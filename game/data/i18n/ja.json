@@ -184,7 +184,7 @@
   "ctrl.inventory": "I 持ち物",
   "ctrl.hotbar": "1–8 ショートカット",
   "ctrl.hint_line": "タップで移動 · タップで調べる · タップでパリィ · Esc メニュー",
-  "ctrl.gamepad_hint": "コントローラー：左スティック移動 · A 調べる · B／RT パリィ · Start メニュー",
+  "ctrl.gamepad_hint": "パッド：B／RT パリィ · Start メニュー（探索はタップ／クリック）",
   "common.back": "戻る",
   "common.return": "現在地へ戻る",
   "common.confirm": "決定",

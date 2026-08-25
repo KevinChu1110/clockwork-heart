@@ -184,7 +184,7 @@
   "ctrl.inventory": "I: inventario",
   "ctrl.hotbar": "1–8: acceso rápido",
   "ctrl.hint_line": "Toca para moverte · toca para interactuar · toca para parar · Esc menú",
-  "ctrl.gamepad_hint": "Mando: stick izq. mover · A interactuar · B/RT parar · Start menú",
+  "ctrl.gamepad_hint": "Mando: B/RT parada · Start menú (explora con toques/clics)",
   "common.back": "Volver",
   "common.return": "Volver aquí",
   "common.confirm": "Confirmar",

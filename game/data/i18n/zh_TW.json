@@ -191,7 +191,7 @@
   "ctrl.inventory": "I 物品欄",
   "ctrl.hotbar": "1–8 快捷欄",
   "ctrl.hint_line": "點地上移動 · 點目標互動 · 點擊格擋 · Esc 選單",
-  "ctrl.gamepad_hint": "手把：左搖桿移動 · A 互動 · B／RT 格擋 · Start 選單",
+  "ctrl.gamepad_hint": "手把：B／RT 格擋 · Start 選單（探索請用點擊）",
   "common.back": "返回",
   "common.return": "返回當前",
   "common.confirm": "確認",

@@ -188,7 +188,7 @@
   "ctrl.inventory": "I 物品栏",
   "ctrl.hotbar": "1–8 快捷栏",
   "ctrl.hint_line": "点地上移动 · 点目标交互 · 点击格挡 · Esc 菜单",
-  "ctrl.gamepad_hint": "手把：左摇杆移动 · A 交互 · B／RT 格挡 · Start 菜单",
+  "ctrl.gamepad_hint": "手柄：B／RT 格挡 · Start 菜单（探索请用点击）",
   "common.back": "返回",
   "common.return": "返回当前",
   "common.confirm": "确认",

@@ -43,7 +43,8 @@ Telemetry="*res://scripts/autoload/telemetry.gd"
 window/size/viewport_width=1280
 window/size/viewport_height=720
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep"
+window/stretch/aspect="expand"
+window/handheld/orientation=4
 window/size/window_width_override=1280
 window/size/window_height_override=720
 window/size/mode=3
@@ -51,6 +52,11 @@ window/size/resizable=true
 window/size/borderless=false
 window/size/always_on_top=false
 window/size/initial_position_type=1
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=false
+pointing/emulate_mouse_from_touch=true
 
 [input]
 ui_left={

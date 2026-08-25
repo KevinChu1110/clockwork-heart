@@ -133,6 +133,8 @@ func _build() -> void:
 		key.add_theme_font_size_override("font_size", 9)
 		key.add_theme_color_override("font_color", Color(0.95, 0.75, 0.45))
 		key.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		## 觸控裝置沒鍵盤，1–8 快捷鍵標籤只會造成困惑
+		key.visible = not DisplayServer.is_touchscreen_available()
 		stack.add_child(key)
 		_keys.append(key)
 

@@ -184,7 +184,7 @@
   "ctrl.inventory": "I 소지품",
   "ctrl.hotbar": "1–8 단축칸",
   "ctrl.hint_line": "탭 이동 · 탭 상호작용 · 탭 패링 · Esc 메뉴",
-  "ctrl.gamepad_hint": "컨트롤러：왼쪽 스틱 이동 · A 상호작용 · B／RT 패링 · Start 메뉴",
+  "ctrl.gamepad_hint": "패드：B／RT 패링 · Start 메뉴（탐색은 탭／클릭）",
   "common.back": "돌아가기",
   "common.return": "현재 위치로",
   "common.confirm": "확인",

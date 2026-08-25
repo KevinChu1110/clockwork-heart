@@ -1833,6 +1833,8 @@ func _build_minimap_ui() -> void:
 	tip.add_theme_font_size_override("font_size", 10)
 	tip.add_theme_color_override("font_color", UiStyle.INK_FAINT)
 	tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	## 觸控裝置沒鍵盤，M 快捷鍵提示藏起來
+	tip.visible = not DisplayServer.is_touchscreen_available()
 	head_row.add_child(tip)
 	## 拖曳小地圖（位置寫入存檔）
 	var WD = load("res://scripts/ui/window_drag.gd")

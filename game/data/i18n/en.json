@@ -191,7 +191,7 @@
   "ctrl.inventory": "I inventory",
   "ctrl.hotbar": "1–8 hotbar",
   "ctrl.hint_line": "Tap to move · tap to interact · tap to parry · Esc menu",
-  "ctrl.gamepad_hint": "Pad: stick move · A interact · B/RT parry · Start menu",
+  "ctrl.gamepad_hint": "Gamepad: B/RT parry · Start menu (explore with taps/clicks)",
   "common.back": "Back",
   "common.return": "Return",
   "common.confirm": "Confirm",
