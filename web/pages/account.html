@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="../css/motion.css" />
   <link rel="stylesheet" href="../css/rwd.css" />
   <script src="../config.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body data-page="account">
   <header class="page-hero" style="--hero-img:url('../media/gemini/keyart_soul.png')">
@@ -110,8 +111,8 @@
                     <input id="hp-website" name="website" type="text" tabindex="-1" autocomplete="off" />
                   </div>
                   <div class="bot-gate" id="bot-gate">
-                    <p>防機器人：點<strong>橙色葫蘆</strong></p>
-                    <div class="gourd-quiz" id="gourd-quiz"></div>
+                    <p>防機器人驗證</p>
+                    <div id="cf-box"></div>
                   </div>
                   <p class="hint-line" id="signup-note">送出後會跳到「去信箱點驗證」。沒點連結不能登入。</p>
                   <button type="submit" class="btn btn-primary" id="reg-btn">建立帳號並寄驗證信</button>
@@ -126,6 +127,10 @@
                 <img src="../media/souls/gourd_orange.png" alt="" />
                 <h3>去信箱點驗證</h3>
                 <p>我們寄了一封信到<br /><strong id="verify-email"></strong><br />點信裡的連結才算註冊完成。沒看到就翻垃圾郵件。</p>
+                <div class="bot-gate" style="text-align:left;margin-bottom:0.75rem">
+                  <p>重寄前再驗一次</p>
+                  <div id="cf-box-resend"></div>
+                </div>
                 <div style="display:grid;gap:0.5rem">
                   <button type="button" class="btn btn-primary" id="btn-resend">重寄驗證信</button>
                   <button type="button" class="btn btn-ghost" id="btn-back-login">我已驗證，去登入</button>
@@ -141,6 +146,10 @@
                   <div class="field">
                     <label for="forgot-email">Email</label>
                     <input id="forgot-email" type="email" required placeholder="you@example.com" autocomplete="username" />
+                  </div>
+                  <div class="bot-gate" id="forgot-captcha-wrap">
+                    <p>防機器人驗證</p>
+                    <div id="cf-box-forgot"></div>
                   </div>
                   <button type="submit" class="btn btn-primary" id="forgot-btn">寄重設信</button>
                   <p class="msg" id="forgot-msg" role="status"></p>
@@ -169,34 +178,46 @@
       var mode = "signup";
       var pendingEmail = "";
       var formOpened = Date.now();
-      var gourdPicked = "";
+      var captchaToken = "";
+      var captchaWidget = null;
 
-      function renderGourdQuiz() {
-        var box = document.getElementById("gourd-quiz");
-        if (!box) return;
-        gourdPicked = "";
-        var items = [
-          { id: "green", src: "../media/souls/gourd_green.png", alt: "綠葫蘆" },
-          { id: "blue", src: "../media/souls/gourd_blue.png", alt: "藍葫蘆" },
-          { id: "purple", src: "../media/souls/gourd_purple.png", alt: "紫葫蘆" },
-          { id: "orange", src: "../media/souls/gourd_orange.png", alt: "橙葫蘆" }
-        ];
-        items.sort(function () { return Math.random() - 0.5; });
-        box.innerHTML = "";
-        items.forEach(function (it) {
-          var b = document.createElement("button");
-          b.type = "button";
-          b.setAttribute("aria-label", it.alt);
-          b.innerHTML = '<img src="' + it.src + '" alt="' + it.alt + '">';
-          b.onclick = function () {
-            gourdPicked = it.id;
-            Array.prototype.forEach.call(box.children, function (c) { c.classList.remove("is-on"); });
-            b.classList.add("is-on");
-          };
-          box.appendChild(b);
+      var captchaBox = "cf-box";
+      function mountTurnstile(id) {
+        if (id) captchaBox = id;
+        if (!window.turnstile || !cfg.turnstileSiteKey) return;
+        var el = document.getElementById(captchaBox);
+        if (!el) return;
+        try { if (captchaWidget != null) window.turnstile.remove(captchaWidget); } catch (e) {}
+        captchaToken = "";
+        el.innerHTML = "";
+        captchaWidget = window.turnstile.render(el, {
+          sitekey: cfg.turnstileSiteKey,
+          theme: "light",
+          callback: function (t) { captchaToken = t; },
+          "expired-callback": function () { captchaToken = ""; },
+          "error-callback": function () { captchaToken = ""; }
         });
       }
-      renderGourdQuiz();
+      function resetCaptcha() {
+        captchaToken = "";
+        try {
+          if (window.turnstile && captchaWidget != null) window.turnstile.reset(captchaWidget);
+        } catch (e) {}
+      }
+      function attachCaptcha(body) {
+        if (captchaToken) body.gotrue_meta_security = { captcha_token: captchaToken };
+        return body;
+      }
+      (function waitTurnstile() {
+        var n = 0;
+        var t = setInterval(function () {
+          n++;
+          if (window.turnstile) {
+            clearInterval(t);
+            mountTurnstile();
+          } else if (n > 40) clearInterval(t);
+        }, 250);
+      })();
 
       function pagesBase() {
         if (location.protocol === "file:") {
@@ -319,6 +340,7 @@
         show("main-auth", false);
         show("forgot-panel", false);
         show("verify-panel", true);
+        mountTurnstile("cf-box-resend");
         try {
           history.replaceState(null, "", location.pathname + "?verify=1");
         } catch (e) {}
@@ -433,9 +455,8 @@
         document.getElementById("signup-note").classList.toggle("hidden", m === "login");
         document.getElementById("pass-strength").hidden = m !== "signup";
         document.getElementById("forgot-wrap").hidden = m !== "login";
-        document.getElementById("bot-gate").classList.toggle("hidden", m !== "signup");
-        if (m === "signup") renderGourdQuiz();
         formOpened = Date.now();
+        mountTurnstile("cf-box");
         document.getElementById("pass-rule").textContent = m === "signup" ? "至少 8 碼，含英文字與數字" : "輸入你的密碼";
         document.getElementById("reg-btn").textContent = m === "signup" ? "建立帳號並寄驗證信" : "登入";
         document.getElementById("reg-pass").autocomplete = m === "signup" ? "new-password" : "current-password";
@@ -470,12 +491,12 @@
         }
         if (mode === "signup") {
           if (Date.now() - formOpened < 1800) { setMsg("reg-msg", "填太快了，請再確認一次。", false); return; }
-          if (gourdPicked !== "orange") { setMsg("reg-msg", "請先點橙色葫蘆（防機器人）。", false); return; }
           if (!passOk(pass)) { setMsg("reg-msg", "密碼至少 8 碼，且要有英文字與數字。", false); return; }
           if (pass !== pass2) { setMsg("reg-msg", "兩次密碼不一致。", false); return; }
         } else if (pass.length < 6) {
           setMsg("reg-msg", "請輸入密碼。", false); return;
         }
+        if (!captchaToken) { setMsg("reg-msg", "請先完成防機器人驗證。", false); return; }
         if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) { setMsg("reg-msg", "尚未接上後端。", false); return; }
         setMsg("reg-msg", "連線中…", true);
         document.getElementById("reg-btn").disabled = true;
@@ -486,11 +507,13 @@
           var body = mode === "signup"
             ? { email: email, password: pass, data: { app: "cuiling_bravesoul", source: "account_page" } }
             : { email: email, password: pass };
+          attachCaptcha(body);
           var res = await fetch(apiBase() + path, {
             method: "POST",
             headers: headers(),
             body: JSON.stringify(body)
           });
+          resetCaptcha();
           var data = {};
           try { data = await res.json(); } catch (e) {}
           if (!res.ok) {
@@ -553,13 +576,15 @@
           setMsg("verify-msg", "請稍等再寄。", false);
           return;
         }
+        if (!captchaToken) { setMsg("verify-msg", "請先完成防機器人驗證。", false); return; }
         this.disabled = true;
         try {
           var res = await fetch(apiBase() + "/auth/v1/resend", {
             method: "POST",
             headers: headers(),
-            body: JSON.stringify({ type: "signup", email: email })
+            body: JSON.stringify(attachCaptcha({ type: "signup", email: email }))
           });
+          resetCaptcha();
           var data = {};
           try { data = await res.json(); } catch (e) {}
           if (!res.ok) throw new Error(data.error_description || data.msg || data.error || ("HTTP " + res.status));
@@ -583,6 +608,7 @@
         show("verify-panel", false);
         show("forgot-panel", true);
         document.getElementById("forgot-email").value = document.getElementById("reg-email").value.trim();
+        mountTurnstile("cf-box-forgot");
       };
       document.getElementById("btn-forgot-back").onclick = function () {
         show("forgot-panel", false);
@@ -593,13 +619,15 @@
         ev.preventDefault();
         var email = document.getElementById("forgot-email").value.trim();
         if (!validEmail(email)) { setMsg("forgot-msg", "Email 格式不對。", false); return; }
+        if (!captchaToken) { setMsg("forgot-msg", "請先完成防機器人驗證。", false); return; }
         document.getElementById("forgot-btn").disabled = true;
         try {
           var res = await fetch(apiBase() + "/auth/v1/recover?redirect_to=" + encodeURIComponent(redirect), {
             method: "POST",
             headers: headers(),
-            body: JSON.stringify({ email: email })
+            body: JSON.stringify(attachCaptcha({ email: email }))
           });
+          resetCaptcha();
           if (!res.ok) {
             var data = {};
             try { data = await res.json(); } catch (e) {}

@@ -1045,23 +1045,7 @@ body[data-page="home"] .gnb.is-scrolled {
   padding: 0.75rem 0.8rem 0.85rem;
 }
 .bot-gate p { margin: 0 0 0.55rem; font-size: 0.86rem; font-weight: 700; color: var(--ink-soft); }
-.gourd-quiz {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.4rem;
-}
-.gourd-quiz button {
-  border: 1px solid var(--line-soft);
-  background: #fff;
-  border-radius: 12px;
-  padding: 0.35rem;
-  cursor: pointer;
-}
-.gourd-quiz button img { width: 100%; height: auto; display: block; }
-.gourd-quiz button.is-on {
-  border-color: var(--key-deep);
-  box-shadow: 0 0 0 3px rgba(194, 94, 115, 0.22);
-}
+.bot-gate .cf-turnstile, .bot-gate iframe { max-width: 100%; }
 .welcome-banner {
   background: rgba(255,255,255,0.1);
   border: 1px solid rgba(255,255,255,0.18);
