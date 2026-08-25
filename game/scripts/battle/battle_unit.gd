@@ -91,6 +91,12 @@ var atb_slow_left: float = 0.0  ## >0 時 ATB 填充變慢
 var atb_freeze_left: float = 0.0  ## >0 時 ATB 不漲
 var atk_buff_left: float = 0.0
 var atk_buff_mult: float = 1.0
+## 原作技能修正：滅世一擊自帶落空率、怒雷狂擊爆擊加成、水晶龍捲冰凍標記
+var skill_self_miss: int = 0
+var skill_crit_mod: float = 0.0
+var skill_freeze_next: bool = false
+## 冰凍標記生效：下一次普攻傷害倍增（打完歸 1）
+var empower_next_mult: float = 1.0
 
 
 func is_alive() -> bool:

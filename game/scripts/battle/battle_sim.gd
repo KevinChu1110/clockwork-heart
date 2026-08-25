@@ -516,6 +516,10 @@ func _resolve_strike(u: BattleUnit) -> void:
 	)
 	var dmg: int = int(rolled.get("damage", 1))
 	var is_crit: bool = bool(rolled.get("crit", false))
+	## 水晶龍捲冰凍標記：下一次普攻傷害加倍（原作），打完歸 1
+	if u.empower_next_mult > 1.0:
+		dmg = int(round(float(dmg) * u.empower_next_mult))
+		u.empower_next_mult = 1.0
 	## 遠距開闊輸出加成（在 Boss 過濾之前，chip 也吃比例）
 	if u.team == BattleUnit.Team.PLAYER:
 		dmg = u.scale_outgoing(dmg)
@@ -601,6 +605,9 @@ func _refresh_player_skill_choice(u: BattleUnit) -> void:
 	u.skill_mult = float(kit.get("mult", u.skill_mult))
 	u.skill_hits = maxi(1, int(kit.get("hits", u.skill_hits)))
 	u.heal_pct = float(kit.get("heal_pct", 0.0))
+	u.skill_self_miss = int(kit.get("self_miss_pct", 0))
+	u.skill_crit_mod = float(kit.get("crit_mod", 0.0))
+	u.skill_freeze_next = bool(kit.get("freeze_next", false))
 
 
 func _resolve_skill(u: BattleUnit) -> void:
@@ -638,6 +645,15 @@ func _resolve_skill(u: BattleUnit) -> void:
 		target = foes[0]
 		u.target_id = target.id
 
+	## 原作人品技（滅世一擊）：技能自帶落空率，怒氣照樣清空
+	if u.skill_self_miss > 0 and rng.randi_range(1, 100) <= u.skill_self_miss:
+		_emit("miss", {"attacker": u.id, "defender": target.id, "skill": u.skill_name})
+		if u.id == player_id:
+			_consume_weapon_use(u)
+		u.state = BattleUnit.State.RECOVER
+		u.state_timer = u.recover_time * 1.2
+		return
+
 	## 真多段：每段獨立擲骰與結算；目標中途死亡則中斷
 	var hits_n: int = maxi(1, u.skill_hits)
 	var atk_s := float(u.atk) * (u.atk_buff_mult if u.atk_buff_left > 0.0 else 1.0)
@@ -649,7 +665,7 @@ func _resolve_skill(u: BattleUnit) -> void:
 			break
 		var sroll: Dictionary = Formulas.roll_hit_damage(
 			atk_s, target.defense, u.skill_mult, var_s,
-			u.crit, target.crit_resist, u.crit_dmg, rng, true
+			u.crit + u.skill_crit_mod, target.crit_resist, u.crit_dmg, rng, true
 		)
 		var dmg: int = int(sroll.get("damage", 1))
 		var skill_crit: bool = bool(sroll.get("crit", false))
@@ -714,6 +730,13 @@ func _resolve_skill(u: BattleUnit) -> void:
 		_abo_add_guard(42.0, u.skill_name)  ## 技能灌破防較多
 	if statue_mode and u.team == BattleUnit.Team.PLAYER:
 		_statue_retarget_player()
+	## 原作水晶龍捲：命中冰凍——下一次普攻傷害加倍
+	if u.skill_freeze_next and total_dealt > 0:
+		u.empower_next_mult = 2.0
+		_emit("freeze_mark", {
+			"attacker": u.id,
+			"msg": _t("冰凍！下一擊加倍。"),
+		})
 	if u.id == player_id:
 		_consume_weapon_use(u)
 	u.state = BattleUnit.State.RECOVER
@@ -1856,6 +1879,9 @@ static func _apply_player_skill_stats(sim: Variant, p: BattleUnit, player_stats:
 	p.skill_id = str(player_stats.get("skill_id", "slash"))
 	p.skill_kind = str(player_stats.get("skill_kind", "attack"))
 	p.heal_pct = float(player_stats.get("heal_pct", 0.0))
+	p.skill_self_miss = int(player_stats.get("skill_self_miss", 0))
+	p.skill_crit_mod = float(player_stats.get("skill_crit_mod", 0.0))
+	p.skill_freeze_next = bool(player_stats.get("skill_freeze_next", false))
 	## 爆擊／傷害浮動（對齊 DataTables + 裝備）
 	p.crit = float(player_stats.get("crit", Formulas.default_player_crit()))
 	p.crit_dmg = float(player_stats.get("crit_dmg", Formulas.default_crit_dmg()))

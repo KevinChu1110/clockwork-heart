@@ -1768,6 +1768,8 @@ func _on_telemetry_battle_finished(won: bool) -> void:
 func _on_event(kind: String, data: Dictionary) -> void:
 	AudioManager.on_battle_event(kind, data)
 	match kind:
+		"freeze_mark":
+			_append_log(_t("[color=#8df]冰凍！下一擊加倍。[/color]"))
 		"parry_early":
 			## 「差一點」——機會還在，要講清楚，不然玩家以為格擋壞了
 			_append_log(_t("[color=#fc8]太早了 · 等倒數變綠[/color]"))

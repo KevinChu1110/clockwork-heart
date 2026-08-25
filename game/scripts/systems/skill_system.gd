@@ -122,10 +122,11 @@ const CATALOG: Array[Dictionary] = [
 		"line": "sword",
 		"profession": "knight",
 		"kind": "attack",
-		"base_mult": 2.6,
+		"base_mult": 2.4,
+		"crit_mod": 25.0,
 		"priority": 40,
 		"req_level": 16,
-		"desc": "★ 16 級暴怒技。滿怒優先的大招。",
+		"desc": "★ 16 級暴怒技。雷勢帶鋒——爆擊率+25%。",
 		"lv2": "雷勢更強。",
 		"lv3": "怒雷尾音延長。",
 		"unlock_hint": "擊敗雷歐 · 或劍系 Lv16",
@@ -252,9 +253,10 @@ const CATALOG: Array[Dictionary] = [
 		"profession": "viking",
 		"kind": "attack",
 		"base_mult": 3.0,
+		"self_miss_pct": 30,
 		"priority": 41,
 		"req_level": 16,
-		"desc": "★ 16 級暴怒技。慢、重、痛（人品技風味）。",
+		"desc": "★ 16 級暴怒技。慢、重、痛——三成機率落空的人品技。",
 		"lv2": "滅勢更沉。",
 		"lv3": "一擊封頂前一檔。",
 		"unlock_hint": "斧系 Lv16",
@@ -366,11 +368,11 @@ const CATALOG: Array[Dictionary] = [
 		"line": "dagger",
 		"profession": "ninja",
 		"kind": "attack",
-		"base_mult": 0.7,
-		"hits": 4,
+		"base_mult": 1.5,
+		"freeze_next": true,
 		"priority": 35,
 		"req_level": 13,
-		"desc": "★ 13 級任務技。連擊渦旋，四段真傷。",
+		"desc": "★ 13 級任務技。命中冰凍——下一次普攻傷害加倍。",
 		"lv2": "龍捲更密。",
 		"lv3": "水晶尾刃。",
 		"unlock_hint": "匕首系 Lv13",
@@ -501,10 +503,10 @@ const CATALOG: Array[Dictionary] = [
 		"line": "fist",
 		"profession": "monk",
 		"kind": "attack",
-		"base_mult": 3.6,
+		"base_mult": 4.6,
 		"priority": 43,
 		"req_level": 16,
-		"desc": "★ 16 級暴怒技。撕裂大地的一擊。",
+		"desc": "★ 16 級暴怒技。撕裂大地的一擊——四絕裡最重的單發。",
 		"lv2": "地裂更廣。",
 		"lv3": "疾風二次衝擊。",
 		"unlock_hint": "拳系 Lv16",
@@ -1219,7 +1221,7 @@ func pick_battle_skill(hp_ratio: float = 1.0, weapon_line: String = "") -> Dicti
 		## 當前線沒有已學攻擊技 → 不硬塞跨線橫斬
 		return {}
 	var sid2: String = str(best.get("id", ""))
-	return {
+	var out := {
 		"id": sid2,
 		"name": str(best.get("name", sid2)),
 		"kind": "attack",
@@ -1228,6 +1230,11 @@ func pick_battle_skill(hp_ratio: float = 1.0, weapon_line: String = "") -> Dicti
 		"heal_pct": 0.0,
 		"line": str(best.get("line", my_line)),
 	}
+	## 原作技能修正透傳（滅世落空率／怒雷爆擊／水晶冰凍）
+	for k in ["self_miss_pct", "crit_mod", "freeze_next", "sure_hit"]:
+		if best.has(k):
+			out[k] = best[k]
+	return out
 
 
 func battle_player_stats_patch(weapon_line: String = "") -> Dictionary:
@@ -1252,6 +1259,9 @@ func battle_player_stats_patch(weapon_line: String = "") -> Dictionary:
 		"skill_hits": int(kit.get("hits", 1)),
 		"skill_kind": str(kit.get("kind", "attack")),
 		"heal_pct": float(kit.get("heal_pct", 0.0)),
+		"skill_self_miss": int(kit.get("self_miss_pct", 0)),
+		"skill_crit_mod": float(kit.get("crit_mod", 0.0)),
+		"skill_freeze_next": bool(kit.get("freeze_next", false)),
 	}
 
 
