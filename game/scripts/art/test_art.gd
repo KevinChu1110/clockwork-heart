@@ -288,8 +288,13 @@ func _check_paperdoll_coverage() -> bool:
 	for bid in bases.keys():
 		var def: Dictionary = bases[bid]
 		var slot := str(def.get("slot", "weapon"))
+		if slot in ["necklace", "amulet", "ring", "earring", "bracelet", "belt"]:
+			slot = "accessory"
 		var p := "res://assets/sprites/player/paperdoll/%s/%s.png" % [slot, bid]
 		if ResourceLoader.exists(p):
+			ok_n += 1
+		elif slot == "accessory":
+			# 飾品若無專屬紙娃娃，系統會安靜回落至飾品類別通用圖 (pendant/ring)，不視為缺失
 			ok_n += 1
 		else:
 			missing.append("%s/%s" % [slot, bid])

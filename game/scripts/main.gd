@@ -4605,9 +4605,7 @@ func _vessel_glow_line(vessel: String) -> String:
 
 func _soul_do_ritual() -> void:
 	if not SoulSystem.can_ritual():
-		_play_dialog([
-			{"speaker": _t("星讀"), "text": _t("金幣不夠點亮魂器。去做委託、演武，或等明日免費一次。")},
-		], _go_soul_panel)
+		_play_dialog(DialogLines.lines("soul.ritual_not_enough"), _go_soul_panel)
 		return
 	## 原作「點亮」：依目前葫蘆色階演出 → 抽魂 → 跳階結果
 	AudioManager.play("ui", 1.08, -6.0)

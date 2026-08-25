@@ -31,6 +31,7 @@ signal battle_finished(won: bool)
 var sim: BattleSim
 var _mode: String = "wolf"
 var _ended: bool = false
+var _in_parry_slowmo: bool = false
 var _player_home: Vector2
 var _enemy_home: Vector2
 var _shake: float = 0.0
@@ -1033,6 +1034,9 @@ func _inventory_node() -> Node:
 ## InventorySystem 會一直握著指向已釋放節點的 Callable。
 func _exit_tree() -> void:
 	_release_hp_authority()
+	## 完美格擋慢鏡／命中定格若在收場瞬間還沒播完，恢復用的 tween 會隨
+	## 節點一起死，Engine.time_scale 就永遠卡在慢速 —— 離場一律歸位。
+	Engine.time_scale = 1.0
 
 
 ## 回傳「實際回了多少」——訊息要靠這個數字，回 0 就會顯示「HP +0」，
@@ -2005,6 +2009,18 @@ func _on_event(kind: String, data: Dictionary) -> void:
 				if is_instance_valid(self) and not _ended:
 					_set_boss_pose("idle")
 			)
+
+			# 完美格擋慢鏡高光：時間流速驟降至 15%，隨後在 0.75 秒內以正弦曲線平滑恢復常態
+			_in_parry_slowmo = true
+			var orig_scale := sim.time_scale if sim != null else 1.0
+			Engine.time_scale = 0.15
+			var stw := create_tween()
+			stw.tween_property(Engine, "time_scale", orig_scale, 0.75).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+			stw.finished.connect(func():
+				_in_parry_slowmo = false
+				Engine.time_scale = orig_scale
+			)
+
 			var pfx := SpriteDB.fx("parry_flash")
 			if hazard_fx and pfx:
 				hazard_fx.texture = pfx
@@ -2319,10 +2335,13 @@ func _pulse_enemy() -> void:
 func trigger_hit_stop(duration: float = 0.08) -> void:
 	if not is_inside_tree() or _ended:
 		return
+	if _in_parry_slowmo:
+		return  ## 正在進行完美格擋慢鏡，不被常規命中定格覆蓋
 	var orig_scale := sim.time_scale if sim != null else 1.0
 	Engine.time_scale = 0.08
 	get_tree().create_timer(duration, true, false, true).timeout.connect(func():
-		Engine.time_scale = orig_scale
+		if not _in_parry_slowmo:
+			Engine.time_scale = orig_scale
 	)
 
 

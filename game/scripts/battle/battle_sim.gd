@@ -783,6 +783,12 @@ func _step_falcon_stop(dt: float) -> void:
 	var f := get_unit("falcon")
 	if f == null or not f.is_alive():
 		return
+	var wings_broken := false
+	for p in f.parts:
+		if p.id == "wings" and bool(p.get("broken", false)):
+			wings_broken = true
+			break
+
 	if falcon_stop_left > 0.0:
 		falcon_stop_left -= dt
 		f.vulnerable = true
@@ -794,10 +800,15 @@ func _step_falcon_stop(dt: float) -> void:
 		f.vulnerable = false
 		falcon_stop_cd -= dt
 		if falcon_stop_cd <= 0.0:
-			falcon_stop_cd = _cycle_jitter(FALCON_STOP_INTERVAL)
+			var interval := FALCON_STOP_INTERVAL
+			if wings_broken:
+				interval *= 0.7  # 翼折失去氣流平衡，喘息頻率大幅增加（間隔縮短30%）
+			falcon_stop_cd = _cycle_jitter(interval)
 			## 低血停拍略短
 			var dur := FALCON_STOP_DURATION
-			if float(f.hp) / float(f.max_hp) < 0.4:
+			if wings_broken:
+				dur += 0.5  # 翼折後停下時間大幅延長，給予玩家黃金輸出高光窗！
+			elif float(f.hp) / float(f.max_hp) < 0.4:
 				dur = 0.72
 				falcon_stop_cd = 2.6
 			falcon_stop_left = dur
@@ -817,7 +828,15 @@ func _step_boar_charge(dt: float) -> void:
 	boar_charge_cd -= dt
 	if boar_charge_cd > 0.0:
 		return
-	boar_charge_cd = BOAR_CHARGE_INTERVAL
+	var interval := BOAR_CHARGE_INTERVAL
+	var horn_broken := false
+	for p in b.parts:
+		if p.id == "horn" and bool(p.get("broken", false)):
+			horn_broken = true
+			break
+	if horn_broken:
+		interval *= 1.8  # 石角斷裂，衝鋒頻率大幅降低（冷卻增加80%）
+	boar_charge_cd = interval
 	b.state = BattleUnit.State.WINDUP
 	b.state_timer = 1.45
 	b.telegraph_active = true
@@ -930,7 +949,16 @@ func resolve_temptation(stage: int, refused: bool) -> void:
 
 
 func _start_king_slash(u: BattleUnit) -> void:
-	u.king_slash_cd = KING_SLASH_CD
+	var cd := KING_SLASH_CD
+	if u.id == "leo":
+		var shield_broken := false
+		for p in u.parts:
+			if p.id == "shield" and bool(p.get("broken", false)):
+				shield_broken = true
+				break
+		if shield_broken:
+			cd += 3.0  # 重盾碎裂，重心不穩，必殺王者斬冷卻時間延長！
+	u.king_slash_cd = cd
 	u.state = BattleUnit.State.WINDUP
 	u.state_timer = KING_SLASH_WINDUP
 	u.telegraph_active = true
@@ -1193,6 +1221,15 @@ func _hazard_window_time() -> float:
 
 func _hazard_interval() -> float:
 	if wrath_mode and hazard_kind == "fire_ring":
+		var w := get_unit("wrath")
+		var mask_broken := false
+		if w != null:
+			for p in w.parts:
+				if p.id == "mask" and bool(p.get("broken", false)):
+					mask_broken = true
+					break
+		if mask_broken:
+			return 8.5  ## 怒焰面具粉碎，控火失衡，火圈頻率大幅降低（冷卻加倍）
 		return 4.2  ## 比雷歐更密
 	if chrono_mode and hazard_kind == "bomb":
 		return 7.0
