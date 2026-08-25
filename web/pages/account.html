@@ -127,7 +127,7 @@
                 <img src="../media/souls/gourd_orange.png" alt="" />
                 <h3>去信箱點驗證</h3>
                 <p>我們寄了一封信到<br /><strong id="verify-email"></strong><br />點信裡的連結才算註冊完成。沒看到就翻垃圾郵件。</p>
-                <div class="bot-gate" style="text-align:left;margin-bottom:0.75rem">
+                <div class="bot-gate" id="resend-captcha-wrap" style="text-align:left;margin-bottom:0.75rem">
                   <p>重寄前再驗一次</p>
                   <div id="cf-box-resend"></div>
                 </div>
@@ -180,11 +180,22 @@
       var formOpened = Date.now();
       var captchaToken = "";
       var captchaWidget = null;
+      var captchaOn = !!cfg.turnstileSiteKey;
 
+      function captchaMissing() {
+        return captchaOn && !captchaToken;
+      }
+      function dropCaptcha() {
+        captchaOn = false;
+        ["bot-gate", "resend-captcha-wrap", "forgot-captcha-wrap"].forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el) el.classList.add("hidden");
+        });
+      }
       var captchaBox = "cf-box";
       function mountTurnstile(id) {
         if (id) captchaBox = id;
-        if (!window.turnstile || !cfg.turnstileSiteKey) return;
+        if (!window.turnstile || !captchaOn) return;
         var el = document.getElementById(captchaBox);
         if (!el) return;
         try { if (captchaWidget != null) window.turnstile.remove(captchaWidget); } catch (e) {}
@@ -209,13 +220,17 @@
         return body;
       }
       (function waitTurnstile() {
+        if (!captchaOn) { dropCaptcha(); return; }
         var n = 0;
         var t = setInterval(function () {
           n++;
           if (window.turnstile) {
             clearInterval(t);
             mountTurnstile();
-          } else if (n > 40) clearInterval(t);
+          } else if (n > 40) {
+            clearInterval(t);
+            dropCaptcha();
+          }
         }, 250);
       })();
 
@@ -496,7 +511,7 @@
         } else if (pass.length < 6) {
           setMsg("reg-msg", "請輸入密碼。", false); return;
         }
-        if (!captchaToken) { setMsg("reg-msg", "請先完成防機器人驗證。", false); return; }
+        if (captchaMissing()) { setMsg("reg-msg", "請先完成防機器人驗證。", false); return; }
         if (!cfg.supabaseUrl || !cfg.supabaseAnonKey) { setMsg("reg-msg", "尚未接上後端。", false); return; }
         setMsg("reg-msg", "連線中…", true);
         document.getElementById("reg-btn").disabled = true;
@@ -576,7 +591,7 @@
           setMsg("verify-msg", "請稍等再寄。", false);
           return;
         }
-        if (!captchaToken) { setMsg("verify-msg", "請先完成防機器人驗證。", false); return; }
+        if (captchaMissing()) { setMsg("verify-msg", "請先完成防機器人驗證。", false); return; }
         this.disabled = true;
         try {
           var res = await fetch(apiBase() + "/auth/v1/resend", {
@@ -619,7 +634,7 @@
         ev.preventDefault();
         var email = document.getElementById("forgot-email").value.trim();
         if (!validEmail(email)) { setMsg("forgot-msg", "Email 格式不對。", false); return; }
-        if (!captchaToken) { setMsg("forgot-msg", "請先完成防機器人驗證。", false); return; }
+        if (captchaMissing()) { setMsg("forgot-msg", "請先完成防機器人驗證。", false); return; }
         document.getElementById("forgot-btn").disabled = true;
         try {
           var res = await fetch(apiBase() + "/auth/v1/recover?redirect_to=" + encodeURIComponent(redirect), {
