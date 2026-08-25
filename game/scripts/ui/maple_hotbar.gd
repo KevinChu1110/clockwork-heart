@@ -4,6 +4,7 @@ extends Control
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const WindowDrag = preload("res://scripts/ui/window_drag.gd")
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const SLOT_N := 8
 const SLOT_SIZE := Vector2(46, 46)
 
@@ -23,9 +24,9 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	anchor_right = 0
 	anchor_bottom = 0
-	## 初始置底中（之後可拖）
-	custom_minimum_size = Vector2(408, 54)
-	size = Vector2(408, 54)
+	## 初始置底中（之後可拖）；尾端多一格「選單」鈕
+	custom_minimum_size = Vector2(459, 54)
+	size = Vector2(459, 54)
 	_build()
 	call_deferred("_place_default")
 	if Engine.get_main_loop() is SceneTree:
@@ -145,6 +146,30 @@ func _build() -> void:
 					slot_right_clicked.emit(idx)
 					get_viewport().set_input_as_handled()
 		)
+
+	## 觸控／滑鼠也要開得了暫停選單：尾端「選單」鈕送 ui_cancel，
+	## 與 Esc 走同一條流程（開關暫停、先收物品欄）
+	var menu_btn := PanelContainer.new()
+	menu_btn.custom_minimum_size = SLOT_SIZE
+	menu_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	menu_btn.add_theme_stylebox_override("panel", UiStyle.slot_style())
+	row.add_child(menu_btn)
+	var ml := Label.new()
+	ml.text = ContentLoc.text("ui", "選單")
+	ml.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ml.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	ml.add_theme_font_size_override("font_size", 12)
+	ml.add_theme_color_override("font_color", Color(0.95, 0.80, 0.55))
+	ml.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	menu_btn.add_child(ml)
+	menu_btn.gui_input.connect(func(ev: InputEvent):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			get_viewport().set_input_as_handled()
+			var act := InputEventAction.new()
+			act.action = "ui_cancel"
+			act.pressed = true
+			Input.parse_input_event(act)
+	)
 
 
 func refresh() -> void:
