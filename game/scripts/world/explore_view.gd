@@ -1,6 +1,7 @@
 class_name ExploreView
 extends Control
-## 俯視可走場景（Control 座標，免物理）。WASD／方向鍵移動，靠近按 E 互動。
+## 俯視可走場景（Control 座標，免物理）。純點擊操作：點地上走過去，
+## 點人物／物件自動走到旁邊並互動（AStarGrid2D 網格尋路）。
 ## 2D：地圖底圖 + TileMap 地磚 + 實心格碰撞 + 角色／NPC。
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
@@ -16,6 +17,8 @@ const PLAYER_SIZE := Vector2(56, 72)
 const PLAYER_HIT := Rect2(12, 52, 32, 16)
 const INTERACT_DIST := 64.0
 const WALK_FPS := 8.0
+## 腳底中心相對 player_pos（= PLAYER_HIT 中心），尋路格與腳底對齊用
+const FOOT_OFFSET := Vector2(28, 60)
 
 var map_id: String = ""
 var frozen: bool = false
@@ -86,6 +89,10 @@ var _ambient_t: float = 0.0
 var _ghost_host: Control = null
 var _ghosts: Array = []  ## {root, phase}
 var _presence_loaded: bool = false
+## 點擊移動：格子尋路器與待走路徑（player_pos 目標點序列）
+var _astar: AStarGrid2D = null
+var _path: Array = []  ## Vector2
+var _tap_interact_id: String = ""  ## 走到路徑終點後要互動的實體
 
 
 
@@ -111,7 +118,7 @@ func _place_minimap_default() -> void:
 func show_guide_hint(text: String) -> void:
 	_guide_hint = text
 	if _hint and _near_id == "":
-		_hint.text = text if text != "" else _t("WASD／方向鍵移動 · 靠近後按 E 互動")
+		_hint.text = text if text != "" else _t("點地上走過去 · 點人或物互動")
 		hint_changed.emit(_hint.text)
 
 
@@ -133,12 +140,16 @@ func setup(p_map_id: String) -> void:
 	_update_player_visual()
 	_ysort_world()
 	_update_camera()
-	hint_changed.emit(_t("WASD 移動 · E 互動 · M 開關小地圖 · 路標切換分區"))
+	hint_changed.emit(_t("點地上移動 · 點目標互動 · 路標切換分區"))
 	call_deferred("_request_presence")
 
 
 func set_frozen(v: bool) -> void:
 	frozen = v
+	if v:
+		## 對話／過場一開就停腳，收掉未完成的點擊指令
+		_path.clear()
+		_tap_interact_id = ""
 
 
 func entity_label(id: String) -> String:
@@ -557,7 +568,7 @@ func _build_chrome() -> void:
 	_hint.add_theme_font_size_override("font_size", 13)
 	_hint.add_theme_color_override("font_color", UiStyle.INK)
 	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_hint.text = _t("移動靠近目標 · 按 E 互動")
+	_hint.text = _t("點地上走過去 · 點人或物互動")
 	hint_bar.add_child(_hint)
 
 	_player_shadow = TextureRect.new()
@@ -1213,6 +1224,7 @@ func _rebuild_collision() -> void:
 					_set_solid(Vector2i(cx, cy), true, false)
 	## 確保玩家出生點不在實心上
 	_unstuck_player()
+	_rebuild_astar()
 
 
 func _entity_collision_scale(id: String) -> Vector2:
@@ -1356,6 +1368,219 @@ func _unstuck_player() -> void:
 					return
 
 
+## ---- 點擊移動（格子尋路） ----
+
+
+func _rebuild_astar() -> void:
+	_astar = AStarGrid2D.new()
+	_astar.region = Rect2i(0, 0, maxi(1, _map_cols), maxi(1, _map_rows))
+	_astar.cell_size = Vector2(1, 1)
+	## 斜走可以，但兩側都是牆時不准切角（腳底盒會卡進去）
+	_astar.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_ONLY_IF_NO_OBSTACLES
+	_astar.default_compute_heuristic = AStarGrid2D.HEURISTIC_OCTILE
+	_astar.default_estimate_heuristic = AStarGrid2D.HEURISTIC_OCTILE
+	_astar.update()
+	for cell in _solid:
+		var c: Vector2i = cell
+		if c.x >= 0 and c.y >= 0 and c.x < _map_cols and c.y < _map_rows and bool(_solid[cell]):
+			_astar.set_point_solid(c, true)
+
+
+## 站上某格時 player_pos 的目標值（腳底中心對齊格心）
+func _cell_to_stand_pos(cell: Vector2i) -> Vector2:
+	var center := FLOOR_RECT.position + (Vector2(cell) + Vector2(0.5, 0.5)) * TILE_PX
+	return center - FOOT_OFFSET
+
+
+func _in_grid(c: Vector2i) -> bool:
+	return c.x >= 0 and c.y >= 0 and c.x < _map_cols and c.y < _map_rows
+
+
+## 找 cell 本身或它周圍最近的可走格；找不到回 (-1,-1)
+func _nearest_open_cell(cell: Vector2i, max_r: int = 8) -> Vector2i:
+	if _in_grid(cell) and not _is_solid_cell(cell):
+		return cell
+	for r in range(1, max_r + 1):
+		for dy in range(-r, r + 1):
+			for dx in range(-r, r + 1):
+				if maxi(absi(dx), absi(dy)) != r:
+					continue
+				var c := cell + Vector2i(dx, dy)
+				if _in_grid(c) and not _is_solid_cell(c):
+					return c
+	return Vector2i(-1, -1)
+
+
+## 規劃走到 world 附近；回傳是否有路（原地也算有）
+func _start_tap_move(world: Vector2, interact_id: String = "") -> bool:
+	_tap_interact_id = interact_id
+	_path.clear()
+	if _astar == null:
+		return false
+	var from := _nearest_open_cell(_world_to_cell(player_pos + FOOT_OFFSET))
+	var to := _nearest_open_cell(_world_to_cell(world))
+	if from.x < 0 or to.x < 0:
+		_tap_interact_id = ""
+		return false
+	if from == to:
+		_arrive_path_end()
+		return true
+	var cells: Array[Vector2i] = _astar.get_id_path(from, to)
+	if cells.size() < 2:
+		_tap_interact_id = ""
+		return false
+	for i in range(1, cells.size()):
+		_path.append(_cell_to_stand_pos(cells[i]))
+	return true
+
+
+## 沿路徑走一步，回傳這幀的移動方向（無路徑回 ZERO）
+func _follow_path(delta: float) -> Vector2:
+	if _path.is_empty():
+		return Vector2.ZERO
+	var target: Vector2 = _path[0]
+	var to_t := target - player_pos
+	var step := SPEED * delta
+	if to_t.length() <= maxf(3.0, step):
+		if _can_stand_at(target):
+			player_pos = target
+		_path.remove_at(0)
+		if _path.is_empty():
+			_arrive_path_end()
+			return Vector2.ZERO
+		target = _path[0]
+		to_t = target - player_pos
+	var dir := to_t.normalized()
+	var before := player_pos
+	_try_move(delta, dir)
+	if player_pos.distance_to(before) < step * 0.1:
+		## 卡住（動態障礙／格與腳底盒誤差）：就地放棄，避免原地抽搐
+		_path.clear()
+		_arrive_path_end()
+		return Vector2.ZERO
+	return dir
+
+
+## 走完路徑：若這趟是「點目標」，靠得夠近就自動互動
+func _arrive_path_end() -> void:
+	if _tap_interact_id == "":
+		return
+	var id := _tap_interact_id
+	_tap_interact_id = ""
+	for e in _entities:
+		if str(e.get("id", "")) != id:
+			continue
+		var ec: Vector2 = e.pos + e.size * 0.5
+		var reach: float = INTERACT_DIST + maxf(e.size.x, e.size.y) * 0.9
+		if _player_center().distance_to(ec) <= reach:
+			_do_interact(id)
+		return
+
+
+func _do_interact(id: String) -> void:
+	AudioManager.play_interact()
+	## 聊天泡泡：先冒一句再交主流程
+	var lab := entity_label(id)
+	if lab != "" and not lab.begins_with(_t("往")) and not lab.begins_with(_t("回")):
+		show_entity_bubble(id, lab, 1.6)
+	interacted.emit(id)
+
+
+## 找點擊位置壓到的實體（用畫面節點矩形，前排優先）
+func _entity_at(world: Vector2) -> String:
+	var best := ""
+	var best_y := -INF
+	for e in _entities:
+		var id := str(e.get("id", ""))
+		var root: Control = _entity_nodes.get(id)
+		var rect := Rect2(e.pos, e.size)
+		if root != null and is_instance_valid(root):
+			rect = Rect2(root.position, root.size)
+		rect = rect.grow(10.0)
+		if not rect.has_point(world):
+			continue
+		var foot_y: float = e.pos.y + e.size.y
+		if foot_y > best_y:
+			best_y = foot_y
+			best = id
+	return best
+
+
+func _on_tap(world: Vector2) -> void:
+	var id := _entity_at(world)
+	if id == "":
+		_spawn_tap_fx(world)
+		_start_tap_move(world)
+		return
+	for e in _entities:
+		if str(e.get("id", "")) != id:
+			continue
+		var ec: Vector2 = e.pos + e.size * 0.5
+		var reach: float = INTERACT_DIST + maxf(e.size.x, e.size.y) * 0.9
+		_spawn_tap_fx(Vector2(ec.x, e.pos.y + e.size.y))
+		if _player_center().distance_to(ec) <= reach:
+			_path.clear()
+			_tap_interact_id = ""
+			_do_interact(id)
+			return
+		## 走到目標腳邊再互動
+		_start_tap_move(Vector2(ec.x, e.pos.y + e.size.y - 4.0), id)
+		return
+
+
+func _gui_input(event: InputEvent) -> void:
+	if frozen:
+		return
+	if event is InputEventMouseButton \
+			and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT \
+			and (event as InputEventMouseButton).pressed:
+		accept_event()
+		_on_tap((event as InputEventMouseButton).position + _cam)
+
+
+## 點擊光圈：柔邊圓環，放大淡出
+static var _ring_tex_cache: Texture2D = null
+
+
+static func _ring_tex() -> Texture2D:
+	if _ring_tex_cache != null:
+		return _ring_tex_cache
+	var s := 48
+	var img := Image.create(s, s, false, Image.FORMAT_RGBA8)
+	var c := (s - 1) * 0.5
+	for y in s:
+		for x in s:
+			var d := Vector2(x - c, y - c).length() / c
+			## 圓環帶：0.62~0.95，內外羽化
+			var a := clampf(1.0 - absf(d - 0.78) / 0.17, 0.0, 1.0)
+			a = a * a * (3.0 - 2.0 * a)
+			img.set_pixel(x, y, Color(1, 1, 1, a))
+	_ring_tex_cache = ImageTexture.create_from_image(img)
+	return _ring_tex_cache
+
+
+func _spawn_tap_fx(world: Vector2) -> void:
+	if _scroll == null or not is_inside_tree():
+		return
+	var fx := TextureRect.new()
+	fx.texture = _ring_tex()
+	fx.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	fx.stretch_mode = TextureRect.STRETCH_SCALE
+	fx.size = Vector2(34, 34)
+	fx.position = world - fx.size * 0.5
+	fx.pivot_offset = fx.size * 0.5
+	fx.scale = Vector2(0.4, 0.4)
+	fx.modulate = Color(1.0, 0.86, 0.55, 0.95)
+	fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fx.z_index = 60
+	_scroll.add_child(fx)
+	var tw := create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(fx, "scale", Vector2(1.15, 1.15), 0.32).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tw.tween_property(fx, "modulate:a", 0.0, 0.34)
+	tw.chain().tween_callback(fx.queue_free)
+
+
 func _entity_display_size(e: Dictionary, tex: Texture2D) -> Vector2:
 	var base: Vector2 = e.size
 	var id := str(e.get("id", ""))
@@ -1483,7 +1708,7 @@ func _rebuild_entities() -> void:
 		badge_panel.add_theme_stylebox_override("panel", UiStyle.interact_badge_style())
 		badge_panel.position = Vector2(root.size.x * 0.5 - 18, -84)
 		var badge := Label.new()
-		badge.text = "E"
+		badge.text = "！"
 		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		badge.add_theme_font_size_override("font_size", 15)
 		badge.add_theme_color_override("font_color", UiStyle.KEY_DEEP)
@@ -1545,30 +1770,19 @@ func _process(delta: float) -> void:
 		_try_ambient_bubble()
 	if frozen:
 		return
-	var dir := Vector2.ZERO
-	## 鍵盤（方向鍵／WASD）與手把（左搖桿／十字鍵）皆綁在 ui_*，見 project.godot [input]
-	if Input.is_action_pressed("ui_left"):
-		dir.x -= 1
-	if Input.is_action_pressed("ui_right"):
-		dir.x += 1
-	if Input.is_action_pressed("ui_up"):
-		dir.y -= 1
-	if Input.is_action_pressed("ui_down"):
-		dir.y += 1
 	if _action_pose_left > 0.0:
 		_action_pose_left -= delta
 		if _action_pose_left <= 0.0:
 			_action_pose = ""
 			_action_pose_left = 0.0
-	## 動作姿期間仍可移動，但視覺鎖在 pose 上
+	## 純點擊：沿尋路路徑走（_follow_path 內含碰撞）；動作姿期間視覺鎖在 pose 上
+	var dir := _follow_path(delta)
 	_moving = dir != Vector2.ZERO
 	if _moving:
-		dir = dir.normalized()
 		if dir.x < -0.1:
 			_facing_left = true
 		elif dir.x > 0.1:
 			_facing_left = false
-		_try_move(delta, dir)
 		_walk_t += delta * WALK_FPS
 		AudioManager.play_step()
 	else:
@@ -1902,7 +2116,7 @@ func _update_near() -> void:
 			if _guide_hint != "":
 				_hint.text = _guide_hint
 			else:
-				_hint.text = _t("移動靠近目標 · 按 E 互動")
+				_hint.text = _t("點地上走過去 · 點人或物互動")
 			_hint.modulate = Color(1, 1, 1, 0.9)
 			hint_changed.emit(_hint.text)
 		else:
@@ -1911,7 +2125,7 @@ func _update_near() -> void:
 				if e.id == best:
 					label = e.label
 					break
-			_hint.text = "〔 E 〕  %s" % label
+			_hint.text = _t("點一下 · %s") % label
 			_hint.modulate = Color(1, 1, 1, 1)
 			hint_changed.emit(_hint.text)
 		_highlight_near()
@@ -1955,16 +2169,6 @@ func _unhandled_input(event: InputEvent) -> void:
 			_minimap_root.visible = not _minimap_root.visible
 			get_viewport().set_input_as_handled()
 			return
-	if frozen:
-		return
-	if event.is_action_pressed("interact") and _near_id != "":
-		AudioManager.play_interact()
-		## 聊天泡泡：先冒一句再交主流程
-		var lab := entity_label(_near_id)
-		if lab != "" and not lab.begins_with(_t("往")) and not lab.begins_with(_t("回")):
-			show_entity_bubble(_near_id, lab, 1.6)
-		interacted.emit(_near_id)
-		get_viewport().set_input_as_handled()
 
 
 ## autoload 之間用絕對路徑 get_node 在某些啟動時機會噴錯，一律從 SceneTree.root 走
