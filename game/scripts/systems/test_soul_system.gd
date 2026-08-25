@@ -156,6 +156,71 @@ func _initialize() -> void:
 	else:
 		print("embed compare OK ", cmp.get("line"))
 
+	## 虔誠度：每抽 +10、滿 100 產 1 碎片
+	gs.set_flag("soul.piety", 0)
+	gs.set_flag("soul.shards", 0)
+	gs.soul_free_draws = 0
+	gs.gold = 99999
+	gs.soul_vessel = "綠葫蘆"
+	for i in 10:
+		ss.ritual(true)
+	if ss.shards() != 1 or ss.piety() != 0:
+		push_error("10 draws should yield 1 shard (shards=%d piety=%d)" % [ss.shards(), ss.piety()])
+		ok = false
+	else:
+		print("piety→shard OK")
+
+	## 碎片兌換：扣片、得指定品質
+	gs.set_flag("soul.shards", 6)
+	var n0: int = gs.souls.size()
+	var ex: Dictionary = ss.exchange_shards("稀世")
+	if not bool(ex.get("ok", false)) or ss.shards() != 0 or gs.souls.size() != n0 + 1:
+		push_error("exchange fail %s shards=%d" % [ex, ss.shards()])
+		ok = false
+	elif str((ex.get("soul", {}) as Dictionary).get("quality", "")) != "稀世":
+		push_error("exchange quality wrong %s" % ex)
+		ok = false
+	else:
+		print("shard exchange OK ", ss.soul_display(ex.get("soul", {})))
+	var ex2: Dictionary = ss.exchange_shards("神")
+	if bool(ex2.get("ok", false)):
+		push_error("exchange without shards should fail")
+		ok = false
+	else:
+		print("shard shortage blocked OK")
+
+	## 養魂：廢魂餵最強、逐級進位；入槽魂不能當飼料
+	gs.souls = [
+		{"id": "t1", "star": "武曲", "quality": "稀世", "level": 0, "equipped": false},
+		{"id": "j1", "star": "破軍", "quality": "凡", "level": 0, "equipped": false},
+		{"id": "j2", "star": "破軍", "quality": "大凶", "level": 0, "equipped": false},
+		{"id": "j3", "star": "破軍", "quality": "凡", "level": 0, "equipped": true},
+	]
+	gs.soul_slots = ["j3"]
+	var ab: Dictionary = ss.absorb_junk_auto()
+	if not bool(ab.get("ok", false)) or int(ab.get("eaten", 0)) != 2:
+		push_error("absorb should eat 2 junk %s" % ab)
+		ok = false
+	elif gs.souls.size() != 2:
+		push_error("junk should be removed, left %d" % gs.souls.size())
+		ok = false
+	else:
+		print("absorb OK xp+", ab.get("xp"), " lv=", ab.get("level"))
+	## 45 經驗不夠 60 → 0 級；再餵到升級
+	var big: Array = []
+	for i in 6:
+		big.append({"id": "k%d" % i, "star": "破軍", "quality": "吉", "level": 0, "equipped": false})
+	gs.souls += big
+	var fids: Array = []
+	for s in big:
+		fids.append(s["id"])
+	var ab2: Dictionary = ss.absorb("t1", fids)
+	if not bool(ab2.get("ok", false)) or int(ab2.get("level", 0)) < 1:
+		push_error("feeding 360xp should level up %s" % ab2)
+		ok = false
+	else:
+		print("feed level-up OK lv=", ab2.get("level"))
+
 	if ok:
 		print("SOUL_OK")
 		quit(0)

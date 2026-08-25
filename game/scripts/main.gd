@@ -4144,6 +4144,12 @@ func _go_soul_panel() -> void:
 			"text": Loc.t("soul.gold_short", {"n": SoulSystem.vessel_cost()}),
 			"cb": _go_soul_panel,
 		})
+	## 虔誠度碎片兌換（原作軟保底）＋一鍵吸收廢魂
+	if SoulSystem.shards() >= int(SoulSystem.SHARD_EXCHANGE.get("稀世", 6)):
+		buttons.append({"text": _t("碎片凝稀世魂（6 片）"), "cb": _soul_exchange_rare})
+	if SoulSystem.shards() >= int(SoulSystem.SHARD_EXCHANGE.get("神", 15)):
+		buttons.append({"text": _t("碎片凝神魂（15 片）"), "cb": _soul_exchange_shen})
+	buttons.append({"text": _t("一鍵吸收廢魂"), "cb": _soul_absorb_junk})
 	## 背包入魂：先進對比槽位，不默默塞第一空槽
 	var bag: Array = SoulSystem.bag_souls()
 	for i in mini(5, bag.size()):
@@ -4635,6 +4641,21 @@ func _vessel_glow_line(vessel: String) -> String:
 			return _t("🧡 橙焰燃滿葫蘆——頂階！再抽同色便會摔回綠。")
 		_:
 			return _t("魂器顫動……")
+
+
+func _soul_exchange_rare() -> void:
+	var r: Dictionary = SoulSystem.exchange_shards("稀世")
+	_play_dialog([{"speaker": _t("星讀"), "text": str(r.get("msg", ""))}], _go_soul_panel)
+
+
+func _soul_exchange_shen() -> void:
+	var r: Dictionary = SoulSystem.exchange_shards("神")
+	_play_dialog([{"speaker": _t("星讀"), "text": str(r.get("msg", ""))}], _go_soul_panel)
+
+
+func _soul_absorb_junk() -> void:
+	var r: Dictionary = SoulSystem.absorb_junk_auto()
+	_play_dialog([{"speaker": _t("星讀"), "text": str(r.get("msg", ""))}], _go_soul_panel)
 
 
 func _soul_do_ritual() -> void:

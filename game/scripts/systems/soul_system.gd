@@ -55,6 +55,20 @@ const FUSE_COUNT := 3
 const FUSE_MAX_LEVEL := 3
 const SHEN_MAX_LEVEL := 10
 
+## ---- 養魂（原作：廢魂餵給要的魂升級，逐級翻倍；一鍵吸收）----
+## 所有魂餵魂上限 10 級（原作）；3 合 1 仍在，當快速合併捷徑
+const SOUL_MAX_LEVEL := 10
+## 升 1 級所需魂經驗 = FEED_BASE_XP × 2^目前等級（原創補完，仿原作 960 起逐級翻倍的曲線）
+const FEED_BASE_XP := 60
+## 各品質當飼料的魂經驗（仿原作 藍=60、紫=120 的比例）
+const FEED_VALUE := {"大凶": 15, "凡": 30, "吉": 60, "大吉": 120, "稀世": 240, "神": 500, "秘境": 240}
+
+## ---- 虔誠度／戰魂碎片（原作官方機制：每次聚魂積虔誠度，滿 100 換 1 碎片）----
+const PIETY_PER_DRAW := 10
+const PIETY_PER_SHARD := 100
+## 碎片兌換價（原創補完：仿原作 36 碎=1 紫魂的軟保底精神，適配本作經濟）
+const SHARD_EXCHANGE := {"稀世": 6, "神": 15}
+
 ## 秘境專屬戰魂（唯一）：key = boss battle mode
 const SECRET_RELICS: Dictionary = {
 	"scar_lord": {
@@ -443,20 +457,10 @@ func ritual(quiet: bool = false) -> Dictionary:
 		if GameState.gold < cost:
 			return {}
 		GameState.add_gold(-cost)
-	var sw: Dictionary = _star_weights()
-	var star_items: Array = []
-	for k in sw.keys():
-		star_items.append({"id": k, "weight": sw[k]})
-	## 十四星：足跡未覆蓋的星也要有底權重
-	for st in STARS:
-		var sid := str(st.get("id", ""))
-		if not sw.has(sid):
-			star_items.append({"id": sid, "weight": 12.0})
-	var star_pick: Dictionary = _pick_weighted(star_items)
 	var quality := _roll_quality_for_vessel(vessel)
 	var soul := {
 		"id": "soul_%d_%d" % [Time.get_ticks_msec(), randi() % 10000],
-		"star": str(star_pick.get("id", "破軍")),
+		"star": _roll_star(),
 		"quality": quality,
 		"level": 0,
 		"equipped": false,
@@ -464,9 +468,143 @@ func ritual(quiet: bool = false) -> Dictionary:
 	var nv: Dictionary = _next_vessel_after(vessel, quality)
 	GameState.soul_vessel = str(nv.get("next", vessel))
 	GameState.souls.append(soul)
+	## 原作：每次聚魂積虔誠度，滿 100 產 1 個戰魂碎片
+	var shard_got := _add_piety(PIETY_PER_DRAW)
 	if not quiet:
-		_ritual_success_hooks(soul, vessel, used_free, nv)
+		_ritual_success_hooks(soul, vessel, used_free, nv, shard_got)
 	return soul
+
+
+## 星曜抽選（足跡加權；足跡未覆蓋的星也有底權重）——抽魂與碎片兌換共用
+func _roll_star() -> String:
+	var sw: Dictionary = _star_weights()
+	var star_items: Array = []
+	for k in sw.keys():
+		star_items.append({"id": k, "weight": sw[k]})
+	for st in STARS:
+		var sid := str(st.get("id", ""))
+		if not sw.has(sid):
+			star_items.append({"id": sid, "weight": 12.0})
+	var star_pick: Dictionary = _pick_weighted(star_items)
+	return str(star_pick.get("id", "破軍"))
+
+
+func piety() -> int:
+	return int(GameState.get_flag("soul.piety", 0))
+
+
+func shards() -> int:
+	return int(GameState.get_flag("soul.shards", 0))
+
+
+## 累積虔誠度；回傳這次產出的碎片數
+func _add_piety(n: int) -> int:
+	var p := piety() + n
+	var got := int(p / PIETY_PER_SHARD)
+	GameState.set_flag("soul.piety", p % PIETY_PER_SHARD)
+	if got > 0:
+		GameState.set_flag("soul.shards", shards() + got)
+	return got
+
+
+## 碎片兌換戰魂（軟保底）：品質指定、星曜隨足跡機率
+func exchange_shards(quality: String) -> Dictionary:
+	var cost := int(SHARD_EXCHANGE.get(quality, 0))
+	if cost <= 0:
+		return {"ok": false, "msg": _t("這個品質不開放兌換。")}
+	if shards() < cost:
+		return {"ok": false, "msg": _t("戰魂碎片不足（需 %d）。") % cost}
+	GameState.set_flag("soul.shards", shards() - cost)
+	var soul := {
+		"id": "soul_%d_%d" % [Time.get_ticks_msec(), randi() % 10000],
+		"star": _roll_star(),
+		"quality": quality,
+		"level": 0,
+		"equipped": false,
+	}
+	GameState.souls.append(soul)
+	SaveManager.save_game()
+	if AudioManager and AudioManager.has_method("play_ritual_success"):
+		AudioManager.play_ritual_success()
+	return {"ok": true, "soul": soul, "msg": _t("碎片凝魂：%s（%s）") % [soul_display(soul), soul_bonus_line(soul)]}
+
+
+## ---- 養魂 ----
+
+
+func feed_xp_needed(level: int) -> int:
+	return FEED_BASE_XP * int(pow(2.0, clampi(level, 0, SOUL_MAX_LEVEL - 1)))
+
+
+## 把 food_ids 這些魂吃掉，經驗餵進 target；逐級進位到 SOUL_MAX_LEVEL
+func absorb(target_id: String, food_ids: Array) -> Dictionary:
+	var target: Dictionary = find_soul(target_id)
+	if target.is_empty():
+		return {"ok": false, "msg": _t("找不到要餵的戰魂。")}
+	if int(target.get("level", 0)) >= SOUL_MAX_LEVEL:
+		return {"ok": false, "msg": _t("已是 10 級，吃不下了。")}
+	var gained := 0
+	var eaten := 0
+	for fid in food_ids:
+		var sid := str(fid)
+		if sid == target_id:
+			continue
+		var f: Dictionary = find_soul(sid)
+		if f.is_empty() or bool(f.get("equipped", false)) or bool(f.get("relic", false)):
+			continue
+		gained += int(FEED_VALUE.get(str(f.get("quality", "凡")), 30))
+		eaten += 1
+		for i in GameState.souls.size():
+			if str((GameState.souls[i] as Dictionary).get("id", "")) == sid:
+				GameState.souls.remove_at(i)
+				break
+	if eaten == 0:
+		return {"ok": false, "msg": _t("沒有可吸收的魂（入槽與秘境魂不能當飼料）。")}
+	var xp := int(target.get("feed_xp", 0)) + gained
+	var lv := int(target.get("level", 0))
+	var ups := 0
+	while lv < SOUL_MAX_LEVEL and xp >= feed_xp_needed(lv):
+		xp -= feed_xp_needed(lv)
+		lv += 1
+		ups += 1
+	for i in GameState.souls.size():
+		var s: Dictionary = GameState.souls[i]
+		if str(s.get("id", "")) == target_id:
+			s["feed_xp"] = xp
+			s["level"] = lv
+			GameState.souls[i] = s
+			break
+	SaveManager.save_game()
+	var msg := _t("吸收 %d 顆魂 · 魂經驗+%d") % [eaten, gained]
+	if ups > 0:
+		msg += _t(" · 升至 %d 級！") % lv
+	return {"ok": true, "eaten": eaten, "xp": gained, "level": lv, "ups": ups, "msg": msg}
+
+
+## 一鍵吸收（原作）：把所有未入槽的大凶／凡 廢魂餵給最強的一顆
+func absorb_junk_auto() -> Dictionary:
+	var best_id := ""
+	var best_score := -1.0
+	var junk: Array = []
+	for s in GameState.souls:
+		var q := str(s.get("quality", "凡"))
+		var sid := str(s.get("id", ""))
+		if not bool(s.get("equipped", false)) and not bool(s.get("relic", false)) and q in ["大凶", "凡"]:
+			junk.append(sid)
+		var mult := 1.0
+		for qd in QUALITIES:
+			if str(qd.get("id", "")) == q:
+				mult = float(qd.get("mult", 1.0))
+				break
+		var score := mult * 100.0 + float(int(s.get("level", 0)))
+		if score > best_score:
+			best_score = score
+			best_id = sid
+	## 最強那顆自己是廢魂時，別把它吃掉
+	junk.erase(best_id)
+	if best_id == "" or junk.is_empty():
+		return {"ok": false, "msg": _t("沒有可吸收的廢魂（大凶／凡）。")}
+	return absorb(best_id, junk)
 
 
 func ritual_batch(n: int = 10) -> Array:
@@ -485,7 +623,7 @@ func ritual_batch(n: int = 10) -> Array:
 
 
 ## 抽魂成功：sfx + 日誌
-func _ritual_success_hooks(soul: Dictionary, from_vessel: String = "", used_free: bool = false, nv: Dictionary = {}) -> void:
+func _ritual_success_hooks(soul: Dictionary, from_vessel: String = "", used_free: bool = false, nv: Dictionary = {}, shard_got: int = 0) -> void:
 	if AudioManager and AudioManager.has_method("play_ritual_success"):
 		AudioManager.play_ritual_success()
 	var tree := Engine.get_main_loop()
@@ -499,6 +637,8 @@ func _ritual_success_hooks(soul: Dictionary, from_vessel: String = "", used_free
 		elif bool(nv.get("climbed", false)):
 			extra = _t("（魂器升至 %s）") % str(nv.get("next", ""))
 		var pay := _t("免費") if used_free else _t("%d 金") % vessel_cost(from_vessel)
+		if shard_got > 0:
+			extra += _t("（虔誠滿百——戰魂碎片+%d）") % shard_got
 		gl.call("system", _t("抽魂凝出 %s（%s）｜%s｜%s%s") % [
 			soul_display(soul), soul_bonus_line(soul), from_vessel, pay, extra
 		])
@@ -676,6 +816,7 @@ func panel_status_bbcode() -> String:
 		lines.append(_t("下次抽魂：%d 金｜金幣 %d｜星屑 %d") % [
 			cost, GameState.gold, GameState.stardust
 		])
+	lines.append(_t("虔誠度 %d/100 · 戰魂碎片 %d（稀世 6 片 · 神 15 片）") % [piety(), shards()])
 	lines.append(_t("武器：%s  T%d · 魂槽 %d") % [GameState.weapon_display(), GameState.weapon_tier, slot_count()])
 	lines.append(_t("入魂加成：攻+%d  防+%d  血+%d") % [
 		int(bonus.get("atk", 0)), int(bonus.get("def", 0)), int(bonus.get("hp", 0))
