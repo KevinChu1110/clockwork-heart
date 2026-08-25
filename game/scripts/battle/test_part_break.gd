@@ -18,6 +18,7 @@ func _initialize() -> void:
 	_assert_fog_parts()
 	_assert_break_shield_like()
 	_assert_threshold_blocks()
+	_assert_staged_window()
 	_assert_all_broken_vuln()
 	_assert_cycle_not_fog()
 	_assert_flee_rift_only()
@@ -70,6 +71,25 @@ func _assert_threshold_blocks() -> void:
 	assert(not bool(leo.parts[1].get("broken")), "full HP should block part break")
 	assert(sim.pending_part_materials.is_empty(), "no loot before unlock")
 	print("  ok - 滿血擋破部位")
+
+
+func _assert_staged_window() -> void:
+	## 原作多段節點：70% 只開一道破綻，40% 才全開
+	var sim := BattleSim.make_abo_fight(_stats())
+	var abo := sim.get_unit("abo")
+	abo.hp = int(float(abo.max_hp) * 0.55)
+	var id0 := str(abo.parts[0].get("id"))
+	var id1 := str(abo.parts[1].get("id"))
+	sim.focus_part_id = id0
+	sim._process_part_damage(abo, int(abo.parts[0].get("max_hp")) + 100, true)
+	assert(bool(abo.parts[0].get("broken")), "first part should break at 55%")
+	sim.focus_part_id = id1
+	sim._process_part_damage(abo, int(abo.parts[1].get("max_hp")) + 100, true)
+	assert(not bool(abo.parts[1].get("broken")), "second break must wait for stage 2")
+	abo.hp = int(float(abo.max_hp) * 0.35)
+	sim._process_part_damage(abo, int(abo.parts[1].get("max_hp")) + 100, true)
+	assert(bool(abo.parts[1].get("broken")), "second part breaks below 40%")
+	print("  ok - 破壞窗兩段：70% 破一處、40% 全開")
 
 
 func _assert_all_broken_vuln() -> void:

@@ -19,6 +19,12 @@ const WAVES: Array[Dictionary] = [
 	{"mode": "coast_raider", "label": "第四試 · 潮襲海盜"},
 	{"mode": "scar_wisp", "label": "終試 · 疤地焰靈"},
 ]
+## 敲鑼池（原作：演武場右下角敲鑼刷新對手）——非 Boss 雜魚
+const GONG_POOL: Array[String] = [
+	"ash_rat", "road_bandit", "sewer_slime", "fog_shade",
+	"bamboo_spirit", "forest_sprite", "coast_raider", "scar_wisp",
+]
+const WAVE_ORDINALS: Array[String] = ["第一試", "第二試", "第三試", "第四試", "終試"]
 
 
 static func _t(s: String) -> String:
@@ -273,23 +279,69 @@ func abandon_run() -> void:
 	SaveManager.save_game()
 
 
+## 本輪對手序列：敲鑼可換（存旗），沒換過就用預設 WAVES
+func lineup() -> Array:
+	var raw = GameState.get_flag(_fk("lineup"), [])
+	if raw is Array and (raw as Array).size() == WAVES.size():
+		return raw
+	var modes: Array = []
+	for w in WAVES:
+		modes.append(str(w.get("mode", "ash_rat")))
+	return modes
+
+
+## 原作：敲鑼刷新對手。從雜魚池抽一批、仍由弱到強排（保持爬坡）
+func reroll_lineup() -> Dictionary:
+	if is_run_active():
+		return {"ok": false, "msg": _t("試煉進行中——先打完或放棄，再敲鑼。")}
+	var pool := GONG_POOL.duplicate()
+	pool.shuffle()
+	var picked: Array = pool.slice(0, WAVES.size())
+	picked.sort_custom(func(a, b):
+		return int(WorldContent.enemy_def(str(a)).get("max_hp", 50)) \
+			< int(WorldContent.enemy_def(str(b)).get("max_hp", 50)))
+	GameState.set_flag(_fk("lineup"), picked)
+	SaveManager.save_game()
+	var names: PackedStringArray = []
+	for m in picked:
+		names.append(str(WorldContent.enemy_def(str(m)).get("name", m)))
+	return {"ok": true, "msg": _t("鑼響——新對手上場：%s") % "、".join(names)}
+
+
 func wave_label(index: int = -1) -> String:
 	var i := current_wave() if index < 0 else index
 	if i < 0 or i >= WAVES.size():
 		return ""
-	return _t(str(WAVES[i].get("label", "試煉")))
+	var o: String = WAVE_ORDINALS[mini(i, WAVE_ORDINALS.size() - 1)]
+	var nm := str(WorldContent.enemy_def(wave_mode(i)).get("name", ""))
+	return "%s · %s" % [_t(o), nm]
 
 
 func wave_mode(index: int = -1) -> String:
 	var i := current_wave() if index < 0 else index
 	if i < 0 or i >= WAVES.size():
 		return "ash_rat"
-	return str(WAVES[i].get("mode", "ash_rat"))
+	return str(lineup()[i])
 
 
 func wave_xp(mode: String, practice: bool) -> int:
 	var def: Dictionary = WorldContent.enemy_def(mode)
 	return Formulas.arena_xp(int(def.get("max_hp", 50)), practice)
+
+
+## 原作：演武每打一場都能抽獎（不論輸贏）。回傳抽獎訊息片段。
+func _wave_lottery() -> String:
+	var r := randf()
+	if r < 0.30:
+		InventorySystem.add_item("hp_s", 1)
+		return _t("抽獎：小紅水×1")
+	elif r < 0.50:
+		GameState.add_stardust(1)
+		return _t("抽獎：星屑×1")
+	elif r < 0.62:
+		EnergySystem.grant(1)
+		return _t("抽獎：能量+1")
+	return _t("抽獎：銘謝惠顧")
 
 
 ## leftover_hp：戰鬥結束時玩家剩餘 HP（main 傳入）；沒傳就用 0
@@ -307,11 +359,13 @@ func on_wave_won(leftover_hp: int = 0) -> Dictionary:
 	var xr: Dictionary = GameState.add_xp(wave_xp(wave_mode(w), practice))
 	var xp_got := int(xr.get("gained", 0))
 	var lv_up := int(xr.get("levels", 0)) > 0
+	var lot := _wave_lottery()
 	if w + 1 >= WAVES.size():
 		var fin := _finish_run(true)
 		fin["xp"] = xp_got
 		fin["level_up"] = lv_up
 		fin["score"] = score
+		fin["msg"] = str(fin.get("msg", "")) + " · " + lot
 		return fin
 	GameState.set_flag(_fk("wave"), w + 1)
 	SaveManager.save_game()
@@ -324,13 +378,17 @@ func on_wave_won(leftover_hp: int = 0) -> Dictionary:
 		"xp": xp_got,
 		"level_up": lv_up,
 		"score": score,
-		"msg": _t("通過！%s（本輪 %d 分）") % [wave_label(nw), score],
+		"msg": _t("通過！%s（本輪 %d 分）") % [wave_label(nw), score] + " · " + lot,
 	}
 
 
 func on_wave_lost() -> Dictionary:
 	if not is_run_active():
 		return {"ok": false, "msg": ""}
+	## 原作：演武輸了也有經驗——是贏的一半；照樣抽獎
+	var half_xp := maxi(1, int(wave_xp(wave_mode(current_wave()), is_practice()) / 2.0))
+	var half_r: Dictionary = GameState.add_xp(half_xp)
+	var lot := _wave_lottery()
 	var score := run_score()
 	var waves := int(GameState.get_flag(_fk("waves_cleared"), 0))
 	var pb := _maybe_commit_pb(score, waves)
@@ -344,6 +402,8 @@ func on_wave_lost() -> Dictionary:
 	GameState.set_flag(_fk("score_run"), 0)
 	SaveManager.save_game()
 	var msg := _t("試煉中斷。本輪 %d 分（通過 %d 波）。") % [score, waves]
+	msg += _t(" 經驗 %d（敗場減半）") % int(half_r.get("gained", half_xp))
+	msg += " · " + lot
 	if pb:
 		msg += _t(" 新紀錄！")
 	return {"ok": true, "msg": msg, "score": score, "new_pb": pb}

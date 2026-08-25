@@ -847,6 +847,7 @@ func _go_arena_panel() -> void:
 		if ArenaSystem.daily_left() > 0:
 			buttons.append({"text": _t("開始有獎試煉（剩 %d）") % ArenaSystem.daily_left(), "cb": _arena_start_rewarded})
 		buttons.append({"text": _t("練習試煉"), "cb": _arena_start_practice})
+		buttons.append({"text": _t("敲鑼換對手"), "cb": _arena_gong})
 	buttons.append({"text": _t("查看排行"), "cb": _arena_show_leaderboard})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _go_starpath_panel})
 	_panel(Loc.t("panel.arena"), body, buttons)
@@ -896,6 +897,13 @@ func _arena_continue() -> void:
 func _arena_abandon() -> void:
 	ArenaSystem.abandon_run()
 	_play_dialog([{"speaker": _t("系統"), "text": _t("已放棄本輪試煉。")}], _go_arena_panel)
+
+
+## 原作：演武場敲鑼刷新對手
+func _arena_gong() -> void:
+	AudioManager.play_interact()
+	var r: Dictionary = ArenaSystem.reroll_lineup()
+	_play_dialog([{"speaker": _t("系統"), "text": str(r.get("msg", ""))}], _go_arena_panel)
 
 
 func _on_arena_battle_finished(won: bool) -> void:

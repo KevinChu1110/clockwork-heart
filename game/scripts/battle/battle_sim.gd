@@ -46,8 +46,13 @@ var player_base_atk: int = 0
 var focus_part_id: String = "body"
 ## 原作：本體血量降到此比例以下才可破壞部位（GNN）
 const PART_BREAK_HP_RATIO := 0.70
-## 本場已解鎖部位破壞（跨過門檻後維持）
+## 原作是多段血量節點逐段開破壞窗（盼盼 38000>30000>21000>11000）。
+## 本作雙部位 Boss 對應兩段：≤70% 可破第 1 個部位、≤40% 開第二道破綻。
+const PART_BREAK_STAGE2_RATIO := 0.40
+## 本場已解鎖部位破壞（跨過第一道門檻後維持；手動設 true＝全開，測試用）
 var parts_break_unlocked: bool = false
+## 破壞窗段數：0=未開、1=可破 1 個、2=全開
+var parts_break_stage: int = 0
 ## 破部位掉落（僅打贏才入袋；由 View／Main 結算）
 var pending_part_materials: Array = []
 ## 上一場勝利的掉落暫存（不進存檔）
@@ -2455,28 +2460,51 @@ func _process_part_damage(target: BattleUnit, dealt: int, is_telegraph: bool) ->
 		_finish_part_break(target, target.part_name, "", is_telegraph)
 
 
-func _parts_can_break(target: BattleUnit) -> bool:
+## 目前可破部位的數量上限（原作多段血量節點逐段開窗）
+func _parts_break_allowance(target: BattleUnit) -> int:
 	if target == null or target.parts.is_empty():
-		return false
-	if parts_break_unlocked:
-		return true
+		return 0
+	## 手動全開（測試／特例）：bool 直接設 true 而未經自然開窗
+	if parts_break_unlocked and parts_break_stage == 0:
+		return 99
 	if target.max_hp <= 0:
-		return false
+		return 0
 	var ratio := float(target.hp) / float(target.max_hp)
-	if ratio <= PART_BREAK_HP_RATIO:
+	var allow := 0
+	if ratio <= PART_BREAK_STAGE2_RATIO:
+		allow = 99
+	elif ratio <= PART_BREAK_HP_RATIO:
+		allow = 1
+	var new_stage := 0
+	if allow >= 99:
+		new_stage = 2
+	elif allow == 1:
+		new_stage = 1
+	if new_stage > parts_break_stage:
+		parts_break_stage = new_stage
 		parts_break_unlocked = true
 		_emit("part_unlock", {
 			"boss_id": target.id,
 			"hp_ratio": ratio,
-			"msg": _t("破綻出現——可以破壞部位裝備了！"),
+			"stage": new_stage,
+			"msg": _t("破綻出現——可以破壞部位裝備了！") if new_stage == 1
+				else _t("第二道破綻——剩下的部位也能破了！"),
 		})
-		return true
-	return false
+	return allow
+
+
+func _broken_parts_count(target: BattleUnit) -> int:
+	var n := 0
+	for p in target.parts:
+		if bool(p.get("broken", false)):
+			n += 1
+	return n
 
 
 func _process_multi_part_damage(target: BattleUnit, dealt: int, is_telegraph: bool) -> void:
 	var base_mult: float = 1.6 if is_telegraph else 1.0
-	var can_break := _parts_can_break(target)
+	var allow := _parts_break_allowance(target)
+	var can_break := allow > _broken_parts_count(target)
 	for i in target.parts.size():
 		var p: Dictionary = target.parts[i]
 		if bool(p.get("broken", false)):
@@ -2507,7 +2535,8 @@ func _process_multi_part_damage(target: BattleUnit, dealt: int, is_telegraph: bo
 				_emit("part_blocked", {
 					"boss_id": target.id,
 					"part_name": str(p.get("name", "")),
-					"msg": _t("部位仍牢固——先把本體壓到七成血以下。"),
+					"msg": _t("部位仍牢固——先把本體壓到七成血以下。") if allow == 0
+						else _t("這道破綻只夠破一處——再壓低血量，下一道才會開。"),
 				})
 				continue
 			p["hp"] = 0
@@ -2525,6 +2554,8 @@ func _process_multi_part_damage(target: BattleUnit, dealt: int, is_telegraph: bo
 			if focus_part_id == pid:
 				focus_part_id = "body"
 			_refresh_all_parts_broken_vuln(target)
+			## 窗有額度：破掉一個就重算，同一擊不可連破兩處
+			can_break = allow > _broken_parts_count(target)
 			## 原作：破部位後可能逃走（僅非主線）
 			if _try_part_flee(target, str(p.get("name", "")), fx):
 				return
