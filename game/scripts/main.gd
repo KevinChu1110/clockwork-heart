@@ -3163,10 +3163,10 @@ func _handle_world_content(id: String) -> bool:
 			return true
 		var mode2 := str(s.get("mode", "ash_rat"))
 		var intro_t := str(s.get("intro", _t("戰鬥！")))
+		## 原作對齊（GNN）：雜魚「點擊後直接進行戰鬥」當場結算，
+		## 只有小王／BOSS 才進戰鬥畫面。打贏才立旗，敗退可再挑戰。
 		_play_dialog([{"speaker": _t("旁白"), "text": intro_t}], func():
-			if once != "":
-				GameState.set_flag(once, true)
-			_start_battle(mode2)
+			_resolve_skirmish_inplace(mode2, once)
 		)
 		return true
 	return false
@@ -3759,6 +3759,11 @@ func _on_world_battle_finished(won: bool) -> void:
 		_on_hunt_battle_finished(won)
 		return
 	## 雜魚
+	_world_skirmish_result(mode, won, _hub_back_from_world_battle)
+
+
+## 雜魚勝負結算（戰鬥畫面與當場結算共用）。back_cb 空＝留在原地（探索中）。
+func _world_skirmish_result(mode: String, won: bool, back_cb: Callable) -> void:
 	var def: Dictionary = WorldContent.enemy_def(mode)
 	var ename := str(def.get("name", _t("敵人")))
 	if won:
@@ -3800,11 +3805,32 @@ func _on_world_battle_finished(won: bool) -> void:
 		if loot_s != "":
 			extra += " · " + loot_s
 		extra += eq_s
-		_play_dialog(DialogLines.lines("battle.world_win", {"enemy": ename, "gold": gold_n, "extra": extra}), _hub_back_from_world_battle)
+		_play_dialog(DialogLines.lines("battle.world_win", {"enemy": ename, "gold": gold_n, "extra": extra}), back_cb)
 	else:
 		GameState.hp = maxi(1, int(GameState.max_hp * 0.35))
 		SaveManager.save_game()
-		_play_dialog(DialogLines.lines("battle.world_flee"), _hub_back_from_world_battle)
+		_play_dialog(DialogLines.lines("battle.world_flee"), back_cb)
+
+
+## 原作對齊：野外雜魚當場無頭結算（BattleSim.resolve_auto），不切戰鬥畫面。
+func _resolve_skirmish_inplace(mode: String, once_flag: String) -> void:
+	var er: Dictionary = EnergySystem.try_spend_for_battle(mode)
+	if not bool(er.get("ok", false)):
+		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}])
+		return
+	elif int(er.get("cost", 0)) > 0:
+		ui_toast(EnergySystem.status_line())
+	var BattleSimT := preload("res://scripts/battle/battle_sim.gd")
+	var sim = BattleSimT.make_world_fight(BattleSimT.gather_player_stats(), mode)
+	var res: Dictionary = BattleSimT.resolve_auto(sim)
+	var won := bool(res.get("won", false))
+	if won:
+		## 帶著這場的剩餘血繼續走；輸的血量懲罰在 _world_skirmish_result 統一處理
+		GameState.hp = clampi(int(res.get("hp_left", GameState.hp)), 1, GameState.effective_max_hp())
+		if once_flag != "":
+			GameState.set_flag(once_flag, true)
+	_explore_play_pose("skill" if won else "hit", 0.5)
+	_world_skirmish_result(mode, won, Callable())
 
 
 func _hub_back_from_world_battle() -> void:

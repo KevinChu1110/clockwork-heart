@@ -99,44 +99,10 @@ func setup(mode: String) -> void:
 	_enemy_home = enemy_body.position
 	_apply_battle_art(mode)
 
-	var max_h: int = GameState.effective_max_hp()
-	## 入魂血量加成時，按比例抬當前 HP 上限感
-	if GameState.hp > max_h:
-		GameState.hp = max_h
-	var stats := {
-		"name": GameState.player_name,
-		"max_hp": max_h,
-		"hp": mini(GameState.hp, max_h),
-		"atk": GameState.effective_atk(),
-		"def": GameState.effective_def(),
-		"speed": GameState.effective_speed(),
-		"can_skill": GameState.skill_slash_lv >= 1 or mode == "wolf",
-		"slash_lv": maxi(1, GameState.skill_slash_lv),
-		"crit": GameState.effective_crit(),
-		"crit_dmg": GameState.effective_crit_dmg(),
-		"dmg_variance": GameState.effective_variance(),
-		"hit": GameState.effective_hit(),
-		"eva": GameState.effective_eva(),
-		"weapon_atk": GameState.weapon_atk,
-		"weapon_name": GameState.weapon_name,
-		"weapon_loadout_active": GameState.weapon_loadout_active,
-	}
-	## 真正多武器欄快照
-	if Engine.get_main_loop() is SceneTree:
-		var eq: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EquipmentSystem")
-		if eq and eq.has_method("loadout_snapshot_for_battle"):
-			stats["weapon_loadout"] = eq.call("loadout_snapshot_for_battle")
-			if eq.has_method("active_weapon_line"):
-				stats["weapon_class"] = str(eq.call("active_weapon_line"))
-	## 招式系統：倍率／優先技名（綁定當前武器 line）
-	if Engine.get_main_loop() is SceneTree:
-		var sk: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("SkillSystem")
-		if sk and sk.has_method("battle_player_stats_patch"):
-			var patch: Dictionary = sk.call("battle_player_stats_patch", str(stats.get("weapon_class", "")))
-			for k in patch.keys():
-				stats[k] = patch[k]
-			if mode == "wolf":
-				stats["can_skill"] = true
+	## 玩家開戰數值（含裝備快照與招式 patch；與雜魚即時結算共用同一份蒐集邏輯）
+	var stats := BattleSim.gather_player_stats()
+	if mode == "wolf":
+		stats["can_skill"] = true
 	if mode == "leo":
 		GameState.hp = GameState.max_hp
 		stats["hp"] = GameState.max_hp

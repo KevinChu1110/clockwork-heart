@@ -2209,6 +2209,70 @@ static func rng_offset(sim: BattleSim) -> float:
 	return sim.rng.randf_range(-1.0, 1.5)
 
 
+## 從 GameState／裝備／招式系統蒐集玩家開戰數值（battle_view 與雜魚即時結算共用）。
+## 本檔刻意不用 autoload 識別字（headless -s 編譯時還不存在），一律 runtime 查節點。
+static func gather_player_stats() -> Dictionary:
+	if not (Engine.get_main_loop() is SceneTree):
+		return {}
+	var rt: Node = (Engine.get_main_loop() as SceneTree).root
+	if rt == null:
+		return {}
+	var g: Node = rt.get_node_or_null("GameState")
+	if g == null:
+		return {}
+	var max_h := int(g.call("effective_max_hp"))
+	if int(g.get("hp")) > max_h:
+		g.set("hp", max_h)
+	var slash_lv := int(g.get("skill_slash_lv"))
+	var stats := {
+		"name": str(g.get("player_name")),
+		"max_hp": max_h,
+		"hp": mini(int(g.get("hp")), max_h),
+		"atk": g.call("effective_atk"),
+		"def": g.call("effective_def"),
+		"speed": g.call("effective_speed"),
+		"can_skill": slash_lv >= 1,
+		"slash_lv": maxi(1, slash_lv),
+		"crit": g.call("effective_crit"),
+		"crit_dmg": g.call("effective_crit_dmg"),
+		"dmg_variance": g.call("effective_variance"),
+		"hit": g.call("effective_hit"),
+		"eva": g.call("effective_eva"),
+		"weapon_atk": g.get("weapon_atk"),
+		"weapon_name": g.get("weapon_name"),
+		"weapon_loadout_active": g.get("weapon_loadout_active"),
+	}
+	var eq: Node = rt.get_node_or_null("EquipmentSystem")
+	if eq and eq.has_method("loadout_snapshot_for_battle"):
+		stats["weapon_loadout"] = eq.call("loadout_snapshot_for_battle")
+		if eq.has_method("active_weapon_line"):
+			stats["weapon_class"] = str(eq.call("active_weapon_line"))
+	var sk: Node = rt.get_node_or_null("SkillSystem")
+	if sk and sk.has_method("battle_player_stats_patch"):
+		var patch: Dictionary = sk.call("battle_player_stats_patch", str(stats.get("weapon_class", "")))
+		for k in patch.keys():
+			stats[k] = patch[k]
+	return stats
+
+
+## 無頭自動打完一場（原作：雜魚點擊直接結算）。格擋窗自動反應。
+## 回傳 {won, hp_left, steps}；步數用盡未分勝負視為敗退。
+static func resolve_auto(sim: BattleSim, max_steps: int = 3000) -> Dictionary:
+	var n := 0
+	while not sim.finished and n < max_steps:
+		sim.step(0.1)
+		n += 1
+		if sim.parry_window_open():
+			sim.try_react()
+	var p: BattleUnit = sim.get_unit("player")
+	var won: bool = sim.finished and p != null and p.is_alive()
+	return {
+		"won": won,
+		"hp_left": int(p.hp) if p != null else 0,
+		"steps": n,
+	}
+
+
 ## 廣域雜魚／秘境小 Boss（定義來自 WorldContent.enemy_def）
 static func make_world_fight(player_stats: Dictionary, mode: String) -> BattleSim:
 	var def: Dictionary = {}
