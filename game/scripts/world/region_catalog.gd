@@ -65,6 +65,7 @@ static func regions() -> Array:
 					"unlock": ["boss.leo_cleared"],
 					"clear_flag": "boss.white_fog_cleared",
 					"boss": _t("鏡廊殘影（秘境）"),
+					"optional": true,
 					"goto": {"map": "mist_mirror", "screen": "C2_MIST"},
 				},
 			],
@@ -118,6 +119,7 @@ static func regions() -> Array:
 					"unlock": ["boss.stonefist_cleared"],
 					"clear_flag": "soul.relic.wreck_captain",
 					"boss": _t("沉船船長影（秘境）"),
+					"optional": true,
 					"goto": {"map": "coast", "screen": "C5_COAST"},
 				},
 				{
@@ -161,9 +163,37 @@ static func region_progress(region: Dictionary) -> Dictionary:
 	return {"cleared": cleared, "total": stages.size()}
 
 
+## 主線「下一站」：第一個已解鎖未通關的必經關卡；主線全清後退而指秘境；都清了回空
+static func next_objective() -> Dictionary:
+	var fallback: Dictionary = {}
+	for r in regions():
+		for s in r.get("stages", []):
+			if stage_state(s) != "open":
+				continue
+			var row: Dictionary = s.duplicate(true)
+			row["region"] = str(r.get("name", ""))
+			if bool(s.get("optional", false)):
+				if fallback.is_empty():
+					fallback = row
+				continue
+			return row
+	return fallback
+
+
+static func next_objective_line() -> String:
+	var o := next_objective()
+	if o.is_empty():
+		return _t("主線已完結——村莊、演武與獵場都在等你。")
+	var boss := str(o.get("boss", ""))
+	if boss != "":
+		return _t("下一站：%s · %s") % [str(o.get("name", "")), boss]
+	return _t("下一站：%s") % str(o.get("name", ""))
+
+
 static func status_bbcode() -> String:
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]世界地圖・四地區關卡[/b]"))
+	lines.append("[color=#fc9]%s[/color]" % next_objective_line())
 	lines.append(_t("原作精神：四區 → 數關 → 數張地圖。點關卡可前往。"))
 	lines.append("")
 	for r in regions():

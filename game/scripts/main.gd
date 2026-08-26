@@ -418,6 +418,14 @@ func _build_pause_layer() -> void:
 	})
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	## 主線指引：暫停時也看得到現在該去哪
+	var obj := Label.new()
+	obj.text = RegionCatalog.next_objective_line()
+	obj.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	obj.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	obj.add_theme_font_size_override("font_size", 13)
+	obj.add_theme_color_override("font_color", Color(0.98, 0.80, 0.55))
+	box.add_child(obj)
 	sub.add_theme_font_size_override("font_size", 12)
 	sub.add_theme_color_override("font_color", UiStyle.INK_DIM)
 	box.add_child(sub)
@@ -1323,7 +1331,8 @@ func _go_starpath_panel() -> void:
 	## 今日村莊儀表板：一天要開遊戲時先看這裡
 	QuestSystem.refresh_daily()
 	OnlineGate.refresh_candle_soft()
-	var body := QuestSystem.starpath_summary_bbcode()
+	var body := "[color=#fc9]%s[/color]\n\n" % RegionCatalog.next_objective_line()
+	body += QuestSystem.starpath_summary_bbcode()
 	body += "\n\n[color=#fc9]%s[/color]" % OnlineGate.candle_line(false)
 	body += _t("\n戰力 %d · Lv%d") % [GameState.power_score(), GameState.level]
 	var buttons: Array = []
@@ -1332,14 +1341,20 @@ func _go_starpath_panel() -> void:
 			var r: Dictionary = QuestSystem.claim_daily()
 			_play_dialog([{"speaker": _t("系統"), "text": str(r.get("msg", ""))}], _go_starpath_panel)
 		})
-	for c in QuestSystem.commissions():
-		var cid := str(c.get("id", ""))
-		if QuestSystem.commission_done(c) and not QuestSystem.commission_claimed(cid):
-			var id2 := cid
-			buttons.append({"text": _t("★ 領委託：%s") % c.get("name", cid), "cb": func():
-				var r2: Dictionary = QuestSystem.claim_commission(id2)
-				_play_dialog([{"speaker": _t("系統"), "text": str(r2.get("msg", ""))}], _go_starpath_panel)
-			})
+	if QuestSystem.claimable_commissions() >= 2:
+		buttons.append({"text": _t("★ 一鍵領取委託（%d）") % QuestSystem.claimable_commissions(), "cb": func():
+			var ra: Dictionary = QuestSystem.claim_all_ready()
+			_play_dialog([{"speaker": _t("系統"), "text": str(ra.get("msg", ""))}], _go_starpath_panel)
+		})
+	else:
+		for c in QuestSystem.commissions():
+			var cid := str(c.get("id", ""))
+			if QuestSystem.commission_done(c) and not QuestSystem.commission_claimed(cid):
+				var id2 := cid
+				buttons.append({"text": _t("★ 領委託：%s") % c.get("name", cid), "cb": func():
+					var r2: Dictionary = QuestSystem.claim_commission(id2)
+					_play_dialog([{"speaker": _t("系統"), "text": str(r2.get("msg", ""))}], _go_starpath_panel)
+				})
 	buttons.append({"text": _t("今日委託明細"), "cb": _go_daily_panel})
 	if ArenaSystem.is_unlocked():
 		var a_left := ArenaSystem.daily_left()
@@ -1378,14 +1393,20 @@ func _go_daily_panel() -> void:
 		})
 	else:
 		buttons.append({"text": _t("簽到已領"), "cb": _go_daily_panel})
-	for c in QuestSystem.commissions():
-		var cid := str(c.get("id", ""))
-		if QuestSystem.commission_done(c) and not QuestSystem.commission_claimed(cid):
-			var id2 := cid
-			buttons.append({"text": _t("領委託：%s") % c.get("name", cid), "cb": func():
-				var r2: Dictionary = QuestSystem.claim_commission(id2)
-				_play_dialog([{"speaker": _t("系統"), "text": str(r2.get("msg", ""))}], _go_daily_panel)
-			})
+	if QuestSystem.claimable_commissions() >= 2:
+		buttons.append({"text": _t("一鍵領取委託（%d）") % QuestSystem.claimable_commissions(), "cb": func():
+			var ra: Dictionary = QuestSystem.claim_all_ready()
+			_play_dialog([{"speaker": _t("系統"), "text": str(ra.get("msg", ""))}], _go_daily_panel)
+		})
+	else:
+		for c in QuestSystem.commissions():
+			var cid := str(c.get("id", ""))
+			if QuestSystem.commission_done(c) and not QuestSystem.commission_claimed(cid):
+				var id2 := cid
+				buttons.append({"text": _t("領委託：%s") % c.get("name", cid), "cb": func():
+					var r2: Dictionary = QuestSystem.claim_commission(id2)
+					_play_dialog([{"speaker": _t("系統"), "text": str(r2.get("msg", ""))}], _go_daily_panel)
+				})
 	buttons.append({"text": _t("材料行（琥珀）"), "cb": _go_material_shop})
 	buttons.append({"text": _t("長遠任務"), "cb": _go_quest_panel})
 	buttons.append({"text": _t("今日村莊"), "cb": _go_starpath_panel})
@@ -2008,6 +2029,9 @@ func _open_explore_then(map_id: String, screen: Screen, after: Callable) -> void
 		host.add_child(_explore)
 		_explore.setup(map_id)
 		_explore.interacted.connect(_on_explore_interact)
+		## 常駐主線指引：閒置提示列顯示「下一站」（教學提示之後蓋上來仍優先）
+		if _explore.has_method("show_guide_hint"):
+			_explore.call("show_guide_hint", RegionCatalog.next_objective_line())
 		AudioManager.play_bgm_for_map(map_id)
 		WorldContent.mark_visit(map_id)
 		if OnlineGate.is_signed_in():

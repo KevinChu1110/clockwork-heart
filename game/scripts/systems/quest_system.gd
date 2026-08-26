@@ -11,6 +11,10 @@ const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 ## 任務名與說明在非繁中會被 ContentLoc 換掉
 const QUEST_TEXT_FIELDS: PackedStringArray = ["name", "desc"]
 
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
+
 const DAILY_PICK := 4
 const COMBAT_TRACKS: PackedStringArray = ["skirmish", "train", "hunt", "arena"]
 const DAY_TRACKS: PackedStringArray = ["train", "skirmish", "sell", "craft", "shop", "hunt", "arena"]
@@ -166,6 +170,22 @@ func commissions() -> Array:
 
 func missions() -> Array:
 	return ContentLoc.apply_all("quest", MISSIONS, QUEST_TEXT_FIELDS)
+
+
+## 一鍵領取所有已完成未領的委託（觸控省點擊）
+func claim_all_ready() -> Dictionary:
+	var msgs: PackedStringArray = []
+	var n := 0
+	for c in commissions():
+		var cid := str(c.get("id", ""))
+		if commission_done(c) and not commission_claimed(cid):
+			var r := claim_commission(cid)
+			if bool(r.get("ok", false)):
+				n += 1
+				msgs.append(str(r.get("msg", "")))
+	if n == 0:
+		return {"ok": false, "n": 0, "msg": _t("沒有可領的委託。")}
+	return {"ok": true, "n": n, "msg": "\n".join(msgs)}
 
 
 func claim_commission(id: String) -> Dictionary:

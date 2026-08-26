@@ -4,6 +4,18 @@ extends Control
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
+
+
+static func _hint_text() -> String:
+	## 觸控裝置沒鍵盤；桌面兩者都提
+	if DisplayServer.is_touchscreen_available():
+		return _t("▼ 點一下繼續")
+	return _t("▼ 點擊 / Space 繼續")
 
 signal finished
 signal choice_selected(index: int)
@@ -43,7 +55,10 @@ func _ensure_dim() -> void:
 	_dim.name = "Dim"
 	_dim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_dim.color = Color(0.08, 0.07, 0.10, 0.42)
-	_dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	## PASS：點擊冒泡到根節點的 _gui_input 推進對話。
+	## 曾是 STOP —— GUI 階段把左鍵吃掉，_unhandled_input 的滑鼠分支
+	## 永遠收不到，「點擊繼續」其實從沒生效過（桌面靠 Space/E 沒人發現）。
+	_dim.mouse_filter = Control.MOUSE_FILTER_PASS
 	_dim.z_index = -1
 	add_child(_dim)
 	move_child(_dim, 0)
@@ -53,6 +68,10 @@ func _apply_look() -> void:
 	## 楓式：底欄較矮、米色紙、小半身像
 	if panel:
 		panel.add_theme_stylebox_override("panel", UiStyle.dialogue_style())
+		## 點對話紙面也要能推進：冒泡到根節點（選項按鈕自己是 STOP 不受影響）
+		panel.mouse_filter = Control.MOUSE_FILTER_PASS
+		if body_label:
+			body_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		panel.offset_top = -200.0
 		panel.offset_bottom = -12.0
 		panel.offset_left = 48.0
@@ -66,7 +85,7 @@ func _apply_look() -> void:
 	if continue_hint:
 		continue_hint.add_theme_color_override("font_color", Color(0.70, 0.65, 0.60))
 		continue_hint.add_theme_font_size_override("font_size", 11)
-		continue_hint.text = "▼ Space / E"
+		continue_hint.text = _hint_text()
 	if accent:
 		accent.color = UiStyle.KEY_STRONG
 		accent.custom_minimum_size = Vector2(4, 0)
@@ -179,7 +198,7 @@ func _finish_typing() -> void:
 			choices.add_child(btn)
 	else:
 		continue_hint.visible = true
-		continue_hint.text = "▼  Space / E  繼續"
+		continue_hint.text = _hint_text()
 
 
 func _skip_or_advance() -> void:
@@ -224,13 +243,19 @@ func _on_choice(i: int) -> void:
 	_show_current()
 
 
-func _unhandled_input(event: InputEvent) -> void:
+## 點擊／觸控推進：打字中先跳滿字，再點才換行（dim 與紙面板 PASS 冒泡到這）
+func _gui_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	if event is InputEventMouseButton and event.pressed \
+			and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
 		if not _waiting_choice:
+			accept_event()
 			_skip_or_advance()
-			get_viewport().set_input_as_handled()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if not visible:
 		return
 	if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
 		if not _waiting_choice:
