@@ -273,6 +273,30 @@ static func weapon_tempo(weapon_class: String) -> Dictionary:
 	return {"windup": wu, "recover": rc}
 
 
+## 原作互剋盤：武器天生命中（拳爪+35／斧鎚-10 的半幅適配）。
+## 剋制純靠數值互抵，無平白倍率——見 ORIGINAL_RESEARCH_R2 §2。
+static func weapon_class_hit(weapon_class: String) -> float:
+	var builtin := {"fist": 8.0, "claw": 7.0, "dart": 3.0, "dagger": 3.0, "axe": -4.0, "hammer": -4.0}
+	var fb := 0.0
+	if builtin.has(weapon_class):
+		fb = float(builtin[weapon_class])
+	if weapon_class.is_empty():
+		return 0.0
+	return _tbl("weapon_class_hit.%s" % weapon_class, fb)
+
+
+## 原作：輕武器單揮多段——「匕首每次攻 2 下、拳套 7 階後每次連打」。
+## 本作固定 拳3／爪2／匕2／鏢2，總傷近似單發拆段；combat.json 可覆寫。
+static func weapon_basic_hits(weapon_class: String) -> int:
+	var builtin := {"dagger": 2, "dart": 2, "fist": 3, "claw": 2}
+	var fb := 1
+	if builtin.has(weapon_class):
+		fb = int(builtin[weapon_class])
+	if weapon_class.is_empty():
+		return 1
+	return int(_tbl("weapon_basic_hits.%s" % weapon_class, float(fb)))
+
+
 ## 本場武器使用次數上限（原作有、具體數字失傳→combat.json 原創補完）
 static func weapon_uses_for(weapon_class: String) -> int:
 	var builtin: Dictionary = {

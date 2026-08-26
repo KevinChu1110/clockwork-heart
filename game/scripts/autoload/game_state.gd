@@ -200,7 +200,16 @@ func effective_crit() -> float:
 
 
 func effective_hit() -> float:
-	return float(_gem_bonuses().get("hit", 0.0))
+	## 寶石＋武器線天生命中（原作互剋：拳爪準、斧鎚糊）
+	var base := float(_gem_bonuses().get("hit", 0.0))
+	var line := ""
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var eq: Node = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if eq and eq.has_method("active_weapon_line"):
+			line = str(eq.call("active_weapon_line"))
+	var F = load("res://scripts/battle/formulas.gd")
+	return base + float(F.weapon_class_hit(line))
 
 
 func effective_eva() -> float:

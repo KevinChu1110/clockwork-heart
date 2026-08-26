@@ -420,6 +420,8 @@ func _finish_run(full_clear: bool) -> Dictionary:
 		## 有獎／練習通關都算「打過一輪」與每日委託
 		GameState.set_flag(_fk("clears_total"), clears_total() + 1)
 		QuestSystem.track_day("arena", 1)
+		## 原作「一鍵戰鬥」：首次手動全通後開放
+		GameState.set_flag("meta.arena_auto_unlocked", true)
 	var gold_n := 24 + waves * 8
 	if practice:
 		gold_n = int(gold_n * PRACTICE_MULT)

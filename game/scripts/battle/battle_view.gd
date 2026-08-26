@@ -81,6 +81,20 @@ func _is_world_miniboss(mode: String) -> bool:
 	return WC != null and WC.is_miniboss(mode)
 
 
+## 原作互剋盤提示（R2 §2）：剋制純靠數值互抵，提示玩家換裝
+static func _kin_hint(kin: String) -> String:
+	match kin:
+		"ninja":
+			return _t("敵手身法飄忽（迴避高）——拳爪的準頭剋得住。")
+		"monk":
+			return _t("敵手皮粗血厚（防爆低）——鏢匕的爆擊剋得住。")
+		"viking":
+			return _t("敵手筋骨結實（防爆高）——爆擊難進，斧鎚硬砸最實在。")
+		"knight":
+			return _t("敵手甲厚步沉（迴避低）——重武器慢也打得中。")
+	return ""
+
+
 func setup(mode: String) -> void:
 	_mode = mode
 	_ended = false
@@ -163,10 +177,21 @@ func setup(mode: String) -> void:
 			stats["hp"] = GameState.max_hp
 			stats["def"] = int(stats["def"]) + 2
 		sim = BattleSim.make_world_fight(stats, mode)
+		## 原作互剋：看敵屬換裝的提示
+		var WC = load("res://scripts/world/world_content.gd")
+		if WC:
+			var kh := _kin_hint(str((WC.enemy_def(mode) as Dictionary).get("kin", "")))
+			if kh != "":
+				call_deferred("_append_log", "[color=#8df]%s[/color]" % kh)
 	else:
 		sim = BattleSim.make_tutorial_wolf_fight(stats)
 	## 體型對照已撤：玩家回饋「看不懂、畫面花、不需要」
 	_hide_size_compare()
+
+	## 自訂戰鬥台詞（原作）：開戰喊一句
+	var cry := str(GameState.get_flag("meta.battle_cry", ""))
+	if cry != "":
+		call_deferred("_append_log", "[color=#fd9]%s：「%s」[/color]" % [GameState.player_name, cry])
 
 	## 黑焰迴響：敵強化 + 機制窗略短
 	var ng_m: float = GameState.ng_enemy_mult()

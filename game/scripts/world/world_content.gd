@@ -24,21 +24,21 @@ static func _enemy_def_raw(mode: String) -> Dictionary:
 	match mode:
 		## 雜魚
 		"ash_rat":
-			return {"id": "ash_rat", "name": "灰燼鼠", "max_hp": 55, "atk": 8, "def": 2, "speed": 12.0, "is_boss": false, "art": "ash_rat", "art_fallback": "wolf"}
+			return {"id": "ash_rat", "name": "灰燼鼠", "max_hp": 55, "atk": 8, "def": 2, "speed": 12.0, "kin": "ninja", "is_boss": false, "art": "ash_rat", "art_fallback": "wolf"}
 		"road_bandit":
-			return {"id": "road_bandit", "name": "荒路殘兵", "max_hp": 75, "atk": 10, "def": 4, "speed": 10.0, "is_boss": false, "art": "road_bandit", "art_fallback": "wolf"}
+			return {"id": "road_bandit", "name": "荒路殘兵", "max_hp": 75, "atk": 10, "def": 4, "speed": 10.0, "kin": "viking", "is_boss": false, "art": "road_bandit", "art_fallback": "wolf"}
 		"sewer_slime":
-			return {"id": "sewer_slime", "name": "下水黏漿", "max_hp": 70, "atk": 9, "def": 5, "speed": 8.0, "is_boss": false, "art": "sewer_slime", "art_fallback": "wolf"}
+			return {"id": "sewer_slime", "name": "下水黏漿", "max_hp": 70, "atk": 9, "def": 5, "speed": 8.0, "kin": "monk", "is_boss": false, "art": "sewer_slime", "art_fallback": "wolf"}
 		"fog_shade":
-			return {"id": "fog_shade", "name": "霧影", "max_hp": 90, "atk": 11, "def": 4, "speed": 13.0, "is_boss": false, "art": "fog_shade", "art_fallback": "fog"}
+			return {"id": "fog_shade", "name": "霧影", "max_hp": 90, "atk": 11, "def": 4, "speed": 13.0, "kin": "ninja", "is_boss": false, "art": "fog_shade", "art_fallback": "fog"}
 		"bamboo_spirit":
-			return {"id": "bamboo_spirit", "name": "竹影拳靈", "max_hp": 100, "atk": 12, "def": 6, "speed": 11.0, "is_boss": false, "art": "bamboo_spirit", "art_fallback": "abo"}
+			return {"id": "bamboo_spirit", "name": "竹影拳靈", "max_hp": 100, "atk": 12, "def": 6, "speed": 11.0, "kin": "monk", "is_boss": false, "art": "bamboo_spirit", "art_fallback": "abo"}
 		"forest_sprite":
-			return {"id": "forest_sprite", "name": "林間風妖", "max_hp": 95, "atk": 11, "def": 5, "speed": 14.0, "is_boss": false, "art": "forest_sprite", "art_fallback": "falcon"}
+			return {"id": "forest_sprite", "name": "林間風妖", "max_hp": 95, "atk": 11, "def": 5, "speed": 14.0, "kin": "ninja", "is_boss": false, "art": "forest_sprite", "art_fallback": "falcon"}
 		"coast_raider":
-			return {"id": "coast_raider", "name": "潮襲海盜", "max_hp": 110, "atk": 13, "def": 7, "speed": 10.0, "is_boss": false, "art": "coast_raider", "art_fallback": "boar"}
+			return {"id": "coast_raider", "name": "潮襲海盜", "max_hp": 110, "atk": 13, "def": 7, "speed": 10.0, "kin": "viking", "is_boss": false, "art": "coast_raider", "art_fallback": "boar"}
 		"scar_wisp":
-			return {"id": "scar_wisp", "name": "疤地焰靈", "max_hp": 120, "atk": 14, "def": 6, "speed": 12.0, "is_boss": false, "art": "scar_wisp", "art_fallback": "wrath"}
+			return {"id": "scar_wisp", "name": "疤地焰靈", "max_hp": 120, "atk": 14, "def": 6, "speed": 12.0, "kin": "knight", "is_boss": false, "art": "scar_wisp", "art_fallback": "wrath"}
 		## 支線：黑焰浪人（可戰可勸）
 		"black_ronin":
 			return {

@@ -762,6 +762,8 @@ func _go_hunt_panel() -> void:
 		if HuntSystem.daily_left() > 0:
 			buttons.append({"text": _t("開始有獎狩獵（剩 %d）") % HuntSystem.daily_left(), "cb": _hunt_start_rewarded})
 		buttons.append({"text": _t("練習狩獵（獎勵少）"), "cb": _hunt_start_practice})
+		if GameState.has_flag("meta.hunt_auto_unlocked"):
+			buttons.append({"text": _t("一鍵戰鬥（自動打完整輪）"), "cb": _hunt_auto_run})
 	buttons.append({"text": _t("溢物回收"), "cb": _go_hunt_recycle_panel})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _hub_back})
 	_panel(Loc.t("panel.hunt"), body, buttons)
@@ -799,6 +801,40 @@ func _hunt_start_practice() -> void:
 		{"speaker": _t("系統"), "text": str(r.get("label", _t("第一波")))},
 	]
 	_play_dialog(lines, func(): _start_battle(str(r.get("mode", "ash_rat"))))
+
+
+## 原作「一鍵戰鬥」：首次手動全通後開放；整輪無頭結算、獎勵與能量照走
+func _hunt_auto_run() -> void:
+	var er: Dictionary = EnergySystem.try_spend_run("hunt")
+	if not bool(er.get("ok", false)):
+		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}], _go_hunt_panel)
+		return
+	var r: Dictionary = HuntSystem.start_run(HuntSystem.daily_left() <= 0)
+	if not bool(r.get("ok", false)):
+		EnergySystem.grant(int(er.get("cost", 1)))
+		_play_dialog([{"speaker": _t("系統"), "text": str(r.get("msg", ""))}], _go_hunt_panel)
+		return
+	var BattleSimT := preload("res://scripts/battle/battle_sim.gd")
+	var lines: PackedStringArray = []
+	var guard := 0
+	while HuntSystem.is_run_active() and guard < 12:
+		guard += 1
+		var sim = BattleSimT.make_world_fight(BattleSimT.gather_player_stats(), HuntSystem.wave_mode())
+		var res: Dictionary = BattleSimT.resolve_auto(sim)
+		if bool(res.get("won", false)):
+			GameState.hp = clampi(int(res.get("hp_left", GameState.hp)), 1, GameState.effective_max_hp())
+			var w: Dictionary = HuntSystem.on_wave_won()
+			lines.append(str(w.get("msg", "")))
+			if str(w.get("loot_msg", "")) != "":
+				lines.append(str(w.get("loot_msg", "")))
+			if bool(w.get("finished", false)):
+				break
+		else:
+			GameState.hp = maxi(1, int(GameState.max_hp * 0.35))
+			var l: Dictionary = HuntSystem.on_wave_lost()
+			lines.append(str(l.get("msg", "")))
+			break
+	_play_dialog([{"speaker": _t("系統"), "text": _t("一鍵狩獵結束。") + "\n" + "\n".join(lines)}], _go_hunt_panel)
 
 
 func _hunt_continue() -> void:
@@ -855,7 +891,10 @@ func _go_arena_panel() -> void:
 		if ArenaSystem.daily_left() > 0:
 			buttons.append({"text": _t("開始有獎試煉（剩 %d）") % ArenaSystem.daily_left(), "cb": _arena_start_rewarded})
 		buttons.append({"text": _t("練習試煉"), "cb": _arena_start_practice})
+		if GameState.has_flag("meta.arena_auto_unlocked"):
+			buttons.append({"text": _t("一鍵戰鬥（自動打完整輪）"), "cb": _arena_auto_run})
 		buttons.append({"text": _t("敲鑼換對手"), "cb": _arena_gong})
+		buttons.append({"text": _t("戰鬥台詞"), "cb": _go_battle_cry_form})
 	buttons.append({"text": _t("查看排行"), "cb": _arena_show_leaderboard})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _go_starpath_panel})
 	_panel(Loc.t("panel.arena"), body, buttons)
@@ -891,6 +930,38 @@ func _arena_start_practice() -> void:
 		{"speaker": _t("系統"), "text": str(r.get("msg", ""))},
 		{"speaker": _t("系統"), "text": str(r.get("label", ""))},
 	], func(): _start_battle(str(r.get("mode", "ash_rat"))))
+
+
+## 原作「一鍵戰鬥」：演武整輪自動結算（首次手動全通後開放）
+func _arena_auto_run() -> void:
+	var er: Dictionary = EnergySystem.try_spend_run("arena")
+	if not bool(er.get("ok", false)):
+		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}], _go_arena_panel)
+		return
+	var r: Dictionary = ArenaSystem.start_run(ArenaSystem.tickets() <= 0)
+	if not bool(r.get("ok", false)):
+		EnergySystem.grant(int(er.get("cost", 1)))
+		_play_dialog([{"speaker": _t("系統"), "text": str(r.get("msg", ""))}], _go_arena_panel)
+		return
+	var BattleSimT := preload("res://scripts/battle/battle_sim.gd")
+	var lines: PackedStringArray = []
+	var guard := 0
+	while ArenaSystem.is_run_active() and guard < 12:
+		guard += 1
+		var sim = BattleSimT.make_world_fight(BattleSimT.gather_player_stats(), ArenaSystem.wave_mode())
+		var res: Dictionary = BattleSimT.resolve_auto(sim)
+		if bool(res.get("won", false)):
+			GameState.hp = clampi(int(res.get("hp_left", GameState.hp)), 1, GameState.effective_max_hp())
+			var w: Dictionary = ArenaSystem.on_wave_won(int(res.get("hp_left", 0)))
+			lines.append(str(w.get("msg", "")))
+			if bool(w.get("finished", false)):
+				break
+		else:
+			GameState.hp = maxi(1, int(GameState.max_hp * 0.35))
+			var l: Dictionary = ArenaSystem.on_wave_lost()
+			lines.append(str(l.get("msg", "")))
+			break
+	_play_dialog([{"speaker": _t("系統"), "text": _t("一鍵演武結束。") + "\n" + "\n".join(lines)}], _go_arena_panel)
 
 
 func _arena_continue() -> void:
@@ -1040,6 +1111,74 @@ func _online_health_check() -> void:
 		else:
 			_play_dialog(DialogLines.lines("hub.online_health_fail", {"msg": OnlineGate.humanize_error(msg)}), _go_online_panel)
 	)
+
+
+## 原作：戰鬥台詞可自訂（當年板上熱門功能）。存旗標，開戰時喊出來
+func _go_battle_cry_form() -> void:
+	_clear_host()
+	_reset_fade()
+	var layer := Control.new()
+	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	host.add_child(layer)
+	var bg := ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0.08, 0.07, 0.1, 0.92)
+	layer.add_child(bg)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layer.add_child(center)
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(460, 0)
+	card.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	center.add_child(card)
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	card.add_child(margin)
+	var root := VBoxContainer.new()
+	root.add_theme_constant_override("separation", 8)
+	margin.add_child(root)
+	var title := Label.new()
+	title.text = _t("戰鬥台詞")
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_color_override("font_color", UiStyle.WOOD_DARK)
+	root.add_child(title)
+	var hint := Label.new()
+	hint.text = _t("開戰時會喊出來，殘影對戰時對手也看得到。留空恢復預設。")
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	hint.add_theme_font_size_override("font_size", 12)
+	hint.add_theme_color_override("font_color", UiStyle.CREAM_DIM)
+	root.add_child(hint)
+	var le := LineEdit.new()
+	le.placeholder_text = _t("例：自己的命自己保護")
+	le.text = str(GameState.get_flag("meta.battle_cry", ""))
+	le.max_length = 20
+	le.custom_minimum_size.y = 36
+	root.add_child(le)
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 8)
+	root.add_child(row)
+	var save_b := Button.new()
+	save_b.text = _t("儲存")
+	save_b.custom_minimum_size = Vector2(120, 36)
+	row.add_child(save_b)
+	var back_b := Button.new()
+	back_b.text = _t("返回")
+	back_b.custom_minimum_size = Vector2(100, 36)
+	row.add_child(back_b)
+	save_b.pressed.connect(func():
+		GameState.set_flag("meta.battle_cry", le.text.strip_edges())
+		SaveManager.save_game()
+		_show_toast(_t("台詞記下了。"))
+		_go_arena_panel()
+	)
+	back_b.pressed.connect(_go_arena_panel)
+	le.grab_focus()
 
 
 func _go_online_backend_form() -> void:

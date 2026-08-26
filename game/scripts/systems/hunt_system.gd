@@ -193,6 +193,9 @@ func on_wave_lost() -> Dictionary:
 
 func _finish_run(full_clear: bool) -> Dictionary:
 	var practice := is_practice()
+	if full_clear:
+		## 原作「一鍵戰鬥」：首次手動全通後開放
+		GameState.set_flag("meta.hunt_auto_unlocked", true)
 	if full_clear and not practice:
 		_refresh_daily()
 		GameState.set_flag(_fk("runs_today"), runs_today() + 1)

@@ -510,22 +510,20 @@ func _resolve_strike(u: BattleUnit) -> void:
 
 	var atk_use := float(u.atk) * (u.atk_buff_mult if u.atk_buff_left > 0.0 else 1.0)
 	var var_pct := u.dmg_variance if u.dmg_variance > 0.0 else Formulas.default_variance()
-	var rolled: Dictionary = Formulas.roll_hit_damage(
-		atk_use, target.defense, 1.0, var_pct,
-		u.crit, target.crit_resist, u.crit_dmg, rng, false
-	)
-	var dmg: int = int(rolled.get("damage", 1))
-	var is_crit: bool = bool(rolled.get("crit", false))
-	## 水晶龍捲冰凍標記：下一次普攻傷害加倍（原作），打完歸 1
-	if u.empower_next_mult > 1.0:
-		dmg = int(round(float(dmg) * u.empower_next_mult))
-		u.empower_next_mult = 1.0
-	## 遠距開闊輸出加成（在 Boss 過濾之前，chip 也吃比例）
-	if u.team == BattleUnit.Team.PLAYER:
-		dmg = u.scale_outgoing(dmg)
 
 	if fog_mode and u.team == BattleUnit.Team.PLAYER:
-		_apply_player_hit_on_fog(u, target, dmg, is_crit)
+		## 白霧走自己的幻影命中處理，維持單段
+		var rolled_f: Dictionary = Formulas.roll_hit_damage(
+			atk_use, target.defense, 1.0, var_pct,
+			u.crit, target.crit_resist, u.crit_dmg, rng, false
+		)
+		var dmg_f: int = int(rolled_f.get("damage", 1))
+		var crit_f: bool = bool(rolled_f.get("crit", false))
+		if u.empower_next_mult > 1.0:
+			dmg_f = int(round(float(dmg_f) * u.empower_next_mult))
+			u.empower_next_mult = 1.0
+		dmg_f = u.scale_outgoing(dmg_f)
+		_apply_player_hit_on_fog(u, target, dmg_f, crit_f)
 		## 白霧戰走自己的命中處理，會在下面那段累積戰意之前 return ——
 		## 於是整場白霧戰一點戰意都不會累積，玩家放不出任何技能。
 		## 第二章的王正好是玩家第一次真的需要技能的地方，而那一場技能是關的。
@@ -538,43 +536,72 @@ func _resolve_strike(u: BattleUnit) -> void:
 		u.state_timer = 0.08
 		return
 
-	## 阿波架勢中：傷害大減，改灌破防條
-	if abo_mode and u.team == BattleUnit.Team.PLAYER and target.id == "abo":
-		dmg = _abo_filter_damage(target, dmg, false)
-	## 疾影：未停拍只 chip
-	if falcon_mode and u.team == BattleUnit.Team.PLAYER and target.id == "falcon":
-		dmg = _falcon_filter_damage(target, dmg)
-	## 石拳：岩甲層 chip
-	if boar_mode and u.team == BattleUnit.Team.PLAYER and target.id == "boar":
-		dmg = _boar_filter_damage(target, dmg)
-	if tide_mode and u.team == BattleUnit.Team.PLAYER:
-		dmg = _tide_filter_damage(target, dmg, false)
-		if u.id == player_id and tide_wave_active:
-			tide_player_swings += 1
-	if statue_mode and u.team == BattleUnit.Team.PLAYER:
-		dmg = _statue_filter_damage(target, dmg)
-	## 部位全破：本體易傷
-	if target.is_boss and target.parts_all_broken_vuln > 1.0:
-		dmg = int(round(float(dmg) * target.parts_all_broken_vuln))
-	var dealt := target.take_damage(dmg)
-	if target.id == player_id:
-		_check_auto_berserk(target)
-	if u.team == BattleUnit.Team.PLAYER and dealt > 0:
-		_process_part_damage(target, dealt, target.telegraph_active)
-	## 出手也累積戰意，否則戰意只能靠挨打累積，而挨到滿之前人就死了
-	if u.can_skill and dealt > 0:
-		_gain_rage(u, Formulas.rage_from_strike())
-	_emit("hit", {
-		"attacker": u.id,
-		"defender": target.id,
-		"damage": dealt,
-		"crit": is_crit,
-		"hp": target.hp,
-		"max_hp": target.max_hp,
-		"rage": target.rage,
-	})
-	if abo_mode and u.team == BattleUnit.Team.PLAYER and target.id == "abo":
-		_abo_add_guard(28.0 if is_crit else 18.0, _t("普攻"))
+	## 原作：輕武器單揮多段（匕首每次攻 2 下、拳套連打）。
+	## 每段獨立擲骰、總量近似單發拆段；敵方與空 class 維持單段。
+	var swing_hits := 1
+	if u.team == BattleUnit.Team.PLAYER:
+		swing_hits = maxi(1, Formulas.weapon_basic_hits(u.weapon_class))
+	var per_mult := 1.0 / float(swing_hits)
+	## 水晶龍捲冰凍標記：整揮生效（每段都吃），打完歸 1
+	var emp := u.empower_next_mult
+	u.empower_next_mult = 1.0
+	var any_crit := false
+	for hi in range(swing_hits):
+		if target == null or not target.is_alive():
+			break
+		var rolled: Dictionary = Formulas.roll_hit_damage(
+			atk_use, target.defense, per_mult, var_pct,
+			u.crit, target.crit_resist, u.crit_dmg, rng, false
+		)
+		var dmg: int = int(rolled.get("damage", 1))
+		var is_crit: bool = bool(rolled.get("crit", false))
+		if is_crit:
+			any_crit = true
+		if emp > 1.0:
+			dmg = int(round(float(dmg) * emp))
+		## 遠距開闊輸出加成（在 Boss 過濾之前，chip 也吃比例）
+		if u.team == BattleUnit.Team.PLAYER:
+			dmg = u.scale_outgoing(dmg)
+		## 阿波架勢中：傷害大減，改灌破防條
+		if abo_mode and u.team == BattleUnit.Team.PLAYER and target.id == "abo":
+			dmg = _abo_filter_damage(target, dmg, false)
+		## 疾影：未停拍只 chip
+		if falcon_mode and u.team == BattleUnit.Team.PLAYER and target.id == "falcon":
+			dmg = _falcon_filter_damage(target, dmg)
+		## 石拳：岩甲層 chip
+		if boar_mode and u.team == BattleUnit.Team.PLAYER and target.id == "boar":
+			dmg = _boar_filter_damage(target, dmg)
+		if tide_mode and u.team == BattleUnit.Team.PLAYER:
+			dmg = _tide_filter_damage(target, dmg, false)
+			if u.id == player_id and tide_wave_active and hi == 0:
+				tide_player_swings += 1
+		if statue_mode and u.team == BattleUnit.Team.PLAYER:
+			dmg = _statue_filter_damage(target, dmg)
+		## 部位全破：本體易傷
+		if target.is_boss and target.parts_all_broken_vuln > 1.0:
+			dmg = int(round(float(dmg) * target.parts_all_broken_vuln))
+		var dealt := target.take_damage(dmg)
+		if target.id == player_id:
+			_check_auto_berserk(target)
+		if u.team == BattleUnit.Team.PLAYER and dealt > 0:
+			_process_part_damage(target, dealt, target.telegraph_active)
+		## 出手也累積戰意，否則戰意只能靠挨打累積，而挨到滿之前人就死了。
+		## 多段武器：首段全額、後段三成——快武器本就揮得快，別再疊怒速
+		if u.can_skill and dealt > 0:
+			_gain_rage(u, Formulas.rage_from_strike() * (1.0 if hi == 0 else 0.3))
+		_emit("hit", {
+			"attacker": u.id,
+			"defender": target.id,
+			"damage": dealt,
+			"crit": is_crit,
+			"hp": target.hp,
+			"max_hp": target.max_hp,
+			"rage": target.rage,
+			"hit_index": hi,
+			"hits": swing_hits,
+		})
+	if abo_mode and u.team == BattleUnit.Team.PLAYER and target != null and target.id == "abo":
+		_abo_add_guard(28.0 if any_crit else 18.0, _t("普攻"))
 	if statue_mode and u.team == BattleUnit.Team.PLAYER:
 		_statue_retarget_player()
 	if u.id == player_id:
@@ -2338,6 +2365,20 @@ static func make_world_fight(player_stats: Dictionary, mode: String) -> BattleSi
 	e.atk = int(def.get("atk", 10))
 	e.defense = int(def.get("def", 4))
 	e.speed = float(def.get("speed", 10.0))
+	## 原作互剋盤：敵屬職系帶天生數值，剋制純靠互抵、無平白倍率（R2 §2 半幅適配）
+	match str(def.get("kin", "")):
+		"ninja":
+			e.eva += 12.0
+			e.crit += 3.0
+		"monk":
+			e.max_hp = int(e.max_hp * 1.15)
+			e.hp = e.max_hp
+			e.crit_resist -= 8.0
+		"viking":
+			e.crit_resist += 10.0
+		"knight":
+			e.defense += 3
+			e.eva -= 6.0
 	if e.is_boss:
 		## 秘境／廣域小王：可破部位逃走（主線聖獸不開）
 		sim.allow_part_flee = true

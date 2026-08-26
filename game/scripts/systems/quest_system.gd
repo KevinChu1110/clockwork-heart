@@ -254,10 +254,10 @@ func can_claim_daily() -> bool:
 
 func streak_milestone_hint() -> String:
 	var streak := int(GameState.get_flag(DAILY_STREAK, 0))
-	for t in [3, 7, 14]:
+	for t in [3, 7, 15, 28]:
 		if streak < t:
-			return "連簽下一檔：%d 天" % t
-	return "連簽里程碑已達 14 天"
+			return _t("連簽下一檔：%d 天") % t
+	return _t("連簽里程碑已達 28 天")
 
 
 func claim_daily() -> Dictionary:
@@ -273,22 +273,36 @@ func claim_daily() -> Dictionary:
 	if GameState.ng_plus > 0:
 		gold_n += 10
 		dust_n += 1
-	## 連簽里程碑（一次性）
+	## 連簽里程碑（一次性；對齊原作 3／7／15／28 天四檔，
+	## 原作獎勵：體力金幣 → 體力演武水晶 → 紫葫蘆×10 → 橙腰帶）
 	var bonus := ""
 	if streak == 3 and not GameState.has_flag("meta.streak_bonus_3"):
 		GameState.set_flag("meta.streak_bonus_3", true)
-		dust_n += 2
-		bonus = " · 連簽 3 天加碼星屑 +2"
+		gold_n += 100
+		EnergySystem.grant(5)
+		bonus = _t(" · 連簽 3 天：能量+5 · 金+100")
 	elif streak == 7 and not GameState.has_flag("meta.streak_bonus_7"):
 		GameState.set_flag("meta.streak_bonus_7", true)
-		dust_n += 4
-		gold_n += 40
-		bonus = " · 連簽 7 天加碼金 +40／星屑 +4"
-	elif streak == 14 and not GameState.has_flag("meta.streak_bonus_14"):
-		GameState.set_flag("meta.streak_bonus_14", true)
-		dust_n += 8
-		gold_n += 80
-		bonus = " · 連簽 14 天加碼金 +80／星屑 +8"
+		dust_n += 5
+		EnergySystem.grant(10)
+		GameState.arena_tickets = ArenaSystem.TICKET_MAX
+		bonus = _t(" · 連簽 7 天：能量+10 · 挑戰狀補滿 · 星屑+5")
+	elif streak == 15 and not GameState.has_flag("meta.streak_bonus_15"):
+		GameState.set_flag("meta.streak_bonus_15", true)
+		gold_n += 300
+		if GameState.soul_vessel in ["綠葫蘆", "藍葫蘆"]:
+			GameState.soul_vessel = "紫葫蘆"
+		GameState.soul_free_draws += 10
+		GemSystem.add_gem("red", 2, 1)
+		bonus = _t(" · 連簽 15 天：魂器躍紫 · 免費抽魂×10 · 二級紅寶石")
+	elif streak == 28 and not GameState.has_flag("meta.streak_bonus_28"):
+		GameState.set_flag("meta.streak_bonus_28", true)
+		gold_n += 400
+		EnergySystem.grant(30)
+		var belt: Dictionary = EquipmentSystem.roll_instance("knight_belt", "epic")
+		if not belt.is_empty():
+			EquipmentSystem.add_to_bag(belt)
+		bonus = _t(" · 連簽 28 天：橙品腰帶 · 能量+30 · 金+400")
 	GameState.add_gold(gold_n)
 	GameState.add_stardust(dust_n)
 	## 公會貢獻
