@@ -4095,7 +4095,9 @@ func _go_pet_panel() -> void:
 			if typeof(p) != TYPE_DICTIONARY:
 				continue
 			var mark := "★ " if str((p as Dictionary).get("id", "")) == active else "· "
-			body += "\n%s%s（%s）" % [mark, _pet_label(p), _pet_bonus_line(p)]
+			var art_p := "res://assets/sprites/pets/pet_%s.png" % str((p as Dictionary).get("species", ""))
+			var icon_s := "[img=40x46]%s[/img] " % art_p if ResourceLoader.exists(art_p) else ""
+			body += "\n%s%s%s（%s）" % [mark, icon_s, _pet_label(p), _pet_bonus_line(p)]
 	var buttons: Array = []
 	if _pet_flowers() >= PET_EGG_FLOWERS and pets.size() < PET_MAX_COUNT:
 		buttons.append({"text": _t("友情之花換蛋（%d 朵）") % PET_EGG_FLOWERS, "cb": _pet_hatch})
@@ -4347,6 +4349,13 @@ func _go_escort_panel() -> void:
 	_escort_refresh_day()
 	var body := _t("[b]護送 · 攔截[/b]\n押一箱貨走商道（%d 分鐘後回來收）。箱越貴、賺越多，路上也越招賊。\n") % int(ESCORT_SECS / 60.0)
 	body += _t("今日護送剩 %d 次 · 攔截剩 %d 次\n") % [_escort_runs_left(), _raid_runs_left()]
+	var box_icons := ""
+	for b2 in ESCORT_BOXES:
+		var ip := "res://assets/sprites/props/escort_box_%s.png" % str((b2 as Dictionary).get("id", ""))
+		if ResourceLoader.exists(ip):
+			box_icons += "[img=40x40]%s[/img]  " % ip
+	if box_icons != "":
+		body += box_icons + "\n"
 	var buttons: Array = []
 	if bool(GameState.get_flag("escort.active", false)):
 		var left := int(GameState.get_flag("escort.end", 0)) - int(Time.get_unix_time_from_system())
@@ -4487,7 +4496,10 @@ func _dcave_runs_left() -> int:
 func _go_dragon_cave_panel() -> void:
 	_dcave_refresh_day()
 	var highest := int(GameState.get_flag("dcave.cleared", 0))
-	var body := _t("[b]龍窟[/b] · 飾品的出處。五章漸深，前三章免能量、後兩章每次 3 點。\n")
+	var body := ""
+	if ResourceLoader.exists("res://assets/sprites/maps/dragon_cave_banner.png"):
+		body += "[img=440x150]res://assets/sprites/maps/dragon_cave_banner.png[/img]\n"
+	body += _t("[b]龍窟[/b] · 飾品的出處。五章漸深，前三章免能量、後兩章每次 3 點。\n")
 	body += _t("今日剩餘挑戰：%d 次 · 已通過 %d／5 章\n") % [_dcave_runs_left(), highest]
 	body += "\n" + EnergySystem.status_line()
 	var buttons: Array = []
