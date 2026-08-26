@@ -39,6 +39,12 @@ static func _enemy_def_raw(mode: String) -> Dictionary:
 			return {"id": "coast_raider", "name": "潮襲海盜", "max_hp": 110, "atk": 13, "def": 7, "speed": 10.0, "kin": "viking", "is_boss": false, "art": "coast_raider", "art_fallback": "boar"}
 		"scar_wisp":
 			return {"id": "scar_wisp", "name": "疤地焰靈", "max_hp": 120, "atk": 14, "def": 6, "speed": 12.0, "kin": "knight", "is_boss": false, "art": "scar_wisp", "art_fallback": "wrath"}
+		## 公會副本：心魔（週制大血池，非部位 Boss——每場打掉多少算多少）
+		"heart_demon":
+			return {
+				"id": "heart_demon", "name": "心魔", "max_hp": 4000, "atk": 16, "def": 8,
+				"speed": 11.0, "is_boss": false, "art": "demon", "art_fallback": "wrath",
+			}
 		## 支線：黑焰浪人（可戰可勸）
 		"black_ronin":
 			return {

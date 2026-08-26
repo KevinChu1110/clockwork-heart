@@ -1503,6 +1503,13 @@ func _go_starpath_panel() -> void:
 		var h_left := HuntSystem.daily_left()
 		var h_lab := _t("野外獵場（剩 %d）") % h_left if h_left > 0 else _t("野外獵場（練習）")
 		buttons.append({"text": h_lab, "cb": func(): _open_explore("hunting_grounds", Screen.C1_WILD)})
+	if GameState.level >= 15 or int(GameState.get_flag("dcave.cleared", 0)) > 0:
+		buttons.append({"text": _t("龍窟（飾品 · 剩 %d）") % _dcave_runs_left(), "cb": _go_dragon_cave_panel})
+	if GameState.level >= 9:
+		var esc_tag := _t("收貨！") if (bool(GameState.get_flag("escort.active", false)) \
+			and int(GameState.get_flag("escort.end", 0)) <= int(Time.get_unix_time_from_system())) \
+			else _t("剩 %d") % _escort_runs_left()
+		buttons.append({"text": _t("護送 · 攔截（%s）") % esc_tag, "cb": _go_escort_panel})
 	buttons.append({"text": _t("旅人留言石"), "cb": func(): _go_message_stone("message_stone")})
 	buttons.append({"text": _t("通關燭火"), "cb": _go_candle_altar})
 	buttons.append({"text": _t("長遠任務"), "cb": _go_quest_panel})
@@ -1651,6 +1658,30 @@ func _go_guild_panel() -> void:
 			})
 		else:
 			buttons.append({"text": _t("公庫補給（需貢獻 30）"), "cb": _go_guild_panel})
+		## 公會心魔（週制）
+		_demon_refresh()
+		if not bool(GameState.get_flag("guild.demon.done", false)):
+			buttons.append({"text": _t("挑戰心魔（週血 %d · 今日剩 %d）") % [
+				int(GameState.get_flag("guild.demon.hp", HEART_DEMON_POOL)),
+				maxi(0, HEART_DEMON_DAILY - int(GameState.get_flag("guild.demon.tries", 0))),
+			], "cb": _guild_demon_challenge})
+		## 公會科技（原作：貪婪／突飛）
+		for tid in GuildSystem.TECHS.keys():
+			var t: Dictionary = GuildSystem.TECHS[tid]
+			var lv: int = GuildSystem.tech_level(str(tid))
+			var maxlv := int(t.get("max", 3))
+			var tid2 := str(tid)
+			var lab: String
+			if lv >= maxlv:
+				lab = _t("科技【%s】Lv%d（頂）") % [_t(str(t.get("name", tid))), lv]
+			else:
+				var costs: Array = t.get("costs", [])
+				var cost := int(costs[mini(lv, costs.size() - 1)])
+				lab = _t("升科技【%s】Lv%d→%d（貢獻 %d）") % [_t(str(t.get("name", tid))), lv, lv + 1, cost]
+			buttons.append({"text": lab, "cb": func():
+				var r2: Dictionary = GuildSystem.upgrade_tech(tid2)
+				_play_dialog([{"speaker": _t("盟約"), "text": str(r2.get("msg", ""))}], _go_guild_panel)
+			})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _hub_back})
 	_panel(Loc.t("panel.guild"), body, buttons)
 
@@ -3954,6 +3985,8 @@ func _world_skirmish_result(mode: String, won: bool, back_cb: Callable) -> void:
 			gold_n = maxi(5, int(gold_n * 0.6))
 		elif sk_wins >= 25:
 			gold_n = maxi(6, int(gold_n * 0.8))
+		## 公會科技「貪婪」：野外金幣加成（原作科技表）
+		gold_n = int(round(float(gold_n) * GuildSystem.tech_mult("greed")))
 		var dust_n := 1 if int(def.get("max_hp", 50)) >= 90 else 0
 		_grant_boss_loot(gold_n, dust_n, 0)
 		var xp_n := Formulas.field_xp(int(def.get("max_hp", 50)), sk_wins)
@@ -3988,6 +4021,313 @@ func _world_skirmish_result(mode: String, won: bool, back_cb: Callable) -> void:
 		GameState.hp = maxi(1, int(GameState.max_hp * 0.35))
 		SaveManager.save_game()
 		_play_dialog(DialogLines.lines("battle.world_flee"), back_cb)
+
+
+## ── 公會心魔（原作公會副本：大血池車輪戰、鼓舞疊層；本作單人週制版）──
+const HEART_DEMON_POOL := 6000
+const HEART_DEMON_DAILY := 3
+
+
+func _demon_week_key() -> String:
+	return str(int(Time.get_unix_time_from_system() / 604800.0))
+
+
+func _demon_refresh() -> void:
+	if str(GameState.get_flag("guild.demon.week", "")) != _demon_week_key():
+		GameState.set_flag("guild.demon.week", _demon_week_key())
+		GameState.set_flag("guild.demon.hp", HEART_DEMON_POOL + GameState.level * 120)
+		GameState.set_flag("guild.demon.insp", 0)
+		GameState.set_flag("guild.demon.done", false)
+	var today := Time.get_date_string_from_system()
+	if str(GameState.get_flag("guild.demon.day", "")) != today:
+		GameState.set_flag("guild.demon.day", today)
+		GameState.set_flag("guild.demon.tries", 0)
+
+
+func _guild_demon_challenge() -> void:
+	_demon_refresh()
+	if bool(GameState.get_flag("guild.demon.done", false)):
+		_play_dialog([{"speaker": _t("盟約"), "text": _t("本週心魔已伏。下週它會換一張臉回來。")}], _go_guild_panel)
+		return
+	var tries := int(GameState.get_flag("guild.demon.tries", 0))
+	if tries >= HEART_DEMON_DAILY:
+		_play_dialog([{"speaker": _t("盟約"), "text": _t("今天砍夠了——心魔的血明天繼續磨。")}], _go_guild_panel)
+		return
+	GameState.set_flag("guild.demon.tries", tries + 1)
+	var BattleSimT := preload("res://scripts/battle/battle_sim.gd")
+	var stats: Dictionary = BattleSimT.gather_player_stats()
+	var insp := int(GameState.get_flag("guild.demon.insp", 0))
+	## 鼓舞：每次挑戰後 +5% 攻，最多 20 層（原作）
+	stats["atk"] = int(round(float(stats.get("atk", 20)) * (1.0 + 0.05 * float(insp))))
+	var sim = BattleSimT.make_world_fight(stats, "heart_demon")
+	var res: Dictionary = BattleSimT.resolve_auto(sim, 6000)
+	var e = sim.get_unit("heart_demon")
+	var per_fight := 4000
+	var chip: int = per_fight - (int(e.hp) if e != null else 0)
+	chip = clampi(chip, 0, per_fight)
+	if bool(res.get("won", false)):
+		GameState.hp = clampi(int(res.get("hp_left", GameState.hp)), 1, GameState.effective_max_hp())
+	else:
+		GameState.hp = maxi(1, int(GameState.max_hp * 0.35))
+	var pool := int(GameState.get_flag("guild.demon.hp", HEART_DEMON_POOL)) - chip
+	GameState.set_flag("guild.demon.hp", maxi(0, pool))
+	GameState.set_flag("guild.demon.insp", mini(20, insp + 1))
+	var lines: Array = [{"speaker": _t("盟約"), "text": _t("這一陣劈掉心魔 %d 血 · 鼓舞 +5%%（現 %d 層）") % [chip, mini(20, insp + 1)]}]
+	if pool <= 0:
+		GameState.set_flag("guild.demon.done", true)
+		GuildSystem.add_contrib(50)
+		GameState.add_gold(300)
+		GameState.add_stardust(10)
+		GemSystem.add_shards("red", 5)
+		lines.append({"speaker": _t("盟約"), "text": _t("心魔崩散！討伐賞：貢獻 +50 · 金 300 · 星屑 10 · 紅寶石碎片 ×5")})
+	else:
+		lines.append({"speaker": _t("盟約"), "text": _t("心魔尚餘 %d 血。") % maxi(0, pool)})
+	SaveManager.save_game()
+	_play_dialog(lines, _go_guild_panel)
+
+
+## ── 護送／攔截（原作押鏢：每日護送 4 次、攔截 8 次；本作單機殘影版，
+## 無真人被搶——攔的是過路商隊殘影，遇襲報仇打的是攔路賊）──
+const ESCORT_BOXES := [
+	{"id": "wood", "name": "木盒", "dust": 0, "gold": 60},
+	{"id": "bronze", "name": "銅盒", "dust": 2, "gold": 110},
+	{"id": "silver", "name": "銀盒", "dust": 5, "gold": 190},
+	{"id": "goldbox", "name": "紫金盒", "dust": 10, "gold": 320},
+]
+const ESCORT_DAILY := 4
+const RAID_DAILY := 8
+const ESCORT_SECS := 600
+
+
+func _escort_refresh_day() -> void:
+	var today := Time.get_date_string_from_system()
+	if str(GameState.get_flag("escort.day", "")) != today:
+		GameState.set_flag("escort.day", today)
+		GameState.set_flag("escort.runs", 0)
+		GameState.set_flag("raid.runs", 0)
+
+
+func _escort_runs_left() -> int:
+	_escort_refresh_day()
+	return maxi(0, ESCORT_DAILY - int(GameState.get_flag("escort.runs", 0)))
+
+
+func _raid_runs_left() -> int:
+	_escort_refresh_day()
+	return maxi(0, RAID_DAILY - int(GameState.get_flag("raid.runs", 0)))
+
+
+func _go_escort_panel() -> void:
+	_escort_refresh_day()
+	var body := _t("[b]護送 · 攔截[/b]\n押一箱貨走商道（%d 分鐘後回來收）。箱越貴、賺越多，路上也越招賊。\n") % int(ESCORT_SECS / 60.0)
+	body += _t("今日護送剩 %d 次 · 攔截剩 %d 次\n") % [_escort_runs_left(), _raid_runs_left()]
+	var buttons: Array = []
+	if bool(GameState.get_flag("escort.active", false)):
+		var left := int(GameState.get_flag("escort.end", 0)) - int(Time.get_unix_time_from_system())
+		if left <= 0:
+			buttons.append({"text": _t("★ 收貨"), "cb": _escort_collect})
+		else:
+			body += _t("\n鏢車在路上——約 %d 分後抵達。") % maxi(1, int(ceil(left / 60.0)))
+	elif _escort_runs_left() > 0:
+		for i in ESCORT_BOXES.size():
+			var idx := i
+			var box: Dictionary = ESCORT_BOXES[i]
+			var d := int(box.get("dust", 0))
+			var lab := _t("押【%s】（收 %d 金）") % [_t(str(box.get("name", ""))), int(box.get("gold", 0))]
+			if d > 0:
+				lab += _t(" · 星屑 %d") % d
+			buttons.append({"text": lab, "cb": func(): _escort_start(idx)})
+	var pot := int(GameState.get_flag("escort.revenge", 0))
+	if pot > 0:
+		buttons.append({"text": _t("★ 報仇（追回 %d 金）") % pot, "cb": _escort_revenge})
+	if _raid_runs_left() > 0:
+		buttons.append({"text": _t("攔截過路商隊（殘影）"), "cb": _raid_once})
+	buttons.append({"text": Loc.t("btn.back"), "cb": _go_starpath_panel})
+	_panel(_t("護送 · 攔截"), body, buttons)
+
+
+func _escort_start(idx: int) -> void:
+	_escort_refresh_day()
+	if _escort_runs_left() <= 0 or bool(GameState.get_flag("escort.active", false)):
+		_go_escort_panel()
+		return
+	var box: Dictionary = ESCORT_BOXES[clampi(idx, 0, ESCORT_BOXES.size() - 1)]
+	var d := int(box.get("dust", 0))
+	if d > 0:
+		if GameState.stardust < d:
+			_play_dialog([{"speaker": _t("系統"), "text": _t("星屑不足（需 %d）。") % d}], _go_escort_panel)
+			return
+		GameState.add_stardust(-d)
+	GameState.set_flag("escort.active", true)
+	GameState.set_flag("escort.box", idx)
+	GameState.set_flag("escort.end", int(Time.get_unix_time_from_system()) + ESCORT_SECS)
+	GameState.set_flag("escort.runs", int(GameState.get_flag("escort.runs", 0)) + 1)
+	SaveManager.save_game()
+	_play_dialog([{"speaker": _t("系統"), "text": _t("鏢車出發了。去做別的事，回頭來收。")}], _go_escort_panel)
+
+
+func _escort_collect() -> void:
+	if not bool(GameState.get_flag("escort.active", false)):
+		_go_escort_panel()
+		return
+	if int(GameState.get_flag("escort.end", 0)) > int(Time.get_unix_time_from_system()):
+		_go_escort_panel()
+		return
+	GameState.set_flag("escort.active", false)
+	var idx := int(GameState.get_flag("escort.box", 0))
+	var box: Dictionary = ESCORT_BOXES[clampi(idx, 0, ESCORT_BOXES.size() - 1)]
+	var gold_n := int(box.get("gold", 60))
+	var msg: String
+	if randf() < 0.30:
+		var lost := int(gold_n * 0.3)
+		gold_n -= lost
+		GameState.set_flag("escort.revenge", int(lost * 0.5) + int(GameState.get_flag("escort.revenge", 0)))
+		msg = _t("路上遇襲！只保住 %d 金——賊影往荒路跑了，可以去報仇。") % gold_n
+	else:
+		msg = _t("鏢車平安抵達。收 %d 金。") % gold_n
+	GameState.add_gold(gold_n)
+	GameLog.combat(_t("護送收貨 · 金 %d") % gold_n)
+	SaveManager.save_game()
+	_play_dialog([{"speaker": _t("系統"), "text": msg}], _go_escort_panel)
+
+
+func _escort_revenge() -> void:
+	var pot := int(GameState.get_flag("escort.revenge", 0))
+	if pot <= 0:
+		_go_escort_panel()
+		return
+	var BattleSimT := preload("res://scripts/battle/battle_sim.gd")
+	var sim = BattleSimT.make_world_fight(BattleSimT.gather_player_stats(), "road_bandit")
+	BattleSimT.apply_ng_plus(sim, 1.3)
+	var res: Dictionary = BattleSimT.resolve_auto(sim)
+	_explore_play_pose("skill" if bool(res.get("won", false)) else "hit", 0.5)
+	if bool(res.get("won", false)):
+		GameState.hp = clampi(int(res.get("hp_left", GameState.hp)), 1, GameState.effective_max_hp())
+		GameState.set_flag("escort.revenge", 0)
+		GameState.add_gold(pot)
+		SaveManager.save_game()
+		_play_dialog([{"speaker": _t("系統"), "text": _t("追上了。奪回 %d 金——賊不敢再跟這條鏢。") % pot}], _go_escort_panel)
+	else:
+		GameState.hp = maxi(1, int(GameState.max_hp * 0.35))
+		SaveManager.save_game()
+		_play_dialog([{"speaker": _t("系統"), "text": _t("賊腿快，這回沒追上。改天再算。")}], _go_escort_panel)
+
+
+func _raid_once() -> void:
+	_escort_refresh_day()
+	if _raid_runs_left() <= 0:
+		_go_escort_panel()
+		return
+	GameState.set_flag("raid.runs", int(GameState.get_flag("raid.runs", 0)) + 1)
+	var BattleSimT := preload("res://scripts/battle/battle_sim.gd")
+	var sim = BattleSimT.make_world_fight(BattleSimT.gather_player_stats(), "coast_raider")
+	BattleSimT.apply_ng_plus(sim, 1.15)
+	var res: Dictionary = BattleSimT.resolve_auto(sim)
+	if bool(res.get("won", false)):
+		GameState.hp = clampi(int(res.get("hp_left", GameState.hp)), 1, GameState.effective_max_hp())
+		var gold_n := 10 + randi() % 31
+		GameState.add_gold(gold_n)
+		SaveManager.save_game()
+		_play_dialog([{"speaker": _t("系統"), "text": _t("攔下一隊殘影商隊，截得 %d 金。") % gold_n}], _go_escort_panel)
+	else:
+		GameState.hp = maxi(1, int(GameState.max_hp * 0.35))
+		SaveManager.save_game()
+		_play_dialog([{"speaker": _t("系統"), "text": _t("對方鏢頭是硬點子——被打退了。")}], _go_escort_panel)
+
+
+## ── 龍窟（原作：Lv15 開的飾品副本，五章各一系；前三章免能量、後兩章每次 3 點）──
+const DRAGON_CAVE := [
+	{"name": "第一章 · 生鐵", "modes": ["ash_rat", "road_bandit", "sewer_slime"], "mult": 1.0, "quality": "common", "energy": 0},
+	{"name": "第二章 · 精晶", "modes": ["fog_shade", "bamboo_spirit", "forest_sprite"], "mult": 1.25, "quality": "uncommon", "energy": 0},
+	{"name": "第三章 · 詛咒", "modes": ["forest_sprite", "coast_raider", "coast_raider"], "mult": 1.5, "quality": "rare", "energy": 0},
+	{"name": "第四章 · 逆鱗", "modes": ["coast_raider", "scar_wisp", "scar_wisp"], "mult": 1.85, "quality": "rare", "energy": 3},
+	{"name": "第五章 · 信仰", "modes": ["scar_wisp", "scar_wisp", "scar_wisp"], "mult": 2.3, "quality": "epic", "energy": 3},
+]
+const DCAVE_DAILY := 3
+
+
+func _dcave_refresh_day() -> void:
+	var today := Time.get_date_string_from_system()
+	if str(GameState.get_flag("dcave.day", "")) != today:
+		GameState.set_flag("dcave.day", today)
+		GameState.set_flag("dcave.runs", 0)
+
+
+func _dcave_runs_left() -> int:
+	_dcave_refresh_day()
+	return maxi(0, DCAVE_DAILY - int(GameState.get_flag("dcave.runs", 0)))
+
+
+func _go_dragon_cave_panel() -> void:
+	_dcave_refresh_day()
+	var highest := int(GameState.get_flag("dcave.cleared", 0))
+	var body := _t("[b]龍窟[/b] · 飾品的出處。五章漸深，前三章免能量、後兩章每次 3 點。\n")
+	body += _t("今日剩餘挑戰：%d 次 · 已通過 %d／5 章\n") % [_dcave_runs_left(), highest]
+	body += "\n" + EnergySystem.status_line()
+	var buttons: Array = []
+	if GameState.level < 15:
+		body += _t("\n\n（Lv15 開放——先去演武場練等。）")
+	else:
+		for i in DRAGON_CAVE.size():
+			if i > highest:
+				break
+			var idx := i
+			var ch: Dictionary = DRAGON_CAVE[i]
+			var mark := "✅ " if i < highest else "▶ "
+			buttons.append({"text": mark + _t(str(ch.get("name", ""))), "cb": func(): _dcave_challenge(idx)})
+	buttons.append({"text": Loc.t("btn.back"), "cb": _go_starpath_panel})
+	_panel(_t("龍窟"), body, buttons)
+
+
+func _dcave_challenge(idx: int) -> void:
+	_dcave_refresh_day()
+	if _dcave_runs_left() <= 0:
+		_play_dialog([{"speaker": _t("系統"), "text": _t("今日龍窟次數用完了。明天再來。")}], _go_dragon_cave_panel)
+		return
+	var ch: Dictionary = DRAGON_CAVE[idx]
+	var cost := int(ch.get("energy", 0))
+	if cost > 0 and not EnergySystem.spend(cost):
+		_play_dialog([{"speaker": _t("系統"), "text": _t("能量不足（需 %d）。") % cost}], _go_dragon_cave_panel)
+		return
+	GameState.set_flag("dcave.runs", int(GameState.get_flag("dcave.runs", 0)) + 1)
+	var BattleSimT := preload("res://scripts/battle/battle_sim.gd")
+	var mult := float(ch.get("mult", 1.0))
+	var lines: PackedStringArray = []
+	var all_won := true
+	for mode in ch.get("modes", []):
+		var sim = BattleSimT.make_world_fight(BattleSimT.gather_player_stats(), str(mode))
+		BattleSimT.apply_ng_plus(sim, mult)
+		var res: Dictionary = BattleSimT.resolve_auto(sim)
+		var def: Dictionary = WorldContent.enemy_def(str(mode))
+		if bool(res.get("won", false)):
+			GameState.hp = clampi(int(res.get("hp_left", GameState.hp)), 1, GameState.effective_max_hp())
+			lines.append(_t("勝 %s") % str(def.get("name", mode)))
+		else:
+			GameState.hp = maxi(1, int(GameState.max_hp * 0.35))
+			lines.append(_t("敗給 %s——退出龍窟。") % str(def.get("name", mode)))
+			all_won = false
+			break
+	if all_won:
+		if idx >= int(GameState.get_flag("dcave.cleared", 0)):
+			GameState.set_flag("dcave.cleared", idx + 1)
+		## 掉飾品：本章品質、九款隨機一件
+		var keys: Array = []
+		for k in DataTables.equip_bases().keys():
+			var bd: Dictionary = DataTables.equip_bases()[k]
+			if EquipmentSystem.is_accessory_slot(str(bd.get("slot", ""))):
+				keys.append(k)
+		var drop_s := ""
+		if not keys.is_empty():
+			var pick := str(keys[randi() % keys.size()])
+			var inst: Dictionary = EquipmentSystem.roll_instance(pick, str(ch.get("quality", "common")))
+			if not inst.is_empty():
+				EquipmentSystem.add_to_bag(inst)
+				drop_s = _t("\n拾獲飾品：%s") % EquipmentSystem.label(inst)
+		var gold_n := 25 + idx * 15
+		GameState.add_gold(gold_n)
+		lines.append(_t("龍窟第 %d 章通過！金 %d%s") % [idx + 1, gold_n, drop_s])
+	SaveManager.save_game()
+	_play_dialog([{"speaker": _t("系統"), "text": "\n".join(lines)}], _go_dragon_cave_panel)
 
 
 ## 原作關卡結構試做（英雄谷）：圖上散佈雜魚、點擊當場結算；

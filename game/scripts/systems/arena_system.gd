@@ -326,7 +326,13 @@ func wave_mode(index: int = -1) -> String:
 
 func wave_xp(mode: String, practice: bool) -> int:
 	var def: Dictionary = WorldContent.enemy_def(mode)
-	return Formulas.arena_xp(int(def.get("max_hp", 50)), practice)
+	var xp := Formulas.arena_xp(int(def.get("max_hp", 50)), practice)
+	## 公會科技「突飛」：演武額外經驗（原作科技表）
+	if Engine.get_main_loop() is SceneTree:
+		var g: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GuildSystem")
+		if g and g.has_method("tech_mult"):
+			xp = int(round(float(xp) * float(g.call("tech_mult", "surge"))))
+	return xp
 
 
 ## 原作：演武每打一場都能抽獎（不論輸贏）。回傳抽獎訊息片段。

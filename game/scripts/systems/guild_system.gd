@@ -135,6 +135,43 @@ func status_bbcode() -> String:
 	]
 
 
+## ── 公會科技（原作：貪婪＝野外額外金幣、突飛＝演武額外經驗）──
+const TECHS := {
+	"greed": {"name": "貪婪", "desc": "野外金幣 +8%／級", "max": 3, "costs": [40, 90, 160]},
+	"surge": {"name": "突飛", "desc": "演武經驗 +8%／級", "max": 3, "costs": [40, 90, 160]},
+}
+
+
+func tech_level(id: String) -> int:
+	return int(GameState.get_flag("guild.tech.%s" % id, 0))
+
+
+## 加成倍率（1.0 起跳）
+func tech_mult(id: String) -> float:
+	return 1.0 + 0.08 * float(tech_level(id))
+
+
+func upgrade_tech(id: String) -> Dictionary:
+	_load_from_state()
+	if not is_joined():
+		return {"ok": false, "msg": _t("尚未加入盟約。")}
+	if not TECHS.has(id):
+		return {"ok": false, "msg": _t("沒有這門科技。")}
+	var t: Dictionary = TECHS[id]
+	var lv := tech_level(id)
+	if lv >= int(t.get("max", 3)):
+		return {"ok": false, "msg": _t("【%s】已至頂。") % _t(str(t.get("name", id)))}
+	var costs: Array = t.get("costs", [])
+	var cost := int(costs[mini(lv, costs.size() - 1)])
+	if contrib < cost:
+		return {"ok": false, "msg": _t("貢獻不足（需 %d）。") % cost}
+	contrib -= cost
+	GameState.set_flag(FLAG_CONTRIB, contrib)
+	GameState.set_flag("guild.tech.%s" % id, lv + 1)
+	SaveManager.save_game()
+	return {"ok": true, "msg": _t("公會科技【%s】升至 %d 級。貢獻 −%d。") % [_t(str(t.get("name", id))), lv + 1, cost]}
+
+
 func can_shop() -> bool:
 	return is_joined() and contrib >= 30
 
