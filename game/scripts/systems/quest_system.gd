@@ -305,6 +305,8 @@ func claim_daily() -> Dictionary:
 		bonus = _t(" · 連簽 28 天：橙品腰帶 · 能量+30 · 金+400")
 	GameState.add_gold(gold_n)
 	GameState.add_stardust(dust_n)
+	## 友情之花（靈寵蛋的原料，原作好友互贈——單機版由簽到與好友挑戰供給）
+	GameState.set_flag("pets.flowers", int(GameState.get_flag("pets.flowers", 0)) + 1)
 	## 公會貢獻
 	if Engine.get_main_loop() is SceneTree:
 		var g: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GuildSystem")

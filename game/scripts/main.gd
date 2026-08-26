@@ -1510,6 +1510,8 @@ func _go_starpath_panel() -> void:
 			and int(GameState.get_flag("escort.end", 0)) <= int(Time.get_unix_time_from_system())) \
 			else _t("剩 %d") % _escort_runs_left()
 		buttons.append({"text": _t("護送 · 攔截（%s）") % esc_tag, "cb": _go_escort_panel})
+	if GameState.level >= 13 or not _pets().is_empty() or _pet_flowers() > 0:
+		buttons.append({"text": _t("靈寵（花 %d）") % _pet_flowers(), "cb": _go_pet_panel})
 	buttons.append({"text": _t("旅人留言石"), "cb": func(): _go_message_stone("message_stone")})
 	buttons.append({"text": _t("通關燭火"), "cb": _go_candle_altar})
 	buttons.append({"text": _t("長遠任務"), "cb": _go_quest_panel})
@@ -4023,6 +4025,230 @@ func _world_skirmish_result(mode: String, won: bool, back_cb: Callable) -> void:
 		_play_dialog(DialogLines.lines("battle.world_flee"), back_cb)
 
 
+## ── 靈寵（原作一週年「聚魂第三代」：友情之花換蛋、口糧餵養、
+## 16 級起出戰、融合升階、帶寵跑真理之路；本作單機版，出戰 1 隻）──
+const PET_SPECIES := [
+	{"id": "ember_rat", "name": "燼鼠", "art": "ash_rat", "atk": 3, "def": 1, "hp": 6},
+	{"id": "grey_pup", "name": "蒼狼崽", "art": "wolf", "atk": 4, "def": 2, "hp": 4},
+	{"id": "wind_chick", "name": "風隼雛", "art": "falcon", "atk": 5, "def": 0, "hp": 3},
+	{"id": "stone_piglet", "name": "石紋幼豬", "art": "boar", "atk": 2, "def": 4, "hp": 8},
+]
+const PET_TIER_NAMES := ["幼", "壯", "神駿"]
+const PET_TIER_MULTS := [1.0, 1.3, 1.6]
+const PET_EGG_FLOWERS := 10
+const PET_FEED_GOLD := 20
+const PET_FEED_EXP := 30
+const PET_MAX_LEVEL := 30
+const PET_MAX_COUNT := 6
+const TRUTH_ROAD_DAILY := 2
+
+
+func _pets() -> Array:
+	var raw = GameState.get_flag("pets.list", [])
+	return raw if raw is Array else []
+
+
+func _pet_flowers() -> int:
+	return int(GameState.get_flag("pets.flowers", 0))
+
+
+func add_pet_flowers(n: int) -> void:
+	GameState.set_flag("pets.flowers", maxi(0, _pet_flowers() + n))
+
+
+func _pet_bonus_line(p: Dictionary) -> String:
+	var lvm := 1.0 + 0.1 * float(p.get("level", 1))
+	var tm := float(p.get("tier_mult", 1.0))
+	return _t("攻+%d 防+%d 血+%d") % [
+		int(round(float(p.get("atk", 0)) * lvm * tm)),
+		int(round(float(p.get("def", 0)) * lvm * tm)),
+		int(round(float(p.get("hp", 0)) * lvm * tm)),
+	]
+
+
+func _pet_label(p: Dictionary) -> String:
+	var tier := clampi(int(p.get("tier", 0)), 0, PET_TIER_NAMES.size() - 1)
+	return _t("%s【%s】Lv%d") % [_t(PET_TIER_NAMES[tier]), str(p.get("name", "")), int(p.get("level", 1))]
+
+
+func _truth_refresh_day() -> void:
+	var today := Time.get_date_string_from_system()
+	if str(GameState.get_flag("truth.day", "")) != today:
+		GameState.set_flag("truth.day", today)
+		GameState.set_flag("truth.runs", 0)
+
+
+func _truth_runs_left() -> int:
+	_truth_refresh_day()
+	return maxi(0, TRUTH_ROAD_DAILY - int(GameState.get_flag("truth.runs", 0)))
+
+
+func _go_pet_panel() -> void:
+	var pets := _pets()
+	var body := _t("[b]靈寵[/b] · 友情之花 %d 朵（換蛋需 %d）。Lv16 起可帶 1 隻出戰。\n") % [_pet_flowers(), PET_EGG_FLOWERS]
+	body += _t("餵口糧每次 %d 金＋%d 經驗；同種兩隻皆 Lv15 以上可融合升階。\n") % [PET_FEED_GOLD, PET_FEED_EXP]
+	var active := str(GameState.get_flag("pets.active", ""))
+	if pets.is_empty():
+		body += _t("\n（還沒有靈寵。攢花換蛋吧——打好友殘影與簽到都給花。）")
+	else:
+		for p in pets:
+			if typeof(p) != TYPE_DICTIONARY:
+				continue
+			var mark := "★ " if str((p as Dictionary).get("id", "")) == active else "· "
+			body += "\n%s%s（%s）" % [mark, _pet_label(p), _pet_bonus_line(p)]
+	var buttons: Array = []
+	if _pet_flowers() >= PET_EGG_FLOWERS and pets.size() < PET_MAX_COUNT:
+		buttons.append({"text": _t("友情之花換蛋（%d 朵）") % PET_EGG_FLOWERS, "cb": _pet_hatch})
+	for i in mini(pets.size(), PET_MAX_COUNT):
+		var p2: Dictionary = pets[i]
+		var pid := str(p2.get("id", ""))
+		var pid2 := pid
+		if pid != active:
+			buttons.append({"text": _t("出戰：%s") % _pet_label(p2), "cb": func(): _pet_field(pid2)})
+		if int(p2.get("level", 1)) < PET_MAX_LEVEL:
+			buttons.append({"text": _t("餵食：%s（金 %d）") % [_pet_label(p2), PET_FEED_GOLD], "cb": func(): _pet_feed(pid2)})
+	var fuse_pair := _pet_fuse_candidate()
+	if not fuse_pair.is_empty():
+		buttons.append({"text": _t("融合升階：%s ×2") % str(fuse_pair.get("name", "")), "cb": _pet_fuse})
+	if active != "" and GameState.level >= 16 and _truth_runs_left() > 0:
+		buttons.append({"text": _t("真理之路（帶寵賺金 · 剩 %d）") % _truth_runs_left(), "cb": _truth_road_run})
+	buttons.append({"text": Loc.t("btn.back"), "cb": _go_starpath_panel})
+	_panel(_t("靈寵"), body, buttons)
+
+
+func _pet_hatch() -> void:
+	if _pet_flowers() < PET_EGG_FLOWERS or _pets().size() >= PET_MAX_COUNT:
+		_go_pet_panel()
+		return
+	add_pet_flowers(-PET_EGG_FLOWERS)
+	var sp: Dictionary = PET_SPECIES[randi() % PET_SPECIES.size()]
+	var pets := _pets().duplicate()
+	var pet := {
+		"id": "pet_%d_%d" % [Time.get_ticks_msec(), randi() % 1000],
+		"species": str(sp.get("id", "")),
+		"name": str(sp.get("name", "")),
+		"art": str(sp.get("art", "")),
+		"atk": int(sp.get("atk", 2)),
+		"def": int(sp.get("def", 1)),
+		"hp": int(sp.get("hp", 4)),
+		"level": 1,
+		"exp": 0,
+		"tier": 0,
+		"tier_mult": PET_TIER_MULTS[0],
+	}
+	pets.append(pet)
+	GameState.set_flag("pets.list", pets)
+	if str(GameState.get_flag("pets.active", "")) == "":
+		GameState.set_flag("pets.active", str(pet.get("id", "")))
+	SaveManager.save_game()
+	_play_dialog([{"speaker": _t("系統"), "text": _t("蛋殼一裂——【%s】探出頭來！") % str(pet.get("name", ""))}], _go_pet_panel)
+
+
+func _pet_field(pid: String) -> void:
+	GameState.set_flag("pets.active", pid)
+	SaveManager.save_game()
+	_go_pet_panel()
+
+
+func _pet_feed(pid: String) -> void:
+	if GameState.gold < PET_FEED_GOLD:
+		_play_dialog([{"speaker": _t("系統"), "text": _t("金幣不足（需 %d）") % PET_FEED_GOLD}], _go_pet_panel)
+		return
+	var pets := _pets().duplicate()
+	for i in pets.size():
+		var p: Dictionary = pets[i]
+		if str(p.get("id", "")) != pid:
+			continue
+		if int(p.get("level", 1)) >= PET_MAX_LEVEL:
+			break
+		GameState.add_gold(-PET_FEED_GOLD)
+		var xp := int(p.get("exp", 0)) + PET_FEED_EXP
+		var lv := int(p.get("level", 1))
+		var ups := 0
+		while lv < PET_MAX_LEVEL and xp >= 40 * lv:
+			xp -= 40 * lv
+			lv += 1
+			ups += 1
+		p["exp"] = xp
+		p["level"] = lv
+		pets[i] = p
+		GameState.set_flag("pets.list", pets)
+		SaveManager.save_game()
+		if ups > 0:
+			_show_toast(_t("【%s】升到 Lv%d！") % [str(p.get("name", "")), lv])
+		break
+	_go_pet_panel()
+
+
+## 融合候選：同種兩隻皆 Lv15+、同階、未至頂階
+func _pet_fuse_candidate() -> Dictionary:
+	var pets := _pets()
+	for i in pets.size():
+		var a: Dictionary = pets[i]
+		if int(a.get("level", 1)) < 15 or int(a.get("tier", 0)) >= PET_TIER_MULTS.size() - 1:
+			continue
+		for j in range(i + 1, pets.size()):
+			var b: Dictionary = pets[j]
+			if str(b.get("species", "")) == str(a.get("species", "")) \
+					and int(b.get("tier", 0)) == int(a.get("tier", 0)) \
+					and int(b.get("level", 1)) >= 15:
+				return {"i": i, "j": j, "name": str(a.get("name", ""))}
+	return {}
+
+
+func _pet_fuse() -> void:
+	var pair := _pet_fuse_candidate()
+	if pair.is_empty():
+		_go_pet_panel()
+		return
+	var pets := _pets().duplicate()
+	var i := int(pair.get("i", 0))
+	var j := int(pair.get("j", 0))
+	var keep: Dictionary = pets[i]
+	var eaten_id := str((pets[j] as Dictionary).get("id", ""))
+	keep["tier"] = int(keep.get("tier", 0)) + 1
+	keep["tier_mult"] = PET_TIER_MULTS[clampi(int(keep["tier"]), 0, PET_TIER_MULTS.size() - 1)]
+	pets[i] = keep
+	pets.remove_at(j)
+	GameState.set_flag("pets.list", pets)
+	if str(GameState.get_flag("pets.active", "")) == eaten_id:
+		GameState.set_flag("pets.active", str(keep.get("id", "")))
+	SaveManager.save_game()
+	_play_dialog([{"speaker": _t("系統"), "text": _t("兩道魂光纏成一體——%s 升階為【%s】！") % [
+		str(keep.get("name", "")), _t(PET_TIER_NAMES[clampi(int(keep["tier"]), 0, PET_TIER_NAMES.size() - 1)])
+	]}], _go_pet_panel)
+
+
+## 真理之路（原作：帶戰寵賺金幣的副本）：3 連戰自動結算
+func _truth_road_run() -> void:
+	_truth_refresh_day()
+	if _truth_runs_left() <= 0 or str(GameState.get_flag("pets.active", "")) == "":
+		_go_pet_panel()
+		return
+	GameState.set_flag("truth.runs", int(GameState.get_flag("truth.runs", 0)) + 1)
+	var BattleSimT := preload("res://scripts/battle/battle_sim.gd")
+	var all_won := true
+	for mode in ["bamboo_spirit", "forest_sprite", "coast_raider"]:
+		var sim = BattleSimT.make_world_fight(BattleSimT.gather_player_stats(), str(mode))
+		BattleSimT.apply_ng_plus(sim, 1.2)
+		var res: Dictionary = BattleSimT.resolve_auto(sim)
+		if bool(res.get("won", false)):
+			GameState.hp = clampi(int(res.get("hp_left", GameState.hp)), 1, GameState.effective_max_hp())
+		else:
+			GameState.hp = maxi(1, int(GameState.max_hp * 0.35))
+			all_won = false
+			break
+	if all_won:
+		var gold_n := 60 + GameState.level * 2
+		GameState.add_gold(gold_n)
+		add_pet_flowers(1)
+		SaveManager.save_game()
+		_play_dialog([{"speaker": _t("系統"), "text": _t("真理之路走通了。金 %d · 友情之花 +1。") % gold_n}], _go_pet_panel)
+	else:
+		SaveManager.save_game()
+		_play_dialog([{"speaker": _t("系統"), "text": _t("路走到一半被打了回來——歇口氣再上。")}], _go_pet_panel)
+
+
 ## ── 公會心魔（原作公會副本：大血池車輪戰、鼓舞疊層；本作單人週制版）──
 const HEART_DEMON_POOL := 6000
 const HEART_DEMON_DAILY := 3
@@ -4707,10 +4933,12 @@ func _on_visit_battle_finished(won: bool) -> void:
 		var lost: Dictionary = VisitSystem.on_challenge_lost()
 		_play_dialog([{"speaker": _t("系統"), "text": str(lost.get("msg", ""))}], _go_visit_panel)
 		return
+	## 友情之花（靈寵）：打好友殘影勝利 +2
+	add_pet_flowers(2)
 	_play_dialog([
 		{
 			"speaker": _t("系統"),
-			"text": _t("好友挑戰勝利！選擇獎勵："),
+			"text": _t("好友挑戰勝利！選擇獎勵：（友情之花 +2）"),
 			"choices": [_t("要金幣"), _t("要經驗")],
 			"replies": [_t("選擇金幣。"), _t("選擇經驗。")],
 		},

@@ -2310,6 +2310,24 @@ static func gather_player_stats() -> Dictionary:
 		var patch: Dictionary = sk.call("battle_player_stats_patch", str(stats.get("weapon_class", "")))
 		for k in patch.keys():
 			stats[k] = patch[k]
+	## 靈寵出戰（原作：16 級起可帶寵）：被動三圍加成
+	if int(g.get("level")) >= 16:
+		var pid := str(g.call("get_flag", "pets.active", ""))
+		if pid != "":
+			for p in (g.call("get_flag", "pets.list", []) as Array):
+				if typeof(p) != TYPE_DICTIONARY or str((p as Dictionary).get("id", "")) != pid:
+					continue
+				var pd: Dictionary = p
+				var lvm := 1.0 + 0.1 * float(pd.get("level", 1))
+				var tm := float(pd.get("tier_mult", 1.0))
+				var b_atk := int(round(float(pd.get("atk", 0)) * lvm * tm))
+				var b_def := int(round(float(pd.get("def", 0)) * lvm * tm))
+				var b_hp := int(round(float(pd.get("hp", 0)) * lvm * tm))
+				stats["atk"] = int(stats.get("atk", 20)) + b_atk
+				stats["def"] = int(stats.get("def", 8)) + b_def
+				stats["max_hp"] = int(stats.get("max_hp", 80)) + b_hp
+				stats["hp"] = int(stats.get("hp", 80)) + b_hp
+				break
 	return stats
 
 
