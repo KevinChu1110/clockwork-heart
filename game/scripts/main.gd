@@ -2171,6 +2171,8 @@ func _open_explore_then(map_id: String, screen: Screen, after: Callable) -> void
 		## 常駐主線指引：閒置提示列顯示「下一站」（教學提示之後蓋上來仍優先）
 		if _explore.has_method("show_guide_hint"):
 			_explore.call("show_guide_hint", RegionCatalog.next_objective_line())
+		## 戰役雜魚帶（原作清圖迴圈）
+		_spawn_stage_mobs(map_id)
 		AudioManager.play_bgm_for_map(map_id)
 		WorldContent.mark_visit(map_id)
 		if OnlineGate.is_signed_in():
@@ -2738,6 +2740,11 @@ func _on_explore_interact(id: String) -> void:
 		_explore_play_pose("attack", 0.42)
 	elif id in ["maisui", "ding", "greybeard", "silk", "sprout", "star", "gem_clerk"]:
 		_explore_play_pose("telegraph", 0.28)
+	## 戰役雜魚（清圖迴圈）：點擊當場結算
+	if str(id).begins_with("smob_"):
+		_explore_play_pose("attack", 0.42)
+		_stage_mob_interact(str(id))
+		return
 	## 全域路標／子地圖（各章共用）
 	if _handle_world_travel(id):
 		return
@@ -3983,8 +3990,100 @@ func _world_skirmish_result(mode: String, won: bool, back_cb: Callable) -> void:
 		_play_dialog(DialogLines.lines("battle.world_flee"), back_cb)
 
 
+## 原作關卡結構試做（英雄谷）：圖上散佈雜魚、點擊當場結算；
+## 每日重生、全清有賞。座標為 FLOOR 比例，落點自動吸最近可走格。
+const STAGE_MOBS := {
+	"road": [
+		{"mode": "ash_rat", "fx": 0.30, "fy": 0.62},
+		{"mode": "ash_rat", "fx": 0.55, "fy": 0.70},
+		{"mode": "road_bandit", "fx": 0.78, "fy": 0.58},
+	],
+	"wild": [
+		{"mode": "ash_rat", "fx": 0.22, "fy": 0.60},
+		{"mode": "road_bandit", "fx": 0.45, "fy": 0.72},
+		{"mode": "road_bandit", "fx": 0.66, "fy": 0.55},
+		{"mode": "sewer_slime", "fx": 0.85, "fy": 0.66},
+	],
+}
+
+
+func _ensure_stage_mob_day() -> void:
+	var today := Time.get_date_string_from_system()
+	if str(GameState.get_flag("stagemob.day", "")) == today:
+		return
+	GameState.set_flag("stagemob.day", today)
+	for map in STAGE_MOBS.keys():
+		var list: Array = STAGE_MOBS[map]
+		for i in list.size():
+			GameState.set_flag("stagemob.%s.%d" % [map, i], false)
+		GameState.set_flag("stagemob.%s.bonus" % map, false)
+
+
+func _spawn_stage_mobs(map_id: String) -> void:
+	if not STAGE_MOBS.has(map_id) or _explore == null:
+		return
+	_ensure_stage_mob_day()
+	var list: Array = STAGE_MOBS[map_id]
+	var ents: Array = []
+	for i in list.size():
+		if GameState.has_flag("stagemob.%s.%d" % [map_id, i]):
+			continue
+		var m: Dictionary = list[i]
+		var mode := str(m.get("mode", "ash_rat"))
+		var def: Dictionary = WorldContent.enemy_def(mode)
+		ents.append({
+			"id": "smob_%d" % i,
+			"pos": Vector2.ZERO,
+			"pos_frac": Vector2(float(m.get("fx", 0.5)), float(m.get("fy", 0.6))),
+			"size": Vector2(52, 60),
+			"label": str(def.get("name", mode)),
+			"color": Color(0.85, 0.40, 0.35),
+			"solid": false,
+			"art_boss": str(def.get("art", mode)),
+		})
+	if ents.is_empty():
+		return
+	_explore.call("add_entities", ents)
+	if _explore.has_method("show_player_bubble"):
+		_explore.call("show_player_bubble", _t("圖上還有 %d 隻雜魚。") % ents.size(), 2.2)
+
+
+func _stage_mob_interact(id: String) -> void:
+	var map := _last_explore_map
+	var list: Array = STAGE_MOBS.get(map, [])
+	var i := int(id.trim_prefix("smob_"))
+	if i < 0 or i >= list.size():
+		return
+	var flag := "stagemob.%s.%d" % [map, i]
+	if GameState.has_flag(flag):
+		return
+	var mode := str((list[i] as Dictionary).get("mode", "ash_rat"))
+	var mid := map
+	_resolve_skirmish_inplace(mode, flag, func():
+		if _explore and is_instance_valid(_explore) and _explore.has_method("remove_entity"):
+			_explore.call("remove_entity", id)
+		_stage_clear_check(mid)
+	)
+
+
+func _stage_clear_check(map: String) -> void:
+	var list: Array = STAGE_MOBS.get(map, [])
+	for i in list.size():
+		if not GameState.has_flag("stagemob.%s.%d" % [map, i]):
+			return
+	var bflag := "stagemob.%s.bonus" % map
+	if GameState.has_flag(bflag):
+		return
+	GameState.set_flag(bflag, true)
+	var gold_n := 30 + list.size() * 10
+	_grant_boss_loot(gold_n, 2, 0)
+	SaveManager.save_game()
+	_play_dialog([{"speaker": _t("系統"), "text": _t("本圖雜魚清空！清圖賞：金 %d · 星屑 2。明日再生。") % gold_n}])
+
+
 ## 原作對齊：野外雜魚當場無頭結算（BattleSim.resolve_auto），不切戰鬥畫面。
-func _resolve_skirmish_inplace(mode: String, once_flag: String) -> void:
+## after_win：打贏、結算對話關閉後呼叫（清圖檢查等）
+func _resolve_skirmish_inplace(mode: String, once_flag: String, after_win: Callable = Callable()) -> void:
 	var er: Dictionary = EnergySystem.try_spend_for_battle(mode)
 	if not bool(er.get("ok", false)):
 		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}])
@@ -4001,7 +4100,7 @@ func _resolve_skirmish_inplace(mode: String, once_flag: String) -> void:
 		if once_flag != "":
 			GameState.set_flag(once_flag, true)
 	_explore_play_pose("skill" if won else "hit", 0.5)
-	_world_skirmish_result(mode, won, Callable())
+	_world_skirmish_result(mode, won, after_win if won else Callable())
 
 
 func _hub_back_from_world_battle() -> void:

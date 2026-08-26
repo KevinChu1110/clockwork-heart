@@ -1634,6 +1634,9 @@ func _rebuild_entities() -> void:
 		root.add_child(shadow)
 
 		var tex := SpriteDB.explore_entity_tex(e.id)
+		## 動態雜魚：借用戰鬥 Boss 圖庫的立繪
+		if tex == null and e.has("art_boss"):
+			tex = SpriteDB.boss(str(e.get("art_boss", "")))
 		## 底圖已經畫過的景物（房子／樹／岩石／船骸…）不再疊一張 prop 上去，
 		## 只留互動熱區 —— 走近了名稱牌與 E 提示照樣會跳出來。
 		## 沒有底圖的地圖仍要畫，否則畫面上根本看不到東西。
@@ -1734,6 +1737,39 @@ func _rebuild_entities() -> void:
 		move_child(_hint.get_parent(), get_child_count() - 1)
 	elif _hint and _hint.get_parent() == self:
 		move_child(_hint, get_child_count() - 1)
+
+
+## 動態實體（戰役雜魚等）：setup 後追加。支援比例座標（pos_frac，
+## 自動吸到最近可走格）與 Boss 圖庫貼圖（art_boss）
+func add_entities(list: Array) -> void:
+	for item in list:
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var e: Dictionary = item
+		if e.has("pos_frac"):
+			var f: Vector2 = e["pos_frac"]
+			var world := FLOOR_RECT.position + Vector2(FLOOR_RECT.size.x * f.x, FLOOR_RECT.size.y * f.y)
+			var cell := _nearest_open_cell(_world_to_cell(world))
+			if cell.x >= 0:
+				world = FLOOR_RECT.position + (Vector2(cell) + Vector2(0.5, 0.5)) * TILE_PX
+			var sz: Vector2 = e.get("size", Vector2(48, 56))
+			e["pos"] = world - sz * 0.5
+			e.erase("pos_frac")
+		_entities.append(e)
+	_rebuild_entities()
+	_rebuild_minimap()
+
+
+func remove_entity(id: String) -> void:
+	for i in _entities.size():
+		if str((_entities[i] as Dictionary).get("id", "")) == id:
+			_entities.remove_at(i)
+			break
+	var n: Node = _entity_nodes.get(id)
+	if n and is_instance_valid(n):
+		n.queue_free()
+	_entity_nodes.erase(id)
+	_rebuild_minimap()
 
 
 func _ysort_world() -> void:

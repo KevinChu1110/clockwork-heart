@@ -93,6 +93,30 @@ func _initialize() -> void:
 		else:
 			print("tap interact OK -> ", hits[0])
 
+	## 2.5) 動態實體：pos_frac 吸到可走格、可移除（戰役雜魚用）
+	var n0: int = ex._entities.size()
+	ex.add_entities([{
+		"id": "smob_t", "pos": Vector2.ZERO, "pos_frac": Vector2(0.5, 0.6),
+		"size": Vector2(52, 60), "label": "測試鼠", "color": Color(1, 0, 0), "solid": false,
+	}])
+	if ex._entities.size() != n0 + 1:
+		push_error("add_entities should append")
+		ok = false
+	else:
+		var sm: Dictionary = ex._entities[n0]
+		var c: Vector2i = ex._world_to_cell(sm.pos + sm.size * 0.5)
+		if ex._is_solid_cell(c):
+			push_error("dynamic mob should snap to open cell, got %s" % str(c))
+			ok = false
+		else:
+			print("dynamic entity snap OK ", sm.pos)
+	ex.remove_entity("smob_t")
+	if ex._entities.size() != n0:
+		push_error("remove_entity should shrink list")
+		ok = false
+	else:
+		print("dynamic entity remove OK")
+
 	## 3) 凍結時收指令：不能留殘路徑
 	ex._start_tap_move(ex.player_pos + Vector2(96, 0))
 	ex.set_frozen(true)
