@@ -950,7 +950,10 @@ func _build_scenic_layers() -> void:
 		spr.texture = at
 		spr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		spr.stretch_mode = TextureRect.STRETCH_SCALE
-		spr.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		## 跟底圖同濾鏡＋同色調 modulate——切片曾用 LINEAR 且沒吃 grade，
+		## 疊在像素化底圖上出現一塊塊色調不合的補丁（Kevin 抓的霧祠色塊）
+		spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		spr.modulate = _floor.modulate
 		spr.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var world_pos := Vector2(
 			FLOOR_RECT.position.x + uv.position.x * FLOOR_RECT.size.x,

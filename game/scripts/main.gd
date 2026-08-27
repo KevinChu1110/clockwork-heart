@@ -2557,11 +2557,20 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 		layer.add_child(solid)
 	layer.add_child(bg)
 
-	## 右側選單底的暗紗，字才浮得起來
-	var scrim := ColorRect.new()
+	## 右側選單底的暗紗（漸層淡入，避免硬切邊）
+	var scrim := TextureRect.new()
 	scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	scrim.anchor_left = 0.55
-	scrim.color = Color(0.06, 0.05, 0.08, 0.72)
+	scrim.anchor_left = 0.48
+	var grad := Gradient.new()
+	grad.set_color(0, Color(0.06, 0.05, 0.08, 0.0))
+	grad.set_color(1, Color(0.06, 0.05, 0.08, 0.78))
+	var gtex := GradientTexture2D.new()
+	gtex.gradient = grad
+	gtex.fill_from = Vector2(0, 0)
+	gtex.fill_to = Vector2(0.55, 0)
+	scrim.texture = gtex
+	scrim.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	scrim.stretch_mode = TextureRect.STRETCH_SCALE
 	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(scrim)
 	var scrim_b := ColorRect.new()
@@ -2585,13 +2594,22 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	layer.add_child(info)
 	var game_name := Label.new()
 	game_name.text = _t("勇者之魂")
-	game_name.add_theme_font_size_override("font_size", 46)
+	game_name.add_theme_font_size_override("font_size", 48)
 	game_name.add_theme_color_override("font_color", Color(0.97, 0.92, 0.82))
 	game_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
 	game_name.add_theme_constant_override("shadow_offset_x", 3)
 	game_name.add_theme_constant_override("shadow_offset_y", 3)
 	game_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	info.add_child(game_name)
+	var en_name := Label.new()
+	en_name.text = "B R A V E   S O U L"
+	en_name.add_theme_font_size_override("font_size", 13)
+	en_name.add_theme_color_override("font_color", Color(0.85, 0.68, 0.45, 0.95))
+	en_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	en_name.add_theme_constant_override("shadow_offset_x", 1)
+	en_name.add_theme_constant_override("shadow_offset_y", 1)
+	en_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	info.add_child(en_name)
 	var meta_rt := RichTextLabel.new()
 	meta_rt.bbcode_enabled = true
 	meta_rt.fit_content = true
@@ -2613,15 +2631,46 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	layer.add_child(scroll)
 	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 10)
+	col.add_theme_constant_override("separation", 8)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(col)
+	## 三層級：主按鈕（新的旅途）／一般／尾端功能鈕（連線・顯示・語言）
+	var util_from := maxi(2, buttons.size() - 3)
 	for i in buttons.size():
 		var bdef: Dictionary = buttons[i]
+		var primary := i == 0
+		var util := i >= util_from
+		if i == util_from:
+			var gap := Control.new()
+			gap.custom_minimum_size = Vector2(0, 14)
+			gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			col.add_child(gap)
 		var btn := Button.new()
 		btn.text = str(bdef.get("text", ""))
-		btn.custom_minimum_size = Vector2(300, 46)
-		UiStyle.style_button(btn, i == 0)
+		btn.custom_minimum_size = Vector2(300, 54 if primary else (38 if util else 44))
+		var sb := StyleBoxFlat.new()
+		if primary:
+			sb.bg_color = Color(0.76, 0.34, 0.44, 0.96)
+			sb.border_color = Color(0.98, 0.78, 0.52, 0.95)
+		else:
+			sb.bg_color = Color(0.10, 0.085, 0.115, 0.66 if util else 0.84)
+			sb.border_color = Color(0.62, 0.48, 0.34, 0.35 if util else 0.60)
+		sb.set_border_width_all(1)
+		sb.set_corner_radius_all(9)
+		sb.content_margin_left = 18
+		sb.content_margin_right = 18
+		var sbh: StyleBoxFlat = sb.duplicate()
+		sbh.border_color = Color(0.98, 0.80, 0.52, 1.0)
+		sbh.bg_color = sb.bg_color.lightened(0.10)
+		var sbp: StyleBoxFlat = sb.duplicate()
+		sbp.bg_color = sb.bg_color.darkened(0.15)
+		btn.add_theme_stylebox_override("normal", sb)
+		btn.add_theme_stylebox_override("hover", sbh)
+		btn.add_theme_stylebox_override("pressed", sbp)
+		btn.add_theme_stylebox_override("focus", sbh)
+		btn.add_theme_color_override("font_color", Color(1, 0.97, 0.93) if primary else Color(0.92, 0.87, 0.78, 0.85 if util else 1.0))
+		btn.add_theme_color_override("font_hover_color", Color(1, 0.95, 0.85))
+		btn.add_theme_font_size_override("font_size", 18 if primary else (13 if util else 15))
 		btn.pressed.connect(bdef.get("cb", Callable()))
 		col.add_child(btn)
 
