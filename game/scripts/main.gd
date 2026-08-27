@@ -2516,19 +2516,114 @@ func _go_title() -> void:
 	else:
 		ng_line = _t("\n一周目旅途")
 	var title_line := _t("稱號 %d／%d") % [TitleCatalog.unlocked_count(), TitleCatalog.total_count()]
-	var body := "[center][i]%s[/i][/center]\n\n" % Loc.t("title.tagline")
-	body += Loc.t("title.blurb") + "\n\n"
-	body += _t("[color=#7fd]v0.17 · 今日村莊／演武場／每日輪替[/color]\n")
-	body += "[color=#fc9]%s[/color]\n" % OnlineGate.candle_line(false)
-	body += "[color=#b8a88a]%s%s[/color]\n\n" % [title_line, ng_line]
-	body += "[color=#8a8070]%s[/color]" % Loc.t("title.controls")
-	_panel(_t("勇者之魂"), body, buttons)
+	var ver := str(ProjectSettings.get_setting("application/config/version", ""))
+	var meta := "[i]%s[/i]\n" % Loc.t("title.tagline")
+	meta += "[color=#7fd]v%s[/color]  ·  [color=#fc9]%s[/color]\n" % [ver, OnlineGate.candle_line(false)]
+	meta += "[color=#b8a88a]%s%s[/color]" % [title_line, ng_line]
+	_title_screen(meta, buttons)
 	_refresh_hud()
 	## 軟拉全服燭火（不擋 UI）
 	OnlineGate.refresh_candle_soft()
-	## 首次啟動引導
-	if not TutorialSystem.seen("boot"):
-		call_deferred("_boot_tutorial")
+	## 「boot」引導已停用：曾在標題畫面就跳出教學對話蓋臉（Kevin 抓的）。
+	## 新手教學由進村後的 _maybe_show_tutorial 負責，內容不重複。
+
+
+## 標題畫面：全屏大圖 + 左下標題資訊 + 右側選單欄（Kevin：要大圖不要白卡）
+func _title_screen(meta_bb: String, buttons: Array) -> void:
+	_clear_host()
+	_reset_fade()
+	var layer := Control.new()
+	layer.name = "TitleLayer"
+	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	host.add_child(layer)
+
+	var bg := TextureRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	bg.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	var art: Texture2D = null
+	if ResourceLoader.exists("res://assets/sprites/illustrations/title_bg.png"):
+		art = load("res://assets/sprites/illustrations/title_bg.png")
+	elif ResourceLoader.exists("res://assets/sprites/illustrations/duel_leo.png"):
+		art = load("res://assets/sprites/illustrations/duel_leo.png")
+	if art:
+		bg.texture = art
+	else:
+		var solid := ColorRect.new()
+		solid.set_anchors_preset(Control.PRESET_FULL_RECT)
+		solid.color = Color(0.09, 0.08, 0.1)
+		layer.add_child(solid)
+	layer.add_child(bg)
+
+	## 右側選單底的暗紗，字才浮得起來
+	var scrim := ColorRect.new()
+	scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	scrim.anchor_left = 0.55
+	scrim.color = Color(0.06, 0.05, 0.08, 0.72)
+	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(scrim)
+	var scrim_b := ColorRect.new()
+	scrim_b.set_anchors_preset(Control.PRESET_FULL_RECT)
+	scrim_b.anchor_top = 0.72
+	scrim_b.anchor_right = 0.55
+	scrim_b.color = Color(0.06, 0.05, 0.08, 0.55)
+	scrim_b.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(scrim_b)
+
+	## 左下：遊戲名 + 資訊
+	var info := VBoxContainer.new()
+	info.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	info.anchor_top = 0.72
+	info.offset_left = 36
+	info.offset_top = 12
+	info.offset_right = 620
+	info.offset_bottom = -20
+	info.add_theme_constant_override("separation", 4)
+	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(info)
+	var game_name := Label.new()
+	game_name.text = _t("勇者之魂")
+	game_name.add_theme_font_size_override("font_size", 46)
+	game_name.add_theme_color_override("font_color", Color(0.97, 0.92, 0.82))
+	game_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	game_name.add_theme_constant_override("shadow_offset_x", 3)
+	game_name.add_theme_constant_override("shadow_offset_y", 3)
+	game_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	info.add_child(game_name)
+	var meta_rt := RichTextLabel.new()
+	meta_rt.bbcode_enabled = true
+	meta_rt.fit_content = true
+	meta_rt.text = meta_bb
+	meta_rt.add_theme_font_size_override("normal_font_size", 13)
+	meta_rt.add_theme_color_override("default_color", Color(0.85, 0.8, 0.72))
+	meta_rt.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	meta_rt.custom_minimum_size = Vector2(560, 0)
+	info.add_child(meta_rt)
+
+	## 右側選單欄
+	var scroll := ScrollContainer.new()
+	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
+	scroll.anchor_left = 0.62
+	scroll.offset_left = 0
+	scroll.offset_top = 48
+	scroll.offset_right = -44
+	scroll.offset_bottom = -40
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	layer.add_child(scroll)
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 10)
+	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(col)
+	for i in buttons.size():
+		var bdef: Dictionary = buttons[i]
+		var btn := Button.new()
+		btn.text = str(bdef.get("text", ""))
+		btn.custom_minimum_size = Vector2(300, 46)
+		UiStyle.style_button(btn, i == 0)
+		btn.pressed.connect(bdef.get("cb", Callable()))
+		col.add_child(btn)
 
 
 func _toggle_locale() -> void:
