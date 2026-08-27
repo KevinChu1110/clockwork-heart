@@ -44,3 +44,4 @@ game/assets/sprites/**/_backup*/**
 # .gdignore 要進版控：它是叫 Godot 別去 import 這些目錄的開關，
 # 少了它每次開專案都要多吃三百多 MB 的匯入。
 !**/.gdignore
+game/assets/sprites/maps/_backup_prepixel_0827/
