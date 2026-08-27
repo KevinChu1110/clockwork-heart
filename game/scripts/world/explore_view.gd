@@ -724,8 +724,9 @@ const SCENIC_OCCLUDERS := {
 		{"uv": Rect2(0.72, 0.1, 0.28, 0.4), "kind": "mg"}
 	],
 	"road_inn": [
-		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"},
-		{"uv": Rect2(0.02, 0.04, 0.55, 0.58), "kind": "mg"}
+		## 半塌客棧是開放式棚屋、玩家會走進棚內——矩形切片蓋上來
+		## 必定把人埋掉，mg 撤除（2026-08-27）；只留下緣灌木前景帶
+		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"}
 	],
 	"dojo": [
 		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"},
@@ -913,22 +914,82 @@ func _clear_scenic_layers() -> void:
 	_scenic_layer_nodes.clear()
 
 
+## 用 walkmask 推切片的腳底線：從切片底往上掃，第一個「不可走」邊界＝
+## 該物件真正踩地的位置。整片皆可走＝那裡根本沒有前景物，退到背景板。
+##
+## 舊做法把 fg 一律設在最前、mg 用切片下緣——UV 手畫得稍大，
+## 玩家站在可走的平地上也會被切片蓋住（Kevin 抓到的「角色在圖下面」）。
+func _occluder_foot(uv: Rect2, world_pos: Vector2, world_size: Vector2) -> float:
+	var default_foot := world_pos.y + world_size.y
+	if not WalkMask.has(_art_id):
+		return default_foot
+	var cols := 7
+	var rows := 24
+	var best := -1.0
+	for ci in cols:
+		var u := uv.position.x + uv.size.x * (float(ci) + 0.5) / float(cols)
+		## 只有「下方可走、往上遇到不可走」的轉折才是物件真正的踩地線。
+		## 整欄不可走（圖緣、純邊框）不投票——曾把獅王庭左緣的整條草帶
+		## 當成建築底，腳底線被推到圖底，玩家整隻被埋。
+		var seen_walk := false
+		for ri in rows:
+			var v := uv.position.y + uv.size.y * (1.0 - (float(ri) + 0.5) / float(rows))
+			if WalkMask.walkable(_art_id, Vector2(u, v)):
+				seen_walk = true
+				continue
+			if seen_walk:
+				if v > best:
+					best = v
+				break
+	if best < 0.0:
+		## 沒有任何「可走→不可走」轉折：不是遮擋物，畫在所有實體後面
+		return FLOOR_RECT.position.y - 1000.0
+	## 邊界再往下讓半格：站在門口不會被蓋臉
+	return FLOOR_RECT.position.y + best * FLOOR_RECT.size.y + TILE_PX * 0.5
+
+
 func _build_scenic_layers() -> void:
 	_clear_scenic_layers()
 	if not _has_scenic_bg or _floor == null or _floor.texture == null or _world == null:
 		return
 	var slices: Array = SCENIC_OCCLUDERS.get(_art_id, [])
 	if slices.is_empty():
-		## 其他 scenic 地圖至少給一條前景帶，空間感立刻好一截
-		slices = [{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"}]
+		## 沒調過的地圖：只有在有 walkmask 時才給前景帶——
+		## 腳底線會照 mask 推；沒 mask 就寧可不蓋，別把人埋進圖裡
+		if WalkMask.has(_art_id):
+			slices = [{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"}]
+		else:
+			return
 	var tex: Texture2D = _floor.texture
 	var ts := tex.get_size()
 	if ts.x < 8.0 or ts.y < 8.0:
 		return
+	## 寬前景帶切 6 段：各段自己推腳底線，整段可走的自動降級
+	var expanded: Array = []
 	for s in slices:
-		var uv: Rect2 = s.get("uv", Rect2())
-		if uv.size.x <= 0.0 or uv.size.y <= 0.0:
+		var uv0: Rect2 = s.get("uv", Rect2())
+		if uv0.size.x <= 0.0 or uv0.size.y <= 0.0:
 			continue
+		var kind0 := str(s.get("kind", "mg"))
+		## 寬切片切欄、各欄自己推腳線——整片共用一條腳線會把
+		## 站在切片「開闊側」的玩家一起蓋掉（road_inn 棚子右半就是）
+		var n := 0
+		if WalkMask.has(_art_id):
+			if kind0 == "fg" and uv0.size.x > 0.5:
+				n = 6
+			elif kind0 == "mg" and uv0.size.x > 0.25:
+				n = 4
+		if n > 0:
+			for i in n:
+				expanded.append({
+					"uv": Rect2(uv0.position.x + uv0.size.x * float(i) / n, uv0.position.y,
+						uv0.size.x / n, uv0.size.y),
+					"kind": kind0,
+				})
+		else:
+			expanded.append(s)
+	for s in expanded:
+		var uv: Rect2 = s.get("uv", Rect2())
 		var at := AtlasTexture.new()
 		at.atlas = tex
 		at.region = Rect2(
@@ -949,11 +1010,11 @@ func _build_scenic_layers() -> void:
 		spr.position = world_pos
 		spr.size = world_size
 		var kind := str(s.get("kind", "mg"))
-		## FG：腳底設在地圖最前，幾乎永遠蓋住角色下半
-		## MG：腳底＝切片下緣，走到建築後面會被立面蓋住
-		var foot := world_pos.y + world_size.y
-		if kind == "fg":
-			foot = FLOOR_RECT.end.y + 20.0
+		var foot: float
+		if WalkMask.has(_art_id):
+			foot = _occluder_foot(uv, world_pos, world_size)
+		else:
+			foot = FLOOR_RECT.end.y + 20.0 if kind == "fg" else world_pos.y + world_size.y
 		spr.set_meta("sort_y", foot)
 		spr.set_meta("scenic_kind", kind)
 		_world.add_child(spr)
