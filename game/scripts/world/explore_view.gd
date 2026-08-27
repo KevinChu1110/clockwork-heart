@@ -700,6 +700,9 @@ func _depth_scale(world_y: float) -> float:
 ## FG = 畫面下緣灌木／岩，永遠蓋住中景角色；
 ## MG = 建築立面，依腳底 Y 與玩家互遮 —— 走到屋後會被蓋住，不再像貼在平面上。
 const SCENIC_OCCLUDERS := {
+	## 2026-08-27 規格重生成的 13 張圖不再手繪切片——
+	## 交給 walkmask 驅動的通用前景帶（MAP_ART_SPEC）
+
 	"village": [
 		{"uv": Rect2(0.0, 0.8, 1.0, 0.2), "kind": "fg"},
 		{"uv": Rect2(0.02, 0.16, 0.24, 0.36), "kind": "mg"},
@@ -722,11 +725,6 @@ const SCENIC_OCCLUDERS := {
 		{"uv": Rect2(0.0, 0.1, 0.22, 0.42), "kind": "mg"},
 		{"uv": Rect2(0.22, 0.12, 0.46, 0.28), "kind": "mg"},
 		{"uv": Rect2(0.72, 0.1, 0.28, 0.4), "kind": "mg"}
-	],
-	"road_inn": [
-		## 半塌客棧是開放式棚屋、玩家會走進棚內——矩形切片蓋上來
-		## 必定把人埋掉，mg 撤除（2026-08-27）；只留下緣灌木前景帶
-		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"}
 	],
 	"dojo": [
 		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"},
@@ -774,19 +772,10 @@ const SCENIC_OCCLUDERS := {
 	"cross_east": [
 		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"}
 	],
-	"cross_north": [
-		{"uv": Rect2(0.0, 0.84, 1.0, 0.16), "kind": "fg"},
-		{"uv": Rect2(0.28, 0.22, 0.28, 0.35), "kind": "mg"}
-	],
 	"dojo_bamboo": [
 		{"uv": Rect2(0.0, 0.84, 1.0, 0.16), "kind": "fg"},
 		{"uv": Rect2(0.15, 0.18, 0.3, 0.35), "kind": "mg"},
 		{"uv": Rect2(0.55, 0.15, 0.35, 0.35), "kind": "mg"}
-	],
-	"dojo_peak": [
-		{"uv": Rect2(0.0, 0.84, 1.0, 0.16), "kind": "fg"},
-		{"uv": Rect2(0.22, 0.12, 0.35, 0.35), "kind": "mg"},
-		{"uv": Rect2(0.62, 0.1, 0.32, 0.35), "kind": "mg"}
 	],
 	"forest": [
 		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"},
@@ -810,10 +799,6 @@ const SCENIC_OCCLUDERS := {
 	"hunting_grounds": [
 		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"}
 	],
-	"mist_cliff": [
-		{"uv": Rect2(0.0, 0.84, 1.0, 0.16), "kind": "fg"},
-		{"uv": Rect2(0.5, 0.25, 0.4, 0.4), "kind": "mg"}
-	],
 	"mist_mirror": [
 		{"uv": Rect2(0.0, 0.84, 1.0, 0.16), "kind": "fg"},
 		{"uv": Rect2(0.25, 0.18, 0.3, 0.4), "kind": "mg"},
@@ -823,23 +808,6 @@ const SCENIC_OCCLUDERS := {
 		{"uv": Rect2(0.0, 0.84, 1.0, 0.16), "kind": "fg"},
 		{"uv": Rect2(0.38, 0.08, 0.4, 0.4), "kind": "mg"},
 		{"uv": Rect2(0.08, 0.18, 0.25, 0.4), "kind": "mg"}
-	],
-	"road": [
-		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"},
-		{"uv": Rect2(0.12, 0.08, 0.28, 0.3), "kind": "mg"},
-		{"uv": Rect2(0.52, 0.05, 0.3, 0.28), "kind": "mg"}
-	],
-	"road_bridge": [
-		{"uv": Rect2(0.0, 0.84, 1.0, 0.16), "kind": "fg"},
-		{"uv": Rect2(0.15, 0.2, 0.3, 0.45), "kind": "mg"}
-	],
-	"road_ruins": [
-		{"uv": Rect2(0.0, 0.84, 1.0, 0.16), "kind": "fg"},
-		{"uv": Rect2(0.25, 0.15, 0.3, 0.4), "kind": "mg"},
-		{"uv": Rect2(0.5, 0.18, 0.3, 0.4), "kind": "mg"}
-	],
-	"starfall_plain": [
-		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"}
 	],
 	"tower": [
 		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"},
@@ -875,23 +843,6 @@ const SCENIC_OCCLUDERS := {
 		{"uv": Rect2(0.48, 0.12, 0.28, 0.35), "kind": "mg"},
 		{"uv": Rect2(0.2, 0.3, 0.25, 0.35), "kind": "mg"}
 	],
-	"village_mill": [
-		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"},
-		{"uv": Rect2(0.28, 0.15, 0.3, 0.42), "kind": "mg"},
-		{"uv": Rect2(0.55, 0.2, 0.3, 0.4), "kind": "mg"}
-	],
-	"wild": [
-		{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"}
-	],
-	"wild_leo_court": [
-		{"uv": Rect2(0.0, 0.84, 1.0, 0.16), "kind": "fg"},
-		{"uv": Rect2(0.12, 0.15, 0.3, 0.4), "kind": "mg"},
-		{"uv": Rect2(0.65, 0.1, 0.32, 0.4), "kind": "mg"}
-	],
-	"wild_ravine": [
-		{"uv": Rect2(0.0, 0.84, 1.0, 0.16), "kind": "fg"},
-		{"uv": Rect2(0.32, 0.22, 0.35, 0.4), "kind": "mg"}
-	]
 }
 
 func _update_horizon_shade(pal: Dictionary = {}) -> void:
