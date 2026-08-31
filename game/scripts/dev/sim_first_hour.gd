@@ -45,6 +45,10 @@ func _run_world(mode: String, st: Dictionary, seed_i: int) -> Dictionary:
 	return BattleSim.resolve_auto(sim)
 
 
+## leo_scale：提案用，把雷歐本體血／攻等比縮放（部位血量不動，粗估）
+var leo_scale := 1.0
+
+
 func _run_named(mode: String, st: Dictionary, seed_i: int, react: bool) -> bool:
 	var sim
 	match mode:
@@ -52,6 +56,11 @@ func _run_named(mode: String, st: Dictionary, seed_i: int, react: bool) -> bool:
 			sim = BattleSim.make_tutorial_wolf_fight(st)
 		"leo":
 			sim = BattleSim.make_leo_fight(st)
+			if leo_scale < 0.999:
+				var leo = sim.get_unit("leo")
+				leo.max_hp = int(round(420.0 * leo_scale))
+				leo.hp = leo.max_hp
+				leo.atk = int(round(14.0 * leo_scale))
 		_:
 			return false
 	sim.rng.seed = seed_i
@@ -98,6 +107,14 @@ func _initialize() -> void:
 		print("  Lv%d atk%d def%d hp%d: parry %.0f%%  no-parry %.0f%%" % [
 			lv, int(st.atk), int(st.def), int(st.max_hp),
 			_rate_named("leo", st, true), _rate_named("leo", st, false)])
+	print("== 提案掃描：雷歐本體血／攻等比縮放（部位不動；看時機格擋） ==")
+	for sc in [0.85, 0.75, 0.65]:
+		leo_scale = sc
+		var row := "  ×%.2f（血 %d／攻 %d）:" % [sc, int(round(420.0 * sc)), int(round(14.0 * sc))]
+		for lv in [4, 6, 8, 10]:
+			row += "  Lv%d %.0f%%" % [lv, _rate_named("leo", _lv_stats(lv, 3, 9), true)]
+		print(row)
+	leo_scale = 1.0
 	print("== 野原雜魚 · Lv3 T2 ==")
 	var s3 := _lv_stats(3, 0, 9)
 	for m in ["ash_rat", "road_bandit", "sewer_slime"]:
