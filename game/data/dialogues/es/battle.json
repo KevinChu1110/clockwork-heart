@@ -26,7 +26,7 @@
     },
     {
       "speaker": "Sistema",
-      "text": "Despiertas ya en la ciudad. Puedes volver cuando quieras."
+      "text": "Despiertas en el campo, fuera de la ciudad. Vuelve cuando quieras."
     }
   ],
   "battle.fog_lose": [
@@ -94,7 +94,7 @@
   "battle.world_flee": [
     {
       "speaker": "Sistema",
-      "text": "Te zafas del combate. Vas malherido: busca una piedra de guardado."
+      "text": "Sigues vivo, apenas. Busca una piedra de guardado."
     }
   ]
 }

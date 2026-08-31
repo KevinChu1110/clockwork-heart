@@ -1335,5 +1335,7 @@
   "開始遊戲": "Start",
   "設置": "Settings",
   "成就": "Achievements",
-  "結束遊戲": "Quit"
+  "結束遊戲": "Quit",
+  "（建議 Lv%d）": " (Lv%d suggested)",
+  "雷歐建議 Lv%d（你 Lv%d）。演武場、野原雜魚、練功台都能練。硬闖也行，再點一次。": "Leo: Lv%d suggested (you're Lv%d). Train at the yard, the wilds, or the post. Or force it — tap again."
 }

@@ -26,7 +26,7 @@
     },
     {
       "speaker": "System",
-      "text": "You wake up back in the city. Return whenever you like."
+      "text": "You come to in the wilds outside the city. Come back any time."
     }
   ],
   "battle.fog_lose": [
@@ -94,7 +94,7 @@
   "battle.world_flee": [
     {
       "speaker": "System",
-      "text": "You tear yourself free of the fight. You're badly hurt — find a save stone."
+      "text": "You're alive, barely. Find a save stone."
     }
   ]
 }

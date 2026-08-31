@@ -1335,5 +1335,7 @@
   "開始遊戲": "Empezar",
   "設置": "Ajustes",
   "成就": "Logros",
-  "結束遊戲": "Salir"
+  "結束遊戲": "Salir",
+  "（建議 Lv%d）": " (Lv%d sugerido)",
+  "雷歐建議 Lv%d（你 Lv%d）。演武場、野原雜魚、練功台都能練。硬闖也行，再點一次。": "Leo: Lv%d sugerido (tú Lv%d). Entrena en el patio, el campo o el poste. O fuerza: toca de nuevo."
 }
