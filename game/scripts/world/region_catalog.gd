@@ -219,7 +219,7 @@ static func status_bbcode() -> String:
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]世界地圖・四地區關卡[/b]"))
 	lines.append("[color=#fc9]%s[/color]" % next_objective_line())
-	lines.append(_t("原作精神：四區 → 數關 → 數張地圖。點關卡可前往。"))
+	lines.append(_t("四區，各有數關。點關卡可前往。"))
 	lines.append("")
 	for r in regions():
 		var prog: Dictionary = region_progress(r)

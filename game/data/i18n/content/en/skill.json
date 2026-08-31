@@ -84,7 +84,7 @@
     "unlock_hint": "Axe line Lv13"
   },
   "doom_strike": {
-    "desc": "★ Level 16 rage technique. Slow, heavy, painful.",
+    "desc": "★ Level 16 rage technique. Slow, heavy, painful—misses three times in ten.",
     "lv2": "Heavier doom.",
     "lv3": "One notch below the cap.",
     "name": "Doom Strike",
@@ -156,7 +156,7 @@
   "ice_lance": {
     "desc": "An icicle drives through.",
     "lv2": "Longer lance.",
-    "lv3": "Frost slows them (multiplier↑).",
+    "lv3": "Frost adds a slow (multiplier↑).",
     "name": "Ice Lance",
     "unlock_hint": "Staff Lv7"
   },

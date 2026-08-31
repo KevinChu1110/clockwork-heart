@@ -805,7 +805,7 @@ func panel_status_bbcode() -> String:
 	var bonus: Dictionary = total_equipped_bonus()
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]聚魂殿 · 戰魂[/b]"))
-	lines.append(_t("神魂＝神品質戰魂（神-星名）。最高 10 級。不是另一套系統。"))
+	lines.append(_t("神魂＝神品質戰魂（神-星名）。最高 10 級。"))
 	lines.append(_t("魂器：%s") % vessel_ladder_bbcode())
 	var cost := ritual_cost_gold()
 	if cost <= 0:

@@ -99,7 +99,7 @@ const CATALOG: Dictionary = {
 	},
 	"medal": {
 		"name": "勳章",
-		"desc": "傭兵／演武功績。手藝工坊可用 50 枚點燃熔爐（原作替代金幣）。",
+		"desc": "傭兵／演武功績。工坊 50 枚可點燃熔爐。",
 		"kind": "key",
 		"stack": 99,
 		"color": Color(0.85, 0.7, 0.3),

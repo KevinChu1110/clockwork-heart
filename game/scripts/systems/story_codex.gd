@@ -115,7 +115,7 @@ func panel_list_bbcode() -> String:
 	try_unlock_all()
 	var lines: PackedStringArray = []
 	lines.append("[b]翠嶺手札[/b]  %d／%d" % [unlocked_count(), total_count()])
-	lines.append("旅途解鎖的故事精華。全文在連載／小說稿；這裡只收你走過的夜。")
+	lines.append("你走過的夜，收在這裡。")
 	lines.append("")
 	var book := -1
 	for d in _entries:

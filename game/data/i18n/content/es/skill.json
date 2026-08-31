@@ -84,7 +84,7 @@
     "unlock_hint": "Línea de hacha Nv13"
   },
   "doom_strike": {
-    "desc": "★ Técnica de furia de nivel 16. Lento, pesado, doloroso.",
+    "desc": "★ Técnica de furia de nivel 16. Lenta, pesada, dolorosa: falla tres de cada diez.",
     "lv2": "Aún más pesado.",
     "lv3": "A un paso del tope.",
     "name": "Golpe funesto",
@@ -156,7 +156,7 @@
   "ice_lance": {
     "desc": "Un carámbano atraviesa.",
     "lv2": "Lanza más larga.",
-    "lv3": "La escarcha ralentiza (multiplicador↑).",
+    "lv3": "La escarcha añade ralentización (multiplicador↑).",
     "name": "Lanza de hielo",
     "unlock_hint": "Báculo Nv7"
   },

@@ -74,5 +74,9 @@
   "wolf_fang": {
     "desc": "Minor drop. Sells for 8 gold.",
     "name": "Wolf Fang"
+  },
+  "medal": {
+    "desc": "Mercenary and training-yard merit. 50 light the workshop furnace.",
+    "name": "Medal"
   }
 }

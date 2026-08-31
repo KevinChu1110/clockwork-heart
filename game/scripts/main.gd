@@ -956,7 +956,7 @@ func _hunt_recycle_one(item_id: String) -> void:
 func _go_online_panel() -> void:
 	var body: String = OnlineGate.panel_bbcode()
 	body += _t("\n\n[b]帳號[/b]：訪客／Email／Google／Discord／Facebook／X")
-	body += _t("\n（OAuth 開瀏覽器 → 官網回跳 → 遊戲本機收 token。需在 Supabase 開啟 Provider。）")
+	body += _t("\n（登入會開瀏覽器，完成後自動回到遊戲。）")
 	var buttons: Array = []
 	if OnlineGate.offline_only:
 		buttons.append({"text": _t("關閉純單機（允許連線）"), "cb": _online_enable})
@@ -1479,7 +1479,7 @@ func _go_material_shop() -> void:
 		InventorySystem.count("knight_shard"),
 		InventorySystem.count("wolf_fang"),
 	]
-	body += _t("循環：野外掉材料 → 賣金／鍛武器 → 不夠再買 → 再打。")
+	body += _t("野外掉的材料，賣我換金，或拿去鍛。")
 	var buttons: Array = [
 		{"text": _t("買鐵屑（14金）"), "cb": func(): _shop_buy("iron_scrap", 14)},
 		{"text": _t("買星砂礦（22金）"), "cb": func(): _shop_buy("star_ore", 22)},
@@ -2806,10 +2806,10 @@ func _start_ng_plus(with_stain: bool) -> void:
 	var tips: Array = TutorialSystem.take("ng")
 	var lines: Array = [
 		{"speaker": _t("旁白"), "text": _t("黑焰退後，又在腳邊留下一圈淺痕——像邀請。")},
-		{"speaker": _t("斷頁"), "text": _t("卷軸可以重抄。脚印，只能再踩一次。")},
+		{"speaker": _t("斷頁"), "text": _t("卷軸可以重抄。腳印，只能再踩一次。")},
 		{"speaker": _t("系統"), "text": _t("【二周目】黑焰迴響 ×%d。%s") % [GameState.ng_plus, stain_s]},
 		{"speaker": _t("系統"), "text": _t("敵人強了 ×%.2f，出手的空檔也窄了些。養成和外觀都帶著走。") % GameState.ng_enemy_mult()},
-		{"speaker": _t("系統"), "text": _t("NPC 會說不一樣的話，佈告也跟著換。畫面上會標著迴響到第幾層。")},
+		{"speaker": _t("系統"), "text": _t("村裡的人會換話說，佈告也換。畫面標著第幾層。")},
 	]
 	for t in tips:
 		lines.append(t)
@@ -3209,7 +3209,7 @@ func _side_start_ding_debt() -> void:
 			{"speaker": _t("系統"), "text": _t("釘釘把斷劍放進爐。第三錘很輕，像在對誰道歉。")},
 			{"speaker": _t("釘釘"), "text": _t("舊主的鐵。我當年沒鍛完就跑了。")},
 			{"speaker": _t("釘釘"), "text": _t("現在合上了。你——別學我丟下沒做完的東西。")},
-			{"speaker": _t("系統"), "text": _t("舊債了結。金幣＋50 · 星屑＋3 · 下次升階成功率提升（暫）。")},
+			{"speaker": _t("系統"), "text": _t("舊債了結。金 50 · 星屑 3 · 下次升階更穩。")},
 		], func():
 			_grant_side_reward(SideMilestones.reward("ding_debt_done"))
 			_show_forge_panel()
@@ -3306,9 +3306,9 @@ func _side_hearth() -> void:
 		])
 		return
 	_play_dialog([
-		{"speaker": _t("旁白"), "text": _t("熄滅壁爐積滿灰。爐邊還有半袋乾柴——像有人打算回來卻沒回來。")},
+		{"speaker": _t("旁白"), "text": _t("熄滅壁爐積滿灰。爐邊半袋乾柴——像要回來，沒回來。")},
 		{"speaker": _t("內心"), "text": _t("替下一個人點著。我也是過路的。")},
-		{"speaker": _t("旁白"), "text": _t("火舌爬上柴。大堂影子暖了一圈。「歇腳」兩個字好像沒那麼破了。")},
+		{"speaker": _t("旁白"), "text": _t("火舌爬上柴。「歇腳」兩個字沒那麼破了。")},
 		{"speaker": _t("系統"), "text": _t("【支線】歇腳餘溫完成。金 18 · 星屑 1 · 經驗 14 · 乾糧×1。")},
 	], func():
 		_grant_side_reward(SideMilestones.reward("hearth"))
@@ -3328,7 +3328,7 @@ func _side_start_fog_letter() -> void:
 	## 讀完麥穗信後可接
 	if not GameState.has_flag("side.fog_letter_asked"):
 		_play_dialog([
-			{"speaker": _t("霧隱"), "text": _t("假信滿天飛。我這裡有一封真的——要送到村外行商驛站。")},
+			{"speaker": _t("霧隱"), "text": _t("假信滿天飛。真的這一封，送去行商驛站。")},
 			{"speaker": _t("霧隱"), "text": _t("假的給霧吃。真的，要人走。")},
 			{"speaker": _t("系統"), "text": _t("【支線】霧中家書：將【真信】交給岔路行商驛站的頭領。")},
 		], func(): _grant_side_reward(SideMilestones.reward("fog_letter_asked")))
@@ -3657,7 +3657,7 @@ func _handle_world_travel(id: String) -> bool:
 
 
 func _go_world_map() -> void:
-	var body := _t("[b]翠嶺大陸 · 六域輿圖（0.9 廣域）[/b]\n\n")
+	var body := _t("[b]翠嶺大陸 · 六域輿圖[/b]\n\n")
 	body += _t("　　　　遊俠森林（樹冠／靜湖／遺址）\n")
 	body += "　　　　　　｜\n"
 	body += _t("維京海岸 ── 法師之塔 ── 騎士堡壘\n")
@@ -3679,7 +3679,7 @@ func _go_world_map() -> void:
 		GameState.power_score(), GameState.level, GameState.path_display(), GameState.weapon_tier
 	]
 	body += _t("經驗 %d／%d\n\n") % [GameState.xp, GameState.xp_to_next()]
-	body += _t("解鎖（0.12 自由路線 · 建議戰力）：\n")
+	body += _t("去處（建議戰力）：\n")
 	body += _t("· 騎士堡 ") + ("✓" if GameState.has_flag("c1_entered_city") or GameState.chapter != "c0" else "·") + "\n"
 	body += _t("· 岔路／練功 ") + (_t("✓ 鍛造後") if GameState.has_flag("c1_forged") else _t("鎖（先鍛造）")) + "\n"
 	body += _t("· 霧隱 ") + ("✓" if GameState.has_flag("c2_entered") else _t("建議 18+")) + "\n"
@@ -4071,7 +4071,7 @@ func _on_world_battle_finished(won: bool) -> void:
 			if relic_msg != "":
 				win_lines.append({"speaker": _t("系統"), "text": relic_msg})
 				if not bool(relic.get("duplicate", false)):
-					win_lines.append({"speaker": _t("系統"), "text": _t("秘境魂器要裝上才有用。按 Esc 開選單，進「戰魂」放進槽裡。")})
+					win_lines.append({"speaker": _t("系統"), "text": _t("秘境魂器入槽才有用。Esc →「戰魂」嵌進去。")})
 			win_lines.append({"speaker": _t("系統"), "text": _t("背包：秘境印記×1 · 中紅水×1")})
 			var wmap := str(b.get("win_map", "crossroads"))
 			var wsc := str(b.get("win_screen", "C1_WILD"))
@@ -4785,7 +4785,7 @@ func _stage_clear_check(map: String) -> void:
 	var gold_n := 30 + list.size() * 10
 	_grant_boss_loot(gold_n, 2, 0)
 	SaveManager.save_game()
-	_play_dialog([{"speaker": _t("系統"), "text": _t("本圖雜魚清空！清圖賞：金 %d · 星屑 2。明日再生。") % gold_n}])
+	_play_dialog([{"speaker": _t("系統"), "text": _t("這一帶雜魚清空。清圖賞：金 %d · 星屑 2。明日再生。") % gold_n}])
 
 
 ## 原作對齊：野外雜魚當場無頭結算（BattleSim.resolve_auto），不切戰鬥畫面。
@@ -5092,7 +5092,7 @@ func _visit_challenge_cb(tid: String) -> Callable:
 			return
 		_play_dialog([
 			{"speaker": _t("系統"), "text": str(r.get("msg", ""))},
-			{"speaker": _t("系統"), "text": _t("殘影戰力 %d。打的是人影留下的打法，不是即時對戰。勝利後可選金幣或經驗。不耗能量。") % int(r.get("power", 0))},
+			{"speaker": _t("系統"), "text": _t("殘影戰力 %d。勝可選金幣或經驗。不耗能量。") % int(r.get("power", 0))},
 		], func(): _start_battle(str(r.get("mode", "pvp_snap"))))
 
 
@@ -5269,7 +5269,7 @@ func _c1_sprout() -> void:
 					{"speaker": _t("小芽"), "text": _t("我以後要當騎士！比獅子還大！")},
 					{
 						"speaker": _t("小芽"),
-						"text": _t("可是我沒有劍。木頭的也可以。你身上叮噹響……贊助我買一把？（30 金）"),
+						"text": _t("木頭的也可以。你身上叮噹響……湊我一把？（30 金）"),
 						"choices": [_t("給她 30 金"), _t("先不給")],
 						"replies": [
 							_t("謝謝你！！我會每天練！你打獅子的時候，我在旗下等你！"),
@@ -5305,7 +5305,7 @@ func _c1_sprout() -> void:
 		_play_dialog([
 			{
 				"speaker": _t("小芽"),
-				"text": _t("你身上叮噹響……是要贊助我買木劍嗎？（30 金）"),
+				"text": _t("你身上叮噹響……是要湊我買木劍嗎？（30 金）"),
 				"choices": [_t("給她 30 金"), _t("先不給")],
 				"replies": [
 					_t("謝謝你！！我會每天練！你打獅子的時候，我在旗下等你！"),
@@ -5383,7 +5383,7 @@ func _interact_shop_interior(id: String) -> bool:
 			match id:
 				"gem_clerk":
 					_play_dialog([
-						{"speaker": _t("工坊師傅"), "text": _t("紅黃藍。三合一流派；碎片熔煉。鑲上就成——只換，不失敗。")},
+						{"speaker": _t("工坊師傅"), "text": _t("紅黃藍。三合一升階，碎片熔煉。鑲上就成，不失敗。")},
 					], _go_gem_panel)
 					return true
 				"gem_case", "cold_furnace", "shard_box":
@@ -6169,16 +6169,16 @@ func _interact_wild(id: String) -> void:
 				GameState.set_flag("c1_leo_soft_warn", true)
 				SaveManager.save_game()
 				_play_dialog([
-					{"speaker": _t("系統"), "text": _t("雷歐建議 Lv%d（你 Lv%d）。演武場、野原雜魚、練功台都能練。硬闖也行，再點一次。") % [
+					{"speaker": _t("系統"), "text": _t("雷歐建議 Lv%d（你 Lv%d）。演武場、野原都能練。硬闖再點一次。") % [
 						RegionCatalog.suggest_lv("r1_s2"), GameState.level
 					]},
 				])
 			else:
 				_play_dialog([
-					{"speaker": _t("灰鬚"), "text": _t("（若有回音）獅子不聽人話。聽刀。")},
+					{"speaker": _t("灰鬚"), "text": _t("（灰鬚的話還在耳邊）獅子不聽人話。聽刀。")},
 					{"speaker": _t("灰鬚"), "text": _t("你不是去證明你強。你是去讓它想起——它該守什麼。")},
 					{"speaker": _t("雷歐"), "text": _t("傭兵團把最弱的送來了？也想挑戰騎士之王？")},
-					{"speaker": _t("系統"), "text": _t("王者斬一定要擋。地上冒出火圈時會先亮一下，那時按 J 跳開。")},
+					{"speaker": _t("系統"), "text": _t("王者斬必擋。火圈先亮再落，亮了按 J。")},
 				], func(): _start_battle("leo"))
 
 
@@ -6200,7 +6200,7 @@ func _c1_leo_aftermath_cut() -> void:
 			"bg": "town",
 			"speaker": _t("旁白"),
 			"portrait": _t("灰鬚"),
-			"text": _t("鏡頭只拍灰鬚的背影。門栓，被一隻不肯年輕的手拉開。"),
+			"text": _t("灰鬚背對著你。門栓，被一隻老手拉開。"),
 		},
 		{
 			"bg": "town",
@@ -6244,7 +6244,7 @@ func _go_c2_enter() -> void:
 	if not GameState.has_flag("boss.leo_cleared") and not GameState.has_flag("c2_soft_warn"):
 		GameState.set_flag("c2_soft_warn", true)
 		_play_dialog([
-			{"speaker": _t("系統"), "text": _t("還沒打贏雷歐也能進霧，只是白霧會很硬。要不要先去鍛造、練練身手，或回內殿再試一次？")},
+			{"speaker": _t("系統"), "text": _t("沒贏雷歐也能進霧。白霧不留情。不夠就回城鍛、練招。")},
 		], func(): _go_c2_enter_body())
 		return
 	_go_c2_enter_body()
@@ -6362,7 +6362,7 @@ func _c2_try_fog_boss() -> void:
 		return
 	_play_dialog([
 		{"speaker": _t("白霧"), "text": _t("嘻嘻～真的假的，你分得清嗎？")},
-		{"speaker": _t("系統"), "text": _t("用 Tab 鎖住本體，等牠發白再出手。砍到幻影會被反咬，還會被寒意拖慢。")},
+		{"speaker": _t("系統"), "text": _t("Tab 鎖本體，發白再出手。砍到幻影會反咬、變慢。")},
 	], func(): _start_battle("fog"))
 
 
@@ -6388,7 +6388,7 @@ func _c2_fog_clear_cut() -> void:
 			"bg": "dojo",
 			"speaker": _t("旁白"),
 			"portrait": _t("阿茶"),
-			"text": _t("遠山鐘響。茶煙升起——武鬥道場在召喚。"),
+			"text": _t("遠山鐘響。茶煙升起——道場在等。"),
 		},
 	]), _go_c2_cleared_panel)
 
@@ -6474,7 +6474,7 @@ func _go_c3_enter_body() -> void:
 			{
 				"bg": "dojo",
 				"speaker": _t("阿茶"),
-				"text": _t("客從霧裡來？傭兵團的……最弱那個？宗師在試煉堂。他不先出手，他先問。"),
+				"text": _t("霧裡來的？氣還喘著。先喝口茶。"),
 			},
 		]), func():
 			_play_dialog(DialogLines.lines("c3.arrive"), _go_c3_dojo)
@@ -6538,7 +6538,7 @@ func _c3_try_abo() -> void:
 	_play_dialog([
 		{"speaker": _t("阿波"), "text": _t("傭兵團最弱的。來打我的架勢。")},
 		{"speaker": _t("阿波"), "text": _t("打不穿的時候，別急——一下一下，把殼撞鬆。頭銜撞不開。")},
-		{"speaker": _t("系統"), "text": _t("先把他的架勢打散，散開的那陣子傷害吃得滿。但他也會出重拳，記得擋。")},
+		{"speaker": _t("系統"), "text": _t("先打散架勢，散開時傷害吃滿。重拳來了要擋。")},
 	], func(): _start_battle("abo"))
 
 
@@ -6551,9 +6551,9 @@ func _go_abo_win() -> void:
 		extra = _t("你的拳裡，開始有道了。")
 	_play_dialog([
 		{"speaker": _t("阿波"), "text": extra},
-		{"speaker": _t("阿波"), "text": _t("（指尖在你眉心一點）最後的試煉在塔頂——去吧，別回頭。團裡若問，就說：你答過為何而戰。")},
+		{"speaker": _t("阿波"), "text": _t("（指尖點你眉心）去塔頂。團裡若問，就說你答過為何而戰。")},
 		{"speaker": _t("阿茶"), "text": _t("（茶香）路上要是聞到這個味道，就是走對了。")},
-		{"speaker": _t("系統"), "text": _t("金 90、星屑 5，體力上限多 10。毛裡泛出玉光。往塔的路開了。")},
+		{"speaker": _t("系統"), "text": _t("金 90、星屑 5、體力上限 +10。玉魄外觀開了。塔路開了。")},
 	], _c3_abo_clear_cut)
 
 
@@ -6621,7 +6621,7 @@ func _go_c4_enter() -> void:
 			{
 				"bg": "forest",
 				"speaker": _t("風耳"),
-				"text": _t("站住。追風的人，最後都會迷路。傭兵團的？腳步比風慢。——正好。"),
+				"text": _t("站住。追風的人，最後都迷路。"),
 			},
 		]), func():
 			_play_dialog(DialogLines.lines("c4.arrive"), _go_c4_forest)
@@ -6664,7 +6664,7 @@ func _interact_forest(id: String) -> void:
 			else:
 				_play_dialog([
 					{"speaker": _t("旁白"), "text": _t("箭道地面一道淺痕——風曾割過這裡。")},
-					{"speaker": _t("系統"), "text": _t("風要切過來之前會先響一聲。聽到就按 J 讓開。")},
+					{"speaker": _t("系統"), "text": _t("風切前會先響。響了按 J。")},
 				], func():
 					GameState.set_flag("c4_arrow_tip", true)
 					SaveManager.save_game()
@@ -6833,7 +6833,7 @@ func _c5_try_boar() -> void:
 	_play_dialog([
 		{"speaker": _t("石拳"), "text": _t("傭兵團把最弱的送來了？還站著？那就接下這一拳——")},
 		{"speaker": _t("石拳"), "text": _t("力氣該砸向誰？頭銜砸不開岸。")},
-		{"speaker": _t("系統"), "text": _t("他衝過來時按 J 硬碰，岩甲會一層層裂開。落石時一樣按 J 找掩護。")},
+		{"speaker": _t("系統"), "text": _t("衝來時按 J 硬碰，岩甲會裂。落石也按 J。")},
 	], func(): _start_battle("boar"))
 
 
@@ -6854,7 +6854,7 @@ func _c5_boar_clear_cut() -> void:
 			"bg": "tower",
 			"speaker": _t("旁白"),
 			"portrait": _t("小白"),
-			"text": _t("五柱中四柱已醒。塔門開了一縫——不是為預言，是為還肯站著的人。"),
+			"text": _t("五柱醒了四柱。塔門開了一縫——為還肯站著的人。"),
 		},
 	]), _go_c5_cleared_panel)
 
@@ -6915,12 +6915,12 @@ func _go_c6_camp() -> void:
 				"bg": "tower",
 				"speaker": _t("旁白"),
 				"portrait": _t("斷頁"),
-				"text": _t("有人在抄卷——字跡比手還抖。塔門……開了。千年來第一次。"),
+				"text": _t("有人在抄卷——字跡比手還抖。"),
 			},
 			{
 				"bg": "tower",
 				"speaker": _t("斷頁"),
-				"text": _t("傭兵團把最弱的送到塔下了。卷軸寫至弱——我信的是你走到這裡的腳印。"),
+				"text": _t("最弱的走到塔下了。卷軸沒寫這一段。"),
 			},
 		]), _show_c6_camp_panel)
 	else:
@@ -6996,7 +6996,7 @@ func _c6_truth_hall() -> void:
 		SaveManager.save_game()
 		_panel(
 			_t("決戰之前"),
-			_t("真相已揭開。\n魔王曾是第一位至弱者。\n\n黑焰外殼正在合攏……"),
+			_t("魔王曾是第一位至弱者。\n\n黑焰外殼正在合攏……"),
 			[
 				{"text": _t("迎戰魔王"), "cb": func(): _start_battle("demon")},
 			]
@@ -7137,19 +7137,19 @@ func _go_rift_intro(mode: String) -> void:
 	var lines := {
 		"wrath": [
 			{"speaker": _t("旁白"), "text": _t("裂縫口。焰在無臉的輪廓裡顫。")},
-			{"speaker": _t("系統"), "text": _t("火圈很密。閃不掉就會累積灼燒，疊到三層會炸開。跳出圈外能退掉一層。")},
+			{"speaker": _t("系統"), "text": _t("火圈密。灼燒疊三層會炸。跳出圈外退一層。")},
 		],
 		"tide": [
 			{"speaker": _t("旁白"), "text": _t("海水氣味的黑焰。刺胞鼓起又癟。")},
-			{"speaker": _t("系統"), "text": _t("時間內解決三隻刺胞。本體會輪流擋掉普攻或技能傷害，看牠的樣子換手。")},
+			{"speaker": _t("系統"), "text": _t("限時清三隻刺胞。本體輪流擋普攻或技能，看樣子換手。")},
 		],
 		"statue": [
 			{"speaker": _t("旁白"), "text": _t("三尊石像輪流亮起一隻眼。")},
-			{"speaker": _t("系統"), "text": _t("只打會發光的那一尊。全部倒下，本體才會現身。落石時按 J。")},
+			{"speaker": _t("系統"), "text": _t("只打發光那尊。全倒本體才現身。落石按 J。")},
 		],
 		"chrono": [
 			{"speaker": _t("旁白"), "text": _t("地上的焰結成倒數的環。")},
-			{"speaker": _t("系統"), "text": _t("炸彈亮起時按 J 拆掉。落石的時候記得躲。")},
+			{"speaker": _t("系統"), "text": _t("炸彈亮了按 J 拆。落石要躲。")},
 		],
 	}
 	var arr: Array = lines.get(mode, [{"speaker": _t("系統"), "text": _t("裂縫張開。")}]).duplicate()

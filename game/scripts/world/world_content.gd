@@ -187,7 +187,7 @@ static func minibosses() -> Dictionary:
 			"win": [
 				{"speaker": _t("疤主"), "portrait": "scar_lord", "text": _t("傷口……合上了嗎……")},
 				{"speaker": _t("疤主"), "portrait": "scar_lord", "text": _t("……你沒有餵我。奇怪。……")},
-				{"speaker": _t("系統"), "text": _t("戰勝【黑焰疤主】。金 90 · 星屑 5。稱號「疤地行者」進度。")},
+				{"speaker": _t("系統"), "text": _t("戰勝【黑焰疤主】。金 90 · 星屑 5。")},
 			],
 			"lose": _t("黑焰把你掀回岔路。疤地仍在跳動脈搏。"),
 			"gold": 90, "dust": 5, "hp": 12,

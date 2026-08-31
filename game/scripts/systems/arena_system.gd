@@ -218,7 +218,7 @@ func status_bbcode() -> String:
 	_refresh_tickets()
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]演武場[/b]（給經驗）· [b]角鬥日結[/b]（給排名獎）"))
-	lines.append(_t("魔王敗後二十年，傭兵團仍用演武台磨刀——五波雜魚天梯，不刷獵場材料。"))
+	lines.append(_t("魔王敗後二十年，傭兵團仍在演武台磨刀。五波雜魚，給經驗不給材料。"))
 	lines.append("")
 	if not is_unlocked():
 		lines.append(_t("（進入騎士堡後解鎖）"))
