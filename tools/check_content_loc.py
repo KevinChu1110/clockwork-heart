@@ -28,7 +28,10 @@ CONTENT = os.path.join(ROOT, "game/data/i18n/content")
 ## 以「原文」當 key 的 domain：從哪個檔、用哪些 regex 抓原文
 SOURCES = {
     ## _t("…") 包起來的介面字串，散在 main.gd 與各系統檔裡
-    "ui": [("__ALL_GD__", [r'\b_t\("((?:[^"\\\\]|\\\\.)*)"\)'])],
+    ## 字面值裡的 \n／\"／\\ 要還原成 GDScript 執行期的字串，表的 key 才對得上
+    ## （舊版寫成 \\\\. 只吃得到兩個反斜線，含 \n 的字串整個漏掉，
+    ##   它們的譯文反而被當成「殘留」）。
+    "ui": [("__ALL_GD__", [r'\b_t\("((?:[^"\\]|\\.)*)"\)'])],
     ## 星曜與品質的 id 本身是中文，存檔存原文、顯示查譯文
     "soul": [("game/scripts/systems/soul_system.gd", [
         r'\{"id": "([^"]+)", "stat":',
@@ -110,9 +113,17 @@ def sources_for(domain: str) -> set:
             body = "\n".join(ln for ln in src.split("\n") if not ln.strip().startswith("#"))
             for pat in patterns:
                 for m in re.finditer(pat, body):
-                    out.add(m.group(1))
+                    out.add(_unescape_gd(m.group(1)))
     out.update(EXTRA.get(domain, []))
     return out
+
+
+_GD_ESC = {"n": "\n", "t": "\t", "r": "\r", '"': '"', "\\": "\\", "'": "'"}
+
+
+def _unescape_gd(s: str) -> str:
+    """把 GDScript 字串字面值的跳脫還原成執行期的字串（ContentLoc 查表用的是後者）。"""
+    return re.sub(r"\\(.)", lambda m: _GD_ESC.get(m.group(1), "\\" + m.group(1)), s)
 
 
 ## 以 id 當 key 的目錄：domain → (檔案, 常數名, id 欄位, 要翻的欄位)
