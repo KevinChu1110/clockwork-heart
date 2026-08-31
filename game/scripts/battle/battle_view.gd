@@ -224,7 +224,7 @@ func setup(mode: String) -> void:
 		_append_log(_t("[color=#9cf]面對【%s】的殘影 · 戰力 %d · 不是即時對戰[/color]") % [
 			str(d3.get("name", _t("好友殘影"))), pwr
 		])
-		_flash_coach(_t("這是對方留下的打法。對手是人影，不是野怪。"), 2.8)
+		_flash_coach(_t("這是對方留下的打法，不是即時對戰。"), 2.8)
 	_flash_coach(_mode_coach_intro(mode), 3.2)
 	if _touch():
 		_append_log(_t("[color=#8cf]點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]"))
@@ -241,18 +241,18 @@ func setup(mode: String) -> void:
 		_append_log(_t("雷歐：傭兵團把最弱的送來了？也想挑戰騎士之王？"))
 		_append_log(_t("[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後按 J 跳開[/color]"))
 		parry_hint.text = _kh(_t("【J】格擋　·　【Tab】鎖部位　·　火圈後躍出"))
-		_flash_coach(_t("先鎖盾磨爆→防禦下降；再打本體。盔可破但會激怒牠。"), 3.6)
+		_flash_coach(_t("先鎖盾磨掉，防禦會降。盔可破，但牠會暴。"), 3.6)
 	elif mode == "fog":
 		_append_log(_t("白霧：嘻嘻～真的假的，你分得清嗎？"))
-		_append_log(_t("[color=#8cf]分身很多 · 只有本體發白時打得中 · 砍幻影會被反咬又變慢[/color]"))
+		_append_log(_t("[color=#8cf]分身多 · 本體發白才打得中 · 砍幻影會反咬、變慢[/color]"))
 		parry_hint.text = _kh(_t("【Tab/1-3】鎖目標　·　本體發白才輸出　·　別打幻影"))
 	elif mode == "demon":
 		_append_log(_t("魔王：那就來——用你的微末，撞我的千年。"))
-		_append_log(_t("[color=#c8f]黑焰必殺一定要擋 · 時鐘轉到時按 J · 血量掉到一半他會拒絕[/color]"))
+		_append_log(_t("[color=#c8f]黑焰必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]"))
 		parry_hint.text = _kh(_t("【J】必殺格擋　·　【Tab】鎖部位　·　時鐘窗"))
 	elif mode == "abo":
 		_append_log(_t("阿波：來。打我的架勢——用拳，不是用嘴。"))
-		_append_log(_t("[color=#9c9]打散他的架勢 · 散開後傷害吃滿 · 但他會出重拳，記得擋[/color]"))
+		_append_log(_t("[color=#9c9]打散架勢 · 散開時傷害吃滿 · 重拳要擋[/color]"))
 		parry_hint.text = _kh(_t("打散架勢　·　【Tab】鎖部位　·　重拳【J】"))
 	elif mode == "falcon":
 		_append_log(_t("疾影：傭兵團把最慢的送來了？眼睛，跟得上我嗎？"))
@@ -260,7 +260,7 @@ func setup(mode: String) -> void:
 		parry_hint.text = _kh(_t("等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】"))
 	elif mode == "boar":
 		_append_log(_t("石拳：傭兵團把最弱的送來了？還站著？那就接下這一拳——"))
-		_append_log(_t("[color=#c96]他衝來時按 J 硬碰，岩甲會裂 · 落石時按 J 躲開[/color]"))
+		_append_log(_t("[color=#c96]衝來按 J 硬碰，岩甲會裂 · 落石按 J[/color]"))
 		parry_hint.text = _kh(_t("衝鋒對撞【J】　·　【Tab】鎖角／甲　·　落岩【J】"))
 	elif mode == "wrath":
 		_append_log(_t("無臉：…………（焰在顫）"))
@@ -1538,7 +1538,7 @@ func _update_falcon_hud() -> void:
 		countdown.add_theme_color_override("font_color", Color(0.6, 0.75, 0.9))
 		countdown_sub.visible = true
 		countdown_sub.text = _t("殘影飛掠中… 等停拍")
-		parry_hint.text = _kh(_t("此時只 scratch · 等「停」"))
+		parry_hint.text = _kh(_t("現在只刮得到皮 · 等『停拍』"))
 		parry_hint.modulate = Color(0.75, 0.85, 0.95)
 		enemy_body.modulate = Color(0.55, 0.7, 0.75)
 		telegraph.visible = false
@@ -1977,7 +1977,7 @@ func _on_event(kind: String, data: Dictionary) -> void:
 				_append_log(_t("[color=#f52]🔥 怒氣滿 · 暴怒！（%.0f 秒攻速與傷害提升）[/color]") % bdur)
 				_spawn_float("player", _t("🔥 暴怒！"), Color(1.0, 0.4, 0.1), true)
 			else:
-				_append_log(_t("[color=#f52]🔥 器魂覺醒！進入暴怒狀態（%.0f 秒攻速與傷害加成）[/color]") % bdur)
+				_append_log(_t("[color=#f52]🔥 暴怒！（%.0f 秒攻速與傷害提升）[/color]") % bdur)
 				_spawn_float("player", _t("🔥 暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)
 			_shake = 0.35
 			trigger_hit_stop(0.1)
@@ -2735,7 +2735,7 @@ func _grant_rift_rewards(mode: String) -> void:
 		GameState.atk += 1
 		GameState.set_flag(first, true)
 	if bool(mult.get("practice", false)):
-		_append_log(_t("[color=#aaa]練習局：金幣×0.35，無經驗／首通加成[/color]"))
+		_append_log(_t("[color=#aaa]練習局：金幣三成五，無經驗[/color]"))
 	elif bool(mult.get("featured", false)):
 		_append_log(_t("[color=#fc8]本週焦點：金幣×1.5 · 經驗×1.25[/color]"))
 
