@@ -129,7 +129,8 @@ static func regions() -> Array:
 					"unlock": ["boss.stonefist_cleared"],
 					"clear_flag": "boss.demon_cleared",
 					"boss": _t("魔王"),
-					"goto": {"map": "blackflame_scar", "screen": "C6_TOWER"},
+					## 魔王在塔裡，不在疤地：前往要開塔下營地（main 會走 _go_c6_camp 的門檻）
+					"goto": {"map": "tower_camp", "screen": "C6_TOWER"},
 				},
 			],
 		},
@@ -180,14 +181,38 @@ static func next_objective() -> Dictionary:
 	return fallback
 
 
+## 各關建議等級（test_boss_curve 量出來「照這個等級來會贏」的數字）。
+## 只放在這裡一份：主線指引、雷歐前的軟提示都讀它。
+const SUGGEST_LV := {
+	"r1_s2": 10,   ## 雷歐：Lv8 只有 23%，Lv10 100%
+	"r2_s1": 20,   ## 白霧（輿圖寫 18+）
+	"r3_s1": 26,   ## 阿波
+	"r3_s2": 30,   ## 疾影
+	"r3_s3": 30,   ## 石拳
+	"r4_s2": 30,   ## 魔王
+}
+
+
+static func suggest_lv(stage_id: String) -> int:
+	return int(SUGGEST_LV.get(stage_id, 0))
+
+
 static func next_objective_line() -> String:
 	var o := next_objective()
 	if o.is_empty():
 		return _t("主線已完結——村莊、演武與獵場都在等你。")
 	var boss := str(o.get("boss", ""))
+	var line: String
 	if boss != "":
-		return _t("下一站：%s · %s") % [str(o.get("name", "")), boss]
-	return _t("下一站：%s") % str(o.get("name", ""))
+		line = _t("下一站：%s · %s") % [str(o.get("name", "")), boss]
+	else:
+		line = _t("下一站：%s") % str(o.get("name", ""))
+	## 等級還不到就把數字講出來。鍛造完 Lv2 直衝雷歐是 0% 勝率，
+	## 而指引只寫「下一站：雷歐」——玩家照著走會撞牆，還不知道該練到幾級。
+	var need := suggest_lv(str(o.get("id", "")))
+	if need > 0 and GameState.level < need:
+		line += _t("（建議 Lv%d）") % need
+	return line
 
 
 static func status_bbcode() -> String:

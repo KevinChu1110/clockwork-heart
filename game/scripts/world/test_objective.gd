@@ -51,6 +51,23 @@ func _initialize() -> void:
 	else:
 		print("endgame line OK: ", line)
 
+	## 4b) 每一關的「前往」都指向真的存在的地圖；魔王那關要開塔下營地，
+	##     不是疤地（魔王在塔裡，疤地那張圖上根本沒有塔門）
+	var WorldTravel = load("res://scripts/world/world_travel.gd")
+	var map_ids: PackedStringArray = WorldTravel.list_map_ids()
+	for r in RegionCatalog.regions():
+		for s in r.get("stages", []):
+			var goto: Dictionary = s.get("goto", {})
+			var mid := str(goto.get("map", ""))
+			if not (mid in map_ids):
+				push_error("stage %s goto map %s not in list_map_ids" % [str(s.get("id", "")), mid])
+				ok = false
+			if str(s.get("id", "")) == "r4_s2" and mid != "tower_camp":
+				push_error("r4_s2（魔王）goto 應為 tower_camp，得 %s" % mid)
+				ok = false
+	if ok:
+		print("stage goto maps OK")
+
 	## 5) 一鍵領取：沒完成的委託 → 明確回報不可領
 	var qs = root.get_node_or_null("QuestSystem")
 	if qs != null:

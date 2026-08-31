@@ -71,10 +71,13 @@ func cost_for_mode(mode: String) -> int:
 	## 序章首戰免費，避免卡教學
 	if mode == "wolf" and not GameState.has_flag("c0_first_battle"):
 		return 0
-	## 演武／獵場：開戰已在 start_run 扣過，波次不再扣
-	if ArenaSystem and ArenaSystem.is_run_active():
+	## 演武／獵場：開戰已在 start_run 扣過，波次不再扣。
+	## 只有「這一波的對手」免費。原本只看 is_run_active()，於是開一場獵場
+	## 打到一半不收尾（進度會存檔），之後野原雜魚、秘境小王、連雷歐都是 0 能量 ——
+	## 一點能量換整個能量制失效。
+	if ArenaSystem and ArenaSystem.is_run_active() and ArenaSystem.wave_mode() == mode:
 		return 0
-	if HuntSystem and HuntSystem.is_run_active():
+	if HuntSystem and HuntSystem.is_run_active() and HuntSystem.wave_mode() == mode:
 		return 0
 	## 好友挑戰不耗能量（原作）
 	if VisitSystem and VisitSystem.pending_id() != "":

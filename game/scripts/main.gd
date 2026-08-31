@@ -3410,7 +3410,10 @@ func _flavor_world_object(id: String) -> void:
 		return
 	if _explore and is_instance_valid(_explore) and _explore.has_method("entity_label"):
 		var lab: String = str(_explore.call("entity_label", id))
-		if lab != "" and not lab.begins_with(_t("往")) and not lab.begins_with(_t("回")) and not lab.begins_with(_t("通")):
+		## 路標（WorldTravel 表裡的 id）被擋下時上面已經講過話，這裡不再疊一句。
+		## 其餘一律給檢視句。原本是用「標籤開頭是往／回／通」猜路標，
+		## 於是「回音壁」「回音階」點了完全沒反應 —— 玩家會以為壞了。
+		if lab != "" and not WorldTravel.links().has(id):
 			_play_dialog(DialogLines.lines("world.inspect_object", {"label": lab}))
 
 
@@ -4708,6 +4711,12 @@ func _ensure_stage_mob_day() -> void:
 func _spawn_stage_mobs(map_id: String) -> void:
 	if not STAGE_MOBS.has(map_id) or _explore == null:
 		return
+	## 序章荒路：第一場戰鬥是狼（教學）。雜魚帶等狼打完再出。
+	## 實測 Lv1 鏽劍打荒路殘兵勝率 100% 但平均只剩 9／50 血，
+	## 當場結算會帶著殘血繼續走，接著點狼 ── 17 血打狼只有 12% ──
+	## 新手在教學戰輸掉，還不知道自己做錯什麼。
+	if map_id == "road" and not GameState.has_flag("c0_first_battle"):
+		return
 	_ensure_stage_mob_day()
 	var list: Array = STAGE_MOBS[map_id]
 	var ents: Array = []
@@ -4990,7 +4999,42 @@ func _go_region_panel() -> void:
 
 func _region_goto_cb(map_id: String, screen: Screen) -> Callable:
 	return func():
-		_open_explore(map_id, screen)
+		_region_goto(map_id, screen)
+
+
+## 四地區關卡表的「前往」。第一次踏進某一章要走章節入口（章旗、過場、
+## 霧隱強制讀信、塔下營地的鐘聲門檻），不能直接開地圖 ——
+## 原本一律 _open_explore，於是從關卡表進霧隱會跳過麥穗的信、chapter 停在 c1，
+## 「繼續」回來人就被送回騎士堡；魔王那關更是開到疤地，塔根本不在那張圖上。
+func _region_goto(map_id: String, screen: Screen) -> void:
+	match screen:
+		Screen.C1_TOWN:
+			if not GameState.has_flag("c1_entered_city"):
+				_go_c1_town()
+				return
+		Screen.C2_MIST:
+			if not GameState.has_flag("c2_entered"):
+				_go_c2_enter()
+				return
+		Screen.C3_DOJO:
+			if not GameState.has_flag("c3_entered"):
+				_go_c3_enter()
+				return
+		Screen.C4_FOREST:
+			if not GameState.has_flag("c4_entered"):
+				_go_c4_enter()
+				return
+		Screen.C5_COAST:
+			if not GameState.has_flag("c5_entered"):
+				_go_c5_enter()
+				return
+		Screen.C6_TOWER:
+			## 塔下營地有自己的門檻（鐘未響／路未開）與過場，一律走正門
+			_go_c6_camp()
+			return
+		_:
+			pass
+	_open_explore(map_id, screen)
 
 
 func _go_visit_panel() -> void:
@@ -6106,6 +6150,17 @@ func _interact_wild(id: String) -> void:
 		"leo_gate":
 			if GameState.has_flag("boss.leo_cleared"):
 				_play_dialog(DialogLines.lines("c1.leo_gate_cleared"))
+			elif GameState.level < RegionCatalog.suggest_lv("r1_s2") - 2 and not GameState.has_flag("c1_leo_soft_warn"):
+				## 一次性軟提示（同 c2／c3 的作法）：講數字、講去哪練，下次點再打。
+				## 量過：看時機格擋，Lv6 勝率 2%、Lv8 23%、Lv10 100%。
+				## 鍛造完直接衝是 Lv2～3，0%，而「回去握草根吧」沒有說要練到幾級。
+				GameState.set_flag("c1_leo_soft_warn", true)
+				SaveManager.save_game()
+				_play_dialog([
+					{"speaker": _t("系統"), "text": _t("雷歐建議 Lv%d（你 Lv%d）。演武場、野原雜魚、練功台都能練。硬闖也行，再點一次。") % [
+						RegionCatalog.suggest_lv("r1_s2"), GameState.level
+					]},
+				])
 			else:
 				_play_dialog([
 					{"speaker": _t("灰鬚"), "text": _t("（若有回音）獅子不聽人話。聽刀。")},

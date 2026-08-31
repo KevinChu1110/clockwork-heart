@@ -117,6 +117,11 @@ func setup(mode: String) -> void:
 	var stats := BattleSim.gather_player_stats()
 	if mode == "wolf":
 		stats["can_skill"] = true
+		## 教學戰滿血開打（跟主線 Boss 一樣）。荒路上先被雜魚磨到 17 血再點狼，
+		## 勝率只有 12%，而這是遊戲教格擋／戰意的那一場。
+		if not GameState.has_flag("c0_first_battle"):
+			GameState.hp = GameState.effective_max_hp()
+			stats["hp"] = GameState.hp
 	if mode == "leo":
 		GameState.hp = GameState.max_hp
 		stats["hp"] = GameState.max_hp
