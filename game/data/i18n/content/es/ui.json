@@ -596,7 +596,6 @@
   "提示：倒數變綠立刻按 J 格擋！火圈亮起後再按 J 躍出": "Consejo: ¡pulsa J en cuanto la cuenta se ponga verde! Luego J otra vez para saltar cuando se encienda el anillo",
   "提示：別追殘影 · 等停拍再打 · 風切預告按 J": "Consejo: no persigas las estelas · espera la pausa · pulsa J con el aviso del corte de viento",
   "提示：必殺與時鐘都靠 J · 血量階段記得「我拒絕」": "Consejo: el remate y el reloj van con J · en cada fase de vida, acuérdate de «Me niego»",
-  "提示：注意畫面中央提示 · 時機窗按 J": "Consejo: fíjate en el aviso central · pulsa J en la ventana",
   "提示：自動互砍 · 怒氣滿會放招 · 撐住就好": "Consejo: os golpeáis automáticamente · con la Furia llena sale la técnica · solo aguanta",
   "提示：衝鋒時對撞（J）剝甲 · 落岩進安全區": "Consejo: choca con la carga (J) para arrancar coraza · ponte a salvo de las rocas",
   "揮空 · 這一擊沒機會了": "Golpe al aire · ese ataque ya se fue",
@@ -1337,5 +1336,13 @@
   "成就": "Logros",
   "結束遊戲": "Salir",
   "（建議 Lv%d）": " (Lv%d sugerido)",
-  "雷歐建議 Lv%d（你 Lv%d）。演武場、野原雜魚、練功台都能練。硬闖也行，再點一次。": "Leo: Lv%d sugerido (tú Lv%d). Entrena en el patio, el campo o el poste. O fuerza: toca de nuevo."
+  "雷歐建議 Lv%d（你 Lv%d）。演武場、野原雜魚、練功台都能練。硬闖也行，再點一次。": "Leo: Lv%d sugerido (tú Lv%d). Entrena en el patio, el campo o el poste. O fuerza: toca de nuevo.",
+  "點畫面": "toca la pantalla",
+  "點敵人": "toca al enemigo",
+  "怒氣未滿。": "La furia no está llena.",
+  "點一下換武器": "Toca para cambiar de arma",
+  "點一下鎖這個部位": "Toca para fijar esta parte",
+  "時機窗：按 J 或點畫面": "Ventana: pulsa J o toca la pantalla",
+  "[color=#8cf]點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]": "[color=#8cf]Toca la pantalla para bloquear · al enemigo para cambiar fijación · la barra de furia para enfurecer · el arma para cambiar[/color]",
+  "[color=#8cf]滑鼠也行：點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]": "[color=#8cf]Con ratón también: clic en pantalla para bloquear · en enemigo para cambiar fijación · en furia para enfurecer · en arma para cambiar[/color]"
 }

@@ -52,6 +52,7 @@ var _skill_banner: Label
 var _rage_ready: Label
 var _weapon_dock: HBoxContainer
 var _weapon_dock_cells: Array = []  ## Label per bar
+const WEAPON_KEYS: PackedStringArray = ["Z", "X", "C"]
 var _overlay_key: String = ""
 var _coach: Label
 var _coach_timer: float = 0.0
@@ -225,6 +226,10 @@ func setup(mode: String) -> void:
 		])
 		_flash_coach(_t("這是對方留下的打法。對手是人影，不是野怪。"), 2.8)
 	_flash_coach(_mode_coach_intro(mode), 3.2)
+	if _touch():
+		_append_log(_t("[color=#8cf]點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]"))
+	else:
+		_append_log(_t("[color=#8cf]滑鼠也行：點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]"))
 	if GameState.ng_plus > 0:
 		_append_log(_t("[color=#c8f]黑焰迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]") % [
 			GameState.ng_plus, ng_m
@@ -235,46 +240,46 @@ func setup(mode: String) -> void:
 	if mode == "leo":
 		_append_log(_t("雷歐：傭兵團把最弱的送來了？也想挑戰騎士之王？"))
 		_append_log(_t("[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後按 J 跳開[/color]"))
-		parry_hint.text = _t("【J】格擋　·　【Tab】鎖部位　·　火圈後躍出")
+		parry_hint.text = _kh(_t("【J】格擋　·　【Tab】鎖部位　·　火圈後躍出"))
 		_flash_coach(_t("先鎖盾磨爆→防禦下降；再打本體。盔可破但會激怒牠。"), 3.6)
 	elif mode == "fog":
 		_append_log(_t("白霧：嘻嘻～真的假的，你分得清嗎？"))
 		_append_log(_t("[color=#8cf]分身很多 · 只有本體發白時打得中 · 砍幻影會被反咬又變慢[/color]"))
-		parry_hint.text = _t("【Tab/1-3】鎖目標　·　本體發白才輸出　·　別打幻影")
+		parry_hint.text = _kh(_t("【Tab/1-3】鎖目標　·　本體發白才輸出　·　別打幻影"))
 	elif mode == "demon":
 		_append_log(_t("魔王：那就來——用你的微末，撞我的千年。"))
 		_append_log(_t("[color=#c8f]黑焰必殺一定要擋 · 時鐘轉到時按 J · 血量掉到一半他會拒絕[/color]"))
-		parry_hint.text = _t("【J】必殺格擋　·　【Tab】鎖部位　·　時鐘窗")
+		parry_hint.text = _kh(_t("【J】必殺格擋　·　【Tab】鎖部位　·　時鐘窗"))
 	elif mode == "abo":
 		_append_log(_t("阿波：來。打我的架勢——用拳，不是用嘴。"))
 		_append_log(_t("[color=#9c9]打散他的架勢 · 散開後傷害吃滿 · 但他會出重拳，記得擋[/color]"))
-		parry_hint.text = _t("打散架勢　·　【Tab】鎖部位　·　重拳【J】")
+		parry_hint.text = _kh(_t("打散架勢　·　【Tab】鎖部位　·　重拳【J】"))
 	elif mode == "falcon":
 		_append_log(_t("疾影：傭兵團把最慢的送來了？眼睛，跟得上我嗎？"))
 		_append_log(_t("[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起按 J[/color]"))
-		parry_hint.text = _t("等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】")
+		parry_hint.text = _kh(_t("等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】"))
 	elif mode == "boar":
 		_append_log(_t("石拳：傭兵團把最弱的送來了？還站著？那就接下這一拳——"))
 		_append_log(_t("[color=#c96]他衝來時按 J 硬碰，岩甲會裂 · 落石時按 J 躲開[/color]"))
-		parry_hint.text = _t("衝鋒對撞【J】　·　【Tab】鎖角／甲　·　落岩【J】")
+		parry_hint.text = _kh(_t("衝鋒對撞【J】　·　【Tab】鎖角／甲　·　落岩【J】"))
 	elif mode == "wrath":
 		_append_log(_t("無臉：…………（焰在顫）"))
 		_append_log(_t("[color=#f84]裂縫·怒火：密火圈 · 漏閃疊灼燒，滿 3 層大爆[/color]"))
-		parry_hint.text = _t("密火圈【J】　·　【Tab】鎖部位")
+		parry_hint.text = _kh(_t("密火圈【J】　·　【Tab】鎖部位"))
 	elif mode == "tide":
 		_append_log(_t("潮聲：刺胞在裂縫裡孵化……"))
 		_append_log(_t("[color=#6cf]裂縫·潮噬：時間內解決刺胞 · 本體會輪流擋普攻或技能，看情況換手[/color]"))
-		parry_hint.text = _t("先清刺胞　·　【Tab】鎖潮甲／囊")
+		parry_hint.text = _kh(_t("先清刺胞　·　【Tab】鎖潮甲／囊"))
 	elif mode == "statue":
 		_append_log(_t("石響：三尊輪流亮起。"))
 		_append_log(_t("[color=#ca8]裂縫·石像：只打發光石像 · 落岩 · 全滅後打本體[/color]"))
-		parry_hint.text = _t("鎖發光石像 · 落岩按 J")
+		parry_hint.text = _kh(_t("鎖發光石像 · 落岩按 J"))
 	elif mode == "chrono":
 		_append_log(_t("時牢：倒數的焰在腳下盤成環。"))
 		_append_log(_t("[color=#a8f]裂縫·時牢：炸彈窗按 J 拆除 · 落岩進安全[/color]"))
-		parry_hint.text = _t("炸彈／落岩【J】　·　【Tab】鎖外殼")
+		parry_hint.text = _kh(_t("炸彈／落岩【J】　·　【Tab】鎖外殼"))
 	else:
-		parry_hint.text = "%s · %s" % [Loc.t("tut.battle"), Loc.t("battle.rage_full")]
+		parry_hint.text = _kh("%s · %s" % [Loc.t("tut.battle"), Loc.t("battle.rage_full")])
 	## 有多部位的 Boss：通用 HUD／教學（白霧／石像除外——Tab 另有用途）
 	if _boss_has_parts():
 		_ensure_part_hud()
@@ -451,6 +456,7 @@ func _apply_hud_chrome() -> void:
 		add_child(_rage_ready)
 	_ensure_weapon_dock()
 	_ensure_coach()
+	_install_touch_controls()
 
 
 func _ensure_weapon_dock() -> void:
@@ -478,6 +484,9 @@ func _ensure_weapon_dock() -> void:
 		cell.add_theme_constant_override("shadow_offset_x", 1)
 		cell.add_theme_constant_override("shadow_offset_y", 1)
 		cell.text = _t("欄%d") % [i + 1]
+		cell.mouse_filter = Control.MOUSE_FILTER_STOP
+		cell.tooltip_text = _t("點一下換武器")
+		cell.gui_input.connect(_on_weapon_cell_gui.bind(i))
 		_weapon_dock.add_child(cell)
 		_weapon_dock_cells.append(cell)
 
@@ -547,6 +556,11 @@ func _refresh_weapon_dock() -> void:
 			lab.modulate = Color(0.55, 0.55, 0.58)
 		else:
 			lab.modulate = Color(0.85, 0.85, 0.82)
+		if not _touch():
+			## 桌機：第一行尾巴掛鍵名（Z／X／C）；觸控直接點格子
+			var lines := txt.split("\n")
+			lines[0] = "%s %s" % [lines[0], WEAPON_KEYS[i]]
+			txt = "\n".join(lines)
 		lab.text = txt
 
 
@@ -589,14 +603,14 @@ func _mode_coach_intro(mode: String) -> String:
 		"wolf":
 			return _t("提示：自動互砍 · 怒氣滿會放招 · 撐住就好")
 		_:
-			return _t("提示：注意畫面中央提示 · 時機窗按 J")
+			return _t("時機窗：按 J 或點畫面")
 
 
 func _flash_coach(text: String, sec: float = 2.4) -> void:
 	_ensure_coach()
 	if _coach == null:
 		return
-	_coach.text = text
+	_coach.text = _kh(text)
 	_coach.visible = true
 	_coach.modulate = Color(1, 1, 1, 1)
 	_coach_timer = sec
@@ -980,9 +994,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	## 快捷欄前三格（玩家最可能放藥的位置）是死的，畫面上也沒有任何一句話說明。
 	## 切目標本來就有 Tab 可以循環，數字鍵還給道具。
 	if event.is_action_pressed("parry"):
-		if sim.try_react():
-			_shake = 0.3
-			_flash(player_body, Color(1, 0.95, 0.5))
+		_do_parry()
 		get_viewport().set_input_as_handled()
 		return
 
@@ -1171,7 +1183,7 @@ func _refresh_hud() -> void:
 					countdown.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0))
 					countdown_sub.visible = true
 					countdown_sub.text = _t("破綻！攻擊本體才有效")
-					parry_hint.text = _t("破綻中 · 確認鎖定本體(鍵2) · 剩餘約 %.1fs") % sim.fog_vuln_left
+					parry_hint.text = _kh(_t("破綻中 · 確認鎖定本體(鍵2) · 剩餘約 %.1fs") % sim.fog_vuln_left)
 					parry_hint.modulate = Color(0.7, 0.95, 1.0)
 				else:
 					enemy_body.modulate = Color(0.7, 0.75, 0.9)
@@ -1184,7 +1196,7 @@ func _refresh_hud() -> void:
 						var lt := sim.get_unit(punit.target_id)
 						if lt:
 							lock_n = lt.display_name
-					parry_hint.text = _t("鎖定中：%s · Tab/1/2/3 切換 · 等本體發白") % lock_n
+					parry_hint.text = _kh(_t("鎖定中：%s · Tab/1/2/3 切換 · 等本體發白") % lock_n)
 					parry_hint.modulate = Color(0.85, 0.85, 0.95)
 		else:
 			enemy_name.text = e.display_name
@@ -1211,7 +1223,7 @@ func _refresh_hud() -> void:
 					_refresh_part_focus_hint()
 				elif _mode == "demon":
 					parry_hint.modulate = Color(1, 1, 1)
-					parry_hint.text = _t("黑焰必殺可格擋 · 階段誘惑選「我拒絕」")
+					parry_hint.text = _kh(_t("黑焰必殺可格擋 · 階段誘惑選「我拒絕」"))
 				elif _mode == "abo":
 					_update_abo_guard_hud()
 				elif _mode == "falcon":
@@ -1298,6 +1310,9 @@ func _ensure_part_hud() -> void:
 		_style_bar(bar, Color(0.95, 0.7, 0.25), Color(0.25, 0.15, 0.08, 0.95))
 		row.add_child(lab)
 		row.add_child(bar)
+		row.mouse_filter = Control.MOUSE_FILTER_STOP
+		row.tooltip_text = _t("點一下鎖這個部位")
+		row.gui_input.connect(_on_part_row_gui.bind(pid))
 		_part_box.add_child(row)
 		_part_bars[pid] = bar
 		_part_labels[pid] = lab
@@ -1344,14 +1359,14 @@ func _refresh_part_focus_hint() -> void:
 	if sim == null or not _part_lock_enabled():
 		return
 	var label := sim.part_focus_label()
-	var tip := _t("鎖定：%s　·　Tab 切換　·　破甲降防／破冠激怒") % label
+	var tip := _kh(_t("鎖定：%s　·　Tab 切換　·　破甲降防／破冠激怒") % label)
 	var boss := sim._primary_boss_unit()
 	if parry_hint and boss and not boss.telegraph_active:
 		## 保留各 Boss 專屬提示時，把鎖定資訊併入尾端
 		if _mode == "leo":
-			parry_hint.text = tip
-		elif not parry_hint.text.contains("Tab"):
-			parry_hint.text = "%s　·　%s" % [parry_hint.text, tip]
+			parry_hint.text = _kh(tip)
+		elif not parry_hint.text.contains(tip.substr(0, 3)):
+			parry_hint.text = _kh("%s　·　%s" % [parry_hint.text, tip])
 	if _focus_hint:
 		_focus_hint.text = _t("部位鎖定 → %s") % label
 
@@ -1365,13 +1380,13 @@ func _update_tide_hud() -> void:
 		countdown.text = _t("刺%d") % sim._count_polyps()
 		countdown.add_theme_color_override("font_color", Color(0.5, 0.9, 1.0))
 		countdown_sub.text = _t("清刺胞！剩餘 %.1fs") % sim.tide_wave_left
-		parry_hint.text = _t("優先清黑焰刺胞")
+		parry_hint.text = _kh(_t("優先清黑焰刺胞"))
 		parry_hint.modulate = Color(0.6, 0.95, 1.0)
 	else:
 		countdown.text = _t("技") if sim.tide_phase_skill else _t("普")
 		countdown.add_theme_color_override("font_color", Color(0.7, 0.85, 1.0))
 		countdown_sub.text = _t("他在擋技能 · 改用普攻") if sim.tide_phase_skill else _t("他在擋普攻 · 改用技能")
-		parry_hint.text = _t("趁現在打 · 刺胞還會再冒")
+		parry_hint.text = _kh(_t("趁現在打 · 刺胞還會再冒"))
 		parry_hint.modulate = Color(0.8, 0.9, 1.0)
 	## 不在此覆寫攻擊幀；由 _set_boss_pose 管
 
@@ -1385,7 +1400,7 @@ func _update_statue_hud() -> void:
 		countdown.text = _t("本體")
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.85, 0.5))
 		countdown_sub.text = _t("石像盡碎 · 殘響現身")
-		parry_hint.text = _t("輸出本體 · 落岩仍要 J")
+		parry_hint.text = _kh(_t("輸出本體 · 落岩仍要 J"))
 		if _boss_art_key != "echo":
 			_boss_art_key = "echo"
 			_set_boss_pose(_boss_pose if _boss_pose != "" else "idle")
@@ -1393,7 +1408,7 @@ func _update_statue_hud() -> void:
 		countdown.text = _t("石%d") % (sim.statue_active_idx + 1)
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.9, 0.4))
 		countdown_sub.text = _t("只打發光石像 · 約 %.1fs 輪轉") % sim.statue_rotate_cd
-		parry_hint.text = _t("打亮的那尊 · 打錯無效")
+		parry_hint.text = _kh(_t("打亮的那尊 · 打錯無效"))
 		if _boss_art_key != "statue":
 			_boss_art_key = "statue"
 		if _boss_pose == "idle":
@@ -1413,7 +1428,7 @@ func _update_chrono_hud() -> void:
 	countdown.add_theme_color_override("font_color", Color(0.85, 0.7, 1.0))
 	countdown_sub.visible = true
 	countdown_sub.text = _t("炸彈拆除 · 落岩進安全")
-	parry_hint.text = _t("預告後按 J")
+	parry_hint.text = _kh(_t("預告後按 J"))
 	parry_hint.modulate = Color(0.9, 0.8, 1.0)
 
 
@@ -1437,7 +1452,7 @@ func _update_wrath_hud() -> void:
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.7, 0.35))
 		countdown_sub.text = _t("灼燒 %d/%d · 密火圈漏閃會疊層") % [st, BattleSim.BURN_STACK_MAX]
 		parry_hint.modulate = Color(1, 0.75, 0.5)
-	parry_hint.text = _t("密火圈：預告後按 J · 必殺可格擋")
+	parry_hint.text = _kh(_t("密火圈：預告後按 J · 必殺可格擋"))
 	enemy_body.modulate = Color(1.1 + st * 0.08, 0.5 - st * 0.05, 0.35)
 
 
@@ -1462,7 +1477,7 @@ func _update_hazard_hud() -> void:
 		countdown.text = _t("注意")
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.6, 0.25))
 		countdown_sub.text = _t("%s 即將生效… %.1fs") % [nm, sim.hazard_timer]
-		parry_hint.text = _t("準備：黃色「閃」出現時按 J")
+		parry_hint.text = _kh(_t("準備：黃色「閃」出現時按 J"))
 		parry_hint.modulate = Color(1, 0.7, 0.4)
 	elif sim.hazard_phase == "window":
 		telegraph.visible = true
@@ -1470,7 +1485,7 @@ func _update_hazard_hud() -> void:
 		countdown.text = _t("閃")
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.95, 0.3))
 		countdown_sub.text = _t("%s！現在按 J 或滑鼠  %.1fs") % [nm, sim.hazard_timer]
-		parry_hint.text = _t("互動窗：按 J")
+		parry_hint.text = _kh(_t("互動窗：按 J"))
 		parry_hint.modulate = Color(1, 1, 0.5)
 		_pulse_countdown()
 
@@ -1512,7 +1527,7 @@ func _update_falcon_hud() -> void:
 		countdown.add_theme_color_override("font_color", Color(0.5, 1.0, 0.7))
 		countdown_sub.visible = true
 		countdown_sub.text = _t("真身定格！全額傷害  %.1fs") % sim.falcon_stop_left
-		parry_hint.text = _t("輸出窗")
+		parry_hint.text = _kh(_t("輸出窗"))
 		parry_hint.modulate = Color(0.6, 1.0, 0.7)
 		enemy_body.modulate = Color(1.25, 1.35, 1.2)
 		telegraph.visible = true
@@ -1523,7 +1538,7 @@ func _update_falcon_hud() -> void:
 		countdown.add_theme_color_override("font_color", Color(0.6, 0.75, 0.9))
 		countdown_sub.visible = true
 		countdown_sub.text = _t("殘影飛掠中… 等停拍")
-		parry_hint.text = _t("此時只 scratch · 等「停」")
+		parry_hint.text = _kh(_t("此時只 scratch · 等「停」"))
 		parry_hint.modulate = Color(0.75, 0.85, 0.95)
 		enemy_body.modulate = Color(0.55, 0.7, 0.75)
 		telegraph.visible = false
@@ -1543,13 +1558,13 @@ func _update_boar_hud() -> void:
 			countdown.text = _t("撞")
 			countdown.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
 			countdown_sub.text = _t("對撞！按 J 卸力剝岩甲  %.1fs") % e.state_timer
-			parry_hint.text = _t("現在對撞")
+			parry_hint.text = _kh(_t("現在對撞"))
 			parry_hint.modulate = Color(1, 0.9, 0.4)
 		else:
 			countdown.text = _t("衝")
 			countdown.add_theme_color_override("font_color", Color(1.0, 0.5, 0.35))
 			countdown_sub.text = _t("石拳衝鋒蓄力… 準備對撞")
-			parry_hint.text = _t("準備 J")
+			parry_hint.text = _kh(_t("準備 J"))
 			parry_hint.modulate = Color(1, 0.6, 0.4)
 		telegraph.visible = true
 		telegraph.color = Color(0.9, 0.4, 0.2, 0.2)
@@ -1557,7 +1572,7 @@ func _update_boar_hud() -> void:
 		countdown.text = _t("甲%d") % sim.boar_armor
 		countdown.add_theme_color_override("font_color", Color(0.85, 0.7, 0.45))
 		countdown_sub.text = _t("岩甲 %d 層 · 對撞可剝") % sim.boar_armor
-		parry_hint.text = _t("等衝鋒對撞 · 落岩按 J 進安全")
+		parry_hint.text = _kh(_t("等衝鋒對撞 · 落岩按 J 進安全"))
 		parry_hint.modulate = Color(0.9, 0.85, 0.7)
 		telegraph.visible = false
 		enemy_body.modulate = Color(0.85, 0.8, 0.75) if sim.boar_armor > 0 else Color(1.1, 0.95, 0.85)
@@ -1572,7 +1587,7 @@ func _update_abo_guard_hud() -> void:
 		countdown.add_theme_color_override("font_color", Color(0.4, 1.0, 0.5))
 		countdown_sub.visible = true
 		countdown_sub.text = _t("架勢崩壞！剩 %.1f 秒 · 全力輸出") % sim.abo_broken_left
-		parry_hint.text = _t("破防中 · 傷害全額")
+		parry_hint.text = _kh(_t("破防中 · 傷害全額"))
 		parry_hint.modulate = Color(0.5, 1.0, 0.55)
 		telegraph.visible = true
 		telegraph.color = Color(0.3, 0.9, 0.4, 0.15)
@@ -1584,7 +1599,7 @@ func _update_abo_guard_hud() -> void:
 		countdown.add_theme_color_override("font_color", Color(0.95, 0.85, 0.4))
 		countdown_sub.visible = true
 		countdown_sub.text = _t("架勢 %d / %d（技能打得快）") % [int(sim.abo_guard), int(BattleSim.ABO_GUARD_MAX)]
-		parry_hint.text = _t("他架著 · 現在打不痛 · 先把架勢打散")
+		parry_hint.text = _kh(_t("他架著 · 現在打不痛 · 先把架勢打散"))
 		parry_hint.modulate = Color(1, 0.85, 0.5)
 		telegraph.visible = false
 		enemy_body.modulate = _enemy_base_mod
@@ -1633,7 +1648,7 @@ func _update_parry_countdown(e: BattleUnit) -> void:
 		countdown_sub.text = _t("現在按 J 或滑鼠左鍵！")
 		countdown_sub.add_theme_color_override("font_color", Color(0.6, 1.0, 0.65))
 		if _parry_note_left <= 0.0:
-			parry_hint.text = _t("格擋時機！（剩餘 %.1f 秒）") % remain
+			parry_hint.text = _kh(_t("格擋時機！（剩餘 %.1f 秒）") % remain)
 			parry_hint.modulate = Color(0.5, 1.0, 0.5)
 		if _last_cd_bucket != 0:
 			_last_cd_bucket = 0
@@ -1645,7 +1660,7 @@ func _update_parry_countdown(e: BattleUnit) -> void:
 		countdown_sub.text = _t("王者斬蓄力中… %.1f 秒後可格擋") % maxf(0.0, remain - BattleSim.PARRY_WINDOW)
 		countdown_sub.add_theme_color_override("font_color", Color(1, 0.7, 0.55))
 		if _parry_note_left <= 0.0:
-			parry_hint.text = _t("準備：倒數到「格擋」再按")
+			parry_hint.text = _kh(_t("準備：倒數到「格擋」再按"))
 			parry_hint.modulate = Color(1, 0.55, 0.45)
 		if bucket != _last_cd_bucket:
 			_last_cd_bucket = bucket
@@ -1663,7 +1678,7 @@ var _parry_note_left: float = 0.0
 func _flash_parry_note(text: String, col: Color) -> void:
 	if parry_hint == null:
 		return
-	parry_hint.text = text
+	parry_hint.text = _kh(text)
 	parry_hint.modulate = col
 	_parry_note_left = 0.9
 
@@ -2519,7 +2534,133 @@ func _on_end(won: bool) -> void:
 
 
 func _append_log(t: String) -> void:
-	log_label.append_text(t + "\n")
+	log_label.append_text(_kh(t) + "\n")
+
+
+## ── 不用鍵盤也能打 ──
+## 觸控裝置：提示裡的鍵名換成「點哪裡」。桌機留鍵名（滑鼠一樣能點，開場記錄有寫）。
+static func _touch() -> bool:
+	return DisplayServer.is_touchscreen_available()
+
+
+func _kh(t: String) -> String:
+	if not _touch():
+		return t
+	var tap := _t("點畫面")
+	var foe := _t("點敵人")
+	t = t.replace("【Tab/1-3】", "【%s】" % foe)
+	t = t.replace("【Tab】", "【%s】" % foe)
+	t = t.replace("Tab ", foe + " ")
+	t = t.replace("Tab", foe)
+	t = t.replace("【J】", "【%s】" % tap)
+	t = t.replace("（J）", "（%s）" % tap)
+	t = t.replace("按 J", tap)
+	t = t.replace("靠 J", "靠" + tap)
+	return t
+
+
+func _do_parry() -> bool:
+	if sim == null or _ended or sim.sim_paused:
+		return false
+	if sim.try_react():
+		_shake = 0.3
+		_flash(player_body, Color(1, 0.95, 0.5))
+		return true
+	return false
+
+
+func _parry_window_open() -> bool:
+	if sim == null:
+		return false
+	if sim.hazard_phase == "window" and not sim.hazard_reacted:
+		return true
+	return sim._telegraphing_boss() != null
+
+
+func _tap_ok(ev: InputEvent) -> bool:
+	if sim == null or _ended or sim.sim_paused:
+		return false
+	return ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT
+
+
+func _install_touch_controls() -> void:
+	## 點畫面＝格擋（跟 J 一樣走 try_react）；點敵人＝有前搖就格擋，否則切鎖定；
+	## 點怒氣條＝暴怒；武器欄／部位條各自在建立時接。
+	## 競技場的貼圖框蓋在左右側欄上面（PASS 往上傳到本節點就被吃掉），
+	## 武器欄／怒氣條永遠點不到。貼圖框一律 IGNORE，點擊由底圖與本節點接；
+	## 敵人用矩形命中判斷。
+	for n in [arena, player_body, enemy_body,
+			get_node_or_null("Arena/PlayerSlot"), get_node_or_null("Arena/EnemySlot")]:
+		if n is Control:
+			(n as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if log_label:
+		log_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for c in [battle_bg, self]:
+		if c and not c.gui_input.is_connected(_on_field_gui):
+			c.gui_input.connect(_on_field_gui)
+	if player_rage and not player_rage.gui_input.is_connected(_on_rage_gui):
+		player_rage.mouse_filter = Control.MOUSE_FILTER_STOP
+		player_rage.gui_input.connect(_on_rage_gui)
+	if _rage_ready and not _rage_ready.gui_input.is_connected(_on_rage_gui):
+		_rage_ready.mouse_filter = Control.MOUSE_FILTER_STOP
+		_rage_ready.gui_input.connect(_on_rage_gui)
+
+
+func _on_field_gui(ev: InputEvent) -> void:
+	if not _tap_ok(ev):
+		return
+	if enemy_body and enemy_body.is_visible_in_tree() \
+			and enemy_body.get_global_rect().has_point(get_global_mouse_position()):
+		_enemy_tap()
+	else:
+		_do_parry()
+	accept_event()
+
+
+func _enemy_tap() -> void:
+	if _parry_window_open():
+		_do_parry()
+	elif _mode == "fog":
+		var tid := sim.cycle_player_target(1)
+		if tid != "":
+			_append_log(_t("鎖定：%s") % sim.get_unit(tid).display_name)
+	elif _part_lock_enabled():
+		sim.cycle_part_focus(1)
+		_append_log(_t("鎖定部位：%s") % sim.part_focus_label())
+		_refresh_part_focus_hint()
+	else:
+		_do_parry()
+
+
+func _on_rage_gui(ev: InputEvent) -> void:
+	if not _tap_ok(ev):
+		return
+	if not sim.trigger_fury_awakening():
+		_flash_coach(_t("怒氣未滿。"), 1.2)
+	accept_event()
+
+
+func _on_weapon_cell_gui(ev: InputEvent, index: int) -> void:
+	if not _tap_ok(ev):
+		return
+	sim.switch_weapon_slot(index)
+	accept_event()
+
+
+func _on_part_row_gui(ev: InputEvent, pid: String) -> void:
+	if not _tap_ok(ev) or not _part_lock_enabled():
+		return
+	var boss := sim._primary_boss_unit()
+	if boss == null:
+		return
+	for p in boss.parts:
+		if str(p.get("id", "")) == pid and not bool(p.get("broken", false)):
+			sim.focus_part_id = pid
+			_append_log(_t("鎖定部位：%s") % sim.part_focus_label())
+			_refresh_part_focus_hint()
+			_refresh_part_bars(boss)
+			break
+	accept_event()
 
 
 func _hazard_name(kind: String) -> String:

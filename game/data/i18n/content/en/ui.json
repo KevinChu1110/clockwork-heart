@@ -596,7 +596,6 @@
   "提示：倒數變綠立刻按 J 格擋！火圈亮起後再按 J 躍出": "Tip: press J the moment the countdown turns green! Then press J again to leap once the fire ring lights",
   "提示：別追殘影 · 等停拍再打 · 風切預告按 J": "Tip: don't chase the afterimages · wait for the pause · press J on the wind-cut telegraph",
   "提示：必殺與時鐘都靠 J · 血量階段記得「我拒絕」": "Tip: both the finisher and the clock use J · remember «I refuse» at each health stage",
-  "提示：注意畫面中央提示 · 時機窗按 J": "Tip: watch the prompt in the centre · press J in the timing window",
   "提示：自動互砍 · 怒氣滿會放招 · 撐住就好": "Tip: you trade blows automatically · a full Rage bar fires a technique · just hold on",
   "提示：衝鋒時對撞（J）剝甲 · 落岩進安全區": "Tip: clash (J) with the charge to strip the plate · get to safety when rocks fall",
   "揮空 · 這一擊沒機會了": "Swung at air · that blow is gone",
@@ -1337,5 +1336,13 @@
   "成就": "Achievements",
   "結束遊戲": "Quit",
   "（建議 Lv%d）": " (Lv%d suggested)",
-  "雷歐建議 Lv%d（你 Lv%d）。演武場、野原雜魚、練功台都能練。硬闖也行，再點一次。": "Leo: Lv%d suggested (you're Lv%d). Train at the yard, the wilds, or the post. Or force it — tap again."
+  "雷歐建議 Lv%d（你 Lv%d）。演武場、野原雜魚、練功台都能練。硬闖也行，再點一次。": "Leo: Lv%d suggested (you're Lv%d). Train at the yard, the wilds, or the post. Or force it — tap again.",
+  "點畫面": "tap the screen",
+  "點敵人": "tap the enemy",
+  "怒氣未滿。": "Rage isn't full.",
+  "點一下換武器": "Tap to switch weapon",
+  "點一下鎖這個部位": "Tap to lock this part",
+  "時機窗：按 J 或點畫面": "Timing window: press J or tap the screen",
+  "[color=#8cf]點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]": "[color=#8cf]Tap screen to parry · tap enemy to switch lock · tap rage bar to go berserk · tap weapon dock to switch[/color]",
+  "[color=#8cf]滑鼠也行：點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]": "[color=#8cf]Mouse works too: click screen to parry · click enemy to switch lock · click rage bar to go berserk · click weapon dock to switch[/color]"
 }
