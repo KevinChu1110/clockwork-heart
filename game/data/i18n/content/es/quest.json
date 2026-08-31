@@ -142,5 +142,17 @@
   "m_wreck": {
     "desc": "Vence a la sombra del capitán del naufragio",
     "name": "Fin del naufragio"
+  },
+  "d_skirmish2": {
+    "name": "Limpieza extra",
+    "desc": "Gana 5 combates contra bichos"
+  },
+  "d_hunt": {
+    "name": "Una cacería",
+    "desc": "Supera una cacería con premio"
+  },
+  "d_arena": {
+    "name": "Prueba de espada",
+    "desc": "Supera el patio de armas una vez (con premio o práctica)"
   }
 }

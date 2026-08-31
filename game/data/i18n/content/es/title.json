@@ -90,5 +90,9 @@
   "title.wreck_end": {
     "desc": "Hunde otra vez la sombra del capitán.",
     "name": "Fin del naufragio"
+  },
+  "title.arena_challenger": {
+    "name": "Retador del patio",
+    "desc": "Supera una vez la prueba de cinco oleadas del patio."
   }
 }

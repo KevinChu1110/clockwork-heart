@@ -78,5 +78,9 @@
   "medal": {
     "desc": "Mercenary and training-yard merit. 50 light the workshop furnace.",
     "name": "Medal"
+  },
+  "friendship_key": {
+    "name": "Friendship Key",
+    "desc": "Won from friend challenges. Three open a friendship chest."
   }
 }

@@ -90,5 +90,9 @@
   "title.wreck_end": {
     "desc": "선장의 그림자를 한 번 더 가라앉혔다.",
     "name": "침몰선의 끝"
+  },
+  "title.arena_challenger": {
+    "name": "연무 도전자",
+    "desc": "연무장 다섯 파 시련을 한 번 클리어."
   }
 }
