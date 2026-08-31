@@ -90,5 +90,9 @@
   "title.wreck_end": {
     "desc": "让船长影再沉一次。",
     "name": "沉船终结者"
+  },
+  "title.arena_challenger": {
+    "name": "演武挑战者",
+    "desc": "演武场五波试炼通关一次。"
   }
 }

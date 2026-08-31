@@ -227,7 +227,7 @@ func claim_commission(id: String) -> Dictionary:
 func list_commissions_bbcode() -> String:
 	refresh_daily()
 	var lines: PackedStringArray = []
-	lines.append("[b]今日委託[/b]（每日輪替 · 養成循環）")
+	lines.append(_t("[b]今日委託[/b]（每日輪替）"))
 	for c in commissions():
 		var id := str(c.get("id", ""))
 		var need := int(c.get("need", 1))

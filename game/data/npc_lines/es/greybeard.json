@@ -10,8 +10,8 @@
         ]
       },
       "lines": [
-        "Otra vez. Tus huellas se posan sobre el camino viejo. ¿Recuerdas que la primera vez tiraste tres veces de la espada?",
-        "El león del eco está más rabioso. No aflojes el parry."
+        "Otra vez. ¿Recuerdas tirar tres veces de la espada?",
+        "El león está más furioso. No aflojes la parada."
       ]
     },
     {
@@ -21,8 +21,8 @@
         ]
       },
       "lines": [
-        "A la torre le falta una esquina. Y tú sigues en pie. …Bah. Pasa a tomar té.",
-        "Si aún quieres pulir técnicas, el entrenamiento del viaje sigue abierto."
+        "Cayó una esquina de la torre. Tú sigues en pie. Entra a tomar té.",
+        "La compañía te llama el más débil. En la fortaleza ya no lo piensan."
       ]
     },
     {
@@ -34,7 +34,7 @@
       },
       "lines": [
         "¿También calaste la niebla? Los ojos crecen antes que la espada.",
-        "La torre espera. No imites al necio que confunde la llama con leña."
+        "La torre espera. No te llames héroe."
       ]
     },
     {
@@ -44,8 +44,8 @@
         ]
       },
       "lines": [
-        "(De espaldas) La puerta se abre para ti.",
-        "Hay niebla al sudeste. Las cartas llegan tarde; tú no."
+        "La puerta se abre para ti.",
+        "Niebla al sudeste. Las cartas se retrasan; tú no."
       ]
     },
     {
@@ -55,15 +55,15 @@
         ]
       },
       "lines": [
-        "Ya tienes filo. Al león del santuario no le hablan las palabras. Le habla el acero.",
-        "No vas a demostrar que eres fuerte. Vas a hacerle recordar qué debía proteger."
+        "Ya tienes filo. El león no escucha palabras. Escucha la hoja.",
+        "No vas a demostrar que eres fuerte. Vas a recordarle qué debe guardar."
       ]
     },
     {
       "when": {},
       "lines": [
-        "El León Sagrado está en el santuario. Si no vas a morir allí, primero cría tu espada.",
-        "Las técnicas no se miran. Solo crecen si aciertan."
+        "¿El más débil de la compañía? El León Sagrado está en el santuario. Cría tu espada primero.",
+        "Las técnicas solo crecen cuando aciertan. Vive para informar."
       ]
     }
   ]

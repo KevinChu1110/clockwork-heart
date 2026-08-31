@@ -2,59 +2,59 @@
   "hub.candle_need_online": [
     {
       "speaker": "システム",
-      "text": "燭火を同期するには、まずオンライン設定でゲスト接続してください。"
+      "text": "燭火を同期するには先に接続を。"
     }
   ],
   "hub.candle_already_lit": [
     {
       "speaker": "ナレーション",
-      "text": "もう灯している。火はまだある。"
+      "text": "もう灯した。火はまだある。"
     }
   ],
   "hub.candle_lit": [
     {
       "speaker": "ナレーション",
-      "text": "炎がひとつ跳ねた。遠くの誰かも同時に見た気がする。\n（全体：{total}）"
+      "text": "火が一度跳ねた。\n（全体：{total}）"
     }
   ],
   "hub.hunt_abandoned": [
     {
       "speaker": "システム",
-      "text": "この狩りを放棄しました。"
+      "text": "この狩りを放棄した。"
     }
   ],
   "hub.online_health_ok": [
     {
       "speaker": "システム",
-      "text": "接続は正常：{msg}"
+      "text": "接続良好：{msg}"
     }
   ],
   "hub.online_health_fail": [
     {
       "speaker": "システム",
-      "text": "接続に異常：{msg}"
+      "text": "接続異常：{msg}"
     }
   ],
   "shop.not_enough_gold": [
     {
       "speaker": "琥珀",
-      "text": "金が足りないね。雑魚を狩るか、素材を売っておいで。"
+      "text": "金が足りない。雑魚を倒すか素材を売ってこい。"
     }
   ],
   "shop.bought": [
     {
       "speaker": "琥珀",
-      "text": "商談成立。外で死ぬんじゃないよ——もう一回稼がせてもらいたいからね。"
+      "text": "成立。外で死ぬなよ——もう一度稼がせてもらう。"
     },
     {
       "speaker": "システム",
-      "text": "【{item}】×1 を購入（-{price}金）"
+      "text": "{item} を購入（-{price} 金）"
     }
   ],
   "hub.ng_plus_not_yet": [
     {
       "speaker": "システム",
-      "text": "まだ終わっていません。まず晨光のところへ。"
+      "text": "まだ終わっていない。先に朝の光まで。"
     }
   ]
 }

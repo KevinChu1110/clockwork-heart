@@ -74,5 +74,13 @@
   "wolf_fang": {
     "desc": "Botín menor. Se vende por 8 de oro.",
     "name": "Colmillo de lobo"
+  },
+  "medal": {
+    "desc": "Mérito de mercenario y del patio. Con 50 se enciende el horno del taller.",
+    "name": "Medalla"
+  },
+  "friendship_key": {
+    "name": "Llave de amistad",
+    "desc": "Se gana en desafíos de amigos. Tres abren un cofre de amistad."
   }
 }

@@ -32,7 +32,7 @@ const GUILDS: Array[Dictionary] = [
 
 const BOARD: Array[String] = [
 	"【灰鬚】別在裂縫裡逞能。活著回來，才算貢獻。",
-	"【星讀】星屑可以交公庫——別全砸在賭博心態上。",
+	"【星讀】星屑可以交公庫。別全砸進葫蘆。",
 	"【霧隱】新進的兔子：先讀完信，再進幻廊。",
 	"【阿茶】道場茶席永遠有位子。先喘口氣。",
 	"【釘釘】缺鐵就去荒野晃。別來跟我哭窮。",
@@ -40,7 +40,7 @@ const BOARD: Array[String] = [
 	"【小芽】我練木劍一百下了！……大概。",
 	"【潮吼】力氣若沒方向，只是浪打空岸！",
 	"【風耳】停拍那一瞬，記得數自己的呼吸。",
-	"【系統】本週盟約目標：裂縫勝場＋主線推進。貢獻可換補給。",
+	"【系統】本週盟約目標：裂縫勝場。貢獻可換補給。",
 ]
 
 
@@ -109,7 +109,7 @@ func rank_name() -> String:
 
 func board_line() -> String:
 	var idx := int(GameState.get_flag(FLAG_BOARD, 0))
-	var line := BOARD[idx % BOARD.size()]
+	var line := _t(BOARD[idx % BOARD.size()])
 	## NG+ 額外留言
 	if GameState.ng_plus > 0 and idx % 3 == 0:
 		line = _t("【迴響】二周目的你，腳印疊在舊路上——盟約記得。")

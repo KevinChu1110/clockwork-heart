@@ -7,7 +7,7 @@
         "ng_plus_min": 1
       },
       "lines": [
-        "Again? Ash on the blade… you touched the flame, didn't you? Never mind. I raise steel, not lives."
+        "Again? Ash on the blade. I keep gear, not lives."
       ]
     },
     {
@@ -17,7 +17,7 @@
         ]
       },
       "lines": [
-        "Good, the iron's still there. Don't make me bury the same iron twice."
+        "Good, the iron's still here. —Don't make me recognise buried iron twice."
       ]
     },
     {
@@ -27,8 +27,8 @@
         ]
       },
       "lines": [
-        "Old debt's paid. The fire burns… a little steadier than before.",
-        "Upgrading still costs gold. Sentiment doesn't burn as coal."
+        "Old debt paid. The fire… burns a little steadier.",
+        "Tier-ups still cost gold. Feelings don't burn like charcoal."
       ]
     },
     {
@@ -38,7 +38,7 @@
         ]
       },
       "lines": [
-        "That break… you picked it up in the training yard? Give it here."
+        "That break… you got it from the training yard? Hand it over."
       ]
     },
     {
@@ -48,7 +48,7 @@
         ]
       },
       "lines": [
-        "The broken sword's near the weapon rack in the training yard. Don't tell me you got lost."
+        "The broken sword is near the weapon rack at the training yard. Don't tell me you got lost."
       ]
     },
     {
@@ -58,14 +58,14 @@
         ]
       },
       "lines": [
-        "Meager Edge. Ugly name, works fine. Bring gold if you want it upgraded.",
-        "…If you've a moment, go take a look at the training yard for me. Old debt."
+        "Meager Edge. Ugly name, works fine. Bring gold for tier-ups.",
+        "…If you've got time, take a look at the training yard for me. An old debt."
       ]
     },
     {
       "when": {},
       "lines": [
-        "The door's not open for green recruits to sightsee.—Company sent their weakest again?"
+        "The door isn't open for sightseeing. The company sent its weakest again?"
       ]
     }
   ]

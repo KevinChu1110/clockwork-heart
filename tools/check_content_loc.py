@@ -28,7 +28,10 @@ CONTENT = os.path.join(ROOT, "game/data/i18n/content")
 ## 以「原文」當 key 的 domain：從哪個檔、用哪些 regex 抓原文
 SOURCES = {
     ## _t("…") 包起來的介面字串，散在 main.gd 與各系統檔裡
-    "ui": [("__ALL_GD__", [r'\b_t\("((?:[^"\\\\]|\\\\.)*)"\)'])],
+    ## 字面值裡的 \n／\"／\\ 要還原成 GDScript 執行期的字串，表的 key 才對得上
+    ## （舊版寫成 \\\\. 只吃得到兩個反斜線，含 \n 的字串整個漏掉，
+    ##   它們的譯文反而被當成「殘留」）。
+    "ui": [("__ALL_GD__", [r'\b_t\("((?:[^"\\]|\\.)*)"\)'])],
     ## 星曜與品質的 id 本身是中文，存檔存原文、顯示查譯文
     "soul": [("game/scripts/systems/soul_system.gd", [
         r'\{"id": "([^"]+)", "stat":',
@@ -62,6 +65,19 @@ SOURCES = {
 ## 動態組出來的標籤：整串才是玩家看到的字，regex 抓不到，只能列在這裡。
 ## 改到 map_catalog 裡這幾行時要記得同步。
 EXTRA = {
+    ## guild_system.gd 的 const BOARD：讀出時才包 _t()，regex 抓不到 const 陣列裡的字串。
+    "ui": [
+        "【灰鬚】別在裂縫裡逞能。活著回來，才算貢獻。",
+        "【星讀】星屑可以交公庫。別全砸進葫蘆。",
+        "【霧隱】新進的兔子：先讀完信，再進幻廊。",
+        "【阿茶】道場茶席永遠有位子。先喘口氣。",
+        "【釘釘】缺鐵就去荒野晃。別來跟我哭窮。",
+        "【斷頁】卷上寫至弱。盟約寫的是——一起走完。",
+        "【小芽】我練木劍一百下了！……大概。",
+        "【潮吼】力氣若沒方向，只是浪打空岸！",
+        "【風耳】停拍那一瞬，記得數自己的呼吸。",
+        "【系統】本週盟約目標：裂縫勝場。貢獻可換補給。",
+    ],
     "map": [
         "長明燈（亮）", "長明燈",
         "橋下鳥巢（已顧）",
@@ -97,9 +113,17 @@ def sources_for(domain: str) -> set:
             body = "\n".join(ln for ln in src.split("\n") if not ln.strip().startswith("#"))
             for pat in patterns:
                 for m in re.finditer(pat, body):
-                    out.add(m.group(1))
+                    out.add(_unescape_gd(m.group(1)))
     out.update(EXTRA.get(domain, []))
     return out
+
+
+_GD_ESC = {"n": "\n", "t": "\t", "r": "\r", '"': '"', "\\": "\\", "'": "'"}
+
+
+def _unescape_gd(s: str) -> str:
+    """把 GDScript 字串字面值的跳脫還原成執行期的字串（ContentLoc 查表用的是後者）。"""
+    return re.sub(r"\\(.)", lambda m: _GD_ESC.get(m.group(1), "\\" + m.group(1)), s)
 
 
 ## 以 id 當 key 的目錄：domain → (檔案, 常數名, id 欄位, 要翻的欄位)

@@ -2,121 +2,121 @@
   "c6.refugee": [
     {
       "speaker": "Refugiado",
-      "text": "La puerta de la torre se abrió… No nos atrevemos a subir. Tú… ¿eres el más débil de la banda mercenario?"
+      "text": "La puerta de la torre está abierta. No nos atrevemos a subir. ¿Eres el más débil de la compañía?"
     }
   ],
   "c6.scroll_pile": [
     {
       "speaker": "Pergamino",
-      "text": "«El más débil puede llegar a la cima. Línea no escrita: si el corazón ansía la fuerza, la llama llega antes.»"
+      "text": "El más débil puede llegar a la cima. Ansía la fuerza y la llama llegará antes."
     }
   ],
   "c6.tower_gate": [
     {
       "speaker": "Narración",
-      "text": "La puerta de la torre está abierta de par en par. La primera vez en mil años. La Llama Negra respira por la rendija."
+      "text": "La puerta de la torre está abierta. La Llama Negra respira en la rendija."
     }
   ],
   "c0.shrine_stub": [
     {
       "speaker": "Ermita",
-      "text": "La ceniza del incienso está fría. ¿También huyeron los dioses, o se fue antes la gente?"
+      "text": "La ceniza del incienso está fría. La gente se fue primero."
     }
   ],
   "c0.field_west": [
     {
       "speaker": "Narración",
-      "text": "La noche ha mordido los surcos y los setos. El mundo es más grande que el pueblo, y tú acabas de dar el primer paso."
+      "text": "El campo fue quemado. Al este."
     }
   ],
   "c0.leave_without_sword": [
     {
       "speaker": "Sistema",
-      "text": "Vas con las manos vacías. Al menos… recoge esa espada."
+      "text": "Manos vacías. Recoge esa espada primero."
     }
   ],
   "c0.road_east": [
     {
       "speaker": "Narración",
-      "text": "El camino se alarga hacia el este. Cuiling es mayor de lo que dibuja el mapa."
+      "text": "El camino largo va al este. Cuiling es más grande de lo que pinta el mapa."
     }
   ],
   "c1.flag_paw": [
     {
       "speaker": "Sistema",
-      "text": "Una huella de conejo torcida, a carboncillo, en la bandera. «Alguien dibujó un conejo. Las orejas no están bien; el valor sí.»"
+      "text": "Un conejo torcido en la bandera. Las orejas están mal."
     }
   ],
   "c1.flag_grey": [
     {
       "speaker": "Sistema",
-      "text": "La bandera gris cuelga floja. Toda la ciudad espera un milagro imposible."
+      "text": "La bandera gris cuelga baja. Nadie espera un milagro."
     }
   ],
   "c1.outer_ward": [
     {
       "speaker": "Narración",
-      "text": "La ciudad exterior es más amplia de lo que parecía. El dominio de los caballeros fue la espina dorsal de Cuiling; ahora solo hay piedra y viento."
+      "text": "La ciudad exterior es enorme. Solo quedan piedra y viento."
     }
   ],
   "c1.save_stone": [
     {
       "speaker": "Sistema",
-      "text": "Progreso grabado en la piedra de guardado. Las heridas también se han estabilizado. {extra}"
+      "text": "Guardado. Heridas estables. {extra}"
     },
     {
       "speaker": "Sistema",
-      "text": "(Puedes consultar el muro de títulos)"
+      "text": "Puedes ver los títulos."
     }
   ],
   "c1.sprout_after_leo": [
     {
       "speaker": "Brote",
-      "text": "¡El conejo de la bandera lo dibujé yo! Las orejas me salieron torcidas, ¡pero el valor está bien!"
+      "text": "¡El conejo de la bandera lo dibujé yo! ¡Las orejas salieron torcidas!"
     },
     {
       "speaker": "Brote",
-      "text": "Practico con la espada de madera todos los días. ¡De mayor quiero guardar la puerta! Fiera como Barbagrís, pero también nada fiera, como tú."
+      "text": "Practico con la espada de madera cada día. De mayor guardaré la puerta."
     }
   ],
   "c1.sprout_thanks": [
     {
       "speaker": "Brote",
-      "text": "¡La espada de madera vuela! ¡Gracias! Oye… ¿el león es muy grande? ¿De verdad vas a ir?"
+      "text": "¡La espada de madera se mueve genial! ¿El león es grande?"
     }
   ],
   "c1.sprout_wish": [
     {
       "speaker": "Brote",
-      "text": "Ding seguro que sabe hacerla, creo que son veinte de oro. ¡O dame treinta y voy yo misma a comprarla!"
+      "text": "Ding podría hacerla. Creo que cuesta unos veinte de oro."
     },
     {
       "speaker": "Brote",
-      "text": "¡No es codicia! ¡Quiero practicar para enseñárselo a todos!"
+      "text": "No es codicia. Quiero practicar donde todos me vean."
     }
   ],
   "c1.wild_need_forge": [
     {
       "speaker": "Sistema",
-      "text": "La espada oxidada se ha mellado. Ve a ver a Ding."
+      "text": "El filo de la espada oxidada se ha doblado. Busca a Ding primero."
     }
   ],
   "c1.burnt_field": [
     {
       "speaker": "Narración",
-      "text": "Trigal quemado. En el viento hay un dulzor rancio de Llama Negra. Aprietas el Filo Ínfimo."
+      "text": "Trigal quemado. Aprieta la espada."
     }
   ],
   "c1.tower_empty": [
     {
       "speaker": "Sistema",
-      "text": "La atalaya está vacía. Solo queda el viento."
+      "text": "La atalaya está vacía. Solo viento."
     }
   ],
   "c1.wild_shrine": [
     {
       "speaker": "Ermita",
-      "text": "«No se guarda la puerta. Se guarda esa pizca de luz que hay detrás.»"
+      "text": "«No se guarda la puerta. Se guarda la lucecita que hay detrás.»"
     },
     {
       "speaker": "Pensamiento",
@@ -132,57 +132,57 @@
   "c1.leo_gate_cleared": [
     {
       "speaker": "Sistema",
-      "text": "El León Sagrado ha despertado. El santuario se ha calmado. El camino de niebla al sudeste está abierto."
+      "text": "El León Sagrado despertó. El camino de niebla del sudeste está abierto."
     }
   ],
   "c1.leo_win": [
     {
       "speaker": "Leo",
-      "text": "Así que… el verdadero caballero es el valor de no retroceder aun siendo pequeño."
+      "text": "Un caballero no es grande. Es el que no retrocede."
     },
     {
       "speaker": "Leo",
-      "text": "Ve. Las puertas de la fortaleza se abren para ti."
+      "text": "La puerta se abre para ti. Ve."
     },
     {
       "speaker": "Leo",
-      "text": "La Llama Negra no quiere tu vida, quiere tu deseo. No la alimentes."
+      "text": "La llama quiere tu deseo. No la alimentes."
     },
     {
       "speaker": "Sistema",
-      "text": "80 de oro, 4 de polvo estelar, +10 de vida máxima. Tu pelaje tira a dorado. Trueno Furioso y Contragolpe también despiertan."
+      "text": "80 de oro, 4 de polvo estelar. Trueno Furioso y Contragolpe han despertado."
     }
   ],
   "c2.arrive": [
     {
       "speaker": "Velo de Niebla",
-      "text": "En la niebla, lo cierto y lo falso tienen el mismo color. Préstame tus ojos."
+      "text": "En la niebla, lo real y lo falso son del mismo color. Préstame tus ojos."
     },
     {
       "speaker": "Velo de Niebla",
-      "text": "Pasa aquí la noche. Quien camina de noche se rompe primero por dentro."
+      "text": "Pasa una noche primero. El camino nocturno se rompe antes en el corazón."
     },
     {
       "speaker": "Sistema",
-      "text": "Junto a la hoguera de la posada… parece que algo te espera."
+      "text": "La hoguera de la posada te espera."
     }
   ],
   "c2.lantern": [
     {
       "speaker": "Narración",
-      "text": "El farol de niebla alumbra tres pasos. El resto del camino lo llevan tus ojos."
+      "text": "El farol alumbra tres pasos. Más allá, los ojos."
     }
   ],
   "c2.well_fog": [
     {
       "speaker": "Narración",
-      "text": "En el pozo no hay agua: hay niebla más espesa. Dicen que quien cae se sueña a sí mismo."
+      "text": "En el pozo hay niebla. No agua."
     }
   ],
   "c2.laundry": [
     {
       "speaker": "Narración",
-      "text": "La ropa sigue mojada y no hay nadie. ¿La niebla tiende la colada por la gente?"
+      "text": "La ropa sigue mojada. No hay nadie."
     }
   ],
   "c2.cat_shadow": [
@@ -192,33 +192,33 @@
     },
     {
       "speaker": "Pensamiento",
-      "text": "¿Es un gato de verdad, o un maullido que la niebla aprendió?"
+      "text": "¿Un gato de verdad, o la niebla imitando?"
     }
   ],
   "c2.shrine": [
     {
       "speaker": "Ermita de la niebla",
-      "text": "«Lo verdadero, un instante. Lo falso, mil capas.»"
+      "text": "«Lo real dura un instante. Lo falso tiene mil capas.»"
     },
     {
       "speaker": "Pensamiento",
-      "text": "Un instante basta. Solo quiero ese instante."
+      "text": "Solo necesito ese instante."
     }
   ],
   "c2.train_need_letter": [
     {
       "speaker": "Sistema",
-      "text": "No tienes la cabeza en paz. Vuelve antes a la posada."
+      "text": "La mente inquieta. Vuelve a la posada primero."
     }
   ],
   "c2.train_tip": [
     {
       "speaker": "Velo de Niebla",
-      "text": "Las sombras mienten. El cuerpo real brilla una vez. Recuerda esa vez."
+      "text": "Las sombras engañan. El cuerpo real brilla un instante."
     },
     {
       "speaker": "Sistema",
-      "text": "Solo aciertas en el instante en que el cuerpo real destella. Cambia de objetivo con Tab o 1/2/3."
+      "text": "Solo se acierta en el destello blanco. Tab cambia de objetivo."
     }
   ],
   "c2.letter_reread": [
@@ -228,125 +228,125 @@
     },
     {
       "speaker": "Diario",
-      "text": "«Sigo aquí. No por la profecía, sino porque tú aún no has vuelto.» — Espiga"
+      "text": "«Sigo aquí. Porque aún no has vuelto.» — Espiga"
     }
   ],
   "c2.fog_need_letter": [
     {
       "speaker": "Velo de Niebla",
-      "text": "Te falta una carta por dentro. Vuelve a la posada."
+      "text": "Debes una carta. Vuelve a la posada."
     }
   ],
   "c2.fog_cleared": [
     {
       "speaker": "Sistema",
-      "text": "La galería de espejismos está en calma. Puedes volver al pueblo o seguir viaje."
+      "text": "La galería de espejismos calló. Vuelve al pueblo o sigue adelante."
     }
   ],
   "c2.fog_win": [
     {
       "speaker": "Niebla Blanca",
-      "text": "Me has calado… qué aburrimiento."
+      "text": "Me has calado. ¿Un mercenario sabe hacerlo? Qué aburrido."
     },
     {
       "speaker": "Niebla Blanca",
-      "text": "La niebla se ha ido; el camino está ahí delante. Anda, ve."
+      "text": "La niebla se fue. Informa o sigue. Me da igual."
     },
     {
       "speaker": "Sistema",
-      "text": "70 de oro, 4 de polvo estelar, +8 de vida máxima. Tu pelaje toma color de niebla. En el monte suena una campana…"
+      "text": "70 de oro, 4 de polvo estelar. Hay una campana en la montaña."
     }
   ],
   "c3.soft_warn": [
     {
       "speaker": "Sistema",
-      "text": "Puedes subir al monte sin haber calado a la Niebla Blanca, pero Abo no te lo tendrá en cuenta. Poder {power}."
+      "text": "Puedes subir sin haber calado la niebla. Abo no perdona. Poder {power}."
     },
     {
       "speaker": "Sistema",
-      "text": "Si no llega, forja y observa estrellas en la ciudad, o cúrtete en el patio de armas y en los cotos."
+      "text": "Si no basta: vuelve a forjar, extraer almas y entrenar."
     }
   ],
   "c3.arrive": [
     {
       "speaker": "Acha",
-      "text": "¿Vienes de la niebla? El maestro está en la sala de pruebas. Él no golpea primero: pregunta primero."
+      "text": "¿De la niebla? El maestro está en la Sala de pruebas. Él pregunta primero."
     },
     {
       "speaker": "Sistema",
-      "text": "Puedes recorrer el dojo. Reta a Abo en la sala de pruebas."
+      "text": "Desafía a Abo en la Sala de pruebas."
     }
   ],
   "c3.gate_bell": [
     {
       "speaker": "Narración",
-      "text": "La campana suena una vez. El valle te devuelve el eco: ¿por qué luchas?"
+      "text": "Suena la campana. ¿Por qué luchas? Alguien espera."
     }
   ],
   "c3.dummy_done": [
     {
       "speaker": "Sistema",
-      "text": "Hay una marca de puño nueva en el muñeco. Es tuya."
+      "text": "Una marca de puño nueva en el muñeco. La tuya."
     }
   ],
   "c3.scroll_wall": [
     {
       "speaker": "Manual de puño",
-      "text": "«La guardia se rompe con constancia, no con ira.»"
+      "text": "«Romper la guardia está en la constancia, no en la ira.»"
     },
     {
       "speaker": "Manual de puño",
-      "text": "«Ira llena, puño disperso. Puño disperso, guardia rota.»"
+      "text": "«Con la ira llena, el puño se dispersa. Disperso, la guardia se rompe.»"
     }
   ],
   "c3.stone_garden": [
     {
       "speaker": "Narración",
-      "text": "Las piedras dibujan un puño. Alguien mueve una cada día, hasta que el ánimo se aquieta."
+      "text": "Piedras dispuestas como un puño. Una se mueve cada día."
     }
   ],
   "c3.abo_cleared": [
     {
       "speaker": "Sistema",
-      "text": "La sala de pruebas está vacía. Abo toma té sentado en el umbral."
+      "text": "La Sala de pruebas está vacía. Abo toma té."
     }
   ],
   "c4.arrive": [
     {
       "speaker": "Oídoviento",
-      "text": "¿La compañía? Tus pies son más lentos que el viento. Bien. Si quieres ver a la Sombra Veloz, aprende a esperar. El compás en que el viento para: ese es el de verdad."
+      "text": "Más lento que el viento. Perfecto. Espera el instante en que se detiene."
     },
     {
       "speaker": "Sistema",
-      "text": "Puedes recorrer el Bosque del Montaraz. El nido de la Sombra está al este."
+      "text": "El Nido de la Sombra Veloz está al este."
     }
   ],
   "c4.treehouse": [
     {
       "speaker": "Narración",
-      "text": "Las casas del árbol se unen con cuerdas de liana. El hilo de una cometa se enreda en la baranda y la punta aún tiembla."
+      "text": "Un hilo de cometa enredado en la barandilla."
     },
     {
       "speaker": "Un niño",
-      "text": "(A lo lejos) ¡Mi cometa… se la llevó el viento!"
+      "text": "¡Mi cometa se ha atascado!"
     }
   ],
   "c4.kite_freed": [
     {
       "speaker": "Sistema",
-      "text": "Has devuelto la cometa al niño. El hilo quedó bien recogido."
+      "text": "Cometa devuelta."
     }
   ],
   "c4.stream": [
     {
       "speaker": "Narración",
-      "text": "El arroyo va limpio. En el agua se reflejan las hojas; ninguna grieta morada. Toda una rareza."
+      "text": "El arroyo está claro. Sin grietas moradas."
     }
   ],
   "c4.owl_post": [
     {
       "speaker": "Búho",
-      "text": "…"
+      "text": "……"
     },
     {
       "speaker": "Pensamiento",
@@ -356,83 +356,83 @@
   "c4.arrow_path_done": [
     {
       "speaker": "Sistema",
-      "text": "La senda de flechas está tranquila. De vez en cuando el viento roza las puntas de la hierba."
+      "text": "La senda de flechas está en silencio."
     }
   ],
   "c4.watch_tower": [
     {
       "speaker": "Inscripción",
-      "text": "«La Sombra guarda el viento. El viento guarda a quien camina.»"
+      "text": "La Sombra Veloz guarda el viento. El viento guarda al viajero."
     },
     {
       "speaker": "Inscripción",
-      "text": "«Si el viento enloquece, espera a que recuerde que él también paró una vez por alguien.»"
+      "text": "Cuando el viento enloquece, espera a que recuerde que alguna vez paró."
     },
     {
       "speaker": "Pensamiento",
-      "text": "Esperar… no es debilidad. Es ver claro — y entonces disparar."
+      "text": "Esperar no es debilidad. Ve claro, luego dispara."
     }
   ],
   "c4.herb_looted": [
     {
       "speaker": "Sistema",
-      "text": "Ya recogiste el rocío de la ladera de hierbas."
+      "text": "Hierbas ya recogidas."
     }
   ],
   "c4.falcon_cleared": [
     {
       "speaker": "Sistema",
-      "text": "El nido está vacío. Solo queda viento y un mechón de plumas plateadas."
+      "text": "El nido está vacío. Solo viento y plumas de plata."
     }
   ],
   "c4.falcon_win": [
     {
       "speaker": "Sombra Veloz",
-      "text": "Atrapaste el viento… el más débil de la compañía, y aun así esperaste."
+      "text": "Alcanzaste el viento. Supiste detenerte."
     },
     {
       "speaker": "Sombra Veloz",
-      "text": "Toma la pluma de plata. No es premio — es recuerdo: alguien quiso parar por ti. Al informar, no escribas 'héroe'."
+      "text": "La pluma de plata es tuya. Recuerda que alguien supo detenerse."
     },
     {
       "speaker": "Oídoviento",
-      "text": "(A lo lejos) Ve. La costa sigue rugiendo. Si la compañía pregunta: esperaste al viento."
+      "text": "Ve. La costa sigue rugiendo."
     },
     {
       "speaker": "Sistema",
-      "text": "85 de oro, 4 de polvo estelar, +8 de vida máxima. Tu pelaje toma el gris del viento."
+      "text": "85 de oro, 4 de polvo estelar."
     }
   ],
   "c5.arrive": [
     {
       "speaker": "Bramamarea",
-      "text": "Puño de Piedra no golpea para romperte. Se le olvidó dónde poner la fuerza."
+      "text": "En la orilla gana quien va de frente. Puño de Piedra olvidó dónde poner su fuerza."
     },
     {
       "speaker": "Sistema",
-      "text": "Puedes recorrer la costa. El Risco del Puño está al este."
+      "text": "El Risco del Puño de Piedra está al este."
     }
   ],
   "c5.dock": [
     {
       "speaker": "Narración",
-      "text": "El pueblo del muelle está casi vacío. Las redes se secan en los soportes; nadie se atreve a salir a la mar."
+      "text": "El muelle está vacío. Las redes se secan en los bastidores."
     },
     {
       "speaker": "Sistema",
-      "text": "Alguien escribió con carbón en una tabla: la fuerza sin rumbo es solo oleaje contra una orilla vacía."
+      "text": "En la tabla: fuerza sin dirección, olas contra una orilla vacía."
     }
   ],
   "c5.boat_wreck": [
     {
       "speaker": "Narración",
-      "text": "En el casco roto queda medio saco de sal. La sal está seca: no se la llevó el mar, se fue antes la gente."
+      "text": "Medio saco de sal seca en el pecio. La gente se fue primero."
     }
   ],
   "c5.net_rack": [
     {
       "speaker": "Narración",
-      "text": "Las redes están cuajadas de cristales de sal. Como si alguien hubiera tejido el oleaje y olvidara recogerlo."
+      "text": "Redes cuajadas de sal. Nadie las recoge."
     }
   ],
   "c5.runestone": [
@@ -442,69 +442,69 @@
     },
     {
       "speaker": "Pensamiento",
-      "text": "…Lo mismo que dijo Bramamarea."
+      "text": "Un título no rompe la orilla. Ve de frente."
     }
   ],
   "c5.forge_tip_done": [
     {
       "speaker": "Bramamarea",
-      "text": "(Eco) La intención del hacha vive en el filo, no en la garganta."
+      "text": "La voluntad del hacha está en el filo, no en la garganta."
     }
   ],
   "c5.cliff_path": [
     {
       "speaker": "Narración",
-      "text": "En el sendero del risco se cruzan marcas de desprendimientos viejos y nuevos. El suelo conserva quemaduras de los círculos seguros."
+      "text": "Marcas de desprendimientos, viejas y nuevas."
     },
     {
       "speaker": "Sistema",
-      "text": "Antes de caer una roca, el suelo se ilumina. Cuando lo veas, esquiva con J."
+      "text": "El suelo brilla primero, luego caen rocas. Con el brillo, pulsa J."
     }
   ],
   "c5.boar_cleared": [
     {
       "speaker": "Sistema",
-      "text": "Arriba hay calma. Solo el oleaje, como aplausos."
+      "text": "El risco está en calma. Solo las olas, como un aplauso."
     }
   ],
   "c5.boar_win": [
     {
       "speaker": "Puño de Piedra",
-      "text": "¡Jajaja! ¡El que sigue en pie eres tú!"
+      "text": "¡Ja! El último en pie eres tú."
     },
     {
       "speaker": "Puño de Piedra",
-      "text": "…La fuerza servía para guardar la orilla. Gracias por recordármelo."
+      "text": "La fuerza es para guardar la orilla. En el informe no pongas «héroe»."
     },
     {
       "speaker": "Bramamarea",
-      "text": "(Riendo a carcajadas) ¡Buen conejo! ¡A la torre!"
+      "text": "A la torre. Tu fuerza ya apunta a algo."
     },
     {
       "speaker": "Sistema",
-      "text": "95 de oro, 5 de polvo estelar, +10 de vida máxima. Las puntas del pelo se te tiñen de fuego."
+      "text": "95 de oro, 5 de polvo estelar."
     }
   ],
   "c6.bell_not_rung": [
     {
       "speaker": "Sistema",
-      "text": "La campana del monte aún no ha sonado. Ve antes al dojo."
+      "text": "La campana de la montaña no ha sonado. Primero el dojo."
     }
   ],
   "c6.path_not_open": [
     {
       "speaker": "Sistema",
-      "text": "El camino aún no está abierto. Termina primero la prueba que tienes delante."
+      "text": "El camino aún no está abierto. Termina la prueba que tienes delante."
     }
   ],
   "c6.floor_shadow": [
     {
       "speaker": "Narración",
-      "text": "La galería de sombras. Alguien susurra tras los muros."
+      "text": "La Galería de las Sombras. Alguien susurra en la pared."
     },
     {
       "speaker": "Voz ilusoria",
-      "text": "Si te haces fuerte, podrás salvar a todos. Traga la llama y el mundo se callará."
+      "text": "¿Hacerte fuerte y salvarlos a todos? La llama ríe primero."
     },
     {
       "speaker": "Pensamiento",
@@ -512,35 +512,35 @@
     },
     {
       "speaker": "Sistema",
-      "text": "Has cruzado la galería de sombras sin desenvainar."
+      "text": "Cruzaste la Galería de las Sombras sin desenvainar."
     }
   ],
   "c6.demon_win": [
     {
       "speaker": "Rey Demonio",
-      "text": "Imposible… el más débil de la banda…"
+      "text": "Imposible… el más débil de la compañía…"
     },
     {
       "speaker": "El Anterior",
-      "text": "…No. Era lo que tenía que pasar."
+      "text": "…No. Es lo que debía ser."
     },
     {
       "speaker": "El Anterior",
-      "text": "La próxima vez… no andes mi camino."
+      "text": "La próxima vez… no sigas mi camino."
     },
     {
       "speaker": "El Anterior",
-      "text": "Te devuelvo la espada. O dásela al siguiente que pese tan poco como nosotros."
+      "text": "Te devuelvo la espada. O… dásela al siguiente que sea tan ligero como nosotros."
     },
     {
       "speaker": "Sistema",
-      "text": "150 de oro, 8 de polvo estelar. Cinco hilos de luz estelar suben y se posan en tu hombro."
+      "text": "150 de oro, 8 de polvo estelar."
     }
   ],
   "post.rift_not_open": [
     {
       "speaker": "Sistema",
-      "text": "La grieta aún no rebosa. Termina antes la prueba de la cima."
+      "text": "La grieta aún no se ha desbordado. Termina la prueba de la cima."
     }
   ],
   "post.rift_win": [
@@ -550,7 +550,7 @@
     },
     {
       "speaker": "Sistema",
-      "text": "«{mode}» se apaga por ahora. Victorias: {wins}. {extra}"
+      "text": "«{mode}» se apagó por ahora. Victorias: {wins}. {extra}"
     }
   ]
 }

@@ -2,7 +2,7 @@
   "hub.candle_need_online": [
     {
       "speaker": "系统",
-      "text": "请先在连接设置访客上线，才能同步烛火。"
+      "text": "先连接，才能同步烛火。"
     }
   ],
   "hub.candle_already_lit": [
@@ -14,7 +14,7 @@
   "hub.candle_lit": [
     {
       "speaker": "旁白",
-      "text": "火苗跳了一下。远方好像有人同时看见。\n（全服：{total}）"
+      "text": "火苗跳了一下。\n（全服：{total}）"
     }
   ],
   "hub.hunt_abandoned": [
@@ -48,7 +48,7 @@
     },
     {
       "speaker": "系统",
-      "text": "购入【{item}】×1（-{price}金）"
+      "text": "买了{item}（-{price}金）"
     }
   ],
   "hub.ng_plus_not_yet": [

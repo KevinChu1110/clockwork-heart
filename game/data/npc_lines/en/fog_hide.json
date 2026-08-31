@@ -10,7 +10,7 @@
         ]
       },
       "lines": [
-        "The mist laughs more the second time around. Wait for the real body to flare white. Don't rush."
+        "Second time round, the mist laughs harder. Wait for the white flash. Don't rush."
       ]
     },
     {
@@ -20,8 +20,8 @@
         ]
       },
       "lines": [
-        "The true letter arrived. One layer less of false fog.",
-        "Your eyes work better than they did the first time."
+        "The true letter arrived. One layer of false mist is gone.",
+        "Your eyes work better than the first time."
       ]
     },
     {
@@ -31,7 +31,7 @@
         ]
       },
       "lines": [
-        "You're carrying the letter. Hand the real one over at the trader post on the Crossroads."
+        "The letter's on you. The Trader Post at the crossroads—hand over the real one."
       ]
     },
     {
@@ -41,8 +41,8 @@
         ]
       },
       "lines": [
-        "The mist has lifted. Your eyes will do.",
-        "…There's one more true letter. Too many forgeries — the real one goes by hand."
+        "The mist has cleared. Your eyes… are usable.",
+        "…One more true letter. Too many fakes; the real one goes by hand."
       ]
     },
     {
@@ -52,14 +52,14 @@
         ]
       },
       "lines": [
-        "Strike a shadow and the shadow laughs at you. Look for the tell: the instant the blade lifts, that one is real.",
-        "The mirror hall is east of the village. White Fog is waiting for you to get lost."
+        "Hit a shadow and it laughs at you. Watch the opening: the instant the blade lifts is the real one.",
+        "The Mirror Hall is east of the village. White Fog is waiting for you to get lost."
       ]
     },
     {
       "when": {},
       "lines": [
-        "From the company? Go to the inn first. Someone passed that letter all the way here… too slowly. Your orders can wait one night."
+        "The inn first. A letter was passed all the way here. Late."
       ]
     }
   ]

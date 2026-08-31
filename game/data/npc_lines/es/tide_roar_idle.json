@@ -9,7 +9,7 @@
         ]
       },
       "lines": [
-        "¡Jajaja! Tu fuerza ya tiene rumbo. ¡A la torre!"
+        "¡Jajaja! Tu fuerza ya tiene dirección. Ve a la torre; la compañía no manda en eso."
       ]
     },
     {
@@ -19,14 +19,14 @@
         ]
       },
       "lines": [
-        "Cuando embista, no huyas: sal a su encuentro. De frente.",
-        "La coraza de roca se pela capa a capa. Métete agachado en la zona clara de los desprendimientos."
+        "No huyas. Ve de frente. Choca.",
+        "La coraza de roca se pela capa a capa. Agáchate en la zona brillante."
       ]
     },
     {
       "when": {},
       "lines": [
-        "El viento de la costa sabe a sal. Tu filo… ¿puede sonar una vez más?"
+        "El viento de la costa sabe a sal. ¿El más débil de la compañía? Las olas no entienden de títulos."
       ]
     }
   ]

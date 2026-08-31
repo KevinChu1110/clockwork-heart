@@ -73,7 +73,7 @@ func status_bbcode() -> String:
 	_refresh_daily()
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]野外獵場[/b]"))
-	lines.append(_t("黑焰溢地的邊陲。主線不經此處——材料為主，經驗比演武場薄。"))
+	lines.append(_t("黑焰溢地的邊陲。拿材料的地方，經驗比演武場薄。"))
 	lines.append("")
 	if not is_unlocked():
 		lines.append(_t("（進入騎士堡後解鎖）"))

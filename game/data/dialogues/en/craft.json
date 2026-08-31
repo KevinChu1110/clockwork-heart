@@ -2,7 +2,7 @@
   "skill.learned": [
     {
       "speaker": "Greybeard",
-      "text": "That's it. Remember the feel, not the name of the move."
+      "text": "Done. Remember the feel, not the name."
     },
     {
       "speaker": "System",
@@ -18,25 +18,25 @@
   "skill.tutor_deny": [
     {
       "speaker": "Greybeard",
-      "text": "Gold — or you've already topped out."
+      "text": "Gold, or you're already at the top."
     }
   ],
   "soul.equipped": [
     {
       "speaker": "System",
-      "text": "Soul set in the slot. The blade's temperament has changed."
+      "text": "Soul set. The blade's temper has changed."
     }
   ],
   "soul.ritual_not_enough": [
     {
       "speaker": "Starreader",
-      "text": "That much dust won't light a single corner."
+      "text": "Not enough stardust to light a corner."
     }
   ],
   "soul.fused": [
     {
       "speaker": "Starreader",
-      "text": "Three on the same orbit become one brighter star."
+      "text": "Three on one track, merged into a brighter star."
     },
     {
       "speaker": "System",
@@ -46,13 +46,13 @@
   "soul.fuse_requirement": [
     {
       "speaker": "Starreader",
-      "text": "Three of the same star, grade and tier — and none of them set."
+      "text": "Needs three of the same star, quality and level, none set."
     }
   ],
   "forge.need_rusty_first": [
     {
       "speaker": "Ding",
-      "text": "Let me see that rusty iron of yours first."
+      "text": "Let me look at that rusty iron of yours first."
     }
   ],
   "forge.path_chosen": [
@@ -62,35 +62,35 @@
     },
     {
       "speaker": "System",
-      "text": "How it plays: {play}. {pro}"
+      "text": "Playstyle: {play}. {pro}"
     },
     {
       "speaker": "System",
-      "text": "For souls, go read the stars with the Starreader. Power {power}."
+      "text": "Draw souls at the Soul Hall. Power {power}."
     }
   ],
   "forge.wood_sword_no_gold": [
     {
       "speaker": "Ding",
-      "text": "Twenty gold. No money, don't block my forge."
+      "text": "Twenty gold. No money, no hogging my forge."
     }
   ],
   "forge.wood_sword_owned": [
     {
       "speaker": "Ding",
-      "text": "Wooden sword? You already took one."
+      "text": "A wooden sword? You already got one."
     }
   ],
   "forge.tier_max": [
     {
       "speaker": "Ding",
-      "text": "That's enough. Go cut that lion first."
+      "text": "Enough. Go cut the lion first."
     }
   ],
   "forge.no_gold": [
     {
       "speaker": "Ding",
-      "text": "Where's the gold? Take a lap outside the walls."
+      "text": "Where's the gold? Take a walk outside the walls."
     }
   ],
   "forge.success": [
@@ -106,21 +106,21 @@
     },
     {
       "speaker": "System",
-      "text": "The hammer lands by the forge and sparks scatter."
+      "text": "The hammer lands by the forge; sparks scatter."
     },
     {
       "speaker": "Ding",
-      "text": "…Take it, a cake to cool off. Come back tomorrow, and don't show me that face today."
+      "text": "Take it. Come back tomorrow."
     },
     {
       "speaker": "System",
-      "text": "You recover some health. The failure streak resets."
+      "text": "Some stamina recovered. Losing streak reset."
     }
   ],
   "forge.failed": [
     {
       "speaker": "Ding",
-      "text": "Failed. The tier stays. The materials don't."
+      "text": "Failed. Tier stays. Materials are gone."
     }
   ]
 }

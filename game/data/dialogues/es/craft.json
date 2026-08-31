@@ -2,41 +2,41 @@
   "skill.learned": [
     {
       "speaker": "Barbagrís",
-      "text": "Ya está. Recuerda el tacto, no el nombre de la técnica."
+      "text": "Listo. Recuerda la sensación, no el nombre."
     },
     {
       "speaker": "Sistema",
-      "text": "Aprendes [{skill}]"
+      "text": "Aprendido: [{skill}]"
     }
   ],
   "skill.not_yet": [
     {
       "speaker": "Barbagrís",
-      "text": "Aún no es el momento."
+      "text": "Aún no."
     }
   ],
   "skill.tutor_deny": [
     {
       "speaker": "Barbagrís",
-      "text": "Oro, o es que ya has tocado techo."
+      "text": "Oro, o ya estás al máximo."
     }
   ],
   "soul.equipped": [
     {
       "speaker": "Sistema",
-      "text": "Alma engarzada. El filo ha cambiado de carácter."
+      "text": "Alma engarzada. El carácter de la hoja ha cambiado."
     }
   ],
   "soul.ritual_not_enough": [
     {
       "speaker": "Lector de Estrellas",
-      "text": "Con ese polvo no se enciende ni una esquina."
+      "text": "No hay polvo estelar ni para encender una esquina."
     }
   ],
   "soul.fused": [
     {
       "speaker": "Lector de Estrellas",
-      "text": "Tres de la misma órbita se funden en una estrella más brillante."
+      "text": "Tres en la misma órbita, fundidas en una estrella más brillante."
     },
     {
       "speaker": "Sistema",
@@ -46,13 +46,13 @@
   "soul.fuse_requirement": [
     {
       "speaker": "Lector de Estrellas",
-      "text": "Hacen falta tres de la misma estrella, calidad y grado, y sin engarzar."
+      "text": "Hacen falta tres de la misma estrella, calidad y nivel, sin engarzar."
     }
   ],
   "forge.need_rusty_first": [
     {
       "speaker": "Ding",
-      "text": "Primero enséñame ese hierro oxidado."
+      "text": "Déjame ver primero ese hierro oxidado tuyo."
     }
   ],
   "forge.path_chosen": [
@@ -62,65 +62,65 @@
     },
     {
       "speaker": "Sistema",
-      "text": "Cómo se juega: {play}. {pro}"
+      "text": "Estilo de juego: {play}. {pro}"
     },
     {
       "speaker": "Sistema",
-      "text": "Para las almas, ve al Lector de Estrellas. Poder {power}."
+      "text": "Las almas se extraen en el Salón del Alma. Poder {power}."
     }
   ],
   "forge.wood_sword_no_gold": [
     {
       "speaker": "Ding",
-      "text": "Veinte de oro. Sin dinero, no me ocupes la fragua."
+      "text": "Veinte de oro. Sin dinero no me ocupes la fragua."
     }
   ],
   "forge.wood_sword_owned": [
     {
       "speaker": "Ding",
-      "text": "¿La espada de madera? Si ya te la llevaste."
+      "text": "¿Espada de madera? Ya te llevaste una."
     }
   ],
   "forge.tier_max": [
     {
       "speaker": "Ding",
-      "text": "Ya basta. Ve a cortarle algo a ese león."
+      "text": "Basta. Ve a cortar al león primero."
     }
   ],
   "forge.no_gold": [
     {
       "speaker": "Ding",
-      "text": "¿Y el oro? Date una vuelta fuera de la ciudad."
+      "text": "¿Y el oro? Date una vuelta fuera de la muralla."
     }
   ],
   "forge.success": [
     {
       "speaker": "Ding",
-      "text": "Hecho. T{tier}. {scrap}"
+      "text": "Listo. T{tier}. {scrap}"
     }
   ],
   "forge.pity_break": [
     {
       "speaker": "Ding",
-      "text": "(Estampa el martillo en el yunque) ¡Basta! ¡El hierro tiene más paciencia que tú!"
+      "text": "(Golpea el yunque con el martillo) ¡Basta! ¡El hierro tiene más paciencia que tú!"
     },
     {
       "speaker": "Sistema",
-      "text": "El martillo cae junto a la fragua y saltan chispas."
+      "text": "El martillo cae junto a la fragua; saltan chispas."
     },
     {
       "speaker": "Ding",
-      "text": "…Toma, una torta para el disgusto. Vuelve mañana y hoy no me enseñes esa cara."
+      "text": "Toma. Vuelve mañana."
     },
     {
       "speaker": "Sistema",
-      "text": "Recuperas algo de vida. El contador de fallos vuelve a cero."
+      "text": "Recuperas algo de aguante. Racha de fallos a cero."
     }
   ],
   "forge.failed": [
     {
       "speaker": "Ding",
-      "text": "Fallo. El nivel se queda. Los materiales, no."
+      "text": "Fallo. El nivel se mantiene. Los materiales se perdieron."
     }
   ]
 }

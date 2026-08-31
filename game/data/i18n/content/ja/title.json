@@ -90,5 +90,9 @@
   "title.wreck_end": {
     "desc": "船長の影をもう一度沈めた。",
     "name": "沈船の終わり"
+  },
+  "title.arena_challenger": {
+    "name": "演武の挑戦者",
+    "desc": "演武場の五波試練を一度クリア。"
   }
 }

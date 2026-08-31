@@ -7,7 +7,7 @@
         "ng_plus_min": 1
       },
       "lines": [
-        "¿Otra vez? Ceniza en el filo… ¿tocaste la llama? Da igual, yo forjo equipo, no vidas."
+        "¿Otra vez? Ceniza en la hoja. Yo cuido armas, no vidas."
       ]
     },
     {
@@ -17,7 +17,7 @@
         ]
       },
       "lines": [
-        "Mientras quede hierro, bien. Y no me hagas enterrar el mismo hierro dos veces."
+        "Bien, el hierro sigue aquí. —No me hagas reconocer dos veces un hierro enterrado."
       ]
     },
     {
@@ -27,8 +27,8 @@
         ]
       },
       "lines": [
-        "Deuda vieja saldada. La fragua… tira algo más firme que antes.",
-        "Subir de nivel sigue costando oro. El cariño no arde en el horno."
+        "Deuda vieja saldada. El fuego… arde un poco más firme.",
+        "Subir de nivel sigue costando oro. El cariño no arde como el carbón."
       ]
     },
     {
@@ -38,7 +38,7 @@
         ]
       },
       "lines": [
-        "Ese corte… ¿lo cogiste en el patio de armas? Dámelo."
+        "Esa rotura… ¿la sacaste del patio de armas? Dámela."
       ]
     },
     {
@@ -48,7 +48,7 @@
         ]
       },
       "lines": [
-        "La espada rota está junto al armero del patio de armas. No me digas que te has perdido."
+        "La espada rota está junto al bastidor del patio de armas. No me digas que te perdiste."
       ]
     },
     {
@@ -58,14 +58,14 @@
         ]
       },
       "lines": [
-        "Filo Ínfimo. Feo nombre, pero cumple. Si quieres subirlo, trae oro.",
-        "…Si te sobra tiempo, échale un ojo al patio de armas. Deuda vieja."
+        "Filo Ínfimo. Nombre feo, pero sirve. Para subirlo trae oro.",
+        "…Si tienes tiempo, echa un ojo al patio de armas por mí. Una deuda vieja."
       ]
     },
     {
       "when": {},
       "lines": [
-        "La puerta no está abierta para que los conejos hagan turismo."
+        "La puerta no está abierta para turistas. ¿La compañía manda otra vez al más débil?"
       ]
     }
   ]

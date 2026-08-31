@@ -487,7 +487,7 @@ func label(inst: Dictionary) -> String:
 func status_bbcode() -> String:
 	_ensure_state()
 	var lines: PackedStringArray = []
-	lines.append(_t("[b]裝備[/b]（素質於獲得時浮動鎖定）"))
+	lines.append(_t("[b]裝備[/b]（數值在拾得時定下）"))
 	var b := bonus_totals()
 	lines.append(_t("總加成：攻+%d 防+%d 血+%d 暴擊+%.1f 暴傷+%.1f") % [
 		int(b.atk), int(b.def), int(b.hp), float(b.crit), float(b.crit_dmg)

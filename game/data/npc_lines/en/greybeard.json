@@ -10,8 +10,8 @@
         ]
       },
       "lines": [
-        "Again. Your footprints laid over the old road. Do you remember pulling three times before the sword came free?",
-        "The lion in the echo is angrier. Don't loosen your parry."
+        "Again. Remember pulling that sword three times?",
+        "The lion's angrier. Don't loosen your parry."
       ]
     },
     {
@@ -21,8 +21,8 @@
         ]
       },
       "lines": [
-        "A corner of the tower fell. And you're still standing. …Hmph. Come in, have some tea.",
-        "If your techniques still have room to grow, the training's still open."
+        "A corner of the tower fell. You're still standing. Come in for tea.",
+        "The company calls you weakest. The keep doesn't think so anymore."
       ]
     },
     {
@@ -33,8 +33,8 @@
         ]
       },
       "lines": [
-        "You saw through the mist too? Eyes grow before the sword does.",
-        "The tower is waiting. Don't be the fool who mistakes flame for firewood."
+        "Saw through the mist too? Eyes grow before blades.",
+        "The tower is waiting. Don't call yourself a hero."
       ]
     },
     {
@@ -44,8 +44,8 @@
         ]
       },
       "lines": [
-        "(Back turned) The gate opens for you.",
-        "There's mist to the southeast. Letters may be late — you shouldn't be."
+        "The gate opens for you.",
+        "Mist to the southeast. Letters run late; you shouldn't."
       ]
     },
     {
@@ -55,15 +55,15 @@
         ]
       },
       "lines": [
-        "You have an edge now. The lion in the sanctum doesn't listen to words. It listens to steel.",
-        "You're not going to prove you're strong. You're going to make it remember what it was supposed to guard."
+        "Blade's ready. The lion won't hear words. It hears the blade.",
+        "Not to prove you're strong. To make it remember what it guards."
       ]
     },
     {
       "when": {},
       "lines": [
-        "Weakest of the company? The Sacred Lion is in the sanctum. If you're not here to die, raise your sword first.",
-        "Techniques aren't for looking at. They only grow when they land. Living to report beats a pretty medal."
+        "The company's weakest? The Sacred Lion is in the sanctum. Raise your blade first.",
+        "Techniques only grow when they land. Live to report."
       ]
     }
   ]

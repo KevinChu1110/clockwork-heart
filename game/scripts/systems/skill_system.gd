@@ -256,7 +256,7 @@ const CATALOG: Array[Dictionary] = [
 		"self_miss_pct": 30,
 		"priority": 41,
 		"req_level": 16,
-		"desc": "★ 16 級暴怒技。慢、重、痛——三成機率落空的人品技。",
+		"desc": "★ 16 級暴怒技。慢、重、痛——三成會落空。",
 		"lv2": "滅勢更沉。",
 		"lv3": "一擊封頂前一檔。",
 		"unlock_hint": "斧系 Lv16",
@@ -609,7 +609,7 @@ const CATALOG: Array[Dictionary] = [
 		"req_level": 7,
 		"desc": "冰錐貫穿。",
 		"lv2": "冰刺更長。",
-		"lv3": "寒霜減速風味（倍率↑）。",
+		"lv3": "寒霜附減速（倍率↑）。",
 		"unlock_hint": "法杖 Lv7",
 	},
 	{
@@ -1285,7 +1285,7 @@ func panel_status_bbcode() -> String:
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]旅途 · 招式[/b]"))
 	lines.append(_t("鐵匠養器 · 星途養魂 · [color=#c9e]旅途養招[/color]"))
-	lines.append(_t("六職業各有兩套對等武器系統（非主副）。戰鬥中技能嚴格綁定【當前武器欄】的類型。"))
+	lines.append(_t("每職兩套武器，不分主副。出招只跟手上那把走。"))
 	lines.append(_t("武器欄：第1欄開局 · 第2欄 Lv10 · 第3欄 Lv16；次數耗盡自動切下一把，也可按 1／2／3 預切。"))
 	lines.append(_t("熟練靠戰鬥命中累積；滿了會自動升階。灰鬚可指點加速。"))
 	var pid := _path_id()

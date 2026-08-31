@@ -2,19 +2,19 @@
   "side.guard_dog": [
     {
       "speaker": "Perro guardián",
-      "text": "Guau. (Un golpe de cola, como diciendo: primero el oro.)"
+      "text": "Guau. (Un golpe de cola, como diciendo: paga primero.)"
     }
   ],
   "side.training_need_weapon": [
     {
       "speaker": "Narración",
-      "text": "Quedan pisadas viejas en la arena del patio. Ve antes a que Ding te críe la espada."
+      "text": "Que Ding te arregle la espada primero."
     }
   ],
   "side.training_daily_cap": [
     {
       "speaker": "Sistema",
-      "text": "Has llegado al límite de entrenamiento de hoy. Cambia de aire en el campo o en un coto."
+      "text": "El entrenamiento de hoy está completo. Al coto."
     }
   ],
   "side.training_result": [
@@ -24,46 +24,46 @@
     },
     {
       "speaker": "Sistema",
-      "text": "Tu poder es ahora {power}. Lleva los materiales a Ding o véndeselos a Ámbar."
+      "text": "Poder {power}. Forja los materiales o véndeselos a Ámbar."
     }
   ],
   "side.weapon_rack_untasked": [
     {
       "speaker": "Narración",
-      "text": "El armero está medio vacío. Una espada rota asoma de la arena: el filo es muy viejo."
+      "text": "Una espada rota en el bastidor. El filo es viejo."
     }
   ],
   "side.broken_blade_gone": [
     {
       "speaker": "Narración",
-      "text": "Aquí ya no queda nada que Ding quiera."
+      "text": "Ya no queda aquí nada que Ding quiera."
     }
   ],
   "side.amber_has_letter": [
     {
       "speaker": "Ámbar",
-      "text": "¿Ah, sí? Esa carta que llevas… ¿lleva el sello de Velo? Dásela al capitán; yo cobro en oro, no en penas ajenas."
+      "text": "¿Esa carta? Dásela al jefe. Yo solo acepto oro."
     },
     {
       "speaker": "Ámbar",
-      "text": "La tienda sigue abierta. Material de forja y agua roja, en stock."
+      "text": "La tienda sigue abierta. Materiales de forja, pociones rojas, todo en stock."
     }
   ],
   "side.amber_shop_open": [
     {
       "speaker": "Ámbar",
-      "text": "Tienda de materiales abierta. Chatarra, arena estelar, resina de roble, hierro de caballero: te compro lo que sueltan y te vendo lo que falte."
+      "text": "Tienda abierta. Compro lo que cae, vendo lo que falta."
     },
     {
       "speaker": "Ámbar",
-      "text": "Aprende a echar cuentas: sal a cazar, véndeme lo que caiga, forja con ese oro; si falta, cómprame y vuelve a salir. Hasta un mercenario lleva libros."
+      "text": "Pelea, véndeme, forja. Hasta los mercenarios llevan cuentas."
     }
   ],
   "side.ronin_guard_fire": [
     {
       "speaker": "Errante de Llama Negra",
       "portrait": "road_bandit",
-      "text": "Yo vigilo el fuego aquí. Los que suban… que no hagan como yo, que quemé la llama como leña."
+      "text": "Yo guardo el fuego. No trates la llama como leña."
     },
     {
       "speaker": "Errante de Llama Negra",
@@ -79,23 +79,23 @@
   "side.ronin_too_early": [
     {
       "speaker": "Errante de Llama Negra",
-      "text": "…Aún es pronto. Ve a por tu león primero."
+      "text": "…Aún es pronto. Ve a pelear con tu león primero."
     }
   ],
   "side.ronin_defeated": [
     {
       "speaker": "Errante de Llama Negra",
-      "text": "…Fuerte… ¿y qué…? La llama sigue vacía…"
+      "text": "…Fuerte… ¿y qué?… la llama sigue vacía."
     },
     {
       "speaker": "Sistema",
-      "text": "Vences al Errante de Llama Negra. 55 de oro · 3 de polvo · {xp} de experiencia{level_up}. Donde cayó, las huellas ya no arden."
+      "text": "Victoria. 55 de oro · 3 de polvo estelar · Exp {xp}{level_up}."
     }
   ],
   "side.ding_debt_remind": [
     {
       "speaker": "Ding",
-      "text": "La espada rota sigue en el patio de armas. No me marees."
+      "text": "La espada rota sigue en el patio de armas. No me hagas perder el tiempo."
     }
   ]
 }

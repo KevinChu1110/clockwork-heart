@@ -8,13 +8,13 @@
   "side.training_need_weapon": [
     {
       "speaker": "旁白",
-      "text": "演武台沙上还有旧脚印。先去钉钉把剑养好再练。"
+      "text": "先去钉钉把剑养好。"
     }
   ],
   "side.training_daily_cap": [
     {
       "speaker": "系统",
-      "text": "今日练功已达上限。去野外或猎场换换空气。"
+      "text": "今日练功满了。去猎场。"
     }
   ],
   "side.training_result": [
@@ -24,13 +24,13 @@
     },
     {
       "speaker": "系统",
-      "text": "战力现为 {power}。材料可拿去钉钉锻武器，或卖给琥珀。"
+      "text": "战力 {power}。材料拿去锻，或卖琥珀。"
     }
   ],
   "side.weapon_rack_untasked": [
     {
       "speaker": "旁白",
-      "text": "武器架空了大半。有一把断剑半埋沙里——刃口很旧。"
+      "text": "架上有断剑。刃口很旧。"
     }
   ],
   "side.broken_blade_gone": [
@@ -42,7 +42,7 @@
   "side.amber_has_letter": [
     {
       "speaker": "琥珀",
-      "text": "喔？你手上那封……雾隐的印？交给头领吧，我只收金币不收心事。"
+      "text": "那封信？交给头领。我只收金币。"
     },
     {
       "speaker": "琥珀",
@@ -52,22 +52,22 @@
   "side.amber_shop_open": [
     {
       "speaker": "琥珀",
-      "text": "材料行开张。铁屑、星砂、橡脂、骑士碎铁，打怪掉的我收，缺的我卖。"
+      "text": "材料行开了。掉的我收，缺的我卖。"
     },
     {
       "speaker": "琥珀",
-      "text": "算盘要会打：出去打，掉的卖我，换钱去锻；不够再跟我买，再出去打。佣兵也得会算帐。"
+      "text": "打怪、卖我、去锻。佣兵也要算帐。"
     }
   ],
   "side.ronin_guard_fire": [
     {
       "speaker": "黑焰浪人",
       "portrait": "road_bandit",
-      "text": "我在这里守火。上去的人……别学我把焰当柴。"
+      "text": "我守火。别把焰当柴。"
     },
     {
       "speaker": "黑焰浪人",
-      "text": "你若倒下，我会把你拖回来。——只一次。"
+      "text": "倒下我拖你回来。一次。"
     }
   ],
   "side.ronin_gone": [
@@ -89,7 +89,7 @@
     },
     {
       "speaker": "系统",
-      "text": "战胜黑焰浪人。金 55 · 星屑 3 · 经验 {xp}{level_up}。他倒下的地方，靴印不再烧。"
+      "text": "胜。金 55 · 星屑 3 · 经验 {xp}{level_up}。"
     }
   ],
   "side.ding_debt_remind": [
