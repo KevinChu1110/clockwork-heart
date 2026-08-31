@@ -9,8 +9,8 @@
         ]
       },
       "lines": [
-        "The tower's records… I filled in half a page. 'The weakest refused strength.'",
-        "Was the prophecy wrong? No — it was read wrong."
+        "The tower's records… I added half a page. 'The weakest refused strength.'",
+        "Was the prophecy wrong? No—it was read wrong."
       ]
     },
     {
@@ -21,8 +21,19 @@
         ]
       },
       "lines": [
-        "The Black Flame feeds on ambition. Wheatear's handwriting is… truer than the canon.",
-        "The folk version says the first weakest one entered the tower. The official version cut that second half."
+        "The Black Flame feeds on ambition. Wheatear's words… are truer than the books.",
+        "The folk version says the first weakest entered the tower. The official one cut the second half."
+      ]
+    },
+    {
+      "when": {
+        "flags": [
+          "c2_wheat_letter"
+        ]
+      },
+      "lines": [
+        "Wheatear's words are truer than the books. The officials cut the second half.",
+        "Before you claim a role, read the contradictions."
       ]
     },
     {
@@ -32,15 +43,15 @@
         ]
       },
       "lines": [
-        "Meager Edge? If Ding still recognises iron, the world isn't finished.",
-        "Behind the archive door: three theories of the Black Flame, the order of disbandment, and a torn-out page about 'the weakest'."
+        "Meager Edge? While Ding still recognises iron, the world isn't over.",
+        "Behind the door: three theories, the disbandment order, a torn page on 'the weakest'."
       ]
     },
     {
       "when": {},
       "lines": [
-        "New face. Refugee? Mercenary subcontract? Or here to cast yourself as 'the weakest'?",
-        "Twenty years after the war, prophecy editions are messier than blades. Don't name yourself yet — read as far as the contradictions first."
+        "A new face. Refugee? Or here to cast yourself as 'the weakest'?",
+        "Prophecy editions are messier than blades. Read the contradictions first."
       ]
     }
   ]
