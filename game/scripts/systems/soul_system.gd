@@ -414,7 +414,7 @@ func ritual_footprint_line() -> String:
 		parts.append(_t("岸岩·血"))
 	if parts.is_empty():
 		return _t("魂器仍樸——但你的腳步已經在畫線。")
-	return _t("足跡偏科：%s。") % " · ".join(parts)
+	return _t("足跡偏向：%s。") % " · ".join(parts)
 
 
 func _roll_quality_for_vessel(vessel: String) -> String:

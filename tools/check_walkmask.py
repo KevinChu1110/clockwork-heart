@@ -50,14 +50,24 @@ def load_mask(include_examples=False):
 
 
 def load_maps():
-    """回傳 [(map_fn, w, h, spawn_x, spawn_y, art)]"""
+    """回傳 [(map_fn, w, h, spawn_x, spawn_y, art)]
+
+    函式體裡 _base 前面可能有註解（鐵匠鋪），所以先切 function block 再找 _base。
+    """
     src = io.open(CATALOG, encoding="utf-8").read()
-    pat = (r'static func (_[a-z0-9_]+)\(\) -> Dictionary:\s*\n\s*var m := _base\('
-           r'"[^"]+",\s*Color\([^)]*\),\s*([\d.]+),\s*([\d.]+),\s*'
-           r'Vector2\(([\d.]+),\s*([\d.]+)\),\s*"([a-z0-9_]+)"\)')
     out = []
-    for m in re.finditer(pat, src):
-        fn, w, h, sx, sy, art = m.groups()
+    for m in re.finditer(r"static func (_[a-z0-9_]+)\(\) -> Dictionary:", src):
+        fn = m.group(1)
+        nxt = src.find("static func ", m.end())
+        blk = src[m.end(): nxt if nxt > 0 else len(src)]
+        b = re.search(
+            r'_base\(\s*"[^"]+",\s*Color\([^)]*\),\s*([\d.]+),\s*([\d.]+),\s*'
+            r"Vector2\(([\d.]+),\s*([\d.]+)\),\s*\"([a-z0-9_]+)\"\)",
+            blk,
+        )
+        if not b:
+            continue
+        w, h, sx, sy, art = b.groups()
         out.append((fn, float(w), float(h), float(sx), float(sy), art))
     return out
 

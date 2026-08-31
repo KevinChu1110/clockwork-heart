@@ -32,7 +32,7 @@
   "c0.leave_without_sword": [
     {
       "speaker": "系统",
-      "text": "两手空空。至少……捡起那柄剑。"
+      "text": "两手空空。先捡那柄剑。"
     }
   ],
   "c0.road_east": [
@@ -324,11 +324,11 @@
   "c4.treehouse": [
     {
       "speaker": "旁白",
-      "text": "树屋用藤索连着。风筝线缠在栏杆上，线头还在颤。"
+      "text": "风筝线缠在栏杆上。"
     },
     {
       "speaker": "孩童",
-      "text": "（远远）我的风筝……被风带走了！"
+      "text": "我的风筝卡住了！"
     }
   ],
   "c4.kite_freed": [

@@ -1530,16 +1530,10 @@ func _on_tap(world: Vector2) -> void:
 	for e in _entities:
 		if str(e.get("id", "")) != id:
 			continue
-		var ec: Vector2 = e.pos + e.size * 0.5
-		var reach: float = INTERACT_DIST + maxf(e.size.x, e.size.y) * 0.9
-		_spawn_tap_fx(Vector2(ec.x, e.pos.y + e.size.y))
-		if _player_center().distance_to(ec) <= reach:
-			_path.clear()
-			_tap_interact_id = ""
-			_do_interact(id)
-			return
-		## 走到目標腳邊再互動
-		_start_tap_move(Vector2(ec.x, e.pos.y + e.size.y - 4.0), id)
+		_spawn_tap_fx(Vector2(e.pos.x + e.size.x * 0.5, e.pos.y + e.size.y))
+		_path.clear()
+		_tap_interact_id = ""
+		_do_interact(id)
 		return
 
 
@@ -1658,7 +1652,9 @@ func _rebuild_entities() -> void:
 		##
 		## 注意這裡不能只把 tex 設成 null：那會掉進下面的色塊 fallback，
 		## 變成在漂亮底圖上畫一個半透明彩色方框，比疊 sprite 還糟。
-		var hide_scenery := _has_scenic_bg and SpriteDB.is_scenery_prop(str(e.id))
+		var hide_scenery := _has_scenic_bg and (
+			SpriteDB.is_scenery_prop(str(e.id)) or SpriteDB.is_arrow_marker(str(e.id))
+		)
 		if hide_scenery:
 			## 看不見的東西不該有影子
 			shadow.visible = false
@@ -1703,25 +1699,24 @@ func _rebuild_entities() -> void:
 			shadow.size = Vector2(bw, maxf(6.0, bw * 0.26))
 			shadow.position = Vector2(e.size.x * 0.5 - bw * 0.5, e.size.y - shadow.size.y * 0.60)
 
-		## 名稱牌：預設隱藏，只在靠近時顯示（避免滿場白字「好花」）
+		## 人／劍／路標常駐名稱；其餘靠近才出，避免滿場白字。
 		var name_chip := PanelContainer.new()
-		name_chip.visible = false
+		name_chip.visible = SpriteDB.is_map_named(str(e.id))
 		name_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		name_chip.add_theme_stylebox_override("panel", UiStyle.interact_name_style())
-		name_chip.position = Vector2(root.size.x * 0.5 - 40, -52)
+		name_chip.position = Vector2(root.size.x * 0.5 - 40, root.size.y + 2)
 		var lab := Label.new()
 		lab.text = e.label
 		lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		lab.add_theme_font_size_override("font_size", 12)
-		lab.add_theme_color_override("font_color", UiStyle.INK)
+		lab.add_theme_color_override("font_color", UiStyle.KEY_SOFT)
 		lab.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		name_chip.add_child(lab)
 		root.add_child(name_chip)
 		root.set_meta("label_node", lab)
 		root.set_meta("name_chip", name_chip)
-		## 靠近時的 E 互動框（有邊框）
 		var badge_panel := PanelContainer.new()
-		badge_panel.visible = false
+		badge_panel.visible = SpriteDB.is_quest_ping(str(e.id))
 		badge_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		badge_panel.add_theme_stylebox_override("panel", UiStyle.interact_badge_style())
 		badge_panel.position = Vector2(root.size.x * 0.5 - 18, -84)
@@ -2193,27 +2188,22 @@ func _highlight_near() -> void:
 		var name_chip: Control = root.get_meta("name_chip") if root.has_meta("name_chip") else null
 		var badge_bg: ColorRect = root.get_meta("badge_bg") if root.has_meta("badge_bg") else null
 		var on: bool = (e.id == _near_id)
+		var named := SpriteDB.is_map_named(str(e.id))
+		var ping := SpriteDB.is_quest_ping(str(e.id))
 		if on:
-			## 輕量高亮，避免 scale 抖動 + 過曝
 			root.modulate = Color(1.06, 1.05, 1.02)
 			root.scale = Vector2.ONE
-			if badge_panel:
-				badge_panel.visible = true
-				badge_panel.position = Vector2(root.size.x * 0.5 - 18, -84)
-			if name_chip:
-				name_chip.visible = true
-				name_chip.position = Vector2(root.size.x * 0.5 - 40, -52)
-			if badge_bg:
-				badge_bg.visible = true
 		else:
 			root.modulate = Color.WHITE
 			root.scale = Vector2.ONE
-			if badge_panel:
-				badge_panel.visible = false
-			if name_chip:
-				name_chip.visible = false
-			if badge_bg:
-				badge_bg.visible = false
+		if badge_panel:
+			badge_panel.visible = ping or on
+			badge_panel.position = Vector2(root.size.x * 0.5 - 18, -84)
+		if name_chip:
+			name_chip.visible = named or on
+			name_chip.position = Vector2(root.size.x * 0.5 - 40, root.size.y + 2)
+		if badge_bg:
+			badge_bg.visible = on
 
 
 func _unhandled_input(event: InputEvent) -> void:

@@ -778,7 +778,7 @@
   "火舌爬上柴。大堂影子暖了一圈。「歇腳」兩個字好像沒那麼破了。": "Flames climb the wood. The shadows in the hall warm a little. The word «Rest» on the sign doesn't look so broken now.",
   "灰影": "Grey shade",
   "灰鬚": "Greybeard",
-  "灰鬚指點了你。【橫斬】更穩了。Esc 可開「技能／招式」。": "Greybeard has coached you. [Wide Slash] is steadier. Press Esc to open «Techniques».",
+  "灰鬚指點了你。【橫斬】更穩了。技能在武術館。": "Greybeard coached you. Wide Slash is steadier. Skills: the dojo.",
   "灼%d": "Burn%d",
   "灼燒 %d/%d · 密火圈漏閃會疊層": "Burn %d/%d · missed dodges in the dense rings add stacks",
   "灼燒滿層！黑焰爆燃": "Burn at full stacks! The Black Flame detonates",
@@ -1309,6 +1309,7 @@
   "默默離開": "Leave quietly",
   "點一下 · %s": "Tap · %s",
   "點地上移動 · 點目標互動 · 路標切換分區": "Tap to move · tap targets to interact · signposts switch zones",
+  "點人說話 · 點路標出門": "Tap a person to talk · tap a sign to leave",
   "點地上走過去 · 點人或物互動": "Tap the ground to walk · tap people or things to interact",
   "點燃（連線同步）": "Light it (syncs online)",
   "點燈失敗": "Failed to light",
@@ -1330,5 +1331,9 @@
   "（這格的內容讀不出來）": "(This slot's contents can't be read)",
   "（進入騎士堡後解鎖）": "(Unlocks once you enter the Knight Keep)",
   "💥 部位破壞！": "💥 Part broken!",
-  "🔥 暴怒覺醒！": "🔥 Rage awakened!"
+  "🔥 暴怒覺醒！": "🔥 Rage awakened!",
+  "開始遊戲": "Start",
+  "設置": "Settings",
+  "成就": "Achievements",
+  "結束遊戲": "Quit"
 }

@@ -2,7 +2,7 @@
   "world.inspect_object": [
     {
       "speaker": "旁白",
-      "text": "你端詳「{label}」。風從翠嶺某處吹來。"
+      "text": "「{label}」。"
     }
   ],
   "world.miniboss_cleared": [
@@ -14,7 +14,7 @@
   "world.scar_cleared": [
     {
       "speaker": "旁白",
-      "text": "疤地不再跳動。焦土裂縫裡長出一點灰綠——像傷口結痂。"
+      "text": "疤地不跳了。"
     },
     {
       "speaker": "內心",
@@ -24,7 +24,7 @@
   "world.mirror_cleared": [
     {
       "speaker": "旁白",
-      "text": "鏡廊只剩你一個倒影。捷徑的裂痕還在，但不發光了。"
+      "text": "鏡廊只剩你的倒影。"
     },
     {
       "speaker": "內心",
@@ -34,7 +34,7 @@
   "world.wreck_cleared": [
     {
       "speaker": "旁白",
-      "text": "船骸安靜下來。浪拍龍骨，像準點的水鐘。"
+      "text": "船骸靜了。浪拍龍骨。"
     },
     {
       "speaker": "內心",
@@ -44,17 +44,17 @@
   "world.road_note": [
     {
       "speaker": "留言板",
-      "text": "「客棧今日無湯。若見橋下鳥巢，別掏蛋——羽軟的那窩是過路人養的。」"
+      "text": "客棧無湯。橋下鳥巢別掏。"
     },
     {
       "speaker": "留言板",
-      "text": "下方另有一行新字：「墓園長明燈滅了。誰有火，點一下。謝。」"
+      "text": "墓園燈滅了。有火就點。"
     }
   ],
   "world.grave_b": [
     {
       "speaker": "旁白",
-      "text": "舊碑前插著一束乾野花。花瓣被風翻過，還壓著一枚小銅板。"
+      "text": "舊碑前一束乾花。壓著銅板。"
     },
     {
       "speaker": "內心",
@@ -64,7 +64,7 @@
   "world.scare_field": [
     {
       "speaker": "旁白",
-      "text": "稻草人戴著童帽，袖口縫了補丁。帽子裡塞著半塊乾糧——給鳥的，不是給人的。"
+      "text": "稻草人帽裡有乾糧。給鳥的。"
     },
     {
       "speaker": "旁白",
@@ -74,14 +74,13 @@
   "world.camp_ash_road": [
     {
       "speaker": "旁白",
-      "text": "路人餘燼還溫。旁邊石頭排成箭頭：東邊有城，西邊有煙。"
+      "text": "餘燼還溫。東邊有城。"
     },
     {
       "speaker": "內心",
       "text": "有人剛走。腳印不大，像也是趕路的。"
     }
   ],
-
   "world.chest_empty": [
     {
       "speaker": "旁白",
@@ -95,7 +94,7 @@
     },
     {
       "speaker": "系統",
-      "text": "獲得 金 {gold} · 星屑 {dust}{drop}"
+      "text": "金 {gold} · 星屑 {dust}{drop}"
     }
   ],
   "world.skirmish_cleared": [
@@ -113,13 +112,13 @@
   "region.dojo_warn": [
     {
       "speaker": "系統",
-      "text": "道場氣壓重。建議戰力 26+（你 {power}），或先走霧隱／升等練功。"
+      "text": "道場重。建議戰力 26+（你 {power}）。"
     }
   ],
   "region.forest_warn": [
     {
       "speaker": "系統",
-      "text": "林風很急。建議戰力 30+（你 {power}）。可先道場／獵場練。"
+      "text": "林風急。建議戰力 30+（你 {power}）。"
     }
   ],
   "region.coast_warn": [

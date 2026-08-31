@@ -17,7 +17,7 @@ func _sync_editor_preview() -> void:
 	var prev := get_node_or_null("EditorPreview")
 	if prev == null:
 		return
-	## 遊戲執行時隱藏預覽底圖（ExploreView 已有正式底圖），避免疊兩層
+	## 遊戲執行時隱藏編輯器預覽。原生探索用 Ground；舊 ExploreView 自己畫底圖。
 	if not Engine.is_editor_hint():
 		prev.visible = false
 		return

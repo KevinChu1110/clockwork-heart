@@ -32,7 +32,7 @@
   "c0.leave_without_sword": [
     {
       "speaker": "System",
-      "text": "Empty-handed. At the very least… pick up that sword."
+      "text": "Empty-handed. Pick up the sword first."
     }
   ],
   "c0.road_east": [
@@ -324,11 +324,11 @@
   "c4.treehouse": [
     {
       "speaker": "Narration",
-      "text": "The treehouses are linked by vine rope. A kite string is tangled on the railing, its end still trembling."
+      "text": "Kite string is tangled on the railing."
     },
     {
       "speaker": "Child",
-      "text": "(From far off) My kite… the wind took it!"
+      "text": "My kite's stuck!"
     }
   ],
   "c4.kite_freed": [

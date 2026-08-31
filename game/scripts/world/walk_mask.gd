@@ -73,6 +73,73 @@ static func walkable(art: String, uv: Vector2) -> bool:
 	return true
 
 
+static func _polys_world(art: String, field: String, origin: Vector2, size: Vector2) -> Array:
+	_load()
+	var e: Dictionary = _cache.get(art, {})
+	var out: Array = []
+	for poly in e.get(field, []):
+		var pts := PackedVector2Array()
+		for p in poly:
+			pts.append(origin + Vector2(p.x * size.x, p.y * size.y))
+		if pts.size() >= 3:
+			out.append(pts)
+	return out
+
+
+## UV 多邊形換成世界座標（origin + uv * size），給 NavigationPolygon 用。
+static func outlines_world(art: String, origin: Vector2, size: Vector2) -> Array:
+	return _polys_world(art, "walk", origin, size)
+
+
+static func blocks_world(art: String, origin: Vector2, size: Vector2) -> Array:
+	return _polys_world(art, "block", origin, size)
+
+
+static func _triangulate(pts: PackedVector2Array) -> PackedInt32Array:
+	var idx: PackedInt32Array = Geometry2D.triangulate_polygon(pts)
+	if not idx.is_empty():
+		return idx
+	var rev := PackedVector2Array()
+	for i in range(pts.size() - 1, -1, -1):
+		rev.append(pts[i])
+	return Geometry2D.triangulate_polygon(rev)
+
+
+## 把可走輪廓扣掉 block 後三角化成 NavigationPolygon。不靠編輯器 bake。
+static func build_navigation_polygon(art: String, origin: Vector2, size: Vector2) -> NavigationPolygon:
+	var np := NavigationPolygon.new()
+	var outlines: Array = outlines_world(art, origin, size)
+	var blocks: Array = blocks_world(art, origin, size)
+	var verts := PackedVector2Array()
+	var tris: Array = []
+	for outline in outlines:
+		var pieces: Array = [outline]
+		for block in blocks:
+			var next_pieces: Array = []
+			for piece in pieces:
+				var clipped: Array = Geometry2D.clip_polygons(piece, block)
+				if clipped.is_empty():
+					## A 完全被 B 吃掉，或 clip 失敗：丟掉這塊
+					continue
+				for c in clipped:
+					if c.size() >= 3:
+						next_pieces.append(c)
+			pieces = next_pieces
+		for piece in pieces:
+			var pts: PackedVector2Array = piece
+			var idx: PackedInt32Array = _triangulate(pts)
+			if idx.is_empty():
+				continue
+			var base := verts.size()
+			verts.append_array(pts)
+			for t in range(0, idx.size(), 3):
+				tris.append(PackedInt32Array([base + idx[t], base + idx[t + 1], base + idx[t + 2]]))
+	np.vertices = verts
+	for p in tris:
+		np.add_polygon(p)
+	return np
+
+
 ## 測試與工具用
 static func arts() -> PackedStringArray:
 	_load()

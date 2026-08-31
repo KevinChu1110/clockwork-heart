@@ -1,14 +1,13 @@
 class_name UiStyle
 extends RefCounted
-## Artale 風格 UI：粉紅主色 · 白底卡片 · 深墨字 · 細線陰影
-## 參考 artale.live 官網 token，適配 Godot 遊戲內 HUD／面板。
+## 據點 UI：深木底、銅金邊、淺字。對齊原作村莊／楓式面板，不用網頁粉紅。
 
-## ── Brand / Key（玫瑰粉）──
-const KEY := Color(0.894, 0.518, 0.612, 1.0)       ## #e4849c
-const KEY_STRONG := Color(0.761, 0.369, 0.451, 1.0) ## #c25e73
-const KEY_DEEP := Color(0.659, 0.243, 0.333, 1.0)   ## #a83e55
-const KEY_SOFT := Color(0.984, 0.890, 0.914, 1.0)   ## #fbe3e9
-const KEY_FAINT := Color(0.992, 0.949, 0.961, 1.0)  ## #fdf2f5
+## ── Brand / Key（銅金）──
+const KEY := Color(0.86, 0.70, 0.44, 1.0)
+const KEY_STRONG := Color(0.78, 0.58, 0.32, 1.0)
+const KEY_DEEP := Color(0.52, 0.36, 0.16, 1.0)
+const KEY_SOFT := Color(0.95, 0.88, 0.74, 1.0)
+const KEY_FAINT := Color(0.98, 0.94, 0.86, 1.0)
 
 ## ── Surface / Wood dark ──
 const WOOD_DARKEST := Color(0.125, 0.110, 0.125, 1.0) ## #201c20
@@ -40,8 +39,8 @@ const HP_FILL := Color(0.86, 0.28, 0.32, 1.0)
 const HP_BG := Color(0.22, 0.12, 0.14, 0.95)
 const MP_FILL := Color(0.55, 0.42, 0.82, 1.0)  ## 星屑偏紫
 const MP_BG := Color(0.14, 0.12, 0.22, 0.95)
-const EXP_FILL := KEY
-const EXP_BG := Color(0.22, 0.14, 0.16, 0.95)
+const EXP_FILL := Color(0.78, 0.62, 0.28, 1.0)
+const EXP_BG := Color(0.18, 0.14, 0.10, 0.95)
 const RAGE_FILL := Color(0.95, 0.55, 0.25, 1.0)
 
 
@@ -79,10 +78,10 @@ static func panel_style_dark() -> StyleBoxFlat:
 
 
 static func header_style() -> StyleBoxFlat:
-	## 標題列（暗粉赤木）
+	## 標題列（暗木銅邊）
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(0.22, 0.16, 0.20, 0.96)
-	s.border_color = Color(0.76, 0.37, 0.45, 0.9)
+	s.bg_color = Color(0.16, 0.13, 0.10, 0.96)
+	s.border_color = Color(0.78, 0.58, 0.32, 0.9)
 	s.set_border_width_all(0)
 	s.border_width_bottom = 1
 	s.set_corner_radius_all(0)
@@ -144,17 +143,22 @@ static func hint_bar_style() -> StyleBoxFlat:
 	return s
 
 
+## 深色底上的台詞字（CREAM 已被當成 ink 用在淺底標題，不能拿來寫旁白）
+const CAPTION := Color(0.96, 0.93, 0.88, 1.0)
+const CAPTION_DIM := Color(0.72, 0.68, 0.62, 1.0)
+
+
 static func dialogue_style() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(0.12, 0.11, 0.15, 0.95)
-	s.border_color = Color(0.85, 0.68, 0.48, 0.9)
+	s.bg_color = Color(0.10, 0.09, 0.12, 1.0)
+	s.border_color = Color(0.85, 0.68, 0.48, 0.95)
 	s.set_border_width_all(2)
-	s.set_corner_radius_all(12)
+	s.set_corner_radius_all(6)
 	s.content_margin_left = 16
 	s.content_margin_right = 16
 	s.content_margin_top = 12
 	s.content_margin_bottom = 10
-	s.shadow_color = Color(0.04, 0.03, 0.05, 0.5)
+	s.shadow_color = Color(0.04, 0.03, 0.05, 0.55)
 	s.shadow_size = 14
 	return s
 
@@ -210,18 +214,17 @@ static func button_disabled() -> StyleBoxFlat:
 
 
 static func button_primary() -> StyleBoxFlat:
-	## Artale 主按鈕：粉紅漸層感（平面近似）
 	var s := StyleBoxFlat.new()
-	s.bg_color = KEY_STRONG
-	s.border_color = KEY_DEEP
-	s.set_border_width_all(0)
+	s.bg_color = KEY_DEEP
+	s.border_color = KEY
+	s.set_border_width_all(1)
 	s.border_width_bottom = 2
-	s.set_corner_radius_all(6)
+	s.set_corner_radius_all(4)
 	s.content_margin_left = 16
 	s.content_margin_right = 16
 	s.content_margin_top = 9
 	s.content_margin_bottom = 9
-	s.shadow_color = Color(0.66, 0.24, 0.33, 0.28)
+	s.shadow_color = Color(0.08, 0.05, 0.02, 0.4)
 	s.shadow_size = 4
 	s.shadow_offset = Vector2(0, 2)
 	return s

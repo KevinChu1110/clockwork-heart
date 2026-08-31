@@ -482,7 +482,7 @@ static func soul_shen() -> Texture2D:
 
 
 static func map_bg(map_id: String) -> Texture2D:
-	## 高解析版是 .webp（2633x1469，底圖不需要 alpha，PNG 純粹浪費空間），
+	## 高解析版是 .webp（16:9，原生像素 ≥ 該 art 的世界尺寸；底圖不需要 alpha），
 	## 還沒重出的維持 .png。兩種都找，webp 優先。
 	var webp := "%s/maps/%s_bg.webp" % [ROOT, map_id]
 	if ResourceLoader.exists(webp):
@@ -677,7 +677,9 @@ static func explore_entity_path(entity_id: String) -> String:
 			return "%s/props/dock.png" % ROOT
 		"forge_c5", "forge_sign":
 			return "%s/props/forge.png" % ROOT
-		"path_mist", "path_dojo", "path_forest", "path_coast", "path_tower", "path_tower_c5", "arrow_path", "cliff_path", "sign_east", "trail_mark":
+		"sign_east":
+			return "%s/props/wood_east.png" % ROOT if ResourceLoader.exists("%s/props/wood_east.png" % ROOT) else "%s/props/sign.png" % ROOT
+		"path_mist", "path_dojo", "path_forest", "path_coast", "path_tower", "path_tower_c5", "arrow_path", "cliff_path", "trail_mark":
 			return "%s/props/path.png" % ROOT
 		"market", "cart", "burnt_field", "stall_frame", "stall":
 			return "%s/props/crate.png" % ROOT if ResourceLoader.exists("%s/props/crate.png" % ROOT) else "%s/props/camp.png" % ROOT
@@ -742,7 +744,7 @@ const _TOKEN_PROP := [
 	[["campfire", "bonfire"], "campfire"],
 	[["camp", "tent"], "camp"],
 	[["fire", "ember", "flame", "torch"], "fire"],
-	[["hut", "house", "inn", "dorm", "cabin", "mill", "barn", "shed", "room", "hall", "shop"], "hut"],
+	[["hut", "house", "inn", "dorm", "cabin", "mill", "barn", "shed", "room", "hall", "shop", "chapel", "stable", "barracks"], "hut"],
 	[["pine"], "pine"],
 	[["tree", "wood", "orchard", "willow", "canopy", "log", "bamboo", "reed"], "tree"],
 	[["rock", "stone", "bone", "rubble", "ore", "pile", "boulder", "vein", "obsidian"], "rock"],
@@ -791,6 +793,39 @@ const _SCENERY_PROPS := ["hut", "tower", "gate", "well", "boat", "cliff",
 static func is_scenery_prop(entity_id: String) -> bool:
 	var name := prop_kind(entity_id)
 	return name != "" and name in _SCENERY_PROPS
+
+
+static func is_npc(entity_id: String) -> bool:
+	return explore_entity_path(entity_id).find("/npcs/") >= 0
+
+
+## 黃箭頭／黃條路標：底圖據點不該再疊一層導航 UI。
+static func is_arrow_marker(entity_id: String) -> bool:
+	var p := explore_entity_path(entity_id)
+	return p.ends_with("/exit.png") or p.ends_with("/path.png")
+
+
+## 場上常駐名稱：人、Boss、要撿的劍、往東木牌、店門、出口。
+## 出口不再疊黃箭頭（底圖已畫路），沒名牌就找不到門——所以出口一律掛名。
+static func is_map_named(entity_id: String) -> bool:
+	if entity_id in [
+		"sword", "sign_east",
+		"board_today", "hunt_board", "visit_board",
+		"forge_sign", "soul_hall", "gem_shop", "tutor_hall",
+	]:
+		return true
+	if is_arrow_marker(entity_id) or prop_kind(entity_id) == "exit":
+		return true
+	var p := explore_entity_path(entity_id)
+	return p.find("/npcs/") >= 0 or p.find("/bosses/") >= 0
+
+
+static func is_quest_ping(entity_id: String) -> bool:
+	return entity_id in [
+		"maisui", "sword", "sign_east",
+		"ding", "star", "greybeard", "sprout",
+		"board_today",
+	]
 
 
 ## entity id → prop 類別名（跟 _fallback_prop_path 用同一張表，避免兩處各判一套）
@@ -866,8 +901,8 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "mirror_wraith"
 		"沉船船長影", "船長影", "wreck_captain":
 			id = "wreck_captain"
-		"行商", "行商頭領", "caravan_chief":
-			id = "caravan_chief"
+		"行商", "行商頭領", "caravan_chief", "merchant":
+			id = "merchant"
 		"絲絨", "silk":
 			id = "silk"
 		"琥珀", "amber":

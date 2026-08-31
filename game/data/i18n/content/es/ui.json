@@ -778,7 +778,7 @@
   "火舌爬上柴。大堂影子暖了一圈。「歇腳」兩個字好像沒那麼破了。": "Las llamas trepan por la leña. Las sombras del salón se entibian. La palabra «Descanso» ya no parece tan rota.",
   "灰影": "Sombra gris",
   "灰鬚": "Barbagrís",
-  "灰鬚指點了你。【橫斬】更穩了。Esc 可開「技能／招式」。": "Barbagrís te ha instruido. [Tajo horizontal] es más firme. Pulsa Esc para abrir «Técnicas».",
+  "灰鬚指點了你。【橫斬】更穩了。技能在武術館。": "Barbagrís te instruyó. El tajo es más firme. Las técnicas, en el dojo.",
   "灼%d": "Quem.%d",
   "灼燒 %d/%d · 密火圈漏閃會疊層": "Quemadura %d/%d · lo que no esquives en los anillos densos suma capas",
   "灼燒滿層！黑焰爆燃": "¡Quemadura al máximo! La Llama Negra estalla",
@@ -1309,6 +1309,7 @@
   "默默離開": "Marcharse en silencio",
   "點一下 · %s": "Toca · %s",
   "點地上移動 · 點目標互動 · 路標切換分區": "Toca para moverte · toca objetivos para interactuar · las señales cambian de zona",
+  "點人說話 · 點路標出門": "Toca a alguien para hablar · toca un letrero para salir",
   "點地上走過去 · 點人或物互動": "Toca el suelo para caminar · toca personas u objetos para interactuar",
   "點燃（連線同步）": "Encender (se sincroniza en línea)",
   "點燈失敗": "No se pudo encender",
@@ -1330,5 +1331,9 @@
   "（這格的內容讀不出來）": "(No se puede leer el contenido de esta ranura)",
   "（進入騎士堡後解鎖）": "(Se desbloquea al entrar en la Fortaleza)",
   "💥 部位破壞！": "💥 ¡Parte destruida!",
-  "🔥 暴怒覺醒！": "🔥 ¡Furia despertada!"
+  "🔥 暴怒覺醒！": "🔥 ¡Furia despertada!",
+  "開始遊戲": "Empezar",
+  "設置": "Ajustes",
+  "成就": "Logros",
+  "結束遊戲": "Salir"
 }

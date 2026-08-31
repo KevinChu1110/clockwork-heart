@@ -14,7 +14,8 @@
 | 比例尺 | 單層屋高 ≈ 畫面高 **1/4**；門高 ≈ 畫面高 **1/12**（＝角色兩倍身高）；樹冠 ≈ 屋高 |
 | 路 | 至少一條主路，寬 ≈ 門寬 1.5–2 倍，清楚連到圖緣（接 walkmask 與出口） |
 | 開闊度 | ≥ 40% 是可走地面；物件沿邊與節點擺，不塞滿 |
-| 規格 | 16:9、1K 生成；產後過 `tools/pixelize_env.py`（96 色主色盤）統一質感 |
+| 規格 | 16:9；**原生像素 ≥ 該 art 的世界／FLOOR 尺寸**（禁止小圖硬拉）。新圖用 Gemini 2K／4K，裝進 runtime 前按世界尺寸縮，再過 `tools/pixelize_env.py`（96 色主色盤） |
+
 
 ## Prompt 模板（tools/regen_map_bgs.py 用這個，不要另起爐灶）
 
@@ -29,13 +30,15 @@ walkable ground, warm muted painted game art, {每圖一句 content brief}
 
 ## 產後三件事（缺一不可）
 
-1. `tools/pixelize_env.py`（會自動備份原圖到 `_backup_prepixel_*`）
-2. **重描 walkmask**（`data/walkmask.json`）——圖換了 mask 一定要跟著換，
+1. 已有 4K 原檔時用 `tools/install_hd_native.py` 裝成「原生 ≥ 世界」的 16:9 webp（不要再縮死 2633×1469）
+2. `tools/pixelize_env.py`（會自動備份原圖到 `_backup_prepixel_*`）
+3. **重描 walkmask**（`data/walkmask.json`）——圖換了 mask 一定要跟著換，
    跑 `tools/check_walkmask.py` 到全綠（出生點＋每個互動實體可站可達）
-3. `dev/verify_capture.gd` 實拍確認角色可見、走在路上
+4. `dev/verify_capture.gd` 實拍確認角色可見、走在路上
 
 ## 特例備忘
 
 - `tower_memory`（塔內記憶幻境）刻意抽象，**豁免**本規格。
+- 室內店舖（`town_forge`／`town_soul`／`town_gem`／`town_tutor`）同樣 ¾ 俯視房間、地面鋪滿；禁止眼平室內＋窗外天空。
 - 「高處」主題（dojo_peak、mist_cliff）：雲霧只能當**圖緣邊界**處理，不得出現天空視角。
 - 開放式建築（棚屋、涼亭）不得當場景遮擋切片——矩形切片表達不了（road_inn 教訓）。

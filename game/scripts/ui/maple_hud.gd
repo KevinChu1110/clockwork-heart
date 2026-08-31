@@ -1,6 +1,6 @@
 class_name MapleHud
 extends Control
-## Artale 風狀態板：白底卡片 · 粉紅標題列 · 可拖曳
+## 據點狀態板：深木底 · 銅金邊 · 可拖曳
 
 ## battle_view 每幀用這個群組把戰鬥單位的 HP 推回畫面
 const VITALS_GROUP := "hud_vitals"
@@ -28,8 +28,8 @@ func _ready() -> void:
 	anchor_right = 0
 	anchor_bottom = 0
 	position = Vector2(10, 10)
-	size = Vector2(248, 148)
-	custom_minimum_size = Vector2(248, 148)
+	size = Vector2(220, 128)
+	custom_minimum_size = Vector2(220, 128)
 	_build()
 	## 戰鬥中 HP 由 BattleSim 的戰鬥單位當權威，變動不經過任何訊號。
 	## 加進群組讓 battle_view 每幀推一次，兩條血條才不會各說各話。
@@ -209,24 +209,13 @@ func refresh() -> void:
 			})
 	_gold_l.text = Loc.t("hud.gold_power", {
 		"gold": GameState.gold, "pow": GameState.power_score(), "week": week, "claim": claim_s,
-	}) + energy_s
+	})
+	_gold_l.tooltip_text = _gold_l.text + energy_s + (claim_s if claim_s != "" else "")
 	_refresh_acc_row()
 
 	var path_s := GameState.path_display() if GameState.path_style != "" else Loc.t("hud.no_path")
-	var tip := Loc.t("hud.tip", {"weapon": GameState.weapon_display(), "path": path_s})
-	## 通關燭火人數常駐（有快取／已拉取才顯示）
-	if Engine.get_main_loop() is SceneTree:
-		var og: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("OnlineGate")
-		if og and og.has_method("candle_total_cached"):
-			var cn: int = int(og.call("candle_total_cached"))
-			if cn >= 0:
-				var c_line := ""
-				if og.has_method("candle_line"):
-					c_line = str(og.call("candle_line", true))
-				else:
-					c_line = Loc.t("hud.candle", {"n": cn})
-				tip = "%s · %s" % [tip, c_line]
-	_tip_l.text = tip
+	_tip_l.text = Loc.t("hud.tip", {"weapon": GameState.weapon_display(), "path": path_s})
+	_panel.tooltip_text = _gold_l.tooltip_text
 
 
 func _refresh_acc_row() -> void:

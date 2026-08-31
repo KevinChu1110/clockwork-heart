@@ -45,9 +45,9 @@ C3 後可直上 C6（最短通關），或先走 C4／C5 補完五柱。通關�
 ```
 scripts/autoload/   GameState, SaveManager
 scripts/battle/     BattleSim + battle_view（演出）
-scripts/world/      ExploreView（可走地圖）
+scripts/world/      ExploreView（舊 Control 點擊走）／ExploreHost（村・騎士堡・四舖 CharacterBody2D）
 scripts/main.gd     流程路由
-scenes/             main, battle, dialogue
+scenes/             main, battle, dialogue, maps/village, actors/player
 ```
 
 ## 測試

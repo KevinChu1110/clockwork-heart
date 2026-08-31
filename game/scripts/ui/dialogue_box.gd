@@ -44,6 +44,7 @@ func _ready() -> void:
 	visible = false
 	choices.visible = false
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	z_index = 100
 	_ensure_dim()
 	_apply_look()
 
@@ -77,11 +78,11 @@ func _apply_look() -> void:
 		panel.offset_left = 48.0
 		panel.offset_right = -48.0
 	if speaker_label:
-		speaker_label.add_theme_color_override("font_color", Color(0.95, 0.78, 0.48))
+		speaker_label.add_theme_color_override("font_color", UiStyle.KEY)
 		speaker_label.add_theme_font_size_override("font_size", 15)
 	if body_label:
-		body_label.add_theme_color_override("default_color", Color(0.95, 0.93, 0.88))
-		body_label.add_theme_font_size_override("normal_font_size", 15)
+		body_label.add_theme_color_override("default_color", UiStyle.CAPTION)
+		body_label.add_theme_font_size_override("normal_font_size", 16)
 	if continue_hint:
 		continue_hint.add_theme_color_override("font_color", Color(0.70, 0.65, 0.60))
 		continue_hint.add_theme_font_size_override("font_size", 11)
@@ -91,16 +92,17 @@ func _apply_look() -> void:
 		accent.custom_minimum_size = Vector2(4, 0)
 	if portrait_frame:
 		var ps := StyleBoxFlat.new()
-		ps.bg_color = Color(1, 1, 1, 1.0)
+		ps.bg_color = Color(0.10, 0.09, 0.12, 1.0)
 		ps.border_color = UiStyle.LINE
 		ps.set_border_width_all(1)
 		ps.set_corner_radius_all(8)
 		portrait_frame.add_theme_stylebox_override("panel", ps)
 		portrait_frame.custom_minimum_size = Vector2(110, 130)
+		portrait_frame.clip_contents = true
 	if portrait:
 		portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+		portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
 		portrait.custom_minimum_size = Vector2(96, 120)
 
 

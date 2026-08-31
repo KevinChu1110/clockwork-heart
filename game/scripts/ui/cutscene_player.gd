@@ -36,7 +36,7 @@ func _ready() -> void:
 	visible = false
 	## 隱藏時絕不擋滑鼠（這是標題「卡選單」主因之一）
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	z_index = 90
+	z_index = 110
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_build()
 
@@ -52,6 +52,7 @@ func _build() -> void:
 	_bg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	_bg.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_bg.modulate = Color(1, 1, 1, 0)
 	_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_bg)
@@ -67,23 +68,9 @@ func _build() -> void:
 
 	_dim = ColorRect.new()
 	_dim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_dim.color = Color(0.02, 0.02, 0.05, 0.35)
+	_dim.color = Color(0.04, 0.03, 0.05, 0.55)
 	_dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_dim)
-
-	_portrait = TextureRect.new()
-	_portrait.custom_minimum_size = Vector2(280, 350)
-	_portrait.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	_portrait.offset_left = 40
-	_portrait.offset_top = -420
-	_portrait.offset_right = 320
-	_portrait.offset_bottom = -70
-	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	_portrait.modulate = Color(1, 1, 1, 0)
-	_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_portrait)
 
 	_caption_panel = PanelContainer.new()
 	## 底部寬字幕條（勿漂到左上）
@@ -96,6 +83,21 @@ func _build() -> void:
 	_caption_panel.modulate = Color(1, 1, 1, 0)
 	_caption_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_caption_panel)
+
+	## 立繪整隻站在字幕條上方，避免被紙面板切耳朵
+	_portrait = TextureRect.new()
+	_portrait.custom_minimum_size = Vector2(200, 240)
+	_portrait.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	_portrait.offset_left = 64
+	_portrait.offset_top = -470
+	_portrait.offset_right = 280
+	_portrait.offset_bottom = -214
+	_portrait.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
+	_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_portrait.modulate = Color(1, 1, 1, 0)
+	_portrait.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_portrait)
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 18)
@@ -119,14 +121,14 @@ func _build() -> void:
 	_body.scroll_active = false
 	_body.custom_minimum_size = Vector2(0, 64)
 	_body.add_theme_font_size_override("normal_font_size", 18)
-	_body.add_theme_color_override("default_color", UiStyle.CREAM)
+	_body.add_theme_color_override("default_color", UiStyle.CAPTION)
 	v.add_child(_body)
 
 	_hint = Label.new()
 	_hint.text = "▼  Space / E  繼續"
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_hint.add_theme_font_size_override("font_size", 13)
-	_hint.add_theme_color_override("font_color", UiStyle.CREAM_DIM)
+	_hint.add_theme_color_override("font_color", UiStyle.CAPTION_DIM)
 	v.add_child(_hint)
 
 
@@ -259,7 +261,11 @@ func _show_slide() -> void:
 	if playing_video:
 		black_target = 0.0
 	elif tex:
-		black_target = 0.12
+		black_target = 0.38
+	if ptex:
+		var pw := ptex.get_width()
+		_portrait.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST if pw <= 256 else CanvasItem.TEXTURE_FILTER_LINEAR
+		_portrait.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT
 	tw.tween_property(_black, "color:a", black_target, 0.35)
 	if tex and not playing_video:
 		tw.parallel().tween_property(_bg, "modulate:a", 1.0, 0.45)

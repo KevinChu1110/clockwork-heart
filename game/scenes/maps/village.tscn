@@ -1,9 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://bsmapvillage001"]
+[gd_scene load_steps=4 format=3 uid="uid://bsmapvillage001"]
 
 [ext_resource type="Script" path="res://scripts/world/map_stage.gd" id="1_stage"]
 [ext_resource type="Texture2D" path="res://assets/sprites/maps/village_bg.webp" id="2_bg"]
 
+[sub_resource type="TileSet" id="TileSet_ground"]
+
 [node name="MapStage" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("1_stage")
 map_id = "village"
 art_id = "village"
@@ -13,23 +16,35 @@ world_size = Vector2(2800, 1562)
 modulate = Color(1, 1, 1, 0.4)
 texture = ExtResource("2_bg")
 centered = false
+position = Vector2(40, 80)
+
+[node name="Ground" type="Sprite2D" parent="."]
+texture_filter = 0
+texture = ExtResource("2_bg")
+centered = false
+position = Vector2(40, 80)
+
+[node name="Tiles" type="TileMapLayer" parent="."]
+tile_set = SubResource("TileSet_ground")
+
+[node name="Navigation" type="NavigationRegion2D" parent="."]
 
 [node name="Decor" type="Node2D" parent="."]
-
-[node name="NoteLantern" type="Marker2D" parent="Decor"]
-position = Vector2(1860, 976)
-gizmo_extents = 12.0
+y_sort_enabled = true
 
 [node name="Markers" type="Node2D" parent="."]
 
 [node name="Spawn" type="Marker2D" parent="Markers"]
-position = Vector2(880, 1173)
+position = Vector2(1360, 980)
 gizmo_extents = 20.0
 
-[node name="Maisui" type="Marker2D" parent="Markers"]
-position = Vector2(1332, 1109)
+[node name="maisui" type="Marker2D" parent="Markers"]
+position = Vector2(1500, 1000)
 gizmo_extents = 16.0
 
-[node name="ExitEast" type="Marker2D" parent="Markers"]
-position = Vector2(2510, 874)
+[node name="exit_east" type="Marker2D" parent="Markers"]
+position = Vector2(1780, 940)
 gizmo_extents = 16.0
+
+[node name="Actors" type="Node2D" parent="."]
+y_sort_enabled = true
