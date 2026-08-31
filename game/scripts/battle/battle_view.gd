@@ -987,15 +987,27 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 
 	if event is InputEventKey and event.pressed and not event.echo:
-		## 1／2／3＝真正武器欄（非器魂快捷）；空／未解鎖會被 sim 擋下
-		if event.keycode == KEY_1:
+		## Z／X／C＝武器欄；F＝手動暴怒。
+		##
+		## 原本武器欄綁 1／2／3、暴怒綁 4／F，而數字鍵 1–8 是底部快捷欄
+		## （格子上就印著數字）。這裡沒有 set_input_as_handled，main 接著也會收到，
+		## 於是戰鬥中按 1 是「換到欄 1 **同時**喝掉快捷欄 1 的藥」；按 4 是
+		## 「暴怒同時吃掉格 4」。數字鍵還給道具（畫面上標的就是它），
+		## 武器欄改用沒被 input map 用掉的鍵（W＝ui_up、E＝interact 都不能拿）
+		## 並吃掉事件；空／未解鎖仍由 sim 擋下並回饋。
+		var handled := true
+		if event.keycode == KEY_Z:
 			sim.switch_weapon_slot(0)
-		elif event.keycode == KEY_2:
+		elif event.keycode == KEY_X:
 			sim.switch_weapon_slot(1)
-		elif event.keycode == KEY_3:
+		elif event.keycode == KEY_C:
 			sim.switch_weapon_slot(2)
-		elif event.keycode == KEY_4 or event.keycode == KEY_F:
+		elif event.keycode == KEY_F:
 			sim.trigger_fury_awakening()
+		else:
+			handled = false
+		if handled:
+			get_viewport().set_input_as_handled()
 
 
 ## ── 戰鬥中的 HP 權威 ──
