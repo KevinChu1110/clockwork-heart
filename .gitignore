@@ -45,3 +45,6 @@ game/assets/sprites/**/_backup*/**
 # 少了它每次開專案都要多吃三百多 MB 的匯入。
 !**/.gdignore
 game/assets/sprites/maps/_backup_prepixel_0827/
+
+# agent worktrees（Claude Code 自動建的，不進版控）
+.claude/worktrees/
