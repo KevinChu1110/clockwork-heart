@@ -86,15 +86,21 @@ func _build_view() -> void:
 	_subvp.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
 	_subvp.size = Vector2i(int(DESIGN_VIEW.x), int(DESIGN_VIEW.y))
 	_vp_box.add_child(_subvp)
+	## 操作提示：跟 ExploreView 同一張深木提示框。原本是頂端一行沒底的淡字，
+	## 壓在城牆／石板上根本讀不出「點人說話 · 點店進去」。
+	var hint_bar := PanelContainer.new()
+	hint_bar.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	hint_bar.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	hint_bar.offset_top = 10
+	hint_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hint_bar.add_theme_stylebox_override("panel", UiStyle.hint_bar_style())
+	add_child(hint_bar)
 	_hint = Label.new()
-	_hint.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	_hint.offset_top = 8
-	_hint.offset_left = 16
-	_hint.offset_right = -16
+	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_hint.add_theme_font_size_override("font_size", 14)
-	_hint.add_theme_color_override("font_color", Color(0.95, 0.92, 0.85))
-	add_child(_hint)
+	_hint.add_theme_font_size_override("font_size", 13)
+	_hint.add_theme_color_override("font_color", UiStyle.CAPTION)
+	hint_bar.add_child(_hint)
 	_plates_layer = Control.new()
 	_plates_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_plates_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -103,7 +109,9 @@ func _build_view() -> void:
 	_bubble.visible = false
 	_bubble.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_bubble.add_theme_font_size_override("font_size", 15)
-	_bubble.add_theme_color_override("font_color", Color(0.98, 0.95, 0.88))
+	_bubble.add_theme_color_override("font_color", UiStyle.CAPTION)
+	_bubble.add_theme_color_override("font_outline_color", UiStyle.QUEST_PING_OUTLINE)
+	_bubble.add_theme_constant_override("outline_size", 4)
 	_bubble.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	add_child(_bubble)
 
@@ -266,6 +274,7 @@ func marker_position(id: String) -> Vector2:
 
 func tap_world(world_pos: Vector2) -> void:
 	_pending_interact = ""
+	_spawn_tap_fx(world_pos)
 	if _player and _player.has_method("go_to"):
 		_player.call("go_to", world_pos)
 		_player.pending_interact_id = ""
@@ -276,7 +285,50 @@ func tap_entity(id: String) -> void:
 	_pending_interact = ""
 	if _player:
 		_player.pending_interact_id = ""
+	for e in _all_entities():
+		if str(e.get("id", "")) == id:
+			_spawn_tap_fx(_entity_foot(e))
+			break
 	interacted.emit(id)
+
+
+## 點地光圈：ExploreView 早就有，原生宿主一直沒有——點下去人要半秒後才起步，
+## 沒有落點記號的話玩家會以為沒點到再點一次。畫在場景 Actors 之上、跟鏡頭縮放。
+static var _ring_tex_cache: Texture2D = null
+
+
+static func _ring_tex() -> Texture2D:
+	if _ring_tex_cache != null:
+		return _ring_tex_cache
+	var s := 48
+	var img := Image.create(s, s, false, Image.FORMAT_RGBA8)
+	var c := (s - 1) * 0.5
+	for y in s:
+		for x in s:
+			var d := Vector2(x - c, y - c).length() / c
+			var a := clampf(1.0 - absf(d - 0.78) / 0.17, 0.0, 1.0)
+			a = a * a * (3.0 - 2.0 * a)
+			img.set_pixel(x, y, Color(1, 1, 1, a))
+	_ring_tex_cache = ImageTexture.create_from_image(img)
+	return _ring_tex_cache
+
+
+func _spawn_tap_fx(world: Vector2) -> void:
+	if _stage == null or not is_inside_tree():
+		return
+	var fx := Sprite2D.new()
+	fx.texture = _ring_tex()
+	fx.centered = true
+	fx.position = world
+	fx.scale = Vector2(0.35, 0.35)
+	fx.modulate = UiStyle.TAP_RING
+	fx.z_index = 50
+	_stage.add_child(fx)
+	var tw := fx.create_tween()
+	tw.set_parallel(true)
+	tw.tween_property(fx, "scale", Vector2(0.95, 0.95), 0.32).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tw.tween_property(fx, "modulate:a", 0.0, 0.34)
+	tw.chain().tween_callback(fx.queue_free)
 
 
 func _on_player_arrived() -> void:
@@ -418,8 +470,20 @@ func _process(_delta: float) -> void:
 	_update_near()
 	_sync_nameplates()
 	if _bubble and _bubble.visible and _player:
-		_bubble.position = Vector2(size.x * 0.5 - 120.0, 40.0)
+		## 跟 ExploreView 一樣掛在玩家頭上（「撿到東西了！」是他說的），
+		## 不再釘在畫面頂端——那裡現在是操作提示框，兩行字會疊在一起。
+		var head_h := 96.0
+		var body: Node = _player.get_node_or_null("Visuals/Body")
+		if body is Sprite2D and (body as Sprite2D).texture:
+			head_h = float((body as Sprite2D).texture.get_height()) - 8.0
+		var head := _player.global_position + Vector2(0, -head_h - 6.0)
+		var hs := _world_to_host(head)
 		_bubble.size = Vector2(240, 28)
+		var bp := hs - Vector2(120.0, 28.0)
+		if size.x > 8.0 and size.y > 8.0:
+			bp.x = clampf(bp.x, PLATE_SIDE_PAD, maxf(PLATE_SIDE_PAD, size.x - 240.0 - PLATE_SIDE_PAD))
+			bp.y = clampf(bp.y, 56.0, maxf(56.0, size.y - PLATE_BOTTOM_RESERVE - 28.0))
+		_bubble.position = bp
 
 
 func _ensure_nameplate(id: String, e: Dictionary) -> void:
@@ -453,8 +517,8 @@ func _ensure_nameplate(id: String, e: Dictionary) -> void:
 		bang.text = "！"
 		bang.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		bang.add_theme_font_size_override("font_size", 20)
-		bang.add_theme_color_override("font_color", Color(1.0, 0.86, 0.32))
-		bang.add_theme_color_override("font_outline_color", Color(0.12, 0.08, 0.05))
+		bang.add_theme_color_override("font_color", UiStyle.QUEST_PING)
+		bang.add_theme_color_override("font_outline_color", UiStyle.QUEST_PING_OUTLINE)
 		bang.add_theme_constant_override("outline_size", 5)
 		bang.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_plates_layer.add_child(bang)
@@ -472,9 +536,18 @@ func _world_to_host(world: Vector2) -> Vector2:
 	return Vector2(vp_pt.x * size.x / vs.x, vp_pt.y * size.y / vs.y)
 
 
+## 名牌不准被快捷欄蓋掉。四舖的「回廣場」出口貼在底圖最下緣，牌子掛在腳下 6px
+## 剛好落進快捷欄後面——玩家進了鐵匠鋪找不到怎麼出去。底邊留這麼多給快捷欄，
+## 牌子會掉進去就翻到腳上方；左右也夾在畫面內。
+const PLATE_BOTTOM_RESERVE := 44.0
+const PLATE_SIDE_PAD := 6.0
+
+
 func _sync_nameplates() -> void:
 	if _plates_layer == null:
 		return
+	var host_w := size.x
+	var host_h := size.y
 	for id in _nameplates:
 		var pack: Dictionary = _nameplates[id]
 		var e: Dictionary = pack.get("ent", {})
@@ -486,7 +559,13 @@ func _sync_nameplates() -> void:
 		var chip: Control = pack.get("chip")
 		if chip and is_instance_valid(chip):
 			chip.reset_size()
-			chip.position = screen - Vector2(chip.size.x * 0.5, -6.0)
+			var p := screen - Vector2(chip.size.x * 0.5, -6.0)
+			if host_w > 8.0 and host_h > 8.0:
+				if p.y + chip.size.y > host_h - PLATE_BOTTOM_RESERVE:
+					p.y = screen.y - chip.size.y - 8.0
+				p.x = clampf(p.x, PLATE_SIDE_PAD, maxf(PLATE_SIDE_PAD, host_w - chip.size.x - PLATE_SIDE_PAD))
+				p.y = clampf(p.y, PLATE_SIDE_PAD, maxf(PLATE_SIDE_PAD, host_h - PLATE_BOTTOM_RESERVE - chip.size.y))
+			chip.position = p
 		var bang: Control = pack.get("bang")
 		if bang and is_instance_valid(bang):
 			var head := foot

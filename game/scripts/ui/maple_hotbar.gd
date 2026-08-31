@@ -106,7 +106,7 @@ func _build() -> void:
 		glyph.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		glyph.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		glyph.add_theme_font_size_override("font_size", 16)
-		glyph.add_theme_color_override("font_color", Color(0.95, 0.90, 0.85))
+		glyph.add_theme_color_override("font_color", UiStyle.HUD_TEXT)
 		glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		stack.add_child(glyph)
 		_glyphs.append(glyph)
@@ -117,7 +117,7 @@ func _build() -> void:
 		cnt.offset_top = -16
 		cnt.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		cnt.add_theme_font_size_override("font_size", 10)
-		cnt.add_theme_color_override("font_color", Color(1, 1, 1, 0.95))
+		cnt.add_theme_color_override("font_color", UiStyle.HUD_TEXT)
 		cnt.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
 		cnt.add_theme_constant_override("shadow_offset_x", 1)
 		cnt.add_theme_constant_override("shadow_offset_y", 1)
@@ -131,7 +131,7 @@ func _build() -> void:
 		key.offset_left = 3
 		key.offset_top = 1
 		key.add_theme_font_size_override("font_size", 9)
-		key.add_theme_color_override("font_color", Color(0.95, 0.75, 0.45))
+		key.add_theme_color_override("font_color", UiStyle.HUD_KEYCAP)
 		key.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		## 觸控裝置沒鍵盤，1–8 快捷鍵標籤只會造成困惑
 		key.visible = not DisplayServer.is_touchscreen_available()
@@ -151,17 +151,18 @@ func _build() -> void:
 
 	## 觸控／滑鼠也要開得了暫停選單：尾端「選單」鈕送 ui_cancel，
 	## 與 Esc 走同一條流程（開關暫停、先收物品欄）
+	## 白底淡橘字（舊）在截圖裡幾乎看不見；改深木底＋銅字，跟其它格同一套皮。
 	var menu_btn := PanelContainer.new()
 	menu_btn.custom_minimum_size = SLOT_SIZE
 	menu_btn.mouse_filter = Control.MOUSE_FILTER_STOP
-	menu_btn.add_theme_stylebox_override("panel", UiStyle.slot_style())
+	menu_btn.add_theme_stylebox_override("panel", UiStyle.slot_menu_style())
 	row.add_child(menu_btn)
 	var ml := Label.new()
 	ml.text = ContentLoc.text("ui", "選單")
 	ml.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ml.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	ml.add_theme_font_size_override("font_size", 12)
-	ml.add_theme_color_override("font_color", Color(0.95, 0.80, 0.55))
+	ml.add_theme_color_override("font_color", UiStyle.KEY_SOFT)
 	ml.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	menu_btn.add_child(ml)
 	menu_btn.gui_input.connect(func(ev: InputEvent):
@@ -190,24 +191,14 @@ func refresh() -> void:
 		if id == "" or int(GameState.inventory.get(id, 0)) <= 0:
 			glyph.text = ""
 			cnt.text = ""
-			var empty := StyleBoxFlat.new()
-			empty.bg_color = Color(0.18, 0.16, 0.20, 0.9)
-			empty.border_color = Color(0.40, 0.35, 0.30, 0.7)
-			empty.set_border_width_all(1)
-			empty.set_corner_radius_all(4)
-			slot.add_theme_stylebox_override("panel", empty)
+			slot.add_theme_stylebox_override("panel", UiStyle.slot_empty_style())
 			continue
 		var def: Dictionary = inv.call("catalog", id)
 		glyph.text = str(def.get("glyph", "·"))
-		glyph.add_theme_color_override("font_color", Color(0.98, 0.95, 0.90))
+		glyph.add_theme_color_override("font_color", UiStyle.HUD_TEXT)
 		var n := int(GameState.inventory.get(id, 0))
 		cnt.text = str(n) if n > 1 else ""
-		var filled := StyleBoxFlat.new()
-		filled.bg_color = Color(0.25, 0.20, 0.28, 0.95)
-		filled.border_color = Color(0.85, 0.65, 0.40, 0.9)
-		filled.set_border_width_all(2)
-		filled.set_corner_radius_all(4)
-		slot.add_theme_stylebox_override("panel", filled)
+		slot.add_theme_stylebox_override("panel", UiStyle.slot_filled_style())
 
 
 func pulse_slot(index: int) -> void:

@@ -566,7 +566,9 @@ func _build_chrome() -> void:
 	_hint = Label.new()
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hint.add_theme_font_size_override("font_size", 13)
-	_hint.add_theme_color_override("font_color", UiStyle.INK)
+	## 提示框是深木底（hint_bar_style），字原本寫成 INK（深墨）—— 深字壓深底，
+	## 截圖裡整條是空的黑框，「點一下 · 麥穗」從沒被看見過。深底上的字用 CAPTION。
+	_hint.add_theme_color_override("font_color", UiStyle.CAPTION)
 	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hint.text = _t("點地上走過去 · 點人或物互動")
 	hint_bar.add_child(_hint)

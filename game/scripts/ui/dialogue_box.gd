@@ -84,7 +84,7 @@ func _apply_look() -> void:
 		body_label.add_theme_color_override("default_color", UiStyle.CAPTION)
 		body_label.add_theme_font_size_override("normal_font_size", 16)
 	if continue_hint:
-		continue_hint.add_theme_color_override("font_color", Color(0.70, 0.65, 0.60))
+		continue_hint.add_theme_color_override("font_color", UiStyle.HUD_TEXT_DIM)
 		continue_hint.add_theme_font_size_override("font_size", 11)
 		continue_hint.text = _hint_text()
 	if accent:

@@ -101,20 +101,27 @@ func _ready() -> void:
 		_inv_panel.item_used.connect(_on_inv_use_item)
 	if _inv_panel.has_signal("assign_hotbar"):
 		_inv_panel.assign_hotbar.connect(_on_inv_assign_hotbar)
+	## 短訊：深木提示框，置底中、在探索提示框與快捷欄上方。
+	## 舊版是沒底的深字＋白影，落在地圖上有時讀得到有時讀不到；
+	## 而且錨在底中卻沒設 grow，文字是從螢幕正中往右長出去的，不是置中。
+	## Label 的最小尺寸是延後更新的，靠 grow_horizontal 置中會抓到上一句的寬度；
+	## 交給 CenterContainer 排就不用自己算。
+	var toast_host := CenterContainer.new()
+	toast_host.z_index = 90
+	toast_host.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	toast_host.offset_top = -136
+	toast_host.offset_bottom = -104
+	toast_host.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(toast_host)
 	_toast = Label.new()
-	_toast.z_index = 90
-	_toast.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_toast.offset_top = -100
-	_toast.offset_bottom = -70
 	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_toast.add_theme_font_size_override("font_size", 14)
-	_toast.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1, 1))
-	_toast.add_theme_color_override("font_shadow_color", Color(1, 1, 1, 0.9))
-	_toast.add_theme_constant_override("shadow_offset_x", 1)
-	_toast.add_theme_constant_override("shadow_offset_y", 1)
+	_toast.add_theme_stylebox_override("normal", UiStyle.toast_style())
+	_toast.add_theme_color_override("font_color", UiStyle.CAPTION)
 	_toast.visible = false
 	_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_toast)
+	toast_host.add_child(_toast)
 	if InventorySystem.has_signal("item_used"):
 		InventorySystem.item_used.connect(func(_id, res):
 			if res.get("ok", false):
@@ -1920,7 +1927,7 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 
 	var bg := ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.969, 0.965, 0.973, 1)  ## Artale paper
+	bg.color = Color(UiStyle.PAPER, 1.0)  ## 紙面底，色只准走 ui_style
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(bg)
 
