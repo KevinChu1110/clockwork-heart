@@ -300,5 +300,8 @@ func recycle_one(item_id: String) -> Dictionary:
 		return {"ok": false, "msg": _t("沒有此物。")}
 	InventorySystem.remove_item(item_id, 1)
 	GameState.add_gold(price)
+	## 每日委託「材料回收：賣出材料累計 5 件」—— 溢物回收也是賣材料，要算進去。
+	## 原本只有琥珀的一鍵賣出會算，獵場刷完回收一輪，委託還是 0／5。
+	QuestSystem.track_day("sell", 1)
 	SaveManager.save_game()
 	return {"ok": true, "msg": _t("回收【%s】· 金 +%d") % [InventorySystem.item_name(item_id), price]}

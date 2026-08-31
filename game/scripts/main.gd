@@ -3937,8 +3937,13 @@ func _start_battle(mode: String) -> void:
 
 
 func _start_battle_raw(mode: String) -> void:
-	## 拜訪挑戰不耗能量；其餘走能量制
-	var visit_pending := VisitSystem.pending_id() != ""
+	## 拜訪挑戰不耗能量；其餘走能量制。
+	## pending 旗只對殘影戰有效：它會跟著中途存檔留下來（戰鬥中喝藥就會存），
+	## 殘影戰打到一半關遊戲，重開後下一場不管打誰都會被當成拜訪收尾 ——
+	## 雷歐打贏了卻走好友獎勵那條，門不開、旗不立、過場也沒有。
+	var visit_pending := VisitSystem.pending_id() != "" and mode == "pvp_snap"
+	if VisitSystem.pending_id() != "" and mode != "pvp_snap":
+		VisitSystem.clear_pending()
 	if not visit_pending:
 		var er: Dictionary = EnergySystem.try_spend_for_battle(mode)
 		if not bool(er.get("ok", false)):
@@ -3971,8 +3976,8 @@ func _on_battle_finished(won: bool) -> void:
 		_explore_play_pose("skill", 0.55)
 	else:
 		_explore_play_pose("hit", 0.5)
-	## 好友挑戰優先收尾
-	if VisitSystem.pending_id() != "":
+	## 好友挑戰優先收尾（只認殘影戰；殘留的 pending 旗在開戰時已清掉）
+	if _battle_mode == "pvp_snap" and VisitSystem.pending_id() != "":
 		_on_visit_battle_finished(won)
 		return
 	if _battle_mode == "wolf":

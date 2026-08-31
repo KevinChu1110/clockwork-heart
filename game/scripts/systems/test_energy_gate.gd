@@ -71,6 +71,23 @@ func _initialize() -> void:
 	## 收尾後回到正常價
 	if int(en.cost_for_mode("ash_rat")) != en.COST_MOB:
 		_fail("放棄場次後雜魚應回到 %d" % en.COST_MOB)
+
+	## 好友挑戰的 pending 旗：只放行殘影戰本身。
+	## 旗會跟著中途存檔留下來（戰鬥中喝藥就會存），殘影戰打一半關遊戲，
+	## 重開後只看旗的話下一場不管打誰都免費。
+	var visit := root.get_node_or_null("VisitSystem")
+	if visit == null:
+		_fail("VisitSystem autoload missing")
+		return _finish()
+	gs.set_flag("visit.pending_id", "stale_shadow")
+	if int(en.cost_for_mode("pvp_snap")) != 0:
+		_fail("拜訪中殘影戰應免能量，得 %d" % int(en.cost_for_mode("pvp_snap")))
+	if int(en.cost_for_mode("leo")) != en.COST_BOSS:
+		_fail("殘留的拜訪旗讓雷歐只耗 %d（應 %d）" % [int(en.cost_for_mode("leo")), en.COST_BOSS])
+	if int(en.cost_for_mode("ash_rat")) != en.COST_MOB:
+		_fail("殘留的拜訪旗讓雜魚只耗 %d（應 %d）" % [int(en.cost_for_mode("ash_rat")), en.COST_MOB])
+	visit.clear_pending()
+	print("  ok 拜訪旗只放行殘影戰：pvp_snap 0、雷歐 %d、雜魚 %d" % [en.COST_BOSS, en.COST_MOB])
 	_finish()
 
 

@@ -79,8 +79,10 @@ func cost_for_mode(mode: String) -> int:
 		return 0
 	if HuntSystem and HuntSystem.is_run_active() and HuntSystem.wave_mode() == mode:
 		return 0
-	## 好友挑戰不耗能量（原作）
-	if VisitSystem and VisitSystem.pending_id() != "":
+	## 好友挑戰不耗能量（原作）—— 只放行殘影戰本身。
+	## pending 旗會被中途存檔留下來（戰鬥中喝藥就會存），只看旗不看 mode
+	## 的話，重開遊戲後下一場不管打誰都免費。
+	if VisitSystem and VisitSystem.pending_id() != "" and mode == "pvp_snap":
 		return 0
 	if BOSS_MODES.has(mode):
 		return COST_BOSS
