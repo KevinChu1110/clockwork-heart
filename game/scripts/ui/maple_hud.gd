@@ -70,7 +70,7 @@ func _build() -> void:
 
 	_lv_l = Label.new()
 	_lv_l.add_theme_font_size_override("font_size", 11)
-	_lv_l.add_theme_color_override("font_color", Color(0.95, 0.72, 0.45))
+	_lv_l.add_theme_color_override("font_color", UiStyle.HUD_LV)
 	_lv_l.add_theme_constant_override("font_weight", 700)
 	_lv_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(_lv_l)
@@ -78,14 +78,14 @@ func _build() -> void:
 	_name_l = Label.new()
 	_name_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_name_l.add_theme_font_size_override("font_size", 13)
-	_name_l.add_theme_color_override("font_color", Color(0.96, 0.94, 0.90))
+	_name_l.add_theme_color_override("font_color", UiStyle.HUD_TEXT)
 	_name_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(_name_l)
 
 	var drag_hint := Label.new()
 	drag_hint.text = "⠿"
 	drag_hint.add_theme_font_size_override("font_size", 11)
-	drag_hint.add_theme_color_override("font_color", Color(0.65, 0.60, 0.55))
+	drag_hint.add_theme_color_override("font_color", UiStyle.HUD_TEXT_DIM)
 	drag_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(drag_hint)
 
@@ -99,8 +99,8 @@ func _build() -> void:
 	_hp_val.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_hp_val.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hp_val.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_hp_val.add_theme_font_size_override("font_size", 10)
-	_hp_val.add_theme_color_override("font_color", Color(1, 1, 1, 0.95))
+	_hp_val.add_theme_font_size_override("font_size", 11)
+	_hp_val.add_theme_color_override("font_color", UiStyle.HUD_TEXT)
 	_hp_val.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.6))
 	_hp_val.add_theme_constant_override("shadow_offset_x", 1)
 	_hp_val.add_theme_constant_override("shadow_offset_y", 1)
@@ -117,7 +117,7 @@ func _build() -> void:
 
 	_gold_l = Label.new()
 	_gold_l.add_theme_font_size_override("font_size", 11)
-	_gold_l.add_theme_color_override("font_color", Color(0.90, 0.85, 0.75))
+	_gold_l.add_theme_color_override("font_color", UiStyle.HUD_GOLD)
 	_gold_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(_gold_l)
 
@@ -136,8 +136,9 @@ func _build() -> void:
 		_acc_cells.append(cell)
 
 	_tip_l = Label.new()
-	_tip_l.add_theme_font_size_override("font_size", 10)
-	_tip_l.add_theme_color_override("font_color", Color(0.70, 0.66, 0.60))
+	## 狀態字 11–13（UI.md §0.2）；10 在 1280×720 縮到手機上就糊了
+	_tip_l.add_theme_font_size_override("font_size", 11)
+	_tip_l.add_theme_color_override("font_color", UiStyle.HUD_TEXT_DIM)
 	_tip_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(_tip_l)
 
@@ -215,7 +216,13 @@ func refresh() -> void:
 
 	var path_s := GameState.path_display() if GameState.path_style != "" else Loc.t("hud.no_path")
 	_tip_l.text = Loc.t("hud.tip", {"weapon": GameState.weapon_display(), "path": path_s})
-	_panel.tooltip_text = _gold_l.tooltip_text
+	## 三條量條都是 MOUSE_FILTER_IGNORE，各自的 tooltip 永遠不會冒出來；
+	## 星屑條、經驗條又沒有字，玩家只看得到兩條空槽。整塊板的 tooltip 一次把
+	## HP／星屑／經驗／能量列齊，滑過去就有答案。
+	_panel.tooltip_text = "\n".join(PackedStringArray([
+		_hp_bar.tooltip_text, _mp_bar.tooltip_text, _exp_bar.tooltip_text,
+		_gold_l.tooltip_text,
+	]))
 
 
 func _refresh_acc_row() -> void:

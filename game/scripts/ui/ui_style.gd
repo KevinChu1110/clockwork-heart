@@ -34,6 +34,17 @@ const MIST := Color(0.45, 0.48, 0.62, 1.0)
 const DANGER := KEY_DEEP
 const GOOD := Color(0.243, 0.608, 0.420, 1.0)  ## #3e9b6b
 
+## 深木底 HUD 上的字（狀態板／快捷欄／名牌共用，不要各檔自己寫數字）
+const HUD_TEXT := Color(0.96, 0.94, 0.90, 1.0)
+const HUD_TEXT_DIM := Color(0.70, 0.66, 0.60, 1.0)
+const HUD_GOLD := Color(0.90, 0.85, 0.75, 1.0)
+const HUD_LV := Color(0.95, 0.72, 0.45, 1.0)
+const HUD_KEYCAP := Color(0.95, 0.75, 0.45, 1.0)
+## 探索：任務「！」與點地光圈
+const QUEST_PING := Color(1.0, 0.86, 0.32, 1.0)
+const QUEST_PING_OUTLINE := Color(0.12, 0.08, 0.05, 1.0)
+const TAP_RING := Color(1.0, 0.86, 0.55, 0.95)
+
 ## 血／藍／經驗
 const HP_FILL := Color(0.86, 0.28, 0.32, 1.0)
 const HP_BG := Color(0.22, 0.12, 0.14, 0.95)
@@ -304,6 +315,41 @@ static func slot_style() -> StyleBoxFlat:
 	s.border_color = LINE
 	s.set_border_width_all(1)
 	s.set_corner_radius_all(6)
+	return s
+
+
+## 快捷欄：深木格。空格淡邊、有東西銅邊；「選單」鈕用同一套，不再是白底淡字。
+static func slot_empty_style() -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.bg_color = Color(0.18, 0.16, 0.20, 0.9)
+	s.border_color = Color(0.40, 0.35, 0.30, 0.7)
+	s.set_border_width_all(1)
+	s.set_corner_radius_all(4)
+	return s
+
+
+static func slot_filled_style() -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.bg_color = Color(0.25, 0.20, 0.28, 0.95)
+	s.border_color = Color(0.85, 0.65, 0.40, 0.9)
+	s.set_border_width_all(2)
+	s.set_corner_radius_all(4)
+	return s
+
+
+static func slot_menu_style() -> StyleBoxFlat:
+	var s := slot_filled_style()
+	s.bg_color = Color(0.16, 0.13, 0.10, 0.96)
+	s.border_color = Color(0.78, 0.58, 0.32, 0.9)
+	s.set_border_width_all(1)
+	return s
+
+
+## 底部短訊（存檔了、用了藥）：跟提示框同一張皮，任何底圖上都讀得到。
+static func toast_style() -> StyleBoxFlat:
+	var s := hint_bar_style()
+	s.content_margin_top = 6
+	s.content_margin_bottom = 6
 	return s
 
 
