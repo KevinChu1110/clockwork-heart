@@ -53,6 +53,17 @@ Recipe: **reference → pose → video → extract frames → loop-trim → remb
 
 Reuse one reference for all of a character's actions. **Chaining** (feed action A's last frame as action B's start) keeps positional continuity — keep chains ≤2 deep, they drift.
 
+### Sprite sheet checklist (frames are only usable if all hold)
+
+- Every frame: same canvas size, same character scale, same view angle, same outfit/lighting, transparent background.
+- Anchor fixed at the **feet** (or center) in every frame — otherwise playback jitters (X=250→280→240).
+- Frames are a **time sequence**, not independent poses: run cycle is Contact → Down → Passing → Up → Contact, then the other foot. An AI model happily gives "8 people running" instead of "8 consecutive frames" — say explicitly in the prompt that the frames are consecutive animation frames with continuity.
+- Loops (idle/walk/run): last frame must lead back into the first without a jump (`tools/find_loop_frame.py`).
+- Playback: 6 FPS reads as stop-motion, 12 is natural, 24 needs many more frames. Raising FPS with few frames just speeds up the flicker.
+- Lay out left→right, then next row; one row per action (idle / walk / run / jump / attack / hit).
+- Preview before wiring: https://tripo.wingzero.tw/zh-TW/tool/sprite-sheet-animator (ref: https://tools.wingzero.tw/articles/4040).
+- In-game: `SpriteDB.player_walk(frame)` (4 frames, 8 FPS) + `poses/*.png`; both `ExploreView` and `explore_player.gd` keep the anchor at the feet via texture height.
+
 ## 3D models
 
 ```bash

@@ -105,6 +105,10 @@ func _process(_d: float) -> bool:
 				_fail("物理幀後人沒有沿路前進 start=%s now=%s dest=%s" % [_start, now, _dest])
 				return _finish()
 			print("  ok moved dist=", now.distance_to(_start))
+			if int(player2.get("walk_frames_played")) <= 0:
+				_fail("原生玩家走路沒有播走路幀（兔子在滑行）")
+				return _finish()
+			print("  ok walk frames played=", int(player2.get("walk_frames_played")))
 			_got_id = ""
 			_host.call("tap_entity", MAISUI)
 			_step = 3
