@@ -64,7 +64,7 @@ func _ready() -> void:
 	nav.avoidance_enabled = false
 	if body:
 		body.centered = true
-		body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		body.scale = Vector2.ONE
 		var mat := ShaderMaterial.new()
 		mat.shader = OutlineShader

@@ -487,18 +487,18 @@ func _build_chrome() -> void:
 	_scroll.add_child(_tile_host)
 	_tile_map = TileMapLayer.new()
 	_tile_map.name = "Ground"
-	_tile_map.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_tile_map.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_tile_map.modulate = Color(1, 1, 1, 0.88)
 	_tile_host.add_child(_tile_map)
 	_wall_map = TileMapLayer.new()
 	_wall_map.name = "Walls"
-	_wall_map.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_wall_map.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_wall_map.modulate = Color(1, 1, 1, 0.95)
 	_tile_host.add_child(_wall_map)
 
 	_floor_tint = ColorRect.new()
 	_floor_tint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_floor_tint.color = Color(0, 0, 0, 0.12)
+	_floor_tint.color = Color(0, 0, 0, 0.0)
 	_scroll.add_child(_floor_tint)
 
 	_banner = TextureRect.new()
@@ -1120,23 +1120,9 @@ func _build_tilemap(map_id_s: String, scenic_bg: bool = false, pal: Dictionary =
 		if atlas.texture:
 			variants = maxi(1, int(atlas.texture.get_width() / TILE_PX))
 	if scenic_bg:
-		## 輕量邊緣碎石／路徑，幾乎透明
-		for y in _map_rows:
-			for x in _map_cols:
-				var edge := x <= 1 or y <= 1 or x >= _map_cols - 2 or y >= _map_rows - 2
-				var path := false
-				if map_id_s in ["town", "dojo"] and (y == _map_rows / 2 or y == _map_rows / 2 + 1):
-					path = true
-				if map_id_s == "road" and abs(y - _map_rows / 2) <= 1:
-					path = true
-				if not edge and not path:
-					continue
-				if edge and (x + y + seed_n) % 3 != 0:
-					continue
-				var n := int(abs(sin(float(x * 12 + y * 7 + seed_n)) * 1000.0))
-				_tile_map.set_cell(Vector2i(x, y), 0, Vector2i(n % variants, 0))
-		var tc: Color = pal.get("tile", Color.WHITE) as Color
-		_tile_map.modulate = Color(tc.r, tc.g, tc.b, 0.14)
+		## 現代手遊風格：有高清風景底圖時，徹底不鋪 16x16 粗方塊，呈現通透插畫
+		_tile_map.clear()
+		return
 	else:
 		for y in _map_rows:
 			for x in _map_cols:

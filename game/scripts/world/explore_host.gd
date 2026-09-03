@@ -156,7 +156,7 @@ func _spawn_entities() -> void:
 				spr.name = "ent_%s" % id
 				spr.texture = tex
 				spr.centered = true
-				spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+				spr.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 				spr.offset = Vector2(0, -tex.get_height() * 0.5 + 8.0)
 				spr.position = foot
 				spr.z_index = 1
