@@ -9,8 +9,21 @@ class_name MapStage
 @export var world_size: Vector2 = Vector2(1200, 700)
 
 
+const ColorGradeShader = preload("res://shaders/color_grade.gdshader")
+
 func _ready() -> void:
 	_sync_editor_preview()
+	_apply_ground_enhancement()
+
+
+func _apply_ground_enhancement() -> void:
+	var g := get_node_or_null("Ground")
+	if g is Sprite2D:
+		g.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		if g.material == null:
+			var mat := ShaderMaterial.new()
+			mat.shader = ColorGradeShader
+			g.material = mat
 
 
 func _sync_editor_preview() -> void:

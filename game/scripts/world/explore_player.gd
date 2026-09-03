@@ -29,6 +29,32 @@ var _action_tween: Tween
 @onready var body: Sprite2D = $Visuals/Body
 
 
+const OutlineShader = preload("res://shaders/outline.gdshader")
+
+static var _shadow_tex_cache: Texture2D = null
+
+static func _get_soft_shadow_tex() -> Texture2D:
+	if _shadow_tex_cache != null:
+		return _shadow_tex_cache
+	var img := Image.create(64, 24, false, Image.FORMAT_RGBA8)
+	var cx := 32.0
+	var cy := 12.0
+	var rx := 28.0
+	var ry := 10.0
+	for y in range(24):
+		for x in range(64):
+			var dx := (float(x) - cx) / rx
+			var dy := (float(y) - cy) / ry
+			var d := sqrt(dx * dx + dy * dy)
+			if d <= 1.0:
+				var a := clampf(pow(1.0 - d, 0.8) * 0.50, 0.0, 0.50)
+				img.set_pixel(x, y, Color(0.12, 0.08, 0.14, a))
+			else:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+	_shadow_tex_cache = ImageTexture.create_from_image(img)
+	return _shadow_tex_cache
+
+
 func _ready() -> void:
 	motion_mode = MOTION_MODE_FLOATING
 	floor_block_on_wall = false
@@ -39,6 +65,23 @@ func _ready() -> void:
 	if body:
 		body.centered = true
 		body.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		body.scale = Vector2.ONE
+		var mat := ShaderMaterial.new()
+		mat.shader = OutlineShader
+		body.material = mat
+	var vis := get_node_or_null("Visuals")
+	if vis:
+		var shadow := vis.get_node_or_null("Shadow") as Sprite2D
+		if shadow == null:
+			shadow = Sprite2D.new()
+			shadow.name = "Shadow"
+			shadow.texture = _get_soft_shadow_tex()
+			shadow.centered = true
+			shadow.position = Vector2(0, 4)
+			shadow.scale = Vector2.ONE
+			shadow.z_index = -1
+			vis.add_child(shadow)
+			vis.move_child(shadow, 0)
 	_update_visual()
 	nav.navigation_finished.connect(_on_nav_finished)
 

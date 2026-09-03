@@ -75,7 +75,7 @@ func _build_view() -> void:
 	_vp_box = SubViewportContainer.new()
 	_vp_box.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_vp_box.stretch = true
-	_vp_box.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_vp_box.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_vp_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_vp_box)
 	_subvp = SubViewport.new()
@@ -83,7 +83,7 @@ func _build_view() -> void:
 	_subvp.handle_input_locally = false
 	_subvp.physics_object_picking = true
 	_subvp.world_2d = World2D.new()
-	_subvp.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_NEAREST
+	_subvp.canvas_item_default_texture_filter = Viewport.DEFAULT_CANVAS_ITEM_TEXTURE_FILTER_LINEAR
 	_subvp.size = Vector2i(int(DESIGN_VIEW.x), int(DESIGN_VIEW.y))
 	_vp_box.add_child(_subvp)
 	## 操作提示：跟 ExploreView 同一張深木提示框。原本是頂端一行沒底的淡字，
@@ -220,11 +220,13 @@ func _fit_camera_zoom() -> void:
 	var vs := Vector2(_subvp.size)
 	if vs.x < 64.0 or vs.y < 64.0:
 		vs = DESIGN_VIEW
-	## 整張底圖塞進視窗（原作村莊一屏據點，不是跟著人走大地圖）
-	var z := minf(vs.x / msize.x, vs.y / msize.y)
-	z = clampf(z, 0.28, 1.0)
+	## 據點鏡頭 0.4 → 0.6 跟人走，角色佔比接近參考
+	var z := 0.6
 	_camera.zoom = Vector2(z, z)
-	_camera.global_position = origin + msize * 0.5
+	if _player:
+		_camera.global_position = _player.global_position
+	else:
+		_camera.global_position = origin + msize * 0.5
 	_camera.limit_left = int(origin.x)
 	_camera.limit_top = int(origin.y)
 	_camera.limit_right = int(origin.x + msize.x)
@@ -467,6 +469,8 @@ func get_nav_agent() -> NavigationAgent2D:
 func _process(_delta: float) -> void:
 	if _player:
 		player_pos = _player.global_position
+		if _camera:
+			_camera.global_position = _player.global_position
 	_update_near()
 	_sync_nameplates()
 	if _bubble and _bubble.visible and _player:

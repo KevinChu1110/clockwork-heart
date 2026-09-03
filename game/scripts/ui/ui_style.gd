@@ -17,15 +17,19 @@ const WOOD := WOOD_DARK  ## 兼容舊呼叫
 const WOOD_LIGHT := Color(0.55, 0.48, 0.55, 1.0)
 
 ## ── Paper / Ink ──
-const PAPER := Color(0.969, 0.965, 0.973, 0.98)  ## #f7f6f8
-const PAPER_SOFT := Color(1.0, 1.0, 1.0, 0.98)
-const CREAM := Color(0.149, 0.141, 0.165, 1.0)  ## 標題字色＝ink
-const CREAM_DIM := Color(0.42, 0.408, 0.439, 1.0)
-const INK := Color(0.149, 0.141, 0.165, 1.0)    ## #26242a
-const INK_DIM := Color(0.420, 0.408, 0.439, 1.0) ## #6b6870
-const INK_FAINT := Color(0.647, 0.635, 0.671, 1.0)
-const LINE := Color(0.863, 0.847, 0.878, 1.0)    ## #dcd8e0
-const LINE_SOFT := Color(0.902, 0.886, 0.918, 1.0)
+const PAPER := Color(0.98, 0.965, 0.935, 0.98)  ## 溫暖亮白紙底
+const PAPER_SOFT := Color(1.0, 0.99, 0.965, 0.98)
+const CREAM := Color(0.18, 0.13, 0.09, 1.0)  ## 標題字色＝深褐墨
+const CREAM_DIM := Color(0.45, 0.38, 0.32, 1.0)
+const INK := Color(0.18, 0.13, 0.09, 1.0)    ## #2e2117 深褐墨
+const INK_DIM := Color(0.45, 0.38, 0.32, 1.0)
+const INK_FAINT := Color(0.65, 0.58, 0.52, 1.0)
+
+## 深色插畫描邊（flat cartoon thick outline）
+const BORDER_DARK := Color(0.24, 0.17, 0.12, 1.0)
+const BORDER_MID := Color(0.48, 0.38, 0.28, 0.9)
+const LINE := BORDER_DARK    ## 換成深描邊
+const LINE_SOFT := BORDER_MID
 
 const GOLD := KEY_STRONG
 const COPPER := KEY
@@ -58,14 +62,14 @@ const RAGE_FILL := Color(0.95, 0.55, 0.25, 1.0)
 static func panel_style(accent: Color = LINE) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = PAPER_SOFT
-	s.border_color = accent if accent != LINE else LINE
-	s.set_border_width_all(1)
+	s.border_color = accent if accent != LINE else BORDER_DARK
+	s.set_border_width_all(2)
 	s.set_corner_radius_all(10)
 	s.content_margin_left = 14
 	s.content_margin_right = 14
 	s.content_margin_top = 12
 	s.content_margin_bottom = 12
-	s.shadow_color = Color(0.17, 0.16, 0.20, 0.14)
+	s.shadow_color = Color(0.12, 0.08, 0.04, 0.22)
 	s.shadow_size = 8
 	s.shadow_offset = Vector2(0, 3)
 	return s
@@ -176,44 +180,47 @@ static func dialogue_style() -> StyleBoxFlat:
 
 static func chip_style() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(1, 1, 1, 0.94)
-	s.border_color = LINE
-	s.set_border_width_all(1)
+	s.bg_color = Color(0.99, 0.98, 0.95, 0.96)
+	s.border_color = BORDER_DARK
+	s.set_border_width_all(2)
 	s.set_corner_radius_all(6)
 	s.content_margin_left = 8
 	s.content_margin_right = 8
 	s.content_margin_top = 3
 	s.content_margin_bottom = 3
-	s.shadow_color = Color(0.17, 0.16, 0.20, 0.08)
-	s.shadow_size = 3
+	s.shadow_color = Color(0.12, 0.08, 0.04, 0.15)
+	s.shadow_size = 4
 	s.shadow_offset = Vector2(0, 1)
 	return s
 
 
 static func button_normal() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(1, 1, 1, 1.0)
-	s.border_color = LINE
-	s.set_border_width_all(1)
+	s.bg_color = Color(0.99, 0.98, 0.95, 1.0)
+	s.border_color = BORDER_DARK
+	s.set_border_width_all(2)
 	s.set_corner_radius_all(6)
 	s.content_margin_left = 14
 	s.content_margin_right = 14
 	s.content_margin_top = 8
 	s.content_margin_bottom = 8
+	s.shadow_color = Color(0.12, 0.08, 0.04, 0.18)
+	s.shadow_size = 4
+	s.shadow_offset = Vector2(0, 2)
 	return s
 
 
 static func button_hover() -> StyleBoxFlat:
 	var s := button_normal()
 	s.bg_color = KEY_FAINT
-	s.border_color = KEY
+	s.border_color = KEY_STRONG
 	return s
 
 
 static func button_pressed() -> StyleBoxFlat:
 	var s := button_normal()
 	s.bg_color = KEY_SOFT
-	s.border_color = KEY_STRONG
+	s.border_color = BORDER_DARK
 	return s
 
 
@@ -227,15 +234,15 @@ static func button_disabled() -> StyleBoxFlat:
 static func button_primary() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = KEY_DEEP
-	s.border_color = KEY
-	s.set_border_width_all(1)
-	s.border_width_bottom = 2
-	s.set_corner_radius_all(4)
+	s.border_color = Color(0.20, 0.12, 0.08, 1.0)
+	s.set_border_width_all(2)
+	s.border_width_bottom = 3
+	s.set_corner_radius_all(6)
 	s.content_margin_left = 16
 	s.content_margin_right = 16
 	s.content_margin_top = 9
 	s.content_margin_bottom = 9
-	s.shadow_color = Color(0.08, 0.05, 0.02, 0.4)
+	s.shadow_color = Color(0.12, 0.06, 0.02, 0.45)
 	s.shadow_size = 4
 	s.shadow_offset = Vector2(0, 2)
 	return s
@@ -257,6 +264,8 @@ static func style_button(btn: Button, primary: bool = false) -> void:
 		btn.add_theme_color_override("font_color", Color.WHITE)
 		btn.add_theme_color_override("font_hover_color", Color.WHITE)
 		btn.add_theme_color_override("font_pressed_color", Color(1, 1, 1, 0.9))
+		btn.add_theme_color_override("font_outline_color", Color(0.20, 0.12, 0.08, 1.0))
+		btn.add_theme_constant_override("outline_size", 3)
 	else:
 		btn.add_theme_stylebox_override("normal", button_normal())
 		btn.add_theme_stylebox_override("hover", button_hover())
@@ -266,6 +275,8 @@ static func style_button(btn: Button, primary: bool = false) -> void:
 		btn.add_theme_color_override("font_color", INK)
 		btn.add_theme_color_override("font_hover_color", KEY_STRONG)
 		btn.add_theme_color_override("font_pressed_color", KEY_DEEP)
+		btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
+		btn.add_theme_constant_override("outline_size", 2)
 	btn.add_theme_color_override("font_disabled_color", INK_FAINT)
 	btn.add_theme_font_size_override("font_size", 14)
 	btn.custom_minimum_size = Vector2(0, 36)
@@ -296,24 +307,24 @@ static func dim_rect(parent: Control, alpha: float = 0.45) -> ColorRect:
 
 static func name_tag_style() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(1, 1, 1, 0.94)
-	s.border_color = LINE
-	s.set_border_width_all(1)
+	s.bg_color = Color(0.99, 0.98, 0.95, 0.96)
+	s.border_color = BORDER_DARK
+	s.set_border_width_all(2)
 	s.set_corner_radius_all(5)
 	s.content_margin_left = 6
 	s.content_margin_right = 6
 	s.content_margin_top = 1
 	s.content_margin_bottom = 1
-	s.shadow_color = Color(0.17, 0.16, 0.20, 0.12)
+	s.shadow_color = Color(0.12, 0.08, 0.04, 0.15)
 	s.shadow_size = 3
 	return s
 
 
 static func slot_style() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(0.97, 0.96, 0.98, 1)
-	s.border_color = LINE
-	s.set_border_width_all(1)
+	s.bg_color = Color(0.98, 0.96, 0.93, 1.0)
+	s.border_color = BORDER_DARK
+	s.set_border_width_all(2)
 	s.set_corner_radius_all(6)
 	return s
 

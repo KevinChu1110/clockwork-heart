@@ -834,17 +834,7 @@ func _layout_battle_equipment_overlays() -> void:
 		else:
 			wtex = SpriteDB.player_weapon_overlay()
 		if wtex:
-			var wsz := Vector2(bs.x * 0.32, bs.y * 0.32)
-			wsz.x = clampf(wsz.x, 48.0, 78.0)
-			wsz.y = clampf(wsz.y, 48.0, 78.0)
-			_battle_weapon.texture = wtex
-			_battle_weapon.visible = true
-			_battle_weapon.custom_minimum_size = wsz
-			_battle_weapon.size = wsz
-			_battle_weapon.position = Vector2(bs.x * 0.55, bs.y * 0.38)
-			_battle_weapon.pivot_offset = wsz * Vector2(0.35, 0.7)
-			_battle_weapon.rotation_degrees = -24.0
-			_battle_weapon.z_index = 2
+			_battle_weapon.visible = false
 		else:
 			_battle_weapon.visible = false
 

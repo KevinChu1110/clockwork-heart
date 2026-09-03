@@ -58,6 +58,8 @@ var _scenic_layer_nodes: Array = []
 var _horizon_shade: ColorRect = null
 
 const WalkMask := preload("res://scripts/world/walk_mask.gd")
+const ColorGradeShader := preload("res://shaders/color_grade.gdshader")
+const OutlineShader := preload("res://shaders/outline.gdshader")
 var _banner: TextureRect
 var _vignette: ColorRect
 var _scroll: Control  ## 攝影機層：整塊世界內容
@@ -470,6 +472,9 @@ func _build_chrome() -> void:
 	## 「看起來不精緻」的主因。畫過的圖要用 LINEAR。
 	## 玩家與 prop 是真像素畫，維持 NEAREST。
 	_floor.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var floor_mat := ShaderMaterial.new()
+	floor_mat.shader = ColorGradeShader
+	_floor.material = floor_mat
 	_floor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_floor.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_floor.stretch_mode = TextureRect.STRETCH_SCALE
@@ -590,6 +595,9 @@ func _build_chrome() -> void:
 	_player.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_player.texture = SpriteDB.player_idle()
 	_player.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	var player_mat := ShaderMaterial.new()
+	player_mat.shader = OutlineShader
+	_player.material = player_mat
 	_world.add_child(_player)
 
 	_player_armor = TextureRect.new()

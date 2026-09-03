@@ -19,7 +19,7 @@ centered = false
 position = Vector2(40, 80)
 
 [node name="Ground" type="Sprite2D" parent="."]
-texture_filter = 0
+texture_filter = 2
 texture = ExtResource("2_bg")
 centered = false
 position = Vector2(40, 80)
