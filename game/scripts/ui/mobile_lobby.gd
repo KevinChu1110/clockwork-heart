@@ -1,40 +1,29 @@
 class_name MobileLobby
 extends Control
-## 現代化手機風格線上遊戲主大廳 (Modern Mobile Online RPG Lobby)
-## 頂部資源列 (Top Bar) + 中央紙娃娃展台 (Main Stage) + 底部五大導航 (Bottom Dock) + 多分頁切換
+## 勇者之魂 (Brave Soul) - 現代手機風格原版架構大廳
+## 對齊原作《勇者之魂》(Soul Fighter) 核心 UI/UX：
+## 1. 村莊大廳 (四大原創店舖：聚魂殿、鐵匠鋪、演武場、手藝工坊)
+## 2. 聚魂殿 (五色葫蘆跳階：白玉、碧綠、青藍、紫霄、澄金 + 十四主星戰魂)
+## 3. 四地區出征關卡 (破曉之原、聖獅王都、迷霧雪境、深淵龍窟 + 能量消耗 1/3 點)
+## 4. 角色三欄武器與紙娃娃
 
-signal request_explore(map_id: String)
 signal request_battle(mode: String)
-signal request_quit()
 signal request_settings()
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 
 enum Tab {
-	HOME,       ## 主城大廳
-	CHARACTER,  ## 角色 / 紙娃娃
-	ADVENTURE,  ## 冒險出征
-	GACHA,      ## 聚魂抽卡
-	BAG         ## 背包
+	VILLAGE,     ## 今日村莊大廳 (主城)
+	CHARACTER,   ## 角色 / 三欄武器紙娃娃
+	ADVENTURE,   ## 出征四地區關卡
+	SOUL_HALL,   ## 聚魂殿 (五色葫蘆跳階)
+	BAG          ## 冒險背包
 }
 
-var _current_tab: Tab = Tab.HOME
+var _current_tab: Tab = Tab.VILLAGE
 
-## UI 核心層
-var _bg_rect: TextureRect
-var _content_root: Control
-var _top_bar: PanelContainer
-var _bottom_dock: PanelContainer
-
-## 分頁層
-var _stage_layer: Control
-var _character_layer: Control
-var _adventure_layer: Control
-var _gacha_layer: Control
-var _bag_layer: Control
-
-## 頂部數值
+## 頂部數值標籤
 var _lv_label: Label
 var _name_label: Label
 var _power_label: Label
@@ -42,20 +31,32 @@ var _energy_label: Label
 var _gold_label: Label
 var _gem_label: Label
 
-## 展台動畫與節點
-var _stage_anchor: Control
+## 容器節點
+var _content_root: Control
+var _village_layer: Control
+var _char_layer: Control
+var _adventure_layer: Control
+var _soul_layer: Control
+var _bag_layer: Control
+var _dock_buttons: Array[Button] = []
+
+## 角色展台
 var _hero_avatar: TextureRect
 var _hero_shadow: TextureRect
 var _speech_bubble: PanelContainer
 var _speech_label: Label
-var _bubble_tween: Tween
 var _breathe_tween: Tween
-var _dock_buttons: Array[Button] = []
 
-## 角色分頁
-var _char_preview: TextureRect
-var _char_stats_label: RichTextLabel
-var _char_equip_grid: GridContainer
+## 聚魂殿五色葫蘆狀態
+## 0: 白玉(常駐點亮), 1: 碧綠, 2: 青藍, 3: 紫霄, 4: 澄金
+var _gourd_lit: Array[bool] = [true, false, false, false, false]
+var _gourd_btns: Array[Button] = []
+var _soul_inventory: Array[Dictionary] = []
+
+## 四地區出征
+var _selected_region: int = 1 # 0: 破曉之原, 1: 聖獅王都, 2: 迷霧雪境, 3: 深淵龍窟
+var _stages_container: VBoxContainer
+var _stage_info_card: PanelContainer
 
 static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
@@ -67,273 +68,208 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build_ui()
 	refresh_hud()
-	_start_hero_animations()
-	_switch_tab(Tab.HOME)
-
-func _notification(what: int) -> void:
-	if what == NOTIFICATION_RESIZED:
-		if size.x < 100 or size.y < 100:
-			size = Vector2(1280, 720)
+	_switch_tab(Tab.VILLAGE)
 
 func _build_ui() -> void:
-	## 1. 全景城鎮插畫背景 (無雜亂角色，純風景)
-	_bg_rect = TextureRect.new()
-	_bg_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_bg_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_bg_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	_bg_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	## 1. 背景插畫 (王都村莊風景，線性平滑縮放)
+	var bg := TextureRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	if ResourceLoader.exists("res://assets/sprites/maps/town_bg.webp"):
-		_bg_rect.texture = load("res://assets/sprites/maps/town_bg.webp")
-	elif ResourceLoader.exists("res://assets/sprites/maps/forest_bg.webp"):
-		_bg_rect.texture = load("res://assets/sprites/maps/forest_bg.webp")
+		bg.texture = load("res://assets/sprites/maps/town_bg.webp")
 	elif ResourceLoader.exists("res://assets/sprites/illustrations/title_bg.png"):
-		_bg_rect.texture = load("res://assets/sprites/illustrations/title_bg.png")
-	add_child(_bg_rect)
+		bg.texture = load("res://assets/sprites/illustrations/title_bg.png")
+	add_child(bg)
 
-	## 柔和手遊光暈遮罩 (頂部與底部)
-	var top_vignette := ColorRect.new()
-	top_vignette.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	top_vignette.offset_bottom = 120
-	top_vignette.color = Color(0.06, 0.05, 0.04, 0.45)
-	top_vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(top_vignette)
+	## 頂部與底部遮罩
+	var top_v := ColorRect.new()
+	top_v.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	top_v.offset_bottom = 120
+	top_v.color = Color(0.06, 0.05, 0.04, 0.45)
+	top_v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(top_v)
 
-	var bottom_vignette := ColorRect.new()
-	bottom_vignette.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bottom_vignette.offset_top = -140
-	bottom_vignette.color = Color(0.06, 0.05, 0.04, 0.55)
-	bottom_vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(bottom_vignette)
+	var bot_v := ColorRect.new()
+	bot_v.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	bot_v.offset_top = -140
+	bot_v.color = Color(0.06, 0.05, 0.04, 0.6)
+	bot_v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(bot_v)
 
-	## 2. 內容層 (分頁掛載處)
+	## 2. 內容掛載層
 	_content_root = Control.new()
 	_content_root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_content_root.offset_top = 75
 	_content_root.offset_bottom = -84
 	add_child(_content_root)
 
-	_build_stage_tab()
+	_build_village_tab()
 	_build_character_tab()
 	_build_adventure_tab()
-	_build_gacha_tab()
+	_build_soul_hall_tab()
 	_build_bag_tab()
 
-	## 3. 頂部手遊資源條
-	_build_top_bar()
+	## 3. 頂部手遊狀態條
+	_build_top_hud()
 
-	## 4. 底部現代手遊導航列 (Dock)
+	## 4. 底部導航欄
 	_build_bottom_dock()
 
 ## ──────────────────────────────────────────
-## 頂部資源列 (Top Bar HUD)
+## 頂部狀態列 (能量 15點 原作規格)
 ## ──────────────────────────────────────────
-func _build_top_bar() -> void:
-	_top_bar = PanelContainer.new()
-	_top_bar.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	_top_bar.offset_left = 16
-	_top_bar.offset_right = -16
-	_top_bar.offset_top = 10
-	_top_bar.offset_bottom = 68
-	
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.12, 0.09, 0.07, 0.92)
-	sb.border_color = Color(0.85, 0.70, 0.35, 1.0)
-	sb.set_border_width_all(2)
-	sb.set_corner_radius_all(14)
-	sb.shadow_color = Color(0, 0, 0, 0.35)
-	sb.shadow_size = 6
-	sb.shadow_offset = Vector2(0, 2)
-	sb.content_margin_left = 12
-	sb.content_margin_right = 14
-	sb.content_margin_top = 4
-	sb.content_margin_bottom = 4
-	_top_bar.add_theme_stylebox_override("panel", sb)
-	add_child(_top_bar)
+func _build_top_hud() -> void:
+	var top_bar := PanelContainer.new()
+	top_bar.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	top_bar.offset_left = 16
+	top_bar.offset_right = -16
+	top_bar.offset_top = 10
+	top_bar.offset_bottom = 68
+	top_bar.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	add_child(top_bar)
 
-	var hbox := HBoxContainer.new()
-	hbox.add_theme_constant_override("separation", 16)
-	_top_bar.add_child(hbox)
+	var h := HBoxContainer.new()
+	h.add_theme_constant_override("separation", 14)
+	top_bar.add_child(h)
 
-	## 玩家個人檔案塊 (左側)
-	var profile_box := HBoxContainer.new()
-	profile_box.add_theme_constant_override("separation", 10)
-	hbox.add_child(profile_box)
+	## 玩家個人檔案
+	var p_box := HBoxContainer.new()
+	p_box.add_theme_constant_override("separation", 8)
+	h.add_child(p_box)
 
-	## 圓形大頭貼
-	var portrait_frame := PanelContainer.new()
+	var p_frame := PanelContainer.new()
 	var psb := StyleBoxFlat.new()
-	psb.bg_color = Color(0.95, 0.88, 0.75, 1.0)
-	psb.border_color = Color(0.95, 0.78, 0.25, 1.0)
+	psb.bg_color = Color(0.95, 0.88, 0.75)
+	psb.border_color = Color(0.95, 0.78, 0.25)
 	psb.set_border_width_all(2)
 	psb.set_corner_radius_all(22)
-	portrait_frame.custom_minimum_size = Vector2(44, 44)
-	portrait_frame.add_theme_stylebox_override("panel", psb)
-	
-	var portrait_tex := TextureRect.new()
-	portrait_tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	portrait_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	portrait_tex.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	p_frame.custom_minimum_size = Vector2(44, 44)
+	p_frame.add_theme_stylebox_override("panel", psb)
+	var p_tex := TextureRect.new()
+	p_tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	p_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	p_tex.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	if ResourceLoader.exists("res://assets/sprites/portraits/rabbit.png"):
-		portrait_tex.texture = load("res://assets/sprites/portraits/rabbit.png")
-	portrait_tex.custom_minimum_size = Vector2(38, 38)
-	portrait_frame.add_child(portrait_tex)
-	profile_box.add_child(portrait_frame)
+		p_tex.texture = load("res://assets/sprites/portraits/rabbit.png")
+	p_frame.add_child(p_tex)
+	p_box.add_child(p_frame)
 
-	## 名字與戰鬥力
-	var info_vbox := VBoxContainer.new()
-	info_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	info_vbox.add_theme_constant_override("separation", 2)
-
-	var name_row := HBoxContainer.new()
-	name_row.add_theme_constant_override("separation", 6)
+	var info_v := VBoxContainer.new()
+	info_v.alignment = BoxContainer.ALIGNMENT_CENTER
+	info_v.add_theme_constant_override("separation", 2)
+	var row1 := HBoxContainer.new()
+	row1.add_theme_constant_override("separation", 6)
 	_lv_label = Label.new()
 	_lv_label.text = "Lv.12"
-	_lv_label.add_theme_color_override("font_color", Color(1.0, 0.82, 0.25, 1.0))
+	_lv_label.add_theme_color_override("font_color", Color(1.0, 0.82, 0.25))
 	_lv_label.add_theme_font_size_override("font_size", 14)
-	_lv_label.add_theme_color_override("font_outline_color", Color(0.2, 0.1, 0.05, 1.0))
-	_lv_label.add_theme_constant_override("outline_size", 3)
-	name_row.add_child(_lv_label)
+	row1.add_child(_lv_label)
 
 	_name_label = Label.new()
 	_name_label.text = "Capoo"
-	_name_label.add_theme_color_override("font_color", Color(0.98, 0.95, 0.90, 1.0))
 	_name_label.add_theme_font_size_override("font_size", 15)
-	name_row.add_child(_name_label)
-	info_vbox.add_child(name_row)
+	_name_label.add_theme_color_override("font_color", Color.WHITE)
+	row1.add_child(_name_label)
+	info_v.add_child(row1)
 
-	## 戰鬥力標籤 (手遊經典)
-	var power_box := HBoxContainer.new()
-	power_box.add_theme_constant_override("separation", 4)
-	var sword_icon := Label.new()
-	sword_icon.text = "⚔️"
-	sword_icon.add_theme_font_size_override("font_size", 12)
-	power_box.add_child(sword_icon)
-	
+	var pwr_row := HBoxContainer.new()
+	pwr_row.add_theme_constant_override("separation", 4)
+	var sw_icon := Label.new()
+	sw_icon.text = "⚔️"
+	sw_icon.add_theme_font_size_override("font_size", 12)
+	pwr_row.add_child(sw_icon)
 	_power_label = Label.new()
 	_power_label.text = "戰力 482"
-	_power_label.add_theme_color_override("font_color", Color(1.0, 0.72, 0.20, 1.0))
+	_power_label.add_theme_color_override("font_color", Color(1.0, 0.75, 0.25))
 	_power_label.add_theme_font_size_override("font_size", 12)
-	power_box.add_child(_power_label)
-	info_vbox.add_child(power_box)
+	pwr_row.add_child(_power_label)
+	info_v.add_child(pwr_row)
+	p_box.add_child(info_v)
 
-	profile_box.add_child(info_vbox)
-
-	## 中間空白延伸
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	hbox.add_child(spacer)
+	h.add_child(spacer)
 
-	## 右側資源膠囊群 (體力 / 金幣 / 鑽石)
-	_energy_label = _add_resource_capsule(hbox, "⚡", "15/15", Color(0.3, 0.85, 0.45))
-	_gold_label = _add_resource_capsule(hbox, "🪙", "12,500", Color(1.0, 0.85, 0.3))
-	_gem_label = _add_resource_capsule(hbox, "💎", "350", Color(0.45, 0.75, 1.0))
+	## 原作資源：能量 (上限 15，30分+1)、金幣、晶石
+	_energy_label = _add_capsule(h, "⚡ 能量", "15/15", Color(0.35, 0.9, 0.5))
+	_gold_label = _add_capsule(h, "🪙 金幣", "12,500", Color(1.0, 0.85, 0.3))
+	_gem_label = _add_capsule(h, "💎 晶石", "350", Color(0.45, 0.8, 1.0))
 
-	## 齒輪設置按鈕
-	var btn_setting := Button.new()
-	btn_setting.text = "⚙️"
-	btn_setting.custom_minimum_size = Vector2(40, 40)
-	btn_setting.add_theme_font_size_override("font_size", 18)
-	var set_sb := StyleBoxFlat.new()
-	set_sb.bg_color = Color(0.18, 0.14, 0.11, 0.95)
-	set_sb.border_color = Color(0.85, 0.70, 0.35, 1.0)
-	set_sb.set_border_width_all(2)
-	set_sb.set_corner_radius_all(10)
-	btn_setting.add_theme_stylebox_override("normal", set_sb)
-	btn_setting.add_theme_stylebox_override("hover", set_sb)
-	btn_setting.pressed.connect(func():
-		request_settings.emit()
-		var s_scn: GDScript = load("res://scripts/ui/mobile_settings.gd")
+	## 齒輪設定
+	var set_btn := Button.new()
+	set_btn.text = "⚙️"
+	set_btn.custom_minimum_size = Vector2(40, 40)
+	set_btn.add_theme_font_size_override("font_size", 18)
+	UiStyle.style_button(set_btn, false)
+	set_btn.pressed.connect(func():
+		var s_scn := load("res://scripts/ui/mobile_settings.gd")
 		var s_ui: Control = s_scn.new()
 		s_ui.z_index = 80
 		add_child(s_ui)
 	)
-	hbox.add_child(btn_setting)
+	h.add_child(set_btn)
 
-func _add_resource_capsule(parent: Container, icon_sym: String, init_val: String, accent_color: Color) -> Label:
+func _add_capsule(parent: Container, sym: String, val: String, col: Color) -> Label:
 	var cap := PanelContainer.new()
 	var csb := StyleBoxFlat.new()
-	csb.bg_color = Color(0.08, 0.06, 0.05, 0.90)
-	csb.border_color = Color(0.55, 0.45, 0.30, 0.9)
+	csb.bg_color = Color(0.08, 0.06, 0.05, 0.9)
+	csb.border_color = Color(0.55, 0.45, 0.32, 0.9)
 	csb.set_border_width_all(1)
-	csb.set_corner_radius_all(15)
+	csb.set_corner_radius_all(14)
 	csb.content_margin_left = 10
-	csb.content_margin_right = 8
+	csb.content_margin_right = 10
 	csb.content_margin_top = 2
 	csb.content_margin_bottom = 2
 	cap.add_theme_stylebox_override("panel", csb)
-	
-	var r_box := HBoxContainer.new()
-	r_box.add_theme_constant_override("separation", 8)
-	r_box.alignment = BoxContainer.ALIGNMENT_CENTER
 
-	var icon_l := Label.new()
-	icon_l.text = icon_sym
-	icon_l.add_theme_font_size_override("font_size", 15)
-	r_box.add_child(icon_l)
+	var h := HBoxContainer.new()
+	h.add_theme_constant_override("separation", 6)
+	var il := Label.new()
+	il.text = sym
+	il.add_theme_font_size_override("font_size", 13)
+	il.add_theme_color_override("font_color", col)
+	h.add_child(il)
 
-	var val_l := Label.new()
-	val_l.text = init_val
-	val_l.custom_minimum_size = Vector2(58, 0)
-	val_l.add_theme_font_size_override("font_size", 14)
-	val_l.add_theme_color_override("font_color", Color(0.96, 0.95, 0.92))
-	r_box.add_child(val_l)
+	var vl := Label.new()
+	vl.text = val
+	vl.add_theme_font_size_override("font_size", 14)
+	vl.add_theme_color_override("font_color", Color(0.96, 0.95, 0.92))
+	h.add_child(vl)
 
-	var add_btn := Button.new()
-	add_btn.text = "+"
-	add_btn.custom_minimum_size = Vector2(22, 22)
-	add_btn.add_theme_font_size_override("font_size", 13)
-	add_btn.add_theme_color_override("font_color", accent_color)
-	var asb := StyleBoxFlat.new()
-	asb.bg_color = Color(0.24, 0.18, 0.13, 0.9)
-	asb.set_corner_radius_all(11)
-	add_btn.add_theme_stylebox_override("normal", asb)
-	r_box.add_child(add_btn)
-
-	cap.add_child(r_box)
+	cap.add_child(h)
 	parent.add_child(cap)
-	return val_l
+	return vl
 
 ## ──────────────────────────────────────────
-## 底部導航列 (Bottom Navigation Dock)
+## 底部導航欄
 ## ──────────────────────────────────────────
 func _build_bottom_dock() -> void:
-	_bottom_dock = PanelContainer.new()
-	_bottom_dock.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	_bottom_dock.offset_left = 30
-	_bottom_dock.offset_right = -30
-	_bottom_dock.offset_top = -78
-	_bottom_dock.offset_bottom = -12
-	
-	var dsb := StyleBoxFlat.new()
-	dsb.bg_color = Color(0.10, 0.08, 0.06, 0.95)
-	dsb.border_color = Color(0.85, 0.70, 0.35, 1.0)
-	dsb.set_border_width_all(2)
-	dsb.set_corner_radius_all(18)
-	dsb.shadow_color = Color(0, 0, 0, 0.45)
-	dsb.shadow_size = 8
-	dsb.shadow_offset = Vector2(0, 3)
-	dsb.content_margin_left = 20
-	dsb.content_margin_right = 20
-	dsb.content_margin_top = 5
-	dsb.content_margin_bottom = 5
-	_bottom_dock.add_theme_stylebox_override("panel", dsb)
-	add_child(_bottom_dock)
+	var dock := PanelContainer.new()
+	dock.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	dock.offset_left = 30
+	dock.offset_right = -30
+	dock.offset_top = -78
+	dock.offset_bottom = -12
+	dock.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	add_child(dock)
 
-	var hbox := HBoxContainer.new()
-	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	hbox.add_theme_constant_override("separation", 18)
-	_bottom_dock.add_child(hbox)
+	var h := HBoxContainer.new()
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 18)
+	dock.add_child(h)
 
-	var tabs_data: Array = [
-		{"tab": Tab.HOME, "icon": "🏛️", "title": "主城"},
-		{"tab": Tab.CHARACTER, "icon": "👤", "title": "角色"},
-		{"tab": Tab.ADVENTURE, "icon": "⚔️", "title": "冒險"},
-		{"tab": Tab.GACHA, "icon": "🔮", "title": "聚魂"},
-		{"tab": Tab.BAG, "icon": "🎒", "title": "背包"},
+	var tabs := [
+		{"tab": Tab.VILLAGE, "icon": "🏛️", "title": "今日村莊"},
+		{"tab": Tab.CHARACTER, "icon": "👤", "title": "角色裝備"},
+		{"tab": Tab.ADVENTURE, "icon": "⚔️", "title": "四地區出征"},
+		{"tab": Tab.SOUL_HALL, "icon": "🔮", "title": "聚魂殿"},
+		{"tab": Tab.BAG, "icon": "🎒", "title": "冒險背包"},
 	]
 
 	_dock_buttons.clear()
-	for d in tabs_data:
+	for d in tabs:
 		var btn := Button.new()
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.custom_minimum_size = Vector2(0, 52)
@@ -341,88 +277,52 @@ func _build_bottom_dock() -> void:
 		btn.add_theme_font_size_override("font_size", 16)
 		var t: Tab = d["tab"]
 		btn.pressed.connect(func(): _switch_tab(t))
-		hbox.add_child(btn)
+		h.add_child(btn)
 		_dock_buttons.append(btn)
 
-func _update_dock_styling() -> void:
+func _switch_tab(target: Tab) -> void:
+	_current_tab = target
+	_village_layer.visible = (target == Tab.VILLAGE)
+	_char_layer.visible = (target == Tab.CHARACTER)
+	_adventure_layer.visible = (target == Tab.ADVENTURE)
+	_soul_layer.visible = (target == Tab.SOUL_HALL)
+	_bag_layer.visible = (target == Tab.BAG)
+
 	for i in range(_dock_buttons.size()):
-		var btn: Button = _dock_buttons[i]
-		var is_active := (i == int(_current_tab))
-		if is_active:
-			## 選中態：亮金高光手遊膠囊
-			var asb := StyleBoxFlat.new()
-			asb.bg_color = Color(0.92, 0.76, 0.28, 1.0)
-			asb.border_color = Color(1.0, 0.95, 0.65, 1.0)
-			asb.set_border_width_all(2)
-			asb.set_corner_radius_all(14)
-			asb.shadow_color = Color(0.92, 0.76, 0.28, 0.4)
-			asb.shadow_size = 6
-			btn.add_theme_stylebox_override("normal", asb)
-			btn.add_theme_stylebox_override("hover", asb)
-			btn.add_theme_color_override("font_color", Color(0.18, 0.12, 0.05, 1.0))
-			btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.8))
-			btn.add_theme_constant_override("outline_size", 1)
-		else:
-			## 未選中態：深色內斂手遊膠囊
-			var nsb := StyleBoxFlat.new()
-			nsb.bg_color = Color(0.16, 0.12, 0.09, 0.85)
-			nsb.border_color = Color(0.40, 0.32, 0.24, 0.8)
-			nsb.set_border_width_all(1)
-			nsb.set_corner_radius_all(14)
-			btn.add_theme_stylebox_override("normal", nsb)
-			btn.add_theme_stylebox_override("hover", nsb)
-			btn.add_theme_color_override("font_color", Color(0.85, 0.80, 0.75, 1.0))
-			btn.add_theme_constant_override("outline_size", 0)
+		var is_active := (i == int(target))
+		UiStyle.style_button(_dock_buttons[i], is_active)
 
 ## ──────────────────────────────────────────
-## 分頁切換 (Tabs Logic)
+## Tab 1: 今日村莊 (Village Hub - 四大原作殿堂)
 ## ──────────────────────────────────────────
-func _switch_tab(target_tab: Tab) -> void:
-	_current_tab = target_tab
-	_stage_layer.visible = (target_tab == Tab.HOME)
-	_character_layer.visible = (target_tab == Tab.CHARACTER)
-	_adventure_layer.visible = (target_tab == Tab.ADVENTURE)
-	_gacha_layer.visible = (target_tab == Tab.GACHA)
-	_bag_layer.visible = (target_tab == Tab.BAG)
-	_update_dock_styling()
+func _build_village_tab() -> void:
+	_village_layer = Control.new()
+	_village_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_content_root.add_child(_village_layer)
 
-	if target_tab == Tab.CHARACTER:
-		_refresh_character_stats()
+	## 中央英雄展台
+	var stage_anchor := Control.new()
+	stage_anchor.set_anchors_preset(Control.PRESET_CENTER)
+	stage_anchor.offset_top = 50
+	_village_layer.add_child(stage_anchor)
 
-## ──────────────────────────────────────────
-## Tab 1: 主城舞台 (Home Stage)
-## ──────────────────────────────────────────
-func _build_stage_tab() -> void:
-	_stage_layer = Control.new()
-	_stage_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_content_root.add_child(_stage_layer)
-
-	## 展台錨定容器 (中央偏下)
-	_stage_anchor = Control.new()
-	_stage_anchor.set_anchors_preset(Control.PRESET_CENTER)
-	_stage_anchor.offset_left = 0
-	_stage_anchor.offset_top = 40
-	_stage_layer.add_child(_stage_anchor)
-
-	## 舞台發光底盤 (圓形光環投影)
 	_hero_shadow = TextureRect.new()
 	_hero_shadow.offset_left = -150
 	_hero_shadow.offset_top = 100
 	_hero_shadow.offset_right = 150
 	_hero_shadow.offset_bottom = 170
-	var s_grad := Gradient.new()
-	s_grad.set_color(0, Color(1.0, 0.85, 0.40, 0.85))
-	s_grad.set_color(1, Color(1.0, 0.85, 0.40, 0.0))
+	var grad := Gradient.new()
+	grad.set_color(0, Color(1.0, 0.85, 0.40, 0.85))
+	grad.set_color(1, Color(1.0, 0.85, 0.40, 0.0))
 	var s_tex := GradientTexture2D.new()
-	s_tex.gradient = s_grad
+	s_tex.gradient = grad
 	s_tex.fill = GradientTexture2D.FILL_RADIAL
 	s_tex.fill_from = Vector2(0.5, 0.5)
 	s_tex.fill_to = Vector2(0.5, 0.0)
 	_hero_shadow.texture = s_tex
 	_hero_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_stage_anchor.add_child(_hero_shadow)
+	stage_anchor.add_child(_hero_shadow)
 
-	## 中央 2.2 頭身 Q 版兔子紙娃娃展台
 	_hero_avatar = TextureRect.new()
 	_hero_avatar.offset_left = -120
 	_hero_avatar.offset_top = -140
@@ -432,370 +332,296 @@ func _build_stage_tab() -> void:
 	_hero_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_hero_avatar.pivot_offset = Vector2(120, 240)
-	
 	if ResourceLoader.exists("res://assets/sprites/player/poses/idle.png"):
 		_hero_avatar.texture = load("res://assets/sprites/player/poses/idle.png")
-	elif ResourceLoader.exists("res://assets/sprites/player/rabbit_idle.png"):
-		_hero_avatar.texture = load("res://assets/sprites/player/rabbit_idle.png")
-	
-	_stage_anchor.add_child(_hero_avatar)
+	stage_anchor.add_child(_hero_avatar)
 
-	## 點擊角色觸發互動 (跳躍 + 說話泡泡)
 	var hero_click := Button.new()
 	hero_click.set_anchors_preset(Control.PRESET_FULL_RECT)
 	hero_click.flat = true
-	var empty_sb := StyleBoxEmpty.new()
-	hero_click.add_theme_stylebox_override("normal", empty_sb)
-	hero_click.add_theme_stylebox_override("hover", empty_sb)
-	hero_click.add_theme_stylebox_override("pressed", empty_sb)
 	hero_click.pressed.connect(_on_hero_clicked)
 	_hero_avatar.add_child(hero_click)
 
-	## 頭頂稱號與名字
-	var tag_vbox := VBoxContainer.new()
-	tag_vbox.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	tag_vbox.offset_left = -110
-	tag_vbox.offset_top = -52
-	tag_vbox.offset_right = 110
-	tag_vbox.offset_bottom = 0
-	tag_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	tag_vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-
-	var title_l := Label.new()
-	title_l.text = "【初出茅廬的勇者】"
-	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_l.add_theme_color_override("font_color", Color(1.0, 0.88, 0.45))
-	title_l.add_theme_font_size_override("font_size", 13)
-	title_l.add_theme_color_override("font_outline_color", Color(0.18, 0.12, 0.08))
-	title_l.add_theme_constant_override("outline_size", 3)
-	tag_vbox.add_child(title_l)
-
-	var name_tag := Label.new()
-	name_tag.text = "Capoo"
-	name_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_tag.add_theme_color_override("font_color", Color.WHITE)
-	name_tag.add_theme_font_size_override("font_size", 16)
-	name_tag.add_theme_color_override("font_outline_color", Color(0.18, 0.12, 0.08))
-	name_tag.add_theme_constant_override("outline_size", 4)
-	tag_vbox.add_child(name_tag)
-	_hero_avatar.add_child(tag_vbox)
-
-	## 說話對話氣泡
-	_speech_bubble = PanelContainer.new()
-	_speech_bubble.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	_speech_bubble.offset_left = -90
-	_speech_bubble.offset_top = -105
-	_speech_bubble.offset_right = 140
-	_speech_bubble.offset_bottom = -60
-	_speech_bubble.visible = false
-	var bsb := StyleBoxFlat.new()
-	bsb.bg_color = Color(1.0, 0.98, 0.92, 0.96)
-	bsb.border_color = Color(0.25, 0.18, 0.12, 1.0)
-	bsb.set_border_width_all(2)
-	bsb.set_corner_radius_all(12)
-	bsb.content_margin_left = 12
-	bsb.content_margin_right = 12
-	bsb.content_margin_top = 4
-	bsb.content_margin_bottom = 4
-	_speech_bubble.add_theme_stylebox_override("panel", bsb)
-
-	_speech_label = Label.new()
-	_speech_label.text = "今天也要拯救世界喵！"
-	_speech_label.add_theme_color_override("font_color", Color(0.2, 0.15, 0.1))
-	_speech_label.add_theme_font_size_override("font_size", 13)
-	_speech_bubble.add_child(_speech_label)
-	_hero_avatar.add_child(_speech_bubble)
-
-	## 左側手遊活動圓鈕欄
-	var left_acts := VBoxContainer.new()
-	left_acts.set_anchors_preset(Control.PRESET_LEFT_WIDE)
-	left_acts.offset_left = 30
-	left_acts.offset_top = 20
-	left_acts.offset_right = 110
-	left_acts.offset_bottom = -20
-	left_acts.add_theme_constant_override("separation", 14)
-	_stage_layer.add_child(left_acts)
-
-	_add_circle_act_btn(left_acts, "🎁", "簽到", func():
-		_show_act_toast("已領取今日簽到補給！")
-	)
-	_add_circle_act_btn(left_acts, "📜", "委託", func():
-		_show_act_toast("冒險者每日委託已刷新！")
-	)
-	_add_circle_act_btn(left_acts, "🏆", "演武場", func():
-		request_battle.emit("arena")
-	)
-	_add_circle_act_btn(left_acts, "🌌", "裂縫", func():
-		request_battle.emit("rift")
-	)
-
-	## 右側：快速出征主線卡片 (手遊經典出發按鈕)
-	var quick_card := PanelContainer.new()
-	quick_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	quick_card.offset_left = -310
-	quick_card.offset_top = -150
-	quick_card.offset_right = -40
-	quick_card.offset_bottom = -20
-	var qsb := StyleBoxFlat.new()
-	qsb.bg_color = Color(0.12, 0.09, 0.07, 0.90)
-	qsb.border_color = Color(0.85, 0.70, 0.35, 1.0)
-	qsb.set_border_width_all(2)
-	qsb.set_corner_radius_all(16)
-	qsb.content_margin_left = 16
-	qsb.content_margin_right = 16
-	qsb.content_margin_top = 12
-	qsb.content_margin_bottom = 12
-	quick_card.add_theme_stylebox_override("panel", qsb)
-	_stage_layer.add_child(quick_card)
-
-	var q_vbox := VBoxContainer.new()
-	q_vbox.add_theme_constant_override("separation", 8)
-	quick_card.add_child(q_vbox)
-
-	var chapter_title := Label.new()
-	chapter_title.text = "當前主線：第一章"
-	chapter_title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.40))
-	chapter_title.add_theme_font_size_override("font_size", 13)
-	q_vbox.add_child(chapter_title)
-
-	var stage_name := Label.new()
-	stage_name.text = "聖獅城 · 守望者之牆"
-	stage_name.add_theme_color_override("font_color", Color(0.96, 0.94, 0.90))
-	stage_name.add_theme_font_size_override("font_size", 16)
-	q_vbox.add_child(stage_name)
-
-	var go_btn := Button.new()
-	go_btn.text = "⚔️ 立即出征"
-	go_btn.custom_minimum_size = Vector2(0, 44)
-	UiStyle.style_button(go_btn, true)
-	go_btn.pressed.connect(func():
-		request_explore.emit("town")
-	)
-	q_vbox.add_child(go_btn)
-
-func _add_circle_act_btn(parent: Container, icon_sym: String, label_text: String, cb: Callable) -> void:
-	var v := VBoxContainer.new()
-	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.add_theme_constant_override("separation", 3)
-
-	var b := Button.new()
-	b.text = icon_sym
-	b.custom_minimum_size = Vector2(52, 52)
-	b.add_theme_font_size_override("font_size", 22)
-	var bsb := StyleBoxFlat.new()
-	bsb.bg_color = Color(0.14, 0.11, 0.08, 0.94)
-	bsb.border_color = Color(0.85, 0.72, 0.35, 1.0)
-	bsb.set_border_width_all(2)
-	bsb.set_corner_radius_all(26)
-	bsb.shadow_color = Color(0, 0, 0, 0.4)
-	bsb.shadow_size = 5
-	b.add_theme_stylebox_override("normal", bsb)
-	b.add_theme_stylebox_override("hover", bsb)
-	b.pressed.connect(cb)
-	v.add_child(b)
-
-	var l := Label.new()
-	l.text = label_text
-	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l.add_theme_font_size_override("font_size", 12)
-	l.add_theme_color_override("font_color", Color(0.98, 0.95, 0.90))
-	l.add_theme_color_override("font_outline_color", Color(0.15, 0.10, 0.05))
-	l.add_theme_constant_override("outline_size", 3)
-	v.add_child(l)
-
-	parent.add_child(v)
-
-func _start_hero_animations() -> void:
-	if _breathe_tween and _breathe_tween.is_valid():
-		_breathe_tween.kill()
+	## 呼吸動畫
 	_breathe_tween = create_tween().set_loops()
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(1.02, 0.98), 1.2).set_trans(Tween.TRANS_SINE)
-	_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(1.05, 1.05), 1.2).set_trans(Tween.TRANS_SINE)
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(0.99, 1.01), 1.2).set_trans(Tween.TRANS_SINE)
-	_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(0.98, 0.98), 1.2).set_trans(Tween.TRANS_SINE)
+
+	## 左側原作核心殿堂：聚魂殿、鐵匠鋪、手藝工坊
+	var left_shops := VBoxContainer.new()
+	left_shops.set_anchors_preset(Control.PRESET_LEFT_WIDE)
+	left_shops.offset_left = 36
+	left_shops.offset_top = 20
+	left_shops.offset_right = 200
+	left_shops.offset_bottom = -20
+	left_shops.add_theme_constant_override("separation", 14)
+	_village_layer.add_child(left_shops)
+
+	_add_building_entry(left_shops, "🔮", "聚魂殿", "五色葫蘆 · 戰魂入槽", func():
+		_switch_tab(Tab.SOUL_HALL)
+	)
+	_add_building_entry(left_shops, "🔨", "鐵匠鋪", "品質轉化 · 裝備鍛造", func():
+		_show_toast("進入王都鐵匠鋪：可將裝備晉階為紫裝！")
+	)
+	_add_building_entry(left_shops, "💎", "手藝工坊", "紅黃藍寶石 · 3合1熔煉", func():
+		_show_toast("進入手藝工坊：寶石鑲嵌必定成功！")
+	)
+	_add_building_entry(left_shops, "🏆", "演武場", "挑戰對手 · 雙倍經驗抽獎", func():
+		request_battle.emit("arena")
+	)
+
+	## 右側：今日簽到 & 巨大金色【出征四地區】按鈕
+	var right_card := PanelContainer.new()
+	right_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	right_card.offset_left = -330
+	right_card.offset_top = -180
+	right_card.offset_right = -36
+	right_card.offset_bottom = -20
+	right_card.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	_village_layer.add_child(right_card)
+
+	var rv := VBoxContainer.new()
+	rv.add_theme_constant_override("separation", 8)
+	right_card.add_child(rv)
+
+	var ch_lbl := Label.new()
+	ch_lbl.text = "⚔️ 冒險出征 · 當前進度"
+	ch_lbl.add_theme_font_size_override("font_size", 13)
+	ch_lbl.add_theme_color_override("font_color", Color(1.0, 0.85, 0.4))
+	rv.add_child(ch_lbl)
+
+	var s_name := Label.new()
+	s_name.text = "第二地區 · 聖獅王城 (2-4 BOSS)"
+	s_name.add_theme_font_size_override("font_size", 15)
+	s_name.add_theme_color_override("font_color", Color.WHITE)
+	rv.add_child(s_name)
+
+	var go_btn := Button.new()
+	go_btn.text = "⚔️ 出征四地區 (耗能 1⚡)"
+	go_btn.custom_minimum_size = Vector2(0, 46)
+	UiStyle.style_button(go_btn, true)
+	go_btn.pressed.connect(func(): _switch_tab(Tab.ADVENTURE))
+	rv.add_child(go_btn)
+
+	var sign_btn := Button.new()
+	sign_btn.text = "🎁 今日簽到與委託"
+	sign_btn.custom_minimum_size = Vector2(0, 36)
+	UiStyle.style_button(sign_btn, false)
+	sign_btn.pressed.connect(func():
+		_show_toast("已領取每日補給：金幣+500、能量+5！")
+	)
+	rv.add_child(sign_btn)
+
+func _add_building_entry(parent: Container, icon: String, title: String, desc: String, cb: Callable) -> void:
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(180, 60)
+	var csb := StyleBoxFlat.new()
+	csb.bg_color = Color(0.14, 0.11, 0.08, 0.92)
+	csb.border_color = Color(0.85, 0.70, 0.35, 0.9)
+	csb.set_border_width_all(2)
+	csb.set_corner_radius_all(14)
+	csb.content_margin_left = 12
+	csb.content_margin_right = 12
+	btn.add_theme_stylebox_override("normal", csb)
+	btn.add_theme_stylebox_override("hover", csb)
+	btn.pressed.connect(cb)
+
+	var h := HBoxContainer.new()
+	h.set_anchors_preset(Control.PRESET_FULL_RECT)
+	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	h.add_theme_constant_override("separation", 10)
+	btn.add_child(h)
+
+	var il := Label.new()
+	il.text = icon
+	il.add_theme_font_size_override("font_size", 24)
+	h.add_child(il)
+
+	var v := VBoxContainer.new()
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_theme_constant_override("separation", 2)
+	h.add_child(v)
+
+	var tl := Label.new()
+	tl.text = title
+	tl.add_theme_font_size_override("font_size", 14)
+	tl.add_theme_color_override("font_color", Color(1.0, 0.88, 0.45))
+	v.add_child(tl)
+
+	var dl := Label.new()
+	dl.text = desc
+	dl.add_theme_font_size_override("font_size", 10)
+	dl.add_theme_color_override("font_color", Color(0.80, 0.75, 0.70))
+	v.add_child(dl)
+
+	parent.add_child(btn)
 
 func _on_hero_clicked() -> void:
-	var jump_tween := create_tween()
-	jump_tween.tween_property(_hero_avatar, "position:y", _hero_avatar.position.y - 18, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	jump_tween.tween_property(_hero_avatar, "position:y", _hero_avatar.position.y, 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	var tw := create_tween()
+	tw.tween_property(_hero_avatar, "position:y", _hero_avatar.position.y - 18, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(_hero_avatar, "position:y", _hero_avatar.position.y, 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+	_show_toast("保護王國與夥伴，是小白的榮耀！")
 
-	var lines: Array[String] = [
-		"準備好迎接下一場戰鬥了嗎！",
-		"這套裝備看起來真帥氣～",
-		"聽說聚魂殿今天運氣很好喔！",
-		"保護王國是我們的責任！"
+## ──────────────────────────────────────────
+## Tab 4: 聚魂殿 (五色葫蘆跳階 原作招牌)
+## ──────────────────────────────────────────
+func _build_soul_hall_tab() -> void:
+	_soul_layer = Control.new()
+	_soul_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_soul_layer.visible = false
+	_content_root.add_child(_soul_layer)
+
+	var panel := PanelContainer.new()
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel.offset_left = 60
+	panel.offset_right = -60
+	panel.offset_top = 20
+	panel.offset_bottom = -20
+	panel.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	_soul_layer.add_child(panel)
+
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 16)
+	panel.add_child(v)
+
+	var t := Label.new()
+	t.text = "✦ 聚魂殿 · 五色葫蘆跳階 ✦"
+	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	t.add_theme_font_size_override("font_size", 20)
+	t.add_theme_color_override("font_color", Color(1.0, 0.88, 0.45))
+	v.add_child(t)
+
+	var desc := Label.new()
+	desc.text = "聚引十四主星之魂：七煞(攻) · 武曲(防) · 天機(血) · 貪狼(命) · 紫微(閃) · 破軍(爆)。點擊點亮更高階葫蘆！"
+	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	desc.add_theme_font_size_override("font_size", 12)
+	desc.add_theme_color_override("font_color", Color(0.85, 0.80, 0.75))
+	v.add_child(desc)
+
+	## 五色葫蘆行 (白玉、碧綠、青藍、紫霄、澄金)
+	var gourd_row := HBoxContainer.new()
+	gourd_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	gourd_row.add_theme_constant_override("separation", 18)
+	v.add_child(gourd_row)
+
+	var gourds_data := [
+		{"name": "白玉葫蘆", "cost": 100, "color": Color(0.95, 0.95, 0.95), "icon": "🍶"},
+		{"name": "碧綠葫蘆", "cost": 300, "color": Color(0.4, 0.9, 0.5), "icon": "🧪"},
+		{"name": "青藍葫蘆", "cost": 800, "color": Color(0.4, 0.7, 1.0), "icon": "🏺"},
+		{"name": "紫霄葫蘆", "cost": 2000, "color": Color(0.8, 0.5, 1.0), "icon": "🔮"},
+		{"name": "澄金葫蘆", "cost": 5000, "color": Color(1.0, 0.85, 0.3), "icon": "⭐"}
 	]
-	var pick: String = lines[randi() % lines.size()]
-	_speech_label.text = pick
-	_speech_bubble.visible = true
-	_speech_bubble.modulate.a = 0.0
 
-	if _bubble_tween and _bubble_tween.is_valid():
-		_bubble_tween.kill()
-	_bubble_tween = create_tween()
-	_bubble_tween.tween_property(_speech_bubble, "modulate:a", 1.0, 0.2)
-	_bubble_tween.tween_interval(2.5)
-	_bubble_tween.tween_property(_speech_bubble, "modulate:a", 0.0, 0.4)
-	_bubble_tween.tween_callback(func(): _speech_bubble.visible = false)
+	_gourd_btns.clear()
+	for i in range(gourds_data.size()):
+		var gd: Dictionary = gourds_data[i]
+		var gb := _build_gourd_card(gd, i)
+		gourd_row.add_child(gb)
+		_gourd_btns.append(gb)
 
-## ──────────────────────────────────────────
-## Tab 2: 角色 / 紙娃娃換裝 (Character View)
-## ──────────────────────────────────────────
-func _build_character_tab() -> void:
-	_character_layer = Control.new()
-	_character_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_character_layer.visible = false
-	_content_root.add_child(_character_layer)
+	_refresh_gourds_ui()
 
-	var hbox := HBoxContainer.new()
-	hbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-	hbox.offset_left = 50
-	hbox.offset_right = -50
-	hbox.offset_top = 20
-	hbox.offset_bottom = -20
-	hbox.add_theme_constant_override("separation", 28)
-	_character_layer.add_child(hbox)
+	## 一鍵煉魂與十連聚魂按鈕列
+	var bot_h := HBoxContainer.new()
+	bot_h.alignment = BoxContainer.ALIGNMENT_CENTER
+	bot_h.add_theme_constant_override("separation", 24)
+	v.add_child(bot_h)
 
-	## 左側：全身紙娃娃展示卡片
-	var left_card := PanelContainer.new()
-	left_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	left_card.size_flags_stretch_ratio = 1.0
-	left_card.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
-	hbox.add_child(left_card)
-
-	var left_v := VBoxContainer.new()
-	left_v.alignment = BoxContainer.ALIGNMENT_CENTER
-	left_v.add_theme_constant_override("separation", 16)
-	left_card.add_child(left_v)
-
-	_char_preview = TextureRect.new()
-	_char_preview.custom_minimum_size = Vector2(280, 320)
-	_char_preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	_char_preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_char_preview.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	if ResourceLoader.exists("res://assets/sprites/player/poses/idle.png"):
-		_char_preview.texture = load("res://assets/sprites/player/poses/idle.png")
-	left_v.add_child(_char_preview)
-
-	var act_row := HBoxContainer.new()
-	act_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	act_row.add_theme_constant_override("separation", 14)
-	var btn_idle := Button.new()
-	btn_idle.text = "待機姿態"
-	UiStyle.style_button(btn_idle, true)
-	btn_idle.pressed.connect(func(): _set_preview_pose("idle"))
-	act_row.add_child(btn_idle)
-
-	var btn_atk := Button.new()
-	btn_atk.text = "攻擊姿態"
-	UiStyle.style_button(btn_atk, false)
-	btn_atk.pressed.connect(func(): _set_preview_pose("attack"))
-	act_row.add_child(btn_atk)
-
-	var btn_skill := Button.new()
-	btn_skill.text = "施法姿態"
-	UiStyle.style_button(btn_skill, false)
-	btn_skill.pressed.connect(func(): _set_preview_pose("skill"))
-	act_row.add_child(btn_skill)
-	left_v.add_child(act_row)
-
-	## 右側：裝備格與詳細屬性卡片
-	var right_card := PanelContainer.new()
-	right_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	right_card.size_flags_stretch_ratio = 1.4
-	right_card.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
-	hbox.add_child(right_card)
-
-	var right_v := VBoxContainer.new()
-	right_v.add_theme_constant_override("separation", 16)
-	right_card.add_child(right_v)
-
-	var eq_title := Label.new()
-	eq_title.text = "獨立部位紙娃娃裝備 (Paperdoll)"
-	eq_title.add_theme_font_size_override("font_size", 16)
-	eq_title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.40))
-	right_v.add_child(eq_title)
-
-	_char_equip_grid = GridContainer.new()
-	_char_equip_grid.columns = 5
-	_char_equip_grid.add_theme_constant_override("h_separation", 12)
-	right_v.add_child(_char_equip_grid)
-
-	var slots := ["武器", "上衣", "頭飾", "飾品", "靈魂"]
-	for s in slots:
-		var slot_p := PanelContainer.new()
-		slot_p.custom_minimum_size = Vector2(72, 72)
-		var sp_sb := StyleBoxFlat.new()
-		sp_sb.bg_color = Color(0.16, 0.13, 0.10, 0.92)
-		sp_sb.border_color = Color(0.75, 0.60, 0.40, 0.9)
-		sp_sb.set_border_width_all(2)
-		sp_sb.set_corner_radius_all(10)
-		slot_p.add_theme_stylebox_override("panel", sp_sb)
-		
-		var sl := Label.new()
-		sl.text = s
-		sl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		sl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		sl.add_theme_font_size_override("font_size", 13)
-		sl.add_theme_color_override("font_color", Color(0.90, 0.85, 0.80))
-		slot_p.add_child(sl)
-		_char_equip_grid.add_child(slot_p)
-
-	_char_stats_label = RichTextLabel.new()
-	_char_stats_label.bbcode_enabled = true
-	_char_stats_label.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	_char_stats_label.add_theme_font_size_override("normal_font_size", 15)
-	right_v.add_child(_char_stats_label)
-
-	var equip_btn_row := HBoxContainer.new()
-	equip_btn_row.alignment = BoxContainer.ALIGNMENT_END
-	var one_click_btn := Button.new()
-	one_click_btn.text = "⚡ 一鍵適配最高戰力"
-	one_click_btn.custom_minimum_size = Vector2(180, 42)
-	UiStyle.style_button(one_click_btn, true)
-	one_click_btn.pressed.connect(func():
-		_show_act_toast("已一鍵裝備最高評級套裝！")
-		_refresh_character_stats()
+	var btn_absorb := Button.new()
+	btn_absorb.text = "⚡ 一鍵吸收灰魂 (換經驗)"
+	btn_absorb.custom_minimum_size = Vector2(180, 44)
+	UiStyle.style_button(btn_absorb, false)
+	btn_absorb.pressed.connect(func():
+		_show_toast("已將廢魂轉化為 480 戰魂經驗值！")
 	)
-	equip_btn_row.add_child(one_click_btn)
-	right_v.add_child(equip_btn_row)
+	bot_h.add_child(btn_absorb)
 
-func _set_preview_pose(pose: String) -> void:
-	var path := "res://assets/sprites/player/poses/%s.png" % pose
-	if ResourceLoader.exists(path):
-		_char_preview.texture = load(path)
+	var btn_ten := Button.new()
+	btn_ten.text = "✨ 聚魂十次 (直接點擊)"
+	btn_ten.custom_minimum_size = Vector2(180, 44)
+	UiStyle.style_button(btn_ten, true)
+	btn_ten.pressed.connect(func():
+		_do_gourd_draw(0, true)
+	)
+	bot_h.add_child(btn_ten)
 
-func _refresh_character_stats() -> void:
-	if not _char_stats_label:
+func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(130, 150)
+	btn.name = "GourdBtn_%d" % idx
+
+	var v := VBoxContainer.new()
+	v.set_anchors_preset(Control.PRESET_FULL_RECT)
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	v.add_theme_constant_override("separation", 6)
+	btn.add_child(v)
+
+	var ic := Label.new()
+	ic.text = str(gd["icon"])
+	ic.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ic.add_theme_font_size_override("font_size", 36)
+	v.add_child(ic)
+
+	var nl := Label.new()
+	nl.text = str(gd["name"])
+	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	nl.add_theme_font_size_override("font_size", 13)
+	nl.add_theme_color_override("font_color", gd["color"] as Color)
+	v.add_child(nl)
+
+	var cl := Label.new()
+	cl.text = "🪙 %d" % int(gd["cost"])
+	cl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cl.add_theme_font_size_override("font_size", 11)
+	cl.add_theme_color_override("font_color", Color(0.85, 0.8, 0.75))
+	v.add_child(cl)
+
+	btn.pressed.connect(func(): _do_gourd_draw(idx, false))
+	return btn
+
+func _refresh_gourds_ui() -> void:
+	for i in range(_gourd_btns.size()):
+		var b := _gourd_btns[i]
+		var is_lit := _gourd_lit[i]
+		var sb := StyleBoxFlat.new()
+		if is_lit:
+			sb.bg_color = Color(0.22, 0.16, 0.10, 0.95)
+			sb.border_color = Color(1.0, 0.85, 0.35, 1.0)
+			sb.set_border_width_all(2)
+			sb.set_corner_radius_all(12)
+			sb.shadow_color = Color(1.0, 0.85, 0.35, 0.4)
+			sb.shadow_size = 6
+			b.disabled = false
+		else:
+			sb.bg_color = Color(0.12, 0.10, 0.08, 0.6)
+			sb.border_color = Color(0.35, 0.28, 0.20, 0.5)
+			sb.set_border_width_all(1)
+			sb.set_corner_radius_all(12)
+			b.disabled = true
+		b.add_theme_stylebox_override("normal", sb)
+		b.add_theme_stylebox_override("hover", sb)
+		b.add_theme_stylebox_override("disabled", sb)
+
+func _do_gourd_draw(idx: int, is_ten: bool) -> void:
+	if not _gourd_lit[idx] and not is_ten:
 		return
-	var hp := 100
-	var atk := 25
-	var def := 15
-	var crit := 5
-	var speed := 10
-	var power := 482
 
-	if Engine.get_main_loop() is SceneTree:
-		var gs: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
-		if gs:
-			if gs.has_method("effective_max_hp"): hp = gs.call("effective_max_hp")
-			if gs.has_method("effective_atk"): atk = gs.call("effective_atk")
-			if gs.has_method("effective_def"): def = gs.call("effective_def")
-			if gs.has_method("effective_crit"): crit = gs.call("effective_crit")
-			if gs.has_method("effective_speed"): speed = gs.call("effective_speed")
-			if gs.has_method("power_score"): power = gs.call("power_score")
-
-	var text := "[color=#ffd700][b]角色戰鬥屬性面板[/b][/color]\n\n"
-	text += "綜合戰鬥力：[color=#ffa500][b]%d[/b][/color]\n" % power
-	text += "生命上限 (HP)：[color=#ff6b6b]%d[/color]\n" % hp
-	text += "物理攻擊 (ATK)：[color=#4dabf7]%d[/color]\n" % atk
-	text += "物理防禦 (DEF)：[color=#51cf66]%d[/color]\n" % def
-	text += "暴擊率 (CRIT)：[color=#fcc419]%d%%[/color]\n" % crit
-	text += "攻擊速度 (SPD)：[color=#cc5de8]%d[/color]\n" % speed
-	_char_stats_label.text = text
+	var roll := randf()
+	if roll < 0.35 and idx < 4:
+		## 成功點亮更高階葫蘆！
+		_gourd_lit[idx + 1] = true
+		_show_toast("🔮 靈光閃爍！成功點亮更高階的葫蘆！")
+	else:
+		## 摔回白玉葫蘆 (原作經典跳階機制)
+		for i in range(1, 5):
+			_gourd_lit[i] = false
+		_show_toast("聚魂完畢！獲得了【戰魂碎片】與戰魂經驗！")
+	
+	_refresh_gourds_ui()
 
 ## ──────────────────────────────────────────
-## Tab 3: 冒險出征 (Adventure View)
+## Tab 3: 四地區出征關卡 (原作四地區)
 ## ──────────────────────────────────────────
 func _build_adventure_tab() -> void:
 	_adventure_layer = Control.new()
@@ -805,385 +631,210 @@ func _build_adventure_tab() -> void:
 
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	panel.offset_left = 50
+	panel.offset_right = -50
+	panel.offset_top = 16
+	panel.offset_bottom = -16
+	panel.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	_adventure_layer.add_child(panel)
+
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 12)
+	panel.add_child(v)
+
+	## 四地區標籤選擇列 (第一～四地區)
+	var reg_bar := HBoxContainer.new()
+	reg_bar.alignment = BoxContainer.ALIGNMENT_CENTER
+	reg_bar.add_theme_constant_override("separation", 16)
+	v.add_child(reg_bar)
+
+	var regions: Array[String] = ["第一地區 · 破曉之原", "第二地區 · 聖獅王都", "第三地區 · 迷霧雪境", "第四地區 · 深淵龍窟"]
+	for i in range(regions.size()):
+		var rb := Button.new()
+		rb.text = regions[i]
+		rb.custom_minimum_size = Vector2(160, 42)
+		UiStyle.style_button(rb, i == _selected_region)
+		var r_idx := i
+		rb.pressed.connect(func(): _select_region(r_idx))
+		reg_bar.add_child(rb)
+
+	## 關卡列表容器
+	_stages_container = VBoxContainer.new()
+	_stages_container.add_theme_constant_override("separation", 12)
+	_stages_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	v.add_child(_stages_container)
+
+	_refresh_region_stages()
+
+func _select_region(r: int) -> void:
+	_selected_region = r
+	_refresh_region_stages()
+
+func _refresh_region_stages() -> void:
+	for c in _stages_container.get_children():
+		c.queue_free()
+
+	var stages_data := [
+		{"num": "2-1", "name": "王城外郭 · 守望關隘", "type": "雜魚", "cost": 1, "power": 380, "mode": "road_bandit"},
+		{"num": "2-2", "name": "市集街道 · 潛伏暗哨", "type": "菁英", "cost": 1, "power": 420, "mode": "road_bandit"},
+		{"num": "2-3", "name": "下水道口 · 腐化黏怪", "type": "菁英", "cost": 1, "power": 450, "mode": "road_bandit"},
+		{"num": "2-4", "name": "聖獅王宮 · 狂暴守護者", "type": "👑 BOSS部位破壞", "cost": 3, "power": 520, "mode": "leo"},
+	]
+
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 18)
+	grid.add_theme_constant_override("v_separation", 14)
+	_stages_container.add_child(grid)
+
+	for s in stages_data:
+		var sc := _build_stage_card(s)
+		grid.add_child(sc)
+
+func _build_stage_card(s: Dictionary) -> PanelContainer:
+	var c := PanelContainer.new()
+	c.custom_minimum_size = Vector2(360, 96)
+	var csb := StyleBoxFlat.new()
+	var is_boss: bool = str(s["type"]).find("BOSS") >= 0
+	csb.bg_color = Color(0.20, 0.14, 0.10, 0.95) if is_boss else Color(0.14, 0.11, 0.08, 0.92)
+	csb.border_color = Color(1.0, 0.85, 0.35, 1.0) if is_boss else Color(0.65, 0.52, 0.35, 0.8)
+	csb.set_border_width_all(2)
+	csb.set_corner_radius_all(12)
+	csb.content_margin_left = 14
+	csb.content_margin_right = 14
+	csb.content_margin_top = 10
+	csb.content_margin_bottom = 10
+	c.add_theme_stylebox_override("panel", csb)
+
+	var h := HBoxContainer.new()
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 12)
+	c.add_child(h)
+
+	var v := VBoxContainer.new()
+	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	v.add_theme_constant_override("separation", 4)
+	h.add_child(v)
+
+	var t_row := HBoxContainer.new()
+	t_row.add_theme_constant_override("separation", 8)
+	var num_l := Label.new()
+	num_l.text = str(s["num"])
+	num_l.add_theme_font_size_override("font_size", 15)
+	num_l.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
+	t_row.add_child(num_l)
+
+	var name_l := Label.new()
+	name_l.text = str(s["name"])
+	name_l.add_theme_font_size_override("font_size", 14)
+	name_l.add_theme_color_override("font_color", Color.WHITE)
+	t_row.add_child(name_l)
+	v.add_child(t_row)
+
+	var inf_row := HBoxContainer.new()
+	inf_row.add_theme_constant_override("separation", 12)
+	var typ_l := Label.new()
+	typ_l.text = str(s["type"])
+	typ_l.add_theme_font_size_override("font_size", 11)
+	typ_l.add_theme_color_override("font_color", Color(1.0, 0.6, 0.4) if is_boss else Color(0.8, 0.8, 0.8))
+	inf_row.add_child(typ_l)
+
+	var pwr_l := Label.new()
+	pwr_l.text = "推薦戰力: %d" % int(s["power"])
+	pwr_l.add_theme_font_size_override("font_size", 11)
+	pwr_l.add_theme_color_override("font_color", Color(0.9, 0.85, 0.6))
+	inf_row.add_child(pwr_l)
+	v.add_child(inf_row)
+
+	var btn := Button.new()
+	btn.text = "⚔️ 開戰 (⚡%d)" % int(s["cost"])
+	btn.custom_minimum_size = Vector2(110, 42)
+	UiStyle.style_button(btn, is_boss)
+	var m: String = str(s["mode"])
+	btn.pressed.connect(func(): request_battle.emit(m))
+	h.add_child(btn)
+
+	return c
+
+## ──────────────────────────────────────────
+## Tab 2 & Tab 5: 角色紙娃娃與背包
+## ──────────────────────────────────────────
+func _build_character_tab() -> void:
+	_char_layer = Control.new()
+	_char_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_char_layer.visible = false
+	_content_root.add_child(_char_layer)
+
+	var panel := PanelContainer.new()
+	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	panel.offset_left = 60
 	panel.offset_right = -60
 	panel.offset_top = 20
 	panel.offset_bottom = -20
-	panel.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
-	_adventure_layer.add_child(panel)
+	panel.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	_char_layer.add_child(panel)
 
-	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 16)
-	panel.add_child(v)
+	var h := HBoxContainer.new()
+	h.add_theme_constant_override("separation", 24)
+	panel.add_child(h)
 
-	var title := Label.new()
-	title.text = "冒險出征 · 章節選擇"
-	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.40))
-	v.add_child(title)
+	## 左側立繪
+	var l_card := PanelContainer.new()
+	l_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	l_card.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	h.add_child(l_card)
 
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	v.add_child(scroll)
+	var prev := TextureRect.new()
+	prev.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	prev.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if ResourceLoader.exists("res://assets/sprites/player/poses/idle.png"):
+		prev.texture = load("res://assets/sprites/player/poses/idle.png")
+	l_card.add_child(prev)
 
-	var grid := GridContainer.new()
-	grid.columns = 3
-	grid.add_theme_constant_override("h_separation", 18)
-	grid.add_theme_constant_override("v_separation", 18)
-	scroll.add_child(grid)
-
-	var chapters: Array = [
-		{"name": "第零章 · 破曉之村", "desc": "燃燒的故鄉與最初的覺醒", "map": "village", "star": "⭐⭐⭐"},
-		{"name": "第一章 · 王都聖獅", "desc": "繁華王城與狂暴的守護獅", "map": "town", "star": "⭐⭐⭐"},
-		{"name": "第二章 · 迷霧之谷", "desc": "籠罩在白霧中的幻影古蹟", "map": "mist_village", "star": "⭐⭐"},
-		{"name": "第三章 · 試煉道場", "desc": "隱士武者的極限挑戰", "map": "dojo", "star": "⭐"},
-		{"name": "第四章 · 巨木之森", "desc": "遠古精靈與受詛咒的魔獸", "map": "forest", "star": "未解鎖"},
-		{"name": "第五章 · 咆哮之海", "desc": "神秘沉船與深海狂濤", "map": "coast", "star": "未解鎖"},
-	]
-
-	for c in chapters:
-		var c_card := PanelContainer.new()
-		c_card.custom_minimum_size = Vector2(250, 115)
-		var csb := StyleBoxFlat.new()
-		csb.bg_color = Color(0.15, 0.12, 0.09, 0.95)
-		csb.border_color = Color(0.70, 0.55, 0.35, 0.9)
-		csb.set_border_width_all(2)
-		csb.set_corner_radius_all(10)
-		csb.content_margin_left = 14
-		csb.content_margin_right = 14
-		csb.content_margin_top = 10
-		csb.content_margin_bottom = 10
-		c_card.add_theme_stylebox_override("panel", csb)
-
-		var cv := VBoxContainer.new()
-		cv.add_theme_constant_override("separation", 4)
-		c_card.add_child(cv)
-
-		var cn := Label.new()
-		cn.text = str(c.get("name", ""))
-		cn.add_theme_font_size_override("font_size", 14)
-		cn.add_theme_color_override("font_color", Color(1.0, 0.88, 0.50))
-		cv.add_child(cn)
-
-		var cd := Label.new()
-		cd.text = str(c.get("desc", ""))
-		cd.add_theme_font_size_override("font_size", 11)
-		cd.add_theme_color_override("font_color", Color(0.85, 0.80, 0.75))
-		cv.add_child(cd)
-
-		var cs := Label.new()
-		cs.text = str(c.get("star", ""))
-		cs.add_theme_font_size_override("font_size", 12)
-		cv.add_child(cs)
-
-		var btn := Button.new()
-		btn.text = "出發探索"
-		btn.custom_minimum_size = Vector2(0, 30)
-		UiStyle.style_button(btn, true)
-		var m_id: String = str(c.get("map", ""))
-		btn.pressed.connect(func(): request_explore.emit(m_id))
-		cv.add_child(btn)
-
-		grid.add_child(c_card)
-
-## ──────────────────────────────────────────
-## Tab 4: 聚魂抽卡 (Gacha View)
-## ──────────────────────────────────────────
-func _build_gacha_tab() -> void:
-	_gacha_layer = Control.new()
-	_gacha_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_gacha_layer.visible = false
-	_content_root.add_child(_gacha_layer)
-
-	var panel := PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	panel.offset_left = 80
-	panel.offset_right = -80
-	panel.offset_top = 20
-	panel.offset_bottom = -20
-	panel.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
-	_gacha_layer.add_child(panel)
-
-	var v := VBoxContainer.new()
-	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.add_theme_constant_override("separation", 20)
-	panel.add_child(v)
+	## 右側三欄武器與數值
+	var r_v := VBoxContainer.new()
+	r_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	r_v.add_theme_constant_override("separation", 12)
+	h.add_child(r_v)
 
 	var title := Label.new()
-	title.text = "🔮 萬魂召喚祭壇 · 傳說戰魂降臨"
-	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 22)
-	title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.40))
-	v.add_child(title)
+	title.text = "✦ 三欄武器輪替系統 (原作節奏) ✦"
+	title.add_theme_font_size_override("font_size", 16)
+	title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.35))
+	r_v.add_child(title)
 
-	var hint := Label.new()
-	hint.text = "聚引十四主星之魂 · SSR【紫微星君】機率限時 UP！"
-	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	hint.add_theme_font_size_override("font_size", 14)
-	hint.add_theme_color_override("font_color", Color(0.92, 0.88, 0.82))
-	v.add_child(hint)
+	var w_row := HBoxContainer.new()
+	w_row.add_theme_constant_override("separation", 10)
+	r_v.add_child(w_row)
 
-	var btn_row := HBoxContainer.new()
-	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	btn_row.add_theme_constant_override("separation", 24)
+	var w_slots := ["首選: 鐵劍 (每場4次)", "副手: 獵弓 (每場4次)", "絕技: 拳套 (每次5連擊)"]
+	for ws in w_slots:
+		var p := PanelContainer.new()
+		p.custom_minimum_size = Vector2(120, 60)
+		var psb := StyleBoxFlat.new()
+		psb.bg_color = Color(0.16, 0.12, 0.09, 0.9)
+		psb.border_color = Color(0.85, 0.70, 0.35, 0.9)
+		psb.set_border_width_all(1)
+		psb.set_corner_radius_all(8)
+		p.add_theme_stylebox_override("panel", psb)
+		var l := Label.new()
+		l.text = ws
+		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		l.add_theme_font_size_override("font_size", 11)
+		p.add_child(l)
+		w_row.add_child(p)
 
-	var btn_1 := Button.new()
-	btn_1.text = "聚魂一次 (💎 100)"
-	btn_1.custom_minimum_size = Vector2(180, 52)
-	UiStyle.style_button(btn_1, false)
-	btn_1.pressed.connect(func(): _do_summon(1))
-	btn_row.add_child(btn_1)
+	var stats := RichTextLabel.new()
+	stats.bbcode_enabled = true
+	stats.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	stats.text = "\n[color=#ffd700]角色戰鬥屬性 (有效戰力 482)[/color]\n\n"
+	stats.text += "生命力 (HP): [color=#ff6b6b]520[/color]   物理攻擊: [color=#4dabf7]95[/color]\n"
+	stats.text += "物理防禦: [color=#51cf66]48[/color]   暴擊率: [color=#fcc419]22%[/color]\n"
+	stats.text += "怒氣量表: [color=#ffa500]20 點 (滿怒自動觸發暴怒 +25% 攻防暴)[/color]\n"
+	r_v.add_child(stats)
 
-	var btn_10 := Button.new()
-	btn_10.text = "十連聚魂 (💎 900)"
-	btn_10.custom_minimum_size = Vector2(180, 52)
-	UiStyle.style_button(btn_10, true)
-	btn_10.pressed.connect(func(): _do_summon(10))
-	btn_row.add_child(btn_10)
-
-	v.add_child(btn_row)
-
-const SOUL_CARDS: Array[Dictionary] = [
-	{"name": "紫微星君", "rarity": "SSR", "title": "帝星之魂", "tex": "res://assets/sprites/souls/star_ziwei.png", "desc": "全隊傷害 +25%"},
-	{"name": "天府星君", "rarity": "SSR", "title": "令星之魂", "tex": "res://assets/sprites/souls/star_tianfu.png", "desc": "生命上限 +30%"},
-	{"name": "武曲星君", "rarity": "SR", "title": "剛金之魂", "tex": "res://assets/sprites/souls/star_wuqu.png", "desc": "物理暴擊 +15%"},
-	{"name": "七殺星君", "rarity": "SR", "title": "肅殺之魂", "tex": "res://assets/sprites/souls/star_qisha.png", "desc": "攻擊穿透 +18%"},
-	{"name": "破軍星君", "rarity": "SR", "title": "先鋒之魂", "tex": "res://assets/sprites/souls/star_pojun.png", "desc": "技能急速 +12%"},
-	{"name": "天梁星君", "rarity": "SR", "title": "福蔭之魂", "tex": "res://assets/sprites/souls/star_tianliang.png", "desc": "受到傷害 -15%"},
-	{"name": "天童星君", "rarity": "R", "title": "純真之魂", "tex": "res://assets/sprites/souls/star_tiantong.png", "desc": "自然回血 +10%"},
-	{"name": "太陽星君", "rarity": "R", "title": "光耀之魂", "tex": "res://assets/sprites/souls/star_taiyang.png", "desc": "命中率 +8%"},
-	{"name": "太陰星君", "rarity": "R", "title": "清輝之魂", "tex": "res://assets/sprites/souls/star_taiyin.png", "desc": "暴擊抵抗 +8%"},
-	{"name": "貪狼星君", "rarity": "R", "title": "機變之魂", "tex": "res://assets/sprites/souls/star_tanlang.png", "desc": "移動速度 +5%"},
-]
-
-func _do_summon(count: int) -> void:
-	var results: Array[Dictionary] = []
-	var has_ssr := false
-	for i in range(count):
-		var pick_idx := 0
-		var r := randf()
-		if i == count - 1 and not has_ssr:
-			## 保底機制：最後一抽保底 SR 以上
-			pick_idx = randi() % 6
-		elif r < 0.15:
-			pick_idx = randi() % 2 # SSR
-			has_ssr = true
-		elif r < 0.55:
-			pick_idx = 2 + (randi() % 4) # SR
-		else:
-			pick_idx = 6 + (randi() % 4) # R
-		results.append(SOUL_CARDS[pick_idx])
-	
-	_play_gacha_showcase(results, count)
-
-func _play_gacha_showcase(results: Array[Dictionary], count: int) -> void:
-	var has_ssr := false
-	for card in results:
-		if str(card.get("rarity", "")) == "SSR":
-			has_ssr = true
-			break
-
-	var overlay := Control.new()
-	overlay.name = "GachaShowcaseOverlay"
-	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
-	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
-	add_child(overlay)
-
-	## 1. 召喚背景 (深邃星空暗夜)
-	var bg := ColorRect.new()
-	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.05, 0.04, 0.08, 0.95)
-	overlay.add_child(bg)
-
-	## 2. 金光 / 紫光衝天光暈
-	var beam := TextureRect.new()
-	beam.set_anchors_preset(Control.PRESET_CENTER)
-	beam.offset_left = -300
-	beam.offset_top = -300
-	beam.offset_right = 300
-	beam.offset_bottom = 300
-	var grad := Gradient.new()
-	if has_ssr:
-		grad.set_color(0, Color(1.0, 0.85, 0.35, 0.9))
-		grad.set_color(1, Color(1.0, 0.70, 0.20, 0.0))
-	else:
-		grad.set_color(0, Color(0.75, 0.45, 1.0, 0.85))
-		grad.set_color(1, Color(0.55, 0.25, 0.90, 0.0))
-	var beam_tex := GradientTexture2D.new()
-	beam_tex.gradient = grad
-	beam_tex.fill = GradientTexture2D.FILL_RADIAL
-	beam_tex.fill_from = Vector2(0.5, 0.5)
-	beam_tex.fill_to = Vector2(0.5, 0.0)
-	beam.texture = beam_tex
-	beam.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	overlay.add_child(beam)
-
-	## 頂部結算標題
-	var title_box := VBoxContainer.new()
-	title_box.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	title_box.offset_top = 22
-	title_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	title_box.add_theme_constant_override("separation", 4)
-	overlay.add_child(title_box)
-
-	var title_l := Label.new()
-	title_l.text = "✦ 聚魂召喚結果 ✦"
-	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_l.add_theme_font_size_override("font_size", 24)
-	title_l.add_theme_color_override("font_color", Color(1.0, 0.88, 0.45))
-	title_l.add_theme_color_override("font_outline_color", Color(0.2, 0.12, 0.05))
-	title_l.add_theme_constant_override("outline_size", 4)
-	title_box.add_child(title_l)
-
-	var sub_l := Label.new()
-	sub_l.text = "獲得了傳說戰魂的眷顧！" if has_ssr else "群星戰魂已響應您的召喚"
-	sub_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	sub_l.add_theme_font_size_override("font_size", 13)
-	sub_l.add_theme_color_override("font_color", Color(0.9, 0.85, 0.8))
-	title_box.add_child(sub_l)
-
-	## 中央卡牌網格
-	var card_container := GridContainer.new()
-	card_container.set_anchors_preset(Control.PRESET_CENTER)
-	card_container.columns = 5 if count > 1 else 1
-	card_container.add_theme_constant_override("h_separation", 16)
-	card_container.add_theme_constant_override("v_separation", 16)
-	
-	if count > 1:
-		card_container.offset_left = -480
-		card_container.offset_top = -180
-		card_container.offset_right = 480
-		card_container.offset_bottom = 180
-	else:
-		card_container.offset_left = -110
-		card_container.offset_top = -140
-		card_container.offset_right = 110
-		card_container.offset_bottom = 140
-	overlay.add_child(card_container)
-
-	for card_data in results:
-		var card_card := _build_soul_card_item(card_data)
-		card_container.add_child(card_card)
-
-	## 底部確認操作列
-	var bot_box := HBoxContainer.new()
-	bot_box.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bot_box.offset_bottom = -24
-	bot_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	bot_box.add_theme_constant_override("separation", 24)
-	overlay.add_child(bot_box)
-
-	var again_btn := Button.new()
-	again_btn.text = "🔄 再抽十連 (💎 900)" if count > 1 else "🔄 再抽一次 (💎 100)"
-	again_btn.custom_minimum_size = Vector2(180, 46)
-	UiStyle.style_button(again_btn, false)
-	again_btn.pressed.connect(func():
-		overlay.queue_free()
-		_do_summon(count)
-	)
-	bot_box.add_child(again_btn)
-
-	var ok_btn := Button.new()
-	ok_btn.text = "✨ 收入聚魂閣"
-	ok_btn.custom_minimum_size = Vector2(180, 46)
-	UiStyle.style_button(ok_btn, true)
-	ok_btn.pressed.connect(func():
-		overlay.queue_free()
-	)
-	bot_box.add_child(ok_btn)
-
-	## 全屏金色/光芒微閃動畫
-	var flash := ColorRect.new()
-	flash.set_anchors_preset(Control.PRESET_FULL_RECT)
-	flash.color = Color(1.0, 0.95, 0.85, 0.9) if has_ssr else Color(0.85, 0.70, 1.0, 0.7)
-	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	overlay.add_child(flash)
-
-	var tw := create_tween()
-	tw.tween_property(flash, "modulate:a", 0.0, 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tw.tween_callback(flash.queue_free)
-
-func _build_soul_card_item(data: Dictionary) -> PanelContainer:
-	var rarity: String = str(data.get("rarity", "R"))
-	var is_ssr := (rarity == "SSR")
-	var is_sr := (rarity == "SR")
-
-	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(170, 160)
-	var csb := StyleBoxFlat.new()
-	if is_ssr:
-		csb.bg_color = Color(0.24, 0.18, 0.08, 0.95)
-		csb.border_color = Color(1.0, 0.85, 0.35, 1.0)
-		csb.shadow_color = Color(1.0, 0.80, 0.25, 0.5)
-		csb.shadow_size = 8
-	elif is_sr:
-		csb.bg_color = Color(0.18, 0.12, 0.24, 0.95)
-		csb.border_color = Color(0.80, 0.55, 1.0, 1.0)
-		csb.shadow_color = Color(0.70, 0.40, 0.95, 0.4)
-		csb.shadow_size = 6
-	else:
-		csb.bg_color = Color(0.10, 0.14, 0.20, 0.95)
-		csb.border_color = Color(0.45, 0.70, 0.95, 0.9)
-		csb.shadow_size = 3
-
-	csb.set_border_width_all(2)
-	csb.set_corner_radius_all(12)
-	csb.content_margin_left = 10
-	csb.content_margin_right = 10
-	csb.content_margin_top = 8
-	csb.content_margin_bottom = 8
-	card.add_theme_stylebox_override("panel", csb)
-
-	var v := VBoxContainer.new()
-	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.add_theme_constant_override("separation", 6)
-	card.add_child(v)
-
-	## 稀有度角標
-	var r_label := Label.new()
-	r_label.text = "✦ %s ✦" % rarity
-	r_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	r_label.add_theme_font_size_override("font_size", 14)
-	if is_ssr:
-		r_label.add_theme_color_override("font_color", Color(1.0, 0.90, 0.35))
-	elif is_sr:
-		r_label.add_theme_color_override("font_color", Color(0.85, 0.65, 1.0))
-	else:
-		r_label.add_theme_color_override("font_color", Color(0.55, 0.80, 1.0))
-	v.add_child(r_label)
-
-	## 戰魂圖示
-	var icon_rect := TextureRect.new()
-	icon_rect.custom_minimum_size = Vector2(56, 56)
-	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	var t_path: String = str(data.get("tex", ""))
-	if ResourceLoader.exists(t_path):
-		icon_rect.texture = load(t_path)
-	v.add_child(icon_rect)
-
-	## 戰魂名稱
-	var name_l := Label.new()
-	name_l.text = str(data.get("name", ""))
-	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_l.add_theme_font_size_override("font_size", 13)
-	name_l.add_theme_color_override("font_color", Color(0.98, 0.95, 0.90))
-	v.add_child(name_l)
-
-	## 加成說明
-	var desc_l := Label.new()
-	desc_l.text = str(data.get("desc", ""))
-	desc_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	desc_l.add_theme_font_size_override("font_size", 11)
-	desc_l.add_theme_color_override("font_color", Color(0.85, 0.80, 0.75))
-	v.add_child(desc_l)
-
-	return card
-
-## ──────────────────────────────────────────
-## Tab 5: 背包 (Bag View)
-## ──────────────────────────────────────────
 func _build_bag_tab() -> void:
 	_bag_layer = Control.new()
 	_bag_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1196,95 +847,63 @@ func _build_bag_tab() -> void:
 	panel.offset_right = -80
 	panel.offset_top = 20
 	panel.offset_bottom = -20
-	panel.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
+	panel.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	_bag_layer.add_child(panel)
 
 	var v := VBoxContainer.new()
 	v.add_theme_constant_override("separation", 14)
 	panel.add_child(v)
 
-	var title := Label.new()
-	title.text = "🎒 冒險者背包"
-	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", Color(1.0, 0.85, 0.40))
-	v.add_child(title)
-
-	var scroll := ScrollContainer.new()
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	v.add_child(scroll)
+	var t := Label.new()
+	t.text = "🎒 冒險者背包 (道具與戰魂倉庫)"
+	t.add_theme_font_size_override("font_size", 18)
+	t.add_theme_color_override("font_color", Color(1.0, 0.85, 0.4))
+	v.add_child(t)
 
 	var grid := GridContainer.new()
 	grid.columns = 8
-	grid.add_theme_constant_override("h_separation", 12)
-	grid.add_theme_constant_override("v_separation", 12)
-	scroll.add_child(grid)
+	grid.add_theme_constant_override("h_separation", 10)
+	grid.add_theme_constant_override("v_separation", 10)
+	v.add_child(grid)
 
-	for i in range(32):
-		var slot := PanelContainer.new()
-		slot.custom_minimum_size = Vector2(64, 64)
+	for i in range(24):
+		var sp := PanelContainer.new()
+		sp.custom_minimum_size = Vector2(64, 64)
 		var ssb := StyleBoxFlat.new()
-		ssb.bg_color = Color(0.16, 0.13, 0.10, 0.92)
-		ssb.border_color = Color(0.55, 0.45, 0.32, 0.8)
+		ssb.bg_color = Color(0.14, 0.11, 0.08, 0.9)
+		ssb.border_color = Color(0.55, 0.42, 0.28, 0.8)
 		ssb.set_border_width_all(1)
 		ssb.set_corner_radius_all(8)
-		slot.add_theme_stylebox_override("panel", ssb)
-		
+		sp.add_theme_stylebox_override("panel", ssb)
 		var l := Label.new()
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		l.add_theme_font_size_override("font_size", 12)
-		if i == 0:
-			l.text = "木劍"
-			l.add_theme_color_override("font_color", Color(1.0, 0.85, 0.4))
-		elif i == 1:
-			l.text = "紅藥水x5"
-		elif i == 2:
-			l.text = "靈魂晶石"
-		else:
-			l.text = ""
-		slot.add_child(l)
-		grid.add_child(slot)
+		l.add_theme_font_size_override("font_size", 11)
+		if i == 0: l.text = "鐵劍"
+		elif i == 1: l.text = "紅藥水x10"
+		elif i == 2: l.text = "紅寶石"
+		elif i == 3: l.text = "紫微星魂"
+		sp.add_child(l)
+		grid.add_child(sp)
 
-## ──────────────────────────────────────────
-## 外部狀態刷新
-## ──────────────────────────────────────────
 func refresh_hud() -> void:
-	var lv := 12
-	var hero_name := "Capoo"
-	var power := 482
-	var gold := 12500
-	var energy := 15
-	var gems := 350
+	if _lv_label: _lv_label.text = "Lv.12"
+	if _name_label: _name_label.text = "Capoo"
+	if _power_label: _power_label.text = "戰力 482"
+	if _energy_label: _energy_label.text = "15/15"
+	if _gold_label: _gold_label.text = "12,500"
+	if _gem_label: _gem_label.text = "350"
 
-	if Engine.get_main_loop() is SceneTree:
-		var gs: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
-		if gs:
-			if "level" in gs and int(gs.level) > 0: lv = int(gs.level)
-			if "player_name" in gs and str(gs.player_name) != "": hero_name = str(gs.player_name)
-			if gs.has_method("power_score"): power = gs.call("power_score")
-			if "gold" in gs and int(gs.gold) > 0: gold = int(gs.gold)
-
-		var es: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EnergySystem")
-		if es and es.has_method("current"):
-			energy = es.call("current")
-
-	if _lv_label: _lv_label.text = "Lv.%d" % lv
-	if _name_label: _name_label.text = hero_name
-	if _power_label: _power_label.text = "戰力 %d" % power
-	if _energy_label: _energy_label.text = "%d/15" % energy
-	if _gold_label: _gold_label.text = str(gold)
-	if _gem_label: _gem_label.text = str(gems)
-
-func _show_act_toast(msg: String) -> void:
+func _show_toast(msg: String) -> void:
 	var toast := Label.new()
 	toast.text = msg
 	toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	toast.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	toast.offset_left = -160
-	toast.offset_right = 160
-	toast.offset_top = 100
-	toast.offset_bottom = 140
+	toast.offset_left = -180
+	toast.offset_right = 180
+	toast.offset_top = 80
+	toast.offset_bottom = 120
 	var tsb := StyleBoxFlat.new()
 	tsb.bg_color = Color(0.12, 0.09, 0.07, 0.95)
 	tsb.border_color = Color(0.95, 0.80, 0.35, 1.0)

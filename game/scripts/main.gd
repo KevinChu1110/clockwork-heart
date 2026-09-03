@@ -2432,13 +2432,10 @@ func _go_mobile_lobby() -> void:
 	_current = Screen.LOBBY
 	var lobby_scn: GDScript = load("res://scripts/ui/mobile_lobby.gd")
 	var lobby: Control = lobby_scn.new()
-	lobby.connect("request_explore", func(map_id: String):
-		_open_explore(map_id, Screen.C1_TOWN)
-	)
 	lobby.connect("request_battle", func(mode: String):
 		_start_battle(mode)
 	)
-	lobby.connect("request_settings", _go_game_settings_menu)
+	lobby.connect("request_settings", _open_mobile_settings)
 	host.add_child(lobby)
 
 
