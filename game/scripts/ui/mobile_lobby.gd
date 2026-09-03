@@ -1,7 +1,7 @@
 class_name MobileLobby
 extends Control
 ## 勇者之魂 (Brave Soul) - 現代多巴胺手遊風格大廳 (Tata Adventure Style)
-## 視覺標準：超大觸控尺寸 + 飽滿果凍立體按鈕 + 多巴胺鮮亮高飽和配色 + 圓角胖胖字體
+## 採用手遊標準的預渲染藝術字按鈕 (Graphic UI Sprites) 徹底告別 PPT 純文字標籤
 
 signal request_battle(mode: String)
 signal request_settings()
@@ -74,7 +74,7 @@ func _build_ui() -> void:
 		bg.texture = load("res://assets/sprites/illustrations/title_bg.png")
 	add_child(bg)
 
-	## 頂部與底部通透暗紫漸層遮罩 (消除老舊黑霧)
+	## 頂部與底部通透暗紫漸層遮罩
 	var top_v := ColorRect.new()
 	top_v.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	top_v.offset_bottom = 120
@@ -109,7 +109,7 @@ func _build_ui() -> void:
 	_build_bottom_dock()
 
 ## ──────────────────────────────────────────
-## 頂部大尺寸多巴胺 HUD (能量 15 點 原作規格)
+## 頂部大尺寸多巴胺 HUD
 ## ──────────────────────────────────────────
 func _build_top_hud() -> void:
 	var top_bar := PanelContainer.new()
@@ -201,12 +201,11 @@ func _build_top_hud() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(spacer)
 
-	## 多巴胺立體三寶果凍膠囊 (能量 ⚡ 薄荷綠 / 金幣 🪙 金黃 / 晶石 💎 蔚藍)
+	## 多巴胺立體三寶果凍膠囊
 	_energy_label = _add_tata_capsule(h, "⚡ 能量", "15/15", UiStyle.TATA_GREEN)
 	_gold_label = _add_tata_capsule(h, "🪙 金幣", "12,500", UiStyle.TATA_YELLOW)
 	_gem_label = _add_tata_capsule(h, "💎 晶石", "350", UiStyle.TATA_BLUE)
 
-	## 齒輪設定按鈕 (立體果凍圓鈕)
 	var set_btn := Button.new()
 	set_btn.text = "⚙️"
 	set_btn.custom_minimum_size = Vector2(46, 46)
@@ -259,7 +258,7 @@ func _add_tata_capsule(parent: Container, sym: String, val: String, accent: Colo
 	return vl
 
 ## ──────────────────────────────────────────
-## 底部多巴胺果凍導航欄 (超大胖胖按鈕)
+## 底部導航欄
 ## ──────────────────────────────────────────
 func _build_bottom_dock() -> void:
 	var dock := PanelContainer.new()
@@ -318,14 +317,14 @@ func _switch_tab(target: Tab) -> void:
 		UiStyle.style_button(_dock_buttons[i], is_active)
 
 ## ──────────────────────────────────────────
-## Tab 1: 今日村莊 (四大鮮亮糖果建築卡片)
+## Tab 1: 今日村莊 (全面換裝為藝術圖片按鈕)
 ## ──────────────────────────────────────────
 func _build_village_tab() -> void:
 	_village_layer = Control.new()
 	_village_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_content_root.add_child(_village_layer)
 
-	## 中央英雄展台 (帶彩虹星芒投影)
+	## 中央英雄展台
 	var stage_anchor := Control.new()
 	stage_anchor.set_anchors_preset(Control.PRESET_CENTER)
 	stage_anchor.offset_top = 45
@@ -371,34 +370,34 @@ func _build_village_tab() -> void:
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
 
-	## 左側四大糖果色殿堂卡片 (紫粉 / 暖橘 / 天藍 / 亮金)
+	## 左側四大手繪藝術卡片 (TextureButton)
 	var left_shops := VBoxContainer.new()
 	left_shops.set_anchors_preset(Control.PRESET_LEFT_WIDE)
 	left_shops.offset_left = 32
 	left_shops.offset_top = 16
-	left_shops.offset_right = 252
+	left_shops.offset_right = 272
 	left_shops.offset_bottom = -16
 	left_shops.add_theme_constant_override("separation", 14)
 	_village_layer.add_child(left_shops)
 
-	_add_candy_building_entry(left_shops, "🔮", "聚魂殿", "五色葫蘆 · 戰魂入槽", UiStyle.TATA_PINK, func():
+	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_soul.png", func():
 		_switch_tab(Tab.SOUL_HALL)
 	)
-	_add_candy_building_entry(left_shops, "🔨", "鐵匠鋪", "品質晉階 · 裝備鍛造", UiStyle.TATA_ORANGE, func():
+	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_forge.png", func():
 		_show_toast("進入王都鐵匠鋪：可將裝備晉階為紫裝！")
 	)
-	_add_candy_building_entry(left_shops, "💎", "手藝工坊", "紅黃藍寶石 · 3合1熔煉", UiStyle.TATA_BLUE, func():
+	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_gem.png", func():
 		_show_toast("進入手藝工坊：寶石鑲嵌必定成功！")
 	)
-	_add_candy_building_entry(left_shops, "🏆", "演武場", "挑戰對手 · 雙倍抽獎", UiStyle.TATA_YELLOW, func():
+	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_arena.png", func():
 		request_battle.emit("arena")
 	)
 
-	## 右側：今日簽到 & 巨大金色【出征四地區】果凍按鈕
+	## 右側：今日簽到 & 巨大手遊藝術字【出征冒險！】
 	var right_card := PanelContainer.new()
 	right_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 	right_card.offset_left = -360
-	right_card.offset_top = -200
+	right_card.offset_top = -210
 	right_card.offset_right = -32
 	right_card.offset_bottom = -16
 	right_card.add_theme_stylebox_override("panel", UiStyle.panel_style())
@@ -424,72 +423,35 @@ func _build_village_tab() -> void:
 	s_name.add_theme_constant_override("outline_size", 4)
 	rv.add_child(s_name)
 
-	## 巨大塔塔風出征按鈕
-	var go_btn := Button.new()
-	go_btn.text = "⚔️ 出征冒險！ (耗能 1⚡)"
-	go_btn.custom_minimum_size = Vector2(0, 56)
-	go_btn.add_theme_font_size_override("font_size", 20)
-	UiStyle.style_button(go_btn, true)
-	go_btn.pressed.connect(func(): _switch_tab(Tab.ADVENTURE))
-	rv.add_child(go_btn)
+	## 商業手遊藝術字出征按鈕
+	_add_texture_button(rv, "res://assets/sprites/ui/mobile/btn_go_adventure.png", Vector2(280, 68), func():
+		_switch_tab(Tab.ADVENTURE)
+	)
 
-	var sign_btn := Button.new()
-	sign_btn.text = "🎁 今日簽到與每日委託"
-	sign_btn.custom_minimum_size = Vector2(0, 44)
-	UiStyle.style_button(sign_btn, false)
-	sign_btn.pressed.connect(func():
+	## 商業手遊藝術字簽到按鈕
+	_add_texture_button(rv, "res://assets/sprites/ui/mobile/btn_sign_daily.png", Vector2(280, 60), func():
 		_show_toast("已領取每日補給：金幣+500、能量+5！")
 	)
-	rv.add_child(sign_btn)
 
-func _add_candy_building_entry(parent: Container, icon: String, title: String, desc: String, accent: Color, cb: Callable) -> void:
-	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(220, 68)
-	var csb := StyleBoxFlat.new()
-	csb.bg_color = Color(0.18, 0.15, 0.32, 0.95)
-	csb.border_color = accent
-	csb.set_border_width_all(2)
-	csb.border_width_bottom = 5
-	csb.set_corner_radius_all(18)
-	csb.content_margin_left = 14
-	csb.content_margin_right = 14
-	csb.shadow_color = Color(accent.r, accent.g, accent.b, 0.4)
-	csb.shadow_size = 6
-	btn.add_theme_stylebox_override("normal", csb)
-	btn.add_theme_stylebox_override("hover", csb)
-	btn.pressed.connect(cb)
+func _add_texture_card(parent: Container, tex_path: String, cb: Callable) -> void:
+	var tb := TextureButton.new()
+	tb.custom_minimum_size = Vector2(240, 72)
+	tb.ignore_texture_size = true
+	tb.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	if ResourceLoader.exists(tex_path):
+		tb.texture_normal = load(tex_path)
+	tb.pressed.connect(cb)
+	parent.add_child(tb)
 
-	var h := HBoxContainer.new()
-	h.set_anchors_preset(Control.PRESET_FULL_RECT)
-	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	h.add_theme_constant_override("separation", 12)
-	btn.add_child(h)
-
-	var il := Label.new()
-	il.text = icon
-	il.add_theme_font_size_override("font_size", 30)
-	h.add_child(il)
-
-	var v := VBoxContainer.new()
-	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.add_theme_constant_override("separation", 2)
-	h.add_child(v)
-
-	var tl := Label.new()
-	tl.text = title
-	tl.add_theme_font_size_override("font_size", 16)
-	tl.add_theme_color_override("font_color", Color.WHITE)
-	tl.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	tl.add_theme_constant_override("outline_size", 3)
-	v.add_child(tl)
-
-	var dl := Label.new()
-	dl.text = desc
-	dl.add_theme_font_size_override("font_size", 11)
-	dl.add_theme_color_override("font_color", accent)
-	v.add_child(dl)
-
-	parent.add_child(btn)
+func _add_texture_button(parent: Container, tex_path: String, sz: Vector2, cb: Callable) -> void:
+	var tb := TextureButton.new()
+	tb.custom_minimum_size = sz
+	tb.ignore_texture_size = true
+	tb.stretch_mode = TextureButton.STRETCH_KEEP_ASPECT_CENTERED
+	if ResourceLoader.exists(tex_path):
+		tb.texture_normal = load(tex_path)
+	tb.pressed.connect(cb)
+	parent.add_child(tb)
 
 func _on_hero_clicked() -> void:
 	var tw := create_tween()
@@ -498,7 +460,7 @@ func _on_hero_clicked() -> void:
 	_show_toast("出發！和夥伴們一起守護王國！")
 
 ## ──────────────────────────────────────────
-## Tab 4: 聚魂殿 (五色葫蘆跳階 原作招牌)
+## Tab 4: 聚魂殿 (藝術圖片十連鈕)
 ## ──────────────────────────────────────────
 func _build_soul_hall_tab() -> void:
 	_soul_layer = Control.new()
@@ -535,7 +497,6 @@ func _build_soul_hall_tab() -> void:
 	desc.add_theme_color_override("font_color", Color(0.90, 0.88, 0.95))
 	v.add_child(desc)
 
-	## 五色葫蘆行 (白玉、碧綠、青藍、紫霄、澄金)
 	var gourd_row := HBoxContainer.new()
 	gourd_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	gourd_row.add_theme_constant_override("separation", 20)
@@ -558,7 +519,6 @@ func _build_soul_hall_tab() -> void:
 
 	_refresh_gourds_ui()
 
-	## 一鍵煉魂與十連聚魂按鈕列 (大尺寸果凍)
 	var bot_h := HBoxContainer.new()
 	bot_h.alignment = BoxContainer.ALIGNMENT_CENTER
 	bot_h.add_theme_constant_override("separation", 28)
@@ -566,21 +526,16 @@ func _build_soul_hall_tab() -> void:
 
 	var btn_absorb := Button.new()
 	btn_absorb.text = "⚡ 一鍵吸收灰魂 (換經驗)"
-	btn_absorb.custom_minimum_size = Vector2(210, 50)
+	btn_absorb.custom_minimum_size = Vector2(210, 52)
 	UiStyle.style_button(btn_absorb, false)
 	btn_absorb.pressed.connect(func():
 		_show_toast("已將廢魂轉化為 480 戰魂經驗值！")
 	)
 	bot_h.add_child(btn_absorb)
 
-	var btn_ten := Button.new()
-	btn_ten.text = "✨ 聚魂十次 (直接點擊)"
-	btn_ten.custom_minimum_size = Vector2(210, 50)
-	UiStyle.style_button(btn_ten, true)
-	btn_ten.pressed.connect(func():
+	_add_texture_button(bot_h, "res://assets/sprites/ui/mobile/btn_draw_10.png", Vector2(220, 56), func():
 		_do_gourd_draw(0, true)
 	)
-	bot_h.add_child(btn_ten)
 
 func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
 	var btn := Button.new()
@@ -660,7 +615,7 @@ func _do_gourd_draw(idx: int, is_ten: bool) -> void:
 	_refresh_gourds_ui()
 
 ## ──────────────────────────────────────────
-## Tab 3: 四地區出征關卡 (超大關卡卡片)
+## Tab 3: 四地區出征 (藝術圖片開戰鈕)
 ## ──────────────────────────────────────────
 func _build_adventure_tab() -> void:
 	_adventure_layer = Control.new()
@@ -681,7 +636,6 @@ func _build_adventure_tab() -> void:
 	v.add_theme_constant_override("separation", 14)
 	panel.add_child(v)
 
-	## 四地區分頁按鈕 (大尺寸膠囊)
 	var reg_bar := HBoxContainer.new()
 	reg_bar.alignment = BoxContainer.ALIGNMENT_CENTER
 	reg_bar.add_theme_constant_override("separation", 16)
@@ -791,14 +745,11 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	inf_row.add_child(pwr_l)
 	v.add_child(inf_row)
 
-	var btn := Button.new()
-	btn.text = "⚔️ 開戰 (⚡%d)" % int(s["cost"])
-	btn.custom_minimum_size = Vector2(130, 48)
-	btn.add_theme_font_size_override("font_size", 16)
-	UiStyle.style_button(btn, is_boss)
+	var btn_img := "res://assets/sprites/ui/mobile/btn_boss_battle.png" if is_boss else "res://assets/sprites/ui/mobile/btn_normal_battle.png"
 	var m: String = str(s["mode"])
-	btn.pressed.connect(func(): request_battle.emit(m))
-	h.add_child(btn)
+	_add_texture_button(h, btn_img, Vector2(145, 52), func():
+		request_battle.emit(m)
+	)
 
 	return c
 
