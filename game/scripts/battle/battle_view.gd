@@ -2366,38 +2366,63 @@ func _spawn_float(target_id: String, text: String, color: Color, is_crit: bool =
 		return
 	var lab := Label.new()
 	var font_sz := 24
-	var pop_scale := Vector2(1.12, 1.12)
 	var display_txt := text
+	var is_heal := text.begins_with("+")
 
 	if is_break:
-		font_sz = 34
-		pop_scale = Vector2(1.6, 1.6)
-		lab.add_theme_color_override("font_outline_color", Color(0.8, 0.2, 0.0))
-		lab.add_theme_constant_override("outline_size", 4)
+		font_sz = 36
+		display_txt = "⚡ " + text + "!"
+		lab.add_theme_color_override("font_outline_color", Color(0.9, 0.25, 0.05, 1.0))
+		lab.add_theme_constant_override("outline_size", 5)
+		_shake = maxf(_shake, 0.35)
 	elif is_crit:
-		font_sz = 30
-		pop_scale = Vector2(1.4, 1.4)
-		display_txt = _t("暴擊 ") + text + "!"
-		lab.add_theme_color_override("font_outline_color", Color(0.6, 0.0, 0.0))
+		font_sz = 32
+		display_txt = "💥 " + text + "!"
+		lab.add_theme_color_override("font_outline_color", Color(0.85, 0.15, 0.05, 1.0))
+		lab.add_theme_constant_override("outline_size", 4)
+		_shake = maxf(_shake, 0.25)
+	elif is_heal:
+		font_sz = 26
+		lab.add_theme_color_override("font_outline_color", Color(0.1, 0.45, 0.15, 1.0))
+		lab.add_theme_constant_override("outline_size", 3)
+	else:
+		font_sz = 24
+		lab.add_theme_color_override("font_outline_color", Color(0.15, 0.10, 0.08, 1.0))
 		lab.add_theme_constant_override("outline_size", 3)
 
 	lab.text = display_txt
 	lab.add_theme_font_size_override("font_size", font_sz)
 	lab.add_theme_color_override("font_color", color)
-	lab.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
+	lab.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 	lab.add_theme_constant_override("shadow_offset_x", 2)
 	lab.add_theme_constant_override("shadow_offset_y", 2)
-	lab.position = body.global_position + Vector2(body.size.x * 0.2, -20)
-	lab.z_index = 30
+	lab.pivot_offset = Vector2(40, 20)
+
+	## 初始位置微偏移 (錯開多段打擊)
+	var jitter_x := randf_range(-24.0, 24.0)
+	var jitter_y := randf_range(-10.0, 10.0)
+	lab.position = body.global_position + Vector2(body.size.x * 0.35 + jitter_x, -15 + jitter_y)
+	lab.z_index = 45
 	add_child(lab)
 
-	var rise := lab.position + Vector2(randf_range(-16.0, 16.0), -60.0)
+	## 手遊經典 Q 彈拋物線動畫 (Squash & Stretch -> Rise & Fall)
+	var start_rot := deg_to_rad(randf_range(-8.0, 8.0))
+	lab.rotation = start_rot
+	lab.scale = Vector2(0.5, 0.5)
+
 	var tw := create_tween()
-	tw.set_parallel(true)
-	tw.tween_property(lab, "position", rise, 0.6)
-	tw.tween_property(lab, "scale", pop_scale, 0.1)
-	tw.tween_property(lab, "modulate:a", 0.0, 0.35).set_delay(0.25)
-	tw.chain().tween_callback(lab.queue_free)
+	## 1. 猛烈放大衝擊 (Punch In)
+	var peak_scale := Vector2(2.0, 2.0) if is_crit else (Vector2(2.2, 2.2) if is_break else Vector2(1.4, 1.4))
+	tw.tween_property(lab, "scale", peak_scale, 0.08).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	## 2. 回彈與向上拋物線微升
+	var peak_pos := lab.position + Vector2(randf_range(-12.0, 12.0), -45.0)
+	tw.parallel().tween_property(lab, "position", peak_pos, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_property(lab, "scale", Vector2(1.0, 1.0), 0.12).set_trans(Tween.TRANS_SINE)
+	## 3. 懸停與優雅飄落淡出
+	var fall_pos := peak_pos + Vector2(randf_range(-8.0, 8.0), 18.0)
+	tw.parallel().tween_property(lab, "position", fall_pos, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tw.parallel().tween_property(lab, "modulate:a", 0.0, 0.28).set_delay(0.18)
+	tw.tween_callback(lab.queue_free)
 
 
 func _grant_skill_mastery(skill_id: String) -> void:

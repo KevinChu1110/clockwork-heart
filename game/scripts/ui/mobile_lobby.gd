@@ -937,10 +937,243 @@ func _build_gacha_tab() -> void:
 
 	v.add_child(btn_row)
 
+const SOUL_CARDS: Array[Dictionary] = [
+	{"name": "紫微星君", "rarity": "SSR", "title": "帝星之魂", "tex": "res://assets/sprites/souls/star_ziwei.png", "desc": "全隊傷害 +25%"},
+	{"name": "天府星君", "rarity": "SSR", "title": "令星之魂", "tex": "res://assets/sprites/souls/star_tianfu.png", "desc": "生命上限 +30%"},
+	{"name": "武曲星君", "rarity": "SR", "title": "剛金之魂", "tex": "res://assets/sprites/souls/star_wuqu.png", "desc": "物理暴擊 +15%"},
+	{"name": "七殺星君", "rarity": "SR", "title": "肅殺之魂", "tex": "res://assets/sprites/souls/star_qisha.png", "desc": "攻擊穿透 +18%"},
+	{"name": "破軍星君", "rarity": "SR", "title": "先鋒之魂", "tex": "res://assets/sprites/souls/star_pojun.png", "desc": "技能急速 +12%"},
+	{"name": "天梁星君", "rarity": "SR", "title": "福蔭之魂", "tex": "res://assets/sprites/souls/star_tianliang.png", "desc": "受到傷害 -15%"},
+	{"name": "天童星君", "rarity": "R", "title": "純真之魂", "tex": "res://assets/sprites/souls/star_tiantong.png", "desc": "自然回血 +10%"},
+	{"name": "太陽星君", "rarity": "R", "title": "光耀之魂", "tex": "res://assets/sprites/souls/star_taiyang.png", "desc": "命中率 +8%"},
+	{"name": "太陰星君", "rarity": "R", "title": "清輝之魂", "tex": "res://assets/sprites/souls/star_taiyin.png", "desc": "暴擊抵抗 +8%"},
+	{"name": "貪狼星君", "rarity": "R", "title": "機變之魂", "tex": "res://assets/sprites/souls/star_tanlang.png", "desc": "移動速度 +5%"},
+]
+
 func _do_summon(count: int) -> void:
-	var pool: Array[String] = ["SSR 紫微星君", "SR 天同星君", "SR 武曲星君", "R 破軍星君", "R 巨門殘魂"]
-	var pick: String = pool[randi() % pool.size()]
-	_show_act_toast("召喚成功！獲得了 【%s】（共 %d 抽）" % [pick, count])
+	var results: Array[Dictionary] = []
+	var has_ssr := false
+	for i in range(count):
+		var pick_idx := 0
+		var r := randf()
+		if i == count - 1 and not has_ssr:
+			## 保底機制：最後一抽保底 SR 以上
+			pick_idx = randi() % 6
+		elif r < 0.15:
+			pick_idx = randi() % 2 # SSR
+			has_ssr = true
+		elif r < 0.55:
+			pick_idx = 2 + (randi() % 4) # SR
+		else:
+			pick_idx = 6 + (randi() % 4) # R
+		results.append(SOUL_CARDS[pick_idx])
+	
+	_play_gacha_showcase(results, count)
+
+func _play_gacha_showcase(results: Array[Dictionary], count: int) -> void:
+	var has_ssr := false
+	for card in results:
+		if str(card.get("rarity", "")) == "SSR":
+			has_ssr = true
+			break
+
+	var overlay := Control.new()
+	overlay.name = "GachaShowcaseOverlay"
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(overlay)
+
+	## 1. 召喚背景 (深邃星空暗夜)
+	var bg := ColorRect.new()
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.color = Color(0.05, 0.04, 0.08, 0.95)
+	overlay.add_child(bg)
+
+	## 2. 金光 / 紫光衝天光暈
+	var beam := TextureRect.new()
+	beam.set_anchors_preset(Control.PRESET_CENTER)
+	beam.offset_left = -300
+	beam.offset_top = -300
+	beam.offset_right = 300
+	beam.offset_bottom = 300
+	var grad := Gradient.new()
+	if has_ssr:
+		grad.set_color(0, Color(1.0, 0.85, 0.35, 0.9))
+		grad.set_color(1, Color(1.0, 0.70, 0.20, 0.0))
+	else:
+		grad.set_color(0, Color(0.75, 0.45, 1.0, 0.85))
+		grad.set_color(1, Color(0.55, 0.25, 0.90, 0.0))
+	var beam_tex := GradientTexture2D.new()
+	beam_tex.gradient = grad
+	beam_tex.fill = GradientTexture2D.FILL_RADIAL
+	beam_tex.fill_from = Vector2(0.5, 0.5)
+	beam_tex.fill_to = Vector2(0.5, 0.0)
+	beam.texture = beam_tex
+	beam.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay.add_child(beam)
+
+	## 頂部結算標題
+	var title_box := VBoxContainer.new()
+	title_box.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	title_box.offset_top = 22
+	title_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	title_box.add_theme_constant_override("separation", 4)
+	overlay.add_child(title_box)
+
+	var title_l := Label.new()
+	title_l.text = "✦ 聚魂召喚結果 ✦"
+	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_l.add_theme_font_size_override("font_size", 24)
+	title_l.add_theme_color_override("font_color", Color(1.0, 0.88, 0.45))
+	title_l.add_theme_color_override("font_outline_color", Color(0.2, 0.12, 0.05))
+	title_l.add_theme_constant_override("outline_size", 4)
+	title_box.add_child(title_l)
+
+	var sub_l := Label.new()
+	sub_l.text = "獲得了傳說戰魂的眷顧！" if has_ssr else "群星戰魂已響應您的召喚"
+	sub_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub_l.add_theme_font_size_override("font_size", 13)
+	sub_l.add_theme_color_override("font_color", Color(0.9, 0.85, 0.8))
+	title_box.add_child(sub_l)
+
+	## 中央卡牌網格
+	var card_container := GridContainer.new()
+	card_container.set_anchors_preset(Control.PRESET_CENTER)
+	card_container.columns = 5 if count > 1 else 1
+	card_container.add_theme_constant_override("h_separation", 16)
+	card_container.add_theme_constant_override("v_separation", 16)
+	
+	if count > 1:
+		card_container.offset_left = -480
+		card_container.offset_top = -180
+		card_container.offset_right = 480
+		card_container.offset_bottom = 180
+	else:
+		card_container.offset_left = -110
+		card_container.offset_top = -140
+		card_container.offset_right = 110
+		card_container.offset_bottom = 140
+	overlay.add_child(card_container)
+
+	for card_data in results:
+		var card_card := _build_soul_card_item(card_data)
+		card_container.add_child(card_card)
+
+	## 底部確認操作列
+	var bot_box := HBoxContainer.new()
+	bot_box.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	bot_box.offset_bottom = -24
+	bot_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	bot_box.add_theme_constant_override("separation", 24)
+	overlay.add_child(bot_box)
+
+	var again_btn := Button.new()
+	again_btn.text = "🔄 再抽十連 (💎 900)" if count > 1 else "🔄 再抽一次 (💎 100)"
+	again_btn.custom_minimum_size = Vector2(180, 46)
+	UiStyle.style_button(again_btn, false)
+	again_btn.pressed.connect(func():
+		overlay.queue_free()
+		_do_summon(count)
+	)
+	bot_box.add_child(again_btn)
+
+	var ok_btn := Button.new()
+	ok_btn.text = "✨ 收入聚魂閣"
+	ok_btn.custom_minimum_size = Vector2(180, 46)
+	UiStyle.style_button(ok_btn, true)
+	ok_btn.pressed.connect(func():
+		overlay.queue_free()
+	)
+	bot_box.add_child(ok_btn)
+
+	## 全屏金色/光芒微閃動畫
+	var flash := ColorRect.new()
+	flash.set_anchors_preset(Control.PRESET_FULL_RECT)
+	flash.color = Color(1.0, 0.95, 0.85, 0.9) if has_ssr else Color(0.85, 0.70, 1.0, 0.7)
+	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	overlay.add_child(flash)
+
+	var tw := create_tween()
+	tw.tween_property(flash, "modulate:a", 0.0, 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tw.tween_callback(flash.queue_free)
+
+func _build_soul_card_item(data: Dictionary) -> PanelContainer:
+	var rarity: String = str(data.get("rarity", "R"))
+	var is_ssr := (rarity == "SSR")
+	var is_sr := (rarity == "SR")
+
+	var card := PanelContainer.new()
+	card.custom_minimum_size = Vector2(170, 160)
+	var csb := StyleBoxFlat.new()
+	if is_ssr:
+		csb.bg_color = Color(0.24, 0.18, 0.08, 0.95)
+		csb.border_color = Color(1.0, 0.85, 0.35, 1.0)
+		csb.shadow_color = Color(1.0, 0.80, 0.25, 0.5)
+		csb.shadow_size = 8
+	elif is_sr:
+		csb.bg_color = Color(0.18, 0.12, 0.24, 0.95)
+		csb.border_color = Color(0.80, 0.55, 1.0, 1.0)
+		csb.shadow_color = Color(0.70, 0.40, 0.95, 0.4)
+		csb.shadow_size = 6
+	else:
+		csb.bg_color = Color(0.10, 0.14, 0.20, 0.95)
+		csb.border_color = Color(0.45, 0.70, 0.95, 0.9)
+		csb.shadow_size = 3
+
+	csb.set_border_width_all(2)
+	csb.set_corner_radius_all(12)
+	csb.content_margin_left = 10
+	csb.content_margin_right = 10
+	csb.content_margin_top = 8
+	csb.content_margin_bottom = 8
+	card.add_theme_stylebox_override("panel", csb)
+
+	var v := VBoxContainer.new()
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_theme_constant_override("separation", 6)
+	card.add_child(v)
+
+	## 稀有度角標
+	var r_label := Label.new()
+	r_label.text = "✦ %s ✦" % rarity
+	r_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	r_label.add_theme_font_size_override("font_size", 14)
+	if is_ssr:
+		r_label.add_theme_color_override("font_color", Color(1.0, 0.90, 0.35))
+	elif is_sr:
+		r_label.add_theme_color_override("font_color", Color(0.85, 0.65, 1.0))
+	else:
+		r_label.add_theme_color_override("font_color", Color(0.55, 0.80, 1.0))
+	v.add_child(r_label)
+
+	## 戰魂圖示
+	var icon_rect := TextureRect.new()
+	icon_rect.custom_minimum_size = Vector2(56, 56)
+	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var t_path: String = str(data.get("tex", ""))
+	if ResourceLoader.exists(t_path):
+		icon_rect.texture = load(t_path)
+	v.add_child(icon_rect)
+
+	## 戰魂名稱
+	var name_l := Label.new()
+	name_l.text = str(data.get("name", ""))
+	name_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_l.add_theme_font_size_override("font_size", 13)
+	name_l.add_theme_color_override("font_color", Color(0.98, 0.95, 0.90))
+	v.add_child(name_l)
+
+	## 加成說明
+	var desc_l := Label.new()
+	desc_l.text = str(data.get("desc", ""))
+	desc_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	desc_l.add_theme_font_size_override("font_size", 11)
+	desc_l.add_theme_color_override("font_color", Color(0.85, 0.80, 0.75))
+	v.add_child(desc_l)
+
+	return card
 
 ## ──────────────────────────────────────────
 ## Tab 5: 背包 (Bag View)
