@@ -3,6 +3,7 @@ extends Control
 
 enum Screen {
 	TITLE,
+	LOBBY,
 	C0_VILLAGE,
 	C0_ROAD,
 	BATTLE,
@@ -2423,9 +2424,26 @@ func _title_meta() -> String:
 	return "[i]%s[/i]\n[color=#c4b08a]v%s · %s[/color]" % [Loc.t("title.tagline"), ver, week]
 
 
+func _go_mobile_lobby() -> void:
+	_clear_host()
+	_reset_fade()
+	_current = Screen.LOBBY
+	var lobby_scn: GDScript = load("res://scripts/ui/mobile_lobby.gd")
+	var lobby: Control = lobby_scn.new()
+	lobby.connect("request_explore", func(map_id: String):
+		_open_explore(map_id, Screen.C1_TOWN)
+	)
+	lobby.connect("request_battle", func(mode: String):
+		_start_battle(mode)
+	)
+	lobby.connect("request_settings", _go_game_settings_menu)
+	host.add_child(lobby)
+
+
 ## 標題子選單：開始遊戲（旅途相關集中在這）
 func _go_title_start_menu() -> void:
 	var buttons: Array = []
+	buttons.append({"text": _t("手遊大廳 (Lobby)"), "cb": _go_mobile_lobby})
 	if SaveManager.has_save():
 		buttons.append({"text": Loc.t("title.continue"), "cb": _continue_game})
 		buttons.append({"text": Loc.t("title.new_game"), "cb": _new_game})
