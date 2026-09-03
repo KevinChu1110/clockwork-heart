@@ -10,9 +10,10 @@ extends Node
 ## 現代的 Noto Sans TC／SC／KR 是**分語言子集**，不是舊的泛 CJK 單檔 ——
 ## 實測 TC 有假名（日文 0 缺字）但缺諺文與部分簡體字形。所以要串後備鏈。
 
-const BASE := "res://assets/fonts/NotoSansTC-Regular.otf"
-## 順序有意義：先補諺文，再補簡體字形
+const BASE := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+## 順序有意義：先補標準繁中，再補諺文與簡體
 const FALLBACKS := [
+	"res://assets/fonts/NotoSansTC-Regular.otf",
 	"res://assets/fonts/NotoSansKR-Regular.otf",
 	"res://assets/fonts/NotoSansSC-Regular.otf",
 ]
