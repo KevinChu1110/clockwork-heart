@@ -8,16 +8,24 @@ Godogen 流程仍適用：**用「跑起來的畫面」證明進度，不要只�
 - 引擎注意事項見 `godot.md`。
 - 遊戲本體在 `game/`。
 
-## 交付方式
+## 交付方式（驗證分級 — 預設走最省的）
 
-從**正在跑的遊戲**判斷進度，不是從 clean build：
+從**跑起來的遊戲**判斷進度，不是從 clean build；但驗證深度依改動大小分級，
+**不要每次都跑全套**（這台只有 2 vCPU，全跑一次很慢也很花對話成本）：
 
-1. `godot --path game --headless --import`（資源變更後）
-2. `godot --path game --headless --quit-after 3`（無 SCRIPT ERROR）
-3. `./tools/run_tests.sh`（9 個無頭測試，CI 跑的是同一支）
-4. 有證明需求時跑 `./tools/proof_run.sh` 產截圖／短片到 `screenshots/`（已含 1–3）
+| 級別 | 什麼時候 | 做什麼 |
+|------|----------|--------|
+| ① 直接回報 | 文字／數值／設定／單檔小邏輯 | 不跑測試，說明改了什麼即可 |
+| ② 冒煙 | 動到 GDScript | `godot --path game --headless --quit-after 3` 確認無 SCRIPT ERROR，**跑一次就好** |
+| ③ 對應測試 | 改到有測試覆蓋的邏輯 | `TEST_FILTER=<關鍵字> ./tools/run_tests.sh` 只跑相關那幾支 |
+| ④ 全套 | **只有使用者說「跑完整測試」「全測」「要截圖」才做** | `godot --path game --headless --import` → `./tools/run_tests.sh`（53 支）→ `./tools/proof_run.sh` 產截圖 |
 
-CI：`.github/workflows/game-ci.yml` 每次 push／PR 自動跑 1–3；export 三平台只在
+- 資源（`.png`／音檔）有變更才需要 `--import`，只改腳本不用。
+- 回報只給結論那幾行（幾支過／哪支失敗＋原因），**不要把整段 log 貼回聊天室**。
+- push 後 GitHub CI 會自動跑 ①～③，**不要輪詢等 CI**；CI 紅了下次再處理。
+- 沒跑全套時，回報要老實說「只做了冒煙／只跑了 X 測試」，不要講成全綠。
+
+CI：`.github/workflows/game-ci.yml` 每次 push／PR 自動跑；export 三平台只在
 手動觸發或發 release 時跑。
 
 ## 寫測試的規矩
@@ -51,4 +59,4 @@ CI：`.github/workflows/game-ci.yml` 每次 push／PR 自動跑 1–3；export �
 | 玩家看得見的字有沒有「AI 腔」？ | 改短、改口吻 |
 | 有沒有偏離原作名詞／機制？ | 對 PRODUCT_BRIDGE |
 | 存檔版號要不要升？ | `GameState.VERSION` + `save_migration` |
-| 無頭測試哨兵有沒有綠？ | `./tools/run_tests.sh` 或單支 `test_*.gd` |
+| 無頭測試哨兵有沒有綠？ | 用 `TEST_FILTER=` 跑**相關**那幾支；全跑等使用者要求 |
