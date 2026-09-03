@@ -61,17 +61,17 @@ const RAGE_FILL := Color(0.95, 0.55, 0.25, 1.0)
 
 static func panel_style(accent: Color = LINE) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = PAPER_SOFT
-	s.border_color = accent if accent != LINE else BORDER_DARK
+	s.bg_color = Color(0.12, 0.09, 0.07, 0.94)
+	s.border_color = accent if accent != LINE else Color(0.85, 0.70, 0.35, 1.0)
 	s.set_border_width_all(2)
-	s.set_corner_radius_all(10)
-	s.content_margin_left = 14
-	s.content_margin_right = 14
-	s.content_margin_top = 12
-	s.content_margin_bottom = 12
-	s.shadow_color = Color(0.12, 0.08, 0.04, 0.22)
-	s.shadow_size = 8
-	s.shadow_offset = Vector2(0, 3)
+	s.set_corner_radius_all(14)
+	s.content_margin_left = 18
+	s.content_margin_right = 18
+	s.content_margin_top = 16
+	s.content_margin_bottom = 16
+	s.shadow_color = Color(0, 0, 0, 0.45)
+	s.shadow_size = 10
+	s.shadow_offset = Vector2(0, 4)
 	return s
 
 
@@ -196,15 +196,15 @@ static func chip_style() -> StyleBoxFlat:
 
 static func button_normal() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(0.99, 0.98, 0.95, 1.0)
-	s.border_color = BORDER_DARK
+	s.bg_color = Color(0.16, 0.12, 0.09, 0.92)
+	s.border_color = Color(0.65, 0.52, 0.35, 0.85)
 	s.set_border_width_all(2)
-	s.set_corner_radius_all(6)
-	s.content_margin_left = 14
-	s.content_margin_right = 14
+	s.set_corner_radius_all(12)
+	s.content_margin_left = 16
+	s.content_margin_right = 16
 	s.content_margin_top = 8
 	s.content_margin_bottom = 8
-	s.shadow_color = Color(0.12, 0.08, 0.04, 0.18)
+	s.shadow_color = Color(0, 0, 0, 0.35)
 	s.shadow_size = 4
 	s.shadow_offset = Vector2(0, 2)
 	return s
@@ -212,45 +212,45 @@ static func button_normal() -> StyleBoxFlat:
 
 static func button_hover() -> StyleBoxFlat:
 	var s := button_normal()
-	s.bg_color = KEY_FAINT
-	s.border_color = KEY_STRONG
+	s.bg_color = Color(0.24, 0.18, 0.14, 0.95)
+	s.border_color = Color(0.92, 0.78, 0.45, 1.0)
 	return s
 
 
 static func button_pressed() -> StyleBoxFlat:
 	var s := button_normal()
-	s.bg_color = KEY_SOFT
-	s.border_color = BORDER_DARK
+	s.bg_color = Color(0.12, 0.08, 0.06, 0.98)
+	s.border_color = Color(0.50, 0.38, 0.25, 1.0)
 	return s
 
 
 static func button_disabled() -> StyleBoxFlat:
 	var s := button_normal()
-	s.bg_color = Color(0.94, 0.93, 0.95, 0.75)
-	s.border_color = LINE_SOFT
+	s.bg_color = Color(0.12, 0.10, 0.08, 0.6)
+	s.border_color = Color(0.35, 0.28, 0.22, 0.5)
 	return s
 
 
 static func button_primary() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = KEY_DEEP
-	s.border_color = Color(0.20, 0.12, 0.08, 1.0)
+	s.bg_color = Color(0.92, 0.76, 0.28, 1.0)
+	s.border_color = Color(1.0, 0.95, 0.65, 1.0)
 	s.set_border_width_all(2)
 	s.border_width_bottom = 3
-	s.set_corner_radius_all(6)
-	s.content_margin_left = 16
-	s.content_margin_right = 16
+	s.set_corner_radius_all(12)
+	s.content_margin_left = 18
+	s.content_margin_right = 18
 	s.content_margin_top = 9
 	s.content_margin_bottom = 9
-	s.shadow_color = Color(0.12, 0.06, 0.02, 0.45)
-	s.shadow_size = 4
+	s.shadow_color = Color(0.92, 0.76, 0.28, 0.45)
+	s.shadow_size = 6
 	s.shadow_offset = Vector2(0, 2)
 	return s
 
 
 static func button_primary_hover() -> StyleBoxFlat:
 	var s := button_primary()
-	s.bg_color = KEY
+	s.bg_color = Color(0.98, 0.84, 0.36, 1.0)
 	return s
 
 
@@ -261,25 +261,46 @@ static func style_button(btn: Button, primary: bool = false) -> void:
 		btn.add_theme_stylebox_override("pressed", button_primary())
 		btn.add_theme_stylebox_override("focus", button_primary_hover())
 		btn.add_theme_stylebox_override("disabled", button_disabled())
-		btn.add_theme_color_override("font_color", Color.WHITE)
-		btn.add_theme_color_override("font_hover_color", Color.WHITE)
-		btn.add_theme_color_override("font_pressed_color", Color(1, 1, 1, 0.9))
-		btn.add_theme_color_override("font_outline_color", Color(0.20, 0.12, 0.08, 1.0))
-		btn.add_theme_constant_override("outline_size", 3)
+		btn.add_theme_color_override("font_color", Color(0.18, 0.12, 0.05, 1.0))
+		btn.add_theme_color_override("font_hover_color", Color(0.10, 0.06, 0.02, 1.0))
+		btn.add_theme_color_override("font_pressed_color", Color(0.18, 0.12, 0.05, 0.9))
+		btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.8))
+		btn.add_theme_constant_override("outline_size", 1)
 	else:
 		btn.add_theme_stylebox_override("normal", button_normal())
 		btn.add_theme_stylebox_override("hover", button_hover())
 		btn.add_theme_stylebox_override("pressed", button_pressed())
 		btn.add_theme_stylebox_override("focus", button_hover())
 		btn.add_theme_stylebox_override("disabled", button_disabled())
-		btn.add_theme_color_override("font_color", INK)
-		btn.add_theme_color_override("font_hover_color", KEY_STRONG)
-		btn.add_theme_color_override("font_pressed_color", KEY_DEEP)
-		btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
+		btn.add_theme_color_override("font_color", Color(0.96, 0.94, 0.90, 1.0))
+		btn.add_theme_color_override("font_hover_color", Color(1.0, 0.90, 0.50, 1.0))
+		btn.add_theme_color_override("font_pressed_color", Color(0.85, 0.75, 0.60, 1.0))
+		btn.add_theme_color_override("font_outline_color", Color(0.15, 0.10, 0.08, 1.0))
 		btn.add_theme_constant_override("outline_size", 2)
-	btn.add_theme_color_override("font_disabled_color", INK_FAINT)
-	btn.add_theme_font_size_override("font_size", 14)
-	btn.custom_minimum_size = Vector2(0, 36)
+	btn.add_theme_color_override("font_disabled_color", Color(0.55, 0.50, 0.45, 0.8))
+	btn.add_theme_font_size_override("font_size", 15)
+	btn.custom_minimum_size = Vector2(0, 40)
+
+
+static func attach_red_dot(parent: Control, offset: Vector2 = Vector2(-4, -4)) -> Panel:
+	var dot := Panel.new()
+	dot.custom_minimum_size = Vector2(10, 10)
+	dot.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	dot.offset_left = offset.x - 10
+	dot.offset_top = offset.y
+	dot.offset_right = offset.x
+	dot.offset_bottom = offset.y + 10
+	var dsb := StyleBoxFlat.new()
+	dsb.bg_color = Color(0.95, 0.25, 0.25, 1.0)
+	dsb.border_color = Color(1.0, 0.9, 0.9, 1.0)
+	dsb.set_border_width_all(1)
+	dsb.set_corner_radius_all(5)
+	dsb.shadow_color = Color(0.95, 0.25, 0.25, 0.5)
+	dsb.shadow_size = 3
+	dot.add_theme_stylebox_override("panel", dsb)
+	dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parent.add_child(dot)
+	return dot
 
 
 static func style_progress(bar: ProgressBar, fill: Color, bg: Color) -> void:

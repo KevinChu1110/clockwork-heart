@@ -1928,7 +1928,7 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 
 	var bg := ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(UiStyle.PAPER, 1.0)  ## 紙面底，色只准走 ui_style
+	bg.color = Color(0.04, 0.03, 0.05, 0.75)  ## 手遊半透明深色暗幕
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(bg)
 
@@ -1959,30 +1959,32 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	layer.add_child(center)
 
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(420, 0)  ## 楓式較窄小窗
+	card.custom_minimum_size = Vector2(520, 0)  ## 現代手遊寬卡片
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 	card.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	center.add_child(card)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 12)
-	margin.add_theme_constant_override("margin_right", 12)
-	margin.add_theme_constant_override("margin_top", 8)
-	margin.add_theme_constant_override("margin_bottom", 10)
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_bottom", 14)
 	margin.mouse_filter = Control.MOUSE_FILTER_STOP
 	card.add_child(margin)
 
 	var root := VBoxContainer.new()
-	root.add_theme_constant_override("separation", 12)
+	root.add_theme_constant_override("separation", 14)
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	margin.add_child(root)
 
 	var t := Label.new()
-	t.text = title
+	t.text = "✦ %s ✦" % title
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	t.add_theme_font_size_override("font_size", 18)
-	t.add_theme_color_override("font_color", UiStyle.WOOD_DARK)
+	t.add_theme_font_size_override("font_size", 20)
+	t.add_theme_color_override("font_color", Color(1.0, 0.88, 0.45))
+	t.add_theme_color_override("font_outline_color", Color(0.2, 0.12, 0.05))
+	t.add_theme_constant_override("outline_size", 3)
 	root.add_child(t)
 
 	if bool(extras.get("soul_hang", false)):
@@ -1992,7 +1994,7 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 
 	var rule := ColorRect.new()
 	rule.custom_minimum_size = Vector2(0, 2)
-	rule.color = UiStyle.WOOD
+	rule.color = Color(0.85, 0.70, 0.35, 0.75)
 	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(rule)
 
@@ -2002,16 +2004,16 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	b.scroll_active = true
 	b.text = body
 	## 限高 + 不擋滑鼠，避免正文把按鈕擠出或吞點擊
-	b.custom_minimum_size = Vector2(380, 0)
+	b.custom_minimum_size = Vector2(480, 0)
 	b.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	b.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	b.add_theme_color_override("default_color", UiStyle.INK)
-	b.add_theme_font_size_override("normal_font_size", 13)
+	b.add_theme_color_override("default_color", Color(0.95, 0.92, 0.88))
+	b.add_theme_font_size_override("normal_font_size", 14)
 	root.add_child(b)
 	## 正文過長時限高，按鈕永遠可見
 	if body.length() > 280:
 		b.fit_content = false
-		b.custom_minimum_size = Vector2(380, 140)
+		b.custom_minimum_size = Vector2(480, 150)
 		b.scroll_active = true
 
 	## 按鈕列要能捲動。
