@@ -2432,26 +2432,14 @@ func _go_mobile_lobby() -> void:
 	_current = Screen.LOBBY
 	var lobby_scn: GDScript = load("res://scripts/ui/mobile_lobby.gd")
 	var lobby: Control = lobby_scn.new()
-	lobby.connect("request_explore", func(_map_id: String):
-		_open_side_scroll_world()
+	lobby.connect("request_explore", func(map_id: String):
+		_open_explore(map_id, Screen.C1_TOWN)
 	)
 	lobby.connect("request_battle", func(mode: String):
 		_start_battle(mode)
 	)
-	lobby.connect("request_settings", _open_mobile_settings)
+	lobby.connect("request_settings", _go_game_settings_menu)
 	host.add_child(lobby)
-
-
-func _open_side_scroll_world() -> void:
-	_clear_host()
-	_reset_fade()
-	var scn: GDScript = load("res://scripts/world/side_scroll_world.gd")
-	var world: Control = scn.new()
-	world.connect("exit_to_lobby", _go_mobile_lobby)
-	world.connect("start_battle", func(mode: String):
-		_start_battle(mode)
-	)
-	host.add_child(world)
 
 
 ## 標題子選單：開始遊戲（旅途相關集中在這）
