@@ -2493,12 +2493,19 @@ func _settings_buttons() -> Array:
 
 func _go_title_settings_menu() -> void:
 	_settings_from_title = true
-	_title_screen(_title_meta(), _settings_buttons())
+	_open_mobile_settings()
 
 
 func _go_game_settings_menu() -> void:
 	_settings_from_title = false
-	_panel(Loc.t("pause.settings"), "", _settings_buttons())
+	_open_mobile_settings()
+
+
+func _open_mobile_settings() -> void:
+	var s_scn: GDScript = load("res://scripts/ui/mobile_settings.gd")
+	var s_ui: Control = s_scn.new()
+	s_ui.z_index = 80
+	add_child(s_ui)
 
 
 func _reset_ui_layout() -> void:

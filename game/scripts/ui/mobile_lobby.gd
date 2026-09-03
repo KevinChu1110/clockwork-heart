@@ -240,7 +240,13 @@ func _build_top_bar() -> void:
 	set_sb.set_corner_radius_all(10)
 	btn_setting.add_theme_stylebox_override("normal", set_sb)
 	btn_setting.add_theme_stylebox_override("hover", set_sb)
-	btn_setting.pressed.connect(func(): request_settings.emit())
+	btn_setting.pressed.connect(func():
+		request_settings.emit()
+		var s_scn: GDScript = load("res://scripts/ui/mobile_settings.gd")
+		var s_ui: Control = s_scn.new()
+		s_ui.z_index = 80
+		add_child(s_ui)
+	)
 	hbox.add_child(btn_setting)
 
 func _add_resource_capsule(parent: Container, icon_sym: String, init_val: String, accent_color: Color) -> Label:
