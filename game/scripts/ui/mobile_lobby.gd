@@ -9,6 +9,8 @@ signal request_settings()
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 
+const DEFAULT_HERO_NAME: String = "新人"
+
 enum Tab {
 	VILLAGE,     ## 今日村莊大廳 (主城)
 	CHARACTER,   ## 角色 / 三欄武器紙娃娃
@@ -39,6 +41,7 @@ var _dock_buttons: Array[Button] = []
 ## 角色動態與姿態
 var _hero_avatar: TextureRect
 var _hero_shadow: TextureRect
+var _hero_name_tag: Label
 var _rainbow_ring: TextureRect
 var _speech_bubble: PanelContainer
 var _speech_label: Label
@@ -68,6 +71,20 @@ var _bunting_flags: Control
 
 static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
+
+static func _gs() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).root.get_node_or_null("GameState")
+	return null
+
+func _get_hero_name() -> String:
+	var gs := _gs()
+	if gs and "player_name" in gs:
+		var pname: String = str(gs.player_name).strip_edges()
+		if not pname.is_empty():
+			return pname
+	return DEFAULT_HERO_NAME
 
 func _ready() -> void:
 	custom_minimum_size = Vector2(1280, 720)
@@ -266,7 +283,7 @@ func _build_top_hud() -> void:
 	row1.add_child(_lv_label)
 
 	_name_label = Label.new()
-	_name_label.text = "Capoo"
+	_name_label.text = _get_hero_name()
 	_name_label.add_theme_font_size_override("font_size", 17)
 	_name_label.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 	_name_label.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.9))
@@ -507,14 +524,14 @@ func _build_village_tab() -> void:
 	title_l.add_theme_constant_override("outline_size", 2)
 	tag_v.add_child(title_l)
 
-	var name_tag := Label.new()
-	name_tag.text = "Capoo"
-	name_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_tag.add_theme_font_size_override("font_size", 16)
-	name_tag.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
-	name_tag.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.9))
-	name_tag.add_theme_constant_override("outline_size", 3)
-	tag_v.add_child(name_tag)
+	_hero_name_tag = Label.new()
+	_hero_name_tag.text = _get_hero_name()
+	_hero_name_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hero_name_tag.add_theme_font_size_override("font_size", 16)
+	_hero_name_tag.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	_hero_name_tag.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.9))
+	_hero_name_tag.add_theme_constant_override("outline_size", 3)
+	tag_v.add_child(_hero_name_tag)
 	_hero_avatar.add_child(tag_v)
 
 	## 4. 點擊彈出的萌系對話氣泡
@@ -1140,7 +1157,8 @@ func _build_bag_tab() -> void:
 
 func refresh_hud() -> void:
 	if _lv_label: _lv_label.text = "Lv.12"
-	if _name_label: _name_label.text = "Capoo"
+	if _name_label: _name_label.text = _get_hero_name()
+	if _hero_name_tag: _hero_name_tag.text = _get_hero_name()
 	if _power_label: _power_label.text = "戰力 482"
 	if _energy_label: _energy_label.text = "15/15"
 	if _gold_label: _gold_label.text = "12,500"
