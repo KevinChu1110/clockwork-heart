@@ -218,7 +218,7 @@ func _build_top_hud() -> void:
 func _add_clean_capsule(parent: Container, title: String, val: String, accent: Color) -> Label:
 	var cap := PanelContainer.new()
 	var csb := StyleBoxFlat.new()
-	csb.bg_color = Color(0.18, 0.15, 0.32, 0.95)
+	csb.bg_color = Color(0.98, 0.97, 0.94, 0.96)
 	csb.border_color = accent
 	csb.set_border_width_all(2)
 	csb.border_width_bottom = 4
@@ -227,7 +227,7 @@ func _add_clean_capsule(parent: Container, title: String, val: String, accent: C
 	csb.content_margin_right = 12
 	csb.content_margin_top = 4
 	csb.content_margin_bottom = 4
-	csb.shadow_color = Color(accent.r, accent.g, accent.b, 0.35)
+	csb.shadow_color = Color(0.25, 0.18, 0.10, 0.15)
 	csb.shadow_size = 5
 	cap.add_theme_stylebox_override("panel", csb)
 
@@ -237,16 +237,16 @@ func _add_clean_capsule(parent: Container, title: String, val: String, accent: C
 	il.text = title
 	il.add_theme_font_size_override("font_size", 13)
 	il.add_theme_color_override("font_color", accent)
-	il.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	il.add_theme_constant_override("outline_size", 3)
+	il.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
+	il.add_theme_constant_override("outline_size", 2)
 	h.add_child(il)
 
 	var vl := Label.new()
 	vl.text = val
 	vl.add_theme_font_size_override("font_size", 16)
-	vl.add_theme_color_override("font_color", Color.WHITE)
-	vl.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	vl.add_theme_constant_override("outline_size", 3)
+	vl.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	vl.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
+	vl.add_theme_constant_override("outline_size", 2)
 	h.add_child(vl)
 
 	cap.add_child(h)
@@ -376,24 +376,24 @@ func _build_village_tab() -> void:
 	left_shops.add_theme_constant_override("separation", 14)
 	_village_layer.add_child(left_shops)
 
-	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_soul.png", func():
-		_switch_tab(Tab.SOUL_HALL)
-	)
 	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_forge.png", func():
 		_show_toast("進入王都鐵匠：可將裝備晉階為紫裝！")
 	)
 	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_gem.png", func():
-		_show_toast("進入手藝工坊：寶石鑲嵌必定成功！")
+		_show_toast("進入手藝工坊：紅黃藍石三合一熔煉！")
 	)
 	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_arena.png", func():
 		request_battle.emit("arena")
 	)
+	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_quest.png", func():
+		_show_toast("已領取今日簽到與冒險委託補給！")
+	)
 
-	## 右側：今日進度 & 商業手遊藝術字按鈕 (出征 / 簽到)
+	## 右側：專注於主線推進 (無重複簽到按鈕)
 	var right_card := PanelContainer.new()
 	right_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	right_card.offset_left = -360
-	right_card.offset_top = -210
+	right_card.offset_left = -340
+	right_card.offset_top = -170
 	right_card.offset_right = -32
 	right_card.offset_bottom = -16
 	right_card.add_theme_stylebox_override("panel", UiStyle.panel_style())
@@ -406,27 +406,18 @@ func _build_village_tab() -> void:
 	var ch_lbl := Label.new()
 	ch_lbl.text = "冒險出征 · 當前主線"
 	ch_lbl.add_theme_font_size_override("font_size", 14)
-	ch_lbl.add_theme_color_override("font_color", UiStyle.TATA_YELLOW)
-	ch_lbl.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	ch_lbl.add_theme_constant_override("outline_size", 3)
+	ch_lbl.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
 	rv.add_child(ch_lbl)
 
 	var s_name := Label.new()
 	s_name.text = "第二地區 · 聖獅王城 (2-4 BOSS)"
 	s_name.add_theme_font_size_override("font_size", 17)
-	s_name.add_theme_color_override("font_color", Color.WHITE)
-	s_name.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	s_name.add_theme_constant_override("outline_size", 4)
+	s_name.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 	rv.add_child(s_name)
 
 	## 商業手遊藝術字出征按鈕
 	_add_texture_button(rv, "res://assets/sprites/ui/mobile/btn_go_adventure.png", Vector2(280, 68), func():
 		_switch_tab(Tab.ADVENTURE)
-	)
-
-	## 商業手遊藝術字簽到按鈕
-	_add_texture_button(rv, "res://assets/sprites/ui/mobile/btn_sign_daily.png", Vector2(280, 60), func():
-		_show_toast("已領取每日補給：金幣+500、能量+5！")
 	)
 
 func _add_texture_card(parent: Container, tex_path: String, cb: Callable) -> void:
@@ -691,8 +682,8 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	c.custom_minimum_size = Vector2(430, 105)
 	var csb := StyleBoxFlat.new()
 	var is_boss: bool = str(s["type"]).find("首領") >= 0
-	csb.bg_color = Color(0.24, 0.18, 0.40, 0.98) if is_boss else Color(0.18, 0.15, 0.32, 0.95)
-	csb.border_color = UiStyle.TATA_YELLOW if is_boss else Color(0.50, 0.44, 0.72, 0.9)
+	csb.bg_color = Color(1.0, 0.98, 0.92, 0.98) if is_boss else Color(0.98, 0.97, 0.94, 0.96)
+	csb.border_color = UiStyle.TATA_ORANGE if is_boss else UiStyle.TATA_CARD_BORDER
 	csb.set_border_width_all(2)
 	csb.border_width_bottom = 5
 	csb.set_corner_radius_all(18)
@@ -700,7 +691,7 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	csb.content_margin_right = 16
 	csb.content_margin_top = 12
 	csb.content_margin_bottom = 12
-	csb.shadow_color = Color(1.0, 0.82, 0.18, 0.4) if is_boss else Color(0.08, 0.05, 0.16, 0.4)
+	csb.shadow_color = Color(0.25, 0.18, 0.10, 0.2)
 	csb.shadow_size = 8
 	c.add_theme_stylebox_override("panel", csb)
 
@@ -719,17 +710,13 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	var num_l := Label.new()
 	num_l.text = str(s["num"])
 	num_l.add_theme_font_size_override("font_size", 18)
-	num_l.add_theme_color_override("font_color", UiStyle.TATA_YELLOW)
-	num_l.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	num_l.add_theme_constant_override("outline_size", 3)
+	num_l.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
 	t_row.add_child(num_l)
 
 	var name_l := Label.new()
 	name_l.text = str(s["name"])
 	name_l.add_theme_font_size_override("font_size", 16)
-	name_l.add_theme_color_override("font_color", Color.WHITE)
-	name_l.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	name_l.add_theme_constant_override("outline_size", 3)
+	name_l.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 	t_row.add_child(name_l)
 	v.add_child(t_row)
 
@@ -738,13 +725,13 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	var typ_l := Label.new()
 	typ_l.text = str(s["type"])
 	typ_l.add_theme_font_size_override("font_size", 13)
-	typ_l.add_theme_color_override("font_color", UiStyle.TATA_ORANGE if is_boss else Color(0.85, 0.85, 0.95))
+	typ_l.add_theme_color_override("font_color", UiStyle.TATA_ORANGE if is_boss else Color(0.45, 0.38, 0.30))
 	inf_row.add_child(typ_l)
 
 	var pwr_l := Label.new()
 	pwr_l.text = "推薦戰力: %d" % int(s["power"])
 	pwr_l.add_theme_font_size_override("font_size", 13)
-	pwr_l.add_theme_color_override("font_color", UiStyle.TATA_YELLOW)
+	pwr_l.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 	inf_row.add_child(pwr_l)
 	v.add_child(inf_row)
 
