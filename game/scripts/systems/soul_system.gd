@@ -842,3 +842,183 @@ func panel_status_bbcode() -> String:
 		for s in bag:
 			lines.append("  · %s  %s" % [soul_display(s), soul_bonus_line(s)])
 	return "\n".join(lines)
+
+
+## ---- 星盤調查（周天十四主星盤點）----
+func quality_mult(q: String) -> float:
+	for qd in QUALITIES:
+		if str(qd.get("id", "")) == q:
+			return float(qd.get("mult", 1.0))
+	if q == "秘境":
+		return 3.2
+	return 1.0
+
+
+func stat_inclination_name(stat: String) -> String:
+	match stat:
+		"all":
+			return _t("全能均衡")
+		"atk":
+			return _t("攻擊偏向")
+		"def":
+			return _t("防禦偏向")
+		"hp":
+			return _t("氣血偏向")
+		_:
+			return stat
+
+
+func survey_astrolabe() -> Dictionary:
+	ensure_slots()
+	var star_map: Dictionary = {}
+	for st in STARS:
+		var sid := str(st.get("id", ""))
+		var stat_type := str(st.get("stat", "atk"))
+		star_map[sid] = {
+			"id": sid,
+			"name": soul_word(sid),
+			"stat": stat_type,
+			"stat_name": stat_inclination_name(stat_type),
+			"base": int(st.get("base", 1)),
+			"label": str(st.get("label", "")),
+			"is_lit": false,
+			"count": 0,
+			"equipped_count": 0,
+			"bag_count": 0,
+			"highest_quality": "",
+			"highest_score": -1.0,
+			"max_level": 0,
+			"best_soul": {},
+		}
+
+	for s in GameState.souls:
+		if typeof(s) != TYPE_DICTIONARY:
+			continue
+		var star_id := str(s.get("star", ""))
+		if not star_map.has(star_id):
+			continue
+		var entry: Dictionary = star_map[star_id]
+		entry["is_lit"] = true
+		entry["count"] += 1
+		var sid := str(s.get("id", ""))
+		var is_eq := bool(s.get("equipped", false))
+		if not is_eq and sid != "":
+			is_eq = sid in GameState.soul_slots
+		if is_eq:
+			entry["equipped_count"] += 1
+		else:
+			entry["bag_count"] += 1
+
+		var q := str(s.get("quality", "凡"))
+		var lv := int(s.get("level", 0))
+		var score := quality_mult(q) * 100.0 + float(lv)
+		if score > float(entry["highest_score"]):
+			entry["highest_quality"] = q
+			entry["highest_score"] = score
+			entry["max_level"] = lv
+			entry["best_soul"] = s
+
+	var lit_count := 0
+	var stat_lit := {"all": 0, "atk": 0, "def": 0, "hp": 0}
+	var stat_totals := {"all": 0, "atk": 0, "def": 0, "hp": 0}
+	var stars_list: Array[Dictionary] = []
+	for st in STARS:
+		var sid := str(st.get("id", ""))
+		var entry: Dictionary = star_map.get(sid, {})
+		stars_list.append(entry)
+		var st_type := str(entry.get("stat", "atk"))
+		stat_totals[st_type] = int(stat_totals.get(st_type, 0)) + 1
+		if bool(entry.get("is_lit", false)):
+			lit_count += 1
+			stat_lit[st_type] = int(stat_lit.get(st_type, 0)) + 1
+
+	var relics: Array[Dictionary] = []
+	for s in GameState.souls:
+		if typeof(s) == TYPE_DICTIONARY and bool(s.get("relic", false)):
+			relics.append(s)
+
+	return {
+		"stars": stars_list,
+		"star_map": star_map,
+		"lit_count": lit_count,
+		"total_stars": STARS.size(),
+		"stat_lit": stat_lit,
+		"stat_totals": stat_totals,
+		"total_souls": GameState.souls.size(),
+		"equipped_bonus": total_equipped_bonus(),
+		"relics": relics,
+	}
+
+
+func astrolabe_status_bbcode() -> String:
+	var survey := survey_astrolabe()
+	var lines: PackedStringArray = []
+	lines.append(_t("[b]聚魂殿 · 周天星盤[/b]"))
+	lines.append(_t("[color=#a0a8c0]「星盤偏了一角，像在等傭兵團最弱的那個。」[/color]"))
+	lines.append("")
+
+	var lit: int = int(survey.get("lit_count", 0))
+	var tot: int = int(survey.get("total_stars", 14))
+	var s_cnt: int = int(survey.get("total_souls", 0))
+	var eq_cnt := 0
+	for sid in GameState.soul_slots:
+		if str(sid) != "":
+			eq_cnt += 1
+	var bag_cnt: int = maxi(0, s_cnt - eq_cnt)
+
+	lines.append(_t("星盤點亮：%d / %d 主星 · 持有戰魂 %d 顆（入魂 %d，背包 %d）") % [
+		lit, tot, s_cnt, eq_cnt, bag_cnt
+	])
+
+	var bonus: Dictionary = survey.get("equipped_bonus", {})
+	lines.append(_t("入魂加成：攻+%d  防+%d  血+%d") % [
+		int(bonus.get("atk", 0)), int(bonus.get("def", 0)), int(bonus.get("hp", 0))
+	])
+	lines.append("")
+
+	var stat_lit: Dictionary = survey.get("stat_lit", {})
+	var stat_tot: Dictionary = survey.get("stat_totals", {})
+	lines.append(_t("[b]數值傾向分布[/b]"))
+	lines.append(_t("  全能均衡：%d / %d 星點亮（紫微）") % [
+		int(stat_lit.get("all", 0)), int(stat_tot.get("all", 1))
+	])
+	lines.append(_t("  攻擊偏向：%d / %d 星點亮（天機、太陽、武曲、廉貞、巨門、七殺、破軍）") % [
+		int(stat_lit.get("atk", 0)), int(stat_tot.get("atk", 7))
+	])
+	lines.append(_t("  防禦偏向：%d / %d 星點亮（天府、天相、天梁）") % [
+		int(stat_lit.get("def", 0)), int(stat_tot.get("def", 3))
+	])
+	lines.append(_t("  氣血偏向：%d / %d 星點亮（天同、太陰、貪狼）") % [
+		int(stat_lit.get("hp", 0)), int(stat_tot.get("hp", 3))
+	])
+	lines.append("")
+
+	lines.append(_t("[b]紫微十四主星盤點[/b]"))
+	var stars: Array = survey.get("stars", [])
+	for st in stars:
+		var sid := str(st.get("id", ""))
+		var sname := str(st.get("name", sid))
+		var is_lit := bool(st.get("is_lit", false))
+		var stat_name := str(st.get("stat_name", ""))
+		var count := int(st.get("count", 0))
+		var best_soul: Dictionary = st.get("best_soul", {})
+
+		var lit_tag := _t("[已點亮]") if is_lit else _t("[未點亮]")
+		var lit_color := "#ffd028" if is_lit else "#7a7890"
+		var line := "  [color=%s]%s[/color] [b]%s[/b] · %s" % [lit_color, lit_tag, sname, stat_name]
+		if is_lit:
+			var best_desc := soul_display(best_soul)
+			var bonus_desc := soul_bonus_line(best_soul)
+			line += _t("（持有 %d 顆 · 最高 %s %s）") % [count, best_desc, bonus_desc]
+		else:
+			line += _t("（未感應）")
+		lines.append(line)
+
+	var relics: Array = survey.get("relics", [])
+	if not relics.is_empty():
+		lines.append("")
+		lines.append(_t("[b]秘境異曜[/b]"))
+		for r in relics:
+			lines.append("  [color=#4ed86a]%s[/color] · %s" % [soul_display(r), soul_bonus_line(r)])
+
+	return "\n".join(lines)

@@ -5219,10 +5219,24 @@ func _go_soul_panel() -> void:
 				_go_soul_panel()
 			})
 	buttons.append({"text": Loc.t("soul.fuse"), "cb": _soul_try_fuse})
+	buttons.append({"text": _t("周天星盤"), "cb": _go_astrolabe_panel})
 	buttons.append({"text": Loc.t("pause.gems"), "cb": _go_gem_panel})
 	buttons.append({"text": Loc.t("common.skills"), "cb": _go_skill_panel})
 	buttons.append({"text": Loc.t("forge.back_square"), "cb": _go_c1_town})
 	_panel(Loc.t("soul.panel_title"), body, buttons, {"soul_hang": true})
+
+
+func _go_astrolabe_panel() -> void:
+	SoulSystem.ensure_slots()
+	if AudioManager and AudioManager.has_method("play_bgm"):
+		AudioManager.play_bgm("village")
+	var body: String = SoulSystem.astrolabe_status_bbcode()
+	var buttons: Array = []
+	buttons.append({"text": _t("聚魂儀式"), "cb": _go_soul_panel})
+	buttons.append({"text": _t("重整星象"), "cb": _go_astrolabe_panel})
+	buttons.append({"text": _t("離開星盤"), "cb": func(): _open_explore("town_soul", Screen.C1_TOWN)})
+	buttons.append({"text": Loc.t("forge.back_square"), "cb": _go_c1_town})
+	_panel(_t("聚魂殿 · 周天星盤"), body, buttons, {"soul_hang": true})
 
 
 func _go_gem_panel() -> void:
@@ -5421,7 +5435,7 @@ func _interact_shop_interior(id: String) -> bool:
 					_c1_star()
 					return true
 				"astrolabe":
-					_play_dialog([{"speaker": _t("旁白"), "text": _t("星盤偏了一角，像在等傭兵團最弱的那個。")}])
+					_go_astrolabe_panel()
 					return true
 				"gourd_shelf":
 					_play_dialog([{"speaker": _t("旁白"), "text": _t("葫蘆綠到橙。抽魂＝聚魂。星屑只是路上的光。")}])
