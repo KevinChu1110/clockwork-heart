@@ -98,7 +98,9 @@ func _build_ui() -> void:
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	if ResourceLoader.exists("res://assets/sprites/maps/town_bg.webp"):
+	if ResourceLoader.exists("res://assets/sprites/maps/sky_kingdom_bg.png"):
+		bg.texture = load("res://assets/sprites/maps/sky_kingdom_bg.png")
+	elif ResourceLoader.exists("res://assets/sprites/maps/town_bg.webp"):
 		bg.texture = load("res://assets/sprites/maps/town_bg.webp")
 	elif ResourceLoader.exists("res://assets/sprites/illustrations/title_bg.png"):
 		bg.texture = load("res://assets/sprites/illustrations/title_bg.png")
