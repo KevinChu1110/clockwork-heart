@@ -177,6 +177,10 @@ func setup(mode: String) -> void:
 		stats["hp"] = GameState.max_hp
 		stats["def"] = int(stats["def"]) + 2
 		sim = BattleSim.make_chrono_fight(stats)
+	elif mode == "training_dummy":
+		stats["can_skill"] = true
+		stats["hp"] = GameState.max_hp
+		sim = BattleSim.make_dummy_fight(stats)
 	elif _is_world_mode(mode):
 		if _is_world_miniboss(mode):
 			GameState.hp = GameState.max_hp
@@ -278,6 +282,9 @@ func setup(mode: String) -> void:
 		_append_log(_t("時牢：倒數的焰在腳下盤成環。"))
 		_append_log(_t("[color=#a8f]裂縫·時牢：炸彈窗按 J 拆除 · 落岩進安全[/color]"))
 		parry_hint.text = _kh(_t("炸彈／落岩【J】　·　【Tab】鎖外殼"))
+	elif mode == "training_dummy":
+		_append_log(_t("木人樁：靜止不動，供武者試招。"))
+		parry_hint.text = _kh(_t("木人樁不反擊 · 自由試刀 · 右上可結束"))
 	else:
 		parry_hint.text = _kh("%s · %s" % [Loc.t("tut.battle"), Loc.t("battle.rage_full")])
 	## 有多部位的 Boss：通用 HUD／教學（白霧／石像除外——Tab 另有用途）
@@ -407,9 +414,11 @@ func _apply_hud_chrome() -> void:
 	if btn_flee:
 		UiStyle.style_button(btn_flee, false)
 		btn_flee.text = Loc.t("battle.flee")
-		## 逃不掉的仗就把按鈕關掉。教學才剛講過「可按逃離脫離非必要戰鬥」，
-		## 讓玩家按下去才在戰報看到一行「無法逃離」，等於教了一件做不到的事。
-		if _mode in NO_FLEE_MODES:
+		if _mode == "training_dummy":
+			btn_flee.disabled = false
+			btn_flee.text = _t("結束試招")
+			btn_flee.tooltip_text = ""
+		elif _mode in NO_FLEE_MODES:
 			btn_flee.disabled = true
 			btn_flee.tooltip_text = _t("這一戰逃不掉。")
 		else:
@@ -602,6 +611,8 @@ func _mode_coach_intro(mode: String) -> String:
 			return _t("提示：必殺與時鐘都靠 J · 血量階段記得「我拒絕」")
 		"wolf":
 			return _t("提示：自動互砍 · 怒氣滿會放招 · 撐住就好")
+		"training_dummy":
+			return _t("木人試招：木人不會還手 · 測試出招節奏與技能傷害 · 隨時可按右上結束")
 		_:
 			return _t("時機窗：按 J 或點畫面")
 
@@ -699,11 +710,17 @@ func _apply_battle_art(mode: String) -> void:
 	if etex == null and mode == "pvp_snap":
 		etex = SpriteDB.player_idle()
 		_boss_art_key = "pvp_snap"
+	if etex == null and mode == "training_dummy":
+		etex = SpriteDB.boss("training_dummy")
+		_boss_art_key = "training_dummy"
 	if etex:
 		enemy_body.texture = etex
 	enemy_body.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	enemy_body.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	match mode:
+		"training_dummy":
+			enemy_body.custom_minimum_size = Vector2(200, 250)
+			_enemy_base_mod = Color(1.0, 1.0, 1.0)
 		"leo":
 			enemy_body.custom_minimum_size = Vector2(280, 310)
 			_enemy_base_mod = Color(1.05, 0.95, 0.8)
@@ -2479,6 +2496,10 @@ func _on_end(won: bool) -> void:
 			banner.text = _t("趕　跑")
 			banner.modulate = Color(1.0, 0.92, 0.55, 1)
 			_append_log(_t("[color=#fc8]敵人逃走——殘片入袋！[/color]"))
+		elif _mode == "training_dummy":
+			banner.text = _t("試招完成")
+			banner.modulate = Color(1, 1, 1, 1)
+			_append_log(_t("[color=#6f6]木人試招完成！[/color]"))
 		else:
 			banner.text = _t("勝　利")
 			banner.modulate = Color(1, 1, 1, 1)
@@ -2539,10 +2560,15 @@ func _on_end(won: bool) -> void:
 			_grant_rift_rewards(_mode)
 			GameState.add_stardust(2)
 	else:
-		banner.text = _t("敗　北")
-		banner.modulate = Color(1, 1, 1, 1)
-		_append_log(_t("[color=#f66]敗北……[/color]"))
-		GameState.hp = maxi(1, GameState.max_hp / 2)
+		if _mode == "training_dummy":
+			banner.text = _t("試招結束")
+			banner.modulate = Color(1, 1, 1, 1)
+			_append_log(_t("[color=#fc8]試招結束。[/color]"))
+		else:
+			banner.text = _t("敗　北")
+			banner.modulate = Color(1, 1, 1, 1)
+			_append_log(_t("[color=#f66]敗北……[/color]"))
+			GameState.hp = maxi(1, GameState.max_hp / 2)
 	banner.visible = true
 	await get_tree().create_timer(1.6).timeout
 	battle_finished.emit(won)

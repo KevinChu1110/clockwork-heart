@@ -53,6 +53,7 @@ var _saves_ui: RefCounted  ## SaveSlotsPanel
 var _toast: Label
 var _current: Screen = Screen.TITLE
 var _battle_mode: String = "wolf"
+var _pre_dummy_hp: int = -1
 var _after_dialogue: Callable = Callable()
 var _paused: bool = false
 var _pause_layer: Control = null
@@ -3952,6 +3953,10 @@ func _start_battle(mode: String) -> void:
 	if _paused:
 		_close_pause()
 	_reset_fade()
+	if mode == "training_dummy":
+		_pre_dummy_hp = GameState.hp
+		_start_battle_raw(mode)
+		return
 	## 探索→戰鬥：先閃攻擊姿，再進戰（與戰鬥 poses 一致）
 	_explore_play_pose("attack", 0.35)
 	## 首次戰鬥／格擋教學（對話後再進戰）
@@ -3968,6 +3973,19 @@ func _start_battle(mode: String) -> void:
 
 
 func _start_battle_raw(mode: String) -> void:
+	if mode == "training_dummy":
+		_current = Screen.BATTLE
+		_battle_mode = mode
+		_clear_host()
+		var battle = _battle_scene.instantiate()
+		battle.set_anchors_preset(Control.PRESET_FULL_RECT)
+		battle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		battle.size_flags_vertical = Control.SIZE_EXPAND_FILL
+		host.add_child(battle)
+		battle.battle_finished.connect(_on_battle_finished)
+		battle.setup(mode)
+		_refresh_hud()
+		return
 	## 拜訪挑戰不耗能量；其餘走能量制。
 	## pending 旗只對殘影戰有效：它會跟著中途存檔留下來（戰鬥中喝藥就會存），
 	## 殘影戰打到一半關遊戲，重開後下一場不管打誰都會被當成拜訪收尾 ——
@@ -4001,6 +4019,14 @@ func _start_battle_raw(mode: String) -> void:
 
 
 func _on_battle_finished(won: bool) -> void:
+	if _battle_mode == "training_dummy":
+		if _pre_dummy_hp > 0:
+			GameState.hp = _pre_dummy_hp
+			_pre_dummy_hp = -1
+		if won:
+			_explore_play_pose("skill", 0.55)
+		_return_to_explore("town_tutor", "C1_TOWN")
+		return
 	SaveManager.save_game()
 	## 回探索時補一拍勝負姿（場景重建後下一幀也可能已換圖，仍盡力播）
 	if won:
@@ -5419,7 +5445,9 @@ func _interact_shop_interior(id: String) -> bool:
 					_c1_greybeard()
 					return true
 				"training_dummy":
-					_play_dialog([{"speaker": _t("旁白"), "text": _t("木人樁身上全是橫痕。啄木鳥式的戳，一刀都沒留下。")}])
+					_play_dialog([
+						{"speaker": _t("旁白"), "text": _t("木人樁立在場中，木質堅實。正好用來試試招式與身手。")},
+					], func(): _start_battle("training_dummy"))
 					return true
 				"weapon_wall":
 					_play_dialog([{"speaker": _t("旁白"), "text": _t("牆上的劍都橫放。招跟手上那把走，換錯欄出不了招。")}])

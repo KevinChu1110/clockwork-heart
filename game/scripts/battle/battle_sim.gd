@@ -296,6 +296,8 @@ func _step_fog_vuln(dt: float) -> void:
 
 
 func _step_unit(u: BattleUnit, dt: float) -> void:
+	if u.id in ["training_dummy", "dummy"]:
+		return
 	if u.is_boss:
 		u.king_slash_cd = maxf(0.0, u.king_slash_cd - dt)
 
@@ -1706,7 +1708,7 @@ static func apply_ng_plus(sim: BattleSim, mult: float) -> BattleSim:
 	sim.ng_scale_applied = true
 	sim.ng_tight_hazards = true
 	for u in sim.units.values():
-		if u.team != BattleUnit.Team.ENEMY:
+		if u.team != BattleUnit.Team.ENEMY or u.id in ["training_dummy", "dummy"]:
 			continue
 		u.max_hp = maxi(1, int(round(float(u.max_hp) * mult)))
 		u.hp = u.max_hp
@@ -1740,6 +1742,35 @@ static func make_tutorial_wolf_fight(player_stats: Dictionary) -> BattleSim:
 	w.defense = 2
 	w.speed = 11.0
 	sim.add_unit(w)
+	return sim
+
+
+## 工廠：武術館木人樁試招（零消耗、不反擊、固定血量）
+static func make_dummy_fight(player_stats: Dictionary) -> BattleSim:
+	var sim := BattleSim.new()
+	var p := BattleUnit.new()
+	p.id = "player"
+	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.team = BattleUnit.Team.PLAYER
+	p.max_hp = int(player_stats.get("max_hp", 50))
+	p.hp = int(player_stats.get("hp", p.max_hp))
+	p.atk = int(player_stats.get("atk", 14))
+	p.defense = int(player_stats.get("def", 5))
+	p.speed = float(player_stats.get("speed", 10))
+	_apply_player_skill_stats(sim, p, player_stats)
+	sim.add_unit(p)
+	sim.player_id = p.id
+
+	var dummy := BattleUnit.new()
+	dummy.id = "training_dummy"
+	dummy.display_name = _t("木人樁")
+	dummy.team = BattleUnit.Team.ENEMY
+	dummy.max_hp = 500
+	dummy.hp = 500
+	dummy.atk = 0
+	dummy.defense = 4
+	dummy.speed = 0.0
+	sim.add_unit(dummy)
 	return sim
 
 

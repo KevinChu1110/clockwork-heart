@@ -68,6 +68,9 @@ func seconds_to_next() -> float:
 
 
 func cost_for_mode(mode: String) -> int:
+	## 武術館木人樁試招零消耗
+	if mode == "training_dummy":
+		return 0
 	## 序章首戰免費，避免卡教學
 	if mode == "wolf" and not GameState.has_flag("c0_first_battle"):
 		return 0

@@ -394,6 +394,8 @@ static func boss(mode: String) -> Texture2D:
 	var idle := boss_pose(mode, "idle")
 	if idle:
 		return idle
+	if mode in ["training_dummy", "dummy"]:
+		return tex("%s/props/dummy.png" % ROOT)
 	var t := tex("%s/bosses/%s.png" % [ROOT, mode])
 	if t == null and mode == "wrath":
 		return tex("%s/bosses/demon.png" % ROOT)
