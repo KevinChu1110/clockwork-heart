@@ -1,7 +1,7 @@
 class_name MobileLobby
 extends Control
 ## 勇者之魂 (Brave Soul) - 現代 Q 萌多巴胺手遊大廳 (Tata Adventure Style)
-## 特色：粉圓體超 Q 萌字體 + 全面移除廉價 Emoji + 預渲染商業立體果凍藝術按鈕
+## 視覺特徵：慶典彩色吊旗 + 飄動陽光粒子 + 白兔多姿態動態呼吸與多動作點擊互動 (無 Emoji)
 
 signal request_battle(mode: String)
 signal request_settings()
@@ -36,10 +36,24 @@ var _soul_layer: Control
 var _bag_layer: Control
 var _dock_buttons: Array[Button] = []
 
-## 角色展台
+## 角色動態與姿態
 var _hero_avatar: TextureRect
 var _hero_shadow: TextureRect
+var _rainbow_ring: TextureRect
+var _speech_bubble: PanelContainer
+var _speech_label: Label
+var _particles_root: Control
 var _breathe_tween: Tween
+var _bubble_tween: Tween
+var _idle_action_timer: float = 0.0
+var _is_interacting: bool = false
+
+## 動作姿態紋理快取
+var _tex_idle: Texture2D
+var _tex_attack: Texture2D
+var _tex_skill: Texture2D
+var _tex_telegraph: Texture2D
+var _tex_recover: Texture2D
 
 ## 聚魂殿五色葫蘆狀態
 var _gourd_lit: Array[bool] = [true, false, false, false, false]
@@ -49,6 +63,9 @@ var _gourd_btns: Array[Button] = []
 var _selected_region: int = 1 # 0: 破曉之原, 1: 聖獅王都, 2: 迷霧雪境, 3: 深淵龍窟
 var _stages_container: VBoxContainer
 
+## 慶典飄動彩旗
+var _bunting_flags: Control
+
 static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
 
@@ -57,9 +74,22 @@ func _ready() -> void:
 	size = Vector2(1280, 720)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	_load_hero_poses()
 	_build_ui()
 	refresh_hud()
 	_switch_tab(Tab.VILLAGE)
+
+func _load_hero_poses() -> void:
+	if ResourceLoader.exists("res://assets/sprites/player/poses/idle.png"):
+		_tex_idle = load("res://assets/sprites/player/poses/idle.png")
+	if ResourceLoader.exists("res://assets/sprites/player/poses/attack.png"):
+		_tex_attack = load("res://assets/sprites/player/poses/attack.png")
+	if ResourceLoader.exists("res://assets/sprites/player/poses/skill.png"):
+		_tex_skill = load("res://assets/sprites/player/poses/skill.png")
+	if ResourceLoader.exists("res://assets/sprites/player/poses/telegraph.png"):
+		_tex_telegraph = load("res://assets/sprites/player/poses/telegraph.png")
+	if ResourceLoader.exists("res://assets/sprites/player/poses/recover.png"):
+		_tex_recover = load("res://assets/sprites/player/poses/recover.png")
 
 func _build_ui() -> void:
 	## 1. 背景插畫 (明亮飽和的童話主城)
@@ -74,22 +104,17 @@ func _build_ui() -> void:
 		bg.texture = load("res://assets/sprites/illustrations/title_bg.png")
 	add_child(bg)
 
-	## 頂部與底部通透暗紫漸層遮罩
-	var top_v := ColorRect.new()
-	top_v.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	top_v.offset_bottom = 120
-	top_v.color = Color(0.10, 0.08, 0.22, 0.40)
-	top_v.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(top_v)
+	## 2. 繽紛童話慶典彩旗 (Carnival Bunting Flags)
+	_build_carnival_buntings()
 
-	var bot_v := ColorRect.new()
-	bot_v.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	bot_v.offset_top = -140
-	bot_v.color = Color(0.10, 0.08, 0.22, 0.50)
-	bot_v.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(bot_v)
+	## 3. 飄散的陽光微光金星粒子
+	_particles_root = Control.new()
+	_particles_root.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_particles_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_particles_root)
+	_spawn_floating_sunlight_particles()
 
-	## 2. 內容掛載層
+	## 4. 內容掛載層
 	_content_root = Control.new()
 	_content_root.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_content_root.offset_top = 80
@@ -102,14 +127,80 @@ func _build_ui() -> void:
 	_build_soul_hall_tab()
 	_build_bag_tab()
 
-	## 3. 頂部狀態列 (無 Emoji，純淨大氣手遊標籤)
+	## 5. 頂部狀態列 (無 Emoji，純淨大氣手遊標籤)
 	_build_top_hud()
 
-	## 4. 底部飽滿果凍導航欄 (無 Emoji，超大胖胖字)
+	## 6. 底部飽滿果凍導航欄 (無 Emoji，超大胖胖字)
 	_build_bottom_dock()
 
 ## ──────────────────────────────────────────
-## 頂部大尺寸多巴胺 HUD (無 Emoji)
+## 繽紛童話慶典三角旗 (Carnival Pennant Bunting)
+## ──────────────────────────────────────────
+func _build_carnival_buntings() -> void:
+	_bunting_flags = Control.new()
+	_bunting_flags.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	_bunting_flags.offset_top = 74
+	_bunting_flags.offset_bottom = 120
+	_bunting_flags.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(_bunting_flags)
+
+	var flag_colors: Array[Color] = [
+		Color(1.0, 0.40, 0.60),  # 草莓粉
+		Color(1.0, 0.82, 0.18),  # 蜜糖黃
+		Color(0.28, 0.85, 0.42), # 薄荷綠
+		Color(0.24, 0.68, 0.98), # 晴空藍
+		Color(1.0, 0.54, 0.12),  # 活力橘
+		Color(0.80, 0.50, 1.0),  # 夢幻紫
+	]
+
+	var flag_count := 24
+	var step_w := 1280.0 / float(flag_count)
+	for i in range(flag_count):
+		var p := Polygon2D.new()
+		var col := flag_colors[i % flag_colors.size()]
+		p.color = col
+		var x1 := float(i) * step_w
+		var x2 := x1 + step_w
+		var xc := x1 + step_w * 0.5
+		# 自然垂墜弧度
+		var curve_y := sin(float(i) / float(flag_count) * PI) * 14.0
+		var pts := PackedVector2Array([
+			Vector2(x1, curve_y),
+			Vector2(x2, curve_y),
+			Vector2(xc, curve_y + 24.0)
+		])
+		p.polygon = pts
+		_bunting_flags.add_child(p)
+
+	# 微風輕擺動畫
+	var tw := create_tween().set_loops()
+	tw.tween_property(_bunting_flags, "position:y", 2.0, 1.6).set_trans(Tween.TRANS_SINE)
+	tw.tween_property(_bunting_flags, "position:y", 0.0, 1.6).set_trans(Tween.TRANS_SINE)
+
+## ──────────────────────────────────────────
+## 陽光漂浮微粒 (Sunshine Particles)
+## ──────────────────────────────────────────
+func _spawn_floating_sunlight_particles() -> void:
+	for i in range(14):
+		var star := Label.new()
+		star.text = "✦"
+		star.add_theme_font_size_override("font_size", 12 + (i % 3) * 4)
+		var c := Color(1.0, 0.90, 0.45, 0.75) if i % 2 == 0 else Color(1.0, 0.60, 0.80, 0.65)
+		star.add_theme_color_override("font_color", c)
+		star.position = Vector2(randf_range(40.0, 1240.0), randf_range(100.0, 580.0))
+		_particles_root.add_child(star)
+
+		# 漂浮與呼吸淡入淡出
+		var tw := create_tween().set_loops()
+		var dur := randf_range(2.0, 3.5)
+		var dy := randf_range(-18.0, -35.0)
+		tw.tween_property(star, "position:y", star.position.y + dy, dur).set_trans(Tween.TRANS_SINE)
+		tw.parallel().tween_property(star, "modulate:a", 0.2, dur * 0.5)
+		tw.tween_property(star, "position:y", star.position.y, dur).set_trans(Tween.TRANS_SINE)
+		tw.parallel().tween_property(star, "modulate:a", 0.85, dur * 0.5)
+
+## ──────────────────────────────────────────
+## 頂部大尺寸多巴胺 HUD
 ## ──────────────────────────────────────────
 func _build_top_hud() -> void:
 	var top_bar := PanelContainer.new()
@@ -121,11 +212,11 @@ func _build_top_hud() -> void:
 	
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = UiStyle.TATA_CARD_BG
-	sb.border_color = UiStyle.TATA_YELLOW
+	sb.border_color = UiStyle.TATA_CARD_BORDER
 	sb.set_border_width_all(2)
 	sb.border_width_bottom = 5
 	sb.set_corner_radius_all(22)
-	sb.shadow_color = Color(0.08, 0.05, 0.18, 0.5)
+	sb.shadow_color = Color(0.25, 0.18, 0.10, 0.2)
 	sb.shadow_size = 10
 	sb.shadow_offset = Vector2(0, 4)
 	top_bar.add_theme_stylebox_override("panel", sb)
@@ -144,7 +235,7 @@ func _build_top_hud() -> void:
 	var p_frame := PanelContainer.new()
 	var psb := StyleBoxFlat.new()
 	psb.bg_color = Color(1.0, 0.95, 0.85)
-	psb.border_color = UiStyle.TATA_YELLOW
+	psb.border_color = UiStyle.TATA_ORANGE
 	psb.set_border_width_all(3)
 	psb.set_corner_radius_all(26)
 	p_frame.custom_minimum_size = Vector2(52, 52)
@@ -166,18 +257,18 @@ func _build_top_hud() -> void:
 	row1.add_theme_constant_override("separation", 8)
 	_lv_label = Label.new()
 	_lv_label.text = "Lv.12"
-	_lv_label.add_theme_color_override("font_color", UiStyle.TATA_YELLOW)
+	_lv_label.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
 	_lv_label.add_theme_font_size_override("font_size", 16)
-	_lv_label.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	_lv_label.add_theme_constant_override("outline_size", 4)
+	_lv_label.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.9))
+	_lv_label.add_theme_constant_override("outline_size", 2)
 	row1.add_child(_lv_label)
 
 	_name_label = Label.new()
 	_name_label.text = "Capoo"
 	_name_label.add_theme_font_size_override("font_size", 17)
-	_name_label.add_theme_color_override("font_color", Color.WHITE)
-	_name_label.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	_name_label.add_theme_constant_override("outline_size", 4)
+	_name_label.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	_name_label.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.9))
+	_name_label.add_theme_constant_override("outline_size", 2)
 	row1.add_child(_name_label)
 	info_v.add_child(row1)
 
@@ -185,10 +276,8 @@ func _build_top_hud() -> void:
 	pwr_row.add_theme_constant_override("separation", 4)
 	_power_label = Label.new()
 	_power_label.text = "戰力 482"
-	_power_label.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
-	_power_label.add_theme_font_size_override("font_size", 14)
-	_power_label.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	_power_label.add_theme_constant_override("outline_size", 3)
+	_power_label.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	_power_label.add_theme_font_size_override("font_size", 13)
 	pwr_row.add_child(_power_label)
 	info_v.add_child(pwr_row)
 	p_box.add_child(info_v)
@@ -197,14 +286,14 @@ func _build_top_hud() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(spacer)
 
-	## 多巴胺立體三寶果凍膠囊 (無 Emoji)
+	## 多巴胺立體三寶果凍膠囊
 	_energy_label = _add_clean_capsule(h, "能量", "15/15", UiStyle.TATA_GREEN)
-	_gold_label = _add_clean_capsule(h, "金幣", "12,500", UiStyle.TATA_YELLOW)
+	_gold_label = _add_clean_capsule(h, "金幣", "12,500", UiStyle.TATA_ORANGE)
 	_gem_label = _add_clean_capsule(h, "晶石", "350", UiStyle.TATA_BLUE)
 
 	var set_btn := Button.new()
 	set_btn.text = "設置"
-	set_btn.custom_minimum_size = Vector2(60, 46)
+	set_btn.custom_minimum_size = Vector2(64, 46)
 	set_btn.add_theme_font_size_override("font_size", 16)
 	UiStyle.style_button(set_btn, false)
 	set_btn.pressed.connect(func():
@@ -254,7 +343,7 @@ func _add_clean_capsule(parent: Container, title: String, val: String, accent: C
 	return vl
 
 ## ──────────────────────────────────────────
-## 底部導航欄 (無 Emoji，純粉圓體胖胖字)
+## 底部導航欄
 ## ──────────────────────────────────────────
 func _build_bottom_dock() -> void:
 	var dock := PanelContainer.new()
@@ -266,11 +355,11 @@ func _build_bottom_dock() -> void:
 	
 	var dsb := StyleBoxFlat.new()
 	dsb.bg_color = UiStyle.TATA_CARD_BG
-	dsb.border_color = UiStyle.TATA_YELLOW
+	dsb.border_color = UiStyle.TATA_CARD_BORDER
 	dsb.set_border_width_all(2)
 	dsb.border_width_bottom = 6
 	dsb.set_corner_radius_all(24)
-	dsb.shadow_color = Color(0.08, 0.05, 0.18, 0.6)
+	dsb.shadow_color = Color(0.25, 0.18, 0.10, 0.25)
 	dsb.shadow_size = 12
 	dock.add_theme_stylebox_override("panel", dsb)
 	add_child(dock)
@@ -313,7 +402,40 @@ func _switch_tab(target: Tab) -> void:
 		UiStyle.style_button(_dock_buttons[i], is_active)
 
 ## ──────────────────────────────────────────
-## Tab 1: 今日村莊 (四大殿堂卡牌 + 實體藝術字按鈕)
+## 每幀小動作判定 (動態待機自然活化)
+## ──────────────────────────────────────────
+func _process(delta: float) -> void:
+	if _current_tab != Tab.VILLAGE or _is_interacting:
+		return
+
+	_idle_action_timer += delta
+	if _idle_action_timer > 5.0:
+		_idle_action_timer = 0.0
+		_play_random_idle_flavor()
+
+func _play_random_idle_flavor() -> void:
+	var roll := randi() % 3
+	if roll == 0 and _tex_telegraph:
+		## 小伸展站姿
+		_hero_avatar.texture = _tex_telegraph
+		var tw := create_tween()
+		tw.tween_interval(1.2)
+		tw.tween_callback(func():
+			if not _is_interacting and _tex_idle:
+				_hero_avatar.texture = _tex_idle
+		)
+	elif roll == 1 and _tex_recover:
+		## 伸個懶腰
+		_hero_avatar.texture = _tex_recover
+		var tw := create_tween()
+		tw.tween_interval(1.0)
+		tw.tween_callback(func():
+			if not _is_interacting and _tex_idle:
+				_hero_avatar.texture = _tex_idle
+		)
+
+## ──────────────────────────────────────────
+## Tab 1: 今日村莊 (彩虹展台 + 點擊互動 + 粒子爆發)
 ## ──────────────────────────────────────────
 func _build_village_tab() -> void:
 	_village_layer = Control.new()
@@ -326,23 +448,25 @@ func _build_village_tab() -> void:
 	stage_anchor.offset_top = 45
 	_village_layer.add_child(stage_anchor)
 
-	_hero_shadow = TextureRect.new()
-	_hero_shadow.offset_left = -160
-	_hero_shadow.offset_top = 100
-	_hero_shadow.offset_right = 160
-	_hero_shadow.offset_bottom = 175
-	var grad := Gradient.new()
-	grad.set_color(0, Color(1.0, 0.85, 0.35, 0.9))
-	grad.set_color(1, Color(1.0, 0.85, 0.35, 0.0))
-	var s_tex := GradientTexture2D.new()
-	s_tex.gradient = grad
-	s_tex.fill = GradientTexture2D.FILL_RADIAL
-	s_tex.fill_from = Vector2(0.5, 0.5)
-	s_tex.fill_to = Vector2(0.5, 0.0)
-	_hero_shadow.texture = s_tex
-	_hero_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	stage_anchor.add_child(_hero_shadow)
+	## 1. 彩虹多巴胺炫光展台底盤
+	_rainbow_ring = TextureRect.new()
+	_rainbow_ring.offset_left = -170
+	_rainbow_ring.offset_top = 90
+	_rainbow_ring.offset_right = 170
+	_rainbow_ring.offset_bottom = 185
+	var r_grad := Gradient.new()
+	r_grad.set_color(0, Color(1.0, 0.85, 0.25, 0.95))
+	r_grad.set_color(1, Color(0.28, 0.85, 0.42, 0.0))
+	var r_tex := GradientTexture2D.new()
+	r_tex.gradient = r_grad
+	r_tex.fill = GradientTexture2D.FILL_RADIAL
+	r_tex.fill_from = Vector2(0.5, 0.5)
+	r_tex.fill_to = Vector2(0.5, 0.0)
+	_rainbow_ring.texture = r_tex
+	_rainbow_ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	stage_anchor.add_child(_rainbow_ring)
 
+	## 2. 2.2 頭身白兔主角
 	_hero_avatar = TextureRect.new()
 	_hero_avatar.offset_left = -125
 	_hero_avatar.offset_top = -140
@@ -352,8 +476,8 @@ func _build_village_tab() -> void:
 	_hero_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_hero_avatar.pivot_offset = Vector2(125, 240)
-	if ResourceLoader.exists("res://assets/sprites/player/poses/idle.png"):
-		_hero_avatar.texture = load("res://assets/sprites/player/poses/idle.png")
+	if _tex_idle:
+		_hero_avatar.texture = _tex_idle
 	stage_anchor.add_child(_hero_avatar)
 
 	var hero_click := Button.new()
@@ -362,11 +486,69 @@ func _build_village_tab() -> void:
 	hero_click.pressed.connect(_on_hero_clicked)
 	_hero_avatar.add_child(hero_click)
 
+	## 3. 頭頂稱號與名字 (Q 萌粉圓體)
+	var tag_v := VBoxContainer.new()
+	tag_v.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	tag_v.offset_left = -100
+	tag_v.offset_top = -52
+	tag_v.offset_right = 100
+	tag_v.offset_bottom = 0
+	tag_v.alignment = BoxContainer.ALIGNMENT_CENTER
+	tag_v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var title_l := Label.new()
+	title_l.text = "【初出茅廬】"
+	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_l.add_theme_font_size_override("font_size", 12)
+	title_l.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
+	title_l.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.9))
+	title_l.add_theme_constant_override("outline_size", 2)
+	tag_v.add_child(title_l)
+
+	var name_tag := Label.new()
+	name_tag.text = "Capoo"
+	name_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_tag.add_theme_font_size_override("font_size", 16)
+	name_tag.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	name_tag.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.9))
+	name_tag.add_theme_constant_override("outline_size", 3)
+	tag_v.add_child(name_tag)
+	_hero_avatar.add_child(tag_v)
+
+	## 4. 點擊彈出的萌系對話氣泡
+	_speech_bubble = PanelContainer.new()
+	_speech_bubble.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	_speech_bubble.offset_left = -110
+	_speech_bubble.offset_top = -110
+	_speech_bubble.offset_right = 150
+	_speech_bubble.offset_bottom = -60
+	_speech_bubble.visible = false
+	var bub_sb := StyleBoxFlat.new()
+	bub_sb.bg_color = Color(1.0, 0.99, 0.95, 0.98)
+	bub_sb.border_color = UiStyle.TATA_ORANGE
+	bub_sb.set_border_width_all(2)
+	bub_sb.set_corner_radius_all(14)
+	bub_sb.shadow_color = Color(0.25, 0.18, 0.10, 0.25)
+	bub_sb.shadow_size = 6
+	bub_sb.content_margin_left = 12
+	bub_sb.content_margin_right = 12
+	bub_sb.content_margin_top = 6
+	bub_sb.content_margin_bottom = 6
+	_speech_bubble.add_theme_stylebox_override("panel", bub_sb)
+
+	_speech_label = Label.new()
+	_speech_label.text = "今天也要元氣滿滿出發！"
+	_speech_label.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	_speech_label.add_theme_font_size_override("font_size", 14)
+	_speech_bubble.add_child(_speech_label)
+	_hero_avatar.add_child(_speech_bubble)
+
+	## 呼吸動畫
 	_breathe_tween = create_tween().set_loops()
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
 
-	## 左側四大殿堂卡牌 (TextureButton)
+	## 左側四大殿堂手繪卡牌 (無重複！王都鐵匠、手藝工坊、演武競技、冒險委託)
 	var left_shops := VBoxContainer.new()
 	left_shops.set_anchors_preset(Control.PRESET_LEFT_WIDE)
 	left_shops.offset_left = 32
@@ -377,7 +559,7 @@ func _build_village_tab() -> void:
 	_village_layer.add_child(left_shops)
 
 	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_forge.png", func():
-		_show_toast("進入王都鐵匠：可將裝備晉階為紫裝！")
+		_show_toast("進入王都鐵匠：可將裝備品質晉階為紫裝！")
 	)
 	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_gem.png", func():
 		_show_toast("進入手藝工坊：紅黃藍石三合一熔煉！")
@@ -415,7 +597,6 @@ func _build_village_tab() -> void:
 	s_name.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 	rv.add_child(s_name)
 
-	## 商業手遊藝術字出征按鈕
 	_add_texture_button(rv, "res://assets/sprites/ui/mobile/btn_go_adventure.png", Vector2(280, 68), func():
 		_switch_tab(Tab.ADVENTURE)
 	)
@@ -440,11 +621,95 @@ func _add_texture_button(parent: Container, tex_path: String, sz: Vector2, cb: C
 	tb.pressed.connect(cb)
 	parent.add_child(tb)
 
+## ──────────────────────────────────────────
+## 點擊主角：切換動態姿態 + 爆發彩色粒子 + 氣泡
+## ──────────────────────────────────────────
 func _on_hero_clicked() -> void:
+	_is_interacting = true
+	var act_type := randi() % 3
+
+	var speech_lines := [
+		"看我的旋風斬～呀！",
+		"今天也要元氣滿滿出發！",
+		"我的短劍已經磨得亮晶晶啦～",
+		"哇！不要一直戳人家的長耳朵啦～",
+		"隨時準備好去挑戰大首領！"
+	]
+	_speech_label.text = speech_lines[randi() % speech_lines.size()]
+	_speech_bubble.visible = true
+	_speech_bubble.modulate.a = 0.0
+
+	if _bubble_tween and _bubble_tween.is_valid():
+		_bubble_tween.kill()
+	_bubble_tween = create_tween()
+	_bubble_tween.tween_property(_speech_bubble, "modulate:a", 1.0, 0.15)
+	_bubble_tween.tween_interval(2.2)
+	_bubble_tween.tween_property(_speech_bubble, "modulate:a", 0.0, 0.3)
+	_bubble_tween.tween_callback(func(): _speech_bubble.visible = false)
+
+	## 噴散 8 顆彩色糖果星芒粒子
+	_burst_click_particles(_hero_avatar.global_position + Vector2(125, 120))
+
 	var tw := create_tween()
-	tw.tween_property(_hero_avatar, "position:y", _hero_avatar.position.y - 20, 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tw.tween_property(_hero_avatar, "position:y", _hero_avatar.position.y, 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
-	_show_toast("出發！和夥伴們一起守護王國！")
+	match act_type:
+		0:
+			## 揮劍劈砍姿態
+			if _tex_attack: _hero_avatar.texture = _tex_attack
+			tw.tween_property(_hero_avatar, "position", Vector2(-110, -165), 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			tw.tween_property(_hero_avatar, "position", Vector2(-125, -140), 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+			tw.tween_interval(0.4)
+			tw.tween_callback(func():
+				if _tex_recover: _hero_avatar.texture = _tex_recover
+			)
+			tw.tween_interval(0.3)
+			tw.tween_callback(func():
+				if _tex_idle: _hero_avatar.texture = _tex_idle
+				_is_interacting = false
+			)
+		1:
+			## 聚氣勝利姿態
+			if _tex_skill: _hero_avatar.texture = _tex_skill
+			tw.tween_property(_hero_avatar, "scale", Vector2(1.15, 1.15), 0.15).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+			tw.tween_property(_hero_avatar, "scale", Vector2(1.0, 1.0), 0.2).set_trans(Tween.TRANS_SINE)
+			tw.tween_interval(0.6)
+			tw.tween_callback(func():
+				if _tex_idle: _hero_avatar.texture = _tex_idle
+				_is_interacting = false
+			)
+		2:
+			## 開心翻轉大跳躍
+			tw.tween_property(_hero_avatar, "position:y", _hero_avatar.position.y - 35, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			tw.parallel().tween_property(_hero_avatar, "scale:x", -1.0, 0.15)
+			tw.tween_property(_hero_avatar, "position:y", _hero_avatar.position.y, 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+			tw.parallel().tween_property(_hero_avatar, "scale:x", 1.0, 0.18)
+			tw.tween_callback(func():
+				_is_interacting = false
+			)
+
+func _burst_click_particles(center_pos: Vector2) -> void:
+	var cols: Array[Color] = [
+		Color(1.0, 0.85, 0.25),  # 金黃
+		Color(1.0, 0.40, 0.60),  # 草莓粉
+		Color(0.28, 0.85, 0.42), # 薄荷綠
+		Color(0.24, 0.68, 0.98), # 晴空藍
+	]
+	for i in range(8):
+		var star := Label.new()
+		star.text = "✦"
+		star.add_theme_font_size_override("font_size", 16)
+		star.add_theme_color_override("font_color", cols[i % cols.size()])
+		star.global_position = center_pos
+		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(star)
+
+		var angle := float(i) * (PI * 2.0 / 8.0)
+		var dist := randf_range(40.0, 80.0)
+		var target := center_pos + Vector2(cos(angle), sin(angle)) * dist
+
+		var tw := create_tween()
+		tw.tween_property(star, "global_position", target, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.parallel().tween_property(star, "modulate:a", 0.0, 0.35).set_delay(0.15)
+		tw.tween_callback(star.queue_free)
 
 ## ──────────────────────────────────────────
 ## Tab 4: 聚魂殿堂 (藝術圖片十連鈕)
@@ -472,16 +737,14 @@ func _build_soul_hall_tab() -> void:
 	t.text = "✦ 聚魂殿堂 · 五色葫蘆跳階 ✦"
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	t.add_theme_font_size_override("font_size", 24)
-	t.add_theme_color_override("font_color", UiStyle.TATA_YELLOW)
-	t.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	t.add_theme_constant_override("outline_size", 4)
+	t.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
 	v.add_child(t)
 
 	var desc := Label.new()
 	desc.text = "聚引十四主星之魂：七煞(攻) · 武曲(防) · 天機(血) · 貪狼(命) · 紫微(閃) · 破軍(爆)。點擊點亮更高階葫蘆！"
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc.add_theme_font_size_override("font_size", 13)
-	desc.add_theme_color_override("font_color", Color(0.90, 0.88, 0.95))
+	desc.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 	v.add_child(desc)
 
 	var gourd_row := HBoxContainer.new()
@@ -490,7 +753,7 @@ func _build_soul_hall_tab() -> void:
 	v.add_child(gourd_row)
 
 	var gourds_data := [
-		{"name": "白玉葫蘆", "cost": 100, "color": Color(0.95, 0.95, 0.95)},
+		{"name": "白玉葫蘆", "cost": 100, "color": Color(0.85, 0.85, 0.85)},
 		{"name": "碧綠葫蘆", "cost": 300, "color": UiStyle.TATA_GREEN},
 		{"name": "青藍葫蘆", "cost": 800, "color": UiStyle.TATA_BLUE},
 		{"name": "紫霄葫蘆", "cost": 2000, "color": UiStyle.TATA_PINK},
@@ -537,13 +800,12 @@ func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
 	v.add_theme_constant_override("separation", 10)
 	btn.add_child(v)
 
-	## 圓形發光星盤標籤
 	var circle := PanelContainer.new()
 	circle.custom_minimum_size = Vector2(56, 56)
 	var csb := StyleBoxFlat.new()
 	csb.bg_color = gd["color"] as Color
 	csb.set_corner_radius_all(28)
-	csb.border_color = Color(1, 1, 1, 0.8)
+	csb.border_color = Color(1, 1, 1, 0.9)
 	csb.set_border_width_all(2)
 	circle.add_theme_stylebox_override("panel", csb)
 	v.add_child(circle)
@@ -553,15 +815,13 @@ func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
 	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	nl.add_theme_font_size_override("font_size", 16)
 	nl.add_theme_color_override("font_color", gd["color"] as Color)
-	nl.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	nl.add_theme_constant_override("outline_size", 3)
 	v.add_child(nl)
 
 	var cl := Label.new()
 	cl.text = "金幣 %d" % int(gd["cost"])
 	cl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cl.add_theme_font_size_override("font_size", 13)
-	cl.add_theme_color_override("font_color", Color(1.0, 0.95, 0.85))
+	cl.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 	v.add_child(cl)
 
 	btn.pressed.connect(func(): _do_gourd_draw(idx, false))
@@ -573,17 +833,17 @@ func _refresh_gourds_ui() -> void:
 		var is_lit := _gourd_lit[i]
 		var sb := StyleBoxFlat.new()
 		if is_lit:
-			sb.bg_color = Color(0.24, 0.18, 0.42, 0.98)
-			sb.border_color = UiStyle.TATA_YELLOW
+			sb.bg_color = Color(1.0, 0.98, 0.92, 0.98)
+			sb.border_color = UiStyle.TATA_ORANGE
 			sb.set_border_width_all(3)
 			sb.border_width_bottom = 6
 			sb.set_corner_radius_all(20)
-			sb.shadow_color = Color(1.0, 0.82, 0.18, 0.5)
+			sb.shadow_color = Color(0.25, 0.18, 0.10, 0.25)
 			sb.shadow_size = 10
 			b.disabled = false
 		else:
-			sb.bg_color = Color(0.14, 0.12, 0.24, 0.6)
-			sb.border_color = Color(0.35, 0.30, 0.50, 0.5)
+			sb.bg_color = Color(0.95, 0.93, 0.90, 0.7)
+			sb.border_color = Color(0.70, 0.65, 0.60, 0.5)
 			sb.set_border_width_all(1)
 			sb.border_width_bottom = 3
 			sb.set_corner_radius_all(18)
@@ -774,8 +1034,8 @@ func _build_character_tab() -> void:
 	prev.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	prev.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	if ResourceLoader.exists("res://assets/sprites/player/poses/idle.png"):
-		prev.texture = load("res://assets/sprites/player/poses/idle.png")
+	if _tex_idle:
+		prev.texture = _tex_idle
 	l_card.add_child(prev)
 
 	var r_v := VBoxContainer.new()
@@ -786,9 +1046,7 @@ func _build_character_tab() -> void:
 	var title := Label.new()
 	title.text = "✦ 三欄武器輪替系統 (原作節奏) ✦"
 	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", UiStyle.TATA_YELLOW)
-	title.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	title.add_theme_constant_override("outline_size", 3)
+	title.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
 	r_v.add_child(title)
 
 	var w_row := HBoxContainer.new()
@@ -800,8 +1058,8 @@ func _build_character_tab() -> void:
 		var p := PanelContainer.new()
 		p.custom_minimum_size = Vector2(130, 68)
 		var psb := StyleBoxFlat.new()
-		psb.bg_color = Color(0.20, 0.16, 0.35, 0.95)
-		psb.border_color = UiStyle.TATA_YELLOW
+		psb.bg_color = Color(0.98, 0.97, 0.94, 0.96)
+		psb.border_color = UiStyle.TATA_ORANGE
 		psb.set_border_width_all(2)
 		psb.border_width_bottom = 4
 		psb.set_corner_radius_all(12)
@@ -811,7 +1069,7 @@ func _build_character_tab() -> void:
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		l.add_theme_font_size_override("font_size", 13)
-		l.add_theme_color_override("font_color", Color.WHITE)
+		l.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 		p.add_child(l)
 		w_row.add_child(p)
 
@@ -819,10 +1077,10 @@ func _build_character_tab() -> void:
 	stats.bbcode_enabled = true
 	stats.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	stats.add_theme_font_size_override("normal_font_size", 15)
-	stats.text = "\n[color=#ffd028][b]角色戰鬥屬性 (有效戰力 482)[/b][/color]\n\n"
-	stats.text += "生命力 (HP): [color=#ff5e8a]520[/color]   物理攻擊: [color=#38a0ff]95[/color]\n"
-	stats.text += "物理防禦: [color=#4ed86a]48[/color]   暴擊率: [color=#ffd028]22%[/color]\n"
-	stats.text += "怒氣量表: [color=#ffa010]20 點 (滿怒自動觸發暴怒 +25% 攻防暴)[/color]\n"
+	stats.text = "\n[color=#e06010][b]角色戰鬥屬性 (有效戰力 482)[/b][/color]\n\n"
+	stats.text += "生命力 (HP): [color=#e03060]520[/color]   物理攻擊: [color=#1080d0]95[/color]\n"
+	stats.text += "物理防禦: [color=#20a040]48[/color]   暴擊率: [color=#e08010]22%[/color]\n"
+	stats.text += "怒氣量表: [color=#e06010]20 點 (滿怒自動觸發暴怒 +25% 攻防暴)[/color]\n"
 	r_v.add_child(stats)
 
 func _build_bag_tab() -> void:
@@ -847,9 +1105,7 @@ func _build_bag_tab() -> void:
 	var t := Label.new()
 	t.text = "冒險者背包 (道具與戰魂倉庫)"
 	t.add_theme_font_size_override("font_size", 20)
-	t.add_theme_color_override("font_color", UiStyle.TATA_YELLOW)
-	t.add_theme_color_override("font_outline_color", UiStyle.TATA_NAVY)
-	t.add_theme_constant_override("outline_size", 3)
+	t.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
 	v.add_child(t)
 
 	var grid := GridContainer.new()
@@ -862,8 +1118,8 @@ func _build_bag_tab() -> void:
 		var sp := PanelContainer.new()
 		sp.custom_minimum_size = Vector2(72, 72)
 		var ssb := StyleBoxFlat.new()
-		ssb.bg_color = Color(0.18, 0.15, 0.32, 0.95)
-		ssb.border_color = Color(0.50, 0.44, 0.72, 0.8)
+		ssb.bg_color = Color(0.98, 0.97, 0.94, 0.96)
+		ssb.border_color = UiStyle.TATA_CARD_BORDER
 		ssb.set_border_width_all(2)
 		ssb.border_width_bottom = 4
 		ssb.set_corner_radius_all(14)
@@ -872,6 +1128,7 @@ func _build_bag_tab() -> void:
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		l.add_theme_font_size_override("font_size", 12)
+		l.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 		if i == 0: l.text = "鐵劍"
 		elif i == 1: l.text = "紅藥水x10"
 		elif i == 2: l.text = "紅寶石"
@@ -898,13 +1155,13 @@ func _show_toast(msg: String) -> void:
 	toast.offset_top = 80
 	toast.offset_bottom = 126
 	var tsb := StyleBoxFlat.new()
-	tsb.bg_color = UiStyle.TATA_NAVY
-	tsb.border_color = UiStyle.TATA_YELLOW
+	tsb.bg_color = UiStyle.TATA_CARD_BG
+	tsb.border_color = UiStyle.TATA_ORANGE
 	tsb.set_border_width_all(2)
 	tsb.border_width_bottom = 4
 	tsb.set_corner_radius_all(14)
 	toast.add_theme_stylebox_override("normal", tsb)
-	toast.add_theme_color_override("font_color", Color.WHITE)
+	toast.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 	toast.add_theme_font_size_override("font_size", 15)
 	add_child(toast)
 
