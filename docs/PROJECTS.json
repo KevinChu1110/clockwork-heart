@@ -282,8 +282,8 @@
    "id": "mk-trailer",
    "cat": "行銷",
    "title": "品牌短片：覺醒（分鏡→影片）",
-   "status": "開發中",
-   "note": "分鏡撰寫中，分鏡確認後才產影片",
+   "status": "測試中",
+   "note": "品牌短片分鏡已完成並送審 (docs/marketing/STORYBOARD_AWAKENING.md)",
    "keys": [
     "品牌短片：覺醒（"
    ]
