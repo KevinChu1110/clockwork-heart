@@ -32,6 +32,16 @@ python3 "$ROOT/tools/check_player_text.py"
 
 echo "== 5) proof capture (multi-stage) =="
 PROOF_ARGS=(--path "$GAME" --script res://scripts/dev/proof_capture.gd)
+## 從 game/project.godot 讀取專案實際設定的 viewport 尺寸與方向
+VP_W=$(grep -E '^[[:space:]]*window/size/viewport_width=' "$GAME/project.godot" | head -n1 | cut -d'=' -f2 | tr -d '[:space:]')
+VP_H=$(grep -E '^[[:space:]]*window/size/viewport_height=' "$GAME/project.godot" | head -n1 | cut -d'=' -f2 | tr -d '[:space:]')
+ORIENTATION=$(grep -E '^[[:space:]]*window/handheld/orientation=' "$GAME/project.godot" | head -n1 | cut -d'=' -f2 | tr -d '[:space:]')
+if [[ "$ORIENTATION" =~ ^(1|2|5)$ ]] && [[ "${VP_W:-0}" -gt "${VP_H:-0}" ]]; then
+  PROOF_RES="${VP_H}x${VP_W}"
+else
+  PROOF_RES="${VP_W:-1280}x${VP_H:-720}"
+fi
+
 ## 預設：本機有顯示器就用視窗截真畫面；CI / 無 GUI 才 headless
 USE_WINDOWED="${PROOF_WINDOWED:-}"
 if [[ -z "$USE_WINDOWED" ]]; then
@@ -42,8 +52,8 @@ if [[ -z "$USE_WINDOWED" ]]; then
   fi
 fi
 if [[ "$USE_WINDOWED" == "1" ]]; then
-  echo "(windowed mode — real pixels)"
-  "$GODOT" "${PROOF_ARGS[@]}" --resolution 1280x720 2>&1 | tee /tmp/bravesoul_proof.log | tail -40
+  echo "(windowed mode — real pixels, resolution=$PROOF_RES)"
+  "$GODOT" "${PROOF_ARGS[@]}" --resolution "$PROOF_RES" 2>&1 | tee /tmp/bravesoul_proof.log | tail -40
 else
   echo "(headless — may fallback composite if viewport empty)"
   "$GODOT" --headless "${PROOF_ARGS[@]}" 2>&1 | tee /tmp/bravesoul_proof.log | tail -40
