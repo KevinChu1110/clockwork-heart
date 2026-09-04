@@ -16,9 +16,9 @@ W1 Short · Book1 C0 燃燒之夜 · 完整約 30 秒
   10–18  鏽劍拔了三次，才勉強離土
   18–24  麥稈不是護身符——是回家的氣味
   24–27  先活著。再走路。
-  27–30  官網連結在簡介 · 勇者之魂
+  27–30  官網連結在簡介 · 發條之心
 
 簡介固定：
-  🐇 勇者之魂 Brave Soul
-  https://KevinChu1110.github.io/bravesoul-game/
+  🐇 發條之心 Clockwork Heart
+  https://KevinChu1110.github.io/clockwork-heart/
 

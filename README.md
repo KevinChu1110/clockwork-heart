@@ -1,11 +1,11 @@
-# 勇者之魂（Brave Soul）
+# 發條之心（Clockwork Heart）
 
-[![Game CI](https://github.com/KevinChu1110/bravesoul-game/actions/workflows/game-ci.yml/badge.svg)](https://github.com/KevinChu1110/bravesoul-game/actions/workflows/game-ci.yml)
+[![Game CI](https://github.com/KevinChu1110/clockwork-heart/actions/workflows/game-ci.yml/badge.svg)](https://github.com/KevinChu1110/clockwork-heart/actions/workflows/game-ci.yml)
 
-> 產品名：**勇者之魂** · 英文：Brave Soul  
-> Repo 工作名：`bravesoul-game`  
+> 產品名：**發條之心** · 英文：Clockwork Heart  
+> Repo 工作名：`bravesoul-game`（保持原樣）  
 > 類型：像素 2D · 敘事為主 · 即時自動戰鬥 · 可連線  
-> 世界觀地名仍可用「翠嶺」；**遊戲對外名稱一律用《勇者之魂》**  
+> **遊戲對外名稱一律用《發條之心 / Clockwork Heart》**  
 > 與舊作關係：延續 Discord bot（`../bravesoul`）的世界觀與美術精神，架構全新建
 
 ## 一句話
@@ -126,7 +126,7 @@ TEST_FILTER=formulas ./tools/run_tests.sh  # 只跑某一支
 
 1. **Settings → Pages → Source: GitHub Actions**
 2. 推送 `main`（或手動跑 Actions：**Deploy GitHub Pages**）
-3. 網址約：`https://你的帳號.github.io/bravesoul-game/`
+3. 網址約：`https://你的帳號.github.io/clockwork-heart/`
 
 詳見 [`web/README.md`](web/README.md)。Workflow：`.github/workflows/github-pages.yml`。
 

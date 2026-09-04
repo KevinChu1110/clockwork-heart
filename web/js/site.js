@@ -1,7 +1,7 @@
 /* 共用導覽、頁尾、全站動效（捲動 / 游標 / 進場） */
 (function () {
   var cfg = window.BRAVESOUL || {};
-  var brand = cfg.name || "勇者之魂";
+  var brand = cfg.name || "發條之心";
   var path = location.pathname.replace(/\\/g, "/");
   var depth = path.match(/\/pages\//) ? ".." : ".";
   var links = [

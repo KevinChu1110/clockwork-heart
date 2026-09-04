@@ -1,6 +1,6 @@
 # GDD · 遊戲設計總文件（索引）
 
-> **勇者之魂** / Brave Soul（repo：`bravesoul-game`）  
+> **發條之心** / Clockwork Heart（repo：`bravesoul-game`）  
 > 本檔是設計入口。細節以各專章為準；衝突時以**較新、較專的檔**為準，並回寫 DECISIONS。
 
 ---

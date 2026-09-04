@@ -26,7 +26,7 @@
 | 10–16 | 遊俠：弓 · 也能換火槍 |
 | 16–22 | 忍者：匕首 · 也能換鏢 |
 | 22–27 | 選刃換手感，養成帶走 |
-| 27–30 | 官網連結在簡介 · 勇者之魂 |
+| 27–30 | 官網連結在簡介 · 發條之心 |
 
 **旁白（可選，只唸兩句）：**  
 「不是主副。」  
@@ -65,7 +65,7 @@ No text, no UI, no logos, no photorealism.
 ### 尾（27～30s）
 
 - 定格最後一幀或官網／logo 靜圖  
-- 字幕：官網連結在簡介 · 勇者之魂
+- 字幕：官網連結在簡介 · 發條之心
 
 ---
 
@@ -82,15 +82,15 @@ No text, no UI, no logos, no photorealism.
 ## 簡介（與週表相同）
 
 ```
-🐇 勇者之魂 Brave Soul
+🐇 發條之心 Clockwork Heart
 像素養成 RPG · 六職雙武器 · 器／魂／招
 
 不是主副——遊俠弓＋銃、忍者匕＋鏢，每一職兩套對等武器系統。
 
-▶️ 官網：https://KevinChu1110.github.io/bravesoul-game/
-⬇️ 下載：https://KevinChu1110.github.io/bravesoul-game/pages/download.html
+▶️ 官網：https://KevinChu1110.github.io/clockwork-heart/
+⬇️ 下載：https://KevinChu1110.github.io/clockwork-heart/pages/download.html
 
-#勇者之魂 #獨立遊戲 #像素RPG #養成 #Shorts #雙武器
+#發條之心 #ClockworkHeart #像素RPG #養成 #Shorts #雙武器
 ```
 
 ---

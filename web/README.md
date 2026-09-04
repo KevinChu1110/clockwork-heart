@@ -6,7 +6,7 @@
 
 | 類型 | 範例 |
 |------|------|
-| 專案頁（常見） | `https://你的帳號.github.io/bravesoul-game/` |
+| 專案頁（常見） | `https://你的帳號.github.io/clockwork-heart/` |
 | 使用者頁 | `https://你的帳號.github.io/`（需把 `web/` 當另一 repo 根目錄） |
 
 本 repo 預設走 **專案頁 + Actions 部署 `web/`**。
@@ -21,10 +21,10 @@
 cd /Users/kevin.chu/develop/sideprojects/bravesoul-game
 git init
 git add .
-git commit -m "Initial: 勇者之魂 + GitHub Pages"
-# 在 GitHub 新建空 repo（例如 bravesoul-game），再：
+git commit -m "Initial: 發條之心 + GitHub Pages"
+# 在 GitHub 新建空 repo（例如 clockwork-heart），再：
 git branch -M main
-git remote add origin git@github.com:你的帳號/bravesoul-game.git
+git remote add origin git@github.com:你的帳號/clockwork-heart.git
 git push -u origin main
 ```
 

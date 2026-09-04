@@ -15,8 +15,8 @@
 ```bash
 # 複製範例
 cp game/data/online/config.example.json \
-   "$HOME/Library/Application Support/Godot/app_userdata/勇者之魂/online_settings.json"
-   （舊版若叫「翠嶺·兔勇者」資料夾，請手動搬移或重新設定）
+   "$HOME/Library/Application Support/Godot/app_userdata/發條之心/online_settings.json"
+   （舊版若叫「勇者之魂」或「翠嶺·兔勇者」資料夾，請手動搬移或重新設定）
 ```
 
 或遊戲內：**標題 → 連線設定** 貼上 URL／anon key，關閉「純單機」。
@@ -48,14 +48,14 @@ Dashboard → Authentication → Providers → **Email** 開啟。
   → 遊戲完成登入
 ```
 
-官網頁：`https://kevinchu1110.github.io/bravesoul-game/pages/auth-callback.html`  
+官網頁：`https://kevinchu1110.github.io/clockwork-heart/pages/auth-callback.html`  
 （repo：`web/pages/auth-callback.html`，需 push 後 GH Pages 更新）
 
 ### Supabase URL Configuration（已可用 ego-browser 加過）
 
-- Site URL：`https://kevinchu1110.github.io/bravesoul-game`
+- Site URL：`https://kevinchu1110.github.io/clockwork-heart`
 - Redirect 白名單需含：
-  - `https://kevinchu1110.github.io/bravesoul-game/**`（或明確 auth-callback.html）
+  - `https://kevinchu1110.github.io/clockwork-heart/**`（或明確 auth-callback.html）
   - `http://127.0.0.1:8765/**`（官網轉本機時用）
   - （可選）`http://localhost:**`
 

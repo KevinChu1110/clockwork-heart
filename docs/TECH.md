@@ -104,5 +104,5 @@ godot --headless -s res://scripts/battle/test_formulas.gd
 | 用途 | 名 |
 |------|-----|
 | Repo／資料夾 | `bravesoul-game` |
-| 產品標題 | 勇者之魂（Brave Soul） |
-| 對外正式名 | 6 個月內再定（避開原作商標硬撞） |
+| 產品標題 | 發條之心（Clockwork Heart） |
+| 對外正式名 | 發條之心 / Clockwork Heart（避開原作商標硬撞定案） |

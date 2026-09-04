@@ -1,4 +1,4 @@
-# VISION · 勇者之魂
+# VISION · 發條之心（Clockwork Heart）
 
 ## 一句話
 

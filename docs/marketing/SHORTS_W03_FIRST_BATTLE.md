@@ -26,7 +26,7 @@
 | 10–16 | **賣點 1** | 普攻有節奏，刀刀有回饋 | 進入實機新手戰鬥，白兔普攻打擊，左右血條清晰，跳出高飽和黃字暴擊與「BREAK」破防飄字 |
 | 16–22 | **賣點 2** | 怒氣條一滿，大招直接轟 | 怒氣槽集滿發光，點擊大招瞬間金光斬擊特效爆發，敵方受擊擊飛，節奏爽快俐落 |
 | 22–27 | **情緒收** | 單機無壓力，隨開隨時玩 | 戰鬥勝利結算，主角回歸待機呼吸跳躍，治癒輕鬆無負擔 |
-| 27–30 | **CTA** | 官網連結在簡介 · 勇者之魂 | 品牌 Logo ＋ 官網與下載頁面定格 |
+| 27–30 | **CTA** | 官網連結在簡介 · 發條之心 | 品牌 Logo ＋ 官網與下載頁面定格 |
 
 **旁白（可選，只唸兩句）：**  
 「先喘口氣再打。」  
@@ -61,7 +61,7 @@
 ### 尾（27～30s）— 品牌與下載引流
 
 - **素材**：`screenshots/proof_01_title.png` 或官網下載頁定格
-- **字幕**：官網連結在簡介 · 勇者之魂
+- **字幕**：官網連結在簡介 · 發條之心
 
 ---
 
@@ -94,17 +94,17 @@
 ## 簡介固定文案（社群貼文用）
 
 ```
-🐇 勇者之魂 Brave Soul
+🐇 發條之心 Clockwork Heart
 第一戰就像呼吸！多巴胺 Q 萌像素 RPG，先喘口氣再出發～
 
 不用背複雜連招，隨點隨玩無壓力！
 陽光浮空島大廳、治癒白兔互動、爽快打擊怒氣爆發，
 雙拇指輕鬆操作，單機隨時隨地開啟冒險。
 
-▶️ 官網：https://KevinChu1110.github.io/bravesoul-game/
-⬇️ 下載：https://KevinChu1110.github.io/bravesoul-game/pages/download.html
+▶️ 官網：https://KevinChu1110.github.io/clockwork-heart/
+⬇️ 下載：https://KevinChu1110.github.io/clockwork-heart/pages/download.html
 
-#勇者之魂 #BraveSoul #像素RPG #手遊 #治癒系 #Shorts #遊戲推薦
+#發條之心 #ClockworkHeart #像素RPG #手遊 #治癒系 #Shorts #遊戲推薦
 ```
 
 ---

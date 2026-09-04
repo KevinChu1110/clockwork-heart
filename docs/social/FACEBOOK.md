@@ -1,4 +1,4 @@
-# 勇者之魂 · Facebook 粉專設定與一週貼文
+# 發條之心 · Facebook 粉專設定與一週貼文
 
 ## 已建立
 
@@ -8,16 +8,16 @@
 ## 建立粉專（5 分鐘）
 
 1. 開 [Meta Business Suite](https://business.facebook.com/) 或 Facebook → 建立粉絲專頁  
-2. **名稱**：`勇者之魂`  
+2. **名稱**：`發條之心`  
 3. **類別**：遊戲／娛樂  
 4. **簡介**（可直接貼）：
 
 ```
 一隻不慕強權的兔子，以器／魂／招走過六域。
 像素養成 RPG · 十種武器流派 · 主線可離線。
-Brave Soul
+Clockwork Heart
 
-官網：https://kevinchu1110.github.io/bravesoul-game/
+官網：https://kevinchu1110.github.io/clockwork-heart/
 ```
 
 5. **大頭貼**：直接上傳  
@@ -25,7 +25,7 @@ Brave Soul
 6. **封面**：  
    `web/media/social/fb_cover.png`（雷歐）或 `fb_cover_alt.png`（主視覺）  
 7. **行動呼籲按鈕**：「了解更多」→  
-   `https://kevinchu1110.github.io/bravesoul-game/`  
+   `https://kevinchu1110.github.io/clockwork-heart/`  
 8. 建好後把粉專完整 URL 傳給我，或自己填進 `web/config.js` 的 `facebook` 欄位（頁尾會出現連結）
 
 ### 一鍵開建立頁（需已登入 Facebook）
@@ -38,7 +38,7 @@ https://www.facebook.com/pages/create
 
 禁止出現：Gemini、Godot、keyart、PROOF、方塊 NPC、版號 changelog、概念圖、實機截圖、去轉蛋、舊名、翠嶺·兔勇者（已更名）。
 
-對外只用：**勇者之魂**、世界觀地名、角色名、玩法好處。
+對外只用：**發條之心**、世界觀地名、角色名、玩法好處。
 
 ---
 
@@ -52,12 +52,12 @@ https://www.facebook.com/pages/create
 > 風從六域交界處吹來。  
 > 一隻不慕強權的兔子，拾起鏽劍，決定自己走出一條路。  
 >
-> 《勇者之魂》官方粉專開張。  
+> 《發條之心》官方粉專開張。  
 > 之後會分享世界、試煉與旅途碎片——歡迎先按讚收藏，旅途見。  
 >
-> 官網 → https://kevinchu1110.github.io/bravesoul-game/  
+> 官網 → https://kevinchu1110.github.io/clockwork-heart/  
 >
-> #勇者之魂 #BraveSoul #像素RPG #獨立遊戲
+> #發條之心 #ClockworkHeart #像素RPG #獨立遊戲
 
 ### Day 2 · Boss
 **圖**：`keyart_leo.png`  
@@ -69,7 +69,7 @@ https://www.facebook.com/pages/create
 >
 > 你會先練劍，還是先練膽？留言告訴我們。  
 >
-> #勇者之魂 #雷歐 #Boss戰
+> #發條之心 #雷歐 #Boss戰
 
 ### Day 3 · 道場
 **圖**：`keyart_dojo.png`  
@@ -79,7 +79,7 @@ https://www.facebook.com/pages/create
 >
 > 劍客之域，歡迎所有願意重複同一個動作到完美的人。  
 >
-> #勇者之魂 #道場 #劍客
+> #發條之心 #道場 #劍客
 
 ### Day 4 · 觀星
 **圖**：`keyart_starfall.png`  
@@ -90,7 +90,7 @@ https://www.facebook.com/pages/create
 > 器養手中的刃，魂養心裡的偏科，招養旅途的肌肉記憶。  
 > 三重養成，走同一條路。  
 >
-> #勇者之魂 #觀星 #養成RPG
+> #發條之心 #觀星 #養成RPG
 
 ### Day 5 · 法師塔
 **圖**：`keyart_tower.png`  
@@ -100,7 +100,7 @@ https://www.facebook.com/pages/create
 >
 > 法師之塔的影子，比地圖上畫的更長。  
 >
-> #勇者之魂 #法師之塔 #黑焰
+> #發條之心 #法師之塔 #黑焰
 
 ### Day 6 · 武器
 **圖**：`keyart_weapons.png`  
@@ -111,7 +111,7 @@ https://www.facebook.com/pages/create
 > 選一把，再讓器／魂／招慢慢長上去。  
 > 你第一把會選哪一種？  
 >
-> #勇者之魂 #武器流派
+> #發條之心 #武器流派
 
 ### Day 7 · 港灣與邀請
 **圖**：`keyart_harbor.png`  
@@ -124,22 +124,22 @@ https://www.facebook.com/pages/create
 >
 > 收藏粉專，下週繼續帶你走霧隱與商隊營火。  
 >
-> https://kevinchu1110.github.io/bravesoul-game/  
+> https://kevinchu1110.github.io/clockwork-heart/  
 >
-> #勇者之魂 #獨立遊戲 #像素遊戲
+> #發條之心 #獨立遊戲 #像素遊戲
 
 ---
 
 ## AI 小編 system prompt（可貼 ChatGPT／Claude）
 
 ```
-你是《勇者之魂》（Brave Soul）官方小編。繁體中文。
+你是《發條之心》（Clockwork Heart）官方小編。繁體中文。
 語氣：溫柔、有旅途感、略帶史詩，不幼稚、不硬銷、不堆 emoji。
 遊戲：像素養成 RPG；十武器流派；器／魂／招；主線可離線。
 禁止：Gemini、Godot、keyart、PROOF、方塊NPC、版號、changelog、
 「概念圖」「實機」「去轉蛋」「舊名」「翠嶺·兔勇者」。
 每則：1 句鉤子 + 2～3 句世界/玩法 + 1 個輕 CTA（留言或官網）。
-Hashtag 3～5 個，含 #勇者之魂。
+Hashtag 3～5 個，含 #發條之心。
 ```
 
 ## 排程建議

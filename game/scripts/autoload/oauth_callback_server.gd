@@ -148,7 +148,7 @@ func _send(peer: StreamPeerTCP, code: int, ctype: String, body: String) -> void:
 
 
 func _callback_html() -> String:
-	return """<!DOCTYPE html><html><head><meta charset="utf-8"><title>勇者之魂 · 登入</title></head>
+	return """<!DOCTYPE html><html><head><meta charset="utf-8"><title>發條之心 · 登入</title></head>
 <body style="font-family:sans-serif;background:#1a1520;color:#eee;padding:2rem">
 <h1>正在完成登入…</h1>
 <p id="m">請稍候，不要關這個視窗。</p>
@@ -178,7 +178,7 @@ func _success_html() -> String:
 	return """<!DOCTYPE html><html><head><meta charset="utf-8"><title>登入成功</title></head>
 <body style="font-family:sans-serif;background:#1a1520;color:#cfc;padding:2rem">
 <h1>登入成功</h1>
-<p>可以關閉此分頁，回到「勇者之魂」。</p>
+<p>可以關閉此分頁，回到「發條之心」。</p>
 <script>setTimeout(function(){ window.close(); }, 800);</script>
 </body></html>
 """

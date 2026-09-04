@@ -2607,7 +2607,7 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(info)
 	var game_name := Label.new()
-	game_name.text = _t("勇者之魂")
+	game_name.text = _t("發條之心")
 	game_name.add_theme_font_size_override("font_size", 48)
 	game_name.add_theme_color_override("font_color", Color(0.97, 0.92, 0.82))
 	game_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
@@ -2616,7 +2616,7 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	game_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	info.add_child(game_name)
 	var en_name := Label.new()
-	en_name.text = "B R A V E   S O U L"
+	en_name.text = "C L O C K W O R K   H E A R T"
 	en_name.add_theme_font_size_override("font_size", 13)
 	en_name.add_theme_color_override("font_color", Color(0.85, 0.68, 0.45, 0.95))
 	en_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))

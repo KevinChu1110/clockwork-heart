@@ -1,4 +1,4 @@
-# AI × Godot RPG 工作流（Brave Soul 適配）
+# AI × Godot RPG 工作流（發條之心 / Clockwork Heart 適配）
 
 對照影片：[新手的第一個 AI x RPG 實作指南](https://www.youtube.com/watch?v=jHNoc3Vhex0)（臭臭虎）  
 本專案已在 Godot 4.7 上路，下列是**可直接套用**的 checklist，不是從頭教學。
