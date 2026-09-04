@@ -10,7 +10,7 @@
 月3 C6 塔反轉終章 + 本地存檔 + 稱號      ✅ 可通關
 月4 C3 完整 + C4/C5                      ✅ 可玩
 月5 裂縫／NG+／2D／音效                  ✅ 大部完成
-月6 出貨收斂（itch／QA）                 ✅ 0.7 包已產出
+月6 出貨收斂（TestFlight／Google Play 內部測試／QA） ✅ 0.7 包已產出
 ```
 
 ---
@@ -39,7 +39,7 @@
 - [x] 本地自動存檔 +「繼續」  
 - [x] 稱號牆  
 - [x] 精簡 HUD + Esc 暫停（F3 除錯列）  
-- [x] itch 頁文案 + export 骨架（`release/ITCH_PAGE.md` · `tools/export_itch.sh`）
+- [x] TestFlight／Google Play 內部測試文案 + export 骨架（`release/ITCH_PAGE.md` · `tools/export_itch.sh`）
 - [x] 表現打磨 v1（標題卡片、對話打字機、轉場、探索 E 提示）  
 - [x] 戰鬥 HUD 打磨（血條樣式、技能橫幅、怒氣提示、傷害飛字）  
 - [x] 對話半身像 + C0/C1 過場（CutscenePlayer）  
@@ -72,7 +72,7 @@
 - [x] 稱號牆、NG+、暫停選單  
 - [x] 0.7 內容收斂（支線、探索、BGM 分區、備份、旅程進度）  
 - [ ] 玩家向 QA／平衡（可公開後收）  
-- [x] itch build zip 三平台 **0.7.0**（`dist/uploads/`；待你上傳＋截圖）
+- [x] TestFlight／Google Play 內部測試 build **0.7.0**（`dist/uploads/`；待你上傳＋截圖）
 - [ ] 五星畫兔等 P2  
 
 ---
