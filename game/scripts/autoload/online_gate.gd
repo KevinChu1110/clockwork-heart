@@ -40,7 +40,7 @@ var _candle_fetching: bool = false
 const OAuthCallbackServer = preload("res://scripts/autoload/oauth_callback_server.gd")
 const OAUTH_PROVIDERS: PackedStringArray = ["google", "discord", "facebook", "twitter"]
 ## Supabase redirect_to：官網靜態頁（再轉回本機 8765 給遊戲收 token）
-const OAUTH_WEB_REDIRECT := "https://kevinchu1110.github.io/bravesoul-game/pages/auth-callback.html"
+const OAUTH_WEB_REDIRECT := "https://kevinchu1110.github.io/clockwork-heart/pages/auth-callback.html"
 var oauth_redirect_url: String = OAUTH_WEB_REDIRECT
 var _oauth: RefCounted = null  ## OAuthCallbackServer
 var _oauth_cb: Callable = Callable()

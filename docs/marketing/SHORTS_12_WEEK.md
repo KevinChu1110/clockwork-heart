@@ -5,7 +5,7 @@
 **長度**：主檔 **28–32 秒**（平台甜蜜區）  
 **KPI（第一季）**：準時發 · 簡介有連結 · 不追求分潤數字  
 
-官網 CTA 固定：`https://KevinChu1110.github.io/bravesoul-game/`  
+官網 CTA 固定：`https://KevinChu1110.github.io/clockwork-heart/`  
 下載頁：`…/pages/download.html`
 
 ---
@@ -61,8 +61,8 @@
 🐇 發條之心 Clockwork Heart
 像素養成 RPG · 六職雙武器 · 器／魂／招
 
-▶️ 官網：https://KevinChu1110.github.io/bravesoul-game/
-⬇️ 下載：https://KevinChu1110.github.io/bravesoul-game/pages/download.html
+▶️ 官網：https://KevinChu1110.github.io/clockwork-heart/
+⬇️ 下載：https://KevinChu1110.github.io/clockwork-heart/pages/download.html
 
 #發條之心 #獨立遊戲 #像素RPG #養成 #Shorts
 ```
