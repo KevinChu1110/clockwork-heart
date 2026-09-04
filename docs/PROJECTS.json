@@ -1,0 +1,292 @@
+{
+ "說明": "《發條之心》的項目清單。這是產品進度的唯一真理來源，Discord #todo-list 是它的鏡子。狀態只有四種：草稿 / 開發中 / 測試中 / 已上線。完成一個階段就改這裡的 status，同步腳本會自動更新 Discord 的標籤。",
+ "狀態定義": {
+  "草稿": "已經決定要做，還沒動工，或只有文件與構想",
+  "開發中": "正在實作或撰寫",
+  "測試中": "做完了但還沒驗收通過（測試有紅燈、等 Kevin 確認、等素材補齊都算）",
+  "已上線": "驗收通過並進入 main / 已對外發布"
+ },
+ "items": [
+  {
+   "id": "world-canon",
+   "cat": "世界觀",
+   "title": "世界憲章與骨架（CANON / ATLAS / 範本）",
+   "status": "已上線",
+   "note": "四萬三千字，Kevin 已認可",
+   "keys": [
+    "憲章",
+    "canon",
+    "atlas",
+    "骨架"
+   ]
+  },
+  {
+   "id": "world-r1",
+   "cat": "世界觀",
+   "title": "區域 1 今日村莊·發條新村",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "區域1",
+    "今日村莊",
+    "發條新村"
+   ]
+  },
+  {
+   "id": "world-r2",
+   "cat": "世界觀",
+   "title": "區域 2 晨曦小鎮·木偶集市",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "區域2",
+    "晨曦小鎮",
+    "木偶集市"
+   ]
+  },
+  {
+   "id": "world-r3",
+   "cat": "世界觀",
+   "title": "區域 3 翡翠深林·發條蔓谷",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "區域3",
+    "翡翠深林"
+   ]
+  },
+  {
+   "id": "world-r4",
+   "cat": "世界觀",
+   "title": "區域 4 黃銅都市·巨輪城",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "區域4",
+    "黃銅都市",
+    "巨輪城"
+   ]
+  },
+  {
+   "id": "world-r5",
+   "cat": "世界觀",
+   "title": "區域 5 琉璃汪洋·發條海淵",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "區域5",
+    "琉璃汪洋"
+   ]
+  },
+  {
+   "id": "world-r6",
+   "cat": "世界觀",
+   "title": "區域 6 赤焰熔爐·鍛造火山",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "區域6",
+    "赤焰熔爐",
+    "鍛造火山"
+   ]
+  },
+  {
+   "id": "world-r7",
+   "cat": "世界觀",
+   "title": "區域 7 星穹軌道·外星基地",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "區域7",
+    "星穹軌道",
+    "外星"
+   ]
+  },
+  {
+   "id": "world-r8",
+   "cat": "世界觀",
+   "title": "區域 8 荒漠齒輪塚·遺忘舊庫",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "區域8",
+    "荒漠齒輪",
+    "遺忘舊庫"
+   ]
+  },
+  {
+   "id": "world-r9",
+   "cat": "世界觀",
+   "title": "區域 9 竹影道場·天元竹林",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "區域9",
+    "竹影道場"
+   ]
+  },
+  {
+   "id": "world-script",
+   "cat": "世界觀",
+   "title": "主線劇本（依新世界觀重寫）",
+   "status": "草稿",
+   "note": "等區域鋪完再動",
+   "keys": [
+    "主線劇本",
+    "劇本"
+   ]
+  },
+  {
+   "id": "game-dummy",
+   "cat": "遊戲",
+   "title": "武術館木人樁試招",
+   "status": "已上線",
+   "note": "零消耗練招，串現有戰鬥場景，測試通過推 main",
+   "keys": [
+    "木人樁",
+    "試招"
+   ]
+  },
+  {
+   "id": "game-combat-test",
+   "cat": "遊戲",
+   "title": "COMBAT 四條驗收測試",
+   "status": "測試中",
+   "note": "3 綠 1 紅：1v1 在 seed 13 耗時 28.35 秒超過文件寫的 20 秒門檻，在 agent 分支等決定",
+   "keys": [
+    "驗收測試",
+    "combat_acc"
+   ]
+  },
+  {
+   "id": "game-rename-hero",
+   "cat": "遊戲",
+   "title": "移除主角名 Capoo（法務風險）",
+   "status": "已上線",
+   "note": "改讀 GameState.player_name，無自訂則用「新人」",
+   "keys": [
+    "capoo",
+    "主角名"
+   ]
+  },
+  {
+   "id": "game-battle-polish",
+   "cat": "遊戲",
+   "title": "戰鬥畫面優化",
+   "status": "草稿",
+   "note": "Kevin 提出需要優化，方向未定（打擊感／可讀性／版面／美術統一）",
+   "keys": [
+    "戰鬥畫面",
+    "打擊感"
+   ]
+  },
+  {
+   "id": "game-title-art",
+   "cat": "遊戲",
+   "title": "標題畫面改為新美術",
+   "status": "草稿",
+   "note": "錄影時發現標題仍是舊像素風，與糖果色手遊 UI 不同調",
+   "keys": [
+    "標題畫面",
+    "title"
+   ]
+  },
+  {
+   "id": "game-mobile-ui",
+   "cat": "遊戲",
+   "title": "官網說明與截圖工具手機化",
+   "status": "已上線",
+   "note": "去除鍵鼠用語，proof_run.sh 動態讀 viewport",
+   "keys": [
+    "觸控",
+    "手機化",
+    "proof_run"
+   ]
+  },
+  {
+   "id": "mk-page-face",
+   "cat": "行銷",
+   "title": "粉專門面（簡介・封面・大廳影片）",
+   "status": "測試中",
+   "note": "兩版簡介與三張封面候選已產出，等 Kevin 挑；封面文字有重影要改用實機截圖疊字",
+   "keys": [
+    "粉專",
+    "封面",
+    "簡介",
+    "門面"
+   ]
+  },
+  {
+   "id": "mk-warmup",
+   "cat": "行銷",
+   "title": "FB 預熱檔期（新世界觀版）",
+   "status": "草稿",
+   "note": "舊世界觀那版已封存為 FB_QUEUE.old-world.md，要等區域鋪完重寫",
+   "keys": [
+    "預熱",
+    "檔期",
+    "warmup"
+   ]
+  },
+  {
+   "id": "mk-shorts",
+   "cat": "行銷",
+   "title": "短影音腳本與實機素材",
+   "status": "草稿",
+   "note": "W03/W04 腳本已有但綁舊世界觀；實機錄影管線已打通",
+   "keys": [
+    "短影音",
+    "shorts",
+    "w03",
+    "w04"
+   ]
+  },
+  {
+   "id": "mk-team",
+   "cat": "行銷",
+   "title": "四 persona 行銷團隊與每週輪",
+   "status": "已上線",
+   "note": "機制完成但暫停中，等新世界觀",
+   "keys": [
+    "persona",
+    "行銷輪",
+    "阿哲",
+    "小魚"
+   ]
+  },
+  {
+   "id": "ops-rename",
+   "cat": "平台",
+   "title": "全面改名 發條之心 Clockwork Heart",
+   "status": "開發中",
+   "note": "六語系、專案名、官網、docs；GitHub repo 與粉專已改名",
+   "keys": [
+    "改名",
+    "clockwork",
+    "發條之心"
+   ]
+  },
+  {
+   "id": "ops-urls",
+   "cat": "平台",
+   "title": "GitHub Pages 網址更新",
+   "status": "開發中",
+   "note": "19 個檔案的舊網址",
+   "keys": [
+    "網址",
+    "pages",
+    "url"
+   ]
+  },
+  {
+   "id": "mk-trailer",
+   "cat": "行銷",
+   "title": "品牌短片：覺醒（分鏡→影片）",
+   "status": "草稿",
+   "note": "Kevin 退過投影片版，改走鏡頭語言",
+   "keys": [
+    "品牌短片：覺醒（"
+   ]
+  }
+ ]
+}
