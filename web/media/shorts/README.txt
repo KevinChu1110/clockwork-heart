@@ -19,6 +19,6 @@ W1 Short · Book1 C0 燃燒之夜 · 完整約 30 秒
   27–30  官網連結在簡介 · 發條之心
 
 簡介固定：
-  🐇 發條之心 Clockwork Heart
+  發條之心 Clockwork Heart
   https://KevinChu1110.github.io/clockwork-heart/
 
