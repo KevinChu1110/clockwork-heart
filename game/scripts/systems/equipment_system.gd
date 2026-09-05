@@ -415,6 +415,8 @@ func unequip_loadout_slot(index: int) -> Dictionary:
 		GameState.equip_worn.erase(uid)
 		if not inst.is_empty():
 			GameState.equip_bag.append(inst)
+		if str(GameState.equip_slots.get("weapon", "")) == uid:
+			GameState.equip_slots["weapon"] = ""
 	## 若卸的是作用中欄，改指到第一個仍有武的欄
 	if active_loadout_index() == index:
 		var nxt := -1
@@ -688,3 +690,75 @@ func try_drop_loot(force_id: String = "") -> Dictionary:
 		return {"ok": false}
 	add_to_bag(inst)
 	return {"ok": true, "inst": inst, "msg": _t("獲得 %s") % label(inst)}
+
+
+## 計算拆解裝備可獲得的鐵屑與金幣收益
+func dismantle_yield(inst: Dictionary) -> Dictionary:
+	if inst.is_empty():
+		return {"iron_scrap": 0, "gold": 0}
+	var tier := maxi(1, int(inst.get("tier", 1)))
+	var quality := str(inst.get("quality", "common"))
+	var q_bonus_scrap := 0
+	var q_bonus_gold := 0
+	match quality:
+		"uncommon":
+			q_bonus_scrap = 1
+			q_bonus_gold = 10
+		"rare":
+			q_bonus_scrap = 2
+			q_bonus_gold = 25
+		"epic":
+			q_bonus_scrap = 3
+			q_bonus_gold = 50
+		_:
+			q_bonus_scrap = 0
+			q_bonus_gold = 0
+	var scrap := tier + q_bonus_scrap
+	var gold := tier * 15 + q_bonus_gold
+	return {"iron_scrap": scrap, "gold": gold}
+
+
+## 拆解未裝備的裝備，回收為鐵屑與金幣
+func dismantle(uid: String) -> Dictionary:
+	_ensure_state()
+	if uid == "":
+		return {"ok": false, "msg": _t("無效的裝備識別碼。")}
+	if GameState.equip_worn.has(uid):
+		return {"ok": false, "msg": _t("裝備中無法拆解，請先卸下。")}
+	for s in SLOTS:
+		if str(GameState.equip_slots.get(s, "")) == uid:
+			return {"ok": false, "msg": _t("裝備中無法拆解，請先卸下。")}
+	for i in WEAPON_LOADOUT_SIZE:
+		if str(GameState.weapon_loadout[i]) == uid:
+			return {"ok": false, "msg": _t("裝備中無法拆解，請先卸下。")}
+
+	var inst := find_bag(uid)
+	if inst.is_empty():
+		return {"ok": false, "msg": _t("背包沒有此裝。")}
+
+	var y := dismantle_yield(inst)
+	var scrap_n: int = int(y.get("iron_scrap", 1))
+	var gold_n: int = int(y.get("gold", 0))
+
+	_remove_from_bag(uid)
+	if scrap_n > 0:
+		InventorySystem.add_item("iron_scrap", scrap_n)
+	if gold_n > 0:
+		GameState.add_gold(gold_n)
+
+	equipment_changed.emit()
+	SaveManager.save_game()
+
+	if Engine.get_main_loop() is SceneTree:
+		var gl: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameLog")
+		if gl and gl.has_method("info"):
+			gl.call("info", "equip", _t("拆解【%s】，獲得鐵屑×%d、金幣+%d") % [inst.get("name", ""), scrap_n, gold_n])
+
+	return {
+		"ok": true,
+		"uid": uid,
+		"name": str(inst.get("name", "")),
+		"iron_scrap": scrap_n,
+		"gold": gold_n,
+		"msg": _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [inst.get("name", ""), scrap_n, gold_n],
+	}

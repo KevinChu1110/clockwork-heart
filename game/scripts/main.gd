@@ -5427,7 +5427,9 @@ func _interact_shop_interior(id: String) -> bool:
 					_play_dialog([{"speaker": _t("旁白"), "text": _t("風箱餘息。重鍛時他曾在這裡停錘兩秒。")}])
 					return true
 				"scrap_bin":
-					_play_dialog([{"speaker": _t("旁白"), "text": _t("廢鐵桶裡有捲刃。他養的是器，不是骨灰盒。")}])
+					_play_dialog([
+						{"speaker": _t("旁白"), "text": _t("廢鐵桶裡有捲刃。他養的是器，不是骨灰盒。把用不上的多餘裝備丟進去，可以拆成鐵屑與零錢。")},
+					], _go_scrap_bin_panel)
 					return true
 		"town_soul":
 			match id:
@@ -5969,6 +5971,7 @@ func _show_forge_panel() -> void:
 		buttons.append({"text": debt_label, "cb": _side_start_ding_debt})
 	if GameState.has_flag("c1_forged"):
 		buttons.append({"text": Loc.t("forge.craft_class"), "cb": _go_craft_panel})
+		buttons.append({"text": _t("廢鐵桶拆解（回收鐵屑）"), "cb": _go_scrap_bin_panel})
 		buttons.append({"text": Loc.t("pause.path", {"path": GameState.path_display()}), "cb": _go_path_panel})
 	buttons.append({"text": Loc.t("forge.back_square"), "cb": _go_c1_town})
 	_panel(Loc.t("forge.panel_title"), body, buttons)
@@ -6026,6 +6029,68 @@ func _do_craft(recipe_index: int) -> void:
 		{"speaker": _t("釘釘"), "text": _t("……看火。") if bool(r.get("ok", false)) else _t("材料不夠就別佔爐。")},
 		{"speaker": _t("系統"), "text": str(r.get("msg", ""))},
 	], _go_craft_panel)
+
+
+func _go_scrap_bin_panel() -> void:
+	EquipmentSystem._ensure_state()
+	var body: String = _t("[b]廢鐵桶 · 裝備拆解[/b]\n廢鐵桶裡堆滿卷刃與碎甲。把用不上的多餘裝備丟進去，能拆解成鐵屑與零錢，正好拿來重鍛。\n\n")
+	body += _t("當前資源：鐵屑 ×%d · 金幣 %d\n") % [
+		InventorySystem.count("iron_scrap"),
+		GameState.gold,
+	]
+	body += _t("背包未裝備裝備：%d 件\n") % GameState.equip_bag.size()
+
+	var buttons: Array = []
+	if GameState.equip_bag.is_empty():
+		body += _t("\n（背包裡沒有多餘的未裝備裝備。）")
+	else:
+		body += _t("\n[b]可拆解裝備[/b]：\n")
+		var commons: Array = []
+		for e in GameState.equip_bag:
+			if str(e.get("quality", "common")) == "common":
+				commons.append(str(e.get("uid", "")))
+		if commons.size() >= 2:
+			buttons.append({
+				"text": _t("一鍵拆解所有凡品裝備（%d 件）") % commons.size(),
+				"cb": func():
+					var total_scrap := 0
+					var total_gold := 0
+					for uid in commons:
+						var r: Dictionary = EquipmentSystem.dismantle(uid)
+						if bool(r.get("ok", false)):
+							total_scrap += int(r.get("iron_scrap", 0))
+							total_gold += int(r.get("gold", 0))
+					_show_toast(_t("已拆解 %d 件凡品裝備：獲得鐵屑 ×%d、金幣 +%d") % [commons.size(), total_scrap, total_gold])
+					_go_scrap_bin_panel()
+			})
+
+		for e in GameState.equip_bag:
+			var uid: String = str(e.get("uid", ""))
+			var y: Dictionary = EquipmentSystem.dismantle_yield(e)
+			var scrap_n: int = int(y.get("iron_scrap", 1))
+			var gold_n: int = int(y.get("gold", 0))
+			var qlabel: String = str(e.get("quality_label", ""))
+			if qlabel == "":
+				var qdef: Dictionary = DataTables.equip_qualities().get(str(e.get("quality", "common")), {})
+				qlabel = str(qdef.get("label", ""))
+			var btn_text := _t("拆解【%s】〔%s〕→ 鐵屑×%d、%d金") % [
+				e.get("name", "?"),
+				qlabel,
+				scrap_n,
+				gold_n,
+			]
+			buttons.append({
+				"text": btn_text,
+				"cb": func():
+					var r: Dictionary = EquipmentSystem.dismantle(uid)
+					_show_toast(str(r.get("msg", "")))
+					_go_scrap_bin_panel()
+			})
+
+	buttons.append({"text": _t("鐵匠鋪鍛造"), "cb": _go_c1_forge})
+	buttons.append({"text": Loc.t("pause.equip"), "cb": _go_equip_panel})
+	buttons.append({"text": Loc.t("btn.close"), "cb": _hub_back})
+	_panel(_t("廢鐵桶 · 裝備拆解"), body, buttons)
 
 
 func _go_path_panel(from_forge: bool = false) -> void:

@@ -224,7 +224,12 @@ func _check_panel(p: Dictionary) -> void:
 	var labels: Array = []
 	var buttons: Array = []
 	_collect(host, labels, buttons)
-	if not labels.has(want_title):
+	var title_found := false
+	for l in labels:
+		if l == want_title or l == "✦ %s ✦" % want_title:
+			title_found = true
+			break
+	if not title_found:
 		_fail("%s：面板標題不符，實際有 %s" % [want_title, str(labels)])
 		return
 	if buttons.size() < int(p["min_buttons"]):
