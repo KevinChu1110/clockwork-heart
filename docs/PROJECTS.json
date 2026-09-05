@@ -292,8 +292,8 @@
    "id": "game-forge-scrap",
    "cat": "遊戲",
    "title": "鐵匠鋪廢鐵桶拆解多餘裝備回收為鐵屑",
-   "status": "草稿",
-   "note": "",
+   "status": "已上線",
+   "note": "實作 EquipmentSystem.dismantle(uid) 與 town_forge scrap_bin 廢鐵桶回收面板，附帶 test_equipment_dismantle.gd 全綠",
    "keys": [
     "鐵匠鋪廢鐵桶拆解"
    ]
