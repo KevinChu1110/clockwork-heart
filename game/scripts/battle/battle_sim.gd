@@ -1740,7 +1740,7 @@ static func make_tutorial_wolf_fight(player_stats: Dictionary) -> BattleSim:
 	w.hp = 45
 	w.atk = 7
 	w.defense = 2
-	w.speed = 11.0
+	w.speed = 10.0
 	sim.add_unit(w)
 	return sim
 

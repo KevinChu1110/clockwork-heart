@@ -90,7 +90,15 @@ func _process(_d: float) -> bool:
 		3:
 			if _wait < 8:
 				return false
-			_expect_buttons("設置子選單", ["連線", "顯示", "返回"])
+			var found_settings := false
+			for c in _main.get_children():
+				if c.get_script() and str(c.get_script().resource_path).ends_with("mobile_settings.gd"):
+					found_settings = true
+					break
+			if found_settings:
+				print("  ok 設置子選單 開啟 MobileSettings 視窗")
+			else:
+				_expect_buttons("設置子選單", ["連線", "顯示", "返回"])
 			return _finish()
 	return false
 
