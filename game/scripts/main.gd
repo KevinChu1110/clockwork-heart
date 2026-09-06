@@ -5466,7 +5466,9 @@ func _interact_shop_interior(id: String) -> bool:
 					], func(): _start_battle("training_dummy"))
 					return true
 				"weapon_wall":
-					_play_dialog([{"speaker": _t("旁白"), "text": _t("牆上的劍都橫放。招跟手上那把走，換錯欄出不了招。")}])
+					_play_dialog([
+						{"speaker": _t("旁白"), "text": _t("兵器架上陳列著各色兵刃。招式依手持兵刃而動，換錯欄便難出招。在此可檢視流派起手式，亦可快捷調度已備武器。")}
+					], _go_weapon_wall_panel)
 					return true
 				"floor_mat":
 					_play_dialog([{"speaker": _t("旁白"), "text": _t("練武墊磨薄了。傭兵第一課：活著比漂亮重要。")}])
@@ -6091,6 +6093,69 @@ func _go_scrap_bin_panel() -> void:
 	buttons.append({"text": Loc.t("pause.equip"), "cb": _go_equip_panel})
 	buttons.append({"text": Loc.t("btn.close"), "cb": _hub_back})
 	_panel(_t("廢鐵桶 · 裝備拆解"), body, buttons)
+
+
+func _go_weapon_wall_panel() -> void:
+	EquipmentSystem._ensure_state()
+	SkillSystem.ensure_skill_map()
+	var summary: Dictionary = EquipmentSystem.get_weapon_wall_summary()
+	var loadouts: Array = summary.get("loadouts", [])
+	var styles: Array = summary.get("styles", [])
+
+	var body := _t("[b]武術館 · 兵器架整備[/b]\n牆上陳列著十二種兵器。招式跟著手持兵刃走，可在此快捷切換當前出戰武器，並預覽各流派起手式與熟練狀態。\n\n")
+	body += _t("[b]備用武器欄（共 3 欄）[/b]：\n")
+	for lo in loadouts:
+		var idx: int = int(lo.get("index", 0))
+		var is_act: bool = bool(lo.get("is_active", false))
+		var unl: bool = bool(lo.get("unlocked", false))
+		var wname: String = str(lo.get("name", ""))
+		var lname: String = str(lo.get("line_name", ""))
+		var tag := _t("【當前出戰】") if is_act else ""
+		if not unl:
+			body += _t("  · 欄位 %d：%s\n") % [idx + 1, wname]
+		elif str(lo.get("uid", "")) == "":
+			body += _t("  · 欄位 %d：%s\n") % [idx + 1, wname]
+		else:
+			var info := (" · 流派「%s」" % lname) if lname != "" else ""
+			body += _t("  · 欄位 %d：%s%s %s\n") % [idx + 1, wname, info, tag]
+
+	body += _t("\n[b]十二流派起手招式與熟練狀態[/b]：\n")
+	for st in styles:
+		var sname: String = str(st.get("name", ""))
+		var stitle: String = str(st.get("title", ""))
+		var sign_name: String = str(st.get("signature_name", ""))
+		var mtext: String = str(st.get("mastery_text", ""))
+		var sdesc: String = str(st.get("signature_desc", ""))
+		var cur_mark := _t("（當前流派）") if bool(st.get("is_current_path", false)) else ""
+		body += _t("  · %s〔%s〕起手【%s】%s  熟練度：%s\n    └ %s\n") % [
+			stitle, sname, sign_name, cur_mark, mtext, sdesc
+		]
+
+	var buttons: Array = []
+	for lo in loadouts:
+		var idx: int = int(lo.get("index", 0))
+		var unl: bool = bool(lo.get("unlocked", false))
+		var uid: String = str(lo.get("uid", ""))
+		var is_act: bool = bool(lo.get("is_active", false))
+		if unl and uid != "" and not is_act:
+			var wname: String = str(lo.get("name", ""))
+			var lname: String = str(lo.get("line_name", ""))
+			var btn_title := _t("切換至欄位 %d：【%s】") % [idx + 1, wname]
+			if lname != "":
+				btn_title += "（%s）" % lname
+			buttons.append({
+				"text": btn_title,
+				"cb": func():
+					var r: Dictionary = EquipmentSystem.switch_weapon_loadout(idx)
+					_show_toast(str(r.get("msg", "")))
+					_go_weapon_wall_panel()
+			})
+
+	buttons.append({"text": _t("更換裝備"), "cb": _go_equip_panel})
+	buttons.append({"text": Loc.t("common.skills"), "cb": _go_skill_panel})
+	buttons.append({"text": Loc.t("btn.close"), "cb": _hub_back})
+
+	_panel(_t("兵器架 · 流派切換與招式預覽"), body, buttons)
 
 
 func _go_path_panel(from_forge: bool = false) -> void:

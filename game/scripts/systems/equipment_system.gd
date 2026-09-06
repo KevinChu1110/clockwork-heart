@@ -216,6 +216,86 @@ func loadout_snapshot_for_battle() -> Array:
 	return out
 
 
+## 兵器架（兵器牆）整備概覽：包含 3 個武器欄位狀態與 12 種武器流派起手招式與熟練度
+func get_weapon_wall_summary() -> Dictionary:
+	_ensure_state()
+	if DataTables != null and DataTables.weapon_classes.is_empty():
+		DataTables.reload()
+	if SkillSystem != null and SkillSystem.has_method("ensure_skill_map"):
+		SkillSystem.ensure_skill_map()
+	var loadouts: Array = []
+	for i in WEAPON_LOADOUT_SIZE:
+		var unlocked := loadout_slot_unlocked(i)
+		var uid := loadout_uid(i) if unlocked else ""
+		var inst := weapon_inst(uid)
+		var wname := ""
+		var line := ""
+		var line_name := ""
+		if not unlocked:
+			wname = _t("未解鎖（Lv%d）") % loadout_unlock_level(i)
+		elif uid == "":
+			wname = _t("（空欄位）")
+		else:
+			wname = str(inst.get("name", _t("未知武器")))
+			line = str(inst.get("line", ""))
+			if line != "":
+				var cdef: Dictionary = DataTables.weapon_class_def(line)
+				line_name = str(cdef.get("name", line))
+		loadouts.append({
+			"index": i,
+			"unlocked": unlocked,
+			"unlock_level": loadout_unlock_level(i),
+			"uid": uid,
+			"name": wname,
+			"line": line,
+			"line_name": line_name,
+			"is_active": (i == active_loadout_index() and unlocked and uid != ""),
+		})
+
+	var active_idx := active_loadout_index()
+	var styles: Array = []
+	var class_list: Array = DataTables.weapon_class_list()
+	for c in class_list:
+		var cid := str(c.get("id", ""))
+		var cname := str(c.get("name", cid))
+		var ctitle := str(c.get("title", ""))
+		var cprof := str(c.get("profession", ""))
+		var prof_name := str(SkillSystem.PROFESSION_NAME.get(cprof, cprof)) if SkillSystem != null else cprof
+		var sig_id := SkillSystem.signature_for_class(cid) if SkillSystem != null else ""
+		var sig_def: Dictionary = SkillSystem.def_of(sig_id) if SkillSystem != null else {}
+		var sig_name := str(sig_def.get("name", sig_id))
+		var sig_desc := str(sig_def.get("desc", ""))
+		var learned: bool = SkillSystem.is_learned(sig_id) if SkillSystem != null else false
+		var lv: int = SkillSystem.get_lv(sig_id) if SkillSystem != null else 0
+		var mastery: int = SkillSystem.get_mastery(sig_id) if SkillSystem != null else 0
+		var need: int = SkillSystem.mastery_need_for_next(sig_id) if SkillSystem != null else 0
+		var mastery_text: String = SkillSystem.mastery_progress_line(sig_id) if SkillSystem != null else ""
+		var is_cur: bool = (str(GameState.path_style) == cid)
+
+		styles.append({
+			"id": cid,
+			"name": cname,
+			"title": ctitle,
+			"profession": cprof,
+			"profession_name": prof_name,
+			"signature_id": sig_id,
+			"signature_name": sig_name,
+			"signature_desc": sig_desc,
+			"learned": learned,
+			"level": lv,
+			"mastery": mastery,
+			"mastery_need": need,
+			"mastery_text": mastery_text,
+			"is_current_path": is_cur,
+		})
+
+	return {
+		"loadouts": loadouts,
+		"active_index": active_idx,
+		"styles": styles,
+	}
+
+
 func _uid() -> String:
 	return "eq_%d_%d" % [Time.get_unix_time_from_system(), randi() % 99999]
 
