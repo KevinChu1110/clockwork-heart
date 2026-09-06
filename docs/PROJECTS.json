@@ -302,8 +302,8 @@
    "id": "game-weapon-wall",
    "cat": "遊戲",
    "title": "武術館兵器架流派快捷切換與招式預覽",
-   "status": "開發中",
-   "note": "已派工 sideworker",
+   "status": "已上線",
+   "note": "武術館兵器架流派快捷切換與招式預覽完成，無頭測試全綠，已進 main",
    "keys": [
     "武術館兵器架流派"
    ]
