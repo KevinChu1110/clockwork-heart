@@ -151,8 +151,8 @@
    "id": "game-combat-test",
    "cat": "遊戲",
    "title": "COMBAT 四條驗收測試",
-   "status": "測試中",
-   "note": "3 綠 1 紅：1v1 在 seed 13 耗時 28.35 秒超過文件寫的 20 秒門檻，在 agent 分支等決定",
+   "status": "已上線",
+   "note": "1v1 戰鬥時長全 seed 綠燈通過並合入 main",
    "keys": [
     "驗收測試",
     "combat_acc"
