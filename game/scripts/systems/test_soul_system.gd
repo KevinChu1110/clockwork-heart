@@ -221,6 +221,81 @@ func _initialize() -> void:
 	else:
 		print("feed level-up OK lv=", ab2.get("level"))
 
+	## 保底進度 API：虔誠度、距下個碎片抽數、碎片與稀世／神兌換價、每日免費
+	if not ss.has_method("pity_progress"):
+		push_error("missing pity_progress")
+		ok = false
+	else:
+		gs.set_flag("soul.piety", 0)
+		gs.set_flag("soul.shards", 0)
+		gs.soul_free_draws = 1
+		gs.soul_free_day = ss.today_key()
+		var p0: Dictionary = ss.pity_progress()
+		if int(p0.get("piety", -1)) != 0 or int(p0.get("piety_max", -1)) != 100:
+			push_error("pity empty piety/max %s" % p0)
+			ok = false
+		elif int(p0.get("draws_to_shard", -1)) != 10:
+			push_error("piety 0 → 10 draws got %s" % p0)
+			ok = false
+		elif int(p0.get("shards", -1)) != 0:
+			push_error("pity empty shards %s" % p0)
+			ok = false
+		elif int(p0.get("rare_cost", -1)) != 6 or int(p0.get("shen_cost", -1)) != 15:
+			push_error("exchange costs %s" % p0)
+			ok = false
+		elif int(p0.get("free_draws", -1)) != 1:
+			push_error("free_draws should surface daily free %s" % p0)
+			ok = false
+		elif bool(p0.get("can_exchange_rare", true)) or bool(p0.get("can_exchange_shen", true)):
+			push_error("0 shards should not exchange %s" % p0)
+			ok = false
+		else:
+			print("pity_progress empty OK")
+		gs.set_flag("soul.piety", 40)
+		gs.set_flag("soul.shards", 3)
+		var p1: Dictionary = ss.pity_progress()
+		if int(p1.get("piety", -1)) != 40 or int(p1.get("draws_to_shard", -1)) != 6 or int(p1.get("shards", -1)) != 3:
+			push_error("pity mid %s" % p1)
+			ok = false
+		else:
+			print("pity_progress mid OK")
+		gs.set_flag("soul.piety", 90)
+		var p2: Dictionary = ss.pity_progress()
+		if int(p2.get("draws_to_shard", -1)) != 1:
+			push_error("piety 90 → 1 draw got %s" % p2)
+			ok = false
+		else:
+			print("pity_progress near OK")
+		gs.set_flag("soul.shards", 6)
+		var p3: Dictionary = ss.pity_progress()
+		if not bool(p3.get("can_exchange_rare", false)) or bool(p3.get("can_exchange_shen", true)):
+			push_error("6 shards → rare only %s" % p3)
+			ok = false
+		else:
+			print("pity_progress rare-only OK")
+		gs.set_flag("soul.shards", 15)
+		var p4: Dictionary = ss.pity_progress()
+		if not bool(p4.get("can_exchange_rare", false)) or not bool(p4.get("can_exchange_shen", false)):
+			push_error("15 shards → both %s" % p4)
+			ok = false
+		else:
+			print("pity_progress both-exchange OK")
+		gs.set_flag("soul.piety", 40)
+		gs.set_flag("soul.shards", 2)
+		gs.soul_free_draws = 1
+		var body: String = ss.panel_status_bbcode()
+		if body.find("█") < 0:
+			push_error("panel should show piety bar, got: %s" % body.substr(0, 280))
+			ok = false
+		elif body.find("再 6 抽") < 0:
+			push_error("panel should show draws-to-shard, got: %s" % body.substr(0, 280))
+			ok = false
+		elif body.find("今日免費") < 0:
+			push_error("panel should show daily free, got: %s" % body.substr(0, 280))
+			ok = false
+		else:
+			print("pity panel first-screen OK")
+
 	if ok:
 		print("SOUL_OK")
 		quit(0)

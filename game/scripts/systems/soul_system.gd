@@ -497,6 +497,38 @@ func shards() -> int:
 	return int(GameState.get_flag("soul.shards", 0))
 
 
+## 聚魂殿首屏保底進度：虔誠度、距下個碎片抽數、碎片與稀世／神兌換價
+func pity_progress() -> Dictionary:
+	ensure_daily_free()
+	var p := clampi(piety(), 0, PIETY_PER_SHARD)
+	var remain := maxi(0, PIETY_PER_SHARD - p)
+	var draws := 0
+	if remain > 0:
+		draws = int(ceili(float(remain) / float(PIETY_PER_DRAW)))
+	var sh := shards()
+	var rare := int(SHARD_EXCHANGE.get("稀世", 6))
+	var shen := int(SHARD_EXCHANGE.get("神", 15))
+	return {
+		"piety": p,
+		"piety_max": PIETY_PER_SHARD,
+		"piety_per_draw": PIETY_PER_DRAW,
+		"draws_to_shard": draws,
+		"shards": sh,
+		"rare_cost": rare,
+		"shen_cost": shen,
+		"free_draws": int(GameState.soul_free_draws),
+		"can_exchange_rare": sh >= rare,
+		"can_exchange_shen": sh >= shen,
+	}
+
+
+func pity_bar_text(width: int = 10) -> String:
+	var pp: Dictionary = pity_progress()
+	var pmax := maxi(1, int(pp.get("piety_max", PIETY_PER_SHARD)))
+	var filled := clampi(int(round(float(pp.get("piety", 0)) / float(pmax) * float(width))), 0, width)
+	return "█".repeat(filled) + "░".repeat(width - filled)
+
+
 ## 累積虔誠度；回傳這次產出的碎片數
 func _add_piety(n: int) -> int:
 	var p := piety() + n
@@ -807,16 +839,26 @@ func panel_status_bbcode() -> String:
 	lines.append(_t("[b]聚魂殿 · 戰魂[/b]"))
 	lines.append(_t("神魂＝神品質戰魂（神-星名）。最高 10 級。"))
 	lines.append(_t("魂器：%s") % vessel_ladder_bbcode())
+	var pp: Dictionary = pity_progress()
 	var cost := ritual_cost_gold()
-	if cost <= 0:
+	if int(pp.get("free_draws", 0)) > 0:
+		lines.append(_t("今日免費抽魂尚餘 %d 次｜金幣 %d｜星屑 %d") % [
+			int(pp.get("free_draws", 0)), GameState.gold, GameState.stardust
+		])
+	elif cost <= 0:
 		lines.append(_t("今日免費抽魂尚餘 %d 次｜金幣 %d｜星屑 %d") % [
 			GameState.soul_free_draws, GameState.gold, GameState.stardust
 		])
 	else:
-		lines.append(_t("下次抽魂：%d 金｜金幣 %d｜星屑 %d") % [
+		lines.append(_t("今日免費已用完｜下次抽魂：%d 金｜金幣 %d｜星屑 %d") % [
 			cost, GameState.gold, GameState.stardust
 		])
-	lines.append(_t("虔誠度 %d/100 · 戰魂碎片 %d（稀世 6 片 · 神 15 片）") % [piety(), shards()])
+	lines.append(_t("保底虔誠 [%s] %d/%d · 再 %d 抽得碎片") % [
+		pity_bar_text(10), int(pp.get("piety", 0)), int(pp.get("piety_max", 100)), int(pp.get("draws_to_shard", 0))
+	])
+	lines.append(_t("戰魂碎片 %d · 稀世需 %d · 神需 %d") % [
+		int(pp.get("shards", 0)), int(pp.get("rare_cost", 6)), int(pp.get("shen_cost", 15))
+	])
 	lines.append(_t("武器：%s  T%d · 魂槽 %d") % [GameState.weapon_display(), GameState.weapon_tier, slot_count()])
 	lines.append(_t("入魂加成：攻+%d  防+%d  血+%d") % [
 		int(bonus.get("atk", 0)), int(bonus.get("def", 0)), int(bonus.get("hp", 0))

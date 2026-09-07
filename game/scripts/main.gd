@@ -1992,6 +1992,10 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 		var hang := _make_soul_hang()
 		if hang:
 			root.add_child(hang)
+		if bool(extras.get("soul_pity", false)):
+			var pity_row := _make_pity_progress_row()
+			if pity_row:
+				root.add_child(pity_row)
 
 	var rule := ColorRect.new()
 	rule.custom_minimum_size = Vector2(0, 2)
@@ -5192,11 +5196,19 @@ func _go_soul_panel() -> void:
 			"text": Loc.t("soul.gold_short", {"n": SoulSystem.vessel_cost()}),
 			"cb": _go_soul_panel,
 		})
-	## 虔誠度碎片兌換（原作軟保底）＋一鍵吸收廢魂
-	if SoulSystem.shards() >= int(SoulSystem.SHARD_EXCHANGE.get("稀世", 6)):
-		buttons.append({"text": _t("碎片凝稀世魂（6 片）"), "cb": _soul_exchange_rare})
-	if SoulSystem.shards() >= int(SoulSystem.SHARD_EXCHANGE.get("神", 15)):
-		buttons.append({"text": _t("碎片凝神魂（15 片）"), "cb": _soul_exchange_shen})
+	## 虔誠度碎片兌換（原作軟保底）：首屏永遠可見，片數不足時點下去仍會擋
+	var pity: Dictionary = SoulSystem.pity_progress()
+	var rare_need: int = int(pity.get("rare_cost", 6))
+	var shen_need: int = int(pity.get("shen_cost", 15))
+	var shard_n: int = int(pity.get("shards", 0))
+	buttons.append({
+		"text": _t("碎片凝稀世魂（%d/%d）") % [shard_n, rare_need],
+		"cb": _soul_exchange_rare,
+	})
+	buttons.append({
+		"text": _t("碎片凝神魂（%d/%d）") % [shard_n, shen_need],
+		"cb": _soul_exchange_shen,
+	})
 	buttons.append({"text": _t("一鍵吸收廢魂"), "cb": _soul_absorb_junk})
 	## 背包入魂：先進對比槽位，不默默塞第一空槽
 	var bag: Array = SoulSystem.bag_souls()
@@ -5218,7 +5230,7 @@ func _go_soul_panel() -> void:
 	buttons.append({"text": Loc.t("pause.gems"), "cb": _go_gem_panel})
 	buttons.append({"text": Loc.t("common.skills"), "cb": _go_skill_panel})
 	buttons.append({"text": Loc.t("forge.back_square"), "cb": _go_c1_town})
-	_panel(Loc.t("soul.panel_title"), body, buttons, {"soul_hang": true})
+	_panel(Loc.t("soul.panel_title"), body, buttons, {"soul_hang": true, "soul_pity": true})
 
 
 func _go_astrolabe_panel() -> void:
@@ -5666,6 +5678,47 @@ func _make_soul_hang() -> Control:
 	if top.get_child_count() == 0 and not any_star:
 		return null
 	return box
+
+
+func _make_pity_progress_row() -> Control:
+	var pp: Dictionary = SoulSystem.pity_progress()
+	var wrap := VBoxContainer.new()
+	wrap.add_theme_constant_override("separation", 4)
+	wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var cap := Label.new()
+	var free_n: int = int(pp.get("free_draws", 0))
+	if free_n > 0:
+		cap.text = _t("今日免費尚餘 %d 次 · 虔誠 %d/%d · 再 %d 抽得碎片") % [
+			free_n, int(pp.get("piety", 0)), int(pp.get("piety_max", 100)), int(pp.get("draws_to_shard", 0))
+		]
+	else:
+		cap.text = _t("今日免費已用完 · 虔誠 %d/%d · 再 %d 抽得碎片") % [
+			int(pp.get("piety", 0)), int(pp.get("piety_max", 100)), int(pp.get("draws_to_shard", 0))
+		]
+	cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cap.add_theme_font_size_override("font_size", 14)
+	cap.add_theme_color_override("font_color", Color(0.22, 0.16, 0.10))
+	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	wrap.add_child(cap)
+	var bar := ProgressBar.new()
+	bar.min_value = 0
+	bar.max_value = float(pp.get("piety_max", 100))
+	bar.value = float(pp.get("piety", 0))
+	bar.custom_minimum_size = Vector2(420, 16)
+	bar.show_percentage = false
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	UiStyle.style_progress(bar, Color(1.0, 0.63, 0.06), Color(1.0, 0.97, 0.90))
+	wrap.add_child(bar)
+	var shards_l := Label.new()
+	shards_l.text = _t("戰魂碎片 %d · 稀世 %d／神 %d") % [
+		int(pp.get("shards", 0)), int(pp.get("rare_cost", 6)), int(pp.get("shen_cost", 15))
+	]
+	shards_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	shards_l.add_theme_font_size_override("font_size", 13)
+	shards_l.add_theme_color_override("font_color", Color(0.35, 0.22, 0.10))
+	shards_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	wrap.add_child(shards_l)
+	return wrap
 
 
 func _soul_preview_tex(tex: Texture2D) -> TextureRect:
