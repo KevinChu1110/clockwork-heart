@@ -8,10 +8,10 @@ signal battle_ended(won: bool)
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 
-const ATB_MAX := 100.0
-const RAGE_MAX := 100.0
-const KING_SLASH_WINDUP := 1.85  ## 較長前搖，方便看倒數
-const PARRY_WINDOW := 0.85      ## 可格擋窗（出手前這段都算成功）
+const ATB_MAX := 100.0  ## = combat.json time_model.atb_max（0.15 鎖）
+const RAGE_MAX := 100.0  ## = combat.json rage.max
+const KING_SLASH_WINDUP := 1.85  ## = time_model.boss_telegraph_sec
+const PARRY_WINDOW := 0.85      ## = time_model.boss_parry_window_sec
 const KING_SLASH_CD := 8.0
 
 ## 「差一點」的寬限：窗開之前這麼久按下去，算按早了但**不算用掉機會**。
@@ -20,7 +20,7 @@ const KING_SLASH_CD := 8.0
 ## 跟無腦連按的人拿到一樣的成績（都是 0% 勝率）。那不是在教時機。
 ## 有了寬限，按早一點點的人收到「太早了」的回饋、機會還在，補按仍然接得住；
 ## 而連按的人第一下必定落在寬限之外（前搖一開始就按），機會照樣花掉。
-const PARRY_EARLY_GRACE := 0.35
+const PARRY_EARLY_GRACE := 0.35  ## = time_model.parry_early_grace_sec
 
 
 var units: Dictionary = {}  ## id -> BattleUnit
@@ -535,7 +535,7 @@ func _resolve_strike(u: BattleUnit) -> void:
 		if u.id == player_id:
 			_consume_weapon_use(u)
 		u.state = BattleUnit.State.STRIKE
-		u.state_timer = 0.08
+		u.state_timer = Formulas.strike_duration()
 		return
 
 	## 原作：輕武器單揮多段（匕首每次攻 2 下、拳套連打）。
@@ -609,7 +609,7 @@ func _resolve_strike(u: BattleUnit) -> void:
 	if u.id == player_id:
 		_consume_weapon_use(u)
 	u.state = BattleUnit.State.STRIKE
-	u.state_timer = 0.08
+	u.state_timer = Formulas.strike_duration()
 	if demon_mode:
 		_check_demon_stages()
 
