@@ -6,6 +6,7 @@ extends Control
 signal closed()
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 
 enum Tab {
@@ -67,7 +68,7 @@ func _build_ui() -> void:
 	add_child(center)
 
 	_dialog_card = PanelContainer.new()
-	_dialog_card.custom_minimum_size = Vector2(760, 490)
+	_dialog_card.custom_minimum_size = Vector2(ResponsiveUi.dialog_width(self), 490)
 	_dialog_card.mouse_filter = Control.MOUSE_FILTER_STOP
 	_dialog_card.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	center.add_child(_dialog_card)
@@ -92,8 +93,8 @@ func _build_ui() -> void:
 
 	## 右上角標準手機關閉按鈕 ✕ (42x42 觸控大熱區)
 	var close_btn := Button.new()
-	close_btn.text = "✕"
-	close_btn.custom_minimum_size = Vector2(40, 40)
+	close_btn.text = "關閉"
+	close_btn.custom_minimum_size = Vector2(50, 50)
 	close_btn.add_theme_font_size_override("font_size", 18)
 	var csb := StyleBoxFlat.new()
 	csb.bg_color = Color(0.22, 0.16, 0.12, 0.95)

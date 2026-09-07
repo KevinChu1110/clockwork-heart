@@ -3,6 +3,7 @@ extends Control
 ## 對話：打字機、半身像、半透明遮罩、銅邊紙面板。Space／E／點擊繼續。
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 
@@ -73,19 +74,20 @@ func _apply_look() -> void:
 		panel.mouse_filter = Control.MOUSE_FILTER_PASS
 		if body_label:
 			body_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		panel.offset_top = -200.0
-		panel.offset_bottom = -12.0
-		panel.offset_left = 48.0
-		panel.offset_right = -48.0
+		var m := ResponsiveUi.safe_margin(self)
+		panel.offset_top = -220.0 - m.w
+		panel.offset_bottom = -m.w
+		panel.offset_left = m.x + 24.0
+		panel.offset_right = -(m.z + 24.0)
 	if speaker_label:
 		speaker_label.add_theme_color_override("font_color", UiStyle.KEY)
-		speaker_label.add_theme_font_size_override("font_size", 15)
+		speaker_label.add_theme_font_size_override("font_size", 17)
 	if body_label:
 		body_label.add_theme_color_override("default_color", UiStyle.CAPTION)
-		body_label.add_theme_font_size_override("normal_font_size", 16)
+		body_label.add_theme_font_size_override("normal_font_size", 18)
 	if continue_hint:
 		continue_hint.add_theme_color_override("font_color", UiStyle.HUD_TEXT_DIM)
-		continue_hint.add_theme_font_size_override("font_size", 11)
+		continue_hint.add_theme_font_size_override("font_size", 13)
 		continue_hint.text = _hint_text()
 	if accent:
 		accent.color = UiStyle.KEY_STRONG
@@ -195,6 +197,7 @@ func _finish_typing() -> void:
 			btn.text = str(opts[i])
 			btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			UiStyle.style_button(btn, i == 0)
+			ResponsiveUi.apply_core_button(btn)
 			var idx := i
 			btn.pressed.connect(func(): _on_choice(idx))
 			choices.add_child(btn)

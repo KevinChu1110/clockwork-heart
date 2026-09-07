@@ -3,10 +3,11 @@ extends Control
 ## 楓式底部快捷欄 1–8；整條可拖曳
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const WindowDrag = preload("res://scripts/ui/window_drag.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const SLOT_N := 8
-const SLOT_SIZE := Vector2(46, 46)
+const SLOT_SIZE := Vector2(50, 50)
 
 signal slot_clicked(index: int)
 signal slot_right_clicked(index: int)
@@ -24,9 +25,9 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	anchor_right = 0
 	anchor_bottom = 0
-	## 初始置底中（之後可拖）；尾端多一格「選單」鈕
-	custom_minimum_size = Vector2(459, 54)
-	size = Vector2(459, 54)
+	## 初始置底中（之後可拖）；尾端多一格「選單」鈕。槽 50px 防誤觸。
+	custom_minimum_size = Vector2(504, 62)
+	size = Vector2(504, 62)
 	_build()
 	call_deferred("_place_default")
 	if Engine.get_main_loop() is SceneTree:
@@ -42,7 +43,8 @@ func _ready() -> void:
 
 func _place_default() -> void:
 	var vp := get_viewport().get_visible_rect().size
-	var fallback := Vector2((vp.x - size.x) * 0.5, vp.y - size.y - 14)
+	var m := ResponsiveUi.safe_margin(self)
+	var fallback := Vector2((vp.x - size.x) * 0.5, vp.y - size.y - m.w)
 	if Engine.get_main_loop() is SceneTree:
 		var ul: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("UiLayout")
 		if ul and ul.has_method("has_pos") and ul.call("has_pos", "hotbar"):

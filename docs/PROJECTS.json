@@ -92,8 +92,8 @@
    "id": "mob-ui",
    "cat": "遊戲",
    "title": "🥈 手機化 3／6：響應式 UI",
-   "status": "草稿",
-   "note": "Safe Area ＋ Anchors ＋ 可縮放 UI。至少測 16:9、19.5:9、20:9、平板、PC。⛔ 1280×720 不再是設計基準。順便處理「字太小、字體不漂亮、像傳統 PPT」。",
+   "status": "測試中",
+   "note": "Safe Area+Anchors+可縮放；標題／暫停／對話／大廳／戰鬥HUD；彈窗740-760、鈕≥50。test_responsive_ui/title_menu/panels 綠；冒煙無 SCRIPT ERROR。分支 agent/2026-09-07-responsive-ui",
    "keys": [
     "ui",
     "responsive",

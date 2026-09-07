@@ -32,6 +32,7 @@ const WorldTravel = preload("res://scripts/world/world_travel.gd")
 const WorldContent = preload("res://scripts/world/world_content.gd")
 const RegionCatalog = preload("res://scripts/world/region_catalog.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const MapleHudScn = preload("res://scripts/ui/maple_hud.gd")
 const MapleHotbarScn = preload("res://scripts/ui/maple_hotbar.gd")
 const MapleInventoryScn = preload("res://scripts/ui/maple_inventory.gd")
@@ -395,7 +396,8 @@ func _build_pause_layer() -> void:
 	_pause_layer.add_child(center)
 
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(320, 0)
+	card.name = "PauseCard"
+	ResponsiveUi.apply_dialog_card(card)
 	card.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
 	center.add_child(card)
 
@@ -406,12 +408,19 @@ func _build_pause_layer() -> void:
 	var head := PanelContainer.new()
 	head.add_theme_stylebox_override("panel", UiStyle.header_style())
 	outer.add_child(head)
+	var head_row := HBoxContainer.new()
+	head_row.add_theme_constant_override("separation", 8)
+	head.add_child(head_row)
 	var title := Label.new()
 	title.text = Loc.t("pause.title")
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 18)
 	title.add_theme_color_override("font_color", UiStyle.KEY)
-	head.add_child(title)
+	head_row.add_child(title)
+	head_row.add_child(ResponsiveUi.make_close_button(func():
+		_close_pause()
+	))
 
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 8)
@@ -1754,6 +1763,7 @@ func _pause_btn(parent: VBoxContainer, text: String, cb: Callable, primary := fa
 	btn.text = text
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	UiStyle.style_button(btn, primary)
+	ResponsiveUi.apply_core_button(btn)
 	btn.pressed.connect(cb)
 	parent.add_child(btn)
 
@@ -1960,7 +1970,8 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	layer.add_child(center)
 
 	var card := PanelContainer.new()
-	card.custom_minimum_size = Vector2(520, 0)  ## 現代手遊寬卡片
+	card.name = "MenuCard"
+	ResponsiveUi.apply_dialog_card(card)
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 	card.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	center.add_child(card)
@@ -1978,15 +1989,26 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	root.mouse_filter = Control.MOUSE_FILTER_STOP
 	margin.add_child(root)
 
+	var head_row := HBoxContainer.new()
+	head_row.add_theme_constant_override("separation", 8)
+	root.add_child(head_row)
 	var t := Label.new()
-	t.text = "✦ %s ✦" % title
+	t.text = title
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	t.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	t.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	t.add_theme_font_size_override("font_size", 20)
 	t.add_theme_color_override("font_color", Color(1.0, 0.88, 0.45))
 	t.add_theme_color_override("font_outline_color", Color(0.2, 0.12, 0.05))
 	t.add_theme_constant_override("outline_size", 3)
-	root.add_child(t)
+	head_row.add_child(t)
+	var close_cb := Callable()
+	if not buttons.is_empty() and buttons[buttons.size() - 1] is Dictionary:
+		close_cb = (buttons[buttons.size() - 1] as Dictionary).get("cb", Callable())
+	head_row.add_child(ResponsiveUi.make_close_button(func():
+		if close_cb.is_valid():
+			call_deferred("_run_menu_cb", close_cb)
+	))
 
 	if bool(extras.get("soul_hang", false)):
 		var hang := _make_soul_hang()
@@ -2005,7 +2027,7 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	b.scroll_active = true
 	b.text = body
 	## 限高 + 不擋滑鼠，避免正文把按鈕擠出或吞點擊
-	b.custom_minimum_size = Vector2(480, 0)
+	b.custom_minimum_size = Vector2(680, 0)
 	b.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	b.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	b.add_theme_color_override("default_color", Color(0.95, 0.92, 0.88))
@@ -2014,7 +2036,7 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	## 正文過長時限高，按鈕永遠可見
 	if body.length() > 280:
 		b.fit_content = false
-		b.custom_minimum_size = Vector2(480, 150)
+		b.custom_minimum_size = Vector2(680, 150)
 		b.scroll_active = true
 
 	## 按鈕列要能捲動。
@@ -2030,11 +2052,11 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	## 按鈕多的面板玩家還會想到去捲，只有兩顆按鈕的面板不會，只覺得「返回不見了」。
 	## 改成按鈕建好之後直接問 VBox 要多高，不再有第二個數字要維護。
 	var btn_gap := 6.0
-	## 卡片固定開銷：標題 26 + 分隔線 2 + 三段間距 36 + 上下邊距 18 + 保險 24，
-	## 另外留 40 給上下留白 —— 不留的話卡片會頂到螢幕邊，看起來像被切掉。
-	var chrome_h := 146.0
+	## 卡片固定開銷：標題列含關閉鈕 50 + 分隔線 2 + 間距 + 邊距 + 留白
+	var chrome_h := 220.0
 	var body_h := 140.0 if body.length() > 280 else minf(140.0, ceilf(float(body.length()) / 26.0) * 20.0)
-	var avail_h := maxf(150.0, float(get_viewport_rect().size.y) - chrome_h - body_h)
+	var screen_h := float(get_viewport_rect().size.y)
+	var avail_h := maxf(150.0, screen_h - chrome_h - body_h)
 
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -2573,31 +2595,21 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 		layer.add_child(solid)
 	layer.add_child(bg)
 
-	## 右側選單底的通透微光暗紗（柔和漸層，確保明亮通透）
-	var scrim := TextureRect.new()
+	## 底中選單卡：橫屏 740–760，不要右側窄欄長條鈕
+	var m := ResponsiveUi.safe_margin(layer)
+	var scrim := ColorRect.new()
 	scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	scrim.anchor_left = 0.55
-	var grad := Gradient.new()
-	grad.set_color(0, Color(0.12, 0.10, 0.23, 0.0))
-	grad.set_color(1, Color(0.12, 0.10, 0.23, 0.38))
-	var gtex := GradientTexture2D.new()
-	gtex.gradient = grad
-	gtex.fill_from = Vector2(0, 0)
-	gtex.fill_to = Vector2(1.0, 0)
-	scrim.texture = gtex
-	scrim.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	scrim.stretch_mode = TextureRect.STRETCH_SCALE
+	scrim.anchor_top = 0.52
+	scrim.color = Color(0.08, 0.06, 0.05, 0.38)
 	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(scrim)
 
-	## 左下：遊戲名 + 資訊
 	var info := VBoxContainer.new()
-	info.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	info.anchor_top = 0.72
-	info.offset_left = 36
-	info.offset_top = 12
-	info.offset_right = 620
-	info.offset_bottom = -20
+	info.set_anchors_preset(Control.PRESET_TOP_LEFT)
+	info.offset_left = m.x + 16
+	info.offset_top = m.y + 10
+	info.offset_right = m.x + 640
+	info.offset_bottom = m.y + 150
 	info.add_theme_constant_override("separation", 4)
 	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(info)
@@ -2629,22 +2641,31 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	meta_rt.custom_minimum_size = Vector2(560, 0)
 	info.add_child(meta_rt)
 
-	## 右側選單欄
+	var menu_host := CenterContainer.new()
+	menu_host.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	menu_host.offset_left = m.x
+	menu_host.offset_right = -m.z
+	menu_host.offset_bottom = -m.w - 10.0
+	menu_host.offset_top = -320.0 - m.w
+	menu_host.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(menu_host)
+
+	var card := PanelContainer.new()
+	card.name = "TitleMenuCard"
+	ResponsiveUi.apply_dialog_card(card)
+	card.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	menu_host.add_child(card)
+
 	var scroll := ScrollContainer.new()
-	scroll.set_anchors_preset(Control.PRESET_FULL_RECT)
-	scroll.anchor_left = 0.62
-	scroll.offset_left = 0
-	scroll.offset_top = 48
-	scroll.offset_right = -44
-	scroll.offset_bottom = -40
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	layer.add_child(scroll)
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.add_child(scroll)
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 8)
 	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(col)
 	## 三層級：primary（預設第一顆，可用 "primary": false 關掉）／
-	## 一般／"tier": "util"（縮小降透明，前面自動留組間距）
+	## 一般／"tier": "util"（前面自動留組間距）。熱區一律 ≥50。
 	var prev_util := false
 	for i in buttons.size():
 		var bdef: Dictionary = buttons[i]
@@ -2652,38 +2673,21 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 		var util := str(bdef.get("tier", "")) == "util"
 		if util and not prev_util:
 			var gap := Control.new()
-			gap.custom_minimum_size = Vector2(0, 14)
+			gap.custom_minimum_size = Vector2(0, 10)
 			gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			col.add_child(gap)
 		prev_util = util
 		var btn := Button.new()
 		btn.text = str(bdef.get("text", ""))
-		btn.custom_minimum_size = Vector2(300, 54 if primary else (38 if util else 44))
-		var sb := StyleBoxFlat.new()
-		if primary:
-			sb.bg_color = Color(0.76, 0.34, 0.44, 0.96)
-			sb.border_color = Color(0.98, 0.78, 0.52, 0.95)
-		else:
-			sb.bg_color = Color(0.10, 0.085, 0.115, 0.66 if util else 0.84)
-			sb.border_color = Color(0.62, 0.48, 0.34, 0.35 if util else 0.60)
-		sb.set_border_width_all(1)
-		sb.set_corner_radius_all(9)
-		sb.content_margin_left = 18
-		sb.content_margin_right = 18
-		var sbh: StyleBoxFlat = sb.duplicate()
-		sbh.border_color = Color(0.98, 0.80, 0.52, 1.0)
-		sbh.bg_color = sb.bg_color.lightened(0.10)
-		var sbp: StyleBoxFlat = sb.duplicate()
-		sbp.bg_color = sb.bg_color.darkened(0.15)
-		btn.add_theme_stylebox_override("normal", sb)
-		btn.add_theme_stylebox_override("hover", sbh)
-		btn.add_theme_stylebox_override("pressed", sbp)
-		btn.add_theme_stylebox_override("focus", sbh)
-		btn.add_theme_color_override("font_color", Color(1, 0.97, 0.93) if primary else Color(0.92, 0.87, 0.78, 0.85 if util else 1.0))
-		btn.add_theme_color_override("font_hover_color", Color(1, 0.95, 0.85))
-		btn.add_theme_font_size_override("font_size", 18 if primary else (13 if util else 15))
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		UiStyle.style_button(btn, primary)
+		ResponsiveUi.apply_core_button(btn)
+		if util:
+			btn.modulate.a = 0.88
 		btn.pressed.connect(bdef.get("cb", Callable()))
 		col.add_child(btn)
+	var need_h := col.get_combined_minimum_size().y + 24.0
+	scroll.custom_minimum_size = Vector2(0, minf(need_h, 280.0))
 
 
 func _toggle_locale() -> void:
