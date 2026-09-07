@@ -30,7 +30,7 @@
 | 文件 | 內容 |
 |------|------|
 | [docs/GDD.md](docs/GDD.md) | **設計總索引** |
-| [docs/VISION.md](docs/VISION.md) | 願景、體驗承諾、不做清單 |
+| [docs/PRODUCT_LOCK_0.20.md](docs/PRODUCT_LOCK_0.20.md) | **產品層根本大法**：產品身份、核心循環、手機化、不做清單、新功能准入閘門 |
 | [docs/SCOPE.md](docs/SCOPE.md) | 3 個月 / 6 個月 / 砍掉 |
 | [docs/WORLD.md](docs/WORLD.md) | 世界觀、六域、勢力、黑焰規則 |
 | [docs/STORY_BIBLE.md](docs/STORY_BIBLE.md) | 主線節拍、章節、結局 |

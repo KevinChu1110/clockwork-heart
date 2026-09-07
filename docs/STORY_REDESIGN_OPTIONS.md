@@ -22,7 +22,7 @@
 
 ## 第一部分：現況設定血緣盤點
 
-透過比對 `docs/PRODUCT_BRIDGE.md`、`docs/WORLD.md`、`docs/VISION.md`、`docs/STORY_BIBLE.md`、`docs/SCRIPT_C0~C6.md` 與 `docs/ORIGINAL_RESEARCH_R2.md`，現有世界觀與機制要素可明確劃分為以下三大類別：
+透過比對 `docs/PRODUCT_BRIDGE.md`、`docs/WORLD.md`、`docs/PRODUCT_LOCK_0.20.md`、`docs/STORY_BIBLE.md`、`docs/SCRIPT_C0~C6.md` 與 `docs/ORIGINAL_RESEARCH_R2.md`，現有世界觀與機制要素可明確劃分為以下三大類別：
 
 ### 類別一：明顯來自原作《Soul Fighter》（版權/血緣風險高，若切斷需優先剝離）
 

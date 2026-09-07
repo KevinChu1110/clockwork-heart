@@ -20,7 +20,7 @@
 
 | 檔案 | 內容 | 狀態 |
 |------|------|------|
-| [VISION.md](VISION.md) | 願景、基調、不做 | ✅ |
+| [PRODUCT_LOCK_0.20.md](PRODUCT_LOCK_0.20.md) | **產品層根本大法**：產品身份、核心循環、每日發條、養成四層、手機化、砍掉的系統、新功能准入閘門 | ✅ |
 | [SCOPE.md](SCOPE.md) | 3m / 6m 範圍 | ✅ 需對齊三重養成 |
 | [WORLD.md](WORLD.md) | 世界觀 | ✅ |
 | [STORY_BIBLE.md](STORY_BIBLE.md) | 主線節拍 | ✅ |
