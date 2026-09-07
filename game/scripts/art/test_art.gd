@@ -109,6 +109,8 @@ func _initialize() -> void:
 		ok = false
 	if not _check_battle_backgrounds():
 		ok = false
+	if not _check_battle_foot_shadows():
+		ok = false
 
 	if ok:
 		print("ART_OK")
@@ -177,6 +179,40 @@ func _check_battle_backgrounds() -> bool:
 		print("  FAIL 對不到戰鬥的背景檔：", ", ".join(strays))
 		return false
 	return true
+
+
+## 戰鬥角色必須有掛在身上的柔化橢圓腳底軟影＋描邊（退稿第 16 項）。
+## 不在 _initialize 裡 instantiate battle.tscn：-s 測試樹還沒進幀，setup() 會碰到 @onready 還是 null。
+func _check_battle_foot_shadows() -> bool:
+	var src := FileAccess.get_file_as_string("res://scripts/battle/battle_view.gd")
+	if src == "":
+		push_error("讀不到 battle_view.gd")
+		return false
+	var ok := true
+	if src.find("FootShadow_%s") < 0 and src.find("FootShadow_") < 0:
+		push_error("戰鬥腳底軟影沒有建立 FootShadow")
+		ok = false
+	if src.find("ShadowLayer") < 0:
+		push_error("腳底軟影沒有獨立 ShadowLayer（會被角色 TextureRect 或戰報蓋住）")
+		ok = false
+	if src.find("show_behind_parent") >= 0:
+		push_error("還在用 show_behind_parent 掛角色身上，畫面上出不來")
+		ok = false
+	if src.find("TEXTURE_FILTER_LINEAR") < 0:
+		push_error("戰鬥畫面沒有 LINEAR 平滑")
+		ok = false
+	if src.find("pow(1.0 - d, 2.2)") < 0:
+		push_error("軟影不是柔化橢圓衰減（會變成硬邊黑塊）")
+		ok = false
+	if src.find("Sprite2D.new()") >= 0:
+		push_error("腳底軟影還在用 Sprite2D 掛 Control 底下（headless 會畫不出柔邊）")
+		ok = false
+	if src.find("OutlineShader") < 0 or src.find("_apply_outline") < 0:
+		push_error("角色沒有描邊 shader")
+		ok = false
+	if ok:
+		print("  ok 戰鬥雙方腳底軟影是 TextureRect 柔化橢圓＋描邊")
+	return ok
 
 
 ## 場景物件的貼圖覆蓋率。

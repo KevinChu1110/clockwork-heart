@@ -15,6 +15,20 @@ func _initialize() -> void:
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 
 
+func _dump_shadows(b: Node) -> void:
+	for path in ["Arena/PlayerSlot/PlayerBody", "Arena/EnemySlot/EnemyBody"]:
+		var body := b.get_node_or_null(path) as TextureRect
+		var layer := b.get_node_or_null("ShadowLayer")
+		var sh: TextureRect = null
+		if layer and body:
+			sh = layer.get_node_or_null("FootShadow_%s" % body.name) as TextureRect
+		print("SHADOW ", path,
+			" body_sz=", body.size if body else Vector2.ZERO,
+			" sh_sz=", sh.size if sh else Vector2.ZERO,
+			" sh_pos=", sh.global_position if sh else Vector2.ZERO,
+			" vis=", sh.visible if sh else false)
+
+
 func _process(_delta: float) -> bool:
 	_frame += 1
 	if _frame == 4:
@@ -23,6 +37,9 @@ func _process(_delta: float) -> bool:
 		root.add_child(_battle)
 		if _battle.has_method("setup"):
 			_battle.call("setup", "road_bandit")
+	elif _frame == 26:
+		if _battle:
+			_dump_shadows(_battle)
 	elif _frame == 28:
 		var img := root.get_viewport().get_texture().get_image()
 		if img:
@@ -38,6 +55,9 @@ func _process(_delta: float) -> bool:
 		root.add_child(_battle)
 		if _battle.has_method("setup"):
 			_battle.call("setup", "leo")
+	elif _frame == 54:
+		if _battle:
+			_dump_shadows(_battle)
 	elif _frame == 56:
 		var img2 := root.get_viewport().get_texture().get_image()
 		if img2:

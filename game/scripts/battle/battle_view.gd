@@ -66,6 +66,7 @@ var _part_labels: Dictionary = {}  ## id -> Label
 var _part_box: VBoxContainer
 var _focus_hint: Label
 static var _shadow_tex_cache: Texture2D = null
+static var _feet_frac_cache: Dictionary = {}
 
 
 
@@ -681,19 +682,25 @@ func _flash_skill_banner(skill_name: String, player_side: bool = true) -> void:
 static func _soft_shadow_tex() -> Texture2D:
 	if _shadow_tex_cache != null:
 		return _shadow_tex_cache
-	var w := 64
-	var h := 24
+	## 大張柔邊橢圓：近鄰濾鏡放大 64×24 會變成實心硬邊黑塊。
+	var w := 256
+	var h := 96
 	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
 	var cx := (w - 1) * 0.5
 	var cy := (h - 1) * 0.5
+	var rx := cx * 0.96
+	var ry := cy * 0.92
 	for y in h:
 		for x in w:
-			var dx := (x - cx) / cx
-			var dy := (y - cy) / cy
-			var d := sqrt(dx * dx + dy * dy)
-			var a := clampf(1.0 - d, 0.0, 1.0)
-			a = a * a * (3.0 - 2.0 * a)
-			img.set_pixel(x, y, Color(0.10, 0.06, 0.04, a * 0.85))
+			var dx := (float(x) - cx) / rx
+			var dy := (float(y) - cy) / ry
+			var d2 := dx * dx + dy * dy
+			if d2 >= 1.0:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+			else:
+				var d := sqrt(d2)
+				var a := pow(1.0 - d, 2.2) * 0.82
+				img.set_pixel(x, y, Color(0.07, 0.05, 0.12, a))
 	_shadow_tex_cache = ImageTexture.create_from_image(img)
 	return _shadow_tex_cache
 
@@ -711,49 +718,123 @@ func _apply_outline(body: TextureRect, width: float) -> void:
 	mat.set_shader_parameter("outline_color", Color(0.20, 0.12, 0.07, 1.0))
 
 
+func _body_drawn_rect(body: TextureRect) -> Rect2:
+	var bs := body.size
+	if bs.x < 8.0 or bs.y < 8.0:
+		bs = body.custom_minimum_size
+	if bs.x < 8.0:
+		bs = Vector2(200, 250)
+	var tex := body.texture
+	if tex == null:
+		return Rect2(Vector2.ZERO, bs)
+	var ts := tex.get_size()
+	if ts.x <= 1.0 or ts.y <= 1.0:
+		return Rect2(Vector2.ZERO, bs)
+	var s := minf(bs.x / ts.x, bs.y / ts.y)
+	var ds := ts * s
+	return Rect2((bs - ds) * 0.5, ds)
+
+
+static func _content_bottom_frac(tex: Texture2D) -> float:
+	if tex == null:
+		return 0.90
+	var key := tex.resource_path
+	if key == "":
+		key = str(tex.get_rid())
+	if _feet_frac_cache.has(key):
+		return float(_feet_frac_cache[key])
+	var img := tex.get_image()
+	if img == null:
+		_feet_frac_cache[key] = 0.90
+		return 0.90
+	var h := img.get_height()
+	var w := img.get_width()
+	var last := int(float(h) * 0.88)
+	var found := false
+	for y in range(h - 1, -1, -1):
+		var hit := false
+		var x := 0
+		while x < w:
+			if img.get_pixel(x, y).a > 0.28:
+				hit = true
+				break
+			x += 3
+		if hit:
+			last = y
+			found = true
+			break
+	var frac := 0.90
+	if found and h > 0:
+		frac = clampf((float(last) + 1.0) / float(h) - 0.03, 0.58, 0.94)
+	_feet_frac_cache[key] = frac
+	return frac
+
+
+func _shadow_layer() -> Control:
+	var layer := get_node_or_null("ShadowLayer") as Control
+	if layer != null:
+		return layer
+	layer = Control.new()
+	layer.name = "ShadowLayer"
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.clip_contents = false
+	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+	add_child(layer)
+	## 畫在角色之上、戰報之下：影子在角色 TextureRect 底下會被立繪蓋住。
+	if arena:
+		move_child(layer, arena.get_index() + 1)
+	elif battle_bg:
+		move_child(layer, battle_bg.get_index() + 1)
+	else:
+		move_child(layer, 1)
+	return layer
+
+
 func _ensure_foot_shadow(body: TextureRect) -> void:
 	if body == null:
 		return
-	var layer := get_node_or_null("ShadowLayer") as Control
-	if layer == null:
-		layer = Control.new()
-		layer.name = "ShadowLayer"
-		layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		layer.set_anchors_preset(Control.PRESET_FULL_RECT)
-		add_child(layer)
-		if arena:
-			move_child(layer, arena.get_index())
-		else:
-			move_child(layer, mini(3, get_child_count() - 1))
+	## 舊版掛在角色身上的子節點拿掉，改走獨立層。
+	var leftover := body.get_node_or_null("FootShadow")
+	if leftover:
+		leftover.queue_free()
+	var layer := _shadow_layer()
 	var key := "FootShadow_%s" % body.name
-	var sh := layer.get_node_or_null(key) as Sprite2D
+	var sh := layer.get_node_or_null(key) as TextureRect
 	if sh == null:
-		sh = Sprite2D.new()
+		sh = TextureRect.new()
 		sh.name = key
+		sh.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sh.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		sh.stretch_mode = TextureRect.STRETCH_SCALE
+		sh.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		sh.texture = _soft_shadow_tex()
-		sh.centered = true
-		sh.z_index = 0
+		sh.layout_mode = 0
 		layer.add_child(sh)
-	_layout_foot_shadow(body, Vector2(180, 36))
+	_layout_foot_shadow(body)
 
 
-func _layout_foot_shadow(body: TextureRect, sz: Vector2) -> void:
+func _layout_foot_shadow(body: TextureRect) -> void:
 	if body == null:
 		return
 	var layer := get_node_or_null("ShadowLayer") as Control
 	if layer == null:
 		return
-	var sh := layer.get_node_or_null("FootShadow_%s" % body.name) as Sprite2D
+	var sh := layer.get_node_or_null("FootShadow_%s" % body.name) as TextureRect
 	if sh == null or sh.texture == null:
 		return
-	var r := body.get_global_rect()
-	if r.size.x < 8.0 or r.size.y < 8.0:
+	var dr := _body_drawn_rect(body)
+	if dr.size.x < 8.0 or dr.size.y < 8.0:
 		return
-	sh.global_position = Vector2(r.position.x + r.size.x * 0.5, r.position.y + r.size.y - 6.0)
-	var tw := float(sh.texture.get_width())
-	var th := float(sh.texture.get_height())
-	if tw > 0.0 and th > 0.0:
-		sh.scale = Vector2(sz.x / tw, sz.y / th)
+	var frac := _content_bottom_frac(body.texture)
+	var origin := body.global_position
+	var feet := origin + Vector2(dr.position.x + dr.size.x * 0.5, dr.position.y + dr.size.y * frac)
+	var sz := Vector2(maxf(dr.size.x * 1.35, 220.0), maxf(dr.size.x * 0.36, 70.0))
+	sh.size = sz
+	## 四成貼住鞋底，六成落在地面。
+	sh.global_position = Vector2(feet.x - sz.x * 0.5, feet.y - sz.y * 0.40)
+	sh.visible = true
+	sh.modulate = Color(1, 1, 1, 1)
+	sh.z_index = 0
 
 
 func _ensure_screen_grade() -> void:
@@ -788,8 +869,6 @@ func _ensure_battle_look() -> void:
 	_apply_outline(enemy_body, 3.2)
 	_ensure_foot_shadow(player_body)
 	_ensure_foot_shadow(enemy_body)
-	_layout_foot_shadow(player_body, Vector2(150, 32))
-	_layout_foot_shadow(enemy_body, Vector2(180, 36))
 	if player_body and not player_body.resized.is_connected(_layout_battle_equipment_overlays):
 		player_body.resized.connect(_layout_battle_equipment_overlays)
 	if enemy_body and not enemy_body.resized.is_connected(_layout_battle_equipment_overlays):
@@ -945,8 +1024,8 @@ func _apply_battle_weapon_overlay() -> void:
 
 
 func _layout_battle_equipment_overlays() -> void:
-	_layout_foot_shadow(player_body, Vector2(150, 32))
-	_layout_foot_shadow(enemy_body, Vector2(180, 36))
+	_layout_foot_shadow(player_body)
+	_layout_foot_shadow(enemy_body)
 	if player_body == null:
 		return
 	var bs := player_body.size
