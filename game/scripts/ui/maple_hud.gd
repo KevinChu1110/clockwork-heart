@@ -6,6 +6,7 @@ extends Control
 const VITALS_GROUP := "hud_vitals"
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const WindowDrag = preload("res://scripts/ui/window_drag.gd")
 
 var _panel: PanelContainer
@@ -27,9 +28,10 @@ func _ready() -> void:
 	set_anchors_preset(Control.PRESET_TOP_LEFT)
 	anchor_right = 0
 	anchor_bottom = 0
-	position = Vector2(10, 10)
-	size = Vector2(220, 128)
-	custom_minimum_size = Vector2(220, 128)
+	var m := ResponsiveUi.safe_margin(self)
+	position = Vector2(m.x, m.y)
+	size = Vector2(260, 148)
+	custom_minimum_size = Vector2(260, 148)
 	_build()
 	## 戰鬥中 HP 由 BattleSim 的戰鬥單位當權威，變動不經過任何訊號。
 	## 加進群組讓 battle_view 每幀推一次，兩條血條才不會各說各話。
@@ -42,7 +44,8 @@ func _restore_layout() -> void:
 	if Engine.get_main_loop() is SceneTree:
 		var ul: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("UiLayout")
 		if ul and ul.has_method("apply_to"):
-			ul.call("apply_to", self, "hud", Vector2(10, 10))
+			var m := ResponsiveUi.safe_margin(self)
+			ul.call("apply_to", self, "hud", Vector2(m.x, m.y))
 
 
 func _build() -> void:
@@ -69,7 +72,7 @@ func _build() -> void:
 	_drag_handle.add_child(row)
 
 	_lv_l = Label.new()
-	_lv_l.add_theme_font_size_override("font_size", 11)
+	_lv_l.add_theme_font_size_override("font_size", 13)
 	_lv_l.add_theme_color_override("font_color", UiStyle.HUD_LV)
 	_lv_l.add_theme_constant_override("font_weight", 700)
 	_lv_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -77,7 +80,7 @@ func _build() -> void:
 
 	_name_l = Label.new()
 	_name_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_name_l.add_theme_font_size_override("font_size", 13)
+	_name_l.add_theme_font_size_override("font_size", 15)
 	_name_l.add_theme_color_override("font_color", UiStyle.HUD_TEXT)
 	_name_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(_name_l)
@@ -99,7 +102,7 @@ func _build() -> void:
 	_hp_val.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_hp_val.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hp_val.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_hp_val.add_theme_font_size_override("font_size", 11)
+	_hp_val.add_theme_font_size_override("font_size", 13)
 	_hp_val.add_theme_color_override("font_color", UiStyle.HUD_TEXT)
 	_hp_val.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.6))
 	_hp_val.add_theme_constant_override("shadow_offset_x", 1)
@@ -116,7 +119,7 @@ func _build() -> void:
 	v.add_child(_exp_bar)
 
 	_gold_l = Label.new()
-	_gold_l.add_theme_font_size_override("font_size", 11)
+	_gold_l.add_theme_font_size_override("font_size", 13)
 	_gold_l.add_theme_color_override("font_color", UiStyle.HUD_GOLD)
 	_gold_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(_gold_l)
@@ -136,8 +139,8 @@ func _build() -> void:
 		_acc_cells.append(cell)
 
 	_tip_l = Label.new()
-	## 狀態字 11–13（UI.md §0.2）；10 在 1280×720 縮到手機上就糊了
-	_tip_l.add_theme_font_size_override("font_size", 11)
+	## 狀態字拉到可讀；不當 1280×720 縮放後的 10px
+	_tip_l.add_theme_font_size_override("font_size", 13)
 	_tip_l.add_theme_color_override("font_color", UiStyle.HUD_TEXT_DIM)
 	_tip_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(_tip_l)

@@ -4,6 +4,7 @@ extends Control
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 
 signal battle_finished(won: bool)
 
@@ -413,6 +414,7 @@ func _apply_hud_chrome() -> void:
 
 	if btn_flee:
 		UiStyle.style_button(btn_flee, false)
+		ResponsiveUi.apply_core_button(btn_flee)
 		btn_flee.text = Loc.t("battle.flee")
 		if _mode == "training_dummy":
 			btn_flee.disabled = false
@@ -463,9 +465,37 @@ func _apply_hud_chrome() -> void:
 		_rage_ready.add_theme_constant_override("shadow_offset_y", 1)
 		_rage_ready.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(_rage_ready)
+	_apply_safe_hud()
 	_ensure_weapon_dock()
 	_ensure_coach()
 	_install_touch_controls()
+
+
+func _apply_safe_hud() -> void:
+	var m := ResponsiveUi.safe_margin(self)
+	var bars := get_node_or_null("SideBars") as Control
+	if bars:
+		bars.offset_left = m.x + 16.0
+		bars.offset_top = m.y + 8.0
+		bars.offset_right = -(m.z + 16.0)
+	if btn_flee:
+		btn_flee.offset_right = -m.z
+		btn_flee.offset_bottom = -m.w
+		btn_flee.offset_left = -114.0 - m.z
+		btn_flee.offset_top = -ResponsiveUi.BTN_H - 8.0 - m.w
+	if _log_panel:
+		_log_panel.offset_left = m.x + 16.0
+		_log_panel.offset_right = -(m.z + 16.0)
+		_log_panel.offset_bottom = -52.0 - m.w
+		_log_panel.offset_top = -188.0 - m.w
+	if _rage_ready:
+		_rage_ready.offset_left = m.x + 16.0
+		_rage_ready.offset_top = m.y + 156.0
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_RESIZED and _hud_styled:
+		_apply_safe_hud()
 
 
 func _ensure_weapon_dock() -> void:

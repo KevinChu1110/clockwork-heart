@@ -1,6 +1,6 @@
 extends Node
 ## 顯示設定：全螢幕／視窗 + 解析度，存 user://display_settings.json
-## 預設：全螢幕；解析度 1280×720（邏輯 viewport 固定 16:9）
+## 1280×720 是視窗後備值，不是 UI 設計基準（見 ResponsiveUi）。
 
 const PATH := "user://display_settings.json"
 

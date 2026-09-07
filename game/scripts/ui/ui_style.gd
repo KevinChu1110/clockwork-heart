@@ -296,7 +296,7 @@ static func style_button(btn: Button, primary: bool = false) -> void:
 		btn.add_theme_constant_override("outline_size", 2)
 	btn.add_theme_color_override("font_disabled_color", Color(0.65, 0.60, 0.55, 0.7))
 	btn.add_theme_font_size_override("font_size", 17)
-	btn.custom_minimum_size = Vector2(0, 48)
+	btn.custom_minimum_size = Vector2(0, 50)
 
 
 static func attach_red_dot(parent: Control, offset: Vector2 = Vector2(-4, -4)) -> Panel:

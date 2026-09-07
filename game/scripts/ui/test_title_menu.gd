@@ -22,7 +22,9 @@ func _fail(msg: String) -> void:
 
 func _collect_buttons(n: Node, out: Array) -> void:
 	if n is Button:
-		out.append((n as Button).text)
+		var b := n as Button
+		if b.name != "CloseBtn" and b.text != "✕":
+			out.append(b.text)
 	for c in n.get_children():
 		_collect_buttons(c, out)
 

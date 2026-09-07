@@ -7,6 +7,7 @@ signal request_battle(mode: String)
 signal request_settings()
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 
 const DEFAULT_HERO_NAME: String = "新人"
@@ -87,14 +88,17 @@ func _get_hero_name() -> String:
 	return DEFAULT_HERO_NAME
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(1280, 720)
-	size = Vector2(1280, 720)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_load_hero_poses()
 	_build_ui()
 	refresh_hud()
 	_switch_tab(Tab.VILLAGE)
+	call_deferred("_apply_safe")
+
+
+func _apply_safe() -> void:
+	ResponsiveUi.apply_safe_margins(self)
 
 func _load_hero_poses() -> void:
 	if ResourceLoader.exists("res://assets/sprites/player/poses/idle.png"):
