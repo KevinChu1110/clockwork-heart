@@ -20,6 +20,16 @@ const BOSS_MODES := {
 	"scar_lord": true, "mirror_wraith": true, "wreck_captain": true,
 }
 
+## 四地區戰役主線首領 → 通關旗。未通關首次免費，避免第一天被體力牆卡住主線。
+const STORY_BOSS_CLEAR := {
+	"leo": "boss.leo_cleared",
+	"fog": "boss.white_fog_cleared",
+	"abo": "boss.abo_cleared",
+	"falcon": "boss.shadowwind_cleared",
+	"boar": "boss.stonefist_cleared",
+	"demon": "boss.demon_cleared",
+}
+
 
 static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
@@ -88,6 +98,9 @@ func cost_for_mode(mode: String) -> int:
 	if VisitSystem and VisitSystem.pending_id() != "" and mode == "pvp_snap":
 		return 0
 	if BOSS_MODES.has(mode):
+		var flag := str(STORY_BOSS_CLEAR.get(mode, ""))
+		if flag != "" and not GameState.has_flag(flag):
+			return 0
 		return COST_BOSS
 	## 廣域小王
 	var WC = load("res://scripts/world/world_content.gd")

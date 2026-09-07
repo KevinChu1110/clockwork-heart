@@ -1,7 +1,9 @@
 extends SceneTree
 ## 能量制的把關測試：godot --headless -s res://scripts/systems/test_energy_gate.gd
 ##
-## 守一件事：**演武／獵場的「波次免能量」只放行那一波的對手。**
+## 守兩件事：
+## 1. 演武／獵場的「波次免能量」只放行那一波的對手。
+## 2. 主線首領未通關 0 耗能、通關後重複挑戰收 3。
 ##
 ## 踩過：cost_for_mode() 只看 is_run_active()。開一場獵場打贏第一波、不收尾
 ## （進度存在旗標裡，重開遊戲還在），之後野原雜魚、秘境小王、雷歐、魔王
@@ -29,13 +31,41 @@ func _initialize() -> void:
 	gs.set_flag("c0_first_battle", true)
 	gs.set_flag("c1_entered_city", true)
 
-	## 沒有任何場次進行中：雜魚 1、首領 3
+	## 沒有任何場次進行中：雜魚 1；主線首領未通關 0；秘境小王仍 3
 	if int(en.cost_for_mode("ash_rat")) != en.COST_MOB:
 		_fail("平時雜魚應耗 %d，得 %d" % [en.COST_MOB, int(en.cost_for_mode("ash_rat"))])
-	if int(en.cost_for_mode("leo")) != en.COST_BOSS:
-		_fail("平時雷歐應耗 %d，得 %d" % [en.COST_BOSS, int(en.cost_for_mode("leo"))])
+	for mode in ["leo", "fog", "abo", "falcon", "boar", "demon"]:
+		if int(en.cost_for_mode(mode)) != 0:
+			_fail("主線首領 %s 未通關應耗 0，得 %d" % [mode, int(en.cost_for_mode(mode))])
+	if int(en.cost_for_mode("scar_lord")) != en.COST_BOSS:
+		_fail("秘境小王未通關仍應耗 %d，得 %d" % [en.COST_BOSS, int(en.cost_for_mode("scar_lord"))])
 
-	## 獵場開跑（第一波 ash_rat）
+	## 通關後重複挑戰收首領價
+	gs.set_flag("boss.leo_cleared", true)
+	if int(en.cost_for_mode("leo")) != en.COST_BOSS:
+		_fail("雷歐通關後應耗 %d，得 %d" % [en.COST_BOSS, int(en.cost_for_mode("leo"))])
+	if int(en.cost_for_mode("fog")) != 0:
+		_fail("白霧未通關不該被雷歐通關旗連坐，得 %d" % int(en.cost_for_mode("fog")))
+
+	## 未通關開戰不扣能量
+	gs.flags.erase("boss.leo_cleared")
+	gs.energy = 15
+	gs.energy_ts = Time.get_unix_time_from_system()
+	var first: Dictionary = en.try_spend_for_battle("leo")
+	if not bool(first.get("ok", false)) or int(first.get("cost", -1)) != 0 or int(gs.energy) != 15:
+		_fail("雷歐首通應 ok、cost 0、能量仍 15，得 %s energy=%d" % [str(first), int(gs.energy)])
+	else:
+		print("  ok 主線首領未通關 0 耗能、通關後 %d；首通不扣能量" % en.COST_BOSS)
+
+	## 通關後能量不足會擋
+	gs.set_flag("boss.leo_cleared", true)
+	gs.energy = 2
+	var deny: Dictionary = en.try_spend_for_battle("leo")
+	if bool(deny.get("ok", false)):
+		_fail("雷歐通關後能量 2 應擋下 cost 3")
+	gs.energy = 15
+
+	## 獵場開跑（第一波 ash_rat）。雷歐已通關，必須仍收 3 —— 不能被獵場波次免能量連坐。
 	var r: Dictionary = hunt.start_run(true)
 	if not bool(r.get("ok", false)):
 		_fail("獵場開不了：%s" % str(r.get("msg", "")))
@@ -44,7 +74,7 @@ func _initialize() -> void:
 	if int(en.cost_for_mode(wave_mode)) != 0:
 		_fail("獵場進行中，本波對手 %s 應免能量，得 %d" % [wave_mode, int(en.cost_for_mode(wave_mode))])
 	if int(en.cost_for_mode("leo")) != en.COST_BOSS:
-		_fail("獵場進行中打雷歐居然只耗 %d（應 %d）—— 一點能量換整個能量制失效" % [
+		_fail("獵場進行中打已通關雷歐居然只耗 %d（應 %d）—— 一點能量換整個能量制失效" % [
 			int(en.cost_for_mode("leo")), en.COST_BOSS
 		])
 	if int(en.cost_for_mode("scar_lord")) != en.COST_BOSS:
@@ -55,7 +85,8 @@ func _initialize() -> void:
 	hunt.abandon_run()
 	print("  ok 獵場進行中：本波 %s 免費，雷歐仍 %d、別種雜魚仍 %d" % [wave_mode, en.COST_BOSS, en.COST_MOB])
 
-	## 演武同理
+	## 演武同理（魔王先標通關，才能驗「波次免能量沒把魔王連坐成 0」）
+	gs.set_flag("boss.demon_cleared", true)
 	var ra: Dictionary = arena.start_run(true)
 	if not bool(ra.get("ok", false)):
 		_fail("演武開不了：%s" % str(ra.get("msg", "")))
@@ -64,7 +95,7 @@ func _initialize() -> void:
 	if int(en.cost_for_mode(am)) != 0:
 		_fail("演武進行中，本波對手 %s 應免能量" % am)
 	if int(en.cost_for_mode("demon")) != en.COST_BOSS:
-		_fail("演武進行中打魔王只耗 %d（應 %d）" % [int(en.cost_for_mode("demon")), en.COST_BOSS])
+		_fail("演武進行中打已通關魔王只耗 %d（應 %d）" % [int(en.cost_for_mode("demon")), en.COST_BOSS])
 	arena.abandon_run()
 	print("  ok 演武進行中：本波 %s 免費，魔王仍 %d" % [am, en.COST_BOSS])
 
@@ -83,7 +114,7 @@ func _initialize() -> void:
 	if int(en.cost_for_mode("pvp_snap")) != 0:
 		_fail("拜訪中殘影戰應免能量，得 %d" % int(en.cost_for_mode("pvp_snap")))
 	if int(en.cost_for_mode("leo")) != en.COST_BOSS:
-		_fail("殘留的拜訪旗讓雷歐只耗 %d（應 %d）" % [int(en.cost_for_mode("leo")), en.COST_BOSS])
+		_fail("殘留的拜訪旗讓已通關雷歐只耗 %d（應 %d）" % [int(en.cost_for_mode("leo")), en.COST_BOSS])
 	if int(en.cost_for_mode("ash_rat")) != en.COST_MOB:
 		_fail("殘留的拜訪旗讓雜魚只耗 %d（應 %d）" % [int(en.cost_for_mode("ash_rat")), en.COST_MOB])
 	visit.clear_pending()
