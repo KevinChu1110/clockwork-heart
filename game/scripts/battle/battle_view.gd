@@ -251,8 +251,8 @@ func setup(mode: String) -> void:
 		_append_log(_t("[color=#8cf]分身多 · 本體發白才打得中 · 砍幻影會反咬、變慢[/color]"))
 		parry_hint.text = _kh(_t("【Tab/1-3】鎖目標　·　本體發白才輸出　·　別打幻影"))
 	elif mode == "demon":
-		_append_log(_t("魔王：那就來——用你的微末，撞我的千年。"))
-		_append_log(_t("[color=#c8f]黑焰必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]"))
+		_append_log(_t("停擺核：那就來——用你的微末，撞我的千年。"))
+		_append_log(_t("[color=#c8f]黑鏽必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]"))
 		parry_hint.text = _kh(_t("【J】必殺格擋　·　【Tab】鎖部位　·　時鐘窗"))
 	elif mode == "abo":
 		_append_log(_t("阿波：來。打我的架勢——用拳，不是用嘴。"))
@@ -931,7 +931,7 @@ func _show_temptation(data: Dictionary) -> void:
 	_refuse_btn.text = _t("我拒絕")
 	_tempt_layer.visible = true
 	_tempt_layer.move_to_front()
-	_append_log(_t("[color=#f9a]戰鬥暫停：魔王的誘惑（%s）[/color]") % data.get("title"))
+	_append_log(_t("[color=#f9a]戰鬥暫停：停擺核的誘惑（%s）[/color]") % data.get("title"))
 
 
 func _on_refuse_pressed() -> void:
@@ -943,12 +943,12 @@ func _on_refuse_pressed() -> void:
 	var keys := ["", "c6_refuse_power", "c6_refuse_revenge", "c6_refuse_peace"]
 	if st >= 1 and st <= 3:
 		GameState.set_flag(keys[st], true)
-	_append_log(_t("[color=#8f8]你拒絕了（%s）。黑焰外殼裂開一點。[/color]") % st)
+	_append_log(_t("[color=#8f8]你拒絕了（%s）。黑鏽外殼裂開一點。[/color]") % st)
 	if st == 3:
 		_enemy_base_mod = Color(0.85, 0.8, 0.9)
 		enemy_body.modulate = _enemy_base_mod
-		enemy_name.text = _t("前任·至弱者殘影")
-		_append_log(_t("[color=#ddf]黑焰大片剝落……外形收束。[/color]"))
+		enemy_name.text = _t("前任·先行者殘影")
+		_append_log(_t("[color=#ddf]黑鏽大片剝落……外形收束。[/color]"))
 
 
 func _on_listen_then_refuse() -> void:
@@ -1230,7 +1230,7 @@ func _refresh_hud() -> void:
 					_refresh_part_focus_hint()
 				elif _mode == "demon":
 					parry_hint.modulate = Color(1, 1, 1)
-					parry_hint.text = _kh(_t("黑焰必殺可格擋 · 階段誘惑選「我拒絕」"))
+					parry_hint.text = _kh(_t("黑鏽必殺可格擋 · 階段誘惑選「我拒絕」"))
 				elif _mode == "abo":
 					_update_abo_guard_hud()
 				elif _mode == "falcon":

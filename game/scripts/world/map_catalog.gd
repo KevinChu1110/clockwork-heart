@@ -547,7 +547,7 @@ static func _crossroads() -> Dictionary:
 		_e("path_dojo_c", 1740, 83, 72, 64, "北·道場", Color(0.4, 0.55, 0.35)),
 		_e("path_forest_c", 2400, 85, 72, 64, "東北·森林", Color(0.35, 0.55, 0.4)),
 		_e("path_coast_c", 2400, 537, 72, 64, "東南·海岸", Color(0.4, 0.55, 0.65)),
-		_e("path_tower_c", 2700, 198, 72, 64, "東·法師之塔", Color(0.45, 0.35, 0.55)),
+		_e("path_tower_c", 2700, 198, 72, 64, "東·通天塔", Color(0.45, 0.35, 0.55)),
 		_e("to_cross_north", 1620, 91, 64, 56, "北山道", Color(0.4, 0.5, 0.4)),
 		_e("to_cross_east", 2820, 421, 64, 56, "東塔荒原道", Color(0.4, 0.35, 0.45)),
 		_e("to_caravan", 900, 760, 64, 56, "行商驛站", Color(0.55, 0.45, 0.35)),
@@ -975,7 +975,7 @@ static func _coast_wreck() -> Dictionary:
 # ═══════════════════════════════════════════
 
 static func _tower_camp() -> Dictionary:
-	var m := _base("法師之塔 · 塔下營地", Color(0.08, 0.07, 0.12), 2800, 1575, Vector2(488, 1088), "tower")
+	var m := _base("通天塔 · 塔下營地", Color(0.08, 0.07, 0.12), 2800, 1575, Vector2(488, 1088), "tower")
 	var ents: Array = [
 		_e("duanye", 800, 898, 48, 64, "斷頁", Color(0.55, 0.45, 0.65)),
 		_e("refugee_fire", 740, 1260, 56, 48, "逃難營火", Color(0.9, 0.4, 0.15), true),
@@ -999,7 +999,7 @@ static func _tower_camp() -> Dictionary:
 
 
 static func _tower_foyer() -> Dictionary:
-	var m := _base("法師之塔 · 門廳", Color(0.07, 0.06, 0.11), 2400, 1340, Vector2(280, 1259), "tower_foyer")
+	var m := _base("通天塔 · 門廳", Color(0.07, 0.06, 0.11), 2400, 1340, Vector2(280, 1259), "tower_foyer")
 	m["entities"] = [
 		_e("back_tower_camp", 252, 1176, 56, 56, "回營地", Color(0.4, 0.35, 0.5)),
 		_e("pillar_a", 548, 831, 40, 80, "黑石柱", Color(0.3, 0.25, 0.35), true),
@@ -1013,7 +1013,7 @@ static func _tower_foyer() -> Dictionary:
 
 
 static func _tower_stairs() -> Dictionary:
-	var m := _base("法師之塔 · 螺旋階", Color(0.06, 0.05, 0.1), 2200, 1238, Vector2(568, 1095), "tower_stairs")
+	var m := _base("通天塔 · 螺旋階", Color(0.06, 0.05, 0.1), 2200, 1238, Vector2(568, 1095), "tower_stairs")
 	m["entities"] = [
 		_e("back_tower_camp", 540, 1014, 56, 56, "下塔", Color(0.4, 0.35, 0.5)),
 		_e("step_mark", 456, 783, 48, 40, "腳印", Color(0.35, 0.3, 0.4)),
@@ -1026,7 +1026,7 @@ static func _tower_stairs() -> Dictionary:
 
 
 static func _tower_memory() -> Dictionary:
-	var m := _base("法師之塔 · 回憶層", Color(0.08, 0.06, 0.12), 2400, 1350, Vector2(280, 1268), "tower_memory")
+	var m := _base("通天塔 · 回憶層", Color(0.08, 0.06, 0.12), 2400, 1350, Vector2(280, 1268), "tower_memory")
 	m["entities"] = [
 		_e("back_tower_camp", 252, 1185, 56, 56, "離開回憶", Color(0.4, 0.35, 0.5)),
 		_e("memory_orb_a", 496, 1004, 48, 48, "記憶球·村", Color(0.55, 0.45, 0.4)),

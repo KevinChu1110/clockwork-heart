@@ -960,9 +960,9 @@ func _begin_temptation(stage: int) -> void:
 			d.state_timer = 0.0
 	var titles := {1: _t("力量"), 2: _t("復仇"), 3: _t("安穩")}
 	var lines := {
-		1: _t("我給你力量。一擊劈開黑焰。你的村、你的人，瞬間安全。你不是慕強。你只是——效率。"),
-		2: _t("恨我。恨燒村的焰。把恨鍛成刃——比愛鋒利。"),
-		3: _t("放下劍。我替你撐封印。你回村。麥田會在。永不變強的安穩——這不就是「不慕強權」嗎？"),
+		1: _t("我給你力量。一擊劈開黑鏽。你的閣樓、你的同伴，瞬間安全。你不是過緊。你只是——效率。"),
+		2: _t("恨我。恨讓閣樓停擺的鏽。把恨鍛成刃——比愛鋒利。"),
+		3: _t("放下劍。我替你撐大鐘。你回閣樓。舊鑰會在。永遠不上弦的安穩——這不就是「發條最鬆」嗎？"),
 	}
 	_emit("temptation", {
 		"stage": stage,
@@ -1024,7 +1024,7 @@ func _start_king_slash(u: BattleUnit) -> void:
 	var foes: Array = living_of(BattleUnit.Team.PLAYER)
 	if not foes.is_empty():
 		u.target_id = foes[0].id
-	var skill_label := _t("黑焰必殺") if demon_mode else _t("王者斬")
+	var skill_label := _t("黑鏽必殺") if demon_mode else _t("王者斬")
 	_emit("king_slash_start", {"id": u.id, "windup": KING_SLASH_WINDUP, "label": skill_label})
 	_emit("state", {"id": u.id, "state": "telegraph"})
 
@@ -2211,7 +2211,7 @@ static func make_demon_fight(player_stats: Dictionary) -> BattleSim:
 
 	var demon := BattleUnit.new()
 	demon.id = "demon"
-	demon.display_name = _t("魔王")
+	demon.display_name = _t("停擺核")
 	demon.team = BattleUnit.Team.ENEMY
 	demon.is_boss = true
 	## 終章魔王。原本 520 血，Lv8 的玩家 22 刀就砍完（每刀約 23）——

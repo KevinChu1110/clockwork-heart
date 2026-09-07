@@ -3400,8 +3400,8 @@ func _flavor_world_object(id: String) -> void:
 		"longship": _t("長船乾擱。龍骨像巨獸的脊。"),
 		"tide_pool": _t("潮池裡有小蟹。與黑焰無關，很好。"),
 		"hull": _t("沉船灣的船骸張著口。像要說一個浪的故事。"),
-		"mural": _t("封印壁畫：五獸環塔。中央空白——那是你的位置嗎？"),
-		"memory_orb_a": _t("記憶球浮出村火。你眨眨眼，它散了。"),
+		"mural": _t("壁畫：五座守衛泰坦環塔。中央空白——那是你的位置嗎？"),
+		"memory_orb_a": _t("記憶球浮出閣樓的火。你眨眨眼，它散了。"),
 		"memory_orb_b": _t("記憶球：堡壘的旗第一次升起。"),
 		"memory_orb_c": _t("記憶球：聖獸還清明時的眼睛。"),
 		"throne_shadow": _t("王座影沒有實體。卻讓人想跪下——你沒有。"),
@@ -3680,7 +3680,7 @@ func _go_world_map() -> void:
 	var body := _t("[b]六域輿圖[/b]\n\n")
 	body += _t("　　　　西林（樹冠／靜湖／遺址）\n")
 	body += "　　　　　　｜\n"
-	body += _t("石拳海岸 ── 法師之塔 ── 堡壘\n")
+	body += _t("石拳海岸 ── 通天塔 ── 堡壘\n")
 	body += _t("（港／洞／沉船）　（門廳／階／回憶）　（四店／市集／演武）\n")
 	body += "　　　　　　｜\n"
 	body += _t("　　　白霧村／霧隱（崖／祠／鏡廊）\n")
@@ -7101,7 +7101,7 @@ func _go_c3_montage() -> void:
 	)
 
 
-# ─── C6 通天黑塔 ───
+# ─── C6 通天塔 ───
 
 func _go_c6_camp() -> void:
 	if not GameState.has_flag("boss.abo_cleared") and not GameState.has_flag("c3_montage_done"):
@@ -7130,7 +7130,7 @@ func _go_c6_camp() -> void:
 			{
 				"bg": "tower",
 				"speaker": _t("斷頁"),
-				"text": _t("最弱的走到塔下了。卷軸沒寫這一段。"),
+				"text": _t("把發條最鬆的送到塔下了。卷軸沒寫這一段。"),
 			},
 		]), _show_c6_camp_panel)
 	else:
@@ -7149,7 +7149,7 @@ func _c6_talk_duanye() -> void:
 	var lines: Array = [
 		{"speaker": _t("斷頁"), "text": _t("塔門……開了。千年來第一次。")},
 		{"speaker": _t("斷頁"), "text": _t("你若上去，卷軸只能寫到這裡。其餘——你自己走完。")},
-		{"speaker": _t("斷頁"), "text": _t("預言寫至弱。我信的不是預言。是你走到這裡的腳印。")},
+		{"speaker": _t("斷頁"), "text": _t("卷軸寫最鬆——我信的是你走到這裡的腳印。")},
 	]
 	if GameState.has_flag("c2_wheat_letter"):
 		lines.append({"speaker": _t("斷頁"), "text": _t("……信比卷軸真。記得回家的氣味。")})
@@ -7176,7 +7176,7 @@ func _c6_floor_blade() -> void:
 	var lines: Array = [
 		{"speaker": _t("旁白"), "text": _t("器之廳。壁畫上一柄古劍，紋路與微末之刃相同。")},
 		{"speaker": _t("內心"), "text": _t("紋……一樣。")},
-		{"speaker": _t("日誌"), "text": _t("古刃銘：微末。持之者，再未歸村。")},
+		{"speaker": _t("日誌"), "text": _t("古刃銘：微末。持之者，再未歸閣。")},
 	]
 	if GameState.has_flag("c1_ding_recognized_sword"):
 		lines.append({"speaker": _t("內心"), "text": _t("釘釘當時停住的兩秒……他認得葬過一次的鐵。")})
@@ -7187,28 +7187,28 @@ func _c6_floor_blade() -> void:
 func _c6_truth_hall() -> void:
 	_play_dialog([
 		{"speaker": _t("旁白"), "text": _t("名之廳。中央一道影。")},
-		{"speaker": "？？？", "text": _t("你走到這裡了。和我一樣輕。")},
+		{"speaker": "？？？", "text": _t("你走到這裡了。和我一樣輕。一樣……不該把發條過緊。")},
 		{
 			"speaker": "？？？",
 			"text": _t("想問什麼？"),
-			"choices": [_t("你是誰？"), _t("你是魔王？"), _t("（沉默）")],
+			"choices": [_t("你是誰？"), _t("停擺核？"), _t("（沉默）")],
 			"replies": [
-				_t("名字燒光了。他們後來叫我魔王。"),
-				_t("那是他們給的稱號。以前我也只是個很輕的人。"),
+				_t("名字燒光了。他們後來叫我停擺的核。"),
+				_t("那是他們給的稱號。以前，我也有過一個很輕的名字。"),
 				_t("……沉默也好。"),
 			],
 		},
-		{"speaker": "？？？", "text": _t("封印要塌時我吞下黑焰。至弱也能慕強——心會先死。")},
+		{"speaker": "？？？", "text": _t("走時要塌時我吞下黑鏽。發條最鬆的也能把發條過緊——心會先死。")},
 		{"speaker": "？？？", "text": _t("那柄劍也是我的。釘釘認得出葬過一次的鐵。")},
-		{"speaker": "？？？", "text": _t("現在輪到你。來。")},
+		{"speaker": "？？？", "text": _t("現在輪到你。來吧。證明你有另一條路。")},
 	], func():
 		GameState.set_flag("c6_truth_revealed", true)
 		SaveManager.save_game()
 		_panel(
 			_t("決戰之前"),
-			_t("魔王曾是第一位至弱者。\n\n黑焰外殼正在合攏……"),
+			_t("停擺核曾是第一個發條最鬆的先行者。\n\n黑鏽外殼正在合攏……"),
 			[
-				{"text": _t("迎戰魔王"), "cb": func(): _start_battle("demon")},
+				{"text": _t("迎戰停擺核"), "cb": func(): _start_battle("demon")},
 			]
 		)
 	)
@@ -7225,8 +7225,8 @@ func _c6_ending_cut() -> void:
 		{
 			"bg": "tower",
 			"speaker": _t("旁白"),
-			"portrait": _t("魔王"),
-			"text": _t("黑焰外殼裂開。裡面不是神——是一個也曾渺小的背影。"),
+			"portrait": _t("停擺核"),
+			"text": _t("黑鏽外殼裂開。裡面不是神——是一個也曾渺小的背影。"),
 		},
 		{
 			"bg": "tower",
@@ -7237,7 +7237,7 @@ func _c6_ending_cut() -> void:
 		{
 			"bg": "village",
 			"speaker": _t("旁白"),
-			"portrait": _t("麥穗"),
+			"portrait": _t("舊鑰"),
 			"text": _t("遠方，有人還在等。氣味比卷軸近。"),
 		},
 	]), _go_ending)
@@ -7285,7 +7285,7 @@ func _go_ending() -> void:
 		title_pop = _t("\n\n新稱號：%s") % "、".join(new_titles)
 	_panel(
 		_t("終章 · 晨光"),
-		_t("塔裂了。焰散了。\n不是因為變強，是因為沒把心餵給焰。\n\n麥穗：%s%s%s%s%s\n\n通關。塔外裂縫還在。") % [maisui_line, ding_line, star_line, ng_line, title_pop],
+		_t("通天塔裂了。鏽散了。\n不是因為變強，是因為沒把心餵給鏽。\n\n舊鑰：%s%s%s%s%s\n\n通關。塔外裂縫還在。") % [maisui_line, ding_line, star_line, ng_line, title_pop],
 		[
 			{"text": _t("黑焰裂縫（通關後）"), "cb": _go_postgame_hub},
 			{"text": _t("稱號牆"), "cb": _go_title_wall},

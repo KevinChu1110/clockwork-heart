@@ -107,7 +107,7 @@ static func regions() -> Array:
 		{
 			"id": "r4",
 			"name": _t("第四區・潮岸與終境"),
-			"blurb": _t("沉船、疤地與塔底。旅程的盡頭。"),
+			"blurb": _t("沉船、疤地與通天塔。旅程的盡頭。"),
 			"stages": [
 				{
 					"id": "r4_s1",
@@ -124,7 +124,7 @@ static func regions() -> Array:
 				},
 				{
 					"id": "r4_s2",
-					"name": _t("關卡 2・黑焰疤地"),
+					"name": _t("關卡 2・通天塔"),
 					"maps": [{"id": "blackflame_scar", "label": _t("疤地")}],
 					"unlock": ["boss.stonefist_cleared"],
 					"clear_flag": "boss.demon_cleared",

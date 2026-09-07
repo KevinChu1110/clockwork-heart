@@ -2,19 +2,19 @@
   "c6.refugee": [
     {
       "speaker": "Refugiado",
-      "text": "La puerta de la torre está abierta. No nos atrevemos a subir. ¿Eres el más débil de la compañía?"
+      "text": "La puerta de la torre está abierta. No nos atrevemos a subir. ¿Eres el de cuerda más floja?"
     }
   ],
   "c6.scroll_pile": [
     {
       "speaker": "Pergamino",
-      "text": "El más débil puede llegar a la cima. Ansía la fuerza y la llama llegará antes."
+      "text": "El de cuerda más floja puede llegar a la cima. El pergamino nunca escribió el precio."
     }
   ],
   "c6.tower_gate": [
     {
       "speaker": "Narración",
-      "text": "La puerta de la torre está abierta. La Llama Negra respira en la rendija."
+      "text": "La puerta de la torre está abierta. El Óxido Negro respira en la rendija."
     }
   ],
   "c0.shrine_stub": [
@@ -508,7 +508,7 @@
     },
     {
       "speaker": "Voz ilusoria",
-      "text": "¿Hacerte fuerte y salvarlos a todos? La llama ríe primero."
+      "text": "¿Sobrecargar la cuerda y salvarlos a todos? El óxido ríe primero."
     },
     {
       "speaker": "Pensamiento",
@@ -521,20 +521,20 @@
   ],
   "c6.demon_win": [
     {
-      "speaker": "Rey Demonio",
-      "text": "Imposible… el más débil de la compañía…"
+      "speaker": "Núcleo de Inactividad",
+      "text": "Imposible… el de cuerda más floja…"
     },
     {
-      "speaker": "El Anterior",
+      "speaker": "Predecesor",
       "text": "…No. Es lo que debía ser."
     },
     {
-      "speaker": "El Anterior",
+      "speaker": "Predecesor",
       "text": "La próxima vez… no sigas mi camino."
     },
     {
-      "speaker": "El Anterior",
-      "text": "Te devuelvo la espada. O… dásela al siguiente que sea tan ligero como nosotros."
+      "speaker": "Predecesor",
+      "text": "Te devuelvo la espada. O… dásela al siguiente juguete tan ligero como nosotros."
     },
     {
       "speaker": "Sistema",
