@@ -318,6 +318,9 @@ static func _ring_tex() -> Texture2D:
 func _spawn_tap_fx(world: Vector2) -> void:
 	if _stage == null or not is_inside_tree():
 		return
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	if gp != null and not gp.vfx_enabled():
+		return
 	var fx := Sprite2D.new()
 	fx.texture = _ring_tex()
 	fx.centered = true

@@ -2697,7 +2697,8 @@ func _toggle_locale() -> void:
 func _go_display_settings() -> void:
 	## 顯示：全螢幕／視窗 + 解析度 + 垂直同步
 	var body := "[b]%s[/b]\n\n" % Loc.t("display.title")
-	body += DisplaySettings.summary_line() + "\n\n"
+	body += DisplaySettings.summary_line() + "\n"
+	body += GraphicsProfile.summary_line() + "\n\n"
 	body += Loc.t("display.blurb") + "\n"
 	## 解析度只有視窗模式吃得到。不講的話，玩家在全螢幕下點了一排解析度、
 	## 每個都打勾、每個都跳提示，卻什麼都沒變。
@@ -2717,6 +2718,7 @@ func _go_display_settings() -> void:
 		})
 	var vs_label := Loc.t("display.vsync_on") if DisplaySettings.vsync else Loc.t("display.vsync_off")
 	buttons.append({"text": vs_label, "cb": _display_toggle_vsync})
+	buttons.append({"text": Loc.t("display.quality_cycle", {"tier": GraphicsProfile.choice_label()}), "cb": _display_cycle_quality})
 	buttons.append({"text": Loc.t("display.apply"), "cb": _display_settings_back})
 	_panel(Loc.t("display.title"), body, buttons)
 	_refresh_hud()
@@ -2748,6 +2750,12 @@ func _display_pick_res(rid: String) -> void:
 
 func _display_toggle_vsync() -> void:
 	DisplaySettings.set_vsync(not DisplaySettings.vsync)
+	AudioManager.play_ui()
+	_go_display_settings()
+
+
+func _display_cycle_quality() -> void:
+	GraphicsProfile.cycle_choice()
 	AudioManager.play_ui()
 	_go_display_settings()
 

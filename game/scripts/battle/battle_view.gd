@@ -2240,6 +2240,9 @@ func _skill_fx_kind(skill_id: String) -> String:
 
 
 func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> void:
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	if gp != null and not gp.vfx_enabled():
+		return
 	var body := _body_of(defender_id)
 	if body == null:
 		return

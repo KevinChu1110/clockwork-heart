@@ -119,8 +119,8 @@
    "id": "mob-lowend",
    "cat": "遊戲",
    "title": "🥈 手機化 5／6：低階手機三檔 profile",
-   "status": "草稿",
-   "note": "Low / Mid / High 三檔。⛔ 不能只在開發機上測。",
+   "status": "測試中",
+   "note": "Low 關陰影／粒子／裝飾特效、scale 0.5（640×360）；Mid 粒子半量 scale 0.75；High=現況。桌面 auto=High。test_graphics_profile 綠；另用 --rendering-method mobile／gl_compatibility 各跑一輪。未推 main。",
    "keys": [
     "低階",
     "profile",
