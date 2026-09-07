@@ -46,7 +46,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.no_worship",
 		"name": "我不慕強權",
-		"desc": "魔王三拒皆滿。",
+		"desc": "塔底三拒皆滿。",
 		"cond": "refuse_all",
 	},
 	{
@@ -70,13 +70,13 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.echo_walker",
 		"name": "迴響行者",
-		"desc": "黑焰迴響任意層再通關。",
+		"desc": "黑鏽迴響任意層再通關。",
 		"cond": "echo",
 	},
 	{
 		"flag": "title.wheat_keeper",
-		"name": "稈在",
-		"desc": "麥稈替你擋過一擊。",
+		"name": "鑰繩還在",
+		"desc": "鑰繩替你擋過一擊。",
 		"cond": "wheat",
 	},
 	{
@@ -111,7 +111,7 @@ const ENTRIES: Array[Dictionary] = [
 	},
 	{
 		"flag": "title.world_wanderer",
-		"name": "翠嶺漫遊者",
+		"name": "世界漫遊者",
 		"desc": "造訪三十處不同的土地。",
 		"cond": "visit30",
 	},

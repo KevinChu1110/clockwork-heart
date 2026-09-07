@@ -37,8 +37,8 @@
    "id": "world-translate",
    "cat": "世界觀",
    "title": "🥇 C0–C6 世界觀轉譯（骨架保留、表皮全換）",
-   "status": "草稿",
-   "note": "⛔ 不是重寫。保留地圖結構、關卡、戰鬥流程、NPC 數量、任務流程、劇情節奏、分歧結構；只換人類→玩具、傭兵→守護者、魔王→停擺異常核心、武器與能量來源、NPC 身份、主角動機、所有世界名詞。第一版不需要完美。",
+   "status": "測試中",
+   "note": "C0–C6 文件與遊戲內字已進",
    "keys": [
     "轉譯",
     "世界觀",
@@ -54,7 +54,7 @@
    "cat": "世界觀",
    "title": "🥇 第一章 30 分鐘體驗（轉譯後）",
    "status": "測試中",
-   "note": "完成 C0 世界觀轉譯，送交總監審核",
+   "note": "C0 player-visible strings in game; review fixes (save chapter name, journey notes, leave attic, codex newlines). not on main.",
    "keys": [
     "第一章",
     "序章",
@@ -78,8 +78,8 @@
    "id": "mob-input",
    "cat": "遊戲",
    "title": "🥈 手機化 2／6：輸入抽象層",
-   "status": "草稿",
-   "note": "收斂成 Move / Attack / Interact / Skill / SwitchWeapon / Confirm / Cancel 七個語意動作。PC 綁鍵鼠與手把，手機綁觸控與虛擬按鍵。⛔ 程式碼裡不得再直接判斷滑鼠或鍵盤。",
+   "status": "測試中",
+   "note": "GameInput 七語意動作; 冒煙與 test_game_input/battle_keys/battle_touch 綠; 分支 agent/2026-09-07-input-abstraction",
    "keys": [
     "input",
     "輸入",

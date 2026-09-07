@@ -26,12 +26,12 @@ static func links() -> Dictionary:
 		"trail_east": {
 			"map": "road", "screen": "C0_ROAD",
 			"need_flag": "item.rusty_sword",
-			"deny": _t("空手走不遠。先回村撿劍。"),
+			"deny": _t("空手走不遠。先回閣樓撿劍。"),
 		},
 		"mill_to_road": {
 			"map": "road", "screen": "C0_ROAD",
 			"need_flag": "item.rusty_sword",
-			"deny": _t("沒有武器不建議上荒路。"),
+			"deny": _t("沒有武器不建議往外走。"),
 		},
 
 		## ── 荒路 ──
@@ -44,7 +44,7 @@ static func links() -> Dictionary:
 		"exit_town_hint": {"map": "town", "screen": "C1_TOWN", "need_flag": "c0_first_battle", "deny": ""},
 		"dawn_glow": {"map": "town", "screen": "C1_TOWN", "need_flag": "c0_first_battle", "deny": ""},
 
-		## ── 騎士堡 ──
+		## ── 堡壘 ──
 		"exit_keep": {"map": "town_keep", "screen": "C1_TOWN"},
 		"back_town": {"map": "town", "screen": "C1_TOWN"},
 		"to_market": {"map": "town_market", "screen": "C1_TOWN"},
@@ -106,7 +106,7 @@ static func links() -> Dictionary:
 		"to_hunt": {
 			"map": "hunting_grounds", "screen": "C1_WILD",
 			"need_flag": "c1_entered_city",
-			"deny": _t("獵場在堡外溢地。先進騎士堡再說。"),
+			"deny": _t("獵場在堡外溢地。先進堡壘再說。"),
 		},
 		"to_blackflame_scar": {
 			"map": "blackflame_scar", "screen": "C1_WILD",

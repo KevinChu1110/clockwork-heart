@@ -129,7 +129,7 @@ static func art_fallback(mode: String) -> String:
 static func chests() -> Dictionary:
 	return {
 		"sealed_chest": {"flag": "loot.chest.road_ruins", "gold": 40, "dust": 2, "text": _t("封箱裂開：古驛的通行費，如今歸你。")},
-		"chest_root": {"flag": "loot.chest.forest_ruins", "gold": 44, "dust": 3, "text": _t("根纏箱打開：遊俠留下的箭矢錢。")},
+		"chest_root": {"flag": "loot.chest.forest_ruins", "gold": 44, "dust": 3, "text": _t("根纏箱打開：林裡留下的箭矢錢。")},
 		"chest_half": {"flag": "loot.chest.coast_wreck", "gold": 48, "dust": 2, "text": _t("半埋箱：海水泡過的金幣仍作響。")},
 		"supply_crate": {"flag": "loot.chest.wild_supply", "gold": 26, "dust": 1, "text": _t("補給箱：乾糧與幾枚城徽幣。")},
 		"hidden_cache": {"flag": "loot.chest.forest_cache", "gold": 35, "dust": 2, "text": _t("獵人藏匿處：藥草與銅板。")},
@@ -141,7 +141,7 @@ static func chests() -> Dictionary:
 		"obsidian": {"flag": "loot.chest.scar_obsidian", "gold": 52, "dust": 4, "text": _t("黑曜碎中封著濃縮星屑——燙手，但有用。")},
 		"scale_table": {"flag": "loot.chest.market_scale", "gold": 24, "dust": 1, "text": _t("天秤台抽屜：商會遺落的零錢。")},
 		"guest_bed": {"flag": "loot.chest.inn_bed", "gold": 14, "dust": 1, "text": _t("塌床底下：旅客來不及拿走的錢袋。")},
-		"nest_mark": {"flag": "loot.chest.forest_feather", "gold": 30, "dust": 2, "text": _t("羽痕石縫：疾影屬下遺落的戰利。")},
+		"nest_mark": {"flag": "loot.chest.forest_feather", "gold": 30, "dust": 2, "text": _t("羽痕石縫：疾影落下的銀羽碎。")},
 		"pirate_mark": {"flag": "loot.chest.coast_pirate", "gold": 42, "dust": 2, "text": _t("海盜標記下埋著箱——他們不會回來了。")},
 		"mosaic": {"flag": "loot.chest.star_mosaic", "gold": 36, "dust": 3, "text": _t("馬賽克中央撬起：古驛的星途通行符與金幣。")},
 	}
@@ -211,7 +211,7 @@ static func minibosses() -> Dictionary:
 				{"speaker": _t("殘影"), "portrait": "mirror_wraith", "text": _t("捷徑……碎了。你自己走吧。")},
 				{"speaker": _t("系統"), "text": _t("戰勝【鏡廊殘影】。金 80 · 星屑 5。")},
 			],
-			"lose": _t("你被自己的倒影推回霧隱村。"),
+			"lose": _t("你被自己的倒影推回白霧村。"),
 			"gold": 80, "dust": 5, "hp": 10,
 			"lose_map": "mist_village", "lose_screen": "C2_MIST",
 			"win_map": "mist_mirror", "win_screen": "C2_MIST",
@@ -220,7 +220,7 @@ static func minibosses() -> Dictionary:
 			"mode": "wreck_captain",
 			"flag": "boss.wreck_captain_cleared",
 			"need_flag": "c5_entered",
-			"deny": _t("船長影只認海上來的人。先踏上維京海岸。"),
+			"deny": _t("船長影只認海上來的人。先踏上石拳海岸。"),
 			"cleared_dialog": "world.wreck_cleared",
 			"intro": [
 				{"speaker": _t("旁白"), "text": _t("沉船龍骨站起——船長帽下沒有臉，只有浪聲。")},

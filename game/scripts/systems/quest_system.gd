@@ -47,7 +47,7 @@ const MISSION_XP_PER_GOLD := 3
 ## 長遠任務表：id → 目標 flag／計數 key、需求、獎勵
 const MISSIONS: Array[Dictionary] = [
 	{"id": "m_first_boss", "name": "初試啼聲", "desc": "戰勝雷歐（或任一聖獸）", "kind": "flag", "key": "boss.leo_cleared", "need": 1, "gold": 50, "dust": 3},
-	{"id": "m_letter", "name": "遲到的字", "desc": "在霧隱讀完麥穗的信", "kind": "flag", "key": "c2_wheat_letter", "need": 1, "gold": 40, "dust": 2},
+	{"id": "m_letter", "name": "遲到的字", "desc": "在霧隱讀完舊鑰的信", "kind": "flag", "key": "c2_wheat_letter", "need": 1, "gold": 40, "dust": 2},
 	{"id": "m_sprout", "name": "木劍之約", "desc": "完成小芽支線", "kind": "flag", "key": "c1_sprout_done", "need": 1, "gold": 30, "dust": 2},
 	{"id": "m_ding_debt", "name": "鐵匠的舊債", "desc": "取回舊主斷劍並交給釘釘", "kind": "flag", "key": "side.ding_debt_done", "need": 1, "gold": 40, "dust": 2},
 	{"id": "m_fog_letter", "name": "霧中家書", "desc": "把霧隱的真信送到行商驛站", "kind": "flag", "key": "side.fog_letter_done", "need": 1, "gold": 40, "dust": 2},
@@ -58,11 +58,11 @@ const MISSIONS: Array[Dictionary] = [
 	{"id": "m_optional", "name": "風與石", "desc": "戰勝疾影與石拳", "kind": "flags_all", "keys": ["boss.shadowwind_cleared", "boss.stonefist_cleared"], "need": 2, "gold": 100, "dust": 5},
 	{"id": "m_clear", "name": "晨光見證", "desc": "通關終章", "kind": "flag", "key": "game_cleared", "need": 1, "gold": 200, "dust": 10},
 	{"id": "m_rift3", "name": "裂縫試煉", "desc": "裂縫勝場達 3", "kind": "count", "key": "postgame.rift_wins", "need": 3, "gold": 80, "dust": 4},
-	{"id": "m_ng1", "name": "二周目啟程", "desc": "進入黑焰迴響（NG+）", "kind": "ng", "need": 1, "gold": 150, "dust": 8},
+	{"id": "m_ng1", "name": "二周目啟程", "desc": "進入黑鏽迴響（NG+）", "kind": "ng", "need": 1, "gold": 150, "dust": 8},
 	{"id": "m_titles5", "name": "稱號收藏家", "desc": "解鎖 5 個稱號", "kind": "titles", "need": 5, "gold": 60, "dust": 3},
 	{"id": "m_guild", "name": "盟約之契", "desc": "公會貢獻達 100", "kind": "guild", "need": 100, "gold": 70, "dust": 4},
 	{"id": "m_chests5", "name": "拾荒者", "desc": "開啟 5 個世界寶箱", "kind": "chests", "need": 5, "gold": 50, "dust": 3},
-	{"id": "m_chests12", "name": "翠嶺寶藏家", "desc": "開啟 12 個世界寶箱", "kind": "chests", "need": 12, "gold": 100, "dust": 5},
+	{"id": "m_chests12", "name": "世界寶藏家", "desc": "開啟 12 個世界寶箱", "kind": "chests", "need": 12, "gold": 100, "dust": 5},
 	{"id": "m_visit15", "name": "遠足兔", "desc": "造訪 15 張不同地圖", "kind": "visits", "need": 15, "gold": 60, "dust": 3},
 	{"id": "m_visit30", "name": "六域漫遊", "desc": "造訪 30 張不同地圖", "kind": "visits", "need": 30, "gold": 120, "dust": 6},
 	{"id": "m_skirmish10", "name": "路邊清道夫", "desc": "雜魚勝場 10", "kind": "count", "key": "meta.skirmish_wins", "need": 10, "gold": 55, "dust": 3},
@@ -469,13 +469,13 @@ func starpath_summary_bbcode() -> String:
 			var best: int = int(ar.call("best_score"))
 			lines.append("[b]演武場[/b]  有獎剩 %d · 最佳 %d 分" % [left_a, best])
 		elif ar:
-			lines.append("[b]演武場[/b]  （進騎士堡後解鎖）")
+			lines.append("[b]演武場[/b]  （進堡壘後解鎖）")
 		var ht: Node = tree.root.get_node_or_null("HuntSystem")
 		if ht and ht.has_method("is_unlocked") and bool(ht.call("is_unlocked")):
 			var left_h: int = int(ht.call("daily_left"))
 			lines.append("[b]野外獵場[/b]  有獎剩 %d" % left_h)
 		elif ht:
-			lines.append("[b]野外獵場[/b]  （進騎士堡後解鎖）")
+			lines.append("[b]野外獵場[/b]  （進堡壘後解鎖）")
 	lines.append("")
 	lines.append("[b]旅人足跡[/b]  地圖上的半透明旅人＝殘影；留言石可留字")
 	var rew := starpath_reward_count()

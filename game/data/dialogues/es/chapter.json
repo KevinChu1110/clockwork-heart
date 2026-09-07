@@ -2,31 +2,31 @@
   "c6.refugee": [
     {
       "speaker": "Refugiado",
-      "text": "La puerta de la torre está abierta. No nos atrevemos a subir. ¿Eres el más débil de la compañía?"
+      "text": "La puerta de la torre está abierta. No nos atrevemos a subir. ¿Eres el de cuerda más floja?"
     }
   ],
   "c6.scroll_pile": [
     {
       "speaker": "Pergamino",
-      "text": "El más débil puede llegar a la cima. Ansía la fuerza y la llama llegará antes."
+      "text": "El de cuerda más floja puede llegar a la cima. El pergamino nunca escribió el precio."
     }
   ],
   "c6.tower_gate": [
     {
       "speaker": "Narración",
-      "text": "La puerta de la torre está abierta. La Llama Negra respira en la rendija."
+      "text": "La puerta de la torre está abierta. El Óxido Negro respira en la rendija."
     }
   ],
   "c0.shrine_stub": [
     {
-      "speaker": "Ermita",
-      "text": "La ceniza del incienso está fría. La gente se fue primero."
+      "speaker": "Péndulo detenido",
+      "text": "El péndulo está trabado en un ángulo. Cristales oscuros en el eje de cobre."
     }
   ],
   "c0.field_west": [
     {
-      "speaker": "Narración",
-      "text": "El campo fue quemado. Al este."
+      "speaker": "Narration",
+      "text": "El paso al fondo está sellado. Solo queda ir adelante."
     }
   ],
   "c0.leave_without_sword": [
@@ -37,8 +37,8 @@
   ],
   "c0.road_east": [
     {
-      "speaker": "Narración",
-      "text": "El camino largo va al este. Cuiling es más grande de lo que pinta el mapa."
+      "speaker": "Narration",
+      "text": "El camino se alarga hacia afuera. El Reino del Asombro es más grande que el montón de bloques."
     }
   ],
   "c1.flag_paw": [
@@ -132,13 +132,13 @@
   "c1.leo_gate_cleared": [
     {
       "speaker": "Sistema",
-      "text": "El León Sagrado despertó. El camino de niebla del sudeste está abierto."
+      "text": "Leo despertó. El camino de niebla del sudeste está abierto."
     }
   ],
   "c1.leo_win": [
     {
       "speaker": "Leo",
-      "text": "Un caballero no es grande. Es el que no retrocede."
+      "text": "Un verdadero guarda, aunque sea pequeño, no retrocede."
     },
     {
       "speaker": "Leo",
@@ -156,11 +156,11 @@
   "c2.arrive": [
     {
       "speaker": "Velo de Niebla",
-      "text": "En la niebla, lo real y lo falso son del mismo color. Préstame tus ojos."
+      "text": "En la niebla, lo real y lo falso son del mismo color. ¿El de la cuerda más floja? …Préstame tus ojos."
     },
     {
       "speaker": "Velo de Niebla",
-      "text": "Pasa una noche primero. El camino nocturno se rompe antes en el corazón."
+      "text": "Pasa una noche primero. Quienes siguen andando con la cuerda a punto de acabarse—sobre todo los que vinieron a «echar un vistazo»—se rompen primero por dentro."
     },
     {
       "speaker": "Sistema",
@@ -214,7 +214,7 @@
   "c2.train_tip": [
     {
       "speaker": "Velo de Niebla",
-      "text": "Las sombras engañan. El cuerpo real brilla un instante."
+      "text": "Golpea una sombra y la sombra se ríe. Mira el gesto real: el fotograma en que se alza el filo. Ese es el verdadero."
     },
     {
       "speaker": "Sistema",
@@ -228,7 +228,7 @@
     },
     {
       "speaker": "Diario",
-      "text": "«Sigo aquí. Porque aún no has vuelto.» — Espiga"
+      "text": "«Sigo aquí. Porque aún no has vuelto.» — Llavevieja"
     }
   ],
   "c2.fog_need_letter": [
@@ -246,11 +246,11 @@
   "c2.fog_win": [
     {
       "speaker": "Niebla Blanca",
-      "text": "Me has calado. ¿Un mercenario sabe hacerlo? Qué aburrido."
+      "text": "Me has calado… ¿Hasta uno recién dado cuerda lo ve? Qué aburrido."
     },
     {
       "speaker": "Niebla Blanca",
-      "text": "La niebla se fue. Informa o sigue. Me da igual."
+      "text": "La niebla se fue. El camino está delante: vuelve a decirlo en el Bastión, o sigue andando. Tú verás."
     },
     {
       "speaker": "Sistema",
@@ -270,7 +270,7 @@
   "c3.arrive": [
     {
       "speaker": "Acha",
-      "text": "¿De la niebla? El maestro está en la Sala de pruebas. Él pregunta primero."
+      "text": "No golpea primero. Pregunta primero. No mira los papeles del camino de la Fortaleza, ni los nombres escritos en la profecía."
     },
     {
       "speaker": "Sistema",
@@ -313,12 +313,16 @@
   ],
   "c4.arrive": [
     {
-      "speaker": "Oídoviento",
-      "text": "Más lento que el viento. Perfecto. Espera el instante en que se detiene."
+      "speaker": "Orejaviento",
+      "text": "¿Recién dado cuerda? Más lento que el viento. —Perfecto."
+    },
+    {
+      "speaker": "Orejaviento",
+      "text": "Si quieres ver a Viento Sombra, aprende a esperar. El instante en que el viento para es el verdadero."
     },
     {
       "speaker": "Sistema",
-      "text": "El Nido de la Sombra Veloz está al este."
+      "text": "El Bosque del Oeste es transitable. El Nido de Viento Sombra está al este."
     }
   ],
   "c4.treehouse": [
@@ -362,15 +366,15 @@
   "c4.watch_tower": [
     {
       "speaker": "Inscripción",
-      "text": "La Sombra Veloz guarda el viento. El viento guarda al viajero."
+      "text": "Viento Sombra guarda el viento. El viento guarda los resortes que van de camino."
     },
     {
       "speaker": "Inscripción",
-      "text": "Cuando el viento enloquece, espera a que recuerde que alguna vez paró."
+      "text": "Si el viento enloquece, espera a que recuerde que alguna vez paró por alguien."
     },
     {
       "speaker": "Pensamiento",
-      "text": "Esperar no es debilidad. Ve claro, luego dispara."
+      "text": "Esperar… no es debilidad. Ver claro, luego disparar."
     }
   ],
   "c4.herb_looted": [
@@ -387,16 +391,16 @@
   ],
   "c4.falcon_win": [
     {
-      "speaker": "Sombra Veloz",
-      "text": "Alcanzaste el viento. Supiste detenerte."
+      "speaker": "Viento Sombra",
+      "text": "Alcanzaste el viento… el resorte más flojo, y aun así dispuesto a parar."
     },
     {
-      "speaker": "Sombra Veloz",
-      "text": "La pluma de plata es tuya. Recuerda que alguien supo detenerse."
+      "speaker": "Viento Sombra",
+      "text": "La pluma de plata es tuya. No es premio: es memoria de que alguien paró por ti. Al informar, no escribas que fuiste elegido."
     },
     {
-      "speaker": "Oídoviento",
-      "text": "Ve. La costa sigue rugiendo."
+      "speaker": "Orejaviento",
+      "text": "Ve. La costa sigue rugiendo. Si la Fortaleza pregunta, di: esperaste al viento."
     },
     {
       "speaker": "Sistema",
@@ -405,12 +409,12 @@
   ],
   "c5.arrive": [
     {
-      "speaker": "Bramamarea",
-      "text": "En la orilla gana quien va de frente. Puño de Piedra olvidó dónde poner su fuerza."
+      "speaker": "Rugido de Marea",
+      "text": "Puño de Piedra no está para aplastarte. Olvidó adónde debe ir la fuerza."
     },
     {
       "speaker": "Sistema",
-      "text": "El Risco del Puño de Piedra está al este."
+      "text": "La costa se puede recorrer. El Risco del Puño de Piedra está al este."
     }
   ],
   "c5.dock": [
@@ -447,7 +451,7 @@
   ],
   "c5.forge_tip_done": [
     {
-      "speaker": "Bramamarea",
+      "speaker": "Rugido de Marea",
       "text": "La voluntad del hacha está en el filo, no en la garganta."
     }
   ],
@@ -470,15 +474,15 @@
   "c5.boar_win": [
     {
       "speaker": "Puño de Piedra",
-      "text": "¡Ja! El último en pie eres tú."
+      "text": "¡Jajaja! ¡El que sigue en pie eres tú! El de cuerda más floja, y aun así fuiste de frente."
     },
     {
       "speaker": "Puño de Piedra",
-      "text": "La fuerza es para guardar la orilla. En el informe no pongas «héroe»."
+      "text": "La fuerza es para guardar la orilla. En el informe no pongas «elegido de la profecía»."
     },
     {
-      "speaker": "Bramamarea",
-      "text": "A la torre. Tu fuerza ya apunta a algo."
+      "speaker": "Rugido de Marea",
+      "text": "¡Bien! Ve a la torre. Si la Fortaleza pregunta, di: encaminaste la fuerza."
     },
     {
       "speaker": "Sistema",
@@ -504,7 +508,7 @@
     },
     {
       "speaker": "Voz ilusoria",
-      "text": "¿Hacerte fuerte y salvarlos a todos? La llama ríe primero."
+      "text": "¿Sobrecargar la cuerda y salvarlos a todos? El óxido ríe primero."
     },
     {
       "speaker": "Pensamiento",
@@ -517,20 +521,20 @@
   ],
   "c6.demon_win": [
     {
-      "speaker": "Rey Demonio",
-      "text": "Imposible… el más débil de la compañía…"
+      "speaker": "Núcleo de Inactividad",
+      "text": "Imposible… el de cuerda más floja…"
     },
     {
-      "speaker": "El Anterior",
+      "speaker": "Predecesor",
       "text": "…No. Es lo que debía ser."
     },
     {
-      "speaker": "El Anterior",
+      "speaker": "Predecesor",
       "text": "La próxima vez… no sigas mi camino."
     },
     {
-      "speaker": "El Anterior",
-      "text": "Te devuelvo la espada. O… dásela al siguiente que sea tan ligero como nosotros."
+      "speaker": "Predecesor",
+      "text": "Te devuelvo la espada. O… dásela al siguiente juguete tan ligero como nosotros."
     },
     {
       "speaker": "Sistema",

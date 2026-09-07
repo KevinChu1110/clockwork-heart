@@ -1,12 +1,12 @@
 {
   "battle.wolf_win": [
     {
-      "speaker": "Narración",
-      "text": "El lobo cae. La llama morada se dispersa en ceniza."
+      "speaker": "Narration",
+      "text": "El resorte trabado del lobo de juguete salta. El resplandor rojo se apaga."
     },
     {
-      "speaker": "Pensamiento",
-      "text": "Así que esto es la Llama Negra. Hasta las bestias…"
+      "speaker": "Thought",
+      "text": "Así es la inactividad y el sobrecalentamiento. Hasta los juguetes…"
     },
     {
       "speaker": "Sistema",
@@ -15,8 +15,8 @@
   ],
   "battle.wolf_lose": [
     {
-      "speaker": "Sistema",
-      "text": "Despiertas junto al camino. Alguien te cubrió con una capa."
+      "speaker": "System",
+      "text": "Despiertas junto a un cajón. Alguien te dio una cuerda de emergencia."
     }
   ],
   "battle.leo_lose": [
@@ -41,7 +41,7 @@
   ],
   "battle.demon_lose": [
     {
-      "speaker": "Rey Demonio",
+      "speaker": "Núcleo de Inactividad",
       "text": "Aún demasiado ligero…"
     },
     {
@@ -61,7 +61,7 @@
   ],
   "battle.falcon_lose": [
     {
-      "speaker": "Sombra Veloz",
+      "speaker": "Viento Sombra",
       "text": "El viento te llevó. Espera una vez más."
     },
     {
@@ -82,7 +82,7 @@
   "battle.rift_lose": [
     {
       "speaker": "Sistema",
-      "text": "La Llama Negra te lanza de vuelta al pie de la torre. {tip}"
+      "text": "El Óxido Negro te lanza de vuelta al pie de la torre. {tip}"
     }
   ],
   "battle.world_win": [

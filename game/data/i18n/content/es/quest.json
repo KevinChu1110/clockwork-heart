@@ -21,7 +21,7 @@
   },
   "m_chests12": {
     "desc": "Abre 12 cofres del mundo",
-    "name": "Buscatesoros de Cuiling"
+    "name": "Buscatesoros del mundo"
   },
   "m_chests5": {
     "desc": "Abre 5 cofres del mundo",
@@ -68,7 +68,7 @@
     "name": "Una llama que dura"
   },
   "m_letter": {
-    "desc": "Lee la carta de Espiga en Velo",
+    "desc": "Lee la carta de Llavevieja en Velo",
     "name": "Palabras que llegan tarde"
   },
   "m_life5": {
@@ -84,11 +84,11 @@
     "name": "Plumas blandas bajo el puente"
   },
   "m_ng1": {
-    "desc": "Entra en el Eco de Llama Negra (NG+)",
+    "desc": "Entra en el Eco de Óxido Negro (NG+)",
     "name": "Segunda partida"
   },
   "m_optional": {
-    "desc": "Vence a la Sombra Veloz y a Puño de Piedra",
+    "desc": "Vence a Viento Sombra y a Puño de Piedra",
     "name": "Viento y piedra"
   },
   "m_rift3": {

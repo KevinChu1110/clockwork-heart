@@ -1,6 +1,6 @@
 {
   "id": "tide_roar_idle",
-  "speaker": "Bramamarea",
+  "speaker": "Rugido de Marea",
   "rules": [
     {
       "when": {
@@ -9,7 +9,7 @@
         ]
       },
       "lines": [
-        "¡Jajaja! Tu fuerza ya tiene dirección. Ve a la torre; la compañía no manda en eso."
+        "¡Bien! Ve a la torre. Si la Fortaleza pregunta, di: encaminaste la fuerza."
       ]
     },
     {
@@ -26,7 +26,7 @@
     {
       "when": {},
       "lines": [
-        "El viento de la costa sabe a sal. ¿El más débil de la compañía? Las olas no entienden de títulos."
+        "¿Recién dado cuerda? La orilla no entiende de títulos, solo de si te atreves a ir de frente."
       ]
     }
   ]

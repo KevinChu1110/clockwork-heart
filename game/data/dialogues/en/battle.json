@@ -2,11 +2,11 @@
   "battle.wolf_win": [
     {
       "speaker": "Narration",
-      "text": "The wolf falls. Purple flame scatters into ash."
+      "text": "The seized spring in the toy wolf pops free. The overheated red glow dies."
     },
     {
       "speaker": "Thought",
-      "text": "So this is the Black Flame. Even beasts…"
+      "text": "So this is stasis and overheat. Even toys can become this…"
     },
     {
       "speaker": "System",
@@ -16,7 +16,7 @@
   "battle.wolf_lose": [
     {
       "speaker": "System",
-      "text": "You wake by the roadside. Someone laid a cloak over you."
+      "text": "You wake beside a crate. Someone quietly gave you an emergency winding."
     }
   ],
   "battle.leo_lose": [
@@ -41,7 +41,7 @@
   ],
   "battle.demon_lose": [
     {
-      "speaker": "Demon King",
+      "speaker": "Stasis Core",
       "text": "Still too light…"
     },
     {
@@ -61,7 +61,7 @@
   ],
   "battle.falcon_lose": [
     {
-      "speaker": "Swiftshadow",
+      "speaker": "Shadowwind",
       "text": "The wind took you. Wait once more."
     },
     {
@@ -82,7 +82,7 @@
   "battle.rift_lose": [
     {
       "speaker": "System",
-      "text": "The Black Flame throws you back below the tower. {tip}"
+      "text": "Blight Rust throws you back below the tower. {tip}"
     }
   ],
   "battle.world_win": [

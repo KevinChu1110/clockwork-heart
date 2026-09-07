@@ -960,9 +960,9 @@ func _begin_temptation(stage: int) -> void:
 			d.state_timer = 0.0
 	var titles := {1: _t("力量"), 2: _t("復仇"), 3: _t("安穩")}
 	var lines := {
-		1: _t("我給你力量。一擊劈開黑焰。你的村、你的人，瞬間安全。你不是慕強。你只是——效率。"),
-		2: _t("恨我。恨燒村的焰。把恨鍛成刃——比愛鋒利。"),
-		3: _t("放下劍。我替你撐封印。你回村。麥田會在。永不變強的安穩——這不就是「不慕強權」嗎？"),
+		1: _t("我給你力量。一擊劈開黑鏽。你的閣樓、你的同伴，瞬間安全。你不是過緊。你只是——效率。"),
+		2: _t("恨我。恨讓閣樓停擺的鏽。把恨鍛成刃——比愛鋒利。"),
+		3: _t("放下劍。我替你撐大鐘。你回閣樓。舊鑰會在。永遠不上弦的安穩——這不就是「發條最鬆」嗎？"),
 	}
 	_emit("temptation", {
 		"stage": stage,
@@ -1024,7 +1024,7 @@ func _start_king_slash(u: BattleUnit) -> void:
 	var foes: Array = living_of(BattleUnit.Team.PLAYER)
 	if not foes.is_empty():
 		u.target_id = foes[0].id
-	var skill_label := _t("黑焰必殺") if demon_mode else _t("王者斬")
+	var skill_label := _t("黑鏽必殺") if demon_mode else _t("王者斬")
 	_emit("king_slash_start", {"id": u.id, "windup": KING_SLASH_WINDUP, "label": skill_label})
 	_emit("state", {"id": u.id, "state": "telegraph"})
 
@@ -1363,7 +1363,7 @@ func _resolve_hazard(success: bool) -> void:
 						_emit("hazard_resolve", {
 							"kind": kind,
 							"success": false,
-							"msg": _t("灼燒滿層！黑焰爆燃"),
+							"msg": _t("灼燒滿層！黑鏽爆燃"),
 							"damage": dealt_b,
 							"hp": p.hp,
 							"max_hp": p.max_hp,
@@ -1519,7 +1519,7 @@ func _tide_summon_wave() -> void:
 		if u == null:
 			u = BattleUnit.new()
 			u.id = id
-			u.display_name = _t("黑焰刺胞")
+			u.display_name = _t("黑鏽刺胞")
 			u.team = BattleUnit.Team.ENEMY
 			u.is_boss = false
 			## 一刀一隻。原本 45 血在通關等級要兩刀才死，三隻就要六刀，
@@ -1734,7 +1734,7 @@ static func make_tutorial_wolf_fight(player_stats: Dictionary) -> BattleSim:
 
 	var w := BattleUnit.new()
 	w.id = "wolf"
-	w.display_name = _t("渣滓之狼")
+	w.display_name = _t("失控的銹蝕玩具")
 	w.team = BattleUnit.Team.ENEMY
 	w.max_hp = 45
 	w.hp = 45
@@ -1791,7 +1791,7 @@ static func make_leo_fight(player_stats: Dictionary) -> BattleSim:
 
 	var leo := BattleUnit.new()
 	leo.id = "leo"
-	leo.display_name = _t("聖獅·雷歐")
+	leo.display_name = _t("守衛泰坦·雷歐")
 	leo.team = BattleUnit.Team.ENEMY
 	leo.is_boss = true
 	## 垂直切片數值（完整版再拉到 ~800）
@@ -1804,8 +1804,8 @@ static func make_leo_fight(player_stats: Dictionary) -> BattleSim:
 	leo.recover_time = 0.45
 	leo.king_slash_cd = 2.5  ## 進半血後首發前的冷卻
 	## 旗艦雙部位：盔（破→更兇）／盾（破→降防），可 Tab 鎖定
-	_attach_boss_part(leo, _t("騎士重盔"), 0.28, "helm", "enrage")
-	_attach_boss_part(leo, _t("騎士重盾"), 0.32, "shield", "def_down")
+	_attach_boss_part(leo, _t("獅衛重盔"), 0.28, "helm", "enrage")
+	_attach_boss_part(leo, _t("獅衛重盾"), 0.32, "shield", "def_down")
 	sim.focus_part_id = "shield"
 	sim.add_unit(leo)
 	sim.setup_hazard("fire_ring", 5.5)  ## 副機制：火圈閃避
@@ -2100,7 +2100,7 @@ static func make_statue_fight(player_stats: Dictionary) -> BattleSim:
 	for i in 3:
 		var s := BattleUnit.new()
 		s.id = "statue_%d" % i
-		s.display_name = _t("黑焰石像·%s") % [_t("甲"), _t("乙"), _t("丙")][i]
+		s.display_name = _t("黑鏽石像·%s") % [_t("甲"), _t("乙"), _t("丙")][i]
 		s.team = BattleUnit.Team.ENEMY
 		s.is_boss = false
 		## 三尊石像。原本各 120，Lv20 就 92% 勝率
@@ -2211,7 +2211,7 @@ static func make_demon_fight(player_stats: Dictionary) -> BattleSim:
 
 	var demon := BattleUnit.new()
 	demon.id = "demon"
-	demon.display_name = _t("魔王")
+	demon.display_name = _t("停擺核")
 	demon.team = BattleUnit.Team.ENEMY
 	demon.is_boss = true
 	## 終章魔王。原本 520 血，Lv8 的玩家 22 刀就砍完（每刀約 23）——
@@ -2227,8 +2227,8 @@ static func make_demon_fight(player_stats: Dictionary) -> BattleSim:
 	demon.windup_time = 0.28
 	demon.recover_time = 0.42
 	demon.king_slash_cd = 4.0
-	_attach_boss_part(demon, _t("黑焰之角"), 0.28, "horn", "enrage")
-	_attach_boss_part(demon, _t("黑焰核心"), 0.32, "core", "expose")
+	_attach_boss_part(demon, _t("黑鏽之角"), 0.28, "horn", "enrage")
+	_attach_boss_part(demon, _t("黑鏽核心"), 0.32, "core", "expose")
 	sim.focus_part_id = "core"
 	sim.add_unit(demon)
 	sim.setup_hazard("time_clock", 6.0)  ## 副機制：控時時鐘

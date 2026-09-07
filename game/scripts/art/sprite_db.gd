@@ -863,7 +863,7 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 	var key := speaker.strip_edges()
 	var id := ""
 	match key:
-		"麥穗", "maisui":
+		"麥穗", "舊鑰", "旧钥", "Oldkey", "Llavevieja", "オールドキー", "올드키", "maisui":
 			id = "maisui"
 		"灰鬚", "greybeard":
 			id = "greybeard"
@@ -875,9 +875,9 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "sprout"
 		"霧隱", "白霧", "fog_hide":
 			id = "fog_hide"
-		"小白", "兔勇者", "內心", "rabbit":
+		"小白", "兔勇者", "發條兔", "內心", "rabbit":
 			id = "rabbit"
-		"雷歐", "聖獅·雷歐", "leo":
+		"雷歐", "守衛泰坦·雷歐", "聖獅·雷歐", "leo":
 			id = "leo"
 		"阿茶", "acha":
 			id = "acha"
@@ -891,9 +891,9 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "falcon"
 		"石拳", "boar":
 			id = "boar"
-		"魔王", "demon":
+		"魔王", "停擺核", "停摆核", "Stasis Core", "Núcleo de Inactividad", "停止核", "정지핵", "demon":
 			id = "demon"
-		"渣滓之狼", "狼", "wolf":
+		"渣滓之狼", "失控的銹蝕玩具", "失控的锈蚀玩具", "Rust-bound Toy", "Juguete Oxidado Descontrolado", "暴走した錆びトイ", "폭주한 녹슨 장난감", "狼", "wolf":
 			id = "wolf"
 		"潮吼", "潮聲", "tide_roar":
 			id = "tide_roar"

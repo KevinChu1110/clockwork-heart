@@ -12,7 +12,7 @@
     "name": "Hammer of Debts"
   },
   "title.echo_walker": {
-    "desc": "Clear the game again in any Black Flame Echo layer.",
+    "desc": "Clear the game again in any Blight Rust Echo layer.",
     "name": "Echowalker"
   },
   "title.featured_fan": {
@@ -24,7 +24,7 @@
     "name": "One Who Sees Through"
   },
   "title.gale_chaser": {
-    "desc": "Wait out Swiftshadow's pause.",
+    "desc": "Wait out Shadowwind's pause.",
     "name": "Windchaser"
   },
   "title.guard_breaker": {
@@ -44,7 +44,7 @@
     "name": "Mirrorbreaker"
   },
   "title.no_worship": {
-    "desc": "All three refusals to the Demon King.",
+    "desc": "All three refusals at the tower base.",
     "name": "I Bow to No Power"
   },
   "title.rift_walker": {
@@ -76,8 +76,8 @@
     "name": "True Courier"
   },
   "title.wheat_keeper": {
-    "desc": "A wheat stalk took a blow for you.",
-    "name": "Still Standing"
+    "name": "The Cord Remains",
+    "desc": "A key cord took a blow for you."
   },
   "title.wood_mentor": {
     "desc": "Put the dream of practice into Sprout's hands.",
@@ -85,7 +85,7 @@
   },
   "title.world_wanderer": {
     "desc": "Visit thirty different places.",
-    "name": "Wanderer of Cuiling"
+    "name": "World Wanderer"
   },
   "title.wreck_end": {
     "desc": "Sink the captain's shadow one more time.",

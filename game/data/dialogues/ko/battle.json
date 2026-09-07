@@ -1,12 +1,12 @@
 {
   "battle.wolf_win": [
     {
-      "speaker": "내레이션",
-      "text": "늑대가 쓰러졌다. 보랏빛 불꽃이 재로 흩어진다."
+      "speaker": "旁白",
+      "text": "장난감 늑대 몸속 멈춘 태엽이 풀려 튕긴다. 과열된 붉은 빛이 꺼진다."
     },
     {
-      "speaker": "속마음",
-      "text": "이게 흑염인가. 짐승까지……"
+      "speaker": "內心",
+      "text": "이게 정지와 과열인가. 장난감도 이렇게 되는구나……"
     },
     {
       "speaker": "시스템",
@@ -15,8 +15,8 @@
   ],
   "battle.wolf_lose": [
     {
-      "speaker": "시스템",
-      "text": "길가에서 깨어났다. 누군가 망토를 덮어 줬다."
+      "speaker": "系統",
+      "text": "다시 눈을 뜨니 나무 상자 옆이다. 누군가 응급 태엽을 한 바퀴 감아 줬다."
     }
   ],
   "battle.leo_lose": [
@@ -41,7 +41,7 @@
   ],
   "battle.demon_lose": [
     {
-      "speaker": "마왕",
+      "speaker": "정지핵",
       "text": "아직 너무 가볍다……"
     },
     {
@@ -82,7 +82,7 @@
   "battle.rift_lose": [
     {
       "speaker": "시스템",
-      "text": "흑염이 너를 탑 아래로 내던졌다. {tip}"
+      "text": "검은 녹이 너를 탑 아래로 내던졌다. {tip}"
     }
   ],
   "battle.world_win": [
