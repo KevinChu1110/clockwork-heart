@@ -419,7 +419,7 @@ func ritual_footprint_line() -> String:
 	if GameState.has_flag("boss.white_fog_cleared"):
 		parts.append(_t("霧痕·衡"))
 	if GameState.has_flag("boss.abo_cleared"):
-		parts.append(_t("拳山·防"))
+		parts.append(_t("道場·防"))
 	if GameState.has_flag("c0_care") or GameState.has_wheat_stalk or GameState.wheat_stalk_broken:
 		parts.append(_t("鑰繩·梁／血"))
 	if GameState.has_flag("boss.shadowwind_cleared"):
@@ -968,7 +968,7 @@ func astrolabe_status_bbcode() -> String:
 	var survey := survey_astrolabe()
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]聚魂殿 · 周天星盤[/b]"))
-	lines.append(_t("[color=#a0a8c0]「星盤偏了一角，像在等傭兵團最弱的那個。」[/color]"))
+	lines.append(_t("[color=#a0a8c0]「星盤偏了一角，像在等發條最鬆的那個。」[/color]"))
 	lines.append("")
 
 	var lit: int = int(survey.get("lit_count", 0))

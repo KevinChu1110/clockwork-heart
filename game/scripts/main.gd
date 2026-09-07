@@ -6679,12 +6679,12 @@ func _go_c3_enter_body() -> void:
 				"bg": "dojo",
 				"speaker": _t("旁白"),
 				"portrait": _t("阿茶"),
-				"text": _t("山門。茶煙。木魚聲很慢——像有人在等你喘口氣。"),
+				"text": _t("山門。煮茶的發條偶。茶煙從壺嘴一縷一縷。"),
 			},
 			{
 				"bg": "dojo",
 				"speaker": _t("阿茶"),
-				"text": _t("霧裡來的？氣還喘著。先喝口茶。"),
+				"text": _t("客從霧裡來？剛上弦的……發條最鬆那個？阿波在試煉堂。"),
 			},
 		]), func():
 			_play_dialog(DialogLines.lines("c3.arrive"), _go_c3_dojo)
@@ -6746,7 +6746,7 @@ func _c3_try_abo() -> void:
 		_play_dialog(DialogLines.lines("c3.abo_cleared"))
 		return
 	_play_dialog([
-		{"speaker": _t("阿波"), "text": _t("傭兵團最弱的。來打我的架勢。")},
+		{"speaker": _t("阿波"), "text": _t("發條最鬆的。來打我的架勢。")},
 		{"speaker": _t("阿波"), "text": _t("打不穿的時候，別急——一下一下，把殼撞鬆。頭銜撞不開。")},
 		{"speaker": _t("系統"), "text": _t("先打散架勢，散開時傷害吃滿。重拳來了要擋。")},
 	], func(): _start_battle("abo"))
@@ -6761,7 +6761,7 @@ func _go_abo_win() -> void:
 		extra = _t("你的拳裡，開始有道了。")
 	_play_dialog([
 		{"speaker": _t("阿波"), "text": extra},
-		{"speaker": _t("阿波"), "text": _t("（指尖點你眉心）去塔頂。團裡若問，就說你答過為何而戰。")},
+		{"speaker": _t("阿波"), "text": _t("（指尖在你眉心一點）最後的試煉在塔頂——去吧，別回頭。堡壘若問，就說：你答過為何而戰。")},
 		{"speaker": _t("阿茶"), "text": _t("（茶香）路上要是聞到這個味道，就是走對了。")},
 		{"speaker": _t("系統"), "text": _t("金 90、星屑 5、體力上限 +10。玉魄外觀開了。塔路開了。")},
 	], _c3_abo_clear_cut)
@@ -6784,7 +6784,7 @@ func _c3_abo_clear_cut() -> void:
 			"bg": "tower",
 			"speaker": _t("旁白"),
 			"portrait": _t("小白"),
-			"text": _t("西林有風，東岸有石——塔尖仍掛著不肯散的黑焰。"),
+			"text": _t("西林有風，東岸有石。亦可直上塔。"),
 		},
 	]), _go_c3_cleared_panel)
 

@@ -72,13 +72,13 @@ static func regions() -> Array:
 		},
 		{
 			"id": "r3",
-			"name": _t("第三區・拳山與疾影林"),
+			"name": _t("第三區・道場與疾影林"),
 			"blurb": _t("道場、森林與石岸。力與速的試煉。"),
 			"stages": [
 				{
 					"id": "r3_s1",
-					"name": _t("關卡 1・拳山道場"),
-					"maps": [{"id": "dojo", "label": _t("拳山")}],
+					"name": _t("關卡 1・武鬥道場"),
+					"maps": [{"id": "dojo", "label": _t("武鬥道場")}],
 					"unlock": ["boss.white_fog_cleared"],
 					"clear_flag": "boss.abo_cleared",
 					"boss": _t("阿波"),
