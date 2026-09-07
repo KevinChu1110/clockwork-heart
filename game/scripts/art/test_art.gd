@@ -213,6 +213,12 @@ func _check_battle_foot_shadows() -> bool:
 	if src.find("t * t * (3.0 - 2.0 * t)") < 0:
 		push_error("軟影不是寬核平台＋柔邊橢圓")
 		ok = false
+	if src.find("set_shader_parameter(\"strength\", 0.68)") >= 0:
+		push_error("strength 0.68 在深色石地原圖認不出橢圓，核要接近不透明")
+		ok = false
+	if src.find("set_shader_parameter(\"strength\", 0.92)") < 0:
+		push_error("腳底軟影 strength 要 0.92（原圖縮小時一眼看得出深色核）")
+		ok = false
 	if src.find("Sprite2D.new()") >= 0:
 		push_error("腳底軟影還在用 Sprite2D 掛 Control 底下（headless 會畫不出柔邊）")
 		ok = false
@@ -220,7 +226,7 @@ func _check_battle_foot_shadows() -> bool:
 		push_error("角色沒有描邊 shader")
 		ok = false
 	if ok:
-		print("  ok 戰鬥雙方腳底軟影是地面層乘色柔化橢圓＋描邊")
+		print("  ok 戰鬥雙方腳底軟影是地面層接近不透明深色核＋柔邊橢圓＋描邊")
 	return ok
 
 

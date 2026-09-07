@@ -216,7 +216,7 @@ stretch_mode = 5
 texture_filter = 2
 
 [node name="GroundPad" type="Control" parent="Arena/PlayerSlot"]
-custom_minimum_size = Vector2(0, 36)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 mouse_filter = 2
 
@@ -243,7 +243,7 @@ stretch_mode = 5
 texture_filter = 2
 
 [node name="GroundPad" type="Control" parent="Arena/EnemySlot"]
-custom_minimum_size = Vector2(0, 36)
+custom_minimum_size = Vector2(0, 44)
 layout_mode = 2
 mouse_filter = 2
 

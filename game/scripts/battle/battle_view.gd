@@ -683,7 +683,7 @@ func _flash_skill_banner(skill_name: String, player_side: bool = true) -> void:
 static func _soft_shadow_tex() -> Texture2D:
 	if _shadow_tex_cache != null:
 		return _shadow_tex_cache
-	## 寬核平台＋柔邊：中心一塊夠認得出橢圓，邊緣才衰減。不要 pow 尖核（看起來像硬斑或沒有）。
+	## 寬核平台＋柔邊：核接近不透明，邊緣才衰減。不要 pow 尖核（看起來像硬斑或沒有）。
 	var w := 256
 	var h := 96
 	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
@@ -701,8 +701,8 @@ static func _soft_shadow_tex() -> Texture2D:
 			else:
 				var d := sqrt(d2)
 				var a := 1.0
-				if d > 0.38:
-					var t := (d - 0.38) / 0.62
+				if d > 0.52:
+					var t := (d - 0.52) / 0.48
 					t = t * t * (3.0 - 2.0 * t)
 					a = 1.0 - t
 				img.set_pixel(x, y, Color(1, 1, 1, a))
@@ -817,7 +817,8 @@ func _ensure_foot_shadow(body: TextureRect) -> void:
 		mat = ShaderMaterial.new()
 		mat.shader = FootShadowShader
 		sh.material = mat
-	mat.set_shader_parameter("strength", 0.68)
+	mat.set_shader_parameter("strength", 0.92)
+	mat.set_shader_parameter("shadow_color", Color(0.01, 0.01, 0.02, 1.0))
 	_layout_foot_shadow(body)
 
 
@@ -836,15 +837,15 @@ func _layout_foot_shadow(body: TextureRect) -> void:
 	var frac := _content_bottom_frac(body.texture)
 	var origin := body.global_position
 	var feet := origin + Vector2(dr.position.x + dr.size.x * 0.5, dr.position.y + dr.size.y * frac)
-	var sz := Vector2(maxf(dr.size.x * 2.10, 300.0), maxf(dr.size.x * 0.28, 56.0))
-	## 扁橢圓貼在腳前方地面；角色不要抬太高，否則腳會踩在底圖暗柱上、影子融化進牆影。
-	var pos_y := feet.y - sz.y * 0.08
+	var sz := Vector2(maxf(dr.size.x * 2.40, 340.0), maxf(dr.size.x * 0.38, 72.0))
+	## 扁橢圓貼在腳前方地面；核要大到縮手機寬還認得出踩在地上。
+	var pos_y := feet.y - sz.y * 0.12
 	var max_bottom := size.y - 8.0
 	if log_label:
 		max_bottom = log_label.global_position.y - 8.0
 	if pos_y + sz.y > max_bottom:
-		sz.y = maxf(48.0, max_bottom - pos_y)
-		pos_y = feet.y - sz.y * 0.08
+		sz.y = maxf(64.0, max_bottom - pos_y)
+		pos_y = feet.y - sz.y * 0.12
 		if pos_y + sz.y > max_bottom:
 			pos_y = max_bottom - sz.y
 	sh.size = sz
