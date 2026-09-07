@@ -220,7 +220,7 @@ static func minibosses() -> Dictionary:
 			"mode": "wreck_captain",
 			"flag": "boss.wreck_captain_cleared",
 			"need_flag": "c5_entered",
-			"deny": _t("船長影只認海上來的人。先踏上維京海岸。"),
+			"deny": _t("船長影只認海上來的人。先踏上石拳海岸。"),
 			"cleared_dialog": "world.wreck_cleared",
 			"intro": [
 				{"speaker": _t("旁白"), "text": _t("沉船龍骨站起——船長帽下沒有臉，只有浪聲。")},

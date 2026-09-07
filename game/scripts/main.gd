@@ -3680,7 +3680,7 @@ func _go_world_map() -> void:
 	var body := _t("[b]六域輿圖[/b]\n\n")
 	body += _t("　　　　西林（樹冠／靜湖／遺址）\n")
 	body += "　　　　　　｜\n"
-	body += _t("維京海岸 ── 法師之塔 ── 堡壘\n")
+	body += _t("石拳海岸 ── 法師之塔 ── 堡壘\n")
 	body += _t("（港／洞／沉船）　（門廳／階／回憶）　（四店／市集／演武）\n")
 	body += "　　　　　　｜\n"
 	body += _t("　　　白霧村／霧隱（崖／祠／鏡廊）\n")
@@ -3718,7 +3718,7 @@ func _go_world_map() -> void:
 		buttons.append({"text": _t("白霧村"), "cb": _go_c2_enter})
 		buttons.append({"text": _t("武鬥道場"), "cb": _go_c3_enter})
 		buttons.append({"text": _t("西林"), "cb": _go_c4_enter})
-		buttons.append({"text": _t("維京海岸"), "cb": _go_c5_enter})
+		buttons.append({"text": _t("石拳海岸"), "cb": _go_c5_enter})
 	if GameState.has_flag("boss.abo_cleared") or GameState.power_score() >= 36:
 		buttons.append({"text": _t("黑焰疤地"), "cb": func(): _open_explore("blackflame_scar", Screen.C1_WILD)})
 	if GameState.has_flag("boss.abo_cleared") or GameState.has_flag("boss.shadowwind_cleared") \
@@ -6800,7 +6800,7 @@ func _go_c3_cleared_panel() -> void:
 		_t("阿波點頭了。不問頭銜，問為何而戰。\n西林有風，東岸有石。也能直接上塔。"),
 		[
 			{"text": _t("西林（C4·疾影）"), "cb": _go_c4_enter},
-			{"text": _t("維京海岸（C5·石拳）"), "cb": _go_c5_enter},
+			{"text": _t("石拳海岸（C5·石拳）"), "cb": _go_c5_enter},
 			{"text": _t("直上塔下營地（C6）"), "cb": _go_c6_camp},
 			{"text": _t("回道場走走"), "cb": _go_c3_dojo},
 			{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
@@ -6946,7 +6946,7 @@ func _go_c4_cleared_panel() -> void:
 		_t("C4 完成 · 風之試煉"),
 		_t("風肯停半拍。銀羽給你。\n東岸還在吼。也能上塔。"),
 		[
-			{"text": _t("維京海岸（C5）"), "cb": _go_c5_enter},
+			{"text": _t("石拳海岸（C5）"), "cb": _go_c5_enter},
 			{"text": _t("塔下營地（C6）"), "cb": _go_c6_camp},
 			{"text": _t("回森林走走"), "cb": _go_c4_forest},
 			{"text": _t("回道場"), "cb": _go_c3_dojo},
@@ -6955,7 +6955,7 @@ func _go_c4_cleared_panel() -> void:
 	)
 
 
-# ─── C5 維京海岸 · 石拳 ───
+# ─── C5 石拳海岸 · 石拳 ───
 
 func _go_c5_enter() -> void:
 	if not _try_soft_enter_region("coast"):
@@ -6968,7 +6968,7 @@ func _go_c5_enter() -> void:
 			{
 				"bg": "forest",
 				"speaker": _t("旁白"),
-				"text": _t("林盡是鹽。團裡最弱的那個，被浪先打濕。"),
+				"text": _t("林盡是鹽。發條最鬆的那個，被浪先打濕。"),
 			},
 			{
 				"bg": "coast",
@@ -6980,7 +6980,7 @@ func _go_c5_enter() -> void:
 				"bg": "coast",
 				"speaker": _t("潮吼"),
 				"portrait": _t("潮吼"),
-				"text": _t("傭兵團的？岸上不比腕力——比你敢不敢迎上去。"),
+				"text": _t("剛上弦的？岸上不比腕力——比你敢不敢迎上去。"),
 			},
 		]), func():
 			_play_dialog(DialogLines.lines("c5.arrive"), _go_c5_coast)
@@ -7041,7 +7041,7 @@ func _c5_try_boar() -> void:
 		_play_dialog(DialogLines.lines("c5.boar_cleared"))
 		return
 	_play_dialog([
-		{"speaker": _t("石拳"), "text": _t("傭兵團把最弱的送來了？還站著？那就接下這一拳——")},
+		{"speaker": _t("石拳"), "text": _t("……把發條最鬆的送來了？還站著？那就接下這一拳——")},
 		{"speaker": _t("石拳"), "text": _t("力氣該砸向誰？頭銜砸不開岸。")},
 		{"speaker": _t("系統"), "text": _t("衝來時按 J 硬碰，岩甲會裂。落石也按 J。")},
 	], func(): _start_battle("boar"))

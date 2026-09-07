@@ -894,7 +894,7 @@ static func _forest_lake() -> Dictionary:
 # ═══════════════════════════════════════════
 
 static func _coast() -> Dictionary:
-	var m := _base("維京海岸 · 碼頭與岸道", Color(0.12, 0.16, 0.2), 3200, 1786, Vector2(232, 1616), "coast")
+	var m := _base("石拳海岸 · 碼頭與岸道", Color(0.12, 0.16, 0.2), 3200, 1786, Vector2(232, 1616), "coast")
 	var ents: Array = [
 		_e("tide_roar", 624, 1123, 48, 64, "潮吼", Color(0.65, 0.45, 0.35)),
 		_e("dock", 1064, 582, 64, 52, "碼頭鎮", Color(0.4, 0.45, 0.5)),

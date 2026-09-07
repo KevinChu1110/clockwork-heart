@@ -409,12 +409,12 @@
   ],
   "c5.arrive": [
     {
-      "speaker": "Bramamarea",
-      "text": "En la orilla gana quien va de frente. Puño de Piedra olvidó dónde poner su fuerza."
+      "speaker": "Rugido de Marea",
+      "text": "Puño de Piedra no está para aplastarte. Olvidó adónde debe ir la fuerza."
     },
     {
       "speaker": "Sistema",
-      "text": "El Risco del Puño de Piedra está al este."
+      "text": "La costa se puede recorrer. El Risco del Puño de Piedra está al este."
     }
   ],
   "c5.dock": [
@@ -451,7 +451,7 @@
   ],
   "c5.forge_tip_done": [
     {
-      "speaker": "Bramamarea",
+      "speaker": "Rugido de Marea",
       "text": "La voluntad del hacha está en el filo, no en la garganta."
     }
   ],
@@ -474,15 +474,15 @@
   "c5.boar_win": [
     {
       "speaker": "Puño de Piedra",
-      "text": "¡Ja! El último en pie eres tú."
+      "text": "¡Jajaja! ¡El que sigue en pie eres tú! El de cuerda más floja, y aun así fuiste de frente."
     },
     {
       "speaker": "Puño de Piedra",
-      "text": "La fuerza es para guardar la orilla. En el informe no pongas «héroe»."
+      "text": "La fuerza es para guardar la orilla. En el informe no pongas «elegido de la profecía»."
     },
     {
-      "speaker": "Bramamarea",
-      "text": "A la torre. Tu fuerza ya apunta a algo."
+      "speaker": "Rugido de Marea",
+      "text": "¡Bien! Ve a la torre. Si la Fortaleza pregunta, di: encaminaste la fuerza."
     },
     {
       "speaker": "Sistema",

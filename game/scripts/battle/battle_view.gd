@@ -263,7 +263,7 @@ func setup(mode: String) -> void:
 		_append_log(_t("[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起按 J[/color]"))
 		parry_hint.text = _kh(_t("等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】"))
 	elif mode == "boar":
-		_append_log(_t("石拳：傭兵團把最弱的送來了？還站著？那就接下這一拳——"))
+		_append_log(_t("石拳：……把發條最鬆的送來了？還站著？那就接下這一拳——"))
 		_append_log(_t("[color=#c96]衝來按 J 硬碰，岩甲會裂 · 落石按 J[/color]"))
 		parry_hint.text = _kh(_t("衝鋒對撞【J】　·　【Tab】鎖角／甲　·　落岩【J】"))
 	elif mode == "wrath":

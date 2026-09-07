@@ -409,12 +409,12 @@
   ],
   "c5.arrive": [
     {
-      "speaker": "Tideroar",
-      "text": "On the shore you compete by meeting it head-on. Stonefist forgot where to put his strength."
+      "speaker": "Tidehowl",
+      "text": "Stonefist isn't here to smash you. It forgot where force should go."
     },
     {
       "speaker": "System",
-      "text": "Stonefist Cliff is east."
+      "text": "The coast is open. Stonefist Cliff is east."
     }
   ],
   "c5.dock": [
@@ -451,7 +451,7 @@
   ],
   "c5.forge_tip_done": [
     {
-      "speaker": "Tideroar",
+      "speaker": "Tidehowl",
       "text": "The axe's will is in the edge, not the throat."
     }
   ],
@@ -474,15 +474,15 @@
   "c5.boar_win": [
     {
       "speaker": "Stonefist",
-      "text": "Ha! You're the one left standing."
+      "text": "Hahaha! You're the one left standing! Loosest spring, and you still met it head-on."
     },
     {
       "speaker": "Stonefist",
-      "text": "Strength is for guarding the shore. Don't write 'hero' in your report."
+      "text": "Force is for guarding the shore. Don't write \"chosen by prophecy\" in the report."
     },
     {
-      "speaker": "Tideroar",
-      "text": "To the tower. Your strength has an aim now."
+      "speaker": "Tidehowl",
+      "text": "Good! To the tower. If the Keep asks, say: you aimed your force true."
     },
     {
       "speaker": "System",
