@@ -129,7 +129,7 @@ static func art_fallback(mode: String) -> String:
 static func chests() -> Dictionary:
 	return {
 		"sealed_chest": {"flag": "loot.chest.road_ruins", "gold": 40, "dust": 2, "text": _t("封箱裂開：古驛的通行費，如今歸你。")},
-		"chest_root": {"flag": "loot.chest.forest_ruins", "gold": 44, "dust": 3, "text": _t("根纏箱打開：遊俠留下的箭矢錢。")},
+		"chest_root": {"flag": "loot.chest.forest_ruins", "gold": 44, "dust": 3, "text": _t("根纏箱打開：林裡留下的箭矢錢。")},
 		"chest_half": {"flag": "loot.chest.coast_wreck", "gold": 48, "dust": 2, "text": _t("半埋箱：海水泡過的金幣仍作響。")},
 		"supply_crate": {"flag": "loot.chest.wild_supply", "gold": 26, "dust": 1, "text": _t("補給箱：乾糧與幾枚城徽幣。")},
 		"hidden_cache": {"flag": "loot.chest.forest_cache", "gold": 35, "dust": 2, "text": _t("獵人藏匿處：藥草與銅板。")},
@@ -141,7 +141,7 @@ static func chests() -> Dictionary:
 		"obsidian": {"flag": "loot.chest.scar_obsidian", "gold": 52, "dust": 4, "text": _t("黑曜碎中封著濃縮星屑——燙手，但有用。")},
 		"scale_table": {"flag": "loot.chest.market_scale", "gold": 24, "dust": 1, "text": _t("天秤台抽屜：商會遺落的零錢。")},
 		"guest_bed": {"flag": "loot.chest.inn_bed", "gold": 14, "dust": 1, "text": _t("塌床底下：旅客來不及拿走的錢袋。")},
-		"nest_mark": {"flag": "loot.chest.forest_feather", "gold": 30, "dust": 2, "text": _t("羽痕石縫：疾影屬下遺落的戰利。")},
+		"nest_mark": {"flag": "loot.chest.forest_feather", "gold": 30, "dust": 2, "text": _t("羽痕石縫：疾影落下的銀羽碎。")},
 		"pirate_mark": {"flag": "loot.chest.coast_pirate", "gold": 42, "dust": 2, "text": _t("海盜標記下埋著箱——他們不會回來了。")},
 		"mosaic": {"flag": "loot.chest.star_mosaic", "gold": 36, "dust": 3, "text": _t("馬賽克中央撬起：古驛的星途通行符與金幣。")},
 	}

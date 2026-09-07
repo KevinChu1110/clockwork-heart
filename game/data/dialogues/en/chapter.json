@@ -314,11 +314,15 @@
   "c4.arrive": [
     {
       "speaker": "Windear",
-      "text": "Slower than the wind. Good. Wait for the moment it stops."
+      "text": "Just wound? Slower than the wind. —Good."
+    },
+    {
+      "speaker": "Windear",
+      "text": "If you want to see Shadowwind—learn to wait first. The instant the wind stops is the true one."
     },
     {
       "speaker": "System",
-      "text": "The Swiftshadow Nest is east."
+      "text": "West Woods is open. Shadowwind Nest is east."
     }
   ],
   "c4.treehouse": [
@@ -362,15 +366,15 @@
   "c4.watch_tower": [
     {
       "speaker": "Inscription",
-      "text": "Swiftshadow guards the wind. The wind guards travellers."
+      "text": "Shadowwind guards the wind. The wind guards clockwork on the road."
     },
     {
       "speaker": "Inscription",
-      "text": "When the wind goes wild, wait until it remembers it once stopped."
+      "text": "If the wind goes wild—wait until it remembers it once stopped for someone."
     },
     {
       "speaker": "Thought",
-      "text": "Waiting isn't weakness. See clearly, then shoot."
+      "text": "Waiting… isn't weakness. See clearly—then shoot."
     }
   ],
   "c4.herb_looted": [
@@ -387,16 +391,16 @@
   ],
   "c4.falcon_win": [
     {
-      "speaker": "Swiftshadow",
-      "text": "You caught the wind. You were willing to stop."
+      "speaker": "Shadowwind",
+      "text": "You caught the wind… the loosest mainspring, yet willing to wait."
     },
     {
-      "speaker": "Swiftshadow",
-      "text": "The silver feather is yours. Remember someone was willing to stop."
+      "speaker": "Shadowwind",
+      "text": "The silver plume is yours. Not a prize—a memory: someone was willing to stop for you. When you report, do not write that you were chosen."
     },
     {
       "speaker": "Windear",
-      "text": "Go. The coast is still roaring."
+      "text": "Go. The coast is still roaring. If the Keep asks, say: you waited for the wind."
     },
     {
       "speaker": "System",

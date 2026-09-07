@@ -3395,7 +3395,7 @@ func _flavor_world_object(id: String) -> void:
 		"bamboo_wall": _t("竹牆沙沙。像有人在林後練拳。"),
 		"peak_platform": _t("山巔試煉台。雲在腳邊。"),
 		"bridge_rope": _t("藤橋在樹冠搖。風耳說：別往下看。"),
-		"arch_ruin": _t("古遊俠拱門。石上還有箭痕。"),
+		"arch_ruin": _t("西林石拱。石上還有箭痕。"),
 		"lake_shore": _t("靜湖倒映樹與天。心一靜，湖也靜。"),
 		"longship": _t("長船乾擱。龍骨像巨獸的脊。"),
 		"tide_pool": _t("潮池裡有小蟹。與黑焰無關，很好。"),
@@ -3678,7 +3678,7 @@ func _handle_world_travel(id: String) -> bool:
 
 func _go_world_map() -> void:
 	var body := _t("[b]六域輿圖[/b]\n\n")
-	body += _t("　　　　遊俠森林（樹冠／靜湖／遺址）\n")
+	body += _t("　　　　西林（樹冠／靜湖／遺址）\n")
 	body += "　　　　　　｜\n"
 	body += _t("維京海岸 ── 法師之塔 ── 堡壘\n")
 	body += _t("（港／洞／沉船）　（門廳／階／回憶）　（四店／市集／演武）\n")
@@ -3704,7 +3704,7 @@ func _go_world_map() -> void:
 	body += _t("· 岔路／練功 ") + (_t("✓ 鍛造後") if GameState.has_flag("c1_forged") else _t("鎖（先鍛造）")) + "\n"
 	body += _t("· 白霧村 ") + ("✓" if GameState.has_flag("c2_entered") else _t("建議 18+")) + "\n"
 	body += _t("· 道場 ") + ("✓" if GameState.has_flag("c3_entered") else _t("建議 26+")) + "\n"
-	body += _t("· 森林 ") + ("✓" if GameState.has_flag("c4_entered") else _t("建議 30+ · 可選序")) + "\n"
+	body += _t("· 西林 ") + ("✓" if GameState.has_flag("c4_entered") else _t("建議 30+ · 可選序")) + "\n"
 	body += _t("· 海岸 ") + ("✓" if GameState.has_flag("c5_entered") else _t("建議 30+ · 可選序")) + "\n"
 	body += _t("· 塔 ") + ("✓" if GameState.has_flag("c6_camp_cut") or GameState.has_flag("boss.abo_cleared") else _t("需足夠試煉")) + "\n"
 	var buttons: Array = [
@@ -3717,7 +3717,7 @@ func _go_world_map() -> void:
 		buttons.append({"text": _t("星落平原"), "cb": func(): _open_explore("starfall_plain", Screen.C1_WILD)})
 		buttons.append({"text": _t("白霧村"), "cb": _go_c2_enter})
 		buttons.append({"text": _t("武鬥道場"), "cb": _go_c3_enter})
-		buttons.append({"text": _t("遊俠森林"), "cb": _go_c4_enter})
+		buttons.append({"text": _t("西林"), "cb": _go_c4_enter})
 		buttons.append({"text": _t("維京海岸"), "cb": _go_c5_enter})
 	if GameState.has_flag("boss.abo_cleared") or GameState.power_score() >= 36:
 		buttons.append({"text": _t("黑焰疤地"), "cb": func(): _open_explore("blackflame_scar", Screen.C1_WILD)})
@@ -6799,7 +6799,7 @@ func _go_c3_cleared_panel() -> void:
 		_t("C3 完成 · 拳中有道"),
 		_t("阿波點頭了。不問頭銜，問為何而戰。\n西林有風，東岸有石。也能直接上塔。"),
 		[
-			{"text": _t("遊俠森林（C4·疾影）"), "cb": _go_c4_enter},
+			{"text": _t("西林（C4·疾影）"), "cb": _go_c4_enter},
 			{"text": _t("維京海岸（C5·石拳）"), "cb": _go_c5_enter},
 			{"text": _t("直上塔下營地（C6）"), "cb": _go_c6_camp},
 			{"text": _t("回道場走走"), "cb": _go_c3_dojo},
@@ -6808,7 +6808,7 @@ func _go_c3_cleared_panel() -> void:
 	)
 
 
-# ─── C4 遊俠森林 · 疾影 ───
+# ─── C4 西林 · 疾影 ───
 
 func _go_c4_enter() -> void:
 	if not _try_soft_enter_region("forest"):
@@ -6820,7 +6820,7 @@ func _go_c4_enter() -> void:
 			{
 				"bg": "dojo",
 				"speaker": _t("旁白"),
-				"text": _t("西林的風比鐘聲更急。團裡最弱的那個，被風先看見。"),
+				"text": _t("西林的風，比大鐘的回聲更急。發條最鬆的那個，被風先看見。"),
 			},
 			{
 				"bg": "forest",
@@ -6831,7 +6831,7 @@ func _go_c4_enter() -> void:
 			{
 				"bg": "forest",
 				"speaker": _t("風耳"),
-				"text": _t("站住。追風的人，最後都迷路。"),
+				"text": _t("站住。追風的人，最後都會迷路。"),
 			},
 		]), func():
 			_play_dialog(DialogLines.lines("c4.arrive"), _go_c4_forest)
@@ -6909,7 +6909,7 @@ func _c4_try_falcon() -> void:
 		_play_dialog(DialogLines.lines("c4.falcon_cleared"))
 		return
 	_play_dialog([
-		{"speaker": _t("疾影"), "text": _t("……傭兵團把最慢的送來了？眼睛，跟得上我嗎？")},
+		{"speaker": _t("疾影"), "text": _t("……把發條最鬆的送來了？眼睛，跟得上我嗎？")},
 		{"speaker": _t("疾影"), "text": _t("追，會迷路。等，才見我。頭銜追不上風。")},
 		{"speaker": _t("系統"), "text": _t("牠停下來的那一拍才吃滿傷害。風聲響起就按 J。")},
 	], func(): _start_battle("falcon"))
@@ -6926,13 +6926,13 @@ func _c4_falcon_clear_cut() -> void:
 			"bg": "forest",
 			"speaker": _t("旁白"),
 			"portrait": _t("疾影"),
-			"text": _t("銀羽在光裡轉。風第一次，為傭兵團最弱的那個停了半拍。"),
+			"text": _t("銀羽在光裡轉。發條最鬆的，卻肯停。"),
 		},
 		{
 			"bg": "coast",
 			"speaker": _t("旁白"),
-			"portrait": _t("石拳"),
-			"text": _t("東岸有浪在吼——力氣，還要找方向。團裡沒規定你非去不可。"),
+			"portrait": _t("風耳"),
+			"text": _t("走吧。海岸還在吼。堡壘若問，就說：你等過風。"),
 		},
 	]), _go_c4_cleared_panel)
 

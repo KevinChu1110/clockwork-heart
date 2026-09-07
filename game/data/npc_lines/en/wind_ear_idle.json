@@ -9,8 +9,8 @@
         ]
       },
       "lines": [
-        "The wind agreed to stop. Your ears are truer than a bow.",
-        "The coast is still roaring. Whether you go is up to you."
+        "The wind agreed to stop. You waited for it.",
+        "The coast is still roaring. If the Keep asks, say: you waited for the wind."
       ]
     },
     {
@@ -20,14 +20,14 @@
         ]
       },
       "lines": [
-        "Swiftshadow won't wait for a title. Its true body waits—for one short instant.",
-        "Don't chase the afterimages. Wait for the pause, then shoot. —Worth more than a pretty medal."
+        "If you want to see Shadowwind—learn to wait first. The instant the wind stops is the true one.",
+        "Don't chase afterimages. Wait for the beat-pause, then shoot. Titles can't catch the wind."
       ]
     },
     {
       "when": {},
       "lines": [
-        "The forest knows the pause, not titles. Walking slow is good."
+        "The woods know the beat-pause, not titles. Walking slow is good."
       ]
     }
   ]

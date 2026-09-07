@@ -1,6 +1,6 @@
 {
   "id": "wind_ear_idle",
-  "speaker": "Oídoviento",
+  "speaker": "Orejaviento",
   "rules": [
     {
       "when": {
@@ -9,8 +9,8 @@
         ]
       },
       "lines": [
-        "El viento accedió a parar. Tus oídos son más certeros que un arco.",
-        "La costa sigue rugiendo. Ir o no, es cosa tuya."
+        "El viento accedió a parar. Esperaste al viento.",
+        "La costa sigue rugiendo. Si la Fortaleza pregunta, di: esperaste al viento."
       ]
     },
     {
@@ -20,14 +20,14 @@
         ]
       },
       "lines": [
-        "La Sombra Veloz no espera títulos. Su cuerpo real sí espera: un instante corto.",
-        "No persigas las estelas. Espera la pausa, luego dispara. Vale más que una medalla bonita."
+        "Si quieres ver a Viento Sombra, aprende a esperar. El instante en que el viento para es el verdadero.",
+        "No persigas las estelas. Espera la pausa del compás, luego dispara. Los títulos no alcanzan al viento."
       ]
     },
     {
       "when": {},
       "lines": [
-        "El bosque reconoce la pausa, no los títulos. Ir despacio está bien."
+        "El bosque reconoce la pausa del compás, no los títulos. Ir despacio está bien."
       ]
     }
   ]

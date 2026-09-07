@@ -72,7 +72,7 @@ static func regions() -> Array:
 		},
 		{
 			"id": "r3",
-			"name": _t("第三區・道場與疾影林"),
+			"name": _t("第三區・道場與西林"),
 			"blurb": _t("道場、森林與石岸。力與速的試煉。"),
 			"stages": [
 				{
@@ -86,8 +86,8 @@ static func regions() -> Array:
 				},
 				{
 					"id": "r3_s2",
-					"name": _t("關卡 2・疾影林"),
-					"maps": [{"id": "forest", "label": _t("疾影林")}],
+					"name": _t("關卡 2・西林"),
+					"maps": [{"id": "forest", "label": _t("西林")}],
 					"unlock": ["boss.abo_cleared"],
 					"clear_flag": "boss.shadowwind_cleared",
 					"boss": _t("疾影"),

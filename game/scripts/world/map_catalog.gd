@@ -763,7 +763,7 @@ static func _dojo() -> Dictionary:
 		_e("exit_cross_d", 228, 1454, 72, 64, "六域岔路", Color(0.45, 0.5, 0.4)),
 	]
 	if _flag("boss.abo_cleared"):
-		ents.append(_e("path_forest", 452, 1391, 72, 64, "林道·遊俠", Color(0.35, 0.55, 0.4)))
+		ents.append(_e("path_forest", 452, 1391, 72, 64, "林道·西林", Color(0.35, 0.55, 0.4)))
 		ents.append(_e("path_tower", 2468, 1391, 72, 64, "向塔之路", Color(0.4, 0.3, 0.5)))
 	m["entities"] = ents
 	return m
@@ -812,7 +812,7 @@ static func _dojo_peak() -> Dictionary:
 
 static func _forest() -> Dictionary:
 	## ¾ 俯視樹海：路從下緣接到上緣，小屋在右。座標是腳底對齊新路。
-	var m := _base("遊俠森林 · 樹海邊緣", Color(0.06, 0.12, 0.08), 3200, 1786, Vector2(1576, 1652), "forest")
+	var m := _base("西林 · 林緣", Color(0.06, 0.12, 0.08), 3200, 1786, Vector2(1576, 1652), "forest")
 	var ents: Array = [
 		_e("wind_ear", 1232, 945, 48, 64, "風耳", Color(0.45, 0.7, 0.5)),
 		_e("treehouse", 2208, 873, 64, 64, "樹屋聚落", Color(0.4, 0.55, 0.35)),
@@ -825,7 +825,7 @@ static func _forest() -> Dictionary:
 		_e("deep_gate", 1608, 595, 64, 56, "深林入口", Color(0.3, 0.45, 0.3)),
 		_e("to_forest_canopy", 2560, 917, 64, 56, "樹冠層", Color(0.35, 0.55, 0.4)),
 		_e("to_forest_lake", 2624, 1417, 64, 56, "靜湖", Color(0.35, 0.5, 0.55)),
-		_e("to_forest_ruins", 2240, 1310, 64, 56, "古遊俠遺址", Color(0.4, 0.45, 0.35)),
+		_e("to_forest_ruins", 2240, 1310, 64, 56, "西林遺址", Color(0.4, 0.45, 0.35)),
 		_e("falcon_nest", 2496, 1512, 80, 88, "疾影巢", Color(0.4, 0.75, 0.55)),
 		_e("save_c4", 1296, 1461, 48, 48, "存檔石", Color(0.4, 0.45, 0.5)),
 		_e("back_dojo", 1612, 211, 56, 48, "回道場", Color(0.4, 0.45, 0.35)),
@@ -864,7 +864,7 @@ static func _forest_canopy() -> Dictionary:
 
 
 static func _forest_ruins() -> Dictionary:
-	var m := _base("森林 · 古遊俠遺址", Color(0.07, 0.1, 0.08), 2400, 1350, Vector2(256, 674), "forest_ruins")
+	var m := _base("西林 · 遺址", Color(0.07, 0.1, 0.08), 2400, 1350, Vector2(256, 674), "forest_ruins")
 	m["entities"] = [
 		_e("back_from_forest_sub", 228, 591, 56, 56, "回樹海", Color(0.35, 0.5, 0.4)),
 		_e("arch_ruin", 724, 759, 72, 64, "石拱廢墟", Color(0.45, 0.42, 0.38), true),

@@ -259,7 +259,7 @@ func setup(mode: String) -> void:
 		_append_log(_t("[color=#9c9]打散架勢 · 散開時傷害吃滿 · 重拳要擋[/color]"))
 		parry_hint.text = _kh(_t("打散架勢　·　【Tab】鎖部位　·　重拳【J】"))
 	elif mode == "falcon":
-		_append_log(_t("疾影：傭兵團把最慢的送來了？眼睛，跟得上我嗎？"))
+		_append_log(_t("疾影：把發條最鬆的送來了？眼睛，跟得上我嗎？"))
 		_append_log(_t("[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起按 J[/color]"))
 		parry_hint.text = _kh(_t("等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】"))
 	elif mode == "boar":

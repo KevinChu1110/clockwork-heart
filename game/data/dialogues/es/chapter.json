@@ -313,12 +313,16 @@
   ],
   "c4.arrive": [
     {
-      "speaker": "Oídoviento",
-      "text": "Más lento que el viento. Perfecto. Espera el instante en que se detiene."
+      "speaker": "Orejaviento",
+      "text": "¿Recién dado cuerda? Más lento que el viento. —Perfecto."
+    },
+    {
+      "speaker": "Orejaviento",
+      "text": "Si quieres ver a Viento Sombra, aprende a esperar. El instante en que el viento para es el verdadero."
     },
     {
       "speaker": "Sistema",
-      "text": "El Nido de la Sombra Veloz está al este."
+      "text": "El Bosque del Oeste es transitable. El Nido de Viento Sombra está al este."
     }
   ],
   "c4.treehouse": [
@@ -362,15 +366,15 @@
   "c4.watch_tower": [
     {
       "speaker": "Inscripción",
-      "text": "La Sombra Veloz guarda el viento. El viento guarda al viajero."
+      "text": "Viento Sombra guarda el viento. El viento guarda los resortes que van de camino."
     },
     {
       "speaker": "Inscripción",
-      "text": "Cuando el viento enloquece, espera a que recuerde que alguna vez paró."
+      "text": "Si el viento enloquece, espera a que recuerde que alguna vez paró por alguien."
     },
     {
       "speaker": "Pensamiento",
-      "text": "Esperar no es debilidad. Ve claro, luego dispara."
+      "text": "Esperar… no es debilidad. Ver claro, luego disparar."
     }
   ],
   "c4.herb_looted": [
@@ -387,16 +391,16 @@
   ],
   "c4.falcon_win": [
     {
-      "speaker": "Sombra Veloz",
-      "text": "Alcanzaste el viento. Supiste detenerte."
+      "speaker": "Viento Sombra",
+      "text": "Alcanzaste el viento… el resorte más flojo, y aun así dispuesto a parar."
     },
     {
-      "speaker": "Sombra Veloz",
-      "text": "La pluma de plata es tuya. Recuerda que alguien supo detenerse."
+      "speaker": "Viento Sombra",
+      "text": "La pluma de plata es tuya. No es premio: es memoria de que alguien paró por ti. Al informar, no escribas que fuiste elegido."
     },
     {
-      "speaker": "Oídoviento",
-      "text": "Ve. La costa sigue rugiendo."
+      "speaker": "Orejaviento",
+      "text": "Ve. La costa sigue rugiendo. Si la Fortaleza pregunta, di: esperaste al viento."
     },
     {
       "speaker": "Sistema",
