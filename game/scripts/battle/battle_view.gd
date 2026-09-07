@@ -4,6 +4,8 @@ extends Control
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const OutlineShader = preload("res://shaders/outline.gdshader")
+const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
 
 signal battle_finished(won: bool)
 
@@ -63,6 +65,7 @@ var _part_bars: Dictionary = {}  ## id -> ProgressBar
 var _part_labels: Dictionary = {}  ## id -> Label
 var _part_box: VBoxContainer
 var _focus_hint: Label
+static var _shadow_tex_cache: Texture2D = null
 
 
 
@@ -675,8 +678,133 @@ func _flash_skill_banner(skill_name: String, player_side: bool = true) -> void:
 	)
 
 
+static func _soft_shadow_tex() -> Texture2D:
+	if _shadow_tex_cache != null:
+		return _shadow_tex_cache
+	var w := 64
+	var h := 24
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var cx := (w - 1) * 0.5
+	var cy := (h - 1) * 0.5
+	for y in h:
+		for x in w:
+			var dx := (x - cx) / cx
+			var dy := (y - cy) / cy
+			var d := sqrt(dx * dx + dy * dy)
+			var a := clampf(1.0 - d, 0.0, 1.0)
+			a = a * a * (3.0 - 2.0 * a)
+			img.set_pixel(x, y, Color(0.10, 0.06, 0.04, a * 0.85))
+	_shadow_tex_cache = ImageTexture.create_from_image(img)
+	return _shadow_tex_cache
+
+
+func _apply_outline(body: TextureRect, width: float) -> void:
+	if body == null:
+		return
+	body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var mat := body.material as ShaderMaterial
+	if mat == null or mat.shader != OutlineShader:
+		mat = ShaderMaterial.new()
+		mat.shader = OutlineShader
+		body.material = mat
+	mat.set_shader_parameter("outline_width", width)
+	mat.set_shader_parameter("outline_color", Color(0.20, 0.12, 0.07, 1.0))
+
+
+func _ensure_foot_shadow(body: TextureRect) -> void:
+	if body == null:
+		return
+	var layer := get_node_or_null("ShadowLayer") as Control
+	if layer == null:
+		layer = Control.new()
+		layer.name = "ShadowLayer"
+		layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+		add_child(layer)
+		if arena:
+			move_child(layer, arena.get_index())
+		else:
+			move_child(layer, mini(3, get_child_count() - 1))
+	var key := "FootShadow_%s" % body.name
+	var sh := layer.get_node_or_null(key) as Sprite2D
+	if sh == null:
+		sh = Sprite2D.new()
+		sh.name = key
+		sh.texture = _soft_shadow_tex()
+		sh.centered = true
+		sh.z_index = 0
+		layer.add_child(sh)
+	_layout_foot_shadow(body, Vector2(180, 36))
+
+
+func _layout_foot_shadow(body: TextureRect, sz: Vector2) -> void:
+	if body == null:
+		return
+	var layer := get_node_or_null("ShadowLayer") as Control
+	if layer == null:
+		return
+	var sh := layer.get_node_or_null("FootShadow_%s" % body.name) as Sprite2D
+	if sh == null or sh.texture == null:
+		return
+	var r := body.get_global_rect()
+	if r.size.x < 8.0 or r.size.y < 8.0:
+		return
+	sh.global_position = Vector2(r.position.x + r.size.x * 0.5, r.position.y + r.size.y - 6.0)
+	var tw := float(sh.texture.get_width())
+	var th := float(sh.texture.get_height())
+	if tw > 0.0 and th > 0.0:
+		sh.scale = Vector2(sz.x / tw, sz.y / th)
+
+
+func _ensure_screen_grade() -> void:
+	if get_node_or_null("BattleGrade") != null:
+		return
+	var copy := BackBufferCopy.new()
+	copy.name = "BattleGradeCopy"
+	copy.copy_mode = BackBufferCopy.COPY_MODE_VIEWPORT
+	add_child(copy)
+	var grade := ColorRect.new()
+	grade.name = "BattleGrade"
+	grade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	grade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	grade.color = Color.WHITE
+	var mat := ShaderMaterial.new()
+	mat.shader = ColorGradeScreenShader
+	grade.material = mat
+	add_child(grade)
+
+
+func _ensure_battle_look() -> void:
+	## 戰鬥畫面換皮：LINEAR、角色描邊＋腳底軟影、飽和／對比微調。不要髒黑濾鏡。
+	if battle_bg:
+		battle_bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if player_body:
+		player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if enemy_body:
+		enemy_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if hazard_fx:
+		hazard_fx.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_apply_outline(player_body, 3.0)
+	_apply_outline(enemy_body, 3.2)
+	_ensure_foot_shadow(player_body)
+	_ensure_foot_shadow(enemy_body)
+	_layout_foot_shadow(player_body, Vector2(150, 32))
+	_layout_foot_shadow(enemy_body, Vector2(180, 36))
+	if player_body and not player_body.resized.is_connected(_layout_battle_equipment_overlays):
+		player_body.resized.connect(_layout_battle_equipment_overlays)
+	if enemy_body and not enemy_body.resized.is_connected(_layout_battle_equipment_overlays):
+		enemy_body.resized.connect(_layout_battle_equipment_overlays)
+	_ensure_screen_grade()
+	var dim := get_node_or_null("BGDim") as ColorRect
+	if dim:
+		dim.visible = false
+		dim.color = Color(1.0, 0.95, 0.82, 0.0)
+	call_deferred("_layout_battle_equipment_overlays")
+
+
 func _apply_battle_art(mode: String) -> void:
 	## 立繪比例：素材約 160×200（兔）／220×240（Boss），維持長寬比、不擠扁
+	_ensure_battle_look()
 	_player_pose = "idle"
 	var ptex := SpriteDB.player_pose("idle")
 	if ptex == null:
@@ -772,17 +900,15 @@ func _apply_battle_art(mode: String) -> void:
 			_enemy_base_mod = Color.WHITE
 	enemy_body.modulate = _enemy_base_mod
 
-	## 背景解析（專屬圖 → 那場仗發生的地圖 → 保底）統一在 SpriteDB.battle_bg_path()。
-	## 這裡原本自己寫了一串 fallback（demon→fog→boar→wolf），而那四張正是
-	## 「主角＋敵人都畫好」的完成稿插圖 —— 於是打某些王的時候，
-	## 背景裡有另一隻主角在跟別的怪對砍。
+	## 背景解析統一在 SpriteDB.battle_bg_path()（地圖插畫底板，不用量化馬賽克）。
 	var bg := SpriteDB.battle_bg(mode)
 	if battle_bg and bg:
 		battle_bg.texture = bg
+		battle_bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		battle_bg.modulate = _battle_bg_tint(mode)
 	elif battle_bg:
 		battle_bg.texture = null
-		battle_bg.modulate = Color(0.12, 0.1, 0.16)
+		battle_bg.modulate = Color(0.98, 0.93, 0.82)
 
 
 func _apply_battle_weapon_overlay() -> void:
@@ -797,7 +923,7 @@ func _apply_battle_weapon_overlay() -> void:
 		_battle_armor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_battle_armor.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_battle_armor.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		_battle_armor.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		_battle_armor.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		player_body.add_child(_battle_armor)
 	elif _battle_armor.get_parent() != player_body:
 		_battle_armor.reparent(player_body)
@@ -807,7 +933,7 @@ func _apply_battle_weapon_overlay() -> void:
 		_battle_weapon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_battle_weapon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_battle_weapon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		_battle_weapon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		_battle_weapon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		player_body.add_child(_battle_weapon)
 	elif _battle_weapon.get_parent() != player_body:
 		_battle_weapon.reparent(player_body)
@@ -819,6 +945,8 @@ func _apply_battle_weapon_overlay() -> void:
 
 
 func _layout_battle_equipment_overlays() -> void:
+	_layout_foot_shadow(player_body, Vector2(150, 32))
+	_layout_foot_shadow(enemy_body, Vector2(180, 36))
 	if player_body == null:
 		return
 	var bs := player_body.size
@@ -2255,7 +2383,7 @@ func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> v
 	fx.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	fx.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	fx.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	fx.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	var sz := Vector2(96, 96)
 	fx.custom_minimum_size = sz
 	fx.size = sz

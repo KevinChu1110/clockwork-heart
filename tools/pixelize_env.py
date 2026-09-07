@@ -7,9 +7,10 @@
 解法：角色是風格北辰——從角色抽主色盤（加地磚與冷色地圖樣本補綠藍，上限 96 色），
 所有環境圖降到像素格（block=5）再量化到這套色盤。零 API 費、可逆。
 
-範圍：maps/*.webp、maps/battle_*.png、maps/*_banner.png、dragon_cave_banner、
+範圍：maps/*.webp、maps/*_banner.png、dragon_cave_banner、
       pets/、props/escort_box_*（僅量化不降格）。
-不動：角色、NPC、tiles、UI。原圖備份到 maps/_backup_prepixel_0827/。
+不動：角色、NPC、tiles、UI、**戰鬥畫面**（maps/battle_*.png 是舊量化馬賽克，
+      戰鬥改走地圖插畫底板，不要再 pixelize）。
 
 用法：python3 tools/pixelize_env.py [--block 5] [--colors 96]
 """
@@ -95,7 +96,6 @@ def main() -> int:
 
     targets: list[Path] = []
     targets += sorted(MAPS.glob("*.webp"))
-    targets += sorted(MAPS.glob("battle_*.png"))
     targets += sorted(MAPS.glob("*_banner.png"))
     dc = MAPS / "dragon_cave_banner.png"
     if dc.exists() and dc not in targets:
