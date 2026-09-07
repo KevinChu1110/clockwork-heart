@@ -142,7 +142,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.lore_reader",
 		"name": "讀矛盾的人",
-		"desc": "讀完絲絨典籍架上的黑焰三說。",
+		"desc": "讀完絲絨典籍架上的黑鏽三說。",
 		"cond": "codex",
 	},
 	{

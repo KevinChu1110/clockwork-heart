@@ -261,7 +261,7 @@ func status_bbcode() -> String:
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]好友挑戰[/b]"))
 	lines.append(_t("打的是對方留下的打法（殘影），不是即時對戰。不耗能量。"))
-	lines.append(_t("登入後可打其他旅人的殘影。離線則打傭兵團名冊。"))
+	lines.append(_t("登入後可打其他旅人的殘影。離線則打發條名冊。"))
 	lines.append(_t("勝可選金幣或經驗，並得友誼鑰匙。每日 %d 場；同一人一天一次。") % CHALLENGE_DAILY)
 	lines.append(_t("今日挑戰：%d／%d（剩餘 %d）") % [challenges_today(), CHALLENGE_DAILY, challenges_left()])
 	lines.append(_t("友誼鑰匙：%d（%d 把開 1 個友誼寶箱）") % [key_count(), KEYS_PER_CHEST])

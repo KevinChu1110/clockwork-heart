@@ -79,7 +79,7 @@ const SECRET_RELICS: Dictionary = {
 		"atk": 9,
 		"def": 2,
 		"hp": 8,
-		"lore": "黑焰疤主的傷口凝成的心核。刃上會殘一絲不肯散的熱。",
+		"lore": "黑鏽疤主的傷口凝成的心核。刃上會殘一絲不肯散的熱。",
 	},
 	"mirror_wraith": {
 		"unique_flag": "soul.relic.mirror_wraith",

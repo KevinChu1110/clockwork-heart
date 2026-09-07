@@ -3083,7 +3083,7 @@ func _side_training_do() -> void:
 func _side_silk(id: String) -> void:
 	if id == "codex_shelf":
 		var lines: Array = [
-			{"speaker": _t("典籍"), "text": _t("《黑焰三說》抄本：野心為食；至弱至塔；鏡中無我。")},
+			{"speaker": _t("典籍"), "text": _t("《黑鏽三說》抄本：過緊為食；至弱至塔；鏡中無我。")},
 			{"speaker": _t("典籍"), "text": _t("邊注（絲絨）：官方刪了『前任至弱者曾守護六域』。")},
 		]
 		if GameState.has_flag("c2_wheat_letter"):
@@ -3361,7 +3361,7 @@ func _flavor_world_object(id: String) -> void:
 		"big_mill": _t("巨風車的葉片卡死了。風仍過，卻推不動任何東西。"),
 		"grain_silo": _t("糧倉空了。灰裡還有半袋焦麥。"),
 		"miller_hut": _t("碾坊主不在。桌上茶杯結了薄冰。"),
-		"wheat_sea": _t("麥浪在夜裡像黑焰的倒影。"),
+		"wheat_sea": _t("麥浪在夜裡像黑鏽的倒影。"),
 		"cave_mouth": _t("洞口呼出冷氣。深處有水滴聲。"),
 		"glow_moss": _t("螢光苔微微發綠——像有人故意種在這裡。"),
 		"deep_dark": _t("再進去會看不見路。先記在心裡。"),
@@ -3381,11 +3381,11 @@ func _flavor_world_object(id: String) -> void:
 		"slime_pool": _t("黏液池反著微光。別踩進去。"),
 		"training_ring": _t("演武台沙上還有舊腳印——很重、很穩。"),
 		"lion_statue": _t("石獅缺了一眼。另一眼望向內殿。"),
-		"honor_plaque": _t("「榮譽先於性命。」字被黑焰燻糊半行。"),
+		"honor_plaque": _t("「榮譽先於性命。」字被黑鏽燻糊半行。"),
 		"rope_bridge": _t("繩橋晃。裂谷像要吞掉聲音。"),
 		"meteor_stone": _t("隕星石觸手微溫。像還記得天空。"),
 		"constellation": _t("地刻星圖。你腳下剛好踩在「弱」的位置。"),
-		"char_soil": _t("焦裂地燙腳心。黑焰曾在這裡醒來。"),
+		"char_soil": _t("焦裂地燙腳心。黑鏽曾在這裡醒來。"),
 		"whisper_stone": _t("低語石：……至弱……至塔……"),
 		"cliff_rail": _t("霧海在腳下翻。遠方像有六域的輪廓。"),
 		"fox_statue": _t("白狐像閉著眼。香灰未冷。"),
@@ -3398,7 +3398,7 @@ func _flavor_world_object(id: String) -> void:
 		"arch_ruin": _t("西林石拱。石上還有箭痕。"),
 		"lake_shore": _t("靜湖倒映樹與天。心一靜，湖也靜。"),
 		"longship": _t("長船乾擱。龍骨像巨獸的脊。"),
-		"tide_pool": _t("潮池裡有小蟹。與黑焰無關，很好。"),
+		"tide_pool": _t("潮池裡有小蟹。與黑鏽無關，很好。"),
 		"hull": _t("沉船灣的船骸張著口。像要說一個浪的故事。"),
 		"mural": _t("壁畫：五座守衛泰坦環塔。中央空白——那是你的位置嗎？"),
 		"memory_orb_a": _t("記憶球浮出閣樓的火。你眨眨眼，它散了。"),
