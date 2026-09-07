@@ -3,6 +3,8 @@
 
 regen_maps_hd.py 以前一律縮到 2633×1469，但 road／town／village 等世界比這還大，
 螢幕上仍是小圖硬拉。這支不呼叫付費 API，只吃 maps/_gen_hd_maps/ 的 4K PNG。
+
+⛔ 2026-09-07 ART-02：裝檔只做 LANCZOS 縮放，禁止再呼叫 pixelize_env。
 """
 from __future__ import annotations
 
@@ -14,7 +16,6 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
-from pixelize_env import build_palette, pixelize  # noqa: E402
 
 HD = ROOT / "game/assets/sprites/maps/_gen_hd_maps"
 NOSKY = ROOT / "game/assets/sprites/_gen_r2/maps_nosky"
@@ -74,7 +75,6 @@ def current_tex(art: str) -> Path | None:
 def main() -> int:
     only = [a for a in sys.argv[1:] if not a.startswith("-")]
     worlds = catalog_worlds()
-    pal = build_palette(96)
     BACKUP.mkdir(exist_ok=True)
     done = skip = miss = 0
     for art, (nw, nh) in sorted(worlds.items()):
@@ -103,11 +103,8 @@ def main() -> int:
             y0 = int(im.height * crop_f)
             im = im.crop((0, y0, im.width, im.height))
         im = im.resize((tw, th), Image.Resampling.LANCZOS)
-        pre = BACKUP / f"{art}_bg.webp"
-        im.save(pre, "WEBP", quality=95, method=6)
-        out = pixelize(im, pal, 5)
         dest = MAPS / f"{art}_bg.webp"
-        out.save(dest, "WEBP", quality=90, method=6)
+        im.save(dest, "WEBP", quality=92, method=6)
         done += 1
     print(f"done={done} skip={skip} miss={miss}")
     return 0

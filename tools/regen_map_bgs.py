@@ -2,7 +2,8 @@
 """照 docs/MAP_ART_SPEC.md 重生成違規底圖（2026-08-27 體檢：13 張）。
 
 違規類型：帶天空地平線的遠景、平視鏡頭、畫框卷軸圖。
-產後仍需：pixelize_env → 重描 walkmask → verify_capture（見 SPEC「產後三件事」）。
+產後仍需：LANCZOS 縮到世界尺寸 → 重描 walkmask → verify_capture（見 SPEC「產後三件事」）。
+⛔ 2026-09-07 ART-02：禁止再跑 pixelize_env.py（96 色量化已廢除）。
 """
 from __future__ import annotations
 
@@ -21,11 +22,15 @@ MAPS = ROOT / "game/assets/sprites/maps"
 
 TEMPLATE = (
     "top-down 3/4 isometric RPG map background, camera looking down at 45 degrees, "
+    "premium painted illustration NOT pixel art NOT quantized NOT 16x16 tiles, "
+    "smooth anti-aliased edges for LINEAR filtering, "
     "consistent scale: a single-story house is about 1/4 of image height and a doorway "
     "about 1/12 of image height, ground terrain fills the entire canvas edge to edge, "
-    "no sky, no horizon, no clouds, no border, no frame, no text, clear walkable dirt "
-    "paths about twice door width connecting to the edges, at least forty percent open "
-    "walkable ground, warm muted painted game art, "
+    "no horizon, no border, no frame, no text, no porcelain dolls, no human figures, "
+    "clear walkable paths about twice door width connecting to the edges, at least "
+    "forty percent OPEN central walkable ground with landmarks only at the edges, "
+    "Nutcracker toy-theater palette: warm ivory, deep navy, antique brass, muted red, "
+    "dark wood, small cyan-green highlights, forgotten mechanical toy world, "
 )
 
 BRIEFS = {
