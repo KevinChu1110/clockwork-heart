@@ -155,12 +155,12 @@
   ],
   "c2.arrive": [
     {
-      "speaker": "Veilfog",
-      "text": "In the mist, true and false share a colour. Lend me your eyes."
+      "speaker": "Mistveil",
+      "text": "In the mist, true and false share a colour. The one with the loosest mainspring? …Lend me your eyes."
     },
     {
-      "speaker": "Veilfog",
-      "text": "Stay one night first. Night roads break in the heart before the feet."
+      "speaker": "Mistveil",
+      "text": "Stay one night first. Those still walking with a winding nearly spent—especially the ones who came to “take a look”—break in their own hearts first."
     },
     {
       "speaker": "System",
@@ -213,8 +213,8 @@
   ],
   "c2.train_tip": [
     {
-      "speaker": "Veilfog",
-      "text": "Shadows lie. The real body flashes."
+      "speaker": "Mistveil",
+      "text": "Hit a shadow, and the shadow laughs. Watch the True Tell—the frame the blade lifts. That's the real one."
     },
     {
       "speaker": "System",
@@ -228,12 +228,12 @@
     },
     {
       "speaker": "Journal",
-      "text": "\"I'm still here. Because you haven't come back.\" — Wheatear"
+      "text": "\"I'm still here. Because you haven't come back.\" — Oldkey"
     }
   ],
   "c2.fog_need_letter": [
     {
-      "speaker": "Veilfog",
+      "speaker": "Mistveil",
       "text": "You owe a letter. Back to the inn."
     }
   ],
@@ -246,11 +246,11 @@
   "c2.fog_win": [
     {
       "speaker": "White Fog",
-      "text": "Seen through. A mercenary can do that? Boring."
+      "text": "You saw through it… Even a freshly wound one can see through? How dull."
     },
     {
       "speaker": "White Fog",
-      "text": "The mist's gone. Report back or go on. Whatever."
+      "text": "The mist is gone. The road is right in front of you—go tell the Keep, or keep walking. Your call."
     },
     {
       "speaker": "System",

@@ -211,7 +211,7 @@ static func minibosses() -> Dictionary:
 				{"speaker": _t("殘影"), "portrait": "mirror_wraith", "text": _t("捷徑……碎了。你自己走吧。")},
 				{"speaker": _t("系統"), "text": _t("戰勝【鏡廊殘影】。金 80 · 星屑 5。")},
 			],
-			"lose": _t("你被自己的倒影推回霧隱村。"),
+			"lose": _t("你被自己的倒影推回白霧村。"),
 			"gold": 80, "dust": 5, "hp": 10,
 			"lose_map": "mist_village", "lose_screen": "C2_MIST",
 			"win_map": "mist_mirror", "win_screen": "C2_MIST",

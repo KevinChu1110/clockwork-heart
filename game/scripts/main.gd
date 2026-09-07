@@ -3148,7 +3148,7 @@ func _side_ronin() -> void:
 	]
 	if can_persuade:
 		choices.append(_t("焰會吃掉你"))
-		replies.append(_t("……閉嘴。你有麥稈味。"))
+		replies.append(_t("……閉嘴。你有鑰繩味。"))
 	_play_dialog([
 		{"speaker": _t("黑焰浪人"), "portrait": "road_bandit", "text": _t("站住。你也是來『變強』的？")},
 		{"speaker": _t("黑焰浪人"), "text": _t("黑焰教我：心一軟，就被吃乾淨。")},
@@ -3293,7 +3293,7 @@ func _side_star_wish() -> void:
 		return
 	_play_dialog([
 		{"speaker": _t("旁白"), "text": _t("淺池映著十四星。水面涼，心卻熱了一下。")},
-		{"speaker": _t("內心"), "text": _t("願……平安。願麥穗還在。願自己走到塔，還記得路回去。")},
+		{"speaker": _t("內心"), "text": _t("願……平安。願舊鑰還在。願自己走到塔，還記得路回去。")},
 		{"speaker": _t("旁白"), "text": _t("水紋一圈。星沒有回答，但池邊開了一朵夜開花。")},
 		{"speaker": _t("系統"), "text": _t("【支線】星池一願完成。金 25 · 星屑 2 · 經驗 20 · 星砂×1。稱號「許願兔」。")},
 	], func():
@@ -3309,7 +3309,7 @@ func _side_fog_incense() -> void:
 		])
 		return
 	_play_dialog([
-		{"speaker": _t("旁白"), "text": _t("香爐灰結了塊。旁有未燃的細香——霧隱人留下的規矩。")},
+		{"speaker": _t("旁白"), "text": _t("香爐灰結了塊。旁有未燃的細香——白霧村人留下的規矩。")},
 		{"speaker": _t("內心"), "text": _t("上香不求強。只求霧只騙敵人。")},
 		{"speaker": _t("旁白"), "text": _t("一炷煙直上，在霧裡拐了個彎，像笑了一下。")},
 		{"speaker": _t("系統"), "text": _t("【支線】霧祠一炷完成。金 25 · 星屑 2 · 經驗 18 · 騎士碎鐵×1。")},
@@ -3683,7 +3683,7 @@ func _go_world_map() -> void:
 	body += _t("維京海岸 ── 法師之塔 ── 堡壘\n")
 	body += _t("（港／洞／沉船）　（門廳／階／回憶）　（四店／市集／演武）\n")
 	body += "　　　　　　｜\n"
-	body += _t("　　　忍者村／霧隱（崖／祠／鏡廊）\n")
+	body += _t("　　　白霧村／霧隱（崖／祠／鏡廊）\n")
 	body += "　　　　　　｜\n"
 	body += _t("　　　武鬥道場（內院／竹林／山巔）\n\n")
 	body += _t("秘境：星落平原 · 行商驛站 · 黑焰疤地 · 北山道 · 東塔荒原\n")
@@ -3702,7 +3702,7 @@ func _go_world_map() -> void:
 	body += _t("去處（建議戰力）：\n")
 	body += _t("· 堡壘 ") + ("✓" if GameState.has_flag("c1_entered_city") or GameState.chapter != "c0" else "·") + "\n"
 	body += _t("· 岔路／練功 ") + (_t("✓ 鍛造後") if GameState.has_flag("c1_forged") else _t("鎖（先鍛造）")) + "\n"
-	body += _t("· 霧隱 ") + ("✓" if GameState.has_flag("c2_entered") else _t("建議 18+")) + "\n"
+	body += _t("· 白霧村 ") + ("✓" if GameState.has_flag("c2_entered") else _t("建議 18+")) + "\n"
 	body += _t("· 道場 ") + ("✓" if GameState.has_flag("c3_entered") else _t("建議 26+")) + "\n"
 	body += _t("· 森林 ") + ("✓" if GameState.has_flag("c4_entered") else _t("建議 30+ · 可選序")) + "\n"
 	body += _t("· 海岸 ") + ("✓" if GameState.has_flag("c5_entered") else _t("建議 30+ · 可選序")) + "\n"
@@ -3715,7 +3715,7 @@ func _go_world_map() -> void:
 		buttons.append({"text": _t("六域岔路"), "cb": func(): _open_explore("crossroads", Screen.C1_WILD)})
 		buttons.append({"text": _t("行商驛站"), "cb": func(): _open_explore("caravan_camp", Screen.C1_WILD)})
 		buttons.append({"text": _t("星落平原"), "cb": func(): _open_explore("starfall_plain", Screen.C1_WILD)})
-		buttons.append({"text": _t("霧隱村"), "cb": _go_c2_enter})
+		buttons.append({"text": _t("白霧村"), "cb": _go_c2_enter})
 		buttons.append({"text": _t("武鬥道場"), "cb": _go_c3_enter})
 		buttons.append({"text": _t("遊俠森林"), "cb": _go_c4_enter})
 		buttons.append({"text": _t("維京海岸"), "cb": _go_c5_enter})
@@ -6438,7 +6438,7 @@ func _go_aftermath() -> void:
 		_t("雷歐之後"),
 		_t("門開了。旗上有歪兔子。東南起霧。\n怒雷、反戈會了。金鬃外觀開了。"),
 		[
-			{"text": _t("前往霧隱村（C2）"), "cb": _go_c2_enter},
+			{"text": _t("前往白霧村（C2）"), "cb": _go_c2_enter},
 			{"text": _t("回到廣場"), "cb": _go_c1_town},
 			{"text": _t("出城荒野（霧道）"), "cb": _go_c1_wild},
 			{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
@@ -6480,7 +6480,7 @@ func _go_c2_enter_body() -> void:
 			{
 				"bg": "mist_village",
 				"speaker": _t("霧隱"),
-				"text": _t("……傭兵團最弱的？眼睛，借我用用。"),
+				"text": _t("……發條最鬆的那掛？眼睛，借我用用。"),
 			},
 		]), func():
 			## N8 延遲的信：進村後主線強制先讀，不可漏
@@ -6555,8 +6555,8 @@ func _c2_play_wheat_letter(after: Callable = Callable()) -> void:
 	_play_dialog(StoryAnchors.wheat_letter_lines(), func():
 		StoryAnchors.mark_wheat_letter_read()
 		SaveManager.save_game()
-		ui_toast(_t("日誌：麥穗的字"))
-		GameLog.system(_t("讀到麥穗的信——我還在"))
+		ui_toast(_t("日誌：舊鑰的字"))
+		GameLog.system(_t("讀到舊鑰的信——我還在"))
 		AudioManager.play("reveal", 1.0, -4.0)
 		if after.is_valid():
 			after.call()
@@ -6592,7 +6592,7 @@ func _c2_fog_clear_cut() -> void:
 		{
 			"bg": "mist_village",
 			"speaker": _t("內心"),
-			"text": _t("麥穗的字還在：我還在。那我就還能走。"),
+			"text": _t("舊鑰的字還在：我還在。那我就還能走。"),
 		},
 		{
 			"bg": "dojo",
@@ -6610,10 +6610,10 @@ func _go_c2_cleared_panel() -> void:
 	AudioManager.play_bgm("mist")
 	_panel(
 		_t("C2 完成 · 霧與真"),
-		_t("霧散了。麥穗的字還在：我還在。\n山上鐘響。去道場。"),
+		_t("霧散了。舊鑰的字還在：我還在。\n山上鐘響。去道場。"),
 		[
 			{"text": _t("前往道場（C3）"), "cb": _go_c3_enter},
-			{"text": _t("回霧隱村"), "cb": _go_c2_mist},
+			{"text": _t("回白霧村"), "cb": _go_c2_mist},
 			{"text": _t("回堡壘"), "cb": _go_c1_town},
 			{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
 		]

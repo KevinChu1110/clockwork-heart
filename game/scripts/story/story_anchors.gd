@@ -38,10 +38,10 @@ static func mark_wheat_letter_read() -> void:
 static func wheat_letter_open_line() -> String:
 	var gs := _gs()
 	if gs != null and (gs.wheat_stalk_broken or gs.has_wheat_stalk):
-		return _t("麥穗的稈裡捲著一張薄紙。字跡被捏過。")
+		return _t("鑰繩／行囊縫裡……有一張薄紙。字跡被捏過。")
 	if gs != null:
 		return _t("霧隱將一封遲到的信放到桌上：「有人託人一站一站轉來。慢了。」")
-	return _t("稈／行囊縫裡……有一張薄紙。字跡被捏過。")
+	return _t("鑰繩／行囊縫裡……有一張薄紙。字跡被捏過。")
 
 
 ## N8 延遲的信正文（進村強制／客棧互動共用）
@@ -51,7 +51,7 @@ static func wheat_letter_lines() -> Array:
 		{"speaker": _t("信"), "text": _t("我還在。")},
 		{"speaker": _t("信"), "text": _t("不是因為預言，")},
 		{"speaker": _t("信"), "text": _t("是因為你還沒回來。")},
-		{"speaker": _t("信"), "text": _t("——麥穗")},
+		{"speaker": _t("信"), "text": _t("——舊鑰")},
 		{"speaker": _t("內心"), "text": _t("……還在。那我就還能走。")},
-		{"speaker": _t("日誌"), "text": _t("麥穗的字。比預言輕，比劍重。")},
+		{"speaker": _t("日誌"), "text": _t("舊鑰的字。比預言輕，比劍重。")},
 	]

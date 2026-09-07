@@ -156,11 +156,11 @@
   "c2.arrive": [
     {
       "speaker": "Velo de Niebla",
-      "text": "En la niebla, lo real y lo falso son del mismo color. Préstame tus ojos."
+      "text": "En la niebla, lo real y lo falso son del mismo color. ¿El de la cuerda más floja? …Préstame tus ojos."
     },
     {
       "speaker": "Velo de Niebla",
-      "text": "Pasa una noche primero. El camino nocturno se rompe antes en el corazón."
+      "text": "Pasa una noche primero. Quienes siguen andando con la cuerda a punto de acabarse—sobre todo los que vinieron a «echar un vistazo»—se rompen primero por dentro."
     },
     {
       "speaker": "Sistema",
@@ -214,7 +214,7 @@
   "c2.train_tip": [
     {
       "speaker": "Velo de Niebla",
-      "text": "Las sombras engañan. El cuerpo real brilla un instante."
+      "text": "Golpea una sombra y la sombra se ríe. Mira el gesto real: el fotograma en que se alza el filo. Ese es el verdadero."
     },
     {
       "speaker": "Sistema",
@@ -228,7 +228,7 @@
     },
     {
       "speaker": "Diario",
-      "text": "«Sigo aquí. Porque aún no has vuelto.» — Espiga"
+      "text": "«Sigo aquí. Porque aún no has vuelto.» — Llavevieja"
     }
   ],
   "c2.fog_need_letter": [
@@ -246,11 +246,11 @@
   "c2.fog_win": [
     {
       "speaker": "Niebla Blanca",
-      "text": "Me has calado. ¿Un mercenario sabe hacerlo? Qué aburrido."
+      "text": "Me has calado… ¿Hasta uno recién dado cuerda lo ve? Qué aburrido."
     },
     {
       "speaker": "Niebla Blanca",
-      "text": "La niebla se fue. Informa o sigue. Me da igual."
+      "text": "La niebla se fue. El camino está delante: vuelve a decirlo en el Bastión, o sigue andando. Tú verás."
     },
     {
       "speaker": "Sistema",

@@ -543,7 +543,7 @@ static func _crossroads() -> Dictionary:
 		_e("camp_fire", 1140, 938, 48, 48, "旅人營火", Color(0.9, 0.4, 0.15), true),
 		_e("merchant", 1230, 990, 48, 64, "行商", Color(0.6, 0.5, 0.4)),
 		_e("path_knight", 180, 651, 72, 64, "西·堡壘", Color(0.5, 0.45, 0.4)),
-		_e("path_mist_c", 2100, 1510, 72, 64, "南·霧隱", Color(0.5, 0.55, 0.7)),
+		_e("path_mist_c", 2100, 1510, 72, 64, "南·白霧村", Color(0.5, 0.55, 0.7)),
 		_e("path_dojo_c", 1740, 83, 72, 64, "北·道場", Color(0.4, 0.55, 0.35)),
 		_e("path_forest_c", 2400, 85, 72, 64, "東北·森林", Color(0.35, 0.55, 0.4)),
 		_e("path_coast_c", 2400, 537, 72, 64, "東南·海岸", Color(0.4, 0.55, 0.65)),
@@ -660,7 +660,7 @@ static func _blackflame_scar() -> Dictionary:
 # ═══════════════════════════════════════════
 
 static func _mist() -> Dictionary:
-	var m := _base("霧隱村 · 外圍", Color(0.1, 0.11, 0.16), 3000, 1674, Vector2(220, 850), "mist_village")
+	var m := _base("白霧村 · 外圍", Color(0.1, 0.11, 0.16), 3000, 1674, Vector2(220, 850), "mist_village")
 	var ents: Array = [
 		_e("fog_hide", 436, 953, 48, 64, "霧隱", Color(0.5, 0.55, 0.7)),
 		_e("lantern", 862, 810, 36, 40, "霧燈", Color(0.55, 0.55, 0.7)),
@@ -687,9 +687,9 @@ static func _mist() -> Dictionary:
 
 
 static func _mist_deep() -> Dictionary:
-	var m := _base("霧隱 · 深巷與影廊前", Color(0.08, 0.09, 0.14), 2200, 1228, Vector2(348, 841), "mist_village")
+	var m := _base("白霧村 · 深巷與影廊前", Color(0.08, 0.09, 0.14), 2200, 1228, Vector2(348, 841), "mist_village")
 	m["entities"] = [
-		_e("back_mist", 320, 761, 56, 56, "回霧隱村", Color(0.45, 0.5, 0.6)),
+		_e("back_mist", 320, 761, 56, 56, "回白霧村", Color(0.45, 0.5, 0.6)),
 		_e("mirror", 676, 581, 48, 64, "霧鏡", Color(0.5, 0.55, 0.65), true),
 		_e("mask_shop", 672, 1006, 56, 56, "面具攤", Color(0.45, 0.4, 0.5), true),
 		_e("echo_well", 1248, 842, 48, 48, "回聲井", Color(0.4, 0.45, 0.55), true),
@@ -700,9 +700,9 @@ static func _mist_deep() -> Dictionary:
 
 
 static func _mist_cliff() -> Dictionary:
-	var m := _base("霧隱 · 霧崖觀台", Color(0.09, 0.1, 0.15), 2200, 1238, Vector2(1210, 1176), "mist_cliff")
+	var m := _base("白霧村 · 霧崖觀台", Color(0.09, 0.1, 0.15), 2200, 1238, Vector2(1210, 1176), "mist_cliff")
 	m["entities"] = [
-		_e("back_from_mist_sub", 1144, 1114, 56, 56, "回霧隱村", Color(0.45, 0.5, 0.6)),
+		_e("back_from_mist_sub", 1144, 1114, 56, 56, "回白霧村", Color(0.45, 0.5, 0.6)),
 		_e("cliff_rail", 1452, 891, 100, 32, "崖欄", Color(0.4, 0.42, 0.5), true),
 		_e("fog_sea", 1276, 1015, 80, 48, "霧海", Color(0.5, 0.55, 0.65)),
 		_e("bell_tower", 1716, 817, 48, 72, "霧鐘樓", Color(0.45, 0.45, 0.55), true),
@@ -713,7 +713,7 @@ static func _mist_cliff() -> Dictionary:
 
 
 static func _mist_shrine() -> Dictionary:
-	var m := _base("霧隱 · 霧祠內殿", Color(0.08, 0.09, 0.14), 2000, 1116, Vector2(640, 1107), "mist_shrine")
+	var m := _base("白霧村 · 霧祠內殿", Color(0.08, 0.09, 0.14), 2000, 1116, Vector2(640, 1107), "mist_shrine")
 	var incense_lab := "香爐（已燃）" if _flag("side.fog_incense_done") else "香爐"
 	m["entities"] = [
 		_e("back_from_mist_sub", 612, 1028, 56, 56, "出祠", Color(0.45, 0.5, 0.6)),
@@ -726,7 +726,7 @@ static func _mist_shrine() -> Dictionary:
 
 
 static func _mist_mirror() -> Dictionary:
-	var m := _base("霧隱 · 鏡廊迷宮", Color(0.07, 0.08, 0.13), 2400, 1350, Vector2(232, 1295), "mist_mirror")
+	var m := _base("白霧村 · 鏡廊迷宮", Color(0.07, 0.08, 0.13), 2400, 1350, Vector2(232, 1295), "mist_mirror")
 	m["entities"] = [
 		_e("back_from_mist_sub", 204, 1212, 56, 56, "出廊", Color(0.45, 0.5, 0.6)),
 		_e("mirror_a", 352, 988, 48, 64, "鏡·一", Color(0.55, 0.6, 0.7), true),
@@ -759,7 +759,7 @@ static func _dojo() -> Dictionary:
 		_e("trial_hall", 2296, 1305, 80, 88, "試煉堂·阿波", Color(0.35, 0.5, 0.3)),
 		_e("dorm", 848, 962, 64, 56, "僧寮", Color(0.4, 0.38, 0.32), true),
 		_e("save_c3", 408, 1251, 48, 48, "存檔石", Color(0.4, 0.45, 0.5)),
-		_e("back_mist", 180, 1407, 56, 48, "回霧隱村", Color(0.45, 0.5, 0.6)),
+		_e("back_mist", 180, 1407, 56, 48, "回白霧村", Color(0.45, 0.5, 0.6)),
 		_e("exit_cross_d", 228, 1454, 72, 64, "六域岔路", Color(0.45, 0.5, 0.4)),
 	]
 	if _flag("boss.abo_cleared"):

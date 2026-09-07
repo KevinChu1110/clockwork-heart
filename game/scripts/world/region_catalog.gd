@@ -43,14 +43,14 @@ static func regions() -> Array:
 		},
 		{
 			"id": "r2",
-			"name": _t("第二區・霧隱之地"),
+			"name": _t("第二區・白霧之地"),
 			"blurb": _t("霧村、霧崖與鏡廊。看破虛影。"),
 			"stages": [
 				{
 					"id": "r2_s1",
-					"name": _t("關卡 1・霧隱村"),
+					"name": _t("關卡 1・白霧村"),
 					"maps": [
-						{"id": "mist_village", "label": _t("霧隱村外")},
+						{"id": "mist_village", "label": _t("白霧村外")},
 						{"id": "mist_cliff", "label": _t("霧崖")},
 					],
 					"unlock": ["boss.leo_cleared"],
