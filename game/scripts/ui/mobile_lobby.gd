@@ -587,7 +587,7 @@ func _build_village_tab() -> void:
 		request_battle.emit("arena")
 	)
 	_add_texture_card(left_shops, "res://assets/sprites/ui/mobile/card_hall_quest.png", func():
-		_show_toast("已領取今日簽到與冒險委託補給！")
+		_show_toast("今天，誰需要上發條？去幫一位玩具轉回去。")
 	)
 
 	## 右側：專注於主線推進 (無重複簽到按鈕)

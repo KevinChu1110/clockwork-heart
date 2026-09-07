@@ -1366,26 +1366,11 @@ func _go_starpath_panel() -> void:
 	body += "\n\n[color=#fc9]%s[/color]" % OnlineGate.candle_line(false)
 	body += _t("\n戰力 %d · Lv%d") % [GameState.power_score(), GameState.level]
 	var buttons: Array = []
-	if QuestSystem.can_claim_daily():
-		buttons.append({"text": _t("★ 領取今日簽到"), "cb": func():
-			var r: Dictionary = QuestSystem.claim_daily()
-			_play_dialog([{"speaker": _t("系統"), "text": str(r.get("msg", ""))}], _go_starpath_panel)
-		})
-	if QuestSystem.claimable_commissions() >= 2:
-		buttons.append({"text": _t("★ 一鍵領取委託（%d）") % QuestSystem.claimable_commissions(), "cb": func():
-			var ra: Dictionary = QuestSystem.claim_all_ready()
-			_play_dialog([{"speaker": _t("系統"), "text": str(ra.get("msg", ""))}], _go_starpath_panel)
-		})
+	WindupDailySystem.refresh()
+	if WindupDailySystem.is_ready():
+		buttons.append({"text": _t("今天，誰需要上發條？"), "cb": _go_daily_panel})
 	else:
-		for c in QuestSystem.commissions():
-			var cid := str(c.get("id", ""))
-			if QuestSystem.commission_done(c) and not QuestSystem.commission_claimed(cid):
-				var id2 := cid
-				buttons.append({"text": _t("★ 領委託：%s") % c.get("name", cid), "cb": func():
-					var r2: Dictionary = QuestSystem.claim_commission(id2)
-					_play_dialog([{"speaker": _t("系統"), "text": str(r2.get("msg", ""))}], _go_starpath_panel)
-				})
-	buttons.append({"text": _t("今日委託明細"), "cb": _go_daily_panel})
+		buttons.append({"text": _t("今天已上過發條"), "cb": _go_daily_panel})
 	if ArenaSystem.is_unlocked():
 		var a_left := ArenaSystem.daily_left()
 		var a_lab := _t("演武場（剩 %d）") % a_left if a_left > 0 else _t("演武場（練習）")
@@ -1415,42 +1400,23 @@ func _go_starpath_panel() -> void:
 
 
 func _go_daily_panel() -> void:
-	QuestSystem.refresh_daily()
-	var body := _t("每天登入可領補給。連續簽到獎勵更高。\n")
-	body += _t("連續：%d 天 · 戰力 %d · Lv%d\n") % [
-		int(GameState.get_flag(QuestSystem.DAILY_STREAK, 0)), GameState.power_score(), GameState.level
-	]
-	body += _t("%s\n\n") % QuestSystem.streak_milestone_hint()
-	if GameState.ng_plus > 0:
-		body += _t("二周目加成：每日略豐。\n\n")
-	body += QuestSystem.list_commissions_bbcode()
+	## 單一入口：今天誰需要上發條（邏輯在 WindupDailySystem）
+	WindupDailySystem.refresh()
+	var body := WindupDailySystem.panel_bbcode()
 	var buttons: Array = []
-	if QuestSystem.can_claim_daily():
-		buttons.append({"text": _t("領取今日簽到"), "cb": func():
-			var r: Dictionary = QuestSystem.claim_daily()
-			_play_dialog([{"speaker": _t("系統"), "text": str(r.get("msg", ""))}], _go_daily_panel)
-		})
-	else:
-		buttons.append({"text": _t("簽到已領"), "cb": _go_daily_panel})
-	if QuestSystem.claimable_commissions() >= 2:
-		buttons.append({"text": _t("一鍵領取委託（%d）") % QuestSystem.claimable_commissions(), "cb": func():
-			var ra: Dictionary = QuestSystem.claim_all_ready()
-			_play_dialog([{"speaker": _t("系統"), "text": str(ra.get("msg", ""))}], _go_daily_panel)
-		})
-	else:
-		for c in QuestSystem.commissions():
-			var cid := str(c.get("id", ""))
-			if QuestSystem.commission_done(c) and not QuestSystem.commission_claimed(cid):
-				var id2 := cid
-				buttons.append({"text": _t("領委託：%s") % c.get("name", cid), "cb": func():
-					var r2: Dictionary = QuestSystem.claim_commission(id2)
-					_play_dialog([{"speaker": _t("系統"), "text": str(r2.get("msg", ""))}], _go_daily_panel)
-				})
-	buttons.append({"text": _t("材料行（琥珀）"), "cb": _go_material_shop})
+	if WindupDailySystem.is_ready():
+		var c: Dictionary = WindupDailySystem.todays_case()
+		for ch in c.get("choices", []):
+			var cid := str(ch.get("id", ""))
+			var lab := str(ch.get("label", cid))
+			buttons.append({"text": lab, "cb": func():
+				var r: Dictionary = WindupDailySystem.complete(cid)
+				_play_dialog([{"speaker": _t("系統"), "text": str(r.get("msg", ""))}], _go_daily_panel)
+			})
 	buttons.append({"text": _t("長遠任務"), "cb": _go_quest_panel})
 	buttons.append({"text": _t("今日村莊"), "cb": _go_starpath_panel})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _hub_back})
-	_panel(Loc.t("panel.daily"), body, buttons)
+	_panel(_t("今天，誰需要上發條？"), body, buttons)
 
 
 func _go_quest_panel() -> void:
@@ -1466,7 +1432,7 @@ func _go_quest_panel() -> void:
 			})
 	if buttons.is_empty():
 		buttons.append({"text": _t("（暫無待領任務）"), "cb": _go_quest_panel})
-	buttons.append({"text": _t("每日／委託"), "cb": _go_daily_panel})
+	buttons.append({"text": _t("今天，誰需要上發條？"), "cb": _go_daily_panel})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _hub_back})
 	_panel(Loc.t("panel.quests"), body, buttons)
 
@@ -1490,7 +1456,7 @@ func _go_material_shop() -> void:
 		{"text": _t("買小紅水×1（12金）"), "cb": func(): _shop_buy("hp_s", 12)},
 		{"text": _t("買乾糧×1（8金）"), "cb": func(): _shop_buy("bread", 8)},
 		{"text": _t("一鍵賣出全部材料"), "cb": _shop_sell_all},
-		{"text": _t("回每日／委託"), "cb": _go_daily_panel},
+		{"text": _t("回上發條"), "cb": _go_daily_panel},
 		{"text": Loc.t("btn.close"), "cb": _hub_back},
 	]
 	_panel(Loc.t("panel.shop"), body, buttons)
