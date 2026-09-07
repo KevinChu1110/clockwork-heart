@@ -78,7 +78,7 @@
       "heal": null,
       "source": "序章拾劍留下的紀念",
       "sources": [
-        {"label": "翠谷村口拾劍", "map": "village"}
+        {"label": "閣樓拾劍", "map": "village"}
       ]
     },
     "map_scrap": {
@@ -257,7 +257,7 @@
       "sources": [
         {"label": "各域雜魚", "map": "road"},
         {"label": "遊俠森林", "map": "forest"},
-        {"label": "黑焰疤地", "map": "scar"},
+        {"label": "黑鏽疤地", "map": "scar"},
         {"label": "琥珀材料行 18 金", "map": "market"},
         {"label": "破部位（靴）", "map": "parts"}
       ]
@@ -270,10 +270,10 @@
       "sell": 12,
       "buy": 28,
       "heal": null,
-      "source": "荒路／騎士域、黑焰浪人；琥珀可買；破部位（盔）",
+      "source": "荒路／騎士域、生鏽發條浪人；琥珀可買；破部位（盔）",
       "sources": [
         {"label": "荒路", "map": "road"},
-        {"label": "騎士堡／黑焰浪人", "map": "town"},
+        {"label": "騎士堡／生鏽發條浪人", "map": "town"},
         {"label": "琥珀材料行 28 金", "map": "market"},
         {"label": "破部位（盔）", "map": "parts"}
       ]
