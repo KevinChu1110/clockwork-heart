@@ -2778,7 +2778,7 @@ func _go_title_wall() -> void:
 		{"text": _t("返回標題"), "cb": _go_title},
 	]
 	if GameState.has_flag("game_cleared"):
-		buttons.append({"text": _t("黑焰裂縫"), "cb": _go_postgame_hub})
+		buttons.append({"text": _t("黑鏽裂縫"), "cb": _go_postgame_hub})
 		buttons.append({"text": _t("堡壘"), "cb": _go_c1_town})
 	_panel(Loc.t("panel.titles"), body, buttons)
 
@@ -2806,7 +2806,7 @@ func _go_ng_plus_menu() -> void:
 	var next_lv := maxi(1, GameState.ng_plus + 1)
 	var next_m: float = minf(1.30, 1.15 + 0.05 * float(next_lv - 1))
 	_panel(
-		_t("黑焰迴響"),
+		_t("黑鏽迴響"),
 		_t("再走一次——敵人的血與攻擊 ×%.2f（第 %d 層）。\n格擋與閃避的時機也會短一點。\n\n帶著走：武器、養成、外觀、裂縫紀錄。\n重來的是：主線的 Boss。\n\n「沾焰」：刃口染上灰邊，攻擊 +3，而且會愈積愈深。") % [next_m, next_lv],
 		[
 			{"text": _t("再走一次"), "cb": func(): _start_ng_plus(false)},
@@ -2825,9 +2825,9 @@ func _start_ng_plus(with_stain: bool) -> void:
 	var stain_s := _t("刃上多了一層不肯散的灰。") if with_stain else _t("你仍選了乾淨的刃。")
 	var tips: Array = TutorialSystem.take("ng")
 	var lines: Array = [
-		{"speaker": _t("旁白"), "text": _t("黑焰退後，又在腳邊留下一圈淺痕——像邀請。")},
+		{"speaker": _t("旁白"), "text": _t("黑鏽退後，又在腳邊留下一圈淺痕——像邀請。")},
 		{"speaker": _t("斷頁"), "text": _t("卷軸可以重抄。腳印，只能再踩一次。")},
-		{"speaker": _t("系統"), "text": _t("【二周目】黑焰迴響 ×%d。%s") % [GameState.ng_plus, stain_s]},
+		{"speaker": _t("系統"), "text": _t("【二周目】黑鏽迴響 ×%d。%s") % [GameState.ng_plus, stain_s]},
 		{"speaker": _t("系統"), "text": _t("敵人強了 ×%.2f，出手的空檔也窄了些。養成和外觀都帶著走。") % GameState.ng_enemy_mult()},
 		{"speaker": _t("系統"), "text": _t("村裡的人會換話說，佈告也換。畫面標著第幾層。")},
 	]
@@ -3403,7 +3403,7 @@ func _flavor_world_object(id: String) -> void:
 		"mural": _t("壁畫：五座守衛泰坦環塔。中央空白——那是你的位置嗎？"),
 		"memory_orb_a": _t("記憶球浮出閣樓的火。你眨眨眼，它散了。"),
 		"memory_orb_b": _t("記憶球：堡壘的旗第一次升起。"),
-		"memory_orb_c": _t("記憶球：聖獸還清明時的眼睛。"),
+		"memory_orb_c": _t("記憶球：守衛泰坦還清明時的眼睛。"),
 		"throne_shadow": _t("王座影沒有實體。卻讓人想跪下——你沒有。"),
 		"wagon_a": _t("篷車裡有乾糧味與遠方泥土。"),
 		"map_table": _t("地圖桌標了六域。塔被畫得最大。"),
@@ -7277,7 +7277,7 @@ func _go_ending() -> void:
 		star_line = _t("\n星讀：「你的拒絕，比任何戰魂都亮。」")
 	var ng_line := ""
 	if GameState.ng_plus > 0:
-		ng_line = _t("\n\n[b]黑焰迴響 ×%d 通關。[/b] 稱號：迴響行者。") % GameState.ng_plus
+		ng_line = _t("\n\n[b]黑鏽迴響 ×%d 通關。[/b] 稱號：迴響行者。") % GameState.ng_plus
 		if GameState.stain_flame:
 			ng_line += _t(" 沾焰灰邊仍在。")
 	var title_pop := ""
@@ -7287,16 +7287,16 @@ func _go_ending() -> void:
 		_t("終章 · 晨光"),
 		_t("通天塔裂了。鏽散了。\n不是因為變強，是因為沒把心餵給鏽。\n\n舊鑰：%s%s%s%s%s\n\n通關。塔外裂縫還在。") % [maisui_line, ding_line, star_line, ng_line, title_pop],
 		[
-			{"text": _t("黑焰裂縫（通關後）"), "cb": _go_postgame_hub},
+			{"text": _t("黑鏽裂縫（通關後）"), "cb": _go_postgame_hub},
 			{"text": _t("稱號牆"), "cb": _go_title_wall},
-			{"text": _t("黑焰迴響（再走一次）"), "cb": _go_ng_plus_menu},
+			{"text": _t("黑鏽迴響（再走一次）"), "cb": _go_ng_plus_menu},
 			{"text": _t("再逛逛（堡壘）"), "cb": _go_c1_town},
 			{"text": _t("回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
 		]
 	)
 
 
-# ─── 通關後 · 黑焰裂縫 ───
+# ─── 通關後 · 黑鏽裂縫 ───
 
 func _go_postgame_hub() -> void:
 	## 通關後中樞：裂縫 + 獵場
@@ -7328,10 +7328,10 @@ func _go_postgame_hub() -> void:
 		{"text": _t("堡壘"), "cb": _go_c1_town},
 		{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
 	])
-	buttons.insert(0, {"text": _t("黑焰迴響（NG+）"), "cb": _go_ng_plus_menu})
+	buttons.insert(0, {"text": _t("黑鏽迴響（NG+）"), "cb": _go_ng_plus_menu})
 	buttons.insert(1, {"text": _t("稱號牆"), "cb": _go_title_wall})
 	TitleCatalog.evaluate_all()
-	_panel(_t("通關後 · 黑焰裂縫"), body, buttons)
+	_panel(_t("通關後 · 黑鏽裂縫"), body, buttons)
 
 
 func _go_rift_intro(mode: String) -> void:

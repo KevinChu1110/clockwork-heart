@@ -58,7 +58,7 @@ const MISSIONS: Array[Dictionary] = [
 	{"id": "m_optional", "name": "風與石", "desc": "戰勝疾影與石拳", "kind": "flags_all", "keys": ["boss.shadowwind_cleared", "boss.stonefist_cleared"], "need": 2, "gold": 100, "dust": 5},
 	{"id": "m_clear", "name": "晨光見證", "desc": "通關終章", "kind": "flag", "key": "game_cleared", "need": 1, "gold": 200, "dust": 10},
 	{"id": "m_rift3", "name": "裂縫試煉", "desc": "裂縫勝場達 3", "kind": "count", "key": "postgame.rift_wins", "need": 3, "gold": 80, "dust": 4},
-	{"id": "m_ng1", "name": "二周目啟程", "desc": "進入黑焰迴響（NG+）", "kind": "ng", "need": 1, "gold": 150, "dust": 8},
+	{"id": "m_ng1", "name": "二周目啟程", "desc": "進入黑鏽迴響（NG+）", "kind": "ng", "need": 1, "gold": 150, "dust": 8},
 	{"id": "m_titles5", "name": "稱號收藏家", "desc": "解鎖 5 個稱號", "kind": "titles", "need": 5, "gold": 60, "dust": 3},
 	{"id": "m_guild", "name": "盟約之契", "desc": "公會貢獻達 100", "kind": "guild", "need": 100, "gold": 70, "dust": 4},
 	{"id": "m_chests5", "name": "拾荒者", "desc": "開啟 5 個世界寶箱", "kind": "chests", "need": 5, "gold": 50, "dust": 3},

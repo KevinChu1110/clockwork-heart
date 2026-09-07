@@ -70,7 +70,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.echo_walker",
 		"name": "迴響行者",
-		"desc": "黑焰迴響任意層再通關。",
+		"desc": "黑鏽迴響任意層再通關。",
 		"cond": "echo",
 	},
 	{

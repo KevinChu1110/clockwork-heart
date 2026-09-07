@@ -235,7 +235,7 @@ func setup(mode: String) -> void:
 	else:
 		_append_log(_t("[color=#8cf]滑鼠也行：點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]"))
 	if GameState.ng_plus > 0:
-		_append_log(_t("[color=#c8f]黑焰迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]") % [
+		_append_log(_t("[color=#c8f]黑鏽迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]") % [
 			GameState.ng_plus, ng_m
 		])
 		_flash_coach(_t("二周目：敵人更硬，空檔更窄。一樣等綠了再擋。"), 2.5)

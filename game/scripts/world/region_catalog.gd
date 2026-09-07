@@ -125,7 +125,10 @@ static func regions() -> Array:
 				{
 					"id": "r4_s2",
 					"name": _t("關卡 2・通天塔"),
-					"maps": [{"id": "blackflame_scar", "label": _t("疤地")}],
+					"maps": [
+						{"id": "tower_camp", "label": _t("塔下營地")},
+						{"id": "tower_foyer", "label": _t("通天塔層")},
+					],
 					"unlock": ["boss.stonefist_cleared"],
 					"clear_flag": "boss.demon_cleared",
 					"boss": _t("塔底"),
