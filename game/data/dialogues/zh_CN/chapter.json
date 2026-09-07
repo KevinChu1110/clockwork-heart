@@ -19,14 +19,14 @@
   ],
   "c0.shrine_stub": [
     {
-      "speaker": "小祠",
-      "text": "香灰冷了。人先走了。"
+      "speaker": "停摆钟摆",
+      "text": "摆锤卡在倾斜角度。铜轴上凝结着深暗结晶。"
     }
   ],
   "c0.field_west": [
     {
       "speaker": "旁白",
-      "text": "田被烧过。往东。"
+      "text": "通往深处的通道被封死。唯一的通路是向前。"
     }
   ],
   "c0.leave_without_sword": [
@@ -38,7 +38,7 @@
   "c0.road_east": [
     {
       "speaker": "旁白",
-      "text": "长路向东延伸。翠岭比地图上画的更大。"
+      "text": "长路向外延伸。创想界域比积木堆看起来更大。"
     }
   ],
   "c1.flag_paw": [

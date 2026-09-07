@@ -19,14 +19,14 @@
   ],
   "c0.shrine_stub": [
     {
-      "speaker": "Shrine",
-      "text": "The incense ash is cold. The people left first."
+      "speaker": "Stopped Pendulum",
+      "text": "The pendulum is stuck at a tilt. Dark crystals cling to the copper axle."
     }
   ],
   "c0.field_west": [
     {
       "speaker": "Narration",
-      "text": "The field was burned. East."
+      "text": "The path into the depths is sealed. The only way is forward."
     }
   ],
   "c0.leave_without_sword": [
@@ -38,7 +38,7 @@
   "c0.road_east": [
     {
       "speaker": "Narration",
-      "text": "The long road runs east. Cuiling is bigger than the map shows."
+      "text": "The road runs outward. The Realm of Wonder is larger than the toy pile looked."
     }
   ],
   "c1.flag_paw": [

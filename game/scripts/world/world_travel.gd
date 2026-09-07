@@ -26,12 +26,12 @@ static func links() -> Dictionary:
 		"trail_east": {
 			"map": "road", "screen": "C0_ROAD",
 			"need_flag": "item.rusty_sword",
-			"deny": _t("空手走不遠。先回村撿劍。"),
+			"deny": _t("空手走不遠。先回閣樓撿劍。"),
 		},
 		"mill_to_road": {
 			"map": "road", "screen": "C0_ROAD",
 			"need_flag": "item.rusty_sword",
-			"deny": _t("沒有武器不建議上荒路。"),
+			"deny": _t("沒有武器不建議往外走。"),
 		},
 
 		## ── 荒路 ──

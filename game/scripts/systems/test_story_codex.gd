@@ -28,7 +28,7 @@ func _initialize() -> void:
 		push_error("newly unlock flag missing %s" % newly)
 		ok = false
 	var body: String = sc.entry_bbcode("c0_ember_night")
-	if body.find("鏽劍") < 0 and body.find("锈剑") < 0:
+	if body.find("鏽劍") < 0 and body.find("锈剑") < 0 and body.find("鏽蝕長劍") < 0:
 		push_error("body missing sword text")
 		ok = false
 	else:

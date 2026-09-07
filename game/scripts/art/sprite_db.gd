@@ -863,7 +863,7 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 	var key := speaker.strip_edges()
 	var id := ""
 	match key:
-		"麥穗", "maisui":
+		"麥穗", "舊鑰", "旧钥", "Oldkey", "Llavevieja", "オールドキー", "올드키", "maisui":
 			id = "maisui"
 		"灰鬚", "greybeard":
 			id = "greybeard"
@@ -893,7 +893,7 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "boar"
 		"魔王", "demon":
 			id = "demon"
-		"渣滓之狼", "狼", "wolf":
+		"渣滓之狼", "失控的銹蝕玩具", "失控的锈蚀玩具", "Rust-bound Toy", "Juguete Oxidado Descontrolado", "暴走した錆びトイ", "폭주한 녹슨 장난감", "狼", "wolf":
 			id = "wolf"
 		"潮吼", "潮聲", "tide_roar":
 			id = "tide_roar"

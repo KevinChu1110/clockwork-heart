@@ -1734,7 +1734,7 @@ static func make_tutorial_wolf_fight(player_stats: Dictionary) -> BattleSim:
 
 	var w := BattleUnit.new()
 	w.id = "wolf"
-	w.display_name = _t("渣滓之狼")
+	w.display_name = _t("失控的銹蝕玩具")
 	w.team = BattleUnit.Team.ENEMY
 	w.max_hp = 45
 	w.hp = 45
