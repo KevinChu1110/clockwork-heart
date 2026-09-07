@@ -275,7 +275,7 @@ func _build_top_hud() -> void:
 	var row1 := HBoxContainer.new()
 	row1.add_theme_constant_override("separation", 8)
 	_lv_label = Label.new()
-	_lv_label.text = "Lv.12"
+	_lv_label.text = "Lv.1"
 	_lv_label.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
 	_lv_label.add_theme_font_size_override("font_size", 16)
 	_lv_label.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.9))
@@ -294,7 +294,7 @@ func _build_top_hud() -> void:
 	var pwr_row := HBoxContainer.new()
 	pwr_row.add_theme_constant_override("separation", 4)
 	_power_label = Label.new()
-	_power_label.text = "戰力 482"
+	_power_label.text = "戰力 0"
 	_power_label.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 	_power_label.add_theme_font_size_override("font_size", 13)
 	pwr_row.add_child(_power_label)
@@ -306,9 +306,9 @@ func _build_top_hud() -> void:
 	h.add_child(spacer)
 
 	## 多巴胺立體三寶果凍膠囊
-	_energy_label = _add_clean_capsule(h, "能量", "15/15", UiStyle.TATA_GREEN)
-	_gold_label = _add_clean_capsule(h, "金幣", "12,500", UiStyle.TATA_ORANGE)
-	_gem_label = _add_clean_capsule(h, "晶石", "350", UiStyle.TATA_BLUE)
+	_energy_label = _add_clean_capsule(h, "能量", "—", UiStyle.TATA_GREEN)
+	_gold_label = _add_clean_capsule(h, "金幣", "—", UiStyle.TATA_ORANGE)
+	_gem_label = _add_clean_capsule(h, "星屑", "—", UiStyle.TATA_BLUE)
 
 	var set_btn := Button.new()
 	set_btn.text = "設置"
@@ -1155,14 +1155,61 @@ func _build_bag_tab() -> void:
 		sp.add_child(l)
 		grid.add_child(sp)
 
+func _fmt_int(n: int) -> String:
+	var neg := n < 0
+	var s := str(absi(n))
+	var out := ""
+	while s.length() > 3:
+		out = "," + s.substr(s.length() - 3, 3) + out
+		s = s.substr(0, s.length() - 3)
+	return ("-" if neg else "") + s + out
+
+
+func _energy_hud_text() -> String:
+	var es: Node = null
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		es = (loop as SceneTree).root.get_node_or_null("EnergySystem")
+	var cur := 0
+	var mx := 15
+	if es:
+		if es.has_method("current"):
+			cur = int(es.call("current"))
+		if es.get("MAX_ENERGY") != null:
+			mx = int(es.get("MAX_ENERGY"))
+	var s := "%d/%d" % [cur, mx]
+	if cur < mx and es and es.has_method("seconds_to_next"):
+		var m := int(ceil(float(es.call("seconds_to_next")) / 60.0))
+		s += " %d分" % maxi(1, m)
+	return s
+
+
 func refresh_hud() -> void:
-	if _lv_label: _lv_label.text = "Lv.12"
-	if _name_label: _name_label.text = _get_hero_name()
-	if _hero_name_tag: _hero_name_tag.text = _get_hero_name()
-	if _power_label: _power_label.text = "戰力 482"
-	if _energy_label: _energy_label.text = "15/15"
-	if _gold_label: _gold_label.text = "12,500"
-	if _gem_label: _gem_label.text = "350"
+	var gs := _gs()
+	var lv := 1
+	var gold := 0
+	var dust := 0
+	var pow := 0
+	if gs:
+		lv = maxi(1, int(gs.level))
+		gold = int(gs.gold)
+		dust = int(gs.stardust)
+		if gs.has_method("power_score"):
+			pow = int(gs.call("power_score"))
+	if _lv_label:
+		_lv_label.text = "Lv.%d" % lv
+	if _name_label:
+		_name_label.text = _get_hero_name()
+	if _hero_name_tag:
+		_hero_name_tag.text = _get_hero_name()
+	if _power_label:
+		_power_label.text = "戰力 %d" % pow
+	if _energy_label:
+		_energy_label.text = _energy_hud_text()
+	if _gold_label:
+		_gold_label.text = _fmt_int(gold)
+	if _gem_label:
+		_gem_label.text = _fmt_int(dust)
 
 func _show_toast(msg: String) -> void:
 	var toast := Label.new()

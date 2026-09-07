@@ -32,6 +32,7 @@ func _initialize() -> void:
 		ok = false
 	else:
 		print("  ok energy spend mob → %d" % gs.energy)
+	gs.set_flag("boss.leo_cleared", true)
 	gs.energy = 2
 	var deny: Dictionary = es.try_spend_for_battle("leo")
 	if bool(deny.get("ok", false)):

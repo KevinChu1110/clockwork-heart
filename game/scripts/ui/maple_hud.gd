@@ -204,14 +204,16 @@ func refresh() -> void:
 	if Engine.get_main_loop() is SceneTree:
 		var es: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EnergySystem")
 		if es and es.has_method("current"):
-			energy_s = " · " + Loc.t("hud.energy", {
+			energy_s = Loc.t("hud.energy", {
 				"cur": int(es.call("current")),
 				"max": int(es.get("MAX_ENERGY")) if es.get("MAX_ENERGY") != null else 15,
 			})
 	_gold_l.text = Loc.t("hud.gold_power", {
 		"gold": GameState.gold, "pow": GameState.power_score(), "week": week, "claim": claim_s,
 	})
-	_gold_l.tooltip_text = _gold_l.text + energy_s + (claim_s if claim_s != "" else "")
+	if energy_s != "":
+		_gold_l.text += " · " + energy_s
+	_gold_l.tooltip_text = _gold_l.text + (claim_s if claim_s != "" else "")
 	_refresh_acc_row()
 
 	var path_s := GameState.path_display() if GameState.path_style != "" else Loc.t("hud.no_path")
