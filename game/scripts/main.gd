@@ -1639,12 +1639,12 @@ func _notify_codex_unlocks() -> void:
 	var names: PackedStringArray = []
 	for id in newly:
 		names.append(StoryCodex.display_title(str(id)))
-	_show_toast(_t("翠嶺手札：%s") % "、".join(names))
+	_show_toast(_t("旅途手札：%s") % "、".join(names))
 
 
 func _journey_summary() -> String:
 	var checks := [
-		[_t("C0 離村"), "c0_village_left"],
+		[_t("C0 離開閣樓"), "c0_village_left"],
 		[_t("C0 首戰"), "c0_first_battle"],
 		[_t("C1 鍛造"), "c1_forged"],
 		[_t("C1 雷歐"), "boss.leo_cleared"],

@@ -1,5 +1,5 @@
 extends Node
-## 旅途手札（翠嶺手札）：依旗標解鎖短文，對齊小說場景卡。
+## 旅途手札：依旗標解鎖短文，對齊小說場景卡。
 ## 全文小說在 docs/story/novel/；遊戲內只放精華 body。
 
 const CODEX_PATH := "res://data/story/codex.json"
@@ -114,7 +114,7 @@ func list_line(id: String) -> String:
 func panel_list_bbcode() -> String:
 	try_unlock_all()
 	var lines: PackedStringArray = []
-	lines.append("[b]翠嶺手札[/b]  %d／%d" % [unlocked_count(), total_count()])
+	lines.append("[b]旅途手札[/b]  %d／%d" % [unlocked_count(), total_count()])
 	lines.append("你走過的夜，收在這裡。")
 	lines.append("")
 	var book := -1
