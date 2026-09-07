@@ -214,8 +214,8 @@
    "id": "game-battle-polish",
    "cat": "遊戲",
    "title": "戰鬥畫面優化（去像素量化、粗描邊、腳底軟影）",
-   "status": "開發中",
-   "note": "戰鬥畫面：LINEAR＋地圖插畫底板、描邊／軟影 shader，測試還沒跑",
+   "status": "測試中",
+   "note": "戰鬥畫面：地圖插畫底板＋LINEAR、描邊／軟影、飽和對比；冒煙與 test_art 綠，未推 main",
    "keys": [
     "戰鬥畫面",
     "像素量化",
