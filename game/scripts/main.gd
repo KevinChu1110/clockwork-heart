@@ -397,6 +397,7 @@ func _build_pause_layer() -> void:
 
 	var card := PanelContainer.new()
 	card.name = "PauseCard"
+	card.clip_contents = false
 	ResponsiveUi.apply_dialog_card(card)
 	card.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
 	center.add_child(card)
@@ -2595,7 +2596,7 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 		layer.add_child(solid)
 	layer.add_child(bg)
 
-	## 底中選單卡：橫屏 740–760，不要右側窄欄長條鈕
+	## 底中選單卡：橫屏 740–760；主選單最多 2 列網格，不要全寬長條往下疊
 	var m := ResponsiveUi.safe_margin(layer)
 	var scrim := ColorRect.new()
 	scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -2642,41 +2643,50 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	info.add_child(meta_rt)
 
 	var menu_host := CenterContainer.new()
-	menu_host.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	menu_host.set_anchors_preset(Control.PRESET_FULL_RECT)
+	menu_host.anchor_top = 0.42
 	menu_host.offset_left = m.x
 	menu_host.offset_right = -m.z
 	menu_host.offset_bottom = -m.w - 10.0
-	menu_host.offset_top = -320.0 - m.w
+	menu_host.offset_top = 0.0
 	menu_host.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(menu_host)
 
 	var card := PanelContainer.new()
 	card.name = "TitleMenuCard"
+	card.clip_contents = false
 	ResponsiveUi.apply_dialog_card(card)
 	card.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	menu_host.add_child(card)
 
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", 8)
+	card.add_child(outer)
+
+	var head_row := HBoxContainer.new()
+	head_row.add_theme_constant_override("separation", 8)
+	outer.add_child(head_row)
+	var head_pad := Control.new()
+	head_pad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head_pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	head_row.add_child(head_pad)
+	var close_cb := Callable()
+	if not buttons.is_empty() and buttons[buttons.size() - 1] is Dictionary:
+		close_cb = (buttons[buttons.size() - 1] as Dictionary).get("cb", Callable())
+	head_row.add_child(ResponsiveUi.make_close_button(close_cb))
+
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	card.add_child(scroll)
-	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 8)
-	col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.add_child(col)
-	## 三層級：primary（預設第一顆，可用 "primary": false 關掉）／
-	## 一般／"tier": "util"（前面自動留組間距）。熱區一律 ≥50。
-	var prev_util := false
+	scroll.clip_contents = false
+	outer.add_child(scroll)
+	var grid := ResponsiveUi.make_two_col_grid("TitleMenuGrid")
+	scroll.add_child(grid)
+	## 最多 2 列橫向網格；熱區一律 ≥50。不要 VBox 全寬一排往下疊。
 	for i in buttons.size():
 		var bdef: Dictionary = buttons[i]
 		var primary := bool(bdef.get("primary", i == 0))
 		var util := str(bdef.get("tier", "")) == "util"
-		if util and not prev_util:
-			var gap := Control.new()
-			gap.custom_minimum_size = Vector2(0, 10)
-			gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			col.add_child(gap)
-		prev_util = util
 		var btn := Button.new()
 		btn.text = str(bdef.get("text", ""))
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2685,9 +2695,9 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 		if util:
 			btn.modulate.a = 0.88
 		btn.pressed.connect(bdef.get("cb", Callable()))
-		col.add_child(btn)
-	var need_h := col.get_combined_minimum_size().y + 24.0
-	scroll.custom_minimum_size = Vector2(0, minf(need_h, 280.0))
+		grid.add_child(btn)
+	var need_h := grid.get_combined_minimum_size().y + 8.0
+	scroll.custom_minimum_size = Vector2(0, minf(need_h, 220.0))
 
 
 func _toggle_locale() -> void:

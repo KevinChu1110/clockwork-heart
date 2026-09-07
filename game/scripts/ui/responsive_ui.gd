@@ -91,9 +91,12 @@ static func ui_scale(n: Node) -> float:
 static func make_close_button(cb: Callable) -> Button:
 	var btn := Button.new()
 	btn.name = "CloseBtn"
-	btn.text = "關閉"
+	btn.text = "✕"
+	btn.clip_text = false
 	btn.custom_minimum_size = Vector2(CLOSE_SIZE, CLOSE_SIZE)
-	btn.add_theme_font_size_override("font_size", 15)
+	btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	btn.add_theme_font_size_override("font_size", 22)
 	var csb := StyleBoxFlat.new()
 	csb.bg_color = Color(0.22, 0.16, 0.12, 0.95)
 	csb.border_color = Color(0.85, 0.70, 0.35, 0.9)
@@ -106,3 +109,13 @@ static func make_close_button(cb: Callable) -> Button:
 	if cb.is_valid():
 		btn.pressed.connect(cb)
 	return btn
+
+
+static func make_two_col_grid(grid_name: String = "TwoColGrid") -> GridContainer:
+	var grid := GridContainer.new()
+	grid.name = grid_name
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return grid

@@ -1,5 +1,5 @@
 extends SceneTree
-## 響應式 UI：Safe Area、彈窗寬、核心熱區。
+## 響應式 UI：Safe Area、彈窗寬、核心熱區、2 列網格、✕ 不被裁。
 ## godot --headless -s res://scripts/ui/test_responsive_ui.gd
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -63,7 +63,60 @@ func _assert_card_width(card: Control, where: String) -> void:
 		_fail("%s：窄欄 %.1f" % [where, w])
 
 
-func _run_aspect(tag: String) -> void:
+func _assert_title_grid(host: Node) -> void:
+	var grid := _find_named(host, "TitleMenuGrid") as GridContainer
+	if grid == null:
+		_fail("標題沒有 TitleMenuGrid")
+		return
+	if grid.columns > 2:
+		_fail("標題網格 %d 列 > 2" % grid.columns)
+	var n_btn := 0
+	for c in grid.get_children():
+		if c is Button:
+			n_btn += 1
+			var b := c as Button
+			if b.size.x > 500.0:
+				_fail("標題鈕「%s」寬 %.0f 仍是全寬長條" % [b.text, b.size.x])
+	if n_btn < 1:
+		_fail("標題網格沒有按鈕")
+	else:
+		print("  ok 標題 2 列網格 columns=%d buttons=%d" % [grid.columns, n_btn])
+
+
+func _assert_close_visible(n: Node, where: String) -> void:
+	var btn := _find_named(n, "CloseBtn") as Button
+	if btn == null:
+		_fail("%s：沒有 CloseBtn" % where)
+		return
+	if btn.text != "✕":
+		_fail("%s：關閉鈕是「%s」不是 ✕" % [where, btn.text])
+	var sz := Vector2(
+		maxf(btn.custom_minimum_size.x, btn.size.x),
+		maxf(btn.custom_minimum_size.y, btn.size.y)
+	)
+	if sz.x + 0.5 < 50.0 or sz.y + 0.5 < 50.0:
+		_fail("%s：關閉熱區 %s < 50" % [where, str(sz)])
+	var r := btn.get_global_rect()
+	var vp := root.get_visible_rect()
+	if r.size.x < 1.0 or r.size.y < 1.0:
+		_fail("%s：關閉鈕尚未排版 r=%s" % [where, str(r)])
+		return
+	if r.position.x < vp.position.x - 1.0 or r.position.y < vp.position.y - 1.0 \
+			or r.end.x > vp.end.x + 1.0 or r.end.y > vp.end.y + 1.0:
+		_fail("%s：關閉鈕被裁 r=%s vp=%s" % [where, str(r), str(vp)])
+	else:
+		print("  ok %s 關閉鈕可見 r=%s" % [where, str(r)])
+
+
+func _build_aspect() -> void:
+	if _main == null:
+		_fail("main 沒載起來")
+		return
+	_main.call("_go_title")
+	_main.call("_open_pause")
+
+
+func _check_aspect(tag: String) -> void:
 	print("== ", tag, " vp=", root.size, " visible=", root.get_visible_rect().size)
 	var dummy := Control.new()
 	root.add_child(dummy)
@@ -77,7 +130,6 @@ func _run_aspect(tag: String) -> void:
 	if _main == null:
 		_fail("main 沒載起來")
 		return
-	_main.call("_go_title")
 	var host: Node = _main.get("host")
 	if host == null:
 		_fail("沒有 host")
@@ -85,8 +137,9 @@ func _run_aspect(tag: String) -> void:
 	_min_btn_h(host)
 	var title_card := _find_named(host, "TitleMenuCard") as Control
 	_assert_card_width(title_card, "標題選單")
+	_assert_title_grid(host)
+	_assert_close_visible(host, "標題")
 
-	_main.call("_open_pause")
 	var pause: Node = _main.get("_pause_layer")
 	if pause == null:
 		_fail("暫停層沒建起來")
@@ -94,6 +147,7 @@ func _run_aspect(tag: String) -> void:
 		_min_btn_h(pause)
 		var pcard := _find_named(pause, "PauseCard") as Control
 		_assert_card_width(pcard, "暫停")
+		_assert_close_visible(pause, "暫停")
 	_main.call("_close_pause")
 	print("  ok 核心熱區 ≥50")
 
@@ -121,8 +175,14 @@ func _process(_d: float) -> bool:
 		2:
 			if _wait < 6:
 				return false
+			_build_aspect()
+			_wait = 0
+			_step = 3
+		3:
+			if _wait < 8:
+				return false
 			var a: Dictionary = ASPECTS[_aspect_i]
-			_run_aspect(str(a["name"]))
+			_check_aspect(str(a["name"]))
 			_aspect_i += 1
 			_step = 1
 			_wait = 0

@@ -91,21 +91,7 @@ func _build_ui() -> void:
 	title_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title_l)
 
-	## 右上角標準手機關閉按鈕 ✕ (42x42 觸控大熱區)
-	var close_btn := Button.new()
-	close_btn.text = "關閉"
-	close_btn.custom_minimum_size = Vector2(50, 50)
-	close_btn.add_theme_font_size_override("font_size", 18)
-	var csb := StyleBoxFlat.new()
-	csb.bg_color = Color(0.22, 0.16, 0.12, 0.95)
-	csb.border_color = Color(0.85, 0.70, 0.35, 0.9)
-	csb.set_border_width_all(2)
-	csb.set_corner_radius_all(20)
-	close_btn.add_theme_stylebox_override("normal", csb)
-	close_btn.add_theme_stylebox_override("hover", csb)
-	close_btn.add_theme_color_override("font_color", Color(1.0, 0.90, 0.80))
-	close_btn.pressed.connect(_on_close)
-	header.add_child(close_btn)
+	header.add_child(ResponsiveUi.make_close_button(_on_close))
 
 	## 分隔金線
 	var rule := ColorRect.new()
