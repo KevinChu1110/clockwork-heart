@@ -81,7 +81,9 @@
   - 耳朵是**立耳**，金屬結構不會軟垂
   - 尾巴是分節金屬或彈簧結構
   - 獅子的鬃毛也是金屬片，不是毛
-- **每一隻背後都要有發條鑰匙**，而且**看得到**。發條是世界觀與角色身份的視覺符號
+- **每一隻背後都要有發條鑰匙**，掛在**上背部**，而且**要從角色輪廓外緣看得出來**——
+  正面平視構圖看不到背部，鑰匙會被身體擋住或被模型硬塞到肩膀上（2026-09-07 兩個模型都犯這個錯）。
+  所以角色圖一律用**四分之三側身**，讓鑰匙在剪影上突出來。發條是世界觀與角色身份的視覺符號
 - **Q 版比例 2.2～2.8 頭身**，頭部與輪廓優先於表面細節
 - **輪廓用清楚的深色描邊 + 柔和腳底陰影**，確保手機小尺寸下的辨識度
 - 「還是太生物了」= 沒做到上面這幾條，重產
@@ -200,7 +202,7 @@ Four small anthropomorphic mechanical toy heroes standing together in a forgotte
 
 All characters are approximately 2.5-head-tall chibi proportions, clearly toy-sized and able to be held in one hand, not human-sized robots.
 
-Every character has a visible mechanical winding key mounted on their back. Animal features are mechanical components: rigid metal rabbit ears, articulated metal fox ears and tail, mechanical boar snout and tusks, mechanical lion mane.
+Every character has a mechanical winding key mounted on the upper back. Pose each character at a slight three-quarter angle so the brass key clearly breaks their silhouette and is readable against the background — never hidden behind the body. Animal features are mechanical components: rigid metal rabbit ears, articulated metal fox ears and tail, mechanical boar snout and tusks, mechanical lion mane.
 
 Material: aged brass, ivory painted metal, worn steel, chipped enamel, tiny screws, visible seams, subtle rust, scratches, dust, handcrafted antique toy construction. No plush fabric, no fur.
 
@@ -225,7 +227,7 @@ Full-body character illustration of Whitey, a charming 2.5-head-tall mechanical 
 
 Whitey is a small ivory-white mechanical rabbit constructed entirely from painted metal toy parts, never plush and never furry. Large cute mechanical rabbit head, rigid upright metal ears, simple expressive cyan-green glass eyes, small rounded mechanical body, short toy limbs, visible joints, screws and seams.
 
-A small antique brass winding key is clearly mounted on the center of Whitey's back.
+A small antique brass winding key is mounted on Whitey's upper back. The body is turned at a three-quarter angle away from the camera so the key clearly protrudes past the silhouette and is fully readable — do not hide it behind the body.
 
 Whitey holds exactly ONE simple single-handed longsword in one hand. The sword is slightly oversized for the tiny toy body but still believable as a toy weapon.
 
@@ -239,7 +241,7 @@ Pose: confident but adorable heroic standing pose, slightly imperfect toy postur
 
 Lighting: warm theatrical studio lighting, soft key light, subtle cyan rim light, soft ground shadow.
 
-Camera: full-body centered character sheet composition, 4:5 vertical framing, 50mm lens, clean neutral toy workshop background with subtle warm atmosphere.
+Camera: full-body character sheet composition, three-quarter view with the body angled about 30 degrees away from camera while the head turns back toward the viewer, 4:5 vertical framing, 50mm lens, completely clean neutral studio background — plain warm gradient, no props, no furniture, no scenery.
 
 Style keywords: premium stylized 3D game character art, handcrafted mechanical toy, chibi proportions, whimsical steampunk fairy tale, cinematic mobile RPG character illustration, strong silhouette, highly readable.
 
@@ -256,7 +258,7 @@ The fox is a small handcrafted mechanical toy, clearly designed to be held in on
 
 The character wears a worn dark navy blue toy wizard robe with small brass mechanical fasteners. The clothing must look like miniature stage-theater costume fabric attached to a metal toy body, not realistic clothing.
 
-A small antique brass winding key is clearly visible on the character's back.
+A small antique brass winding key is mounted on the character's upper back. The body is turned at a three-quarter angle so the key clearly protrudes past the silhouette — do not hide it behind the body.
 
 The fox holds one elegant miniature wooden-and-brass magic staff with a small cyan-green glowing crystal mechanism at the top.
 
@@ -268,7 +270,7 @@ Pose: cheerful confident mage pose, one hand holding the staff, the other hand s
 
 Lighting: warm theatrical stage lighting, soft volumetric illumination, cyan magical rim light, soft ground shadow.
 
-Camera: full-body 4:5 vertical character art, 50mm lens, clean antique toy workshop background, centered composition.
+Camera: full-body 4:5 vertical character art, three-quarter view with the body angled about 30 degrees away from camera, 50mm lens, completely clean neutral studio background — plain warm gradient, no props, no furniture, no scenery.
 
 Style keywords: premium stylized 3D mobile RPG character art, handcrafted mechanical toy, chibi fantasy mage, whimsical steampunk fairy tale, Nutcracker-inspired stage toy, strong silhouette, expressive character design.
 
@@ -312,7 +314,7 @@ Extreme close-up of a tiny ivory-white mechanical toy rabbit hero standing on a 
 
 The rabbit is a 2.5-head-tall mechanical toy, made entirely from aged ivory painted metal and antique brass. Rigid metal rabbit ears, expressive cyan-green glass eyes, tiny screws, worn joints, chipped paint, scratches and subtle rust. A small brass winding key is clearly visible on its back.
 
-The rabbit holds exactly ONE single-handed longsword.
+The rabbit holds exactly ONE single-handed longsword. It is seen from a three-quarter rear angle with its head turned back over its shoulder toward the viewer, so the brass winding key on its upper back is fully visible and catches the light.
 
 Behind the rabbit, the mysterious floating Gear Heart suddenly activates, emitting a powerful cyan-green glow through the dusty attic.
 
