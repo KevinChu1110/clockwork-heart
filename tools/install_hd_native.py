@@ -25,7 +25,7 @@ CATALOG = ROOT / "game/scripts/world/map_catalog.gd"
 ASPECT = 16 / 9
 ## 舊 4K 仍帶天空時，先丟掉頂部這一段再裝。nosky 原檔為 0。
 CROP_TOP = {
-	"village": 0.20,
+	# village 已改為室內閣樓，禁止再裁掉頂部木樑
 	"road": 0.26,
 	"wild": 0.20,
 	"dojo_inner": 0.28,

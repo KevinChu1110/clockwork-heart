@@ -48,6 +48,7 @@ cyan-green highlights), forgotten mechanical toy world, {每圖一句 content br
 
 ## 特例備忘
 
+- `village`（C0 開場可走圖）：**室內玩具閣樓／工房**，不是戶外村落。必有木樑天花板、木地板鋪滿、舊玩具與發條零件沿邊；中央 ≥40% 可走；⛔ 草地／茅屋頂／山邊洞窟／瓷娃娃。
 - `sky_kingdom_bg`（大廳）：16:9 橫屏遠景，允許天空；必須是古典玩具劇場／閣樓王國，⛔ 糖果綠平台。
 - `tower_memory`（塔內記憶幻境）刻意抽象，**豁免**本規格。
 - 室內店舖（`town_forge`／`town_soul`／`town_gem`／`town_tutor`）同樣 ¾ 俯視房間、地面鋪滿；禁止眼平室內＋窗外天空。
