@@ -1,191 +1,318 @@
 {
-  "說明": "《發條之心》項目清單。這是 Discord #todo-list 的真理來源，project_sync.py 每 5 分鐘同步一次。排序＝優先序，依 docs/PRODUCT_LOCK_0.20.md §10 執行順序。新增項目前先過 Product Lock §9 的准入閘門六題。",
-  "狀態定義": {
-    "草稿": "還沒動工",
-    "開發中": "正在做",
-    "測試中": "做完了在驗",
-    "已上線": "上了，帖子自動封存"
+ "說明": "《發條之心》項目清單。這是 Discord #todo-list 的真理來源，project_sync.py 每 5 分鐘同步一次。排序＝優先序，依 docs/PRODUCT_LOCK_0.20.md §10 執行順序。新增項目前先過 Product Lock §9 的准入閘門六題。",
+ "狀態定義": {
+  "草稿": "還沒動工",
+  "開發中": "正在做",
+  "測試中": "做完了在驗",
+  "已上線": "上了，帖子自動封存"
+ },
+ "items": [
+  {
+   "id": "lock-020",
+   "cat": "平台",
+   "title": "0.20 Product Lock 與美術定調 v2",
+   "status": "已上線",
+   "note": "產品層根本大法。任何新的大型系統要先過 §9 准入閘門六題才准動工。",
+   "keys": [
+    "product lock",
+    "准入閘門",
+    "美術定調",
+    "art_direction"
+   ]
   },
-  "items": [
-    {
-      "id": "lock-020",
-      "cat": "平台",
-      "title": "0.20 Product Lock 與美術定調 v2",
-      "status": "已上線",
-      "note": "產品層根本大法。任何新的大型系統要先過 §9 准入閘門六題才准動工。",
-      "keys": ["product lock", "准入閘門", "美術定調", "art_direction"]
-    },
-    {
-      "id": "world-canon",
-      "cat": "世界觀",
-      "title": "世界憲章與骨架（CANON / ATLAS / 範本）",
-      "status": "已上線",
-      "note": "2026-09-07 已把主角材質的「毛絨」改成米白斑駁金屬。",
-      "keys": ["憲章", "canon", "atlas", "骨架"]
-    },
-    {
-      "id": "world-translate",
-      "cat": "世界觀",
-      "title": "🥇 C0–C6 世界觀轉譯（骨架保留、表皮全換）",
-      "status": "草稿",
-      "note": "⛔ 不是重寫。保留地圖結構、關卡、戰鬥流程、NPC 數量、任務流程、劇情節奏、分歧結構；只換人類→玩具、傭兵→守護者、魔王→停擺異常核心、武器與能量來源、NPC 身份、主角動機、所有世界名詞。第一版不需要完美。",
-      "keys": ["轉譯", "世界觀", "劇本", "c0", "c1", "c2", "c6"]
-    },
-    {
-      "id": "world-c0",
-      "cat": "世界觀",
-      "title": "🥇 第一章 30 分鐘體驗（轉譯後）",
-      "status": "草稿",
-      "note": "閣樓·夜停擺 → 玩具堆邊緣·黎明 → 鏽蝕玩具教學戰 → 望見世界大鐘 → 夜宿八音盒旁。這 30 分鐘也是所有行銷素材的取材來源，優先於其他章節。",
-      "keys": ["第一章", "序章", "30 分鐘", "c0"]
-    },
-    {
-      "id": "mob-renderer",
-      "cat": "遊戲",
-      "title": "🥈 手機化 1／6：Mobile renderer profile",
-      "status": "草稿",
-      "note": "現在是 Forward Plus（桌面級）。建立 Mobile profile 並確認可正常跑，桌面維持現有 profile。",
-      "keys": ["renderer", "forward plus", "mobile profile"]
-    },
-    {
-      "id": "mob-input",
-      "cat": "遊戲",
-      "title": "🥈 手機化 2／6：輸入抽象層",
-      "status": "草稿",
-      "note": "收斂成 Move / Attack / Interact / Skill / SwitchWeapon / Confirm / Cancel 七個語意動作。PC 綁鍵鼠與手把，手機綁觸控與虛擬按鍵。⛔ 程式碼裡不得再直接判斷滑鼠或鍵盤。",
-      "keys": ["input", "輸入", "觸控", "手把", "抽象層"]
-    },
-    {
-      "id": "mob-ui",
-      "cat": "遊戲",
-      "title": "🥈 手機化 3／6：響應式 UI",
-      "status": "草稿",
-      "note": "Safe Area ＋ Anchors ＋ 可縮放 UI。至少測 16:9、19.5:9、20:9、平板、PC。⛔ 1280×720 不再是設計基準。順便處理「字太小、字體不漂亮、像傳統 PPT」。",
-      "keys": ["ui", "responsive", "safe area", "anchor", "字體"]
-    },
-    {
-      "id": "mob-battle",
-      "cat": "遊戲",
-      "title": "🥈 手機化 4／6：觸控優先戰鬥",
-      "status": "草稿",
-      "note": "驗收標準只有一句：一個玩家只用右手拇指，能不能完成一場戰鬥？不能就還是 PC-first，重做。⛔ 不是「PC 遊戲塞一個虛擬搖桿」。",
-      "keys": ["觸控戰鬥", "拇指", "虛擬搖桿", "battle touch"]
-    },
-    {
-      "id": "mob-lowend",
-      "cat": "遊戲",
-      "title": "🥈 手機化 5／6：低階手機三檔 profile",
-      "status": "草稿",
-      "note": "Low / Mid / High 三檔。⛔ 不能只在開發機上測。",
-      "keys": ["低階", "profile", "效能", "lowend"]
-    },
-    {
-      "id": "mob-bundle",
-      "cat": "遊戲",
-      "title": "🥈 手機化 6／6：首包瘦到 50–80MB 與分包",
-      "status": "草稿",
-      "note": "現在 web 目錄 135MB。劇情包、後續地圖、語音、大型素材採分包。目標不是「整個遊戲永遠 < 50MB」，是玩家第一次接觸時不要被下載量嚇跑。",
-      "keys": ["包體", "分包", "bundle", "下載"]
-    },
-    {
-      "id": "balance-lock",
-      "cat": "遊戲",
-      "title": "🥉 戰鬥數值時間模型鎖版",
-      "status": "草稿",
-      "note": "⚠️ 這條沒完成之前，不准新增任何會影響戰鬥數值的系統（Product Lock §9 硬規則）。",
-      "keys": ["balance", "數值", "時間模型", "鎖版"]
-    },
-    {
-      "id": "loop-daily",
-      "cat": "遊戲",
-      "title": "🥉 每日發條：「今天，誰需要上發條？」",
-      "status": "草稿",
-      "note": "每日首次登入產生一個今日異常，3–5 分鐘完成，產出發條碎片→幫一位角色上發條→解鎖小故事／動畫／表情／收藏品。⛔ 不做每日任務 1~5 清單、不做斷簽歸零、不做限時焦慮。",
-      "keys": ["每日", "發條", "daily", "留存", "登入"]
-    },
-    {
-      "id": "soul-simplify",
-      "cat": "遊戲",
-      "title": "🥉 戰魂收斂：保留抽寶核心，移除 14 主星結構",
-      "status": "草稿",
-      "note": "養成收斂成 角色→戰魂→裝備→技能 四層。14 主星本來就不是原作必要的東西，拆掉；但抽寶（抽魂）的核心邏輯保留——它是商業模式的內購支點，且必須有保底與上限，⛔ 不做 pay-to-win。",
-      "keys": ["戰魂", "抽魂", "抽寶", "主星", "入魂", "觀星"]
-    },
-    {
-      "id": "cut-systems",
-      "cat": "遊戲",
-      "title": "🥉 下架公會週貢獻／NG+／裂縫",
-      "status": "草稿",
-      "note": "Product Lock §4 已裁決移出範圍。要復活必須走 §9 閘門。放棄的代價：社交 MMO 化、重複遊玩深度、Endgame 內容池——接受代價，不要偷偷做回來。",
-      "keys": ["公會", "ng+", "裂縫", "下架"]
-    },
-    {
-      "id": "art-v2",
-      "cat": "行銷",
-      "title": "美術定調 v2 落地：重產主視覺與四角色立繪",
-      "status": "草稿",
-      "note": "用 ART_DIRECTION.md 第 6 節的五組提示詞重產。產完先過 20 項自檢表，前兩項是「縮到 128px 還認得出物種／武器嗎」。",
-      "keys": ["主視覺", "立繪", "key visual", "美術", "產圖"]
-    },
-    {
-      "id": "game-battle-polish",
-      "cat": "遊戲",
-      "title": "戰鬥畫面優化（去像素量化、粗描邊、腳底軟影）",
-      "status": "草稿",
-      "note": "拿掉底圖的像素量化改成全螢幕調色（飽和＋對比＋），角色加粗描邊 shader ＋ 腳底軟影。這不是調色能補的，要換皮。",
-      "keys": ["戰鬥畫面", "像素量化", "描邊", "outline", "shader"]
-    },
-    {
-      "id": "mk-trailer",
-      "cat": "行銷",
-      "title": "品牌短片：覺醒（分鏡→影片）",
-      "status": "開發中",
-      "note": "分鏡在 docs/marketing/STORYBOARD_AWAKENING.md。",
-      "keys": ["短片", "覺醒", "分鏡", "trailer", "veo"]
-    },
-    {
-      "id": "mk-page-face",
-      "cat": "行銷",
-      "title": "粉專門面（簡介・封面・大廳影片）",
-      "status": "測試中",
-      "keys": ["粉專", "門面", "封面", "簡介"]
-    },
-    {
-      "id": "mk-shorts",
-      "cat": "行銷",
-      "title": "短影音腳本與實機素材",
-      "status": "草稿",
-      "note": "首幀用 ART_DIRECTION.md §6.5 的 9:16 廣告素材提示詞。",
-      "keys": ["短影音", "shorts", "腳本", "實機"]
-    },
-    {
-      "id": "mk-team",
-      "cat": "行銷",
-      "title": "四 persona 行銷團隊與每週輪",
-      "status": "已上線",
-      "keys": ["persona", "行銷團隊", "每週輪"]
-    },
-    {
-      "id": "ops-rename",
-      "cat": "平台",
-      "title": "全面改名 發條之心 Clockwork Heart",
-      "status": "開發中",
-      "keys": ["改名", "rename", "clockwork"]
-    },
-    {
-      "id": "ops-urls",
-      "cat": "平台",
-      "title": "GitHub Pages 網址更新",
-      "status": "開發中",
-      "keys": ["github pages", "網址", "url"]
-    },
-    {
-      "id": "world-regions",
-      "cat": "世界觀",
-      "title": "區域 3–9 設定（手機化完成後才動）",
-      "status": "草稿",
-      "note": "翡翠深林／黃銅都市／琉璃汪洋／赤焰熔爐／星穹軌道／荒漠齒輪塚／竹影道場。⚠️ 手機 First 期間不新增內容，這項壓在後面。區域 1、2 已完成。",
-      "keys": ["區域", "region", "深林", "都市", "汪洋", "熔爐", "軌道", "齒輪塚", "道場"]
-    }
-  ]
+  {
+   "id": "world-canon",
+   "cat": "世界觀",
+   "title": "世界憲章與骨架（CANON / ATLAS / 範本）",
+   "status": "已上線",
+   "note": "2026-09-07 已把主角材質的「毛絨」改成米白斑駁金屬。",
+   "keys": [
+    "憲章",
+    "canon",
+    "atlas",
+    "骨架"
+   ]
+  },
+  {
+   "id": "world-translate",
+   "cat": "世界觀",
+   "title": "🥇 C0–C6 世界觀轉譯（骨架保留、表皮全換）",
+   "status": "草稿",
+   "note": "⛔ 不是重寫。保留地圖結構、關卡、戰鬥流程、NPC 數量、任務流程、劇情節奏、分歧結構；只換人類→玩具、傭兵→守護者、魔王→停擺異常核心、武器與能量來源、NPC 身份、主角動機、所有世界名詞。第一版不需要完美。",
+   "keys": [
+    "轉譯",
+    "世界觀",
+    "劇本",
+    "c0",
+    "c1",
+    "c2",
+    "c6"
+   ]
+  },
+  {
+   "id": "world-c0",
+   "cat": "世界觀",
+   "title": "🥇 第一章 30 分鐘體驗（轉譯後）",
+   "status": "開發中",
+   "note": "開始 C0 世界觀轉譯：閣樓（骨架保留、表皮全換）",
+   "keys": [
+    "第一章",
+    "序章",
+    "30 分鐘",
+    "c0"
+   ]
+  },
+  {
+   "id": "mob-renderer",
+   "cat": "遊戲",
+   "title": "🥈 手機化 1／6：Mobile renderer profile",
+   "status": "草稿",
+   "note": "現在是 Forward Plus（桌面級）。建立 Mobile profile 並確認可正常跑，桌面維持現有 profile。",
+   "keys": [
+    "renderer",
+    "forward plus",
+    "mobile profile"
+   ]
+  },
+  {
+   "id": "mob-input",
+   "cat": "遊戲",
+   "title": "🥈 手機化 2／6：輸入抽象層",
+   "status": "草稿",
+   "note": "收斂成 Move / Attack / Interact / Skill / SwitchWeapon / Confirm / Cancel 七個語意動作。PC 綁鍵鼠與手把，手機綁觸控與虛擬按鍵。⛔ 程式碼裡不得再直接判斷滑鼠或鍵盤。",
+   "keys": [
+    "input",
+    "輸入",
+    "觸控",
+    "手把",
+    "抽象層"
+   ]
+  },
+  {
+   "id": "mob-ui",
+   "cat": "遊戲",
+   "title": "🥈 手機化 3／6：響應式 UI",
+   "status": "草稿",
+   "note": "Safe Area ＋ Anchors ＋ 可縮放 UI。至少測 16:9、19.5:9、20:9、平板、PC。⛔ 1280×720 不再是設計基準。順便處理「字太小、字體不漂亮、像傳統 PPT」。",
+   "keys": [
+    "ui",
+    "responsive",
+    "safe area",
+    "anchor",
+    "字體"
+   ]
+  },
+  {
+   "id": "mob-battle",
+   "cat": "遊戲",
+   "title": "🥈 手機化 4／6：觸控優先戰鬥",
+   "status": "草稿",
+   "note": "驗收標準只有一句：一個玩家只用右手拇指，能不能完成一場戰鬥？不能就還是 PC-first，重做。⛔ 不是「PC 遊戲塞一個虛擬搖桿」。",
+   "keys": [
+    "觸控戰鬥",
+    "拇指",
+    "虛擬搖桿",
+    "battle touch"
+   ]
+  },
+  {
+   "id": "mob-lowend",
+   "cat": "遊戲",
+   "title": "🥈 手機化 5／6：低階手機三檔 profile",
+   "status": "草稿",
+   "note": "Low / Mid / High 三檔。⛔ 不能只在開發機上測。",
+   "keys": [
+    "低階",
+    "profile",
+    "效能",
+    "lowend"
+   ]
+  },
+  {
+   "id": "mob-bundle",
+   "cat": "遊戲",
+   "title": "🥈 手機化 6／6：首包瘦到 50–80MB 與分包",
+   "status": "草稿",
+   "note": "現在 web 目錄 135MB。劇情包、後續地圖、語音、大型素材採分包。目標不是「整個遊戲永遠 < 50MB」，是玩家第一次接觸時不要被下載量嚇跑。",
+   "keys": [
+    "包體",
+    "分包",
+    "bundle",
+    "下載"
+   ]
+  },
+  {
+   "id": "balance-lock",
+   "cat": "遊戲",
+   "title": "🥉 戰鬥數值時間模型鎖版",
+   "status": "草稿",
+   "note": "⚠️ 這條沒完成之前，不准新增任何會影響戰鬥數值的系統（Product Lock §9 硬規則）。",
+   "keys": [
+    "balance",
+    "數值",
+    "時間模型",
+    "鎖版"
+   ]
+  },
+  {
+   "id": "loop-daily",
+   "cat": "遊戲",
+   "title": "🥉 每日發條：「今天，誰需要上發條？」",
+   "status": "草稿",
+   "note": "每日首次登入產生一個今日異常，3–5 分鐘完成，產出發條碎片→幫一位角色上發條→解鎖小故事／動畫／表情／收藏品。⛔ 不做每日任務 1~5 清單、不做斷簽歸零、不做限時焦慮。",
+   "keys": [
+    "每日",
+    "發條",
+    "daily",
+    "留存",
+    "登入"
+   ]
+  },
+  {
+   "id": "soul-simplify",
+   "cat": "遊戲",
+   "title": "🥉 戰魂收斂：保留抽寶核心，移除 14 主星結構",
+   "status": "草稿",
+   "note": "養成收斂成 角色→戰魂→裝備→技能 四層。14 主星本來就不是原作必要的東西，拆掉；但抽寶（抽魂）的核心邏輯保留——它是商業模式的內購支點，且必須有保底與上限，⛔ 不做 pay-to-win。",
+   "keys": [
+    "戰魂",
+    "抽魂",
+    "抽寶",
+    "主星",
+    "入魂",
+    "觀星"
+   ]
+  },
+  {
+   "id": "cut-systems",
+   "cat": "遊戲",
+   "title": "🥉 下架公會週貢獻／NG+／裂縫",
+   "status": "草稿",
+   "note": "Product Lock §4 已裁決移出範圍。要復活必須走 §9 閘門。放棄的代價：社交 MMO 化、重複遊玩深度、Endgame 內容池——接受代價，不要偷偷做回來。",
+   "keys": [
+    "公會",
+    "ng+",
+    "裂縫",
+    "下架"
+   ]
+  },
+  {
+   "id": "art-v2",
+   "cat": "行銷",
+   "title": "美術定調 v2 落地：重產主視覺與四角色立繪",
+   "status": "草稿",
+   "note": "用 ART_DIRECTION.md 第 6 節的五組提示詞重產。產完先過 20 項自檢表，前兩項是「縮到 128px 還認得出物種／武器嗎」。",
+   "keys": [
+    "主視覺",
+    "立繪",
+    "key visual",
+    "美術",
+    "產圖"
+   ]
+  },
+  {
+   "id": "game-battle-polish",
+   "cat": "遊戲",
+   "title": "戰鬥畫面優化（去像素量化、粗描邊、腳底軟影）",
+   "status": "草稿",
+   "note": "拿掉底圖的像素量化改成全螢幕調色（飽和＋對比＋），角色加粗描邊 shader ＋ 腳底軟影。這不是調色能補的，要換皮。",
+   "keys": [
+    "戰鬥畫面",
+    "像素量化",
+    "描邊",
+    "outline",
+    "shader"
+   ]
+  },
+  {
+   "id": "mk-trailer",
+   "cat": "行銷",
+   "title": "品牌短片：覺醒（分鏡→影片）",
+   "status": "開發中",
+   "note": "分鏡在 docs/marketing/STORYBOARD_AWAKENING.md。",
+   "keys": [
+    "短片",
+    "覺醒",
+    "分鏡",
+    "trailer",
+    "veo"
+   ]
+  },
+  {
+   "id": "mk-page-face",
+   "cat": "行銷",
+   "title": "粉專門面（簡介・封面・大廳影片）",
+   "status": "測試中",
+   "keys": [
+    "粉專",
+    "門面",
+    "封面",
+    "簡介"
+   ]
+  },
+  {
+   "id": "mk-shorts",
+   "cat": "行銷",
+   "title": "短影音腳本與實機素材",
+   "status": "草稿",
+   "note": "首幀用 ART_DIRECTION.md §6.5 的 9:16 廣告素材提示詞。",
+   "keys": [
+    "短影音",
+    "shorts",
+    "腳本",
+    "實機"
+   ]
+  },
+  {
+   "id": "mk-team",
+   "cat": "行銷",
+   "title": "四 persona 行銷團隊與每週輪",
+   "status": "已上線",
+   "keys": [
+    "persona",
+    "行銷團隊",
+    "每週輪"
+   ]
+  },
+  {
+   "id": "ops-rename",
+   "cat": "平台",
+   "title": "全面改名 發條之心 Clockwork Heart",
+   "status": "開發中",
+   "keys": [
+    "改名",
+    "rename",
+    "clockwork"
+   ]
+  },
+  {
+   "id": "ops-urls",
+   "cat": "平台",
+   "title": "GitHub Pages 網址更新",
+   "status": "開發中",
+   "keys": [
+    "github pages",
+    "網址",
+    "url"
+   ]
+  },
+  {
+   "id": "world-regions",
+   "cat": "世界觀",
+   "title": "區域 3–9 設定（手機化完成後才動）",
+   "status": "草稿",
+   "note": "翡翠深林／黃銅都市／琉璃汪洋／赤焰熔爐／星穹軌道／荒漠齒輪塚／竹影道場。⚠️ 手機 First 期間不新增內容，這項壓在後面。區域 1、2 已完成。",
+   "keys": [
+    "區域",
+    "region",
+    "深林",
+    "都市",
+    "汪洋",
+    "熔爐",
+    "軌道",
+    "齒輪塚",
+    "道場"
+   ]
+  }
+ ]
 }
