@@ -3,6 +3,7 @@ extends SceneTree
 ##
 ## 守：攻擊／技能／換武／鎖定／暫停／逃離都在右側、熱區 ≥50，
 ## 不是左上角、不是虛擬搖桿。16:9／19.5:9／20:9／平板／PC 都成立。
+## 標籤＝行為：沒有站位 API 就不要左下「前／後」假站位鈕。
 
 var _ok := true
 var _step := 0
@@ -103,6 +104,22 @@ func _assert_right_thumb(tag: String) -> void:
 					_fail("%s 武器格不在右半" % tag)
 
 
+func _assert_no_fake_stance(tag: String) -> void:
+	var pad: Node = _battle.get_node_or_null("StancePad")
+	if pad != null and pad is Control and (pad as Control).is_visible_in_tree():
+		_fail("%s 還有左下 StancePad（假站位）" % tag)
+	if _ctrl("stance_prev") != null or _ctrl("stance_next") != null:
+		_fail("%s thumb_controls 還掛 stance_prev／stance_next" % tag)
+	for n in _battle.find_children("*", "Button", true, false):
+		if not (n is Button) or not (n as Button).is_visible_in_tree():
+			continue
+		var t := str((n as Button).text)
+		if t == "前" or t == "後":
+			_fail("%s 可見鈕標成「%s」但戰鬥沒有站位" % [tag, t])
+		if str(n.name) == "StancePrev" or str(n.name) == "StanceNext":
+			_fail("%s 還有 %s" % [tag, n.name])
+
+
 func _process(_d: float) -> bool:
 	_wait += 1
 	match _step:
@@ -146,8 +163,9 @@ func _process(_d: float) -> bool:
 				_fail("狼戰沒有 sim")
 				return _finish()
 			_assert_right_thumb("16:9")
+			_assert_no_fake_stance("16:9")
 			if _ok:
-				print("  ok 16:9 右側熱區 ≥50，無虛擬搖桿")
+				print("  ok 16:9 右側熱區 ≥50，無虛擬搖桿、無假站位")
 			var p = _sim.get_unit("player")
 			_click(_ctrl("switch"))
 			_step = 2
@@ -181,6 +199,11 @@ func _process(_d: float) -> bool:
 		4:
 			if _wait < 2:
 				return false
+			var coach: Label = _battle.get("_coach") as Label
+			if coach != null and coach.visible and "站位" in str(coach.text):
+				_fail("狼戰點鎖定跳出「%s」——沒有站位就不要講站位" % coach.text)
+			else:
+				print("  ok 狼戰點鎖定不講站位")
 			_battle.call("_ensure_temptation_ui")
 			_battle.call("_show_temptation", {
 				"title": "測", "text": "右手拇指確認", "stage": 1, "refuse_scale": 0.5,
@@ -236,6 +259,7 @@ func _process(_d: float) -> bool:
 				return false
 			var spec: Dictionary = _ratios[_ratio_i]
 			_assert_right_thumb(str(spec["name"]))
+			_assert_no_fake_stance(str(spec["name"]))
 			if _ok:
 				print("  ok %s %s 右側熱區" % [spec["name"], str(spec["size"])])
 			_ratio_i += 1

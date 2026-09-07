@@ -61,9 +61,6 @@ var _btn_skill: Button
 var _btn_switch: Button
 var _btn_pause: Button
 var _btn_lock: Button
-var _left_stance: Control
-var _btn_stance_prev: Button
-var _btn_stance_next: Button
 var _tempt_card: Control
 var _tempt_close: Button
 var _overlay_key: String = ""
@@ -243,7 +240,7 @@ func setup(mode: String) -> void:
 		])
 		_flash_coach(_t("這是對方留下的打法，不是即時對戰。"), 2.8)
 	_flash_coach(_mode_coach_intro(mode), 3.2)
-	_append_log(_t("[color=#8cf]右側拇指：攻擊／技能／換武／鎖定／暫停／逃離。雙拇指可再用左下切站位。[/color]"))
+	_append_log(_t("[color=#8cf]右側拇指：攻擊／技能／換武／鎖定／暫停／逃離。[/color]"))
 	if GameState.ng_plus > 0:
 		_append_log(_t("[color=#c8f]黑焰迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]") % [
 			GameState.ng_plus, ng_m
@@ -2748,32 +2745,7 @@ func _ensure_thumb_hud() -> void:
 	_btn_attack.custom_minimum_size = Vector2(88, 72)
 	bot.add_child(_btn_attack)
 
-	_ensure_left_stance()
 	_layout_thumb_hud()
-
-
-func _ensure_left_stance() -> void:
-	if _left_stance != null and is_instance_valid(_left_stance):
-		return
-	_left_stance = Control.new()
-	_left_stance.name = "StancePad"
-	_left_stance.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
-	_left_stance.grow_horizontal = Control.GROW_DIRECTION_END
-	_left_stance.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	_left_stance.mouse_filter = Control.MOUSE_FILTER_STOP
-	_left_stance.z_index = 25
-	add_child(_left_stance)
-	var row := HBoxContainer.new()
-	row.set_anchors_preset(Control.PRESET_FULL_RECT)
-	row.add_theme_constant_override("separation", 8)
-	row.alignment = BoxContainer.ALIGNMENT_BEGIN
-	_left_stance.add_child(row)
-	_btn_stance_prev = _thumb_btn(_t("前"), false, func(): _thumb_cycle_lock(-1))
-	_btn_stance_prev.name = "StancePrev"
-	_btn_stance_next = _thumb_btn(_t("後"), false, func(): _thumb_cycle_lock(1))
-	_btn_stance_next.name = "StanceNext"
-	row.add_child(_btn_stance_prev)
-	row.add_child(_btn_stance_next)
 
 
 func _layout_thumb_hud() -> void:
@@ -2789,12 +2761,6 @@ func _layout_thumb_hud() -> void:
 	_thumb_pad.offset_right = -m
 	_thumb_pad.offset_top = -h - m
 	_thumb_pad.offset_bottom = -m
-	if _left_stance != null and is_instance_valid(_left_stance):
-		## 雙拇指左下可切站位；窄屏仍保留，但單拇指不靠它（右側有鎖定）。
-		_left_stance.offset_left = m
-		_left_stance.offset_right = m + 128.0
-		_left_stance.offset_top = -THUMB_MIN - 20.0 - m
-		_left_stance.offset_bottom = -m
 
 
 func _on_thumb_attack() -> void:
@@ -2832,7 +2798,7 @@ func _thumb_cycle_lock(dir: int) -> void:
 		_append_log(_t("鎖定部位：%s") % sim.part_focus_label())
 		_refresh_part_focus_hint()
 		return
-	_flash_coach(_t("這場沒有可切站位。"), 1.2)
+	## 這場沒有多目標／部位可切，鎖定鈕靜默。不要講站位——模擬沒有站位 API。
 
 
 func thumb_controls() -> Dictionary:
@@ -2844,8 +2810,6 @@ func thumb_controls() -> Dictionary:
 		"flee": btn_flee,
 		"lock": _btn_lock,
 		"pad": _thumb_pad,
-		"stance_prev": _btn_stance_prev,
-		"stance_next": _btn_stance_next,
 	}
 
 
