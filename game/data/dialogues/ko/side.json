@@ -61,12 +61,12 @@
   ],
   "side.ronin_guard_fire": [
     {
-      "speaker": "흑염 낭인",
+      "speaker": "검은 녹 낭인",
       "portrait": "road_bandit",
-      "text": "난 불을 지킨다. 불꽃을 땔감 취급하지 마."
+      "text": "난 불을 지킨다. 녹을 땔감 취급하지 마."
     },
     {
-      "speaker": "흑염 낭인",
+      "speaker": "검은 녹 낭인",
       "text": "쓰러지면 끌고 와 주지. 한 번만."
     }
   ],
@@ -78,13 +78,13 @@
   ],
   "side.ronin_too_early": [
     {
-      "speaker": "흑염 낭인",
+      "speaker": "검은 녹 낭인",
       "text": "……아직 이르다. 네 사자부터 잡고 와."
     }
   ],
   "side.ronin_defeated": [
     {
-      "speaker": "흑염 낭인",
+      "speaker": "검은 녹 낭인",
       "text": "……강해…… 그래서 뭐…… 불꽃은 여전히 비었다."
     },
     {

@@ -17,7 +17,7 @@ const GOLDEN: Array = [
 	{"npc": "greybeard", "ng": 0, "flags": [], "n": 2, "first": "剛上弦的？獅衛在內殿。先把劍養好。"},
 	{"npc": "star", "ng": 0, "flags": [], "n": 0, "first": ""},
 	{"npc": "ding", "ng": 0, "flags": ["side.ding_debt_done"], "n": 2, "first": "舊債還了。爐火……比以前穩一點。"},
-	{"npc": "ronin", "ng": 0, "flags": ["side.ronin_spared"], "n": 1, "first": "……刃收了。路還長。別學我把焰當柴。"},
+	{"npc": "ronin", "ng": 0, "flags": ["side.ronin_spared"], "n": 1, "first": "……刃收了。路還長。別學我把鏽當柴。"},
 	{"npc": "tide_roar_idle", "ng": 0, "flags": ["c5_entered"], "n": 2, "first": "別逃。迎上去。對撞。"},
 	{"npc": "silk", "ng": 0, "flags": ["c2_wheat_letter"], "n": 2, "first": "舊鑰的字比典籍真。官方刪了後半句。"},
 	{"npc": "knight_orphan", "ng": 0, "flags": ["side.ding_debt_asked"], "n": 2, "first": "斷劍？在武器架那邊。我不敢碰，怕鐵匠生氣。"},

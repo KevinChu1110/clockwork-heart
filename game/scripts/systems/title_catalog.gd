@@ -94,7 +94,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.scar_walker",
 		"name": "疤地行者",
-		"desc": "踏平黑焰疤地的主宰。",
+		"desc": "踏平黑鏽疤地的主宰。",
 		"cond": "scar",
 	},
 	{
@@ -136,7 +136,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.ronin_path",
 		"name": "收刃之人",
-		"desc": "在岔路勸下（或戰勝）黑焰浪人。",
+		"desc": "在岔路勸下（或戰勝）黑鏽浪人。",
 		"cond": "ronin",
 	},
 	{

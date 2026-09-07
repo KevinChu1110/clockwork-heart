@@ -61,12 +61,12 @@
   ],
   "side.ronin_guard_fire": [
     {
-      "speaker": "黑焰浪人",
+      "speaker": "黑鏽浪人",
       "portrait": "road_bandit",
-      "text": "我守火。別把焰當柴。"
+      "text": "我守火。別把鏽當柴。"
     },
     {
-      "speaker": "黑焰浪人",
+      "speaker": "黑鏽浪人",
       "text": "倒下我拖你回來。一次。"
     }
   ],
@@ -78,14 +78,14 @@
   ],
   "side.ronin_too_early": [
     {
-      "speaker": "黑焰浪人",
+      "speaker": "黑鏽浪人",
       "text": "……還太早。先去打你的獅子。"
     }
   ],
   "side.ronin_defeated": [
     {
-      "speaker": "黑焰浪人",
-      "text": "……強……又如何……焰還是空的。"
+      "speaker": "黑鏽浪人",
+      "text": "……強……又如何……鏽還是空的。"
     },
     {
       "speaker": "系統",

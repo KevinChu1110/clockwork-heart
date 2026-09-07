@@ -514,7 +514,7 @@ static func _wild_ravine() -> Dictionary:
 		_e("rope_bridge", 1248, 770, 100, 40, "繩橋", Color(0.45, 0.38, 0.3), true),
 		_e("bone_pile", 480, 1242, 48, 40, "獸骨", Color(0.5, 0.48, 0.45)),
 		_e("echo_canyon", 2040, 608, 56, 48, "回音峽", Color(0.35, 0.4, 0.38)),
-		_e("black_vein", 432, 783, 56, 40, "黑焰脈紋", Color(0.3, 0.2, 0.35)),
+		_e("black_vein", 432, 783, 56, 40, "黑鏽脈紋", Color(0.3, 0.2, 0.35)),
 	]
 	return m
 
@@ -557,9 +557,9 @@ static func _crossroads() -> Dictionary:
 		_e("save_cross", 1260, 1210, 48, 48, "存檔石", Color(0.4, 0.45, 0.5)),
 		_e("world_map_stone", 1650, 803, 56, 48, "世界輿圖石", Color(0.4, 0.5, 0.55)),
 	]
-	## 雷歐後、未完結前：岔路擋道的黑焰浪人
+	## 雷歐後、未完結前：岔路擋道的黑鏽浪人
 	if _flag("boss.leo_cleared") and not _flag("side.ronin_done"):
-		ents.append(_e("ronin", 1500, 945, 52, 68, "黑焰浪人", Color(0.35, 0.2, 0.35)))
+		ents.append(_e("ronin", 1500, 945, 52, 68, "黑鏽浪人", Color(0.35, 0.2, 0.35)))
 	elif _flag("side.ronin_spared"):
 		ents.append(_e("ronin", 1500, 944, 48, 64, "浪人（收刃）", Color(0.4, 0.35, 0.4)))
 	m["entities"] = ents
@@ -585,7 +585,7 @@ static func _cross_east() -> Dictionary:
 		_e("back_cross", 130, 760, 56, 56, "回岔路", Color(0.45, 0.5, 0.4)),
 		_e("dead_trees", 468, 994, 72, 56, "枯樹陣", Color(0.35, 0.3, 0.35), true),
 		_e("ash_wind", 1248, 1170, 56, 40, "灰風帶", Color(0.4, 0.35, 0.4)),
-		_e("to_blackflame_scar", 1248, 146, 64, 56, "黑焰疤地", Color(0.35, 0.2, 0.4)),
+		_e("to_blackflame_scar", 1248, 146, 64, 56, "黑鏽疤地", Color(0.35, 0.2, 0.4)),
 		_e("path_tower_c", 2392, 760, 72, 64, "塔下方向", Color(0.45, 0.35, 0.55)),
 		_e("watch_rock", 1716, 673, 48, 48, "眺望岩", Color(0.4, 0.38, 0.42)),
 	]
@@ -624,7 +624,7 @@ static func _starfall_plain() -> Dictionary:
 
 
 static func _hunting_grounds() -> Dictionary:
-	var m := _base("野外獵場 · 黑焰溢地", Color(0.09, 0.06, 0.08), 3000, 1674, Vector2(340, 950), "hunting_grounds")
+	var m := _base("野外獵場 · 黑鏽溢地", Color(0.09, 0.06, 0.08), 3000, 1674, Vector2(340, 950), "hunting_grounds")
 	m["entities"] = [
 		_e("hunt_board", 904, 518, 72, 64, "狩獵告示", Color(0.65, 0.4, 0.35), true),
 		_e("hunt_start", 1388, 761, 64, 56, "開始狩獵", Color(0.75, 0.35, 0.4)),
@@ -641,7 +641,7 @@ static func _hunting_grounds() -> Dictionary:
 
 
 static func _blackflame_scar() -> Dictionary:
-	var m := _base("黑焰疤地 · 被吞噬的土地", Color(0.08, 0.05, 0.1), 2600, 1451, Vector2(196, 1212), "blackflame_scar")
+	var m := _base("黑鏽疤地 · 被吞噬的土地", Color(0.08, 0.05, 0.1), 2600, 1451, Vector2(196, 1212), "blackflame_scar")
 	m["entities"] = [
 		_e("back_cross", 168, 1185, 56, 56, "退回荒原道", Color(0.4, 0.35, 0.45)),
 		_e("char_soil", 520, 1106, 80, 48, "焦裂地", Color(0.25, 0.15, 0.2), true),
@@ -649,7 +649,7 @@ static func _blackflame_scar() -> Dictionary:
 		_e("obsidian", 1160, 1201, 48, 40, "黑曜碎", Color(0.2, 0.18, 0.25)),
 		_e("lost_banner", 1424, 837, 40, 56, "半融旗", Color(0.4, 0.25, 0.3)),
 		_e("whisper_stone", 1888, 758, 48, 48, "低語石", Color(0.35, 0.25, 0.4), true),
-		_e("scar_boss", 2184, 1095, 80, 88, "黑焰疤主", Color(0.65, 0.25, 0.45)),
+		_e("scar_boss", 2184, 1095, 80, 88, "黑鏽疤主", Color(0.65, 0.25, 0.45)),
 		_e("path_tower_c", 2448, 1177, 72, 64, "疤地盡頭·塔", Color(0.45, 0.35, 0.55)),
 	]
 	return m

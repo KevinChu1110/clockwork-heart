@@ -3150,10 +3150,10 @@ func _side_ronin() -> void:
 		choices.append(_t("焰會吃掉你"))
 		replies.append(_t("……閉嘴。你有鑰繩味。"))
 	_play_dialog([
-		{"speaker": _t("黑焰浪人"), "portrait": "road_bandit", "text": _t("站住。你也是來『變強』的？")},
-		{"speaker": _t("黑焰浪人"), "text": _t("黑焰教我：心一軟，就被吃乾淨。")},
+		{"speaker": _t("黑鏽浪人"), "portrait": "road_bandit", "text": _t("站住。你也是來『變強』的？")},
+		{"speaker": _t("黑鏽浪人"), "text": _t("黑鏽教我：心一軟，就被吃乾淨。")},
 		{
-			"speaker": _t("黑焰浪人"),
+			"speaker": _t("黑鏽浪人"),
 			"text": _t("要刀還是要滾？"),
 			"choices": choices,
 			"replies": replies,
@@ -3178,8 +3178,8 @@ func _side_ronin_fight() -> void:
 
 func _side_ronin_persuade() -> void:
 	_play_dialog([
-		{"speaker": _t("黑焰浪人"), "text": _t("……矯情。焰卻沒更亮。")},
-		{"speaker": _t("黑焰浪人"), "text": _t("滾。路自己斷。你去塔。")},
+		{"speaker": _t("黑鏽浪人"), "text": _t("……矯情。焰卻沒更亮。")},
+		{"speaker": _t("黑鏽浪人"), "text": _t("滾。路自己斷。你去塔。")},
 		{"speaker": _t("系統"), "text": _t("浪人收了刃。金 40、星屑 3。")},
 	], func():
 		_grant_side_reward(SideMilestones.reward("ronin_persuade"))
@@ -3204,7 +3204,7 @@ func _side_finish_ronin_battle(won: bool) -> void:
 		GameState.hp = maxi(1, int(GameState.max_hp * 0.4))
 		SaveManager.save_game()
 		_play_dialog([
-			{"speaker": _t("黑焰浪人"), "text": _t("回去練。別用『想變強』當藉口——那是我的台詞。")},
+			{"speaker": _t("黑鏽浪人"), "text": _t("回去練。別用『想變強』當藉口——那是我的台詞。")},
 		], func():
 			_open_explore(_last_explore_map if _last_explore_map != "" else "crossroads", _last_explore_screen)
 		)
@@ -3686,7 +3686,7 @@ func _go_world_map() -> void:
 	body += _t("　　　白霧村／霧隱（崖／祠／鏡廊）\n")
 	body += "　　　　　　｜\n"
 	body += _t("　　　武鬥道場（內院／竹林／山巔）\n\n")
-	body += _t("秘境：星落平原 · 行商驛站 · 黑焰疤地 · 北山道 · 東塔荒原\n")
+	body += _t("秘境：星落平原 · 行商驛站 · 黑鏽疤地 · 北山道 · 東塔荒原\n")
 	body += _t("秘境 Boss：疤主 ") + ("✓" if GameState.has_flag("boss.scar_lord_cleared") else "·")
 	body += _t(" · 鏡影 ") + ("✓" if GameState.has_flag("boss.mirror_wraith_cleared") else "·")
 	body += _t(" · 船長 ") + ("✓" if GameState.has_flag("boss.wreck_captain_cleared") else "·") + "\n"
@@ -3720,7 +3720,7 @@ func _go_world_map() -> void:
 		buttons.append({"text": _t("西林"), "cb": _go_c4_enter})
 		buttons.append({"text": _t("石拳海岸"), "cb": _go_c5_enter})
 	if GameState.has_flag("boss.abo_cleared") or GameState.power_score() >= 36:
-		buttons.append({"text": _t("黑焰疤地"), "cb": func(): _open_explore("blackflame_scar", Screen.C1_WILD)})
+		buttons.append({"text": _t("黑鏽疤地"), "cb": func(): _open_explore("blackflame_scar", Screen.C1_WILD)})
 	if GameState.has_flag("boss.abo_cleared") or GameState.has_flag("boss.shadowwind_cleared") \
 			or GameState.has_flag("boss.stonefist_cleared") or GameState.power_score() >= 42:
 		buttons.append({"text": _t("塔下營地"), "cb": _go_c6_camp})

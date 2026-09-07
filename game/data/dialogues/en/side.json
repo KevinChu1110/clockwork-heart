@@ -61,12 +61,12 @@
   ],
   "side.ronin_guard_fire": [
     {
-      "speaker": "Black Flame Ronin",
+      "speaker": "Blight Rust Wanderer",
       "portrait": "road_bandit",
-      "text": "I guard the fire. Don't treat the flame as firewood."
+      "text": "I guard the fire. Don't treat rust as firewood."
     },
     {
-      "speaker": "Black Flame Ronin",
+      "speaker": "Blight Rust Wanderer",
       "text": "If you fall, I drag you back. Once."
     }
   ],
@@ -78,13 +78,13 @@
   ],
   "side.ronin_too_early": [
     {
-      "speaker": "Black Flame Ronin",
+      "speaker": "Blight Rust Wanderer",
       "text": "…Too early. Go fight your lion first."
     }
   ],
   "side.ronin_defeated": [
     {
-      "speaker": "Black Flame Ronin",
+      "speaker": "Blight Rust Wanderer",
       "text": "…Strong… so what… the flame is still empty."
     },
     {

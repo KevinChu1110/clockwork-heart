@@ -14,7 +14,7 @@ static func _t(s: String) -> String:
 
 static func links() -> Dictionary:
 	return {
-		## ── 翠谷 ──
+		## ── 閣樓 ──
 		"exit_outskirts": {"map": "village_outskirts", "screen": "C0_VILLAGE"},
 		"back_village": {"map": "village", "screen": "C0_VILLAGE"},
 		"to_mill": {"map": "village_mill", "screen": "C0_VILLAGE"},
@@ -111,7 +111,7 @@ static func links() -> Dictionary:
 		"to_blackflame_scar": {
 			"map": "blackflame_scar", "screen": "C1_WILD",
 			"need_flag": "boss.abo_cleared",
-			"deny": _t("黑焰疤地太危險。至少先通過道場試煉。"),
+			"deny": _t("黑鏽疤地太危險。至少先通過道場試煉。"),
 		},
 		"back_cross": {"map": "crossroads", "screen": "C1_WILD"},
 

@@ -1,6 +1,6 @@
 {
   "id": "ronin",
-  "speaker": "Errante de Llama Negra",
+  "speaker": "Errante de Óxido Negro",
   "rules": [
     {
       "when": {
@@ -9,7 +9,7 @@
         ]
       },
       "lines": [
-        "…Hoja envainada. El camino es largo. No hagas como yo: tratar la llama como leña."
+        "…Hoja envainada. El camino es largo. No hagas como yo: tratar el óxido como leña."
       ]
     },
     {
@@ -26,7 +26,7 @@
       "when": {},
       "lines": [
         "Alto. ¿Tú también vienes a «hacerte fuerte»?",
-        "La Llama Negra me enseñó: si el corazón cede una vez, te come entero. No volveré a ceder."
+        "El óxido negro me enseñó: si el corazón cede una vez, te come entero. No volveré a ceder."
       ]
     }
   ]

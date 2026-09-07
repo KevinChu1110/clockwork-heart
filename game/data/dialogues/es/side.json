@@ -61,12 +61,12 @@
   ],
   "side.ronin_guard_fire": [
     {
-      "speaker": "Errante de Llama Negra",
+      "speaker": "Errante de Óxido Negro",
       "portrait": "road_bandit",
-      "text": "Yo guardo el fuego. No trates la llama como leña."
+      "text": "Yo guardo el fuego. No trates el óxido como leña."
     },
     {
-      "speaker": "Errante de Llama Negra",
+      "speaker": "Errante de Óxido Negro",
       "text": "Si caes, te arrastro de vuelta. Una vez."
     }
   ],
@@ -78,13 +78,13 @@
   ],
   "side.ronin_too_early": [
     {
-      "speaker": "Errante de Llama Negra",
+      "speaker": "Errante de Óxido Negro",
       "text": "…Aún es pronto. Ve a pelear con tu león primero."
     }
   ],
   "side.ronin_defeated": [
     {
-      "speaker": "Errante de Llama Negra",
+      "speaker": "Errante de Óxido Negro",
       "text": "…Fuerte… ¿y qué?… la llama sigue vacía."
     },
     {

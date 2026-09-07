@@ -45,16 +45,16 @@ static func _enemy_def_raw(mode: String) -> Dictionary:
 				"id": "heart_demon", "name": "心魔", "max_hp": 4000, "atk": 16, "def": 8,
 				"speed": 11.0, "is_boss": false, "art": "demon", "art_fallback": "wrath",
 			}
-		## 支線：黑焰浪人（可戰可勸）
+		## 支線：黑鏽浪人（可戰可勸）
 		"black_ronin":
 			return {
-				"id": "black_ronin", "name": "黑焰浪人", "max_hp": 160, "atk": 14, "def": 7, "speed": 12.5,
+				"id": "black_ronin", "name": "黑鏽浪人", "max_hp": 160, "atk": 14, "def": 7, "speed": 12.5,
 				"is_boss": false, "art": "black_ronin", "art_fallback": "road_bandit",
 			}
 		## 秘境小 Boss
 		"scar_lord":
 			return {
-				"id": "scar_lord", "name": "黑焰疤主", "max_hp": 280, "atk": 15, "def": 9, "speed": 10.0,
+				"id": "scar_lord", "name": "黑鏽疤主", "max_hp": 280, "atk": 15, "def": 9, "speed": 10.0,
 				"is_boss": true, "art": "scar_lord", "art_fallback": "wrath",
 				"windup": 0.28, "recover": 0.42, "king_slash_cd": 2.8, "hazard": "fire_ring", "hazard_cd": 4.0,
 			}
@@ -163,7 +163,7 @@ static func skirmishes() -> Dictionary:
 		"boat_wreck": {"mode": "coast_raider", "once_flag": "skirmish.boat", "intro": _t("破船骸裡爬出海盜影。")},
 		"deep_water": {"mode": "coast_raider", "once_flag": "", "intro": _t("深水翻湧——潮襲者上岸。")},
 		"flame_vent": {"mode": "scar_wisp", "once_flag": "", "intro": _t("焰口噴出疤地焰靈！")},
-		"black_vein": {"mode": "scar_wisp", "once_flag": "skirmish.black_vein", "intro": _t("黑焰脈紋凝成靈體。")},
+		"black_vein": {"mode": "scar_wisp", "once_flag": "skirmish.black_vein", "intro": _t("黑鏽脈紋凝成靈體。")},
 		"echo_canyon": {"mode": "ash_rat", "once_flag": "skirmish.ravine", "intro": _t("回音峽傳出獸吼——灰燼鼠群。")},
 		"alley_dark": {"mode": "road_bandit", "once_flag": "skirmish.market_alley", "intro": _t("窄巷裡有刀光。")},
 	}
@@ -179,17 +179,17 @@ static func minibosses() -> Dictionary:
 			"deny": _t("疤主的氣壓太重。至少先通過道場試煉。"),
 			"cleared_dialog": "world.scar_cleared",
 			"intro": [
-				{"speaker": _t("旁白"), "text": _t("疤地中央，黑焰聚成人形——沒有臉，只有胃口。")},
+				{"speaker": _t("旁白"), "text": _t("疤地中央，黑鏽聚成人形——沒有臉，只有胃口。")},
 				{"speaker": _t("旁白"), "text": _t("焦土一跳一跳，像還在流血的傷口。")},
-				{"speaker": _t("黑焰疤主"), "portrait": "scar_lord", "text": _t("……弱者……也配踏入我的傷口？")},
-				{"speaker": _t("黑焰疤主"), "portrait": "scar_lord", "text": _t("野心……香味……過來。讓我把它從你身上撕開。")},
+				{"speaker": _t("黑鏽疤主"), "portrait": "scar_lord", "text": _t("……弱者……也配踏入我的傷口？")},
+				{"speaker": _t("黑鏽疤主"), "portrait": "scar_lord", "text": _t("野心……香味……過來。讓我把它從你身上撕開。")},
 			],
 			"win": [
 				{"speaker": _t("疤主"), "portrait": "scar_lord", "text": _t("傷口……合上了嗎……")},
 				{"speaker": _t("疤主"), "portrait": "scar_lord", "text": _t("……你沒有餵我。奇怪。……")},
-				{"speaker": _t("系統"), "text": _t("戰勝【黑焰疤主】。金 90 · 星屑 5。")},
+				{"speaker": _t("系統"), "text": _t("戰勝【黑鏽疤主】。金 90 · 星屑 5。")},
 			],
-			"lose": _t("黑焰把你掀回岔路。疤地仍在跳動脈搏。"),
+			"lose": _t("黑鏽把你掀回岔路。疤地仍在跳動脈搏。"),
 			"gold": 90, "dust": 5, "hp": 12,
 			"lose_map": "crossroads", "lose_screen": "C1_WILD",
 			"win_map": "blackflame_scar", "win_screen": "C1_WILD",
