@@ -4,6 +4,9 @@ extends Node
 ## 遊戲邏輯只讀七個語意動作：
 ##   Move / Attack / Interact / Skill / SwitchWeapon / Confirm / Cancel
 ## PC 綁鍵鼠／手把，手機綁觸控／虛擬按鍵。裝置判斷只准出現在這一檔。
+##
+## 被 headless -s 測試 preload 的腳本不可寫 autoload 識別字 GameInput
+## （編譯早於 autoload）。請走 game_input_gate.gd 執行期查找。
 
 const MOVE := "move"
 const ATTACK := "attack"

@@ -5,6 +5,7 @@ extends Control
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const WindowDrag = preload("res://scripts/ui/window_drag.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 const SLOT_N := 8
 const SLOT_SIZE := Vector2(46, 46)
 
@@ -166,9 +167,9 @@ func _build() -> void:
 	ml.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	menu_btn.add_child(ml)
 	menu_btn.gui_input.connect(func(ev: InputEvent):
-		if GameInput.primary_pointer_pressed(ev):
+		if GameInputGate.primary_pointer_pressed(ev):
 			get_viewport().set_input_as_handled()
-			GameInput.inject(GameInput.CANCEL)
+			GameInputGate.inject(GameInputGate.CANCEL)
 	)
 
 

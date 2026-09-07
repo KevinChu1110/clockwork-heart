@@ -2,6 +2,7 @@ extends Control
 ## 戰鬥畫面：左右血條、格擋倒數、衝刺／受擊演出
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 
@@ -1000,17 +1001,17 @@ func _unhandled_input(event: InputEvent) -> void:
 	## 比 main 深，會先吃到事件）—— 於是全遊戲最需要中途補血的一場，
 	## 快捷欄前三格（玩家最可能放藥的位置）是死的，畫面上也沒有任何一句話說明。
 	## 切目標本來就有 Tab 可以循環，數字鍵還給道具。
-	if GameInput.matches(event, GameInput.ATTACK):
+	if GameInputGate.matches(event, GameInputGate.ATTACK):
 		_do_parry()
 		get_viewport().set_input_as_handled()
 		return
-	if GameInput.matches(event, GameInput.SKILL):
+	if GameInputGate.matches(event, GameInputGate.SKILL):
 		sim.trigger_fury_awakening()
 		get_viewport().set_input_as_handled()
 		return
-	if GameInput.matches(event, GameInput.SWITCH_WEAPON):
+	if GameInputGate.matches(event, GameInputGate.SWITCH_WEAPON):
 		## 數字鍵 1–8 是快捷欄，武器欄走 SwitchWeapon（PC＝Z／X／C）。
-		var slot := GameInput.weapon_slot(event)
+		var slot := GameInputGate.weapon_slot(event)
 		if slot >= 0:
 			sim.switch_weapon_slot(slot)
 		else:
@@ -2610,8 +2611,8 @@ func _parry_window_open() -> bool:
 func _tap_ok(ev: InputEvent) -> bool:
 	if sim == null or _ended or sim.sim_paused:
 		return false
-	## 場上／怒氣／武器格＝對應語意動作的虛擬鍵；裝置判斷在 GameInput。
-	return GameInput.primary_pointer_pressed(ev)
+	## 場上／怒氣／武器格＝對應語意動作的虛擬鍵；裝置判斷在 GameInputGate。
+	return GameInputGate.primary_pointer_pressed(ev)
 
 
 func _install_touch_controls() -> void:

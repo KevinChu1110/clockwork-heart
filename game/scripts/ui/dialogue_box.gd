@@ -5,6 +5,7 @@ extends Control
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 
 
 static func _t(s: String) -> String:
@@ -245,11 +246,11 @@ func _on_choice(i: int) -> void:
 	_show_current()
 
 
-## Confirm：點畫面／E／Enter。裝置判斷在 GameInput。
+## Confirm：點畫面／E／Enter。裝置判斷在 GameInputGate（執行期找 autoload）。
 func _gui_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if GameInput.primary_pointer_pressed(event) or GameInput.matches(event, GameInput.CONFIRM):
+	if GameInputGate.primary_pointer_pressed(event) or GameInputGate.matches(event, GameInputGate.CONFIRM):
 		if not _waiting_choice:
 			accept_event()
 			_skip_or_advance()
@@ -258,7 +259,7 @@ func _gui_input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if GameInput.matches(event, GameInput.CONFIRM) or GameInput.matches(event, GameInput.INTERACT):
+	if GameInputGate.matches(event, GameInputGate.CONFIRM) or GameInputGate.matches(event, GameInputGate.INTERACT):
 		if not _waiting_choice:
 			_skip_or_advance()
 			get_viewport().set_input_as_handled()

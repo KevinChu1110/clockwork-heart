@@ -20,6 +20,7 @@ enum Screen {
 }
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 
 @onready var host: Control = %ScreenHost
 @onready var hud: Label = %DebugHud
@@ -272,7 +273,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_toggle_inventory()
 		get_viewport().set_input_as_handled()
 		return
-	if GameInput.matches(event, GameInput.CANCEL):
+	if GameInputGate.matches(event, GameInputGate.CANCEL):
 		## Cancel：先關物品欄 → 暫停／恢復
 		if _current == Screen.TITLE:
 			return

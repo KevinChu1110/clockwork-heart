@@ -7,6 +7,7 @@ signal finished
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 
 ## 影片放這裡；只給檔名時自動補上這層路徑與 .ogv
 ## Godot 內建只支援 Ogg Theora，轉檔用 tools/import_cutscene.py
@@ -328,8 +329,8 @@ func _end_cutscene() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible or _busy:
 		return
-	if GameInput.matches(event, GameInput.CONFIRM) \
-			or GameInput.matches(event, GameInput.INTERACT) \
-			or GameInput.primary_pointer_pressed(event):
+	if GameInputGate.matches(event, GameInputGate.CONFIRM) \
+			or GameInputGate.matches(event, GameInputGate.INTERACT) \
+			or GameInputGate.primary_pointer_pressed(event):
 		_advance()
 		get_viewport().set_input_as_handled()

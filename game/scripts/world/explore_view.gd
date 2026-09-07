@@ -7,6 +7,7 @@ extends Control
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 
 signal interacted(id: String)
 signal hint_changed(text: String)
@@ -1536,9 +1537,9 @@ func _on_tap(world: Vector2) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if frozen:
 		return
-	if GameInput.primary_pointer_pressed(event):
+	if GameInputGate.primary_pointer_pressed(event):
 		accept_event()
-		_on_tap(GameInput.pointer_position(event) + _cam)
+		_on_tap(GameInputGate.pointer_position(event) + _cam)
 
 
 ## 點擊光圈：柔邊圓環，放大淡出
@@ -2201,7 +2202,7 @@ func _highlight_near() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if not frozen and GameInput.matches(event, GameInput.INTERACT) and _near_id != "":
+	if not frozen and GameInputGate.matches(event, GameInputGate.INTERACT) and _near_id != "":
 		_do_interact(_near_id)
 		get_viewport().set_input_as_handled()
 		return

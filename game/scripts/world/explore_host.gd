@@ -11,6 +11,7 @@ const MapSceneRegistry = preload("res://scripts/world/map_scene_registry.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const PlayerScn := preload("res://scenes/actors/player.tscn")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 
 const NATIVE_MAPS: PackedStringArray = [
 	"village", "town", "town_forge", "town_soul", "town_gem", "town_tutor",
@@ -345,9 +346,9 @@ func _on_player_arrived() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if frozen:
 		return
-	if not GameInput.primary_pointer_pressed(event):
+	if not GameInputGate.primary_pointer_pressed(event):
 		return
-	var world := _screen_to_world(GameInput.pointer_position(event))
+	var world := _screen_to_world(GameInputGate.pointer_position(event))
 	var hit := _hit_entity_id(world)
 	if hit != "":
 		tap_entity(hit)
@@ -359,7 +360,7 @@ func _gui_input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if frozen:
 		return
-	if GameInput.matches(event, GameInput.INTERACT) and _near_id != "":
+	if GameInputGate.matches(event, GameInputGate.INTERACT) and _near_id != "":
 		tap_entity(_near_id)
 		get_viewport().set_input_as_handled()
 
