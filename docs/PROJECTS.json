@@ -220,8 +220,8 @@
    "id": "mk-warmup",
    "cat": "行銷",
    "title": "FB 預熱檔期（新世界觀版）",
-   "status": "測試中",
-   "note": "完成 R01/R02 預熱貼文庫 FB_QUEUE_R02.md，待總監審核驗收",
+   "status": "已上線",
+   "note": "R01/R02 預熱貼文庫審核通過並已合入 main",
    "keys": [
     "預熱",
     "檔期",
