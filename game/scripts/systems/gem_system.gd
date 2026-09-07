@@ -389,3 +389,163 @@ func status_bbcode() -> String:
 
 func panel_actions_hint() -> String:
 	return _t("熔煉：3 碎片→寶石。合成：3 同級升階。鑲嵌：選武器／防具。熔爐＝第二條每日產線。")
+
+
+## 盤點當前穿戴裝備（武器/防具）各孔位鑲嵌的寶石色階與六維總加成
+func inspect_gem_case() -> Dictionary:
+	_ensure_bag()
+	_ensure_shards()
+	var per := {
+		"crit": 2.0, "hp_pct": 0.03, "atk_pct": 0.04,
+		"def_pct": 0.04, "hit": 3.0, "eva": 3.0,
+	}
+	var slots_data: Array = []
+	var filled_sockets := 0
+
+	for slot in ["weapon", "armor"]:
+		var slot_name := _t("武器") if slot == "weapon" else _t("防具")
+		var inst: Dictionary = {}
+		var uid := str(GameState.equip_slots.get(slot, "")) if GameState.equip_slots else ""
+		if uid != "" and GameState.equip_worn and GameState.equip_worn.has(uid):
+			inst = GameState.equip_worn[uid]
+		elif uid == "" and GameState.equip_worn:
+			# 若未設 equip_slots 則自 equip_worn 檢索對應槽位之實體
+			for w_uid in GameState.equip_worn.keys():
+				var item: Dictionary = GameState.equip_worn[w_uid]
+				if str(item.get("slot", "")) == slot:
+					inst = item
+					uid = str(w_uid)
+					break
+
+		var is_equipped: bool = not inst.is_empty()
+		var equip_name: String = str(inst.get("name", slot_name)) if is_equipped else ""
+		var g: Variant = inst.get("gem", {}) if is_equipped else {}
+		var has_gem: bool = false
+		var gem_info: Dictionary = {}
+		var bonus_key := ""
+		var bonus_name := ""
+		var bonus_val := 0.0
+		var bonus_text := ""
+
+		if typeof(g) == TYPE_DICTIONARY and not (g as Dictionary).is_empty():
+			var color := str((g as Dictionary).get("color", ""))
+			var lv := clampi(int((g as Dictionary).get("level", 1)), 1, MAX_LEVEL)
+			has_gem = true
+			filled_sockets += 1
+			match color:
+				"red":
+					bonus_key = "crit" if slot == "weapon" else "hp_pct"
+					bonus_name = _t("暴擊") if slot == "weapon" else _t("生命%")
+				"yellow":
+					bonus_key = "atk_pct" if slot == "weapon" else "def_pct"
+					bonus_name = _t("攻擊%") if slot == "weapon" else _t("防禦%")
+				"blue":
+					bonus_key = "hit" if slot == "weapon" else "eva"
+					bonus_name = _t("命中") if slot == "weapon" else _t("迴避")
+
+			var per_val: float = float(per.get(bonus_key, 0.0))
+			bonus_val = per_val * float(lv)
+			if bonus_key.ends_with("_pct"):
+				bonus_text = "+%.1f%%" % [bonus_val * 100.0]
+			else:
+				bonus_text = "+%.1f" % [bonus_val]
+
+			gem_info = {
+				"color": color,
+				"level": lv,
+				"color_name": color_label(color),
+				"stars": "★".repeat(lv),
+				"label": gem_label(g as Dictionary),
+				"bonus_key": bonus_key,
+				"bonus_name": bonus_name,
+				"bonus_val": bonus_val,
+				"bonus_text": bonus_text,
+			}
+
+		slots_data.append({
+			"slot": slot,
+			"slot_name": slot_name,
+			"equip_uid": uid,
+			"equip_name": equip_name,
+			"is_equipped": is_equipped,
+			"has_gem": has_gem,
+			"gem": gem_info,
+			"bonus_key": bonus_key,
+			"bonus_name": bonus_name,
+			"bonus_val": bonus_val,
+			"bonus_text": bonus_text,
+		})
+
+	var wb := worn_bonuses()
+
+	return {
+		"slots": slots_data,
+		"worn_bonuses": wb,
+		"total_sockets": 2,
+		"filled_sockets": filled_sockets,
+		"bag_gems_count": GameState.gem_bag.size() if GameState.gem_bag else 0,
+	}
+
+
+func gem_case_status_bbcode() -> String:
+	_ensure_bag()
+	_ensure_shards()
+	var survey := inspect_gem_case()
+	var lines: PackedStringArray = []
+	lines.append(_t("[b]手藝工坊 · 寶石櫃檢視[/b]"))
+	lines.append(_t("[color=#a0a8c0]「櫃中天鵝絨托盤整齊擺放著各色原石，全身穿戴孔位與鑲嵌加成一覽無遺。」[/color]"))
+	lines.append("")
+
+	var filled: int = int(survey.get("filled_sockets", 0))
+	var total_s: int = int(survey.get("total_sockets", 2))
+	var bag_n: int = int(survey.get("bag_gems_count", 0))
+	lines.append(_t("[b]裝備鑲嵌孔位盤點[/b]（已鑲嵌 %d / %d 孔位 · 背包儲備 %d 顆）") % [filled, total_s, bag_n])
+
+	var slots: Array = survey.get("slots", [])
+	for s in slots:
+		var s_name := str(s.get("slot_name", ""))
+		var is_eq := bool(s.get("is_equipped", false))
+		var eq_name := str(s.get("equip_name", ""))
+		var has_g := bool(s.get("has_gem", false))
+		if not is_eq:
+			lines.append("  · %s：[color=#7a7890][未穿戴裝備][/color]" % s_name)
+		elif not has_g:
+			lines.append("  · %s【%s】：[color=#7a7890][孔位閒置 · 未鑲嵌][/color]" % [s_name, eq_name])
+		else:
+			var g: Dictionary = s.get("gem", {})
+			var color_code := "#ffd028"
+			var c_str := str(g.get("color", ""))
+			if c_str == "red":
+				color_code = "#ff5e8a"
+			elif c_str == "yellow":
+				color_code = "#ffd028"
+			elif c_str == "blue":
+				color_code = "#38a0ff"
+			var glabel := str(g.get("label", ""))
+			var stars := str(g.get("stars", ""))
+			var bname := str(g.get("bonus_name", ""))
+			var btext := str(g.get("bonus_text", ""))
+			lines.append("  · %s【%s】：[color=%s][已鑲嵌][/color] %s（%s） → %s %s" % [
+				s_name, eq_name, color_code, glabel, stars, bname, btext
+			])
+
+	lines.append("")
+	lines.append(_t("[b]全身寶石六維總加成[/b]"))
+	var wb: Dictionary = survey.get("worn_bonuses", {})
+	var crit_v: float = float(wb.get("crit", 0.0))
+	var atk_pct_v: float = float(wb.get("atk_pct", 0.0)) * 100.0
+	var hit_v: float = float(wb.get("hit", 0.0))
+	var hp_pct_v: float = float(wb.get("hp_pct", 0.0)) * 100.0
+	var def_pct_v: float = float(wb.get("def_pct", 0.0)) * 100.0
+	var eva_v: float = float(wb.get("eva", 0.0))
+
+	lines.append("  · %s：+%.1f" % [_t("暴擊"), crit_v])
+	lines.append("  · %s：+%.1f%%" % [_t("攻擊%"), atk_pct_v])
+	lines.append("  · %s：+%.1f" % [_t("命中"), hit_v])
+	lines.append("  · %s：+%.1f%%" % [_t("生命%"), hp_pct_v])
+	lines.append("  · %s：+%.1f%%" % [_t("防禦%"), def_pct_v])
+	lines.append("  · %s：+%.1f" % [_t("迴避"), eva_v])
+
+	lines.append("")
+	lines.append(_t("[color=#a0a8c0]※ 器軸規範：寶石僅可鑲嵌於武器與防具，提供暴擊、攻擊%、命中、生命%、防禦%、迴避六維加成，不可取下只能以新寶石替換覆蓋。[/color]"))
+	return "\n".join(lines)

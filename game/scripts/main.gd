@@ -5234,6 +5234,19 @@ func _go_astrolabe_panel() -> void:
 	_panel(_t("聚魂殿 · 周天星盤"), body, buttons, {"soul_hang": true})
 
 
+func _go_gem_case_panel() -> void:
+	EquipmentSystem._ensure_state()
+	GemSystem._ensure_bag()
+	var body: String = GemSystem.gem_case_status_bbcode()
+	var buttons: Array = []
+	buttons.append({"text": _t("重新盤點"), "cb": _go_gem_case_panel})
+	buttons.append({"text": _t("前往熔煉與鑲嵌"), "cb": _go_gem_panel})
+	buttons.append({"text": Loc.t("pause.equip"), "cb": _go_equip_panel})
+	buttons.append({"text": _t("離開寶石櫃"), "cb": func(): _open_explore("town_gem", Screen.C1_TOWN)})
+	buttons.append({"text": Loc.t("forge.back_square"), "cb": _go_c1_town})
+	_panel(_t("手藝工坊 · 寶石櫃檢視"), body, buttons)
+
+
 func _go_gem_panel() -> void:
 	var body: String = GemSystem.status_bbcode()
 	body += "\n\n" + GemSystem.panel_actions_hint()
@@ -5305,6 +5318,7 @@ func _go_gem_panel() -> void:
 						_go_gem_panel()
 				})
 			bag_n += 1
+	buttons.append({"text": _t("寶石櫃檢視"), "cb": _go_gem_case_panel})
 	buttons.append({"text": Loc.t("pause.soul"), "cb": _go_soul_panel})
 	buttons.append({"text": Loc.t("pause.equip"), "cb": _go_equip_panel})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _hub_back})
@@ -5447,7 +5461,12 @@ func _interact_shop_interior(id: String) -> bool:
 						{"speaker": _t("工坊師傅"), "text": _t("紅黃藍。三合一升階，碎片熔煉。鑲上就成，不失敗。")},
 					], _go_gem_panel)
 					return true
-				"gem_case", "cold_furnace", "shard_box":
+				"gem_case":
+					_play_dialog([
+						{"speaker": _t("旁白"), "text": _t("寶石陳列櫃擦得透亮。天鵝絨托盤上放著各色原石，在此可盤點全身裝備鑲嵌孔位、寶石色階與六維總加成。")}
+					], _go_gem_case_panel)
+					return true
+				"cold_furnace", "shard_box":
 					_go_gem_panel()
 					return true
 		"town_tutor":
