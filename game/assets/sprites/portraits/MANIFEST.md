@@ -1,13 +1,13 @@
-# Dialogue portraits · 翠嶺動物族
+# Dialogue portraits · 發條之心
 
-**世界觀**：與兔勇者同一世界——**溫暖動物族**。  
-**規則**：對話半身像必須與 `npcs/` 場上立繪是**同一張像素**（放大），禁止另畫寫實人類／油畫。  
-**規格**：384×480 PNG · 透明底。
+**世界觀**：覺醒的機械發條玩具。四位主角一律金屬機械玩具，不是絨毛。  
+**規則**：對話半身像必須與場上立繪是**同一套風格錨**（金屬、發條鑰匙、青綠核心）。禁止另畫寫實人類／油畫／絨毛玩偶。  
+**規格**：頭像 128×128 PNG · 透明底。
 
 | 檔案 | 角色 | 場上／對話 |
 |------|------|------------|
-| rabbit.png | 小白 | 白兔旅人（頭像；場上 `player/rabbit_idle_x3`） |
-| maisui.png | 麥穗 | 田鼠 · 麥冠圍裙 |
+| rabbit.png | 小白 | **金屬發條兔劍士**（頭像；場上 `player/rabbit_idle_x3`） |
+| maisui.png | 麥穗／舊鑰 | 田鼠 · 麥冠圍裙 |
 | greybeard.png | 灰鬚 | 白兔老兵 · 綠斗篷 |
 | ding.png | 釘釘 | 熊 · 鐵匠 |
 | star.png | 星讀 | 雪梟 · 星袍望遠鏡 |
@@ -24,4 +24,11 @@
 | merchant.png / caravan_chief.png | 行商 | 白兔旅商（與 `npcs/merchant` 同圖） |
 | leo.png 等頭目 | 戰鬥用 | 尚未改成場上 icon 同一套 |
 
-重畫時以 `player/rabbit_idle_x3.png` + `npcs/ding.png` 為風格錨。
+## 風格錨（ART-01，2026-09-07）
+
+重畫小白與後續英雄時，以這套為準，**不要再漂回絨毛紅圍巾**：
+
+- 場上立繪：`player/rabbit_idle_x3.png`（128×128）＋ `player/poses/*.png`
+- 頭像：`portraits/rabbit.png`（128×128）
+- 角色參考：`branding/char_rabbit.png`、主視覺 `branding/key_visual_main.png`
+- 規格：四分之三側、背後黃銅發條鑰匙必須破輪廓、單手長劍一把、米白金屬＋斑駁黃銅、青綠玻璃眼與胸口核心、立耳金屬件。⛔ 絨毛、紅圍巾、垂耳。
