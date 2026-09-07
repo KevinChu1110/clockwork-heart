@@ -2556,9 +2556,11 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
-	bg.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	var art: Texture2D = null
-	if ResourceLoader.exists("res://assets/sprites/illustrations/title_bg.png"):
+	if ResourceLoader.exists("res://assets/sprites/illustrations/title_bg_clockwork.png"):
+		art = load("res://assets/sprites/illustrations/title_bg_clockwork.png")
+	elif ResourceLoader.exists("res://assets/sprites/illustrations/title_bg.png"):
 		art = load("res://assets/sprites/illustrations/title_bg.png")
 	elif ResourceLoader.exists("res://assets/sprites/illustrations/duel_leo.png"):
 		art = load("res://assets/sprites/illustrations/duel_leo.png")
@@ -2571,29 +2573,22 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 		layer.add_child(solid)
 	layer.add_child(bg)
 
-	## 右側選單底的暗紗（漸層淡入，避免硬切邊）
+	## 右側選單底的通透微光暗紗（柔和漸層，確保明亮通透）
 	var scrim := TextureRect.new()
 	scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	scrim.anchor_left = 0.48
+	scrim.anchor_left = 0.55
 	var grad := Gradient.new()
-	grad.set_color(0, Color(0.06, 0.05, 0.08, 0.0))
-	grad.set_color(1, Color(0.06, 0.05, 0.08, 0.78))
+	grad.set_color(0, Color(0.12, 0.10, 0.23, 0.0))
+	grad.set_color(1, Color(0.12, 0.10, 0.23, 0.38))
 	var gtex := GradientTexture2D.new()
 	gtex.gradient = grad
 	gtex.fill_from = Vector2(0, 0)
-	gtex.fill_to = Vector2(0.55, 0)
+	gtex.fill_to = Vector2(1.0, 0)
 	scrim.texture = gtex
 	scrim.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	scrim.stretch_mode = TextureRect.STRETCH_SCALE
 	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(scrim)
-	var scrim_b := ColorRect.new()
-	scrim_b.set_anchors_preset(Control.PRESET_FULL_RECT)
-	scrim_b.anchor_top = 0.72
-	scrim_b.anchor_right = 0.55
-	scrim_b.color = Color(0.06, 0.05, 0.08, 0.55)
-	scrim_b.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	layer.add_child(scrim_b)
 
 	## 左下：遊戲名 + 資訊
 	var info := VBoxContainer.new()
