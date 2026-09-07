@@ -109,8 +109,9 @@ func _load_hero_poses() -> void:
 		_tex_recover = load("res://assets/sprites/player/poses/recover.png")
 
 func _build_ui() -> void:
-	## 1. 背景插畫 (明亮飽和的童話主城)
+	## 1. 背景插畫（LINEAR 手繪底圖；大廳不准蓋 TileMap）
 	var bg := TextureRect.new()
+	bg.name = "SkyKingdomBg"
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
