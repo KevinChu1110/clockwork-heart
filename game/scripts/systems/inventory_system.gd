@@ -229,6 +229,15 @@ const CATALOG: Dictionary = {
 		"color": Color(0.85, 0.7, 0.35),
 		"glyph": "鑰",
 	},
+	"windup_fragment": {
+		"name": "發條碎片",
+		"desc": "幫玩具上發條時掉下的齒片。累積可解鎖獨白。",
+		"kind": "material",
+		"stack": 99,
+		"sell": 0,
+		"color": Color(0.95, 0.72, 0.22),
+		"glyph": "條",
+	},
 }
 
 

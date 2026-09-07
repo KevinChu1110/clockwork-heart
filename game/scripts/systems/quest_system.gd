@@ -92,9 +92,7 @@ func refresh_daily() -> void:
 	if last != today:
 		GameState.set_flag(DAILY_KEY, today)
 		GameState.set_flag(DAILY_CLAIMED, false)
-		## 斷簽：間隔 >1 日清 streak（可選溫和）
-		if last >= 0 and today - last > 1:
-			GameState.set_flag(DAILY_STREAK, 0)
+		## Product Lock §3.2：錯過不罰、斷簽不歸零。streak 改由上發條累計次數寫入。
 		## 日計數歸零（委託進度）
 		for t in DAY_TRACKS:
 			GameState.set_flag("day.%s" % t, 0)
@@ -253,11 +251,18 @@ func can_claim_daily() -> bool:
 
 
 func streak_milestone_hint() -> String:
-	var streak := int(GameState.get_flag(DAILY_STREAK, 0))
+	## 里程碑改掛累計「上發條次數」，不再用連續登入。
+	var n := int(GameState.get_flag(DAILY_STREAK, 0))
+	if Engine.get_main_loop() is SceneTree:
+		var w: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("WindupDailySystem")
+		if w and w.has_method("windup_count"):
+			n = int(w.call("windup_count"))
+		if w and w.has_method("milestone_hint"):
+			return str(w.call("milestone_hint"))
 	for t in [3, 7, 15, 28]:
-		if streak < t:
-			return _t("連簽下一檔：%d 天") % t
-	return _t("連簽里程碑已達 28 天")
+		if n < t:
+			return _t("上發條下一檔：累計 %d 次") % t
+	return _t("上發條里程碑已達 28 次")
 
 
 func claim_daily() -> Dictionary:
@@ -265,44 +270,15 @@ func claim_daily() -> Dictionary:
 	refresh_daily()
 	if bool(GameState.get_flag(DAILY_CLAIMED, false)):
 		return {"ok": false, "msg": "今日獎勵已領過。明天再來。"}
-	var streak := int(GameState.get_flag(DAILY_STREAK, 0)) + 1
-	GameState.set_flag(DAILY_STREAK, streak)
+	## 補給仍可領，但不再靠連續登入加碼；里程碑改走 WindupDailySystem 累計次數。
+	var streak := int(GameState.get_flag(DAILY_STREAK, 0))
 	GameState.set_flag(DAILY_CLAIMED, true)
-	var gold_n := 20 + mini(30, streak * 2)
-	var dust_n := 1 + (1 if streak % 3 == 0 else 0)
+	var gold_n := 20
+	var dust_n := 1
 	if GameState.ng_plus > 0:
 		gold_n += 10
 		dust_n += 1
-	## 連簽里程碑（一次性；對齊原作 3／7／15／28 天四檔，
-	## 原作獎勵：體力金幣 → 體力演武水晶 → 紫葫蘆×10 → 橙腰帶）
 	var bonus := ""
-	if streak == 3 and not GameState.has_flag("meta.streak_bonus_3"):
-		GameState.set_flag("meta.streak_bonus_3", true)
-		gold_n += 100
-		EnergySystem.grant(5)
-		bonus = _t(" · 連簽 3 天：能量+5 · 金+100")
-	elif streak == 7 and not GameState.has_flag("meta.streak_bonus_7"):
-		GameState.set_flag("meta.streak_bonus_7", true)
-		dust_n += 5
-		EnergySystem.grant(10)
-		GameState.arena_tickets = ArenaSystem.TICKET_MAX
-		bonus = _t(" · 連簽 7 天：能量+10 · 挑戰狀補滿 · 星屑+5")
-	elif streak == 15 and not GameState.has_flag("meta.streak_bonus_15"):
-		GameState.set_flag("meta.streak_bonus_15", true)
-		gold_n += 300
-		if GameState.soul_vessel in ["綠葫蘆", "藍葫蘆"]:
-			GameState.soul_vessel = "紫葫蘆"
-		GameState.soul_free_draws += 10
-		GemSystem.add_gem("red", 2, 1)
-		bonus = _t(" · 連簽 15 天：魂器躍紫 · 免費抽魂×10 · 二級紅寶石")
-	elif streak == 28 and not GameState.has_flag("meta.streak_bonus_28"):
-		GameState.set_flag("meta.streak_bonus_28", true)
-		gold_n += 400
-		EnergySystem.grant(30)
-		var belt: Dictionary = EquipmentSystem.roll_instance("knight_belt", "epic")
-		if not belt.is_empty():
-			EquipmentSystem.add_to_bag(belt)
-		bonus = _t(" · 連簽 28 天：橙品腰帶 · 能量+30 · 金+400")
 	GameState.add_gold(gold_n)
 	GameState.add_stardust(dust_n)
 	## 友情之花（靈寵蛋的原料，原作好友互贈——單機版由簽到與好友挑戰供給）
@@ -318,7 +294,7 @@ func claim_daily() -> Dictionary:
 		"gold": gold_n,
 		"dust": dust_n,
 		"streak": streak,
-		"msg": "每日補給：金 %d · 星屑 %d · 連續簽到 %d 天%s" % [gold_n, dust_n, streak, bonus],
+		"msg": "每日補給：金 %d · 星屑 %d · 上發條累計 %d 次%s" % [gold_n, dust_n, streak, bonus],
 	}
 
 
@@ -420,21 +396,22 @@ func claimable_count() -> int:
 ## 「今日村莊」儀表板用：可領的紅點（不含長遠里程碑，避免永遠紅）
 func starpath_reward_count() -> int:
 	var n := 0
-	if can_claim_daily():
-		n += 1
-	n += claimable_commissions()
+	if Engine.get_main_loop() is SceneTree:
+		var w: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("WindupDailySystem")
+		if w and w.has_method("is_ready") and bool(w.call("is_ready")):
+			n += 1
 	return n
 
 
-## 今日還能做的短循環件數（未完成委託 + 有獎場次提示）
+## 今日還能做的短循環件數（上發條未完成 + 有獎場次提示）
 func starpath_todo_count() -> int:
 	refresh_daily()
 	var n := 0
-	for c in todays_commissions_raw():
-		if not commission_done(c):
-			n += 1
 	if Engine.get_main_loop() is SceneTree:
 		var tree := Engine.get_main_loop() as SceneTree
+		var w: Node = tree.root.get_node_or_null("WindupDailySystem")
+		if w and w.has_method("is_ready") and bool(w.call("is_ready")):
+			n += 1
 		var ar: Node = tree.root.get_node_or_null("ArenaSystem")
 		if ar and ar.has_method("is_unlocked") and bool(ar.call("is_unlocked")):
 			if int(ar.call("daily_left")) > 0:
@@ -451,15 +428,17 @@ func starpath_summary_bbcode() -> String:
 	refresh_daily()
 	var lines: PackedStringArray = []
 	lines.append("[b]今日村莊[/b]")
-	lines.append("連續簽到 %d 天 · %s" % [
+	lines.append(_t("上發條累計 %d 次 · %s") % [
 		int(GameState.get_flag(DAILY_STREAK, 0)), streak_milestone_hint()
 	])
-	if can_claim_daily():
-		lines.append("[color=#fc6]● 簽到補給尚未領取[/color]")
+	if Engine.get_main_loop() is SceneTree:
+		var w: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("WindupDailySystem")
+		if w and w.has_method("summary_line"):
+			lines.append(str(w.call("summary_line")))
+		else:
+			lines.append(_t("今天，誰需要上發條？"))
 	else:
-		lines.append("· 今日簽到已領")
-	lines.append("")
-	lines.append(list_commissions_bbcode())
+		lines.append(_t("今天，誰需要上發條？"))
 	lines.append("")
 	if Engine.get_main_loop() is SceneTree:
 		var tree := Engine.get_main_loop() as SceneTree
