@@ -245,12 +245,11 @@ func _on_choice(i: int) -> void:
 	_show_current()
 
 
-## 點擊／觸控推進：打字中先跳滿字，再點才換行（dim 與紙面板 PASS 冒泡到這）
+## Confirm：點畫面／E／Enter。裝置判斷在 GameInput。
 func _gui_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if event is InputEventMouseButton and event.pressed \
-			and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT:
+	if GameInput.primary_pointer_pressed(event) or GameInput.matches(event, GameInput.CONFIRM):
 		if not _waiting_choice:
 			accept_event()
 			_skip_or_advance()
@@ -259,7 +258,7 @@ func _gui_input(event: InputEvent) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible:
 		return
-	if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
+	if GameInput.matches(event, GameInput.CONFIRM) or GameInput.matches(event, GameInput.INTERACT):
 		if not _waiting_choice:
 			_skip_or_advance()
 			get_viewport().set_input_as_handled()

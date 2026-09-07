@@ -1536,11 +1536,9 @@ func _on_tap(world: Vector2) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if frozen:
 		return
-	if event is InputEventMouseButton \
-			and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT \
-			and (event as InputEventMouseButton).pressed:
+	if GameInput.primary_pointer_pressed(event):
 		accept_event()
-		_on_tap((event as InputEventMouseButton).position + _cam)
+		_on_tap(GameInput.pointer_position(event) + _cam)
 
 
 ## 點擊光圈：柔邊圓環，放大淡出
@@ -2203,6 +2201,10 @@ func _highlight_near() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not frozen and GameInput.matches(event, GameInput.INTERACT) and _near_id != "":
+		_do_interact(_near_id)
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_M:
 		if _minimap_root:
 			_minimap_root.visible = not _minimap_root.visible

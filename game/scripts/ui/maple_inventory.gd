@@ -36,7 +36,7 @@ func _build() -> void:
 	_dim.color = Color(0.08, 0.06, 0.04, 0.28)
 	_dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	_dim.gui_input.connect(func(ev: InputEvent):
-		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+		if GameInput.primary_pointer_pressed(ev):
 			close()
 	)
 	add_child(_dim)

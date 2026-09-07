@@ -345,17 +345,23 @@ func _on_player_arrived() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if frozen:
 		return
-	if event is InputEventMouseButton:
-		var mb := event as InputEventMouseButton
-		if not mb.pressed or mb.button_index != MOUSE_BUTTON_LEFT:
-			return
-		var world := _screen_to_world(mb.position)
-		var hit := _hit_entity_id(world)
-		if hit != "":
-			tap_entity(hit)
-		else:
-			tap_world(world)
-		accept_event()
+	if not GameInput.primary_pointer_pressed(event):
+		return
+	var world := _screen_to_world(GameInput.pointer_position(event))
+	var hit := _hit_entity_id(world)
+	if hit != "":
+		tap_entity(hit)
+	else:
+		tap_world(world)
+	accept_event()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if frozen:
+		return
+	if GameInput.matches(event, GameInput.INTERACT) and _near_id != "":
+		tap_entity(_near_id)
+		get_viewport().set_input_as_handled()
 
 
 func _screen_to_world(local_pos: Vector2) -> Vector2:

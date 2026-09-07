@@ -328,11 +328,8 @@ func _end_cutscene() -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not visible or _busy:
 		return
-	var go := false
-	if event.is_action_pressed("interact") or event.is_action_pressed("ui_accept"):
-		go = true
-	elif event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		go = true
-	if go:
+	if GameInput.matches(event, GameInput.CONFIRM) \
+			or GameInput.matches(event, GameInput.INTERACT) \
+			or GameInput.primary_pointer_pressed(event):
 		_advance()
 		get_viewport().set_input_as_handled()

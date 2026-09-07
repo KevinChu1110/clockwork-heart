@@ -1000,33 +1000,22 @@ func _unhandled_input(event: InputEvent) -> void:
 	## 比 main 深，會先吃到事件）—— 於是全遊戲最需要中途補血的一場，
 	## 快捷欄前三格（玩家最可能放藥的位置）是死的，畫面上也沒有任何一句話說明。
 	## 切目標本來就有 Tab 可以循環，數字鍵還給道具。
-	if event.is_action_pressed("parry"):
+	if GameInput.matches(event, GameInput.ATTACK):
 		_do_parry()
 		get_viewport().set_input_as_handled()
 		return
-
-	if event is InputEventKey and event.pressed and not event.echo:
-		## Z／X／C＝武器欄；F＝手動暴怒。
-		##
-		## 原本武器欄綁 1／2／3、暴怒綁 4／F，而數字鍵 1–8 是底部快捷欄
-		## （格子上就印著數字）。這裡沒有 set_input_as_handled，main 接著也會收到，
-		## 於是戰鬥中按 1 是「換到欄 1 **同時**喝掉快捷欄 1 的藥」；按 4 是
-		## 「暴怒同時吃掉格 4」。數字鍵還給道具（畫面上標的就是它），
-		## 武器欄改用沒被 input map 用掉的鍵（W＝ui_up、E＝interact 都不能拿）
-		## 並吃掉事件；空／未解鎖仍由 sim 擋下並回饋。
-		var handled := true
-		if event.keycode == KEY_Z:
-			sim.switch_weapon_slot(0)
-		elif event.keycode == KEY_X:
-			sim.switch_weapon_slot(1)
-		elif event.keycode == KEY_C:
-			sim.switch_weapon_slot(2)
-		elif event.keycode == KEY_F:
-			sim.trigger_fury_awakening()
+	if GameInput.matches(event, GameInput.SKILL):
+		sim.trigger_fury_awakening()
+		get_viewport().set_input_as_handled()
+		return
+	if GameInput.matches(event, GameInput.SWITCH_WEAPON):
+		## 數字鍵 1–8 是快捷欄，武器欄走 SwitchWeapon（PC＝Z／X／C）。
+		var slot := GameInput.weapon_slot(event)
+		if slot >= 0:
+			sim.switch_weapon_slot(slot)
 		else:
-			handled = false
-		if handled:
-			get_viewport().set_input_as_handled()
+			sim.switch_weapon_slot((int(sim.weapon_bar_active) + 1) % maxi(1, sim.weapon_bars.size()))
+		get_viewport().set_input_as_handled()
 
 
 ## ── 戰鬥中的 HP 權威 ──
@@ -2621,7 +2610,8 @@ func _parry_window_open() -> bool:
 func _tap_ok(ev: InputEvent) -> bool:
 	if sim == null or _ended or sim.sim_paused:
 		return false
-	return ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT
+	## 場上／怒氣／武器格＝對應語意動作的虛擬鍵；裝置判斷在 GameInput。
+	return GameInput.primary_pointer_pressed(ev)
 
 
 func _install_touch_controls() -> void:
