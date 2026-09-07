@@ -54,7 +54,7 @@
    "cat": "世界觀",
    "title": "🥇 第一章 30 分鐘體驗（轉譯後）",
    "status": "測試中",
-   "note": "完成 C0 世界觀轉譯，送交總監審核",
+   "note": "C0 player-visible strings in game; review fixes (save chapter name, journey notes, leave attic, codex newlines). not on main.",
    "keys": [
     "第一章",
     "序章",

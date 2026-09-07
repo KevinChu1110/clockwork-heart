@@ -407,7 +407,7 @@ func ritual_footprint_line() -> String:
 	if GameState.has_flag("boss.abo_cleared"):
 		parts.append(_t("拳山·防"))
 	if GameState.has_flag("c0_care") or GameState.has_wheat_stalk or GameState.wheat_stalk_broken:
-		parts.append(_t("麥稈·梁／血"))
+		parts.append(_t("鑰繩·梁／血"))
 	if GameState.has_flag("boss.shadowwind_cleared"):
 		parts.append(_t("林風·銳"))
 	if GameState.has_flag("boss.stonefist_cleared"):

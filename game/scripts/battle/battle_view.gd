@@ -2505,7 +2505,7 @@ func _try_wheat_save(hp_after: int) -> void:
 	GameState.has_wheat_stalk = false
 	GameState.wheat_stalk_broken = true
 	GameState.set_flag("c0_wheat_saved", true)
-	_append_log(_t("[color=#fc8]麥穗給的麥稈碎裂了。你撐過了這一擊。[/color]"))
+	_append_log(_t("[color=#fc8]舊鑰給予的鑰繩碎裂了。替你化解了致命的金屬衝擊。[/color]"))
 	_flash(player_body, Color(1, 0.85, 0.4))
 	_shake = 0.2
 

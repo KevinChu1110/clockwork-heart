@@ -1615,12 +1615,12 @@ func _notify_codex_unlocks() -> void:
 	var names: PackedStringArray = []
 	for id in newly:
 		names.append(StoryCodex.display_title(str(id)))
-	_show_toast(_t("翠嶺手札：%s") % "、".join(names))
+	_show_toast(_t("旅途手札：%s") % "、".join(names))
 
 
 func _journey_summary() -> String:
 	var checks := [
-		[_t("C0 離村"), "c0_village_left"],
+		[_t("C0 離開閣樓"), "c0_village_left"],
 		[_t("C0 首戰"), "c0_first_battle"],
 		[_t("C1 鍛造"), "c1_forged"],
 		[_t("C1 雷歐"), "boss.leo_cleared"],
@@ -3747,12 +3747,12 @@ func _go_c0() -> void:
 			{
 				"bg": "village",
 				"speaker": _t("旁白"),
-				"portrait": _t("麥穗"),
+				"portrait": _t("舊鑰"),
 				"text": Loc.t("c0.intro2"),
 			},
 			{
 				"bg": "village",
-				"speaker": _t("麥穗"),
+				"speaker": _t("舊鑰"),
 				"text": Loc.t("c0.intro3"),
 			},
 			{
@@ -3787,7 +3787,7 @@ func _interact_village(id: String) -> void:
 			## 急著叫你跑 → 立刻三選。選項不掛在「還站著？」後面。
 			_play_dialog([
 				{
-					"speaker": _t("麥穗"),
+					"speaker": _t("舊鑰"),
 					"text": Loc.t("c0.maisui1"),
 					"choices": [
 						Loc.t("c0.choice_you"),
@@ -3800,7 +3800,7 @@ func _interact_village(id: String) -> void:
 						Loc.t("c0.reply_help"),
 					],
 				},
-				{"speaker": _t("麥穗"), "text": Loc.t("c0.maisui3")},
+				{"speaker": _t("舊鑰"), "text": Loc.t("c0.maisui3")},
 			])
 		"sword":
 			if GameState.has_flag("item.rusty_sword"):
@@ -3855,9 +3855,9 @@ func _c0_try_leave() -> void:
 	_notify_codex_unlocks()
 	var last := Loc.t("c0.leave_wait") if GameState.has_flag("c0_care") else Loc.t("c0.leave_run")
 	_play_dialog([
-		{"speaker": _t("麥穗"), "text": Loc.t("c0.leave_stalk")},
-		{"speaker": _t("麥穗"), "text": Loc.t("c0.leave_home")},
-		{"speaker": _t("麥穗"), "text": last},
+		{"speaker": _t("舊鑰"), "text": Loc.t("c0.leave_stalk")},
+		{"speaker": _t("舊鑰"), "text": Loc.t("c0.leave_home")},
+		{"speaker": _t("舊鑰"), "text": last},
 	], _c0_leave_cutscene)
 
 
@@ -3866,7 +3866,7 @@ func _c0_leave_cutscene() -> void:
 		{
 			"bg": "village",
 			"speaker": _t("旁白"),
-			"portrait": _t("麥穗"),
+			"portrait": _t("舊鑰"),
 			"text": Loc.t("c0.cut_ash"),
 		},
 		{
@@ -3907,7 +3907,7 @@ func _interact_road(id: String) -> void:
 			if GameState.has_flag("c0_first_battle"):
 				_play_dialog([
 					{"speaker": _t("內心"), "text": Loc.t("flavor.dawn")},
-					{"speaker": _t("系統"), "text": _t("石牆就在前方。")},
+					{"speaker": _t("系統"), "text": _t("世界大鐘就在前方。")},
 				], _go_c1_town)
 			else:
 				_play_dialog([{"speaker": _t("內心"), "text": Loc.t("flavor.dawn")}])
@@ -4852,7 +4852,7 @@ func _c0_to_c1_cutscene() -> void:
 		{
 			"bg": "road",
 			"speaker": _t("旁白"),
-			"text": _t("天亮了。石牆還在。旗還掛著。"),
+			"text": _t("天亮了。遠方，世界大鐘懸在雲海頂端。"),
 		},
 		{
 			"bg": "town",
@@ -4863,7 +4863,7 @@ func _c0_to_c1_cutscene() -> void:
 		{
 			"bg": "town",
 			"speaker": _t("灰鬚"),
-			"text": _t("……傭兵團的？煙味。最弱那掛。"),
+			"text": _t("……發條剛轉的？灰塵味。最小那掛。"),
 		},
 	]), _go_c1_town)
 

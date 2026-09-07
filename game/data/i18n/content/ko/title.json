@@ -76,8 +76,8 @@
     "name": "참된 전령"
   },
   "title.wheat_keeper": {
-    "desc": "밀대가 대신 일격을 받았다.",
-    "name": "대는 남았다"
+    "name": "열쇠끈은 남았다",
+    "desc": "열쇠끈이 대신 한 방을 막았다."
   },
   "title.wood_mentor": {
     "desc": "연습이라는 꿈을 새싹의 손에 쥐여 주었다.",

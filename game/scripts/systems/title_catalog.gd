@@ -75,8 +75,8 @@ const ENTRIES: Array[Dictionary] = [
 	},
 	{
 		"flag": "title.wheat_keeper",
-		"name": "稈在",
-		"desc": "麥稈替你擋過一擊。",
+		"name": "鑰繩還在",
+		"desc": "鑰繩替你擋過一擊。",
 		"cond": "wheat",
 	},
 	{

@@ -19,14 +19,14 @@
   ],
   "c0.shrine_stub": [
     {
-      "speaker": "Ermita",
-      "text": "La ceniza del incienso está fría. La gente se fue primero."
+      "speaker": "Péndulo detenido",
+      "text": "El péndulo está trabado en un ángulo. Cristales oscuros en el eje de cobre."
     }
   ],
   "c0.field_west": [
     {
-      "speaker": "Narración",
-      "text": "El campo fue quemado. Al este."
+      "speaker": "Narration",
+      "text": "El paso al fondo está sellado. Solo queda ir adelante."
     }
   ],
   "c0.leave_without_sword": [
@@ -37,8 +37,8 @@
   ],
   "c0.road_east": [
     {
-      "speaker": "Narración",
-      "text": "El camino largo va al este. Cuiling es más grande de lo que pinta el mapa."
+      "speaker": "Narration",
+      "text": "El camino se alarga hacia afuera. El Reino del Asombro es más grande que el montón de bloques."
     }
   ],
   "c1.flag_paw": [
