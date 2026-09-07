@@ -5733,13 +5733,13 @@ func _soul_play_lightup(vessel: String, result: Texture2D, then: Callable) -> vo
 func _vessel_glow_line(vessel: String) -> String:
 	match vessel:
 		"綠葫蘆":
-			return _t("💚 綠光從蒂部滲出……樸素的葫蘆醒了。")
+			return _t("💚 綠光從蒂部滲出……樸素的封靈壺醒了。")
 		"藍葫蘆":
-			return _t("💙 藍紋沿著葫蘆腰線爬升……更深一階。")
+			return _t("💙 藍紋沿著壺腰爬升……更深一階。")
 		"紫葫蘆":
-			return _t("💜 紫霧在葫蘆內打轉……稀世近了。")
+			return _t("💜 紫霧在壺內打轉……稀世近了。")
 		"橙葫蘆":
-			return _t("🧡 橙焰燃滿葫蘆——頂階！再抽同色便會摔回綠。")
+			return _t("🧡 橙焰燃滿封靈壺——頂階！再抽同色便會摔回綠。")
 		_:
 			return _t("魂器顫動……")
 
@@ -5767,7 +5767,7 @@ func _soul_do_ritual() -> void:
 	AudioManager.play("ui", 1.08, -6.0)
 	var vessel_now := str(GameState.soul_vessel)
 	_soul_preview_tex(SpriteDB.soul_vessel(vessel_now))
-	ui_toast(_t("點亮：%s") % vessel_now)
+	ui_toast(_t("點亮：%s") % SoulSystem.vessel_display(vessel_now))
 	var footprint: String = SoulSystem.ritual_footprint_line()
 	var ladder := SoulSystem.vessel_ladder_bbcode()
 	_play_dialog([
@@ -5795,12 +5795,12 @@ func _soul_do_ritual() -> void:
 		var line: String = _t("凝出 %s（%s）") % [
 			SoulSystem.soul_display(soul), SoulSystem.soul_bonus_line(soul)
 		]
-		var vessel_line := _t("魂器仍為 %s。") % after_v
+		var vessel_line := _t("魂器仍為 %s。") % SoulSystem.vessel_display(after_v)
 		if after_v != before_v:
 			if after_v == "綠葫蘆" and before_v != "綠葫蘆":
-				vessel_line = _t("同色頂階！魂器由 %s 摔回綠葫蘆，重新攀升。") % before_v
+				vessel_line = _t("同色頂階！魂器由 %s 摔回綠階封靈壺，重新攀升。") % SoulSystem.vessel_display(before_v)
 			else:
-				vessel_line = _t("魂器升階：%s → %s｜%s") % [before_v, after_v, _vessel_glow_line(after_v)]
+				vessel_line = _t("魂器升階：%s → %s｜%s") % [SoulSystem.vessel_display(before_v), SoulSystem.vessel_display(after_v), _vessel_glow_line(after_v)]
 		ui_toast(_t("入魂候補：%s") % SoulSystem.soul_display(soul))
 		AudioManager.play("interact", 1.0, -4.0)
 		var sid_done := str(soul.get("id", ""))
@@ -5824,7 +5824,7 @@ func _soul_do_ritual_x10() -> void:
 	AudioManager.play("ui", 1.08, -6.0)
 	var vessel_now := str(GameState.soul_vessel)
 	_soul_preview_tex(SpriteDB.soul_vessel(vessel_now))
-	ui_toast(_t("點亮×10：%s") % vessel_now)
+	ui_toast(_t("點亮×10：%s") % SoulSystem.vessel_display(vessel_now))
 	_play_dialog([
 		{"speaker": _t("星讀"), "text": _t("十次。把手放穩。聚魂會連著跳。")},
 		{"speaker": _t("系統"), "text": _vessel_glow_line(vessel_now)},
@@ -5855,12 +5855,12 @@ func _soul_do_ritual_x10() -> void:
 		var shown := "、".join(PackedStringArray(names.slice(0, mini(4, names.size()))))
 		if names.size() > 4:
 			shown += _t("…共 %d 顆") % names.size()
-		var vessel_line := _t("魂器仍為 %s。") % after_v
+		var vessel_line := _t("魂器仍為 %s。") % SoulSystem.vessel_display(after_v)
 		if after_v != before_v:
 			if after_v == "綠葫蘆" and before_v != "綠葫蘆":
-				vessel_line = _t("同色頂階！魂器由 %s 摔回綠葫蘆，重新攀升。") % before_v
+				vessel_line = _t("同色頂階！魂器由 %s 摔回綠階封靈壺，重新攀升。") % SoulSystem.vessel_display(before_v)
 			else:
-				vessel_line = _t("魂器：%s → %s") % [before_v, after_v]
+				vessel_line = _t("魂器：%s → %s") % [SoulSystem.vessel_display(before_v), SoulSystem.vessel_display(after_v)]
 		ui_toast(_t("抽魂×%d") % souls.size())
 		var sid_best := str(best.get("id", ""))
 		_soul_play_lightup(before_v, best_tex, func():
