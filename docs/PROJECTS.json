@@ -132,8 +132,8 @@
    "id": "mob-bundle",
    "cat": "遊戲",
    "title": "🥈 手機化 6／6：首包瘦到 50–80MB 與分包",
-   "status": "草稿",
-   "note": "現在 web 目錄 135MB。劇情包、後續地圖、語音、大型素材採分包。目標不是「整個遊戲永遠 < 50MB」，是玩家第一次接觸時不要被下載量嚇跑。",
+   "status": "測試中",
+   "note": "首包源資產 54.54MB（標題+大廳+C0）；chapter 62MB / extra 55MB 移出手機首包。含引擎估計 80–95MB，差 0–15MB，下一刀是 core BGM 轉碼。web/ 135MB 是行銷站不是遊戲 export。邊界見 docs/BUNDLE.md。未推 main。",
    "keys": [
     "包體",
     "分包",
