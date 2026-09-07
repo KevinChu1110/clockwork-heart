@@ -15,7 +15,7 @@ static func regions() -> Array:
 	return [
 		{
 			"id": "r1",
-			"name": _t("第一區・英雄谷"),
+			"name": _t("第一區・閣樓與堡壘"),
 			"blurb": _t("閣樓、堡壘與野原。初試鋒刃。"),
 			"stages": [
 				{
@@ -107,7 +107,7 @@ static func regions() -> Array:
 		{
 			"id": "r4",
 			"name": _t("第四區・潮岸與終境"),
-			"blurb": _t("沉船、疤地與魔王。旅程的盡頭。"),
+			"blurb": _t("沉船、疤地與塔底。旅程的盡頭。"),
 			"stages": [
 				{
 					"id": "r4_s1",
@@ -128,7 +128,7 @@ static func regions() -> Array:
 					"maps": [{"id": "blackflame_scar", "label": _t("疤地")}],
 					"unlock": ["boss.stonefist_cleared"],
 					"clear_flag": "boss.demon_cleared",
-					"boss": _t("魔王"),
+					"boss": _t("塔底"),
 					## 魔王在塔裡，不在疤地：前往要開塔下營地（main 會走 _go_c6_camp 的門檻）
 					"goto": {"map": "tower_camp", "screen": "C6_TOWER"},
 				},

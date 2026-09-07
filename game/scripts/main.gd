@@ -1650,7 +1650,7 @@ func _journey_summary() -> String:
 		[_t("C1 雷歐"), "boss.leo_cleared"],
 		[_t("C1 小芽"), "c1_sprout_done"],
 		[_t("C1 舊債"), "side.ding_debt_done"],
-		[_t("C2 麥穗信"), "c2_wheat_letter"],
+		[_t("C2 舊鑰的信"), "c2_wheat_letter"],
 		[_t("C2 家書"), "side.fog_letter_done"],
 		[_t("C2 白霧"), "boss.white_fog_cleared"],
 		[_t("C3 阿波"), "boss.abo_cleared"],
@@ -1662,7 +1662,7 @@ func _journey_summary() -> String:
 		[_t("星池願"), "side.star_wish_done"],
 		[_t("霧祠香"), "side.fog_incense_done"],
 		[_t("客棧爐"), "side.hearth_lit"],
-		[_t("C6 魔王"), "boss.demon_cleared"],
+		[_t("C6 終章"), "boss.demon_cleared"],
 		[_t("通關"), "game_cleared"],
 	]
 	var done := 0

@@ -47,7 +47,7 @@ const MISSION_XP_PER_GOLD := 3
 ## 長遠任務表：id → 目標 flag／計數 key、需求、獎勵
 const MISSIONS: Array[Dictionary] = [
 	{"id": "m_first_boss", "name": "初試啼聲", "desc": "戰勝雷歐（或任一聖獸）", "kind": "flag", "key": "boss.leo_cleared", "need": 1, "gold": 50, "dust": 3},
-	{"id": "m_letter", "name": "遲到的字", "desc": "在霧隱讀完麥穗的信", "kind": "flag", "key": "c2_wheat_letter", "need": 1, "gold": 40, "dust": 2},
+	{"id": "m_letter", "name": "遲到的字", "desc": "在霧隱讀完舊鑰的信", "kind": "flag", "key": "c2_wheat_letter", "need": 1, "gold": 40, "dust": 2},
 	{"id": "m_sprout", "name": "木劍之約", "desc": "完成小芽支線", "kind": "flag", "key": "c1_sprout_done", "need": 1, "gold": 30, "dust": 2},
 	{"id": "m_ding_debt", "name": "鐵匠的舊債", "desc": "取回舊主斷劍並交給釘釘", "kind": "flag", "key": "side.ding_debt_done", "need": 1, "gold": 40, "dust": 2},
 	{"id": "m_fog_letter", "name": "霧中家書", "desc": "把霧隱的真信送到行商驛站", "kind": "flag", "key": "side.fog_letter_done", "need": 1, "gold": 40, "dust": 2},
@@ -62,7 +62,7 @@ const MISSIONS: Array[Dictionary] = [
 	{"id": "m_titles5", "name": "稱號收藏家", "desc": "解鎖 5 個稱號", "kind": "titles", "need": 5, "gold": 60, "dust": 3},
 	{"id": "m_guild", "name": "盟約之契", "desc": "公會貢獻達 100", "kind": "guild", "need": 100, "gold": 70, "dust": 4},
 	{"id": "m_chests5", "name": "拾荒者", "desc": "開啟 5 個世界寶箱", "kind": "chests", "need": 5, "gold": 50, "dust": 3},
-	{"id": "m_chests12", "name": "翠嶺寶藏家", "desc": "開啟 12 個世界寶箱", "kind": "chests", "need": 12, "gold": 100, "dust": 5},
+	{"id": "m_chests12", "name": "世界寶藏家", "desc": "開啟 12 個世界寶箱", "kind": "chests", "need": 12, "gold": 100, "dust": 5},
 	{"id": "m_visit15", "name": "遠足兔", "desc": "造訪 15 張不同地圖", "kind": "visits", "need": 15, "gold": 60, "dust": 3},
 	{"id": "m_visit30", "name": "六域漫遊", "desc": "造訪 30 張不同地圖", "kind": "visits", "need": 30, "gold": 120, "dust": 6},
 	{"id": "m_skirmish10", "name": "路邊清道夫", "desc": "雜魚勝場 10", "kind": "count", "key": "meta.skirmish_wins", "need": 10, "gold": 55, "dust": 3},

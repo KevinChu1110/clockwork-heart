@@ -44,7 +44,7 @@
     "name": "Mirrorbreaker"
   },
   "title.no_worship": {
-    "desc": "All three refusals to the Demon King.",
+    "desc": "All three refusals at the tower base.",
     "name": "I Bow to No Power"
   },
   "title.rift_walker": {
@@ -85,7 +85,7 @@
   },
   "title.world_wanderer": {
     "desc": "Visit thirty different places.",
-    "name": "Wanderer of Cuiling"
+    "name": "World Wanderer"
   },
   "title.wreck_end": {
     "desc": "Sink the captain's shadow one more time.",

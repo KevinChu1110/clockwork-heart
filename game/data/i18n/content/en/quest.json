@@ -21,7 +21,7 @@
   },
   "m_chests12": {
     "desc": "Open 12 world chests",
-    "name": "Treasure Hunter of Cuiling"
+    "name": "World Treasure Hunter"
   },
   "m_chests5": {
     "desc": "Open 5 world chests",
@@ -68,7 +68,7 @@
     "name": "One Lasting Flame"
   },
   "m_letter": {
-    "desc": "Read Wheatear's letter in Veilfog",
+    "desc": "Read Oldkey's letter in Veilfog",
     "name": "Late Words"
   },
   "m_life5": {

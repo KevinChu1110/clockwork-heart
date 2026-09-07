@@ -46,7 +46,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.no_worship",
 		"name": "我不慕強權",
-		"desc": "魔王三拒皆滿。",
+		"desc": "塔底三拒皆滿。",
 		"cond": "refuse_all",
 	},
 	{
@@ -111,7 +111,7 @@ const ENTRIES: Array[Dictionary] = [
 	},
 	{
 		"flag": "title.world_wanderer",
-		"name": "翠嶺漫遊者",
+		"name": "世界漫遊者",
 		"desc": "造訪三十處不同的土地。",
 		"cond": "visit30",
 	},

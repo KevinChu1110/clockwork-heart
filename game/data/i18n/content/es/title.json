@@ -44,7 +44,7 @@
     "name": "Rompeespejos"
   },
   "title.no_worship": {
-    "desc": "Rechaza las tres ofertas del Rey Demonio.",
+    "desc": "Rechaza las tres ofertas al pie de la torre.",
     "name": "No adoro al poder"
   },
   "title.rift_walker": {
@@ -85,7 +85,7 @@
   },
   "title.world_wanderer": {
     "desc": "Visita treinta lugares distintos.",
-    "name": "Errante de Cuiling"
+    "name": "Errante del mundo"
   },
   "title.wreck_end": {
     "desc": "Hunde otra vez la sombra del capitán.",
