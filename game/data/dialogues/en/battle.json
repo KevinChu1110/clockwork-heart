@@ -82,7 +82,7 @@
   "battle.rift_lose": [
     {
       "speaker": "System",
-      "text": "The Black Flame throws you back below the tower. {tip}"
+      "text": "Blight Rust throws you back below the tower. {tip}"
     }
   ],
   "battle.world_win": [

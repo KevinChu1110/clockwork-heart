@@ -7350,7 +7350,7 @@ func _go_rift_intro(mode: String) -> void:
 			{"speaker": _t("系統"), "text": _t("火圈密。灼燒疊三層會炸。跳出圈外退一層。")},
 		],
 		"tide": [
-			{"speaker": _t("旁白"), "text": _t("海水氣味的黑焰。刺胞鼓起又癟。")},
+			{"speaker": _t("旁白"), "text": _t("海水氣味的黑鏽。刺胞鼓起又癟。")},
 			{"speaker": _t("系統"), "text": _t("限時清三隻刺胞。本體輪流擋普攻或技能，看樣子換手。")},
 		],
 		"statue": [

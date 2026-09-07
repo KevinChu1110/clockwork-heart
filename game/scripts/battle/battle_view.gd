@@ -203,7 +203,7 @@ func setup(mode: String) -> void:
 	if cry != "":
 		call_deferred("_append_log", "[color=#fd9]%s：「%s」[/color]" % [GameState.player_name, cry])
 
-	## 黑焰迴響：敵強化 + 機制窗略短
+	## 黑鏽迴響：敵強化 + 機制窗略短
 	var ng_m: float = GameState.ng_enemy_mult()
 	if ng_m > 1.001:
 		BattleSim.apply_ng_plus(sim, ng_m)
@@ -1387,7 +1387,7 @@ func _update_tide_hud() -> void:
 		countdown.text = _t("刺%d") % sim._count_polyps()
 		countdown.add_theme_color_override("font_color", Color(0.5, 0.9, 1.0))
 		countdown_sub.text = _t("清刺胞！剩餘 %.1fs") % sim.tide_wave_left
-		parry_hint.text = _kh(_t("優先清黑焰刺胞"))
+		parry_hint.text = _kh(_t("優先清黑鏽刺胞"))
 		parry_hint.modulate = Color(0.6, 0.95, 1.0)
 	else:
 		countdown.text = _t("技") if sim.tide_phase_skill else _t("普")
@@ -2133,7 +2133,7 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			elif int(data.get("stacks", 0)) > 0:
 				_append_log(_t("[color=#f86]灼燒疊層：%s[/color]") % data.get("stacks"))
 		"tide_summon":
-			_append_log(_t("[color=#6cf]黑焰刺胞×%s 孵化！%.0f 秒內清除[/color]") % [data.get("count"), data.get("time")])
+			_append_log(_t("[color=#6cf]黑鏽刺胞×%s 孵化！%.0f 秒內清除[/color]") % [data.get("count"), data.get("time")])
 			_shake = 0.1
 		"tide_wave_clear":
 			_append_log(_t("[color=#8f8]刺胞清除。潮勢暫緩。[/color]"))

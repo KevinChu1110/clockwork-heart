@@ -82,7 +82,7 @@
   "battle.rift_lose": [
     {
       "speaker": "システム",
-      "text": "黒炎に塔の下まで吹き飛ばされた。{tip}"
+      "text": "黒錆に塔の下まで吹き飛ばされた。{tip}"
     }
   ],
   "battle.world_win": [

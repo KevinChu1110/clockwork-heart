@@ -1363,7 +1363,7 @@ func _resolve_hazard(success: bool) -> void:
 						_emit("hazard_resolve", {
 							"kind": kind,
 							"success": false,
-							"msg": _t("灼燒滿層！黑焰爆燃"),
+							"msg": _t("灼燒滿層！黑鏽爆燃"),
 							"damage": dealt_b,
 							"hp": p.hp,
 							"max_hp": p.max_hp,
@@ -1519,7 +1519,7 @@ func _tide_summon_wave() -> void:
 		if u == null:
 			u = BattleUnit.new()
 			u.id = id
-			u.display_name = _t("黑焰刺胞")
+			u.display_name = _t("黑鏽刺胞")
 			u.team = BattleUnit.Team.ENEMY
 			u.is_boss = false
 			## 一刀一隻。原本 45 血在通關等級要兩刀才死，三隻就要六刀，
@@ -2100,7 +2100,7 @@ static func make_statue_fight(player_stats: Dictionary) -> BattleSim:
 	for i in 3:
 		var s := BattleUnit.new()
 		s.id = "statue_%d" % i
-		s.display_name = _t("黑焰石像·%s") % [_t("甲"), _t("乙"), _t("丙")][i]
+		s.display_name = _t("黑鏽石像·%s") % [_t("甲"), _t("乙"), _t("丙")][i]
 		s.team = BattleUnit.Team.ENEMY
 		s.is_boss = false
 		## 三尊石像。原本各 120，Lv20 就 92% 勝率
@@ -2227,8 +2227,8 @@ static func make_demon_fight(player_stats: Dictionary) -> BattleSim:
 	demon.windup_time = 0.28
 	demon.recover_time = 0.42
 	demon.king_slash_cd = 4.0
-	_attach_boss_part(demon, _t("黑焰之角"), 0.28, "horn", "enrage")
-	_attach_boss_part(demon, _t("黑焰核心"), 0.32, "core", "expose")
+	_attach_boss_part(demon, _t("黑鏽之角"), 0.28, "horn", "enrage")
+	_attach_boss_part(demon, _t("黑鏽核心"), 0.32, "core", "expose")
 	sim.focus_part_id = "core"
 	sim.add_unit(demon)
 	sim.setup_hazard("time_clock", 6.0)  ## 副機制：控時時鐘

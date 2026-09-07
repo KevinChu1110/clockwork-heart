@@ -82,7 +82,7 @@
   "battle.rift_lose": [
     {
       "speaker": "Sistema",
-      "text": "La Llama Negra te lanza de vuelta al pie de la torre. {tip}"
+      "text": "El Óxido Negro te lanza de vuelta al pie de la torre. {tip}"
     }
   ],
   "battle.world_win": [
