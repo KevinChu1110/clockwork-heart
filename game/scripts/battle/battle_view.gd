@@ -53,6 +53,19 @@ var _rage_ready: Label
 var _weapon_dock: HBoxContainer
 var _weapon_dock_cells: Array = []  ## Label per bar
 const WEAPON_KEYS: PackedStringArray = ["Z", "X", "C"]
+## 右手拇指熱區（Product Lock §5.1 第 4 項）。不是虛擬搖桿。
+const THUMB_MIN := 50
+var _thumb_pad: Control
+var _btn_attack: Button
+var _btn_skill: Button
+var _btn_switch: Button
+var _btn_pause: Button
+var _btn_lock: Button
+var _left_stance: Control
+var _btn_stance_prev: Button
+var _btn_stance_next: Button
+var _tempt_card: Control
+var _tempt_close: Button
 var _overlay_key: String = ""
 var _coach: Label
 var _coach_timer: float = 0.0
@@ -230,10 +243,7 @@ func setup(mode: String) -> void:
 		])
 		_flash_coach(_t("這是對方留下的打法，不是即時對戰。"), 2.8)
 	_flash_coach(_mode_coach_intro(mode), 3.2)
-	if _touch():
-		_append_log(_t("[color=#8cf]點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]"))
-	else:
-		_append_log(_t("[color=#8cf]滑鼠也行：點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]"))
+	_append_log(_t("[color=#8cf]右側拇指：攻擊／技能／換武／鎖定／暫停／逃離。雙拇指可再用左下切站位。[/color]"))
 	if GameState.ng_plus > 0:
 		_append_log(_t("[color=#c8f]黑焰迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]") % [
 			GameState.ng_plus, ng_m
@@ -466,6 +476,7 @@ func _apply_hud_chrome() -> void:
 	_ensure_weapon_dock()
 	_ensure_coach()
 	_install_touch_controls()
+	_ensure_thumb_hud()
 
 
 func _ensure_weapon_dock() -> void:
@@ -484,10 +495,10 @@ func _ensure_weapon_dock() -> void:
 	_weapon_dock_cells.clear()
 	for i in 3:
 		var cell := Label.new()
-		cell.custom_minimum_size = Vector2(72, 36)
+		cell.custom_minimum_size = Vector2(56, 56)
 		cell.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		cell.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		cell.add_theme_font_size_override("font_size", 11)
+		cell.add_theme_font_size_override("font_size", 13)
 		cell.add_theme_color_override("font_color", Color(0.9, 0.88, 0.82))
 		cell.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 		cell.add_theme_constant_override("shadow_offset_x", 1)
@@ -864,6 +875,7 @@ func _ensure_temptation_ui() -> void:
 	_tempt_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_tempt_layer.visible = false
 	_tempt_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	_tempt_layer.z_index = 40
 	add_child(_tempt_layer)
 
 	var dim := ColorRect.new()
@@ -872,39 +884,74 @@ func _ensure_temptation_ui() -> void:
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	_tempt_layer.add_child(dim)
 
-	var box := VBoxContainer.new()
-	box.set_anchors_preset(Control.PRESET_CENTER)
-	box.offset_left = -280
-	box.offset_top = -160
-	box.offset_right = 280
-	box.offset_bottom = 200
-	box.add_theme_constant_override("separation", 14)
-	_tempt_layer.add_child(box)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_tempt_layer.add_child(center)
 
+	_tempt_card = PanelContainer.new()
+	_tempt_card.name = "TemptCard"
+	_tempt_card.custom_minimum_size = Vector2(750, 0)
+	_tempt_card.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
+	center.add_child(_tempt_card)
+
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", 0)
+	_tempt_card.add_child(outer)
+
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 8)
+	outer.add_child(head)
 	var title := Label.new()
 	title.name = "TemptTitle"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 26)
+	title.add_theme_font_size_override("font_size", 22)
 	title.add_theme_color_override("font_color", Color(1, 0.55, 0.6))
-	box.add_child(title)
+	head.add_child(title)
+	_tempt_close = Button.new()
+	_tempt_close.name = "TemptClose"
+	_tempt_close.text = "✕"
+	_tempt_close.focus_mode = Control.FOCUS_NONE
+	_tempt_close.custom_minimum_size = Vector2(50, 50)
+	UiStyle.style_button(_tempt_close, false)
+	_tempt_close.custom_minimum_size = Vector2(50, 50)
+	_tempt_close.pressed.connect(_on_refuse_pressed)
+	head.add_child(_tempt_close)
+
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 12)
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_top", 10)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	outer.add_child(margin)
+	margin.add_child(box)
 
 	var body := RichTextLabel.new()
 	body.name = "TemptBody"
 	body.bbcode_enabled = true
 	body.fit_content = true
-	body.custom_minimum_size = Vector2(520, 100)
+	body.custom_minimum_size = Vector2(700, 100)
 	body.add_theme_font_size_override("normal_font_size", 18)
 	box.add_child(body)
 
 	_refuse_btn = Button.new()
 	_refuse_btn.name = "RefuseBtn"
 	_refuse_btn.text = _t("我拒絕")
+	_refuse_btn.focus_mode = Control.FOCUS_NONE
+	UiStyle.style_button(_refuse_btn, true)
 	_refuse_btn.custom_minimum_size = Vector2(0, 56)
 	_refuse_btn.pressed.connect(_on_refuse_pressed)
 	box.add_child(_refuse_btn)
 
 	var listen_btn := Button.new()
+	listen_btn.name = "ListenBtn"
 	listen_btn.text = _t("……聽聽看（之後仍可拒絕）")
+	listen_btn.focus_mode = Control.FOCUS_NONE
+	UiStyle.style_button(listen_btn, false)
+	listen_btn.custom_minimum_size = Vector2(0, 50)
 	listen_btn.pressed.connect(_on_listen_then_refuse)
 	box.add_child(listen_btn)
 
@@ -927,7 +974,8 @@ func _show_temptation(data: Dictionary) -> void:
 	var scale_f := float(data.get("refuse_scale", 1.0))
 	var font_sz := int(round(20.0 * scale_f))
 	_refuse_btn.add_theme_font_size_override("font_size", font_sz)
-	_refuse_btn.custom_minimum_size = Vector2(0, maxi(48, int(40 * scale_f)))
+	## 熱區不得低於 50（右手拇指）；字可以隨誘惑變大，不可縮到點不到。
+	_refuse_btn.custom_minimum_size = Vector2(0, maxi(50, int(40 * scale_f)))
 	_refuse_btn.text = _t("我拒絕")
 	_tempt_layer.visible = true
 	_tempt_layer.move_to_front()
@@ -963,6 +1011,7 @@ func _hide_size_compare() -> void:
 
 
 func _process(delta: float) -> void:
+	_layout_thumb_hud()
 	_tick_coach(delta)
 	if _parry_note_left > 0.0:
 		_parry_note_left = maxf(0.0, _parry_note_left - delta)
@@ -980,7 +1029,17 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if sim == null or _ended:
 		return
+	## 誘惑彈窗把 sim 暫停；Confirm／Cancel 仍要接得住（右手拇指 ✕／我拒絕）。
+	if _tempt_layer != null and is_instance_valid(_tempt_layer) and _tempt_layer.visible:
+		if GameInput.matches(event, GameInput.CONFIRM) or GameInput.matches(event, GameInput.CANCEL):
+			_on_refuse_pressed()
+			get_viewport().set_input_as_handled()
+		return
 	if sim.sim_paused:
+		return
+	if GameInput.matches(event, GameInput.INTERACT):
+		_thumb_cycle_lock(1)
+		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("ui_focus_next"):
 		## Tab：白霧切目標；其餘有部位的 Boss 切部位鎖定
@@ -2612,6 +2671,182 @@ func _tap_ok(ev: InputEvent) -> bool:
 		return false
 	## 場上／怒氣／武器格＝對應語意動作的虛擬鍵；裝置判斷在 GameInput。
 	return GameInput.primary_pointer_pressed(ev)
+
+
+func _thumb_btn(text: String, primary: bool, cb: Callable) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.focus_mode = Control.FOCUS_NONE
+	b.mouse_filter = Control.MOUSE_FILTER_STOP
+	UiStyle.style_button(b, primary)
+	b.custom_minimum_size = Vector2(THUMB_MIN + 6, THUMB_MIN + 6)
+	b.pressed.connect(cb)
+	return b
+
+
+func _ensure_thumb_hud() -> void:
+	if _thumb_pad != null and is_instance_valid(_thumb_pad):
+		_layout_thumb_hud()
+		return
+	_ensure_weapon_dock()
+	_thumb_pad = Control.new()
+	_thumb_pad.name = "ThumbPad"
+	_thumb_pad.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	_thumb_pad.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_thumb_pad.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_thumb_pad.mouse_filter = Control.MOUSE_FILTER_STOP
+	_thumb_pad.z_index = 25
+	add_child(_thumb_pad)
+
+	var col := VBoxContainer.new()
+	col.name = "ThumbCol"
+	col.set_anchors_preset(Control.PRESET_FULL_RECT)
+	col.add_theme_constant_override("separation", 8)
+	col.alignment = BoxContainer.ALIGNMENT_END
+	_thumb_pad.add_child(col)
+
+	if _weapon_dock != null and is_instance_valid(_weapon_dock):
+		_weapon_dock.reparent(col)
+		_weapon_dock.alignment = BoxContainer.ALIGNMENT_END
+		for cell in _weapon_dock_cells:
+			if cell is Control:
+				(cell as Control).custom_minimum_size = Vector2(56, 56)
+
+	var mid := HBoxContainer.new()
+	mid.name = "ThumbMid"
+	mid.alignment = BoxContainer.ALIGNMENT_END
+	mid.add_theme_constant_override("separation", 8)
+	col.add_child(mid)
+	_btn_lock = _thumb_btn(_t("鎖定"), false, func(): _thumb_cycle_lock(1))
+	_btn_lock.name = "ThumbLock"
+	_btn_switch = _thumb_btn(_t("換武"), false, _on_thumb_switch)
+	_btn_switch.name = "ThumbSwitch"
+	_btn_skill = _thumb_btn(_t("技能"), false, _on_thumb_skill)
+	_btn_skill.name = "ThumbSkill"
+	mid.add_child(_btn_lock)
+	mid.add_child(_btn_switch)
+	mid.add_child(_btn_skill)
+
+	var bot := HBoxContainer.new()
+	bot.name = "ThumbBot"
+	bot.alignment = BoxContainer.ALIGNMENT_END
+	bot.add_theme_constant_override("separation", 8)
+	col.add_child(bot)
+	_btn_pause = _thumb_btn(_t("暫停"), false, _on_thumb_pause)
+	_btn_pause.name = "ThumbPause"
+	bot.add_child(_btn_pause)
+	if btn_flee:
+		var fp := btn_flee.get_parent()
+		if fp:
+			fp.remove_child(btn_flee)
+		bot.add_child(btn_flee)
+		btn_flee.focus_mode = Control.FOCUS_NONE
+		UiStyle.style_button(btn_flee, false)
+		btn_flee.custom_minimum_size = Vector2(72, 56)
+	_btn_attack = _thumb_btn(_t("攻擊"), true, _on_thumb_attack)
+	_btn_attack.name = "ThumbAttack"
+	_btn_attack.custom_minimum_size = Vector2(88, 72)
+	bot.add_child(_btn_attack)
+
+	_ensure_left_stance()
+	_layout_thumb_hud()
+
+
+func _ensure_left_stance() -> void:
+	if _left_stance != null and is_instance_valid(_left_stance):
+		return
+	_left_stance = Control.new()
+	_left_stance.name = "StancePad"
+	_left_stance.set_anchors_preset(Control.PRESET_BOTTOM_LEFT)
+	_left_stance.grow_horizontal = Control.GROW_DIRECTION_END
+	_left_stance.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_left_stance.mouse_filter = Control.MOUSE_FILTER_STOP
+	_left_stance.z_index = 25
+	add_child(_left_stance)
+	var row := HBoxContainer.new()
+	row.set_anchors_preset(Control.PRESET_FULL_RECT)
+	row.add_theme_constant_override("separation", 8)
+	row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	_left_stance.add_child(row)
+	_btn_stance_prev = _thumb_btn(_t("前"), false, func(): _thumb_cycle_lock(-1))
+	_btn_stance_prev.name = "StancePrev"
+	_btn_stance_next = _thumb_btn(_t("後"), false, func(): _thumb_cycle_lock(1))
+	_btn_stance_next.name = "StanceNext"
+	row.add_child(_btn_stance_prev)
+	row.add_child(_btn_stance_next)
+
+
+func _layout_thumb_hud() -> void:
+	if _thumb_pad == null or not is_instance_valid(_thumb_pad):
+		return
+	var vp := get_viewport_rect().size
+	if vp.x < 8.0 or vp.y < 8.0:
+		return
+	var m := 12.0
+	var w := clampf(vp.x * 0.42, 240.0, 320.0)
+	var h := clampf(vp.y * 0.46, 188.0, 248.0)
+	_thumb_pad.offset_left = -w - m
+	_thumb_pad.offset_right = -m
+	_thumb_pad.offset_top = -h - m
+	_thumb_pad.offset_bottom = -m
+	if _left_stance != null and is_instance_valid(_left_stance):
+		## 雙拇指左下可切站位；窄屏仍保留，但單拇指不靠它（右側有鎖定）。
+		_left_stance.offset_left = m
+		_left_stance.offset_right = m + 128.0
+		_left_stance.offset_top = -THUMB_MIN - 20.0 - m
+		_left_stance.offset_bottom = -m
+
+
+func _on_thumb_attack() -> void:
+	_do_parry()
+
+
+func _on_thumb_skill() -> void:
+	if sim == null or _ended:
+		return
+	if not sim.trigger_fury_awakening():
+		_flash_coach(_t("怒氣未滿。"), 1.2)
+
+
+func _on_thumb_switch() -> void:
+	if sim == null or _ended:
+		return
+	var n: int = maxi(1, sim.weapon_bars.size())
+	sim.switch_weapon_slot((int(sim.weapon_bar_active) + 1) % n)
+
+
+func _on_thumb_pause() -> void:
+	GameInput.inject(GameInput.CANCEL)
+
+
+func _thumb_cycle_lock(dir: int) -> void:
+	if sim == null or _ended or sim.sim_paused:
+		return
+	if _mode == "fog":
+		var tid := sim.cycle_player_target(dir)
+		if tid != "":
+			_append_log(_t("鎖定：%s") % sim.get_unit(tid).display_name)
+		return
+	if _part_lock_enabled():
+		sim.cycle_part_focus(dir)
+		_append_log(_t("鎖定部位：%s") % sim.part_focus_label())
+		_refresh_part_focus_hint()
+		return
+	_flash_coach(_t("這場沒有可切站位。"), 1.2)
+
+
+func thumb_controls() -> Dictionary:
+	return {
+		"attack": _btn_attack,
+		"skill": _btn_skill,
+		"switch": _btn_switch,
+		"pause": _btn_pause,
+		"flee": btn_flee,
+		"lock": _btn_lock,
+		"pad": _thumb_pad,
+		"stance_prev": _btn_stance_prev,
+		"stance_next": _btn_stance_next,
+	}
 
 
 func _install_touch_controls() -> void:
