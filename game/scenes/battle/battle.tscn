@@ -170,6 +170,15 @@ show_percentage = false
 modulate = Color(1, 0.4, 0.4, 1)
 fill_mode = 1
 
+[node name="ShadowLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="Arena" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -206,6 +215,11 @@ expand_mode = 1
 stretch_mode = 5
 texture_filter = 2
 
+[node name="GroundPad" type="Control" parent="Arena/PlayerSlot"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+mouse_filter = 2
+
 [node name="EnemySlot" type="VBoxContainer" parent="Arena"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -227,6 +241,11 @@ size_flags_vertical = 4
 expand_mode = 1
 stretch_mode = 5
 texture_filter = 2
+
+[node name="GroundPad" type="Control" parent="Arena/EnemySlot"]
+custom_minimum_size = Vector2(0, 36)
+layout_mode = 2
+mouse_filter = 2
 
 [node name="HazardFX" type="TextureRect" parent="."]
 unique_name_in_owner = true

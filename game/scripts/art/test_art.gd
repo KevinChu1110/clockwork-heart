@@ -195,14 +195,23 @@ func _check_battle_foot_shadows() -> bool:
 	if src.find("ShadowLayer") < 0:
 		push_error("腳底軟影沒有獨立 ShadowLayer（會被角色 TextureRect 或戰報蓋住）")
 		ok = false
+	if src.find("move_child(layer, arena.get_index() + 1)") >= 0:
+		push_error("ShadowLayer 還插在 Arena 之後，會畫在立繪上面蓋靴子")
+		ok = false
+	if src.find("FootShadowShader") < 0:
+		push_error("腳底軟影沒有乘色 shader（深色石地 alpha 橢圓會看不見）")
+		ok = false
 	if src.find("show_behind_parent") >= 0:
 		push_error("還在用 show_behind_parent 掛角色身上，畫面上出不來")
 		ok = false
 	if src.find("TEXTURE_FILTER_LINEAR") < 0:
 		push_error("戰鬥畫面沒有 LINEAR 平滑")
 		ok = false
-	if src.find("pow(1.0 - d, 2.2)") < 0:
-		push_error("軟影不是柔化橢圓衰減（會變成硬邊黑塊）")
+	if src.find("exp(-2.6 * d2)") >= 0:
+		push_error("軟影還在用尖核高斯，全圖認不出橢圓")
+		ok = false
+	if src.find("t * t * (3.0 - 2.0 * t)") < 0:
+		push_error("軟影不是寬核平台＋柔邊橢圓")
 		ok = false
 	if src.find("Sprite2D.new()") >= 0:
 		push_error("腳底軟影還在用 Sprite2D 掛 Control 底下（headless 會畫不出柔邊）")
@@ -211,7 +220,7 @@ func _check_battle_foot_shadows() -> bool:
 		push_error("角色沒有描邊 shader")
 		ok = false
 	if ok:
-		print("  ok 戰鬥雙方腳底軟影是 TextureRect 柔化橢圓＋描邊")
+		print("  ok 戰鬥雙方腳底軟影是地面層乘色柔化橢圓＋描邊")
 	return ok
 
 

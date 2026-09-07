@@ -6,6 +6,7 @@ const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const OutlineShader = preload("res://shaders/outline.gdshader")
 const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
+const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 
 signal battle_finished(won: bool)
 
@@ -682,14 +683,14 @@ func _flash_skill_banner(skill_name: String, player_side: bool = true) -> void:
 static func _soft_shadow_tex() -> Texture2D:
 	if _shadow_tex_cache != null:
 		return _shadow_tex_cache
-	## 大張柔邊橢圓：近鄰濾鏡放大 64×24 會變成實心硬邊黑塊。
+	## 寬核平台＋柔邊：中心一塊夠認得出橢圓，邊緣才衰減。不要 pow 尖核（看起來像硬斑或沒有）。
 	var w := 256
 	var h := 96
 	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
 	var cx := (w - 1) * 0.5
 	var cy := (h - 1) * 0.5
-	var rx := cx * 0.96
-	var ry := cy * 0.92
+	var rx := cx * 0.98
+	var ry := cy * 0.96
 	for y in h:
 		for x in w:
 			var dx := (float(x) - cx) / rx
@@ -699,8 +700,12 @@ static func _soft_shadow_tex() -> Texture2D:
 				img.set_pixel(x, y, Color(0, 0, 0, 0))
 			else:
 				var d := sqrt(d2)
-				var a := pow(1.0 - d, 2.2) * 0.82
-				img.set_pixel(x, y, Color(0.07, 0.05, 0.12, a))
+				var a := 1.0
+				if d > 0.38:
+					var t := (d - 0.38) / 0.62
+					t = t * t * (3.0 - 2.0 * t)
+					a = 1.0 - t
+				img.set_pixel(x, y, Color(1, 1, 1, a))
 	_shadow_tex_cache = ImageTexture.create_from_image(img)
 	return _shadow_tex_cache
 
@@ -772,21 +777,18 @@ static func _content_bottom_frac(tex: Texture2D) -> float:
 
 func _shadow_layer() -> Control:
 	var layer := get_node_or_null("ShadowLayer") as Control
-	if layer != null:
-		return layer
-	layer = Control.new()
-	layer.name = "ShadowLayer"
+	if layer == null:
+		layer = Control.new()
+		layer.name = "ShadowLayer"
+		layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		layer.clip_contents = false
+		layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+		add_child(layer)
 	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.clip_contents = false
-	layer.set_anchors_preset(Control.PRESET_FULL_RECT)
-	add_child(layer)
-	## 畫在角色之上、戰報之下：影子在角色 TextureRect 底下會被立繪蓋住。
-	if arena:
-		move_child(layer, arena.get_index() + 1)
-	elif battle_bg:
-		move_child(layer, battle_bg.get_index() + 1)
-	else:
-		move_child(layer, 1)
+	## 地面 → 軟影 → 角色 → 戰報。畫在 Arena 之後會蓋靴子。
+	if arena and layer.get_index() != arena.get_index() - 1:
+		move_child(layer, arena.get_index())
 	return layer
 
 
@@ -810,6 +812,12 @@ func _ensure_foot_shadow(body: TextureRect) -> void:
 		sh.texture = _soft_shadow_tex()
 		sh.layout_mode = 0
 		layer.add_child(sh)
+	var mat := sh.material as ShaderMaterial
+	if mat == null or mat.shader != FootShadowShader:
+		mat = ShaderMaterial.new()
+		mat.shader = FootShadowShader
+		sh.material = mat
+	mat.set_shader_parameter("strength", 0.68)
 	_layout_foot_shadow(body)
 
 
@@ -828,13 +836,24 @@ func _layout_foot_shadow(body: TextureRect) -> void:
 	var frac := _content_bottom_frac(body.texture)
 	var origin := body.global_position
 	var feet := origin + Vector2(dr.position.x + dr.size.x * 0.5, dr.position.y + dr.size.y * frac)
-	var sz := Vector2(maxf(dr.size.x * 1.35, 220.0), maxf(dr.size.x * 0.36, 70.0))
+	var sz := Vector2(maxf(dr.size.x * 2.10, 300.0), maxf(dr.size.x * 0.28, 56.0))
+	## 扁橢圓貼在腳前方地面；角色不要抬太高，否則腳會踩在底圖暗柱上、影子融化進牆影。
+	var pos_y := feet.y - sz.y * 0.08
+	var max_bottom := size.y - 8.0
+	if log_label:
+		max_bottom = log_label.global_position.y - 8.0
+	if pos_y + sz.y > max_bottom:
+		sz.y = maxf(48.0, max_bottom - pos_y)
+		pos_y = feet.y - sz.y * 0.08
+		if pos_y + sz.y > max_bottom:
+			pos_y = max_bottom - sz.y
 	sh.size = sz
-	## 四成貼住鞋底，六成落在地面。
-	sh.global_position = Vector2(feet.x - sz.x * 0.5, feet.y - sz.y * 0.40)
+	## 幾乎整塊落腳前方地面；底邊不進戰報。
+	sh.global_position = Vector2(feet.x - sz.x * 0.5, pos_y)
 	sh.visible = true
 	sh.modulate = Color(1, 1, 1, 1)
 	sh.z_index = 0
+	sh.z_as_relative = true
 
 
 func _ensure_screen_grade() -> void:
