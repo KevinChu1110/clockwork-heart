@@ -5771,7 +5771,7 @@ func _soul_do_ritual() -> void:
 	var footprint: String = SoulSystem.ritual_footprint_line()
 	var ladder := SoulSystem.vessel_ladder_bbcode()
 	_play_dialog([
-		{"speaker": _t("星讀"), "text": _t("把手放上葫蘆。聚魂——也就是你們說的抽魂。")},
+		{"speaker": _t("星讀"), "text": _t("把手放上封靈罐。聚魂——也就是你們說的抽魂。")},
 		{"speaker": _t("系統"), "text": _t("魂器階梯：%s") % ladder},
 		{"speaker": _t("系統"), "text": _vessel_glow_line(vessel_now)},
 		{"speaker": _t("系統"), "text": footprint},
@@ -5806,7 +5806,7 @@ func _soul_do_ritual() -> void:
 		var sid_done := str(soul.get("id", ""))
 		_soul_play_lightup(before_v, result_tex, func():
 			_play_dialog([
-				{"speaker": _t("星讀"), "text": _t("好。看葫蘆現在停在哪一階。")},
+				{"speaker": _t("星讀"), "text": _t("好。看封靈罐現在停在哪一階。")},
 				{"speaker": _t("系統"), "text": line},
 				{"speaker": _t("系統"), "text": vessel_line},
 				{"speaker": _t("系統"), "text": _t("現階：%s") % SoulSystem.vessel_ladder_bbcode()},
