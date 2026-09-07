@@ -66,8 +66,8 @@
    "id": "mob-renderer",
    "cat": "遊戲",
    "title": "🥈 手機化 1／6：Mobile renderer profile",
-   "status": "草稿",
-   "note": "現在是 Forward Plus（桌面級）。建立 Mobile profile 並確認可正常跑，桌面維持現有 profile。",
+   "status": "開發中",
+   "note": "開工：桌面維持 gl_compatibility；手機改 mobile renderer；features 從誤導的 Forward Plus 改成 GL Compatibility。",
    "keys": [
     "renderer",
     "forward plus",
