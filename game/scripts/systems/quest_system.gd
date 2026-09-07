@@ -80,6 +80,9 @@ const MISSIONS: Array[Dictionary] = [
 	{"id": "m_life5", "name": "日常微光", "desc": "完成長明燈／鳥巢／許願／上香／壁爐五件小事", "kind": "flags_all", "keys": ["side.lantern_done", "side.nest_care_done", "side.star_wish_done", "side.fog_incense_done", "side.hearth_lit"], "need": 5, "gold": 150, "dust": 8},
 ]
 
+## Product Lock §4：公會／NG+／裂縫任務仍留 id，但玩家清單看不到、也領不到。
+const HIDDEN_MISSION_IDS: PackedStringArray = ["m_rift3", "m_ng1", "m_guild"]
+
 
 func _day_id() -> int:
 	## 以本地日切換（unix / 86400）
@@ -169,7 +172,13 @@ func commissions() -> Array:
 
 
 func missions() -> Array:
-	return ContentLoc.apply_all("quest", MISSIONS, QUEST_TEXT_FIELDS)
+	var all: Array = ContentLoc.apply_all("quest", MISSIONS, QUEST_TEXT_FIELDS)
+	var out: Array = []
+	for m in all:
+		if str(m.get("id", "")) in HIDDEN_MISSION_IDS:
+			continue
+		out.append(m)
+	return out
 
 
 ## 一鍵領取所有已完成未領的委託（觸控省點擊）
@@ -392,7 +401,7 @@ func claim_mission(id: String) -> Dictionary:
 
 func list_missions_bbcode() -> String:
 	var lines: PackedStringArray = []
-	for m in MISSIONS:
+	for m in missions():
 		var id := str(m.get("id", ""))
 		var need := int(m.get("need", 1))
 		var prog := mini(need, _mission_progress(m))
@@ -410,7 +419,7 @@ func claimable_count() -> int:
 	if can_claim_daily():
 		n += 1
 	n += claimable_commissions()
-	for m in MISSIONS:
+	for m in missions():
 		var id := str(m.get("id", ""))
 		if mission_done(m) and not mission_claimed(id):
 			n += 1

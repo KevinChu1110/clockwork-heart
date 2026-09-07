@@ -1421,8 +1421,6 @@ func _go_daily_panel() -> void:
 		int(GameState.get_flag(QuestSystem.DAILY_STREAK, 0)), GameState.power_score(), GameState.level
 	]
 	body += _t("%s\n\n") % QuestSystem.streak_milestone_hint()
-	if GameState.ng_plus > 0:
-		body += _t("二周目加成：每日略豐。\n\n")
 	body += QuestSystem.list_commissions_bbcode()
 	var buttons: Array = []
 	if QuestSystem.can_claim_daily():
@@ -1515,68 +1513,8 @@ func _shop_sell_all() -> void:
 
 
 func _go_guild_panel() -> void:
-	var body := GuildSystem.status_bbcode()
-	var buttons: Array = []
-	if not GuildSystem.is_joined():
-		for g in GuildSystem.guilds():
-			var gid := str(g.get("id", ""))
-			var gname := str(g.get("name", gid))
-			## 加入之後沒有退出的路（GuildSystem 只有 join()），
-			## 而面板文案一個字都沒提這是一次性選擇。至少先問一次。
-			buttons.append({"text": _t("加入：%s") % gname, "cb": func():
-				_play_dialog([
-					{
-						"speaker": _t("盟約"),
-						"text": _t("入了「%s」就不能改投別家了。確定嗎？") % gname,
-						"choices": [_t("確定加入"), _t("再想想")],
-						"replies": [_t("名字落在盟約上。"), _t("盟約收了回去。")],
-					},
-				], func():
-					if _last_choice != 0:
-						_go_guild_panel()
-						return
-					var r: Dictionary = GuildSystem.join(gid)
-					_play_dialog([{"speaker": _t("盟約"), "text": str(r.get("msg", ""))}], _go_guild_panel)
-				, "guild_join")
-			})
-	else:
-		buttons.append({"text": _t("下一則佈告"), "cb": func():
-			var line := GuildSystem.next_board()
-			_play_dialog([{"speaker": _t("佈告欄"), "text": line}], _go_guild_panel)
-		})
-		if GuildSystem.can_shop():
-			buttons.append({"text": _t("公庫補給（貢獻 30）"), "cb": func():
-				var r: Dictionary = GuildSystem.buy_supply()
-				_play_dialog([{"speaker": _t("公庫"), "text": str(r.get("msg", ""))}], _go_guild_panel)
-			})
-		else:
-			buttons.append({"text": _t("公庫補給（需貢獻 30）"), "cb": _go_guild_panel})
-		## 公會心魔（週制）
-		_demon_refresh()
-		if not bool(GameState.get_flag("guild.demon.done", false)):
-			buttons.append({"text": _t("挑戰心魔（週血 %d · 今日剩 %d）") % [
-				int(GameState.get_flag("guild.demon.hp", HEART_DEMON_POOL)),
-				maxi(0, HEART_DEMON_DAILY - int(GameState.get_flag("guild.demon.tries", 0))),
-			], "cb": _guild_demon_challenge})
-		## 公會科技（原作：貪婪／突飛）
-		for tid in GuildSystem.TECHS.keys():
-			var t: Dictionary = GuildSystem.TECHS[tid]
-			var lv: int = GuildSystem.tech_level(str(tid))
-			var maxlv := int(t.get("max", 3))
-			var tid2 := str(tid)
-			var lab: String
-			if lv >= maxlv:
-				lab = _t("科技【%s】Lv%d（頂）") % [_t(str(t.get("name", tid))), lv]
-			else:
-				var costs: Array = t.get("costs", [])
-				var cost := int(costs[mini(lv, costs.size() - 1)])
-				lab = _t("升科技【%s】Lv%d→%d（貢獻 %d）") % [_t(str(t.get("name", tid))), lv, lv + 1, cost]
-			buttons.append({"text": lab, "cb": func():
-				var r2: Dictionary = GuildSystem.upgrade_tech(tid2)
-				_play_dialog([{"speaker": _t("盟約"), "text": str(r2.get("msg", ""))}], _go_guild_panel)
-			})
-	buttons.append({"text": Loc.t("btn.back"), "cb": _hub_back})
-	_panel(Loc.t("panel.guild"), body, buttons)
+	## Product Lock §4：公會／週貢獻已移出範圍。內部 id／flag 仍在，主流程不再打開這扇門。
+	_hub_back()
 
 
 func _title_settings_or_hub_back() -> void:
@@ -2423,7 +2361,7 @@ func _go_title() -> void:
 
 func _title_meta() -> String:
 	var ver := str(ProjectSettings.get_setting("application/config/version", ""))
-	var week := Loc.t("pause.echo", {"n": GameState.ng_plus}) if GameState.ng_plus > 0 else Loc.t("pause.week1")
+	var week := Loc.t("pause.week1")
 	return "[i]%s[/i]\n[color=#c4b08a]v%s · %s[/color]" % [Loc.t("title.tagline"), ver, week]
 
 
@@ -2455,8 +2393,6 @@ func _go_title_start_menu() -> void:
 	## 但玩家要進得去才刪得掉那一格。
 	if SaveManager.has_any_slot():
 		buttons.append({"text": _t("旅途紀錄"), "cb": _go_save_slots_panel})
-	if GameState.has_flag("game_cleared") or GameState.ng_plus > 0:
-		buttons.append({"text": Loc.t("title.ng"), "cb": _go_ng_plus_menu})
 	buttons.append({"text": _t("返回"), "cb": _go_title, "tier": "util"})
 	_title_screen(_title_meta(), buttons)
 
@@ -2778,7 +2714,6 @@ func _go_title_wall() -> void:
 		{"text": _t("返回標題"), "cb": _go_title},
 	]
 	if GameState.has_flag("game_cleared"):
-		buttons.append({"text": _t("黑焰裂縫"), "cb": _go_postgame_hub})
 		buttons.append({"text": _t("騎士堡"), "cb": _go_c1_town})
 	_panel(Loc.t("panel.titles"), body, buttons)
 
@@ -2799,41 +2734,13 @@ func _new_game() -> void:
 
 
 func _go_ng_plus_menu() -> void:
-	if not GameState.has_flag("game_cleared") and GameState.ng_plus <= 0:
-		_play_dialog(DialogLines.lines("hub.ng_plus_not_yet"), _go_title)
-		return
-	## 預覽下一層倍率
-	var next_lv := maxi(1, GameState.ng_plus + 1)
-	var next_m: float = minf(1.30, 1.15 + 0.05 * float(next_lv - 1))
-	_panel(
-		_t("黑焰迴響"),
-		_t("再走一次——敵人的血與攻擊 ×%.2f（第 %d 層）。\n格擋與閃避的時機也會短一點。\n\n帶著走：武器、養成、外觀、裂縫紀錄。\n重來的是：主線的 Boss。\n\n「沾焰」：刃口染上灰邊，攻擊 +3，而且會愈積愈深。") % [next_m, next_lv],
-		[
-			{"text": _t("再走一次"), "cb": func(): _start_ng_plus(false)},
-			{"text": _t("再走一次 · 沾焰"), "cb": func(): _start_ng_plus(true)},
-			{"text": _t("返回標題"), "cb": _go_title},
-		]
-	)
+	## Product Lock §4：NG+ 已移出範圍。不再從標題／通關後把玩家送進二周目。
+	_go_title()
 
 
-func _start_ng_plus(with_stain: bool) -> void:
-	GameState.start_ng_plus_run(with_stain)
-	## 二周目：給一點盟約與任務進度感
-	GuildSystem.add_contrib(25)
-	SaveManager.save_game()
-	AudioManager.play_bgm("title")
-	var stain_s := _t("刃上多了一層不肯散的灰。") if with_stain else _t("你仍選了乾淨的刃。")
-	var tips: Array = TutorialSystem.take("ng")
-	var lines: Array = [
-		{"speaker": _t("旁白"), "text": _t("黑焰退後，又在腳邊留下一圈淺痕——像邀請。")},
-		{"speaker": _t("斷頁"), "text": _t("卷軸可以重抄。腳印，只能再踩一次。")},
-		{"speaker": _t("系統"), "text": _t("【二周目】黑焰迴響 ×%d。%s") % [GameState.ng_plus, stain_s]},
-		{"speaker": _t("系統"), "text": _t("敵人強了 ×%.2f，出手的空檔也窄了些。養成和外觀都帶著走。") % GameState.ng_enemy_mult()},
-		{"speaker": _t("系統"), "text": _t("村裡的人會換話說，佈告也換。畫面標著第幾層。")},
-	]
-	for t in tips:
-		lines.append(t)
-	_play_dialog(lines, _go_c0)
+func _start_ng_plus(_with_stain: bool) -> void:
+	## Product Lock §4：NG+ 入口關閉。不升層、不重開主線。
+	_go_title()
 
 
 func _continue_game() -> void:
@@ -2909,11 +2816,11 @@ func _resume_from_chapter() -> void:
 				_go_c5_coast()
 		"c6":
 			if GameState.has_flag("boss.demon_cleared"):
-				_go_postgame_hub()
+				_go_c1_town()
 			else:
 				_go_c6_camp()
 		"cleared":
-			_go_postgame_hub()
+			_go_c1_town()
 		_:
 			_go_c0()
 
@@ -7276,20 +7183,14 @@ func _go_ending() -> void:
 	if GameState.has_flag("c6_refuse_all"):
 		star_line = _t("\n星讀：「你的拒絕，比任何戰魂都亮。」")
 	var ng_line := ""
-	if GameState.ng_plus > 0:
-		ng_line = _t("\n\n[b]黑焰迴響 ×%d 通關。[/b] 稱號：迴響行者。") % GameState.ng_plus
-		if GameState.stain_flame:
-			ng_line += _t(" 沾焰灰邊仍在。")
 	var title_pop := ""
 	if not new_titles.is_empty():
 		title_pop = _t("\n\n新稱號：%s") % "、".join(new_titles)
 	_panel(
 		_t("終章 · 晨光"),
-		_t("塔裂了。焰散了。\n不是因為變強，是因為沒把心餵給焰。\n\n麥穗：%s%s%s%s%s\n\n通關。塔外裂縫還在。") % [maisui_line, ding_line, star_line, ng_line, title_pop],
+		_t("塔裂了。焰散了。\n不是因為變強，是因為沒把心餵給焰。\n\n麥穗：%s%s%s%s%s\n\n通關。") % [maisui_line, ding_line, star_line, ng_line, title_pop],
 		[
-			{"text": _t("黑焰裂縫（通關後）"), "cb": _go_postgame_hub},
 			{"text": _t("稱號牆"), "cb": _go_title_wall},
-			{"text": _t("黑焰迴響（再走一次）"), "cb": _go_ng_plus_menu},
 			{"text": _t("再逛逛（騎士堡）"), "cb": _go_c1_town},
 			{"text": _t("回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
 		]
@@ -7299,76 +7200,21 @@ func _go_ending() -> void:
 # ─── 通關後 · 黑焰裂縫 ───
 
 func _go_postgame_hub() -> void:
-	## 通關後中樞：裂縫 + 獵場
-	if not GameState.has_flag("game_cleared"):
-		_play_dialog(DialogLines.lines("post.rift_not_open"))
-		return
-	GameState.set_flag("postgame.rift_unlocked", true)
-	GameState.set_chapter("cleared")
-	RiftSchedule.refresh_day()
-	SaveManager.save_game()
-	AudioManager.play_bgm("tower")
-	var body: String = RiftSchedule.hub_status_text()
-	body += _t("\n\n★＝本週焦點。有獎次數用盡後仍可練習。")
-	var feat: String = RiftSchedule.featured_mode()
-	var buttons: Array = [
-		{"text": _t("本週焦點·%s") % RiftSchedule.featured_name(), "cb": func(): _go_rift_intro(feat)},
-	]
-	for m in RiftSchedule.MODES:
-		if m == feat:
-			continue
-		var mode_s: String = m
-		buttons.append({
-			"text": RiftSchedule.button_label(mode_s),
-			"cb": func(): _go_rift_intro(mode_s),
-		})
-	buttons.append_array([
-		{"text": _t("野外獵場"), "cb": func(): _open_explore("hunting_grounds", Screen.C1_WILD)},
-		{"text": _t("塔下營地"), "cb": _go_c6_camp},
-		{"text": _t("騎士堡"), "cb": _go_c1_town},
-		{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
-	])
-	buttons.insert(0, {"text": _t("黑焰迴響（NG+）"), "cb": _go_ng_plus_menu})
-	buttons.insert(1, {"text": _t("稱號牆"), "cb": _go_title_wall})
-	TitleCatalog.evaluate_all()
-	_panel(_t("通關後 · 黑焰裂縫"), body, buttons)
-
-
-func _go_rift_intro(mode: String) -> void:
-	RiftSchedule.refresh_day()
-	var rewarded: bool = RiftSchedule.daily_left() > 0
-	var attempt_note: String
-	if rewarded:
-		attempt_note = _t("消耗 1 次今日有獎（剩餘將為 %d）。") % (RiftSchedule.daily_left() - 1)
-		if RiftSchedule.is_featured(mode):
-			attempt_note += _t(" 本週焦點：金幣×1.5。")
-	else:
-		attempt_note = _t("今日有獎已用盡——此為練習局（金幣大減、無經驗）。")
-	var lines := {
-		"wrath": [
-			{"speaker": _t("旁白"), "text": _t("裂縫口。焰在無臉的輪廓裡顫。")},
-			{"speaker": _t("系統"), "text": _t("火圈密。灼燒疊三層會炸。跳出圈外退一層。")},
-		],
-		"tide": [
-			{"speaker": _t("旁白"), "text": _t("海水氣味的黑焰。刺胞鼓起又癟。")},
-			{"speaker": _t("系統"), "text": _t("限時清三隻刺胞。本體輪流擋普攻或技能，看樣子換手。")},
-		],
-		"statue": [
-			{"speaker": _t("旁白"), "text": _t("三尊石像輪流亮起一隻眼。")},
-			{"speaker": _t("系統"), "text": _t("只打發光那尊。全倒本體才現身。落石按 J。")},
-		],
-		"chrono": [
-			{"speaker": _t("旁白"), "text": _t("地上的焰結成倒數的環。")},
-			{"speaker": _t("系統"), "text": _t("炸彈亮了按 J 拆。落石要躲。")},
-		],
-	}
-	var arr: Array = lines.get(mode, [{"speaker": _t("系統"), "text": _t("裂縫張開。")}]).duplicate()
-	arr.append({"speaker": _t("系統"), "text": attempt_note})
-	_play_dialog(arr, func():
-		RiftSchedule.consume_attempt()
-		SaveManager.save_game()
-		_start_battle(mode)
+	## Product Lock §4：裂縫／NG+ 移出範圍。舊入口改成出口，不開裂縫中樞。
+	_panel(
+		_t("通關之後"),
+		_t("主線完結。村子、演武與獵場都在。"),
+		[
+			{"text": _t("稱號牆"), "cb": _go_title_wall},
+			{"text": _t("騎士堡"), "cb": _go_c1_town},
+			{"text": _t("回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
+		]
 	)
+
+
+func _go_rift_intro(_mode: String) -> void:
+	## Product Lock §4：裂縫入口關閉。
+	_go_c1_town()
 
 
 func _go_rift_win(mode: String) -> void:
