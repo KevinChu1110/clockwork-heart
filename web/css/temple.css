@@ -80,7 +80,7 @@ body::after {
   body::before { animation: none; }
 }
 
-.gnb, .hero, .band, main.page, footer, .quote-band, .gourd-hang, .page-hero {
+.gnb, .hero, .band, main.page, footer, .quote-band, .page-hero {
   position: relative;
   z-index: 1;
 }
@@ -547,17 +547,6 @@ footer a:hover { color: var(--teal-core); }
 .weapon-card .split div {
   background: #0E0C12;
   border-color: var(--line);
-}
-
-.gourd-banner {
-  position: relative;
-  overflow: hidden;
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-}
-.gourd-banner .cap {
-  color: var(--gold-hover);
-  letter-spacing: 0.12em;
 }
 
 @media (max-width: 1080px) {

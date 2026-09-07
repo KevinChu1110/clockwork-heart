@@ -1,11 +1,11 @@
 {
   "schema": "souls_v1",
-  "note": "原作聚魂：紫微十四主星＋葫蘆魂器。神品質＝神魂，不是另一套系統。",
+  "note": "原作聚魂：紫微十四主星＋發條封靈罐。神品質＝神魂，不是另一套系統。",
   "vessels": [
-    {"id": "green", "name": "綠葫蘆", "cost": 80, "icon": "../media/souls/gourd_green.png"},
-    {"id": "blue", "name": "藍葫蘆", "cost": 200, "icon": "../media/souls/gourd_blue.png"},
-    {"id": "purple", "name": "紫葫蘆", "cost": 500, "icon": "../media/souls/gourd_purple.png"},
-    {"id": "orange", "name": "橙葫蘆", "cost": 1000, "icon": "../media/souls/gourd_orange.png"}
+    {"id": "green", "name": "綠階封靈罐", "cost": 80, "icon": "../media/souls/gourd_green.png"},
+    {"id": "blue", "name": "藍階封靈罐", "cost": 200, "icon": "../media/souls/gourd_blue.png"},
+    {"id": "purple", "name": "紫階封靈罐", "cost": 500, "icon": "../media/souls/gourd_purple.png"},
+    {"id": "orange", "name": "橙階封靈罐", "cost": 1000, "icon": "../media/souls/gourd_orange.png"}
   ],
   "stars": [
     {"id": "ziwei", "name": "紫微", "stat": "衡", "icon": "../media/souls/star_ziwei.png"},

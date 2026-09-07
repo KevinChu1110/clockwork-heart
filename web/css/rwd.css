@@ -168,12 +168,6 @@ body[data-page="home"] .gnb:not(.is-scrolled):not(.is-open) .gnb-toggle span {
   }
   .codex-sheet .art { height: 150px; }
 
-  .gourd-hang { gap: 0.35rem; padding-bottom: 0.2rem; }
-  .gourd-hang__rope { height: 16px; }
-  .gourd-hang__item img { width: 42px; }
-  .gourd-banner { height: 140px; }
-  .gourd-banner .cap { font-size: 0.78rem; padding: 0.7rem 0.9rem; }
-
   .fx-wisp { display: none; }
   .fx-ember { opacity: 0.28; }
   .rail.is-marquee { animation: none !important; width: auto; }
