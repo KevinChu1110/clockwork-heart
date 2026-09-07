@@ -14,7 +14,7 @@ config/name="發條之心"
 config/description="Story-first pixel RPG. Most battles breathe—boss battles remember."
 config/version="0.19.0"
 run/main_scene="res://scenes/main.tscn"
-config/features=PackedStringArray("4.7", "Forward Plus")
+config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -130,9 +130,15 @@ locale/fallback="zh_TW"
 
 [rendering]
 
+; 三條 renderer profile（Product Lock §5.1 第 1 項）
+; 桌面：維持現況可用的 Compatibility（OpenGL）。CI／無頭機走這條。
+; 手機：Godot Mobile renderer（Vulkan／Metal）。低階三檔是 5／6，本項只建立 Mobile profile。
+; Web：Compatibility（WebGL）。
+; config/features 必須對齊預設 rendering_method，不可再寫 Forward Plus。
 textures/canvas_textures/default_texture_filter=1
 renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
+renderer/rendering_method.mobile="mobile"
+renderer/rendering_method.web="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
 2d/snap/snap_2d_transforms_to_pixel=false
 2d/snap/snap_2d_vertices_to_pixel=false
