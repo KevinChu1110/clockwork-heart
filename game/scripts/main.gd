@@ -2779,7 +2779,7 @@ func _go_title_wall() -> void:
 	]
 	if GameState.has_flag("game_cleared"):
 		buttons.append({"text": _t("黑焰裂縫"), "cb": _go_postgame_hub})
-		buttons.append({"text": _t("騎士堡"), "cb": _go_c1_town})
+		buttons.append({"text": _t("堡壘"), "cb": _go_c1_town})
 	_panel(Loc.t("panel.titles"), body, buttons)
 
 
@@ -3108,7 +3108,7 @@ func _side_try_pick_broken_blade(id: String) -> bool:
 		_play_dialog(DialogLines.lines("side.broken_blade_gone"))
 		return true
 	_play_dialog([
-		{"speaker": _t("旁白"), "text": _t("沙坑邊的武器架下，一把斷劍露出半截。刃上刻著舊騎士團章。")},
+		{"speaker": _t("旁白"), "text": _t("沙坑邊的武器架下，一把斷劍露出半截。刃上刻著舊獅衛章。")},
 		{"speaker": _t("內心"), "text": _t("釘釘說的……舊主的鐵。")},
 		{"speaker": _t("系統"), "text": _t("獲得【舊主斷劍】。拿回給釘釘。")},
 	], func(): _grant_side_reward(SideMilestones.reward("broken_blade")))
@@ -3238,7 +3238,7 @@ func _side_start_ding_debt() -> void:
 	if not GameState.has_flag("side.ding_debt_asked"):
 		_play_dialog([
 			{"speaker": _t("釘釘"), "text": _t("……站住。爐邊有件事。")},
-			{"speaker": _t("釘釘"), "text": _t("演武場武器架下，有一把斷劍。舊騎士團的。")},
+			{"speaker": _t("釘釘"), "text": _t("演武場武器架下，有一把斷劍。舊獅衛的。")},
 			{"speaker": _t("釘釘"), "text": _t("我欠那鐵一個收場。你若撿回來——我當你付過一次人情。")},
 			{"speaker": _t("系統"), "text": _t("【支線】鐵匠的舊債：去演武場取【舊主斷劍】。")},
 		], func():
@@ -3376,7 +3376,7 @@ func _flavor_world_object(id: String) -> void:
 		"column_a": _t("古驛斷柱。柱身有星曜刻紋。"),
 		"star_mark": _t("十四星的簡圖。有人用刀補過最後一顆。"),
 		"stall_a": _t("布攤只剩支架。風在空棚裡說話。"),
-		"beggar": _t("老人抬眼：「騎士堡的旗……換過幾次了。」"),
+		"beggar": _t("老人抬眼：「堡壘的旗……換過幾次了。」"),
 		"pipe_a": _t("鐵管嗡嗡響。像城在低語。"),
 		"slime_pool": _t("黏液池反著微光。別踩進去。"),
 		"training_ring": _t("演武台沙上還有舊腳印——很重、很穩。"),
@@ -3402,7 +3402,7 @@ func _flavor_world_object(id: String) -> void:
 		"hull": _t("沉船灣的船骸張著口。像要說一個浪的故事。"),
 		"mural": _t("封印壁畫：五獸環塔。中央空白——那是你的位置嗎？"),
 		"memory_orb_a": _t("記憶球浮出村火。你眨眨眼，它散了。"),
-		"memory_orb_b": _t("記憶球：騎士堡的旗第一次升起。"),
+		"memory_orb_b": _t("記憶球：堡壘的旗第一次升起。"),
 		"memory_orb_c": _t("記憶球：聖獸還清明時的眼睛。"),
 		"throne_shadow": _t("王座影沒有實體。卻讓人想跪下——你沒有。"),
 		"wagon_a": _t("篷車裡有乾糧味與遠方泥土。"),
@@ -3411,10 +3411,10 @@ func _flavor_world_object(id: String) -> void:
 		"codex_shelf": _t("典籍架上積灰。絲絨的字跡比灰塵新。"),
 		"knight_orphan": _t("少年抱著斷木槍。眼睛比槍尖還直。"),
 		"armor": _t("空盔甲架。裡面沒有人，卻像還站著班。"),
-		"hall": _t("騎士舊廳回音很大。榮譽兩個字被煙燻黃。"),
+		"hall": _t("舊廳回音很大。榮譽兩個字被煙燻黃。"),
 		"throne_hall": _t("議政廳門半掩。椅子比人多。"),
 		"keep_well": _t("內井水深。倒影裡沒有旗。"),
-		"statue_knight": _t("無名騎士像缺了半邊臉。另一半仍望著門。"),
+		"statue_knight": _t("無名獅衛像缺了半邊臉。另一半仍望著門。"),
 		"spice_smell": _t("香料殘跡還在——像有人昨天剛走。"),
 		"echo_drip": _t("滴水聲數到七就亂。下水道也不守規矩。"),
 		"sealed_door": _t("封死鐵門。牆上有人用指甲刻：別開。"),
@@ -3677,10 +3677,10 @@ func _handle_world_travel(id: String) -> bool:
 
 
 func _go_world_map() -> void:
-	var body := _t("[b]翠嶺大陸 · 六域輿圖[/b]\n\n")
+	var body := _t("[b]六域輿圖[/b]\n\n")
 	body += _t("　　　　遊俠森林（樹冠／靜湖／遺址）\n")
 	body += "　　　　　　｜\n"
-	body += _t("維京海岸 ── 法師之塔 ── 騎士堡壘\n")
+	body += _t("維京海岸 ── 法師之塔 ── 堡壘\n")
 	body += _t("（港／洞／沉船）　（門廳／階／回憶）　（四店／市集／演武）\n")
 	body += "　　　　　　｜\n"
 	body += _t("　　　忍者村／霧隱（崖／祠／鏡廊）\n")
@@ -3700,7 +3700,7 @@ func _go_world_map() -> void:
 	]
 	body += _t("經驗 %d／%d\n\n") % [GameState.xp, GameState.xp_to_next()]
 	body += _t("去處（建議戰力）：\n")
-	body += _t("· 騎士堡 ") + ("✓" if GameState.has_flag("c1_entered_city") or GameState.chapter != "c0" else "·") + "\n"
+	body += _t("· 堡壘 ") + ("✓" if GameState.has_flag("c1_entered_city") or GameState.chapter != "c0" else "·") + "\n"
 	body += _t("· 岔路／練功 ") + (_t("✓ 鍛造後") if GameState.has_flag("c1_forged") else _t("鎖（先鍛造）")) + "\n"
 	body += _t("· 霧隱 ") + ("✓" if GameState.has_flag("c2_entered") else _t("建議 18+")) + "\n"
 	body += _t("· 道場 ") + ("✓" if GameState.has_flag("c3_entered") else _t("建議 26+")) + "\n"
@@ -3708,7 +3708,7 @@ func _go_world_map() -> void:
 	body += _t("· 海岸 ") + ("✓" if GameState.has_flag("c5_entered") else _t("建議 30+ · 可選序")) + "\n"
 	body += _t("· 塔 ") + ("✓" if GameState.has_flag("c6_camp_cut") or GameState.has_flag("boss.abo_cleared") else _t("需足夠試煉")) + "\n"
 	var buttons: Array = [
-		{"text": _t("騎士堡廣場"), "cb": _go_c1_town},
+		{"text": _t("堡壘廣場"), "cb": _go_c1_town},
 		{"text": _t("城外荒野"), "cb": _go_c1_wild},
 	]
 	if GameState.has_flag("c1_forged") or GameState.has_flag("boss.leo_cleared"):
@@ -4895,18 +4895,18 @@ func _go_c1_town() -> void:
 		_clear_host()
 		_current = Screen.C1_TOWN
 		_play_dialog([
-			{"speaker": _t("灰鬚"), "text": _t("停。看腳步就知道。最弱那掛。")},
+			{"speaker": _t("灰鬚"), "text": _t("停。剛上弦的？看腳步就知道。發條最鬆那掛的。")},
 			{
 				"speaker": _t("灰鬚"),
 				"text": _t("說吧。幹嘛來。"),
-				"choices": [_t("村子燒了。上面叫我來看。"), _t("找能打黑焰的人。"), _t("讓我進去。活著回報。")],
+				"choices": [_t("閣樓停了。——舊鑰只叫我來看一眼。"), _t("我來找能對上停擺異常的人。沒有玩具肯來。"), _t("……讓我進去就好。發條還轉著就行。")],
 				"replies": [
 					_t("煙味聞得出。進來。別哭。"),
 					_t("牆裡沒神仙。只有還肯站崗的。"),
 					_t("哼。話短。進門。"),
 				],
 			},
-			{"speaker": _t("灰鬚"), "text": _t("牆內也不是天堂。聖獅狂了。")},
+			{"speaker": _t("灰鬚"), "text": _t("門裡也不是上滿弦的安全箱。獅衛過載了。")},
 			{"speaker": _t("灰鬚"), "text": _t("劍橫著掃。別戳。")},
 			{"speaker": _t("系統"), "text": _t("學會橫斬。招在武術館。")},
 		], func():
@@ -4983,7 +4983,7 @@ func _go_title_wall_from_town() -> void:
 	if not newly.is_empty():
 		body = _t("[color=#fc8]新解鎖：%s[/color]\n\n") % "、".join(newly) + body
 	_panel(
-		_t("稱號牆 · 騎士堡"),
+		_t("稱號牆 · 堡壘"),
 		body,
 		[{"text": _t("回到廣場"), "cb": _go_c1_town}]
 	)
@@ -5062,7 +5062,7 @@ func _region_goto_cb(map_id: String, screen: Screen) -> Callable:
 ## 四地區關卡表的「前往」。第一次踏進某一章要走章節入口（章旗、過場、
 ## 霧隱強制讀信、塔下營地的鐘聲門檻），不能直接開地圖 ——
 ## 原本一律 _open_explore，於是從關卡表進霧隱會跳過麥穗的信、chapter 停在 c1，
-## 「繼續」回來人就被送回騎士堡；魔王那關更是開到疤地，塔根本不在那張圖上。
+## 「繼續」回來人就被送回堡壘；魔王那關更是開到疤地，塔根本不在那張圖上。
 func _region_goto(map_id: String, screen: Screen) -> void:
 	match screen:
 		Screen.C1_TOWN:
@@ -5339,7 +5339,7 @@ func _c1_sprout() -> void:
 		if not GameState.has_flag("item.wood_sword"):
 			if GameState.gold >= 30:
 				_play_dialog([
-					{"speaker": _t("小芽"), "text": _t("我以後要當騎士！比獅子還大！")},
+					{"speaker": _t("小芽"), "text": _t("我以後要當守衛！比獅子還大！")},
 					{
 						"speaker": _t("小芽"),
 						"text": _t("木頭的也可以。你身上叮噹響……湊我一把？（30 金）"),
@@ -5352,7 +5352,7 @@ func _c1_sprout() -> void:
 				], Callable(), "sprout_sponsor")
 				return
 			_play_dialog([
-				{"speaker": _t("小芽"), "text": _t("我以後要當騎士！比獅子還大！")},
+				{"speaker": _t("小芽"), "text": _t("我以後要當守衛！比獅子還大！")},
 				{"speaker": _t("小芽"), "text": _t("可是我沒有劍。木頭的也可以。")},
 				{"speaker": _t("系統"), "text": _t("小芽要練習木劍。釘釘 20 金可做，或下次帶 30 金給她。")},
 			])
@@ -5449,7 +5449,7 @@ func _interact_shop_interior(id: String) -> bool:
 					_go_astrolabe_panel()
 					return true
 				"gourd_shelf":
-					_play_dialog([{"speaker": _t("旁白"), "text": _t("葫蘆綠到橙。抽魂＝聚魂。星屑只是路上的光。")}])
+					_play_dialog([{"speaker": _t("旁白"), "text": _t("封靈罐綠到橙。觀星＝聚魂。星屑只是路上的光。")}])
 					return true
 				"star_mat":
 					_play_dialog([{"speaker": _t("旁白"), "text": _t("墊上還有上一個人的膝印。足跡會交疊。")}])
@@ -5485,7 +5485,7 @@ func _interact_shop_interior(id: String) -> bool:
 					], _go_weapon_wall_panel)
 					return true
 				"floor_mat":
-					_play_dialog([{"speaker": _t("旁白"), "text": _t("練武墊磨薄了。傭兵第一課：活著比漂亮重要。")}])
+					_play_dialog([{"speaker": _t("旁白"), "text": _t("練武墊磨薄了。上弦第一課：發條還轉著，比姿勢漂亮重要。")}])
 					return true
 		_:
 			pass
@@ -5908,9 +5908,9 @@ func _go_c1_forge() -> void:
 		TutorialSystem.mark("forge")
 	if not GameState.has_flag("c1_forged"):
 		_play_dialog([
-			{"speaker": _t("釘釘"), "text": _t("門開著不是讓菜鳥觀光的。——傭兵團又把最弱的送來了？")},
-			{"speaker": _t("釘釘"), "text": _t("……這什麼垃圾。挖土的？團裡發的？")},
-			{"speaker": _t("釘釘"), "text": _t("鏽進骨子了。你要走遠路，就別拿骨灰盒當武器。")},
+			{"speaker": _t("釘釘"), "text": _t("門開著不是讓菜鳥觀光的。——又把剛上弦、發條最鬆的送來了？")},
+			{"speaker": _t("釘釘"), "text": _t("……這什麼垃圾。挖積木的？箱底撿的？")},
+			{"speaker": _t("釘釘"), "text": _t("鏽進齒縫了。你要走遠路，就別拿停擺的空殼當武器。")},
 			{"speaker": _t("系統"), "text": _t("錘擊一。火花。")},
 			{"speaker": _t("系統"), "text": _t("錘擊二。刃上淺淺古紋。")},
 			{"speaker": _t("釘釘"), "text": _t("……你從哪撿的。")},
@@ -6387,7 +6387,7 @@ func _interact_wild(id: String) -> void:
 				_play_dialog([
 					{"speaker": _t("灰鬚"), "text": _t("（灰鬚的話還在耳邊）獅子不聽人話。聽刀。")},
 					{"speaker": _t("灰鬚"), "text": _t("你不是去證明你強。你是去讓它想起——它該守什麼。")},
-					{"speaker": _t("雷歐"), "text": _t("傭兵團把最弱的送來了？也想挑戰騎士之王？")},
+					{"speaker": _t("雷歐"), "text": _t("渺小的兔子……也想挑戰獅衛之王？")},
 					{"speaker": _t("系統"), "text": _t("王者斬必擋。火圈先亮再落，亮了按 J。")},
 				], func(): _start_battle("leo"))
 
@@ -6404,7 +6404,7 @@ func _c1_leo_aftermath_cut() -> void:
 			"bg": "wild",
 			"speaker": _t("旁白"),
 			"portrait": _t("雷歐"),
-			"text": _t("聖獅臥下。內殿的塵第一次安靜得像有人在禱告。"),
+			"text": _t("巨獅跪下一膝。過熱赤紅從玻璃瞳散去。"),
 		},
 		{
 			"bg": "town",
@@ -6614,7 +6614,7 @@ func _go_c2_cleared_panel() -> void:
 		[
 			{"text": _t("前往道場（C3）"), "cb": _go_c3_enter},
 			{"text": _t("回霧隱村"), "cb": _go_c2_mist},
-			{"text": _t("回騎士堡"), "cb": _go_c1_town},
+			{"text": _t("回堡壘"), "cb": _go_c1_town},
 			{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
 		]
 	)
@@ -7290,7 +7290,7 @@ func _go_ending() -> void:
 			{"text": _t("黑焰裂縫（通關後）"), "cb": _go_postgame_hub},
 			{"text": _t("稱號牆"), "cb": _go_title_wall},
 			{"text": _t("黑焰迴響（再走一次）"), "cb": _go_ng_plus_menu},
-			{"text": _t("再逛逛（騎士堡）"), "cb": _go_c1_town},
+			{"text": _t("再逛逛（堡壘）"), "cb": _go_c1_town},
 			{"text": _t("回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
 		]
 	)
@@ -7325,7 +7325,7 @@ func _go_postgame_hub() -> void:
 	buttons.append_array([
 		{"text": _t("野外獵場"), "cb": func(): _open_explore("hunting_grounds", Screen.C1_WILD)},
 		{"text": _t("塔下營地"), "cb": _go_c6_camp},
-		{"text": _t("騎士堡"), "cb": _go_c1_town},
+		{"text": _t("堡壘"), "cb": _go_c1_town},
 		{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
 	])
 	buttons.insert(0, {"text": _t("黑焰迴響（NG+）"), "cb": _go_ng_plus_menu})

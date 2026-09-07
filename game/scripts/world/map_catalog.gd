@@ -321,11 +321,11 @@ static func _road_ruins() -> Dictionary:
 
 
 # ═══════════════════════════════════════════
-#  騎士堡
+#  堡壘
 # ═══════════════════════════════════════════
 
 static func _town() -> Dictionary:
-	var m := _base("騎士堡壘 · 外城廣場", Color(0.1, 0.11, 0.14), 3200, 1785, Vector2(1640, 1508), "town")
+	var m := _base("堡壘 · 外城廣場", Color(0.1, 0.11, 0.14), 3200, 1785, Vector2(1640, 1508), "town")
 	var flag_label := "旗幟（兔爪）" if _flag("c1_flag_paw") else "灰旗"
 	## 整張廣場一屏看完：店門貼建築、人站泥路、出口在圖緣。腳點全在 walkmask 內，彼此 ≥100px。
 	## 左屋＝鐵匠鋪、中央石屋＝武術館、右上掛旗木屋＝聚魂殿、右大屋＝手藝工坊、東北小徑＝出城。
@@ -365,7 +365,7 @@ static func _town() -> Dictionary:
 
 static func _town_forge() -> Dictionary:
 	## 原作村內鐵匠鋪：走進才見到爐與釘釘。世界 16:9，實體腳底對齊 ¾ 俯視地板。
-	var m := _base("騎士堡 · 鐵匠鋪", Color(0.16, 0.08, 0.06), 1458, 820, Vector2(769, 769), "town_forge")
+	var m := _base("堡壘 · 鐵匠鋪", Color(0.16, 0.08, 0.06), 1458, 820, Vector2(769, 769), "town_forge")
 	m["entities"] = [
 		_e("back_from_shop", 741, 786, 56, 48, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("ding", 628, 590, 48, 64, "釘釘·鐵匠", Color(0.7, 0.4, 0.25)),
@@ -378,19 +378,19 @@ static func _town_forge() -> Dictionary:
 
 
 static func _town_soul() -> Dictionary:
-	var m := _base("騎士堡 · 聚魂殿", Color(0.07, 0.08, 0.16), 1458, 820, Vector2(769, 785), "town_soul")
+	var m := _base("堡壘 · 聚魂殿", Color(0.07, 0.08, 0.16), 1458, 820, Vector2(769, 785), "town_soul")
 	m["entities"] = [
 		_e("back_from_shop", 741, 795, 56, 48, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("star", 687, 606, 48, 64, "星讀", Color(0.45, 0.5, 0.75)),
 		_e("astrolabe", 508, 508, 56, 48, "星盤台", Color(0.4, 0.45, 0.7), true),
-		_e("gourd_shelf", 337, 532, 48, 56, "葫蘆架", Color(0.35, 0.5, 0.4), true),
+		_e("gourd_shelf", 337, 532, 48, 56, "封靈罐架", Color(0.35, 0.5, 0.4), true),
 		_e("star_mat", 810, 569, 64, 36, "觀星墊", Color(0.3, 0.32, 0.5)),
 	]
 	return m
 
 
 static func _town_gem() -> Dictionary:
-	var m := _base("騎士堡 · 手藝工坊", Color(0.14, 0.07, 0.09), 1458, 820, Vector2(740, 769), "town_gem")
+	var m := _base("堡壘 · 手藝工坊", Color(0.14, 0.07, 0.09), 1458, 820, Vector2(740, 769), "town_gem")
 	m["entities"] = [
 		_e("back_from_shop", 858, 786, 56, 48, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("gem_clerk", 512, 574, 48, 64, "工坊師傅", Color(0.75, 0.35, 0.4)),
@@ -402,7 +402,7 @@ static func _town_gem() -> Dictionary:
 
 
 static func _town_tutor() -> Dictionary:
-	var m := _base("騎士堡 · 武術館", Color(0.11, 0.1, 0.12), 1458, 820, Vector2(507, 736), "town_tutor")
+	var m := _base("堡壘 · 武術館", Color(0.11, 0.1, 0.12), 1458, 820, Vector2(507, 736), "town_tutor")
 	m["entities"] = [
 		_e("back_from_shop", 449, 737, 56, 48, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("greybeard", 599, 557, 48, 64, "灰鬚", Color(0.55, 0.55, 0.6)),
@@ -414,14 +414,14 @@ static func _town_tutor() -> Dictionary:
 
 
 static func _town_keep() -> Dictionary:
-	var m := _base("騎士堡 · 內城與內殿道", Color(0.09, 0.09, 0.12), 2600, 1451, Vector2(690, 1154), "town")
+	var m := _base("堡壘 · 內城與內殿道", Color(0.09, 0.09, 0.12), 2600, 1451, Vector2(690, 1154), "town")
 	m["entities"] = [
 		_e("back_town", 571, 1170, 56, 56, "回外城廣場", Color(0.4, 0.4, 0.45)),
-		_e("hall", 936, 675, 80, 72, "騎士舊廳", Color(0.4, 0.38, 0.42), true),
+		_e("hall", 936, 675, 80, 72, "舊廳", Color(0.4, 0.38, 0.42), true),
 		_e("armor", 1177, 677, 40, 56, "空盔甲架", Color(0.5, 0.5, 0.55)),
 		_e("throne_hall", 1421, 662, 72, 64, "議政廳門", Color(0.45, 0.4, 0.35), true),
 		_e("keep_well", 1264, 961, 48, 48, "內井", Color(0.4, 0.42, 0.48), true),
-		_e("statue_knight", 679, 829, 48, 64, "無名騎士像", Color(0.5, 0.48, 0.5), true),
+		_e("statue_knight", 679, 829, 48, 64, "無名獅衛像", Color(0.5, 0.48, 0.5), true),
 		_e("archive", 1741, 706, 56, 56, "檔案庫門", Color(0.42, 0.4, 0.45), true),
 		_e("silk", 1810, 858, 48, 64, "絲絨·書吏", Color(0.55, 0.5, 0.65)),
 		_e("codex_shelf", 1862, 787, 48, 48, "典籍架", Color(0.45, 0.4, 0.5), true),
@@ -432,7 +432,7 @@ static func _town_keep() -> Dictionary:
 
 
 static func _town_market() -> Dictionary:
-	var m := _base("騎士堡 · 下城市集", Color(0.11, 0.1, 0.12), 2600, 1451, Vector2(560, 1270), "town_market")
+	var m := _base("堡壘 · 下城市集", Color(0.11, 0.1, 0.12), 2600, 1451, Vector2(560, 1270), "town_market")
 	m["entities"] = [
 		_e("back_from_market", 532, 1185, 56, 56, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("stall_a", 740, 612, 56, 48, "布攤", Color(0.55, 0.4, 0.35), true),
@@ -448,7 +448,7 @@ static func _town_market() -> Dictionary:
 
 
 static func _town_sewers() -> Dictionary:
-	var m := _base("騎士堡 · 舊下水道", Color(0.06, 0.08, 0.07), 2400, 1350, Vector2(760, 1268), "town_sewers")
+	var m := _base("堡壘 · 舊下水道", Color(0.06, 0.08, 0.07), 2400, 1350, Vector2(760, 1268), "town_sewers")
 	m["entities"] = [
 		_e("back_from_sewers", 732, 1185, 56, 56, "爬回地面", Color(0.4, 0.4, 0.45)),
 		_e("pipe_a", 344, 788, 64, 48, "鐵管", Color(0.35, 0.38, 0.35), true),
@@ -462,7 +462,7 @@ static func _town_sewers() -> Dictionary:
 
 
 static func _barracks_yard() -> Dictionary:
-	var m := _base("騎士堡 · 演武場", Color(0.1, 0.1, 0.12), 2400, 1340, Vector2(328, 375), "barracks_yard")
+	var m := _base("堡壘 · 演武場", Color(0.1, 0.1, 0.12), 2400, 1340, Vector2(328, 375), "barracks_yard")
 	var blade_lab := "空武器架" if _flag("item.broken_blade") or _flag("side.ding_debt_done") else "武器架（斷劍）"
 	m["entities"] = [
 		_e("back_from_barracks", 300, 292, 56, 56, "回廣場", Color(0.4, 0.4, 0.45)),
@@ -537,12 +537,12 @@ static func _wild_leo_court() -> Dictionary:
 # ═══════════════════════════════════════════
 
 static func _crossroads() -> Dictionary:
-	var m := _base("六域岔路 · 翠嶺之心道", Color(0.1, 0.12, 0.1), 3000, 1674, Vector2(1350, 1081), "road")
+	var m := _base("六域岔路 · 沙盤之心道", Color(0.1, 0.12, 0.1), 3000, 1674, Vector2(1350, 1081), "road")
 	var ents: Array = [
 		_e("sign_board", 1410, 625, 64, 56, "六域路標", Color(0.45, 0.4, 0.3), true),
 		_e("camp_fire", 1140, 938, 48, 48, "旅人營火", Color(0.9, 0.4, 0.15), true),
 		_e("merchant", 1230, 990, 48, 64, "行商", Color(0.6, 0.5, 0.4)),
-		_e("path_knight", 180, 651, 72, 64, "西·騎士堡", Color(0.5, 0.45, 0.4)),
+		_e("path_knight", 180, 651, 72, 64, "西·堡壘", Color(0.5, 0.45, 0.4)),
 		_e("path_mist_c", 2100, 1510, 72, 64, "南·霧隱", Color(0.5, 0.55, 0.7)),
 		_e("path_dojo_c", 1740, 83, 72, 64, "北·道場", Color(0.4, 0.55, 0.35)),
 		_e("path_forest_c", 2400, 85, 72, 64, "東北·森林", Color(0.35, 0.55, 0.4)),
@@ -635,7 +635,7 @@ static func _hunting_grounds() -> Dictionary:
 		_e("save_hunt", 376, 1405, 48, 48, "存檔石", Color(0.4, 0.45, 0.5)),
 		_e("back_cross", 252, 861, 56, 56, "回岔路", Color(0.45, 0.5, 0.4)),
 		_e("exit_world", 2652, 861, 56, 56, "世界輿圖", Color(0.4, 0.5, 0.55)),
-		_e("path_knight", 1808, 1464, 64, 56, "往騎士堡", Color(0.5, 0.45, 0.4)),
+		_e("path_knight", 1808, 1464, 64, 56, "往堡壘", Color(0.5, 0.45, 0.4)),
 	]
 	return m
 
@@ -676,7 +676,7 @@ static func _mist() -> Dictionary:
 		_e("to_mist_mirror", 2348, 1363, 64, 56, "鏡廊", Color(0.5, 0.55, 0.7)),
 		_e("fog_gate", 2640, 1298, 80, 88, "幻廊·白霧", Color(0.65, 0.7, 0.85)),
 		_e("save_c2", 256, 1170, 48, 48, "存檔石", Color(0.4, 0.45, 0.5)),
-		_e("back_knight", 192, 769, 56, 48, "回騎士堡", Color(0.4, 0.4, 0.45)),
+		_e("back_knight", 192, 769, 56, 48, "回堡壘", Color(0.4, 0.4, 0.45)),
 		_e("exit_cross_m", 2704, 1556, 72, 64, "六域岔路", Color(0.45, 0.5, 0.4)),
 		_e("message_stone", 980, 1360, 48, 52, "留言石", Color(0.5, 0.55, 0.75), true),
 	]

@@ -44,7 +44,7 @@ static func links() -> Dictionary:
 		"exit_town_hint": {"map": "town", "screen": "C1_TOWN", "need_flag": "c0_first_battle", "deny": ""},
 		"dawn_glow": {"map": "town", "screen": "C1_TOWN", "need_flag": "c0_first_battle", "deny": ""},
 
-		## ── 騎士堡 ──
+		## ── 堡壘 ──
 		"exit_keep": {"map": "town_keep", "screen": "C1_TOWN"},
 		"back_town": {"map": "town", "screen": "C1_TOWN"},
 		"to_market": {"map": "town_market", "screen": "C1_TOWN"},
@@ -106,7 +106,7 @@ static func links() -> Dictionary:
 		"to_hunt": {
 			"map": "hunting_grounds", "screen": "C1_WILD",
 			"need_flag": "c1_entered_city",
-			"deny": _t("獵場在堡外溢地。先進騎士堡再說。"),
+			"deny": _t("獵場在堡外溢地。先進堡壘再說。"),
 		},
 		"to_blackflame_scar": {
 			"map": "blackflame_scar", "screen": "C1_WILD",

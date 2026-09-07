@@ -877,7 +877,7 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "fog_hide"
 		"小白", "兔勇者", "內心", "rabbit":
 			id = "rabbit"
-		"雷歐", "聖獅·雷歐", "leo":
+		"雷歐", "守衛泰坦·雷歐", "聖獅·雷歐", "leo":
 			id = "leo"
 		"阿茶", "acha":
 			id = "acha"

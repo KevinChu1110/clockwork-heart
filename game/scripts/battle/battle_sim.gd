@@ -1791,7 +1791,7 @@ static func make_leo_fight(player_stats: Dictionary) -> BattleSim:
 
 	var leo := BattleUnit.new()
 	leo.id = "leo"
-	leo.display_name = _t("聖獅·雷歐")
+	leo.display_name = _t("守衛泰坦·雷歐")
 	leo.team = BattleUnit.Team.ENEMY
 	leo.is_boss = true
 	## 垂直切片數值（完整版再拉到 ~800）
@@ -1804,8 +1804,8 @@ static func make_leo_fight(player_stats: Dictionary) -> BattleSim:
 	leo.recover_time = 0.45
 	leo.king_slash_cd = 2.5  ## 進半血後首發前的冷卻
 	## 旗艦雙部位：盔（破→更兇）／盾（破→降防），可 Tab 鎖定
-	_attach_boss_part(leo, _t("騎士重盔"), 0.28, "helm", "enrage")
-	_attach_boss_part(leo, _t("騎士重盾"), 0.32, "shield", "def_down")
+	_attach_boss_part(leo, _t("獅衛重盔"), 0.28, "helm", "enrage")
+	_attach_boss_part(leo, _t("獅衛重盾"), 0.32, "shield", "def_down")
 	sim.focus_part_id = "shield"
 	sim.add_unit(leo)
 	sim.setup_hazard("fire_ring", 5.5)  ## 副機制：火圈閃避

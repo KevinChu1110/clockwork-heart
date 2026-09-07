@@ -221,7 +221,7 @@ func status_bbcode() -> String:
 	lines.append(_t("魔王敗後二十年，傭兵團仍在演武台磨刀。五波雜魚，給經驗不給材料。"))
 	lines.append("")
 	if not is_unlocked():
-		lines.append(_t("（進入騎士堡後解鎖）"))
+		lines.append(_t("（進入堡壘後解鎖）"))
 		return "\n".join(lines)
 	var tix := tickets()
 	lines.append(_t("挑戰狀：%d／%d") % [tix, TICKET_MAX])

@@ -242,7 +242,7 @@ func setup(mode: String) -> void:
 	if GameState.stain_flame:
 		_append_log(_t("[color=#a88]沾焰：刃上有一層不肯散的灰。攻擊略升。[/color]"))
 	if mode == "leo":
-		_append_log(_t("雷歐：傭兵團把最弱的送來了？也想挑戰騎士之王？"))
+		_append_log(_t("雷歐：渺小的兔子……也想挑戰獅衛之王？"))
 		_append_log(_t("[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後按 J 跳開[/color]"))
 		parry_hint.text = _kh(_t("【J】格擋　·　【Tab】鎖部位　·　火圈後躍出"))
 		_flash_coach(_t("先鎖盾磨掉，防禦會降。盔可破，但牠會暴。"), 3.6)

@@ -16,7 +16,7 @@ static func regions() -> Array:
 		{
 			"id": "r1",
 			"name": _t("第一區・英雄谷"),
-			"blurb": _t("村莊、騎士堡與野原。初試鋒刃。"),
+			"blurb": _t("閣樓、堡壘與野原。初試鋒刃。"),
 			"stages": [
 				{
 					"id": "r1_s1",
@@ -29,14 +29,14 @@ static func regions() -> Array:
 				},
 				{
 					"id": "r1_s2",
-					"name": _t("關卡 2・騎士堡"),
+					"name": _t("關卡 2・堡壘的門"),
 					"maps": [
-						{"id": "town", "label": _t("騎士堡廣場")},
+						{"id": "town", "label": _t("堡壘廣場")},
 						{"id": "wild", "label": _t("堡外野原")},
 					],
 					"unlock": ["c0_first_battle"],
 					"clear_flag": "boss.leo_cleared",
-					"boss": _t("聖獅・雷歐"),
+					"boss": _t("守衛泰坦·雷歐"),
 					"goto": {"map": "town", "screen": "C1_TOWN"},
 				},
 			],

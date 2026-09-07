@@ -469,13 +469,13 @@ func starpath_summary_bbcode() -> String:
 			var best: int = int(ar.call("best_score"))
 			lines.append("[b]演武場[/b]  有獎剩 %d · 最佳 %d 分" % [left_a, best])
 		elif ar:
-			lines.append("[b]演武場[/b]  （進騎士堡後解鎖）")
+			lines.append("[b]演武場[/b]  （進堡壘後解鎖）")
 		var ht: Node = tree.root.get_node_or_null("HuntSystem")
 		if ht and ht.has_method("is_unlocked") and bool(ht.call("is_unlocked")):
 			var left_h: int = int(ht.call("daily_left"))
 			lines.append("[b]野外獵場[/b]  有獎剩 %d" % left_h)
 		elif ht:
-			lines.append("[b]野外獵場[/b]  （進騎士堡後解鎖）")
+			lines.append("[b]野外獵場[/b]  （進堡壘後解鎖）")
 	lines.append("")
 	lines.append("[b]旅人足跡[/b]  地圖上的半透明旅人＝殘影；留言石可留字")
 	var rew := starpath_reward_count()
