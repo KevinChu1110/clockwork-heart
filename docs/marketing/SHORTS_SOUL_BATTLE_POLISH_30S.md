@@ -118,7 +118,6 @@ Shot 6 (27.0-30.0s)【合成·點題】純黑底板微推，後製疊加官方�
 - **所屬功能**：`soul-pity`（戰魂首屏保底進度條與封靈罐系統，main 合併 commit `0736a53`）
 - **Godot 場景路徑**：`res://scenes/main.tscn`
 - **對應腳本**：`game/scripts/systems/soul_system.gd`、`game/scripts/main.gd`（`_go_soul_panel()` 所在腳本）
-- **參考現存截圖**：`screenshots/soul_panel_pity.png`
 - **錄製操作序列（手動操作序列，無自動腳本）**：
   1. 啟動 `res://scenes/main.tscn`，注入測試狀態：`GameState.set_flag("soul.piety", 60)`，`GameState.set_flag("soul.shards", 4)`，金幣 1500。
   2. 點擊進入聚魂殿（或呼叫 `_go_soul_panel()`）。
@@ -189,7 +188,7 @@ plush rabbit, furry animal, real fur, stuffed toy, biological rabbit, humanoid r
 | **第 16 條** | **不暗示已完成，不拿 AI 圖充當實機** | 概念鏡次（Shot 1）與合成鏡次（Shot 6）明確標示為概念與品牌字標；實機鏡次（Shot 2～5）100% 來自真實 Godot 錄影。 | ✅ 合格 |
 | **第 17 條** | **切入點獨立，風格不撞車** | 本片切入點為純粹的「戰鬥打擊手感與聚魂保底爽感」，與劇情向短影音腳本 `docs/marketing/STORYBOARD_C0_30S.md`、品牌概念片腳本 `docs/marketing/STORYBOARD_AWAKENING.md` 之調性與賣點截然不同。 | ✅ 合格 |
 | **第 19 條** | **素材列出必須是已存在之合併功能** | 所列 4 項實機素材（REC-01 至 REC-04）皆對應 main 上已合併之真實功能與 commit（`0975523`、`3a801b6`、`0736a53`、`985ba28`），已完全剔除尚未實裝之四大核心圖鑑。 | ✅ 合格 |
-| **第 19b 條** | **標實機的必須真的是 Godot 錄影** | 實機清單所有檔案與腳本逐項查證無訛：已 ls 確認 `game/scenes/battle/battle.tscn`、`game/scenes/main.tscn`、`game/shaders/outline.gdshader`、`game/shaders/foot_shadow.gdshader`、`game/scripts/battle/battle_view.gd`、`game/scripts/battle/test_battle_thumb.gd`、`game/scripts/dev/capture_battle_polish.gd`、`game/scripts/main.gd`（`_go_soul_panel()` 所在處）、`game/scripts/systems/soul_system.gd` 及 `screenshots/soul_panel_pity.png` 均存在；已 git branch --contains 確認 4 個 commit（`0975523`、`3a801b6`、`0736a53`、`985ba28`）皆在 main；REC-03 註明手動操作序列。 | ✅ 合格 |
+| **第 19b 條** | **標實機的必須真的是 Godot 錄影** | 實機清單所有檔案與腳本逐項查證無訛：已 ls 確認場景 `game/scenes/battle/battle.tscn`、`game/scenes/main.tscn`，著色器 `game/shaders/outline.gdshader`、`game/shaders/foot_shadow.gdshader`，腳本 `game/scripts/battle/battle_view.gd`、`game/scripts/battle/test_battle_thumb.gd`、`game/scripts/dev/capture_battle_polish.gd`、`game/scripts/main.gd`（`_go_soul_panel()` 所在處）、`game/scripts/systems/soul_system.gd` 均存在（共 9 個實機相關檔案全數 stat/ls 通過）；REC-03 為手動操作序列，已剔除未產截圖路徑；已 git branch --contains 確認 4 個 commit（`0975523`、`3a801b6`、`0736a53`、`985ba28`）皆在 main。 | ✅ 合格 |
 | **第 19c 條** | **不得自立片名與分歧點題** | 移除自立片名欄位，統一為內部代號 `mk-shorts`（片內不呈現）；Shot 6 點題卡標明由後製無失真疊加官方字標 `branding/logo_cn.png`，不得由 AI 生成。 | ✅ 合格 |
 | **第 22 條** | **不違背 CANON 世界憲章** | 嚴格遵守「覺醒的金屬發條玩具」世界觀：零毛皮、背後鑰匙、胡桃鉗色盤、齒輪部位破壞無血肉、舊 IP 詞彙全面掃蕩。 | ✅ 合格 |
 | **第 23 條** | **名詞六語系皆可翻譯** | 涉及之核心名詞如封靈罐（Spirit-Seal Jar）、虔誠度（Piety）、暴怒覺醒（Fury Awakening）等皆在五／六語系本地化字典內。 | ✅ 合格 |
