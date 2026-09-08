@@ -68,7 +68,6 @@ var _dock_buttons: Array[Button] = []
 var _hero_avatar: TextureRect
 var _hero_shadow: TextureRect
 var _hero_name_tag: Label
-var _rainbow_ring: TextureRect
 var _speech_bubble: PanelContainer
 var _speech_label: Label
 var _particles_root: Control
