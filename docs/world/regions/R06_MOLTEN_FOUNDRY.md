@@ -127,8 +127,8 @@
 
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
-  - **七煞星軸（Qi Sha / Destruction Core）**：象徵孤勇突進、絕對破壞與部位拆卸。
-  - **廉貞星軸（Lian Zhen / Molten Forge Core）**：象徵高溫淬火、受擊反震與霸體反擊。
+  - **七煞星軸（銳齒之魂 / Razor Tooth Core）**：象徵孤勇突進、絕對破壞與部位拆卸。
+  - **廉貞星軸（銳齒之魂 / Razor Tooth Core）**：象徵高溫淬火、受擊反震與霸體反擊。
 - **星軸被動詞條**：
   - 七煞·玄鐵重破：對 BOSS 與精英怪的拆卸部位造成的傷害提升 25%；成功破壞任意部位時，立即恢復 2 點發條能量並重置當前武器耐久 1 次。
   - 廉貞·烈火淬金：處於過載散熱或霸體狀態時，受到的傷害降低 20%，並將受到傷害的 35% 轉化為周身環形熱浪反震周圍敵人。
@@ -256,8 +256,8 @@ Cute chibi giant boar titan mecha, toy mechanical stone-fist wild boar boss, mad
 | **代表素材** | 耐高溫合金彈簧 | 耐高温合金弹簧 | Heat-Resistant Alloy Spring | Resorte de Aleación Termorresistente | 耐熱合金ばね | 내열 합금 스프링 |
 | **代表素材** | 熔岩黑曜石拳板 | 熔岩黑曜石拳板 | Obsidian Punch Plate | Placa de Golpe de Obsidiana | 溶岩黒曜石拳板 | 용암 흑요석 권판 |
 | **代表素材** | 耐火石墨潤滑膏 | 耐火石墨润滑膏 | Refractory Graphite Lubricant | Lubricante de Grafito Refractario | 耐火黒鉛潤滑ペースト | 내화 흑연 윤활 페이스트 |
-| **核心星軸** | 七煞星軸 | 七煞星轴 | Qi Sha Core (Destruction Core) | Núcleo Qi Sha (Destrucción) | 七殺の星軸（破砕の星軸） | 칠살 성축 (파쇄 성축) |
-| **核心星軸** | 廉貞星軸 | 廉贞星轴 | Lian Zhen Core (Molten Forge Core) | Núcleo Lian Zhen (Forja Fundida) | 廉貞の星軸（鍛造の星軸） | 염정 성축 (단조 성축) |
+| **核心星軸** | 七煞星軸 | 七煞星轴 | Qi Sha Core (Razor Tooth Core) | Núcleo Qi Sha (Diente Cortante) | 七煞の星軸（鋭歯の魂） | 칠살 성축 (예리한 이빨) |
+| **核心星軸** | 廉貞星軸 | 廉贞星轴 | Lian Zhen Core (Razor Tooth Core) | Núcleo Lian Zhen (Diente Cortante) | 廉貞の星軸（鋭歯の魂） | 염정 성축 (예리한 이빨) |
 | **核心招式** | 崩山衝壓擊 | 崩山冲压击 | Mountain-Shattering Stamping Strike | Golpe Estampador Demoledor de Montañas | 崩山プレス撃 | 붕산 프레스 격 |
 | **核心招式** | 熱浪爆碎震 | 热浪爆碎震 | Thermal Shockwave Eruption | Erupción de Onda de Choque Térmica | 熱波爆砕震 | 열파 폭쇄진 |
 | **核心機制** | 高溫過熱淬火窗口 | 高温过热淬火窗口 | Thermal Overheat & Quenching Window | Ventana de Sobrecalentamiento y Templado | 高温過熱焼入れウィンドウ | 고온 과열 담금질 윈도우 |

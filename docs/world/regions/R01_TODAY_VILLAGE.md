@@ -124,8 +124,8 @@
 
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
-  - **天同星軸（Tian Tong / Harmony Core）**：象徵守護、包容與生機修復。
-  - **天機星軸（Tian Ji / Calculation Core）**：象徵機變、運算與關節回彈。
+  - **天同星軸（旋簧之魂 / Coiled Spring Core）**：象徵守護、包容與生機修復。
+  - **天機星軸（銳齒之魂 / Razor Tooth Core）**：象徵機變、運算與關節回彈。
 - **星軸被動詞條**：
   - 天同·和光：在戰鬥中主動切換武器時，為當前切出之武器微幅補給 1 次發條彈力（每場戰鬥限觸發 2 次）。
   - 天機·巧步：成功以翻滾或後撤步規避敵人攻擊後，下一擊部位破壞削韌值提升 25%。
@@ -233,7 +233,7 @@ Cute chibi giant mecha titan, toy mechanical guardian, made of vintage timber bo
 | **代表零件** | 粗製鐵屑 | 粗制铁屑 | Iron Scrap | Chatarra de Hierro | 粗製鉄くず | 조제 쇠 부스러기 |
 | **代表零件** | 黃銅墊圈 | 黄铜垫圈 | Brass Washer | Arandela de Latón | 真鍮ワッシャー | 황동 와셔 |
 | **代表零件** | 高剛性椴木連桿 | 高刚性椴木连杆 | Dense Hardwood Link | Biela de Madera Rígida | 高剛性シナノキ連桿 | 고강성 피나무 커넥팅 로드 |
-| **核心星軸** | 天同星軸 | 天同星轴 | Tian Tong Core (Harmony Core) | Núcleo Tian Tong (Armonía) | 天同の星軸（和の星軸） | 천동 성축 (조화 성축) |
-| **核心星軸** | 天機星軸 | 天机星轴 | Tian Ji Core (Calculation Core) | Núcleo Tian Ji (Cálculo) | 天機の星軸（機知の星軸） | 천기 성축 (기교 성축) |
+| **核心星軸** | 天同星軸 | 天同星轴 | Tian Tong Core (Coiled Spring Core) | Núcleo Tian Tong (Muelle Espiral) | 天同の星軸（旋簧の魂） | 천동 성축 (태엽 스프링) |
+| **核心星軸** | 天機星軸 | 天机星轴 | Tian Ji Core (Razor Tooth Core) | Núcleo Tian Ji (Diente Cortante) | 天機の星軸（鋭歯の魂） | 천기 성축 (예리한 이빨) |
 | **核心招式** | 橫斬 | 横斩 | Horizontal Cleave | Corte Horizontal | 横斬り | 횡베기 |
 | **核心招式** | 彈跳起手式 | 弹跳起手式 | Spring Vault Primer | Postura de Salto Elástico | 跳躍の構え | 도약 기동세 |

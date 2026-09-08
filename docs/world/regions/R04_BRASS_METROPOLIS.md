@@ -129,7 +129,7 @@
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
   - **武曲星軸（銳齒之魂 / Razor Tooth Core）**：象徵剛毅剛勁、鋼鐵撞擊與暴擊倍率。
-  - **破軍星軸（Po Jun / Vanguard Core）**：象徵摧枯拉朽、部位破壞特化與破甲削韌。
+  - **破軍星軸（銳齒之魂 / Razor Tooth Core）**：象徵摧枯拉朽、部位破壞特化與破甲削韌。
 - **星軸被動詞條**：
   - 武曲·鎢鋼重擊：暴擊率提高 18%，每次暴擊使目標裝甲抗性降低 12%（可疊加 3 層）。
   - 破軍·破滅拆解：對首領與精英敵人的部位削韌傷害提升 30%，成功拆卸任一部位時立即返還 3 點發條能量。
@@ -258,7 +258,7 @@ Cute chibi giant fortress titan, toy mechanical juggernaut boss, made of polishe
 | **代表素材** | 合金軸承鉚釘 | 合金轴承铆钉 | Alloy Bearing Rivet | Remache de Cojinete de Aleación | 合金ベアリングリベット | 합금 베어링 리벳 |
 | **代表素材** | 重鍛黃銅板 | 重锻黄铜板 | Forged Heavy Brass Plate | Placa Forjada de Latón Pesado | 鍛造黄銅板 | 단조 황동판 |
 | **核心星軸** | 武曲星軸 | 武曲星轴 | Wu Qu Core (Razor Tooth Core) | Núcleo Wu Qu (Diente Cortante) | 武曲の星軸（鋭歯の魂） | 무곡 성축 (예리한 이빨) |
-| **核心星軸** | 破軍星軸 | 破軍星轴 | Po Jun Core (Vanguard Core) | Núcleo Po Jun (Vanguardia) | 破軍の星軸（破軍の星軸） | 파군 성축 (파군 성축) |
+| **核心星軸** | 破軍星軸 | 破軍星轴 | Po Jun Core (Razor Tooth Core) | Núcleo Po Jun (Diente Cortante) | 破軍の星軸（鋭歯の魂） | 파군 성축 (예리한 이빨) |
 | **核心招式** | 震地重錘破 | 震地重锤破 | Groundbreaker Cog Slam | Golpe Aplastador Terrestre | 震地重槌砕 | 진지중추파 |
 | **核心招式** | 蒸氣噴射滑步 | 蒸气喷射滑步 | Steam Jet Dash | Deslizamiento de Chorro de Vapor | 蒸気噴射スライド | 증기 분사 슬라이드 |
 | **核心機制** | 過熱洩壓排氣窗口 | 过热泄压排气窗口 | Overheat Steam Vent Window | Ventana de Escape de Vapor por Sobrecalentamiento | 過熱排圧見切りウィンドウ | 과열 감압 배기 윈도우 |

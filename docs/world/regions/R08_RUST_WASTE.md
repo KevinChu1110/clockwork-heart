@@ -129,7 +129,7 @@
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
   - **貪狼星軸（旋簧之魂 / Coiled Spring Core）**：象徵荒野韌性、發條續航與廢土重生。
-  - **破軍星軸（Po Jun / Vanguard Core）**：象徵摧枯拉朽、先鋒突破與破陣碎甲。（精確鉚接 R04 既有星軸體系）
+  - **破軍星軸（銳齒之魂 / Razor Tooth Core）**：象徵摧枯拉朽、先鋒突破與破陣碎甲。（精確鉚接 R04 既有星軸體系）
 - **星軸被動詞條**：
   - 貪狼·動能回收：命中敵人弱點部位或成功拆卸部位時，為自身立即回充相當於傷害值 15% 的發條彈力；處於怒氣 100% 齒輪過載狀態時，近戰攻擊附帶 20% 額外回充效果。
   - 破軍·披荊斬棘：施展蓄力重斬時霸體硬直抗性提升 50%；若該擊成功破壞敵人部位，立即重置當前武器 1 次揮動次數。
@@ -257,8 +257,8 @@ Cute chibi giant rusted apex lion titan, toy scrap metal clockwork lion boss, ma
 | **代表素材** | 鏽蝕高剛性鋸片齒輪 | 锈蚀高刚性锯片齿轮 | Rusted Heavy Sawblade Cog | Engranaje de Sierra Rígido Oxidado | 錆びた高剛性鋸刃歯車 | 녹슨 고강성 톱날 톱니 |
 | **代表素材** | 廢土重型液壓連桿 | 废土重型液压连杆 | Wasteland Hydraulic Linkage | Biela Hidráulica Pesada del Páramo | 廃土重型油圧リンケージ | 폐토 중형 유압 커넥팅 로드 |
 | **代表素材** | 高扭力廢棄原型發條 | 高扭力废弃原型发条 | High-Torque Prototype Spring | Resorte Prototipo de Alta Torsión | 高トルク廃棄プロトタイプぜんまい | 고토크 폐기 프로토타입 태엽 |
-| **核心星軸** | 貪狼星軸 | 贪狼星轴 | Tan Lang Core (Coiled Spring Core) | Núcleo Tan Lang (Resorte Enrollado) | 貪狼の星軸（旋條の星軸） | 탐랑 성축 (선조 성축) |
-| **核心星軸** | 破軍星軸 | 破軍星轴 | Po Jun Core (Vanguard Core) | Núcleo Po Jun (Vanguardia) | 破軍の星軸（破軍の星軸） | 파군 성축 (파군 성축) |
+| **核心星軸** | 貪狼星軸 | 贪狼星轴 | Tan Lang Core (Coiled Spring Core) | Núcleo Tan Lang (Muelle Espiral) | 貪狼の星軸（旋簧の魂） | 탐랑 성축 (태엽 스프링) |
+| **核心星軸** | 破軍星軸 | 破軍星轴 | Po Jun Core (Razor Tooth Core) | Núcleo Po Jun (Diente Cortante) | 破軍の星軸（鋭歯の魂） | 파군 성축 (예리한 이빨) |
 | **核心招式** | 荒野狂暴旋風 | 荒野狂暴旋风 | Wasteland Berserk Whirlwind | Torbellino Frenético del Páramo | 荒野狂暴旋風 | 황야 광폭 선풍 |
 | **核心招式** | 廢鐵重壓裂地擊 | 废铁重压裂地击 | Scrap Impact Ground-Slam | Golpe Terrestre Devastador de Chatarra | 廃鉄重圧地割れ撃 | 고철 중압 열지지격 |
 | **核心機制** | 生鏽卡阻散熱窗口 | 生锈卡阻散热窗口 | Rust Jam & Cooling Window | Ventana de Enfriamiento por Atasco de Óxido | 錆び付き冷却ウィンドウ | 녹슬림 걸림 냉각 윈도우 |

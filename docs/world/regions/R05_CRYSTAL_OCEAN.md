@@ -126,8 +126,8 @@
 
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
-  - **天府星軸（Tian Fu / Aegis Core）**：象徵厚重包容、深海防禦與護盾生成。
-  - **太陰星軸（Tai Yin / Ocean Tide Core）**：象徵澄澈晶瑩、受擊反傷與怒氣反哺。
+  - **天府星軸（固甲之魂 / Plated Iron Core）**：象徵厚重包容、深海防禦與護盾生成。
+  - **太陰星軸（旋簧之魂 / Coiled Spring Core）**：象徵澄澈晶瑩、受擊反傷與怒氣反哺。
 - **星軸被動詞條**：
   - 天府·深海巨盾：受到的所有傷害降低 15%；格擋成功時立即生成一道抵擋下一次傷害的水流凝膠護盾。
   - 太陰·潮汐逆流：受到近戰攻擊時，對攻擊者反彈 45% 的金屬震盪傷害，並有 25% 機率返還 1 點發條能量。
@@ -254,8 +254,8 @@ Cute chibi giant kraken titan, toy mechanical octopus boss, made of polished bra
 | **代表素材** | 鍍鈦耐腐蝕增壓閥 | 镀钛耐腐蚀增压阀 | Titanium Anti-Corrosion Booster Valve | Válvula Potenciadora de Titanio Anticorrosión | チタン防食増圧バルブ | 티타늄 내식 증압 밸브 |
 | **代表素材** | 深海抗壓錨鏈鉸鏈 | 深海抗压锚链铰链 | Deepsea High-Tensile Anchor Link | Eslabón de Ancla de Alta Tensión | 深海耐圧錨鎖ヒンジ | 심해 내압 닻줄 경첩 |
 | **代表素材** | 防鏽特種矽油 | 防锈特种硅油 | Anti-Rust Special Silicone Oil | Aceite de Silicona Especial Antioxidante | 防錆特殊シリコンオイル | 방청 특수 실리콘 오일 |
-| **核心星軸** | 天府星軸 | 天府星轴 | Tian Fu Core (Aegis Core) | Núcleo Tian Fu (Égida) | 天府の星軸（庇護の星軸） | 천부 성축 (수호 성축) |
-| **核心星軸** | 太陰星軸 | 太阴星轴 | Tai Yin Core (Ocean Tide Core) | Núcleo Tai Yin (Marea Lunar) | 太陰の星軸（潮汐の星軸） | 태음 성축 (조석 성축) |
+| **核心星軸** | 天府星軸 | 天府星轴 | Tian Fu Core (Plated Iron Core) | Núcleo Tian Fu (Coraza Férrea) | 天府の星軸（固甲の魂） | 천부 성축 (견고한 갑옷) |
+| **核心星軸** | 太陰星軸 | 太阴星轴 | Tai Yin Core (Coiled Spring Core) | Núcleo Tai Yin (Muelle Espiral) | 太陰の星軸（旋簧の魂） | 태음 성축 (태엽 스프링) |
 | **核心招式** | 潮汐迴旋斬 | 潮汐回旋斩 | Tidal Whirlwind Slash | Corte Torbellino de Marea | 潮汐旋風斬 | 조석 회선참 |
 | **核心招式** | 氣泡踏浪衝 | 气泡踏浪冲 | Bubble Wave Surge | Embestida de Oleada de Burbujas | 気泡波乗りダッシュ | 기포 파도타기 돌진 |
 | **核心機制** | 洋流阻尼浮力窗口 | 洋流阻尼浮力窗口 | Hydro-Damping & Buoyancy Window | Ventana de Flotabilidad y Amortiguación | 水流減衰浮力ウィンドウ | 수류 감쇠 부력 윈도우 |

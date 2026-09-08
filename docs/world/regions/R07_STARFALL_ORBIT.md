@@ -126,8 +126,8 @@
 
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
-  - **太陽星軸（Tai Yang / Solar Photon Core）**：象徵高能光子、雷射脈衝與能量充盈。
-  - **天機星軸（Tian Ji / Calculation Core）**：象徵零重力軌道運算、向量推進與機動回彈。（鉚接 R01/R02 既有星軸體系）
+  - **太陽星軸（銳齒之魂 / Razor Tooth Core）**：象徵高能光子、雷射脈衝與能量充盈。
+  - **天機星軸（銳齒之魂 / Razor Tooth Core）**：象徵零重力軌道運算、向量推進與機動回彈。（鉚接 R01/R02 既有星軸體系）
 - **星軸被動詞條**：
   - 太陽·光子充能：命中敵人弱點部位時，發條能量恢復速度提升 20%；處於怒氣 100% 齒輪過載狀態時，武器揮動耐久消耗降低 1 次。
   - 天機·向量折躍：處於空中或失重懸停狀態時，閃避無敵幀延長 0.25 秒，且成功極限閃避後立即恢復 2 點發條能量。
@@ -255,8 +255,8 @@ Cute chibi giant orbital titan mecha, toy modular space construction harvester b
 | **代表素材** | 反重力微型晶片 | 反重力微型芯片 | Anti-Gravity Microchip | Microchip Antigravedad | 反重力マイクロチップ | 반중력 마이크로칩 |
 | **代表素材** | 螢光塑料卡扣關節 | 荧光塑料卡扣关节 | Neon Snap-Fit Joint | Articulación a Presión de Neón | 蛍光プラスチックジョイント | 형광 플라스틱 스냅핏 관절 |
 | **代表素材** | 冷氣反推微型噴嘴 | 冷气反推微型喷嘴 | Cold-Gas Thruster Nozzle | Boquilla de Propulsor de Gas Frío | コールドガス微細ノズル | 콜드가스 미세 노즐 |
-| **核心星軸** | 太陽星軸 | 太阳星轴 | Tai Yang Core (Solar Photon Core) | Núcleo Tai Yang (Fotón Solar) | 太陽の星軸（光子の星軸） | 태양 성축 (광자 성축) |
-| **核心星軸** | 天機星軸 | 天机星轴 | Tian Ji Core (Calculation Core) | Núcleo Tian Ji (Cálculo) | 天機の星軸（機知の星軸） | 천기 성축 (기교 성축) |
+| **核心星軸** | 太陽星軸 | 太阳星轴 | Tai Yang Core (Razor Tooth Core) | Núcleo Tai Yang (Diente Cortante) | 太陽の星軸（鋭歯の魂） | 태양 성축 (예리한 이빨) |
+| **核心星軸** | 天機星軸 | 天机星轴 | Tian Ji Core (Razor Tooth Core) | Núcleo Tian Ji (Diente Cortante) | 天機の星軸（鋭歯の魂） | 천기 성축 (예리한 이빨) |
 | **核心招式** | 反衝向量突進 | 反冲向量突进 | Vector Thruster Dash | Embestida de Propulsor Vectorial | ベクトル推進突進 | 벡터 추진 돌진 |
 | **核心招式** | 零重力環形旋空斬 | 零重力环形旋空斩 | Zero-G Orbital Spin Slash | Tajo Giratorio Orbital Gravedad Cero | 無重力回転旋空斬 | 무중력 회전 선공참 |
 | **核心機制** | 失重微浮力散熱窗口 | 失重微浮力散热窗口 | Zero-G Micro-Float & Cooling Window | Ventana de Microflotación y Enfriamiento | 無重力微小浮力冷却ウィンドウ | 무중력 미세부력 냉각 윈도우 |

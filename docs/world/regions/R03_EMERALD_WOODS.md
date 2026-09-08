@@ -127,8 +127,8 @@
 
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
-  - **天梁星軸（Tian Liang / Aegis Core）**：象徵庇護、堅韌與減傷外殼。
-  - **七煞星軸（Qi Sha / Destruction Core）**：象徵極限破壞、弱點穿透與破甲拆卸。
+  - **天梁星軸（固甲之魂 / Plated Iron Core）**：象徵庇護、堅韌與減傷外殼。
+  - **七煞星軸（銳齒之魂 / Razor Tooth Core）**：象徵極限破壞、弱點穿透與破甲拆卸。
 - **星軸被動詞條**：
   - 天梁·林木庇護：受到打擊時，體內彈簧自動生成一層相當於生命上限 15% 的減震護盾（冷卻 20 秒）。
   - 七煞·停拍貫殺：打擊處於停拍定格狀態的敵人時，暴擊傷害提升 35%，並額外削去目標 10% 護甲耐久。
@@ -256,8 +256,8 @@ Cute chibi giant falcon titan, toy mechanical falcon guardian boss, made of poli
 | **代表素材** | 星光發條樹脂 | 星光发条树脂 | Starlight Clockwork Resin | Resina Mecánica Estelar | 星光ぜんまい樹脂 | 별빛 태엽 수지 |
 | **代表素材** | 青銅羽片 | 青铜羽片 | Bronze Plume | Pluma de Bronce | 青銅の羽根片 | 청동 깃털 조각 |
 | **代表素材** | 微型調相齒輪 | 微型调相齿轮 | Miniature Phase-Tuning Cog | Engranaje Diminuto de Fase | 小型位相調整歯車 | 초소형 위상 조정 톱니 |
-| **核心星軸** | 天梁星軸 | 天梁星轴 | Tian Liang Core (Aegis Core) | Núcleo Tian Liang (Protección) | 天梁の星軸（庇護の星軸） | 천량 성축 (비호 성축) |
-| **核心星軸** | 七煞星軸 | 七煞星轴 | Qi Sha Core (Destruction Core) | Núcleo Qi Sha (Destrucción) | 七殺の星軸（破砕の星軸） | 칠살 성축 (파쇄 성축) |
+| **核心星軸** | 天梁星軸 | 天梁星轴 | Tian Liang Core (Plated Iron Core) | Núcleo Tian Liang (Coraza Férrea) | 天梁の星軸（固甲の魂） | 천량 성축 (견고한 갑옷) |
+| **核心星軸** | 七煞星軸 | 七煞星轴 | Qi Sha Core (Razor Tooth Core) | Núcleo Qi Sha (Diente Cortante) | 七煞の星軸（鋭歯の魂） | 칠살 성축 (예리한 이빨) |
 | **核心招式** | 穿雲定風箭 | 穿云定风箭 | Wind-Piercing Shot | Flecha Perforavientos | 穿雲定風の矢 | 천운정풍 화살 |
 | **核心招式** | 掠影靈貓翻 | 掠影灵猫翻 | Shadow Leap Evasion | Evasión Salto Sombrío | 影かすめ宙返り | 그림자 도약 회피 |
 | **核心機制** | 停拍看破窗口 | 停拍看破窗口 | Beat Pause Vulnerability Window | Ventana de Pausa Vulnerable | 拍停止見切りウィンドウ | 비트 정지 간파 윈도우 |
