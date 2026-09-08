@@ -138,12 +138,12 @@
 </head>
 <body data-page="home">
   <header class="hero hero--video">
-    <video class="bg bg-video" preload="none" muted loop playsinline poster="media/hero/key_visual_greece_gears.png" aria-hidden="true">
+    <video class="bg bg-video hero-parallax-bg" preload="none" muted loop playsinline poster="media/hero/key_visual_greece_gears.png" aria-hidden="true">
       <source src="media/promo/trailer_hero_clockwork_15s.mp4" type="video/mp4" />
     </video>
-    <img class="bg bg-fallback parallax-media" src="media/hero/key_visual_greece_gears.png" alt="發條之心主視覺 · 希臘神殿石柱與黃金齒輪" data-parallax="0.12" />
+    <img class="bg bg-fallback hero-parallax-bg parallax-media" src="media/hero/key_visual_greece_gears.png" alt="發條之心主視覺 · 希臘神殿石柱與黃金齒輪" data-parallax="0.18" />
     <div class="hero-overlay"></div>
-    <div class="hero-copy">
+    <div class="hero-copy hero-parallax-fg">
       <div class="eyebrow" style="margin-bottom:0.75rem">
         <span class="hero-pill">Clockwork Heart · 發條之心</span>
         <span class="hero-tag-badge">希臘神殿奇想 · 黃金齒輪 × 發條之心</span>
@@ -156,16 +156,23 @@
         <a class="btn btn-ghost" href="#temple-showcase">看神殿核心主視覺</a>
       </div>
     </div>
+    <div class="hero-scroll-cue" id="hero-scroll-cue" aria-hidden="true">
+      <span class="cue-label">SCROLL TO EXPLORE · 捲動探索</span>
+      <div class="cue-mouse">
+        <div class="cue-wheel"></div>
+      </div>
+      <div class="cue-line"></div>
+    </div>
   </header>
 
-  <section class="quote-band">
+  <section class="quote-band scroll-narrative">
     <blockquote>「動起來吧，小傢伙，去看看這個停下來的世界。」<span class="coral">當世界大鐘停擺，背負十五圈發條的玩具白兔握緊長劍。</span></blockquote>
     <p class="cite">《發條之心》（Clockwork Heart）· 發條玩具世界冒險譚</p>
   </section>
 
   <section class="band band--ink" style="padding:2.2rem 0">
     <div class="container">
-      <div class="stats-row" style="margin:0">
+      <div class="stats-row scroll-narrative" style="margin:0">
         <div class="stat"><div class="stat__n">15 圈</div><div class="stat__l">初源發條戰鬥律動</div></div>
         <div class="stat"><div class="stat__n">部位</div><div class="stat__l">震顫聽音零件拆卸</div></div>
         <div class="stat"><div class="stat__n">四大</div><div class="stat__l">工坊殿堂自由探索</div></div>
@@ -177,7 +184,7 @@
   <!-- AEO / 關於遊戲核心定義（讓 AI 搜尋引擎與玩家精確理解遊戲） -->
   <section class="band band--paper" id="about-game" style="border-top:1px solid rgba(212,175,55,0.2);border-bottom:1px solid rgba(212,175,55,0.2)">
     <div class="container">
-      <div class="sec-head" style="margin-bottom:1.5rem">
+      <div class="sec-head scroll-narrative" style="margin-bottom:1.5rem">
         <p class="sec-kicker">About Clockwork Heart · 遊戲介紹</p>
         <h2 class="sec-title">《發條之心》是什麼遊戲？</h2>
         <p class="sec-lead" style="max-width:840px;margin:0 auto">
@@ -185,7 +192,7 @@
           在世界大鐘停擺的靜止世界中，玩家將引導背後附帶黃銅發條鑰匙、胸口跳動齒輪核心的米白金屬玩具兔「小白」，展開重啟世界動力的冒險旅程。
         </p>
       </div>
-      <div class="feature feature--flip" style="align-items:center;margin-top:1.5rem">
+      <div class="feature feature--flip scroll-narrative" style="align-items:center;margin-top:1.5rem">
         <div class="feature__media">
           <img src="media/shots/proof_mobile_lobby_home.png" alt="發條之心手遊實機畫面與雙拇指橫屏操作" />
           <span class="feature__badge">橫屏手遊 · 實機畫面</span>
@@ -210,29 +217,234 @@
   <!-- 希臘神殿 · 黃金齒輪與發條英雄 Key Visual Showcase -->
   <section class="band band--ink" id="temple-showcase">
     <div class="container">
-      <div class="sec-head">
+      <div class="sec-head scroll-narrative">
         <p class="sec-kicker">Key Visual & Canon</p>
         <h2 class="sec-title">希臘神殿 · 黃金齒輪與發條之心</h2>
         <p class="sec-lead">希臘石柱長廊環繞著永動金色齒輪；遠方神秘身影操縱著浮空運轉的發條之心，引領甦醒的金屬公仔英雄重啟世界。</p>
       </div>
-      <div class="feature feature--hero-visual" style="align-items:center">
+      <div class="feature feature--hero-visual scroll-narrative" style="align-items:center">
         <div class="feature__media">
           <img src="media/hero/key_visual_greece_gears.png" alt="發條之心官方主視覺：希臘神殿、黃金齒輪與發條玩具小隊" />
           <span class="feature__badge">官方主視覺 · 希臘神殿與黃金齒輪</span>
         </div>
         <div class="feature__copy">
+          <div class="showcase-pill-tag">Canon Roster · 正史英雄陣容</div>
           <h3>全金屬發條公仔 · 四大職業小隊</h3>
           <p>零毛皮、精緻金屬板件與螺栓鉚釘，每位英雄身後皆裝有標誌性的<strong>黃銅發條鑰匙</strong>。2.2 頭身矮萌公仔比例，各持專屬武器並背負著重啟世界的使命：</p>
-          <ul class="feature__list">
-            <li><strong>白兔劍士（小白）</strong>：米白金屬板件與胸口微型發條爐，手持單手長劍的純真勇者</li>
-            <li><strong>獅子騎士</strong>：皇家雕花板甲與金屬齒輪鬃毛，手持耀金騎士長槍的威嚴守衛</li>
-            <li><strong>狐狸學者</strong>：深藍法袍與精巧木銅法杖，精通機關奧秘與星讀符文的智者</li>
-            <li><strong>野豬狂戰</strong>：厚重維京鐵甲與金屬鋼鐵獠牙，手持巨型動力戰錘的重裝先鋒</li>
-          </ul>
-          <div style="margin-top:1.2rem;display:flex;gap:0.75rem;flex-wrap:wrap">
+          <div class="hero-roster-quick">
+            <span class="roster-chip">白兔劍士 · 小白</span>
+            <span class="roster-chip">獅子騎士 · 雷歐</span>
+            <span class="roster-chip">狐狸學者</span>
+            <span class="roster-chip">野豬狂戰</span>
+          </div>
+          <div style="margin-top:1.4rem;display:flex;gap:0.75rem;flex-wrap:wrap">
             <a class="btn btn-primary" href="media/promo/trailer_hero_clockwork_15s.mp4" target="_blank">觀看 15 秒電影預告片</a>
             <a class="btn btn-ghost" href="pages/gallery.html">圖庫高清放大</a>
           </div>
+        </div>
+      </div>
+
+      <!-- 四大英雄登場舞台 (Interactive Character Showcase) -->
+      <div class="hero-roster-stage scroll-narrative">
+        <div class="roster-stage-header">
+          <div class="roster-stage-kicker">Hero Showcase · 角色登場誌</div>
+          <h3 class="roster-stage-title">四大發條英雄 · 戰鬥特徵與核心配置</h3>
+          <p class="roster-stage-sub">點擊切換英雄，檢視專屬武器、發條驅動核心與戰場奧義。</p>
+        </div>
+
+        <!-- 英雄切換導覽 -->
+        <div class="hero-tabs" role="tablist" aria-label="英雄職業切換">
+          <button type="button" class="hero-tab is-active" role="tab" aria-selected="true" aria-controls="hero-whitey" id="tab-whitey" data-hero="whitey">
+            <span class="tab-badge">01</span>
+            <span class="tab-name">白兔劍士 · 小白</span>
+            <span class="tab-role">純真勇者 · 劍士</span>
+          </button>
+          <button type="button" class="hero-tab" role="tab" aria-selected="false" aria-controls="hero-leo" id="tab-leo" data-hero="leo">
+            <span class="tab-badge">02</span>
+            <span class="tab-name">獅子騎士 · 雷歐</span>
+            <span class="tab-role">皇家守衛 · 騎士</span>
+          </button>
+          <button type="button" class="hero-tab" role="tab" aria-selected="false" aria-controls="hero-fox" id="tab-fox" data-hero="fox">
+            <span class="tab-badge">03</span>
+            <span class="tab-name">狐狸學者</span>
+            <span class="tab-role">符文智者 · 法師</span>
+          </button>
+          <button type="button" class="hero-tab" role="tab" aria-selected="false" aria-controls="hero-boar" id="tab-boar" data-hero="boar">
+            <span class="tab-badge">04</span>
+            <span class="tab-name">野豬狂戰</span>
+            <span class="tab-role">重裝先鋒 · 狂戰</span>
+          </button>
+        </div>
+
+        <!-- 英雄詳情面板 (Panels) -->
+        <div class="hero-panels">
+          <!-- Panel 1: 小白 -->
+          <article class="hero-panel is-active" id="hero-whitey" role="tabpanel" aria-labelledby="tab-whitey">
+            <div class="hero-panel__main">
+              <div class="hero-panel__head">
+                <div class="hero-panel__titles">
+                  <span class="hero-archetype">純真勇者 · SWORDMASTER</span>
+                  <h4 class="hero-name">白兔劍士「小白」</h4>
+                  <p class="hero-quote">「動起來吧，小傢伙，去看看這個停下來的世界。」</p>
+                </div>
+                <div class="hero-key-badge">
+                  <span class="badge-label">核心發條</span>
+                  <span class="badge-val">15 圈初源</span>
+                </div>
+              </div>
+              <p class="hero-desc">
+                米白純淨金屬板件，胸膛跳動著原初雙子擒縱「發條之心」。背部裝有醒目的黃銅發條鑰匙，以小博大的敏捷身手穿梭於巨型機械齒輪縫隙中。
+              </p>
+              <div class="hero-specs-grid">
+                <div class="spec-card">
+                  <span class="spec-label">專屬兵裝</span>
+                  <strong class="spec-val">初源單手長劍</strong>
+                  <span class="spec-desc">微末之刃 · 精準破甲</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">感知天賦</span>
+                  <strong class="spec-val">長耳共鳴聽音</strong>
+                  <span class="spec-desc">感知破綻 · 零件拆卸</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">作戰風格</span>
+                  <strong class="spec-val">15 圈律動對決</strong>
+                  <span class="spec-desc">張弛有度 · 閃避反擊</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">過載奧義</span>
+                  <strong class="spec-val">百裂廢鐵暴風</strong>
+                  <span class="spec-desc">安全閥全開 · 終結大劍斬</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Panel 2: 雷歐 -->
+          <article class="hero-panel" id="hero-leo" role="tabpanel" aria-labelledby="tab-leo" hidden>
+            <div class="hero-panel__main">
+              <div class="hero-panel__head">
+                <div class="hero-panel__titles">
+                  <span class="hero-archetype">皇家守衛 · PALADIN</span>
+                  <h4 class="hero-name">獅子騎士「雷歐」</h4>
+                  <p class="hero-quote">「只要黃金齒輪仍在咬合，榮譽之門便絕不向混亂敞開。」</p>
+                </div>
+                <div class="hero-key-badge">
+                  <span class="badge-label">核心發條</span>
+                  <span class="badge-val">鎢鋼同心</span>
+                </div>
+              </div>
+              <p class="hero-desc">
+                身披皇家重裝雕花板甲，威嚴鬃毛由數十枚同心金色齒輪聯動運轉。鎮守世界大鐘外環防線，背部雙聯散熱煙囪在戰意高漲時噴湧滾燙蒸汽。
+              </p>
+              <div class="hero-specs-grid">
+                <div class="spec-card">
+                  <span class="spec-label">專屬兵裝</span>
+                  <strong class="spec-val">耀金騎士長槍</strong>
+                  <span class="spec-desc">沉穩突進 · 貫穿破盾</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">戰術天賦</span>
+                  <strong class="spec-val">磐石完美招架</strong>
+                  <span class="spec-desc">化解衝擊 · 即時反制</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">防禦體系</span>
+                  <strong class="spec-val">同心齒輪護盾</strong>
+                  <span class="spec-desc">硬質重甲 · 抵禦重擊</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">過載奧義</span>
+                  <strong class="spec-val">王者裁決斬</strong>
+                  <span class="spec-desc">齒輪過載 · 巨芒劈裂敵陣</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Panel 3: 狐狸學者 -->
+          <article class="hero-panel" id="hero-fox" role="tabpanel" aria-labelledby="tab-fox" hidden>
+            <div class="hero-panel__main">
+              <div class="hero-panel__head">
+                <div class="hero-panel__titles">
+                  <span class="hero-archetype">符文智者 · SAGE</span>
+                  <h4 class="hero-name">狐狸學者</h4>
+                  <p class="hero-quote">「星辰的軌道早已銘刻在齒輪的齒尖，一切停擺皆有跡可循。」</p>
+                </div>
+                <div class="hero-key-badge">
+                  <span class="badge-label">核心發條</span>
+                  <span class="badge-val">天體星盤</span>
+                </div>
+              </div>
+              <p class="hero-desc">
+                身穿深藍星象法袍，精巧木銅齒輪法杖頂端旋轉著縮小版渾天儀。精通世界大鐘的星讀律曆與符文封印機關，能在戰場上引導空間重力場。
+              </p>
+              <div class="hero-specs-grid">
+                <div class="spec-card">
+                  <span class="spec-label">專屬兵裝</span>
+                  <strong class="spec-val">木銅符文法杖</strong>
+                  <span class="spec-desc">星圖引導 · 遠程牽制</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">機關天賦</span>
+                  <strong class="spec-val">星軸符文解析</strong>
+                  <span class="spec-desc">削弱裝甲 · 破除力場</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">戰術支援</span>
+                  <strong class="spec-val">微型重力透鏡</strong>
+                  <span class="spec-desc">聚攏零件 · 控場制動</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">過載奧義</span>
+                  <strong class="spec-val">星穹萬象光子滅</strong>
+                  <span class="spec-desc">空間失重 · 毀滅性光子衝擊</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Panel 4: 野豬狂戰 -->
+          <article class="hero-panel" id="hero-boar" role="tabpanel" aria-labelledby="tab-boar" hidden>
+            <div class="hero-panel__main">
+              <div class="hero-panel__head">
+                <div class="hero-panel__titles">
+                  <span class="hero-archetype">重裝先鋒 · BERSERKER</span>
+                  <h4 class="hero-name">野豬狂戰</h4>
+                  <p class="hero-quote">「沒有任何生鏽的外殼，能扛住這柄動力戰錘的三次重擊！」</p>
+                </div>
+                <div class="hero-key-badge">
+                  <span class="badge-label">核心發條</span>
+                  <span class="badge-val">高壓排氣</span>
+                </div>
+              </div>
+              <p class="hero-desc">
+                厚重維京鉚釘鐵甲與鋼鐵鍛造雙獠牙，揮舞著高扭矩動力戰錘。體內粗獷的排氣風箱隨步伐轟鳴，以純粹的物理力量瓦解巨型頭目的防禦樞紐。
+              </p>
+              <div class="hero-specs-grid">
+                <div class="spec-card">
+                  <span class="spec-label">專屬兵裝</span>
+                  <strong class="spec-val">巨型動力戰錘</strong>
+                  <span class="spec-desc">重型打擊 · 部位粉碎</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">先鋒天賦</span>
+                  <strong class="spec-val">蓄力鋼鐵霸體</strong>
+                  <span class="spec-desc">無視衝擊 · 強行破招</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">機甲破壞</span>
+                  <strong class="spec-val">鎢鋼獠牙衝撞</strong>
+                  <span class="spec-desc">撞碎外殼 · 暴露核心</span>
+                </div>
+                <div class="spec-card">
+                  <span class="spec-label">過載奧義</span>
+                  <strong class="spec-val">狂怒蒸汽震撼</strong>
+                  <span class="spec-desc">全管線超壓 · 地裂震盪波</span>
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </div>
@@ -241,12 +453,12 @@
   <!-- 實機大廳 Showcase -->
   <section class="band band--paper" id="lobby-showcase">
     <div class="container">
-      <div class="sec-head">
+      <div class="sec-head scroll-narrative">
         <p class="sec-kicker">In-game</p>
         <h2 class="sec-title">實機大廳 · 今日村莊</h2>
         <p class="sec-lead">舒適親切的橫屏手遊介面，享受與發條英雄的日常陪伴。</p>
       </div>
-      <div class="feature">
+      <div class="feature scroll-narrative">
         <div class="feature__media" style="aspect-ratio:16/9">
           <img src="media/shots/proof_mobile_lobby_home.png" alt="今日村莊實機大廳（Godot 截圖）" />
           <span class="feature__badge">Godot 實機 · 今日村莊</span>
@@ -267,12 +479,12 @@
   <!-- 故事切入：晨光工坊 -->
   <section class="band band--soft-key">
     <div class="container">
-      <div class="sec-head">
+      <div class="sec-head scroll-narrative">
         <p class="sec-kicker">Realm of Wonder</p>
         <h2 class="sec-title">世界大鐘停擺之時，發條白兔握緊長劍</h2>
         <p class="sec-lead">2.2 頭身金屬發條白兔「小白」，以長耳共鳴感知零件破綻，挺身迎戰巨大的失控機關。</p>
       </div>
-      <div class="feature">
+      <div class="feature scroll-narrative">
         <div class="feature__media">
           <div class="placeholder-card" style="aspect-ratio:16/9;height:100%">
             <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><circle cx="12" cy="12" r="3" fill="#3ECFBF"/><path d="M12 9v3l2 2"/></svg>
@@ -418,32 +630,67 @@
   <!-- Bento 六大界域 -->
   <section class="band band--paper">
     <div class="container">
-      <div class="sec-head">
+      <div class="sec-head scroll-narrative">
         <p class="sec-kicker">Explore</p>
         <h2 class="sec-title">六域探索 · 自由自訂的冒險路徑</h2>
         <p class="sec-lead">騎士堡壘、霧隱村、武鬥道場、遊俠森林、維京深港、法師之塔——岔路自由選序，依當前戰力挑戰首領。</p>
       </div>
-      <div class="bento">
-        <div class="bento__item bento__item--lg" style="background:linear-gradient(180deg,#1D1926,#121018);display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;min-height:260px">
-          <div class="cap" style="position:static;background:none;padding:0"><strong>騎士堡壘</strong><span style="color:var(--gold)">榮譽之都 · 演武角鬥與騎士團駐地</span></div>
+      <div class="bento scroll-narrative-stagger">
+        <div class="bento__item bento__item--lg bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-01 · 騎士團駐地</span>
+            <strong class="bento-title">騎士堡壘</strong>
+            <span class="bento-sub">榮譽之都 · 演武角鬥與騎士團駐地</span>
+            <p class="bento-desc">高聳巍峨的青銅閘門與演武校場，接受多波守衛考驗，獲取榮譽金章與高階武器圖紙。</p>
+          </div>
         </div>
-        <div class="bento__item bento__item--md" style="background:linear-gradient(180deg,#1D1926,#121018);display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;min-height:220px">
-          <div class="cap" style="position:static;background:none;padding:0"><strong>霧隱村</strong><span style="color:var(--gold)">白霧試煉 · 虛實莫辨的機關迷陣</span></div>
+        <div class="bento__item bento__item--md bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-02 · 機關迷陣</span>
+            <strong class="bento-title">霧隱村</strong>
+            <span class="bento-sub">白霧試煉 · 虛實莫辨的機關迷陣</span>
+            <p class="bento-desc">長年被發條冷凝白霧籠罩的古樸聚落，機關暗器遍布，考驗小白長耳聽音破除虛影破綻。</p>
+          </div>
         </div>
-        <div class="bento__item bento__item--sm" style="background:linear-gradient(180deg,#1D1926,#121018);display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;min-height:180px">
-          <div class="cap" style="position:static;background:none;padding:0"><strong>武鬥道場</strong><span style="color:var(--gold)">拳理研習 · 阿波師傅的試煉</span></div>
+        <div class="bento__item bento__item--sm bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-03 · 拳理研習</span>
+            <strong class="bento-title">武鬥道場</strong>
+            <span class="bento-sub">拳理研習 · 阿波師傅的試煉</span>
+            <p class="bento-desc">研習六職武技招式，在沉重木人樁與沙袋陣中領會極限格擋的反擊時機。</p>
+          </div>
         </div>
-        <div class="bento__item bento__item--sm" style="background:linear-gradient(180deg,#1D1926,#121018);display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;min-height:180px">
-          <div class="cap" style="position:static;background:none;padding:0"><strong>遊俠森林</strong><span style="color:var(--gold)">林間穿梭 · 等風而動的疾影</span></div>
+        <div class="bento__item bento__item--sm bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-04 · 林間疾影</span>
+            <strong class="bento-title">遊俠森林</strong>
+            <span class="bento-sub">林間穿梭 · 等風而動的疾影</span>
+            <p class="bento-desc">巨型積木樹冠與發條風車交織的獵場，靈巧穿梭採集原木素材與珍稀松脂。</p>
+          </div>
         </div>
-        <div class="bento__item bento__item--sm" style="background:linear-gradient(180deg,#1D1926,#121018);display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;min-height:180px">
-          <div class="cap" style="position:static;background:none;padding:0"><strong>維京深港</strong><span style="color:var(--gold)">浪火交融 · 石拳停泊的要塞</span></div>
+        <div class="bento__item bento__item--sm bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-05 · 石拳要塞</span>
+            <strong class="bento-title">維京深港</strong>
+            <span class="bento-sub">浪火交融 · 石拳停泊的要塞</span>
+            <p class="bento-desc">生鏽鎢鋼重錨與巨型絞盤天梯，深海打撈失落齒輪，鍛造抗氧化高強度護甲。</p>
+          </div>
         </div>
-        <div class="bento__item bento__item--wide" style="background:linear-gradient(180deg,#1D1926,#121018);display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;min-height:200px">
-          <div class="cap" style="position:static;background:none;padding:0"><strong>法師之塔</strong><span style="color:var(--gold)">終焉記憶 · 塔頂世界大鐘的核心樞紐</span></div>
+        <div class="bento__item bento__item--wide bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-06 · 核心樞紐</span>
+            <strong class="bento-title">法師之塔</strong>
+            <span class="bento-sub">終焉記憶 · 塔頂世界大鐘的核心樞紐</span>
+            <p class="bento-desc">螺旋攀升的星軸天階，遠古符文發條星盤在此運轉，世界大鐘停擺的終極謎底所在。</p>
+          </div>
         </div>
-        <div class="bento__item bento__item--sm" style="background:linear-gradient(180deg,#1D1926,#121018);display:flex;flex-direction:column;justify-content:flex-end;padding:1.5rem;min-height:180px">
-          <div class="cap" style="position:static;background:none;padding:0"><strong>即時戰鬥</strong><span style="color:var(--gold)">掌控 15 圈能量的律動對決</span></div>
+        <div class="bento__item bento__item--sm bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">SYSTEM · 核心節奏</span>
+            <strong class="bento-title">即時戰鬥</strong>
+            <span class="bento-sub">掌控 15 圈能量的律動對決</span>
+            <p class="bento-desc">無須魔力藍條，每一次閃避、突進與奧義皆由發條能量即時驅動。</p>
+          </div>
         </div>
       </div>
     </div>
@@ -561,7 +808,7 @@
   <!-- 開始旅程 CTA -->
   <section class="band band--paper">
     <div class="container">
-      <div class="cta-finale">
+      <div class="cta-finale scroll-narrative">
         <div class="cta-finale__shade"></div>
         <h2>發條已上弦。你準備好出發了嗎？</h2>
         <p>#開發中 · 最新遊戲實機畫面陸續公開。深入了解遊戲設定，或下載開發測試包搶先體驗。</p>
