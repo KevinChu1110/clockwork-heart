@@ -303,12 +303,13 @@
    "id": "ops-urls",
    "cat": "平台",
    "title": "GitHub Pages 網址更新",
-   "status": "開發中",
+   "status": "測試中",
    "keys": [
     "github pages",
     "網址",
     "url"
-   ]
+   ],
+   "note": "GitHub Pages/OAuth callback網址已更新至clockwork-heart(97766ef)"
   },
   {
    "id": "world-regions",
