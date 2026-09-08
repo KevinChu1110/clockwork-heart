@@ -92,8 +92,8 @@
    "id": "mob-ui",
    "cat": "遊戲",
    "title": "🥈 手機化 3／6：響應式 UI",
-   "status": "測試中",
-   "note": "Safe Area+Anchors+可縮放；標題／暫停／對話／大廳／戰鬥HUD；彈窗740-760、鈕≥50。test_responsive_ui/title_menu/panels 綠；冒煙無 SCRIPT ERROR。分支 agent/2026-09-07-responsive-ui",
+   "status": "已上線",
+   "note": "QA回歸驗收全綠(t_5f90bd63)，79/79 PASSED",
    "keys": [
     "ui",
     "responsive",
