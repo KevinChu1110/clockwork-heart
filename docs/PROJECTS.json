@@ -291,12 +291,13 @@
    "id": "ops-rename",
    "cat": "平台",
    "title": "全面改名 發條之心 Clockwork Heart",
-   "status": "開發中",
+   "status": "測試中",
    "keys": [
     "改名",
     "rename",
     "clockwork"
-   ]
+   ],
+   "note": "全面改名六語系已合併main(b42b264)，待QA走一輪確認無殘留舊名再標已上線"
   },
   {
    "id": "ops-urls",
