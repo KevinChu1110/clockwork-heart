@@ -556,30 +556,55 @@ func _build_village_tab() -> void:
 	hero_click.pressed.connect(_on_hero_clicked)
 	_hero_avatar.add_child(hero_click)
 
-	## 3. 頭頂稱號與名字
+	## 3. 頭頂稱號與名字（黑曜石半透明膠囊底襯 + 金框 + 深色文字描邊，確保在中央發光齒輪光暈上清晰可讀）
+	var tag_panel := PanelContainer.new()
+	tag_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	tag_panel.offset_left = -75
+	tag_panel.offset_top = -58
+	tag_panel.offset_right = 75
+	tag_panel.offset_bottom = -8
+	tag_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var tag_sb := StyleBoxFlat.new()
+	tag_sb.bg_color = Color(0.027, 0.024, 0.039, 0.88) # OBSIDIAN_DEEP 半透明黑曜石底
+	tag_sb.border_color = Color(0.831, 0.686, 0.216, 0.75) # GOLD_CLASSICAL 金屬微光邊框
+	tag_sb.set_border_width_all(1)
+	tag_sb.border_width_bottom = 2
+	tag_sb.set_corner_radius_all(10)
+	tag_sb.content_margin_left = 10
+	tag_sb.content_margin_right = 10
+	tag_sb.content_margin_top = 4
+	tag_sb.content_margin_bottom = 4
+	tag_sb.shadow_color = Color(0.0, 0.0, 0.0, 0.5)
+	tag_sb.shadow_size = 5
+	tag_sb.shadow_offset = Vector2(0, 2)
+	tag_panel.add_theme_stylebox_override("panel", tag_sb)
+
 	var tag_v := VBoxContainer.new()
-	tag_v.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	tag_v.offset_left = -100
-	tag_v.offset_top = -52
-	tag_v.offset_right = 100
-	tag_v.offset_bottom = 0
 	tag_v.alignment = BoxContainer.ALIGNMENT_CENTER
 	tag_v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tag_v.add_theme_constant_override("separation", 2)
 
 	var title_l := Label.new()
 	title_l.text = "【初出茅廬】"
 	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_l.add_theme_font_size_override("font_size", 12)
-	title_l.add_theme_color_override("font_color", BRONZE_WARM)
+	title_l.add_theme_font_size_override("font_size", 11)
+	title_l.add_theme_color_override("font_color", GOLD_HOVER)
+	title_l.add_theme_color_override("font_outline_color", Color(0.02, 0.02, 0.04, 0.95))
+	title_l.add_theme_constant_override("outline_size", 2)
 	tag_v.add_child(title_l)
 
 	_hero_name_tag = Label.new()
 	_hero_name_tag.text = _get_hero_name()
 	_hero_name_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hero_name_tag.add_theme_font_size_override("font_size", 16)
+	_hero_name_tag.add_theme_font_size_override("font_size", 15)
 	_hero_name_tag.add_theme_color_override("font_color", INK_IVORY)
+	_hero_name_tag.add_theme_color_override("font_outline_color", Color(0.02, 0.02, 0.04, 0.95))
+	_hero_name_tag.add_theme_constant_override("outline_size", 3)
 	tag_v.add_child(_hero_name_tag)
-	_hero_avatar.add_child(tag_v)
+
+	tag_panel.add_child(tag_v)
+	_hero_avatar.add_child(tag_panel)
 
 	## 4. 點擊彈出的神殿對話氣泡
 	_speech_bubble = PanelContainer.new()
