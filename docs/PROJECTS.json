@@ -338,26 +338,6 @@
    "keys": [
     "紙娃娃角色創建系"
    ]
-  },
-  {
-   "id": "seo-aeo",
-   "cat": "平台",
-   "title": "AI 搜尋優化（AEO）：llms.txt 與結構化資料",
-   "status": "開發中",
-   "note": "已開單 t_08b87e5a 給阿宏：llms.txt、structured data、meta優化",
-   "keys": [
-    "AI 搜尋優化（"
-   ]
-  },
-  {
-   "id": "ai-agent-play",
-   "cat": "平台",
-   "title": "AI agent 操作遊戲 API/MCP 評估",
-   "status": "開發中",
-   "note": "已開單 t_3010b9b7 給阿宏：先出評估報告，不直接實作",
-   "keys": [
-    "AI agent"
-   ]
   }
  ]
 }
