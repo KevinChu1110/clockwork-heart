@@ -228,8 +228,8 @@
    "id": "mk-trailer",
    "cat": "行銷",
    "title": "品牌短片：覺醒（分鏡→影片）",
-   "status": "開發中",
-   "note": "分鏡在 docs/marketing/STORYBOARD_AWAKENING.md。",
+   "status": "測試中",
+   "note": "完成 ffmpeg 17.5s 覺醒品牌短片合成與 6 鏡動態/音效驗收，送審 review",
    "keys": [
     "短片",
     "覺醒",
