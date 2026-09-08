@@ -348,6 +348,16 @@
    "keys": [
     "AI agent"
    ]
+  },
+  {
+   "id": "web-aeo",
+   "cat": "平台",
+   "title": "官網 SEO/AEO：llms.txt・結構化資料・OG/meta 優化",
+   "status": "草稿",
+   "note": "完成 AEO 技術面與檢驗",
+   "keys": [
+    "官網 SEO/A"
+   ]
   }
  ]
 }
