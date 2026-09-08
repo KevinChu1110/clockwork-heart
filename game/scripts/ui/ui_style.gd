@@ -2,6 +2,30 @@ class_name UiStyle
 extends RefCounted
 ## 據點 UI：深木底、銅金邊、淺字。對齊原作村莊／楓式面板，不用網頁粉紅。
 
+## ── 希臘神殿 · 黑曜石 × 古典金標準色盤 (對齊 temple.css 與 docs/LOBBY_UI_REDESIGN.md) ──
+const OBSIDIAN_BASE      := Color(0.043, 0.039, 0.055, 1.0)  ## #0B0A0E：黑曜石最深底色
+const OBSIDIAN_CARD      := Color(0.078, 0.071, 0.094, 1.0)  ## #141218：黑曜石卡片面色
+const OBSIDIAN_WARM      := Color(0.102, 0.090, 0.122, 1.0)  ## #1A171F：微溫黑曜石
+const OBSIDIAN_DEEP      := Color(0.027, 0.024, 0.039, 1.0)  ## #07060A：黑曜石凹槽
+
+const GOLD_CLASSICAL     := Color(0.831, 0.686, 0.216, 1.0)  ## #D4AF37：古典金
+const GOLD_HOVER         := Color(0.941, 0.843, 0.549, 1.0)  ## #F0D78C：黃金亮色
+const BRONZE_ANTIQUE     := Color(0.549, 0.416, 0.102, 1.0)  ## #8C6A1A：仿古黃銅
+const BRONZE_WARM        := Color(0.769, 0.573, 0.165, 1.0)  ## #C4922A：暖古銅
+
+const TEAL_CORE          := Color(0.243, 0.812, 0.749, 1.0)  ## #3ECFBF：以太青綠核心
+const TEAL_CORE_DARK     := Color(0.122, 0.541, 0.502, 1.0)  ## #1F8A80：以太青綠暗底
+
+const INK_IVORY          := Color(0.957, 0.922, 0.831, 1.0)  ## #F4EBD4：象牙白文字
+const INK_IVORY_SOFT     := Color(0.788, 0.749, 0.659, 1.0)  ## #C9BFA8：柔和象牙白
+const INK_IVORY_MUTED    := Color(0.541, 0.502, 0.439, 1.0)  ## #8A8070：弱化象牙白
+
+const CORAL_RUST         := Color(0.769, 0.361, 0.290, 1.0)  ## #C45C4A：鐵鏽珊瑚紅
+const STEEL_BLUE         := Color(0.420, 0.549, 0.682, 1.0)  ## #6B8CAE：淬火精鋼藍
+
+const LINE_GOLD          := Color(0.831, 0.686, 0.216, 0.38) ## 金線微光邊框
+const LINE_GOLD_SOFT     := Color(0.831, 0.686, 0.216, 0.18) ## 輔助分界金線
+
 ## ── 塔塔冒險隊風格：陽光童話·奶油糖果多巴胺色盤 (Tata Sunshine Dopamine) ──
 const TATA_YELLOW := Color(1.0, 0.82, 0.18, 1.0)          ## 陽光蜜糖黃
 const TATA_ORANGE := Color(1.0, 0.54, 0.12, 1.0)          ## 活力暖橘
