@@ -1943,33 +1943,25 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	b.custom_minimum_size = Vector2(680, 0)
 	b.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	b.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	b.add_theme_color_override("default_color", Color(0.95, 0.92, 0.88))
+	b.add_theme_color_override("default_color", Color(0.24, 0.18, 0.14))
 	b.add_theme_font_size_override("normal_font_size", 14)
 	root.add_child(b)
 	## 正文過長時限高，按鈕永遠可見
 	if body.length() > 280:
 		b.fit_content = false
-		b.custom_minimum_size = Vector2(680, 150)
+		b.custom_minimum_size = Vector2(680, 105)
 		b.scroll_active = true
 
-	## 按鈕列要能捲動。
-	##
-	## 原本是直接把 VBox 掛進卡片，按鈕多的時候卡片就長過螢幕；CenterContainer
-	## 置中之後上下都被切掉，「返回」被推出畫面外，Esc 只會疊暫停選單，
-	## 唯一出路是回標題 —— 玩家的進度沒了。684px 的可用高度只放得下 10 顆。
-	##
-	## 可用高 = 視窗高 － 卡片其它東西（標題、分隔線、正文、間距、邊距）。
-	## 需要多高**不要用猜的**：這裡原本寫死「一顆按鈕 30px」，
-	## 而 UiStyle.style_button() 之後會把 custom_minimum_size 蓋成 36 ——
-	## 於是每個面板的捲動區都比內容矮，最後一顆（幾乎都是「返回」）被切掉一半。
-	## 按鈕多的面板玩家還會想到去捲，只有兩顆按鈕的面板不會，只覺得「返回不見了」。
-	## 改成按鈕建好之後直接問 VBox 要多高，不再有第二個數字要維護。
 	var btn_gap := 6.0
 	## 卡片固定開銷：標題列含關閉鈕 50 + 分隔線 2 + 間距 + 邊距 + 留白
 	var chrome_h := 220.0
-	var body_h := 140.0 if body.length() > 280 else minf(140.0, ceilf(float(body.length()) / 26.0) * 20.0)
+	if bool(extras.get("soul_hang", false)):
+		chrome_h += 75.0
+	if bool(extras.get("soul_pity", false)):
+		chrome_h += 75.0
+	var body_h := 105.0 if body.length() > 280 else minf(105.0, ceilf(float(body.length()) / 26.0) * 20.0)
 	var screen_h := float(get_viewport_rect().size.y)
-	var avail_h := maxf(150.0, screen_h - chrome_h - body_h)
+	var avail_h := maxf(110.0, screen_h - chrome_h - body_h - 25.0)
 
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -4923,8 +4915,8 @@ func _c1_star() -> void:
 	_play_dialog([
 		{"speaker": _t("星讀"), "text": _t("你身上有煙味，和一點……尚未點名的星光。")},
 		{"speaker": _t("星讀"), "text": _t("路上會撿到星屑。拿來抽魂，走過的路會凝成刃的性格。")},
-		{"speaker": _t("星讀"), "text": _t("先送你一握星屑。星盤為你亮了一角。")},
-		{"speaker": _t("系統"), "text": _t("獲得星屑 ×5。凝出戰魂「凡·破軍」，已入魂槽。")},
+		{"speaker": _t("星讀"), "text": _t("先送你一握星屑。封靈台為你亮了一角。")},
+		{"speaker": _t("系統"), "text": _t("獲得星屑 ×5。凝出戰魂「凡·銳齒之魂」，已入魂槽。")},
 	], func():
 		GameState.add_stardust(5)
 		SoulSystem.grant_starter_soul()
@@ -5142,7 +5134,7 @@ func _go_soul_panel() -> void:
 				_go_soul_panel()
 			})
 	buttons.append({"text": Loc.t("soul.fuse"), "cb": _soul_try_fuse})
-	buttons.append({"text": _t("周天星盤"), "cb": _go_astrolabe_panel})
+	buttons.append({"text": _t("戰魂圖鑑"), "cb": _go_astrolabe_panel})
 	buttons.append({"text": Loc.t("pause.gems"), "cb": _go_gem_panel})
 	buttons.append({"text": Loc.t("common.skills"), "cb": _go_skill_panel})
 	buttons.append({"text": Loc.t("forge.back_square"), "cb": _go_c1_town})
@@ -5153,13 +5145,13 @@ func _go_astrolabe_panel() -> void:
 	SoulSystem.ensure_slots()
 	if AudioManager and AudioManager.has_method("play_bgm"):
 		AudioManager.play_bgm("village")
-	var body: String = SoulSystem.astrolabe_status_bbcode()
+	var body: String = SoulSystem.soul_codex_status_bbcode()
 	var buttons: Array = []
 	buttons.append({"text": _t("聚魂儀式"), "cb": _go_soul_panel})
-	buttons.append({"text": _t("重整星象"), "cb": _go_astrolabe_panel})
-	buttons.append({"text": _t("離開星盤"), "cb": func(): _open_explore("town_soul", Screen.C1_TOWN)})
+	buttons.append({"text": _t("重整圖鑑"), "cb": _go_astrolabe_panel})
+	buttons.append({"text": _t("離開圖鑑"), "cb": func(): _open_explore("town_soul", Screen.C1_TOWN)})
 	buttons.append({"text": Loc.t("forge.back_square"), "cb": _go_c1_town})
-	_panel(_t("聚魂殿 · 周天星盤"), body, buttons, {"soul_hang": true})
+	_panel(_t("聚魂殿 · 戰魂圖鑑"), body, buttons, {"soul_hang": true})
 
 
 func _go_gem_case_panel() -> void:
@@ -5567,20 +5559,22 @@ func _make_soul_hang() -> Control:
 		top.add_child(wreath)
 	box.add_child(top)
 	var grid := GridContainer.new()
-	grid.columns = 7
-	grid.add_theme_constant_override("h_separation", 4)
+	grid.columns = 4
+	grid.add_theme_constant_override("h_separation", 8)
 	grid.add_theme_constant_override("v_separation", 4)
 	grid.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var any_star := false
-	for st in SoulSystem.STARS:
+	for st in SoulSystem.CORE_SOULS:
 		var sid := str(st.get("id", ""))
-		var star_tex: Texture2D = SpriteDB.soul_star(sid)
+		var star_tex: Texture2D = SpriteDB.soul_core(str(st.get("key", sid)))
+		if star_tex == null:
+			star_tex = SpriteDB.soul_star(sid)
 		if star_tex == null:
 			continue
 		any_star = true
 		var cell := TextureRect.new()
 		cell.texture = star_tex
-		cell.custom_minimum_size = Vector2(32, 32)
+		cell.custom_minimum_size = Vector2(36, 36)
 		cell.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		cell.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		cell.mouse_filter = Control.MOUSE_FILTER_IGNORE

@@ -96,9 +96,9 @@ func _initialize() -> void:
 	gs.soul_slots = [""]
 	for i in 3:
 		gs.souls.append({
-			"id": "t%d" % i, "star": "破軍", "quality": "凡", "level": 0, "equipped": false
+			"id": "t%d" % i, "star": "銳齒之魂", "quality": "凡", "level": 0, "equipped": false
 		})
-	var fused: Dictionary = ss.fuse("破軍", "凡", 0)
+	var fused: Dictionary = ss.fuse("銳齒之魂", "凡", 0)
 	if fused.is_empty() or int(fused.get("level", -1)) != 1:
 		push_error("fuse fail")
 		ok = false
@@ -113,11 +113,11 @@ func _initialize() -> void:
 	else:
 		print("tier6 slots OK")
 
-	if ss.STARS.size() < 14:
-		push_error("need 14 stars got %d" % ss.STARS.size())
+	if ss.CORE_SOULS.size() != 4:
+		push_error("need 4 core souls got %d" % ss.CORE_SOULS.size())
 		ok = false
 	else:
-		print("fourteen stars OK")
+		print("four core souls OK")
 
 	## 神魂＝神品質戰魂，最高 10 級（聚俠網）；凡品仍 3 階
 	if ss.fuse_max_level("凡") != 3 or ss.fuse_max_level("神") != 10:
@@ -129,16 +129,16 @@ func _initialize() -> void:
 	gs.soul_slots = [""]
 	for i in 3:
 		gs.souls.append({
-			"id": "s%d" % i, "star": "天機", "quality": "神", "level": 9, "equipped": false
+			"id": "s%d" % i, "star": "銳齒之魂", "quality": "神", "level": 9, "equipped": false
 		})
-	if not ss.can_fuse("天機", "神", 9):
+	if not ss.can_fuse("銳齒之魂", "神", 9):
 		push_error("神 lv9 should fuse to 10")
 		ok = false
-	var shen: Dictionary = ss.fuse("天機", "神", 9)
+	var shen: Dictionary = ss.fuse("銳齒之魂", "神", 9)
 	if shen.is_empty() or int(shen.get("level", 0)) != 10:
 		push_error("神 fuse to 10 fail %s" % shen)
 		ok = false
-	elif ss.can_fuse("天機", "神", 10):
+	elif ss.can_fuse("銳齒之魂", "神", 10):
 		push_error("神 should stop at 10")
 		ok = false
 	else:
@@ -146,7 +146,7 @@ func _initialize() -> void:
 
 	## 入魂對比：空槽應顯示從 0 起的增減
 	gs.souls = [{
-		"id": "cmp1", "star": "破軍", "quality": "凡", "level": 0, "equipped": false
+		"id": "cmp1", "star": "銳齒之魂", "quality": "凡", "level": 0, "equipped": false
 	}]
 	gs.soul_slots = [""]
 	var cmp: Dictionary = ss.compare_embed("cmp1", 0)
@@ -191,10 +191,10 @@ func _initialize() -> void:
 
 	## 養魂：廢魂餵最強、逐級進位；入槽魂不能當飼料
 	gs.souls = [
-		{"id": "t1", "star": "武曲", "quality": "稀世", "level": 0, "equipped": false},
-		{"id": "j1", "star": "破軍", "quality": "凡", "level": 0, "equipped": false},
-		{"id": "j2", "star": "破軍", "quality": "大凶", "level": 0, "equipped": false},
-		{"id": "j3", "star": "破軍", "quality": "凡", "level": 0, "equipped": true},
+		{"id": "t1", "star": "全衡之魂", "quality": "稀世", "level": 0, "equipped": false},
+		{"id": "j1", "star": "銳齒之魂", "quality": "凡", "level": 0, "equipped": false},
+		{"id": "j2", "star": "銳齒之魂", "quality": "大凶", "level": 0, "equipped": false},
+		{"id": "j3", "star": "銳齒之魂", "quality": "凡", "level": 0, "equipped": true},
 	]
 	gs.soul_slots = ["j3"]
 	var ab: Dictionary = ss.absorb_junk_auto()
@@ -209,7 +209,7 @@ func _initialize() -> void:
 	## 45 經驗不夠 60 → 0 級；再餵到升級
 	var big: Array = []
 	for i in 6:
-		big.append({"id": "k%d" % i, "star": "破軍", "quality": "吉", "level": 0, "equipped": false})
+		big.append({"id": "k%d" % i, "star": "銳齒之魂", "quality": "吉", "level": 0, "equipped": false})
 	gs.souls += big
 	var fids: Array = []
 	for s in big:
