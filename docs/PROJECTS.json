@@ -187,8 +187,8 @@
    "id": "cut-systems",
    "cat": "遊戲",
    "title": "🥉 下架公會週貢獻／NG+／裂縫",
-   "status": "測試中",
-   "note": "標題暫停通關後入口已關 test_cut_systems 綠；分支已合併進 main（35b4767 之前）",
+   "status": "已上線",
+   "note": "QA回歸驗收全綠(t_5f90bd63)，79/79 PASSED",
    "keys": [
     "公會",
     "ng+",
