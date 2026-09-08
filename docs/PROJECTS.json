@@ -145,8 +145,8 @@
    "id": "balance-lock",
    "cat": "遊戲",
    "title": "🥉 戰鬥數值時間模型鎖版",
-   "status": "測試中",
-   "note": "三處已對齊（BALANCE.md §5＝combat.json＝Formulas/BattleSim）；鏢/鎚風姿改跟表；跑過 test_formulas、test_rage、test_boss_curve。未推 main。",
+   "status": "已上線",
+   "note": "QA回歸驗收全綠(t_5f90bd63)，79/79 PASSED",
    "keys": [
     "balance",
     "數值",
