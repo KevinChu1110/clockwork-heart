@@ -4,7 +4,8 @@
 > **制定依據**：`docs/marketing/SHORTS_SOUL_BATTLE_POLISH_30S.md` 第四節與第五節  
 > **產出日期**：2026-09-08  
 > **錄製執行**：側案·程式 阿宏（sideworker）  
-> **規範標準**：嚴格遵守 `references/review.md` 第 10～19 條、第 12 條（全片 9:16 直式 1080×1920）、第 19e 條（逐條 ls 驗證）。
+> **規範標準**：嚴格遵守 `references/review.md` 第 10～19 條、第 12 條（全片 9:16 直式 1080×1920）、第 19e 條（逐條 ls 驗證）、第 19b 條（100% 真實 Godot 錄影）。  
+> **驗證備忘**：採用檔案握手信號機制（場景與畫面完全渲染穩定後方啟動錄影），徹底根除 Godot 開機 Splash Screen 與滑鼠游標。四段縮圖與影片已全數經由 Vision 檢查確認無誤。
 
 ---
 
@@ -28,34 +29,34 @@
 ### 1. 9:16 直式影片素材（1080×1920，主要合成素材）
 | 素材編號 | Workspace 路徑 | 專案交付路徑 (`docs/marketing/shots/`) | 檔案大小 | SHA256 (首8碼) |
 |---|---|---|---|---|
-| **REC-01** | `rec01_thumb_pad_9x16.mp4` | `docs/marketing/shots/rec01_thumb_pad_9x16.mp4` | 436 KB | `18e4a17e` |
-| **REC-02** | `rec02_battle_polish_9x16.mp4` | `docs/marketing/shots/rec02_battle_polish_9x16.mp4` | 486 KB | `9034b6c6` |
-| **REC-03** | `rec03_soul_pity_9x16.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16.mp4` | 201 KB | `07185f9e` |
-| **REC-04** | `rec04_overdrive_break_9x16.mp4` | `docs/marketing/shots/rec04_overdrive_break_9x16.mp4` | 410 KB | `446cf8e5` |
+| **REC-01** | `rec01_thumb_pad_9x16.mp4` | `docs/marketing/shots/rec01_thumb_pad_9x16.mp4` | 294 KB | `fdae23dc` |
+| **REC-02** | `rec02_battle_polish_9x16.mp4` | `docs/marketing/shots/rec02_battle_polish_9x16.mp4` | 317 KB | `9a49c976` |
+| **REC-03** | `rec03_soul_pity_9x16.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16.mp4` | 96 KB | `64ecf103` |
+| **REC-04** | `rec04_overdrive_break_9x16.mp4` | `docs/marketing/shots/rec04_overdrive_break_9x16.mp4` | 400 KB | `06390333` |
 
 ### 2. 9:16 直式特寫裁切版影片素材（1080×1920，備用特寫剪輯）
 | 素材編號 | Workspace 路徑 | 專案交付路徑 (`docs/marketing/shots/`) | 檔案大小 | SHA256 (首8碼) |
 |---|---|---|---|---|
-| **REC-01** | `rec01_thumb_pad_9x16_crop.mp4` | `docs/marketing/shots/rec01_thumb_pad_9x16_crop.mp4` | 434 KB | `cdab4c6f` |
-| **REC-02** | `rec02_battle_polish_9x16_crop.mp4` | `docs/marketing/shots/rec02_battle_polish_9x16_crop.mp4` | 554 KB | `82f7dcfd` |
-| **REC-03** | `rec03_soul_pity_9x16_crop.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16_crop.mp4` | 249 KB | `a1c1401a` |
-| **REC-04** | `rec04_overdrive_break_9x16_crop.mp4` | `docs/marketing/shots/rec04_overdrive_break_9x16_crop.mp4` | 445 KB | `a077a8e9` |
+| **REC-01** | `rec01_thumb_pad_9x16_crop.mp4` | `docs/marketing/shots/rec01_thumb_pad_9x16_crop.mp4` | 260 KB | `de152cd2` |
+| **REC-02** | `rec02_battle_polish_9x16_crop.mp4` | `docs/marketing/shots/rec02_battle_polish_9x16_crop.mp4` | 363 KB | `14a65842` |
+| **REC-03** | `rec03_soul_pity_9x16_crop.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16_crop.mp4` | 131 KB | `28998ba6` |
+| **REC-04** | `rec04_overdrive_break_9x16_crop.mp4` | `docs/marketing/shots/rec04_overdrive_break_9x16_crop.mp4` | 435 KB | `ef76d27f` |
 
 ### 3. 16:9 原始實機錄影母帶（1280×720，原始無損畫面）
 | 素材編號 | Workspace 路徑 | 檔案大小 | SHA256 (首8碼) |
 |---|---|---|---|
-| **REC-01** | `rec01_thumb_pad_raw_16x9.mp4` | 391 KB | `5cff80ff` |
-| **REC-02** | `rec02_battle_polish_raw_16x9.mp4` | 444 KB | `99004307` |
-| **REC-03** | `rec03_soul_pity_raw_16x9.mp4` | 171 KB | `cbf116f1` |
-| **REC-04** | `rec04_overdrive_break_raw_16x9.mp4` | 369 KB | `f79838cb` |
+| **REC-01** | `rec01_thumb_pad_raw_16x9.mp4` | 263 KB | `8cf54fe1` |
+| **REC-02** | `rec02_battle_polish_raw_16x9.mp4` | 268 KB | `946cbe5b` |
+| **REC-03** | `rec03_soul_pity_raw_16x9.mp4` | 50 KB | `1ac9bf50` |
+| **REC-04** | `rec04_overdrive_break_raw_16x9.mp4` | 317 KB | `35160677` |
 
-### 4. 關鍵幀截圖證明（PNG，驗證真實畫面與 UI）
-| 素材編號 | Workspace 路徑 | 專案交付路徑 (`docs/marketing/shots/`) | 驗證焦點 |
-|---|---|---|---|
-| **REC-01** | `rec01_thumb_pad.png` | `docs/marketing/shots/rec01_thumb_pad.png` | 右側 ThumbPad 操作熱區、換武至精鋼重錘日誌 |
-| **REC-02** | `rec02_battle_polish.png` | `docs/marketing/shots/rec02_battle_polish.png` | 小白 vs 雷歐、角色粗描邊與落地軟影 |
-| **REC-03** | `rec03_soul_pity.png` | `docs/marketing/shots/rec03_soul_pity.png` | 聚魂殿四階封靈罐、60/100 虔誠度首屏保底進度條 |
-| **REC-04** | `rec04_overdrive_break.png` | `docs/marketing/shots/rec04_overdrive_break.png` | 怒氣全滿、暴怒覺醒中、部位獅衛重盾破甲擊破 |
+### 4. 關鍵幀縮圖與截圖證明（PNG，驗證真實畫面與 UI）
+| 素材編號 | 9:16 關鍵幀縮圖路徑 | 縮圖大小 | 縮圖 SHA256 (首8碼) | 實機原生截圖路徑 | 驗證焦點 |
+|---|---|---|---|---|---|
+| **REC-01** | `docs/marketing/shots/rec01_thumb_pad_9x16_thumb.png` | 1,277 KB | `801843f9` | `docs/marketing/shots/rec01_thumb_pad.png` | 右側 ThumbPad 操作熱區、普攻換武切換 |
+| **REC-02** | `docs/marketing/shots/rec02_battle_polish_9x16_thumb.png` | 1,187 KB | `1d297531` | `docs/marketing/shots/rec02_battle_polish.png` | 小白 vs 雷歐、角色粗描邊與落地軟影 |
+| **REC-03** | `docs/marketing/shots/rec03_soul_pity_9x16_thumb.png` | 215 KB | `41c366d2` | `docs/marketing/shots/rec03_soul_pity.png` | 聚魂殿四階封靈罐、60/100 虔誠度首屏保底進度條 |
+| **REC-04** | `docs/marketing/shots/rec04_overdrive_break_9x16_thumb.png` | 1,205 KB | `2419f95f` | `docs/marketing/shots/rec04_overdrive_break.png` | 怒氣全滿、暴怒覺醒中、部位獅衛重盾破甲擊破 |
 
 ---
 
@@ -82,7 +83,7 @@
 
 ## 四、重現與驅動方式說明
 
-本批素材錄製採用既有 Godot 引擎與 Linux Xvfb 虛擬顯示器配合 ffmpeg 擷取：
+本批素材錄製採用既有 Godot 引擎與 Linux Xvfb 虛擬顯示器配合 ffmpeg 擷取，並使用檔案握手信號確保場景與畫面完全繪製穩定：
 - 驅動腳本：
   - `game/scripts/dev/capture_rec01_thumb.gd`
   - `game/scripts/dev/capture_rec02_polish.gd`
@@ -91,6 +92,6 @@
 - 自動批次錄影工具：`/root/record_shorts_recs.sh`
 - 執行指令：
   ```bash
-  /root/record_shorts_recs.sh
+  /root/record_shorts_recs.sh /opt/side/bravesoul-game/.worktrees/t_6e7da2e3
   ```
   即可全自動重新錄製出上述所有 9:16、16:9 及關鍵幀截圖資產。
