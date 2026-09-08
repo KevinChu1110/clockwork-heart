@@ -129,7 +129,7 @@
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
   - **紫微星軸（全衡之魂 / Balance Core）**：象徵天元歸心、動靜皆宜、全平衡調諧與極致心法。
-  - **武曲星軸（Wu Qu Core / Valor Core）**：象徵剛毅破勢、身法剛勁與暴怒蓄力衝擊。（精確鉚接 R02/R04 既有星軸體系）
+  - **武曲星軸（銳齒之魂 / Razor Tooth Core）**：象徵剛毅破勢、身法剛勁與暴怒蓄力衝擊。（精確鉚接 R02/R04 既有星軸體系）
 - **星軸被動詞條**：
   - 紫微·天元歸一：全能力微幅提升，在維持「靜心架勢」不移動 1.5 秒後，下次招式瞬間暴發，蓄力時間縮減 50%，並使發條彈力消耗降低 20%。
   - 武曲·破勢蓄力：在蓄力攻擊或施展身法時，加速動能積累，怒氣獲取效率提升 30%；處於怒氣 100% 齒輪過載狀態時，近戰攻擊直接穿透目標 40% 的架勢防護。
@@ -259,7 +259,7 @@ Cute chibi giant clockwork martial panda titan, toy mechanical guardian panda bo
 | **代表素材** | 重力調速金屬擺錘 | 重力调速金属摆锤 | Gravity Tuning Pendulum Weight | Contrapeso de Péndulo Metálico de Gravedad | 重力調速金属振り子 | 중력 조속 금속 진자 |
 | **代表素材** | 精工黃銅高壓蓄能罐 | 精工黄铜高压蓄能罐 | Precision Brass Pressure Canister | Depósito de Presión de Latón de Precisión | 精密真鍮蓄圧キャニスター | 정밀 황동 축압 캐니스터 |
 | **核心星軸** | 紫微星軸 | 紫微星轴 | Zi Wei Core (Balance Core) | Núcleo Zi Wei (Equilibrio) | 紫微の星軸（全衡の魂） | 자미 성축 (균형) |
-| **核心星軸** | 武曲星軸 | 武曲星轴 | Wu Qu Core (Valor Core) | Núcleo Wu Qu (Marcial) | 武曲の星軸（勇武の星軸） | 무곡 성축 (용맹 성축) |
+| **核心星軸** | 武曲星軸 | 武曲星轴 | Wu Qu Core (Razor Tooth Core) | Núcleo Wu Qu (Diente Cortante) | 武曲の星軸（鋭歯の魂） | 무곡 성축 (예리한 이빨) |
 | **核心招式** | 天元破勢崩拳 | 天元破势崩拳 | Zen Guard-Breaking Strike | Golpe Rompeguardia Zen | 天元崩しの崩拳 | 천원 파세 붕권 |
 | **核心招式** | 竹影凌空踏波 | 竹影凌空踏波 | Bamboo Shadow Aerial Stride | Paso Aéreo de Sombra de Bambú | 竹影凌空ステップ | 죽영 능공 답파 |
 | **核心機制** | 架勢破勢失衡窗口 | 架势破势失衡窗口 | Stance Guard & Break Window | Ventana de Desequilibrio por Romper Guardia | 構え崩し失衡ウィンドウ | 자세 가드 브레이크 불균형 윈도우 |
