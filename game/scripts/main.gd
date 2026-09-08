@@ -3204,7 +3204,7 @@ func _side_star_wish() -> void:
 		])
 		return
 	_play_dialog([
-		{"speaker": _t("旁白"), "text": _t("淺池映著十四星。水面涼，心卻熱了一下。")},
+		{"speaker": _t("旁白"), "text": _t("淺池映著四核微光。水面涼，心卻熱了一下。")},
 		{"speaker": _t("內心"), "text": _t("願……平安。願舊鑰還在。願自己走到塔，還記得路回去。")},
 		{"speaker": _t("旁白"), "text": _t("水紋一圈。星沒有回答，但池邊開了一朵夜開花。")},
 		{"speaker": _t("系統"), "text": _t("【支線】星池一願完成。金 25 · 星屑 2 · 經驗 20 · 星砂×1。稱號「許願兔」。")},
@@ -3285,8 +3285,8 @@ func _flavor_world_object(id: String) -> void:
 		"toll_ruin": _t("廢稅亭牆上刻著：「先交心，再過橋。」"),
 		"inn_sign": _t("破牌寫著「歇腳」。字被刀劃過。"),
 		"common_room": _t("大堂空椅對空椅。壁爐冷透。"),
-		"column_a": _t("古驛斷柱。柱身有星曜刻紋。"),
-		"star_mark": _t("十四星的簡圖。有人用刀補過最後一顆。"),
+		"column_a": _t("古驛斷柱。柱身有核紋刻痕。"),
+		"star_mark": _t("四核的簡圖。有人用刀補過最後一顆。"),
 		"stall_a": _t("布攤只剩支架。風在空棚裡說話。"),
 		"beggar": _t("老人抬眼：「堡壘的旗……換過幾次了。」"),
 		"pipe_a": _t("鐵管嗡嗡響。像城在低語。"),
@@ -5522,7 +5522,7 @@ func _soul_equip_cb(sid: String, slot: int) -> Callable:
 
 
 func _make_soul_hang() -> Control:
-	## 聚魂面板掛圖：當下葫蘆＋十四星（已抽過的亮、神品質偏金）
+	## 聚魂面板掛圖：當下封靈罐＋四大核心（已抽過的亮、神品質偏金）
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 6)
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE

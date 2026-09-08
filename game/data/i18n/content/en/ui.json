@@ -311,7 +311,6 @@
   "勝　利": "VICTORY",
   "匕首": "Dagger",
   "匯入失敗：%s": "Import failed: %s",
-  "十四星的簡圖。有人用刀補過最後一顆。": "A rough chart of the fourteen stars. Someone recut the last one with a knife.",
   "升科技【%s】Lv%d→%d（貢獻 %d）": "Upgrade [%s] Lv%d→%d (contribution %d)",
   "半埋箱：海水泡過的金幣仍作響。": "Half-buried chest: coins soaked in seawater still ring.",
   "危險！灼燒 %d/%d · 再漏就爆": "Danger! Burn %d/%d · one more miss and it blows",
@@ -321,7 +320,6 @@
   "友情之花換蛋（%d 朵）": "Trade flowers for an egg (%d)",
   "古刃銘：微末。持之者，再未歸閣。": "Old-blade inscription: Micro. Those who held it never returned to the attic.",
   "西林石拱。石上還有箭痕。": "A West Woods stone arch. Arrow marks still in the stone.",
-  "古驛斷柱。柱身有星曜刻紋。": "A broken pillar of the old post. Star glyphs carved into the shaft.",
   "另一武器系統：%s · %s": "Other weapon system: %s · %s",
   "另一武器系統：%s（可切換遊玩）": "Other weapon system: %s (switchable)",
   "只打發光那尊。全倒本體才現身。落石按 J。": "Only hit the glowing statue. The body shows once all fall. Press J for falling rocks.",
@@ -660,7 +658,6 @@
   "消耗 1 次今日有獎（剩餘將為 %d）。": "Uses one of today's rewarded runs (%d will remain).",
   "深水翻湧——潮襲者上岸。": "The deep water churns — tide raiders come ashore.",
   "淺池仍映星。你的願已經沉在水底，不必再說一遍。": "The shallows still hold the stars. Your wish has settled on the bottom; no need to say it twice.",
-  "淺池映著十四星。水面涼，心卻熱了一下。": "The shallows reflect the fourteen stars. The water is cool, but something warms in you.",
   "清刺胞！剩餘 %.1fs": "Clear the stingers! %.1fs left",
   "準備 J": "Ready J",
   "準備：倒數到「格擋」再按": "Get ready: press when the countdown reaches «parry»",
@@ -1879,5 +1876,8 @@
   "獲得星屑 ×5。凝出戰魂「凡·銳齒之魂」，已入魂槽。": "Obtained 5 Stardust. Formed soul \"Ordinary · Razor Tooth Soul\", equipped to slot.",
   "先送你一握星屑。封靈台為你亮了一角。": "Here's a handful of stardust. A corner of the sealing altar lights up for you.",
   "聚引四大共鳴核心之魂：銳齒(攻) · 固甲(防) · 旋簧(血) · 全衡(衡)。點擊點亮更高階封靈罐！": "Channel the souls of the 4 Resonance Cores: Razor Tooth (ATK), Plated Iron (DEF), Coiled Spring (HP), Grand Balance (ALL). Tap to light up higher tier soul canisters!",
-  "重整圖鑑": "Refresh Codex"
+  "重整圖鑑": "Refresh Codex",
+  "古驛斷柱。柱身有核紋刻痕。": "A broken pillar of the old post. Core-glyph engravings worn into the stone.",
+  "四核的簡圖。有人用刀補過最後一顆。": "A rough sketch of the four cores. Someone carved the final core in with a blade.",
+  "淺池映著四核微光。水面涼，心卻熱了一下。": "The shallow pool catches the faint glimmer of four cores. The water feels cold, but a spark inside stirs."
 }

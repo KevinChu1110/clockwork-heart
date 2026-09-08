@@ -311,7 +311,6 @@
   "勝　利": "VICTORIA",
   "匕首": "Daga",
   "匯入失敗：%s": "Fallo al importar: %s",
-  "十四星的簡圖。有人用刀補過最後一顆。": "Un esquema de las catorce estrellas. Alguien retalló la última con un cuchillo.",
   "升科技【%s】Lv%d→%d（貢獻 %d）": "Mejorar [%s] niv. %d→%d (contribución %d)",
   "半埋箱：海水泡過的金幣仍作響。": "Cofre medio enterrado: las monedas empapadas de mar aún tintinean.",
   "危險！灼燒 %d/%d · 再漏就爆": "¡Peligro! Quemadura %d/%d · un fallo más y estalla",
@@ -321,7 +320,6 @@
   "友情之花換蛋（%d 朵）": "Cambiar flores por un huevo (%d)",
   "古刃銘：微末。持之者，再未歸閣。": "Inscripción de la hoja antigua: Minúscula. Quien la sostuvo no volvió al desván.",
   "西林石拱。石上還有箭痕。": "Un arco de piedra del Bosque del Oeste. Aún hay marcas de flecha en la piedra.",
-  "古驛斷柱。柱身有星曜刻紋。": "Columna partida de la vieja posta. En el fuste, glifos estelares.",
   "另一武器系統：%s · %s": "Otro sistema de arma: %s · %s",
   "另一武器系統：%s（可切換遊玩）": "Otro sistema de arma: %s (puedes alternar)",
   "只打發光那尊。全倒本體才現身。落石按 J。": "Golpea solo la estatua que brilla. El cuerpo aparece cuando caen todas. Pulsa J con las rocas.",
@@ -660,7 +658,6 @@
   "消耗 1 次今日有獎（剩餘將為 %d）。": "Consume una de las rondas con recompensa de hoy (quedarán %d).",
   "深水翻湧——潮襲者上岸。": "Las aguas hondas se revuelven: los saqueadores de la marea desembarcan.",
   "淺池仍映星。你的願已經沉在水底，不必再說一遍。": "El estanque sigue reflejando estrellas. Tu deseo ya reposa en el fondo; no hace falta repetirlo.",
-  "淺池映著十四星。水面涼，心卻熱了一下。": "El estanque refleja las catorce estrellas. El agua está fría, pero algo se te calienta dentro.",
   "清刺胞！剩餘 %.1fs": "¡Elimina los aguijones! Quedan %.1fs",
   "準備 J": "Prepara J",
   "準備：倒數到「格擋」再按": "Prepárate: pulsa cuando la cuenta llegue a «parar»",
@@ -1879,5 +1876,8 @@
   "獲得星屑 ×5。凝出戰魂「凡·銳齒之魂」，已入魂槽。": "Ganas 5 de polvo estelar. Cuaja el alma «Común · Alma de Diente Cortante» y queda engarzada.",
   "先送你一握星屑。封靈台為你亮了一角。": "Te doy un puñado de polvo estelar. Un rincón del altar de sellado se ilumina para ti.",
   "聚引四大共鳴核心之魂：銳齒(攻) · 固甲(防) · 旋簧(血) · 全衡(衡)。點擊點亮更高階封靈罐！": "Canaliza las almas de los 4 Núcleos de Resonancia: Diente Cortante (ATQ), Coraza Férrea (DEF), Muelle Espiral (VIT), Gran Equilibrio (EQUIL). ¡Toca para encender recipientes de almas de mayor grado!",
-  "重整圖鑑": "Actualizar Códice"
+  "重整圖鑑": "Actualizar Códice",
+  "古驛斷柱。柱身有核紋刻痕。": "Columna partida de la vieja posta. En el fuste, marcas talladas del núcleo.",
+  "四核的簡圖。有人用刀補過最後一顆。": "Un boceto de los cuatro núcleos. Alguien grabó la última pieza con una hoja afilada.",
+  "淺池映著四核微光。水面涼，心卻熱了一下。": "El estanque refleja el brillo de los cuatro núcleos. El agua está gélida, pero el pecho recobra su calidez."
 }

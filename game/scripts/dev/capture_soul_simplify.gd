@@ -54,10 +54,28 @@ func _process(_d: float) -> bool:
 			if _wait < 30:
 				return false
 			_shot("soul_codex.png")
+			_scroll_panel_down()
+			_step = 3
+			_wait = 0
+		3:
+			if _wait < 20:
+				return false
+			_shot("soul_codex_details.png")
 			print("CAPTURE done ", _saved)
 			quit(0)
 			return true
 	return false
+
+
+func _scroll_panel_down() -> void:
+	if _main == null:
+		return
+	var rtls := _main.find_children("", "RichTextLabel", true, false)
+	for rtl in rtls:
+		if rtl is RichTextLabel:
+			var vsb: VScrollBar = rtl.get_v_scroll_bar()
+			if vsb:
+				vsb.value = vsb.max_value
 
 
 func _shot(filename: String) -> void:
@@ -69,5 +87,10 @@ func _shot(filename: String) -> void:
 	var path := _out.path_join(filename)
 	var err := img.save_png(path)
 	print("CAPTURE ", path, " err=", err, " ", img.get_width(), "x", img.get_height())
+	var ws := OS.get_environment("HERMES_KANBAN_WORKSPACE")
+	if ws != "":
+		DirAccess.make_dir_recursive_absolute(ws)
+		var ws_err := img.save_png(ws.path_join(filename))
+		print("CAPTURE workspace ", ws.path_join(filename), " err=", ws_err)
 	if err == OK:
 		_saved.append(path)
