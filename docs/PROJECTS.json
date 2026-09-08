@@ -292,13 +292,13 @@
    "id": "ops-rename",
    "cat": "平台",
    "title": "全面改名 發條之心 Clockwork Heart",
-   "status": "測試中",
+   "status": "已上線",
    "keys": [
     "改名",
     "rename",
     "clockwork"
    ],
-   "note": "全面改名六語系已合併main(b42b264)，待QA走一輪確認無殘留舊名再標已上線"
+   "note": "全面改名玩家可見面已驗證：web/docs/game 掃描無舊名殘留（BRANDING_CHECK.md/DECISIONS.md 為歷史決策記錄非玩家可見，mobile_lobby.gd 舊名僅出現在程式註解），t_f531e0f9 QA回歸與後續修正單均已 done"
   },
   {
    "id": "ops-urls",
