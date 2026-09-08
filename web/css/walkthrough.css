@@ -67,7 +67,8 @@
 .wt-toc a.done .n {
   background: var(--key);
   border-color: var(--key-deep);
-  color: #fff;
+  color: var(--wood-darkest);
+  font-weight: 700;
 }
 .wt-toc a.done { color: var(--ink); }
 .wt-progress {
@@ -164,7 +165,7 @@
 .wt-callout strong { color: var(--key-deep); }
 .wt-tip {
   border-left: 4px solid var(--success);
-  background: #eef8f2;
+  background: rgba(62,207,191,0.10);
   border-radius: 0 var(--radius) var(--radius) 0;
   padding: 0.85rem 1rem;
   margin: 1rem 0;
@@ -200,8 +201,8 @@
   border-radius: 8px;
   cursor: pointer;
   font-weight: 600;
-  color: var(--ink-soft);
-  background: #fff;
+  color: var(--ink);
+  background: rgba(255,255,255,0.06);
 }
 .wt-opts label:hover { border-color: var(--key); }
 .wt-opts input { margin-top: 0.2rem; }
@@ -215,8 +216,8 @@
   margin-top: 1rem;
   padding: 1rem;
   border-radius: 10px;
-  background: linear-gradient(135deg, var(--key-soft), #fff);
-  border: 1px solid #f2c9d3;
+  background: linear-gradient(135deg, var(--key-soft), var(--warm));
+  border: 1px solid var(--line-soft);
 }
 .wt-result.show { display: block; }
 .wt-result h4 { margin: 0 0 0.35rem; color: var(--key-deep); font-size: 1.15rem; }

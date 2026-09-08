@@ -268,7 +268,7 @@ img { max-width: 100%; display: block; }
   border-color: var(--gold-dark);
   background: var(--key-faint);
   transform: translateY(-1px);
-  box-shadow: 0 5px 0 var(--gold), 0 8px 18px rgba(255, 208, 40, 0.15);
+  box-shadow: 0 5px 0 var(--gold), 0 8px 18px rgba(212, 175, 55, 0.15);
 }
 
 /* Page hero · 內頁也拉高，文案貼底 */
