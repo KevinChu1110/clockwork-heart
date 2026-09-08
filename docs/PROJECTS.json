@@ -188,7 +188,7 @@
    "cat": "遊戲",
    "title": "🥉 下架公會週貢獻／NG+／裂縫",
    "status": "測試中",
-   "note": "標題暫停通關後入口已關 test_cut_systems綠 分支agent/2026-09-08-cut-systems 未推main",
+   "note": "標題暫停通關後入口已關 test_cut_systems 綠；分支已合併進 main（35b4767 之前）",
    "keys": [
     "公會",
     "ng+",
