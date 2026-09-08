@@ -25,6 +25,9 @@
   var reduceMotion =
     window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   var fineHover = window.matchMedia && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if (!reduceMotion) {
+    document.documentElement.classList.add("has-scroll-fx");
+  }
 
   function el(html) {
     var t = document.createElement("template");
@@ -181,23 +184,74 @@
   onScroll();
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  /* 視差 */
+  /* 視差與捲動敘事引擎 (GTA / 黑神話電影感分層視差) */
   function setupParallax() {
     if (reduceMotion) return;
-    var nodes = document.querySelectorAll(".parallax-media");
-    if (!nodes.length) return;
-    function update() {
+    var mediaNodes = document.querySelectorAll(".parallax-media");
+    var heroBg = document.querySelectorAll(".hero-parallax-bg");
+    var heroFg = document.querySelector(".hero-parallax-fg");
+    var heroCue = document.getElementById("hero-scroll-cue");
+    var ticking = false;
+
+    function render() {
+      var sy = window.scrollY;
       var vh = window.innerHeight;
-      nodes.forEach(function (n) {
-        var speed = parseFloat(n.getAttribute("data-parallax") || "0.1");
-        var r = n.getBoundingClientRect();
-        var mid = r.top + r.height / 2 - vh / 2;
-        var y = mid * speed * -0.15;
-        n.style.transform = "translate3d(0," + y.toFixed(1) + "px,0) scale(1.05)";
-      });
+      var isMobile = window.innerWidth <= 768;
+
+      // 1. Hero 區分層視差（背景緩移 + 前景文字優雅淡出）
+      if (sy < vh * 1.2 && !isMobile) {
+        var bgY = sy * 0.28;
+        var fgOp = Math.max(0, 1 - sy / 360);
+        heroBg.forEach(function (n) {
+          n.style.transform = "translate3d(0," + bgY.toFixed(1) + "px,0) scale(1.03)";
+        });
+        if (heroFg) {
+          heroFg.style.transform = "translate3d(0," + (sy * 0.12).toFixed(1) + "px,0)";
+          heroFg.style.opacity = fgOp.toFixed(3);
+        }
+      } else if (isMobile) {
+        heroBg.forEach(function (n) { n.style.transform = ""; });
+        if (heroFg) {
+          heroFg.style.transform = "";
+          heroFg.style.opacity = "";
+        }
+      }
+
+      // 2. 探索捲動引導器淡出
+      if (heroCue) {
+        if (sy > 25) {
+          heroCue.classList.add("is-hidden");
+        } else {
+          heroCue.classList.remove("is-hidden");
+        }
+      }
+
+      // 3. 一般 parallax-media 視差
+      if (!isMobile) {
+        mediaNodes.forEach(function (n) {
+          if (n.classList.contains("hero-parallax-bg")) return;
+          var speed = parseFloat(n.getAttribute("data-parallax") || "0.1");
+          var r = n.getBoundingClientRect();
+          if (r.bottom < -100 || r.top > vh + 100) return;
+          var mid = r.top + r.height / 2 - vh / 2;
+          var y = mid * speed * -0.15;
+          n.style.transform = "translate3d(0," + y.toFixed(1) + "px,0) scale(1.05)";
+        });
+      }
+
+      ticking = false;
     }
-    window.addEventListener("scroll", update, { passive: true });
-    update();
+
+    function onScrollUpdate() {
+      if (!ticking) {
+        requestAnimationFrame(render);
+        ticking = true;
+      }
+    }
+
+    window.addEventListener("scroll", onScrollUpdate, { passive: true });
+    window.addEventListener("resize", onScrollUpdate, { passive: true });
+    render();
   }
 
   function setupReveal() {
@@ -222,7 +276,7 @@
     });
 
     if (reduceMotion || !("IntersectionObserver" in window)) {
-      document.querySelectorAll(".reveal, .reveal-band").forEach(function (n) {
+      document.querySelectorAll(".reveal, .reveal-band, .scroll-narrative, .scroll-narrative-stagger").forEach(function (n) {
         n.classList.add("is-in");
       });
       return;
@@ -239,7 +293,7 @@
       },
       { rootMargin: "0px 0px -6% 0px", threshold: 0.06 }
     );
-    document.querySelectorAll(".reveal, .reveal-band").forEach(function (n) {
+    document.querySelectorAll(".reveal, .reveal-band, .scroll-narrative, .scroll-narrative-stagger").forEach(function (n) {
       io.observe(n);
     });
   }
@@ -428,6 +482,53 @@
     setupMarquee();
     setupTilt();
     setupCountUp();
+    setupHeroRoster();
+  }
+
+  /* 四大英雄登場舞台互動切換 */
+  function setupHeroRoster() {
+    var tabs = document.querySelectorAll(".hero-tab");
+    var panels = document.querySelectorAll(".hero-panel");
+    if (!tabs.length || !panels.length) return;
+
+    function selectHero(heroKey) {
+      tabs.forEach(function (tab) {
+        var isCurrent = tab.getAttribute("data-hero") === heroKey;
+        tab.classList.toggle("is-active", isCurrent);
+        tab.setAttribute("aria-selected", isCurrent ? "true" : "false");
+      });
+      panels.forEach(function (panel) {
+        if (panel.id === "hero-" + heroKey) {
+          panel.classList.add("is-active");
+          panel.removeAttribute("hidden");
+        } else {
+          panel.classList.remove("is-active");
+          panel.setAttribute("hidden", "hidden");
+        }
+      });
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () {
+        var key = tab.getAttribute("data-hero");
+        if (key) selectHero(key);
+      });
+      tab.addEventListener("keydown", function (e) {
+        var tabList = Array.prototype.slice.call(tabs);
+        var idx = tabList.indexOf(tab);
+        if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+          e.preventDefault();
+          var next = tabList[(idx + 1) % tabList.length];
+          next.focus();
+          selectHero(next.getAttribute("data-hero"));
+        } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+          e.preventDefault();
+          var prev = tabList[(idx - 1 + tabList.length) % tabList.length];
+          prev.focus();
+          selectHero(prev.getAttribute("data-hero"));
+        }
+      });
+    });
   }
 
   window.BS_refreshMotion = function () {
