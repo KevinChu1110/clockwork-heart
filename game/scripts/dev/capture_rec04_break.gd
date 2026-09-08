@@ -1,7 +1,7 @@
 extends SceneTree
 ## REC-04 怒氣滿額暴怒覺醒與高速連斬
 ## 時長: 6.5s (由握手信號觸發錄製)
-## 展示: 怒氣滿額觸發「🔥 暴怒覺醒！」橘紅跳字＋高速狂暴連斬
+## 展示: 怒氣滿額觸發「暴怒覺醒！」跳字＋三連斬擊命中雷歐（受擊閃紅與傷害跳字）
 
 var _elapsed: float = 0.0
 var _step_timer: float = 0.0
@@ -54,6 +54,8 @@ func _process(delta: float) -> bool:
 				_battle = host.get_child(host.get_child_count() - 1) as Control
 				if _battle and _battle.is_inside_tree():
 					_sim = _battle.get("sim")
+					if _sim:
+						_sim.set("hazard_kind", "")
 					_step = 2
 					_step_timer = 0.0
 					print("REC04_BATTLE_NODE_READY at ", _elapsed)
@@ -75,40 +77,62 @@ func _process(delta: float) -> bool:
 				print("REC04_RECORDING_STARTED at elapsed=", _elapsed)
 		3:
 			_rec_elapsed += delta
-			# +1.2s: 怒氣滿 100% 並觸發暴怒覺醒
-			if _rec_elapsed >= 1.2 and _step == 3:
+			# +1.0s: 怒氣滿 100% 並觸發暴怒覺醒
+			if _rec_elapsed >= 1.0 and _step == 3:
 				if _sim:
 					var p = _sim.call("get_unit", "player")
 					if p:
 						p.set("rage", 100.0)
+						p.set("crit", 100.0)
 						_sim.call("trigger_fury_awakening")
 						print("REC04_FURY_AWAKENING_TRIGGERED at rec_elapsed=", _rec_elapsed)
 				_step = 4
 		4:
 			_rec_elapsed += delta
-			# +2.2s: 狂暴高速普攻
-			if _rec_elapsed >= 2.2 and _step == 4:
-				if _battle:
-					_battle.call("_on_thumb_attack")
-				print("REC04_FURY_ATTACK_1 at rec_elapsed=", _rec_elapsed)
+			# +2.0s: 暴怒連斬第 1 擊
+			if _rec_elapsed >= 2.0 and _step == 4:
+				if _sim:
+					var p = _sim.call("get_unit", "player")
+					var leo = _sim.call("get_unit", "leo")
+					if leo:
+						leo.set("atb", 0.0)
+					if p:
+						p.set("state", 0)
+						_sim.call("_begin_attack", p)
+						print("REC04_ATTACK_1 at rec_elapsed=", _rec_elapsed)
 				_step = 5
 		5:
 			_rec_elapsed += delta
-			# +3.5s: 狂暴高速連斬第二段
-			if _rec_elapsed >= 3.5 and _step == 5:
+			# +3.2s: 暴怒連斬第 2 擊
+			if _rec_elapsed >= 3.2 and _step == 5:
 				if _sim:
-					var boss = _sim.call("_primary_boss_unit")
-					if boss and boss.get("parts") and boss.parts.size() > 1:
-						boss.parts[1]["hp"] = 1
-						_sim.set("focus_part_id", boss.parts[1].get("id", ""))
-				if _battle:
-					_battle.call("_on_thumb_attack")
-				print("REC04_BREAK_ATTACK at rec_elapsed=", _rec_elapsed)
+					var p = _sim.call("get_unit", "player")
+					var leo = _sim.call("get_unit", "leo")
+					if leo:
+						leo.set("atb", 0.0)
+					if p:
+						p.set("state", 0)
+						_sim.call("_begin_attack", p)
+						print("REC04_ATTACK_2 at rec_elapsed=", _rec_elapsed)
 				_step = 6
 		6:
 			_rec_elapsed += delta
-			# +5.0s: 保存關鍵幀截圖
-			if _rec_elapsed >= 5.0 and not _saved_png:
+			# +4.4s: 暴怒連斬第 3 擊
+			if _rec_elapsed >= 4.4 and _step == 6:
+				if _sim:
+					var p = _sim.call("get_unit", "player")
+					var leo = _sim.call("get_unit", "leo")
+					if leo:
+						leo.set("atb", 0.0)
+					if p:
+						p.set("state", 0)
+						_sim.call("_begin_attack", p)
+						print("REC04_ATTACK_3 at rec_elapsed=", _rec_elapsed)
+				_step = 7
+		7:
+			_rec_elapsed += delta
+			# +5.2s: 保存關鍵幀截圖
+			if _rec_elapsed >= 5.2 and not _saved_png:
 				_saved_png = true
 				_save_screenshot("rec04_overdrive_break.png")
 			# +6.5s: 錄影結束
