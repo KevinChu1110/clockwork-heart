@@ -1,4 +1,4 @@
-W1 Short · Book1 C0 燃燒之夜 · 完整約 30 秒
+W1 Short · Book1 C0 停擺之夜 · 完整約 30 秒
 
 【上傳用成片】
   w01_c0_ember_night_30s.mp4   ← YouTube Shorts / Facebook Reels 用這支

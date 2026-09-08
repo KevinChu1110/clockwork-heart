@@ -354,13 +354,13 @@ func as_vessel(v: String) -> String:
 func vessel_display(vessel: String = "") -> String:
 	match as_vessel(vessel if vessel != "" else GameState.soul_vessel):
 		"藍葫蘆":
-			return _t("藍階封靈壺")
+			return _t("藍階封靈罐")
 		"紫葫蘆":
-			return _t("紫階封靈壺")
+			return _t("紫階封靈罐")
 		"橙葫蘆":
-			return _t("橙階封靈壺")
+			return _t("橙階封靈罐")
 		_:
-			return _t("綠階封靈壺")
+			return _t("綠階封靈罐")
 
 
 func vessel_cost(vessel: String = "") -> int:
@@ -679,7 +679,7 @@ func _ritual_success_hooks(soul: Dictionary, from_vessel: String = "", used_free
 	if gl != null and gl.has_method("system"):
 		var extra := ""
 		if bool(nv.get("reset", false)):
-			extra = _t("（同色頂階——魂器摔回綠階封靈壺）")
+			extra = _t("（同色頂階——魂器摔回綠階封靈罐）")
 		elif bool(nv.get("climbed", false)):
 			extra = _t("（魂器升至 %s）") % vessel_display(str(nv.get("next", "")))
 		var pay := _t("免費") if used_free else _t("%d 金") % vessel_cost(from_vessel)

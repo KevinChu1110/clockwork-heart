@@ -5374,7 +5374,7 @@ func _interact_shop_interior(id: String) -> bool:
 					_go_astrolabe_panel()
 					return true
 				"gourd_shelf":
-					_play_dialog([{"speaker": _t("旁白"), "text": _t("封靈罐綠到橙。觀星＝聚魂。星屑只是路上的光。")}])
+					_play_dialog([{"speaker": _t("旁白"), "text": _t("封靈罐綠階到橙階。抽魂＝聚魂。星屑只是路上的光。")}])
 					return true
 				"star_mat":
 					_play_dialog([{"speaker": _t("旁白"), "text": _t("墊上還有上一個人的膝印。足跡會交疊。")}])
@@ -5699,13 +5699,13 @@ func _soul_play_lightup(vessel: String, result: Texture2D, then: Callable) -> vo
 func _vessel_glow_line(vessel: String) -> String:
 	match vessel:
 		"綠葫蘆":
-			return _t("💚 綠光從蒂部滲出……樸素的封靈壺醒了。")
+			return _t("綠光從封口滲出……樸素的封靈罐醒了。")
 		"藍葫蘆":
-			return _t("💙 藍紋沿著壺腰爬升……更深一階。")
+			return _t("藍紋沿著罐壁爬升……更深一階。")
 		"紫葫蘆":
-			return _t("💜 紫霧在壺內打轉……稀世近了。")
+			return _t("紫霧在罐內打轉……稀世近了。")
 		"橙葫蘆":
-			return _t("🧡 橙焰燃滿封靈壺——頂階！再抽同色便會摔回綠。")
+			return _t("橙焰燃滿封靈罐——頂階！再抽同色便會摔回綠階。")
 		_:
 			return _t("魂器顫動……")
 
@@ -5764,7 +5764,7 @@ func _soul_do_ritual() -> void:
 		var vessel_line := _t("魂器仍為 %s。") % SoulSystem.vessel_display(after_v)
 		if after_v != before_v:
 			if after_v == "綠葫蘆" and before_v != "綠葫蘆":
-				vessel_line = _t("同色頂階！魂器由 %s 摔回綠階封靈壺，重新攀升。") % SoulSystem.vessel_display(before_v)
+				vessel_line = _t("同色頂階！魂器由 %s 摔回綠階封靈罐，重新攀升。") % SoulSystem.vessel_display(before_v)
 			else:
 				vessel_line = _t("魂器升階：%s → %s｜%s") % [SoulSystem.vessel_display(before_v), SoulSystem.vessel_display(after_v), _vessel_glow_line(after_v)]
 		ui_toast(_t("入魂候補：%s") % SoulSystem.soul_display(soul))
@@ -5824,7 +5824,7 @@ func _soul_do_ritual_x10() -> void:
 		var vessel_line := _t("魂器仍為 %s。") % SoulSystem.vessel_display(after_v)
 		if after_v != before_v:
 			if after_v == "綠葫蘆" and before_v != "綠葫蘆":
-				vessel_line = _t("同色頂階！魂器由 %s 摔回綠階封靈壺，重新攀升。") % SoulSystem.vessel_display(before_v)
+				vessel_line = _t("同色頂階！魂器由 %s 摔回綠階封靈罐，重新攀升。") % SoulSystem.vessel_display(before_v)
 			else:
 				vessel_line = _t("魂器：%s → %s") % [SoulSystem.vessel_display(before_v), SoulSystem.vessel_display(after_v)]
 		ui_toast(_t("抽魂×%d") % souls.size())
