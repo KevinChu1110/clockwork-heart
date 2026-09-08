@@ -63,7 +63,7 @@
 
 #### NPC 2：陶土魔像學徒·黏土泥泥（Clay Clay the Terracotta Apprentice）
 - **NPC 姓名**：泥泥（Clay Clay）
-- **外觀特徵**：圓滾滾的雙頭身紅陶小泥偶，雙手是圓圓的陶土拳套，胸前有一枚亮綠色的小巧發條游絲指針。動作略顯笨拙但充滿活力，頭頂經常頂著一塊未燒結的小陶磚，走動時搖搖晃晃。（純陶土與金屬發條結構）
+- **外觀特徵**：2.2 頭身圓滾滾的紅陶小泥偶，雙手是圓圓的陶土拳套，胸前有一枚亮綠色的小巧發條游絲指針。動作略顯笨拙但充滿活力，頭頂經常頂著一塊未燒結的小陶磚，走動時搖搖晃晃。（純陶土與金屬發條結構）
 - **發條健康度**：發條 7 圈，運轉聲音清脆溫潤，帶有陶土摩擦的沙沙聲。
 - **對主角的態度**：
   - 對小白敏捷的翻滾與白淨的金屬外殼無比崇拜，自願充當火山導遊，指引隱藏在熔岩冷卻岩壁後方的鍛造密道。
@@ -127,7 +127,7 @@
 
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
-  - **七煞星軸（Qi Sha / Demolition Core）**：象徵孤勇突進、絕對破壞與部位拆卸。
+  - **七煞星軸（Qi Sha / Destruction Core）**：象徵孤勇突進、絕對破壞與部位拆卸。
   - **廉貞星軸（Lian Zhen / Molten Forge Core）**：象徵高溫淬火、受擊反震與霸體反擊。
 - **星軸被動詞條**：
   - 七煞·玄鐵重破：對 BOSS 與精英怪的拆卸部位造成的傷害提升 25%；成功破壞任意部位時，立即恢復 2 點發條能量並重置當前武器耐久 1 次。
@@ -256,7 +256,7 @@ Cute chibi giant boar titan mecha, toy mechanical stone-fist wild boar boss, mad
 | **代表素材** | 耐高溫合金彈簧 | 耐高温合金弹簧 | Heat-Resistant Alloy Spring | Resorte de Aleación Termorresistente | 耐熱合金ばね | 내열 합금 스프링 |
 | **代表素材** | 熔岩黑曜石拳板 | 熔岩黑曜石拳板 | Obsidian Punch Plate | Placa de Golpe de Obsidiana | 溶岩黒曜石拳板 | 용암 흑요석 권판 |
 | **代表素材** | 耐火石墨潤滑膏 | 耐火石墨润滑膏 | Refractory Graphite Lubricant | Lubricante de Grafito Refractario | 耐火黒鉛潤滑ペースト | 내화 흑연 윤활 페이스트 |
-| **核心星軸** | 七煞星軸 | 七煞星轴 | Qi Sha Core (Demolition Core) | Núcleo Qi Sha (Demolición) | 七殺の星軸（破壊の星軸） | 칠살 성축 (파괴 성축) |
+| **核心星軸** | 七煞星軸 | 七煞星轴 | Qi Sha Core (Destruction Core) | Núcleo Qi Sha (Destrucción) | 七殺の星軸（破砕の星軸） | 칠살 성축 (파쇄 성축) |
 | **核心星軸** | 廉貞星軸 | 廉贞星轴 | Lian Zhen Core (Molten Forge Core) | Núcleo Lian Zhen (Forja Fundida) | 廉貞の星軸（鍛造の星軸） | 염정 성축 (단조 성축) |
 | **核心招式** | 崩山衝壓擊 | 崩山冲压击 | Mountain-Shattering Stamping Strike | Golpe Estampador Demoledor de Montañas | 崩山プレス撃 | 붕산 프레스 격 |
 | **核心招式** | 熱浪爆碎震 | 热浪爆碎震 | Thermal Shockwave Eruption | Erupción de Onda de Choque Térmica | 熱波爆砕震 | 열파 폭쇄진 |
