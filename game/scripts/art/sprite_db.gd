@@ -462,6 +462,7 @@ const SOUL_CORE_FILE := {
 	# 舊十四主星相容映射
 	"破軍": "core_atk",
 	"七殺": "core_atk",
+	"七煞": "core_atk",
 	"天機": "core_atk",
 	"太陽": "core_atk",
 	"武曲": "core_atk",

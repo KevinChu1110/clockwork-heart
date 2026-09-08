@@ -125,7 +125,7 @@
 
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
-  - **天機星軸（Tian Ji / Calculation Core）**：象徵機變、運算與關節回彈。
+  - **天機星軸（銳齒之魂 / Razor Tooth Core）**：象徵機變、運算與關節回彈。
   - **武曲星軸（銳齒之魂 / Razor Tooth Core）**：象徵剛毅、穿透與結構共鳴。
 - **星軸被動詞條**：
   - 天機·絲線感知：成功以極限閃避規避打擊後，3 秒內下一次揮擊必出齒輪暴擊。
@@ -234,7 +234,7 @@ Cute chibi giant marionette titan, theatrical stage mecha boss, made of polished
 | **代表素材** | 高剛性木材 | 高刚性木材 | High-Rigidity Timber | Madera de Alta Rigidez | 高剛性木材 | 고강성 목재 |
 | **代表素材** | 黃銅滑輪 | 黄铜滑轮 | Brass Pulley | Polea de Latón | 真鍮プーリー | 황동 풀리 |
 | **代表素材** | 微型發條軸承 | 微型发条轴承 | Miniature Clockwork Bearing | Cojinete Mecánico Miniatura | 小型ぜんまいベアリング | 초소형 태엽 베어링 |
-| **核心星軸** | 天機星軸 | 天机星轴 | Tian Ji Core (Calculation Core) | Núcleo Tian Ji (Cálculo) | 天機の星軸（機知の星軸） | 천기 성축 (기교 성축) |
+| **核心星軸** | 天機星軸 | 天机星轴 | Tian Ji Core (Razor Tooth Core) | Núcleo Tian Ji (Diente Cortante) | 天機の星軸（鋭歯の魂） | 천기 성축 (예리한 이빨) |
 | **核心星軸** | 武曲星軸 | 武曲星轴 | Wu Qu Core (Razor Tooth Core) | Núcleo Wu Qu (Diente Cortante) | 武曲の星軸（鋭歯の魂） | 무곡 성축 (예리한 이빨) |
 | **核心招式** | 引線穿針 | 引线穿针 | Threading the Needle | Enhebrar la Aguja | 糸通し突進 | 바늘구멍 꿰기 |
 | **核心招式** | 提線制動術 | 提线制动术 | Marionette Brake Primer | Freno de Marioneta | 操り糸ブレーキ法 | 마리오네트 제동술 |
