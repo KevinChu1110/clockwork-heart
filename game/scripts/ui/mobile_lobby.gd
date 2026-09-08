@@ -9,6 +9,7 @@ signal request_settings()
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 
 ## ── 希臘神殿 · 黑曜石 × 古典金標準色盤 (對齊 temple.css 與 docs/LOBBY_UI_REDESIGN.md) ──
 const OBSIDIAN_BASE      := Color(0.043, 0.039, 0.055, 1.0)  ## #0B0A0E：黑曜石最深底色
@@ -132,6 +133,37 @@ func _load_hero_poses() -> void:
 		_tex_telegraph = load("res://assets/sprites/player/poses/telegraph.png")
 	if ResourceLoader.exists("res://assets/sprites/player/poses/recover.png"):
 		_tex_recover = load("res://assets/sprites/player/poses/recover.png")
+
+static var _shadow_tex_cache: Texture2D = null
+
+static func _soft_shadow_tex() -> Texture2D:
+	if _shadow_tex_cache != null:
+		return _shadow_tex_cache
+	## 寬核平台＋柔邊：核接近不透明，邊緣才衰減（review.md 第 16 條 / 腳底軟影）
+	var w := 256
+	var h := 96
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var cx := (w - 1) * 0.5
+	var cy := (h - 1) * 0.5
+	var rx := cx * 0.98
+	var ry := cy * 0.96
+	for y in h:
+		for x in w:
+			var dx := (float(x) - cx) / rx
+			var dy := (float(y) - cy) / ry
+			var d2 := dx * dx + dy * dy
+			if d2 >= 1.0:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+			else:
+				var d := sqrt(d2)
+				var a := 1.0
+				if d > 0.40:
+					var t := (d - 0.40) / 0.60
+					t = t * t * (3.0 - 2.0 * t)
+					a = 1.0 - t
+				img.set_pixel(x, y, Color(1, 1, 1, a))
+	_shadow_tex_cache = ImageTexture.create_from_image(img)
+	return _shadow_tex_cache
 
 func _build_ui() -> void:
 	## 1. 背景插畫（神殿黑曜石底圖 / LINEAR 平滑採樣）
@@ -514,27 +546,46 @@ func _build_village_tab() -> void:
 	stage_anchor.offset_top = 45
 	_village_layer.add_child(stage_anchor)
 
-	## 1. 古典黃銅星盤日晷基座 (Astrolabe Plinth)
-	_rainbow_ring = TextureRect.new()
-	_rainbow_ring.offset_left = -170
-	_rainbow_ring.offset_top = 90
-	_rainbow_ring.offset_right = 170
-	_rainbow_ring.offset_bottom = 185
-	var r_grad := Gradient.new()
-	r_grad.colors = PackedColorArray([
-		Color(0.831, 0.686, 0.216, 0.85), # GOLD_CLASSICAL
-		Color(0.243, 0.812, 0.749, 0.35), # TEAL_CORE
-		Color(0.0, 0.0, 0.0, 0.0)          # 完全透明
-	])
-	r_grad.offsets = PackedFloat32Array([0.0, 0.45, 1.0])
-	var r_tex := GradientTexture2D.new()
-	r_tex.gradient = r_grad
-	r_tex.fill = GradientTexture2D.FILL_RADIAL
-	r_tex.fill_from = Vector2(0.5, 0.5)
-	r_tex.fill_to = Vector2(0.5, 0.0)
-	_rainbow_ring.texture = r_tex
-	_rainbow_ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	stage_anchor.add_child(_rainbow_ring)
+	## 1. 角色腳底接地軟影 (Foot Soft Shadow / review.md 第 16 條)
+	_hero_shadow = TextureRect.new()
+	_hero_shadow.name = "HeroFootShadow"
+	_hero_shadow.offset_left = -62
+	_hero_shadow.offset_top = 74
+	_hero_shadow.offset_right = 98
+	_hero_shadow.offset_bottom = 116
+	_hero_shadow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_hero_shadow.stretch_mode = TextureRect.STRETCH_SCALE
+	_hero_shadow.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_hero_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hero_shadow.texture = _soft_shadow_tex()
+	_hero_shadow.pivot_offset = Vector2(80, 21)
+
+	var shadow_mat := ShaderMaterial.new()
+	shadow_mat.shader = FootShadowShader
+	shadow_mat.set_shader_parameter("strength", 0.95)
+	shadow_mat.set_shader_parameter("shadow_color", Color(0.01, 0.01, 0.02, 1.0))
+	_hero_shadow.material = shadow_mat
+	stage_anchor.add_child(_hero_shadow)
+
+	## 1.1 緊密接地閉塞陰影 (Contact Occlusion Shadow)
+	var contact_shadow := TextureRect.new()
+	contact_shadow.name = "HeroContactShadow"
+	contact_shadow.offset_left = -38
+	contact_shadow.offset_top = 84
+	contact_shadow.offset_right = 74
+	contact_shadow.offset_bottom = 104
+	contact_shadow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	contact_shadow.stretch_mode = TextureRect.STRETCH_SCALE
+	contact_shadow.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	contact_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	contact_shadow.texture = _soft_shadow_tex()
+
+	var contact_mat := ShaderMaterial.new()
+	contact_mat.shader = FootShadowShader
+	contact_mat.set_shader_parameter("strength", 0.98)
+	contact_mat.set_shader_parameter("shadow_color", Color(0.005, 0.005, 0.01, 1.0))
+	contact_shadow.material = contact_mat
+	stage_anchor.add_child(contact_shadow)
 
 	## 2. 2.2 頭身白兔主角
 	_hero_avatar = TextureRect.new()
@@ -638,7 +689,11 @@ func _build_village_tab() -> void:
 	## 呼吸動畫
 	_breathe_tween = create_tween().set_loops()
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	if _hero_shadow:
+		_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+	if _hero_shadow:
+		_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
 
 	## 左側四大殿堂黑曜石金屬浮雕卡牌 (王都鐵匠、手藝工坊、演武競技、冒險委託)
 	var left_shops := VBoxContainer.new()
