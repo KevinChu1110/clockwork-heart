@@ -1,7 +1,7 @@
 class_name MobileLobby
 extends Control
 ## 勇者之魂 (Clockwork Heart) - 神殿黑曜石 × 古典黃金齒輪手遊大廳
-## 視覺特徵：希臘神殿石柱 + 深邃黑曜石地坪 + 古典黃金齒輪 + 白兔多姿態動態待機 (無 Emoji)
+## 視覺特徵：希臘神殿石柱 + 深邃黑曜石地坪 + 古典黃金齒輪 + 白兔多姿態動態待機 (無 Emoji、無系統字型符號)
 
 signal request_battle(mode: String)
 signal request_settings()
@@ -205,10 +205,10 @@ func _build_ui() -> void:
 	_build_soul_hall_tab()
 	_build_bag_tab()
 
-	## 4. 頂部狀態列 (神殿黑曜石 HUD，無 Emoji)
+	## 4. 頂部狀態列 (神殿黑曜石 HUD，無 Emoji、無符號)
 	_build_top_hud()
 
-	## 5. 底部黑曜石神殿導航欄 (無 Emoji，古典黃金雕飾)
+	## 5. 底部黑曜石神殿導航欄 (無 Emoji、無符號，古典黃金雕飾)
 	_build_bottom_dock()
 
 ## ──────────────────────────────────────────
@@ -242,11 +242,14 @@ func _spawn_floating_ether_motes() -> void:
 	if n <= 0:
 		return
 	for i in range(n):
-		var star := Label.new()
-		star.text = "✦"
-		star.add_theme_font_size_override("font_size", 12 + (i % 3) * 4)
+		var star := ColorRect.new()
+		var sz := 4.0 + float((i % 3) * 2)
+		star.custom_minimum_size = Vector2(sz, sz)
+		star.size = Vector2(sz, sz)
+		star.pivot_offset = Vector2(sz * 0.5, sz * 0.5)
+		star.rotation = PI * 0.25
 		var c := Color(0.831, 0.686, 0.216, 0.70) if i % 2 == 0 else Color(0.243, 0.812, 0.749, 0.60)
-		star.add_theme_color_override("font_color", c)
+		star.color = c
 		star.position = Vector2(randf_range(40.0, 1240.0), randf_range(100.0, 580.0))
 		_particles_root.add_child(star)
 
@@ -331,7 +334,7 @@ func _build_top_hud() -> void:
 	var pwr_row := HBoxContainer.new()
 	pwr_row.add_theme_constant_override("separation", 4)
 	_power_label = Label.new()
-	_power_label.text = "✦ 戰力 0"
+	_power_label.text = "戰力 0"
 	_power_label.add_theme_color_override("font_color", BRONZE_WARM)
 	_power_label.add_theme_font_size_override("font_size", 13)
 	pwr_row.add_child(_power_label)
@@ -704,16 +707,16 @@ func _build_village_tab() -> void:
 	left_shops.add_theme_constant_override("separation", 14)
 	_village_layer.add_child(left_shops)
 
-	_add_hall_card(left_shops, "王都鐵匠", "品質轉化 · 裝備鍛造", "⚒", func():
+	_add_hall_card(left_shops, "王都鐵匠", "品質轉化 · 裝備鍛造", "鐵", func():
 		_show_toast("進入王都鐵匠：可將裝備品質晉階為紫裝！")
 	)
-	_add_hall_card(left_shops, "手藝工坊", "紅黃藍石 · 三合一熔煉", "✦", func():
+	_add_hall_card(left_shops, "手藝工坊", "紅黃藍石 · 三合一熔煉", "工", func():
 		_show_toast("進入手藝工坊：紅黃藍石三合一熔煉！")
 	)
-	_add_hall_card(left_shops, "演武競技", "挑戰對手 · 雙倍抽獎", "⚔", func():
+	_add_hall_card(left_shops, "演武競技", "挑戰對手 · 雙倍抽獎", "武", func():
 		request_battle.emit("arena")
 	)
-	_add_hall_card(left_shops, "冒險委託", "每日簽到 · 懸賞領獎", "⚙", func():
+	_add_hall_card(left_shops, "冒險委託", "每日簽到 · 懸賞領獎", "委", func():
 		_show_toast("今天，誰需要上發條？去幫一位玩具轉回去。")
 	)
 
@@ -745,7 +748,7 @@ func _build_village_tab() -> void:
 
 	var btn_go := Button.new()
 	btn_go.custom_minimum_size = Vector2(280, 68)
-	btn_go.text = "✦ 前往出征 ➔"
+	btn_go.text = "前往出征"
 	btn_go.add_theme_font_size_override("font_size", 20)
 	var gsb := StyleBoxFlat.new()
 	gsb.bg_color = GOLD_CLASSICAL
@@ -934,11 +937,13 @@ func _burst_click_particles(center_pos: Vector2) -> void:
 		BRONZE_WARM
 	]
 	for i in range(n):
-		var star := Label.new()
-		star.text = "✦"
-		star.add_theme_font_size_override("font_size", 16)
-		star.add_theme_color_override("font_color", cols[i % cols.size()])
-		star.global_position = center_pos
+		var star := ColorRect.new()
+		star.custom_minimum_size = Vector2(6, 6)
+		star.size = Vector2(6, 6)
+		star.pivot_offset = Vector2(3, 3)
+		star.rotation = PI * 0.25
+		star.color = cols[i % cols.size()]
+		star.global_position = center_pos - Vector2(3, 3)
 		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(star)
 
@@ -1033,7 +1038,7 @@ func _build_soul_hall_tab() -> void:
 	bot_h.add_child(btn_absorb)
 
 	var btn_draw := Button.new()
-	btn_draw.text = "✦ 聚魂十連 ✦"
+	btn_draw.text = "聚魂十連"
 	btn_draw.custom_minimum_size = Vector2(220, 56)
 	btn_draw.add_theme_font_size_override("font_size", 18)
 	var dsb := StyleBoxFlat.new()
@@ -1360,7 +1365,7 @@ func _build_character_tab() -> void:
 	h.add_child(r_v)
 
 	var title := Label.new()
-	title.text = "✦ 三欄武器輪替系統 (原作節奏) ✦"
+	title.text = "三欄武器輪替系統 (原作節奏)"
 	title.add_theme_font_size_override("font_size", 18)
 	title.add_theme_color_override("font_color", GOLD_CLASSICAL)
 	r_v.add_child(title)
@@ -1498,7 +1503,7 @@ func refresh_hud() -> void:
 	if _hero_name_tag:
 		_hero_name_tag.text = _get_hero_name()
 	if _power_label:
-		_power_label.text = "✦ 戰力 %d" % pow
+		_power_label.text = "戰力 %d" % pow
 	if _energy_label:
 		_energy_label.text = _energy_hud_text()
 	if _gold_label:
