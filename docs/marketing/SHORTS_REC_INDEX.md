@@ -4,8 +4,8 @@
 > **制定依據**：`docs/marketing/SHORTS_SOUL_BATTLE_POLISH_30S.md` 第四節與第五節  
 > **產出日期**：2026-09-08  
 > **錄製執行**：側案·程式 阿宏（sideworker）  
-> **規範標準**：嚴格遵守 `references/review.md` 第 10～19 條、第 12 條（全片 9:16 直式 1080×1920）、第 19e 條（逐條 ls 驗證）、第 19b 條（100% 真實 Godot 錄影）。  
-> **驗證備忘**：採用檔案握手信號機制（場景與畫面完全渲染穩定後方啟動錄影），徹底根除 Godot 開機 Splash Screen 與滑鼠游標。四段縮圖與影片已全數經由 Vision 檢查確認無誤。
+> **規範標準**：嚴格遵守 `references/review.md` 第 10～19 條、第 12 條（全片 9:16 直式 1080×1920）、第 19e 條（逐條 ls 驗證）、第 19b 條（100% 真實 Godot 錄影）、第 19g 條（逐格抽幀比對確認與索引吻合）。  
+> **驗證備忘**：採用檔案握手信號機制（場景與畫面完全渲染穩定後方啟動錄影），徹底根除 Godot 開機 Splash Screen 與滑鼠游標。四段縮圖與影片已全數經由 Vision 開圖查驗，逐項比對特效、跳字、進度條數值與 UI 元素真實無誤。
 
 ---
 
@@ -15,8 +15,8 @@
 |---|---|---|---|---|---|
 | **REC-01** | Shot 2 | **4.5s** | **4.50s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **右手拇指操作熱區（ThumbPad HUD）**<br>荒路殘兵戰鬥，展示右側 ThumbPad（攻擊、換武、鎖定、技能、暫停）。小白單手持長劍連續 3 次普攻揮斬，點擊 ThumbSwitch 順暢切換巨錘（武器圖示即時更換），點擊 ThumbLock 目標指示器切換。 |
 | **REC-02** | Shot 3 | **8.0s** | **8.00s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **視覺換血與 0.15s 打擊停頓**<br>守衛巨獸雷歐戰鬥，展示線性平滑插畫感、`outline.gdshader` 深暖褐粗描邊、`foot_shadow.gdshader` 獨立層落地柔化橢圓軟影。普攻斬擊命中觸發精確 0.15s Hitstop 打擊停頓與金色跳字爆散。 |
-| **REC-03** | Shot 4 | **5.0s** | **5.00s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **聚魂殿四階封靈罐與首屏透明保底**<br>聚魂殿介面，無任何系統 Emoji。首屏上方清楚展示「虔誠度 60/100 · 再 4 抽得碎片」透明保底進度條，中央綠→藍→紫→橙四階發條封靈罐，點擊抽魂觸發金光迸裂開光動態。 |
-| **REC-04** | Shot 5 | **6.5s** | **6.50s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **怒氣超轉速過載（Overdrive）與部位 BREAK**<br>雷歐戰鬥怒氣值累積滿 100%，觸發「暴怒覺醒 / 齒輪過載」，小白以 +25% 攻速展開高速狂暴連斬，重擊打碎雷歐「獅衛重盾」防禦部位，彈出金色「BREAK！」字樣與零件崩飛。 |
+| **REC-03** | Shot 4 | **5.0s** | **5.00s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **聚魂殿四階封靈罐開光與首屏透明保底**<br>聚魂殿介面，無任何系統 Emoji。首屏上方清楚展示「綠階封靈罐 → 藍階封靈罐 → 紫階封靈罐 → 橙階封靈罐」四階發條封靈罐並列，上方清楚展示「虔誠度 60/100 · 再抽 4 次獲得碎片」透明保底進度條（60% 橘黃進度），點擊抽魂觸發橙階封靈罐金光迸裂、開光浮現月桂冠金色神魂光效。 |
+| **REC-04** | Shot 5 | **6.5s** | **6.50s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **怒氣超轉速過載（Overdrive）與部位破壞**<br>雷歐戰鬥怒氣值累積滿 100%，觸發「暴怒覺醒 / 齒輪過載」（紅色「怒氣過載！」跳字），小白以 +25% 攻速展開高速狂暴連斬，重擊打碎雷歐「獅衛重盾」防禦部位，彈出紅橘色「部位破壞」跳字＋獅衛重盾消失。 |
 
 - **實機素材累計時長**：`4.5s + 8.0s + 5.0s + 6.5s = 24.0s`（加上 Shot 1 概念圖 3.0s 與 Shot 6 品牌點題卡 3.0s，剛好 30.0s 嚴絲合縫）。
 
@@ -29,34 +29,34 @@
 ### 1. 9:16 直式影片素材（1080×1920，主要合成素材）
 | 素材編號 | Workspace 路徑 | 專案交付路徑 (`docs/marketing/shots/`) | 檔案大小 | SHA256 (首8碼) |
 |---|---|---|---|---|
-| **REC-01** | `rec01_thumb_pad_9x16.mp4` | `docs/marketing/shots/rec01_thumb_pad_9x16.mp4` | 294 KB | `fdae23dc` |
-| **REC-02** | `rec02_battle_polish_9x16.mp4` | `docs/marketing/shots/rec02_battle_polish_9x16.mp4` | 317 KB | `9a49c976` |
-| **REC-03** | `rec03_soul_pity_9x16.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16.mp4` | 96 KB | `64ecf103` |
-| **REC-04** | `rec04_overdrive_break_9x16.mp4` | `docs/marketing/shots/rec04_overdrive_break_9x16.mp4` | 400 KB | `06390333` |
+| **REC-01** | `rec01_thumb_pad_9x16.mp4` | `docs/marketing/shots/rec01_thumb_pad_9x16.mp4` | 295 KB | `fdae23dc` |
+| **REC-02** | `rec02_battle_polish_9x16.mp4` | `docs/marketing/shots/rec02_battle_polish_9x16.mp4` | 318 KB | `9a49c976` |
+| **REC-03** | `rec03_soul_pity_9x16.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16.mp4` | 78 KB | `6a262de7` |
+| **REC-04** | `rec04_overdrive_break_9x16.mp4` | `docs/marketing/shots/rec04_overdrive_break_9x16.mp4` | 401 KB | `06390333` |
 
 ### 2. 9:16 直式特寫裁切版影片素材（1080×1920，備用特寫剪輯）
 | 素材編號 | Workspace 路徑 | 專案交付路徑 (`docs/marketing/shots/`) | 檔案大小 | SHA256 (首8碼) |
 |---|---|---|---|---|
-| **REC-01** | `rec01_thumb_pad_9x16_crop.mp4` | `docs/marketing/shots/rec01_thumb_pad_9x16_crop.mp4` | 260 KB | `de152cd2` |
-| **REC-02** | `rec02_battle_polish_9x16_crop.mp4` | `docs/marketing/shots/rec02_battle_polish_9x16_crop.mp4` | 363 KB | `14a65842` |
-| **REC-03** | `rec03_soul_pity_9x16_crop.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16_crop.mp4` | 131 KB | `28998ba6` |
-| **REC-04** | `rec04_overdrive_break_9x16_crop.mp4` | `docs/marketing/shots/rec04_overdrive_break_9x16_crop.mp4` | 435 KB | `ef76d27f` |
+| **REC-01** | `rec01_thumb_pad_9x16_crop.mp4` | `docs/marketing/shots/rec01_thumb_pad_9x16_crop.mp4` | 261 KB | `de152cd2` |
+| **REC-02** | `rec02_battle_polish_9x16_crop.mp4` | `docs/marketing/shots/rec02_battle_polish_9x16_crop.mp4` | 364 KB | `14a65842` |
+| **REC-03** | `rec03_soul_pity_9x16_crop.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16_crop.mp4` | 160 KB | `6545b409` |
+| **REC-04** | `rec04_overdrive_break_9x16_crop.mp4` | `docs/marketing/shots/rec04_overdrive_break_9x16_crop.mp4` | 436 KB | `ef76d27f` |
 
 ### 3. 16:9 原始實機錄影母帶（1280×720，原始無損畫面）
 | 素材編號 | Workspace 路徑 | 檔案大小 | SHA256 (首8碼) |
 |---|---|---|---|
 | **REC-01** | `rec01_thumb_pad_raw_16x9.mp4` | 263 KB | `8cf54fe1` |
 | **REC-02** | `rec02_battle_polish_raw_16x9.mp4` | 268 KB | `946cbe5b` |
-| **REC-03** | `rec03_soul_pity_raw_16x9.mp4` | 50 KB | `1ac9bf50` |
+| **REC-03** | `rec03_soul_pity_raw_16x9.mp4` | 55 KB | `8beaf6d9` |
 | **REC-04** | `rec04_overdrive_break_raw_16x9.mp4` | 317 KB | `35160677` |
 
 ### 4. 關鍵幀縮圖與截圖證明（PNG，驗證真實畫面與 UI）
 | 素材編號 | 9:16 關鍵幀縮圖路徑 | 縮圖大小 | 縮圖 SHA256 (首8碼) | 實機原生截圖路徑 | 驗證焦點 |
 |---|---|---|---|---|---|
-| **REC-01** | `docs/marketing/shots/rec01_thumb_pad_9x16_thumb.png` | 1,277 KB | `801843f9` | `docs/marketing/shots/rec01_thumb_pad.png` | 右側 ThumbPad 操作熱區、普攻換武切換 |
-| **REC-02** | `docs/marketing/shots/rec02_battle_polish_9x16_thumb.png` | 1,187 KB | `1d297531` | `docs/marketing/shots/rec02_battle_polish.png` | 小白 vs 雷歐、角色粗描邊與落地軟影 |
-| **REC-03** | `docs/marketing/shots/rec03_soul_pity_9x16_thumb.png` | 215 KB | `41c366d2` | `docs/marketing/shots/rec03_soul_pity.png` | 聚魂殿四階封靈罐、60/100 虔誠度首屏保底進度條 |
-| **REC-04** | `docs/marketing/shots/rec04_overdrive_break_9x16_thumb.png` | 1,205 KB | `2419f95f` | `docs/marketing/shots/rec04_overdrive_break.png` | 怒氣全滿、暴怒覺醒中、部位獅衛重盾破甲擊破 |
+| **REC-01** | `docs/marketing/shots/rec01_thumb_pad_9x16_thumb.png` | 1,277 KB | `801843f9` | `docs/marketing/shots/rec01_thumb_pad.png` | 右側 ThumbPad 操作熱區、長劍揮斬與切換巨錘（經抽幀驗證無誤） |
+| **REC-02** | `docs/marketing/shots/rec02_battle_polish_9x16_thumb.png` | 1,187 KB | `1d297531` | `docs/marketing/shots/rec02_battle_polish.png` | 小白 vs 雷歐、角色粗描邊與落地軟影、0.15s Hitstop 打擊停頓（經抽幀驗證無誤） |
+| **REC-03** | `docs/marketing/shots/rec03_soul_pity_9x16_thumb.png` | 304 KB | `2f2e81b0` | `docs/marketing/shots/rec03_soul_pity.png` | 聚魂殿四階封靈罐並列（綠→藍→紫→橙）、虔誠度 60/100 · 再抽 4 次獲得碎片透明保底進度條、開光浮現月桂冠金色神魂光效（經抽幀驗證無誤） |
+| **REC-04** | `docs/marketing/shots/rec04_overdrive_break_9x16_thumb.png` | 1,205 KB | `2419f95f` | `docs/marketing/shots/rec04_overdrive_break.png` | 怒氣全滿、暴怒覺醒紅色「怒氣過載！」跳字、部位獅衛重盾重擊擊破（紅橘色「部位破壞」跳字＋獅衛重盾消失，經抽幀驗證無誤） |
 
 ---
 
