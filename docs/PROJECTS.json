@@ -158,8 +158,8 @@
    "id": "loop-daily",
    "cat": "遊戲",
    "title": "🥉 每日發條：「今天，誰需要上發條？」",
-   "status": "測試中",
-   "note": "每日發條已合併進 main",
+   "status": "已上線",
+   "note": "QA回歸驗收全綠(t_5f90bd63)，79/79 PASSED",
    "keys": [
     "每日",
     "發條",
