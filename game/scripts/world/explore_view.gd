@@ -74,6 +74,8 @@ var _action_pose_left: float = 0.0
 var _action_pose_tween: Tween
 var _banner_base_x: float = 40.0
 const TILE_PX := 32
+## ART-02：這幾張手繪底圖即使 map_bg 載不到也不准滿鋪粗方塊 tile。
+const NO_TILE_OVERLAY_ART: PackedStringArray = ["town", "village"]
 ## 動態可行走區（大地圖）
 var FLOOR_RECT := Rect2(40, 80, 1200, 560)
 var _cam: Vector2 = Vector2.ZERO
@@ -1096,23 +1098,45 @@ func _get_or_make_tileset(kind: String) -> TileSet:
 	return ts
 
 
+func _hide_tile_overlay() -> void:
+	if _tile_map:
+		_tile_map.clear()
+		_tile_map.visible = false
+	if _wall_map:
+		_wall_map.clear()
+		_wall_map.visible = false
+	if _tile_host:
+		_tile_host.visible = false
+
+
+func _show_tile_overlay() -> void:
+	if _tile_host:
+		_tile_host.visible = true
+	if _tile_map:
+		_tile_map.visible = true
+	if _wall_map:
+		_wall_map.visible = true
+
+
 func _build_tilemap(map_id_s: String, scenic_bg: bool = false, pal: Dictionary = {}) -> void:
 	if _tile_map == null or _tile_host == null:
 		return
 	_tile_host.position = FLOOR_RECT.position
 	_map_cols = int(FLOOR_RECT.size.x / TILE_PX)
 	_map_rows = int(FLOOR_RECT.size.y / TILE_PX)
+	## 手繪底圖（含 ART-02 的大廳配對主城／C0 村）不准蓋半透明滿鋪 tile。
+	if scenic_bg or map_id_s in NO_TILE_OVERLAY_ART:
+		_hide_tile_overlay()
+		return
+	_show_tile_overlay()
 	var kind := SpriteDB.map_tile_kind(map_id_s)
 	var ts := _get_or_make_tileset(kind)
 	if ts == null:
-		_tile_map.clear()
-		if _wall_map:
-			_wall_map.clear()
+		_hide_tile_overlay()
 		return
 	_tile_map.tile_set = ts
 	_tile_map.clear()
-	## 有風景底圖時：不再鋪滿 tile（那會蓋掉 Gemini 場景圖，變成「醜地板」）
-	## 只在邊角極淡點綴；無底圖時才滿鋪可走地面
+	## 無底圖時才滿鋪可走地面
 	var seed_n := map_id_s.hash()
 	var variants := 4
 	var src: TileSetSource = ts.get_source(0)
@@ -1120,22 +1144,17 @@ func _build_tilemap(map_id_s: String, scenic_bg: bool = false, pal: Dictionary =
 		var atlas := src as TileSetAtlasSource
 		if atlas.texture:
 			variants = maxi(1, int(atlas.texture.get_width() / TILE_PX))
-	if scenic_bg:
-		## 現代手遊風格：有高清風景底圖時，徹底不鋪 16x16 粗方塊，呈現通透插畫
-		_tile_map.clear()
-		return
-	else:
-		for y in _map_rows:
-			for x in _map_cols:
-				var n := int(abs(sin(float(x * 12 + y * 7 + seed_n)) * 1000.0))
-				var vi := n % variants
-				if map_id_s in ["town", "dojo"] and (y == _map_rows / 2 or y == _map_rows / 2 + 1):
-					vi = 0
-				if map_id_s == "road" and abs(y - _map_rows / 2) <= 1:
-					vi = mini(1, variants - 1)
-				_tile_map.set_cell(Vector2i(x, y), 0, Vector2i(vi, 0))
-		var tc2: Color = pal.get("tile", Color.WHITE) as Color
-		_tile_map.modulate = Color(tc2.r, tc2.g, tc2.b, 0.88)
+	for y in _map_rows:
+		for x in _map_cols:
+			var n := int(abs(sin(float(x * 12 + y * 7 + seed_n)) * 1000.0))
+			var vi := n % variants
+			if map_id_s in ["town", "dojo"] and (y == _map_rows / 2 or y == _map_rows / 2 + 1):
+				vi = 0
+			if map_id_s == "road" and abs(y - _map_rows / 2) <= 1:
+				vi = mini(1, variants - 1)
+			_tile_map.set_cell(Vector2i(x, y), 0, Vector2i(vi, 0))
+	var tc2: Color = pal.get("tile", Color.WHITE) as Color
+	_tile_map.modulate = Color(tc2.r, tc2.g, tc2.b, 0.88)
 	## 牆層 tileset
 	var wall_ts := _get_or_make_tileset("wall")
 	if _wall_map and wall_ts:
