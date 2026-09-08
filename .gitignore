@@ -48,3 +48,4 @@ game/assets/sprites/maps/_backup_prepixel_0827/
 
 # agent worktrees（Claude Code 自動建的，不進版控）
 .claude/worktrees/
+.worktrees/
