@@ -172,8 +172,8 @@
    "id": "soul-simplify",
    "cat": "遊戲",
    "title": "🥉 戰魂收斂：保留抽寶核心，移除 14 主星結構",
-   "status": "草稿",
-   "note": "養成收斂成 角色→戰魂→裝備→技能 四層。14 主星本來就不是原作必要的東西，拆掉；但抽寶（抽魂）的核心邏輯保留——它是商業模式的內購支點，且必須有保底與上限，⛔ 不做 pay-to-win。",
+   "status": "開發中",
+   "note": "設計文件已完成（docs/SOUL_SIMPLIFY_DESIGN.md），送審中；待 balance-lock 合併後由 sideworker 實作代碼。",
    "keys": [
     "戰魂",
     "抽魂",
