@@ -10,7 +10,7 @@
 .band--cream { background: var(--cream); }
 .band--warm { background: var(--warm); }
 .band--ink {
-  background: linear-gradient(145deg, #1F1A3A 0%, #29224E 55%, #392854 100%);
+  background: linear-gradient(145deg, #0B0A0E 0%, #141218 55%, #1A171F 100%);
   color: #FFFDF8;
 }
 .band--ink .section-sub,

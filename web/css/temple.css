@@ -416,6 +416,11 @@ a.card:hover .title,
   color: var(--gold-hover);
   border: 1px solid var(--line);
 }
+.tag-update {
+  background: var(--key-strong);
+  color: var(--wood-darkest);
+  border: 1px solid var(--gold);
+}
 .chip {
   background: var(--cream);
   color: var(--ink-soft);
