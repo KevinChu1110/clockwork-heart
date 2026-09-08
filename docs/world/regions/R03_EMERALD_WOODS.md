@@ -211,16 +211,16 @@
 
 ## 七、AI 美術與影音產出規範（Art & Media Keywords）
 
-> 用於產圖腳本（`/root/gen_media.py`）與音效調配。嚴格遵守 `art_direction.md`，禁止任何真實生物皮毛、血肉傷殘、恐怖驚悚元素。
+> 用於產圖腳本（`/root/gen_media.py`）與音效調配。嚴格遵守 `art_direction.md` 與 `review.md`，禁止任何真實生物皮毛、血肉傷殘、恐怖驚悚元素。產圖一律帶 --ref branding/key_visual_main.png，遊戲名與標題卡由後製無失真疊加 branding/logo_cn.png／logo_en.png，不得由 AI 生成。
 
 ### 7.1 場景原畫 Prompt Keywords（英文）
 ```text
-Bright dopamine color palette, Maplestory and Tata Adventure style, 2.2 head chibi proportions, warm cream background (#FFFDF8), vibrant candy colors, enchanted clockwork forest diorama, giant hollow trees made of stamped polished brass sheets and copper rivets, flowing glowing copper sap in glass pipes, felt moss carpet on brass baseplate with visible gear teeth, segmented spring-wire vines, luminescent glowing resin mushrooms, cute miniature wooden treehouses with tin roofs, warm golden Tyndall sunbeams (#D4F7D0), soft cel-shaded rendering, highly detailed cute toy diorama, 8k resolution, isometric wide view --no dark gritty mud, --no blood, --no real fur, --no realistic forest, --no horror
+Bright dopamine color palette, Maplestory and Tata Adventure style, 2.2 head chibi proportions, warm cream background (#FFFDF8), vibrant candy colors, enchanted clockwork forest diorama, giant hollow trees made of stamped polished brass sheets and copper rivets, flowing glowing copper sap in glass pipes, felt moss carpet on brass baseplate with visible gear teeth, segmented spring-wire vines, luminescent glowing resin mushrooms, cute miniature wooden treehouses with tin roofs, warm golden Tyndall sunbeams (#D4F7D0), soft cel-shaded rendering, highly detailed cute toy diorama, 8k resolution, isometric wide view --no dark gritty mud, --no blood, --no real fur, --no realistic forest, --no horror, --no text, --no letters, --no logo, --no watermark
 ```
 
 ### 7.2 怪物與 BOSS Prompt Keywords（英文）
 ```text
-Cute chibi giant falcon titan, toy mechanical falcon guardian boss, made of polished vintage bronze plumes, brass gear skeleton, twin turbo spring barrels on back, harmless comic expression, cyan-green glowing crystal lenses, toy bolts and brass screws popping off during combat, steam puffing from exhaust pipes, cel-shaded anime style, bold outlines, dopamine color accents, soft foot shadow, white border outline --no gore, --no biological flesh, --no real feathers, --no real fur, --no horror, --no blank eyes
+Cute chibi giant falcon titan, toy mechanical falcon guardian boss, made of polished vintage bronze plumes, brass gear skeleton, twin turbo spring barrels on back, harmless comic expression, cyan-green glowing crystal lenses, toy bolts and brass screws popping off during combat, steam puffing from exhaust pipes, cel-shaded anime style, bold outlines, dopamine color accents, soft foot shadow, white border outline --no gore, --no biological flesh, --no real feathers, --no real fur, --no horror, --no blank eyes, --no text, --no letters, --no logo, --no watermark
 ```
 
 ### 7.3 音樂與音效氛圍（BGM Mood & Instruments）

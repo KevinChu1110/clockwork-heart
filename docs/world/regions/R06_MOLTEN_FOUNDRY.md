@@ -210,16 +210,16 @@
 
 ## 七、AI 美術與影音產出規範（Art & Media Keywords）
 
-> 用於產圖腳本（`/root/gen_media.py`）與音效調配。嚴格遵守 `art_direction.md` 與 `review.md`，禁止任何真實生物皮毛、血肉傷殘、恐怖驚悚元素。
+> 用於產圖腳本（`/root/gen_media.py`）與音效調配。嚴格遵守 `art_direction.md` 與 `review.md`，禁止任何真實生物皮毛、血肉傷殘、恐怖驚悚元素。產圖一律帶 --ref branding/key_visual_main.png，遊戲名與標題卡由後製無失真疊加 branding/logo_cn.png／logo_en.png，不得由 AI 生成。
 
 ### 7.1 場景原畫 Prompt Keywords（英文）
 ```text
-Bright dopamine color palette, Maplestory and Tata Adventure style, 2.2 head chibi proportions, warm cream background (#FFFDF8), vibrant candy colors, breathtaking molten volcano foundry diorama, glowing golden liquid iron pools (#FFA010), ancient black cast-iron fortress, cute terracotta golem workers, heavy hanging steel suspension bridges, giant ticking brass clockwork gears (#FFD028), white steam puffs from chimneys, soft cel-shaded rendering, highly detailed cute toy diorama, 8k resolution, isometric wide view --no dark gritty mud, --no blood, --no real fur, --no realistic gritty steampunk, --no horror
+Bright dopamine color palette, Maplestory and Tata Adventure style, 2.2 head chibi proportions, warm cream background (#FFFDF8), vibrant candy colors, breathtaking molten volcano foundry diorama, glowing golden liquid iron pools (#FFA010), ancient black cast-iron fortress, cute terracotta golem workers, heavy hanging steel suspension bridges, giant ticking brass clockwork gears (#FFD028), white steam puffs from chimneys, soft cel-shaded rendering, highly detailed cute toy diorama, 8k resolution, isometric wide view --no dark gritty mud, --no blood, --no real fur, --no realistic gritty steampunk, --no horror, --no text, --no letters, --no logo, --no watermark
 ```
 
 ### 7.2 怪物與 BOSS Prompt Keywords（英文）
 ```text
-Cute chibi giant boar titan mecha, toy mechanical stone-fist wild boar boss, made of polished matte black cast-iron plates and obsidian armor blocks, oversized hydraulic iron fists, shiny brass exhaust chimneys on back, prominent winding spring key on back, harmless comic expression, glowing amber crystal eye visors, toy bolts and screws popping off during combat, cel-shaded anime style, bold outlines, dopamine color accents (#FFA010, #FFD028), soft foot shadow, white border outline --no gore, --no biological flesh, --no real fur, --no horror, --no blank eyes
+Cute chibi giant boar titan mecha, toy mechanical stone-fist wild boar boss, made of polished matte black cast-iron plates and obsidian armor blocks, oversized hydraulic iron fists, shiny brass exhaust chimneys on back, prominent winding spring key on back, harmless comic expression, glowing amber crystal eye visors, toy bolts and screws popping off during combat, cel-shaded anime style, bold outlines, dopamine color accents (#FFA010, #FFD028), soft foot shadow, white border outline --no gore, --no biological flesh, --no real fur, --no horror, --no blank eyes, --no text, --no letters, --no logo, --no watermark
 ```
 
 ### 7.3 音樂與音效氛圍（BGM Mood & Instruments）
