@@ -6,6 +6,9 @@ const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
+const OutlineShader = preload("res://shaders/outline.gdshader")
+const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
+const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 
 signal battle_finished(won: bool)
 
@@ -75,6 +78,8 @@ var _part_bars: Dictionary = {}  ## id -> ProgressBar
 var _part_labels: Dictionary = {}  ## id -> Label
 var _part_box: VBoxContainer
 var _focus_hint: Label
+static var _shadow_tex_cache: Texture2D = null
+static var _feet_frac_cache: Dictionary = {}
 
 
 
@@ -714,8 +719,230 @@ func _flash_skill_banner(skill_name: String, player_side: bool = true) -> void:
 	)
 
 
+static func _soft_shadow_tex() -> Texture2D:
+	if _shadow_tex_cache != null:
+		return _shadow_tex_cache
+	## 寬核平台＋柔邊：核接近不透明，邊緣才衰減。不要 pow 尖核（看起來像硬斑或沒有）。
+	var w := 256
+	var h := 96
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var cx := (w - 1) * 0.5
+	var cy := (h - 1) * 0.5
+	var rx := cx * 0.98
+	var ry := cy * 0.96
+	for y in h:
+		for x in w:
+			var dx := (float(x) - cx) / rx
+			var dy := (float(y) - cy) / ry
+			var d2 := dx * dx + dy * dy
+			if d2 >= 1.0:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+			else:
+				var d := sqrt(d2)
+				var a := 1.0
+				if d > 0.52:
+					var t := (d - 0.52) / 0.48
+					t = t * t * (3.0 - 2.0 * t)
+					a = 1.0 - t
+				img.set_pixel(x, y, Color(1, 1, 1, a))
+	_shadow_tex_cache = ImageTexture.create_from_image(img)
+	return _shadow_tex_cache
+
+
+func _apply_outline(body: TextureRect, width: float) -> void:
+	if body == null:
+		return
+	body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var mat := body.material as ShaderMaterial
+	if mat == null or mat.shader != OutlineShader:
+		mat = ShaderMaterial.new()
+		mat.shader = OutlineShader
+		body.material = mat
+	mat.set_shader_parameter("outline_width", width)
+	mat.set_shader_parameter("outline_color", Color(0.20, 0.12, 0.07, 1.0))
+
+
+func _body_drawn_rect(body: TextureRect) -> Rect2:
+	var bs := body.size
+	if bs.x < 8.0 or bs.y < 8.0:
+		bs = body.custom_minimum_size
+	if bs.x < 8.0:
+		bs = Vector2(200, 250)
+	var tex := body.texture
+	if tex == null:
+		return Rect2(Vector2.ZERO, bs)
+	var ts := tex.get_size()
+	if ts.x <= 1.0 or ts.y <= 1.0:
+		return Rect2(Vector2.ZERO, bs)
+	var s := minf(bs.x / ts.x, bs.y / ts.y)
+	var ds := ts * s
+	return Rect2((bs - ds) * 0.5, ds)
+
+
+static func _content_bottom_frac(tex: Texture2D) -> float:
+	if tex == null:
+		return 0.90
+	var key := tex.resource_path
+	if key == "":
+		key = str(tex.get_rid())
+	if _feet_frac_cache.has(key):
+		return float(_feet_frac_cache[key])
+	var img := tex.get_image()
+	if img == null:
+		_feet_frac_cache[key] = 0.90
+		return 0.90
+	var h := img.get_height()
+	var w := img.get_width()
+	var last := int(float(h) * 0.88)
+	var found := false
+	for y in range(h - 1, -1, -1):
+		var hit := false
+		var x := 0
+		while x < w:
+			if img.get_pixel(x, y).a > 0.28:
+				hit = true
+				break
+			x += 3
+		if hit:
+			last = y
+			found = true
+			break
+	var frac := 0.90
+	if found and h > 0:
+		frac = clampf((float(last) + 1.0) / float(h) - 0.03, 0.58, 0.94)
+	_feet_frac_cache[key] = frac
+	return frac
+
+
+func _shadow_layer() -> Control:
+	var layer := get_node_or_null("ShadowLayer") as Control
+	if layer == null:
+		layer = Control.new()
+		layer.name = "ShadowLayer"
+		layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		layer.clip_contents = false
+		layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+		add_child(layer)
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.clip_contents = false
+	## 地面 → 軟影 → 角色 → 戰報。畫在 Arena 之後會蓋靴子。
+	if arena and layer.get_index() != arena.get_index() - 1:
+		move_child(layer, arena.get_index())
+	return layer
+
+
+func _ensure_foot_shadow(body: TextureRect) -> void:
+	if body == null:
+		return
+	## 舊版掛在角色身上的子節點拿掉，改走獨立層。
+	var leftover := body.get_node_or_null("FootShadow")
+	if leftover:
+		leftover.queue_free()
+	var layer := _shadow_layer()
+	var key := "FootShadow_%s" % body.name
+	var sh := layer.get_node_or_null(key) as TextureRect
+	if sh == null:
+		sh = TextureRect.new()
+		sh.name = key
+		sh.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sh.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		sh.stretch_mode = TextureRect.STRETCH_SCALE
+		sh.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		sh.texture = _soft_shadow_tex()
+		sh.layout_mode = 0
+		layer.add_child(sh)
+	var mat := sh.material as ShaderMaterial
+	if mat == null or mat.shader != FootShadowShader:
+		mat = ShaderMaterial.new()
+		mat.shader = FootShadowShader
+		sh.material = mat
+	mat.set_shader_parameter("strength", 0.92)
+	mat.set_shader_parameter("shadow_color", Color(0.01, 0.01, 0.02, 1.0))
+	_layout_foot_shadow(body)
+
+
+func _layout_foot_shadow(body: TextureRect) -> void:
+	if body == null:
+		return
+	var layer := get_node_or_null("ShadowLayer") as Control
+	if layer == null:
+		return
+	var sh := layer.get_node_or_null("FootShadow_%s" % body.name) as TextureRect
+	if sh == null or sh.texture == null:
+		return
+	var dr := _body_drawn_rect(body)
+	if dr.size.x < 8.0 or dr.size.y < 8.0:
+		return
+	var frac := _content_bottom_frac(body.texture)
+	var origin := body.global_position
+	var feet := origin + Vector2(dr.position.x + dr.size.x * 0.5, dr.position.y + dr.size.y * frac)
+	var sz := Vector2(maxf(dr.size.x * 2.40, 340.0), maxf(dr.size.x * 0.38, 72.0))
+	## 扁橢圓貼在腳前方地面；核要大到縮手機寬還認得出踩在地上。
+	var pos_y := feet.y - sz.y * 0.12
+	var max_bottom := size.y - 8.0
+	if log_label:
+		max_bottom = log_label.global_position.y - 8.0
+	if pos_y + sz.y > max_bottom:
+		sz.y = maxf(64.0, max_bottom - pos_y)
+		pos_y = feet.y - sz.y * 0.12
+		if pos_y + sz.y > max_bottom:
+			pos_y = max_bottom - sz.y
+	sh.size = sz
+	## 幾乎整塊落腳前方地面；底邊不進戰報。
+	sh.global_position = Vector2(feet.x - sz.x * 0.5, pos_y)
+	sh.visible = true
+	sh.modulate = Color(1, 1, 1, 1)
+	sh.z_index = 0
+	sh.z_as_relative = true
+
+
+func _ensure_screen_grade() -> void:
+	if get_node_or_null("BattleGrade") != null:
+		return
+	var copy := BackBufferCopy.new()
+	copy.name = "BattleGradeCopy"
+	copy.copy_mode = BackBufferCopy.COPY_MODE_VIEWPORT
+	add_child(copy)
+	var grade := ColorRect.new()
+	grade.name = "BattleGrade"
+	grade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	grade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	grade.color = Color.WHITE
+	var mat := ShaderMaterial.new()
+	mat.shader = ColorGradeScreenShader
+	grade.material = mat
+	add_child(grade)
+
+
+func _ensure_battle_look() -> void:
+	## 戰鬥畫面換皮：LINEAR、角色描邊＋腳底軟影、飽和／對比微調。不要髒黑濾鏡。
+	if battle_bg:
+		battle_bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if player_body:
+		player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if enemy_body:
+		enemy_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if hazard_fx:
+		hazard_fx.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_apply_outline(player_body, 3.0)
+	_apply_outline(enemy_body, 3.2)
+	_ensure_foot_shadow(player_body)
+	_ensure_foot_shadow(enemy_body)
+	if player_body and not player_body.resized.is_connected(_layout_battle_equipment_overlays):
+		player_body.resized.connect(_layout_battle_equipment_overlays)
+	if enemy_body and not enemy_body.resized.is_connected(_layout_battle_equipment_overlays):
+		enemy_body.resized.connect(_layout_battle_equipment_overlays)
+	_ensure_screen_grade()
+	var dim := get_node_or_null("BGDim") as ColorRect
+	if dim:
+		dim.visible = false
+		dim.color = Color(1.0, 0.95, 0.82, 0.0)
+	call_deferred("_layout_battle_equipment_overlays")
+
+
 func _apply_battle_art(mode: String) -> void:
 	## 立繪比例：素材約 160×200（兔）／220×240（Boss），維持長寬比、不擠扁
+	_ensure_battle_look()
 	_player_pose = "idle"
 	var ptex := SpriteDB.player_pose("idle")
 	if ptex == null:
@@ -811,17 +1038,15 @@ func _apply_battle_art(mode: String) -> void:
 			_enemy_base_mod = Color.WHITE
 	enemy_body.modulate = _enemy_base_mod
 
-	## 背景解析（專屬圖 → 那場仗發生的地圖 → 保底）統一在 SpriteDB.battle_bg_path()。
-	## 這裡原本自己寫了一串 fallback（demon→fog→boar→wolf），而那四張正是
-	## 「主角＋敵人都畫好」的完成稿插圖 —— 於是打某些王的時候，
-	## 背景裡有另一隻主角在跟別的怪對砍。
+	## 背景解析統一在 SpriteDB.battle_bg_path()（地圖插畫底板，不用量化馬賽克）。
 	var bg := SpriteDB.battle_bg(mode)
 	if battle_bg and bg:
 		battle_bg.texture = bg
+		battle_bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		battle_bg.modulate = _battle_bg_tint(mode)
 	elif battle_bg:
 		battle_bg.texture = null
-		battle_bg.modulate = Color(0.12, 0.1, 0.16)
+		battle_bg.modulate = Color(0.98, 0.93, 0.82)
 
 
 func _apply_battle_weapon_overlay() -> void:
@@ -836,7 +1061,7 @@ func _apply_battle_weapon_overlay() -> void:
 		_battle_armor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_battle_armor.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_battle_armor.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		_battle_armor.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		_battle_armor.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		player_body.add_child(_battle_armor)
 	elif _battle_armor.get_parent() != player_body:
 		_battle_armor.reparent(player_body)
@@ -846,7 +1071,7 @@ func _apply_battle_weapon_overlay() -> void:
 		_battle_weapon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_battle_weapon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_battle_weapon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		_battle_weapon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		_battle_weapon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		player_body.add_child(_battle_weapon)
 	elif _battle_weapon.get_parent() != player_body:
 		_battle_weapon.reparent(player_body)
@@ -858,6 +1083,8 @@ func _apply_battle_weapon_overlay() -> void:
 
 
 func _layout_battle_equipment_overlays() -> void:
+	_layout_foot_shadow(player_body)
+	_layout_foot_shadow(enemy_body)
 	if player_body == null:
 		return
 	var bs := player_body.size
@@ -2334,7 +2561,7 @@ func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> v
 	fx.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	fx.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	fx.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	fx.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	var sz := Vector2(96, 96)
 	fx.custom_minimum_size = sz
 	fx.size = sz

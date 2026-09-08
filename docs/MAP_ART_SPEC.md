@@ -42,3 +42,4 @@ walkable ground, warm muted painted game art, {每圖一句 content brief}
 - 室內店舖（`town_forge`／`town_soul`／`town_gem`／`town_tutor`）同樣 ¾ 俯視房間、地面鋪滿；禁止眼平室內＋窗外天空。
 - 「高處」主題（dojo_peak、mist_cliff）：雲霧只能當**圖緣邊界**處理，不得出現天空視角。
 - 開放式建築（棚屋、涼亭）不得當場景遮擋切片——矩形切片表達不了（road_inn 教訓）。
+- **戰鬥畫面不用 pixelize_env。** `maps/battle_*.png` 是舊量化馬賽克，runtime 改走該場地圖的插畫底板（webp）＋ LINEAR。

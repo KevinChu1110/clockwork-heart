@@ -483,13 +483,18 @@ static func soul_shen() -> Texture2D:
 	return tex("%s/souls/shen.png" % ROOT)
 
 
-static func map_bg(map_id: String) -> Texture2D:
+static func map_bg_path(map_id: String) -> String:
 	## 高解析版是 .webp（16:9，原生像素 ≥ 該 art 的世界尺寸；底圖不需要 alpha），
 	## 還沒重出的維持 .png。兩種都找，webp 優先。
 	var webp := "%s/maps/%s_bg.webp" % [ROOT, map_id]
 	if ResourceLoader.exists(webp):
-		return tex(webp)
-	return tex("%s/maps/%s_bg.png" % [ROOT, map_id])
+		return webp
+	var png := "%s/maps/%s_bg.png" % [ROOT, map_id]
+	return png if ResourceLoader.exists(png) else ""
+
+
+static func map_bg(map_id: String) -> Texture2D:
+	return tex(map_bg_path(map_id))
 
 
 ## 每一種戰鬥該站在哪張圖前面。
@@ -503,7 +508,7 @@ static func map_bg(map_id: String) -> Texture2D:
 ## 這張表讓每一場戰鬥都退到「那場仗實際發生的地方」的既有底圖，
 ## 五十幾張地圖底圖本來就在 repo 裡，不必等新美術就先不黑。
 ##
-## 專屬戰鬥背景畫好之後丟 `maps/battle_<mode>.png`，會自動蓋過這張表。
+## `maps/battle_<mode>.png` 是 pixelize_env 量化馬賽克（約 70 色），戰鬥畫面不用。
 const BATTLE_BG_MAP := {
 	## 主線 Boss
 	"wolf": "road",
@@ -538,24 +543,21 @@ const BATTLE_BG_MAP := {
 const BATTLE_BG_LAST_RESORT := "wild"
 
 
-## 這場戰鬥的背景圖路徑。順序：專屬戰鬥背景 → 那場仗發生的地圖 → 保底。
+## 這場戰鬥的背景圖路徑：那場仗發生的地圖插畫底板（webp 優先）→ 保底荒野。
+## 不採用 `maps/battle_<mode>.png`（pixelize_env 量化馬賽克）。
 ## 回空字串代表連保底都不在（正常情況不該發生，test_art 會擋）。
 static func battle_bg_path(mode: String) -> String:
-	var own := "%s/maps/battle_%s.png" % [ROOT, mode]
-	if ResourceLoader.exists(own):
-		return own
 	var map_id := str(BATTLE_BG_MAP.get(mode, ""))
 	if map_id != "":
-		var by_map := "%s/maps/%s_bg.png" % [ROOT, map_id]
-		if ResourceLoader.exists(by_map):
+		var by_map := map_bg_path(map_id)
+		if by_map != "":
 			return by_map
-	var last := "%s/maps/%s_bg.png" % [ROOT, BATTLE_BG_LAST_RESORT]
-	return last if ResourceLoader.exists(last) else ""
+	return map_bg_path(BATTLE_BG_LAST_RESORT)
 
 
-## 這張背景是專屬畫的，還是退回去用地圖底圖的。給工具與測試看覆蓋率用。
-static func battle_bg_is_dedicated(mode: String) -> bool:
-	return ResourceLoader.exists("%s/maps/battle_%s.png" % [ROOT, mode])
+## 專屬量化戰鬥圖不再當背景。給工具與測試看覆蓋率用。
+static func battle_bg_is_dedicated(_mode: String) -> bool:
+	return false
 
 
 static func battle_bg(mode: String) -> Texture2D:
