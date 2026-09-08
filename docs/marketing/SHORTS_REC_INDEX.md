@@ -15,7 +15,7 @@
 |---|---|---|---|---|---|
 | **REC-01** | Shot 2 | **4.5s** | **4.50s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **右手拇指操作熱區（ThumbPad HUD）**<br>荒路殘兵戰鬥，展示右側 ThumbPad（攻擊、換武、鎖定、技能、暫停）。小白單手持長劍連續 3 次普攻揮斬，點擊 ThumbSwitch 順暢切換巨錘（武器圖示即時更換），點擊 ThumbLock 目標指示器切換。 |
 | **REC-02** | Shot 3 | **8.0s** | **8.00s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **視覺換血與 0.15s 打擊停頓**<br>守衛巨獸雷歐戰鬥，展示線性平滑插畫感、`outline.gdshader` 深暖褐粗描邊、`foot_shadow.gdshader` 獨立層落地柔化橢圓軟影。普攻斬擊命中觸發精確 0.15s Hitstop 打擊停頓與金色跳字爆散。 |
-| **REC-03** | Shot 4 | **5.0s** | **5.00s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **聚魂殿四階封靈罐開光與首屏透明保底**<br>聚魂殿介面，無任何系統 Emoji。首屏上方清楚展示「綠階封靈罐 → 藍階封靈罐 → 紫階封靈罐 → 橙階封靈罐」四階發條封靈罐並列，上方清楚展示「虔誠度 60/100 · 再抽 4 次獲得碎片」透明保底進度條（60% 橘黃進度），點擊抽魂觸發橙階封靈罐金光迸裂、開光浮現月桂冠金色神魂光效。 |
+| **REC-03** | Shot 4 | **5.0s** | **5.00s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **聚魂殿四階封靈罐開光與首屏透明保底**<br>聚魂殿介面，無任何系統 Emoji。首屏上方清楚展示「綠階封靈罐 → 藍階封靈罐 → 紫階封靈罐 → 橙階封靈罐」四階金屬封靈罐並列（鉚接圓筒黃銅罐外觀），上方清楚展示「虔誠度 60/100 · 再抽 4 次獲得碎片」透明保底進度條（60% 橘黃進度），觸發橙階封靈罐金光迸裂、開光浮現月桂冠金色神魂光效。 |
 | **REC-04** | Shot 5 | **6.5s** | **6.50s** | **9:16 (1080×1920)**<br>H.264 / 30fps | **怒氣滿額暴怒覺醒與三連斬擊**<br>雷歐戰鬥怒氣值累積滿 100%，怒氣滿額觸發「暴怒覺醒！」橘紅跳字與「暴怒中 · 屬性提升」，小白突刺揮斬對雷歐展開連續 3 次斬擊命中，雷歐生命值自 420 扣減至 369（戰鬥日誌即時結算 3 次 17 點暴擊傷害），獅衛重盾完好在手（無部位破壞演出）。 |
 
 - **實機素材累計時長**：`4.5s + 8.0s + 5.0s + 6.5s = 24.0s`（加上 Shot 1 概念圖 3.0s 與 Shot 6 品牌點題卡 3.0s，剛好 30.0s 嚴絲合縫）。
@@ -31,7 +31,7 @@
 |---|---|---|---|---|
 | **REC-01** | `rec01_thumb_pad_9x16.mp4` | `docs/marketing/shots/rec01_thumb_pad_9x16.mp4` | 295 KB | `fdae23dc` |
 | **REC-02** | `rec02_battle_polish_9x16.mp4` | `docs/marketing/shots/rec02_battle_polish_9x16.mp4` | 318 KB | `9a49c976` |
-| **REC-03** | `rec03_soul_pity_9x16.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16.mp4` | 78 KB | `6a262de7` |
+| **REC-03** | `rec03_soul_pity_9x16.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16.mp4` | 75 KB | `cf95f428` |
 | **REC-04** | `rec04_overdrive_break_9x16.mp4` | `docs/marketing/shots/rec04_overdrive_break_9x16.mp4` | 402 KB | `204487e6` |
 
 ### 2. 9:16 直式特寫裁切版影片素材（1080×1920，備用特寫剪輯）
@@ -39,7 +39,7 @@
 |---|---|---|---|---|
 | **REC-01** | `rec01_thumb_pad_9x16_crop.mp4` | `docs/marketing/shots/rec01_thumb_pad_9x16_crop.mp4` | 261 KB | `de152cd2` |
 | **REC-02** | `rec02_battle_polish_9x16_crop.mp4` | `docs/marketing/shots/rec02_battle_polish_9x16_crop.mp4` | 364 KB | `14a65842` |
-| **REC-03** | `rec03_soul_pity_9x16_crop.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16_crop.mp4` | 160 KB | `6545b409` |
+| **REC-03** | `rec03_soul_pity_9x16_crop.mp4` | `docs/marketing/shots/rec03_soul_pity_9x16_crop.mp4` | 158 KB | `542e5e04` |
 | **REC-04** | `rec04_overdrive_break_9x16_crop.mp4` | `docs/marketing/shots/rec04_overdrive_break_9x16_crop.mp4` | 315 KB | `0f158039` |
 
 ### 3. 16:9 原始實機錄影母帶（1280×720，原始無損畫面）
@@ -47,7 +47,7 @@
 |---|---|---|---|
 | **REC-01** | `rec01_thumb_pad_raw_16x9.mp4` | 263 KB | `8cf54fe1` |
 | **REC-02** | `rec02_battle_polish_raw_16x9.mp4` | 268 KB | `946cbe5b` |
-| **REC-03** | `rec03_soul_pity_raw_16x9.mp4` | 55 KB | `8beaf6d9` |
+| **REC-03** | `rec03_soul_pity_raw_16x9.mp4` | 60 KB | `59f07319` |
 | **REC-04** | `rec04_overdrive_break_raw_16x9.mp4` | 324 KB | `273e643a` |
 
 ### 4. 關鍵幀縮圖與截圖證明（PNG，驗證真實畫面與 UI）
@@ -55,7 +55,7 @@
 |---|---|---|---|---|---|
 | **REC-01** | `docs/marketing/shots/rec01_thumb_pad_9x16_thumb.png` | 1,277 KB | `801843f9` | `docs/marketing/shots/rec01_thumb_pad.png` | 右側 ThumbPad 操作熱區、長劍揮斬與切換巨錘（經抽幀驗證無誤） |
 | **REC-02** | `docs/marketing/shots/rec02_battle_polish_9x16_thumb.png` | 1,187 KB | `1d297531` | `docs/marketing/shots/rec02_battle_polish.png` | 小白 vs 雷歐、角色粗描邊與落地軟影、0.15s Hitstop 打擊停頓（經抽幀驗證無誤） |
-| **REC-03** | `docs/marketing/shots/rec03_soul_pity_9x16_thumb.png` | 304 KB | `2f2e81b0` | `docs/marketing/shots/rec03_soul_pity.png` | 聚魂殿四階封靈罐並列（綠→藍→紫→橙）、虔誠度 60/100 · 再抽 4 次獲得碎片透明保底進度條、開光浮現月桂冠金色神魂光效（經抽幀驗證無誤） |
+| **REC-03** | `docs/marketing/shots/rec03_soul_pity_9x16_thumb.png` | 292 KB | `2b478b82` | `docs/marketing/shots/rec03_soul_pity.png` | 聚魂殿四階金屬封靈罐並列（綠→藍→紫→橙，鉚接圓筒黃銅罐外觀）、虔誠度 60/100 · 再抽 4 次獲得碎片透明保底進度條（60% 橘黃進度）、開光浮現月桂冠金色神魂光效（經抽幀逐格驗證無誤，容器非葫蘆，無系統 emoji） |
 | **REC-04** | `docs/marketing/shots/rec04_overdrive_break_9x16_thumb.png` | 1,212 KB | `20740e7c` | `docs/marketing/shots/rec04_overdrive_break.png` | 怒氣滿額觸發「暴怒覺醒！」橘紅跳字與「暴怒中 · 屬性提升」＋三連斬擊命中雷歐（日誌連續 3 次 17 暴擊傷害、HP 扣至 369）（經抽幀逐格驗證無誤，無系統 emoji，無部位破壞與盾牌消失） |
 
 ---
