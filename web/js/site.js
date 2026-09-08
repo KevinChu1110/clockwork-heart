@@ -34,7 +34,7 @@
 
   /* 確保 sections.css / motion.css 有載入 */
   (function ensureCss() {
-    ["sections.css", "motion.css", "rwd.css"].forEach(function (name) {
+    ["sections.css", "motion.css", "rwd.css", "temple.css"].forEach(function (name) {
       var found = false;
       Array.prototype.forEach.call(document.querySelectorAll('link[rel="stylesheet"]'), function (l) {
         if ((l.getAttribute("href") || "").indexOf(name) >= 0) found = true;
@@ -52,7 +52,7 @@
     '<nav class="gnb" aria-label="主選單"><div class="container gnb-inner">' +
       '<a class="logo" href="' +
       depth +
-      '/index.html"><span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1F1A3A" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><circle cx="12" cy="12" r="3" fill="#FFD028"/><path d="M12 9v3l2 2"/></svg></span><span>' +
+      '/index.html"><span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1A1408" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><circle cx="12" cy="12" r="3" fill="#3ECFBF"/><path d="M12 9v3l2 2"/></svg></span><span>' +
       brand +
       "</span></a>" +
       '<div class="gnb-menu" id="gnb-menu"></div>' +

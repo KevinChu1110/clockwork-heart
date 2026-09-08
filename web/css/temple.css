@@ -1,0 +1,576 @@
+/* 發條之心官網 · 希臘神殿神聖莊嚴肅穆層
+   黑曜石底、古典金飾、黃金齒輪點綴、神殿雕刻排版。
+   必須最後載入，蓋過塔塔糖果色殘留。 */
+
+:root {
+  --paper: #0B0A0E;
+  --cream: #141218;
+  --warm: #1A171F;
+  --gold: #D4AF37;
+  --gold-hover: #F0D78C;
+  --gold-dark: #8C6A1A;
+  --orange: #C4922A;
+  --orange-dark: #8A5A12;
+  --mint: #3ECFBF;
+  --mint-dark: #1F8A80;
+  --sky: #6B8CAE;
+  --sky-dark: #3D5570;
+  --coral: #C45C4A;
+  --coral-dark: #8A3428;
+  --ink: #F4EBD4;
+  --ink-soft: #C9BFA8;
+  --ink-faint: #8A8070;
+  --line: rgba(212, 175, 55, 0.38);
+  --line-soft: rgba(212, 175, 55, 0.18);
+  --success: #3ECFBF;
+  --key: #D4AF37;
+  --key-strong: #F0D78C;
+  --key-deep: #C4922A;
+  --key-soft: rgba(212, 175, 55, 0.16);
+  --key-faint: rgba(212, 175, 55, 0.08);
+  --wood-darkest: #07060A;
+  --wood-dark: #121018;
+  --wood-mid: #1E1B26;
+  --shadow-card: 0 0 0 1px rgba(212, 175, 55, 0.22), 0 12px 28px rgba(0, 0, 0, 0.45);
+  --shadow-card-hi: 0 0 0 1px rgba(240, 215, 140, 0.55), 0 16px 36px rgba(0, 0, 0, 0.55);
+  --shadow-glow: 0 0 28px rgba(212, 175, 55, 0.22);
+  --radius: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 10px;
+  --obsidian: #0B0A0E;
+  --ivory: #F4EBD4;
+  --teal-core: #3ECFBF;
+}
+
+html { background: var(--obsidian); }
+body {
+  background:
+    radial-gradient(900px 420px at 50% -8%, rgba(212, 175, 55, 0.10), transparent 58%),
+    radial-gradient(700px 380px at 88% 108%, rgba(62, 207, 191, 0.07), transparent 55%),
+    var(--obsidian);
+  color: var(--ivory);
+}
+
+body::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: -20%;
+  z-index: 0;
+  background: url("../media/ui/gear-gold.svg") 8% 18% / 220px no-repeat,
+              url("../media/ui/gear-gold.svg") 92% 72% / 160px no-repeat;
+  opacity: 0.07;
+  animation: gearDrift 80s linear infinite;
+}
+body::after {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  border: 14px solid transparent;
+  border-image: url("../media/ui/meander.svg") 8 round;
+  opacity: 0.35;
+}
+@keyframes gearDrift {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  body::before { animation: none; }
+}
+
+.gnb, .hero, .band, main.page, footer, .quote-band, .page-hero {
+  position: relative;
+  z-index: 1;
+}
+.gnb { z-index: 50; }
+
+/* ── 導覽：黑曜石玻璃 + 金線 ── */
+.gnb {
+  background: rgba(11, 10, 14, 0.78);
+  backdrop-filter: blur(14px) saturate(1.1);
+  -webkit-backdrop-filter: blur(14px) saturate(1.1);
+  border-bottom: 1px solid var(--line);
+}
+.gnb.is-scrolled {
+  background: rgba(11, 10, 14, 0.94);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+.logo { color: var(--ivory); letter-spacing: 0.08em; }
+.logo-mark {
+  background: linear-gradient(145deg, #F0D78C, #8C6A1A);
+  box-shadow: 0 0 0 1px #F0D78C, 0 4px 10px rgba(212, 175, 55, 0.35);
+  border-radius: 6px;
+}
+.logo:hover .logo-mark {
+  transform: rotate(-8deg) scale(1.05);
+  box-shadow: 0 0 0 1px #F0D78C, 0 6px 16px rgba(62, 207, 191, 0.35);
+}
+.gnb-menu a { color: var(--ink-soft); }
+.gnb-menu a::after {
+  background: linear-gradient(90deg, var(--gold), var(--teal-core));
+  height: 2px;
+}
+.gnb-menu a:hover,
+.gnb-menu a.active { color: var(--gold-hover); }
+.ver-pill {
+  color: var(--gold);
+  background: var(--key-faint);
+  border: 1px solid var(--line);
+}
+
+body[data-page="home"] .gnb {
+  background: transparent;
+  border-bottom-color: transparent;
+}
+body[data-page="home"] .gnb:not(.is-scrolled) .logo,
+body[data-page="home"] .gnb:not(.is-scrolled) .gnb-menu a {
+  color: rgba(244, 235, 212, 0.92);
+}
+body[data-page="home"] .gnb.is-scrolled {
+  background: rgba(11, 10, 14, 0.94);
+  border-bottom-color: var(--line);
+}
+
+/* ── 按鈕：鑄金，不是糖果果凍 ── */
+.btn {
+  min-height: 50px;
+  border-radius: 4px;
+  border: 1px solid var(--gold-dark);
+  letter-spacing: 0.08em;
+}
+.btn::before {
+  border-radius: 2px;
+  background: linear-gradient(180deg, rgba(255, 248, 220, 0.38) 0%, rgba(255, 248, 220, 0.02) 100%);
+}
+.btn-primary {
+  background: linear-gradient(180deg, #E8C96A 0%, #B8922A 55%, #8C6A1A 100%);
+  color: #1A1408;
+  box-shadow: 0 4px 0 #5C440E, 0 10px 22px rgba(212, 175, 55, 0.28);
+}
+.btn-primary:hover {
+  background: linear-gradient(180deg, #F0D78C 0%, #D4AF37 55%, #8C6A1A 100%);
+  box-shadow: 0 6px 0 #5C440E, 0 14px 26px rgba(212, 175, 55, 0.4);
+}
+.btn-ghost {
+  background: rgba(11, 10, 14, 0.55);
+  color: var(--ivory);
+  border-color: var(--gold);
+  box-shadow: 0 4px 0 #5C440E, inset 0 0 0 1px rgba(212, 175, 55, 0.25);
+}
+.btn-ghost:hover {
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--gold-hover);
+  box-shadow: 0 6px 0 #5C440E;
+}
+.btn-sky {
+  background: linear-gradient(180deg, #5FE0D2 0%, #2A9A90 100%);
+  color: #071614;
+  box-shadow: 0 4px 0 #14645C, 0 10px 22px rgba(62, 207, 191, 0.28);
+}
+.btn-coral,
+.btn-mint {
+  background: linear-gradient(180deg, #E8C96A 0%, #B8922A 100%);
+  color: #1A1408;
+  box-shadow: 0 4px 0 #5C440E;
+}
+.btn-oauth {
+  background: var(--cream);
+  color: var(--ivory);
+  border-color: var(--line);
+  box-shadow: 0 3px 0 #5C440E;
+}
+.btn-oauth:hover {
+  border-color: var(--gold);
+  background: var(--key-faint);
+}
+
+/* ── 神殿雕刻框 ── */
+.card,
+.panel,
+.weapon-card,
+.sys-card,
+.equip-card,
+.gallery-grid figure,
+.rail__card,
+.ship-card,
+.moment-card,
+.tl-body,
+.keycap,
+.auth-card,
+.bento__item,
+.feature__media {
+  background: linear-gradient(180deg, #1A171F 0%, #121018 100%);
+  border: 1px solid var(--line);
+  box-shadow:
+    inset 0 0 0 3px rgba(11, 10, 14, 0.55),
+    inset 0 0 0 4px rgba(212, 175, 55, 0.28),
+    var(--shadow-card);
+  border-radius: var(--radius-lg);
+}
+a.card:hover,
+.card.is-hover,
+.weapon-card:hover,
+.sys-card:hover,
+.equip-card:hover,
+.gallery-grid figure:hover,
+.rail__card:hover,
+.ship-card:hover,
+.moment-card:hover,
+.bento__item:hover,
+.panel:hover {
+  border-color: var(--gold-hover);
+  box-shadow:
+    inset 0 0 0 3px rgba(11, 10, 14, 0.4),
+    inset 0 0 0 4px rgba(240, 215, 140, 0.55),
+    var(--shadow-card-hi),
+    var(--shadow-glow);
+}
+a.card:hover .body,
+.card.is-hover .body { background: transparent; }
+a.card:hover .title,
+.sys-card:hover h3,
+.gallery-grid figure:hover figcaption { color: var(--gold-hover); }
+
+.feature__badge {
+  background: linear-gradient(180deg, #E8C96A, #B8922A);
+  color: #1A1408;
+  border: 1px solid #F0D78C;
+  border-radius: 2px;
+  box-shadow: 0 2px 0 #5C440E;
+  letter-spacing: 0.06em;
+}
+
+/* ── 區塊：石帶，不是奶油紙 ── */
+.band--paper,
+.band--cream,
+.band--warm,
+.band--soft-key,
+.band--blush {
+  background:
+    radial-gradient(700px 280px at 50% 0%, rgba(212, 175, 55, 0.08), transparent 60%),
+    var(--obsidian);
+  color: var(--ivory);
+}
+.band--ink {
+  background:
+    linear-gradient(180deg, #07060A 0%, #121018 50%, #07060A 100%);
+  color: var(--ivory);
+}
+.band--edge {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.band--ink .sec-lead,
+.band--ink .section-sub,
+.band--ink .muted { color: rgba(244, 235, 212, 0.72); }
+
+.sec-head {
+  max-width: 42rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+.sec-kicker {
+  color: var(--gold);
+  letter-spacing: 0.22em;
+  justify-content: center;
+}
+.sec-kicker::before,
+.sec-kicker::after {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--gold);
+  border-radius: 0;
+}
+.sec-title {
+  color: var(--ivory);
+  letter-spacing: 0.08em;
+}
+.sec-title::after {
+  content: "";
+  display: block;
+  width: 120px;
+  height: 12px;
+  margin: 0.65rem auto 0;
+  background: url("../media/ui/meander.svg") center / contain no-repeat;
+  opacity: 0.85;
+}
+.sec-lead { color: var(--ink-soft); }
+
+.feature__copy h3 { color: var(--gold-hover); }
+.feature__copy p { color: var(--ink-soft); }
+.feature__list li { color: var(--ivory); }
+.feature__list li::before {
+  background: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18);
+  border-radius: 1px;
+}
+
+/* ── Hero ── */
+.hero { background: #07060A; }
+.hero-overlay {
+  background: linear-gradient(
+    180deg,
+    rgba(7, 6, 10, 0.35) 0%,
+    rgba(7, 6, 10, 0.15) 38%,
+    rgba(7, 6, 10, 0.72) 78%,
+    rgba(7, 6, 10, 0.94) 100%
+  );
+}
+.hero-copy h1 {
+  color: var(--ivory);
+  text-shadow: 0 2px 18px rgba(0, 0, 0, 0.65), 0 0 24px rgba(212, 175, 55, 0.18);
+}
+.hero-copy h1 .coral,
+.hero-copy h1 .rose { color: var(--gold-hover) !important; display: block; }
+.hero-pill {
+  background: rgba(11, 10, 14, 0.55);
+  color: var(--gold-hover);
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  box-shadow: none;
+  letter-spacing: 0.14em;
+}
+.hero-tag-badge {
+  background: transparent;
+  color: var(--ivory);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.page-hero {
+  background: var(--wood-darkest);
+}
+.page-hero::before {
+  background:
+    linear-gradient(100deg, rgba(7, 6, 10, 0.92) 0%, rgba(7, 6, 10, 0.55) 55%, rgba(212, 175, 55, 0.18) 100%),
+    var(--hero-img, none) center/cover no-repeat;
+}
+.breadcrumb { color: var(--gold); }
+
+/* ── 銘文引句 ── */
+.quote-band {
+  background:
+    linear-gradient(180deg, rgba(212, 175, 55, 0.08), transparent 30%),
+    #100E14;
+  color: var(--ivory);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.quote-band::before,
+.quote-band::after {
+  content: "";
+  display: block;
+  height: 12px;
+  margin: 0 auto;
+  max-width: 420px;
+  background: url("../media/ui/meander.svg") center / contain repeat-x;
+  opacity: 0.7;
+}
+.quote-band blockquote { font-weight: 700; }
+.quote-band blockquote .coral,
+.quote-band blockquote .rose { color: var(--gold-hover) !important; }
+.quote-band .cite { color: var(--ink-faint); }
+
+/* ── 統計銘板 ── */
+.stat {
+  background: linear-gradient(180deg, #1A171F, #121018);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: inset 0 0 0 3px rgba(212, 175, 55, 0.12);
+}
+.band--soft-key .stat,
+.band--paper .stat,
+.band--cream .stat,
+.band--warm .stat,
+.band--blush .stat {
+  background: linear-gradient(180deg, #1A171F, #121018);
+  border-color: var(--line);
+  box-shadow: inset 0 0 0 3px rgba(212, 175, 55, 0.12);
+}
+.stat__n,
+.band--ink .stat__n {
+  background: linear-gradient(180deg, #F0D78C, #D4AF37);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.stat__l,
+.band--ink .stat__l { color: var(--ink-soft); }
+
+/* ── 標籤／晶片 ── */
+.tag-guide { color: var(--gold); background: var(--key-faint); border-color: var(--line); }
+.tag-con { color: var(--gold); background: var(--key-faint); border-color: var(--line); }
+.tag-live {
+  background: rgba(62, 207, 191, 0.12);
+  color: var(--teal-core);
+  border: 1px solid rgba(62, 207, 191, 0.45);
+}
+.tag-soon {
+  background: var(--key-faint);
+  color: var(--gold-hover);
+  border: 1px solid var(--line);
+}
+.chip {
+  background: var(--cream);
+  color: var(--ink-soft);
+  border-color: var(--line);
+}
+.chip:hover {
+  border-color: var(--gold);
+  color: var(--gold-hover);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.2);
+}
+.chip.active {
+  background: linear-gradient(180deg, #E8C96A, #8C6A1A);
+  color: #1A1408;
+  border-color: var(--gold);
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  background: #0E0C12;
+  color: var(--ivory);
+  border: 1px solid var(--line);
+}
+input:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.22);
+}
+code {
+  background: #1A171F;
+  border-color: var(--line);
+  color: var(--gold-hover);
+}
+th { color: var(--gold); }
+td { border-bottom-color: var(--line-soft); color: var(--ink-soft); }
+
+.codex-lb { background: rgba(7, 6, 10, 0.78); }
+.codex-sheet {
+  background: #141218;
+  color: var(--ivory);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius-lg);
+}
+.codex-sheet .art { background: #0E0C12; }
+.codex-sheet .close {
+  background: #141218;
+  color: var(--ivory);
+  border-color: var(--line);
+}
+
+footer {
+  background: #07060A;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line);
+  position: relative;
+}
+footer::before {
+  content: "";
+  display: block;
+  height: 10px;
+  background: url("../media/ui/meander.svg") center / auto 10px repeat-x;
+  opacity: 0.55;
+  margin-bottom: 1.4rem;
+}
+footer a { color: var(--gold-hover); }
+footer a:hover { color: var(--teal-core); }
+
+.rail { scrollbar-color: var(--gold-dark) transparent; }
+.rail::-webkit-scrollbar-thumb { background: var(--gold-dark); }
+.rail__card .title { color: var(--ivory); }
+.rail__card .meta { color: var(--ink-soft); }
+
+.tl-dot {
+  background: linear-gradient(145deg, #E8C96A, #8C6A1A);
+  color: #1A1408;
+  box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.18);
+  border-radius: 4px;
+}
+.timeline::before { background: linear-gradient(180deg, var(--gold), transparent); }
+
+.src-link {
+  color: var(--gold-hover) !important;
+  text-decoration-color: rgba(212, 175, 55, 0.45);
+}
+
+.who-row .lab { color: var(--gold); }
+.who-row span { color: var(--ink-soft); }
+
+.auth-card { color: var(--ivory); }
+.auth-tabs { background: #0E0C12; }
+.auth-tabs button.active {
+  background: linear-gradient(180deg, #E8C96A, #8C6A1A);
+  color: #1A1408;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.28);
+}
+.auth-visual li::before { color: var(--gold); content: "◆ "; }
+.welcome-banner {
+  background: rgba(212, 175, 55, 0.08);
+  border-color: var(--line);
+  color: var(--ivory);
+}
+.welcome-banner strong { color: var(--gold-hover); }
+.bot-gate {
+  border: 1px dashed var(--line);
+  background: var(--key-faint);
+}
+.lift:hover { box-shadow: 0 18px 40px -18px rgba(212, 175, 55, 0.45); }
+
+.cta-finale {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: clamp(2.2rem, 5vw, 3.4rem) 1.5rem;
+  text-align: center;
+  box-shadow: inset 0 0 0 4px rgba(212, 175, 55, 0.22);
+}
+.cta-finale h2 { color: var(--ivory); letter-spacing: 0.06em; }
+.cta-finale p { color: var(--ink-soft); }
+.cta-finale__shade {
+  background: linear-gradient(120deg, rgba(7, 6, 10, 0.78), rgba(212, 175, 55, 0.22));
+}
+
+.equip-card .thumb { background: #0E0C12; }
+.equip-card .thumb.look { background: #0E0C12; }
+.weapon-card .icon {
+  background: #0E0C12;
+  border-color: var(--line);
+}
+.weapon-card .split div {
+  background: #0E0C12;
+  border-color: var(--line);
+}
+
+@media (max-width: 1080px) {
+  .gnb-toggle {
+    background: rgba(11, 10, 14, 0.7);
+    border-color: var(--line);
+  }
+  .gnb-toggle span { background: var(--gold); }
+  .gnb-menu {
+    background: rgba(11, 10, 14, 0.97);
+  }
+  .gnb-menu a {
+    color: var(--ivory) !important;
+    border-bottom-color: var(--line-soft);
+  }
+  body[data-page="home"] .gnb.is-open {
+    background: rgba(11, 10, 14, 0.96);
+    border-bottom-color: var(--line);
+  }
+  body[data-page="home"] .gnb.is-open .logo { color: var(--ivory); }
+  body::after { border-width: 8px; opacity: 0.22; }
+}
+
+@media (max-width: 700px) {
+  .btn { min-height: 48px; }
+  body::before { opacity: 0.04; }
+}
