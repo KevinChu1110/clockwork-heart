@@ -1,5 +1,6 @@
 extends SceneTree
 ## godot --headless -s res://scripts/systems/test_rift_schedule.gd
+## 內部排程仍測（id／flag 暫留）。玩家入口已關，見 test_cut_systems.gd。
 
 
 func _initialize() -> void:

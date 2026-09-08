@@ -8,12 +8,15 @@ class_name MapStage
 @export var art_id: String = ""
 @export var world_size: Vector2 = Vector2(1200, 700)
 
+## ART-02：這幾張手繪底圖不准再蓋 16x16 TileMap。
+const NO_TILE_OVERLAY_ART: PackedStringArray = ["town", "village"]
 
 const ColorGradeShader = preload("res://shaders/color_grade.gdshader")
 
 func _ready() -> void:
 	_sync_editor_preview()
 	_apply_ground_enhancement()
+	_hide_tile_overlay_if_needed()
 
 
 func _apply_ground_enhancement() -> void:
@@ -24,6 +27,14 @@ func _apply_ground_enhancement() -> void:
 			var mat := ShaderMaterial.new()
 			mat.shader = ColorGradeShader
 			g.material = mat
+
+
+func _hide_tile_overlay_if_needed() -> void:
+	var tiles := get_node_or_null("Tiles")
+	if tiles == null:
+		return
+	if art_id in NO_TILE_OVERLAY_ART or map_id in NO_TILE_OVERLAY_ART:
+		tiles.visible = false
 
 
 func _sync_editor_preview() -> void:

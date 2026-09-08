@@ -32,6 +32,7 @@ var _sfx_val_l: Label
 
 ## 畫面開關
 var _fullscreen_btn: Button
+var _quality_buttons: HBoxContainer = null
 
 static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
@@ -425,6 +426,34 @@ func _build_display_panel() -> void:
 	row_fs.add_child(_fullscreen_btn)
 	root_p.add_child(row_fs)
 
+	var q_title := Label.new()
+	q_title.text = _loc_t("display.quality")
+	q_title.add_theme_font_size_override("font_size", 14)
+	q_title.add_theme_color_override("font_color", Color(0.95, 0.90, 0.80))
+	root_p.add_child(q_title)
+
+	var q_row := HBoxContainer.new()
+	q_row.add_theme_constant_override("separation", 8)
+	root_p.add_child(q_row)
+	var q_opts: Array = [
+		{"id": "auto", "key": "display.quality_auto"},
+		{"id": "low", "key": "display.quality_low"},
+		{"id": "mid", "key": "display.quality_mid"},
+		{"id": "high", "key": "display.quality_high"},
+	]
+	for opt in q_opts:
+		var qb := Button.new()
+		qb.text = _loc_t(str(opt["key"]))
+		qb.custom_minimum_size = Vector2(0, 50)
+		qb.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		qb.add_theme_font_size_override("font_size", 15)
+		var qid := str(opt["id"])
+		qb.pressed.connect(_on_quality_picked.bind(qid))
+		qb.set_meta("quality_id", qid)
+		q_row.add_child(qb)
+	_quality_buttons = q_row
+	_refresh_quality_buttons()
+
 ## ──────────────────────────────────────────
 ## 分頁 4: 存檔備份 (Backup & Account)
 ## ──────────────────────────────────────────
@@ -463,6 +492,53 @@ func _build_backup_panel() -> void:
 func _on_close() -> void:
 	closed.emit()
 	queue_free()
+
+
+func _loc_t(key: String, vars: Dictionary = {}) -> String:
+	if Engine.get_main_loop() is SceneTree:
+		var loc: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("Loc")
+		if loc != null and loc.has_method("t"):
+			return str(loc.call("t", key, vars))
+	return key
+
+
+func _on_quality_picked(qid: String) -> void:
+	if Engine.get_main_loop() is SceneTree:
+		var gp: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GraphicsProfile")
+		if gp != null and gp.has_method("set_choice"):
+			gp.call("set_choice", qid)
+	_refresh_quality_buttons()
+	_show_toast(_loc_t("display.quality_applied", {"tier": _loc_t("display.quality_" + qid)}))
+
+
+func _refresh_quality_buttons() -> void:
+	if _quality_buttons == null:
+		return
+	var current := "auto"
+	if Engine.get_main_loop() is SceneTree:
+		var gp: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GraphicsProfile")
+		if gp != null and "choice" in gp:
+			current = str(gp.choice)
+	for child in _quality_buttons.get_children():
+		var b := child as Button
+		if b == null:
+			continue
+		var is_on := str(b.get_meta("quality_id", "")) == current
+		var sb := StyleBoxFlat.new()
+		if is_on:
+			sb.bg_color = Color(0.92, 0.76, 0.28, 1.0)
+			sb.border_color = Color(1.0, 0.95, 0.65, 1.0)
+			sb.set_border_width_all(3)
+			b.add_theme_color_override("font_color", Color(0.18, 0.12, 0.05))
+		else:
+			sb.bg_color = Color(0.16, 0.12, 0.09, 0.85)
+			sb.border_color = Color(0.50, 0.40, 0.28, 0.8)
+			sb.set_border_width_all(1)
+			b.add_theme_color_override("font_color", Color(0.90, 0.85, 0.80))
+		sb.set_corner_radius_all(12)
+		b.add_theme_stylebox_override("normal", sb)
+		b.add_theme_stylebox_override("hover", sb)
+		b.add_theme_stylebox_override("pressed", sb)
 
 func _show_toast(msg: String) -> void:
 	var toast := Label.new()

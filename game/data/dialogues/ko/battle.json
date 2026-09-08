@@ -41,7 +41,7 @@
   ],
   "battle.demon_lose": [
     {
-      "speaker": "마왕",
+      "speaker": "정지핵",
       "text": "아직 너무 가볍다……"
     },
     {
@@ -82,7 +82,7 @@
   "battle.rift_lose": [
     {
       "speaker": "시스템",
-      "text": "흑염이 너를 탑 아래로 내던졌다. {tip}"
+      "text": "검은 녹이 너를 탑 아래로 내던졌다. {tip}"
     }
   ],
   "battle.world_win": [

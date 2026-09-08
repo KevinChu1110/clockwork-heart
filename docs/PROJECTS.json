@@ -37,8 +37,8 @@
    "id": "world-translate",
    "cat": "世界觀",
    "title": "🥇 C0–C6 世界觀轉譯（骨架保留、表皮全換）",
-   "status": "開發中",
-   "note": "C1 文件已轉、C2–C6 未動",
+   "status": "測試中",
+   "note": "C0–C6 文件與遊戲內字已進",
    "keys": [
     "轉譯",
     "世界觀",
@@ -78,8 +78,8 @@
    "id": "mob-input",
    "cat": "遊戲",
    "title": "🥈 手機化 2／6：輸入抽象層",
-   "status": "草稿",
-   "note": "收斂成 Move / Attack / Interact / Skill / SwitchWeapon / Confirm / Cancel 七個語意動作。PC 綁鍵鼠與手把，手機綁觸控與虛擬按鍵。⛔ 程式碼裡不得再直接判斷滑鼠或鍵盤。",
+   "status": "測試中",
+   "note": "GameInput 七語意動作; 冒煙與 test_game_input/battle_keys/battle_touch 綠; 分支 agent/2026-09-07-input-abstraction",
    "keys": [
     "input",
     "輸入",
@@ -106,8 +106,8 @@
    "id": "mob-battle",
    "cat": "遊戲",
    "title": "🥈 手機化 4／6：觸控優先戰鬥",
-   "status": "草稿",
-   "note": "驗收標準只有一句：一個玩家只用右手拇指，能不能完成一場戰鬥？不能就還是 PC-first，重做。⛔ 不是「PC 遊戲塞一個虛擬搖桿」。",
+   "status": "測試中",
+   "note": "右側拇指熱區（攻擊/技能/換武/鎖定/暫停/逃離）≥50，單拇指可打完；測 16:9/19.5:9/20:9/平板/PC；test_game_input/battle_keys/battle_touch/battle_thumb 綠；分支 agent/2026-09-07-battle-touch",
    "keys": [
     "觸控戰鬥",
     "拇指",
@@ -119,8 +119,8 @@
    "id": "mob-lowend",
    "cat": "遊戲",
    "title": "🥈 手機化 5／6：低階手機三檔 profile",
-   "status": "草稿",
-   "note": "Low / Mid / High 三檔。⛔ 不能只在開發機上測。",
+   "status": "測試中",
+   "note": "Low 關陰影／粒子／裝飾特效、scale 0.5（640×360）；Mid 粒子半量 scale 0.75；High=現況。桌面 auto=High。test_graphics_profile 綠；另用 --rendering-method mobile／gl_compatibility 各跑一輪。未推 main。",
    "keys": [
     "低階",
     "profile",
@@ -132,8 +132,8 @@
    "id": "mob-bundle",
    "cat": "遊戲",
    "title": "🥈 手機化 6／6：首包瘦到 50–80MB 與分包",
-   "status": "草稿",
-   "note": "現在 web 目錄 135MB。劇情包、後續地圖、語音、大型素材採分包。目標不是「整個遊戲永遠 < 50MB」，是玩家第一次接觸時不要被下載量嚇跑。",
+   "status": "測試中",
+   "note": "首包源資產 54.54MB（標題+大廳+C0）；chapter 62MB / extra 55MB 移出手機首包。含引擎估計 80–95MB，差 0–15MB，下一刀是 core BGM 轉碼。web/ 135MB 是行銷站不是遊戲 export。邊界見 docs/BUNDLE.md。未推 main。",
    "keys": [
     "包體",
     "分包",
@@ -145,8 +145,8 @@
    "id": "balance-lock",
    "cat": "遊戲",
    "title": "🥉 戰鬥數值時間模型鎖版",
-   "status": "草稿",
-   "note": "⚠️ 這條沒完成之前，不准新增任何會影響戰鬥數值的系統（Product Lock §9 硬規則）。",
+   "status": "測試中",
+   "note": "三處已對齊（BALANCE.md §5＝combat.json＝Formulas/BattleSim）；鏢/鎚風姿改跟表；跑過 test_formulas、test_rage、test_boss_curve。未推 main。",
    "keys": [
     "balance",
     "數值",
@@ -172,8 +172,8 @@
    "id": "soul-simplify",
    "cat": "遊戲",
    "title": "🥉 戰魂收斂：保留抽寶核心，移除 14 主星結構",
-   "status": "草稿",
-   "note": "養成收斂成 角色→戰魂→裝備→技能 四層。14 主星本來就不是原作必要的東西，拆掉；但抽寶（抽魂）的核心邏輯保留——它是商業模式的內購支點，且必須有保底與上限，⛔ 不做 pay-to-win。",
+   "status": "開發中",
+   "note": "設計文件已審核通過（docs/SOUL_SIMPLIFY_DESIGN.md）；等分支整合＋balance-lock合併main後開始實作",
    "keys": [
     "戰魂",
     "抽魂",
@@ -187,8 +187,8 @@
    "id": "cut-systems",
    "cat": "遊戲",
    "title": "🥉 下架公會週貢獻／NG+／裂縫",
-   "status": "草稿",
-   "note": "Product Lock §4 已裁決移出範圍。要復活必須走 §9 閘門。放棄的代價：社交 MMO 化、重複遊玩深度、Endgame 內容池——接受代價，不要偷偷做回來。",
+   "status": "測試中",
+   "note": "標題暫停通關後入口已關 test_cut_systems綠 分支agent/2026-09-08-cut-systems 未推main",
    "keys": [
     "公會",
     "ng+",
@@ -214,8 +214,8 @@
    "id": "game-battle-polish",
    "cat": "遊戲",
    "title": "戰鬥畫面優化（去像素量化、粗描邊、腳底軟影）",
-   "status": "草稿",
-   "note": "拿掉底圖的像素量化改成全螢幕調色（飽和＋對比＋），角色加粗描邊 shader ＋ 腳底軟影。這不是調色能補的，要換皮。",
+   "status": "測試中",
+   "note": "戰鬥腳底軟影核透明度拉到 0.92，荒路／雷歐原圖縮手機寬可見橢圓；分支 agent/2026-09-08-battle-polish",
    "keys": [
     "戰鬥畫面",
     "像素量化",
@@ -248,6 +248,19 @@
     "門面",
     "封面",
     "簡介"
+   ]
+  },
+  {
+   "id": "web-temple",
+   "cat": "行銷",
+   "title": "官網視覺：希臘神殿神聖莊嚴",
+   "status": "開發中",
+   "note": "黑曜石底、古典金飾、黃金齒輪點綴、神殿雕刻排版。樣式在 web/css/temple.css。",
+   "keys": [
+    "官網",
+    "神殿",
+    "黑曜石",
+    "黃金齒輪"
    ]
   },
   {

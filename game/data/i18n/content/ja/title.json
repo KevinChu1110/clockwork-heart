@@ -12,7 +12,7 @@
     "name": "借りを返す槌"
   },
   "title.echo_walker": {
-    "desc": "黒炎の残響のいずれかの層で再クリア。",
+    "desc": "黒錆の残響のいずれかの層で再クリア。",
     "name": "残響を歩む者"
   },
   "title.featured_fan": {
@@ -36,7 +36,7 @@
     "name": "灯を守る者"
   },
   "title.lore_reader": {
-    "desc": "絲絨の書棚の黒炎三説を読み終えた。",
+    "desc": "絲絨の書棚の黒錆三説を読み終えた。",
     "name": "矛盾を読む者"
   },
   "title.mirror_break": {
@@ -44,7 +44,7 @@
     "name": "鏡を破る者"
   },
   "title.no_worship": {
-    "desc": "魔王の三度の誘いをすべて拒む。",
+    "desc": "塔の底の三度の誘いをすべて拒む。",
     "name": "我、強権を慕わず"
   },
   "title.rift_walker": {
@@ -52,11 +52,11 @@
     "name": "裂け目を歩む者"
   },
   "title.ronin_path": {
-    "desc": "岔路で黒炎の浪人を諭した（あるいは倒した）。",
+    "desc": "岔路で黒錆の浪人を諭した（あるいは倒した）。",
     "name": "刃を収める者"
   },
   "title.scar_walker": {
-    "desc": "黒炎の傷跡の主を踏み越えた。",
+    "desc": "黒錆の傷跡の主を踏み越えた。",
     "name": "傷跡を歩む者"
   },
   "title.shore_last": {
@@ -85,7 +85,7 @@
   },
   "title.world_wanderer": {
     "desc": "三十か所の土地を訪れた。",
-    "name": "翠嶺の漫遊者"
+    "name": "世界の漫遊者"
   },
   "title.wreck_end": {
     "desc": "船長の影をもう一度沈めた。",

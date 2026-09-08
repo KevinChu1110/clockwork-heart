@@ -202,7 +202,7 @@ func refresh() -> void:
 		elif q and q.has_method("claimable_count"):
 			claim = int(q.call("claimable_count"))
 	var claim_s := Loc.t("hud.claim", {"n": claim}) if claim > 0 else ""
-	var week := Loc.t("pause.week1") if GameState.ng_plus <= 0 else Loc.t("pause.echo", {"n": GameState.ng_plus})
+	var week := Loc.t("pause.week1")
 	var energy_s := ""
 	if Engine.get_main_loop() is SceneTree:
 		var es: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EnergySystem")

@@ -25,6 +25,7 @@ centered = false
 position = Vector2(40, 80)
 
 [node name="Tiles" type="TileMapLayer" parent="."]
+visible = false
 tile_set = SubResource("TileSet_ground")
 
 [node name="Navigation" type="NavigationRegion2D" parent="."]

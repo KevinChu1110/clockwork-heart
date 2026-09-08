@@ -21,7 +21,7 @@
   },
   "m_chests12": {
     "desc": "Open 12 world chests",
-    "name": "Treasure Hunter of Cuiling"
+    "name": "World Treasure Hunter"
   },
   "m_chests5": {
     "desc": "Open 5 world chests",
@@ -68,7 +68,7 @@
     "name": "One Lasting Flame"
   },
   "m_letter": {
-    "desc": "Read Wheatear's letter in Veilfog",
+    "desc": "Read Oldkey's letter in Veilfog",
     "name": "Late Words"
   },
   "m_life5": {
@@ -84,11 +84,11 @@
     "name": "Soft Feathers Under the Bridge"
   },
   "m_ng1": {
-    "desc": "Enter the Black Flame Echo (NG+)",
+    "desc": "Enter the Blight Rust Echo (NG+)",
     "name": "Second Journey"
   },
   "m_optional": {
-    "desc": "Defeat Swiftshadow and Stonefist",
+    "desc": "Defeat Shadowwind and Stonefist",
     "name": "Wind and Stone"
   },
   "m_rift3": {
@@ -96,11 +96,11 @@
     "name": "Rift Trial"
   },
   "m_ronin": {
-    "desc": "Talk down or defeat the Black Flame Ronin",
+    "desc": "Talk down or defeat the Blight Rust Wanderer",
     "name": "Parted Blades"
   },
   "m_scar": {
-    "desc": "Defeat the Scar Lord of the Black Flame",
+    "desc": "Defeat the Scar Lord of Blight Rust",
     "name": "Scarwalker"
   },
   "m_side4": {

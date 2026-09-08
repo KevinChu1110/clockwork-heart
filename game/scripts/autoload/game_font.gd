@@ -35,6 +35,8 @@ func _build() -> FontFile:
 		return null
 	var chain: Array[Font] = []
 	for p in FALLBACKS:
+		if not FileAccess.file_exists(p):
+			continue
 		var fb := FontFile.new()
 		if fb.load_dynamic_font(p) == OK:
 			chain.append(fb)

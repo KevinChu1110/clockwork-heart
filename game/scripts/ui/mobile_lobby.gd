@@ -16,7 +16,7 @@ enum Tab {
 	VILLAGE,     ## 今日村莊大廳 (主城)
 	CHARACTER,   ## 角色 / 三欄武器紙娃娃
 	ADVENTURE,   ## 四區出征關卡
-	SOUL_HALL,   ## 聚魂殿堂 (五色葫蘆跳階)
+	SOUL_HALL,   ## 聚魂殿堂 (封靈罐四階)
 	BAG          ## 冒險背包
 }
 
@@ -59,8 +59,8 @@ var _tex_skill: Texture2D
 var _tex_telegraph: Texture2D
 var _tex_recover: Texture2D
 
-## 聚魂殿五色葫蘆狀態
-var _gourd_lit: Array[bool] = [true, false, false, false, false]
+## 聚魂殿封靈罐四階狀態
+var _gourd_lit: Array[bool] = [true, false, false, false]
 var _gourd_btns: Array[Button] = []
 
 ## 四地區出征
@@ -113,8 +113,9 @@ func _load_hero_poses() -> void:
 		_tex_recover = load("res://assets/sprites/player/poses/recover.png")
 
 func _build_ui() -> void:
-	## 1. 背景插畫 (明亮飽和的童話主城)
+	## 1. 背景插畫（LINEAR 手繪底圖；大廳不准蓋 TileMap）
 	var bg := TextureRect.new()
+	bg.name = "SkyKingdomBg"
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
@@ -204,7 +205,13 @@ func _build_carnival_buntings() -> void:
 ## 陽光漂浮微粒 (Sunshine Particles)
 ## ──────────────────────────────────────────
 func _spawn_floating_sunlight_particles() -> void:
-	for i in range(14):
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	var n := 14
+	if gp != null:
+		n = int(gp.particle_count(14))
+	if n <= 0:
+		return
+	for i in range(n):
 		var star := Label.new()
 		star.text = "✦"
 		star.add_theme_font_size_override("font_size", 12 + (i % 3) * 4)
@@ -710,13 +717,19 @@ func _on_hero_clicked() -> void:
 			)
 
 func _burst_click_particles(center_pos: Vector2) -> void:
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	var n := 8
+	if gp != null:
+		n = int(gp.particle_count(8))
+	if n <= 0:
+		return
 	var cols: Array[Color] = [
 		Color(1.0, 0.85, 0.25),  # 金黃
 		Color(1.0, 0.40, 0.60),  # 草莓粉
 		Color(0.28, 0.85, 0.42), # 薄荷綠
 		Color(0.24, 0.68, 0.98), # 晴空藍
 	]
-	for i in range(8):
+	for i in range(n):
 		var star := Label.new()
 		star.text = "✦"
 		star.add_theme_font_size_override("font_size", 16)
@@ -725,7 +738,7 @@ func _burst_click_particles(center_pos: Vector2) -> void:
 		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(star)
 
-		var angle := float(i) * (PI * 2.0 / 8.0)
+		var angle := float(i) * (PI * 2.0 / float(n))
 		var dist := randf_range(40.0, 80.0)
 		var target := center_pos + Vector2(cos(angle), sin(angle)) * dist
 
@@ -757,14 +770,14 @@ func _build_soul_hall_tab() -> void:
 	panel.add_child(v)
 
 	var t := Label.new()
-	t.text = "✦ 聚魂殿堂 · 五色葫蘆跳階 ✦"
+	t.text = _t("聚魂殿 · 封靈罐四階")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	t.add_theme_font_size_override("font_size", 24)
 	t.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
 	v.add_child(t)
 
 	var desc := Label.new()
-	desc.text = "聚引十四主星之魂：七煞(攻) · 武曲(防) · 天機(血) · 貪狼(命) · 紫微(閃) · 破軍(爆)。點擊點亮更高階葫蘆！"
+	desc.text = _t("聚引十四主星之魂：七煞(攻) · 武曲(防) · 天機(血) · 貪狼(命) · 紫微(閃) · 破軍(爆)。點擊點亮更高階封靈罐！")
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc.add_theme_font_size_override("font_size", 13)
 	desc.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
@@ -772,15 +785,14 @@ func _build_soul_hall_tab() -> void:
 
 	var gourd_row := HBoxContainer.new()
 	gourd_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	gourd_row.add_theme_constant_override("separation", 20)
+	gourd_row.add_theme_constant_override("separation", 14)
 	v.add_child(gourd_row)
 
 	var gourds_data := [
-		{"name": "白玉葫蘆", "cost": 100, "color": Color(0.85, 0.85, 0.85)},
-		{"name": "碧綠葫蘆", "cost": 300, "color": UiStyle.TATA_GREEN},
-		{"name": "青藍葫蘆", "cost": 800, "color": UiStyle.TATA_BLUE},
-		{"name": "紫霄葫蘆", "cost": 2000, "color": UiStyle.TATA_PINK},
-		{"name": "澄金葫蘆", "cost": 5000, "color": UiStyle.TATA_YELLOW}
+		{"name": _t("綠階封靈罐"), "cost": 80, "color": UiStyle.TATA_GREEN},
+		{"name": _t("藍階封靈罐"), "cost": 200, "color": UiStyle.TATA_BLUE},
+		{"name": _t("紫階封靈罐"), "cost": 500, "color": UiStyle.TATA_PINK},
+		{"name": _t("橙階封靈罐"), "cost": 1000, "color": UiStyle.TATA_YELLOW}
 	]
 
 	_gourd_btns.clear()
@@ -880,11 +892,11 @@ func _do_gourd_draw(idx: int, is_ten: bool) -> void:
 		return
 
 	var roll := randf()
-	if roll < 0.35 and idx < 4:
+	if roll < 0.35 and idx < 3:
 		_gourd_lit[idx + 1] = true
-		_show_toast("靈光閃爍！成功點亮更高階的葫蘆！")
+		_show_toast(_t("靈光閃爍！成功點亮更高階的封靈罐！"))
 	else:
-		for i in range(1, 5):
+		for i in range(1, 4):
 			_gourd_lit[i] = false
 		_show_toast("聚魂完畢！獲得了戰魂碎片與戰魂經驗！")
 	

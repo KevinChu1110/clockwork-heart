@@ -4,6 +4,7 @@ extends Control
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const WindowDrag = preload("res://scripts/ui/window_drag.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 const COLS := 4
 const ROWS := 6
 
@@ -36,7 +37,7 @@ func _build() -> void:
 	_dim.color = Color(0.08, 0.06, 0.04, 0.28)
 	_dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	_dim.gui_input.connect(func(ev: InputEvent):
-		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+		if GameInputGate.primary_pointer_pressed(ev):
 			close()
 	)
 	add_child(_dim)

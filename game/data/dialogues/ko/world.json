@@ -68,7 +68,7 @@
     },
     {
       "speaker": "내레이션",
-      "text": "챙에 삐뚤게 적혔다: 맥수 건 먹지 마."
+      "text": "챙에 삐뚤게 적혔다: 올드키 건 먹지 마."
     }
   ],
   "world.camp_ash_road": [
@@ -106,7 +106,7 @@
   "region.mist_locked": [
     {
       "speaker": "시스템",
-      "text": "안개는 아직 멀다. 기사보에서 검부터 키워라."
+      "text": "안개는 아직 멀다. 요새에서 검부터 키워라."
     }
   ],
   "region.dojo_warn": [

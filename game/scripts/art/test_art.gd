@@ -109,6 +109,8 @@ func _initialize() -> void:
 		ok = false
 	if not _check_battle_backgrounds():
 		ok = false
+	if not _check_battle_foot_shadows():
+		ok = false
 
 	if ok:
 		print("ART_OK")
@@ -118,16 +120,14 @@ func _initialize() -> void:
 		quit(1)
 
 
-## 每一種戰鬥都要有背景，而且不可以用到「畫了角色的完成稿」。
+## 每一種戰鬥都要有背景，而且不可以用量化馬賽克戰鬥圖。
 ##
 ## 踩過兩件事：
 ##   1. `maps/battle_leo.png` 那七張是主角＋敵人都畫好的插圖被當背景用。
-##      打雷歐的時候背景裡有一隻比人還大的兔子在跟哥布林對砍，
-##      前景又疊一隻活的主角。看起來像 bug，其實是「拿錯圖」。
-##   2. 其餘十六種戰鬥連圖都沒有，背景直接是純黑。
+##   2. 後來那批 battle_*.png 被 pixelize_env 量化成約 70 色馬賽克。
 ##
-## 現在解析順序是「專屬圖 → 那場仗發生的地圖 → 保底」，所以這裡守兩件事：
-## 每一種模式都解析得到東西，而且 maps/ 底下不准再出現角色插圖。
+## 現在解析走「那場仗發生的地圖插畫底板（webp）→ 保底」，所以這裡守：
+## 每一種模式都解析得到東西，而且路徑不准再是 maps/battle_*.png。
 func _check_battle_backgrounds() -> bool:
 	## 所有會進戰鬥的 mode
 	var modes: Array[String] = [
@@ -139,17 +139,25 @@ func _check_battle_backgrounds() -> bool:
 		"black_ronin",
 	]
 	var missing: PackedStringArray = []
+	var mosaic: PackedStringArray = []
 	var dedicated := 0
 	for m in modes:
-		if SpriteDB.battle_bg_path(m) == "":
+		var p := SpriteDB.battle_bg_path(m)
+		if p == "":
 			missing.append(m)
+		elif p.get_file().begins_with("battle_"):
+			mosaic.append("%s→%s" % [m, p.get_file()])
 		elif SpriteDB.battle_bg_is_dedicated(m):
 			dedicated += 1
 	if missing.size() > 0:
 		push_error("這些戰鬥沒有背景，畫面會是純黑：%s" % ", ".join(missing))
 		print("  FAIL 沒有背景的戰鬥：", ", ".join(missing))
 		return false
-	print("  ok %d 種戰鬥都有背景（其中 %d 種有專屬圖，其餘退到該地圖底圖）" % [
+	if mosaic.size() > 0:
+		push_error("這些戰鬥還在用量化馬賽克底圖：%s" % ", ".join(mosaic))
+		print("  FAIL 量化馬賽克底圖：", ", ".join(mosaic))
+		return false
+	print("  ok %d 種戰鬥都有插畫底板（其中 %d 種有專屬圖，其餘退到該地圖底圖）" % [
 		modes.size(), dedicated
 	])
 
@@ -171,6 +179,55 @@ func _check_battle_backgrounds() -> bool:
 		print("  FAIL 對不到戰鬥的背景檔：", ", ".join(strays))
 		return false
 	return true
+
+
+## 戰鬥角色必須有掛在身上的柔化橢圓腳底軟影＋描邊（退稿第 16 項）。
+## 不在 _initialize 裡 instantiate battle.tscn：-s 測試樹還沒進幀，setup() 會碰到 @onready 還是 null。
+func _check_battle_foot_shadows() -> bool:
+	var src := FileAccess.get_file_as_string("res://scripts/battle/battle_view.gd")
+	if src == "":
+		push_error("讀不到 battle_view.gd")
+		return false
+	var ok := true
+	if src.find("FootShadow_%s") < 0 and src.find("FootShadow_") < 0:
+		push_error("戰鬥腳底軟影沒有建立 FootShadow")
+		ok = false
+	if src.find("ShadowLayer") < 0:
+		push_error("腳底軟影沒有獨立 ShadowLayer（會被角色 TextureRect 或戰報蓋住）")
+		ok = false
+	if src.find("move_child(layer, arena.get_index() + 1)") >= 0:
+		push_error("ShadowLayer 還插在 Arena 之後，會畫在立繪上面蓋靴子")
+		ok = false
+	if src.find("FootShadowShader") < 0:
+		push_error("腳底軟影沒有乘色 shader（深色石地 alpha 橢圓會看不見）")
+		ok = false
+	if src.find("show_behind_parent") >= 0:
+		push_error("還在用 show_behind_parent 掛角色身上，畫面上出不來")
+		ok = false
+	if src.find("TEXTURE_FILTER_LINEAR") < 0:
+		push_error("戰鬥畫面沒有 LINEAR 平滑")
+		ok = false
+	if src.find("exp(-2.6 * d2)") >= 0:
+		push_error("軟影還在用尖核高斯，全圖認不出橢圓")
+		ok = false
+	if src.find("t * t * (3.0 - 2.0 * t)") < 0:
+		push_error("軟影不是寬核平台＋柔邊橢圓")
+		ok = false
+	if src.find("set_shader_parameter(\"strength\", 0.68)") >= 0:
+		push_error("strength 0.68 在深色石地原圖認不出橢圓，核要接近不透明")
+		ok = false
+	if src.find("set_shader_parameter(\"strength\", 0.92)") < 0:
+		push_error("腳底軟影 strength 要 0.92（原圖縮小時一眼看得出深色核）")
+		ok = false
+	if src.find("Sprite2D.new()") >= 0:
+		push_error("腳底軟影還在用 Sprite2D 掛 Control 底下（headless 會畫不出柔邊）")
+		ok = false
+	if src.find("OutlineShader") < 0 or src.find("_apply_outline") < 0:
+		push_error("角色沒有描邊 shader")
+		ok = false
+	if ok:
+		print("  ok 戰鬥雙方腳底軟影是地面層接近不透明深色核＋柔邊橢圓＋描邊")
+	return ok
 
 
 ## 場景物件的貼圖覆蓋率。

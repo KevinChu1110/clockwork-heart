@@ -56,17 +56,17 @@
     },
     {
       "speaker": "琥珀",
-      "text": "打怪、卖我、去锻。佣兵也要算帐。"
+      "text": "打怪、卖我、去锻。旅人也要算账。"
     }
   ],
   "side.ronin_guard_fire": [
     {
-      "speaker": "黑焰浪人",
+      "speaker": "黑锈浪人",
       "portrait": "road_bandit",
-      "text": "我守火。别把焰当柴。"
+      "text": "我守火。别把锈当柴。"
     },
     {
-      "speaker": "黑焰浪人",
+      "speaker": "黑锈浪人",
       "text": "倒下我拖你回来。一次。"
     }
   ],
@@ -78,14 +78,14 @@
   ],
   "side.ronin_too_early": [
     {
-      "speaker": "黑焰浪人",
+      "speaker": "黑锈浪人",
       "text": "……还太早。先去打你的狮子。"
     }
   ],
   "side.ronin_defeated": [
     {
-      "speaker": "黑焰浪人",
-      "text": "……强……又如何……焰还是空的。"
+      "speaker": "黑锈浪人",
+      "text": "……强……又如何……锈还是空的。"
     },
     {
       "speaker": "系统",

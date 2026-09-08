@@ -82,8 +82,27 @@ func _ready() -> void:
 			shadow.z_index = -1
 			vis.add_child(shadow)
 			vis.move_child(shadow, 0)
+	_apply_shadow_profile()
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	if gp != null and not gp.changed.is_connected(_on_graphics_changed):
+		gp.changed.connect(_on_graphics_changed)
 	_update_visual()
 	nav.navigation_finished.connect(_on_nav_finished)
+
+
+func _on_graphics_changed(_tier: String) -> void:
+	_apply_shadow_profile()
+
+
+func _apply_shadow_profile() -> void:
+	var vis := get_node_or_null("Visuals")
+	if vis == null:
+		return
+	var shadow := vis.get_node_or_null("Shadow") as CanvasItem
+	if shadow == null:
+		return
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	shadow.visible = gp == null or gp.shadows_enabled()
 
 
 func _set_body_tex(tex: Texture2D) -> void:

@@ -21,7 +21,8 @@ grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 1
 stretch_mode = 6
-modulate = Color(0.92, 0.92, 0.95, 1)
+texture_filter = 2
+modulate = Color(1, 1, 1, 1)
 
 [node name="BGDim" type="ColorRect" parent="."]
 layout_mode = 1
@@ -31,7 +32,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-color = Color(0.05, 0.04, 0.08, 0.15)
+visible = false
+color = Color(1, 0.95, 0.82, 0)
 
 [node name="TelegraphFlash" type="ColorRect" parent="."]
 unique_name_in_owner = true
@@ -168,6 +170,15 @@ show_percentage = false
 modulate = Color(1, 0.4, 0.4, 1)
 fill_mode = 1
 
+[node name="ShadowLayer" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
 [node name="Arena" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
@@ -176,7 +187,7 @@ anchor_bottom = 1.0
 offset_left = 48.0
 offset_top = 148.0
 offset_right = -48.0
-offset_bottom = -163.0
+offset_bottom = -210.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 80
@@ -202,7 +213,12 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 expand_mode = 1
 stretch_mode = 5
-texture_filter = 0
+texture_filter = 2
+
+[node name="GroundPad" type="Control" parent="Arena/PlayerSlot"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+mouse_filter = 2
 
 [node name="EnemySlot" type="VBoxContainer" parent="Arena"]
 layout_mode = 2
@@ -224,7 +240,12 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 expand_mode = 1
 stretch_mode = 5
-texture_filter = 0
+texture_filter = 2
+
+[node name="GroundPad" type="Control" parent="Arena/EnemySlot"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+mouse_filter = 2
 
 [node name="HazardFX" type="TextureRect" parent="."]
 unique_name_in_owner = true

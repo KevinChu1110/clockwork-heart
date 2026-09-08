@@ -73,10 +73,10 @@ func status_bbcode() -> String:
 	_refresh_daily()
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]野外獵場[/b]"))
-	lines.append(_t("黑焰溢地的邊陲。拿材料的地方，經驗比演武場薄。"))
+	lines.append(_t("黑鏽溢地的邊陲。拿材料的地方，經驗比演武場薄。"))
 	lines.append("")
 	if not is_unlocked():
-		lines.append(_t("（進入騎士堡後解鎖）"))
+		lines.append(_t("（進入堡壘後解鎖）"))
 		return "\n".join(lines)
 	lines.append(_t("今日有獎場次：%d／%d（剩餘 %d）") % [runs_today(), DAILY_CAP, daily_left()])
 	lines.append(_t("每場：3 波雜魚。每波薄經驗，通關再發材料與金。要練等回村演武。"))

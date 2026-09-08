@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 """環境層像素歸一（降 AI 感 · 2026-08-27 Kevin 拍板）。
 
+⛔ 2026-09-07 ART-02 **已廢除**：新圖與重產圖禁止再跑本腳本。
+   規格改為手繪插畫 + LINEAR，見 docs/MAP_ART_SPEC.md。本檔只留歷史還原用。
+
 問題：底圖／戰鬥背景／橫幅是每張獨立生成的 AI 插畫（town_bg 有 77,001 色），
 和統一像素 chibi 的角色層疊在一起就是「AI 拼貼」。
 
 解法：角色是風格北辰——從角色抽主色盤（加地磚與冷色地圖樣本補綠藍，上限 96 色），
 所有環境圖降到像素格（block=5）再量化到這套色盤。零 API 費、可逆。
 
-範圍：maps/*.webp、maps/battle_*.png、maps/*_banner.png、dragon_cave_banner、
+範圍：maps/*.webp、maps/*_banner.png、dragon_cave_banner、
       pets/、props/escort_box_*（僅量化不降格）。
-不動：角色、NPC、tiles、UI。原圖備份到 maps/_backup_prepixel_0827/。
+不動：角色、NPC、tiles、UI、**戰鬥畫面**（maps/battle_*.png 是舊量化馬賽克，
+      戰鬥改走地圖插畫底板，不要再 pixelize）。
 
 用法：python3 tools/pixelize_env.py [--block 5] [--colors 96]
 """
@@ -95,7 +99,6 @@ def main() -> int:
 
     targets: list[Path] = []
     targets += sorted(MAPS.glob("*.webp"))
-    targets += sorted(MAPS.glob("battle_*.png"))
     targets += sorted(MAPS.glob("*_banner.png"))
     dc = MAPS / "dragon_cave_banner.png"
     if dc.exists() and dc not in targets:

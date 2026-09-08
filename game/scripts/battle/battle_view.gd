@@ -2,9 +2,13 @@ extends Control
 ## 戰鬥畫面：左右血條、格擋倒數、衝刺／受擊演出
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
+const OutlineShader = preload("res://shaders/outline.gdshader")
+const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
+const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 
 signal battle_finished(won: bool)
 
@@ -54,6 +58,16 @@ var _rage_ready: Label
 var _weapon_dock: HBoxContainer
 var _weapon_dock_cells: Array = []  ## Label per bar
 const WEAPON_KEYS: PackedStringArray = ["Z", "X", "C"]
+## 右手拇指熱區（Product Lock §5.1 第 4 項）。不是虛擬搖桿。
+const THUMB_MIN := 50
+var _thumb_pad: Control
+var _btn_attack: Button
+var _btn_skill: Button
+var _btn_switch: Button
+var _btn_pause: Button
+var _btn_lock: Button
+var _tempt_card: Control
+var _tempt_close: Button
 var _overlay_key: String = ""
 var _coach: Label
 var _coach_timer: float = 0.0
@@ -64,6 +78,8 @@ var _part_bars: Dictionary = {}  ## id -> ProgressBar
 var _part_labels: Dictionary = {}  ## id -> Label
 var _part_box: VBoxContainer
 var _focus_hint: Label
+static var _shadow_tex_cache: Texture2D = null
+static var _feet_frac_cache: Dictionary = {}
 
 
 
@@ -204,7 +220,7 @@ func setup(mode: String) -> void:
 	if cry != "":
 		call_deferred("_append_log", "[color=#fd9]%s：「%s」[/color]" % [GameState.player_name, cry])
 
-	## 黑焰迴響：敵強化 + 機制窗略短
+	## 黑鏽迴響：敵強化 + 機制窗略短
 	var ng_m: float = GameState.ng_enemy_mult()
 	if ng_m > 1.001:
 		BattleSim.apply_ng_plus(sim, ng_m)
@@ -231,19 +247,16 @@ func setup(mode: String) -> void:
 		])
 		_flash_coach(_t("這是對方留下的打法，不是即時對戰。"), 2.8)
 	_flash_coach(_mode_coach_intro(mode), 3.2)
-	if _touch():
-		_append_log(_t("[color=#8cf]點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]"))
-	else:
-		_append_log(_t("[color=#8cf]滑鼠也行：點畫面格擋 · 點敵人切鎖定 · 點怒氣條暴怒 · 點武器欄換武器[/color]"))
+	_append_log(_t("[color=#8cf]右側拇指：攻擊／技能／換武／鎖定／暫停／逃離。[/color]"))
 	if GameState.ng_plus > 0:
-		_append_log(_t("[color=#c8f]黑焰迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]") % [
+		_append_log(_t("[color=#c8f]黑鏽迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]") % [
 			GameState.ng_plus, ng_m
 		])
 		_flash_coach(_t("二周目：敵人更硬，空檔更窄。一樣等綠了再擋。"), 2.5)
 	if GameState.stain_flame:
 		_append_log(_t("[color=#a88]沾焰：刃上有一層不肯散的灰。攻擊略升。[/color]"))
 	if mode == "leo":
-		_append_log(_t("雷歐：傭兵團把最弱的送來了？也想挑戰騎士之王？"))
+		_append_log(_t("雷歐：渺小的兔子……也想挑戰獅衛之王？"))
 		_append_log(_t("[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後按 J 跳開[/color]"))
 		parry_hint.text = _kh(_t("【J】格擋　·　【Tab】鎖部位　·　火圈後躍出"))
 		_flash_coach(_t("先鎖盾磨掉，防禦會降。盔可破，但牠會暴。"), 3.6)
@@ -252,19 +265,19 @@ func setup(mode: String) -> void:
 		_append_log(_t("[color=#8cf]分身多 · 本體發白才打得中 · 砍幻影會反咬、變慢[/color]"))
 		parry_hint.text = _kh(_t("【Tab/1-3】鎖目標　·　本體發白才輸出　·　別打幻影"))
 	elif mode == "demon":
-		_append_log(_t("魔王：那就來——用你的微末，撞我的千年。"))
-		_append_log(_t("[color=#c8f]黑焰必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]"))
+		_append_log(_t("停擺核：那就來——用你的微末，撞我的千年。"))
+		_append_log(_t("[color=#c8f]黑鏽必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]"))
 		parry_hint.text = _kh(_t("【J】必殺格擋　·　【Tab】鎖部位　·　時鐘窗"))
 	elif mode == "abo":
 		_append_log(_t("阿波：來。打我的架勢——用拳，不是用嘴。"))
 		_append_log(_t("[color=#9c9]打散架勢 · 散開時傷害吃滿 · 重拳要擋[/color]"))
 		parry_hint.text = _kh(_t("打散架勢　·　【Tab】鎖部位　·　重拳【J】"))
 	elif mode == "falcon":
-		_append_log(_t("疾影：傭兵團把最慢的送來了？眼睛，跟得上我嗎？"))
+		_append_log(_t("疾影：把發條最鬆的送來了？眼睛，跟得上我嗎？"))
 		_append_log(_t("[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起按 J[/color]"))
 		parry_hint.text = _kh(_t("等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】"))
 	elif mode == "boar":
-		_append_log(_t("石拳：傭兵團把最弱的送來了？還站著？那就接下這一拳——"))
+		_append_log(_t("石拳：……把發條最鬆的送來了？還站著？那就接下這一拳——"))
 		_append_log(_t("[color=#c96]衝來按 J 硬碰，岩甲會裂 · 落石按 J[/color]"))
 		parry_hint.text = _kh(_t("衝鋒對撞【J】　·　【Tab】鎖角／甲　·　落岩【J】"))
 	elif mode == "wrath":
@@ -469,6 +482,7 @@ func _apply_hud_chrome() -> void:
 	_ensure_weapon_dock()
 	_ensure_coach()
 	_install_touch_controls()
+	_ensure_thumb_hud()
 
 
 func _apply_safe_hud() -> void:
@@ -514,10 +528,10 @@ func _ensure_weapon_dock() -> void:
 	_weapon_dock_cells.clear()
 	for i in 3:
 		var cell := Label.new()
-		cell.custom_minimum_size = Vector2(72, 36)
+		cell.custom_minimum_size = Vector2(56, 56)
 		cell.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		cell.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		cell.add_theme_font_size_override("font_size", 11)
+		cell.add_theme_font_size_override("font_size", 13)
 		cell.add_theme_color_override("font_color", Color(0.9, 0.88, 0.82))
 		cell.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 		cell.add_theme_constant_override("shadow_offset_x", 1)
@@ -705,8 +719,230 @@ func _flash_skill_banner(skill_name: String, player_side: bool = true) -> void:
 	)
 
 
+static func _soft_shadow_tex() -> Texture2D:
+	if _shadow_tex_cache != null:
+		return _shadow_tex_cache
+	## 寬核平台＋柔邊：核接近不透明，邊緣才衰減。不要 pow 尖核（看起來像硬斑或沒有）。
+	var w := 256
+	var h := 96
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var cx := (w - 1) * 0.5
+	var cy := (h - 1) * 0.5
+	var rx := cx * 0.98
+	var ry := cy * 0.96
+	for y in h:
+		for x in w:
+			var dx := (float(x) - cx) / rx
+			var dy := (float(y) - cy) / ry
+			var d2 := dx * dx + dy * dy
+			if d2 >= 1.0:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+			else:
+				var d := sqrt(d2)
+				var a := 1.0
+				if d > 0.52:
+					var t := (d - 0.52) / 0.48
+					t = t * t * (3.0 - 2.0 * t)
+					a = 1.0 - t
+				img.set_pixel(x, y, Color(1, 1, 1, a))
+	_shadow_tex_cache = ImageTexture.create_from_image(img)
+	return _shadow_tex_cache
+
+
+func _apply_outline(body: TextureRect, width: float) -> void:
+	if body == null:
+		return
+	body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var mat := body.material as ShaderMaterial
+	if mat == null or mat.shader != OutlineShader:
+		mat = ShaderMaterial.new()
+		mat.shader = OutlineShader
+		body.material = mat
+	mat.set_shader_parameter("outline_width", width)
+	mat.set_shader_parameter("outline_color", Color(0.20, 0.12, 0.07, 1.0))
+
+
+func _body_drawn_rect(body: TextureRect) -> Rect2:
+	var bs := body.size
+	if bs.x < 8.0 or bs.y < 8.0:
+		bs = body.custom_minimum_size
+	if bs.x < 8.0:
+		bs = Vector2(200, 250)
+	var tex := body.texture
+	if tex == null:
+		return Rect2(Vector2.ZERO, bs)
+	var ts := tex.get_size()
+	if ts.x <= 1.0 or ts.y <= 1.0:
+		return Rect2(Vector2.ZERO, bs)
+	var s := minf(bs.x / ts.x, bs.y / ts.y)
+	var ds := ts * s
+	return Rect2((bs - ds) * 0.5, ds)
+
+
+static func _content_bottom_frac(tex: Texture2D) -> float:
+	if tex == null:
+		return 0.90
+	var key := tex.resource_path
+	if key == "":
+		key = str(tex.get_rid())
+	if _feet_frac_cache.has(key):
+		return float(_feet_frac_cache[key])
+	var img := tex.get_image()
+	if img == null:
+		_feet_frac_cache[key] = 0.90
+		return 0.90
+	var h := img.get_height()
+	var w := img.get_width()
+	var last := int(float(h) * 0.88)
+	var found := false
+	for y in range(h - 1, -1, -1):
+		var hit := false
+		var x := 0
+		while x < w:
+			if img.get_pixel(x, y).a > 0.28:
+				hit = true
+				break
+			x += 3
+		if hit:
+			last = y
+			found = true
+			break
+	var frac := 0.90
+	if found and h > 0:
+		frac = clampf((float(last) + 1.0) / float(h) - 0.03, 0.58, 0.94)
+	_feet_frac_cache[key] = frac
+	return frac
+
+
+func _shadow_layer() -> Control:
+	var layer := get_node_or_null("ShadowLayer") as Control
+	if layer == null:
+		layer = Control.new()
+		layer.name = "ShadowLayer"
+		layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		layer.clip_contents = false
+		layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+		add_child(layer)
+	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.clip_contents = false
+	## 地面 → 軟影 → 角色 → 戰報。畫在 Arena 之後會蓋靴子。
+	if arena and layer.get_index() != arena.get_index() - 1:
+		move_child(layer, arena.get_index())
+	return layer
+
+
+func _ensure_foot_shadow(body: TextureRect) -> void:
+	if body == null:
+		return
+	## 舊版掛在角色身上的子節點拿掉，改走獨立層。
+	var leftover := body.get_node_or_null("FootShadow")
+	if leftover:
+		leftover.queue_free()
+	var layer := _shadow_layer()
+	var key := "FootShadow_%s" % body.name
+	var sh := layer.get_node_or_null(key) as TextureRect
+	if sh == null:
+		sh = TextureRect.new()
+		sh.name = key
+		sh.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		sh.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		sh.stretch_mode = TextureRect.STRETCH_SCALE
+		sh.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		sh.texture = _soft_shadow_tex()
+		sh.layout_mode = 0
+		layer.add_child(sh)
+	var mat := sh.material as ShaderMaterial
+	if mat == null or mat.shader != FootShadowShader:
+		mat = ShaderMaterial.new()
+		mat.shader = FootShadowShader
+		sh.material = mat
+	mat.set_shader_parameter("strength", 0.92)
+	mat.set_shader_parameter("shadow_color", Color(0.01, 0.01, 0.02, 1.0))
+	_layout_foot_shadow(body)
+
+
+func _layout_foot_shadow(body: TextureRect) -> void:
+	if body == null:
+		return
+	var layer := get_node_or_null("ShadowLayer") as Control
+	if layer == null:
+		return
+	var sh := layer.get_node_or_null("FootShadow_%s" % body.name) as TextureRect
+	if sh == null or sh.texture == null:
+		return
+	var dr := _body_drawn_rect(body)
+	if dr.size.x < 8.0 or dr.size.y < 8.0:
+		return
+	var frac := _content_bottom_frac(body.texture)
+	var origin := body.global_position
+	var feet := origin + Vector2(dr.position.x + dr.size.x * 0.5, dr.position.y + dr.size.y * frac)
+	var sz := Vector2(maxf(dr.size.x * 2.40, 340.0), maxf(dr.size.x * 0.38, 72.0))
+	## 扁橢圓貼在腳前方地面；核要大到縮手機寬還認得出踩在地上。
+	var pos_y := feet.y - sz.y * 0.12
+	var max_bottom := size.y - 8.0
+	if log_label:
+		max_bottom = log_label.global_position.y - 8.0
+	if pos_y + sz.y > max_bottom:
+		sz.y = maxf(64.0, max_bottom - pos_y)
+		pos_y = feet.y - sz.y * 0.12
+		if pos_y + sz.y > max_bottom:
+			pos_y = max_bottom - sz.y
+	sh.size = sz
+	## 幾乎整塊落腳前方地面；底邊不進戰報。
+	sh.global_position = Vector2(feet.x - sz.x * 0.5, pos_y)
+	sh.visible = true
+	sh.modulate = Color(1, 1, 1, 1)
+	sh.z_index = 0
+	sh.z_as_relative = true
+
+
+func _ensure_screen_grade() -> void:
+	if get_node_or_null("BattleGrade") != null:
+		return
+	var copy := BackBufferCopy.new()
+	copy.name = "BattleGradeCopy"
+	copy.copy_mode = BackBufferCopy.COPY_MODE_VIEWPORT
+	add_child(copy)
+	var grade := ColorRect.new()
+	grade.name = "BattleGrade"
+	grade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	grade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	grade.color = Color.WHITE
+	var mat := ShaderMaterial.new()
+	mat.shader = ColorGradeScreenShader
+	grade.material = mat
+	add_child(grade)
+
+
+func _ensure_battle_look() -> void:
+	## 戰鬥畫面換皮：LINEAR、角色描邊＋腳底軟影、飽和／對比微調。不要髒黑濾鏡。
+	if battle_bg:
+		battle_bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if player_body:
+		player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if enemy_body:
+		enemy_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if hazard_fx:
+		hazard_fx.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_apply_outline(player_body, 3.0)
+	_apply_outline(enemy_body, 3.2)
+	_ensure_foot_shadow(player_body)
+	_ensure_foot_shadow(enemy_body)
+	if player_body and not player_body.resized.is_connected(_layout_battle_equipment_overlays):
+		player_body.resized.connect(_layout_battle_equipment_overlays)
+	if enemy_body and not enemy_body.resized.is_connected(_layout_battle_equipment_overlays):
+		enemy_body.resized.connect(_layout_battle_equipment_overlays)
+	_ensure_screen_grade()
+	var dim := get_node_or_null("BGDim") as ColorRect
+	if dim:
+		dim.visible = false
+		dim.color = Color(1.0, 0.95, 0.82, 0.0)
+	call_deferred("_layout_battle_equipment_overlays")
+
+
 func _apply_battle_art(mode: String) -> void:
 	## 立繪比例：素材約 160×200（兔）／220×240（Boss），維持長寬比、不擠扁
+	_ensure_battle_look()
 	_player_pose = "idle"
 	var ptex := SpriteDB.player_pose("idle")
 	if ptex == null:
@@ -802,17 +1038,15 @@ func _apply_battle_art(mode: String) -> void:
 			_enemy_base_mod = Color.WHITE
 	enemy_body.modulate = _enemy_base_mod
 
-	## 背景解析（專屬圖 → 那場仗發生的地圖 → 保底）統一在 SpriteDB.battle_bg_path()。
-	## 這裡原本自己寫了一串 fallback（demon→fog→boar→wolf），而那四張正是
-	## 「主角＋敵人都畫好」的完成稿插圖 —— 於是打某些王的時候，
-	## 背景裡有另一隻主角在跟別的怪對砍。
+	## 背景解析統一在 SpriteDB.battle_bg_path()（地圖插畫底板，不用量化馬賽克）。
 	var bg := SpriteDB.battle_bg(mode)
 	if battle_bg and bg:
 		battle_bg.texture = bg
+		battle_bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		battle_bg.modulate = _battle_bg_tint(mode)
 	elif battle_bg:
 		battle_bg.texture = null
-		battle_bg.modulate = Color(0.12, 0.1, 0.16)
+		battle_bg.modulate = Color(0.98, 0.93, 0.82)
 
 
 func _apply_battle_weapon_overlay() -> void:
@@ -827,7 +1061,7 @@ func _apply_battle_weapon_overlay() -> void:
 		_battle_armor.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_battle_armor.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_battle_armor.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		_battle_armor.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		_battle_armor.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		player_body.add_child(_battle_armor)
 	elif _battle_armor.get_parent() != player_body:
 		_battle_armor.reparent(player_body)
@@ -837,7 +1071,7 @@ func _apply_battle_weapon_overlay() -> void:
 		_battle_weapon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_battle_weapon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		_battle_weapon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		_battle_weapon.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		_battle_weapon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		player_body.add_child(_battle_weapon)
 	elif _battle_weapon.get_parent() != player_body:
 		_battle_weapon.reparent(player_body)
@@ -849,6 +1083,8 @@ func _apply_battle_weapon_overlay() -> void:
 
 
 func _layout_battle_equipment_overlays() -> void:
+	_layout_foot_shadow(player_body)
+	_layout_foot_shadow(enemy_body)
 	if player_body == null:
 		return
 	var bs := player_body.size
@@ -894,6 +1130,7 @@ func _ensure_temptation_ui() -> void:
 	_tempt_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_tempt_layer.visible = false
 	_tempt_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	_tempt_layer.z_index = 40
 	add_child(_tempt_layer)
 
 	var dim := ColorRect.new()
@@ -902,39 +1139,74 @@ func _ensure_temptation_ui() -> void:
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	_tempt_layer.add_child(dim)
 
-	var box := VBoxContainer.new()
-	box.set_anchors_preset(Control.PRESET_CENTER)
-	box.offset_left = -280
-	box.offset_top = -160
-	box.offset_right = 280
-	box.offset_bottom = 200
-	box.add_theme_constant_override("separation", 14)
-	_tempt_layer.add_child(box)
+	var center := CenterContainer.new()
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_tempt_layer.add_child(center)
 
+	_tempt_card = PanelContainer.new()
+	_tempt_card.name = "TemptCard"
+	_tempt_card.custom_minimum_size = Vector2(750, 0)
+	_tempt_card.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
+	center.add_child(_tempt_card)
+
+	var outer := VBoxContainer.new()
+	outer.add_theme_constant_override("separation", 0)
+	_tempt_card.add_child(outer)
+
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 8)
+	outer.add_child(head)
 	var title := Label.new()
 	title.name = "TemptTitle"
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 26)
+	title.add_theme_font_size_override("font_size", 22)
 	title.add_theme_color_override("font_color", Color(1, 0.55, 0.6))
-	box.add_child(title)
+	head.add_child(title)
+	_tempt_close = Button.new()
+	_tempt_close.name = "TemptClose"
+	_tempt_close.text = "✕"
+	_tempt_close.focus_mode = Control.FOCUS_NONE
+	_tempt_close.custom_minimum_size = Vector2(50, 50)
+	UiStyle.style_button(_tempt_close, false)
+	_tempt_close.custom_minimum_size = Vector2(50, 50)
+	_tempt_close.pressed.connect(_on_refuse_pressed)
+	head.add_child(_tempt_close)
+
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 12)
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_right", 16)
+	margin.add_theme_constant_override("margin_top", 10)
+	margin.add_theme_constant_override("margin_bottom", 14)
+	outer.add_child(margin)
+	margin.add_child(box)
 
 	var body := RichTextLabel.new()
 	body.name = "TemptBody"
 	body.bbcode_enabled = true
 	body.fit_content = true
-	body.custom_minimum_size = Vector2(520, 100)
+	body.custom_minimum_size = Vector2(700, 100)
 	body.add_theme_font_size_override("normal_font_size", 18)
 	box.add_child(body)
 
 	_refuse_btn = Button.new()
 	_refuse_btn.name = "RefuseBtn"
 	_refuse_btn.text = _t("我拒絕")
+	_refuse_btn.focus_mode = Control.FOCUS_NONE
+	UiStyle.style_button(_refuse_btn, true)
 	_refuse_btn.custom_minimum_size = Vector2(0, 56)
 	_refuse_btn.pressed.connect(_on_refuse_pressed)
 	box.add_child(_refuse_btn)
 
 	var listen_btn := Button.new()
+	listen_btn.name = "ListenBtn"
 	listen_btn.text = _t("……聽聽看（之後仍可拒絕）")
+	listen_btn.focus_mode = Control.FOCUS_NONE
+	UiStyle.style_button(listen_btn, false)
+	listen_btn.custom_minimum_size = Vector2(0, 50)
 	listen_btn.pressed.connect(_on_listen_then_refuse)
 	box.add_child(listen_btn)
 
@@ -957,11 +1229,12 @@ func _show_temptation(data: Dictionary) -> void:
 	var scale_f := float(data.get("refuse_scale", 1.0))
 	var font_sz := int(round(20.0 * scale_f))
 	_refuse_btn.add_theme_font_size_override("font_size", font_sz)
-	_refuse_btn.custom_minimum_size = Vector2(0, maxi(48, int(40 * scale_f)))
+	## 熱區不得低於 50（右手拇指）；字可以隨誘惑變大，不可縮到點不到。
+	_refuse_btn.custom_minimum_size = Vector2(0, maxi(50, int(40 * scale_f)))
 	_refuse_btn.text = _t("我拒絕")
 	_tempt_layer.visible = true
 	_tempt_layer.move_to_front()
-	_append_log(_t("[color=#f9a]戰鬥暫停：魔王的誘惑（%s）[/color]") % data.get("title"))
+	_append_log(_t("[color=#f9a]戰鬥暫停：停擺核的誘惑（%s）[/color]") % data.get("title"))
 
 
 func _on_refuse_pressed() -> void:
@@ -973,12 +1246,12 @@ func _on_refuse_pressed() -> void:
 	var keys := ["", "c6_refuse_power", "c6_refuse_revenge", "c6_refuse_peace"]
 	if st >= 1 and st <= 3:
 		GameState.set_flag(keys[st], true)
-	_append_log(_t("[color=#8f8]你拒絕了（%s）。黑焰外殼裂開一點。[/color]") % st)
+	_append_log(_t("[color=#8f8]你拒絕了（%s）。黑鏽外殼裂開一點。[/color]") % st)
 	if st == 3:
 		_enemy_base_mod = Color(0.85, 0.8, 0.9)
 		enemy_body.modulate = _enemy_base_mod
-		enemy_name.text = _t("前任·至弱者殘影")
-		_append_log(_t("[color=#ddf]黑焰大片剝落……外形收束。[/color]"))
+		enemy_name.text = _t("前任·先行者殘影")
+		_append_log(_t("[color=#ddf]黑鏽大片剝落……外形收束。[/color]"))
 
 
 func _on_listen_then_refuse() -> void:
@@ -993,6 +1266,7 @@ func _hide_size_compare() -> void:
 
 
 func _process(delta: float) -> void:
+	_layout_thumb_hud()
 	_tick_coach(delta)
 	if _parry_note_left > 0.0:
 		_parry_note_left = maxf(0.0, _parry_note_left - delta)
@@ -1010,7 +1284,17 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if sim == null or _ended:
 		return
+	## 誘惑彈窗把 sim 暫停；Confirm／Cancel 仍要接得住（右手拇指 ✕／我拒絕）。
+	if _tempt_layer != null and is_instance_valid(_tempt_layer) and _tempt_layer.visible:
+		if GameInput.matches(event, GameInput.CONFIRM) or GameInput.matches(event, GameInput.CANCEL):
+			_on_refuse_pressed()
+			get_viewport().set_input_as_handled()
+		return
 	if sim.sim_paused:
+		return
+	if GameInput.matches(event, GameInput.INTERACT):
+		_thumb_cycle_lock(1)
+		get_viewport().set_input_as_handled()
 		return
 	if event.is_action_pressed("ui_focus_next"):
 		## Tab：白霧切目標；其餘有部位的 Boss 切部位鎖定
@@ -1030,33 +1314,22 @@ func _unhandled_input(event: InputEvent) -> void:
 	## 比 main 深，會先吃到事件）—— 於是全遊戲最需要中途補血的一場，
 	## 快捷欄前三格（玩家最可能放藥的位置）是死的，畫面上也沒有任何一句話說明。
 	## 切目標本來就有 Tab 可以循環，數字鍵還給道具。
-	if event.is_action_pressed("parry"):
+	if GameInputGate.matches(event, GameInputGate.ATTACK):
 		_do_parry()
 		get_viewport().set_input_as_handled()
 		return
-
-	if event is InputEventKey and event.pressed and not event.echo:
-		## Z／X／C＝武器欄；F＝手動暴怒。
-		##
-		## 原本武器欄綁 1／2／3、暴怒綁 4／F，而數字鍵 1–8 是底部快捷欄
-		## （格子上就印著數字）。這裡沒有 set_input_as_handled，main 接著也會收到，
-		## 於是戰鬥中按 1 是「換到欄 1 **同時**喝掉快捷欄 1 的藥」；按 4 是
-		## 「暴怒同時吃掉格 4」。數字鍵還給道具（畫面上標的就是它），
-		## 武器欄改用沒被 input map 用掉的鍵（W＝ui_up、E＝interact 都不能拿）
-		## 並吃掉事件；空／未解鎖仍由 sim 擋下並回饋。
-		var handled := true
-		if event.keycode == KEY_Z:
-			sim.switch_weapon_slot(0)
-		elif event.keycode == KEY_X:
-			sim.switch_weapon_slot(1)
-		elif event.keycode == KEY_C:
-			sim.switch_weapon_slot(2)
-		elif event.keycode == KEY_F:
-			sim.trigger_fury_awakening()
+	if GameInputGate.matches(event, GameInputGate.SKILL):
+		sim.trigger_fury_awakening()
+		get_viewport().set_input_as_handled()
+		return
+	if GameInputGate.matches(event, GameInputGate.SWITCH_WEAPON):
+		## 數字鍵 1–8 是快捷欄，武器欄走 SwitchWeapon（PC＝Z／X／C）。
+		var slot := GameInputGate.weapon_slot(event)
+		if slot >= 0:
+			sim.switch_weapon_slot(slot)
 		else:
-			handled = false
-		if handled:
-			get_viewport().set_input_as_handled()
+			sim.switch_weapon_slot((int(sim.weapon_bar_active) + 1) % maxi(1, sim.weapon_bars.size()))
+		get_viewport().set_input_as_handled()
 
 
 ## ── 戰鬥中的 HP 權威 ──
@@ -1260,7 +1533,7 @@ func _refresh_hud() -> void:
 					_refresh_part_focus_hint()
 				elif _mode == "demon":
 					parry_hint.modulate = Color(1, 1, 1)
-					parry_hint.text = _kh(_t("黑焰必殺可格擋 · 階段誘惑選「我拒絕」"))
+					parry_hint.text = _kh(_t("黑鏽必殺可格擋 · 階段誘惑選「我拒絕」"))
 				elif _mode == "abo":
 					_update_abo_guard_hud()
 				elif _mode == "falcon":
@@ -1417,7 +1690,7 @@ func _update_tide_hud() -> void:
 		countdown.text = _t("刺%d") % sim._count_polyps()
 		countdown.add_theme_color_override("font_color", Color(0.5, 0.9, 1.0))
 		countdown_sub.text = _t("清刺胞！剩餘 %.1fs") % sim.tide_wave_left
-		parry_hint.text = _kh(_t("優先清黑焰刺胞"))
+		parry_hint.text = _kh(_t("優先清黑鏽刺胞"))
 		parry_hint.modulate = Color(0.6, 0.95, 1.0)
 	else:
 		countdown.text = _t("技") if sim.tide_phase_skill else _t("普")
@@ -2163,7 +2436,7 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			elif int(data.get("stacks", 0)) > 0:
 				_append_log(_t("[color=#f86]灼燒疊層：%s[/color]") % data.get("stacks"))
 		"tide_summon":
-			_append_log(_t("[color=#6cf]黑焰刺胞×%s 孵化！%.0f 秒內清除[/color]") % [data.get("count"), data.get("time")])
+			_append_log(_t("[color=#6cf]黑鏽刺胞×%s 孵化！%.0f 秒內清除[/color]") % [data.get("count"), data.get("time")])
 			_shake = 0.1
 		"tide_wave_clear":
 			_append_log(_t("[color=#8f8]刺胞清除。潮勢暫緩。[/color]"))
@@ -2270,6 +2543,9 @@ func _skill_fx_kind(skill_id: String) -> String:
 
 
 func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> void:
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	if gp != null and not gp.vfx_enabled():
+		return
 	var body := _body_of(defender_id)
 	if body == null:
 		return
@@ -2285,7 +2561,7 @@ func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> v
 	fx.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	fx.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	fx.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	fx.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	var sz := Vector2(96, 96)
 	fx.custom_minimum_size = sz
 	fx.size = sz
@@ -2651,7 +2927,151 @@ func _parry_window_open() -> bool:
 func _tap_ok(ev: InputEvent) -> bool:
 	if sim == null or _ended or sim.sim_paused:
 		return false
-	return ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT
+	## 場上／怒氣／武器格＝對應語意動作的虛擬鍵；裝置判斷在 GameInputGate。
+	return GameInputGate.primary_pointer_pressed(ev)
+
+
+func _thumb_btn(text: String, primary: bool, cb: Callable) -> Button:
+	var b := Button.new()
+	b.text = text
+	b.focus_mode = Control.FOCUS_NONE
+	b.mouse_filter = Control.MOUSE_FILTER_STOP
+	UiStyle.style_button(b, primary)
+	b.custom_minimum_size = Vector2(THUMB_MIN + 6, THUMB_MIN + 6)
+	b.pressed.connect(cb)
+	return b
+
+
+func _ensure_thumb_hud() -> void:
+	if _thumb_pad != null and is_instance_valid(_thumb_pad):
+		_layout_thumb_hud()
+		return
+	_ensure_weapon_dock()
+	_thumb_pad = Control.new()
+	_thumb_pad.name = "ThumbPad"
+	_thumb_pad.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	_thumb_pad.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_thumb_pad.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	_thumb_pad.mouse_filter = Control.MOUSE_FILTER_STOP
+	_thumb_pad.z_index = 25
+	add_child(_thumb_pad)
+
+	var col := VBoxContainer.new()
+	col.name = "ThumbCol"
+	col.set_anchors_preset(Control.PRESET_FULL_RECT)
+	col.add_theme_constant_override("separation", 8)
+	col.alignment = BoxContainer.ALIGNMENT_END
+	_thumb_pad.add_child(col)
+
+	if _weapon_dock != null and is_instance_valid(_weapon_dock):
+		_weapon_dock.reparent(col)
+		_weapon_dock.alignment = BoxContainer.ALIGNMENT_END
+		for cell in _weapon_dock_cells:
+			if cell is Control:
+				(cell as Control).custom_minimum_size = Vector2(56, 56)
+
+	var mid := HBoxContainer.new()
+	mid.name = "ThumbMid"
+	mid.alignment = BoxContainer.ALIGNMENT_END
+	mid.add_theme_constant_override("separation", 8)
+	col.add_child(mid)
+	_btn_lock = _thumb_btn(_t("鎖定"), false, func(): _thumb_cycle_lock(1))
+	_btn_lock.name = "ThumbLock"
+	_btn_switch = _thumb_btn(_t("換武"), false, _on_thumb_switch)
+	_btn_switch.name = "ThumbSwitch"
+	_btn_skill = _thumb_btn(_t("技能"), false, _on_thumb_skill)
+	_btn_skill.name = "ThumbSkill"
+	mid.add_child(_btn_lock)
+	mid.add_child(_btn_switch)
+	mid.add_child(_btn_skill)
+
+	var bot := HBoxContainer.new()
+	bot.name = "ThumbBot"
+	bot.alignment = BoxContainer.ALIGNMENT_END
+	bot.add_theme_constant_override("separation", 8)
+	col.add_child(bot)
+	_btn_pause = _thumb_btn(_t("暫停"), false, _on_thumb_pause)
+	_btn_pause.name = "ThumbPause"
+	bot.add_child(_btn_pause)
+	if btn_flee:
+		var fp := btn_flee.get_parent()
+		if fp:
+			fp.remove_child(btn_flee)
+		bot.add_child(btn_flee)
+		btn_flee.focus_mode = Control.FOCUS_NONE
+		UiStyle.style_button(btn_flee, false)
+		btn_flee.custom_minimum_size = Vector2(72, 56)
+	_btn_attack = _thumb_btn(_t("攻擊"), true, _on_thumb_attack)
+	_btn_attack.name = "ThumbAttack"
+	_btn_attack.custom_minimum_size = Vector2(88, 72)
+	bot.add_child(_btn_attack)
+
+	_layout_thumb_hud()
+
+
+func _layout_thumb_hud() -> void:
+	if _thumb_pad == null or not is_instance_valid(_thumb_pad):
+		return
+	var vp := get_viewport_rect().size
+	if vp.x < 8.0 or vp.y < 8.0:
+		return
+	var m := 12.0
+	var w := clampf(vp.x * 0.42, 240.0, 320.0)
+	var h := clampf(vp.y * 0.46, 188.0, 248.0)
+	_thumb_pad.offset_left = -w - m
+	_thumb_pad.offset_right = -m
+	_thumb_pad.offset_top = -h - m
+	_thumb_pad.offset_bottom = -m
+
+
+func _on_thumb_attack() -> void:
+	_do_parry()
+
+
+func _on_thumb_skill() -> void:
+	if sim == null or _ended:
+		return
+	if not sim.trigger_fury_awakening():
+		_flash_coach(_t("怒氣未滿。"), 1.2)
+
+
+func _on_thumb_switch() -> void:
+	if sim == null or _ended:
+		return
+	var n: int = maxi(1, sim.weapon_bars.size())
+	sim.switch_weapon_slot((int(sim.weapon_bar_active) + 1) % n)
+
+
+func _on_thumb_pause() -> void:
+	GameInput.inject(GameInput.CANCEL)
+
+
+func _thumb_cycle_lock(dir: int) -> void:
+	if sim == null or _ended or sim.sim_paused:
+		return
+	if _mode == "fog":
+		var tid := sim.cycle_player_target(dir)
+		if tid != "":
+			_append_log(_t("鎖定：%s") % sim.get_unit(tid).display_name)
+		return
+	if _part_lock_enabled():
+		sim.cycle_part_focus(dir)
+		_append_log(_t("鎖定部位：%s") % sim.part_focus_label())
+		_refresh_part_focus_hint()
+		return
+	## 這場沒有多目標／部位可切，鎖定鈕靜默。不要講站位——模擬沒有站位 API。
+
+
+func thumb_controls() -> Dictionary:
+	return {
+		"attack": _btn_attack,
+		"skill": _btn_skill,
+		"switch": _btn_switch,
+		"pause": _btn_pause,
+		"flee": btn_flee,
+		"lock": _btn_lock,
+		"pad": _thumb_pad,
+	}
 
 
 func _install_touch_controls() -> void:

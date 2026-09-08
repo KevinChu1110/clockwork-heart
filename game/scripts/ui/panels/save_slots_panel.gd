@@ -58,8 +58,6 @@ func _slot_line(s: Dictionary) -> String:
 	var line := _t("%s[b]第 %d 格[/b] %s · Lv%d · %s") % [
 		mark, n, str(s.get("name", "")), int(s.get("level", 1)), str(s.get("place", "")),
 	]
-	if int(s.get("ng_plus", 0)) > 0:
-		line += _t(" · 黑焰迴響 ×%d") % int(s.get("ng_plus", 0))
 	line += _t("\n　  [color=#b8a88a]走了 %s · 存於 %s[/color]") % [
 		str(s.get("play_time_text", "")), str(s.get("saved_at_text", "")),
 	]

@@ -483,13 +483,18 @@ static func soul_shen() -> Texture2D:
 	return tex("%s/souls/shen.png" % ROOT)
 
 
-static func map_bg(map_id: String) -> Texture2D:
+static func map_bg_path(map_id: String) -> String:
 	## 高解析版是 .webp（16:9，原生像素 ≥ 該 art 的世界尺寸；底圖不需要 alpha），
 	## 還沒重出的維持 .png。兩種都找，webp 優先。
 	var webp := "%s/maps/%s_bg.webp" % [ROOT, map_id]
 	if ResourceLoader.exists(webp):
-		return tex(webp)
-	return tex("%s/maps/%s_bg.png" % [ROOT, map_id])
+		return webp
+	var png := "%s/maps/%s_bg.png" % [ROOT, map_id]
+	return png if ResourceLoader.exists(png) else ""
+
+
+static func map_bg(map_id: String) -> Texture2D:
+	return tex(map_bg_path(map_id))
 
 
 ## 每一種戰鬥該站在哪張圖前面。
@@ -503,7 +508,7 @@ static func map_bg(map_id: String) -> Texture2D:
 ## 這張表讓每一場戰鬥都退到「那場仗實際發生的地方」的既有底圖，
 ## 五十幾張地圖底圖本來就在 repo 裡，不必等新美術就先不黑。
 ##
-## 專屬戰鬥背景畫好之後丟 `maps/battle_<mode>.png`，會自動蓋過這張表。
+## `maps/battle_<mode>.png` 是 pixelize_env 量化馬賽克（約 70 色），戰鬥畫面不用。
 const BATTLE_BG_MAP := {
 	## 主線 Boss
 	"wolf": "road",
@@ -513,7 +518,7 @@ const BATTLE_BG_MAP := {
 	"falcon": "forest",
 	"boar": "coast",
 	"demon": "tower",
-	## 通關後裂縫：都發生在黑焰疤地
+	## 通關後裂縫：都發生在黑鏽疤地
 	"wrath": "blackflame_scar",
 	"tide": "coast_wreck",
 	"statue": "tower_memory",
@@ -538,24 +543,21 @@ const BATTLE_BG_MAP := {
 const BATTLE_BG_LAST_RESORT := "wild"
 
 
-## 這場戰鬥的背景圖路徑。順序：專屬戰鬥背景 → 那場仗發生的地圖 → 保底。
+## 這場戰鬥的背景圖路徑：那場仗發生的地圖插畫底板（webp 優先）→ 保底荒野。
+## 不採用 `maps/battle_<mode>.png`（pixelize_env 量化馬賽克）。
 ## 回空字串代表連保底都不在（正常情況不該發生，test_art 會擋）。
 static func battle_bg_path(mode: String) -> String:
-	var own := "%s/maps/battle_%s.png" % [ROOT, mode]
-	if ResourceLoader.exists(own):
-		return own
 	var map_id := str(BATTLE_BG_MAP.get(mode, ""))
 	if map_id != "":
-		var by_map := "%s/maps/%s_bg.png" % [ROOT, map_id]
-		if ResourceLoader.exists(by_map):
+		var by_map := map_bg_path(map_id)
+		if by_map != "":
 			return by_map
-	var last := "%s/maps/%s_bg.png" % [ROOT, BATTLE_BG_LAST_RESORT]
-	return last if ResourceLoader.exists(last) else ""
+	return map_bg_path(BATTLE_BG_LAST_RESORT)
 
 
-## 這張背景是專屬畫的，還是退回去用地圖底圖的。給工具與測試看覆蓋率用。
-static func battle_bg_is_dedicated(mode: String) -> bool:
-	return ResourceLoader.exists("%s/maps/battle_%s.png" % [ROOT, mode])
+## 專屬量化戰鬥圖不再當背景。給工具與測試看覆蓋率用。
+static func battle_bg_is_dedicated(_mode: String) -> bool:
+	return false
 
 
 static func battle_bg(mode: String) -> Texture2D:
@@ -863,7 +865,7 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 	var key := speaker.strip_edges()
 	var id := ""
 	match key:
-		"麥穗", "舊鑰", "旧钥", "Oldkey", "Llavevieja", "オールドキー", "올드키", "maisui":
+		"麥穗", "舊鑰", "旧钥", "Oldkey", "Llavevieja", "オールドキー", "올드키", "Wheatear", "Espiga", "maisui":
 			id = "maisui"
 		"灰鬚", "greybeard":
 			id = "greybeard"
@@ -875,9 +877,9 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "sprout"
 		"霧隱", "白霧", "fog_hide":
 			id = "fog_hide"
-		"小白", "兔勇者", "內心", "rabbit":
+		"小白", "兔勇者", "發條兔", "內心", "rabbit":
 			id = "rabbit"
-		"雷歐", "聖獅·雷歐", "leo":
+		"雷歐", "守衛泰坦·雷歐", "聖獅·雷歐", "leo":
 			id = "leo"
 		"阿茶", "acha":
 			id = "acha"
@@ -891,13 +893,13 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "falcon"
 		"石拳", "boar":
 			id = "boar"
-		"魔王", "demon":
+		"魔王", "停擺核", "停摆核", "Stasis Core", "Núcleo de Inactividad", "停止核", "정지핵", "demon":
 			id = "demon"
 		"渣滓之狼", "失控的銹蝕玩具", "失控的锈蚀玩具", "Rust-bound Toy", "Juguete Oxidado Descontrolado", "暴走した錆びトイ", "폭주한 녹슨 장난감", "狼", "wolf":
 			id = "wolf"
 		"潮吼", "潮聲", "tide_roar":
 			id = "tide_roar"
-		"黑焰疤主", "疤主", "scar_lord":
+		"黑鏽疤主", "黑锈疤主", "疤主", "Scar Lord of Blight Rust", "Señor de la Cicatriz de Óxido Negro", "黒錆の傷跡の主", "검은 녹 흉터의 주인", "scar_lord":
 			id = "scar_lord"
 		"鏡廊殘影", "殘影", "mirror_wraith":
 			id = "mirror_wraith"
@@ -909,7 +911,7 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "silk"
 		"琥珀", "amber":
 			id = "amber"
-		"黑焰浪人", "浪人", "ronin":
+		"黑鏽浪人", "黑锈浪人", "浪人", "Blight Rust Wanderer", "Errante de Óxido Negro", "黒錆の浪人", "검은 녹 낭인", "ronin":
 			id = "ronin"
 		"遺孤少年", "knight_orphan":
 			id = "knight_orphan"

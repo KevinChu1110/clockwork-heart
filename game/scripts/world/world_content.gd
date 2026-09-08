@@ -45,16 +45,16 @@ static func _enemy_def_raw(mode: String) -> Dictionary:
 				"id": "heart_demon", "name": "心魔", "max_hp": 4000, "atk": 16, "def": 8,
 				"speed": 11.0, "is_boss": false, "art": "demon", "art_fallback": "wrath",
 			}
-		## 支線：黑焰浪人（可戰可勸）
+		## 支線：黑鏽浪人（可戰可勸）
 		"black_ronin":
 			return {
-				"id": "black_ronin", "name": "黑焰浪人", "max_hp": 160, "atk": 14, "def": 7, "speed": 12.5,
+				"id": "black_ronin", "name": "黑鏽浪人", "max_hp": 160, "atk": 14, "def": 7, "speed": 12.5,
 				"is_boss": false, "art": "black_ronin", "art_fallback": "road_bandit",
 			}
 		## 秘境小 Boss
 		"scar_lord":
 			return {
-				"id": "scar_lord", "name": "黑焰疤主", "max_hp": 280, "atk": 15, "def": 9, "speed": 10.0,
+				"id": "scar_lord", "name": "黑鏽疤主", "max_hp": 280, "atk": 15, "def": 9, "speed": 10.0,
 				"is_boss": true, "art": "scar_lord", "art_fallback": "wrath",
 				"windup": 0.28, "recover": 0.42, "king_slash_cd": 2.8, "hazard": "fire_ring", "hazard_cd": 4.0,
 			}
@@ -129,7 +129,7 @@ static func art_fallback(mode: String) -> String:
 static func chests() -> Dictionary:
 	return {
 		"sealed_chest": {"flag": "loot.chest.road_ruins", "gold": 40, "dust": 2, "text": _t("封箱裂開：古驛的通行費，如今歸你。")},
-		"chest_root": {"flag": "loot.chest.forest_ruins", "gold": 44, "dust": 3, "text": _t("根纏箱打開：遊俠留下的箭矢錢。")},
+		"chest_root": {"flag": "loot.chest.forest_ruins", "gold": 44, "dust": 3, "text": _t("根纏箱打開：林裡留下的箭矢錢。")},
 		"chest_half": {"flag": "loot.chest.coast_wreck", "gold": 48, "dust": 2, "text": _t("半埋箱：海水泡過的金幣仍作響。")},
 		"supply_crate": {"flag": "loot.chest.wild_supply", "gold": 26, "dust": 1, "text": _t("補給箱：乾糧與幾枚城徽幣。")},
 		"hidden_cache": {"flag": "loot.chest.forest_cache", "gold": 35, "dust": 2, "text": _t("獵人藏匿處：藥草與銅板。")},
@@ -141,7 +141,7 @@ static func chests() -> Dictionary:
 		"obsidian": {"flag": "loot.chest.scar_obsidian", "gold": 52, "dust": 4, "text": _t("黑曜碎中封著濃縮星屑——燙手，但有用。")},
 		"scale_table": {"flag": "loot.chest.market_scale", "gold": 24, "dust": 1, "text": _t("天秤台抽屜：商會遺落的零錢。")},
 		"guest_bed": {"flag": "loot.chest.inn_bed", "gold": 14, "dust": 1, "text": _t("塌床底下：旅客來不及拿走的錢袋。")},
-		"nest_mark": {"flag": "loot.chest.forest_feather", "gold": 30, "dust": 2, "text": _t("羽痕石縫：疾影屬下遺落的戰利。")},
+		"nest_mark": {"flag": "loot.chest.forest_feather", "gold": 30, "dust": 2, "text": _t("羽痕石縫：疾影落下的銀羽碎。")},
 		"pirate_mark": {"flag": "loot.chest.coast_pirate", "gold": 42, "dust": 2, "text": _t("海盜標記下埋著箱——他們不會回來了。")},
 		"mosaic": {"flag": "loot.chest.star_mosaic", "gold": 36, "dust": 3, "text": _t("馬賽克中央撬起：古驛的星途通行符與金幣。")},
 	}
@@ -163,7 +163,7 @@ static func skirmishes() -> Dictionary:
 		"boat_wreck": {"mode": "coast_raider", "once_flag": "skirmish.boat", "intro": _t("破船骸裡爬出海盜影。")},
 		"deep_water": {"mode": "coast_raider", "once_flag": "", "intro": _t("深水翻湧——潮襲者上岸。")},
 		"flame_vent": {"mode": "scar_wisp", "once_flag": "", "intro": _t("焰口噴出疤地焰靈！")},
-		"black_vein": {"mode": "scar_wisp", "once_flag": "skirmish.black_vein", "intro": _t("黑焰脈紋凝成靈體。")},
+		"black_vein": {"mode": "scar_wisp", "once_flag": "skirmish.black_vein", "intro": _t("黑鏽脈紋凝成靈體。")},
 		"echo_canyon": {"mode": "ash_rat", "once_flag": "skirmish.ravine", "intro": _t("回音峽傳出獸吼——灰燼鼠群。")},
 		"alley_dark": {"mode": "road_bandit", "once_flag": "skirmish.market_alley", "intro": _t("窄巷裡有刀光。")},
 	}
@@ -179,17 +179,17 @@ static func minibosses() -> Dictionary:
 			"deny": _t("疤主的氣壓太重。至少先通過道場試煉。"),
 			"cleared_dialog": "world.scar_cleared",
 			"intro": [
-				{"speaker": _t("旁白"), "text": _t("疤地中央，黑焰聚成人形——沒有臉，只有胃口。")},
+				{"speaker": _t("旁白"), "text": _t("疤地中央，黑鏽聚成人形——沒有臉，只有胃口。")},
 				{"speaker": _t("旁白"), "text": _t("焦土一跳一跳，像還在流血的傷口。")},
-				{"speaker": _t("黑焰疤主"), "portrait": "scar_lord", "text": _t("……弱者……也配踏入我的傷口？")},
-				{"speaker": _t("黑焰疤主"), "portrait": "scar_lord", "text": _t("野心……香味……過來。讓我把它從你身上撕開。")},
+				{"speaker": _t("黑鏽疤主"), "portrait": "scar_lord", "text": _t("……弱者……也配踏入我的傷口？")},
+				{"speaker": _t("黑鏽疤主"), "portrait": "scar_lord", "text": _t("野心……香味……過來。讓我把它從你身上撕開。")},
 			],
 			"win": [
 				{"speaker": _t("疤主"), "portrait": "scar_lord", "text": _t("傷口……合上了嗎……")},
 				{"speaker": _t("疤主"), "portrait": "scar_lord", "text": _t("……你沒有餵我。奇怪。……")},
-				{"speaker": _t("系統"), "text": _t("戰勝【黑焰疤主】。金 90 · 星屑 5。")},
+				{"speaker": _t("系統"), "text": _t("戰勝【黑鏽疤主】。金 90 · 星屑 5。")},
 			],
-			"lose": _t("黑焰把你掀回岔路。疤地仍在跳動脈搏。"),
+			"lose": _t("黑鏽把你掀回岔路。疤地仍在跳動脈搏。"),
 			"gold": 90, "dust": 5, "hp": 12,
 			"lose_map": "crossroads", "lose_screen": "C1_WILD",
 			"win_map": "blackflame_scar", "win_screen": "C1_WILD",
@@ -211,7 +211,7 @@ static func minibosses() -> Dictionary:
 				{"speaker": _t("殘影"), "portrait": "mirror_wraith", "text": _t("捷徑……碎了。你自己走吧。")},
 				{"speaker": _t("系統"), "text": _t("戰勝【鏡廊殘影】。金 80 · 星屑 5。")},
 			],
-			"lose": _t("你被自己的倒影推回霧隱村。"),
+			"lose": _t("你被自己的倒影推回白霧村。"),
 			"gold": 80, "dust": 5, "hp": 10,
 			"lose_map": "mist_village", "lose_screen": "C2_MIST",
 			"win_map": "mist_mirror", "win_screen": "C2_MIST",
@@ -220,7 +220,7 @@ static func minibosses() -> Dictionary:
 			"mode": "wreck_captain",
 			"flag": "boss.wreck_captain_cleared",
 			"need_flag": "c5_entered",
-			"deny": _t("船長影只認海上來的人。先踏上維京海岸。"),
+			"deny": _t("船長影只認海上來的人。先踏上石拳海岸。"),
 			"cleared_dialog": "world.wreck_cleared",
 			"intro": [
 				{"speaker": _t("旁白"), "text": _t("沉船龍骨站起——船長帽下沒有臉，只有浪聲。")},

@@ -9,9 +9,11 @@
     "note": "鎖版目標：雜魚可讀節奏、Boss 前搖可格擋、怒氣約半分鐘內首次技。改 ATB／怒氣前先跑 test_formulas + test_rage + test_boss_curve。",
     "mob_cycle_target_sec": 4.5,
     "mob_note": "speed=10：ATB 4.0s + windup0.25 + strike0.08 + recover0.40 ≈ 4.73s/刀；speed=12 ≈ 4.3s/刀。雜魚普攻應落在 4～5 秒一輪，不要再壓到 2 秒連砍。",
+    "strike_sec": 0.08,
     "boss_telegraph_sec": 1.85,
     "boss_parry_window_sec": 0.85,
-    "boss_note": "王者斬前搖 1.85s，末 0.85s 開格擋窗（外加 0.35s 早按寬限）。目標：第一次見面就能讀倒數，不是反應力測驗。",
+    "parry_early_grace_sec": 0.35,
+    "boss_note": "王者斬前搖 1.85s，末 0.85s 開格擋窗（外加 0.35s 早按寬限）。目標：第一次見面就能讀倒數，不是反應力測驗。BattleSim 常數必須等於這三個鍵。",
     "rage_strikes_to_full": 8,
     "rage_fill_target_sec": 35,
     "rage_note": "每刀 +14 戰意、滿 100 → 約 8 刀（14×7=98 未滿）。speed10 純出手 ≈ 8×4.7≈38s；再加受傷怒氣，實戰首次技約 25～35s。雜魚戰至少放得出 1 次、Boss 戰數次。"
@@ -42,6 +44,7 @@
   },
   "atb": {
     "fill_base": 25.0,
+    "speed_base": 0.6,
     "speed_scale": 0.04,
     "speed_floor": 0.5,
     "speed_ceil": 2.0

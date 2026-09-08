@@ -21,10 +21,13 @@ config/icon="res://icon.svg"
 
 ; 字型要最早掛：它改的是 ThemeDB 預設，晚於 UI 建立就來不及
 GameFont="*res://scripts/autoload/game_font.gd"
+BundleLoader="*res://scripts/autoload/bundle_loader.gd"
 GameState="*res://scripts/autoload/game_state.gd"
 SaveManager="*res://scripts/autoload/save_manager.gd"
 AudioManager="*res://scripts/autoload/audio_manager.gd"
 DisplaySettings="*res://scripts/autoload/display_settings.gd"
+GameInput="*res://scripts/autoload/game_input.gd"
+GraphicsProfile="*res://scripts/autoload/graphics_profile.gd"
 Loc="*res://scripts/autoload/loc.gd"
 RiftSchedule="*res://scripts/systems/rift_schedule.gd"
 TitleCatalog="*res://scripts/systems/title_catalog.gd"

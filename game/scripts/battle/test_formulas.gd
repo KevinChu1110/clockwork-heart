@@ -323,6 +323,42 @@ func _initialize() -> void:
 		ok = false
 	else:
 		print("time_model boss telegraph OK")
+	## 三處鎖：BattleSim 常數 = Formulas 讀表 = combat.json fallback
+	if abs(BattleSim.KING_SLASH_WINDUP - Formulas.boss_telegraph_sec()) > 0.001:
+		push_error("time_model: KING_SLASH_WINDUP != table %s / %s" % [
+			BattleSim.KING_SLASH_WINDUP, Formulas.boss_telegraph_sec()
+		])
+		ok = false
+	if abs(BattleSim.PARRY_WINDOW - Formulas.boss_parry_window_sec()) > 0.001:
+		push_error("time_model: PARRY_WINDOW != table")
+		ok = false
+	if abs(BattleSim.PARRY_EARLY_GRACE - Formulas.parry_early_grace_sec()) > 0.001:
+		push_error("time_model: PARRY_EARLY_GRACE != table")
+		ok = false
+	if abs(BattleSim.ATB_MAX - Formulas.atb_max()) > 0.001:
+		push_error("time_model: ATB_MAX != table")
+		ok = false
+	if abs(Formulas.strike_duration() - 0.08) > 0.001:
+		push_error("time_model: strike_sec != 0.08")
+		ok = false
+	var sword_t: Dictionary = Formulas.weapon_tempo("sword")
+	var dart_t: Dictionary = Formulas.weapon_tempo("dart")
+	var ham_t: Dictionary = Formulas.weapon_tempo("hammer")
+	if abs(float(sword_t.windup) - 0.25) > 0.001 or abs(float(sword_t.recover) - 0.40) > 0.001:
+		push_error("time_model: sword tempo %s" % sword_t)
+		ok = false
+	if abs(float(dart_t.windup) - 0.14) > 0.001 or abs(float(dart_t.recover) - 0.22) > 0.001:
+		push_error("time_model: dart tempo %s" % dart_t)
+		ok = false
+	if abs(float(ham_t.windup) - 0.40) > 0.001 or abs(float(ham_t.recover) - 0.56) > 0.001:
+		push_error("time_model: hammer tempo %s" % ham_t)
+		ok = false
+	var cycle10 := atb10 + float(sword_t.windup) + Formulas.strike_duration() + float(sword_t.recover)
+	if cycle10 < 4.5 or cycle10 > 5.0:
+		push_error("time_model: speed10 cycle should ~4.7s got %s" % cycle10)
+		ok = false
+	else:
+		print("time_model lock OK cycle10=", cycle10)
 
 	## ── 姿態：遠距開闊／被壓、坦克容錯 ──
 	if not Formulas.is_ranged_class("bow") or not Formulas.is_ranged_class("gun"):

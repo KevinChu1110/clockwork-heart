@@ -7,6 +7,7 @@ extends Control
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 
 signal interacted(id: String)
 signal hint_changed(text: String)
@@ -73,6 +74,8 @@ var _action_pose_left: float = 0.0
 var _action_pose_tween: Tween
 var _banner_base_x: float = 40.0
 const TILE_PX := 32
+## ART-02：這幾張手繪底圖即使 map_bg 載不到也不准滿鋪粗方塊 tile。
+const NO_TILE_OVERLAY_ART: PackedStringArray = ["town", "village"]
 ## 動態可行走區（大地圖）
 var FLOOR_RECT := Rect2(40, 80, 1200, 560)
 var _cam: Vector2 = Vector2.ZERO
@@ -1095,23 +1098,45 @@ func _get_or_make_tileset(kind: String) -> TileSet:
 	return ts
 
 
+func _hide_tile_overlay() -> void:
+	if _tile_map:
+		_tile_map.clear()
+		_tile_map.visible = false
+	if _wall_map:
+		_wall_map.clear()
+		_wall_map.visible = false
+	if _tile_host:
+		_tile_host.visible = false
+
+
+func _show_tile_overlay() -> void:
+	if _tile_host:
+		_tile_host.visible = true
+	if _tile_map:
+		_tile_map.visible = true
+	if _wall_map:
+		_wall_map.visible = true
+
+
 func _build_tilemap(map_id_s: String, scenic_bg: bool = false, pal: Dictionary = {}) -> void:
 	if _tile_map == null or _tile_host == null:
 		return
 	_tile_host.position = FLOOR_RECT.position
 	_map_cols = int(FLOOR_RECT.size.x / TILE_PX)
 	_map_rows = int(FLOOR_RECT.size.y / TILE_PX)
+	## 手繪底圖（含 ART-02 的大廳配對主城／C0 村）不准蓋半透明滿鋪 tile。
+	if scenic_bg or map_id_s in NO_TILE_OVERLAY_ART:
+		_hide_tile_overlay()
+		return
+	_show_tile_overlay()
 	var kind := SpriteDB.map_tile_kind(map_id_s)
 	var ts := _get_or_make_tileset(kind)
 	if ts == null:
-		_tile_map.clear()
-		if _wall_map:
-			_wall_map.clear()
+		_hide_tile_overlay()
 		return
 	_tile_map.tile_set = ts
 	_tile_map.clear()
-	## 有風景底圖時：不再鋪滿 tile（那會蓋掉 Gemini 場景圖，變成「醜地板」）
-	## 只在邊角極淡點綴；無底圖時才滿鋪可走地面
+	## 無底圖時才滿鋪可走地面
 	var seed_n := map_id_s.hash()
 	var variants := 4
 	var src: TileSetSource = ts.get_source(0)
@@ -1119,22 +1144,17 @@ func _build_tilemap(map_id_s: String, scenic_bg: bool = false, pal: Dictionary =
 		var atlas := src as TileSetAtlasSource
 		if atlas.texture:
 			variants = maxi(1, int(atlas.texture.get_width() / TILE_PX))
-	if scenic_bg:
-		## 現代手遊風格：有高清風景底圖時，徹底不鋪 16x16 粗方塊，呈現通透插畫
-		_tile_map.clear()
-		return
-	else:
-		for y in _map_rows:
-			for x in _map_cols:
-				var n := int(abs(sin(float(x * 12 + y * 7 + seed_n)) * 1000.0))
-				var vi := n % variants
-				if map_id_s in ["town", "dojo"] and (y == _map_rows / 2 or y == _map_rows / 2 + 1):
-					vi = 0
-				if map_id_s == "road" and abs(y - _map_rows / 2) <= 1:
-					vi = mini(1, variants - 1)
-				_tile_map.set_cell(Vector2i(x, y), 0, Vector2i(vi, 0))
-		var tc2: Color = pal.get("tile", Color.WHITE) as Color
-		_tile_map.modulate = Color(tc2.r, tc2.g, tc2.b, 0.88)
+	for y in _map_rows:
+		for x in _map_cols:
+			var n := int(abs(sin(float(x * 12 + y * 7 + seed_n)) * 1000.0))
+			var vi := n % variants
+			if map_id_s in ["town", "dojo"] and (y == _map_rows / 2 or y == _map_rows / 2 + 1):
+				vi = 0
+			if map_id_s == "road" and abs(y - _map_rows / 2) <= 1:
+				vi = mini(1, variants - 1)
+			_tile_map.set_cell(Vector2i(x, y), 0, Vector2i(vi, 0))
+	var tc2: Color = pal.get("tile", Color.WHITE) as Color
+	_tile_map.modulate = Color(tc2.r, tc2.g, tc2.b, 0.88)
 	## 牆層 tileset
 	var wall_ts := _get_or_make_tileset("wall")
 	if _wall_map and wall_ts:
@@ -1536,11 +1556,9 @@ func _on_tap(world: Vector2) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if frozen:
 		return
-	if event is InputEventMouseButton \
-			and (event as InputEventMouseButton).button_index == MOUSE_BUTTON_LEFT \
-			and (event as InputEventMouseButton).pressed:
+	if GameInputGate.primary_pointer_pressed(event):
 		accept_event()
-		_on_tap((event as InputEventMouseButton).position + _cam)
+		_on_tap(GameInputGate.pointer_position(event) + _cam)
 
 
 ## 點擊光圈：柔邊圓環，放大淡出
@@ -1566,6 +1584,9 @@ static func _ring_tex() -> Texture2D:
 
 func _spawn_tap_fx(world: Vector2) -> void:
 	if _scroll == null or not is_inside_tree():
+		return
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	if gp != null and not gp.vfx_enabled():
 		return
 	var fx := TextureRect.new()
 	fx.texture = _ring_tex()
@@ -2123,17 +2144,22 @@ func _update_player_visual() -> void:
 		else:
 			_player_accessory.visible = false
 	if _player_shadow:
-		## 陰影跟著深度一起縮，遠處的腳印才不會比近處還大
-		var sh_k := _depth_scale(foot_y)
-		var sh_w := (PLAYER_SIZE.x - 8.0) * sh_k
-		var sh_h := 12.0 * sh_k
-		_player_shadow.size = Vector2(sh_w, sh_h)
-		_player_shadow.position = Vector2(
-			player_pos.x + PLAYER_SIZE.x * 0.5 - sh_w * 0.5,
-			foot_y - sh_h * 0.62)
-		_player_shadow.set_meta("sort_y", foot_y - 1.0)
-		## scenic 地圖把影子再加深一點，腳底「踩在地上」才站得住
-		_player_shadow.modulate = Color(0, 0, 0, 0.55 if _has_scenic_bg else 0.42)
+		var gp := get_node_or_null("/root/GraphicsProfile")
+		if gp != null and not gp.shadows_enabled():
+			_player_shadow.visible = false
+		else:
+			_player_shadow.visible = true
+			## 陰影跟著深度一起縮，遠處的腳印才不會比近處還大
+			var sh_k := _depth_scale(foot_y)
+			var sh_w := (PLAYER_SIZE.x - 8.0) * sh_k
+			var sh_h := 12.0 * sh_k
+			_player_shadow.size = Vector2(sh_w, sh_h)
+			_player_shadow.position = Vector2(
+				player_pos.x + PLAYER_SIZE.x * 0.5 - sh_w * 0.5,
+				foot_y - sh_h * 0.62)
+			_player_shadow.set_meta("sort_y", foot_y - 1.0)
+			## scenic 地圖把影子再加深一點，腳底「踩在地上」才站得住
+			_player_shadow.modulate = Color(0, 0, 0, 0.55 if _has_scenic_bg else 0.42)
 	var tag := _world.get_node_or_null("PlayerNameTag") as Control
 	if tag:
 		tag.position = player_pos + Vector2(PLAYER_SIZE.x * 0.5 - 28, -16)
@@ -2203,6 +2229,10 @@ func _highlight_near() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not frozen and GameInputGate.matches(event, GameInputGate.INTERACT) and _near_id != "":
+		_do_interact(_near_id)
+		get_viewport().set_input_as_handled()
+		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_M:
 		if _minimap_root:
 			_minimap_root.visible = not _minimap_root.visible

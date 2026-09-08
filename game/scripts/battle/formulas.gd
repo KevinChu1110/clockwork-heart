@@ -98,10 +98,35 @@ static func roll_hit_damage(
 
 static func atb_fill_per_sec(speed: float) -> float:
 	var fill := _tbl("atb.fill_base", 25.0)
+	var base := _tbl("atb.speed_base", 0.6)
 	var sc := _tbl("atb.speed_scale", 0.04)
 	var lo := _tbl("atb.speed_floor", 0.5)
 	var hi := _tbl("atb.speed_ceil", 2.0)
-	return fill * clampf(0.6 + speed * sc, lo, hi)
+	return fill * clampf(base + speed * sc, lo, hi)
+
+
+static func strike_duration() -> float:
+	return _tbl("time_model.strike_sec", 0.08)
+
+
+static func boss_telegraph_sec() -> float:
+	return _tbl("time_model.boss_telegraph_sec", 1.85)
+
+
+static func boss_parry_window_sec() -> float:
+	return _tbl("time_model.boss_parry_window_sec", 0.85)
+
+
+static func parry_early_grace_sec() -> float:
+	return _tbl("time_model.parry_early_grace_sec", 0.35)
+
+
+static func atb_max() -> float:
+	return _tbl("time_model.atb_max", 100.0)
+
+
+static func rage_max() -> float:
+	return _tbl("rage.max", 100.0)
 
 
 ## ATB 從 0 填滿所需秒數（不含 windup／recover）
@@ -109,8 +134,7 @@ static func atb_seconds_to_full(speed: float) -> float:
 	var rate := atb_fill_per_sec(speed)
 	if rate <= 0.001:
 		return 999.0
-	var atb_max := _tbl("time_model.atb_max", 100.0)
-	return atb_max / rate
+	return atb_max() / rate
 
 
 ## 出手命中累積的戰意。
@@ -147,7 +171,7 @@ static func default_variance() -> float:
 
 # ── 姿態（虛擬距離）：遠距開闊／被壓、坦克常駐減傷 ──
 
-const _RANGED_DEFAULT: Array[String] = ["bow", "gun", "magic", "dart", "crystal"]
+const _RANGED_DEFAULT: Array[String] = ["bow", "gun", "magic", "dart"]
 const _TANK_DEFAULT: Array[String] = ["hammer", "crystal"]
 
 

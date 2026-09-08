@@ -46,7 +46,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.no_worship",
 		"name": "我不慕強權",
-		"desc": "魔王三拒皆滿。",
+		"desc": "塔底三拒皆滿。",
 		"cond": "refuse_all",
 	},
 	{
@@ -70,7 +70,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.echo_walker",
 		"name": "迴響行者",
-		"desc": "黑焰迴響任意層再通關。",
+		"desc": "黑鏽迴響任意層再通關。",
 		"cond": "echo",
 	},
 	{
@@ -94,7 +94,7 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.scar_walker",
 		"name": "疤地行者",
-		"desc": "踏平黑焰疤地的主宰。",
+		"desc": "踏平黑鏽疤地的主宰。",
 		"cond": "scar",
 	},
 	{
@@ -111,7 +111,7 @@ const ENTRIES: Array[Dictionary] = [
 	},
 	{
 		"flag": "title.world_wanderer",
-		"name": "翠嶺漫遊者",
+		"name": "世界漫遊者",
 		"desc": "造訪三十處不同的土地。",
 		"cond": "visit30",
 	},
@@ -136,13 +136,13 @@ const ENTRIES: Array[Dictionary] = [
 	{
 		"flag": "title.ronin_path",
 		"name": "收刃之人",
-		"desc": "在岔路勸下（或戰勝）黑焰浪人。",
+		"desc": "在岔路勸下（或戰勝）黑鏽浪人。",
 		"cond": "ronin",
 	},
 	{
 		"flag": "title.lore_reader",
 		"name": "讀矛盾的人",
-		"desc": "讀完絲絨典籍架上的黑焰三說。",
+		"desc": "讀完絲絨典籍架上的黑鏽三說。",
 		"cond": "codex",
 	},
 	{

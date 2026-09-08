@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>圖鑑 — 發條之心</title>
-  <meta name="description" content="發條之心圖鑑：武器、防具、飾品六槽、紫微十四星、葫蘆魂器、紅黃藍寶石。" />
+  <meta name="description" content="發條之心圖鑑：武器、防具、飾品六槽、戰魂、封靈罐魂器、紅黃藍寶石。" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="../css/site.css" />
   <link rel="stylesheet" href="../css/sections.css" />
@@ -15,7 +15,7 @@
     <div class="container">
       <div class="breadcrumb"><a href="../index.html">首頁</a> / 圖鑑</div>
       <h1>圖鑑</h1>
-      <p>原作村莊四店對得上的東西：器、魂、寶石、招。武器決定攻速與次數；戰魂是紫微十四星。</p>
+      <p>原作村莊四店對得上的東西：器、魂、寶石、招。武器決定攻速與次數；戰魂提供專屬屬性。</p>
     </div>
   </header>
   <main class="page">
@@ -28,7 +28,7 @@
       </div>
       <div class="panel" style="margin-bottom:1.25rem">
         <p style="margin:0 0 0.5rem"><strong>器</strong>：三欄武器、失敗不掉階。次數耗盡自動切下一把。</p>
-        <p style="margin:0 0 0.5rem"><strong>魂</strong>：抽魂＝聚魂。葫蘆綠→橙；十四星；神品質最高 10 級。</p>
+        <p style="margin:0 0 0.5rem"><strong>魂</strong>：抽魂＝聚魂。封靈罐綠階→橙階；戰魂入魂；神品質最高 10 級。</p>
         <p style="margin:0"><strong>寶石</strong>：紅黃藍。3 合 1，鑲上必定成功，只能換不能拆。</p>
       </div>
 
@@ -38,7 +38,7 @@
         <button type="button" class="chip" data-filter="armor">防具</button>
         <button type="button" class="chip" data-filter="accessory">飾品</button>
         <button type="button" class="chip" data-filter="soul">戰魂</button>
-        <button type="button" class="chip" data-filter="vessel">葫蘆</button>
+        <button type="button" class="chip" data-filter="vessel">封靈罐</button>
         <button type="button" class="chip" data-filter="gem">寶石</button>
         <button type="button" class="chip" data-filter="material">材料</button>
       </div>
@@ -134,7 +134,7 @@
         weapon: "武器", armor: "防具", accessory: "飾品",
         ring: "戒指", necklace: "項鍊", bracelet: "手環",
         earring: "耳環", amulet: "護符", belt: "腰帶",
-        soul: "戰魂", vessel: "葫蘆", gem: "寶石",
+        soul: "戰魂", vessel: "封靈罐", gem: "寶石",
         material: "材料", consumable: "消耗", key: "重要"
       };
       var LINE_LABEL = {
@@ -143,7 +143,7 @@
       };
       var FILTER_LABEL = {
         all: "全部", weapon: "武器", armor: "防具", accessory: "飾品",
-        soul: "戰魂", vessel: "葫蘆", gem: "寶石", material: "材料"
+        soul: "戰魂", vessel: "封靈罐", gem: "寶石", material: "材料"
       };
       var ACC_SLOTS = ["ring","necklace","bracelet","earring","amulet","belt"];
       var allItems = [];
@@ -415,7 +415,7 @@
         (souls.stars || []).forEach(function (s) {
           allItems.push({
             id: s.id, name: s.name, kind: "soul", slot: "soul",
-            icon: s.icon, note: "紫微十四星 · " + s.stat,
+            icon: s.icon, note: "戰魂 · " + s.stat,
           });
         });
         if (souls.shen) {
