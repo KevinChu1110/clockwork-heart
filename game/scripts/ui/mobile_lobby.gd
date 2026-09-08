@@ -777,7 +777,7 @@ func _build_soul_hall_tab() -> void:
 	v.add_child(t)
 
 	var desc := Label.new()
-	desc.text = _t("聚引十四主星之魂：七煞(攻) · 武曲(防) · 天機(血) · 貪狼(命) · 紫微(閃) · 破軍(爆)。點擊點亮更高階封靈罐！")
+	desc.text = _t("聚引四大共鳴核心之魂：銳齒(攻) · 固甲(防) · 旋簧(血) · 全衡(衡)。點擊點亮更高階封靈罐！")
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc.add_theme_font_size_override("font_size", 13)
 	desc.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
@@ -1167,7 +1167,7 @@ func _build_bag_tab() -> void:
 		if i == 0: l.text = "鐵劍"
 		elif i == 1: l.text = "紅藥水x10"
 		elif i == 2: l.text = "紅寶石"
-		elif i == 3: l.text = "紫微星魂"
+		elif i == 3: l.text = "全衡之魂"
 		sp.add_child(l)
 		grid.add_child(sp)
 

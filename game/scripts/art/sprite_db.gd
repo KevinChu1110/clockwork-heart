@@ -449,12 +449,31 @@ static func _boss_art_key(mode: String) -> String:
 			return mode
 
 
-## 聚魂招牌：葫蘆魂器／十四星珠／神品質光環
-const SOUL_STAR_FILE := {
-	"紫微": "ziwei", "天機": "tianji", "太陽": "taiyang", "武曲": "wuqu",
-	"天同": "tiantong", "廉貞": "lianzhen", "天府": "tianfu", "太陰": "taiyin",
-	"貪狼": "tanlang", "巨門": "jumen", "天相": "tianxiang", "天梁": "tianliang",
-	"七殺": "qisha", "破軍": "pojun",
+## 聚魂招牌：葫蘆魂器／四大共鳴核心／神品質光環
+const SOUL_CORE_FILE := {
+	"core_atk": "core_atk",
+	"core_def": "core_def",
+	"core_hp": "core_hp",
+	"core_all": "core_all",
+	"銳齒之魂": "core_atk",
+	"固甲之魂": "core_def",
+	"旋簧之魂": "core_hp",
+	"全衡之魂": "core_all",
+	# 舊十四主星相容映射
+	"破軍": "core_atk",
+	"七殺": "core_atk",
+	"天機": "core_atk",
+	"太陽": "core_atk",
+	"武曲": "core_atk",
+	"廉貞": "core_atk",
+	"巨門": "core_atk",
+	"天府": "core_def",
+	"天相": "core_def",
+	"天梁": "core_def",
+	"天同": "core_hp",
+	"太陰": "core_hp",
+	"貪狼": "core_hp",
+	"紫微": "core_all",
 }
 
 
@@ -472,11 +491,27 @@ static func soul_vessel(vessel: String) -> Texture2D:
 	return tex("%s/souls/gourd_%s.png" % [ROOT, key])
 
 
-static func soul_star(star_id: String) -> Texture2D:
-	var f := str(SOUL_STAR_FILE.get(star_id, ""))
+static func soul_core(core_id: String) -> Texture2D:
+	var f := str(SOUL_CORE_FILE.get(core_id, ""))
 	if f == "":
 		return null
-	return tex("%s/souls/star_%s.png" % [ROOT, f])
+	var p := "%s/souls/%s.png" % [ROOT, f]
+	if ResourceLoader.exists(p):
+		return tex(p)
+	match f:
+		"core_atk":
+			return tex("%s/souls/star_pojun.png" % ROOT)
+		"core_def":
+			return tex("%s/souls/star_tianfu.png" % ROOT)
+		"core_hp":
+			return tex("%s/souls/star_tiantong.png" % ROOT)
+		"core_all":
+			return tex("%s/souls/star_ziwei.png" % ROOT)
+	return null
+
+
+static func soul_star(star_id: String) -> Texture2D:
+	return soul_core(star_id)
 
 
 static func soul_shen() -> Texture2D:
@@ -865,7 +900,7 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 	var key := speaker.strip_edges()
 	var id := ""
 	match key:
-		"麥穗", "舊鑰", "旧钥", "Oldkey", "Llavevieja", "オールドキー", "올드키", "Wheatear", "Espiga", "maisui":
+		"麥穗", "舊鑰", "Oldkey", "Llavevieja", "オールドキー", "올드키", "Wheatear", "Espiga", "maisui":
 			id = "maisui"
 		"灰鬚", "greybeard":
 			id = "greybeard"

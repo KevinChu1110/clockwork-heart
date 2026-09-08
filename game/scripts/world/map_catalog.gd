@@ -314,7 +314,7 @@ static func _road_ruins() -> Dictionary:
 		_e("mosaic", 1200, 918, 72, 48, "碎馬賽克", Color(0.5, 0.45, 0.4)),
 		_e("courier_post", 1776, 864, 56, 56, "驛亭基座", Color(0.4, 0.38, 0.35), true),
 		_e("sealed_chest", 840, 1013, 48, 40, "封箱", Color(0.45, 0.35, 0.25)),
-		_e("star_mark", 1320, 405, 48, 48, "星曜刻紋", Color(0.5, 0.55, 0.7)),
+		_e("star_mark", 1320, 405, 48, 48, "核紋刻痕", Color(0.5, 0.55, 0.7)),
 		_e("to_starfall", 2112, 972, 64, 56, "往星落平原", Color(0.45, 0.5, 0.65)),
 	]
 	return m
@@ -382,7 +382,7 @@ static func _town_soul() -> Dictionary:
 	m["entities"] = [
 		_e("back_from_shop", 741, 795, 56, 48, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("star", 687, 606, 48, 64, "星讀", Color(0.45, 0.5, 0.75)),
-		_e("astrolabe", 508, 508, 56, 48, "星盤台", Color(0.4, 0.45, 0.7), true),
+		_e("astrolabe", 508, 508, 56, 48, "封靈台", Color(0.4, 0.45, 0.7), true),
 		_e("gourd_shelf", 337, 532, 48, 56, "封靈罐架", Color(0.35, 0.5, 0.4), true),
 		_e("star_mat", 810, 569, 64, 36, "觀星墊", Color(0.3, 0.32, 0.5)),
 	]
@@ -610,7 +610,7 @@ static func _caravan_camp() -> Dictionary:
 
 
 static func _starfall_plain() -> Dictionary:
-	var m := _base("星落平原 · 十四星夜空", Color(0.05, 0.06, 0.12), 2800, 1563, Vector2(179, 859), "starfall_plain")
+	var m := _base("星落平原 · 四核共鳴夜空", Color(0.05, 0.06, 0.12), 2800, 1563, Vector2(179, 859), "starfall_plain")
 	m["entities"] = [
 		_e("back_cross", 124, 773, 56, 56, "回岔路", Color(0.45, 0.5, 0.4)),
 		_e("meteor_stone", 486, 749, 56, 48, "隕星石", Color(0.5, 0.55, 0.75), true),

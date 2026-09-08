@@ -5,23 +5,35 @@ extends Node
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 
-## 紫微斗數十四主星（截圖證實）；數值映射到本作三圍
-const STARS: Array[Dictionary] = [
-	{"id": "紫微", "stat": "all", "label": "衡", "base": 1},
-	{"id": "天機", "stat": "atk", "label": "機", "base": 2},
-	{"id": "太陽", "stat": "atk", "label": "陽", "base": 3},
-	{"id": "武曲", "stat": "atk", "label": "武", "base": 3},
-	{"id": "天同", "stat": "hp", "label": "同", "base": 8},
-	{"id": "廉貞", "stat": "atk", "label": "廉", "base": 2},
-	{"id": "天府", "stat": "def", "label": "府", "base": 3},
-	{"id": "太陰", "stat": "hp", "label": "陰", "base": 8},
-	{"id": "貪狼", "stat": "hp", "label": "血", "base": 6},
-	{"id": "巨門", "stat": "atk", "label": "巨", "base": 2},
-	{"id": "天相", "stat": "def", "label": "相", "base": 3},
-	{"id": "天梁", "stat": "def", "label": "防", "base": 2},
-	{"id": "七殺", "stat": "atk", "label": "銳", "base": 2},
-	{"id": "破軍", "stat": "atk", "label": "攻", "base": 2},
+## 四大共鳴核心（攻／防／血／衡）——取代舊十四主星架構
+const CORE_SOULS: Array[Dictionary] = [
+	{"id": "銳齒之魂", "stat": "atk", "key": "core_atk", "label": "齒", "base": 2},
+	{"id": "固甲之魂", "stat": "def", "key": "core_def", "label": "甲", "base": 2},
+	{"id": "旋簧之魂", "stat": "hp", "key": "core_hp", "label": "簧", "base": 8},
+	{"id": "全衡之魂", "stat": "all", "key": "core_all", "label": "衡", "base": 1},
 ]
+
+## 舊十四主星向四大核心遷移映射（確保讀取舊存檔時無縫轉型）
+const STAR_TO_CORE_MIGRATION := {
+	"紫微": "全衡之魂",
+	"天機": "銳齒之魂",
+	"太陽": "銳齒之魂",
+	"武曲": "銳齒之魂",
+	"天同": "旋簧之魂",
+	"廉貞": "銳齒之魂",
+	"天府": "固甲之魂",
+	"太陰": "旋簧之魂",
+	"貪狼": "旋簧之魂",
+	"巨門": "銳齒之魂",
+	"天相": "固甲之魂",
+	"天梁": "固甲之魂",
+	"七殺": "銳齒之魂",
+	"破軍": "銳齒之魂",
+	"core_atk": "銳齒之魂",
+	"core_def": "固甲之魂",
+	"core_hp": "旋簧之魂",
+	"core_all": "全衡之魂",
+}
 
 ## 品質倍率（神＝頂級；大凶可賣／合成素材感）
 const QUALITIES: Array[Dictionary] = [
@@ -164,7 +176,9 @@ func soul_display(s: Dictionary) -> String:
 		var lv_s := "" if lv <= 0 else "·%d" % lv
 		return _t("秘·%s%s") % [soul_word(dn), lv_s]
 	var q: String = str(s.get("quality", "凡"))
-	var star: String = str(s.get("star", "？"))
+	var star: String = str(s.get("star", s.get("id", "？")))
+	if STAR_TO_CORE_MIGRATION.has(star):
+		star = STAR_TO_CORE_MIGRATION[star]
 	var lv2: int = int(s.get("level", 0))
 	var lv_s2 := "" if lv2 <= 0 else "·%d" % lv2
 	## 原作截圖：僅「神」品質加「神-」前綴
@@ -197,16 +211,18 @@ func calc_soul_bonus(s: Dictionary) -> Dictionary:
 			"def": maxi(0, int(round(float(s.get("def_bonus", 0)) * scale))),
 			"hp": maxi(0, int(round(float(s.get("hp_bonus", 0)) * scale))),
 		}
-	var star_id: String = str(s.get("star", "破軍"))
+	var star_id: String = str(s.get("star", "銳齒之魂"))
+	if STAR_TO_CORE_MIGRATION.has(star_id):
+		star_id = STAR_TO_CORE_MIGRATION[star_id]
 	var q_id: String = str(s.get("quality", "凡"))
 	var lv2: int = int(s.get("level", 0))
-	var star_def: Dictionary = {}
-	for st in STARS:
-		if str(st.get("id", "")) == star_id:
-			star_def = st
+	var core_def: Dictionary = {}
+	for st in CORE_SOULS:
+		if str(st.get("id", "")) == star_id or str(st.get("key", "")) == star_id:
+			core_def = st
 			break
-	if star_def.is_empty():
-		star_def = STARS[0]
+	if core_def.is_empty():
+		core_def = CORE_SOULS[0]
 	var mult := 1.0
 	for q in QUALITIES:
 		if str(q.get("id", "")) == q_id:
@@ -214,15 +230,13 @@ func calc_soul_bonus(s: Dictionary) -> Dictionary:
 			break
 	if q_id == "秘境":
 		mult = 3.2
-	var base: float = float(star_def.get("base", 1)) * mult * (1.0 + 0.15 * float(lv2))
+	var base: float = float(core_def.get("base", 1)) * mult * (1.0 + 0.15 * float(lv2))
 	var val: int = maxi(1, int(round(base)))
-	var stat: String = str(star_def.get("stat", "atk"))
+	var stat: String = str(core_def.get("stat", "atk"))
 	var out := {"atk": 0, "def": 0, "hp": 0}
 	match stat:
 		"atk":
 			out["atk"] = val
-			if star_id == "七殺":
-				out["atk"] = val + 1
 		"def":
 			out["def"] = val
 		"hp":
@@ -289,31 +303,24 @@ func total_equipped_bonus() -> Dictionary:
 	return total
 
 
-## 足跡權重：主線進度偏科
+## 足跡權重：主線進度偏科（四大共鳴核心）
 func _star_weights() -> Dictionary:
 	var w: Dictionary = {}
-	for st in STARS:
-		w[str(st.get("id", ""))] = 14.0
+	for st in CORE_SOULS:
+		w[str(st.get("id", ""))] = 25.0
 	if GameState.has_flag("boss.leo_cleared"):
-		w["破軍"] = float(w.get("破軍", 14)) + 25.0
-		w["七殺"] = float(w.get("七殺", 14)) + 10.0
-		w["太陽"] = float(w.get("太陽", 14)) + 8.0
+		w["銳齒之魂"] = float(w.get("銳齒之魂", 25)) + 20.0
 	if GameState.has_flag("boss.white_fog_cleared"):
-		w["紫微"] = float(w.get("紫微", 14)) + 15.0
-		w["天機"] = float(w.get("天機", 14)) + 8.0
+		w["全衡之魂"] = float(w.get("全衡之魂", 25)) + 15.0
 	if GameState.has_flag("boss.abo_cleared"):
-		w["天梁"] = float(w.get("天梁", 14)) + 20.0
-		w["天府"] = float(w.get("天府", 14)) + 10.0
+		w["固甲之魂"] = float(w.get("固甲之魂", 25)) + 20.0
 	if GameState.has_flag("c0_care") or GameState.has_wheat_stalk or GameState.wheat_stalk_broken:
-		w["天梁"] = float(w.get("天梁", 14)) + 12.0
-		w["貪狼"] = float(w.get("貪狼", 14)) + 8.0
-		w["天同"] = float(w.get("天同", 14)) + 6.0
+		w["固甲之魂"] = float(w.get("固甲之魂", 25)) + 10.0
+		w["旋簧之魂"] = float(w.get("旋簧之魂", 25)) + 10.0
 	if GameState.has_flag("boss.shadowwind_cleared"):
-		w["七殺"] = float(w.get("七殺", 14)) + 12.0
-		w["天機"] = float(w.get("天機", 14)) + 8.0
+		w["銳齒之魂"] = float(w.get("銳齒之魂", 25)) + 15.0
 	if GameState.has_flag("boss.stonefist_cleared"):
-		w["貪狼"] = float(w.get("貪狼", 14)) + 12.0
-		w["武曲"] = float(w.get("武曲", 14)) + 8.0
+		w["旋簧之魂"] = float(w.get("旋簧之魂", 25)) + 15.0
 	return w
 
 
@@ -489,18 +496,18 @@ func ritual(quiet: bool = false) -> Dictionary:
 	return soul
 
 
-## 星曜抽選（足跡加權；足跡未覆蓋的星也有底權重）——抽魂與碎片兌換共用
+## 核心抽選（足跡加權；足跡未覆蓋的核心也有底權重）——抽魂與碎片兌換共用
 func _roll_star() -> String:
 	var sw: Dictionary = _star_weights()
-	var star_items: Array = []
+	var core_items: Array = []
 	for k in sw.keys():
-		star_items.append({"id": k, "weight": sw[k]})
-	for st in STARS:
+		core_items.append({"id": k, "weight": sw[k]})
+	for st in CORE_SOULS:
 		var sid := str(st.get("id", ""))
 		if not sw.has(sid):
-			star_items.append({"id": sid, "weight": 12.0})
-	var star_pick: Dictionary = _pick_weighted(star_items)
-	return str(star_pick.get("id", "破軍"))
+			core_items.append({"id": sid, "weight": 25.0})
+	var star_pick: Dictionary = _pick_weighted(core_items)
+	return str(star_pick.get("id", "銳齒之魂"))
 
 
 func piety() -> int:
@@ -828,10 +835,10 @@ func fuse(star: String, quality: String, level: int) -> Dictionary:
 
 
 func grant_starter_soul() -> Dictionary:
-	## C1 教學：凡·破軍
+	## C1 教學：凡·銳齒之魂
 	var soul := {
-		"id": "soul_starter_pojun",
-		"star": "破軍",
+		"id": "soul_starter_core_atk",
+		"star": "銳齒之魂",
 		"quality": "凡",
 		"level": 0,
 		"equipped": false,
@@ -851,7 +858,7 @@ func panel_status_bbcode() -> String:
 	var bonus: Dictionary = total_equipped_bonus()
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]聚魂殿 · 戰魂[/b]"))
-	lines.append(_t("神魂＝神品質戰魂（神-星名）。最高 10 級。"))
+	lines.append(_t("神魂＝神品質戰魂（神-核心名）。最高 10 級。"))
 	lines.append(_t("魂器：%s") % vessel_ladder_bbcode())
 	var pp: Dictionary = pity_progress()
 	var cost := ritual_cost_gold()
@@ -924,15 +931,16 @@ func stat_inclination_name(stat: String) -> String:
 			return stat
 
 
-func survey_astrolabe() -> Dictionary:
+func survey_soul_codex() -> Dictionary:
 	ensure_slots()
-	var star_map: Dictionary = {}
-	for st in STARS:
-		var sid := str(st.get("id", ""))
+	var core_map: Dictionary = {}
+	for st in CORE_SOULS:
+		var cid := str(st.get("id", ""))
 		var stat_type := str(st.get("stat", "atk"))
-		star_map[sid] = {
-			"id": sid,
-			"name": soul_word(sid),
+		core_map[cid] = {
+			"id": cid,
+			"key": str(st.get("key", "")),
+			"name": soul_word(cid),
 			"stat": stat_type,
 			"stat_name": stat_inclination_name(stat_type),
 			"base": int(st.get("base", 1)),
@@ -951,9 +959,18 @@ func survey_astrolabe() -> Dictionary:
 		if typeof(s) != TYPE_DICTIONARY:
 			continue
 		var star_id := str(s.get("star", ""))
-		if not star_map.has(star_id):
+		if STAR_TO_CORE_MIGRATION.has(star_id):
+			star_id = STAR_TO_CORE_MIGRATION[star_id]
+		var entry: Dictionary = {}
+		if core_map.has(star_id):
+			entry = core_map[star_id]
+		else:
+			for cid in core_map:
+				if core_map[cid].get("key") == star_id:
+					entry = core_map[cid]
+					break
+		if entry.is_empty():
 			continue
-		var entry: Dictionary = star_map[star_id]
 		entry["is_lit"] = true
 		entry["count"] += 1
 		var sid := str(s.get("id", ""))
@@ -977,11 +994,11 @@ func survey_astrolabe() -> Dictionary:
 	var lit_count := 0
 	var stat_lit := {"all": 0, "atk": 0, "def": 0, "hp": 0}
 	var stat_totals := {"all": 0, "atk": 0, "def": 0, "hp": 0}
-	var stars_list: Array[Dictionary] = []
-	for st in STARS:
-		var sid := str(st.get("id", ""))
-		var entry: Dictionary = star_map.get(sid, {})
-		stars_list.append(entry)
+	var cores_list: Array[Dictionary] = []
+	for st in CORE_SOULS:
+		var cid := str(st.get("id", ""))
+		var entry: Dictionary = core_map.get(cid, {})
+		cores_list.append(entry)
 		var st_type := str(entry.get("stat", "atk"))
 		stat_totals[st_type] = int(stat_totals.get(st_type, 0)) + 1
 		if bool(entry.get("is_lit", false)):
@@ -994,10 +1011,13 @@ func survey_astrolabe() -> Dictionary:
 			relics.append(s)
 
 	return {
-		"stars": stars_list,
-		"star_map": star_map,
+		"cores": cores_list,
+		"core_map": core_map,
+		"stars": cores_list,
+		"star_map": core_map,
 		"lit_count": lit_count,
-		"total_stars": STARS.size(),
+		"total_cores": CORE_SOULS.size(),
+		"total_stars": CORE_SOULS.size(),
 		"stat_lit": stat_lit,
 		"stat_totals": stat_totals,
 		"total_souls": GameState.souls.size(),
@@ -1006,15 +1026,19 @@ func survey_astrolabe() -> Dictionary:
 	}
 
 
-func astrolabe_status_bbcode() -> String:
-	var survey := survey_astrolabe()
+func survey_astrolabe() -> Dictionary:
+	return survey_soul_codex()
+
+
+func soul_codex_status_bbcode() -> String:
+	var survey := survey_soul_codex()
 	var lines: PackedStringArray = []
-	lines.append(_t("[b]聚魂殿 · 周天星盤[/b]"))
-	lines.append(_t("[color=#a0a8c0]「星盤偏了一角，像在等發條最鬆的那個。」[/color]"))
+	lines.append(_t("[b]聚魂殿 · 戰魂圖鑑[/b]"))
+	lines.append(_t("[color=#a0a8c0]「純淨的發條諧波凝入金屬核心，為每一次揮砍賦予靈魂。」[/color]"))
 	lines.append("")
 
 	var lit: int = int(survey.get("lit_count", 0))
-	var tot: int = int(survey.get("total_stars", 14))
+	var tot: int = int(survey.get("total_cores", 4))
 	var s_cnt: int = int(survey.get("total_souls", 0))
 	var eq_cnt := 0
 	for sid in GameState.soul_slots:
@@ -1022,7 +1046,7 @@ func astrolabe_status_bbcode() -> String:
 			eq_cnt += 1
 	var bag_cnt: int = maxi(0, s_cnt - eq_cnt)
 
-	lines.append(_t("星盤點亮：%d / %d 主星 · 持有戰魂 %d 顆（入魂 %d，背包 %d）") % [
+	lines.append(_t("核心共鳴：%d / %d 類 · 持有戰魂 %d 顆（入魂 %d，背包 %d）") % [
 		lit, tot, s_cnt, eq_cnt, bag_cnt
 	])
 
@@ -1035,25 +1059,25 @@ func astrolabe_status_bbcode() -> String:
 	var stat_lit: Dictionary = survey.get("stat_lit", {})
 	var stat_tot: Dictionary = survey.get("stat_totals", {})
 	lines.append(_t("[b]數值傾向分布[/b]"))
-	lines.append(_t("  全能均衡：%d / %d 星點亮（紫微）") % [
+	lines.append(_t("  全能均衡：%d / %d 類核心點亮（全衡之魂）") % [
 		int(stat_lit.get("all", 0)), int(stat_tot.get("all", 1))
 	])
-	lines.append(_t("  攻擊偏向：%d / %d 星點亮（天機、太陽、武曲、廉貞、巨門、七殺、破軍）") % [
-		int(stat_lit.get("atk", 0)), int(stat_tot.get("atk", 7))
+	lines.append(_t("  攻擊偏向：%d / %d 類核心點亮（銳齒之魂）") % [
+		int(stat_lit.get("atk", 0)), int(stat_tot.get("atk", 1))
 	])
-	lines.append(_t("  防禦偏向：%d / %d 星點亮（天府、天相、天梁）") % [
-		int(stat_lit.get("def", 0)), int(stat_tot.get("def", 3))
+	lines.append(_t("  防禦偏向：%d / %d 類核心點亮（固甲之魂）") % [
+		int(stat_lit.get("def", 0)), int(stat_tot.get("def", 1))
 	])
-	lines.append(_t("  氣血偏向：%d / %d 星點亮（天同、太陰、貪狼）") % [
-		int(stat_lit.get("hp", 0)), int(stat_tot.get("hp", 3))
+	lines.append(_t("  氣血偏向：%d / %d 類核心點亮（旋簧之魂）") % [
+		int(stat_lit.get("hp", 0)), int(stat_tot.get("hp", 1))
 	])
 	lines.append("")
 
-	lines.append(_t("[b]紫微十四主星盤點[/b]"))
-	var stars: Array = survey.get("stars", [])
-	for st in stars:
-		var sid := str(st.get("id", ""))
-		var sname := str(st.get("name", sid))
+	lines.append(_t("[b]四大共鳴核心盤點[/b]"))
+	var cores: Array = survey.get("cores", [])
+	for st in cores:
+		var cid := str(st.get("id", ""))
+		var sname := str(st.get("name", cid))
 		var is_lit := bool(st.get("is_lit", false))
 		var stat_name := str(st.get("stat_name", ""))
 		var count := int(st.get("count", 0))
@@ -1078,3 +1102,7 @@ func astrolabe_status_bbcode() -> String:
 			lines.append("  [color=#4ed86a]%s[/color] · %s" % [soul_display(r), soul_bonus_line(r)])
 
 	return "\n".join(lines)
+
+
+func astrolabe_status_bbcode() -> String:
+	return soul_codex_status_bbcode()
