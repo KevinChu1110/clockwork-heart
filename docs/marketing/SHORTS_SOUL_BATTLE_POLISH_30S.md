@@ -197,6 +197,6 @@ plush rabbit, furry animal, real fur, stuffed toy, biological rabbit, humanoid r
 
 ## 八、下一步實作指引（下一輪派工，本輪不做）
 
-1. **實機素材錄製（sideworker）**：依據本清單第五節之 REC-01 至 REC-04 操作序列，使用 `/root/gameplay_capture.sh` 或 Godot 實機測試環境錄製 4 段乾淨的無壓縮 60fps 畫面片段。
+1. **實機素材錄製（sideworker）**：已依第五節之 REC-01 至 REC-04 操作序列完成 4 段 9:16 (1080×1920) 實機錄影與關鍵幀截圖，完整索引與檔案路徑見 `docs/marketing/SHORTS_REC_INDEX.md`。
 2. **首幀素材生成（需經確認）**：依據第六節 9:16 提示詞使用 `gen_media.py` 產出 Shot 1 封面圖（需帶 `--ref branding/key_visual_main.png`）。
 3. **剪接合成**：使用 ffmpeg 依據第四節時間軸（30.0s，6 鏡）進行接鏡與實體音效混音，產出最終 1080×1920 直式短影音。
