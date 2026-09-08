@@ -106,8 +106,8 @@
    "id": "mob-battle",
    "cat": "遊戲",
    "title": "🥈 手機化 4／6：觸控優先戰鬥",
-   "status": "草稿",
-   "note": "驗收標準只有一句：一個玩家只用右手拇指，能不能完成一場戰鬥？不能就還是 PC-first，重做。⛔ 不是「PC 遊戲塞一個虛擬搖桿」。",
+   "status": "測試中",
+   "note": "右側拇指熱區（攻擊/技能/換武/鎖定/暫停/逃離）≥50，單拇指可打完；測 16:9/19.5:9/20:9/平板/PC；test_game_input/battle_keys/battle_touch/battle_thumb 綠；分支 agent/2026-09-07-battle-touch",
    "keys": [
     "觸控戰鬥",
     "拇指",
