@@ -101,14 +101,14 @@
 
 - **BOSS 官方全稱**：醉步發條武鬥熊貓·阿波泰坦（Titan Abo: Drunken Fist Clockwork Martial Panda Titan）
 - **背景故事**：古代造物主為守護天元竹林與東方演武道場而精心鍛造的頂級工坊守衛泰坦。身軀由亮面黑白雙色生漆陶瓷板件、重鑄黃銅內骨架與高剛性竹木纖維減震層緊密咬合而成，胸膛內置超大功率高扭力重力擺錘發條爐。在世界大鐘停擺之際，一片崩落的重型青銅指針榫頭卡死在牠咽喉與背脊之間的主軸鎖扣上，導致體內排氣通道阻塞且平衡陀劇烈失衡，動能轉化為無差別揮灑的狂暴醉拳，將整座試煉堂與後山天梯徹底封鎖。
-- **外觀尺寸**：小白身高的 14 倍（長約 18 公尺，高約 12 公尺）。身披黑白雙色亮面生漆陶瓷重甲，背部矗立著一柄帶有竹葉雕紋的巨型青銅發條天線鑰匙，腰間繫著一隻噴射著白熱竹露香霧的巨型黃銅茶葫蘆，雙眼燃燒著過熱過載的烈焰金紅。
+- **外觀尺寸**：小白身高的 14 倍（長約 18 公尺，高約 12 公尺）。身披黑白雙色亮面生漆陶瓷重甲，背部矗立著一柄帶有竹葉雕紋的巨型青銅發條天線鑰匙，腰間繫著一隻噴射著白熱竹露香霧的巨型黃銅高壓蓄能罐，雙眼燃燒著過熱過載的烈焰金紅。
 
 #### 部位破壞拆卸點（Part Break Mechanics）—— 核心戰鬥規範
 | 部位標籤 | 對應機械結構 | 拆卸破壞條件 | 破壞後的戰術收益 | 掉落稀有零件 |
 |:---|:---|:---|:---|:---|
 | **背部宗師發條棘輪外罩（Master Ratchet Cowl）** | 多層生漆陶瓷與青銅八卦棘爪防護罩（Lacquered Porcelain Ratchet Guard Plate） | 於 BOSS 施展「太極撼地大坐」震碎石板後的 3.5 秒散熱硬直期間，累積 2 次跳躍高空斬擊固定卡扣 | 棘輪外罩脫扣崩落，解除其霸體抗性 40%，封印其全場震波撼地技能，受擊硬直延長 35% | 高剛性宗師黃銅棘輪（Master Brass Ratchet Cog） |
 | **右臂重力醉拳擺錘護腕（Drunken Gravity Fist Bracer）** | 重型生漆陶瓷拳甲與雙聯偏心配重擺錘（Twin Heavy Eccentric Pendulum Bracer） | 於 BOSS 揮擊「醉步連環重拳」砸入地面卡住的 3 秒拔拳空檔，累積 2 次怒氣 100% 齒輪過載打擊驅動鉸鏈 | 擺錘配重脫落彈飛，重拳衝擊波半徑縮減 50%，無法施展連環狂風拳，出拳前搖延長 45% | 重力調速金屬擺錘（Gravity Tuning Pendulum Weight） |
-| **腰間潤滑油葫蘆蒸氣閥（Lubricant Gourd Steam Valve）** | 精工黃銅高壓儲能葫蘆與排氣洩壓閥（Precision Brass Gourd Pressure-Vessel & Valve） | 於 BOSS 仰天噴射高壓蒸氣的 2.5 秒力竭窗口，集中火力打擊葫蘆固定鉚釘 3 次 | 蒸氣噴嘴碎裂脫扣，BOSS 喪失高速滑步推進能力，移動速度降低 40%，急轉向時會引發 3 秒失衡側翻 | 精工黃銅蓄壓葫蘆（Precision Brass Gourd Pressure-Vessel） |
+| **腰間潤滑油蓄能罐蒸氣閥（Lubricant Canister Steam Valve）** | 精工黃銅高壓蓄能罐與排氣洩壓閥（Precision Brass Pressure Canister & Valve） | 於 BOSS 仰天噴射高壓蒸氣的 2.5 秒力竭窗口，集中火力打擊蓄能罐固定鉚釘 3 次 | 蒸氣噴嘴碎裂脫扣，BOSS 喪失高速滑步推進能力，移動速度降低 40%，急轉向時會引發 3 秒失衡側翻 | 精工黃銅高壓蓄能罐（Precision Brass Pressure Canister） |
 
 - **戰鬥終局表現**：三大關鍵部位被依序精準拆卸後，阿波泰坦體內的過載扭矩得到平穩釋放。小白在最後一記凌空飛躍斬擊中，刀尖精準挑飛卡死在阿波背部主傳動軸上的青銅指針榫頭！隨著「鏘——！」的一聲悠揚龍吟，阿波背部排氣閥噴湧出一陣純白芬芳的高山竹露香霧，體內刺耳的卡滯摩擦聲瞬間轉化為平穩深沉如古鐘回盪的呼吸。雙眸赤紅光芒退去，化作溫和智慧的晨曦金芒（#FFD028）。巍峨如山的阿波泰坦盤腿端坐於青石坪上，雙手合十向小白行武道稽首禮，沉聲讚許：「發條最鬆的旅人，你的拳裡，開始有道了。」隨後阿波以巨掌推開通往試煉絕頂的青石重門，沉寂千年的凌雲懸索天梯再次啟動，竹海重歸寧靜，山道鋪滿晨光。
 
@@ -122,19 +122,19 @@
   - 「青竹旋簧刺槍（Green Bamboo Spring Lance）」：長槍類（spear），具備 6 次突刺耐久。槍桿以高韌性實心發條竹桿鍛製，槍尖附帶微型發條螺旋鑽頭，自帶被動「破空竹影」（中距離突刺精準穿透目標裝甲部位，部位破壞累積效率提升 35%）。
   - 「疾風竹刃短劍（Gale Bamboo Wakizashi）」：劍類（sword），具備 7 次揮動耐久。劍刃取自深山雷擊硬化竹節，質輕如羽而堅逾玄鐵，自帶被動「動能流轉」（成功招架或藉由翻滾閃避敵人打擊時，下一次揮擊命中為自身立即回充 15% 的發條彈力）。
 - **核心掉落零件**：
-  - 堅韌竹木纖維（Tough Bamboo Fiber）、高剛性宗師黃銅棘輪（Master Brass Ratchet Cog）、重力調速金屬擺錘（Gravity Tuning Pendulum Weight）、精工黃銅蓄壓葫蘆（Precision Brass Gourd Pressure-Vessel）。
+  - 堅韌竹木纖維（Tough Bamboo Fiber）、高剛性宗師黃銅棘輪（Master Brass Ratchet Cog）、重力調速金屬擺錘（Gravity Tuning Pendulum Weight）、精工黃銅高壓蓄能罐（Precision Brass Pressure Canister）。
 - **次數與攻速傾向**：
   - 主打「靈動敏捷、連環打擊、架勢破勢與蓄力爆發」為核心的東方武道兵刃體系。揮動次數適中（6~8 次），出招攻速迅猛俐落，打擊反饋清脆剛勁，伴隨破空風聲與木簧金鳴。
 
 ### 4.2 魂（Souls）：靈魂星軸碎片
 - **產出主星傾向**：
-  - **紫微星軸（Zi Wei Core / Zenith Core）**：象徵天元歸心、動靜皆宜、全平衡調諧與極致心法。
+  - **紫微星軸（全衡之魂 / Balance Core）**：象徵天元歸心、動靜皆宜、全平衡調諧與極致心法。
   - **武曲星軸（Wu Qu Core / Valor Core）**：象徵剛毅破勢、身法剛勁與暴怒蓄力衝擊。（精確鉚接 R02/R04 既有星軸體系）
 - **星軸被動詞條**：
   - 紫微·天元歸一：全能力微幅提升，在維持「靜心架勢」不移動 1.5 秒後，下次招式瞬間暴發，蓄力時間縮減 50%，並使發條彈力消耗降低 20%。
   - 武曲·破勢蓄力：在蓄力攻擊或施展身法時，加速動能積累，怒氣獲取效率提升 30%；處於怒氣 100% 齒輪過載狀態時，近戰攻擊直接穿透目標 40% 的架勢防護。
 - **共鳴調校難度**：
-  - 史詩至傳奇（紫/橙階），星軸諧振頻率清明澄澈，需在演武道場青石台使用「堅韌竹木纖維」配合「精工黃銅蓄壓葫蘆」進行陰陽八卦諧振調校。
+  - 史詩至傳奇（紫/橙階），星軸諧振頻率清明澄澈，需在演武道場青石台使用「堅韌竹木纖維」配合「精工黃銅高壓蓄能罐」進行陰陽八卦諧振調校。
 
 ### 4.3 招（Skills）：機動技巧與心法
 - **掉落秘笈手冊**：
@@ -159,7 +159,7 @@
 - **核心目標**：
   - 小白自荒漠舊庫翻斗鐵軌抵達天元竹林，穿過竹海迷宮抵達山門，與煮茶偶阿茶對飲，悟出靜心凝神之道；
   - 進入古道場演武坪，破解狂風修羅木人陣法，習得破勢要訣，獲取長老圓空師傅的認可；
-  - 踏入後山試煉堂，決戰醉步發條武鬥熊貓·阿波泰坦，精準拆卸背部棘輪外罩、右臂擺錘護腕與葫蘆蒸氣閥，挑飛卡死背脊的青銅榫頭；
+  - 踏入後山試煉堂，決戰醉步發條武鬥熊貓·阿波泰坦，精準拆卸背部棘輪外罩、右臂擺錘護腕與蓄能罐蒸氣閥，挑飛卡死背脊的青銅榫頭；
   - 回答阿波「為何而戰」之問，重啟天元古鐘，取得天元竹玉發條令，開啟通往中央雲端天宮的凌雲天梯。
 - **過場動畫意象**：
   - 漫天翠竹搖曳，晨霧瀰漫。巍峨如山閣的黑白陶瓷熊貓阿波端坐於演武坪中央，背後巨型發條鑰匙噴射出道道白熱竹露香霧。天幕秒針伴隨空靈木簧聲「叮——咚！」長鳴，晨曦穿透竹葉化作萬道璀璨金光；小白乘著搖曳竹梢凌空飛躍，手中竹刃短劍如晨曦破曉，精準挑飛卡在阿波背脊的重型榫頭！阿波體內狂暴的咬合聲戛然而止，化作綿長古鐘呼吸。阿波緩緩睜開雙眸，金眸重現慈悲純淨的智慧光芒，雙手合十向小白行禮，凌雲懸索天梯在萬千竹簧齊鳴中緩緩升起，整座竹林再次沐浴在發條世界溫暖的晨光之中。
@@ -220,7 +220,7 @@ Bright dopamine color palette, Maplestory and Tata Adventure style, 2.2-2.8 head
 
 ### 7.2 怪物與 BOSS Prompt Keywords（英文）
 ```text
-Cute chibi giant clockwork martial panda titan, toy mechanical guardian panda boss, made of polished black and white lacquered porcelain plates and brass frame, winding spring key on back with bamboo leaf motif, harmless yet powerful, comic zen expression, giant brass tea gourd on waist puffing white steam, toy snap-fit bolts popping off during combat, cel-shaded anime style, bold outlines, dopamine color accents (#4ED86A, #FFD028), 2.2-2.8 head chibi proportions, soft foot shadow, white border outline --no gore, --no biological flesh, --no real fur, --no horror, --no blank eyes, --no text, --no letters, --no logo, --no watermark
+Cute chibi giant clockwork martial panda titan, toy mechanical guardian panda boss, made of polished black and white lacquered porcelain plates and brass frame, winding spring key on back with bamboo leaf motif, harmless yet powerful, comic zen expression, giant brass pressure canister on waist puffing white steam, toy snap-fit bolts popping off during combat, cel-shaded anime style, bold outlines, dopamine color accents (#4ED86A, #FFD028), 2.2-2.8 head chibi proportions, soft foot shadow, white border outline --no gore, --no biological flesh, --no real fur, --no horror, --no blank eyes, --no text, --no letters, --no logo, --no watermark
 ```
 
 ### 7.3 音樂與音效氛圍（BGM Mood & Instruments）
@@ -244,7 +244,7 @@ Cute chibi giant clockwork martial panda titan, toy mechanical guardian panda bo
 | **旗艦 BOSS** | 醉步發條武鬥熊貓·阿波泰坦 | 醉步发条武斗熊猫·阿波泰坦 | Titan Abo: Drunken Fist Clockwork Martial Panda Titan | Titán Abo: Panda Marcial Mecánico del Puño Borracho | 酔歩ぜんまい武闘パンダ・アボタイタン | 취보 태엽 무투 팬더·아보 타이탄 |
 | **拆卸部位** | 宗師發條棘輪外罩 | 宗师发条棘轮外罩 | Master Ratchet Cowl | Cubierta de Trinquete del Maestro | 宗師ぜんまいラチェットカバー | 사부 태엽 라챗 커버 |
 | **拆卸部位** | 重力醉拳擺錘護腕 | 重力醉拳摆锤护腕 | Drunken Gravity Fist Bracer | Brazal de Péndulo de Puño Borracho de Gravedad | 重力酔拳振り子アームガード | 중력 취권 진자 완갑 |
-| **拆卸部位** | 潤滑油葫蘆蒸氣閥 | 润滑油葫芦蒸气阀 | Lubricant Gourd Steam Valve | Válvula de Vapor de Calabaza de Lubricante | 潤滑油ひょうたん蒸気バルブ | 윤활유 조롱박 증기 밸브 |
+| **拆卸部位** | 潤滑油蓄能罐蒸氣閥 | 润滑油蓄能罐蒸气阀 | Lubricant Canister Steam Valve | Válvula de Vapor del Depósito de Lubricante | 潤滑油キャニスター蒸気バルブ | 윤활유 캐니스터 증기 밸브 |
 | **野外小怪** | 狂風修羅木人傀儡 | 狂风修罗木人傀儡 | Gale Asura Wooden Dummy | Marioneta de Madera Asura del Vendaval | 狂風修羅木人パペット | 광풍 수라 목인 꼭두각시 |
 | **野外小怪** | 巡林木雕竹葉青蛇 | 巡林木雕竹叶青蛇 | Forest-Patrolling Carved Bamboo Viper | Víbora de Bambú Tallada Patrullera | 巡林木彫り竹葉青蛇 | 순림 목각 죽엽청사 |
 | **野外小怪** | 醉步陶瓷武僧傀儡 | 醉步陶瓷武僧傀儡 | Drunken-Stance Porcelain Monk Puppet | Marioneta de Monje de Porcelana del Paso Borracho | 酔歩陶器武僧パペット | 취보 도자기 무승 꼭두각시 |
@@ -257,8 +257,8 @@ Cute chibi giant clockwork martial panda titan, toy mechanical guardian panda bo
 | **代表素材** | 堅韌竹木纖維 | 坚韧竹木纤维 | Tough Bamboo Fiber | Fibra de Bambú Resistente | 強靭な竹木繊維 | 강인한 대나무 섬유 |
 | **代表素材** | 高剛性宗師黃銅棘輪 | 高刚性宗师黄铜棘轮 | Master Brass Ratchet Cog | Engranaje de Trinquete de Latón del Maestro | 高剛性宗師真鍮ラチェット歯車 | 고강성 사부 황동 라챗 톱니 |
 | **代表素材** | 重力調速金屬擺錘 | 重力调速金属摆锤 | Gravity Tuning Pendulum Weight | Contrapeso de Péndulo Metálico de Gravedad | 重力調速金属振り子 | 중력 조속 금속 진자 |
-| **代表素材** | 精工黃銅蓄壓葫蘆 | 精工黄铜蓄压葫芦 | Precision Brass Gourd Pressure-Vessel | Calabaza de Presión de Latón de Precisión | 精密真鍮蓄圧ひょうたん | 정밀 황동 축압 조롱박 |
-| **核心星軸** | 紫微星軸 | 紫微星轴 | Zi Wei Core (Zenith Core) | Núcleo Zi Wei (Cenit) | 紫微の星軸（天元の星軸） | 자미 성축 (천원 성축) |
+| **代表素材** | 精工黃銅高壓蓄能罐 | 精工黄铜高压蓄能罐 | Precision Brass Pressure Canister | Depósito de Presión de Latón de Precisión | 精密真鍮蓄圧キャニスター | 정밀 황동 축압 캐니스터 |
+| **核心星軸** | 紫微星軸 | 紫微星轴 | Zi Wei Core (Balance Core) | Núcleo Zi Wei (Equilibrio) | 紫微の星軸（全衡の魂） | 자미 성축 (균형) |
 | **核心星軸** | 武曲星軸 | 武曲星轴 | Wu Qu Core (Valor Core) | Núcleo Wu Qu (Marcial) | 武曲の星軸（勇武の星軸） | 무곡 성축 (용맹 성축) |
 | **核心招式** | 天元破勢崩拳 | 天元破势崩拳 | Zen Guard-Breaking Strike | Golpe Rompeguardia Zen | 天元崩しの崩拳 | 천원 파세 붕권 |
 | **核心招式** | 竹影凌空踏波 | 竹影凌空踏波 | Bamboo Shadow Aerial Stride | Paso Aéreo de Sombra de Bambú | 竹影凌空ステップ | 죽영 능공 답파 |
