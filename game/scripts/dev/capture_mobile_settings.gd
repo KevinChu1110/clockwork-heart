@@ -37,6 +37,15 @@ func _process(_delta: float) -> bool:
 			var p2 := _out_dir.path_join("proof_mobile_settings_audio.png")
 			img2.save_png(p2)
 			print("SAVED_AUDIO: ", p2)
+		if _settings and _settings.has_method("_switch_tab"):
+			_settings.call("_switch_tab", 3) # Tab.BACKUP
+	elif _frame == 28:
+		## 截取備份分頁
+		var img3 := root.get_viewport().get_texture().get_image()
+		if img3:
+			var p3 := _out_dir.path_join("proof_mobile_settings_backup.png")
+			img3.save_png(p3)
+			print("SAVED_BACKUP: ", p3)
 		print("SETTINGS_CAPTURE_OK")
 		quit(0)
 	return false

@@ -113,17 +113,17 @@ func _build_ui() -> void:
 	body_h.add_child(left_tabs)
 
 	var tabs_info := [
-		{"tab": Tab.LANGUAGE, "icon": "🌐", "name": "語言切換"},
-		{"tab": Tab.AUDIO, "icon": "🔊", "name": "聲音音效"},
-		{"tab": Tab.DISPLAY, "icon": "🖥️", "name": "畫面顯示"},
-		{"tab": Tab.BACKUP, "icon": "💾", "name": "存檔備份"},
+		{"tab": Tab.LANGUAGE, "name": "語言切換"},
+		{"tab": Tab.AUDIO, "name": "聲音音效"},
+		{"tab": Tab.DISPLAY, "name": "畫面顯示"},
+		{"tab": Tab.BACKUP, "name": "存檔備份"},
 	]
 
 	_tab_buttons.clear()
 	for t in tabs_info:
 		var btn := Button.new()
 		btn.custom_minimum_size = Vector2(0, 50)
-		btn.text = "%s  %s" % [t["icon"], t["name"]]
+		btn.text = str(t["name"])
 		btn.add_theme_font_size_override("font_size", 15)
 		var tb: Tab = t["tab"]
 		btn.pressed.connect(func(): _switch_tab(tb))
@@ -335,7 +335,7 @@ func _build_audio_panel() -> void:
 	var bgm_row := HBoxContainer.new()
 	bgm_row.add_theme_constant_override("separation", 16)
 	var bgm_icon := Label.new()
-	bgm_icon.text = "🎵 背景音樂 (BGM)"
+	bgm_icon.text = "背景音樂 (BGM)"
 	bgm_icon.custom_minimum_size = Vector2(160, 0)
 	bgm_icon.add_theme_font_size_override("font_size", 14)
 	bgm_row.add_child(bgm_icon)
@@ -365,7 +365,7 @@ func _build_audio_panel() -> void:
 	var sfx_row := HBoxContainer.new()
 	sfx_row.add_theme_constant_override("separation", 16)
 	var sfx_icon := Label.new()
-	sfx_icon.text = "⚔️ 戰鬥音效 (SFX)"
+	sfx_icon.text = "戰鬥音效 (SFX)"
 	sfx_icon.custom_minimum_size = Vector2(160, 0)
 	sfx_icon.add_theme_font_size_override("font_size", 14)
 	sfx_row.add_child(sfx_icon)
@@ -472,7 +472,7 @@ func _build_backup_panel() -> void:
 	root_p.add_child(title)
 
 	var btn_exp := Button.new()
-	btn_exp.text = "📦 匯出存檔備份檔 (JSON)"
+	btn_exp.text = "匯出存檔備份檔 (JSON)"
 	btn_exp.custom_minimum_size = Vector2(0, 48)
 	UiStyle.style_button(btn_exp, false)
 	btn_exp.pressed.connect(func():
@@ -481,7 +481,7 @@ func _build_backup_panel() -> void:
 	root_p.add_child(btn_exp)
 
 	var btn_imp := Button.new()
-	btn_imp.text = "📥 從外部備份還原存檔"
+	btn_imp.text = "從外部備份還原存檔"
 	btn_imp.custom_minimum_size = Vector2(0, 48)
 	UiStyle.style_button(btn_imp, false)
 	btn_imp.pressed.connect(func():
