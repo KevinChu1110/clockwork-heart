@@ -190,16 +190,16 @@
 
 ## 六、AI 美術與影音產出規範（Art & Media Keywords）
 
-> 用於產圖腳本（`/root/gen_media.py`）與音效調配。嚴禁包含寫實血腥、肉體傷殘與驚悚恐怖詞彙。
+> 用於產圖腳本（`/root/gen_media.py`）與音效調配。嚴格遵守 `art_direction.md` 與 `review.md`，禁止任何真實生物皮毛、血肉傷殘、恐怖驚悚元素。產圖一律帶 --ref branding/key_visual_main.png，遊戲名與標題卡由後製無失真疊加 branding/logo_cn.png／logo_en.png，不得由 AI 生成。
 
 ### 6.1 場景原畫 Prompt Keywords（英文）
 ```text
-Bright dopamine color palette, Maplestory and Tata Adventure style, 2.2 head chibi proportions, warm cream background (#FFFDF8), vibrant candy colors, floating clockwork diorama island, giant golden brass gears, steam puffs, lush felt vegetation, miniature wooden building blocks, warm sunlight, soft cel-shaded rendering, highly detailed cute toy world, 8k resolution, isometric wide view --no dark gritty mud, --no blood, --no realistic human proportions
+Bright dopamine color palette, Maplestory and Tata Adventure style, 2.2 head chibi proportions, warm cream background (#FFFDF8), vibrant candy colors, floating clockwork diorama island, giant golden brass gears, steam puffs, lush felt vegetation, miniature wooden building blocks, warm sunlight, soft cel-shaded rendering, highly detailed cute toy world, 8k resolution, isometric wide view --no dark gritty mud, --no blood, --no realistic human proportions, --no text, --no letters, --no logo, --no watermark
 ```
 
 ### 6.2 怪物與 BOSS Prompt Keywords（英文）
 ```text
-Cute chibi giant mecha titan, toy mechanical guardian, made of vintage timber boards, colorful painted wood and brass gears, visible spring winding key on back, harmless yet powerful, comic expression, smoke puffing from chimney, toy bolts and screws popping off, cel-shaded anime style, white border outline --no gore, --no flesh, --no horror
+Cute chibi giant mecha titan, toy mechanical guardian, made of vintage timber boards, colorful painted wood and brass gears, visible spring winding key on back, harmless yet powerful, comic expression, smoke puffing from chimney, toy bolts and screws popping off, cel-shaded anime style, white border outline --no gore, --no flesh, --no horror, --no text, --no letters, --no logo, --no watermark
 ```
 
 ### 6.3 音樂與音效氛圍（BGM Mood & Instruments）
