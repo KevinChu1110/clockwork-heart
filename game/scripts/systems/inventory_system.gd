@@ -43,7 +43,7 @@ const CATALOG: Dictionary = {
 		"stack": 99,
 		"heal": 25,
 		"color": Color(0.9, 0.25, 0.25),
-		"glyph": "🧪",
+		"glyph": "小",
 	},
 	"hp_m": {
 		"name": "中紅水",
@@ -52,7 +52,7 @@ const CATALOG: Dictionary = {
 		"stack": 99,
 		"heal": 55,
 		"color": Color(0.85, 0.15, 0.2),
-		"glyph": "🍷",
+		"glyph": "中",
 	},
 	"bread": {
 		"name": "乾糧",
@@ -61,7 +61,7 @@ const CATALOG: Dictionary = {
 		"stack": 99,
 		"heal": 15,
 		"color": Color(0.75, 0.55, 0.3),
-		"glyph": "🍖",
+		"glyph": "糧",
 	},
 	"dust_crumb": {
 		"name": "星屑碎",
@@ -70,7 +70,7 @@ const CATALOG: Dictionary = {
 		"stack": 99,
 		"dust": 1,
 		"color": Color(0.55, 0.65, 0.95),
-		"glyph": "✦",
+		"glyph": "屑",
 	},
 	"antidote": {
 		"name": "清焰露",
@@ -79,7 +79,7 @@ const CATALOG: Dictionary = {
 		"stack": 30,
 		"heal": 10,
 		"color": Color(0.4, 0.75, 0.55),
-		"glyph": "💧",
+		"glyph": "露",
 	},
 	"key_rusty": {
 		"name": "鏽劍（紀念）",
@@ -87,7 +87,7 @@ const CATALOG: Dictionary = {
 		"kind": "key",
 		"stack": 1,
 		"color": Color(0.55, 0.5, 0.4),
-		"glyph": "🗡️",
+		"glyph": "劍",
 	},
 	"map_scrap": {
 		"name": "六域殘圖",
@@ -95,7 +95,7 @@ const CATALOG: Dictionary = {
 		"kind": "key",
 		"stack": 1,
 		"color": Color(0.7, 0.65, 0.45),
-		"glyph": "📜",
+		"glyph": "圖",
 	},
 	"medal": {
 		"name": "勳章",
@@ -103,7 +103,7 @@ const CATALOG: Dictionary = {
 		"kind": "key",
 		"stack": 99,
 		"color": Color(0.85, 0.7, 0.3),
-		"glyph": "🏅",
+		"glyph": "勳",
 	},
 	"relic_token": {
 		"name": "秘境印記",
@@ -111,7 +111,7 @@ const CATALOG: Dictionary = {
 		"kind": "key",
 		"stack": 9,
 		"color": Color(0.65, 0.4, 0.75),
-		"glyph": "☸",
+		"glyph": "印",
 	},
 	"wolf_fang": {
 		"name": "狼牙",
@@ -120,7 +120,7 @@ const CATALOG: Dictionary = {
 		"stack": 99,
 		"sell": 8,
 		"color": Color(0.7, 0.7, 0.75),
-		"glyph": "🦴",
+		"glyph": "牙",
 	},
 	"mist_shard": {
 		"name": "霧晶",
@@ -129,7 +129,7 @@ const CATALOG: Dictionary = {
 		"stack": 99,
 		"sell": 12,
 		"color": Color(0.6, 0.7, 0.9),
-		"glyph": "🔮",
+		"glyph": "晶",
 	},
 	"sea_shell": {
 		"name": "潮貝",
@@ -138,7 +138,7 @@ const CATALOG: Dictionary = {
 		"stack": 99,
 		"sell": 10,
 		"color": Color(0.5, 0.7, 0.75),
-		"glyph": "🐚",
+		"glyph": "貝",
 	},
 	"scar_ember": {
 		"name": "疤焰燼",
@@ -147,7 +147,7 @@ const CATALOG: Dictionary = {
 		"stack": 99,
 		"sell": 15,
 		"color": Color(0.55, 0.25, 0.5),
-		"glyph": "🔥",
+		"glyph": "燼",
 	},
 	"hunt_hide": {
 		"name": "溢皮",
@@ -157,7 +157,7 @@ const CATALOG: Dictionary = {
 		"sell": 10,
 		"tradeable": true,
 		"color": Color(0.55, 0.4, 0.3),
-		"glyph": "📜",
+		"glyph": "皮",
 	},
 	"hunt_bone": {
 		"name": "焰骨",
@@ -167,7 +167,7 @@ const CATALOG: Dictionary = {
 		"sell": 22,
 		"tradeable": true,
 		"color": Color(0.7, 0.55, 0.4),
-		"glyph": "🦴",
+		"glyph": "骨",
 	},
 	"hunt_core": {
 		"name": "溢核",
@@ -177,7 +177,7 @@ const CATALOG: Dictionary = {
 		"sell": 60,
 		"tradeable": true,
 		"color": Color(0.85, 0.35, 0.55),
-		"glyph": "💎",
+		"glyph": "核",
 	},
 	## 0.12.1 鍛造材料循環
 	"iron_scrap": {

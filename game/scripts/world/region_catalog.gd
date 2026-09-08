@@ -230,11 +230,11 @@ static func status_bbcode() -> String:
 		lines.append(str(r.get("blurb", "")))
 		for s in r.get("stages", []):
 			var st := stage_state(s)
-			var mark := "🔒"
+			var mark := "·"
 			if st == "open":
 				mark = "▶"
 			elif st == "cleared":
-				mark = "✅"
+				mark = "✓"
 			var boss := str(s.get("boss", ""))
 			var boss_s := (" · " + boss) if boss != "" else ""
 			lines.append("  %s %s%s" % [mark, str(s.get("name", "")), boss_s])

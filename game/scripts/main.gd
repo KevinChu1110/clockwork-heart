@@ -74,7 +74,7 @@ var _import_armed: bool = false
 ##
 ## 一定要包在**字面值**上、格式化之前：
 ##     _t("稱號 %d／%d") % [a, b]      ✓
-##     _t("稱號 %d／%d" % [a, b])      ✗  代完了就查不到表
+##     _t("稱號 %d／%d" % [a, b])      ✕  代完了就查不到表
 ## 所以譯文的 %s／%d 佔位符數量與順序必須跟原文一致，check_content_loc.py 會擋。
 func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
@@ -4608,7 +4608,7 @@ func _go_dragon_cave_panel() -> void:
 				break
 			var idx := i
 			var ch: Dictionary = DRAGON_CAVE[i]
-			var mark := "✅ " if i < highest else "▶ "
+			var mark := "✓ " if i < highest else "▶ "
 			buttons.append({"text": mark + _t(str(ch.get("name", ""))), "cb": func(): _dcave_challenge(idx)})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _go_starpath_panel})
 	_panel(_t("龍窟"), body, buttons)
@@ -4973,7 +4973,7 @@ func _go_region_panel() -> void:
 	var buttons: Array = []
 	for s in RegionCatalog.flat_open_stages():
 		var st := str(s.get("state", "open"))
-		var mark := "✅" if st == "cleared" else "▶"
+		var mark := "✓" if st == "cleared" else "▶"
 		var label := "%s %s" % [mark, str(s.get("name", ""))]
 		var goto: Dictionary = s.get("goto", {})
 		var map_id := str(goto.get("map", "town"))

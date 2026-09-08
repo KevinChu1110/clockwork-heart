@@ -91,6 +91,25 @@ func _initialize() -> void:
 		ok = false
 	else:
 		print("  ok open stages=%d" % open_n)
+	var sbb: String = RegionCatalog.status_bbcode()
+	if sbb.find("🔒") >= 0 or sbb.find("✅") >= 0:
+		push_error("RegionCatalog.status_bbcode contains system emoji 🔒/✅")
+		ok = false
+	else:
+		print("  ok region status_bbcode has no system emoji")
+
+	## 背包道具 glyph 無系統 emoji
+	for item_id in inv.CATALOG.keys():
+		var idef: Dictionary = inv.CATALOG[item_id]
+		var glyph: String = str(idef.get("glyph", ""))
+		if glyph.is_empty():
+			push_error("item %s glyph is empty" % item_id)
+			ok = false
+		for bad in ["🧪", "🍷", "🍖", "✦", "💧", "🗡️", "📜", "🏅", "☸", "🦴", "🔮", "🐚", "🔥", "💎", "🔒", "✅"]:
+			if glyph.find(bad) >= 0:
+				push_error("item %s glyph contains banned symbol/emoji %s" % [item_id, bad])
+				ok = false
+	print("  ok inventory catalog glyphs (%d items) clean" % inv.CATALOG.size())
 
 	## 飾品六槽
 	if eq.ACCESSORY_SLOTS.size() != 6:
