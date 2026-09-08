@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>PC 開發測試包（非商店版）— 發條之心</title>
   <meta name="description" content="發條之心 PC 開發測試包（非商店版）。手機商店尚未上架；此為開發中測試建置，非正式發行。" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%23FFD028' stroke='%231F1A3A' stroke-width='8'/><circle cx='50' cy='50' r='18' fill='%23FF5E8A'/><path d='M50 8v16M50 76v16M8 50h16M76 50h16' stroke='%231F1A3A' stroke-width='8' stroke-linecap='round'/></svg>" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='42' fill='%230B0A0E' stroke='%23D4AF37' stroke-width='8'/><circle cx='50' cy='50' r='18' fill='%233ECFBF'/><path d='M50 8v16M50 76v16M8 50h16M76 50h16' stroke='%23D4AF37' stroke-width='8' stroke-linecap='round'/></svg>" />
   <link rel="stylesheet" href="../css/site.css" />
   <link rel="stylesheet" href="../css/sections.css" />
+  <link rel="stylesheet" href="../css/temple.css" />
   <script src="../config.js"></script>
 </head>
 <body data-page="download">
@@ -34,21 +35,21 @@
           <img class="platform__bg" src="../media/shots/proof_13_dojo.png" alt="" />
           <div class="platform__shade"></div>
           <h3>Windows</h3>
-          <p id="meta-win">BraveSoul-0.16.8-win.zip · 約 65MB</p>
+          <p id="meta-win">ClockworkHeart-0.16.8-win.zip · 約 65MB</p>
           <a class="btn btn-primary" id="dl-win" href="https://github.com/KevinChu1110/clockwork-heart/releases/download/v0.16.8/BraveSoul-0.16.8-win.zip">下載 Windows 測試包</a>
         </div>
         <div class="platform">
           <img class="platform__bg" src="../media/shots/proof_06_forest.png" alt="" />
           <div class="platform__shade"></div>
           <h3>macOS</h3>
-          <p id="meta-mac">BraveSoul-0.16.8-mac.zip · universal · 約 87MB</p>
+          <p id="meta-mac">ClockworkHeart-0.16.8-mac.zip · universal · 約 87MB</p>
           <a class="btn btn-primary" id="dl-mac" href="https://github.com/KevinChu1110/clockwork-heart/releases/download/v0.16.8/BraveSoul-0.16.8-mac.zip">下載 macOS 測試包</a>
         </div>
         <div class="platform">
           <img class="platform__bg" src="../media/shots/proof_19_harbor.png" alt="" />
           <div class="platform__shade"></div>
           <h3>Linux</h3>
-          <p id="meta-linux">BraveSoul-0.16.8-linux.zip · 約 56MB</p>
+          <p id="meta-linux">ClockworkHeart-0.16.8-linux.zip · 約 56MB</p>
           <a class="btn btn-primary" id="dl-linux" href="https://github.com/KevinChu1110/clockwork-heart/releases/download/v0.16.8/BraveSoul-0.16.8-linux.zip">下載 Linux 測試包</a>
         </div>
       </div>
@@ -108,9 +109,9 @@
       if (el) el.textContent = "v" + v;
       var base = "https://github.com/KevinChu1110/clockwork-heart/releases/download/v" + v + "/BraveSoul-" + v;
       var map = [
-        ["dl-win", "meta-win", base + "-win.zip", "BraveSoul-" + v + "-win.zip · 約 65MB"],
-        ["dl-mac", "meta-mac", base + "-mac.zip", "BraveSoul-" + v + "-mac.zip · universal · 約 87MB"],
-        ["dl-linux", "meta-linux", base + "-linux.zip", "BraveSoul-" + v + "-linux.zip · 約 56MB"],
+        ["dl-win", "meta-win", base + "-win.zip", "ClockworkHeart-" + v + "-win.zip · 約 65MB"],
+        ["dl-mac", "meta-mac", base + "-mac.zip", "ClockworkHeart-" + v + "-mac.zip · universal · 約 87MB"],
+        ["dl-linux", "meta-linux", base + "-linux.zip", "ClockworkHeart-" + v + "-linux.zip · 約 56MB"],
       ];
       map.forEach(function (row) {
         var a = document.getElementById(row[0]);
