@@ -173,7 +173,7 @@
    "cat": "遊戲",
    "title": "🥉 戰魂收斂：保留抽寶核心，移除 14 主星結構",
    "status": "開發中",
-   "note": "設計文件已審核通過（docs/SOUL_SIMPLIFY_DESIGN.md）；等分支整合＋balance-lock合併main後開始實作",
+   "note": "14主星拆除、四大共鳴核心實作中",
    "keys": [
     "戰魂",
     "抽魂",
