@@ -1,4 +1,4 @@
-/* 發條之心 · 氣氛動效（餘燼／魂塵／葫蘆擺） */
+/* 發條之心 · 氣氛動效（齒輪／魂塵／封靈罐） */
 
 .fx-layer {
   position: absolute;
@@ -83,7 +83,7 @@ canvas.fx-embers {
   to { transform: translateX(-50%); }
 }
 
-/* 遊戲葫蘆懸掛擺動 */
+/* 封靈罐懸掛擺動 */
 .gourd-hang {
   display: flex;
   justify-content: center;

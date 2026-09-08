@@ -3,22 +3,22 @@
   "places": [
     {
       "id": "village",
-      "title": "翠谷村 · 夜",
-      "kicker": "餘燼村",
+      "title": "初始閣樓 · 夜",
+      "kicker": "閣樓玩具堆",
       "image": "../media/shots/proof_12_village.png",
       "gallery": ["../media/gemini/keyart_village.png"],
-      "blurb": "旅途起點。村口那把齒輪短劍、開場乾糧都從這裡帶走。背負十五圈發條的小白由此邁向創想界域。",
+      "blurb": "旅途起點。閣樓那把齒輪短劍、開場乾糧都從這裡帶走。背負十五圈發條的小白由此邁向創想界域。",
       "enemies": [],
       "drops": ["bread", "key_rusty", "hp_s"],
       "note": "開場贈送乾糧與小紅水。"
     },
     {
       "id": "road",
-      "title": "荒路 · 橫貫翠嶺東道",
+      "title": "荒路 · 橫貫界域東道",
       "kicker": "出村第一帶",
       "image": "../media/shots/proof_05_crossroads.png",
       "gallery": ["../media/shots/proof_24_caravan.png"],
-      "blurb": "離開翠谷之後的東道：斷崖大橋、半塌客棧、古驛廢墟。荒路殘兵與灰燼鼠常在這裡。鍛造入門材料多半先從這帶撿。",
+      "blurb": "離開閣樓之後的東道：斷崖大橋、半塌客棧、古驛廢墟。荒路殘兵與灰燼鼠常在這裡。鍛造入門材料多半先從這帶撿。",
       "enemies": ["荒路殘兵", "灰燼鼠"],
       "drops": ["wolf_fang", "knight_shard", "iron_scrap", "star_ore", "oak_resin", "hp_s", "bread"],
       "note": "各域雜魚也會掉鐵屑／星砂／橡脂；荒路機率較穩。"
@@ -29,8 +29,8 @@
       "kicker": "主城",
       "image": "../media/shots/proof_02_explore_town.png",
       "gallery": ["../media/gemini/keyart_leo.png"],
-      "blurb": "石城、旗幟、榮譽。釘釘、星讀、工坊、演武、下城市集都從廣場走進。黑焰浪人在雷歐之後出沒，騎士碎鐵掉很多。",
-      "enemies": ["黑焰浪人"],
+      "blurb": "石城、旗幟、榮譽。釘釘、星讀、工坊、演武、下城市集都從廣場走進。狂暴發條浪人在雷歐之後出沒，騎士碎鐵掉很多。",
+      "enemies": ["狂暴發條浪人"],
       "drops": ["knight_shard", "iron_scrap"],
       "note": "聖獸：雷歐（獅）。"
     },
@@ -124,18 +124,18 @@
     },
     {
       "id": "scar",
-      "title": "黑焰疤地 · 被吞噬的土地",
+      "title": "黑鏽疤地 · 被侵蝕的土地",
       "kicker": "秘境與長遠",
       "image": "../media/shots/proof_16_blackflame.png",
       "gallery": ["../media/shots/proof_17_starfall.png"],
-      "blurb": "黑焰吞噬過的土地。疤地焰靈掉疤焰燼；橡脂在疤地也會出現。疤主是秘境三王之一。",
-      "enemies": ["疤地焰靈"],
+      "blurb": "黑鏽侵蝕過的土地。疤地鏽靈掉疤痕燼；橡脂在疤地也會出現。疤主是秘境三王之一。",
+      "enemies": ["疤地鏽靈"],
       "drops": ["scar_ember", "oak_resin"],
-      "note": "星落平原就在附近，十四星夜空。"
+      "note": "星落平原就在附近，群星夜空。"
     },
     {
       "id": "hunt",
-      "title": "野外獵場 · 黑焰溢地",
+      "title": "野外獵場 · 黑鏽溢地",
       "kicker": "狩獵",
       "image": "../media/shots/proof_21_hunt.png",
       "gallery": [],
