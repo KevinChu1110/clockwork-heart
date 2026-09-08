@@ -53,8 +53,8 @@
    "id": "world-c0",
    "cat": "世界觀",
    "title": "🥇 第一章 30 分鐘體驗（轉譯後）",
-   "status": "測試中",
-   "note": "C0 player-visible strings in game; review fixes (save chapter name, journey notes, leave attic, codex newlines). not on main.",
+   "status": "已上線",
+   "note": "確認已在main上，存檔格地名(閣樓·夜)/手札4篇/教學句/地圖物件六語系實測正確無舊IP殘留，測試綠燈",
    "keys": [
     "第一章",
     "序章",
