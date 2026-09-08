@@ -268,7 +268,7 @@
    "cat": "行銷",
    "title": "短影音腳本與實機素材",
    "status": "測試中",
-   "note": "30 秒短影音成片已合成完畢（web/media/shorts/mk_shorts_soul_battle_polish_30s.mp4，9:16、30.0s、6 鏡完整接龍對齊分鏡表），抽格拼貼已由 Vision 查驗通過，送審驗收中",
+   "note": "REC-03 重錄完成（鉚接金屬罐＋開光金色月桂冠神魂光效，SHA 已更新並推 main 56ab49b）",
    "keys": [
     "短影音",
     "shorts",
