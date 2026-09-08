@@ -353,8 +353,8 @@
    "id": "web-aeo",
    "cat": "平台",
    "title": "官網 SEO/AEO：llms.txt・結構化資料・OG/meta 優化",
-   "status": "開發中",
-   "note": "實作 llms.txt、JSON-LD 與 meta",
+   "status": "已上線",
+   "note": "通過檢驗並部署至 GitHub Pages",
    "keys": [
     "官網 SEO/A"
    ]
