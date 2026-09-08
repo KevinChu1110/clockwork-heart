@@ -179,7 +179,7 @@
   "forge.back_menu": "鍛冶屋のメニューへ",
   "forge.back_square": "広場へ戻る",
   "soul.panel_title": "星読 · 聚魂殿",
-  "soul.hint": "抽魂＝聚魂。葫蘆は緑→橙。毎日一回無料、以降は金。",
+  "soul.hint": "抽魂＝聚魂。封霊缶は緑階→橙階。毎日一回無料、以降は金。",
   "soul.ritual": "抽魂（星屑 {n}）",
   "soul.dust_short": "星屑が足りません（必要 {n}）",
   "soul.equip": "入魂：{name}",

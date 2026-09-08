@@ -383,7 +383,7 @@ static func _town_soul() -> Dictionary:
 		_e("back_from_shop", 741, 795, 56, 48, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("star", 687, 606, 48, 64, "星讀", Color(0.45, 0.5, 0.75)),
 		_e("astrolabe", 508, 508, 56, 48, "星盤台", Color(0.4, 0.45, 0.7), true),
-		_e("gourd_shelf", 337, 532, 48, 56, "葫蘆架", Color(0.35, 0.5, 0.4), true),
+		_e("gourd_shelf", 337, 532, 48, 56, "封靈罐架", Color(0.35, 0.5, 0.4), true),
 		_e("star_mat", 810, 569, 64, 36, "觀星墊", Color(0.3, 0.32, 0.5)),
 	]
 	return m
