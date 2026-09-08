@@ -1566,6 +1566,9 @@ static func _ring_tex() -> Texture2D:
 func _spawn_tap_fx(world: Vector2) -> void:
 	if _scroll == null or not is_inside_tree():
 		return
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	if gp != null and not gp.vfx_enabled():
+		return
 	var fx := TextureRect.new()
 	fx.texture = _ring_tex()
 	fx.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -2122,17 +2125,22 @@ func _update_player_visual() -> void:
 		else:
 			_player_accessory.visible = false
 	if _player_shadow:
-		## 陰影跟著深度一起縮，遠處的腳印才不會比近處還大
-		var sh_k := _depth_scale(foot_y)
-		var sh_w := (PLAYER_SIZE.x - 8.0) * sh_k
-		var sh_h := 12.0 * sh_k
-		_player_shadow.size = Vector2(sh_w, sh_h)
-		_player_shadow.position = Vector2(
-			player_pos.x + PLAYER_SIZE.x * 0.5 - sh_w * 0.5,
-			foot_y - sh_h * 0.62)
-		_player_shadow.set_meta("sort_y", foot_y - 1.0)
-		## scenic 地圖把影子再加深一點，腳底「踩在地上」才站得住
-		_player_shadow.modulate = Color(0, 0, 0, 0.55 if _has_scenic_bg else 0.42)
+		var gp := get_node_or_null("/root/GraphicsProfile")
+		if gp != null and not gp.shadows_enabled():
+			_player_shadow.visible = false
+		else:
+			_player_shadow.visible = true
+			## 陰影跟著深度一起縮，遠處的腳印才不會比近處還大
+			var sh_k := _depth_scale(foot_y)
+			var sh_w := (PLAYER_SIZE.x - 8.0) * sh_k
+			var sh_h := 12.0 * sh_k
+			_player_shadow.size = Vector2(sh_w, sh_h)
+			_player_shadow.position = Vector2(
+				player_pos.x + PLAYER_SIZE.x * 0.5 - sh_w * 0.5,
+				foot_y - sh_h * 0.62)
+			_player_shadow.set_meta("sort_y", foot_y - 1.0)
+			## scenic 地圖把影子再加深一點，腳底「踩在地上」才站得住
+			_player_shadow.modulate = Color(0, 0, 0, 0.55 if _has_scenic_bg else 0.42)
 	var tag := _world.get_node_or_null("PlayerNameTag") as Control
 	if tag:
 		tag.position = player_pos + Vector2(PLAYER_SIZE.x * 0.5 - 28, -16)

@@ -204,7 +204,13 @@ func _build_carnival_buntings() -> void:
 ## 陽光漂浮微粒 (Sunshine Particles)
 ## ──────────────────────────────────────────
 func _spawn_floating_sunlight_particles() -> void:
-	for i in range(14):
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	var n := 14
+	if gp != null:
+		n = int(gp.particle_count(14))
+	if n <= 0:
+		return
+	for i in range(n):
 		var star := Label.new()
 		star.text = "✦"
 		star.add_theme_font_size_override("font_size", 12 + (i % 3) * 4)
@@ -710,13 +716,19 @@ func _on_hero_clicked() -> void:
 			)
 
 func _burst_click_particles(center_pos: Vector2) -> void:
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	var n := 8
+	if gp != null:
+		n = int(gp.particle_count(8))
+	if n <= 0:
+		return
 	var cols: Array[Color] = [
 		Color(1.0, 0.85, 0.25),  # 金黃
 		Color(1.0, 0.40, 0.60),  # 草莓粉
 		Color(0.28, 0.85, 0.42), # 薄荷綠
 		Color(0.24, 0.68, 0.98), # 晴空藍
 	]
-	for i in range(8):
+	for i in range(n):
 		var star := Label.new()
 		star.text = "✦"
 		star.add_theme_font_size_override("font_size", 16)
@@ -725,7 +737,7 @@ func _burst_click_particles(center_pos: Vector2) -> void:
 		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(star)
 
-		var angle := float(i) * (PI * 2.0 / 8.0)
+		var angle := float(i) * (PI * 2.0 / float(n))
 		var dist := randf_range(40.0, 80.0)
 		var target := center_pos + Vector2(cos(angle), sin(angle)) * dist
 
