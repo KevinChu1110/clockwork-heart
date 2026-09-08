@@ -1,7 +1,7 @@
 extends SceneTree
-## REC-04 怒氣滿額超轉速過載 (Overdrive) 與部位 BREAK
+## REC-04 怒氣滿額暴怒覺醒與高速連斬
 ## 時長: 6.5s (由握手信號觸發錄製)
-## 展示: 怒氣滿額覺醒、齒輪超轉速狂暴連斬、部位擊破金字 BREAK 爆散
+## 展示: 怒氣滿額觸發「🔥 暴怒覺醒！」橘紅跳字＋高速狂暴連斬
 
 var _elapsed: float = 0.0
 var _step_timer: float = 0.0
@@ -94,7 +94,7 @@ func _process(delta: float) -> bool:
 				_step = 5
 		5:
 			_rec_elapsed += delta
-			# +3.5s: 觸發部位 BREAK（壓低部位血量並攻擊破壞）
+			# +3.5s: 狂暴高速連斬第二段
 			if _rec_elapsed >= 3.5 and _step == 5:
 				if _sim:
 					var boss = _sim.call("_primary_boss_unit")
