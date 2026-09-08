@@ -106,8 +106,8 @@
    "id": "mob-battle",
    "cat": "遊戲",
    "title": "🥈 手機化 4／6：觸控優先戰鬥",
-   "status": "測試中",
-   "note": "右側拇指熱區（攻擊/技能/換武/鎖定/暫停/逃離）≥50，單拇指可打完；測 16:9/19.5:9/20:9/平板/PC；test_game_input/battle_keys/battle_touch/battle_thumb 綠；分支 agent/2026-09-07-battle-touch",
+   "status": "已上線",
+   "note": "QA回歸驗收全綠(t_5f90bd63)，79/79 PASSED",
    "keys": [
     "觸控戰鬥",
     "拇指",
