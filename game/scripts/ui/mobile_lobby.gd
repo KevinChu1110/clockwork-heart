@@ -551,6 +551,7 @@ func _build_village_tab() -> void:
 	## 1. 角色腳底接地軟影 (Foot Soft Shadow / review.md 第 16 條)
 	_hero_shadow = TextureRect.new()
 	_hero_shadow.name = "HeroFootShadow"
+	_hero_shadow.add_to_group("soft_shadow")
 	_hero_shadow.offset_left = -62
 	_hero_shadow.offset_top = 74
 	_hero_shadow.offset_right = 98
@@ -572,6 +573,7 @@ func _build_village_tab() -> void:
 	## 1.1 緊密接地閉塞陰影 (Contact Occlusion Shadow)
 	var contact_shadow := TextureRect.new()
 	contact_shadow.name = "HeroContactShadow"
+	contact_shadow.add_to_group("soft_shadow")
 	contact_shadow.offset_left = -38
 	contact_shadow.offset_top = 84
 	contact_shadow.offset_right = 74
@@ -612,9 +614,9 @@ func _build_village_tab() -> void:
 	## 3. 頭頂稱號與名字（黑曜石半透明膠囊底襯 + 金框 + 深色文字描邊，確保在中央發光齒輪光暈上清晰可讀）
 	var tag_panel := PanelContainer.new()
 	tag_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	tag_panel.offset_left = -75
-	tag_panel.offset_top = -58
-	tag_panel.offset_right = 75
+	tag_panel.offset_left = -85
+	tag_panel.offset_top = -68
+	tag_panel.offset_right = 85
 	tag_panel.offset_bottom = -8
 	tag_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
@@ -641,7 +643,7 @@ func _build_village_tab() -> void:
 	var title_l := Label.new()
 	title_l.text = "【初出茅廬】"
 	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_l.add_theme_font_size_override("font_size", 11)
+	title_l.add_theme_font_size_override("font_size", 18)
 	title_l.add_theme_color_override("font_color", GOLD_HOVER)
 	title_l.add_theme_color_override("font_outline_color", Color(0.02, 0.02, 0.04, 0.95))
 	title_l.add_theme_constant_override("outline_size", 2)
@@ -699,6 +701,7 @@ func _build_village_tab() -> void:
 
 	## 左側四大殿堂黑曜石金屬浮雕卡牌 (王都鐵匠、手藝工坊、演武競技、冒險委託)
 	var left_shops := VBoxContainer.new()
+	left_shops.name = "HallCardsContainer"
 	left_shops.set_anchors_preset(Control.PRESET_LEFT_WIDE)
 	left_shops.offset_left = 32
 	left_shops.offset_top = 16
@@ -776,6 +779,11 @@ func _build_village_tab() -> void:
 
 func _add_hall_card(parent: Container, title: String, subtitle: String, icon_symbol: String, cb: Callable) -> void:
 	var btn := Button.new()
+	btn.name = "HallCard_" + title
+	btn.add_to_group("hall_cards")
+	btn.set_meta("hall_title", title)
+	btn.set_meta("hall_subtitle", subtitle)
+	btn.set_meta("hall_icon", icon_symbol)
 	btn.custom_minimum_size = Vector2(240, 72)
 	
 	var sb := StyleBoxFlat.new()
@@ -938,6 +946,8 @@ func _burst_click_particles(center_pos: Vector2) -> void:
 	]
 	for i in range(n):
 		var star := ColorRect.new()
+		star.name = "BurstParticle_%d" % i
+		star.add_to_group("burst_particles")
 		star.custom_minimum_size = Vector2(6, 6)
 		star.size = Vector2(6, 6)
 		star.pivot_offset = Vector2(3, 3)
