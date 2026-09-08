@@ -66,8 +66,8 @@
    "id": "mob-renderer",
    "cat": "遊戲",
    "title": "🥈 手機化 1／6：Mobile renderer profile",
-   "status": "測試中",
-   "note": "桌面／Web = gl_compatibility；手機 = mobile renderer。features 已從誤導的 Forward Plus 改成 GL Compatibility。冒煙與 test_renderer_profile 綠。分支 agent/2026-09-07-mobile-renderer，未推 main。",
+   "status": "已上線",
+   "note": "QA回歸驗收全綠(t_5f90bd63)，79/79 PASSED",
    "keys": [
     "renderer",
     "forward plus",
