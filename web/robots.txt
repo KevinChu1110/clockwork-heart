@@ -1,0 +1,8 @@
+# robots.txt for 發條之心 (Clockwork Heart)
+User-agent: *
+Allow: /
+
+# AI Documentation & Site Summary (llmstxt.org)
+# https://kevinchu1110.github.io/clockwork-heart/llms.txt
+
+Sitemap: https://kevinchu1110.github.io/clockwork-heart/sitemap.xml
