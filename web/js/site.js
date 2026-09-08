@@ -485,7 +485,7 @@
     setupHeroRoster();
   }
 
-  /* 四大英雄登場舞台互動切換 */
+  /* 主視覺陣容外觀介紹切換 */
   function setupHeroRoster() {
     var tabs = document.querySelectorAll(".hero-tab");
     var panels = document.querySelectorAll(".hero-panel");

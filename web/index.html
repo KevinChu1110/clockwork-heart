@@ -96,18 +96,18 @@
           },
           {
             "@type": "Person",
-            "name": "獅子騎士 (Leo)",
-            "description": "身披黃金皇家板甲、手持耀金騎士長槍的發條獅子騎士，鬃毛由同心金屬齒輪環繞而成。"
+            "name": "獅子騎士 (Lion Knight)",
+            "description": "身披皇家守衛裝束、手持騎士長槍的發條獅子騎士，鬃毛由金屬板件與鉚釘固定而成。"
           },
           {
             "@type": "Person",
-            "name": "狐狸學者 (Fox Scholar)",
-            "description": "身穿深藍法袍、手持木銅齒輪法杖的發條狐狸，精通星讀與符文機關。"
+            "name": "狐狸法師 (Fox Mage)",
+            "description": "身穿微縮舞台戲服法袍、手持長法杖的發條狐狸法師，具備金屬三角立耳與分節金屬尾。"
           },
           {
             "@type": "Person",
-            "name": "野豬狂戰 (Boar Berserker)",
-            "description": "厚重鉚釘維京鐵甲與鋼鐵雙獠牙的發條野豬，揮舞巨型動力戰錘。"
+            "name": "野豬戰士 (Boar Warrior)",
+            "description": "厚重鉚釘維京鐵甲與金屬雙獠牙、金屬鼻盤的發條野豬戰士，手持重型金屬戰錘。"
           }
         ],
         "author": {
@@ -228,14 +228,14 @@
           <span class="feature__badge">官方主視覺 · 希臘神殿與黃金齒輪</span>
         </div>
         <div class="feature__copy">
-          <div class="showcase-pill-tag">Canon Roster · 正史英雄陣容</div>
-          <h3>全金屬發條公仔 · 四大職業小隊</h3>
-          <p>零毛皮、精緻金屬板件與螺栓鉚釘，每位英雄身後皆裝有標誌性的<strong>黃銅發條鑰匙</strong>。2.2 頭身矮萌公仔比例，各持專屬武器並背負著重啟世界的使命：</p>
+          <div class="showcase-pill-tag">Canon Roster · 正史主視覺陣容</div>
+          <h3>全金屬發條公仔 · 主視覺四位角色</h3>
+          <p>零毛皮、精緻金屬板件與螺栓鉚釘，每位角色身後皆裝有標誌性的<strong>黃銅發條鑰匙</strong>。2.2 頭身矮萌公仔比例，同框展現世界觀美術特色：</p>
           <div class="hero-roster-quick">
             <span class="roster-chip">白兔劍士 · 小白</span>
-            <span class="roster-chip">獅子騎士 · 雷歐</span>
-            <span class="roster-chip">狐狸學者</span>
-            <span class="roster-chip">野豬狂戰</span>
+            <span class="roster-chip">獅子騎士</span>
+            <span class="roster-chip">狐狸法師</span>
+            <span class="roster-chip">野豬戰士</span>
           </div>
           <div style="margin-top:1.4rem;display:flex;gap:0.75rem;flex-wrap:wrap">
             <a class="btn btn-primary" href="media/promo/trailer_hero_clockwork_15s.mp4" target="_blank">觀看 15 秒電影預告片</a>
@@ -244,203 +244,247 @@
         </div>
       </div>
 
-      <!-- 四大英雄登場舞台 (Interactive Character Showcase) -->
+      <!-- 主視覺角色陣容介紹 (Key Visual Character Showcase) -->
       <div class="hero-roster-stage scroll-narrative">
         <div class="roster-stage-header">
-          <div class="roster-stage-kicker">Hero Showcase · 角色登場誌</div>
-          <h3 class="roster-stage-title">四大發條英雄 · 戰鬥特徵與核心配置</h3>
-          <p class="roster-stage-sub">點擊切換英雄，檢視專屬武器、發條驅動核心與戰場奧義。</p>
+          <div class="roster-stage-kicker">Key Visual Cast · 主視覺角色誌</div>
+          <h3 class="roster-stage-title">主視覺四位角色 · 外觀特徵與武器裝束</h3>
+          <p class="roster-stage-sub">檢視主視覺同框登場的四位發條公仔角色：白兔劍士、獅子騎士、狐狸法師與野豬戰士。</p>
         </div>
 
-        <!-- 英雄切換導覽 -->
-        <div class="hero-tabs" role="tablist" aria-label="英雄職業切換">
+        <!-- 主視覺角色切換導覽 -->
+        <div class="hero-tabs" role="tablist" aria-label="主視覺角色外觀介紹切換">
           <button type="button" class="hero-tab is-active" role="tab" aria-selected="true" aria-controls="hero-whitey" id="tab-whitey" data-hero="whitey">
-            <span class="tab-badge">01</span>
-            <span class="tab-name">白兔劍士 · 小白</span>
-            <span class="tab-role">純真勇者 · 劍士</span>
+            <div class="hero-tab__thumb">
+              <img src="media/hero/char_rabbit.png" alt="白兔劍士小白立繪縮圖" loading="lazy" />
+            </div>
+            <div class="hero-tab__info">
+              <span class="tab-badge">01</span>
+              <span class="tab-name">白兔劍士 · 小白</span>
+              <span class="tab-role">劍士 · 單手長劍</span>
+            </div>
           </button>
-          <button type="button" class="hero-tab" role="tab" aria-selected="false" aria-controls="hero-leo" id="tab-leo" data-hero="leo">
-            <span class="tab-badge">02</span>
-            <span class="tab-name">獅子騎士 · 雷歐</span>
-            <span class="tab-role">皇家守衛 · 騎士</span>
+          <button type="button" class="hero-tab" role="tab" aria-selected="false" aria-controls="hero-lion" id="tab-lion" data-hero="lion">
+            <div class="hero-tab__thumb">
+              <img src="media/hero/char_lion.png" alt="獅子騎士立繪縮圖" loading="lazy" />
+            </div>
+            <div class="hero-tab__info">
+              <span class="tab-badge">02</span>
+              <span class="tab-name">獅子騎士</span>
+              <span class="tab-role">騎士 · 騎士長槍</span>
+            </div>
           </button>
           <button type="button" class="hero-tab" role="tab" aria-selected="false" aria-controls="hero-fox" id="tab-fox" data-hero="fox">
-            <span class="tab-badge">03</span>
-            <span class="tab-name">狐狸學者</span>
-            <span class="tab-role">符文智者 · 法師</span>
+            <div class="hero-tab__thumb">
+              <img src="media/hero/char_fox.png" alt="狐狸法師立繪縮圖" loading="lazy" />
+            </div>
+            <div class="hero-tab__info">
+              <span class="tab-badge">03</span>
+              <span class="tab-name">狐狸法師</span>
+              <span class="tab-role">法師 · 法袍法杖</span>
+            </div>
           </button>
           <button type="button" class="hero-tab" role="tab" aria-selected="false" aria-controls="hero-boar" id="tab-boar" data-hero="boar">
-            <span class="tab-badge">04</span>
-            <span class="tab-name">野豬狂戰</span>
-            <span class="tab-role">重裝先鋒 · 狂戰</span>
+            <div class="hero-tab__thumb">
+              <img src="media/hero/char_boar.png" alt="野豬戰士立繪縮圖" loading="lazy" />
+            </div>
+            <div class="hero-tab__info">
+              <span class="tab-badge">04</span>
+              <span class="tab-name">野豬戰士</span>
+              <span class="tab-role">戰士 · 維京裝束巨錘</span>
+            </div>
           </button>
         </div>
 
-        <!-- 英雄詳情面板 (Panels) -->
+        <!-- 角色詳情面板 (Panels) -->
         <div class="hero-panels">
           <!-- Panel 1: 小白 -->
           <article class="hero-panel is-active" id="hero-whitey" role="tabpanel" aria-labelledby="tab-whitey">
-            <div class="hero-panel__main">
-              <div class="hero-panel__head">
-                <div class="hero-panel__titles">
-                  <span class="hero-archetype">純真勇者 · SWORDMASTER</span>
-                  <h4 class="hero-name">白兔劍士「小白」</h4>
-                  <p class="hero-quote">「動起來吧，小傢伙，去看看這個停下來的世界。」</p>
-                </div>
-                <div class="hero-key-badge">
-                  <span class="badge-label">核心發條</span>
-                  <span class="badge-val">15 圈初源</span>
-                </div>
+            <div class="hero-panel__layout">
+              <div class="hero-panel__visual">
+                <img src="media/hero/char_rabbit.png" alt="白兔劍士小白官方立繪：單手長劍、金屬立耳、背後發條鑰匙" class="hero-panel__portrait" />
+                <span class="hero-panel__tag">主視覺同框角色</span>
               </div>
-              <p class="hero-desc">
-                米白純淨金屬板件，胸膛跳動著原初雙子擒縱「發條之心」。背部裝有醒目的黃銅發條鑰匙，以小博大的敏捷身手穿梭於巨型機械齒輪縫隙中。
-              </p>
-              <div class="hero-specs-grid">
-                <div class="spec-card">
-                  <span class="spec-label">專屬兵裝</span>
-                  <strong class="spec-val">初源單手長劍</strong>
-                  <span class="spec-desc">微末之刃 · 精準破甲</span>
+              <div class="hero-panel__main">
+                <div class="hero-panel__head">
+                  <div class="hero-panel__titles">
+                    <span class="hero-archetype">主視覺角色 · 劍士</span>
+                    <h4 class="hero-name">白兔劍士「小白」</h4>
+                    <p class="hero-quote">「動起來吧，小傢伙，去看看這個停下來的世界。」</p>
+                  </div>
+                  <div class="hero-key-badge">
+                    <span class="badge-label">標誌特徵</span>
+                    <span class="badge-val">黃銅發條鑰匙</span>
+                  </div>
                 </div>
-                <div class="spec-card">
-                  <span class="spec-label">感知天賦</span>
-                  <strong class="spec-val">長耳共鳴聽音</strong>
-                  <span class="spec-desc">感知破綻 · 零件拆卸</span>
-                </div>
-                <div class="spec-card">
-                  <span class="spec-label">作戰風格</span>
-                  <strong class="spec-val">15 圈律動對決</strong>
-                  <span class="spec-desc">張弛有度 · 閃避反擊</span>
-                </div>
-                <div class="spec-card">
-                  <span class="spec-label">過載奧義</span>
-                  <strong class="spec-val">百裂廢鐵暴風</strong>
-                  <span class="spec-desc">安全閥全開 · 終結大劍斬</span>
-                </div>
-              </div>
-            </div>
-          </article>
-
-          <!-- Panel 2: 雷歐 -->
-          <article class="hero-panel" id="hero-leo" role="tabpanel" aria-labelledby="tab-leo" hidden>
-            <div class="hero-panel__main">
-              <div class="hero-panel__head">
-                <div class="hero-panel__titles">
-                  <span class="hero-archetype">皇家守衛 · PALADIN</span>
-                  <h4 class="hero-name">獅子騎士「雷歐」</h4>
-                  <p class="hero-quote">「只要黃金齒輪仍在咬合，榮譽之門便絕不向混亂敞開。」</p>
-                </div>
-                <div class="hero-key-badge">
-                  <span class="badge-label">核心發條</span>
-                  <span class="badge-val">鎢鋼同心</span>
-                </div>
-              </div>
-              <p class="hero-desc">
-                身披皇家重裝雕花板甲，威嚴鬃毛由數十枚同心金色齒輪聯動運轉。鎮守世界大鐘外環防線，背部雙聯散熱煙囪在戰意高漲時噴湧滾燙蒸汽。
-              </p>
-              <div class="hero-specs-grid">
-                <div class="spec-card">
-                  <span class="spec-label">專屬兵裝</span>
-                  <strong class="spec-val">耀金騎士長槍</strong>
-                  <span class="spec-desc">沉穩突進 · 貫穿破盾</span>
-                </div>
-                <div class="spec-card">
-                  <span class="spec-label">戰術天賦</span>
-                  <strong class="spec-val">磐石完美招架</strong>
-                  <span class="spec-desc">化解衝擊 · 即時反制</span>
-                </div>
-                <div class="spec-card">
-                  <span class="spec-label">防禦體系</span>
-                  <strong class="spec-val">同心齒輪護盾</strong>
-                  <span class="spec-desc">硬質重甲 · 抵禦重擊</span>
-                </div>
-                <div class="spec-card">
-                  <span class="spec-label">過載奧義</span>
-                  <strong class="spec-val">王者裁決斬</strong>
-                  <span class="spec-desc">齒輪過載 · 巨芒劈裂敵陣</span>
+                <p class="hero-desc">
+                  米白純淨金屬板件，胸口鑲嵌青綠發光玻璃發條之心。背部裝有外露黃銅發條鑰匙，2.2 頭身金屬玩具公仔比例，以單手長劍探索停擺的沙盤世界。
+                </p>
+                <div class="hero-specs-grid">
+                  <div class="spec-card">
+                    <span class="spec-label">職業</span>
+                    <strong class="spec-val">劍士</strong>
+                    <span class="spec-desc">主視覺同框角色 · 看板角色</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">武器裝備</span>
+                    <strong class="spec-val">單手長劍</strong>
+                    <span class="spec-desc">單手長劍一把 · 2.2 頭身</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">機械特徵</span>
+                    <strong class="spec-val">金屬立耳</strong>
+                    <span class="spec-desc">立耳金屬件 · 球形鉸鏈關節</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">發條標誌</span>
+                    <strong class="spec-val">發條鑰匙</strong>
+                    <span class="spec-desc">背部黃銅雙翼蝶形發條鑰匙</span>
+                  </div>
                 </div>
               </div>
             </div>
           </article>
 
-          <!-- Panel 3: 狐狸學者 -->
+          <!-- Panel 2: 獅子騎士 -->
+          <article class="hero-panel" id="hero-lion" role="tabpanel" aria-labelledby="tab-lion" hidden>
+            <div class="hero-panel__layout">
+              <div class="hero-panel__visual">
+                <img src="media/hero/char_lion.png" alt="獅子騎士官方立繪：騎士長槍、皇家守衛裝束、金屬鬃毛" class="hero-panel__portrait" />
+                <span class="hero-panel__tag">主視覺同框角色</span>
+              </div>
+              <div class="hero-panel__main">
+                <div class="hero-panel__head">
+                  <div class="hero-panel__titles">
+                    <span class="hero-archetype">主視覺角色 · 騎士</span>
+                    <h4 class="hero-name">獅子騎士</h4>
+                    <p class="hero-quote">「皇家守衛裝束 · 騎士長槍持握」</p>
+                  </div>
+                  <div class="hero-key-badge">
+                    <span class="badge-label">標誌特徵</span>
+                    <span class="badge-val">黃銅發條鑰匙</span>
+                  </div>
+                </div>
+                <p class="hero-desc">
+                  身披皇家守衛裝束與厚重黃銅胸甲，鬃毛為層疊金屬板件與鉚釘固定。站立持長槍，背後外露金色金屬發條旋鈕鑰匙，呈現胡桃鉗經典玩具質感。
+                </p>
+                <div class="hero-specs-grid">
+                  <div class="spec-card">
+                    <span class="spec-label">職業</span>
+                    <strong class="spec-val">騎士</strong>
+                    <span class="spec-desc">主視覺同框角色 · 皇家守衛裝束</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">武器裝備</span>
+                    <strong class="spec-val">騎士長槍</strong>
+                    <span class="spec-desc">單手持長槍 · 左手空手無短劍</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">機械特徵</span>
+                    <strong class="spec-val">金屬板件鬃毛</strong>
+                    <span class="spec-desc">弧形金屬板模組 · 扁平金屬鰭片尾</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">發條標誌</span>
+                    <strong class="spec-val">發條鑰匙</strong>
+                    <span class="spec-desc">背部黃銅金屬發條旋鈕鑰匙</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Panel 3: 狐狸法師 -->
           <article class="hero-panel" id="hero-fox" role="tabpanel" aria-labelledby="tab-fox" hidden>
-            <div class="hero-panel__main">
-              <div class="hero-panel__head">
-                <div class="hero-panel__titles">
-                  <span class="hero-archetype">符文智者 · SAGE</span>
-                  <h4 class="hero-name">狐狸學者</h4>
-                  <p class="hero-quote">「星辰的軌道早已銘刻在齒輪的齒尖，一切停擺皆有跡可循。」</p>
-                </div>
-                <div class="hero-key-badge">
-                  <span class="badge-label">核心發條</span>
-                  <span class="badge-val">天體星盤</span>
-                </div>
+            <div class="hero-panel__layout">
+              <div class="hero-panel__visual">
+                <img src="media/hero/char_fox.png" alt="狐狸法師官方立繪：法袍、法杖、分節金屬尾" class="hero-panel__portrait" />
+                <span class="hero-panel__tag">主視覺同框角色</span>
               </div>
-              <p class="hero-desc">
-                身穿深藍星象法袍，精巧木銅齒輪法杖頂端旋轉著縮小版渾天儀。精通世界大鐘的星讀律曆與符文封印機關，能在戰場上引導空間重力場。
-              </p>
-              <div class="hero-specs-grid">
-                <div class="spec-card">
-                  <span class="spec-label">專屬兵裝</span>
-                  <strong class="spec-val">木銅符文法杖</strong>
-                  <span class="spec-desc">星圖引導 · 遠程牽制</span>
+              <div class="hero-panel__main">
+                <div class="hero-panel__head">
+                  <div class="hero-panel__titles">
+                    <span class="hero-archetype">主視覺角色 · 法師</span>
+                    <h4 class="hero-name">狐狸法師</h4>
+                    <p class="hero-quote">「微縮舞台戲服 · 長法杖水晶鑲嵌」</p>
+                  </div>
+                  <div class="hero-key-badge">
+                    <span class="badge-label">標誌特徵</span>
+                    <span class="badge-val">黃銅發條鑰匙</span>
+                  </div>
                 </div>
-                <div class="spec-card">
-                  <span class="spec-label">機關天賦</span>
-                  <strong class="spec-val">星軸符文解析</strong>
-                  <span class="spec-desc">削弱裝甲 · 破除力場</span>
-                </div>
-                <div class="spec-card">
-                  <span class="spec-label">戰術支援</span>
-                  <strong class="spec-val">微型重力透鏡</strong>
-                  <span class="spec-desc">聚攏零件 · 控場制動</span>
-                </div>
-                <div class="spec-card">
-                  <span class="spec-label">過載奧義</span>
-                  <strong class="spec-val">星穹萬象光子滅</strong>
-                  <span class="spec-desc">空間失重 · 毀滅性光子衝擊</span>
+                <p class="hero-desc">
+                  身穿微縮舞台戲服風格深色法袍，左手持握頂端鑲嵌青碧水晶的長法杖。金屬三角立耳與橘白面部金屬板件沖壓拼裝，身後配備分節金屬彈簧尾。
+                </p>
+                <div class="hero-specs-grid">
+                  <div class="spec-card">
+                    <span class="spec-label">職業</span>
+                    <strong class="spec-val">法師</strong>
+                    <span class="spec-desc">主視覺同框角色 · 微縮舞台戲服</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">武器裝備</span>
+                    <strong class="spec-val">法杖</strong>
+                    <span class="spec-desc">長法杖 · 頂端青碧發光水晶</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">機械特徵</span>
+                    <strong class="spec-val">分節金屬尾</strong>
+                    <span class="spec-desc">金屬三角立耳 · 模組化裝配縫</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">發條標誌</span>
+                    <strong class="spec-val">發條鑰匙</strong>
+                    <span class="spec-desc">背部黃銅雙孔蝶形發條鑰匙</span>
+                  </div>
                 </div>
               </div>
             </div>
           </article>
 
-          <!-- Panel 4: 野豬狂戰 -->
+          <!-- Panel 4: 野豬戰士 -->
           <article class="hero-panel" id="hero-boar" role="tabpanel" aria-labelledby="tab-boar" hidden>
-            <div class="hero-panel__main">
-              <div class="hero-panel__head">
-                <div class="hero-panel__titles">
-                  <span class="hero-archetype">重裝先鋒 · BERSERKER</span>
-                  <h4 class="hero-name">野豬狂戰</h4>
-                  <p class="hero-quote">「沒有任何生鏽的外殼，能扛住這柄動力戰錘的三次重擊！」</p>
-                </div>
-                <div class="hero-key-badge">
-                  <span class="badge-label">核心發條</span>
-                  <span class="badge-val">高壓排氣</span>
-                </div>
+            <div class="hero-panel__layout">
+              <div class="hero-panel__visual">
+                <img src="media/hero/char_boar.png" alt="野豬戰士官方立繪：維京裝束、巨錘、金屬鼻盤與獠牙" class="hero-panel__portrait" />
+                <span class="hero-panel__tag">主視覺同框角色</span>
               </div>
-              <p class="hero-desc">
-                厚重維京鉚釘鐵甲與鋼鐵鍛造雙獠牙，揮舞著高扭矩動力戰錘。體內粗獷的排氣風箱隨步伐轟鳴，以純粹的物理力量瓦解巨型頭目的防禦樞紐。
-              </p>
-              <div class="hero-specs-grid">
-                <div class="spec-card">
-                  <span class="spec-label">專屬兵裝</span>
-                  <strong class="spec-val">巨型動力戰錘</strong>
-                  <span class="spec-desc">重型打擊 · 部位粉碎</span>
+              <div class="hero-panel__main">
+                <div class="hero-panel__head">
+                  <div class="hero-panel__titles">
+                    <span class="hero-archetype">主視覺角色 · 戰士</span>
+                    <h4 class="hero-name">野豬戰士</h4>
+                    <p class="hero-quote">「維京裝束 · 鍛造金屬板件獠牙」</p>
+                  </div>
+                  <div class="hero-key-badge">
+                    <span class="badge-label">標誌特徵</span>
+                    <span class="badge-val">黃銅發條鑰匙</span>
+                  </div>
                 </div>
-                <div class="spec-card">
-                  <span class="spec-label">先鋒天賦</span>
-                  <strong class="spec-val">蓄力鋼鐵霸體</strong>
-                  <span class="spec-desc">無視衝擊 · 強行破招</span>
-                </div>
-                <div class="spec-card">
-                  <span class="spec-label">機甲破壞</span>
-                  <strong class="spec-val">鎢鋼獠牙衝撞</strong>
-                  <span class="spec-desc">撞碎外殼 · 暴露核心</span>
-                </div>
-                <div class="spec-card">
-                  <span class="spec-label">過載奧義</span>
-                  <strong class="spec-val">狂怒蒸汽震撼</strong>
-                  <span class="spec-desc">全管線超壓 · 地裂震盪波</span>
+                <p class="hero-desc">
+                  身著維京裝束金屬板甲，黃銅金屬鼻盤與鍛造金屬鉚釘獠牙完全機械化。手持重型金屬戰錘，背部清楚可見黃銅雙孔發條鑰匙。
+                </p>
+                <div class="hero-specs-grid">
+                  <div class="spec-card">
+                    <span class="spec-label">職業</span>
+                    <strong class="spec-val">戰士</strong>
+                    <span class="spec-desc">主視覺同框角色 · 維京裝束</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">武器裝備</span>
+                    <strong class="spec-val">巨錘</strong>
+                    <span class="spec-desc">重型金屬戰錘 · 維京裝束</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">機械特徵</span>
+                    <strong class="spec-val">金屬獠牙</strong>
+                    <span class="spec-desc">黃銅金屬鼻盤 · 鍛造金屬獠牙</span>
+                  </div>
+                  <div class="spec-card">
+                    <span class="spec-label">發條標誌</span>
+                    <strong class="spec-val">發條鑰匙</strong>
+                    <span class="spec-desc">背部黃銅雙孔發條鑰匙</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -628,7 +672,7 @@
   </section>
 
   <!-- Bento 六大界域 -->
-  <section class="band band--paper">
+  <section class="band band--paper" id="regions">
     <div class="container">
       <div class="sec-head scroll-narrative">
         <p class="sec-kicker">Explore</p>
