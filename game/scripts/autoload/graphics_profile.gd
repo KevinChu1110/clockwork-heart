@@ -143,11 +143,7 @@ func apply() -> void:
 	applied_content_size = Vector2i(int(s.get("content_w", BASE_W)), int(s.get("content_h", BASE_H)))
 	var win := get_window()
 	if win != null:
-		if applied == "high":
-			## (0,0) = 用 project.godot 的 1280×720，不改開發機現況
-			win.content_scale_size = Vector2i(0, 0)
-		else:
-			win.content_scale_size = applied_content_size
+		win.content_scale_size = applied_content_size
 	changed.emit(applied)
 	print("GraphicsProfile apply choice=%s applied=%s scale=%s size=%s shadows=%s particles=%s vfx=%s method=%s" % [
 		choice, applied, applied_scale, applied_content_size, s.get("shadows"), s.get("particles"), s.get("vfx"),
