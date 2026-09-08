@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "first_path": "title → lobby → C0",
+  "target_mb": [50, 80],
+  "packs": {
+    "core": {
+      "player_gets": "第一次下載。標題、大廳（今日村莊／四大殿堂）、C0 序章（閣樓＋荒路）可玩。含操作／戰鬥／UI／玩家紙娃娃／C0 用 BGM。",
+      "map_prefixes": ["village", "road", "town"],
+      "map_extra": ["barracks_yard", "sky_kingdom"],
+      "bgm": ["title", "village", "town", "road", "battle"],
+      "keep_dirs": [
+        "assets/sprites/player",
+        "assets/sprites/npcs",
+        "assets/sprites/ui",
+        "assets/sprites/fx",
+        "assets/sprites/tiles",
+        "assets/sprites/equipment",
+        "assets/sprites/souls",
+        "assets/sprites/pets",
+        "assets/sprites/props",
+        "assets/sprites/portraits",
+        "assets/sprites/bosses",
+        "assets/audio/sfx"
+      ],
+      "fonts": ["jf-openhuninn-2.1.ttf"],
+      "title_art": [
+        "assets/sprites/illustrations/title_bg_clockwork.png",
+        "assets/sprites/illustrations/title_bg.png"
+      ],
+      "sentinels": [
+        "res://assets/sprites/maps/village_bg.webp",
+        "res://assets/sprites/maps/town_bg.webp",
+        "res://assets/sprites/maps/road_bg.webp"
+      ]
+    },
+    "chapter": {
+      "player_gets": "C1～C6 與後續區域。之後新地圖預設進這包，除非前綴是 village／road／town。",
+      "map_prefixes": ["wild", "mist", "dojo", "forest", "coast", "tower", "cross"],
+      "map_extra": [
+        "crossroads",
+        "hunting_grounds",
+        "caravan_camp",
+        "starfall_plain",
+        "blackflame_scar"
+      ],
+      "bgm": ["wild", "mist", "dojo", "forest", "coast", "tower", "ending", "boss"],
+      "sentinels": ["res://assets/sprites/maps/wild_bg.webp"]
+    },
+    "extra": {
+      "player_gets": "第一次不必載：語系後備字型、BGM 的 wav 占位、決鬥插圖、已有 webp 的 png 重複檔。行銷站 web/media 也不進遊戲首包。",
+      "fonts": [
+        "NotoSansTC-Regular.otf",
+        "NotoSansSC-Regular.otf",
+        "NotoSansKR-Regular.otf"
+      ],
+      "sentinels": ["res://assets/fonts/NotoSansTC-Regular.otf"]
+    }
+  },
+  "default_pack": "chapter"
+}

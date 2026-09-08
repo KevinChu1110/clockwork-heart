@@ -32,6 +32,7 @@ const ExploreHostScn = preload("res://scripts/world/explore_host.gd")
 const WorldTravel = preload("res://scripts/world/world_travel.gd")
 const WorldContent = preload("res://scripts/world/world_content.gd")
 const RegionCatalog = preload("res://scripts/world/region_catalog.gd")
+const BundlePacksScn = preload("res://scripts/systems/bundle_packs.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const MapleHudScn = preload("res://scripts/ui/maple_hud.gd")
@@ -2112,7 +2113,21 @@ func _open_explore(map_id: String, screen: Screen) -> void:
 	_open_explore_then(map_id, screen, Callable())
 
 
+func _show_bundle_missing(map_id: String) -> void:
+	var dlg := AcceptDialog.new()
+	dlg.title = "尚未下載"
+	dlg.dialog_text = BundlePacksScn.missing_pack_line(map_id)
+	dlg.unresizable = true
+	add_child(dlg)
+	dlg.popup_centered()
+	dlg.confirmed.connect(dlg.queue_free)
+	dlg.close_requested.connect(dlg.queue_free)
+
+
 func _open_explore_then(map_id: String, screen: Screen, after: Callable) -> void:
+	if not BundlePacksScn.can_enter_map(map_id):
+		_show_bundle_missing(map_id)
+		return
 	_fade_pulse(func():
 		_clear_host()
 		_current = screen
