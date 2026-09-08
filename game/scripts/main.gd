@@ -2744,6 +2744,9 @@ func _new_game() -> void:
 
 
 func _go_ng_plus_menu() -> void:
+	if not GameState.has_flag("game_cleared") and GameState.ng_plus <= 0:
+		_play_dialog(DialogLines.lines("hub.ng_plus_not_yet"), _go_title)
+		return
 	## Product Lock §4：NG+ 已移出範圍。不再從標題／通關後把玩家送進二周目。
 	_go_title()
 
@@ -7259,6 +7262,9 @@ func _go_ending() -> void:
 # ─── 通關後 · 黑鏽裂縫 ───
 
 func _go_postgame_hub() -> void:
+	if not GameState.has_flag("game_cleared"):
+		_play_dialog(DialogLines.lines("post.rift_not_open"))
+		return
 	## Product Lock §4：裂縫／NG+ 移出範圍。舊入口改成出口，不開裂縫中樞。
 	_panel(
 		_t("通關之後"),
