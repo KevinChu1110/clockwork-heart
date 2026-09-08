@@ -78,8 +78,8 @@
    "id": "mob-input",
    "cat": "遊戲",
    "title": "🥈 手機化 2／6：輸入抽象層",
-   "status": "測試中",
-   "note": "GameInput 七語意動作; 冒煙與 test_game_input/battle_keys/battle_touch 綠; 分支 agent/2026-09-07-input-abstraction",
+   "status": "已上線",
+   "note": "QA回歸驗收全綠(t_5f90bd63)，79/79 PASSED",
    "keys": [
     "input",
     "輸入",
