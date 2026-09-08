@@ -149,31 +149,41 @@ body[data-page="home"] .gnb.is-scrolled {
   color: #1A1408;
   box-shadow: 0 4px 0 #5C440E, 0 10px 22px rgba(212, 175, 55, 0.28);
 }
+/* ── 希臘神殿配色統一：次要按鈕全站統一為香檳金 / 古典金 ── */
+.btn-primary {
+  background: linear-gradient(180deg, #F0D78C 0%, #D4AF37 55%, #8C6A1A 100%);
+  color: #1A1408 !important;
+  border: 1px solid #F0D78C;
+  box-shadow: 0 4px 0 #5C440E, 0 10px 22px rgba(212, 175, 55, 0.28);
+}
 .btn-primary:hover {
   background: linear-gradient(180deg, #F0D78C 0%, #D4AF37 55%, #8C6A1A 100%);
   box-shadow: 0 6px 0 #5C440E, 0 14px 26px rgba(212, 175, 55, 0.4);
 }
 .btn-ghost {
-  background: rgba(11, 10, 14, 0.55);
-  color: var(--ivory);
-  border-color: var(--gold);
-  box-shadow: 0 4px 0 #5C440E, inset 0 0 0 1px rgba(212, 175, 55, 0.25);
+  background: rgba(26, 23, 31, 0.85);
+  color: var(--ivory) !important;
+  border: 1px solid var(--gold);
+  box-shadow: 0 4px 0 #4A3A12, inset 0 0 0 1px rgba(212, 175, 55, 0.25);
 }
 .btn-ghost:hover {
-  background: rgba(212, 175, 55, 0.12);
-  color: var(--gold-hover);
-  box-shadow: 0 6px 0 #5C440E;
+  background: rgba(212, 175, 55, 0.18);
+  color: var(--gold-hover) !important;
+  border-color: var(--gold-hover);
+  box-shadow: 0 6px 0 #4A3A12;
 }
-.btn-sky {
-  background: linear-gradient(180deg, #5FE0D2 0%, #2A9A90 100%);
-  color: #071614;
-  box-shadow: 0 4px 0 #14645C, 0 10px 22px rgba(62, 207, 191, 0.28);
+.btn-sky,
+.btn-champagne {
+  background: linear-gradient(180deg, #E6CA7E 0%, #B8922A 100%);
+  color: #1A1408 !important;
+  border: 1px solid #F0D78C;
+  box-shadow: 0 4px 0 #5C440E, 0 10px 22px rgba(212, 175, 55, 0.28);
 }
-.btn-coral,
-.btn-mint {
-  background: linear-gradient(180deg, #E8C96A 0%, #B8922A 100%);
-  color: #1A1408;
-  box-shadow: 0 4px 0 #5C440E;
+.btn-sky:hover,
+.btn-champagne:hover {
+  background: linear-gradient(180deg, #F0D78C 0%, #CFA534 100%);
+  color: #1A1408 !important;
+  box-shadow: 0 6px 0 #5C440E, 0 14px 26px rgba(212, 175, 55, 0.4);
 }
 .btn-oauth {
   background: var(--cream);
@@ -310,7 +320,17 @@ a.card:hover .title,
 }
 
 /* ── Hero ── */
-.hero { background: #07060A; }
+.hero {
+  background: #07060A;
+  min-height: clamp(560px, 85vh, 760px);
+  max-height: 820px;
+}
+.fx-layer,
+.fx-wisp,
+.fx-ember,
+.fx-dust-bg {
+  display: none !important;
+}
 .hero-overlay {
   background: linear-gradient(
     180deg,
@@ -347,8 +367,8 @@ a.card:hover .title,
 }
 .page-hero::before {
   background:
-    linear-gradient(100deg, rgba(7, 6, 10, 0.92) 0%, rgba(7, 6, 10, 0.55) 55%, rgba(212, 175, 55, 0.18) 100%),
-    var(--hero-img, none) center/cover no-repeat;
+    linear-gradient(100deg, rgba(7, 6, 10, 0.92) 0%, rgba(7, 6, 10, 0.65) 55%, rgba(212, 175, 55, 0.18) 100%),
+    url("../media/hero/key_visual_greece_gears.png") center/cover no-repeat !important;
 }
 .breadcrumb { color: var(--gold); }
 
@@ -579,3 +599,51 @@ footer a:hover { color: var(--teal-core); }
   .btn { min-height: 48px; }
   body::before { opacity: 0.04; }
 }
+
+/* ── 解決異常留白斷層與黑畫面：禁止大區塊因 IntersectionObserver 未觸發而預設透明 ── */
+.band.reveal-band,
+.reveal,
+.reveal-stagger > .reveal,
+.feature,
+.sec-head,
+.stat {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+.hero--video img.bg-fallback {
+  opacity: 0.85 !important;
+}
+
+/* ── 未過審素材替代展示：精緻神殿銘牌 ── */
+.placeholder-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 220px;
+  background: linear-gradient(180deg, #18151F 0%, #100E14 100%);
+  border: 1px dashed rgba(212, 175, 55, 0.4);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  color: var(--gold-light);
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6);
+}
+.placeholder-card svg {
+  width: 44px;
+  height: 44px;
+  margin-bottom: 0.75rem;
+  opacity: 0.85;
+}
+.placeholder-card strong {
+  color: var(--gold);
+  font-size: 1.05rem;
+  margin-bottom: 0.25rem;
+  letter-spacing: 0.04em;
+}
+.placeholder-card span {
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+
