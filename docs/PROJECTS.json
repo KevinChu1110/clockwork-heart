@@ -344,8 +344,8 @@
    "id": "ai-agent-play",
    "cat": "平台",
    "title": "AI agent 操作遊戲 API/MCP 評估",
-   "status": "測試中",
-   "note": "評估報告完成於 docs/TECH_EVAL_AI_AGENT_MCP.md，分支 agent/20260908-eval-ai-agent-mcp 待審",
+   "status": "已上線",
+   "note": "分支 agent/20260908-eval-ai-agent-mcp 已合併 main (fbdce15)",
    "keys": [
     "AI agent"
    ]
