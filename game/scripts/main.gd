@@ -1986,28 +1986,35 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	for i in buttons.size():
 		var item: Dictionary = buttons[i]
 		var btn := Button.new()
-		btn.text = str(item["text"])
+		btn.text = str(item.get("text", ""))
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.focus_mode = Control.FOCUS_ALL
 		btn.mouse_filter = Control.MOUSE_FILTER_STOP
-		btn.disabled = false
-		UiStyle.style_button(btn, i == 0)
+		var is_dis: bool = bool(item.get("disabled", false))
+		btn.disabled = is_dis
+		UiStyle.style_button(btn, i == 0 and not is_dis)
 		## deferred：避免在 pressed 當幀清掉 host 導致「卡死」
-		var cb: Callable = item["cb"]
-		btn.pressed.connect(func():
-			AudioManager.play_ui()
-			## 只暫時關掉整列，下一幀回呼；不要留下「灰掉的新的旅途」假卡死
-			for c in row.get_children():
-				if c is Button:
-					(c as Button).disabled = true
-			call_deferred("_run_menu_cb", cb)
-		)
+		var cb: Callable = item.get("cb", Callable())
+		if cb.is_valid() and not is_dis:
+			btn.pressed.connect(func():
+				AudioManager.play_ui()
+				## 只暫時關掉整列，下一幀回呼；不要留下「灰掉的新的旅途」假卡死
+				for c in row.get_children():
+					if c is Button:
+						(c as Button).disabled = true
+				call_deferred("_run_menu_cb", cb)
+			)
 		row.add_child(btn)
+		if item.has("below_control") and item["below_control"] is Control:
+			row.add_child(item["below_control"])
 	## 按鈕都建好了，直接問實際需要多高（含 style_button 蓋上去的高度）
 	var need_h := row.get_combined_minimum_size().y
 	scroll.custom_minimum_size = Vector2(0, minf(need_h, avail_h))
 	if row.get_child_count() > 0:
-		(row.get_child(0) as Button).grab_focus()
+		for c in row.get_children():
+			if c is Button and not (c as Button).disabled:
+				(c as Button).grab_focus()
+				break
 	## 下一幀再確保 fade / 過場不擋
 	call_deferred("_reset_fade")
 
@@ -2330,6 +2337,16 @@ func proof_show_soul() -> void:
 	if GameState.stardust < 5:
 		GameState.add_stardust(5)
 	_go_soul_panel()
+
+
+func proof_show_tutor() -> void:
+	GameState.set_flag("c1_forged", true)
+	GameState.set_flag("c1_entered_city", true)
+	SkillSystem.ensure_skill_map()
+	SkillSystem.grant_c1_greybeard()
+	if GameState.gold < 100:
+		GameState.gold = 100
+	_go_skill_panel()
 
 
 func _go_title() -> void:
@@ -5440,6 +5457,28 @@ func _go_skill_panel() -> void:
 	SkillSystem.ensure_skill_map()
 	var body: String = SkillSystem.panel_status_bbcode()
 	var buttons: Array = []
+	## 已習得招式（導師指點／熟練推進／滿階極意）
+	for d in SkillSystem.CATALOG:
+		var sid2: String = str(d.get("id", ""))
+		if not SkillSystem.is_learned(sid2):
+			continue
+		var slv2: int = SkillSystem.get_lv(sid2)
+		var base_name2: String = str(SkillSystem.def_of(sid2).get("name", sid2))
+		var is_max: bool = (slv2 >= SkillSystem.MAX_LV)
+		var can_t: bool = SkillSystem.can_tutor(sid2)
+		var item := {
+			"below_control": _make_skill_progress_widget(sid2)
+		}
+		if is_max:
+			item["text"] = _t("【%s · Lv%d】已達極階") % [base_name2, slv2]
+			item["disabled"] = true
+		elif can_t:
+			item["text"] = _t("指點 %s（%d金）") % [base_name2, SkillSystem.TUTOR_COST]
+			item["cb"] = _skill_tutor_cb(sid2)
+		else:
+			item["text"] = _t("指點 %s（需 %d 金 · 金幣不足）") % [base_name2, SkillSystem.TUTOR_COST]
+			item["disabled"] = true
+		buttons.append(item)
 	## 可習得
 	for d in SkillSystem.CATALOG:
 		var sid: String = str(d.get("id", ""))
@@ -5447,16 +5486,131 @@ func _go_skill_panel() -> void:
 			continue
 		if SkillSystem.is_unlocked(sid):
 			var nm: String = str(d.get("name", sid))
-			buttons.append({"text": _t("體悟：%s") % nm, "cb": _skill_unlock_cb(sid)})
-	## 導師指點（加速熟練）
-	for d in SkillSystem.CATALOG:
-		var sid2: String = str(d.get("id", ""))
-		if SkillSystem.can_tutor(sid2):
-			var label: String = _t("指點 %s（%d金）") % [SkillSystem.display_name(sid2), SkillSystem.TUTOR_COST]
-			buttons.append({"text": label, "cb": _skill_tutor_cb(sid2)})
+			buttons.append({
+				"text": _t("體悟：%s") % nm,
+				"cb": _skill_unlock_cb(sid),
+				"below_control": _make_skill_progress_widget(sid),
+			})
 	buttons.append({"text": Loc.t("pause.soul"), "cb": _go_soul_panel})
 	buttons.append({"text": _t("回到廣場"), "cb": _go_c1_town})
 	_panel(Loc.t("panel.tutor"), body, buttons)
+
+
+func _make_skill_progress_widget(sid: String) -> Control:
+	var slv: int = SkillSystem.get_lv(sid)
+	var base_name: String = str(SkillSystem.def_of(sid).get("name", sid))
+	var cur_m: int = SkillSystem.get_mastery(sid)
+	var need_m: int = SkillSystem.mastery_need_for_next(sid)
+	var max_lv: int = SkillSystem.MAX_LV
+	var learned: bool = SkillSystem.is_learned(sid)
+
+	var card := PanelContainer.new()
+	var csb := StyleBoxFlat.new()
+	csb.bg_color = Color(0.99, 0.98, 0.95, 0.96)
+	csb.border_color = UiStyle.TATA_CARD_BORDER
+	csb.set_border_width_all(2)
+	csb.border_width_bottom = 4
+	csb.set_corner_radius_all(14)
+	csb.content_margin_left = 14
+	csb.content_margin_right = 14
+	csb.content_margin_top = 8
+	csb.content_margin_bottom = 10
+	csb.shadow_color = Color(0.25, 0.18, 0.10, 0.12)
+	csb.shadow_size = 5
+	csb.shadow_offset = Vector2(0, 2)
+	card.add_theme_stylebox_override("panel", csb)
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var vbox := VBoxContainer.new()
+	vbox.add_theme_constant_override("separation", 6)
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(vbox)
+
+	var top_row := HBoxContainer.new()
+	top_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(top_row)
+
+	var title_l := Label.new()
+	if not learned:
+		title_l.text = _t("招式階位：未習得 · %s") % base_name
+	elif slv >= max_lv:
+		title_l.text = _t("招式階位：Lv.%d %s（極階）") % [slv, base_name]
+	else:
+		title_l.text = _t("招式階位：Lv.%d %s") % [slv, base_name]
+	title_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_l.add_theme_font_size_override("font_size", 14)
+	title_l.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	title_l.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
+	title_l.add_theme_constant_override("outline_size", 2)
+	title_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top_row.add_child(title_l)
+
+	var pct: float = 0.0
+	var is_full := false
+	if not learned:
+		pct = 0.0
+	elif slv >= max_lv:
+		pct = 100.0
+		is_full = true
+	else:
+		pct = clampf(float(cur_m) / float(maxi(1, need_m)) * 100.0, 0.0, 100.0)
+		is_full = (cur_m >= need_m)
+
+	var val_l := Label.new()
+	if not learned:
+		val_l.text = _t("熟練度 0%")
+	elif slv >= max_lv:
+		val_l.text = _t("熟練度 100% · 滿階")
+	else:
+		val_l.text = _t("熟練 %d／%d（%.1f%%）") % [mini(cur_m, need_m), need_m, pct]
+	val_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	val_l.add_theme_font_size_override("font_size", 14)
+	val_l.add_theme_color_override("font_color", UiStyle.TATA_ORANGE if pct >= 50.0 else UiStyle.TATA_BROWN)
+	val_l.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
+	val_l.add_theme_constant_override("outline_size", 2)
+	val_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top_row.add_child(val_l)
+
+	var bar := ProgressBar.new()
+	bar.min_value = 0.0
+	bar.max_value = 100.0
+	bar.value = pct
+	bar.custom_minimum_size = Vector2(0, 18)
+	bar.show_percentage = false
+	bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var fill_color: Color = UiStyle.TATA_YELLOW
+	if not learned:
+		fill_color = Color(0.75, 0.72, 0.68, 0.5)
+	elif slv >= max_lv or is_full:
+		fill_color = UiStyle.TATA_YELLOW
+	elif pct >= 50.0:
+		fill_color = UiStyle.TATA_ORANGE
+	else:
+		fill_color = UiStyle.TATA_GREEN
+	UiStyle.style_jelly_progress(bar, fill_color)
+	vbox.add_child(bar)
+
+	var hint_l := Label.new()
+	if not learned:
+		hint_l.text = _t("〔未習得〕尚未領悟此招起手式，可點擊上方體悟習得")
+		hint_l.add_theme_color_override("font_color", Color(0.55, 0.50, 0.45))
+	elif slv >= max_lv:
+		hint_l.text = _t("〔推階圓滿〕滿階極意！此招式威力已臻化境，推階大成。")
+		hint_l.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
+	elif is_full:
+		hint_l.text = _t("〔熟練滿溢〕滿條推階！招式蓄勢待發，即將晉升下一階！")
+		hint_l.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
+	else:
+		var diff: int = maxi(0, need_m - cur_m)
+		hint_l.text = _t("〔推階蓄勢〕距升至 Lv.%d 尚需 %d 點熟練（可由戰鬥命中或導師指點累積）") % [slv + 1, diff]
+		hint_l.add_theme_color_override("font_color", Color(0.42, 0.35, 0.28))
+	hint_l.add_theme_font_size_override("font_size", 12)
+	hint_l.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
+	hint_l.add_theme_constant_override("outline_size", 2)
+	hint_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(hint_l)
+
+	return card
 
 
 func _skill_unlock_cb(sid: String) -> Callable:

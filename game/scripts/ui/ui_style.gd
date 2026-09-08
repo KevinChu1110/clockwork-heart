@@ -334,6 +334,34 @@ static func style_progress(bar: ProgressBar, fill: Color, bg: Color) -> void:
 	bar.show_percentage = false
 
 
+static func style_jelly_progress(bar: ProgressBar, fill: Color = TATA_YELLOW, bg: Color = Color(0.95, 0.93, 0.88, 0.95)) -> void:
+	## 塔塔多巴胺果凍立體進度條：厚底槽 + 高光果凍條
+	var bg_s := StyleBoxFlat.new()
+	bg_s.bg_color = bg
+	bg_s.border_color = TATA_CARD_BORDER
+	bg_s.set_border_width_all(2)
+	bg_s.border_width_bottom = 4
+	bg_s.set_corner_radius_all(10)
+	bg_s.content_margin_left = 3
+	bg_s.content_margin_right = 3
+	bg_s.content_margin_top = 2
+	bg_s.content_margin_bottom = 3
+	bg_s.shadow_color = Color(0.25, 0.18, 0.10, 0.15)
+	bg_s.shadow_size = 4
+	bg_s.shadow_offset = Vector2(0, 2)
+
+	var fill_s := StyleBoxFlat.new()
+	fill_s.bg_color = fill
+	fill_s.border_color = Color(1.0, 0.98, 0.85, 0.8)
+	fill_s.set_border_width_all(1)
+	fill_s.border_width_bottom = 3
+	fill_s.set_corner_radius_all(8)
+
+	bar.add_theme_stylebox_override("background", bg_s)
+	bar.add_theme_stylebox_override("fill", fill_s)
+	bar.show_percentage = false
+
+
 static func dim_rect(parent: Control, alpha: float = 0.45) -> ColorRect:
 	var d := ColorRect.new()
 	d.set_anchors_preset(Control.PRESET_FULL_RECT)
