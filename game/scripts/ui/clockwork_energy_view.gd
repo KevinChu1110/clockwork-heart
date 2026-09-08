@@ -411,7 +411,7 @@ func _build_allocation_modal() -> void:
 	_modal_panel.add_child(mvbox)
 
 	var m_title := Label.new()
-	m_title.text = "★ 發條能量過載！請選擇技能注入對象 ★"
+	m_title.text = "發條能量過載　請選擇技能注入對象"
 	m_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	m_title.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
 	m_title.add_theme_font_size_override("font_size", 20)

@@ -226,7 +226,7 @@ func _check_panel(p: Dictionary) -> void:
 	_collect(host, labels, buttons)
 	var title_found := false
 	for l in labels:
-		if l == want_title or l == "✦ %s ✦" % want_title:
+		if l == want_title:
 			title_found = true
 			break
 	if not title_found:

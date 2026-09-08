@@ -84,7 +84,7 @@ func _build_ui() -> void:
 	v_main.add_child(header)
 
 	var title_l := Label.new()
-	title_l.text = "✦ 系統設定 ✦"
+	title_l.text = "系統設定"
 	title_l.add_theme_font_size_override("font_size", 20)
 	title_l.add_theme_color_override("font_color", Color(1.0, 0.88, 0.45))
 	title_l.add_theme_color_override("font_outline_color", Color(0.2, 0.12, 0.05))
