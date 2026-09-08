@@ -55,7 +55,8 @@
 
 - [官方網站首頁 (Home)](https://kevinchu1110.github.io/clockwork-heart/): 遊戲主視覺展示、神殿永動齒輪世界觀、實機大廳展示與核心特色。
 - [PC 開發測試包下載 (Download)](https://kevinchu1110.github.io/clockwork-heart/pages/download.html): Windows / macOS / Linux 測試建置安裝包下載。
-- [畫面圖庫 (Gallery)](https://kevinchu1110.github.io/clockwork-heart/pages/gallery.html): 遊戲實機戰鬥截圖、場景地圖概念圖與 15 秒預告短片。
+- [畫面圖庫 (Gallery)](https://kevinchu1110.github.io/clockwork-heart/pages/gallery.html): 遊戲實機戰鬥截圖、場景地圖概念圖與宣傳短片入口。
+- [官方預告與宣傳短片 (Trailers)](https://kevinchu1110.github.io/clockwork-heart/pages/trailers.html): 官方 15 秒電影預告片與 17.5 秒《覺醒》品牌概念短片影音專區。
 - [系統與養成 (Systems)](https://kevinchu1110.github.io/clockwork-heart/pages/systems.html): 15 圈能量、部位拆卸、器魂招養成與四大殿堂詳解。
 - [六職雙武器系統 (Weapons)](https://kevinchu1110.github.io/clockwork-heart/pages/weapons.html): 十二條武器線、戰鬥三欄即時切換與武器特性。
 - [圖鑑指南 (Equipment)](https://kevinchu1110.github.io/clockwork-heart/pages/equipment.html): 裝備、防具、六槽飾品、戰魂封靈罐與寶石圖鑑。
