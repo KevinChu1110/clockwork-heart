@@ -2211,10 +2211,10 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			var pname := str(data.get("part_name", _t("部位")))
 			var staggered := bool(data.get("staggered", false))
 			if staggered:
-				_append_log(_t("[color=#fc0]💥 部位破壞！【%s】打破擊暈！[/color]") % pname)
+				_append_log(_t("[color=#fc0]部位破壞！【%s】打破擊暈！[/color]") % pname)
 			else:
-				_append_log(_t("[color=#fc0]💥 部位破壞！【%s】碎裂！[/color]") % pname)
-			_spawn_float(boss_id, _t("💥 部位破壞！"), Color(1.0, 0.85, 0.15), false, true)
+				_append_log(_t("[color=#fc0]部位破壞！【%s】碎裂！[/color]") % pname)
+			_spawn_float(boss_id, _t("部位破壞！"), Color(1.0, 0.85, 0.15), false, true)
 			_shake = 0.5
 			trigger_hit_stop(0.12)
 			_flash(_body_of(boss_id), Color(3.0, 2.5, 1.0))
@@ -2258,12 +2258,12 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			var label := wname if wname != "" else wline
 			var auto_sw := bool(data.get("auto", false))
 			if auto_sw:
-				_append_log(_t("[color=#8ff]⚔️ 武器次數耗盡 · 自動切換欄 %d：%s（武 %d/%d）[/color]") % [
+				_append_log(_t("[color=#8ff]武器次數耗盡 · 自動切換欄 %d：%s（武 %d/%d）[/color]") % [
 					int(data.get("index", 0)) + 1, label, wuses, wmax,
 				])
 				_spawn_float("player", _t("換武！"), Color(0.5, 1.0, 0.55), true)
 			else:
-				_append_log(_t("[color=#8ff]⚔️ 武器欄 %d：%s（武 %d/%d%s）[/color]") % [
+				_append_log(_t("[color=#8ff]武器欄 %d：%s（武 %d/%d%s）[/color]") % [
 					int(data.get("index", 0)) + 1, label, wuses, wmax,
 					(" · " + skn2) if skn2 != "" else "",
 				])
@@ -2284,11 +2284,11 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			var auto_b := bool(data.get("auto", false))
 			var bdur := float(data.get("duration", 8.0))
 			if auto_b:
-				_append_log(_t("[color=#f52]🔥 怒氣滿 · 暴怒！（%.0f 秒攻速與傷害提升）[/color]") % bdur)
-				_spawn_float("player", _t("🔥 暴怒！"), Color(1.0, 0.4, 0.1), true)
+				_append_log(_t("[color=#f52]怒氣滿 · 暴怒！（%.0f 秒攻速與傷害提升）[/color]") % bdur)
+				_spawn_float("player", _t("暴怒！"), Color(1.0, 0.4, 0.1), true)
 			else:
-				_append_log(_t("[color=#f52]🔥 暴怒！（%.0f 秒攻速與傷害提升）[/color]") % bdur)
-				_spawn_float("player", _t("🔥 暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)
+				_append_log(_t("[color=#f52]暴怒！（%.0f 秒攻速與傷害提升）[/color]") % bdur)
+				_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)
 			_shake = 0.35
 			trigger_hit_stop(0.1)
 			_flash(player_body, Color(3.0, 1.5, 0.5))
@@ -2694,13 +2694,13 @@ func _spawn_float(target_id: String, text: String, color: Color, is_crit: bool =
 
 	if is_break:
 		font_sz = 36
-		display_txt = "⚡ " + text + "!"
+		display_txt = text if (text.ends_with("!") or text.ends_with("！")) else (text + "!")
 		lab.add_theme_color_override("font_outline_color", Color(0.9, 0.25, 0.05, 1.0))
 		lab.add_theme_constant_override("outline_size", 5)
 		_shake = maxf(_shake, 0.35)
 	elif is_crit:
 		font_sz = 32
-		display_txt = "💥 " + text + "!"
+		display_txt = text if (text.ends_with("!") or text.ends_with("！")) else (text + "!")
 		lab.add_theme_color_override("font_outline_color", Color(0.85, 0.15, 0.05, 1.0))
 		lab.add_theme_constant_override("outline_size", 4)
 		_shake = maxf(_shake, 0.25)
