@@ -12,7 +12,7 @@
     "name": "El martillo de las deudas"
   },
   "title.echo_walker": {
-    "desc": "Vuelve a terminar el juego en cualquier capa del Eco de Llama Negra.",
+    "desc": "Vuelve a terminar el juego en cualquier capa del Eco de Óxido Negro.",
     "name": "Caminante del eco"
   },
   "title.featured_fan": {
@@ -24,7 +24,7 @@
     "name": "El que ve a través"
   },
   "title.gale_chaser": {
-    "desc": "Aguanta hasta la pausa de la Sombra Veloz.",
+    "desc": "Aguanta hasta la pausa de Viento Sombra.",
     "name": "Perseguidor del viento"
   },
   "title.guard_breaker": {
@@ -36,7 +36,7 @@
     "name": "Guardián de la lámpara"
   },
   "title.lore_reader": {
-    "desc": "Lee las tres teorías de la Llama Negra en el estante de Terciopelo.",
+    "desc": "Lee las tres teorías del Óxido Negro en el estante de Terciopelo.",
     "name": "Lector de contradicciones"
   },
   "title.mirror_break": {
@@ -44,7 +44,7 @@
     "name": "Rompeespejos"
   },
   "title.no_worship": {
-    "desc": "Rechaza las tres ofertas del Rey Demonio.",
+    "desc": "Rechaza las tres ofertas al pie de la torre.",
     "name": "No adoro al poder"
   },
   "title.rift_walker": {
@@ -52,11 +52,11 @@
     "name": "Caminante de grietas"
   },
   "title.ronin_path": {
-    "desc": "Convence (o vence) al Errante de Llama Negra en la encrucijada.",
+    "desc": "Convence (o vence) al Errante de Óxido Negro en la encrucijada.",
     "name": "El que envaina"
   },
   "title.scar_walker": {
-    "desc": "Aplasta al señor de la Cicatriz de Llama Negra.",
+    "desc": "Aplasta al señor de la Cicatriz de Óxido Negro.",
     "name": "Caminante de la cicatriz"
   },
   "title.shore_last": {
@@ -85,7 +85,7 @@
   },
   "title.world_wanderer": {
     "desc": "Visita treinta lugares distintos.",
-    "name": "Errante de Cuiling"
+    "name": "Errante del mundo"
   },
   "title.wreck_end": {
     "desc": "Hunde otra vez la sombra del capitán.",

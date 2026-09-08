@@ -12,7 +12,7 @@
     "name": "Hammer of Debts"
   },
   "title.echo_walker": {
-    "desc": "Clear the game again in any Black Flame Echo layer.",
+    "desc": "Clear the game again in any Blight Rust Echo layer.",
     "name": "Echowalker"
   },
   "title.featured_fan": {
@@ -24,7 +24,7 @@
     "name": "One Who Sees Through"
   },
   "title.gale_chaser": {
-    "desc": "Wait out Swiftshadow's pause.",
+    "desc": "Wait out Shadowwind's pause.",
     "name": "Windchaser"
   },
   "title.guard_breaker": {
@@ -36,7 +36,7 @@
     "name": "Lampkeeper"
   },
   "title.lore_reader": {
-    "desc": "Read all three Black Flame theories on Velvet's shelf.",
+    "desc": "Read all three Blight Rust theories on Velvet's shelf.",
     "name": "Reader of Contradictions"
   },
   "title.mirror_break": {
@@ -44,7 +44,7 @@
     "name": "Mirrorbreaker"
   },
   "title.no_worship": {
-    "desc": "All three refusals to the Demon King.",
+    "desc": "All three refusals at the tower base.",
     "name": "I Bow to No Power"
   },
   "title.rift_walker": {
@@ -52,11 +52,11 @@
     "name": "Riftwalker"
   },
   "title.ronin_path": {
-    "desc": "Talk down (or defeat) the Black Flame Ronin at the crossroads.",
+    "desc": "Talk down (or defeat) the Blight Rust Wanderer at the crossroads.",
     "name": "One Who Sheathes"
   },
   "title.scar_walker": {
-    "desc": "Flatten the lord of the Black Flame Scar.",
+    "desc": "Flatten the lord of the Blight Rust Scar.",
     "name": "Scarwalker"
   },
   "title.shore_last": {
@@ -85,7 +85,7 @@
   },
   "title.world_wanderer": {
     "desc": "Visit thirty different places.",
-    "name": "Wanderer of Cuiling"
+    "name": "World Wanderer"
   },
   "title.wreck_end": {
     "desc": "Sink the captain's shadow one more time.",

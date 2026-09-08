@@ -79,7 +79,7 @@ const SECRET_RELICS: Dictionary = {
 		"atk": 9,
 		"def": 2,
 		"hp": 8,
-		"lore": "黑焰疤主的傷口凝成的心核。刃上會殘一絲不肯散的熱。",
+		"lore": "黑鏽疤主的傷口凝成的心核。刃上會殘一絲不肯散的熱。",
 	},
 	"mirror_wraith": {
 		"unique_flag": "soul.relic.mirror_wraith",
@@ -350,6 +350,19 @@ func as_vessel(v: String) -> String:
 	return "綠葫蘆"
 
 
+## 玩家可見名。內部 id 仍是綠葫蘆／藍葫蘆…，不准把 id 印上畫面。
+func vessel_display(vessel: String = "") -> String:
+	match as_vessel(vessel if vessel != "" else GameState.soul_vessel):
+		"藍葫蘆":
+			return _t("藍階封靈壺")
+		"紫葫蘆":
+			return _t("紫階封靈壺")
+		"橙葫蘆":
+			return _t("橙階封靈壺")
+		_:
+			return _t("綠階封靈壺")
+
+
 func vessel_cost(vessel: String = "") -> int:
 	var v := as_vessel(vessel if vessel != "" else GameState.soul_vessel)
 	return int(VESSEL_COST.get(v, 80))
@@ -390,10 +403,11 @@ func vessel_ladder_bbcode() -> String:
 	var cur := as_vessel(GameState.soul_vessel)
 	var bits: PackedStringArray = []
 	for v in VESSEL_LADDER:
+		var shown := vessel_display(v)
 		if v == cur:
-			bits.append("[b]%s[/b]" % v)
+			bits.append("[b]%s[/b]" % shown)
 		else:
-			bits.append(v)
+			bits.append(shown)
 	return " → ".join(bits)
 
 
@@ -405,7 +419,7 @@ func ritual_footprint_line() -> String:
 	if GameState.has_flag("boss.white_fog_cleared"):
 		parts.append(_t("霧痕·衡"))
 	if GameState.has_flag("boss.abo_cleared"):
-		parts.append(_t("拳山·防"))
+		parts.append(_t("道場·防"))
 	if GameState.has_flag("c0_care") or GameState.has_wheat_stalk or GameState.wheat_stalk_broken:
 		parts.append(_t("鑰繩·梁／血"))
 	if GameState.has_flag("boss.shadowwind_cleared"):
@@ -665,14 +679,14 @@ func _ritual_success_hooks(soul: Dictionary, from_vessel: String = "", used_free
 	if gl != null and gl.has_method("system"):
 		var extra := ""
 		if bool(nv.get("reset", false)):
-			extra = _t("（同色頂階——魂器摔回綠葫蘆）")
+			extra = _t("（同色頂階——魂器摔回綠階封靈壺）")
 		elif bool(nv.get("climbed", false)):
-			extra = _t("（魂器升至 %s）") % str(nv.get("next", ""))
+			extra = _t("（魂器升至 %s）") % vessel_display(str(nv.get("next", "")))
 		var pay := _t("免費") if used_free else _t("%d 金") % vessel_cost(from_vessel)
 		if shard_got > 0:
 			extra += _t("（虔誠滿百——戰魂碎片+%d）") % shard_got
 		gl.call("system", _t("抽魂凝出 %s（%s）｜%s｜%s%s") % [
-			soul_display(soul), soul_bonus_line(soul), from_vessel, pay, extra
+			soul_display(soul), soul_bonus_line(soul), vessel_display(from_vessel), pay, extra
 		])
 
 
@@ -996,7 +1010,7 @@ func astrolabe_status_bbcode() -> String:
 	var survey := survey_astrolabe()
 	var lines: PackedStringArray = []
 	lines.append(_t("[b]聚魂殿 · 周天星盤[/b]"))
-	lines.append(_t("[color=#a0a8c0]「星盤偏了一角，像在等傭兵團最弱的那個。」[/color]"))
+	lines.append(_t("[color=#a0a8c0]「星盤偏了一角，像在等發條最鬆的那個。」[/color]"))
 	lines.append("")
 
 	var lit: int = int(survey.get("lit_count", 0))

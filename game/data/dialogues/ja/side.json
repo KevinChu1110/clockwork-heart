@@ -56,17 +56,17 @@
     },
     {
       "speaker": "琥珀",
-      "text": "戦って、私に売って、鍛造へ。傭兵だって勘定は要る。"
+      "text": "戦って、私に売って、鍛造へ。旅人だって勘定は要る。"
     }
   ],
   "side.ronin_guard_fire": [
     {
-      "speaker": "黒炎の浪人",
+      "speaker": "黒錆の浪人",
       "portrait": "road_bandit",
-      "text": "俺は火を守る。焰を薪にするな。"
+      "text": "俺は火を守る。錆を薪にするな。"
     },
     {
-      "speaker": "黒炎の浪人",
+      "speaker": "黒錆の浪人",
       "text": "倒れたら引きずり戻してやる。一度だけ。"
     }
   ],
@@ -78,13 +78,13 @@
   ],
   "side.ronin_too_early": [
     {
-      "speaker": "黒炎の浪人",
+      "speaker": "黒錆の浪人",
       "text": "……まだ早い。先にお前の獅子を倒してこい。"
     }
   ],
   "side.ronin_defeated": [
     {
-      "speaker": "黒炎の浪人",
+      "speaker": "黒錆の浪人",
       "text": "……強い……それがどうした……焰はまだ空だ。"
     },
     {

@@ -41,7 +41,7 @@
   ],
   "battle.demon_lose": [
     {
-      "speaker": "Demon King",
+      "speaker": "Stasis Core",
       "text": "Still too light…"
     },
     {
@@ -61,7 +61,7 @@
   ],
   "battle.falcon_lose": [
     {
-      "speaker": "Swiftshadow",
+      "speaker": "Shadowwind",
       "text": "The wind took you. Wait once more."
     },
     {
@@ -82,7 +82,7 @@
   "battle.rift_lose": [
     {
       "speaker": "System",
-      "text": "The Black Flame throws you back below the tower. {tip}"
+      "text": "Blight Rust throws you back below the tower. {tip}"
     }
   ],
   "battle.world_win": [

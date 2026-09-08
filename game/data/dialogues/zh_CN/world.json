@@ -68,7 +68,7 @@
     },
     {
       "speaker": "旁白",
-      "text": "帽沿写着歪字：别吃麦穗的。"
+      "text": "帽沿写着歪字：别吃旧钥的。"
     }
   ],
   "world.camp_ash_road": [
@@ -106,7 +106,7 @@
   "region.mist_locked": [
     {
       "speaker": "系统",
-      "text": "雾还太远。先在骑士堡把剑养起来。"
+      "text": "雾还太远。先在堡垒把剑养起来。"
     }
   ],
   "region.dojo_warn": [

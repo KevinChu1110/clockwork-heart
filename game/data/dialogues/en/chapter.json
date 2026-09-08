@@ -2,19 +2,19 @@
   "c6.refugee": [
     {
       "speaker": "Refugee",
-      "text": "The tower gate is open. We don't dare go up. You're the company's weakest?"
+      "text": "The tower gate is open. We don't dare go up. You're the loosest-wound?"
     }
   ],
   "c6.scroll_pile": [
     {
       "speaker": "Scroll",
-      "text": "The weakest may reach the top. Crave strength, and the flame gets there first."
+      "text": "The loosest-wound may reach the top. The scroll never wrote the cost."
     }
   ],
   "c6.tower_gate": [
     {
       "speaker": "Narration",
-      "text": "The tower gate is open. Black Flame breathes in the gap."
+      "text": "The tower gate is open. Blight Rust breathes in the gap."
     }
   ],
   "c0.shrine_stub": [
@@ -132,13 +132,13 @@
   "c1.leo_gate_cleared": [
     {
       "speaker": "System",
-      "text": "The Sacred Lion is awake. The mist road southeast is open."
+      "text": "Leo is awake. The mist road southeast is open."
     }
   ],
   "c1.leo_win": [
     {
       "speaker": "Leo",
-      "text": "A knight isn't about size. It's about not retreating."
+      "text": "A true guard is courage that does not step back, even when small."
     },
     {
       "speaker": "Leo",
@@ -155,12 +155,12 @@
   ],
   "c2.arrive": [
     {
-      "speaker": "Veilfog",
-      "text": "In the mist, true and false share a colour. Lend me your eyes."
+      "speaker": "Mistveil",
+      "text": "In the mist, true and false share a colour. The one with the loosest mainspring? …Lend me your eyes."
     },
     {
-      "speaker": "Veilfog",
-      "text": "Stay one night first. Night roads break in the heart before the feet."
+      "speaker": "Mistveil",
+      "text": "Stay one night first. Those still walking with a winding nearly spent—especially the ones who came to “take a look”—break in their own hearts first."
     },
     {
       "speaker": "System",
@@ -213,8 +213,8 @@
   ],
   "c2.train_tip": [
     {
-      "speaker": "Veilfog",
-      "text": "Shadows lie. The real body flashes."
+      "speaker": "Mistveil",
+      "text": "Hit a shadow, and the shadow laughs. Watch the True Tell—the frame the blade lifts. That's the real one."
     },
     {
       "speaker": "System",
@@ -228,12 +228,12 @@
     },
     {
       "speaker": "Journal",
-      "text": "\"I'm still here. Because you haven't come back.\" — Wheatear"
+      "text": "\"I'm still here. Because you haven't come back.\" — Oldkey"
     }
   ],
   "c2.fog_need_letter": [
     {
-      "speaker": "Veilfog",
+      "speaker": "Mistveil",
       "text": "You owe a letter. Back to the inn."
     }
   ],
@@ -246,11 +246,11 @@
   "c2.fog_win": [
     {
       "speaker": "White Fog",
-      "text": "Seen through. A mercenary can do that? Boring."
+      "text": "You saw through it… Even a freshly wound one can see through? How dull."
     },
     {
       "speaker": "White Fog",
-      "text": "The mist's gone. Report back or go on. Whatever."
+      "text": "The mist is gone. The road is right in front of you—go tell the Keep, or keep walking. Your call."
     },
     {
       "speaker": "System",
@@ -270,7 +270,7 @@
   "c3.arrive": [
     {
       "speaker": "Acha",
-      "text": "From the mist? The master is in the Trial Hall. He asks first."
+      "text": "He doesn't strike first. He asks first. He doesn't look at the Keep's road papers, or names written in prophecy."
     },
     {
       "speaker": "System",
@@ -314,11 +314,15 @@
   "c4.arrive": [
     {
       "speaker": "Windear",
-      "text": "Slower than the wind. Good. Wait for the moment it stops."
+      "text": "Just wound? Slower than the wind. —Good."
+    },
+    {
+      "speaker": "Windear",
+      "text": "If you want to see Shadowwind—learn to wait first. The instant the wind stops is the true one."
     },
     {
       "speaker": "System",
-      "text": "The Swiftshadow Nest is east."
+      "text": "West Woods is open. Shadowwind Nest is east."
     }
   ],
   "c4.treehouse": [
@@ -362,15 +366,15 @@
   "c4.watch_tower": [
     {
       "speaker": "Inscription",
-      "text": "Swiftshadow guards the wind. The wind guards travellers."
+      "text": "Shadowwind guards the wind. The wind guards clockwork on the road."
     },
     {
       "speaker": "Inscription",
-      "text": "When the wind goes wild, wait until it remembers it once stopped."
+      "text": "If the wind goes wild—wait until it remembers it once stopped for someone."
     },
     {
       "speaker": "Thought",
-      "text": "Waiting isn't weakness. See clearly, then shoot."
+      "text": "Waiting… isn't weakness. See clearly—then shoot."
     }
   ],
   "c4.herb_looted": [
@@ -387,16 +391,16 @@
   ],
   "c4.falcon_win": [
     {
-      "speaker": "Swiftshadow",
-      "text": "You caught the wind. You were willing to stop."
+      "speaker": "Shadowwind",
+      "text": "You caught the wind… the loosest mainspring, yet willing to wait."
     },
     {
-      "speaker": "Swiftshadow",
-      "text": "The silver feather is yours. Remember someone was willing to stop."
+      "speaker": "Shadowwind",
+      "text": "The silver plume is yours. Not a prize—a memory: someone was willing to stop for you. When you report, do not write that you were chosen."
     },
     {
       "speaker": "Windear",
-      "text": "Go. The coast is still roaring."
+      "text": "Go. The coast is still roaring. If the Keep asks, say: you waited for the wind."
     },
     {
       "speaker": "System",
@@ -405,12 +409,12 @@
   ],
   "c5.arrive": [
     {
-      "speaker": "Tideroar",
-      "text": "On the shore you compete by meeting it head-on. Stonefist forgot where to put his strength."
+      "speaker": "Tidehowl",
+      "text": "Stonefist isn't here to smash you. It forgot where force should go."
     },
     {
       "speaker": "System",
-      "text": "Stonefist Cliff is east."
+      "text": "The coast is open. Stonefist Cliff is east."
     }
   ],
   "c5.dock": [
@@ -447,7 +451,7 @@
   ],
   "c5.forge_tip_done": [
     {
-      "speaker": "Tideroar",
+      "speaker": "Tidehowl",
       "text": "The axe's will is in the edge, not the throat."
     }
   ],
@@ -470,15 +474,15 @@
   "c5.boar_win": [
     {
       "speaker": "Stonefist",
-      "text": "Ha! You're the one left standing."
+      "text": "Hahaha! You're the one left standing! Loosest spring, and you still met it head-on."
     },
     {
       "speaker": "Stonefist",
-      "text": "Strength is for guarding the shore. Don't write 'hero' in your report."
+      "text": "Force is for guarding the shore. Don't write \"chosen by prophecy\" in the report."
     },
     {
-      "speaker": "Tideroar",
-      "text": "To the tower. Your strength has an aim now."
+      "speaker": "Tidehowl",
+      "text": "Good! To the tower. If the Keep asks, say: you aimed your force true."
     },
     {
       "speaker": "System",
@@ -504,7 +508,7 @@
     },
     {
       "speaker": "Phantom Voice",
-      "text": "Get strong and save everyone? The flame laughs first."
+      "text": "Overwind the spring and save everyone? The rust laughs first."
     },
     {
       "speaker": "Thought",
@@ -517,8 +521,8 @@
   ],
   "c6.demon_win": [
     {
-      "speaker": "Demon King",
-      "text": "Impossible… the company's weakest…"
+      "speaker": "Stasis Core",
+      "text": "Impossible… the loosest-wound…"
     },
     {
       "speaker": "Predecessor",
@@ -526,11 +530,11 @@
     },
     {
       "speaker": "Predecessor",
-      "text": "Next time… don't walk my road."
+      "text": "Next time… don't take my path."
     },
     {
       "speaker": "Predecessor",
-      "text": "The sword is yours again. Or—give it to the next one as light as us."
+      "text": "The sword is yours again. Or—give it to the next toy as light as us."
     },
     {
       "speaker": "System",

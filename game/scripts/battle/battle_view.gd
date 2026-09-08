@@ -220,7 +220,7 @@ func setup(mode: String) -> void:
 	if cry != "":
 		call_deferred("_append_log", "[color=#fd9]%s：「%s」[/color]" % [GameState.player_name, cry])
 
-	## 黑焰迴響：敵強化 + 機制窗略短
+	## 黑鏽迴響：敵強化 + 機制窗略短
 	var ng_m: float = GameState.ng_enemy_mult()
 	if ng_m > 1.001:
 		BattleSim.apply_ng_plus(sim, ng_m)
@@ -249,14 +249,14 @@ func setup(mode: String) -> void:
 	_flash_coach(_mode_coach_intro(mode), 3.2)
 	_append_log(_t("[color=#8cf]右側拇指：攻擊／技能／換武／鎖定／暫停／逃離。[/color]"))
 	if GameState.ng_plus > 0:
-		_append_log(_t("[color=#c8f]黑焰迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]") % [
+		_append_log(_t("[color=#c8f]黑鏽迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]") % [
 			GameState.ng_plus, ng_m
 		])
 		_flash_coach(_t("二周目：敵人更硬，空檔更窄。一樣等綠了再擋。"), 2.5)
 	if GameState.stain_flame:
 		_append_log(_t("[color=#a88]沾焰：刃上有一層不肯散的灰。攻擊略升。[/color]"))
 	if mode == "leo":
-		_append_log(_t("雷歐：傭兵團把最弱的送來了？也想挑戰騎士之王？"))
+		_append_log(_t("雷歐：渺小的兔子……也想挑戰獅衛之王？"))
 		_append_log(_t("[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後按 J 跳開[/color]"))
 		parry_hint.text = _kh(_t("【J】格擋　·　【Tab】鎖部位　·　火圈後躍出"))
 		_flash_coach(_t("先鎖盾磨掉，防禦會降。盔可破，但牠會暴。"), 3.6)
@@ -265,19 +265,19 @@ func setup(mode: String) -> void:
 		_append_log(_t("[color=#8cf]分身多 · 本體發白才打得中 · 砍幻影會反咬、變慢[/color]"))
 		parry_hint.text = _kh(_t("【Tab/1-3】鎖目標　·　本體發白才輸出　·　別打幻影"))
 	elif mode == "demon":
-		_append_log(_t("魔王：那就來——用你的微末，撞我的千年。"))
-		_append_log(_t("[color=#c8f]黑焰必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]"))
+		_append_log(_t("停擺核：那就來——用你的微末，撞我的千年。"))
+		_append_log(_t("[color=#c8f]黑鏽必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]"))
 		parry_hint.text = _kh(_t("【J】必殺格擋　·　【Tab】鎖部位　·　時鐘窗"))
 	elif mode == "abo":
 		_append_log(_t("阿波：來。打我的架勢——用拳，不是用嘴。"))
 		_append_log(_t("[color=#9c9]打散架勢 · 散開時傷害吃滿 · 重拳要擋[/color]"))
 		parry_hint.text = _kh(_t("打散架勢　·　【Tab】鎖部位　·　重拳【J】"))
 	elif mode == "falcon":
-		_append_log(_t("疾影：傭兵團把最慢的送來了？眼睛，跟得上我嗎？"))
+		_append_log(_t("疾影：把發條最鬆的送來了？眼睛，跟得上我嗎？"))
 		_append_log(_t("[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起按 J[/color]"))
 		parry_hint.text = _kh(_t("等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】"))
 	elif mode == "boar":
-		_append_log(_t("石拳：傭兵團把最弱的送來了？還站著？那就接下這一拳——"))
+		_append_log(_t("石拳：……把發條最鬆的送來了？還站著？那就接下這一拳——"))
 		_append_log(_t("[color=#c96]衝來按 J 硬碰，岩甲會裂 · 落石按 J[/color]"))
 		parry_hint.text = _kh(_t("衝鋒對撞【J】　·　【Tab】鎖角／甲　·　落岩【J】"))
 	elif mode == "wrath":
@@ -1234,7 +1234,7 @@ func _show_temptation(data: Dictionary) -> void:
 	_refuse_btn.text = _t("我拒絕")
 	_tempt_layer.visible = true
 	_tempt_layer.move_to_front()
-	_append_log(_t("[color=#f9a]戰鬥暫停：魔王的誘惑（%s）[/color]") % data.get("title"))
+	_append_log(_t("[color=#f9a]戰鬥暫停：停擺核的誘惑（%s）[/color]") % data.get("title"))
 
 
 func _on_refuse_pressed() -> void:
@@ -1246,12 +1246,12 @@ func _on_refuse_pressed() -> void:
 	var keys := ["", "c6_refuse_power", "c6_refuse_revenge", "c6_refuse_peace"]
 	if st >= 1 and st <= 3:
 		GameState.set_flag(keys[st], true)
-	_append_log(_t("[color=#8f8]你拒絕了（%s）。黑焰外殼裂開一點。[/color]") % st)
+	_append_log(_t("[color=#8f8]你拒絕了（%s）。黑鏽外殼裂開一點。[/color]") % st)
 	if st == 3:
 		_enemy_base_mod = Color(0.85, 0.8, 0.9)
 		enemy_body.modulate = _enemy_base_mod
-		enemy_name.text = _t("前任·至弱者殘影")
-		_append_log(_t("[color=#ddf]黑焰大片剝落……外形收束。[/color]"))
+		enemy_name.text = _t("前任·先行者殘影")
+		_append_log(_t("[color=#ddf]黑鏽大片剝落……外形收束。[/color]"))
 
 
 func _on_listen_then_refuse() -> void:
@@ -1533,7 +1533,7 @@ func _refresh_hud() -> void:
 					_refresh_part_focus_hint()
 				elif _mode == "demon":
 					parry_hint.modulate = Color(1, 1, 1)
-					parry_hint.text = _kh(_t("黑焰必殺可格擋 · 階段誘惑選「我拒絕」"))
+					parry_hint.text = _kh(_t("黑鏽必殺可格擋 · 階段誘惑選「我拒絕」"))
 				elif _mode == "abo":
 					_update_abo_guard_hud()
 				elif _mode == "falcon":
@@ -1690,7 +1690,7 @@ func _update_tide_hud() -> void:
 		countdown.text = _t("刺%d") % sim._count_polyps()
 		countdown.add_theme_color_override("font_color", Color(0.5, 0.9, 1.0))
 		countdown_sub.text = _t("清刺胞！剩餘 %.1fs") % sim.tide_wave_left
-		parry_hint.text = _kh(_t("優先清黑焰刺胞"))
+		parry_hint.text = _kh(_t("優先清黑鏽刺胞"))
 		parry_hint.modulate = Color(0.6, 0.95, 1.0)
 	else:
 		countdown.text = _t("技") if sim.tide_phase_skill else _t("普")
@@ -2436,7 +2436,7 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			elif int(data.get("stacks", 0)) > 0:
 				_append_log(_t("[color=#f86]灼燒疊層：%s[/color]") % data.get("stacks"))
 		"tide_summon":
-			_append_log(_t("[color=#6cf]黑焰刺胞×%s 孵化！%.0f 秒內清除[/color]") % [data.get("count"), data.get("time")])
+			_append_log(_t("[color=#6cf]黑鏽刺胞×%s 孵化！%.0f 秒內清除[/color]") % [data.get("count"), data.get("time")])
 			_shake = 0.1
 		"tide_wave_clear":
 			_append_log(_t("[color=#8f8]刺胞清除。潮勢暫緩。[/color]"))

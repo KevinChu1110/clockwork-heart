@@ -1,6 +1,6 @@
 {
   "id": "ronin",
-  "speaker": "Black Flame Ronin",
+  "speaker": "Blight Rust Wanderer",
   "rules": [
     {
       "when": {
@@ -9,7 +9,7 @@
         ]
       },
       "lines": [
-        "…Blade's sheathed. The road is long. Don't do what I did—treating the flame as firewood."
+        "…Blade's sheathed. The road is long. Don't do what I did—treating rust as firewood."
       ]
     },
     {
@@ -26,7 +26,7 @@
       "when": {},
       "lines": [
         "Halt. You're here to 'get strong' too?",
-        "The Black Flame taught me: soften once and you're eaten clean. I won't soften again."
+        "Blight rust taught me: soften once and you're eaten clean. I won't soften again."
       ]
     }
   ]

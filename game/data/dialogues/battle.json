@@ -41,7 +41,7 @@
   ],
   "battle.demon_lose": [
     {
-      "speaker": "魔王",
+      "speaker": "停擺核",
       "text": "還是太輕了……"
     },
     {
@@ -82,7 +82,7 @@
   "battle.rift_lose": [
     {
       "speaker": "系統",
-      "text": "黑焰把你掀回塔下。{tip}"
+      "text": "黑鏽把你掀回塔下。{tip}"
     }
   ],
   "battle.world_win": [

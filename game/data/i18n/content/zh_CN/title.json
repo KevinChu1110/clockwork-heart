@@ -12,7 +12,7 @@
     "name": "还债的锤"
   },
   "title.echo_walker": {
-    "desc": "黑焰回响任意层再通关。",
+    "desc": "黑锈回响任意层再通关。",
     "name": "回响行者"
   },
   "title.featured_fan": {
@@ -36,7 +36,7 @@
     "name": "守灯人"
   },
   "title.lore_reader": {
-    "desc": "读完丝绒典籍架上的黑焰三说。",
+    "desc": "读完丝绒典籍架上的黑锈三说。",
     "name": "读矛盾的人"
   },
   "title.mirror_break": {
@@ -44,7 +44,7 @@
     "name": "破镜之人"
   },
   "title.no_worship": {
-    "desc": "魔王三拒皆满。",
+    "desc": "塔底三拒皆满。",
     "name": "我不慕强权"
   },
   "title.rift_walker": {
@@ -52,11 +52,11 @@
     "name": "裂缝行者"
   },
   "title.ronin_path": {
-    "desc": "在岔路劝下（或战胜）黑焰浪人。",
+    "desc": "在岔路劝下（或战胜）黑锈浪人。",
     "name": "收刃之人"
   },
   "title.scar_walker": {
-    "desc": "踏平黑焰疤地的主宰。",
+    "desc": "踏平黑锈疤地的主宰。",
     "name": "疤地行者"
   },
   "title.shore_last": {
@@ -85,7 +85,7 @@
   },
   "title.world_wanderer": {
     "desc": "造访三十处不同的土地。",
-    "name": "翠岭漫游者"
+    "name": "世界漫游者"
   },
   "title.wreck_end": {
     "desc": "让船长影再沉一次。",

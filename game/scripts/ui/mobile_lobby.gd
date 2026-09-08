@@ -16,7 +16,7 @@ enum Tab {
 	VILLAGE,     ## 今日村莊大廳 (主城)
 	CHARACTER,   ## 角色 / 三欄武器紙娃娃
 	ADVENTURE,   ## 四區出征關卡
-	SOUL_HALL,   ## 聚魂殿堂 (五色葫蘆跳階)
+	SOUL_HALL,   ## 聚魂殿堂 (五色封靈壺跳階)
 	BAG          ## 冒險背包
 }
 
@@ -59,7 +59,7 @@ var _tex_skill: Texture2D
 var _tex_telegraph: Texture2D
 var _tex_recover: Texture2D
 
-## 聚魂殿五色葫蘆狀態
+## 聚魂殿五色封靈壺狀態
 var _gourd_lit: Array[bool] = [true, false, false, false, false]
 var _gourd_btns: Array[Button] = []
 
@@ -770,14 +770,14 @@ func _build_soul_hall_tab() -> void:
 	panel.add_child(v)
 
 	var t := Label.new()
-	t.text = "✦ 聚魂殿堂 · 五色葫蘆跳階 ✦"
+	t.text = _t("✦ 聚魂殿堂 · 五色封靈壺跳階 ✦")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	t.add_theme_font_size_override("font_size", 24)
 	t.add_theme_color_override("font_color", UiStyle.TATA_ORANGE)
 	v.add_child(t)
 
 	var desc := Label.new()
-	desc.text = "聚引十四主星之魂：七煞(攻) · 武曲(防) · 天機(血) · 貪狼(命) · 紫微(閃) · 破軍(爆)。點擊點亮更高階葫蘆！"
+	desc.text = _t("聚引十四主星之魂：七煞(攻) · 武曲(防) · 天機(血) · 貪狼(命) · 紫微(閃) · 破軍(爆)。點擊點亮更高階封靈壺！")
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc.add_theme_font_size_override("font_size", 13)
 	desc.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
@@ -789,11 +789,11 @@ func _build_soul_hall_tab() -> void:
 	v.add_child(gourd_row)
 
 	var gourds_data := [
-		{"name": "白玉葫蘆", "cost": 100, "color": Color(0.85, 0.85, 0.85)},
-		{"name": "碧綠葫蘆", "cost": 300, "color": UiStyle.TATA_GREEN},
-		{"name": "青藍葫蘆", "cost": 800, "color": UiStyle.TATA_BLUE},
-		{"name": "紫霄葫蘆", "cost": 2000, "color": UiStyle.TATA_PINK},
-		{"name": "澄金葫蘆", "cost": 5000, "color": UiStyle.TATA_YELLOW}
+		{"name": _t("白玉封靈壺"), "cost": 100, "color": Color(0.85, 0.85, 0.85)},
+		{"name": _t("綠階封靈壺"), "cost": 300, "color": UiStyle.TATA_GREEN},
+		{"name": _t("藍階封靈壺"), "cost": 800, "color": UiStyle.TATA_BLUE},
+		{"name": _t("紫階封靈壺"), "cost": 2000, "color": UiStyle.TATA_PINK},
+		{"name": _t("橙階封靈壺"), "cost": 5000, "color": UiStyle.TATA_YELLOW}
 	]
 
 	_gourd_btns.clear()
@@ -895,7 +895,7 @@ func _do_gourd_draw(idx: int, is_ten: bool) -> void:
 	var roll := randf()
 	if roll < 0.35 and idx < 4:
 		_gourd_lit[idx + 1] = true
-		_show_toast("靈光閃爍！成功點亮更高階的葫蘆！")
+		_show_toast(_t("靈光閃爍！成功點亮更高階的封靈壺！"))
 	else:
 		for i in range(1, 5):
 			_gourd_lit[i] = false

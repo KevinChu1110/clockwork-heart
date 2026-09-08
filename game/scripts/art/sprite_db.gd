@@ -518,7 +518,7 @@ const BATTLE_BG_MAP := {
 	"falcon": "forest",
 	"boar": "coast",
 	"demon": "tower",
-	## 通關後裂縫：都發生在黑焰疤地
+	## 通關後裂縫：都發生在黑鏽疤地
 	"wrath": "blackflame_scar",
 	"tide": "coast_wreck",
 	"statue": "tower_memory",
@@ -865,7 +865,7 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 	var key := speaker.strip_edges()
 	var id := ""
 	match key:
-		"麥穗", "舊鑰", "旧钥", "Oldkey", "Llavevieja", "オールドキー", "올드키", "maisui":
+		"麥穗", "舊鑰", "旧钥", "Oldkey", "Llavevieja", "オールドキー", "올드키", "Wheatear", "Espiga", "maisui":
 			id = "maisui"
 		"灰鬚", "greybeard":
 			id = "greybeard"
@@ -877,9 +877,9 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "sprout"
 		"霧隱", "白霧", "fog_hide":
 			id = "fog_hide"
-		"小白", "兔勇者", "內心", "rabbit":
+		"小白", "兔勇者", "發條兔", "內心", "rabbit":
 			id = "rabbit"
-		"雷歐", "聖獅·雷歐", "leo":
+		"雷歐", "守衛泰坦·雷歐", "聖獅·雷歐", "leo":
 			id = "leo"
 		"阿茶", "acha":
 			id = "acha"
@@ -893,13 +893,13 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "falcon"
 		"石拳", "boar":
 			id = "boar"
-		"魔王", "demon":
+		"魔王", "停擺核", "停摆核", "Stasis Core", "Núcleo de Inactividad", "停止核", "정지핵", "demon":
 			id = "demon"
 		"渣滓之狼", "失控的銹蝕玩具", "失控的锈蚀玩具", "Rust-bound Toy", "Juguete Oxidado Descontrolado", "暴走した錆びトイ", "폭주한 녹슨 장난감", "狼", "wolf":
 			id = "wolf"
 		"潮吼", "潮聲", "tide_roar":
 			id = "tide_roar"
-		"黑焰疤主", "疤主", "scar_lord":
+		"黑鏽疤主", "黑锈疤主", "疤主", "Scar Lord of Blight Rust", "Señor de la Cicatriz de Óxido Negro", "黒錆の傷跡の主", "검은 녹 흉터의 주인", "scar_lord":
 			id = "scar_lord"
 		"鏡廊殘影", "殘影", "mirror_wraith":
 			id = "mirror_wraith"
@@ -911,7 +911,7 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "silk"
 		"琥珀", "amber":
 			id = "amber"
-		"黑焰浪人", "浪人", "ronin":
+		"黑鏽浪人", "黑锈浪人", "浪人", "Blight Rust Wanderer", "Errante de Óxido Negro", "黒錆の浪人", "검은 녹 낭인", "ronin":
 			id = "ronin"
 		"遺孤少年", "knight_orphan":
 			id = "knight_orphan"

@@ -68,7 +68,7 @@
     },
     {
       "speaker": "Narration",
-      "text": "Crooked writing on the brim: don't eat Wheatear's."
+      "text": "Crooked writing on the brim: don't eat Oldkey's."
     }
   ],
   "world.camp_ash_road": [
@@ -106,7 +106,7 @@
   "region.mist_locked": [
     {
       "speaker": "System",
-      "text": "The mist is still far. Raise your blade at the Knight Keep first."
+      "text": "The mist is still far. Raise your blade at the Keep first."
     }
   ],
   "region.dojo_warn": [
