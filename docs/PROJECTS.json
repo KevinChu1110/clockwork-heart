@@ -315,8 +315,8 @@
    "id": "world-regions",
    "cat": "世界觀",
    "title": "區域 3–9 設定（手機化完成後才動）",
-   "status": "測試中",
-   "note": "已完成區域3翡翠深林詳細設定 R03_EMERALD_WOODS.md，送審中",
+   "status": "開發中",
+   "note": "展開區域4黃銅都市·巨輪城(R04_BRASS_METROPOLIS.md)詳細規格書",
    "keys": [
     "區域",
     "region",
