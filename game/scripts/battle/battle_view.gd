@@ -2493,7 +2493,15 @@ func _body_of(id: String) -> TextureRect:
 
 func _lunge(id: String) -> void:
 	var body := _body_of(id)
+	if id == "player":
+		if _player_home == Vector2.ZERO and body.position != Vector2.ZERO:
+			_player_home = body.position
+	else:
+		if _enemy_home == Vector2.ZERO and body.position != Vector2.ZERO:
+			_enemy_home = body.position
 	var home := _player_home if id == "player" else _enemy_home
+	if home == Vector2.ZERO:
+		home = body.position
 	var dir := 1.0 if id == "player" else -1.0
 	var tw := create_tween()
 	tw.tween_property(body, "position", home + Vector2(dir * 36, 0), 0.08)
