@@ -37,8 +37,8 @@
    "id": "world-translate",
    "cat": "世界觀",
    "title": "🥇 C0–C6 世界觀轉譯（骨架保留、表皮全換）",
-   "status": "測試中",
-   "note": "C0–C6 文件與遊戲內字已進",
+   "status": "已上線",
+   "note": "C0-C6 全區世界觀轉譯與玩家可見字清理均已完成並過 QA 回歸 (t_d2129b76/t_da4c29ac/t_f341165e done)",
    "keys": [
     "轉譯",
     "世界觀",
