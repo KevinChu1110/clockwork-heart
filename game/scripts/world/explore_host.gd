@@ -11,6 +11,7 @@ const MapSceneRegistry = preload("res://scripts/world/map_scene_registry.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const PlayerScn := preload("res://scenes/actors/player.tscn")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 
 const NATIVE_MAPS: PackedStringArray = [
 	"village", "town", "town_forge", "town_soul", "town_gem", "town_tutor",
@@ -345,17 +346,23 @@ func _on_player_arrived() -> void:
 func _gui_input(event: InputEvent) -> void:
 	if frozen:
 		return
-	if event is InputEventMouseButton:
-		var mb := event as InputEventMouseButton
-		if not mb.pressed or mb.button_index != MOUSE_BUTTON_LEFT:
-			return
-		var world := _screen_to_world(mb.position)
-		var hit := _hit_entity_id(world)
-		if hit != "":
-			tap_entity(hit)
-		else:
-			tap_world(world)
-		accept_event()
+	if not GameInputGate.primary_pointer_pressed(event):
+		return
+	var world := _screen_to_world(GameInputGate.pointer_position(event))
+	var hit := _hit_entity_id(world)
+	if hit != "":
+		tap_entity(hit)
+	else:
+		tap_world(world)
+	accept_event()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if frozen:
+		return
+	if GameInputGate.matches(event, GameInputGate.INTERACT) and _near_id != "":
+		tap_entity(_near_id)
+		get_viewport().set_input_as_handled()
 
 
 func _screen_to_world(local_pos: Vector2) -> Vector2:

@@ -6,6 +6,7 @@ const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const WindowDrag = preload("res://scripts/ui/window_drag.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 const SLOT_N := 8
 const SLOT_SIZE := Vector2(50, 50)
 
@@ -151,7 +152,7 @@ func _build() -> void:
 					get_viewport().set_input_as_handled()
 		)
 
-	## 觸控／滑鼠也要開得了暫停選單：尾端「選單」鈕送 ui_cancel，
+	## 觸控／滑鼠也要開得了暫停選單：尾端「選單」鈕送 Cancel，
 	## 與 Esc 走同一條流程（開關暫停、先收物品欄）
 	## 白底淡橘字（舊）在截圖裡幾乎看不見；改深木底＋銅字，跟其它格同一套皮。
 	var menu_btn := PanelContainer.new()
@@ -168,12 +169,9 @@ func _build() -> void:
 	ml.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	menu_btn.add_child(ml)
 	menu_btn.gui_input.connect(func(ev: InputEvent):
-		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+		if GameInputGate.primary_pointer_pressed(ev):
 			get_viewport().set_input_as_handled()
-			var act := InputEventAction.new()
-			act.action = "ui_cancel"
-			act.pressed = true
-			Input.parse_input_event(act)
+			GameInputGate.inject(GameInputGate.CANCEL)
 	)
 
 

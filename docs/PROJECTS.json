@@ -78,8 +78,8 @@
    "id": "mob-input",
    "cat": "遊戲",
    "title": "🥈 手機化 2／6：輸入抽象層",
-   "status": "草稿",
-   "note": "收斂成 Move / Attack / Interact / Skill / SwitchWeapon / Confirm / Cancel 七個語意動作。PC 綁鍵鼠與手把，手機綁觸控與虛擬按鍵。⛔ 程式碼裡不得再直接判斷滑鼠或鍵盤。",
+   "status": "測試中",
+   "note": "GameInput 七語意動作; 冒煙與 test_game_input/battle_keys/battle_touch 綠; 分支 agent/2026-09-07-input-abstraction",
    "keys": [
     "input",
     "輸入",
