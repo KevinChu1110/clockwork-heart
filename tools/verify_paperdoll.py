@@ -4,7 +4,7 @@ import glob
 import re
 import sys
 
-REPO = "/opt/side/bravesoul-game"
+REPO = os.environ.get("REPO_ROOT", os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 JSON_PATH = os.path.join(REPO, "docs/design/paperdoll_slots.json")
 SPEC_PATH = os.path.join(REPO, "docs/design/PAPERDOLL_SLOTS_SPEC.md")
 
