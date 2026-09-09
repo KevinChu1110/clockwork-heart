@@ -70,11 +70,11 @@ Kevin 於 2026-09-09 正式拍板首發 5 大動物族系為：**兔、狐、獅
 
 | 種族識別碼 (`race_id`) | 種族中文 | 種族英文 | 職業風格標籤 | 靈源界域 | 頭身比 (Chibi) | 核心外觀特徵 | 主色調與材質 |
 |:---|:---|:---|:---|:---|:---:|:---|:---|
-| `rabbit` | **白金兔** | Clockwork Rabbit | 劍士 / 遊俠 | 今日村莊 (R01) | 2.3 ~ 2.5 | 雙聯長立金屬耳、珊瑚粉金屬內耳、倒三角小金屬鼻、胸口青藍心形核心、單手長劍 | 象牙白 (#FFFDF8) 琺瑯、黃銅金 (#FFD028)、天藍光 (#38A0FF) |
-| `lion` | **烈鬃獅** | Gilded Lion | 皇家騎士 / 聖堂 | 黃銅都市 (R04) | 2.2 ~ 2.4 | 外擴金屬疊片鬃毛冠、剛毅厚重黃銅胸甲、鉸鏈粗壯四肢、皇家長矛 | 拋光黃銅 (#E5A93C)、近衛朱紅 (#B84A39)、琥珀金 (#FFA010) |
-| `fox` | **靈尾狐** | Astral Fox | 秘術師 / 刺客 | 翡翠蔓谷 (R03) | 2.3 ~ 2.5 | 尖聳雷達天線耳、三至五節懸浮連桿星軸長尾、流線型輕金屬殼、星核晶杖 | 暖橘烤漆 (#E87A38)、深紫藍 (#4A3B7A)、紫晶光 (#A855F7) |
-| `boar` | **鋼牙豕** | Forge Boar | 狂怒戰士 / 工兵 | 赤焰熔爐 (R06) | 2.1 ~ 2.3 | 衝壓鋼板野豬鼻、雙根外露鎢鋼長獠牙、鉚接加厚肩甲、鍛爐雙面戰斧 | 黑鐵合金 (#474D58)、鍛爐烈火 (#D9532F)、鎢鋼銀 (#C0C5CE) |
-| `macaque` *(alias: `monkey`)* | **靈爪猴** | Spring Macaque | 武術家 / 拳爪 | 晨曦道場 (R02/R09) | 2.2 ~ 2.4 | 雙小臂螺旋黃銅彈簧避震套管、單片長方形額前導流板、伸縮平衡長尾、機關靈爪護手 | 香檳金/淺褐 (#E8C88A)、黃銅金 (#FFD028)、翡翠綠 (#4ED86A) |
+| `rabbit` | **白金兔** | Clockwork Rabbit | 劍士 / 遊俠 | R01 今日村莊·發條新村 / Today Village: Cogwheel Hamlet | 2.3 ~ 2.5 | 雙聯長立金屬耳、珊瑚粉金屬內耳、倒三角小金屬鼻、胸口青藍心形核心、單手長劍 | 象牙白 (#FFFDF8) 琺瑯、黃銅金 (#FFD028)、天藍光 (#38A0FF) |
+| `lion` | **烈鬃獅** | Gilded Lion | 皇家騎士 / 聖堂 | R04 黃銅都市·巨輪城 / Brass Metropolis: The Great Cog City | 2.2 ~ 2.4 | 外擴金屬疊片鬃毛冠、剛毅厚重黃銅胸甲、鉸鏈粗壯四肢、長多節黃銅連桿尾（尾端為可展開扇形金屬扇片）、皇家長矛 | 拋光黃銅 (#E5A93C)、近衛朱紅 (#B84A39)、琥珀金 (#FFA010) |
+| `fox` | **靈尾狐** | Astral Fox | 秘術師 / 刺客 | R03 翡翠深林·發條蔓谷 / Emerald Woods: Vine & Gear Forest | 2.3 ~ 2.5 | 尖聳雷達天線耳、三至五節懸浮連桿星軸長尾、流線型輕金屬殼、星核晶杖 | 暖橘烤漆 (#E87A38)、深紫藍 (#4A3B7A)、紫晶光 (#A855F7) |
+| `boar` | **鋼牙豕** | Forge Boar | 狂怒戰士 / 工兵 | R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano | 2.1 ~ 2.3 | 衝壓鋼板野豬鼻、雙根外露鎢鋼長獠牙、鉚接加厚肩甲、粗螺旋金屬彈簧短尾、鍛爐雙面戰斧 | 黑鐵合金 (#474D58)、鍛爐烈火 (#D9532F)、鎢鋼銀 (#C0C5CE) |
+| `macaque` *(alias: `monkey`)* | **靈爪猴** | Spring Macaque | 武術家 / 拳爪 | R09 竹影道場·天元竹林 / Bamboo Grove: Zen Puppet Dojo | 2.2 ~ 2.4 | 雙小臂螺旋黃銅彈簧避震套管、單片長方形額前導流板、伸縮平衡長尾、機關靈爪護手 | 香檳金/淺褐 (#E8C88A)、黃銅金 (#FFD028)、翡翠綠 (#4ED86A) |
 
 ---
 
@@ -91,18 +91,32 @@ Kevin 於 2026-09-09 正式拍板首發 5 大動物族系為：**兔、狐、獅
 
 #### (2) 遊戲內 `game/assets/sprites/player/` 完整檔案鏡像對齊表
 
-| 用途 / 類別 | 白金兔既有檔案結構 (`char_rabbit`) | 靈爪猴對齊檔案結構 (`char_macaque`) | 尺寸與格式 |
-|:---|:---|:---|:---:|
-| **基礎待機幀 (1x)** | `game/assets/sprites/player/rabbit_idle.png` | `game/assets/sprites/player/macaque_idle.png` | 64×64 RGBA |
-| **高畫質待機幀 (3x)** | `game/assets/sprites/player/rabbit_idle_x3.png` | `game/assets/sprites/player/macaque_idle_x3.png` | 128×128 RGBA |
-| **大廳/隊伍展示幀** | `game/assets/sprites/player/rabbit_idle_x3.png` | `game/assets/sprites/player/party/macaque_idle.png` | 128×128 RGBA |
-| **戰鬥特寫姿態** | `game/assets/sprites/player/rabbit_battle.png` | `game/assets/sprites/player/macaque_battle.png` | 128×128 RGBA |
-| **行走動畫 (0~3 幀, 1x)** | `game/assets/sprites/player/rabbit_walk_{0..3}.png` | `game/assets/sprites/player/macaque_walk_{0..3}.png` | 64×64 RGBA |
-| **行走動畫 (0~3 幀, 3x)** | `game/assets/sprites/player/rabbit_walk_{0..3}_x3.png` | `game/assets/sprites/player/macaque_walk_{0..3}_x3.png` | 128×128 RGBA |
-| **戰鬥 6 大動作姿態** | `game/assets/sprites/player/poses/{attack,hit,idle,recover,skill,telegraph}.png` | `game/assets/sprites/player/poses/macaque/{attack,hit,idle,recover,skill,telegraph}.png` | 128×128 RGBA |
-| **HUD 戰鬥頭像** | `game/assets/sprites/portraits/rabbit.png` | `game/assets/sprites/portraits/macaque.png` | 128×128 RGBA |
-| **對話框半身像** | `game/assets/sprites/portraits/rabbit.png` | `game/assets/sprites/portraits/spring_macaque.png` | 384×480 RGBA |
-| **紙娃娃切片目錄** | `game/assets/sprites/player/paperdoll/rabbit/{slot}/{id}.png` | `game/assets/sprites/player/paperdoll/macaque/{slot}/{id}.png` | 128×128 RGBA |
+| 用途 / 類別 | 白金兔既有檔案結構 (`char_rabbit`) | 靈爪猴對齊檔案結構 (`char_macaque`) | 尺寸與格式 | 資源狀態 (Status) |
+|:---|:---|:---|:---:|:---|
+| **基礎待機幀 (1x)** | `game/assets/sprites/player/rabbit_idle.png` | `game/assets/sprites/player/macaque_idle.png` | 64×64 RGBA | 兔既有 / 猴待產出 |
+| **高畫質待機幀 (3x)** | `game/assets/sprites/player/rabbit_idle_x3.png` | `game/assets/sprites/player/macaque_idle_x3.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
+| **大廳/隊伍展示幀** | `game/assets/sprites/player/rabbit_idle_x3.png` | `game/assets/sprites/player/party/macaque_idle.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
+| **戰鬥特寫姿態** | `game/assets/sprites/player/rabbit_battle.png` | `game/assets/sprites/player/macaque_battle.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
+| **行走動畫 (0~3 幀, 1x)** | `game/assets/sprites/player/rabbit_walk_{0..3}.png` | `game/assets/sprites/player/macaque_walk_{0..3}.png` | 64×64 RGBA | 兔既有 / 猴待產出 |
+| **行走動畫 (0~3 幀, 3x)** | `game/assets/sprites/player/rabbit_walk_{0..3}_x3.png` | `game/assets/sprites/player/macaque_walk_{0..3}_x3.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
+| **戰鬥 6 大動作姿態** | `game/assets/sprites/player/poses/{attack,hit,idle,recover,skill,telegraph}.png` | `game/assets/sprites/player/poses/macaque/{attack,hit,idle,recover,skill,telegraph}.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
+| **HUD 戰鬥頭像** | `game/assets/sprites/portraits/rabbit.png` | `game/assets/sprites/portraits/macaque.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
+| **對話框半身像** | `game/assets/sprites/portraits/rabbit.png` | `game/assets/sprites/portraits/spring_macaque.png` | 384×480 RGBA | 兔既有 / 猴待產出 |
+| **紙娃娃切片目錄** | `game/assets/sprites/player/paperdoll/rabbit/{slot}/{id}.png` | `game/assets/sprites/player/paperdoll/macaque/{slot}/{id}.png` | 128×128 RGBA | 全族待產出（下一棒規格） |
+
+---
+
+### 2.3 五大族系資產清冊與實體產出狀態表 (Asset Status & Inventory)
+
+為防止下一棒工程師或美術執行時 `ls` 檔案撲空，特別註明各族系目前實際硬碟實體路徑與產出狀態：
+
+| 種族代號 (`race_id`) | 既有現存實體檔案 (Existing Assets) | 前瞻待產出檔案 (Pending Assets) | 實體檔案目錄說明與備註 |
+|:---|:---|:---|:---|
+| `rabbit` (白金兔) | • `branding/char_rabbit.png` (400×840 立牌)<br>• `docs/art/char_rabbit_candidate_400x840.png`<br>• `game/assets/sprites/player/rabbit_idle.png` (64×64)<br>• `game/assets/sprites/player/rabbit_idle_x3.png` (128×128)<br>• `game/assets/sprites/player/rabbit_battle.png` (128×128)<br>• `game/assets/sprites/player/rabbit_walk_{0..3}.png` (64×64)<br>• `game/assets/sprites/player/rabbit_walk_{0..3}_x3.png` (128×128)<br>• `game/assets/sprites/player/poses/` (6大戰鬥動作幀)<br>• `game/assets/sprites/portraits/rabbit.png` (128×128) | • `web/media/hero/char_rabbit.png`<br>• `web/media/hero/rabbit_idle.png`<br>• `game/assets/sprites/player/paperdoll/rabbit/` (7大部件切片) | 基準核心素體，遊戲內基礎與戰鬥資產齊全；紙娃娃系統切片為本期設計規格。 |
+| `lion` (烈鬃獅) | • `branding/char_lion.png` (400×840 立牌)<br>• `game/assets/sprites/player/party/lion_idle.png` (128×128)<br>• `game/assets/sprites/portraits/lion_knight.png` (對話框頭像) | • `game/assets/sprites/player/lion_idle.png` (64×64)<br>• `game/assets/sprites/player/lion_battle.png` (128×128)<br>• `game/assets/sprites/player/lion_walk_{0..3}.png`<br>• `game/assets/sprites/player/poses/lion/`<br>• `game/assets/sprites/portraits/lion.png` (128×128 HUD)<br>• `web/media/hero/char_lion.png`<br>• `game/assets/sprites/player/paperdoll/lion/` | 隊伍展示待機幀既存於 `party/` 目錄下；獨立 1x 待機、戰鬥特寫與 HUD 戰鬥小頭像待後續批次產出。 |
+| `fox` (靈尾狐) | • `branding/char_fox.png` (400×840 立牌)<br>• `game/assets/sprites/player/party/fox_idle.png` (128×128)<br>• `game/assets/sprites/portraits/fox_mage.png` (對話框頭像) | • `game/assets/sprites/player/fox_idle.png` (64×64)<br>• `game/assets/sprites/player/fox_battle.png` (128×128)<br>• `game/assets/sprites/player/fox_walk_{0..3}.png`<br>• `game/assets/sprites/player/poses/fox/`<br>• `game/assets/sprites/portraits/fox.png` (128×128 HUD)<br>• `web/media/hero/char_fox.png`<br>• `game/assets/sprites/player/paperdoll/fox/` | 隊伍展示待機幀既存於 `party/` 目錄下；法師對話半身像既存於 `portraits/fox_mage.png`。 |
+| `boar` (鋼牙豕) | • `branding/char_boar.png` (400×840 立牌)<br>• `game/assets/sprites/player/party/boar_idle.png` (128×128)<br>• `game/assets/sprites/portraits/boar.png` (既有HUD頭像)<br>• `game/assets/sprites/portraits/boar_warrior.png` (對話框頭像) | • `game/assets/sprites/player/boar_idle.png` (64×64)<br>• `game/assets/sprites/player/boar_battle.png` (128×128)<br>• `game/assets/sprites/player/boar_walk_{0..3}.png`<br>• `game/assets/sprites/player/poses/boar/`<br>• `web/media/hero/char_boar.png`<br>• `game/assets/sprites/player/paperdoll/boar/` | 隊伍展示待機幀既存於 `party/` 目錄下；既有戰士頭像齊全。 |
+| `macaque` (靈爪猴) | • `docs/art/spring_macaque_concept.png` (928×1152 原畫)<br>• `docs/art/spring_macaque_thumb_128px.png` (驗證縮圖)<br>• `docs/art/spring_macaque_crop_*.png` (部位驗證切片) | • `branding/char_macaque.png` (400×840 立牌)<br>• `docs/art/char_macaque_candidate_400x840.png`<br>• `web/media/hero/char_macaque.png`<br>• `game/assets/sprites/player/macaque_idle.png`<br>• `game/assets/sprites/player/party/macaque_idle.png`<br>• `game/assets/sprites/player/macaque_battle.png`<br>• `game/assets/sprites/player/poses/macaque/`<br>• `game/assets/sprites/portraits/macaque.png`<br>• `game/assets/sprites/portraits/spring_macaque.png`<br>• `game/assets/sprites/player/paperdoll/macaque/` | 概念定稿（t_1d201223）已正式通過；全套遊戲資產為對齊 `char_rabbit` 規格之全新前瞻規範。 |
 
 ---
 

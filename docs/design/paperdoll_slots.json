@@ -18,7 +18,7 @@
     ],
     "scope_and_guardrails": {
       "excluded_topics": "⛔ 本單不涉及、不決定：四英雄是否升格為可自訂素體、社交系統做到哪一層——此兩項卡位等待 t_f0737f11 由 Kevin 裁示。本文件專注於技術與美術可獨立推進之槽位定義、動物素體規範、資產命名與圖層標準。",
-      "aesthetic_core": "100% 零毛皮、全金屬/琺瑯組裝玩具憲章。禁止任何生物有機肉質、絨毛、恐怖谷縫合線與暗黑廢土鏽斑。",
+      "aesthetic_core": "100% 零毛皮、全金屬/琺瑯組裝玩具憲章。禁止任何生物有機肉質、動物毛皮、恐怖谷縫合線與暗黑廢土鏽斑。",
       "monetization_core": "絕對零數值壓迫 (Zero Pay-to-Win)，所有外觀部件 100% 不增加戰鬥屬性，僅提供個人化審美與大廳社交展示價值。"
     }
   },
@@ -239,7 +239,7 @@
         "name_zh": "白金兔",
         "name_en": "Clockwork Rabbit",
         "class_archetype": "劍士 / 遊俠 (Swordsman / Ranger)",
-        "origin_realm": "今日村莊 (R01 Today Village)",
+        "origin_realm": "R01 今日村莊·發條新村 / Today Village: Cogwheel Hamlet",
         "lore_anchor": "傳奇先行者小白（Whitey）的經典族系，中央大鐘精細鐘錶展台的時間守護者",
         "proportions": {
           "head_to_body_ratio": "2.3 ~ 2.5 頭身 (不計長立耳)",
@@ -261,18 +261,36 @@
           "outline": "#1F1A3A (深藍紫厚描邊)"
         },
         "asset_naming_conventions": {
-          "branding_standee": "branding/char_rabbit.png (400x840)",
-          "branding_concept_art": "docs/art/char_rabbit_candidate_400x840.png",
-          "web_hero": "web/media/hero/char_rabbit.png (400x840)",
-          "web_preview": "web/media/hero/rabbit_idle.png (128x128)",
-          "game_sprite_idle_base": "game/assets/sprites/player/rabbit_idle.png (64x64)",
-          "game_sprite_idle_hi": "game/assets/sprites/player/rabbit_idle_x3.png (128x128)",
-          "game_sprite_battle": "game/assets/sprites/player/rabbit_battle.png (128x128)",
-          "game_sprite_walk": "game/assets/sprites/player/rabbit_walk_{0..3}.png (64x64)",
-          "game_sprite_walk_hi": "game/assets/sprites/player/rabbit_walk_{0..3}_x3.png (128x128)",
-          "game_action_poses": "game/assets/sprites/player/poses/{attack,hit,idle,recover,skill,telegraph}.png (128x128)",
-          "portrait_hud": "game/assets/sprites/portraits/rabbit.png (128x128)",
-          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/rabbit/{slot_id}/{item_id}.png"
+          "status": {
+            "existing": [
+              "branding/char_rabbit.png (400x840 立牌)",
+              "docs/art/char_rabbit_candidate_400x840.png (400x840 候選)",
+              "game/assets/sprites/player/rabbit_idle.png (64x64 基礎待機)",
+              "game/assets/sprites/player/rabbit_idle_x3.png (128x128 隊伍/高畫質待機)",
+              "game/assets/sprites/player/rabbit_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/rabbit_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/rabbit_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/rabbit.png (128x128 HUD戰鬥頭像)"
+            ],
+            "pending": [
+              "web/media/hero/char_rabbit.png (400x840 官網英雄圖)",
+              "web/media/hero/rabbit_idle.png (128x128 官網預覽圖)",
+              "game/assets/sprites/player/paperdoll/rabbit/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_rabbit.png (400x840) [既有]",
+          "branding_concept_art": "docs/art/char_rabbit_candidate_400x840.png [既有]",
+          "web_hero": "web/media/hero/char_rabbit.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/rabbit_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/rabbit_idle.png (64x64) [既有]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/rabbit_idle_x3.png (128x128) [既有]",
+          "game_sprite_battle": "game/assets/sprites/player/rabbit_battle.png (128x128) [既有]",
+          "game_sprite_walk": "game/assets/sprites/player/rabbit_walk_{0..3}.png (64x64) [既有]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/rabbit_walk_{0..3}_x3.png (128x128) [既有]",
+          "game_action_poses": "game/assets/sprites/player/poses/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [既有]",
+          "portrait_hud": "game/assets/sprites/portraits/rabbit.png (128x128) [既有]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/rabbit/{slot_id}/{item_id}.png [待產出]"
         }
       },
       {
@@ -280,7 +298,7 @@
         "name_zh": "烈鬃獅",
         "name_en": "Gilded Lion",
         "class_archetype": "皇家騎士 / 聖堂衛士 (Royal Knight / Paladin)",
-        "origin_realm": "黃銅都市 (R04 Brass Metropolis)",
+        "origin_realm": "R04 黃銅都市·巨輪城 / Brass Metropolis: The Great Cog City",
         "lore_anchor": "黃銅都市發條樞紐守護者，胡桃鉗皇家近衛儀隊之首",
         "proportions": {
           "head_to_body_ratio": "2.2 ~ 2.4 頭身",
@@ -292,7 +310,7 @@
           "ears": "圓弧黃銅外耳外擴，頭部兩側具備外展金屬疊片鬃毛冠",
           "face": "剛毅四方型黃銅面額，外露厚鋼鉸鏈接縫",
           "limbs": "粗壯四肢，雙肘與雙膝配置強化黃銅齒輪關節",
-          "tail": "長多節金屬連桿尾，尾端為展開式鍛鐵毛簇"
+          "tail": "長多節黃銅連桿尾，尾端為可展開的扇形金屬扇片，帶分片接縫與鉚釘"
         },
         "color_palette": {
           "primary": "#E5A93C (拋光黃銅合金)",
@@ -302,19 +320,37 @@
           "outline": "#1F1A3A (深藍紫厚描邊)"
         },
         "asset_naming_conventions": {
-          "branding_standee": "branding/char_lion.png (400x840)",
-          "branding_concept_art": "branding/char_lion.png (原稿 928x1152)",
-          "web_hero": "web/media/hero/char_lion.png (400x840)",
-          "web_preview": "web/media/hero/lion_idle.png (128x128)",
-          "game_sprite_idle_base": "game/assets/sprites/player/lion_idle.png (64x64)",
-          "game_sprite_idle_hi": "game/assets/sprites/player/party/lion_idle.png (128x128)",
-          "game_sprite_battle": "game/assets/sprites/player/lion_battle.png (128x128)",
-          "game_sprite_walk": "game/assets/sprites/player/lion_walk_{0..3}.png (64x64)",
-          "game_sprite_walk_hi": "game/assets/sprites/player/lion_walk_{0..3}_x3.png (128x128)",
-          "game_action_poses": "game/assets/sprites/player/poses/lion/{attack,hit,idle,recover,skill,telegraph}.png (128x128)",
-          "portrait_hud": "game/assets/sprites/portraits/lion.png (128x128)",
-          "portrait_dialogue": "game/assets/sprites/portraits/lion_knight.png (256x256 / 384x480)",
-          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/lion/{slot_id}/{item_id}.png"
+          "status": {
+            "existing": [
+              "branding/char_lion.png (400x840 原稿立牌)",
+              "game/assets/sprites/player/party/lion_idle.png (128x128 既有隊伍展示幀)",
+              "game/assets/sprites/portraits/lion_knight.png (256x256 對話框半身像)"
+            ],
+            "pending": [
+              "game/assets/sprites/player/lion_idle.png (64x64 基礎待機)",
+              "game/assets/sprites/player/lion_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/lion_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/lion_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/lion/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/lion.png (128x128 HUD戰鬥頭像)",
+              "web/media/hero/char_lion.png (400x840)",
+              "web/media/hero/lion_idle.png (128x128)",
+              "game/assets/sprites/player/paperdoll/lion/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_lion.png (400x840) [既有]",
+          "branding_concept_art": "branding/char_lion.png (原稿 928x1152) [既有]",
+          "web_hero": "web/media/hero/char_lion.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/lion_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/lion_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/party/lion_idle.png (128x128) [既有於party/目錄]",
+          "game_sprite_battle": "game/assets/sprites/player/lion_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/lion_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/lion_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/lion/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/lion.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/lion_knight.png (256x256 / 384x480) [既有]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/lion/{slot_id}/{item_id}.png [待產出]"
         }
       },
       {
@@ -322,7 +358,7 @@
         "name_zh": "靈尾狐",
         "name_en": "Astral Fox",
         "class_archetype": "秘術師 / 刺客 (Mystic Astrologer / Assassin)",
-        "origin_realm": "翡翠蔓谷 (R03 Emerald Valley)",
+        "origin_realm": "R03 翡翠深林·發條蔓谷 / Emerald Woods: Vine & Gear Forest",
         "lore_anchor": "星象觀測台與發條藤蔓守護者，專精十四主星軸共鳴秘術",
         "proportions": {
           "head_to_body_ratio": "2.3 ~ 2.5 頭身",
@@ -344,19 +380,37 @@
           "outline": "#1F1A3A (深藍紫厚描邊)"
         },
         "asset_naming_conventions": {
-          "branding_standee": "branding/char_fox.png (400x840)",
-          "branding_concept_art": "branding/char_fox.png (原稿 928x1152)",
-          "web_hero": "web/media/hero/char_fox.png (400x840)",
-          "web_preview": "web/media/hero/fox_idle.png (128x128)",
-          "game_sprite_idle_base": "game/assets/sprites/player/fox_idle.png (64x64)",
-          "game_sprite_idle_hi": "game/assets/sprites/player/party/fox_idle.png (128x128)",
-          "game_sprite_battle": "game/assets/sprites/player/fox_battle.png (128x128)",
-          "game_sprite_walk": "game/assets/sprites/player/fox_walk_{0..3}.png (64x64)",
-          "game_sprite_walk_hi": "game/assets/sprites/player/fox_walk_{0..3}_x3.png (128x128)",
-          "game_action_poses": "game/assets/sprites/player/poses/fox/{attack,hit,idle,recover,skill,telegraph}.png (128x128)",
-          "portrait_hud": "game/assets/sprites/portraits/fox.png (128x128)",
-          "portrait_dialogue": "game/assets/sprites/portraits/fox_mage.png (256x256 / 384x480)",
-          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/fox/{slot_id}/{item_id}.png"
+          "status": {
+            "existing": [
+              "branding/char_fox.png (400x840 原稿立牌)",
+              "game/assets/sprites/player/party/fox_idle.png (128x128 既有隊伍展示幀)",
+              "game/assets/sprites/portraits/fox_mage.png (256x256 對話框半身像)"
+            ],
+            "pending": [
+              "game/assets/sprites/player/fox_idle.png (64x64 基礎待機)",
+              "game/assets/sprites/player/fox_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/fox_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/fox_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/fox/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/fox.png (128x128 HUD戰鬥頭像)",
+              "web/media/hero/char_fox.png (400x840)",
+              "web/media/hero/fox_idle.png (128x128)",
+              "game/assets/sprites/player/paperdoll/fox/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_fox.png (400x840) [既有]",
+          "branding_concept_art": "branding/char_fox.png (原稿 928x1152) [既有]",
+          "web_hero": "web/media/hero/char_fox.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/fox_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/fox_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/party/fox_idle.png (128x128) [既有於party/目錄]",
+          "game_sprite_battle": "game/assets/sprites/player/fox_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/fox_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/fox_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/fox/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/fox.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/fox_mage.png (256x256 / 384x480) [既有]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/fox/{slot_id}/{item_id}.png [待產出]"
         }
       },
       {
@@ -364,7 +418,7 @@
         "name_zh": "鋼牙豕",
         "name_en": "Forge Boar",
         "class_archetype": "狂怒戰士 / 重裝工兵 (Forge Berserker / Combat Engineer)",
-        "origin_realm": "赤焰熔爐 (R06 Blazing Foundry)",
+        "origin_realm": "R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano",
         "lore_anchor": "耐熱高溫鍛爐的重裝工兵，專克泰坦巨型裝甲的狂爆衝擊者",
         "proportions": {
           "head_to_body_ratio": "2.1 ~ 2.3 頭身",
@@ -386,19 +440,37 @@
           "outline": "#1A1B22 (鍛鐵深黑厚描邊)"
         },
         "asset_naming_conventions": {
-          "branding_standee": "branding/char_boar.png (400x840)",
-          "branding_concept_art": "branding/char_boar.png (原稿 928x1152)",
-          "web_hero": "web/media/hero/char_boar.png (400x840)",
-          "web_preview": "web/media/hero/boar_idle.png (128x128)",
-          "game_sprite_idle_base": "game/assets/sprites/player/boar_idle.png (64x64)",
-          "game_sprite_idle_hi": "game/assets/sprites/player/party/boar_idle.png (128x128)",
-          "game_sprite_battle": "game/assets/sprites/player/boar_battle.png (128x128)",
-          "game_sprite_walk": "game/assets/sprites/player/boar_walk_{0..3}.png (64x64)",
-          "game_sprite_walk_hi": "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128)",
-          "game_action_poses": "game/assets/sprites/player/poses/boar/{attack,hit,idle,recover,skill,telegraph}.png (128x128)",
-          "portrait_hud": "game/assets/sprites/portraits/boar.png (128x128)",
-          "portrait_dialogue": "game/assets/sprites/portraits/boar_warrior.png (256x256 / 384x480)",
-          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/boar/{slot_id}/{item_id}.png"
+          "status": {
+            "existing": [
+              "branding/char_boar.png (400x840 原稿立牌)",
+              "game/assets/sprites/player/party/boar_idle.png (128x128 既有隊伍展示幀)",
+              "game/assets/sprites/portraits/boar.png (既有頭像)",
+              "game/assets/sprites/portraits/boar_warrior.png (256x256 對話框半身像)"
+            ],
+            "pending": [
+              "game/assets/sprites/player/boar_idle.png (64x64 基礎待機)",
+              "game/assets/sprites/player/boar_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/boar_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/boar/ (戰鬥6大動作姿態目錄)",
+              "web/media/hero/char_boar.png (400x840)",
+              "web/media/hero/boar_idle.png (128x128)",
+              "game/assets/sprites/player/paperdoll/boar/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_boar.png (400x840) [既有]",
+          "branding_concept_art": "branding/char_boar.png (原稿 928x1152) [既有]",
+          "web_hero": "web/media/hero/char_boar.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/boar_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/boar_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/party/boar_idle.png (128x128) [既有於party/目錄]",
+          "game_sprite_battle": "game/assets/sprites/player/boar_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/boar_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/boar/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/boar.png (128x128) [既有]",
+          "portrait_dialogue": "game/assets/sprites/portraits/boar_warrior.png (256x256 / 384x480) [既有]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/boar/{slot_id}/{item_id}.png [待產出]"
         }
       },
       {
@@ -407,7 +479,7 @@
         "name_zh": "靈爪猴",
         "name_en": "Spring Macaque",
         "class_archetype": "武術家 / 拳法靈爪 (Martial Monk / Claw Master)",
-        "origin_realm": "晨曦道場·天元竹林 (R02 Sunrise Town & R09 Bamboo Dojo)",
+        "origin_realm": "R09 竹影道場·天元竹林 / Bamboo Grove: Zen Puppet Dojo",
         "lore_anchor": "補位木人樁與演武場東方武道機關玩具，以長臂彈簧拳與機關銅爪見長之靈動武者",
         "proportions": {
           "head_to_body_ratio": "2.2 ~ 2.4 頭身",
@@ -430,20 +502,42 @@
           "outline": "#1F1A3A (深藍紫厚描邊)"
         },
         "asset_naming_conventions": {
-          "branding_standee": "branding/char_macaque.png (400x840，對齊 char_rabbit 規格)",
-          "branding_concept_art": "docs/art/spring_macaque_concept.png (928x1152 定稿立繪)",
-          "web_hero": "web/media/hero/char_macaque.png (400x840)",
-          "web_preview": "web/media/hero/macaque_idle.png (128x128)",
-          "game_sprite_idle_base": "game/assets/sprites/player/macaque_idle.png (64x64)",
-          "game_sprite_idle_hi": "game/assets/sprites/player/macaque_idle_x3.png (128x128)",
-          "game_sprite_party_idle": "game/assets/sprites/player/party/macaque_idle.png (128x128)",
-          "game_sprite_battle": "game/assets/sprites/player/macaque_battle.png (128x128)",
-          "game_sprite_walk": "game/assets/sprites/player/macaque_walk_{0..3}.png (64x64)",
-          "game_sprite_walk_hi": "game/assets/sprites/player/macaque_walk_{0..3}_x3.png (128x128)",
-          "game_action_poses": "game/assets/sprites/player/poses/macaque/{attack,hit,idle,recover,skill,telegraph}.png (128x128)",
-          "portrait_hud": "game/assets/sprites/portraits/macaque.png (128x128)",
-          "portrait_dialogue": "game/assets/sprites/portraits/spring_macaque.png (384x480)",
-          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/macaque/{slot_id}/{item_id}.png"
+          "status": {
+            "existing": [
+              "docs/art/spring_macaque_concept.png (928x1152 定稿概念立繪)",
+              "docs/art/spring_macaque_thumb_128px.png (128px 驗證縮圖)"
+            ],
+            "pending": [
+              "branding/char_macaque.png (400x840，對齊 char_rabbit 規格)",
+              "docs/art/char_macaque_candidate_400x840.png (400x840 候選立牌)",
+              "web/media/hero/char_macaque.png (400x840)",
+              "web/media/hero/macaque_idle.png (128x128)",
+              "game/assets/sprites/player/macaque_idle.png (64x64)",
+              "game/assets/sprites/player/macaque_idle_x3.png (128x128)",
+              "game/assets/sprites/player/party/macaque_idle.png (128x128)",
+              "game/assets/sprites/player/macaque_battle.png (128x128)",
+              "game/assets/sprites/player/macaque_walk_{0..3}.png (64x64)",
+              "game/assets/sprites/player/macaque_walk_{0..3}_x3.png (128x128)",
+              "game/assets/sprites/player/poses/macaque/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/macaque.png (128x128 HUD戰鬥頭像)",
+              "game/assets/sprites/portraits/spring_macaque.png (384x480 對話框半身像)",
+              "game/assets/sprites/player/paperdoll/macaque/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_macaque.png (400x840，對齊 char_rabbit 規格) [待產出]",
+          "branding_concept_art": "docs/art/spring_macaque_concept.png (928x1152 定稿立繪) [既有]",
+          "web_hero": "web/media/hero/char_macaque.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/macaque_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/macaque_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/macaque_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/macaque_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/macaque_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/macaque_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/macaque_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/macaque/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/macaque.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/spring_macaque.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/macaque/{slot_id}/{item_id}.png [待產出]"
         }
       }
     ]
