@@ -113,15 +113,15 @@ func hub_status_text() -> String:
 	var marks := ""
 	for m in MODES:
 		var mark := "✓" if GameState.has_flag(str(CLEARED_FLAG.get(m, ""))) else "·"
-		var star := "★" if is_featured(m) else " "
-		marks += "%s%s%s　" % [star, mark, mode_name(m)]
-	return "本週焦點：★%s（有獎時金幣×1.5）\n今日有獎：%d／%d 已用，剩餘 %d\n（用盡後仍可練習，獎勵大減）\n\n勝場：%d%s\n%s" % [
+		var feat_tag := "[焦點]" if is_featured(m) else ""
+		marks += "%s%s%s　" % [feat_tag, mark, mode_name(m)]
+	return "本週焦點：%s（有獎時金幣×1.5）\n今日有獎：%d／%d 已用，剩餘 %d\n（用盡後仍可練習，獎勵大減）\n\n勝場：%d%s\n%s" % [
 		feat, used, DAILY_REWARD_CAP, left, wins, title_s, marks.strip_edges()
 	]
 
 
 func button_label(mode: String) -> String:
 	var base: String = mode_name(mode)
-	var prefix := "★" if is_featured(mode) else ""
+	var prefix := "[焦點]" if is_featured(mode) else ""
 	var done := "✓" if GameState.has_flag(str(CLEARED_FLAG.get(mode, ""))) else ""
 	return "%s%s%s" % [prefix, base, (" " + done) if done != "" else ""]

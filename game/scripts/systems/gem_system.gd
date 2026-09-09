@@ -288,7 +288,7 @@ func socket(equip_uid: String, gem_id: String) -> Dictionary:
 				GameState.equip_bag[i] = inst
 				break
 	SaveManager.save_game()
-	var stars := "★".repeat(clampi(lv, 1, 5))
+	var stars: String = ["凡", "良", "優", "精", "極"][clampi(lv, 1, 5) - 1]
 	return {
 		"ok": true,
 		"msg": _t("鑲嵌成功 %s（%s）· 花費 %d 金") % [gem_label(inst["gem"]), stars, cost],
@@ -454,7 +454,7 @@ func inspect_gem_case() -> Dictionary:
 				"color": color,
 				"level": lv,
 				"color_name": color_label(color),
-				"stars": "★".repeat(lv),
+				"stars": ["凡", "良", "優", "精", "極"][clampi(lv, 1, 5) - 1],
 				"label": gem_label(g as Dictionary),
 				"bonus_key": bonus_key,
 				"bonus_name": bonus_name,

@@ -4191,7 +4191,7 @@ func _go_pet_panel() -> void:
 		for p in pets:
 			if typeof(p) != TYPE_DICTIONARY:
 				continue
-			var mark := "★ " if str((p as Dictionary).get("id", "")) == active else "· "
+			var mark := "✓ " if str((p as Dictionary).get("id", "")) == active else "· "
 			var art_p := "res://assets/sprites/pets/pet_%s.png" % str((p as Dictionary).get("species", ""))
 			var icon_s := "[img=40x46]%s[/img] " % art_p if ResourceLoader.exists(art_p) else ""
 			body += "\n%s%s%s（%s）" % [mark, icon_s, _pet_label(p), _pet_bonus_line(p)]
@@ -4457,7 +4457,7 @@ func _go_escort_panel() -> void:
 	if bool(GameState.get_flag("escort.active", false)):
 		var left := int(GameState.get_flag("escort.end", 0)) - int(Time.get_unix_time_from_system())
 		if left <= 0:
-			buttons.append({"text": _t("★ 收貨"), "cb": _escort_collect})
+			buttons.append({"text": _t("收貨"), "cb": _escort_collect})
 		else:
 			body += _t("\n鏢車在路上——約 %d 分後抵達。") % maxi(1, int(ceil(left / 60.0)))
 	elif _escort_runs_left() > 0:
@@ -4471,7 +4471,7 @@ func _go_escort_panel() -> void:
 			buttons.append({"text": lab, "cb": func(): _escort_start(idx)})
 	var pot := int(GameState.get_flag("escort.revenge", 0))
 	if pot > 0:
-		buttons.append({"text": _t("★ 報仇（追回 %d 金）") % pot, "cb": _escort_revenge})
+		buttons.append({"text": _t("報仇（追回 %d 金）") % pot, "cb": _escort_revenge})
 	if _raid_runs_left() > 0:
 		buttons.append({"text": _t("攔截過路商隊（殘影）"), "cb": _raid_once})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _go_starpath_panel})
