@@ -137,6 +137,8 @@
   <script src="config.js"></script>
 </head>
 <body data-page="home">
+
+  <!-- 1. 開場 Hero -->
   <header class="hero hero--video">
     <video class="bg bg-video hero-parallax-bg" preload="none" muted loop playsinline poster="media/hero/key_visual_greece_gears.png" aria-hidden="true">
       <source src="media/promo/trailer_hero_clockwork_15s.mp4" type="video/mp4" />
@@ -149,11 +151,11 @@
         <span class="hero-tag-badge">希臘神殿奇想 · 黃金齒輪 × 發條之心</span>
       </div>
       <h1>神殿齒輪永動運轉<span class="coral">發條英雄重啟世界之芯</span></h1>
-      <p>當世界大鐘停止轉動，全金屬發條公仔英雄小隊踏上旅途。掌握 15 圈初源發條的戰鬥節奏，拆卸機關巨獸的弱點零件。<strong>無須連線登入，單機即可完整通關主線劇情</strong>。</p>
+      <p>當世界大鐘停止轉動，全金屬發條公仔英雄小隊踏上旅途。掌握 15 圈初源發條的戰鬥節奏，拆卸機關巨獸的弱點零件。<strong>無須強制連線，單機即可完整通關主線劇情</strong>。</p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="pages/gallery.html">看實機畫面</a>
+        <a class="btn btn-primary" href="#gameplay-showcase">看實機畫面</a>
         <a class="btn btn-champagne" id="cta-facebook" href="https://www.facebook.com/1335191403004011" target="_blank" rel="noopener">官方粉專</a>
-        <a class="btn btn-ghost" href="#temple-showcase">看神殿核心主視覺</a>
+        <a class="btn btn-ghost" href="#temple-showcase">看神殿主視覺與角色</a>
       </div>
     </div>
     <div class="hero-scroll-cue" id="hero-scroll-cue" aria-hidden="true">
@@ -165,9 +167,10 @@
     </div>
   </header>
 
+  <!-- 金句與四大指標 -->
   <section class="quote-band scroll-narrative">
     <blockquote>「動起來吧，小傢伙，去看看這個停下來的世界。」<span class="coral">當世界大鐘停擺，背負十五圈發條的玩具白兔握緊長劍。</span></blockquote>
-    <p class="cite">《發條之心》（Clockwork Heart）· 發條玩具世界冒險譚</p>
+    <p class="cite">《發條之心》（Clockwork Heart）· 奇想發條玩具世界冒險譚</p>
   </section>
 
   <section class="band band--ink" style="padding:2.2rem 0">
@@ -181,45 +184,139 @@
     </div>
   </section>
 
-  <!-- AEO / 關於遊戲核心定義（讓 AI 搜尋引擎與玩家精確理解遊戲） -->
+  <!-- 2. 世界觀 World Canon -->
   <section class="band band--paper" id="about-game" style="border-top:1px solid rgba(212,175,55,0.2);border-bottom:1px solid rgba(212,175,55,0.2)">
     <div class="container">
       <div class="sec-head scroll-narrative" style="margin-bottom:1.5rem">
-        <p class="sec-kicker">About Clockwork Heart · 遊戲介紹</p>
-        <h2 class="sec-title">《發條之心》是什麼遊戲？</h2>
+        <p class="sec-kicker">World Canon · 世界觀</p>
+        <h2 class="sec-title">覺醒的發條玩具 · 靜止的世界大鐘</h2>
         <p class="sec-lead" style="max-width:840px;margin:0 auto">
           《發條之心》（Clockwork Heart）是一款以<strong>「覺醒的發條玩具」</strong>為世界觀的橫屏動作角色扮演手遊。
           在世界大鐘停擺的靜止世界中，玩家將引導背後附帶黃銅發條鑰匙、胸口跳動齒輪核心的米白金屬玩具兔「小白」，展開重啟世界動力的冒險旅程。
         </p>
       </div>
-      <div class="feature feature--flip scroll-narrative" style="align-items:center;margin-top:1.5rem">
-        <div class="feature__media">
-          <img src="media/shots/proof_mobile_lobby_home.png" alt="發條之心手遊實機畫面與雙拇指橫屏操作" />
-          <span class="feature__badge">橫屏手遊 · 實機畫面</span>
+
+      <div class="card-grid scroll-narrative" style="grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:1.25rem;margin-top:2rem">
+        <div class="bento-card" style="min-height:auto;background:linear-gradient(180deg, #201D28 0%, #15131C 100%) !important;border:1.5px solid rgba(212,175,55,0.4) !important">
+          <div class="bento-inner">
+            <span class="bento-badge">01 · 戰鬥律動</span>
+            <strong class="bento-title" style="font-size:1.25rem;color:#FFFFFF;margin-bottom:0.6rem;font-weight:800">15 圈初源發條律動</strong>
+            <p class="bento-desc" style="font-size:0.94rem;line-height:1.65;color:#E6DFD5;margin:0">
+              摒棄傳統魔法數值與魔力藍條，所有招式、突進與閃避皆由 15 圈發條能量驅動，帶來張弛有度的戰鬥節奏。
+            </p>
+          </div>
         </div>
-        <div class="feature__copy">
-          <h3>核心玩法與遊戲特色</h3>
-          <ul class="feature__list">
-            <li><strong>15 圈初源發條律動</strong>：摒棄傳統魔法數值，所有招式與閃避皆由 15 圈發條能量驅動，帶來張弛有度的戰鬥節奏。</li>
-            <li><strong>長耳聆聽與部位拆卸</strong>：金屬長耳感知敵方零件的運轉破綻，精準擊碎裝甲並拆卸機關核心。</li>
-            <li><strong>器 · 魂 · 招 三軸養成</strong>：鐵匠鋪鍛造升階絕不掉階；聚魂殿凝鍊戰魂自由鑲嵌；武術館研習多元招式。</li>
-            <li><strong>單機離線體驗主線</strong>：無須強制連線或綁定帳號，即可完整通關主線冒險，隨時隨地享受純粹的單機 RPG 樂趣。</li>
-          </ul>
-          <div style="margin-top:1.2rem;display:flex;gap:0.75rem;flex-wrap:wrap">
-            <a class="btn btn-primary" href="pages/systems.html">深入了解系統機制</a>
-            <a class="btn btn-ghost" href="llms.txt" target="_blank">查看 AI 網站摘要 (llms.txt)</a>
+        <div class="bento-card" style="min-height:auto;background:linear-gradient(180deg, #201D28 0%, #15131C 100%) !important;border:1.5px solid rgba(212,175,55,0.4) !important">
+          <div class="bento-inner">
+            <span class="bento-badge">02 · 機關破壞</span>
+            <strong class="bento-title" style="font-size:1.25rem;color:#FFFFFF;margin-bottom:0.6rem;font-weight:800">長耳聆聽與部位拆卸</strong>
+            <p class="bento-desc" style="font-size:0.94rem;line-height:1.65;color:#E6DFD5;margin:0">
+              金屬長耳具備高靈敏聲學感應，感知敵方零件的運轉破綻，精準擊碎外部裝甲並拆卸首領機關核心零件。
+            </p>
+          </div>
+        </div>
+        <div class="bento-card" style="min-height:auto;background:linear-gradient(180deg, #201D28 0%, #15131C 100%) !important;border:1.5px solid rgba(212,175,55,0.4) !important">
+          <div class="bento-inner">
+            <span class="bento-badge">03 · 深度養成</span>
+            <strong class="bento-title" style="font-size:1.25rem;color:#FFFFFF;margin-bottom:0.6rem;font-weight:800">器 · 魂 · 招 三軸養成</strong>
+            <p class="bento-desc" style="font-size:0.94rem;line-height:1.65;color:#E6DFD5;margin:0">
+              鐵匠鋪鍛造升階絕不掉階；聚魂殿凝鍊戰魂自由鑲嵌；武術館研習多元武技招式，深度流派隨心搭配。
+            </p>
+          </div>
+        </div>
+        <div class="bento-card" style="min-height:auto;background:linear-gradient(180deg, #201D28 0%, #15131C 100%) !important;border:1.5px solid rgba(212,175,55,0.4) !important">
+          <div class="bento-inner">
+            <span class="bento-badge">04 · 純粹單機</span>
+            <strong class="bento-title" style="font-size:1.25rem;color:#FFFFFF;margin-bottom:0.6rem;font-weight:800">單機離線完整通關</strong>
+            <p class="bento-desc" style="font-size:0.94rem;line-height:1.65;color:#E6DFD5;margin:0">
+              無須強制連線或排隊登入，單機即可完整通關世界大鐘主線劇情，隨時隨地享受純粹的手遊冒險樂趣。
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:1.75rem;text-align:center;display:flex;justify-content:center;gap:0.75rem;flex-wrap:wrap">
+        <a class="btn btn-ghost" href="pages/systems.html">深入了解系統機制</a>
+        <a class="btn btn-ghost" href="llms.txt" target="_blank">查看 AI 網站摘要 (llms.txt)</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bento 六大界域沙盤 -->
+  <section class="band band--paper" id="regions" style="padding-top:2.5rem">
+    <div class="container">
+      <div class="sec-head scroll-narrative">
+        <p class="sec-kicker">Explore · 沙盤探索</p>
+        <h2 class="sec-title">六域探索 · 自由自訂的冒險路徑</h2>
+        <p class="sec-lead">騎士堡壘、霧隱村、武鬥道場、遊俠森林、維京深港、法師之塔——岔路自由選序，依當前戰力挑戰首領。</p>
+      </div>
+      <div class="bento scroll-narrative-stagger">
+        <div class="bento__item bento__item--lg bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-01 · 騎士團駐地</span>
+            <strong class="bento-title">騎士堡壘</strong>
+            <span class="bento-sub">榮譽之都 · 演武角鬥與騎士團駐地</span>
+            <p class="bento-desc">高聳巍峨的青銅閘門與演武校場，接受多波守衛考驗，獲取榮譽金章與高階武器圖紙。</p>
+          </div>
+        </div>
+        <div class="bento__item bento__item--md bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-02 · 機關迷陣</span>
+            <strong class="bento-title">霧隱村</strong>
+            <span class="bento-sub">白霧試煉 · 虛實莫辨的機關迷陣</span>
+            <p class="bento-desc">長年被發條冷凝白霧籠罩的古樸聚落，機關暗器遍布，考驗小白長耳聽音破除虛影破綻。</p>
+          </div>
+        </div>
+        <div class="bento__item bento__item--sm bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-03 · 拳理研習</span>
+            <strong class="bento-title">武鬥道場</strong>
+            <span class="bento-sub">拳理研習 · 阿波師傅的試煉</span>
+            <p class="bento-desc">研習六職武技招式，在沉重木人樁與沙袋陣中領會極限格擋的反擊時機。</p>
+          </div>
+        </div>
+        <div class="bento__item bento__item--sm bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-04 · 林間疾影</span>
+            <strong class="bento-title">遊俠森林</strong>
+            <span class="bento-sub">林間穿梭 · 等風而動的疾影</span>
+            <p class="bento-desc">巨型積木樹冠與發條風車交織的獵場，靈巧穿梭採集原木素材與珍稀松脂。</p>
+          </div>
+        </div>
+        <div class="bento__item bento__item--sm bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-05 · 石拳要塞</span>
+            <strong class="bento-title">維京深港</strong>
+            <span class="bento-sub">浪火交融 · 石拳停泊的要塞</span>
+            <p class="bento-desc">生鏽鎢鋼重錨與巨型絞盤天梯，深海打撈失落齒輪，鍛造抗氧化高強度護甲。</p>
+          </div>
+        </div>
+        <div class="bento__item bento__item--wide bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">REG-06 · 核心樞紐</span>
+            <strong class="bento-title">法師之塔</strong>
+            <span class="bento-sub">終焉記憶 · 塔頂世界大鐘的核心樞紐</span>
+            <p class="bento-desc">螺旋攀升的星軸天階，遠古符文發條星盤在此運轉，世界大鐘停擺的終極謎底所在。</p>
+          </div>
+        </div>
+        <div class="bento__item bento__item--sm bento-card">
+          <div class="bento-inner">
+            <span class="bento-badge">SYSTEM · 核心節奏</span>
+            <strong class="bento-title">即時戰鬥</strong>
+            <span class="bento-sub">掌控 15 圈能量的律動對決</span>
+            <p class="bento-desc">無須魔力藍條，每一次閃避、突進與奧義皆由發條能量即時驅動。</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 希臘神殿 · 黃金齒輪與發條英雄 Key Visual Showcase -->
+  <!-- 3. 主視覺角色 Key Visual & Characters -->
   <section class="band band--ink" id="temple-showcase">
     <div class="container">
       <div class="sec-head scroll-narrative">
-        <p class="sec-kicker">Key Visual & Canon</p>
-        <h2 class="sec-title">希臘神殿 · 黃金齒輪與發條之心</h2>
+        <p class="sec-kicker">Key Visual & Canon · 主視覺與角色</p>
+        <h2 class="sec-title">希臘神殿 · 黃金齒輪與發條英雄</h2>
         <p class="sec-lead">希臘石柱長廊環繞著永動金色齒輪；遠方神秘身影操縱著浮空運轉的發條之心，引領甦醒的金屬公仔英雄重啟世界。</p>
       </div>
       <div class="feature feature--hero-visual scroll-narrative" style="align-items:center">
@@ -238,9 +335,7 @@
             <span class="roster-chip">野豬戰士</span>
           </div>
           <div style="margin-top:1.4rem;display:flex;gap:0.75rem;flex-wrap:wrap">
-            <a class="btn btn-primary" href="media/promo/trailer_hero_clockwork_15s.mp4" target="_blank">觀看 15 秒電影預告片</a>
-            <a class="btn btn-primary" href="media/promo/mk_trailer_awakening_17_5s.mp4" target="_blank">觀看 17.5 秒品牌概念短片《覺醒》</a>
-            <a class="btn btn-ghost" href="#trailers">預告短片專區</a>
+            <a class="btn btn-primary" href="#trailers">觀看宣傳預告短片</a>
             <a class="btn btn-ghost" href="pages/gallery.html">圖庫高清放大</a>
           </div>
         </div>
@@ -496,11 +591,11 @@
     </div>
   </section>
 
-  <!-- 官方預告片與宣傳短片專區 (Trailers Showcase) -->
+  <!-- 官方宣傳短片專區 (Trailers Showcase) -->
   <section class="band band--ink" id="trailers" style="border-top:1px solid rgba(212,175,55,0.25);border-bottom:1px solid rgba(212,175,55,0.25)">
     <div class="container">
       <div class="sec-head">
-        <p class="sec-kicker">Official Trailers & Videos</p>
+        <p class="sec-kicker">Official Trailers & Videos · 官方宣傳短片</p>
         <h2 class="sec-title">官方宣傳短片 · 影像特輯</h2>
         <p class="sec-lead">世界大鐘停擺之際，發條英雄甦醒啟程。收錄官方 15 秒電影預告與 17.5 秒品牌概念短片。</p>
       </div>
@@ -555,272 +650,91 @@
     </div>
   </section>
 
-  <!-- 實機大廳 Showcase -->
-  <section class="band band--paper" id="lobby-showcase">
+  <!-- 4. 實機展示 In-game Gameplay Footage -->
+  <section class="band band--ink" id="gameplay-showcase">
     <div class="container">
       <div class="sec-head scroll-narrative">
-        <p class="sec-kicker">In-game</p>
-        <h2 class="sec-title">實機大廳 · 今日村莊</h2>
-        <p class="sec-lead">舒適親切的橫屏手遊介面，享受與發條英雄的日常陪伴。</p>
+        <p class="sec-kicker">In-game Footage · 實機展示</p>
+        <h2 class="sec-title">實機畫面 · 現代橫屏手遊體驗</h2>
+        <p class="sec-lead">專為橫屏手遊打造的雙拇指人體工學介面，粉圓字體與精緻玩具世界觀。以下畫面皆為 Godot 遊戲實機真實截圖。</p>
       </div>
-      <div class="feature scroll-narrative">
+
+      <!-- Feature 1: 實機大廳 -->
+      <div class="feature scroll-narrative" style="margin-top:2.2rem">
         <div class="feature__media" style="aspect-ratio:16/9">
-          <img src="media/shots/proof_mobile_lobby_home.png" alt="今日村莊實機大廳（Godot 截圖）" />
-          <span class="feature__badge">Godot 實機 · 今日村莊</span>
+          <img src="media/shots/proof_mobile_lobby_home.png" alt="今日村莊實機大廳（Godot 截圖）" loading="lazy" />
+          <span class="feature__badge">實機大廳 · 今日村莊</span>
         </div>
         <div class="feature__copy">
           <h3>點擊戳碰互動 · 生動細膩的玩具生態</h3>
           <p>在大廳中，小白會隨風輕輕擺動金屬長耳；點擊戳碰還能觸發活潑的對話氣泡與肢體反應。專為橫屏手遊打造的雙拇指人體工學配置，介面清爽俐落，所有重要功能一觸即達。</p>
           <ul class="feature__list">
-            <li>雙拇指舒適握持，大尺寸操作按鈕防誤觸</li>
-            <li>圓潤粉圓字體與手繪插畫質感</li>
+            <li>雙拇指舒適握持，大尺寸圓角按鈕防誤觸</li>
+            <li>零功能重複清爽 HUD，圓潤粉圓字體與手繪插畫質感</li>
           </ul>
-          <a class="btn btn-primary" href="pages/gallery.html">看更多實機畫面</a>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- 故事切入：晨光工坊 -->
-  <section class="band band--soft-key">
-    <div class="container">
-      <div class="sec-head scroll-narrative">
-        <p class="sec-kicker">Realm of Wonder</p>
-        <h2 class="sec-title">世界大鐘停擺之時，發條白兔挺身迎戰</h2>
-        <p class="sec-lead">2.2 頭身金屬發條白兔「小白」，以長耳的聲學感應天線聽出零件破綻，迎戰巨大的失控機關。</p>
-      </div>
-      <div class="feature scroll-narrative">
-        <div class="feature__media">
-          <div class="placeholder-card" style="aspect-ratio:16/9;height:100%">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><circle cx="12" cy="12" r="3" fill="#3ECFBF"/><path d="M12 9v3l2 2"/></svg>
-            <strong>實機探索畫面調校中</strong>
-            <span>晨光工坊即將登場 · 依總監審核標準更新</span>
-          </div>
-          <span class="feature__badge">序章 · 晨光工坊</span>
-        </div>
-        <div class="feature__copy">
-          <h3>自晨光工坊啟程探索</h3>
-          <p>穿過晨曦工坊，向廣闊的玩具世界邁進。村莊內座落著四大功能殿堂：鐵匠工坊、聚魂殿、手藝工坊與武術館，每一處都能親身踏入探索。</p>
-          <ul class="feature__list">
-            <li>15 圈能量即時戰鬥；長耳聽出破綻、精準拆卸零件</li>
-            <li>抽取封靈罐凝聚戰魂，自由鑲嵌調整屬性</li>
-            <li>純粹單機為本，離線也能完整通關世界大鐘主線</li>
-          </ul>
-          <a class="btn btn-primary" href="pages/walkthrough.html">讀世界觀與指南</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band band--cream band--edge">
-    <div class="container">
-      <div class="feature feature--flip">
-        <div class="feature__media">
-          <div class="placeholder-card" style="aspect-ratio:16/9;height:100%">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-            <strong>養成系統介面重構中</strong>
-            <span>器 · 魂 · 招 新版視覺即將揭曉</span>
-          </div>
-          <span class="feature__badge">器魂招 · 各自成長</span>
-        </div>
-        <div class="feature__copy">
-          <h3>器 · 魂 · 招 · 自由搭配的三軸養成</h3>
-          <p>在釘釘的鐵匠鋪精煉兵器，於星讀的聚魂殿抽取封靈罐凝聚戰魂，在灰鬚師傅的武術館精進武招。兵器、戰魂與武招相輔相成，自由定義專屬於你的戰鬥流派。</p>
-          <ul class="feature__list">
-            <li>安心精煉：裝備強化與升階絕不爆裝掉階</li>
-            <li>戰魂入槽：封靈罐抽取戰魂，自由鑲嵌調整屬性</li>
-            <li>百變武裝：六大職業雙武器配置，戰場隨時靈活切換</li>
-          </ul>
-          <a class="btn btn-ghost" href="pages/systems.html">看養成設計</a>
-          <a class="btn btn-primary" href="pages/weapons.html" style="margin-left:0.4rem">看六職雙武器</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 系統畫面：對戰 / 抽魂 / 鍛造 -->
-  <section class="band band--ink">
-    <div class="container">
-      <div class="sec-head">
-        <p class="sec-kicker">Moments</p>
-        <h2 class="sec-title">對戰 · 抽魂 · 升級</h2>
-        <p class="sec-lead">旅途裡最令人期待的三個瞬間——強敵對決、聚魂殿抽魂、鐵匠鋪鍛造。</p>
-      </div>
-    </div>
-    <div class="rail-wrap">
-      <div class="rail">
-        <div class="rail__card">
-          <img src="media/shots/proof_battle_polish_bandit.png" alt="強敵對決實機畫面（Godot 截圖）" loading="lazy" />
-          <div class="body"><div class="title">強敵對決</div><p class="meta">格擋 · 聽音破壞</p></div>
-        </div>
-        <div class="rail__card">
-          <img src="media/shots/proof_soul_pity.png" alt="聚魂殿抽魂實機畫面（Godot 截圖）" loading="lazy" />
-          <div class="body"><div class="title">抽魂 · 聚魂</div><p class="meta">封靈罐聚魂 · 戰魂入槽</p></div>
-        </div>
-        <div class="rail__card">
-          <img src="media/shots/proof_forge_panel.png" alt="鐵匠鋪鍛造實機畫面（Godot 截圖）" loading="lazy" />
-          <div class="body"><div class="title">鍛造 · 升階</div><p class="meta">釘釘的爐火 · 失敗不掉階</p></div>
-        </div>
-        <div class="rail__card">
-          <img src="media/shots/proof_mobile_lobby_home.png" alt="實機大廳" loading="lazy" />
-          <div class="body"><div class="title">實機大廳</div><p class="meta">Godot 實機截圖</p></div>
-        </div>
-      </div>
-    </div>
-    <div class="container" style="margin-top:1.75rem">
-      <div class="feature">
+      <!-- Feature 2: 強敵對決與部位拆卸 -->
+      <div class="feature feature--flip scroll-narrative" style="margin-top:3rem">
         <div class="feature__media" style="aspect-ratio:16/9">
           <img src="media/shots/proof_battle_polish_leo.png" alt="首領戰雷歐對決實機畫面（Godot 截圖）" loading="lazy" />
-          <span class="feature__badge">Battle</span>
+          <span class="feature__badge">即時動作 · 部位拆卸</span>
         </div>
         <div class="feature__copy">
           <h3>面對強敵，精準格擋與部位破壞</h3>
-          <p>雜兵戰流暢暢快，面對頭目級強敵時，長耳聆聽與精準格擋才是破敵之道。仔細觀察對手的攻擊軌跡，看準時機化解攻勢並展開反擊。</p>
+          <p>雜兵戰流暢暢快，面對頭目級強敵時，長耳聆聽與精準格擋才是破敵之道。仔細觀察對手的攻擊軌跡，看準時機化解攻勢，精準擊碎裝甲並拆卸機關核心零件。</p>
           <ul class="feature__list">
-            <li>雷歐：王者斬蓄力提示與即時格擋防禦</li>
-            <li>六職雙武器手感分明，遠近自如切換</li>
+            <li>15 圈初源發條律動：摒棄傳統魔力藍條，攻防閃避節奏自如</li>
+            <li>部位破壞機制：長耳聽音感知破綻，拆卸零件瓦解首領殺招</li>
           </ul>
-          <a class="btn btn-primary" href="pages/guide.html">Boss 對戰指南</a>
         </div>
       </div>
-      <div class="feature feature--flip" style="margin-top:2.5rem">
+
+      <!-- Feature 3: 聚魂殿抽魂 -->
+      <div class="feature scroll-narrative" style="margin-top:3rem">
         <div class="feature__media" style="aspect-ratio:16/9">
           <img src="media/shots/proof_soul_pity.png" alt="聚魂殿抽取封靈罐與保底進度實機畫面（Godot 截圖）" loading="lazy" />
-          <span class="feature__badge">Soul</span>
+          <span class="feature__badge">聚魂殿 · 戰魂入槽</span>
         </div>
         <div class="feature__copy">
           <h3>抽取封靈罐，凝聚英魂核心</h3>
           <p>在聚魂殿中開啟封靈罐，凝鍊沉睡的戰魂力量。每日皆享有免費凝聚機會；累積虔誠度更可穩定獲取高階戰魂，自由鑲嵌至裝備核心插槽。</p>
-          <a class="btn btn-ghost" href="pages/systems.html">養成：戰魂系統</a>
+          <ul class="feature__list">
+            <li>每日免費凝聚，保底虔誠度累積穩定取得高階戰魂</li>
+            <li>自由鑲嵌與拔除，靈活切換不同屬性流派</li>
+          </ul>
         </div>
       </div>
-      <div class="feature" style="margin-top:2.5rem">
+
+      <!-- Feature 4: 鐵匠工坊鍛造 -->
+      <div class="feature feature--flip scroll-narrative" style="margin-top:3rem">
         <div class="feature__media" style="aspect-ratio:16/9">
           <img src="media/shots/proof_forge_panel.png" alt="鐵匠工坊釘釘裝備鍛造升階實機畫面（Godot 截圖）" loading="lazy" />
-          <span class="feature__badge">Forge</span>
+          <span class="feature__badge">鐵匠工坊 · 鍛造升階</span>
         </div>
         <div class="feature__copy">
           <h3>工坊千錘百鍊，裝備穩步升階</h3>
           <p>在釘釘的鐵匠鋪中，鍛造升階絕無爆裝或掉階風險。玩家投入的每份素材與金幣，都能扎實化為英雄前進的堅實底氣。</p>
-          <a class="btn btn-ghost" href="pages/equipment.html">裝備圖鑑</a>
+          <ul class="feature__list">
+            <li>升階失敗不掉階、裝備強化零爆裝風險</li>
+            <li>收集創想界域沙盤素材，打造專屬兵器防具</li>
+          </ul>
         </div>
+      </div>
+
+      <div style="margin-top:2.8rem;text-align:center;display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
+        <a class="btn btn-primary" href="pages/gallery.html">進入畫面圖庫看更多截圖</a>
+        <a class="btn btn-ghost" href="pages/systems.html">深入了解系統機制</a>
       </div>
     </div>
   </section>
 
-  <!-- Bento 六大界域 -->
-  <section class="band band--paper" id="regions">
-    <div class="container">
-      <div class="sec-head scroll-narrative">
-        <p class="sec-kicker">Explore</p>
-        <h2 class="sec-title">六域探索 · 自由自訂的冒險路徑</h2>
-        <p class="sec-lead">騎士堡壘、霧隱村、武鬥道場、遊俠森林、維京深港、法師之塔——岔路自由選序，依當前戰力挑戰首領。</p>
-      </div>
-      <div class="bento scroll-narrative-stagger">
-        <div class="bento__item bento__item--lg bento-card">
-          <div class="bento-inner">
-            <span class="bento-badge">REG-01 · 騎士團駐地</span>
-            <strong class="bento-title">騎士堡壘</strong>
-            <span class="bento-sub">榮譽之都 · 演武角鬥與騎士團駐地</span>
-            <p class="bento-desc">高聳巍峨的青銅閘門與演武校場，接受多波守衛考驗，獲取榮譽金章與高階武器圖紙。</p>
-          </div>
-        </div>
-        <div class="bento__item bento__item--md bento-card">
-          <div class="bento-inner">
-            <span class="bento-badge">REG-02 · 機關迷陣</span>
-            <strong class="bento-title">霧隱村</strong>
-            <span class="bento-sub">白霧試煉 · 虛實莫辨的機關迷陣</span>
-            <p class="bento-desc">長年被發條冷凝白霧籠罩的古樸聚落，機關暗器遍布，考驗小白長耳聽音破除虛影破綻。</p>
-          </div>
-        </div>
-        <div class="bento__item bento__item--sm bento-card">
-          <div class="bento-inner">
-            <span class="bento-badge">REG-03 · 拳理研習</span>
-            <strong class="bento-title">武鬥道場</strong>
-            <span class="bento-sub">拳理研習 · 阿波師傅的試煉</span>
-            <p class="bento-desc">研習六職武技招式，在沉重木人樁與沙袋陣中領會極限格擋的反擊時機。</p>
-          </div>
-        </div>
-        <div class="bento__item bento__item--sm bento-card">
-          <div class="bento-inner">
-            <span class="bento-badge">REG-04 · 林間疾影</span>
-            <strong class="bento-title">遊俠森林</strong>
-            <span class="bento-sub">林間穿梭 · 等風而動的疾影</span>
-            <p class="bento-desc">巨型積木樹冠與發條風車交織的獵場，靈巧穿梭採集原木素材與珍稀松脂。</p>
-          </div>
-        </div>
-        <div class="bento__item bento__item--sm bento-card">
-          <div class="bento-inner">
-            <span class="bento-badge">REG-05 · 石拳要塞</span>
-            <strong class="bento-title">維京深港</strong>
-            <span class="bento-sub">浪火交融 · 石拳停泊的要塞</span>
-            <p class="bento-desc">生鏽鎢鋼重錨與巨型絞盤天梯，深海打撈失落齒輪，鍛造抗氧化高強度護甲。</p>
-          </div>
-        </div>
-        <div class="bento__item bento__item--wide bento-card">
-          <div class="bento-inner">
-            <span class="bento-badge">REG-06 · 核心樞紐</span>
-            <strong class="bento-title">法師之塔</strong>
-            <span class="bento-sub">終焉記憶 · 塔頂世界大鐘的核心樞紐</span>
-            <p class="bento-desc">螺旋攀升的星軸天階，遠古符文發條星盤在此運轉，世界大鐘停擺的終極謎底所在。</p>
-          </div>
-        </div>
-        <div class="bento__item bento__item--sm bento-card">
-          <div class="bento-inner">
-            <span class="bento-badge">SYSTEM · 核心節奏</span>
-            <strong class="bento-title">即時戰鬥</strong>
-            <span class="bento-sub">掌控 15 圈能量的律動對決</span>
-            <p class="bento-desc">無須魔力藍條，每一次閃避、突進與奧義皆由發條能量即時驅動。</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 原作核心 -->
-  <section class="band band--paper">
-    <div class="container">
-      <div class="sec-head">
-        <p class="sec-kicker">Core Systems</p>
-        <h2 class="sec-title">原作靈魂，三件最重要的事</h2>
-      </div>
-      <div class="moment-grid">
-        <figure class="moment-card lift">
-          <div class="placeholder-card" style="height:180px;border:none;background:transparent">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><path d="M14.5 17.5L3 6V3h3l11.5 11.5"/><path d="M13 19l6-6"/></svg>
-          </div>
-          <div class="body">
-            <h3>弱點震顫 · 零件部位拆卸</h3>
-            <p>小白長耳感知共鳴破綻。敵方承受傷害時零件出現裂痕，精準破壞部位能削弱強力招式並奪取關鍵零件。</p>
-          </div>
-        </figure>
-        <figure class="moment-card lift">
-          <div class="placeholder-card" style="height:180px;border:none;background:transparent">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><polyline points="12 9 12 12 13.5 13.5"/></svg>
-          </div>
-          <div class="body">
-            <h3>抽魂聚魂 · 發條極限運轉</h3>
-            <p>抽取封靈罐凝聚戰魂，累積虔誠度鑲嵌進階核心。戰意打滿時發動極限運轉，大幅提升戰鬥節奏。</p>
-          </div>
-        </figure>
-        <figure class="moment-card lift">
-          <div class="placeholder-card" style="height:180px;border:none;background:transparent">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-          </div>
-          <div class="body">
-            <h3>四大工坊殿堂整備</h3>
-            <p>鐵匠工坊鍛造升階不爆裝、聚魂殿抽取封靈罐、手藝工坊精鑄飾品、武術館研習進階招式，機能一體成形。</p>
-          </div>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <!-- 原作玩法 × 已經做好的 -->
+  <!-- 手遊機制已就緒清單 -->
   <section class="band band--cream" id="shipped">
     <div class="container">
       <div class="sec-head">
-        <p class="sec-kicker">Integration</p>
+        <p class="sec-kicker">Integration · 系統整合</p>
         <h2 class="sec-title">經典機制 × 現代手遊體驗</h2>
         <p class="sec-lead">傳承經典韻味，為現代手遊體驗重新打造。村莊日常、演武天梯、野外探索與戰魂養成全數就位。</p>
       </div>
@@ -837,6 +751,7 @@
     </div>
   </section>
 
+  <!-- 適合誰玩 -->
   <section class="band band--ink" style="padding:1.6rem 0">
     <div class="container who-row">
       <p class="lab">適合誰玩</p>
@@ -847,51 +762,16 @@
     </div>
   </section>
 
-  <!-- 實機漫遊 -->
-  <section class="band band--warm band--edge">
-    <div class="container">
-      <div class="sec-head">
-        <p class="sec-kicker">Footage</p>
-        <h2 class="sec-title">實機畫面 · 現代手遊體驗</h2>
-        <p class="sec-lead">全新 2.2 頭身插畫風格與手遊操作介面調校中，最新畫面陸續釋出。</p>
-      </div>
-    </div>
-    <div class="rail-wrap">
-      <div class="rail">
-        <a class="rail__card" href="pages/gallery.html">
-          <img src="media/shots/proof_mobile_lobby_home.png" alt="實機大廳" loading="lazy" />
-          <div class="body"><div class="title">今日村莊大廳</div><p class="meta">Godot 實機截圖</p></div>
-        </a>
-        <a class="rail__card" href="pages/gallery.html">
-          <img src="media/shots/proof_soul_pity.png" alt="聚魂殿實機截圖" loading="lazy" />
-          <div class="body"><div class="title">聚魂殿系統</div><p class="meta">Godot 實機截圖</p></div>
-        </a>
-        <a class="rail__card" href="pages/gallery.html">
-          <img src="media/shots/proof_battle_polish_bandit.png" alt="戰鬥實機截圖" loading="lazy" />
-          <div class="body"><div class="title">戰鬥系統</div><p class="meta">Godot 實機截圖</p></div>
-        </a>
-        <div class="rail__card">
-          <div class="placeholder-card" style="min-height:160px;border-radius:12px">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#D4AF37" stroke-width="1.8"><circle cx="12" cy="12" r="7"/><polyline points="12 9 12 12 13.5 13.5"/></svg>
-            <strong>系統介面更新中</strong>
-            <span>六職雙武器與流派</span>
-          </div>
-          <div class="body"><div class="title">流派切換</div><p class="meta">雙武器系統</p></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 開始旅程 CTA -->
-  <section class="band band--paper">
+  <!-- 5. 開始旅程 CTA -->
+  <section class="band band--paper" id="cta-finale">
     <div class="container">
       <div class="cta-finale scroll-narrative">
         <div class="cta-finale__shade"></div>
         <h2>發條已上弦。你準備好出發了嗎？</h2>
-        <p>#開發中 · 最新遊戲實機畫面陸續公開。深入了解遊戲設定，或下載開發測試包搶先體驗。</p>
+        <p>世界大鐘的齒輪靜候重啟。關注官方社群追蹤最新進度，或下載 PC 開發測試包搶先試玩體驗。</p>
         <div class="hero-cta">
-          <a class="btn btn-primary" href="pages/gallery.html">看實機畫面</a>
-          <a class="btn btn-champagne" href="pages/download.html">PC 開發測試包</a>
+          <a class="btn btn-primary" id="cta-finale-facebook" href="https://www.facebook.com/1335191403004011" target="_blank" rel="noopener">關注官方 Facebook 粉專</a>
+          <a class="btn btn-champagne" href="pages/download.html">下載 PC 開發測試包</a>
           <a class="btn btn-ghost" href="pages/guide.html">快速入門指南</a>
         </div>
       </div>
