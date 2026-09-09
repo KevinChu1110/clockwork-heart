@@ -11,7 +11,11 @@ func _initialize() -> void:
 		win.size = Vector2i(1280, 720)
 
 	_out_dir = ProjectSettings.globalize_path("res://").path_join("../screenshots")
+	var out_web := ProjectSettings.globalize_path("res://").path_join("../web/media/shots")
+	var out_game := ProjectSettings.globalize_path("res://").path_join("screenshots")
 	DirAccess.make_dir_recursive_absolute(_out_dir)
+	DirAccess.make_dir_recursive_absolute(out_web)
+	DirAccess.make_dir_recursive_absolute(out_game)
 
 	var scn: GDScript = load("res://scripts/ui/mobile_lobby.gd")
 	_lobby = scn.new()
@@ -25,7 +29,11 @@ func _process(_delta: float) -> bool:
 		if img1:
 			var p1 := _out_dir.path_join("proof_mobile_lobby_home.png")
 			img1.save_png(p1)
-			print("SAVED: ", p1)
+			var pw1 := ProjectSettings.globalize_path("res://").path_join("../web/media/shots/proof_mobile_lobby_home.png")
+			img1.save_png(pw1)
+			var pg1 := ProjectSettings.globalize_path("res://").path_join("screenshots/proof_mobile_lobby_home.png")
+			img1.save_png(pg1)
+			print("SAVED: ", p1, " and ", pw1, " and ", pg1)
 		if _lobby and _lobby.has_method("_switch_tab"):
 			_lobby.call("_switch_tab", 1) # CHARACTER
 	elif _frame == 20:

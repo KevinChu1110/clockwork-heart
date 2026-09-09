@@ -47,6 +47,7 @@ func _process(_d: float) -> bool:
 		_test_hall_cards()
 		_test_soft_shadow()
 		_test_hero_click_and_particles()
+		_test_hero_nameplate()
 		return _finish()
 	return false
 
@@ -322,6 +323,75 @@ func _get_burst_particle_nodes() -> Array[Node]:
 			if cr.name.begins_with("BurstParticle") or is_equal_approx(cr.size.x, 6.0):
 				result.append(cr)
 	return result
+
+
+## ──────────────────────────────────────────
+## 4. 斷言英雄頭頂名牌位置（上移避開齒輪核心）與主次文字層級
+## ──────────────────────────────────────────
+func _test_hero_nameplate() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試頭頂名牌")
+		return
+
+	var name_tag = _lobby.get("_hero_name_tag") as Label
+	if name_tag == null or not is_instance_valid(name_tag):
+		_fail("大廳缺少 _hero_name_tag 節點")
+		return
+
+	var tag_vbox := name_tag.get_parent() as VBoxContainer
+	if tag_vbox == null:
+		_fail("_hero_name_tag 未置於 VBoxContainer 容器內")
+		return
+
+	var tag_panel := tag_vbox.get_parent() as PanelContainer
+	if tag_panel == null:
+		_fail("名牌 VBoxContainer 未置於 PanelContainer 底襯內")
+		return
+
+	# 4.1 驗證名牌已上移，避開齒輪核心 (offset_top 應 <= -140)
+	print("  [名牌位置] offset_top: %.1f, offset_bottom: %.1f" % [tag_panel.offset_top, tag_panel.offset_bottom])
+	if tag_panel.offset_top > -140.0:
+		_fail("名牌 offset_top 應 <= -140.0 以避開齒輪核心，實際為 %.1f" % tag_panel.offset_top)
+	else:
+		print("  ok 名牌位置已成功上移避開齒輪核心區 (offset_top=%.1f)" % tag_panel.offset_top)
+
+	# 4.2 驗證標籤互換：角色名應為第一個子節點，稱號為第二個子節點
+	var children := tag_vbox.get_children()
+	if children.size() < 2:
+		_fail("名牌容器子節點數量應至少為 2 (角色名與稱號)")
+		return
+
+	if children[0] != name_tag:
+		_fail("名牌首項應為角色名標籤 (_hero_name_tag)，以突出角色主體")
+	else:
+		print("  ok 名牌首項為角色名標籤")
+
+	var title_tag: Label = null
+	for c in children:
+		if c != name_tag and c is Label:
+			title_tag = c as Label
+			break
+
+	if title_tag == null:
+		_fail("名牌容器內未找到稱號 Label")
+		return
+
+	# 4.3 驗證字級主次層級：角色名 >= 18px，稱號 <= 14px
+	var name_size: int = name_tag.get_theme_font_size("font_size")
+	var title_size: int = title_tag.get_theme_font_size("font_size")
+	print("  [字級層級] 角色名: %d px, 稱號: %d px" % [name_size, title_size])
+	if name_size < 18:
+		_fail("角色名字級應加大 (>= 18px)，實際為 %d px" % name_size)
+	elif title_size > 14:
+		_fail("稱號字級應縮小 (<= 14px) 以降低權重，實際為 %d px" % title_size)
+	elif name_size <= title_size:
+		_fail("角色名字級 (%d px) 應大於稱號字級 (%d px)" % [name_size, title_size])
+	else:
+		print("  ok 角色名與稱號字級主次層級正確 (角色名 %d px > 稱號 %d px)" % [name_size, title_size])
+
+	# 4.4 驗證色彩主次
+	var name_color: Color = name_tag.get_theme_color("font_color")
+	print("  [文字顏色] 角色名顏色: %s, 稱號顏色: %s" % [str(name_color), str(title_tag.get_theme_color("font_color"))])
 
 
 func _finish() -> bool:
