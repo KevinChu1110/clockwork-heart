@@ -212,7 +212,7 @@
           "skirt_or_trousers"
         ],
         "mechanical_details": {
-          "fabric_style": "微縮玩偶舞台服裝質感，顯眼粗縫線、黃銅暗扣、鉚接金屬帶，不可做成現代寫實長袍",
+          "costume_style": "微縮玩偶舞台裝甲質感，顯眼金屬接縫、黃銅暗扣、鉚接金屬帶，不可做成現代寫實長袍",
           "chibi_compatibility": "統一對齊 2.3~2.5 頭身 Chibi 軀幹胸腰尺寸，確保5種動物均可跨種族穿戴"
         },
         "sample_variants": [
@@ -238,7 +238,7 @@
           },
           {
             "id": "costume_viking_harness",
-            "name": "粗獷鍛爐護胸皮帶",
+            "name": "粗獷鍛爐護胸鐵束帶",
             "tier": "common"
           }
         ]

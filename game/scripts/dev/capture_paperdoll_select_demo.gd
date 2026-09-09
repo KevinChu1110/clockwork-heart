@@ -89,7 +89,7 @@ func _setup_sequence() -> void:
 			"mem_key": "lion"
 		},
 		{
-			"name": "野豬 - 預設外裝 (粗獷鍛爐護胸皮帶)",
+			"name": "野豬 - 預設外裝 (粗獷鍛爐護胸鐵束帶)",
 			"fn": func():
 				_demo.select_race("boar"),
 			"filename": "proof_paperdoll_select_demo_boar.png",
