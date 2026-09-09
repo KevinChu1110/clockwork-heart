@@ -349,6 +349,43 @@ static func get_sorted_slot_entries(race: String, slot_selection: Dictionary = {
 	return entries
 
 
+## ── 記憶體即時合成 128x128 RGBA8 貼圖（依 z_index 順序疊合 7 大槽位）──
+static func build_composite_image(race: String, slot_selection: Dictionary = {}) -> Image:
+	var entries := get_sorted_slot_entries(race, slot_selection)
+	var base_img := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+	base_img.fill(Color(0, 0, 0, 0))
+	for entry in entries:
+		var tex: Texture2D = entry.get("texture", null)
+		if tex == null:
+			continue
+		var layer_img: Image = tex.get_image()
+		if layer_img == null or layer_img.is_empty():
+			continue
+		if layer_img.get_format() != Image.FORMAT_RGBA8:
+			layer_img.convert(Image.FORMAT_RGBA8)
+		var src_rect := Rect2i(0, 0, layer_img.get_width(), layer_img.get_height())
+		base_img.blend_rect(layer_img, src_rect, Vector2i.ZERO)
+	return base_img
+
+
+static func build_composite_texture(race: String, slot_selection: Dictionary = {}) -> Texture2D:
+	var img := build_composite_image(race, slot_selection)
+	if img != null and not img.is_empty():
+		return ImageTexture.create_from_image(img)
+	return null
+
+
+static func get_race_composite_texture(race: String, slot_selection: Dictionary = {}) -> Texture2D:
+	var rid := race.to_lower().strip_edges()
+	if slot_selection.is_empty():
+		var proof_path := "%s/%s/proof_paperdoll_%s_composite.png" % [PAPERDOLL_ROOT, rid, rid]
+		if ResourceLoader.exists(proof_path):
+			var res = load(proof_path)
+			if res is Texture2D:
+				return res as Texture2D
+	return build_composite_texture(rid, slot_selection)
+
+
 ## ── 安全預設規格 ──
 static func _get_fallback_spec() -> Dictionary:
 	return {

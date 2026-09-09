@@ -13,6 +13,8 @@ var _host: Node
 
 ## 宿主掛上：紀錄已經進 GameState 了，請把畫面接回章節。新開的旅途也走這支。
 var on_loaded: Callable = Callable()
+## 宿主掛上：新開旅途自訂創角選族流程。若有掛則轉交宿主處理（傳入 slot: int）
+var on_new_game: Callable = Callable()
 ## 宿主掛上：按返回時去哪。沒掛就回中樞。
 var on_close: Callable = Callable()
 
@@ -93,6 +95,9 @@ func load_slot(slot: int) -> void:
 
 
 func start_new(slot: int) -> void:
+	if on_new_game.is_valid():
+		on_new_game.call(slot)
+		return
 	GameState.reset_new_game()
 	if SaveManager.save_game(slot) != OK:
 		_host.ui_toast(_t("第 %d 格寫不進去。") % slot)

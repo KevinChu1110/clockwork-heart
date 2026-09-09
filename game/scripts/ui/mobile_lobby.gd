@@ -65,6 +65,7 @@ var _bag_layer: Control
 var _dock_buttons: Array[Button] = []
 
 ## 角色動態與姿態
+var _profile_avatar: TextureRect
 var _hero_avatar: TextureRect
 var _hero_shadow: TextureRect
 var _hero_name_tag: Label
@@ -121,9 +122,40 @@ func _ready() -> void:
 func _apply_safe() -> void:
 	ResponsiveUi.apply_safe_margins(self)
 
+func _get_hero_portrait(race: String) -> Texture2D:
+	var r := race.to_lower().strip_edges()
+	var p_path := ""
+	match r:
+		"rabbit": p_path = "res://assets/sprites/portraits/rabbit.png"
+		"fox": p_path = "res://assets/sprites/portraits/fox_mage.png"
+		"lion": p_path = "res://assets/sprites/portraits/lion_knight.png"
+		"boar": p_path = "res://assets/sprites/portraits/boar_warrior.png"
+		"macaque": p_path = "res://assets/sprites/portraits/macaque.png"
+		_: p_path = "res://assets/sprites/portraits/rabbit.png"
+	if ResourceLoader.exists(p_path):
+		return load(p_path) as Texture2D
+	return SpriteDB.player_race_composite(r)
+
+
 func _load_hero_poses() -> void:
-	if ResourceLoader.exists("res://assets/sprites/player/poses/idle.png"):
-		_tex_idle = load("res://assets/sprites/player/poses/idle.png")
+	var gs := _gs()
+	var race := "rabbit"
+	if gs and "player_race" in gs:
+		race = str(gs.player_race).strip_edges().to_lower()
+		if race.is_empty():
+			race = "rabbit"
+
+	if race != "rabbit":
+		var r_tex := SpriteDB.player_race_composite(race)
+		if r_tex:
+			_tex_idle = r_tex
+			_tex_attack = r_tex
+			_tex_skill = r_tex
+			_tex_telegraph = r_tex
+			_tex_recover = r_tex
+			return
+
+	_tex_idle = SpriteDB.player_idle()
 	if ResourceLoader.exists("res://assets/sprites/player/poses/attack.png"):
 		_tex_attack = load("res://assets/sprites/player/poses/attack.png")
 	if ResourceLoader.exists("res://assets/sprites/player/poses/skill.png"):
@@ -307,8 +339,10 @@ func _build_top_hud() -> void:
 	p_tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	p_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	p_tex.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	if ResourceLoader.exists("res://assets/sprites/portraits/rabbit.png"):
-		p_tex.texture = load("res://assets/sprites/portraits/rabbit.png")
+	var init_gs := _gs()
+	var init_race := str(init_gs.player_race).strip_edges().to_lower() if init_gs and "player_race" in init_gs else "rabbit"
+	p_tex.texture = _get_hero_portrait(init_race)
+	_profile_avatar = p_tex
 	p_frame.add_child(p_tex)
 	p_box.add_child(p_frame)
 
@@ -1512,6 +1546,13 @@ func refresh_hud() -> void:
 		_name_label.text = _get_hero_name()
 	if _hero_name_tag:
 		_hero_name_tag.text = _get_hero_name()
+	if _profile_avatar:
+		var cur_r := str(gs.player_race).strip_edges().to_lower() if gs and "player_race" in gs else "rabbit"
+		_profile_avatar.texture = _get_hero_portrait(cur_r)
+	if _hero_avatar:
+		_load_hero_poses()
+		if not _is_interacting and _tex_idle:
+			_hero_avatar.texture = _tex_idle
 	if _power_label:
 		_power_label.text = "戰力 %d" % pow
 	if _energy_label:
