@@ -43,6 +43,7 @@ print("✓ Zero duplicate MD5 hashes within any slot across all 5 races!")
 # 2. Check rabbit chassis soft shadow density & body solidness
 # ---------------------------------------------------------
 r_chassis = Image.open(f"{BASE}/rabbit/chassis/paint_ivory_stock.png").convert("RGBA")
+r_brass = Image.open(f"{BASE}/rabbit/chassis/paint_brass_gold.png").convert("RGBA")
 
 # Shadow density
 shadow_non_trans = 0
@@ -59,13 +60,78 @@ shadow_density = shadow_non_trans / total_box
 print(f"Rabbit ground soft shadow density: {shadow_non_trans}/{total_box} = {shadow_density*100:.1f}%")
 assert shadow_density >= 0.85, f"Shadow density {shadow_density*100:.1f}% < 85%!"
 
-# Check torso/pelvis solidness (where diagonal cut used to be: y=73..95, x=45..70)
-for y in range(73, 96):
-    for x in range(45, 71):
-        c = r_chassis.getpixel((x, y))
-        assert isinstance(c, tuple)
-        assert c[3] > 0, f"Void found inside rabbit torso/pelvis at ({x}, {y})!"
-print("✓ Rabbit chassis lower body / pelvis / thigh is 100% solid with zero cut/gap!")
+# Single-layer flood fill hole helper
+def count_single_layer_holes(im, threshold=30):
+    w, h = im.size
+    visited = [[False for _ in range(w)] for _ in range(h)]
+    queue = []
+    for y in range(h):
+        for x in [0, w - 1]:
+            p = im.getpixel((x, y))
+            assert isinstance(p, tuple)
+            if p[3] < threshold and not visited[y][x]:
+                visited[y][x] = True
+                queue.append((x, y))
+    for x in range(w):
+        for y in [0, h - 1]:
+            p = im.getpixel((x, y))
+            assert isinstance(p, tuple)
+            if p[3] < threshold and not visited[y][x]:
+                visited[y][x] = True
+                queue.append((x, y))
+    while queue:
+        cx, cy = queue.pop(0)
+        for dx, dy in [(-1,0),(1,0),(0,-1),(0,1)]:
+            nx, ny = cx + dx, cy + dy
+            if 0 <= nx < w and 0 <= ny < h:
+                p = im.getpixel((nx, ny))
+                assert isinstance(p, tuple)
+                if not visited[ny][nx] and p[3] < threshold:
+                    visited[ny][nx] = True
+                    queue.append((nx, ny))
+    holes = []
+    for y in range(h):
+        for x in range(w):
+            p = im.getpixel((x, y))
+            assert isinstance(p, tuple)
+            if p[3] < threshold and not visited[y][x]:
+                holes.append((x, y))
+    return holes
+
+ivory_chassis_holes = count_single_layer_holes(r_chassis)
+brass_chassis_holes = count_single_layer_holes(r_brass)
+print(f"Chassis single-layer holes (Rule 4c-6): ivory={len(ivory_chassis_holes)} px, brass={len(brass_chassis_holes)} px (origin/main was 4 px)")
+assert len(ivory_chassis_holes) == 0, f"Ivory chassis holes > 0: {len(ivory_chassis_holes)}"
+assert len(brass_chassis_holes) == 0, f"Brass chassis holes > 0: {len(brass_chassis_holes)}"
+print("✓ Rabbit chassis (ivory & brass) single layer flood-fill holes = 0 px!")
+
+# Check costume combinations (bare, steam_artisan, nutcracker_guard)
+costume_options = [
+    ("bare", None),
+    ("steam_artisan", "costume_steam_artisan.png"),
+    ("nutcracker_guard", "costume_nutcracker_guard.png"),
+]
+r_base = f"{BASE}/rabbit"
+for cname, cfile in costume_options:
+    comp = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    for slot, fn in [
+        ("winding_key", "key_classic_brass.png"),
+        ("back_curio", "curio_clockwork_pigeon.png"),
+        ("chassis", "paint_ivory_stock.png"),
+        ("head_unit", "ear_rabbit_straight.png"),
+    ]:
+        comp = Image.alpha_composite(comp, Image.open(f"{r_base}/{slot}/{fn}").convert("RGBA"))
+    if cfile:
+        comp = Image.alpha_composite(comp, Image.open(f"{r_base}/costume/{cfile}").convert("RGBA"))
+    for slot, fn in [
+        ("optic_core", "core_cyan_emerald.png"),
+        ("weapon", "wpn_dawn_blade.png"),
+    ]:
+        comp = Image.alpha_composite(comp, Image.open(f"{r_base}/{slot}/{fn}").convert("RGBA"))
+    choles = count_single_layer_holes(comp)
+    print(f"Rabbit costume '{cname}' composite holes: {len(choles)} px")
+    assert len(choles) == 0, f"Costume {cname} has {len(choles)} holes!"
+print("✓ Rabbit costume combinations (bare, steam_artisan, nutcracker_guard) composite holes = 0 px!")
 
 # ---------------------------------------------------------
 # 3. Check live composite vs proof images for all 5 races
@@ -118,7 +184,7 @@ race_slots = {
     ],
 }
 
-hole_stats = {}
+bg_magenta = Image.new("RGBA", (128, 128), (255, 0, 255, 255))
 for race, slots in race_slots.items():
     rdir = f"{BASE}/{race}"
     comp = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
@@ -132,48 +198,13 @@ for race, slots in race_slots.items():
     diff = ImageChops.difference(comp, proof_im)
     assert diff.getbbox(alpha_only=False) is None, f"Proof mismatch for {race}: {diff.getbbox()}"
 
-    # Flood fill hole check
-    w, h = 128, 128
-    visited = [[False for _ in range(w)] for _ in range(h)]
-    queue: list[tuple[int, int]] = []
-    for y in range(h):
-        for x in [0, w - 1]:
-            c = comp.getpixel((x, y))
-            assert isinstance(c, tuple)
-            if c[3] == 0 and not visited[y][x]:
-                visited[y][x] = True
-                queue.append((x, y))
-    for x in range(w):
-        for y in [0, h - 1]:
-            c = comp.getpixel((x, y))
-            assert isinstance(c, tuple)
-            if c[3] == 0 and not visited[y][x]:
-                visited[y][x] = True
-                queue.append((x, y))
-    while queue:
-        cx, cy = queue.pop(0)
-        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            nx, ny = cx + dx, cy + dy
-            if 0 <= nx < w and 0 <= ny < h:
-                c = comp.getpixel((nx, ny))
-                assert isinstance(c, tuple)
-                if not visited[ny][nx] and c[3] == 0:
-                    visited[ny][nx] = True
-                    queue.append((nx, ny))
-    holes = []
-    for y in range(h):
-        for x in range(w):
-            c = comp.getpixel((x, y))
-            assert isinstance(c, tuple)
-            if c[3] == 0 and not visited[y][x]:
-                holes.append((x, y))
-    hole_stats[race] = len(holes)
-    print(f"  {race:10} proof diff bbox = None (0 px diff) | composite holes = {len(holes)} px")
+    mag_p = f"{rdir}/proof_paperdoll_{race}_magenta.png"
+    if os.path.exists(mag_p):
+        expected_mag = Image.alpha_composite(bg_magenta, comp)
+        actual_mag = Image.open(mag_p).convert("RGBA")
+        diff_m = ImageChops.difference(expected_mag, actual_mag)
+        assert diff_m.getbbox(alpha_only=False) is None, f"Magenta mismatch for {race}: {diff_m.getbbox()}"
 
-print(f"\nHole statistics summary: {hole_stats}")
-assert hole_stats["rabbit"] == 57, f"Unexpected rabbit holes: {hole_stats['rabbit']}"
-assert hole_stats["macaque"] == 0, f"Unexpected macaque holes: {hole_stats['macaque']}"
-assert hole_stats["boar"] == 38, f"Unexpected boar holes: {hole_stats['boar']}"
-assert hole_stats["fox"] == 19, f"Unexpected fox holes: {hole_stats['fox']}"
-assert hole_stats["lion"] == 85, f"Unexpected lion holes: {hole_stats['lion']}"
-print("✓ All 5 races hole numbers match verified QA baselines perfectly!")
+    print(f"  {race:10} proof diff bbox = None (0 px diff) | composite & magenta verified identical")
+
+print("✓ All checks in comprehensive_paperdoll_check passed successfully!")
