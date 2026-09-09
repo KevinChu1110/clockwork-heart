@@ -164,7 +164,7 @@
   "path.blurb_dart": "鏢・影鏢：素早い連射。",
   "path.blurb_crystal": "水晶・晶使：魂と器の共鳴。",
   "forge.panel_title": "鍛冶屋 · 釘釘",
-  "forge.status": "微末の刃 T{tier}／{max} · 攻撃 +{atk}\n連敗：{fail}（3 回で釘釘が怒ります）\n所持金：{gold}",
+  "forge.status": "微末の刃 T{tier}／{max} · 攻撃 +{atk}\n所持金：{gold}",
   "forge.at_max": "最高階位です。",
   "forge.next": "次の階位：{cost} 金 · 成功率およそ {rate}%",
   "forge.soul_slots": "魂枠 {cur}／{max}",
