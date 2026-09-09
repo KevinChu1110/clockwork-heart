@@ -101,7 +101,7 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/paperdoll/boar/proof_paperdoll_boar_composite.png",
 		"desc": "熔爐鐵匠鋪的重型開拓者，金屬鉚釘獠牙與強韌彈簧衝擊核心。",
 		"costumes": [
-			{"id": "costume_viking_harness", "name_zh": "粗獷鍛爐護胸皮帶", "desc": "鉚釘加固厚重鍛鐵戰士胸甲"},
+			{"id": "costume_viking_harness", "name_zh": "粗獷鍛爐護胸鐵束帶", "desc": "鉚釘加固厚重鍛鐵戰士胸甲"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現剛硬生鐵鍛造衝擊素體"}
 		],
 		"chassis": [
