@@ -72,7 +72,7 @@ Kevin 於 2026-09-09 正式拍板首發 5 大動物族系為：**兔、狐、獅
 |:---|:---|:---|:---|:---|:---:|:---|:---|
 | `rabbit` | **白金兔** | Clockwork Rabbit | 劍士 (Knight) | R01 今日村莊·發條新村 / Today Village: Cogwheel Hamlet | 2.3 ~ 2.5 | 雙聯長立金屬耳、珊瑚粉金屬內耳、倒三角小金屬鼻、胸口青藍心形核心、單手長劍 | 象牙白 (#FFFDF8) 琺瑯、黃銅金 (#FFD028)、天藍光 (#38A0FF) |
 | `lion` | **烈鬃獅** | Gilded Lion | 騎士 (Knight) | R04 黃銅都市·巨輪城 / Brass Metropolis: The Great Cog City | 2.2 ~ 2.4 | 外擴金屬疊片鬃毛冠、剛毅厚重黃銅胸甲、鉸鏈粗壯四肢、長多節黃銅連桿尾（尾端為可展開扇形金屬扇片）、皇家長槍 | 拋光黃銅 (#E5A93C)、近衛朱紅 (#B84A39)、琥珀金 (#FFA010) |
-| `fox` | **靈尾狐** | Astral Fox | 法師 (Mage) | R03 翡翠深林·發條蔓谷 / Emerald Woods: Vine & Gear Forest | 2.3 ~ 2.5 | 尖聳雷達天線耳、三至五節懸浮連桿星軸長尾、流線型輕金屬殼、星核晶杖 | 暖橘烤漆 (#E87A38)、深紫藍 (#4A3B7A)、紫晶光 (#A855F7) |
+| `fox` | **靈尾狐** | Astral Fox | 法師 (Mage) | R03 翡翠深林·發條蔓谷 / Emerald Woods: Vine & Gear Forest | 2.3 ~ 2.5 | 尖聳雷達天線耳、三至五節懸浮連桿星軸長尾、流線型輕金屬殼、星盤晶核秘術法杖 | 暖橘烤漆 (#E87A38)、深紫藍 (#4A3B7A)、紫晶光 (#A855F7) |
 | `boar` | **鋼牙豕** | Forge Boar | 戰士 (Viking) | R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano | 2.1 ~ 2.3 | 衝壓鋼板野豬鼻、雙根外露鎢鋼長獠牙、鉚接加厚肩甲、粗螺旋金屬彈簧短尾、鍛爐鐵砧重型戰鎚 | 黑鐵合金 (#474D58)、鍛爐烈火 (#D9532F)、鎢鋼銀 (#C0C5CE) |
 | `macaque` *(alias: `monkey`)* | **靈爪猴** | Spring Macaque | 武術家 (Monk) | R09 竹影道場·天元竹林 / Bamboo Grove: Zen Puppet Dojo | 2.2 ~ 2.4 | 雙小臂螺旋黃銅彈簧避震套管、單片長方形額前導流板、伸縮平衡長尾、機關靈爪護手 | 香檳金/淺褐 (#E8C88A)、黃銅金 (#FFD028)、翡翠綠 (#4ED86A) |
 
