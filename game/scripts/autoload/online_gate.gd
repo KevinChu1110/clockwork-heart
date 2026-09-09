@@ -185,7 +185,7 @@ func sign_out() -> void:
 	status_changed.emit()
 
 
-## ⚠ `_cb_*` 的參數順序：**cb 一定要放最後一個**。
+## 注意：`_cb_*` 的參數順序：**cb 一定要放最後一個**。
 ##
 ## 送出時寫的是 `_cb_xxx.bind(cb)`，而 Godot 的 `Callable.bind()` 是把綁定的參數
 ## 接在**呼叫端參數的後面**，不是前面。HTTP 回來時呼叫的是 `cb.call(ok, body)`，
