@@ -62,11 +62,13 @@ const RACES_DATA: Dictionary = {
 		"costumes": [
 			{"id": "costume_nutcracker_guard", "name_zh": "胡桃鉗近衛軍裝", "desc": "經典紅藍胡桃鉗金屬禮服與黃銅肩章"},
 			{"id": "costume_steam_artisan", "name_zh": "蒸氣工匠吊帶工作裝", "desc": "耐磨工匠鍛鐵胸板與工具掛扣"},
+			{"id": "costume_royal_parade", "name_zh": "皇家巡遊金屬禮服", "desc": "奢華深藍金屬胸甲與雙排齒輪扣典禮禮服"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現象牙白精密機械軀體"}
 		],
 		"chassis": [
 			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "溫潤微光象牙白高光琺瑯塗層"},
-			{"id": "paint_brass_gold", "name_zh": "黃銅原金拋光", "desc": "古典黃銅金屬原色重拋光鏡面"}
+			{"id": "paint_brass_gold", "name_zh": "黃銅原金拋光", "desc": "古典黃銅金屬原色重拋光鏡面"},
+			{"id": "paint_midnight_navy", "name_zh": "午夜深藍烤漆", "desc": "深邃暗夜深藍高光琺瑯防護塗層"}
 		]
 	},
 	"fox": {

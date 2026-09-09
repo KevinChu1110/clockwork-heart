@@ -240,6 +240,12 @@
             "id": "costume_viking_harness",
             "name": "粗獷鍛爐護胸鐵束帶",
             "tier": "common"
+          },
+          {
+            "id": "costume_royal_parade",
+            "name": "皇家巡遊金屬禮服",
+            "race": "rabbit",
+            "tier": "epic"
           }
         ]
       },
