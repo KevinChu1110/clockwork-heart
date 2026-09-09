@@ -116,6 +116,10 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 	var sid := slot_id.to_lower().strip_edges()
 	var iid := item_id.strip_edges()
 
+	# 0. 若明確指定無裝備 / 卸除，回傳空字串以安全隱藏該層
+	if iid in ["none", "empty", "bare"]:
+		return ""
+
 	# 1. 若已有專屬紙娃娃切片圖檔存在，優先採用
 	var effective_id := iid if iid != "" else _get_default_variant_id(rid, sid)
 	if effective_id != "":
