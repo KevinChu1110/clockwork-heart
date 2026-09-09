@@ -93,15 +93,15 @@ Kevin 於 2026-09-09 正式拍板首發 5 大動物族系為：**兔、狐、獅
 
 | 用途 / 類別 | 白金兔既有檔案結構 (`char_rabbit`) | 靈爪猴對齊檔案結構 (`char_macaque`) | 尺寸與格式 | 資源狀態 (Status) |
 |:---|:---|:---|:---:|:---|
-| **基礎待機幀 (1x)** | `game/assets/sprites/player/rabbit_idle.png` | `game/assets/sprites/player/macaque_idle.png` | 64×64 RGBA | 兔既有 / 猴待產出 |
-| **高畫質待機幀 (3x)** | `game/assets/sprites/player/rabbit_idle_x3.png` | `game/assets/sprites/player/macaque_idle_x3.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
-| **大廳/隊伍展示幀** | `game/assets/sprites/player/rabbit_idle_x3.png` | `game/assets/sprites/player/party/macaque_idle.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
-| **戰鬥特寫姿態** | `game/assets/sprites/player/rabbit_battle.png` | `game/assets/sprites/player/macaque_battle.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
-| **行走動畫 (0~3 幀, 1x)** | `game/assets/sprites/player/rabbit_walk_{0..3}.png` | `game/assets/sprites/player/macaque_walk_{0..3}.png` | 64×64 RGBA | 兔既有 / 猴待產出 |
-| **行走動畫 (0~3 幀, 3x)** | `game/assets/sprites/player/rabbit_walk_{0..3}_x3.png` | `game/assets/sprites/player/macaque_walk_{0..3}_x3.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
-| **戰鬥 6 大動作姿態** | `game/assets/sprites/player/poses/{attack,hit,idle,recover,skill,telegraph}.png` | `game/assets/sprites/player/poses/macaque/{attack,hit,idle,recover,skill,telegraph}.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
-| **HUD 戰鬥頭像** | `game/assets/sprites/portraits/rabbit.png` | `game/assets/sprites/portraits/macaque.png` | 128×128 RGBA | 兔既有 / 猴待產出 |
-| **對話框半身像** | `game/assets/sprites/portraits/rabbit.png` | `game/assets/sprites/portraits/spring_macaque.png` | 384×480 RGBA | 兔既有 / 猴待產出 |
+| **基礎待機幀 (1x)** | `game/assets/sprites/player/rabbit_idle.png` | `game/assets/sprites/player/macaque_idle.png` | 64×64 RGBA | 兔既有 / 猴既有 |
+| **高畫質待機幀 (3x)** | `game/assets/sprites/player/rabbit_idle_x3.png` | `game/assets/sprites/player/macaque_idle_x3.png` | 128×128 RGBA | 兔既有 / 猴既有 |
+| **大廳/隊伍展示幀** | `game/assets/sprites/player/rabbit_idle_x3.png` | `game/assets/sprites/player/party/macaque_idle.png` | 128×128 RGBA | 兔既有 / 猴既有 |
+| **戰鬥特寫姿態** | `game/assets/sprites/player/rabbit_battle.png` | `game/assets/sprites/player/macaque_battle.png` | 128×128 RGBA | 兔既有 / 猴既有 |
+| **行走動畫 (0~3 幀, 1x)** | `game/assets/sprites/player/rabbit_walk_{0..3}.png` | `game/assets/sprites/player/macaque_walk_{0..3}.png` | 64×64 RGBA | 兔既有 / 猴既有 |
+| **行走動畫 (0~3 幀, 3x)** | `game/assets/sprites/player/rabbit_walk_{0..3}_x3.png` | `game/assets/sprites/player/macaque_walk_{0..3}_x3.png` | 128×128 RGBA | 兔既有 / 猴既有 |
+| **戰鬥 6 大動作姿態** | `game/assets/sprites/player/poses/{attack,hit,idle,recover,skill,telegraph}.png` | `game/assets/sprites/player/poses/macaque/{attack,hit,idle,recover,skill,telegraph}.png` | 128×128 RGBA | 兔既有 / 猴既有 |
+| **HUD 戰鬥頭像** | `game/assets/sprites/portraits/rabbit.png` | `game/assets/sprites/portraits/macaque.png` | 128×128 RGBA | 兔既有 / 猴既有 |
+| **對話框半身像** | `game/assets/sprites/portraits/rabbit.png` | `game/assets/sprites/portraits/spring_macaque.png` | 384×480 RGBA | 兔既有 / 猴既有 |
 | **紙娃娃切片目錄** | `game/assets/sprites/player/paperdoll/rabbit/{slot}/{id}.png` | `game/assets/sprites/player/paperdoll/macaque/{slot}/{id}.png` | 128×128 RGBA | 全族待產出（下一棒規格） |
 
 ---
