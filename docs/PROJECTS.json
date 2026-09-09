@@ -334,8 +334,8 @@
    "id": "mob-paperdoll",
    "cat": "遊戲",
    "title": "紙娃娃角色創建系統：多動物種類＋部件替換＋社交",
-   "status": "開發中",
-   "note": "開始串接生涯開局選族創角流程與 GameState (t_a534edd5)",
+   "status": "測試中",
+   "note": "已完成生涯開局選族創角流程串接與 GameState 持久化，戰鬥/大廳素體一致 (t_a534edd5 送審中)",
    "keys": [
     "紙娃娃角色創建系"
    ]
