@@ -82,5 +82,9 @@
   "friendship_key": {
     "name": "Friendship Key",
     "desc": "Won from friend challenges. Three open a friendship chest."
+  },
+  "windup_fragment": {
+    "name": "Windup Fragment",
+    "desc": "A gear tooth dropped while winding up toys. Collect them to unlock monologues."
   }
 }

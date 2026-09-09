@@ -82,5 +82,9 @@
   "friendship_key": {
     "name": "Llave de amistad",
     "desc": "Se gana en desafíos de amigos. Tres abren un cofre de amistad."
+  },
+  "windup_fragment": {
+    "name": "Fragmento de cuerda",
+    "desc": "Diente de engranaje caído al dar cuerda a los juguetes. Acumúlalos para desbloquear monólogos."
   }
 }
