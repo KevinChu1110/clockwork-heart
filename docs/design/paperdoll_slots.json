@@ -73,6 +73,12 @@
             "tier": "common"
           },
           {
+            "id": "paint_fox_orange",
+            "name": "靈狐曜橙烤漆",
+            "race": "fox",
+            "tier": "rare"
+          },
+          {
             "id": "paint_nutcracker_red",
             "name": "胡桃鉗皇家朱紅",
             "tier": "rare"

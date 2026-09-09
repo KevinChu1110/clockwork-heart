@@ -1,0 +1,710 @@
+[gd_scene format=3 uid="uid://b87p1doll001"]
+
+[ext_resource type="Script" path="res://scripts/ui/paperdoll_select_demo.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://be8g7m2uonf7" path="res://assets/fonts/jf-openhuninn-2.1.ttf" id="2_font"]
+[ext_resource type="PackedScene" path="res://scenes/actors/paperdoll_character.tscn" id="3_character"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/rabbit/proof_paperdoll_rabbit_composite.png" id="4_thumb_rabbit"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/fox/proof_paperdoll_fox_composite.png" id="5_thumb_fox"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/lion/proof_paperdoll_lion_composite.png" id="6_thumb_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/boar/proof_paperdoll_boar_composite.png" id="7_thumb_boar"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_composite.png" id="8_thumb_macaque"]
+
+[sub_resource type="Theme" id="Theme_huninn"]
+default_font = ExtResource("2_font")
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_header"]
+bg_color = Color(1, 0.968627, 0.839216, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 5
+border_color = Color(0.121569, 0.101961, 0.227451, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_card"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 6
+border_color = Color(0.121569, 0.101961, 0.227451, 1)
+corner_radius_top_left = 22
+corner_radius_top_right = 22
+corner_radius_bottom_right = 22
+corner_radius_bottom_left = 22
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_btn_race_normal"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 5
+border_color = Color(0.560784, 0.509804, 0.670588, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_btn_race_hover"]
+bg_color = Color(1, 0.976471, 0.901961, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 5
+border_color = Color(0.219608, 0.627451, 1, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_btn_race_pressed"]
+bg_color = Color(1, 0.941176, 0.701961, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 6
+border_color = Color(1, 0.627451, 0.0627451, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+corner_radius_bottom_left = 16
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_arrow_btn"]
+bg_color = Color(0.219608, 0.627451, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 5
+border_color = Color(0.121569, 0.101961, 0.227451, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_arrow_btn_hover"]
+bg_color = Color(0.380392, 0.721569, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 5
+border_color = Color(0.121569, 0.101961, 0.227451, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_inner_card"]
+bg_color = Color(0.960784, 0.952941, 0.980392, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.690196, 0.65098, 0.780392, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_status_card"]
+bg_color = Color(0.929412, 0.976471, 0.941176, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.305882, 0.847059, 0.415686, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_action_btn"]
+bg_color = Color(0.305882, 0.847059, 0.415686, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 5
+border_color = Color(0.121569, 0.101961, 0.227451, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[sub_resource type="StyleBoxFlat" id="StyleBox_reset_btn"]
+bg_color = Color(1, 0.972549, 0.901961, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 5
+border_color = Color(0.121569, 0.101961, 0.227451, 1)
+corner_radius_top_left = 14
+corner_radius_top_right = 14
+corner_radius_bottom_right = 14
+corner_radius_bottom_left = 14
+
+[node name="PaperdollSelectDemo" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_huninn")
+script = ExtResource("1_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.992157, 0.972549, 1)
+
+[node name="TopSoftBg" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 216.0
+grow_horizontal = 2
+color = Color(1, 0.968627, 0.901961, 0.8)
+
+[node name="HeaderBadge" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -280.0
+offset_top = 12.0
+offset_right = 280.0
+offset_bottom = 68.0
+grow_horizontal = 2
+theme_override_styles/panel = SubResource("StyleBox_header")
+
+[node name="HeaderVBox" type="VBoxContainer" parent="HeaderBadge"]
+layout_mode = 2
+alignment = 1
+
+[node name="MainTitle" type="Label" parent="HeaderBadge/HeaderVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 20
+text = "發條之心 · 五族紙娃娃試衣間"
+horizontal_alignment = 1
+
+[node name="SubTitle" type="Label" parent="HeaderBadge/HeaderVBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.439216, 0.396078, 0.529412, 1)
+theme_override_font_sizes/font_size = 11
+text = "CLOCKWORK HEART MODULAR PAPAR-DOLL DEMO"
+horizontal_alignment = 1
+
+[node name="TopRaceBar" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 40.0
+offset_top = 78.0
+offset_right = -40.0
+offset_bottom = 208.0
+grow_horizontal = 2
+
+[node name="ButtonsHBox" type="HBoxContainer" parent="TopRaceBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="BtnRace_rabbit" type="Button" parent="TopRaceBar/ButtonsHBox"]
+custom_minimum_size = Vector2(220, 116)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
+theme_override_styles/hover = SubResource("StyleBox_btn_race_hover")
+theme_override_styles/pressed = SubResource("StyleBox_btn_race_pressed")
+
+[node name="Margin" type="MarginContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_rabbit"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_rabbit/Margin"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="CheckLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_rabbit/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.627451, 0.0627451, 1)
+theme_override_font_sizes/font_size = 12
+text = "✓ 已選"
+horizontal_alignment = 1
+
+[node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_rabbit/Margin/VBox"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("4_thumb_rabbit")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_rabbit/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 15
+text = "兔 (小白)"
+horizontal_alignment = 1
+
+[node name="BtnRace_fox" type="Button" parent="TopRaceBar/ButtonsHBox"]
+custom_minimum_size = Vector2(220, 116)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
+theme_override_styles/hover = SubResource("StyleBox_btn_race_hover")
+theme_override_styles/pressed = SubResource("StyleBox_btn_race_pressed")
+
+[node name="Margin" type="MarginContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_fox"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_fox/Margin"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="CheckLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_fox/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.627451, 0.0627451, 1)
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+
+[node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_fox/Margin/VBox"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("5_thumb_fox")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_fox/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 15
+text = "狐"
+horizontal_alignment = 1
+
+[node name="BtnRace_lion" type="Button" parent="TopRaceBar/ButtonsHBox"]
+custom_minimum_size = Vector2(220, 116)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
+theme_override_styles/hover = SubResource("StyleBox_btn_race_hover")
+theme_override_styles/pressed = SubResource("StyleBox_btn_race_pressed")
+
+[node name="Margin" type="MarginContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_lion"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_lion/Margin"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="CheckLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_lion/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.627451, 0.0627451, 1)
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+
+[node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_lion/Margin/VBox"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("6_thumb_lion")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_lion/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 15
+text = "獅"
+horizontal_alignment = 1
+
+[node name="BtnRace_boar" type="Button" parent="TopRaceBar/ButtonsHBox"]
+custom_minimum_size = Vector2(220, 116)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
+theme_override_styles/hover = SubResource("StyleBox_btn_race_hover")
+theme_override_styles/pressed = SubResource("StyleBox_btn_race_pressed")
+
+[node name="Margin" type="MarginContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_boar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_boar/Margin"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="CheckLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_boar/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.627451, 0.0627451, 1)
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+
+[node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_boar/Margin/VBox"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("7_thumb_boar")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_boar/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 15
+text = "野豬"
+horizontal_alignment = 1
+
+[node name="BtnRace_macaque" type="Button" parent="TopRaceBar/ButtonsHBox"]
+custom_minimum_size = Vector2(220, 116)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
+theme_override_styles/hover = SubResource("StyleBox_btn_race_hover")
+theme_override_styles/pressed = SubResource("StyleBox_btn_race_pressed")
+
+[node name="Margin" type="MarginContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_macaque"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_macaque/Margin"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="CheckLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_macaque/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.627451, 0.0627451, 1)
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+
+[node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_macaque/Margin/VBox"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("8_thumb_macaque")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_macaque/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 15
+text = "猴"
+horizontal_alignment = 1
+
+[node name="CenterStage" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 216.0
+offset_right = 620.0
+offset_bottom = 696.0
+theme_override_styles/panel = SubResource("StyleBox_card")
+
+[node name="HeroBadge" type="VBoxContainer" parent="CenterStage"]
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_constants/separation = 2
+
+[node name="Margin" type="MarginContainer" parent="CenterStage/HeroBadge"]
+layout_mode = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+
+[node name="HBox" type="HBoxContainer" parent="CenterStage/HeroBadge/Margin"]
+layout_mode = 2
+
+[node name="HeroTitleLabel" type="Label" parent="CenterStage/HeroBadge/Margin/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 22
+text = "兔 (小白) (Whitey)"
+
+[node name="HeroArchetypeLabel" type="Label" parent="CenterStage/HeroBadge/Margin/HBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.627451, 0.0627451, 1)
+theme_override_font_sizes/font_size = 15
+text = "【劍士 (knight)】"
+
+[node name="Pedestal" type="Polygon2D" parent="CenterStage"]
+position = Vector2(290, 395)
+color = Color(0.121569, 0.101961, 0.227451, 0.18)
+polygon = PackedVector2Array(-70, -12, -45, -24, 0, -28, 45, -24, 70, -12, 70, 12, 45, 24, 0, 28, -45, 24, -70, 12)
+
+[node name="CharacterContainer" type="Node2D" parent="CenterStage"]
+position = Vector2(290, 390)
+scale = Vector2(2.5, 2.5)
+
+[node name="PaperdollCharacter" parent="CenterStage/CharacterContainer" instance=ExtResource("3_character")]
+
+[node name="DescPanel" type="PanelContainer" parent="CenterStage"]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+size_flags_vertical = 8
+theme_override_styles/panel = SubResource("StyleBox_inner_card")
+
+[node name="HeroDescLabel" type="Label" parent="CenterStage/DescPanel"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.352941, 0.301961, 0.439216, 1)
+theme_override_font_sizes/font_size = 12
+text = "發條之心的守護象徵，身形輕巧，搭載高響應晨曦核心與剛性長耳。"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RightControlPanel" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_left = 640.0
+offset_top = 216.0
+offset_right = 1240.0
+offset_bottom = 696.0
+theme_override_styles/panel = SubResource("StyleBox_card")
+
+[node name="Margin" type="MarginContainer" parent="RightControlPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 18
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 18
+
+[node name="VBox" type="VBoxContainer" parent="RightControlPanel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="PanelTitle" type="Label" parent="RightControlPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 17
+text = "即時換裝控制項 · 模組槽位調配"
+
+[node name="CostumeControl" type="VBoxContainer" parent="RightControlPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SlotLabel" type="Label" parent="RightControlPanel/Margin/VBox/CostumeControl"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.352941, 0.301961, 0.439216, 1)
+theme_override_font_sizes/font_size = 13
+text = "• 外裝服飾槽 (Costume Slot - Z:25)"
+
+[node name="HBox" type="HBoxContainer" parent="RightControlPanel/Margin/VBox/CostumeControl"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BtnCostumePrev" type="Button" parent="RightControlPanel/Margin/VBox/CostumeControl/HBox"]
+custom_minimum_size = Vector2(56, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBox_arrow_btn")
+theme_override_styles/hover = SubResource("StyleBox_arrow_btn_hover")
+text = "◀"
+
+[node name="CostumeDisplay" type="PanelContainer" parent="RightControlPanel/Margin/VBox/CostumeControl/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBox_inner_card")
+
+[node name="VBox" type="VBoxContainer" parent="RightControlPanel/Margin/VBox/CostumeControl/HBox/CostumeDisplay"]
+layout_mode = 2
+alignment = 1
+
+[node name="CostumeNameLabel" type="Label" parent="RightControlPanel/Margin/VBox/CostumeControl/HBox/CostumeDisplay/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 15
+text = "胡桃鉗皇家守衛 [costume_nutcracker_guard]"
+horizontal_alignment = 1
+
+[node name="CostumeDescLabel" type="Label" parent="RightControlPanel/Margin/VBox/CostumeControl/HBox/CostumeDisplay/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.466667, 0.419608, 0.556863, 1)
+theme_override_font_sizes/font_size = 11
+text = "經典紅藍胡桃鉗禮服與黃銅肩章"
+horizontal_alignment = 1
+
+[node name="BtnCostumeNext" type="Button" parent="RightControlPanel/Margin/VBox/CostumeControl/HBox"]
+custom_minimum_size = Vector2(56, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBox_arrow_btn")
+theme_override_styles/hover = SubResource("StyleBox_arrow_btn_hover")
+text = "▶"
+
+[node name="ChassisControl" type="VBoxContainer" parent="RightControlPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SlotLabel" type="Label" parent="RightControlPanel/Margin/VBox/ChassisControl"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.352941, 0.301961, 0.439216, 1)
+theme_override_font_sizes/font_size = 13
+text = "• 軀體塗裝槽 (Chassis Shell - Z:10)"
+
+[node name="HBox" type="HBoxContainer" parent="RightControlPanel/Margin/VBox/ChassisControl"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="BtnChassisPrev" type="Button" parent="RightControlPanel/Margin/VBox/ChassisControl/HBox"]
+custom_minimum_size = Vector2(56, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBox_arrow_btn")
+theme_override_styles/hover = SubResource("StyleBox_arrow_btn_hover")
+text = "◀"
+
+[node name="ChassisDisplay" type="PanelContainer" parent="RightControlPanel/Margin/VBox/ChassisControl/HBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBox_inner_card")
+
+[node name="VBox" type="VBoxContainer" parent="RightControlPanel/Margin/VBox/ChassisControl/HBox/ChassisDisplay"]
+layout_mode = 2
+alignment = 1
+
+[node name="ChassisNameLabel" type="Label" parent="RightControlPanel/Margin/VBox/ChassisControl/HBox/ChassisDisplay/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 15
+text = "原廠象牙白琺瑯 [paint_ivory_stock]"
+horizontal_alignment = 1
+
+[node name="ChassisDescLabel" type="Label" parent="RightControlPanel/Margin/VBox/ChassisControl/HBox/ChassisDisplay/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.466667, 0.419608, 0.556863, 1)
+theme_override_font_sizes/font_size = 11
+text = "溫潤微光象牙白高光琺瑯塗層"
+horizontal_alignment = 1
+
+[node name="BtnChassisNext" type="Button" parent="RightControlPanel/Margin/VBox/ChassisControl/HBox"]
+custom_minimum_size = Vector2(56, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBox_arrow_btn")
+theme_override_styles/hover = SubResource("StyleBox_arrow_btn_hover")
+text = "▶"
+
+[node name="WeaponControl" type="VBoxContainer" parent="RightControlPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="SlotLabel" type="Label" parent="RightControlPanel/Margin/VBox/WeaponControl"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.352941, 0.301961, 0.439216, 1)
+theme_override_font_sizes/font_size = 13
+text = "• 手持武器槽 (Weapon Slot - Z:40)"
+
+[node name="WeaponDisplay" type="PanelContainer" parent="RightControlPanel/Margin/VBox/WeaponControl"]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_inner_card")
+
+[node name="WeaponNameLabel" type="Label" parent="RightControlPanel/Margin/VBox/WeaponControl/WeaponDisplay"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 14
+text = "晨曦發條單手長劍 (wpn_dawn_blade)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StatusCard" type="PanelContainer" parent="RightControlPanel/Margin/VBox"]
+custom_minimum_size = Vector2(0, 44)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_status_card")
+
+[node name="SlotSummaryLabel" type="Label" parent="RightControlPanel/Margin/VBox/StatusCard"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.113725, 0.431373, 0.2, 1)
+theme_override_font_sizes/font_size = 13
+text = "7 大槽位狀態：全部 7 槽疊合就緒 (載入: 7/7)"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ActionsRow" type="HBoxContainer" parent="RightControlPanel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="BtnResetDefault" type="Button" parent="RightControlPanel/Margin/VBox/ActionsRow"]
+custom_minimum_size = Vector2(160, 52)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBox_reset_btn")
+text = "重設預設"
+
+[node name="BtnCaptureProof" type="Button" parent="RightControlPanel/Margin/VBox/ActionsRow"]
+custom_minimum_size = Vector2(180, 52)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.0509804, 0.25098, 0.101961, 1)
+theme_override_font_sizes/font_size = 16
+theme_override_styles/normal = SubResource("StyleBox_action_btn")
+text = "儲存驗證截圖"
