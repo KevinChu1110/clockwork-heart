@@ -627,13 +627,13 @@
               "game/assets/sprites/player/party/boar_idle.png (128x128 既有隊伍展示幀)",
               "game/assets/sprites/portraits/boar.png (既有頭像)",
               "game/assets/sprites/portraits/boar_warrior.png (256x256 對話框半身像)",
-              "game/assets/sprites/player/paperdoll/boar/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
-            ],
-            "pending": [
+              "game/assets/sprites/player/paperdoll/boar/{slot_id}/{item_id}.png (紙娃娃切片圖層)",
               "web/media/hero/boar_idle.png (128x128 官網預覽圖)",
               "game/assets/sprites/player/boar_battle.png (128x128 戰鬥特寫姿態)",
               "game/assets/sprites/player/boar_walk_{0..3}.png (64x64 行走動畫)",
-              "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128 高畫質行走動畫)"
+            ],
+            "pending": [
               "game/assets/sprites/player/poses/boar/ (戰鬥6大動作姿態目錄)"
             ]
           },
