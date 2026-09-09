@@ -105,32 +105,32 @@ func _initialize() -> void:
 	else:
 		print("  ✓ build_paperdoll_map 產出之字典順序嚴格對齊 z_index 遞增順序")
 
-	# ── 3. 斷言 ②：缺圖時不丟例外只是該槽位為 null（以 macaque 族系與無效路徑驗證） ──
+	# ── 3. 斷言 ②：缺圖時不拋出例外，安全回傳 null（以未出圖之虛構族系與無效路徑驗證） ──
 	print("\n--- 檢查斷言 ②：缺圖時不拋出例外，安全回傳 null ---")
-	var macaque_selection: Dictionary = {
-		"chassis": "paint_ivory_stock",
-		"head_unit": "ear_macaque_coaxial",
-		"winding_key": "key_classic_brass",
-		"costume": "costume_dawn_monk_tunic",
-		"optic_core": "core_cyan_emerald",
-		"weapon": "wpn_spring_claws",
-		"back_curio": "curio_spring_tail"
+	var dummy_selection: Dictionary = {
+		"chassis": "paint_missing_dummy",
+		"head_unit": "ear_missing_dummy",
+		"winding_key": "key_missing_dummy",
+		"costume": "costume_missing_dummy",
+		"optic_core": "core_missing_dummy",
+		"weapon": "wpn_missing_dummy",
+		"back_curio": "curio_missing_dummy"
 	}
-	var macaque_map: Dictionary = PaperdollRenderer.build_paperdoll_map("macaque", macaque_selection)
-	var macaque_textures: Dictionary = PaperdollRenderer.build_paperdoll_textures("macaque", macaque_selection)
-	var macaque_entries: Array[Dictionary] = PaperdollRenderer.get_sorted_slot_entries("macaque", macaque_selection)
+	var dummy_map: Dictionary = PaperdollRenderer.build_paperdoll_map("dummy_construct", dummy_selection)
+	var dummy_textures: Dictionary = PaperdollRenderer.build_paperdoll_textures("dummy_construct", dummy_selection)
+	var dummy_entries: Array[Dictionary] = PaperdollRenderer.get_sorted_slot_entries("dummy_construct", dummy_selection)
 
 	for sid in expected_order:
-		var path: String = str(macaque_map.get(sid, ""))
+		var path: String = str(dummy_map.get(sid, ""))
 		if path == "":
-			push_error("macaque 槽位 %s 未能產生規格佔位路徑" % sid)
+			push_error("dummy 槽位 %s 未能產生規格佔位路徑" % sid)
 			ok = false
-		var tex: Texture2D = macaque_textures.get(sid)
+		var tex: Texture2D = dummy_textures.get(sid)
 		if tex != null:
-			push_error("macaque 槽位 %s 預期尚無實體圖檔，但載入了貼圖：%s" % [sid, str(tex)])
+			push_error("dummy 槽位 %s 預期無實體圖檔，但載入了貼圖：%s" % [sid, str(tex)])
 			ok = false
 		else:
-			print("  ✓ macaque 槽位 %-12s 佔位路徑：%s -> 安全回傳 null" % [sid, path])
+			print("  ✓ dummy 槽位 %-12s 佔位路徑：%s -> 安全回傳 null" % [sid, path])
 
 	# 額外驗證：直接請求不存在之路徑，不可 crash 或 throw
 	var fake_tex: Texture2D = PaperdollRenderer.get_slot_texture("res://assets/sprites/player/does_not_exist_999.png")
@@ -139,6 +139,23 @@ func _initialize() -> void:
 		ok = false
 	else:
 		print("  ✓ 任意不存在路徑調用 get_slot_texture 安全回傳 null，無例外拋出")
+
+	# 驗證 macaque 族系 7 大槽位已全部產出且正確載入
+	print("\n--- 檢查猴族系 (macaque) 7 大槽位全部對應至真實檔案 ---")
+	var macaque_textures: Dictionary = PaperdollRenderer.build_paperdoll_textures("macaque")
+	var macaque_entries: Array[Dictionary] = PaperdollRenderer.get_sorted_slot_entries("macaque")
+	for entry in macaque_entries:
+		var sid: String = entry["slot_id"]
+		var path: String = entry["texture_path"]
+		var tex: Texture2D = entry["texture"]
+		if path == "":
+			push_error("猴族系槽位 %s 的檔案路徑為空字串！" % sid)
+			ok = false
+		elif tex == null:
+			push_error("猴族系槽位 %s 貼圖未能載入！路徑: %s" % [sid, path])
+			ok = false
+		else:
+			print("  ✓ 猴槽位 %-12s (Z:%2d) -> %s (尺寸: %s)" % [sid, entry["layer_z_index"], path, str(tex.get_size())])
 
 	# ── 4. 斷言 ③：兔族系全部 7 槽位都能對應到現有真實檔案路徑（不是空字串） ──
 	print("\n--- 檢查斷言 ③：兔族系 7 大槽位全部對應至真實檔案 ---")
