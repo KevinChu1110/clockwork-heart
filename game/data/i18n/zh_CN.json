@@ -164,7 +164,7 @@
   "path.blurb_dart": "镖·影镖：迅捷连射。",
   "path.blurb_crystal": "水晶·晶使：魂器共鸣。",
   "forge.panel_title": "铁匠铺 · 钉钉",
-  "forge.status": "微末之刃 T{tier}／{max} · 攻击 +{atk}\n连败：{fail}（3 次钉钉发脾气）\n金币：{gold}",
+  "forge.status": "微末之刃 T{tier}／{max} · 攻击 +{atk}\n金币：{gold}",
   "forge.at_max": "已到顶阶。",
   "forge.next": "升下一阶：{cost} 金 · 成功率约 {rate}%",
   "forge.soul_slots": "魂槽 {cur}／{max}",

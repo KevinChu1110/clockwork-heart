@@ -164,7 +164,7 @@
   "path.blurb_dart": "표・영표: 재빠른 연사.",
   "path.blurb_crystal": "수정・정사: 혼과 기의 공명.",
   "forge.panel_title": "대장간 · 딩딩",
-  "forge.status": "미말의 칼날 T{tier}／{max} · 공격 +{atk}\n연패：{fail}（3 회면 딩딩이 화냅니다）\n소지금：{gold}",
+  "forge.status": "미말의 칼날 T{tier}／{max} · 공격 +{atk}\n소지금：{gold}",
   "forge.at_max": "최고 계위입니다.",
   "forge.next": "다음 계위：{cost} 골드 · 성공률 약 {rate}%",
   "forge.soul_slots": "혼 슬롯 {cur}／{max}",

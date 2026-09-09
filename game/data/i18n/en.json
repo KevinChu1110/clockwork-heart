@@ -167,7 +167,7 @@
   "path.blurb_dart": "Dart: swift multi-hits.",
   "path.blurb_crystal": "Crystal: soul resonance.",
   "forge.panel_title": "Smithy · Ding",
-  "forge.status": "Meager Edge T{tier}/{max} · ATK +{atk}\nFail streak: {fail} (3 angers Ding)\nGold: {gold}",
+  "forge.status": "Meager Edge T{tier}/{max} · ATK +{atk}\nGold: {gold}",
   "forge.at_max": "Max tier reached.",
   "forge.next": "Next tier: {cost} gold · ~{rate}% success",
   "forge.soul_slots": "Soul slots {cur}/{max}",
