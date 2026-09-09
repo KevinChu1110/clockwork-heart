@@ -5,7 +5,7 @@ extends RefCounted
 ## 讀取 7 大機械部件槽位定義與 z_index 渲染層級，
 ## 依「動物種族 + 各槽位選擇」組出 {slot: texture_path} 對照表與安全貼圖載入。
 
-const SPEC_JSON_PATH := "res://../docs/design/paperdoll_slots.json"
+const SPEC_JSON_PATH := "res://data/tables/paperdoll_slots.json"
 const ROOT_SPRITES := "res://assets/sprites/player"
 const PAPERDOLL_ROOT := "res://assets/sprites/player/paperdoll"
 
@@ -25,30 +25,20 @@ static var _slots_sorted_cache: Array[Dictionary] = []
 
 ## ── 規格讀取與解析 ──
 
-## 讀取 docs/design/paperdoll_slots.json，若已快取則直接回傳
+## 讀取 res://data/tables/paperdoll_slots.json，若已快取則直接回傳
 static func get_spec(force_reload: bool = false) -> Dictionary:
 	if not _spec_cache.is_empty() and not force_reload:
 		return _spec_cache
 
-	var candidate_paths: Array[String] = [
-		SPEC_JSON_PATH,
-		ProjectSettings.globalize_path(SPEC_JSON_PATH).simplify_path(),
-		"docs/design/paperdoll_slots.json",
-		"../docs/design/paperdoll_slots.json",
-		"/opt/side/bravesoul-game/docs/design/paperdoll_slots.json",
-		"res://data/tables/paperdoll_slots.json"
-	]
-
-	for path in candidate_paths:
-		if FileAccess.file_exists(path):
-			var file := FileAccess.open(path, FileAccess.READ)
-			if file != null:
-				var text := file.get_as_text()
-				var parsed: Variant = JSON.parse_string(text)
-				if parsed is Dictionary and parsed.has("slots_architecture"):
-					_spec_cache = parsed as Dictionary
-					_init_cache()
-					return _spec_cache
+	if FileAccess.file_exists(SPEC_JSON_PATH):
+		var file := FileAccess.open(SPEC_JSON_PATH, FileAccess.READ)
+		if file != null:
+			var text := file.get_as_text()
+			var parsed: Variant = JSON.parse_string(text)
+			if parsed is Dictionary and parsed.has("slots_architecture"):
+				_spec_cache = parsed as Dictionary
+				_init_cache()
+				return _spec_cache
 
 	push_warning("[PaperdollRenderer] 無法讀取紙娃娃規格檔 %s，使用內部安全備份規格" % SPEC_JSON_PATH)
 	_spec_cache = _get_fallback_spec()

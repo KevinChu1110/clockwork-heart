@@ -14,7 +14,33 @@ func _initialize() -> void:
 		push_error("無法讀取 paperdoll_slots.json 規格")
 		ok = false
 	else:
-		print("  ✓ 成功讀取規格檔：paperdoll_slots.json")
+		print("  ✓ 成功讀取規格檔：res://data/tables/paperdoll_slots.json")
+
+	# 斷言：主路徑讀取成功、未落入 fallback（檢查 meta.version 欄位，fallback 規格無此欄位）
+	var meta: Dictionary = spec.get("meta", {})
+	var meta_ver: String = str(meta.get("version", ""))
+	if meta_ver.is_empty():
+		push_error("PaperdollRenderer 落入 _get_fallback_spec()！未成功從主路徑載入真實 JSON（缺少 meta.version）")
+		ok = false
+	else:
+		print("  ✓ 斷言通過：真檔讀取成功（meta.version = %s, system_id = %s），未落入 fallback" % [
+			meta_ver, str(meta.get("system_id", ""))
+		])
+
+	# 斷言：docs/design/ 與 res://data/tables/ 兩份 JSON 的 slots_architecture 保持嚴格一致
+	var doc_spec_path := ProjectSettings.globalize_path("res://").path_join("../docs/design/paperdoll_slots.json").simplify_path()
+	if FileAccess.file_exists(doc_spec_path):
+		var doc_file := FileAccess.open(doc_spec_path, FileAccess.READ)
+		if doc_file != null:
+			var doc_parsed: Variant = JSON.parse_string(doc_file.get_as_text())
+			if doc_parsed is Dictionary:
+				var doc_arch: Dictionary = doc_parsed.get("slots_architecture", {})
+				var table_arch: Dictionary = spec.get("slots_architecture", {})
+				if doc_arch != table_arch:
+					push_error("docs/design 與 res://data/tables/ 的 slots_architecture 定義不一致！")
+					ok = false
+				else:
+					print("  ✓ 斷言通過：docs/design 與 res://data/tables/ 規格檔 slots_architecture 嚴格一致")
 
 	var slots_raw: Array = PaperdollRenderer.get_slots_raw()
 	if slots_raw.size() != 7:

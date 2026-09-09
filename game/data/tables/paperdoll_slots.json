@@ -1,0 +1,782 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "meta": {
+    "version": "1.0.0",
+    "system_id": "mob-paperdoll",
+    "title": "《發條之心》紙娃娃槽位與五大動物素體規格書",
+    "title_en": "Clockwork Heart - Paperdoll Modular Slots & 5 Chassis Specifications",
+    "author": "側案·策劃總監 小凱 (sideplan)",
+    "date": "2026-09-09",
+    "status": "APPROVED_SPECIFICATION",
+    "reference_documents": [
+      "docs/PAPERDOLL_SYSTEM_PROPOSAL.md",
+      "docs/art/SPRING_MACAQUE_DESIGN_PROPOSAL.md",
+      "docs/art/WHITEY_REDESIGN_PROPOSAL.md",
+      "docs/world/CANON.md",
+      "docs/ART_DIRECTION.md",
+      "docs/BUSINESS.md"
+    ],
+    "scope_and_guardrails": {
+      "excluded_topics": "⛔ 本單不涉及、不決定：四英雄是否升格為可自訂素體、社交系統做到哪一層——此兩項卡位等待 t_f0737f11 由 Kevin 裁示。本文件專注於技術與美術可獨立推進之槽位定義、動物素體規範、資產命名與圖層標準。",
+      "aesthetic_core": "100% 零毛皮、全金屬/琺瑯組裝玩具憲章。禁止任何生物有機肉質、動物毛皮、恐怖谷縫合線與暗黑廢土鏽斑。",
+      "monetization_core": "絕對零數值壓迫 (Zero Pay-to-Win)，所有外觀部件 100% 不增加戰鬥屬性，僅提供個人化審美與大廳社交展示價值。"
+    }
+  },
+  "slots_architecture": {
+    "total_slots": 7,
+    "rendering_pipeline": "Layered Sprite / Multi-pass 2D Z-Ordering",
+    "default_canvas_in_game": {
+      "width": 128,
+      "height": 128,
+      "format": "RGBA8888 Transparent PNG",
+      "root_anchor": {
+        "x": 64,
+        "y": 120,
+        "description": "雙足落地中心點，與陰影軟影中心重合"
+      }
+    },
+    "standee_canvas_ui": {
+      "width": 400,
+      "height": 840,
+      "format": "RGBA8888 Transparent PNG",
+      "root_anchor": {
+        "x": 200,
+        "y": 800,
+        "description": "立繪展台雙足接地點"
+      }
+    },
+    "slots": [
+      {
+        "slot_index": 1,
+        "slot_id": "chassis",
+        "name_zh": "軀體外殼與塗裝",
+        "name_en": "Chassis & Paint Shell",
+        "layer_z_index": 10,
+        "required": true,
+        "description": "底層金屬本體之塗裝與材質。涵蓋主軀幹底殼、四肢關節（球窩關節）、機械腿部與手臂基礎素體骨架。",
+        "sub_regions": [
+          "torso_shell",
+          "limb_ball_joints",
+          "forearm_links",
+          "lower_leg_springs",
+          "footplates"
+        ],
+        "mechanical_details": {
+          "joint_type": "球窩旋轉關節 (Ball-and-socket joints)、平頭螺絲裝配刻線",
+          "surface_finish": "拋光高光琺瑯 / 瓷質烤漆，外露微小螺栓，邊角輕微倒角高光",
+          "forbidden": "禁止任何有機生物皮膚、真毛皮、肉質紋理、粗黑線縫合怪"
+        },
+        "sample_variants": [
+          {
+            "id": "paint_ivory_stock",
+            "name": "原廠象牙白",
+            "tier": "common"
+          },
+          {
+            "id": "paint_nutcracker_red",
+            "name": "胡桃鉗皇家朱紅",
+            "tier": "rare"
+          },
+          {
+            "id": "paint_midnight_navy",
+            "name": "午夜深藍烤漆",
+            "tier": "rare"
+          },
+          {
+            "id": "paint_brass_gold",
+            "name": "黃銅原金拋光",
+            "tier": "epic"
+          },
+          {
+            "id": "paint_emerald_glaze",
+            "name": "翡翠螢光釉面",
+            "tier": "legendary"
+          }
+        ]
+      },
+      {
+        "slot_index": 2,
+        "slot_id": "head_unit",
+        "name_zh": "頭部機關與耳朵造型",
+        "name_en": "Head Unit & Ear Mechanism",
+        "layer_z_index": 20,
+        "required": true,
+        "description": "動物最具辨識度的頭部特徵部件，包含頭部金屬外殼、額頭導流板件、左右機械雙耳與天線機構。",
+        "sub_regions": [
+          "cranial_shell",
+          "left_mechanical_ear",
+          "right_mechanical_ear",
+          "forehead_plate_or_casing"
+        ],
+        "mechanical_details": {
+          "ear_structure": "金屬同心階梯下陷分件、外緣螺栓/鉚釘固定，內耳必須有垂直分模刻線與琺瑯反光",
+          "forehead_structure": "單片平頭螺栓散熱導流板，嚴禁封閉成環（非金箍/非緊箍/非皇冠）",
+          "silhouette_rule": "30公尺縮圖檢視下動物頭頂剪影必須100%瞬間辨識，不可被過度覆蓋"
+        },
+        "sample_variants": [
+          {
+            "id": "ear_rabbit_straight",
+            "name": "雙聯長立金屬耳",
+            "race": "rabbit",
+            "tier": "common"
+          },
+          {
+            "id": "ear_fox_radar",
+            "name": "雷達折疊天線尖耳",
+            "race": "fox",
+            "tier": "rare"
+          },
+          {
+            "id": "ear_lion_gilded_mane",
+            "name": "金屬疊片外擴鬃毛冠",
+            "race": "lion",
+            "tier": "epic"
+          },
+          {
+            "id": "ear_boar_rivet_cowl",
+            "name": "衝壓鋼板防撞罩耳",
+            "race": "boar",
+            "tier": "common"
+          },
+          {
+            "id": "ear_macaque_coaxial",
+            "name": "同心圓階梯金屬耳罩",
+            "race": "macaque",
+            "tier": "common"
+          }
+        ]
+      },
+      {
+        "slot_index": 3,
+        "slot_id": "winding_key",
+        "name_zh": "背部發條鑰匙",
+        "name_en": "Wind-up Key",
+        "layer_z_index": 5,
+        "required": true,
+        "description": "【全遊戲靈魂焦點】角色背部最核心的機械身分標誌與動力來源。在待機、奔跑與戰鬥時持續維持齒輪旋轉動態。",
+        "sub_regions": [
+          "back_socket_axle",
+          "key_wing_or_gear_head"
+        ],
+        "mechanical_details": {
+          "mounting_point": "上背脊正中齒輪插座，3/4 視角向身後斜側伸出，絕對突破角色本體外剪影",
+          "dynamic_vfx": "待機時每4秒平穩旋轉1圈；技能過載時每秒高速旋轉5圈並噴射微量微縮蒸氣與金黃火花",
+          "audio": "待機自帶清脆發條上弦齒輪嚙合音效 (tick-tock ratchet)"
+        },
+        "sample_variants": [
+          {
+            "id": "key_classic_brass",
+            "name": "雙孔古銅發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_butterfly_t",
+            "name": "八音盒T型蝶翼發條",
+            "tier": "rare"
+          },
+          {
+            "id": "key_starlight_cog",
+            "name": "星芒齒輪旋鈕",
+            "tier": "epic"
+          },
+          {
+            "id": "key_royal_crown",
+            "name": "皇家十字冠冕發條",
+            "tier": "legendary"
+          },
+          {
+            "id": "key_winged_angel",
+            "name": "展翼天國雙重發條",
+            "tier": "legendary"
+          }
+        ]
+      },
+      {
+        "slot_index": 4,
+        "slot_id": "costume",
+        "name_zh": "玩具外裝與服飾",
+        "name_en": "Costume & Toy Armor",
+        "layer_z_index": 25,
+        "required": false,
+        "description": "套在金屬素體外的微縮玩偶舞台戲服或外掛輕裝甲。賦予角色強烈的主題職業氣質。",
+        "sub_regions": [
+          "chest_tunic_or_cuirass",
+          "shoulder_pads_or_pauldrons",
+          "waist_belt_or_harness",
+          "skirt_or_trousers"
+        ],
+        "mechanical_details": {
+          "fabric_style": "微縮玩偶舞台服裝質感，顯眼粗縫線、黃銅暗扣、鉚接金屬帶，不可做成現代寫實長袍",
+          "chibi_compatibility": "統一對齊 2.3~2.5 頭身 Chibi 軀幹胸腰尺寸，確保5種動物均可跨種族穿戴"
+        },
+        "sample_variants": [
+          {
+            "id": "costume_nutcracker_guard",
+            "name": "胡桃鉗近衛軍裝",
+            "tier": "rare"
+          },
+          {
+            "id": "costume_steam_artisan",
+            "name": "蒸氣工匠吊帶工作裝",
+            "tier": "common"
+          },
+          {
+            "id": "costume_dawn_monk_tunic",
+            "name": "晨曦行者武道短褂",
+            "tier": "rare"
+          },
+          {
+            "id": "costume_astral_cape",
+            "name": "星紋見習占星斗篷",
+            "tier": "epic"
+          },
+          {
+            "id": "costume_viking_harness",
+            "name": "粗獷鍛爐護胸皮帶",
+            "tier": "common"
+          }
+        ]
+      },
+      {
+        "slot_index": 5,
+        "slot_id": "optic_core",
+        "name_zh": "面部光學與表情核心",
+        "name_en": "Optic Core & Faceplate",
+        "layer_z_index": 30,
+        "required": true,
+        "description": "決定玩具眼神靈動度與情感的面部五官光學組件、嘴吻部嵌件以及胸口核心能量晶石。",
+        "sub_regions": [
+          "optic_gemstone_eyes",
+          "metal_muzzle_and_nose_triangle",
+          "expression_mouth_slit",
+          "chest_clockwork_heart_gem"
+        ],
+        "mechanical_details": {
+          "eyes": "透亮晶瑩光學玻璃透鏡，帶高光亮斑與柔和內發光，非呆滯塑膠死眼",
+          "nose": "上漆金屬獨立倒三角形嵌件，邊界銳利",
+          "mouth": "ω形或微笑深邃機械分件凹線，禁止任何布質針腳與金屬外露縫合釘",
+          "chest_core": "胸口正中央鑲嵌愛心或菱形能量晶石，與眼珠色澤同頻呼吸閃爍"
+        },
+        "sample_variants": [
+          {
+            "id": "core_cyan_emerald",
+            "name": "天青翡翠透鏡核心",
+            "tier": "common"
+          },
+          {
+            "id": "core_amber_sun",
+            "name": "琥珀烈陽透鏡核心",
+            "tier": "rare"
+          },
+          {
+            "id": "core_astral_amethyst",
+            "name": "星海紫晶透鏡核心",
+            "tier": "epic"
+          },
+          {
+            "id": "core_pilot_visor",
+            "name": "護目鏡覆蓋型光學面板",
+            "tier": "rare"
+          }
+        ]
+      },
+      {
+        "slot_index": 6,
+        "slot_id": "weapon",
+        "name_zh": "手持武器外觀",
+        "name_en": "Handheld Weapon Skin",
+        "layer_z_index": 40,
+        "required": true,
+        "description": "角色持握的武器外觀，覆蓋 12 大武器體系（劍、槍、法杖、斧、鎚、爪套、弓、銃、鏢等）。獨立道具層，絕不與手掌焊死。",
+        "sub_regions": [
+          "mainhand_grip_and_blade",
+          "offhand_or_gauntlet_blades"
+        ],
+        "mechanical_details": {
+          "weapon_scale": "相對於 Chibi 玩具身型略大（如單手長劍刃長為手臂2.5~3倍），具備厚實玩具手感與微型齒輪關節",
+          "grip_point": "標準對位右手持握點 (88, 76) 或雙手爪套自適應鏡像對位",
+          "independent_layer": "與手臂素體分離，隨時支援換裝或武器升階"
+        },
+        "sample_variants": [
+          {
+            "id": "wpn_dawn_blade",
+            "name": "晨曦發條單手長劍",
+            "weapon_type": "sword",
+            "tier": "rare"
+          },
+          {
+            "id": "wpn_spring_claws",
+            "name": "機關發條靈爪護手",
+            "weapon_type": "claw",
+            "tier": "rare"
+          },
+          {
+            "id": "wpn_knight_lance",
+            "name": "皇家黃銅突刺長槍",
+            "weapon_type": "spear",
+            "tier": "rare"
+          },
+          {
+            "id": "wpn_astral_staff",
+            "name": "星盤晶核秘術法杖",
+            "weapon_type": "magic",
+            "tier": "rare"
+          },
+          {
+            "id": "wpn_anvil_greathammer",
+            "name": "鍛爐鐵砧重型戰鎚",
+            "weapon_type": "hammer",
+            "tier": "common"
+          }
+        ]
+      },
+      {
+        "slot_index": 7,
+        "slot_id": "back_curio",
+        "name_zh": "隨身奇玩與尾部機關",
+        "name_en": "Back Curio & Tail Balance Unit",
+        "layer_z_index": 8,
+        "required": false,
+        "description": "懸浮於身側的奇想發條微縮玩物，或動物專屬的可替換尾部平衡機械裝置。",
+        "sub_regions": [
+          "mechanical_tail_balance_rod",
+          "floating_curio_pet"
+        ],
+        "mechanical_details": {
+          "tail_structure": "金屬分節與螺旋彈簧減震套管，維持動態架式的物理平衡",
+          "floating_curio": "身側左上方 (28, 40) 懸浮自帶呼吸微動態的微縮發條奇玩",
+          "independent_layer": "位於軀幹後方、發條鑰匙上方，層次分明"
+        },
+        "sample_variants": [
+          {
+            "id": "curio_spring_tail",
+            "name": "伸縮彈簧機關平衡尾",
+            "race": "macaque",
+            "tier": "common"
+          },
+          {
+            "id": "curio_fox_astral_tail",
+            "name": "多節連桿星軸導能尾",
+            "race": "fox",
+            "tier": "rare"
+          },
+          {
+            "id": "curio_clockwork_pigeon",
+            "name": "自走發條通訊小信鴿",
+            "tier": "rare"
+          },
+          {
+            "id": "curio_steam_exhaust",
+            "name": "迷你雙聯蒸氣排氣管",
+            "tier": "common"
+          },
+          {
+            "id": "curio_floating_musicbox",
+            "name": "懸浮微型齒輪八音盒",
+            "tier": "epic"
+          }
+        ]
+      }
+    ]
+  },
+  "races_specification": {
+    "total_races": 5,
+    "races": [
+      {
+        "race_id": "rabbit",
+        "name_zh": "白金兔",
+        "name_en": "Clockwork Rabbit",
+        "class_archetype": "劍士 (Knight)",
+        "origin_realm": "R01 今日村莊·發條新村 / Today Village: Cogwheel Hamlet",
+        "lore_anchor": "傳奇先行者小白（Whitey）的經典族系，中央大鐘精細鐘錶展台的時間守護者",
+        "proportions": {
+          "head_to_body_ratio": "2.3 ~ 2.5 頭身 (不計長立耳)",
+          "posture": "靈巧挺拔，重心微前傾，長耳直立朝天",
+          "standee_height_px": 840,
+          "standee_width_px": 400
+        },
+        "mechanical_features": {
+          "ears": "雙聯長立金屬板件耳，珊瑚粉琺瑯內耳金屬片，垂直分片刻線與外緣平頭固定螺絲",
+          "face": "奶油白金屬外殼，倒三角上漆粉色金屬鼻件，ω形深邃機械微笑槽線",
+          "limbs": "後腿關節內置微型高彈力避震彈簧，手腕為靈巧球形轉軸",
+          "tail": "圓形球體黃銅避震短尾"
+        },
+        "color_palette": {
+          "primary": "#FFFDF8 (奶油白陶瓷琺瑯)",
+          "secondary": "#FFD028 (拋光黃銅原金)",
+          "accent": "#38A0FF (活力天藍光學核心/眼珠)",
+          "detail": "#FF8A7A (珊瑚粉內耳琺瑯片/小鼻)",
+          "outline": "#1F1A3A (深藍紫厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [
+              "branding/char_rabbit.png (400x840 立牌)",
+              "docs/art/char_rabbit_candidate_400x840.png (400x840 候選)",
+              "web/media/hero/char_rabbit.png (400x840 官網英雄圖)",
+              "web/media/hero/rabbit_idle.png (128x128 官網預覽圖)",
+              "game/assets/sprites/player/rabbit_idle.png (64x64 基礎待機)",
+              "game/assets/sprites/player/rabbit_idle_x3.png (128x128 隊伍/高畫質待機)",
+              "game/assets/sprites/player/rabbit_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/rabbit_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/rabbit_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/rabbit.png (128x128 HUD戰鬥頭像)"
+            ],
+            "pending": [
+              "game/assets/sprites/player/paperdoll/rabbit/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_rabbit.png (400x840) [既有]",
+          "branding_concept_art": "docs/art/char_rabbit_candidate_400x840.png [既有]",
+          "web_hero": "web/media/hero/char_rabbit.png (400x840) [既有]",
+          "web_preview": "web/media/hero/rabbit_idle.png (128x128) [既有]",
+          "game_sprite_idle_base": "game/assets/sprites/player/rabbit_idle.png (64x64) [既有]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/rabbit_idle_x3.png (128x128) [既有]",
+          "game_sprite_battle": "game/assets/sprites/player/rabbit_battle.png (128x128) [既有]",
+          "game_sprite_walk": "game/assets/sprites/player/rabbit_walk_{0..3}.png (64x64) [既有]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/rabbit_walk_{0..3}_x3.png (128x128) [既有]",
+          "game_action_poses": "game/assets/sprites/player/poses/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [既有]",
+          "portrait_hud": "game/assets/sprites/portraits/rabbit.png (128x128) [既有]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/rabbit/{slot_id}/{item_id}.png [待產出]"
+        }
+      },
+      {
+        "race_id": "lion",
+        "name_zh": "烈鬃獅",
+        "name_en": "Gilded Lion",
+        "class_archetype": "騎士 (Knight)",
+        "origin_realm": "R04 黃銅都市·巨輪城 / Brass Metropolis: The Great Cog City",
+        "lore_anchor": "黃銅都市發條樞紐守護者，胡桃鉗皇家近衛儀隊之首",
+        "proportions": {
+          "head_to_body_ratio": "2.2 ~ 2.4 頭身",
+          "posture": "厚重沉穩，正面寬闊，肩寬略大於其他種族",
+          "standee_height_px": 840,
+          "standee_width_px": 400
+        },
+        "mechanical_features": {
+          "ears": "圓弧黃銅外耳外擴，頭部兩側具備外展金屬疊片鬃毛冠",
+          "face": "剛毅四方型黃銅面額，外露厚鋼鉸鏈接縫",
+          "limbs": "粗壯四肢，雙肘與雙膝配置強化黃銅齒輪關節",
+          "tail": "長多節黃銅連桿尾，尾端為可展開的扇形金屬扇片，帶分片接縫與鉚釘"
+        },
+        "color_palette": {
+          "primary": "#E5A93C (拋光黃銅合金)",
+          "secondary": "#B84A39 (近衛皇家朱紅)",
+          "accent": "#FFA010 (溫暖琥珀金光學眼珠)",
+          "detail": "#594A42 (深古銅接縫齒輪)",
+          "outline": "#1F1A3A (深藍紫厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [
+              "branding/char_lion.png (400x840 原稿立牌)",
+              "web/media/hero/char_lion.png (400x840 官網英雄圖)",
+              "game/assets/sprites/player/party/lion_idle.png (128x128 既有隊伍展示幀)",
+              "game/assets/sprites/portraits/lion_knight.png (256x256 對話框半身像)"
+            ],
+            "pending": [
+              "web/media/hero/lion_idle.png (128x128 官網預覽圖)",
+              "game/assets/sprites/player/lion_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/lion_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/lion_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/lion/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/lion.png (128x128 HUD戰鬥頭像)",
+              "game/assets/sprites/player/paperdoll/lion/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_lion.png (400x840) [既有]",
+          "branding_concept_art": "branding/char_lion.png (原稿 928x1152) [既有]",
+          "web_hero": "web/media/hero/char_lion.png (400x840) [既有]",
+          "web_preview": "web/media/hero/lion_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/lion_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/party/lion_idle.png (128x128) [既有於party/目錄]",
+          "game_sprite_battle": "game/assets/sprites/player/lion_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/lion_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/lion_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/lion/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/lion.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/lion_knight.png (256x256 / 384x480) [既有]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/lion/{slot_id}/{item_id}.png [待產出]"
+        }
+      },
+      {
+        "race_id": "fox",
+        "name_zh": "靈尾狐",
+        "name_en": "Astral Fox",
+        "class_archetype": "法師 (Mage)",
+        "origin_realm": "R03 翡翠深林·發條蔓谷 / Emerald Woods: Vine & Gear Forest",
+        "lore_anchor": "星象觀測台與發條藤蔓守護者，專精十四主星軸共鳴秘術",
+        "proportions": {
+          "head_to_body_ratio": "2.3 ~ 2.5 頭身",
+          "posture": "流線輕盈，身形纖巧，站姿帶有優雅微旋",
+          "standee_height_px": 840,
+          "standee_width_px": 400
+        },
+        "mechanical_features": {
+          "ears": "高聳直立三角形雷達天線耳，內側配置精密導能金屬線圈",
+          "face": "小巧尖吻金屬面甲，眼部外側帶有紫晶刻度線",
+          "limbs": "細長流線型金屬四肢，輕量化鋁合金連桿",
+          "tail": "三節至五節懸浮連桿星軸長尾，末端鑲嵌微型紫晶諧振器"
+        },
+        "color_palette": {
+          "primary": "#E87A38 (流線暖橘烤漆)",
+          "secondary": "#4A3B7A (深紫藍星軸合金)",
+          "accent": "#A855F7 (星海秘術紫晶光芒)",
+          "detail": "#FFFDF8 (象牙白下頜金屬嵌件)",
+          "outline": "#1F1A3A (深藍紫厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [
+              "branding/char_fox.png (400x840 原稿立牌)",
+              "web/media/hero/char_fox.png (400x840 官網英雄圖)",
+              "game/assets/sprites/player/party/fox_idle.png (128x128 既有隊伍展示幀)",
+              "game/assets/sprites/portraits/fox_mage.png (256x256 對話框半身像)"
+            ],
+            "pending": [
+              "web/media/hero/fox_idle.png (128x128 官網預覽圖)",
+              "game/assets/sprites/player/fox_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/fox_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/fox_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/fox/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/fox.png (128x128 HUD戰鬥頭像)",
+              "game/assets/sprites/player/paperdoll/fox/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_fox.png (400x840) [既有]",
+          "branding_concept_art": "branding/char_fox.png (原稿 928x1152) [既有]",
+          "web_hero": "web/media/hero/char_fox.png (400x840) [既有]",
+          "web_preview": "web/media/hero/fox_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/fox_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/party/fox_idle.png (128x128) [既有於party/目錄]",
+          "game_sprite_battle": "game/assets/sprites/player/fox_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/fox_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/fox_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/fox/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/fox.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/fox_mage.png (256x256 / 384x480) [既有]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/fox/{slot_id}/{item_id}.png [待產出]"
+        }
+      },
+      {
+        "race_id": "boar",
+        "name_zh": "鋼牙豕",
+        "name_en": "Forge Boar",
+        "class_archetype": "戰士 (Viking)",
+        "origin_realm": "R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano",
+        "lore_anchor": "耐熱高溫鍛爐的重裝工兵，專克泰坦巨型裝甲的狂爆衝擊者",
+        "proportions": {
+          "head_to_body_ratio": "2.1 ~ 2.3 頭身",
+          "posture": "低重心，敦實粗獷，向前沉肩蓄力姿態",
+          "standee_height_px": 840,
+          "standee_width_px": 400
+        },
+        "mechanical_features": {
+          "ears": "厚衝壓鋼板折耳，邊緣以雙列鋼鉚釘緊固",
+          "face": "雙根外露鎢鋼長獠牙（拆解卡死軸承之用），重裝衝壓鋼鼻罩",
+          "limbs": "加厚防震金屬重裝肢體，履帶紋防滑底盤足墊",
+          "tail": "粗金屬螺旋彈簧小短尾"
+        },
+        "color_palette": {
+          "primary": "#474D58 (高溫耐熱黑鐵合金)",
+          "secondary": "#D9532F (鍛爐烈焰暗橘紅)",
+          "accent": "#FF4500 (高熱熔火發光核心)",
+          "detail": "#C0C5CE (拋光鎢鋼獠牙與鉚釘)",
+          "outline": "#1A1B22 (鍛鐵深黑厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [
+              "branding/char_boar.png (400x840 原稿立牌)",
+              "web/media/hero/char_boar.png (400x840 官網英雄圖)",
+              "game/assets/sprites/player/party/boar_idle.png (128x128 既有隊伍展示幀)",
+              "game/assets/sprites/portraits/boar.png (既有頭像)",
+              "game/assets/sprites/portraits/boar_warrior.png (256x256 對話框半身像)"
+            ],
+            "pending": [
+              "web/media/hero/boar_idle.png (128x128 官網預覽圖)",
+              "game/assets/sprites/player/boar_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/boar_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/boar/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/player/paperdoll/boar/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_boar.png (400x840) [既有]",
+          "branding_concept_art": "branding/char_boar.png (原稿 928x1152) [既有]",
+          "web_hero": "web/media/hero/char_boar.png (400x840) [既有]",
+          "web_preview": "web/media/hero/boar_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/boar_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/party/boar_idle.png (128x128) [既有於party/目錄]",
+          "game_sprite_battle": "game/assets/sprites/player/boar_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/boar_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/boar/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/boar.png (128x128) [既有]",
+          "portrait_dialogue": "game/assets/sprites/portraits/boar_warrior.png (256x256 / 384x480) [既有]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/boar/{slot_id}/{item_id}.png [待產出]"
+        }
+      },
+      {
+        "race_id": "macaque",
+        "aliases": [
+          "monkey"
+        ],
+        "name_zh": "靈爪猴",
+        "name_en": "Spring Macaque",
+        "class_archetype": "武術家 (Monk)",
+        "origin_realm": "R09 竹影道場·天元竹林 / Bamboo Grove: Zen Puppet Dojo",
+        "lore_anchor": "補位木人樁與演武場東方武道機關玩具，以長臂彈簧拳與機關銅爪見長之靈動武者",
+        "proportions": {
+          "head_to_body_ratio": "2.2 ~ 2.4 頭身",
+          "posture": "靈巧活潑，雙臂自然外展蓄勁，右爪微抬，長尾向上優雅捲曲平衡",
+          "standee_height_px": 840,
+          "standee_width_px": 400
+        },
+        "mechanical_features": {
+          "ears": "黃銅外圈外耳飾有一整排平頭鉚釘，內耳為多層同心階梯狀下陷金屬分件",
+          "face": "琺瑯金屬面罩與臉頰分件接縫，拋光倒三角純金屬小鼻，額前單片長方形四角平頭螺栓散熱導流板（不成環）",
+          "limbs": "雙小臂包覆粗螺旋黃銅彈簧減震套管，提供伸縮打擊彈力反饋，球窩腕關節",
+          "tail": "多節金屬連桿與彈簧避震管構成的伸縮平衡長尾",
+          "weapon_system": "手部配備可拆卸專利「機關發條靈爪護手」，3~4根鋒利弧形銅爪延伸自手背"
+        },
+        "color_palette": {
+          "primary": "#E8C88A (香檳金/淺褐合金板件)",
+          "secondary": "#FFD028 (拋光黃銅齒輪與彈簧)",
+          "accent": "#4ED86A (青綠翡翠發條之心與透鏡眼珠)",
+          "detail": "#5A4232 (深褐金屬分模刻線)",
+          "outline": "#1F1A3A (深藍紫厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [
+              "docs/art/spring_macaque_concept.png (928x1152 定稿概念立繪)",
+              "docs/art/spring_macaque_thumb_128px.png (128px 驗證縮圖)"
+            ],
+            "pending": [
+              "branding/char_macaque.png (400x840，對齊 char_rabbit 規格)",
+              "docs/art/char_macaque_candidate_400x840.png (400x840 候選立牌)",
+              "web/media/hero/char_macaque.png (400x840)",
+              "web/media/hero/macaque_idle.png (128x128)",
+              "game/assets/sprites/player/macaque_idle.png (64x64)",
+              "game/assets/sprites/player/macaque_idle_x3.png (128x128)",
+              "game/assets/sprites/player/party/macaque_idle.png (128x128)",
+              "game/assets/sprites/player/macaque_battle.png (128x128)",
+              "game/assets/sprites/player/macaque_walk_{0..3}.png (64x64)",
+              "game/assets/sprites/player/macaque_walk_{0..3}_x3.png (128x128)",
+              "game/assets/sprites/player/poses/macaque/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/macaque.png (128x128 HUD戰鬥頭像)",
+              "game/assets/sprites/portraits/spring_macaque.png (384x480 對話框半身像)",
+              "game/assets/sprites/player/paperdoll/macaque/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_macaque.png (400x840，對齊 char_rabbit 規格) [待產出]",
+          "branding_concept_art": "docs/art/spring_macaque_concept.png (928x1152 定稿立繪) [既有]",
+          "web_hero": "web/media/hero/char_macaque.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/macaque_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/macaque_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/macaque_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/macaque_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/macaque_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/macaque_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/macaque_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/macaque/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/macaque.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/spring_macaque.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/macaque/{slot_id}/{item_id}.png [待產出]"
+        }
+      }
+    ]
+  },
+  "art_output_standards": {
+    "tier_1_standee_ui": {
+      "name": "全尺寸展示立牌與大廳特寫 (High-Res Standee)",
+      "canvas_dimensions": "400 x 840 px",
+      "color_depth": "32-bit RGBA Transparent PNG",
+      "dpi": 72,
+      "character_alignment": {
+        "ground_baseline_y": 800,
+        "center_x": 200,
+        "head_top_y_approx": 200,
+        "safe_margin_left_right": 20,
+        "safe_margin_top": 30
+      },
+      "shadow_spec": {
+        "type": "柔和漫反射落地接觸軟陰影 (Contact Soft Shadow)",
+        "center": "x: 200, y: 808",
+        "radius_x": 110,
+        "radius_y": 24,
+        "color": "rgba(31, 26, 58, 0.35)"
+      }
+    },
+    "tier_2_game_layered_sprite": {
+      "name": "遊戲內 2D 紙娃娃貼圖層 (In-Game Modular Layers)",
+      "canvas_dimensions": "128 x 128 px",
+      "downsampled_legacy_dimensions": "64 x 64 px",
+      "color_depth": "32-bit RGBA Transparent PNG",
+      "slice_origin": "全槽位貼圖共用統一起點 (0, 0)，直接同屏疊加渲染，無須執行期動態計算平移偏移量",
+      "root_anchor": {
+        "x": 64,
+        "y": 120
+      }
+    },
+    "tier_3_portraits": {
+      "name": "頭像與對話框立繪 (Portraits & Icons)",
+      "hud_icon": "128 x 128 px (戰鬥隊列 / 隊伍列表 / HUD)",
+      "profile_card": "256 x 256 px (好友名片 / 戳碰特寫)",
+      "dialogue_bust": "384 x 480 px (主線劇情對話框特寫)"
+    }
+  },
+  "interchangeability_and_compatibility": {
+    "universal_slots": [
+      {
+        "slot_id": "winding_key",
+        "status": "100% 跨種族通用",
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 5 種動物素體"
+      },
+      {
+        "slot_id": "weapon",
+        "status": "100% 跨種族通用",
+        "rule": "所有武器對齊右手抓握點或雙手前臂槽位，所有種族均可裝備 12 大武器"
+      },
+      {
+        "slot_id": "back_curio",
+        "status": "100% 跨種族通用",
+        "rule": "懸浮奇玩寵物共用身側左上方懸浮空間，不與本體產生碰撞穿模"
+      }
+    ],
+    "race_adapted_slots": [
+      {
+        "slot_id": "head_unit",
+        "status": "種族基座專屬 ＋ 通用飾品外掛",
+        "rule": "長耳、尖耳、鬃毛、鋼罩、圓耳為各族原生骨架；外掛帽子、面具需針對各族耳部留出安全槽口"
+      },
+      {
+        "slot_id": "costume",
+        "status": "標準 Chibi 軀幹通版裁切",
+        "rule": "五大種族軀幹均維持 2.2~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬) 由渲染器微調縮放 1.05x"
+      }
+    ]
+  },
+  "directory_structure_blueprint": {
+    "sprites_player_root": "game/assets/sprites/player/",
+    "paperdoll_root": "game/assets/sprites/player/paperdoll/",
+    "sub_directories": {
+      "races": [
+        "game/assets/sprites/player/paperdoll/rabbit/",
+        "game/assets/sprites/player/paperdoll/lion/",
+        "game/assets/sprites/player/paperdoll/fox/",
+        "game/assets/sprites/player/paperdoll/boar/",
+        "game/assets/sprites/player/paperdoll/macaque/"
+      ],
+      "universal_equipment": [
+        "game/assets/sprites/player/paperdoll/weapon/",
+        "game/assets/sprites/player/paperdoll/armor/",
+        "game/assets/sprites/player/paperdoll/accessory/",
+        "game/assets/sprites/player/paperdoll/key/",
+        "game/assets/sprites/player/paperdoll/curio/"
+      ]
+    }
+  }
+}
