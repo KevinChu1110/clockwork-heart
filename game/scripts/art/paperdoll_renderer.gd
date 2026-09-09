@@ -117,10 +117,20 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 	var iid := item_id.strip_edges()
 
 	# 1. 若已有專屬紙娃娃切片圖檔存在，優先採用
-	if iid != "":
-		var custom_slice := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, iid]
-		if ResourceLoader.exists(custom_slice):
+	var effective_id := iid if iid != "" else _get_default_variant_id(rid, sid)
+	if effective_id != "":
+		var custom_slice := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, effective_id]
+		if ResourceLoader.exists(custom_slice) or FileAccess.file_exists(custom_slice):
 			return custom_slice
+		# 檢查去前綴後之切片命名相容性
+		var clean_id := effective_id
+		for pfx in ["wpn_", "costume_", "key_", "curio_", "paint_", "ear_", "core_"]:
+			if clean_id.begins_with(pfx):
+				clean_id = clean_id.trim_prefix(pfx)
+				break
+		var custom_slice_clean := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, clean_id]
+		if ResourceLoader.exists(custom_slice_clean) or FileAccess.file_exists(custom_slice_clean):
+			return custom_slice_clean
 
 	# 2. 通用裝備紙娃娃目錄 (weapon, armor, accessory, key, curio)
 	if sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
@@ -244,11 +254,17 @@ static func build_paperdoll_map(race: String, slot_selection: Dictionary = {}) -
 
 ## 安全取得貼圖資源（缺圖時回傳 null，絕不拋出例外）
 static func get_slot_texture(path: String) -> Texture2D:
-	if path == "" or not ResourceLoader.exists(path):
+	if path == "" or (not ResourceLoader.exists(path) and not FileAccess.file_exists(path)):
 		return null
-	var res = load(path)
-	if res is Texture2D:
-		return res as Texture2D
+	if ResourceLoader.exists(path):
+		var res = load(path)
+		if res is Texture2D:
+			return res as Texture2D
+	# 若尚未產生 .import 快取，使用 Image.load_from_file 安全即時載入
+	if FileAccess.file_exists(path):
+		var img := Image.load_from_file(path)
+		if img != null and not img.is_empty():
+			return ImageTexture.create_from_image(img)
 	return null
 
 
