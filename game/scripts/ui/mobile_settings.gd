@@ -38,22 +38,19 @@ static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
 
 func _ready() -> void:
-	set_anchors_preset(Control.PRESET_FULL_RECT)
+	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	_build_ui()
 	_switch_tab(Tab.LANGUAGE)
 
 func _build_ui() -> void:
-	## 1. 全螢幕半透明深色暗幕
-	var scrim := ColorRect.new()
-	scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
-	scrim.color = Color(0.04, 0.03, 0.05, 0.80)
-	scrim.mouse_filter = Control.MOUSE_FILTER_STOP
+	## 1. 全螢幕半透明深色暗幕 (Scrim)
+	var scrim := ResponsiveUi.make_scrim(ResponsiveUi.SCRIM_COLOR)
 	add_child(scrim)
 
 	## 點擊背景可關閉
 	var scrim_click := Button.new()
-	scrim_click.set_anchors_preset(Control.PRESET_FULL_RECT)
+	scrim_click.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	scrim_click.flat = true
 	var esb := StyleBoxEmpty.new()
 	scrim_click.add_theme_stylebox_override("normal", esb)
@@ -64,12 +61,14 @@ func _build_ui() -> void:
 
 	## 2. 中央大氣手遊卡片主體 (寬 740, 高 480，適合橫向手機操作)
 	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(center)
 
 	_dialog_card = PanelContainer.new()
-	_dialog_card.custom_minimum_size = Vector2(ResponsiveUi.dialog_width(self), 490)
+	_dialog_card.name = "SettingsCard"
+	ResponsiveUi.apply_dialog_card(_dialog_card)
+	_dialog_card.custom_minimum_size.y = 490
 	_dialog_card.mouse_filter = Control.MOUSE_FILTER_STOP
 	_dialog_card.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	center.add_child(_dialog_card)

@@ -10,6 +10,17 @@ const CLOSE_SIZE := 50.0
 const PAD := 12.0
 ## 字級相對這個高度微縮，不當版面寬高。
 const REF_H := 720.0
+const SCRIM_COLOR := Color(0.0, 0.0, 0.0, 0.55)
+
+
+## 建立橫屏彈窗全螢幕遮罩 (Scrim)
+static func make_scrim(color: Color = SCRIM_COLOR) -> ColorRect:
+	var scrim := ColorRect.new()
+	scrim.name = "DialogScrim"
+	scrim.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	scrim.color = color
+	scrim.mouse_filter = Control.MOUSE_FILTER_STOP
+	return scrim
 
 
 static func viewport_size(n: Node) -> Vector2:

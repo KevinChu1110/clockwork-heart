@@ -34,7 +34,7 @@ const TATA_BLUE := Color(0.24, 0.68, 0.98, 1.0)            ## 晴空蔚藍
 const TATA_PINK := Color(1.0, 0.40, 0.60, 1.0)             ## 活力草莓粉
 const TATA_BROWN := Color(0.26, 0.18, 0.12, 1.0)           ## 溫暖深巧克力褐描邊 (告別死黑/深紫)
 const TATA_NAVY := TATA_BROWN                              ## 相容別名
-const TATA_CARD_BG := Color(0.99, 0.98, 0.95, 0.96)        ## 溫潤奶油米白卡片底 (告別暗沉)
+const TATA_CARD_BG := Color(0.99, 0.98, 0.95, 1.0)        ## 溫潤奶油米白卡片底 (不透明)
 const TATA_CARD_BORDER := Color(0.38, 0.28, 0.18, 1.0)     ## 溫暖深棕描邊
 const TATA_GOLD := Color(0.95, 0.78, 0.22, 1.0)           ## 金琥珀飾邊
 
@@ -114,7 +114,7 @@ static func panel_style(accent: Color = LINE) -> StyleBoxFlat:
 static func panel_style_dark() -> StyleBoxFlat:
 	## HUD / 面板：深色暖木／金邊質感框
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(0.13, 0.12, 0.15, 0.92)
+	s.bg_color = Color(0.13, 0.12, 0.15, 1.0)
 	s.border_color = Color(0.75, 0.60, 0.45, 0.85)
 	s.set_border_width_all(1)
 	s.set_corner_radius_all(8)
