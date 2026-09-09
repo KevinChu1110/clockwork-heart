@@ -1873,5 +1873,11 @@
   "四核的簡圖。有人用刀補過最後一顆。": "A rough sketch of the four cores. Someone carved the final core in with a blade.",
   "淺池映著四核微光。水面涼，心卻熱了一下。": "The shallow pool catches the faint glimmer of four cores. The water feels cold, but a spark inside stirs.",
   "報仇（追回 %d 金）": "Revenge (reclaim %d gold)",
-  "收貨": "Collect cargo"
+  "收貨": "Collect cargo",
+  "器階已達上限 · 鍛造已封頂": "Gear tier maxed · Forging capped",
+  "鍛造連敗保底 %d/3 · 滿 3 格釘釘摔錘必成功": "Forge loss pity %d/3 · At 3 bars Ding's hammer throw guarantees success",
+  "保底已滿 3/3 · 本次升階釘釘摔錘必成功！": "Pity full 3/3 · Ding's hammer throw guarantees tier-up this time!",
+  "保底已觸發 · 釘釘發脾氣必定升階": "Pity triggered · Ding's anger guarantees tier-up",
+  "再失敗 1 次將觸發第 3 格摔錘保底": "1 more failure will trigger 3rd bar hammer-throw pity",
+  "升階失敗累積 1 格 · 升階成功清空進度": "Tier-up failure adds 1 bar · Tier-up success resets progress"
 }
