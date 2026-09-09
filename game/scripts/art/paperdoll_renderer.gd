@@ -228,7 +228,7 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 			elif race == "boar":
 				return "paint_ivory_stock"
 			elif race == "macaque":
-				return "paint_macaque_champagne"
+				return "paint_ivory_stock"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
