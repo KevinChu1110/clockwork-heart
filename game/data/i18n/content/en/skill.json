@@ -7,7 +7,7 @@
     "unlock_hint": "Hammer line Lv7"
   },
   "arrow_storm": {
-    "desc": "★ Level 16 rage technique. Ten arrows blanket the ground.",
+    "desc": "Level 16 rage technique. Ten arrows blanket the ground.",
     "lv2": "Fiercer storm.",
     "lv3": "The storm converges.",
     "name": "Arrow Storm",
@@ -35,7 +35,7 @@
     "unlock_hint": "Choose the sword style · or level 8"
   },
   "blood_petal": {
-    "desc": "★ Claw line quest technique. Petal-shaped cuts in sequence.",
+    "desc": "Claw line quest technique. Petal-shaped cuts in sequence.",
     "lv2": "Denser petals.",
     "lv3": "Longer trailing edge.",
     "name": "Blood Petal",
@@ -63,28 +63,28 @@
     "unlock_hint": "After Leo · or level 7"
   },
   "crystal_prison": {
-    "desc": "★ Crystal quest technique. Imprison, then shatter for damage.",
+    "desc": "Crystal quest technique. Imprison, then shatter for damage.",
     "lv2": "Harder prison.",
     "lv3": "The shattering spreads.",
     "name": "Crystal Prison",
     "unlock_hint": "Crystal Lv13"
   },
   "crystal_tornado": {
-    "desc": "★ Level 13 quest technique. A combo vortex, four hits of true damage.",
+    "desc": "Level 13 quest technique. A combo vortex, four hits of true damage.",
     "lv2": "Denser vortex.",
     "lv3": "Crystal trailing edge.",
     "name": "Crystal Tornado",
     "unlock_hint": "Dagger line Lv13"
   },
   "def_break": {
-    "desc": "★ Level 13 quest technique. A blow that breaks the enemy's defence.",
+    "desc": "Level 13 quest technique. A blow that breaks the enemy's defence.",
     "lv2": "Deeper break.",
     "lv3": "The aftershock raises damage again.",
     "name": "Defence Break",
     "unlock_hint": "Axe line Lv13"
   },
   "doom_strike": {
-    "desc": "★ Level 16 rage technique. Slow, heavy, painful—misses three times in ten.",
+    "desc": "Level 16 rage technique. Slow, heavy, painful—misses three times in ten.",
     "lv2": "Heavier doom.",
     "lv3": "One notch below the cap.",
     "name": "Doom Strike",
@@ -98,7 +98,7 @@
     "unlock_hint": "Gun Lv7"
   },
   "earth_breaker": {
-    "desc": "★ Hammer line rage technique. A finishing blow that splits the ground.",
+    "desc": "Hammer line rage technique. A finishing blow that splits the ground.",
     "lv2": "Wider rift.",
     "lv3": "The blast caps out.",
     "name": "Earthbreaker",
@@ -112,14 +112,14 @@
     "unlock_hint": "After forging in C1, ask Greybeard"
   },
   "energy_beam": {
-    "desc": "★ Level 13 quest technique. Inner energy turned into a beam.",
+    "desc": "Level 13 quest technique. Inner energy turned into a beam.",
     "lv2": "Tighter beam.",
     "lv3": "Overload.",
     "name": "Energy Beam",
     "unlock_hint": "Fist line Lv13"
   },
   "explosive_round": {
-    "desc": "★ Gun quest technique. Detonates on impact.",
+    "desc": "Gun quest technique. Detonates on impact.",
     "lv2": "Larger blast.",
     "lv3": "Shrapnel aftershock.",
     "name": "Explosive Round",
@@ -133,7 +133,7 @@
     "unlock_hint": "Dagger line Lv7"
   },
   "fireball": {
-    "desc": "★ Level 13 quest technique. A scorching ball of fire.",
+    "desc": "Level 13 quest technique. A scorching ball of fire.",
     "lv2": "Larger fireball.",
     "lv3": "Blast aftershock.",
     "name": "Fireball",
@@ -168,7 +168,7 @@
     "unlock_hint": "Choose the hammer style · or level 5"
   },
   "last_bullet": {
-    "desc": "★ Gun rage technique. One report that decides it.",
+    "desc": "Gun rage technique. One report that decides it.",
     "lv2": "Higher chamber pressure.",
     "lv3": "The finisher caps out.",
     "name": "Last Bullet",
@@ -189,7 +189,7 @@
     "unlock_hint": "Staff opener"
   },
   "meteor": {
-    "desc": "★ Level 16 rage technique. A meteor bombardment.",
+    "desc": "Level 16 rage technique. A meteor bombardment.",
     "lv2": "Heavier meteor.",
     "lv3": "Falling stars in sequence.",
     "name": "Meteor",
@@ -203,7 +203,7 @@
     "unlock_hint": "Choose the dart style · or level 6"
   },
   "multi_shot": {
-    "desc": "★ Level 13 quest technique. Four true shots in a row.",
+    "desc": "Level 13 quest technique. Four true shots in a row.",
     "lv2": "Steadier arrow count.",
     "lv3": "Multishot follows up.",
     "name": "Multishot",
@@ -217,7 +217,7 @@
     "unlock_hint": "Spear line Lv7"
   },
   "phantom_rain": {
-    "desc": "★ Dart line quest technique. A rain of darts you can't tell apart.",
+    "desc": "Dart line quest technique. A rain of darts you can't tell apart.",
     "lv2": "Denser rain.",
     "lv3": "Phantoms follow up.",
     "name": "Phantom Rain",
@@ -245,7 +245,7 @@
     "unlock_hint": "Choose the fist style · or level 6"
   },
   "prism_nova": {
-    "desc": "★ Crystal rage technique. A refracted burst.",
+    "desc": "Crystal rage technique. A refracted burst.",
     "lv2": "Brighter nova.",
     "lv3": "Seven-colour scatter.",
     "name": "Prism Nova",
@@ -259,7 +259,7 @@
     "unlock_hint": "Choose the crystal style · or level 5"
   },
   "quake_slash": {
-    "desc": "★ Level 16 rage technique. A blow that tears the ground open.",
+    "desc": "Level 16 rage technique. A blow that tears the ground open.",
     "lv2": "Wider rift.",
     "lv3": "A second gale impact.",
     "name": "Gale Earthrend",
@@ -294,14 +294,14 @@
     "unlock_hint": "Crystal opener"
   },
   "shinra": {
-    "desc": "★ Level 16 rage technique. Sixteen linked thrusts.",
+    "desc": "Level 16 rage technique. Sixteen linked thrusts.",
     "lv2": "Faster chain.",
     "lv3": "The final thrust always lands.",
     "name": "All Creation",
     "unlock_hint": "Dagger line Lv16"
   },
   "sky_lance": {
-    "desc": "★ Spear line rage technique. A killing blow dropped from above.",
+    "desc": "Spear line rage technique. A killing blow dropped from above.",
     "lv2": "Heavier descent.",
     "lv3": "Shockwave where the lance strikes.",
     "name": "Sky Lance",
@@ -315,7 +315,7 @@
     "unlock_hint": "First battle, or Greybeard's pointer"
   },
   "spiral_pierce": {
-    "desc": "★ Spear line quest technique. A spinning thrust through armour.",
+    "desc": "Spear line quest technique. A spinning thrust through armour.",
     "lv2": "Deeper penetration.",
     "lv3": "Longer follow-through.",
     "name": "Spiral Pierce",
@@ -336,7 +336,7 @@
     "unlock_hint": "Hammer line opener"
   },
   "thousand_needles": {
-    "desc": "★ Dart line rage technique. A thousand needles at once.",
+    "desc": "Dart line rage technique. A thousand needles at once.",
     "lv2": "Faster needles.",
     "lv3": "The burial caps out.",
     "name": "Thousand Needles",
@@ -357,7 +357,7 @@
     "unlock_hint": "Claw line Lv7"
   },
   "void_rend": {
-    "desc": "★ Claw line rage technique. A finish that tears space open.",
+    "desc": "Claw line rage technique. A finish that tears space open.",
     "lv2": "Sharper rend.",
     "lv3": "Void aftershock.",
     "name": "Void Rend",

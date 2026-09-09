@@ -124,9 +124,7 @@
   "panel.codex": "Journey Notes",
   "pause.journey": "Journey",
   "pause.daily": "Daily quests",
-  "pause.daily_star": "Daily quests ★",
   "pause.quests": "Quests",
-  "pause.quests_star": "Quests ★{n}",
   "pause.guild": "Guild",
   "pause.online": "Account / Travellers",
   "pause.path": "Weapon path ({path})",
@@ -265,7 +263,6 @@
   "panel.arena": "Training Yard",
   "title.starpath": "Village Today",
   "pause.starpath": "Village Today",
-  "pause.starpath_star": "Village Today ★{n}",
   "panel.starpath": "Village Today",
   "hud.candle": "Candles {n}"
 }
