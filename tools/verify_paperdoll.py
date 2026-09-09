@@ -24,6 +24,15 @@ for fname in ["paperdoll_slots.json", "PAPERDOLL_SLOTS_SPEC.md"]:
 with open(JSON_PATH, "r", encoding="utf-8") as f:
     data = json.load(f)
 
+# Also check sync between docs/design and game/data/tables
+TABLES_JSON_PATH = os.path.join(REPO, "game/data/tables/paperdoll_slots.json")
+with open(TABLES_JSON_PATH, "r", encoding="utf-8") as f2:
+    data_tables = json.load(f2)
+s1 = json.dumps(data, sort_keys=True, indent=2)
+s2 = json.dumps(data_tables, sort_keys=True, indent=2)
+if s1 != s2:
+    errors.append("[SPEC SYNC] docs/design/paperdoll_slots.json and game/data/tables/paperdoll_slots.json differ (sort_keys diff is not empty)!")
+
 expected_archetypes = {
     "rabbit": "劍士 (Knight)",
     "lion": "騎士 (Knight)",
@@ -57,10 +66,50 @@ for wid, exp_name in expected_weapons.items():
     if actual_name != exp_name:
         errors.append(f"[WEAPON MISMATCH] {wid}: got '{actual_name}', expected '{exp_name}'")
 
+# Helper functions for pattern expansion
+def expand_wildcards(path):
+    results = [path]
+    while True:
+        new_results = []
+        expanded_any = False
+        for p in results:
+            m_range = re.search(r'\{(\d+)\.\.(\d+)\}', p)
+            if m_range:
+                expanded_any = True
+                start, end = int(m_range.group(1)), int(m_range.group(2))
+                for i in range(start, end + 1):
+                    new_results.append(p[:m_range.start()] + str(i) + p[m_range.end():])
+                continue
+            m_set = re.search(r'\{([^{}]+,[^{}]+)\}', p)
+            if m_set:
+                expanded_any = True
+                for opt in m_set.group(1).split(','):
+                    new_results.append(p[:m_set.start()] + opt.strip() + p[m_set.end():])
+                continue
+            new_results.append(p)
+        results = new_results
+        if not expanded_any:
+            break
+    return results
+
+def check_slot_dir_has_png(repo, rel_path):
+    base_dir = rel_path.split("{")[0].rstrip("/")
+    abs_dir = os.path.join(repo, base_dir)
+    if not os.path.isdir(abs_dir):
+        return False, []
+    pngs = []
+    for root, dirs, files in os.walk(abs_dir):
+        for f in sorted(files):
+            if f.endswith('.png') and not f.endswith('.png.import'):
+                pngs.append(os.path.join(root, f))
+    return len(pngs) > 0, pngs
+
 # 3. Check bidirectional exists for all existing/pending assets
 print("=== ASSET BIDIRECTIONAL EXISTS CHECK ===")
 existing_count = 0
 pending_count = 0
+existing_missing = []
+pending_already_exists = []
 
 for r in races:
     rid = r["race_id"]
@@ -68,34 +117,57 @@ for r in races:
     print(f"\n--- Race: {rid} ---")
     for item in status.get("existing", []):
         path = item.split(" ")[0]
-        full_path = os.path.join(REPO, path)
-        # Handle wildcards
-        pattern = full_path.replace("{0..3}", "*").replace("{0..3}_x3", "*")
-        matched = glob.glob(pattern) if ("*" in pattern or "{" in pattern) else [full_path]
-        exists = any(os.path.exists(p) for p in matched)
-        if not exists:
-            errors.append(f"[EXISTING MISSING] {rid} -> {path}")
-            print(f"  ❌ EXISTING MISSING: {path}")
+        if "{slot_id}" in path or "{item_id}" in path or "{slot}" in path or "{id}" in path:
+            has_png, pngs = check_slot_dir_has_png(REPO, path)
+            if not has_png:
+                existing_missing.append(f"{rid} -> {path}")
+                errors.append(f"[EXISTING MISSING] {rid} -> {path}")
+                print(f"  ❌ EXISTING MISSING: {path} (0 png found)")
+            else:
+                existing_count += 1
+                print(f"  ✓ EXISTING OK (DIR HAS {len(pngs)} PNGs): {path}")
         else:
-            existing_count += 1
-            print(f"  ✓ EXISTING OK: {path}")
+            variants = expand_wildcards(path)
+            missing = [v for v in variants if not os.path.exists(os.path.join(REPO, v))]
+            if missing:
+                for m in missing:
+                    existing_missing.append(f"{rid} -> {m}")
+                    errors.append(f"[EXISTING MISSING] {rid} -> {m}")
+                print(f"  ❌ EXISTING MISSING: {path} (missing: {missing})")
+            else:
+                existing_count += 1
+                print(f"  ✓ EXISTING OK: {path} ({len(variants)} files checked)")
 
     for item in status.get("pending", []):
         path = item.split(" ")[0]
-        if "{" in path and "slot_id" in path:
-            print(f"  ✓ PENDING DIR (SPEC ONLY): {path}")
-            pending_count += 1
-            continue
-        full_path = os.path.join(REPO, path)
-        pattern = full_path.replace("{0..3}", "*").replace("{0..3}_x3", "*")
-        matched = glob.glob(pattern) if ("*" in pattern or "{" in pattern) else [full_path]
-        exists = any(os.path.exists(p) for p in matched)
-        if exists:
-            errors.append(f"[PENDING ALREADY EXISTS] {rid} -> {path}")
-            print(f"  ❌ PENDING ALREADY EXISTS: {path}")
+        if "{slot_id}" in path or "{item_id}" in path or "{slot}" in path or "{id}" in path:
+            has_png, pngs = check_slot_dir_has_png(REPO, path)
+            if has_png:
+                pending_already_exists.append(f"{rid} -> {path} (found {len(pngs)} pngs)")
+                errors.append(f"[PENDING ALREADY EXISTS] {rid} -> {path}")
+                print(f"  ❌ PENDING ALREADY EXISTS: {path} (found {len(pngs)} pngs)")
+            else:
+                pending_count += 1
+                print(f"  ✓ PENDING OK (ABSENT): {path}")
         else:
-            pending_count += 1
-            print(f"  ✓ PENDING OK (ABSENT): {path}")
+            variants = expand_wildcards(path)
+            found = [v for v in variants if os.path.exists(os.path.join(REPO, v))]
+            if found:
+                for fd in found:
+                    pending_already_exists.append(f"{rid} -> {fd}")
+                    errors.append(f"[PENDING ALREADY EXISTS] {rid} -> {fd}")
+                print(f"  ❌ PENDING ALREADY EXISTS: {path} (already exists: {found})")
+            else:
+                pending_count += 1
+                print(f"  ✓ PENDING OK (ABSENT): {path} ({len(variants)} files checked)")
+
+print("\n=== SUMMARY: BIDIRECTIONAL ASSET STATUS ===")
+print(f"existing but MISSING: {len(existing_missing)}")
+for m in existing_missing:
+    print(f"  - {m}")
+print(f"pending but ALREADY EXISTS: {len(pending_already_exists)}")
+for p in pending_already_exists:
+    print(f"  - {p}")
 
 print(f"\nTotal Existing Verified: {existing_count}")
 print(f"Total Pending Verified: {pending_count}")
