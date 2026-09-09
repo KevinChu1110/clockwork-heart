@@ -367,6 +367,12 @@
             "tier": "rare"
           },
           {
+            "id": "curio_lion_fan_tail",
+            "name": "黃銅多節連桿扇尾",
+            "race": "lion",
+            "tier": "rare"
+          },
+          {
             "id": "curio_clockwork_pigeon",
             "name": "自走發條通訊小信鴿",
             "tier": "rare"
