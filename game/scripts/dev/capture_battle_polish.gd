@@ -4,6 +4,7 @@ extends SceneTree
 var _frame: int = 0
 var _battle: Control = null
 var _out_dir: String = ""
+var _out_web: String = ""
 
 
 func _initialize() -> void:
@@ -11,8 +12,11 @@ func _initialize() -> void:
 	var win := root.get_window()
 	if win:
 		win.size = Vector2i(1280, 720)
-	_out_dir = ProjectSettings.globalize_path("res://").path_join("../screenshots")
+	var base := ProjectSettings.globalize_path("res://")
+	_out_dir = base.path_join("../screenshots")
+	_out_web = base.path_join("../web/media/shots")
 	DirAccess.make_dir_recursive_absolute(_out_dir)
+	DirAccess.make_dir_recursive_absolute(_out_web)
 
 
 func _dump_shadows(b: Node) -> void:
@@ -45,7 +49,11 @@ func _process(_delta: float) -> bool:
 		if img:
 			var p := _out_dir.path_join("proof_battle_polish_bandit.png")
 			img.save_png(p)
-			print("SAVED_BATTLE_POLISH: ", p)
+			var pw := _out_web.path_join("proof_battle_polish_bandit.png")
+			img.save_png(pw)
+			var pw11 := _out_web.path_join("proof_11_battle.png")
+			img.save_png(pw11)
+			print("SAVED_BATTLE_POLISH: ", p, " and web: ", pw)
 		if _battle and is_instance_valid(_battle):
 			_battle.queue_free()
 			_battle = null
@@ -63,7 +71,9 @@ func _process(_delta: float) -> bool:
 		if img2:
 			var p2 := _out_dir.path_join("proof_battle_polish_leo.png")
 			img2.save_png(p2)
-			print("SAVED_BATTLE_POLISH: ", p2)
+			var pw2 := _out_web.path_join("proof_battle_polish_leo.png")
+			img2.save_png(pw2)
+			print("SAVED_BATTLE_POLISH: ", p2, " and web: ", pw2)
 		print("BATTLE_POLISH_CAPTURE_OK")
 		quit(0)
 	return false

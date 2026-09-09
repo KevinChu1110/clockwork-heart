@@ -6,12 +6,16 @@ var _step := 0
 var _wait := 0
 var _main: Node = null
 var _out := ""
+var _out_web := ""
 var _saved: PackedStringArray = PackedStringArray()
 
 
 func _initialize() -> void:
-	_out = ProjectSettings.globalize_path("res://").path_join("../screenshots")
+	var base := ProjectSettings.globalize_path("res://")
+	_out = base.path_join("../screenshots")
+	_out_web = base.path_join("../web/media/shots")
 	DirAccess.make_dir_recursive_absolute(_out)
+	DirAccess.make_dir_recursive_absolute(_out_web)
 	root.size = Vector2i(1280, 720)
 	var win := root.get_window()
 	if win:
@@ -47,6 +51,8 @@ func _process(_d: float) -> bool:
 			if _wait < 30:
 				return false
 			_shot("soul_panel_pity.png")
+			_shot_web("proof_soul_pity.png")
+			_shot_web("proof_10_soul.png")
 			_main.call("_go_astrolabe_panel")
 			_step = 2
 			_wait = 0
@@ -94,3 +100,16 @@ func _shot(filename: String) -> void:
 		print("CAPTURE workspace ", ws.path_join(filename), " err=", ws_err)
 	if err == OK:
 		_saved.append(path)
+
+
+func _shot_web(filename: String) -> void:
+	var tex: ViewportTexture = root.get_texture()
+	var img: Image = tex.get_image() if tex else null
+	if img == null:
+		return
+	var path := _out_web.path_join(filename)
+	var err := img.save_png(path)
+	print("CAPTURE web ", path, " err=", err, " ", img.get_width(), "x", img.get_height())
+	if err == OK:
+		_saved.append(path)
+
