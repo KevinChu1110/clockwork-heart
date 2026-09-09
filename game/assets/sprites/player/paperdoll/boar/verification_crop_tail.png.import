@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vlaedqojrfk5"
-path="res://.godot/imported/rivet_cowl.png-4aee209d886377ea4adfe7a0c92ac967.ctex"
+uid="uid://bccu8qeyyge3n"
+path="res://.godot/imported/verification_crop_tail.png-7fbe59775b4ab4ddee0ac8603c20d0d4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/head_unit/rivet_cowl.png"
-dest_files=["res://.godot/imported/rivet_cowl.png-4aee209d886377ea4adfe7a0c92ac967.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/verification_crop_tail.png"
+dest_files=["res://.godot/imported/verification_crop_tail.png-7fbe59775b4ab4ddee0ac8603c20d0d4.ctex"]
 
 [params]
 

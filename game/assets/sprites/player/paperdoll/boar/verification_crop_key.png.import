@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://u6725c4rdix4"
-path="res://.godot/imported/core_amber_sun.png-7058102af540ac29367ddcd715ed8e4e.ctex"
+uid="uid://dm2eu3mvyud18"
+path="res://.godot/imported/verification_crop_key.png-791702d087c4cc0016aab73c466da1fc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/optic_core/core_amber_sun.png"
-dest_files=["res://.godot/imported/core_amber_sun.png-7058102af540ac29367ddcd715ed8e4e.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/verification_crop_key.png"
+dest_files=["res://.godot/imported/verification_crop_key.png-791702d087c4cc0016aab73c466da1fc.ctex"]
 
 [params]
 

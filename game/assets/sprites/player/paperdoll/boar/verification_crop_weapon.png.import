@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dj70xtggklr2a"
-path="res://.godot/imported/costume_nutcracker_guard.png-deed85b3987b56ff044b2cc7cefe64ca.ctex"
+uid="uid://c7pq2m7ugumte"
+path="res://.godot/imported/verification_crop_weapon.png-ac497b691c071b7d68816bdaa8b38f24.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/costume/costume_nutcracker_guard.png"
-dest_files=["res://.godot/imported/costume_nutcracker_guard.png-deed85b3987b56ff044b2cc7cefe64ca.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/verification_crop_weapon.png"
+dest_files=["res://.godot/imported/verification_crop_weapon.png-ac497b691c071b7d68816bdaa8b38f24.ctex"]
 
 [params]
 

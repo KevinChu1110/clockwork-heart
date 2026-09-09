@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cfhack55jvhac"
-path="res://.godot/imported/anvil_greathammer.png-efaf5e7345888c9e5c0666d9825de50a.ctex"
+uid="uid://dvs1mj4723op0"
+path="res://.godot/imported/verification_crop_ears.png-d72a9f4259dadaf9094cc2ba44dbbb64.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/weapon/anvil_greathammer.png"
-dest_files=["res://.godot/imported/anvil_greathammer.png-efaf5e7345888c9e5c0666d9825de50a.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/verification_crop_ears.png"
+dest_files=["res://.godot/imported/verification_crop_ears.png-d72a9f4259dadaf9094cc2ba44dbbb64.ctex"]
 
 [params]
 

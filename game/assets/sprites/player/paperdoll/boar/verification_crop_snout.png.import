@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnj07n3vw0nk3"
-path="res://.godot/imported/wpn_dawn_blade.png-5a4227980be976ee85f04006a20bfef7.ctex"
+uid="uid://1nsrasbehjuv"
+path="res://.godot/imported/verification_crop_snout.png-bb5019d25356fa2416bbb669aa07da83.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/weapon/wpn_dawn_blade.png"
-dest_files=["res://.godot/imported/wpn_dawn_blade.png-5a4227980be976ee85f04006a20bfef7.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/verification_crop_snout.png"
+dest_files=["res://.godot/imported/verification_crop_snout.png-bb5019d25356fa2416bbb669aa07da83.ctex"]
 
 [params]
 

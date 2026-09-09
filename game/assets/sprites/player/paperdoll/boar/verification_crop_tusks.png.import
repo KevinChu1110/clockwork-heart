@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dvaa273dn68yt"
-path="res://.godot/imported/viking_harness.png-136d1529ce1935be2d703416bc844bb7.ctex"
+uid="uid://chp2dolu5tgqq"
+path="res://.godot/imported/verification_crop_tusks.png-f6396e81c1750f3098b1441bdf2fa126.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/costume/viking_harness.png"
-dest_files=["res://.godot/imported/viking_harness.png-136d1529ce1935be2d703416bc844bb7.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/verification_crop_tusks.png"
+dest_files=["res://.godot/imported/verification_crop_tusks.png-f6396e81c1750f3098b1441bdf2fa126.ctex"]
 
 [params]
 
