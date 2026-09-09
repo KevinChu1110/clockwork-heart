@@ -164,9 +164,6 @@
   "▼ 點一下繼續": "▼ Toca para continuar",
   "▼ 點擊 / Space 繼續": "▼ Clic / Espacio para continuar",
   "● 你  ·  路標  ·  NPC  ·  點": "● Tú  ·  Poste  ·  NPC  ·  Punto",
-  "★ 一鍵領取委託（%d）": "★ Cobrar todos los encargos (%d)",
-  "★ 報仇（追回 %d 金）": "★ Venganza (recupera %d de oro)",
-  "★ 收貨": "★ Recoger carga",
   "✓ 鍛造後": "✓ tras forjar",
   "「還在啊。」": "«Sigo aquí.»",
   "「還在啊。早說了是氣味。」": "«Sigo aquí. Ya te dije que era el olor.»",
@@ -1233,8 +1230,6 @@
   "……閉嘴。你有鑰繩味。": "…Cállate. Hueles a Cordón de Llave.",
   "…共 %d 顆": "…%d en total",
   "▶ 請點背包中的【武器】裝入第 %d 欄（或點取消）": "▶ Toca un [arma] de la bolsa para cargarla en la ranura %d (o cancela)",
-  "★ 領取今日簽到": "★ Cobrar el registro de hoy",
-  "★ 領委託：%s": "★ Cobrar encargo: %s",
   "「別走我的路。」——佚名": "«No sigas mi camino.» — Anónimo",
   "「微末也有火。」——過客": "«Hasta lo ínfimo tiene fuego.» — Un viajero",
   "「足跡會交疊。」——星讀": "«Las huellas se cruzan.» — Lector de Estrellas",
@@ -1607,7 +1602,6 @@
   "去處（建議戰力）：\n": "Destinos (poder recomendado):\n",
   "\n\n[b]帳號[/b]：訪客／Email／Google／Discord／Facebook／X": "\n\n[b]Cuenta[/b]: Invitado / Email / Google / Discord / Facebook / X",
   "\n\n[b]黑鏽迴響 ×%d 通關。[/b] 稱號：迴響行者。": "\n\n[b]Eco de Óxido Negro ×%d superado.[/b] Título: Caminante del Eco.",
-  "\n\n★＝本週焦點。有獎次數用盡後仍可練習。": "\n\n★ = foco de esta semana. Al agotar las partidas con premio aún puedes practicar.",
   "\n\n【舊債】斷劍在演武場武器架。": "\n\n[Deuda vieja] La espada rota está en el bastidor del patio de armas.",
   "\n\n【舊債】斷劍已帶回——可交給釘釘。": "\n\n[Deuda vieja] La espada rota está de vuelta: puedes dársela a Ding.",
   "\n\n小芽想要練習木劍——可在此打一把（20 金）。": "\n\nBrote quiere una espada de madera para practicar: puedes forjar una aquí (20 de oro).",
@@ -1879,5 +1873,7 @@
   "重整圖鑑": "Actualizar Códice",
   "古驛斷柱。柱身有核紋刻痕。": "Columna partida de la vieja posta. En el fuste, marcas talladas del núcleo.",
   "四核的簡圖。有人用刀補過最後一顆。": "Un boceto de los cuatro núcleos. Alguien grabó la última pieza con una hoja afilada.",
-  "淺池映著四核微光。水面涼，心卻熱了一下。": "El estanque refleja el brillo de los cuatro núcleos. El agua está gélida, pero el pecho recobra su calidez."
+  "淺池映著四核微光。水面涼，心卻熱了一下。": "El estanque refleja el brillo de los cuatro núcleos. El agua está gélida, pero el pecho recobra su calidez.",
+  "報仇（追回 %d 金）": "Venganza (recupera %d de oro)",
+  "收貨": "Recoger carga"
 }

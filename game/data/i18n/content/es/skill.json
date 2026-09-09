@@ -7,7 +7,7 @@
     "unlock_hint": "Línea de martillo Nv7"
   },
   "arrow_storm": {
-    "desc": "★ Técnica de furia de nivel 16. Diez flechas cubren el suelo.",
+    "desc": "Técnica de furia de nivel 16. Diez flechas cubren el suelo.",
     "lv2": "Tormenta más feroz.",
     "lv3": "La tormenta converge.",
     "name": "Tormenta de flechas",
@@ -35,7 +35,7 @@
     "unlock_hint": "Elige el estilo de espada · o nivel 8"
   },
   "blood_petal": {
-    "desc": "★ Técnica de misión de garra. Cortes en forma de pétalo, en serie.",
+    "desc": "Técnica de misión de garra. Cortes en forma de pétalo, en serie.",
     "lv2": "Pétalos más densos.",
     "lv3": "Filo final más largo.",
     "name": "Pétalo de sangre",
@@ -63,28 +63,28 @@
     "unlock_hint": "Tras Leo · o nivel 7"
   },
   "crystal_prison": {
-    "desc": "★ Técnica de misión de cristal. Aprisiona y luego estalla.",
+    "desc": "Técnica de misión de cristal. Aprisiona y luego estalla.",
     "lv2": "Prisión más dura.",
     "lv3": "La rotura se propaga.",
     "name": "Prisión de cristal",
     "unlock_hint": "Cristal Nv13"
   },
   "crystal_tornado": {
-    "desc": "★ Técnica de misión de nivel 13. Vórtice de golpes, cuatro de daño puro.",
+    "desc": "Técnica de misión de nivel 13. Vórtice de golpes, cuatro de daño puro.",
     "lv2": "Vórtice más cerrado.",
     "lv3": "Filo final de cristal.",
     "name": "Tornado de cristal",
     "unlock_hint": "Línea de daga Nv13"
   },
   "def_break": {
-    "desc": "★ Técnica de misión de nivel 13. Un golpe que rompe la defensa enemiga.",
+    "desc": "Técnica de misión de nivel 13. Un golpe que rompe la defensa enemiga.",
     "lv2": "Rompe más hondo.",
     "lv3": "La onda posterior sube el daño.",
     "name": "Quiebra defensa",
     "unlock_hint": "Línea de hacha Nv13"
   },
   "doom_strike": {
-    "desc": "★ Técnica de furia de nivel 16. Lenta, pesada, dolorosa: falla tres de cada diez.",
+    "desc": "Técnica de furia de nivel 16. Lenta, pesada, dolorosa: falla tres de cada diez.",
     "lv2": "Aún más pesado.",
     "lv3": "A un paso del tope.",
     "name": "Golpe funesto",
@@ -98,7 +98,7 @@
     "unlock_hint": "Fusil Nv7"
   },
   "earth_breaker": {
-    "desc": "★ Técnica de furia de martillo. Un remate que abre la tierra.",
+    "desc": "Técnica de furia de martillo. Un remate que abre la tierra.",
     "lv2": "Grieta más ancha.",
     "lv3": "El estruendo toca el tope.",
     "name": "Rompesuelos",
@@ -112,14 +112,14 @@
     "unlock_hint": "Tras forjar en C1, pregunta a Barbagrís"
   },
   "energy_beam": {
-    "desc": "★ Técnica de misión de nivel 13. La energía interior se vuelve rayo.",
+    "desc": "Técnica de misión de nivel 13. La energía interior se vuelve rayo.",
     "lv2": "Rayo más concentrado.",
     "lv3": "Sobrecarga.",
     "name": "Rayo de energía",
     "unlock_hint": "Línea de puño Nv13"
   },
   "explosive_round": {
-    "desc": "★ Técnica de misión de fusil. Detona al impactar.",
+    "desc": "Técnica de misión de fusil. Detona al impactar.",
     "lv2": "Explosión mayor.",
     "lv3": "Onda de metralla.",
     "name": "Bala explosiva",
@@ -133,7 +133,7 @@
     "unlock_hint": "Línea de daga Nv7"
   },
   "fireball": {
-    "desc": "★ Técnica de misión de nivel 13. Una bola de fuego abrasadora.",
+    "desc": "Técnica de misión de nivel 13. Una bola de fuego abrasadora.",
     "lv2": "Bola más grande.",
     "lv3": "Onda de la explosión.",
     "name": "Bola de fuego",
@@ -168,7 +168,7 @@
     "unlock_hint": "Elige el estilo de martillo · o nivel 5"
   },
   "last_bullet": {
-    "desc": "★ Técnica de furia de fusil. Un disparo que lo decide todo.",
+    "desc": "Técnica de furia de fusil. Un disparo que lo decide todo.",
     "lv2": "Más presión en la recámara.",
     "lv3": "El remate toca el tope.",
     "name": "La última bala",
@@ -189,7 +189,7 @@
     "unlock_hint": "Apertura de báculo"
   },
   "meteor": {
-    "desc": "★ Técnica de furia de nivel 16. Bombardeo de meteoros.",
+    "desc": "Técnica de furia de nivel 16. Bombardeo de meteoros.",
     "lv2": "Meteoro más pesado.",
     "lv3": "Estrellas en cadena.",
     "name": "Meteoro",
@@ -203,7 +203,7 @@
     "unlock_hint": "Elige el estilo de dardo · o nivel 6"
   },
   "multi_shot": {
-    "desc": "★ Técnica de misión de nivel 13. Cuatro disparos reales seguidos.",
+    "desc": "Técnica de misión de nivel 13. Cuatro disparos reales seguidos.",
     "lv2": "Número de flechas más estable.",
     "lv3": "El múltiple remata.",
     "name": "Disparo múltiple",
@@ -217,7 +217,7 @@
     "unlock_hint": "Línea de lanza Nv7"
   },
   "phantom_rain": {
-    "desc": "★ Técnica de misión de dardo. Una lluvia de dardos indistinguibles.",
+    "desc": "Técnica de misión de dardo. Una lluvia de dardos indistinguibles.",
     "lv2": "Lluvia más densa.",
     "lv3": "Los fantasmas rematan.",
     "name": "Lluvia fantasma",
@@ -245,7 +245,7 @@
     "unlock_hint": "Elige el estilo de puño · o nivel 6"
   },
   "prism_nova": {
-    "desc": "★ Técnica de furia de cristal. Estallido refractado.",
+    "desc": "Técnica de furia de cristal. Estallido refractado.",
     "lv2": "Nova más brillante.",
     "lv3": "Dispersión de siete colores.",
     "name": "Nova prismática",
@@ -259,7 +259,7 @@
     "unlock_hint": "Elige el estilo de cristal · o nivel 5"
   },
   "quake_slash": {
-    "desc": "★ Técnica de furia de nivel 16. Un golpe que desgarra la tierra.",
+    "desc": "Técnica de furia de nivel 16. Un golpe que desgarra la tierra.",
     "lv2": "Grieta más ancha.",
     "lv3": "Segundo impacto del vendaval.",
     "name": "Tajo de vendaval",
@@ -294,14 +294,14 @@
     "unlock_hint": "Apertura de cristal"
   },
   "shinra": {
-    "desc": "★ Técnica de furia de nivel 16. Dieciséis estocadas encadenadas.",
+    "desc": "Técnica de furia de nivel 16. Dieciséis estocadas encadenadas.",
     "lv2": "Cadena más veloz.",
     "lv3": "La última estocada nunca falla.",
     "name": "Todas las cosas",
     "unlock_hint": "Línea de daga Nv16"
   },
   "sky_lance": {
-    "desc": "★ Técnica de furia de lanza. Un golpe mortal caído desde lo alto.",
+    "desc": "Técnica de furia de lanza. Un golpe mortal caído desde lo alto.",
     "lv2": "Caída más pesada.",
     "lv3": "Onda de choque al impactar.",
     "name": "Lanza celeste",
@@ -315,7 +315,7 @@
     "unlock_hint": "Primer combate o el consejo de Barbagrís"
   },
   "spiral_pierce": {
-    "desc": "★ Técnica de misión de lanza. Una estocada giratoria que atraviesa la coraza.",
+    "desc": "Técnica de misión de lanza. Una estocada giratoria que atraviesa la coraza.",
     "lv2": "Penetra más hondo.",
     "lv3": "Remate más largo.",
     "name": "Perforación espiral",
@@ -336,7 +336,7 @@
     "unlock_hint": "Apertura de martillo"
   },
   "thousand_needles": {
-    "desc": "★ Técnica de furia de dardo. Mil agujas a la vez.",
+    "desc": "Técnica de furia de dardo. Mil agujas a la vez.",
     "lv2": "Agujas más veloces.",
     "lv3": "El entierro toca el tope.",
     "name": "Mil agujas",
@@ -357,7 +357,7 @@
     "unlock_hint": "Línea de garra Nv7"
   },
   "void_rend": {
-    "desc": "★ Técnica de furia de garra. Un remate que abre el espacio.",
+    "desc": "Técnica de furia de garra. Un remate que abre el espacio.",
     "lv2": "Desgarro más afilado.",
     "lv3": "Onda del vacío.",
     "name": "Desgarro del vacío",

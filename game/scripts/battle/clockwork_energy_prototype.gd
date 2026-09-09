@@ -221,7 +221,7 @@ func update(delta: float) -> void:
 func _trigger_allocation_window() -> void:
 	is_allocating = true
 	allocation_countdown = COUNTDOWN_SECONDS
-	add_log("★【發條過載】共用能量池已滿額！請在 %.1f 秒內指派技能施放對象！" % COUNTDOWN_SECONDS, true)
+	add_log("【發條過載】共用能量池已滿額！請在 %.1f 秒內指派技能施放對象！" % COUNTDOWN_SECONDS, true)
 	allocation_started.emit(COUNTDOWN_SECONDS)
 
 
@@ -393,7 +393,7 @@ func _check_battle_end() -> void:
 	if enemy["hp"] <= 0:
 		battle_over = true
 		battle_won = true
-		add_log("★★★【戰鬥勝利】發條巨像完全瓦解，齒輪四散！四職業能量協作成功！★★★", true)
+		add_log("✓【戰鬥勝利】發條巨像完全瓦解，齒輪四散！四職業能量協作成功！", true)
 		battle_ended.emit(true)
 		return
 

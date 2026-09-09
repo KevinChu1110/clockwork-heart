@@ -124,9 +124,7 @@
   "panel.codex": "旅途手札",
   "pause.journey": "旅程進度",
   "pause.daily": "每日委託",
-  "pause.daily_star": "每日委託 ★",
   "pause.quests": "任務／長遠",
-  "pause.quests_star": "任務／長遠 ★{n}",
   "pause.guild": "公會／盟約",
   "pause.online": "帳號／旅人",
   "pause.path": "武器流派（{path}）",
@@ -265,7 +263,6 @@
   "panel.gems": "手藝工坊 · 寶石",
   "title.starpath": "今日村莊",
   "pause.starpath": "今日村莊",
-  "pause.starpath_star": "今日村莊 ★{n}",
   "panel.starpath": "今日村莊",
   "hud.candle": "燭火 {n}"
 }

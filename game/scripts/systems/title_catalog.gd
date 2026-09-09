@@ -270,7 +270,7 @@ func wall_bbcode() -> String:
 		var name_s: String = str(e.get("name", ""))
 		var desc_s: String = str(e.get("desc", ""))
 		if unlocked:
-			lines.append("[color=#e8c86a]★ %s[/color]\n  %s" % [name_s, desc_s])
+			lines.append("[color=#e8c86a][b]%s[/b][/color]\n  %s" % [name_s, desc_s])
 		else:
 			lines.append("[color=#666]？ ？？？[/color]\n  [color=#555]%s[/color]" % ContentLoc.text("ui", "（尚未解鎖）"))
 	## 外觀契機一覽（非稱號，附錄）
