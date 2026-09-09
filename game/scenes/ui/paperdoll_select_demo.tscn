@@ -266,7 +266,7 @@ stretch_mode = 5
 layout_mode = 2
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 15
-text = "白金兔 (Rabbit)"
+text = "兔 (小白)"
 horizontal_alignment = 1
 
 [node name="BtnRace_fox" type="Button" parent="TopRaceBar/ButtonsHBox"]
@@ -313,7 +313,7 @@ stretch_mode = 5
 layout_mode = 2
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 15
-text = "靈尾狐 (Fox)"
+text = "狐"
 horizontal_alignment = 1
 
 [node name="BtnRace_lion" type="Button" parent="TopRaceBar/ButtonsHBox"]
@@ -360,7 +360,7 @@ stretch_mode = 5
 layout_mode = 2
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 15
-text = "烈鬃獅 (Lion)"
+text = "獅"
 horizontal_alignment = 1
 
 [node name="BtnRace_boar" type="Button" parent="TopRaceBar/ButtonsHBox"]
@@ -407,7 +407,7 @@ stretch_mode = 5
 layout_mode = 2
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 15
-text = "鋼牙豕 (Boar)"
+text = "野豬"
 horizontal_alignment = 1
 
 [node name="BtnRace_macaque" type="Button" parent="TopRaceBar/ButtonsHBox"]
@@ -454,7 +454,7 @@ stretch_mode = 5
 layout_mode = 2
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 15
-text = "靈爪猴 (Macaque)"
+text = "猴"
 horizontal_alignment = 1
 
 [node name="CenterStage" type="PanelContainer" parent="."]
@@ -484,13 +484,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 22
-text = "白金兔 (Clockwork Rabbit)"
+text = "兔 (小白) (Whitey)"
 
 [node name="HeroArchetypeLabel" type="Label" parent="CenterStage/HeroBadge/Margin/HBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(1, 0.627451, 0.0627451, 1)
 theme_override_font_sizes/font_size = 15
-text = "【晨曦單手劍士】"
+text = "【劍士 (knight)】"
 
 [node name="Pedestal" type="Polygon2D" parent="CenterStage"]
 position = Vector2(290, 395)

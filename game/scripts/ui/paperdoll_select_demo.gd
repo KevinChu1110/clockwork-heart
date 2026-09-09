@@ -16,14 +16,14 @@ const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 const RACES_DATA: Dictionary = {
 	"rabbit": {
 		"id": "rabbit",
-		"name_zh": "白金兔",
-		"name_en": "Clockwork Rabbit",
-		"archetype": "晨曦單手劍士",
+		"name_zh": "兔 (小白)",
+		"name_en": "Whitey",
+		"archetype": "劍士 (knight)",
 		"thumb": "res://assets/sprites/player/paperdoll/rabbit/proof_paperdoll_rabbit_composite.png",
 		"desc": "發條之心的守護象徵，身形輕巧，搭載高響應晨曦核心與剛性長耳。",
 		"costumes": [
-			{"id": "costume_nutcracker_guard", "name_zh": "胡桃鉗皇家守衛", "desc": "經典紅藍胡桃鉗禮服與黃銅肩章"},
-			{"id": "costume_steam_artisan", "name_zh": "蒸汽工匠外裝", "desc": "耐磨工匠皮革胸甲與工具掛扣"},
+			{"id": "costume_nutcracker_guard", "name_zh": "胡桃鉗守衛禮服", "desc": "經典紅藍胡桃鉗禮服與黃銅肩章"},
+			{"id": "costume_steam_artisan", "name_zh": "工匠外裝", "desc": "耐磨工匠皮革胸甲與工具掛扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現象牙白精密機械軀體"}
 		],
 		"chassis": [
@@ -33,13 +33,13 @@ const RACES_DATA: Dictionary = {
 	},
 	"fox": {
 		"id": "fox",
-		"name_zh": "靈尾狐",
-		"name_en": "Astral Fox",
-		"archetype": "星穹秘術法師",
+		"name_zh": "狐",
+		"name_en": "Fox",
+		"archetype": "法師 (mage)",
 		"thumb": "res://assets/sprites/player/paperdoll/fox/proof_paperdoll_fox_composite.png",
 		"desc": "掌握星軌共鳴的靈動玩具法師，具備金屬雷達耳與分節發條尾。",
 		"costumes": [
-			{"id": "costume_astral_cape", "name_zh": "星穹法師披風", "desc": "深藍天鵝絨質地與星芒金屬扣"},
+			{"id": "costume_astral_cape", "name_zh": "法師披風", "desc": "深藍天鵝絨質地與星芒金屬扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現曜橙靈動狐型素體"}
 		],
 		"chassis": [
@@ -49,13 +49,13 @@ const RACES_DATA: Dictionary = {
 	},
 	"lion": {
 		"id": "lion",
-		"name_zh": "烈鬃獅",
-		"name_en": "Gilded Lion",
-		"archetype": "皇家重裝騎士",
+		"name_zh": "獅",
+		"name_en": "Lion",
+		"archetype": "騎士 (knight)",
 		"thumb": "res://assets/sprites/player/paperdoll/lion/proof_paperdoll_lion_composite.png",
 		"desc": "恪守騎士榮譽的黃銅機甲獅，配備金色板件鬃毛與折疊尾翼。",
 		"costumes": [
-			{"id": "costume_nutcracker_guard", "name_zh": "胡桃鉗皇家侍衛", "desc": "典禮胡桃鉗侍衛禮服"},
+			{"id": "costume_nutcracker_guard", "name_zh": "皇家侍衛禮服", "desc": "典禮侍衛禮服"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現全黃銅厚重鍛造素體"}
 		],
 		"chassis": [
@@ -65,13 +65,13 @@ const RACES_DATA: Dictionary = {
 	},
 	"boar": {
 		"id": "boar",
-		"name_zh": "鋼牙豕",
-		"name_en": "Forge Boar",
-		"archetype": "鐵匠重鎚狂戰士",
+		"name_zh": "野豬",
+		"name_en": "Boar",
+		"archetype": "戰士 (viking)",
 		"thumb": "res://assets/sprites/player/paperdoll/boar/proof_paperdoll_boar_composite.png",
 		"desc": "熔爐鐵匠鋪的重型開拓者，金屬鉚釘獠牙與強韌彈簧衝擊核心。",
 		"costumes": [
-			{"id": "costume_viking_harness", "name_zh": "維京鋼牙戰甲", "desc": "鉚釘加固厚重皮革戰士胸甲"},
+			{"id": "costume_viking_harness", "name_zh": "維京戰甲", "desc": "鉚釘加固厚重皮革戰士胸甲"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現剛硬生鐵鍛造衝擊素體"}
 		],
 		"chassis": [
@@ -81,13 +81,13 @@ const RACES_DATA: Dictionary = {
 	},
 	"macaque": {
 		"id": "macaque",
-		"name_zh": "靈爪猴",
-		"name_en": "Spring Macaque",
-		"archetype": "晨曦靈巧武僧",
+		"name_zh": "猴",
+		"name_en": "Macaque",
+		"archetype": "未定案",
 		"thumb": "res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_composite.png",
 		"desc": "敏捷靈活的彈簧行者，同軸金屬耳與伸縮爪刃，機巧多變。",
 		"costumes": [
-			{"id": "costume_dawn_monk_tunic", "name_zh": "晨曦武僧服", "desc": "輕量無拘束修行者短衣"},
+			{"id": "costume_dawn_monk_tunic", "name_zh": "修行短衣", "desc": "輕量無拘束短衣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現極簡彈簧骨架素體"}
 		],
 		"chassis": [
@@ -247,7 +247,12 @@ func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis
 	if hero_title_label != null:
 		hero_title_label.text = "%s (%s)" % [name_zh, name_en]
 	if hero_archetype_label != null:
-		hero_archetype_label.text = "【%s】" % archetype
+		if archetype == "未定案":
+			hero_archetype_label.text = "【未定案】"
+		elif archetype.is_empty():
+			hero_archetype_label.text = ""
+		else:
+			hero_archetype_label.text = "【%s】" % archetype
 	if hero_desc_label != null:
 		hero_desc_label.text = desc
 
