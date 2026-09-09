@@ -237,6 +237,11 @@
             "tier": "epic"
           },
           {
+            "id": "costume_astral_observer",
+            "name": "星象觀測者金屬儀裝",
+            "tier": "rare"
+          },
+          {
             "id": "costume_viking_harness",
             "name": "粗獷鍛爐護胸鐵束帶",
             "tier": "common"
