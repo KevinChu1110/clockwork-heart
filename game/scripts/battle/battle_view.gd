@@ -1117,14 +1117,7 @@ func _layout_battle_equipment_overlays() -> void:
 		else:
 			wtex = SpriteDB.player_weapon_overlay()
 		if wtex:
-			var wsz := Vector2(bs.y * 0.50, bs.y * 0.50)
-			_battle_weapon.texture = wtex
-			_battle_weapon.visible = true
-			_battle_weapon.custom_minimum_size = wsz
-			_battle_weapon.size = wsz
-			_battle_weapon.position = Vector2(bs.x * 0.36, bs.y * 0.20)
-			_battle_weapon.modulate = Color(1, 1, 1, 1.0)
-			_battle_weapon.z_index = 2
+			_battle_weapon.visible = false
 		else:
 			_battle_weapon.visible = false
 
