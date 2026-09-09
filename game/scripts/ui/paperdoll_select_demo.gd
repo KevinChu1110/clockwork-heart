@@ -116,11 +116,13 @@ const RACES_DATA: Dictionary = {
 		"desc": "熔爐鐵匠鋪的重型開拓者，金屬鉚釘獠牙與強韌彈簧衝擊核心。",
 		"costumes": [
 			{"id": "costume_viking_harness", "name_zh": "粗獷鍛爐護胸鐵束帶", "desc": "鉚釘加固厚重鍛鐵戰士胸甲"},
+			{"id": "costume_viking_ironclad", "name_zh": "維京重裝鍛鐵板甲", "desc": "耐高溫重型鍛鐵板甲與雙列鉚釘金屬護肩"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現剛硬生鐵鍛造衝擊素體"}
 		],
 		"chassis": [
 			{"id": "paint_brass_gold", "name_zh": "黃銅原金拋光", "desc": "耐磨耐高溫黃銅金屬強化外殼"},
-			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白抗衝擊塗裝"}
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白抗衝擊塗裝"},
+			{"id": "paint_molten_crimson", "name_zh": "赤焰熔爐烤漆", "desc": "耐高溫赤焰琺瑯防護塗層"}
 		]
 	},
 	"macaque": {

@@ -94,6 +94,12 @@
             "tier": "epic"
           },
           {
+            "id": "paint_molten_crimson",
+            "name": "赤焰熔爐烤漆",
+            "race": "boar",
+            "tier": "rare"
+          },
+          {
             "id": "paint_emerald_glaze",
             "name": "翡翠螢光釉面",
             "tier": "legendary"
@@ -251,6 +257,12 @@
             "name": "皇家巡遊金屬禮服",
             "race": "rabbit",
             "tier": "epic"
+          },
+          {
+            "id": "costume_viking_ironclad",
+            "name": "維京重裝鍛鐵板甲",
+            "race": "boar",
+            "tier": "rare"
           }
         ]
       },
