@@ -53,7 +53,7 @@ func _initialize() -> void:
 func _setup_sequence() -> void:
 	_sequence = [
 		{
-			"name": "兔 (小白) - 胡桃鉗守衛禮服",
+			"name": "兔 (小白) - 胡桃鉗近衛軍裝",
 			"fn": func():
 				_demo.select_race("rabbit")
 				_demo.reset_to_default(),
@@ -61,7 +61,7 @@ func _setup_sequence() -> void:
 			"mem_key": "rabbit_nutcracker"
 		},
 		{
-			"name": "兔 (小白) - 工匠外裝 (主驗證截圖)",
+			"name": "兔 (小白) - 蒸氣工匠吊帶工作裝 (主驗證截圖)",
 			"fn": func():
 				_demo._on_costume_next_pressed(),
 			"filename": "proof_paperdoll_select_demo.png",
@@ -75,28 +75,28 @@ func _setup_sequence() -> void:
 			"mem_key": "rabbit_bare"
 		},
 		{
-			"name": "狐 - 預設外裝 (法師披風)",
+			"name": "狐 - 預設外裝 (星紋見習占星斗篷)",
 			"fn": func():
 				_demo.select_race("fox"),
 			"filename": "proof_paperdoll_select_demo_fox.png",
 			"mem_key": "fox"
 		},
 		{
-			"name": "獅 - 預設外裝 (皇家侍衛禮服)",
+			"name": "獅 - 預設外裝 (胡桃鉗近衛軍裝)",
 			"fn": func():
 				_demo.select_race("lion"),
 			"filename": "proof_paperdoll_select_demo_lion.png",
 			"mem_key": "lion"
 		},
 		{
-			"name": "野豬 - 預設外裝 (維京戰甲)",
+			"name": "野豬 - 預設外裝 (粗獷鍛爐護胸皮帶)",
 			"fn": func():
 				_demo.select_race("boar"),
 			"filename": "proof_paperdoll_select_demo_boar.png",
 			"mem_key": "boar"
 		},
 		{
-			"name": "猴 - 預設外裝 (修行短衣)",
+			"name": "猴 - 預設外裝 (晨曦行者武道短褂)",
 			"fn": func():
 				_demo.select_race("macaque"),
 			"filename": "proof_paperdoll_select_demo_macaque.png",

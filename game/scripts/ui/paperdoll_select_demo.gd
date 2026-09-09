@@ -12,6 +12,36 @@ const PaperdollCharacter = preload("res://scripts/art/paperdoll_character.gd")
 
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
+## 規格書 (res://data/tables/paperdoll_slots.json) 官方部件名稱快取
+static var _spec_variant_names: Dictionary = {}
+
+static func _load_spec_names() -> void:
+	if not _spec_variant_names.is_empty():
+		return
+	const SPEC_PATH := "res://data/tables/paperdoll_slots.json"
+	if FileAccess.file_exists(SPEC_PATH):
+		var file := FileAccess.open(SPEC_PATH, FileAccess.READ)
+		if file != null:
+			var json_str := file.get_as_text()
+			var json = JSON.parse_string(json_str)
+			if json is Dictionary and json.has("slots_architecture"):
+				var slots: Array = json["slots_architecture"].get("slots", [])
+				for slot in slots:
+					var variants: Array = slot.get("sample_variants", [])
+					for v in variants:
+						var vid: String = str(v.get("id", ""))
+						var vname: String = str(v.get("name", ""))
+						if not vid.is_empty() and not vname.is_empty():
+							_spec_variant_names[vid] = vname
+
+static func get_variant_spec_name(id: String, fallback: String = "") -> String:
+	_load_spec_names()
+	if id == "none":
+		return "無外裝 (裸機素體)"
+	if _spec_variant_names.has(id):
+		return str(_spec_variant_names[id])
+	return fallback if not fallback.is_empty() else id
+
 ## 五大種族詳細設定與可用部件變體表
 const RACES_DATA: Dictionary = {
 	"rabbit": {
@@ -22,12 +52,12 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/paperdoll/rabbit/proof_paperdoll_rabbit_composite.png",
 		"desc": "發條之心的守護象徵，身形輕巧，搭載高響應晨曦核心與剛性長耳。",
 		"costumes": [
-			{"id": "costume_nutcracker_guard", "name_zh": "胡桃鉗守衛禮服", "desc": "經典紅藍胡桃鉗禮服與黃銅肩章"},
-			{"id": "costume_steam_artisan", "name_zh": "工匠外裝", "desc": "耐磨工匠皮革胸甲與工具掛扣"},
+			{"id": "costume_nutcracker_guard", "name_zh": "胡桃鉗近衛軍裝", "desc": "經典紅藍胡桃鉗金屬禮服與黃銅肩章"},
+			{"id": "costume_steam_artisan", "name_zh": "蒸氣工匠吊帶工作裝", "desc": "耐磨工匠鍛鐵胸板與工具掛扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現象牙白精密機械軀體"}
 		],
 		"chassis": [
-			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白琺瑯", "desc": "溫潤微光象牙白高光琺瑯塗層"},
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "溫潤微光象牙白高光琺瑯塗層"},
 			{"id": "paint_brass_gold", "name_zh": "黃銅原金拋光", "desc": "古典黃銅金屬原色重拋光鏡面"}
 		]
 	},
@@ -39,12 +69,12 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/paperdoll/fox/proof_paperdoll_fox_composite.png",
 		"desc": "掌握星軌共鳴的靈動玩具法師，具備金屬雷達耳與分節發條尾。",
 		"costumes": [
-			{"id": "costume_astral_cape", "name_zh": "法師披風", "desc": "深藍天鵝絨質地與星芒金屬扣"},
+			{"id": "costume_astral_cape", "name_zh": "星紋見習占星斗篷", "desc": "深藍琺瑯釉面與星芒金屬扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現曜橙靈動狐型素體"}
 		],
 		"chassis": [
 			{"id": "paint_fox_orange", "name_zh": "靈狐曜橙烤漆", "desc": "高飽和鮮明暖橘琺瑯烤漆"},
-			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白琺瑯", "desc": "低調優雅素體象牙白烤漆"}
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "低調優雅素體象牙白烤漆"}
 		]
 	},
 	"lion": {
@@ -55,12 +85,12 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/paperdoll/lion/proof_paperdoll_lion_composite.png",
 		"desc": "恪守騎士榮譽的黃銅機甲獅，配備金色板件鬃毛與折疊尾翼。",
 		"costumes": [
-			{"id": "costume_nutcracker_guard", "name_zh": "皇家侍衛禮服", "desc": "典禮侍衛禮服"},
+			{"id": "costume_nutcracker_guard", "name_zh": "胡桃鉗近衛軍裝", "desc": "典禮侍衛金屬胸甲與禮服分件"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現全黃銅厚重鍛造素體"}
 		],
 		"chassis": [
 			{"id": "paint_brass_gold", "name_zh": "黃銅原金拋光", "desc": "皇家黃金尊貴拋光金屬外殼"},
-			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白琺瑯", "desc": "皇家象牙白紀念版典雅塗裝"}
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "皇家象牙白紀念版典雅塗裝"}
 		]
 	},
 	"boar": {
@@ -71,12 +101,12 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/paperdoll/boar/proof_paperdoll_boar_composite.png",
 		"desc": "熔爐鐵匠鋪的重型開拓者，金屬鉚釘獠牙與強韌彈簧衝擊核心。",
 		"costumes": [
-			{"id": "costume_viking_harness", "name_zh": "維京戰甲", "desc": "鉚釘加固厚重皮革戰士胸甲"},
+			{"id": "costume_viking_harness", "name_zh": "粗獷鍛爐護胸皮帶", "desc": "鉚釘加固厚重鍛鐵戰士胸甲"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現剛硬生鐵鍛造衝擊素體"}
 		],
 		"chassis": [
 			{"id": "paint_brass_gold", "name_zh": "黃銅原金拋光", "desc": "耐磨耐高溫黃銅金屬強化外殼"},
-			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白琺瑯", "desc": "標準型象牙白抗衝擊塗裝"}
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白抗衝擊塗裝"}
 		]
 	},
 	"macaque": {
@@ -87,11 +117,11 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_composite.png",
 		"desc": "敏捷靈活的彈簧行者，同軸金屬耳與伸縮爪刃，機巧多變。",
 		"costumes": [
-			{"id": "costume_dawn_monk_tunic", "name_zh": "修行短衣", "desc": "輕量無拘束短衣"},
+			{"id": "costume_dawn_monk_tunic", "name_zh": "晨曦行者武道短褂", "desc": "輕量合金武道短褂分件"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現極簡彈簧骨架素體"}
 		],
 		"chassis": [
-			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白琺瑯", "desc": "高韌性象牙白減震琺瑯"}
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "高韌性象牙白減震琺瑯"}
 		]
 	}
 }
@@ -258,16 +288,16 @@ func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis
 
 	# 外裝顯示
 	if costume_name_label != null:
-		var c_name := str(cur_costume.get("name_zh", "未裝備"))
 		var c_id := str(cur_costume.get("id", "none"))
+		var c_name := get_variant_spec_name(c_id, str(cur_costume.get("name_zh", "未裝備")))
 		costume_name_label.text = "%s [%s]" % [c_name, c_id]
 	if costume_desc_label != null:
 		costume_desc_label.text = str(cur_costume.get("desc", "標準外觀"))
 
 	# 塗裝顯示
 	if chassis_name_label != null:
-		var ch_name := str(cur_chassis.get("name_zh", "原廠塗裝"))
 		var ch_id := str(cur_chassis.get("id", "paint_ivory_stock"))
+		var ch_name := get_variant_spec_name(ch_id, str(cur_chassis.get("name_zh", "原廠塗裝")))
 		chassis_name_label.text = "%s [%s]" % [ch_name, ch_id]
 	if chassis_desc_label != null:
 		chassis_desc_label.text = str(cur_chassis.get("desc", "外殼拋光烤漆"))
@@ -275,14 +305,8 @@ func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis
 	# 武器顯示
 	if weapon_name_label != null:
 		var default_wpn := str(PaperdollRenderer._get_default_variant_id(_current_race_id, "weapon"))
-		var wpn_names := {
-			"wpn_dawn_blade": "晨曦發條單手長劍 (wpn_dawn_blade)",
-			"wpn_knight_lance": "皇家守衛騎士長槍 (wpn_knight_lance)",
-			"wpn_astral_staff": "星穹共鳴發條法杖 (wpn_astral_staff)",
-			"wpn_anvil_greathammer": "鐵匠精鍛重鋼巨錘 (wpn_anvil_greathammer)",
-			"wpn_spring_claws": "晨曦伸縮機巧鋼爪 (wpn_spring_claws)"
-		}
-		weapon_name_label.text = wpn_names.get(default_wpn, default_wpn)
+		var wpn_name := get_variant_spec_name(default_wpn, default_wpn)
+		weapon_name_label.text = "%s (%s)" % [wpn_name, default_wpn]
 
 	# 槽位總結
 	if slot_summary_label != null and character != null:
