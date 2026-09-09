@@ -89,6 +89,21 @@ static func paperdoll_tex(slot: String, base_id: String) -> Texture2D:
 	return tex(paperdoll_path(slot, base_id))
 
 
+## ── 新版 7 槽模組化紙娃娃骨架介面 (paperdoll_slots.json) ──
+static func modular_paperdoll_map(race: String = "rabbit", selection: Dictionary = {}) -> Dictionary:
+	var pr: GDScript = load("res://scripts/art/paperdoll_renderer.gd")
+	if pr and pr.has_method("build_paperdoll_map"):
+		return pr.call("build_paperdoll_map", race, selection)
+	return {}
+
+
+static func modular_paperdoll_textures(race: String = "rabbit", selection: Dictionary = {}) -> Dictionary:
+	var pr: GDScript = load("res://scripts/art/paperdoll_renderer.gd")
+	if pr and pr.has_method("build_paperdoll_textures"):
+		return pr.call("build_paperdoll_textures", race, selection)
+	return {}
+
+
 ## 裝備武器疊層（優先已裝備武器 → 流派）
 static func player_weapon_class_id() -> String:
 	## 1) 已裝備武器的 line / base_id
