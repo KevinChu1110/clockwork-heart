@@ -1927,6 +1927,10 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 			var pity_row := _make_pity_progress_row()
 			if pity_row:
 				root.add_child(pity_row)
+	if bool(extras.get("forge_pity", false)):
+		var forge_pity_row := _make_forge_pity_row()
+		if forge_pity_row:
+			root.add_child(forge_pity_row)
 
 	var rule := ColorRect.new()
 	rule.custom_minimum_size = Vector2(0, 2)
@@ -1959,6 +1963,8 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 		chrome_h += 75.0
 	if bool(extras.get("soul_pity", false)):
 		chrome_h += 75.0
+	if bool(extras.get("forge_pity", false)):
+		chrome_h += 65.0
 	var body_h := 105.0 if body.length() > 280 else minf(105.0, ceilf(float(body.length()) / 26.0) * 20.0)
 	var screen_h := float(get_viewport_rect().size.y)
 	var avail_h := maxf(110.0, screen_h - chrome_h - body_h - 25.0)
@@ -5786,6 +5792,63 @@ func _make_pity_progress_row() -> Control:
 	return wrap
 
 
+func _make_forge_pity_row() -> Control:
+	var at_max := GameState.weapon_tier >= FORGE_MAX_TIER
+	var streak: int = clampi(GameState.forge_fail_streak, 0, 3)
+	var wrap := VBoxContainer.new()
+	wrap.name = "ForgePityRow"
+	wrap.add_theme_constant_override("separation", 4)
+	wrap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var cap := Label.new()
+	cap.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	cap.add_theme_font_size_override("font_size", 14)
+	cap.add_theme_color_override("font_color", Color(0.22, 0.16, 0.10))
+	cap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	wrap.add_child(cap)
+
+	if at_max:
+		cap.text = _t("器階已達上限 · 鍛造已封頂")
+		return wrap
+
+	if streak < 3:
+		cap.text = _t("鍛造連敗保底 %d/3 · 滿 3 格釘釘摔錘必成功") % streak
+	else:
+		cap.text = _t("保底已滿 3/3 · 本次升階釘釘摔錘必成功！")
+
+	var bar_row := HBoxContainer.new()
+	bar_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	bar_row.add_theme_constant_override("separation", 6)
+	bar_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for i in range(3):
+		var seg := ProgressBar.new()
+		seg.min_value = 0
+		seg.max_value = 1
+		seg.value = 1.0 if streak > i else 0.0
+		seg.custom_minimum_size = Vector2(136, 16)
+		seg.show_percentage = false
+		seg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		var fill_color: Color = Color(1.0, 0.63, 0.06) if i < 2 else Color(1.0, 0.38, 0.28)
+		UiStyle.style_progress(seg, fill_color, Color(1.0, 0.97, 0.90))
+		bar_row.add_child(seg)
+	wrap.add_child(bar_row)
+
+	var sub_l := Label.new()
+	if streak >= 3:
+		sub_l.text = _t("保底已觸發 · 釘釘發脾氣必定升階")
+	elif streak == 2:
+		sub_l.text = _t("再失敗 1 次將觸發第 3 格摔錘保底")
+	else:
+		sub_l.text = _t("升階失敗累積 1 格 · 升階成功清空進度")
+	sub_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	sub_l.add_theme_font_size_override("font_size", 13)
+	sub_l.add_theme_color_override("font_color", Color(0.35, 0.22, 0.10))
+	sub_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	wrap.add_child(sub_l)
+
+	return wrap
+
+
 func _soul_preview_tex(tex: Texture2D) -> TextureRect:
 	var old := host.get_node_or_null("SoulHangPreview")
 	if old:
@@ -6108,7 +6171,7 @@ func _show_forge_panel() -> void:
 		buttons.append({"text": _t("廢鐵桶拆解（回收鐵屑）"), "cb": _go_scrap_bin_panel})
 		buttons.append({"text": Loc.t("pause.path", {"path": GameState.path_display()}), "cb": _go_path_panel})
 	buttons.append({"text": Loc.t("forge.back_square"), "cb": _go_c1_town})
-	_panel(Loc.t("forge.panel_title"), body, buttons)
+	_panel(Loc.t("forge.panel_title"), body, buttons, {"forge_pity": true})
 
 
 func _go_craft_panel() -> void:

@@ -167,7 +167,7 @@
   "path.blurb_dart": "鏢·影鏢：迅捷連射。",
   "path.blurb_crystal": "水晶·晶使：魂器共鳴。",
   "forge.panel_title": "鐵匠鋪 · 釘釘",
-  "forge.status": "微末之刃 T{tier}／{max} · 攻擊 +{atk}\n連敗：{fail}（3 次釘釘發脾氣）\n金幣：{gold}",
+  "forge.status": "微末之刃 T{tier}／{max} · 攻擊 +{atk}\n金幣：{gold}",
   "forge.at_max": "已到頂階。",
   "forge.next": "升下一階：{cost} 金 · 成功率約 {rate}%",
   "forge.soul_slots": "魂槽 {cur}／{max}",

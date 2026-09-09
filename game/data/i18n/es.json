@@ -164,7 +164,7 @@
   "path.blurb_dart": "Dardo · Sombra: disparos rápidos en cadena.",
   "path.blurb_crystal": "Cristal · Resonante: sintoniza almas y equipo.",
   "forge.panel_title": "Herrería · Ding",
-  "forge.status": "Filo Ínfimo T{tier}/{max} · Ataque +{atk}\nFallos seguidos: {fail} (a los 3, Ding se enfada)\nOro: {gold}",
+  "forge.status": "Filo Ínfimo T{tier}/{max} · Ataque +{atk}\nOro: {gold}",
   "forge.at_max": "Ya está en el nivel máximo.",
   "forge.next": "Siguiente nivel: {cost} oro · éxito ~{rate}%",
   "forge.soul_slots": "Ranuras de alma {cur}/{max}",
