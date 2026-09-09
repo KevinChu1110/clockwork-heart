@@ -78,11 +78,13 @@ const RACES_DATA: Dictionary = {
 		"desc": "掌握星軌共鳴的靈動玩具法師，具備金屬雷達耳與分節發條尾。",
 		"costumes": [
 			{"id": "costume_astral_cape", "name_zh": "星紋見習占星斗篷", "desc": "深藍琺瑯釉面與星芒金屬扣"},
+			{"id": "costume_astral_observer", "name_zh": "星象觀測者金屬儀裝", "desc": "黃銅星軌刻盤護胸與青銅鉚釘金屬儀裝"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現曜橙靈動狐型素體"}
 		],
 		"chassis": [
 			{"id": "paint_fox_orange", "name_zh": "靈狐曜橙烤漆", "desc": "高飽和鮮明暖橘琺瑯烤漆"},
-			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "低調優雅素體象牙白烤漆"}
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "低調優雅素體象牙白烤漆"},
+			{"id": "paint_emerald_glaze", "name_zh": "翡翠螢光釉面", "desc": "翡翠深林星光微粒高光琺瑯釉面"}
 		]
 	},
 	"lion": {
