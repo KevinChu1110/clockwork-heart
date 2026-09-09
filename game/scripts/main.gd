@@ -138,6 +138,8 @@ func _ready() -> void:
 	_saves_ui.on_loaded = func() -> void:
 		_apply_saved_ui_layout()
 		_resume_from_chapter()
+	_saves_ui.on_new_game = func(slot: int) -> void:
+		_go_character_creation(slot)
 	_saves_ui.on_close = _go_title
 	_ensure_fade()
 	_go_title()
@@ -2753,10 +2755,39 @@ func _new_game() -> void:
 		_show_toast(_t("四格都有紀錄了，先挑一格清掉。"))
 		_go_save_slots_panel()
 		return
-	SaveManager.current_slot = empty
-	GameState.reset_new_game()
-	SaveManager.save_game()
-	_go_c0()
+	_go_character_creation(empty)
+
+
+func _go_character_creation(target_slot: int = -1) -> void:
+	if target_slot <= 0:
+		target_slot = SaveManager.first_empty_slot()
+	if target_slot <= 0:
+		target_slot = 1
+	SaveManager.current_slot = target_slot
+	_clear_host()
+	_reset_fade()
+	_current = Screen.TITLE
+	var creation_scn = load("res://scenes/ui/paperdoll_select_demo.tscn")
+	if creation_scn == null:
+		GameState.reset_new_game()
+		SaveManager.save_game(target_slot)
+		_go_c0()
+		return
+	var creation_node = creation_scn.instantiate()
+	if "creation_mode" in creation_node:
+		creation_node.creation_mode = true
+	if creation_node.has_signal("character_confirmed"):
+		creation_node.character_confirmed.connect(func(race_id: String, selections: Dictionary):
+			GameState.reset_new_game(race_id, selections)
+			SaveManager.save_game(target_slot)
+			_show_toast(_t("已建立角色，展開旅途！"))
+			_go_c0()
+		)
+	if creation_node.has_signal("cancelled"):
+		creation_node.cancelled.connect(func():
+			_go_title_start_menu()
+		)
+	host.add_child(creation_node)
 
 
 func _go_ng_plus_menu() -> void:

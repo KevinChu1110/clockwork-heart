@@ -15,6 +15,8 @@ var chapter: String = "title"
 var flags: Dictionary = {}
 
 var player_name: String = "小白"
+var player_race: String = "rabbit"
+var paperdoll_slots: Dictionary = {}
 var level: int = 1
 var xp: int = 0
 var gold: int = 30
@@ -448,6 +450,8 @@ func to_dict() -> Dictionary:
 		"chapter": chapter,
 		"flags": flags.duplicate(true),
 		"player_name": player_name,
+		"player_race": player_race,
+		"paperdoll_slots": paperdoll_slots.duplicate(true),
 		"level": level,
 		"xp": xp,
 		"path_style": path_style,
@@ -519,6 +523,10 @@ func from_dict(d: Dictionary) -> void:
 	chapter = str(d.get("chapter", "title"))
 	flags = _dict_field(d, "flags")
 	player_name = str(d.get("player_name", "小白"))
+	player_race = str(d.get("player_race", "rabbit")).to_lower().strip_edges()
+	if player_race.is_empty():
+		player_race = "rabbit"
+	paperdoll_slots = _dict_field(d, "paperdoll_slots")
 	level = int(d.get("level", 1))
 	xp = int(d.get("xp", 0))
 	path_style = _migrate_path_style(str(d.get("path_style", "")))
@@ -581,11 +589,24 @@ func from_dict(d: Dictionary) -> void:
 	dmg_variance = float(d.get("dmg_variance", 0.08))
 
 
-func reset_new_game() -> void:
+func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {}) -> void:
+	var r := chosen_race.to_lower().strip_edges()
+	if r.is_empty():
+		r = "rabbit"
+	var default_name := "小白"
+	match r:
+		"rabbit": default_name = "小白"
+		"lion": default_name = "烈鬃獅"
+		"fox": default_name = "靈尾狐"
+		"boar": default_name = "鋼牙豕"
+		"macaque": default_name = "靈爪猴"
+		_: default_name = "小白"
 	from_dict({
 		"chapter": "c0",
 		"flags": {},
-		"player_name": "小白",
+		"player_name": default_name,
+		"player_race": r,
+		"paperdoll_slots": chosen_slots,
 		"level": 1,
 		"xp": 0,
 		"path_style": "",

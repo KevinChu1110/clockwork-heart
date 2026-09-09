@@ -7,6 +7,14 @@ extends Control
 ## 3. 部件槽即時換裝控制（外裝服飾 costume、機體塗裝 chassis 左右切換）。
 ## 4. 全程使用開源粉圓體 (OpenHuninn)，嚴禁系統 Emoji，多巴胺鮮亮高飽和配色。
 
+signal character_confirmed(race_id: String, selections: Dictionary)
+signal cancelled()
+
+@export var creation_mode: bool = false:
+	set(val):
+		creation_mode = val
+		_update_creation_mode_ui()
+
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 const PaperdollCharacter = preload("res://scripts/art/paperdoll_character.gd")
 
@@ -152,6 +160,9 @@ const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
 @onready var btn_reset_default: Button = $RightControlPanel/Margin/VBox/ActionsRow/BtnResetDefault as Button
 @onready var btn_capture_proof: Button = $RightControlPanel/Margin/VBox/ActionsRow/BtnCaptureProof as Button
 
+var btn_confirm: Button = null
+var btn_back: Button = null
+
 ## 執行期狀態
 var _current_race_id: String = "rabbit"
 var _costume_index: int = 0
@@ -162,6 +173,7 @@ var _race_buttons: Dictionary = {}
 func _ready() -> void:
 	_init_race_buttons()
 	_bind_controls()
+	_update_creation_mode_ui()
 	select_race("rabbit")
 
 
@@ -189,6 +201,68 @@ func _bind_controls() -> void:
 		btn_reset_default.pressed.connect(reset_to_default)
 	if btn_capture_proof != null:
 		btn_capture_proof.pressed.connect(func(): save_proof_screenshot())
+
+	var actions_row = get_node_or_null("RightControlPanel/Margin/VBox/ActionsRow")
+	if actions_row != null:
+		btn_confirm = get_node_or_null("RightControlPanel/Margin/VBox/ActionsRow/BtnConfirm") as Button
+		if btn_confirm == null:
+			btn_confirm = Button.new()
+			btn_confirm.name = "BtnConfirm"
+			btn_confirm.custom_minimum_size = Vector2(160, 52)
+			btn_confirm.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			btn_confirm.add_theme_font_size_override("font_size", 16)
+			btn_confirm.add_theme_color_override("font_color", Color(0.04, 0.22, 0.08, 1.0))
+			if btn_capture_proof:
+				var sb = btn_capture_proof.get_theme_stylebox("normal")
+				if sb:
+					btn_confirm.add_theme_stylebox_override("normal", sb.duplicate())
+			btn_confirm.text = "確認選擇 · 踏上旅途"
+			actions_row.add_child(btn_confirm)
+		btn_confirm.pressed.connect(confirm_selection)
+
+		btn_back = get_node_or_null("RightControlPanel/Margin/VBox/ActionsRow/BtnBack") as Button
+		if btn_back == null:
+			btn_back = Button.new()
+			btn_back.name = "BtnBack"
+			btn_back.custom_minimum_size = Vector2(90, 52)
+			btn_back.add_theme_font_size_override("font_size", 16)
+			btn_back.add_theme_color_override("font_color", Color(0.12, 0.1, 0.22, 1.0))
+			if btn_reset_default:
+				var sb = btn_reset_default.get_theme_stylebox("normal")
+				if sb:
+					btn_back.add_theme_stylebox_override("normal", sb.duplicate())
+			btn_back.text = "返回"
+			btn_back.visible = creation_mode
+			actions_row.add_child(btn_back)
+		btn_back.pressed.connect(func(): cancelled.emit())
+
+
+func _update_creation_mode_ui() -> void:
+	if btn_confirm:
+		btn_confirm.text = "確認選擇 · 踏上旅途" if creation_mode else "確認選擇"
+	if btn_back:
+		btn_back.visible = creation_mode
+	if btn_capture_proof:
+		btn_capture_proof.visible = not creation_mode
+
+
+## 確認選擇並同步寫入 GameState
+func confirm_selection() -> void:
+	var sel := get_current_selections()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var gs = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs:
+			gs.player_race = _current_race_id
+			gs.paperdoll_slots = sel
+			match _current_race_id:
+				"rabbit": gs.player_name = "小白"
+				"lion": gs.player_name = "烈鬃獅"
+				"fox": gs.player_name = "靈尾狐"
+				"boar": gs.player_name = "鋼牙豕"
+				"macaque": gs.player_name = "靈爪猴"
+				_: gs.player_name = "小白"
+	character_confirmed.emit(_current_race_id, sel)
 
 
 ## 選取指定種族

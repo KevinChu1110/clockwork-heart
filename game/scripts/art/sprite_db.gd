@@ -21,7 +21,30 @@ static func tex(path: String) -> Texture2D:
 	return load(path) as Texture2D
 
 
+static func player_race() -> String:
+	var gs := _gs()
+	if gs and "player_race" in gs:
+		var r: String = str(gs.player_race).strip_edges().to_lower()
+		if not r.is_empty():
+			return r
+	return "rabbit"
+
+
+static func player_race_composite(race: String, selections: Dictionary = {}) -> Texture2D:
+	var pr: GDScript = load("res://scripts/art/paperdoll_renderer.gd")
+	if pr and pr.has_method("get_race_composite_texture"):
+		return pr.call("get_race_composite_texture", race, selections)
+	var rid := race.to_lower().strip_edges()
+	var proof_path := "%s/player/paperdoll/%s/proof_paperdoll_%s_composite.png" % [ROOT, rid, rid]
+	return tex(proof_path)
+
+
 static func player_idle() -> Texture2D:
+	var r := player_race()
+	if r != "rabbit":
+		var comp := player_race_composite(r)
+		if comp:
+			return comp
 	return tex("%s/player/rabbit_idle_x3.png" % ROOT)
 
 
@@ -364,7 +387,11 @@ static func equip_icon_for_inst(inst: Dictionary) -> Texture2D:
 
 
 static func player_battle() -> Texture2D:
-	## 與探索同一套 chibi 底圖（紙娃娃疊層才對得齊）
+	var r := player_race()
+	if r != "rabbit":
+		var comp := player_race_composite(r)
+		if comp:
+			return comp
 	var idle := player_idle()
 	if idle:
 		return idle
@@ -375,6 +402,11 @@ static func player_battle() -> Texture2D:
 ## 0.16.2：poses/*.png 已用 rabbit_idle_x3 錨重產，戰鬥優先讀專用姿態。
 static func player_pose(pose: String) -> Texture2D:
 	var key := pose
+	var r := player_race()
+	if r != "rabbit":
+		var comp := player_race_composite(r)
+		if comp:
+			return comp
 	if key == "" or key == "idle":
 		return player_idle()
 	## 專用姿態（chibi 鎖定）
