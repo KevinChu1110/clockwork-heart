@@ -67,11 +67,31 @@
           "forbidden": "禁止任何有機生物皮膚、真毛皮、肉質紋理、粗黑線縫合怪"
         },
         "sample_variants": [
-          { "id": "paint_ivory_stock", "name": "原廠象牙白", "tier": "common" },
-          { "id": "paint_nutcracker_red", "name": "胡桃鉗皇家朱紅", "tier": "rare" },
-          { "id": "paint_midnight_navy", "name": "午夜深藍烤漆", "tier": "rare" },
-          { "id": "paint_brass_gold", "name": "黃銅原金拋光", "tier": "epic" },
-          { "id": "paint_emerald_glaze", "name": "翡翠螢光釉面", "tier": "legendary" }
+          {
+            "id": "paint_ivory_stock",
+            "name": "原廠象牙白",
+            "tier": "common"
+          },
+          {
+            "id": "paint_nutcracker_red",
+            "name": "胡桃鉗皇家朱紅",
+            "tier": "rare"
+          },
+          {
+            "id": "paint_midnight_navy",
+            "name": "午夜深藍烤漆",
+            "tier": "rare"
+          },
+          {
+            "id": "paint_brass_gold",
+            "name": "黃銅原金拋光",
+            "tier": "epic"
+          },
+          {
+            "id": "paint_emerald_glaze",
+            "name": "翡翠螢光釉面",
+            "tier": "legendary"
+          }
         ]
       },
       {
@@ -94,11 +114,36 @@
           "silhouette_rule": "30公尺縮圖檢視下動物頭頂剪影必須100%瞬間辨識，不可被過度覆蓋"
         },
         "sample_variants": [
-          { "id": "ear_rabbit_straight", "name": "雙聯長立金屬耳", "race": "rabbit", "tier": "common" },
-          { "id": "ear_fox_radar", "name": "雷達折疊天線尖耳", "race": "fox", "tier": "rare" },
-          { "id": "ear_lion_gilded_mane", "name": "金屬疊片外擴鬃毛冠", "race": "lion", "tier": "epic" },
-          { "id": "ear_boar_rivet_cowl", "name": "衝壓鋼板防撞罩耳", "race": "boar", "tier": "common" },
-          { "id": "ear_macaque_coaxial", "name": "同心圓階梯金屬耳罩", "race": "macaque", "tier": "common" }
+          {
+            "id": "ear_rabbit_straight",
+            "name": "雙聯長立金屬耳",
+            "race": "rabbit",
+            "tier": "common"
+          },
+          {
+            "id": "ear_fox_radar",
+            "name": "雷達折疊天線尖耳",
+            "race": "fox",
+            "tier": "rare"
+          },
+          {
+            "id": "ear_lion_gilded_mane",
+            "name": "金屬疊片外擴鬃毛冠",
+            "race": "lion",
+            "tier": "epic"
+          },
+          {
+            "id": "ear_boar_rivet_cowl",
+            "name": "衝壓鋼板防撞罩耳",
+            "race": "boar",
+            "tier": "common"
+          },
+          {
+            "id": "ear_macaque_coaxial",
+            "name": "同心圓階梯金屬耳罩",
+            "race": "macaque",
+            "tier": "common"
+          }
         ]
       },
       {
@@ -119,11 +164,31 @@
           "audio": "待機自帶清脆發條上弦齒輪嚙合音效 (tick-tock ratchet)"
         },
         "sample_variants": [
-          { "id": "key_classic_brass", "name": "雙孔古銅發條鑰匙", "tier": "common" },
-          { "id": "key_butterfly_t", "name": "八音盒T型蝶翼發條", "tier": "rare" },
-          { "id": "key_starlight_cog", "name": "星芒齒輪旋鈕", "tier": "epic" },
-          { "id": "key_royal_crown", "name": "皇家十字冠冕發條", "tier": "legendary" },
-          { "id": "key_winged_angel", "name": "展翼天國雙重發條", "tier": "legendary" }
+          {
+            "id": "key_classic_brass",
+            "name": "雙孔古銅發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_butterfly_t",
+            "name": "八音盒T型蝶翼發條",
+            "tier": "rare"
+          },
+          {
+            "id": "key_starlight_cog",
+            "name": "星芒齒輪旋鈕",
+            "tier": "epic"
+          },
+          {
+            "id": "key_royal_crown",
+            "name": "皇家十字冠冕發條",
+            "tier": "legendary"
+          },
+          {
+            "id": "key_winged_angel",
+            "name": "展翼天國雙重發條",
+            "tier": "legendary"
+          }
         ]
       },
       {
@@ -145,11 +210,31 @@
           "chibi_compatibility": "統一對齊 2.3~2.5 頭身 Chibi 軀幹胸腰尺寸，確保5種動物均可跨種族穿戴"
         },
         "sample_variants": [
-          { "id": "costume_nutcracker_guard", "name": "胡桃鉗近衛軍裝", "tier": "rare" },
-          { "id": "costume_steam_artisan", "name": "蒸氣工匠吊帶工作裝", "tier": "common" },
-          { "id": "costume_dawn_monk_tunic", "name": "晨曦行者武道短褂", "tier": "rare" },
-          { "id": "costume_astral_cape", "name": "星紋見習占星斗篷", "tier": "epic" },
-          { "id": "costume_viking_harness", "name": "粗獷鍛爐護胸皮帶", "tier": "common" }
+          {
+            "id": "costume_nutcracker_guard",
+            "name": "胡桃鉗近衛軍裝",
+            "tier": "rare"
+          },
+          {
+            "id": "costume_steam_artisan",
+            "name": "蒸氣工匠吊帶工作裝",
+            "tier": "common"
+          },
+          {
+            "id": "costume_dawn_monk_tunic",
+            "name": "晨曦行者武道短褂",
+            "tier": "rare"
+          },
+          {
+            "id": "costume_astral_cape",
+            "name": "星紋見習占星斗篷",
+            "tier": "epic"
+          },
+          {
+            "id": "costume_viking_harness",
+            "name": "粗獷鍛爐護胸皮帶",
+            "tier": "common"
+          }
         ]
       },
       {
@@ -173,10 +258,26 @@
           "chest_core": "胸口正中央鑲嵌愛心或菱形能量晶石，與眼珠色澤同頻呼吸閃爍"
         },
         "sample_variants": [
-          { "id": "core_cyan_emerald", "name": "天青翡翠透鏡核心", "tier": "common" },
-          { "id": "core_amber_sun", "name": "琥珀烈陽透鏡核心", "tier": "rare" },
-          { "id": "core_astral_amethyst", "name": "星海紫晶透鏡核心", "tier": "epic" },
-          { "id": "core_pilot_visor", "name": "護目鏡覆蓋型光學面板", "tier": "rare" }
+          {
+            "id": "core_cyan_emerald",
+            "name": "天青翡翠透鏡核心",
+            "tier": "common"
+          },
+          {
+            "id": "core_amber_sun",
+            "name": "琥珀烈陽透鏡核心",
+            "tier": "rare"
+          },
+          {
+            "id": "core_astral_amethyst",
+            "name": "星海紫晶透鏡核心",
+            "tier": "epic"
+          },
+          {
+            "id": "core_pilot_visor",
+            "name": "護目鏡覆蓋型光學面板",
+            "tier": "rare"
+          }
         ]
       },
       {
@@ -186,7 +287,7 @@
         "name_en": "Handheld Weapon Skin",
         "layer_z_index": 40,
         "required": true,
-        "description": "角色持握的武器外觀，覆蓋 12 大武器體系（劍、槍、法杖、斧、錘、爪套、弓、銃、鏢等）。獨立道具層，絕不與手掌焊死。",
+        "description": "角色持握的武器外觀，覆蓋 12 大武器體系（劍、槍、法杖、斧、鎚、爪套、弓、銃、鏢等）。獨立道具層，絕不與手掌焊死。",
         "sub_regions": [
           "mainhand_grip_and_blade",
           "offhand_or_gauntlet_blades"
@@ -197,11 +298,36 @@
           "independent_layer": "與手臂素體分離，隨時支援換裝或武器升階"
         },
         "sample_variants": [
-          { "id": "wpn_dawn_blade", "name": "晨曦發條單手長劍", "weapon_type": "sword", "tier": "rare" },
-          { "id": "wpn_spring_claws", "name": "機關發條靈爪護手", "weapon_type": "claw", "tier": "rare" },
-          { "id": "wpn_knight_lance", "name": "皇家黃銅突刺長矛", "weapon_type": "spear", "tier": "rare" },
-          { "id": "wpn_astral_staff", "name": "星盤晶核秘術法杖", "weapon_type": "magic", "tier": "rare" },
-          { "id": "wpn_anvil_greathammer", "name": "鍛爐鐵砧重型戰錘", "weapon_type": "hammer", "tier": "common" }
+          {
+            "id": "wpn_dawn_blade",
+            "name": "晨曦發條單手長劍",
+            "weapon_type": "sword",
+            "tier": "rare"
+          },
+          {
+            "id": "wpn_spring_claws",
+            "name": "機關發條靈爪護手",
+            "weapon_type": "claw",
+            "tier": "rare"
+          },
+          {
+            "id": "wpn_knight_lance",
+            "name": "皇家黃銅突刺長槍",
+            "weapon_type": "spear",
+            "tier": "rare"
+          },
+          {
+            "id": "wpn_astral_staff",
+            "name": "星盤晶核秘術法杖",
+            "weapon_type": "magic",
+            "tier": "rare"
+          },
+          {
+            "id": "wpn_anvil_greathammer",
+            "name": "鍛爐鐵砧重型戰鎚",
+            "weapon_type": "hammer",
+            "tier": "common"
+          }
         ]
       },
       {
@@ -222,11 +348,33 @@
           "independent_layer": "位於軀幹後方、發條鑰匙上方，層次分明"
         },
         "sample_variants": [
-          { "id": "curio_spring_tail", "name": "伸縮彈簧機關平衡尾", "race": "macaque", "tier": "common" },
-          { "id": "curio_fox_astral_tail", "name": "多節連桿星軸導能尾", "race": "fox", "tier": "rare" },
-          { "id": "curio_clockwork_pigeon", "name": "自走發條通訊小信鴿", "tier": "rare" },
-          { "id": "curio_steam_exhaust", "name": "迷你雙聯蒸氣排氣管", "tier": "common" },
-          { "id": "curio_floating_musicbox", "name": "懸浮微型齒輪八音盒", "tier": "epic" }
+          {
+            "id": "curio_spring_tail",
+            "name": "伸縮彈簧機關平衡尾",
+            "race": "macaque",
+            "tier": "common"
+          },
+          {
+            "id": "curio_fox_astral_tail",
+            "name": "多節連桿星軸導能尾",
+            "race": "fox",
+            "tier": "rare"
+          },
+          {
+            "id": "curio_clockwork_pigeon",
+            "name": "自走發條通訊小信鴿",
+            "tier": "rare"
+          },
+          {
+            "id": "curio_steam_exhaust",
+            "name": "迷你雙聯蒸氣排氣管",
+            "tier": "common"
+          },
+          {
+            "id": "curio_floating_musicbox",
+            "name": "懸浮微型齒輪八音盒",
+            "tier": "epic"
+          }
         ]
       }
     ]
@@ -238,7 +386,7 @@
         "race_id": "rabbit",
         "name_zh": "白金兔",
         "name_en": "Clockwork Rabbit",
-        "class_archetype": "劍士 / 遊俠 (Swordsman / Ranger)",
+        "class_archetype": "劍士 (Knight)",
         "origin_realm": "R01 今日村莊·發條新村 / Today Village: Cogwheel Hamlet",
         "lore_anchor": "傳奇先行者小白（Whitey）的經典族系，中央大鐘精細鐘錶展台的時間守護者",
         "proportions": {
@@ -265,6 +413,8 @@
             "existing": [
               "branding/char_rabbit.png (400x840 立牌)",
               "docs/art/char_rabbit_candidate_400x840.png (400x840 候選)",
+              "web/media/hero/char_rabbit.png (400x840 官網英雄圖)",
+              "web/media/hero/rabbit_idle.png (128x128 官網預覽圖)",
               "game/assets/sprites/player/rabbit_idle.png (64x64 基礎待機)",
               "game/assets/sprites/player/rabbit_idle_x3.png (128x128 隊伍/高畫質待機)",
               "game/assets/sprites/player/rabbit_battle.png (128x128 戰鬥特寫姿態)",
@@ -274,15 +424,13 @@
               "game/assets/sprites/portraits/rabbit.png (128x128 HUD戰鬥頭像)"
             ],
             "pending": [
-              "web/media/hero/char_rabbit.png (400x840 官網英雄圖)",
-              "web/media/hero/rabbit_idle.png (128x128 官網預覽圖)",
               "game/assets/sprites/player/paperdoll/rabbit/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
             ]
           },
           "branding_standee": "branding/char_rabbit.png (400x840) [既有]",
           "branding_concept_art": "docs/art/char_rabbit_candidate_400x840.png [既有]",
-          "web_hero": "web/media/hero/char_rabbit.png (400x840) [待產出]",
-          "web_preview": "web/media/hero/rabbit_idle.png (128x128) [待產出]",
+          "web_hero": "web/media/hero/char_rabbit.png (400x840) [既有]",
+          "web_preview": "web/media/hero/rabbit_idle.png (128x128) [既有]",
           "game_sprite_idle_base": "game/assets/sprites/player/rabbit_idle.png (64x64) [既有]",
           "game_sprite_idle_hi": "game/assets/sprites/player/rabbit_idle_x3.png (128x128) [既有]",
           "game_sprite_battle": "game/assets/sprites/player/rabbit_battle.png (128x128) [既有]",
@@ -297,7 +445,7 @@
         "race_id": "lion",
         "name_zh": "烈鬃獅",
         "name_en": "Gilded Lion",
-        "class_archetype": "皇家騎士 / 聖堂衛士 (Royal Knight / Paladin)",
+        "class_archetype": "騎士 (Knight)",
         "origin_realm": "R04 黃銅都市·巨輪城 / Brass Metropolis: The Great Cog City",
         "lore_anchor": "黃銅都市發條樞紐守護者，胡桃鉗皇家近衛儀隊之首",
         "proportions": {
@@ -323,24 +471,23 @@
           "status": {
             "existing": [
               "branding/char_lion.png (400x840 原稿立牌)",
+              "web/media/hero/char_lion.png (400x840 官網英雄圖)",
               "game/assets/sprites/player/party/lion_idle.png (128x128 既有隊伍展示幀)",
               "game/assets/sprites/portraits/lion_knight.png (256x256 對話框半身像)"
             ],
             "pending": [
-              "game/assets/sprites/player/lion_idle.png (64x64 基礎待機)",
+              "web/media/hero/lion_idle.png (128x128 官網預覽圖)",
               "game/assets/sprites/player/lion_battle.png (128x128 戰鬥特寫姿態)",
               "game/assets/sprites/player/lion_walk_{0..3}.png (64x64 行走動畫)",
               "game/assets/sprites/player/lion_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
               "game/assets/sprites/player/poses/lion/ (戰鬥6大動作姿態目錄)",
               "game/assets/sprites/portraits/lion.png (128x128 HUD戰鬥頭像)",
-              "web/media/hero/char_lion.png (400x840)",
-              "web/media/hero/lion_idle.png (128x128)",
               "game/assets/sprites/player/paperdoll/lion/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
             ]
           },
           "branding_standee": "branding/char_lion.png (400x840) [既有]",
           "branding_concept_art": "branding/char_lion.png (原稿 928x1152) [既有]",
-          "web_hero": "web/media/hero/char_lion.png (400x840) [待產出]",
+          "web_hero": "web/media/hero/char_lion.png (400x840) [既有]",
           "web_preview": "web/media/hero/lion_idle.png (128x128) [待產出]",
           "game_sprite_idle_base": "game/assets/sprites/player/lion_idle.png (64x64) [待產出]",
           "game_sprite_idle_hi": "game/assets/sprites/player/party/lion_idle.png (128x128) [既有於party/目錄]",
@@ -357,7 +504,7 @@
         "race_id": "fox",
         "name_zh": "靈尾狐",
         "name_en": "Astral Fox",
-        "class_archetype": "秘術師 / 刺客 (Mystic Astrologer / Assassin)",
+        "class_archetype": "法師 (Mage)",
         "origin_realm": "R03 翡翠深林·發條蔓谷 / Emerald Woods: Vine & Gear Forest",
         "lore_anchor": "星象觀測台與發條藤蔓守護者，專精十四主星軸共鳴秘術",
         "proportions": {
@@ -383,24 +530,23 @@
           "status": {
             "existing": [
               "branding/char_fox.png (400x840 原稿立牌)",
+              "web/media/hero/char_fox.png (400x840 官網英雄圖)",
               "game/assets/sprites/player/party/fox_idle.png (128x128 既有隊伍展示幀)",
               "game/assets/sprites/portraits/fox_mage.png (256x256 對話框半身像)"
             ],
             "pending": [
-              "game/assets/sprites/player/fox_idle.png (64x64 基礎待機)",
+              "web/media/hero/fox_idle.png (128x128 官網預覽圖)",
               "game/assets/sprites/player/fox_battle.png (128x128 戰鬥特寫姿態)",
               "game/assets/sprites/player/fox_walk_{0..3}.png (64x64 行走動畫)",
               "game/assets/sprites/player/fox_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
               "game/assets/sprites/player/poses/fox/ (戰鬥6大動作姿態目錄)",
               "game/assets/sprites/portraits/fox.png (128x128 HUD戰鬥頭像)",
-              "web/media/hero/char_fox.png (400x840)",
-              "web/media/hero/fox_idle.png (128x128)",
               "game/assets/sprites/player/paperdoll/fox/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
             ]
           },
           "branding_standee": "branding/char_fox.png (400x840) [既有]",
           "branding_concept_art": "branding/char_fox.png (原稿 928x1152) [既有]",
-          "web_hero": "web/media/hero/char_fox.png (400x840) [待產出]",
+          "web_hero": "web/media/hero/char_fox.png (400x840) [既有]",
           "web_preview": "web/media/hero/fox_idle.png (128x128) [待產出]",
           "game_sprite_idle_base": "game/assets/sprites/player/fox_idle.png (64x64) [待產出]",
           "game_sprite_idle_hi": "game/assets/sprites/player/party/fox_idle.png (128x128) [既有於party/目錄]",
@@ -417,7 +563,7 @@
         "race_id": "boar",
         "name_zh": "鋼牙豕",
         "name_en": "Forge Boar",
-        "class_archetype": "狂怒戰士 / 重裝工兵 (Forge Berserker / Combat Engineer)",
+        "class_archetype": "戰士 (Viking)",
         "origin_realm": "R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano",
         "lore_anchor": "耐熱高溫鍛爐的重裝工兵，專克泰坦巨型裝甲的狂爆衝擊者",
         "proportions": {
@@ -443,24 +589,23 @@
           "status": {
             "existing": [
               "branding/char_boar.png (400x840 原稿立牌)",
+              "web/media/hero/char_boar.png (400x840 官網英雄圖)",
               "game/assets/sprites/player/party/boar_idle.png (128x128 既有隊伍展示幀)",
               "game/assets/sprites/portraits/boar.png (既有頭像)",
               "game/assets/sprites/portraits/boar_warrior.png (256x256 對話框半身像)"
             ],
             "pending": [
-              "game/assets/sprites/player/boar_idle.png (64x64 基礎待機)",
+              "web/media/hero/boar_idle.png (128x128 官網預覽圖)",
               "game/assets/sprites/player/boar_battle.png (128x128 戰鬥特寫姿態)",
               "game/assets/sprites/player/boar_walk_{0..3}.png (64x64 行走動畫)",
               "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
               "game/assets/sprites/player/poses/boar/ (戰鬥6大動作姿態目錄)",
-              "web/media/hero/char_boar.png (400x840)",
-              "web/media/hero/boar_idle.png (128x128)",
               "game/assets/sprites/player/paperdoll/boar/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
             ]
           },
           "branding_standee": "branding/char_boar.png (400x840) [既有]",
           "branding_concept_art": "branding/char_boar.png (原稿 928x1152) [既有]",
-          "web_hero": "web/media/hero/char_boar.png (400x840) [待產出]",
+          "web_hero": "web/media/hero/char_boar.png (400x840) [既有]",
           "web_preview": "web/media/hero/boar_idle.png (128x128) [待產出]",
           "game_sprite_idle_base": "game/assets/sprites/player/boar_idle.png (64x64) [待產出]",
           "game_sprite_idle_hi": "game/assets/sprites/player/party/boar_idle.png (128x128) [既有於party/目錄]",
@@ -475,10 +620,12 @@
       },
       {
         "race_id": "macaque",
-        "aliases": ["monkey"],
+        "aliases": [
+          "monkey"
+        ],
         "name_zh": "靈爪猴",
         "name_en": "Spring Macaque",
-        "class_archetype": "武術家 / 拳法靈爪 (Martial Monk / Claw Master)",
+        "class_archetype": "武術家 (Monk)",
         "origin_realm": "R09 竹影道場·天元竹林 / Bamboo Grove: Zen Puppet Dojo",
         "lore_anchor": "補位木人樁與演武場東方武道機關玩具，以長臂彈簧拳與機關銅爪見長之靈動武者",
         "proportions": {
@@ -569,7 +716,10 @@
       "downsampled_legacy_dimensions": "64 x 64 px",
       "color_depth": "32-bit RGBA Transparent PNG",
       "slice_origin": "全槽位貼圖共用統一起點 (0, 0)，直接同屏疊加渲染，無須執行期動態計算平移偏移量",
-      "root_anchor": { "x": 64, "y": 120 }
+      "root_anchor": {
+        "x": 64,
+        "y": 120
+      }
     },
     "tier_3_portraits": {
       "name": "頭像與對話框立繪 (Portraits & Icons)",
