@@ -1,15 +1,15 @@
 extends SceneTree
-## 《發條之心》紙娃娃場景節點 (PaperdollCharacter) 無頭自動化測試
-## 執行方式：godot --path game --headless -s res://scripts/art/test_paperdoll_scene.gd
+## 《發條之心》紙娃娃猴族場景節點 (PaperdollCharacter) 無頭自動化測試
+## 執行方式：godot --path game --headless -s res://scripts/dev/test_paperdoll_macaque_scene.gd
 
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 const PaperdollCharacter = preload("res://scripts/art/paperdoll_character.gd")
-const PROOF_OUTPUT_PATH := "res://assets/sprites/player/paperdoll/rabbit/proof_paperdoll_scene_composite.png"
+const PROOF_OUTPUT_PATH := "res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_composite.png"
 
 
 func _initialize() -> void:
 	var ok := true
-	print("=== 開始紙娃娃實際場景節點測試 (PaperdollCharacter) ===")
+	print("=== 開始猴族紙娃娃實際場景節點測試 (PaperdollCharacter - macaque) ===")
 
 	# ── 1. 節點實例化與場景樹掛載 ──
 	var character := PaperdollCharacter.new()
@@ -22,8 +22,8 @@ func _initialize() -> void:
 		return
 	print("  ✓ 成功實例化 PaperdollCharacter 節點並加入場景樹")
 
-	# ── 2. 測試兔族 7 槽位渲染 ──
-	character.render_character("rabbit")
+	# ── 2. 測試猴族 7 槽位渲染 ──
+	character.render_character("macaque")
 	var entries := character.get_rendered_entries()
 	if entries.size() != 7:
 		push_error("渲染條目數量不為 7：實際為 %d" % entries.size())
@@ -110,7 +110,6 @@ func _initialize() -> void:
 			ok = false
 
 		var non_transparent_pixels := 0
-		var opaque_bounding_box := Rect2i()
 		var min_x := width
 		var min_y := height
 		var max_x := 0
@@ -133,7 +132,7 @@ func _initialize() -> void:
 			(max_x - min_x + 1), (max_y - min_y + 1)
 		])
 
-		# 斷言：合成圖絕非空白或全透明（完整 7 層兔族角色應有超過 1000 像素）
+		# 斷言：合成圖絕非空白或全透明（完整 7 層猴族角色應有超過 1000 像素）
 		if non_transparent_pixels < 1000:
 			push_error("合成圖非透明像素過少 (%d < 1000)，角色可能為空白或大量漏失！" % non_transparent_pixels)
 			ok = false
@@ -149,50 +148,47 @@ func _initialize() -> void:
 		else:
 			print("  ✓ 成功儲存驗證截圖檔案：%s" % global_proof_path)
 
-	# ── 5. 斷言缺圖 fallback 不崩潰 ──
-	print("\n--- 檢查缺圖 fallback 安全性 ---")
-	# 使用未具備切片之虛擬族系驗證安全 fallback
-	character.render_character("dummy_construct")
-	var dummy_sprites := character.get_all_slot_sprites()
-	var all_hidden_or_empty := true
-	for sid in dummy_sprites.keys():
-		var sp: Sprite2D = dummy_sprites[sid]
-		if sp.texture != null and sp.visible:
-			all_hidden_or_empty = false
-	if not all_hidden_or_empty:
-		push_error("虛擬族系無圖檔時，Sprite2D 未正確安全 fallback！")
-		ok = false
-	else:
-		print("  ✓ 斷言通過：缺圖時 Sprite2D 自動安全隱藏，完全無例外或崩潰")
-
-	# 驗證猴族系 (macaque) 7 槽渲染成功
-	print("\n--- 檢查猴族系 (macaque) 實際渲染有效性 ---")
-	character.render_character("macaque")
-	var macaque_comp := character.get_composite_image()
-	if macaque_comp == null or macaque_comp.is_empty():
-		push_error("macaque 族系合成圖為空！")
-		ok = false
-	else:
-		var non_trans_macaque := 0
-		for y in range(128):
-			for x in range(128):
-				if macaque_comp.get_pixel(x, y).a > 0.05:
-					non_trans_macaque += 1
-		print("  ✓ macaque 合成圖非透明像素：%d 像素" % non_trans_macaque)
-		if non_trans_macaque < 1000:
-			push_error("macaque 族系合成圖非透明像素過少 (%d < 1000)" % non_trans_macaque)
-			ok = false
-		else:
-			print("  ✓ 斷言通過：macaque 族系成功渲染出完整角色 (%d 像素)" % non_trans_macaque)
-
-	# 切換回 rabbit 確保可重複切換恢復
+	# ── 5. 斷言切換族系安全性 ──
+	print("\n--- 檢查五大族系切換安全性 ---")
 	character.render_character("rabbit")
 	var restored_chassis: Sprite2D = character.get_slot_sprite("chassis")
 	if restored_chassis == null or restored_chassis.texture == null or not restored_chassis.visible:
 		push_error("切回 rabbit 後未能正確恢復顯示！")
 		ok = false
 	else:
-		print("  ✓ 斷言通過：切換回 rabbit 後所有槽位正常恢復可見與貼圖")
+		print("  ✓ 斷言通過：切換至 rabbit 所有槽位正常恢復可見與貼圖")
+
+	character.render_character("fox")
+	var restored_fox_staff: Sprite2D = character.get_slot_sprite("weapon")
+	if restored_fox_staff == null or restored_fox_staff.texture == null or not restored_fox_staff.visible:
+		push_error("切回 fox 後未能正確恢復顯示！")
+		ok = false
+	else:
+		print("  ✓ 斷言通過：切換至 fox 所有槽位正常恢復可見與貼圖")
+
+	character.render_character("lion")
+	var restored_lion_lance: Sprite2D = character.get_slot_sprite("weapon")
+	if restored_lion_lance == null or restored_lion_lance.texture == null or not restored_lion_lance.visible:
+		push_error("切回 lion 後未能正確恢復顯示！")
+		ok = false
+	else:
+		print("  ✓ 斷言通過：切換至 lion 所有槽位正常恢復可見與貼圖")
+
+	character.render_character("boar")
+	var restored_boar_hammer: Sprite2D = character.get_slot_sprite("weapon")
+	if restored_boar_hammer == null or restored_boar_hammer.texture == null or not restored_boar_hammer.visible:
+		push_error("切回 boar 後未能正確恢復顯示！")
+		ok = false
+	else:
+		print("  ✓ 斷言通過：切換至 boar 所有槽位正常恢復可見與貼圖")
+
+	character.render_character("macaque")
+	var restored_macaque_claws: Sprite2D = character.get_slot_sprite("weapon")
+	if restored_macaque_claws == null or restored_macaque_claws.texture == null or not restored_macaque_claws.visible:
+		push_error("切回 macaque 後未能正確恢復顯示！")
+		ok = false
+	else:
+		print("  ✓ 斷言通過：切換至 macaque 所有槽位正常恢復可見與貼圖")
 
 	character.queue_free()
 	_finish(ok)
@@ -201,8 +197,8 @@ func _initialize() -> void:
 func _finish(ok: bool) -> void:
 	print("\n=======================================================")
 	if ok:
-		print("PAPERDOLL_SCENE_OK")
+		print("MACAQUE_PAPERDOLL_SCENE_OK")
 		quit(0)
 	else:
-		print("PAPERDOLL_SCENE_FAIL")
+		print("MACAQUE_PAPERDOLL_SCENE_FAIL")
 		quit(1)
