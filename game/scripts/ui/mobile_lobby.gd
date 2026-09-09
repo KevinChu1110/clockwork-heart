@@ -611,13 +611,13 @@ func _build_village_tab() -> void:
 	hero_click.pressed.connect(_on_hero_clicked)
 	_hero_avatar.add_child(hero_click)
 
-	## 3. 頭頂稱號與名字（黑曜石半透明膠囊底襯 + 金框 + 深色文字描邊，確保在中央發光齒輪光暈上清晰可讀）
+	## 3. 頭頂稱號與名字（黑曜石半透明膠囊底襯 + 金框 + 深色文字描邊，置於齒輪上方避開核心細節）
 	var tag_panel := PanelContainer.new()
 	tag_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	tag_panel.offset_left = -85
-	tag_panel.offset_top = -68
-	tag_panel.offset_right = 85
-	tag_panel.offset_bottom = -8
+	tag_panel.offset_left = -75
+	tag_panel.offset_top = -158
+	tag_panel.offset_right = 75
+	tag_panel.offset_bottom = -112
 	tag_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var tag_sb := StyleBoxFlat.new()
@@ -640,23 +640,23 @@ func _build_village_tab() -> void:
 	tag_v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tag_v.add_theme_constant_override("separation", 2)
 
-	var title_l := Label.new()
-	title_l.text = "【初出茅廬】"
-	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_l.add_theme_font_size_override("font_size", 18)
-	title_l.add_theme_color_override("font_color", GOLD_HOVER)
-	title_l.add_theme_color_override("font_outline_color", Color(0.02, 0.02, 0.04, 0.95))
-	title_l.add_theme_constant_override("outline_size", 2)
-	tag_v.add_child(title_l)
-
 	_hero_name_tag = Label.new()
 	_hero_name_tag.text = _get_hero_name()
 	_hero_name_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hero_name_tag.add_theme_font_size_override("font_size", 15)
-	_hero_name_tag.add_theme_color_override("font_color", INK_IVORY)
+	_hero_name_tag.add_theme_font_size_override("font_size", 18)
+	_hero_name_tag.add_theme_color_override("font_color", GOLD_HOVER)
 	_hero_name_tag.add_theme_color_override("font_outline_color", Color(0.02, 0.02, 0.04, 0.95))
 	_hero_name_tag.add_theme_constant_override("outline_size", 3)
 	tag_v.add_child(_hero_name_tag)
+
+	var title_l := Label.new()
+	title_l.text = "【初出茅廬】"
+	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title_l.add_theme_font_size_override("font_size", 12)
+	title_l.add_theme_color_override("font_color", INK_IVORY_SOFT)
+	title_l.add_theme_color_override("font_outline_color", Color(0.02, 0.02, 0.04, 0.95))
+	title_l.add_theme_constant_override("outline_size", 2)
+	tag_v.add_child(title_l)
 
 	tag_panel.add_child(tag_v)
 	_hero_avatar.add_child(tag_panel)
