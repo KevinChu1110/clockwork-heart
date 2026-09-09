@@ -2459,6 +2459,7 @@ func _open_mobile_settings() -> void:
 	var s_scn: GDScript = load("res://scripts/ui/mobile_settings.gd")
 	var s_ui: Control = s_scn.new()
 	s_ui.z_index = 80
+	s_ui.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(s_ui)
 
 
