@@ -1,0 +1,71 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/dev/dev_paperdoll_preview.gd" id="1_dev_script"]
+[ext_resource type="PackedScene" path="res://scenes/actors/paperdoll_character.tscn" id="2_character_scene"]
+
+[node name="DevPaperdollPreview" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_dev_script")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.992157, 0.972549, 1)
+
+[node name="Stage" type="Node2D" parent="."]
+position = Vector2(480, 450)
+scale = Vector2(2.5, 2.5)
+
+[node name="Shadow" type="Polygon2D" parent="Stage"]
+color = Color(0.121569, 0.101961, 0.227451, 0.2)
+polygon = PackedVector2Array(-28, -2, -18, -8, 0, -10, 18, -8, 28, -2, 28, 4, 18, 10, 0, 12, -18, 10, -28, 4)
+
+[node name="PaperdollCharacter" parent="Stage" instance=ExtResource("2_character_scene")]
+
+[node name="Panel" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -440.0
+offset_top = 40.0
+offset_right = -40.0
+offset_bottom = -40.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="VBox" type="VBoxContainer" parent="Panel"]
+layout_mode = 2
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "紙娃娃渲染器實時節點預覽"
+horizontal_alignment = 1
+
+[node name="InfoLabel" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+text = "正在讀取規格與槽位..."
+
+[node name="HSeparator" type="HSeparator" parent="Panel/VBox"]
+layout_mode = 2
+
+[node name="SlotsTitle" type="Label" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "【7 大機械槽位 z_index 疊合層級】"
+
+[node name="SlotsList" type="VBoxContainer" parent="Panel/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 8
