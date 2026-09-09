@@ -221,19 +221,37 @@ static func _resolve_rabbit_existing_asset(slot_id: String, item_id: String) -> 
 static func _get_default_variant_id(race: String, slot_id: String) -> String:
 	match slot_id:
 		SLOT_CHASSIS:
+			if race == "fox":
+				return "paint_fox_orange"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
-			return "ear_macaque_coaxial" if race == "macaque" else "ear_rabbit_straight"
+			if race == "macaque":
+				return "ear_macaque_coaxial"
+			elif race == "fox":
+				return "ear_fox_radar"
+			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			return "key_classic_brass"
 		SLOT_COSTUME:
-			return "costume_dawn_monk_tunic" if race == "macaque" else "costume_nutcracker_guard"
+			if race == "macaque":
+				return "costume_dawn_monk_tunic"
+			elif race == "fox":
+				return "costume_astral_cape"
+			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			return "core_cyan_emerald"
 		SLOT_WEAPON:
-			return "wpn_spring_claws" if race == "macaque" else "wpn_dawn_blade"
+			if race == "macaque":
+				return "wpn_spring_claws"
+			elif race == "fox":
+				return "wpn_astral_staff"
+			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
-			return "curio_spring_tail" if race == "macaque" else "curio_clockwork_pigeon"
+			if race == "macaque":
+				return "curio_spring_tail"
+			elif race == "fox":
+				return "curio_fox_astral_tail"
+			return "curio_clockwork_pigeon"
 		_:
 			return "default"
 
@@ -317,5 +335,61 @@ static func _get_fallback_spec() -> Dictionary:
 				{"slot_id": "weapon", "name_zh": "手持武器外觀", "layer_z_index": 40, "required": true},
 				{"slot_id": "back_curio", "name_zh": "隨身奇玩與尾部機關", "layer_z_index": 8, "required": false}
 			]
+		},
+		"races_specification": {
+			"total_races": 5,
+			"races": [
+				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
+				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
+				{"race_id": "fox", "name_zh": "靈尾狐", "name_en": "Astral Fox", "class_archetype": "法師 (Mage)"},
+				{"race_id": "boar", "name_zh": "鋼牙豕", "name_en": "Forge Boar", "class_archetype": "戰士 (Viking)"},
+				{"race_id": "macaque", "aliases": ["monkey"], "name_zh": "靈爪猴", "name_en": "Spring Macaque", "class_archetype": "武術家 (Monk)"}
+			]
 		}
 	}
+
+
+## ── 種族規格讀取與解析 (races_specification) ──
+
+## 取得所有種族規格定義清單
+static func get_races() -> Array[Dictionary]:
+	var spec := get_spec()
+	var races_spec: Dictionary = spec.get("races_specification", {})
+	var raw_races: Array = races_spec.get("races", [])
+	var typed_races: Array[Dictionary] = []
+	for r in raw_races:
+		if r is Dictionary:
+			typed_races.append(r as Dictionary)
+	return typed_races
+
+
+## 取得所有支援的種族 ID 清單
+static func get_race_ids() -> Array[String]:
+	var races := get_races()
+	var ids: Array[String] = []
+	for r in races:
+		ids.append(str(r.get("race_id", "")))
+	return ids
+
+
+## 取得特定種族規格
+static func get_race_def(race_id: String) -> Dictionary:
+	var rid := race_id.to_lower().strip_edges()
+	for r in get_races():
+		if str(r.get("race_id", "")).to_lower() == rid:
+			return r
+		var aliases: Array = r.get("aliases", [])
+		for a in aliases:
+			if str(a).to_lower() == rid:
+				return r
+	return {}
+
+
+## 檢查特定種族是否已有可載入的貼圖素材
+static func has_race_assets(race_id: String, slot_selections: Dictionary = {}) -> bool:
+	var entries := get_sorted_slot_entries(race_id, slot_selections)
+	for entry in entries:
+		if bool(entry.get("is_loaded", false)):
+			return true
+	return false
+
