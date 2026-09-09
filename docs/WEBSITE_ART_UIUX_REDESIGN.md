@@ -23,9 +23,9 @@
 * 首頁充斥多達 4 處「占位卡（Placeholder Cards）」，印著 SVG 齒輪並寫著「調校中」、「即將登場」，嚴重給人「遊戲尚未成熟、內容空洞」的半成品廉價印象。
 
 ### 根本病灶 3：品牌資產與遊戲大廳風格脫節
-* 官方已經定案並由 Kevin 選定的中文手繪字標（`branding/logo_cn_black.png`），官網居然完全沒用！GNB 與 Hero 僅使用普通純文字 `發條之心` 搭配簡陋的 SVG 小圈。
-* 實機大廳展示截圖（`proof_mobile_lobby_home.png`）仍是舊版的「藍天綠草地浮空城堡」，與神殿黑曜石世界觀徹底衝突。
-* 全站 10 個子頁面（`pages/*.html`）竟然全部私自引用 Google Fonts 的「思源黑體（`Noto Sans TC`）」，直接破壞了 Kevin 嚴格要求的「開源粉圓體（Open Huninn）」規範！
+* 官方已經定案並由 Kevin 選定的中文手繪字標，官網居然完全沒用！GNB 與 Hero 僅使用普通純文字 `發條之心` 搭配簡陋的 SVG 小圈。此外原字標為 RGB 帶黑底，若直接縮至 GNB 小尺寸（38px 高）會導致四角黑底直角接縫、且英文副標模糊，現已精準重製為 GNB 專用透明 RGBA 版（`web/media/branding/logo_cn_gnb.png`）與全尺寸透明 RGBA 版（`web/media/branding/logo_cn_rgba.png`）。
+* 實機大廳展示截圖（`proof_mobile_lobby_home.png`）仍是舊版的「藍天綠草地浮空城堡」，與神殿黑曜石世界觀徹底衝突，須於大廳 UI 依神殿黑曜石重構後重新錄製實機截圖，嚴禁以 AI 概念圖冒充實機。
+* 全站 9 個子頁面（`web/pages/*.html`）竟然私自引用 Google Fonts 的「思源黑體（`Noto Sans TC`）」，直接破壞了 Kevin 嚴格要求的「開源粉圓體（Open Huninn）」規範！（經實測檢驗 `download.html` 未載入，其餘 9 檔均有違規載入標籤）。
 
 ---
 
@@ -38,7 +38,7 @@
 |---|---|---|---|
 | **01** | **Hero 磅礡首屏** | 官方字標 Logo + 15s 預告片背景 + 雙黃金立體按鈕 | 奠定奇想發條玩具手遊品牌高度 |
 | **02** | **神殿石柱與四英雄** | 主視覺 Showcase + 四族公仔立繪 Tab 切換 | 展現「全金屬、背負發條鑰匙」世界觀 |
-| **03** | **核心玩法三軸** | 三大視覺化圖卡（15 圈能量律動 / 聽音部位拆卸 / 器魂招三軸） | 告別純文字列表，以圖解展示獨特玩法 |
+| **03** | **核心玩法三軸** | 三大視覺化圖卡（15 點能量制 / 部位破壞與零件拆卸 / 武器次數與切換） | 告別純文字列表，以圖解展示獨特玩法（詞條全數逐字取自 CANON.md:20, 214 與 PRODUCT_BRIDGE.md） |
 | **04** | **實機大廳與日常** | 神殿黑曜石大廳實機圖 + 點擊戳碰互動說明 | 呈現 2.2 頭身白兔活化生態與橫屏雙拇指手感 |
 | **05** | **戰鬥與系統實機瞬間** | 3 欄式真實截圖（強敵部位破壞 / 聚魂殿抽魂 / 釘釘鍛造） | 用真畫面說話，絕不放占位卡 |
 | **06** | **六大界域沙盤探索** | Bento 網格（騎士堡壘、霧隱村、道場、森林、深港、法師之塔） | 呈現非線性地圖與古典玩具劇場風貌 |
@@ -161,26 +161,38 @@
 ```
 
 ### 3.2 字體 100% 統一為粉圓體（清除思源黑體）
-* **問題**：`gallery.html`、`trailers.html`、`systems.html`、`weapons.html`、`equipment.html`、`walkthrough.html`、`guide.html`、`maps.html`、`download.html`、`account.html` 10 個檔案中均有：
-  ```html
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
+* **實測檢驗**：經逐檔 grep 掃描 `web/pages/*.html`，確認共 **9 個檔案**含有 Google Fonts `Noto Sans TC` 外部載入標籤（`web/pages/download.html` 經實測 0 命中，無引入外部字體）：
+  ```text
+  web/pages/account.html:21:  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  web/pages/equipment.html:20:  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  web/pages/gallery.html:20:  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  web/pages/guide.html:20:  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  web/pages/maps.html:20:  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  web/pages/systems.html:20:  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  web/pages/trailers.html:48:  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  web/pages/walkthrough.html:20:  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  web/pages/weapons.html:20:  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;800&display=swap" rel="stylesheet" />
   ```
 * **整改要求**：
-  1. 全數刪除上述 10 個 HTML 內的 Google Fonts `Noto Sans TC` 外部載入標籤。
+  1. 全數刪除上述 9 個 HTML 內的 Google Fonts `Noto Sans TC` 外部載入標籤。
   2. 確保所有頁面皆統一載入 `css/site.css` 中的 local `@font-face`（`jf-openhuninn-2.1.ttf`）。
   3. `body` 與所有標題、按鈕一律繼承 `"Open Huninn", "jf-openhuninn", sans-serif`。
 
 ### 3.3 品牌官方字標（Logo）正式置入
-* 官方美術資源庫中已具備 Kevin 選定的手繪書冊風字標（`branding/logo_cn_black.png`），現已同步拷貝至 `web/media/branding/logo_cn_black.png`。
-* **導覽列（GNB）修改**：
-  將純文字 `.logo` 改為帶有官方高解析透明黑底字標圖示：
+* **字標產出與去背規格**：
+  - 官方手繪書冊風字標（`branding/logo_cn_black.png`）原為 RGB 無 Alpha 通道（底色純黑），若在 `--paper: #0B0A0E` 的神殿底色上直接貼圖會產生比背景更黑且帶直角邊界的矩形色塊；且原圖 1024x640 縮小至 38px 高時寬度僅 61px，英文副標 `CLOCKWORK HEART` 會糊成一條線。
+  - 美術部已完成兩組 RGBA 透明通道規格化資產產出並驗收：
+    1. **`web/media/branding/logo_cn_gnb.png`**（418×76 RGBA 透明底）：專供 GNB 導覽列使用。橫向排版「心形發條鑰匙齒輪圖騰 ＋ 中文主標『發條之心』」，拿掉小尺寸會模糊的英文副標，高 76px 支援 Retina 2x，在 CSS `height: 38px` 下呈現 209px 完美比例，金屬高光清晰且無黑框邊界。
+    2. **`web/media/branding/logo_cn_rgba.png`**（1024×640 RGBA 透明底）：全尺寸去背版，保留完整圖騰、中文主標與英文副標，邊緣平滑羽化，供 Hero 區塊、宣傳 Banner 或大版面展示使用。
+* **導覽列（GNB）實作代碼**：
+  將純文字 `.logo` 改為專用透明字標：
   ```html
   <a class="logo" href="index.html">
-    <img src="media/branding/logo_cn_black.png" alt="發條之心 Clockwork Heart" class="logo-img" style="height:38px;width:auto;display:block;" />
+    <img src="media/branding/logo_cn_gnb.png" alt="發條之心 Clockwork Heart" class="logo-img" style="height:38px;width:auto;display:block;" />
   </a>
   ```
 * **Hero 區塊修改**：
-  在主標題上方加入品牌 Logo 徽章或直接以官方字標作為 Visual Crest，取代單純的純文字 `h1`。
+  在主標題上方以 `web/media/branding/logo_cn_rgba.png` 作為 Visual Crest 或品牌標誌，與下方的 3D 鑄金按鈕形成大氣呼應。
 
 ### 3.4 導覽列（GNB）資訊瘦身
 * **現狀痛點**：GNB 塞滿了 10 個文字連結（首頁、流派、圖鑑、地圖、養成、攻略、指南、畫面、下載、帳號），在任何螢幕上都像行政後台導航。
@@ -198,32 +210,32 @@
 
 | 現行素材路徑 / 元素 | 現存問題 | 替換對策與路徑 | 狀態 |
 |---|---|---|---|
-| `web/media/shots/proof_mobile_lobby_home.png` | 舊版浮空城堡藍天草地，與神殿風格割裂 | 替換為 `web/media/shots/proof_mobile_lobby_temple.png`（神殿黑曜石石柱大廳已過審概念圖） | ✅ 檔案已就緒 |
-| `index.html` 晨光工坊占位卡 (`placeholder-card`) | 醜陋 SVG 齒輪 +「調校中」半成品標籤 | 替換為真實探索場景圖卡 + 特色文字說明（可採用 `web/media/shots/proof_20_mist_shrine.png` 或 `proof_18_forest_lake.png`） | ✅ 現成截圖在庫 |
-| `index.html` 養成系統占位卡 (`placeholder-card`) | 醜陋 SVG 多邊形 +「即將揭曉」標籤 | 替換為 `web/media/shots/proof_soul_pity.png`（聚魂殿抽魂實機介面） | ✅ 現成截圖在庫 |
-| `index.html` 流派切換占位卡 (`placeholder-card`) | 醜陋 SVG 占位卡 | 替換為 `web/media/shots/proof_forge_panel.png`（鍛造介面實機截圖） | ✅ 現成截圖在庫 |
-| 導覽列與 Hero 純文字標題 | 缺乏官方手繪字標，像內部文件 | 引入 `web/media/branding/logo_cn_black.png` | ✅ 檔案已同步 |
+| `web/media/shots/proof_mobile_lobby_home.png` | 舊版浮空城堡藍天草地，與神殿風格割裂 | 大廳 UI 改完後另行重錄實機圖（概念圖 `docs/lobby_ui_redesign_concept.png` 留作美術指引，禁止放進 `web/media/shots/` 冒充實機截圖） | ⏳ 待大廳 UI 重構後實機重錄 |
+| `index.html` 晨光工坊占位卡 (`placeholder-card`) | 醜陋 SVG 齒輪 +「調校中」半成品標籤 | 替換為真實探索場景圖卡 + 特色文字說明（可採用在庫真實截圖 `web/media/shots/proof_20_mist_shrine.png` 或 `proof_18_forest_lake.png`） | ✅ 現成截圖在庫 |
+| `index.html` 養成系統占位卡 (`placeholder-card`) | 醜陋 SVG 多邊形 +「即將揭曉」標籤 | 替換為 `web/media/shots/proof_soul_pity.png`（聚魂殿抽魂實機介面，封靈罐為圓柱罐狀無 emoji） | ✅ 現成截圖在庫 |
+| `index.html` 流派切換占位卡 (`placeholder-card`) | 醜陋 SVG 占位卡 | 替換為 `web/media/shots/proof_forge_panel.png`（釘釘鍛造介面實機截圖，無 emoji 無葫蘆） | ✅ 現成截圖在庫 |
+| 導覽列與 Hero 純文字標題 | 缺乏官方手繪字標，像內部文件 | 引入 `web/media/branding/logo_cn_gnb.png`（GNB 專用透明 RGBA 版）與 `web/media/branding/logo_cn_rgba.png`（Hero 全尺寸透明 RGBA 版） | ✅ 檔案已產出並就緒 |
 
 ---
 
 ## 5. 給阿宏（sideworker）的實作工單檢核表
 
 - [ ] **Task 1: 清理全站字型違規**
-  - 檢視並移除 `web/pages/*.html`（共 10 檔）中所有 `fonts.googleapis.com/.../Noto+Sans+TC` 標籤。
+  - 檢視並移除 `web/pages/` 中經確認的 **9 個檔案**（`account.html:21`、`equipment.html:20`、`gallery.html:20`、`guide.html:20`、`maps.html:20`、`systems.html:20`、`trailers.html:48`、`walkthrough.html:20`、`weapons.html:20`）之 Google Fonts `Noto Sans TC` 外部標籤（`download.html` 經實測 0 命中，無需修改）。
   - 確認全站所有頁面均透過 `css/site.css` 正確載入並優先套用 `Open Huninn`。
 
 - [ ] **Task 2: 重構按鈕與全域圓角 CSS**
-  - 在 `web/css/temple.css` 中，將 `.btn`、`.btn-primary`、`.btn-ghost` 重構為第 3.1 節規範的「3D 鑄金琺瑯果凍厚底規格」（5px 實體厚槽、14~16px 圓角、`:active` 3px 下沉）。
+  - 在 `web/css/temple.css` 中，將 `.btn`、`.btn-primary`、`.btn-ghost` 重構為第 3.1 節規範的「3D 鑄金琺瑯果凍厚底規格」（5px 實體厚槽、14~16px 圓角、`:active` 3px 下沉，熱區 ≥48px）。
   - 將 `.card`、`.sys-card`、`.bento-card` 全面統一為 18px 圓角與雙層微光陰影（第 2.4 節規格）。
 
 - [ ] **Task 3: GNB 與頁面導覽重整**
   - 修改 `web/js/site.js` 中的導覽列生成邏輯，將 10 個連結收斂為 5 大入口，右側為立體金色「下載」按鈕。
-  - 將 Logo 文字換為 `media/branding/logo_cn_black.png`。
+  - 將 Logo 文字換為專用去背字標 `media/branding/logo_cn_gnb.png`（`style="height:38px;width:auto;display:block;"`）。
 
 - [ ] **Task 4: 首頁區塊去重與占位卡拔除**
   - 依照第 2.1 節之 7 大模組規劃，刪除重複出現的實機截圖滾動軌道。
   - 拔除首頁所有 `.placeholder-card`，替換為真實截圖與視覺圖卡（見第 4 節對照表）。
-  - 將實機大廳截圖路徑更新為 `media/shots/proof_mobile_lobby_temple.png`。
+  - 實機大廳截圖暫時保留現有展示；待大廳 UI 依神殿黑曜石規範重製後，再以腳本重錄實機圖替換，嚴禁將 AI 概念圖放進 `web/media/shots/`。
 
 - [ ] **Task 5: 驗證與回報**
   - 跑完所有改動後，在本機開啟瀏覽器確認無破圖、無字型漂移、手機 RWD 雙拇指握持無按鈕遮擋（熱區 ≥48px）。
