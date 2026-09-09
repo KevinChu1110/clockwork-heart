@@ -94,11 +94,13 @@ const RACES_DATA: Dictionary = {
 		"desc": "恪守騎士榮譽的黃銅機甲獅，配備金色板件鬃毛與折疊尾翼。",
 		"costumes": [
 			{"id": "costume_nutcracker_guard", "name_zh": "胡桃鉗近衛軍裝", "desc": "典禮侍衛金屬胸甲與禮服分件"},
+			{"id": "costume_steam_artisan", "name_zh": "蒸氣工匠吊帶工作裝", "desc": "工匠耐磨鍛鐵護胸吊帶與鉚釘金屬搭扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現全黃銅厚重鍛造素體"}
 		],
 		"chassis": [
 			{"id": "paint_brass_gold", "name_zh": "黃銅原金拋光", "desc": "皇家黃金尊貴拋光金屬外殼"},
-			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "皇家象牙白紀念版典雅塗裝"}
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "皇家象牙白紀念版典雅塗裝"},
+			{"id": "paint_midnight_navy", "name_zh": "午夜深藍烤漆", "desc": "深邃暗夜深藍高光琺瑯防護塗層"}
 		]
 	},
 	"boar": {
