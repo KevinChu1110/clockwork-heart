@@ -28,15 +28,16 @@ func _process(_delta: float) -> bool:
 	match _frame:
 		1:
 			_run_test_suite()
-		2:
 			if _ok:
 				print("\n=======================================================")
-				print("ALL_CHARACTER_CREATION_TESTS_PASSED (0 ERROR)")
+				print("CHARACTER_CREATION_OK")
 				quit(0)
 			else:
-				push_error("CHARACTER_CREATION_TESTS_FAILED")
+				push_error("CHARACTER_CREATION_FAIL")
+				print("CHARACTER_CREATION_FAIL")
 				quit(1)
-	return true
+			return true
+	return false
 
 
 func _run_test_suite() -> void:
