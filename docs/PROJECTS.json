@@ -334,8 +334,8 @@
    "id": "mob-paperdoll",
    "cat": "遊戲",
    "title": "紙娃娃角色創建系統：多動物種類＋部件替換＋社交",
-   "status": "開發中",
-   "note": "兔族7大槽位128x128切片產出完成，交接sideworker接場景節點",
+   "status": "測試中",
+   "note": "紙娃娃場景節點 PaperdollCharacter 完成，7層兔族疊合測試綠燈與截圖產出",
    "keys": [
     "紙娃娃角色創建系"
    ]
