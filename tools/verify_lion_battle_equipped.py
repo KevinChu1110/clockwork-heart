@@ -14,7 +14,7 @@ import numpy as np
 from PIL import Image, ImageChops
 
 def main():
-    root = "/opt/side/bravesoul-game"
+    root = os.environ.get("HERMES_KANBAN_WORKSPACE", "/opt/side/bravesoul-game")
     shot_dir = os.path.join(root, "screenshots")
     battle_steam_path = os.path.join(shot_dir, "proof_battle_lion_equipped_steam_artisan.png")
     battle_nutcracker_path = os.path.join(shot_dir, "proof_battle_lion_equipped_nutcracker_guard.png")
@@ -131,15 +131,15 @@ def main():
         print(f"  ✓ {os.path.basename(sp)}: 16c 檢查通過（胸腹最大暗橫帶 {max_player_streak} px < {streak_limit} px，全寬暗比例 < 40%）")
     print("  ✓ 門檻 4 通過：全數截圖符合 review.md 第 16c 條規範！\n")
 
-    print("=== 門檻 5: 驗收 review.md 第 16c-1 條（攻擊幀腳底接地影存在性檢驗）===")
-    for sp in [atk_full_screen_path, battle_atk_path]:
+    print("=== 門檻 5: 驗收 review.md 第 16c-1 條（待機幀與攻擊幀腳底接地影存在性檢驗）===")
+    for sp in [full_screen_path, atk_full_screen_path, battle_atk_path]:
         sim = Image.open(sp).convert("L")
         feet_crop = sim.crop((260, 420, 680, 620))
         farr = np.array(feet_crop)
         shadow_dark_px = int((farr < 70).sum())
         print(f"  ✓ {os.path.basename(sp)}: 腳底接地影區域暗像素 = {shadow_dark_px} px (門檻: > 1000 px)")
         assert shadow_dark_px > 1000, f"{os.path.basename(sp)} 違反第 16c-1 條：腳底區域暗像素僅 {shadow_dark_px} px，缺少接地影！"
-    print("  ✓ 門檻 5 通過：攻擊幀全景與特寫皆具備接地影，角色絕不浮空！\n")
+    print("  ✓ 門檻 5 通過：待機幀與攻擊幀全景皆具備接地影，角色絕不浮空！\n")
 
     print("ALL 5 LION AUDIT REQUIREMENTS VERIFIED AND PASSED!")
 
