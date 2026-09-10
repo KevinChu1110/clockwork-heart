@@ -943,12 +943,34 @@ func _ensure_battle_look() -> void:
 	call_deferred("_layout_battle_equipment_overlays")
 
 
+func _get_player_equipped_idle_texture() -> Texture2D:
+	if _player_race.is_empty():
+		_player_race = SpriteDB.player_race()
+	var slots: Dictionary = {}
+	if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
+		slots = (GameState.paperdoll_slots as Dictionary).duplicate()
+	if not slots.has("weapon") or str(slots["weapon"]).is_empty():
+		if GameState and "equip_slots" in GameState and GameState.equip_slots is Dictionary:
+			var wuid: String = str(GameState.equip_slots.get("weapon", ""))
+			if wuid != "" and GameState.equip_worn is Dictionary and GameState.equip_worn.has(wuid):
+				var winst: Dictionary = GameState.equip_worn[wuid]
+				var base_id: String = str(winst.get("base_id", winst.get("id", "")))
+				if base_id != "":
+					slots["weapon"] = base_id
+	var tex: Texture2D = SpriteDB.player_equipped_idle(_player_race, slots)
+	if tex == null:
+		tex = SpriteDB.player_pose("idle", _player_race)
+	if tex == null:
+		tex = SpriteDB.player_battle()
+	return tex
+
+
 func _apply_battle_art(mode: String) -> void:
 	## 立繪比例：素材約 160×200（兔）／220×240（Boss），維持長寬比、不擠扁
 	_ensure_battle_look()
 	_player_race = SpriteDB.player_race()
 	_player_pose = "idle"
-	var ptex := SpriteDB.player_pose("idle", _player_race)
+	var ptex := _get_player_equipped_idle_texture()
 	if ptex == null:
 		ptex = SpriteDB.player_battle()
 	if ptex:
@@ -2003,16 +2025,20 @@ func _pulse_countdown() -> void:
 	tw.tween_property(countdown, "scale", Vector2.ONE, 0.12)
 
 
-## 切換 Boss 攻擊幀（telegraph 蓄力 / attack 出手 / recover / idle）
+## 切換玩家攻擊幀（telegraph 蓄力 / attack 出手 / recover / idle）
 func _set_player_pose(pose: String, punch: bool = false) -> void:
 	if pose == _player_pose and not punch:
 		return
 	_player_pose = pose
 	if _player_race.is_empty():
 		_player_race = SpriteDB.player_race()
-	var t: Texture2D = SpriteDB.player_pose(pose, _player_race)
-	if t == null and pose != "idle":
-		t = SpriteDB.player_pose("idle", _player_race)
+	var t: Texture2D = null
+	if pose == "idle":
+		t = _get_player_equipped_idle_texture()
+	else:
+		t = SpriteDB.player_pose(pose, _player_race)
+		if t == null:
+			t = _get_player_equipped_idle_texture()
 	if t == null:
 		t = SpriteDB.player_battle()
 	if t:
