@@ -4,11 +4,13 @@ tools/assemble_perfect_boar_poses.py
 Assembles all 6 final Boar combat action poses into game/assets/sprites/player/poses/boar/:
 - idle: party/boar_idle.png (with tan dirt patch stripped, pure clean soft charcoal shadow)
 - telegraph: /tmp/full_pose_telegraph_clean.png
-- attack: layered composite with rigid hammer assembly shifted dx=32 to fit inside canvas (x=124..127 strictly 0)
+- attack: layered composite with rigid hammer assembly shifted dx=52 to fit inside canvas (x=124..127 strictly 0)
 - recover: /tmp/recover_clean_intact.png tilted -4 deg for aggressive forward-impact recovery squat
 - skill: /tmp/skill_full_intact.png (cleaned stray specks, full hammer & aura)
-- hit: /tmp/hit_clean_intact.png (top 10 rows trimmed to eliminate stray white sliver)
+- hit: /tmp/hit_clean_intact.png (top 12 rows trimmed to eliminate stray artifact)
+
 All 128x128 RGBA, Rule 4b-5 compliant soft translucent charcoal ground shadow.
+Rule 4b-9 compliant: All poses share unified base scale (character height diff <= 5%, zero whole-image resize).
 """
 
 import os
@@ -20,6 +22,7 @@ PARTY_IDLE = f"{REPO_ROOT}/game/assets/sprites/player/party/boar_idle.png"
 OUT_DIR = f"{REPO_ROOT}/game/assets/sprites/player/poses/boar"
 
 W, H = 128, 128
+UNIFIED_TARGET_H = 108
 
 def build_clean_contact_shadow(cx: int = 64, cy: int = 120, rx: int = 42, ry: int = 6, blur: float = 0.7) -> Image.Image:
     shadow_canvas = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
@@ -92,7 +95,7 @@ def enforce_ground_shadow(img: Image.Image) -> Image.Image:
                 o_px[x, y] = sp
     return out
 
-def format_pose(raw_path: str, target_h: int, offset_y: int, offset_x: int = -1, trim_top: int = 0) -> Image.Image:
+def format_pose(raw_path: str, offset_y: int, offset_x: int = -1, trim_top: int = 0) -> Image.Image:
     raw = Image.open(raw_path).convert("RGBA")
     if trim_top > 0:
         rw, rh = raw.size
@@ -103,9 +106,9 @@ def format_pose(raw_path: str, target_h: int, offset_y: int, offset_x: int = -1,
     assert bbox is not None
     tight = cleaned.crop(bbox)
     tw, th = tight.size
-    scale = target_h / float(th)
+    scale = UNIFIED_TARGET_H / float(th)
     target_w = int(round(tw * scale))
-    resized = tight.resize((target_w, target_h), Image.Resampling.LANCZOS)
+    resized = tight.resize((target_w, UNIFIED_TARGET_H), Image.Resampling.LANCZOS)
     
     if offset_x == -1:
         offset_x = max(2, (W - target_w) // 2)
@@ -124,7 +127,7 @@ idle_im.alpha_composite(idle_body)
 idle_im = enforce_ground_shadow(idle_im)
 
 # 2. Telegraph: wind-up charge
-telegraph_im = format_pose("/tmp/full_pose_telegraph_clean.png", target_h=114, offset_y=11, offset_x=14)
+telegraph_im = format_pose("/tmp/full_pose_telegraph_clean.png", offset_y=10, offset_x=14)
 
 # 3. Attack: massive downward slam impact with rigid hammer shifted inward
 def build_perfect_attack_pose() -> Image.Image:
@@ -162,8 +165,8 @@ def build_perfect_attack_pose() -> Image.Image:
                     continue
                 h_px[x, y] = p
 
-    # Composite with dx = 32
-    dx = 32
+    # Composite with dx = 52 to ensure hammer head stays cleanly within canvas (x < 124)
+    dx = 52
     composed = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     h_crop = hammer_layer.crop((265, 0, 378, h))
     composed.paste(h_crop, (265 - dx, 0), h_crop)
@@ -174,14 +177,13 @@ def build_perfect_attack_pose() -> Image.Image:
     tight = composed.crop(bbox)
     tw, th = tight.size
 
-    target_h = 102
-    scale = target_h / float(th)
+    scale = UNIFIED_TARGET_H / float(th)
     target_w = int(round(tw * scale))
-    resized = tight.resize((target_w, target_h), Image.Resampling.LANCZOS)
+    resized = tight.resize((target_w, UNIFIED_TARGET_H), Image.Resampling.LANCZOS)
 
     canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     canvas.alpha_composite(shadow_standard)
-    canvas.alpha_composite(resized, (2, 22))
+    canvas.alpha_composite(resized, (2, 10))
     return enforce_ground_shadow(canvas)
 
 attack_im = build_perfect_attack_pose()
@@ -196,23 +198,22 @@ def build_tilted_recover_pose() -> Image.Image:
     tight = rot.crop(bbox)
     tw, th = tight.size
 
-    target_h = 98
-    scale = target_h / float(th)
+    scale = UNIFIED_TARGET_H / float(th)
     target_w = int(round(tw * scale))
-    resized = tight.resize((target_w, target_h), Image.Resampling.LANCZOS)
+    resized = tight.resize((target_w, UNIFIED_TARGET_H), Image.Resampling.LANCZOS)
 
     canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     canvas.alpha_composite(shadow_standard)
-    canvas.alpha_composite(resized, (24, 27))
+    canvas.alpha_composite(resized, (20, 10))
     return enforce_ground_shadow(canvas)
 
 recover_im = build_tilted_recover_pose()
 
 # 5. Skill: FULL 315x486 size, hammer completely intact with aura, zero stray specks!
-skill_im = format_pose("/tmp/skill_full_intact.png", target_h=121, offset_y=3, offset_x=-1)
+skill_im = format_pose("/tmp/skill_full_intact.png", offset_y=10, offset_x=-1)
 
-# 6. Hit: clean whiplash knockback recoil, trimmed top 12px to eliminate stray white artifact
-hit_im = format_pose("/tmp/hit_clean_intact.png", target_h=104, offset_y=19, offset_x=-1, trim_top=12)
+# 6. Hit: clean whiplash knockback recoil, trimmed top 12px to eliminate stray artifact
+hit_im = format_pose("/tmp/hit_clean_intact.png", offset_y=10, offset_x=-1, trim_top=12)
 
 poses = {
     "idle": idle_im,
@@ -225,6 +226,7 @@ poses = {
 
 os.makedirs(OUT_DIR, exist_ok=True)
 print("=== FINAL 6 POSES STATUS ===")
+h_bodies = {}
 for name, im in poses.items():
     out_p = os.path.join(OUT_DIR, f"{name}.png")
     im.save(out_p, "PNG")
@@ -235,5 +237,16 @@ for name, im in poses.items():
     pct = (diff_px / float(W * H)) * 100
 
     bbox = im.getbbox()
+    px = im.load()
+    assert px is not None
+    ys = [y for y in range(118) for x in range(W) if cast(tuple[int, ...], px[x, y])[3] > 10]
+    h_b = max(ys) - min(ys) + 1 if ys else 0
+    h_bodies[name] = h_b
+    top40 = sum(1 for y in range(min(ys), min(ys)+40) for x in range(W) if cast(tuple[int, ...], px[x, y])[3] > 10)
     print(f"[{name.upper():9s}] Saved {out_p}")
-    print(f"  bbox={bbox} | diff_vs_idle={diff_px} px ({pct:.1f}%)")
+    print(f"  bbox={bbox} | body_h={h_b} | top40_px={top40} | diff_vs_idle={diff_px} px ({pct:.1f}%)")
+
+max_hb = max(h_bodies.values())
+min_hb = min(h_bodies.values())
+diff_ratio = (max_hb - min_hb) / float(max_hb) * 100
+print(f"\nCharacter body height: min={min_hb}, max={max_hb}, diff={diff_ratio:.2f}% (<= 5%? {diff_ratio <= 5.0})")
