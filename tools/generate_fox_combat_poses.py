@@ -343,10 +343,57 @@ def generate_fox_poses():
     hit_body = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
     hit_body.paste(rotated_hit, (-64, -64), rotated_hit)
     
-    staff_hit = place_rigid_staff(clean_staff, deg=-65, target_hand=(84, 58), scale=0.98)
+    # Reinforced rigid staff for hit: bridge the floating ring and shaft gaps so staff is 100% rigid & unified
+    staff_hit_src = clean_staff.copy()
+    draw_cs = ImageDraw.Draw(staff_hit_src)
+    draw_cs.polygon([(86, 54), (99, 56), (99, 60), (86, 58)], fill=(120, 80, 50, 255))
+    draw_cs.line([(86, 54), (99, 56)], fill=(50, 30, 20, 255), width=1)
+    draw_cs.line([(86, 58), (99, 60)], fill=(50, 30, 20, 255), width=1)
+    draw_cs.line([(92, 94), (88, 101)], fill=(115, 75, 45, 255), width=2)
+    draw_cs.line([(88, 106), (90, 119)], fill=(115, 75, 45, 255), width=2)
+    
+    staff_hit = place_rigid_staff(staff_hit_src, deg=-65, target_hand=(84, 58), scale=0.98)
+    
+    # Arm and sleeve layer: reconnect right shoulder to hand/cuff (Rule 0b-5)
+    # Right shoulder of rotated_hit is around x=70..76, y=62..72
+    # target_hand is at (84, 58), with wrist socket around (83..86, 50..54)
+    arm_layer = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    draw_arm = ImageDraw.Draw(arm_layer)
+    
+    # 1. Dark outline of sleeve extending upward-right from shoulder to wrist:
+    sleeve_outline = [
+        (69, 61), (74, 53), (82, 47), (87, 49),
+        (90, 55), (84, 62), (77, 72), (73, 72)
+    ]
+    draw_arm.polygon(sleeve_outline, fill=(30, 22, 28, 255))
+    
+    # 2. Main navy fabric of the sleeve:
+    sleeve_navy = [
+        (70, 62), (75, 54), (82, 48), (86, 50),
+        (88, 55), (83, 61), (76, 70), (74, 70)
+    ]
+    draw_arm.polygon(sleeve_navy, fill=(55, 75, 95, 255))
+    
+    # Highlight along the top fold of the sleeve
+    draw_arm.polygon([(71, 62), (76, 54), (82, 49), (81, 53), (75, 59)], fill=(80, 105, 130, 255))
+    # Shadow along the bottom/underarm fold
+    draw_arm.polygon([(75, 68), (81, 61), (86, 56), (88, 55), (83, 61), (76, 70)], fill=(38, 48, 65, 255))
+    
+    # 3. Crimson inner lining visible at cuff rim
+    draw_arm.polygon([(82, 49), (86, 50), (87, 54), (83, 53)], fill=(125, 25, 30, 255))
+    
+    # 4. Gold decorative cuff trim:
+    draw_arm.line([(82, 48), (87, 50), (89, 55)], fill=(215, 175, 65, 255), width=2)
+    draw_arm.point((82, 48), fill=(245, 215, 110, 255))
+    draw_arm.point((87, 50), fill=(245, 215, 110, 255))
+    
+    # 5. Mechanical forearm connector bridging cuff lining to hand:
+    draw_arm.polygon([(83, 51), (86, 50), (87, 53), (84, 53)], fill=(150, 115, 75, 255))
+    draw_arm.point((85, 52), fill=(235, 205, 120, 255))
     
     hit_shadow = build_contact_shadow(cx=50, cy=119, rx=34, ry=5, blur=0.6)
     hit_img = Image.alpha_composite(hit_shadow, hit_body)
+    hit_img = Image.alpha_composite(hit_img, arm_layer)
     hit_img = Image.alpha_composite(hit_img, staff_hit)
     poses["hit"] = hit_img
 
