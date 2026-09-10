@@ -129,17 +129,15 @@ const RACES_DATA: Dictionary = {
 		"id": "macaque",
 		"name_zh": "猴",
 		"name_en": "Macaque",
-		"archetype": "武術家 (monk)",
+		"archetype": "未定案",
 		"thumb": "res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_composite.png",
 		"desc": "敏捷靈活的彈簧行者，同軸金屬耳與伸縮爪刃，機巧多變。",
 		"costumes": [
 			{"id": "costume_dawn_monk_tunic", "name_zh": "晨曦行者武道短褂", "desc": "輕量合金武道短褂分件"},
-			{"id": "costume_zen_striker", "name_zh": "天元演武者機關甲", "desc": "青古銅榫卯護胸板與天元金黃鉚釘搭扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現極簡彈簧骨架素體"}
 		],
 		"chassis": [
-			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "高韌性象牙白減震琺瑯"},
-			{"id": "paint_bamboo_bronze", "name_zh": "天元青古銅烤漆", "desc": "沉穩青古銅釉面金屬板件與黃銅關節"}
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "高韌性象牙白減震琺瑯"}
 		]
 	}
 }
