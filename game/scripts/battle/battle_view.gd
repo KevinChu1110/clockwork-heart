@@ -55,6 +55,14 @@ var _pose_tween: Tween
 var _player_pose: String = "idle"
 var _player_pose_tween: Tween
 var _player_tex_has_baked_shadow: bool = false
+var _breathe_tween: Tween = null
+var enable_idle_breathing: bool = true:
+	set(v):
+		enable_idle_breathing = v
+		if not v:
+			_stop_breathe_tween()
+		elif _player_pose == "idle" and not _ended:
+			_start_breathe_tween()
 var _baked_shadow_cache: Dictionary = {}
 var _battle_weapon: TextureRect = null
 var _battle_armor: TextureRect = null
@@ -1041,6 +1049,7 @@ func _apply_battle_art(mode: String) -> void:
 	_player_base_mod = SpriteDB.player_armor_modulate()
 	player_body.modulate = _player_base_mod
 	_apply_battle_weapon_overlay()
+	_start_breathe_tween()
 
 	_boss_art_key = mode
 	_boss_pose = "idle"
@@ -1173,6 +1182,9 @@ func _layout_battle_equipment_overlays() -> void:
 	_layout_foot_shadow(enemy_body)
 	if player_body == null:
 		return
+	_update_player_pivot()
+	if _player_pose == "idle" and not is_breathing() and not _ended:
+		_start_breathe_tween()
 	var bs := player_body.size
 	if bs.x < 8.0 or bs.y < 8.0:
 		bs = player_body.custom_minimum_size
@@ -1449,6 +1461,7 @@ func _inventory_node() -> Node:
 ## 逃跑不走 _on_end()，戰鬥畫面直接被清掉。不在這裡交還的話，
 ## InventorySystem 會一直握著指向已釋放節點的 Callable。
 func _exit_tree() -> void:
+	_stop_breathe_tween()
 	_release_hp_authority()
 	## 完美格擋慢鏡／命中定格若在收場瞬間還沒播完，恢復用的 tween 會隨
 	## 節點一起死，Engine.time_scale 就永遠卡在慢速 —— 離場一律歸位。
@@ -2109,18 +2122,67 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 	if t:
 		player_body.texture = t
 	_layout_foot_shadow(player_body)
-	if punch or pose == "attack" or pose == "skill":
-		if _player_pose_tween and _player_pose_tween.is_valid():
-			_player_pose_tween.kill()
-		player_body.scale = Vector2(1.1, 0.94)
-		_player_pose_tween = create_tween()
-		_player_pose_tween.tween_property(player_body, "scale", Vector2.ONE, 0.12)
-	elif pose == "telegraph":
-		if _player_pose_tween and _player_pose_tween.is_valid():
-			_player_pose_tween.kill()
-		player_body.scale = Vector2(0.97, 1.05)
-		_player_pose_tween = create_tween()
-		_player_pose_tween.tween_property(player_body, "scale", Vector2.ONE, 0.15)
+	if _player_pose_tween and _player_pose_tween.is_valid():
+		_player_pose_tween.kill()
+		_player_pose_tween = null
+	if pose == "idle":
+		_start_breathe_tween()
+	else:
+		_stop_breathe_tween()
+
+
+func is_breathing() -> bool:
+	return _breathe_tween != null and _breathe_tween.is_valid() and _breathe_tween.is_running()
+
+
+func _get_player_foot_shadow() -> TextureRect:
+	var layer := get_node_or_null("ShadowLayer") as Control
+	if layer == null:
+		return null
+	return layer.get_node_or_null("FootShadow_PlayerBody") as TextureRect
+
+
+func _update_player_pivot() -> void:
+	if player_body == null:
+		return
+	var dr := _body_drawn_rect(player_body)
+	var frac := _content_bottom_frac(player_body.texture)
+	player_body.pivot_offset = Vector2(dr.position.x + dr.size.x * 0.5, dr.position.y + dr.size.y * frac)
+
+
+func _start_breathe_tween() -> void:
+	if not enable_idle_breathing or _player_pose != "idle" or _ended or player_body == null:
+		return
+	if _breathe_tween and _breathe_tween.is_valid() and _breathe_tween.is_running():
+		return
+	if _breathe_tween and _breathe_tween.is_valid():
+		_breathe_tween.kill()
+	_update_player_pivot()
+	player_body.scale = Vector2.ONE
+	var sh := _get_player_foot_shadow()
+	var external_sh: TextureRect = null
+	if sh and sh.visible and not _player_tex_has_baked_shadow:
+		sh.pivot_offset = sh.size * 0.5
+		sh.scale = Vector2.ONE
+		external_sh = sh
+	_breathe_tween = create_tween().set_loops()
+	_breathe_tween.tween_property(player_body, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	if external_sh:
+		_breathe_tween.parallel().tween_property(external_sh, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	_breathe_tween.tween_property(player_body, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+	if external_sh:
+		_breathe_tween.parallel().tween_property(external_sh, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+
+
+func _stop_breathe_tween() -> void:
+	if _breathe_tween and _breathe_tween.is_valid():
+		_breathe_tween.kill()
+		_breathe_tween = null
+	if player_body:
+		player_body.scale = Vector2.ONE
+	var sh := _get_player_foot_shadow()
+	if sh:
+		sh.scale = Vector2.ONE
 
 
 func _set_boss_pose(pose: String, punch: bool = false) -> void:
@@ -2982,6 +3044,8 @@ func _try_wheat_save(hp_after: int) -> void:
 
 func _on_end(won: bool) -> void:
 	_ended = true
+	if not won:
+		_stop_breathe_tween()
 	_release_hp_authority()
 	countdown.visible = false
 	countdown_sub.visible = false
@@ -3377,6 +3441,7 @@ func _on_btn_flee_pressed() -> void:
 		_append_log(_t("無法逃離此戰。"))
 		return
 	_ended = true
+	_stop_breathe_tween()
 	battle_finished.emit(false)
 
 
