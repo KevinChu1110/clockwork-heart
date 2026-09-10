@@ -7,6 +7,7 @@ var _battle: Control = null
 var _sim = null
 var _stage: int = 0
 var _ready_flag: String = "/root/tmp_workspace/race_ready.flag"
+var _start_flag: String = "/root/tmp_workspace/start_sim.flag"
 var _sim_elapsed: float = 0.0
 var _ended_timer: float = 0.0
 var _is_ended: bool = false
@@ -63,6 +64,19 @@ func _process(delta: float) -> bool:
 		return false
 
 	elif _stage == 1:
+		# 通知外層腳本 Godot 場景樹與節點已完全渲染就緒
+		if not FileAccess.file_exists(_ready_flag):
+			var f := FileAccess.open(_ready_flag, FileAccess.WRITE)
+			if f:
+				f.store_string("ready")
+				f.close()
+			print(">>> [CAPTURE] Ready flag written, waiting for start_sim signal...")
+
+		# 等待外層 ffmpeg 啟動完成並發出 start_sim 旗標
+		if not FileAccess.file_exists(_start_flag):
+			return false
+
+		# 收到開始訊號，正式啟動戰鬥模擬與事件監聽
 		var cfg = RACE_CONFIG[_race]
 		_battle.call("setup", cfg.mode)
 		_sim = _battle.get("sim")
@@ -75,16 +89,12 @@ func _process(delta: float) -> bool:
 
 		if _sim:
 			_sim.event.connect(func(kind: String, data: Dictionary):
-				print(">>> [EVENT t=%.2f] kind=%s, data=%s" % [_sim.time, kind, JSON.stringify(data)])
+				print(">>> [EVENT t=%.3f real_ms=%d] kind=%s, data=%s" % [_sim.time, Time.get_ticks_msec(), kind, JSON.stringify(data)])
 				if kind == "battle_end":
 					_is_ended = true
 			)
 
-		var f := FileAccess.open(_ready_flag, FileAccess.WRITE)
-		if f:
-			f.store_string("ready")
-			f.close()
-		print(">>> [CAPTURE] Ready flag written, combat simulation started!")
+		print(">>> [CAPTURE] Combat simulation officially started at real_ms=%d" % Time.get_ticks_msec())
 		_sim_elapsed = 0.0
 		_stage = 2
 		return false
@@ -96,7 +106,7 @@ func _process(delta: float) -> bool:
 			if _ended_timer >= 1.5:
 				print(">>> [CAPTURE] Finished recording after battle_end at sim_elapsed=%.2f" % _sim_elapsed)
 				quit(0)
-		elif _sim_elapsed >= 7.0:
+		elif _sim_elapsed >= 7.5:
 			print(">>> [CAPTURE] Finished recording window at sim_elapsed=%.2f" % _sim_elapsed)
 			quit(0)
 	return false

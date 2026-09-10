@@ -33,12 +33,12 @@ for race in "${RACES[@]}"; do
     echo "----------------------------------------------------"
     echo ">>> Recording Race: $race"
     echo "----------------------------------------------------"
-    rm -f "$TMP_DIR/race_ready.flag" 2>/dev/null || true
+    rm -f "$TMP_DIR/race_ready.flag" "$TMP_DIR/start_sim.flag" 2>/dev/null || true
 
     RAW_16X9="$TMP_DIR/raw_${race}_16x9.mp4"
     rm -f "$RAW_16X9" 2>/dev/null || true
 
-    # 啟動 Godot 戰鬥場景
+    # 啟動 Godot 戰鬥場景 (等待 ready)
     TARGET_RACE="$race" DISPLAY="$DISP" godot --path game --rendering-driver opengl3 \
         -s res://scripts/dev/capture_single_race_combat.gd >/tmp/godot_${race}.log 2>&1 &
     GODOT_PID=$!
@@ -56,10 +56,15 @@ for race in "${RACES[@]}"; do
     done
     echo ">>> Godot ready confirmed for $race in ${WAITED}00ms"
 
-    # 啟動 ffmpeg 錄製 7 秒無損 1280x720 (涵蓋 6.0s 觀察窗)
+    # 啟動 ffmpeg 錄製 8.5 秒無損 1280x720
     ffmpeg -y -loglevel error -f x11grab -draw_mouse 0 -framerate 30 -video_size 1280x720 -i "$DISP" \
-           -t 7.0 -c:v libx264 -preset veryfast -pix_fmt yuv420p "$RAW_16X9" &
+           -t 8.5 -c:v libx264 -preset veryfast -pix_fmt yuv420p "$RAW_16X9" &
     FF_PID=$!
+
+    # 稍候 0.3s 確保 ffmpeg 已建立 X11 抓取與錄製管線，隨後觸發戰鬥正式開始
+    sleep 0.3
+    touch "$TMP_DIR/start_sim.flag"
+    echo ">>> Simulation start flag sent to Godot!"
 
     wait "$FF_PID" || true
     wait "$GODOT_PID" || true

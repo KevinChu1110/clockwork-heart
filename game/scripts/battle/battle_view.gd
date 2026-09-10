@@ -2172,11 +2172,11 @@ func _on_event(kind: String, data: Dictionary) -> void:
 				)
 			elif aid == "player":
 				_set_player_pose("attack", true)
-				get_tree().create_timer(0.24).timeout.connect(func():
+				get_tree().create_timer(0.45).timeout.connect(func():
 					if is_instance_valid(self) and not _ended and _player_pose == "attack":
 						_set_player_pose("recover")
 				)
-				get_tree().create_timer(0.42).timeout.connect(func():
+				get_tree().create_timer(0.85).timeout.connect(func():
 					if is_instance_valid(self) and not _ended and _player_pose == "recover":
 						_set_player_pose("idle")
 				)
@@ -2185,13 +2185,14 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			var crit_s := _t("暴擊") if is_crit else ""
 			var ks := _t("【王者斬】") if data.get("king_slash", false) else ""
 			_append_log(_t("%s%s 造成 %s 傷害 %s") % [ks, data.get("attacker"), data.get("damage"), crit_s])
-			## 玩家挨打：切受擊姿
+			## 玩家挨打：切受擊姿（出招中不打斷攻擊幀，與 Boss 保持一致）
 			if str(data.get("defender", "")) == "player":
-				_set_player_pose("hit", true)
-				get_tree().create_timer(0.28).timeout.connect(func():
-					if is_instance_valid(self) and not _ended and _player_pose == "hit":
-						_set_player_pose("idle")
-				)
+				if _player_pose != "attack" and _player_pose != "skill":
+					_set_player_pose("hit", true)
+					get_tree().create_timer(0.28).timeout.connect(func():
+						if is_instance_valid(self) and not _ended and _player_pose == "hit":
+							_set_player_pose("idle")
+					)
 			elif _is_enemy_actor(str(data.get("defender", ""))):
 				if _boss_pose != "telegraph" and _boss_pose != "attack":
 					var hit_pose := SpriteDB.boss_pose(_boss_art_key, "hit")
@@ -2526,9 +2527,9 @@ func _lunge(id: String) -> void:
 		body.position = home
 		_player_lunge_tw = create_tween()
 		var dir := 1.0
-		_player_lunge_tw.tween_property(body, "position", home + Vector2(dir * 42, 0), 0.10).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		_player_lunge_tw.tween_interval(0.12)
-		_player_lunge_tw.tween_property(body, "position", home, 0.14).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+		_player_lunge_tw.tween_property(body, "position", home + Vector2(dir * 42, 0), 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		_player_lunge_tw.tween_interval(0.35)
+		_player_lunge_tw.tween_property(body, "position", home, 0.20).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 	else:
 		if _enemy_home == Vector2.ZERO and body.position != Vector2.ZERO:
 			_enemy_home = body.position

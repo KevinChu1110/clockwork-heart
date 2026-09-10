@@ -2,6 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://c1qv5wc4je1ry"
+path="res://.godot/imported/costume_steam_artisan.png-bbce2b298bdc813a54c76cae7226f24d.ctex"
 metadata={
 "vram_texture": false
 }
@@ -9,6 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/sprites/player/paperdoll/lion/costume/costume_steam_artisan.png"
+dest_files=["res://.godot/imported/costume_steam_artisan.png-bbce2b298bdc813a54c76cae7226f24d.ctex"]
 
 [params]
 
