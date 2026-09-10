@@ -231,40 +231,66 @@ def generate_fox_poses():
     poses["telegraph"] = tele_img
 
     # =========================================================================
-    # 3. ATTACK (Dynamic lunging thrust strike / two-handed / unclipped tapered burst)
+    # 3. ATTACK (Dynamic lunging magic thrust / center of gravity forward / back leg kick)
     # =========================================================================
-    b_im = battle_src.copy()
-    bw, bh = b_im.size
-    px = b_im.load()
-    assert px is not None
+    shifts_attack = {
+        "ear_l": (14, 0), "ear_r": (16, 0), "forehead": (16, 0),
+        "eye_l": (16, 1), "eye_r": (18, 1), "snout": (20, 2),
+        "neck": (16, 2), "core": (14, 2), "shoulder_l": (10, 3), "shoulder_r": (18, 2),
+        "key_mount": (8, 2), "key_top": (6, 2), "key_bot": (6, 2),
+        "pelvis": (8, 3), 
+        "hip_l": (-2, 4), "knee_l": (-8, 4), "foot_l": (-12, 0),
+        "hip_r": (14, 3), "knee_r": (18, 2), "foot_r": (16, 0),
+        "tail_base": (0, 2), "tail_mid": (-10, -2), "tail_tip": (-18, -6),
+        "hand": (10, 0),
+    }
 
-    # Clean ground halo
-    for y in range(116, bh):
-        for x in range(bw):
-            p = cast(tuple[int, int, int, int], px[x, y])
-            if p[3] > 0:
-                is_paw = (44 <= x <= 62 or 80 <= x <= 104) and y <= 122 and p[0] < 85 and p[1] < 85 and p[2] < 85
-                if not is_paw:
-                    px[x, y] = (0, 0, 0, 0)
+    src_pts = list(anchors)
+    dst_pts = list(anchors)
+    for name, (bx, by) in base_landmarks.items():
+        dx, dy = shifts_attack.get(name, (0, 0))
+        src_pts.append((bx, by))
+        dst_pts.append((bx + dx, by + dy))
 
-    # Smoothly feather out rightmost magic blast at x >= 102
-    for y in range(bh):
-        for x in range(bw):
-            p = cast(tuple[int, int, int, int], px[x, y])
-            if p[3] > 0 and x >= 102:
-                fade = max(0.0, 1.0 - ((x - 102) / 14.0) ** 1.5)
-                px[x, y] = (p[0], p[1], p[2], int(p[3] * fade))
+    warped_atk = warp_image_idw(body_clean, src_pts, dst_pts, power=2.0, epsilon=4.0)
 
-    # Scale 1.02 to perfectly match idle proportion
-    target_w = int(round(bw * 1.02))
-    target_h = int(round(bh * 1.02))
-    scaled_atk = b_im.resize((target_w, target_h), Image.Resampling.LANCZOS)
+    # Clean staff with bridged gaps & crescent ring
+    staff_atk_src = clean_staff.copy()
+    draw_cs_atk = ImageDraw.Draw(staff_atk_src)
+    draw_cs_atk.polygon([(86, 54), (99, 56), (99, 60), (86, 58)], fill=(120, 80, 50, 255))
+    draw_cs_atk.line([(86, 54), (99, 56)], fill=(50, 30, 20, 255), width=1)
+    draw_cs_atk.line([(86, 58), (99, 60)], fill=(50, 30, 20, 255), width=1)
+    draw_cs_atk.line([(91, 95), (88, 99)], fill=(115, 75, 45, 255), width=2)
+    draw_cs_atk.line([(88, 108), (89, 117)], fill=(115, 75, 45, 255), width=2)
 
-    b_canvas = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
-    b_canvas.paste(scaled_atk, (-2, 0), scaled_atk)
+    # Staff thrust forward horizontally:
+    target_hand = (82, 78)
+    staff_atk = place_rigid_staff(staff_atk_src, deg=-62, target_hand=target_hand, scale=0.98)
 
-    attack_shadow = build_contact_shadow(cx=62, cy=120, rx=44, ry=6, blur=0.8)
-    attack_img = Image.alpha_composite(attack_shadow, b_canvas)
+    # Arm layer to connect right shoulder to hand/cuff:
+    arm_layer = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    draw_arm = ImageDraw.Draw(arm_layer)
+    sleeve_poly = [(92, 68), (97, 72), (88, 83), (80, 81), (80, 75), (86, 70)]
+    draw_arm.polygon(sleeve_poly, fill=(30, 22, 28, 255))
+    draw_arm.polygon([(93, 69), (96, 72), (87, 82), (81, 80), (81, 76), (87, 71)], fill=(55, 75, 95, 255))
+    draw_arm.line([(81, 76), (81, 80)], fill=(200, 160, 60, 255), width=2)
+    draw_arm.ellipse([79, 75, 85, 81], fill=(160, 120, 65, 255))
+    draw_arm.ellipse([80, 76, 84, 80], fill=(210, 175, 90, 255))
+
+    # Subtle magic energy spark at crystal tip
+    spark_layer = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    draw_sp = ImageDraw.Draw(spark_layer)
+    draw_sp.ellipse([116, 54, 124, 62], fill=(80, 235, 255, 120))
+    draw_sp.ellipse([118, 56, 122, 60], fill=(220, 255, 255, 200))
+    spark_layer = spark_layer.filter(ImageFilter.GaussianBlur(0.6))
+
+    # Contact shadow
+    attack_shadow = build_contact_shadow(cx=66, cy=120, rx=44, ry=6, blur=0.7)
+
+    attack_img = Image.alpha_composite(attack_shadow, warped_atk)
+    attack_img = Image.alpha_composite(attack_img, arm_layer)
+    attack_img = Image.alpha_composite(attack_img, staff_atk)
+    attack_img = Image.alpha_composite(attack_img, spark_layer)
     poses["attack"] = attack_img
 
     # =========================================================================
