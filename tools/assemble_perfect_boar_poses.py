@@ -4,8 +4,8 @@ tools/assemble_perfect_boar_poses.py
 Assembles all 6 final Boar combat action poses into game/assets/sprites/player/poses/boar/:
 - idle: party/boar_idle.png (with tan dirt patch stripped, pure clean soft charcoal shadow)
 - telegraph: /tmp/full_pose_telegraph_clean.png
-- attack: /tmp/full_pose_attack_clean.png
-- recover: /tmp/recover_clean_intact.png
+- attack: layered composite with rigid hammer assembly shifted dx=32 to fit inside canvas (x=124..127 strictly 0)
+- recover: /tmp/recover_clean_intact.png tilted -4 deg for aggressive forward-impact recovery squat
 - skill: /tmp/skill_full_intact.png (cleaned stray specks, full hammer & aura)
 - hit: /tmp/hit_clean_intact.png (top 10 rows trimmed to eliminate stray white sliver)
 All 128x128 RGBA, Rule 4b-5 compliant soft translucent charcoal ground shadow.
@@ -71,9 +71,7 @@ def strip_tan_and_shadow(im: Image.Image) -> Image.Image:
             p = cast(tuple[int, ...], px[x, y])
             if p[3] > 0:
                 r, g, b = p[0], p[1], p[2]
-                # Detect baked-in tan/beige ground dirt
                 is_tan = (r > 125 and g > 105 and b > 75) or (p[3] < 120 and y > h * 0.88)
-                # Keep solid dark metallic feet/hooves
                 is_dark_foot = (p[3] > 200 and r < 110 and g < 95 and b < 85)
                 if is_tan and not is_dark_foot:
                     px[x, y] = (0, 0, 0, 0)
@@ -88,11 +86,9 @@ def enforce_ground_shadow(img: Image.Image) -> Image.Image:
         for x in range(W):
             sp = cast(tuple[int, int, int, int], sh_px[x, y])
             op = cast(tuple[int, int, int, int], o_px[x, y])
-            # Outside shadow ellipse: strictly transparent
             if sp[3] == 0:
                 o_px[x, y] = (0, 0, 0, 0)
             elif op[3] > 0 and (op[0] > 125 and op[1] > 105 and op[2] > 75):
-                # Replace tan floor artifact with clean soft shadow
                 o_px[x, y] = sp
     return out
 
@@ -130,11 +126,87 @@ idle_im = enforce_ground_shadow(idle_im)
 # 2. Telegraph: wind-up charge
 telegraph_im = format_pose("/tmp/full_pose_telegraph_clean.png", target_h=114, offset_y=11, offset_x=14)
 
-# 3. Attack: massive downward slam impact
-attack_im = format_pose("/tmp/full_pose_attack_clean.png", target_h=104, offset_y=21, offset_x=8)
+# 3. Attack: massive downward slam impact with rigid hammer shifted inward
+def build_perfect_attack_pose() -> Image.Image:
+    raw = Image.open("/tmp/preview_raw_atk.png").convert("RGBA")
+    w, h = raw.size
 
-# 4. Recover: deep recovery crouch
-recover_im = format_pose("/tmp/recover_clean_intact.png", target_h=98, offset_y=27, offset_x=-1)
+    # Layer 1: Body (head, tusks, snout, ears, crest, winding key, body, legs, hands)
+    body_layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    b_px = body_layer.load()
+    r_px = raw.load()
+    assert b_px is not None and r_px is not None
+
+    for y in range(h):
+        for x in range(w):
+            p = cast(tuple[int, ...], r_px[x, y])
+            if p[3] == 0:
+                continue
+            if y > 275 and (p[0] > 125 and p[1] > 105 and p[2] > 75):
+                continue
+            if y < 165 and x <= 285:
+                b_px[x, y] = p
+            elif y >= 165 and x <= 255:
+                b_px[x, y] = p
+
+    # Layer 2: Hammer (shaft connection, metal sleeve, stone hammer block, right metal hub/cap)
+    hammer_layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    h_px = hammer_layer.load()
+    assert h_px is not None
+
+    for y in range(160, 276):
+        for x in range(265, 378):
+            p = cast(tuple[int, ...], r_px[x, y])
+            if p[3] > 30:
+                if y > 262 and (p[0] > 125 and p[1] > 105 and p[2] > 75):
+                    continue
+                h_px[x, y] = p
+
+    # Composite with dx = 32
+    dx = 32
+    composed = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    h_crop = hammer_layer.crop((265, 0, 378, h))
+    composed.paste(h_crop, (265 - dx, 0), h_crop)
+    composed.paste(body_layer, (0, 0), body_layer)
+
+    bbox = composed.getbbox()
+    assert bbox is not None
+    tight = composed.crop(bbox)
+    tw, th = tight.size
+
+    target_h = 102
+    scale = target_h / float(th)
+    target_w = int(round(tw * scale))
+    resized = tight.resize((target_w, target_h), Image.Resampling.LANCZOS)
+
+    canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    canvas.alpha_composite(shadow_standard)
+    canvas.alpha_composite(resized, (2, 22))
+    return enforce_ground_shadow(canvas)
+
+attack_im = build_perfect_attack_pose()
+
+# 4. Recover: deep recovery crouch tilted forward (-4 deg) for aggressive impact-absorbing squat
+def build_tilted_recover_pose() -> Image.Image:
+    rec_raw = Image.open("/tmp/recover_clean_intact.png").convert("RGBA")
+    rw, rh = rec_raw.size
+    rot = rec_raw.rotate(-4, resample=Image.Resampling.BICUBIC, center=(int(rw * 0.45), int(rh * 0.95)))
+    bbox = rot.getbbox()
+    assert bbox is not None
+    tight = rot.crop(bbox)
+    tw, th = tight.size
+
+    target_h = 98
+    scale = target_h / float(th)
+    target_w = int(round(tw * scale))
+    resized = tight.resize((target_w, target_h), Image.Resampling.LANCZOS)
+
+    canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    canvas.alpha_composite(shadow_standard)
+    canvas.alpha_composite(resized, (24, 27))
+    return enforce_ground_shadow(canvas)
+
+recover_im = build_tilted_recover_pose()
 
 # 5. Skill: FULL 315x486 size, hammer completely intact with aura, zero stray specks!
 skill_im = format_pose("/tmp/skill_full_intact.png", target_h=121, offset_y=3, offset_x=-1)
