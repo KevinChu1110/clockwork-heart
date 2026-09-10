@@ -41,9 +41,19 @@ static func player_race_composite(race: String, selections: Dictionary = {}) -> 
 
 static func player_idle() -> Texture2D:
 	var r := player_race()
+	if r != "rabbit":
+		var t := tex("%s/player/poses/%s/idle.png" % [ROOT, r])
+		if t:
+			return t
+		t = tex("%s/player/%s_idle.png" % [ROOT, r])
+		if t:
+			return t
+		t = tex("%s/player/party/%s_idle.png" % [ROOT, r])
+		if t:
+			return t
 	var gs := _gs()
 	var sel: Dictionary = gs.paperdoll_slots if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary else {}
-	if r != "rabbit" or not sel.is_empty():
+	if not sel.is_empty():
 		var comp := player_race_composite(r, sel)
 		if comp:
 			return comp
@@ -52,6 +62,10 @@ static func player_idle() -> Texture2D:
 
 static func player_walk(frame: int) -> Texture2D:
 	var i := posmod(frame, 4)
+	var r := player_race()
+	var t := tex("%s/player/%s_walk_%d_x3.png" % [ROOT, r, i])
+	if t:
+		return t
 	return tex("%s/player/rabbit_walk_%d_x3.png" % [ROOT, i])
 
 
@@ -389,14 +403,14 @@ static func equip_icon_for_inst(inst: Dictionary) -> Texture2D:
 
 
 static func player_battle() -> Texture2D:
+	var idle := player_idle()
+	if idle:
+		return idle
 	var r := player_race()
 	if r != "rabbit":
 		var comp := player_race_composite(r)
 		if comp:
 			return comp
-	var idle := player_idle()
-	if idle:
-		return idle
 	return tex("%s/player/rabbit_battle.png" % ROOT)
 
 
