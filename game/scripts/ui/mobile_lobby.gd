@@ -63,6 +63,7 @@ var _adventure_layer: Control
 var _soul_layer: Control
 var _bag_layer: Control
 var _dock_buttons: Array[Button] = []
+var _char_prev: TextureRect = null
 
 ## 角色動態與姿態
 var _profile_avatar: TextureRect
@@ -140,13 +141,16 @@ func _get_hero_portrait(race: String) -> Texture2D:
 func _load_hero_poses() -> void:
 	var gs := _gs()
 	var race := "rabbit"
+	var sel: Dictionary = {}
 	if gs and "player_race" in gs:
 		race = str(gs.player_race).strip_edges().to_lower()
 		if race.is_empty():
 			race = "rabbit"
+	if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
+		sel = gs.paperdoll_slots
 
-	if race != "rabbit":
-		var r_tex := SpriteDB.player_race_composite(race)
+	if race != "rabbit" or not sel.is_empty():
+		var r_tex := SpriteDB.player_race_composite(race, sel)
 		if r_tex:
 			_tex_idle = r_tex
 			_tex_attack = r_tex
@@ -267,7 +271,10 @@ func _create_obsidian_panel(accent: Color = LINE_GOLD) -> StyleBoxFlat:
 ## 黃金以太塵埃微粒 (Golden Ether Motes)
 ## ──────────────────────────────────────────
 func _spawn_floating_ether_motes() -> void:
-	var gp := get_node_or_null("/root/GraphicsProfile")
+	var gp: Node = null
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		gp = (loop as SceneTree).root.get_node_or_null("GraphicsProfile")
 	var n := 14
 	if gp != null:
 		n = int(gp.particle_count(14))
@@ -525,11 +532,16 @@ func _style_dock_button(btn: Button, is_active: bool) -> void:
 
 func _switch_tab(target: Tab) -> void:
 	_current_tab = target
-	_village_layer.visible = (target == Tab.VILLAGE)
-	_char_layer.visible = (target == Tab.CHARACTER)
-	_adventure_layer.visible = (target == Tab.ADVENTURE)
-	_soul_layer.visible = (target == Tab.SOUL_HALL)
-	_bag_layer.visible = (target == Tab.BAG)
+	if _village_layer:
+		_village_layer.visible = (target == Tab.VILLAGE)
+	if _char_layer:
+		_char_layer.visible = (target == Tab.CHARACTER)
+	if _adventure_layer:
+		_adventure_layer.visible = (target == Tab.ADVENTURE)
+	if _soul_layer:
+		_soul_layer.visible = (target == Tab.SOUL_HALL)
+	if _bag_layer:
+		_bag_layer.visible = (target == Tab.BAG)
 
 	for i in range(_dock_buttons.size()):
 		var is_active := (i == int(target))
@@ -1395,13 +1407,59 @@ func _build_character_tab() -> void:
 	l_card.add_theme_stylebox_override("panel", _create_obsidian_panel(LINE_GOLD_SOFT))
 	h.add_child(l_card)
 
-	var prev := TextureRect.new()
-	prev.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	prev.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var l_margin := MarginContainer.new()
+	l_margin.add_theme_constant_override("margin_left", 12)
+	l_margin.add_theme_constant_override("margin_top", 12)
+	l_margin.add_theme_constant_override("margin_right", 12)
+	l_margin.add_theme_constant_override("margin_bottom", 12)
+	l_card.add_child(l_margin)
+
+	var l_vbox := VBoxContainer.new()
+	l_vbox.add_theme_constant_override("separation", 10)
+	l_margin.add_child(l_vbox)
+
+	_char_prev = TextureRect.new()
+	_char_prev.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_char_prev.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_char_prev.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_char_prev.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_char_prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	if _tex_idle:
-		prev.texture = _tex_idle
-	l_card.add_child(prev)
+		_char_prev.texture = _tex_idle
+	_char_prev.mouse_filter = Control.MOUSE_FILTER_PASS
+	l_vbox.add_child(_char_prev)
+
+	# 點擊預覽卡可直接開啟更衣
+	var click_card_btn := Button.new()
+	click_card_btn.flat = true
+	click_card_btn.set_anchors_preset(Control.PRESET_FULL_RECT)
+	click_card_btn.mouse_filter = Control.MOUSE_FILTER_PASS
+	click_card_btn.pressed.connect(open_wardrobe)
+	_char_prev.add_child(click_card_btn)
+
+	# 正式更衣按鈕 (手遊防誤觸標準：高度 50px，熱區 >= 50px)
+	var btn_wardrobe := Button.new()
+	btn_wardrobe.name = "BtnWardrobe"
+	btn_wardrobe.text = _t("更衣 · 發條衣櫥")
+	btn_wardrobe.custom_minimum_size = Vector2(0, 50)
+	btn_wardrobe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn_wardrobe.add_theme_font_size_override("font_size", 16)
+	var wsb := StyleBoxFlat.new()
+	wsb.bg_color = OBSIDIAN_WARM
+	wsb.border_color = GOLD_CLASSICAL
+	wsb.set_border_width_all(2)
+	wsb.border_width_bottom = 5
+	wsb.set_corner_radius_all(14)
+	btn_wardrobe.add_theme_stylebox_override("normal", wsb)
+	var wsb_h := wsb.duplicate()
+	wsb_h.bg_color = Color(0.18, 0.15, 0.22, 1.0)
+	wsb_h.border_color = GOLD_HOVER
+	btn_wardrobe.add_theme_stylebox_override("hover", wsb_h)
+	btn_wardrobe.add_theme_stylebox_override("pressed", wsb_h)
+	btn_wardrobe.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	btn_wardrobe.add_theme_color_override("font_hover_color", GOLD_HOVER)
+	btn_wardrobe.pressed.connect(open_wardrobe)
+	l_vbox.add_child(btn_wardrobe)
 
 	var r_v := VBoxContainer.new()
 	r_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -1553,6 +1611,8 @@ func refresh_hud() -> void:
 		_load_hero_poses()
 		if not _is_interacting and _tex_idle:
 			_hero_avatar.texture = _tex_idle
+	if _char_prev and _tex_idle:
+		_char_prev.texture = _tex_idle
 	if _power_label:
 		_power_label.text = "戰力 %d" % pow
 	if _energy_label:
@@ -1588,3 +1648,38 @@ func _show_toast(msg: String) -> void:
 	tw.tween_interval(1.5)
 	tw.tween_property(toast, "modulate:a", 0.0, 0.4)
 	tw.tween_callback(toast.queue_free)
+
+
+## 開啟換裝衣櫥彈窗 (非開局選角，是隨時可重複開合的衣櫥)
+func open_wardrobe() -> void:
+	var existing = get_node_or_null("WardrobeDialog")
+	if existing != null:
+		return
+
+	var wardrobe_scn := load("res://scenes/ui/wardrobe_dialog.tscn")
+	var dlg: Control = null
+	if wardrobe_scn != null:
+		dlg = wardrobe_scn.instantiate() as Control
+	else:
+		var WardrobeClass: GDScript = load("res://scripts/ui/wardrobe_dialog.gd")
+		if WardrobeClass != null:
+			dlg = WardrobeClass.new() as Control
+
+	if dlg == null:
+		push_error("無法載入 WardrobeDialog")
+		return
+
+	if "creation_mode" in dlg:
+		dlg.creation_mode = false
+
+	if dlg.has_signal("outfit_saved"):
+		dlg.connect("outfit_saved", func(_race: String, _selections: Dictionary):
+			_load_hero_poses()
+			refresh_hud()
+			if _char_prev and _tex_idle:
+				_char_prev.texture = _tex_idle
+			_show_toast(_t("換裝完成！新外裝已生效"))
+		)
+
+	add_child(dlg)
+
