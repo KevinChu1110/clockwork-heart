@@ -146,6 +146,9 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
   - **待機對峙窗（`sim.time 0.0s～3.8s`）**：白金兔保持 `idle` 姿態，荒路殘兵進入對峙，ATB 蓄力推進。
   - **出手突刺窗（`sim.time 3.8s～4.1s`，實測出手 `sim.time = 4.00s`）**：`sim` 發出 `attack_swing` 事件，觸發 `battle_view.gd` 的 `attack_swing` 分支呼叫 `_lunge("player")` 前衝突刺位移，並切換 `_set_player_pose("attack", true)`，觸發角色 `scale(1.1, 0.94)` 壓扁與 0.12s 緩動回彈。錄影窗建議 `3.8s～4.8s`。
   - **命中停頓窗（`sim.time 4.1s～4.4s`，實測首次命中 `sim.time = 4.27s`）**：`sim` 發出 `hit` 事件，觸發 `battle_view.gd` 的 `hit` 分支呼叫 `_spawn_float()` 傷害跳字（實測 32～38 點浮動）、`_flash()` 荒路殘兵受擊閃白、屏幕微震，以及 `trigger_hit_stop(0.08)` 精確 0.08 秒命中打擊停頓！首次命中 4.27s，之後戰鬥可能延續，錄影窗不依賴擊殺。
+- **素材交付檔案（9:16 成片）**：`docs/marketing/shots/rec01_rabbit_combat_9x16.mp4`（1080×1920，2.50s，含 AAC 實體音軌）
+- **原始母帶檔案（16:9 原生）**：`docs/marketing/shots/rec01_rabbit_combat_raw_16x9.mp4`（1280×720，2.50s）
+- **關鍵幀抽格證明**：`proofs/combat_feel/rabbit_weapon_crop.png`、`proofs/combat_feel/rabbit_proof_01_idle.png`、`proofs/combat_feel/rabbit_proof_02_attack.png`、`proofs/combat_feel/rabbit_proof_03_hit.png`
 
 ---
 
@@ -192,6 +195,9 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
   - **待機對峙窗（`sim.time 0.0s～3.6s`）**：烈鬃獅保持威武待機，雙手端持長槍對峙，ATB 蓄力。⚠️ 黑鏽浪人會在 `sim.time = 3.65s` 先出手、`3.92s` 命中我方（我方受擊閃白＋跳字），那是敵方動作，別當成獅子出手。
   - **突貫位移窗（`sim.time 3.9s～4.2s`，實測我方 `attack_swing` `sim.time = 4.00s`）**：`sim` 發出 `attack_swing`（`data.id == "player"`），觸發 `battle_view.gd` 的 `attack_swing` 分支呼叫 `_lunge("player")` 直線突刺位移，並切換 `attack` 姿態，長槍向前疾刺。錄影窗建議 `3.6s～4.8s`（含敵方先手，畫面更有來回）。
   - **槍尖穿透窗（`sim.time 4.2s～4.4s`，實測我方首次命中 `sim.time = 4.28s`）**：`sim` 發出 `hit`（`attacker == "player"`），觸發 `hit` 分支呼叫傷害跳字（實測 12～22 點浮動）、黑鏽浪人受擊閃白、屏幕微震與 0.08 秒命中打擊停頓！⚠️ 這一擊會 miss（實測三輪有一輪首次命中落到 9.00s），錄影必得畫面是我方出手位移，命中為加分。
+- **素材交付檔案（9:16 成片）**：`docs/marketing/shots/rec02_lion_combat_9x16.mp4`（1080×1920，2.50s，含 AAC 實體音軌）
+- **原始母帶檔案（16:9 原生）**：`docs/marketing/shots/rec02_lion_combat_raw_16x9.mp4`（1280×720，2.50s）
+- **關鍵幀抽格證明**：`proofs/combat_feel/lion_weapon_crop.png`、`proofs/combat_feel/lion_proof_01_idle.png`、`proofs/combat_feel/lion_proof_02_attack.png`、`proofs/combat_feel/lion_proof_03_hit.png`
 
 ---
 
@@ -239,6 +245,9 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
   - **前搖蓄能窗（`sim.time 0.0s～3.6s`）**：靈尾狐法杖前引蓄勢，機械星軸尾微擺，ATB 蓄能。⚠️ 霧影會在 `sim.time = 3.58s` 先出手、`3.85s` 命中我方（我方受擊閃白），那是敵方動作，別當成狐狸出手。
   - **法杖衝擊窗（`sim.time 3.9s～4.2s`，實測我方 `attack_swing` `sim.time = 4.00s`）**：`sim` 發出 `attack_swing`（`data.id == "player"`），觸發 `battle_view.gd` 的 `attack_swing` 分支呼叫 `_lunge("player")` 前移位移，法杖向前引導能量衝擊。錄影窗建議 `3.5s～4.6s`。
   - **秘術命中窗（`sim.time 4.2s～4.5s`，實測我方首次命中 `sim.time = 4.33s`）**：`sim` 發出 `hit`（`attacker == "player"`），霧影身上觸發受擊閃白、傷害跳字（實測 15 點上下浮動）與 0.08 秒打擊停頓！隨後姿態平滑恢復 `recover` 與 `idle`。
+- **素材交付檔案（9:16 成片）**：`docs/marketing/shots/rec03_fox_combat_9x16.mp4`（1080×1920，2.50s，含 AAC 實體音軌）
+- **原始母帶檔案（16:9 原生）**：`docs/marketing/shots/rec03_fox_combat_raw_16x9.mp4`（1280×720，2.50s）
+- **關鍵幀抽格證明**：`proofs/combat_feel/fox_weapon_crop.png`、`proofs/combat_feel/fox_proof_01_idle.png`、`proofs/combat_feel/fox_proof_02_attack.png`、`proofs/combat_feel/fox_proof_03_hit.png`
 
 ---
 
@@ -286,6 +295,9 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
   - **蓄勢待機窗（`sim.time 0.0s～3.8s`）**：鋼牙豕保持厚重待機，雙手高舉戰鎚，ATB 蓄力。
   - **戰鎚重劈窗（`sim.time 3.8s～4.1s`，實測出手 `sim.time = 4.00s`）**：`sim` 發出 `attack_swing` 事件，觸發 `battle_view.gd` 的 `attack_swing` 分支呼叫 `_lunge("player")` 前衝，並切換 `attack` 姿態，戰鎚自空中重重砸落。錄影窗建議 `3.8s～4.8s`。
   - **重錘轟地窗（`sim.time 4.3s～4.6s`，實測我方首次命中 `sim.time = 4.42s`；⚠️ 潮襲海盜在 `4.27s` 先命中我方，別搞混）**：`sim` 發出 `hit`（`attacker == "player"`），觸發 `battle_view.gd` 的 `hit` 分支屏幕震顫反饋（`_shake = 0.35`）、潮襲海盜受擊閃白、傷害跳字（實測 13 點上下浮動），以及 0.08 秒打擊停頓！隨後戰鎚貼地緩衝收招。錄影窗建議 `3.8s～4.9s`。
+- **素材交付檔案（9:16 成片）**：`docs/marketing/shots/rec04_boar_combat_9x16.mp4`（1080×1920，2.50s，含 AAC 實體音軌）
+- **原始母帶檔案（16:9 原生）**：`docs/marketing/shots/rec04_boar_combat_raw_16x9.mp4`（1280×720，2.50s）
+- **關鍵幀抽格證明**：`proofs/combat_feel/boar_weapon_crop.png`、`proofs/combat_feel/boar_proof_01_idle.png`、`proofs/combat_feel/boar_proof_02_attack.png`、`proofs/combat_feel/boar_proof_03_hit.png`
 
 ---
 
@@ -342,6 +354,9 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
   - **暴怒覺醒爆發窗（`sim.time = 0.00s`，開局手動觸發）**：`sim.trigger_fury_awakening()` 發送 `fury_awakening` 事件，`battle_view.gd` 接收事件，在 `fury_awakening` 分支執行 `_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)` 彈出橘紅「暴怒覺醒！」浮動跳字、屏幕震顫、`trigger_hit_stop(0.1)` 0.1 秒打擊停頓，以及角色全身金光閃耀！錄影窗建議 `0.0s～3.2s`。
   - **狂暴快爪出手窗（`sim.time 2.7s～2.9s`，實測出手 `sim.time = 2.87s`）**：處於暴怒攻速強化中的靈爪猴由 `sim` 觸發攻擊位移（`_lunge("player")`），彈簧手臂極速伸縮前衝，連環快抓。
   - **命中爆發窗（`sim.time 2.9s～3.2s`，實測我方首次命中 `sim.time = 3.03s`）**：`sim` 發送 `hit` 事件（傷害跳字實測 28～56 點，可暴擊），竹影拳靈受擊閃白。⚠️ 這一擊**不會**當場結束戰鬥（實測整場 6.42s 才 `battle_end`），錄影窗建議 `2.7s～3.4s`，⛔ 全片收錄不得晚於 6.4s。
+- **素材交付檔案（9:16 成片）**：`docs/marketing/shots/rec05_macaque_combat_9x16.mp4`（1080×1920，2.50s，含 AAC 實體音軌）
+- **原始母帶檔案（16:9 原生）**：`docs/marketing/shots/rec05_macaque_combat_raw_16x9.mp4`（1280×720，2.50s）
+- **關鍵幀抽格證明**：`proofs/combat_feel/macaque_weapon_crop.png`、`proofs/combat_feel/macaque_proof_01_idle.png`、`proofs/combat_feel/macaque_proof_02_attack.png`、`proofs/combat_feel/macaque_proof_03_hit.png`
 
 ---
 
@@ -418,6 +433,25 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 | `branding/key_visual_main.png` | 官方主視覺基準資產（Shot 1 開場無文字微距裁切基準，1376×768） | 1,735,537 Bytes | ✅ 通過 |
 | `branding/logo_cn.png` | 官方手繪繪本風中文字標（Shot 7 點題卡後製無失真疊加） | 866,886 Bytes | ✅ 通過 |
 | `branding/title_plate.png` | 官方純黑底板（Shot 7 點題卡底板） | 373,881 Bytes | ✅ 通過 |
+
+### 5. 實機錄製五段素材交付與嚴格驗收清冊（REC-01～REC-05 實體存在）
+
+依據任務書驗收標準與 `references/review.md` 第 10c、14a、19b、19e-3、19e-6、19f、19g-7、19i-7、21g 條，對本單實機錄製之五段素材進行嚴格客觀檢驗，**全數通過 `test -f` 實體存在、AAC 實體音軌、PSNR 動態、抽格 MD5 互異與手持武器判定**：
+
+| 素材編號 | 種族與招式 | 交付檔案路徑 (9:16 成片) | 原始母帶路徑 (16:9) | 檔案大小 (9:16 / 16:9) | 音軌查驗 (`ffprobe` aac 44100Hz) | 動態查驗 (`PSNR` <50dB) | 抽格 MD5 (3 張互異且 diff>10000px) | 武器握持判定 (0b/9/19i-7) |
+|---|---|---|---|---|---|---|---|---|
+| **REC-01** | 白金兔 晨光長劍突刺 | `docs/marketing/shots/rec01_rabbit_combat_9x16.mp4` | `docs/marketing/shots/rec01_rabbit_combat_raw_16x9.mp4` | 281,509 B / 292,463 B | ✅ aac, 44.1kHz, 立體聲 (`slash`+`hit`) | ✅ `25.67 dB` (實體位移) | ✅ `f48fd869` / `dd5b1f6a` / `bb4d7879`<br>(diff: 101,371 px) | ✅ 右手握持晨光長劍劍柄，金色十字護手緊貼手腕 |
+| **REC-02** | 烈鬃獅 皇家長槍突貫 | `docs/marketing/shots/rec02_lion_combat_9x16.mp4` | `docs/marketing/shots/rec02_lion_combat_raw_16x9.mp4` | 190,744 B / 177,778 B | ✅ aac, 44.1kHz, 立體聲 (`slash`+`hit`+`clash`) | ✅ `24.50 dB` (長槍突貫) | ✅ `e8450292` / `3d94a4dc` / `5b41d3aa`<br>(diff: 86,238 px) | ✅ 右手緊扣皇家長槍護手盤正下方握柄，槍身穿出 |
+| **REC-03** | 靈尾狐 星盤秘術法杖爆破 | `docs/marketing/shots/rec03_fox_combat_9x16.mp4` | `docs/marketing/shots/rec03_fox_combat_raw_16x9.mp4` | 213,889 B / 210,715 B | ✅ aac, 44.1kHz, 立體聲 (`slash`+`hit`+`fire`+`break`) | ✅ `26.10 dB` (能量衝擊) | ✅ `5a0a154c` / `b1a159e6` / `1992ea03`<br>(diff: 60,255 px) | ✅ 左手五指環扣星盤法杖杖身，頂部青綠水晶發光 |
+| **REC-04** | 鋼牙豕 鍛爐鐵砧重型戰鎚砸地 | `docs/marketing/shots/rec04_boar_combat_9x16.mp4` | `docs/marketing/shots/rec04_boar_combat_raw_16x9.mp4` | 231,546 B / 223,619 B | ✅ aac, 44.1kHz, 立體聲 (`rock`+`hit`+`break`) | ✅ `25.77 dB` (戰鎚重砸) | ✅ `12a98aa1` / `45137b37` / `ca5e593c`<br>(diff: 63,807 px) | ✅ 左手握拳環扣重鎚長柄，指節覆蓋握柄上方 |
+| **REC-05** | 靈爪猴 機關發條靈爪連擊 | `docs/marketing/shots/rec05_macaque_combat_9x16.mp4` | `docs/marketing/shots/rec05_macaque_combat_raw_16x9.mp4` | 244,546 B / 244,739 B | ✅ aac, 44.1kHz, 立體聲 (`wind`+`slash`+`hit`) | ✅ `28.63 dB` (狂暴快爪) | ✅ `9b9ee1a5` / `60efde98` / `166d75f0`<br>(diff: 59,209 px) | ✅ 雙腕裝備機關發條護手，直拳出擊與收拳蓄勢衝擊 |
+
+- **驗收關鍵幀抽格證明檔案（PNG 實體存放）**：
+  - 兔族：`proofs/combat_feel/rabbit_weapon_crop.png`、`proof_01_idle.png`、`proof_02_attack.png`、`proof_03_hit.png`
+  - 獅族：`proofs/combat_feel/lion_weapon_crop.png`、`proof_01_idle.png`、`proof_02_attack.png`、`proof_03_hit.png`
+  - 狐族：`proofs/combat_feel/fox_weapon_crop.png`、`proof_01_idle.png`、`proof_02_attack.png`、`proof_03_hit.png`
+  - 豬族：`proofs/combat_feel/boar_weapon_crop.png`、`proof_01_idle.png`、`proof_02_attack.png`、`proof_03_hit.png`
+  - 猴族：`proofs/combat_feel/macaque_weapon_crop.png`、`proof_01_idle.png`、`proof_02_attack.png`、`proof_03_hit.png`
 
 ---
 
