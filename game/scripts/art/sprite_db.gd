@@ -405,6 +405,8 @@ static func player_battle() -> Texture2D:
 ## 0.17.0：支援多種族專用姿態目錄（poses/<race>/<pose>.png），非兔族優先讀專用姿態。
 static func player_pose(pose: String) -> Texture2D:
 	var key := pose
+	if key == "" or key == "idle":
+		return player_idle()
 	var r := player_race()
 	if key == "" or key == "idle":
 		if r != "rabbit":
