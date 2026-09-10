@@ -40,6 +40,13 @@ static func player_race_composite(race: String, selections: Dictionary = {}) -> 
 
 
 static var _equipped_idle_cache: Dictionary = {}
+static var _equipped_walk_cache: Dictionary = {}
+
+
+## 清空紙娃娃即時合成快取（換裝／卸裝／種族變更時呼叫）
+static func clear_equipped_cache() -> void:
+	_equipped_idle_cache.clear()
+	_equipped_walk_cache.clear()
 
 
 ## 依據 player_race 與 paperdoll_slots 用 PaperdollRenderer 合成待機圖；合成失敗才退回 player_pose("idle")
@@ -76,6 +83,43 @@ static func player_equipped_idle(race_override: String = "", slots_override: Dic
 	return fb
 
 
+## 依據 player_race 與 paperdoll_slots 用 PaperdollRenderer 分部位即時合成走路四幀 (0..3)
+static func player_equipped_walk(frame: int, race_override: String = "", slots_override: Dictionary = {}) -> Texture2D:
+	var r := race_override.strip_edges().to_lower() if not race_override.is_empty() else player_race()
+	if r.is_empty():
+		r = "rabbit"
+	var slots: Dictionary = slots_override.duplicate() if not slots_override.is_empty() else {}
+	if slots.is_empty():
+		var gs := _gs()
+		if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
+			slots = (gs.paperdoll_slots as Dictionary).duplicate()
+
+	var f := posmod(frame, 4)
+	var cache_key := "%s:%d:%s" % [r, f, JSON.stringify(slots)]
+	if _equipped_walk_cache.has(cache_key):
+		var cached: Variant = _equipped_walk_cache[cache_key]
+		if cached is Texture2D and cached != null:
+			return cached as Texture2D
+
+	if not slots.is_empty():
+		if not slots.has("costume") and slots.has("costume_id"):
+			slots["costume"] = slots["costume_id"]
+		if not slots.has("chassis") and slots.has("paint_id"):
+			slots["chassis"] = slots["paint_id"]
+		var pr: GDScript = load("res://scripts/art/paperdoll_renderer.gd")
+		if pr and pr.has_method("get_race_walk_composite_texture"):
+			var comp: Variant = pr.call("get_race_walk_composite_texture", r, f, slots)
+			if comp is Texture2D and comp != null:
+				_equipped_walk_cache[cache_key] = comp as Texture2D
+				return comp as Texture2D
+
+	var fb_tex := tex("%s/player/%s_walk_%d_x3.png" % [ROOT, r, f])
+	if fb_tex == null and r != "rabbit":
+		fb_tex = tex("%s/player/rabbit_walk_%d_x3.png" % [ROOT, f])
+	_equipped_walk_cache[cache_key] = fb_tex
+	return fb_tex
+
+
 static func player_idle() -> Texture2D:
 	var r := player_race()
 	if r != "rabbit":
@@ -98,6 +142,9 @@ static func player_idle() -> Texture2D:
 
 
 static func player_walk(frame: int) -> Texture2D:
+	var gs := _gs()
+	if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary and not (gs.paperdoll_slots as Dictionary).is_empty():
+		return player_equipped_walk(frame)
 	var i := posmod(frame, 4)
 	var r := player_race()
 	var t := tex("%s/player/%s_walk_%d_x3.png" % [ROOT, r, i])
