@@ -269,7 +269,18 @@ func setup(mode: String) -> void:
 	if GameState.stain_flame:
 		_append_log(_t("[color=#a88]沾焰：刃上有一層不肯散的灰。攻擊略升。[/color]"))
 	if mode == "leo":
-		_append_log(_t("雷歐：渺小的兔子……也想挑戰獅衛之王？"))
+		var r_code := SpriteDB.player_race() if SpriteDB else "rabbit"
+		match r_code:
+			"macaque":
+				_append_log(_t("雷歐：渺小的猴子……也想挑戰獅衛之王？"))
+			"lion":
+				_append_log(_t("雷歐：狂妄的同族……也想挑戰獅衛之王？"))
+			"fox":
+				_append_log(_t("雷歐：狡猾的狐狸……也想挑戰獅衛之王？"))
+			"boar":
+				_append_log(_t("雷歐：魯莽的野豬……也想挑戰獅衛之王？"))
+			_:
+				_append_log(_t("雷歐：渺小的兔子……也想挑戰獅衛之王？"))
 		_append_log(_t("[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後按 J 跳開[/color]"))
 		parry_hint.text = _kh(_t("【J】格擋　·　【Tab】鎖部位　·　火圈後躍出"))
 		_flash_coach(_t("先鎖盾磨掉，防禦會降。盔可破，但牠會暴。"), 3.6)
@@ -2121,6 +2132,7 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 		_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
 	if t:
 		player_body.texture = t
+		print(">>> _set_player_pose APPLIED: pose=", pose, " tex=", t.resource_path if t else "null", " tex_size=", t.get_size() if t else Vector2.ZERO)
 	_layout_foot_shadow(player_body)
 	if _player_pose_tween and _player_pose_tween.is_valid():
 		_player_pose_tween.kill()
@@ -2326,11 +2338,11 @@ func _on_event(kind: String, data: Dictionary) -> void:
 				)
 			elif aid == "player":
 				_set_player_pose("attack", true)
-				get_tree().create_timer(0.24).timeout.connect(func():
+				get_tree().create_timer(0.40).timeout.connect(func():
 					if is_instance_valid(self) and not _ended and _player_pose == "attack":
 						_set_player_pose("recover")
 				)
-				get_tree().create_timer(0.42).timeout.connect(func():
+				get_tree().create_timer(0.65).timeout.connect(func():
 					if is_instance_valid(self) and not _ended and _player_pose == "recover":
 						_set_player_pose("idle")
 				)
@@ -2972,33 +2984,49 @@ func _spawn_float(target_id: String, text: String, color: Color, is_crit: bool =
 	lab.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 	lab.add_theme_constant_override("shadow_offset_x", 2)
 	lab.add_theme_constant_override("shadow_offset_y", 2)
-	lab.pivot_offset = Vector2(40, 20)
+	lab.reset_size()
+	var lab_w := float(display_txt.length()) * float(font_sz) * 1.15
+	var lab_h := float(font_sz) * 1.35
+	lab.pivot_offset = Vector2(lab_w * 0.5, lab_h * 0.5)
 
-	## 初始位置微偏移 (錯開多段打擊)；部位破壞 BREAK 掛在敵人身邊
-	var jitter_x := randf_range(-24.0, 24.0)
-	var jitter_y := randf_range(-10.0, 10.0)
+	## 初始位置微偏移 (錯開多段打擊)；部位破壞 BREAK 懸浮於交鋒中場留足安全邊距 (防切字)
+	var jitter_x := randf_range(-12.0, 12.0)
+	var jitter_y := randf_range(-6.0, 6.0)
+	var peak_scale := Vector2(2.0, 2.0) if is_crit else (Vector2(2.2, 2.2) if is_break else Vector2(1.4, 1.4))
+	var max_half_w := (lab_w * 0.5) * peak_scale.x
+
+	var center_x: float
+	var center_y: float
 	if is_break:
-		lab.position = body.global_position + Vector2(body.size.x * 0.2 + jitter_x, body.size.y * 0.35 + jitter_y)
+		center_x = clampf(580.0 + jitter_x, 32.0 + max_half_w, 1280.0 - 64.0 - max_half_w)
+		center_y = body.global_position.y + body.size.y * 0.25 + jitter_y
 	else:
-		lab.position = body.global_position + Vector2(body.size.x * 0.35 + jitter_x, -15 + jitter_y)
+		var base_cx := body.global_position.x + body.size.x * 0.35 + jitter_x
+		center_x = clampf(base_cx, 24.0 + max_half_w, 1280.0 - 24.0 - max_half_w)
+		center_y = body.global_position.y - 15.0 + jitter_y
+
+	lab.position = Vector2(center_x - lab_w * 0.5, center_y - lab_h * 0.5)
 	lab.z_index = 45
 	add_child(lab)
 
 	## 手遊經典 Q 彈拋物線動畫 (Squash & Stretch -> Rise & Fall)
-	var start_rot := deg_to_rad(randf_range(-8.0, 8.0))
+	var start_rot := deg_to_rad(randf_range(-3.0, 3.0))
 	lab.rotation = start_rot
 	lab.scale = Vector2(0.5, 0.5)
 
 	var tw := create_tween()
 	## 1. 猛烈放大衝擊 (Punch In)
-	var peak_scale := Vector2(2.0, 2.0) if is_crit else (Vector2(2.2, 2.2) if is_break else Vector2(1.4, 1.4))
 	tw.tween_property(lab, "scale", peak_scale, 0.08).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	## 2. 回彈與向上拋物線微升
-	var peak_pos := lab.position + Vector2(randf_range(-12.0, 12.0), -45.0)
+	## 2. 回彈與向上拋物線微升 (維持在安全邊距內)
+	var max_peak_x: float = 1280.0 - 64.0 - max_half_w
+	var peak_cx := clampf(center_x + randf_range(-4.0, 4.0), 32.0 + max_half_w, max_peak_x)
+	var peak_pos := Vector2(peak_cx - lab_w * 0.5, lab.position.y - 45.0)
 	tw.parallel().tween_property(lab, "position", peak_pos, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tw.tween_property(lab, "scale", Vector2(1.0, 1.0), 0.12).set_trans(Tween.TRANS_SINE)
 	## 3. 懸停與優雅飄落淡出
-	var fall_pos := peak_pos + Vector2(randf_range(-8.0, 8.0), 18.0)
+	var max_fall_x: float = 1280.0 - 64.0 - (lab_w * 0.5)
+	var fall_cx := clampf(peak_cx + randf_range(-3.0, 3.0), 32.0 + (lab_w * 0.5), max_fall_x)
+	var fall_pos := Vector2(fall_cx - lab_w * 0.5, peak_pos.y + 18.0)
 	tw.parallel().tween_property(lab, "position", fall_pos, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tw.parallel().tween_property(lab, "modulate:a", 0.0, 0.28).set_delay(0.18)
 	tw.tween_callback(lab.queue_free)

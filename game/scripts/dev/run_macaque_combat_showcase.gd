@@ -8,8 +8,8 @@ var _sim: Object = null
 var _player_unit: Object = null
 var _leo_unit: Object = null
 
-var _ready_flag: String = "/opt/side/bravesoul-game/proofs/combat_feel/combat_ready.flag"
-var _sync_flag: String = "/opt/side/bravesoul-game/proofs/combat_feel/ffmpeg_started.flag"
+var _ready_flag: String = ProjectSettings.globalize_path("res://../proofs/combat_feel/combat_ready.flag")
+var _sync_flag: String = ProjectSettings.globalize_path("res://../proofs/combat_feel/ffmpeg_started.flag")
 var _is_ready: bool = false
 var _has_started: bool = false
 
@@ -60,6 +60,7 @@ func _process(_delta: float) -> bool:
 		if _sim:
 			_sim.connect("event", _on_sim_event)
 			_sim.parts_break_unlocked = true
+			_sim.sim_paused = true
 			_player_unit = _sim.call("get_unit", "player")
 			_leo_unit = _sim.call("get_unit", "leo")
 			if _player_unit:
@@ -90,7 +91,9 @@ func _process(_delta: float) -> bool:
 			_has_started = true
 			print(">>> FFMPEG SYNC DETECTED, COMMENCING COMBAT TIMELINE")
 		else:
-			# 等待錄影啟動期間，凍結 ATB，保持待機
+			# 等待錄影啟動期間，凍結模擬，保持待機
+			if _sim:
+				_sim.sim_paused = true
 			if _player_unit:
 				_player_unit.atb = 0.0
 			if _leo_unit:
@@ -99,16 +102,20 @@ func _process(_delta: float) -> bool:
 
 	_combat_frame += 1
 
-	# 0 ~ 20 幀 (0.0s ~ 0.67s): 保持待機狀態
-	if _combat_frame < 22:
+	# 0 ~ 15 幀 (0.0s ~ 0.50s): 保持乾淨待機狀態
+	if _combat_frame < 16:
+		if _sim:
+			_sim.sim_paused = true
 		if _player_unit:
 			_player_unit.atb = 0.0
 		if _leo_unit:
 			_leo_unit.atb = 0.0
 
-	# 幀 22 (~0.73s): 玩家 ATB 蓄滿，自然觸發攻擊 (WINDUP -> attack_swing -> lunge & attack pose)
-	if _combat_frame == 22:
+	# 幀 16 (~0.53s): 解凍並蓄滿 ATB，自然觸發攻擊 (attack_swing -> lunge & attack pose)
+	if _combat_frame == 16:
 		print("  [COMBAT ACTION @ f", _combat_frame, "] Player ATB full -> Trigger attack_swing")
+		if _sim:
+			_sim.sim_paused = false
 		if _player_unit:
 			_player_unit.atb = 100.0
 
