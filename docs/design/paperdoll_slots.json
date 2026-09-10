@@ -641,11 +641,10 @@
               "web/media/hero/boar_idle.png (128x128 官網預覽圖)",
               "game/assets/sprites/player/boar_battle.png (128x128 戰鬥特寫姿態)",
               "game/assets/sprites/player/boar_walk_{0..3}.png (64x64 行走動畫)",
-              "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128 高畫質行走動畫)"
-            ],
-            "pending": [
+              "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
               "game/assets/sprites/player/poses/boar/ (戰鬥6大動作姿態目錄)"
-            ]
+            ],
+            "pending": []
           },
           "branding_standee": "branding/char_boar.png (400x840) [既有]",
           "branding_concept_art": "branding/char_boar.png (原稿 928x1152) [既有]",
@@ -656,7 +655,7 @@
           "game_sprite_battle": "game/assets/sprites/player/boar_battle.png (128x128) [待產出]",
           "game_sprite_walk": "game/assets/sprites/player/boar_walk_{0..3}.png (64x64) [待產出]",
           "game_sprite_walk_hi": "game/assets/sprites/player/boar_walk_{0..3}_x3.png (128x128) [待產出]",
-          "game_action_poses": "game/assets/sprites/player/poses/boar/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/boar/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [既有]",
           "portrait_hud": "game/assets/sprites/portraits/boar.png (128x128) [既有]",
           "portrait_dialogue": "game/assets/sprites/portraits/boar_warrior.png (256x256 / 384x480) [既有]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/boar/{slot_id}/{item_id}.png [既有]"
