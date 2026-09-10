@@ -54,6 +54,7 @@ var _boss_art_key: String = ""
 var _pose_tween: Tween
 var _player_pose: String = "idle"
 var _player_pose_tween: Tween
+var _player_tex_has_baked_shadow: bool = false
 var _battle_weapon: TextureRect = null
 var _battle_armor: TextureRect = null
 var _skill_banner: Label
@@ -798,7 +799,8 @@ static func _content_bottom_frac(tex: Texture2D) -> float:
 	var w := img.get_width()
 	var last := int(float(h) * 0.88)
 	var found := false
-	for y in range(h - 1, -1, -1):
+	var scan_start := h - 1
+	for y in range(scan_start, -1, -1):
 		var hit := false
 		var x := 0
 		while x < w:
@@ -873,26 +875,31 @@ func _layout_foot_shadow(body: TextureRect) -> void:
 	var sh := layer.get_node_or_null("FootShadow_%s" % body.name) as TextureRect
 	if sh == null or sh.texture == null:
 		return
+	## 玩家紙娃娃合成圖 (equipped_idle) 已自帶接地影，關閉外掛 FootShadow 避免疊第二層與錯位 (review.md 16c)
+	if body == player_body and _player_tex_has_baked_shadow:
+		sh.visible = false
+		return
 	var dr := _body_drawn_rect(body)
 	if dr.size.x < 8.0 or dr.size.y < 8.0:
 		return
 	var frac := _content_bottom_frac(body.texture)
-	var origin := body.global_position
-	var feet := origin + Vector2(dr.position.x + dr.size.x * 0.5, dr.position.y + dr.size.y * frac)
+	var local_feet := Vector2(dr.position.x + dr.size.x * 0.5, dr.position.y + dr.size.y * frac)
+	var feet: Vector2 = body.get_global_transform() * local_feet
 	var sz := Vector2(maxf(dr.size.x * 2.40, 340.0), maxf(dr.size.x * 0.38, 72.0))
+	var s_scale := layer.get_global_transform().get_scale()
 	## 扁橢圓貼在腳前方地面；核要大到縮手機寬還認得出踩在地上。
-	var pos_y := feet.y - sz.y * 0.12
+	var pos_y := feet.y - (sz.y * s_scale.y) * 0.12
 	var max_bottom := size.y - 8.0
 	if log_label:
 		max_bottom = log_label.global_position.y - 8.0
-	if pos_y + sz.y > max_bottom:
-		sz.y = maxf(64.0, max_bottom - pos_y)
-		pos_y = feet.y - sz.y * 0.12
-		if pos_y + sz.y > max_bottom:
-			pos_y = max_bottom - sz.y
+	if pos_y + sz.y * s_scale.y > max_bottom:
+		sz.y = maxf(64.0, (max_bottom - pos_y) / maxf(s_scale.y, 0.001))
+		pos_y = feet.y - (sz.y * s_scale.y) * 0.12
+		if pos_y + sz.y * s_scale.y > max_bottom:
+			pos_y = max_bottom - sz.y * s_scale.y
 	sh.size = sz
 	## 幾乎整塊落腳前方地面；底邊不進戰報。
-	sh.global_position = Vector2(feet.x - sz.x * 0.5, pos_y)
+	sh.global_position = Vector2(feet.x - (sz.x * s_scale.x) * 0.5, pos_y)
 	sh.visible = true
 	sh.modulate = Color(1, 1, 1, 1)
 	sh.z_index = 0
@@ -943,16 +950,39 @@ func _ensure_battle_look() -> void:
 	call_deferred("_layout_battle_equipment_overlays")
 
 
+func _get_player_equipped_idle_texture() -> Texture2D:
+	if _player_race.is_empty():
+		_player_race = SpriteDB.player_race()
+	var slots: Dictionary = {}
+	if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
+		slots = (GameState.paperdoll_slots as Dictionary).duplicate()
+	if not slots.has("weapon") or str(slots["weapon"]).is_empty():
+		if GameState and "equip_slots" in GameState and GameState.equip_slots is Dictionary:
+			var wuid: String = str(GameState.equip_slots.get("weapon", ""))
+			if wuid != "" and GameState.equip_worn is Dictionary and GameState.equip_worn.has(wuid):
+				var winst: Dictionary = GameState.equip_worn[wuid]
+				var base_id: String = str(winst.get("base_id", winst.get("id", "")))
+				if base_id != "":
+					slots["weapon"] = base_id
+	var tex: Texture2D = SpriteDB.player_equipped_idle(_player_race, slots)
+	if tex == null:
+		tex = SpriteDB.player_pose("idle", _player_race)
+	if tex == null:
+		tex = SpriteDB.player_battle()
+	return tex
+
+
 func _apply_battle_art(mode: String) -> void:
 	## 立繪比例：素材約 160×200（兔）／220×240（Boss），維持長寬比、不擠扁
 	_ensure_battle_look()
 	_player_race = SpriteDB.player_race()
 	_player_pose = "idle"
-	var ptex := SpriteDB.player_pose("idle", _player_race)
+	var ptex := _get_player_equipped_idle_texture()
 	if ptex == null:
 		ptex = SpriteDB.player_battle()
 	if ptex:
 		player_body.texture = ptex
+		_player_tex_has_baked_shadow = (ptex != SpriteDB.player_battle())
 	player_body.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	player_body.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	player_body.custom_minimum_size = Vector2(200, 250)
@@ -2003,20 +2033,30 @@ func _pulse_countdown() -> void:
 	tw.tween_property(countdown, "scale", Vector2.ONE, 0.12)
 
 
-## 切換 Boss 攻擊幀（telegraph 蓄力 / attack 出手 / recover / idle）
+## 切換玩家攻擊幀（telegraph 蓄力 / attack 出手 / recover / idle）
 func _set_player_pose(pose: String, punch: bool = false) -> void:
 	if pose == _player_pose and not punch:
 		return
 	_player_pose = pose
 	if _player_race.is_empty():
 		_player_race = SpriteDB.player_race()
-	var t: Texture2D = SpriteDB.player_pose(pose, _player_race)
-	if t == null and pose != "idle":
-		t = SpriteDB.player_pose("idle", _player_race)
+	var t: Texture2D = null
+	if pose == "idle":
+		t = _get_player_equipped_idle_texture()
+		_player_tex_has_baked_shadow = true
+	else:
+		t = SpriteDB.player_pose(pose, _player_race)
+		if t == null:
+			t = _get_player_equipped_idle_texture()
+			_player_tex_has_baked_shadow = true
+		else:
+			_player_tex_has_baked_shadow = false
 	if t == null:
 		t = SpriteDB.player_battle()
+		_player_tex_has_baked_shadow = false
 	if t:
 		player_body.texture = t
+	_layout_foot_shadow(player_body)
 	if punch or pose == "attack" or pose == "skill":
 		if _player_pose_tween and _player_pose_tween.is_valid():
 			_player_pose_tween.kill()
