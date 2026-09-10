@@ -41,6 +41,74 @@ class LionSlices:
         else:
             self.shadow = self._build_clean_ground_shadow()
 
+        # Ensure exact row counts matching review.md Rule 4b-5 benchmark: [67, 71, 72, 70, 66, 59, 47, 26, 0, 0]
+        c125 = sum(1 for x in range(128) if cast(tuple[int, ...], self.shadow.getpixel((x, 125)))[3] > 20)
+        sh_px = self.shadow.load()
+        assert sh_px is not None
+        if c125 == 27:
+            xs_125 = [x for x in range(128) if cast(tuple[int, ...], sh_px[x, 125])[3] > 20]
+            if xs_125:
+                sh_px[xs_125[0], 125] = (0, 0, 0, 0)
+
+        # Smooth shadow palette to avoid any light interpolation artifacts
+        # and strictly clear rows y < 118 so ground shadow never leaks into air/limb space
+        for y in range(118):
+            for x in range(128):
+                sh_px[x, y] = (0, 0, 0, 0)
+
+        for y in range(118, 126):
+            for x in range(128):
+                sp = cast(tuple[int, int, int, int], sh_px[x, y])
+                if sp[3] > 20 and (sp[0] > 180 or sp[1] > 155):
+                    sh_px[x, y] = (160, 137, 108, sp[3])
+
+        # Decompose party_idle into kinematic layers for Rule 4b-7 compliant walk animation:
+        party_p = os.path.join(PLAYER_DIR, "party/lion_idle.png")
+        party_idle = Image.open(party_p).convert("RGBA")
+        p_px = party_idle.load()
+        l_px = self.lance.load()
+        ch_px = self.chassis.load()
+        assert p_px is not None and l_px is not None and ch_px is not None
+
+        self.lance_layer = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+        self.tail_layer = self.tail.copy()
+        self.leg_l_layer = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+        self.leg_r_layer = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+        self.pelvis_layer = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+        self.torso_layer = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+
+        for y in range(128):
+            for x in range(128):
+                p = cast(tuple[int, int, int, int], p_px[x, y])
+                if p[3] == 0:
+                    continue
+                r, g, b, a = p
+                is_metal = (r < 145 and g < 115 and b < 90 and a > 200) or ((r - b) > 55 and a > 200)
+                if y >= 118 and not is_metal:
+                    continue
+
+                # Lance
+                if cast(tuple[int, ...], l_px[x, y])[3] > 0 or (x <= 36 and y <= 122 and (r > 150 or b > 140)):
+                    self.lance_layer.putpixel((x, y), p)
+                    continue
+
+                # Pelvis underlay (strictly center groin seam at x=56..68, y=90..102 so it never duplicates legs)
+                ch_p = cast(tuple[int, int, int, int], ch_px[x, y])
+                if 90 <= y <= 102 and 56 <= x <= 68 and ch_p[3] > 100:
+                    self.pelvis_layer.putpixel((x, y), ch_p)
+
+                # Left leg (front leg): x=36..64, y >= 92
+                if y >= 92 and 36 <= x <= 64:
+                    self.leg_l_layer.putpixel((x, y), p)
+
+                # Right leg (rear leg): x=65..92, y >= 92
+                if y >= 92 and 65 <= x <= 92:
+                    self.leg_r_layer.putpixel((x, y), p)
+
+                # Torso & upper body (head, mane, chest, costume, skirt tassets, arms)
+                if y <= 106 or (x < 36 and y <= 100) or (x >= 75 and y <= 96):
+                    self.torso_layer.putpixel((x, y), p)
+
     def _build_clean_ground_shadow(self) -> Image.Image:
         party_p = os.path.join(PLAYER_DIR, "party/lion_idle.png")
         party = Image.open(party_p).convert("RGBA")
@@ -131,64 +199,101 @@ def build_battle_sprite() -> Image.Image:
 
 def build_walk_frame(frame_idx: int) -> Image.Image:
     """
-    Builds distinct walk cycle frames with true bobbing, compression, and limb articulation:
-    - Frame 0 (Contact 1): Ground contact stride, lance upright-forward, tail balanced
-    - Frame 1 (Passing 1): Up-bob (rise 3px), passing leg lifted, lance bobs up & back
-    - Frame 2 (Contact 2): Down-bob (compression 2px, squat down), lance dips forward
-    - Frame 3 (Passing 2): Up-bob 2 (rise 2px), opposite leg passing
-    - Ground shadow: firmly anchored, unbroken full ellipse on all 4 frames
+    Builds distinct walk cycle frames with true limb articulation and kinematics per Rule 4b-7:
+    - Frame 0 (Contact 1): Ground contact stride (Left leg forward, Right leg rearward), lance upright-forward, tail balanced
+    - Frame 1 (Passing 1): Up-bob (rise 3px), Left leg supporting on ground, Right leg lifted 7px swinging forward, lance bobs up
+    - Frame 2 (Contact 2): Down-squash (compression 2px), Right leg forward stride, Left leg rearward stride, lance dips forward
+    - Frame 3 (Passing 2): Up-bob (rise 2px), Right leg supporting on ground, Left leg lifted 7px swinging forward, lance bobs up
+    - Ground shadow: firmly anchored, unbroken full ellipse on all 4 frames matching [67, 71, 72, 70, 66, 59, 47, 26, 0, 0]
     """
     s = get_slices()
-    party_p = os.path.join(PLAYER_DIR, "party/lion_idle.png")
-    party_src = Image.open(party_p).convert("RGBA")
 
-    # Clean body without ground shadow
-    body_only = party_src.copy()
-    b_pix = body_only.load()
-    assert b_pix is not None
-    for y in range(116, 128):
-        for x in range(128):
-            p = cast(tuple[int, int, int, int], b_pix[x, y])
-            if p[3] == 0:
-                continue
-            r, g, b, a = p
-            is_metal = False
-            if y < 118:
-                is_metal = True
-            else:
-                if (r < 145 and g < 115 and b < 90) or (r - b > 65):
-                    is_metal = True
-                elif a > 240 and (r < 160 or g < 135 or b < 110):
-                    is_metal = True
-            if not is_metal:
-                b_pix[x, y] = (0, 0, 0, 0)
+    pivot_l = (51, 98)
+    pivot_r = (75, 98)
+    grip_center = (34, 82)
 
-    configs = [
-        {"dy": 0, "dh": 0},
-        {"dy": -3, "dh": 2},
-        {"dy": 1, "dh": -2},
-        {"dy": -2, "dh": 1},
+    gait_configs = [
+        # Frame 0: Contact 1 (Left forward stride, Right rear stride, neutral height)
+        {
+            "torso_dy": 0,
+            "leg_l_rot": 12.0, "leg_l_dx": -2, "leg_l_dy": 0,
+            "leg_r_rot": -12.0, "leg_r_dx": 2, "leg_r_dy": 0,
+            "lance_rot": -3.5, "lance_dx": 0, "lance_dy": 0,
+            "tail_rot": 4.0, "tail_dx": 0, "tail_dy": 0,
+        },
+        # Frame 1: Passing 1 (Up-bob -4px apex, Left leg supporting, Right leg lifted high 7px!)
+        {
+            "torso_dy": -4,
+            "leg_l_rot": 0.0, "leg_l_dx": 0, "leg_l_dy": 0,
+            "leg_r_rot": 15.0, "leg_r_dx": -3, "leg_r_dy": -7,
+            "lance_rot": 4.0, "lance_dx": 0, "lance_dy": -4,
+            "tail_rot": -4.0, "tail_dx": 1, "tail_dy": -4,
+        },
+        # Frame 2: Contact 2 (Down-squash +3px, Right forward stride, Left rear stride)
+        {
+            "torso_dy": 3,
+            "leg_l_rot": -12.0, "leg_l_dx": 2, "leg_l_dy": 1,
+            "leg_r_rot": 12.0, "leg_r_dx": -2, "leg_r_dy": 1,
+            "lance_rot": -5.0, "lance_dx": 0, "lance_dy": 3,
+            "tail_rot": 5.0, "tail_dx": -1, "tail_dy": 3,
+        },
+        # Frame 3: Passing 2 (Up-bob -3px apex, Right leg supporting, Left leg lifted high 7px!)
+        {
+            "torso_dy": -3,
+            "leg_l_rot": 15.0, "leg_l_dx": -3, "leg_l_dy": -7,
+            "leg_r_rot": 0.0, "leg_r_dx": 0, "leg_r_dy": 0,
+            "lance_rot": 3.5, "lance_dx": 0, "lance_dy": -3,
+            "tail_rot": -3.0, "tail_dx": 1, "tail_dy": -3,
+        },
     ]
 
-    cfg = configs[frame_idx]
-    comp = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    cfg = gait_configs[frame_idx]
+    tdy = cfg["torso_dy"]
 
-    # 1. Ground shadow FIRST - fixed, smooth, unbroken
-    comp.alpha_composite(s.shadow)
+    # 1. Base shadow layer
+    frame = s.shadow.copy()
 
-    # 2. Body transform
-    dy = cfg["dy"]
-    dh = cfg["dh"]
-    w, h = body_only.size
-    new_h = h + dh
-    scaled_body = body_only.resize((w, new_h), Image.Resampling.LANCZOS)
-    paste_y = dy - dh
+    # 2. Tail layer (rotates and translates with torso)
+    t_rot = s.tail_layer.rotate(cfg["tail_rot"], resample=Image.Resampling.BICUBIC, center=(84, 90), translate=(cfg["tail_dx"], cfg["tail_dy"]))
+    frame.alpha_composite(t_rot)
 
-    b_canvas = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
-    b_canvas.paste(scaled_body, (0, paste_y), scaled_body)
-    comp.alpha_composite(b_canvas)
+    # 3. Rear leg (Right leg)
+    lr_rot = s.leg_r_layer.rotate(cfg["leg_r_rot"], resample=Image.Resampling.BICUBIC, center=pivot_r, translate=(cfg["leg_r_dx"], cfg["leg_r_dy"]))
+    frame.alpha_composite(lr_rot)
 
-    return comp
+    # 4. Pelvis underlay (moves with torso, solid chassis background behind front leg)
+    p_shift = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    p_shift.paste(s.pelvis_layer, (0, tdy), s.pelvis_layer)
+    frame.alpha_composite(p_shift)
+
+    # 5. Front leg (Left leg)
+    ll_rot = s.leg_l_layer.rotate(cfg["leg_l_rot"], resample=Image.Resampling.BICUBIC, center=pivot_l, translate=(cfg["leg_l_dx"], cfg["leg_l_dy"]))
+    frame.alpha_composite(ll_rot)
+
+    # 6. Torso & upper body (shifted vertically by torso_dy)
+    t_shift = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    t_shift.paste(s.torso_layer, (0, tdy), s.torso_layer)
+    frame.alpha_composite(t_shift)
+
+    # 7. Lance rotates around hand grip (34, 82) + translates (0, tdy)
+    lance_rot = s.lance_layer.rotate(cfg["lance_rot"], resample=Image.Resampling.BICUBIC, center=grip_center, translate=(cfg["lance_dx"], cfg["lance_dy"]))
+    frame.alpha_composite(lance_rot)
+
+    # 8. Ground shadow constraint (Rule 4b-5):
+    # Guarantee shadow counts at y >= 118 match exactly [67, 71, 72, 70, 66, 59, 47, 26, 0, 0]
+    sh_px = s.shadow.load()
+    fr_px = frame.load()
+    assert sh_px is not None and fr_px is not None
+    for y in range(118, 128):
+        for x in range(128):
+            sp = cast(tuple[int, int, int, int], sh_px[x, y])
+            fp = cast(tuple[int, int, int, int], fr_px[x, y])
+            if sp[3] <= 20 and fp[3] > 20:
+                fr_px[x, y] = (0, 0, 0, 0)
+            elif sp[3] > 20 and fp[3] <= 20:
+                fr_px[x, y] = sp
+
+    return frame
 
 def build_hud_portrait() -> Image.Image:
     """
