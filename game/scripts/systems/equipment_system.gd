@@ -22,6 +22,65 @@ const LEGACY_ACCESSORY_TO := "ring"
 const WEAPON_LOADOUT_SIZE := 3
 const WEAPON_LOADOUT_LEVEL_REQ := [1, 10, 16]
 
+## 五族開局定案武器對照（對齊 equipment.json bases 既有 id，不准自創）
+const RACE_STARTER_WEAPONS: Dictionary = {
+	"rabbit": "dawn_blade",
+	"lion": "knight_pike",
+	"fox": "star_rod",
+	"boar": "anvil_hammer",
+	"macaque": "hunt_claw",
+}
+
+static func starter_weapon_id_for_race(race: String) -> String:
+	var r := race.to_lower().strip_edges()
+	return str(RACE_STARTER_WEAPONS.get(r, "dawn_blade"))
+
+## 開局／選族裝備該族定案武器（快捷欄第 0 欄）
+func equip_starter_weapon(race: String = "", existing_inst: Dictionary = {}) -> Dictionary:
+	_ensure_state()
+	var r := race.to_lower().strip_edges()
+	if r.is_empty():
+		r = str(GameState.player_race).to_lower().strip_edges()
+	if r.is_empty():
+		r = "rabbit"
+	var target_base_id := starter_weapon_id_for_race(r)
+
+	var inst: Dictionary = {}
+	if not existing_inst.is_empty() and str(existing_inst.get("base_id", "")) == target_base_id:
+		inst = existing_inst.duplicate(true)
+	else:
+		var cur_uid := loadout_uid(0)
+		if cur_uid != "" and GameState.equip_worn.has(cur_uid):
+			var cur_inst: Dictionary = GameState.equip_worn[cur_uid]
+			if str(cur_inst.get("base_id", "")) == target_base_id:
+				inst = cur_inst
+
+	if inst.is_empty():
+		inst = roll_instance(target_base_id, "common")
+		if inst.is_empty():
+			push_warning("EquipmentSystem: failed to roll starter weapon for %s (%s)" % [r, target_base_id])
+			return {}
+
+	var uid := str(inst.get("uid", ""))
+	if uid.is_empty():
+		uid = _uid()
+		inst["uid"] = uid
+
+	var old_uid := loadout_uid(0)
+	if old_uid != "" and old_uid != uid and GameState.equip_worn.has(old_uid):
+		GameState.equip_worn.erase(old_uid)
+
+	GameState.equip_worn[uid] = inst
+	GameState.equip_slots["weapon"] = uid
+	GameState.weapon_loadout[0] = uid
+	GameState.weapon_loadout_active = 0
+	_sync_legacy_weapon()
+	var line := str(inst.get("line", ""))
+	if line != "":
+		GameState.path_style = line
+
+	equipment_changed.emit()
+	return inst
 
 
 ## 玩家看得到的中文字面值一律包這支（以原文當 key，譯文在

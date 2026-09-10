@@ -50,14 +50,20 @@ func combat_i(path: String, default: int = 0) -> int:
 
 
 func equip_bases() -> Dictionary:
+	if not loaded or equipment.is_empty():
+		reload()
 	return equipment.get("bases", {}) as Dictionary
 
 
 func equip_qualities() -> Dictionary:
+	if not loaded or equipment.is_empty():
+		reload()
 	return equipment.get("qualities", {}) as Dictionary
 
 
 func float_ranges() -> Dictionary:
+	if not loaded or equipment.is_empty():
+		reload()
 	return equipment.get("float_ranges", {}) as Dictionary
 
 

@@ -294,8 +294,8 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 - **所屬功能**：`race-poses` 與 `mob-battle`（靈爪猴戰鬥姿態與暴怒覺醒機制）
 - **Godot 場景路徑**：`res://scenes/battle/battle.tscn`
 - **對應核心腳本**：
-  - `game/scripts/battle/battle_sim.gd`（`trigger_fury_awakening()`，line 2929；事件分發）
-  - `game/scripts/battle/battle_view.gd`（事件分支 line 2283 `fury_awakening`、line 2154 `attack_swing`、line 2177 `hit`）
+  - `game/scripts/battle/battle_sim.gd`（`trigger_fury_awakening()`；事件分發）
+  - `game/scripts/battle/battle_view.gd`（事件分支 `fury_awakening`、`attack_swing`、`hit`）
   - `game/scripts/art/sprite_db.gd`
 - **使用姿態檔案**：
   - `game/assets/sprites/player/poses/macaque/idle.png`
@@ -332,16 +332,16 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
   if sim:
       var p = sim.get_unit("player")
       p.rage = 100.0
-      # 呼叫 BattleSim 的 trigger_fury_awakening()（battle_sim.gd:2929），
+      # 呼叫 BattleSim 的 trigger_fury_awakening()，
       # 內部執行 _apply_berserk(p, true) 並向 view emit("fury_awakening", {"auto": false, ...})
       sim.trigger_fury_awakening()
 
   # 5. 戰鬥自然運行，由 Sim 自然驅動狂暴快爪攻擊與勝負事件流
   ```
-- **畫面效果產生點與實測觀察窗（依據第 19e-4 條實測回填）**：
-  - **開局第 0～15 幀（約 0.0s～0.1s，實測第 0 幀 / sim.time 0.00s）暴怒覺醒爆發窗**：`sim.trigger_fury_awakening()` 發送 `fury_awakening` 事件，`battle_view.gd:2283` 接收事件，在 `:2291` 執行 `_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)` 彈出橘紅「暴怒覺醒！」浮動跳字、`:2292` `_shake = 0.35` 屏幕震顫、`:2293` `trigger_hit_stop(0.1)` 0.1 秒打擊停頓，並在 `:2294` 執行 `_flash(player_body, Color(3.0, 1.5, 0.5))` 角色全身金光閃耀！
-  - **第 380～410 幀（約 2.7s～2.9s，實測第 396 幀 / sim.time 2.86s）狂暴快爪出手窗**：處於暴怒攻速強化中的靈爪猴由 `sim` 觸發攻擊位移（`_lunge("player")`），彈簧手臂極速伸縮前衝，連環快抓。
-  - **第 410～430 幀（約 3.0s～3.1s，實測第 420 幀 / sim.time 3.03s）命中爆發與終結窗**：`sim` 發送 `hit` 事件，連續命中 2 次（傷害跳字 93 點），竹影拳靈受擊閃白，竹影拳靈血量歸零戰鬥於 sim.time 3.03s 迅速獲勝結束，錄影窗精準在戰鬥結束前完成收錄，隨後畫面白閃切純黑。
+- **畫面效果產生點與實測觀察窗（依據第 19e-4 / 19e-5 條實測回填）**：
+  - **暴怒覺醒爆發窗（`sim.time = 0.00s`，開局手動觸發）**：`sim.trigger_fury_awakening()` 發送 `fury_awakening` 事件，`battle_view.gd` 接收事件，在 `fury_awakening` 分支執行 `_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)` 彈出橘紅「暴怒覺醒！」浮動跳字、屏幕震顫、`trigger_hit_stop(0.1)` 0.1 秒打擊停頓，以及角色全身金光閃耀！錄影窗建議 `0.0s～3.2s`。
+  - **狂暴快爪出手窗（`sim.time 2.7s～2.9s`，實測出手 `sim.time = 2.87s`）**：處於暴怒攻速強化中的靈爪猴由 `sim` 觸發攻擊位移（`_lunge("player")`），彈簧手臂極速伸縮前衝，連環快抓。
+  - **命中爆發與終結窗（`sim.time 2.9s～3.1s`，實測命中 `sim.time = 3.03s`）**：`sim` 發送 `hit` 事件，連續命中 2 次（傷害跳字 93 點），竹影拳靈受擊閃白，竹影拳靈血量歸零戰鬥於 sim.time 3.03s 迅速獲勝結束，錄影窗精準在戰鬥結束前完成收錄，隨後畫面白閃切純黑。
 
 ---
 
@@ -476,10 +476,10 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 | **④ 武器名稱** | 「星盤晶核秘術法杖」（ID `star_rod`） | `paperdoll_slots.json:362` / `equipment.json:145` | `paperdoll_slots.json:362` / `equipment.json:145`（line: magic） | ✅ 100% 存在 |
 | **④ 武器名稱** | 「鍛爐鐵砧重型戰鎚」（ID `anvil_hammer`） | `paperdoll_slots.json:368` / `equipment.json:262` | `paperdoll_slots.json:368` / `equipment.json:262`（line: hammer） | ✅ 100% 存在 |
 | **④ 武器名稱** | 「機關發條靈爪護手」（ID `hunt_claw`） | `paperdoll_slots.json:350` / `equipment.json:184` | `paperdoll_slots.json:350` / `equipment.json:184`（line: claw） | ✅ 100% 存在 |
-| **⑤ 函式名與歸屬** | `trigger_fury_awakening()` | `game/scripts/battle/battle_sim.gd` | line 2929: `func trigger_fury_awakening() -> bool:`（歸屬於 `BattleSim`；`battle_view.gd:1322, 3042, 3137` 皆透過 `sim.trigger_fury_awakening()` 呼叫） | ✅ 100% 存在且歸屬正確 |
-| **⑤ 函式名與歸屬** | `_set_player_pose()` | `game/scripts/battle/battle_view.gd` | line 2003: `func _set_player_pose(pose: String, punch: bool = false) -> void:` | ✅ 100% 存在且歸屬正確 |
-| **⑤ 函式名與歸屬** | `player_pose()` | `game/scripts/art/sprite_db.gd` | line 406: `static func player_pose(pose: String) -> Texture2D:` | ✅ 100% 存在且歸屬正確 |
-| **⑤ 浮動跳字字串** | 「暴怒覺醒！」(`Color(1.0, 0.4, 0.1)`) | `game/scripts/battle/battle_view.gd` | line 2291: `_spawn_float(\"player\", _t(\"暴怒覺醒！\"), Color(1.0, 0.4, 0.1), true)` | ✅ 100% 存在且顏色文字相符 |
+| **⑤ 函式名與歸屬** | `trigger_fury_awakening()` | `game/scripts/battle/battle_sim.gd` | 函式定義：`func trigger_fury_awakening() -> bool:`（歸屬於 `BattleSim`；`battle_view.gd` 皆透過 `sim.trigger_fury_awakening()` 呼叫） | ✅ 100% 存在且歸屬正確 |
+| **⑤ 函式名與歸屬** | `_set_player_pose()` | `game/scripts/battle/battle_view.gd` | 函式定義：`func _set_player_pose(pose: String, punch: bool = false) -> void:` | ✅ 100% 存在且歸屬正確 |
+| **⑤ 函式名與歸屬** | `player_pose()` | `game/scripts/art/sprite_db.gd` | 函式定義：`static func player_pose(pose: String, race_override: String = "") -> Texture2D:` | ✅ 100% 存在且歸屬正確 |
+| **⑤ 浮動跳字字串** | 「暴怒覺醒！」(`Color(1.0, 0.4, 0.1)`) | `game/scripts/battle/battle_view.gd` | `fury_awakening` 事件分支：`_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)` | ✅ 100% 存在且顏色文字相符 |
 
 ---
 
@@ -487,15 +487,15 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 
 依據 `references/review.md` 第 19e-3 條要求，對分鏡與操作序列中所有宣告之畫面效果進行因果鏈條審查，逐項確認呼叫函式具備生成對應畫面的程式碼，絕不將純貼圖切換當作攻擊入口：
 
-| 宣稱之畫面效果 | 產生點唯一函式 | 觸發來源事件 / 呼叫鏈 | 程式碼行號與實體邏輯依據 | 因果鏈驗證判定 |
+| 宣稱之畫面效果 | 產生點唯一函式 | 觸發來源事件 / 呼叫鏈 | 函式名、事件 kind 與邏輯依據 | 因果鏈驗證判定 |
 |---|---|---|---|---|
-| **角色前衝突進位移** | `_lunge(aid)` | `sim` 發出 `\"attack_swing\"` 事件時觸發 | `battle_view.gd:2156`: `_lunge(aid)` 執行 Tween 前衝位移並回彈 | ✅ 因果成立，由 Sim 自然驅動 |
-| **角色姿態切換與縮放** | `_set_player_pose(pose, true)` | `sim` 發出 `\"attack_swing\"` 事件時觸發 | `battle_view.gd:2168`: 切換 `attack` 姿態；`:2017-2019` 執行 `scale = Vector2(1.1, 0.94)` 並在 0.12s 內回彈 Vector2.ONE；`:2171` 於 0.2s 後接 `recover`；`:2175` 於 0.45s 後回 `idle` | ✅ 因果成立，由 Sim 事件鏈自然驅動 |
-| **受擊閃白（敵方反饋）** | `_flash(body, color)` | `sim` 發出 `\"hit\"` 事件時觸發 | `battle_view.gd:2193`（暴擊時閃白 `Color(2.5, 0.6, 0.4)`）/ `:2196`（普通命中閃白 `Color(1, 0.3, 0.3)`） | ✅ 因果成立，非貼圖切換所能產生 |
-| **傷害浮動跳字** | `_spawn_float(target, dmg, color)` | `sim` 發出 `\"hit\"` 事件時觸發 | `battle_view.gd:2190`（暴擊金黃 `Color(1.0, 0.85, 0.2)`）/ `:2195`（普通紅橘 `Color(1, 0.4, 0.35)`） | ✅ 因果成立，由 Sim 命中結算觸發 |
-| **屏幕震顫反饋** | `_shake = 0.35` | `sim` 發出 `\"hit\"` / `\"fury_awakening\"` 事件時觸發 | `battle_view.gd:2191`（暴擊震屏 0.35）/ `:2200`（王者斬 0.4）/ `:2292`（暴怒覺醒 0.35） | ✅ 因果成立，由 Sim 事件鏈自然驅動 |
-| **命中停頓（Hitstop）** | `trigger_hit_stop(duration)` | `sim` 發出 `\"hit\"` / `\"fury_awakening\"` 事件時觸發 | `battle_view.gd:2192`: `trigger_hit_stop(0.08)`（命中 0.08s）；`:2293`: `trigger_hit_stop(0.1)`（暴怒覺醒 0.1s） | ✅ 因果成立，精確對齊 0.08s / 0.1s 邏輯 |
-| **「暴怒覺醒！」大字跳字** | `_spawn_float(\"player\", \"暴怒覺醒！\", ...)` | `battle_sim.gd:2929` 的 `sim.trigger_fury_awakening()` 向已連線之 view 發出 `\"fury_awakening\"` 事件時觸發 | `battle_view.gd:2283` 的 `\"fury_awakening\"` 分支；`:2291` 執行 `_spawn_float(\"player\", _t(\"暴怒覺醒！\"), Color(1.0, 0.4, 0.1), true)`；`:2294` `_flash(player_body, Color(3.0, 1.5, 0.5))` | ✅ 因果成立，需在 view 連線後呼叫 sim |
+| **角色前衝突進位移** | `_lunge(aid)` | `sim` 發出 `"attack_swing"` 事件時觸發 | `battle_view.gd` 的 `attack_swing` 事件分支：呼叫 `_lunge(aid)` 執行 Tween 前衝位移並回彈 | ✅ 因果成立，由 Sim 自然驅動 |
+| **角色姿態切換與縮放** | `_set_player_pose(pose, true)` | `sim` 發出 `"attack_swing"` 事件時觸發 | `battle_view.gd` 的 `attack_swing` 事件分支：切換 `attack` 姿態；`_set_player_pose()` 執行 `scale = Vector2(1.1, 0.94)` 並在 0.12s 內回彈 Vector2.ONE；隨後定時接 `recover` 與回 `idle` | ✅ 因果成立，由 Sim 事件鏈自然驅動 |
+| **受擊閃白（敵方反饋）** | `_flash(body, color)` | `sim` 發出 `"hit"` 事件時觸發 | `battle_view.gd` 的 `hit` 事件分支：暴擊時閃白 `Color(2.5, 0.6, 0.4)`，普通命中閃白 `Color(1, 0.3, 0.3)` | ✅ 因果成立，非貼圖切換所能產生 |
+| **傷害浮動跳字** | `_spawn_float(target, dmg, color)` | `sim` 發出 `"hit"` 事件時觸發 | `battle_view.gd` 的 `hit` 事件分支：暴擊金黃 `Color(1.0, 0.85, 0.2)`，普通紅橘 `Color(1, 0.4, 0.35)` | ✅ 因果成立，由 Sim 命中結算觸發 |
+| **屏幕震顫反饋** | `_shake = 0.35` | `sim` 發出 `"hit"` / `"fury_awakening"` 事件時觸發 | `battle_view.gd` 的 `hit` 事件分支設定 `_shake = 0.35`（暴擊）/ 王者斬 0.4；`fury_awakening` 事件分支設定 `_shake = 0.35` | ✅ 因果成立，由 Sim 事件鏈自然驅動 |
+| **命中停頓（Hitstop）** | `trigger_hit_stop(duration)` | `sim` 發出 `"hit"` / `"fury_awakening"` 事件時觸發 | `battle_view.gd` 的 `hit` 事件分支：呼叫 `trigger_hit_stop(0.08)`（命中 0.08s）；`fury_awakening` 事件分支呼叫 `trigger_hit_stop(0.1)`（暴怒覺醒 0.1s） | ✅ 因果成立，精確對齊 0.08s / 0.1s 邏輯 |
+| **「暴怒覺醒！」大字跳字** | `_spawn_float("player", "暴怒覺醒！", ...)` | `battle_sim.gd` 的 `sim.trigger_fury_awakening()` 向已連線之 view 發出 `"fury_awakening"` 事件時觸發 | `battle_view.gd` 的 `"fury_awakening"` 分支：手動覺醒呼叫 `_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)`；並以 `_flash(player_body, Color(3.0, 1.5, 0.5))` 展現金光 | ✅ 因果成立，需在 view 連線後呼叫 sim |
 
 ---
 
