@@ -1,29 +1,32 @@
 class_name GemWorkshopDialog
 extends Control
 ## 《發條之心》手藝工坊寶石彈窗 (GemWorkshopDialog)
-## 依手遊人體工學與 review.md 第 28、29 條規範：
+## 依多巴胺亮色盤規範與手遊人體工學：
 ## 1. 橫屏彈窗寬 740~760px，置中顯示，背景全螢幕半透明遮罩 (Scrim)。
 ## 2. 右上「✕」關閉按鈕尺寸 >= 50px，按鈕高度均 >= 50px。
-## 3. 連接既有寶石熔煉／寶石櫃畫面與 GemSystem。
-## 4. 零 emoji、零系統字型符號。
+## 3. 多巴胺亮色盤：金黃 #FFD028、暖橘 #FFA010、薄荷綠 #4ED86A、天藍 #38A0FF、珊瑚粉 #FF5E8A，描邊深藍紫 #1F1A3A。
+## 4. 圓角 18~24px，按鈕立體果凍厚底 (bottom border 5~6px)。
+## 5. 字級 16~24px 加粗帶深色厚描邊，零小字。
+## 6. 連接既有寶石熔煉／寶石櫃畫面與 GemSystem。
+## 7. 零 emoji、零系統字型符號。
 
 signal closed()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
-const OBSIDIAN_CARD   := Color(0.078, 0.071, 0.094, 0.98)
-const OBSIDIAN_WARM   := Color(0.102, 0.090, 0.122, 1.0)
-const OBSIDIAN_DEEP   := Color(0.027, 0.024, 0.039, 1.0)
-const GOLD_CLASSICAL  := Color(0.831, 0.686, 0.216, 1.0)
-const GOLD_HOVER      := Color(0.941, 0.843, 0.549, 1.0)
-const INK_IVORY       := Color(0.957, 0.922, 0.831, 1.0)
-const INK_MUTED       := Color(0.65, 0.60, 0.52, 1.0)
-const LINE_GOLD       := Color(0.831, 0.686, 0.216, 0.5)
-const BTN_ACTIVE_BG   := Color(0.20, 0.18, 0.26, 1.0)
-const BTN_INACTIVE_BG := Color(0.08, 0.07, 0.10, 1.0)
-const BTN_GREEN_BG    := Color(0.20, 0.58, 0.32, 1.0)
-const BTN_GREEN_BORDER:= Color(0.35, 0.78, 0.48, 1.0)
+## ── 多巴胺鮮亮高飽和色盤 ──
+const COLOR_GOLD       := Color("#FFD028")  ## 金黃
+const COLOR_ORANGE     := Color("#FFA010")  ## 暖橘
+const COLOR_MINT       := Color("#4ED86A")  ## 薄荷綠
+const COLOR_SKY        := Color("#38A0FF")  ## 天藍
+const COLOR_PINK       := Color("#FF5E8A")  ## 珊瑚粉
+const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
+const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
+const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
+const COLOR_CARD_SKY   := Color("#F0F7FF")  ## 柔和天藍卡片底
+const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
+const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
 
 enum Tab {
 	SMELT,
@@ -85,7 +88,8 @@ func _build_ui() -> void:
 	_dialog_card.name = "GemWorkshopCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
 	_dialog_card.custom_minimum_size = Vector2(750, 500)
-	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(OBSIDIAN_CARD, GOLD_CLASSICAL, 1, 4, 14))
+	# 奶油米白底 + 深藍紫立體邊框 + 22px 大圓角
+	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
 	var margin := MarginContainer.new()
@@ -106,8 +110,10 @@ func _build_ui() -> void:
 
 	var title_lbl := Label.new()
 	title_lbl.text = "手藝工坊 · 寶石熔煉與寶石櫃"
-	title_lbl.add_theme_font_size_override("font_size", 20)
-	title_lbl.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	title_lbl.add_theme_font_size_override("font_size", 22)
+	title_lbl.add_theme_color_override("font_color", COLOR_SKY)
+	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	title_lbl.add_theme_constant_override("outline_size", 4)
 	if _cached_font:
 		title_lbl.add_theme_font_override("font", _cached_font)
 	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -116,10 +122,10 @@ func _build_ui() -> void:
 	var close_btn := ResponsiveUi.make_close_button(_on_close)
 	head.add_child(close_btn)
 
-	# 金色分隔線
+	# 天藍色粗分隔線
 	var sep := ColorRect.new()
-	sep.custom_minimum_size = Vector2(0, 2)
-	sep.color = LINE_GOLD
+	sep.custom_minimum_size = Vector2(0, 3)
+	sep.color = COLOR_SKY
 	v.add_child(sep)
 
 	# 分頁標籤切換列 (按鈕高 >= 50)
@@ -164,14 +170,29 @@ func _build_ui() -> void:
 	_smelt_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content_box.add_child(_smelt_view)
 
+	var smelt_panel := PanelContainer.new()
+	smelt_panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_SKY, COLOR_BORDER, 2, 4, 18))
+	_smelt_view.add_child(smelt_panel)
+
+	var sp_m := MarginContainer.new()
+	sp_m.add_theme_constant_override("margin_left", 14)
+	sp_m.add_theme_constant_override("margin_right", 14)
+	sp_m.add_theme_constant_override("margin_top", 12)
+	sp_m.add_theme_constant_override("margin_bottom", 12)
+	smelt_panel.add_child(sp_m)
+
 	_smelt_rich = RichTextLabel.new()
 	_smelt_rich.bbcode_enabled = true
 	_smelt_rich.fit_content = true
 	_smelt_rich.scroll_active = false
-	_smelt_rich.custom_minimum_size = Vector2(700, 0)
+	_smelt_rich.custom_minimum_size = Vector2(670, 0)
+	_smelt_rich.add_theme_color_override("default_color", COLOR_TEXT_DARK)
+	_smelt_rich.add_theme_font_size_override("normal_font_size", 16)
+	_smelt_rich.add_theme_font_size_override("bold_font_size", 17)
 	if _cached_font:
 		_smelt_rich.add_theme_font_override("normal_font", _cached_font)
-	_smelt_view.add_child(_smelt_rich)
+		_smelt_rich.add_theme_font_override("bold_font", _cached_font)
+	sp_m.add_child(_smelt_rich)
 
 	_actions_container = VBoxContainer.new()
 	_actions_container.add_theme_constant_override("separation", 8)
@@ -183,26 +204,43 @@ func _build_ui() -> void:
 	_case_view.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content_box.add_child(_case_view)
 
+	var case_panel := PanelContainer.new()
+	case_panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
+	_case_view.add_child(case_panel)
+
+	var cp_m := MarginContainer.new()
+	cp_m.add_theme_constant_override("margin_left", 14)
+	cp_m.add_theme_constant_override("margin_right", 14)
+	cp_m.add_theme_constant_override("margin_top", 12)
+	cp_m.add_theme_constant_override("margin_bottom", 12)
+	case_panel.add_child(cp_m)
+
 	_case_rich = RichTextLabel.new()
 	_case_rich.bbcode_enabled = true
 	_case_rich.fit_content = true
 	_case_rich.scroll_active = false
-	_case_rich.custom_minimum_size = Vector2(700, 0)
+	_case_rich.custom_minimum_size = Vector2(670, 0)
+	_case_rich.add_theme_color_override("default_color", COLOR_TEXT_DARK)
+	_case_rich.add_theme_font_size_override("normal_font_size", 16)
+	_case_rich.add_theme_font_size_override("bold_font_size", 17)
 	if _cached_font:
 		_case_rich.add_theme_font_override("normal_font", _cached_font)
-	_case_view.add_child(_case_rich)
+		_case_rich.add_theme_font_override("bold_font", _cached_font)
+	cp_m.add_child(_case_rich)
 
 	var btn_refresh_case := Button.new()
 	btn_refresh_case.name = "BtnRefreshCase"
 	btn_refresh_case.text = "重新盤點寶石櫃"
 	btn_refresh_case.custom_minimum_size = Vector2(220, 50)
 	btn_refresh_case.add_theme_font_size_override("font_size", 16)
+	btn_refresh_case.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_refresh_case.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	btn_refresh_case.add_theme_constant_override("outline_size", 1)
 	if _cached_font:
 		btn_refresh_case.add_theme_font_override("font", _cached_font)
-	btn_refresh_case.add_theme_stylebox_override("normal", _create_button_style(OBSIDIAN_WARM, LINE_GOLD, 4))
-	btn_refresh_case.add_theme_stylebox_override("hover", _create_button_style(Color(0.15, 0.13, 0.18), GOLD_HOVER, 4))
-	btn_refresh_case.add_theme_stylebox_override("pressed", _create_button_style(Color(0.08, 0.07, 0.10), LINE_GOLD, 2))
-	btn_refresh_case.add_theme_color_override("font_color", INK_IVORY)
+	btn_refresh_case.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 6, 20, 2))
+	btn_refresh_case.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 6, 20, 2))
+	btn_refresh_case.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 20, 2))
 	btn_refresh_case.pressed.connect(_refresh_case_view)
 	_case_view.add_child(btn_refresh_case)
 
@@ -210,13 +248,15 @@ func _build_ui() -> void:
 	_msg_label = Label.new()
 	_msg_label.text = ""
 	_msg_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_msg_label.add_theme_font_size_override("font_size", 14)
-	_msg_label.add_theme_color_override("font_color", GOLD_HOVER)
+	_msg_label.add_theme_font_size_override("font_size", 16)
+	_msg_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_msg_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_msg_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
 		_msg_label.add_theme_font_override("font", _cached_font)
 	v.add_child(_msg_label)
 
-	# 底部離開按鈕 (按鈕高 >= 50)
+	# 底部離開按鈕 (按鈕高 >= 50, 金黃立體厚底 5px)
 	var foot_row := HBoxContainer.new()
 	foot_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(foot_row)
@@ -225,13 +265,15 @@ func _build_ui() -> void:
 	btn_close.name = "BtnCloseGemWorkshop"
 	btn_close.text = "離開工坊"
 	btn_close.custom_minimum_size = Vector2(180, 50)
-	btn_close.add_theme_font_size_override("font_size", 16)
+	btn_close.add_theme_font_size_override("font_size", 18)
+	btn_close.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_close.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	btn_close.add_theme_constant_override("outline_size", 1)
 	if _cached_font:
 		btn_close.add_theme_font_override("font", _cached_font)
-	btn_close.add_theme_stylebox_override("normal", _create_button_style(OBSIDIAN_WARM, LINE_GOLD, 4))
-	btn_close.add_theme_stylebox_override("hover", _create_button_style(Color(0.15, 0.13, 0.18), GOLD_HOVER, 4))
-	btn_close.add_theme_stylebox_override("pressed", _create_button_style(Color(0.08, 0.07, 0.10), LINE_GOLD, 2))
-	btn_close.add_theme_color_override("font_color", INK_IVORY)
+	btn_close.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 20, 2))
+	btn_close.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 20, 2))
+	btn_close.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 20, 2))
 	btn_close.pressed.connect(_on_close)
 	foot_row.add_child(btn_close)
 
@@ -239,18 +281,38 @@ func _build_ui() -> void:
 func _switch_tab(tab: Tab) -> void:
 	_current_tab = tab
 	if tab == Tab.SMELT:
-		_tab_smelt_btn.add_theme_stylebox_override("normal", _create_button_style(BTN_ACTIVE_BG, GOLD_CLASSICAL, 4))
-		_tab_smelt_btn.add_theme_color_override("font_color", GOLD_CLASSICAL)
-		_tab_case_btn.add_theme_stylebox_override("normal", _create_button_style(BTN_INACTIVE_BG, LINE_GOLD, 2))
-		_tab_case_btn.add_theme_color_override("font_color", INK_MUTED)
+		_tab_smelt_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 20, 2))
+		_tab_smelt_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5AB3FF"), COLOR_BORDER, 5, 20, 2))
+		_tab_smelt_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#268FE8"), COLOR_BORDER, 2, 20, 2))
+		_tab_smelt_btn.add_theme_color_override("font_color", Color.WHITE)
+		_tab_smelt_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		_tab_smelt_btn.add_theme_constant_override("outline_size", 3)
+
+		_tab_case_btn.add_theme_stylebox_override("normal", _create_button_style(Color("#F6F1E6"), COLOR_BORDER, 3, 20, 1))
+		_tab_case_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#EBE3D0"), COLOR_BORDER, 3, 20, 1))
+		_tab_case_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#DFD4BC"), COLOR_BORDER, 1, 20, 1))
+		_tab_case_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_tab_case_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		_tab_case_btn.add_theme_constant_override("outline_size", 0)
+
 		_smelt_view.visible = true
 		_case_view.visible = false
 		_refresh_smelt_view()
 	else:
-		_tab_case_btn.add_theme_stylebox_override("normal", _create_button_style(BTN_ACTIVE_BG, GOLD_CLASSICAL, 4))
-		_tab_case_btn.add_theme_color_override("font_color", GOLD_CLASSICAL)
-		_tab_smelt_btn.add_theme_stylebox_override("normal", _create_button_style(BTN_INACTIVE_BG, LINE_GOLD, 2))
-		_tab_smelt_btn.add_theme_color_override("font_color", INK_MUTED)
+		_tab_case_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 20, 2))
+		_tab_case_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 20, 2))
+		_tab_case_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 20, 2))
+		_tab_case_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_tab_case_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		_tab_case_btn.add_theme_constant_override("outline_size", 2)
+
+		_tab_smelt_btn.add_theme_stylebox_override("normal", _create_button_style(Color("#E8F2FC"), COLOR_BORDER, 3, 20, 1))
+		_tab_smelt_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#D4E6F8"), COLOR_BORDER, 3, 20, 1))
+		_tab_smelt_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#C4DCF4"), COLOR_BORDER, 1, 20, 1))
+		_tab_smelt_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_tab_smelt_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		_tab_smelt_btn.add_theme_constant_override("outline_size", 0)
+
 		_smelt_view.visible = false
 		_case_view.visible = true
 		_refresh_case_view()
@@ -265,7 +327,7 @@ func _refresh_smelt_view() -> void:
 
 	var count_actions := 0
 
-	# 1. 熔煉按鈕：3 碎片 -> 1 級
+	# 1. 熔煉按鈕：3 碎片 -> 1 級 (薄荷綠立體果凍厚底 6px)
 	for col in GemSystem.COLORS:
 		if GemSystem.can_smelt(col):
 			var c_str: String = col
@@ -273,23 +335,26 @@ func _refresh_smelt_view() -> void:
 			btn.text = "熔煉 %s（3 碎片 → 1 級寶石）" % GemSystem.color_label(c_str)
 			btn.custom_minimum_size = Vector2(0, 50)
 			btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-			btn.add_theme_font_size_override("font_size", 15)
+			btn.add_theme_font_size_override("font_size", 16)
+			btn.add_theme_color_override("font_color", Color.WHITE)
+			btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+			btn.add_theme_constant_override("outline_size", 4)
 			if _cached_font:
 				btn.add_theme_font_override("font", _cached_font)
-			btn.add_theme_stylebox_override("normal", _create_button_style(BTN_GREEN_BG, BTN_GREEN_BORDER, 4))
-			btn.add_theme_stylebox_override("hover", _create_button_style(Color(0.25, 0.68, 0.38), BTN_GREEN_BORDER, 4))
-			btn.add_theme_color_override("font_color", Color.WHITE)
+			btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 6, 20, 2))
+			btn.add_theme_stylebox_override("hover", _create_button_style(Color("#68E882"), COLOR_BORDER, 6, 20, 2))
+			btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#3BBF55"), COLOR_BORDER, 2, 20, 2))
 			btn.pressed.connect(func():
 				var res: Dictionary = GemSystem.smelt(c_str)
 				_msg_label.text = str(res.get("msg", "熔煉完成！"))
-				_msg_label.add_theme_color_override("font_color", Color(0.4, 0.95, 0.5))
+				_msg_label.add_theme_color_override("font_color", COLOR_MINT)
 				SaveManager.save_game()
 				_refresh_smelt_view()
 			)
 			_actions_container.add_child(btn)
 			count_actions += 1
 
-	# 2. 合成按鈕：3 顆同級 -> 1 顆下一級
+	# 2. 合成按鈕：3 顆同級 -> 1 顆下一級 (天藍立體果凍厚底 6px)
 	for col in GemSystem.COLORS:
 		for lv in range(1, GemSystem.MAX_LEVEL):
 			if GemSystem.can_fuse(col, lv) and count_actions < 8:
@@ -299,16 +364,19 @@ func _refresh_smelt_view() -> void:
 				btn.text = "合成 %s（3 顆 %d 級 → 1 顆 %d 級寶石）" % [GemSystem.color_label(c_str), l_val, l_val + 1]
 				btn.custom_minimum_size = Vector2(0, 50)
 				btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				btn.add_theme_font_size_override("font_size", 15)
+				btn.add_theme_font_size_override("font_size", 16)
+				btn.add_theme_color_override("font_color", Color.WHITE)
+				btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+				btn.add_theme_constant_override("outline_size", 4)
 				if _cached_font:
 					btn.add_theme_font_override("font", _cached_font)
-				btn.add_theme_stylebox_override("normal", _create_button_style(Color(0.18, 0.32, 0.58), Color(0.35, 0.55, 0.88), 4))
-				btn.add_theme_stylebox_override("hover", _create_button_style(Color(0.25, 0.42, 0.72), Color(0.45, 0.65, 0.98), 4))
-				btn.add_theme_color_override("font_color", Color.WHITE)
+				btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 6, 20, 2))
+				btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5AB3FF"), COLOR_BORDER, 6, 20, 2))
+				btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#268FE8"), COLOR_BORDER, 2, 20, 2))
 				btn.pressed.connect(func():
 					var res: Dictionary = GemSystem.fuse(c_str, l_val)
 					_msg_label.text = str(res.get("msg", "合成完成！"))
-					_msg_label.add_theme_color_override("font_color", Color(0.4, 0.8, 1.0))
+					_msg_label.add_theme_color_override("font_color", COLOR_SKY)
 					SaveManager.save_game()
 					_refresh_smelt_view()
 				)
@@ -319,8 +387,10 @@ func _refresh_smelt_view() -> void:
 		var empty_lbl := Label.new()
 		empty_lbl.text = "目前無可熔煉碎片（需 3 枚同色碎片）或可合成之同級寶石。\n可於主線冒險或獵場中取得寶石碎片。"
 		empty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		empty_lbl.add_theme_font_size_override("font_size", 14)
-		empty_lbl.add_theme_color_override("font_color", INK_MUTED)
+		empty_lbl.add_theme_font_size_override("font_size", 16)
+		empty_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		empty_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		empty_lbl.add_theme_constant_override("outline_size", 1)
 		if _cached_font:
 			empty_lbl.add_theme_font_override("font", _cached_font)
 		_actions_container.add_child(empty_lbl)
@@ -335,25 +405,32 @@ func _on_close() -> void:
 	queue_free()
 
 
-func _create_panel_style(bg: Color, border: Color, border_w: int = 1, bottom_w: int = 3, radius: int = 12) -> StyleBoxFlat:
+func _create_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = bg
 	sb.border_color = border
 	sb.set_border_width_all(border_w)
 	sb.border_width_bottom = bottom_w
 	sb.set_corner_radius_all(radius)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 10
+	sb.shadow_offset = Vector2(0, 5)
 	return sb
 
 
-func _create_button_style(bg: Color, border: Color, bottom_border: int = 4) -> StyleBoxFlat:
+func _create_button_style(bg: Color, border: Color = COLOR_BORDER, bottom_border: int = 6, radius: int = 20, border_w: int = 2) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = bg
 	sb.border_color = border
-	sb.set_border_width_all(1)
+	sb.set_border_width_all(border_w)
 	sb.border_width_bottom = bottom_border
-	sb.set_corner_radius_all(10)
-	sb.content_margin_left = 16
-	sb.content_margin_right = 16
-	sb.content_margin_top = 8
-	sb.content_margin_bottom = 8
+	sb.set_corner_radius_all(radius)
+	sb.content_margin_left = 20
+	sb.content_margin_right = 20
+	sb.content_margin_top = 10
+	sb.content_margin_bottom = 12
+	if bottom_border > 2:
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.35)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 4)
 	return sb

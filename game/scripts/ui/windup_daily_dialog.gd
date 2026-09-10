@@ -1,29 +1,32 @@
 class_name WindupDailyDialog
 extends Control
 ## 《發條之心》冒險委託每日上發條彈窗 (WindupDailyDialog)
-## 依手遊人體工學與 review.md 第 28、29 條規範：
+## 依多巴胺亮色盤規範與手遊人體工學：
 ## 1. 橫屏彈窗寬 740~760px，置中顯示，背景全螢幕半透明遮罩 (Scrim)。
 ## 2. 右上「✕」關閉按鈕尺寸 >= 50px，按鈕高度均 >= 50px。
-## 3. 連接既有 WindupDailySystem「今天，誰需要上發條？」當日個案。
+## 3. 多巴胺亮色盤：金黃 #FFD028、暖橘 #FFA010、薄荷綠 #4ED86A、天藍 #38A0FF、珊瑚粉 #FF5E8A，描邊深藍紫 #1F1A3A。
+## 4. 圓角 18~24px，按鈕立體果凍厚底 (bottom border 5~6px)。
+## 5. 字級 16~24px 加粗帶深色厚描邊，零小字。
+## 6. 連接既有 WindupDailySystem「今天，誰需要上發條？」當日個案。
 ##    兩個選項可選、完成發獎勵、當天不可再領。
-## 4. 零 emoji、零系統字型符號。
+## 7. 零 emoji、零系統字型符號。
 
 signal closed()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
-const OBSIDIAN_CARD   := Color(0.078, 0.071, 0.094, 0.98)
-const OBSIDIAN_WARM   := Color(0.102, 0.090, 0.122, 1.0)
-const OBSIDIAN_DEEP   := Color(0.027, 0.024, 0.039, 1.0)
-const GOLD_CLASSICAL  := Color(0.831, 0.686, 0.216, 1.0)
-const GOLD_HOVER      := Color(0.941, 0.843, 0.549, 1.0)
-const INK_IVORY       := Color(0.957, 0.922, 0.831, 1.0)
-const INK_MUTED       := Color(0.65, 0.60, 0.52, 1.0)
-const LINE_GOLD       := Color(0.831, 0.686, 0.216, 0.5)
-const BTN_GREEN_BG    := Color(0.20, 0.58, 0.32, 1.0)
-const BTN_GREEN_BORDER:= Color(0.35, 0.78, 0.48, 1.0)
-const COLOR_SUCCESS   := Color(0.31, 0.85, 0.42, 1.0)
+## ── 多巴胺鮮亮高飽和色盤 ──
+const COLOR_GOLD       := Color("#FFD028")  ## 金黃
+const COLOR_ORANGE     := Color("#FFA010")  ## 暖橘
+const COLOR_MINT       := Color("#4ED86A")  ## 薄荷綠
+const COLOR_SKY        := Color("#38A0FF")  ## 天藍
+const COLOR_PINK       := Color("#FF5E8A")  ## 珊瑚粉
+const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
+const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
+const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
+const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
+const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
 
 var _dialog_card: PanelContainer
 var _case_title_label: Label
@@ -76,7 +79,8 @@ func _build_ui() -> void:
 	_dialog_card.name = "WindupDailyCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
 	_dialog_card.custom_minimum_size = Vector2(750, 480)
-	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(OBSIDIAN_CARD, GOLD_CLASSICAL, 1, 4, 14))
+	# 奶油米白底 + 深藍紫立體邊框 + 22px 大圓角
+	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
 	var margin := MarginContainer.new()
@@ -97,8 +101,10 @@ func _build_ui() -> void:
 
 	var title_lbl := Label.new()
 	title_lbl.text = "冒險委託 · 今天誰需要上發條"
-	title_lbl.add_theme_font_size_override("font_size", 20)
-	title_lbl.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	title_lbl.add_theme_font_size_override("font_size", 22)
+	title_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
+	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	title_lbl.add_theme_constant_override("outline_size", 4)
 	if _cached_font:
 		title_lbl.add_theme_font_override("font", _cached_font)
 	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -107,15 +113,15 @@ func _build_ui() -> void:
 	var close_btn := ResponsiveUi.make_close_button(_on_close)
 	head.add_child(close_btn)
 
-	# 金色分隔線
+	# 亮橘色粗分隔線
 	var sep := ColorRect.new()
-	sep.custom_minimum_size = Vector2(0, 2)
-	sep.color = LINE_GOLD
+	sep.custom_minimum_size = Vector2(0, 3)
+	sep.color = COLOR_ORANGE
 	v.add_child(sep)
 
-	# 個案內容卡片 (PanelContainer)
+	# 個案內容卡片 (溫暖米黃卡片底 + 20px 圓角)
 	var case_panel := PanelContainer.new()
-	case_panel.add_theme_stylebox_override("panel", _create_panel_style(OBSIDIAN_WARM, LINE_GOLD, 1, 2, 10))
+	case_panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 20))
 	v.add_child(case_panel)
 
 	var cm := MarginContainer.new()
@@ -133,7 +139,9 @@ func _build_ui() -> void:
 	_case_title_label.name = "CaseTitle"
 	_case_title_label.text = "【個案委託】"
 	_case_title_label.add_theme_font_size_override("font_size", 18)
-	_case_title_label.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	_case_title_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_case_title_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_case_title_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
 		_case_title_label.add_theme_font_override("font", _cached_font)
 	cv.add_child(_case_title_label)
@@ -142,8 +150,10 @@ func _build_ui() -> void:
 	_case_desc_label.name = "CaseDesc"
 	_case_desc_label.text = "委託描述"
 	_case_desc_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_case_desc_label.add_theme_font_size_override("font_size", 15)
-	_case_desc_label.add_theme_color_override("font_color", INK_IVORY)
+	_case_desc_label.add_theme_font_size_override("font_size", 16)
+	_case_desc_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_case_desc_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_case_desc_label.add_theme_constant_override("outline_size", 1)
 	if _cached_font:
 		_case_desc_label.add_theme_font_override("font", _cached_font)
 	cv.add_child(_case_desc_label)
@@ -152,8 +162,10 @@ func _build_ui() -> void:
 	_prompt_label.name = "CasePrompt"
 	_prompt_label.text = "對話提示"
 	_prompt_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_prompt_label.add_theme_font_size_override("font_size", 14)
-	_prompt_label.add_theme_color_override("font_color", GOLD_HOVER)
+	_prompt_label.add_theme_font_size_override("font_size", 16)
+	_prompt_label.add_theme_color_override("font_color", COLOR_SKY)
+	_prompt_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_prompt_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
 		_prompt_label.add_theme_font_override("font", _cached_font)
 	cv.add_child(_prompt_label)
@@ -162,8 +174,10 @@ func _build_ui() -> void:
 	_unlock_label.name = "CaseUnlock"
 	_unlock_label.text = ""
 	_unlock_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_unlock_label.add_theme_font_size_override("font_size", 14)
-	_unlock_label.add_theme_color_override("font_color", COLOR_SUCCESS)
+	_unlock_label.add_theme_font_size_override("font_size", 16)
+	_unlock_label.add_theme_color_override("font_color", COLOR_PINK)
+	_unlock_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_unlock_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
 		_unlock_label.add_theme_font_override("font", _cached_font)
 	cv.add_child(_unlock_label)
@@ -171,8 +185,10 @@ func _build_ui() -> void:
 	_milestone_label = Label.new()
 	_milestone_label.name = "MilestoneHint"
 	_milestone_label.text = "累計上發條 0 次"
-	_milestone_label.add_theme_font_size_override("font_size", 13)
-	_milestone_label.add_theme_color_override("font_color", INK_MUTED)
+	_milestone_label.add_theme_font_size_override("font_size", 16)
+	_milestone_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_milestone_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_milestone_label.add_theme_constant_override("outline_size", 1)
 	if _cached_font:
 		_milestone_label.add_theme_font_override("font", _cached_font)
 	cv.add_child(_milestone_label)
@@ -182,20 +198,22 @@ func _build_ui() -> void:
 	_msg_label.name = "MsgLabel"
 	_msg_label.text = "完成委託獎勵：金幣 +25、星塵 +1、發條碎片 +1"
 	_msg_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_msg_label.add_theme_font_size_override("font_size", 14)
-	_msg_label.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	_msg_label.add_theme_font_size_override("font_size", 16)
+	_msg_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_msg_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_msg_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
 		_msg_label.add_theme_font_override("font", _cached_font)
 	v.add_child(_msg_label)
 
-	# 委託行動選項按鈕區 (按鈕高 >= 50)
+	# 委託行動選項按鈕區 (按鈕高 >= 50, 薄荷綠立體果凍厚底 6px)
 	_choices_box = HBoxContainer.new()
 	_choices_box.name = "ChoicesBox"
 	_choices_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	_choices_box.add_theme_constant_override("separation", 16)
 	v.add_child(_choices_box)
 
-	# 底部關閉按鈕列
+	# 底部關閉按鈕列 (金黃立體厚底 5px)
 	var foot := HBoxContainer.new()
 	foot.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(foot)
@@ -203,14 +221,16 @@ func _build_ui() -> void:
 	var btn_leave := Button.new()
 	btn_leave.name = "BtnCloseWindup"
 	btn_leave.text = "離開委託"
-	btn_leave.custom_minimum_size = Vector2(180, 50)
-	btn_leave.add_theme_font_size_override("font_size", 16)
+	btn_leave.custom_minimum_size = Vector2(180, 52)
+	btn_leave.add_theme_font_size_override("font_size", 18)
+	btn_leave.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_leave.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	btn_leave.add_theme_constant_override("outline_size", 1)
 	if _cached_font:
 		btn_leave.add_theme_font_override("font", _cached_font)
-	btn_leave.add_theme_stylebox_override("normal", _create_button_style(OBSIDIAN_WARM, LINE_GOLD, 4))
-	btn_leave.add_theme_stylebox_override("hover", _create_button_style(Color(0.15, 0.13, 0.18), GOLD_HOVER, 4))
-	btn_leave.add_theme_stylebox_override("pressed", _create_button_style(Color(0.08, 0.07, 0.10), LINE_GOLD, 2))
-	btn_leave.add_theme_color_override("font_color", INK_IVORY)
+	btn_leave.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 20, 2))
+	btn_leave.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 20, 2))
+	btn_leave.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 20, 2))
 	btn_leave.pressed.connect(_on_close)
 	foot.add_child(btn_leave)
 
@@ -231,7 +251,7 @@ func _refresh_display() -> void:
 
 	if is_done:
 		_prompt_label.text = "今天這截發條已經上好。明天再來看誰需要。"
-		_prompt_label.add_theme_color_override("font_color", COLOR_SUCCESS)
+		_prompt_label.add_theme_color_override("font_color", COLOR_MINT)
 		var unlock_text := str(c.get("unlock", ""))
 		if unlock_text.is_empty():
 			_unlock_label.text = "這截發條輕輕咬合，發出溫柔的運轉聲。"
@@ -240,27 +260,30 @@ func _refresh_display() -> void:
 		_unlock_label.visible = true
 
 		_msg_label.text = "今日委託獎勵已領取，明日將輪替新個案。"
-		_msg_label.add_theme_color_override("font_color", INK_MUTED)
+		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 
 		var done_btn := Button.new()
 		done_btn.name = "BtnDoneStatus"
 		done_btn.text = "今日委託已完成（當日不可再領）"
 		done_btn.disabled = true
-		done_btn.custom_minimum_size = Vector2(320, 50)
-		done_btn.add_theme_font_size_override("font_size", 15)
+		done_btn.custom_minimum_size = Vector2(320, 52)
+		done_btn.add_theme_font_size_override("font_size", 16)
+		done_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		done_btn.add_theme_color_override("font_disabled_color", COLOR_TEXT_DARK)
+		done_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		done_btn.add_theme_constant_override("outline_size", 1)
 		if _cached_font:
 			done_btn.add_theme_font_override("font", _cached_font)
-		done_btn.add_theme_stylebox_override("disabled", _create_button_style(Color(0.12, 0.11, 0.15), Color(0.25, 0.22, 0.30), 2))
-		done_btn.add_theme_color_override("font_disabled_color", INK_MUTED)
+		done_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#EFEAE0"), COLOR_BORDER, 3, 20, 2))
 		_choices_box.add_child(done_btn)
 	else:
 		_prompt_label.text = str(c.get("prompt", "請選擇行動為發條玩具轉緊發條："))
-		_prompt_label.add_theme_color_override("font_color", GOLD_HOVER)
+		_prompt_label.add_theme_color_override("font_color", COLOR_SKY)
 		_unlock_label.text = ""
 		_unlock_label.visible = false
 
 		_msg_label.text = "完成委託獎勵：金幣 +25、星塵 +1、發條碎片 +1"
-		_msg_label.add_theme_color_override("font_color", GOLD_CLASSICAL)
+		_msg_label.add_theme_color_override("font_color", COLOR_ORANGE)
 
 		var choices: Array = c.get("choices", [])
 		for i in range(choices.size()):
@@ -271,14 +294,16 @@ func _refresh_display() -> void:
 			var btn := Button.new()
 			btn.name = "ChoiceBtn_%d" % i
 			btn.text = clabel
-			btn.custom_minimum_size = Vector2(260, 50)
+			btn.custom_minimum_size = Vector2(260, 52)
 			btn.add_theme_font_size_override("font_size", 16)
+			btn.add_theme_color_override("font_color", Color.WHITE)
+			btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+			btn.add_theme_constant_override("outline_size", 4)
 			if _cached_font:
 				btn.add_theme_font_override("font", _cached_font)
-			btn.add_theme_stylebox_override("normal", _create_button_style(BTN_GREEN_BG, BTN_GREEN_BORDER, 4))
-			btn.add_theme_stylebox_override("hover", _create_button_style(Color(0.25, 0.68, 0.38), BTN_GREEN_BORDER, 4))
-			btn.add_theme_stylebox_override("pressed", _create_button_style(Color(0.16, 0.48, 0.25), BTN_GREEN_BORDER, 2))
-			btn.add_theme_color_override("font_color", Color.WHITE)
+			btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 6, 20, 2))
+			btn.add_theme_stylebox_override("hover", _create_button_style(Color("#68E882"), COLOR_BORDER, 6, 20, 2))
+			btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#3BBF55"), COLOR_BORDER, 2, 20, 2))
 
 			btn.pressed.connect(func():
 				_on_choice_selected(cid)
@@ -293,10 +318,10 @@ func _on_choice_selected(choice_id: String) -> void:
 	_refresh_display()
 	if bool(r.get("ok", false)):
 		_msg_label.text = "委託完成！" + str(r.get("msg", "已獲得獎勵！"))
-		_msg_label.add_theme_color_override("font_color", COLOR_SUCCESS)
+		_msg_label.add_theme_color_override("font_color", COLOR_MINT)
 	else:
 		_msg_label.text = str(r.get("msg", "領取失敗"))
-		_msg_label.add_theme_color_override("font_color", Color(1.0, 0.5, 0.4))
+		_msg_label.add_theme_color_override("font_color", COLOR_PINK)
 
 
 func _on_close() -> void:
@@ -304,25 +329,32 @@ func _on_close() -> void:
 	queue_free()
 
 
-func _create_panel_style(bg: Color, border: Color, border_w: int = 1, bottom_w: int = 3, radius: int = 12) -> StyleBoxFlat:
+func _create_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = bg
 	sb.border_color = border
 	sb.set_border_width_all(border_w)
 	sb.border_width_bottom = bottom_w
 	sb.set_corner_radius_all(radius)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 10
+	sb.shadow_offset = Vector2(0, 5)
 	return sb
 
 
-func _create_button_style(bg: Color, border: Color, bottom_border: int = 4) -> StyleBoxFlat:
+func _create_button_style(bg: Color, border: Color = COLOR_BORDER, bottom_border: int = 6, radius: int = 20, border_w: int = 2) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = bg
 	sb.border_color = border
-	sb.set_border_width_all(1)
+	sb.set_border_width_all(border_w)
 	sb.border_width_bottom = bottom_border
-	sb.set_corner_radius_all(10)
-	sb.content_margin_left = 16
-	sb.content_margin_right = 16
-	sb.content_margin_top = 8
-	sb.content_margin_bottom = 8
+	sb.set_corner_radius_all(radius)
+	sb.content_margin_left = 20
+	sb.content_margin_right = 20
+	sb.content_margin_top = 10
+	sb.content_margin_bottom = 12
+	if bottom_border > 2:
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.35)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 4)
 	return sb
