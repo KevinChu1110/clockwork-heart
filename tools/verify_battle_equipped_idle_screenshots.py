@@ -98,13 +98,31 @@ def main():
     assert brass_pixels > 50, "攻擊幀缺少長劍黃銅護手/劍首像素！"
     print("  ✓ 門檻 3 通過：軀幹＋雙手持握金屬長劍判定確鑿，非空手、非浮空 overlay！\n")
 
-    print("ALL 3 AUDIT REQUIREMENTS VERIFIED AND PASSED!")
+    print("=== 門檻 4: 驗收 review.md 第 16c 條（零接地影錯位黑帶）===")
+    full_screen_path = os.path.join(shot_dir, "proof_battle_full_screen.png")
+    assert os.path.exists(full_screen_path), f"缺少未縮放完整戰鬥畫面原圖: {full_screen_path}"
+    all_proof_paths = [full_screen_path, battle_royal_path, battle_steam_path, battle_atk_path]
+    for sp in all_proof_paths:
+        sim = Image.open(sp).convert("L")
+        sarr = np.array(sim)
+        dark_cnt = (sarr < 70).sum(axis=1)
+        h, w = sim.size[1], sim.size[0]
+        bad = []
+        for y in range(h):
+            if dark_cnt[y] > w * 0.35 and 0.35 <= y / float(h) <= 0.55:
+                bad.append(y)
+        assert len(bad) == 0, f"截圖 {os.path.basename(sp)} 違反第 16c 條：在 35%-55% 胸腹高度存在 {len(bad)} 列橫向黑帶！"
+        print(f"  ✓ {os.path.basename(sp)}: 16c 檢查通過（胸腹高度零錯位黑帶，暗像素列數=0）")
+    print("  ✓ 門檻 4 通過：全數截圖符合 review.md 第 16c 條規範！\n")
+
+    print("ALL 4 AUDIT REQUIREMENTS VERIFIED AND PASSED!")
     return {
         "same_px": same_px,
         "total_px": total_px,
         "same_pct": same_pct,
         "diff_px": diff_px,
-        "brass_pixels": brass_pixels
+        "brass_pixels": brass_pixels,
+        "full_screen_path": full_screen_path
     }
 
 if __name__ == "__main__":

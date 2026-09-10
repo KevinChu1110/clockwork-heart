@@ -79,11 +79,15 @@ func _run_captures() -> void:
 	if battle.has_method("setup"):
 		battle.call("setup", "wolf")
 
+	await _wait_frames(18)
+	print(">>> 截取未縮放完整戰鬥畫面原圖（含敵方、我方、全景與接地影）...")
+	await _capture_frame("proof_battle_full_screen.png")
+
 	# 縮放焦點對準玩家角色區（類似探索模式 cam.zoom），讓 1280x720 畫布清晰呈現紙娃娃細節
 	battle.pivot_offset = Vector2(300, 360)
 	battle.scale = Vector2(2.1, 2.1)
 
-	await _wait_frames(18)
+	await _wait_frames(6)
 	print(">>> 截取第一套外裝（皇家巡遊禮服）戰鬥待機畫面...")
 	await _capture_frame("proof_battle_equipped_royal_parade.png")
 

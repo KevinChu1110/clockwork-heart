@@ -798,7 +798,10 @@ static func _content_bottom_frac(tex: Texture2D) -> float:
 	var w := img.get_width()
 	var last := int(float(h) * 0.88)
 	var found := false
-	for y in range(h - 1, -1, -1):
+	var scan_start := h - 1
+	if h >= 120 and h <= 136:
+		scan_start = 117  ## 排除已烤入的 y118~127 影子帶 (review.md 16c)
+	for y in range(scan_start, -1, -1):
 		var hit := false
 		var x := 0
 		while x < w:
@@ -872,6 +875,10 @@ func _layout_foot_shadow(body: TextureRect) -> void:
 		return
 	var sh := layer.get_node_or_null("FootShadow_%s" % body.name) as TextureRect
 	if sh == null or sh.texture == null:
+		return
+	## 玩家紙娃娃合成圖 (equipped_idle) 已自帶接地影，關閉外掛 FootShadow 避免疊第二層與錯位 (review.md 16c)
+	if body == player_body:
+		sh.visible = false
 		return
 	var dr := _body_drawn_rect(body)
 	if dr.size.x < 8.0 or dr.size.y < 8.0:
