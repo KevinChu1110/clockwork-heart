@@ -1,15 +1,15 @@
 class_name WardrobeDialog
 extends Control
 ## 《發條之心》大廳角色換裝衣櫥彈窗 (WardrobeDialog)
-## 依據手遊人體工學規範與 review.md 第 28 條、第 28a 條：
-## 1. 橫屏彈窗寬 740~760px，置中顯示，背景附全螢幕遮罩 (Scrim)。
+## 依多巴胺亮色盤規範與手遊人體工學：
+## 1. 橫屏彈窗寬 740~760px，置中顯示，背景全螢幕半透明遮罩 (Scrim)。
 ## 2. 右上「✕」關閉按鈕尺寸 >= 50px，點擊遮罩空白處亦可關閉。
-## 3. 部件挑選採 GridContainer 每列 4 格縮圖卡片網格，一次呈現全部已解鎖選項。
-##    每格顯示部件縮圖＋名稱，已裝備格附亮金框與『✓ 已選用』標籤；多於一頁採 ScrollContainer 捲動。
-##    嚴禁垂直長條文字按鈕，嚴禁左右箭頭分頁輪播。
-## 4. creation_mode 預設為 false，作為大廳隨時開合的正式衣櫥。
-## 5. 打開時自動對應玩家當前種族與已裝備的部件 index，不從 0 開始重置。
-## 6. 確認換裝寫回 GameState (costume_id, paint_id) 並自動存檔。
+## 3. 多巴胺亮色盤：金黃 #FFD028、暖橘 #FFA010、薄荷綠 #4ED86A、天藍 #38A0FF、珊瑚粉 #FF5E8A，描邊深藍紫 #1F1A3A，底板奶油白 #FFFDF8。
+## 4. 圓角 18~24px，按鈕立體果凍厚底 (bottom border 5~6px)，按鈕高度均 >= 50px。
+## 5. 字級 16~24px 加粗帶深色厚描邊，零小字。
+## 6. 部件挑選採 GridContainer 每列 4 格縮圖卡片網格，已裝備格附亮金/暖橘果凍框與『✓ 已選用』標籤。
+## 7. 打開時自動對應玩家當前種族與已裝備的部件 index，確認換裝寫回 GameState 並存檔。
+## 8. 全程 0 系統 emoji，角色待機呼吸動畫持續進行。
 
 signal outfit_saved(race_id: String, selections: Dictionary)
 signal cancelled()
@@ -23,22 +23,21 @@ const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 ## 彈窗尺寸標準 (review.md 第 28 條: 740~760px)
 const DIALOG_WIDTH := 750.0
-const DIALOG_HEIGHT := 530.0
+const DIALOG_HEIGHT := 540.0
 const BTN_SIZE := 50.0
 
-## 色盤常數 (希臘神殿黑曜石 x 多巴胺古典金)
-const OBSIDIAN_BASE   := Color(0.043, 0.039, 0.055, 1.0)
-const OBSIDIAN_CARD   := Color(0.078, 0.071, 0.094, 0.98)
-const OBSIDIAN_WARM   := Color(0.102, 0.090, 0.122, 1.0)
-const OBSIDIAN_DEEP   := Color(0.027, 0.024, 0.039, 1.0)
-const GOLD_CLASSICAL  := Color(0.831, 0.686, 0.216, 1.0)
-const GOLD_HOVER      := Color(0.941, 0.843, 0.549, 1.0)
-const INK_IVORY       := Color(0.957, 0.922, 0.831, 1.0)
-const INK_MUTED       := Color(0.65, 0.60, 0.52, 1.0)
-const LINE_GOLD       := Color(0.831, 0.686, 0.216, 0.5)
-const LINE_GOLD_SOFT  := Color(0.831, 0.686, 0.216, 0.25)
-const BTN_CONFIRM_BG  := Color(0.22, 0.68, 0.38, 1.0)
-const BTN_CONFIRM_TXT := Color(0.04, 0.20, 0.08, 1.0)
+## ── 多巴胺鮮亮高飽和色盤 ──
+const COLOR_GOLD       := Color("#FFD028")  ## 金黃
+const COLOR_ORANGE     := Color("#FFA010")  ## 暖橘
+const COLOR_MINT       := Color("#4ED86A")  ## 薄荷綠
+const COLOR_SKY        := Color("#38A0FF")  ## 天藍
+const COLOR_PINK       := Color("#FF5E8A")  ## 珊瑚粉
+const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
+const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
+const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
+const COLOR_CARD_SKY   := Color("#F0F7FF")  ## 柔和天藍卡片底
+const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
+const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
 
 ## UI 節點參照
 var _scrim: ColorRect
@@ -160,8 +159,8 @@ func _init_from_game_state() -> void:
 
 
 func _build_ui() -> void:
-	# 1. 全螢幕遮罩 (Scrim)
-	_scrim = ResponsiveUi.make_scrim(Color(0.02, 0.02, 0.03, 0.75))
+	# 1. 全螢幕柔和遮罩 (Scrim)
+	_scrim = ResponsiveUi.make_scrim(Color(0.08, 0.06, 0.12, 0.65))
 	_scrim.gui_input.connect(func(event: InputEvent):
 		if event is InputEventMouseButton and event.pressed:
 			close()
@@ -171,21 +170,12 @@ func _build_ui() -> void:
 	# 2. 彈窗主體容器 Card (740~760px 橫屏彈窗標準)
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "DialogCard"
+	ResponsiveUi.apply_dialog_card(_dialog_card)
 	_dialog_card.custom_minimum_size = Vector2(DIALOG_WIDTH, DIALOG_HEIGHT)
 	_dialog_card.set_anchors_preset(Control.PRESET_CENTER)
 	_dialog_card.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	_dialog_card.grow_vertical = Control.GROW_DIRECTION_BOTH
-
-	var card_sb := StyleBoxFlat.new()
-	card_sb.bg_color = OBSIDIAN_CARD
-	card_sb.border_color = GOLD_CLASSICAL
-	card_sb.set_border_width_all(2)
-	card_sb.border_width_bottom = 5
-	card_sb.set_corner_radius_all(18)
-	card_sb.shadow_color = Color(0, 0, 0, 0.6)
-	card_sb.shadow_size = 20
-	card_sb.shadow_offset = Vector2(0, 8)
-	_dialog_card.add_theme_stylebox_override("panel", card_sb)
+	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	add_child(_dialog_card)
 
 	var card_margin := MarginContainer.new()
@@ -196,7 +186,7 @@ func _build_ui() -> void:
 	_dialog_card.add_child(card_margin)
 
 	var root_vbox := VBoxContainer.new()
-	root_vbox.add_theme_constant_override("separation", 12)
+	root_vbox.add_theme_constant_override("separation", 10)
 	card_margin.add_child(root_vbox)
 
 	# ── 頂部標題列 ──
@@ -210,16 +200,18 @@ func _build_ui() -> void:
 
 	_title_label = Label.new()
 	_title_label.text = "發條衣櫥 · 英雄換裝"
-	_title_label.add_theme_font_size_override("font_size", 20)
-	_title_label.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	_title_label.add_theme_font_size_override("font_size", 22)
+	_title_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_title_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_title_label.add_theme_constant_override("outline_size", 4)
 	if _cached_font:
 		_title_label.add_theme_font_override("font", _cached_font)
 	title_vbox.add_child(_title_label)
 
 	_subtitle_label = Label.new()
-	_subtitle_label.text = "個人化外觀部件即時切換 · 零數值純視覺展示 (手遊人體工學標準)"
-	_subtitle_label.add_theme_font_size_override("font_size", 12)
-	_subtitle_label.add_theme_color_override("font_color", INK_MUTED)
+	_subtitle_label.text = "個人化外觀部件即時切換 · 零數值純視覺展示"
+	_subtitle_label.add_theme_font_size_override("font_size", 16)
+	_subtitle_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		_subtitle_label.add_theme_font_override("font", _cached_font)
 	title_vbox.add_child(_subtitle_label)
@@ -228,22 +220,22 @@ func _build_ui() -> void:
 	_close_btn = ResponsiveUi.make_close_button(Callable(self, "close"))
 	top_bar.add_child(_close_btn)
 
+	# 亮橘色分隔線
+	var sep := ColorRect.new()
+	sep.custom_minimum_size = Vector2(0, 3)
+	sep.color = COLOR_ORANGE
+	root_vbox.add_child(sep)
+
 	# ── 中間主內容區 (左側展台 + 右側卡片網格挑選) ──
 	var main_hbox := HBoxContainer.new()
 	main_hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	main_hbox.add_theme_constant_override("separation", 16)
 	root_vbox.add_child(main_hbox)
 
-	# 左側角色展示展台
+	# 左側角色展示展台 (溫暖米黃卡片底)
 	var stage_panel := PanelContainer.new()
-	stage_panel.custom_minimum_size = Vector2(250, 360)
-	var stage_sb := StyleBoxFlat.new()
-	stage_sb.bg_color = OBSIDIAN_DEEP
-	stage_sb.border_color = LINE_GOLD
-	stage_sb.set_border_width_all(1)
-	stage_sb.border_width_bottom = 3
-	stage_sb.set_corner_radius_all(14)
-	stage_panel.add_theme_stylebox_override("panel", stage_sb)
+	stage_panel.custom_minimum_size = Vector2(250, 370)
+	stage_panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 20))
 	main_hbox.add_child(stage_panel)
 
 	var stage_vbox := VBoxContainer.new()
@@ -263,21 +255,23 @@ func _build_ui() -> void:
 
 	var badge_box := VBoxContainer.new()
 	badge_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	badge_box.add_theme_constant_override("separation", 2)
+	badge_box.add_theme_constant_override("separation", 4)
 	stage_vbox.add_child(badge_box)
 
 	_badge_name_label = Label.new()
 	_badge_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_badge_name_label.add_theme_font_size_override("font_size", 16)
-	_badge_name_label.add_theme_color_override("font_color", INK_IVORY)
+	_badge_name_label.add_theme_font_size_override("font_size", 20)
+	_badge_name_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		_badge_name_label.add_theme_font_override("font", _cached_font)
 	badge_box.add_child(_badge_name_label)
 
 	_badge_race_label = Label.new()
 	_badge_race_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_badge_race_label.add_theme_font_size_override("font_size", 12)
-	_badge_race_label.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	_badge_race_label.add_theme_font_size_override("font_size", 16)
+	_badge_race_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_badge_race_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_badge_race_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
 		_badge_race_label.add_theme_font_override("font", _cached_font)
 	badge_box.add_child(_badge_race_label)
@@ -306,18 +300,15 @@ func _build_ui() -> void:
 	_btn_reset = Button.new()
 	_btn_reset.name = "BtnReset"
 	_btn_reset.text = "還原預設"
-	_btn_reset.custom_minimum_size = Vector2(110, BTN_SIZE)
-	_btn_reset.add_theme_font_size_override("font_size", 15)
+	_btn_reset.custom_minimum_size = Vector2(130, BTN_SIZE)
+	_btn_reset.add_theme_font_size_override("font_size", 16)
+	_btn_reset.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		_btn_reset.add_theme_font_override("font", _cached_font)
-	var rsb := StyleBoxFlat.new()
-	rsb.bg_color = OBSIDIAN_WARM
-	rsb.border_color = LINE_GOLD
-	rsb.set_border_width_all(1)
-	rsb.border_width_bottom = 3
-	rsb.set_corner_radius_all(12)
-	_btn_reset.add_theme_stylebox_override("normal", rsb)
-	_btn_reset.add_theme_color_override("font_color", INK_IVORY)
+	_btn_reset.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 5, 18, 2))
+	var r_h := _create_button_style(Color("#FFFDF0"), COLOR_BORDER, 3, 18, 2)
+	_btn_reset.add_theme_stylebox_override("hover", r_h)
+	_btn_reset.add_theme_stylebox_override("pressed", r_h)
 	_btn_reset.pressed.connect(_on_reset_pressed)
 	actions_hbox.add_child(_btn_reset)
 
@@ -326,36 +317,23 @@ func _build_ui() -> void:
 	_btn_confirm.text = "確認換裝 · 套用新外觀"
 	_btn_confirm.custom_minimum_size = Vector2(0, BTN_SIZE)
 	_btn_confirm.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_btn_confirm.add_theme_font_size_override("font_size", 16)
+	_btn_confirm.add_theme_font_size_override("font_size", 18)
+	_btn_confirm.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		_btn_confirm.add_theme_font_override("font", _cached_font)
-	var csb := StyleBoxFlat.new()
-	csb.bg_color = BTN_CONFIRM_BG
-	csb.border_color = GOLD_CLASSICAL
-	csb.set_border_width_all(2)
-	csb.border_width_bottom = 5
-	csb.set_corner_radius_all(12)
-	_btn_confirm.add_theme_stylebox_override("normal", csb)
-	var csb_h := csb.duplicate()
-	csb_h.bg_color = Color(0.28, 0.78, 0.44, 1.0)
-	_btn_confirm.add_theme_stylebox_override("hover", csb_h)
-	_btn_confirm.add_theme_stylebox_override("pressed", csb_h)
-	_btn_confirm.add_theme_color_override("font_color", BTN_CONFIRM_TXT)
+	_btn_confirm.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 6, 18, 2))
+	var c_h := _create_button_style(Color("#5EED7C"), COLOR_BORDER, 3, 18, 2)
+	_btn_confirm.add_theme_stylebox_override("hover", c_h)
+	_btn_confirm.add_theme_stylebox_override("pressed", c_h)
 	_btn_confirm.pressed.connect(confirm_selection)
 	actions_hbox.add_child(_btn_confirm)
 
 
-## 建立卡片網格區塊 (第 28a 條：卡片網格＋亮金框『✓ 已選用』，多於一頁採 ScrollContainer)
+## 建立卡片網格區塊 (卡片網格＋果凍框『✓ 已選用』，多於一頁採 ScrollContainer)
 func _create_grid_section(section_title: String, slot_type: String) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = OBSIDIAN_WARM
-	sb.border_color = LINE_GOLD_SOFT
-	sb.set_border_width_all(1)
-	sb.border_width_bottom = 3
-	sb.set_corner_radius_all(12)
-	panel.add_theme_stylebox_override("panel", sb)
+	panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 12)
@@ -374,8 +352,10 @@ func _create_grid_section(section_title: String, slot_type: String) -> PanelCont
 
 	var title_lbl := Label.new()
 	title_lbl.text = section_title
-	title_lbl.add_theme_font_size_override("font_size", 13)
-	title_lbl.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	title_lbl.add_theme_font_size_override("font_size", 16)
+	title_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
+	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	title_lbl.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
 		title_lbl.add_theme_font_override("font", _cached_font)
 	header_hbox.add_child(title_lbl)
@@ -386,15 +366,17 @@ func _create_grid_section(section_title: String, slot_type: String) -> PanelCont
 
 	var tip_lbl := Label.new()
 	tip_lbl.text = "點擊卡片即時預覽"
-	tip_lbl.add_theme_font_size_override("font_size", 11)
-	tip_lbl.add_theme_color_override("font_color", INK_MUTED)
+	tip_lbl.add_theme_font_size_override("font_size", 16)
+	tip_lbl.add_theme_color_override("font_color", COLOR_SKY)
+	tip_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	tip_lbl.add_theme_constant_override("outline_size", 2)
 	if _cached_font:
 		tip_lbl.add_theme_font_override("font", _cached_font)
 	header_hbox.add_child(tip_lbl)
 
 	# 捲動容器包覆 GridContainer (每列 4 格)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size.y = 96
+	scroll.custom_minimum_size.y = 100
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
@@ -450,7 +432,7 @@ func _rebuild_cards() -> void:
 func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Button:
 	var btn := Button.new()
 	btn.name = "Card_%s_%d" % [slot_type, idx]
-	btn.custom_minimum_size = Vector2(92, 108)
+	btn.custom_minimum_size = Vector2(96, 116)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
@@ -471,7 +453,7 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 
 	# 部件縮圖
 	var thumb := TextureRect.new()
-	thumb.custom_minimum_size = Vector2(38, 38)
+	thumb.custom_minimum_size = Vector2(40, 40)
 	thumb.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	thumb.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	thumb.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -484,14 +466,14 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	var name_lbl := Label.new()
 	name_lbl.text = str(item_data.get("name_zh", ""))
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_lbl.add_theme_font_size_override("font_size", 11)
-	name_lbl.add_theme_color_override("font_color", INK_IVORY)
+	name_lbl.add_theme_font_size_override("font_size", 16)
+	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		name_lbl.add_theme_font_override("font", _cached_font)
 	# 商品名一律完整顯示，⛔ 不截斷成「…」（收費點面板玩家要看得到全名）
 	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_lbl.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-	name_lbl.custom_minimum_size.y = 28
+	name_lbl.custom_minimum_size.y = 38
 	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(name_lbl)
@@ -501,11 +483,13 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	badge_lbl.name = "BadgeLabel"
 	badge_lbl.text = ""
 	badge_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	badge_lbl.add_theme_font_size_override("font_size", 10)
-	badge_lbl.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	badge_lbl.add_theme_font_size_override("font_size", 16)
+	badge_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
+	badge_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	badge_lbl.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
 		badge_lbl.add_theme_font_override("font", _cached_font)
-	badge_lbl.custom_minimum_size.y = 14
+	badge_lbl.custom_minimum_size.y = 18
 	badge_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(badge_lbl)
 
@@ -555,33 +539,69 @@ func _update_card_selection_states() -> void:
 		_apply_card_style(_chassis_cards[i], is_selected)
 
 
-## 套用單張卡片之視覺樣式 (選中時亮金框 + 『✓ 已選用』)
+## 套用單張卡片之視覺樣式 (選中時果凍金黃底 + 暖橘框 + 『✓ 已選用』)
 func _apply_card_style(btn: Button, is_selected: bool) -> void:
 	var sb := StyleBoxFlat.new()
-	sb.set_corner_radius_all(10)
+	sb.set_corner_radius_all(14)
 	if is_selected:
-		sb.bg_color = Color(0.14, 0.12, 0.08, 0.98) # 溫潤金褐底
-		sb.border_color = GOLD_CLASSICAL           # 亮金邊框
+		sb.bg_color = COLOR_CARD_GOLD         ## 金黃柔和卡片底
+		sb.border_color = COLOR_ORANGE        ## 暖橘立體邊框
 		sb.set_border_width_all(2)
-		sb.border_width_bottom = 3
+		sb.border_width_bottom = 5           ## 立體果凍厚底
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 3)
 	else:
-		sb.bg_color = OBSIDIAN_DEEP                 # 深黑曜底
-		sb.border_color = LINE_GOLD_SOFT            # 柔和淡金框
+		sb.bg_color = COLOR_BG_CREAM         ## 陽光童話奶油米白底
+		sb.border_color = COLOR_BORDER       ## 深藍紫描邊
 		sb.set_border_width_all(1)
+		sb.border_width_bottom = 3
 	btn.add_theme_stylebox_override("normal", sb)
 
 	var sb_h := sb.duplicate()
 	if is_selected:
-		sb_h.border_color = GOLD_HOVER
+		sb_h.bg_color = Color("#FFF8DC")
+		sb_h.border_color = COLOR_GOLD
 	else:
-		sb_h.bg_color = OBSIDIAN_WARM
-		sb_h.border_color = GOLD_HOVER
+		sb_h.bg_color = COLOR_CARD_WARM
+		sb_h.border_color = COLOR_ORANGE
 	btn.add_theme_stylebox_override("hover", sb_h)
 	btn.add_theme_stylebox_override("pressed", sb_h)
 
 	var badge = btn.find_child("BadgeLabel", true, false)
 	if badge is Label:
 		badge.text = "✓ 已選用" if is_selected else ""
+
+
+func _create_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg
+	sb.border_color = border
+	sb.set_border_width_all(border_w)
+	sb.border_width_bottom = bottom_w
+	sb.set_corner_radius_all(radius)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	sb.shadow_size = 10
+	sb.shadow_offset = Vector2(0, 5)
+	return sb
+
+
+func _create_button_style(bg: Color, border: Color = COLOR_BORDER, bottom_border: int = 6, radius: int = 18, border_w: int = 2) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg
+	sb.border_color = border
+	sb.set_border_width_all(border_w)
+	sb.border_width_bottom = bottom_border
+	sb.set_corner_radius_all(radius)
+	sb.content_margin_left = 16
+	sb.content_margin_right = 16
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 10
+	if bottom_border > 2:
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.30)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 4)
+	return sb
 
 
 func _on_reset_pressed() -> void:
@@ -695,4 +715,3 @@ func _stop_breathe_tween() -> void:
 
 func is_breathe_running() -> bool:
 	return _breathe_tween != null and _breathe_tween.is_valid() and _breathe_tween.is_running()
-
