@@ -84,6 +84,7 @@ var _tex_attack: Texture2D
 var _tex_skill: Texture2D
 var _tex_telegraph: Texture2D
 var _tex_recover: Texture2D
+var _tex_hit: Texture2D
 
 ## 聚魂殿封靈罐四階狀態
 var _gourd_lit: Array[bool] = [true, false, false, false]
@@ -149,25 +150,31 @@ func _load_hero_poses() -> void:
 	if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
 		sel = gs.paperdoll_slots
 
-	if race != "rabbit" or not sel.is_empty():
-		var r_tex := SpriteDB.player_race_composite(race, sel)
-		if r_tex:
-			_tex_idle = r_tex
-			_tex_attack = r_tex
-			_tex_skill = r_tex
-			_tex_telegraph = r_tex
-			_tex_recover = r_tex
-			return
+	_tex_idle = SpriteDB.player_pose("idle", race)
+	_tex_attack = SpriteDB.player_pose("attack", race)
+	_tex_skill = SpriteDB.player_pose("skill", race)
+	_tex_telegraph = SpriteDB.player_pose("telegraph", race)
+	_tex_recover = SpriteDB.player_pose("recover", race)
+	_tex_hit = SpriteDB.player_pose("hit", race)
 
-	_tex_idle = SpriteDB.player_idle()
-	if ResourceLoader.exists("res://assets/sprites/player/poses/attack.png"):
+	if _tex_idle == null:
+		_tex_idle = SpriteDB.player_idle()
+	if _tex_attack == null and ResourceLoader.exists("res://assets/sprites/player/poses/attack.png"):
 		_tex_attack = load("res://assets/sprites/player/poses/attack.png")
-	if ResourceLoader.exists("res://assets/sprites/player/poses/skill.png"):
+	if _tex_skill == null and ResourceLoader.exists("res://assets/sprites/player/poses/skill.png"):
 		_tex_skill = load("res://assets/sprites/player/poses/skill.png")
-	if ResourceLoader.exists("res://assets/sprites/player/poses/telegraph.png"):
+	if _tex_telegraph == null and ResourceLoader.exists("res://assets/sprites/player/poses/telegraph.png"):
 		_tex_telegraph = load("res://assets/sprites/player/poses/telegraph.png")
-	if ResourceLoader.exists("res://assets/sprites/player/poses/recover.png"):
+	if _tex_recover == null and ResourceLoader.exists("res://assets/sprites/player/poses/recover.png"):
 		_tex_recover = load("res://assets/sprites/player/poses/recover.png")
+	if _tex_hit == null and ResourceLoader.exists("res://assets/sprites/player/poses/hit.png"):
+		_tex_hit = load("res://assets/sprites/player/poses/hit.png")
+
+	## 換裝槽位若有自訂外觀，影響待機預覽（衣櫥預覽與大廳站姿），但戰鬥姿態維持真姿態幀
+	if not sel.is_empty():
+		var comp := SpriteDB.player_race_composite(race, sel)
+		if comp:
+			_tex_idle = comp
 
 static var _shadow_tex_cache: Texture2D = null
 
