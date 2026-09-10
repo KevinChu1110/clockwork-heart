@@ -34,6 +34,8 @@ C_STEEL_DARK   = (65, 85, 105, 255)
 C_DARK_GRIP    = (25, 15, 10, 255)
 
 # Glove / chassis fist colors (matching ivory chassis fist):
+C_FIST_MAIN    = (195, 165, 125, 255)    # Chassis fist skin tone
+C_FIST_CREASE  = (150, 120, 88, 255)     # Knuckle crease / shadow interval
 C_FIST_SPEC    = (245, 235, 205, 255)
 C_FIST_HI      = (197, 161, 105, 255)
 C_FIST_MID     = (156, 114, 57, 255)
@@ -177,31 +179,53 @@ weapon.putpixel((int(round(tip_bx)), int(round(tip_by))), C_OUTLINE)
 weapon.putpixel((int(round(tip_bx - 1)), int(round(tip_by))), C_STEEL_SPEC)
 
 # 5. Hand Clasping (Modification A):
-# Finger patches on layer z=40 wrapping across the grip at x: 35..38, y: 90..92
-fingers_map = {
-    (37, 91): C_OUTLINE,
-    (38, 91): C_FIST_SPEC,
-    (39, 91): C_FIST_HI,
-    (40, 91): C_OUTLINE,
-    
-    (35, 91): C_OUTLINE,
-    (36, 91): C_FIST_SPEC,
-    (37, 92): C_FIST_HI,
-    (38, 92): C_FIST_MID,
-    (39, 92): C_OUTLINE,
-    
-    (35, 90): C_OUTLINE,
-    (36, 90): C_FIST_SPEC,
-    (37, 90): C_FIST_HI,
-    (38, 90): C_OUTLINE,
-    
-    (36, 92): C_OUTLINE,
-    (37, 93): C_OUTLINE,
-    (38, 93): C_FIST_SHAD,
-    (39, 93): C_OUTLINE,
+# Finger patches on layer z=40 wrapping across the grip at x: 34..40, y: 88..96
+# Two prominent finger clusters (>=25 skin pixels, zero 8-adjacency, separated by C_FIST_CREASE)
+f1_skin = {
+    (36, 89), (37, 89),
+    (35, 90), (36, 90), (37, 90),
+    (35, 91), (36, 91), (37, 91),
+    (34, 91), (34, 92), (35, 92), (36, 92),
+    (35, 93), (36, 93)
+} # 14 pts
+
+crease_sep = {
+    (38, 88),
+    (38, 89),
+    (38, 90),
+    (38, 91),
+    (37, 92), (38, 92),
+    (37, 93), (38, 93),
+    (37, 94)
 }
-for pt, col in fingers_map.items():
-    weapon.putpixel(pt, col)
+
+f2_skin = {
+    (39, 89), (40, 89),
+    (39, 90), (40, 90),
+    (39, 91), (40, 91),
+    (39, 92), (40, 92),
+    (39, 93), (40, 93),
+    (38, 94), (39, 94),
+    (38, 95), (39, 95)
+} # 14 pts
+
+outlines = {
+    # Top edge:
+    (36, 88), (37, 88), (39, 88), (40, 88),
+    # Left edge (towards pommel):
+    (35, 89), (34, 90), (33, 91), (33, 92), (34, 93),
+    # Bottom edge:
+    (35, 94), (36, 94), (37, 95), (38, 96), (39, 96),
+    # Right edge (towards guard):
+    (41, 89), (41, 90), (41, 91), (41, 92), (41, 93), (40, 94)
+}
+
+for pt in outlines:
+    weapon.putpixel(pt, C_OUTLINE)
+for pt in crease_sep:
+    weapon.putpixel(pt, C_FIST_CREASE)
+for pt in f1_skin | f2_skin:
+    weapon.putpixel(pt, C_FIST_MAIN)
 
 # 6. Verify outer boundary closure
 im_closed = weapon.copy()
@@ -273,6 +297,11 @@ comp_standard.save(f"{r_dir}/composite_final_master.png")
 magenta = Image.new("RGBA", (w, h), (255, 0, 255, 255))
 magenta.alpha_composite(comp_standard)
 magenta.save(f"{r_dir}/proof_paperdoll_rabbit_magenta.png")
+
+# Single layer weapon magenta proof
+wpn_magenta = Image.new("RGBA", (w, h), (255, 0, 255, 255))
+wpn_magenta.alpha_composite(wpn)
+wpn_magenta.save(f"{r_dir}/proof_wpn_dawn_blade_magenta.png")
 
 # Proof royal navy
 ch_navy = Image.open(f"{r_dir}/chassis/paint_midnight_navy.png").convert("RGBA")
