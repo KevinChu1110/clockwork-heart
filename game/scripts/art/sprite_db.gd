@@ -404,8 +404,13 @@ static func player_battle() -> Texture2D:
 ## 0.16.2：poses/*.png 已用 rabbit_idle_x3 錨重產，戰鬥優先讀專用姿態。
 static func player_pose(pose: String) -> Texture2D:
 	var key := pose
+	if key == "" or key == "idle":
+		return player_idle()
 	var r := player_race()
 	if r != "rabbit":
+		var race_t := tex("%s/player/poses/%s/%s.png" % [ROOT, r, key])
+		if race_t:
+			return race_t
 		var comp := player_race_composite(r)
 		if comp:
 			return comp
