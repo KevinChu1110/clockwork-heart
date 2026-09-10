@@ -424,8 +424,8 @@
    "id": "battle-grade-metal",
    "cat": "遊戲",
    "title": "戰鬥調色shader把銀白金屬染成木頭色",
-   "status": "測試中",
-   "note": "shader 參數調修與高光保護完成，四族金屬實測 84%~96% silver、0% brown 全數達標，25/25 測試綠，送審中",
+   "status": "已上線",
+   "note": "shader 參數調修與高光保護完成，四族金屬實測達標，已審核通過並合併 main",
    "keys": [
     "戰鬥調色shad"
    ]
@@ -444,30 +444,50 @@
    "id": "explore-equipped-idle",
    "cat": "遊戲",
    "title": "探索待機顯示玩家當前換裝",
-   "status": "測試中",
-   "note": "探索站立讀取 SpriteDB.player_equipped_idle，雙套外裝實機 diff 12929px，送審中",
+   "status": "已上線",
+   "note": "探索站立讀取 SpriteDB.player_equipped_idle，雙套外裝實機 diff 過審並合併 main",
    "keys": [
     "探索待機顯示玩家"
-   ]
-  },
-  {
-   "id": "explore-walk-paperdoll",
-   "cat": "遊戲",
-   "title": "探索走路改執行期紙娃娃合成",
-   "status": "測試中",
-   "note": "PaperdollRenderer 走路合成跑通，待驗收",
-   "keys": [
-    "探索走路改執行期"
    ]
   },
   {
    "id": "battle-idle-equip",
    "cat": "遊戲",
    "title": "戰鬥待機顯示玩家當前換裝",
-   "status": "草稿",
-   "note": "大廳與探索已顯示換裝，戰鬥待機仍是各族素體 pose；攻擊幀維持現有 pose 不動",
+   "status": "已上線",
+   "note": "戰鬥待機換裝、接地影對位修復已合併 main，battle 測試 25/25 綠",
    "keys": [
     "戰鬥待機顯示玩家"
+   ]
+  },
+  {
+   "id": "explore-walk-paperdoll",
+   "cat": "遊戲",
+   "title": "探索走路改執行期紙娃娃合成（換裝後走路也穿那套）",
+   "status": "已上線",
+   "note": "PaperdollRenderer 走路合成、接縫修復已合併 main，explore 測試 1/1 綠",
+   "keys": [
+    "探索走路改執行期"
+   ]
+  },
+  {
+   "id": "rabbit-attack-pose",
+   "cat": "遊戲",
+   "title": "兔族攻擊姿態重畫（現況是雙手垂放站姿，沒有揮劍動作）",
+   "status": "已上線",
+   "note": "兔族攻擊姿態幀重製已合併 main，揮劍對位通過驗收",
+   "keys": [
+    "兔族攻擊姿態重畫"
+   ]
+  },
+  {
+   "id": "lobby-poke-restore",
+   "cat": "遊戲",
+   "title": "大廳戳碰結束後回到當前換裝待機",
+   "status": "開發中",
+   "note": "大廳戳碰結束後回到 equipped idle，已開單",
+   "keys": [
+    "大廳戳碰結束後回"
    ]
   }
  ]

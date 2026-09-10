@@ -125,7 +125,7 @@ func _update_visual() -> void:
 		if frame != _last_walk_frame:
 			_last_walk_frame = frame
 			walk_frames_played += 1
-		tex = SpriteDB.player_walk(frame)
+		tex = SpriteDB.player_equipped_walk(frame)
 	else:
 		_last_walk_frame = -1
 		tex = SpriteDB.player_equipped_idle()
