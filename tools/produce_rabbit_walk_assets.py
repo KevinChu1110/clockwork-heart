@@ -70,28 +70,28 @@ def produce():
         {
             "name": "Frame 0 (Contact 1)",
             "torso_dy": 0,
-            "leg_l_rot": 8.0, "leg_l_dx": -1, "leg_l_dy": 0,
-            "leg_r_rot": -8.0, "leg_r_dx": 1, "leg_r_dy": 0,
+            "leg_l_rot": 9.0, "leg_l_dx": -1, "leg_l_dy": 0,
+            "leg_r_rot": -9.0, "leg_r_dx": 1, "leg_r_dy": 0,
         },
         # Frame 1: Passing 1 (Up-bob, Left leg supporting on ground, Right leg lifted swinging forward)
         {
             "name": "Frame 1 (Passing 1)",
             "torso_dy": -1,
             "leg_l_rot": 0.0, "leg_l_dx": 0, "leg_l_dy": 1,
-            "leg_r_rot": 12.0, "leg_r_dx": -2, "leg_r_dy": -4,
+            "leg_r_rot": 13.0, "leg_r_dx": -2, "leg_r_dy": -4,
         },
         # Frame 2: Contact 2 (Down-squash, Right forward stride, Left rear stride)
         {
             "name": "Frame 2 (Contact 2)",
             "torso_dy": 0,
-            "leg_l_rot": -8.0, "leg_l_dx": 1, "leg_l_dy": 0,
-            "leg_r_rot": 8.0, "leg_r_dx": -1, "leg_r_dy": 0,
+            "leg_l_rot": -9.0, "leg_l_dx": 1, "leg_l_dy": 0,
+            "leg_r_rot": 9.0, "leg_r_dx": -1, "leg_r_dy": 0,
         },
         # Frame 3: Passing 2 (Up-bob, Right leg supporting on ground, Left leg lifted swinging forward)
         {
             "name": "Frame 3 (Passing 2)",
             "torso_dy": -1,
-            "leg_l_rot": 12.0, "leg_l_dx": -2, "leg_l_dy": -4,
+            "leg_l_rot": 13.0, "leg_l_dx": -2, "leg_l_dy": -4,
             "leg_r_rot": 0.0, "leg_r_dx": 0, "leg_r_dy": 1,
         },
     ]

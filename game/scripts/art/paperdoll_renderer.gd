@@ -386,6 +386,235 @@ static func get_race_composite_texture(race: String, slot_selection: Dictionary 
 	return build_composite_texture(rid, slot_selection)
 
 
+## ── 執行期走路姿態動態合成 (PaperdollRenderer Walk Kinematics) ──
+
+const RABBIT_WALK_GAIT: Array[Dictionary] = [
+	{
+		"name": "Frame 0",
+		"torso_dy": 0,
+		"leg_l_rot": 10.5, "leg_l_dx": -2, "leg_l_dy": 0,
+		"leg_r_rot": -10.5, "leg_r_dx": 2, "leg_r_dy": 0,
+	},
+	{
+		"name": "Frame 1",
+		"torso_dy": -1,
+		"leg_l_rot": 0.0, "leg_l_dx": 0, "leg_l_dy": 1,
+		"leg_r_rot": 15.0, "leg_r_dx": -3, "leg_r_dy": -4,
+	},
+	{
+		"name": "Frame 2",
+		"torso_dy": 0,
+		"leg_l_rot": -10.5, "leg_l_dx": 2, "leg_l_dy": 0,
+		"leg_r_rot": 10.5, "leg_r_dx": -2, "leg_r_dy": 0,
+	},
+	{
+		"name": "Frame 3",
+		"torso_dy": -1,
+		"leg_l_rot": 15.0, "leg_l_dx": -3, "leg_l_dy": -4,
+		"leg_r_rot": 0.0, "leg_r_dx": 0, "leg_r_dy": 1,
+	},
+]
+
+static func _rotate_and_translate_layer(src: Image, angle_deg: float, pivot: Vector2, translate: Vector2i) -> Image:
+	var dst := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+	dst.fill(Color(0, 0, 0, 0))
+	if src == null or src.is_empty():
+		return dst
+	if is_zero_approx(angle_deg):
+		var src_rect := Rect2i(0, 0, 128, 128)
+		dst.blend_rect(src, src_rect, translate)
+		return dst
+
+	var rad := deg_to_rad(angle_deg)
+	var cos_a := cos(rad)
+	var sin_a := sin(rad)
+
+	for y in range(85, 126):
+		for x in range(30, 95):
+			var tx: float = float(x - translate.x) - pivot.x
+			var ty: float = float(y - translate.y) - pivot.y
+			var sx: float = pivot.x + tx * cos_a + ty * sin_a
+			var sy: float = pivot.y - tx * sin_a + ty * cos_a
+
+			var x0: int = int(floor(sx))
+			var y0: int = int(floor(sy))
+			var x1: int = x0 + 1
+			var y1: int = y0 + 1
+
+			if x0 < 0 or x1 >= 128 or y0 < 0 or y1 >= 128:
+				continue
+
+			var fx: float = sx - float(x0)
+			var fy: float = sy - float(y0)
+
+			var c00: Color = src.get_pixel(x0, y0)
+			var c10: Color = src.get_pixel(x1, y0)
+			var c01: Color = src.get_pixel(x0, y1)
+			var c11: Color = src.get_pixel(x1, y1)
+
+			var c0: Color = c00.lerp(c10, fx)
+			var c1: Color = c01.lerp(c11, fx)
+			var c: Color = c0.lerp(c1, fy)
+
+			if c.a > 0.02:
+				dst.set_pixel(x, y, c)
+
+	return dst
+
+static func _blend_slot(canvas: Image, entry_map: Dictionary, slot_id: String, offset: Vector2i) -> void:
+	var entry: Dictionary = entry_map.get(slot_id, {})
+	var tex: Texture2D = entry.get("texture", null)
+	if tex == null:
+		return
+	var img: Image = tex.get_image()
+	if img == null or img.is_empty():
+		return
+	if img.get_format() != Image.FORMAT_RGBA8:
+		img.convert(Image.FORMAT_RGBA8)
+	var rect := Rect2i(0, 0, img.get_width(), img.get_height())
+	canvas.blend_rect(img, rect, offset)
+
+## 依據種族、幀數 (0..3) 與換裝選擇，執行期分部位即時合成走路姿態
+static func build_walk_composite_image(race: String, frame: int, slot_selection: Dictionary = {}) -> Image:
+	var rid := race.to_lower().strip_edges()
+	var f_idx := posmod(frame, 4)
+	if rid != "rabbit":
+		var base_img: Image = null
+		var baked_path := "%s/%s_walk_%d_x3.png" % [ROOT_SPRITES, rid, f_idx]
+		var baked_tex := get_slot_texture(baked_path)
+		if baked_tex:
+			base_img = baked_tex.get_image()
+			if base_img and base_img.get_format() != Image.FORMAT_RGBA8:
+				base_img.convert(Image.FORMAT_RGBA8)
+		if base_img == null:
+			base_img = build_composite_image(rid, slot_selection)
+		else:
+			for sid in ["costume", "weapon"]:
+				if slot_selection.has(sid) and str(slot_selection[sid]) != "":
+					var path := resolve_slot_texture_path(rid, sid, str(slot_selection[sid]))
+					var tex := get_slot_texture(path)
+					if tex:
+						var img := tex.get_image()
+						if img and not img.is_empty():
+							if img.get_format() != Image.FORMAT_RGBA8:
+								img.convert(Image.FORMAT_RGBA8)
+							base_img.blend_rect(img, Rect2i(0, 0, img.get_width(), img.get_height()), Vector2i.ZERO)
+		return base_img
+
+	# 兔族分部位關節運動學合成
+	var entries := get_sorted_slot_entries("rabbit", slot_selection)
+	var entry_map := {}
+	for e in entries:
+		entry_map[str(e.get("slot_id", ""))] = e
+
+	var chassis_entry: Dictionary = entry_map.get(SLOT_CHASSIS, {})
+	var chassis_tex: Texture2D = chassis_entry.get("texture", null)
+	var chassis_img: Image = null
+	if chassis_tex:
+		chassis_img = chassis_tex.get_image()
+		if chassis_img and chassis_img.get_format() != Image.FORMAT_RGBA8:
+			chassis_img.convert(Image.FORMAT_RGBA8)
+
+	if chassis_img == null or chassis_img.is_empty():
+		return build_composite_image("rabbit", slot_selection)
+
+	# 1. 分解 chassis 軀幹、骨盆、雙腿與影子
+	var shadow_img := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+	var torso_chassis := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+	var pelvis := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+	var leg_l := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+	var leg_r := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+
+	for y in range(128):
+		for x in range(128):
+			var c: Color = chassis_img.get_pixel(x, y)
+			if c.a <= 0.0:
+				continue
+			if y >= 118 and (c.a <= 200.0 / 255.0 or (c.r < 50.0 / 255.0 and c.g < 50.0 / 255.0 and c.b < 70.0 / 255.0)):
+				shadow_img.set_pixel(x, y, c)
+				continue
+			if y < 98:
+				torso_chassis.set_pixel(x, y, c)
+			else:
+				if x <= 61:
+					leg_l.set_pixel(x, y, c)
+				else:
+					leg_r.set_pixel(x, y, c)
+				if x >= 54 and x <= 68 and y >= 96 and y <= 104:
+					pelvis.set_pixel(x, y, c)
+
+	var gait: Dictionary = RABBIT_WALK_GAIT[f_idx]
+	var tdy: int = int(gait.get("torso_dy", 0))
+	var pivot_l := Vector2(52, 98)
+	var pivot_r := Vector2(71, 98)
+
+	# 2. 雙腿各自關節位移與旋轉 (Rule 4b-7 / 4b-7-1)
+	var lr_rot: float = float(gait.get("leg_r_rot", 0.0))
+	var lr_trans := Vector2i(int(gait.get("leg_r_dx", 0)), int(gait.get("leg_r_dy", 0)))
+	var leg_r_tx := _rotate_and_translate_layer(leg_r, lr_rot, pivot_r, lr_trans)
+
+	var ll_rot: float = float(gait.get("leg_l_rot", 0.0))
+	var ll_trans := Vector2i(int(gait.get("leg_l_dx", 0)), int(gait.get("leg_l_dy", 0)))
+	var leg_l_tx := _rotate_and_translate_layer(leg_l, ll_rot, pivot_l, ll_trans)
+
+	# 3. 依 z_index 階梯與部位上下關係疊合
+	var canvas := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+	canvas.fill(Color(0, 0, 0, 0))
+	var full_rect := Rect2i(0, 0, 128, 128)
+
+	# 腳底軟影帶（固定在基底）
+	canvas.blend_rect(shadow_img, full_rect, Vector2i.ZERO)
+
+	# z=5: winding_key（隨軀幹微幅浮沉）
+	_blend_slot(canvas, entry_map, SLOT_WINDING_KEY, Vector2i(0, tdy))
+
+	# z=8: back_curio
+	_blend_slot(canvas, entry_map, SLOT_BACK_CURIO, Vector2i(0, tdy))
+
+	# 後腿
+	canvas.blend_rect(leg_r_tx, full_rect, Vector2i.ZERO)
+
+	# 骨盆底層
+	canvas.blend_rect(pelvis, full_rect, Vector2i(0, tdy))
+
+	# 前腿
+	canvas.blend_rect(leg_l_tx, full_rect, Vector2i.ZERO)
+
+	# 軀幹主機體
+	canvas.blend_rect(torso_chassis, full_rect, Vector2i(0, tdy))
+
+	# z=20: head_unit
+	_blend_slot(canvas, entry_map, SLOT_HEAD_UNIT, Vector2i(0, tdy))
+
+	# z=25: costume 玩具外裝獨立層即時疊合（不焊進貼圖）
+	_blend_slot(canvas, entry_map, SLOT_COSTUME, Vector2i(0, tdy))
+
+	# z=30: optic_core
+	_blend_slot(canvas, entry_map, SLOT_OPTIC_CORE, Vector2i(0, tdy))
+
+	# z=40: weapon 手持武器獨立層即時疊合
+	_blend_slot(canvas, entry_map, SLOT_WEAPON, Vector2i(0, tdy))
+
+	return canvas
+
+static func build_walk_composite_texture(race: String, frame: int, slot_selection: Dictionary = {}) -> Texture2D:
+	var img := build_walk_composite_image(race, frame, slot_selection)
+	if img != null and not img.is_empty():
+		return ImageTexture.create_from_image(img)
+	return null
+
+static func get_race_walk_composite_texture(race: String, frame: int, slot_selection: Dictionary = {}) -> Texture2D:
+	var rid := race.to_lower().strip_edges()
+	var f := posmod(frame, 4)
+	if slot_selection.is_empty():
+		var baked_path := "%s/%s_walk_%d_x3.png" % [ROOT_SPRITES, rid, f]
+		if ResourceLoader.exists(baked_path):
+			var res = load(baked_path)
+			if res is Texture2D:
+				return res as Texture2D
+	return build_walk_composite_texture(rid, f, slot_selection)
+
+
 ## ── 安全預設規格 ──
 static func _get_fallback_spec() -> Dictionary:
 	return {

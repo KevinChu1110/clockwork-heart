@@ -2077,7 +2077,7 @@ func _update_player_visual() -> void:
 				_player.texture = idle_fb
 	elif _moving:
 		var frame := int(_walk_t) % 4
-		var t := SpriteDB.player_walk(frame)
+		var t := SpriteDB.player_equipped_walk(frame)
 		if t:
 			_player.texture = t
 	else:
