@@ -100,8 +100,10 @@ def main():
 
     print("=== 門檻 4: 驗收 review.md 第 16c 條（零接地影錯位黑帶）===")
     full_screen_path = os.path.join(shot_dir, "proof_battle_full_screen.png")
-    assert os.path.exists(full_screen_path), f"缺少未縮放完整戰鬥畫面原圖: {full_screen_path}"
-    all_proof_paths = [full_screen_path, battle_royal_path, battle_steam_path, battle_atk_path]
+    atk_full_screen_path = os.path.join(shot_dir, "proof_battle_attack_full_screen.png")
+    assert os.path.exists(full_screen_path), f"缺少未縮放完整待機畫面原圖: {full_screen_path}"
+    assert os.path.exists(atk_full_screen_path), f"缺少未縮放完整攻擊畫面原圖: {atk_full_screen_path}"
+    all_proof_paths = [full_screen_path, atk_full_screen_path, battle_royal_path, battle_steam_path, battle_atk_path]
     for sp in all_proof_paths:
         sim = Image.open(sp).convert("L")
         sarr = np.array(sim)
@@ -115,14 +117,25 @@ def main():
         print(f"  ✓ {os.path.basename(sp)}: 16c 檢查通過（胸腹高度零錯位黑帶，暗像素列數=0）")
     print("  ✓ 門檻 4 通過：全數截圖符合 review.md 第 16c 條規範！\n")
 
-    print("ALL 4 AUDIT REQUIREMENTS VERIFIED AND PASSED!")
+    print("=== 門檻 5: 驗收 review.md 第 16c-1 條（攻擊幀腳底接地影存在性檢驗）===")
+    for sp in [atk_full_screen_path, battle_atk_path]:
+        sim = Image.open(sp).convert("L")
+        feet_crop = sim.crop((300, 420, 660, 600))
+        farr = np.array(feet_crop)
+        shadow_dark_px = int((farr < 70).sum())
+        print(f"  ✓ {os.path.basename(sp)}: 腳底接地影區域暗像素 = {shadow_dark_px} px (門檻: > 1000 px)")
+        assert shadow_dark_px > 1000, f"{os.path.basename(sp)} 違反第 16c-1 條：腳底區域暗像素僅 {shadow_dark_px} px，缺少接地影！"
+    print("  ✓ 門檻 5 通過：攻擊幀全景與特寫皆具備接地影，角色絕不浮空！\n")
+
+    print("ALL 5 AUDIT REQUIREMENTS VERIFIED AND PASSED!")
     return {
         "same_px": same_px,
         "total_px": total_px,
         "same_pct": same_pct,
         "diff_px": diff_px,
         "brass_pixels": brass_pixels,
-        "full_screen_path": full_screen_path
+        "full_screen_path": full_screen_path,
+        "atk_full_screen_path": atk_full_screen_path
     }
 
 if __name__ == "__main__":

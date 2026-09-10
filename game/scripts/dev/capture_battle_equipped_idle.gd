@@ -83,6 +83,18 @@ func _run_captures() -> void:
 	print(">>> 截取未縮放完整戰鬥畫面原圖（含敵方、我方、全景與接地影）...")
 	await _capture_frame("proof_battle_full_screen.png")
 
+	# 抽格未縮放攻擊畫面原圖（review.md 要求兩張完整畫面原圖：待機幀、攻擊幀）
+	print(">>> 觸發未縮放攻擊動作，截取未縮放完整攻擊畫面原圖...")
+	if battle.has_method("_set_player_pose"):
+		battle.call("_set_player_pose", "attack", true)
+	await _wait_frames(5)
+	await _capture_frame("proof_battle_attack_full_screen.png")
+
+	# 切回待機準備特寫
+	if battle.has_method("_set_player_pose"):
+		battle.call("_set_player_pose", "idle", false)
+	await _wait_frames(5)
+
 	# 縮放焦點對準玩家角色區（類似探索模式 cam.zoom），讓 1280x720 畫布清晰呈現紙娃娃細節
 	battle.pivot_offset = Vector2(300, 360)
 	battle.scale = Vector2(2.1, 2.1)
