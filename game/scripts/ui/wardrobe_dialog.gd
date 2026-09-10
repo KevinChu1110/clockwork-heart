@@ -59,6 +59,8 @@ var _chassis_cards: Array[Button] = []
 var _btn_confirm: Button
 var _btn_reset: Button
 
+var _breathe_tween: Tween = null
+
 ## 執行期狀態
 var current_race: String = "rabbit"
 var costume_index: int = 0
@@ -85,6 +87,11 @@ func _ready() -> void:
 	_rebuild_cards()
 	_update_ui_texts()
 	_update_preview()
+	_start_breathe_tween()
+
+
+func _exit_tree() -> void:
+	_stop_breathe_tween()
 
 
 func ensure_ui() -> void:
@@ -251,6 +258,7 @@ func _build_ui() -> void:
 	_preview_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_preview_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_preview_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_preview_rect.pivot_offset = Vector2(105, 195)
 	stage_vbox.add_child(_preview_rect)
 
 	var badge_box := VBoxContainer.new()
@@ -659,5 +667,32 @@ func confirm_selection() -> void:
 
 
 func close() -> void:
+	_stop_breathe_tween()
 	cancelled.emit()
 	queue_free()
+
+
+## 待機呼吸小動作 (對齊大廳人體工學規範：scale 在 (1.03, 0.97) ↔ (0.98, 1.02)、約 1.1s、TRANS_SINE、loop)
+func _start_breathe_tween() -> void:
+	if _breathe_tween and _breathe_tween.is_valid() and _breathe_tween.is_running():
+		return
+	if _breathe_tween and _breathe_tween.is_valid():
+		_breathe_tween.kill()
+	if _preview_rect:
+		_preview_rect.scale = Vector2.ONE
+	_breathe_tween = create_tween().set_loops()
+	_breathe_tween.tween_property(_preview_rect, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	_breathe_tween.tween_property(_preview_rect, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+
+
+func _stop_breathe_tween() -> void:
+	if _breathe_tween and _breathe_tween.is_valid():
+		_breathe_tween.kill()
+		_breathe_tween = null
+	if _preview_rect:
+		_preview_rect.scale = Vector2.ONE
+
+
+func is_breathe_running() -> bool:
+	return _breathe_tween != null and _breathe_tween.is_valid() and _breathe_tween.is_running()
+
