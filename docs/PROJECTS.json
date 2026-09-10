@@ -454,7 +454,7 @@
    "id": "battle-idle-equip",
    "cat": "遊戲",
    "title": "戰鬥待機顯示玩家當前換裝",
-   "status": "草稿",
+   "status": "開發中",
    "note": "大廳與探索已顯示換裝，戰鬥待機仍是各族素體 pose；攻擊幀維持現有 pose 不動",
    "keys": [
     "戰鬥待機顯示玩家"
