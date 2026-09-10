@@ -484,8 +484,8 @@
    "id": "lobby-poke-restore",
    "cat": "遊戲",
    "title": "大廳戳碰結束後回到當前換裝待機",
-   "status": "草稿",
-   "note": "戳碰可播種族戰鬥 pose，結束後必須回到 equipped idle，否則付費外裝在大廳互動後消失",
+   "status": "開發中",
+   "note": "大廳戳碰結束後回到 equipped idle，已開單",
    "keys": [
     "大廳戳碰結束後回"
    ]
