@@ -4,6 +4,8 @@ Produce Rabbit Walk Cycle Assets adhering to:
 - Rule 4b-5 / 16: Consistent ground shadow band at y=118..123
 - Rule 4b-7: True kinematic limb articulation (diff > 300 px vs resize+translate)
 - Rule 4b-9 / 4b-9-2: Character height difference <= 5.0% vs equipped idle
+- Rule 4b-11: Neutral bare body only (chassis + head_unit + winding_key + optic_core)
+  No changeable costume or weapon welded into baked walk cycle.
 - Foot lowest opaque y anchored at 118 (±1)
 """
 
@@ -17,17 +19,13 @@ PAPERDOLL_DIR = os.path.join(PLAYER_DIR, "paperdoll/rabbit")
 def produce():
     chassis_p = os.path.join(PAPERDOLL_DIR, "chassis/paint_ivory_stock.png")
     head_p = os.path.join(PAPERDOLL_DIR, "head_unit/ear_rabbit_straight.png")
-    costume_p = os.path.join(PAPERDOLL_DIR, "costume/costume_nutcracker_guard.png")
     optic_p = os.path.join(PAPERDOLL_DIR, "optic_core/core_cyan_emerald.png")
     key_p = os.path.join(PAPERDOLL_DIR, "winding_key/key_classic_brass.png")
-    wpn_p = os.path.join(PAPERDOLL_DIR, "weapon/wpn_dawn_blade.png")
 
     chassis = Image.open(chassis_p).convert("RGBA")
     head = Image.open(head_p).convert("RGBA")
-    costume = Image.open(costume_p).convert("RGBA")
     optic = Image.open(optic_p).convert("RGBA")
     key = Image.open(key_p).convert("RGBA")
-    wpn = Image.open(wpn_p).convert("RGBA")
 
     # 1. Decompose chassis into kinematic layers
     px = chassis.load()
@@ -57,16 +55,15 @@ def produce():
                 if 54 <= x <= 68 and 96 <= y <= 104:
                     pelvis.putpixel((x, y), p)
 
+    # Neutral bare body upper layers (Rule 4b-11: NO costume, NO weapon)
     upper_body = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
     upper_body.alpha_composite(key)
     upper_body.alpha_composite(torso_chassis)
     upper_body.alpha_composite(head)
-    upper_body.alpha_composite(costume)
     upper_body.alpha_composite(optic)
 
     pivot_l = (52, 98)
     pivot_r = (71, 98)
-    grip_pivot = (75, 92)
 
     gait_configs = [
         # Frame 0: Contact 1 (Left forward stride, Right rear stride)
@@ -75,7 +72,6 @@ def produce():
             "torso_dy": 0,
             "leg_l_rot": 8.0, "leg_l_dx": -1, "leg_l_dy": 0,
             "leg_r_rot": -8.0, "leg_r_dx": 1, "leg_r_dy": 0,
-            "wpn_rot": -2.0, "wpn_dx": 0, "wpn_dy": 0,
         },
         # Frame 1: Passing 1 (Up-bob, Left leg supporting on ground, Right leg lifted swinging forward)
         {
@@ -83,7 +79,6 @@ def produce():
             "torso_dy": -1,
             "leg_l_rot": 0.0, "leg_l_dx": 0, "leg_l_dy": 1,
             "leg_r_rot": 12.0, "leg_r_dx": -2, "leg_r_dy": -4,
-            "wpn_rot": 1.5, "wpn_dx": 0, "wpn_dy": -1,
         },
         # Frame 2: Contact 2 (Down-squash, Right forward stride, Left rear stride)
         {
@@ -91,7 +86,6 @@ def produce():
             "torso_dy": 0,
             "leg_l_rot": -8.0, "leg_l_dx": 1, "leg_l_dy": 0,
             "leg_r_rot": 8.0, "leg_r_dx": -1, "leg_r_dy": 0,
-            "wpn_rot": -1.0, "wpn_dx": 0, "wpn_dy": 0,
         },
         # Frame 3: Passing 2 (Up-bob, Right leg supporting on ground, Left leg lifted swinging forward)
         {
@@ -99,7 +93,6 @@ def produce():
             "torso_dy": -1,
             "leg_l_rot": 12.0, "leg_l_dx": -2, "leg_l_dy": -4,
             "leg_r_rot": 0.0, "leg_r_dx": 0, "leg_r_dy": 1,
-            "wpn_rot": 1.5, "wpn_dx": 0, "wpn_dy": -1,
         },
     ]
 
@@ -122,7 +115,7 @@ def produce():
         ll = leg_l.rotate(cfg["leg_l_rot"], resample=Image.Resampling.BICUBIC, center=pivot_l, translate=(cfg["leg_l_dx"], cfg["leg_l_dy"]))
         frame.alpha_composite(ll)
 
-        # Measure foot y BEFORE upper body and weapon
+        # Measure foot y BEFORE upper body
         f_px = frame.load()
         assert f_px is not None
         foot_solid_ys = [y for y in range(110, 128) for x in range(40, 80) if f_px[x, y][3] > 200]
@@ -133,10 +126,6 @@ def produce():
         ub_shift = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
         ub_shift.paste(upper_body, (0, tdy), upper_body)
         frame.alpha_composite(ub_shift)
-
-        # Weapon
-        w_rot = wpn.rotate(cfg["wpn_rot"], resample=Image.Resampling.BICUBIC, center=grip_pivot, translate=(cfg["wpn_dx"], cfg["wpn_dy"] + tdy))
-        frame.alpha_composite(w_rot)
 
         frames.append(frame)
 
@@ -151,7 +140,6 @@ def produce():
     idle_foot_solid = [y for y in range(110, 128) for x in range(40, 80) if idle_f_px[x, y][3] > 200]
     idle_foot_y = max(idle_foot_solid)
     idle.alpha_composite(upper_body)
-    idle.alpha_composite(wpn)
 
     # Save 128x128 and 64x64 walk frames
     for idx, f_im in enumerate(frames):
