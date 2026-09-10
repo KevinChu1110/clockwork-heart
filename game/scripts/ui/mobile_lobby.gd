@@ -150,7 +150,7 @@ func _load_hero_poses() -> void:
 	if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
 		sel = gs.paperdoll_slots
 
-	_tex_idle = SpriteDB.player_pose("idle", race)
+	_tex_idle = SpriteDB.player_equipped_idle(race, sel)
 	_tex_attack = SpriteDB.player_pose("attack", race)
 	_tex_skill = SpriteDB.player_pose("skill", race)
 	_tex_telegraph = SpriteDB.player_pose("telegraph", race)
@@ -170,11 +170,10 @@ func _load_hero_poses() -> void:
 	if _tex_hit == null and ResourceLoader.exists("res://assets/sprites/player/poses/hit.png"):
 		_tex_hit = load("res://assets/sprites/player/poses/hit.png")
 
-	## 換裝槽位若有自訂外觀，影響待機預覽（衣櫥預覽與大廳站姿），但戰鬥姿態維持真姿態幀
-	if not sel.is_empty():
-		var comp := SpriteDB.player_race_composite(race, sel)
-		if comp:
-			_tex_idle = comp
+	if _hero_avatar and _tex_idle and not _is_interacting:
+		_hero_avatar.texture = _tex_idle
+	if _char_prev and _tex_idle:
+		_char_prev.texture = _tex_idle
 
 static var _shadow_tex_cache: Texture2D = null
 
@@ -1683,6 +1682,8 @@ func open_wardrobe() -> void:
 		dlg.connect("outfit_saved", func(_race: String, _selections: Dictionary):
 			_load_hero_poses()
 			refresh_hud()
+			if _hero_avatar and _tex_idle and not _is_interacting:
+				_hero_avatar.texture = _tex_idle
 			if _char_prev and _tex_idle:
 				_char_prev.texture = _tex_idle
 			_show_toast(_t("換裝完成！新外裝已生效"))
@@ -1692,6 +1693,11 @@ func open_wardrobe() -> void:
 	if _char_prev:
 		_char_prev.visible = false
 	var restore_prev := func():
+		_load_hero_poses()
+		if _hero_avatar and _tex_idle and not _is_interacting:
+			_hero_avatar.texture = _tex_idle
+		if _char_prev and _tex_idle:
+			_char_prev.texture = _tex_idle
 		if _char_prev:
 			_char_prev.visible = true
 	dlg.tree_exited.connect(restore_prev)

@@ -39,6 +39,31 @@ static func player_race_composite(race: String, selections: Dictionary = {}) -> 
 	return tex(proof_path)
 
 
+## 依據 player_race 與 paperdoll_slots 用 PaperdollRenderer 合成待機圖；合成失敗才退回 player_pose("idle")
+static func player_equipped_idle(race_override: String = "", slots_override: Dictionary = {}) -> Texture2D:
+	var r := race_override.strip_edges().to_lower() if not race_override.is_empty() else player_race()
+	if r.is_empty():
+		r = "rabbit"
+	var slots: Dictionary = slots_override.duplicate() if not slots_override.is_empty() else {}
+	if slots.is_empty():
+		var gs := _gs()
+		if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
+			slots = (gs.paperdoll_slots as Dictionary).duplicate()
+
+	if not slots.is_empty():
+		if not slots.has("costume") and slots.has("costume_id"):
+			slots["costume"] = slots["costume_id"]
+		if not slots.has("chassis") and slots.has("paint_id"):
+			slots["chassis"] = slots["paint_id"]
+		var pr: GDScript = load("res://scripts/art/paperdoll_renderer.gd")
+		if pr and pr.has_method("get_race_composite_texture"):
+			var comp: Variant = pr.call("get_race_composite_texture", r, slots)
+			if comp is Texture2D and comp != null:
+				return comp as Texture2D
+
+	return player_pose("idle", r)
+
+
 static func player_idle() -> Texture2D:
 	var r := player_race()
 	if r != "rabbit":
