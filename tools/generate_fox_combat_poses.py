@@ -334,16 +334,16 @@ def generate_fox_poses():
     poses["skill"] = skill_img
 
     # =========================================================================
-    # 6. HIT (Dramatic stagger backward recoil / off-axis tilt / front foot lifted)
+    # 6. HIT (Dramatic stagger backward recoil / off-axis tilt / staff recoil)
     # =========================================================================
     large_hit = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
     large_hit.paste(body_clean, (64, 64))
-    rotated_hit = large_hit.rotate(-14, resample=Image.Resampling.BICUBIC, center=(64 + 52, 64 + 118))
+    rotated_hit = large_hit.rotate(14, resample=Image.Resampling.BICUBIC, center=(64 + 52, 64 + 118))
     
     hit_body = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
     hit_body.paste(rotated_hit, (-64, -64), rotated_hit)
     
-    staff_hit = place_rigid_staff(clean_staff, deg=-25, target_hand=(78, 72))
+    staff_hit = place_rigid_staff(clean_staff, deg=-65, target_hand=(84, 58), scale=0.98)
     
     hit_shadow = build_contact_shadow(cx=50, cy=119, rx=34, ry=5, blur=0.6)
     hit_img = Image.alpha_composite(hit_shadow, hit_body)
