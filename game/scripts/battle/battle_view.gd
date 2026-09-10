@@ -55,6 +55,7 @@ var _pose_tween: Tween
 var _player_pose: String = "idle"
 var _player_pose_tween: Tween
 var _player_tex_has_baked_shadow: bool = false
+var _baked_shadow_cache: Dictionary = {}
 var _battle_weapon: TextureRect = null
 var _battle_armor: TextureRect = null
 var _skill_banner: Label
@@ -819,6 +820,57 @@ static func _content_bottom_frac(tex: Texture2D) -> float:
 	return frac
 
 
+## 檢測貼圖底部是否有烤入的半透明接地影（16c / 16c-1）
+## 依 review.md 規範：取 tex.get_image()，掃底部約 10~15% 高度，
+## 統計 alpha 介於 10~200 且亮度 <110 的像素數。
+## 兔族過審合成圖實測值約 250~309 px，獅/狐/豬僅 30~68 px（靴底描邊）。
+## 門檻值設為 >= 200 px（或以兔族未裝備底座 300 px 校準，容納換裝覆蓋容差）。
+func _texture_has_baked_shadow(tex: Texture2D) -> bool:
+	if tex == null:
+		return false
+	var key: Variant = null
+	if not tex.resource_path.is_empty():
+		key = tex.resource_path
+	else:
+		var rid := tex.get_rid()
+		if rid.is_valid():
+			key = rid
+		else:
+			key = tex.get_instance_id()
+	if _baked_shadow_cache.has(key):
+		return bool(_baked_shadow_cache[key])
+	
+	var img: Image = tex.get_image()
+	if img == null or img.is_empty():
+		_baked_shadow_cache[key] = false
+		return false
+	if img.is_compressed():
+		img.decompress()
+	
+	var w := img.get_width()
+	var h := img.get_height()
+	if w <= 0 or h <= 0:
+		_baked_shadow_cache[key] = false
+		return false
+	
+	var y_start := int(float(h) * 0.85)
+	var count := 0
+	for y in range(y_start, h):
+		for x in range(w):
+			var c := img.get_pixel(x, y)
+			var a := int(c.a * 255.0)
+			if a >= 10 and a <= 200:
+				var lum := (0.299 * c.r + 0.587 * c.g + 0.114 * c.b) * 255.0
+				if lum < 110.0:
+					count += 1
+					if count >= 200:
+						_baked_shadow_cache[key] = true
+						return true
+	
+	_baked_shadow_cache[key] = false
+	return false
+
+
 func _shadow_layer() -> Control:
 	var layer := get_node_or_null("ShadowLayer") as Control
 	if layer == null:
@@ -982,7 +1034,7 @@ func _apply_battle_art(mode: String) -> void:
 		ptex = SpriteDB.player_battle()
 	if ptex:
 		player_body.texture = ptex
-		_player_tex_has_baked_shadow = (ptex != SpriteDB.player_battle())
+		_player_tex_has_baked_shadow = _texture_has_baked_shadow(ptex)
 	player_body.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	player_body.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	player_body.custom_minimum_size = Vector2(200, 250)
@@ -2043,17 +2095,17 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 	var t: Texture2D = null
 	if pose == "idle":
 		t = _get_player_equipped_idle_texture()
-		_player_tex_has_baked_shadow = true
+		_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
 	else:
 		t = SpriteDB.player_pose(pose, _player_race)
 		if t == null:
 			t = _get_player_equipped_idle_texture()
-			_player_tex_has_baked_shadow = true
+			_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
 		else:
-			_player_tex_has_baked_shadow = false
+			_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
 	if t == null:
 		t = SpriteDB.player_battle()
-		_player_tex_has_baked_shadow = false
+		_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
 	if t:
 		player_body.texture = t
 	_layout_foot_shadow(player_body)
