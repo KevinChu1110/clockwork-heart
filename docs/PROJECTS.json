@@ -444,8 +444,8 @@
    "id": "explore-equipped-idle",
    "cat": "遊戲",
    "title": "探索待機顯示玩家當前換裝",
-   "status": "測試中",
-   "note": "探索站立讀取 SpriteDB.player_equipped_idle，雙套外裝實機 diff 12929px，送審中",
+   "status": "已上線",
+   "note": "探索站立讀取 SpriteDB.player_equipped_idle，雙套外裝實機 diff 過審並合併 main",
    "keys": [
     "探索待機顯示玩家"
    ]
