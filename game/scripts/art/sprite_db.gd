@@ -41,8 +41,10 @@ static func player_race_composite(race: String, selections: Dictionary = {}) -> 
 
 static func player_idle() -> Texture2D:
 	var r := player_race()
-	if r != "rabbit":
-		var comp := player_race_composite(r)
+	var gs := _gs()
+	var sel: Dictionary = gs.paperdoll_slots if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary else {}
+	if r != "rabbit" or not sel.is_empty():
+		var comp := player_race_composite(r, sel)
 		if comp:
 			return comp
 	return tex("%s/player/rabbit_idle_x3.png" % ROOT)

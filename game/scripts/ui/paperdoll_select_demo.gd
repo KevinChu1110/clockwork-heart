@@ -184,7 +184,39 @@ func _ready() -> void:
 	_init_race_buttons()
 	_bind_controls()
 	_update_creation_mode_ui()
-	select_race("rabbit")
+	var init_race := "rabbit"
+	var init_costume := ""
+	var init_chassis := ""
+	if not creation_mode:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree:
+			var gs = (loop as SceneTree).root.get_node_or_null("GameState")
+			if gs:
+				if "player_race" in gs and not str(gs.player_race).is_empty():
+					init_race = str(gs.player_race).to_lower().strip_edges()
+				if "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
+					init_costume = str(gs.paperdoll_slots.get("costume_id", gs.paperdoll_slots.get("costume", "")))
+					init_chassis = str(gs.paperdoll_slots.get("paint_id", gs.paperdoll_slots.get("chassis", "")))
+	select_race(init_race)
+	if not creation_mode:
+		_restore_selections_by_id(init_costume, init_chassis)
+
+
+func _restore_selections_by_id(costume_id: String, chassis_id: String) -> void:
+	var data: Dictionary = RACES_DATA.get(_current_race_id, {})
+	var costumes: Array = data.get("costumes", [])
+	var chassis_list: Array = data.get("chassis", [])
+	if not costume_id.is_empty():
+		for i in range(costumes.size()):
+			if str(costumes[i].get("id", "")) == costume_id:
+				_costume_index = i
+				break
+	if not chassis_id.is_empty():
+		for i in range(chassis_list.size()):
+			if str(chassis_list[i].get("id", "")) == chassis_id:
+				_chassis_index = i
+				break
+	_apply_current_selections()
 
 
 ## 初始化橫向種族選擇按鈕
@@ -261,17 +293,24 @@ func confirm_selection() -> void:
 	var sel := get_current_selections()
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree:
-		var gs = (loop as SceneTree).root.get_node_or_null("GameState")
+		var root_node = (loop as SceneTree).root
+		var gs = root_node.get_node_or_null("GameState")
 		if gs:
 			gs.player_race = _current_race_id
 			gs.paperdoll_slots = sel
-			match _current_race_id:
-				"rabbit": gs.player_name = "小白"
-				"lion": gs.player_name = "烈鬃獅"
-				"fox": gs.player_name = "靈尾狐"
-				"boar": gs.player_name = "鋼牙豕"
-				"macaque": gs.player_name = "靈爪猴"
-				_: gs.player_name = "小白"
+			# 若非開局選角模式 (換裝衣櫥模式)，不覆蓋玩家原本的名字
+			if creation_mode:
+				match _current_race_id:
+					"rabbit": gs.player_name = "小白"
+					"lion": gs.player_name = "烈鬃獅"
+					"fox": gs.player_name = "靈尾狐"
+					"boar": gs.player_name = "鋼牙豕"
+					"macaque": gs.player_name = "靈爪猴"
+					_: gs.player_name = "小白"
+
+		var sm = root_node.get_node_or_null("SaveManager")
+		if sm and sm.has_method("save_game"):
+			sm.call("save_game")
 	character_confirmed.emit(_current_race_id, sel)
 
 
@@ -431,10 +470,14 @@ func get_current_selections() -> Dictionary:
 	var chassis_list: Array = data.get("chassis", [])
 	var cur_costume: Dictionary = costumes[_costume_index] if _costume_index < costumes.size() else {}
 	var cur_chassis: Dictionary = chassis_list[_chassis_index] if _chassis_index < chassis_list.size() else {}
+	var c_id := str(cur_costume.get("id", ""))
+	var p_id := str(cur_chassis.get("id", ""))
 	return {
 		"race": _current_race_id,
-		"costume": cur_costume.get("id", ""),
-		"chassis": cur_chassis.get("id", "")
+		"costume": c_id,
+		"chassis": p_id,
+		"costume_id": c_id,
+		"paint_id": p_id
 	}
 
 
