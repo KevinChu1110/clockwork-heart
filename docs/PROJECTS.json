@@ -554,8 +554,8 @@
    "id": "creation-preview-breathe",
    "cat": "遊戲",
    "title": "開局選族預覽角色待機呼吸小動作",
-   "status": "開發中",
-   "note": "開局選族預覽角色套用 squash-stretch 待機呼吸小動作",
+   "status": "測試中",
+   "note": "已實作開局選族預覽角色待機呼吸，兔/狐兩族實機截圖與量測通過，送審中",
    "keys": [
     "開局選族預覽角色"
    ]
