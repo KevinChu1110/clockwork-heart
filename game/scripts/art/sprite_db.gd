@@ -402,15 +402,23 @@ static func player_battle() -> Texture2D:
 
 ## pose: idle | telegraph | attack | recover | skill | hit
 ## 0.16.2：poses/*.png 已用 rabbit_idle_x3 錨重產，戰鬥優先讀專用姿態。
+## 0.17.0：支援多種族專用姿態目錄（poses/<race>/<pose>.png），非兔族優先讀專用姿態。
 static func player_pose(pose: String) -> Texture2D:
 	var key := pose
 	var r := player_race()
+	if key == "" or key == "idle":
+		if r != "rabbit":
+			var race_idle := tex("%s/player/poses/%s/idle.png" % [ROOT, r])
+			if race_idle:
+				return race_idle
+		return player_idle()
 	if r != "rabbit":
+		var race_t := tex("%s/player/poses/%s/%s.png" % [ROOT, r, key])
+		if race_t:
+			return race_t
 		var comp := player_race_composite(r)
 		if comp:
 			return comp
-	if key == "" or key == "idle":
-		return player_idle()
 	## 專用姿態（chibi 鎖定）
 	var t := tex("%s/player/poses/%s.png" % [ROOT, key])
 	if t:
