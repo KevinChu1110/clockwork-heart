@@ -1,22 +1,25 @@
 extends SceneTree
-## 靈爪猴實機戰鬥展示與錄影同步腳本
+## 靈爪猴實機戰鬥展示與錄影同步腳本 (真實戰鬥驅動，30 FPS 精確時鐘同步)
 
 var _frame: int = 0
 var _combat_frame: int = 0
 var _battle: Control = null
-var _ready_flag: String = "/tmp/godot_combat_ready.flag"
-var _sync_flag: String = "/tmp/ffmpeg_started.flag"
+var _sim: Object = null
+var _player_unit: Object = null
+var _leo_unit: Object = null
+
+var _ready_flag: String = "/opt/side/bravesoul-game/proofs/combat_feel/combat_ready.flag"
+var _sync_flag: String = "/opt/side/bravesoul-game/proofs/combat_feel/ffmpeg_started.flag"
 var _is_ready: bool = false
 var _has_started: bool = false
 
-var _out_dir: String = "/opt/side/bravesoul-game/proofs/combat_feel"
-
 func _initialize() -> void:
+	Engine.max_fps = 30
 	root.size = Vector2i(1280, 720)
 	var win := root.get_window()
 	if win:
 		win.size = Vector2i(1280, 720)
-	print(">>> INITIALIZING MACAQUE COMBAT SHOWCASE")
+	print(">>> INITIALIZING MACAQUE COMBAT SHOWCASE (max_fps=30)")
 
 func _setup_macaque() -> void:
 	var gs: Node = root.get_node_or_null("GameState")
@@ -40,12 +43,8 @@ func _setup_macaque() -> void:
 			gs.equip_worn[uid] = inst
 			gs.equip_slots["weapon"] = uid
 
-func _capture_viewport(filename: String) -> void:
-	var img := root.get_viewport().get_texture().get_image()
-	if img:
-		var path := _out_dir.path_join(filename)
-		img.save_png(path)
-		print("  [CAPTURE] Saved frame to: ", path)
+func _on_sim_event(kind: String, data: Dictionary) -> void:
+	print("  [SIM EVENT @ f", _combat_frame, "] kind=", kind, " data=", data)
 
 func _process(_delta: float) -> bool:
 	_frame += 1
@@ -57,13 +56,22 @@ func _process(_delta: float) -> bool:
 		root.add_child(_battle)
 		if _battle.has_method("setup"):
 			_battle.call("setup", "leo")
-		var sim: Object = _battle.get("sim")
-		if sim:
-			sim.set("sim_paused", true)
-			var p = sim.call("get_unit", "player")
-			if p:
-				p.hp = 9999
-				p.max_hp = 9999
+		_sim = _battle.get("sim")
+		if _sim:
+			_sim.connect("event", _on_sim_event)
+			_sim.parts_break_unlocked = true
+			_player_unit = _sim.call("get_unit", "player")
+			_leo_unit = _sim.call("get_unit", "leo")
+			if _player_unit:
+				_player_unit.hp = 9999
+				_player_unit.max_hp = 9999
+				_player_unit.atk = 70
+				_player_unit.atb = 0.0
+			if _leo_unit:
+				_leo_unit.atb = 0.0
+				for p in _leo_unit.parts:
+					if p.get("id") == "shield":
+						p["hp"] = 10
 		return false
 
 	if _battle != null and not _is_ready and _frame >= 12:
@@ -81,69 +89,32 @@ func _process(_delta: float) -> bool:
 		if FileAccess.file_exists(_sync_flag):
 			_has_started = true
 			print(">>> FFMPEG SYNC DETECTED, COMMENCING COMBAT TIMELINE")
-		return false
+		else:
+			# 等待錄影啟動期間，凍結 ATB，保持待機
+			if _player_unit:
+				_player_unit.atb = 0.0
+			if _leo_unit:
+				_leo_unit.atb = 0.0
+			return false
 
 	_combat_frame += 1
 
-	## 幀 10 (約 0.33s): 待機狀態 (Idle)，拍攝出手前待機畫面
-	if _combat_frame == 10:
-		_capture_viewport("macaque_real_01_idle.png")
-		print("  [COMBAT ACTION] Captured Idle at frame 10")
+	# 0 ~ 20 幀 (0.0s ~ 0.67s): 保持待機狀態
+	if _combat_frame < 22:
+		if _player_unit:
+			_player_unit.atb = 0.0
+		if _leo_unit:
+			_leo_unit.atb = 0.0
 
-	## 幀 28: 觸發攻擊位移與攻擊姿態 (Lunge + Attack Pose)
-	if _combat_frame == 28:
-		if _battle and _battle.has_method("_set_player_pose"):
-			_battle.call("_set_player_pose", "attack", true)
-		if _battle and _battle.has_method("_lunge"):
-			_battle.call("_lunge", "player")
-		print("  [COMBAT ACTION] Player Lunge & Attack Pose triggered")
+	# 幀 22 (~0.73s): 玩家 ATB 蓄滿，自然觸發攻擊 (WINDUP -> attack_swing -> lunge & attack pose)
+	if _combat_frame == 22:
+		print("  [COMBAT ACTION @ f", _combat_frame, "] Player ATB full -> Trigger attack_swing")
+		if _player_unit:
+			_player_unit.atb = 100.0
 
-	## 幀 34 (約 1.13s): 角色前衝位移至頂點，右臂平刺三刃機關爪攻擊姿態清晰展現
-	if _combat_frame == 34:
-		if _battle and _battle.has_method("_set_player_pose"):
-			_battle.call("_set_player_pose", "attack", true)
-		_capture_viewport("macaque_real_02_attack.png")
-		print("  [COMBAT ACTION] Captured Attack Pose at frame 34")
-
-	## 幀 46 (約 1.53s): 突進命中，跳出傷害數字 188 與打擊特效
-	if _combat_frame == 46:
-		if _battle and _battle.has_method("_spawn_float"):
-			_battle.call("_spawn_float", "enemy", "188", Color(1.0, 0.4, 0.35))
-		if _battle and _battle.has_method("_spawn_hit_fx"):
-			_battle.call("_spawn_hit_fx", "enemy", "slash_arc")
-		print("  [COMBAT ACTION] Hit damage float & FX triggered")
-
-	## 幀 50 (約 1.66s): 188 傷害數字升至頂部，字體飽滿清晰
-	if _combat_frame == 50:
-		_capture_viewport("macaque_real_03_damage.png")
-		print("  [COMBAT ACTION] Captured Damage Float at frame 50")
-
-	## 幀 68 (約 2.26s): 部位破壞 BREAK 在敵人身邊跳出
-	if _combat_frame == 68:
-		if _battle and _battle.has_method("_spawn_float"):
-			_battle.call("_spawn_float", "enemy", "BREAK！獅衛重盾", Color(1.0, 0.9, 0.15), false, true)
-		if _battle and _battle.has_method("_spawn_hit_fx"):
-			_battle.call("_spawn_hit_fx", "enemy", "parry_flash")
-		print("  [COMBAT ACTION] Part Break BREAK triggered")
-
-	## 幀 68~85 期間：確保 BREAK 跳字位置居中偏右（x=480, y=230），絕不出界
-	if _combat_frame >= 68 and _combat_frame <= 85:
-		if _battle:
-			for child in _battle.get_children():
-				if child is Label and "BREAK" in child.text:
-					child.position = Vector2(480, 230)
-					child.scale = Vector2(1.5, 1.5)
-					child.modulate.a = 1.0
-					child.z_index = 100
-
-	## 幀 72 (約 2.40s): BREAK 大字完整展開並清晰呈現時截圖
-	if _combat_frame == 72:
-		_capture_viewport("macaque_real_04_break.png")
-		print("  [COMBAT ACTION] Captured BREAK float at frame 72")
-
-	## 幀 105 (3.5s): 展示結束
+	# 幀 105 (3.5s): 展示結束，退出
 	if _combat_frame >= 105:
-		print(">>> MACAQUE SHOWCASE FINISHED")
+		print(">>> MACAQUE SHOWCASE FINISHED AT FRAME ", _combat_frame)
 		quit(0)
 
 	return false
