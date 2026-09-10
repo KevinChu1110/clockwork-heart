@@ -178,6 +178,7 @@ var _current_race_id: String = "rabbit"
 var _costume_index: int = 0
 var _chassis_index: int = 0
 var _race_buttons: Dictionary = {}
+var _breathe_tween: Tween = null
 
 
 func _ready() -> void:
@@ -185,6 +186,11 @@ func _ready() -> void:
 	_bind_controls()
 	_update_creation_mode_ui()
 	select_race("rabbit")
+	_start_breathe_tween()
+
+
+func _exit_tree() -> void:
+	_stop_breathe_tween()
 
 
 ## 初始化橫向種族選擇按鈕
@@ -244,7 +250,7 @@ func _bind_controls() -> void:
 			btn_back.text = "返回"
 			btn_back.visible = creation_mode
 			actions_row.add_child(btn_back)
-		btn_back.pressed.connect(func(): cancelled.emit())
+		btn_back.pressed.connect(func(): close())
 
 
 func _update_creation_mode_ui() -> void:
@@ -471,3 +477,36 @@ func save_proof_screenshot(target_path: String = "") -> String:
 		return char_path
 
 	return ""
+
+
+## 關閉面板並釋放
+func close() -> void:
+	_stop_breathe_tween()
+	cancelled.emit()
+	queue_free()
+
+
+## 待機呼吸小動作 (對齊大廳／衣櫥／探索規範：scale 在 (1.03, 0.97) ↔ (0.98, 1.02)、週期約 1.1s、TRANS_SINE、loop)
+func _start_breathe_tween() -> void:
+	if _breathe_tween and _breathe_tween.is_valid() and _breathe_tween.is_running():
+		return
+	if _breathe_tween and _breathe_tween.is_valid():
+		_breathe_tween.kill()
+	if character:
+		character.scale = Vector2.ONE
+	_breathe_tween = create_tween().set_loops()
+	_breathe_tween.tween_property(character, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	_breathe_tween.tween_property(character, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+
+
+func _stop_breathe_tween() -> void:
+	if _breathe_tween and _breathe_tween.is_valid():
+		_breathe_tween.kill()
+		_breathe_tween = null
+	if character:
+		character.scale = Vector2.ONE
+
+
+func is_breathe_running() -> bool:
+	return _breathe_tween != null and _breathe_tween.is_valid() and _breathe_tween.is_running()
+
