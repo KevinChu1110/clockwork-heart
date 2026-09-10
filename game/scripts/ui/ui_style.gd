@@ -201,16 +201,18 @@ const CAPTION_DIM := Color(0.72, 0.68, 0.62, 1.0)
 
 static func dialogue_style() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(0.10, 0.09, 0.12, 1.0)
-	s.border_color = Color(0.85, 0.68, 0.48, 0.95)
+	s.bg_color = Color("#FFFDF8")
+	s.border_color = Color("#1F1A3A")
 	s.set_border_width_all(2)
-	s.set_corner_radius_all(6)
-	s.content_margin_left = 16
-	s.content_margin_right = 16
-	s.content_margin_top = 12
-	s.content_margin_bottom = 10
-	s.shadow_color = Color(0.04, 0.03, 0.05, 0.55)
-	s.shadow_size = 14
+	s.border_width_bottom = 5
+	s.set_corner_radius_all(22)
+	s.content_margin_left = 20
+	s.content_margin_right = 20
+	s.content_margin_top = 14
+	s.content_margin_bottom = 12
+	s.shadow_color = Color(0.12, 0.10, 0.23, 0.22)
+	s.shadow_size = 10
+	s.shadow_offset = Vector2(0, 4)
 	return s
 
 
