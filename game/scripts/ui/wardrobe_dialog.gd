@@ -624,9 +624,16 @@ func _update_preview() -> void:
 	if _preview_rect == null:
 		return
 	var sel := get_current_selections()
-	var tex := PaperdollRenderer.get_race_composite_texture(current_race, sel)
-	if tex != null:
-		_preview_rect.texture = tex
+	var img := PaperdollRenderer.build_composite_image(current_race, sel)
+	if img != null and not img.is_empty():
+		# 高解析度超取樣 (256x256 LANCZOS)：對齊 UI 顯示密度，徹底消除 128x128 放大模糊與鋸齒
+		var hires := img.duplicate()
+		hires.resize(256, 256, Image.INTERPOLATE_LANCZOS)
+		_preview_rect.texture = ImageTexture.create_from_image(hires)
+	else:
+		var tex := PaperdollRenderer.get_race_composite_texture(current_race, sel)
+		if tex != null:
+			_preview_rect.texture = tex
 
 
 ## 確認換裝並寫入 GameState 與存檔
