@@ -91,6 +91,29 @@ func _initialize() -> void:
 	else:
 		print("  ✓ 打開衣櫥時正確定位已裝備塗裝索引：chassis_index = %d" % dlg2.chassis_index)
 
+	# ── 3a. 測試卡片網格 (GridContainer) 與『✓ 已選用』標籤 (review.md 第 28a 條) ──
+	var grid_costume = dlg2.find_child("GridCostume", true, false)
+	var grid_chassis = dlg2.find_child("GridChassis", true, false)
+	if not (grid_costume is GridContainer) or not (grid_chassis is GridContainer):
+		push_error("未找到 GridCostume 或 GridChassis (GridContainer)")
+		ok = false
+	else:
+		print("  ✓ 換裝面板外裝與塗裝皆採用 GridContainer 卡片網格")
+		if (grid_costume as GridContainer).get_child_count() < 3 or (grid_chassis as GridContainer).get_child_count() < 3:
+			push_error("卡片網格數量不足")
+			ok = false
+		else:
+			print("  ✓ 卡片網格數量充足 (外裝 %d 格，塗裝 %d 格)" % [(grid_costume as GridContainer).get_child_count(), (grid_chassis as GridContainer).get_child_count()])
+
+		# 檢驗選中卡片之『✓ 已選用』狀態
+		var c_card = (grid_costume as GridContainer).get_child(dlg2.costume_index)
+		var c_badge = c_card.find_child("BadgeLabel", true, false) if c_card else null
+		if c_badge is Label and (c_badge as Label).text == "✓ 已選用":
+			print("  ✓ 已裝備外裝卡片正確標示『✓ 已選用』")
+		else:
+			push_error("已裝備外裝卡片未標示『✓ 已選用』")
+			ok = false
+
 	# ── 4. 測試換裝並確認寫回 GameState ──
 	# 切換為蒸氣工匠工作裝 (index 1: costume_steam_artisan) 與黃銅原金 (index 1: paint_brass_gold)
 	dlg2.costume_index = 1

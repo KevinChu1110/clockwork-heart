@@ -1,10 +1,12 @@
 class_name WardrobeDialog
 extends Control
 ## 《發條之心》大廳角色換裝衣櫥彈窗 (WardrobeDialog)
-## 依據手遊人體工學規範與 review.md：
+## 依據手遊人體工學規範與 review.md 第 28 條、第 28a 條：
 ## 1. 橫屏彈窗寬 740~760px，置中顯示，背景附全螢幕遮罩 (Scrim)。
 ## 2. 右上「✕」關閉按鈕尺寸 >= 50px，點擊遮罩空白處亦可關閉。
-## 3. 嚴禁垂直長條文字按鈕，部件切換採水平左右箭頭 (< >) 與卡片展示。
+## 3. 部件挑選採 GridContainer 每列 4 格縮圖卡片網格，一次呈現全部已解鎖選項。
+##    每格顯示部件縮圖＋名稱，已裝備格附亮金框與『✓ 已選用』標籤；多於一頁採 ScrollContainer 捲動。
+##    嚴禁垂直長條文字按鈕，嚴禁左右箭頭分頁輪播。
 ## 4. creation_mode 預設為 false，作為大廳隨時開合的正式衣櫥。
 ## 5. 打開時自動對應玩家當前種族與已裝備的部件 index，不從 0 開始重置。
 ## 6. 確認換裝寫回 GameState (costume_id, paint_id) 並自動存檔。
@@ -21,7 +23,7 @@ const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 ## 彈窗尺寸標準 (review.md 第 28 條: 740~760px)
 const DIALOG_WIDTH := 750.0
-const DIALOG_HEIGHT := 520.0
+const DIALOG_HEIGHT := 530.0
 const BTN_SIZE := 50.0
 
 ## 色盤常數 (希臘神殿黑曜石 x 多巴胺古典金)
@@ -49,17 +51,10 @@ var _preview_rect: TextureRect
 var _badge_name_label: Label
 var _badge_race_label: Label
 
-var _costume_count_label: Label
-var _costume_name_label: Label
-var _costume_desc_label: Label
-var _btn_costume_prev: Button
-var _btn_costume_next: Button
-
-var _chassis_count_label: Label
-var _chassis_name_label: Label
-var _chassis_desc_label: Label
-var _btn_chassis_prev: Button
-var _btn_chassis_next: Button
+var _costume_grid: GridContainer
+var _chassis_grid: GridContainer
+var _costume_cards: Array[Button] = []
+var _chassis_cards: Array[Button] = []
 
 var _btn_confirm: Button
 var _btn_reset: Button
@@ -79,6 +74,7 @@ func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	ensure_ui()
 	_init_from_game_state()
+	_rebuild_cards()
 	_update_ui_texts()
 	_update_preview()
 
@@ -86,6 +82,7 @@ func _init() -> void:
 func _ready() -> void:
 	ensure_ui()
 	_init_from_game_state()
+	_rebuild_cards()
 	_update_ui_texts()
 	_update_preview()
 
@@ -192,7 +189,7 @@ func _build_ui() -> void:
 	_dialog_card.add_child(card_margin)
 
 	var root_vbox := VBoxContainer.new()
-	root_vbox.add_theme_constant_override("separation", 14)
+	root_vbox.add_theme_constant_override("separation", 12)
 	card_margin.add_child(root_vbox)
 
 	# ── 頂部標題列 ──
@@ -224,15 +221,15 @@ func _build_ui() -> void:
 	_close_btn = ResponsiveUi.make_close_button(Callable(self, "close"))
 	top_bar.add_child(_close_btn)
 
-	# ── 中間主內容區 (左側展台 + 右側部件挑選) ──
+	# ── 中間主內容區 (左側展台 + 右側卡片網格挑選) ──
 	var main_hbox := HBoxContainer.new()
 	main_hbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	main_hbox.add_theme_constant_override("separation", 20)
+	main_hbox.add_theme_constant_override("separation", 16)
 	root_vbox.add_child(main_hbox)
 
 	# 左側角色展示展台
 	var stage_panel := PanelContainer.new()
-	stage_panel.custom_minimum_size = Vector2(280, 360)
+	stage_panel.custom_minimum_size = Vector2(250, 360)
 	var stage_sb := StyleBoxFlat.new()
 	stage_sb.bg_color = OBSIDIAN_DEEP
 	stage_sb.border_color = LINE_GOLD
@@ -248,7 +245,7 @@ func _build_ui() -> void:
 	stage_panel.add_child(stage_vbox)
 
 	_preview_rect = TextureRect.new()
-	_preview_rect.custom_minimum_size = Vector2(230, 230)
+	_preview_rect.custom_minimum_size = Vector2(210, 210)
 	_preview_rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_preview_rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	_preview_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
@@ -277,19 +274,19 @@ func _build_ui() -> void:
 		_badge_race_label.add_theme_font_override("font", _cached_font)
 	badge_box.add_child(_badge_race_label)
 
-	# 右側部件控制區
+	# 右側部件挑選區 (卡片網格)
 	var controls_vbox := VBoxContainer.new()
 	controls_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	controls_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	controls_vbox.add_theme_constant_override("separation", 14)
+	controls_vbox.add_theme_constant_override("separation", 10)
 	main_hbox.add_child(controls_vbox)
 
-	# ── 槽位 1：外裝服飾 (Costume) ──
-	var costume_box := _create_slot_section("外裝服飾 (Costume)", "costume")
+	# ── 槽位 1：外裝服飾 (Costume) 卡片網格 ──
+	var costume_box := _create_grid_section("外裝服飾 (Costume)", "costume")
 	controls_vbox.add_child(costume_box)
 
-	# ── 槽位 2：機體塗裝 (Paint / Chassis) ──
-	var chassis_box := _create_slot_section("機體塗裝 (Chassis / Paint)", "chassis")
+	# ── 槽位 2：機體塗裝 (Paint / Chassis) 卡片網格 ──
+	var chassis_box := _create_grid_section("機體塗裝 (Chassis / Paint)", "chassis")
 	controls_vbox.add_child(chassis_box)
 
 	# ── 底部操作按鈕列 ──
@@ -340,8 +337,10 @@ func _build_ui() -> void:
 	actions_hbox.add_child(_btn_confirm)
 
 
-func _create_slot_section(section_title: String, slot_type: String) -> PanelContainer:
+## 建立卡片網格區塊 (第 28a 條：卡片網格＋亮金框『✓ 已選用』，多於一頁採 ScrollContainer)
+func _create_grid_section(section_title: String, slot_type: String) -> PanelContainer:
 	var panel := PanelContainer.new()
+	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = OBSIDIAN_WARM
 	sb.border_color = LINE_GOLD_SOFT
@@ -351,23 +350,23 @@ func _create_slot_section(section_title: String, slot_type: String) -> PanelCont
 	panel.add_theme_stylebox_override("panel", sb)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 14)
-	margin.add_theme_constant_override("margin_top", 10)
-	margin.add_theme_constant_override("margin_right", 14)
-	margin.add_theme_constant_override("margin_bottom", 10)
+	margin.add_theme_constant_override("margin_left", 12)
+	margin.add_theme_constant_override("margin_top", 8)
+	margin.add_theme_constant_override("margin_right", 12)
+	margin.add_theme_constant_override("margin_bottom", 8)
 	panel.add_child(margin)
 
 	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 8)
+	vbox.add_theme_constant_override("separation", 6)
 	margin.add_child(vbox)
 
-	# 標題與計數列
+	# 標題列
 	var header_hbox := HBoxContainer.new()
 	vbox.add_child(header_hbox)
 
 	var title_lbl := Label.new()
 	title_lbl.text = section_title
-	title_lbl.add_theme_font_size_override("font_size", 14)
+	title_lbl.add_theme_font_size_override("font_size", 13)
 	title_lbl.add_theme_color_override("font_color", GOLD_CLASSICAL)
 	if _cached_font:
 		title_lbl.add_theme_font_override("font", _cached_font)
@@ -377,140 +376,207 @@ func _create_slot_section(section_title: String, slot_type: String) -> PanelCont
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header_hbox.add_child(spacer)
 
-	var count_lbl := Label.new()
-	count_lbl.add_theme_font_size_override("font_size", 12)
-	count_lbl.add_theme_color_override("font_color", INK_MUTED)
+	var tip_lbl := Label.new()
+	tip_lbl.text = "點擊卡片即時預覽"
+	tip_lbl.add_theme_font_size_override("font_size", 11)
+	tip_lbl.add_theme_color_override("font_color", INK_MUTED)
 	if _cached_font:
-		count_lbl.add_theme_font_override("font", _cached_font)
-	header_hbox.add_child(count_lbl)
+		tip_lbl.add_theme_font_override("font", _cached_font)
+	header_hbox.add_child(tip_lbl)
 
-	# 部件切換列 (左右箭頭 + 中央資訊卡)
-	var select_hbox := HBoxContainer.new()
-	select_hbox.add_theme_constant_override("separation", 10)
-	vbox.add_child(select_hbox)
+	# 捲動容器包覆 GridContainer (每列 4 格)
+	var scroll := ScrollContainer.new()
+	scroll.custom_minimum_size.y = 96
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	vbox.add_child(scroll)
 
-	var arrow_sb := StyleBoxFlat.new()
-	arrow_sb.bg_color = OBSIDIAN_DEEP
-	arrow_sb.border_color = GOLD_CLASSICAL
-	arrow_sb.set_border_width_all(1)
-	arrow_sb.border_width_bottom = 3
-	arrow_sb.set_corner_radius_all(10)
-
-	var btn_prev := Button.new()
-	btn_prev.text = "<"
-	btn_prev.custom_minimum_size = Vector2(BTN_SIZE, BTN_SIZE)
-	btn_prev.add_theme_font_size_override("font_size", 18)
-	btn_prev.add_theme_stylebox_override("normal", arrow_sb)
-	btn_prev.add_theme_color_override("font_color", GOLD_CLASSICAL)
-	select_hbox.add_child(btn_prev)
-
-	var info_card := PanelContainer.new()
-	info_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	var isb := StyleBoxFlat.new()
-	isb.bg_color = OBSIDIAN_DEEP
-	isb.border_color = LINE_GOLD_SOFT
-	isb.set_border_width_all(1)
-	isb.set_corner_radius_all(10)
-	info_card.add_theme_stylebox_override("panel", isb)
-	select_hbox.add_child(info_card)
-
-	var info_margin := MarginContainer.new()
-	info_margin.add_theme_constant_override("margin_left", 12)
-	info_margin.add_theme_constant_override("margin_top", 6)
-	info_margin.add_theme_constant_override("margin_right", 12)
-	info_margin.add_theme_constant_override("margin_bottom", 6)
-	info_card.add_child(info_margin)
-
-	var info_vbox := VBoxContainer.new()
-	info_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-	info_vbox.add_theme_constant_override("separation", 2)
-	info_margin.add_child(info_vbox)
-
-	var name_lbl := Label.new()
-	name_lbl.add_theme_font_size_override("font_size", 15)
-	name_lbl.add_theme_color_override("font_color", INK_IVORY)
-	if _cached_font:
-		name_lbl.add_theme_font_override("font", _cached_font)
-	info_vbox.add_child(name_lbl)
-
-	var desc_lbl := Label.new()
-	desc_lbl.add_theme_font_size_override("font_size", 12)
-	desc_lbl.add_theme_color_override("font_color", INK_MUTED)
-	if _cached_font:
-		desc_lbl.add_theme_font_override("font", _cached_font)
-	info_vbox.add_child(desc_lbl)
-
-	var btn_next := Button.new()
-	btn_next.text = ">"
-	btn_next.custom_minimum_size = Vector2(BTN_SIZE, BTN_SIZE)
-	btn_next.add_theme_font_size_override("font_size", 18)
-	btn_next.add_theme_stylebox_override("normal", arrow_sb)
-	btn_next.add_theme_color_override("font_color", GOLD_CLASSICAL)
-	select_hbox.add_child(btn_next)
+	var grid := GridContainer.new()
+	grid.name = "GridCostume" if slot_type == "costume" else "GridChassis"
+	grid.columns = 4
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	scroll.add_child(grid)
 
 	if slot_type == "costume":
-		_costume_count_label = count_lbl
-		_costume_name_label = name_lbl
-		_costume_desc_label = desc_lbl
-		_btn_costume_prev = btn_prev
-		_btn_costume_next = btn_next
-		btn_prev.pressed.connect(_on_costume_prev)
-		btn_next.pressed.connect(_on_costume_next)
+		_costume_grid = grid
 	else:
-		_chassis_count_label = count_lbl
-		_chassis_name_label = name_lbl
-		_chassis_desc_label = desc_lbl
-		_btn_chassis_prev = btn_prev
-		_btn_chassis_next = btn_next
-		btn_prev.pressed.connect(_on_chassis_prev)
-		btn_next.pressed.connect(_on_chassis_next)
+		_chassis_grid = grid
 
 	return panel
 
 
-func _on_costume_prev() -> void:
-	var data := _get_race_data()
-	var list: Array = data.get("costumes", [])
-	if list.is_empty():
+## 重新建置全部卡片
+func _rebuild_cards() -> void:
+	if _costume_grid == null or _chassis_grid == null:
 		return
-	costume_index = (costume_index - 1 + list.size()) % list.size()
-	_update_ui_texts()
-	_update_preview()
 
+	# 清空舊卡片
+	for c in _costume_grid.get_children():
+		c.queue_free()
+	for c in _chassis_grid.get_children():
+		c.queue_free()
+	_costume_cards.clear()
+	_chassis_cards.clear()
 
-func _on_costume_next() -> void:
 	var data := _get_race_data()
-	var list: Array = data.get("costumes", [])
-	if list.is_empty():
-		return
-	costume_index = (costume_index + 1) % list.size()
-	_update_ui_texts()
-	_update_preview()
+	var costumes: Array = data.get("costumes", [])
+	var chassis_list: Array = data.get("chassis", [])
+
+	for i in range(costumes.size()):
+		var card := _create_item_card("costume", i, costumes[i])
+		_costume_grid.add_child(card)
+		_costume_cards.append(card)
+
+	for i in range(chassis_list.size()):
+		var card := _create_item_card("chassis", i, chassis_list[i])
+		_chassis_grid.add_child(card)
+		_chassis_cards.append(card)
+
+	_update_card_selection_states()
 
 
-func _on_chassis_prev() -> void:
-	var data := _get_race_data()
-	var list: Array = data.get("chassis", [])
-	if list.is_empty():
-		return
-	chassis_index = (chassis_index - 1 + list.size()) % list.size()
-	_update_ui_texts()
-	_update_preview()
+## 建立單張縮圖卡片按鈕
+func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Button:
+	var btn := Button.new()
+	btn.name = "Card_%s_%d" % [slot_type, idx]
+	btn.custom_minimum_size = Vector2(92, 92)
+	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+	var margin := MarginContainer.new()
+	margin.set_anchors_preset(Control.PRESET_FULL_RECT)
+	margin.add_theme_constant_override("margin_left", 4)
+	margin.add_theme_constant_override("margin_top", 4)
+	margin.add_theme_constant_override("margin_right", 4)
+	margin.add_theme_constant_override("margin_bottom", 4)
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(margin)
+
+	var vbox := VBoxContainer.new()
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 2)
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_child(vbox)
+
+	# 部件縮圖
+	var thumb := TextureRect.new()
+	thumb.custom_minimum_size = Vector2(38, 38)
+	thumb.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	thumb.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	thumb.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	thumb.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	thumb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	thumb.texture = _get_item_thumbnail(slot_type, str(item_data.get("id", "")))
+	vbox.add_child(thumb)
+
+	# 部件名稱
+	var name_lbl := Label.new()
+	name_lbl.text = str(item_data.get("name_zh", ""))
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 11)
+	name_lbl.add_theme_color_override("font_color", INK_IVORY)
+	if _cached_font:
+		name_lbl.add_theme_font_override("font", _cached_font)
+	name_lbl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(name_lbl)
+
+	# 選取狀態標籤 (『✓ 已選用』)
+	var badge_lbl := Label.new()
+	badge_lbl.name = "BadgeLabel"
+	badge_lbl.text = ""
+	badge_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	badge_lbl.add_theme_font_size_override("font_size", 10)
+	badge_lbl.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	if _cached_font:
+		badge_lbl.add_theme_font_override("font", _cached_font)
+	badge_lbl.custom_minimum_size.y = 14
+	badge_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(badge_lbl)
+
+	# 點擊即時套用預覽與選取狀態
+	btn.pressed.connect(func():
+		if slot_type == "costume":
+			costume_index = idx
+		else:
+			chassis_index = idx
+		_update_card_selection_states()
+		_update_preview()
+		_update_ui_texts()
+	)
+
+	return btn
 
 
-func _on_chassis_next() -> void:
-	var data := _get_race_data()
-	var list: Array = data.get("chassis", [])
-	if list.is_empty():
-		return
-	chassis_index = (chassis_index + 1) % list.size()
-	_update_ui_texts()
-	_update_preview()
+## 取得部件對應之縮圖貼圖
+func _get_item_thumbnail(slot_type: String, item_id: String) -> Texture2D:
+	if slot_type == "costume":
+		if item_id == "none":
+			var bare_path := "res://assets/sprites/player/paperdoll/%s/composite_preview_bare.png" % current_race
+			if ResourceLoader.exists(bare_path):
+				return load(bare_path) as Texture2D
+			var stock_chassis := "res://assets/sprites/player/paperdoll/%s/chassis/paint_ivory_stock.png" % current_race
+			if ResourceLoader.exists(stock_chassis):
+				return load(stock_chassis) as Texture2D
+		else:
+			var path := "res://assets/sprites/player/paperdoll/%s/costume/%s.png" % [current_race, item_id]
+			if ResourceLoader.exists(path):
+				return load(path) as Texture2D
+	elif slot_type == "chassis":
+		var path := "res://assets/sprites/player/paperdoll/%s/chassis/%s.png" % [current_race, item_id]
+		if ResourceLoader.exists(path):
+			return load(path) as Texture2D
+	return null
+
+
+## 更新所有卡片的亮金邊框與『✓ 已選用』狀態
+func _update_card_selection_states() -> void:
+	for i in range(_costume_cards.size()):
+		var is_selected := (i == costume_index)
+		_apply_card_style(_costume_cards[i], is_selected)
+
+	for i in range(_chassis_cards.size()):
+		var is_selected := (i == chassis_index)
+		_apply_card_style(_chassis_cards[i], is_selected)
+
+
+## 套用單張卡片之視覺樣式 (選中時亮金框 + 『✓ 已選用』)
+func _apply_card_style(btn: Button, is_selected: bool) -> void:
+	var sb := StyleBoxFlat.new()
+	sb.set_corner_radius_all(10)
+	if is_selected:
+		sb.bg_color = Color(0.14, 0.12, 0.08, 0.98) # 溫潤金褐底
+		sb.border_color = GOLD_CLASSICAL           # 亮金邊框
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 3
+	else:
+		sb.bg_color = OBSIDIAN_DEEP                 # 深黑曜底
+		sb.border_color = LINE_GOLD_SOFT            # 柔和淡金框
+		sb.set_border_width_all(1)
+	btn.add_theme_stylebox_override("normal", sb)
+
+	var sb_h := sb.duplicate()
+	if is_selected:
+		sb_h.border_color = GOLD_HOVER
+	else:
+		sb_h.bg_color = OBSIDIAN_WARM
+		sb_h.border_color = GOLD_HOVER
+	btn.add_theme_stylebox_override("hover", sb_h)
+	btn.add_theme_stylebox_override("pressed", sb_h)
+
+	var badge = btn.find_child("BadgeLabel", true, false)
+	if badge is Label:
+		badge.text = "✓ 已選用" if is_selected else ""
 
 
 func _on_reset_pressed() -> void:
 	costume_index = 0
 	chassis_index = 0
+	_update_card_selection_states()
 	_update_ui_texts()
 	_update_preview()
 
@@ -537,9 +603,6 @@ func get_current_selections() -> Dictionary:
 
 func _update_ui_texts() -> void:
 	var data := _get_race_data()
-	var costumes: Array = data.get("costumes", [])
-	var chassis_list: Array = data.get("chassis", [])
-
 	var race_name_zh := str(data.get("name_zh", current_race))
 	var archetype := str(data.get("archetype", ""))
 
@@ -552,20 +615,6 @@ func _update_ui_texts() -> void:
 		_badge_name_label.text = "%s" % p_name
 	if _badge_race_label:
 		_badge_race_label.text = "【%s · %s】" % [race_name_zh, archetype]
-
-	# 外裝文字
-	if _costume_name_label and not costumes.is_empty():
-		var cur_c: Dictionary = costumes[costume_index]
-		_costume_name_label.text = str(cur_c.get("name_zh", "未命名外裝"))
-		_costume_desc_label.text = str(cur_c.get("desc", ""))
-		_costume_count_label.text = "%d / %d" % [costume_index + 1, costumes.size()]
-
-	# 塗裝文字
-	if _chassis_name_label and not chassis_list.is_empty():
-		var cur_ch: Dictionary = chassis_list[chassis_index]
-		_chassis_name_label.text = str(cur_ch.get("name_zh", "原廠塗裝"))
-		_chassis_desc_label.text = str(cur_ch.get("desc", ""))
-		_chassis_count_label.text = "%d / %d" % [chassis_index + 1, chassis_list.size()]
 
 
 func _update_preview() -> void:
