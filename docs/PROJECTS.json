@@ -424,8 +424,8 @@
    "id": "battle-grade-metal",
    "cat": "遊戲",
    "title": "戰鬥調色shader把銀白金屬染成木頭色",
-   "status": "開發中",
-   "note": "已開單給 sideworker，改 shader 參數並用像素比例驗四族",
+   "status": "測試中",
+   "note": "shader 參數調修與高光保護完成，四族金屬實測 84%~96% silver、0% brown 全數達標，25/25 測試綠，送審中",
    "keys": [
     "戰鬥調色shad"
    ]
