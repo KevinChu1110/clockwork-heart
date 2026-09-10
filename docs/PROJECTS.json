@@ -498,6 +498,15 @@
    "note": "探索站立呼吸小動作已合併 main",
    "keys": [
     "探索站立呼吸小動"
+  },
+  {
+   "id": "battle-idle-fox-boar",
+   "cat": "遊戲",
+   "title": "狐／豬戰鬥待機換裝顯示",
+   "status": "測試中",
+   "note": "狐、野豬雙套外裝戰鬥待機驗收通過，0 SCRIPT ERROR，battle 測試 25/25 全綠",
+   "keys": [
+    "狐／豬戰鬥待機換"
    ]
   }
  ]
