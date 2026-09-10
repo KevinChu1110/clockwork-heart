@@ -454,8 +454,8 @@
    "id": "battle-idle-equip",
    "cat": "遊戲",
    "title": "戰鬥待機顯示玩家當前換裝",
-   "status": "測試中",
-   "note": "戰鬥待機支援顯示紙娃娃換裝 (SpriteDB.player_equipped_idle)，雙套外裝實機 diff 12959px，送審中",
+   "status": "開發中",
+   "note": "審核退回：接地影錯位橫切胸口，修好重送",
    "keys": [
     "戰鬥待機顯示玩家"
    ]
