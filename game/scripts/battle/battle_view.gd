@@ -39,6 +39,9 @@ var _ended: bool = false
 var _in_parry_slowmo: bool = false
 var _player_home: Vector2
 var _enemy_home: Vector2
+var _player_race: String = ""
+var _player_lunge_tw: Tween
+var _enemy_lunge_tw: Tween
 var _shake: float = 0.0
 var _last_cd_bucket: int = -1
 var _tempt_layer: Control
@@ -943,8 +946,9 @@ func _ensure_battle_look() -> void:
 func _apply_battle_art(mode: String) -> void:
 	## 立繪比例：素材約 160×200（兔）／220×240（Boss），維持長寬比、不擠扁
 	_ensure_battle_look()
+	_player_race = SpriteDB.player_race()
 	_player_pose = "idle"
-	var ptex := SpriteDB.player_pose("idle")
+	var ptex := SpriteDB.player_pose("idle", _player_race)
 	if ptex == null:
 		ptex = SpriteDB.player_battle()
 	if ptex:
@@ -2004,9 +2008,11 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 	if pose == _player_pose and not punch:
 		return
 	_player_pose = pose
-	var t: Texture2D = SpriteDB.player_pose(pose)
+	if _player_race.is_empty():
+		_player_race = SpriteDB.player_race()
+	var t: Texture2D = SpriteDB.player_pose(pose, _player_race)
 	if t == null and pose != "idle":
-		t = SpriteDB.player_pose("idle")
+		t = SpriteDB.player_pose("idle", _player_race)
 	if t == null:
 		t = SpriteDB.player_battle()
 	if t:
@@ -2166,11 +2172,11 @@ func _on_event(kind: String, data: Dictionary) -> void:
 				)
 			elif aid == "player":
 				_set_player_pose("attack", true)
-				get_tree().create_timer(0.2).timeout.connect(func():
-					if is_instance_valid(self) and not _ended:
+				get_tree().create_timer(0.24).timeout.connect(func():
+					if is_instance_valid(self) and not _ended and _player_pose == "attack":
 						_set_player_pose("recover")
 				)
-				get_tree().create_timer(0.45).timeout.connect(func():
+				get_tree().create_timer(0.42).timeout.connect(func():
 					if is_instance_valid(self) and not _ended and _player_pose == "recover":
 						_set_player_pose("idle")
 				)
@@ -2186,6 +2192,23 @@ func _on_event(kind: String, data: Dictionary) -> void:
 					if is_instance_valid(self) and not _ended and _player_pose == "hit":
 						_set_player_pose("idle")
 				)
+			elif _is_enemy_actor(str(data.get("defender", ""))):
+				if _boss_pose != "telegraph" and _boss_pose != "attack":
+					var hit_pose := SpriteDB.boss_pose(_boss_art_key, "hit")
+					if hit_pose != null:
+						_set_boss_pose("hit", true)
+						get_tree().create_timer(0.2).timeout.connect(func():
+							if is_instance_valid(self) and not _ended and _boss_pose == "hit":
+								_set_boss_pose("idle")
+						)
+			## 命中特效：普攻命中播放武器線 FX
+			if str(data.get("attacker", "")) == "player":
+				var wclass := ""
+				var p_u: BattleUnit = sim.get_unit("player") if sim else null
+				if p_u:
+					wclass = p_u.weapon_class
+				var fx_kind := _weapon_hit_fx_kind(wclass)
+				_spawn_hit_fx(str(data.get("defender")), fx_kind)
 			if is_crit:
 				_spawn_float(str(data.get("defender")), str(data.get("damage")), Color(1.0, 0.85, 0.2), true)
 				_shake = 0.35
@@ -2214,7 +2237,8 @@ func _on_event(kind: String, data: Dictionary) -> void:
 				_append_log(_t("[color=#fc0]部位破壞！【%s】打破擊暈！[/color]") % pname)
 			else:
 				_append_log(_t("[color=#fc0]部位破壞！【%s】碎裂！[/color]") % pname)
-			_spawn_float(boss_id, _t("部位破壞！"), Color(1.0, 0.85, 0.15), false, true)
+			_spawn_float(boss_id, "BREAK！" + pname, Color(1.0, 0.85, 0.15), false, true)
+			_spawn_hit_fx(boss_id, "parry_flash")
 			_shake = 0.5
 			trigger_hit_stop(0.12)
 			_flash(_body_of(boss_id), Color(3.0, 2.5, 1.0))
@@ -2496,16 +2520,27 @@ func _lunge(id: String) -> void:
 	if id == "player":
 		if _player_home == Vector2.ZERO and body.position != Vector2.ZERO:
 			_player_home = body.position
+		var home := _player_home if _player_home != Vector2.ZERO else body.position
+		if _player_lunge_tw and _player_lunge_tw.is_valid():
+			_player_lunge_tw.kill()
+		body.position = home
+		_player_lunge_tw = create_tween()
+		var dir := 1.0
+		_player_lunge_tw.tween_property(body, "position", home + Vector2(dir * 42, 0), 0.10).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		_player_lunge_tw.tween_interval(0.12)
+		_player_lunge_tw.tween_property(body, "position", home, 0.14).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 	else:
 		if _enemy_home == Vector2.ZERO and body.position != Vector2.ZERO:
 			_enemy_home = body.position
-	var home := _player_home if id == "player" else _enemy_home
-	if home == Vector2.ZERO:
-		home = body.position
-	var dir := 1.0 if id == "player" else -1.0
-	var tw := create_tween()
-	tw.tween_property(body, "position", home + Vector2(dir * 36, 0), 0.08)
-	tw.tween_property(body, "position", home, 0.12)
+		var home := _enemy_home if _enemy_home != Vector2.ZERO else body.position
+		if _enemy_lunge_tw and _enemy_lunge_tw.is_valid():
+			_enemy_lunge_tw.kill()
+		body.position = home
+		_enemy_lunge_tw = create_tween()
+		var dir := -1.0
+		_enemy_lunge_tw.tween_property(body, "position", home + Vector2(dir * 36, 0), 0.10).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		_enemy_lunge_tw.tween_interval(0.10)
+		_enemy_lunge_tw.tween_property(body, "position", home, 0.14).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 
 
 ## 多段技：同幀會連發多個 skill_hit，用 hit_index 錯開演出，讓「真多段」看得見
@@ -2550,6 +2585,62 @@ func _skill_fx_kind(skill_id: String) -> String:
 			return "slash_arc"
 
 
+func _weapon_hit_fx_kind(wclass: String) -> String:
+	match wclass:
+		"sword", "spear", "axe", "hammer":
+			return "slash_arc"
+		"dagger", "dart":
+			return "dart_fan"
+		"bow":
+			return "arrow_rain"
+		"gun":
+			return "gun_flash"
+		"fist", "claw":
+			return "fist_burst"
+		"magic", "crystal":
+			return "magic_spark"
+		_:
+			return "slash_arc"
+
+
+func _spawn_hit_fx(target_id: String, kind: String, hit_i: int = 0) -> void:
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	if gp != null and not gp.vfx_enabled():
+		return
+	var body := _body_of(target_id)
+	if body == null:
+		return
+	var tex: Texture2D = SpriteDB.fx(kind)
+	if tex == null:
+		tex = SpriteDB.fx("parry_flash")
+	if tex == null:
+		return
+	var fx := TextureRect.new()
+	fx.name = "HitFX"
+	fx.texture = tex
+	fx.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	fx.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	fx.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	fx.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var sz := Vector2(96, 96)
+	fx.custom_minimum_size = sz
+	fx.size = sz
+	var jitter := Vector2(float((hit_i * 37) % 48) - 24.0, float((hit_i * 19) % 36) - 18.0)
+	fx.global_position = body.global_position + body.size * 0.5 - sz * 0.5 + jitter
+	fx.z_index = 40
+	fx.modulate = Color(1, 1, 1, 0.95)
+	fx.scale = Vector2(0.7, 0.7)
+	fx.pivot_offset = sz * 0.5
+	add_child(fx)
+	var tw := create_tween()
+	tw.tween_property(fx, "scale", Vector2(1.25, 1.25), 0.08)
+	tw.parallel().tween_property(fx, "modulate:a", 0.0, 0.22).set_delay(0.06)
+	tw.tween_callback(func():
+		if is_instance_valid(fx):
+			fx.queue_free()
+	)
+
+
 func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> void:
 	var gp := get_node_or_null("/root/GraphicsProfile")
 	if gp != null and not gp.vfx_enabled():
@@ -2575,7 +2666,7 @@ func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> v
 	fx.size = sz
 	## 多段錯開落點，避免全疊同一點
 	var jitter := Vector2(float((hit_i * 37) % 48) - 24.0, float((hit_i * 19) % 36) - 18.0)
-	fx.position = body.position + body.size * 0.5 - sz * 0.5 + jitter
+	fx.global_position = body.global_position + body.size * 0.5 - sz * 0.5 + jitter
 	fx.z_index = 40
 	fx.modulate = Color(1, 1, 1, 0.95)
 	fx.scale = Vector2(0.7, 0.7)
@@ -2729,10 +2820,13 @@ func _spawn_float(target_id: String, text: String, color: Color, is_crit: bool =
 	lab.add_theme_constant_override("shadow_offset_y", 2)
 	lab.pivot_offset = Vector2(40, 20)
 
-	## 初始位置微偏移 (錯開多段打擊)
+	## 初始位置微偏移 (錯開多段打擊)；部位破壞 BREAK 掛在敵人身邊
 	var jitter_x := randf_range(-24.0, 24.0)
 	var jitter_y := randf_range(-10.0, 10.0)
-	lab.position = body.global_position + Vector2(body.size.x * 0.35 + jitter_x, -15 + jitter_y)
+	if is_break:
+		lab.position = body.global_position + Vector2(body.size.x * 0.2 + jitter_x, body.size.y * 0.35 + jitter_y)
+	else:
+		lab.position = body.global_position + Vector2(body.size.x * 0.35 + jitter_x, -15 + jitter_y)
 	lab.z_index = 45
 	add_child(lab)
 

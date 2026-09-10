@@ -2,6 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://8wpwfbv6s2j1"
+path="res://.godot/imported/proof_paperdoll_lion_nutcracker_navy_magenta.png-f899c4732efff36e394be75b602cffdc.ctex"
 metadata={
 "vram_texture": false
 }
@@ -9,6 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/sprites/player/paperdoll/lion/proof_paperdoll_lion_nutcracker_navy_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_lion_nutcracker_navy_magenta.png-f899c4732efff36e394be75b602cffdc.ctex"]
 
 [params]
 

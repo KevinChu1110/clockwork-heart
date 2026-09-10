@@ -2,6 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://dg7ftf8fmi2j"
+path="res://.godot/imported/proof_paperdoll_lion_artisan_gold_magenta.png-81ebaa82c4edb8db742ebebca5845a20.ctex"
 metadata={
 "vram_texture": false
 }
@@ -9,6 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/sprites/player/paperdoll/lion/proof_paperdoll_lion_artisan_gold_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_lion_artisan_gold_magenta.png-81ebaa82c4edb8db742ebebca5845a20.ctex"]
 
 [params]
 

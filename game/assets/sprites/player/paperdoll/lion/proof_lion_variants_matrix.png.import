@@ -2,6 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://7kcdkorbxnv1"
+path="res://.godot/imported/proof_lion_variants_matrix.png-dad27d39ed83fcf1bf2af23b6a1dc73c.ctex"
 metadata={
 "vram_texture": false
 }
@@ -9,6 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/sprites/player/paperdoll/lion/proof_lion_variants_matrix.png"
+dest_files=["res://.godot/imported/proof_lion_variants_matrix.png-dad27d39ed83fcf1bf2af23b6a1dc73c.ctex"]
 
 [params]
 
