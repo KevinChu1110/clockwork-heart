@@ -209,8 +209,113 @@ def build_tilted_recover_pose() -> Image.Image:
 
 recover_im = build_tilted_recover_pose()
 
-# 5. Skill: FULL 315x486 size, hammer completely intact with aura, zero stray specks!
-skill_im = format_pose("/tmp/skill_full_intact.png", offset_y=10, offset_x=-1)
+# 5. Skill: Separated body_layer and hammer_layer (Rule 4b-9-2 compliant unified scale)
+def build_perfect_skill_pose() -> Image.Image:
+    raw = Image.open("/tmp/skill_full_intact.png").convert("RGBA")
+    w, h = raw.size
+
+    # Clean raw of artifacts
+    cleaned = raw.copy()
+    c_px = cleaned.load()
+    assert c_px is not None
+
+    # Remove floating 145px artifact at x in [215..245], y in [265..310]
+    for y in range(265, 310):
+        for x in range(215, 245):
+            c_px[x, y] = (0, 0, 0, 0)
+
+    # Remove white ring and ground artifacts at y >= 420
+    for y in range(420, h):
+        for x in range(w):
+            p = cast(tuple[int, ...], c_px[x, y])
+            if p[3] > 0:
+                is_dark_hoof = (p[3] > 180 and p[0] < 80 and p[1] < 60 and p[2] < 50)
+                if not is_dark_hoof:
+                    c_px[x, y] = (0, 0, 0, 0)
+
+    # Remove grey dashed line between hooves at y >= 440
+    for y in range(440, h):
+        for x in range(w):
+            p = cast(tuple[int, ...], c_px[x, y])
+            if p[3] > 0:
+                r, g, b = p[0], p[1], p[2]
+                if abs(r - g) < 18 and abs(g - b) < 18 and r > 60:
+                    c_px[x, y] = (0, 0, 0, 0)
+
+    # 1. Build Layer 1: Body (head, crown, snout, tusks, chest furnace, arms, hands, legs, hooves)
+    body_layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    b_px = body_layer.load()
+    assert b_px is not None
+
+    for y in range(h):
+        for x in range(w):
+            p = cast(tuple[int, ...], c_px[x, y])
+            if p[3] == 0:
+                continue
+            # Exclude upper hammer head block: x >= 180, y <= 210
+            if y <= 210 and x >= 180:
+                continue
+            b_px[x, y] = p
+
+    for y in range(0, 120):
+        for x in range(w):
+            b_px[x, y] = (0, 0, 0, 0)
+
+    # Smooth top edge of shaft at x > 165, y < 125
+    for y in range(120, 128):
+        for x in range(w):
+            if x > 165 and y < 125:
+                b_px[x, y] = (0, 0, 0, 0)
+
+    # Clear grey tether line above crown at x in [85..155], y in [120..128]
+    for y in range(120, 128):
+        for x in range(85, 155):
+            p = cast(tuple[int, ...], b_px[x, y])
+            if p[3] > 0 and abs(p[0] - p[1]) < 15 and abs(p[1] - p[2]) < 15:
+                b_px[x, y] = (0, 0, 0, 0)
+
+    # Clear space between hooves at y > 440
+    for y in range(440, h):
+        for x in range(85, 155):
+            b_px[x, y] = (0, 0, 0, 0)
+
+    b_box = body_layer.getbbox()
+    assert b_box is not None
+    tight_body = body_layer.crop(b_box)
+    bw, bh = tight_body.size
+
+    # 2. Build Layer 2: Hammer (head block + fiery aura + socket)
+    hammer_layer = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    h_px = hammer_layer.load()
+    assert h_px is not None
+    for y in range(0, 160):
+        for x in range(175, w):
+            p = cast(tuple[int, ...], c_px[x, y])
+            if p[3] > 20:
+                h_px[x, y] = p
+
+    h_bbox = hammer_layer.getbbox()
+    assert h_bbox is not None
+    tight_hammer = hammer_layer.crop(h_bbox)
+    hw, hh = tight_hammer.size
+
+    # 3. Calculate scale based on body_layer ONLY (Rule 4b-9-2)
+    scale = UNIFIED_TARGET_H / float(bh)
+    target_bw = int(round(bw * scale))
+    scaled_body = tight_body.resize((target_bw, UNIFIED_TARGET_H), Image.Resampling.LANCZOS)
+
+    target_hw = int(round(hw * scale))
+    target_hh = int(round(hh * scale))
+    scaled_hammer = tight_hammer.resize((target_hw, target_hh), Image.Resampling.LANCZOS)
+
+    # 4. Composite onto 128x128
+    canvas = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+    canvas.alpha_composite(shadow_standard)
+    canvas.alpha_composite(scaled_hammer, (72, 9))
+    canvas.alpha_composite(scaled_body, (25, 10))
+    return enforce_ground_shadow(canvas)
+
+skill_im = build_perfect_skill_pose()
 
 # 6. Hit: clean whiplash knockback recoil, trimmed top 12px to eliminate stray artifact
 hit_im = format_pose("/tmp/hit_clean_intact.png", offset_y=10, offset_x=-1, trim_top=12)
