@@ -1681,5 +1681,13 @@ func open_wardrobe() -> void:
 			_show_toast(_t("換裝完成！新外裝已生效"))
 		)
 
+	# 開啟衣櫥時隱藏底層角色預覽，避免高亮剪影穿透全螢幕半透明遮罩 (review.md / 視覺品質標準)
+	if _char_prev:
+		_char_prev.visible = false
+	var restore_prev := func():
+		if _char_prev:
+			_char_prev.visible = true
+	dlg.tree_exited.connect(restore_prev)
+
 	add_child(dlg)
 
