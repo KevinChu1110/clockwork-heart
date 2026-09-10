@@ -75,8 +75,11 @@ var _speech_label: Label
 var _particles_root: Control
 var _breathe_tween: Tween
 var _bubble_tween: Tween
+var _poke_tween: Tween
 var _idle_action_timer: float = 0.0
 var _is_interacting: bool = false
+var enable_idle_breathing: bool = true
+var enable_idle_flavor: bool = true
 
 ## 動作姿態紋理快取
 var _tex_idle: Texture2D
@@ -139,18 +142,71 @@ func _get_hero_portrait(race: String) -> Texture2D:
 	return SpriteDB.player_race_composite(r)
 
 
-func _load_hero_poses() -> void:
+func _get_hero_equipped_idle_texture() -> Texture2D:
 	var gs := _gs()
 	var race := "rabbit"
-	var sel: Dictionary = {}
+	var slots: Dictionary = {}
 	if gs and "player_race" in gs:
 		race = str(gs.player_race).strip_edges().to_lower()
 		if race.is_empty():
 			race = "rabbit"
 	if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
-		sel = gs.paperdoll_slots
+		slots = (gs.paperdoll_slots as Dictionary).duplicate()
+	if not slots.has("weapon") or str(slots["weapon"]).is_empty():
+		if gs and "equip_slots" in gs and gs.equip_slots is Dictionary:
+			var wuid: String = str(gs.equip_slots.get("weapon", ""))
+			if wuid != "" and "equip_worn" in gs and gs.equip_worn is Dictionary and gs.equip_worn.has(wuid):
+				var winst: Dictionary = gs.equip_worn[wuid]
+				var base_id: String = str(winst.get("base_id", winst.get("id", "")))
+				if base_id != "":
+					slots["weapon"] = base_id
+	var tex: Texture2D = SpriteDB.player_equipped_idle(race, slots)
+	if tex == null:
+		tex = SpriteDB.player_idle()
+	return tex
 
-	_tex_idle = SpriteDB.player_equipped_idle(race, sel)
+
+func _start_breathe_tween() -> void:
+	if _breathe_tween and _breathe_tween.is_valid():
+		_breathe_tween.kill()
+	if _hero_avatar:
+		_hero_avatar.scale = Vector2.ONE
+	if _hero_shadow:
+		_hero_shadow.scale = Vector2.ONE
+	if not enable_idle_breathing:
+		return
+	_breathe_tween = create_tween().set_loops()
+	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	if _hero_shadow:
+		_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+	if _hero_shadow:
+		_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+
+
+func _restore_hero_idle() -> void:
+	_tex_idle = _get_hero_equipped_idle_texture()
+	if _hero_avatar and _tex_idle:
+		_hero_avatar.texture = _tex_idle
+		_hero_avatar.position = Vector2(-125, -140)
+		_hero_avatar.scale = Vector2.ONE
+	if _char_prev and _tex_idle:
+		_char_prev.texture = _tex_idle
+	if _speech_bubble:
+		_speech_bubble.visible = false
+	_is_interacting = false
+	_start_breathe_tween()
+
+
+func _load_hero_poses() -> void:
+	var gs := _gs()
+	var race := "rabbit"
+	if gs and "player_race" in gs:
+		race = str(gs.player_race).strip_edges().to_lower()
+		if race.is_empty():
+			race = "rabbit"
+
+	_tex_idle = _get_hero_equipped_idle_texture()
 	_tex_attack = SpriteDB.player_pose("attack", race)
 	_tex_skill = SpriteDB.player_pose("skill", race)
 	_tex_telegraph = SpriteDB.player_pose("telegraph", race)
@@ -557,7 +613,7 @@ func _switch_tab(target: Tab) -> void:
 ## 每幀小動作判定 (動態待機自然活化)
 ## ──────────────────────────────────────────
 func _process(delta: float) -> void:
-	if _current_tab != Tab.VILLAGE or _is_interacting:
+	if _current_tab != Tab.VILLAGE or _is_interacting or not enable_idle_flavor:
 		return
 
 	_idle_action_timer += delta
@@ -573,8 +629,8 @@ func _play_random_idle_flavor() -> void:
 		var tw := create_tween()
 		tw.tween_interval(1.2)
 		tw.tween_callback(func():
-			if not _is_interacting and _tex_idle:
-				_hero_avatar.texture = _tex_idle
+			if not _is_interacting:
+				_restore_hero_idle()
 		)
 	elif roll == 1 and _tex_recover:
 		## 伸個懶腰
@@ -582,8 +638,8 @@ func _play_random_idle_flavor() -> void:
 		var tw := create_tween()
 		tw.tween_interval(1.0)
 		tw.tween_callback(func():
-			if not _is_interacting and _tex_idle:
-				_hero_avatar.texture = _tex_idle
+			if not _is_interacting:
+				_restore_hero_idle()
 		)
 
 ## ──────────────────────────────────────────
@@ -743,13 +799,7 @@ func _build_village_tab() -> void:
 	_hero_avatar.add_child(_speech_bubble)
 
 	## 呼吸動畫
-	_breathe_tween = create_tween().set_loops()
-	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
-	if _hero_shadow:
-		_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
-	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
-	if _hero_shadow:
-		_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+	_start_breathe_tween()
 
 	## 左側四大殿堂黑曜石金屬浮雕卡牌 (王都鐵匠、手藝工坊、演武競技、冒險委託)
 	var left_shops := VBoxContainer.new()
@@ -921,9 +971,12 @@ func _add_texture_button(parent: Container, tex_path: String, sz: Vector2, cb: C
 ## ──────────────────────────────────────────
 ## 點擊主角：切換動態姿態 + 爆發黃金以太粒子 + 氣泡
 ## ──────────────────────────────────────────
-func _on_hero_clicked() -> void:
+func _on_hero_clicked(forced_act: int = -1) -> void:
 	_is_interacting = true
-	var act_type := randi() % 3
+	var act_type := forced_act if forced_act >= 0 else (randi() % 3)
+
+	if _breathe_tween and _breathe_tween.is_valid():
+		_breathe_tween.kill()
 
 	var speech_lines := [
 		"看我的旋風斬～喝！",
@@ -932,56 +985,56 @@ func _on_hero_clicked() -> void:
 		"神殿的以太核心正在共鳴……",
 		"隨時準備好去挑戰大首領！"
 	]
-	_speech_label.text = speech_lines[randi() % speech_lines.size()]
-	_speech_bubble.visible = true
-	_speech_bubble.modulate.a = 0.0
+	if _speech_label:
+		_speech_label.text = speech_lines[randi() % speech_lines.size()]
+	if _speech_bubble:
+		_speech_bubble.visible = true
+		_speech_bubble.modulate.a = 0.0
 
-	if _bubble_tween and _bubble_tween.is_valid():
-		_bubble_tween.kill()
-	_bubble_tween = create_tween()
-	_bubble_tween.tween_property(_speech_bubble, "modulate:a", 1.0, 0.15)
-	_bubble_tween.tween_interval(2.2)
-	_bubble_tween.tween_property(_speech_bubble, "modulate:a", 0.0, 0.3)
-	_bubble_tween.tween_callback(func(): _speech_bubble.visible = false)
+		if _bubble_tween and _bubble_tween.is_valid():
+			_bubble_tween.kill()
+		_bubble_tween = create_tween()
+		_bubble_tween.tween_property(_speech_bubble, "modulate:a", 1.0, 0.15)
+		_bubble_tween.tween_interval(0.7)
+		_bubble_tween.tween_property(_speech_bubble, "modulate:a", 0.0, 0.15)
+		_bubble_tween.tween_callback(func(): _speech_bubble.visible = false)
 
 	## 噴散 8 顆黃金以太星芒微粒
-	_burst_click_particles(_hero_avatar.global_position + Vector2(125, 120))
+	if _hero_avatar:
+		_burst_click_particles(_hero_avatar.global_position + Vector2(125, 120))
 
+	if _poke_tween and _poke_tween.is_valid():
+		_poke_tween.kill()
 	var tw := create_tween()
+	_poke_tween = tw
 	match act_type:
 		0:
-			## 揮劍劈砍姿態
-			if _tex_attack: _hero_avatar.texture = _tex_attack
+			## 揮劍劈砍姿態 (attack -> recover -> equipped idle)
+			if _tex_attack and _hero_avatar: _hero_avatar.texture = _tex_attack
 			tw.tween_property(_hero_avatar, "position", Vector2(-110, -165), 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 			tw.tween_property(_hero_avatar, "position", Vector2(-125, -140), 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 			tw.tween_interval(0.4)
 			tw.tween_callback(func():
-				if _tex_recover: _hero_avatar.texture = _tex_recover
+				if _tex_recover and _hero_avatar: _hero_avatar.texture = _tex_recover
 			)
 			tw.tween_interval(0.3)
-			tw.tween_callback(func():
-				if _tex_idle: _hero_avatar.texture = _tex_idle
-				_is_interacting = false
-			)
+			tw.tween_callback(_restore_hero_idle)
 		1:
-			## 聚氣勝利姿態
-			if _tex_skill: _hero_avatar.texture = _tex_skill
+			## 聚氣勝利姿態 (skill -> equipped idle)
+			if _tex_skill and _hero_avatar: _hero_avatar.texture = _tex_skill
 			tw.tween_property(_hero_avatar, "scale", Vector2(1.15, 1.15), 0.15).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 			tw.tween_property(_hero_avatar, "scale", Vector2(1.0, 1.0), 0.2).set_trans(Tween.TRANS_SINE)
 			tw.tween_interval(0.6)
-			tw.tween_callback(func():
-				if _tex_idle: _hero_avatar.texture = _tex_idle
-				_is_interacting = false
-			)
+			tw.tween_callback(_restore_hero_idle)
 		2:
-			## 靈巧後翻大跳躍
-			tw.tween_property(_hero_avatar, "position:y", _hero_avatar.position.y - 35, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+			## 靈巧後翻大跳躍 (telegraph -> equipped idle)
+			if _tex_telegraph and _hero_avatar: _hero_avatar.texture = _tex_telegraph
+			tw.tween_property(_hero_avatar, "position:y", -175.0, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 			tw.parallel().tween_property(_hero_avatar, "scale:x", -1.0, 0.15)
-			tw.tween_property(_hero_avatar, "position:y", _hero_avatar.position.y, 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
+			tw.tween_property(_hero_avatar, "position:y", -140.0, 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 			tw.parallel().tween_property(_hero_avatar, "scale:x", 1.0, 0.18)
-			tw.tween_callback(func():
-				_is_interacting = false
-			)
+			tw.tween_interval(0.2)
+			tw.tween_callback(_restore_hero_idle)
 
 func _burst_click_particles(center_pos: Vector2) -> void:
 	var gp := get_node_or_null("/root/GraphicsProfile")
