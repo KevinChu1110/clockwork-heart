@@ -504,8 +504,8 @@
    "id": "battle-idle-equip-races",
    "cat": "遊戲",
    "title": "獅／狐／豬／猴戰鬥待機換裝顯示",
-   "status": "草稿",
-   "note": "各族戰鬥待機換裝與接地影修復已合併 main",
+   "status": "已上線",
+   "note": "各族戰鬥待機換裝與接地影修復已合併 main，0 SCRIPT ERROR，battle 測試 25/25 全綠",
    "keys": [
     "獅／狐／豬／猴戰"
    ]
