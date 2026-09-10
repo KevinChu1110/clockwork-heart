@@ -434,8 +434,8 @@
    "id": "lobby-equipped-idle",
    "cat": "遊戲",
    "title": "大廳待機顯示玩家當前換裝",
-   "status": "草稿",
-   "note": "紙娃娃是收費點，換了要看得到",
+   "status": "已上線",
+   "note": "SpriteDB.player_equipped_idle 合成待機圖，衣櫥存檔與關窗即時重載；兩套外裝實機 diff 24262px，已審核通過並合併 main 9b69d1f",
    "keys": [
     "大廳待機顯示玩家"
    ]
