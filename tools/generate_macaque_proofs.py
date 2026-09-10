@@ -219,8 +219,8 @@ def generate_magenta_proofs():
 def generate_verification_crops():
     # Crop 1: Zen Striker cuirass, pauldron rivets, and brass core bezel
     zen_slice = Image.open(f"{MACAQUE_DIR}/costume/costume_zen_striker.png").convert("RGBA")
-    # Region around chest/belt/tassets: X[34..80], Y[56..103]
-    crop_zen = zen_slice.crop((34, 56, 80, 103))
+    # Region around chest and belt: X[34..72], Y[58..86]
+    crop_zen = zen_slice.crop((34, 58, 72, 86))
     crop_zen_large = crop_zen.resize((crop_zen.width * 8, crop_zen.height * 8), Image.Resampling.NEAREST)
     out_zen = f"{MACAQUE_DIR}/verification_crop_zen_striker.png"
     crop_zen_large.save(out_zen)
