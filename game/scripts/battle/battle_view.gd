@@ -341,16 +341,17 @@ func _apply_hud_chrome() -> void:
 	var etag := get_node_or_null("Arena/EnemySlot/EnemyTag") as Label
 	if etag:
 		etag.text = Loc.t("battle.enemy")
-	## 楓式：紅血／黃怒／敵血
-	_style_bar(player_hp, Color(0.86, 0.22, 0.22), Color(0.35, 0.12, 0.12, 0.95))
-	_style_bar(player_rage, Color(0.95, 0.55, 0.12), Color(0.30, 0.20, 0.08, 0.95))
-	_style_bar(enemy_hp, Color(0.88, 0.28, 0.28), Color(0.30, 0.10, 0.10, 0.95))
+	## 楓式多巴胺亮色盤：奶油白 #FFFDF8 槽底＋深藍紫 #1F1A3A 描邊，填充條維持多巴胺色（血條珊瑚粉/紅 #FF5E8A、怒氣暖橘 #FFA010）
+	const BAR_BG_CREAM := Color("#FFFDF8")
+	_style_bar(player_hp, Color("#FF5E8A"), BAR_BG_CREAM)
+	_style_bar(player_rage, Color("#FFA010"), BAR_BG_CREAM)
+	_style_bar(enemy_hp, Color("#FF5E8A"), BAR_BG_CREAM)
 	player_hp.modulate = Color.WHITE
 	player_rage.modulate = Color.WHITE
 	enemy_hp.modulate = Color.WHITE
-	player_hp.custom_minimum_size.y = 14
-	enemy_hp.custom_minimum_size.y = 14
-	player_rage.custom_minimum_size.y = 8
+	player_hp.custom_minimum_size.y = 16
+	enemy_hp.custom_minimum_size.y = 16
+	player_rage.custom_minimum_size.y = 10
 	## 戰鬥背景是暗的，所以這裡的字一律走淺色。
 	## 底下那幾個 if 曾經用 UiStyle.CREAM 覆寫回來——那個常數名字叫奶油色、
 	## 值卻是墨色 #26242a（改成白底風格時語意翻轉了），於是近黑字畫在近黑底上。
@@ -701,12 +702,12 @@ func _style_bar(bar: ProgressBar, fill: Color, back: Color) -> void:
 		return
 	var bg := StyleBoxFlat.new()
 	bg.bg_color = back
-	bg.set_corner_radius_all(3)
-	bg.set_border_width_all(1)
-	bg.border_color = Color(0.2, 0.18, 0.16, 0.9)
+	bg.set_corner_radius_all(4)
+	bg.set_border_width_all(2)
+	bg.border_color = Color("#1F1A3A")
 	var fg := StyleBoxFlat.new()
 	fg.bg_color = fill
-	fg.set_corner_radius_all(2)
+	fg.set_corner_radius_all(3)
 	bar.add_theme_stylebox_override("background", bg)
 	bar.add_theme_stylebox_override("fill", fg)
 	bar.show_percentage = false
@@ -1719,7 +1720,7 @@ func _ensure_part_hud() -> void:
 		bar.max_value = float(p.get("max_hp", 1))
 		bar.value = float(p.get("hp", 0))
 		bar.show_percentage = false
-		_style_bar(bar, Color(0.95, 0.7, 0.25), Color(0.25, 0.15, 0.08, 0.95))
+		_style_bar(bar, Color("#FFA010"), Color("#FFFDF8"))
 		row.add_child(lab)
 		row.add_child(bar)
 		row.mouse_filter = Control.MOUSE_FILTER_STOP
