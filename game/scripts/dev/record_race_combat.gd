@@ -1,32 +1,33 @@
 extends SceneTree
 ## 單族實機戰鬥精確抽格錄影腳本 (接收 TARGET_RACE 環境變數)
-## 嚴格遵循 SHORTS_FIVE_RACES_COMBAT_18S.md 第五節與第八節之觀察窗
+## 嚴格遵循 SHORTS_FIVE_RACES_COMBAT_18S.md 與 review.md 規範
+## 配合 --fixed-fps 30 確保逐幀物理時間 100% 穩定，精準對齊打擊幀
 
 const RACE_CONFIGS := {
 	"rabbit": {
 		"mode": "road_bandit",
 		"weapon": "dawn_blade",
-		"start_time": 2.5,
+		"start_time": 3.067,
 	},
 	"lion": {
 		"mode": "black_ronin",
 		"weapon": "knight_pike",
-		"start_time": 2.5,
+		"start_time": 3.000,
 	},
 	"fox": {
 		"mode": "fog_shade",
 		"weapon": "star_rod",
-		"start_time": 2.5,
+		"start_time": 3.033,
 	},
 	"boar": {
 		"mode": "coast_raider",
 		"weapon": "anvil_hammer",
-		"start_time": 2.5,
+		"start_time": 3.300,
 	},
 	"macaque": {
 		"mode": "bamboo_spirit",
 		"weapon": "hunt_claw",
-		"start_time": 0.8,
+		"start_time": 1.400,
 	}
 }
 
@@ -50,7 +51,11 @@ func _initialize() -> void:
 	if env_race in RACE_CONFIGS:
 		_race = env_race
 	
-	_out_dir = "/opt/side/bravesoul-game/proofs/five_races_frames".path_join(_race)
+	var env_out := OS.get_environment("OUT_FRAMES_DIR")
+	if env_out != "":
+		_out_dir = env_out.path_join(_race)
+	else:
+		_out_dir = ProjectSettings.globalize_path("res://../proofs/five_races_frames").path_join(_race)
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 	print(">>> INITIALIZING FRAME RECORDER FOR RACE: ", _race, " -> ", _out_dir)
 
@@ -90,11 +95,19 @@ func _start_battle() -> void:
 		_battle.call("setup", mode)
 	
 	_sim = _battle.get("sim")
+	if _sim:
+		# 關鍵改進：確保敵方生命值充沛 (500 HP)，防止 1 擊秒殺導致跳入勝利結算畫面 (勝 利)！
+		# 遵守 review.md 第 19i 條與總監退稿意見：「不准用勝利結算畫面充當打擊鏡頭」
+		var enemy = _sim.call("get_unit", mode)
+		if enemy:
+			enemy.hp = 500
+			enemy.max_hp = 500
+	
 	if _race == "macaque" and _sim:
 		var p = _sim.call("get_unit", "player")
 		if p:
 			p.rage = 100.0
-		_sim.trigger_fury_awakening()
+		_sim.call("trigger_fury_awakening")
 		print("  [MACAQUE] Fury awakening triggered!")
 	
 	print(">>> BATTLE STARTED FOR: ", _race, " (mode: ", mode, ", weapon: ", weapon, ")")
@@ -116,7 +129,7 @@ func _process(_delta: float) -> bool:
 	
 	if cur_sim_t >= start_t and not _recording:
 		_recording = true
-		print("  >>> START RECORDING FOR ", _race, " at sim.time = ", cur_sim_t)
+		print("  >>> START RECORDING FOR ", _race, " at sim.time = ", cur_sim_t, " (frame ", _frame_count, ")")
 	
 	if _recording:
 		if _recorded_frames < 75:
