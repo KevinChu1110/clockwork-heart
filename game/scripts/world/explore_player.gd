@@ -24,9 +24,18 @@ var _facing_left: bool = false
 var _action_pose: String = ""
 var _action_pose_left: float = 0.0
 var _action_tween: Tween
+var _breathe_tween: Tween = null
+var enable_idle_breathing: bool = true:
+	set(v):
+		enable_idle_breathing = v
+		if not v:
+			_stop_breathe_tween()
+		elif not _moving and _action_pose == "":
+			_start_breathe_tween()
 
 @onready var nav: NavigationAgent2D = $NavigationAgent2D
 @onready var body: Sprite2D = $Visuals/Body
+var shadow: Sprite2D = null
 
 
 const OutlineShader = preload("res://shaders/outline.gdshader")
@@ -71,7 +80,7 @@ func _ready() -> void:
 		body.material = mat
 	var vis := get_node_or_null("Visuals")
 	if vis:
-		var shadow := vis.get_node_or_null("Shadow") as Sprite2D
+		shadow = vis.get_node_or_null("Shadow") as Sprite2D
 		if shadow == null:
 			shadow = Sprite2D.new()
 			shadow.name = "Shadow"
@@ -88,6 +97,7 @@ func _ready() -> void:
 		gp.changed.connect(_on_graphics_changed)
 	_update_visual()
 	nav.navigation_finished.connect(_on_nav_finished)
+	_start_breathe_tween()
 
 
 func _on_graphics_changed(_tier: String) -> void:
@@ -95,10 +105,10 @@ func _on_graphics_changed(_tier: String) -> void:
 
 
 func _apply_shadow_profile() -> void:
-	var vis := get_node_or_null("Visuals")
-	if vis == null:
-		return
-	var shadow := vis.get_node_or_null("Shadow") as CanvasItem
+	if shadow == null:
+		var vis := get_node_or_null("Visuals")
+		if vis:
+			shadow = vis.get_node_or_null("Shadow") as Sprite2D
 	if shadow == null:
 		return
 	var gp := get_node_or_null("/root/GraphicsProfile")
@@ -145,6 +155,8 @@ func _physics_process(delta: float) -> void:
 		_action_pose_left -= delta
 		if _action_pose_left <= 0.0:
 			_action_pose = ""
+			if not _moving:
+				_start_breathe_tween()
 	var was_moving := _moving
 	if frozen or nav.is_navigation_finished():
 		velocity = velocity.move_toward(Vector2.ZERO, FRICTION * delta)
@@ -164,6 +176,12 @@ func _physics_process(delta: float) -> void:
 				_facing_left = true
 			elif velocity.x > 8.0:
 				_facing_left = false
+
+	if not was_moving and _moving:
+		_stop_breathe_tween()
+	elif was_moving and not _moving:
+		_start_breathe_tween()
+
 	if _moving:
 		_walk_t += delta * WALK_FPS
 		var am := get_node_or_null("/root/AudioManager")
@@ -186,6 +204,8 @@ func _set_target(world_pos: Vector2) -> void:
 
 func _on_nav_finished() -> void:
 	arrived.emit()
+	if not _moving and _action_pose == "":
+		_start_breathe_tween()
 	var iid := pending_interact_id
 	pending_interact_id = ""
 	if iid != "":
@@ -198,7 +218,10 @@ func play_action_pose(pose: String, duration: float = 0.4) -> void:
 		_action_pose = ""
 		_action_pose_left = 0.0
 		_update_visual()
+		if not _moving:
+			_start_breathe_tween()
 		return
+	_stop_breathe_tween()
 	_action_pose = pose
 	_action_pose_left = maxf(0.12, duration)
 	if body == null:
@@ -217,3 +240,37 @@ func play_action_pose(pose: String, duration: float = 0.4) -> void:
 	_action_tween = create_tween()
 	_action_tween.tween_property(body, "scale", Vector2.ONE, 0.14)
 	_update_visual()
+
+
+func is_breathing() -> bool:
+	return _breathe_tween != null and _breathe_tween.is_valid() and _breathe_tween.is_running()
+
+
+func _start_breathe_tween() -> void:
+	if not enable_idle_breathing or _moving or _action_pose != "":
+		return
+	if _breathe_tween and _breathe_tween.is_valid() and _breathe_tween.is_running():
+		return
+	if _breathe_tween and _breathe_tween.is_valid():
+		_breathe_tween.kill()
+	if body:
+		body.scale = Vector2.ONE
+	if shadow:
+		shadow.scale = Vector2.ONE
+	_breathe_tween = create_tween().set_loops()
+	_breathe_tween.tween_property(body, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	if shadow:
+		_breathe_tween.parallel().tween_property(shadow, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	_breathe_tween.tween_property(body, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+	if shadow:
+		_breathe_tween.parallel().tween_property(shadow, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+
+
+func _stop_breathe_tween() -> void:
+	if _breathe_tween and _breathe_tween.is_valid():
+		_breathe_tween.kill()
+		_breathe_tween = null
+	if body:
+		body.scale = Vector2.ONE
+	if shadow:
+		shadow.scale = Vector2.ONE

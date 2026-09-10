@@ -14,6 +14,7 @@ var _start: Vector2 = Vector2.ZERO
 var _dest: Vector2 = Vector2.ZERO
 var _got_id: String = ""
 var _physics_left := 0
+var _checked_walking_scale := false
 
 
 func _fail(msg: String) -> void:
@@ -56,6 +57,19 @@ func _process(_d: float) -> bool:
 			if body.motion_mode != CharacterBody2D.MOTION_MODE_FLOATING:
 				_fail("玩家 motion_mode 不是 FLOATING")
 				return _finish()
+			if not bool(player.call("is_breathing")):
+				_fail("站立時沒有啟用呼吸")
+				return _finish()
+			print("  ok standing breathing active")
+			var pbody: Sprite2D = player.get("body")
+			if pbody == null or pbody.texture == null:
+				_fail("玩家缺少 body 貼圖")
+				return _finish()
+			var expected_idle: Texture2D = SpriteDB.player_equipped_idle()
+			if pbody.texture != expected_idle:
+				_fail("站立貼圖不是 SpriteDB.player_equipped_idle()")
+				return _finish()
+			print("  ok standing texture is equipped idle")
 			_start = body.global_position
 			_dest = _host.call("marker_position", MAISUI) as Vector2
 			if _dest == Vector2.ZERO:
@@ -95,9 +109,23 @@ func _process(_d: float) -> bool:
 			_step = 2
 			_wait = 0
 		2:
+			var player2: CharacterBody2D = _host.call("get_player")
+			if player2 and bool(player2.get("_moving")):
+				var pbody_walk: Sprite2D = player2.get("body")
+				if pbody_walk and pbody_walk.scale != Vector2.ONE:
+					_fail("走路中 body.scale 必須是 (1, 1)，實際=%s" % pbody_walk.scale)
+					return _finish()
+				var pshadow_walk: Sprite2D = player2.get("shadow")
+				if pshadow_walk and pshadow_walk.scale != Vector2.ONE:
+					_fail("走路中 shadow.scale 必須是 (1, 1)，實際=%s" % pshadow_walk.scale)
+					return _finish()
+				_checked_walking_scale = true
 			if _wait < 90:
 				return false
-			var player2: CharacterBody2D = _host.call("get_player")
+			if not _checked_walking_scale:
+				_fail("未能在走路期間驗證 scale == Vector2.ONE")
+				return _finish()
+			print("  ok verified walking scale == Vector2.ONE while moving")
 			var now: Vector2 = player2.global_position
 			var closer := now.distance_to(_dest) < _start.distance_to(_dest) - 8.0 \
 				or now.distance_to(_start) > 24.0
@@ -109,6 +137,10 @@ func _process(_d: float) -> bool:
 				_fail("原生玩家走路沒有播走路幀（兔子在滑行）")
 				return _finish()
 			print("  ok walk frames played=", int(player2.get("walk_frames_played")))
+			if not bool(player2.call("is_breathing")):
+				_fail("到達目標停下後沒有呼吸")
+				return _finish()
+			print("  ok breathing after stopping at mid")
 			_got_id = ""
 			_host.call("tap_entity", MAISUI)
 			_step = 3
@@ -116,6 +148,11 @@ func _process(_d: float) -> bool:
 		3:
 			if _got_id == MAISUI:
 				print("  ok interacted ", _got_id)
+				var player3: Node = _host.call("get_player")
+				if player3 and not bool(player3.call("is_breathing")):
+					_fail("到達後站立沒有恢復呼吸")
+					return _finish()
+				print("  ok resumed breathing after arrival")
 				return _finish()
 			if _wait < 180:
 				return false
