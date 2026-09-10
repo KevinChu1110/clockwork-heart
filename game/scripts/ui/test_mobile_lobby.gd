@@ -48,6 +48,7 @@ func _process(_d: float) -> bool:
 		_test_soft_shadow()
 		_test_hero_click_and_particles()
 		_test_hero_nameplate()
+		_test_hero_race_poses()
 		return _finish()
 	return false
 
@@ -392,6 +393,94 @@ func _test_hero_nameplate() -> void:
 	# 4.4 驗證色彩主次
 	var name_color: Color = name_tag.get_theme_color("font_color")
 	print("  [文字顏色] 角色名顏色: %s, 稱號顏色: %s" % [str(name_color), str(title_tag.get_theme_color("font_color"))])
+
+
+## ──────────────────────────────────────────
+## 5. 斷言大廳各族真戰鬥姿態（非兔族戳碰非同一張底圖，review.md 第 4b）
+## ──────────────────────────────────────────
+func _test_hero_race_poses() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試各族戰鬥姿態")
+		return
+
+	var gs := root.get_node_or_null("GameState")
+	if gs == null:
+		_fail("無法取得 GameState 單例")
+		return
+
+	var races := ["rabbit", "lion", "fox", "macaque", "boar"]
+	for r in races:
+		gs.player_race = r
+		gs.paperdoll_slots = {}
+		_lobby._load_hero_poses()
+
+		var tex_idle: Texture2D = _lobby.get("_tex_idle")
+		var tex_attack: Texture2D = _lobby.get("_tex_attack")
+		var tex_skill: Texture2D = _lobby.get("_tex_skill")
+		var tex_telegraph: Texture2D = _lobby.get("_tex_telegraph")
+		var tex_recover: Texture2D = _lobby.get("_tex_recover")
+		var tex_hit: Texture2D = _lobby.get("_tex_hit")
+
+		if tex_idle == null:
+			_fail("種族 %s 之 _tex_idle 為空" % r)
+		if tex_attack == null:
+			_fail("種族 %s 之 _tex_attack 為空" % r)
+		if tex_skill == null:
+			_fail("種族 %s 之 _tex_skill 為空" % r)
+		if tex_telegraph == null:
+			_fail("種族 %s 之 _tex_telegraph 為空" % r)
+		if tex_recover == null:
+			_fail("種族 %s 之 _tex_recover 為空" % r)
+		if tex_hit == null:
+			_fail("種族 %s 之 _tex_hit 為空" % r)
+
+		if r == "rabbit":
+			# 兔族回歸：attack 應指向 poses/attack.png
+			if tex_attack.resource_path != "res://assets/sprites/player/poses/attack.png":
+				_fail("兔族 _tex_attack 路徑非 res://assets/sprites/player/poses/attack.png: %s" % tex_attack.resource_path)
+			else:
+				print("  ok 兔族回歸：_tex_attack 指向既有 poses/attack.png")
+
+		# 驗證動作變數不可全指向同一張 Texture2D (review.md 第 4b)
+		if tex_idle == tex_attack and tex_attack == tex_skill and tex_skill == tex_recover:
+			_fail("種族 %s 之所有動作變數指向同一張貼圖，違反 review.md 第 4b 條" % r)
+		else:
+			print("  ok 種族 %s 各動作姿態非同一張貼圖" % r)
+
+		# 像素比較：idle 與 attack 必須有非零差異
+		var img_idle: Image = tex_idle.get_image()
+		var img_atk: Image = tex_attack.get_image()
+		if img_idle == null or img_atk == null:
+			_fail("種族 %s 無法取得貼圖 Image" % r)
+			continue
+
+		var diff_count := 0
+		var w := mini(img_idle.get_width(), img_atk.get_width())
+		var h := mini(img_idle.get_height(), img_atk.get_height())
+		for y in h:
+			for x in w:
+				if img_idle.get_pixel(x, y) != img_atk.get_pixel(x, y):
+					diff_count += 1
+		if diff_count == 0:
+			_fail("種族 %s 之 _tex_idle 與 _tex_attack 像素完全相同 (diff=0)，未載入真姿態！" % r)
+		else:
+			print("  ok 種族 %s idle vs attack 像素差異非零 (差異像素數: %d)" % [r, diff_count])
+
+	# 測試換裝槽位影響待機預覽，但戳碰仍為真戰鬥姿態
+	gs.player_race = "lion"
+	gs.paperdoll_slots = {"costume": "costume_nutcracker_guard"}
+	_lobby._load_hero_poses()
+	var lion_costumed_idle: Texture2D = _lobby.get("_tex_idle")
+	var lion_costumed_atk: Texture2D = _lobby.get("_tex_attack")
+	if lion_costumed_idle == lion_costumed_atk:
+		_fail("獅子裝備換裝後，_tex_attack 與 _tex_idle 變成同一張合成圖，未維持真戰鬥姿態！")
+	else:
+		print("  ok 獅子有換裝槽時，_tex_attack 仍維持真姿態，未被合成圖覆蓋")
+
+	# 測試完恢復預設
+	gs.player_race = "rabbit"
+	gs.paperdoll_slots = {}
+	_lobby._load_hero_poses()
 
 
 func _finish() -> bool:
