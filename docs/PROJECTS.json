@@ -419,6 +419,16 @@
    "keys": [
     "戰鬥演出收斂：1"
    ]
+  },
+  {
+   "id": "battle-grade-metal",
+   "cat": "遊戲",
+   "title": "戰鬥調色shader把銀白金屬染成木頭色",
+   "status": "草稿",
+   "note": "既有欠帳，t_2b93e9c8 審核時量到；已開單給 sideworker",
+   "keys": [
+    "戰鬥調色shad"
+   ]
   }
  ]
 }
