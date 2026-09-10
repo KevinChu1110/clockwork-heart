@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-ROOT="/opt/side/bravesoul-game"
+ROOT="${HERMES_KANBAN_WORKSPACE:-$(pwd)}"
 cd "$ROOT"
 
 DISP=":97"
