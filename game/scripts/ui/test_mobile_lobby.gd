@@ -182,6 +182,153 @@ func _test_hall_cards() -> void:
 
 	print("  ok 殿堂卡片無 Emoji、無字型殘留符號回歸防線通過")
 
+	# 1.3 斷言點擊卡片開啟真畫面，而非僅跳 toast (review.md 第 28、29 條)
+	_test_hall_card_real_screens(cards)
+
+
+## ──────────────────────────────────────────
+## 1.3 斷言三張殿堂卡片點擊會開啟手遊規範真畫面彈窗
+## ──────────────────────────────────────────
+func _test_hall_card_real_screens(cards: Array[Button]) -> void:
+	# A. 王都鐵匠
+	cards[0].pressed.emit()
+	var forge_dlg = _lobby.get_node_or_null("ForgeDialog")
+	if forge_dlg == null or not is_instance_valid(forge_dlg):
+		_fail("點擊王都鐵匠未開啟 ForgeDialog 真畫面")
+	else:
+		print("  ok 點擊王都鐵匠成功開啟 ForgeDialog")
+		var card = _find_named(forge_dlg, "ForgeCard") as Control
+		if card == null:
+			_fail("ForgeDialog 缺少 ForgeCard 節點")
+		else:
+			var w: float = card.custom_minimum_size.x
+			if w < 740.0 or w > 760.0:
+				_fail("ForgeCard 寬度 %.1f 不符合橫屏彈窗 740~760px 規範" % w)
+			else:
+				print("  ok ForgeCard 寬度符合手遊彈窗規範 (%.1f px)" % w)
+
+		var close_btn = _find_named(forge_dlg, "CloseBtn") as Button
+		if close_btn == null or close_btn.text != "✕":
+			_fail("ForgeDialog 缺少右上「✕」關閉按鈕")
+		else:
+			print("  ok ForgeDialog 具備右上「✕」關閉按鈕")
+
+		var pity_row = _find_named(forge_dlg, "PityBarRow")
+		if pity_row == null or pity_row.get_child_count() != 3:
+			_fail("ForgeDialog 缺少連敗保底 3 格進度條")
+		else:
+			print("  ok ForgeDialog 具備鍛造連敗保底 3 格進度條")
+
+		var btn_forge = _find_named(forge_dlg, "BtnForge") as Button
+		if btn_forge == null or btn_forge.custom_minimum_size.y < 50.0:
+			_fail("ForgeDialog 鍛造按鈕高度小於 50px")
+		else:
+			print("  ok ForgeDialog 鍛造按鈕高度符合防誤觸規範 (>=50px)")
+
+		forge_dlg._on_close()
+		if not forge_dlg.is_queued_for_deletion():
+			_fail("ForgeDialog 關閉失敗 (未標記 queue_free)")
+		else:
+			print("  ok ForgeDialog 成功關閉 (已標記 queue_free)")
+
+	# B. 手藝工坊
+	cards[1].pressed.emit()
+	var gem_dlg = _lobby.get_node_or_null("GemWorkshopDialog")
+	if gem_dlg == null or not is_instance_valid(gem_dlg):
+		_fail("點擊手藝工坊未開啟 GemWorkshopDialog 真畫面")
+	else:
+		print("  ok 點擊手藝工坊成功開啟 GemWorkshopDialog")
+		var card = _find_named(gem_dlg, "GemWorkshopCard") as Control
+		if card == null:
+			_fail("GemWorkshopDialog 缺少 GemWorkshopCard 節點")
+		else:
+			var w: float = card.custom_minimum_size.x
+			if w < 740.0 or w > 760.0:
+				_fail("GemWorkshopCard 寬度 %.1f 不符合橫屏彈窗 740~760px 規範" % w)
+			else:
+				print("  ok GemWorkshopCard 寬度符合手遊彈窗規範 (%.1f px)" % w)
+
+		var close_btn = _find_named(gem_dlg, "CloseBtn") as Button
+		if close_btn == null or close_btn.text != "✕":
+			_fail("GemWorkshopDialog 缺少右上「✕」關閉按鈕")
+		else:
+			print("  ok GemWorkshopDialog 具備右上「✕」關閉按鈕")
+
+		var tab_smelt = _find_named(gem_dlg, "TabSmeltBtn") as Button
+		var tab_case = _find_named(gem_dlg, "TabCaseBtn") as Button
+		if tab_smelt == null or tab_case == null:
+			_fail("GemWorkshopDialog 缺少熔煉或寶石櫃分頁按鈕")
+		else:
+			print("  ok GemWorkshopDialog 具備熔煉與寶石櫃分頁切換功能")
+
+		gem_dlg._on_close()
+		if not gem_dlg.is_queued_for_deletion():
+			_fail("GemWorkshopDialog 關閉失敗 (未標記 queue_free)")
+		else:
+			print("  ok GemWorkshopDialog 成功關閉 (已標記 queue_free)")
+
+	# C. 冒險委託
+	cards[3].pressed.emit()
+	var windup_dlg = _lobby.get_node_or_null("WindupDailyDialog")
+	if windup_dlg == null or not is_instance_valid(windup_dlg):
+		_fail("點擊冒險委託未開啟 WindupDailyDialog 真畫面")
+	else:
+		print("  ok 點擊冒險委託成功開啟 WindupDailyDialog")
+		var card = _find_named(windup_dlg, "WindupDailyCard") as Control
+		if card == null:
+			_fail("WindupDailyDialog 缺少 WindupDailyCard 節點")
+		else:
+			var w: float = card.custom_minimum_size.x
+			if w < 740.0 or w > 760.0:
+				_fail("WindupDailyCard 寬度 %.1f 不符合橫屏彈窗 740~760px 規範" % w)
+			else:
+				print("  ok WindupDailyCard 寬度符合手遊彈窗規範 (%.1f px)" % w)
+
+		var close_btn = _find_named(windup_dlg, "CloseBtn") as Button
+		if close_btn == null or close_btn.text != "✕":
+			_fail("WindupDailyDialog 缺少右上「✕」關閉按鈕")
+		else:
+			print("  ok WindupDailyDialog 具備右上「✕」關閉按鈕")
+
+		var case_title = _find_named(windup_dlg, "CaseTitle") as Label
+		var case_desc = _find_named(windup_dlg, "CaseDesc") as Label
+		if case_title == null or case_title.text.is_empty() or case_desc == null:
+			_fail("WindupDailyDialog 缺少當日個案標題或說明")
+		else:
+			print("  ok WindupDailyDialog 顯示當日個案：「%s」" % case_title.text)
+
+		# 測試個案選項與獎勵領取流程
+		var choices_box = _find_named(windup_dlg, "ChoicesBox")
+		if choices_box == null:
+			_fail("WindupDailyDialog 缺少選項容器")
+		else:
+			var ws: Node = root.get_node_or_null("WindupDailySystem")
+			if ws != null and ws.has_method("is_ready") and ws.call("is_ready"):
+				var choice_btns: Array[Button] = []
+				for ch in choices_box.get_children():
+					if ch is Button and not ch.disabled:
+						choice_btns.append(ch as Button)
+				if choice_btns.size() < 2:
+					_fail("未完成的當日個案應提供至少 2 個選項，實際取得: %d" % choice_btns.size())
+				else:
+					print("  ok 當日個案提供 %d 個可選行動選項" % choice_btns.size())
+					for cb in choice_btns:
+						if cb.custom_minimum_size.y < 50.0:
+							_fail("委託選項按鈕高度小於 50px: %s" % cb.text)
+					# 點擊第一個選項完成委託
+					choice_btns[0].pressed.emit()
+					if not ws.call("is_done_today"):
+						_fail("點擊選項後委託未標記為今日已完成")
+					else:
+						print("  ok 成功完成委託並領取獎勵，當日狀態切換為已完成")
+
+		windup_dlg._on_close()
+		if not windup_dlg.is_queued_for_deletion():
+			_fail("WindupDailyDialog 關閉失敗 (未標記 queue_free)")
+		else:
+			print("  ok WindupDailyDialog 成功關閉 (已標記 queue_free)")
+
+
 
 func _collect_labels(n: Node, out: Array[Label]) -> void:
 	if n is Label:

@@ -6453,73 +6453,43 @@ func _forge_wood_sword() -> void:
 	)
 
 
+const ForgeSys = preload("res://scripts/systems/forge_system.gd")
+
 ## 鍛造的階數上限。設計是 T1～T15（PROGRESSION 2.2），三個月切片先做到 T8，
 ## 而魂槽門檻寫的是 T1／T6／T11 —— 於是第三個魂槽永遠開不了。
-## 開到 T11 讓那個承諾兌現得了，也讓金幣在後期還有地方去。
-const FORGE_MAX_TIER := 11
+## 開到 T11 讓那個承諾兌現得了，也讓金幣在後期還有地方去。指向共用來源 ForgeSystem。
+const FORGE_MAX_TIER := ForgeSys.FORGE_MAX_TIER
 
-## 升階價 = 這個數 × 目前階數。
-##
-## 原本每一階都是固定 50 金：T2 打到封頂總共約 430 金，比一趟野外來回還便宜。
-## 而全遊戲有 24 個收入點、5 個支出點，實測一趟通關收入 10328、支出 1480 ——
-## 金幣是單向累積的，中期之後永遠花不完，於是「賺錢」對三條養成柱都失去意義。
-## 改成隨階漲價之後，T2→T11 約要 3500 金，後期的每一場戰鬥又開始有理由打。
-const FORGE_COST_PER_TIER := 40
+## 升階價 = 這個數 × 目前階數。指向共用來源 ForgeSystem。
+const FORGE_COST_PER_TIER := ForgeSys.FORGE_COST_PER_TIER
 
 
 func forge_cost() -> int:
-	return FORGE_COST_PER_TIER * maxi(1, GameState.weapon_tier)
+	return ForgeSystem.forge_cost()
 
 
 ## 成功率隨階下降（PROGRESSION 2.2 寫了但沒實作，之前是固定 0.70）。
 ## 連敗 3 次保底成功那條還在，所以最壞情況仍然是四次一定升。
 func forge_rate_base() -> float:
-	return maxf(0.45, 0.80 - 0.03 * float(GameState.weapon_tier - 1))
+	return ForgeSystem.forge_rate_base()
 
 
 func _try_forge() -> void:
-	if GameState.weapon_tier >= FORGE_MAX_TIER:
-		_play_dialog(DialogLines.lines("forge.tier_max"), _show_forge_panel)
-		return
-	var cost := forge_cost()
-	if GameState.gold < cost:
-		_play_dialog(DialogLines.lines("forge.no_gold"), _show_forge_panel)
-		return
-	GameState.add_gold(-cost)
-	var forge_rate := forge_rate_base()
-	if GameState.has_flag("meta.forge_debt_bonus"):
-		forge_rate = 0.88
-	if GameState.path_style in ["hammer", "crystal"]:
-		forge_rate = minf(0.95, forge_rate + 0.08)
-	## 消耗 1 鐵屑可提高成功率
-	var used_scrap := false
-	if InventorySystem.has_item("iron_scrap", 1):
-		InventorySystem.remove_item("iron_scrap", 1)
-		forge_rate = minf(0.96, forge_rate + 0.12)
-		used_scrap = true
-	var ok := randf() < forge_rate or GameState.forge_fail_streak >= 3
-	QuestSystem.track_day("craft", 1)
-	if ok:
-		GameState.weapon_tier += 1
-		GameState.weapon_atk += 2
-		GameState.forge_fail_streak = 0
-		var scrap_s := _t("（耗鐵屑穩火）") if used_scrap else ""
-		if AudioManager.has_method("play_craft_success"):
-			AudioManager.play_craft_success()
-		_play_dialog(DialogLines.lines("forge.success", {"tier": GameState.weapon_tier, "scrap": scrap_s}), _show_forge_panel)
-	else:
-		GameState.forge_fail_streak += 1
-		if GameState.forge_fail_streak >= 3:
-			## W4 釘釘摔錘（連敗 3 次 · 主線可截圖記憶點）
-			GameState.forge_fail_streak = 0
-			GameState.hp = mini(GameState.max_hp, GameState.hp + 15)
-			AudioManager.play("break", 0.92, -2.0)
+	var res: Dictionary = ForgeSystem.try_forge()
+	match str(res.get("code", "")):
+		"tier_max":
+			_play_dialog(DialogLines.lines("forge.tier_max"), _show_forge_panel)
+		"no_gold":
+			_play_dialog(DialogLines.lines("forge.no_gold"), _show_forge_panel)
+		"success":
+			var scrap_s := _t("（耗鐵屑穩火）") if bool(res.get("used_scrap", false)) else ""
+			_play_dialog(DialogLines.lines("forge.success", {"tier": GameState.weapon_tier, "scrap": scrap_s}), _show_forge_panel)
+		"pity_break":
 			ui_toast(_t("釘釘摔錘了"))
 			GameLog.system(_t("釘釘摔錘 · 消氣餅"))
 			_play_dialog(DialogLines.lines("forge.pity_break"), _show_forge_panel)
-		else:
+		"failed":
 			_play_dialog(DialogLines.lines("forge.failed"), _show_forge_panel)
-	SaveManager.save_game()
 
 
 func _go_c1_wild() -> void:
