@@ -128,9 +128,9 @@ func _update_visual() -> void:
 		tex = SpriteDB.player_walk(frame)
 	else:
 		_last_walk_frame = -1
-		tex = SpriteDB.player_idle()
+		tex = SpriteDB.player_equipped_idle()
 	if tex == null:
-		tex = SpriteDB.player_idle()
+		tex = SpriteDB.player_equipped_idle()
 	_set_body_tex(tex)
 	body.flip_h = _facing_left
 	## 受擊短暫偏紅，其餘維持防具染色
@@ -166,7 +166,9 @@ func _physics_process(delta: float) -> void:
 				_facing_left = false
 	if _moving:
 		_walk_t += delta * WALK_FPS
-		AudioManager.play_step()
+		var am := get_node_or_null("/root/AudioManager")
+		if am and am.has_method("play_step"):
+			am.call("play_step")
 	elif was_moving:
 		_walk_t = 0.0
 	_update_visual()
