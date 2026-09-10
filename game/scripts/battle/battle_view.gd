@@ -2038,6 +2038,8 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 	if pose == _player_pose and not punch:
 		return
 	_player_pose = pose
+	var sim_t: float = sim.time if sim else 0.0
+	print(">>> [POSE t=%.2f real_ms=%d] pose=%s" % [sim_t, Time.get_ticks_msec(), pose])
 	if _player_race.is_empty():
 		_player_race = SpriteDB.player_race()
 	var t: Texture2D = null

@@ -27,7 +27,7 @@ trap cleanup EXIT
 
 echo "=== [1/6] STARTING REAL RECORDING FOR 5 RACES ==="
 
-RACES=("rabbit" "lion" "fox" "boar" "macaque")
+RACES=("rabbit" "lion" "macaque")
 
 for race in "${RACES[@]}"; do
     echo "----------------------------------------------------"

@@ -56,6 +56,10 @@ func _process(delta: float) -> bool:
 				gs.equip_slots["weapon"] = uid
 				gs.set("weapon_atk", 0)
 				print(">>> [CAPTURE] Equipped %s uid=%s" % [cfg.wpn, uid])
+				var pr: GDScript = load("res://scripts/art/paperdoll_renderer.gd")
+				if pr:
+					var wpn_path: String = pr.call("resolve_slot_texture_path", _race, "weapon", cfg.wpn)
+					print(">>> [PAPERDOLL] %s weapon path resolved: %s" % [_race, wpn_path])
 
 		var b_scn: PackedScene = load("res://scenes/battle/battle.tscn")
 		_battle = b_scn.instantiate()
