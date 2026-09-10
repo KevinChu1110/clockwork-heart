@@ -13,9 +13,6 @@ const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
-const FORGE_MAX_TIER := 11
-const FORGE_COST_PER_TIER := 40
-
 const OBSIDIAN_CARD   := Color(0.078, 0.071, 0.094, 0.98)
 const OBSIDIAN_WARM   := Color(0.102, 0.090, 0.122, 1.0)
 const OBSIDIAN_DEEP   := Color(0.027, 0.024, 0.039, 1.0)
@@ -285,22 +282,14 @@ func _create_info_label(parent: Container, text: String) -> Label:
 	return l
 
 
-func _forge_cost() -> int:
-	return FORGE_COST_PER_TIER * maxi(1, GameState.weapon_tier)
-
-
-func _forge_rate_base() -> float:
-	return maxf(0.45, 0.80 - 0.03 * float(GameState.weapon_tier - 1))
-
-
 func _refresh_display() -> void:
-	var at_max := GameState.weapon_tier >= FORGE_MAX_TIER
+	var at_max := GameState.weapon_tier >= ForgeSystem.FORGE_MAX_TIER
 	var wname := GameState.weapon_display() if GameState.has_method("weapon_display") else GameState.weapon_name
 	_weapon_label.text = "當前裝備：%s（第 %d 階）" % [wname, GameState.weapon_tier]
 	_atk_label.text = "武器攻擊：+%d" % GameState.weapon_atk
 	_gold_label.text = "持有金幣：%d" % GameState.gold
 
-	var cost := _forge_cost()
+	var cost := ForgeSystem.forge_cost()
 	if at_max:
 		_cost_label.text = "升階花費：已達上限"
 		_rate_label.text = "成功率：已封頂"
@@ -308,7 +297,7 @@ func _refresh_display() -> void:
 		_btn_forge.disabled = true
 	else:
 		_cost_label.text = "升階花費：%d 金幣" % cost
-		var rate_pct := int(_forge_rate_base() * 100.0)
+		var rate_pct := int(ForgeSystem.forge_rate_base() * 100.0)
 		_rate_label.text = "基礎成功率：%d%%" % rate_pct
 		_btn_forge.text = "強化升階（消耗 %d 金幣）" % cost
 		_btn_forge.disabled = false
@@ -347,52 +336,26 @@ func _refresh_display() -> void:
 
 
 func _on_forge_pressed() -> void:
-	if GameState.weapon_tier >= FORGE_MAX_TIER:
-		_msg_label.text = "器階已達上限，無法再進行鍛造！"
-		_msg_label.add_theme_color_override("font_color", INK_MUTED)
-		return
-
-	var cost := _forge_cost()
-	if GameState.gold < cost:
-		_msg_label.text = "金幣不足！升階需要 %d 金幣。" % cost
-		_msg_label.add_theme_color_override("font_color", Color(1.0, 0.45, 0.45))
-		return
-
-	GameState.add_gold(-cost)
-	var rate := _forge_rate_base()
-	if GameState.has_flag("meta.forge_debt_bonus"):
-		rate = 0.88
-	if GameState.path_style in ["hammer", "crystal"]:
-		rate = minf(0.95, rate + 0.08)
-
-	var used_scrap := false
-	if InventorySystem.has_item("iron_scrap", 1):
-		InventorySystem.remove_item("iron_scrap", 1)
-		rate = minf(0.96, rate + 0.12)
-		used_scrap = true
-
-	var ok := randf() < rate or GameState.forge_fail_streak >= 3
-	QuestSystem.track_day("craft", 1)
-
-	if ok:
-		GameState.weapon_tier += 1
-		GameState.weapon_atk += 2
-		GameState.forge_fail_streak = 0
-		var scrap_tip := "（消耗鐵屑穩火）" if used_scrap else ""
-		_msg_label.text = "鍛造成功！升階至第 %d 階，攻擊力上升！%s" % [GameState.weapon_tier, scrap_tip]
-		_msg_label.add_theme_color_override("font_color", Color(0.4, 0.95, 0.5))
-		if AudioManager.has_method("play_craft_success"):
-			AudioManager.play_craft_success()
-	else:
-		GameState.forge_fail_streak += 1
-		if GameState.forge_fail_streak >= 3:
-			_msg_label.text = "鍛造失敗！保底進度已滿 3/3，下次升階必定成功！"
+	var res: Dictionary = ForgeSystem.try_forge()
+	match str(res.get("code", "")):
+		"tier_max":
+			_msg_label.text = "器階已達上限，無法再進行鍛造！"
+			_msg_label.add_theme_color_override("font_color", INK_MUTED)
+		"no_gold":
+			var cost: int = int(res.get("cost", ForgeSystem.forge_cost()))
+			_msg_label.text = "金幣不足！升階需要 %d 金幣。" % cost
+			_msg_label.add_theme_color_override("font_color", Color(1.0, 0.45, 0.45))
+		"success":
+			var scrap_tip := "（消耗鐵屑穩火）" if bool(res.get("used_scrap", false)) else ""
+			_msg_label.text = "鍛造成功！升階至第 %d 階，攻擊力上升！%s" % [GameState.weapon_tier, scrap_tip]
+			_msg_label.add_theme_color_override("font_color", Color(0.4, 0.95, 0.5))
+		"pity_break":
+			_msg_label.text = "鍛造失敗！釘釘摔錘了，吃塊消氣餅回復體力！"
 			_msg_label.add_theme_color_override("font_color", Color(1.0, 0.75, 0.3))
-		else:
-			_msg_label.text = "鍛造失敗！累積 1 格保底進度（目前 %d/3 格）。" % GameState.forge_fail_streak
+		"failed":
+			var streak: int = int(res.get("fail_streak", GameState.forge_fail_streak))
+			_msg_label.text = "鍛造失敗！累積 1 格保底進度（目前 %d/3 格）。" % streak
 			_msg_label.add_theme_color_override("font_color", Color(1.0, 0.6, 0.35))
-
-	SaveManager.save_game()
 	_refresh_display()
 
 
