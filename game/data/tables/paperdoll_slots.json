@@ -103,6 +103,12 @@
             "id": "paint_emerald_glaze",
             "name": "翡翠螢光釉面",
             "tier": "legendary"
+          },
+          {
+            "id": "paint_bamboo_bronze",
+            "name": "天元青古銅烤漆",
+            "race": "macaque",
+            "tier": "rare"
           }
         ]
       },
@@ -262,6 +268,12 @@
             "id": "costume_viking_ironclad",
             "name": "維京重裝鍛鐵板甲",
             "race": "boar",
+            "tier": "rare"
+          },
+          {
+            "id": "costume_zen_striker",
+            "name": "天元演武者機關甲",
+            "race": "macaque",
             "tier": "rare"
           }
         ]
