@@ -464,8 +464,8 @@
    "id": "explore-walk-paperdoll",
    "cat": "遊戲",
    "title": "探索走路改執行期紙娃娃合成（換裝後走路也穿那套）",
-   "status": "測試中",
-   "note": "兔族通過總監審核，走 agent 分支未推 main",
+   "status": "已上線",
+   "note": "PaperdollRenderer 走路合成、接縫修復已合併 main，explore 測試 1/1 綠",
    "keys": [
     "探索走路改執行期"
    ]
