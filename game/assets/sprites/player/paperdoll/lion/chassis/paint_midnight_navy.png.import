@@ -2,6 +2,8 @@
 
 importer="texture"
 type="CompressedTexture2D"
+uid="uid://bbr487st1kgea"
+path="res://.godot/imported/paint_midnight_navy.png-bd27e513ee64730e8044eb6bb0a62abc.ctex"
 metadata={
 "vram_texture": false
 }
@@ -9,6 +11,7 @@ metadata={
 [deps]
 
 source_file="res://assets/sprites/player/paperdoll/lion/chassis/paint_midnight_navy.png"
+dest_files=["res://.godot/imported/paint_midnight_navy.png-bd27e513ee64730e8044eb6bb0a62abc.ctex"]
 
 [params]
 
