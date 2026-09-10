@@ -596,7 +596,7 @@ func _build_chrome() -> void:
 	_player.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_player.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_player.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_player.texture = SpriteDB.player_idle()
+	_player.texture = SpriteDB.player_equipped_idle()
 	_player.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	var player_mat := ShaderMaterial.new()
 	player_mat.shader = OutlineShader
@@ -2072,7 +2072,7 @@ func _update_player_visual() -> void:
 		if pt:
 			_player.texture = pt
 		else:
-			var idle_fb := SpriteDB.player_idle()
+			var idle_fb := SpriteDB.player_equipped_idle()
 			if idle_fb:
 				_player.texture = idle_fb
 	elif _moving:
@@ -2081,7 +2081,7 @@ func _update_player_visual() -> void:
 		if t:
 			_player.texture = t
 	else:
-		var idle := SpriteDB.player_idle()
+		var idle := SpriteDB.player_equipped_idle()
 		if idle:
 			_player.texture = idle
 	## 受擊短暫偏紅，其餘維持防具染色

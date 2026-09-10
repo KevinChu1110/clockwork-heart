@@ -39,6 +39,9 @@ static func player_race_composite(race: String, selections: Dictionary = {}) -> 
 	return tex(proof_path)
 
 
+static var _equipped_idle_cache: Dictionary = {}
+
+
 ## 依據 player_race 與 paperdoll_slots 用 PaperdollRenderer 合成待機圖；合成失敗才退回 player_pose("idle")
 static func player_equipped_idle(race_override: String = "", slots_override: Dictionary = {}) -> Texture2D:
 	var r := race_override.strip_edges().to_lower() if not race_override.is_empty() else player_race()
@@ -50,6 +53,12 @@ static func player_equipped_idle(race_override: String = "", slots_override: Dic
 		if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
 			slots = (gs.paperdoll_slots as Dictionary).duplicate()
 
+	var cache_key := "%s:%s" % [r, JSON.stringify(slots)]
+	if _equipped_idle_cache.has(cache_key):
+		var cached: Variant = _equipped_idle_cache[cache_key]
+		if cached is Texture2D and cached != null:
+			return cached as Texture2D
+
 	if not slots.is_empty():
 		if not slots.has("costume") and slots.has("costume_id"):
 			slots["costume"] = slots["costume_id"]
@@ -59,9 +68,12 @@ static func player_equipped_idle(race_override: String = "", slots_override: Dic
 		if pr and pr.has_method("get_race_composite_texture"):
 			var comp: Variant = pr.call("get_race_composite_texture", r, slots)
 			if comp is Texture2D and comp != null:
+				_equipped_idle_cache[cache_key] = comp as Texture2D
 				return comp as Texture2D
 
-	return player_pose("idle", r)
+	var fb := player_pose("idle", r)
+	_equipped_idle_cache[cache_key] = fb
+	return fb
 
 
 static func player_idle() -> Texture2D:
