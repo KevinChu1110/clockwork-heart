@@ -454,8 +454,8 @@
    "id": "battle-idle-equip",
    "cat": "遊戲",
    "title": "戰鬥待機顯示玩家當前換裝",
-   "status": "開發中",
-   "note": "大廳與探索已顯示換裝，戰鬥待機仍是各族素體 pose；攻擊幀維持現有 pose 不動",
+   "status": "測試中",
+   "note": "戰鬥待機支援顯示紙娃娃換裝 (SpriteDB.player_equipped_idle)，雙套外裝實機 diff 12959px，送審中",
    "keys": [
     "戰鬥待機顯示玩家"
    ]
