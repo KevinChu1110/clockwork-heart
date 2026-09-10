@@ -534,8 +534,8 @@
    "id": "wardrobe-preview-breathe",
    "cat": "遊戲",
    "title": "衣櫥預覽角色待機呼吸小動作",
-   "status": "草稿",
-   "note": "開發中",
+   "status": "開發中",
+   "note": "開始實作衣櫥預覽角色待機呼吸",
    "keys": [
     "衣櫥預覽角色待機"
    ]
