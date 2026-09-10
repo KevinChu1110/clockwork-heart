@@ -135,6 +135,12 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		var custom_slice_clean := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, clean_id]
 		if ResourceLoader.exists(custom_slice_clean) or FileAccess.file_exists(custom_slice_clean):
 			return custom_slice_clean
+		# 若指定的 item_id 在該族不存在（例如切換種族時殘留他族武器），退回該族預設部件
+		var def_id := _get_default_variant_id(rid, sid)
+		if def_id != "" and def_id != effective_id:
+			var def_slice := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, def_id]
+			if ResourceLoader.exists(def_slice) or FileAccess.file_exists(def_slice):
+				return def_slice
 
 	# 2. 通用裝備紙娃娃目錄 (weapon, armor, accessory, key, curio)
 	if sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
