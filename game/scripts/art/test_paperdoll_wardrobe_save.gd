@@ -202,6 +202,35 @@ func _initialize() -> void:
 
 	lobby.queue_free()
 
+	# ── 7. 測試衣櫥彈窗角色預覽待機呼吸 (Wardrobe Preview Breathe) ──
+	var dlg_breathe: WardrobeDialog = WardrobeDialog.new()
+	root.add_child(dlg_breathe)
+	dlg_breathe._ready()
+
+	if not dlg_breathe.is_breathe_running():
+		push_error("WardrobeDialog 打開後未啟動預覽角色待機呼吸動畫")
+		ok = false
+	else:
+		print("  ✓ WardrobeDialog 預覽角色待機呼吸動畫正常啟動")
+
+	# 點選切換不同外裝，預覽圖更新後呼吸不中斷
+	dlg_breathe.costume_index = 0
+	dlg_breathe._update_card_selection_states()
+	dlg_breathe._update_preview()
+	if not dlg_breathe.is_breathe_running():
+		push_error("點選切換外裝更新預覽後，呼吸動畫中斷")
+		ok = false
+	else:
+		print("  ✓ 點選切換外裝後呼吸動畫持續進行不中斷")
+
+	# 關閉彈窗必須停掉 tween
+	dlg_breathe.close()
+	if dlg_breathe.is_breathe_running():
+		push_error("WardrobeDialog 關閉後呼吸 tween 未被停止")
+		ok = false
+	else:
+		print("  ✓ WardrobeDialog 關閉時呼吸 tween 確實停止")
+
 	_finish(ok)
 
 
