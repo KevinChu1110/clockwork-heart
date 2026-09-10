@@ -589,6 +589,16 @@ func from_dict(d: Dictionary) -> void:
 	dmg_variance = float(d.get("dmg_variance", 0.08))
 
 
+## 五族開局定案武器對照（對齊 equipment.json bases 既有 id，不准自創）
+const RACE_STARTER_WEAPONS: Dictionary = {
+	"rabbit": "dawn_blade",
+	"lion": "knight_pike",
+	"fox": "star_rod",
+	"boar": "anvil_hammer",
+	"macaque": "hunt_claw",
+}
+
+
 func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {}) -> void:
 	var r := chosen_race.to_lower().strip_edges()
 	if r.is_empty():
@@ -601,6 +611,16 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"boar": default_name = "鋼牙豕"
 		"macaque": default_name = "靈爪猴"
 		_: default_name = "小白"
+
+	## 兔若本來就有 dawn_blade，不要改數值，只補其他族缺的
+	var existing_dawn: Dictionary = {}
+	if r == "rabbit":
+		var cur_wuid := str(equip_slots.get("weapon", ""))
+		if cur_wuid != "" and equip_worn.has(cur_wuid):
+			var cur_inst: Dictionary = equip_worn[cur_wuid]
+			if str(cur_inst.get("base_id", "")) == "dawn_blade":
+				existing_dawn = cur_inst.duplicate(true)
+
 	from_dict({
 		"chapter": "c0",
 		"flags": {},
@@ -638,6 +658,83 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"hotbar": ["", "", "", "", "", "", "", ""],
 		"ui_layout": {},
 	})
+
+	equip_starter_weapon(r, existing_dawn)
+
+
+## 開局／選族裝備該族定案武器（快捷欄第 0 欄）
+func equip_starter_weapon(race: String = "", existing_inst: Dictionary = {}) -> Dictionary:
+	var r := race.to_lower().strip_edges()
+	if r.is_empty():
+		r = player_race
+	if r.is_empty():
+		r = "rabbit"
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var es: Node = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if es and es.has_method("equip_starter_weapon"):
+			return es.call("equip_starter_weapon", r, existing_inst)
+	return _fallback_equip_starter_weapon(r, existing_inst)
+
+
+func _fallback_equip_starter_weapon(r: String, existing_inst: Dictionary = {}) -> Dictionary:
+	var target_base_id: String = str(RACE_STARTER_WEAPONS.get(r, "dawn_blade"))
+	var inst: Dictionary = {}
+	if not existing_inst.is_empty() and str(existing_inst.get("base_id", "")) == target_base_id:
+		inst = existing_inst.duplicate(true)
+	else:
+		var cur_uid := ""
+		if weapon_loadout.size() > 0:
+			cur_uid = str(weapon_loadout[0])
+		if cur_uid != "" and equip_worn.has(cur_uid):
+			var cur_inst: Dictionary = equip_worn[cur_uid]
+			if str(cur_inst.get("base_id", "")) == target_base_id:
+				inst = cur_inst
+	if inst.is_empty():
+		var dt: Node = null
+		var tree := Engine.get_main_loop()
+		if tree is SceneTree and (tree as SceneTree).root != null:
+			dt = (tree as SceneTree).root.get_node_or_null("DataTables")
+		var bases: Dictionary = dt.equip_bases() if dt and dt.has_method("equip_bases") else {}
+		if bases.is_empty() and FileAccess.file_exists("res://data/tables/equipment.json"):
+			var f := FileAccess.open("res://data/tables/equipment.json", FileAccess.READ)
+			if f != null:
+				var parsed = JSON.parse_string(f.get_as_text())
+				if typeof(parsed) == TYPE_DICTIONARY:
+					bases = parsed.get("bases", {})
+		var bdef: Dictionary = bases.get(target_base_id, {})
+		var base_stats: Dictionary = bdef.get("base", {})
+		var rolled: Dictionary = {}
+		for k in ["atk", "def", "hp", "crit", "crit_dmg"]:
+			rolled[k] = float(base_stats.get(k, 0))
+		var uid := "eq_%d_%d" % [int(Time.get_unix_time_from_system()), randi() % 99999]
+		inst = {
+			"uid": uid,
+			"base_id": target_base_id,
+			"name": str(bdef.get("name", target_base_id)),
+			"slot": "weapon",
+			"tier": int(bdef.get("tier", 1)),
+			"line": str(bdef.get("line", "")),
+			"quality": "common",
+			"quality_label": "凡品",
+			"rolled": rolled,
+			"bound": false,
+		}
+	var uid := str(inst.get("uid", ""))
+	equip_worn[uid] = inst
+	equip_slots["weapon"] = uid
+	if weapon_loadout.size() < 3:
+		while weapon_loadout.size() < 3:
+			weapon_loadout.append("")
+	weapon_loadout[0] = uid
+	weapon_loadout_active = 0
+	weapon_name = str(inst.get("name", "空手"))
+	weapon_atk = int(inst.get("rolled", {}).get("atk", 0))
+	weapon_tier = int(inst.get("tier", 1))
+	var line := str(inst.get("line", ""))
+	if line != "":
+		path_style = line
+	return inst
 
 
 ## 黑焰迴響：升 NG 層、清主線進度 flag，保留養成與外觀／通關紀念
