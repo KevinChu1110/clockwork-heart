@@ -529,6 +529,16 @@
    "keys": [
     "獅／狐／豬／猴戰"
    ]
+  },
+  {
+   "id": "battle-idle-breathe",
+   "cat": "遊戲",
+   "title": "戰鬥待機呼吸小動作與動作姿態還原",
+   "status": "測試中",
+   "note": "完成戰鬥待機呼吸小動作，26/26 測試全綠，實機截圖與量測已附，branch: agent/2026-09-11-battle-idle-breathe",
+   "keys": [
+    "戰鬥待機呼吸小動"
+   ]
   }
  ]
 }
