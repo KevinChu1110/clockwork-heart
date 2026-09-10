@@ -414,8 +414,8 @@
    "id": "combat-feel",
    "cat": "遊戲",
    "title": "戰鬥演出收斂：10秒無HUD看得出誰在砍誰",
-   "status": "草稿",
-   "note": "現況有 lunge/跳字，武器 overlay 關閉；先用各族 pose 圖證明不是空手對站",
+   "status": "開發中",
+   "note": "收斂戰鬥演出，不開新系統",
    "keys": [
     "戰鬥演出收斂：1"
    ]
