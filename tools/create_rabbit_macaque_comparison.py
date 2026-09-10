@@ -3,7 +3,7 @@
 tools/create_rabbit_macaque_comparison.py
 Creates side-by-side comparison of Rabbit and Macaque:
 1. Full battle view side-by-side (Rabbit vs Macaque Zen Striker vs Dawn Monk)
-2. Character close-up side-by-side
+2. Character close-up side-by-side (1:1 identical crop scale from 1280x720 battle scenes)
 3. Reviewer standard 8x NEAREST zoom comparison on Magenta background
 """
 
@@ -17,6 +17,7 @@ rabbit_chassis_dir = "/opt/side/bravesoul-game/game/assets/sprites/player/paperd
 rab_shot = os.path.join(shot_dir, "proof_battle_rabbit.png")
 zen_shot = os.path.join(shot_dir, "proof_battle_macaque_equipped_zen_striker.png")
 dawn_shot = os.path.join(shot_dir, "proof_battle_macaque_equipped_dawn_monk.png")
+fs_shot = os.path.join(shot_dir, "proof_battle_macaque_full_screen.png")
 
 def make_comparisons():
     if os.path.exists(rab_shot) and os.path.exists(zen_shot) and os.path.exists(dawn_shot):
@@ -28,7 +29,6 @@ def make_comparisons():
         w, h = 640, 360
         r_s = im_rab.resize((w, h), Image.Resampling.LANCZOS)
         z_s = im_zen.resize((w, h), Image.Resampling.LANCZOS)
-        d_s = im_dawn.resize((w, h), Image.Resampling.LANCZOS)
         
         comp_full = Image.new("RGBA", (w * 2 + 10, h), (25, 25, 30, 255))
         comp_full.paste(r_s, (0, 0))
@@ -37,21 +37,27 @@ def make_comparisons():
         comp_full.save(out_full)
         print(f"✓ Saved {out_full}")
         
-        # 2. Characters crop comparison
-        crop_box = (200, 180, 580, 660)
-        c_r = im_rab.crop(crop_box)
-        c_d = im_dawn.crop(crop_box)
-        c_z = im_zen.crop(crop_box)
-        cw, ch = c_r.size
-        
-        comp_chars = Image.new("RGBA", (cw * 3 + 20, ch), (25, 25, 30, 255))
-        comp_chars.paste(c_r, (0, 0))
-        comp_chars.paste(c_d, (cw + 10, 0))
-        comp_chars.paste(c_z, (cw * 2 + 20, 0))
-        out_chars = os.path.join(shot_dir, "proof_battle_rabbit_macaque_characters_comparison.png")
-        comp_chars.save(out_chars)
-        print(f"✓ Saved {out_chars}")
-        
+        out_full2 = os.path.join(shot_dir, "proof_battle_rabbit_macaque_fullscreen_comparison.png")
+        comp_full.save(out_full2)
+        print(f"✓ Saved {out_full2}")
+
+        # 2. Characters crop comparison:
+        # Both rabbit and macaque full screen are 1280x720.
+        # In both 1280x720 screens, the player is situated around x: 230..450, y: 240..580.
+        if os.path.exists(fs_shot):
+            im_fs = Image.open(fs_shot).convert("RGBA")
+            char_box = (220, 220, 460, 600)
+            c_rab = im_rab.crop(char_box)
+            c_mac = im_fs.crop(char_box)
+            
+            cw, ch = c_rab.size
+            comp_chars = Image.new("RGBA", (cw * 2 + 20, ch), (25, 25, 30, 255))
+            comp_chars.paste(c_rab, (0, 0))
+            comp_chars.paste(c_mac, (cw + 20, 0))
+            out_chars = os.path.join(shot_dir, "proof_battle_rabbit_macaque_characters_comparison.png")
+            comp_chars.save(out_chars)
+            print(f"✓ Saved 1:1 character comparison: {out_chars}")
+
     # 3. 8x zoom on Magenta comparison (Review standard)
     mac_iv = os.path.join(macaque_chassis_dir, "paint_ivory_stock.png")
     rab_iv = os.path.join(rabbit_chassis_dir, "paint_ivory_stock.png")

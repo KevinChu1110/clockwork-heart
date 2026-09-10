@@ -491,6 +491,26 @@
    ]
   },
   {
+   "id": "explore-idle-breathe",
+   "cat": "遊戲",
+   "title": "探索站立呼吸小動作",
+   "status": "已上線",
+   "note": "探索站立呼吸小動作已合併 main",
+   "keys": [
+    "探索站立呼吸小動"
+   ]
+  },
+  {
+   "id": "battle-idle-fox-boar",
+   "cat": "遊戲",
+   "title": "狐／豬戰鬥待機換裝顯示",
+   "status": "已上線",
+   "note": "狐／豬戰鬥待機換裝已合併 main，0 SCRIPT ERROR，battle 測試 25/25 全綠",
+   "keys": [
+    "狐／豬戰鬥待機換"
+   ]
+  },
+  {
    "id": "battle-idle-macaque",
    "cat": "遊戲",
    "title": "猴族戰鬥待機顯示當前換裝",
