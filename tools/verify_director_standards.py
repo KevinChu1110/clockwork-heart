@@ -34,7 +34,7 @@ frame_idx = 0
 
 sample_targets = {
     45: "proof_f0045_shot1_macro.png",
-    126: "proof_f0126_rabbit_dawn_blade.png",
+    120: "proof_f0120_rabbit_ready_dawn_blade.png",
     204: "proof_f0204_lion_knight_pike.png",
     282: "proof_f0282_fox_star_rod.png",
     354: "proof_f0354_boar_anvil_hammer.png",
@@ -98,17 +98,19 @@ for f_idx, proof_fname in sample_targets.items():
     # 由於 ffmpeg -ss 精確取樣與逐幀解出的時間戳對齊，驗證像素差極小 (小於 0.05)
     assert p_diff < 0.05, f"Proof {proof_fname} does not match video frame {f_idx} (diff={p_diff})!"
 
-# 6. 逐項查核五族代表格：零勝利結算畫面 (無「勝 利」、無「勝利！」)、有命中特效或傷害跳字
+# 6. 逐項查核五族代表格：零勝利結算畫面 (無「勝 利」、無「勝利！」)、武器持握與打擊效果
+# 遵照總監二退指示：採方案 A 動作區間規範，兔族代表格改為 f0120（持劍備戰），實證銀刃長劍在手；
+# 成片動作區間完整保留 f0116~f0130（拔刀→突進→命中），並在下方加驗 f0126 命中幀之受擊與跳字。
 combat_samples = [
-    ("Rabbit", "proof_f0126_rabbit_dawn_blade.png"),
-    ("Lion", "proof_f0204_lion_knight_pike.png"),
-    ("Fox", "proof_f0282_fox_star_rod.png"),
-    ("Boar", "proof_f0354_boar_anvil_hammer.png"),
-    ("Macaque", "proof_f0433_macaque_hunt_claw.png"),
+    ("Rabbit", "proof_f0120_rabbit_ready_dawn_blade.png", True),
+    ("Lion", "proof_f0204_lion_knight_pike.png", False),
+    ("Fox", "proof_f0282_fox_star_rod.png", False),
+    ("Boar", "proof_f0354_boar_anvil_hammer.png", False),
+    ("Macaque", "proof_f0433_macaque_hunt_claw.png", False),
 ]
 
-print("\n>>> 查核五族代表格之打擊效果與零勝利結算狀態 (第 19i 條):")
-for rname, fname in combat_samples:
+print("\n>>> 查核五族代表格之零勝利結算狀態與武器/打擊效果 (第 19i 條):")
+for rname, fname, is_ready_pose in combat_samples:
     p = os.path.join(SHOTS_DIR, fname)
     arr = np.array(Image.open(p).convert("RGB"))
     
@@ -128,6 +130,31 @@ for rname, fname in combat_samples:
     print(f"  [{rname}] gold_banner_px={gold_banner_px}, green_victory_px={green_victory_px}, red_hit_px={red_hit_px}, yel_hit_px={yel_hit_px}")
     assert gold_banner_px < 50, f"[{rname}] Detected victory banner in combat frame!"
     assert green_victory_px < 50, f"[{rname}] Detected victory log in combat frame!"
-    assert (red_hit_px > 200 or yel_hit_px > 200), f"[{rname}] No hit effect or damage float detected!"
+    
+    if is_ready_pose:
+        # 方案 A：兔族 f0120 為持劍備戰姿態，驗證晨光長劍（金屬刃+藍十字護手）在手
+        rabbit_box = arr[800:1100, 300:600]
+        metal_blade_px = np.sum((rabbit_box[:,:,0] > 180) & (rabbit_box[:,:,1] > 180) & (rabbit_box[:,:,2] > 180))
+        blue_guard_px = np.sum((rabbit_box[:,:,2] > 140) & (rabbit_box[:,:,2] > rabbit_box[:,:,0] + 30))
+        print(f"  [{rname}] 方案 A 持劍備戰格武器檢測: metal_blade_px={metal_blade_px}, blue_guard_px={blue_guard_px}")
+        assert metal_blade_px > 500 and blue_guard_px > 500, f"[{rname}] Weapon entity (dawn_blade) not detected in rabbit hand!"
+        assert yel_hit_px < 50, f"[{rname}] Enemy should not have golden hit ring in ready pose frame!"
+    else:
+        assert (red_hit_px > 200 or yel_hit_px > 200), f"[{rname}] No hit effect or damage float detected!"
+
+# 7. 驗證兔族成片動作區間 (f0116~f0130) 之命中受擊幀 (f0126)
+f126_arr = extracted_samples.get(126)
+if f126_arr is None:
+    # 從影片提取 frame 126
+    f126_raw = subprocess.check_output([
+        "ffmpeg", "-ss", "4.200", "-i", VIDEO_PATH, "-vframes", "1", "-f", "rawvideo", "-pix_fmt", "rgb24", "-"
+    ])
+    f126_arr = np.frombuffer(f126_raw, dtype=np.uint8).reshape((HEIGHT, WIDTH, 3))
+
+f126_enemy_box = f126_arr[750:1150, 550:950]
+f126_red_hit = np.sum((f126_enemy_box[:,:,0] > 190) & (f126_enemy_box[:,:,1] < 130) & (f126_enemy_box[:,:,2] < 130))
+f126_yel_hit = np.sum((f126_enemy_box[:,:,0] > 200) & (f126_enemy_box[:,:,1] > 150) & (f126_enemy_box[:,:,2] < 100))
+print(f"\n>>> 兔族成片動作區間命中受擊幀 (f0126) 查驗: red_hit_px={f126_red_hit}, yel_hit_px={f126_yel_hit}")
+assert (f126_red_hit > 200 or f126_yel_hit > 200), "Rabbit combat sequence missing hit FX or damage float at frame 126!"
 
 print("\n>>> 所有檢查項 100% 全部通過！符合總監驗收標準！")

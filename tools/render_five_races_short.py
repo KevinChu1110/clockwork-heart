@@ -277,7 +277,7 @@ def generate_contact_sheet(video_path):
     
     # 7 幀精確抽格（依據審查意見：標籤與畫面實際內容 100% 一致，標明第幾格）：
     # 1. Shot 1 (1.50s, f0045): 微距懸念發條特寫
-    # 2. Shot 2 (4.20s, f0126): 兔族晨光長劍命中 (紅字85+受擊特效)
+    # 2. Shot 2 (4.00s, f0120): 兔族晨光長劍持劍備戰 (長劍在手·動作區間f0116-f0130)
     # 3. Shot 3 (6.80s, f0204): 獅族皇家長槍突貫 (紅字75+槍尖穿透)
     # 4. Shot 4 (9.40s, f0282): 狐族秘術法杖爆裂 (紅字62+光環爆裂)
     # 5. Shot 5 (11.80s, f0354): 豬族鍛爐重鎚砸地 (紅字61+轟擊特效)
@@ -285,7 +285,7 @@ def generate_contact_sheet(video_path):
     # 7. Shot 7 (16.80s, f0504): 官方字標推進點題 (8%推進+流光呼吸)
     sample_items = [
         ("Shot 1 微距懸念發條 (f0045, 1.5s)", 1.500, "proof_f0045_shot1_macro.png"),
-        ("Shot 2 兔族晨光長劍命中 (f0126, 4.2s)", 4.200, "proof_f0126_rabbit_dawn_blade.png"),
+        ("Shot 2 兔族晨光長劍持劍備戰 (f0120, 4.0s)", 4.000, "proof_f0120_rabbit_ready_dawn_blade.png"),
         ("Shot 3 獅族皇家長槍突貫 (f0204, 6.8s)", 6.800, "proof_f0204_lion_knight_pike.png"),
         ("Shot 4 狐族秘術法杖爆裂 (f0282, 9.4s)", 9.400, "proof_f0282_fox_star_rod.png"),
         ("Shot 5 豬族鍛爐重鎚砸地 (f0354, 11.8s)", 11.800, "proof_f0354_boar_anvil_hammer.png"),
