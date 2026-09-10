@@ -813,16 +813,16 @@ func _build_village_tab() -> void:
 	_village_layer.add_child(left_shops)
 
 	_add_hall_card(left_shops, "王都鐵匠", "品質轉化 · 裝備鍛造", "鐵", func():
-		_show_toast("進入王都鐵匠：可將裝備品質晉階為紫裝！")
+		open_forge()
 	)
 	_add_hall_card(left_shops, "手藝工坊", "紅黃藍石 · 三合一熔煉", "工", func():
-		_show_toast("進入手藝工坊：紅黃藍石三合一熔煉！")
+		open_gem_workshop()
 	)
 	_add_hall_card(left_shops, "演武競技", "挑戰對手 · 雙倍抽獎", "武", func():
 		request_battle.emit("arena")
 	)
 	_add_hall_card(left_shops, "冒險委託", "每日簽到 · 懸賞領獎", "委", func():
-		_show_toast("今天，誰需要上發條？去幫一位玩具轉回去。")
+		open_windup_daily()
 	)
 
 	## 右側：黑曜石戰情報告板 (專注於主線推進)
@@ -1756,4 +1756,59 @@ func open_wardrobe() -> void:
 	dlg.tree_exited.connect(restore_prev)
 
 	add_child(dlg)
+
+
+## 開啟王都鐵匠彈窗
+func open_forge() -> Control:
+	var existing = get_node_or_null("ForgeDialog")
+	if existing != null:
+		return existing
+	var ForgeClass: GDScript = load("res://scripts/ui/forge_dialog.gd")
+	if ForgeClass == null:
+		push_error("無法載入 ForgeDialog")
+		return null
+	var dlg: Control = ForgeClass.new() as Control
+	dlg.z_index = 80
+	dlg.tree_exited.connect(func():
+		refresh_hud()
+	)
+	add_child(dlg)
+	return dlg
+
+
+## 開啟手藝工坊寶石彈窗
+func open_gem_workshop() -> Control:
+	var existing = get_node_or_null("GemWorkshopDialog")
+	if existing != null:
+		return existing
+	var GemClass: GDScript = load("res://scripts/ui/gem_workshop_dialog.gd")
+	if GemClass == null:
+		push_error("無法載入 GemWorkshopDialog")
+		return null
+	var dlg: Control = GemClass.new() as Control
+	dlg.z_index = 80
+	dlg.tree_exited.connect(func():
+		refresh_hud()
+	)
+	add_child(dlg)
+	return dlg
+
+
+## 開啟冒險委託每日上發條彈窗
+func open_windup_daily() -> Control:
+	var existing = get_node_or_null("WindupDailyDialog")
+	if existing != null:
+		return existing
+	var WindupClass: GDScript = load("res://scripts/ui/windup_daily_dialog.gd")
+	if WindupClass == null:
+		push_error("無法載入 WindupDailyDialog")
+		return null
+	var dlg: Control = WindupClass.new() as Control
+	dlg.z_index = 80
+	dlg.tree_exited.connect(func():
+		refresh_hud()
+	)
+	add_child(dlg)
+	return dlg
+
 
