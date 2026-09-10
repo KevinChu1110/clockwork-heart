@@ -65,10 +65,10 @@ RACES_CONFIG = {
         "rec": "REC-05",
         "name": "靈爪猴 (Macaque) 機關發條靈爪連擊",
         "wpn": "hunt_claw",
-        "hit_rel_ms": 680,
+        "hit_rel_ms": 900,
         "audio": [
             {"file": f"{ROOT}/game/assets/audio/sfx/slash.wav", "ms": 500},
-            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 680},
+            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 900},
             {"file": f"{ROOT}/game/assets/audio/sfx/wind.wav", "ms": 1200},
             {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 1400},
         ],
@@ -80,7 +80,7 @@ RACE_BEST_SS = {
     "lion": 4.90,
     "fox": 5.50,
     "boar": 4.40,
-    "macaque": 4.70,
+    "macaque": 4.50,
 }
 
 def derive_cut_window_from_log(race):
