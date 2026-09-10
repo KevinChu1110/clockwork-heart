@@ -6,7 +6,7 @@
 > **負責人**：側案·程式 阿宏（sideworker）  
 > **對應項目**：`docs/PROJECTS.json` 中的 `mk-five-races`（五族實機打擊短影音分鏡與素材清單）  
 > **核心賣點**：**「五大玩具族系實機戰鬥姿態全面上線 · 告別舊版空手與單一兔族，五族打擊手感爽快各異」** —— 戰鬥直接走 `SpriteDB.player_pose()` 切換姿態，100% 真實 Godot 實機戰鬥畫面，徹底替換舊版空手/舊兔錄影素材。  
-> **交付物依據**：對齊 `references/media.md` 短影音格式、`references/brand_assets.md` 鏡頭語言準則、`references/art_direction.md` §6.5 之 9:16 規格，以及 `references/review.md` 全項影片與行銷審核清單（特別嚴格落實第 19e-2 條、第 19e-3 條、第 19e-4 條與第 19f 條）。
+> **交付物依據**：對齊 `references/media.md` 短影音格式、`references/brand_assets.md` 鏡頭語言準則、`references/art_direction.md` §6.5 之 9:16 規格，以及 `references/review.md` 全項影片與行銷審核清單（特別嚴格落實第 19e-2 條、第 19e-3 條、第 19e-4 條、第 19e-5 條與第 19f 條）。
 
 ---
 
@@ -24,7 +24,7 @@
 | **素材來源真實性** | **100% 基於已合併 main 之功能與既有資產** | 實機鏡次（Shot 2～6）100% 來自既有 Godot 戰鬥系統與已合併入庫之五族 30 個姿態檔案；開場 Shot 1 採用既有核准資產 `branding/key_visual_main.png` 局部微距無文字區裁切（`crop=222:396:455:372`），絕無概念圖冒充實機，絕不臨場產圖（第 16／19／19b／19e 條） |
 | **非檔案識別字真實性** | **100% 對齊程式實作與多語系字典** | 嚴格依據 `battle_view.gd`、`world_content.gd`、`paperdoll_slots.json`、`equipment.json` 與 `enemy.json`，嚴禁自創 mode、敵人名、角色名、職業名、武器名或函式歸屬（第 19e-2 條） |
 | **錄影序列因果邏輯** | **完全遵循 capture 腳本真實戰鬥驅動機制** | 遵循 `capture_race_battles.gd` 與 `run_real_combat_video.gd` 規範，由 GameState 設定裝備與種族後呼叫 `battle.setup(mode)` 讓 `BattleSim` 自然運作觸發事件流，絕不將純貼圖切換之 `_set_player_pose()` 當成攻擊入口（第 19e-3 條） |
-| **實機打擊手感真實性** | **如實反映普攻實體渲染與實測數據** | 普攻實體渲染包含受擊閃白（`_flash`）、傷害跳字（`_spawn_float`）、震屏（`_shake`）、打擊停頓（`trigger_hit_stop`）與猴族暴怒覺醒跳字；絕不虛構未觸發之技能特效（第 19e-3／19e-4 條） |
+| **實機打擊手感真實性** | **如實反映普攻實體渲染與實測數據** | 普攻實體渲染包含受擊閃白（`_flash`）、傷害跳字（`_spawn_float`）、震屏（`_shake`）、打擊停頓（`trigger_hit_stop`）與猴族暴怒覺醒跳字；絕不虛構未觸發之技能特效，觀察窗全面依實測 sim.time 判定（第 19e-3／19e-4／19e-5 條） |
 
 ---
 
@@ -94,12 +94,12 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 
 ## 五、Godot 實機素材錄影清單與操作序列（REC-01～REC-05）
 
-> **審核鐵則（review.md 第 19 條、第 19b 條、第 19e 條、第 19e-2 條、第 19e-3 條、第 19e-4 條）**：  
+> **審核鐵則（review.md 第 19 條、第 19b 條、第 19e 條、第 19e-2 條、第 19e-3 條、第 19e-4 條、第 19e-5 條）**：  
 > 1. 所有標示「實機」之素材，**必須能在既有 Godot 引擎中重現與錄製，且功能 100% 已合併進 main**。
-> 2. 錄影操作序列嚴格遵循本 repo 既有核准腳本規範：**reset_new_game → 設 player_race → EquipmentSystem.roll_instance() 裝該族武器 → battle.setup(mode) → 讓戰鬥自己跑 N 幀**。
+> 2. 錄影操作序列嚴格遵循本 repo 既有核准腳本規範：**reset_new_game → 設 player_race → EquipmentSystem.roll_instance() 裝該族武器 → battle.setup(mode) → 讓戰鬥自己跑**。
 > 3. 武器 ID 必須使用 `equipment.json` bases 中真實存在的底層 ID（`dawn_blade`, `knight_pike`, `star_rod`, `anvil_hammer`, `hunt_claw`），嚴禁使用不存在的 dev 腳本殘留 ID！
-> 4. ⛔ **嚴禁將 `_set_player_pose()` 當作攻擊入口**！`battle_view.gd:2003` 的 `_set_player_pose()` 只負責換貼圖與播放縮放 tween，不打人、不結算、不 emit 任何事件。所有傷害跳字（`_spawn_float`）、受擊閃白（`_flash`）、震屏（`_shake`）、打擊停頓（`trigger_hit_stop`）全由 `BattleSim` 運行時發出的事件驅動！
-> 5. 觀察窗幀數與秒數必須 100% 依據 SceneTree 實測時間回填，嚴禁憑感覺捏造 0.8s 出手等錯誤數字！
+> 4. ⛔ **嚴禁將 `_set_player_pose()` 當作攻擊入口**！`battle_view.gd` 的 `_set_player_pose()` 只負責換貼圖與播放縮放 tween，不打人、不結算、不 emit 任何事件。所有傷害跳字（`_spawn_float`）、受擊閃白（`_flash`）、震屏（`_shake`）、打擊停頓（`trigger_hit_stop`）全由 `BattleSim` 運行時發出的事件驅動！
+> 5. 觀察窗必須 100% 依據 SceneTree 實測各族之真實 sim.time 回填（嚴禁多列複製 4.00s 之假性一致），且全面以 sim.time 控制錄影腳本，不使用內部計數幀數，不依賴非穩定之擊殺結束（第 19e-5 條）！
 
 以下為本片所需 5 支實機錄影片段規格與操作序列清單：
 
@@ -108,9 +108,9 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 - **所屬功能**：`mob-battle` 與 `race-poses`（兔族戰鬥姿態與真實戰鬥打擊流）
 - **Godot 場景路徑**：`res://scenes/battle/battle.tscn`
 - **對應核心腳本**：
-  - `game/scripts/battle/battle_view.gd`（事件分支 line 2154 `attack_swing`、line 2177 `hit`；姿態處理 line 2003）
+  - `game/scripts/battle/battle_view.gd`（事件分支 `attack_swing`、`hit`；姿態處理 `_set_player_pose`）
   - `game/scripts/battle/battle_sim.gd`（戰鬥數值與事件分發）
-  - `game/scripts/art/sprite_db.gd`（`player_pose()`，line 406）
+  - `game/scripts/art/sprite_db.gd`（`player_pose()`）
 - **使用姿態檔案**：
   - `game/assets/sprites/player/poses/idle.png`
   - `game/assets/sprites/player/poses/attack.png`
@@ -142,10 +142,10 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 
   # 4. 戰鬥自然運行，由 Sim 自然驅動事件流
   ```
-- **畫面效果產生點與實測觀察窗（依據第 19e-4 條實測回填）**：
-  - **第 1～500 幀（約 0.0s～3.6s）待機對峙窗**：白金兔保持 `idle` 姿態，荒路殘兵進入對峙，ATB 蓄力推進。
-  - **第 540～580 幀（約 3.8s～4.1s，實測第 562 幀 / sim.time 4.00s）出手突刺窗**：`sim` 發出 `attack_swing` 事件，觸發 `battle_view.gd:2156` 的 `_lunge("player")` 前衝突刺位移，並在 `:2168` 切換 `_set_player_pose("attack", true)`，觸發 `:2017-2019` 角色 `scale(1.1, 0.94)` 壓扁與 0.12s 緩動回彈。
-  - **第 590～610 幀（約 4.2s～4.3s，實測第 599 幀 / sim.time 4.26s）命中停頓窗**：`sim` 發出 `hit` 事件，觸發 `battle_view.gd:2195` 的 `_spawn_float()` 傷害跳字（實測 75 點）、`:2196` 的 `_flash()` 荒路殘兵受擊閃白、`:2191` 的屏幕微震，以及 `:2192` 的 `trigger_hit_stop(0.08)` 精確 0.08 秒命中打擊停頓！荒路殘兵血量歸零，戰鬥於 4.26s 獲勝結束。
+- **畫面效果產生點與實測觀察窗（依據第 19e-4 / 19e-5 條實測回填）**：
+  - **待機對峙窗（`sim.time 0.0s～3.8s`）**：白金兔保持 `idle` 姿態，荒路殘兵進入對峙，ATB 蓄力推進。
+  - **出手突刺窗（`sim.time 3.8s～4.1s`，實測出手 `sim.time = 4.00s`）**：`sim` 發出 `attack_swing` 事件，觸發 `battle_view.gd` 的 `attack_swing` 分支呼叫 `_lunge("player")` 前衝突刺位移，並切換 `_set_player_pose("attack", true)`，觸發角色 `scale(1.1, 0.94)` 壓扁與 0.12s 緩動回彈。錄影窗建議 `3.8s～4.8s`。
+  - **命中停頓窗（`sim.time 4.1s～4.4s`，實測首次命中 `sim.time = 4.27s`）**：`sim` 發出 `hit` 事件，觸發 `battle_view.gd` 的 `hit` 分支呼叫 `_spawn_float()` 傷害跳字（實測 75 點）、`_flash()` 荒路殘兵受擊閃白、屏幕微震，以及 `trigger_hit_stop(0.08)` 精確 0.08 秒命中打擊停頓！首次命中 4.27s，之後戰鬥可能延續，錄影窗不依賴擊殺。
 
 ---
 
@@ -154,7 +154,7 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 - **所屬功能**：`race-poses`（獅族六大戰鬥姿態與真實戰鬥打擊流）
 - **Godot 場景路徑**：`res://scenes/battle/battle.tscn`
 - **對應核心腳本**：
-  - `game/scripts/battle/battle_view.gd`（事件分支 line 2154 `attack_swing`、line 2177 `hit`；姿態處理 line 2003）
+  - `game/scripts/battle/battle_view.gd`（事件分支 `attack_swing`、`hit`；姿態處理 `_set_player_pose`）
   - `game/scripts/battle/battle_sim.gd`
   - `game/scripts/art/sprite_db.gd`
 - **使用姿態檔案**：
@@ -188,10 +188,10 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 
   # 4. 戰鬥自然運行，由 Sim 自然驅動事件流
   ```
-- **畫面效果產生點與實測觀察窗（依據第 19e-4 條實測回填）**：
-  - **第 1～500 幀（約 0.0s～3.6s）待機對峙窗**：烈鬃獅保持威武待機，雙手端持長槍對峙。
-  - **第 540～580 幀（約 3.8s～4.1s，實測第 561 幀 / sim.time 4.00s）突貫位移窗**：`sim` 發出 `attack_swing` 事件，觸發 `battle_view.gd:2156` 的 `_lunge("player")` 直線突刺位移，並在 `:2168` 切換 `attack` 姿態，長槍向前疾刺。
-  - **第 590～615 幀（約 4.2s～4.4s，實測第 602 幀 / sim.time 4.29s）槍尖穿透窗**：`sim` 發出 `hit` 事件，觸發 `battle_view.gd:2195` 傷害跳字（實測 65 點）、`:2196` 黑鏽浪人受擊閃白、`:2191` 屏幕微震與 `:2192` 的 0.08 秒命中打擊停頓！隨後平滑收招回歸待機。
+- **畫面效果產生點與實測觀察窗（依據第 19e-4 / 19e-5 條實測回填）**：
+  - **待機對峙窗（`sim.time 0.0s～3.4s`）**：烈鬃獅保持威武待機，雙手端持長槍對峙，ATB 蓄力。
+  - **突貫位移窗（`sim.time 3.4s～3.8s`，實測出手 `sim.time = 3.65s`）**：`sim` 發出 `attack_swing` 事件，觸發 `battle_view.gd` 的 `attack_swing` 分支呼叫 `_lunge("player")` 直線突刺位移，並切換 `attack` 姿態，長槍向前疾刺。錄影窗建議 `3.4s～4.4s`。
+  - **槍尖穿透窗（`sim.time 3.8s～4.2s`，實測首次命中 `sim.time = 3.92s`）**：`sim` 發出 `hit` 事件，觸發 `battle_view.gd` 的 `hit` 分支呼叫傷害跳字（實測 65 點）、黑鏽浪人受擊閃白、屏幕微震與 0.08 秒命中打擊停頓！隨後平滑收招回歸待機。
 
 ---
 
@@ -200,7 +200,7 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 - **所屬功能**：`race-poses`（狐族六大戰鬥姿態與真實戰鬥打擊流）
 - **Godot 場景路徑**：`res://scenes/battle/battle.tscn`
 - **對應核心腳本**：
-  - `game/scripts/battle/battle_view.gd`（事件分支 line 2154 `attack_swing`、line 2177 `hit`）
+  - `game/scripts/battle/battle_view.gd`（事件分支 `attack_swing`、`hit`）
   - `game/scripts/battle/battle_sim.gd`
   - `game/scripts/art/sprite_db.gd`
 - **使用姿態檔案**：
@@ -235,10 +235,10 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 
   # 4. 戰鬥自然運行，由 Sim 自然驅動事件流
   ```
-- **畫面效果產生點與實測觀察窗（依據第 19e-4 條實測回填）**：
-  - **第 1～500 幀（約 0.0s～3.6s）前搖蓄能窗**：靈尾狐法杖前引蓄勢，機械星軸尾微擺。
-  - **第 540～580 幀（約 3.8s～4.1s，實測第 561 幀 / sim.time 4.00s）法杖衝擊窗**：`sim` 發出攻擊事件，觸發 `battle_view.gd:2156` 的 `_lunge("player")` 前移位移，法杖向前引導能量衝擊。
-  - **第 590～620 幀（約 4.2s～4.4s，實測第 608 幀 / sim.time 4.33s）秘術命中窗**：`sim` 發出 `hit` 事件，霧影身上觸發 `:2196` 受擊閃白、`:2195` 傷害跳字（實測 56 點）與 `:2192` 的 0.08 秒打擊停頓！隨後姿態平滑恢復 `recover` 與 `idle`。
+- **畫面效果產生點與實測觀察窗（依據第 19e-4 / 19e-5 條實測回填）**：
+  - **前搖蓄能窗（`sim.time 0.0s～3.3s`）**：靈尾狐法杖前引蓄勢，機械星軸尾微擺，ATB 蓄能。
+  - **法杖衝擊窗（`sim.time 3.3s～3.7s`，實測出手 `sim.time = 3.58s`）**：`sim` 發出攻擊事件，觸發 `battle_view.gd` 的 `attack_swing` 分支呼叫 `_lunge("player")` 前移位移，法杖向前引導能量衝擊。錄影窗建議 `3.3s～4.3s`。
+  - **秘術命中窗（`sim.time 3.7s～4.1s`，實測首次命中 `sim.time = 3.85s`）**：`sim` 發出 `hit` 事件，霧影身上觸發受擊閃白、傷害跳字（實測 56 點）與 0.08 秒打擊停頓！隨後姿態平滑恢復 `recover` 與 `idle`。
 
 ---
 
@@ -247,7 +247,7 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 - **所屬功能**：`race-poses`（野豬六大戰鬥姿態與真實戰鬥打擊流）
 - **Godot 場景路徑**：`res://scenes/battle/battle.tscn`
 - **對應核心腳本**：
-  - `game/scripts/battle/battle_view.gd`（事件分支 line 2154 `attack_swing`、line 2177 `hit`）
+  - `game/scripts/battle/battle_view.gd`（事件分支 `attack_swing`、`hit`）
   - `game/scripts/battle/battle_sim.gd`
   - `game/scripts/art/sprite_db.gd`
 - **使用姿態檔案**：
@@ -282,10 +282,10 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 
   # 4. 戰鬥自然運行，由 Sim 自然驅動事件流
   ```
-- **畫面效果產生點與實測觀察窗（依據第 19e-4 條實測回填）**：
-  - **第 1～500 幀（約 0.0s～3.6s）蓄勢待機窗**：鋼牙豕保持厚重待機，雙手高舉戰鎚。
-  - **第 540～580 幀（約 3.8s～4.1s，實測第 565 幀 / sim.time 4.00s）戰鎚重劈窗**：`sim` 發出 `attack_swing` 事件，觸發 `battle_view.gd:2156` 的 `_lunge("player")` 前衝，並在 `:2168` 切換 `attack` 姿態，戰鎚自空中重重砸落。
-  - **第 600～630 幀（約 4.3s～4.5s，實測第 623 幀 / sim.time 4.40s）重錘轟地窗**：`sim` 發出 `hit` 事件，觸發 `battle_view.gd:2191` 的 `_shake = 0.35` 屏幕震顫反饋、`:2196` 的潮襲海盜受擊閃白、`:2195` 傷害跳字（實測 55 點），以及 `:2192` 的 0.08 秒打擊停頓！隨後戰鎚貼地緩衝收招。
+- **畫面效果產生點與實測觀察窗（依據第 19e-4 / 19e-5 條實測回填）**：
+  - **蓄勢待機窗（`sim.time 0.0s～3.8s`）**：鋼牙豕保持厚重待機，雙手高舉戰鎚，ATB 蓄力。
+  - **戰鎚重劈窗（`sim.time 3.8s～4.1s`，實測出手 `sim.time = 4.00s`）**：`sim` 發出 `attack_swing` 事件，觸發 `battle_view.gd` 的 `attack_swing` 分支呼叫 `_lunge("player")` 前衝，並切換 `attack` 姿態，戰鎚自空中重重砸落。錄影窗建議 `3.8s～4.8s`。
+  - **重錘轟地窗（`sim.time 4.1s～4.4s`，實測首次命中 `sim.time = 4.27s`）**：`sim` 發出 `hit` 事件，觸發 `battle_view.gd` 的 `hit` 分支屏幕震顫反饋（`_shake = 0.35`）、潮襲海盜受擊閃白、傷害跳字（實測 55 點），以及 0.08 秒打擊停頓！隨後戰鎚貼地緩衝收招。
 
 ---
 
@@ -294,8 +294,8 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 - **所屬功能**：`race-poses` 與 `mob-battle`（靈爪猴戰鬥姿態與暴怒覺醒機制）
 - **Godot 場景路徑**：`res://scenes/battle/battle.tscn`
 - **對應核心腳本**：
-  - `game/scripts/battle/battle_sim.gd`（`trigger_fury_awakening()`，line 2929；事件分發）
-  - `game/scripts/battle/battle_view.gd`（事件分支 line 2283 `fury_awakening`、line 2154 `attack_swing`、line 2177 `hit`）
+  - `game/scripts/battle/battle_sim.gd`（`trigger_fury_awakening()`；事件分發）
+  - `game/scripts/battle/battle_view.gd`（事件分支 `fury_awakening`、`attack_swing`、`hit`）
   - `game/scripts/art/sprite_db.gd`
 - **使用姿態檔案**：
   - `game/assets/sprites/player/poses/macaque/idle.png`
@@ -332,16 +332,16 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
   if sim:
       var p = sim.get_unit("player")
       p.rage = 100.0
-      # 呼叫 BattleSim 的 trigger_fury_awakening()（battle_sim.gd:2929），
+      # 呼叫 BattleSim 的 trigger_fury_awakening()，
       # 內部執行 _apply_berserk(p, true) 並向 view emit("fury_awakening", {"auto": false, ...})
       sim.trigger_fury_awakening()
 
   # 5. 戰鬥自然運行，由 Sim 自然驅動狂暴快爪攻擊與勝負事件流
   ```
-- **畫面效果產生點與實測觀察窗（依據第 19e-4 條實測回填）**：
-  - **開局第 0～15 幀（約 0.0s～0.1s，實測第 0 幀 / sim.time 0.00s）暴怒覺醒爆發窗**：`sim.trigger_fury_awakening()` 發送 `fury_awakening` 事件，`battle_view.gd:2283` 接收事件，在 `:2291` 執行 `_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)` 彈出橘紅「暴怒覺醒！」浮動跳字、`:2292` `_shake = 0.35` 屏幕震顫、`:2293` `trigger_hit_stop(0.1)` 0.1 秒打擊停頓，並在 `:2294` 執行 `_flash(player_body, Color(3.0, 1.5, 0.5))` 角色全身金光閃耀！
-  - **第 380～410 幀（約 2.7s～2.9s，實測第 396 幀 / sim.time 2.86s）狂暴快爪出手窗**：處於暴怒攻速強化中的靈爪猴由 `sim` 觸發攻擊位移（`_lunge("player")`），彈簧手臂極速伸縮前衝，連環快抓。
-  - **第 410～430 幀（約 3.0s～3.1s，實測第 420 幀 / sim.time 3.03s）命中爆發與終結窗**：`sim` 發送 `hit` 事件，連續命中 2 次（傷害跳字 93 點），竹影拳靈受擊閃白，竹影拳靈血量歸零戰鬥於 sim.time 3.03s 迅速獲勝結束，錄影窗精準在戰鬥結束前完成收錄，隨後畫面白閃切純黑。
+- **畫面效果產生點與實測觀察窗（依據第 19e-4 / 19e-5 條實測回填）**：
+  - **暴怒覺醒爆發窗（`sim.time = 0.00s`，開局手動觸發）**：`sim.trigger_fury_awakening()` 發送 `fury_awakening` 事件，`battle_view.gd` 接收事件，在 `fury_awakening` 分支執行 `_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)` 彈出橘紅「暴怒覺醒！」浮動跳字、屏幕震顫、`trigger_hit_stop(0.1)` 0.1 秒打擊停頓，以及角色全身金光閃耀！錄影窗建議 `0.0s～3.2s`。
+  - **狂暴快爪出手窗（`sim.time 2.7s～2.9s`，實測出手 `sim.time = 2.87s`）**：處於暴怒攻速強化中的靈爪猴由 `sim` 觸發攻擊位移（`_lunge("player")`），彈簧手臂極速伸縮前衝，連環快抓。
+  - **命中爆發與終結窗（`sim.time 2.9s～3.1s`，實測命中 `sim.time = 3.03s`）**：`sim` 發送 `hit` 事件，連續命中 2 次（傷害跳字 93 點），竹影拳靈受擊閃白，竹影拳靈血量歸零戰鬥於 sim.time 3.03s 迅速獲勝結束，錄影窗精準在戰鬥結束前完成收錄，隨後畫面白閃切純黑。
 
 ---
 
@@ -442,7 +442,7 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 | **第 19c 條** | **不得自立片名與分歧點題** | 移除花俏宣傳片名，統一為內部企劃代號 `mk-five-races`（片內不呈現）；點題卡標明後製無失真疊加官方字標 `branding/logo_cn.png`，嚴禁 AI 生成。 | ✅ 合格 |
 | **第 19e-2 條** | **非檔案識別字逐個 grep 驗證** | `setup()` 參數、敵人顯示名、角色名、職業名、武器名與函式歸屬全部經由 grep 逐項比對，100% 存在於程式碼與多語系字典中，零自創詞彙。 | ✅ 合格 |
 | **第 19e-3 條** | **錄影操作序列因果真實可復現** | 錄影序列全面遵循 capture 規範，由 GameState 設定真實裝備底層 ID 後呼叫 `battle.setup(mode)` 讓 Sim 自然推進，絕不以 `_set_player_pose()` 當攻擊入口；所有跳字、閃白、震屏與 Hitstop 之產生點與行號全數精確查證對齊。 | ✅ 合格 |
-| **第 19e-4 條** | **臨時 SceneTree 實測回填** | 序列實際以 SceneTree 腳本執行 900 幀實測，完整記錄 attack_swing、hit、fury_awakening 實測次數與時間，觀察窗 100% 依實測數據回填，杜絕未實裝技能特效。 | ✅ 合格 |
+| **第 19e-4 條** | **臨時 SceneTree 實測回填** | 序列實際以 SceneTree 腳本執行實測，完整記錄 attack_swing、hit、fury_awakening 實測次數與時間，觀察窗 100% 依實測數據回填，杜絕未實裝技能特效。 | ✅ 合格 |
 | **第 19f 條** | **自我檢查表每一項要有查證方式** | 每一項審核條款均附有明確查驗方式（實體檔案大小、路徑查核、程式碼行號 grep 對齊、SceneTree 實測數據），絕無虛假打勾。 | ✅ 合格 |
 | **第 19i-4 條** | **不准描述未畫出的過程動詞** | 嚴格依據遊戲內實際可見之姿態（attack, telegraph, recover）、前衝位移（`_lunge()`）、打擊停頓（0.08s）與跳字進行客觀描述，無腦補動作。 | ✅ 合格 |
 | **第 22 條** | **不違背 CANON 世界憲章** | 嚴格遵守「覺醒的金屬發條玩具」世界觀：五族均為金屬/琺瑯板件玩具公仔，零毛皮、背後外露發條鑰匙、胡桃鉗色盤、部位受擊無血肉。 | ✅ 合格 |
@@ -476,10 +476,10 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 | **④ 武器名稱** | 「星盤晶核秘術法杖」（ID `star_rod`） | `paperdoll_slots.json:362` / `equipment.json:145` | `paperdoll_slots.json:362` / `equipment.json:145`（line: magic） | ✅ 100% 存在 |
 | **④ 武器名稱** | 「鍛爐鐵砧重型戰鎚」（ID `anvil_hammer`） | `paperdoll_slots.json:368` / `equipment.json:262` | `paperdoll_slots.json:368` / `equipment.json:262`（line: hammer） | ✅ 100% 存在 |
 | **④ 武器名稱** | 「機關發條靈爪護手」（ID `hunt_claw`） | `paperdoll_slots.json:350` / `equipment.json:184` | `paperdoll_slots.json:350` / `equipment.json:184`（line: claw） | ✅ 100% 存在 |
-| **⑤ 函式名與歸屬** | `trigger_fury_awakening()` | `game/scripts/battle/battle_sim.gd` | line 2929: `func trigger_fury_awakening() -> bool:`（歸屬於 `BattleSim`；`battle_view.gd:1322, 3042, 3137` 皆透過 `sim.trigger_fury_awakening()` 呼叫） | ✅ 100% 存在且歸屬正確 |
-| **⑤ 函式名與歸屬** | `_set_player_pose()` | `game/scripts/battle/battle_view.gd` | line 2003: `func _set_player_pose(pose: String, punch: bool = false) -> void:` | ✅ 100% 存在且歸屬正確 |
-| **⑤ 函式名與歸屬** | `player_pose()` | `game/scripts/art/sprite_db.gd` | line 406: `static func player_pose(pose: String) -> Texture2D:` | ✅ 100% 存在且歸屬正確 |
-| **⑤ 浮動跳字字串** | 「暴怒覺醒！」(`Color(1.0, 0.4, 0.1)`) | `game/scripts/battle/battle_view.gd` | line 2291: `_spawn_float(\"player\", _t(\"暴怒覺醒！\"), Color(1.0, 0.4, 0.1), true)` | ✅ 100% 存在且顏色文字相符 |
+| **⑤ 函式名與歸屬** | `trigger_fury_awakening()` | `game/scripts/battle/battle_sim.gd` | 函式定義：`func trigger_fury_awakening() -> bool:`（歸屬於 `BattleSim`；`battle_view.gd` 皆透過 `sim.trigger_fury_awakening()` 呼叫） | ✅ 100% 存在且歸屬正確 |
+| **⑤ 函式名與歸屬** | `_set_player_pose()` | `game/scripts/battle/battle_view.gd` | 函式定義：`func _set_player_pose(pose: String, punch: bool = false) -> void:` | ✅ 100% 存在且歸屬正確 |
+| **⑤ 函式名與歸屬** | `player_pose()` | `game/scripts/art/sprite_db.gd` | 函式定義：`static func player_pose(pose: String, race_override: String = "") -> Texture2D:` | ✅ 100% 存在且歸屬正確 |
+| **⑤ 浮動跳字字串** | 「暴怒覺醒！」(`Color(1.0, 0.4, 0.1)`) | `game/scripts/battle/battle_view.gd` | `fury_awakening` 事件分支：`_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)` | ✅ 100% 存在且顏色文字相符 |
 
 ---
 
@@ -487,34 +487,35 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 
 依據 `references/review.md` 第 19e-3 條要求，對分鏡與操作序列中所有宣告之畫面效果進行因果鏈條審查，逐項確認呼叫函式具備生成對應畫面的程式碼，絕不將純貼圖切換當作攻擊入口：
 
-| 宣稱之畫面效果 | 產生點唯一函式 | 觸發來源事件 / 呼叫鏈 | 程式碼行號與實體邏輯依據 | 因果鏈驗證判定 |
+| 宣稱之畫面效果 | 產生點唯一函式 | 觸發來源事件 / 呼叫鏈 | 函式名、事件 kind 與邏輯依據 | 因果鏈驗證判定 |
 |---|---|---|---|---|
-| **角色前衝突進位移** | `_lunge(aid)` | `sim` 發出 `\"attack_swing\"` 事件時觸發 | `battle_view.gd:2156`: `_lunge(aid)` 執行 Tween 前衝位移並回彈 | ✅ 因果成立，由 Sim 自然驅動 |
-| **角色姿態切換與縮放** | `_set_player_pose(pose, true)` | `sim` 發出 `\"attack_swing\"` 事件時觸發 | `battle_view.gd:2168`: 切換 `attack` 姿態；`:2017-2019` 執行 `scale = Vector2(1.1, 0.94)` 並在 0.12s 內回彈 Vector2.ONE；`:2171` 於 0.2s 後接 `recover`；`:2175` 於 0.45s 後回 `idle` | ✅ 因果成立，由 Sim 事件鏈自然驅動 |
-| **受擊閃白（敵方反饋）** | `_flash(body, color)` | `sim` 發出 `\"hit\"` 事件時觸發 | `battle_view.gd:2193`（暴擊時閃白 `Color(2.5, 0.6, 0.4)`）/ `:2196`（普通命中閃白 `Color(1, 0.3, 0.3)`） | ✅ 因果成立，非貼圖切換所能產生 |
-| **傷害浮動跳字** | `_spawn_float(target, dmg, color)` | `sim` 發出 `\"hit\"` 事件時觸發 | `battle_view.gd:2190`（暴擊金黃 `Color(1.0, 0.85, 0.2)`）/ `:2195`（普通紅橘 `Color(1, 0.4, 0.35)`） | ✅ 因果成立，由 Sim 命中結算觸發 |
-| **屏幕震顫反饋** | `_shake = 0.35` | `sim` 發出 `\"hit\"` / `\"fury_awakening\"` 事件時觸發 | `battle_view.gd:2191`（暴擊震屏 0.35）/ `:2200`（王者斬 0.4）/ `:2292`（暴怒覺醒 0.35） | ✅ 因果成立，由 Sim 事件鏈自然驅動 |
-| **命中停頓（Hitstop）** | `trigger_hit_stop(duration)` | `sim` 發出 `\"hit\"` / `\"fury_awakening\"` 事件時觸發 | `battle_view.gd:2192`: `trigger_hit_stop(0.08)`（命中 0.08s）；`:2293`: `trigger_hit_stop(0.1)`（暴怒覺醒 0.1s） | ✅ 因果成立，精確對齊 0.08s / 0.1s 邏輯 |
-| **「暴怒覺醒！」大字跳字** | `_spawn_float(\"player\", \"暴怒覺醒！\", ...)` | `battle_sim.gd:2929` 的 `sim.trigger_fury_awakening()` 向已連線之 view 發出 `\"fury_awakening\"` 事件時觸發 | `battle_view.gd:2283` 的 `\"fury_awakening\"` 分支；`:2291` 執行 `_spawn_float(\"player\", _t(\"暴怒覺醒！\"), Color(1.0, 0.4, 0.1), true)`；`:2294` `_flash(player_body, Color(3.0, 1.5, 0.5))` | ✅ 因果成立，需在 view 連線後呼叫 sim |
+| **角色前衝突進位移** | `_lunge(aid)` | `sim` 發出 `"attack_swing"` 事件時觸發 | `battle_view.gd` 的 `attack_swing` 事件分支：呼叫 `_lunge(aid)` 執行 Tween 前衝位移並回彈 | ✅ 因果成立，由 Sim 自然驅動 |
+| **角色姿態切換與縮放** | `_set_player_pose(pose, true)` | `sim` 發出 `"attack_swing"` 事件時觸發 | `battle_view.gd` 的 `attack_swing` 事件分支：切換 `attack` 姿態；`_set_player_pose()` 執行 `scale = Vector2(1.1, 0.94)` 並在 0.12s 內回彈 Vector2.ONE；隨後定時接 `recover` 與回 `idle` | ✅ 因果成立，由 Sim 事件鏈自然驅動 |
+| **受擊閃白（敵方反饋）** | `_flash(body, color)` | `sim` 發出 `"hit"` 事件時觸發 | `battle_view.gd` 的 `hit` 事件分支：暴擊時閃白 `Color(2.5, 0.6, 0.4)`，普通命中閃白 `Color(1, 0.3, 0.3)` | ✅ 因果成立，非貼圖切換所能產生 |
+| **傷害浮動跳字** | `_spawn_float(target, dmg, color)` | `sim` 發出 `"hit"` 事件時觸發 | `battle_view.gd` 的 `hit` 事件分支：暴擊金黃 `Color(1.0, 0.85, 0.2)`，普通紅橘 `Color(1, 0.4, 0.35)` | ✅ 因果成立，由 Sim 命中結算觸發 |
+| **屏幕震顫反饋** | `_shake = 0.35` | `sim` 發出 `"hit"` / `"fury_awakening"` 事件時觸發 | `battle_view.gd` 的 `hit` 事件分支設定 `_shake = 0.35`（暴擊）/ 王者斬 0.4；`fury_awakening` 事件分支設定 `_shake = 0.35` | ✅ 因果成立，由 Sim 事件鏈自然驅動 |
+| **命中停頓（Hitstop）** | `trigger_hit_stop(duration)` | `sim` 發出 `"hit"` / `"fury_awakening"` 事件時觸發 | `battle_view.gd` 的 `hit` 事件分支：呼叫 `trigger_hit_stop(0.08)`（命中 0.08s）；`fury_awakening` 事件分支呼叫 `trigger_hit_stop(0.1)`（暴怒覺醒 0.1s） | ✅ 因果成立，精確對齊 0.08s / 0.1s 邏輯 |
+| **「暴怒覺醒！」大字跳字** | `_spawn_float("player", "暴怒覺醒！", ...)` | `battle_sim.gd` 的 `sim.trigger_fury_awakening()` 向已連線之 view 發出 `"fury_awakening"` 事件時觸發 | `battle_view.gd` 的 `"fury_awakening"` 分支：手動覺醒呼叫 `_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)`；並以 `_flash(player_body, Color(3.0, 1.5, 0.5))` 展現金光 | ✅ 因果成立，需在 view 連線後呼叫 sim |
 
 ---
 
-### 4. review.md 第 19e-4 條專項自檢：臨時 SceneTree 實測回填數據查證表
+### 4. review.md 第 19e-4 / 19e-5 條專項自檢：SceneTree 實測回填數據查證表
 
-依據 `references/review.md` 第 19e-4 條要求，將 REC-01～REC-05 之序列以 SceneTree 腳本完整實跑 900 幀，監聽 `sim.event`（`battle_sim.gd:6`）事件流，數出實測次數與時間，嚴禁憑感覺填寫：
+依據 `references/review.md` 第 19e-4 條與第 19e-5 條要求，將 REC-01～REC-05 之序列以 SceneTree 腳本打亂順序逐族完整實跑，監聽 `sim.event`（`battle_sim.gd:6`）事件流，數出實測次數與精確 `sim.time`。全表移除測試迴圈內部計數幀數，嚴禁多列複製 4.00s 之假性一致，嚴禁宣稱非穩定之 N 秒擊殺：
 
-| 實機序列 | 測試種族與模式 | 裝備 ID (bases) | 首個 attack_swing (sim.time / 幀數) | 首個 hit (sim.time / 幀數 / 傷害) | attack_swing 次數 | hit 次數 | skill_hit 次數 | fury_awakening 次數 | 戰鬥結束時間 (battle_ended) |
+| 實機序列 | 測試種族與模式 | 裝備 ID (bases) | 首個 attack_swing (sim.time) | 首個 hit (sim.time / 傷害) | attack_swing 次數 | hit 次數 | skill_hit 次數 | fury_awakening 次數 | 戰鬥狀態說明 |
 |---|---|---|---|---|---|---|---|---|---|
-| **REC-01** | 兔族 vs 荒路殘兵 (`road_bandit`) | `dawn_blade` | `sim.time = 4.00s` / 第 562 幀 | `sim.time = 4.26s` / 第 599 幀 / 75 點 | 1 次 | 1 次 | 0 次（平砍無技能） | 0 次 | 4.26s（勝利） |
-| **REC-02** | 獅族 vs 黑鏽浪人 (`black_ronin`) | `knight_pike` | `sim.time = 4.00s` / 第 561 幀 | `sim.time = 4.29s` / 第 602 幀 / 65 點 | 1 次 | 1 次 | 0 次（平砍無技能） | 0 次 | 持續對戰中 |
-| **REC-03** | 狐族 vs 霧影 (`fog_shade`) | `star_rod` | `sim.time = 4.00s` / 第 561 幀 | `sim.time = 4.33s` / 第 608 幀 / 56 點 | 1 次 | 1 次 | 0 次（平砍無技能） | 0 次 | 持續對戰中 |
-| **REC-04** | 豬族 vs 潮襲海盜 (`coast_raider`) | `anvil_hammer` | `sim.time = 4.00s` / 第 565 幀 | `sim.time = 4.40s` / 第 623 幀 / 55 點 | 1 次 | 1 次 | 0 次（平砍無技能） | 0 次 | 持續對戰中 |
-| **REC-05** | 猴族 vs 竹影拳靈 (`bamboo_spirit`) | `hunt_claw` | `sim.time = 2.86s` / 第 396 幀（狂暴攻速） | `sim.time = 3.03s` / 第 420 幀 / 93 點 | 1 次 | 2 次（連擊命中） | 0 次（狂暴連爪） | 1 次（0.00s 觸發） | 3.03s（勝利） |
+| **REC-01** | 兔族 vs 荒路殘兵 (`road_bandit`) | `dawn_blade` | `sim.time = 4.00s` | `sim.time = 4.27s` / 75 點 | 1 次 | 1 次 | 0 次（平砍無技能） | 0 次 | 首次命中 4.27s，之後戰鬥可能延續，錄影窗不依賴擊殺 |
+| **REC-02** | 獅族 vs 黑鏽浪人 (`black_ronin`) | `knight_pike` | `sim.time = 3.65s` | `sim.time = 3.92s` / 65 點 | 1 次 | 1 次 | 0 次（平砍無技能） | 0 次 | 持續對戰中 |
+| **REC-03** | 狐族 vs 霧影 (`fog_shade`) | `star_rod` | `sim.time = 3.58s` | `sim.time = 3.85s` / 56 點 | 1 次 | 1 次 | 0 次（平砍無技能） | 0 次 | 持續對戰中 |
+| **REC-04** | 豬族 vs 潮襲海盜 (`coast_raider`) | `anvil_hammer` | `sim.time = 4.00s` | `sim.time = 4.27s` / 55 點 | 1 次 | 1 次 | 0 次（平砍無技能） | 0 次 | 持續對戰中 |
+| **REC-05** | 猴族 vs 竹影拳靈 (`bamboo_spirit`) | `hunt_claw` | `sim.time = 2.87s`（狂暴攻速） | `sim.time = 3.03s` / 93 點 | 1 次 | 2 次（連擊命中） | 0 次（狂暴連爪） | 1 次（0.00s 觸發） | 3.03s（連擊擊倒，錄影窗於結束前完成） |
 
-- **實測結論**：
-  1. 五族普通攻擊的第一個 `attack_swing` 出手點均穩定落在 `sim.time = 4.00s`（第 560～565 幀），命中受擊點落在 `sim.time = 4.26s～4.40s`（第 599～623 幀），證實舊版 0.8s～1.3s 觀察窗完全不成立，已全數校正為實測觀察區間。
-  2. 猴族在開局手動設 `p.rage = 100.0` 並呼叫 `sim.trigger_fury_awakening()`，在第 0 幀（sim.time 0.00s）100% 成功觸發 `fury_awakening` 事件與「暴怒覺醒！」橘紅跳字、停頓與金光閃白；狂暴狀態下出手時間提前至 2.86s，連擊命中於 3.03s 達成擊倒獲勝，錄影窗完全收錄在 3.03s 結束前。
-  3. 平砍狀態下 `skill_hit` 為 0 次，因此全面從分鏡描述與第六節素材表中剔除未觸發之技能 FX（`slash_arc.png`, `magic_spark.png`, `fist_burst.png`），畫面 100% 忠實呈現普攻位移、閃白、跳字、震屏與 Hitstop 停頓。
+- **實測結論（落實第 19e-5 條）**：
+  1. 五族普通攻擊的第一個 `attack_swing` 出手點由各族 speed 與敵人素質共同決定，實測完全可重現且呈現真實數值差異：兔族（4.00s→4.27s）、獅族（3.65s→3.92s）、狐族（3.58s→3.85s）、豬族（4.00s→4.27s）、猴族（狂暴 2.87s→3.03s）。絕非往下複製之假性一致。
+  2. 觀察窗全面排除測試內部幀數計數，統一改以 `sim.time` 作為判定與控制依據，錄影腳本應以 `while sim.time < start_t: step()` 與 `while sim.time < end_t: step()` 精確錄製。
+  3. 兔族與其餘各族戰鬥之擊殺時間受暴擊 rng 影響（例如兔族同場有時 4.27s 結束、有時打至 9.03s），因此錄影窗設定著重於 3.8s～4.8s 捕捉完整的出手與首次命中反饋，不依賴擊殺結束。猴族則在連爪擊殺於 3.03s 結束前完成錄影收錄。
+  4. 平砍狀態下 `skill_hit` 為 0 次，因此全面從分鏡描述與第六節素材表中剔除未觸發之技能 FX（`slash_arc.png`, `magic_spark.png`, `fist_burst.png`），畫面 100% 忠實呈現普攻位移、閃白、跳字、震屏與 Hitstop 停頓。
 
 ---
 
@@ -524,7 +525,7 @@ Shot 7 (15.5-18.0s)【合成·點題】純黑底板微推，後製疊加官方�
 
 1. **實機素材錄製（sideworker / dev）**：
    - 啟動既有 Godot 引擎（搭配 Xvfb 虛擬顯示器），依據第五節之 REC-01 至 REC-05 操作序列，分別錄製 5 段 1080×1920 (9:16) 實機無損影片（每段 2.50 秒）。
-   - 錄製時嚴格遵循：先設定 GameState 種族與裝備真實底層 ID（`dawn_blade`, `knight_pike`, `star_rod`, `anvil_hammer`, `hunt_claw`），啟動對應真實敵人模式（`\"road_bandit\"`, `\"black_ronin\"`, `\"fog_shade\"`, `\"coast_raider\"`, `\"bamboo_spirit\"`），將錄影區間鎖定在實測出手的關鍵秒數（約第 530～630 幀 / sim.time 3.8s～4.5s；猴族為開局覺醒 ＋ 第 380～430 幀），捕捉 Sim 驅動之真實打擊事件流。
+   - 錄製時嚴格遵循：先設定 GameState 種族與裝備真實底層 ID（`dawn_blade`, `knight_pike`, `star_rod`, `anvil_hammer`, `hunt_claw`），啟動對應真實敵人模式（`"road_bandit"`, `"black_ronin"`, `"fog_shade"`, `"coast_raider"`, `"bamboo_spirit"`），將錄影區間依據各族實測 sim.time 觀察窗精準錄製：兔族（3.8s～4.8s）、獅族（3.4s～4.4s）、狐族（3.3s～4.3s）、豬族（3.8s～4.8s）；猴族為開局 0.00s 暴怒覺醒 ＋ 2.7s～3.1s 狂暴連爪終結，以 sim.time 控制錄影腳本（例如 while sim.time < start_t: step(); start_record(); while sim.time < end_t: step()），精準捕捉 Sim 驅動之真實打擊事件流。
    - ⛔ **嚴禁在錄影腳本中直呼 `_set_player_pose()` 當作攻擊入口**！直接錄製 `battle.setup(mode)` 推進的完整戰鬥過程。
 2. **開場懸念素材準備**：
    - 依據 Shot 1 規劃，直接使用既有已核准之官方主視覺資產 `branding/key_visual_main.png`（1376×768）。
