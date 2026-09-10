@@ -514,8 +514,8 @@
    "id": "battle-idle-macaque",
    "cat": "遊戲",
    "title": "猴族戰鬥待機顯示當前換裝",
-   "status": "測試中",
-   "note": "猴族戰鬥待機換裝與攻擊幀爪刃三審通過，待併入主線",
+   "status": "已上線",
+   "note": "猴族戰鬥待機換裝與攻擊幀已合併 main，0 SCRIPT ERROR，battle 測試 25/25 全綠",
    "keys": [
     "猴族戰鬥待機顯示"
    ]
