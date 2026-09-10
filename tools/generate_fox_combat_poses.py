@@ -295,17 +295,18 @@ def generate_fox_poses():
 
     # =========================================================================
     # 4. RECOVER (Low-crouch recoil absorption / folded limbs / grounded staff)
+    # Calibrated for bbox height consistency (h=103 vs idle 109, max diff <= 10.5%)
     # =========================================================================
     shifts_recover = {
-        "ear_l": (-2, 22), "ear_r": (2, 22), "forehead": (0, 22),
-        "eye_l": (-1, 20), "eye_r": (1, 20), "snout": (0, 20),
-        "neck": (0, 18), "core": (0, 16), "shoulder_l": (-4, 16), "shoulder_r": (4, 16),
-        "key_mount": (-4, 15), "key_top": (-4, 15), "key_bot": (-4, 15),
-        "pelvis": (0, 14), "hip_l": (-8, 12), "hip_r": (8, 12),
-        "tail_base": (0, 12), "tail_mid": (-8, 8), "tail_tip": (-12, 4),
-        "knee_l": (-9, 8), "foot_l": (-4, 2),
-        "knee_r": (9, 8), "foot_r": (4, 2),
-        "hand": (-2, 16),
+        "ear_l": (-4, 7), "ear_r": (4, 7), "forehead": (0, 7),
+        "eye_l": (-2, 6), "eye_r": (2, 6), "snout": (0, 6),
+        "neck": (0, 6), "core": (0, 5), "shoulder_l": (-6, 5), "shoulder_r": (6, 5),
+        "key_mount": (-6, 5), "key_top": (-6, 5), "key_bot": (-6, 5),
+        "pelvis": (0, 4), "hip_l": (-12, 4), "hip_r": (12, 4),
+        "tail_base": (0, 4), "tail_mid": (-12, 3), "tail_tip": (-17, 1),
+        "knee_l": (-13, 3), "foot_l": (-6, 1),
+        "knee_r": (13, 3), "foot_r": (6, 1),
+        "hand": (-2, 10),
     }
     src_pts = list(anchors)
     dst_pts = list(anchors)
@@ -315,7 +316,7 @@ def generate_fox_poses():
         dst_pts.append((bx + dx, by + dy))
         
     warped_recover = warp_image_idw(body_clean, src_pts, dst_pts, power=2.0, epsilon=4.0)
-    staff_recover = place_rigid_staff(clean_staff, deg=0, target_hand=(88, 102))
+    staff_recover = place_rigid_staff(clean_staff, deg=-2, target_hand=(88, 96))
     
     recover_shadow = build_contact_shadow(cx=60, cy=121, rx=44, ry=6, blur=0.7)
     recover_img = Image.alpha_composite(recover_shadow, warped_recover)
@@ -324,17 +325,18 @@ def generate_fox_poses():
 
     # =========================================================================
     # 5. SKILL (Ascendant ultimate pose / staff raised high skyward toward upper-right)
+    # Calibrated for bbox height consistency (h=109 vs idle 109, max diff <= 10.5%)
     # =========================================================================
     shifts_skill = {
-        "ear_l": (-2, -8), "ear_r": (3, -8), "forehead": (1, -7),
-        "eye_l": (0, -7), "eye_r": (2, -7), "snout": (2, -10),
-        "neck": (1, -5), "core": (1, -4), "shoulder_l": (-2, -5), "shoulder_r": (4, -7),
-        "key_mount": (-1, -4), "key_top": (-1, -4), "key_bot": (-1, -4),
-        "pelvis": (0, -3), "hip_l": (-1, -3), "hip_r": (1, -3),
-        "tail_base": (-1, -4), "tail_mid": (-7, -10), "tail_tip": (-12, -16),
-        "knee_l": (0, -2), "foot_l": (0, -1),
-        "knee_r": (0, -2), "foot_r": (0, -1),
-        "hand": (4, -22),
+        "ear_l": (-3, 1), "ear_r": (3, 1), "forehead": (1, 1),
+        "eye_l": (1, 1), "eye_r": (3, 1), "snout": (4, 1),
+        "neck": (2, -2), "core": (2, -2), "shoulder_l": (-3, -3), "shoulder_r": (6, -4),
+        "key_mount": (-3, -3), "key_top": (-4, -3), "key_bot": (-4, -3),
+        "pelvis": (1, -1), "hip_l": (-4, -1), "hip_r": (4, -1),
+        "tail_base": (-2, -4), "tail_mid": (-12, -13), "tail_tip": (-20, -18),
+        "knee_l": (-6, 0), "foot_l": (-3, 0),
+        "knee_r": (6, 0), "foot_r": (3, 0),
+        "hand": (4, -18),
     }
     src_pts = list(anchors)
     dst_pts = list(anchors)
@@ -344,8 +346,25 @@ def generate_fox_poses():
         dst_pts.append((bx + dx, by + dy))
         
     warped_skill = warp_image_idw(body_clean, src_pts, dst_pts, power=2.0, epsilon=4.0)
-    staff_skill = place_rigid_staff(clean_staff, deg=-45, target_hand=(86, 68))
+
+    # Reinforced rigid staff for skill: bridge floating ring and shaft gaps so staff is 100% rigid & unified
+    staff_skill_src = clean_staff.copy()
+    draw_cs_skill = ImageDraw.Draw(staff_skill_src)
+    draw_cs_skill.polygon([(86, 54), (99, 56), (99, 60), (86, 58)], fill=(120, 80, 50, 255))
+    draw_cs_skill.line([(86, 54), (99, 56)], fill=(50, 30, 20, 255), width=1)
+    draw_cs_skill.line([(86, 58), (99, 60)], fill=(50, 30, 20, 255), width=1)
+    draw_cs_skill.line([(91, 95), (88, 99)], fill=(115, 75, 45, 255), width=2)
+    draw_cs_skill.line([(88, 108), (89, 117)], fill=(115, 75, 45, 255), width=2)
+
+    staff_skill = place_rigid_staff(staff_skill_src, deg=-45, target_hand=(86, 68))
     
+    # Right arm / sleeve connection for raised staff
+    arm_layer_skill = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+    draw_arm_skill = ImageDraw.Draw(arm_layer_skill)
+    draw_arm_skill.polygon([(78, 64), (84, 62), (88, 68), (86, 72), (80, 70)], fill=(30, 22, 28, 255))
+    draw_arm_skill.polygon([(79, 65), (83, 63), (87, 68), (85, 71), (81, 69)], fill=(55, 75, 95, 255))
+    draw_arm_skill.ellipse([84, 66, 88, 70], fill=(210, 175, 90, 255))
+
     skill_aura = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
     a_draw = ImageDraw.Draw(skill_aura)
     a_draw.ellipse([98, 18, 114, 34], fill=(80, 235, 255, 140))
@@ -355,6 +374,7 @@ def generate_fox_poses():
     
     skill_shadow = build_contact_shadow(cx=60, cy=119, rx=34, ry=4, blur=0.6)
     skill_img = Image.alpha_composite(skill_shadow, warped_skill)
+    skill_img = Image.alpha_composite(skill_img, arm_layer_skill)
     skill_img = Image.alpha_composite(skill_img, staff_skill)
     skill_img = Image.alpha_composite(skill_img, skill_aura)
     poses["skill"] = skill_img
