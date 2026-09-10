@@ -454,8 +454,8 @@
    "id": "explore-walk-paperdoll",
    "cat": "遊戲",
    "title": "探索走路改執行期紙娃娃合成",
-   "status": "草稿",
-   "note": "PaperdollRenderer 分部位走路關節運動學合成與換裝即時疊合",
+   "status": "測試中",
+   "note": "PaperdollRenderer 走路合成跑通，待驗收",
    "keys": [
     "探索走路改執行期"
    ]
