@@ -392,26 +392,26 @@ const RABBIT_WALK_GAIT: Array[Dictionary] = [
 	{
 		"name": "Frame 0",
 		"torso_dy": 0,
-		"leg_l_rot": 10.5, "leg_l_dx": -2, "leg_l_dy": 0,
-		"leg_r_rot": -10.5, "leg_r_dx": 2, "leg_r_dy": 0,
+		"leg_l_rot": 12.5, "leg_l_dx": -2, "leg_l_dy": 0,
+		"leg_r_rot": -12.5, "leg_r_dx": 2, "leg_r_dy": 0,
 	},
 	{
 		"name": "Frame 1",
 		"torso_dy": -1,
-		"leg_l_rot": 0.0, "leg_l_dx": 0, "leg_l_dy": 1,
-		"leg_r_rot": 15.0, "leg_r_dx": -3, "leg_r_dy": -4,
+		"leg_l_rot": 13.0, "leg_l_dx": 0, "leg_l_dy": 1,
+		"leg_r_rot": 22.0, "leg_r_dx": -5, "leg_r_dy": -4,
 	},
 	{
 		"name": "Frame 2",
 		"torso_dy": 0,
-		"leg_l_rot": -10.5, "leg_l_dx": 2, "leg_l_dy": 0,
-		"leg_r_rot": 10.5, "leg_r_dx": -2, "leg_r_dy": 0,
+		"leg_l_rot": -12.5, "leg_l_dx": 2, "leg_l_dy": 0,
+		"leg_r_rot": 12.5, "leg_r_dx": -2, "leg_r_dy": 0,
 	},
 	{
 		"name": "Frame 3",
 		"torso_dy": -1,
-		"leg_l_rot": 15.0, "leg_l_dx": -3, "leg_l_dy": -4,
-		"leg_r_rot": 0.0, "leg_r_dx": 0, "leg_r_dy": 1,
+		"leg_l_rot": 22.0, "leg_l_dx": -5, "leg_l_dy": -4,
+		"leg_r_rot": 13.0, "leg_r_dx": 0, "leg_r_dy": 1,
 	},
 ]
 
@@ -540,8 +540,9 @@ static func build_walk_composite_image(race: String, frame: int, slot_selection:
 					leg_l.set_pixel(x, y, c)
 				else:
 					leg_r.set_pixel(x, y, c)
-				if x >= 54 and x <= 68 and y >= 96 and y <= 104:
-					pelvis.set_pixel(x, y, c)
+			# 骨盆完整覆蓋切割線上下各 3px (y=95..101)，隨軀幹位移消除接縫橫向空洞 (Rule 4b-13)
+			if y >= 95 and y <= 101:
+				pelvis.set_pixel(x, y, c)
 
 	var gait: Dictionary = RABBIT_WALK_GAIT[f_idx]
 	var tdy: int = int(gait.get("torso_dy", 0))
@@ -586,8 +587,40 @@ static func build_walk_composite_image(race: String, frame: int, slot_selection:
 	# z=20: head_unit
 	_blend_slot(canvas, entry_map, SLOT_HEAD_UNIT, Vector2i(0, tdy))
 
-	# z=25: costume 玩具外裝獨立層即時疊合（不焊進貼圖）
-	_blend_slot(canvas, entry_map, SLOT_COSTUME, Vector2i(0, tdy))
+	# z=25: costume 玩具外裝獨立層即時疊合（下擺隨雙腿分段位移與旋轉，防止布料遮蔽腿部步態 Rule 4b-12）
+	var costume_entry: Dictionary = entry_map.get(SLOT_COSTUME, {})
+	var costume_tex: Texture2D = costume_entry.get("texture", null)
+	if costume_tex:
+		var cos_img: Image = costume_tex.get_image()
+		if cos_img and not cos_img.is_empty():
+			if cos_img.get_format() != Image.FORMAT_RGBA8:
+				cos_img = cos_img.duplicate()
+				cos_img.convert(Image.FORMAT_RGBA8)
+			var cos_torso := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+			var cos_skirt_l := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+			var cos_skirt_r := Image.create(128, 128, false, Image.FORMAT_RGBA8)
+			for y in range(128):
+				for x in range(128):
+					var c: Color = cos_img.get_pixel(x, y)
+					if c.a <= 0.0:
+						continue
+					if y < 98:
+						cos_torso.set_pixel(x, y, c)
+					else:
+						if x <= 61:
+							cos_skirt_l.set_pixel(x, y, c)
+						else:
+							cos_skirt_r.set_pixel(x, y, c)
+			var c_lr_rot: float = lr_rot * 0.7
+			var c_lr_trans := Vector2i(int(round(float(lr_trans.x) * 0.7)), int(round(float(lr_trans.y) * 0.7)))
+			var cos_skirt_r_tx := _rotate_and_translate_layer(cos_skirt_r, c_lr_rot, pivot_r, c_lr_trans)
+			var c_ll_rot: float = ll_rot * 0.7
+			var c_ll_trans := Vector2i(int(round(float(ll_trans.x) * 0.7)), int(round(float(ll_trans.y) * 0.7)))
+			var cos_skirt_l_tx := _rotate_and_translate_layer(cos_skirt_l, c_ll_rot, pivot_l, c_ll_trans)
+
+			canvas.blend_rect(cos_skirt_r_tx, full_rect, Vector2i(0, tdy))
+			canvas.blend_rect(cos_skirt_l_tx, full_rect, Vector2i(0, tdy))
+			canvas.blend_rect(cos_torso, full_rect, Vector2i(0, tdy))
 
 	# z=30: optic_core
 	_blend_slot(canvas, entry_map, SLOT_OPTIC_CORE, Vector2i(0, tdy))

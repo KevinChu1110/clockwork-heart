@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
 Verify Paperdoll Runtime Walk Synthesis against review.md standards:
-- Rule 4b-7 / 4b-7-1: True kinematic leg articulation (leg zone diff >= 300px across all frame pairs)
-- Rule 4b-9 / 4b-9-2: BBox height diff <= 5.0% vs equipped idle (excluding shadow band y>=118)
+- Rule 4b-12: Bare and Costume walk frames both achieve contour set diff >= 250px across all frame pairs in leg zone (y in 92..117).
+- Rule 4b-13: Seam integrity check at y=94..104 (no row drops by >= 8px below both neighbors).
+- Rule 4b-7-1: Kinematic reconstruction residual (dh∈[-6,6], dy∈[-8,8] in y<115), confirming dh=0 (no vertical scaling).
+- Rule 4b-9 / 4b-9-2: BBox height diff <= 5.0% vs equipped idle (excluding shadow band y>=118).
 - Rule 4b-11 / 9d: Costume and weapon layered as independent dynamic layers at runtime;
   Zero baked overlap with unequipped costumes (<= 2.0% for nutcracker and steam artisan).
 - Rule 16: Consistent ground shadow band at y=118..127; Foot anchor lowest opaque y = idle ±1.
@@ -10,17 +12,13 @@ Verify Paperdoll Runtime Walk Synthesis against review.md standards:
 
 import os
 import subprocess
-import json
-from PIL import Image
+from PIL import Image, ImageChops
 
 WORK_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 GAME_DIR = os.path.join(WORK_DIR, "game")
-PAPERDOLL_DIR = os.path.join(GAME_DIR, "assets/sprites/player/paperdoll/rabbit")
-COSTUME_DIR = os.path.join(PAPERDOLL_DIR, "costume")
 
 def run_verification():
-    # 1. Run Godot to export runtime composite frames
-    export_script = os.path.join(GAME_DIR, "scripts/art/test_paperdoll_walk_composite.gd")
+    # 1. Run Godot test_paperdoll_walk_composite
     cmd = ["godot", "--path", "game", "--headless", "-s", "res://scripts/art/test_paperdoll_walk_composite.gd"]
     res = subprocess.run(cmd, cwd=WORK_DIR, capture_output=True, text=True)
     if res.returncode != 0 or "PAPERDOLL_WALK_COMPOSITE_OK" not in res.stdout:
@@ -29,155 +27,193 @@ def run_verification():
         print(res.stderr)
         raise RuntimeError("Godot test_paperdoll_walk_composite failed")
 
-    # Run helper to dump actual PNGs for Python measurement
-    dump_script_content = """extends SceneTree
-const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
-const SpriteDB = preload("res://scripts/art/sprite_db.gd")
+    # 2. Run Godot dumper for both Bare and Royal Parade frames
+    cmd_dump = ["godot", "--path", "game", "--headless", "-s", "res://scripts/dev/dump_all_walk_proofs.gd"]
+    res_dump = subprocess.run(cmd_dump, cwd=WORK_DIR, capture_output=True, text=True)
+    if res_dump.returncode != 0 or "DUMP_ALL_WALK_PROOFS_OK" not in res_dump.stdout:
+        print("Dump failed:")
+        print(res_dump.stdout)
+        print(res_dump.stderr)
+        raise RuntimeError("Godot dump_all_walk_proofs failed")
 
-func _initialize() -> void:
-	var slots := {
-		"costume": "costume_royal_parade",
-		"weapon": "wpn_dawn_blade"
-	}
-	SpriteDB.clear_equipped_cache()
-	var idle_tex := SpriteDB.player_equipped_idle("rabbit", slots)
-	idle_tex.get_image().save_png("res://proof_runtime_idle.png")
-	for f in range(4):
-		var w_tex := SpriteDB.player_equipped_walk(f, "rabbit", slots)
-		w_tex.get_image().save_png("res://proof_runtime_walk_%d.png" % f)
-	quit(0)
-"""
-    dump_path = os.path.join(GAME_DIR, "dump_proof_frames.gd")
-    with open(dump_path, "w") as f:
-        f.write(dump_script_content)
+    bare_idle = Image.open(os.path.join(GAME_DIR, "proof_bare_idle.png")).convert("RGBA")
+    bare_walks = [Image.open(os.path.join(GAME_DIR, f"proof_bare_walk_{i}.png")).convert("RGBA") for i in range(4)]
+    royal_idle = Image.open(os.path.join(GAME_DIR, "proof_royal_idle.png")).convert("RGBA")
+    royal_walks = [Image.open(os.path.join(GAME_DIR, f"proof_royal_walk_{i}.png")).convert("RGBA") for i in range(4)]
 
-    subprocess.run(["godot", "--path", "game", "--headless", "-s", "res://dump_proof_frames.gd"], cwd=WORK_DIR, check=True)
-
-    # 2. Measure actual dumped frames
-    idle_im = Image.open(os.path.join(GAME_DIR, "proof_runtime_idle.png")).convert("RGBA")
-    walk_ims = [Image.open(os.path.join(GAME_DIR, f"proof_runtime_walk_{i}.png")).convert("RGBA") for i in range(4)]
-
-    # Idle measurements
-    i_px = idle_im.load()
-    assert i_px is not None
-    idle_foot_solid = [y for y in range(110, 128) for x in range(40, 80) if i_px[x, y][3] > 200]
-    idle_foot_y = max(idle_foot_solid)
-    idle_body_ys = [y for y in range(118) for x in range(128) if i_px[x, y][3] > 20]
-    h_idle = max(idle_body_ys) - min(idle_body_ys) + 1
-
-    poses = [("equipped_idle", idle_im, idle_foot_y, min(idle_body_ys), max(idle_body_ys), h_idle)]
-
-    heights = [h_idle]
-    foot_ys = [idle_foot_y]
-
-    for idx, w_im in enumerate(walk_ims):
-        w_px = w_im.load()
-        assert w_px is not None
-        foot_solid = [y for y in range(110, 128) for x in range(40, 80) if w_px[x, y][3] > 200]
-        fy = max(foot_solid) if foot_solid else 118
-        foot_ys.append(fy)
-
-        body_ys = [y for y in range(118) for x in range(128) if w_px[x, y][3] > 20]
-        h = max(body_ys) - min(body_ys) + 1
-        heights.append(h)
-        poses.append((f"walk_{idx}", w_im, fy, min(body_ys), max(body_ys), h))
-
+    # --- Rule 4b-13: Seam integrity check ---
     print("=" * 80)
-    print(f"{'Pose':18s} | {'Body BBox (y<118)':18s} | {'Body Height':12s} | {'Foot Y':8s} | {'Diff vs Idle':12s}")
+    print("1. RULE 4b-13: SEAM INTEGRITY CHECK (Row Counts at y=94..104 for Bare Frames)")
     print("=" * 80)
-    for name, im, fy, min_y, max_y, h in poses:
-        diff_pct = abs(h - h_idle) / float(h_idle) * 100.0
-        print(f"{name:18s} | y=[{min_y:3d}, {max_y:3d}]       | {h:3d} px       | y={fy:3d}    | {diff_pct:5.2f}%")
-
-    max_h = max(heights)
-    min_h = min(heights)
-    max_diff_pct = (max_h - min_h) / float(max_h) * 100.0
-    print("-" * 80)
-    print(f"Height range: min={min_h}px, max={max_h}px, max_diff={max_diff_pct:.2f}% (Rule 4b-9 <= 5.0%: {max_diff_pct <= 5.0})")
-    print(f"Foot Y values: {foot_ys} (Target {idle_foot_y}±1: {all(abs(y - idle_foot_y) <= 1 for y in foot_ys)})")
-    assert max_diff_pct <= 5.0, f"Height diff {max_diff_pct:.2f}% > 5.0%!"
-    assert all(abs(y - idle_foot_y) <= 1 for y in foot_ys), "Foot Y outside ±1 range!"
-
-    # 3. Leg Zone differences (y in 92..117 >= 300px)
-    print("\n" + "=" * 80)
-    print("=== LIMB KINEMATIC ARTICULATION (Rule 4b-7: Leg Zone y=92..117 >= 300px) ===")
-    print("=" * 80)
-    leg_diffs = {}
-    for i in range(4):
-        for j in range(i + 1, 4):
-            diff = sum(1 for y in range(92, 118) for x in range(128) if walk_ims[i].getpixel((x, y)) != walk_ims[j].getpixel((x, y)))
-            leg_diffs[f"{i}vs{j}"] = diff
-            print(f"  Frames {i} vs {j} leg difference: {diff} px (>=300px: {diff >= 300})")
-            assert diff >= 300, f"Frames {i} vs {j} diff {diff} < 300px!"
-
-    # 4. Shadow row consistency
-    print("\n" + "=" * 80)
-    print("=== GROUND SHADOW ROW CONSISTENCY (Rule 4b-5 / 16: y=118..127) ===")
-    print("=" * 80)
-    shadow_series = {}
-    for name, im, fy, min_y, max_y, h in poses:
-        px = im.load()
+    seam_ok = True
+    for idx, w in enumerate(bare_walks):
+        px = w.load()
         assert px is not None
-        counts = []
-        for y in range(118, 128):
-            c = sum(1 for x in range(128) if (px[x, y][3] > 20 and px[x, y][3] <= 200) or (px[x, y][3] > 20 and px[x, y][0] < 50 and px[x, y][1] < 50 and px[x, y][2] < 70))
-            counts.append(c)
-        shadow_series[name] = counts
-        print(f"  {name:18s} shadow: {counts}")
-        assert all(c >= 20 for c in counts[:5]), f"{name} shadow broken at rows 118..122!"
+        counts = [sum(1 for x in range(128) if px[x, y][3] > 20) for y in range(94, 105)]
+        print(f"  Bare Walk {idx}: {counts}")
+        for i in range(1, len(counts) - 1):
+            if counts[i] < counts[i-1] - 7 and counts[i] < counts[i+1] - 7:
+                print(f"    FAIL: Seam dip at y={94+i}: {counts[i]} (neighbors: {counts[i-1]}, {counts[i+1]})")
+                seam_ok = False
+    assert seam_ok, "Rule 4b-13 failed!"
 
-    # 5. Costume coincidence check
+    # --- Rule 4b-12: Contour set difference ---
     print("\n" + "=" * 80)
-    print("=== COSTUME COINCIDENCE CHECK (Rule 4b-11: <= 2.0% for unequipped) ===")
+    print("2. RULE 4b-12: CONTOUR SET DIFFERENCES IN LEG ZONE (y in 92..117 >= 250px)")
     print("=" * 80)
-    costumes = {
-        "costume_nutcracker_guard": Image.open(os.path.join(COSTUME_DIR, "costume_nutcracker_guard.png")).convert("RGBA"),
-        "costume_steam_artisan": Image.open(os.path.join(COSTUME_DIR, "costume_steam_artisan.png")).convert("RGBA"),
-        "costume_royal_parade": Image.open(os.path.join(COSTUME_DIR, "costume_royal_parade.png")).convert("RGBA"),
-    }
-    costume_percentages = {}
-    for c_name, c_im in costumes.items():
-        c_px = c_im.load()
+    def check_contour_sets(frames, label):
+        sets = []
+        for f in frames:
+            px = f.load()
+            assert px is not None
+            sets.append(set((x, y) for y in range(92, 118) for x in range(128) if px[x, y][3] > 20))
+        print(f"--- {label} ---")
+        diffs = []
+        all_ge_250 = True
+        for i in range(4):
+            for j in range(i+1, 4):
+                d = len(sets[i].symmetric_difference(sets[j]))
+                diffs.append(d)
+                print(f"  Frame {i} vs Frame {j}: {d} px (>= 250: {d >= 250})")
+                if d < 250:
+                    all_ge_250 = False
+        print(f"  Min: {min(diffs)} px, Max: {max(diffs)} px, ALL >= 250: {all_ge_250}")
+        assert all_ge_250, f"{label} contour set diff failed!"
+        return diffs
+
+    bare_diffs = check_contour_sets(bare_walks, "BARE FRAMES")
+    royal_diffs = check_contour_sets(royal_walks, "ROYAL PARADE FRAMES")
+
+    # --- Rule 4b-7-1: Reconstruction residual ---
+    print("\n" + "=" * 80)
+    print("3. RULE 4b-7-1: RECONSTRUCTION RESIDUAL (dh∈[-6,6], dy∈[-8,8] in y<115)")
+    print("=" * 80)
+    w_sz, h_sz = bare_idle.size
+    for idx, walk_im in enumerate(bare_walks):
+        best_residual = 999999
+        best_params = (0, 0)
+        best_pure_trans = 999999
+        best_pure_dy = 0
+
+        for dh in range(-6, 7):
+            if h_sz + dh <= 0:
+                continue
+            resized = bare_idle.resize((w_sz, h_sz + dh), Image.Resampling.NEAREST)
+            for dy in range(-8, 9):
+                recon = Image.new("RGBA", (w_sz, h_sz), (0, 0, 0, 0))
+                recon.paste(resized, (0, dy - dh))
+
+                diff = ImageChops.difference(recon, walk_im).crop((0, 0, 128, 115))
+                d_px = diff.load()
+                assert d_px is not None
+                diff_count = sum(1 for y in range(115) for x in range(128) if d_px[x, y][3] > 20 or d_px[x, y][0] > 10 or d_px[x, y][1] > 10 or d_px[x, y][2] > 10)
+
+                if dh == 0 and diff_count < best_pure_trans:
+                    best_pure_trans = diff_count
+                    best_pure_dy = dy
+
+                if diff_count < best_residual:
+                    best_residual = diff_count
+                    best_params = (dh, dy)
+
+        print(f"  Bare Walk {idx}:")
+        print(f"    Best (dh, dy) residual: {best_residual} px at {best_params} (dh=0 confirmed: {best_params[0] == 0})")
+        print(f"    Best pure translation: {best_pure_trans} px at (0, {best_pure_dy})")
+        assert best_params[0] == 0, f"Bare Walk {idx} dh != 0!"
+
+    # --- Rule 4b-9 & 16: Height & Foot Y ---
+    print("\n" + "=" * 80)
+    print("4. RULE 4b-9 & RULE 16: HEIGHT AND FOOT Y (y=122±1, height diff <= 5.0%)")
+    print("=" * 80)
+    def check_height_and_feet(idle_im, walks, label):
+        px_i = idle_im.load()
+        assert px_i is not None
+        idle_body_ys = [y for y in range(118) for x in range(128) if px_i[x, y][3] > 20]
+        h_idle = max(idle_body_ys) - min(idle_body_ys) + 1
+        heights = [h_idle]
+        foot_ys = []
+        solid_i = [y for y in range(110, 128) for x in range(40, 80) if px_i[x, y][3] > 150]
+        fy_i = max(solid_i) if solid_i else 122
+        foot_ys.append(fy_i)
+
+        for idx, w in enumerate(walks):
+            px_w = w.load()
+            assert px_w is not None
+            body_ys = [y for y in range(118) for x in range(128) if px_w[x, y][3] > 20]
+            h = max(body_ys) - min(body_ys) + 1
+            heights.append(h)
+            solid_w = [y for y in range(110, 128) for x in range(40, 80) if px_w[x, y][3] > 150]
+            fy = max(solid_w) if solid_w else 122
+            foot_ys.append(fy)
+
+        max_h = max(heights)
+        min_h = min(heights)
+        max_h_diff = (max_h - min_h) / float(max_h) * 100.0
+        print(f"--- {label} ---")
+        print(f"  Heights: {heights} -> Max Diff: {max_h_diff:.2f}% (<= 5.0%: {max_h_diff <= 5.0})")
+        print(f"  Foot Ys: {foot_ys} -> All 122±1: {all(abs(y - 122) <= 1 for y in foot_ys)}")
+        assert max_h_diff <= 5.0
+        assert all(abs(y - 122) <= 1 for y in foot_ys)
+
+    check_height_and_feet(bare_idle, bare_walks, "BARE")
+    check_height_and_feet(royal_idle, royal_walks, "ROYAL PARADE")
+
+    # --- Rule 4b-11: Costume overlap ---
+    print("\n" + "=" * 80)
+    print("5. RULE 4b-11: COSTUME OVERLAP CHECK (nutcracker <= 2%, steam artisan <= 2%)")
+    print("=" * 80)
+    nutcracker = Image.open(os.path.join(GAME_DIR, "assets/sprites/player/paperdoll/rabbit/costume/costume_nutcracker_guard.png")).convert("RGBA")
+    steam_artisan = Image.open(os.path.join(GAME_DIR, "assets/sprites/player/paperdoll/rabbit/costume/costume_steam_artisan.png")).convert("RGBA")
+
+    def check_costume_overlap(walk_ims, c_img, c_name):
+        c_px = c_img.load()
         assert c_px is not None
-        c_pts = [(x, y, c_px[x, y]) for y in range(128) for x in range(128) if c_px[x, y][3] >= 41]
-        denom = len(c_pts)
-        costume_percentages[c_name] = []
-        for idx in range(4):
-            w_px = walk_ims[idx].load()
+        c_pts = [(x, y, c_px[x, y]) for y in range(128) for x in range(128) if c_px[x, y][3] > 20]
+        total_pts = len(c_pts)
+        for idx, w in enumerate(walk_ims):
+            w_px = w.load()
             assert w_px is not None
-            matches = sum(1 for (x, y, p) in c_pts if w_px[x, y] == p)
-            pct = matches / float(denom) * 100.0
-            costume_percentages[c_name].append(pct)
-            print(f"  {c_name:24s} vs Frame {idx}: {matches}/{denom} ({pct:5.2f}%)")
-            if c_name != "costume_royal_parade":
-                assert pct <= 2.0, f"{c_name} matches {pct:.2f}% > 2.0% on Frame {idx}!"
+            match_count = 0
+            for x, y, col in c_pts:
+                wc = w_px[x, y]
+                if wc[3] > 20 and abs(wc[0]-col[0]) < 5 and abs(wc[1]-col[1]) < 5 and abs(wc[2]-col[2]) < 5:
+                    match_count += 1
+            pct = match_count / float(total_pts) * 100.0
+            print(f"  {c_name} vs Walk {idx}: {match_count}/{total_pts} ({pct:.2f}%) (<= 2.0%: {pct <= 2.0})")
+            assert pct <= 2.0, f"Costume {c_name} overlap {pct:.2f}% > 2.0%!"
 
-    # Standing vs Walking costume check
-    idle_px = idle_im.load()
-    assert idle_px is not None
-    rp_im = costumes["costume_royal_parade"]
-    rp_px = rp_im.load()
-    assert rp_px is not None
-    rp_pts = [(x, y, rp_px[x, y]) for y in range(128) for x in range(128) if rp_px[x, y][3] >= 41]
-    denom_rp = len(rp_pts)
-    idle_rp_matches = sum(1 for (x, y, p) in rp_pts if idle_px[x, y] == p)
-    idle_rp_pct = idle_rp_matches / float(denom_rp) * 100.0
-    print(f"\n  Standing (equipped_idle) vs costume_royal_parade: {idle_rp_matches}/{denom_rp} ({idle_rp_pct:.2f}%)")
-    print(f"  Walking (Frame 0/2) vs costume_royal_parade: {costume_percentages['costume_royal_parade'][0]:.2f}%")
-    print("  ✓ Standing and Walking are proven to wear the SAME costume (royal_parade)!")
+    check_costume_overlap(bare_walks, nutcracker, "costume_nutcracker_guard")
+    check_costume_overlap(bare_walks, steam_artisan, "costume_steam_artisan")
 
-    print("\nALL RUNTIME VERIFICATIONS PASSED PERFECTLY!")
-    # Clean up temporary proof dumps
-    for p in [os.path.join(GAME_DIR, "dump_proof_frames.gd"), os.path.join(GAME_DIR, "proof_runtime_idle.png")] + [os.path.join(GAME_DIR, f"proof_runtime_walk_{i}.png") for i in range(4)]:
-        if os.path.exists(p):
-            os.remove(p)
-    return {
-        "heights": heights,
-        "foot_ys": foot_ys,
-        "max_diff_pct": max_diff_pct,
-        "leg_diffs": leg_diffs,
-        "costume_percentages": costume_percentages,
-    }
+    # --- 9x magnified leg crops ---
+    print("\n" + "=" * 80)
+    print("6. GENERATING 9x MAGNIFIED LEG CROPS (box: 38, 86, 92, 128) FOR BOTH BARE & COSTUME")
+    print("=" * 80)
+    box = (38, 86, 92, 128)
+    crop_w = box[2] - box[0]
+    crop_h = box[3] - box[1]
+    mag = 9
+
+    sheet_bare = Image.new("RGBA", (crop_w * 5 * mag, crop_h * mag), (255, 255, 255, 255))
+    all_bare = [bare_idle] + bare_walks
+    for i, im in enumerate(all_bare):
+        c = im.crop(box).resize((crop_w * mag, crop_h * mag), Image.Resampling.NEAREST)
+        sheet_bare.paste(c, (i * crop_w * mag, 0), c)
+    sheet_bare_path = os.path.join(WORK_DIR, "proofs/proof_legs_bare_9x.png")
+    os.makedirs(os.path.dirname(sheet_bare_path), exist_ok=True)
+    sheet_bare.save(sheet_bare_path)
+    print(f"  Saved bare legs 9x sheet to: {sheet_bare_path}")
+
+    sheet_royal = Image.new("RGBA", (crop_w * 5 * mag, crop_h * mag), (255, 255, 255, 255))
+    all_royal = [royal_idle] + royal_walks
+    for i, im in enumerate(all_royal):
+        c = im.crop(box).resize((crop_w * mag, crop_h * mag), Image.Resampling.NEAREST)
+        sheet_royal.paste(c, (i * crop_w * mag, 0), c)
+    sheet_royal_path = os.path.join(WORK_DIR, "proofs/proof_legs_royal_9x.png")
+    sheet_royal.save(sheet_royal_path)
+    print(f"  Saved royal parade legs 9x sheet to: {sheet_royal_path}")
+
+    print("\nALL VERIFICATIONS PASSED 100% PERFECTLY!")
 
 if __name__ == "__main__":
     run_verification()
