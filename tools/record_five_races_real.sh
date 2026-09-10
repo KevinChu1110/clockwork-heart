@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT="/opt/side/bravesoul-game"
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
 OUT_DIR="$ROOT/docs/marketing/shots"
 PROOF_DIR="$ROOT/proofs/combat_feel"
 TMP_DIR="/root/tmp_workspace"
 mkdir -p "$OUT_DIR" "$PROOF_DIR" "$TMP_DIR"
+
+echo "=== [0/6] IMPORTING ASSETS (review.md 21g) ==="
+godot --path game --headless --import
 
 DISP=":95"
 killall -9 Xvfb 2>/dev/null || true
@@ -53,9 +56,9 @@ for race in "${RACES[@]}"; do
     done
     echo ">>> Godot ready confirmed for $race in ${WAITED}00ms"
 
-    # 啟動 ffmpeg 錄製 6 秒無損 1280x720
+    # 啟動 ffmpeg 錄製 7 秒無損 1280x720 (涵蓋 6.0s 觀察窗)
     ffmpeg -y -loglevel error -f x11grab -draw_mouse 0 -framerate 30 -video_size 1280x720 -i "$DISP" \
-           -t 6.0 -c:v libx264 -preset veryfast -pix_fmt yuv420p "$RAW_16X9" &
+           -t 7.0 -c:v libx264 -preset veryfast -pix_fmt yuv420p "$RAW_16X9" &
     FF_PID=$!
 
     wait "$FF_PID" || true

@@ -36,13 +36,10 @@ func _process(delta: float) -> bool:
 		print(">>> [CAPTURE] Setup GameState for %s (wpn=%s, mode=%s)" % [_race, cfg.wpn, cfg.mode])
 		var gs: Node = root.get_node_or_null("GameState")
 		if gs:
-			gs.call("reset_new_game")
+			gs.call("reset_new_game", _race)
 			gs.set("player_race", _race)
 			gs.set("gold", 2000)
-			gs.set("weapon_tier", 3)
-			gs.set("weapon_atk", 40)
-			gs.call("set_flag", "c1_forged", true)
-			gs.call("set_flag", "tut_done", true)
+			gs.set("weapon_atk", 0)
 			gs.set("skill_slash_lv", 3)
 
 		var eq: Node = root.get_node_or_null("EquipmentSystem")
@@ -56,6 +53,7 @@ func _process(delta: float) -> bool:
 				gs.set("weapon_loadout_active", 0)
 				gs.equip_worn[uid] = inst
 				gs.equip_slots["weapon"] = uid
+				gs.set("weapon_atk", 0)
 				print(">>> [CAPTURE] Equipped %s uid=%s" % [cfg.wpn, uid])
 
 		var b_scn: PackedScene = load("res://scenes/battle/battle.tscn")
@@ -95,10 +93,10 @@ func _process(delta: float) -> bool:
 		_sim_elapsed += delta
 		if _is_ended:
 			_ended_timer += delta
-			if _ended_timer >= 1.2:
+			if _ended_timer >= 1.5:
 				print(">>> [CAPTURE] Finished recording after battle_end at sim_elapsed=%.2f" % _sim_elapsed)
 				quit(0)
-		elif _sim_elapsed >= 5.8:
+		elif _sim_elapsed >= 7.0:
 			print(">>> [CAPTURE] Finished recording window at sim_elapsed=%.2f" % _sim_elapsed)
 			quit(0)
 	return false

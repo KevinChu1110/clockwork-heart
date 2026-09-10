@@ -136,6 +136,20 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		if ResourceLoader.exists(custom_slice_clean) or FileAccess.file_exists(custom_slice_clean):
 			return custom_slice_clean
 
+		# 各族裝備底層 id 與族內切片命名對照（確保 base_id 映射至族內專屬圖層，非通用備援）
+		const RACE_WEAPON_MAP := {
+			"rabbit": {"dawn_blade": "wpn_dawn_blade"},
+			"lion": {"knight_pike": "wpn_knight_lance", "ash_spear": "wpn_knight_lance"},
+			"macaque": {"hunt_claw": "wpn_spring_claws"},
+			"fox": {"star_rod": "wpn_astral_staff"},
+			"boar": {"anvil_hammer": "wpn_anvil_greathammer"},
+		}
+		if sid == SLOT_WEAPON and RACE_WEAPON_MAP.has(rid) and RACE_WEAPON_MAP[rid].has(clean_id):
+			var mapped_name: String = RACE_WEAPON_MAP[rid][clean_id]
+			var custom_mapped := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, mapped_name]
+			if ResourceLoader.exists(custom_mapped) or FileAccess.file_exists(custom_mapped):
+				return custom_mapped
+
 	# 2. 通用裝備紙娃娃目錄 (weapon, armor, accessory, key, curio)
 	if sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 		var uni_path := _resolve_universal_equipment_path(sid, iid)

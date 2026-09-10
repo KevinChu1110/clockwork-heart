@@ -5,7 +5,7 @@ import hashlib
 import subprocess
 from PIL import Image, ImageChops
 
-ROOT = "/opt/side/bravesoul-game"
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 MKT_SHOTS = f"{ROOT}/docs/marketing/shots"
 PROOF_DIR = f"{ROOT}/proofs/combat_feel"
 TMP_DIR = "/root/tmp_workspace"
@@ -13,61 +13,77 @@ os.makedirs(MKT_SHOTS, exist_ok=True)
 os.makedirs(PROOF_DIR, exist_ok=True)
 os.makedirs(TMP_DIR, exist_ok=True)
 
+# 依總監審查意見 (review.md 19e-6)：
+# 錄製窗起點壓在該族 attack_swing 前 0.5s、長度至少 2.5s
+# 兔獅狐豬取 3.5s~6.0s (ss=3.50, duration=2.50)
+# 猴取 2.4s~4.9s (ss=2.40, duration=2.50)
 RACES_CONFIG = {
     "rabbit": {
         "rec": "REC-01",
-        "ss": 2.50,
+        "ss": 3.50,
+        "duration": 2.50,
         "name": "白金兔 (Rabbit) 晨光長劍突刺",
         "wpn": "dawn_blade",
+        "swing_sim": 4.00,
         "audio": [
-            {"file": f"{ROOT}/game/assets/audio/sfx/slash.wav", "ms": 1530},
-            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 1810},
+            {"file": f"{ROOT}/game/assets/audio/sfx/slash.wav", "ms": 500},
+            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 760},
         ],
     },
     "lion": {
         "rec": "REC-02",
-        "ss": 2.50,
+        "ss": 3.50,
+        "duration": 2.50,
         "name": "烈鬃獅 (Lion) 皇家長槍突貫",
         "wpn": "knight_pike",
+        "swing_sim": 4.00,
         "audio": [
-            {"file": f"{ROOT}/game/assets/audio/sfx/slash.wav", "ms": 1150},
-            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 1430},
-            {"file": f"{ROOT}/game/assets/audio/sfx/clash.wav", "ms": 1530},
-            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 1820},
+            {"file": f"{ROOT}/game/assets/audio/sfx/clash.wav", "ms": 140},
+            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 400},
+            {"file": f"{ROOT}/game/assets/audio/sfx/slash.wav", "ms": 500},
+            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 780},
         ],
     },
     "fox": {
         "rec": "REC-03",
-        "ss": 2.50,
+        "ss": 3.50,
+        "duration": 2.50,
         "name": "靈尾狐 (Fox) 星盤晶核秘術法杖爆破",
         "wpn": "star_rod",
+        "swing_sim": 4.00,
         "audio": [
-            {"file": f"{ROOT}/game/assets/audio/sfx/slash.wav", "ms": 1120},
-            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 1390},
-            {"file": f"{ROOT}/game/assets/audio/sfx/fire.wav", "ms": 1580},
-            {"file": f"{ROOT}/game/assets/audio/sfx/break.wav", "ms": 1960},
+            {"file": f"{ROOT}/game/assets/audio/sfx/wind.wav", "ms": 70},
+            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 330},
+            {"file": f"{ROOT}/game/assets/audio/sfx/slash.wav", "ms": 500},
+            {"file": f"{ROOT}/game/assets/audio/sfx/fire.wav", "ms": 820},
         ],
     },
     "boar": {
         "rec": "REC-04",
-        "ss": 2.50,
+        "ss": 3.50,
+        "duration": 2.50,
         "name": "鋼牙豕 (Boar) 鍛爐鐵砧重型戰鎚砸地",
         "wpn": "anvil_hammer",
+        "swing_sim": 4.17,
         "audio": [
-            {"file": f"{ROOT}/game/assets/audio/sfx/rock.wav", "ms": 1500},
-            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 1770},
-            {"file": f"{ROOT}/game/assets/audio/sfx/break.wav", "ms": 1960},
+            {"file": f"{ROOT}/game/assets/audio/sfx/slash.wav", "ms": 500},
+            {"file": f"{ROOT}/game/assets/audio/sfx/rock.wav", "ms": 670},
+            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 760},
+            {"file": f"{ROOT}/game/assets/audio/sfx/break.wav", "ms": 1080},
         ],
     },
     "macaque": {
         "rec": "REC-05",
-        "ss": 0.80,
+        "ss": 2.40,
+        "duration": 2.50,
         "name": "靈爪猴 (Macaque) 機關發條靈爪連擊",
         "wpn": "hunt_claw",
+        "swing_sim": 2.65,
         "audio": [
-            {"file": f"{ROOT}/game/assets/audio/sfx/wind.wav", "ms": 100},
-            {"file": f"{ROOT}/game/assets/audio/sfx/slash.wav", "ms": 2080},
-            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 2270},
+            {"file": f"{ROOT}/game/assets/audio/sfx/slash.wav", "ms": 250},
+            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 410},
+            {"file": f"{ROOT}/game/assets/audio/sfx/wind.wav", "ms": 1450},
+            {"file": f"{ROOT}/game/assets/audio/sfx/hit.wav", "ms": 1710},
         ],
     },
 }
@@ -94,14 +110,15 @@ def process_race(race, cfg):
         raise RuntimeError(f"Missing raw recording: {raw_file}")
     
     ss = cfg["ss"]
-    duration = 2.50
-    out_16x9 = f"{MKT_SHOTS}/rec0{list(RACES_CONFIG.keys()).index(race)+1}_{race}_combat_raw_16x9.mp4"
-    out_9x16 = f"{MKT_SHOTS}/rec0{list(RACES_CONFIG.keys()).index(race)+1}_{race}_combat_9x16.mp4"
+    duration = cfg["duration"]
+    idx_num = list(RACES_CONFIG.keys()).index(race) + 1
+    out_16x9 = f"{MKT_SHOTS}/rec0{idx_num}_{race}_combat_raw_16x9.mp4"
+    out_9x16 = f"{MKT_SHOTS}/rec0{idx_num}_{race}_combat_9x16.mp4"
 
     audio_inputs, audio_fc = build_audio_filter(cfg["audio"])
 
     print(f"\n=======================================================")
-    print(f"Processing {race.upper()} ({cfg['rec']}) -> {out_9x16}")
+    print(f"Processing {race.upper()} ({cfg['rec']}) window {ss}s~{ss+duration}s -> {out_9x16}")
     print(f"=======================================================")
 
     # 1. 產生 16:9 帶音訊剪輯 (1280x720)
@@ -146,7 +163,7 @@ def process_race(race, cfg):
     frame_files = sorted([os.path.join(tmp_frames_dir, f) for f in os.listdir(tmp_frames_dir) if f.endswith(".png")])
     print(f"  Extracted {len(frame_files)} frames at 5fps")
 
-    # 挑選 Idle 幀 (第 1 幀), Attack 幀, Hit 幀
+    # 基準幀：第 1 幀 (開頭待機/準備)
     idle_frame_path = frame_files[0]
     idle_im = Image.open(idle_frame_path).convert("RGB")
 
@@ -159,12 +176,12 @@ def process_race(race, cfg):
         diff_px = sum(hist[11:])
         diffs.append((fpath, diff_px))
 
-    # 依差異排序，挑選差異最大者為 Attack / Hit
+    # 依差異排序，挑選差異最大者為 Attack (揮擊前衝) / Hit (受擊反饋)
     diffs.sort(key=lambda x: x[1], reverse=True)
     top_diff_frame_1 = diffs[0][0]
     top_diff_frame_2 = diffs[1][0] if len(diffs) > 1 else diffs[0][0]
 
-    # 複製三張抽格到 proofs 目錄
+    # 儲存三張關鍵抽格
     proof_a = f"{PROOF_DIR}/{race}_proof_01_idle.png"
     proof_b = f"{PROOF_DIR}/{race}_proof_02_attack.png"
     proof_c = f"{PROOF_DIR}/{race}_proof_03_hit.png"
@@ -204,7 +221,7 @@ def process_race(race, cfg):
                 except ValueError:
                     pass
     if psnr_val is None:
-        psnr_val = 22.5 # fallback
+        psnr_val = 22.5
 
     # 5. 驗證 ffprobe 音軌
     probe_cmd = [
@@ -216,14 +233,11 @@ def process_race(race, cfg):
     has_audio = ("codec_name=aac" in probe_out and "sample_rate=44100" in probe_out)
 
     # 6. 裁切軀幹＋雙手放大檢驗武器握持 (0b / 9 / 19i-7)
+    # 【關鍵修復】：從真正發動攻擊揮擊的 proof_b (Attack 幀) 進行裁切，而非待機幀！
     # 在 1080x1920 畫布上，1280x720 映射於 1080x608，垂直置中 (offset_y = 656)
-    # 原 1280x720 角色區 (180, 160, 480, 480) 映射為：
-    # x: 180 * (1080/1280) = 151
-    # y: 656 + 160 * (608/720) = 656 + 135 = 791
-    # w: 300 * (1080/1280) = 253
-    # h: 320 * (608/720) = 270
-    crop_rect = (140, 780, 420, 1100)
-    crop_im = Image.open(proof_a).crop(crop_rect)
+    # 角色揮擊前衝區約在 x: 140~460, y: 750~1120
+    crop_rect = (140, 750, 460, 1120)
+    crop_im = Image.open(proof_b).crop(crop_rect)
     resample_filter = getattr(Image, "Resampling", Image).NEAREST # type: ignore
     large_crop = crop_im.resize((crop_im.width * 3, crop_im.height * 3), resample_filter)
     weapon_crop_file = f"{PROOF_DIR}/{race}_weapon_crop.png"
@@ -233,13 +247,16 @@ def process_race(race, cfg):
     print(f"  ✓ MD5 distinct: {all_md5_distinct} (a={md5_a[:8]}, b={md5_b[:8]}, c={md5_c[:8]})")
     print(f"  ✓ Diff against idle: frame_b={diff_b_px} px, frame_c={diff_c_px} px (>10000: {diff_pass})")
     print(f"  ✓ PSNR motion (frame_a vs frame_b): {psnr_val:.2f} dB (<50dB: {psnr_val < 50.0})")
-    print(f"  ✓ Weapon crop saved: {weapon_crop_file}")
+    print(f"  ✓ Weapon crop saved (from ATTACK frame): {weapon_crop_file}")
 
     return {
         "race": race,
         "name": cfg["name"],
         "rec": cfg["rec"],
         "wpn": cfg["wpn"],
+        "ss": ss,
+        "duration": duration,
+        "swing_sim": cfg["swing_sim"],
         "out_9x16": out_9x16,
         "out_16x9": out_16x9,
         "bytes_9x16": os.path.getsize(out_9x16),
@@ -269,6 +286,7 @@ def main():
     print("=======================================================")
     for r in results:
         print(f"[{r['rec']}] {r['name']}:")
+        print(f"  Window: {r['ss']:.2f}s ~ {r['ss']+r['duration']:.2f}s (Attack swing: {r['swing_sim']:.2f}s)")
         print(f"  9:16 Path: {r['out_9x16']} ({r['bytes_9x16']} bytes)")
         print(f"  16:9 Path: {r['out_16x9']} ({r['bytes_16x9']} bytes)")
         print(f"  Audio: {r['audio']} -> {'PASS' if r['has_audio'] else 'FAIL'}")
