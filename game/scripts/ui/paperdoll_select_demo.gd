@@ -272,6 +272,8 @@ func confirm_selection() -> void:
 				"boar": gs.player_name = "鋼牙豕"
 				"macaque": gs.player_name = "靈爪猴"
 				_: gs.player_name = "小白"
+			if gs.has_method("equip_starter_weapon"):
+				gs.call("equip_starter_weapon", _current_race_id)
 	character_confirmed.emit(_current_race_id, sel)
 
 
