@@ -734,8 +734,8 @@
    "id": "close-btn-dopamine",
    "cat": "遊戲",
    "title": "共用右上關閉鈕改多巴胺亮色盤",
-   "status": "開發中",
-   "note": "開始修改 make_close_button 為多巴胺深莓紅果凍厚底",
+   "status": "測試中",
+   "note": "完成 make_close_button 深莓紅果凍厚底實作與實機截圖存證，測試全綠待審核",
    "keys": [
     "共用右上關閉鈕改"
    ]
