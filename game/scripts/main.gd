@@ -403,37 +403,70 @@ func _build_pause_layer() -> void:
 	card.name = "PauseCard"
 	card.clip_contents = false
 	ResponsiveUi.apply_dialog_card(card)
-	card.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
+	card.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	center.add_child(card)
 
 	var outer := VBoxContainer.new()
-	outer.add_theme_constant_override("separation", 0)
+	outer.add_theme_constant_override("separation", 10)
 	card.add_child(outer)
 
 	var head := PanelContainer.new()
-	head.add_theme_stylebox_override("panel", UiStyle.header_style())
+	var head_sb := StyleBoxFlat.new()
+	head_sb.bg_color = Color("#FFF8E7")  ## 亮底溫暖米黃
+	head_sb.border_color = Color("#1F1A3A")  ## 描邊深藍紫 #1F1A3A
+	head_sb.set_border_width_all(2)
+	head_sb.border_width_bottom = 4
+	head_sb.set_corner_radius_all(20)  ## 圓角 18~24px
+	head_sb.content_margin_left = 16
+	head_sb.content_margin_right = 10
+	head_sb.content_margin_top = 8
+	head_sb.content_margin_bottom = 8
+	head_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.18)
+	head_sb.shadow_size = 6
+	head_sb.shadow_offset = Vector2(0, 3)
+	head.add_theme_stylebox_override("panel", head_sb)
 	outer.add_child(head)
+
 	var head_row := HBoxContainer.new()
 	head_row.add_theme_constant_override("separation", 8)
+	head_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	head.add_child(head_row)
+
 	var title := Label.new()
 	title.text = Loc.t("pause.title")
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", UiStyle.KEY)
+	title.add_theme_font_size_override("font_size", 22)
+	title.add_theme_color_override("font_color", Color("#1F1A3A"))
+	title.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	title.add_theme_constant_override("outline_size", 1)
 	head_row.add_child(title)
-	head_row.add_child(ResponsiveUi.make_close_button(func():
+
+	var close_btn := ResponsiveUi.make_close_button(func():
 		_close_pause()
-	))
+	)
+	var close_sb := StyleBoxFlat.new()
+	close_sb.bg_color = Color("#C22B55")  ## 深莓紅果凍厚底按鈕
+	close_sb.border_color = Color("#1F1A3A")
+	close_sb.set_border_width_all(2)
+	close_sb.border_width_bottom = 5
+	close_sb.set_corner_radius_all(20)
+	close_btn.custom_minimum_size = Vector2(50, 50)
+	close_btn.add_theme_stylebox_override("normal", close_sb)
+	close_btn.add_theme_stylebox_override("hover", close_sb)
+	close_btn.add_theme_stylebox_override("pressed", close_sb)
+	close_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	close_btn.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	close_btn.add_theme_constant_override("outline_size", 2)
+	head_row.add_child(close_btn)
 
 	var box := VBoxContainer.new()
-	box.add_theme_constant_override("separation", 8)
+	box.add_theme_constant_override("separation", 10)
 	box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 16)
 	margin.add_theme_constant_override("margin_right", 16)
-	margin.add_theme_constant_override("margin_top", 12)
+	margin.add_theme_constant_override("margin_top", 10)
 	margin.add_theme_constant_override("margin_bottom", 14)
 	outer.add_child(margin)
 	margin.add_child(box)
@@ -442,8 +475,10 @@ func _build_pause_layer() -> void:
 	obj.text = RegionCatalog.next_objective_line()
 	obj.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	obj.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	obj.add_theme_font_size_override("font_size", 13)
-	obj.add_theme_color_override("font_color", UiStyle.KEY)
+	obj.add_theme_font_size_override("font_size", 18)
+	obj.add_theme_color_override("font_color", Color("#1F1A3A"))
+	obj.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	obj.add_theme_constant_override("outline_size", 1)
 	box.add_child(obj)
 
 	var sub := Label.new()
@@ -454,8 +489,8 @@ func _build_pause_layer() -> void:
 	})
 	sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sub.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	sub.add_theme_font_size_override("font_size", 12)
-	sub.add_theme_color_override("font_color", UiStyle.CAPTION_DIM)
+	sub.add_theme_font_size_override("font_size", 16)
+	sub.add_theme_color_override("font_color", Color("#1F1A3A"))
 	box.add_child(sub)
 
 	_pause_btn(box, Loc.t("pause.continue"), func():
@@ -1675,6 +1710,51 @@ func _pause_btn(parent: VBoxContainer, text: String, cb: Callable, primary := fa
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	UiStyle.style_button(btn, primary)
 	ResponsiveUi.apply_core_button(btn)
+
+	## 多巴胺亮色盤按鈕規範：奶油白／柔和金黃底，描邊深藍紫 #1F1A3A，圓角 18px，按鈕高 >= 50px
+	var sb := StyleBoxFlat.new()
+	if primary:
+		sb.bg_color = Color("#FFF4D0")  ## 溫暖柔和金黃底（非原值 #FFD028）
+		sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 5
+		sb.set_corner_radius_all(18)
+	else:
+		sb.bg_color = Color("#FFFDF8")  ## 奶油米白底
+		sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 5
+		sb.set_corner_radius_all(18)
+	sb.content_margin_left = 18
+	sb.content_margin_right = 18
+	sb.content_margin_top = 10
+	sb.content_margin_bottom = 12
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.2)
+	sb.shadow_size = 5
+	sb.shadow_offset = Vector2(0, 3)
+
+	var sb_hover := sb.duplicate() as StyleBoxFlat
+	sb_hover.bg_color = Color("#FFF8E7")
+	sb_hover.border_color = Color("#C2600A")  ## 壓明度暖橘描邊
+
+	var sb_pressed := sb.duplicate() as StyleBoxFlat
+	sb_pressed.border_width_bottom = 2
+	sb_pressed.content_margin_top = 13
+	sb_pressed.content_margin_bottom = 9
+
+	btn.add_theme_stylebox_override("normal", sb)
+	btn.add_theme_stylebox_override("hover", sb_hover)
+	btn.add_theme_stylebox_override("pressed", sb_pressed)
+	btn.add_theme_stylebox_override("focus", sb_hover)
+
+	btn.add_theme_color_override("font_color", Color("#1F1A3A"))
+	btn.add_theme_color_override("font_hover_color", Color("#C2600A"))
+	btn.add_theme_color_override("font_pressed_color", Color("#1F1A3A"))
+	btn.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	btn.add_theme_constant_override("outline_size", 1)
+	btn.add_theme_font_size_override("font_size", 18)
+	btn.custom_minimum_size.y = 50
+
 	btn.pressed.connect(cb)
 	parent.add_child(btn)
 
