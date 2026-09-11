@@ -1,17 +1,23 @@
 extends Control
-## §8 可玩切片 View：掛 placeholder 三態圖 + 胸口光環 HUD + 對白。
+## §8 可玩切片 View：Art Pivot v2 紙娃娃三相 + 胸口光環 HUD + 對白。
 ## 執行：Godot 4.7 開 scenes/s8_smoke/s8_smoke.tscn（F6）。
 ## 空白鍵／滑鼠＝逐步；H＝一次自動跑完。
 
 const WindStaminaScript := preload("res://scripts/systems/wind_stamina/wind_stamina.gd")
 const ChestGlowHudScript := preload("res://scripts/systems/wind_stamina/chest_glow_hud.gd")
 const S8SmokeFlowScript := preload("res://scripts/systems/standard_scene_s8/s8_smoke_flow.gd")
+const AssemblerScript := preload("res://scripts/systems/paper_doll_v2/paper_doll_assembler.gd")
 
-const TEX_EXPLORE := "res://assets/sprites/s8_smoke/e03_explore.png"
-const TEX_COMBAT := "res://assets/sprites/s8_smoke/b02_combat.png"
-const TEX_DISMANTLE := "res://assets/sprites/s8_smoke/d02_dismantle.png"
+## Art Pivot v2（W6-K3）；舊 s8_smoke 電影皮僅作缺檔回退
+const TEX_EXPLORE := "res://assets/sprites/pack_a/v2/xiaobai_e03.png"
+const TEX_COMBAT := "res://assets/sprites/pack_a/v2/xiaobai_b02.png"
+const TEX_DISMANTLE := "res://assets/sprites/pack_a/v2/xiaobai_d02.png"
+const TEX_EXPLORE_FALLBACK := "res://assets/sprites/s8_smoke/e03_explore.png"
+const TEX_COMBAT_FALLBACK := "res://assets/sprites/s8_smoke/b02_combat.png"
+const TEX_DISMANTLE_FALLBACK := "res://assets/sprites/s8_smoke/d02_dismantle.png"
 
 var flow: S8SmokeFlow
+var _doll
 var hud: ChestGlowHud
 var _art: TextureRect
 var _dialog: Label
@@ -28,6 +34,8 @@ func _ready() -> void:
 	flow = S8SmokeFlowScript.new()
 	flow.auto_advance = false
 	flow.setup()
+	_doll = AssemblerScript.new()
+	_doll.setup()
 	hud.setup(flow.wind)
 	flow.phase_changed.connect(_on_phase)
 	flow.log_line.connect(_on_log)
@@ -52,7 +60,9 @@ func _build() -> void:
 	_art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	add_child(_art)
 
+	# chest_heart 錨點：綁 WindStaminaGlow（W6-K3）
 	_chest_anchor = Control.new()
+	_chest_anchor.name = "ChestHeartAnchor"
 	_chest_anchor.position = Vector2(640, 380)
 	_chest_anchor.size = Vector2(80, 80)
 	add_child(_chest_anchor)
@@ -161,13 +171,39 @@ func _on_finished(ok: bool, summary: String) -> void:
 
 
 func _refresh_art() -> void:
+	## 走紙娃娃 v2 相位 composite；chest_heart 錨點綁 WindStaminaGlow
 	if flow == null:
 		return
-	var path := TEX_EXPLORE
 	var p := flow.phase
+	var phase_name := "explore"
+	var fallback := TEX_EXPLORE_FALLBACK
 	if p >= S8SmokeFlow.Phase.B01_START and p <= S8SmokeFlow.Phase.B07_END:
-		path = TEX_COMBAT
+		phase_name = "battle"
+		fallback = TEX_COMBAT_FALLBACK
 	elif p >= S8SmokeFlow.Phase.D01_START:
-		path = TEX_DISMANTLE
+		phase_name = "dismantle"
+		fallback = TEX_DISMANTLE_FALLBACK
+	var path := TEX_EXPLORE
+	if _doll != null:
+		_doll.set_phase(phase_name)
+		path = _doll.composite_path_for_phase()
+	else:
+		match phase_name:
+			"battle":
+				path = TEX_COMBAT
+			"dismantle":
+				path = TEX_DISMANTLE
+			_:
+				path = TEX_EXPLORE
+	if not ResourceLoader.exists(path):
+		path = fallback
 	if ResourceLoader.exists(path):
 		_art.texture = load(path) as Texture2D
+	# 胸口錨點：chest_heart → WindStaminaGlow
+	if _chest_anchor != null:
+		if phase_name == "battle":
+			_chest_anchor.position = Vector2(580, 340)
+		elif phase_name == "dismantle":
+			_chest_anchor.position = Vector2(560, 360)
+		else:
+			_chest_anchor.position = Vector2(640, 380)

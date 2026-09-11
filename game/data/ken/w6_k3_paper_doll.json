@@ -1,0 +1,42 @@
+{
+  "id": "W6-K3",
+  "supersedes": "W6-K2",
+  "paperDoll": {
+    "characterId": "xiaobai",
+    "EquipSlots": [
+      {"SlotId": "body_base", "z": 10, "required": true},
+      {"SlotId": "outfit", "z": 20, "required": false},
+      {"SlotId": "helmet", "z": 35, "required": false},
+      {"SlotId": "face", "z": 30, "required": true},
+      {"SlotId": "chest_heart", "z": 40, "required": true, "bindsHud": "WindStaminaGlow"},
+      {"SlotId": "back_key", "z": 5, "required": true, "anchor": "back", "rule": "always_on_back"},
+      {"SlotId": "weapon_main", "z": 50, "required": false, "hand": "main", "phase": "battle"},
+      {"SlotId": "weapon_off", "z": 45, "required": false, "hand": "off", "mvp": "empty_only"},
+      {"SlotId": "vfx", "z": 60, "required": false, "trigger": ["hit", "part_break", "dismantle_pull"]}
+    ],
+    "WeaponClass": {
+      "MVP": "one_hand",
+      "allowed": ["one_hand"],
+      "blocked": ["two_hand", "dual_wield", "fists"],
+      "defaultWeaponId": "sword_1h_brass",
+      "equipRule": "weapon_main=one_hand; weapon_off=empty"
+    },
+    "Anim": {
+      "idle": {"loop": true, "sec": -1},
+      "explore_walk": {"loop": true, "sec": -1, "phase": "explore"},
+      "ready": {"loop": true, "sec": -1, "phase": "battle"},
+      "hit": {"loop": false, "sec": 0.35, "vfx": "candy_chip"},
+      "one_hand_atk_1": {"loop": false, "sec": 0.40, "weaponClass": "one_hand", "slot": "weapon_main"},
+      "one_hand_atk_2": {"loop": false, "sec": 0.45, "weaponClass": "one_hand", "slot": "weapon_main"},
+      "one_hand_atk_3": {"loop": false, "sec": 0.55, "weaponClass": "one_hand", "slot": "weapon_main", "finisher": true},
+      "dismantle_pull": {"loop": false, "sec": 0.60, "phase": "dismantle", "vfx": "candy_burst"}
+    },
+    "defaults": {
+      "outfit": "outfit_cream_enamel",
+      "helmet": "helmet_none",
+      "weapon_main": "sword_1h_brass",
+      "weapon_off": "empty",
+      "vfx_part_break": "vfx_candy_burst"
+    }
+  }
+}
