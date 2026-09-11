@@ -1403,12 +1403,38 @@ func _refresh_region_stages() -> void:
 	for c in _stages_container.get_children():
 		c.queue_free()
 
-	var stages_data := [
-		{"num": "2-1", "name": "王城外郭 · 守望關隘", "type": "前哨雜魚", "cost": 1, "power": 380, "mode": "road_bandit"},
-		{"num": "2-2", "name": "市集街道 · 潛伏暗哨", "type": "精英戰鬥", "cost": 1, "power": 420, "mode": "road_bandit"},
-		{"num": "2-3", "name": "下水道口 · 腐化黏怪", "type": "精英戰鬥", "cost": 1, "power": 450, "mode": "road_bandit"},
-		{"num": "2-4", "name": "聖獅王宮 · 狂暴守護者", "type": "首領部位破壞", "cost": 3, "power": 520, "mode": "leo"},
+	var all_stages := [
+		[
+			{"num": "1-1", "name": "荒路哨站 · 發條灰鼠", "type": "前哨雜魚", "cost": 1, "power": 220, "mode": "ash_rat"},
+			{"num": "1-2", "name": "堡外野原 · 荒路殘兵", "type": "精英戰鬥", "cost": 1, "power": 260, "mode": "road_bandit"},
+			{"num": "1-3", "name": "堡壘廣場 · 守門暗哨", "type": "精英戰鬥", "cost": 1, "power": 300, "mode": "sewer_slime"},
+			{"num": "1-4", "name": "閣樓大門 · 大型殘兵", "type": "精英戰鬥", "cost": 1, "power": 340, "mode": "road_bandit"},
+		],
+		[
+			{"num": "2-1", "name": "王城外郭 · 守望關隘", "type": "前哨雜魚", "cost": 1, "power": 380, "mode": "road_bandit"},
+			{"num": "2-2", "name": "市集街道 · 潛伏暗哨", "type": "精英戰鬥", "cost": 1, "power": 420, "mode": "road_bandit"},
+			{"num": "2-3", "name": "下水道口 · 腐化黏怪", "type": "精英戰鬥", "cost": 1, "power": 450, "mode": "road_bandit"},
+			{"num": "2-4", "name": "聖獅王宮 · 狂暴守護者", "type": "首領部位破壞", "cost": 3, "power": 520, "mode": "leo"},
+		],
+		[
+			{"num": "3-1", "name": "白霧村外 · 霧影遊魂", "type": "前哨雜魚", "cost": 1, "power": 560, "mode": "fog_shade"},
+			{"num": "3-2", "name": "霧崖小徑 · 林間風妖", "type": "精英戰鬥", "cost": 1, "power": 600, "mode": "forest_sprite"},
+			{"num": "3-3", "name": "鏡廊入口 · 鏡廊殘影", "type": "精英戰鬥", "cost": 1, "power": 640, "mode": "mirror_wraith"},
+			{"num": "3-4", "name": "白霧核心 · 白霧", "type": "首領部位破壞", "cost": 3, "power": 720, "mode": "fog"},
+		],
+		[
+			{"num": "4-1", "name": "石岸潮襲 · 潮襲海盜", "type": "前哨雜魚", "cost": 1, "power": 760, "mode": "coast_raider"},
+			{"num": "4-2", "name": "潮岸沉船 · 船長殘影", "type": "精英戰鬥", "cost": 1, "power": 800, "mode": "wreck_captain"},
+			{"num": "4-3", "name": "瘢地焰徑 · 瘢地焰靈", "type": "精英戰鬥", "cost": 1, "power": 840, "mode": "scar_wisp"},
+			{"num": "4-4", "name": "通天塔底 · 塔底", "type": "首領部位破壞", "cost": 3, "power": 920, "mode": "demon"},
+		],
 	]
+
+	var stages_data: Array = []
+	if _selected_region >= 0 and _selected_region < all_stages.size():
+		stages_data = all_stages[_selected_region]
+	else:
+		stages_data = all_stages[0]
 
 	var grid := GridContainer.new()
 	grid.columns = 2
