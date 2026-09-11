@@ -654,8 +654,8 @@
    "id": "pause-dopamine-ui",
    "cat": "遊戲",
    "title": "暫停選單改回多巴胺亮色盤",
-   "status": "草稿",
-   "note": "",
+   "status": "已上線",
+   "note": "暫停選單改為多巴胺亮色盤（PauseCard UiStyle.panel_style奶油白，字級16~24px深藍紫#1F1A3A，無禁用原值，測試全綠已合進main）",
    "keys": [
     "暫停選單改回多巴"
    ]
