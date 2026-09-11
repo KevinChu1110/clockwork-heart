@@ -46,6 +46,7 @@ func _process(_d: float) -> bool:
 		1:
 			if _wait < 30:
 				return false
+			_shot("proof_soul_pity.png")
 			_shot("soul_panel_pity.png")
 			_main.call("_go_astrolabe_panel")
 			_step = 2
@@ -87,6 +88,11 @@ func _shot(filename: String) -> void:
 	var path := _out.path_join(filename)
 	var err := img.save_png(path)
 	print("CAPTURE ", path, " err=", err, " ", img.get_width(), "x", img.get_height())
+	var base := ProjectSettings.globalize_path("res://")
+	var p_web := base.path_join("../web/media/shots").path_join(filename)
+	DirAccess.make_dir_recursive_absolute(base.path_join("../web/media/shots"))
+	img.save_png(p_web)
+	print("CAPTURE web ", p_web)
 	var ws := OS.get_environment("HERMES_KANBAN_WORKSPACE")
 	if ws != "":
 		DirAccess.make_dir_recursive_absolute(ws)

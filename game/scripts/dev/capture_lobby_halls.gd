@@ -105,3 +105,12 @@ func _save_shot(filename: String) -> void:
 			print("  ✓ 成功存證截圖: ", p)
 		else:
 			push_error("截圖儲存失敗: %s" % p)
+		if filename == "proof_lobby_hall_forge.png":
+			var base := ProjectSettings.globalize_path("res://")
+			var p_web := base.path_join("../web/media/shots/proof_forge_panel.png")
+			var p_shots := base.path_join("../screenshots/proof_forge_panel.png")
+			DirAccess.make_dir_recursive_absolute(base.path_join("../web/media/shots"))
+			DirAccess.make_dir_recursive_absolute(base.path_join("../screenshots"))
+			img.save_png(p_web)
+			img.save_png(p_shots)
+			print("  ✓ 同步官網鍛造圖: ", p_web)

@@ -9,6 +9,7 @@ signal request_settings()
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 
 ## ── 多巴胺鮮亮色盤標準 (對齊 mobile_settings / maple_hud / review.md) ──
