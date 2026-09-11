@@ -1248,7 +1248,7 @@ func _ensure_temptation_ui() -> void:
 	_tempt_card = PanelContainer.new()
 	_tempt_card.name = "TemptCard"
 	_tempt_card.custom_minimum_size = Vector2(750, 0)
-	_tempt_card.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
+	_tempt_card.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	center.add_child(_tempt_card)
 
 	var outer := VBoxContainer.new()
@@ -1263,7 +1263,9 @@ func _ensure_temptation_ui() -> void:
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 22)
-	title.add_theme_color_override("font_color", Color(1, 0.55, 0.6))
+	title.add_theme_color_override("font_color", Color("#1F1A3A"))
+	title.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	title.add_theme_constant_override("outline_size", 1)
 	head.add_child(title)
 	_tempt_close = Button.new()
 	_tempt_close.name = "TemptClose"
@@ -1272,6 +1274,9 @@ func _ensure_temptation_ui() -> void:
 	_tempt_close.custom_minimum_size = Vector2(50, 50)
 	UiStyle.style_button(_tempt_close, false)
 	_tempt_close.custom_minimum_size = Vector2(50, 50)
+	_tempt_close.add_theme_font_size_override("font_size", 22)
+	_tempt_close.add_theme_color_override("font_color", Color("#1F1A3A"))
+	_tempt_close.add_theme_color_override("font_hover_color", Color("#C22B55"))
 	_tempt_close.pressed.connect(_on_refuse_pressed)
 	head.add_child(_tempt_close)
 
@@ -1289,8 +1294,10 @@ func _ensure_temptation_ui() -> void:
 	body.name = "TemptBody"
 	body.bbcode_enabled = true
 	body.fit_content = true
-	body.custom_minimum_size = Vector2(700, 100)
+	body.custom_minimum_size = Vector2(674, 100)
 	body.add_theme_font_size_override("normal_font_size", 18)
+	body.add_theme_font_size_override("bold_font_size", 18)
+	body.add_theme_color_override("default_color", Color("#1F1A3A"))
 	box.add_child(body)
 
 	_refuse_btn = Button.new()
@@ -1299,6 +1306,10 @@ func _ensure_temptation_ui() -> void:
 	_refuse_btn.focus_mode = Control.FOCUS_NONE
 	UiStyle.style_button(_refuse_btn, true)
 	_refuse_btn.custom_minimum_size = Vector2(0, 56)
+	_refuse_btn.add_theme_font_size_override("font_size", 20)
+	_refuse_btn.add_theme_color_override("font_color", Color("#1F1A3A"))
+	_refuse_btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
+	_refuse_btn.add_theme_constant_override("outline_size", 2)
 	_refuse_btn.pressed.connect(_on_refuse_pressed)
 	box.add_child(_refuse_btn)
 
@@ -1308,6 +1319,11 @@ func _ensure_temptation_ui() -> void:
 	listen_btn.focus_mode = Control.FOCUS_NONE
 	UiStyle.style_button(listen_btn, false)
 	listen_btn.custom_minimum_size = Vector2(0, 50)
+	listen_btn.add_theme_font_size_override("font_size", 18)
+	listen_btn.add_theme_color_override("font_color", Color("#1F1A3A"))
+	listen_btn.add_theme_color_override("font_hover_color", Color("#C2600A"))
+	listen_btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
+	listen_btn.add_theme_constant_override("outline_size", 2)
 	listen_btn.pressed.connect(_on_listen_then_refuse)
 	box.add_child(listen_btn)
 
@@ -1326,16 +1342,20 @@ func _show_temptation(data: Dictionary) -> void:
 	if title:
 		title.text = _t("誘惑 · %s") % str(data.get("title", ""))
 	if body:
-		body.text = str(data.get("text", ""))
+		var raw_text := str(data.get("text", ""))
+		raw_text = raw_text.replace("#f9a", "#C22B55").replace("#FF5E8A", "#C22B55").replace("#ff5e8a", "#C22B55")
+		raw_text = raw_text.replace("#FFA010", "#C2600A").replace("#ffa010", "#C2600A")
+		raw_text = raw_text.replace("#FFD028", "#9A6B00").replace("#ffd028", "#9A6B00")
+		body.text = raw_text
 	var scale_f := float(data.get("refuse_scale", 1.0))
-	var font_sz := int(round(20.0 * scale_f))
+	var font_sz := clampi(int(round(20.0 * scale_f)), 16, 24)
 	_refuse_btn.add_theme_font_size_override("font_size", font_sz)
 	## 熱區不得低於 50（右手拇指）；字可以隨誘惑變大，不可縮到點不到。
 	_refuse_btn.custom_minimum_size = Vector2(0, maxi(50, int(40 * scale_f)))
 	_refuse_btn.text = _t("我拒絕")
 	_tempt_layer.visible = true
 	_tempt_layer.move_to_front()
-	_append_log(_t("[color=#f9a]戰鬥暫停：停擺核的誘惑（%s）[/color]") % data.get("title"))
+	_append_log(_t("[color=#C22B55]戰鬥暫停：停擺核的誘惑（%s）[/color]") % data.get("title"))
 
 
 func _on_refuse_pressed() -> void:
