@@ -137,7 +137,7 @@
       "toastKey": "soul.pull_outfit"
     },
     {
-      "DropId": "junk_scrap",
+      "DropId": "junk_enamel_chip",
       "kind": "junk",
       "weight": 6,
       "toastKey": "soul.pull_junk"
@@ -155,5 +155,14 @@
     "pull_outfit": "soul.pull_outfit",
     "pull_junk": "soul.pull_junk",
     "pity_soft": "soul.pity_soft"
-  }
+  },
+  "characterAliases": {
+    "rabbit": "xiaobai",
+    "xiaobai_rabbit": "xiaobai"
+  },
+  "dropAliases": {
+    "junk_scrap": "junk_enamel_chip",
+    "junk": "junk_enamel_chip"
+  },
+  "idNote": "canonical CharacterId=xiaobai; rabbit is alias only"
 }

@@ -35,6 +35,7 @@ func setup(cfg = null) -> bool:
 
 
 func select_character(character_id: String) -> bool:
+	character_id = soul_cfg.resolve_character_id(character_id)
 	if not soul_cfg.is_character_allowed(character_id):
 		last_error = "blocked_or_unknown:%s" % character_id
 		return false

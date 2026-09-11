@@ -9,3 +9,5 @@
 - 模組：`soul_draw_v2/`＋`paper_doll_v2/character_loadout.gd`
 
 - 抽魂字串：`docs/W7_B1_SOUL_CODEX.md` → i18n `soul.pull_*`
+
+- CharacterId 正式＝`xiaobai`；`rabbit` 僅 alias。junk 正式＝`junk_enamel_chip`（`junk_scrap` alias）。

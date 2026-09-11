@@ -15,6 +15,8 @@ var outfit_atlas_cols: int = 4
 var blocked: Array = []
 var outfit_aliases: Dictionary = {}
 var toast_keys: Dictionary = {}
+var character_aliases: Dictionary = {}
+var drop_aliases: Dictionary = {}
 
 
 func load_from(path: String = DEFAULT_PATH) -> bool:
@@ -36,6 +38,8 @@ func load_from(path: String = DEFAULT_PATH) -> bool:
 	blocked = raw.get("blockedCharacterIds", []) as Array
 	outfit_aliases = raw.get("outfitAliases", {}) as Dictionary
 	toast_keys = raw.get("toastKeys", {}) as Dictionary
+	character_aliases = raw.get("characterAliases", {}) as Dictionary
+	drop_aliases = raw.get("dropAliases", {}) as Dictionary
 	return true
 
 
@@ -103,3 +107,22 @@ func toast_key_for_kind(kind: String) -> String:
 			return str(toast_keys.get("pull_junk", "soul.pull_junk"))
 		_:
 			return str(toast_keys.get("pull_start", "soul.pull_start"))
+
+
+func resolve_character_id(character_id: String) -> String:
+	## rabbit → xiaobai（正式 ID 仍為 xiaobai）
+	if character_id.is_empty():
+		return character_id
+	if is_character_allowed(character_id):
+		return character_id
+	if character_aliases.has(character_id):
+		return str(character_aliases[character_id])
+	return character_id
+
+
+func resolve_drop_id(drop_id: String) -> String:
+	if drop_id.is_empty():
+		return drop_id
+	if drop_aliases.has(drop_id):
+		return str(drop_aliases[drop_id])
+	return drop_id

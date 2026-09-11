@@ -98,6 +98,27 @@ func _init() -> void:
 		print("SOUL_DRAW_V2_FAIL toastKey %s" % str(sample.get("toastKey", "")))
 		ok = false
 
+	# rabbit → xiaobai；junk_enamel_chip
+	if cfg.resolve_character_id("rabbit") != "xiaobai":
+		print("SOUL_DRAW_V2_FAIL rabbit alias")
+		ok = false
+	if not loadout.select_character("rabbit"):
+		print("SOUL_DRAW_V2_FAIL select rabbit")
+		ok = false
+	if loadout.active_character_id != "xiaobai":
+		print("SOUL_DRAW_V2_FAIL rabbit not canonical")
+		ok = false
+	if cfg.resolve_drop_id("junk_scrap") != "junk_enamel_chip":
+		print("SOUL_DRAW_V2_FAIL junk alias")
+		ok = false
+	var junk_ok := false
+	for e in cfg.loot_table:
+		if typeof(e) == TYPE_DICTIONARY and str((e as Dictionary).get("DropId", "")) == "junk_enamel_chip":
+			junk_ok = true
+	if not junk_ok:
+		print("SOUL_DRAW_V2_FAIL junk_enamel_chip missing")
+		ok = false
+
 	print(JSON.stringify({
 		"loadout": loadout.summary(),
 		"sampleForced": forced,
