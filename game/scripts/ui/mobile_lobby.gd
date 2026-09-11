@@ -1425,7 +1425,7 @@ func _refresh_region_stages() -> void:
 		[
 			{"num": "4-1", "name": "石岸潮襲 · 潮襲海盜", "type": "前哨雜魚", "cost": 1, "power": 760, "mode": "coast_raider"},
 			{"num": "4-2", "name": "潮岸沉船 · 船長殘影", "type": "精英戰鬥", "cost": 1, "power": 800, "mode": "wreck_captain"},
-			{"num": "4-3", "name": "瘢地焰徑 · 瘢地焰靈", "type": "精英戰鬥", "cost": 1, "power": 840, "mode": "scar_wisp"},
+			{"num": "4-3", "name": "疤地焰徑 · 疤地焰靈", "type": "精英戰鬥", "cost": 1, "power": 840, "mode": "scar_wisp"},
 			{"num": "4-4", "name": "通天塔底 · 塔底", "type": "首領部位破壞", "cost": 3, "power": 920, "mode": "demon"},
 		],
 	]
