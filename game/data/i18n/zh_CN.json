@@ -264,5 +264,17 @@
   "pause.visit": "好友挑战",
   "hud.energy": "能量 {cur}/{max}",
   "pause.gems": "宝石工坊",
-  "panel.gems": "手艺工坊 · 宝石"
+  "panel.gems": "手艺工坊 · 宝石",
+  "soul.pull_start": "上紧——抽一格！",
+  "soul.pull_part": "零件进图鉴了！",
+  "soul.pull_outfit": "新贴纸皮！要换上吗？",
+  "soul.pull_junk": "嗯……这格发条空转。",
+  "soul.pity_soft": "再几格，心会亮大一点。",
+  "soul.codex.drop_brass_gear": "咔——齿合上了！",
+  "soul.codex.drop_spring_coil": "还在跳跳跳～",
+  "soul.codex.drop_core_shard": "青绿叮！收好！",
+  "soul.codex.outfit_cream": "这身……还是我。",
+  "soul.codex.outfit_brass_vest": "护好心，再出爪。",
+  "soul.codex.outfit_scarf_tunic": "嗯——这条围巾会说话。",
+  "soul.codex.outfit_worker_apron": "围裙穿上，开工！"
 }

@@ -264,5 +264,17 @@
   "soul.gold_short": "ゴールド不足（必要 {n}）",
   "pause.regions": "四地区ステージ",
   "pause.visit": "フレンド挑戦",
-  "hud.energy": "エネルギー {cur}/{max}"
+  "hud.energy": "エネルギー {cur}/{max}",
+  "soul.pull_start": "巻き上げ——一回！",
+  "soul.pull_part": "パーツ図鑑に入った！",
+  "soul.pull_outfit": "新しいステッカー皮！着替える？",
+  "soul.pull_junk": "うん……このマス空回り。",
+  "soul.pity_soft": "あと少し、心がもっと輝く。",
+  "soul.codex.drop_brass_gear": "カチッ——歯が噛み合った！",
+  "soul.codex.drop_spring_coil": "まだ跳ねてる～",
+  "soul.codex.drop_core_shard": "青緑チン！しまおう！",
+  "soul.codex.outfit_cream": "この格好……やっぱり私。",
+  "soul.codex.outfit_brass_vest": "心を守って、それから爪。",
+  "soul.codex.outfit_scarf_tunic": "うん——このマフラー、喋る。",
+  "soul.codex.outfit_worker_apron": "エプロン着た、作業開始！"
 }
