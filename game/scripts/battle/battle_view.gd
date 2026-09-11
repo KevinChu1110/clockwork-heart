@@ -321,6 +321,27 @@ func setup(mode: String) -> void:
 			_append_log(_t("[color=#fc0]部位破壞：Tab 鎖定部位／本體 · 破甲降防 · 破冠／角會激怒[/color]"))
 
 
+static func _style_field_tag(lbl: Label, text_col: Color, shrink_mode: int = Control.SIZE_SHRINK_CENTER) -> void:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8")  ## 陽光童話·奶油米白底
+	sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 3
+	sb.set_corner_radius_all(10)
+	sb.content_margin_left = 8
+	sb.content_margin_right = 8
+	sb.content_margin_top = 2
+	sb.content_margin_bottom = 2
+	sb.shadow_color = Color(0.12, 0.1, 0.23, 0.25)
+	sb.shadow_size = 4
+	sb.shadow_offset = Vector2(0, 2)
+	lbl.add_theme_stylebox_override("normal", sb)
+	lbl.add_theme_font_size_override("font_size", 16)
+	lbl.add_theme_color_override("font_color", text_col)
+	lbl.add_theme_constant_override("outline_size", 0)
+	lbl.size_flags_horizontal = shrink_mode
+
+
 func _apply_hud_chrome() -> void:
 	if _hud_styled:
 		return
@@ -335,12 +356,15 @@ func _apply_hud_chrome() -> void:
 	var prl := get_node_or_null("SideBars/PlayerSide/PlayerRageLabel") as Label
 	if prl:
 		prl.text = Loc.t("battle.rage")
+		_style_field_tag(prl, Color("#1F1A3A"), Control.SIZE_SHRINK_BEGIN)
 	var ptag := get_node_or_null("Arena/PlayerSlot/PlayerTag") as Label
 	if ptag:
 		ptag.text = Loc.t("battle.ally")
+		_style_field_tag(ptag, Color("#1F1A3A"), Control.SIZE_SHRINK_CENTER)
 	var etag := get_node_or_null("Arena/EnemySlot/EnemyTag") as Label
 	if etag:
 		etag.text = Loc.t("battle.enemy")
+		_style_field_tag(etag, Color("#C22B55"), Control.SIZE_SHRINK_CENTER)
 	## 楓式多巴胺亮色盤：奶油白 #FFFDF8 槽底＋深藍紫 #1F1A3A 描邊，填充條維持多巴胺色（血條珊瑚粉/紅 #FF5E8A、怒氣暖橘 #FFA010）
 	const BAR_BG_CREAM := Color("#FFFDF8")
 	_style_bar(player_hp, Color("#FF5E8A"), BAR_BG_CREAM)
@@ -415,9 +439,9 @@ func _apply_hud_chrome() -> void:
 		ls.set_corner_radius_all(20)
 		ls.shadow_color = Color(0.12, 0.1, 0.23, 0.15)
 		ls.shadow_size = 4
-		ls.content_margin_left = 16
-		ls.content_margin_right = 16
-		ls.content_margin_top = 10
+		ls.content_margin_left = 18
+		ls.content_margin_right = 18
+		ls.content_margin_top = 14
 		ls.content_margin_bottom = 10
 		_log_panel.add_theme_stylebox_override("panel", ls)
 		parent_ctrl.add_child(_log_panel)
@@ -428,6 +452,7 @@ func _apply_hud_chrome() -> void:
 		log_label.offset_top = 0
 		log_label.offset_right = 0
 		log_label.offset_bottom = 0
+		log_label.scroll_following = false
 		## 日誌內文顏色：深藍紫 #1F1A3A 系，字級 16px 加粗，確保亮底高對比度可讀
 		log_label.add_theme_color_override("default_color", Color("#1F1A3A"))
 		log_label.add_theme_font_size_override("normal_font_size", 16)
@@ -3189,11 +3214,21 @@ static func _adapt_log_colors(text: String) -> String:
 	return res
 
 
+const MAX_LOG_LINES := 5
+var _log_history: Array[String] = []
+
+
 func _append_log(t: String) -> void:
 	var line := _adapt_log_colors(_kh(t))
 	if not line.begins_with("[b]"):
 		line = "[b]%s[/b]" % line
-	log_label.append_text(line + "\n")
+	_log_history.append(line)
+	while _log_history.size() > MAX_LOG_LINES:
+		_log_history.pop_front()
+	if log_label:
+		log_label.clear()
+		for i in range(_log_history.size()):
+			log_label.append_text(_log_history[i] + ("\n" if i < _log_history.size() - 1 else ""))
 
 
 ## ── 不用鍵盤也能打 ──
