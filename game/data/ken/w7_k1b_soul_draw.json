@@ -1,0 +1,61 @@
+{
+  "id": "W7-K1b",
+  "supersedes": "W7-K1",
+  "system": "SoulDraw",
+  "rule": "single_pool_no_gacha_ui",
+  "cost": {"currency": "SoulTicket", "perPull": 1},
+  "characters": [
+    {
+      "CharacterId": "xiaobai",
+      "displayName": "小白",
+      "artKey": "xiaobai",
+      "baseAsset": "res://assets/sprites/pack_a/v2/chars/xiaobai_base.png",
+      "defaultOutfit": "outfit_cream",
+      "outfitAtlasCol": 0
+    },
+    {
+      "CharacterId": "lion",
+      "displayName": "獅",
+      "artKey": "lion",
+      "baseAsset": "res://assets/sprites/pack_a/v2/chars/lion_base.png",
+      "defaultOutfit": "brass_vest",
+      "outfitAtlasCol": 1
+    },
+    {
+      "CharacterId": "fox",
+      "displayName": "狐",
+      "artKey": "fox",
+      "baseAsset": "res://assets/sprites/pack_a/v2/chars/fox_base.png",
+      "defaultOutfit": "scarf_tunic",
+      "outfitAtlasCol": 2
+    },
+    {
+      "CharacterId": "pig",
+      "displayName": "野豬",
+      "artKey": "pig",
+      "baseAsset": "res://assets/sprites/pack_a/v2/chars/pig_base.png",
+      "defaultOutfit": "worker_apron",
+      "outfitAtlasCol": 3
+    }
+  ],
+  "blockedCharacterIds": ["tin_soldier", "gear_bear"],
+  "outfits": [
+    {"OutfitId": "outfit_cream", "CharacterId": "xiaobai", "atlasCol": 0, "weight": 6},
+    {"OutfitId": "brass_vest", "CharacterId": "lion", "atlasCol": 1, "weight": 6},
+    {"OutfitId": "scarf_tunic", "CharacterId": "fox", "atlasCol": 2, "weight": 6},
+    {"OutfitId": "worker_apron", "CharacterId": "pig", "atlasCol": 3, "weight": 6}
+  ],
+  "outfitAtlas": "res://assets/sprites/pack_a/v2/chars/outfits_x4.png",
+  "outfitAtlasCols": 4,
+  "LootTable": [
+    {"DropId": "drop_brass_gear", "kind": "part", "weight": 28},
+    {"DropId": "drop_spring_coil", "kind": "part", "weight": 28},
+    {"DropId": "drop_core_shard", "kind": "part", "weight": 14},
+    {"DropId": "outfit_cream", "kind": "outfit", "weight": 6, "CharacterId": "xiaobai"},
+    {"DropId": "brass_vest", "kind": "outfit", "weight": 6, "CharacterId": "lion"},
+    {"DropId": "scarf_tunic", "kind": "outfit", "weight": 6, "CharacterId": "fox"},
+    {"DropId": "worker_apron", "kind": "outfit", "weight": 6, "CharacterId": "pig"},
+    {"DropId": "junk_scrap", "kind": "junk", "weight": 6}
+  ],
+  "pity": {"softPity": 10, "hardPity": 20, "hardPityKind": "outfit"}
+}
