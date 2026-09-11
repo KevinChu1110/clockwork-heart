@@ -110,6 +110,7 @@ static func _t(s: String) -> String:
 func _place_minimap_default() -> void:
 	if _minimap_root == null:
 		return
+	_minimap_root.size = Vector2.ZERO
 	var vp := get_viewport().get_visible_rect().size
 	var fallback := Vector2(vp.x - _minimap_root.size.x - 8, 8)
 	if Engine.get_main_loop() is SceneTree:
@@ -1892,6 +1893,38 @@ func _process(delta: float) -> void:
 	_ysort_world()
 
 
+static func _create_minimap_panel_style() -> StyleBoxFlat:
+	var sb := UiStyle.panel_style()
+	sb.bg_color = Color("#FFFDF8")  ## 陽光童話·奶油米白底（不透明）
+	sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 5
+	sb.set_corner_radius_all(20)  ## 圓角 18~24px
+	sb.content_margin_left = 10
+	sb.content_margin_right = 10
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 10
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 8
+	sb.shadow_offset = Vector2(0, 4)
+	return sb
+
+
+static func _create_minimap_header_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8")  ## 乾淨奶油白條
+	sb.border_color = Color("#1F1A3A")
+	sb.set_border_width_all(0)
+	sb.border_width_bottom = 2  ## 分隔底線
+	sb.corner_radius_top_left = 16
+	sb.corner_radius_top_right = 16
+	sb.content_margin_left = 4
+	sb.content_margin_right = 4
+	sb.content_margin_top = 2
+	sb.content_margin_bottom = 4
+	return sb
+
+
 func _build_minimap_ui() -> void:
 	## 右上角可視化小地圖
 	_minimap_root = PanelContainer.new()
@@ -1899,10 +1932,10 @@ func _build_minimap_ui() -> void:
 	## 自由定位（可拖），預設右上
 	_minimap_root.set_anchors_preset(Control.PRESET_TOP_LEFT)
 	_minimap_root.position = Vector2(1280 - 196, 8)
-	_minimap_root.custom_minimum_size = Vector2(180, 140)
-	_minimap_root.size = Vector2(180, 140)
+	_minimap_root.custom_minimum_size = Vector2(180, 0)
+	_minimap_root.size = Vector2(180, 0)
 	_minimap_root.mouse_filter = Control.MOUSE_FILTER_STOP
-	_minimap_root.add_theme_stylebox_override("panel", UiStyle.panel_style_dark())
+	_minimap_root.add_theme_stylebox_override("panel", _create_minimap_panel_style())
 	add_child(_minimap_root)
 	call_deferred("_place_minimap_default")
 
@@ -1913,22 +1946,22 @@ func _build_minimap_ui() -> void:
 
 	var head := PanelContainer.new()
 	head.mouse_filter = Control.MOUSE_FILTER_STOP
-	head.add_theme_stylebox_override("panel", UiStyle.header_style())
+	head.add_theme_stylebox_override("panel", _create_minimap_header_style())
 	v.add_child(head)
 	var head_row := HBoxContainer.new()
 	head_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	head.add_child(head_row)
 	var ht := Label.new()
 	ht.text = _t("小地圖")
-	ht.add_theme_font_size_override("font_size", 11)
-	ht.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
+	ht.add_theme_font_size_override("font_size", 16)
+	ht.add_theme_color_override("font_color", Color("#1F1A3A"))
 	ht.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ht.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head_row.add_child(ht)
 	var tip := Label.new()
 	tip.text = "M"
-	tip.add_theme_font_size_override("font_size", 10)
-	tip.add_theme_color_override("font_color", UiStyle.INK_FAINT)
+	tip.add_theme_font_size_override("font_size", 12)
+	tip.add_theme_color_override("font_color", Color("#1F1A3A"))
 	tip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	## 觸控裝置沒鍵盤，M 快捷鍵提示藏起來
 	tip.visible = not DisplayServer.is_touchscreen_available()
@@ -1941,24 +1974,25 @@ func _build_minimap_ui() -> void:
 	_mmap_view = Control.new()
 	_mmap_view.custom_minimum_size = _mmap_size
 	_mmap_view.size = _mmap_size
+	_mmap_view.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_mmap_view.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_mmap_view.clip_contents = true
 	v.add_child(_mmap_view)
 
 	var bg := ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.12, 0.16, 0.14, 1.0)
+	bg.color = Color("#1F1A3A")
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_mmap_view.add_child(bg)
 
-	## 邊框內框
+	## 邊框內框（地圖畫布本身維持可讀暗底地形色塊）
 	var frame := ColorRect.new()
 	frame.set_anchors_preset(Control.PRESET_FULL_RECT)
 	frame.offset_left = 1
 	frame.offset_top = 1
 	frame.offset_right = -1
 	frame.offset_bottom = -1
-	frame.color = Color(0.1, 0.14, 0.13, 1)
+	frame.color = Color(0.12, 0.16, 0.14, 1.0)
 	frame.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_mmap_view.add_child(frame)
 
@@ -1988,16 +2022,17 @@ func _build_minimap_ui() -> void:
 	_mmap_view.add_child(_mmap_player)
 
 	_mmap_label = Label.new()
-	_mmap_label.add_theme_font_size_override("font_size", 11)
-	_mmap_label.add_theme_color_override("font_color", Color(0.7, 0.78, 0.82, 0.95))
+	_mmap_label.custom_minimum_size = Vector2(_mmap_size.x, 0)
+	_mmap_label.add_theme_font_size_override("font_size", 12)
+	_mmap_label.add_theme_color_override("font_color", Color("#1F1A3A"))
 	_mmap_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_mmap_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(_mmap_label)
 
 	var legend := Label.new()
 	legend.text = _t("● 你  ·  路標  ·  NPC  ·  點")
-	legend.add_theme_font_size_override("font_size", 10)
-	legend.add_theme_color_override("font_color", Color(0.5, 0.55, 0.6, 0.9))
+	legend.add_theme_font_size_override("font_size", 16)
+	legend.add_theme_color_override("font_color", Color("#1F1A3A"))
 	legend.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	v.add_child(legend)
 
@@ -2044,6 +2079,8 @@ func _rebuild_minimap() -> void:
 		dot.color = col
 		_mmap_dots.add_child(dot)
 	_update_minimap_markers()
+	if _minimap_root:
+		_minimap_root.size = Vector2.ZERO
 
 
 func _update_minimap_markers() -> void:
