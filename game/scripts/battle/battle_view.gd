@@ -392,12 +392,13 @@ func _apply_hud_chrome() -> void:
 		countdown_sub.add_theme_constant_override("shadow_offset_x", 1)
 		countdown_sub.add_theme_constant_override("shadow_offset_y", 1)
 
-	## 戰鬥 log：半透明紙底（包一層 Panel）
+	## 戰鬥 log：多巴胺亮色底板（奶油白 #FFFDF8，深藍紫描邊 #1F1A3A，圓角 20px）
 	if log_label and log_label.get_parent() and not (log_label.get_parent() is PanelContainer):
 		var parent_ctrl: Control = log_label.get_parent() as Control
 		var idx := log_label.get_index()
 		_log_panel = PanelContainer.new()
 		_log_panel.name = "LogPanel"
+		_log_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_log_panel.anchor_left = log_label.anchor_left
 		_log_panel.anchor_top = log_label.anchor_top
 		_log_panel.anchor_right = log_label.anchor_right
@@ -407,14 +408,16 @@ func _apply_hud_chrome() -> void:
 		_log_panel.offset_right = log_label.offset_right
 		_log_panel.offset_bottom = log_label.offset_bottom
 		var ls := StyleBoxFlat.new()
-		ls.bg_color = Color(0.06, 0.05, 0.08, 0.78)
-		ls.border_color = Color(0.55, 0.42, 0.28, 0.55)
-		ls.set_border_width_all(1)
-		ls.set_corner_radius_all(4)
-		ls.content_margin_left = 10
-		ls.content_margin_right = 10
-		ls.content_margin_top = 6
-		ls.content_margin_bottom = 6
+		ls.bg_color = Color("#FFFDF8")
+		ls.border_color = Color("#1F1A3A")
+		ls.set_border_width_all(2)
+		ls.set_corner_radius_all(20)
+		ls.shadow_color = Color(0.12, 0.1, 0.23, 0.15)
+		ls.shadow_size = 4
+		ls.content_margin_left = 16
+		ls.content_margin_right = 16
+		ls.content_margin_top = 10
+		ls.content_margin_bottom = 10
 		_log_panel.add_theme_stylebox_override("panel", ls)
 		parent_ctrl.add_child(_log_panel)
 		parent_ctrl.move_child(_log_panel, idx)
@@ -424,10 +427,10 @@ func _apply_hud_chrome() -> void:
 		log_label.offset_top = 0
 		log_label.offset_right = 0
 		log_label.offset_bottom = 0
-		## 戰報是「打在幻影上，毫無作用」「無法逃離此戰」這些因果的唯一出口，
-		## 原本是深灰畫在近黑面板上，約 3.2:1
-		log_label.add_theme_color_override("default_color", Color(0.86, 0.84, 0.8))
-		log_label.add_theme_font_size_override("normal_font_size", 14)
+		## 日誌內文顏色：深藍紫 #1F1A3A 系，字級 16px 加粗，確保亮底高對比度可讀
+		log_label.add_theme_color_override("default_color", Color("#1F1A3A"))
+		log_label.add_theme_font_size_override("normal_font_size", 16)
+		log_label.add_theme_font_size_override("bold_font_size", 16)
 
 	## 中央橫幅
 	if banner:
@@ -3138,8 +3141,35 @@ func _on_end(won: bool) -> void:
 	battle_finished.emit(won)
 
 
+## 多巴胺色盤色碼轉換：將適合暗色底板的舊淺色碼轉換為亮底（#FFFDF8）高可讀深色與多巴胺強調色
+static func _adapt_log_colors(text: String) -> String:
+	var res := text
+	# 暴怒／警報／破防／部位破壞／受傷反噬 -> 珊瑚粉 #FF5E8A
+	const RAGE_COLORS := ["#f52", "#f44", "#f66", "#f88", "#e88", "#f84", "#f86", "#fa8"]
+	for c in RAGE_COLORS:
+		if res.contains(c) or res.contains(c.to_upper()):
+			res = res.replace("[color=%s]" % c, "[color=#FF5E8A]")
+			res = res.replace("[color=%s]" % c.to_upper(), "[color=#FF5E8A]")
+	# 提示／金幣／獎勵／招式互動／預告 -> 暖橘 #FFA010
+	const WARN_COLORS := ["#fc0", "#fc8", "#fd9", "#ff8", "#ff5", "#fa6", "#ffd700", "#c96", "#ca8", "#f9a"]
+	for c in WARN_COLORS:
+		if res.contains(c) or res.contains(c.to_upper()):
+			res = res.replace("[color=%s]" % c, "[color=#FFA010]")
+			res = res.replace("[color=%s]" % c.to_upper(), "[color=#FFA010]")
+	# 暗底淺藍／青綠／灰白／次要文字 -> 深藍紫 #1F1A3A
+	const DARK_BASE_COLORS := ["#8df", "#9cf", "#8cf", "#8ff", "#6cf", "#cff", "#c8f", "#a8f", "#ddf", "#9c9", "#8f8", "#6f6", "#aaa", "#b8a88a", "#a88", "#fff", "#ffffff", "#eee"]
+	for c in DARK_BASE_COLORS:
+		if res.contains(c) or res.contains(c.to_upper()):
+			res = res.replace("[color=%s]" % c, "[color=#1F1A3A]")
+			res = res.replace("[color=%s]" % c.to_upper(), "[color=#1F1A3A]")
+	return res
+
+
 func _append_log(t: String) -> void:
-	log_label.append_text(_kh(t) + "\n")
+	var line := _adapt_log_colors(_kh(t))
+	if not line.begins_with("[b]"):
+		line = "[b]%s[/b]" % line
+	log_label.append_text(line + "\n")
 
 
 ## ── 不用鍵盤也能打 ──
