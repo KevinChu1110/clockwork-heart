@@ -2441,7 +2441,8 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			else:
 				_append_log(_t("[color=#fc0]部位破壞！【%s】碎裂！[/color]") % pname)
 			_spawn_float(boss_id, "BREAK！" + pname, Color(1.0, 0.85, 0.15), false, true)
-			_spawn_hit_fx(boss_id, "parry_flash")
+			# Alice 糖果屑（粉紫奶油琺瑯＋黃銅屑）；⛔ 不用焊花主特效
+			_spawn_candy_chip_break(boss_id, data)
 			_shake = 0.5
 			trigger_hit_stop(0.12)
 			_flash(_body_of(boss_id), Color(3.0, 2.5, 1.0))
@@ -2842,6 +2843,39 @@ func _spawn_hit_fx(target_id: String, kind: String, hit_i: int = 0) -> void:
 		if is_instance_valid(fx):
 			fx.queue_free()
 	)
+
+
+
+func _spawn_candy_chip_break(boss_id: String, data: Dictionary) -> void:
+	## W4-F3：part_break 呈現掛糖果屑；缺腳本／錨點時靜默跳過（不改 battle_sim）。
+	var gp := get_node_or_null("/root/GraphicsProfile")
+	if gp != null and not gp.vfx_enabled():
+		return
+	var drop_id := str(data.get("drop_id", ""))
+	if drop_id.is_empty():
+		# 嘗試從 material 對到 Ken DropId
+		var mat := str(data.get("material", "")).to_lower()
+		if "spring" in mat or "coil" in mat or "彈簧" in mat:
+			drop_id = "drop_spring_coil"
+		elif "core" in mat or "shard" in mat or "核心" in mat:
+			drop_id = "drop_core_shard"
+		elif "brass" in mat or "gear" in mat or "黃銅" in mat or "齒輪" in mat:
+			drop_id = "drop_brass_gear"
+	var body := _body_of(boss_id)
+	var script_path := "res://scripts/systems/candy_chip_vfx/candy_chip_vfx.gd"
+	if not ResourceLoader.exists(script_path):
+		_spawn_hit_fx(boss_id, "parry_flash")
+		return
+	var Candy = load(script_path)
+	if Candy == null:
+		_spawn_hit_fx(boss_id, "parry_flash")
+		return
+	var origin := Vector2.ZERO
+	if body != null:
+		origin = body.global_position + body.size * 0.5
+	else:
+		origin = size * 0.5
+	Candy.play(self, origin, drop_id)
 
 
 func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> void:

@@ -32,3 +32,11 @@ Requires Godot 4.7 macOS export templates. If templates are missing on the build
 - Headless: `S8_SMOKE_SUCCESS` via `test_s8_smoke.gd`
 - Mac zip (after installing 4.7 templates): `dist/macos/ClockworkHeart.zip`
 - Note: exported zip launches **main scene** (full game). For the thin §8 slice on Mac, prefer opening `game/project.godot` → run `scenes/s8_smoke/s8_smoke.tscn` (F6).
+
+## W4 UIUX (candy / HUD / phases)
+
+- Chest-glow HUD: `scripts/systems/wind_stamina/chest_glow_hud.gd` (tick drain flash on spend)
+- Candy chips on part break: `scripts/systems/candy_chip_vfx/candy_chip_vfx.gd` (also hooked from `battle_view` `part_broken`)
+- Phase buttons: Explore / Combat / Dismantle in `s8_smoke_view.gd`
+- Dialogue: Bingo `docs/w4/W4_B1_S8_DIALOGUE_POLISH.md` keys in `s8_smoke_flow.gd`
+- Pack-A art: `assets/sprites/pack_a/` (cel + drop VFX; missing files safe)

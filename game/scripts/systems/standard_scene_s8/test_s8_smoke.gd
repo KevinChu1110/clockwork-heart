@@ -68,6 +68,28 @@ func _initialize() -> void:
 		ok = false
 	print("  ok - flow E→B→D loot=%s wind_left=%s spent=%d" % [str(loot), str(result.get("wind")), spent])
 
+	# Bingo W4 對白 key（e02_hud / b02_hint）必須存在且無藍條用語
+	var d_e02 := str(result.get("dialog_e02", ""))
+	var d_b02 := str(result.get("dialog_b02", ""))
+	if d_e02.find("發條") < 0:
+		push_error("s8.e02_hud missing 發條 wording")
+		ok = false
+	if d_b02.find("拆") < 0:
+		push_error("s8.b02_hint should guide dismantle")
+		ok = false
+	for bad in ["藍條", "mana", "能量條"]:
+		if d_e02.find(bad) >= 0 or d_b02.find(bad) >= 0:
+			push_error("dialog must not contain %s" % bad)
+			ok = false
+	# 糖果屑腳本可載入
+	var candy_path := "res://scripts/systems/candy_chip_vfx/candy_chip_vfx.gd"
+	if not ResourceLoader.exists(candy_path):
+		push_error("CandyChipVfx missing")
+		ok = false
+	else:
+		print("  ok - CandyChipVfx + Bingo dialogue keys")
+
+
 	# battle_sim 既有門檻對齊（常數旁註，不重寫 battle_sim）
 	const BattleSim := preload("res://scripts/battle/battle_sim.gd")
 	if not is_equal_approx(BattleSim.PART_BREAK_HP_RATIO, 0.70):
