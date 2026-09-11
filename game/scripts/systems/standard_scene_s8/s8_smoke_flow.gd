@@ -1,28 +1,39 @@
 class_name S8SmokeFlow
 extends RefCounted
 ## Wave-2 §8 煙測流程：探索 → 戰鬥 → 拆一部位。
-## 對齊 Bingo W2_B1_S8_SMOKE_SCRIPT.md；數值對齊 Ken W2-K1。
+## 對齊 Bingo W4_B1_S8_DIALOGUE_POLISH；數值對齊 Ken W2-K1。
 ## 刻意極薄：不拉整包 RPG／main.gd，專供 Mac 可開切片與無頭證明。
 
 signal phase_changed(phase: String, line: String)
 signal log_line(text: String)
 signal finished(ok: bool, summary: String)
+## View／VFX：部位打碎時（drop_id 供糖果屑 tint）
+signal part_break_fx(drop_id: String, part_name: String)
+## View：發條扣點（Ken costs）— HUD 已聽 WindStamina.spent，此信號供額外 UI
+signal stamina_spent(action_id: String, amount: int, remaining: int)
+## View：W5-K1 ERR_* toast 橫幅（與旁白分離；Bingo s8.err_* 不作 toast）
+signal err_toast(code: String, message: String)
+## View：首拆逾時（FirstBreakDeadlineSec）— 高亮拆解鈕，不 softlock
+signal first_break_deadline()
 
 const DIALOG := {
-	"s8.e01": "……背上一緊。有人上了發條？",
-	"s8.e03": "齒輪……還在轉。",
-	"s8.e04": "黃色的……黃銅？",
-	"s8.e05": "那邊也在響。",
-	"s8.b01": "別擋住路。",
-	"s8.b03": "接縫開了！",
-	"s8.b05": "下來！",
-	"s8.b07": "還能走。",
-	"s8.d01": "一顆一顆來。",
+	"s8.e01": "背上一緊……有人替我上了發條。",
+	"s8.e02_hud": "（系統・首次）胸口那圈＝發條。轉不動就停一下。",
+	"s8.e03": "這裡的齒輪，好像還沒完全停。",
+	"s8.e04": "黃銅屑……有人拆過這裡。",
+	"s8.e05": "那邊在響——不太友善。",
+	"s8.b01": "擋路的，先請開。",
+	"s8.b02_hint": "（系統・首次）點敵人。接縫亮了就能拆。",
+	"s8.b03": "接縫開了！鎖那一塊！",
+	"s8.b05": "下來——糖果屑也一起！",
+	"s8.b07": "還走得動。零件，收。",
+	"s8.d01": "一顆一顆來。選發光的那顆。",
 	"s8.d03": "……轉開。",
-	"s8.d04": "黃銅齒輪，收好。",
-	"s8.d05": "……亮了一下。",
-	"s8.d06": "發條還沒停。",
-	"s8.err_stamina": "發條轉不動了。",
+	"s8.d04": "黃銅齒輪，進圖鑑了。",
+	"s8.d04b": "發條彈簧，還在跳。",
+	"s8.d05": "青綠亮了一下……核心碎片。",
+	"s8.d06": "發條還沒停。下一格，給誰？",
+	"s8.err_stamina": "發條轉不動了——先休息。",
 }
 
 enum Phase {
@@ -59,12 +70,20 @@ var loot: Array[String] = []
 var last_error: String = ""
 var auto_advance: bool = true
 var _strike_count: int = 0
+var _shown_e02_hud: bool = false
+var _shown_b02_hint: bool = false
+var smoke_started_msec: int = 0
+var first_break_done: bool = false
+var deadline_fired: bool = false
+var last_err_code: String = ""
 
 
 func setup() -> void:
 	wind = WindStamina.new()
 	wind.load_defaults()
 	wind.reset_scene()
+	if not wind.spent.is_connected(_on_wind_spent):
+		wind.spent.connect(_on_wind_spent)
 	enemy_max_hp = 40
 	enemy_hp = enemy_max_hp
 	part_max_hp = maxi(4, int(float(enemy_max_hp) * wind.part_hp_ratio()))
@@ -74,7 +93,17 @@ func setup() -> void:
 	loot.clear()
 	last_error = ""
 	_strike_count = 0
+	_shown_e02_hud = false
+	_shown_b02_hint = false
+	smoke_started_msec = 0
+	first_break_done = false
+	deadline_fired = false
+	last_err_code = ""
 	phase = Phase.IDLE
+
+
+func _on_wind_spent(action_id: String, amount: int, remaining: int) -> void:
+	stamina_spent.emit(action_id, amount, remaining)
 
 
 func dialog(key: String) -> String:
@@ -85,9 +114,24 @@ func phase_name() -> String:
 	return Phase.keys()[phase]
 
 
+## 三相分組：explore / combat / dismantle（給 View 按鈕高亮）
+func phase_group() -> String:
+	if phase >= Phase.D01_START and phase <= Phase.D06_COMPLETE:
+		return "dismantle"
+	if phase >= Phase.B01_START and phase <= Phase.B07_END:
+		return "combat"
+	if phase >= Phase.E01_ENTER and phase <= Phase.E06_TO_BATTLE:
+		return "explore"
+	return "idle"
+
+
 func start() -> void:
 	if wind == null:
 		setup()
+	smoke_started_msec = Time.get_ticks_msec()
+	first_break_done = false
+	deadline_fired = false
+	last_err_code = ""
 	_enter(Phase.E01_ENTER)
 
 
@@ -102,8 +146,15 @@ func _enter(p: int) -> void:
 		Phase.E02_WIND:
 			if not _spend("E02_exploreTick"):
 				return
-			_emit_phase("（系統）發條 −%d" % wind.cost_of("E02_exploreTick"))
-			_log("WindStamina → %d/%d" % [wind.current, wind.max_stamina])
+			# Bingo：首次系統提示胸口光 HUD；附成本回饋（非「藍條」用語）
+			var hud_line := dialog("s8.e02_hud")
+			if _shown_e02_hud:
+				hud_line = "發條 −%d（胸口那圈）" % wind.cost_of("E02_exploreTick")
+			_shown_e02_hud = true
+			_emit_phase(hud_line)
+			_log("WindStamina → %d/%d (E02_exploreTick=%d)" % [
+				wind.current, wind.max_stamina, wind.cost_of("E02_exploreTick")
+			])
 			if auto_advance:
 				_enter(Phase.E03_AMBIENT)
 		Phase.E03_AMBIENT:
@@ -128,10 +179,15 @@ func _enter(p: int) -> void:
 			if not _spend("B01_combatEnter"):
 				return
 			_emit_phase(dialog("s8.b01"))
-			_log("combat enter cost; WindStamina → %d/%d" % [wind.current, wind.max_stamina])
+			_log("combat enter cost=%d; WindStamina → %d/%d" % [
+				wind.cost_of("B01_combatEnter"), wind.current, wind.max_stamina
+			])
 			if auto_advance:
 				_enter(Phase.B02_COMBAT)
 		Phase.B02_COMBAT:
+			if not _shown_b02_hint:
+				_shown_b02_hint = true
+				_emit_phase(dialog("s8.b02_hint"))
 			_run_combat_loop()
 		Phase.B03_PART_UNLOCK:
 			_emit_phase(dialog("s8.b03"))
@@ -157,7 +213,9 @@ func _enter(p: int) -> void:
 			if not _spend("D01_dismantleEnter"):
 				return
 			_emit_phase(dialog("s8.d01"))
-			_log("dismantle enter; WindStamina → %d/%d" % [wind.current, wind.max_stamina])
+			_log("dismantle enter cost=%d; WindStamina → %d/%d" % [
+				wind.cost_of("D01_dismantleEnter"), wind.current, wind.max_stamina
+			])
 			if auto_advance:
 				_enter(Phase.D02_SELECT)
 		Phase.D02_SELECT:
@@ -174,8 +232,10 @@ func _enter(p: int) -> void:
 				return
 			var drop_id := wind.primary_drop()
 			loot.append(drop_id)
-			_emit_phase(dialog("s8.d04"))
+			_emit_phase(_dialog_for_drop(drop_id))
 			_log("loot +%s (%s)" % [drop_id, wind.drop_display_name(drop_id)])
+			# 抽出也播一次糖果屑（與 B05 打碎呼應）
+			part_break_fx.emit(drop_id, "gear_brass")
 			if auto_advance:
 				_enter(Phase.D06_COMPLETE)
 		Phase.D06_COMPLETE:
@@ -183,6 +243,16 @@ func _enter(p: int) -> void:
 			_finish(true)
 		_:
 			pass
+
+
+func _dialog_for_drop(drop_id: String) -> String:
+	match drop_id:
+		"drop_spring_coil":
+			return dialog("s8.d04b")
+		"drop_core_shard":
+			return dialog("s8.d05")
+		_:
+			return dialog("s8.d04")
 
 
 func advance() -> void:
@@ -202,8 +272,47 @@ func advance() -> void:
 	_enter(order[idx + 1])
 
 
+## 三相按鈕：往指定分組推進（已過則 noop；未到則連跳到該組入口）。
+func goto_group(group: String) -> void:
+	if phase == Phase.DONE:
+		return
+	var target := Phase.E01_ENTER
+	match group:
+		"explore":
+			target = Phase.E01_ENTER
+		"combat":
+			target = Phase.B01_START
+		"dismantle":
+			target = Phase.D01_START
+		_:
+			return
+	if phase >= target and phase_group() == group:
+		# 已在該組：當一步 advance（B02 特判由 View 處理）
+		if phase == Phase.B02_COMBAT:
+			_run_combat_loop()
+		else:
+			advance()
+		return
+	if phase > target:
+		return
+	# 連跳到目標入口（保留中間扣點／狀態）
+	var guard := 0
+	while phase < target and phase != Phase.DONE and guard < 32:
+		guard += 1
+		if phase == Phase.B02_COMBAT:
+			_run_combat_loop()
+		else:
+			advance()
+		if last_error != "":
+			return
+
+
 func _run_combat_loop() -> void:
-	_emit_phase("即時互毆（節奏預算）")
+	if not _shown_b02_hint:
+		_shown_b02_hint = true
+		_emit_phase(dialog("s8.b02_hint"))
+	else:
+		_emit_phase("即時互毆（節奏預算）")
 	# 目標：把本體壓到 unlock 門檻以下，再砸掉部位。
 	var unlock_hp := int(ceil(float(enemy_max_hp) * wind.part_unlock_hp()))
 	while enemy_hp > unlock_hp:
@@ -232,6 +341,7 @@ func _check_part_unlock() -> void:
 
 func _break_part() -> void:
 	if not part_unlocked:
+		_emit_err("ERR_PART_LOCKED")
 		last_error = "break before unlock"
 		_finish(false)
 		return
@@ -242,14 +352,19 @@ func _break_part() -> void:
 		part_hp = maxi(0, part_hp - dmg)
 		_log("part hit hp=%d/%d (bonus×%.2f)" % [part_hp, part_max_hp, wind.break_bonus()])
 	part_broken = true
-	_log("broke gear_brass")
+	first_break_done = true
+	var drop_preview := wind.primary_drop()
+	_log("broke gear_brass → candy chips (%s)" % drop_preview)
+	part_break_fx.emit(drop_preview, "gear_brass")
 
 
 func _spend(action_id: String) -> bool:
 	if wind.try_spend(action_id):
 		return true
-	last_error = dialog("s8.err_stamina") + " (%s)" % action_id
-	_emit_phase(last_error)
+	# Toast＝Ken ERR_STAMINA；旁白 s8.err_stamina 僅 log／備選，不取代 toast
+	_emit_err("ERR_STAMINA")
+	last_error = "ERR_STAMINA (%s)" % action_id
+	_log("voiceover備選 %s" % dialog("s8.err_stamina"))
 	_finish(false)
 	return false
 
@@ -272,6 +387,39 @@ func _finish(ok: bool) -> void:
 	finished.emit(ok, summary)
 
 
+
+func _emit_err(code: String) -> void:
+	last_err_code = code
+	var msg := wind.err_toast(code) if wind != null else code
+	err_toast.emit(code, msg)
+	_log("toast %s: %s" % [code, msg])
+
+
+## View 每幀／計時呼叫：逾時且尚未首拆 → 發一次 first_break_deadline。
+func poll_first_break_deadline(now_msec: int = -1) -> bool:
+	if first_break_done or deadline_fired or phase == Phase.DONE or phase == Phase.IDLE:
+		return false
+	# smoke_started_msec 以 start() 寫入；測試可覆寫（可為負，表引擎啟動未滿 60s）
+	if smoke_started_msec == 0:
+		return false
+	var now := now_msec if now_msec >= 0 else Time.get_ticks_msec()
+	var limit_ms: int = (wind.deadline_sec() * 1000) if wind != null else 60000
+	if now - smoke_started_msec < limit_ms:
+		return false
+	deadline_fired = true
+	_log("FirstBreakDeadlineSec=%d elapsed — highlight 拆解" % (limit_ms / 1000))
+	first_break_deadline.emit()
+	return true
+
+
+## 可選 nudge：不 softlock；若尚未進拆解組則標成 dismantle-ready（玩家仍可點三相鈕）。
+func nudge_dismantle_ready() -> void:
+	if phase == Phase.DONE or phase_group() == "dismantle":
+		return
+	# 僅提示；真正進入仍靠 View 按鈕／advance，避免強制跳關 softlock
+	_log("nudge: dismantle-ready (press 拆解)")
+
+
 ## 無頭／單元：一次跑完並回傳結果字典。
 func run_to_completion() -> Dictionary:
 	auto_advance = true
@@ -292,4 +440,11 @@ func run_to_completion() -> Dictionary:
 		"part_unlocked": part_unlocked,
 		"hud_style": wind.hud_style(),
 		"forbids_blue_mana": wind.hud_forbids_blue_mana(),
+		"dialog_e02": dialog("s8.e02_hud"),
+		"dialog_b02": dialog("s8.b02_hint"),
+		"dialog_err_stamina_vo": dialog("s8.err_stamina"),
+		"toast_ERR_STAMINA": wind.err_toast("ERR_STAMINA"),
+		"toast_ERR_PART_LOCKED": wind.err_toast("ERR_PART_LOCKED"),
+		"FirstBreakDeadlineSec": wind.deadline_sec(),
+		"first_break_done": first_break_done,
 	}
