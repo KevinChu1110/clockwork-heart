@@ -4,10 +4,10 @@
   "target_mb": [50, 80],
   "packs": {
     "core": {
-      "player_gets": "第一次下載。標題、大廳（今日村莊／四大殿堂）、C0 序章（閣樓＋荒路）可玩。含操作／戰鬥／UI／玩家紙娃娃／C0 用 BGM。",
+      "player_gets": "第一次下載（Ken Base）。標題、大廳（今日村莊／四大殿堂）、C0 序章可玩。含操作／戰鬥／UI／玩家紙娃娃；BGM 僅留 battle（C0 教學戰）。缺 Pack-A 時 sfx／氛圍曲靜音占位，不擋 s8.*。",
       "map_prefixes": ["village", "road", "town"],
       "map_extra": ["barracks_yard", "sky_kingdom"],
-      "bgm": ["title", "village", "town", "road", "battle"],
+      "bgm": ["battle"],
       "keep_dirs": [
         "assets/sprites/player",
         "assets/sprites/npcs",
@@ -31,10 +31,18 @@
         "res://assets/sprites/maps/village_bg.webp",
         "res://assets/sprites/maps/town_bg.webp",
         "res://assets/sprites/maps/road_bg.webp"
+      ],
+      "base_keeps_ids_only": [
+        "WindStamina",
+        "Cost*",
+        "PartUnlockHP",
+        "DropIds",
+        "s8.* dialog keys",
+        "sfx.* cue names (no wav required)"
       ]
     },
     "chapter": {
-      "player_gets": "C1～C6 與後續區域。之後新地圖預設進這包，除非前綴是 village／road／town。",
+      "player_gets": "C1～C6 與後續區域＋從 core 挪出的氛圍 BGM（title／village／town／road）。之後新地圖預設進這包，除非前綴是 village／road／town。對齊 Ken Pack-A 下載邊界的章節半。",
       "map_prefixes": ["wild", "mist", "dojo", "forest", "coast", "tower", "cross"],
       "map_extra": [
         "crossroads",
@@ -43,7 +51,7 @@
         "starfall_plain",
         "blackflame_scar"
       ],
-      "bgm": ["wild", "mist", "dojo", "forest", "coast", "tower", "ending", "boss"],
+      "bgm": ["title", "village", "town", "road", "wild", "mist", "dojo", "forest", "coast", "tower", "ending", "boss"],
       "sentinels": ["res://assets/sprites/maps/wild_bg.webp"]
     },
     "extra": {
@@ -54,6 +62,30 @@
         "NotoSansKR-Regular.otf"
       ],
       "sentinels": ["res://assets/fonts/NotoSansTC-Regular.otf"]
+    },
+    "pack_a": {
+      "player_gets": "Ken Pack-A 外掛（執行時可併入 chapter.pck）：真音檔、Alice／小白三態定稿、找碴圖、後續章大型素材。缺檔時 cue 靜音，s8_smoke 仍過。",
+      "ships_via": "chapter",
+      "art_paths": [
+        "assets/sprites/art/xiaobai_explore.png",
+        "assets/sprites/art/xiaobai_combat.png",
+        "assets/sprites/art/xiaobai_dismantle.png",
+        "assets/sprites/art/find_bug_*.png",
+        "assets/sprites/s8_smoke/*_final*.png"
+      ],
+      "audio_paths": [
+        "assets/audio/sfx/ui/wind_tick.ogg",
+        "assets/audio/sfx/ui/wind_empty.ogg",
+        "assets/audio/sfx/explore/*.ogg",
+        "assets/audio/sfx/battle/*.ogg",
+        "assets/audio/sfx/dismantle/*.ogg",
+        "assets/audio/bgm/title.mp3",
+        "assets/audio/bgm/village.mp3",
+        "assets/audio/bgm/town.mp3",
+        "assets/audio/bgm/road.mp3"
+      ],
+      "bgm_deferred_from_core": ["title", "village", "town", "road"],
+      "note": "見 clockwork-docs/W3_B1_BASE_PACKA_AUDIO.md；battle.mp3 留 core 供 C0 教學戰。"
     }
   },
   "default_pack": "chapter"

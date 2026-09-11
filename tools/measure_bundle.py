@@ -292,21 +292,24 @@ def print_report(col: dict, mani: dict) -> None:
 
 
 def apply_presets(extra_f: str, core_f: str) -> None:
+    """Mac + mobile first-download use CORE; Win/Linux stay full (extra-only junk strip)."""
     cfg = GAME / "export_presets.cfg"
     text = cfg.read_text(encoding="utf-8")
     lines = text.splitlines(keepends=True)
     name = ""
     out: list[str] = []
+    # Product Lock §5.2 mobile-first: Mac store + Android/iOS share CORE exclude.
+    core_presets = {"macOS", "Android", "iOS"}
     for line in lines:
         if line.startswith("name="):
             name = line.split("=", 1)[1].strip().strip('"')
         if line.startswith("exclude_filter="):
-            filt = core_f if name in ("Android", "iOS") else extra_f
+            filt = core_f if name in core_presets else extra_f
             out.append('exclude_filter="%s"\n' % filt)
             continue
         out.append(line)
     cfg.write_text("".join(out), encoding="utf-8")
-    print("updated", cfg.relative_to(ROOT), "Android/iOS=core, others=extra-only")
+    print("updated", cfg.relative_to(ROOT), "macOS/Android/iOS=core, Win/Linux=extra-only")
 
 
 def main() -> int:
@@ -337,7 +340,7 @@ def main() -> int:
     print("== exclude_filter extra-only（桌面完整包，只丟永不進包的重複檔）==")
     print(extra_f)
     print()
-    print("== exclude_filter core（Android／iOS 首包，再排除 chapter）==")
+    print("== exclude_filter core（macOS／Android／iOS 首包，再排除 chapter／Pack-A BGM）==")
     print(core_f)
     if args.write_filters:
         out = ROOT / "docs" / "bundle_filters.txt"
