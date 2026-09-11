@@ -91,6 +91,9 @@ var _part_bars: Dictionary = {}  ## id -> ProgressBar
 var _part_labels: Dictionary = {}  ## id -> Label
 var _part_box: VBoxContainer
 var _focus_hint: Label
+var _clockwork_energy_bar: ProgressBar
+var _clockwork_energy_val: Label
+var _loot_reward_bar: PanelContainer
 static var _shadow_tex_cache: Texture2D = null
 static var _feet_frac_cache: Dictionary = {}
 
@@ -376,6 +379,57 @@ func _apply_hud_chrome() -> void:
 	player_hp.custom_minimum_size.y = 16
 	enemy_hp.custom_minimum_size.y = 16
 	player_rage.custom_minimum_size.y = 10
+
+	# 建立發條能量（胸口青綠光芒＋外圈刻度 15 點語意，拒絕傳統藍條）
+	var player_side := get_node_or_null("SideBars/PlayerSide") as VBoxContainer
+	if player_side and player_side.get_node_or_null("ClockworkEnergyRow") == null:
+		var e_row := HBoxContainer.new()
+		e_row.name = "ClockworkEnergyRow"
+		e_row.add_theme_constant_override("separation", 6)
+		
+		var heart_box := PanelContainer.new()
+		heart_box.custom_minimum_size = Vector2(26, 26)
+		var h_sb := StyleBoxFlat.new()
+		h_sb.bg_color = BAR_BG_CREAM
+		h_sb.border_color = Color("#1F1A3A")
+		h_sb.set_border_width_all(2)
+		h_sb.border_width_bottom = 3
+		h_sb.set_corner_radius_all(13)
+		heart_box.add_theme_stylebox_override("panel", h_sb)
+		
+		var heart_icon := Label.new()
+		heart_icon.text = "◆"
+		heart_icon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		heart_icon.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		heart_icon.add_theme_font_size_override("font_size", 13)
+		heart_icon.add_theme_color_override("font_color", Color("#38FFB0"))
+		heart_box.add_child(heart_icon)
+		e_row.add_child(heart_box)
+		
+		var bar_vbox := VBoxContainer.new()
+		bar_vbox.add_theme_constant_override("separation", 2)
+		
+		_clockwork_energy_val = Label.new()
+		_clockwork_energy_val.name = "EnergyVal"
+		_clockwork_energy_val.text = _t("發條 15/15 · 刻度")
+		_clockwork_energy_val.add_theme_font_size_override("font_size", 12)
+		_clockwork_energy_val.add_theme_color_override("font_color", Color("#4ED86A"))
+		_clockwork_energy_val.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
+		_clockwork_energy_val.add_theme_constant_override("shadow_offset_x", 1)
+		_clockwork_energy_val.add_theme_constant_override("shadow_offset_y", 1)
+		bar_vbox.add_child(_clockwork_energy_val)
+		
+		_clockwork_energy_bar = ProgressBar.new()
+		_clockwork_energy_bar.name = "ClockworkEnergyBar"
+		_clockwork_energy_bar.custom_minimum_size = Vector2(130, 10)
+		_clockwork_energy_bar.max_value = 15
+		_clockwork_energy_bar.value = 15
+		_clockwork_energy_bar.show_percentage = false
+		_style_bar(_clockwork_energy_bar, Color("#4ED86A"), BAR_BG_CREAM)
+		bar_vbox.add_child(_clockwork_energy_bar)
+		
+		e_row.add_child(bar_vbox)
+		player_side.add_child(e_row)
 	## 戰鬥背景是暗的，所以這裡的字一律走淺色。
 	## 底下那幾個 if 曾經用 UiStyle.CREAM 覆寫回來——那個常數名字叫奶油色、
 	## 值卻是墨色 #26242a（改成白底風格時語意翻轉了），於是近黑字畫在近黑底上。
@@ -1593,6 +1647,16 @@ func _refresh_hud() -> void:
 		player_hp_label.text = "HP %d／%d%s%s" % [p.hp, p.max_hp, status, uses_txt]
 		player_rage.max_value = 100
 		player_rage.value = p.rage
+		if _clockwork_energy_bar:
+			var es: Node = null
+			if Engine.get_main_loop() is SceneTree:
+				es = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EnergySystem")
+			var cur_e: int = int(es.call("current")) if es and es.has_method("current") else 15
+			var max_e: int = int(es.get("MAX_ENERGY")) if es and es.get("MAX_ENERGY") != null else 15
+			_clockwork_energy_bar.max_value = max_e
+			_clockwork_energy_bar.value = cur_e
+			if _clockwork_energy_val:
+				_clockwork_energy_val.text = "發條 %d/%d · 刻度" % [cur_e, max_e]
 		## 怒氣將近滿／已滿／暴怒中提示
 		if _rage_ready:
 			if p.fury_active:
@@ -1808,9 +1872,10 @@ func _refresh_part_bars(boss: BattleUnit) -> void:
 			var nm := str(p.get("name", pid))
 			if tag2 != "":
 				nm = "%s·%s" % [tag2, nm]
-			lab.text = ("%s%s" % [mark, nm])
+			var break_tag := " [可拆]" if not broken else " [已破]"
+			lab.text = ("%s%s%s" % [mark, nm, break_tag])
 			lab.modulate = Color(0.55, 0.55, 0.55) if broken else (Color(1.0, 0.92, 0.55) if focused else Color.WHITE)
-		bar.modulate = Color(0.45, 0.45, 0.45) if broken else Color.WHITE
+		bar.modulate = Color(0.45, 0.45, 0.45) if broken else (Color(1.25, 1.15, 0.7) if focused else Color.WHITE)
 
 
 func _refresh_part_focus_hint() -> void:
@@ -2435,19 +2500,23 @@ func _on_event(kind: String, data: Dictionary) -> void:
 		"part_broken":
 			var boss_id := str(data.get("boss_id", "enemy"))
 			var pname := str(data.get("part_name", _t("部位")))
+			var pid := str(data.get("part_id", ""))
 			var staggered := bool(data.get("staggered", false))
+			var mat := str(data.get("material", "iron_scrap"))
+			var qty := int(data.get("qty", 1))
 			if staggered:
 				_append_log(_t("[color=#fc0]部位破壞！【%s】打破擊暈！[/color]") % pname)
 			else:
 				_append_log(_t("[color=#fc0]部位破壞！【%s】碎裂！[/color]") % pname)
 			_spawn_float(boss_id, "BREAK！" + pname, Color(1.0, 0.85, 0.15), false, true)
 			_spawn_hit_fx(boss_id, "parry_flash")
-			_shake = 0.5
-			trigger_hit_stop(0.12)
+			_shake = 0.55
+			trigger_hit_stop(0.15)
 			_flash(_body_of(boss_id), Color(3.0, 2.5, 1.0))
 			_set_boss_pose("recover")
 			_refresh_part_focus_hint()
-			get_tree().create_timer(0.8).timeout.connect(func():
+			_play_part_break_sequence(boss_id, pid, pname, mat, qty)
+			get_tree().create_timer(1.0).timeout.connect(func():
 				if is_instance_valid(self) and not _ended:
 					_set_boss_pose("idle")
 			)
@@ -2829,7 +2898,8 @@ func _spawn_hit_fx(target_id: String, kind: String, hit_i: int = 0) -> void:
 	fx.custom_minimum_size = sz
 	fx.size = sz
 	var jitter := Vector2(float((hit_i * 37) % 48) - 24.0, float((hit_i * 19) % 36) - 18.0)
-	fx.global_position = body.global_position + body.size * 0.5 - sz * 0.5 + jitter
+	var origin: Vector2 = body.global_position + body.size * 0.5 + jitter
+	fx.global_position = origin - sz * 0.5
 	fx.z_index = 40
 	fx.modulate = Color(1, 1, 1, 0.95)
 	fx.scale = Vector2(0.7, 0.7)
@@ -2842,6 +2912,307 @@ func _spawn_hit_fx(target_id: String, kind: String, hit_i: int = 0) -> void:
 		if is_instance_valid(fx):
 			fx.queue_free()
 	)
+	_spawn_candy_and_brass_debris(origin)
+
+
+func _spawn_candy_and_brass_debris(origin: Vector2) -> void:
+	# C2 受擊主特效糖果色＋黃銅屑（拒絕黑血／寫實焊花）
+	var candy_colors := [
+		Color("#FFD028"), # 金黃
+		Color("#FF5E8A"), # 珊瑚粉
+		Color("#4ED86A"), # 薄荷綠
+		Color("#38A0FF"), # 天藍
+		Color("#FFA010"), # 暖橘
+	]
+	for i in 6:
+		var c := ColorRect.new()
+		var sz_val := randf_range(5.0, 8.0)
+		c.size = Vector2(sz_val, sz_val)
+		c.color = candy_colors[i % candy_colors.size()]
+		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		c.z_index = 42
+		c.position = origin - c.size * 0.5
+		add_child(c)
+		var angle := randf_range(0.0, TAU)
+		var dist := randf_range(35.0, 75.0)
+		var target_pos := origin + Vector2(cos(angle), sin(angle)) * dist
+		var tw := create_tween()
+		tw.set_parallel(true)
+		tw.tween_property(c, "position", target_pos, randf_range(0.2, 0.32)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.tween_property(c, "rotation", randf_range(-PI, PI), 0.3)
+		tw.tween_property(c, "scale", Vector2(0.2, 0.2), 0.3).set_delay(0.08)
+		tw.tween_property(c, "modulate:a", 0.0, 0.28).set_delay(0.08)
+		tw.chain().tween_callback(c.queue_free)
+
+	for j in 3:
+		var brass := Panel.new()
+		brass.size = Vector2(8, 6)
+		var b_sb := StyleBoxFlat.new()
+		b_sb.bg_color = Color("#E6B33D") # 黃銅色
+		b_sb.border_color = Color("#4A3010") # 深褐邊
+		b_sb.set_border_width_all(1)
+		b_sb.set_corner_radius_all(2)
+		brass.add_theme_stylebox_override("panel", b_sb)
+		brass.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		brass.z_index = 43
+		brass.position = origin - brass.size * 0.5
+		add_child(brass)
+		var b_angle := randf_range(-PI * 0.8, -PI * 0.2)
+		var b_dist := randf_range(40.0, 90.0)
+		var mid_pos := origin + Vector2(cos(b_angle), sin(b_angle)) * b_dist
+		var final_pos := mid_pos + Vector2(randf_range(-20, 20), randf_range(30, 60))
+		var btw := create_tween()
+		btw.tween_property(brass, "position", mid_pos, 0.16).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		btw.tween_property(brass, "position", final_pos, 0.2).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		btw.parallel().tween_property(brass, "rotation", randf_range(-TAU, TAU), 0.36)
+		btw.parallel().tween_property(brass, "modulate:a", 0.0, 0.3).set_delay(0.12)
+		btw.chain().tween_callback(brass.queue_free)
+
+
+func _play_part_break_sequence(boss_id: String, pid: String, pname: String, mat: String, qty: int) -> void:
+	var body := _body_of(boss_id)
+	if body == null:
+		return
+	var origin := body.global_position + body.size * Vector2(0.5, 0.35)
+
+	# ── ① 部位閃邊 (Flashing outline highlight) ──
+	var flash_ring := Panel.new()
+	flash_ring.size = body.size * 1.15
+	flash_ring.position = body.global_position - body.size * 0.075
+	var r_sb := StyleBoxFlat.new()
+	r_sb.bg_color = Color(1.0, 0.85, 0.2, 0.25)
+	r_sb.border_color = Color("#FFD028")
+	r_sb.set_border_width_all(4)
+	r_sb.set_corner_radius_all(16)
+	flash_ring.add_theme_stylebox_override("panel", r_sb)
+	flash_ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	flash_ring.z_index = 45
+	add_child(flash_ring)
+
+	var rtw := create_tween()
+	rtw.tween_property(flash_ring, "scale", Vector2(1.1, 1.1), 0.12).set_trans(Tween.TRANS_BACK)
+	rtw.parallel().tween_property(flash_ring, "modulate:a", 1.0, 0.08)
+	rtw.tween_property(flash_ring, "modulate:a", 0.0, 0.25)
+	rtw.chain().tween_callback(flash_ring.queue_free)
+
+	if _part_bars.has(pid):
+		var pbar: ProgressBar = _part_bars[pid]
+		if pbar:
+			var ptw := create_tween()
+			ptw.tween_property(pbar, "modulate", Color(2.5, 2.0, 0.5), 0.1)
+			ptw.tween_property(pbar, "modulate", Color.WHITE, 0.3)
+
+	# ── ② 裂縫 (Cracking fracture overlay) ──
+	var crack_overlay := Control.new()
+	crack_overlay.size = Vector2(120, 100)
+	crack_overlay.position = origin - crack_overlay.size * 0.5
+	crack_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	crack_overlay.z_index = 46
+	crack_overlay.draw.connect(func():
+		var center := Vector2(60, 50)
+		var branches := [
+			[center, center + Vector2(-45, -35), center + Vector2(-55, -45)],
+			[center, center + Vector2(40, -30), center + Vector2(55, -38)],
+			[center, center + Vector2(-30, 40), center + Vector2(-42, 50)],
+			[center, center + Vector2(35, 38), center + Vector2(50, 48)],
+			[center, center + Vector2(0, -45), center + Vector2(10, -52)],
+			[center, center + Vector2(-15, 45), center + Vector2(-22, 52)]
+		]
+		for branch in branches:
+			for k in branch.size() - 1:
+				crack_overlay.draw_line(branch[k], branch[k+1], Color("#1F1A3A"), 5.0)
+				crack_overlay.draw_line(branch[k], branch[k+1], Color("#FFFDF8"), 3.0)
+		crack_overlay.draw_circle(center, 4.0, Color("#FFD028"))
+	)
+	add_child(crack_overlay)
+	crack_overlay.scale = Vector2(0.4, 0.4)
+	crack_overlay.pivot_offset = crack_overlay.size * 0.5
+
+	var ctw := create_tween()
+	ctw.tween_property(crack_overlay, "scale", Vector2(1.2, 1.2), 0.1).set_trans(Tween.TRANS_BACK)
+	ctw.tween_interval(0.35)
+	ctw.tween_property(crack_overlay, "modulate:a", 0.0, 0.2)
+	ctw.chain().tween_callback(crack_overlay.queue_free)
+
+	# ── ③ 零件飛出 (Flying detached mechanical parts) ──
+	get_tree().create_timer(0.12).timeout.connect(func():
+		if not is_instance_valid(self) or _ended:
+			return
+		_spawn_detached_gear_parts(origin, pname, mat, qty)
+	)
+
+
+func _spawn_detached_gear_parts(origin: Vector2, pname: String, mat: String, qty: int) -> void:
+	for i in 4:
+		var part := Panel.new()
+		var is_gear := (i % 2 == 0)
+		part.size = Vector2(16, 16) if is_gear else Vector2(20, 10)
+		var p_sb := StyleBoxFlat.new()
+		p_sb.bg_color = Color("#E6B33D") if is_gear else Color("#8E99A8")
+		p_sb.border_color = Color("#1F1A3A")
+		p_sb.set_border_width_all(2)
+		p_sb.set_corner_radius_all(8 if is_gear else 3)
+		part.add_theme_stylebox_override("panel", p_sb)
+		part.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		part.z_index = 48
+		part.position = origin - part.size * 0.5
+		add_child(part)
+
+		var angle := randf_range(-PI * 0.9, -PI * 0.1)
+		var power := randf_range(160.0, 260.0)
+		var apex := origin + Vector2(cos(angle), sin(angle)) * power
+		var landing := apex + Vector2(randf_range(-60, 60), randf_range(180, 280))
+
+		var ptw := create_tween()
+		ptw.tween_property(part, "position", apex, 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		ptw.tween_property(part, "position", landing, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		ptw.parallel().tween_property(part, "rotation", randf_range(-PI * 3, PI * 3), 0.63)
+		ptw.parallel().tween_property(part, "modulate:a", 0.0, 0.25).set_delay(0.4)
+		ptw.chain().tween_callback(part.queue_free)
+
+	var drop_node := PanelContainer.new()
+	drop_node.custom_minimum_size = Vector2(36, 36)
+	var d_sb := StyleBoxFlat.new()
+	d_sb.bg_color = Color("#FFF8E7")
+	d_sb.border_color = Color("#FFA010")
+	d_sb.set_border_width_all(2)
+	d_sb.set_corner_radius_all(8)
+	drop_node.add_theme_stylebox_override("panel", d_sb)
+	drop_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	drop_node.z_index = 50
+
+	var drop_icon := Label.new()
+	drop_icon.text = "⚙"
+	drop_icon.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	drop_icon.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	drop_icon.add_theme_font_size_override("font_size", 18)
+	drop_icon.add_theme_color_override("font_color", Color("#E6B33D"))
+	drop_node.add_child(drop_icon)
+
+	drop_node.position = origin - Vector2(18, 18)
+	add_child(drop_node)
+
+	_ensure_loot_bar()
+	var dest: Vector2 = _loot_reward_bar.global_position + Vector2(20, 20)
+	var mid := (origin + dest) * 0.5 + Vector2(0, -100)
+
+	var dtw := create_tween()
+	dtw.tween_property(drop_node, "position", mid, 0.26).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	dtw.tween_property(drop_node, "position", dest, 0.28).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	dtw.parallel().tween_property(drop_node, "scale", Vector2(1.3, 1.3), 0.26)
+	dtw.parallel().tween_property(drop_node, "scale", Vector2(0.8, 0.8), 0.28).set_delay(0.26)
+	dtw.chain().tween_callback(func():
+		if is_instance_valid(drop_node):
+			drop_node.queue_free()
+		_show_loot_reward_pop(pname, mat, qty)
+	)
+
+
+func _ensure_loot_bar() -> void:
+	if _loot_reward_bar != null and is_instance_valid(_loot_reward_bar):
+		return
+	_loot_reward_bar = PanelContainer.new()
+	_loot_reward_bar.name = "PartBreakLootBar"
+	_loot_reward_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_loot_reward_bar.z_index = 35
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8")
+	sb.border_color = Color("#1F1A3A")
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(14)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 6
+	sb.shadow_offset = Vector2(0, 3)
+	sb.content_margin_left = 12
+	sb.content_margin_right = 14
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 10
+	_loot_reward_bar.add_theme_stylebox_override("panel", sb)
+
+	_loot_reward_bar.position = Vector2(490, 75)
+	_loot_reward_bar.size = Vector2(300, 68)
+	_loot_reward_bar.visible = false
+	add_child(_loot_reward_bar)
+
+
+func _show_loot_reward_pop(pname: String, mat: String, qty: int) -> void:
+	_ensure_loot_bar()
+	for child in _loot_reward_bar.get_children():
+		child.queue_free()
+
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 4)
+	_loot_reward_bar.add_child(v)
+
+	var title_l := Label.new()
+	title_l.text = _t("戰利品 · 部位掉落！")
+	title_l.add_theme_font_size_override("font_size", 13)
+	title_l.add_theme_color_override("font_color", Color("#FFA010"))
+	title_l.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	title_l.add_theme_constant_override("outline_size", 2)
+	v.add_child(title_l)
+
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	v.add_child(row)
+
+	var icon_box := PanelContainer.new()
+	icon_box.custom_minimum_size = Vector2(28, 28)
+	var isb := StyleBoxFlat.new()
+	isb.bg_color = Color("#FFF8E7")
+	isb.border_color = Color("#FFD028")
+	isb.set_border_width_all(2)
+	isb.set_corner_radius_all(8)
+	icon_box.add_theme_stylebox_override("panel", isb)
+
+	var icon_l := Label.new()
+	icon_l.text = "⚙"
+	icon_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	icon_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	icon_l.add_theme_font_size_override("font_size", 16)
+	icon_l.add_theme_color_override("font_color", Color("#E6B33D"))
+	icon_box.add_child(icon_l)
+	row.add_child(icon_box)
+
+	var mat_name := "騎士碎鐵"
+	if mat == "knight_shard":
+		mat_name = "騎士碎鐵"
+	elif mat == "iron_scrap":
+		mat_name = "鐵屑"
+	elif mat == "star_ore":
+		mat_name = "星砂礦"
+	elif mat == "oak_resin":
+		mat_name = "橡脂"
+	elif mat != "":
+		mat_name = mat
+
+	var item_l := Label.new()
+	item_l.text = "【%s】%s ×%d" % [pname, mat_name, qty]
+	item_l.add_theme_font_size_override("font_size", 14)
+	item_l.add_theme_color_override("font_color", Color("#1F1A3A"))
+	row.add_child(item_l)
+
+	_loot_reward_bar.visible = true
+	_loot_reward_bar.scale = Vector2(1.35, 1.35)
+	_loot_reward_bar.pivot_offset = _loot_reward_bar.size * 0.5
+
+	var tw := create_tween()
+	tw.tween_property(_loot_reward_bar, "scale", Vector2(1.0, 1.0), 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+	for s in 5:
+		var star := Label.new()
+		star.text = "✦"
+		star.add_theme_font_size_override("font_size", 14)
+		star.add_theme_color_override("font_color", Color("#FFD028"))
+		star.position = _loot_reward_bar.global_position + Vector2(randf_range(10, 260), randf_range(0, 40))
+		star.z_index = 52
+		add_child(star)
+		var stw := create_tween()
+		stw.tween_property(star, "position:y", star.position.y - 25, 0.4)
+		stw.parallel().tween_property(star, "modulate:a", 0.0, 0.35).set_delay(0.05)
+		stw.chain().tween_callback(star.queue_free)
 
 
 func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> void:

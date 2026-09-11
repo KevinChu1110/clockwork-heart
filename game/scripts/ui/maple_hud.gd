@@ -28,6 +28,7 @@ var _hp_bar: ProgressBar
 var _mp_bar: ProgressBar
 var _exp_bar: ProgressBar
 var _hp_val: Label
+var _mp_val: Label
 var _gold_l: Label
 var _tip_l: Label
 var _acc_row: HBoxContainer
@@ -189,10 +190,23 @@ func _build() -> void:
 	_hp_val.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hp_bar.add_child(_hp_val)
 
-	# MP Bar / Stardust (奶油白槽底 + 深藍紫描邊 + 天藍填充條)
+	# 發條能量條 (奶油白槽底 + 深藍紫描邊 + 薄荷綠填充條 + 15點發條語意，拒絕傳統藍條)
 	_mp_bar = _make_bar(18)
-	_style_progress_bar(_mp_bar, COLOR_SKY, COLOR_BG_CREAM, 8)
+	_style_progress_bar(_mp_bar, COLOR_MINT, COLOR_BG_CREAM, 8)
 	v.add_child(_mp_bar)
+
+	_mp_val = Label.new()
+	_mp_val.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_mp_val.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_mp_val.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_mp_val.add_theme_font_size_override("font_size", 13)
+	_mp_val.add_theme_color_override("font_color", Color.WHITE)
+	_mp_val.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_mp_val.add_theme_constant_override("outline_size", 3)
+	if f:
+		_mp_val.add_theme_font_override("font", f)
+	_mp_val.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_mp_bar.add_child(_mp_val)
 
 	# EXP Bar (奶油白槽底 + 深藍紫描邊 + 金黃填充條)
 	_exp_bar = _make_bar(14)
@@ -272,11 +286,16 @@ func refresh_vitals() -> void:
 	if _hp_val:
 		_hp_val.text = "%d / %d" % [hp, max_hp]
 
-	var dust: int = int(GameState.stardust)
-	var dust_cap: int = maxi(30, dust)
-	_mp_bar.max_value = dust_cap
-	_mp_bar.value = dust
-	_mp_bar.tooltip_text = Loc.t("hud.stardust", {"n": dust})
+	var es: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		es = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EnergySystem")
+	var cur_e: int = int(es.call("current")) if es and es.has_method("current") else 15
+	var max_e: int = int(es.get("MAX_ENERGY")) if es and es.get("MAX_ENERGY") != null else 15
+	_mp_bar.max_value = max_e
+	_mp_bar.value = cur_e
+	_mp_bar.tooltip_text = Loc.t("hud.energy", {"cur": cur_e, "max": max_e})
+	if _mp_val:
+		_mp_val.text = "發條 %d / %d" % [cur_e, max_e]
 
 	var need_xp: int = maxi(1, GameState.xp_to_next())
 	_exp_bar.max_value = 100
