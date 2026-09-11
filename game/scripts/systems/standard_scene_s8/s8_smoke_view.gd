@@ -9,12 +9,12 @@ const S8SmokeFlowScript := preload("res://scripts/systems/standard_scene_s8/s8_s
 const AssemblerScript := preload("res://scripts/systems/paper_doll_v2/paper_doll_assembler.gd")
 
 ## Art Pivot v2（W6-K3）；舊 s8_smoke 電影皮僅作缺檔回退
-const TEX_EXPLORE := "res://assets/sprites/pack_a/v2/xiaobai_e03.png"
-const TEX_COMBAT := "res://assets/sprites/pack_a/v2/xiaobai_b02.png"
-const TEX_DISMANTLE := "res://assets/sprites/pack_a/v2/xiaobai_d02.png"
-const TEX_EXPLORE_FALLBACK := "res://assets/sprites/s8_smoke/e03_explore.png"
-const TEX_COMBAT_FALLBACK := "res://assets/sprites/s8_smoke/b02_combat.png"
-const TEX_DISMANTLE_FALLBACK := "res://assets/sprites/s8_smoke/d02_dismantle.png"
+const TEX_EXPLORE := "res://assets/sprites/pack_a/v2/paper_doll/frames/explore_walk.png"
+const TEX_COMBAT := "res://assets/sprites/pack_a/v2/paper_doll/frames/oh_ready.png"
+const TEX_DISMANTLE := "res://assets/sprites/pack_a/v2/paper_doll/frames/dismantle_pull.png"
+const TEX_EXPLORE_FALLBACK := "res://assets/sprites/pack_a/v2/xiaobai_e03.png"
+const TEX_COMBAT_FALLBACK := "res://assets/sprites/pack_a/v2/xiaobai_b02.png"
+const TEX_DISMANTLE_FALLBACK := "res://assets/sprites/pack_a/v2/xiaobai_d02.png"
 
 var flow: S8SmokeFlow
 var _doll
@@ -186,7 +186,7 @@ func _refresh_art() -> void:
 	var path := TEX_EXPLORE
 	if _doll != null:
 		_doll.set_phase(phase_name)
-		path = _doll.composite_path_for_phase()
+		path = _doll.frame_path_for_current()
 	else:
 		match phase_name:
 			"battle":

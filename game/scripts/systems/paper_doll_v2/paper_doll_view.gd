@@ -1,7 +1,7 @@
 extends Control
-## Art Pivot v2 紙娃娃視圖：以組裝器相位 composite 顯示，胸口錨點給 WindStaminaGlow。
+## Art Pivot v2 紙娃娃視圖：優先顯示 frames/ 單幀，胸口錨點給 WindStaminaGlow。
 ## 模組邊界：只負責顯示與錨點；不驅動流程／體力邏輯。
-## 舊電影 3D／s8_smoke placeholder 皮由此退役（改走 pack_a/v2）。
+## 舊 strip／電影皮已退役。
 
 const AssemblerScript := preload("res://scripts/systems/paper_doll_v2/paper_doll_assembler.gd")
 
@@ -54,18 +54,18 @@ func set_phase(phase: String) -> void:
 func refresh() -> void:
 	if assembler == null or _art == null:
 		return
-	var path := assembler.composite_path_for_phase()
-	if ResourceLoader.exists(path):
+	var path: String = assembler.frame_path_for_current()
+	if ResourceLoader.exists(path) or FileAccess.file_exists(path):
 		_art.texture = load(path) as Texture2D
 	else:
-		push_warning("PaperDollView: missing composite %s" % path)
+		push_warning("PaperDollView: missing frame %s" % path)
 	_layout_chest_anchor()
 	var s: Dictionary = assembler.summary()
-	_slot_debug.text = "v2 · %s · %s · off=%s · key=%s" % [
+	_slot_debug.text = "v2 frames · %s/%s · off=%s · %s" % [
 		str(s.get("phase", "")),
-		str(s.get("weaponClass", "")),
+		str(s.get("anim", "")),
 		str(s.get("weapon_off", "")),
-		str(s.get("back_key", "")),
+		str(s.get("frame", "")).get_file(),
 	]
 
 

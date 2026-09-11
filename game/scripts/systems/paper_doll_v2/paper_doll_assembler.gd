@@ -3,9 +3,10 @@ extends RefCounted
 ## 模組邊界：產出 loadout／可見槽／AnimId；不直接碰 Texture。
 
 const PaperDollConfigScript := preload("res://scripts/systems/paper_doll_v2/paper_doll_config.gd")
+const FramesScript := preload("res://scripts/systems/paper_doll_v2/paper_doll_frames.gd")
 
-## 相位 → 暫用整圖 composite（層切 PNG 未齊前）
-const PHASE_COMPOSITE := {
+## 僅作單幀缺檔回退（舊整圖／電影皮）
+const PHASE_FALLBACK := {
 	"explore": "res://assets/sprites/pack_a/v2/xiaobai_e03.png",
 	"battle": "res://assets/sprites/pack_a/v2/xiaobai_b02.png",
 	"dismantle": "res://assets/sprites/pack_a/v2/xiaobai_d02.png",
@@ -121,15 +122,7 @@ func equip(slot_id: String, asset_id: String) -> bool:
 func set_phase(phase: String) -> void:
 	## explore | battle | dismantle
 	current_phase = phase
-	match phase:
-		"explore":
-			current_anim = "explore_walk"
-		"battle":
-			current_anim = "ready"
-		"dismantle":
-			current_anim = "dismantle_pull"
-		_:
-			current_anim = "idle"
+	current_anim = FramesScript.phase_default_anim(phase)
 
 
 func play_anim(anim_id: String) -> bool:
@@ -160,9 +153,27 @@ func visible_slots_for_phase() -> PackedStringArray:
 	return out
 
 
+func frame_path_for_current() -> String:
+	## 優先 Alice 單幀（frames/）；缺檔才回退相位整圖。
+	var path: String = FramesScript.anim_path(current_anim)
+	if path != "" and (ResourceLoader.exists(path) or FileAccess.file_exists(path)):
+		return path
+	# 相位預設動畫再試一次
+	var phase_anim: String = FramesScript.phase_default_anim(current_phase)
+	path = FramesScript.anim_path(phase_anim)
+	if path != "" and (ResourceLoader.exists(path) or FileAccess.file_exists(path)):
+		return path
+	return str(PHASE_FALLBACK.get(current_phase, PHASE_FALLBACK["explore"]))
+
+
 func composite_path_for_phase() -> String:
-	## 層切未齊時用 Alice v2 三相整圖；退役舊 s8_smoke 電影皮。
-	return str(PHASE_COMPOSITE.get(current_phase, PHASE_COMPOSITE["explore"]))
+	## 相容舊呼叫：等同 frame_path_for_current（單幀優先）。
+	return frame_path_for_current()
+
+
+func slot_texture_path(slot_id: String) -> String:
+	## 裝備單幀路徑（outfit／helmet／weapon_main）；身份層暫含在動作幀。
+	return FramesScript.slot_path(slot_id)
 
 
 func chest_heart_hud_bound() -> bool:
@@ -182,6 +193,10 @@ func summary() -> Dictionary:
 		"bindsWindStaminaGlow": chest_heart_hud_bound(),
 		"backKeyAlwaysOnBack": config.back_key_always_on_back(),
 		"composite": composite_path_for_phase(),
+		"frame": frame_path_for_current(),
+		"outfitFrame": slot_texture_path("outfit"),
+		"helmetFrame": slot_texture_path("helmet"),
+		"weaponFrame": slot_texture_path("weapon_main"),
 		"visibleSlots": Array(visible_slots_for_phase()),
 		"lastError": last_error,
 	}
