@@ -1141,14 +1141,14 @@ func _build_soul_hall_tab() -> void:
 	t.text = _t("聚魂殿 · 封靈罐四階")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	t.add_theme_font_size_override("font_size", 24)
-	t.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	t.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	v.add_child(t)
 
 	var desc := Label.new()
 	desc.text = _t("聚引四大共鳴核心之魂：銳齒(攻) · 固甲(防) · 旋簧(血) · 全衡(衡)。點擊點亮更高階封靈罐！")
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc.add_theme_font_size_override("font_size", 13)
-	desc.add_theme_color_override("font_color", INK_IVORY_SOFT)
+	desc.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	v.add_child(desc)
 
 	var gourd_row := HBoxContainer.new()
@@ -1400,16 +1400,16 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	c.custom_minimum_size = Vector2(430, 105)
 	var csb := StyleBoxFlat.new()
 	var is_boss: bool = str(s["type"]).find("首領") >= 0
-	csb.bg_color = OBSIDIAN_CARD
-	csb.border_color = CORAL_RUST if is_boss else LINE_GOLD
-	csb.set_border_width_all(2 if is_boss else 1)
-	csb.border_width_bottom = 4 if is_boss else 2
-	csb.set_corner_radius_all(8)
+	csb.bg_color = COLOR_CARD_WARM
+	csb.border_color = CORAL_RUST if is_boss else COLOR_BORDER
+	csb.set_border_width_all(2)
+	csb.border_width_bottom = 4
+	csb.set_corner_radius_all(10)
 	csb.content_margin_left = 16
 	csb.content_margin_right = 16
 	csb.content_margin_top = 12
 	csb.content_margin_bottom = 12
-	csb.shadow_color = Color(0.0, 0.0, 0.0, 0.35)
+	csb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
 	csb.shadow_size = 6
 	c.add_theme_stylebox_override("panel", csb)
 
@@ -1428,13 +1428,13 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	var num_l := Label.new()
 	num_l.text = str(s["num"])
 	num_l.add_theme_font_size_override("font_size", 18)
-	num_l.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	num_l.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	t_row.add_child(num_l)
 
 	var name_l := Label.new()
 	name_l.text = str(s["name"])
 	name_l.add_theme_font_size_override("font_size", 16)
-	name_l.add_theme_color_override("font_color", INK_IVORY)
+	name_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	t_row.add_child(name_l)
 	v.add_child(t_row)
 
@@ -1443,13 +1443,13 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	var typ_l := Label.new()
 	typ_l.text = str(s["type"])
 	typ_l.add_theme_font_size_override("font_size", 13)
-	typ_l.add_theme_color_override("font_color", CORAL_RUST if is_boss else INK_IVORY_SOFT)
+	typ_l.add_theme_color_override("font_color", CORAL_RUST if is_boss else COLOR_TEXT_DARK)
 	inf_row.add_child(typ_l)
 
 	var pwr_l := Label.new()
 	pwr_l.text = "推薦戰力: %d" % int(s["power"])
 	pwr_l.add_theme_font_size_override("font_size", 13)
-	pwr_l.add_theme_color_override("font_color", INK_IVORY_MUTED)
+	pwr_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	inf_row.add_child(pwr_l)
 	v.add_child(inf_row)
 

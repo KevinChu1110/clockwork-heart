@@ -68,5 +68,17 @@ func _run_captures() -> void:
 	print(">>> [Dock] 截取角色裝備分頁（頂欄／Dock 對比）…")
 	await _capture_frame("proof_lobby_dock_character.png")
 
+	print(">>> [Dock] 切到聚魂殿堂分頁…")
+	_lobby._switch_tab(MobileLobby.Tab.SOUL_HALL)
+	await _wait_frames(20)
+	print(">>> [Dock] 截取聚魂殿堂分頁…")
+	await _capture_frame("proof_lobby_soul_hall.png")
+
+	print(">>> [Dock] 切到四區出征分頁…")
+	_lobby._switch_tab(MobileLobby.Tab.ADVENTURE)
+	await _wait_frames(20)
+	print(">>> [Dock] 截取四區出征分頁…")
+	await _capture_frame("proof_lobby_adventure.png")
+
 	print("CAPTURE_LOBBY_DOPAMINE_OK")
 	quit(0)
