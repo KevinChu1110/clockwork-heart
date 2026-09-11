@@ -1,0 +1,36 @@
+{
+  "id": "W2-K1",
+  "WindStaminaMax": 15,
+  "costs": {
+    "E02_exploreTick": 1,
+    "B01_combatEnter": 2,
+    "D01_dismantleEnter": 2,
+    "B_strike": 1,
+    "B_takeHit": 0,
+    "D_pullPart": 1
+  },
+  "partBreak": {
+    "PartUnlockHP": 0.70,
+    "PartHPRatio": 0.25,
+    "BreakBonus": 1.25,
+    "drops": ["drop_brass_gear", "drop_spring_coil", "drop_core_shard"]
+  },
+  "hud": {
+    "style": "chest_glow_ring_ticks",
+    "forbid": ["blue_mana_bar", "second_resource_bar"],
+    "HudTickCount": 15,
+    "glowColor": "#2EC4B6",
+    "tickColorLit": "#D4A017",
+    "tickColorDim": "#6B5A3E",
+    "anchor": "player_chest",
+    "ringRadiusPx": 28,
+    "glowMin": 0.25,
+    "glowMax": 1.0
+  },
+  "combatMode": "realtime_rhythm_budget",
+  "dropNames": {
+    "drop_brass_gear": "黃銅齒輪",
+    "drop_spring_coil": "發條彈簧",
+    "drop_core_shard": "核心碎片"
+  }
+}
