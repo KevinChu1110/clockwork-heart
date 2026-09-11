@@ -28,6 +28,9 @@ const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
 const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
 const COLOR_CARD_PINK  := Color("#FFF0F4")  ## 珊瑚粉柔和卡片底
 const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
+const COLOR_TEXT_GOLD  := Color("#9A6B00")  ## 壓明度金黃（亮底文字專用）
+const COLOR_TEXT_ORANGE:= Color("#C2600A")  ## 壓明度暖橘（亮底文字專用）
+const COLOR_TEXT_PINK  := Color("#D62E5C")  ## 壓明度珊瑚粉（亮底文字專用）
 
 var _dialog_card: PanelContainer
 var _weapon_label: Label
@@ -120,7 +123,7 @@ func _build_ui() -> void:
 	var title_lbl := Label.new()
 	title_lbl.text = "王都鐵匠 · 裝備鍛造"
 	title_lbl.add_theme_font_size_override("font_size", 22)
-	title_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
+	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	title_lbl.add_theme_constant_override("outline_size", 4)
 	if _cached_font:
@@ -205,7 +208,7 @@ func _build_ui() -> void:
 	_pity_title_label.text = "鍛造連敗保底 0/3 · 滿 3 格釘釘摔錘必成功"
 	_pity_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_pity_title_label.add_theme_font_size_override("font_size", 17)
-	_pity_title_label.add_theme_color_override("font_color", COLOR_PINK)
+	_pity_title_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 	_pity_title_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_pity_title_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
@@ -247,7 +250,7 @@ func _build_ui() -> void:
 	_msg_label.text = ""
 	_msg_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_msg_label.add_theme_font_size_override("font_size", 16)
-	_msg_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	_msg_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_msg_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
@@ -371,18 +374,18 @@ func _on_forge_pressed() -> void:
 		"no_gold":
 			var cost: int = int(res.get("cost", ForgeSystem.forge_cost()))
 			_msg_label.text = "金幣不足！升階需要 %d 金幣。" % cost
-			_msg_label.add_theme_color_override("font_color", COLOR_PINK)
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 		"success":
 			var scrap_tip := "（消耗鐵屑穩火）" if bool(res.get("used_scrap", false)) else ""
 			_msg_label.text = "鍛造成功！升階至第 %d 階，攻擊力上升！%s" % [GameState.weapon_tier, scrap_tip]
 			_msg_label.add_theme_color_override("font_color", COLOR_MINT)
 		"pity_break":
 			_msg_label.text = "鍛造失敗！釘釘摔錘了，吃塊消氣餅回復體力！"
-			_msg_label.add_theme_color_override("font_color", COLOR_ORANGE)
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 		"failed":
 			var streak: int = int(res.get("fail_streak", GameState.forge_fail_streak))
 			_msg_label.text = "鍛造失敗！累積 1 格保底進度（目前 %d/3 格）。" % streak
-			_msg_label.add_theme_color_override("font_color", COLOR_PINK)
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 	_refresh_display()
 
 

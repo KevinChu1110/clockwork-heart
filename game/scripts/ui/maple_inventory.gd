@@ -36,6 +36,9 @@ const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
 const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
 const COLOR_CARD_SKY   := Color("#F0F7FF")  ## 柔和天藍卡片底
 const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
+const COLOR_TEXT_GOLD  := Color("#9A6B00")  ## 壓明度金黃（亮底文字專用）
+const COLOR_TEXT_ORANGE:= Color("#C2600A")  ## 壓明度暖橘（亮底文字專用）
+const COLOR_TEXT_PINK  := Color("#D62E5C")  ## 壓明度珊瑚粉（亮底文字專用）
 
 var _dim: ColorRect
 var _card: PanelContainer
@@ -155,7 +158,7 @@ func _build() -> void:
 
 	_title = Label.new()
 	_title.text = "物品欄"
-	_apply_label_style(_title, 22, COLOR_ORANGE, COLOR_BORDER, 4)
+	_apply_label_style(_title, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 4)
 	title_box.add_child(_title)
 
 	var sub_title := Label.new()
@@ -442,7 +445,7 @@ func refresh() -> void:
 
 func _update_detail(inv: Node) -> void:
 	if _selected == "" or inv == null:
-		_detail.text = "[color=#1F1A3A][b]冒險者背包[/b]\n\n請點選左側格子查看道具詳情。\n\n[color=#FFA010]•[/color] 消耗品：使用回復狀態\n[color=#FFA010]•[/color] 素材：點擊使用可賣出金幣\n[color=#FFA010]•[/color] 重要物：劇情關鍵道具[/color]"
+		_detail.text = "[color=#1F1A3A][b]冒險者背包[/b]\n\n請點選左側格子查看道具詳情。\n\n[color=#C2600A]•[/color] 消耗品：使用回復狀態\n[color=#C2600A]•[/color] 素材：點擊使用可賣出金幣\n[color=#C2600A]•[/color] 重要物：劇情關鍵道具[/color]"
 		if _use_btn:
 			_use_btn.disabled = true
 		if _hb_btn:
@@ -469,7 +472,7 @@ func _update_detail(inv: Node) -> void:
 	var item_name: String = str(def.get("name", _selected))
 	var item_desc: String = str(def.get("desc", ""))
 
-	_detail.text = "[color=#1F1A3A][b][font_size=20]%s[/font_size][/b]  [color=#FFA010]×%d[/color]\n\n[color=#4A3E60]%s[/color]\n\n[color=#FFA010]類型：[/color][color=#1F1A3A]%s[/color][/color]" % [
+	_detail.text = "[color=#1F1A3A][b][font_size=20]%s[/font_size][/b]  [color=#C2600A]×%d[/color]\n\n[color=#4A3E60]%s[/color]\n\n[color=#C2600A]類型：[/color][color=#1F1A3A]%s[/color][/color]" % [
 		item_name,
 		n,
 		item_desc,

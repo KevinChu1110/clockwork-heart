@@ -27,6 +27,9 @@ const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
 const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
 const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
 const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
+const COLOR_TEXT_GOLD  := Color("#9A6B00")  ## 壓明度金黃（亮底文字專用）
+const COLOR_TEXT_ORANGE:= Color("#C2600A")  ## 壓明度暖橘（亮底文字專用）
+const COLOR_TEXT_PINK  := Color("#D62E5C")  ## 壓明度珊瑚粉（亮底文字專用）
 
 enum Tab {
 	LANGUAGE,  ## 語言切換
@@ -181,7 +184,7 @@ func _build_ui() -> void:
 
 	var title_l := Label.new()
 	title_l.text = "系統設定"
-	_apply_label_style(title_l, 22, COLOR_ORANGE, COLOR_BORDER, 4)
+	_apply_label_style(title_l, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 4)
 	title_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title_l)
 
@@ -359,7 +362,7 @@ func _build_lang_card(item: Dictionary) -> Button:
 	var check_icon := Label.new()
 	check_icon.name = "CheckIcon"
 	check_icon.text = "✓ 已選用"
-	_apply_label_style(check_icon, 16, COLOR_ORANGE, COLOR_BORDER, 2)
+	_apply_label_style(check_icon, 16, COLOR_TEXT_ORANGE, COLOR_BORDER, 2)
 	check_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	h.add_child(check_icon)
 
@@ -401,11 +404,11 @@ func _refresh_lang_selection() -> void:
 				if title_l:
 					title_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 				if sub_l:
-					sub_l.add_theme_color_override("font_color", COLOR_ORANGE)
+					sub_l.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 				if check_l:
 					check_l.visible = true
 					check_l.text = "✓ 已選用"
-					check_l.add_theme_color_override("font_color", COLOR_ORANGE)
+					check_l.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 					check_l.add_theme_color_override("font_outline_color", COLOR_BORDER)
 					check_l.add_theme_constant_override("outline_size", 2)
 			else:

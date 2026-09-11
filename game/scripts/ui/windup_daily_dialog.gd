@@ -27,6 +27,9 @@ const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
 const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
 const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
 const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
+const COLOR_TEXT_GOLD  := Color("#9A6B00")  ## 壓明度金黃（亮底文字專用）
+const COLOR_TEXT_ORANGE:= Color("#C2600A")  ## 壓明度暖橘（亮底文字專用）
+const COLOR_TEXT_PINK  := Color("#D62E5C")  ## 壓明度珊瑚粉（亮底文字專用）
 
 var _dialog_card: PanelContainer
 var _case_title_label: Label
@@ -102,7 +105,7 @@ func _build_ui() -> void:
 	var title_lbl := Label.new()
 	title_lbl.text = "冒險委託 · 今天誰需要上發條"
 	title_lbl.add_theme_font_size_override("font_size", 22)
-	title_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
+	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	title_lbl.add_theme_constant_override("outline_size", 4)
 	if _cached_font:
@@ -139,7 +142,7 @@ func _build_ui() -> void:
 	_case_title_label.name = "CaseTitle"
 	_case_title_label.text = "【個案委託】"
 	_case_title_label.add_theme_font_size_override("font_size", 18)
-	_case_title_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_case_title_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	_case_title_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_case_title_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
@@ -175,7 +178,7 @@ func _build_ui() -> void:
 	_unlock_label.text = ""
 	_unlock_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_unlock_label.add_theme_font_size_override("font_size", 16)
-	_unlock_label.add_theme_color_override("font_color", COLOR_PINK)
+	_unlock_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 	_unlock_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_unlock_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
@@ -199,7 +202,7 @@ func _build_ui() -> void:
 	_msg_label.text = "完成委託獎勵：金幣 +25、星塵 +1、發條碎片 +1"
 	_msg_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_msg_label.add_theme_font_size_override("font_size", 16)
-	_msg_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	_msg_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_msg_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
@@ -283,7 +286,7 @@ func _refresh_display() -> void:
 		_unlock_label.visible = false
 
 		_msg_label.text = "完成委託獎勵：金幣 +25、星塵 +1、發條碎片 +1"
-		_msg_label.add_theme_color_override("font_color", COLOR_ORANGE)
+		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 
 		var choices: Array = c.get("choices", [])
 		for i in range(choices.size()):
@@ -321,7 +324,7 @@ func _on_choice_selected(choice_id: String) -> void:
 		_msg_label.add_theme_color_override("font_color", COLOR_MINT)
 	else:
 		_msg_label.text = str(r.get("msg", "領取失敗"))
-		_msg_label.add_theme_color_override("font_color", COLOR_PINK)
+		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 
 
 func _on_close() -> void:

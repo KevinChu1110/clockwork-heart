@@ -38,6 +38,9 @@ const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
 const COLOR_CARD_SKY   := Color("#F0F7FF")  ## 柔和天藍卡片底
 const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
 const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
+const COLOR_TEXT_GOLD  := Color("#9A6B00")  ## 壓明度金黃（亮底文字專用）
+const COLOR_TEXT_ORANGE:= Color("#C2600A")  ## 壓明度暖橘（亮底文字專用）
+const COLOR_TEXT_PINK  := Color("#D62E5C")  ## 壓明度珊瑚粉（亮底文字專用）
 
 ## UI 節點參照
 var _scrim: ColorRect
@@ -201,7 +204,7 @@ func _build_ui() -> void:
 	_title_label = Label.new()
 	_title_label.text = "發條衣櫥 · 英雄換裝"
 	_title_label.add_theme_font_size_override("font_size", 22)
-	_title_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_title_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	_title_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_title_label.add_theme_constant_override("outline_size", 4)
 	if _cached_font:
@@ -269,7 +272,7 @@ func _build_ui() -> void:
 	_badge_race_label = Label.new()
 	_badge_race_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_badge_race_label.add_theme_font_size_override("font_size", 16)
-	_badge_race_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_badge_race_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	_badge_race_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_badge_race_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
@@ -353,7 +356,7 @@ func _create_grid_section(section_title: String, slot_type: String) -> PanelCont
 	var title_lbl := Label.new()
 	title_lbl.text = section_title
 	title_lbl.add_theme_font_size_override("font_size", 16)
-	title_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
+	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	title_lbl.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
@@ -484,7 +487,7 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	badge_lbl.text = ""
 	badge_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	badge_lbl.add_theme_font_size_override("font_size", 16)
-	badge_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
+	badge_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	badge_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	badge_lbl.add_theme_constant_override("outline_size", 3)
 	if _cached_font:

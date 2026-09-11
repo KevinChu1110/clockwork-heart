@@ -27,6 +27,9 @@ const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
 const COLOR_CARD_SKY   := Color("#F0F7FF")  ## 柔和天藍卡片底
 const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
 const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
+const COLOR_TEXT_GOLD  := Color("#9A6B00")  ## 壓明度金黃（亮底文字專用）
+const COLOR_TEXT_ORANGE:= Color("#C2600A")  ## 壓明度暖橘（亮底文字專用）
+const COLOR_TEXT_PINK  := Color("#D62E5C")  ## 壓明度珊瑚粉（亮底文字專用）
 
 enum Tab {
 	SMELT,
@@ -249,7 +252,7 @@ func _build_ui() -> void:
 	_msg_label.text = ""
 	_msg_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_msg_label.add_theme_font_size_override("font_size", 16)
-	_msg_label.add_theme_color_override("font_color", COLOR_ORANGE)
+	_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	_msg_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_msg_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
@@ -318,8 +321,14 @@ func _switch_tab(tab: Tab) -> void:
 		_refresh_case_view()
 
 
+static func _darken_bbcode(text: String) -> String:
+	return text.replace("#FFD028", "#9A6B00").replace("#ffd028", "#9A6B00") \
+		.replace("#FFA010", "#C2600A").replace("#ffa010", "#C2600A") \
+		.replace("#FF5E8A", "#D62E5C").replace("#ff5e8a", "#D62E5C")
+
+
 func _refresh_smelt_view() -> void:
-	_smelt_rich.text = GemSystem.status_bbcode() + "\n\n" + GemSystem.panel_actions_hint()
+	_smelt_rich.text = _darken_bbcode(GemSystem.status_bbcode() + "\n\n" + GemSystem.panel_actions_hint())
 
 	# 清理並重建可執行的熔煉與合成按鈕 (按鈕高 >= 50)
 	for c in _actions_container.get_children():
@@ -397,7 +406,7 @@ func _refresh_smelt_view() -> void:
 
 
 func _refresh_case_view() -> void:
-	_case_rich.text = GemSystem.gem_case_status_bbcode()
+	_case_rich.text = _darken_bbcode(GemSystem.gem_case_status_bbcode())
 
 
 func _on_close() -> void:
