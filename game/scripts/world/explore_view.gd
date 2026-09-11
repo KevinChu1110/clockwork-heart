@@ -454,6 +454,40 @@ func _try_ambient_bubble() -> void:
 	show_entity_bubble(pick, str(lines[pick]), 2.4)
 
 
+static func _create_hint_bar_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8")  ## 陽光童話·奶油米白底（不透明）
+	sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(18)  ## 圓角 18px
+	sb.content_margin_left = 16
+	sb.content_margin_right = 16
+	sb.content_margin_top = 6
+	sb.content_margin_bottom = 6
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 6
+	sb.shadow_offset = Vector2(0, 3)
+	return sb
+
+
+static func _create_nameplate_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8")  ## 陽光童話·奶油米白底（不透明）
+	sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(18)  ## 圓角 18px
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 5
+	sb.shadow_offset = Vector2(0, 2)
+	return sb
+
+
 func _build_chrome() -> void:
 	_bg = ColorRect.new()
 	_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -568,15 +602,15 @@ func _build_chrome() -> void:
 	hint_bar.offset_top = -86
 	hint_bar.offset_bottom = -48
 	hint_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hint_bar.add_theme_stylebox_override("panel", UiStyle.hint_bar_style())
+	hint_bar.add_theme_stylebox_override("panel", _create_hint_bar_style())
 	hint_bar.z_index = 20
 	add_child(hint_bar)
 	_hint = Label.new()
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hint.add_theme_font_size_override("font_size", 13)
-	## 提示框是深木底（hint_bar_style），字原本寫成 INK（深墨）—— 深字壓深底，
-	## 截圖裡整條是空的黑框，「點一下 · 麥穗」從沒被看見過。深底上的字用 CAPTION。
-	_hint.add_theme_color_override("font_color", UiStyle.CAPTION)
+	_hint.add_theme_font_size_override("font_size", 14)
+	_hint.add_theme_color_override("font_color", Color("#1F1A3A"))
+	_hint.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	_hint.add_theme_constant_override("outline_size", 1)
 	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hint.text = _t("點地上走過去 · 點人或物互動")
 	hint_bar.add_child(_hint)
@@ -1720,13 +1754,13 @@ func _rebuild_entities() -> void:
 		var name_chip := PanelContainer.new()
 		name_chip.visible = SpriteDB.is_map_named(str(e.id))
 		name_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		name_chip.add_theme_stylebox_override("panel", UiStyle.interact_name_style())
+		name_chip.add_theme_stylebox_override("panel", _create_nameplate_style())
 		name_chip.position = Vector2(root.size.x * 0.5 - 40, root.size.y + 2)
 		var lab := Label.new()
 		lab.text = e.label
 		lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		lab.add_theme_font_size_override("font_size", 12)
-		lab.add_theme_color_override("font_color", UiStyle.KEY_SOFT)
+		lab.add_theme_font_size_override("font_size", 13)
+		lab.add_theme_color_override("font_color", Color("#1F1A3A"))
 		lab.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		name_chip.add_child(lab)
 		root.add_child(name_chip)
