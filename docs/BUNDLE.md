@@ -10,6 +10,8 @@ python3 tools/measure_bundle.py --apply-presets   # 把 filter 寫回 game/expor
 
 單一真相：`game/data/bundle_manifest.json`。Runtime：`BundlePacks`／`BundleLoader`。
 
+> **W3-F1（2026-09-11）**：core 源資產 **45.29 MB**（was 61.45）；Mac／Android／iOS 用 CORE filter；數字與商店短句見 [`docs/W3_CORE_SIZE.md`](W3_CORE_SIZE.md)。
+
 ---
 
 ## 量測（2026-09-07）

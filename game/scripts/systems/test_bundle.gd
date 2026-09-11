@@ -63,12 +63,12 @@ func _check_maps() -> void:
 
 
 func _check_bgm() -> void:
-	for id in ["title", "village", "town", "road", "battle"]:
-		if Packs.pack_for_bgm(id) != "core":
-			_fail("bgm %s 應在 core" % id)
-	for id in ["boss", "mist", "ending", "tower"]:
+	## W3-F1：core 僅留 battle（C0 教學戰）；title/village/town/road → chapter／Pack-A
+	if Packs.pack_for_bgm("battle") != "core":
+		_fail("bgm battle 應在 core（C0 teach fight）")
+	for id in ["title", "village", "town", "road", "boss", "mist", "ending", "tower"]:
 		if Packs.pack_for_bgm(id) != "chapter":
-			_fail("bgm %s 應在 chapter" % id)
+			_fail("bgm %s 應在 chapter／Pack-A" % id)
 
 
 func _check_core_assets() -> void:
