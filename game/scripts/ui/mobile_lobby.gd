@@ -1329,7 +1329,7 @@ func _build_adventure_tab() -> void:
 	for i in range(regions.size()):
 		var rb := Button.new()
 		rb.text = regions[i]
-		rb.custom_minimum_size = Vector2(175, 46)
+		rb.custom_minimum_size = Vector2(175, 50)
 		rb.add_theme_font_size_override("font_size", 16)
 		_style_region_button(rb, i == _selected_region)
 		var r_idx := i
@@ -1347,25 +1347,50 @@ func _build_adventure_tab() -> void:
 func _style_region_button(btn: Button, is_selected: bool) -> void:
 	var sb := StyleBoxFlat.new()
 	if is_selected:
-		sb.bg_color = GOLD_CLASSICAL
-		sb.border_color = TEAL_CORE
-		sb.set_border_width_all(1)
-		sb.border_width_bottom = 3
-		sb.set_corner_radius_all(8)
-		btn.add_theme_color_override("font_color", OBSIDIAN_BASE)
-		btn.add_theme_color_override("font_hover_color", Color(0.0, 0.0, 0.0, 1.0))
-		btn.add_theme_color_override("font_pressed_color", OBSIDIAN_BASE)
+		sb.bg_color = COLOR_GOLD
+		sb.border_color = COLOR_BORDER
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 5
+		sb.set_corner_radius_all(20)
+		sb.content_margin_top = 8
+		sb.content_margin_bottom = 8
+		sb.content_margin_left = 14
+		sb.content_margin_right = 14
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 3)
+		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	else:
-		sb.bg_color = OBSIDIAN_WARM
-		sb.border_color = LINE_GOLD_SOFT
-		sb.set_border_width_all(1)
-		sb.set_corner_radius_all(8)
-		btn.add_theme_color_override("font_color", INK_IVORY_MUTED)
-		btn.add_theme_color_override("font_hover_color", INK_IVORY)
-		btn.add_theme_color_override("font_pressed_color", INK_IVORY_SOFT)
+		sb.bg_color = COLOR_CARD_WARM
+		sb.border_color = COLOR_BORDER
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 5
+		sb.set_corner_radius_all(20)
+		sb.content_margin_top = 8
+		sb.content_margin_bottom = 8
+		sb.content_margin_left = 14
+		sb.content_margin_right = 14
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
+		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_hover_color", COLOR_GOLD_DARK)
+		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var sb_h := sb.duplicate() as StyleBoxFlat
+	if not is_selected:
+		sb_h.bg_color = COLOR_CARD_GOLD
+	else:
+		sb_h.bg_color = Color("#FFE066")
+
+	var sb_p := sb.duplicate() as StyleBoxFlat
+	sb_p.border_width_bottom = 2
+
 	btn.add_theme_stylebox_override("normal", sb)
-	btn.add_theme_stylebox_override("hover", sb)
-	btn.add_theme_stylebox_override("pressed", sb)
+	btn.add_theme_stylebox_override("hover", sb_h)
+	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
 
 func _select_region(r: int) -> void:
@@ -1454,29 +1479,42 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	v.add_child(inf_row)
 
 	var btn_battle := Button.new()
-	btn_battle.custom_minimum_size = Vector2(145, 48)
+	btn_battle.custom_minimum_size = Vector2(145, 50)
 	btn_battle.text = "挑戰首領" if is_boss else "出征"
 	btn_battle.add_theme_font_size_override("font_size", 16)
 	var bsb := StyleBoxFlat.new()
 	if is_boss:
-		bsb.bg_color = GOLD_CLASSICAL
-		bsb.border_color = CORAL_RUST
-		bsb.set_border_width_all(1)
-		bsb.border_width_bottom = 3
-		bsb.set_corner_radius_all(8)
-		btn_battle.add_theme_color_override("font_color", OBSIDIAN_BASE)
-		btn_battle.add_theme_color_override("font_hover_color", Color(0.0, 0.0, 0.0, 1.0))
+		bsb.bg_color = COLOR_ORANGE
+		bsb.border_color = COLOR_BORDER
+		bsb.set_border_width_all(2)
+		bsb.border_width_bottom = 5
+		bsb.set_corner_radius_all(18)
+		bsb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+		bsb.shadow_size = 6
+		bsb.shadow_offset = Vector2(0, 3)
 	else:
-		bsb.bg_color = OBSIDIAN_WARM
-		bsb.border_color = BRONZE_WARM
-		bsb.set_border_width_all(1)
-		bsb.border_width_bottom = 3
-		bsb.set_corner_radius_all(8)
-		btn_battle.add_theme_color_override("font_color", INK_IVORY)
-		btn_battle.add_theme_color_override("font_hover_color", GOLD_HOVER)
+		bsb.bg_color = COLOR_GOLD
+		bsb.border_color = COLOR_BORDER
+		bsb.set_border_width_all(2)
+		bsb.border_width_bottom = 5
+		bsb.set_corner_radius_all(18)
+		bsb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+		bsb.shadow_size = 6
+		bsb.shadow_offset = Vector2(0, 3)
+
+	btn_battle.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_battle.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_battle.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var bsb_h := bsb.duplicate() as StyleBoxFlat
+	bsb_h.bg_color = Color("#FFB84D") if is_boss else Color("#FFE066")
+	var bsb_p := bsb.duplicate() as StyleBoxFlat
+	bsb_p.border_width_bottom = 2
+
 	btn_battle.add_theme_stylebox_override("normal", bsb)
-	btn_battle.add_theme_stylebox_override("hover", bsb)
-	btn_battle.add_theme_stylebox_override("pressed", bsb)
+	btn_battle.add_theme_stylebox_override("hover", bsb_h)
+	btn_battle.add_theme_stylebox_override("pressed", bsb_p)
+	btn_battle.add_theme_stylebox_override("focus", bsb)
 	var m: String = str(s["mode"])
 	btn_battle.pressed.connect(func(): request_battle.emit(m))
 	h.add_child(btn_battle)

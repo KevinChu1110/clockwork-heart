@@ -78,8 +78,14 @@ func _run_captures() -> void:
 	print(">>> [Dock] 切到四區出征分頁…")
 	_lobby._switch_tab(MobileLobby.Tab.ADVENTURE)
 	await _wait_frames(20)
-	print(">>> [Dock] 截取四區出征分頁…")
-	await _capture_frame("proof_lobby_adventure.png")
+	print(">>> [Dock] 截取四區出征分頁（第二地區已選＋出戰鈕）…")
+	await _capture_frame("proof_adventure_stages_region2.png")
+
+	print(">>> [Dock] 切換到第一地區…")
+	_lobby._select_region(0)
+	await _wait_frames(20)
+	print(">>> [Dock] 截取四區出征分頁（第一地區已選／第二地區未選）…")
+	await _capture_frame("proof_adventure_stages_region1.png")
 
 	print("CAPTURE_LOBBY_DOPAMINE_OK")
 	quit(0)
