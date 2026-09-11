@@ -1548,19 +1548,23 @@ func _build_character_tab() -> void:
 	btn_wardrobe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn_wardrobe.add_theme_font_size_override("font_size", 16)
 	var wsb := StyleBoxFlat.new()
-	wsb.bg_color = COLOR_GOLD
+	wsb.bg_color = COLOR_CARD_WARM
 	wsb.border_color = COLOR_BORDER
 	wsb.set_border_width_all(2)
 	wsb.border_width_bottom = 5
-	wsb.set_corner_radius_all(14)
+	wsb.set_corner_radius_all(18)
 	btn_wardrobe.add_theme_stylebox_override("normal", wsb)
-	var wsb_h := wsb.duplicate()
-	wsb_h.bg_color = Color("#FFE066")
+	var wsb_h := wsb.duplicate() as StyleBoxFlat
+	wsb_h.bg_color = COLOR_CARD_GOLD
 	wsb_h.border_color = COLOR_BORDER
+	var wsb_p := wsb.duplicate() as StyleBoxFlat
+	wsb_p.border_width_bottom = 2
 	btn_wardrobe.add_theme_stylebox_override("hover", wsb_h)
-	btn_wardrobe.add_theme_stylebox_override("pressed", wsb_h)
+	btn_wardrobe.add_theme_stylebox_override("pressed", wsb_p)
+	btn_wardrobe.add_theme_stylebox_override("focus", wsb)
 	btn_wardrobe.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	btn_wardrobe.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_wardrobe.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	btn_wardrobe.pressed.connect(open_wardrobe)
 	l_vbox.add_child(btn_wardrobe)
 
@@ -1587,8 +1591,8 @@ func _build_character_tab() -> void:
 		psb.bg_color = COLOR_CARD_WARM
 		psb.border_color = COLOR_BORDER
 		psb.set_border_width_all(2)
-		psb.border_width_bottom = 4
-		psb.set_corner_radius_all(10)
+		psb.border_width_bottom = 5
+		psb.set_corner_radius_all(18)
 		p.add_theme_stylebox_override("panel", psb)
 		var l := Label.new()
 		l.text = ws
