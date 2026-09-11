@@ -94,19 +94,27 @@ func _process(_delta: float) -> bool:
 			if font_sz < 16 or font_sz > 24:
 				_fail("字級不符規範 (16~24px): 實際 %d" % font_sz)
 
-			# 5. 驗證色碼轉換函數 _adapt_log_colors
+			# 5. 驗證色碼轉換函數 _adapt_log_colors（亮底高對比：深琥珀 #A85A00、深莓紅 #C22B55、深藍紫 #1F1A3A）
 			if _battle.has_method("_adapt_log_colors"):
 				var rage_test: String = _battle.call("_adapt_log_colors", "[color=#f52]怒氣滿[/color]")
-				if not rage_test.contains("[color=#FF5E8A]"):
-					_fail("舊色碼 #f52 未正確轉換為珊瑚粉 #FF5E8A: %s" % rage_test)
+				if not rage_test.contains("[color=#C22B55]"):
+					_fail("舊色碼 #f52 未正確轉換為深莓紅 #C22B55: %s" % rage_test)
 
 				var gold_test: String = _battle.call("_adapt_log_colors", "[color=#fc8]獎勵[/color]")
-				if not gold_test.contains("[color=#FFA010]"):
-					_fail("舊色碼 #fc8 未正確轉換為暖橘 #FFA010: %s" % gold_test)
+				if not gold_test.contains("[color=#A85A00]"):
+					_fail("舊色碼 #fc8 未正確轉換為深琥珀 #A85A00: %s" % gold_test)
 
 				var dark_test: String = _battle.call("_adapt_log_colors", "[color=#8df]說明[/color]")
 				if not dark_test.contains("[color=#1F1A3A]"):
 					_fail("舊色碼 #8df 未正確轉換為深藍紫 #1F1A3A: %s" % dark_test)
+
+				# 6. 驗證日誌內文不得出現 #FFA010／#FF5E8A／#FFD028 原值（避免白底低對比看不清）
+				for forbidden in ["#FFA010", "#FF5E8A", "#FFD028", "#ffa010", "#ff5e8a", "#ffd028"]:
+					var converted: String = _battle.call("_adapt_log_colors", "[color=%s]測試[/color]" % forbidden)
+					if converted.contains(forbidden):
+						_fail("日誌轉換後仍出現禁用亮色原值 %s: %s" % [forbidden, converted])
+					if log_label.text.contains(forbidden):
+						_fail("日誌面板當前內容出現禁用亮色原值 %s: %s" % [forbidden, log_label.text])
 
 			if _ok:
 				print("BATTLE_LOG_DOPAMINE_OK")

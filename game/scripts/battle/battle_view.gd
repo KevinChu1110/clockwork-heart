@@ -3141,27 +3141,30 @@ func _on_end(won: bool) -> void:
 	battle_finished.emit(won)
 
 
-## 多巴胺色盤色碼轉換：將適合暗色底板的舊淺色碼轉換為亮底（#FFFDF8）高可讀深色與多巴胺強調色
+## 多巴胺色盤色碼轉換：將適合暗色底板的舊淺色碼轉換為亮底（#FFFDF8）高可讀深色（深琥珀 #A85A00、深莓紅 #C22B55、深藍紫 #1F1A3A）
 static func _adapt_log_colors(text: String) -> String:
 	var res := text
-	# 暴怒／警報／破防／部位破壞／受傷反噬 -> 珊瑚粉 #FF5E8A
-	const RAGE_COLORS := ["#f52", "#f44", "#f66", "#f88", "#e88", "#f84", "#f86", "#fa8"]
+	# 暴怒／警報／破防／部位破壞／受傷反噬 -> 深莓紅 #C22B55（亮底高對比）
+	const RAGE_COLORS := ["#f52", "#f44", "#f66", "#f88", "#e88", "#f84", "#f86", "#fa8", "#ff5e8a"]
 	for c in RAGE_COLORS:
-		if res.contains(c) or res.contains(c.to_upper()):
-			res = res.replace("[color=%s]" % c, "[color=#FF5E8A]")
-			res = res.replace("[color=%s]" % c.to_upper(), "[color=#FF5E8A]")
-	# 提示／金幣／獎勵／招式互動／預告 -> 暖橘 #FFA010
-	const WARN_COLORS := ["#fc0", "#fc8", "#fd9", "#ff8", "#ff5", "#fa6", "#ffd700", "#c96", "#ca8", "#f9a"]
+		if res.contains(c) or res.contains(c.to_upper()) or res.contains(c.to_lower()):
+			res = res.replace("[color=%s]" % c, "[color=#C22B55]")
+			res = res.replace("[color=%s]" % c.to_upper(), "[color=#C22B55]")
+			res = res.replace("[color=%s]" % c.to_lower(), "[color=#C22B55]")
+	# 提示／金幣／獎勵／招式互動／預告 -> 深琥珀 #A85A00（亮底高對比，仍屬暖橘家族）
+	const WARN_COLORS := ["#fc0", "#fc8", "#fd9", "#ff8", "#ff5", "#fa6", "#ffd700", "#c96", "#ca8", "#f9a", "#ffa010", "#ffd028"]
 	for c in WARN_COLORS:
-		if res.contains(c) or res.contains(c.to_upper()):
-			res = res.replace("[color=%s]" % c, "[color=#FFA010]")
-			res = res.replace("[color=%s]" % c.to_upper(), "[color=#FFA010]")
+		if res.contains(c) or res.contains(c.to_upper()) or res.contains(c.to_lower()):
+			res = res.replace("[color=%s]" % c, "[color=#A85A00]")
+			res = res.replace("[color=%s]" % c.to_upper(), "[color=#A85A00]")
+			res = res.replace("[color=%s]" % c.to_lower(), "[color=#A85A00]")
 	# 暗底淺藍／青綠／灰白／次要文字 -> 深藍紫 #1F1A3A
 	const DARK_BASE_COLORS := ["#8df", "#9cf", "#8cf", "#8ff", "#6cf", "#cff", "#c8f", "#a8f", "#ddf", "#9c9", "#8f8", "#6f6", "#aaa", "#b8a88a", "#a88", "#fff", "#ffffff", "#eee"]
 	for c in DARK_BASE_COLORS:
-		if res.contains(c) or res.contains(c.to_upper()):
+		if res.contains(c) or res.contains(c.to_upper()) or res.contains(c.to_lower()):
 			res = res.replace("[color=%s]" % c, "[color=#1F1A3A]")
 			res = res.replace("[color=%s]" % c.to_upper(), "[color=#1F1A3A]")
+			res = res.replace("[color=%s]" % c.to_lower(), "[color=#1F1A3A]")
 	return res
 
 
