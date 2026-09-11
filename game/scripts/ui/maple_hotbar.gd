@@ -1,14 +1,29 @@
 class_name MapleHotbar
 extends Control
-## 楓式底部快捷欄 1–8；整條可拖曳
+## 楓式底部快捷欄 1–8；陽光童話·多巴胺亮色盤（奶油白底 · 果凍槽位 · 深藍紫立體邊框）
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const WindowDrag = preload("res://scripts/ui/window_drag.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
+const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+
 const SLOT_N := 8
 const SLOT_SIZE := Vector2(50, 50)
+
+## ── 多巴胺鮮亮高飽和色盤 ──
+const COLOR_GOLD       := Color("#FFD028")  ## 金黃
+const COLOR_ORANGE     := Color("#FFA010")  ## 暖橘
+const COLOR_MINT       := Color("#4ED86A")  ## 薄荷綠
+const COLOR_SKY        := Color("#38A0FF")  ## 天藍
+const COLOR_PINK       := Color("#FF5E8A")  ## 珊瑚粉
+const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
+const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
+const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
+const COLOR_CARD_SKY   := Color("#F0F7FF")  ## 柔和天藍卡片底
+const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
+const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
 
 signal slot_clicked(index: int)
 signal slot_right_clicked(index: int)
@@ -19,6 +34,66 @@ var _glyphs: Array = []
 var _counts: Array = []
 var _keys: Array = []
 var _flash: Array = []
+var _cached_font: Font = null
+
+
+func _get_font() -> Font:
+	if _cached_font == null and ResourceLoader.exists(FONT_PATH):
+		_cached_font = load(FONT_PATH) as Font
+	return _cached_font
+
+
+func _create_bar_style() -> StyleBoxFlat:
+	var bs := StyleBoxFlat.new()
+	bs.bg_color = COLOR_BG_CREAM
+	bs.border_color = COLOR_BORDER
+	bs.set_border_width_all(2)
+	bs.border_width_bottom = 5
+	bs.set_corner_radius_all(22)
+	bs.content_margin_left = 12
+	bs.content_margin_right = 12
+	bs.content_margin_top = 8
+	bs.content_margin_bottom = 10
+	bs.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	bs.shadow_size = 10
+	bs.shadow_offset = Vector2(0, 5)
+	return bs
+
+
+func _style_slot_empty() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = COLOR_CARD_WARM
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(18)
+	return sb
+
+
+func _style_slot_filled() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = COLOR_CARD_GOLD
+	sb.border_color = COLOR_ORANGE
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 5
+	sb.set_corner_radius_all(18)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.2)
+	sb.shadow_size = 4
+	sb.shadow_offset = Vector2(0, 2)
+	return sb
+
+
+func _style_slot_menu() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = COLOR_ORANGE
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 5
+	sb.set_corner_radius_all(18)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 4
+	sb.shadow_offset = Vector2(0, 2)
+	return sb
 
 
 func _ready() -> void:
@@ -27,8 +102,8 @@ func _ready() -> void:
 	anchor_right = 0
 	anchor_bottom = 0
 	## 初始置底中（之後可拖）；尾端多一格「選單」鈕。槽 50px 防誤觸。
-	custom_minimum_size = Vector2(504, 62)
-	size = Vector2(504, 62)
+	custom_minimum_size = Vector2(520, 72)
+	size = Vector2(520, 72)
 	_build()
 	call_deferred("_place_default")
 	if Engine.get_main_loop() is SceneTree:
@@ -55,22 +130,12 @@ func _place_default() -> void:
 
 
 func _build() -> void:
+	var f := _get_font()
+
 	_bar = PanelContainer.new()
 	_bar.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_bar.mouse_filter = Control.MOUSE_FILTER_STOP
-	var bs := StyleBoxFlat.new()
-	bs.bg_color = Color(0.13, 0.12, 0.15, 0.92)
-	bs.border_color = Color(0.75, 0.60, 0.45, 0.85)
-	bs.set_border_width_all(1)
-	bs.set_corner_radius_all(10)
-	bs.content_margin_left = 8
-	bs.content_margin_right = 8
-	bs.content_margin_top = 6
-	bs.content_margin_bottom = 6
-	bs.shadow_color = Color(0.05, 0.04, 0.06, 0.35)
-	bs.shadow_size = 6
-	bs.shadow_offset = Vector2(0, 2)
-	_bar.add_theme_stylebox_override("panel", bs)
+	_bar.add_theme_stylebox_override("panel", _create_bar_style())
 	add_child(_bar)
 
 	var col := VBoxContainer.new()
@@ -79,7 +144,7 @@ func _build() -> void:
 	_bar.add_child(col)
 
 	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 5)
+	row.add_theme_constant_override("separation", 6)
 	row.mouse_filter = Control.MOUSE_FILTER_STOP
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	col.add_child(row)
@@ -88,7 +153,7 @@ func _build() -> void:
 		var slot := PanelContainer.new()
 		slot.custom_minimum_size = SLOT_SIZE
 		slot.mouse_filter = Control.MOUSE_FILTER_STOP
-		slot.add_theme_stylebox_override("panel", UiStyle.slot_style())
+		slot.add_theme_stylebox_override("panel", _style_slot_empty())
 		row.add_child(slot)
 		_slots.append(slot)
 
@@ -99,7 +164,7 @@ func _build() -> void:
 
 		var flash := ColorRect.new()
 		flash.set_anchors_preset(Control.PRESET_FULL_RECT)
-		flash.color = Color(1, 1, 0.6, 0)
+		flash.color = Color(1, 0.85, 0.3, 0)
 		flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		stack.add_child(flash)
 		_flash.append(flash)
@@ -108,22 +173,27 @@ func _build() -> void:
 		glyph.set_anchors_preset(Control.PRESET_FULL_RECT)
 		glyph.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		glyph.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		glyph.add_theme_font_size_override("font_size", 16)
-		glyph.add_theme_color_override("font_color", UiStyle.HUD_TEXT)
+		glyph.add_theme_font_size_override("font_size", 20)
+		glyph.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		glyph.add_theme_color_override("font_outline_color", Color.WHITE)
+		glyph.add_theme_constant_override("outline_size", 2)
+		if f:
+			glyph.add_theme_font_override("font", f)
 		glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		stack.add_child(glyph)
 		_glyphs.append(glyph)
 
 		var cnt := Label.new()
 		cnt.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-		cnt.offset_left = -28
-		cnt.offset_top = -16
+		cnt.offset_left = -32
+		cnt.offset_top = -20
 		cnt.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		cnt.add_theme_font_size_override("font_size", 10)
-		cnt.add_theme_color_override("font_color", UiStyle.HUD_TEXT)
-		cnt.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
-		cnt.add_theme_constant_override("shadow_offset_x", 1)
-		cnt.add_theme_constant_override("shadow_offset_y", 1)
+		cnt.add_theme_font_size_override("font_size", 16)
+		cnt.add_theme_color_override("font_color", COLOR_ORANGE)
+		cnt.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		cnt.add_theme_constant_override("outline_size", 3)
+		if f:
+			cnt.add_theme_font_override("font", f)
 		cnt.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		stack.add_child(cnt)
 		_counts.append(cnt)
@@ -131,10 +201,14 @@ func _build() -> void:
 		var key := Label.new()
 		key.text = str(i + 1)
 		key.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
-		key.offset_left = 3
-		key.offset_top = 1
-		key.add_theme_font_size_override("font_size", 9)
-		key.add_theme_color_override("font_color", UiStyle.HUD_KEYCAP)
+		key.offset_left = 4
+		key.offset_top = 2
+		key.add_theme_font_size_override("font_size", 16)
+		key.add_theme_color_override("font_color", COLOR_BORDER)
+		key.add_theme_color_override("font_outline_color", Color.WHITE)
+		key.add_theme_constant_override("outline_size", 2)
+		if f:
+			key.add_theme_font_override("font", f)
 		key.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		## 觸控裝置沒鍵盤，1–8 快捷鍵標籤只會造成困惑
 		key.visible = not DisplayServer.is_touchscreen_available()
@@ -154,18 +228,21 @@ func _build() -> void:
 
 	## 觸控／滑鼠也要開得了暫停選單：尾端「選單」鈕送 Cancel，
 	## 與 Esc 走同一條流程（開關暫停、先收物品欄）
-	## 白底淡橘字（舊）在截圖裡幾乎看不見；改深木底＋銅字，跟其它格同一套皮。
 	var menu_btn := PanelContainer.new()
 	menu_btn.custom_minimum_size = SLOT_SIZE
 	menu_btn.mouse_filter = Control.MOUSE_FILTER_STOP
-	menu_btn.add_theme_stylebox_override("panel", UiStyle.slot_menu_style())
+	menu_btn.add_theme_stylebox_override("panel", _style_slot_menu())
 	row.add_child(menu_btn)
 	var ml := Label.new()
 	ml.text = ContentLoc.text("ui", "選單")
 	ml.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ml.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	ml.add_theme_font_size_override("font_size", 12)
-	ml.add_theme_color_override("font_color", UiStyle.KEY_SOFT)
+	ml.add_theme_font_size_override("font_size", 18)
+	ml.add_theme_color_override("font_color", Color.WHITE)
+	ml.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	ml.add_theme_constant_override("outline_size", 3)
+	if f:
+		ml.add_theme_font_override("font", f)
 	ml.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	menu_btn.add_child(ml)
 	menu_btn.gui_input.connect(func(ev: InputEvent):
@@ -191,20 +268,20 @@ func refresh() -> void:
 		if id == "" or int(GameState.inventory.get(id, 0)) <= 0:
 			glyph.text = ""
 			cnt.text = ""
-			slot.add_theme_stylebox_override("panel", UiStyle.slot_empty_style())
+			slot.add_theme_stylebox_override("panel", _style_slot_empty())
 			continue
 		var def: Dictionary = inv.call("catalog", id)
 		glyph.text = str(def.get("glyph", "·"))
-		glyph.add_theme_color_override("font_color", UiStyle.HUD_TEXT)
+		glyph.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		var n := int(GameState.inventory.get(id, 0))
 		cnt.text = str(n) if n > 1 else ""
-		slot.add_theme_stylebox_override("panel", UiStyle.slot_filled_style())
+		slot.add_theme_stylebox_override("panel", _style_slot_filled())
 
 
 func pulse_slot(index: int) -> void:
 	if index < 0 or index >= _flash.size():
 		return
 	var f: ColorRect = _flash[index]
-	f.color = Color(1, 1, 0.5, 0.55)
+	f.color = Color(1, 0.85, 0.3, 0.6)
 	var tw := create_tween()
 	tw.tween_property(f, "color:a", 0.0, 0.25)
