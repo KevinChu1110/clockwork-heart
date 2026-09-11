@@ -94,13 +94,15 @@ func _build_view() -> void:
 	hint_bar.grow_horizontal = Control.GROW_DIRECTION_BOTH
 	hint_bar.offset_top = 10
 	hint_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hint_bar.add_theme_stylebox_override("panel", UiStyle.hint_bar_style())
+	hint_bar.add_theme_stylebox_override("panel", _create_hint_bar_style())
 	add_child(hint_bar)
 	_hint = Label.new()
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_hint.add_theme_font_size_override("font_size", 13)
-	_hint.add_theme_color_override("font_color", UiStyle.CAPTION)
+	_hint.add_theme_font_size_override("font_size", 14)
+	_hint.add_theme_color_override("font_color", Color("#1F1A3A"))
+	_hint.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	_hint.add_theme_constant_override("outline_size", 1)
 	hint_bar.add_child(_hint)
 	_plates_layer = Control.new()
 	_plates_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -500,6 +502,40 @@ func _process(_delta: float) -> void:
 		_bubble.position = bp
 
 
+static func _create_hint_bar_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8")  ## 陽光童話·奶油米白底（不透明）
+	sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(18)  ## 圓角 18px
+	sb.content_margin_left = 16
+	sb.content_margin_right = 16
+	sb.content_margin_top = 6
+	sb.content_margin_bottom = 6
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 6
+	sb.shadow_offset = Vector2(0, 3)
+	return sb
+
+
+static func _create_nameplate_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8")  ## 陽光童話·奶油米白底（不透明）
+	sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(18)  ## 圓角 18px
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 5
+	sb.shadow_offset = Vector2(0, 2)
+	return sb
+
+
 func _ensure_nameplate(id: String, e: Dictionary) -> void:
 	if _plates_layer == null:
 		return
@@ -516,12 +552,12 @@ func _ensure_nameplate(id: String, e: Dictionary) -> void:
 			return
 	var chip := PanelContainer.new()
 	chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	chip.add_theme_stylebox_override("panel", UiStyle.interact_name_style())
+	chip.add_theme_stylebox_override("panel", _create_nameplate_style())
 	var lab := Label.new()
 	lab.text = label
 	lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lab.add_theme_font_size_override("font_size", 13)
-	lab.add_theme_color_override("font_color", UiStyle.KEY_SOFT)
+	lab.add_theme_color_override("font_color", Color("#1F1A3A"))
 	lab.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	chip.add_child(lab)
 	_plates_layer.add_child(chip)
