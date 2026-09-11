@@ -13,6 +13,8 @@ var cost: Dictionary = {}
 var outfit_atlas: String = ""
 var outfit_atlas_cols: int = 4
 var blocked: Array = []
+var outfit_aliases: Dictionary = {}
+var toast_keys: Dictionary = {}
 
 
 func load_from(path: String = DEFAULT_PATH) -> bool:
@@ -32,6 +34,8 @@ func load_from(path: String = DEFAULT_PATH) -> bool:
 	outfit_atlas = str(raw.get("outfitAtlas", ""))
 	outfit_atlas_cols = int(raw.get("outfitAtlasCols", 4))
 	blocked = raw.get("blockedCharacterIds", []) as Array
+	outfit_aliases = raw.get("outfitAliases", {}) as Dictionary
+	toast_keys = raw.get("toastKeys", {}) as Dictionary
 	return true
 
 
@@ -76,3 +80,26 @@ func total_weight() -> int:
 		if typeof(e) == TYPE_DICTIONARY:
 			sum += int((e as Dictionary).get("weight", 0))
 	return sum
+
+
+func resolve_outfit_id(outfit_id: String) -> String:
+	## Alice／舊短名 → K1b 正式 OutfitId
+	if outfit_id.is_empty():
+		return outfit_id
+	if not outfit_def(outfit_id).is_empty():
+		return outfit_id
+	if outfit_aliases.has(outfit_id):
+		return str(outfit_aliases[outfit_id])
+	return outfit_id
+
+
+func toast_key_for_kind(kind: String) -> String:
+	match kind:
+		"part":
+			return str(toast_keys.get("pull_part", "soul.pull_part"))
+		"outfit":
+			return str(toast_keys.get("pull_outfit", "soul.pull_outfit"))
+		"junk":
+			return str(toast_keys.get("pull_junk", "soul.pull_junk"))
+		_:
+			return str(toast_keys.get("pull_start", "soul.pull_start"))

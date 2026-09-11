@@ -264,5 +264,17 @@
   "title.starpath": "今日村莊",
   "pause.starpath": "今日村莊",
   "panel.starpath": "今日村莊",
-  "hud.candle": "燭火 {n}"
+  "hud.candle": "燭火 {n}",
+  "soul.pull_start": "上緊——抽一格！",
+  "soul.pull_part": "零件進圖鑑了！",
+  "soul.pull_outfit": "新貼紙皮！要換上嗎？",
+  "soul.pull_junk": "嗯……這格發條空轉。",
+  "soul.pity_soft": "再幾格，心會亮大一點。",
+  "soul.codex.drop_brass_gear": "咔——齒合上了！",
+  "soul.codex.drop_spring_coil": "還在跳跳跳～",
+  "soul.codex.drop_core_shard": "青綠叮！收好！",
+  "soul.codex.outfit_cream": "這身……還是我。",
+  "soul.codex.outfit_brass_vest": "護好心，再出爪。",
+  "soul.codex.outfit_scarf_tunic": "嗯——這條圍巾會說話。",
+  "soul.codex.outfit_worker_apron": "圍裙穿上，開工！"
 }

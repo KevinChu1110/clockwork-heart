@@ -37,7 +37,7 @@ func _init() -> void:
 	if not loadout.select_character("lion"):
 		print("SOUL_DRAW_V2_FAIL lion select")
 		ok = false
-	if str(loadout.summary().get("outfitId", "")) != "brass_vest":
+	if str(loadout.summary().get("outfitId", "")) != "outfit_brass_vest":
 		print("SOUL_DRAW_V2_FAIL lion default outfit")
 		ok = false
 
@@ -81,6 +81,21 @@ func _init() -> void:
 	var forced: Dictionary = pool2.pull()
 	if str(forced.get("kind", "")) != "outfit" or not bool(forced.get("pityForced", false)):
 		print("SOUL_DRAW_V2_FAIL hard pity %s" % str(forced))
+		ok = false
+
+	# alias：Alice 短名 → K1b
+	if cfg.resolve_outfit_id("scarf_tunic") != "outfit_scarf_tunic":
+		print("SOUL_DRAW_V2_FAIL alias scarf")
+		ok = false
+	if cfg.resolve_outfit_id("apron") != "outfit_worker_apron":
+		print("SOUL_DRAW_V2_FAIL alias apron")
+		ok = false
+	if not loadout.unlock_outfit("scarf_tunic"):
+		print("SOUL_DRAW_V2_FAIL unlock alias")
+		ok = false
+	var sample: Dictionary = pool.pull()
+	if str(sample.get("toastKey", "")).find("soul.pull_") != 0 and str(sample.get("toastKey", "")).find("soul.pity_") != 0:
+		print("SOUL_DRAW_V2_FAIL toastKey %s" % str(sample.get("toastKey", "")))
 		ok = false
 
 	print(JSON.stringify({

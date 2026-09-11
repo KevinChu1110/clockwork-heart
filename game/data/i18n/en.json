@@ -264,5 +264,17 @@
   "title.starpath": "Village Today",
   "pause.starpath": "Village Today",
   "panel.starpath": "Village Today",
-  "hud.candle": "Candles {n}"
+  "hud.candle": "Candles {n}",
+  "soul.pull_start": "Wind up — one pull!",
+  "soul.pull_part": "Part logged in the codex!",
+  "soul.pull_outfit": "New sticker skin! Equip it?",
+  "soul.pull_junk": "Hmm… that tick spun empty.",
+  "soul.pity_soft": "A few more pulls — the heart glows bigger.",
+  "soul.codex.drop_brass_gear": "Click — teeth mesh!",
+  "soul.codex.drop_spring_coil": "Still bouncing~",
+  "soul.codex.drop_core_shard": "Teal ping! Keep it!",
+  "soul.codex.outfit_cream": "This outfit… still me.",
+  "soul.codex.outfit_brass_vest": "Guard the heart, then claw.",
+  "soul.codex.outfit_scarf_tunic": "Hmm — this scarf talks.",
+  "soul.codex.outfit_worker_apron": "Apron on. Let's work!"
 }

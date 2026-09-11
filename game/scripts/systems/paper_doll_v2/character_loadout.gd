@@ -43,6 +43,7 @@ func select_character(character_id: String) -> bool:
 
 
 func unlock_outfit(outfit_id: String) -> bool:
+	outfit_id = soul_cfg.resolve_outfit_id(outfit_id)
 	var odef: Dictionary = soul_cfg.outfit_def(outfit_id)
 	if odef.is_empty():
 		last_error = "unknown_outfit:%s" % outfit_id
@@ -60,6 +61,7 @@ func unlock_outfit(outfit_id: String) -> bool:
 
 
 func equip_outfit(character_id: String, outfit_id: String) -> bool:
+	outfit_id = soul_cfg.resolve_outfit_id(outfit_id)
 	if not select_character(character_id):
 		return false
 	var bag: Dictionary = loadouts[character_id]

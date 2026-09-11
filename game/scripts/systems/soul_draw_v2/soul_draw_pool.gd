@@ -45,17 +45,29 @@ func pull() -> Dictionary:
 	var kind: String = str(entry.get("kind", ""))
 	var drop_id: String = str(entry.get("DropId", ""))
 	if kind == "outfit":
+		drop_id = config.resolve_outfit_id(drop_id)
 		pulls_since_outfit = 0
 	else:
 		pulls_since_outfit += 1
+
+	var soft: int = int(config.pity.get("softPity", 10))
+	var soft_near := (not force_outfit) and kind != "outfit" and pulls_since_outfit >= soft
+	var toast_key: String = str(entry.get("toastKey", ""))
+	if toast_key.is_empty():
+		toast_key = config.toast_key_for_kind(kind)
+	if soft_near:
+		toast_key = str(config.pity.get("softToastKey", config.toast_keys.get("pity_soft", "soul.pity_soft")))
 
 	var result := {
 		"ok": true,
 		"DropId": drop_id,
 		"kind": kind,
 		"pityForced": force_outfit and kind == "outfit",
+		"softPityNear": soft_near,
 		"pullsSinceOutfit": pulls_since_outfit,
 		"CharacterId": str(entry.get("CharacterId", "")),
+		"toastKey": toast_key,
+		"toastStartKey": str(config.toast_keys.get("pull_start", "soul.pull_start")),
 	}
 	return result
 

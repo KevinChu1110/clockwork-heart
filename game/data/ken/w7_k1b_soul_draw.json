@@ -3,7 +3,10 @@
   "supersedes": "W7-K1",
   "system": "SoulDraw",
   "rule": "single_pool_no_gacha_ui",
-  "cost": {"currency": "SoulTicket", "perPull": 1},
+  "cost": {
+    "currency": "SoulTicket",
+    "perPull": 1
+  },
   "characters": [
     {
       "CharacterId": "xiaobai",
@@ -18,7 +21,7 @@
       "displayName": "獅",
       "artKey": "lion",
       "baseAsset": "res://assets/sprites/pack_a/v2/chars/lion_base.png",
-      "defaultOutfit": "brass_vest",
+      "defaultOutfit": "outfit_brass_vest",
       "outfitAtlasCol": 1
     },
     {
@@ -26,7 +29,7 @@
       "displayName": "狐",
       "artKey": "fox",
       "baseAsset": "res://assets/sprites/pack_a/v2/chars/fox_base.png",
-      "defaultOutfit": "scarf_tunic",
+      "defaultOutfit": "outfit_scarf_tunic",
       "outfitAtlasCol": 2
     },
     {
@@ -34,28 +37,123 @@
       "displayName": "野豬",
       "artKey": "pig",
       "baseAsset": "res://assets/sprites/pack_a/v2/chars/pig_base.png",
-      "defaultOutfit": "worker_apron",
+      "defaultOutfit": "outfit_worker_apron",
       "outfitAtlasCol": 3
     }
   ],
-  "blockedCharacterIds": ["tin_soldier", "gear_bear"],
+  "blockedCharacterIds": [
+    "tin_soldier",
+    "gear_bear"
+  ],
+  "outfitAliases": {
+    "brass_vest": "outfit_brass_vest",
+    "scarf_tunic": "outfit_scarf_tunic",
+    "scarf": "outfit_scarf_tunic",
+    "worker_apron": "outfit_worker_apron",
+    "apron": "outfit_worker_apron",
+    "cream": "outfit_cream",
+    "outfit_xiaobai_cream": "outfit_cream",
+    "outfit_lion_brass_vest": "outfit_brass_vest",
+    "outfit_fox_scarf_tunic": "outfit_scarf_tunic",
+    "outfit_pig_worker_apron": "outfit_worker_apron",
+    "rabbit_outfit_cream": "outfit_cream",
+    "lion_outfit_brass_vest": "outfit_brass_vest",
+    "fox_outfit_scarf_tunic": "outfit_scarf_tunic",
+    "pig_outfit_worker_apron": "outfit_worker_apron"
+  },
   "outfits": [
-    {"OutfitId": "outfit_cream", "CharacterId": "xiaobai", "atlasCol": 0, "weight": 6},
-    {"OutfitId": "brass_vest", "CharacterId": "lion", "atlasCol": 1, "weight": 6},
-    {"OutfitId": "scarf_tunic", "CharacterId": "fox", "atlasCol": 2, "weight": 6},
-    {"OutfitId": "worker_apron", "CharacterId": "pig", "atlasCol": 3, "weight": 6}
+    {
+      "OutfitId": "outfit_cream",
+      "CharacterId": "xiaobai",
+      "atlasCol": 0,
+      "weight": 6
+    },
+    {
+      "OutfitId": "outfit_brass_vest",
+      "CharacterId": "lion",
+      "atlasCol": 1,
+      "weight": 6
+    },
+    {
+      "OutfitId": "outfit_scarf_tunic",
+      "CharacterId": "fox",
+      "atlasCol": 2,
+      "weight": 6
+    },
+    {
+      "OutfitId": "outfit_worker_apron",
+      "CharacterId": "pig",
+      "atlasCol": 3,
+      "weight": 6
+    }
   ],
   "outfitAtlas": "res://assets/sprites/pack_a/v2/chars/outfits_x4.png",
   "outfitAtlasCols": 4,
   "LootTable": [
-    {"DropId": "drop_brass_gear", "kind": "part", "weight": 28},
-    {"DropId": "drop_spring_coil", "kind": "part", "weight": 28},
-    {"DropId": "drop_core_shard", "kind": "part", "weight": 14},
-    {"DropId": "outfit_cream", "kind": "outfit", "weight": 6, "CharacterId": "xiaobai"},
-    {"DropId": "brass_vest", "kind": "outfit", "weight": 6, "CharacterId": "lion"},
-    {"DropId": "scarf_tunic", "kind": "outfit", "weight": 6, "CharacterId": "fox"},
-    {"DropId": "worker_apron", "kind": "outfit", "weight": 6, "CharacterId": "pig"},
-    {"DropId": "junk_scrap", "kind": "junk", "weight": 6}
+    {
+      "DropId": "drop_brass_gear",
+      "kind": "part",
+      "weight": 28,
+      "toastKey": "soul.pull_part"
+    },
+    {
+      "DropId": "drop_spring_coil",
+      "kind": "part",
+      "weight": 28,
+      "toastKey": "soul.pull_part"
+    },
+    {
+      "DropId": "drop_core_shard",
+      "kind": "part",
+      "weight": 14,
+      "toastKey": "soul.pull_part"
+    },
+    {
+      "DropId": "outfit_cream",
+      "kind": "outfit",
+      "weight": 6,
+      "CharacterId": "xiaobai",
+      "toastKey": "soul.pull_outfit"
+    },
+    {
+      "DropId": "outfit_brass_vest",
+      "kind": "outfit",
+      "weight": 6,
+      "CharacterId": "lion",
+      "toastKey": "soul.pull_outfit"
+    },
+    {
+      "DropId": "outfit_scarf_tunic",
+      "kind": "outfit",
+      "weight": 6,
+      "CharacterId": "fox",
+      "toastKey": "soul.pull_outfit"
+    },
+    {
+      "DropId": "outfit_worker_apron",
+      "kind": "outfit",
+      "weight": 6,
+      "CharacterId": "pig",
+      "toastKey": "soul.pull_outfit"
+    },
+    {
+      "DropId": "junk_scrap",
+      "kind": "junk",
+      "weight": 6,
+      "toastKey": "soul.pull_junk"
+    }
   ],
-  "pity": {"softPity": 10, "hardPity": 20, "hardPityKind": "outfit"}
+  "pity": {
+    "softPity": 10,
+    "hardPity": 20,
+    "hardPityKind": "outfit",
+    "softToastKey": "soul.pity_soft"
+  },
+  "toastKeys": {
+    "pull_start": "soul.pull_start",
+    "pull_part": "soul.pull_part",
+    "pull_outfit": "soul.pull_outfit",
+    "pull_junk": "soul.pull_junk",
+    "pity_soft": "soul.pity_soft"
+  }
 }
