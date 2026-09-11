@@ -44,6 +44,7 @@ func pull() -> Dictionary:
 
 	var kind: String = str(entry.get("kind", ""))
 	var drop_id: String = str(entry.get("DropId", ""))
+	drop_id = config.resolve_drop_id(drop_id)
 	if kind == "outfit":
 		drop_id = config.resolve_outfit_id(drop_id)
 		pulls_since_outfit = 0
