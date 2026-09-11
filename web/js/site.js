@@ -6,15 +6,10 @@
   var depth = path.match(/\/pages\//) ? ".." : ".";
   var links = [
     { href: depth + "/index.html", id: "home", label: "首頁" },
-    { href: depth + "/pages/weapons.html", id: "weapons", label: "流派" },
-    { href: depth + "/pages/equipment.html", id: "equipment", label: "圖鑑" },
-    { href: depth + "/pages/maps.html", id: "maps", label: "地圖" },
-    { href: depth + "/pages/systems.html", id: "systems", label: "養成" },
-    { href: depth + "/pages/walkthrough.html", id: "walkthrough", label: "攻略" },
-    { href: depth + "/pages/guide.html", id: "guide", label: "指南" },
     { href: depth + "/pages/gallery.html", id: "gallery", label: "畫面" },
+    { href: depth + "/pages/systems.html", id: "systems", label: "怎麼玩" },
+    { href: depth + "/pages/guide.html", id: "guide", label: "指南" },
     { href: depth + "/pages/download.html", id: "download", label: "下載" },
-    { href: depth + "/pages/account.html", id: "account", label: "帳號" },
   ];
   var vp = document.querySelector('meta[name="viewport"]');
   if (vp) {
@@ -119,7 +114,7 @@
     '<footer><div class="container footer-inner">' +
       "<div>" +
       brand +
-      " · 創想界域物語 · 2.2頭身發條白兔奇想冒險</div>" +
+      " · Clockwork Heart · 開發中</div>" +
       '<div><a href="' +
       depth +
       '/index.html">首頁</a> · <a href="' +

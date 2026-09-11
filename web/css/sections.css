@@ -10,12 +10,15 @@
 .band--cream { background: var(--cream); }
 .band--warm { background: var(--warm); }
 .band--ink {
-  background: linear-gradient(145deg, #0B0A0E 0%, #141218 55%, #1A171F 100%);
-  color: #FFFDF8;
+  background:
+    radial-gradient(900px 420px at 8% 0%, rgba(56, 160, 255, 0.16), transparent 60%),
+    radial-gradient(700px 360px at 92% 100%, rgba(255, 208, 40, 0.18), transparent 55%),
+    #E8F6FF;
+  color: var(--ink);
 }
 .band--ink .section-sub,
-.band--ink .muted { color: rgba(255, 253, 248, 0.78); }
-.band--ink .section-h2 { color: #FFFDF8; }
+.band--ink .muted { color: var(--ink-soft); }
+.band--ink .section-h2 { color: var(--ink); }
 .band--soft-key {
   background:
     radial-gradient(800px 380px at 12% 0%, rgba(56, 160, 255, 0.14), transparent 60%),
@@ -65,7 +68,7 @@
   font-size: 1.02rem;
   line-height: 1.7;
 }
-.band--ink .sec-lead { color: rgba(247, 246, 248, 0.78); }
+.band--ink .sec-lead { color: var(--ink-soft); }
 
 /* 左右交錯大區塊（核心：不是 card） */
 .feature {

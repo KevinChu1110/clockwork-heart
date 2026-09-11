@@ -34,11 +34,11 @@ body { overflow-x: hidden; }
 }
 
 body[data-page="home"] .gnb:not(.is-scrolled):not(.is-open) .gnb-toggle {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 248, 235, 0.92);
+  border-color: var(--line);
 }
 body[data-page="home"] .gnb:not(.is-scrolled):not(.is-open) .gnb-toggle span {
-  background: #fff;
+  background: var(--ink);
 }
 
 @media (max-width: 1080px) {

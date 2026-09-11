@@ -1,66 +1,49 @@
 # 發條之心 (Clockwork Heart)
 
-> 《發條之心》（Clockwork Heart）是一款以「覺醒的發條玩具」為核心世界觀的橫屏奇想動作角色扮演手遊（Action RPG）。遊戲採用古典童話溫暖底色與蒸氣機械風格，支援單機離線通關主線，跨手機與 PC 多平台。
+> 橫屏發條玩具動作 RPG。扮演金屬發條兔「小白」。15 點發條打仗、拆敵人零件。主線單機可通關。免費遊玩＋內購＋廣告。開發中，手機商店尚未上架。
 
-## 遊戲簡介 (Overview)
+## 遊戲簡介
 
-- **遊戲名稱**：發條之心（Clockwork Heart）
-- **遊戲類型**：橫屏奇想發條玩具動作角色扮演遊戲（Action RPG / JRPG）
-- **開發引擎**：Godot Engine（2D/Mobile Renderer）
-- **開發狀態**：開發中（In Active Development，#開發中）
-- **商業模式**：免費下載（Free-to-Play, F2P）＋ 內購（IAP）＋ 獎勵型廣告（含一次性去廣告買斷）。所有主線劇情不付費、不連線均可完整通關，無強制連線門檻，非 Pay-to-Win。
-- **目標平台**：Android / iOS 智慧型手機（橫屏雙拇指握持、觸控大熱區 ≥48px）及 PC（Windows / macOS / Linux）與 Web 跨平台。
-- **語言支援**：繁體中文、簡體中文、英文 (English)、日文 (日本語)、韓文 (한국어)、西班牙文 (Español)。
+- **名稱**：發條之心（Clockwork Heart）
+- **類型**：橫屏動作角色扮演（Action RPG）
+- **引擎**：Godot
+- **狀態**：開發中
+- **商業模式**：F2P＋內購＋獎勵型廣告（可買斷去廣告）。主線不付費、不連線可完整通關。非 Pay-to-Win。
+- **平台**：Android / iOS（尚未上架）＋ PC（Windows / macOS / Linux 開發測試包）＋ Web
+- **語言**：繁中、簡中、英、日、韓、西
 
-## 世界觀與角色 (World & Characters)
+## 世界與角色
 
-- **世界觀：創想界域（The Realm of Wonder）**
-  由發條、齒輪、鐵皮與願力構築的奇想沙盤世界。當世界大鐘突然停擺，整個界域的時間與大部分發條玩具陷入僵滯。
-- **核心主角：小白（Whitey）**
-  - **外觀特徵**：2.2 頭身 Q 版米白色金屬發條玩具兔（全金屬板件、螺栓鉚釘，零毛皮、非布偶）。
-  - **核心標誌**：背後插有一柄純金色「上鍊發條鑰匙（Wind-up Key）」，輕輕旋轉了 15 圈；胸口鑲嵌著世界大鐘遺失的主擺輪——「發條之心」。
-  - **戰鬥特性**：手持單手長劍，長耳內嵌銅絲共鳴天線，能精準聽出敵方機關內部齒輪卡死與軸承震顫，鎖定弱點進行部位破壞。
-- **主視覺同框角色成員**：
-  - **獅子騎士**：身披皇家守衛裝束、手持騎士長槍，鬃毛為層疊金屬板件與鉚釘固定。
-  - **狐狸法師**：身穿微縮舞台戲服法袍、手持長法杖，具備金屬三角立耳與分節金屬尾。
-  - **野豬戰士**：厚重鉚釘維京鐵甲與金屬雙獠牙、金屬鼻盤，手持重型金屬戰錘。
-- **美術視覺定調**：
-  - 2.2 頭身 Q 版造型，深暖褐描邊，亮色賽璐璐上色。
-  - 希臘神殿石柱立體空間、深邃黑曜石底（#0d0e12）與古典金飾邊，中央運轉著發條之心反應爐。
-  - 全面採用開源「粉圓體（Open Huninn）」圓滾胖胖字，介面無生硬系統 Emoji。
+- **世界**：覺醒的發條玩具。世界大鐘停擺後，玩具要自己把發條上回去。
+- **可玩主角：小白**：2.2 頭身米白金屬發條兔（零毛皮）。背後黃銅發條鑰匙，胸口青綠發條之心，持單手長劍。長耳用來聽機關弱點、拆部位。
+- **主視覺同框（不可選為獨立英雄）**：獅子（長槍）、狐狸（法杖）、野豬（巨錘）。
+- **美術**：多巴胺發條玩具奇想。晴空藍 / 奶油白 / 暖金 / 青綠。粉圓體。介面無系統 Emoji。拒絕生鏽暗黑。
 
-## 核心玩法與特色 (Core Features & Gameplay)
+## 核心玩法
 
-1. **15 圈初源發條能量制**
-   摒棄傳統藍條法力，每次攻擊、技能施放均受 15 圈初源發條旋律調配，強調節奏與精準控能。
-2. **長耳震顫感應與部位破壞拆卸**
-   敵對機關泰坦擁有可破壞部件（武器、裝甲、推進動力）。利用白兔長耳感應鎖定部位零件，將其拆卸削弱敵方戰力，並獲取稀有掉落素材。
-3. **器 · 魂 · 招 三軸獨立養成**
-   - **器（裝備鍛造）**：今日村莊鐵匠釘釘親手打造，鍛造失敗絕不掉階。
-   - **魂（戰魂系統）**：聚魂殿抽取封靈罐凝聚星軸戰魂，可自由鑲嵌武器槽位，賦予特殊打擊手感與戰術偏科，具備透明保底與獲取上限。
-   - **招（技能修練）**：武術館木人樁試招，提升熟練度進階招式。
-4. **今日村莊四大工坊殿堂**
-   玩家大廳以「今日村莊」為樞紐，包含鍛造殿、聚魂殿、手藝工坊、武術殿。大廳底部 Dock 與場景互動零功能重複，主角具備活化待機小動作與點擊戳碰語音互動。
-5. **單機離線通關與輕社群**
-   無須綁定帳號即可離線暢玩通關全部章節。支援非同步好友殘影挑戰與雲端存檔。
+1. **15 點發條**：沒有藍條。攻擊、閃避、招式吃發條。
+2. **部位破壞**：打頭目拆零件。
+3. **器·魂·招**：鍛造（失敗不掉階）、聚魂（封靈罐、保底）、武術。
+4. **今日村莊四大殿堂**：鍛造、聚魂、工坊、武術。
+5. **單機主線**：不必綁帳號。可選雲端存檔與非同步好友。
 
-## 下載與官方連結 (Downloads & Official Links)
+## 連結
 
-- **官方網站**：https://kevinchu1110.github.io/clockwork-heart/
-- **官方 Facebook 粉絲專頁**：https://www.facebook.com/1335191403004011
-- **開發測試包下載（PC 試玩版，非商店發行）**：https://kevinchu1110.github.io/clockwork-heart/pages/download.html
-- **開源與開發專案倉儲 (GitHub)**：https://github.com/KevinChu1110/clockwork-heart
+- 官網：https://kevinchu1110.github.io/clockwork-heart/
+- Facebook：https://www.facebook.com/1335191403004011
+- PC 測試包：https://kevinchu1110.github.io/clockwork-heart/pages/download.html
+- GitHub：https://github.com/KevinChu1110/clockwork-heart
 
-## 網站架構與頁面索引 (Site Index)
+## 網站頁面
 
-- [官方網站首頁 (Home)](https://kevinchu1110.github.io/clockwork-heart/): 遊戲主視覺展示、神殿永動齒輪世界觀、實機大廳展示與核心特色。
-- [PC 開發測試包下載 (Download)](https://kevinchu1110.github.io/clockwork-heart/pages/download.html): Windows / macOS / Linux 測試建置安裝包下載。
-- [畫面圖庫 (Gallery)](https://kevinchu1110.github.io/clockwork-heart/pages/gallery.html): 遊戲實機戰鬥截圖、場景地圖概念圖與宣傳短片入口。
-- [官方預告與宣傳短片 (Trailers)](https://kevinchu1110.github.io/clockwork-heart/pages/trailers.html): 官方 15 秒電影預告片與 17.5 秒《覺醒》品牌概念短片影音專區。
-- [系統與養成 (Systems)](https://kevinchu1110.github.io/clockwork-heart/pages/systems.html): 15 圈能量、部位拆卸、器魂招養成與四大殿堂詳解。
-- [六職雙武器系統 (Weapons)](https://kevinchu1110.github.io/clockwork-heart/pages/weapons.html): 十二條武器線、戰鬥三欄即時切換與武器特性。
-- [圖鑑指南 (Equipment)](https://kevinchu1110.github.io/clockwork-heart/pages/equipment.html): 裝備、防具、六槽飾品、戰魂封靈罐與寶石圖鑑。
-- [地圖誌 (Maps)](https://kevinchu1110.github.io/clockwork-heart/pages/maps.html): 創想界域各大沙盤區域地圖與素材掉落關聯。
-- [遊戲指南 (Guide)](https://kevinchu1110.github.io/clockwork-heart/pages/guide.html): 新手節奏、雙拇指操作技巧與首領試煉提示。
-- [十二章完整攻略 (Walkthrough)](https://kevinchu1110.github.io/clockwork-heart/pages/walkthrough.html): 創想界域十二章冒險推進指南與 Boss 戰略。
-- [雲端帳號與存檔 (Account)](https://kevinchu1110.github.io/clockwork-heart/pages/account.html): 單機遊玩說明、可選雲端存檔與好友殘影連線說明。
+- [首頁](https://kevinchu1110.github.io/clockwork-heart/)
+- [畫面](https://kevinchu1110.github.io/clockwork-heart/pages/gallery.html)
+- [怎麼玩](https://kevinchu1110.github.io/clockwork-heart/pages/systems.html)
+- [指南](https://kevinchu1110.github.io/clockwork-heart/pages/guide.html)
+- [下載](https://kevinchu1110.github.io/clockwork-heart/pages/download.html)
+- [帳號](https://kevinchu1110.github.io/clockwork-heart/pages/account.html)
+- [預告片](https://kevinchu1110.github.io/clockwork-heart/pages/trailers.html)
+- [流派](https://kevinchu1110.github.io/clockwork-heart/pages/weapons.html)
+- [圖鑑](https://kevinchu1110.github.io/clockwork-heart/pages/equipment.html)
+- [地圖](https://kevinchu1110.github.io/clockwork-heart/pages/maps.html)
+- [攻略](https://kevinchu1110.github.io/clockwork-heart/pages/walkthrough.html)
