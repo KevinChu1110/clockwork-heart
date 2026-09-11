@@ -724,8 +724,8 @@
    "id": "explore-joystick-dopamine",
    "cat": "遊戲",
    "title": "探索虛擬搖桿底座改多巴胺亮色盤＋修 capture 越界寫入",
-   "status": "開發中",
-   "note": "探索搖桿底座與capture腳本修正",
+   "status": "已上線",
+   "note": "探索移動底座改多巴胺亮色盤＋修 capture 越界寫入，測試全綠並合入 main",
    "keys": [
     "探索虛擬搖桿底座"
    ]
