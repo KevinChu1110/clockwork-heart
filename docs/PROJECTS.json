@@ -644,8 +644,8 @@
    "id": "battlelog-contrast-fix",
    "cat": "遊戲",
    "title": "戰鬥日誌亮底文字對比度修正",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "戰鬥日誌亮底高對比文字色調整",
    "keys": [
     "戰鬥日誌亮底文字"
    ]
