@@ -19,8 +19,6 @@ const COLOR_PINK       := Color("#FF5E8A")  ## 珊瑚粉
 const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
 const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
 const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
-const COLOR_CARD_SKY   := Color("#F0F7FF")  ## 柔和天藍卡片底
-const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
 const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
 
 var _panel: PanelContainer
@@ -173,9 +171,9 @@ func _build() -> void:
 	drag_hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(drag_hint)
 
-	# HP Bar
+	# HP Bar (奶油白槽底 + 深藍紫描邊 + 珊瑚粉填充條)
 	_hp_bar = _make_bar(24)
-	_style_progress_bar(_hp_bar, COLOR_PINK, Color("#FFF0F4"), 10)
+	_style_progress_bar(_hp_bar, COLOR_PINK, COLOR_BG_CREAM, 10)
 	v.add_child(_hp_bar)
 
 	_hp_val = Label.new()
@@ -191,14 +189,14 @@ func _build() -> void:
 	_hp_val.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hp_bar.add_child(_hp_val)
 
-	# MP Bar (Stardust)
+	# MP Bar / Stardust (奶油白槽底 + 深藍紫描邊 + 天藍填充條)
 	_mp_bar = _make_bar(18)
-	_style_progress_bar(_mp_bar, COLOR_SKY, Color("#F0F7FF"), 8)
+	_style_progress_bar(_mp_bar, COLOR_SKY, COLOR_BG_CREAM, 8)
 	v.add_child(_mp_bar)
 
-	# EXP Bar
+	# EXP Bar (奶油白槽底 + 深藍紫描邊 + 金黃填充條)
 	_exp_bar = _make_bar(14)
-	_style_progress_bar(_exp_bar, COLOR_GOLD, Color("#FFFEEA"), 6)
+	_style_progress_bar(_exp_bar, COLOR_GOLD, COLOR_BG_CREAM, 6)
 	v.add_child(_exp_bar)
 
 	# Gold / Energy / Power Label
@@ -308,14 +306,15 @@ func refresh() -> void:
 			claim = int(q.call("claimable_count"))
 	var claim_s := Loc.t("hud.claim", {"n": claim}) if claim > 0 else ""
 	var week := Loc.t("pause.week1")
-	var energy_s := ""
+	var es: Node = null
 	if Engine.get_main_loop() is SceneTree:
-		var es: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EnergySystem")
-		if es and es.has_method("current"):
-			energy_s = Loc.t("hud.energy", {
-				"cur": int(es.call("current")),
-				"max": int(es.get("MAX_ENERGY")) if es.get("MAX_ENERGY") != null else 15,
-			})
+		es = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EnergySystem")
+	var energy_s := ""
+	if es and es.has_method("current"):
+		energy_s = Loc.t("hud.energy", {
+			"cur": int(es.call("current")),
+			"max": int(es.get("MAX_ENERGY")) if es.get("MAX_ENERGY") != null else 15,
+		})
 	_gold_l.text = Loc.t("hud.gold_power", {
 		"gold": GameState.gold, "pow": GameState.power_score(), "week": week, "claim": claim_s,
 	})
@@ -343,17 +342,17 @@ func _refresh_acc_row() -> void:
 		var eq: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EquipmentSystem")
 		if eq and eq.has_method("accessories_unlocked"):
 			unlocked = bool(eq.call("accessories_unlocked"))
-		var slots: Array[String] = ["ring", "necklace", "bracelet", "earring", "amulet", "belt"]
-		for i in _acc_cells.size():
-			var cell: TextureRect = _acc_cells[i]
-			cell.modulate = Color(0.45, 0.45, 0.5, 0.7) if not unlocked else Color.WHITE
-			cell.texture = null
-			if not unlocked or i >= slots.size():
-				continue
-			var slot := slots[i]
-			var uid := str(GameState.equip_slots.get(slot, ""))
-			if uid == "" or not GameState.equip_worn.has(uid):
-				continue
-			var inst: Dictionary = GameState.equip_worn[uid]
-			cell.texture = SpriteDB.equip_icon_for_inst(inst)
-			cell.modulate = Color.WHITE
+	var slots: Array[String] = ["ring", "necklace", "bracelet", "earring", "amulet", "belt"]
+	for i in _acc_cells.size():
+		var cell: TextureRect = _acc_cells[i]
+		cell.modulate = Color(0.45, 0.45, 0.5, 0.7) if not unlocked else Color.WHITE
+		cell.texture = null
+		if not unlocked or i >= slots.size():
+			continue
+		var slot := slots[i]
+		var uid := str(GameState.equip_slots.get(slot, ""))
+		if uid == "" or not GameState.equip_worn.has(uid):
+			continue
+		var inst: Dictionary = GameState.equip_worn[uid]
+		cell.texture = SpriteDB.equip_icon_for_inst(inst)
+		cell.modulate = Color.WHITE

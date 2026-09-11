@@ -13,17 +13,13 @@ const SLOT_N := 8
 const SLOT_SIZE := Vector2(50, 50)
 
 ## ── 多巴胺鮮亮高飽和色盤 ──
-const COLOR_GOLD       := Color("#FFD028")  ## 金黃
+const COLOR_GOLD       := Color("#FFD028")  ## 金黃（選中高亮框）
 const COLOR_ORANGE     := Color("#FFA010")  ## 暖橘
-const COLOR_MINT       := Color("#4ED86A")  ## 薄荷綠
-const COLOR_SKY        := Color("#38A0FF")  ## 天藍
-const COLOR_PINK       := Color("#FF5E8A")  ## 珊瑚粉
 const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
 const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
-const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
-const COLOR_CARD_SKY   := Color("#F0F7FF")  ## 柔和天藍卡片底
-const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
-const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
+const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃底
+const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和米底（選中格轉亮底）
+const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫文字
 
 signal slot_clicked(index: int)
 signal slot_right_clicked(index: int)
@@ -55,8 +51,8 @@ func _create_bar_style() -> StyleBoxFlat:
 	bs.content_margin_top = 8
 	bs.content_margin_bottom = 10
 	bs.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
-	bs.shadow_size = 10
-	bs.shadow_offset = Vector2(0, 5)
+	bs.shadow_size = 8
+	bs.shadow_offset = Vector2(0, 4)
 	return bs
 
 
@@ -73,8 +69,8 @@ func _style_slot_empty() -> StyleBoxFlat:
 func _style_slot_filled() -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = COLOR_CARD_GOLD
-	sb.border_color = COLOR_ORANGE
-	sb.set_border_width_all(2)
+	sb.border_color = COLOR_GOLD
+	sb.set_border_width_all(3)
 	sb.border_width_bottom = 5
 	sb.set_corner_radius_all(18)
 	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.2)
@@ -85,12 +81,12 @@ func _style_slot_filled() -> StyleBoxFlat:
 
 func _style_slot_menu() -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = COLOR_ORANGE
+	sb.bg_color = COLOR_CARD_WARM
 	sb.border_color = COLOR_BORDER
 	sb.set_border_width_all(2)
 	sb.border_width_bottom = 5
 	sb.set_corner_radius_all(18)
-	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.2)
 	sb.shadow_size = 4
 	sb.shadow_offset = Vector2(0, 2)
 	return sb
@@ -189,8 +185,8 @@ func _build() -> void:
 		cnt.offset_top = -20
 		cnt.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		cnt.add_theme_font_size_override("font_size", 16)
-		cnt.add_theme_color_override("font_color", COLOR_ORANGE)
-		cnt.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		cnt.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		cnt.add_theme_color_override("font_outline_color", Color.WHITE)
 		cnt.add_theme_constant_override("outline_size", 3)
 		if f:
 			cnt.add_theme_font_override("font", f)
@@ -203,8 +199,8 @@ func _build() -> void:
 		key.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 		key.offset_left = 4
 		key.offset_top = 2
-		key.add_theme_font_size_override("font_size", 16)
-		key.add_theme_color_override("font_color", COLOR_BORDER)
+		key.add_theme_font_size_override("font_size", 14)
+		key.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		key.add_theme_color_override("font_outline_color", Color.WHITE)
 		key.add_theme_constant_override("outline_size", 2)
 		if f:
@@ -226,8 +222,7 @@ func _build() -> void:
 					get_viewport().set_input_as_handled()
 		)
 
-	## 觸控／滑鼠也要開得了暫停選單：尾端「選單」鈕送 Cancel，
-	## 與 Esc 走同一條流程（開關暫停、先收物品欄）
+	## 尾端「選單」鈕送 Cancel，與右側鎖定／換武／技能同一套米黃厚底風格
 	var menu_btn := PanelContainer.new()
 	menu_btn.custom_minimum_size = SLOT_SIZE
 	menu_btn.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -237,10 +232,10 @@ func _build() -> void:
 	ml.text = ContentLoc.text("ui", "選單")
 	ml.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ml.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	ml.add_theme_font_size_override("font_size", 18)
-	ml.add_theme_color_override("font_color", Color.WHITE)
-	ml.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	ml.add_theme_constant_override("outline_size", 3)
+	ml.add_theme_font_size_override("font_size", 16)
+	ml.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	ml.add_theme_color_override("font_outline_color", Color.WHITE)
+	ml.add_theme_constant_override("outline_size", 2)
 	if f:
 		ml.add_theme_font_override("font", f)
 	ml.mouse_filter = Control.MOUSE_FILTER_IGNORE
