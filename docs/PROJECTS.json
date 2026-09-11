@@ -694,8 +694,8 @@
    "id": "explore-minimap-dopamine",
    "cat": "遊戲",
    "title": "探索畫面小地圖改多巴胺亮色盤",
-   "status": "開發中",
-   "note": "開始修改 explore_view.gd 小地圖 UI",
+   "status": "已上線",
+   "note": "探索小地圖多巴胺亮色盤改動已合併至 main",
    "keys": [
     "探索畫面小地圖改"
    ]
