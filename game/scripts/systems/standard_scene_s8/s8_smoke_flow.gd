@@ -11,6 +11,10 @@ signal finished(ok: bool, summary: String)
 signal part_break_fx(drop_id: String, part_name: String)
 ## View：發條扣點（Ken costs）— HUD 已聽 WindStamina.spent，此信號供額外 UI
 signal stamina_spent(action_id: String, amount: int, remaining: int)
+## View：W5-K1 ERR_* toast 橫幅（與旁白分離；Bingo s8.err_* 不作 toast）
+signal err_toast(code: String, message: String)
+## View：首拆逾時（FirstBreakDeadlineSec）— 高亮拆解鈕，不 softlock
+signal first_break_deadline()
 
 const DIALOG := {
 	"s8.e01": "背上一緊……有人替我上了發條。",
@@ -68,6 +72,10 @@ var auto_advance: bool = true
 var _strike_count: int = 0
 var _shown_e02_hud: bool = false
 var _shown_b02_hint: bool = false
+var smoke_started_msec: int = 0
+var first_break_done: bool = false
+var deadline_fired: bool = false
+var last_err_code: String = ""
 
 
 func setup() -> void:
@@ -87,6 +95,10 @@ func setup() -> void:
 	_strike_count = 0
 	_shown_e02_hud = false
 	_shown_b02_hint = false
+	smoke_started_msec = 0
+	first_break_done = false
+	deadline_fired = false
+	last_err_code = ""
 	phase = Phase.IDLE
 
 
@@ -116,6 +128,10 @@ func phase_group() -> String:
 func start() -> void:
 	if wind == null:
 		setup()
+	smoke_started_msec = Time.get_ticks_msec()
+	first_break_done = false
+	deadline_fired = false
+	last_err_code = ""
 	_enter(Phase.E01_ENTER)
 
 
@@ -325,6 +341,7 @@ func _check_part_unlock() -> void:
 
 func _break_part() -> void:
 	if not part_unlocked:
+		_emit_err("ERR_PART_LOCKED")
 		last_error = "break before unlock"
 		_finish(false)
 		return
@@ -335,6 +352,7 @@ func _break_part() -> void:
 		part_hp = maxi(0, part_hp - dmg)
 		_log("part hit hp=%d/%d (bonus×%.2f)" % [part_hp, part_max_hp, wind.break_bonus()])
 	part_broken = true
+	first_break_done = true
 	var drop_preview := wind.primary_drop()
 	_log("broke gear_brass → candy chips (%s)" % drop_preview)
 	part_break_fx.emit(drop_preview, "gear_brass")
@@ -343,8 +361,10 @@ func _break_part() -> void:
 func _spend(action_id: String) -> bool:
 	if wind.try_spend(action_id):
 		return true
-	last_error = dialog("s8.err_stamina") + " (%s)" % action_id
-	_emit_phase(last_error)
+	# Toast＝Ken ERR_STAMINA；旁白 s8.err_stamina 僅 log／備選，不取代 toast
+	_emit_err("ERR_STAMINA")
+	last_error = "ERR_STAMINA (%s)" % action_id
+	_log("voiceover備選 %s" % dialog("s8.err_stamina"))
 	_finish(false)
 	return false
 
@@ -365,6 +385,39 @@ func _finish(ok: bool) -> void:
 	if not ok:
 		summary = "FAIL: %s | %s" % [last_error, summary]
 	finished.emit(ok, summary)
+
+
+
+func _emit_err(code: String) -> void:
+	last_err_code = code
+	var msg := wind.err_toast(code) if wind != null else code
+	err_toast.emit(code, msg)
+	_log("toast %s: %s" % [code, msg])
+
+
+## View 每幀／計時呼叫：逾時且尚未首拆 → 發一次 first_break_deadline。
+func poll_first_break_deadline(now_msec: int = -1) -> bool:
+	if first_break_done or deadline_fired or phase == Phase.DONE or phase == Phase.IDLE:
+		return false
+	# smoke_started_msec 以 start() 寫入；測試可覆寫（可為負，表引擎啟動未滿 60s）
+	if smoke_started_msec == 0:
+		return false
+	var now := now_msec if now_msec >= 0 else Time.get_ticks_msec()
+	var limit_ms: int = (wind.deadline_sec() * 1000) if wind != null else 60000
+	if now - smoke_started_msec < limit_ms:
+		return false
+	deadline_fired = true
+	_log("FirstBreakDeadlineSec=%d elapsed — highlight 拆解" % (limit_ms / 1000))
+	first_break_deadline.emit()
+	return true
+
+
+## 可選 nudge：不 softlock；若尚未進拆解組則標成 dismantle-ready（玩家仍可點三相鈕）。
+func nudge_dismantle_ready() -> void:
+	if phase == Phase.DONE or phase_group() == "dismantle":
+		return
+	# 僅提示；真正進入仍靠 View 按鈕／advance，避免強制跳關 softlock
+	_log("nudge: dismantle-ready (press 拆解)")
 
 
 ## 無頭／單元：一次跑完並回傳結果字典。
@@ -389,4 +442,9 @@ func run_to_completion() -> Dictionary:
 		"forbids_blue_mana": wind.hud_forbids_blue_mana(),
 		"dialog_e02": dialog("s8.e02_hud"),
 		"dialog_b02": dialog("s8.b02_hint"),
+		"dialog_err_stamina_vo": dialog("s8.err_stamina"),
+		"toast_ERR_STAMINA": wind.err_toast("ERR_STAMINA"),
+		"toast_ERR_PART_LOCKED": wind.err_toast("ERR_PART_LOCKED"),
+		"FirstBreakDeadlineSec": wind.deadline_sec(),
+		"first_break_done": first_break_done,
 	}

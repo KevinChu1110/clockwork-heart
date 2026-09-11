@@ -1,0 +1,13 @@
+{
+  "id": "W5-K1",
+  "extends": "W2-K1",
+  "FirstBreakDeadlineSec": 60,
+  "errToast": {
+    "ERR_STAMINA": "發條不夠了",
+    "ERR_PART_LOCKED": "這個部位還沒鬆"
+  },
+  "notes": {
+    "toast_vs_bingo": "UI toast uses ERR_* only. Bingo s8.err_stamina is voiceover/旁白備選 — never use as toast banner.",
+    "deadline": "If first part break not completed within FirstBreakDeadlineSec of smoke start, force-highlight Dismantle phase button (pulse/glow); optional nudge without softlock."
+  }
+}

@@ -27,7 +27,10 @@ var _btn_explore: Button
 var _btn_combat: Button
 var _btn_dismantle: Button
 var _drop_preview: TextureRect
+var _toast: Label
 var _done: bool = false
+var _deadline_highlight: bool = false
+var _dismantle_pulse: Tween
 
 
 func _ready() -> void:
@@ -42,9 +45,12 @@ func _ready() -> void:
 	flow.finished.connect(_on_finished)
 	flow.part_break_fx.connect(_on_part_break_fx)
 	flow.stamina_spent.connect(_on_stamina_spent)
+	flow.err_toast.connect(_on_err_toast)
+	flow.first_break_deadline.connect(_on_first_break_deadline)
 	flow.start()
 	_refresh_art()
 	_refresh_phase_buttons()
+	set_process(true)
 
 
 func _build() -> void:
@@ -131,6 +137,7 @@ func _build() -> void:
 	_log.add_theme_color_override("default_color", Color(0.7, 0.75, 0.7, 0.85))
 	add_child(_log)
 
+	_build_toast()
 	_build_phase_buttons()
 
 
@@ -187,10 +194,109 @@ func _make_phase_btn(label: String, group: String) -> Button:
 	return b
 
 
+
+func _build_toast() -> void:
+	## W5-K1 ERR_* 短橫幅（與對白 Label 分離）
+	var host := CenterContainer.new()
+	host.name = "ErrToastHost"
+	host.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	host.offset_top = 8
+	host.offset_bottom = 48
+	host.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	host.z_index = 100
+	add_child(host)
+	_toast = Label.new()
+	_toast.name = "ErrToast"
+	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_toast.add_theme_font_size_override("font_size", 18)
+	_toast.add_theme_color_override("font_color", Color(0.20, 0.12, 0.08))
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(1.0, 0.92, 0.72, 0.96)
+	sb.corner_radius_top_left = 12
+	sb.corner_radius_top_right = 12
+	sb.corner_radius_bottom_left = 12
+	sb.corner_radius_bottom_right = 12
+	sb.content_margin_left = 18
+	sb.content_margin_right = 18
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 8
+	sb.border_width_bottom = 3
+	sb.border_color = Color(0.85, 0.55, 0.25, 1.0)
+	_toast.add_theme_stylebox_override("normal", sb)
+	_toast.visible = false
+	_toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	host.add_child(_toast)
+
+
+func _process(_delta: float) -> void:
+	if _done or flow == null:
+		return
+	flow.poll_first_break_deadline()
+
+
+func _on_err_toast(code: String, message: String) -> void:
+	_show_err_toast(message if message != "" else code)
+
+
+func _show_err_toast(msg: String) -> void:
+	if _toast == null or msg == "":
+		return
+	_toast.text = msg
+	_toast.visible = true
+	_toast.modulate.a = 1.0
+	var tw := create_tween()
+	tw.tween_interval(1.6)
+	tw.tween_property(_toast, "modulate:a", 0.0, 0.35)
+	tw.tween_callback(func() -> void:
+		if _toast:
+			_toast.visible = false
+			_toast.modulate.a = 1.0
+	)
+
+
+func _on_first_break_deadline() -> void:
+	_deadline_highlight = true
+	if flow != null:
+		flow.nudge_dismantle_ready()
+	_start_dismantle_pulse()
+	_refresh_phase_buttons()
+	_on_log("UI: 拆解鈕 pulse（首拆逾時）")
+
+
+func _start_dismantle_pulse() -> void:
+	if _btn_dismantle == null:
+		return
+	if _dismantle_pulse != null and _dismantle_pulse.is_valid():
+		_dismantle_pulse.kill()
+	_btn_dismantle.pivot_offset = _btn_dismantle.size * 0.5
+	_dismantle_pulse = create_tween()
+	_dismantle_pulse.set_loops()
+	_dismantle_pulse.tween_property(_btn_dismantle, "modulate", Color(1.35, 1.15, 0.55, 1.0), 0.45)
+	_dismantle_pulse.tween_property(_btn_dismantle, "modulate", Color(1.0, 0.95, 0.75, 1.0), 0.45)
+
+
+func _stop_dismantle_pulse() -> void:
+	if _dismantle_pulse != null and _dismantle_pulse.is_valid():
+		_dismantle_pulse.kill()
+	_dismantle_pulse = null
+
+
 func _on_phase_btn(group: String) -> void:
 	if _done or flow == null:
 		return
+	# 拆解前若部位未解鎖：toast ERR_PART_LOCKED（不 softlock）
+	if group == "dismantle" and flow.phase < S8SmokeFlow.Phase.B03_PART_UNLOCK and not flow.part_unlocked:
+		# 仍允許 goto_group 推進；若尚在探索僅 toast 提示
+		if flow.phase < S8SmokeFlow.Phase.B01_START:
+			_show_err_toast(flow.wind.err_toast("ERR_PART_LOCKED"))
 	flow.goto_group(group)
+	if group == "dismantle" or flow.phase_group() == "dismantle":
+		_deadline_highlight = false
+		_stop_dismantle_pulse()
+	if flow.first_break_done:
+		_deadline_highlight = false
+		_stop_dismantle_pulse()
 	_refresh_art()
 	_refresh_phase_buttons()
 
@@ -201,16 +307,28 @@ func _refresh_phase_buttons() -> void:
 	var g := flow.phase_group()
 	_style_active(_btn_explore, g == "explore")
 	_style_active(_btn_combat, g == "combat")
-	_style_active(_btn_dismantle, g == "dismantle")
+	var dismantle_on := g == "dismantle" or _deadline_highlight
+	_style_active(_btn_dismantle, dismantle_on)
+	if _deadline_highlight and g != "dismantle":
+		if _dismantle_pulse == null or not _dismantle_pulse.is_valid():
+			_start_dismantle_pulse()
 
 
 func _style_active(b: Button, on: bool) -> void:
 	if b == null:
 		return
-	b.modulate = Color(1.15, 1.05, 0.85, 1.0) if on else Color(0.85, 0.85, 0.85, 0.9)
+	# 逾時 pulse 中的拆解鈕：不要每幀蓋掉 modulate
+	var pulsing := b == _btn_dismantle and _deadline_highlight and (_dismantle_pulse != null and _dismantle_pulse.is_valid())
+	if not pulsing:
+		b.modulate = Color(1.15, 1.05, 0.85, 1.0) if on else Color(0.85, 0.85, 0.85, 0.9)
 	# 啟用組加角標感
-	var base := b.text.replace(" · 進行中", "")
-	b.text = ("%s · 進行中" % base) if on else base
+	var base := b.text.replace(" · 進行中", "").replace(" · 來拆！", "")
+	if b == _btn_dismantle and _deadline_highlight and not (flow != null and flow.phase_group() == "dismantle"):
+		b.text = "%s · 來拆！" % base
+	elif on:
+		b.text = "%s · 進行中" % base
+	else:
+		b.text = base
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -298,6 +416,8 @@ func _update_cost_caption() -> void:
 
 
 func _on_part_break_fx(drop_id: String, _part_name: String) -> void:
+	_deadline_highlight = false
+	_stop_dismantle_pulse()
 	var origin := Vector2(720, 400)
 	if _chest_anchor != null:
 		origin = _chest_anchor.global_position + Vector2(200, 40)

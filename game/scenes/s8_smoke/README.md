@@ -40,3 +40,9 @@ Requires Godot 4.7 macOS export templates. If templates are missing on the build
 - Phase buttons: Explore / Combat / Dismantle in `s8_smoke_view.gd`
 - Dialogue: Bingo `docs/w4/W4_B1_S8_DIALOGUE_POLISH.md` keys in `s8_smoke_flow.gd`
 - Pack-A art: `assets/sprites/pack_a/` (cel + drop VFX; missing files safe)
+
+## W5-F4 · ERR toast + first-break deadline
+
+- Ken: `game/data/ken/w5_k1_s8_uiux.json` (+ fields on `w2_k1_wind_stamina.json`)
+- Toast codes: `ERR_STAMINA`→「發條不夠了」, `ERR_PART_LOCKED`→「這個部位還沒鬆」（≠ Bingo `s8.err_stamina` VO）
+- `FirstBreakDeadlineSec=60`: pulse/glow **拆解** button if first part break not done; no softlock
