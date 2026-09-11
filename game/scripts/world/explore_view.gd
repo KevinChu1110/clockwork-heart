@@ -489,6 +489,23 @@ static func _create_nameplate_style() -> StyleBoxFlat:
 	return sb
 
 
+static func _create_quest_badge_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8")  ## 陽光童話·奶油米白底（不透明）
+	sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(18)  ## 圓角 18px
+	sb.content_margin_left = 8
+	sb.content_margin_right = 8
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 5
+	sb.shadow_offset = Vector2(0, 2)
+	return sb
+
+
 func _build_chrome() -> void:
 	_bg = ColorRect.new()
 	_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1770,13 +1787,15 @@ func _rebuild_entities() -> void:
 		var badge_panel := PanelContainer.new()
 		badge_panel.visible = SpriteDB.is_quest_ping(str(e.id))
 		badge_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		badge_panel.add_theme_stylebox_override("panel", UiStyle.interact_badge_style())
+		badge_panel.add_theme_stylebox_override("panel", _create_quest_badge_style())
 		badge_panel.position = Vector2(root.size.x * 0.5 - 18, -84)
+		badge_panel.z_index = 10
+		badge_panel.z_as_relative = false
 		var badge := Label.new()
 		badge.text = "！"
 		badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		badge.add_theme_font_size_override("font_size", 15)
-		badge.add_theme_color_override("font_color", UiStyle.KEY_DEEP)
+		badge.add_theme_font_size_override("font_size", 16)
+		badge.add_theme_color_override("font_color", Color("#1F1A3A"))
 		badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		badge_panel.add_child(badge)
 		root.add_child(badge_panel)
