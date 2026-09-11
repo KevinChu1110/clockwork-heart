@@ -170,12 +170,63 @@ func _process(_delta: float) -> bool:
 					print("  [OK] refuse_scale 2.0 字級安全約束: %d px" % r_sz_large)
 
 				# 8. 驗證戰鬥日誌文字不含 #f9a 淺粉
+				var cl = load("res://scripts/systems/content_loc.gd")
 				var log_lbl: RichTextLabel = _battle.get("log_label") as RichTextLabel
 				if log_lbl:
-					if log_lbl.text.contains("#f9a") or log_lbl.text.contains("#F9A"):
+					var parsed_log: String = log_lbl.get_parsed_text()
+					if parsed_log.contains("#f9a") or parsed_log.contains("#F9A"):
 						_fail("戰鬥日誌中仍含有 #f9a 淺粉")
 					else:
 						print("  [OK] 戰鬥日誌中無 #f9a 淺粉")
+
+				# 9. 驗證五語系 ui.json 誘惑 key 與譯文色碼正確（#C22B55，無 #f9a，且舊魔王 key 已刪）
+				var loc_node: Node = root.get_node_or_null("Loc")
+				if loc_node and cl:
+					var key_tempt := "[color=#C22B55]戰鬥暫停：停擺核的誘惑（%s）[/color]"
+					var old_demon := "[color=#f9a]戰鬥暫停：魔王的誘惑（%s）[/color]"
+					for lang in ["en", "ja", "ko", "es", "zh_CN"]:
+						loc_node.call("set_locale", lang)
+						if cl.has_method("reload"):
+							cl.reload()
+						var translated: String = cl.text("ui", key_tempt)
+						if translated.contains("#f9a") or translated.contains("#F9A"):
+							_fail("%s 語系 ui.json 仍含有 #f9a 淺粉: %s" % [lang, translated])
+						elif not translated.contains("#C22B55"):
+							_fail("%s 語系 ui.json 未包含 #C22B55 深莓紅: %s" % [lang, translated])
+						elif translated == key_tempt and lang != "zh_TW":
+							_fail("%s 語系 ui.json 誘惑查表失敗（掉回繁中原文）" % lang)
+						else:
+							print("  [OK] %s 語系 ui.json 誘惑鍵值對齊且無 #f9a" % lang)
+						# 驗證舊的「魔王的誘惑」key 已不存在（查表應回傳 fallback/原文自身）
+						var old_lookup: String = cl.text("ui", old_demon)
+						if old_lookup != old_demon:
+							_fail("%s 語系 ui.json 仍殘留舊魔王誘惑 key" % lang)
+
+					# 切到 en 再觸發誘惑，斷言日誌行不含 #f9a 且不等於繁中原文
+					loc_node.call("set_locale", "en")
+					if cl.has_method("reload"):
+						cl.reload()
+					_battle.call("_show_temptation", {
+						"stage": 1,
+						"title": "Power",
+						"text": "test en temptation",
+						"refuse_scale": 1.0,
+					})
+					if log_lbl:
+						var t_en: String = log_lbl.get_parsed_text()
+						if t_en.contains("#f9a") or t_en.contains("#F9A"):
+							_fail("en locale 下戰鬥日誌含有 #f9a")
+						elif not t_en.contains("Battle paused: the Stasis Core's temptation"):
+							_fail("en locale 下戰鬥日誌未翻譯（未找到英譯，可能斷鏈或掉回繁中）")
+						else:
+							print("  [OK] en locale 下戰鬥日誌翻譯正確且不含 #f9a（實機斷言成功）")
+
+					# 測完切回 zh_TW
+					loc_node.call("set_locale", "zh_TW")
+					if cl.has_method("reload"):
+						cl.reload()
+				else:
+					_fail("找不到 Loc 節點或 ContentLoc")
 
 				if _ok:
 					print("TEMPTATION_DOPAMINE_OK")
