@@ -704,8 +704,8 @@
    "id": "battle-hud-contrast",
    "cat": "遊戲",
    "title": "戰鬥場上標籤對比與日誌最上緣切字修復",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "修正 PlayerRageLabel, PlayerTag/EnemyTag, LogPanel 邊距",
    "keys": [
     "戰鬥場上標籤對比"
    ]
