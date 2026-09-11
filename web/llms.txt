@@ -37,7 +37,7 @@
 ## 網站頁面
 
 - [首頁](https://kevinchu1110.github.io/clockwork-heart/)
-- [畫面](https://kevinchu1110.github.io/clockwork-heart/pages/gallery.html)
+- [畫面](https://kevinchu1110.github.io/clockwork-heart/pages/gallery.html): 官方主視覺。遊戲實機畫面暫不公開。
 - [怎麼玩](https://kevinchu1110.github.io/clockwork-heart/pages/systems.html)
 - [指南](https://kevinchu1110.github.io/clockwork-heart/pages/guide.html)
 - [下載](https://kevinchu1110.github.io/clockwork-heart/pages/download.html)

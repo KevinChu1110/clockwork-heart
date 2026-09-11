@@ -6,7 +6,6 @@
   var depth = path.match(/\/pages\//) ? ".." : ".";
   var links = [
     { href: depth + "/index.html", id: "home", label: "首頁" },
-    { href: depth + "/pages/gallery.html", id: "gallery", label: "畫面" },
     { href: depth + "/pages/systems.html", id: "systems", label: "怎麼玩" },
     { href: depth + "/pages/guide.html", id: "guide", label: "指南" },
     { href: depth + "/pages/download.html", id: "download", label: "下載" },
