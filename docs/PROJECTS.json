@@ -754,8 +754,8 @@
    "id": "lobby-dopamine-ui",
    "cat": "遊戲",
    "title": "大廳頂欄 Dock 與資訊卡改多巴胺亮色盤",
-   "status": "測試中",
-   "note": "頂欄 Dock 資訊卡已改奶油白，等審核",
+   "status": "已上線",
+   "note": "頂欄 Dock 資訊卡已過審合進 main",
    "keys": [
     "大廳頂欄 Doc"
    ]
