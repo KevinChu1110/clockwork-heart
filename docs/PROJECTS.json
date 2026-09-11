@@ -719,6 +719,16 @@
    "keys": [
     "探索任務「！」徽"
    ]
+  },
+  {
+   "id": "explore-joystick-dopamine",
+   "cat": "遊戲",
+   "title": "探索虛擬搖桿底座改多巴胺亮色盤＋修 capture 越界寫入",
+   "status": "草稿",
+   "note": "開始開發",
+   "keys": [
+    "探索虛擬搖桿底座"
+   ]
   }
  ]
 }
