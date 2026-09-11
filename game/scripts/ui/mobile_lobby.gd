@@ -11,6 +11,19 @@ const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 
+## ── 多巴胺鮮亮色盤標準 (對齊 mobile_settings / maple_hud / review.md) ──
+const COLOR_GOLD       := Color("#FFD028")  ## 金黃
+const COLOR_ORANGE     := Color("#FFA010")  ## 暖橘
+const COLOR_MINT       := Color("#4ED86A")  ## 薄荷綠
+const COLOR_SKY        := Color("#38A0FF")  ## 天藍
+const COLOR_PINK       := Color("#FF5E8A")  ## 珊瑚粉
+const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
+const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
+const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
+const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
+const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
+const COLOR_GOLD_DARK  := Color("#9A6B00")  ## 壓明度金強調文字
+
 ## ── 希臘神殿 · 黑曜石 × 古典金標準色盤 (對齊 temple.css 與 docs/LOBBY_UI_REDESIGN.md) ──
 const OBSIDIAN_BASE      := Color(0.043, 0.039, 0.055, 1.0)  ## #0B0A0E：黑曜石最深底色
 const OBSIDIAN_CARD      := Color(0.078, 0.071, 0.094, 1.0)  ## #141218：黑曜石卡片面色
@@ -310,21 +323,20 @@ func _build_ui() -> void:
 	_build_bottom_dock()
 
 ## ──────────────────────────────────────────
-## 通用黑曜石神殿風格面板 (Obsidian Temple Panel)
+## 通用多巴胺奶油白面板 (Cream Dopamine Panel)
 ## ──────────────────────────────────────────
-func _create_obsidian_panel(accent: Color = LINE_GOLD) -> StyleBoxFlat:
+func _create_obsidian_panel(accent: Color = COLOR_BORDER) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = OBSIDIAN_CARD
-	s.border_color = accent
-	s.set_border_width_all(1)
-	s.border_width_bottom = 3
-	s.border_color = BRONZE_ANTIQUE
-	s.set_corner_radius_all(8)
+	s.bg_color = COLOR_BG_CREAM
+	s.border_color = COLOR_BORDER
+	s.set_border_width_all(2)
+	s.border_width_bottom = 5
+	s.set_corner_radius_all(20)
 	s.content_margin_left = 20
 	s.content_margin_right = 20
 	s.content_margin_top = 16
 	s.content_margin_bottom = 16
-	s.shadow_color = Color(0.0, 0.0, 0.0, 0.45)
+	s.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 	s.shadow_size = 10
 	s.shadow_offset = Vector2(0, 4)
 	return s
@@ -364,7 +376,8 @@ func _spawn_floating_ether_motes() -> void:
 		tw.parallel().tween_property(star, "modulate:a", 0.85, dur * 0.5)
 
 ## ──────────────────────────────────────────
-## 頂部黑曜石 HUD (Top Obsidian HUD)
+## ──────────────────────────────────────────
+## 頂部多巴胺 HUD (Top Dopamine HUD)
 ## ──────────────────────────────────────────
 func _build_top_hud() -> void:
 	var top_bar := PanelContainer.new()
@@ -375,12 +388,12 @@ func _build_top_hud() -> void:
 	top_bar.offset_bottom = 74
 	
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0.043, 0.039, 0.055, 0.90) # OBSIDIAN_BASE @ 90%
-	sb.border_color = BRONZE_ANTIQUE
-	sb.set_border_width_all(1)
-	sb.border_width_bottom = 2
-	sb.set_corner_radius_all(8)
-	sb.shadow_color = Color(0.0, 0.0, 0.0, 0.45)
+	sb.bg_color = COLOR_BG_CREAM
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 5
+	sb.set_corner_radius_all(20)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 	sb.shadow_size = 8
 	sb.shadow_offset = Vector2(0, 3)
 	top_bar.add_theme_stylebox_override("panel", sb)
@@ -398,8 +411,8 @@ func _build_top_hud() -> void:
 
 	var p_frame := PanelContainer.new()
 	var psb := StyleBoxFlat.new()
-	psb.bg_color = OBSIDIAN_WARM
-	psb.border_color = GOLD_CLASSICAL
+	psb.bg_color = COLOR_CARD_WARM
+	psb.border_color = COLOR_BORDER
 	psb.set_border_width_all(2)
 	psb.set_corner_radius_all(26)
 	p_frame.custom_minimum_size = Vector2(52, 52)
@@ -423,14 +436,14 @@ func _build_top_hud() -> void:
 	row1.add_theme_constant_override("separation", 8)
 	_lv_label = Label.new()
 	_lv_label.text = "Lv.1"
-	_lv_label.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	_lv_label.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	_lv_label.add_theme_font_size_override("font_size", 16)
 	row1.add_child(_lv_label)
 
 	_name_label = Label.new()
 	_name_label.text = _get_hero_name()
 	_name_label.add_theme_font_size_override("font_size", 17)
-	_name_label.add_theme_color_override("font_color", INK_IVORY)
+	_name_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	row1.add_child(_name_label)
 	info_v.add_child(row1)
 
@@ -438,7 +451,7 @@ func _build_top_hud() -> void:
 	pwr_row.add_theme_constant_override("separation", 4)
 	_power_label = Label.new()
 	_power_label.text = "戰力 0"
-	_power_label.add_theme_color_override("font_color", BRONZE_WARM)
+	_power_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_power_label.add_theme_font_size_override("font_size", 13)
 	pwr_row.add_child(_power_label)
 	info_v.add_child(pwr_row)
@@ -448,25 +461,39 @@ func _build_top_hud() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(spacer)
 
-	## 黑曜石凹槽立體三寶膠囊
-	_energy_label = _add_clean_capsule(h, "能量", "—", TEAL_CORE)
-	_gold_label = _add_clean_capsule(h, "金幣", "—", GOLD_CLASSICAL)
-	_gem_label = _add_clean_capsule(h, "星屑", "—", STEEL_BLUE)
+	## 奶油白三寶膠囊
+	_energy_label = _add_clean_capsule(h, "能量", "—", COLOR_GOLD_DARK)
+	_gold_label = _add_clean_capsule(h, "金幣", "—", COLOR_GOLD_DARK)
+	_gem_label = _add_clean_capsule(h, "星屑", "—", COLOR_GOLD_DARK)
 
 	var set_btn := Button.new()
 	set_btn.text = "設置"
-	set_btn.custom_minimum_size = Vector2(64, 44)
+	set_btn.custom_minimum_size = Vector2(80, 50)
 	set_btn.add_theme_font_size_override("font_size", 15)
 	var sbs := StyleBoxFlat.new()
-	sbs.bg_color = OBSIDIAN_WARM
-	sbs.border_color = LINE_GOLD
-	sbs.set_border_width_all(1)
-	sbs.border_width_bottom = 2
-	sbs.set_corner_radius_all(6)
+	sbs.bg_color = COLOR_CARD_WARM
+	sbs.border_color = COLOR_BORDER
+	sbs.set_border_width_all(2)
+	sbs.border_width_bottom = 4
+	sbs.set_corner_radius_all(18)
+	sbs.content_margin_left = 12
+	sbs.content_margin_right = 12
+	sbs.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
+	sbs.shadow_size = 4
+	sbs.shadow_offset = Vector2(0, 2)
+	
+	var sbs_h := sbs.duplicate() as StyleBoxFlat
+	sbs_h.bg_color = COLOR_CARD_GOLD
+	var sbs_p := sbs.duplicate() as StyleBoxFlat
+	sbs_p.border_width_bottom = 2
+	
 	set_btn.add_theme_stylebox_override("normal", sbs)
-	set_btn.add_theme_stylebox_override("hover", sbs)
-	set_btn.add_theme_stylebox_override("pressed", sbs)
-	set_btn.add_theme_color_override("font_color", INK_IVORY_SOFT)
+	set_btn.add_theme_stylebox_override("hover", sbs_h)
+	set_btn.add_theme_stylebox_override("pressed", sbs_p)
+	set_btn.add_theme_stylebox_override("focus", sbs)
+	set_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	set_btn.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	set_btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	set_btn.pressed.connect(func():
 		var s_scn := load("res://scripts/ui/mobile_settings.gd")
 		var s_ui: Control = s_scn.new()
@@ -478,17 +505,18 @@ func _build_top_hud() -> void:
 func _add_clean_capsule(parent: Container, title: String, val: String, accent: Color) -> Label:
 	var cap := PanelContainer.new()
 	var csb := StyleBoxFlat.new()
-	csb.bg_color = OBSIDIAN_DEEP
-	csb.border_color = BRONZE_ANTIQUE
-	csb.set_border_width_all(1)
-	csb.border_width_bottom = 2
-	csb.set_corner_radius_all(8)
-	csb.content_margin_left = 12
-	csb.content_margin_right = 12
+	csb.bg_color = COLOR_CARD_WARM
+	csb.border_color = COLOR_BORDER
+	csb.set_border_width_all(2)
+	csb.border_width_bottom = 4
+	csb.set_corner_radius_all(18)
+	csb.content_margin_left = 14
+	csb.content_margin_right = 14
 	csb.content_margin_top = 4
 	csb.content_margin_bottom = 4
-	csb.shadow_color = Color(0.0, 0.0, 0.0, 0.3)
+	csb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
 	csb.shadow_size = 4
+	csb.shadow_offset = Vector2(0, 2)
 	cap.add_theme_stylebox_override("panel", csb)
 
 	var h := HBoxContainer.new()
@@ -502,7 +530,7 @@ func _add_clean_capsule(parent: Container, title: String, val: String, accent: C
 	var vl := Label.new()
 	vl.text = val
 	vl.add_theme_font_size_override("font_size", 15)
-	vl.add_theme_color_override("font_color", INK_IVORY)
+	vl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	h.add_child(vl)
 
 	cap.add_child(h)
@@ -510,7 +538,7 @@ func _add_clean_capsule(parent: Container, title: String, val: String, accent: C
 	return vl
 
 ## ──────────────────────────────────────────
-## 底部黑曜石神殿導航欄 (Bottom Dock)
+## 底部多巴胺導航欄 (Bottom Dopamine Dock)
 ## ──────────────────────────────────────────
 func _build_bottom_dock() -> void:
 	var dock := PanelContainer.new()
@@ -521,15 +549,14 @@ func _build_bottom_dock() -> void:
 	dock.offset_bottom = -12
 	
 	var dsb := StyleBoxFlat.new()
-	dsb.bg_color = Color(0.043, 0.039, 0.055, 0.95) # OBSIDIAN_BASE @ 95%
-	dsb.border_color = GOLD_CLASSICAL
-	dsb.border_width_top = 2
-	dsb.border_width_bottom = 1
-	dsb.border_width_left = 1
-	dsb.border_width_right = 1
-	dsb.set_corner_radius_all(8)
-	dsb.shadow_color = Color(0.0, 0.0, 0.0, 0.5)
+	dsb.bg_color = COLOR_BG_CREAM
+	dsb.border_color = COLOR_BORDER
+	dsb.set_border_width_all(2)
+	dsb.border_width_bottom = 5
+	dsb.set_corner_radius_all(20)
+	dsb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
 	dsb.shadow_size = 12
+	dsb.shadow_offset = Vector2(0, 4)
 	dock.add_theme_stylebox_override("panel", dsb)
 	add_child(dock)
 
@@ -561,35 +588,48 @@ func _build_bottom_dock() -> void:
 func _style_dock_button(btn: Button, is_active: bool) -> void:
 	var sb := StyleBoxFlat.new()
 	if is_active:
-		sb.bg_color = GOLD_CLASSICAL
-		sb.border_color = TEAL_CORE
-		sb.set_border_width_all(1)
-		sb.border_width_bottom = 3
-		sb.set_corner_radius_all(8)
+		sb.bg_color = COLOR_GOLD
+		sb.border_color = COLOR_BORDER
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 5
+		sb.set_corner_radius_all(18)
 		sb.content_margin_top = 8
 		sb.content_margin_bottom = 8
 		sb.content_margin_left = 14
 		sb.content_margin_right = 14
-		sb.shadow_color = Color(0.831, 0.686, 0.216, 0.35)
-		sb.shadow_size = 8
-		btn.add_theme_color_override("font_color", OBSIDIAN_BASE)
-		btn.add_theme_color_override("font_hover_color", Color(0.0, 0.0, 0.0, 1.0))
-		btn.add_theme_color_override("font_pressed_color", OBSIDIAN_BASE)
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 3)
+		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	else:
-		sb.bg_color = OBSIDIAN_WARM
-		sb.border_color = LINE_GOLD_SOFT
-		sb.set_border_width_all(1)
-		sb.set_corner_radius_all(8)
+		sb.bg_color = COLOR_CARD_WARM
+		sb.border_color = COLOR_BORDER
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 4
+		sb.set_corner_radius_all(18)
 		sb.content_margin_top = 8
 		sb.content_margin_bottom = 8
 		sb.content_margin_left = 14
 		sb.content_margin_right = 14
-		btn.add_theme_color_override("font_color", INK_IVORY_SOFT)
-		btn.add_theme_color_override("font_hover_color", GOLD_HOVER)
-		btn.add_theme_color_override("font_pressed_color", INK_IVORY)
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.10)
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
+		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_hover_color", COLOR_GOLD_DARK)
+		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var sb_h := sb.duplicate() as StyleBoxFlat
+	if not is_active:
+		sb_h.bg_color = COLOR_CARD_GOLD
+
+	var sb_p := sb.duplicate() as StyleBoxFlat
+	sb_p.border_width_bottom = 2
+
 	btn.add_theme_stylebox_override("normal", sb)
-	btn.add_theme_stylebox_override("hover", sb)
-	btn.add_theme_stylebox_override("pressed", sb)
+	btn.add_theme_stylebox_override("hover", sb_h)
+	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
 
 func _switch_tab(target: Tab) -> void:
@@ -719,7 +759,7 @@ func _build_village_tab() -> void:
 	hero_click.pressed.connect(_on_hero_clicked)
 	_hero_avatar.add_child(hero_click)
 
-	## 3. 頭頂稱號與名字（黑曜石半透明膠囊底襯 + 金框 + 深色文字描邊，置於齒輪上方避開核心細節）
+	## 3. 頭頂稱號與名字（多巴胺奶油白底襯 + 深藍紫描邊，置於齒輪上方避開核心細節）
 	var tag_panel := PanelContainer.new()
 	tag_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	tag_panel.offset_left = -75
@@ -729,16 +769,16 @@ func _build_village_tab() -> void:
 	tag_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var tag_sb := StyleBoxFlat.new()
-	tag_sb.bg_color = Color(0.027, 0.024, 0.039, 0.88) # OBSIDIAN_DEEP 半透明黑曜石底
-	tag_sb.border_color = Color(0.831, 0.686, 0.216, 0.75) # GOLD_CLASSICAL 金屬微光邊框
-	tag_sb.set_border_width_all(1)
-	tag_sb.border_width_bottom = 2
-	tag_sb.set_corner_radius_all(10)
+	tag_sb.bg_color = Color(1.0, 0.992, 0.973, 0.95) # 奶油白 #FFFDF8 @ 95%
+	tag_sb.border_color = COLOR_BORDER # #1F1A3A 深藍紫
+	tag_sb.set_border_width_all(2)
+	tag_sb.border_width_bottom = 4
+	tag_sb.set_corner_radius_all(18)
 	tag_sb.content_margin_left = 10
 	tag_sb.content_margin_right = 10
 	tag_sb.content_margin_top = 4
 	tag_sb.content_margin_bottom = 4
-	tag_sb.shadow_color = Color(0.0, 0.0, 0.0, 0.5)
+	tag_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.18)
 	tag_sb.shadow_size = 5
 	tag_sb.shadow_offset = Vector2(0, 2)
 	tag_panel.add_theme_stylebox_override("panel", tag_sb)
@@ -752,24 +792,24 @@ func _build_village_tab() -> void:
 	_hero_name_tag.text = _get_hero_name()
 	_hero_name_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hero_name_tag.add_theme_font_size_override("font_size", 18)
-	_hero_name_tag.add_theme_color_override("font_color", GOLD_HOVER)
-	_hero_name_tag.add_theme_color_override("font_outline_color", Color(0.02, 0.02, 0.04, 0.95))
-	_hero_name_tag.add_theme_constant_override("outline_size", 3)
+	_hero_name_tag.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_hero_name_tag.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.8))
+	_hero_name_tag.add_theme_constant_override("outline_size", 2)
 	tag_v.add_child(_hero_name_tag)
 
 	var title_l := Label.new()
 	title_l.text = "【初出茅廬】"
 	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_l.add_theme_font_size_override("font_size", 12)
-	title_l.add_theme_color_override("font_color", INK_IVORY_SOFT)
-	title_l.add_theme_color_override("font_outline_color", Color(0.02, 0.02, 0.04, 0.95))
-	title_l.add_theme_constant_override("outline_size", 2)
+	title_l.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+	title_l.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.6))
+	title_l.add_theme_constant_override("outline_size", 1)
 	tag_v.add_child(title_l)
 
 	tag_panel.add_child(tag_v)
 	_hero_avatar.add_child(tag_panel)
 
-	## 4. 點擊彈出的神殿對話氣泡
+	## 4. 點擊彈出的多巴胺對話氣泡
 	_speech_bubble = PanelContainer.new()
 	_speech_bubble.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	_speech_bubble.offset_left = -110
@@ -778,22 +818,22 @@ func _build_village_tab() -> void:
 	_speech_bubble.offset_bottom = -60
 	_speech_bubble.visible = false
 	var bub_sb := StyleBoxFlat.new()
-	bub_sb.bg_color = Color(0.078, 0.071, 0.094, 0.95) # OBSIDIAN_CARD
-	bub_sb.border_color = GOLD_CLASSICAL
-	bub_sb.set_border_width_all(1)
-	bub_sb.border_width_bottom = 2
-	bub_sb.set_corner_radius_all(8)
-	bub_sb.shadow_color = Color(0.0, 0.0, 0.0, 0.4)
+	bub_sb.bg_color = COLOR_BG_CREAM
+	bub_sb.border_color = COLOR_BORDER
+	bub_sb.set_border_width_all(2)
+	bub_sb.border_width_bottom = 4
+	bub_sb.set_corner_radius_all(18)
+	bub_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 	bub_sb.shadow_size = 6
-	bub_sb.content_margin_left = 12
-	bub_sb.content_margin_right = 12
+	bub_sb.content_margin_left = 14
+	bub_sb.content_margin_right = 14
 	bub_sb.content_margin_top = 6
 	bub_sb.content_margin_bottom = 6
 	_speech_bubble.add_theme_stylebox_override("panel", bub_sb)
 
 	_speech_label = Label.new()
 	_speech_label.text = "背後的發條上得剛剛好，出發吧！"
-	_speech_label.add_theme_color_override("font_color", INK_IVORY)
+	_speech_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_speech_label.add_theme_font_size_override("font_size", 14)
 	_speech_bubble.add_child(_speech_label)
 	_hero_avatar.add_child(_speech_bubble)
@@ -825,14 +865,14 @@ func _build_village_tab() -> void:
 		open_windup_daily()
 	)
 
-	## 右側：黑曜石戰情報告板 (專注於主線推進)
+	## 右側：多巴胺奶油白戰情報告板 (專注於主線推進)
 	var right_card := PanelContainer.new()
 	right_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 	right_card.offset_left = -340
 	right_card.offset_top = -170
 	right_card.offset_right = -32
 	right_card.offset_bottom = -16
-	right_card.add_theme_stylebox_override("panel", _create_obsidian_panel(GOLD_CLASSICAL))
+	right_card.add_theme_stylebox_override("panel", _create_obsidian_panel(COLOR_BORDER))
 	_village_layer.add_child(right_card)
 
 	var rv := VBoxContainer.new()
@@ -842,13 +882,13 @@ func _build_village_tab() -> void:
 	var ch_lbl := Label.new()
 	ch_lbl.text = "冒險出征 · 當前主線"
 	ch_lbl.add_theme_font_size_override("font_size", 14)
-	ch_lbl.add_theme_color_override("font_color", BRONZE_WARM)
+	ch_lbl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	rv.add_child(ch_lbl)
 
 	var s_name := Label.new()
 	s_name.text = "第二地區 · 聖獅王城 (2-4 BOSS)"
 	s_name.add_theme_font_size_override("font_size", 17)
-	s_name.add_theme_color_override("font_color", INK_IVORY)
+	s_name.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	rv.add_child(s_name)
 
 	var btn_go := Button.new()
@@ -856,26 +896,28 @@ func _build_village_tab() -> void:
 	btn_go.text = "前往出征"
 	btn_go.add_theme_font_size_override("font_size", 20)
 	var gsb := StyleBoxFlat.new()
-	gsb.bg_color = GOLD_CLASSICAL
-	gsb.border_color = TEAL_CORE
-	gsb.set_border_width_all(1)
-	gsb.border_width_bottom = 4
-	gsb.set_corner_radius_all(8)
+	gsb.bg_color = COLOR_GOLD
+	gsb.border_color = COLOR_BORDER
+	gsb.set_border_width_all(2)
+	gsb.border_width_bottom = 5
+	gsb.set_corner_radius_all(20)
 	gsb.content_margin_top = 12
 	gsb.content_margin_bottom = 12
-	gsb.shadow_color = Color(0.831, 0.686, 0.216, 0.35)
+	gsb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
 	gsb.shadow_size = 8
 	gsb.shadow_offset = Vector2(0, 3)
 	btn_go.add_theme_stylebox_override("normal", gsb)
 	
 	var gsb_h := gsb.duplicate() as StyleBoxFlat
-	gsb_h.bg_color = GOLD_HOVER
+	gsb_h.bg_color = Color("#FFE066")
+	var gsb_p := gsb.duplicate() as StyleBoxFlat
+	gsb_p.border_width_bottom = 2
 	btn_go.add_theme_stylebox_override("hover", gsb_h)
-	btn_go.add_theme_stylebox_override("pressed", gsb)
+	btn_go.add_theme_stylebox_override("pressed", gsb_p)
 	btn_go.add_theme_stylebox_override("focus", gsb)
-	btn_go.add_theme_color_override("font_color", OBSIDIAN_BASE)
-	btn_go.add_theme_color_override("font_hover_color", Color(0.0, 0.0, 0.0, 1.0))
-	btn_go.add_theme_color_override("font_pressed_color", OBSIDIAN_BASE)
+	btn_go.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_go.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_go.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	btn_go.pressed.connect(func(): _switch_tab(Tab.ADVENTURE))
 	rv.add_child(btn_go)
 
@@ -889,25 +931,26 @@ func _add_hall_card(parent: Container, title: String, subtitle: String, icon_sym
 	btn.custom_minimum_size = Vector2(240, 72)
 	
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = OBSIDIAN_CARD
-	sb.border_color = BRONZE_ANTIQUE
-	sb.set_border_width_all(1)
-	sb.border_width_bottom = 3
-	sb.set_corner_radius_all(8)
+	sb.bg_color = COLOR_BG_CREAM
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 5
+	sb.set_corner_radius_all(20)
 	sb.content_margin_left = 14
 	sb.content_margin_right = 14
 	sb.content_margin_top = 8
 	sb.content_margin_bottom = 8
-	sb.shadow_color = Color(0.0, 0.0, 0.0, 0.4)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
 	sb.shadow_size = 6
-	sb.shadow_offset = Vector2(0, 2)
+	sb.shadow_offset = Vector2(0, 3)
 	btn.add_theme_stylebox_override("normal", sb)
 	
 	var sb_h := sb.duplicate() as StyleBoxFlat
-	sb_h.bg_color = OBSIDIAN_WARM
-	sb_h.border_color = GOLD_CLASSICAL
+	sb_h.bg_color = COLOR_CARD_GOLD
+	var sb_p := sb.duplicate() as StyleBoxFlat
+	sb_p.border_width_bottom = 2
 	btn.add_theme_stylebox_override("hover", sb_h)
-	btn.add_theme_stylebox_override("pressed", sb)
+	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
 	
 	var h := HBoxContainer.new()
@@ -918,12 +961,13 @@ func _add_hall_card(parent: Container, title: String, subtitle: String, icon_sym
 	btn.add_child(h)
 	
 	var icon_box := PanelContainer.new()
-	icon_box.custom_minimum_size = Vector2(42, 42)
+	icon_box.custom_minimum_size = Vector2(46, 46)
 	var isb := StyleBoxFlat.new()
-	isb.bg_color = OBSIDIAN_DEEP
-	isb.border_color = GOLD_CLASSICAL
-	isb.set_border_width_all(1)
-	isb.set_corner_radius_all(6)
+	isb.bg_color = COLOR_GOLD
+	isb.border_color = COLOR_BORDER
+	isb.set_border_width_all(2)
+	isb.border_width_bottom = 3
+	isb.set_corner_radius_all(14)
 	icon_box.add_theme_stylebox_override("panel", isb)
 	icon_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
@@ -932,7 +976,7 @@ func _add_hall_card(parent: Container, title: String, subtitle: String, icon_sym
 	icon_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	icon_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	icon_lbl.add_theme_font_size_override("font_size", 18)
-	icon_lbl.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	icon_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	icon_box.add_child(icon_lbl)
 	h.add_child(icon_box)
 	
@@ -944,14 +988,14 @@ func _add_hall_card(parent: Container, title: String, subtitle: String, icon_sym
 	
 	var tl := Label.new()
 	tl.text = title
-	tl.add_theme_font_size_override("font_size", 15)
-	tl.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	tl.add_theme_font_size_override("font_size", 16)
+	tl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	v.add_child(tl)
 	
 	var sl := Label.new()
 	sl.text = subtitle
 	sl.add_theme_font_size_override("font_size", 12)
-	sl.add_theme_color_override("font_color", INK_IVORY_SOFT)
+	sl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	v.add_child(sl)
 	
 	h.add_child(v)
@@ -1097,14 +1141,14 @@ func _build_soul_hall_tab() -> void:
 	t.text = _t("聚魂殿 · 封靈罐四階")
 	t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	t.add_theme_font_size_override("font_size", 24)
-	t.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	t.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	v.add_child(t)
 
 	var desc := Label.new()
 	desc.text = _t("聚引四大共鳴核心之魂：銳齒(攻) · 固甲(防) · 旋簧(血) · 全衡(衡)。點擊點亮更高階封靈罐！")
 	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	desc.add_theme_font_size_override("font_size", 13)
-	desc.add_theme_color_override("font_color", INK_IVORY_SOFT)
+	desc.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	v.add_child(desc)
 
 	var gourd_row := HBoxContainer.new()
@@ -1356,16 +1400,16 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	c.custom_minimum_size = Vector2(430, 105)
 	var csb := StyleBoxFlat.new()
 	var is_boss: bool = str(s["type"]).find("首領") >= 0
-	csb.bg_color = OBSIDIAN_CARD
-	csb.border_color = CORAL_RUST if is_boss else LINE_GOLD
-	csb.set_border_width_all(2 if is_boss else 1)
-	csb.border_width_bottom = 4 if is_boss else 2
-	csb.set_corner_radius_all(8)
+	csb.bg_color = COLOR_CARD_WARM
+	csb.border_color = CORAL_RUST if is_boss else COLOR_BORDER
+	csb.set_border_width_all(2)
+	csb.border_width_bottom = 4
+	csb.set_corner_radius_all(10)
 	csb.content_margin_left = 16
 	csb.content_margin_right = 16
 	csb.content_margin_top = 12
 	csb.content_margin_bottom = 12
-	csb.shadow_color = Color(0.0, 0.0, 0.0, 0.35)
+	csb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
 	csb.shadow_size = 6
 	c.add_theme_stylebox_override("panel", csb)
 
@@ -1384,13 +1428,13 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	var num_l := Label.new()
 	num_l.text = str(s["num"])
 	num_l.add_theme_font_size_override("font_size", 18)
-	num_l.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	num_l.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	t_row.add_child(num_l)
 
 	var name_l := Label.new()
 	name_l.text = str(s["name"])
 	name_l.add_theme_font_size_override("font_size", 16)
-	name_l.add_theme_color_override("font_color", INK_IVORY)
+	name_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	t_row.add_child(name_l)
 	v.add_child(t_row)
 
@@ -1399,13 +1443,13 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	var typ_l := Label.new()
 	typ_l.text = str(s["type"])
 	typ_l.add_theme_font_size_override("font_size", 13)
-	typ_l.add_theme_color_override("font_color", CORAL_RUST if is_boss else INK_IVORY_SOFT)
+	typ_l.add_theme_color_override("font_color", CORAL_RUST if is_boss else COLOR_TEXT_DARK)
 	inf_row.add_child(typ_l)
 
 	var pwr_l := Label.new()
 	pwr_l.text = "推薦戰力: %d" % int(s["power"])
 	pwr_l.add_theme_font_size_override("font_size", 13)
-	pwr_l.add_theme_color_override("font_color", INK_IVORY_MUTED)
+	pwr_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	inf_row.add_child(pwr_l)
 	v.add_child(inf_row)
 
@@ -1504,19 +1548,19 @@ func _build_character_tab() -> void:
 	btn_wardrobe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn_wardrobe.add_theme_font_size_override("font_size", 16)
 	var wsb := StyleBoxFlat.new()
-	wsb.bg_color = OBSIDIAN_WARM
-	wsb.border_color = GOLD_CLASSICAL
+	wsb.bg_color = COLOR_GOLD
+	wsb.border_color = COLOR_BORDER
 	wsb.set_border_width_all(2)
 	wsb.border_width_bottom = 5
 	wsb.set_corner_radius_all(14)
 	btn_wardrobe.add_theme_stylebox_override("normal", wsb)
 	var wsb_h := wsb.duplicate()
-	wsb_h.bg_color = Color(0.18, 0.15, 0.22, 1.0)
-	wsb_h.border_color = GOLD_HOVER
+	wsb_h.bg_color = Color("#FFE066")
+	wsb_h.border_color = COLOR_BORDER
 	btn_wardrobe.add_theme_stylebox_override("hover", wsb_h)
 	btn_wardrobe.add_theme_stylebox_override("pressed", wsb_h)
-	btn_wardrobe.add_theme_color_override("font_color", GOLD_CLASSICAL)
-	btn_wardrobe.add_theme_color_override("font_hover_color", GOLD_HOVER)
+	btn_wardrobe.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_wardrobe.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
 	btn_wardrobe.pressed.connect(open_wardrobe)
 	l_vbox.add_child(btn_wardrobe)
 
@@ -1528,7 +1572,7 @@ func _build_character_tab() -> void:
 	var title := Label.new()
 	title.text = "三欄武器輪替系統 (原作節奏)"
 	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	title.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	r_v.add_child(title)
 
 	var w_row := HBoxContainer.new()
@@ -1540,18 +1584,18 @@ func _build_character_tab() -> void:
 		var p := PanelContainer.new()
 		p.custom_minimum_size = Vector2(130, 68)
 		var psb := StyleBoxFlat.new()
-		psb.bg_color = OBSIDIAN_DEEP
-		psb.border_color = BRONZE_WARM
-		psb.set_border_width_all(1)
-		psb.border_width_bottom = 3
-		psb.set_corner_radius_all(8)
+		psb.bg_color = COLOR_CARD_WARM
+		psb.border_color = COLOR_BORDER
+		psb.set_border_width_all(2)
+		psb.border_width_bottom = 4
+		psb.set_corner_radius_all(10)
 		p.add_theme_stylebox_override("panel", psb)
 		var l := Label.new()
 		l.text = ws
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		l.add_theme_font_size_override("font_size", 13)
-		l.add_theme_color_override("font_color", INK_IVORY)
+		l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		p.add_child(l)
 		w_row.add_child(p)
 
@@ -1559,10 +1603,11 @@ func _build_character_tab() -> void:
 	stats.bbcode_enabled = true
 	stats.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	stats.add_theme_font_size_override("normal_font_size", 15)
-	stats.text = "\n[color=#D4AF37][b]機體戰鬥屬性 (有效戰力 482)[/b][/color]\n\n"
-	stats.text += "生命力 (HP): [color=#3ECFBF]520[/color]   物理攻擊: [color=#D4AF37]95[/color]\n"
-	stats.text += "物理防禦: [color=#6B8CAE]48[/color]   暴擊率: [color=#F0D78C]22%[/color]\n"
-	stats.text += "怒氣量表: [color=#C45C4A]20 點 (滿怒超頻運轉 +25% 性能)[/color]\n"
+	stats.add_theme_color_override("default_color", COLOR_TEXT_DARK)
+	stats.text = "\n[color=#9A6B00][b]機體戰鬥屬性 (有效戰力 482)[/b][/color]\n\n"
+	stats.text += "生命力 (HP): [color=#0E8A7A][b]520[/b][/color]   物理攻擊: [color=#9A6B00][b]95[/b][/color]\n"
+	stats.text += "物理防禦: [color=#2A5580][b]48[/b][/color]   暴擊率: [color=#9A6B00][b]22%[/b][/color]\n"
+	stats.text += "怒氣量表: [color=#A82B1E][b]20 點 (滿怒超頻運轉 +25% 性能)[/b][/color]\n"
 	r_v.add_child(stats)
 
 func _build_bag_tab() -> void:
@@ -1587,7 +1632,7 @@ func _build_bag_tab() -> void:
 	var t := Label.new()
 	t.text = "冒險者背包 (道具與戰魂倉庫)"
 	t.add_theme_font_size_override("font_size", 20)
-	t.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	t.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	v.add_child(t)
 
 	var grid := GridContainer.new()
@@ -1600,17 +1645,17 @@ func _build_bag_tab() -> void:
 		var sp := PanelContainer.new()
 		sp.custom_minimum_size = Vector2(72, 72)
 		var ssb := StyleBoxFlat.new()
-		ssb.bg_color = OBSIDIAN_DEEP
-		ssb.border_color = LINE_GOLD_SOFT
+		ssb.bg_color = COLOR_CARD_WARM
+		ssb.border_color = COLOR_BORDER
 		ssb.set_border_width_all(1)
-		ssb.border_width_bottom = 2
-		ssb.set_corner_radius_all(6)
+		ssb.border_width_bottom = 3
+		ssb.set_corner_radius_all(8)
 		sp.add_theme_stylebox_override("panel", ssb)
 		var l := Label.new()
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		l.add_theme_font_size_override("font_size", 12)
-		l.add_theme_color_override("font_color", INK_IVORY)
+		l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		if i == 0: l.text = "鐵劍"
 		elif i == 1: l.text = "紅藥水x10"
 		elif i == 2: l.text = "紅寶石"
