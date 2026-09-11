@@ -1548,19 +1548,19 @@ func _build_character_tab() -> void:
 	btn_wardrobe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn_wardrobe.add_theme_font_size_override("font_size", 16)
 	var wsb := StyleBoxFlat.new()
-	wsb.bg_color = OBSIDIAN_WARM
-	wsb.border_color = GOLD_CLASSICAL
+	wsb.bg_color = COLOR_GOLD
+	wsb.border_color = COLOR_BORDER
 	wsb.set_border_width_all(2)
 	wsb.border_width_bottom = 5
 	wsb.set_corner_radius_all(14)
 	btn_wardrobe.add_theme_stylebox_override("normal", wsb)
 	var wsb_h := wsb.duplicate()
-	wsb_h.bg_color = Color(0.18, 0.15, 0.22, 1.0)
-	wsb_h.border_color = GOLD_HOVER
+	wsb_h.bg_color = Color("#FFE066")
+	wsb_h.border_color = COLOR_BORDER
 	btn_wardrobe.add_theme_stylebox_override("hover", wsb_h)
 	btn_wardrobe.add_theme_stylebox_override("pressed", wsb_h)
-	btn_wardrobe.add_theme_color_override("font_color", GOLD_CLASSICAL)
-	btn_wardrobe.add_theme_color_override("font_hover_color", GOLD_HOVER)
+	btn_wardrobe.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_wardrobe.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
 	btn_wardrobe.pressed.connect(open_wardrobe)
 	l_vbox.add_child(btn_wardrobe)
 
@@ -1572,7 +1572,7 @@ func _build_character_tab() -> void:
 	var title := Label.new()
 	title.text = "三欄武器輪替系統 (原作節奏)"
 	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	title.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	r_v.add_child(title)
 
 	var w_row := HBoxContainer.new()
@@ -1584,18 +1584,18 @@ func _build_character_tab() -> void:
 		var p := PanelContainer.new()
 		p.custom_minimum_size = Vector2(130, 68)
 		var psb := StyleBoxFlat.new()
-		psb.bg_color = OBSIDIAN_DEEP
-		psb.border_color = BRONZE_WARM
-		psb.set_border_width_all(1)
-		psb.border_width_bottom = 3
-		psb.set_corner_radius_all(8)
+		psb.bg_color = COLOR_CARD_WARM
+		psb.border_color = COLOR_BORDER
+		psb.set_border_width_all(2)
+		psb.border_width_bottom = 4
+		psb.set_corner_radius_all(10)
 		p.add_theme_stylebox_override("panel", psb)
 		var l := Label.new()
 		l.text = ws
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		l.add_theme_font_size_override("font_size", 13)
-		l.add_theme_color_override("font_color", INK_IVORY)
+		l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		p.add_child(l)
 		w_row.add_child(p)
 
@@ -1603,10 +1603,11 @@ func _build_character_tab() -> void:
 	stats.bbcode_enabled = true
 	stats.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	stats.add_theme_font_size_override("normal_font_size", 15)
-	stats.text = "\n[color=#D4AF37][b]機體戰鬥屬性 (有效戰力 482)[/b][/color]\n\n"
-	stats.text += "生命力 (HP): [color=#3ECFBF]520[/color]   物理攻擊: [color=#D4AF37]95[/color]\n"
-	stats.text += "物理防禦: [color=#6B8CAE]48[/color]   暴擊率: [color=#F0D78C]22%[/color]\n"
-	stats.text += "怒氣量表: [color=#C45C4A]20 點 (滿怒超頻運轉 +25% 性能)[/color]\n"
+	stats.add_theme_color_override("default_color", COLOR_TEXT_DARK)
+	stats.text = "\n[color=#9A6B00][b]機體戰鬥屬性 (有效戰力 482)[/b][/color]\n\n"
+	stats.text += "生命力 (HP): [color=#0E8A7A][b]520[/b][/color]   物理攻擊: [color=#9A6B00][b]95[/b][/color]\n"
+	stats.text += "物理防禦: [color=#2A5580][b]48[/b][/color]   暴擊率: [color=#9A6B00][b]22%[/b][/color]\n"
+	stats.text += "怒氣量表: [color=#A82B1E][b]20 點 (滿怒超頻運轉 +25% 性能)[/b][/color]\n"
 	r_v.add_child(stats)
 
 func _build_bag_tab() -> void:
@@ -1631,7 +1632,7 @@ func _build_bag_tab() -> void:
 	var t := Label.new()
 	t.text = "冒險者背包 (道具與戰魂倉庫)"
 	t.add_theme_font_size_override("font_size", 20)
-	t.add_theme_color_override("font_color", GOLD_CLASSICAL)
+	t.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	v.add_child(t)
 
 	var grid := GridContainer.new()
@@ -1644,17 +1645,17 @@ func _build_bag_tab() -> void:
 		var sp := PanelContainer.new()
 		sp.custom_minimum_size = Vector2(72, 72)
 		var ssb := StyleBoxFlat.new()
-		ssb.bg_color = OBSIDIAN_DEEP
-		ssb.border_color = LINE_GOLD_SOFT
+		ssb.bg_color = COLOR_CARD_WARM
+		ssb.border_color = COLOR_BORDER
 		ssb.set_border_width_all(1)
-		ssb.border_width_bottom = 2
-		ssb.set_corner_radius_all(6)
+		ssb.border_width_bottom = 3
+		ssb.set_corner_radius_all(8)
 		sp.add_theme_stylebox_override("panel", ssb)
 		var l := Label.new()
 		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		l.add_theme_font_size_override("font_size", 12)
-		l.add_theme_color_override("font_color", INK_IVORY)
+		l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		if i == 0: l.text = "鐵劍"
 		elif i == 1: l.text = "紅藥水x10"
 		elif i == 2: l.text = "紅寶石"
