@@ -109,14 +109,28 @@ static func make_close_button(cb: Callable) -> Button:
 	btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	btn.add_theme_font_size_override("font_size", 22)
 	var csb := StyleBoxFlat.new()
-	csb.bg_color = Color(0.22, 0.16, 0.12, 0.95)
-	csb.border_color = Color(0.85, 0.70, 0.35, 0.9)
+	csb.bg_color = Color("#C22B55")  ## 深莓紅果凍厚底按鈕
+	csb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
 	csb.set_border_width_all(2)
-	csb.set_corner_radius_all(18)
+	csb.border_width_bottom = 5  ## 果凍厚底 bottom border 5px
+	csb.set_corner_radius_all(18)  ## 圓角 18px
+
+	var csb_hover := csb.duplicate()
+	csb_hover.bg_color = Color("#D63865")
+
+	var csb_pressed := csb.duplicate()
+	csb_pressed.bg_color = Color("#A82247")
+	csb_pressed.border_width_bottom = 2
+
 	btn.add_theme_stylebox_override("normal", csb)
-	btn.add_theme_stylebox_override("hover", csb)
-	btn.add_theme_stylebox_override("pressed", csb)
-	btn.add_theme_color_override("font_color", Color(1.0, 0.90, 0.80))
+	btn.add_theme_stylebox_override("hover", csb_hover)
+	btn.add_theme_stylebox_override("pressed", csb_pressed)
+	btn.add_theme_color_override("font_color", Color("#FFFDF8"))
+	btn.add_theme_color_override("font_hover_color", Color("#FFFFFF"))
+	btn.add_theme_color_override("font_pressed_color", Color("#FFFDF8"))
+	btn.add_theme_color_override("font_focus_color", Color("#FFFDF8"))
+	btn.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	btn.add_theme_constant_override("outline_size", 2)
 	if cb.is_valid():
 		btn.pressed.connect(cb)
 	return btn
