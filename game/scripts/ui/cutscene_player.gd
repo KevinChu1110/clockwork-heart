@@ -8,6 +8,20 @@ signal finished
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
+const FONT_PATH        := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+
+## ── 多巴胺鮮亮高飽和色盤 ──
+const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
+const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
+const COLOR_TEXT_MUTED := Color("#4A3E60")  ## 深藍紫次要提示字
+
+var _cached_font: Font = null
+
+
+func _get_font() -> Font:
+	if _cached_font == null and ResourceLoader.exists(FONT_PATH):
+		_cached_font = load(FONT_PATH) as Font
+	return _cached_font
 
 ## 影片放這裡；只給檔名時自動補上這層路徑與 .ogv
 ## Godot 內建只支援 Ogg Theora，轉檔用 tools/import_cutscene.py
@@ -73,6 +87,8 @@ func _build() -> void:
 	_dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_dim)
 
+	var f := _get_font()
+
 	_caption_panel = PanelContainer.new()
 	## 底部寬字幕條（勿漂到左上）
 	_caption_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
@@ -101,10 +117,10 @@ func _build() -> void:
 	add_child(_portrait)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 18)
-	margin.add_theme_constant_override("margin_right", 18)
-	margin.add_theme_constant_override("margin_top", 12)
-	margin.add_theme_constant_override("margin_bottom", 10)
+	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_top", 16)
+	margin.add_theme_constant_override("margin_bottom", 14)
 	_caption_panel.add_child(margin)
 
 	var v := VBoxContainer.new()
@@ -112,8 +128,10 @@ func _build() -> void:
 	margin.add_child(v)
 
 	_speaker = Label.new()
-	_speaker.add_theme_font_size_override("font_size", 18)
-	_speaker.add_theme_color_override("font_color", UiStyle.COPPER)
+	_speaker.add_theme_font_size_override("font_size", 20)
+	_speaker.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if f:
+		_speaker.add_theme_font_override("font", f)
 	v.add_child(_speaker)
 
 	_body = RichTextLabel.new()
@@ -122,14 +140,20 @@ func _build() -> void:
 	_body.scroll_active = false
 	_body.custom_minimum_size = Vector2(0, 64)
 	_body.add_theme_font_size_override("normal_font_size", 18)
-	_body.add_theme_color_override("default_color", UiStyle.CAPTION)
+	_body.add_theme_font_size_override("bold_font_size", 18)
+	_body.add_theme_color_override("default_color", COLOR_TEXT_DARK)
+	if f:
+		_body.add_theme_font_override("normal_font", f)
+		_body.add_theme_font_override("bold_font", f)
 	v.add_child(_body)
 
 	_hint = Label.new()
 	_hint.text = "▼  Space / E  繼續"
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	_hint.add_theme_font_size_override("font_size", 13)
-	_hint.add_theme_color_override("font_color", UiStyle.CAPTION_DIM)
+	_hint.add_theme_font_size_override("font_size", 16)
+	_hint.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	if f:
+		_hint.add_theme_font_override("font", f)
 	v.add_child(_hint)
 
 
@@ -254,7 +278,10 @@ func _show_slide() -> void:
 	_portrait.texture = ptex
 	_portrait.visible = ptex != null
 	_speaker.text = sp
+	_speaker.visible = sp != ""
+	_speaker.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_body.text = str(s.get("text", ""))
+	_body.add_theme_color_override("default_color", COLOR_TEXT_DARK)
 
 	var tw := create_tween()
 	## 有底圖或影片才幾乎透黑；都沒有就保留暗幕，避免標題選單透出

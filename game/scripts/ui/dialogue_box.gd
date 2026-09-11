@@ -7,6 +7,23 @@ const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
+const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+
+## ── 多巴胺鮮亮高飽和色盤 ──
+const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
+const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
+const COLOR_TEXT_MUTED := Color("#4A3E60")  ## 深藍紫次要提示字
+const COLOR_ORANGE     := Color("#FFA010")  ## 活力暖橘
+const COLOR_SKY        := Color("#38A0FF")  ## 晴空蔚藍
+const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃底
+
+var _cached_font: Font = null
+
+
+func _get_font() -> Font:
+	if _cached_font == null and ResourceLoader.exists(FONT_PATH):
+		_cached_font = load(FONT_PATH) as Font
+	return _cached_font
 
 
 static func _t(s: String) -> String:
@@ -68,7 +85,8 @@ func _ensure_dim() -> void:
 
 
 func _apply_look() -> void:
-	## 楓式：底欄較矮、米色紙、小半身像
+	## 楓式：底欄較矮、奶油白紙、小半身像
+	var f := _get_font()
 	if panel:
 		panel.add_theme_stylebox_override("panel", UiStyle.dialogue_style())
 		## 點對話紙面也要能推進：冒泡到根節點（選項按鈕自己是 STOP 不受影響）
@@ -81,24 +99,33 @@ func _apply_look() -> void:
 		panel.offset_left = m.x + 24.0
 		panel.offset_right = -(m.z + 24.0)
 	if speaker_label:
-		speaker_label.add_theme_color_override("font_color", UiStyle.KEY)
-		speaker_label.add_theme_font_size_override("font_size", 17)
+		speaker_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		speaker_label.add_theme_font_size_override("font_size", 20)
+		if f:
+			speaker_label.add_theme_font_override("font", f)
 	if body_label:
-		body_label.add_theme_color_override("default_color", UiStyle.CAPTION)
+		body_label.add_theme_color_override("default_color", COLOR_TEXT_DARK)
 		body_label.add_theme_font_size_override("normal_font_size", 18)
+		body_label.add_theme_font_size_override("bold_font_size", 18)
+		if f:
+			body_label.add_theme_font_override("normal_font", f)
+			body_label.add_theme_font_override("bold_font", f)
 	if continue_hint:
-		continue_hint.add_theme_color_override("font_color", UiStyle.HUD_TEXT_DIM)
-		continue_hint.add_theme_font_size_override("font_size", 13)
+		continue_hint.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+		continue_hint.add_theme_font_size_override("font_size", 16)
+		if f:
+			continue_hint.add_theme_font_override("font", f)
 		continue_hint.text = _hint_text()
 	if accent:
-		accent.color = UiStyle.KEY_STRONG
+		accent.color = COLOR_ORANGE
 		accent.custom_minimum_size = Vector2(4, 0)
 	if portrait_frame:
 		var ps := StyleBoxFlat.new()
-		ps.bg_color = Color(0.10, 0.09, 0.12, 1.0)
-		ps.border_color = UiStyle.LINE
-		ps.set_border_width_all(1)
-		ps.set_corner_radius_all(8)
+		ps.bg_color = COLOR_CARD_WARM
+		ps.border_color = COLOR_BORDER
+		ps.set_border_width_all(2)
+		ps.border_width_bottom = 4
+		ps.set_corner_radius_all(14)
 		portrait_frame.add_theme_stylebox_override("panel", ps)
 		portrait_frame.custom_minimum_size = Vector2(110, 130)
 		portrait_frame.clip_contents = true
@@ -152,15 +179,15 @@ func _show_current() -> void:
 		else:
 			portrait.texture = null
 			portrait_frame.visible = false
-	## 系統／旁白用霧藍，角色用銅
+	## 系統／旁白用天藍提示條，角色用暖橘；文字統一為深藍紫 #1F1A3A 系
 	if sp in ["系統", "旁白", "系統·教學"]:
-		speaker_label.add_theme_color_override("font_color", UiStyle.MIST)
+		speaker_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		if accent:
-			accent.color = UiStyle.MIST
+			accent.color = COLOR_SKY
 	else:
-		speaker_label.add_theme_color_override("font_color", UiStyle.COPPER)
+		speaker_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		if accent:
-			accent.color = UiStyle.COPPER
+			accent.color = COLOR_ORANGE
 
 	_full_text = str(line.get("text", ""))
 	_type_i = 0
@@ -193,12 +220,15 @@ func _finish_typing() -> void:
 		continue_hint.visible = false
 		choices.visible = true
 		var opts: Array = line["choices"]
+		var f := _get_font()
 		for i in opts.size():
 			var btn := Button.new()
 			btn.text = str(opts[i])
 			btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 			UiStyle.style_button(btn, i == 0)
 			ResponsiveUi.apply_core_button(btn)
+			if f:
+				btn.add_theme_font_override("font", f)
 			var idx := i
 			btn.pressed.connect(func(): _on_choice(idx))
 			choices.add_child(btn)
