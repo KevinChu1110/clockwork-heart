@@ -7,7 +7,6 @@ var _step: int = 0
 var _main: Node = null
 var _out_dir: String = ""
 var _proof_dir: String = ""
-var _hud_proof_dir: String = ""
 
 
 func _initialize() -> void:
@@ -19,10 +18,8 @@ func _initialize() -> void:
 	var base := ProjectSettings.globalize_path("res://")
 	_out_dir = base.path_join("../screenshots")
 	_proof_dir = base.path_join("../proofs/battlelog")
-	_hud_proof_dir = base.path_join("../proofs/hud_dopamine")
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 	DirAccess.make_dir_recursive_absolute(_proof_dir)
-	DirAccess.make_dir_recursive_absolute(_hud_proof_dir)
 
 	change_scene_to_file("res://scenes/main.tscn")
 
@@ -84,14 +81,9 @@ func _process(_delta: float) -> bool:
 				if img:
 					var p1 := _out_dir.path_join("proof_battle_log_dopamine.png")
 					var p2 := _proof_dir.path_join("proof_battle_log_dopamine.png")
-					var p3 := _out_dir.path_join("proof_battle_hud_hotbar.png")
-					var p4 := _hud_proof_dir.path_join("proof_battle_hud_hotbar.png")
 					img.save_png(p1)
 					img.save_png(p2)
-					img.save_png(p3)
-					img.save_png(p4)
 					print("SAVED_BATTLE_LOG: ", p1, " & ", p2)
-					print("SAVED_BATTLE_HUD: ", p3, " & ", p4)
 
 				print("BATTLELOG_DOPAMINE_CAPTURE_OK")
 				quit(0)
