@@ -1,0 +1,67 @@
+{
+  "id": "W8-K1",
+  "dailyCycle": {
+    "WindStaminaMax": 15,
+    "regen": {"perMinutes": 8, "amount": 1, "cap": 15},
+    "dailyCap": {"soulPull": 30, "sweep": 20, "adRegen": 5},
+    "adRegen": {"WindStamina": 3, "dailyLimit": 5},
+    "resetHourLocal": 5
+  },
+  "growth": {
+    "maxLevel": 30,
+    "expToNext": "Floor(20 * Level^1.35)",
+    "statPerLevel": {"ATK": 2, "DEF": 1, "HP": 12},
+    "equipEnhance": {
+      "slots": ["weapon_main", "outfit", "helmet"],
+      "maxEnhance": 10,
+      "costGold": "Floor(50 * (EnhanceLv+1)^1.6)",
+      "costPart": {"drop_brass_gear": 1, "perLevels": 2},
+      "bonusPerEnhance": {"ATK": 1, "DEF": 1}
+    }
+  },
+  "economy": {
+    "currencies": ["Gold", "SoulTicket"],
+    "sinks": {
+      "soulPull": {"SoulTicket": 1},
+      "enhance": {"Gold": "costGold"},
+      "sweep": {"Gold": 20}
+    },
+    "sources": {
+      "firstClear": {"Gold": 200, "SoulTicket": 2, "exp": 80},
+      "sweep": {"Gold": 60, "exp": 30},
+      "dailyLogin": {"Gold": 100, "SoulTicket": 1},
+      "partBreak": {"Gold": 15}
+    },
+    "inflationGuard": {"dailyGoldCap": 5000, "dailyTicketCap": 40}
+  },
+  "chapters": [
+    {
+      "ChapterId": "C0_S8",
+      "name": "玩具堆邊緣",
+      "staminaEnter": 2,
+      "firstClear": {"Gold": 200, "SoulTicket": 2, "exp": 80, "DropId": "drop_brass_gear"},
+      "sweep": {"Gold": 60, "exp": 30, "DropId": "drop_brass_gear", "dropPct": 35},
+      "enemy": {"HP": 120, "ATK": 8, "DEF": 2}
+    },
+    {
+      "ChapterId": "C1_01",
+      "name": "停擺工坊",
+      "staminaEnter": 3,
+      "firstClear": {"Gold": 280, "SoulTicket": 2, "exp": 110, "DropId": "drop_spring_coil"},
+      "sweep": {"Gold": 80, "exp": 40, "DropId": "drop_spring_coil", "dropPct": 30},
+      "enemy": {"HP": 180, "ATK": 12, "DEF": 4}
+    },
+    {
+      "ChapterId": "C1_02",
+      "name": "生鏽走廊",
+      "staminaEnter": 3,
+      "firstClear": {"Gold": 360, "SoulTicket": 3, "exp": 140, "DropId": "drop_core_shard"},
+      "sweep": {"Gold": 100, "exp": 50, "DropId": "drop_core_shard", "dropPct": 20},
+      "enemy": {"HP": 260, "ATK": 16, "DEF": 6}
+    }
+  ],
+  "formulas": {
+    "Final_Damage": "Max(1, ATK + EnhanceATK - DEF)",
+    "CanSweep": "ChapterCleared == true AND WindStamina >= staminaEnter AND dailySweepUsed < 20"
+  }
+}
