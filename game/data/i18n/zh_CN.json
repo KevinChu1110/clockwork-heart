@@ -312,5 +312,15 @@
   "daily.wind_share.title": "今天，谁需要上发条？",
   "daily.wind_share.body": "发条之心问：今天這格，送给谁？",
   "daily.wind_share.a": "选四角色之一",
-  "daily.wind_share.b": "留给自己"
+  "daily.wind_share.b": "留给自己",
+  "reward.daily_login": "發條早安～金幣＋{Gold}，抽魂票＋{SoulTicket}！",
+  "reward.first_clear": "首通！金幣＋{Gold}、票＋{SoulTicket}、經驗＋{exp}",
+  "reward.sweep": "掃蕩完成～金幣＋{Gold}、經驗＋{exp}",
+  "reward.part_break_gold": "零件叮咚，金幣＋{Gold}",
+  "reward.daily_event": "這格發條轉完了！（獎勵進口袋）",
+  "reward.stamina_regen": "發條自己轉回一格～",
+  "reward.ad_regen": "看完小劇場，發條＋{WindStamina}",
+  "err.daily_cap_pull": "今天抽魂次數滿了，明天再轉",
+  "err.daily_cap_sweep": "今天掃蕩次數滿了",
+  "err.daily_gold_cap": "今天金幣裝太滿，先去強化吧"
 }

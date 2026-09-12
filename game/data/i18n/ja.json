@@ -312,5 +312,15 @@
   "daily.wind_share.title": "Who needs winding today?",
   "daily.wind_share.body": "Clockwork Heart asks: who gets today's tick?",
   "daily.wind_share.a": "Pick one of four",
-  "daily.wind_share.b": "Keep it for yourself"
+  "daily.wind_share.b": "Keep it for yourself",
+  "reward.daily_login": "Morning wind~ Gold +{Gold}, SoulTicket +{SoulTicket}!",
+  "reward.first_clear": "First clear! Gold +{Gold}, tickets +{SoulTicket}, exp +{exp}",
+  "reward.sweep": "Sweep done~ Gold +{Gold}, exp +{exp}",
+  "reward.part_break_gold": "Part ding — Gold +{Gold}",
+  "reward.daily_event": "This tick is done! (Rewards pocketed)",
+  "reward.stamina_regen": "Wind stamina spun back one tick~",
+  "reward.ad_regen": "After the short show, wind +{WindStamina}",
+  "err.daily_cap_pull": "Daily soul pulls are full — come back tomorrow",
+  "err.daily_cap_sweep": "Daily sweeps are full",
+  "err.daily_gold_cap": "Daily gold cap hit — go enhance something"
 }

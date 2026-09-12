@@ -75,13 +75,14 @@ func do_first_clear(chapter_id: String) -> Dictionary:
 		"gain": gain,
 		"level": lv,
 		"wind": daily.wind,
+		"toastKey": "reward.first_clear",
 	}
 
 
 func do_sweep(chapter_id: String) -> Dictionary:
 	daily.tick_regen()
 	if not daily.can_sweep():
-		return {"ok": false, "error": "daily_sweep_cap"}
+		return {"ok": false, "error": "daily_sweep_cap", "toastKey": "err.daily_cap_sweep"}
 	var ch: Dictionary = config.chapter_def(chapter_id)
 	if not chapters.can_sweep(chapter_id, daily.wind, true):
 		return {"ok": false, "error": "cannot_sweep"}
@@ -105,7 +106,7 @@ func do_sweep(chapter_id: String) -> Dictionary:
 			dropped = (randi() % 100) < drop_pct
 		if dropped:
 			inventory_parts[drop_id] = int(inventory_parts.get(drop_id, 0)) + 1
-	return {"ok": true, "reward": reward, "gain": gain, "level": lv, "dropped": dropped, "wind": daily.wind}
+	return {"ok": true, "reward": reward, "gain": gain, "level": lv, "dropped": dropped, "wind": daily.wind, "toastKey": "reward.sweep"}
 
 
 func do_enhance(slot: String) -> Dictionary:

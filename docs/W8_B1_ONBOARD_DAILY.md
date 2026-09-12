@@ -95,3 +95,35 @@
 - [ ] key 與 CharacterId 正式欄為 `xiaobai`  
 - [ ] Mark 可直接抽 Day 列當粉專每日鉤  
 
+
+---
+
+## E. 對齊 Ken W8-K1 · 獎勵 toast 字串（不改％）
+
+> 數值以 `W8_K1_DAILY_GROWTH_ECON.json` 為準；此處只補 UI／旁白字串
+
+| 時機 | key | zh-TW |
+|------|-----|-------|
+| 日登入 | `reward.daily_login` | 發條早安～金幣＋{Gold}，抽魂票＋{SoulTicket}！ |
+| 首通 | `reward.first_clear` | 首通！金幣＋{Gold}、票＋{SoulTicket}、經驗＋{exp} |
+| 掃蕩 | `reward.sweep` | 掃蕩完成～金幣＋{Gold}、經驗＋{exp} |
+| 拆零件金幣 | `reward.part_break_gold` | 零件叮咚，金幣＋{Gold} |
+| 日事件選完（通用） | `reward.daily_event` | 這格發條轉完了！（獎勵進口袋） |
+| 體力自然回復 1 格 | `reward.stamina_regen` | 發條自己轉回一格～ |
+| 廣告回復（若做） | `reward.ad_regen` | 看完小劇場，發條＋{WindStamina} |
+| 日限打到 | `err.daily_cap_pull` | 今天抽魂次數滿了，明天再轉 |
+| 日限掃蕩 | `err.daily_cap_sweep` | 今天掃蕩次數滿了 |
+| 金幣日上限 | `err.daily_gold_cap` | 今天金幣裝太滿，先去強化吧 |
+
+**日事件×7 → 建議掛哪種來源（Ken 可改）**
+
+| EventId | 建議 reward source |
+|---------|-------------------|
+| `daily.wind_xiaobai` | 小量 Gold 或 stamina +1 |
+| `daily.wind_lion` | Gold（對 `dailyLogin` 節奏） |
+| `daily.wind_fox` | SoulTicket 碎片／1 |
+| `daily.wind_pig` | part 權重暗示（實際掉落仍走戰鬥） |
+| `daily.wind_clock` | 導向掃蕩／章節 |
+| `daily.wind_codex` | 導向 §8 或抽魂 |
+| `daily.wind_share` | `dailyLogin` 同檔獎勵 |
+

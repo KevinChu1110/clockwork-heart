@@ -76,3 +76,17 @@ func spend_sweep() -> bool:
 	var sinks: Dictionary = config.economy.get("sinks", {}) as Dictionary
 	var need: int = int((sinks.get("sweep", {}) as Dictionary).get("Gold", 20))
 	return spend_gold(need)
+
+
+func toast_for_source(source_id: String) -> String:
+	match source_id:
+		"dailyLogin":
+			return "reward.daily_login"
+		"firstClear":
+			return "reward.first_clear"
+		"sweep":
+			return "reward.sweep"
+		"partBreak":
+			return "reward.part_break_gold"
+		_:
+			return "reward.daily_event"
