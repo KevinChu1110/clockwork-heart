@@ -1,0 +1,38 @@
+{
+  "id": "W8-B1",
+  "onboard": {
+    "maxSeconds": 180,
+    "tutorialSoulTicket": 1,
+    "skipableNodes": ["N07"],
+    "requiredNodes": ["N05"],
+    "steps": [
+      {"node": "N01", "t": [0, 10], "key": "onb.n01", "cue": "sfx.ui.wind_tick"},
+      {"node": "N02", "t": [10, 25], "key": "onb.n02", "cue": "sfx.ui.wind_tick"},
+      {"node": "N03", "t": [25, 50], "key": "onb.n03", "cue": "sfx.explore.interact"},
+      {"node": "N04", "t": [50, 70], "key": "onb.n04", "cue": "sfx.battle.start"},
+      {"node": "N05", "t": [70, 110], "key": "onb.n05", "cue": "sfx.battle.part_break"},
+      {"node": "N06", "t": [110, 130], "key": "onb.n06", "cue": "sfx.dismantle.core_glint"},
+      {"node": "N07", "t": [130, 160], "key": "onb.n07", "cue": "soul.pull_start"},
+      {"node": "N08", "t": [160, 180], "key": "onb.n08", "cue": "soul.pull_outfit"}
+    ]
+  },
+  "dailyEvents": [
+    {"day": 1, "EventId": "daily.wind_xiaobai", "CharacterId": "xiaobai", "titleKey": "daily.wind_xiaobai.title", "bodyKey": "daily.wind_xiaobai.body", "aKey": "daily.wind_xiaobai.a", "bKey": "daily.wind_xiaobai.b"},
+    {"day": 2, "EventId": "daily.wind_lion", "CharacterId": "lion", "titleKey": "daily.wind_lion.title", "bodyKey": "daily.wind_lion.body", "aKey": "daily.wind_lion.a", "bKey": "daily.wind_lion.b"},
+    {"day": 3, "EventId": "daily.wind_fox", "CharacterId": "fox", "titleKey": "daily.wind_fox.title", "bodyKey": "daily.wind_fox.body", "aKey": "daily.wind_fox.a", "bKey": "daily.wind_fox.b"},
+    {"day": 4, "EventId": "daily.wind_pig", "CharacterId": "pig", "titleKey": "daily.wind_pig.title", "bodyKey": "daily.wind_pig.body", "aKey": "daily.wind_pig.a", "bKey": "daily.wind_pig.b"},
+    {"day": 5, "EventId": "daily.wind_clock", "CharacterId": "", "titleKey": "daily.wind_clock.title", "bodyKey": "daily.wind_clock.body", "aKey": "daily.wind_clock.a", "bKey": "daily.wind_clock.b"},
+    {"day": 6, "EventId": "daily.wind_codex", "CharacterId": "", "titleKey": "daily.wind_codex.title", "bodyKey": "daily.wind_codex.body", "aKey": "daily.wind_codex.a", "bKey": "daily.wind_codex.b"},
+    {"day": 7, "EventId": "daily.wind_share", "CharacterId": "", "titleKey": "daily.wind_share.title", "bodyKey": "daily.wind_share.body", "aKey": "daily.wind_share.a", "bKey": "daily.wind_share.b"}
+  ],
+  "ui": {
+    "soulResultCard": "res://assets/sprites/pack_a/v2/ui/soul_result_card.png",
+    "codexIcons": "res://assets/sprites/pack_a/v2/ui/codex_icons_x4.png",
+    "threeSizes": {
+      "xiaobai": "res://assets/sprites/pack_a/v2/ui/xiaobai_three_sizes.png",
+      "lion": "res://assets/sprites/pack_a/v2/ui/lion_three_sizes.png",
+      "fox": "res://assets/sprites/pack_a/v2/ui/fox_three_sizes.png",
+      "pig": "res://assets/sprites/pack_a/v2/ui/pig_three_sizes.png"
+    }
+  }
+}
