@@ -50,6 +50,7 @@
 | [PAPER_DOLL_V2_ASSEMBLY.md](PAPER_DOLL_V2_ASSEMBLY.md) | W6-K3 紙娃娃組裝：Slots／Anim／WeaponClass、副手 empty、背鑰永在背、chest_heart↔體力光 | ✅ |
 | [SOUL_DRAW_V2.md](SOUL_DRAW_V2.md) | W7-K1b 抽魂單一池＋四角色換裝 loadout | ✅ |
 | [W8_B1_ONBOARD_DAILY.md](W8_B1_ONBOARD_DAILY.md) | Wave-8 新手 3 分鐘＋每日上發條×7 | ✅ |
+| [W8_K1_SYSTEMS.md](W8_K1_SYSTEMS.md) | Wave-8 日循環／養成／經濟／關卡 | ✅ |
 | [ART_STANDARD_SCENE_S8.md](ART_STANDARD_SCENE_S8.md) | **§8 標準場過審**：探索→戰鬥→拆部位；Grok 審／Hermes 做／老周合 | ✅ |
 | [ART_DIRECTION.md](ART_DIRECTION.md) | 品牌／KV 參考＋v3 覆寫指向憲法 | ✅ |
 | [ART_2D.md](ART_2D.md) | 2D 表現與遷移（**歷史索引**；風格以憲法為準） | ⚠️ 歷史 |
