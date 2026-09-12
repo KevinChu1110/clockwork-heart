@@ -96,6 +96,7 @@ func _goto(p: int) -> void:
 			)
 		Phase.CHAPTER:
 			_banner.text = "Hub · ③ C0 首通／掃蕩 · 發條 %d/%d" % [runtime.daily.wind, runtime.daily.wind_max]
+	_refresh_daily_event_ui()
 			_build_chapter_panel()
 
 
@@ -145,9 +146,11 @@ func _build_chapter_panel() -> void:
 	b4.pressed.connect(func() -> void: _goto(Phase.SOUL))
 	row.add_child(b4)
 
+	_build_daily_event_block()
+
 	var hint := Label.new()
-	hint.position = Vector2(48, 240)
-	hint.text = "一條龍：新手 → 抽魂 → 本頁。也可開獨立場景 F6。"
+	hint.position = Vector2(48, 400)
+	hint.text = "一條龍：新手 → 抽魂 → 本頁。日事件每日一選，漏天不補。"
 	hint.add_theme_color_override("font_color", Color(0.65, 0.62, 0.55))
 	_chapter_panel.add_child(hint)
 
@@ -163,6 +166,7 @@ func _refresh_chapter_info() -> void:
 		runtime.daily.wind, runtime.daily.wind_max, runtime.daily.daily_sweeps
 	]
 	_banner.text = "Hub · ③ C0 首通／掃蕩 · 發條 %d/%d" % [runtime.daily.wind, runtime.daily.wind_max]
+	_refresh_daily_event_ui()
 
 
 func _flash(msg: String) -> void:
@@ -203,3 +207,94 @@ func _on_sim_regen() -> void:
 	var gained: int = runtime.daily.tick_regen()
 	_flash("%s（%d→%d，＋%d）" % [_tr("reward.stamina_regen"), before, runtime.daily.wind, gained])
 	_refresh_chapter_info()
+
+func _build_daily_event_block() -> void:
+	var box := VBoxContainer.new()
+	box.name = "DailyEventBox"
+	box.position = Vector2(48, 260)
+	box.add_theme_constant_override("separation", 8)
+	_chapter_panel.add_child(box)
+
+	var title := Label.new()
+	title.name = "DailyTitle"
+	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_color_override("font_color", Color(0.85, 0.9, 1.0))
+	box.add_child(title)
+
+	var body := Label.new()
+	body.name = "DailyBody"
+	body.add_theme_font_size_override("font_size", 15)
+	body.add_theme_color_override("font_color", Color(0.75, 0.78, 0.7))
+	box.add_child(body)
+
+	var row := HBoxContainer.new()
+	row.name = "DailyChoices"
+	row.add_theme_constant_override("separation", 12)
+	box.add_child(row)
+
+	_refresh_daily_event_ui()
+
+
+func _format_daily_toast(toast_key: String, tokens: Dictionary) -> String:
+	var tpl: String = _tr(toast_key)
+	for k in tokens.keys():
+		tpl = tpl.replace("{%s}" % str(k), str(tokens[k]))
+	return tpl
+
+
+func _refresh_daily_event_ui() -> void:
+	if _chapter_panel == null:
+		return
+	var box: VBoxContainer = _chapter_panel.get_node_or_null("DailyEventBox") as VBoxContainer
+	if box == null:
+		return
+	var title: Label = box.get_node_or_null("DailyTitle") as Label
+	var body: Label = box.get_node_or_null("DailyBody") as Label
+	var row: HBoxContainer = box.get_node_or_null("DailyChoices") as HBoxContainer
+	if title == null or row == null:
+		return
+	for c in row.get_children():
+		c.queue_free()
+
+	var info: Dictionary = runtime.today_daily_event()
+	var ev: Dictionary = info.get("event", {}) as Dictionary
+	var day_id: String = str(ev.get("DayId", "?"))
+	var picked: bool = bool(info.get("picked", false))
+	if picked:
+		title.text = "%s · %s" % [_tr("daily.title"), _tr("daily.already")]
+	else:
+		title.text = _tr("daily.title")
+	if body != null:
+		body.text = _tr("daily.%s.body" % day_id)
+
+	for ch in ev.get("choices", []) as Array:
+		if typeof(ch) != TYPE_DICTIONARY:
+			continue
+		var choice: Dictionary = ch as Dictionary
+		var cid: String = str(choice.get("ChoiceId", ""))
+		var label_key: String = "daily.%s.%s" % [day_id, cid]
+		var label: String = _tr(label_key)
+		if label == label_key:
+			label = str(choice.get("label", cid))
+		var b := Button.new()
+		b.text = "%s · %s" % [cid, label]
+		b.custom_minimum_size = Vector2(220, 48)
+		b.disabled = picked
+		var pick_id: String = cid
+		b.pressed.connect(func() -> void: _on_daily_pick(pick_id))
+		row.add_child(b)
+
+
+func _on_daily_pick(choice_id: String) -> void:
+	var r: Dictionary = runtime.do_daily_event_pick(choice_id)
+	if bool(r.get("ok", false)):
+		var tokens: Dictionary = r.get("tokens", {}) as Dictionary
+		_flash(_format_daily_toast(str(r.get("toastKey", "reward.daily_event")), tokens))
+	else:
+		var err: String = str(r.get("error", ""))
+		if err == "already_picked":
+			_flash(_tr("daily.already"))
+		else:
+			_flash("日事件失敗：%s" % err)
+	_refresh_chapter_info()
+	_refresh_daily_event_ui()

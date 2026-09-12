@@ -7,6 +7,7 @@ const GrowthScript := preload("res://scripts/systems/wave8/w8_growth.gd")
 const EconScript := preload("res://scripts/systems/wave8/w8_economy.gd")
 const ChaptersScript := preload("res://scripts/systems/wave8/w8_chapters.gd")
 const W8StateScript := preload("res://scripts/systems/wave8/w8_game_state.gd")
+const DailyEventsScript := preload("res://scripts/systems/wave8/w8_daily_events.gd")
 
 var config
 var daily
@@ -14,6 +15,7 @@ var growth
 var econ
 var chapters
 var meta  ## onboard／daily events
+var daily_events
 var inventory_parts: Dictionary = {"drop_brass_gear": 0, "drop_spring_coil": 0, "drop_core_shard": 0}
 var last_error: String = ""
 
@@ -34,6 +36,10 @@ func setup() -> bool:
 	meta = W8StateScript.new()
 	meta.load_bingo()
 	meta.grant_tutorial_ticket()
+	daily_events = DailyEventsScript.new()
+	if not daily_events.load_from():
+		last_error = "k2_daily_events"
+		return false
 	# sync tutorial ticket into econ
 	econ.soul_tickets = max(econ.soul_tickets, meta.soul_tickets)
 	return true
@@ -123,6 +129,36 @@ func do_enhance(slot: String) -> Dictionary:
 		inventory_parts["drop_brass_gear"] = brass - cp
 	return res
 
+
+func calendar_day_index(now_unix: float = -1.0) -> int:
+	## Mon=1 … Sun=7 → DayId D1…D7（D7 週末）
+	if now_unix < 0.0:
+		now_unix = Time.get_unix_time_from_system()
+	daily.tick_regen(now_unix)
+	var dt := Time.get_datetime_dict_from_unix_time(int(now_unix))
+	var wd: int = int(dt.get("weekday", 0))  # 0=Sun … 6=Sat
+	if wd == 0:
+		return 7
+	return wd
+
+func do_daily_event_pick(choice_id: String) -> Dictionary:
+	daily.tick_regen()
+	var day_key: String = daily.day_key
+	var idx: int = calendar_day_index()
+	return daily_events.pick(day_key, idx, choice_id, self)
+
+func today_daily_event() -> Dictionary:
+	daily.tick_regen()
+	var idx: int = calendar_day_index()
+	var ev: Dictionary = daily_events.todays_event(idx)
+	var day_key: String = daily.day_key
+	return {
+		"event": ev,
+		"dayKey": day_key,
+		"dayIndex": idx,
+		"picked": daily_events.has_picked(day_key),
+		"pickedChoice": str(daily_events.picked_by_day.get(day_key, "")),
+	}
 
 func summary() -> Dictionary:
 	return {

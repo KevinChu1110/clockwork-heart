@@ -1,0 +1,38 @@
+{
+  "id": "W8-K2",
+  "dailyEvents": [
+    {"DayId": "D1", "CharacterId": "xiaobai", "choices": [
+      {"ChoiceId": "A", "label": "上滿發條", "Gold": 80, "SoulTicket": 0, "WindStamina": 2},
+      {"ChoiceId": "B", "label": "先休息", "Gold": 40, "exp": 20, "WindStamina": 5}
+    ]},
+    {"DayId": "D2", "CharacterId": "lion", "choices": [
+      {"ChoiceId": "A", "label": "陪練揮劍", "Gold": 60, "exp": 30},
+      {"ChoiceId": "B", "label": "擦亮黃銅甲", "Gold": 50, "DropId": "drop_brass_gear", "dropPct": 100}
+    ]},
+    {"DayId": "D3", "CharacterId": "fox", "choices": [
+      {"ChoiceId": "A", "label": "夜探工坊", "Gold": 70, "SoulTicket": 1},
+      {"ChoiceId": "B", "label": "聽齒輪故事", "Gold": 40, "exp": 40}
+    ]},
+    {"DayId": "D4", "CharacterId": "pig", "choices": [
+      {"ChoiceId": "A", "label": "幫忙搬彈簧", "Gold": 55, "DropId": "drop_spring_coil", "dropPct": 100},
+      {"ChoiceId": "B", "label": "分享午茶", "Gold": 90, "WindStamina": 3}
+    ]},
+    {"DayId": "D5", "CharacterId": "xiaobai", "choices": [
+      {"ChoiceId": "A", "label": "拆一顆試試", "Gold": 50, "DropId": "drop_core_shard", "dropPct": 50},
+      {"ChoiceId": "B", "label": "圖鑑整理", "Gold": 45, "exp": 35}
+    ]},
+    {"DayId": "D6", "CharacterId": "lion", "choices": [
+      {"ChoiceId": "A", "label": "掃蕩加練", "Gold": 100, "exp": 25},
+      {"ChoiceId": "B", "label": "養精蓄銳", "Gold": 30, "WindStamina": 6}
+    ]},
+    {"DayId": "D7", "CharacterId": "fox", "choices": [
+      {"ChoiceId": "A", "label": "週末抽魂加碼", "Gold": 0, "SoulTicket": 2},
+      {"ChoiceId": "B", "label": "發放零件禮", "Gold": 120, "DropId": "drop_brass_gear", "dropPct": 100}
+    ]}
+  ],
+  "rules": {
+    "picksPerDay": 1,
+    "countsToward": {"dailyGoldCap": 5000, "dailyTicketCap": 40},
+    "missDay": "no_retroactive_reward"
+  }
+}
