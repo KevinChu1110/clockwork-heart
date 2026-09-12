@@ -1,4 +1,5 @@
 extends Control
+signal finished
 ## 新手 onb 場景：逐步顯示 onb.n01–n08，N07 可跳過進抽魂結果示意。
 
 const FlowScript := preload("res://scripts/systems/onboard/onboard_flow.gd")
@@ -103,6 +104,9 @@ func _show_current() -> void:
 		_dialog.text = _tr("onb.n08")
 		_btn_next.disabled = true
 		_btn_skip.visible = false
+		if not has_meta("_emitted_finished"):
+			set_meta("_emitted_finished", true)
+			finished.emit()
 		return
 	var cur: Dictionary = flow.current()
 	var node: String = str(cur.get("node", ""))

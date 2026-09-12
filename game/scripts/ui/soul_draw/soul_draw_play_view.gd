@@ -1,4 +1,5 @@
 extends Control
+signal continue_requested
 ## SoulDraw 可玩 UI：扣票 → 抽一格 → 結果卡。
 ## ⛔ 不開第二轉蛋；唯一池＝soul_draw_v2。
 
@@ -73,6 +74,18 @@ func _build() -> void:
 	_btn.offset_bottom = -84
 	_btn.pressed.connect(_on_pull)
 	add_child(_btn)
+
+	var cont := Button.new()
+	cont.name = "ContinueBtn"
+	cont.text = "去玩具堆邊緣（C0）"
+	cont.custom_minimum_size = Vector2(280, 48)
+	cont.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	cont.offset_left = -140
+	cont.offset_right = 140
+	cont.offset_top = -76
+	cont.offset_bottom = -28
+	cont.pressed.connect(func() -> void: continue_requested.emit())
+	add_child(cont)
 
 	_err = Label.new()
 	_err.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
