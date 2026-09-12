@@ -1,5 +1,6 @@
 extends RefCounted
 ## W8-K2 日事件：每日一選 A／B；獎勵吃日 cap；漏天不補。
+## Toast／label 走 Bingo W8-B2：`daily.{DayId}.{ChoiceId}.toast`；％與數值吃 K2 表。
 
 const PATH := "res://data/ken/w8_k2_daily_events.json"
 
@@ -42,14 +43,24 @@ func has_picked(day_key: String) -> bool:
 	return picked_by_day.has(day_key)
 
 
+func toast_key(day_id: String, choice_id: String) -> String:
+	return "daily.%s.%s.toast" % [day_id, choice_id]
+
+
+func label_key(day_id: String, choice_id: String) -> String:
+	return "daily.%s.%s" % [day_id, choice_id]
+
+
+func body_key(day_id: String) -> String:
+	return "daily.%s.body" % day_id
+
+
 func pick(day_key: String, day_index: int, choice_id: String, runtime) -> Dictionary:
 	## runtime: w8_runtime with econ/daily/growth/inventory_parts
 	last_error = ""
-	if str(rules.get("missDay", "")) == "no_retroactive_reward":
-		pass  # 僅允許「今天」由呼叫端傳入今日 day_key；過去日不補
 	if has_picked(day_key):
 		last_error = "already_picked"
-		return {"ok": false, "error": last_error, "toastKey": "reward.daily_event"}
+		return {"ok": false, "error": last_error, "toastKey": "daily.already"}
 	var picks: int = int(rules.get("picksPerDay", 1))
 	if picks < 1:
 		last_error = "no_picks"
@@ -58,6 +69,7 @@ func pick(day_key: String, day_index: int, choice_id: String, runtime) -> Dictio
 	if ev.is_empty():
 		last_error = "no_event"
 		return {"ok": false, "error": last_error}
+	var day_id: String = str(ev.get("DayId", ""))
 	var choice: Dictionary = {}
 	for c in ev.get("choices", []) as Array:
 		if typeof(c) == TYPE_DICTIONARY and str((c as Dictionary).get("ChoiceId", "")) == choice_id:
@@ -84,16 +96,26 @@ func pick(day_key: String, day_index: int, choice_id: String, runtime) -> Dictio
 			runtime.inventory_parts[drop_id] = int(runtime.inventory_parts.get(drop_id, 0)) + 1
 
 	picked_by_day[day_key] = choice_id
+	## toast 佔位符吃 K2 表值（％／數值不改）
+	var tokens: Dictionary = {
+		"Gold": gold,
+		"SoulTicket": tickets,
+		"exp": exp_n,
+		"WindStamina": wind_gain,
+	}
 	return {
 		"ok": true,
-		"DayId": str(ev.get("DayId", "")),
+		"DayId": day_id,
 		"ChoiceId": choice_id,
 		"label": str(choice.get("label", "")),
+		"labelKey": label_key(day_id, choice_id),
+		"bodyKey": body_key(day_id),
 		"gain": gain,
 		"level": lv,
 		"wind": runtime.daily.wind,
 		"dropped": dropped,
 		"DropId": drop_id if dropped else "",
-		"toastKey": "reward.daily_event",
+		"toastKey": toast_key(day_id, choice_id),
+		"tokens": tokens,
 		"noRetroactive": true,
 	}

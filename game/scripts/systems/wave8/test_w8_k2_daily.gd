@@ -27,6 +27,19 @@ func _init() -> void:
 	if not bool(r1.get("ok", false)):
 		print("W8_K2_FAIL first_pick ", r1)
 		ok = false
+	var tk: String = str(r1.get("toastKey", ""))
+	if not tk.begins_with("daily.") or not tk.ends_with(".toast"):
+		print("W8_K2_FAIL toast_key ", tk)
+		ok = false
+	if not (r1.get("tokens", {}) as Dictionary).has("Gold"):
+		print("W8_K2_FAIL tokens")
+		ok = false
+	# i18n formal strings exist
+	var i18n_path := "res://data/i18n/zh_TW.json"
+	var i18n = JSON.parse_string(FileAccess.get_file_as_string(i18n_path))
+	if typeof(i18n) != TYPE_DICTIONARY or not (i18n as Dictionary).has(tk):
+		print("W8_K2_FAIL i18n_missing ", tk)
+		ok = false
 	if rt.econ.gold < gold0 and int((choices[0] as Dictionary).get("Gold", 0)) > 0:
 		# gold should not drop from a positive Gold reward
 		pass

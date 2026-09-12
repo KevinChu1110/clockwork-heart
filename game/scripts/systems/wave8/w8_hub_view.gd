@@ -221,12 +221,25 @@ func _build_daily_event_block() -> void:
 	title.add_theme_color_override("font_color", Color(0.85, 0.9, 1.0))
 	box.add_child(title)
 
+	var body := Label.new()
+	body.name = "DailyBody"
+	body.add_theme_font_size_override("font_size", 15)
+	body.add_theme_color_override("font_color", Color(0.75, 0.78, 0.7))
+	box.add_child(body)
+
 	var row := HBoxContainer.new()
 	row.name = "DailyChoices"
 	row.add_theme_constant_override("separation", 12)
 	box.add_child(row)
 
 	_refresh_daily_event_ui()
+
+
+func _format_daily_toast(toast_key: String, tokens: Dictionary) -> String:
+	var tpl: String = _tr(toast_key)
+	for k in tokens.keys():
+		tpl = tpl.replace("{%s}" % str(k), str(tokens[k]))
+	return tpl
 
 
 func _refresh_daily_event_ui() -> void:
@@ -236,6 +249,7 @@ func _refresh_daily_event_ui() -> void:
 	if box == null:
 		return
 	var title: Label = box.get_node_or_null("DailyTitle") as Label
+	var body: Label = box.get_node_or_null("DailyBody") as Label
 	var row: HBoxContainer = box.get_node_or_null("DailyChoices") as HBoxContainer
 	if title == null or row == null:
 		return
@@ -245,21 +259,23 @@ func _refresh_daily_event_ui() -> void:
 	var info: Dictionary = runtime.today_daily_event()
 	var ev: Dictionary = info.get("event", {}) as Dictionary
 	var day_id: String = str(ev.get("DayId", "?"))
-	var char_id: String = str(ev.get("CharacterId", ""))
 	var picked: bool = bool(info.get("picked", false))
 	if picked:
-		title.text = "日事件 %s（%s）· 今日已選 %s · 漏天不補" % [
-			day_id, char_id, str(info.get("pickedChoice", ""))
-		]
+		title.text = "%s · %s" % [_tr("daily.title"), _tr("daily.already")]
 	else:
-		title.text = "日事件 %s（%s）· 每日一選 A／B" % [day_id, char_id]
+		title.text = _tr("daily.title")
+	if body != null:
+		body.text = _tr("daily.%s.body" % day_id)
 
 	for ch in ev.get("choices", []) as Array:
 		if typeof(ch) != TYPE_DICTIONARY:
 			continue
 		var choice: Dictionary = ch as Dictionary
 		var cid: String = str(choice.get("ChoiceId", ""))
-		var label: String = str(choice.get("label", cid))
+		var label_key: String = "daily.%s.%s" % [day_id, cid]
+		var label: String = _tr(label_key)
+		if label == label_key:
+			label = str(choice.get("label", cid))
 		var b := Button.new()
 		b.text = "%s · %s" % [cid, label]
 		b.custom_minimum_size = Vector2(220, 48)
@@ -272,19 +288,13 @@ func _refresh_daily_event_ui() -> void:
 func _on_daily_pick(choice_id: String) -> void:
 	var r: Dictionary = runtime.do_daily_event_pick(choice_id)
 	if bool(r.get("ok", false)):
-		var g: Dictionary = r.get("gain", {}) as Dictionary
-		_flash("%s · %s（金＋%d 票＋%d）" % [
-			str(r.get("label", "")),
-			_tr(str(r.get("toastKey", "reward.daily_event"))),
-			int(g.get("goldAdded", 0)),
-			int(g.get("ticketAdded", 0)),
-		])
+		var tokens: Dictionary = r.get("tokens", {}) as Dictionary
+		_flash(_format_daily_toast(str(r.get("toastKey", "reward.daily_event")), tokens))
 	else:
 		var err: String = str(r.get("error", ""))
 		if err == "already_picked":
-			_flash("今日已選過（漏天不補）")
+			_flash(_tr("daily.already"))
 		else:
 			_flash("日事件失敗：%s" % err)
 	_refresh_chapter_info()
 	_refresh_daily_event_ui()
-
