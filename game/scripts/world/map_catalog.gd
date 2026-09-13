@@ -209,13 +209,13 @@ static func _village_outskirts() -> Dictionary:
 static func _village_mill() -> Dictionary:
 	var m := _base("風車積木田", Color(0.09, 0.1, 0.07), 2400, 1350, Vector2(912, 1269), "village_mill")
 	m["entities"] = [
-		_e("back_from_mill", 840, 1215, 56, 56, "回田野", Color(0.4, 0.35, 0.3)),
-		_e("big_mill", 864, 891, 96, 120, "巨風車", Color(0.45, 0.42, 0.38), true),
+		_e("back_from_mill", 840, 1215, 56, 56, "回玩具堆邊緣", Color(0.4, 0.35, 0.3)),
+		_e("big_mill", 864, 891, 96, 120, "巨型發條風車", Color(0.45, 0.42, 0.38), true),
 		_e("grain_silo", 1320, 864, 56, 64, "糧倉", Color(0.5, 0.4, 0.3), true),
 		_e("miller_hut", 1680, 864, 64, 56, "碾坊主屋", Color(0.42, 0.36, 0.28), true),
 		_e("wheat_sea", 2112, 837, 80, 48, "麥浪坡", Color(0.55, 0.5, 0.3)),
-		_e("mill_to_road", 2208, 1080, 64, 56, "捷徑·荒路", Color(0.35, 0.4, 0.3)),
-		_e("scare_b", 744, 1026, 40, 48, "第二稻草人", Color(0.4, 0.35, 0.25)),
+		_e("mill_to_road", 2208, 1080, 64, 56, "捷徑·外緣", Color(0.35, 0.4, 0.3)),
+		_e("scare_b", 744, 1026, 40, 48, "第二哨兵偶", Color(0.4, 0.35, 0.25)),
 	]
 	return m
 
