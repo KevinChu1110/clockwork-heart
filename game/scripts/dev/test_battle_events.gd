@@ -26,6 +26,7 @@ func _process(_delta: float) -> bool:
 	if _battle == null:
 		if _idx >= _races.size():
 			print("ALL RACES TESTED")
+			print("TEST_BATTLE_EVENTS_OK")
 			quit(0)
 			return false
 		var r = _races[_idx]
@@ -67,8 +68,8 @@ func _process(_delta: float) -> bool:
 			)
 		return false
 
-	if _sim and _sim.get("has_ended"):
-		print("  --> Battle ended at t=%.2f, victory=%s" % [_sim.get("time"), _sim.get("victory")])
+	if _sim and (_sim.get("finished") or _sim.get("has_ended")):
+		print("  --> Battle ended at t=%.2f, victory=%s" % [_sim.get("time"), _sim.get("won")])
 		_battle.queue_free()
 		_battle = null
 		_sim = null
