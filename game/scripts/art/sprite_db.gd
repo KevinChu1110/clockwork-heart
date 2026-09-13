@@ -962,7 +962,6 @@ const _TOKEN_PROP := [
 	[["herb", "grass", "moss", "bush", "field", "wheat", "crop", "scare", "bloom"], "herb"],
 	[["cliff", "ridge", "slope", "peak", "canyon", "ravine"], "cliff"],
 	[["nest"], "nest"],
-	[["fence", "wall", "barrier"], "fence"],
 	[["sword", "blade", "weapon", "armor"], "sword"],
 	[["dummy", "training", "spar"], "dummy"],
 	[["tea"], "tea"],
@@ -989,7 +988,7 @@ static func _fallback_prop_path(entity_id: String) -> String:
 ##     玩家要看得到才知道有東西
 ##   · 玩法標記（dummy／forge／bell）—— 找不到就卡關
 const _SCENERY_PROPS := ["hut", "tower", "gate", "well", "boat", "cliff",
-	"pine", "tree", "rock", "camp", "shrine", "fence"]
+	"pine", "tree", "rock", "camp", "shrine"]
 
 
 static func is_scenery_prop(entity_id: String) -> bool:
