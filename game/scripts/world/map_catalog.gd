@@ -365,7 +365,7 @@ static func _town() -> Dictionary:
 
 static func _town_forge() -> Dictionary:
 	## 原作村內鐵匠鋪：走進才見到爐與釘釘。世界 16:9，實體腳底對齊 ¾ 俯視地板。
-	var m := _base("堡壘 · 鐵匠鋪", Color(0.16, 0.08, 0.06), 1458, 820, Vector2(769, 769), "town_forge")
+	var m := _base("堡壘 · 鐵匠鋪", Color(0.88, 0.82, 0.74), 1458, 820, Vector2(769, 769), "town_forge")
 	m["entities"] = [
 		_e("back_from_shop", 741, 786, 56, 48, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("ding", 628, 590, 48, 64, "釘釘·鐵匠", Color(0.7, 0.4, 0.25)),
@@ -378,7 +378,7 @@ static func _town_forge() -> Dictionary:
 
 
 static func _town_soul() -> Dictionary:
-	var m := _base("堡壘 · 聚魂殿", Color(0.07, 0.08, 0.16), 1458, 820, Vector2(769, 785), "town_soul")
+	var m := _base("堡壘 · 聚魂殿", Color(0.82, 0.86, 0.90), 1458, 820, Vector2(769, 785), "town_soul")
 	m["entities"] = [
 		_e("back_from_shop", 741, 795, 56, 48, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("star", 687, 606, 48, 64, "星讀", Color(0.45, 0.5, 0.75)),
@@ -390,7 +390,7 @@ static func _town_soul() -> Dictionary:
 
 
 static func _town_gem() -> Dictionary:
-	var m := _base("堡壘 · 手藝工坊", Color(0.14, 0.07, 0.09), 1458, 820, Vector2(740, 769), "town_gem")
+	var m := _base("堡壘 · 手藝工坊", Color(0.89, 0.82, 0.84), 1458, 820, Vector2(740, 769), "town_gem")
 	m["entities"] = [
 		_e("back_from_shop", 858, 786, 56, 48, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("gem_clerk", 512, 574, 48, 64, "工坊師傅", Color(0.75, 0.35, 0.4)),
@@ -402,7 +402,7 @@ static func _town_gem() -> Dictionary:
 
 
 static func _town_tutor() -> Dictionary:
-	var m := _base("堡壘 · 武術館", Color(0.11, 0.1, 0.12), 1458, 820, Vector2(507, 736), "town_tutor")
+	var m := _base("堡壘 · 武術館", Color(0.86, 0.84, 0.80), 1458, 820, Vector2(507, 736), "town_tutor")
 	m["entities"] = [
 		_e("back_from_shop", 449, 737, 56, 48, "回廣場", Color(0.4, 0.4, 0.45)),
 		_e("greybeard", 599, 557, 48, 64, "灰鬚", Color(0.55, 0.55, 0.6)),

@@ -509,7 +509,7 @@ static func _create_quest_badge_style() -> StyleBoxFlat:
 func _build_chrome() -> void:
 	_bg = ColorRect.new()
 	_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_bg.color = Color(0.06, 0.05, 0.08)
+	_bg.color = Color(0.91, 0.88, 0.82)
 	_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_bg)
 
@@ -569,7 +569,8 @@ func _build_chrome() -> void:
 	_vignette = ColorRect.new()
 	_vignette.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	## 淺 vignette：過重會整圖髒、搶物件可讀性
-	_vignette.color = Color(0.02, 0.02, 0.04, 0.14)
+	_vignette.color = Color(0.02, 0.02, 0.04, 0.0)
+	_vignette.visible = false
 	_scroll.add_child(_vignette)
 
 	## 站立帶上方淡影（scenic 地圖才開）
@@ -916,11 +917,16 @@ func _update_horizon_shade(pal: Dictionary = {}) -> void:
 	if not _has_scenic_bg:
 		_horizon_shade.visible = false
 		return
+	var hc: Color = pal.get("horizon", Color(0.03, 0.02, 0.06, 0.0)) as Color
+	if hc.a <= 0.04:
+		_horizon_shade.visible = false
+		_horizon_shade.color = hc
+		return
 	_horizon_shade.visible = true
 	_horizon_shade.position = FLOOR_RECT.position
 	_horizon_shade.size = Vector2(FLOOR_RECT.size.x, FLOOR_RECT.size.y * STAND_BAND_TOP_T)
 	## 淡淡壓暗遠景／屋頂帶；色跟域走，不再一律紫灰
-	_horizon_shade.color = pal.get("horizon", Color(0.03, 0.02, 0.06, 0.20)) as Color
+	_horizon_shade.color = hc
 
 
 func _clear_scenic_layers() -> void:
@@ -1091,20 +1097,26 @@ func _apply_map_art(id: String) -> void:
 	var has_scenic_bg := bg_tex != null
 	_has_scenic_bg = has_scenic_bg
 	_art_id = art_id
-	_bg.color = pal.get("bg", Color(0.08, 0.08, 0.1)) as Color
+	_bg.color = pal.get("bg", Color(0.91, 0.88, 0.82)) as Color
 	if has_scenic_bg:
 		## 完整顯示手繪底圖。必須 STRETCH_SCALE 對齊 FLOOR_RECT，
 		## 否則 COVERED 裁切會讓美術建築與 entity／碰撞座標錯位（看起來像穿模）。
 		_floor.texture = bg_tex
 		_floor.modulate = pal.get("grade", Color.WHITE) as Color
 		_floor.stretch_mode = TextureRect.STRETCH_SCALE
-		_floor_tint.color = pal.get("wash", Color(0.04, 0.03, 0.06, 0.10)) as Color
+		var wc: Color = pal.get("wash", Color(0.04, 0.03, 0.06, 0.0)) as Color
+		_floor_tint.color = wc
+		_floor_tint.visible = wc.a > 0.001
 	else:
 		_floor.texture = null
 		_floor.modulate = Color.WHITE
-		_floor_tint.color = pal.get("wash", Color(0.12, 0.10, 0.10, 0.45)) as Color
+		var wc: Color = pal.get("wash", Color(0.0, 0.0, 0.0, 0.0)) as Color
+		_floor_tint.color = wc
+		_floor_tint.visible = wc.a > 0.001
 	if _vignette:
-		_vignette.color = pal.get("vignette", Color(0.02, 0.02, 0.04, 0.14)) as Color
+		var vc: Color = pal.get("vignette", Color(0.02, 0.02, 0.04, 0.0)) as Color
+		_vignette.color = vc
+		_vignette.visible = vc.a > 0.001
 
 	_build_tilemap(art_id if art_id != "" else id, has_scenic_bg, pal)
 	_update_horizon_shade(pal)
@@ -1219,7 +1231,7 @@ func _load_map(id: String) -> void:
 	_entities.clear()
 	var data: Dictionary = MapCatalog.build(id)
 	_title.text = str(data.get("title", id))
-	_bg.color = data.get("bg_color", Color(0.08, 0.08, 0.1)) as Color
+	_bg.color = data.get("bg_color", Color(0.91, 0.88, 0.82)) as Color
 	var origin: Vector2 = data.get("origin", Vector2(40, 80))
 	var msize: Vector2 = data.get("size", Vector2(1600, 900))
 	FLOOR_RECT = Rect2(origin, msize)
