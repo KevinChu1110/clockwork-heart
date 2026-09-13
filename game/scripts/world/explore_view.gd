@@ -1781,6 +1781,8 @@ func _rebuild_entities() -> void:
 		name_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		name_chip.add_theme_stylebox_override("panel", _create_nameplate_style())
 		name_chip.position = Vector2(root.size.x * 0.5 - 40, root.size.y + 2)
+		name_chip.z_index = 25
+		name_chip.z_as_relative = false
 		var lab := Label.new()
 		lab.text = e.label
 		lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -1796,7 +1798,7 @@ func _rebuild_entities() -> void:
 		badge_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		badge_panel.add_theme_stylebox_override("panel", _create_quest_badge_style())
 		badge_panel.position = Vector2(root.size.x * 0.5 - 18, -84)
-		badge_panel.z_index = 10
+		badge_panel.z_index = 25
 		badge_panel.z_as_relative = false
 		var badge := Label.new()
 		badge.text = "！"
@@ -2295,7 +2297,7 @@ func _update_near() -> void:
 			_hint.text = _t("點一下 · %s") % label
 			_hint.modulate = Color(1, 1, 1, 1)
 			hint_changed.emit(_hint.text)
-		_highlight_near()
+	_highlight_near()
 
 
 func _highlight_near() -> void:
@@ -2320,7 +2322,16 @@ func _highlight_near() -> void:
 			badge_panel.position = Vector2(root.size.x * 0.5 - 18, -84)
 		if name_chip:
 			name_chip.visible = named or on
-			name_chip.position = Vector2(root.size.x * 0.5 - 40, root.size.y + 2)
+			var base_x: float = root.size.x * 0.5 - 40.0
+			var default_y: float = root.size.y + 2.0
+			var chip_h: float = maxf(26.0, name_chip.size.y)
+			var screen_pos: Vector2 = root.global_position if root.is_inside_tree() else (root.position - _cam)
+			var chip_screen_x: float = screen_pos.x + base_x
+			var chip_screen_y: float = screen_pos.y + default_y
+			if chip_screen_x < 308.0 and chip_screen_y < 236.0:
+				name_chip.position = Vector2(base_x, -(chip_h + 2.0))
+			else:
+				name_chip.position = Vector2(base_x, default_y)
 		if badge_bg:
 			badge_bg.visible = on
 
