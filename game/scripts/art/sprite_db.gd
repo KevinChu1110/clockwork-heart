@@ -882,7 +882,7 @@ static func explore_entity_path(entity_id: String) -> String:
 			return "%s/props/wood_east.png" % ROOT if ResourceLoader.exists("%s/props/wood_east.png" % ROOT) else "%s/props/sign.png" % ROOT
 		"path_mist", "path_dojo", "path_forest", "path_coast", "path_tower", "path_tower_c5", "arrow_path", "cliff_path", "trail_mark":
 			return "%s/props/path.png" % ROOT
-		"market", "cart", "burnt_field", "stall_frame", "stall":
+		"market", "cart", "burnt_field", "stall_frame", "stall", "fence_row":
 			return "%s/props/crate.png" % ROOT if ResourceLoader.exists("%s/props/crate.png" % ROOT) else "%s/props/camp.png" % ROOT
 		"look_back", "ash_pile", "dawn_glow":
 			return "%s/props/campfire.png" % ROOT if ResourceLoader.exists("%s/props/campfire.png" % ROOT) else "%s/props/fire.png" % ROOT
@@ -904,9 +904,9 @@ static func explore_entity_path(entity_id: String) -> String:
 			return "%s/props/shrine.png" % ROOT if ResourceLoader.exists("%s/props/shrine.png" % ROOT) else "%s/props/bell.png" % ROOT
 		"boat", "boat_wreck":
 			return "%s/props/boat.png" % ROOT if ResourceLoader.exists("%s/props/boat.png" % ROOT) else "%s/props/dock.png" % ROOT
-		"hut_a", "hut_b", "hut_c", "inn", "dorm", "stable", "chapel", "half_house":
+		"hut_a", "hut_b", "hut_c", "inn", "dorm", "stable", "chapel", "half_house", "windmill":
 			return "%s/props/hut.png" % ROOT if ResourceLoader.exists("%s/props/hut.png" % ROOT) else "%s/props/camp.png" % ROOT
-		"gate_arch", "tower_gate", "windmill", "fence_row":
+		"gate_arch", "tower_gate":
 			return "%s/props/gate.png" % ROOT if ResourceLoader.exists("%s/props/gate.png" % ROOT) else "%s/props/tower.png" % ROOT
 		"banner":
 			return "%s/props/banner.png" % ROOT if ResourceLoader.exists("%s/props/banner.png" % ROOT) else "%s/props/flag.png" % ROOT
@@ -945,7 +945,7 @@ const _TOKEN_PROP := [
 	[["campfire", "bonfire"], "campfire"],
 	[["camp", "tent"], "camp"],
 	[["fire", "ember", "flame", "torch"], "fire"],
-	[["hut", "house", "inn", "dorm", "cabin", "mill", "barn", "shed", "room", "hall", "shop", "chapel", "stable", "barracks"], "hut"],
+	[["hut", "house", "inn", "dorm", "cabin", "mill", "windmill", "barn", "shed", "room", "hall", "shop", "chapel", "stable", "barracks"], "hut"],
 	[["pine"], "pine"],
 	[["tree", "wood", "orchard", "willow", "canopy", "log", "bamboo", "reed"], "tree"],
 	[["rock", "stone", "bone", "rubble", "ore", "pile", "boulder", "vein", "obsidian"], "rock"],
@@ -962,6 +962,7 @@ const _TOKEN_PROP := [
 	[["herb", "grass", "moss", "bush", "field", "wheat", "crop", "scare", "bloom"], "herb"],
 	[["cliff", "ridge", "slope", "peak", "canyon", "ravine"], "cliff"],
 	[["nest"], "nest"],
+	[["fence", "wall", "barrier"], "fence"],
 	[["sword", "blade", "weapon", "armor"], "sword"],
 	[["dummy", "training", "spar"], "dummy"],
 	[["tea"], "tea"],
@@ -988,7 +989,7 @@ static func _fallback_prop_path(entity_id: String) -> String:
 ##     玩家要看得到才知道有東西
 ##   · 玩法標記（dummy／forge／bell）—— 找不到就卡關
 const _SCENERY_PROPS := ["hut", "tower", "gate", "well", "boat", "cliff",
-	"pine", "tree", "rock", "camp", "shrine"]
+	"pine", "tree", "rock", "camp", "shrine", "fence"]
 
 
 static func is_scenery_prop(entity_id: String) -> bool:
