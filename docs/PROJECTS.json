@@ -819,6 +819,16 @@
    "keys": [
     "戰鬥HUD鎖定提"
    ]
+  },
+  {
+   "id": "explore-bright",
+   "cat": "遊戲",
+   "title": "探索場拿掉髒黑 wash／vignette，改回亮色日常層",
+   "status": "草稿",
+   "note": "scenic 底圖不再蓋近黑濾鏡",
+   "keys": [
+    "探索場拿掉髒黑 "
+   ]
   }
  ]
 }
