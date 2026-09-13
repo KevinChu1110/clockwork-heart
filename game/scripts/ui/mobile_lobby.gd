@@ -107,7 +107,7 @@ var _gourd_lit: Array[bool] = [true, false, false, false]
 var _gourd_btns: Array[Button] = []
 
 ## 四地區出征
-var _selected_region: int = 1 # 0: 破曉之原, 1: 聖獅王都, 2: 迷霧雪境, 3: 深淵龍窟
+var _selected_region: int = 1 # 0: 閣樓與堡壘, 1: 白霧之地, 2: 道場與西林, 3: 潮岸與終境
 var _stages_container: VBoxContainer
 var _region_buttons: Array[Button] = []
 
@@ -1379,7 +1379,12 @@ func _build_adventure_tab() -> void:
 	v.add_child(reg_bar)
 
 	_region_buttons.clear()
-	var regions: Array[String] = ["第一地區 · 破曉之原", "第二地區 · 聖獅王都", "第三地區 · 迷霧雪境", "第四地區 · 深淵龍窟"]
+	var regions: Array[String] = [
+		_t("第一地區 · 閣樓與堡壘"),
+		_t("第二地區 · 白霧之地"),
+		_t("第三地區 · 道場與西林"),
+		_t("第四地區 · 潮岸與終境"),
+	]
 	for i in range(regions.size()):
 		var rb := Button.new()
 		rb.text = regions[i]

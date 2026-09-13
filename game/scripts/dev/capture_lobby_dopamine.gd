@@ -97,25 +97,25 @@ func _run_captures() -> void:
 	print(">>> [Dock] 截取四區出征分頁（第一地區已選／第二地區未選）…")
 	await _capture_frame("proof_adventure_stages_region1.png")
 
-	print(">>> [四區實機存證] 第一地區 · 破曉之原…")
+	print(">>> [四區實機存證] 第一地區 · 閣樓與堡壘…")
 	_lobby._select_region(0)
 	await _wait_frames(20)
-	await _capture_frame("proof_adventure_region0_dawn.png")
+	await _capture_frame("proof_adventure_region0_attic_keep.png")
 
-	print(">>> [四區實機存證] 第二地區 · 聖獅王都…")
+	print(">>> [四區實機存證] 第二地區 · 白霧之地…")
 	_lobby._select_region(1)
 	await _wait_frames(20)
-	await _capture_frame("proof_adventure_region1_lion.png")
+	await _capture_frame("proof_adventure_region1_white_fog.png")
 
-	print(">>> [四區實機存證] 第三地區 · 迷霧雪境…")
+	print(">>> [四區實機存證] 第三地區 · 道場與西林…")
 	_lobby._select_region(2)
 	await _wait_frames(20)
-	await _capture_frame("proof_adventure_region2_snow.png")
+	await _capture_frame("proof_adventure_region2_dojo_woods.png")
 
-	print(">>> [四區實機存證] 第四地區 · 深淵龍窟…")
+	print(">>> [四區實機存證] 第四地區 · 潮岸與終境…")
 	_lobby._select_region(3)
 	await _wait_frames(20)
-	await _capture_frame("proof_adventure_region3_abyss.png")
+	await _capture_frame("proof_adventure_region3_tide_reach.png")
 
 	print("CAPTURE_LOBBY_DOPAMINE_OK")
 	quit(0)
