@@ -402,12 +402,24 @@ func _apply_hud_chrome() -> void:
 		player_hp_label.add_theme_color_override("font_color", Color(0.88, 0.9, 0.86))
 	if enemy_hp_label:
 		enemy_hp_label.add_theme_color_override("font_color", Color(0.9, 0.7, 0.68))
+	var player_side := get_node_or_null("SideBars/PlayerSide") as Control
+	if player_side:
+		player_side.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+		player_side.custom_minimum_size.x = 220
+	var enemy_side := get_node_or_null("SideBars/EnemySide") as Control
+	if enemy_side:
+		enemy_side.size_flags_horizontal = Control.SIZE_SHRINK_END
+		enemy_side.custom_minimum_size.x = 220
+	var center_hint := get_node_or_null("SideBars/CenterHint") as Control
+	if center_hint:
+		center_hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if parry_hint:
+		parry_hint.autowrap_mode = TextServer.AUTOWRAP_OFF
 		parry_hint.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 		parry_hint.add_theme_constant_override("shadow_offset_x", 1)
 		parry_hint.add_theme_constant_override("shadow_offset_y", 1)
-		## 這行寫著要按哪一顆鍵，是全場最該讀得到的字
-		parry_hint.add_theme_font_size_override("font_size", 18)
+		## 這行寫著要按哪一顆鍵，是全場最該讀得到的字；字級 16px 保持橫屏單行不折行
+		parry_hint.add_theme_font_size_override("font_size", 16)
 	if countdown:
 		countdown.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
 		countdown.add_theme_constant_override("shadow_offset_x", 2)
@@ -429,7 +441,7 @@ func _apply_hud_chrome() -> void:
 		_log_panel.anchor_right = log_label.anchor_right
 		_log_panel.anchor_bottom = log_label.anchor_bottom
 		_log_panel.offset_left = log_label.offset_left
-		_log_panel.offset_top = log_label.offset_top
+		_log_panel.offset_top = log_label.offset_top - 36.0
 		_log_panel.offset_right = log_label.offset_right
 		_log_panel.offset_bottom = log_label.offset_bottom
 		var ls := StyleBoxFlat.new()
@@ -440,8 +452,8 @@ func _apply_hud_chrome() -> void:
 		ls.shadow_color = Color(0.12, 0.1, 0.23, 0.15)
 		ls.shadow_size = 4
 		ls.content_margin_left = 18
-		ls.content_margin_right = 18
-		ls.content_margin_top = 14
+		ls.content_margin_right = 260
+		ls.content_margin_top = 50
 		ls.content_margin_bottom = 10
 		_log_panel.add_theme_stylebox_override("panel", ls)
 		parent_ctrl.add_child(_log_panel)
@@ -543,7 +555,7 @@ func _apply_safe_hud() -> void:
 		_log_panel.offset_left = m.x + 16.0
 		_log_panel.offset_right = -(m.z + 16.0)
 		_log_panel.offset_bottom = -52.0 - m.w
-		_log_panel.offset_top = -188.0 - m.w
+		_log_panel.offset_top = -224.0 - m.w
 	if _rage_ready:
 		_rage_ready.offset_left = m.x + 16.0
 		_rage_ready.offset_top = m.y + 156.0
@@ -578,6 +590,8 @@ func _ensure_weapon_dock() -> void:
 		cell.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 		cell.add_theme_constant_override("shadow_offset_x", 1)
 		cell.add_theme_constant_override("shadow_offset_y", 1)
+		cell.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+		cell.add_theme_constant_override("outline_size", 2)
 		cell.text = _t("欄%d") % [i + 1]
 		cell.mouse_filter = Control.MOUSE_FILTER_STOP
 		cell.tooltip_text = _t("點一下換武器")
@@ -1817,7 +1831,7 @@ func _refresh_part_focus_hint() -> void:
 	if sim == null or not _part_lock_enabled():
 		return
 	var label := sim.part_focus_label()
-	var tip := _kh(_t("鎖定：%s　·　Tab 切換　·　破甲降防／破冠激怒") % label)
+	var tip := _kh(_t("鎖定：%s　·　Tab 切換　·　破甲降防／破冠激怒") % label).replace("　·　", " · ")
 	var boss := sim._primary_boss_unit()
 	if parry_hint and boss and not boss.telegraph_active:
 		## 保留各 Boss 專屬提示時，把鎖定資訊併入尾端
@@ -3362,13 +3376,14 @@ func _layout_thumb_hud() -> void:
 	var vp := get_viewport_rect().size
 	if vp.x < 8.0 or vp.y < 8.0:
 		return
-	var m := 12.0
+	var m_right := 26.0
+	var m_bot := 12.0
 	var w := clampf(vp.x * 0.42, 240.0, 320.0)
 	var h := clampf(vp.y * 0.46, 188.0, 248.0)
-	_thumb_pad.offset_left = -w - m
-	_thumb_pad.offset_right = -m
-	_thumb_pad.offset_top = -h - m
-	_thumb_pad.offset_bottom = -m
+	_thumb_pad.offset_left = -w - m_right
+	_thumb_pad.offset_right = -m_right
+	_thumb_pad.offset_top = -h - m_bot
+	_thumb_pad.offset_bottom = -m_bot
 
 
 func _on_thumb_attack() -> void:

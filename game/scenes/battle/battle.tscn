@@ -48,6 +48,7 @@ mouse_filter = 2
 color = Color(1, 0.2, 0.2, 0.2)
 
 [node name="SideBars" type="HBoxContainer" parent="."]
+z_index = 20
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
@@ -59,8 +60,8 @@ grow_horizontal = 2
 theme_override_constants/separation = 32
 
 [node name="PlayerSide" type="VBoxContainer" parent="SideBars"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
 [node name="PlayerSideTitle" type="Label" parent="SideBars/PlayerSide"]
@@ -107,15 +108,13 @@ modulate = Color(1, 0.6, 0.2, 1)
 [node name="CenterHint" type="VBoxContainer" parent="SideBars"]
 layout_mode = 2
 size_flags_horizontal = 3
-alignment = 1
 
 [node name="ParryHint" type="Label" parent="SideBars/CenterHint"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_font_sizes/font_size = 18
+theme_override_font_sizes/font_size = 16
 text = "格擋提示"
 horizontal_alignment = 1
-autowrap_mode = 2
 
 [node name="Countdown" type="Label" parent="SideBars/CenterHint"]
 unique_name_in_owner = true
@@ -135,8 +134,8 @@ text = "準備格擋"
 horizontal_alignment = 1
 
 [node name="EnemySide" type="VBoxContainer" parent="SideBars"]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
-size_flags_horizontal = 3
 theme_override_constants/separation = 6
 
 [node name="EnemySideTitle" type="Label" parent="SideBars/EnemySide"]
