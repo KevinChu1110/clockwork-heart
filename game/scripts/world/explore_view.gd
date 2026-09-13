@@ -112,7 +112,8 @@ func _place_minimap_default() -> void:
 		return
 	_minimap_root.size = Vector2.ZERO
 	var vp := get_viewport().get_visible_rect().size
-	var fallback := Vector2(vp.x - _minimap_root.size.x - 8, 8)
+	var w: float = maxf(_minimap_root.size.x, _minimap_root.get_combined_minimum_size().x)
+	var fallback := Vector2(vp.x - w - 8, 8)
 	if Engine.get_main_loop() is SceneTree:
 		var ul: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("UiLayout")
 		if ul and ul.has_method("has_pos") and ul.call("has_pos", "minimap"):
@@ -587,27 +588,21 @@ func _build_chrome() -> void:
 	_scroll.add_child(_world)
 	_scenic_layer_nodes.clear()
 
-	## 楓式地圖名：小木牌（避開左上狀態板）
-	_title = Label.new()
-	_title.position = Vector2(240, 10)
-	_title.add_theme_font_size_override("font_size", 13)
-	_title.add_theme_color_override("font_color", Color(0.2, 0.14, 0.1, 1))
-	_title.add_theme_color_override("font_shadow_color", Color(1, 1, 1, 0.7))
-	_title.add_theme_constant_override("shadow_offset_x", 1)
-	_title.add_theme_constant_override("shadow_offset_y", 1)
-	_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_title)
+	## 楓式地圖名：小木牌（避開左上狀態板，狀態板寬 300+8=308px，加上陰影置於 x=324）
 	var title_chip := PanelContainer.new()
-	title_chip.position = Vector2(248, 12)
+	title_chip.name = "TitleChip"
+	title_chip.position = Vector2(324, 12)
+	title_chip.z_index = 25
+	title_chip.z_as_relative = false
 	title_chip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	title_chip.add_theme_stylebox_override("panel", UiStyle.chip_style())
 	add_child(title_chip)
-	## 把 title 掛在 chip 上
-	remove_child(_title)
-	title_chip.add_child(_title)
-	_title.position = Vector2.ZERO
+
+	_title = Label.new()
+	_title.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_title.add_theme_color_override("font_color", UiStyle.INK)
 	_title.add_theme_font_size_override("font_size", 13)
+	title_chip.add_child(_title)
 
 	_build_minimap_ui()
 
@@ -1962,9 +1957,9 @@ func _build_minimap_ui() -> void:
 	_minimap_root.name = "MiniMap"
 	## 自由定位（可拖），預設右上
 	_minimap_root.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	_minimap_root.position = Vector2(1280 - 196, 8)
-	_minimap_root.custom_minimum_size = Vector2(180, 0)
-	_minimap_root.size = Vector2(180, 0)
+	_minimap_root.position = Vector2(1280 - 228, 8)
+	_minimap_root.custom_minimum_size = Vector2(220, 0)
+	_minimap_root.size = Vector2(220, 0)
 	_minimap_root.mouse_filter = Control.MOUSE_FILTER_STOP
 	_minimap_root.add_theme_stylebox_override("panel", _create_minimap_panel_style())
 	add_child(_minimap_root)
@@ -2061,7 +2056,7 @@ func _build_minimap_ui() -> void:
 	v.add_child(_mmap_label)
 
 	var legend := Label.new()
-	legend.text = _t("● 你  ·  路標  ·  NPC  ·  點")
+	legend.text = _t("● 你  ·  路標  ·  NPC  ·  地點")
 	legend.add_theme_font_size_override("font_size", 16)
 	legend.add_theme_color_override("font_color", Color("#1F1A3A"))
 	legend.mouse_filter = Control.MOUSE_FILTER_IGNORE
