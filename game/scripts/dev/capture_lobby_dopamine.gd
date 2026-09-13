@@ -72,8 +72,18 @@ func _run_captures() -> void:
 	print(">>> [Dock] 切到聚魂殿堂分頁…")
 	_lobby._switch_tab(MobileLobby.Tab.SOUL_HALL)
 	await _wait_frames(20)
-	print(">>> [Dock] 截取聚魂殿堂分頁…")
+	print(">>> [Dock] 截取聚魂殿堂分頁（未點亮狀態）…")
 	await _capture_frame("proof_lobby_soul_hall.png")
+	await _capture_frame("proof_soul_hall_unlit_dopamine.png")
+
+	print(">>> [Dock] 點亮高階封靈罐…")
+	_lobby._gourd_lit = [true, true, true, false]
+	_lobby._refresh_gourds_ui()
+	await _wait_frames(20)
+	print(">>> [Dock] 截取聚魂殿堂分頁（高階已點亮狀態）…")
+	await _capture_frame("proof_soul_hall_lit_dopamine.png")
+	_lobby._gourd_lit = [true, false, false, false]
+	_lobby._refresh_gourds_ui()
 
 	print(">>> [Dock] 切到四區出征分頁…")
 	_lobby._switch_tab(MobileLobby.Tab.ADVENTURE)

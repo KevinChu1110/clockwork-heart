@@ -1130,7 +1130,20 @@ func _build_soul_hall_tab() -> void:
 	panel.offset_right = -50
 	panel.offset_top = 16
 	panel.offset_bottom = -16
-	panel.add_theme_stylebox_override("panel", _create_obsidian_panel(LINE_GOLD))
+	var psb := StyleBoxFlat.new()
+	psb.bg_color = COLOR_CARD_WARM
+	psb.border_color = COLOR_BORDER
+	psb.set_border_width_all(2)
+	psb.border_width_bottom = 5
+	psb.set_corner_radius_all(20)
+	psb.content_margin_left = 20
+	psb.content_margin_right = 20
+	psb.content_margin_top = 16
+	psb.content_margin_bottom = 16
+	psb.shadow_color = Color(0.12, 0.10, 0.23, 0.18)
+	psb.shadow_size = 8
+	psb.shadow_offset = Vector2(0, 4)
+	panel.add_theme_stylebox_override("panel", psb)
 	_soul_layer.add_child(panel)
 
 	var v := VBoxContainer.new()
@@ -1182,15 +1195,29 @@ func _build_soul_hall_tab() -> void:
 	btn_absorb.custom_minimum_size = Vector2(210, 52)
 	btn_absorb.add_theme_font_size_override("font_size", 16)
 	var asb := StyleBoxFlat.new()
-	asb.bg_color = OBSIDIAN_WARM
-	asb.border_color = BRONZE_WARM
-	asb.set_border_width_all(1)
-	asb.border_width_bottom = 3
-	asb.set_corner_radius_all(8)
+	asb.bg_color = COLOR_ORANGE
+	asb.border_color = COLOR_BORDER
+	asb.set_border_width_all(2)
+	asb.border_width_bottom = 5
+	asb.set_corner_radius_all(18)
+	asb.content_margin_top = 8
+	asb.content_margin_bottom = 8
+	asb.content_margin_left = 14
+	asb.content_margin_right = 14
+	asb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	asb.shadow_size = 6
+	asb.shadow_offset = Vector2(0, 3)
+	var asb_h := asb.duplicate() as StyleBoxFlat
+	asb_h.bg_color = Color("#FFB84D")
+	var asb_p := asb.duplicate() as StyleBoxFlat
+	asb_p.border_width_bottom = 2
 	btn_absorb.add_theme_stylebox_override("normal", asb)
-	btn_absorb.add_theme_stylebox_override("hover", asb)
-	btn_absorb.add_theme_stylebox_override("pressed", asb)
-	btn_absorb.add_theme_color_override("font_color", INK_IVORY)
+	btn_absorb.add_theme_stylebox_override("hover", asb_h)
+	btn_absorb.add_theme_stylebox_override("pressed", asb_p)
+	btn_absorb.add_theme_stylebox_override("focus", asb)
+	btn_absorb.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_absorb.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_absorb.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	btn_absorb.pressed.connect(func():
 		_show_toast("已將廢魂轉化為 480 戰魂經驗值！")
 	)
@@ -1201,20 +1228,29 @@ func _build_soul_hall_tab() -> void:
 	btn_draw.custom_minimum_size = Vector2(220, 56)
 	btn_draw.add_theme_font_size_override("font_size", 18)
 	var dsb := StyleBoxFlat.new()
-	dsb.bg_color = GOLD_CLASSICAL
-	dsb.border_color = TEAL_CORE
-	dsb.set_border_width_all(1)
-	dsb.border_width_bottom = 4
-	dsb.set_corner_radius_all(8)
-	dsb.shadow_color = Color(0.831, 0.686, 0.216, 0.35)
-	dsb.shadow_size = 8
-	btn_draw.add_theme_stylebox_override("normal", dsb)
+	dsb.bg_color = COLOR_GOLD
+	dsb.border_color = COLOR_BORDER
+	dsb.set_border_width_all(2)
+	dsb.border_width_bottom = 5
+	dsb.set_corner_radius_all(18)
+	dsb.content_margin_top = 8
+	dsb.content_margin_bottom = 8
+	dsb.content_margin_left = 16
+	dsb.content_margin_right = 16
+	dsb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	dsb.shadow_size = 6
+	dsb.shadow_offset = Vector2(0, 3)
 	var dsb_h := dsb.duplicate() as StyleBoxFlat
-	dsb_h.bg_color = GOLD_HOVER
+	dsb_h.bg_color = Color("#FFE066")
+	var dsb_p := dsb.duplicate() as StyleBoxFlat
+	dsb_p.border_width_bottom = 2
+	btn_draw.add_theme_stylebox_override("normal", dsb)
 	btn_draw.add_theme_stylebox_override("hover", dsb_h)
-	btn_draw.add_theme_stylebox_override("pressed", dsb)
-	btn_draw.add_theme_color_override("font_color", OBSIDIAN_BASE)
-	btn_draw.add_theme_color_override("font_hover_color", Color(0.0, 0.0, 0.0, 1.0))
+	btn_draw.add_theme_stylebox_override("pressed", dsb_p)
+	btn_draw.add_theme_stylebox_override("focus", dsb)
+	btn_draw.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_draw.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_draw.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	btn_draw.pressed.connect(func(): _do_gourd_draw(0, true))
 	bot_h.add_child(btn_draw)
 
@@ -1224,6 +1260,7 @@ func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
 	btn.name = "GourdBtn_%d" % idx
 
 	var v := VBoxContainer.new()
+	v.name = "Content"
 	v.set_anchors_preset(Control.PRESET_FULL_RECT)
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -1235,23 +1272,25 @@ func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
 	var csb := StyleBoxFlat.new()
 	csb.bg_color = gd["color"] as Color
 	csb.set_corner_radius_all(28)
-	csb.border_color = GOLD_HOVER
+	csb.border_color = COLOR_BORDER
 	csb.set_border_width_all(2)
 	circle.add_theme_stylebox_override("panel", csb)
 	v.add_child(circle)
 
 	var nl := Label.new()
+	nl.name = "NameLabel"
 	nl.text = str(gd["name"])
 	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	nl.add_theme_font_size_override("font_size", 16)
-	nl.add_theme_color_override("font_color", gd["color"] as Color)
+	nl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	v.add_child(nl)
 
 	var cl := Label.new()
+	cl.name = "CostLabel"
 	cl.text = "金幣 %d" % int(gd["cost"])
 	cl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cl.add_theme_font_size_override("font_size", 13)
-	cl.add_theme_color_override("font_color", BRONZE_WARM)
+	cl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	v.add_child(cl)
 
 	btn.pressed.connect(func(): _do_gourd_draw(idx, false))
@@ -1262,25 +1301,40 @@ func _refresh_gourds_ui() -> void:
 		var b := _gourd_btns[i]
 		var is_lit := _gourd_lit[i]
 		var sb := StyleBoxFlat.new()
+		sb.set_corner_radius_all(18)
+		var v_content := b.get_node_or_null("Content") as Control
 		if is_lit:
-			sb.bg_color = OBSIDIAN_CARD
-			sb.border_color = GOLD_CLASSICAL
+			sb.bg_color = COLOR_CARD_GOLD
+			sb.border_color = COLOR_BORDER
 			sb.set_border_width_all(2)
-			sb.border_width_bottom = 4
-			sb.set_corner_radius_all(8)
-			sb.shadow_color = Color(0.831, 0.686, 0.216, 0.25)
-			sb.shadow_size = 8
+			sb.border_width_bottom = 5
+			sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+			sb.shadow_size = 6
+			sb.shadow_offset = Vector2(0, 3)
 			b.disabled = false
+			if v_content:
+				v_content.modulate = Color(1.0, 1.0, 1.0, 1.0)
+			var sb_h := sb.duplicate() as StyleBoxFlat
+			sb_h.bg_color = Color("#FFEAA0")
+			var sb_p := sb.duplicate() as StyleBoxFlat
+			sb_p.border_width_bottom = 2
+			b.add_theme_stylebox_override("normal", sb)
+			b.add_theme_stylebox_override("hover", sb_h)
+			b.add_theme_stylebox_override("pressed", sb_p)
+			b.add_theme_stylebox_override("focus", sb)
 		else:
-			sb.bg_color = OBSIDIAN_DEEP
-			sb.border_color = LINE_GOLD_SOFT
-			sb.set_border_width_all(1)
-			sb.border_width_bottom = 2
-			sb.set_corner_radius_all(8)
+			sb.bg_color = Color("#EDE7D8")
+			sb.border_color = Color(0.12, 0.10, 0.23, 0.45)
+			sb.set_border_width_all(2)
+			sb.border_width_bottom = 3
+			sb.shadow_color = Color(0.12, 0.10, 0.23, 0.08)
+			sb.shadow_size = 4
+			sb.shadow_offset = Vector2(0, 2)
 			b.disabled = true
-		b.add_theme_stylebox_override("normal", sb)
-		b.add_theme_stylebox_override("hover", sb)
-		b.add_theme_stylebox_override("disabled", sb)
+			if v_content:
+				v_content.modulate = Color(1.0, 1.0, 1.0, 0.5)
+			b.add_theme_stylebox_override("disabled", sb)
+			b.add_theme_stylebox_override("normal", sb)
 
 func _do_gourd_draw(idx: int, is_ten: bool) -> void:
 	if not _gourd_lit[idx] and not is_ten:
