@@ -859,7 +859,7 @@ static func explore_entity_path(entity_id: String) -> String:
 		"tea":
 			return "%s/props/tea.png" % ROOT
 		"fire":
-			return "%s/props/fire.png" % ROOT
+			return ""
 		"flag":
 			return "%s/props/flag.png" % ROOT
 		"menu_save", "save_c2", "save_c3", "save_c4", "save_c5":
