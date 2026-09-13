@@ -824,8 +824,8 @@
    "id": "explore-bright",
    "cat": "遊戲",
    "title": "探索場拿掉髒黑 wash／vignette，改回亮色日常層",
-   "status": "開發中",
-   "note": "已開單給程式，不動戰鬥與大廳",
+   "status": "測試中",
+   "note": "已拿掉髒黑 wash/vignette/horizon，完成實機截圖與無頭測試",
    "keys": [
     "探索場拿掉髒黑 "
    ]
