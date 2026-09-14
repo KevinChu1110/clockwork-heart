@@ -5624,7 +5624,7 @@ func _make_skill_progress_widget(sid: String) -> Control:
 	var card := PanelContainer.new()
 	var csb := StyleBoxFlat.new()
 	csb.bg_color = Color(0.99, 0.98, 0.95, 0.96)
-	csb.border_color = UiStyle.TATA_CARD_BORDER
+	csb.border_color = Color("#1F1A3A")
 	csb.set_border_width_all(2)
 	csb.border_width_bottom = 4
 	csb.set_corner_radius_all(14)
