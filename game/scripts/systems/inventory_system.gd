@@ -83,7 +83,7 @@ const CATALOG: Dictionary = {
 	},
 	"key_rusty": {
 		"name": "鏽劍（紀念）",
-		"desc": "村口撿起的那把。已鍛成正器後仍留念。",
+		"desc": "霧廊入口撿起的那把。已鍛成正器後仍留念。",
 		"kind": "key",
 		"stack": 1,
 		"color": Color(0.55, 0.5, 0.4),
