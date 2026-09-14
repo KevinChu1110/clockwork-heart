@@ -83,14 +83,14 @@ No text, no UI, no logos, no photorealism.
 
 ```
 🐇 發條之心 Clockwork Heart
-像素養成 RPG · 六職雙武器 · 器／魂／招
+手繪養成 RPG · 六職雙武器 · 器／魂／招
 
 不是主副——遊俠弓＋銃、忍者匕＋鏢，每一職兩套對等武器系統。
 
 ▶️ 官網：https://KevinChu1110.github.io/clockwork-heart/
 ⬇️ 下載：https://KevinChu1110.github.io/clockwork-heart/pages/download.html
 
-#發條之心 #ClockworkHeart #像素RPG #養成 #Shorts #雙武器
+#發條之心 #ClockworkHeart #手繪RPG #養成 #Shorts #雙武器
 ```
 
 ---

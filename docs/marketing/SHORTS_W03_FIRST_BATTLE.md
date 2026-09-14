@@ -95,7 +95,7 @@
 
 ```
 🐇 發條之心 Clockwork Heart
-第一戰就像呼吸！多巴胺 Q 萌像素 RPG，先喘口氣再出發～
+第一戰就像呼吸！多巴胺 Q 萌手繪 RPG，先喘口氣再出發～
 
 不用背複雜連招，隨點隨玩無壓力！
 陽光浮空島大廳、治癒白兔互動、爽快打擊怒氣爆發，
@@ -104,7 +104,7 @@
 ▶️ 官網：https://KevinChu1110.github.io/clockwork-heart/
 ⬇️ 下載：https://KevinChu1110.github.io/clockwork-heart/pages/download.html
 
-#發條之心 #ClockworkHeart #像素RPG #手遊 #治癒系 #Shorts #遊戲推薦
+#發條之心 #ClockworkHeart #手繪RPG #手遊 #治癒系 #Shorts #遊戲推薦
 ```
 
 ---

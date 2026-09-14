@@ -49,7 +49,7 @@
 ## 社群貼文文案（YouTube Shorts / Facebook 短影音）
 
 ```
-誰說像素手遊不能極限格擋？點哪碎哪！🔥
+誰說手繪手遊不能極限格擋？點哪碎哪！🔥
 
 不用搓彆扭的虛擬搖桿，整面螢幕就是你的武器。
 看準抬手一觸格擋，指尖鎖定部位直接打碎！
@@ -63,7 +63,7 @@
 ▶️ 官網探索：https://KevinChu1110.github.io/clockwork-heart/
 ⬇️ 下載頁面：https://KevinChu1110.github.io/clockwork-heart/pages/download.html
 
-#發條之心 #ClockworkHeart #像素動作 #手遊推薦 #打擊感 #Shorts #部位破壞 #極限格擋
+#發條之心 #ClockworkHeart #手繪動作 #手遊推薦 #打擊感 #Shorts #部位破壞 #極限格擋
 ```
 
 ---

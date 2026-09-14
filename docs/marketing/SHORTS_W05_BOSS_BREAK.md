@@ -106,7 +106,7 @@
 ```
 點哪碎哪！這才是玩具世界的部位拆卸 🔥
 
-誰說像素手遊只能互相刮痧？
+誰說手繪手遊只能互相刮痧？
 看準守衛泰坦「雷歐」的重盾與裝甲，
 長劍突刺、長槍破防、法杖引爆、戰鎚重砸！
 打碎接縫、金光崩解，直接洩壓解除暴走！
@@ -121,7 +121,7 @@
 ▶️ 官網探索：https://KevinChu1110.github.io/clockwork-heart/
 ⬇️ 下載頁面：https://KevinChu1110.github.io/clockwork-heart/pages/download.html
 
-#發條之心 #ClockworkHeart #手遊推薦 #打擊感 #部位拆卸 #極限格擋 #Shorts #獨立遊戲 #像素動作
+#發條之心 #ClockworkHeart #手遊推薦 #打擊感 #部位拆卸 #極限格擋 #Shorts #獨立遊戲 #手繪動作
 ```
 
 ---
