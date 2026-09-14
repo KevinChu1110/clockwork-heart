@@ -48,9 +48,12 @@ func todays_daily_event() -> Dictionary:
 	if bingo.is_empty():
 		load_bingo()
 	var events: Array = bingo.get("dailyEvents", []) as Array
+	var target_day_id := "D%d" % daily_day_index
 	for e in events:
-		if typeof(e) == TYPE_DICTIONARY and int((e as Dictionary).get("day", 0)) == daily_day_index:
-			return e as Dictionary
+		if typeof(e) == TYPE_DICTIONARY:
+			var d := e as Dictionary
+			if str(d.get("DayId", "")) == target_day_id or int(d.get("day", 0)) == daily_day_index:
+				return d
 	return {}
 
 

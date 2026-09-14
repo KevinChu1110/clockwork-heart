@@ -115,8 +115,10 @@ func _run_test_suite() -> void:
 		var p_body: TextureRect = battle_node.get_node_or_null("Arena/PlayerSlot/PlayerBody") as TextureRect
 		_assert(p_body != null, "戰鬥畫面中 PlayerBody 節點存在 (%s)" % r)
 		if p_body != null:
+			var starter_weapon := str(GameState.RACE_STARTER_WEAPONS.get(r, ""))
+			var expected_tex: Texture2D = SpriteDB.player_equipped_idle(r, {"weapon": starter_weapon})
 			_assert(p_body.texture != null, "戰鬥畫面中 PlayerBody.texture 不為 null (%s)" % r)
-			_assert(p_body.texture == _race_textures[r], "戰鬥畫面中 PlayerBody.texture 精確使用 %s 族素體" % r)
+			_assert(p_body.texture == expected_tex, "戰鬥畫面中 PlayerBody.texture 精確使用 %s 族開局裝備素體" % r)
 
 		battle_node.queue_free()
 
@@ -137,12 +139,14 @@ func _run_test_suite() -> void:
 
 		var avatar: TextureRect = lobby.get("_hero_avatar")
 		_assert(avatar != null, "手遊大廳中 _hero_avatar 存在 (%s)" % r)
+		var starter_weapon := str(GameState.RACE_STARTER_WEAPONS.get(r, ""))
+		var expected_tex: Texture2D = SpriteDB.player_equipped_idle(r, {"weapon": starter_weapon})
 		if avatar != null:
 			_assert(avatar.texture != null, "手遊大廳中 _hero_avatar.texture 不為 null (%s)" % r)
-			_assert(avatar.texture == _race_textures[r], "手遊大廳中 _hero_avatar.texture 精確使用 %s 族素體" % r)
+			_assert(avatar.texture == expected_tex, "手遊大廳中 _hero_avatar.texture 精確使用 %s 族開局裝備素體" % r)
 
 		# 驗證戰鬥與大廳素體貼圖完全一致
-		_assert(avatar.texture == SpriteDB.player_idle(), "手遊大廳與戰鬥/SpriteDB 貼圖 100%% 保持一致 (%s)" % r)
+		_assert(avatar.texture == expected_tex, "手遊大廳與戰鬥/SpriteDB 貼圖 100%% 保持一致 (%s)" % r)
 
 		lobby.queue_free()
 

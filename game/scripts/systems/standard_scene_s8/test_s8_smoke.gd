@@ -153,7 +153,7 @@ func _initialize() -> void:
 		print("  ok - battle_sim.PART_BREAK_HP_RATIO=0.70 aligned")
 
 	if ok:
-		print("S8_SMOKE_SUCCESS")
+		print("S8_SMOKE_OK")
 		quit(0)
 	else:
 		print("S8_SMOKE_FAIL")

@@ -75,7 +75,7 @@ func _init() -> void:
 
 	print(JSON.stringify(asm.summary()))
 	if ok:
-		print("PAPER_DOLL_V2_SUCCESS")
+		print("PAPER_DOLL_V2_OK")
 		quit(0)
 	else:
 		print("PAPER_DOLL_V2_FAIL")

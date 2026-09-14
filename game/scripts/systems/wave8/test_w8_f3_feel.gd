@@ -75,7 +75,7 @@ func _init() -> void:
 	for n in notes:
 		print(n)
 	if ok:
-		print("W8_F3_FEEL_SUCCESS")
+		print("W8_F3_FEEL_OK")
 		quit(0)
 	else:
 		print("W8_F3_FEEL_FAIL")

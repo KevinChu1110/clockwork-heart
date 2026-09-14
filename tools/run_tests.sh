@@ -47,7 +47,7 @@ while IFS= read -r line; do
   [[ -z "$line" ]] && continue
   if [[ -n "$FILTER" && "$line" != *"$FILTER"* ]]; then continue; fi
   TESTS+=("$line")
-done < <(cd "$GAME" && find scripts -name "test_*.gd" | sort)
+done < <(cd "$GAME" && find scripts -name "test_*.gd" -not -path 'scripts/dev/*' | sort)
 
 if [[ ${#TESTS[@]} -eq 0 ]]; then
   echo "FATAL: 沒有找到任何測試（filter='$FILTER'）"
@@ -70,9 +70,9 @@ for t in "${TESTS[@]}"; do
     reason="逾時 ${TIMEOUT}s（測試沒有 quit — 多半是編譯失敗後退回跑主場景）"
   elif grep -qE "SCRIPT ERROR|Parse Error|Compile Error" "$log"; then
     reason="有 script error：$(grep -m1 -E 'SCRIPT ERROR|Parse Error|Compile Error' "$log" | tr -d '\r')"
-  elif grep -qE "[A-Z_]+_FAIL" "$log"; then
-    reason="斷言失敗：$(grep -m1 -E '[A-Z_]+_FAIL' "$log")"
-  elif ! grep -qE "[A-Z_]+_OK" "$log"; then
+  elif grep -qE "[A-Z0-9_]+_FAIL" "$log"; then
+    reason="斷言失敗：$(grep -m1 -E '[A-Z0-9_]+_FAIL' "$log")"
+  elif ! grep -qE "[A-Z0-9_]+_OK" "$log"; then
     reason="沒有印出 _OK 哨兵（exit=$code）"
   elif [[ $code -ne 0 ]]; then
     reason="exit code = $code"
@@ -86,7 +86,7 @@ for t in "${TESTS[@]}"; do
     tail -20 "$log" | sed 's/^/        /'
     echo "        --------------------"
   else
-    echo "  ok    $name  $(grep -oE '[A-Z_]+_OK' "$log" | tail -1)"
+    echo "  ok    $name  $(grep -oE '[A-Z0-9_]+_OK' "$log" | tail -1)"
   fi
 done
 

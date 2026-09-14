@@ -69,7 +69,7 @@ func _init() -> void:
 		str(ev.get("DayId", "")), a_id, rt.econ.gold, rt.econ.soul_tickets, rt.econ.daily_gold_gained
 	])
 	if ok:
-		print("W8_K2_SUCCESS")
+		print("W8_K2_OK")
 		quit(0)
 	else:
 		print("W8_K2_FAIL")

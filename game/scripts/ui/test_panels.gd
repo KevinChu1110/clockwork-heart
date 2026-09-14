@@ -17,11 +17,12 @@ extends SceneTree
 ## —— 實測過，那種破壞抓不到。驗到具體按鈕才擋得住。
 const PANELS: Array = [
 	## 裝備面板：武器欄三格 + 防具／飾品 + 背包
+	## （選族開局已裝上該族定案初始武器，第 0 欄為使用中並顯示「卸下」）
 	{
 		"entry": "_go_equip_panel",
 		"title": "裝備",
 		"min_buttons": 2,
-		"expect_buttons": ["返回", "裝填"],
+		"expect_buttons": ["返回", "卸下"],
 	},
 	{
 		"entry": "_go_save_slots_panel",

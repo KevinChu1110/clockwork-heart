@@ -51,7 +51,7 @@ func _init() -> void:
 		ok = false
 	print(JSON.stringify(rt.summary()))
 	if ok:
-		print("W8_K1_SUCCESS")
+		print("W8_K1_OK")
 		quit(0)
 	else:
 		print("W8_K1_FAIL")

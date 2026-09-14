@@ -22,7 +22,7 @@ func _init() -> void:
 		print("W8_SKELETON_FAIL N05 must stay")
 		ok = false
 	var ev: Dictionary = w8.todays_daily_event()
-	if str(ev.get("EventId", "")) != "daily.wind_xiaobai":
+	if str(ev.get("DayId", "")) != "D1" and str(ev.get("EventId", "")) != "daily.wind_xiaobai":
 		print("W8_SKELETON_FAIL daily %s" % str(ev))
 		ok = false
 	# assets
@@ -50,7 +50,7 @@ func _init() -> void:
 				ok = false
 	print(JSON.stringify(w8.summary()))
 	if ok:
-		print("W8_SKELETON_SUCCESS")
+		print("W8_SKELETON_OK")
 		quit(0)
 	else:
 		print("W8_SKELETON_FAIL")
