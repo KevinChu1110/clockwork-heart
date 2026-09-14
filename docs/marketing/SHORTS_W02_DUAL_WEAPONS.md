@@ -42,7 +42,7 @@
 - **提示詞（貼 Grok）：**
 
 ```
-Vertical 9:16 cozy chibi 16-bit pixel RPG, continuous single shot 15 seconds.
+Vertical 9:16 cozy chibi hand-painted cel-shaded RPG, continuous single shot 15 seconds.
 Cute white rabbit ranger hero smoothly swaps from a short bow to a flintlock gun,
 same character identity, warm toy lighting, soft forest bokeh background,
 clear weapon silhouette change mid-shot, emotional confident mood.
@@ -55,7 +55,7 @@ No text, no UI, no logos, no photorealism.
 - **提示詞：**
 
 ```
-Vertical 9:16 cozy chibi 16-bit pixel RPG, continuous single shot 15 seconds.
+Vertical 9:16 cozy chibi hand-painted cel-shaded RPG, continuous single shot 15 seconds.
 Cute white rabbit ninja hero transitions from a short dagger to throwing darts,
 misty village night, same chibi rabbit, purple-blue soft lighting,
 weapon change is readable, continuous camera gentle orbit.
