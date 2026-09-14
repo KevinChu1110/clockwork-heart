@@ -122,6 +122,8 @@ func _process(_d: float) -> bool:
 				_checked_walking_scale = true
 			if _wait < 90:
 				return false
+			if bool(player2.get("_moving")) and _wait < 160:
+				return false
 			if not _checked_walking_scale:
 				_fail("未能在走路期間驗證 scale == Vector2.ONE")
 				return _finish()
