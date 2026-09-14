@@ -125,7 +125,7 @@ func _build() -> void:
 	# 7. 次按鈕「去玩具堆邊緣（C0）」（UiStyle.style_button(btn, false)，高度 50px ≥ 50px）
 	var cont := Button.new()
 	cont.name = "ContinueBtn"
-	cont.text = "去玩具堆邊緣（C0）"
+	cont.text = "去玩具堆邊緣"
 	cont.custom_minimum_size = Vector2(300, 50)
 	cont.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	cont.offset_left = -150
