@@ -1957,5 +1957,6 @@
   "齒輪深淵": "Gear Abyss",
   "齒輪深淵第 %d 章通過！金 %d%s": "Gear Abyss chapter %d cleared! Gold %d%s",
   "齒輪深淵（飾品 · 剩 %d）": "Gear Abyss (accessories · %d left)",
-  "[b]齒輪深淵[/b] · 飾品的出處。五章漸深，前三章免能量、後兩章每次 3 點。\n": "[b]Gear Abyss[/b] · where accessories come from. Five chapters, deeper each time; first three cost no energy, last two cost 3 per try.\n"
+  "[b]齒輪深淵[/b] · 飾品的出處。五章漸深，前三章免能量、後兩章每次 3 點。\n": "[b]Gear Abyss[/b] · where accessories come from. Five chapters, deeper each time; first three cost no energy, last two cost 3 per try.\n",
+  "[color=#fc8]發條重新上鍊！獲得二次戰鬥機會！[/color]": "[color=#fc8]Rewound! You get a second chance in battle![/color]"
 }

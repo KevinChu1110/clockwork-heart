@@ -1957,5 +1957,6 @@
   "齒輪深淵": "Abismo de los Engranajes",
   "齒輪深淵第 %d 章通過！金 %d%s": "¡Capítulo %d del Abismo de los Engranajes superado! Oro %d%s",
   "齒輪深淵（飾品 · 剩 %d）": "Abismo de los Engranajes (accesorios · quedan %d)",
-  "[b]齒輪深淵[/b] · 飾品的出處。五章漸深，前三章免能量、後兩章每次 3 點。\n": "[b]Abismo de los Engranajes[/b] · origen de los accesorios. Cinco capítulos; los tres primeros sin energía, los dos últimos cuestan 3.\n"
+  "[b]齒輪深淵[/b] · 飾品的出處。五章漸深，前三章免能量、後兩章每次 3 點。\n": "[b]Abismo de los Engranajes[/b] · origen de los accesorios. Cinco capítulos; los tres primeros sin energía, los dos últimos cuestan 3.\n",
+  "[color=#fc8]發條重新上鍊！獲得二次戰鬥機會！[/color]": "[color=#fc8]¡Cuerda recargada! ¡Obtienes una segunda oportunidad en combate![/color]"
 }
