@@ -370,7 +370,7 @@ static func berserk_manual_atb_mult() -> float:
 	return _tbl("berserk.manual_atb_mult", 1.40)
 
 
-## 經驗分流（批次 6）：野外／獵場材料為主、薄經驗；回村演武才是經驗主源。
+## 經驗分流（批次 6）：野外／獵場材料為主、薄經驗；演武場才是經驗主源。
 ## 不歸零野外 XP。
 static func field_xp(max_hp: int, skirmish_wins: int = 0) -> int:
 	var xp_n := 8 + int(maxi(0, max_hp) / 14)

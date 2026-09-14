@@ -20,7 +20,7 @@ static func regions() -> Array:
 			"stages": [
 				{
 					"id": "r1_s1",
-					"name": _t("關卡 1・村外道路"),
+					"name": _t("關卡 1・玩具堆外緣"),
 					"maps": [{"id": "road", "label": _t("玩具堆外緣")}],
 					"unlock": [],
 					"clear_flag": "c0_first_battle",
@@ -44,7 +44,7 @@ static func regions() -> Array:
 		{
 			"id": "r2",
 			"name": _t("第二區・白霧之地"),
-			"blurb": _t("霧村、霧崖與鏡廊。看破虛影。"),
+			"blurb": _t("白霧、霧崖與鏡廊。看破虛影。"),
 			"stages": [
 				{
 					"id": "r2_s1",
@@ -203,7 +203,7 @@ static func suggest_lv(stage_id: String) -> int:
 static func next_objective_line() -> String:
 	var o := next_objective()
 	if o.is_empty():
-		return _t("主線已完結——村莊、演武與獵場都在等你。")
+		return _t("主線已完結——今日村莊、演武與獵場都在等你。")
 	var boss := str(o.get("boss", ""))
 	var line: String
 	if boss != "":

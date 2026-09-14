@@ -79,7 +79,7 @@ func status_bbcode() -> String:
 		lines.append(_t("（進入堡壘後解鎖）"))
 		return "\n".join(lines)
 	lines.append(_t("今日有獎場次：%d／%d（剩餘 %d）") % [runs_today(), DAILY_CAP, daily_left()])
-	lines.append(_t("每場：3 波雜魚。每波薄經驗，通關再發材料與金。要練等回村演武。"))
+	lines.append(_t("每場：3 波雜魚。每波薄經驗，通關再發材料與金。要練等回演武場。"))
 	lines.append(_t("有獎場次用完後仍可練習，但經驗與金都只剩三成五。"))
 	if is_run_active():
 		lines.append(_t("[color=#c96]進行中：第 %d／%d 波[/color]") % [current_wave() + 1, WAVES.size()])

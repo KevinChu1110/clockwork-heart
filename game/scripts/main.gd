@@ -3260,7 +3260,7 @@ func _side_finish_ronin_battle(won: bool) -> void:
 func _side_deliver_true_letter() -> void:
 	_play_dialog([
 		{"speaker": _t("行商"), "portrait": "caravan_chief", "text": _t("這印……霧隱？假信我看過一百封。")},
-		{"speaker": _t("行商"), "text": _t("……紙邊有火燎。是真的。我們會送到村外那戶。")},
+		{"speaker": _t("行商"), "text": _t("……紙邊有火燎。是真的。我們會送到霧廊外那戶。")},
 		{"speaker": _t("行商"), "text": _t("謝了。路上少一層假，就少一場刀。")},
 		{"speaker": _t("系統"), "text": _t("交付【真信】。金幣＋45 · 星屑＋3。")},
 	], func(): _grant_side_reward(SideMilestones.reward("fog_letter_deliver")))
@@ -4229,7 +4229,7 @@ func _world_skirmish_result(mode: String, won: bool, back_cb: Callable) -> void:
 		if int(xr.get("levels", 0)) > 0:
 			extra += _t(" · 升級！")
 		if sk_wins == 24:
-			extra += _t(" · 野外經驗開始變薄。回村演武比較厚。")
+			extra += _t(" · 野外經驗開始變薄。回演武場比較厚。")
 		if loot_s != "":
 			extra += " · " + loot_s
 		extra += eq_s
@@ -7561,7 +7561,7 @@ func _go_postgame_hub() -> void:
 	## Product Lock §4：裂縫／NG+ 移出範圍。舊入口改成出口，不開裂縫中樞。
 	_panel(
 		_t("通關之後"),
-		_t("主線完結。村子、演武與獵場都在。"),
+		_t("主線完結。今日村莊、演武與獵場都在。"),
 		[
 			{"text": _t("稱號牆"), "cb": _go_title_wall},
 			{"text": _t("堡壘"), "cb": _go_c1_town},
