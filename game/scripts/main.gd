@@ -2614,7 +2614,7 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	else:
 		var solid := ColorRect.new()
 		solid.set_anchors_preset(Control.PRESET_FULL_RECT)
-		solid.color = Color(0.09, 0.08, 0.1)
+		solid.color = Color(0.24, 0.68, 0.98, 1.0) ## 晴空蔚藍底 (對齊 ART_DAILY_CONSTITUTION 日常層，不用 0.09 泥灰黑)
 		layer.add_child(solid)
 	layer.add_child(bg)
 
@@ -2623,7 +2623,7 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	var scrim := ColorRect.new()
 	scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
 	scrim.anchor_top = 0.52
-	scrim.color = Color(0.08, 0.06, 0.05, 0.38)
+	scrim.color = Color(1.0, 0.88, 0.60, 0.06) ## 暖金微光薄紗 (對齊日常層，移除 0.38 泥灰髒霧)
 	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(scrim)
 
@@ -2639,8 +2639,10 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	var game_name := Label.new()
 	game_name.text = _t("發條之心")
 	game_name.add_theme_font_size_override("font_size", 48)
-	game_name.add_theme_color_override("font_color", Color(0.97, 0.92, 0.82))
-	game_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.8))
+	game_name.add_theme_color_override("font_color", Color(0.98, 0.95, 0.88))
+	game_name.add_theme_color_override("font_outline_color", Color(0.26, 0.18, 0.12, 0.95))
+	game_name.add_theme_constant_override("outline_size", 6)
+	game_name.add_theme_color_override("font_shadow_color", Color(0.15, 0.10, 0.06, 0.65))
 	game_name.add_theme_constant_override("shadow_offset_x", 3)
 	game_name.add_theme_constant_override("shadow_offset_y", 3)
 	game_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -2648,8 +2650,10 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	var en_name := Label.new()
 	en_name.text = "C L O C K W O R K   H E A R T"
 	en_name.add_theme_font_size_override("font_size", 13)
-	en_name.add_theme_color_override("font_color", Color(0.85, 0.68, 0.45, 0.95))
-	en_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
+	en_name.add_theme_color_override("font_color", Color(1.0, 0.85, 0.45, 0.98))
+	en_name.add_theme_color_override("font_outline_color", Color(0.26, 0.18, 0.12, 0.90))
+	en_name.add_theme_constant_override("outline_size", 2)
+	en_name.add_theme_color_override("font_shadow_color", Color(0.15, 0.10, 0.06, 0.60))
 	en_name.add_theme_constant_override("shadow_offset_x", 1)
 	en_name.add_theme_constant_override("shadow_offset_y", 1)
 	en_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -2659,7 +2663,10 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	meta_rt.fit_content = true
 	meta_rt.text = meta_bb
 	meta_rt.add_theme_font_size_override("normal_font_size", 13)
-	meta_rt.add_theme_color_override("default_color", Color(0.85, 0.8, 0.72))
+	meta_rt.add_theme_color_override("default_color", Color(0.95, 0.92, 0.85))
+	meta_rt.add_theme_color_override("font_shadow_color", Color(0.15, 0.10, 0.06, 0.70))
+	meta_rt.add_theme_constant_override("shadow_offset_x", 1)
+	meta_rt.add_theme_constant_override("shadow_offset_y", 1)
 	meta_rt.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	meta_rt.custom_minimum_size = Vector2(560, 0)
 	info.add_child(meta_rt)
