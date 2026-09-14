@@ -2,7 +2,7 @@ extends SceneTree
 const HubScript := preload("res://scripts/systems/wave8/w8_hub_view.gd")
 const FlowScript := preload("res://scripts/systems/onboard/onboard_flow.gd")
 
-func _init() -> void:
+func _initialize() -> void:
 	var ok := true
 	# scene file
 	if not FileAccess.file_exists("res://scenes/w8_hub/w8_hub.tscn"):
@@ -26,7 +26,7 @@ func _init() -> void:
 		pass
 	print("phases=onboard,soul,chapter scene=w8_hub.tscn")
 	if ok:
-		print("W8_HUB_SUCCESS")
+		print("W8_HUB_OK")
 		quit(0)
 	else:
 		print("W8_HUB_FAIL")
