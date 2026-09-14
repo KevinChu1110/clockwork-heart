@@ -186,7 +186,7 @@ func _build_ui() -> void:
 	v_main.add_child(header)
 
 	var title_l := Label.new()
-	title_l.text = "系統設定"
+	title_l.text = _t("系統設定")
 	_apply_label_style(title_l, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 4)
 	title_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title_l)
@@ -223,10 +223,10 @@ func _build_ui() -> void:
 	body_h.add_child(left_tabs)
 
 	var tabs_info := [
-		{"tab": Tab.LANGUAGE, "name": "語言切換"},
-		{"tab": Tab.AUDIO, "name": "聲音音效"},
-		{"tab": Tab.DISPLAY, "name": "畫面顯示"},
-		{"tab": Tab.BACKUP, "name": "存檔備份"},
+		{"tab": Tab.LANGUAGE, "name": _t("語言切換")},
+		{"tab": Tab.AUDIO, "name": _t("聲音音效")},
+		{"tab": Tab.DISPLAY, "name": _t("畫面顯示")},
+		{"tab": Tab.BACKUP, "name": _t("存檔備份")},
 	]
 
 	_tab_buttons.clear()
@@ -305,7 +305,7 @@ func _build_language_panel() -> void:
 	_content_container.add_child(root_p)
 
 	var tip := Label.new()
-	tip.text = "請選擇您偏好的顯示語系 (即時生效)："
+	tip.text = _t("請選擇您偏好的顯示語系 (即時生效)：")
 	_apply_label_style(tip, 16, COLOR_TEXT_DARK)
 	root_p.add_child(tip)
 

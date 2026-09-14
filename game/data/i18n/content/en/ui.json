@@ -1995,5 +1995,11 @@
   "· 已啟用": "· Enabled",
   "· 未啟用": "· Disabled",
   "已啟用移除廣告功能！": "Remove Ads feature enabled!",
-  "已重置移除廣告狀態！": "Remove Ads state reset!"
+  "已重置移除廣告狀態！": "Remove Ads state reset!",
+  "系統設定": "System Settings",
+  "語言切換": "Language Switch",
+  "聲音音效": "Audio & Sound",
+  "畫面顯示": "Display Settings",
+  "存檔備份": "Save Backup",
+  "請選擇您偏好的顯示語系 (即時生效)：": "Please select your preferred display language (takes effect immediately):"
 }

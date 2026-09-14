@@ -78,6 +78,27 @@ func _initialize() -> void:
 		_fail("程式用了表裡沒有的 key，玩家會直接看到 key 本身：%s" % ", ".join(missing))
 		return _finish()
 	print("  ok 程式用到的 %d 個 key 都在表裡" % used.size())
+
+	## 4) 五語系 content/ui.json key 數要一致且設定頁 key 齊全
+	var ui_base := _load("res://data/i18n/content/en/ui.json")
+	if ui_base.is_empty():
+		_fail("讀不到 content/en/ui.json")
+	for code in LOCALES:
+		var ui_tbl := _load("res://data/i18n/content/%s/ui.json" % code)
+		if ui_tbl.is_empty():
+			_fail("讀不到 content/%s/ui.json" % code)
+			continue
+		if ui_tbl.size() != ui_base.size():
+			_fail("content/%s/ui.json key 數 (%d) 與 en (%d) 不一致" % [code, ui_tbl.size(), ui_base.size()])
+		var missing_ui: PackedStringArray = []
+		for k in ["系統設定", "語言切換", "聲音音效", "畫面顯示", "存檔備份", "請選擇您偏好的顯示語系 (即時生效)："]:
+			if not ui_tbl.has(k):
+				missing_ui.append(str(k))
+		if missing_ui.size() > 0:
+			_fail("content/%s/ui.json 缺少設定頁 key：%s" % [code, ", ".join(missing_ui)])
+	if _ok:
+		print("  ok 五語系 content/ui.json 各 %d 個 key，全部對齊" % ui_base.size())
+
 	_finish()
 
 

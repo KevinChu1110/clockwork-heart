@@ -1995,5 +1995,11 @@
   "· 已啟用": "· Activado",
   "· 未啟用": "· Desactivado",
   "已啟用移除廣告功能！": "¡Función de eliminar anuncios activada!",
-  "已重置移除廣告狀態！": "¡Estado de eliminación de anuncios restablecido!"
+  "已重置移除廣告狀態！": "¡Estado de eliminación de anuncios restablecido!",
+  "系統設定": "Ajustes del sistema",
+  "語言切換": "Cambiar idioma",
+  "聲音音效": "Audio y sonido",
+  "畫面顯示": "Pantalla",
+  "存檔備份": "Copia de seguridad",
+  "請選擇您偏好的顯示語系 (即時生效)：": "Seleccione su idioma de visualización preferido (se aplica al instante):"
 }
