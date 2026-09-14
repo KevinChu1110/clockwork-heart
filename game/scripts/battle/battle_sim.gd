@@ -1721,7 +1721,7 @@ static func make_tutorial_wolf_fight(player_stats: Dictionary) -> BattleSim:
 	var sim := BattleSim.new()
 	var p := BattleUnit.new()
 	p.id = "player"
-	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.display_name = str(player_stats.get("name", _t("小白")))
 	p.team = BattleUnit.Team.PLAYER
 	p.max_hp = int(player_stats.get("max_hp", 50))
 	p.hp = int(player_stats.get("hp", p.max_hp))
@@ -1750,7 +1750,7 @@ static func make_dummy_fight(player_stats: Dictionary) -> BattleSim:
 	var sim := BattleSim.new()
 	var p := BattleUnit.new()
 	p.id = "player"
-	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.display_name = str(player_stats.get("name", _t("小白")))
 	p.team = BattleUnit.Team.PLAYER
 	p.max_hp = int(player_stats.get("max_hp", 50))
 	p.hp = int(player_stats.get("hp", p.max_hp))
@@ -1778,7 +1778,7 @@ static func make_leo_fight(player_stats: Dictionary) -> BattleSim:
 	var sim := BattleSim.new()
 	var p := BattleUnit.new()
 	p.id = "player"
-	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.display_name = str(player_stats.get("name", _t("小白")))
 	p.team = BattleUnit.Team.PLAYER
 	p.max_hp = int(player_stats.get("max_hp", 80))
 	p.hp = int(player_stats.get("hp", p.max_hp))
@@ -1819,7 +1819,7 @@ static func make_falcon_fight(player_stats: Dictionary) -> BattleSim:
 	sim.falcon_stop_left = 0.0
 	var p := BattleUnit.new()
 	p.id = "player"
-	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.display_name = str(player_stats.get("name", _t("小白")))
 	p.team = BattleUnit.Team.PLAYER
 	p.max_hp = int(player_stats.get("max_hp", 90))
 	p.hp = int(player_stats.get("hp", p.max_hp))
@@ -1857,7 +1857,7 @@ static func make_boar_fight(player_stats: Dictionary) -> BattleSim:
 	sim.boar_charge_cd = 3.5
 	var p := BattleUnit.new()
 	p.id = "player"
-	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.display_name = str(player_stats.get("name", _t("小白")))
 	p.team = BattleUnit.Team.PLAYER
 	p.max_hp = int(player_stats.get("max_hp", 95))
 	p.hp = int(player_stats.get("hp", p.max_hp))
@@ -2043,7 +2043,7 @@ func _setup_weapon_bars(player_stats: Dictionary, unit: BattleUnit = null) -> vo
 static func _rift_player(player_stats: Dictionary) -> BattleUnit:
 	var p := BattleUnit.new()
 	p.id = "player"
-	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.display_name = str(player_stats.get("name", _t("小白")))
 	p.team = BattleUnit.Team.PLAYER
 	p.max_hp = int(player_stats.get("max_hp", 100))
 	p.hp = int(player_stats.get("hp", p.max_hp))
@@ -2161,7 +2161,7 @@ static func make_abo_fight(player_stats: Dictionary) -> BattleSim:
 	sim.abo_slam_cd = 1.5
 	var p := BattleUnit.new()
 	p.id = "player"
-	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.display_name = str(player_stats.get("name", _t("小白")))
 	p.team = BattleUnit.Team.PLAYER
 	p.max_hp = int(player_stats.get("max_hp", 85))
 	p.hp = int(player_stats.get("hp", p.max_hp))
@@ -2198,7 +2198,7 @@ static func make_demon_fight(player_stats: Dictionary) -> BattleSim:
 	sim.demon_mode = true
 	var p := BattleUnit.new()
 	p.id = "player"
-	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.display_name = str(player_stats.get("name", _t("小白")))
 	p.team = BattleUnit.Team.PLAYER
 	p.max_hp = int(player_stats.get("max_hp", 90))
 	p.hp = int(player_stats.get("hp", p.max_hp))
@@ -2241,7 +2241,7 @@ static func make_fog_fight(player_stats: Dictionary) -> BattleSim:
 	sim.fog_vuln_cd = 1.2  ## 開場稍後第一次破綻
 	var p := BattleUnit.new()
 	p.id = "player"
-	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.display_name = str(player_stats.get("name", _t("小白")))
 	p.team = BattleUnit.Team.PLAYER
 	p.max_hp = int(player_stats.get("max_hp", 80))
 	p.hp = int(player_stats.get("hp", p.max_hp))
@@ -2393,7 +2393,7 @@ static func make_world_fight(player_stats: Dictionary, mode: String) -> BattleSi
 	var sim := BattleSim.new()
 	var p := BattleUnit.new()
 	p.id = "player"
-	p.display_name = str(player_stats.get("name", _t("兔勇者")))
+	p.display_name = str(player_stats.get("name", _t("小白")))
 	p.team = BattleUnit.Team.PLAYER
 	p.max_hp = int(player_stats.get("max_hp", 80))
 	p.hp = int(player_stats.get("hp", p.max_hp))
