@@ -119,7 +119,7 @@ func _build_ui() -> void:
 
 	var energy_title := Label.new()
 	energy_title.text = "【小隊共用發條能量】四職業技能共享單一能量池"
-	energy_title.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	energy_title.add_theme_color_override("font_color", Color("#1F1A3A"))
 	energy_title.add_theme_font_size_override("font_size", 15)
 	energy_header_hbox.add_child(energy_title)
 
@@ -127,7 +127,7 @@ func _build_ui() -> void:
 
 	_energy_label = Label.new()
 	_energy_label.text = "0 / 100"
-	_energy_label.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	_energy_label.add_theme_color_override("font_color", Color("#1F1A3A"))
 	_energy_label.add_theme_font_size_override("font_size", 15)
 	energy_header_hbox.add_child(_energy_label)
 
@@ -139,10 +139,11 @@ func _build_ui() -> void:
 	_energy_bar.custom_minimum_size = Vector2(0, 24)
 
 	var bar_bg := StyleBoxFlat.new()
-	bar_bg.bg_color = Color(0.24, 0.18, 0.14, 0.95)
+	bar_bg.bg_color = Color("#FFFDF8")
 	bar_bg.set_corner_radius_all(12)
+	bar_bg.set_border_width_all(2)
 	bar_bg.border_width_bottom = 3
-	bar_bg.border_color = Color(0.38, 0.28, 0.18, 1.0)
+	bar_bg.border_color = Color("#1F1A3A")
 	_energy_bar.add_theme_stylebox_override("background", bar_bg)
 
 	var bar_fill := StyleBoxFlat.new()

@@ -25,17 +25,27 @@ func _process(_delta: float) -> bool:
 	_frame += 1
 
 	if _frame == 2:
-		## 模擬充能觸發倒數分配視窗
-		_view.sim.shared_energy = 55.0
-		_view.sim.update(0.1)
-		_view.sim.allocation_countdown = 2.8  ## 展示倒數中的視覺狀態
+		## 模擬充能狀態（展示發條能量條與戰鬥層正常亮底視覺）
+		_view.sim.shared_energy = 45.0
 		_view.call("_refresh_all")
-	elif _frame == 4:
+	elif _frame == 3:
 		var img := root.get_viewport().get_texture().get_image()
 		if img:
 			var p := _out_dir.path_join("proof_clockwork_energy.png")
 			img.save_png(p)
 			print("SAVED_CLOCKWORK_ENERGY: ", p)
+	elif _frame == 4:
+		## 模擬充能觸發倒數分配視窗
+		_view.sim.shared_energy = 55.0
+		_view.sim.update(0.1)
+		_view.sim.allocation_countdown = 2.8  ## 展示倒數中的視覺狀態
+		_view.call("_refresh_all")
+	elif _frame == 6:
+		var img2 := root.get_viewport().get_texture().get_image()
+		if img2:
+			var p2 := _out_dir.path_join("proof_clockwork_energy_modal.png")
+			img2.save_png(p2)
+			print("SAVED_CLOCKWORK_ENERGY_MODAL: ", p2)
 		print("CLOCKWORK_ENERGY_CAPTURE_OK")
 		quit(0)
 
