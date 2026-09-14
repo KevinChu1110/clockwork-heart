@@ -1429,7 +1429,7 @@ func _go_starpath_panel() -> void:
 		var h_lab := _t("野外獵場（剩 %d）") % h_left if h_left > 0 else _t("野外獵場（練習）")
 		buttons.append({"text": h_lab, "cb": func(): _open_explore("hunting_grounds", Screen.C1_WILD)})
 	if GameState.level >= 15 or int(GameState.get_flag("dcave.cleared", 0)) > 0:
-		buttons.append({"text": _t("龍窟（飾品 · 剩 %d）") % _dcave_runs_left(), "cb": _go_dragon_cave_panel})
+		buttons.append({"text": _t("齒輪深淵（飾品 · 剩 %d）") % _dcave_runs_left(), "cb": _go_dragon_cave_panel})
 	if GameState.level >= 9:
 		var esc_tag := _t("收貨！") if (bool(GameState.get_flag("escort.active", false)) \
 			and int(GameState.get_flag("escort.end", 0)) <= int(Time.get_unix_time_from_system())) \
@@ -4695,7 +4695,7 @@ func _raid_once() -> void:
 		_play_dialog([{"speaker": _t("系統"), "text": _t("對方鏢頭是硬點子——被打退了。")}], _go_escort_panel)
 
 
-## ── 龍窟（原作：Lv15 開的飾品副本，五章各一系；前三章免能量、後兩章每次 3 點）──
+## ── 齒輪深淵（飾品副本，五章各一系；前三章免能量、後兩章每次 3 點）──
 const DRAGON_CAVE := [
 	{"name": "第一章 · 生鐵", "modes": ["ash_rat", "road_bandit", "sewer_slime"], "mult": 1.0, "quality": "common", "energy": 0},
 	{"name": "第二章 · 精晶", "modes": ["fog_shade", "bamboo_spirit", "forest_sprite"], "mult": 1.25, "quality": "uncommon", "energy": 0},
@@ -4724,7 +4724,7 @@ func _go_dragon_cave_panel() -> void:
 	var body := ""
 	if ResourceLoader.exists("res://assets/sprites/maps/dragon_cave_banner.png"):
 		body += "[img=440x150]res://assets/sprites/maps/dragon_cave_banner.png[/img]\n"
-	body += _t("[b]龍窟[/b] · 飾品的出處。五章漸深，前三章免能量、後兩章每次 3 點。\n")
+	body += _t("[b]齒輪深淵[/b] · 飾品的出處。五章漸深，前三章免能量、後兩章每次 3 點。\n")
 	body += _t("今日剩餘挑戰：%d 次 · 已通過 %d／5 章\n") % [_dcave_runs_left(), highest]
 	body += "\n" + EnergySystem.status_line()
 	var buttons: Array = []
@@ -4739,13 +4739,13 @@ func _go_dragon_cave_panel() -> void:
 			var mark := "✓ " if i < highest else "▶ "
 			buttons.append({"text": mark + _t(str(ch.get("name", ""))), "cb": func(): _dcave_challenge(idx)})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _go_starpath_panel})
-	_panel(_t("龍窟"), body, buttons)
+	_panel(_t("齒輪深淵"), body, buttons)
 
 
 func _dcave_challenge(idx: int) -> void:
 	_dcave_refresh_day()
 	if _dcave_runs_left() <= 0:
-		_play_dialog([{"speaker": _t("系統"), "text": _t("今日龍窟次數用完了。明天再來。")}], _go_dragon_cave_panel)
+		_play_dialog([{"speaker": _t("系統"), "text": _t("今日齒輪深淵次數用完了。明天再來。")}], _go_dragon_cave_panel)
 		return
 	var ch: Dictionary = DRAGON_CAVE[idx]
 	var cost := int(ch.get("energy", 0))
@@ -4767,7 +4767,7 @@ func _dcave_challenge(idx: int) -> void:
 			lines.append(_t("勝 %s") % str(def.get("name", mode)))
 		else:
 			GameState.hp = maxi(1, int(GameState.max_hp * 0.35))
-			lines.append(_t("敗給 %s——退出龍窟。") % str(def.get("name", mode)))
+			lines.append(_t("敗給 %s——退出齒輪深淵。") % str(def.get("name", mode)))
 			all_won = false
 			break
 	if all_won:
@@ -4788,7 +4788,7 @@ func _dcave_challenge(idx: int) -> void:
 				drop_s = _t("\n拾獲飾品：%s") % EquipmentSystem.label(inst)
 		var gold_n := 25 + idx * 15
 		GameState.add_gold(gold_n)
-		lines.append(_t("龍窟第 %d 章通過！金 %d%s") % [idx + 1, gold_n, drop_s])
+		lines.append(_t("齒輪深淵第 %d 章通過！金 %d%s") % [idx + 1, gold_n, drop_s])
 	SaveManager.save_game()
 	_play_dialog([{"speaker": _t("系統"), "text": "\n".join(lines)}], _go_dragon_cave_panel)
 
