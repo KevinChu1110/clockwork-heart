@@ -35,7 +35,7 @@ const TATA_PINK := Color(1.0, 0.40, 0.60, 1.0)             ## 活力草莓粉
 const TATA_BROWN := Color(0.26, 0.18, 0.12, 1.0)           ## 溫暖深巧克力褐描邊 (告別死黑/深紫)
 const TATA_NAVY := TATA_BROWN                              ## 相容別名
 const TATA_CARD_BG := Color(0.99, 0.98, 0.95, 1.0)        ## 溫潤奶油米白卡片底 (不透明)
-const TATA_CARD_BORDER := Color(0.38, 0.28, 0.18, 1.0)     ## 溫暖深棕描邊
+const TATA_CARD_BORDER := Color("#1F1A3A")                  ## 深藍紫描邊
 const TATA_GOLD := Color(0.95, 0.78, 0.22, 1.0)           ## 金琥珀飾邊
 
 const KEY := TATA_YELLOW
@@ -56,12 +56,12 @@ const PAPER := TATA_CARD_BG
 const PAPER_SOFT := Color(1.0, 1.0, 1.0, 0.98)
 const CREAM := TATA_BROWN
 const CREAM_DIM := Color(0.48, 0.38, 0.28, 1.0)
-const INK := TATA_BROWN
+const INK := Color("#1F1A3A")
 const INK_DIM := Color(0.48, 0.38, 0.28, 1.0)
 const INK_FAINT := Color(0.68, 0.60, 0.52, 1.0)
 
 ## 深暖色插畫描邊
-const BORDER_DARK := TATA_BROWN
+const BORDER_DARK := Color("#1F1A3A")
 const BORDER_MID := Color(0.50, 0.40, 0.30, 0.9)
 const LINE := TATA_GOLD
 const LINE_SOFT := BORDER_MID
