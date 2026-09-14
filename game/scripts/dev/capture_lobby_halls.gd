@@ -1,5 +1,5 @@
 extends SceneTree
-## 《發條之心》大廳三殿堂彈窗（王都鐵匠、手藝工坊、冒險委託）實機截圖產生器
+## 《發條之心》大廳三殿堂彈窗（天宮鐵匠、手藝工坊、冒險委託）實機截圖產生器
 ## 執行方式：
 ## xvfb-run -a godot --path game --rendering-driver opengl3 -s res://scripts/dev/capture_lobby_halls.gd
 
@@ -47,7 +47,7 @@ func _process(_delta: float) -> bool:
 		1:
 			# 等待大廳載入完畢，開啟鐵匠
 			if _frame_count >= 10:
-				print("  開啟王都鐵匠彈窗...")
+				print("  開啟天宮鐵匠彈窗...")
 				_current_dlg = _lobby.open_forge()
 				_step = 2
 				_frame_count = 0

@@ -120,7 +120,7 @@ func _test_hall_cards() -> void:
 
 	# 1.2 斷言四張卡片的標題關鍵字、圖示格文字，以及無 Emoji / 符號
 	var expected_cards := [
-		{"keyword": "鐵匠", "full_title": "王都鐵匠", "icon": "鐵"},
+		{"keyword": "鐵匠", "full_title": "天宮鐵匠", "icon": "鐵"},
 		{"keyword": "工坊", "full_title": "手藝工坊", "icon": "工"},
 		{"keyword": "演武", "full_title": "演武競技", "icon": "武"},
 		{"keyword": "委託", "full_title": "冒險委託", "icon": "委"},
@@ -192,13 +192,13 @@ func _test_hall_cards() -> void:
 ## 1.3 斷言三張殿堂卡片點擊會開啟手遊規範真畫面彈窗
 ## ──────────────────────────────────────────
 func _test_hall_card_real_screens(cards: Array[Button]) -> void:
-	# A. 王都鐵匠
+	# A. 天宮鐵匠
 	cards[0].pressed.emit()
 	var forge_dlg = _lobby.get_node_or_null("ForgeDialog")
 	if forge_dlg == null or not is_instance_valid(forge_dlg):
-		_fail("點擊王都鐵匠未開啟 ForgeDialog 真畫面")
+		_fail("點擊天宮鐵匠未開啟 ForgeDialog 真畫面")
 	else:
-		print("  ok 點擊王都鐵匠成功開啟 ForgeDialog")
+		print("  ok 點擊天宮鐵匠成功開啟 ForgeDialog")
 		var card = _find_named(forge_dlg, "ForgeCard") as Control
 		if card == null:
 			_fail("ForgeDialog 缺少 ForgeCard 節點")
@@ -646,13 +646,13 @@ func _test_adventure_region_stages() -> void:
 	var expected_prefixes := ["1-", "2-", "3-", "4-"]
 	var expected_first_names := [
 		"荒路哨站 · 發條灰鼠",
-		"王城外郭 · 守望關隘",
+		"白霧外緣 · 守望關隘",
 		"白霧村外 · 霧影遊魂",
 		"石岸潮襲 · 潮襲海盜"
 	]
 	var expected_last_names := [
 		"閣樓大門 · 大型殘兵",
-		"聖獅王宮 · 狂暴守護者",
+		"聖獅內殿 · 狂暴守護者",
 		"白霧核心 · 白霧",
 		"通天塔底 · 塔底"
 	]
