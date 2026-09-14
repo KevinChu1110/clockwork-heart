@@ -2032,10 +2032,11 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	b.add_theme_color_override("default_color", Color(0.24, 0.18, 0.14))
 	b.add_theme_font_size_override("normal_font_size", 14)
 	root.add_child(b)
+	var body_h_limit := float(extras.get("body_h", 105.0))
 	## 正文過長時限高，按鈕永遠可見
-	if body.length() > 280:
+	if body.length() > 280 or extras.has("body_h"):
 		b.fit_content = false
-		b.custom_minimum_size = Vector2(680, 105)
+		b.custom_minimum_size = Vector2(680, body_h_limit)
 		b.scroll_active = true
 
 	var btn_gap := 6.0
@@ -2047,7 +2048,7 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 		chrome_h += 75.0
 	if bool(extras.get("forge_pity", false)):
 		chrome_h += 65.0
-	var body_h := 105.0 if body.length() > 280 else minf(105.0, ceilf(float(body.length()) / 26.0) * 20.0)
+	var body_h := body_h_limit if (body.length() > 280 or extras.has("body_h")) else minf(body_h_limit, ceilf(float(body.length()) / 26.0) * 20.0)
 	var screen_h := float(get_viewport_rect().size.y)
 	var avail_h := maxf(110.0, screen_h - chrome_h - body_h - 25.0)
 
@@ -5610,7 +5611,7 @@ func _go_skill_panel() -> void:
 			})
 	buttons.append({"text": Loc.t("pause.soul"), "cb": _go_soul_panel})
 	buttons.append({"text": _t("回到廣場"), "cb": _go_c1_town})
-	_panel(Loc.t("panel.tutor"), body, buttons)
+	_panel(Loc.t("panel.tutor"), body, buttons, {"body_h": 140.0})
 
 
 func _make_skill_progress_widget(sid: String) -> Control:
