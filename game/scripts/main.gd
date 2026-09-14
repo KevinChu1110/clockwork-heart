@@ -3406,7 +3406,7 @@ func _side_start_fog_letter() -> void:
 func _flavor_world_object(id: String) -> void:
 	var flavors := {
 		"big_mill": _t("巨型發條風車的葉片卡死了。風仍過，卻推不動任何東西。"),
-		"grain_silo": _t("糧倉空了。灰裡還有半袋燒焦的發條穀粒。"),
+		"grain_silo": _t("發條穀倉空了。灰裡還有半袋燒焦的發條穀粒。"),
 		"miller_hut": _t("發條碾坊沒人。桌上茶杯結了薄冰。"),
 		"wheat_sea": _t("積木浪在夜裡一動也不動。"),
 		"cave_mouth": _t("洞口呼出冷氣。深處有水滴聲。"),
