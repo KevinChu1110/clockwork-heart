@@ -1729,7 +1729,7 @@ func _rebuild_entities() -> void:
 		## 注意這裡不能只把 tex 設成 null：那會掉進下面的色塊 fallback，
 		## 變成在漂亮底圖上畫一個半透明彩色方框，比疊 sprite 還糟。
 		var hide_scenery := _has_scenic_bg and (
-			SpriteDB.is_scenery_prop(str(e.id)) or SpriteDB.is_arrow_marker(str(e.id))
+			SpriteDB.is_scenery_prop(str(e.id)) or SpriteDB.is_arrow_marker(str(e.id)) or str(e.id) == "fire"
 		)
 		if hide_scenery:
 			## 看不見的東西不該有影子
