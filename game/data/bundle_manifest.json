@@ -4,7 +4,7 @@
   "target_mb": [50, 80],
   "packs": {
     "core": {
-      "player_gets": "第一次下載（Ken Base）。標題、大廳（今日村莊／四大殿堂）、C0 序章可玩。含操作／戰鬥／UI／玩家紙娃娃；BGM 僅留 battle（C0 教學戰）。缺 Pack-A 時 sfx／氛圍曲靜音占位，不擋 s8.*。",
+      "player_gets": "第一次下載（Ken Base）。標題、大廳（發條新村／四大殿堂）、C0 序章可玩。含操作／戰鬥／UI／玩家紙娃娃；BGM 僅留 battle（C0 教學戰）。缺 Pack-A 時 sfx／氛圍曲靜音占位，不擋 s8.*。",
       "map_prefixes": ["village", "road", "town"],
       "map_extra": ["barracks_yard", "sky_kingdom"],
       "bgm": ["battle"],
