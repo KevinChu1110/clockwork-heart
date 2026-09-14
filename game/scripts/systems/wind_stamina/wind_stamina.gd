@@ -17,6 +17,8 @@ var part_break: Dictionary = {}
 var hud: Dictionary = {}
 var combat_mode: String = "realtime_rhythm_budget"
 var drop_names: Dictionary = {}
+var err_toast_map: Dictionary = {}
+var first_break_deadline_sec: int = 60
 var data_id: String = "W2-K1"
 var _loaded: bool = false
 
@@ -69,6 +71,11 @@ func _builtin_defaults() -> Dictionary:
 			"drop_spring_coil": "發條彈簧",
 			"drop_core_shard": "核心碎片",
 		},
+		"FirstBreakDeadlineSec": 60,
+		"errToast": {
+			"ERR_STAMINA": "發條不夠了",
+			"ERR_PART_LOCKED": "這個部位還沒鬆",
+		},
 	}
 
 
@@ -80,6 +87,13 @@ func _apply_dict(d: Dictionary) -> void:
 	hud = (d.get("hud", {}) as Dictionary).duplicate(true)
 	combat_mode = str(d.get("combatMode", "realtime_rhythm_budget"))
 	drop_names = (d.get("dropNames", {}) as Dictionary).duplicate(true)
+	err_toast_map = (d.get("errToast", {}) as Dictionary).duplicate(true)
+	if err_toast_map.is_empty():
+		err_toast_map = {
+			"ERR_STAMINA": "發條不夠了",
+			"ERR_PART_LOCKED": "這個部位還沒鬆",
+		}
+	first_break_deadline_sec = int(d.get("FirstBreakDeadlineSec", 60))
 
 
 func _read_json(path: String) -> Variant:
@@ -169,3 +183,12 @@ func hud_forbids_blue_mana() -> bool:
 
 func hud_style() -> String:
 	return str(hud.get("style", "chest_glow_ring_ticks"))
+
+## W5-K1：UI toast 文案（⛔ 勿用 Bingo s8.err_* 旁白當 toast）
+func err_toast(code: String) -> String:
+	return str(err_toast_map.get(code, code))
+
+
+func deadline_sec() -> int:
+	return first_break_deadline_sec
+
