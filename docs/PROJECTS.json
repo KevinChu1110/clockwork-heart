@@ -814,8 +814,8 @@
    "id": "hud-text-overlap",
    "cat": "遊戲",
    "title": "戰鬥HUD鎖定提示折行被角色蓋與快捷標籤壓框線",
-   "status": "測試中",
-   "note": "審過：鎖定提示單行、快捷標籤進面板；未合 main",
+   "status": "已上線",
+   "note": "已過審並合進本機 main",
    "keys": [
     "戰鬥HUD鎖定提"
    ]
