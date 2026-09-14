@@ -33,7 +33,7 @@ const TATA_GREEN := Color(0.30, 0.82, 0.44, 1.0)           ## 清新薄荷綠
 const TATA_BLUE := Color(0.24, 0.68, 0.98, 1.0)            ## 晴空蔚藍
 const TATA_PINK := Color(1.0, 0.40, 0.60, 1.0)             ## 活力草莓粉
 const TATA_BROWN := Color(0.26, 0.18, 0.12, 1.0)           ## 溫暖深巧克力褐描邊 (告別死黑/深紫)
-const TATA_NAVY := TATA_BROWN                              ## 相容別名
+const TATA_NAVY := Color("#1F1A3A")                         ## 深藍紫相容別名
 const TATA_CARD_BG := Color(0.99, 0.98, 0.95, 1.0)        ## 溫潤奶油米白卡片底 (不透明)
 const TATA_CARD_BORDER := Color("#1F1A3A")                  ## 深藍紫描邊
 const TATA_GOLD := Color(0.95, 0.78, 0.22, 1.0)           ## 金琥珀飾邊
@@ -45,7 +45,7 @@ const KEY_SOFT := Color(1.0, 0.94, 0.70, 1.0)
 const KEY_FAINT := Color(1.0, 0.98, 0.88, 1.0)
 
 ## ── Surface (全面升級為溫暖奶油童話底) ──
-const WOOD_DARKEST := TATA_BROWN
+const WOOD_DARKEST := Color("#1F1A3A")
 const WOOD_DARK := Color(0.32, 0.24, 0.16, 1.0)
 const WOOD_MID := Color(0.45, 0.35, 0.25, 1.0)
 const WOOD := WOOD_DARK
@@ -54,10 +54,10 @@ const WOOD_LIGHT := Color(0.65, 0.55, 0.45, 1.0)
 ## ── Paper / Ink ──
 const PAPER := TATA_CARD_BG
 const PAPER_SOFT := Color(1.0, 1.0, 1.0, 0.98)
-const CREAM := TATA_BROWN
-const CREAM_DIM := Color(0.48, 0.38, 0.28, 1.0)
+const CREAM := Color("#FFFDF8")                             ## 陽光童話·奶油米白（修正歷史深褐錯誤）
+const CREAM_DIM := Color(0.30, 0.27, 0.42, 1.0)            ## 次級字（#1F1A3A 較亮版本，約 #4D456B）
 const INK := Color("#1F1A3A")
-const INK_DIM := Color(0.48, 0.38, 0.28, 1.0)
+const INK_DIM := Color(0.30, 0.27, 0.42, 1.0)              ## 次級灰字（#1F1A3A 較亮版本）
 const INK_FAINT := Color(0.68, 0.60, 0.52, 1.0)
 
 ## 深暖色插畫描邊

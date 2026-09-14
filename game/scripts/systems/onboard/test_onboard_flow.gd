@@ -41,6 +41,7 @@ func _init() -> void:
 			ok = false
 	if ok:
 		print("ONBOARD_SOULDRAW_UI_SUCCESS")
+		print("ONBOARD_FLOW_OK")
 		quit(0)
 	else:
 		print("ONBOARD_SOULDRAW_UI_FAIL")
