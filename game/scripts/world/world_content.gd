@@ -135,7 +135,7 @@ static func chests() -> Dictionary:
 		"hidden_cache": {"flag": "loot.chest.forest_cache", "gold": 35, "dust": 2, "text": _t("獵人藏匿處：藥草與銅板。")},
 		"cellar_hatch": {"flag": "loot.chest.road_inn", "gold": 30, "dust": 1, "text": _t("地窖底：旅舍老闆偶藏的小費罐。")},
 		"ore_cart": {"flag": "loot.chest.village_cave", "gold": 22, "dust": 2, "text": _t("礦車夾層：半袋未熔的星屑礦砂。")},
-		"fresh_earth": {"flag": "loot.chest.village_grave", "gold": 18, "dust": 1, "text": _t("新土下露出小盒——村民的護身符錢。")},
+		"fresh_earth": {"flag": "loot.chest.village_grave", "gold": 18, "dust": 1, "text": _t("新土下露出小盒——停擺玩具的護身符錢。")},
 		"goods_pile": {"flag": "loot.chest.caravan", "gold": 35, "dust": 2, "text": _t("行商允你摸一層貨——規矩內的謝禮。")},
 		"scroll_pile": {"flag": "loot.chest.tower_scrolls", "gold": 30, "dust": 3, "text": _t("卷軸間夾著星屑袋。斷頁說過：拿吧。")},
 		"obsidian": {"flag": "loot.chest.scar_obsidian", "gold": 52, "dust": 4, "text": _t("黑曜碎中封著濃縮星屑——燙手，但有用。")},
