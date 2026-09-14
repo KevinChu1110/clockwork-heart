@@ -4,7 +4,9 @@ extends Control
 const OnboardScript := preload("res://scripts/systems/onboard/onboard_view.gd")
 const SoulScript := preload("res://scripts/ui/soul_draw/soul_draw_play_view.gd")
 const RuntimeScript := preload("res://scripts/systems/wave8/w8_runtime.gd")
+const UiStyle := preload("res://scripts/ui/ui_style.gd")
 const I18N_PATH := "res://data/i18n/zh_TW.json"
+const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 enum Phase { ONBOARD, SOUL, CHAPTER }
 
@@ -16,10 +18,19 @@ var _chapter_panel: Control
 var runtime
 var _i18n: Dictionary = {}
 var _child: Node = null
+var _font: Font = null
 
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	anchor_right = 1.0
+	anchor_bottom = 1.0
+	grow_horizontal = Control.GROW_DIRECTION_BOTH
+	grow_vertical = Control.GROW_DIRECTION_BOTH
+	custom_minimum_size = Vector2(1280, 720)
+
+	if ResourceLoader.exists(FONT_PATH):
+		_font = load(FONT_PATH) as Font
 	if FileAccess.file_exists(I18N_PATH):
 		var parsed = JSON.parse_string(FileAccess.get_file_as_string(I18N_PATH))
 		if typeof(parsed) == TYPE_DICTIONARY:
@@ -34,31 +45,52 @@ func _tr(key: String) -> String:
 	return str(_i18n.get(key, key))
 
 
+func _apply_label(lbl: Label, font_size: int, color: Color, outline: bool = false) -> void:
+	lbl.add_theme_font_size_override("font_size", font_size)
+	lbl.add_theme_color_override("font_color", color)
+	if outline:
+		lbl.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
+		lbl.add_theme_constant_override("outline_size", 2)
+	if _font != null:
+		lbl.add_theme_font_override("font", _font)
+
+
 func _build_shell() -> void:
-	var bg := ColorRect.new()
+	var bg := Panel.new()
+	bg.name = "BackgroundPanel"
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.07, 0.07, 0.09, 1)
+	bg.anchor_right = 1.0
+	bg.anchor_bottom = 1.0
+	bg.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	bg.grow_vertical = Control.GROW_DIRECTION_BOTH
+	var bg_style := StyleBoxFlat.new()
+	bg_style.bg_color = UiStyle.TATA_CARD_BG
+	bg.add_theme_stylebox_override("panel", bg_style)
 	add_child(bg)
 
 	_banner = Label.new()
-	_banner.position = Vector2(24, 8)
-	_banner.add_theme_font_size_override("font_size", 18)
-	_banner.add_theme_color_override("font_color", Color(0.9, 0.85, 0.65))
+	_banner.name = "Banner"
+	_banner.position = Vector2(40, 14)
+	_apply_label(_banner, 24, UiStyle.TATA_BROWN, true)
 	add_child(_banner)
 
 	_toast = Label.new()
+	_toast.name = "Toast"
 	_toast.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	_toast.offset_top = 36
-	_toast.offset_bottom = 64
+	_toast.offset_top = 40
+	_toast.offset_bottom = 72
 	_toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_toast.add_theme_font_size_override("font_size", 16)
-	_toast.add_theme_color_override("font_color", Color(1.0, 0.92, 0.7))
+	_apply_label(_toast, 22, UiStyle.TATA_ORANGE, true)
 	add_child(_toast)
 
 	_host = Control.new()
 	_host.name = "PhaseHost"
 	_host.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_host.offset_top = 68
+	_host.anchor_right = 1.0
+	_host.anchor_bottom = 1.0
+	_host.offset_top = 74
+	_host.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	_host.grow_vertical = Control.GROW_DIRECTION_BOTH
 	add_child(_host)
 
 
@@ -75,83 +107,98 @@ func _goto(p: int) -> void:
 	_clear_host()
 	match p:
 		Phase.ONBOARD:
-			_banner.text = "Hub · ① 新手 onb"
+			_banner.text = "玩具堆邊緣 · 新手引導"
 			var v = OnboardScript.new()
 			v.set_anchors_preset(Control.PRESET_FULL_RECT)
 			_host.add_child(v)
 			_child = v
 			v.finished.connect(func() -> void:
-				_flash("新手完成 → 抽魂")
+				_flash("新手引導完成，前往聚魂")
 				_goto(Phase.SOUL)
 			)
 		Phase.SOUL:
-			_banner.text = "Hub · ② 抽魂結果卡"
+			_banner.text = "玩具堆邊緣 · 聚魂抽取"
 			var v = SoulScript.new()
 			v.set_anchors_preset(Control.PRESET_FULL_RECT)
 			_host.add_child(v)
 			_child = v
 			v.continue_requested.connect(func() -> void:
-				_flash("前往 C0 玩具堆邊緣")
+				_flash("前往玩具堆邊緣")
 				_goto(Phase.CHAPTER)
 			)
 		Phase.CHAPTER:
-			_banner.text = "Hub · ③ C0 首通／掃蕩 · 發條 %d/%d" % [runtime.daily.wind, runtime.daily.wind_max]
-	_refresh_daily_event_ui()
+			_banner.text = "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d" % [runtime.daily.wind, runtime.daily.wind_max]
 			_build_chapter_panel()
+			_refresh_daily_event_ui()
 
 
 func _build_chapter_panel() -> void:
-	_chapter_panel = Control.new()
-	_chapter_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_host.add_child(_chapter_panel)
-	_child = _chapter_panel
+	var card := Panel.new()
+	card.name = "ChapterPanel"
+	card.set_anchors_preset(Control.PRESET_FULL_RECT)
+	card.anchor_right = 1.0
+	card.anchor_bottom = 1.0
+	card.offset_left = 40
+	card.offset_top = 16
+	card.offset_right = -40
+	card.offset_bottom = -28
+	card.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	card.grow_vertical = Control.GROW_DIRECTION_BOTH
+	card.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	_host.add_child(card)
+	_chapter_panel = card
+	_child = card
 
 	var info := Label.new()
-	info.position = Vector2(48, 24)
-	info.add_theme_font_size_override("font_size", 22)
-	info.add_theme_color_override("font_color", Color(0.95, 0.93, 0.88))
-	info.text = "章節 C0_S8「玩具堆邊緣」\nGold %d · SoulTicket %d · Lv %d\n發條 %d/%d · 今日掃蕩 %d" % [
+	info.name = "Info"
+	info.position = Vector2(36, 26)
+	_apply_label(info, 22, UiStyle.TATA_BROWN)
+	info.text = "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d" % [
 		runtime.econ.gold, runtime.econ.soul_tickets, runtime.growth.level,
 		runtime.daily.wind, runtime.daily.wind_max, runtime.daily.daily_sweeps
 	]
-	info.name = "Info"
 	_chapter_panel.add_child(info)
 
 	var row := HBoxContainer.new()
-	row.position = Vector2(48, 160)
+	row.position = Vector2(36, 144)
 	row.add_theme_constant_override("separation", 16)
 	_chapter_panel.add_child(row)
 
 	var b1 := Button.new()
-	b1.text = "首通 C0_S8"
-	b1.custom_minimum_size = Vector2(200, 52)
+	b1.text = "首通 玩具堆邊緣"
+	b1.custom_minimum_size = Vector2(210, 52)
+	UiStyle.style_button(b1, true)
 	b1.pressed.connect(_on_first_clear)
 	row.add_child(b1)
 
 	var b2 := Button.new()
-	b2.text = "掃蕩 C0_S8"
-	b2.custom_minimum_size = Vector2(200, 52)
+	b2.text = "掃蕩 玩具堆邊緣"
+	b2.custom_minimum_size = Vector2(210, 52)
+	UiStyle.style_button(b2, false)
 	b2.pressed.connect(_on_sweep)
 	row.add_child(b2)
 
 	var b3 := Button.new()
 	b3.text = "等 8 分（模擬回復）"
 	b3.custom_minimum_size = Vector2(220, 52)
+	UiStyle.style_button(b3, false)
 	b3.pressed.connect(_on_sim_regen)
 	row.add_child(b3)
 
 	var b4 := Button.new()
-	b4.text = "回抽魂"
-	b4.custom_minimum_size = Vector2(140, 52)
+	b4.text = "前往聚魂"
+	b4.custom_minimum_size = Vector2(160, 52)
+	UiStyle.style_button(b4, false)
 	b4.pressed.connect(func() -> void: _goto(Phase.SOUL))
 	row.add_child(b4)
 
 	_build_daily_event_block()
 
 	var hint := Label.new()
-	hint.position = Vector2(48, 400)
-	hint.text = "一條龍：新手 → 抽魂 → 本頁。日事件每日一選，漏天不補。"
-	hint.add_theme_color_override("font_color", Color(0.65, 0.62, 0.55))
+	hint.name = "Hint"
+	hint.position = Vector2(36, 460)
+	hint.text = "引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。"
+	_apply_label(hint, 17, Color(0.36, 0.26, 0.18, 1.0))
 	_chapter_panel.add_child(hint)
 
 
@@ -161,11 +208,11 @@ func _refresh_chapter_info() -> void:
 	var info: Label = _chapter_panel.get_node_or_null("Info") as Label
 	if info == null:
 		return
-	info.text = "章節 C0_S8「玩具堆邊緣」\nGold %d · SoulTicket %d · Lv %d\n發條 %d/%d · 今日掃蕩 %d" % [
+	info.text = "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d" % [
 		runtime.econ.gold, runtime.econ.soul_tickets, runtime.growth.level,
 		runtime.daily.wind, runtime.daily.wind_max, runtime.daily.daily_sweeps
 	]
-	_banner.text = "Hub · ③ C0 首通／掃蕩 · 發條 %d/%d" % [runtime.daily.wind, runtime.daily.wind_max]
+	_banner.text = "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d" % [runtime.daily.wind, runtime.daily.wind_max]
 	_refresh_daily_event_ui()
 
 
@@ -194,7 +241,7 @@ func _on_sweep() -> void:
 		if err == "daily_sweep_cap":
 			_flash(_tr("err.daily_cap_sweep"))
 		elif err == "already_cleared_use_sweep" or err == "cannot_sweep":
-			_flash("需先首通，或體力／日限不足")
+			_flash("需先首通，或發條／掃蕩次數不足")
 		else:
 			_flash("掃蕩失敗：%s" % err)
 	_refresh_chapter_info()
@@ -208,28 +255,27 @@ func _on_sim_regen() -> void:
 	_flash("%s（%d→%d，＋%d）" % [_tr("reward.stamina_regen"), before, runtime.daily.wind, gained])
 	_refresh_chapter_info()
 
+
 func _build_daily_event_block() -> void:
 	var box := VBoxContainer.new()
 	box.name = "DailyEventBox"
-	box.position = Vector2(48, 260)
-	box.add_theme_constant_override("separation", 8)
+	box.position = Vector2(36, 240)
+	box.add_theme_constant_override("separation", 12)
 	_chapter_panel.add_child(box)
 
 	var title := Label.new()
 	title.name = "DailyTitle"
-	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", Color(0.85, 0.9, 1.0))
+	_apply_label(title, 22, UiStyle.TATA_BROWN, true)
 	box.add_child(title)
 
 	var body := Label.new()
 	body.name = "DailyBody"
-	body.add_theme_font_size_override("font_size", 15)
-	body.add_theme_color_override("font_color", Color(0.75, 0.78, 0.7))
+	_apply_label(body, 18, Color(0.32, 0.22, 0.14, 1.0))
 	box.add_child(body)
 
 	var row := HBoxContainer.new()
 	row.name = "DailyChoices"
-	row.add_theme_constant_override("separation", 12)
+	row.add_theme_constant_override("separation", 16)
 	box.add_child(row)
 
 	_refresh_daily_event_ui()
@@ -277,9 +323,10 @@ func _refresh_daily_event_ui() -> void:
 		if label == label_key:
 			label = str(choice.get("label", cid))
 		var b := Button.new()
-		b.text = "%s · %s" % [cid, label]
-		b.custom_minimum_size = Vector2(220, 48)
+		b.text = label
+		b.custom_minimum_size = Vector2(220, 52)
 		b.disabled = picked
+		UiStyle.style_button(b, not picked)
 		var pick_id: String = cid
 		b.pressed.connect(func() -> void: _on_daily_pick(pick_id))
 		row.add_child(b)
@@ -295,6 +342,6 @@ func _on_daily_pick(choice_id: String) -> void:
 		if err == "already_picked":
 			_flash(_tr("daily.already"))
 		else:
-			_flash("日事件失敗：%s" % err)
+			_flash("日常發條失敗：%s" % err)
 	_refresh_chapter_info()
 	_refresh_daily_event_ui()
