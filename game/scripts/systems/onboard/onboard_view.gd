@@ -74,7 +74,7 @@ func _build() -> void:
 	_node_lbl.name = "NodeTitle"
 	_node_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_node_lbl.add_theme_font_size_override("font_size", 22)
-	_node_lbl.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	_node_lbl.add_theme_color_override("font_color", UiStyle.INK)
 	_node_lbl.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
 	_node_lbl.add_theme_constant_override("outline_size", 2)
 	vbox.add_child(_node_lbl)

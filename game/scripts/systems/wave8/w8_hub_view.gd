@@ -71,7 +71,7 @@ func _build_shell() -> void:
 	_banner = Label.new()
 	_banner.name = "Banner"
 	_banner.position = Vector2(40, 14)
-	_apply_label(_banner, 24, UiStyle.TATA_BROWN, true)
+	_apply_label(_banner, 24, UiStyle.INK, true)
 	add_child(_banner)
 
 	_toast = Label.new()
@@ -152,7 +152,7 @@ func _build_chapter_panel() -> void:
 	var info := Label.new()
 	info.name = "Info"
 	info.position = Vector2(36, 26)
-	_apply_label(info, 22, UiStyle.TATA_BROWN)
+	_apply_label(info, 22, UiStyle.INK)
 	info.text = "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d" % [
 		runtime.econ.gold, runtime.econ.soul_tickets, runtime.growth.level,
 		runtime.daily.wind, runtime.daily.wind_max, runtime.daily.daily_sweeps
@@ -265,7 +265,7 @@ func _build_daily_event_block() -> void:
 
 	var title := Label.new()
 	title.name = "DailyTitle"
-	_apply_label(title, 22, UiStyle.TATA_BROWN, true)
+	_apply_label(title, 22, UiStyle.INK, true)
 	box.add_child(title)
 
 	var body := Label.new()

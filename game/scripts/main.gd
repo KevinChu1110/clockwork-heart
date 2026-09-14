@@ -5656,7 +5656,7 @@ func _make_skill_progress_widget(sid: String) -> Control:
 		title_l.text = _t("招式階位：Lv.%d %s") % [slv, base_name]
 	title_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title_l.add_theme_font_size_override("font_size", 14)
-	title_l.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	title_l.add_theme_color_override("font_color", UiStyle.INK)
 	title_l.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
 	title_l.add_theme_constant_override("outline_size", 2)
 	title_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -5682,7 +5682,7 @@ func _make_skill_progress_widget(sid: String) -> Control:
 		val_l.text = _t("熟練 %d／%d（%.1f%%）") % [mini(cur_m, need_m), need_m, pct]
 	val_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	val_l.add_theme_font_size_override("font_size", 14)
-	val_l.add_theme_color_override("font_color", UiStyle.TATA_ORANGE if pct >= 50.0 else UiStyle.TATA_BROWN)
+	val_l.add_theme_color_override("font_color", UiStyle.TATA_ORANGE if pct >= 50.0 else UiStyle.INK)
 	val_l.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
 	val_l.add_theme_constant_override("outline_size", 2)
 	val_l.mouse_filter = Control.MOUSE_FILTER_IGNORE
