@@ -73,10 +73,10 @@ const MISSIONS: Array[Dictionary] = [
 	{"id": "m_hunt3", "name": "星途獵手", "desc": "狩獵場有獎通關 3 次", "kind": "count", "key": "hunt.clears_total", "need": 3, "gold": 55, "dust": 3},
 	## 日常小事支線（探索互動物件；完成旗標後可於任務面板再領一次）
 	{"id": "m_lantern", "name": "長明一火", "desc": "在村後墓園點亮長明燈", "kind": "flag", "key": "side.lantern_done", "need": 1, "gold": 30, "dust": 2},
-	{"id": "m_nest", "name": "橋下軟羽", "desc": "照顧荒路大橋下的鳥巢", "kind": "flag", "key": "side.nest_care_done", "need": 1, "gold": 25, "dust": 1},
+	{"id": "m_nest", "name": "橋下軟羽", "desc": "照顧積木斷橋下的鳥巢", "kind": "flag", "key": "side.nest_care_done", "need": 1, "gold": 25, "dust": 1},
 	{"id": "m_star_wish", "name": "星池一願", "desc": "在星落平原許願淺池許願", "kind": "flag", "key": "side.star_wish_done", "need": 1, "gold": 35, "dust": 2},
 	{"id": "m_fog_incense", "name": "霧祠一炷", "desc": "在霧祠香爐上香", "kind": "flag", "key": "side.fog_incense_done", "need": 1, "gold": 35, "dust": 2},
-	{"id": "m_hearth", "name": "歇腳餘溫", "desc": "點燃路旁客棧的壁爐", "kind": "flag", "key": "side.hearth_lit", "need": 1, "gold": 25, "dust": 1},
+	{"id": "m_hearth", "name": "歇腳餘溫", "desc": "點燃停擺旅舍的壁爐", "kind": "flag", "key": "side.hearth_lit", "need": 1, "gold": 25, "dust": 1},
 	{"id": "m_life5", "name": "日常微光", "desc": "完成長明燈／鳥巢／許願／上香／壁爐五件小事", "kind": "flags_all", "keys": ["side.lantern_done", "side.nest_care_done", "side.star_wish_done", "side.fog_incense_done", "side.hearth_lit"], "need": 5, "gold": 150, "dust": 8},
 ]
 

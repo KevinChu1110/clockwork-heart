@@ -16,8 +16,8 @@ const CHEST_GOLD_MAX := 120
 const LOCAL_SHADOWS: Array[Dictionary] = [
 	{"id": "shadow_ash", "name": "好友・灰道", "mode": "pvp_snap", "power": 12,
 		"payload": {"name": "好友・灰道", "max_hp": 55, "atk": 9, "def": 3, "speed": 10.0, "power": 12}},
-	{"id": "shadow_bandit", "name": "好友・荒路", "mode": "pvp_snap", "power": 18,
-		"payload": {"name": "好友・荒路", "max_hp": 70, "atk": 11, "def": 4, "speed": 11.0, "power": 18}},
+	{"id": "shadow_bandit", "name": "好友・外緣", "mode": "pvp_snap", "power": 18,
+		"payload": {"name": "好友・外緣", "max_hp": 70, "atk": 11, "def": 4, "speed": 11.0, "power": 18}},
 	{"id": "shadow_fog", "name": "好友・霧隱", "mode": "pvp_snap", "power": 22,
 		"payload": {"name": "好友・霧隱", "max_hp": 80, "atk": 13, "def": 5, "speed": 12.0, "power": 22}},
 	{"id": "shadow_coast", "name": "好友・潮岸", "mode": "pvp_snap", "power": 26,

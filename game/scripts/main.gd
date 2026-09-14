@@ -4632,7 +4632,7 @@ func _escort_collect() -> void:
 		var lost := int(gold_n * 0.3)
 		gold_n -= lost
 		GameState.set_flag("escort.revenge", int(lost * 0.5) + int(GameState.get_flag("escort.revenge", 0)))
-		msg = _t("路上遇襲！只保住 %d 金——賊影往荒路跑了，可以去報仇。") % gold_n
+		msg = _t("路上遇襲！只保住 %d 金——賊影往玩具堆外緣跑了，可以去報仇。") % gold_n
 	else:
 		msg = _t("鏢車平安抵達。收 %d 金。") % gold_n
 	GameState.add_gold(gold_n)
