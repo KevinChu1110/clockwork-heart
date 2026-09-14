@@ -844,8 +844,8 @@
    "id": "w8-hub-dopamine",
    "cat": "遊戲",
    "title": "W8 Hub 殼與章節面板改多巴胺亮色盤",
-   "status": "測試中",
-   "note": "Hub 殼與章節面板改多巴胺亮色盤完成，測試綠，待驗收",
+   "status": "已上線",
+   "note": "已過審並合進本機 main",
    "keys": [
     "W8 Hub 殼"
    ]
