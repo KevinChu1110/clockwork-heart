@@ -1080,7 +1080,7 @@ func _go_battle_cry_form() -> void:
 	title.text = _t("戰鬥台詞")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", UiStyle.WOOD_DARK)
+	title.add_theme_color_override("font_color", UiStyle.INK)
 	root.add_child(title)
 	var hint := Label.new()
 	hint.text = _t("開戰時會喊出來，殘影對戰時對手也看得到。留空恢復預設。")
@@ -1147,7 +1147,7 @@ func _go_online_backend_form() -> void:
 	title.text = _t("後端設定（Supabase）")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", UiStyle.WOOD_DARK)
+	title.add_theme_color_override("font_color", UiStyle.INK)
 	root.add_child(title)
 	var hint := Label.new()
 	hint.text = _t("貼上 Project URL 與 publishable／anon key。不會上傳到別人。")
@@ -1230,7 +1230,7 @@ func _show_account_form(is_register: bool) -> void:
 	title.text = _t("註冊星途帳號") if is_register else _t("登入星途帳號")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", UiStyle.WOOD_DARK)
+	title.add_theme_color_override("font_color", UiStyle.INK)
 	root.add_child(title)
 	var email := LineEdit.new()
 	email.placeholder_text = "Email"

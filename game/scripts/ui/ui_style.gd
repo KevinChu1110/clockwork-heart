@@ -46,10 +46,10 @@ const KEY_FAINT := Color(1.0, 0.98, 0.88, 1.0)
 
 ## ── Surface (全面升級為溫暖奶油童話底) ──
 const WOOD_DARKEST := Color("#1F1A3A")
-const WOOD_DARK := Color(0.32, 0.24, 0.16, 1.0)
-const WOOD_MID := Color(0.45, 0.35, 0.25, 1.0)
+const WOOD_DARK := Color("#1F1A3A")
+const WOOD_MID := Color("#4D456B")
 const WOOD := WOOD_DARK
-const WOOD_LIGHT := Color(0.65, 0.55, 0.45, 1.0)
+const WOOD_LIGHT := Color("#7A7199")
 
 ## ── Paper / Ink ──
 const PAPER := TATA_CARD_BG
@@ -58,11 +58,11 @@ const CREAM := Color("#FFFDF8")                             ## 陽光童話·奶
 const CREAM_DIM := Color(0.30, 0.27, 0.42, 1.0)            ## 次級字（#1F1A3A 較亮版本，約 #4D456B）
 const INK := Color("#1F1A3A")
 const INK_DIM := Color(0.30, 0.27, 0.42, 1.0)              ## 次級灰字（#1F1A3A 較亮版本）
-const INK_FAINT := Color(0.68, 0.60, 0.52, 1.0)
+const INK_FAINT := Color("#7A7199")
 
 ## 深暖色插畫描邊
 const BORDER_DARK := Color("#1F1A3A")
-const BORDER_MID := Color(0.50, 0.40, 0.30, 0.9)
+const BORDER_MID := Color(0.30, 0.27, 0.42, 0.9)
 const LINE := TATA_GOLD
 const LINE_SOFT := BORDER_MID
 
