@@ -51,7 +51,7 @@
 | [docs/DESIGN_CRITIQUE.md](docs/DESIGN_CRITIQUE.md) | 外部建議評析 R1 |
 | [docs/DESIGN_CRITIQUE_R2.md](docs/DESIGN_CRITIQUE_R2.md) | 外部建議評析 R2 |
 | [docs/SHARE.md](docs/SHARE.md) | 高光／成就／發行 |
-| [docs/SCRIPT_C2.md](docs/SCRIPT_C2.md) | 忍者村＋延遲的信 |
+| [docs/SCRIPT_C2.md](docs/SCRIPT_C2.md) | 白霧之地＋延遲的信 |
 | [docs/BOSS_KITS.md](docs/BOSS_KITS.md) | 翠嶺四王機制 |
 | [docs/MECHANIC_LIBRARY.md](docs/MECHANIC_LIBRARY.md) | Artale 機制庫（未來 Boss／活動） |
 | [docs/CHAPTER_C4_C5.md](docs/CHAPTER_C4_C5.md) | C4 疾影／C5 石拳 |

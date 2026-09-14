@@ -54,7 +54,7 @@
 | [ART_STANDARD_SCENE_S8.md](ART_STANDARD_SCENE_S8.md) | **§8 標準場過審**：探索→戰鬥→拆部位；Grok 審／Hermes 做／老周合 | ✅ |
 | [ART_DIRECTION.md](ART_DIRECTION.md) | 品牌／KV 參考＋v3 覆寫指向憲法 | ✅ |
 | [ART_2D.md](ART_2D.md) | 2D 表現與遷移（**歷史索引**；風格以憲法為準） | ⚠️ 歷史 |
-| [SCRIPT_C2.md](SCRIPT_C2.md) | 忍者村＋N8 信＋白霧 | ✅ |
+| [SCRIPT_C2.md](SCRIPT_C2.md) | 白霧之地＋N8 信＋白霧 | ✅ |
 | [SCRIPT_C3.md](SCRIPT_C3.md) | 道場＋為何而戰 | ✅ |
 | [SCRIPT_C4.md](SCRIPT_C4.md) | 疾影森林傭兵語氣 | ✅ |
 | [SCRIPT_C5.md](SCRIPT_C5.md) | 石拳海岸傭兵語氣 | ✅ |
