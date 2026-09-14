@@ -235,7 +235,7 @@ static func chip_style() -> StyleBoxFlat:
 static func button_normal() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = Color(0.98, 0.97, 0.94, 0.96)
-	s.border_color = TATA_CARD_BORDER
+	s.border_color = Color("#1F1A3A")
 	s.set_border_width_all(2)
 	s.border_width_bottom = 5
 	s.set_corner_radius_all(18)
@@ -304,9 +304,9 @@ static func style_button(btn: Button, primary: bool = false) -> void:
 		btn.add_theme_stylebox_override("pressed", button_primary())
 		btn.add_theme_stylebox_override("focus", button_primary_hover())
 		btn.add_theme_stylebox_override("disabled", button_disabled())
-		btn.add_theme_color_override("font_color", Color(0.20, 0.10, 0.02, 1.0))
-		btn.add_theme_color_override("font_hover_color", Color(0.12, 0.05, 0.01, 1.0))
-		btn.add_theme_color_override("font_pressed_color", Color(0.20, 0.10, 0.02, 0.9))
+		btn.add_theme_color_override("font_color", Color("#1F1A3A"))
+		btn.add_theme_color_override("font_hover_color", Color("#1F1A3A"))
+		btn.add_theme_color_override("font_pressed_color", Color("#1F1A3A"))
 		btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
 		btn.add_theme_constant_override("outline_size", 2)
 	else:
@@ -315,9 +315,9 @@ static func style_button(btn: Button, primary: bool = false) -> void:
 		btn.add_theme_stylebox_override("pressed", button_pressed())
 		btn.add_theme_stylebox_override("focus", button_hover())
 		btn.add_theme_stylebox_override("disabled", button_disabled())
-		btn.add_theme_color_override("font_color", TATA_BROWN)
+		btn.add_theme_color_override("font_color", Color("#1F1A3A"))
 		btn.add_theme_color_override("font_hover_color", TATA_ORANGE)
-		btn.add_theme_color_override("font_pressed_color", TATA_BROWN)
+		btn.add_theme_color_override("font_pressed_color", Color("#1F1A3A"))
 		btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
 		btn.add_theme_constant_override("outline_size", 2)
 	btn.add_theme_color_override("font_disabled_color", Color(0.65, 0.60, 0.55, 0.7))

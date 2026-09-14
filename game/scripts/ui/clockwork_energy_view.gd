@@ -283,7 +283,7 @@ func _build_ui() -> void:
 
 	var ctrl_title := Label.new()
 	ctrl_title.text = "原型測試控制"
-	ctrl_title.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	ctrl_title.add_theme_color_override("font_color", Color("#1F1A3A"))
 	ctrl_title.add_theme_font_size_override("font_size", 14)
 	ctrl_vbox.add_child(ctrl_title)
 
@@ -473,7 +473,7 @@ func _build_allocation_modal() -> void:
 
 		var h_name := Label.new()
 		h_name.text = "【%s】%s" % [hero["profession"], hero["name"]]
-		h_name.add_theme_color_override("font_color", Color(0.20, 0.10, 0.02, 1.0))
+		h_name.add_theme_color_override("font_color", Color("#1F1A3A"))
 		h_name.add_theme_font_size_override("font_size", 16)
 		h_top.add_child(h_name)
 
@@ -487,7 +487,7 @@ func _build_allocation_modal() -> void:
 
 		var h_desc := Label.new()
 		h_desc.text = hero["skill_desc"]
-		h_desc.add_theme_color_override("font_color", Color(0.35, 0.25, 0.15, 1.0))
+		h_desc.add_theme_color_override("font_color", Color("#1F1A3A"))
 		h_desc.add_theme_font_size_override("font_size", 12)
 		h_desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		btn_vbox.add_child(h_desc)
