@@ -1599,25 +1599,25 @@ func _notify_codex_unlocks() -> void:
 
 func _journey_summary() -> String:
 	var checks := [
-		[_t("C0 離開閣樓"), "c0_village_left"],
-		[_t("C0 首戰"), "c0_first_battle"],
-		[_t("C1 鍛造"), "c1_forged"],
-		[_t("C1 雷歐"), "boss.leo_cleared"],
-		[_t("C1 小芽"), "c1_sprout_done"],
-		[_t("C1 舊債"), "side.ding_debt_done"],
-		[_t("C2 舊鑰的信"), "c2_wheat_letter"],
-		[_t("C2 家書"), "side.fog_letter_done"],
-		[_t("C2 白霧"), "boss.white_fog_cleared"],
-		[_t("C3 阿波"), "boss.abo_cleared"],
-		[_t("C4 疾影"), "boss.shadowwind_cleared"],
-		[_t("C5 石拳"), "boss.stonefist_cleared"],
+		[_t("離開閣樓"), "c0_village_left"],
+		[_t("首戰"), "c0_first_battle"],
+		[_t("鍛造"), "c1_forged"],
+		[_t("雷歐"), "boss.leo_cleared"],
+		[_t("小芽"), "c1_sprout_done"],
+		[_t("舊債"), "side.ding_debt_done"],
+		[_t("舊鑰的信"), "c2_wheat_letter"],
+		[_t("家書"), "side.fog_letter_done"],
+		[_t("白霧"), "boss.white_fog_cleared"],
+		[_t("阿波"), "boss.abo_cleared"],
+		[_t("疾影"), "boss.shadowwind_cleared"],
+		[_t("石拳"), "boss.stonefist_cleared"],
 		[_t("岔路浪人"), "side.ronin_done"],
 		[_t("長明燈"), "side.lantern_done"],
 		[_t("橋下巢"), "side.nest_care_done"],
 		[_t("星池願"), "side.star_wish_done"],
 		[_t("霧祠香"), "side.fog_incense_done"],
 		[_t("客棧爐"), "side.hearth_lit"],
-		[_t("C6 終章"), "boss.demon_cleared"],
+		[_t("終章"), "boss.demon_cleared"],
 		[_t("通關"), "game_cleared"],
 	]
 	var done := 0
@@ -6879,10 +6879,10 @@ func _go_c2_cleared_panel() -> void:
 	SaveManager.save_game()
 	AudioManager.play_bgm("mist")
 	_panel(
-		_t("C2 完成 · 霧與真"),
+		_t("完成 · 霧與真"),
 		_t("霧散了。舊鑰的字還在：我還在。\n山上鐘響。去道場。"),
 		[
-			{"text": _t("前往道場（C3）"), "cb": _go_c3_enter},
+			{"text": _t("前往道場"), "cb": _go_c3_enter},
 			{"text": _t("回白霧之地"), "cb": _go_c2_mist},
 			{"text": _t("回堡壘"), "cb": _go_c1_town},
 			{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
@@ -7066,12 +7066,12 @@ func _go_c3_cleared_panel() -> void:
 	SaveManager.save_game()
 	AudioManager.play_bgm("dojo")
 	_panel(
-		_t("C3 完成 · 拳中有道"),
+		_t("完成 · 拳中有道"),
 		_t("阿波點頭了。不問頭銜，問為何而戰。\n西林有風，東岸有石。也能直接上塔。"),
 		[
-			{"text": _t("西林（C4·疾影）"), "cb": _go_c4_enter},
-			{"text": _t("石拳海岸（C5·石拳）"), "cb": _go_c5_enter},
-			{"text": _t("直上塔下營地（C6）"), "cb": _go_c6_camp},
+			{"text": _t("西林（疾影）"), "cb": _go_c4_enter},
+			{"text": _t("石拳海岸（石拳）"), "cb": _go_c5_enter},
+			{"text": _t("直上塔下營地"), "cb": _go_c6_camp},
 			{"text": _t("回道場走走"), "cb": _go_c3_dojo},
 			{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
 		]
@@ -7213,11 +7213,11 @@ func _go_c4_cleared_panel() -> void:
 	SaveManager.save_game()
 	AudioManager.play_bgm("forest")
 	_panel(
-		_t("C4 完成 · 風之試煉"),
+		_t("完成 · 風之試煉"),
 		_t("風肯停半拍。銀羽給你。\n東岸還在吼。也能上塔。"),
 		[
-			{"text": _t("石拳海岸（C5）"), "cb": _go_c5_enter},
-			{"text": _t("塔下營地（C6）"), "cb": _go_c6_camp},
+			{"text": _t("石拳海岸"), "cb": _go_c5_enter},
+			{"text": _t("塔下營地"), "cb": _go_c6_camp},
 			{"text": _t("回森林走走"), "cb": _go_c4_forest},
 			{"text": _t("回道場"), "cb": _go_c3_dojo},
 			{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
@@ -7345,10 +7345,10 @@ func _go_c5_cleared_panel() -> void:
 	SaveManager.save_game()
 	AudioManager.play_bgm("coast")
 	_panel(
-		_t("C5 完成 · 岸上最後一擊"),
+		_t("完成 · 岸上最後一擊"),
 		_t("力氣是用來護岸的。你迎上去了。\n四柱醒了。塔門在等。"),
 		[
-			{"text": _t("前往塔下營地（C6）"), "cb": _go_c6_camp},
+			{"text": _t("前往塔下營地"), "cb": _go_c6_camp},
 			{"text": _t("回海岸走走"), "cb": _go_c5_coast},
 			{"text": _t("回森林"), "cb": _go_c4_forest},
 			{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
