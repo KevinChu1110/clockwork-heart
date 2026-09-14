@@ -383,7 +383,7 @@ func _spawn_bubble(world_pos: Vector2, text: String, secs: float, fill: Color) -
 	root.z_index = 50
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color(fill.r, fill.g, fill.b, 0.95)
-	sb.border_color = Color(0.28, 0.18, 0.1, 1)
+	sb.border_color = Color("#1F1A3A")
 	sb.set_border_width_all(2)
 	sb.set_corner_radius_all(6)
 	sb.content_margin_left = 8
@@ -394,7 +394,7 @@ func _spawn_bubble(world_pos: Vector2, text: String, secs: float, fill: Color) -
 	var lab := Label.new()
 	lab.text = t
 	lab.add_theme_font_size_override("font_size", 11)
-	lab.add_theme_color_override("font_color", Color(0.18, 0.14, 0.1, 1))
+	lab.add_theme_color_override("font_color", Color("#1F1A3A"))
 	lab.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	root.add_child(lab)
 	_world.add_child(root)
