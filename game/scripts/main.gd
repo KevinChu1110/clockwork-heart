@@ -6849,7 +6849,7 @@ func _c2_fog_clear_cut() -> void:
 			"bg": "mist_village",
 			"speaker": _t("旁白"),
 			"portrait": _t("霧隱"),
-			"text": _t("霧退成薄紗。村影第一次站穩腳跟。"),
+			"text": _t("霧退成薄紗。霧廊裡的玩具屋影第一次站穩腳跟。"),
 		},
 		{
 			"bg": "mist_village",
