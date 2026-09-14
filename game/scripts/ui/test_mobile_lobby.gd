@@ -49,6 +49,8 @@ func _process(_d: float) -> bool:
 		_test_hero_click_and_particles()
 		_test_hero_nameplate()
 		_test_hero_race_poses()
+		_test_adventure_region_stages()
+		_test_soul_hall_tab()
 		return _finish()
 	return false
 
@@ -628,6 +630,171 @@ func _test_hero_race_poses() -> void:
 	gs.player_race = "rabbit"
 	gs.paperdoll_slots = {}
 	_lobby._load_hero_poses()
+
+
+func _test_adventure_region_stages() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試冒險分頁地區切換")
+		return
+
+	if not _lobby.has_method("_switch_tab") or not _lobby.has_method("_select_region"):
+		_fail("大廳缺少 _switch_tab 或 _select_region 方法")
+		return
+
+	_lobby._switch_tab(MobileLobby.Tab.ADVENTURE)
+
+	var expected_prefixes := ["1-", "2-", "3-", "4-"]
+	var expected_first_names := [
+		"荒路哨站 · 發條灰鼠",
+		"王城外郭 · 守望關隘",
+		"白霧村外 · 霧影遊魂",
+		"石岸潮襲 · 潮襲海盜"
+	]
+	var expected_last_names := [
+		"閣樓大門 · 大型殘兵",
+		"聖獅王宮 · 狂暴守護者",
+		"白霧核心 · 白霧",
+		"通天塔底 · 塔底"
+	]
+
+	for r in range(4):
+		_lobby._select_region(r)
+		if _lobby.get("_selected_region") != r:
+			_fail("地區切換至 %d 失敗，_selected_region 不符" % r)
+
+		var stages_box = _lobby.get("_stages_container") as Node
+		if stages_box == null:
+			_fail("無法取得 _stages_container")
+			continue
+
+		var grid: GridContainer = null
+		for c in stages_box.get_children():
+			if c is GridContainer and not c.is_queued_for_deletion():
+				grid = c as GridContainer
+
+		if grid == null:
+			_fail("地區 %d 未找到有效的 GridContainer" % r)
+			continue
+
+		var cards: Array[PanelContainer] = []
+		for c in grid.get_children():
+			if c is PanelContainer and not c.is_queued_for_deletion():
+				cards.append(c as PanelContainer)
+
+		if cards.size() != 4:
+			_fail("地區 %d 之關卡卡片數量應為 4，實際: %d" % [r, cards.size()])
+			continue
+
+		for i in range(cards.size()):
+			var card := cards[i]
+			var num_str := "%d-%d" % [r + 1, i + 1]
+			var found_num := false
+			var found_name := false
+			var labels: Array[Label] = []
+			_collect_labels(card, labels)
+			for lbl in labels:
+				if lbl.text == num_str:
+					found_num = true
+				if i == 0 and lbl.text == expected_first_names[r]:
+					found_name = true
+				elif i == 3 and lbl.text == expected_last_names[r]:
+					found_name = true
+
+			if not found_num:
+				_fail("地區 %d 關卡 %d 未找到編號標籤 %s" % [r, i, num_str])
+			if i == 0 and not found_name:
+				_fail("地區 %d 第一關未找到名稱 %s" % [r, expected_first_names[r]])
+			if i == 3 and not found_name:
+				_fail("地區 %d 第四關未找到名稱 %s" % [r, expected_last_names[r]])
+
+		print("  ok 冒險分頁地區 %d 關卡清單驗證通過（前綴 %s）" % [r, expected_prefixes[r]])
+
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+
+
+## ──────────────────────────────────────────
+## 7. 斷言聚魂殿堂分頁多巴胺亮色盤樣式與封靈罐卡片
+## ──────────────────────────────────────────
+func _test_soul_hall_tab() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試聚魂殿堂分頁")
+		return
+
+	_lobby._switch_tab(MobileLobby.Tab.SOUL_HALL)
+	var soul_layer: Control = _lobby._soul_layer
+	if soul_layer == null or not soul_layer.visible:
+		_fail("聚魂分頁層未顯示或為空")
+		return
+
+	# 檢查主面板 StyleBoxFlat (必須為溫暖米黃 #FFF8E7，非黑曜石)
+	var panels: Array[PanelContainer] = []
+	for c in soul_layer.get_children():
+		if c is PanelContainer:
+			panels.append(c as PanelContainer)
+	if panels.is_empty():
+		_fail("聚魂分頁缺少主面板 PanelContainer")
+		return
+
+	var main_panel := panels[0]
+	var psb := main_panel.get_theme_stylebox("panel") as StyleBoxFlat
+	if psb == null:
+		_fail("聚魂主面板未設定 StyleBoxFlat")
+	else:
+		if psb.bg_color.to_html(false).to_upper() != "FFF8E7":
+			_fail("聚魂主面板底色應為 #FFF8E7 (COLOR_CARD_WARM)，實際為: #" + psb.bg_color.to_html(false))
+		if psb.border_color.to_html(false).to_upper() != "1F1A3A":
+			_fail("聚魂主面板描邊應為 #1F1A3A (COLOR_BORDER)，實際為: #" + psb.border_color.to_html(false))
+		if psb.corner_radius_top_left < 18:
+			_fail("聚魂主面板圓角應 >= 18px，實際為: %d" % psb.corner_radius_top_left)
+		if psb.border_width_bottom < 5:
+			_fail("聚魂主面板底部立體厚底應 >= 5px，實際為: %d" % psb.border_width_bottom)
+		print("  ok 聚魂分頁主面板多巴胺亮色盤驗證通過 (#FFF8E7/圓角%d/厚底%d)" % [psb.corner_radius_top_left, psb.border_width_bottom])
+
+	# 檢查封靈罐卡片 4 張
+	var gourd_btns: Array = _lobby._gourd_btns
+	if gourd_btns.size() != 4:
+		_fail("封靈罐按鈕數量應為 4，實際為: %d" % gourd_btns.size())
+		return
+
+	# 第一張預設點亮 (is_lit = true)
+	var lit_btn := gourd_btns[0] as Button
+	var lit_sb := lit_btn.get_theme_stylebox("normal") as StyleBoxFlat
+	if lit_sb == null:
+		_fail("已點亮封靈罐按鈕缺少 normal StyleBoxFlat")
+	else:
+		if lit_sb.bg_color.to_html(false).to_upper() != "FFF4D0":
+			_fail("已點亮封靈罐底色應為 #FFF4D0 (COLOR_CARD_GOLD)，實際為: #" + lit_sb.bg_color.to_html(false))
+		if lit_sb.corner_radius_top_left < 18:
+			_fail("已點亮封靈罐圓角應 >= 18px")
+		if lit_sb.border_width_bottom < 5:
+			_fail("已點亮封靈罐厚底應 >= 5px")
+		print("  ok 已點亮封靈罐卡片驗證通過 (#FFF4D0/厚底%d)" % lit_sb.border_width_bottom)
+
+	# 第二至四張預設未點亮 (is_lit = false，稍暗米灰底但非黑曜石黑底)
+	for i in range(1, 4):
+		var unlit_btn := gourd_btns[i] as Button
+		var unlit_sb := unlit_btn.get_theme_stylebox("disabled") as StyleBoxFlat
+		if unlit_sb == null:
+			_fail("未點亮封靈罐 %d 缺少 disabled StyleBoxFlat" % i)
+		else:
+			var bg_hex := unlit_sb.bg_color.to_html(false).to_upper()
+			if bg_hex == "07060A" or bg_hex == "141218" or bg_hex == "0B0A0E":
+				_fail("未點亮封靈罐 %d 仍為黑曜石黑底: #%s" % [i, bg_hex])
+			if unlit_sb.corner_radius_top_left < 18:
+				_fail("未點亮封靈罐 %d 圓角應 >= 18px" % i)
+			print("  ok 未點亮封靈罐 %d 驗證通過 (#%s，非黑底)" % [i, bg_hex])
+
+	# 檢查文字與是否有 ASCII █ 假進度條或禁止符號
+	var labels: Array[Label] = []
+	_collect_labels(soul_layer, labels)
+	for lbl in labels:
+		if _has_forbidden_symbols_or_emoji(lbl.text):
+			_fail("聚魂分頁文字含有禁止符號或Emoji: %s" % lbl.text)
+		if lbl.text.find("█") >= 0:
+			_fail("聚魂分頁文字含有 ASCII █ 假進度條: %s" % lbl.text)
+
+	print("  ok 聚魂殿堂分頁全部檢查通過")
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
 
 
 func _finish() -> bool:
