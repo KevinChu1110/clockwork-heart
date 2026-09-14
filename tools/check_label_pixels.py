@@ -2,8 +2,8 @@ from PIL import Image
 
 im = Image.open('/opt/side/bravesoul-game/proofs/hud_dopamine/proof_explore_hud_hotbar.png')
 # Let's inspect pixels around:
-# 1. Top hint bar "點一下 · 銹蝕長劍" (approx around x=640, y=20)
-# 2. "銹蝕長劍" (around x=610, y=490)
+# 1. Top hint bar "點一下 · 鏽蝕長劍" (approx around x=640, y=20)
+# 2. "鏽蝕長劍" (around x=610, y=490)
 # 3. "舊鑰" (around x=750, y=510)
 # 4. "玩具堆邊緣" (around x=140, y=410)
 # 5. "往天窗" (around x=860, y=430)

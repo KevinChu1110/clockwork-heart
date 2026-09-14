@@ -26,7 +26,7 @@ static func _enemy_def_raw(mode: String) -> Dictionary:
 		"ash_rat":
 			return {"id": "ash_rat", "name": "灰燼鼠", "max_hp": 55, "atk": 8, "def": 2, "speed": 12.0, "kin": "ninja", "is_boss": false, "art": "ash_rat", "art_fallback": "wolf"}
 		"road_bandit":
-			return {"id": "road_bandit", "name": "銹蝕哨兵偶", "max_hp": 75, "atk": 10, "def": 4, "speed": 10.0, "kin": "viking", "is_boss": false, "art": "road_bandit", "art_fallback": "wolf"}
+			return {"id": "road_bandit", "name": "鏽蝕哨兵偶", "max_hp": 75, "atk": 10, "def": 4, "speed": 10.0, "kin": "viking", "is_boss": false, "art": "road_bandit", "art_fallback": "wolf"}
 		"sewer_slime":
 			return {"id": "sewer_slime", "name": "下水黏漿", "max_hp": 70, "atk": 9, "def": 5, "speed": 8.0, "kin": "monk", "is_boss": false, "art": "sewer_slime", "art_fallback": "wolf"}
 		"fog_shade":
