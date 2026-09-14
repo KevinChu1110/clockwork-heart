@@ -49,7 +49,7 @@ var _tile_host: Node2D  ## TileMap 掛點
 var _tile_map: TileMapLayer  ## 地面
 var _wall_map: TileMapLayer  ## 牆／實心視覺
 ## 有手繪底圖時不畫牆磚 —— 底圖已經畫好房子與岩石了，再鋪一層灰色牆磚
-## 就會在畫面上多出一堆格線方框（翠谷村左下那棟屋、右上帳篷就是這樣來的）。
+## 就會在畫面上多出一堆格線方框（發條新村左下那棟屋、右上帳篷就是這樣來的）。
 var _has_scenic_bg := false
 ## 目前地圖底圖的 art id —— walkmask 是以 art 為 key（多張地圖共用同一張底圖）
 var _art_id := ""
