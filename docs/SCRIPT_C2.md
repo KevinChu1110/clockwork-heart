@@ -135,7 +135,7 @@
 | **旗艦 BOSS** | 白霧 | 白雾 | White Fog | Niebla Blanca | 白霧 | 백무 |
 | **BOSS 全稱** | 守衛泰坦·白霧 | 守卫泰坦·白雾 | Titan Overseer White Fog | Titán Guardián Niebla Blanca | 守護タイタン・白霧 | 수호 타이탄·백무 |
 | **種族稱謂** | 白霧仙狐 | 白雾仙狐 | Fox Titan White Fog | Zorro Titán Niebla Blanca | 白霧の仙狐 | 백무 선호 |
-| **核心 NPC** | 霧隱 | 雾隐 | Mistveil | Velo de Niebla | ミストベール | 미스트베일 |
+| **核心 NPC** | 霧隱 | 雾隐 | Veilfog | Velo de Niebla | 霧隠 | 무은 |
 | **核心 NPC** | 星讀 | 星读 | Star-Reader | Lector Estelar | 星読み | 성독 |
 | **情感夥伴** | 舊鑰 | 旧钥 | Oldkey | Llavevieja | オールドキー | 올드키 |
 | **牽掛信物** | 鑰繩 | 钥绳 | Key Cord | Cordón de Llave | 鍵ひも | 열쇠끈 |
