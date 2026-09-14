@@ -130,7 +130,7 @@ func _build() -> void:
 	_hint = Label.new()
 	_hint.name = "HintLabel"
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hint.text = "空白鍵／下一步 · N07 可「稍後再說」"
+	_hint.text = "空白鍵／下一步 · 部分步驟可「稍後再說」"
 	_hint.add_theme_font_size_override("font_size", 16)
 	_hint.add_theme_color_override("font_color", UiStyle.INK_DIM)
 	vbox.add_child(_hint)
@@ -149,7 +149,7 @@ func _show_current() -> void:
 	var cur: Dictionary = flow.current()
 	var node: String = str(cur.get("node", ""))
 	var key: String = str(cur.get("key", ""))
-	_node_lbl.text = "新手 · %s · cue %s" % [node, str(cur.get("cue", ""))]
+	_node_lbl.text = "新手引導 · 第 %d／%d 步" % [flow.step_index + 1, flow.steps().size()]
 	_dialog.text = _tr(key)
 	_btn_skip.visible = flow.can_skip_current()
 	# N07／N08 秀結果卡
