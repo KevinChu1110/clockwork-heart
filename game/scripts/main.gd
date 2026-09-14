@@ -3738,7 +3738,7 @@ func _go_world_map() -> void:
 	body += _t("石拳海岸 ── 通天塔 ── 堡壘\n")
 	body += _t("（港／洞／沉船）　（門廳／階／回憶）　（四店／市集／演武）\n")
 	body += "　　　　　　｜\n"
-	body += _t("　　　白霧村／霧隱（崖／祠／鏡廊）\n")
+	body += _t("　　　白霧之地／霧隱（崖／祠／鏡廊）\n")
 	body += "　　　　　　｜\n"
 	body += _t("　　　武鬥道場（內院／竹林／山巔）\n\n")
 	body += _t("秘境：星落平原 · 行商驛站 · 黑鏽疤地 · 北山道 · 東塔荒原\n")
@@ -3757,7 +3757,7 @@ func _go_world_map() -> void:
 	body += _t("去處（建議戰力）：\n")
 	body += _t("· 堡壘 ") + ("✓" if GameState.has_flag("c1_entered_city") or GameState.chapter != "c0" else "·") + "\n"
 	body += _t("· 岔路／練功 ") + (_t("✓ 鍛造後") if GameState.has_flag("c1_forged") else _t("鎖（先鍛造）")) + "\n"
-	body += _t("· 白霧村 ") + ("✓" if GameState.has_flag("c2_entered") else _t("建議 18+")) + "\n"
+	body += _t("· 白霧之地 ") + ("✓" if GameState.has_flag("c2_entered") else _t("建議 18+")) + "\n"
 	body += _t("· 道場 ") + ("✓" if GameState.has_flag("c3_entered") else _t("建議 26+")) + "\n"
 	body += _t("· 西林 ") + ("✓" if GameState.has_flag("c4_entered") else _t("建議 30+ · 可選序")) + "\n"
 	body += _t("· 海岸 ") + ("✓" if GameState.has_flag("c5_entered") else _t("建議 30+ · 可選序")) + "\n"
@@ -3770,7 +3770,7 @@ func _go_world_map() -> void:
 		buttons.append({"text": _t("六域岔路"), "cb": func(): _open_explore("crossroads", Screen.C1_WILD)})
 		buttons.append({"text": _t("行商驛站"), "cb": func(): _open_explore("caravan_camp", Screen.C1_WILD)})
 		buttons.append({"text": _t("星落平原"), "cb": func(): _open_explore("starfall_plain", Screen.C1_WILD)})
-		buttons.append({"text": _t("白霧村"), "cb": _go_c2_enter})
+		buttons.append({"text": _t("白霧之地"), "cb": _go_c2_enter})
 		buttons.append({"text": _t("武鬥道場"), "cb": _go_c3_enter})
 		buttons.append({"text": _t("西林"), "cb": _go_c4_enter})
 		buttons.append({"text": _t("石拳海岸"), "cb": _go_c5_enter})
@@ -6708,7 +6708,7 @@ func _go_aftermath() -> void:
 		_t("雷歐之後"),
 		_t("門開了。旗上有歪兔子。東南起霧。\n怒雷、反戈會了。金鬃外觀開了。"),
 		[
-			{"text": _t("前往白霧村（C2）"), "cb": _go_c2_enter},
+			{"text": _t("前往白霧之地"), "cb": _go_c2_enter},
 			{"text": _t("回到廣場"), "cb": _go_c1_town},
 			{"text": _t("出城荒野（霧道）"), "cb": _go_c1_wild},
 			{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
@@ -6883,7 +6883,7 @@ func _go_c2_cleared_panel() -> void:
 		_t("霧散了。舊鑰的字還在：我還在。\n山上鐘響。去道場。"),
 		[
 			{"text": _t("前往道場（C3）"), "cb": _go_c3_enter},
-			{"text": _t("回白霧村"), "cb": _go_c2_mist},
+			{"text": _t("回白霧之地"), "cb": _go_c2_mist},
 			{"text": _t("回堡壘"), "cb": _go_c1_town},
 			{"text": _t("存檔回標題"), "cb": func(): SaveManager.save_game(); _go_title()},
 		]
