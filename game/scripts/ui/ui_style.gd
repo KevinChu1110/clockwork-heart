@@ -97,7 +97,7 @@ const RAGE_FILL := Color(0.95, 0.55, 0.25, 1.0)
 static func panel_style(accent: Color = LINE) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = TATA_CARD_BG
-	s.border_color = TATA_CARD_BORDER
+	s.border_color = INK
 	s.set_border_width_all(3)
 	s.border_width_bottom = 6
 	s.set_corner_radius_all(24)
@@ -267,8 +267,8 @@ static func button_pressed() -> StyleBoxFlat:
 
 static func button_disabled() -> StyleBoxFlat:
 	var s := button_normal()
-	s.bg_color = Color(0.92, 0.90, 0.88, 0.6)
-	s.border_color = Color(0.65, 0.60, 0.55, 0.5)
+	s.bg_color = Color(0.94, 0.93, 0.90, 0.75)
+	s.border_color = Color(0.70, 0.67, 0.64, 0.6)
 	s.border_width_bottom = 2
 	return s
 
@@ -320,7 +320,7 @@ static func style_button(btn: Button, primary: bool = false) -> void:
 		btn.add_theme_color_override("font_pressed_color", Color("#1F1A3A"))
 		btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
 		btn.add_theme_constant_override("outline_size", 2)
-	btn.add_theme_color_override("font_disabled_color", Color(0.65, 0.60, 0.55, 0.7))
+	btn.add_theme_color_override("font_disabled_color", INK)
 	btn.add_theme_font_size_override("font_size", 17)
 	btn.custom_minimum_size = Vector2(0, 50)
 
@@ -364,7 +364,7 @@ static func style_jelly_progress(bar: ProgressBar, fill: Color = TATA_YELLOW, bg
 	## 塔塔多巴胺果凍立體進度條：厚底槽 + 高光果凍條
 	var bg_s := StyleBoxFlat.new()
 	bg_s.bg_color = bg
-	bg_s.border_color = TATA_CARD_BORDER
+	bg_s.border_color = INK
 	bg_s.set_border_width_all(2)
 	bg_s.border_width_bottom = 4
 	bg_s.set_corner_radius_all(10)

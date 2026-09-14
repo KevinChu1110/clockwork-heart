@@ -2074,6 +2074,8 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 		var is_dis: bool = bool(item.get("disabled", false))
 		btn.disabled = is_dis
 		UiStyle.style_button(btn, i == 0 and not is_dis)
+		if item.has("font_disabled_color"):
+			btn.add_theme_color_override("font_disabled_color", item["font_disabled_color"])
 		## deferred：避免在 pressed 當幀清掉 host 導致「卡死」
 		var cb: Callable = item.get("cb", Callable())
 		if cb.is_valid() and not is_dis:
@@ -5590,6 +5592,7 @@ func _go_skill_panel() -> void:
 		if is_max:
 			item["text"] = _t("【%s · Lv%d】已達極階") % [base_name2, slv2]
 			item["disabled"] = true
+			item["font_disabled_color"] = UiStyle.INK
 		elif can_t:
 			item["text"] = _t("指點 %s（%d金）") % [base_name2, SkillSystem.TUTOR_COST]
 			item["cb"] = _skill_tutor_cb(sid2)
@@ -5625,7 +5628,7 @@ func _make_skill_progress_widget(sid: String) -> Control:
 	var card := PanelContainer.new()
 	var csb := StyleBoxFlat.new()
 	csb.bg_color = Color(0.99, 0.98, 0.95, 0.96)
-	csb.border_color = Color("#1F1A3A")
+	csb.border_color = UiStyle.INK
 	csb.set_border_width_all(2)
 	csb.border_width_bottom = 4
 	csb.set_corner_radius_all(14)
