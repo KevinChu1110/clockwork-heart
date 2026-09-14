@@ -33,9 +33,12 @@ signal battle_finished(won: bool)
 @onready var battle_bg: TextureRect = %BG
 @onready var hazard_fx: TextureRect = %HazardFX
 
+const BattleDefeatDialogScript := preload("res://scripts/battle/battle_defeat_dialog.gd")
+
 var sim: BattleSim
 var _mode: String = "wolf"
 var _ended: bool = false
+var _revived_by_ad: bool = false
 var _in_parry_slowmo: bool = false
 var _player_home: Vector2
 var _enemy_home: Vector2
@@ -3230,9 +3233,51 @@ func _on_end(won: bool) -> void:
 			banner.modulate = Color(1, 1, 1, 1)
 			_append_log(_t("[color=#f66]敗北……[/color]"))
 			GameState.hp = maxi(1, GameState.max_hp / 2)
+			banner.visible = true
+			if not _revived_by_ad and _can_offer_ad_revive():
+				_show_defeat_settlement()
+				return
 	banner.visible = true
 	await get_tree().create_timer(1.6).timeout
 	battle_finished.emit(won)
+
+
+func _can_offer_ad_revive() -> bool:
+	if _mode == "training_dummy" or _mode == "pvp_snap":
+		return false
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var es: Node = (loop as SceneTree).root.get_node_or_null("EnergySystem")
+		if es and es.has_method("can_claim_ad_revive"):
+			return bool(es.call("can_claim_ad_revive"))
+	return false
+
+
+func _show_defeat_settlement() -> void:
+	BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat)
+
+
+func _on_ad_revive_success() -> void:
+	_revived_by_ad = true
+	_ended = false
+	banner.visible = false
+	var p: BattleUnit = sim.get_unit("player")
+	if p:
+		p.hp = maxi(1, int(p.max_hp * 0.5))
+		GameState.hp = p.hp
+		p.state = BattleUnit.State.IDLE
+		p.atb = 0.0
+	sim.finished = false
+	sim.won = false
+	_append_log(_t("[color=#fc8]發條重新上鍊！獲得二次戰鬥機會！[/color]"))
+	_flash(player_body, Color(1, 0.85, 0.4))
+	_shake = 0.2
+	_start_breathe_tween()
+
+
+func _on_give_up_defeat() -> void:
+	battle_finished.emit(false)
+
 
 
 ## 多巴胺色盤色碼轉換：將適合暗色底板的舊淺色碼轉換為亮底（#FFFDF8）高可讀深色（深琥珀 #A85A00、深莓紅 #C22B55、深藍紫 #1F1A3A）

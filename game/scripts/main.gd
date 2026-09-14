@@ -42,6 +42,7 @@ const CutscenePlayerScn = preload("res://scripts/ui/cutscene_player.gd")
 const NpcLines = preload("res://scripts/systems/npc_lines.gd")
 const EquipPanelScn = preload("res://scripts/ui/panels/equip_panel.gd")
 const SaveSlotsPanelScn = preload("res://scripts/ui/panels/save_slots_panel.gd")
+const EnergyLackDialogScn = preload("res://scripts/ui/energy_lack_dialog.gd")
 var _dialogue: DialogueBox
 var _cutscene: Control  ## CutscenePlayer
 var _explore: Control  ## ExploreView
@@ -707,7 +708,7 @@ func _go_hunt_panel() -> void:
 func _hunt_start_rewarded() -> void:
 	var er: Dictionary = EnergySystem.try_spend_run("hunt")
 	if not bool(er.get("ok", false)):
-		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}], _go_hunt_panel)
+		_show_energy_lack_dialog(_hunt_start_rewarded, _go_hunt_panel)
 		return
 	var r: Dictionary = HuntSystem.start_run(false)
 	if not bool(r.get("ok", false)):
@@ -724,7 +725,7 @@ func _hunt_start_rewarded() -> void:
 func _hunt_start_practice() -> void:
 	var er: Dictionary = EnergySystem.try_spend_run("hunt")
 	if not bool(er.get("ok", false)):
-		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}], _go_hunt_panel)
+		_show_energy_lack_dialog(_hunt_start_practice, _go_hunt_panel)
 		return
 	var r: Dictionary = HuntSystem.start_run(true)
 	if not bool(r.get("ok", false)):
@@ -742,7 +743,7 @@ func _hunt_start_practice() -> void:
 func _hunt_auto_run() -> void:
 	var er: Dictionary = EnergySystem.try_spend_run("hunt")
 	if not bool(er.get("ok", false)):
-		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}], _go_hunt_panel)
+		_show_energy_lack_dialog(_hunt_auto_run, _go_hunt_panel)
 		return
 	var r: Dictionary = HuntSystem.start_run(HuntSystem.daily_left() <= 0)
 	if not bool(r.get("ok", false)):
@@ -838,7 +839,7 @@ func _go_arena_panel() -> void:
 func _arena_start_rewarded() -> void:
 	var er: Dictionary = EnergySystem.try_spend_run("arena")
 	if not bool(er.get("ok", false)):
-		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}], _go_arena_panel)
+		_show_energy_lack_dialog(_arena_start_rewarded, _go_arena_panel)
 		return
 	var r: Dictionary = ArenaSystem.start_run(false)
 	if not bool(r.get("ok", false)):
@@ -854,7 +855,7 @@ func _arena_start_rewarded() -> void:
 func _arena_start_practice() -> void:
 	var er: Dictionary = EnergySystem.try_spend_run("arena")
 	if not bool(er.get("ok", false)):
-		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}], _go_arena_panel)
+		_show_energy_lack_dialog(_arena_start_practice, _go_arena_panel)
 		return
 	var r: Dictionary = ArenaSystem.start_run(true)
 	if not bool(r.get("ok", false)):
@@ -871,7 +872,7 @@ func _arena_start_practice() -> void:
 func _arena_auto_run() -> void:
 	var er: Dictionary = EnergySystem.try_spend_run("arena")
 	if not bool(er.get("ok", false)):
-		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}], _go_arena_panel)
+		_show_energy_lack_dialog(_arena_auto_run, _go_arena_panel)
 		return
 	var r: Dictionary = ArenaSystem.start_run(ArenaSystem.tickets() <= 0)
 	if not bool(r.get("ok", false)):
@@ -2284,6 +2285,11 @@ func _show_toast(msg: String) -> void:
 			_toast.visible = false
 			_toast.modulate.a = 1.0
 	)
+
+
+func _show_energy_lack_dialog(on_granted: Callable = Callable(), on_close: Callable = Callable()) -> void:
+	EnergyLackDialogScn.show_dialog(self, on_granted, on_close)
+
 
 
 func _player_bubble(text: String) -> void:
@@ -4048,11 +4054,14 @@ func _start_battle_raw(mode: String) -> void:
 	if not visit_pending:
 		var er: Dictionary = EnergySystem.try_spend_for_battle(mode)
 		if not bool(er.get("ok", false)):
-			_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}], func():
-				if _last_explore_map != "":
-					_open_explore(_last_explore_map, _last_explore_screen)
-				else:
-					_go_starpath_panel()
+			_show_energy_lack_dialog(
+				func():
+					_start_battle(mode),
+				func():
+					if _last_explore_map != "":
+						_open_explore(_last_explore_map, _last_explore_screen)
+					else:
+						_go_starpath_panel()
 			)
 			return
 		elif int(er.get("cost", 0)) > 0:
@@ -4750,7 +4759,9 @@ func _dcave_challenge(idx: int) -> void:
 	var ch: Dictionary = DRAGON_CAVE[idx]
 	var cost := int(ch.get("energy", 0))
 	if cost > 0 and not EnergySystem.spend(cost):
-		_play_dialog([{"speaker": _t("系統"), "text": _t("能量不足（需 %d）。") % cost}], _go_dragon_cave_panel)
+		_show_energy_lack_dialog(func():
+			_dcave_challenge(idx)
+		, _go_dragon_cave_panel)
 		return
 	GameState.set_flag("dcave.runs", int(GameState.get_flag("dcave.runs", 0)) + 1)
 	var BattleSimT := preload("res://scripts/battle/battle_sim.gd")
@@ -4895,7 +4906,9 @@ func _stage_clear_check(map: String) -> void:
 func _resolve_skirmish_inplace(mode: String, once_flag: String, after_win: Callable = Callable()) -> void:
 	var er: Dictionary = EnergySystem.try_spend_for_battle(mode)
 	if not bool(er.get("ok", false)):
-		_play_dialog([{"speaker": _t("系統"), "text": str(er.get("msg", ""))}])
+		_show_energy_lack_dialog(func():
+			_resolve_skirmish_inplace(mode, once_flag, after_win)
+		)
 		return
 	elif int(er.get("cost", 0)) > 0:
 		ui_toast(EnergySystem.status_line())

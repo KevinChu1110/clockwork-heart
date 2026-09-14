@@ -463,6 +463,13 @@ func _build_top_hud() -> void:
 
 	## 奶油白三寶膠囊
 	_energy_label = _add_clean_capsule(h, "能量", "—", COLOR_GOLD_DARK)
+	var energy_cap: PanelContainer = _energy_label.get_parent().get_parent() as PanelContainer
+	if energy_cap:
+		energy_cap.mouse_filter = Control.MOUSE_FILTER_STOP
+		energy_cap.gui_input.connect(func(ev: InputEvent):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				open_energy_dialog()
+		)
 	_gold_label = _add_clean_capsule(h, "金幣", "—", COLOR_GOLD_DARK)
 	_gem_label = _add_clean_capsule(h, "星屑", "—", COLOR_GOLD_DARK)
 
@@ -1982,5 +1989,24 @@ func open_windup_daily() -> Control:
 	)
 	add_child(dlg)
 	return dlg
+
+
+## 開啟能量/體力補充彈窗（看廣告拿能量）
+func open_energy_dialog() -> Control:
+	var existing = get_node_or_null("EnergyLackDialog")
+	if existing != null:
+		return existing
+	var EnergyLackClass: GDScript = load("res://scripts/ui/energy_lack_dialog.gd")
+	if EnergyLackClass == null:
+		push_error("無法載入 EnergyLackDialog")
+		return null
+	var dlg: Control = EnergyLackClass.new() as Control
+	dlg.z_index = 85
+	dlg.tree_exited.connect(func():
+		refresh_hud()
+	)
+	add_child(dlg)
+	return dlg
+
 
 

@@ -170,3 +170,77 @@ func status_line() -> String:
 		return _t("能量 %d／%d（已滿）") % [GameState.energy, MAX_ENERGY]
 	var m := int(ceil(seconds_to_next() / 60.0))
 	return _t("能量 %d／%d（約 %d 分後＋1）") % [GameState.energy, MAX_ENERGY, maxi(1, m)]
+
+
+## ── 獎勵型廣告掛鉤（Rewarded Ads - Mock）──
+const DAILY_AD_REWARD_CAP := 3
+const AD_REWARD_ENERGY_AMOUNT := 3
+const DAILY_AD_REVIVE_CAP := 3
+
+signal ad_energy_granted(amount: int, remaining_today: int)
+signal ad_revive_granted(remaining_today: int)
+
+
+func ad_today_key() -> String:
+	var d: Dictionary = Time.get_date_dict_from_system()
+	return "%04d-%02d-%02d" % [int(d.year), int(d.month), int(d.day)]
+
+
+func refresh_ad_daily() -> void:
+	var today := ad_today_key()
+	if str(GameState.get_flag("energy.ad_reward_day", "")) != today:
+		GameState.set_flag("energy.ad_reward_day", today)
+		GameState.set_flag("energy.ad_reward_count", 0)
+	if str(GameState.get_flag("battle.ad_revive_day", "")) != today:
+		GameState.set_flag("battle.ad_revive_day", today)
+		GameState.set_flag("battle.ad_revive_count", 0)
+
+
+func ad_rewards_used_today() -> int:
+	refresh_ad_daily()
+	return int(GameState.get_flag("energy.ad_reward_count", 0))
+
+
+func ad_rewards_left_today() -> int:
+	refresh_ad_daily()
+	return maxi(0, DAILY_AD_REWARD_CAP - int(GameState.get_flag("energy.ad_reward_count", 0)))
+
+
+func can_claim_ad_energy() -> bool:
+	return ad_rewards_left_today() > 0
+
+
+func claim_ad_energy(amount: int = AD_REWARD_ENERGY_AMOUNT) -> bool:
+	refresh_ad_daily()
+	if not can_claim_ad_energy():
+		return false
+	var used := int(GameState.get_flag("energy.ad_reward_count", 0))
+	GameState.set_flag("energy.ad_reward_count", used + 1)
+	grant(amount)
+	ad_energy_granted.emit(amount, ad_rewards_left_today())
+	return true
+
+
+func ad_revives_used_today() -> int:
+	refresh_ad_daily()
+	return int(GameState.get_flag("battle.ad_revive_count", 0))
+
+
+func ad_revives_left_today() -> int:
+	refresh_ad_daily()
+	return maxi(0, DAILY_AD_REVIVE_CAP - int(GameState.get_flag("battle.ad_revive_count", 0)))
+
+
+func can_claim_ad_revive() -> bool:
+	return ad_revives_left_today() > 0
+
+
+func claim_ad_revive() -> bool:
+	refresh_ad_daily()
+	if not can_claim_ad_revive():
+		return false
+	var used := int(GameState.get_flag("battle.ad_revive_count", 0))
+	GameState.set_flag("battle.ad_revive_count", used + 1)
+	ad_revive_granted.emit(ad_revives_left_today())
+	return true
+
