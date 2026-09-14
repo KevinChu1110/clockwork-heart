@@ -10,7 +10,7 @@ Procedural one-shots for combat / UI.
 | id | 地區感 | BPM | 主奏 | 鼓 | 特徵 |
 |----|--------|-----|------|----|------|
 | title | 英雄主題 | 118 | brass | drive | 辨識度最高 |
-| village | 翠谷村 | 92 | flute | 無 | 溫暖、慢、木笛 |
+| village | 發條新村 | 92 | flute | 無 | 溫暖、慢、木笛 |
 | town | 騎士堡 | 112 | horn | 軍鼓 march | 行進號角 |
 | road | 荒路 | 108 | pulse | soft | 趕路步伐 |
 | wild | 荒野 | 120 | pulse | drive | 不安 Phrygian |
