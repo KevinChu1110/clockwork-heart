@@ -333,7 +333,7 @@ static func _town() -> Dictionary:
 		_e("greybeard", 1546, 885, 48, 64, "灰鬚", Color(0.55, 0.55, 0.6)),
 		_e("tutor_hall", 1688, 848, 44, 44, "武術館", Color(0.5, 0.48, 0.52)),
 		_e("wall_notice", 1426, 849, 44, 52, "告示牆", Color(0.45, 0.4, 0.35), true),
-		_e("board_today", 1280, 1219, 48, 48, "今日村莊", Color(0.55, 0.45, 0.32), true),
+		_e("board_today", 1280, 1219, 48, 48, "發條新村", Color(0.55, 0.45, 0.32), true),
 		_e("hunt_board", 1488, 1326, 48, 48, "野外獵場", Color(0.4, 0.38, 0.32), true),
 		_e("visit_board", 1072, 1250, 48, 44, "旅人木牌", Color(0.5, 0.48, 0.4), true),
 		_e("message_stone", 1760, 1456, 48, 52, "留言石", Color(0.5, 0.55, 0.7), true),

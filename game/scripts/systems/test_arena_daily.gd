@@ -34,9 +34,9 @@ func _initialize() -> void:
 		quit(1)
 	print("  ok daily rotation pick=%d" % a.size())
 
-	## 今日村莊彙總不應噴錯
+	## 每日發條彙總不應噴錯
 	var _sum: String = qs.starpath_summary_bbcode()
-	if _sum.find("今日村莊") < 0 and _sum.find("Starpath") < 0 and _sum.find("[b]") < 0:
+	if _sum.find("每日發條") < 0 and _sum.find("Starpath") < 0 and _sum.find("[b]") < 0:
 		push_error("starpath summary empty-ish")
 		print("ARENA_DAILY_FAIL")
 		quit(1)

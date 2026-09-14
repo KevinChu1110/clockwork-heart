@@ -20,7 +20,7 @@ func _initialize() -> void:
 func _process(_delta: float) -> bool:
 	_frame += 1
 	if _frame == 8:
-		## 開啟手遊卡片化面板 (例如今日村莊 / 簽到與委託儀表板)
+		## 開啟手遊卡片化面板 (例如每日發條 / 簽到與委託儀表板)
 		if _main and _main.has_method("_go_daily_panel"):
 			_main.call("_go_daily_panel")
 	elif _frame == 20:

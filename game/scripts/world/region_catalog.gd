@@ -203,7 +203,7 @@ static func suggest_lv(stage_id: String) -> int:
 static func next_objective_line() -> String:
 	var o := next_objective()
 	if o.is_empty():
-		return _t("主線已完結——今日村莊、演武與獵場都在等你。")
+		return _t("主線已完結——發條新村、演武與獵場都在等你。")
 	var boss := str(o.get("boss", ""))
 	var line: String
 	if boss != "":

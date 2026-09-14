@@ -402,7 +402,7 @@ func claimable_count() -> int:
 	return n
 
 
-## 「今日村莊」儀表板用：可領的紅點（不含長遠里程碑，避免永遠紅）
+## 「每日發條」儀表板用：可領的紅點（不含長遠里程碑，避免永遠紅）
 func starpath_reward_count() -> int:
 	var n := 0
 	if Engine.get_main_loop() is SceneTree:
@@ -436,7 +436,7 @@ func starpath_todo_count() -> int:
 func starpath_summary_bbcode() -> String:
 	refresh_daily()
 	var lines: PackedStringArray = []
-	lines.append("[b]今日村莊[/b]")
+	lines.append("[b]%s[/b]" % _t("每日發條"))
 	lines.append(_t("上發條累計 %d 次 · %s") % [
 		int(GameState.get_flag(DAILY_STREAK, 0)), streak_milestone_hint()
 	])
