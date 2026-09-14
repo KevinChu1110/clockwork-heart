@@ -1636,7 +1636,7 @@
   "[color=#fc8]新解鎖：%s[/color]\n\n": "[color=#fc8]Newly unlocked: %s[/color]\n\n",
   "· %s ×%d（回收 %d 金／個）\n": "· %s ×%d (buyback %d gold each)\n",
   "　　　　西林（樹冠／靜湖／遺址）\n": "　　　　West Woods (canopy / still lake / ruins)\n",
-  "　　　白霧之地／霧隱（崖／祠／鏡廊）\n": "　　　Lands of White Fog / Mistveil (cliff / shrine / Mirror Hall)\n",
+  "　　　白霧之地／霧隱（崖／祠／鏡廊）\n": "　　　Lands of White Fog / Veilfog (cliff / shrine / Mirror Hall)\n",
   "　　　武鬥道場（內院／竹林／山巔）\n\n": "　　　Martial Dojo (inner court / bamboo grove / summit)\n\n",
   "二周目加成：每日略豐。\n\n": "Second-run bonus: slightly richer dailies.\n\n",
   "你加入了【%s】。\n「%s」": "You joined [%s].\n\"%s\"",

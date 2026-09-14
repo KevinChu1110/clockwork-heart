@@ -155,11 +155,11 @@
   ],
   "c2.arrive": [
     {
-      "speaker": "Mistveil",
+      "speaker": "Veilfog",
       "text": "In the mist, true and false share a colour. The one with the loosest mainspring? …Lend me your eyes."
     },
     {
-      "speaker": "Mistveil",
+      "speaker": "Veilfog",
       "text": "Stay one night first. Those still walking with a winding nearly spent—especially the ones who came to “take a look”—break in their own hearts first."
     },
     {
@@ -213,7 +213,7 @@
   ],
   "c2.train_tip": [
     {
-      "speaker": "Mistveil",
+      "speaker": "Veilfog",
       "text": "Hit a shadow, and the shadow laughs. Watch the True Tell—the frame the blade lifts. That's the real one."
     },
     {
@@ -233,7 +233,7 @@
   ],
   "c2.fog_need_letter": [
     {
-      "speaker": "Mistveil",
+      "speaker": "Veilfog",
       "text": "You owe a letter. Back to the inn."
     }
   ],
