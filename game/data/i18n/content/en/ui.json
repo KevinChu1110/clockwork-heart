@@ -1984,5 +1984,16 @@
   "若是選擇承認敗北，將返回城鎮整頓裝備與招式。": "Accepting defeat will return you to town to reorganize equipment and skills.",
   "結束戰鬥": "End Battle",
   "觀看廣告立即復活  (%d/%d)": "Watch Ad to Revive Instantly  (%d/%d)",
-  "今日復活次數已達上限 (0/%d)": "Daily revives limit reached (0/%d)"
+  "今日復活次數已達上限 (0/%d)": "Daily revives limit reached (0/%d)",
+  "已移除廣告，直接領取  (%d/%d)": "Ads Removed, Claim Directly  (%d/%d)",
+  "已移除廣告，直接領取 (+3)  (%d/%d)": "Ads Removed, Claim Directly (+3)  (%d/%d)",
+  "今日領取次數已達上限 (0/%d)": "Daily claim limit reached (0/%d)",
+  "二次機會：已移除廣告，可直接重新上鍊，立即以 50% 生命值重返戰場！": "Second Chance: Ads removed, rewind directly and return to battle with 50% HP immediately!",
+  "出發探索或挑戰戰鬥需要充足的發條能量。\n您可以稍候等待能量自然回復，或是直接領取補充 3 點能量！": "Exploring or challenging battles requires plenty of clockwork energy.\nYou can wait for natural recovery or directly claim 3 energy!",
+  "加值權限與功能測試": "Value-Add Privileges & Feature Test",
+  "移除廣告（測試用開關）": "Remove Ads (Test Toggle)",
+  "· 已啟用": "· Enabled",
+  "· 未啟用": "· Disabled",
+  "已啟用移除廣告功能！": "Remove Ads feature enabled!",
+  "已重置移除廣告狀態！": "Remove Ads state reset!"
 }

@@ -695,13 +695,13 @@ func _build_backup_panel() -> void:
 	root_p.add_child(sep_ad)
 
 	var ad_title := Label.new()
-	ad_title.text = "加值權限與功能測試"
+	ad_title.text = _t("加值權限與功能測試")
 	_apply_label_style(ad_title, 18, COLOR_TEXT_DARK)
 	root_p.add_child(ad_title)
 
 	var btn_remove_ads := Button.new()
 	btn_remove_ads.name = "RemoveAdsBtn"
-	btn_remove_ads.text = "移除廣告（測試用開關）"
+	btn_remove_ads.text = _t("移除廣告（測試用開關）")
 	btn_remove_ads.custom_minimum_size = Vector2(0, 52)
 	btn_remove_ads.add_theme_font_size_override("font_size", 18)
 	if _cached_font:
@@ -729,7 +729,7 @@ func _refresh_remove_ads_button() -> void:
 		return
 	var active := _is_remove_ads_active()
 	if active:
-		_remove_ads_btn.text = "移除廣告（測試用開關） · 已啟用"
+		_remove_ads_btn.text = _t("移除廣告（測試用開關）") + " " + _t("· 已啟用")
 		_remove_ads_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 20))
 		_remove_ads_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 20))
 		_remove_ads_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_GOLD, COLOR_BORDER, 2, 20))
@@ -737,7 +737,7 @@ func _refresh_remove_ads_button() -> void:
 		_remove_ads_btn.remove_theme_color_override("font_outline_color")
 		_remove_ads_btn.add_theme_constant_override("outline_size", 0)
 	else:
-		_remove_ads_btn.text = "移除廣告（測試用開關） · 未啟用"
+		_remove_ads_btn.text = _t("移除廣告（測試用開關）") + " " + _t("· 未啟用")
 		_remove_ads_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 5, 20))
 		_remove_ads_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFF0D0"), COLOR_BORDER, 5, 20))
 		_remove_ads_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 20))
@@ -762,9 +762,9 @@ func _on_toggle_remove_ads() -> void:
 				sm.call("save_game")
 			_refresh_remove_ads_button()
 			if nxt:
-				_show_toast("已啟用移除廣告功能！")
+				_show_toast(_t("已啟用移除廣告功能！"))
 			else:
-				_show_toast("已重置移除廣告狀態！")
+				_show_toast(_t("已重置移除廣告狀態！"))
 
 
 func _on_close() -> void:

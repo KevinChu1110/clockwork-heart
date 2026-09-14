@@ -157,6 +157,28 @@ func _initialize() -> void:
 	else:
 		print("  ok 存檔字典還原後 has_removed_ads 正確為 true")
 
+	# ── 5. 去廣告新增文案五語系 i18n 覆蓋驗證 ──
+	var ContentLocClass := preload("res://scripts/systems/content_loc.gd")
+	var remove_ads_keys: Array[String] = [
+		"已移除廣告，直接領取  (%d/%d)",
+		"已移除廣告，直接領取 (+3)  (%d/%d)",
+		"今日領取次數已達上限 (0/%d)",
+		"二次機會：已移除廣告，可直接重新上鍊，立即以 50% 生命值重返戰場！",
+		"出發探索或挑戰戰鬥需要充足的發條能量。\n您可以稍候等待能量自然回復，或是直接領取補充 3 點能量！",
+		"加值權限與功能測試",
+		"移除廣告（測試用開關）",
+		"· 已啟用",
+		"· 未啟用",
+		"已啟用移除廣告功能！",
+		"已重置移除廣告狀態！"
+	]
+	for loc_code in ["en", "ja", "ko", "es", "zh_CN"]:
+		var tbl: Dictionary = ContentLocClass._table("ui", loc_code)
+		for k in remove_ads_keys:
+			if not tbl.has(k):
+				_fail("[%s] 去廣告文案缺少 i18n 譯文：%s" % [loc_code, k])
+	print("  ok 去廣告 11 項文案五語系覆蓋正常（en, ja, ko, es, zh_CN）")
+
 	_finish()
 
 

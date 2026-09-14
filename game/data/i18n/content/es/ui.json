@@ -1984,5 +1984,16 @@
   "若是選擇承認敗北，將返回城鎮整頓裝備與招式。": "Si aceptas la derrota, volverás a la aldea a organizar tu equipo y técnicas.",
   "結束戰鬥": "Terminar combate",
   "觀看廣告立即復活  (%d/%d)": "Ver anuncio y revivir al instante  (%d/%d)",
-  "今日復活次數已達上限 (0/%d)": "Límite de resurrecciones diario alcanzado (0/%d)"
+  "今日復活次數已達上限 (0/%d)": "Límite de resurrecciones diario alcanzado (0/%d)",
+  "已移除廣告，直接領取  (%d/%d)": "Anuncios eliminados, reclamar directamente  (%d/%d)",
+  "已移除廣告，直接領取 (+3)  (%d/%d)": "Anuncios eliminados, reclamar directamente (+3)  (%d/%d)",
+  "今日領取次數已達上限 (0/%d)": "Límite de reclamos diario alcanzado (0/%d)",
+  "二次機會：已移除廣告，可直接重新上鍊，立即以 50% 生命值重返戰場！": "Segunda oportunidad: ¡anuncios eliminados, puedes recargar la cuerda directamente y volver al combate con 50% de PS!",
+  "出發探索或挑戰戰鬥需要充足的發條能量。\n您可以稍候等待能量自然回復，或是直接領取補充 3 點能量！": "Explorar o combatir requiere suficiente energía de cuerda.\n¡Puedes esperar a la recuperación natural o reclamar directamente 3 de energía!",
+  "加值權限與功能測試": "Funciones añadidas y prueba",
+  "移除廣告（測試用開關）": "Eliminar anuncios (prueba)",
+  "· 已啟用": "· Activado",
+  "· 未啟用": "· Desactivado",
+  "已啟用移除廣告功能！": "¡Función de eliminar anuncios activada!",
+  "已重置移除廣告狀態！": "¡Estado de eliminación de anuncios restablecido!"
 }
