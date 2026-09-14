@@ -6737,7 +6737,7 @@ func _go_c2_enter_body() -> void:
 				"bg": "mist_village",
 				"speaker": _t("旁白"),
 				"portrait": _t("霧隱"),
-				"text": _t("村口沒有門——只有霧。真假同色，腳下也是。"),
+				"text": _t("霧廊入口沒有門——只有霧。真假同色，腳下也是。"),
 			},
 			{
 				"bg": "mist_village",
