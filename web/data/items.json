@@ -240,7 +240,7 @@
       "source": "各域雜魚、霧域較多；琥珀可買；破部位（冠）",
       "sources": [
         {"label": "各域雜魚", "map": "road"},
-        {"label": "霧隱較多", "map": "mist"},
+        {"label": "白霧之地較多", "map": "mist"},
         {"label": "琥珀材料行 22 金", "map": "market"},
         {"label": "破部位（冠）", "map": "parts"}
       ]
