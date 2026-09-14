@@ -10,14 +10,21 @@
     "D_pullPart": 1
   },
   "partBreak": {
-    "PartUnlockHP": 0.70,
+    "PartUnlockHP": 0.7,
     "PartHPRatio": 0.25,
     "BreakBonus": 1.25,
-    "drops": ["drop_brass_gear", "drop_spring_coil", "drop_core_shard"]
+    "drops": [
+      "drop_brass_gear",
+      "drop_spring_coil",
+      "drop_core_shard"
+    ]
   },
   "hud": {
     "style": "chest_glow_ring_ticks",
-    "forbid": ["blue_mana_bar", "second_resource_bar"],
+    "forbid": [
+      "blue_mana_bar",
+      "second_resource_bar"
+    ],
     "HudTickCount": 15,
     "glowColor": "#2EC4B6",
     "tickColorLit": "#D4A017",
@@ -32,5 +39,10 @@
     "drop_brass_gear": "黃銅齒輪",
     "drop_spring_coil": "發條彈簧",
     "drop_core_shard": "核心碎片"
+  },
+  "FirstBreakDeadlineSec": 60,
+  "errToast": {
+    "ERR_STAMINA": "發條不夠了",
+    "ERR_PART_LOCKED": "這個部位還沒鬆"
   }
 }
