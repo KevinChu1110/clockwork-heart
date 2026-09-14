@@ -160,7 +160,7 @@ func _gem_bonuses() -> Dictionary:
 
 
 func effective_atk() -> int:
-	var a := atk + weapon_atk
+	var a := atk
 	if stain_flame:
 		a += 3
 	a += soul_bonus_atk()
@@ -273,7 +273,18 @@ func _equip_bonus() -> Dictionary:
 		var es: Node = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
 		if es and es.has_method("bonus_totals"):
 			return es.call("bonus_totals")
-	return {"atk": 0, "def": 0, "hp": 0, "crit": 0.0, "crit_dmg": 0.0}
+	## Fallback: 直接從 equip_worn 統計（例如無頭測試或 EquipmentSystem 未載入時）
+	var t := {"atk": 0, "def": 0, "hp": 0, "crit": 0.0, "crit_dmg": 0.0}
+	for s in ["weapon", "offhand", "armor", "helmet", "boots", "ring", "necklace", "bracelet", "earring", "amulet", "belt"]:
+		var uid := str(equip_slots.get(s, ""))
+		if uid != "" and equip_worn.has(uid):
+			var r: Dictionary = (equip_worn[uid] as Dictionary).get("rolled", {})
+			t["atk"] = int(t["atk"]) + int(r.get("atk", 0))
+			t["def"] = int(t["def"]) + int(r.get("def", 0))
+			t["hp"] = int(t["hp"]) + int(r.get("hp", 0))
+			t["crit"] = float(t["crit"]) + float(r.get("crit", 0))
+			t["crit_dmg"] = float(t["crit_dmg"]) + float(r.get("crit_dmg", 0))
+	return t
 
 
 func soul_bonus_atk() -> int:
@@ -593,13 +604,13 @@ func from_dict(d: Dictionary) -> void:
 	dmg_variance = float(d.get("dmg_variance", 0.08))
 
 
-## 五族開局定案武器對照（對齊 equipment.json bases 既有 id，不准自創）
+## 五族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
 const RACE_STARTER_WEAPONS: Dictionary = {
-	"rabbit": "dawn_blade",
-	"lion": "knight_pike",
+	"rabbit": "rusty_blade",
+	"lion": "ash_spear",
 	"fox": "star_rod",
 	"boar": "anvil_hammer",
-	"macaque": "hunt_claw",
+	"macaque": "wrap_gloves",
 }
 
 
@@ -616,14 +627,14 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"macaque": default_name = "靈爪猴"
 		_: default_name = "小白"
 
-	## 兔若本來就有 dawn_blade，不要改數值，只補其他族缺的
-	var existing_dawn: Dictionary = {}
-	if r == "rabbit":
-		var cur_wuid := str(equip_slots.get("weapon", ""))
-		if cur_wuid != "" and equip_worn.has(cur_wuid):
-			var cur_inst: Dictionary = equip_worn[cur_wuid]
-			if str(cur_inst.get("base_id", "")) == "dawn_blade":
-				existing_dawn = cur_inst.duplicate(true)
+	## 該族若本來就有一樣的開局武器，不要改數值
+	var target_starter: String = str(RACE_STARTER_WEAPONS.get(r, "rusty_blade"))
+	var existing_starter: Dictionary = {}
+	var cur_wuid := str(equip_slots.get("weapon", ""))
+	if cur_wuid != "" and equip_worn.has(cur_wuid):
+		var cur_inst: Dictionary = equip_worn[cur_wuid]
+		if str(cur_inst.get("base_id", "")) == target_starter:
+			existing_starter = cur_inst.duplicate(true)
 
 	from_dict({
 		"chapter": "c0",
@@ -664,7 +675,8 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"ui_layout": {},
 	})
 
-	equip_starter_weapon(r, existing_dawn)
+	equip_starter_weapon(r, existing_starter)
+	_grant_starter_skills_for_weapon_instance(equip_worn.get(str(equip_slots.get("weapon", "")), {}))
 
 
 ## 開局／選族裝備該族定案武器（快捷欄第 0 欄）
@@ -675,15 +687,19 @@ func equip_starter_weapon(race: String = "", existing_inst: Dictionary = {}) -> 
 	if r.is_empty():
 		r = "rabbit"
 	var tree := Engine.get_main_loop()
+	var inst: Dictionary = {}
 	if tree is SceneTree and (tree as SceneTree).root != null:
 		var es: Node = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
 		if es and es.has_method("equip_starter_weapon"):
-			return es.call("equip_starter_weapon", r, existing_inst)
-	return _fallback_equip_starter_weapon(r, existing_inst)
+			inst = es.call("equip_starter_weapon", r, existing_inst)
+	if inst.is_empty():
+		inst = _fallback_equip_starter_weapon(r, existing_inst)
+	_grant_starter_skills_for_weapon_instance(inst)
+	return inst
 
 
 func _fallback_equip_starter_weapon(r: String, existing_inst: Dictionary = {}) -> Dictionary:
-	var target_base_id: String = str(RACE_STARTER_WEAPONS.get(r, "dawn_blade"))
+	var target_base_id: String = str(RACE_STARTER_WEAPONS.get(r, "rusty_blade"))
 	var inst: Dictionary = {}
 	if not existing_inst.is_empty() and str(existing_inst.get("base_id", "")) == target_base_id:
 		inst = existing_inst.duplicate(true)
@@ -740,6 +756,69 @@ func _fallback_equip_starter_weapon(r: String, existing_inst: Dictionary = {}) -
 	if line != "":
 		path_style = line
 	return inst
+
+
+func _grant_starter_skills_for_weapon_instance(inst: Dictionary) -> void:
+	var line := str(inst.get("line", ""))
+	if line.is_empty():
+		line = str(path_style)
+	if line.is_empty():
+		return
+	var tree := Engine.get_main_loop()
+	var granted := false
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var sk: Node = (tree as SceneTree).root.get_node_or_null("SkillSystem")
+		if sk and sk.has_method("grant_for_weapon_class"):
+			sk.call("grant_for_weapon_class", line)
+			granted = true
+	if not granted:
+		_fallback_grant_starter_skill(line)
+
+
+func _fallback_grant_starter_skill(class_id: String) -> void:
+	const SIGNATURES := {
+		"sword": "slash",
+		"spear": "line_thrust",
+		"axe": "axe_split",
+		"hammer": "stone_crush",
+		"dagger": "quick_stab",
+		"dart": "mist_needle",
+		"fist": "combo_fist",
+		"claw": "claw_rake",
+		"magic": "magic_bolt",
+		"crystal": "shard_bolt",
+		"bow": "quick_shot",
+		"gun": "powder_shot",
+		"soul": "magic_bolt",
+		"iron": "stone_crush",
+	}
+	const SIBLINGS := {
+		"sword": "line_thrust",
+		"spear": "slash",
+		"axe": "stone_crush",
+		"hammer": "axe_split",
+		"dagger": "mist_needle",
+		"dart": "quick_stab",
+		"fist": "claw_rake",
+		"claw": "combo_fist",
+		"magic": "shard_bolt",
+		"crystal": "magic_bolt",
+		"bow": "powder_shot",
+		"gun": "quick_shot",
+		"soul": "shard_bolt",
+		"iron": "axe_split",
+	}
+	var cid := class_id.to_lower().strip_edges()
+	var sig: String = str(SIGNATURES.get(cid, "slash"))
+	var sib: String = str(SIBLINGS.get(cid, ""))
+	if not skill_data.has("slash"):
+		skill_data["slash"] = {"lv": 1, "mastery": 0}
+	if sig != "" and not skill_data.has(sig):
+		skill_data[sig] = {"lv": 1, "mastery": 0}
+	if sib != "" and not skill_data.has(sib):
+		skill_data[sib] = {"lv": 1, "mastery": 0}
+	if skill_slash_lv < 1:
+		skill_slash_lv = 1
 
 
 ## 黑焰迴響：升 NG 層、清主線進度 flag，保留養成與外觀／通關紀念
