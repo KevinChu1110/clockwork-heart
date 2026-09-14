@@ -115,7 +115,7 @@ static func links() -> Dictionary:
 		},
 		"back_cross": {"map": "crossroads", "screen": "C1_WILD"},
 
-		## ── 霧隱 ──
+		## ── 白霧之地 ──
 		"alley_gate": {"map": "mist_deep", "screen": "C2_MIST"},
 		"back_mist": {"map": "mist_village", "screen": "C2_MIST"},
 		"to_mist_cliff": {"map": "mist_cliff", "screen": "C2_MIST"},
