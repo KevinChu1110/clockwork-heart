@@ -140,7 +140,7 @@
       "image": "../media/shots/proof_21_hunt.png",
       "gallery": [],
       "blurb": "岔路連過去的溢地獵場。溢皮、焰骨、溢核只在這裡出，可拿去溢物回收換金。不是演武場。",
-      "enemies": ["溢地殘兵", "灰燼鼠潮"],
+      "enemies": ["鏽蝕哨兵偶", "灰燼鼠潮"],
       "drops": ["hunt_hide", "hunt_bone", "hunt_core"],
       "note": "中階焰骨、稀有溢核。"
     },
