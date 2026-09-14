@@ -56,6 +56,9 @@ var _sfx_val_l: Label
 var _fullscreen_btn: Button
 var _quality_buttons: HBoxContainer = null
 
+## 移除廣告開關
+var _remove_ads_btn: Button = null
+
 var _cached_font: Font = null
 var _grabber_tex: ImageTexture = null
 
@@ -288,6 +291,7 @@ func _switch_tab(target: Tab) -> void:
 		Tab.BACKUP:
 			var p := _content_container.get_node_or_null("BackupPanel")
 			if p: p.visible = true
+			_refresh_remove_ads_button()
 
 
 ## ──────────────────────────────────────────
@@ -683,6 +687,84 @@ func _build_backup_panel() -> void:
 		_show_toast("請選擇要還原的備份存檔...")
 	)
 	root_p.add_child(btn_imp)
+
+	## ── 商業化與功能測試開關 ──
+	var sep_ad := ColorRect.new()
+	sep_ad.custom_minimum_size = Vector2(0, 3)
+	sep_ad.color = COLOR_ORANGE
+	root_p.add_child(sep_ad)
+
+	var ad_title := Label.new()
+	ad_title.text = "加值權限與功能測試"
+	_apply_label_style(ad_title, 18, COLOR_TEXT_DARK)
+	root_p.add_child(ad_title)
+
+	var btn_remove_ads := Button.new()
+	btn_remove_ads.name = "RemoveAdsBtn"
+	btn_remove_ads.text = "移除廣告（測試用開關）"
+	btn_remove_ads.custom_minimum_size = Vector2(0, 52)
+	btn_remove_ads.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		btn_remove_ads.add_theme_font_override("font", _cached_font)
+	btn_remove_ads.pressed.connect(_on_toggle_remove_ads)
+	root_p.add_child(btn_remove_ads)
+	_remove_ads_btn = btn_remove_ads
+	_refresh_remove_ads_button()
+
+
+func _is_remove_ads_active() -> bool:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs:
+			if "has_removed_ads" in gs:
+				return bool(gs.get("has_removed_ads"))
+			if gs.has_method("get_flag"):
+				return bool(gs.call("get_flag", "has_removed_ads", false))
+	return false
+
+
+func _refresh_remove_ads_button() -> void:
+	if _remove_ads_btn == null:
+		return
+	var active := _is_remove_ads_active()
+	if active:
+		_remove_ads_btn.text = "移除廣告（測試用開關） · 已啟用"
+		_remove_ads_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 20))
+		_remove_ads_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 20))
+		_remove_ads_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_GOLD, COLOR_BORDER, 2, 20))
+		_remove_ads_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_remove_ads_btn.remove_theme_color_override("font_outline_color")
+		_remove_ads_btn.add_theme_constant_override("outline_size", 0)
+	else:
+		_remove_ads_btn.text = "移除廣告（測試用開關） · 未啟用"
+		_remove_ads_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 5, 20))
+		_remove_ads_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFF0D0"), COLOR_BORDER, 5, 20))
+		_remove_ads_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 20))
+		_remove_ads_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_remove_ads_btn.remove_theme_color_override("font_outline_color")
+		_remove_ads_btn.add_theme_constant_override("outline_size", 0)
+
+
+func _on_toggle_remove_ads() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		var sm: Node = (loop as SceneTree).root.get_node_or_null("SaveManager")
+		if gs:
+			var cur := _is_remove_ads_active()
+			var nxt := not cur
+			if "has_removed_ads" in gs:
+				gs.set("has_removed_ads", nxt)
+			if gs.has_method("set_flag"):
+				gs.call("set_flag", "has_removed_ads", nxt)
+			if sm and sm.has_method("save_game"):
+				sm.call("save_game")
+			_refresh_remove_ads_button()
+			if nxt:
+				_show_toast("已啟用移除廣告功能！")
+			else:
+				_show_toast("已重置移除廣告狀態！")
 
 
 func _on_close() -> void:

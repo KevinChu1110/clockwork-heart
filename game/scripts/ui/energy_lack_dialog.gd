@@ -39,6 +39,7 @@ const COLOR_TEXT_GOLD  := Color("#9A6B00")  ## 壓明度金黃
 var _dialog_card: PanelContainer
 var _energy_val_label: Label
 var _status_detail_label: Label
+var _desc_lbl: Label
 var _ad_btn: Button
 var _cached_font: Font = null
 
@@ -166,6 +167,7 @@ func _build_ui() -> void:
 	sc_v.add_child(_status_detail_label)
 
 	var desc_lbl := Label.new()
+	_desc_lbl = desc_lbl
 	desc_lbl.text = _t("出發探索或挑戰戰鬥需要充足的發條能量。\n您可以稍候等待能量自然回復，或是觀看廣告立即補充 3 點能量！")
 	desc_lbl.add_theme_font_size_override("font_size", 16)
 	desc_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -211,6 +213,21 @@ func _build_ui() -> void:
 	btn_h.add_child(back_btn)
 
 
+func _is_ad_removed() -> bool:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var es: Node = (loop as SceneTree).root.get_node_or_null("EnergySystem")
+		if es and es.has_method("is_ad_removed"):
+			return bool(es.call("is_ad_removed"))
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs:
+			if "has_removed_ads" in gs:
+				return bool(gs.get("has_removed_ads"))
+			if gs.has_method("get_flag"):
+				return bool(gs.call("get_flag", "has_removed_ads", false))
+	return false
+
+
 func _refresh_display() -> void:
 	var cur := 0
 	var mx := 15
@@ -245,13 +262,26 @@ func _refresh_display() -> void:
 		if es.has_method("can_claim_ad_energy"):
 			can_claim = bool(es.call("can_claim_ad_energy"))
 
+	var ad_removed := _is_ad_removed()
+	if _desc_lbl:
+		if ad_removed:
+			_desc_lbl.text = _t("出發探索或挑戰戰鬥需要充足的發條能量。\n您可以稍候等待能量自然回復，或是直接領取補充 3 點能量！")
+		else:
+			_desc_lbl.text = _t("出發探索或挑戰戰鬥需要充足的發條能量。\n您可以稍候等待能量自然回復，或是觀看廣告立即補充 3 點能量！")
+
 	if _ad_btn:
 		if can_claim:
 			_ad_btn.disabled = false
-			_ad_btn.text = _t("觀看廣告回復能量 (+3)  (%d/%d)") % [left, cap]
+			if ad_removed:
+				_ad_btn.text = _t("已移除廣告，直接領取 (+3)  (%d/%d)") % [left, cap]
+			else:
+				_ad_btn.text = _t("觀看廣告回復能量 (+3)  (%d/%d)") % [left, cap]
 		else:
 			_ad_btn.disabled = true
-			_ad_btn.text = _t("今日廣告次數已達上限 (0/%d)") % cap
+			if ad_removed:
+				_ad_btn.text = _t("今日領取次數已達上限 (0/%d)") % cap
+			else:
+				_ad_btn.text = _t("今日廣告次數已達上限 (0/%d)") % cap
 
 
 func _on_watch_ad_clicked() -> void:
@@ -261,6 +291,10 @@ func _on_watch_ad_clicked() -> void:
 		es = (loop as SceneTree).root.get_node_or_null("EnergySystem")
 
 	if es and es.has_method("can_claim_ad_energy") and not bool(es.call("can_claim_ad_energy")):
+		return
+
+	if _is_ad_removed():
+		_on_ad_watch_success()
 		return
 
 	# 開啟本機假讀秒占位廣告畫面

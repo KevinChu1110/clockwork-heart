@@ -58,6 +58,8 @@ var skill_slash_lv: int = 0  ## 舊欄位：與 skill_data.slash.lv 同步
 var skill_data: Dictionary = {}  ## id -> {lv, mastery}
 var has_wheat_stalk: bool = false
 var wheat_stalk_broken: bool = false
+## 一次性去廣告買斷旗標（本機已購買狀態）
+var has_removed_ads: bool = false
 
 ## 連敗升階（W4）
 var forge_fail_streak: int = 0
@@ -471,6 +473,7 @@ func to_dict() -> Dictionary:
 		"skill_data": skill_data.duplicate(true),
 		"has_wheat_stalk": has_wheat_stalk,
 		"wheat_stalk_broken": wheat_stalk_broken,
+		"has_removed_ads": has_removed_ads,
 		"forge_fail_streak": forge_fail_streak,
 		"ng_plus": ng_plus,
 		"stain_flame": stain_flame,
@@ -522,6 +525,7 @@ func _array_field(d: Dictionary, key: String, fallback: Array = []) -> Array:
 func from_dict(d: Dictionary) -> void:
 	chapter = str(d.get("chapter", "title"))
 	flags = _dict_field(d, "flags")
+	has_removed_ads = bool(d.get("has_removed_ads", flags.get("has_removed_ads", false)))
 	player_name = str(d.get("player_name", "小白"))
 	player_race = str(d.get("player_race", "rabbit")).to_lower().strip_edges()
 	if player_race.is_empty():
@@ -645,6 +649,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"skill_data": {},
 		"has_wheat_stalk": false,
 		"wheat_stalk_broken": false,
+		"has_removed_ads": false,
 		"forge_fail_streak": 0,
 		"ng_plus": 0,
 		"stain_flame": false,

@@ -38,6 +38,7 @@ const COLOR_TEXT_MINT  := Color("#1A7A30")  ## 壓明度薄荷綠
 
 var _dialog_card: PanelContainer
 var _revive_btn: Button
+var _hint_lbl: Label
 var _cached_font: Font = null
 
 var _on_revive: Callable = Callable()
@@ -148,6 +149,7 @@ func _build_ui() -> void:
 	dc_v.add_child(sub_lbl)
 
 	var hint_lbl := Label.new()
+	_hint_lbl = hint_lbl
 	hint_lbl.text = _t("二次機會：觀看贊助廣告即可重新上鍊，立即以 50% 生命值重返戰場！")
 	hint_lbl.add_theme_font_size_override("font_size", 15)
 	hint_lbl.add_theme_color_override("font_color", COLOR_TEXT_MINT)
@@ -200,6 +202,21 @@ func _build_ui() -> void:
 	btn_h.add_child(give_up_btn)
 
 
+func _is_ad_removed() -> bool:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var es: Node = (loop as SceneTree).root.get_node_or_null("EnergySystem")
+		if es and es.has_method("is_ad_removed"):
+			return bool(es.call("is_ad_removed"))
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs:
+			if "has_removed_ads" in gs:
+				return bool(gs.get("has_removed_ads"))
+			if gs.has_method("get_flag"):
+				return bool(gs.call("get_flag", "has_removed_ads", false))
+	return false
+
+
 func _refresh_display() -> void:
 	var left := 0
 	var cap := 3
@@ -217,10 +234,20 @@ func _refresh_display() -> void:
 		if es.has_method("can_claim_ad_revive"):
 			can_claim = bool(es.call("can_claim_ad_revive"))
 
+	var ad_removed := _is_ad_removed()
+	if _hint_lbl:
+		if ad_removed:
+			_hint_lbl.text = _t("二次機會：已移除廣告，可直接重新上鍊，立即以 50% 生命值重返戰場！")
+		else:
+			_hint_lbl.text = _t("二次機會：觀看贊助廣告即可重新上鍊，立即以 50% 生命值重返戰場！")
+
 	if _revive_btn:
 		if can_claim:
 			_revive_btn.disabled = false
-			_revive_btn.text = _t("觀看廣告立即復活  (%d/%d)") % [left, cap]
+			if ad_removed:
+				_revive_btn.text = _t("已移除廣告，直接領取  (%d/%d)") % [left, cap]
+			else:
+				_revive_btn.text = _t("觀看廣告立即復活  (%d/%d)") % [left, cap]
 		else:
 			_revive_btn.disabled = true
 			_revive_btn.text = _t("今日復活次數已達上限 (0/%d)") % cap
@@ -233,6 +260,10 @@ func _on_revive_ad_clicked() -> void:
 		es = (loop as SceneTree).root.get_node_or_null("EnergySystem")
 
 	if es and es.has_method("can_claim_ad_revive") and not bool(es.call("can_claim_ad_revive")):
+		return
+
+	if _is_ad_removed():
+		_on_ad_revive_success()
 		return
 
 	# 開啟假讀秒占位廣告

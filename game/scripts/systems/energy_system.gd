@@ -210,6 +210,12 @@ func can_claim_ad_energy() -> bool:
 	return ad_rewards_left_today() > 0
 
 
+func is_ad_removed() -> bool:
+	if "has_removed_ads" in GameState:
+		return bool(GameState.has_removed_ads)
+	return bool(GameState.get_flag("has_removed_ads", false))
+
+
 func claim_ad_energy(amount: int = AD_REWARD_ENERGY_AMOUNT) -> bool:
 	refresh_ad_daily()
 	if not can_claim_ad_energy():
