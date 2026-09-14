@@ -608,7 +608,7 @@ func _show_messages_panel(place: String, list: Array, online: bool) -> void:
 		{"text": _t("留下足跡：還在啊"), "cb": _msg_post.bind(place, _t("還在啊。"), online)},
 		{"text": _t("留下足跡：氣味比預言近"), "cb": _msg_post.bind(place, _t("氣味比預言近。"), online)},
 		{"text": _t("留下足跡：微末也走到了"), "cb": _msg_post.bind(place, _t("微末也走到了。"), online)},
-		{"text": _t("留下足跡：今日村莊"), "cb": _msg_post.bind(place, _t("今日村莊，還亮著。"), online)},
+		{"text": _t("留下足跡：發條新村"), "cb": _msg_post.bind(place, _t("發條新村，還亮著。"), online)},
 		{"text": Loc.t("btn.refresh"), "cb": func(): _go_message_stone("message_stone")},
 	]
 	if not online:
@@ -1407,7 +1407,7 @@ func _online_on_result(res: Dictionary) -> void:
 
 
 func _go_starpath_panel() -> void:
-	## 今日村莊儀表板：一天要開遊戲時先看這裡
+	## 每日發條儀表板：一天要開遊戲時先看這裡
 	QuestSystem.refresh_daily()
 	OnlineGate.refresh_candle_soft()
 	var body := "[color=#fc9]%s[/color]\n\n" % RegionCatalog.next_objective_line()
@@ -1463,7 +1463,7 @@ func _go_daily_panel() -> void:
 				_play_dialog([{"speaker": _t("系統"), "text": str(r.get("msg", ""))}], _go_daily_panel)
 			})
 	buttons.append({"text": _t("長遠任務"), "cb": _go_quest_panel})
-	buttons.append({"text": _t("今日村莊"), "cb": _go_starpath_panel})
+	buttons.append({"text": _t("每日發條"), "cb": _go_starpath_panel})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _hub_back})
 	_panel(_t("今天，誰需要上發條？"), body, buttons)
 
@@ -2494,7 +2494,7 @@ func _go_title_start_menu() -> void:
 	if SaveManager.has_save():
 		buttons.append({"text": Loc.t("title.continue"), "cb": _continue_game})
 		buttons.append({"text": Loc.t("title.new_game"), "cb": _new_game})
-		## 今日村莊：先讀檔再開儀表板（避免在空白狀態領獎）
+		## 每日發條：先讀檔再開儀表板（避免在空白狀態領獎）
 		buttons.append({"text": Loc.t("title.starpath"), "cb": _continue_then_starpath})
 	else:
 		buttons.append({"text": Loc.t("title.new_game"), "cb": _new_game})
@@ -2902,7 +2902,7 @@ func _continue_game() -> void:
 	_resume_from_chapter()
 
 
-## 標題「今日村莊」：先載入存檔再開儀表板（狀態才是真的）
+## 標題「每日發條」：先載入存檔再開儀表板（狀態才是真的）
 func _continue_then_starpath() -> void:
 	if SaveManager.load_game() != OK:
 		_show_toast(_t("那一格讀不起來，先看看紀錄。"))
@@ -7569,7 +7569,7 @@ func _go_postgame_hub() -> void:
 	## Product Lock §4：裂縫／NG+ 移出範圍。舊入口改成出口，不開裂縫中樞。
 	_panel(
 		_t("通關之後"),
-		_t("主線完結。今日村莊、演武與獵場都在。"),
+		_t("主線完結。發條新村、演武與獵場都在。"),
 		[
 			{"text": _t("稱號牆"), "cb": _go_title_wall},
 			{"text": _t("堡壘"), "cb": _go_c1_town},

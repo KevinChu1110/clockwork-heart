@@ -38,7 +38,7 @@ const LINE_GOLD_SOFT     := Color(0.831, 0.686, 0.216, 0.18) ## 輔助分界金�
 const DEFAULT_HERO_NAME: String = "新人"
 
 enum Tab {
-	VILLAGE,     ## 今日村莊大廳 (主城)
+	VILLAGE,     ## 發條新村大廳 (主城)
 	CHARACTER,   ## 角色 / 三欄武器紙娃娃
 	ADVENTURE,   ## 四區出征關卡
 	SOUL_HALL,   ## 聚魂殿堂 (封靈罐四階)
@@ -539,11 +539,11 @@ func _build_bottom_dock() -> void:
 	dock.add_child(h)
 
 	var tabs := [
-		{"tab": Tab.VILLAGE, "title": "今日村莊"},
-		{"tab": Tab.CHARACTER, "title": "角色裝備"},
-		{"tab": Tab.ADVENTURE, "title": "四區出征"},
-		{"tab": Tab.SOUL_HALL, "title": "聚魂殿堂"},
-		{"tab": Tab.BAG, "title": "冒險背包"},
+		{"tab": Tab.VILLAGE, "title": _t("發條新村")},
+		{"tab": Tab.CHARACTER, "title": _t("角色裝備")},
+		{"tab": Tab.ADVENTURE, "title": _t("四區出征")},
+		{"tab": Tab.SOUL_HALL, "title": _t("聚魂殿堂")},
+		{"tab": Tab.BAG, "title": _t("冒險背包")},
 	]
 
 	_dock_buttons.clear()
@@ -643,7 +643,7 @@ func _play_random_idle_flavor() -> void:
 		)
 
 ## ──────────────────────────────────────────
-## Tab 1: 今日村莊 (神殿日晷展台 + 點擊互動 + 黃金以太粒子)
+## Tab 1: 發條新村 (神殿日晷展台 + 點擊互動 + 黃金以太粒子)
 ## ──────────────────────────────────────────
 func _build_village_tab() -> void:
 	_village_layer = Control.new()
