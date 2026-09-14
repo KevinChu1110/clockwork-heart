@@ -40,7 +40,11 @@ position = Vector2(1360, 980)
 gizmo_extents = 20.0
 
 [node name="maisui" type="Marker2D" parent="Markers"]
-position = Vector2(1500, 1000)
+position = Vector2(1780, 960)
+gizmo_extents = 16.0
+
+[node name="sword" type="Marker2D" parent="Markers"]
+position = Vector2(880, 960)
 gizmo_extents = 16.0
 
 [node name="exit_east" type="Marker2D" parent="Markers"]
