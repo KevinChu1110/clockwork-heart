@@ -40,7 +40,6 @@ func _init() -> void:
 			print("ONBOARD_FAIL missing %s" % p)
 			ok = false
 	if ok:
-		print("ONBOARD_SOULDRAW_UI_SUCCESS")
 		print("ONBOARD_FLOW_OK")
 		quit(0)
 	else:

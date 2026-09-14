@@ -127,7 +127,6 @@ func _init() -> void:
 	if ok:
 		print("SOUL_DRAW_OK")
 		print("SOUL_DRAW_V2_OK")
-		print("SOUL_DRAW_V2_SUCCESS")
 		quit(0)
 	else:
 		print("SOUL_DRAW_V2_FAIL")
