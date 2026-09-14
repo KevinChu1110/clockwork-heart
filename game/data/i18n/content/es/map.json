@@ -133,7 +133,6 @@
   "捷徑·外緣": "Atajo · Borde exterior",
   "掌門靜室": "Sala del maestro",
   "接古驛": "Hacia la vieja posta",
-  "接荒路": "Hacia el camino yermo",
   "撕破旗": "Estandarte desgarrado",
   "攤位殘架": "Restos del puesto",
   "散落卷軸": "Pergaminos dispersos",
@@ -296,9 +295,9 @@
   "船體殘骸": "Restos del casco",
   "苔文": "Escritura de musgo",
   "茶席": "Mesa de té",
-  "荒路 · 半塌客棧": "Camino Yermo · Posada Medio Caída",
-  "荒路 · 古驛站廢墟": "Camino Yermo · Ruinas de la Vieja Posta",
-  "荒路 · 斷崖大橋": "Camino Yermo · Puente del Barranco",
+  "玩具堆外緣 · 停擺旅舍": "Afueras del montón de juguetes · Posada Parada",
+  "玩具堆外緣 · 舊上鍊站": "Afueras del montón de juguetes · Vieja estación de cuerda",
+  "玩具堆外緣 · 積木斷橋": "Afueras del montón de juguetes · Puente de bloques roto",
   "荒野 · 內殿前院": "Yermo · Antepatio del Santuario",
   "荒野 · 深裂谷": "Yermo · Barranco Profundo",
   "落葉堆": "Montón de hojas",
@@ -441,7 +440,7 @@
   "風車積木田": "Campo de bloques del molino",
   "箱底舊礦洞": "Mina vieja bajo el cajón",
   "靜止玩具墓園": "Cementerio de juguetes quietos",
-  "荒路 · 朝向世界大鐘": "Camino baldío · Hacia el Gran Reloj Mundial",
+  "玩具堆外緣 · 朝向世界大鐘": "Afueras del montón de juguetes · Hacia el Gran Reloj Mundial",
   "舊鑰": "Llavevieja",
   "鏽蝕長劍": "Espada Larga Oxidada",
   "傾倒木箱": "Cajón volcado",
@@ -474,5 +473,6 @@
   "拆開的積木條": "Bloques de construcción desmontados",
   "發條風車台": "Plataforma del molino de cuerda",
   "接玩具堆外緣": "Hacia las afueras del montón de juguetes",
-  "停擺發條風車": "Molino de cuerda detenido"
+  "停擺發條風車": "Molino de cuerda detenido",
+  "停擺旅舍": "Posada parada"
 }

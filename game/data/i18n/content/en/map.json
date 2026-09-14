@@ -133,7 +133,6 @@
   "捷徑·外緣": "Shortcut · Outer Edge",
   "掌門靜室": "Master's Quiet Room",
   "接古驛": "To the Old Post",
-  "接荒路": "To the Waste Road",
   "撕破旗": "Torn Banner",
   "攤位殘架": "Stall Wreckage",
   "散落卷軸": "Scattered Scrolls",
@@ -296,9 +295,9 @@
   "船體殘骸": "Hull Wreckage",
   "苔文": "Moss Script",
   "茶席": "Tea Mat",
-  "荒路 · 半塌客棧": "Waste Road · Half-Collapsed Inn",
-  "荒路 · 古驛站廢墟": "Waste Road · Old Post Ruins",
-  "荒路 · 斷崖大橋": "Waste Road · Cliff Bridge",
+  "玩具堆外緣 · 停擺旅舍": "Toy Pile Outskirts · Halted Inn",
+  "玩具堆外緣 · 舊上鍊站": "Toy Pile Outskirts · Old Winding Station",
+  "玩具堆外緣 · 積木斷橋": "Toy Pile Outskirts · Block Bridge",
   "荒野 · 內殿前院": "Wilds · Sanctum Forecourt",
   "荒野 · 深裂谷": "Wilds · Deep Ravine",
   "落葉堆": "Leaf Pile",
@@ -441,7 +440,7 @@
   "風車積木田": "Windmill Block Field",
   "箱底舊礦洞": "Old Mine under the Crate",
   "靜止玩具墓園": "Still-Toy Graveyard",
-  "荒路 · 朝向世界大鐘": "Waste Road · Toward the Grand Clockwork",
+  "玩具堆外緣 · 朝向世界大鐘": "Toy Pile Outskirts · Toward the Grand Clockwork",
   "舊鑰": "Oldkey",
   "鏽蝕長劍": "Rusty Longsword",
   "傾倒木箱": "Tipped Crate",
@@ -474,5 +473,6 @@
   "拆開的積木條": "Dismantled Toy Blocks",
   "發條風車台": "Clockwork Windmill Stand",
   "接玩具堆外緣": "To Toy Pile Outskirts",
-  "停擺發條風車": "Halted Clockwork Windmill"
+  "停擺發條風車": "Halted Clockwork Windmill",
+  "停擺旅舍": "Halted Inn"
 }

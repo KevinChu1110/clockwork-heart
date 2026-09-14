@@ -255,11 +255,11 @@ static func _village_grave() -> Dictionary:
 # ═══════════════════════════════════════════
 
 static func _road() -> Dictionary:
-	var m := _base("荒路 · 朝向世界大鐘", Color(0.12, 0.16, 0.22), 3600, 2009, Vector2(2520, 1763), "road")
+	var m := _base("玩具堆外緣 · 朝向世界大鐘", Color(0.12, 0.16, 0.22), 3600, 2009, Vector2(2520, 1763), "road")
 	m["entities"] = [
 		_e("look_back", 2376, 1672, 48, 48, "停擺的閣樓", Color(0.4, 0.35, 0.35)),
 		_e("milepost", 2232, 1403, 40, 56, "里程碑·一", Color(0.45, 0.42, 0.4), true),
-		_e("to_road_inn", 1872, 969, 64, 56, "路旁客棧", Color(0.5, 0.4, 0.3)),
+		_e("to_road_inn", 1872, 969, 64, 56, "停擺旅舍", Color(0.5, 0.4, 0.3)),
 		_e("bush_a", 1512, 964, 48, 40, "灌木", Color(0.3, 0.35, 0.28)),
 		_e("wolf", 1368, 701, 64, 64, "齒輪異響", Color(0.35, 0.3, 0.35)),
 		_e("milepost_b", 1800, 644, 40, 56, "里程碑·二", Color(0.45, 0.42, 0.4), true),
@@ -276,7 +276,7 @@ static func _road() -> Dictionary:
 
 
 static func _road_bridge() -> Dictionary:
-	var m := _base("荒路 · 斷崖大橋", Color(0.1, 0.14, 0.2), 2600, 1462, Vector2(390, 877), "road_bridge")
+	var m := _base("玩具堆外緣 · 積木斷橋", Color(0.1, 0.14, 0.2), 2600, 1462, Vector2(390, 877), "road_bridge")
 	m["entities"] = [
 		_e("back_road", 312, 804, 56, 56, "回主路", Color(0.4, 0.4, 0.45)),
 		_e("bridge_arch", 1716, 643, 120, 64, "石拱橋", Color(0.45, 0.43, 0.42), true),
@@ -290,7 +290,7 @@ static func _road_bridge() -> Dictionary:
 
 
 static func _road_inn() -> Dictionary:
-	var m := _base("荒路 · 半塌客棧", Color(0.11, 0.1, 0.12), 2200, 1238, Vector2(990, 681), "road_inn")
+	var m := _base("玩具堆外緣 · 停擺旅舍", Color(0.11, 0.1, 0.12), 2200, 1238, Vector2(990, 681), "road_inn")
 	var hearth_lab := "壁爐（暖）" if _flag("side.hearth_lit") else "熄滅壁爐"
 	m["entities"] = [
 		_e("back_road", 2024, 966, 56, 56, "回主路", Color(0.4, 0.4, 0.45)),
@@ -306,7 +306,7 @@ static func _road_inn() -> Dictionary:
 
 
 static func _road_ruins() -> Dictionary:
-	var m := _base("荒路 · 古驛站廢墟", Color(0.1, 0.12, 0.14), 2400, 1350, Vector2(480, 1148), "road_ruins")
+	var m := _base("玩具堆外緣 · 舊上鍊站", Color(0.1, 0.12, 0.14), 2400, 1350, Vector2(480, 1148), "road_ruins")
 	m["entities"] = [
 		_e("back_road", 384, 1188, 56, 56, "回主路", Color(0.4, 0.4, 0.45)),
 		_e("column_a", 576, 783, 40, 72, "斷柱", Color(0.45, 0.42, 0.4), true),

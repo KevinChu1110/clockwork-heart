@@ -26,7 +26,7 @@ static func _enemy_def_raw(mode: String) -> Dictionary:
 		"ash_rat":
 			return {"id": "ash_rat", "name": "灰燼鼠", "max_hp": 55, "atk": 8, "def": 2, "speed": 12.0, "kin": "ninja", "is_boss": false, "art": "ash_rat", "art_fallback": "wolf"}
 		"road_bandit":
-			return {"id": "road_bandit", "name": "荒路殘兵", "max_hp": 75, "atk": 10, "def": 4, "speed": 10.0, "kin": "viking", "is_boss": false, "art": "road_bandit", "art_fallback": "wolf"}
+			return {"id": "road_bandit", "name": "銹蝕哨兵偶", "max_hp": 75, "atk": 10, "def": 4, "speed": 10.0, "kin": "viking", "is_boss": false, "art": "road_bandit", "art_fallback": "wolf"}
 		"sewer_slime":
 			return {"id": "sewer_slime", "name": "下水黏漿", "max_hp": 70, "atk": 9, "def": 5, "speed": 8.0, "kin": "monk", "is_boss": false, "art": "sewer_slime", "art_fallback": "wolf"}
 		"fog_shade":
@@ -133,7 +133,7 @@ static func chests() -> Dictionary:
 		"chest_half": {"flag": "loot.chest.coast_wreck", "gold": 48, "dust": 2, "text": _t("半埋箱：海水泡過的金幣仍作響。")},
 		"supply_crate": {"flag": "loot.chest.wild_supply", "gold": 26, "dust": 1, "text": _t("補給箱：乾糧與幾枚城徽幣。")},
 		"hidden_cache": {"flag": "loot.chest.forest_cache", "gold": 35, "dust": 2, "text": _t("獵人藏匿處：藥草與銅板。")},
-		"cellar_hatch": {"flag": "loot.chest.road_inn", "gold": 30, "dust": 1, "text": _t("地窖底：客棧老闆藏的小費罐。")},
+		"cellar_hatch": {"flag": "loot.chest.road_inn", "gold": 30, "dust": 1, "text": _t("地窖底：旅舍老闆偶藏的小費罐。")},
 		"ore_cart": {"flag": "loot.chest.village_cave", "gold": 22, "dust": 2, "text": _t("礦車夾層：半袋未熔的星屑礦砂。")},
 		"fresh_earth": {"flag": "loot.chest.village_grave", "gold": 18, "dust": 1, "text": _t("新土下露出小盒——村民的護身符錢。")},
 		"goods_pile": {"flag": "loot.chest.caravan", "gold": 35, "dust": 2, "text": _t("行商允你摸一層貨——規矩內的謝禮。")},

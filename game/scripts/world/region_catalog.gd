@@ -21,7 +21,7 @@ static func regions() -> Array:
 				{
 					"id": "r1_s1",
 					"name": _t("關卡 1・村外道路"),
-					"maps": [{"id": "road", "label": _t("荒路")}],
+					"maps": [{"id": "road", "label": _t("玩具堆外緣")}],
 					"unlock": [],
 					"clear_flag": "c0_first_battle",
 					"boss": "",
