@@ -863,17 +863,19 @@
   {
    "id": "village-words-toy",
    "cat": "遊戲",
-   "title": "已上線",
+   "title": "戰鬥失敗／幻廊／墓園三句村落泛稱改玩具世界詞（六語系）",
    "status": "已上線",
    "note": "六語系＋金標同步，dialog 測試 4/4 綠，已合 main",
    "keys": [
-    "已上線"
+    "村落泛稱",
+    "玩具世界詞",
+    "六語系"
    ]
   },
   {
    "id": "energy-bar-dopamine",
    "cat": "遊戲",
-   "title": "已上線",
+   "title": "每日發條體力條槽底改亮色盤",
    "status": "已上線",
    "note": "槽底奶油白＋深藍紫描邊，vision 驗過，已合 main；剩餘外框另開追修",
    "keys": [
