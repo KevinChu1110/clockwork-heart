@@ -13,7 +13,12 @@ signal ad_completed(reward_type: String)
 signal ad_cancelled(reward_type: String)
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
+
 
 ## ── 多巴胺鮮亮色盤 ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
@@ -106,7 +111,7 @@ func _build_ui() -> void:
 	v.add_child(head)
 
 	var title_lbl := Label.new()
-	title_lbl.text = "贊助商廣告"
+	title_lbl.text = _t("贊助商廣告")
 	title_lbl.add_theme_font_size_override("font_size", 22)
 	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -144,7 +149,7 @@ func _build_ui() -> void:
 	ab_m.add_child(ab_v)
 
 	var sponsor_title := Label.new()
-	sponsor_title.text = "發條之心工坊 · 冒險熱情贊助"
+	sponsor_title.text = _t("發條之心工坊 · 冒險熱情贊助")
 	sponsor_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sponsor_title.add_theme_font_size_override("font_size", 20)
 	sponsor_title.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -154,9 +159,9 @@ func _build_ui() -> void:
 
 	var sponsor_desc := Label.new()
 	if reward_type == "revive":
-		sponsor_desc.text = "齒輪重新咬合，金屬骨架再度充能！\n贊助商為倒下的玩具勇者提供重返戰場的二次機會。"
+		sponsor_desc.text = _t("齒輪重新咬合，金屬骨架再度充能！\n贊助商為倒下的玩具勇者提供重返戰場的二次機會。")
 	else:
-		sponsor_desc.text = "玩具世界的發條需要充足動能！\n感謝您觀看贊助內容，冒險動能即刻補充完畢。"
+		sponsor_desc.text = _t("玩具世界的發條需要充足動能！\n感謝您觀看贊助內容，冒險動能即刻補充完畢。")
 	sponsor_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sponsor_desc.add_theme_font_size_override("font_size", 16)
 	sponsor_desc.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -171,14 +176,14 @@ func _build_ui() -> void:
 	prog_v.add_child(status_h)
 
 	_status_label = Label.new()
-	_status_label.text = "廣告播映中……"
+	_status_label.text = _t("廣告播映中……")
 	_status_label.add_theme_font_size_override("font_size", 15)
 	_status_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_status_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	status_h.add_child(_status_label)
 
 	_countdown_label = Label.new()
-	_countdown_label.text = "剩餘 2 秒"
+	_countdown_label.text = _t("剩餘 %d 秒") % 2
 	_countdown_label.add_theme_font_size_override("font_size", 16)
 	_countdown_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	status_h.add_child(_countdown_label)
@@ -208,7 +213,7 @@ func _build_ui() -> void:
 	v.add_child(btn_h)
 
 	_action_btn = Button.new()
-	_action_btn.text = "廣告播放中 (請稍候)"
+	_action_btn.text = _t("廣告播放中 (請稍候)")
 	_action_btn.custom_minimum_size = Vector2(280, 52)
 	_action_btn.disabled = true
 	_action_btn.add_theme_font_size_override("font_size", 18)
@@ -235,9 +240,9 @@ func _process(delta: float) -> void:
 	var sec_ceil := int(ceil(_time_left))
 	if _countdown_label:
 		if sec_ceil > 0:
-			_countdown_label.text = "剩餘 %d 秒" % sec_ceil
+			_countdown_label.text = _t("剩餘 %d 秒") % sec_ceil
 		else:
-			_countdown_label.text = "播映完畢！"
+			_countdown_label.text = _t("播映完畢！")
 
 	if _time_left <= 0.0:
 		_on_ad_playback_completed()
@@ -247,11 +252,11 @@ func _on_ad_playback_completed() -> void:
 	_is_finished = true
 	_timer_active = false
 	if _status_label:
-		_status_label.text = "觀看完成！已可領取獎勵。"
+		_status_label.text = _t("觀看完成！已可領取獎勵。")
 		_status_label.add_theme_color_override("font_color", COLOR_TEXT_MINT)
 	if _action_btn:
 		_action_btn.disabled = false
-		_action_btn.text = "領取獎勵"
+		_action_btn.text = _t("領取獎勵")
 		_action_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 6))
 		_action_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5CE879"), COLOR_BORDER, 6))
 		_action_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#3DBB55"), COLOR_BORDER, 2))

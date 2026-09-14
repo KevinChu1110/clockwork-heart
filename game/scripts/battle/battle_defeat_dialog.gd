@@ -14,7 +14,12 @@ signal give_up_selected()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
+
 
 ## ── 多巴胺鮮亮色盤 ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
@@ -99,7 +104,7 @@ func _build_ui() -> void:
 	v.add_child(head)
 
 	var title_lbl := Label.new()
-	title_lbl.text = "戰鬥失敗"
+	title_lbl.text = _t("戰鬥失敗")
 	title_lbl.add_theme_font_size_override("font_size", 22)
 	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -135,7 +140,7 @@ func _build_ui() -> void:
 	dc_m.add_child(dc_v)
 
 	var sub_lbl := Label.new()
-	sub_lbl.text = "發條動能耗盡，齒輪暫時停擺！"
+	sub_lbl.text = _t("發條動能耗盡，齒輪暫時停擺！")
 	sub_lbl.add_theme_font_size_override("font_size", 19)
 	sub_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -143,7 +148,7 @@ func _build_ui() -> void:
 	dc_v.add_child(sub_lbl)
 
 	var hint_lbl := Label.new()
-	hint_lbl.text = "二次機會：觀看贊助廣告即可重新上鍊，立即以 50% 生命值重返戰場！"
+	hint_lbl.text = _t("二次機會：觀看贊助廣告即可重新上鍊，立即以 50% 生命值重返戰場！")
 	hint_lbl.add_theme_font_size_override("font_size", 15)
 	hint_lbl.add_theme_color_override("font_color", COLOR_TEXT_MINT)
 	if _cached_font:
@@ -151,7 +156,7 @@ func _build_ui() -> void:
 	dc_v.add_child(hint_lbl)
 
 	var tip_lbl := Label.new()
-	tip_lbl.text = "若是選擇承認敗北，將返回城鎮整頓裝備與招式。"
+	tip_lbl.text = _t("若是選擇承認敗北，將返回城鎮整頓裝備與招式。")
 	tip_lbl.add_theme_font_size_override("font_size", 15)
 	tip_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	v.add_child(tip_lbl)
@@ -182,7 +187,7 @@ func _build_ui() -> void:
 	# 結束戰鬥按鈕 (溫暖米黃/橙底)
 	var give_up_btn := Button.new()
 	give_up_btn.name = "GiveUpBtn"
-	give_up_btn.text = "結束戰鬥"
+	give_up_btn.text = _t("結束戰鬥")
 	give_up_btn.custom_minimum_size = Vector2(180, 52)
 	give_up_btn.add_theme_font_size_override("font_size", 18)
 	give_up_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -215,10 +220,10 @@ func _refresh_display() -> void:
 	if _revive_btn:
 		if can_claim:
 			_revive_btn.disabled = false
-			_revive_btn.text = "觀看廣告立即復活  (%d/%d)" % [left, cap]
+			_revive_btn.text = _t("觀看廣告立即復活  (%d/%d)") % [left, cap]
 		else:
 			_revive_btn.disabled = true
-			_revive_btn.text = "今日復活次數已達上限 (0/%d)" % cap
+			_revive_btn.text = _t("今日復活次數已達上限 (0/%d)") % cap
 
 
 func _on_revive_ad_clicked() -> void:

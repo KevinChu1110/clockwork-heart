@@ -14,7 +14,12 @@ signal closed()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
+
 
 ## ── 多巴胺鮮亮色盤 ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
@@ -111,7 +116,7 @@ func _build_ui() -> void:
 	v.add_child(head)
 
 	var title_lbl := Label.new()
-	title_lbl.text = "能量不足"
+	title_lbl.text = _t("能量不足")
 	title_lbl.add_theme_font_size_override("font_size", 22)
 	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -147,7 +152,7 @@ func _build_ui() -> void:
 	sc_m.add_child(sc_v)
 
 	_energy_val_label = Label.new()
-	_energy_val_label.text = "當前能量：—"
+	_energy_val_label.text = _t("當前能量：—")
 	_energy_val_label.add_theme_font_size_override("font_size", 20)
 	_energy_val_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -155,13 +160,13 @@ func _build_ui() -> void:
 	sc_v.add_child(_energy_val_label)
 
 	_status_detail_label = Label.new()
-	_status_detail_label.text = "自然回復：—"
+	_status_detail_label.text = _t("自然回復：—")
 	_status_detail_label.add_theme_font_size_override("font_size", 15)
 	_status_detail_label.add_theme_color_override("font_color", COLOR_TEXT_GOLD)
 	sc_v.add_child(_status_detail_label)
 
 	var desc_lbl := Label.new()
-	desc_lbl.text = "出發探索或挑戰戰鬥需要充足的發條能量。\n您可以稍候等待能量自然回復，或是觀看廣告立即補充 3 點能量！"
+	desc_lbl.text = _t("出發探索或挑戰戰鬥需要充足的發條能量。\n您可以稍候等待能量自然回復，或是觀看廣告立即補充 3 點能量！")
 	desc_lbl.add_theme_font_size_override("font_size", 16)
 	desc_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -193,7 +198,7 @@ func _build_ui() -> void:
 	# 返回按鈕 (溫暖米黃/橙底)
 	var back_btn := Button.new()
 	back_btn.name = "BackBtn"
-	back_btn.text = "稍後再來"
+	back_btn.text = _t("稍後再來")
 	back_btn.custom_minimum_size = Vector2(180, 52)
 	back_btn.add_theme_font_size_override("font_size", 18)
 	back_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -221,13 +226,13 @@ func _refresh_display() -> void:
 			mx = int(es.get("MAX_ENERGY"))
 
 	if _energy_val_label:
-		_energy_val_label.text = "當前能量：%d／%d" % [cur, mx]
+		_energy_val_label.text = _t("當前能量：%d／%d") % [cur, mx]
 
 	if _status_detail_label:
 		if es and es.has_method("status_line"):
 			_status_detail_label.text = str(es.call("status_line"))
 		else:
-			_status_detail_label.text = "能量恢復中……"
+			_status_detail_label.text = _t("能量恢復中……")
 
 	var left := 0
 	var cap := 3
@@ -243,10 +248,10 @@ func _refresh_display() -> void:
 	if _ad_btn:
 		if can_claim:
 			_ad_btn.disabled = false
-			_ad_btn.text = "觀看廣告回復能量 (+3)  (%d/%d)" % [left, cap]
+			_ad_btn.text = _t("觀看廣告回復能量 (+3)  (%d/%d)") % [left, cap]
 		else:
 			_ad_btn.disabled = true
-			_ad_btn.text = "今日廣告次數已達上限 (0/%d)" % cap
+			_ad_btn.text = _t("今日廣告次數已達上限 (0/%d)") % cap
 
 
 func _on_watch_ad_clicked() -> void:
