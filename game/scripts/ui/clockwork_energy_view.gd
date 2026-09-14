@@ -98,7 +98,7 @@ func _build_ui() -> void:
 
 	var title_lbl := Label.new()
 	title_lbl.text = "發條之心 · 戰鬥原型：共用發條能量分配系統"
-	title_lbl.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	title_lbl.add_theme_color_override("font_color", Color("#1F1A3A"))
 	title_lbl.add_theme_font_size_override("font_size", 20)
 	header_hbox.add_child(title_lbl)
 
@@ -174,7 +174,7 @@ func _build_ui() -> void:
 
 	var p_title := Label.new()
 	p_title.text = "發條特遣隊（四大職業）"
-	p_title.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	p_title.add_theme_color_override("font_color", Color("#1F1A3A"))
 	p_title.add_theme_font_size_override("font_size", 16)
 	party_vbox.add_child(p_title)
 
@@ -198,14 +198,14 @@ func _build_ui() -> void:
 
 	var b_title := Label.new()
 	b_title.text = "敵方首領：發條巨像"
-	b_title.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	b_title.add_theme_color_override("font_color", Color("#1F1A3A"))
 	b_title.add_theme_font_size_override("font_size", 16)
 	boss_vbox.add_child(b_title)
 
 	## 首領血條
 	var b_hp_title := Label.new()
 	b_hp_title.text = "核心耐久度 (HP)"
-	b_hp_title.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	b_hp_title.add_theme_color_override("font_color", Color("#1F1A3A"))
 	b_hp_title.add_theme_font_size_override("font_size", 13)
 	boss_vbox.add_child(b_hp_title)
 
@@ -223,14 +223,14 @@ func _build_ui() -> void:
 
 	_boss_hp_label = Label.new()
 	_boss_hp_label.text = "%d / %d" % [sim.enemy["hp"], sim.enemy["max_hp"]]
-	_boss_hp_label.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	_boss_hp_label.add_theme_color_override("font_color", Color("#1F1A3A"))
 	_boss_hp_label.add_theme_font_size_override("font_size", 12)
 	boss_vbox.add_child(_boss_hp_label)
 
 	## 首領裝甲板件
 	var b_arm_title := Label.new()
 	b_arm_title.text = "外層裝甲板件 (Armor)"
-	b_arm_title.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	b_arm_title.add_theme_color_override("font_color", Color("#1F1A3A"))
 	b_arm_title.add_theme_font_size_override("font_size", 13)
 	boss_vbox.add_child(b_arm_title)
 
@@ -248,7 +248,7 @@ func _build_ui() -> void:
 
 	_boss_armor_label = Label.new()
 	_boss_armor_label.text = "裝甲值: %d (減傷中)" % sim.enemy["armor"]
-	_boss_armor_label.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	_boss_armor_label.add_theme_color_override("font_color", Color("#1F1A3A"))
 	_boss_armor_label.add_theme_font_size_override("font_size", 12)
 	boss_vbox.add_child(_boss_armor_label)
 
@@ -267,7 +267,7 @@ func _build_ui() -> void:
 	_log_label = RichTextLabel.new()
 	_log_label.bbcode_enabled = true
 	_log_label.scroll_following = true
-	_log_label.add_theme_color_override("default_color", UiStyle.TATA_BROWN)
+	_log_label.add_theme_color_override("default_color", Color("#1F1A3A"))
 	_log_label.add_theme_font_size_override("normal_font_size", 12)
 	log_panel.add_child(_log_label)
 
@@ -339,7 +339,7 @@ func _build_hero_cards() -> void:
 
 		var name_lbl := Label.new()
 		name_lbl.text = "%s·%s" % [hero["name"], hero["profession"]]
-		name_lbl.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+		name_lbl.add_theme_color_override("font_color", Color("#1F1A3A"))
 		name_lbl.add_theme_font_size_override("font_size", 14)
 		vbox.add_child(name_lbl)
 
@@ -363,7 +363,7 @@ func _build_hero_cards() -> void:
 
 		var hp_lbl := Label.new()
 		hp_lbl.text = "HP: %d/%d" % [hero["hp"], hero["max_hp"]]
-		hp_lbl.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+		hp_lbl.add_theme_color_override("font_color", Color("#1F1A3A"))
 		hp_lbl.add_theme_font_size_override("font_size", 11)
 		vbox.add_child(hp_lbl)
 
@@ -414,7 +414,7 @@ func _build_allocation_modal() -> void:
 	var m_title := Label.new()
 	m_title.text = "發條能量過載　請選擇技能注入對象"
 	m_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	m_title.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	m_title.add_theme_color_override("font_color", Color("#1F1A3A"))
 	m_title.add_theme_font_size_override("font_size", 20)
 	mvbox.add_child(m_title)
 
