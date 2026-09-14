@@ -48,9 +48,9 @@ static func regions() -> Array:
 			"stages": [
 				{
 					"id": "r2_s1",
-					"name": _t("關卡 1・白霧村"),
+					"name": _t("關卡 1・白霧之地"),
 					"maps": [
-						{"id": "mist_village", "label": _t("白霧村外")},
+						{"id": "mist_village", "label": _t("白霧之地外緣")},
 						{"id": "mist_cliff", "label": _t("霧崖")},
 					],
 					"unlock": ["boss.leo_cleared"],
