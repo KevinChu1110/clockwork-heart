@@ -834,8 +834,8 @@
    "id": "w8-onboard-dopamine",
    "cat": "遊戲",
    "title": "W8 新手引導畫面改多巴胺亮色盤",
-   "status": "測試中",
-   "note": "已改多巴胺亮色盤與果凍按鈕，已提交看板審核 (commit 4a534a1)",
+   "status": "已上線",
+   "note": "已過審並合進本機 main",
    "keys": [
     "W8 新手引導畫"
    ]
