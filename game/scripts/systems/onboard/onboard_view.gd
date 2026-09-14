@@ -4,10 +4,13 @@ signal finished
 
 const FlowScript := preload("res://scripts/systems/onboard/onboard_flow.gd")
 const CardScript := preload("res://scripts/ui/soul_draw/soul_result_card_view.gd")
+const UiStyle := preload("res://scripts/ui/ui_style.gd")
+const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const I18N_PATH := "res://data/i18n/zh_TW.json"
 
 var flow
 var card
+var _panel: PanelContainer
 var _dialog: Label
 var _node_lbl: Label
 var _hint: Label
@@ -33,69 +36,104 @@ func _tr(key: String) -> String:
 
 
 func _build() -> void:
+	# 1. 溫暖奶油陽光底，徹底告別 0.10 黑曜石暗底
 	var bg := ColorRect.new()
+	bg.name = "Background"
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.10, 0.09, 0.12, 1)
+	bg.color = Color(0.96, 0.94, 0.90, 1.0)
 	add_child(bg)
 
+	# 2. 置中容器與手遊橫屏主卡片（對齊 740~760px 規範，寬 750px）
+	var center := CenterContainer.new()
+	center.name = "Center"
+	center.set_anchors_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_PASS
+	add_child(center)
+
+	_panel = PanelContainer.new()
+	_panel.name = "OnboardCard"
+	_panel.custom_minimum_size = Vector2(750, 500)
+	_panel.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	center.add_child(_panel)
+
+	var margin := MarginContainer.new()
+	margin.name = "Margin"
+	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_top", 20)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	_panel.add_child(margin)
+
+	var vbox := VBoxContainer.new()
+	vbox.name = "ContentVBox"
+	vbox.add_theme_constant_override("separation", 14)
+	margin.add_child(vbox)
+
+	# 標題級 (約 24px)
 	_node_lbl = Label.new()
-	_node_lbl.position = Vector2(40, 24)
-	_node_lbl.add_theme_font_size_override("font_size", 20)
-	_node_lbl.add_theme_color_override("font_color", Color(0.85, 0.8, 0.65))
-	add_child(_node_lbl)
+	_node_lbl.name = "NodeTitle"
+	_node_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_node_lbl.add_theme_font_size_override("font_size", 22)
+	_node_lbl.add_theme_color_override("font_color", UiStyle.TATA_BROWN)
+	_node_lbl.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
+	_node_lbl.add_theme_constant_override("outline_size", 2)
+	vbox.add_child(_node_lbl)
 
+	# N07/N08 抽魂結果卡示意（具備足夠高度供 TextureRect 與 Label 居中排列）
 	card = CardScript.new()
-	card.set_anchors_preset(Control.PRESET_FULL_RECT)
-	card.offset_left = 60
-	card.offset_top = 70
-	card.offset_right = -60
-	card.offset_bottom = -200
+	card.name = "SoulResultCard"
+	card.custom_minimum_size = Vector2(0, 250)
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	card.visible = false
-	add_child(card)
+	vbox.add_child(card)
 
+	# 內文級 (24px)
 	_dialog = Label.new()
-	_dialog.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	_dialog.offset_top = -190
-	_dialog.offset_left = 48
-	_dialog.offset_right = -48
-	_dialog.offset_bottom = -110
+	_dialog.name = "DialogLabel"
 	_dialog.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_dialog.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_dialog.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_dialog.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_dialog.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_dialog.custom_minimum_size = Vector2(0, 80)
 	_dialog.add_theme_font_size_override("font_size", 24)
-	_dialog.add_theme_color_override("font_color", Color(0.95, 0.93, 0.88))
-	add_child(_dialog)
+	_dialog.add_theme_color_override("font_color", UiStyle.INK)
+	vbox.add_child(_dialog)
 
-	_hint = Label.new()
-	_hint.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	_hint.offset_top = -48
-	_hint.offset_bottom = -16
-	_hint.offset_left = 48
-	_hint.text = "空白鍵／下一步 · N07 可「稍後再說」"
-	_hint.add_theme_font_size_override("font_size", 14)
-	_hint.add_theme_color_override("font_color", Color(0.65, 0.62, 0.55))
-	add_child(_hint)
-
+	# 按鈕列：高度 >= 50px
 	var row := HBoxContainer.new()
-	row.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
-	row.offset_top = -100
-	row.offset_bottom = -52
-	row.offset_left = 48
-	row.offset_right = -48
+	row.name = "ButtonRow"
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 16)
-	add_child(row)
+	vbox.add_child(row)
 
 	_btn_next = Button.new()
+	_btn_next.name = "BtnNext"
 	_btn_next.text = "下一步"
 	_btn_next.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_btn_next.custom_minimum_size = Vector2(0, 48)
+	UiStyle.style_button(_btn_next, true)
+	_btn_next.custom_minimum_size = Vector2(0, 50)
 	_btn_next.pressed.connect(func() -> void: _advance(false))
 	row.add_child(_btn_next)
 
 	_btn_skip = Button.new()
+	_btn_skip.name = "BtnSkip"
 	_btn_skip.text = "稍後再說"
 	_btn_skip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_btn_skip.custom_minimum_size = Vector2(0, 48)
+	UiStyle.style_button(_btn_skip, false)
+	_btn_skip.custom_minimum_size = Vector2(0, 50)
 	_btn_skip.pressed.connect(func() -> void: _advance(true))
 	row.add_child(_btn_skip)
+
+	# 輔助級 (>= 16px)
+	_hint = Label.new()
+	_hint.name = "HintLabel"
+	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hint.text = "空白鍵／下一步 · 部分步驟可「稍後再說」"
+	_hint.add_theme_font_size_override("font_size", 16)
+	_hint.add_theme_color_override("font_color", UiStyle.INK_DIM)
+	vbox.add_child(_hint)
 
 
 func _show_current() -> void:
@@ -111,7 +149,7 @@ func _show_current() -> void:
 	var cur: Dictionary = flow.current()
 	var node: String = str(cur.get("node", ""))
 	var key: String = str(cur.get("key", ""))
-	_node_lbl.text = "新手 · %s · cue %s" % [node, str(cur.get("cue", ""))]
+	_node_lbl.text = "新手引導 · 第 %d／%d 步" % [flow.step_index + 1, flow.steps().size()]
 	_dialog.text = _tr(key)
 	_btn_skip.visible = flow.can_skip_current()
 	# N07／N08 秀結果卡
