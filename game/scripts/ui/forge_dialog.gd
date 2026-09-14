@@ -1,6 +1,6 @@
 class_name ForgeDialog
 extends Control
-## 《發條之心》王都鐵匠鍛造彈窗 (ForgeDialog)
+## 《發條之心》天宮鐵匠鍛造彈窗 (ForgeDialog)
 ## 依多巴胺亮色盤規範與手遊人體工學：
 ## 1. 橫屏彈窗寬 740~760px，置中顯示，背景全螢幕半透明遮罩 (Scrim)。
 ## 2. 右上「✕」關閉按鈕尺寸 >= 50px，按鈕高度均 >= 50px。
@@ -14,7 +14,11 @@ signal closed()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
 
 ## ── 多巴胺鮮亮高飽和色盤 ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
@@ -121,7 +125,7 @@ func _build_ui() -> void:
 	v.add_child(head)
 
 	var title_lbl := Label.new()
-	title_lbl.text = "王都鐵匠 · 裝備鍛造"
+	title_lbl.text = _t("天宮鐵匠 · 裝備鍛造")
 	title_lbl.add_theme_font_size_override("font_size", 22)
 	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)

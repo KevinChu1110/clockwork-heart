@@ -841,7 +841,7 @@ func _build_village_tab() -> void:
 	## 呼吸動畫
 	_start_breathe_tween()
 
-	## 左側四大殿堂黑曜石金屬浮雕卡牌 (王都鐵匠、手藝工坊、演武競技、冒險委託)
+	## 左側四大殿堂黑曜石金屬浮雕卡牌 (天宮鐵匠、手藝工坊、演武競技、冒險委託)
 	var left_shops := VBoxContainer.new()
 	left_shops.name = "HallCardsContainer"
 	left_shops.set_anchors_preset(Control.PRESET_LEFT_WIDE)
@@ -852,7 +852,7 @@ func _build_village_tab() -> void:
 	left_shops.add_theme_constant_override("separation", 14)
 	_village_layer.add_child(left_shops)
 
-	_add_hall_card(left_shops, "王都鐵匠", "品質轉化 · 裝備鍛造", "鐵", func():
+	_add_hall_card(left_shops, _t("天宮鐵匠"), "品質轉化 · 裝備鍛造", "鐵", func():
 		open_forge()
 	)
 	_add_hall_card(left_shops, "手藝工坊", "紅黃藍石 · 三合一熔煉", "工", func():
@@ -886,7 +886,7 @@ func _build_village_tab() -> void:
 	rv.add_child(ch_lbl)
 
 	var s_name := Label.new()
-	s_name.text = "第二地區 · 聖獅王城 (2-4 BOSS)"
+	s_name.text = _t("第二地區 · 白霧之地 (2-4 BOSS)")
 	s_name.add_theme_font_size_override("font_size", 17)
 	s_name.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	rv.add_child(s_name)
@@ -1470,10 +1470,10 @@ func _refresh_region_stages() -> void:
 			{"num": "1-4", "name": "閣樓大門 · 大型殘兵", "type": "精英戰鬥", "cost": 1, "power": 340, "mode": "road_bandit"},
 		],
 		[
-			{"num": "2-1", "name": "王城外郭 · 守望關隘", "type": "前哨雜魚", "cost": 1, "power": 380, "mode": "road_bandit"},
+			{"num": "2-1", "name": _t("白霧外緣 · 守望關隘"), "type": "前哨雜魚", "cost": 1, "power": 380, "mode": "road_bandit"},
 			{"num": "2-2", "name": "市集街道 · 潛伏暗哨", "type": "精英戰鬥", "cost": 1, "power": 420, "mode": "road_bandit"},
 			{"num": "2-3", "name": "下水道口 · 腐化黏怪", "type": "精英戰鬥", "cost": 1, "power": 450, "mode": "road_bandit"},
-			{"num": "2-4", "name": "聖獅王宮 · 狂暴守護者", "type": "首領部位破壞", "cost": 3, "power": 520, "mode": "leo"},
+			{"num": "2-4", "name": _t("聖獅內殿 · 狂暴守護者"), "type": "首領部位破壞", "cost": 3, "power": 520, "mode": "leo"},
 		],
 		[
 			{"num": "3-1", "name": "白霧村外 · 霧影遊魂", "type": "前哨雜魚", "cost": 1, "power": 560, "mode": "fog_shade"},
@@ -1930,7 +1930,7 @@ func open_wardrobe() -> void:
 	add_child(dlg)
 
 
-## 開啟王都鐵匠彈窗
+## 開啟天宮鐵匠彈窗
 func open_forge() -> Control:
 	var existing = get_node_or_null("ForgeDialog")
 	if existing != null:

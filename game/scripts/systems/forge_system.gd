@@ -1,5 +1,5 @@
 extends Node
-## 王都鐵匠鍛造系統 (ForgeSystem)
+## 天宮鐵匠鍛造系統 (ForgeSystem)
 ## 統一管理鍛造階數上限、升階費用、成功率判定與連敗保底邏輯。
 ## Autoload：ForgeSystem
 
