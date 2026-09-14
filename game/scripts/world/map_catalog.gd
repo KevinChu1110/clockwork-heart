@@ -1029,7 +1029,7 @@ static func _tower_memory() -> Dictionary:
 	var m := _base("通天塔 · 回憶層", Color(0.08, 0.06, 0.12), 2400, 1350, Vector2(280, 1268), "tower_memory")
 	m["entities"] = [
 		_e("back_tower_camp", 252, 1185, 56, 56, "離開回憶", Color(0.4, 0.35, 0.5)),
-		_e("memory_orb_a", 496, 1004, 48, 48, "記憶球·村", Color(0.55, 0.45, 0.4)),
+		_e("memory_orb_a", 496, 1004, 48, 48, "記憶球·閣樓", Color(0.55, 0.45, 0.4)),
 		_e("memory_orb_b", 784, 1112, 48, 48, "記憶球·堡", Color(0.5, 0.45, 0.55)),
 		_e("memory_orb_c", 1600, 1085, 48, 48, "記憶球·守衛泰坦", Color(0.5, 0.55, 0.45)),
 		_e("throne_shadow", 1156, 772, 72, 64, "王座影", Color(0.35, 0.25, 0.4), true),
