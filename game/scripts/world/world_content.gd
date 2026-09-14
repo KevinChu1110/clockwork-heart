@@ -152,7 +152,7 @@ static func skirmishes() -> Dictionary:
 	return {
 		"deep_dark": {"mode": "ash_rat", "once_flag": "", "intro": _t("黑暗裡兩點紅光——灰燼鼠撲來。")},
 		"bone_pile": {"mode": "ash_rat", "once_flag": "", "intro": _t("獸骨堆動了。不是風。")},
-		"bush_b": {"mode": "road_bandit", "once_flag": "skirmish.road_bush", "intro": _t("黑刺叢後竄出鏽蝕哨兵偶！")},
+		"bush_b": {"mode": "road_bandit", "once_flag": "skirmish.road_bush", "intro": _t("發條雜叢後竄出鏽蝕哨兵偶！")},
 		"rat_nest": {"mode": "sewer_slime", "once_flag": "", "intro": _t("黏液從管口湧出。")},
 		"slime_pool": {"mode": "sewer_slime", "once_flag": "skirmish.sewer_pool", "intro": _t("池面鼓起人形……不，是黏漿。")},
 		"cat_shadow": {"mode": "fog_shade", "once_flag": "skirmish.mist_cat", "intro": _t("影貓化作霧影撲向你。")},
