@@ -896,8 +896,8 @@
    "id": "ci-red-fix",
    "cat": "平台",
    "title": "main CI 連續紅燈修復",
-   "status": "草稿",
-   "note": "根因已查清（dev 擷圖工具誤收錄＋哨兵寫錯＋2支真紅），修復單已派工",
+   "status": "開發中",
+   "note": "診斷單已結案，修復單 sideworker 執行中",
    "keys": [
     "main CI "
    ]
