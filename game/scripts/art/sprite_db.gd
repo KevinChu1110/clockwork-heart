@@ -1092,7 +1092,7 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 			id = "boar"
 		"魔王", "停擺核", "停摆核", "Stasis Core", "Núcleo de Inactividad", "停止核", "정지핵", "demon":
 			id = "demon"
-		"渣滓之狼", "失控的銹蝕玩具", "失控的锈蚀玩具", "Rust-bound Toy", "Juguete Oxidado Descontrolado", "暴走した錆びトイ", "폭주한 녹슨 장난감", "狼", "wolf":
+		"渣滓之狼", "失控的鏽蝕玩具", "失控的锈蚀玩具", "Rust-bound Toy", "Juguete Oxidado Descontrolado", "暴走した錆びトイ", "폭주한 녹슨 장난감", "狼", "wolf":
 			id = "wolf"
 		"潮吼", "潮聲", "tide_roar":
 			id = "tide_roar"

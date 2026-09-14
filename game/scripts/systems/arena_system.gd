@@ -14,7 +14,7 @@ const TICKET_REGEN_SEC := 90.0 * 60.0
 ## 五波既有雜魚（WorldContent mode），越打越硬
 const WAVES: Array[Dictionary] = [
 	{"mode": "ash_rat", "label": "第一試 · 灰燼鼠"},
-	{"mode": "road_bandit", "label": "第二試 · 銹蝕哨兵偶"},
+	{"mode": "road_bandit", "label": "第二試 · 鏽蝕哨兵偶"},
 	{"mode": "fog_shade", "label": "第三試 · 霧影"},
 	{"mode": "coast_raider", "label": "第四試 · 潮襲海盜"},
 	{"mode": "scar_wisp", "label": "終試 · 疤地焰靈"},

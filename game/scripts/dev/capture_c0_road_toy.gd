@@ -95,7 +95,7 @@ func _process(_delta: float) -> bool:
 			if _frame == 45:
 				_save_image("proof_04_road_ruins.png")
 				_save_image("crop_04_road_ruins_title.png", Rect2i(310, 8, 380, 50), 2)
-				print(">>> [5/5] 開啟戰鬥畫面: road_bandit (銹蝕哨兵偶)...")
+				print(">>> [5/5] 開啟戰鬥畫面: road_bandit (鏽蝕哨兵偶)...")
 				_main.queue_free()
 				var b_scn: PackedScene = load("res://scenes/battle/battle.tscn")
 				_battle = b_scn.instantiate()
