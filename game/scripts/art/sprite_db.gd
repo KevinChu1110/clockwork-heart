@@ -882,7 +882,7 @@ static func explore_entity_path(entity_id: String) -> String:
 			return "%s/props/wood_east.png" % ROOT if ResourceLoader.exists("%s/props/wood_east.png" % ROOT) else "%s/props/sign.png" % ROOT
 		"path_mist", "path_dojo", "path_forest", "path_coast", "path_tower", "path_tower_c5", "arrow_path", "cliff_path", "trail_mark":
 			return "%s/props/path.png" % ROOT
-		"market", "cart", "burnt_field", "stall_frame", "stall":
+		"market", "cart", "burnt_field", "stall_frame", "stall", "fence_row":
 			return "%s/props/crate.png" % ROOT if ResourceLoader.exists("%s/props/crate.png" % ROOT) else "%s/props/camp.png" % ROOT
 		"look_back", "ash_pile", "dawn_glow":
 			return "%s/props/campfire.png" % ROOT if ResourceLoader.exists("%s/props/campfire.png" % ROOT) else "%s/props/fire.png" % ROOT
@@ -904,9 +904,9 @@ static func explore_entity_path(entity_id: String) -> String:
 			return "%s/props/shrine.png" % ROOT if ResourceLoader.exists("%s/props/shrine.png" % ROOT) else "%s/props/bell.png" % ROOT
 		"boat", "boat_wreck":
 			return "%s/props/boat.png" % ROOT if ResourceLoader.exists("%s/props/boat.png" % ROOT) else "%s/props/dock.png" % ROOT
-		"hut_a", "hut_b", "hut_c", "inn", "dorm", "stable", "chapel", "half_house":
+		"hut_a", "hut_b", "hut_c", "inn", "dorm", "stable", "chapel", "half_house", "windmill":
 			return "%s/props/hut.png" % ROOT if ResourceLoader.exists("%s/props/hut.png" % ROOT) else "%s/props/camp.png" % ROOT
-		"gate_arch", "tower_gate", "windmill", "fence_row":
+		"gate_arch", "tower_gate":
 			return "%s/props/gate.png" % ROOT if ResourceLoader.exists("%s/props/gate.png" % ROOT) else "%s/props/tower.png" % ROOT
 		"banner":
 			return "%s/props/banner.png" % ROOT if ResourceLoader.exists("%s/props/banner.png" % ROOT) else "%s/props/flag.png" % ROOT
@@ -945,7 +945,7 @@ const _TOKEN_PROP := [
 	[["campfire", "bonfire"], "campfire"],
 	[["camp", "tent"], "camp"],
 	[["fire", "ember", "flame", "torch"], "fire"],
-	[["hut", "house", "inn", "dorm", "cabin", "mill", "barn", "shed", "room", "hall", "shop", "chapel", "stable", "barracks"], "hut"],
+	[["hut", "house", "inn", "dorm", "cabin", "mill", "windmill", "barn", "shed", "room", "hall", "shop", "chapel", "stable", "barracks"], "hut"],
 	[["pine"], "pine"],
 	[["tree", "wood", "orchard", "willow", "canopy", "log", "bamboo", "reed"], "tree"],
 	[["rock", "stone", "bone", "rubble", "ore", "pile", "boulder", "vein", "obsidian"], "rock"],
