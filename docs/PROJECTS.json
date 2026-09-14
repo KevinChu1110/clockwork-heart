@@ -886,8 +886,8 @@
    "id": "ad-reward-mock",
    "cat": "遊戲",
    "title": "獎勵型廣告掛鉤（體力回復／戰鬥復活）",
-   "status": "草稿",
-   "note": "本機假發放版已上線 main，真 SDK 待 Kevin 決定",
+   "status": "已上線",
+   "note": "四張截圖與 battle 29/29 測試複驗通過，已合併 main",
    "keys": [
     "獎勵型廣告掛鉤（"
    ]
