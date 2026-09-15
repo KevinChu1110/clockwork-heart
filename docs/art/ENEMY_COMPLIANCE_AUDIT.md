@@ -132,6 +132,21 @@
   - **核心特徵保留**：完整保留雙持苦無匕首、潛行刺客身姿、白紫雙色調服飾、多尾扇形展開之視覺張力。
   - **合規改造結果**：已於任務 `t_9a23594e` 成功重繪為「機巧白狐傀儡忍者（Clockwork Kitsune Automaton）」，100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
+##### [同域關聯 NPC] 霧隱 (fog_hide) · C2 迷霧之村
+- **原始資產**：`game/assets/sprites/portraits/fog_hide.png` (對話半身像)
+- **依據截圖**：
+  - 對話半身像頭部裁切：`proofs/enemy_audit/fog_hide_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/fog_hide_portrait_compare.png` (800×540)
+  - 遊戲實機對話截圖：`proofs/enemy_audit/proof_dialogue_fog_hide.png` (1280×720)
+- **三項問題答覆**：
+  - ① 毛髮質感：**無** (合格)。臉部改為暗鐵銀灰機巧面甲，耳廓為鉚接金屬耳（內部外露齒輪），完全去除舊版生物毛皮灰狐面孔與毛皮尾巴。
+  - ② 生物皮膚：**無** (合格)。全金屬漆面與金屬板件接縫，雙眼為青藍發光光學透鏡，零腮紅、零生物皮膚。
+  - ③ 發條鑰匙與螺栓：**有** (合格)。背部右肩清晰可見黃銅發條鑰匙，面甲兩側、耳軸與護甲密布螺栓與固定鉚釘。
+- **判定結果**：✅ **合格** (t_87d452b0 補換合規發條玩具版半身像複驗全數通過)
+- **0c-28 辨識度保留與重繪成果**：
+  - **核心特徵保留**：完整保留灰狐忍者深色兜帽輕甲、手持苦無匕首、冷靜警惕之刺客神態。
+  - **合規改造結果**：成功改造為「機巧灰狐忍者（Clockwork Grey Fox Ninja）」，100% 符合 CANON 玩具世界觀與 review 19g-10 規範。
+
 ---
 
 #### M3. 阿波 (abo) · C3 竹林道場
@@ -175,17 +190,19 @@
 ---
 
 #### M5. 石拳 (boar) · C5 殘破海岸
-- **原始資產**：`game/assets/sprites/bosses/boar.png` (220×225 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/boar.png` (220×225 RGBA) / `game/assets/sprites/portraits/boar.png` (對話半身像)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/boar_full.png` (1080×1280)
   - 頭部裁切放大：`proofs/enemy_audit/boar_head_crop.png` (680×640)
   - 審查對照面板：`proofs/enemy_audit/boar_audit_panel.png` (1110×710)
   - 重繪前後對比：`proofs/enemy_audit/boar_compare.png` (1000×560)
+  - 對話半身像頭部裁切：`proofs/enemy_audit/boar_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/boar_portrait_compare.png` (800×540)
 - **三項問題答覆**：
   - ① 毛髮質感：**無** (合格)。剛毛全面消除，獸皮毛領披肩替換為黃銅齒輪護頸與鍛鐵重鏈，全身為厚重生鐵板件。
   - ② 生物皮膚：**無** (合格)。豬鼻改為圓形金屬排氣閥門孔，獠牙改為金屬沖壓合金角，雙眼為暗黑金屬視孔，無肉質皮膚與腮紅。
   - ③ 發條鑰匙與螺栓：**有** (合格)。背部右上方外露巨大重型十字齒輪黃銅發條鑰匙，雙角維京鐵盔與面甲遍布粗大固定鉚釘。
-- **判定結果**：✅ **合格** (t_8de27f8b 重繪)
+- **判定結果**：✅ **合格** (t_8de27f8b 重繪 ＆ t_87d452b0 對話半身像 384x480 規格補正複驗全數通過)
 - **0c-28 前後辨識度保留與重繪說明**：
   - **核心特徵保留**：雙角維京鐵盔、野豬衝撞狂暴身形、厚實重裝護甲、野豬獠牙與巨錘戰鬥剪影完整保留。
   - **合規改造達成**：成功改造為「鑄鐵發條維京野豬機偶（Cast-Iron Viking Boar Automaton）」，符合 CANON 規範。

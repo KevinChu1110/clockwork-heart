@@ -12,7 +12,7 @@
 | ding.png | 釘釘 | 熊 · 鐵匠 |
 | star.png | 星讀 | 雪梟 · 星袍望遠鏡 |
 | sprout.png | 小芽 | 幼棕兔 · 木劍 |
-| fog_hide.png | 霧隱 | 灰狐忍者 |
+| fog_hide.png | 霧隱 | 機巧灰狐忍者（384×480 對話半身像，合規發條玩具版） |
 | acha.png | 阿茶 | 小熊貓 · 茶杯 |
 | wind_ear.png | 風耳 | 松鼠遊俠 |
 | duanye.png | 斷頁 | 龜學者 · 卷軸 |
@@ -22,11 +22,11 @@
 | ronin.png | 黑焰浪人 | 黑袍刀客（與場上同圖） |
 | knight_orphan.png | 遺孤少年 | 小騎士（與場上同圖） |
 | merchant.png / caravan_chief.png | 行商 | 白兔旅商（與 `npcs/merchant` 同圖） |
-| leo.png 等頭目 | 戰鬥／對話用 | 已依 review 19g-10/0c-28/0c-29 全數重製為 384×480 金屬發條玩具對話半身像（leo, wolf, fog, abo, falcon, demon, scar_lord, mirror_wraith, wreck_captain）。**不是**隊伍獅子——隊伍獅用 `lion_knight.png` / `lion.png` |
+| leo.png 等頭目與 NPC | 戰鬥／對話用 | 已依 review 19g-10/0c-28/0c-29 全數重製為 384×480 金屬發條玩具對話半身像（leo, wolf, fog, fog_hide, abo, falcon, boar, demon, scar_lord, mirror_wraith, wreck_captain）。**不是**隊伍獅子——隊伍獅用 `lion_knight.png` / `lion.png` |
 | lion.png | 烈鬃獅 | 金屬發條獅 · 皇家長槍（128×128 HUD 戰鬥頭像；場上 `player/party/lion_idle.png` 128×128） |
 | lion_knight.png | 獅騎士 | 金屬發條獅 · 長槍（256×256 對話框半身像；場上 `player/party/lion_idle.png` 128×128） |
 | fox_mage.png | 狐法師 | 金屬發條狐 · 法杖（256×256；場上 `player/party/fox_idle.png` 128×128） |
-| boar.png | 鋼牙豕 | 金屬發條野豬 · 巨錘（128×128 HUD 戰鬥頭像；場上 `player/party/boar_idle.png` 128×128） |
+| boar.png | 鋼牙豕 / 石拳 | 金屬發條野豬 · 巨錘（384×480 對話半身像，合規發條玩具版；場上 `player/party/boar_idle.png` 128×128） |
 | boar_warrior.png | 野豬戰士 | 金屬發條野豬 · 巨錘（256×256 對話框半身像；場上 `player/party/boar_idle.png` 128×128） |
 | macaque.png | 靈爪猴 | 金屬發條猴 · 機關靈爪（128×128 HUD 頭像；場上 `player/party/macaque_idle.png` 128×128） |
 | spring_macaque.png | 靈爪猴 | 金屬發條猴 · 武術家（384×480 對話半身像；立牌 `branding/char_macaque.png` 400×840） |
