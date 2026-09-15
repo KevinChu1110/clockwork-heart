@@ -133,7 +133,7 @@
    "cat": "遊戲",
    "title": "🥈 手機化 6／6：首包瘦到 50–80MB 與分包",
    "status": "測試中",
-   "note": "新增Chapter Pack preset並驗證實機分包：core.pck 104M / chapter.pck 165M / debug APK 122M，缺包流程守衛與動態掛載測試全綠",
+   "note": "core/chapter 分包已真的切出並打包驗證，APK 124MB、PCK 95.6MB，缺包不崩潰測試通過，待 QA 復驗",
    "keys": [
     "包體",
     "分包",
