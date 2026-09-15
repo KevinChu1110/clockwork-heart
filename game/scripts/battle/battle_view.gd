@@ -474,6 +474,7 @@ func _apply_hud_chrome() -> void:
 		ls.content_margin_top = 42
 		ls.content_margin_bottom = 10
 		_log_panel.add_theme_stylebox_override("panel", ls)
+		_log_panel.z_index = 30
 		parent_ctrl.add_child(_log_panel)
 		parent_ctrl.move_child(_log_panel, idx)
 		log_label.reparent(_log_panel)
@@ -1759,17 +1760,22 @@ func _ensure_part_hud() -> void:
 	_part_box = VBoxContainer.new()
 	_part_box.name = "PartBars"
 	_part_box.add_theme_constant_override("separation", 4)
+	_part_box.alignment = BoxContainer.ALIGNMENT_END
+	_part_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	enemy_side.add_child(_part_box)
 	var hp_i := enemy_hp.get_index() if enemy_hp else 1
 	enemy_side.move_child(_part_box, mini(hp_i + 2, enemy_side.get_child_count() - 1))
 	_focus_hint = Label.new()
 	_focus_hint.name = "PartFocusHint"
+	_focus_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_focus_hint.add_theme_font_size_override("font_size", 13)
 	_focus_hint.add_theme_color_override("font_color", Color(1.0, 0.85, 0.45))
 	_part_box.add_child(_focus_hint)
 	for p in boss.parts:
 		var pid := str(p.get("id", ""))
 		var row := HBoxContainer.new()
+		row.alignment = BoxContainer.ALIGNMENT_END
+		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_theme_constant_override("separation", 6)
 		var lab := Label.new()
 		var ptype := str(p.get("ptype", p.get("effect", "")))
@@ -1789,6 +1795,7 @@ func _ensure_part_hud() -> void:
 				tag = _t("甲")
 		var pname := str(p.get("name", pid))
 		lab.text = ("%s·%s" % [tag, pname]) if tag != "" else pname
+		lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		lab.custom_minimum_size.x = 84
 		lab.add_theme_font_size_override("font_size", 12)
 		lab.add_theme_color_override("font_color", Color(0.9, 0.75, 0.55))
@@ -1797,6 +1804,7 @@ func _ensure_part_hud() -> void:
 		bar.max_value = float(p.get("max_hp", 1))
 		bar.value = float(p.get("hp", 0))
 		bar.show_percentage = false
+		bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN
 		_style_bar(bar, Color("#FFA010"), Color("#FFFDF8"))
 		row.add_child(lab)
 		row.add_child(bar)

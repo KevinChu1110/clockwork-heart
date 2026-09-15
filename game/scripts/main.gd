@@ -2077,6 +2077,10 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 		b.fit_content = false
 		b.custom_minimum_size = Vector2(680, body_h_limit)
 		b.scroll_active = true
+	if bool(extras.get("soul_pity", false)):
+		b.fit_content = false
+		b.custom_minimum_size = Vector2(680, 125)
+		b.scroll_active = true
 
 	var btn_gap := 6.0
 	## 卡片固定開銷：標題列含關閉鈕 50 + 分隔線 2 + 間距 + 邊距 + 留白
@@ -2088,8 +2092,12 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 	if bool(extras.get("forge_pity", false)):
 		chrome_h += 65.0
 	var body_h := body_h_limit if (body.length() > 280 or extras.has("body_h")) else minf(body_h_limit, ceilf(float(body.length()) / 26.0) * 20.0)
+	if bool(extras.get("soul_pity", false)):
+		body_h = 125.0
 	var screen_h := float(get_viewport_rect().size.y)
 	var avail_h := maxf(110.0, screen_h - chrome_h - body_h - 25.0)
+	if bool(extras.get("soul_pity", false)):
+		avail_h = maxf(avail_h, 224.0)
 
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -2131,7 +2139,10 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 			row.add_child(item["below_control"])
 	## 按鈕都建好了，直接問實際需要多高（含 style_button 蓋上去的高度）
 	var need_h := row.get_combined_minimum_size().y
-	scroll.custom_minimum_size = Vector2(0, minf(need_h, avail_h))
+	if bool(extras.get("soul_pity", false)):
+		scroll.custom_minimum_size = Vector2(0, minf(224.0, avail_h))
+	else:
+		scroll.custom_minimum_size = Vector2(0, minf(need_h, avail_h))
 	if row.get_child_count() > 0:
 		for c in row.get_children():
 			if c is Button and not (c as Button).disabled:
@@ -5290,6 +5301,13 @@ func _go_soul_panel() -> void:
 	if AudioManager and AudioManager.has_method("play_bgm"):
 		AudioManager.play_bgm("village")
 	var body: String = SoulSystem.panel_status_bbcode()
+	var raw_lines := body.split("\n")
+	var clean_lines: PackedStringArray = []
+	for l in raw_lines:
+		if l.contains("保底虔誠") and (l.contains("█") or l.contains("\\")):
+			continue
+		clean_lines.append(l)
+	body = "\n".join(clean_lines)
 	body += "\n\n" + Loc.t("soul.hint")
 	body += "\n" + EnergySystem.status_line()
 	var buttons: Array = []
