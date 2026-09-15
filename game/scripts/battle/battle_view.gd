@@ -384,7 +384,7 @@ func _apply_hud_chrome() -> void:
 	## 值卻是墨色 #26242a（改成白底風格時語意翻轉了），於是近黑字畫在近黑底上。
 	## 更麻煩的是後續狀態變化只改 modulate，而 modulate 是乘法，
 	## 近黑乘任何係數只會更黑，那行字沒有任何狀態救得回來。底色修好，狀態變化才有意義。
-	for lab in [player_hp_label, enemy_hp_label, parry_hint, banner]:
+	for lab in [parry_hint, banner]:
 		if lab:
 			lab.add_theme_font_size_override("font_size", 14 if lab != banner else 16)
 			lab.add_theme_color_override("font_color", Color(0.95, 0.93, 0.88))
@@ -417,9 +417,15 @@ func _apply_hud_chrome() -> void:
 		enemy_name.add_theme_constant_override("shadow_offset_x", 0)
 		enemy_name.add_theme_constant_override("shadow_offset_y", 0)
 	if player_hp_label:
-		player_hp_label.add_theme_color_override("font_color", Color(0.88, 0.9, 0.86))
+		_style_field_tag(player_hp_label, Color("#1F1A3A"), Control.SIZE_SHRINK_BEGIN)
+		if huninn:
+			player_hp_label.add_theme_font_override("font", huninn)
+		player_hp_label.add_theme_font_size_override("font_size", 14)
 	if enemy_hp_label:
-		enemy_hp_label.add_theme_color_override("font_color", Color(0.9, 0.7, 0.68))
+		_style_field_tag(enemy_hp_label, Color("#1F1A3A"), Control.SIZE_SHRINK_END)
+		if huninn:
+			enemy_hp_label.add_theme_font_override("font", huninn)
+		enemy_hp_label.add_theme_font_size_override("font_size", 14)
 	var player_side := get_node_or_null("SideBars/PlayerSide") as Control
 	if player_side:
 		player_side.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
@@ -1795,27 +1801,55 @@ func _ensure_part_hud() -> void:
 		boss = sim._primary_boss_unit()
 	if boss == null or boss.parts.is_empty():
 		return
+
+	var huninn: Font = null
+	if ResourceLoader.exists("res://assets/fonts/jf-openhuninn-2.1.ttf"):
+		huninn = load("res://assets/fonts/jf-openhuninn-2.1.ttf") as Font
+
+	var part_panel := PanelContainer.new()
+	part_panel.name = "PartPanel"
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8")  ## 陽光童話·奶油米白底
+	sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 3
+	sb.set_corner_radius_all(10)
+	sb.content_margin_left = 10
+	sb.content_margin_right = 10
+	sb.content_margin_top = 6
+	sb.content_margin_bottom = 6
+	sb.shadow_color = Color(0.12, 0.1, 0.23, 0.25)
+	sb.shadow_size = 4
+	sb.shadow_offset = Vector2(0, 2)
+	part_panel.add_theme_stylebox_override("panel", sb)
+	part_panel.size_flags_horizontal = Control.SIZE_SHRINK_END
+
 	_part_box = VBoxContainer.new()
 	_part_box.name = "PartBars"
-	_part_box.add_theme_constant_override("separation", 4)
+	_part_box.add_theme_constant_override("separation", 5)
 	_part_box.alignment = BoxContainer.ALIGNMENT_END
 	_part_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	enemy_side.add_child(_part_box)
+	part_panel.add_child(_part_box)
+	enemy_side.add_child(part_panel)
 	var hp_i := enemy_hp.get_index() if enemy_hp else 1
-	enemy_side.move_child(_part_box, mini(hp_i + 2, enemy_side.get_child_count() - 1))
+	enemy_side.move_child(part_panel, mini(hp_i + 2, enemy_side.get_child_count() - 1))
 	_focus_hint = Label.new()
 	_focus_hint.name = "PartFocusHint"
 	_focus_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	if huninn:
+		_focus_hint.add_theme_font_override("font", huninn)
 	_focus_hint.add_theme_font_size_override("font_size", 13)
-	_focus_hint.add_theme_color_override("font_color", Color(1.0, 0.85, 0.45))
+	_focus_hint.add_theme_color_override("font_color", Color("#8B4513"))
 	_part_box.add_child(_focus_hint)
 	for p in boss.parts:
 		var pid := str(p.get("id", ""))
 		var row := HBoxContainer.new()
 		row.alignment = BoxContainer.ALIGNMENT_END
 		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		row.add_theme_constant_override("separation", 6)
+		row.add_theme_constant_override("separation", 8)
 		var lab := Label.new()
+		if huninn:
+			lab.add_theme_font_override("font", huninn)
 		var ptype := str(p.get("ptype", p.get("effect", "")))
 		var tag := ""
 		match ptype:
@@ -1834,16 +1868,17 @@ func _ensure_part_hud() -> void:
 		var pname := str(p.get("name", pid))
 		lab.text = ("%s·%s" % [tag, pname]) if tag != "" else pname
 		lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		lab.custom_minimum_size.x = 84
-		lab.add_theme_font_size_override("font_size", 12)
-		lab.add_theme_color_override("font_color", Color(0.9, 0.75, 0.55))
+		lab.custom_minimum_size.x = 88
+		lab.add_theme_font_size_override("font_size", 13)
+		lab.add_theme_color_override("font_color", Color.WHITE)
+		lab.modulate = Color("#1F1A3A")
 		var bar := ProgressBar.new()
-		bar.custom_minimum_size = Vector2(120, 10)
+		bar.custom_minimum_size = Vector2(104, 12)
 		bar.max_value = float(p.get("max_hp", 1))
 		bar.value = float(p.get("hp", 0))
 		bar.show_percentage = false
 		bar.fill_mode = ProgressBar.FILL_END_TO_BEGIN
-		_style_bar(bar, Color("#FFA010"), Color("#FFFDF8"))
+		_style_bar(bar, Color("#FFA010"), Color("#EFEAE0"))
 		row.add_child(lab)
 		row.add_child(bar)
 		row.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -1886,9 +1921,20 @@ func _refresh_part_bars(boss: BattleUnit) -> void:
 			var nm := str(p.get("name", pid))
 			if tag2 != "":
 				nm = "%s·%s" % [tag2, nm]
-			lab.text = ("%s%s" % [mark, nm])
-			lab.modulate = Color(0.55, 0.55, 0.55) if broken else (Color(1.0, 0.92, 0.55) if focused else Color.WHITE)
-		bar.modulate = Color(0.45, 0.45, 0.45) if broken else Color.WHITE
+			if broken:
+				lab.text = "%s [已破]" % nm
+				lab.modulate = Color(0.60, 0.58, 0.68)
+			elif focused:
+				lab.text = "%s%s" % [mark, nm]
+				lab.modulate = Color("#C22B55")
+			else:
+				lab.text = "%s%s" % [mark, nm]
+				lab.modulate = Color("#1F1A3A")
+		if broken:
+			bar.value = 0.0
+			bar.modulate = Color(0.45, 0.45, 0.45)
+		else:
+			bar.modulate = Color.WHITE
 
 
 func _refresh_part_focus_hint() -> void:
@@ -1905,6 +1951,10 @@ func _refresh_part_focus_hint() -> void:
 			parry_hint.text = _kh("%s　·　%s" % [parry_hint.text, tip])
 	if _focus_hint:
 		_focus_hint.text = _t("部位鎖定 → %s") % label
+		if sim.focus_part_id != "" and sim.focus_part_id != "body":
+			_focus_hint.add_theme_color_override("font_color", Color("#C22B55"))
+		else:
+			_focus_hint.add_theme_color_override("font_color", Color("#8B4513"))
 
 
 func _update_tide_hud() -> void:
