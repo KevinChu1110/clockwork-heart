@@ -30,10 +30,10 @@
 
 | 編號 | 敵人代號 | 敵人名稱 | 資源原圖路徑 | 審查截圖依據 (Panel) | ①毛髮質感 | ②生物皮膚 | ③發條鑰匙/螺栓 | 綜合判定 |
 | :---: | :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: |
-| 01 | `ash_rat` | 灰燼鼠 | `game/assets/sprites/bosses/ash_rat.png` | `proofs/enemy_audit/ash_rat_audit_panel.png` | **有** (違規) | **有** (違規) | **無** (違規) | ❌ **不合格** |
+| 01 | `ash_rat` | 灰燼鼠 | `game/assets/sprites/bosses/ash_rat.png` | `proofs/enemy_audit/ash_rat_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_63073ba4 重繪) |
 | 02 | `bamboo_spirit` | 竹靈 | `game/assets/sprites/bosses/bamboo_spirit.png` | `proofs/enemy_audit/bamboo_spirit_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
-| 03 | `coast_raider` | 海岸掠奪者 | `game/assets/sprites/bosses/coast_raider.png` | `proofs/enemy_audit/coast_raider_audit_panel.png` | **有** (違規) | **有** (違規) | **無** (違規) | ❌ **不合格** |
-| 04 | `fog_shade` | 迷霧暗影 | `game/assets/sprites/bosses/fog_shade.png` | `proofs/enemy_audit/fog_shade_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
+| 03 | `coast_raider` | 海岸掠奪者 | `game/assets/sprites/bosses/coast_raider.png` | `proofs/enemy_audit/coast_raider_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_63073ba4 重繪) |
+| 04 | `fog_shade` | 迷霧暗影 | `game/assets/sprites/bosses/fog_shade.png` | `proofs/enemy_audit/fog_shade_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_63073ba4 重繪) |
 | 05 | `forest_sprite` | 森林精靈 | `game/assets/sprites/bosses/forest_sprite.png` | `proofs/enemy_audit/forest_sprite_audit_panel.png` | **有** (髮絲) | **有** (違規) | **無** (違規) | ❌ **不合格** |
 | 06 | `mirror_wraith` | 鏡中幽靈 | `game/assets/sprites/bosses/mirror_wraith.png` | `proofs/enemy_audit/mirror_wraith_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
 | 07 | `road_bandit` | 荒路匪徒 | `game/assets/sprites/bosses/road_bandit.png` | `proofs/enemy_audit/road_bandit_audit_panel.png` | **無** | **無** | **有** (合格) | ✅ **合格** |
@@ -44,8 +44,8 @@
 
 > **盤點統計**：
 > - 審查總數：11
-> - **合格**：**1** 個（`road_bandit`，已於 `t_f1fcef58` 成功重繪為發條玩具盜匪）
-> - **不合格**：**10** 個（其餘皆未玩具機械化，缺乏發條鑰匙與螺栓接縫，或包含血肉/毛皮/腮紅）
+> - **合格**：**4** 個（`road_bandit` 已於 `t_f1fcef58` 重繪；`ash_rat`、`coast_raider`、`fog_shade` 已於 `t_63073ba4` 依 19g-10 標準成功重繪為發條金屬玩具）
+> - **不合格**：**7** 個（其餘皆未玩具機械化，缺乏發條鑰匙與螺栓接縫，或包含血肉/毛皮/腮紅）
 
 *(補充：C1 首領守衛泰坦·雷歐 `leo` 已於 `t_2e6dee93` 完成金屬化改造重繪，具備黃銅雙環發條鑰匙與金屬面甲螺栓，為合規資產。)*
 
@@ -54,17 +54,18 @@
 ## 3. 逐項詳細審查紀錄
 
 ### 01. 灰燼鼠 (ash_rat)
-- **原始資產**：`game/assets/sprites/bosses/ash_rat.png` (132×98 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/ash_rat.png` (270×200 RGBA)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/ash_rat_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/ash_rat_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/ash_rat_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/ash_rat_compare.png`
 - **三項問題答覆**：
-  - ① 毛髮質感：**有**。全身覆蓋刺蝟/灰燼鼠之蓬鬆毛髮，耳緣帶有毛茸特徵，四肢為生物爪掌，鼠尾為生物肉質。
-  - ② 生物皮膚：**有**。耳內呈現生物內耳溫暖肉褐色與暗橙光澤，臉部為純生物哺乳動物口吻與眼眶。
-  - ③ 發條鑰匙與螺栓：**無**。全身 100% 為生物元素妖獸，無任何發條鑰匙、螺栓、鉚釘或金屬分片線。
-- **判定結果**：❌ **不合格**
-- **違規詳情與後續建議**：嚴重違反 CANON「零毛皮」禁令。未來重繪應比照小白兔或機械老鼠造型，將全身改為上漆白鐵皮或黃銅板件、球形四肢關節，背部外露發條鑰匙，耳內改為金屬沖壓件。
+  - ① 毛髮質感：**無**。全身改為上漆白鐵皮與暗灰鐵板件，四肢為球形機械關節與鉸鏈，鼠尾為分節鋼製彈簧金屬尾，完全零毛皮、零絨毛、零鬍鬚。
+  - ② 生物皮膚：**無**。臉部為鉚釘沖壓金屬面甲與螺栓下顎，雙耳為帶固定螺絲之沖壓金屬薄片（無粉色內耳生物肉色），雙眼為圓形發光琥珀橙透鏡，零腮紅、零生物皮膚。
+  - ③ 發條鑰匙與螺栓：**有**。**背部清晰可見巨大黃銅雙環發條鑰匙**，頭部、面甲、下顎與身體板件皆有外露螺栓與分片接縫。
+- **判定結果**：✅ **合格**
+- **說明**：已於任務 `t_63073ba4` 成功重繪為發條金屬玩具老鼠，100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
 
@@ -84,32 +85,34 @@
 ---
 
 ### 03. 海岸掠奪者 (coast_raider)
-- **原始資產**：`game/assets/sprites/bosses/coast_raider.png` (137×137 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/coast_raider.png` (270×320 RGBA)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/coast_raider_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/coast_raider_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/coast_raider_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/coast_raider_compare.png`
 - **三項問題答覆**：
-  - ① 毛髮質感：**有**。極濃密的深橙紅色編織大鬍鬚、八字鬍、濃眉與後腦髮束，腰部皮甲邊緣更有明顯毛皮滾邊（fur trim）。
-  - ② 生物皮膚：**有**。標準人類/矮人肉色皮膚（peach flesh tone），面部五官具有生物陰影與血肉過渡。
-  - ③ 發條鑰匙與螺栓：**無**。為傳統西方奇幻維京戰士，鐵盔上的圓點僅為普通鉚釘，背後無任何發條鑰匙，全身無玩具關節。
-- **判定結果**：❌ **不合格**
-- **違規詳情與後續建議**：嚴重違反 CANON 第五章「零血肉人類敵人」與「零毛皮」。行銷絕對禁止引用！後續需比照 `road_bandit` 徹底重繪為發條錫兵海盜或鐵皮海盜人偶。
+  - ① 毛髮質感：**無**。大鬍鬚完全改為分片重疊的紅銅／黃銅金屬排片（胡桃鉗玩具風格），盔甲邊緣去除所有毛皮飾邊，完全無有機毛髮與毛皮。
+  - ② 生物皮膚：**無**。頭部為金屬鉚接牛角鐵盔，面甲為金屬沖壓件，雙眼為圓形發光琥珀黃光學透鏡，全身為鋼鐵與黃銅板件，零人類肉色皮膚、零血肉五官。
+  - ③ 發條鑰匙與螺栓：**有**。**右肩背後外露大型黃銅發條鑰匙（雙環透空結構清晰）**，頭盔、胸甲、腰帶、肩部與四肢均有清晰可見之球形機械關節、十字螺栓與鉚釘。
+- **判定結果**：✅ **合格**
+- **說明**：已於任務 `t_63073ba4` 成功重繪為發條錫兵海盜玩具，100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
 
 ### 04. 迷霧暗影 (fog_shade)
-- **原始資產**：`game/assets/sprites/bosses/fog_shade.png` (98×153 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/fog_shade.png` (240×310 RGBA)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/fog_shade_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/fog_shade_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/fog_shade_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/fog_shade_compare.png`
 - **三項問題答覆**：
-  - ① 毛髮質感：**無**。為純流動煙霧與以太氣體。
-  - ② 生物皮膚：**無**。純青藍光影氣體，無肉色皮膚。
-  - ③ 發條鑰匙與螺栓：**無**。為純粹的自然/魔法氣態霧妖，無金屬外殼、無螺栓接縫、背後無發條鑰匙。
-- **判定結果**：❌ **不合格**
-- **違規詳情與後續建議**：缺乏玩具世界的實體質感。建議改為「發條噴霧機偶」或「內藏齒輪核心、外罩磨砂玻璃罩／金屬燈罩」的玩具幽靈，外殼具備鉚釘螺栓與發條動力鑰匙。
+  - ① 毛髮質感：**無**。全身為深鐵色金屬斗篷罩殼與黃銅邊框，完全無毛髮或毛皮。
+  - ② 生物皮膚：**無**。頭戴鍛鐵金屬兜帽，面部為黃銅通風格柵面罩，內部配備兩顆圓形發光琥珀透鏡，胸腔外露機械齒輪箱與排氣管，下身由分節金屬甲片與排氣噴嘴噴出青藍玩具霧氣構成，零生物皮膚、零血肉。
+  - ③ 發條鑰匙與螺栓：**有**。**左肩背後外露大型雙環黃銅發條鑰匙（鏤空雙環清晰可見）**，兜帽周圍、胸甲與腰部皆具備凸起之黃銅鉚釘與機械接縫。
+- **判定結果**：✅ **合格**
+- **說明**：已於任務 `t_63073ba4` 成功重繪為發條蒸氣噴霧機偶玩具，100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
 
@@ -225,13 +228,13 @@
 ### 🟢 允許對外發佈之合規敵人白名單 (Whitelist)
 1. **守衛泰坦·雷歐 (`leo`)**：已於 `t_2e6dee93` 完成發條機械化改造，具備放射金屬鬃毛、螺栓面甲與黃銅發條鑰匙。
 2. **荒路匪徒 (`road_bandit`)**：已於 `t_f1fcef58` 完成重繪，具備金屬球形頭部、鐵皮胸甲與背部發條鑰匙。
+3. **灰燼鼠 (`ash_rat`)**：已於 `t_63073ba4` 完成重繪，具備上漆白鐵皮與暗灰鐵板件、彈簧金屬尾與背部黃銅發條鑰匙。
+4. **海岸掠奪者 (`coast_raider`)**：已於 `t_63073ba4` 完成重繪，具備牛角鐵盔、銅片玩具鬍、球形關節與背部黃銅發條鑰匙。
+5. **迷霧暗影 (`fog_shade`)**：已於 `t_63073ba4` 完成重繪，具備鍛鐵兜帽、齒輪胸腔、格柵面甲與背部黃銅發條鑰匙。
 
 ### 🔴 嚴格禁止對外發佈之未合規黑名單 (Blacklist - 待後續美術任務重繪)
-- ❌ **灰燼鼠 (`ash_rat`)**：含毛皮與生物鼠耳鼠吻
-- ❌ **海岸掠奪者 (`coast_raider`)**：含人類肉色皮膚、大鬍鬚與毛皮飾邊
 - ❌ **森林精靈 (`forest_sprite`)**：含人類肉色皮膚、粉色腮紅與少女髮絲
 - ❌ **竹靈 (`bamboo_spirit`)**：無發條鑰匙與玩具機械結構
-- ❌ **迷霧暗影 (`fog_shade`)**：純氣態，無玩具機械結構
 - ❌ **鏡中幽靈 (`mirror_wraith`)**：純幽靈，無玩具機械結構
 - ❌ **黑焰領主 (`scar_lord`)**：純黑鎧魔王，無發條鑰匙與玩具板件
 - ❌ **黑焰幽火 (`scar_wisp`)**：純鬼火，無玩具機械結構
