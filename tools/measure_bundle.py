@@ -291,8 +291,8 @@ def print_report(col: dict, mani: dict) -> None:
     print("  目標 50–80 MB。差額見 docs/BUNDLE.md。")
 
 
-def apply_presets(extra_f: str, core_f: str) -> None:
-    """Mac + mobile first-download use CORE; Win/Linux stay full (extra-only junk strip)."""
+def apply_presets(extra_f: str, core_f: str, chap_f: str = "") -> None:
+    """Mac + mobile first-download use CORE; Win/Linux stay full (extra-only junk strip); Chapter Pack uses chap_f."""
     cfg = GAME / "export_presets.cfg"
     text = cfg.read_text(encoding="utf-8")
     lines = text.splitlines(keepends=True)
@@ -304,12 +304,17 @@ def apply_presets(extra_f: str, core_f: str) -> None:
         if line.startswith("name="):
             name = line.split("=", 1)[1].strip().strip('"')
         if line.startswith("exclude_filter="):
-            filt = core_f if name in core_presets else extra_f
+            if name in ("Chapter Pack", "Android Chapter"):
+                filt = chap_f if chap_f else line.split("=", 1)[1].strip().strip('"')
+            elif name in core_presets:
+                filt = core_f
+            else:
+                filt = extra_f
             out.append('exclude_filter="%s"\n' % filt)
             continue
         out.append(line)
     cfg.write_text("".join(out), encoding="utf-8")
-    print("updated", cfg.relative_to(ROOT), "macOS/Android/iOS=core, Win/Linux=extra-only")
+    print("updated", cfg.relative_to(ROOT), "macOS/Android/iOS=core, Win/Linux=extra-only, Chapter Pack=chap")
 
 
 def main() -> int:

@@ -30,15 +30,18 @@ func _ready() -> void:
 
 
 func _build() -> FontFile:
-	var base := FontFile.new()
-	if base.load_dynamic_font(BASE) != OK:
+	if not ResourceLoader.exists(BASE):
 		return null
+	var base_res = load(BASE)
+	if not (base_res is FontFile):
+		return null
+	var base: FontFile = (base_res as FontFile).duplicate() as FontFile
 	var chain: Array[Font] = []
 	for p in FALLBACKS:
-		if not FileAccess.file_exists(p):
+		if not ResourceLoader.exists(p):
 			continue
-		var fb := FontFile.new()
-		if fb.load_dynamic_font(p) == OK:
-			chain.append(fb)
+		var fb = load(p)
+		if fb is Font:
+			chain.append(fb as Font)
 	base.fallbacks = chain
 	return base

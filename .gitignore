@@ -1,5 +1,7 @@
 # itch builds / local exports
 dist/
+extension_api.json
+*.pck
 *.tpz
 .godot/
 

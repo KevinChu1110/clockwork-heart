@@ -14,6 +14,26 @@ python3 tools/measure_bundle.py --apply-presets   # 把 filter 寫回 game/expor
 
 ---
 
+## 實機分包量測（2026-09-15 驗證）
+
+使用 Godot 4.7.1 實機 export templates 真正打出 `core` 與 `chapter` 兩個 artifact：
+
+| 檔案 Artifact | 檔案大小 | 說明 |
+|---|---:|---|
+| `dist/android/core.pck` | **103.05 MB** (108,058,360 bytes) | 開局到 C0 必要資產（排除後續章節地圖、氛圍 BGM 與 Noto 字型） |
+| `dist/android/chapter.pck` | **164.87 MB** (172,882,116 bytes) | 後續章節 C1～C6 地圖底圖、各區 BGM、Pack-A 等資產 |
+| `dist/android/ClockworkHeart-debug.apk` | **121.44 MB** (127,341,603 bytes) | 內含 core.pck ＋ Android arm64 原生庫與執行期資源的完整除錯安裝包 |
+
+### 分包驗證工具與測試
+
+1. `python3 tools/build_bundles.py --export`：自動更新 `export_presets.cfg` 的 Chapter Pack preset 並執行 Godot `--export-pack` 與 `--export-debug`，產出上述實機檔案。
+2. `TEST_FILTER=bundle tools/run_tests.sh`：
+   - `test_bundle.gd`：驗證單一真相 `bundle_manifest.json` 與前綴歸屬。
+   - `test_bundle_pack_boundary.gd`：驗證核心邊界與缺包提示文案。
+   - `test_full_bundle_flow.gd`：在僅載入 `core.pck` 的獨立環境下驗證開局正常、未下載章節地圖受到防護阻擋，並動態掛載 `chapter.pck` 後成功載入章節資源。
+
+---
+
 ## 量測（2026-09-07）
 
 | 項目 | 大小 | 說明 |
