@@ -70,12 +70,12 @@
     "note": "戰鬥幾乎無真實距離。用「開闊／被壓」虛擬姿態區分遠距，用固定減傷區分坦克。",
     "pressure_duration": 3.5,
     "ranged_open_dmg_bonus": 0.12,
-    "ranged_pressured_taken_mult": 1.18,
+    "ranged_pressured_taken_mult": 1.10,
     "ranged_first_hit_mitigation": 0.28,
     "tank_taken_mult": 0.90,
     "ranged_classes": ["bow", "gun", "magic", "dart"],
     "tank_classes": ["hammer", "crystal"],
-    "ranged_note": "開闊：輸出 +12%。被擊中進入被壓 3.5s：失去開闊加成、受傷 ×1.18（近身易傷）。本場第一次受擊額外減傷 28%（疾走／反應窗），之後被壓才吃易傷。",
+    "ranged_note": "開闊：輸出 +12%。被擊中進入被壓 3.5s：失去開闊加成、受傷 ×1.10（近身易傷）。本場第一次受擊額外減傷 28%（疾走／反應窗），之後被壓才吃易傷。",
     "tank_note": "鎚／晶：受傷 ×0.90（常駐）。銃同為遠距但薄血薄防＋被壓易傷，容錯明顯低於坦克。"
   },
 

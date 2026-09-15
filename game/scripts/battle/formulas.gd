@@ -209,9 +209,9 @@ static func ranged_open_dmg_bonus() -> float:
 	return _tbl("stance.ranged_open_dmg_bonus", 0.12)
 
 
-## 被壓時受傷倍率（1.18 = +18% 近身易傷）
+## 被壓時受傷倍率（1.10 = +10% 近身易傷）
 static func ranged_pressured_taken_mult() -> float:
-	return _tbl("stance.ranged_pressured_taken_mult", 1.18)
+	return _tbl("stance.ranged_pressured_taken_mult", 1.10)
 
 
 ## 本場第一次受擊減傷比例（0.28 = 減 28%）
