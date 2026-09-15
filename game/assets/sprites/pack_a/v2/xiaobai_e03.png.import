@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1ltq1ubtndli"
-valid=false
+uid="uid://dk16b8t2ggnhm"
+path="res://.godot/imported/xiaobai_e03.png-7b016a6469e65af7c7b0c769fe3cf27f.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/sprites/pack_a/v2/xiaobai_e03.png"
+dest_files=["res://.godot/imported/xiaobai_e03.png-7b016a6469e65af7c7b0c769fe3cf27f.ctex"]
 
 [params]
 

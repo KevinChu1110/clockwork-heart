@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bu1m057adgy3a"
-valid=false
+uid="uid://dac1u1btl887"
+path="res://.godot/imported/b02_combat.png-ad9ba15aacbaa48975bf3c1edb5adaf1.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/sprites/s8_smoke/b02_combat.png"
+dest_files=["res://.godot/imported/b02_combat.png-ad9ba15aacbaa48975bf3c1edb5adaf1.ctex"]
 
 [params]
 

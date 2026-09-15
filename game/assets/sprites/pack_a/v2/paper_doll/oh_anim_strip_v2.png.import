@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvwdhqnlhxodw"
-path="res://.godot/imported/vfx_drop_brass_gear.png-9a76411b4bd6b393b586caf5d10213ad.ctex"
+uid="uid://8xq71n3pcwoc"
+path="res://.godot/imported/oh_anim_strip_v2.png-48e3bab9013a26c97a310a971ffdd1d5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/pack_a/vfx_drop_brass_gear.png"
-dest_files=["res://.godot/imported/vfx_drop_brass_gear.png-9a76411b4bd6b393b586caf5d10213ad.ctex"]
+source_file="res://assets/sprites/pack_a/v2/paper_doll/oh_anim_strip_v2.png"
+dest_files=["res://.godot/imported/oh_anim_strip_v2.png-48e3bab9013a26c97a310a971ffdd1d5.ctex"]
 
 [params]
 

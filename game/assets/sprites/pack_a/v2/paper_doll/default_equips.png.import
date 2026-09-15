@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvwdhqnlhxodw"
-path="res://.godot/imported/vfx_drop_brass_gear.png-9a76411b4bd6b393b586caf5d10213ad.ctex"
+uid="uid://ctky0v5fyh6j"
+path="res://.godot/imported/default_equips.png-20ae1ed312e2b94b3af87c9d58dc6a44.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/pack_a/vfx_drop_brass_gear.png"
-dest_files=["res://.godot/imported/vfx_drop_brass_gear.png-9a76411b4bd6b393b586caf5d10213ad.ctex"]
+source_file="res://assets/sprites/pack_a/v2/paper_doll/default_equips.png"
+dest_files=["res://.godot/imported/default_equips.png-20ae1ed312e2b94b3af87c9d58dc6a44.ctex"]
 
 [params]
 

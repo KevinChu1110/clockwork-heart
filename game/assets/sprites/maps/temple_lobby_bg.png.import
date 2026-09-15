@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dgmq6k57mqnxk"
-valid=false
+uid="uid://cwq70ji7hix7t"
+path="res://.godot/imported/temple_lobby_bg.png-6263ec4f5da3cf07b309eec18018f9d8.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/sprites/maps/temple_lobby_bg.png"
+dest_files=["res://.godot/imported/temple_lobby_bg.png-6263ec4f5da3cf07b309eec18018f9d8.ctex"]
 
 [params]
 

@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cqm34v4a7k7yi"
-valid=false
+uid="uid://dxbdj5as7mygo"
+path="res://.godot/imported/d02_dismantle.png-812e5d47658a488ae379a72c39e2dfd6.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/sprites/s8_smoke/d02_dismantle.png"
+dest_files=["res://.godot/imported/d02_dismantle.png-812e5d47658a488ae379a72c39e2dfd6.ctex"]
 
 [params]
 
