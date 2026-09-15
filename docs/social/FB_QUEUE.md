@@ -35,12 +35,12 @@
 依據 `git log --since="7 days ago" --oneline` 盤點：
 1. **主線首領「守衛泰坦·雷歐」合規機械化全數落地（`805f3a6`, `f7f2321` 合入）**：
    - 守衛泰坦·雷歐立繪完成合規改造：金色合金齒輪鬃毛、鉚釘面甲、眼部天藍色機械透鏡、背部雙環黃銅發條鑰匙，保留獅衛重盔、斬擊巨劍與星紋重盾之 0c-28 核心戰鬥辨識度。
-   - 官方名場面立繪資產：`web/media/bosses/signature/leo.png`（928×1152，100% 零毛皮合規金屬發條玩具立繪）。
+   - 官方完整立繪資產：`proofs/enemy_audit/leo_v2_full.png`（928×1152，100% 零毛皮合規金屬發條玩具完整立繪，實測長邊 1152px ≥ 900px）。
 2. **實機戰鬥部位破壞 HUD 與合規敵人戰鬥截圖到位（`proofs/combat/proof_battle_part_break.png`）**：
-   - 實機 1280×720 戰鬥畫面，左側機械兔小白（單手長劍、發條核心）、右側全新合規機械獅王雷歐、部位鎖定顯示【可拆】盔·獅衛重盔與【已破】甲·獅衛重盾。
+   - 實機 1280×720 戰鬥畫面，左側機械兔小白（單手長劍、發條核心）、右側全新合規機械獅王雷歐（金色合金齒輪鬃毛、面甲螺栓鉚釘無腮紅無毛皮、背後黃銅發條鑰匙）、部位鎖定顯示【可拆】盔·獅衛重盔與【已破】甲·獅衛重盾。
    - 經 vision 嚴格核對：文字邊距充足，零裁切、零文字重疊（1104 條合格）；無系統 Emoji、無 ASCII 假進度條。
 3. **發條英雄甦醒 15 秒橫屏實機短影音（`web/media/promo/trailer_hero_clockwork_15s.mp4`）**：
-   - 1280×720，剛好 15.0 秒，h264 + aac 實體音軌，小白走向齒輪神殿大門，畫面純淨無字幕裁切與文字重疊。
+   - 1280×720，剛好 15.0 秒，H.264 視訊 15.0s ＋ AAC 實體音軌 15.0s（音軌覆蓋率 100%，符合 14a/14b 條規範），小白走向齒輪神殿大門，畫面純淨無字幕裁切與文字重疊。
 4. **直式 9:16 手勢互動短影音儲備（`web/media/hero/fb_lobby_9x16.mp4`）**：
    - 1080×1920，剛好 20.0 秒，h264 + aac 實體發條齒輪音軌，片頭自帶「長按加速／數牠換了幾次姿勢」手勢導引，文字排版置中工整無裁切。
 
@@ -58,7 +58,7 @@
 
 | 序 | 建議時段 | Persona | 形式 | 素材（必須存在於 repo） | 核心目的與追蹤指標 | 狀態 |
 |---|---|---|---|---|---|---|
-| Day 1 | 週三 20:00 (09-16) | 阿哲（內容行銷） | 守衛泰坦機械化取捨世界觀長文 | `web/media/bosses/signature/leo.png` | 從守衛泰坦重繪談發條玩具世界觀憲章與工藝深度／分享數、長文停留時間 | 📝 草案待審 |
+| Day 1 | 週三 20:00 (09-16) | 阿哲（內容行銷） | 守衛泰坦機械化取捨世界觀長文 | `proofs/enemy_audit/leo_v2_full.png` | 從守衛泰坦重繪談發條玩具世界觀憲章與工藝深度／分享數、長文停留時間 | 📝 草案待審 |
 | Day 2 | 週四 20:00 (09-17) | 小魚（短影音） | 15s 橫屏實機發條英雄甦醒短片 | `web/media/promo/trailer_hero_clockwork_15s.mp4` | 開門見山展現發條玩具英雄甦醒與齒輪神殿大門／完播率、重播率 | 📝 草案待審 |
 | Day 3 | 週五 20:00 (09-18) | 小玩（平台機制） | 20s 直式短影音長按加速數姿勢 | `web/media/hero/fb_lobby_9x16.mp4` | 借平台長按加速手勢挑戰數小白換姿勢次數／平均播放時長、重播率、留言數 | 📝 草案待審 |
 | Day 4 | 週六 12:00 (09-19) | Ken（社群互動） | 部位破壞先拆哪裡二選一秒回投票 | `proofs/combat/proof_battle_part_break.png` | 獅衛重盔 vs 獅衛重盾二選一單字回覆／留言數、留言與觸及比 | 📝 草案待審 |
@@ -66,7 +66,7 @@
 素材自檢（發文前必須確認檔案存在於 repo 且合規）：
 
 ```bash
-test -f web/media/bosses/signature/leo.png
+test -f proofs/enemy_audit/leo_v2_full.png
 test -f web/media/promo/trailer_hero_clockwork_15s.mp4
 test -f web/media/hero/fb_lobby_9x16.mp4
 test -f proofs/combat/proof_battle_part_break.png
@@ -77,8 +77,8 @@ test -f proofs/combat/proof_battle_part_break.png
 ### Day 1 · 阿哲（內容行銷）· 468 字
 
 - **形式**：世界觀、角色小傳、開發幕後長文（300–600 字區間）
-- **圖**：`web/media/bosses/signature/leo.png`（928×1152，守衛泰坦·雷歐合規機械化名場面立繪）
-- **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" web/media/bosses/signature/leo.png`
+- **圖**：`proofs/enemy_audit/leo_v2_full.png`（928×1152，守衛泰坦·雷歐合規機械化完整立繪，實測長邊 1152px ≥ 900px）
+- **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" proofs/enemy_audit/leo_v2_full.png`
 - **定位**：從本週合入 main 的「守衛泰坦·雷歐真正機械化」出發，講述在《發條之心》的世界觀憲章下，為何團隊必須推翻重畫一隻原本「看起來很威風的獅子騎士」。無毛皮、金色咬合齒輪鬃毛、沖壓合金板件面甲與背後外露的雙環發條鑰匙。不寫促銷，誠實分享工藝取捨與世界觀堅持。
 - **0c-28 三問與合規複驗（vision 親自查核）**：
   ① 有沒有毛髮質感的鬃毛/絨毛/羽毛？【無】（鬃毛全改為金色合金齒輪零件）
@@ -115,7 +115,7 @@ test -f proofs/combat/proof_battle_part_break.png
 
 ### Day 2 · 小魚（短影音）· 136 字
 
-- **形式**：15 秒 16:9 橫屏實機短影音（1280×720，剛好 15.0 秒，h264 + aac 實體音軌）
+- **形式**：15 秒 16:9 橫屏實機短影音（1280×720，剛好 15.0 秒，H.264 視訊 15.0s ＋ AAC 實體音軌 15.0s，覆蓋率 100%，符合 14a/14b 條規範）
 - **片**：`web/media/promo/trailer_hero_clockwork_15s.mp4`
 - **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py video "<文案>" web/media/promo/trailer_hero_clockwork_15s.mp4 "發條英雄甦醒時刻"`
 - **誠實**：100% 來自已合併 main 之實機動畫錄影，非 AI 冒充。展示晨光中機械兔小白金屬素體甦醒、手持單手長劍邁步走向發條之心神殿的金色同心旋轉齒輪大門，大門敞開透出璀璨光芒。
@@ -175,7 +175,7 @@ test -f proofs/combat/proof_battle_part_break.png
 ### Day 4 · Ken（社群互動）· 128 字
 
 - **形式**：部位破壞二選一秒回投票短貼文（80–150 字區間）
-- **圖**：`proofs/combat/proof_battle_part_break.png`（1280×720，實機「守衛泰坦·雷歐」部位破壞戰鬥截圖）
+- **圖**：`proofs/combat/proof_battle_part_break.png`（1280×720，實機「守衛泰坦·雷歐」部位破壞戰鬥截圖，依 21g 條先跑 godot --headless --import 清快取後重錄，19g-10/19g-12 複驗全數通過）
 - **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" proofs/combat/proof_battle_part_break.png`
 - **定位**：聚焦本檔期重新開放的守衛泰坦戰鬥素材，展示實機部位破壞系統（【可拆】獅衛重盔 vs 【已破】獅衛重盾），推出戰術二選一投票，零思考門檻單字秒回 A 或 B，引爆社群留言。
 - **0c-28 三問、武器規格與 1104 條自檢（vision 親自查核）**：
@@ -211,13 +211,13 @@ B 獅衛重盾（破甲卸防，直接封印王者斬連段）
    四篇切入點、長度、目的完全不同，明確包含一則純粹平台機制路線（小玩），絕非四篇都在介紹遊戲。
 2. **當週素材與 0c-28 / 19g-10 敵人素材解禁複驗（vision 親自核對）**：
    - **4 條素材路徑經 `test -f` 實測全數存在於 repo**：
-     - `web/media/bosses/signature/leo.png`（928×1152，守衛泰坦·雷歐合規機械化名場面立繪）
-     - `web/media/promo/trailer_hero_clockwork_15s.mp4`（1280×720，15.0s，實機發條英雄甦醒短片）
-     - `web/media/hero/fb_lobby_9x16.mp4`（1080×1920，20.0s，aac 音軌，實機大廳長按加速直式短片）
-     - `proofs/combat/proof_battle_part_break.png`（1280×720，實機「守衛泰坦·雷歐」部位破壞戰鬥截圖）
+     - `proofs/enemy_audit/leo_v2_full.png`（928×1152，守衛泰坦·雷歐合規機械化完整立繪，實測長邊 1152px ≥ 900px）
+     - `web/media/promo/trailer_hero_clockwork_15s.mp4`（1280×720，15.0s，H.264 視訊 15.0s ＋ AAC 實體音軌 15.0s，覆蓋率 100%，14a/14b 合格）
+     - `web/media/hero/fb_lobby_9x16.mp4`（1080×1920，20.0s，H.264 ＋ aac 音軌 20.0s，覆蓋率 99.8%，14b 合格）
+     - `proofs/combat/proof_battle_part_break.png`（1280×720，實機「守衛泰坦·雷歐」部位破壞戰鬥截圖，依 21g 條重錄，右側雷歐為合規機械版）
    - **敵人素材解禁與 0c-28 三問親自查核**：
      - 前置任務 `t_010b5760`、`t_110d45c4`、`t_79bb94ed` 全數過審通過，雷歐真正機械化已落地。
-     - Day 1（`signature/leo.png`）與 Day 4（`proof_battle_part_break.png`）所含之敵方 Boss 守衛泰坦·雷歐，經 vision 依 0c-28 三問檢驗：
+     - Day 1（`proofs/enemy_audit/leo_v2_full.png`）與 Day 4（重錄後 `proof_battle_part_break.png`）所含之敵方 Boss 守衛泰坦·雷歐，經 vision 依 0c-28 三問檢驗：
        ① 毛髮/羽毛：無（金色合金齒輪鬃毛）
        ② 生物皮膚/腮紅：無（沖壓金屬板件、藍色機械光圈透鏡）
        ③ 發條鑰匙/螺栓：有（背部雙環黃銅發條鑰匙、螺栓接縫清晰）
