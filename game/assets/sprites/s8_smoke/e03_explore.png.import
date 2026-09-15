@@ -2,12 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ghv0as6ubhw1"
-valid=false
+uid="uid://dcu3rshhhqnuw"
+path="res://.godot/imported/e03_explore.png-85dce6fd6b7e299e7ca126ce06e574a4.ctex"
+metadata={
+"vram_texture": false
+}
 
 [deps]
 
 source_file="res://assets/sprites/s8_smoke/e03_explore.png"
+dest_files=["res://.godot/imported/e03_explore.png-85dce6fd6b7e299e7ca126ce06e574a4.ctex"]
 
 [params]
 
