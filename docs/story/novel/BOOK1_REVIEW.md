@@ -17,6 +17,7 @@
 | [book1_c2_s05-07_third_shadow.md](book1_c2_s05-07_third_shadow.md) | **C2-S05~S07 白霧第三個影子至家書與舊影**全文 ≈3400 字 + 對白壓稿 + Short 字幕 |
 | [book1_c3_s01-05_why_we_fight.md](book1_c3_s01-05_why_we_fight.md) | **C3-S01~S05 道場的鐘至塔路開了**全文 ≈3200 字 + 對白壓稿 + Short 字幕 |
 | [book5_c4_s01-03_wait_for_wind.md](book5_c4_s01-03_wait_for_wind.md) | **C4-S01~S03 等風的人至你追上了風**全文 ≈3200 字 + 對白壓稿 + Short 字幕 |
+| [book5_c5_s01-03_stone_fist.md](book5_c5_s01-03_stone_fist.md) | **C5-S01~S03 岸上沒有退路至站到最後**全文 ≈4800 字 + 對白壓稿 + Short 字幕 |
 | `game/data/story/codex.json` | 手札 10 條（C0～C1 雷歐、C2 白霧仙狐、C3 阿波、C4 疾影） |
 | `game/scripts/systems/story_codex.gd` | 解鎖邏輯 |
 | 暫停選單 → **旅途手札** | 遊戲內閱讀入口 |
@@ -34,6 +35,7 @@
 - **C2**（#24～#30 全部場景卡正文已完稿，含白霧仙狐戰與霧中家書）
 - **C3**（#31～#35 全部場景卡正文已完稿，含阿波破勢試煉與塔路解鎖）
 - **C4**（#36～#38 全部場景卡正文已完稿，含疾影停拍試煉與銀羽獲取）
+- **C5**（#39～#41 全部場景卡正文已完稿，含石拳對撞破岩甲試煉與炎心獲取）
 
 建議你審的重點：
 
