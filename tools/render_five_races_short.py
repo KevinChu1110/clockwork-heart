@@ -170,7 +170,7 @@ def render_shot7(start_frame):
         slogan_bbox = draw.textbbox((0, 0), slogan_text, font=font_slogan)
         slogan_w = slogan_bbox[2] - slogan_bbox[0]
         slogan_x = (WIDTH - slogan_w) // 2
-        slogan_y = int(HEIGHT * 0.60 - 5 * t)
+        slogan_y = int(HEIGHT * 0.68 - 5 * t)
         
         # 陰影 + 奶白字
         draw.text((slogan_x + 3, slogan_y + 3), slogan_text, font=font_slogan, fill=(20, 15, 30, 200))

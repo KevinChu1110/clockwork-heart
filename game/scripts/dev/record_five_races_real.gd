@@ -6,8 +6,8 @@ const RACE_CONFIGS := {
 	"rabbit": {
 		"mode": "road_bandit",
 		"weapon": "dawn_blade",
-		"start_time": 2.5,
-		"end_time": 5.0,
+		"start_time": 3.07,
+		"end_time": 5.57,
 	},
 	"lion": {
 		"mode": "black_ronin",
@@ -30,8 +30,8 @@ const RACE_CONFIGS := {
 	"macaque": {
 		"mode": "bamboo_spirit",
 		"weapon": "hunt_claw",
-		"start_time": 0.8,
-		"end_time": 3.3,
+		"start_time": 1.5,
+		"end_time": 4.0,
 	}
 }
 
@@ -39,8 +39,8 @@ var _races: Array[String] = ["rabbit", "lion", "fox", "boar", "macaque"]
 var _current_idx: int = 0
 var _battle: Control = null
 var _sim: Object = null
-var _out_base: String = "/tmp/five_races_frames"
-var _recorded_frames: int = 0
+var _out_base: String = "/opt/side/bravesoul-game/proofs/five_races_frames"
+var _frame_buffer: Array[Image] = []
 var _recording: bool = false
 var _init_done: bool = false
 
@@ -83,7 +83,7 @@ func _start_battle() -> void:
 	DirAccess.make_dir_recursive_absolute(r_dir)
 	
 	_setup_race(race, weapon)
-	_recorded_frames = 0
+	_frame_buffer.clear()
 	_recording = false
 	
 	var b_scn: PackedScene = load("res://scenes/battle/battle.tscn")
@@ -121,14 +121,16 @@ func _process(_delta: float) -> bool:
 		print("  >>> START RECORDING FOR ", race, " at sim.time = ", cur_sim_t)
 	
 	if _recording:
-		if _recorded_frames < 75:
+		if _frame_buffer.size() < 75:
 			var img := root.get_viewport().get_texture().get_image()
 			if img:
-				var frame_path := _out_base.path_join(race).path_join("frame_%04d.png" % _recorded_frames)
-				img.save_png(frame_path)
-			_recorded_frames += 1
+				_frame_buffer.append(img)
 		else:
-			print("  >>> FINISHED RECORDING 75 FRAMES FOR ", race, " at sim.time = ", cur_sim_t)
+			print("  >>> FLUSHING 75 FRAMES TO DISK FOR ", race, " at sim.time = ", cur_sim_t)
+			for i in range(_frame_buffer.size()):
+				var frame_path := _out_base.path_join(race).path_join("frame_%04d.png" % i)
+				_frame_buffer[i].save_png(frame_path)
+			_frame_buffer.clear()
 			_battle.queue_free()
 			_battle = null
 			_sim = null
