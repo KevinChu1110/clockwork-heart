@@ -349,13 +349,6 @@ func _apply_hud_chrome() -> void:
 	if _hud_styled:
 		return
 	_hud_styled = true
-	## 側欄標題走語系
-	var pst := get_node_or_null("SideBars/PlayerSide/PlayerSideTitle") as Label
-	if pst:
-		pst.text = Loc.t("battle.ally")
-	var est := get_node_or_null("SideBars/EnemySide/EnemySideTitle") as Label
-	if est:
-		est.text = Loc.t("battle.enemy")
 	var prl := get_node_or_null("SideBars/PlayerSide/PlayerRageLabel") as Label
 	if prl:
 		prl.text = Loc.t("battle.rage")
