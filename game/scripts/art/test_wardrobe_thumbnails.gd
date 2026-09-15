@@ -41,4 +41,9 @@ func _init() -> void:
 	dlg.free()
 	print("\n--- Summary ---")
 	print("Total tested: ", total_count, " Failed: ", failed_count)
-	quit(0 if failed_count == 0 else 1)
+	if failed_count == 0:
+		print("WARDROBE_THUMBNAILS_OK")
+		quit(0)
+	else:
+		print("WARDROBE_THUMBNAILS_FAIL: %d failures" % failed_count)
+		quit(1)
