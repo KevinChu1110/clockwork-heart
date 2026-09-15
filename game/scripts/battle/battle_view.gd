@@ -471,7 +471,7 @@ func _apply_hud_chrome() -> void:
 		ls.shadow_size = 4
 		ls.content_margin_left = 18
 		ls.content_margin_right = 260
-		ls.content_margin_top = 50
+		ls.content_margin_top = 42
 		ls.content_margin_bottom = 10
 		_log_panel.add_theme_stylebox_override("panel", ls)
 		parent_ctrl.add_child(_log_panel)
@@ -572,7 +572,7 @@ func _apply_safe_hud() -> void:
 	if _log_panel:
 		_log_panel.offset_left = m.x + 16.0
 		_log_panel.offset_right = -(m.z + 16.0)
-		_log_panel.offset_bottom = -52.0 - m.w
+		_log_panel.offset_bottom = -82.0 - m.w
 		_log_panel.offset_top = -224.0 - m.w
 	if _rage_ready:
 		_rage_ready.offset_left = m.x + 16.0
@@ -3354,7 +3354,7 @@ static func _adapt_log_colors(text: String) -> String:
 	return res
 
 
-const MAX_LOG_LINES := 5
+const MAX_LOG_LINES := 4
 var _log_history: Array[String] = []
 
 
