@@ -99,8 +99,9 @@ text = "怒氣"
 
 [node name="PlayerRage" type="ProgressBar" parent="SideBars/PlayerSide"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(0, 14)
+custom_minimum_size = Vector2(140, 14)
 layout_mode = 2
+size_flags_horizontal = 0
 max_value = 100.0
 show_percentage = false
 modulate = Color(1, 0.6, 0.2, 1)

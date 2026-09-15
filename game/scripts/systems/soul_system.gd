@@ -548,6 +548,8 @@ func pity_bar_text(width: int = 10) -> String:
 	var pp: Dictionary = pity_progress()
 	var pmax := maxi(1, int(pp.get("piety_max", PIETY_PER_SHARD)))
 	var filled := clampi(int(round(float(pp.get("piety", 0)) / float(pmax) * float(width))), 0, width)
+	if filled <= 0:
+		return ""
 	return "█".repeat(filled) + "░".repeat(width - filled)
 
 
@@ -875,9 +877,15 @@ func panel_status_bbcode() -> String:
 		lines.append(_t("今日免費已用完｜下次抽魂：%d 金｜金幣 %d｜星屑 %d") % [
 			cost, GameState.gold, GameState.stardust
 		])
-	lines.append(_t("保底虔誠 [%s] %d/%d · 再 %d 抽得碎片") % [
-		pity_bar_text(10), int(pp.get("piety", 0)), int(pp.get("piety_max", 100)), int(pp.get("draws_to_shard", 0))
-	])
+	var bar_txt := pity_bar_text(10)
+	if bar_txt.is_empty():
+		lines.append(_t("保底虔誠 %d/%d · 再 %d 抽得碎片") % [
+			int(pp.get("piety", 0)), int(pp.get("piety_max", 100)), int(pp.get("draws_to_shard", 0))
+		])
+	else:
+		lines.append(_t("保底虔誠 [%s] %d/%d · 再 %d 抽得碎片") % [
+			bar_txt, int(pp.get("piety", 0)), int(pp.get("piety_max", 100)), int(pp.get("draws_to_shard", 0))
+		])
 	lines.append(_t("戰魂碎片 %d · 稀世需 %d · 神需 %d") % [
 		int(pp.get("shards", 0)), int(pp.get("rare_cost", 6)), int(pp.get("shen_cost", 15))
 	])

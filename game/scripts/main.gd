@@ -5304,7 +5304,7 @@ func _go_soul_panel() -> void:
 	var raw_lines := body.split("\n")
 	var clean_lines: PackedStringArray = []
 	for l in raw_lines:
-		if l.contains("保底虔誠") and (l.contains("█") or l.contains("\\")):
+		if l.contains("保底虔誠"):
 			continue
 		clean_lines.append(l)
 	body = "\n".join(clean_lines)

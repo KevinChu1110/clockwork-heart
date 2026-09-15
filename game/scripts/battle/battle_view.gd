@@ -316,7 +316,7 @@ func setup(mode: String) -> void:
 		_append_log(_t("木人樁：靜止不動，供武者試招。"))
 		parry_hint.text = _kh(_t("木人樁不反擊 · 自由試刀 · 右上可結束"))
 	else:
-		parry_hint.text = _kh("%s · %s" % [Loc.t("tut.battle"), Loc.t("battle.rage_full")])
+		parry_hint.text = _kh(Loc.t("tut.battle"))
 	## 有多部位的 Boss：通用 HUD／教學（白霧／石像除外——Tab 另有用途）
 	if _boss_has_parts():
 		_ensure_part_hud()
@@ -378,7 +378,8 @@ func _apply_hud_chrome() -> void:
 	enemy_hp.modulate = Color.WHITE
 	player_hp.custom_minimum_size.y = 16
 	enemy_hp.custom_minimum_size.y = 16
-	player_rage.custom_minimum_size.y = 10
+	player_rage.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	player_rage.custom_minimum_size = Vector2(140, 10)
 	## 戰鬥背景是暗的，所以這裡的字一律走淺色。
 	## 底下那幾個 if 曾經用 UiStyle.CREAM 覆寫回來——那個常數名字叫奶油色、
 	## 值卻是墨色 #26242a（改成白底風格時語意翻轉了），於是近黑字畫在近黑底上。
@@ -1257,11 +1258,17 @@ func _layout_battle_equipment_overlays() -> void:
 		var atex := SpriteDB.player_armor_overlay()
 		if atex:
 			var asz := Vector2(bs.x * 0.62, bs.y * 0.42)
+			var apos := Vector2((bs.x - asz.x) * 0.5, bs.y * 0.30)
+			var cur_race := _player_race if not _player_race.is_empty() else SpriteDB.player_race()
+			if cur_race == "macaque":
+				# 猴族頭盔與面部比例較大且位置偏中，軀幹在下方；調降錨點縮減高度以避開面部區域
+				asz = Vector2(bs.x * 0.52, bs.y * 0.30)
+				apos = Vector2((bs.x - asz.x) * 0.5, bs.y * 0.52)
 			_battle_armor.texture = atex
 			_battle_armor.visible = true
 			_battle_armor.custom_minimum_size = asz
 			_battle_armor.size = asz
-			_battle_armor.position = Vector2((bs.x - asz.x) * 0.5, bs.y * 0.30)
+			_battle_armor.position = apos
 			_battle_armor.modulate = Color(1, 1, 1, 0.9)
 			_battle_armor.z_index = 1
 		else:
