@@ -58,6 +58,15 @@ func _initialize() -> void:
 	if not sc.is_unlocked("c5_stonefist"):
 		push_error("c5_stonefist unlock fail")
 		ok = false
+	gs.set_flag("boss.demon_cleared", true)
+	sc.try_unlock_all()
+	if not sc.is_unlocked("c6_tower_summit"):
+		push_error("c6_tower_summit unlock fail")
+		ok = false
+	var c6_body: String = sc.entry_bbcode("c6_tower_summit")
+	if c6_body.find("走時要塌") < 0 or c6_body.find("晨光") < 0:
+		push_error("c6_tower_summit body missing text")
+		ok = false
 	print("unlocked ", sc.unlocked_count(), "/", sc.total_count())
 	if ok:
 		print("CODEX_OK")
