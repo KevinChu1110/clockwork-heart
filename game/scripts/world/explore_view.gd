@@ -1167,6 +1167,11 @@ func _load_map(id: String) -> void:
 	var raw_ents: Array = data.get("entities", [])
 	for e in raw_ents:
 		if typeof(e) == TYPE_DICTIONARY:
+			var pos: Vector2 = e.get("pos", Vector2.ZERO) as Vector2
+			if pos.x < origin.x or pos.y < origin.y:
+				push_error("[explore_view] 地圖 %s 實體 %s 座標 %s 小於 origin %s，浮出地板邊緣" % [
+					id, str(e.get("id", "")), str(pos), str(origin)
+				])
 			_entities.append(e)
 	if _mmap_label:
 		_mmap_label.text = "%s  ·  %.0f×%.0f" % [str(data.get("title", id)), msize.x, msize.y]

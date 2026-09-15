@@ -33,6 +33,14 @@ func _initialize() -> void:
 	var checked := 0
 	for id in ids:
 		var data: Dictionary = MapCatalog.build(id)
+		var origin: Vector2 = data.get("origin", Vector2(40, 80))
+		for e in data.get("entities", []):
+			if typeof(e) == TYPE_DICTIONARY:
+				var pos: Vector2 = e.get("pos", Vector2.ZERO) as Vector2
+				if pos.x < origin.x or pos.y < origin.y:
+					_fail("%s 實體 %s 座標 (%s) 小於 origin (%s)，浮出地板邊界" % [
+						id, str(e.get("id", "")), str(pos), str(origin)
+					])
 		var art := str(data.get("art", id))
 		if art in EXEMPT:
 			print("  skip exempt ", id, " art=", art)
