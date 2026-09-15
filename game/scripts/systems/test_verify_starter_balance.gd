@@ -103,5 +103,39 @@ func _initialize() -> void:
 			r, base_id, inst_tier, str(winst.get("name", "")), w_atk, eff_atk
 		])
 
+		# 驗證五族開局皆已習得對應武器線起手技能，且 can_skill 皆為 true
+		var can_sk: bool = bool(stats.get("can_skill", false))
+		var sk_id: String = str(stats.get("skill_id", ""))
+		var sk_name: String = str(stats.get("skill_name", ""))
+		var sk_mult: float = float(stats.get("skill_mult", 0.0))
+		var sk_hits: int = int(stats.get("skill_hits", 1))
+		if not can_sk:
+			push_error("%s 開局 can_skill 為 false，滿怒無法放技能" % r)
+			print("VERIFY_STARTER_BALANCE_FAIL")
+			quit(1)
+			return
+		if sk_id.is_empty():
+			push_error("%s 開局缺少對應武器線技能 id" % r)
+			print("VERIFY_STARTER_BALANCE_FAIL")
+			quit(1)
+			return
+		var expected_sk_ids = {
+			"rabbit": "slash",
+			"lion": "line_thrust",
+			"fox": "magic_bolt",
+			"boar": "stone_crush",
+			"macaque": "combo_fist",
+		}
+		var exp_sk_id: String = str(expected_sk_ids.get(r, ""))
+		if sk_id != exp_sk_id:
+			push_error("%s 開局技能 id 預期為 %s，實際為 %s" % [r, exp_sk_id, sk_id])
+			print("VERIFY_STARTER_BALANCE_FAIL")
+			quit(1)
+			return
+		var total_mult: float = sk_mult * float(sk_hits)
+		print("✓ %s 開局技能: [%s] %s | 單段倍率: %.2f (段數: %d, 總倍率: %.2f) | can_skill: %s" % [
+			r, sk_id, sk_name, sk_mult, sk_hits, total_mult, str(can_sk)
+		])
+
 	print("VERIFY_STARTER_BALANCE_OK")
 	quit(0)

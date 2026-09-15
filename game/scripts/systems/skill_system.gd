@@ -1131,7 +1131,7 @@ func is_unlocked(id: String) -> bool:
 				or (same_prof and lv >= 16) \
 				or lv >= 18
 		"star_pierce":
-			return same_line or same_prof or lv >= 6 or GameState.has_flag("c1_soul_intro")
+			return (in_prof_tree and lv >= 6) or lv >= 10 or GameState.has_flag("c1_soul_intro")
 		"iron_guard", "prism_ward":
 			return same_line or same_prof or lv >= 5
 		_:

@@ -3189,8 +3189,12 @@ func _on_end(won: bool) -> void:
 			GameState.set_flag("c0_first_battle", true)
 			if Engine.get_main_loop() is SceneTree:
 				var sk0: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("SkillSystem")
-				if sk0 and sk0.has_method("grant_c0_slash"):
-					sk0.call("grant_c0_slash")
+				if sk0:
+					var wline := str(GameState.path_style)
+					if wline != "" and sk0.has_method("grant_for_weapon_class"):
+						sk0.call("grant_for_weapon_class", wline)
+					elif sk0.has_method("grant_c0_slash"):
+						sk0.call("grant_c0_slash")
 			if GameState.skill_slash_lv < 1:
 				GameState.skill_slash_lv = 1
 			_award_xp(20)

@@ -13,9 +13,11 @@ func _initialize() -> void:
 	gs.reset_new_game()
 	sk.ensure_skill_map()
 
-	if sk.is_learned("slash"):
-		push_error("new game should not know slash")
+	if not sk.is_learned("slash") or sk.get_lv("slash") != 1:
+		push_error("new game should know starter skill slash")
 		ok = false
+	else:
+		print("starter slash OK")
 	sk.grant_c0_slash()
 	if not sk.is_learned("slash") or sk.get_lv("slash") != 1:
 		push_error("grant slash fail")
