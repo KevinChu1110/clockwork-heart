@@ -91,6 +91,9 @@ func _process(_delta: float) -> bool:
 	elif _frame == 26:
 		if _battle:
 			_dump_shadows(_battle)
+			var dock1: Control = _battle.get("_weapon_dock") as Control
+			if dock1 and is_instance_valid(dock1):
+				dock1.visible = false
 	elif _frame == 28:
 		var img := root.get_viewport().get_texture().get_image()
 		if img:
@@ -109,6 +112,9 @@ func _process(_delta: float) -> bool:
 	elif _frame == 54:
 		if _battle:
 			_dump_shadows(_battle)
+			var dock2: Control = _battle.get("_weapon_dock") as Control
+			if dock2 and is_instance_valid(dock2):
+				dock2.visible = false
 	elif _frame == 56:
 		var img2 := root.get_viewport().get_texture().get_image()
 		if img2:
