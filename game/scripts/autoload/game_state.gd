@@ -160,7 +160,7 @@ func _gem_bonuses() -> Dictionary:
 
 
 func effective_atk() -> int:
-	var a := atk + weapon_atk
+	var a := atk
 	if stain_flame:
 		a += 3
 	a += soul_bonus_atk()
@@ -604,13 +604,13 @@ func from_dict(d: Dictionary) -> void:
 	dmg_variance = float(d.get("dmg_variance", 0.08))
 
 
-## 五族開局定案武器對照（對齊 equipment.json bases 既有 id，不准自創）
+## 五族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
 const RACE_STARTER_WEAPONS: Dictionary = {
-	"rabbit": "dawn_blade",
-	"lion": "knight_pike",
+	"rabbit": "rusty_blade",
+	"lion": "ash_spear",
 	"fox": "star_rod",
 	"boar": "anvil_hammer",
-	"macaque": "hunt_claw",
+	"macaque": "wrap_gloves",
 }
 
 
@@ -627,14 +627,14 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"macaque": default_name = "靈爪猴"
 		_: default_name = "小白"
 
-	## 兔若本來就有 dawn_blade，不要改數值，只補其他族缺的
-	var existing_dawn: Dictionary = {}
-	if r == "rabbit":
-		var cur_wuid := str(equip_slots.get("weapon", ""))
-		if cur_wuid != "" and equip_worn.has(cur_wuid):
-			var cur_inst: Dictionary = equip_worn[cur_wuid]
-			if str(cur_inst.get("base_id", "")) == "dawn_blade":
-				existing_dawn = cur_inst.duplicate(true)
+	## 該族若本來就有一樣的開局武器，不要改數值
+	var target_starter: String = str(RACE_STARTER_WEAPONS.get(r, "rusty_blade"))
+	var existing_starter: Dictionary = {}
+	var cur_wuid := str(equip_slots.get("weapon", ""))
+	if cur_wuid != "" and equip_worn.has(cur_wuid):
+		var cur_inst: Dictionary = equip_worn[cur_wuid]
+		if str(cur_inst.get("base_id", "")) == target_starter:
+			existing_starter = cur_inst.duplicate(true)
 
 	from_dict({
 		"chapter": "c0",
@@ -675,7 +675,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"ui_layout": {},
 	})
 
-	equip_starter_weapon(r, existing_dawn)
+	equip_starter_weapon(r, existing_starter)
 	_grant_starter_skills_for_weapon_instance(equip_worn.get(str(equip_slots.get("weapon", "")), {}))
 
 
@@ -699,7 +699,7 @@ func equip_starter_weapon(race: String = "", existing_inst: Dictionary = {}) -> 
 
 
 func _fallback_equip_starter_weapon(r: String, existing_inst: Dictionary = {}) -> Dictionary:
-	var target_base_id: String = str(RACE_STARTER_WEAPONS.get(r, "dawn_blade"))
+	var target_base_id: String = str(RACE_STARTER_WEAPONS.get(r, "rusty_blade"))
 	var inst: Dictionary = {}
 	if not existing_inst.is_empty() and str(existing_inst.get("base_id", "")) == target_base_id:
 		inst = existing_inst.duplicate(true)
