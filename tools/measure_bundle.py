@@ -23,6 +23,8 @@ FONTS = GAME / "assets" / "fonts"
 WEB = ROOT / "web"
 
 ALWAYS_EXCLUDE = [
+    "extension_api.json",
+    "screenshots/**",
     "scripts/**/test_*.gd",
     "scripts/**/test_*.gd.uid",
     "scripts/**/test_*.json",
