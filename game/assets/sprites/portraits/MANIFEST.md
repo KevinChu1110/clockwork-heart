@@ -22,7 +22,7 @@
 | ronin.png | 黑焰浪人 | 黑袍刀客（與場上同圖） |
 | knight_orphan.png | 遺孤少年 | 小騎士（與場上同圖） |
 | merchant.png / caravan_chief.png | 行商 | 白兔旅商（與 `npcs/merchant` 同圖） |
-| leo.png 等頭目 | 戰鬥用 | 尚未改成場上 icon 同一套。**不是**隊伍獅子——隊伍獅用 `lion_knight.png` / `lion.png` |
+| leo.png 等頭目 | 戰鬥／對話用 | 已依 review 19g-10/0c-28/0c-29 全數重製為 384×480 金屬發條玩具對話半身像（leo, wolf, fog, abo, falcon, demon, scar_lord, mirror_wraith, wreck_captain）。**不是**隊伍獅子——隊伍獅用 `lion_knight.png` / `lion.png` |
 | lion.png | 烈鬃獅 | 金屬發條獅 · 皇家長槍（128×128 HUD 戰鬥頭像；場上 `player/party/lion_idle.png` 128×128） |
 | lion_knight.png | 獅騎士 | 金屬發條獅 · 長槍（256×256 對話框半身像；場上 `player/party/lion_idle.png` 128×128） |
 | fox_mage.png | 狐法師 | 金屬發條狐 · 法杖（256×256；場上 `player/party/fox_idle.png` 128×128） |

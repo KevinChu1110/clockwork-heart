@@ -76,17 +76,19 @@
 ### 【第一部分：六位主線首領專案審查紀錄與 0c-28 規劃】
 
 #### M0. 渣滓之狼 (wolf) · C0 荒野荒路
-- **原始資產**：`game/assets/sprites/bosses/wolf.png` (193×232 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/wolf.png` (193×232 RGBA) / `game/assets/sprites/portraits/wolf.png` (對話半身像)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/wolf_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/wolf_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/wolf_audit_panel.png`
   - 重繪前後對比：`proofs/enemy_audit/wolf_compare.png`
+  - 對話半身像頭部裁切：`proofs/enemy_audit/wolf_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/wolf_portrait_compare.png` (800×540)
 - **三項問題答覆**：
   - ① 毛髮質感：**無**。全身改為沖壓暗鐵與鍍鋅馬口鐵板件，耳部為沖壓鐵片耳，四肢為金屬球形關節，尾巴為分節金屬鋼板尾，完全零毛皮、零絨毛。
   - ② 生物皮膚：**無**。臉部為鉚釘沖壓金屬面甲與螺栓固定耳板（無粉色內耳肉色），雙眼為圓形發光琥珀黃光學透鏡，零腮紅、零生物皮膚。
   - ③ 發條鑰匙與螺栓：**有**。**背部清晰可見巨大黃銅雙環發條鑰匙**，頭部、面甲、下顎與身軀各處皆有外露螺栓與鉚釘分片接縫。
-- **判定結果**：✅ **合格**
+- **判定結果**：✅ **合格** (t_9a23594e 重繪 ＆ t_66f8e073 對話半身像補換複驗全數通過)
 - **0c-28 辨識度保留與重繪成果**：
   - **核心特徵保留**：完整保留原版 2.2 頭身 Q 版灰狼幼犬剪影、四足站立警戒姿態、堅定小狼神態、標誌性小獠牙與灰白分色板件。
   - **合規改造結果**：已於任務 `t_9a23594e` 成功重繪為「失控的鐵皮發條狼玩具（Clockwork Tin Wolf）」，100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
@@ -113,17 +115,19 @@
 ---
 
 #### M2. 白霧 (fog) · C2 迷霧之村
-- **原始資產**：`game/assets/sprites/bosses/fog.png` (216×198 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/fog.png` (216×198 RGBA) / `game/assets/sprites/portraits/fog.png` (對話半身像)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/fog_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/fog_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/fog_audit_panel.png`
   - 重繪前後對比：`proofs/enemy_audit/fog_compare.png`
+  - 對話半身像頭部裁切：`proofs/enemy_audit/fog_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/fog_portrait_compare.png` (800×540)
 - **三項問題答覆**：
   - ① 毛髮質感：**無**。臉部改為白瓷烤漆狐面機巧面甲，尾巴改為鏤空黃銅齒輪與半透明導光白鐵薄片構造，完全去除有機動物毛髮與蓬鬆狐尾。
   - ② 生物皮膚：**無**。金屬外殼與白瓷面甲，雙眼為發光紫色寶石光學鏡片，耳朵為沖壓黃銅薄片並以螺絲固定（無肉色內耳），零生物皮膚、零腮紅。
   - ③ 發條鑰匙與螺栓：**有**。**背部雙肩軸心外露大型黃銅發條鑰匙**，關節為外露螺栓之球形機械鉸鏈，全身接縫皆具備外露螺栓與固定鉚釘。
-- **判定結果**：✅ **合格**
+- **判定結果**：✅ **合格** (t_9a23594e 重繪 ＆ t_66f8e073 對話半身像補換複驗全數通過)
 - **0c-28 辨識度保留與重繪成果**：
   - **核心特徵保留**：完整保留雙持苦無匕首、潛行刺客身姿、白紫雙色調服飾、多尾扇形展開之視覺張力。
   - **合規改造結果**：已於任務 `t_9a23594e` 成功重繪為「機巧白狐傀儡忍者（Clockwork Kitsune Automaton）」，100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
@@ -131,17 +135,19 @@
 ---
 
 #### M3. 阿波 (abo) · C3 竹林道場
-- **原始資產**：`game/assets/sprites/bosses/abo.png` (209×240 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/abo.png` (209×240 RGBA) / `game/assets/sprites/portraits/abo.png` (對話半身像)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/abo_full.png` (1080×1280)
   - 頭部裁切放大：`proofs/enemy_audit/abo_head_crop.png` (680×640)
   - 審查對照面板：`proofs/enemy_audit/abo_audit_panel.png` (1110×710)
   - 重繪前後對比：`proofs/enemy_audit/abo_compare.png` (1000×560)
+  - 對話半身像頭部裁切：`proofs/enemy_audit/abo_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/abo_portrait_compare.png` (800×540)
 - **三項問題答覆**：
   - ① 毛髮質感：**無** (合格)。圓耳改為鉚釘固定黑漆金屬圓盤，頭部為黑白雙色亮面生漆玩具板件，無有機毛皮。
   - ② 生物皮膚：**無** (合格)。鼻頭改為拋光黑金屬扣，臉頰具玩具注塑分模接縫，完全去除粉紅腮紅與肉色組織。
   - ③ 發條鑰匙與螺栓：**有** (合格)。背部軸心清晰外露大型黃銅太極八卦發條鑰匙，頭部、耳軸與關節具備清楚的金屬螺釘與鉚釘。
-- **判定結果**：✅ **合格** (t_8de27f8b 重繪)
+- **判定結果**：✅ **合格** (t_8de27f8b 重繪 ＆ t_66f8e073 對話半身像補換複驗全數通過)
 - **0c-28 前後辨識度保留與重繪說明**：
   - **核心特徵保留**：經典國術武僧架式（白鶴亮翅/虎爪格鬥姿態）、鮮紅武術袍、金刺繡龍紋、綠翡翠玉珠項圈、黑金利爪臂鎧皆完整保留，玩家可一眼辨認。
   - **合規改造達成**：成功改造為「漆器機巧熊貓武僧（Lacquer Karakuri Panda Master）」，100% 符合 CANON 玩具世界觀與 review 19g-10 規範。
@@ -149,17 +155,19 @@
 ---
 
 #### M4. 疾影 (falcon) · C4 永夜森林
-- **原始資產**：`game/assets/sprites/bosses/falcon.png` (220×173 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/falcon.png` (220×173 RGBA) / `game/assets/sprites/portraits/falcon.png` (對話半身像)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/falcon_full.png` (1080×1280)
   - 頭部裁切放大：`proofs/enemy_audit/falcon_head_crop.png` (680×640)
   - 審查對照面板：`proofs/enemy_audit/falcon_audit_panel.png` (1110×710)
   - 重繪前後對比：`proofs/enemy_audit/falcon_compare.png` (1000×560)
+  - 對話半身像頭部裁切：`proofs/enemy_audit/falcon_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/falcon_portrait_compare.png` (800×540)
 - **三項問題答覆**：
   - ① 毛髮質感：**無** (合格)。羽翼全面改為沖壓黃銅與紫晶金屬刀刃薄片排片，無有機鳥羽。
   - ② 生物皮膚：**無** (合格)。臉部改為拋光黃銅鳥首金屬面甲與機械啄，眼睛為青藍發光光學透鏡與戰術齒輪單眼瞄準鏡，去除粉紅腮紅與角質器官。
   - ③ 發條鑰匙與螺栓：**有** (合格)。背部軸心外露大型黃銅螺旋槳推進發條鑰匙，面甲兩側與胸鎧密布外露螺絲與鉚釘。
-- **判定結果**：✅ **合格** (t_8de27f8b 重繪)
+- **判定結果**：✅ **合格** (t_8de27f8b 重繪 ＆ t_66f8e073 對話半身像補換複驗全數通過)
 - **0c-28 前後辨識度保留與重繪說明**：
   - **核心特徵保留**：紫金綠三色羽翼射手剪影、戰術單眼瞄準鏡、青銅鱗甲胸盾、獵鷹利爪與銳利神態 100% 保留。
   - **合規改造達成**：成功改造為「發條天隼狙擊機偶（Clockwork Sky Falcon Automaton）」，符合 CANON 玩具世界觀。
@@ -185,17 +193,19 @@
 ---
 
 #### M6. 停擺核 (demon) · C6 停擺高塔
-- **原始資產**：`game/assets/sprites/bosses/demon.png` (219×204 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/demon.png` (219×204 RGBA) / `game/assets/sprites/portraits/demon.png` (對話半身像)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/demon_full.png` (1080×1280)
   - 頭部裁切放大：`proofs/enemy_audit/demon_head_crop.png` (680×640)
   - 審查對照面板：`proofs/enemy_audit/demon_audit_panel.png` (1110×710)
   - 重繪前後對比：`proofs/enemy_audit/demon_compare.png` (1000×560)
+  - 對話半身像頭部裁切：`proofs/enemy_audit/demon_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/demon_portrait_compare.png` (800×540)
 - **三項問題答覆**：
   - ① 毛髮質感：**無** (合格)。全身無毛髮，背後雙翼為分節黑曜金屬刀鋒羽翼。
   - ② 生物皮膚：**無** (合格)。面部為暗鐵沖壓無面魔甲配猩紅狹長發光視縫，雙角為金屬分節外殼，胸口外露青紫雙色停擺齒輪核心，無魔族血肉與腮紅。
   - ③ 發條鑰匙與螺栓：**有** (合格)。背後高聳外露華麗金屬王冠造型黃銅發條鑰匙，全身重鎧由粗大機械螺栓與金屬鉸鏈接合。
-- **判定結果**：✅ **合格** (t_8de27f8b 重繪)
+- **判定結果**：✅ **合格** (t_8de27f8b 重繪 ＆ t_66f8e073 對話半身像補換複驗全數通過)
 - **0c-28 前後辨識度保留與重繪說明**：
   - **核心特徵保留**：停擺核心巨劍、紫黑哥德魔王重鎧、頭頂華麗紫晶王冠、雙角魔王霸氣剪影 100% 保留。
   - **合規改造達成**：成功改造為「高塔停擺核心機偶·魔王玩具（Stasis Core Sovereign Puppet）」，100% 達成 CANON 規範。
@@ -286,17 +296,19 @@
 ---
 
 ### 06. 鏡中幽靈 (mirror_wraith)
-- **原始資產**：`game/assets/sprites/bosses/mirror_wraith.png` (270×300 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/mirror_wraith.png` (270×300 RGBA) / `game/assets/sprites/portraits/mirror_wraith.png` (對話半身像)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/mirror_wraith_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/mirror_wraith_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/mirror_wraith_audit_panel.png`
   - 重繪前後對比：`proofs/enemy_audit/mirror_wraith_compare.png`
+  - 對話半身像頭部裁切：`proofs/enemy_audit/mirror_wraith_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/mirror_wraith_portrait_compare.png` (800×540)
 - **三項問題答覆**：
   - ① 毛髮質感：**無**。傀儡頭部為紫靛色金屬螺栓頭殼，鏡面本體為水銀漩渦，無任何有機毛髮。
   - ② 生物皮膚：**無**。面部為純白瓷質威尼斯面具，雙眼為青藍色發光透鏡，身軀為紫靛色琺瑯漆金屬胸甲，四肢為金屬球形關節與黃銅機械手，零生物皮膚、零腮紅。
   - ③ 發條鑰匙與螺栓：**有**。**鏡框右側齒輪傳動箱外露巨大雙環黃銅發條鑰匙**，鏡框頂部與邊緣密布咬合金屬齒輪，古董金屬底座帶有機械獸爪腳座與螺栓接縫。
-- **判定結果**：✅ **合格**
+- **判定結果**：✅ **合格** (t_b51e9456 重繪 ＆ t_66f8e073 對話半身像補換複驗全數通過)
 - **說明**：已於任務 `t_b51e9456` 成功重繪為發條魔鏡機偶（Clockwork Magic Mirror Automaton），100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
@@ -318,17 +330,19 @@
 ---
 
 ### 08. 黑焰領主 (scar_lord)
-- **原始資產**：`game/assets/sprites/bosses/scar_lord.png` (280×260 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/scar_lord.png` (280×260 RGBA) / `game/assets/sprites/portraits/scar_lord.png` (對話半身像)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/scar_lord_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/scar_lord_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/scar_lord_audit_panel.png`
   - 重繪前後對比：`proofs/enemy_audit/scar_lord_compare.png`
+  - 對話半身像頭部裁切：`proofs/enemy_audit/scar_lord_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/scar_lord_portrait_compare.png` (800×540)
 - **三項問題答覆**：
   - ① 毛髮質感：**無**。全身為暗黑曜鐵板件與紫晶能量導管，無任何毛髮、鬃毛或毛皮。
   - ② 生物皮膚：**無**。頭部為暗鐵封閉騎士頭盔配備琥珀黃發光透鏡視縫，胸前鑲嵌紫水晶齒輪動力核心，雙手持握雙鋸齒符文黑鐵刃，四肢為金屬球形關節，零生物皮膚、零腮紅。
   - ③ 發條鑰匙與螺栓：**有**。**背部正中央外露巨大黃銅齒輪發條鑰匙**，肩甲、胸甲與耳軸皆具備分明的外露十字螺栓、鉚釘與板件接縫。
-- **判定結果**：✅ **合格**
+- **判定結果**：✅ **合格** (t_0d32007c 重繪 ＆ t_66f8e073 對話半身像補換複驗全數通過)
 - **說明**：已於任務 `t_0d32007c` 成功重繪為發條黑鐵領主機偶（Clockwork Dark Knight Automaton），100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
@@ -366,17 +380,19 @@
 ---
 
 ### 11. 沉船船長 (wreck_captain)
-- **原始資產**：`game/assets/sprites/bosses/wreck_captain.png` (240×260 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/wreck_captain.png` (240×260 RGBA) / `game/assets/sprites/portraits/wreck_captain.png` (對話半身像)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/wreck_captain_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/wreck_captain_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/wreck_captain_audit_panel.png`
   - 重繪前後對比：`proofs/enemy_audit/wreck_captain_compare.png`
+  - 對話半身像頭部裁切：`proofs/enemy_audit/wreck_captain_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/wreck_captain_portrait_compare.png` (800×540)
 - **三項問題答覆**：
   - ① 毛髮質感：**無**。海盜帽為風化木板與金屬包邊（金屬船舵帽徽），完全去除有機羽毛與鬍鬚。
   - ② 生物皮膚：**無**。臉部為雕刻風化木紋人偶面甲與機械接縫分模線，左眼為鉚釘金屬眼罩、右眼為青藍透鏡眼，身軀為鉚接木板與海軍藍大衣，右腿為木製假腿、左腿為木靴，四肢為金屬合頁與球形關節，零人類血肉皮膚。
   - ③ 發條鑰匙與螺栓：**有**。**背部軸心外露巨大的生鏽黃銅船舵造型發條鑰匙**，頭部、耳軸、胸甲與肢體密布外露螺栓與固定鉚釘。
-- **判定結果**：✅ **合格**
+- **判定結果**：✅ **合格** (t_0d32007c 重繪 ＆ t_66f8e073 對話半身像補換複驗全數通過)
 - **說明**：已於任務 `t_0d32007c` 成功重繪為沉船木偶發條海盜水手（Wreckage Pirate Puppet Automaton），100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
