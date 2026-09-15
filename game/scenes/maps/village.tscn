@@ -48,7 +48,7 @@ position = Vector2(880, 960)
 gizmo_extents = 16.0
 
 [node name="exit_east" type="Marker2D" parent="Markers"]
-position = Vector2(1780, 940)
+position = Vector2(2496, 920)
 gizmo_extents = 16.0
 
 [node name="Actors" type="Node2D" parent="."]

@@ -556,7 +556,7 @@ func _ensure_nameplate(id: String, e: Dictionary) -> void:
 	var lab := Label.new()
 	lab.text = label
 	lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	lab.add_theme_font_size_override("font_size", 13)
+	lab.add_theme_font_size_override("font_size", 14)
 	lab.add_theme_color_override("font_color", Color("#1F1A3A"))
 	lab.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	chip.add_child(lab)
@@ -615,7 +615,7 @@ func _sync_nameplates() -> void:
 					p.y = screen.y - chip.size.y - 8.0
 				p.x = clampf(p.x, PLATE_SIDE_PAD, maxf(PLATE_SIDE_PAD, host_w - chip.size.x - PLATE_SIDE_PAD))
 				p.y = clampf(p.y, PLATE_SIDE_PAD, maxf(PLATE_SIDE_PAD, host_h - PLATE_BOTTOM_RESERVE - chip.size.y))
-			chip.position = p
+			chip.position = p.round()
 		var bang: Control = pack.get("bang")
 		if bang and is_instance_valid(bang):
 			var head := foot
@@ -624,7 +624,7 @@ func _sync_nameplates() -> void:
 				head = foot + Vector2(0, -th + 12.0)
 			var hs := _world_to_host(head)
 			bang.reset_size()
-			bang.position = hs - Vector2(bang.size.x * 0.5, bang.size.y + 2.0)
+			bang.position = (hs - Vector2(bang.size.x * 0.5, bang.size.y + 2.0)).round()
 
 
 func _update_near() -> void:

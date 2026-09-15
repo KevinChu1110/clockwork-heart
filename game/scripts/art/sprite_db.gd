@@ -992,6 +992,9 @@ const _SCENERY_PROPS := ["hut", "tower", "gate", "well", "boat", "cliff",
 
 
 static func is_scenery_prop(entity_id: String) -> bool:
+	## 鐵匠鋪門口標記在 town 底圖已完整手繪熔爐與煙囪，不准再疊 forge.png 營火立體殘影 (t_923e133b)
+	if entity_id == "forge_sign":
+		return true
 	var name := prop_kind(entity_id)
 	return name != "" and name in _SCENERY_PROPS
 

@@ -967,78 +967,10 @@ func _occluder_foot(uv: Rect2, world_pos: Vector2, world_size: Vector2) -> float
 
 func _build_scenic_layers() -> void:
 	_clear_scenic_layers()
-	if not _has_scenic_bg or _floor == null or _floor.texture == null or _world == null:
-		return
-	var slices: Array = SCENIC_OCCLUDERS.get(_art_id, [])
-	if slices.is_empty():
-		## 沒調過的地圖：只有在有 walkmask 時才給前景帶——
-		## 腳底線會照 mask 推；沒 mask 就寧可不蓋，別把人埋進圖裡
-		if WalkMask.has(_art_id):
-			slices = [{"uv": Rect2(0.0, 0.82, 1.0, 0.18), "kind": "fg"}]
-		else:
-			return
-	var tex: Texture2D = _floor.texture
-	var ts := tex.get_size()
-	if ts.x < 8.0 or ts.y < 8.0:
-		return
-	## 寬前景帶切 6 段：各段自己推腳底線，整段可走的自動降級
-	var expanded: Array = []
-	for s in slices:
-		var uv0: Rect2 = s.get("uv", Rect2())
-		if uv0.size.x <= 0.0 or uv0.size.y <= 0.0:
-			continue
-		var kind0 := str(s.get("kind", "mg"))
-		## 寬切片切欄、各欄自己推腳線——整片共用一條腳線會把
-		## 站在切片「開闊側」的玩家一起蓋掉（road_inn 棚子右半就是）
-		var n := 0
-		if WalkMask.has(_art_id):
-			if kind0 == "fg" and uv0.size.x > 0.5:
-				n = 6
-			elif kind0 == "mg" and uv0.size.x > 0.25:
-				n = 4
-		if n > 0:
-			for i in n:
-				expanded.append({
-					"uv": Rect2(uv0.position.x + uv0.size.x * float(i) / n, uv0.position.y,
-						uv0.size.x / n, uv0.size.y),
-					"kind": kind0,
-				})
-		else:
-			expanded.append(s)
-	for s in expanded:
-		var uv: Rect2 = s.get("uv", Rect2())
-		var at := AtlasTexture.new()
-		at.atlas = tex
-		at.region = Rect2(
-			uv.position.x * ts.x, uv.position.y * ts.y,
-			uv.size.x * ts.x, uv.size.y * ts.y)
-		var spr := TextureRect.new()
-		spr.texture = at
-		spr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		spr.stretch_mode = TextureRect.STRETCH_SCALE
-		## 跟底圖同濾鏡＋同色調 modulate——切片曾用 LINEAR 且沒吃 grade，
-		## 疊在像素化底圖上出現一塊塊色調不合的補丁（Kevin 抓的霧祠色塊）
-		spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
-		spr.modulate = _floor.modulate
-		spr.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		var world_pos := Vector2(
-			FLOOR_RECT.position.x + uv.position.x * FLOOR_RECT.size.x,
-			FLOOR_RECT.position.y + uv.position.y * FLOOR_RECT.size.y)
-		var world_size := Vector2(
-			uv.size.x * FLOOR_RECT.size.x,
-			uv.size.y * FLOOR_RECT.size.y)
-		spr.position = world_pos
-		spr.size = world_size
-		var kind := str(s.get("kind", "mg"))
-		var foot: float
-		if WalkMask.has(_art_id):
-			foot = _occluder_foot(uv, world_pos, world_size)
-		else:
-			foot = FLOOR_RECT.end.y + 20.0 if kind == "fg" else world_pos.y + world_size.y
-		spr.set_meta("sort_y", foot)
-		spr.set_meta("scenic_kind", kind)
-		_world.add_child(spr)
-		_scenic_layer_nodes.append(spr)
+	## QA #3~#8 (t_923e133b): 廢除從底圖硬切無羽化矩形覆蓋層做法。
+	## 舊切片缺乏 ColorGradeShader、濾鏡不一致（NEAREST vs LINEAR）且分欄浮點誤差產生接縫，
+	## 會在 C2 白霧、C3 道場、C4 森林、C5 海岸製造筆直色差硬邊與拼接斷層。
+	return
 
 
 func _clear_map_stage() -> void:
