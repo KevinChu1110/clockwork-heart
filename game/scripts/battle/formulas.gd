@@ -282,7 +282,7 @@ static func weapon_tempo(weapon_class: String) -> Dictionary:
 		"fist": {"windup": 0.18, "recover": 0.28},
 		"claw": {"windup": 0.16, "recover": 0.26},
 		"axe": {"windup": 0.42, "recover": 0.58},
-		"hammer": {"windup": 0.40, "recover": 0.56},
+		"hammer": {"windup": 0.35, "recover": 0.56},
 		"spear": {"windup": 0.28, "recover": 0.42},
 		"crystal": {"windup": 0.28, "recover": 0.45},
 	}
@@ -325,7 +325,7 @@ static func weapon_basic_hits(weapon_class: String) -> int:
 static func weapon_uses_for(weapon_class: String) -> int:
 	var builtin: Dictionary = {
 		"sword": 16, "spear": 15, "bow": 14, "gun": 12, "magic": 14, "crystal": 14,
-		"axe": 12, "hammer": 12, "dart": 22, "dagger": 20, "fist": 18, "claw": 18,
+		"axe": 12, "hammer": 18, "dart": 22, "dagger": 20, "fist": 18, "claw": 18,
 	}
 	var fallback := 16
 	if builtin.has(weapon_class):

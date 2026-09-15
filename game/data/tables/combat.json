@@ -91,7 +91,7 @@
     "fist": { "windup": 0.18, "recover": 0.28 },
     "claw": { "windup": 0.16, "recover": 0.26 },
     "axe": { "windup": 0.42, "recover": 0.58 },
-    "hammer": { "windup": 0.40, "recover": 0.56 },
+    "hammer": { "windup": 0.35, "recover": 0.56 },
     "spear": { "windup": 0.28, "recover": 0.42 },
     "crystal": { "windup": 0.28, "recover": 0.45 }
   },
@@ -106,7 +106,7 @@
     "magic": 14,
     "crystal": 14,
     "axe": 12,
-    "hammer": 12,
+    "hammer": 18,
     "dart": 22,
     "dagger": 20,
     "fist": 18,

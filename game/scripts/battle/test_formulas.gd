@@ -350,7 +350,7 @@ func _initialize() -> void:
 	if abs(float(dart_t.windup) - 0.14) > 0.001 or abs(float(dart_t.recover) - 0.22) > 0.001:
 		push_error("time_model: dart tempo %s" % dart_t)
 		ok = false
-	if abs(float(ham_t.windup) - 0.40) > 0.001 or abs(float(ham_t.recover) - 0.56) > 0.001:
+	if abs(float(ham_t.windup) - 0.35) > 0.001 or abs(float(ham_t.recover) - 0.56) > 0.001:
 		push_error("time_model: hammer tempo %s" % ham_t)
 		ok = false
 	var cycle10 := atb10 + float(sword_t.windup) + Formulas.strike_duration() + float(sword_t.recover)

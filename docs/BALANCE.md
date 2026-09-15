@@ -26,7 +26,7 @@
 多 4% 出手次數。Lv40 累到 +9（10→19），剛好在最快的 Boss（疾影 16）之上而不是
 碾過去。這個數字是照 Boss 曲線量出來的，改之前先看 `test_boss_curve.gd`。
 
-武器流派表（`weapon_classes.json`）也有 speed 欄位（鏢 +3、鎚 −1），
+武器流派表（`weapon_classes.json`）也有 speed 欄位（鏢 +3、鎚 0），
 經 `GameState.effective_speed()` 併進來。**不要直接讀 `GameState.speed`**，
 那會繞過流派加成。
 
@@ -135,7 +135,7 @@ Lv3 可另加：橫斬附帶小範圍、恢復 +5% 等（見 PROGRESSION）。
 | 怒氣 per 傷 | `40 * dmg/max_hp` 上限 40／下 |
 | 自動暴怒 | 滿怒 6s、ATK×1.25、ATB×1.25（不耗怒） |
 | 手動暴怒 F | 8s、ATK×1.40、ATB×1.40（耗怒） |
-| 武器次數 | 斧／鎚 12 … 鏢 22（見 weapon_uses）；赤手 ATK×0.55 |
+| 武器次數 | 斧 12／鎚 18 … 鏢 22（見 weapon_uses）；赤手 ATK×0.55 |
 | 暴擊傷害 | 150% 面板（crit_dmg 50% 加成算法另定） |
 
 ### miss
@@ -164,7 +164,7 @@ miss% = clamp(floor(sqrt(max(0, 5*(spd_def-spd_atk)))) + eva - hit, 0, 95)
 | 法 magic | 0.32 | 0.42 | 略長 |
 | 銃 gun | 0.42 | 0.55 | 最慢收招 |
 | 斧 axe | 0.42 | 0.58 | 重 |
-| 鎚 hammer | 0.40 | 0.56 | 重 |
+| 鎚 hammer | 0.35 | 0.56 | 重（原 0.40，對齊 50~56s 節奏） |
 
 **姿態（虛擬距離）** — 戰鬥幾乎無真實距離，用「開闊／被壓」區分遠距：
 
