@@ -55,8 +55,38 @@ func _process(_delta: float) -> bool:
 			var expected_bg := Color("#FFFDF8")
 			var expected_border := Color("#1F1A3A")
 
-			# 1. 檢驗 PlayerRageLabel（左上「怒氣」）
-			print("=== 檢驗 1: PlayerRageLabel 樣式與字級 ===")
+			# 1. 檢驗 PlayerRageLabel、PlayerHPLabel、EnemyHPLabel（左上/右上卡片底板與樣式）
+			print("=== 檢驗 1: PlayerHPLabel / EnemyHPLabel / PlayerRageLabel 樣式與字級 ===")
+			var php := _battle.get_node_or_null("SideBars/PlayerSide/PlayerHPLabel") as Label
+			if php == null:
+				_fail("找不到 PlayerHPLabel 節點")
+			else:
+				var php_sz := php.get_theme_font_size("font_size")
+				if php_sz < 14:
+					_fail("PlayerHPLabel 字級小於 14px: %d" % php_sz)
+				else:
+					print("  [OK] PlayerHPLabel 字級符合 >=14px: %d" % php_sz)
+				var php_sb := php.get_theme_stylebox("normal") as StyleBoxFlat
+				if php_sb == null or not php_sb.bg_color.is_equal_approx(expected_bg):
+					_fail("PlayerHPLabel 未套用奶油白底小卡片")
+				else:
+					print("  [OK] PlayerHPLabel 套用奶油白底卡片")
+
+			var ehp := _battle.get_node_or_null("SideBars/EnemySide/EnemyHPLabel") as Label
+			if ehp == null:
+				_fail("找不到 EnemyHPLabel 節點")
+			else:
+				var ehp_sz := ehp.get_theme_font_size("font_size")
+				if ehp_sz < 14:
+					_fail("EnemyHPLabel 字級小於 14px: %d" % ehp_sz)
+				else:
+					print("  [OK] EnemyHPLabel 字級符合 >=14px: %d" % ehp_sz)
+				var ehp_sb := ehp.get_theme_stylebox("normal") as StyleBoxFlat
+				if ehp_sb == null or not ehp_sb.bg_color.is_equal_approx(expected_bg):
+					_fail("EnemyHPLabel 未套用奶油白底小卡片")
+				else:
+					print("  [OK] EnemyHPLabel 套用奶油白底卡片")
+
 			var prl := _battle.get_node_or_null("SideBars/PlayerSide/PlayerRageLabel") as Label
 			if prl == null:
 				_fail("找不到 PlayerRageLabel 節點")
