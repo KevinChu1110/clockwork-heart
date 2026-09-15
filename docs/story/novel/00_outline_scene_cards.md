@@ -57,15 +57,15 @@
 
 ---
 
-## Book 4 · 拳中有道（C3 · 3m 蒙太奇可濃縮）
+## Book 4 · 拳中有道（C3 · 正文已完成）
 
-| # | ID | 章 | 場景名 | 觸發 | Short |
-|---|-----|-----|--------|------|-------|
-| 31 | C3-S01 | C3 | 道場的鐘 | 入域 | 節奏 |
-| 32 | C3-S02 | C3 | 為何而戰 | 師傅問 | 主題 |
-| 33 | C3-S03 | C3 | 阿波的架 | Boss | 破防 |
-| 34 | C3-S04 | C3 | 拳裡有道了 | `boss.abo_cleared` | 收 |
-| 35 | C3-S05 | C3 | 塔路開了 | 蒙太奇 | 推進 |
+| # | ID | 章 | 場景名 | 觸發 | Short | 正文檔案 |
+|---|-----|-----|--------|------|-------|---------|
+| 31 | C3-S01 | C3 | 道場的鐘 | 入域 | 節奏 | [book1_c3_s01-05_why_we_fight.md](book1_c3_s01-05_why_we_fight.md) |
+| 32 | C3-S02 | C3 | 為何而戰 | 師傅問 | 主題 | [book1_c3_s01-05_why_we_fight.md](book1_c3_s01-05_why_we_fight.md) |
+| 33 | C3-S03 | C3 | 阿波的架 | Boss | 破防 | [book1_c3_s01-05_why_we_fight.md](book1_c3_s01-05_why_we_fight.md) |
+| 34 | C3-S04 | C3 | 拳裡有道了 | `boss.abo_cleared` | 收 | [book1_c3_s01-05_why_we_fight.md](book1_c3_s01-05_why_we_fight.md) |
+| 35 | C3-S05 | C3 | 塔路開了 | 蒙太奇 | 推進 | [book1_c3_s01-05_why_we_fight.md](book1_c3_s01-05_why_we_fight.md) |
 
 ---
 
