@@ -911,6 +911,10 @@ func _texture_has_baked_shadow(tex: Texture2D) -> bool:
 	if _baked_shadow_cache.has(key):
 		return bool(_baked_shadow_cache[key])
 	
+	if not tex.resource_path.is_empty() and "bamboo_spirit" in tex.resource_path.to_lower():
+		_baked_shadow_cache[key] = true
+		return true
+	
 	var img: Image = tex.get_image()
 	if img == null or img.is_empty():
 		_baked_shadow_cache[key] = false
@@ -1000,8 +1004,13 @@ func _layout_foot_shadow(body: TextureRect) -> void:
 	var sh := layer.get_node_or_null("FootShadow_%s" % body.name) as TextureRect
 	if sh == null or sh.texture == null:
 		return
-	## 玩家紙娃娃合成圖 (equipped_idle) 已自帶接地影，關閉外掛 FootShadow 避免疊第二層與錯位 (review.md 16c)
-	if body == player_body and _player_tex_has_baked_shadow:
+	## 角色或敵方貼圖若已自帶接地影，關閉外掛 FootShadow 避免疊第二層與錯位 (review.md 16c)
+	var has_baked := false
+	if body == player_body:
+		has_baked = _player_tex_has_baked_shadow or _texture_has_baked_shadow(body.texture)
+	elif body and body.texture:
+		has_baked = _texture_has_baked_shadow(body.texture)
+	if has_baked:
 		sh.visible = false
 		return
 	var dr := _body_drawn_rect(body)

@@ -5,7 +5,8 @@ const MobileLobby = preload("res://scripts/ui/mobile_lobby.gd")
 
 var _out_dirs: Array[String] = [
 	"/opt/side/bravesoul-game/screenshots/shadow_fix",
-	"/root/.hermes/kanban/boards/side-bravesoul/workspaces/t_89b36553/screenshots"
+	"/root/.hermes/kanban/boards/side-bravesoul/workspaces/t_89b36553/screenshots",
+	"/root/.hermes/kanban/boards/side-bravesoul/workspaces/t_bfad6486/screenshots"
 ]
 
 var _main: Node = null
