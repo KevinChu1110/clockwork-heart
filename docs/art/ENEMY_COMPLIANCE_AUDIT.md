@@ -94,16 +94,18 @@
 ---
 
 #### M1. 守衛泰坦·雷歐 (leo) · C1 王庭
-- **原始資產**：`web/media/bosses/signature/leo.png` / `game/assets/sprites/bosses/leo.png` (舊版生物毛皮)
+- **原始資產**：`web/media/bosses/signature/leo.png` / `game/assets/sprites/bosses/leo.png` (舊版生物毛皮) / `game/assets/sprites/portraits/leo.png` (對話半身像)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/leo_v2_full.png` (928×1152)
   - 頭部裁切放大：`proofs/enemy_audit/leo_v2_head_crop.png` (680×640)
   - 重繪前後對比：`proofs/enemy_audit/leo_v2_compare.png` (1000×560)
+  - 對話半身像頭部裁切：`proofs/enemy_audit/leo_portrait_head_crop.png` (488×488)
+  - 對話半身像前後對比：`proofs/enemy_audit/leo_portrait_compare.png` (800×540)
 - **三項問題答覆（review 19g-10 嚴格頭部裁切放大複驗）**：
   - ① 毛髮質感：**無** (合格)。鬃毛完全改為多層咬合之金色合金齒輪組與放射金屬薄片，無任何有機毛皮或蓬鬆絨毛。
   - ② 生物皮膚：**無** (合格)。臉孔改為金色合金沖壓板件、接縫線與螺栓十字鉚釘固定之機械面甲，雙眼為青藍色發光光學感測透鏡，徹底消除生物獸臉與粉紅腮紅。
   - ③ 發條鑰匙與螺栓：**有** (合格)。背部左肩軸心清晰外露大型黃銅雙環發條鑰匙，面甲、耳軸、頭盔與胸甲密布金屬螺栓與固定鉚釘。
-- **判定結果**：✅ **合格** (t_527e1941 二次修正複驗通過)
+- **判定結果**：✅ **合格** (t_527e1941 二次修正 ＆ t_110d45c4 對話半身像補換複驗全數通過)
 - **0c-28 前後辨識度保留與重繪說明**：
   - **核心特徵保留**：完整保留經典獅衛重裝銀鎧、頭頂珠寶黃金王冠與翻起式騎士面甲、右手持劍揮斬之金色齒輪能量波、左手厚重金屬鳶盾中央鑲嵌立體金色五角星、分節金屬鉸鏈機械尾，玩家可一眼辨認。
   - **合規改造達成**：成功改造為「發條合金機械獅王騎士（Clockwork Mechanical Toy Lion Knight）」，100% 符合 CANON 玩具世界觀憲章與 review 19g-10、0c-28 規範。
