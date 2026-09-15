@@ -48,6 +48,13 @@
     "name": "Zarpazo",
     "unlock_hint": "Apertura de garra"
   },
+  "clockwork_heal": {
+    "desc": "Mecanismo de emergencia de vara: el resorte tenso libera energía para recargar la durabilidad del chasis.",
+    "lv2": "Mayor recarga de durabilidad.",
+    "lv3": "Umbral crítico más amplio, mayor recarga de durabilidad.",
+    "name": "Autorreparación de Cuerda",
+    "unlock_hint": "Elige el estilo de vara · o nivel 5"
+  },
   "combo_fist": {
     "desc": "Apertura de tres puñetazos, tres impactos.",
     "lv2": "Puños más cerrados.",

@@ -48,6 +48,13 @@
     "name": "Rake",
     "unlock_hint": "Claw line opener"
   },
+  "clockwork_heal": {
+    "desc": "Staff emergency mechanism: tightly wound spring releases tension to restore chassis durability.",
+    "lv2": "Slightly more durability restored.",
+    "lv3": "Wider critical threshold, more durability restored.",
+    "name": "Clockwork Mend",
+    "unlock_hint": "Choose the staff style · or level 5"
+  },
   "combo_fist": {
     "desc": "A three-punch opener, three hits.",
     "lv2": "Denser punches.",
