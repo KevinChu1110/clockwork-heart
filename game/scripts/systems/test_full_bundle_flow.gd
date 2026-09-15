@@ -72,7 +72,8 @@ func _initialize() -> void:
 
 	# Step 3: Dynamically mount chapter.pck (as BundleLoader does at runtime)
 	print("[Phase 3: Mounting chapter.pck dynamically]")
-	var chap_pck_path := "/opt/side/bravesoul-game/dist/android/chapter.pck"
+	# ⛔ 不要寫死開發機絕對路徑（review.md 21h）：以專案根往上推 dist/android/
+	var chap_pck_path := ProjectSettings.globalize_path("res://../dist/android/chapter.pck")
 	if FileAccess.file_exists(chap_pck_path):
 		var load_ok = ProjectSettings.load_resource_pack(chap_pck_path)
 		if not load_ok:
