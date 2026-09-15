@@ -311,7 +311,8 @@ func _refresh_hud() -> void:
 	## 快捷欄留著 —— 戰鬥中要用道具（見 InventorySystem.hp_authority）。
 	var talking := (_dialogue and is_instance_valid(_dialogue) and _dialogue.visible) \
 		or (_cutscene and is_instance_valid(_cutscene) and _cutscene.visible)
-	var show_status_card := show_chrome and _current != Screen.BATTLE and not talking
+	var modal_open := _any_modal_open()
+	var show_status_card := show_chrome and _current != Screen.BATTLE and _current != Screen.LOBBY and not talking and not modal_open
 	if _inv_panel and _inv_panel.visible:
 		show_status_card = true
 	if _maple_hud and is_instance_valid(_maple_hud):
@@ -319,7 +320,7 @@ func _refresh_hud() -> void:
 		if show_status_card and _maple_hud.has_method("refresh"):
 			_maple_hud.call("refresh")
 	if _hotbar and is_instance_valid(_hotbar):
-		_hotbar.visible = show_chrome and not (_dialogue and _dialogue.visible)
+		_hotbar.visible = show_chrome and _current != Screen.LOBBY and not (_dialogue and _dialogue.visible) and not modal_open
 		if _hotbar.visible and _hotbar.has_method("refresh"):
 			_hotbar.call("refresh")
 	if hud == null:
@@ -341,6 +342,41 @@ func _refresh_hud() -> void:
 			GameState.hp, GameState.max_hp, GameState.gold,
 			GameState.weapon_display(), GameState.weapon_tier, GameState.chapter, extra
 		]
+
+
+func _any_modal_open() -> bool:
+	## 檢查全域與子場景中的 modal 彈窗（衣櫥／鍛造／寶石工坊／每日發條／能量／設定／廣告等）
+	for child in get_children():
+		if _is_modal_node(child):
+			return true
+	if host and is_instance_valid(host):
+		for screen_node in host.get_children():
+			if _is_modal_node(screen_node):
+				return true
+			for child in screen_node.get_children():
+				if _is_modal_node(child):
+					return true
+	return false
+
+
+func _is_modal_node(n: Node) -> bool:
+	if not is_instance_valid(n) or not (n is CanvasItem):
+		return false
+	if not (n as CanvasItem).visible or n.is_queued_for_deletion():
+		return false
+	if n is WardrobeDialog or n is ForgeDialog or n is GemWorkshopDialog \
+		or n is WindupDailyDialog or n is EnergyLackDialog or n is MobileSettings \
+		or n is MockAdDialog:
+		return true
+	var sname := ""
+	var scr = n.get_script()
+	if scr and scr is Script:
+		sname = scr.resource_path.get_file().get_basename()
+	if sname in ["wardrobe_dialog", "forge_dialog", "gem_workshop_dialog", "windup_daily_dialog", "energy_lack_dialog", "mobile_settings", "mock_ad_dialog"]:
+		return true
+	if n.name in ["WardrobeDialog", "ForgeDialog", "GemWorkshopDialog", "WindupDailyDialog", "EnergyLackDialog", "SettingsCard", "MobileSettings", "MockAdDialog"]:
+		return true
+	return false
 
 
 func _open_pause() -> void:
