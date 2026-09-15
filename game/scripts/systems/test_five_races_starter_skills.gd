@@ -23,7 +23,7 @@ func _initialize() -> void:
 		"lion": {"id": "line_thrust", "name": "一線突刺", "mult": 1.90, "hits": 1},
 		"fox": {"id": "magic_bolt", "name": "魔彈", "mult": 1.80, "hits": 1},
 		"boar": {"id": "stone_crush", "name": "碎岩鎚", "mult": 1.95, "hits": 1},
-		"macaque": {"id": "combo_fist", "name": "連環拳", "mult": 0.60, "hits": 3},
+		"macaque": {"id": "claw_rake", "name": "裂爪", "mult": 1.75, "hits": 1},
 	}
 
 	for r in races:
