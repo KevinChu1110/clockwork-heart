@@ -18,6 +18,7 @@ func _initialize() -> void:
 	_check_bgm()
 	_check_core_assets()
 	_check_unknown_defaults_to_chapter()
+	_check_missing_chapter_pack_behavior()
 	if _ok:
 		print("BUNDLE_OK")
 		quit(0)
@@ -96,3 +97,42 @@ func _check_unknown_defaults_to_chapter() -> void:
 	## 這條是「之後加區域不會再把首包撐破」的護欄
 	if Packs.pack_for_map("brand_new_region_99") != "chapter":
 		_fail("未知地圖必須預設 chapter")
+
+
+func _check_missing_chapter_pack_behavior() -> void:
+	## 驗證：進 C1~C6 地圖但沒裝 chapter.pck 時，要跳「尚未下載」提示不能崩潰或卡死
+	Packs.set_pack_presence_override("chapter", false)
+
+	# C0 / 大廳核心地圖在缺 chapter 時依然要可進
+	var core_maps: Array[String] = [
+		"village", "village_outskirts", "road", "road_bridge", "town", "sky_kingdom", "barracks_yard"
+	]
+	for mid in core_maps:
+		if not Packs.can_enter_map(mid):
+			_fail("核心地圖 %s 在缺 chapter 時應仍可進入" % mid)
+
+	# C1~C6 各章地圖在缺 chapter 時必須判定不可進，且提示文案包含「尚未下載」與「chapter」
+	var c1_to_c6_maps: Array[String] = [
+		"wild", "wild_leo_court",
+		"mist_village", "mist_cliff",
+		"dojo", "dojo_inner", "dojo_peak",
+		"forest", "forest_canopy",
+		"coast", "coast_harbor",
+		"tower_foyer", "tower_stairs",
+	]
+	for mid in c1_to_c6_maps:
+		if Packs.can_enter_map(mid):
+			_fail("C1~C6 地圖 %s 在未裝 chapter 時不應允許進入" % mid)
+		var prompt := Packs.missing_pack_line(mid)
+		if prompt.find("尚未下載") < 0 or prompt.find("chapter") < 0:
+			_fail("缺包提示不符要求: %s -> %s" % [mid, prompt])
+
+	# 驗證提示彈窗 AcceptDialog 建立與清理流程不崩潰
+	var test_dlg := AcceptDialog.new()
+	test_dlg.title = "尚未下載"
+	test_dlg.dialog_text = Packs.missing_pack_line("wild")
+	root.add_child(test_dlg)
+	test_dlg.queue_free()
+
+	Packs.clear_pack_presence_overrides()
+
