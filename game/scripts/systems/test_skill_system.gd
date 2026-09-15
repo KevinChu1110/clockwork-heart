@@ -262,6 +262,21 @@ func _initialize() -> void:
 		else:
 			print("crystal heal pick OK")
 
+		## 法杖危急：發條自癒（path magic 時可 unlock）
+		gs.skill_data = {}
+		gs.skill_slash_lv = 0
+		gs.path_style = "magic"
+		sk.grant_for_weapon_class("magic")
+		if not sk.is_learned("clockwork_heal"):
+			push_error("magic grant should unlock clockwork_heal")
+			ok = false
+		var kit_mg: Dictionary = sk.pick_battle_skill(0.30)
+		if str(kit_mg.get("id", "")) != "clockwork_heal":
+			push_error("magic low hp want clockwork_heal got %s" % kit_mg)
+			ok = false
+		else:
+			print("magic heal pick OK")
+
 		## 高等級解鎖暴怒技
 		gs.skill_data = {}
 		gs.skill_slash_lv = 0

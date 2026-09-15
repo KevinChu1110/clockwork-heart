@@ -64,6 +64,7 @@ const LEGACY_SIGNATURE_ALIAS := {
 	"heavy_cleave": "axe",
 	"iron_guard": "hammer",
 	"prism_ward": "crystal",
+	"clockwork_heal": "magic",
 }
 
 ## 目錄裡要翻的欄位（其餘是數值與 id，不能動）
@@ -654,6 +655,21 @@ const CATALOG: Array[Dictionary] = [
 		"lv3": "穿刺附短暫識破。",
 		"unlock_hint": "法杖 Lv6 · 或星途",
 	},
+	{
+		"id": "clockwork_heal",
+		"name": "發條自癒",
+		"line": "magic",
+		"profession": "mage",
+		"kind": "heal",
+		"base_mult": 0.0,
+		"heal_pct": 0.25,
+		"priority": 8,
+		"req_level": 5,
+		"desc": "法杖應急機制：緊繃發條釋放彈力，為金屬機體回充耐久。",
+		"lv2": "耐久回充略增。",
+		"lv3": "危急門檻更寬，耐久回充再增。",
+		"unlock_hint": "法杖 · 或 Lv5",
+	},
 	# ── 法師 · 水晶 ──
 	{
 		"id": "shard_bolt",
@@ -1132,7 +1148,7 @@ func is_unlocked(id: String) -> bool:
 				or lv >= 18
 		"star_pierce":
 			return (in_prof_tree and lv >= 6) or lv >= 10 or GameState.has_flag("c1_soul_intro")
-		"iron_guard", "prism_ward":
+		"iron_guard", "prism_ward", "clockwork_heal":
 			return same_line or same_prof or lv >= 5
 		_:
 			## 起手技：選了這條武器或同職另一武器即可
@@ -1184,6 +1200,8 @@ func pick_battle_skill(hp_ratio: float = 1.0, weapon_line: String = "") -> Dicti
 			threshold = 0.48 if get_lv("iron_guard") >= 3 else 0.44
 		elif sid == "prism_ward":
 			threshold = 0.46 if get_lv("prism_ward") >= 3 else 0.42
+		elif sid == "clockwork_heal":
+			threshold = 0.46 if get_lv("clockwork_heal") >= 3 else 0.42
 		if hp_ratio > threshold:
 			continue
 		var prio: int = int(d.get("priority", 0))

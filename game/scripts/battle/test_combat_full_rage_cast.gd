@@ -181,6 +181,82 @@ func _test_skillsystem_integrated_cast() -> bool:
 	return ok
 
 
+func _test_fox_low_hp_clockwork_heal() -> bool:
+	var ok := true
+	print("--- 驗收 3: 狐族（法師·杖）低血量滿怒自動施放自保技能（發條自癒） ---")
+
+	var sk: Node = root.get_node_or_null("SkillSystem")
+	var gs: Node = root.get_node_or_null("GameState")
+	if sk == null or gs == null:
+		push_error("缺少 SkillSystem 或 GameState autoload")
+		return false
+
+	gs.call("reset_new_game", "fox")
+	sk.call("ensure_skill_map")
+
+	if not sk.call("is_learned", "clockwork_heal"):
+		push_error("狐族創角後未習得自保技能 clockwork_heal")
+		return false
+
+	var stats: Dictionary = BattleSim.gather_player_stats()
+	# 設定為低血量（比率 <= 0.40，例如 18 / 50 = 36%）
+	stats["hp"] = 18
+	stats["max_hp"] = 50
+
+	var sim := BattleSim.make_tutorial_wolf_fight(stats)
+	sim.rng.seed = 99
+	var p: BattleUnit = sim.get_unit("player")
+	p.hp = 18
+	p.max_hp = 50
+	p.rage = 100.0
+
+	var captured_cast: Dictionary = {}
+	var captured_hit: Dictionary = {}
+	sim.event.connect(func(kind: String, data: Dictionary):
+		if kind == "skill_cast" and str(data.get("id", "")) == "player" and captured_cast.is_empty():
+			for k in data.keys():
+				captured_cast[k] = data[k]
+		elif kind == "skill_hit" and str(data.get("attacker", "")) == "player" and captured_hit.is_empty():
+			for k in data.keys():
+				captured_hit[k] = data[k]
+	)
+
+	var steps := 0
+	while (captured_cast.is_empty() or captured_hit.is_empty()) and steps < 200:
+		sim.step(0.05)
+		steps += 1
+
+	if captured_cast.is_empty():
+		push_error("狐族低血量滿怒未能釋放技能")
+		ok = false
+	elif str(captured_cast.get("skill_id", "")) != "clockwork_heal":
+		push_error("低血量優先技能應為 clockwork_heal，實際為 %s" % captured_cast.get("skill_id"))
+		ok = false
+	elif str(captured_cast.get("skill", "")) != "發條自癒":
+		push_error("低血量技能名稱應為 發條自癒，實際為 %s" % captured_cast.get("skill"))
+		ok = false
+	else:
+		print("  ok 狐族低血量滿怒成功釋放自保技能: %s (id=%s)" % [
+			captured_cast.get("skill"), captured_cast.get("skill_id")
+		])
+
+	if captured_hit.is_empty():
+		push_error("狐族自保技能未結算 skill_hit")
+		ok = false
+	elif str(captured_hit.get("kind", "")) != "heal":
+		push_error("狐族自保技能類型應為 heal，實際為 %s" % captured_hit.get("kind"))
+		ok = false
+	elif int(captured_hit.get("heal", 0)) <= 0:
+		push_error("狐族自保技能治療量應大於 0，實際為 %s" % captured_hit.get("heal"))
+		ok = false
+	else:
+		print("  ok 狐族自保技能命中結算成功，回復耐久 %d (當前 HP: %d/%d)" % [
+			int(captured_hit.get("heal", 0)), int(captured_hit.get("hp", 0)), int(captured_hit.get("max_hp", 0))
+		])
+
+	return ok
+
+
 func _initialize() -> void:
 	var ok := true
 
@@ -188,6 +264,9 @@ func _initialize() -> void:
 		ok = false
 
 	if not _test_skillsystem_integrated_cast():
+		ok = false
+
+	if not _test_fox_low_hp_clockwork_heal():
 		ok = false
 
 	if ok:

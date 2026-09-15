@@ -42,7 +42,7 @@ static func grant_skills_for_path(class_id: String) -> void:
 	if sk.has_method("grant_for_weapon_class"):
 		sk.call("grant_for_weapon_class", str(class_id))
 	else:
-		for sid in ["star_pierce", "iron_guard", "blade_dance", "emergency_heal", "slash"]:
+		for sid in ["star_pierce", "iron_guard", "blade_dance", "emergency_heal", "slash", "clockwork_heal"]:
 			if sk.has_method("try_unlock"):
 				sk.call("try_unlock", sid)
 
