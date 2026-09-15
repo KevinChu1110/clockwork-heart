@@ -132,8 +132,8 @@
    "id": "mob-bundle",
    "cat": "遊戲",
    "title": "🥈 手機化 6／6：首包瘦到 50–80MB 與分包",
-   "status": "開發中",
-   "note": "Grok回報：exclude filter與文檔在，但五個preset仍是all_resources單包，未真正拆出core/chapter兩個artifact，真機APK/PCK未實重。下一刀：打出core+chapter兩個包，缺包不擋流程驗收",
+   "status": "測試中",
+   "note": "新增Chapter Pack preset並驗證實機分包：core.pck 104M / chapter.pck 165M / debug APK 122M，缺包流程守衛與動態掛載測試全綠",
    "keys": [
     "包體",
     "分包",
