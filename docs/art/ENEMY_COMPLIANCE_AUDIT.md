@@ -31,11 +31,11 @@
 | 編號 | 敵人代號 | 敵人名稱 | 資源原圖路徑 | 審查截圖依據 (Panel) | ①毛髮質感 | ②生物皮膚 | ③發條鑰匙/螺栓 | 綜合判定 |
 | :---: | :--- | :--- | :--- | :--- | :---: | :---: | :---: | :---: |
 | 01 | `ash_rat` | 灰燼鼠 | `game/assets/sprites/bosses/ash_rat.png` | `proofs/enemy_audit/ash_rat_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_63073ba4 重繪) |
-| 02 | `bamboo_spirit` | 竹靈 | `game/assets/sprites/bosses/bamboo_spirit.png` | `proofs/enemy_audit/bamboo_spirit_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
+| 02 | `bamboo_spirit` | 竹靈 | `game/assets/sprites/bosses/bamboo_spirit.png` | `proofs/enemy_audit/bamboo_spirit_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_b51e9456 重繪) |
 | 03 | `coast_raider` | 海岸掠奪者 | `game/assets/sprites/bosses/coast_raider.png` | `proofs/enemy_audit/coast_raider_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_63073ba4 重繪) |
 | 04 | `fog_shade` | 迷霧暗影 | `game/assets/sprites/bosses/fog_shade.png` | `proofs/enemy_audit/fog_shade_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_63073ba4 重繪) |
-| 05 | `forest_sprite` | 森林精靈 | `game/assets/sprites/bosses/forest_sprite.png` | `proofs/enemy_audit/forest_sprite_audit_panel.png` | **有** (髮絲) | **有** (違規) | **無** (違規) | ❌ **不合格** |
-| 06 | `mirror_wraith` | 鏡中幽靈 | `game/assets/sprites/bosses/mirror_wraith.png` | `proofs/enemy_audit/mirror_wraith_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
+| 05 | `forest_sprite` | 森林精靈 | `game/assets/sprites/bosses/forest_sprite.png` | `proofs/enemy_audit/forest_sprite_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_b51e9456 重繪) |
+| 06 | `mirror_wraith` | 鏡中幽靈 | `game/assets/sprites/bosses/mirror_wraith.png` | `proofs/enemy_audit/mirror_wraith_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_b51e9456 重繪) |
 | 07 | `road_bandit` | 荒路匪徒 | `game/assets/sprites/bosses/road_bandit.png` | `proofs/enemy_audit/road_bandit_audit_panel.png` | **無** | **無** | **有** (合格) | ✅ **合格** |
 | 08 | `scar_lord` | 黑焰領主 | `game/assets/sprites/bosses/scar_lord.png` | `proofs/enemy_audit/scar_lord_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
 | 09 | `scar_wisp` | 黑焰幽火 | `game/assets/sprites/bosses/scar_wisp.png` | `proofs/enemy_audit/scar_wisp_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
@@ -44,8 +44,8 @@
 
 > **盤點統計**：
 > - 審查總數：11
-> - **合格**：**4** 個（`road_bandit` 已於 `t_f1fcef58` 重繪；`ash_rat`、`coast_raider`、`fog_shade` 已於 `t_63073ba4` 依 19g-10 標準成功重繪為發條金屬玩具）
-> - **不合格**：**7** 個（其餘皆未玩具機械化，缺乏發條鑰匙與螺栓接縫，或包含血肉/毛皮/腮紅）
+> - **合格**：**7** 個（`road_bandit` 已於 `t_f1fcef58` 重繪；`ash_rat`、`coast_raider`、`fog_shade` 已於 `t_63073ba4` 重繪；`bamboo_spirit`、`forest_sprite`、`mirror_wraith` 已於 `t_b51e9456` 依 19g-10 標準成功重繪為發條金屬玩具）
+> - **不合格**：**4** 個（`scar_lord`、`scar_wisp`、`sewer_slime`、`wreck_captain` 留待後續專項重繪）
 
 *(補充：C1 首領守衛泰坦·雷歐 `leo` 已於 `t_2e6dee93` 完成金屬化改造重繪，具備黃銅雙環發條鑰匙與金屬面甲螺栓，為合規資產。)*
 
@@ -70,17 +70,18 @@
 ---
 
 ### 02. 竹靈 (bamboo_spirit)
-- **原始資產**：`game/assets/sprites/bosses/bamboo_spirit.png` (122×150 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/bamboo_spirit.png` (240×300 RGBA)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/bamboo_spirit_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/bamboo_spirit_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/bamboo_spirit_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/bamboo_spirit_compare.png`
 - **三項問題答覆**：
-  - ① 毛髮質感：**無**。整體為竹筒與自然碎屑/靈氣粒子，無動物毛髮。
-  - ② 生物皮膚：**無**。呈現天然植物青竹色，無肉色皮膚或腮紅。
-  - ③ 發條鑰匙與螺栓：**無**。頭頂為自然斜切空心竹筒，背後背負的是斜插竹管（非發條鑰匙）；全身為植物與布料道袍，完全無金屬螺栓、機械接縫或發條玩具機關。
-- **判定結果**：❌ **不合格**
-- **違規詳情與後續建議**：雖然無動物毛皮，但完全未落實「發條玩具」世界觀。未來應改為「竹製發條機巧人偶（Karakuri Toy）」——頭部加入雕花黃銅發條鎖栓，關節改為木製卡榫與金屬軸心，背部增設黃銅發條鑰匙。
+  - ① 毛髮質感：**無**。全身改為漆綠竹筒外殼與拋光黃銅板件，無任何有機動物毛髮或鬃毛。
+  - ② 生物皮膚：**無**。臉部為精細雕刻之原木機巧面甲，雙眼為青藍色發光圓形透鏡，額頭與胸口鑲嵌鉚釘白鐵片與齒輪能量核心，完全零血肉、零生物皮膚、零腮紅。
+  - ③ 發條鑰匙與螺栓：**有**。**背部外露巨大齒輪齒緣之黃銅發條鑰匙**，四肢採用金屬球形關節與鉸鏈，竹杖兩側裝配黃銅齒輪環，全身關節具備清晰金屬螺栓與機械接縫。
+- **判定結果**：✅ **合格**
+- **說明**：已於任務 `t_b51e9456` 成功重繪為竹製發條機巧人偶（Karakuri Toy Automaton），100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
 
@@ -117,32 +118,34 @@
 ---
 
 ### 05. 森林精靈 (forest_sprite)
-- **原始資產**：`game/assets/sprites/bosses/forest_sprite.png` (125×141 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/forest_sprite.png` (220×320 RGBA)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/forest_sprite_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/forest_sprite_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/forest_sprite_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/forest_sprite_compare.png`
 - **三項問題答覆**：
-  - ① 毛髮質感：**有**。頭頂具備柔順的綠色人類少女髮束與馬尾（非金屬片）。
-  - ② 生物皮膚：**有**。臉部、脖頸與手臂均為鮮嫩的生物肉色皮膚，雙頰有極為明顯的**粉色少女腮紅**與尖尖的精靈肉耳。
-  - ③ 發條鑰匙與螺栓：**無**。純粹的人形生物妖精，無發條鑰匙、無螺栓與金屬接縫。
-- **判定結果**：❌ **不合格**
-- **違規詳情與後續建議**：典型的二次元生物精靈，嚴重違反「零人類血肉、零腮紅」規範。後續應重繪為「八音盒上的發條芭蕾精靈公仔」——琺瑯金屬烤漆臉、球形木偶關節、背後帶黃銅發條鑰匙、金屬雕刻薄片翅膀。
+  - ① 毛髮質感：**無**。髮型改為分片沖壓金屬綠葉板件（葉脈帶微型固定螺栓與鉚釘），頂部為金屬葉梗，完全零有機髮絲與毛茸。
+  - ② 生物皮膚：**無**。全臉改為光滑純白瓷面金屬烤漆人偶面甲，雙頰無任何腮紅，雙眼為銀白金屬透鏡，臉頰帶玩具分模接縫線，四肢均為純白瓷漆球形關節肢體，零生物皮膚。
+  - ③ 發條鑰匙與螺栓：**有**。**背部右側突出明顯雙環巴洛克雕花黃銅發條鑰匙**，背後翅膀為鏤空黃銅齒輪薄片翅膀，腰部設有黃銅鉸鏈皮帶，葉片洋裝皆有金屬固定鉚釘與接縫。
+- **判定結果**：✅ **合格**
+- **說明**：已於任務 `t_b51e9456` 成功重繪為八音盒發條芭蕾精靈公仔（Music Box Fairy Figurine），100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
 
 ### 06. 鏡中幽靈 (mirror_wraith)
-- **原始資產**：`game/assets/sprites/bosses/mirror_wraith.png` (181×200 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/mirror_wraith.png` (270×300 RGBA)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/mirror_wraith_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/mirror_wraith_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/mirror_wraith_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/mirror_wraith_compare.png`
 - **三項問題答覆**：
-  - ① 毛髮質感：**無**。飄散的為以太幽能，非毛皮。
-  - ② 生物皮膚：**無**。整體為冷灰藍死靈骷髏質感，無肉色腮紅。
-  - ③ 發條鑰匙與螺栓：**無**。為傳統奇幻死靈怨女，全身為破布與靈體，持握普通金屬鏡，身上與背後無發條鑰匙、無機關螺栓。
-- **判定結果**：❌ **不合格**
-- **違規詳情與後續建議**：缺乏發條玩具屬性。後續重繪應將其改造為「發條魔鏡機偶」——以古董金屬框立鏡為本體，背後有巨大齒輪箱與發條鑰匙，透過活動金屬支架操縱鏡中傀儡。
+  - ① 毛髮質感：**無**。傀儡頭部為紫靛色金屬螺栓頭殼，鏡面本體為水銀漩渦，無任何有機毛髮。
+  - ② 生物皮膚：**無**。面部為純白瓷質威尼斯面具，雙眼為青藍色發光透鏡，身軀為紫靛色琺瑯漆金屬胸甲，四肢為金屬球形關節與黃銅機械手，零生物皮膚、零腮紅。
+  - ③ 發條鑰匙與螺栓：**有**。**鏡框右側齒輪傳動箱外露巨大雙環黃銅發條鑰匙**，鏡框頂部與邊緣密布咬合金屬齒輪，古董金屬底座帶有機械獸爪腳座與螺栓接縫。
+- **判定結果**：✅ **合格**
+- **說明**：已於任務 `t_b51e9456` 成功重繪為發條魔鏡機偶（Clockwork Magic Mirror Automaton），100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
 
