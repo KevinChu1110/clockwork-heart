@@ -8,26 +8,26 @@
 
 ## Book 1 · 微末的開始（C0～C1 入城）
 
-| # | ID | 章 | 場景名 | 遊戲觸發／flag（示意） | Short 可用 |
-|---|-----|-----|--------|------------------------|------------|
-| 01 | C0-S01 | C0 | 預言與今夜 | 開場黑屏旁白 | W1 鉤子 |
-| 02 | C0-S02 | C0 | 發條新村·燃燒之夜 | C0-S1 入場 | ★ 第一場正文 |
-| 03 | C0-S03 | C0 | 舊鑰的三種回答 | 對話選項 A/B/C | 情緒短片 |
-| 04 | C0-S04 | C0 | 鏽劍三振 | `c0_sword_triple_pull` | 拔劍梗 |
-| 05 | C0-S05 | C0 | 舊閣樓的氣味 | `c0_village_left` | 溫柔收 |
-| 06 | C0-S06 | C0 | 荒路·黎明的煙柱 | C0-S2 | 氣氛 |
-| 07 | C0-S07 | C0 | 路標與血字布條 | 調查 | 世界觀 |
-| 08 | C0-S08 | C0 | 第一戰·像呼吸 | `c0_first_battle` | W3 |
-| 09 | C0-S09 | C0 | 陌生人的半句 | `c0_helped_by_stranger` | 可選 |
-| 10 | C0-S10 | C0 | 望見石牆 | 望堡過場 | 希望鏡頭 |
-| 11 | C1-S01 | C1 | 石牆的大門不為體型開 | 進城 | 主題 |
-| 12 | C1-S02 | C1 | 老門衛的盤問 | 門衛 NPC | 幽默 |
-| 13 | C1-S03 | C1 | 釘釘看火不看人 | 鐵匠初遇 | W9 伏筆 |
-| 14 | C1-S04 | C1 | 微末之刃重鍛 | `c1_forged` | 器 |
-| 15 | C1-S05 | C1 | 星讀與互相矛盾的預言 | 星讀初遇 | 魂 |
-| 16 | C1-S06 | C1 | 小芽的旗 | `c1_sprout_done` | 可愛 |
-| 17 | C1-S07 | C1 | 廣場上的爪印 | 劇情推進 | 緊張 |
-| 18 | C1-S08 | C1 | 雷歐的前夜 | 戰前 | W5 前奏 |
+| # | ID | 章 | 場景名 | 遊戲觸發／flag（示意） | Short 可用 | 正文檔案 |
+|---|-----|-----|--------|------------------------|------------|---------|
+| 01 | C0-S01 | C0 | 預言與今夜 | 開場黑屏旁白 | W1 鉤子 | [book1_c0_s01_prophecy.md](book1_c0_s01_prophecy.md) |
+| 02 | C0-S02 | C0 | 發條新村·燃燒之夜 | C0-S1 入場 | ★ 第一場正文 | [book1_c0_s02_ember_night.md](book1_c0_s02_ember_night.md)（舊案保留） |
+| 03 | C0-S03 | C0 | 舊鑰的三種回答 | 對話選項 A/B/C | 情緒短片 | [book1_c0_s03_three_answers.md](book1_c0_s03_three_answers.md) |
+| 04 | C0-S04 | C0 | 鏽劍三振 | `c0_sword_triple_pull` | 拔劍梗 | [book1_c0_s04_triple_pull.md](book1_c0_s04_triple_pull.md) |
+| 05 | C0-S05 | C0 | 舊閣樓的氣味 | `c0_village_left` | 溫柔收 | [book1_c0_s05_attic_scent.md](book1_c0_s05_attic_scent.md) |
+| 06 | C0-S06 | C0 | 荒路·黎明的煙柱 | C0-S2 | 氣氛 | [book1_c0_s06-08_dawn_road.md](book1_c0_s06-08_dawn_road.md) |
+| 07 | C0-S07 | C0 | 路標與血字布條 | 調查 | 世界觀 | [book1_c0_s06-08_dawn_road.md](book1_c0_s06-08_dawn_road.md) |
+| 08 | C0-S08 | C0 | 第一戰·像呼吸 | `c0_first_battle` | W3 | [book1_c0_s06-08_dawn_road.md](book1_c0_s06-08_dawn_road.md) |
+| 09 | C0-S09 | C0 | 陌生人的半句 | `c0_helped_by_stranger` | 可選 | [book1_c0_s09_stranger_half.md](book1_c0_s09_stranger_half.md) |
+| 10 | C0-S10 | C0 | 望見石牆 | 望堡過場 | 希望鏡頭 | [book1_c0_s10_stone_wall.md](book1_c0_s10_stone_wall.md) |
+| 11 | C1-S01 | C1 | 石牆的大門不為體型開 | 進城 | 主題 | [book1_c1_s01-04_gate_forge.md](book1_c1_s01-04_gate_forge.md) |
+| 12 | C1-S02 | C1 | 老門衛的盤問 | 門衛 NPC | 幽默 | [book1_c1_s01-04_gate_forge.md](book1_c1_s01-04_gate_forge.md) |
+| 13 | C1-S03 | C1 | 釘釘看火不看人 | 鐵匠初遇 | W9 伏筆 | [book1_c1_s01-04_gate_forge.md](book1_c1_s01-04_gate_forge.md) |
+| 14 | C1-S04 | C1 | 微末之刃重鍛 | `c1_forged` | 器 | [book1_c1_s01-04_gate_forge.md](book1_c1_s01-04_gate_forge.md) |
+| 15 | C1-S05 | C1 | 星讀與互相矛盾的預言 | 星讀初遇 | 魂 | [book1_c1_s05-08_leo_eve.md](book1_c1_s05-08_leo_eve.md) |
+| 16 | C1-S06 | C1 | 小芽的旗 | `c1_sprout_done` | 可愛 | [book1_c1_s05-08_leo_eve.md](book1_c1_s05-08_leo_eve.md) |
+| 17 | C1-S07 | C1 | 廣場上的爪印 | 劇情推進 | 緊張 | [book1_c1_s05-08_leo_eve.md](book1_c1_s05-08_leo_eve.md) |
+| 18 | C1-S08 | C1 | 雷歐的前夜 | 戰前 | W5 前奏 | [book1_c1_s05-08_leo_eve.md](book1_c1_s05-08_leo_eve.md) |
 
 ---
 
