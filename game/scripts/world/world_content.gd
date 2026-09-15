@@ -26,7 +26,7 @@ static func _enemy_def_raw(mode: String) -> Dictionary:
 		"ash_rat":
 			return {"id": "ash_rat", "name": "灰燼鼠", "max_hp": 55, "atk": 8, "def": 2, "speed": 12.0, "kin": "ninja", "is_boss": false, "art": "ash_rat", "art_fallback": "wolf"}
 		"road_bandit":
-			return {"id": "road_bandit", "name": "鏽蝕哨兵偶", "max_hp": 75, "atk": 10, "def": 4, "speed": 10.0, "kin": "viking", "is_boss": false, "art": "road_bandit", "art_fallback": "wolf"}
+			return {"id": "road_bandit", "name": "荒路匪徒", "max_hp": 75, "atk": 10, "def": 4, "speed": 10.0, "kin": "viking", "is_boss": false, "art": "road_bandit", "art_fallback": "wolf"}
 		"sewer_slime":
 			return {"id": "sewer_slime", "name": "下水黏漿", "max_hp": 70, "atk": 9, "def": 5, "speed": 8.0, "kin": "monk", "is_boss": false, "art": "sewer_slime", "art_fallback": "wolf"}
 		"fog_shade":
@@ -152,7 +152,7 @@ static func skirmishes() -> Dictionary:
 	return {
 		"deep_dark": {"mode": "ash_rat", "once_flag": "", "intro": _t("黑暗裡兩點紅光——灰燼鼠撲來。")},
 		"bone_pile": {"mode": "ash_rat", "once_flag": "", "intro": _t("獸骨堆動了。不是風。")},
-		"bush_b": {"mode": "road_bandit", "once_flag": "skirmish.road_bush", "intro": _t("發條雜叢後竄出鏽蝕哨兵偶！")},
+		"bush_b": {"mode": "road_bandit", "once_flag": "skirmish.road_bush", "intro": _t("發條雜叢後竄出荒路匪徒！")},
 		"rat_nest": {"mode": "sewer_slime", "once_flag": "", "intro": _t("黏液從管口湧出。")},
 		"slime_pool": {"mode": "sewer_slime", "once_flag": "skirmish.sewer_pool", "intro": _t("池面鼓起人形……不，是黏漿。")},
 		"cat_shadow": {"mode": "fog_shade", "once_flag": "skirmish.mist_cat", "intro": _t("影貓化作霧影撲向你。")},

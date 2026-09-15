@@ -1830,6 +1830,8 @@ func _on_choice(i: int) -> void:
 func _clear_host() -> void:
 	_explore = null
 	for c in host.get_children():
+		if c is CanvasItem:
+			(c as CanvasItem).hide()
 		c.queue_free()
 
 
