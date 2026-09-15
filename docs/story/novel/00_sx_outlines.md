@@ -11,7 +11,7 @@
 
 | ID | 篇名 | 分類 | 核心地點 | 核心 NPC | 遊戲 Flag / 觸發 | 對應稱號 / 任務 |
 |---|------|------|----------|----------|------------------|------------------|
-| SX-01 | 浪人的岔路 | 人情支線 | 荒漠齒輪塚·遺忘舊庫（岔路） | 黑鏽浪人、小白 | `side.ronin_done` | 稱號「收刃之人」· 岔路分刃 |
+| SX-01 | [浪人的岔路](bookX_sx01_ronin_crossroads.md) | 人情支線 | 荒漠齒輪塚·遺忘舊庫（岔路） | 黑鏽浪人、小白 | `side.ronin_done` | 稱號「收刃之人」· 岔路分刃 |
 | SX-02 | 長明燈 | 日常微光 | 今日村莊·村後墓園 | 小白、先驅玩偶們 | `side.lantern_done` | 稱號「守燈人」· 長明一火 |
 | SX-03 | 橋下巢 | 日常微光 | 積木斷橋 | 小白（巢中雛鳥） | `side.nest_care_done` | 任務「橋下軟羽」 |
 | SX-04 | 星池願 | 日常微光 | 星落平原 | 小白、星讀 | `side.star_wish_done` | 稱號「許願兔」· 星池一願 |
@@ -25,6 +25,7 @@
 ## SX-01 · 浪人的岔路
 
 - **章節編號**：SX-01
+- **正文檔案**：[bookX_sx01_ronin_crossroads.md](bookX_sx01_ronin_crossroads.md)
 - **遊戲機制與 Flag 對齊**：主線擊敗雷歐（`boss.leo_cleared`）後在該處岔路觸發。若小白帶有善意印記（`c2_wheat_letter` / `c0_wheat_saved` / `c1_sprout_done`），可選勸說使其收刃（`side.ronin_spared` 且 `side.ronin_done`），日後浪人會在通天黑塔營火旁默默守夜；亦可選擇拔劍交鋒將其戰勝（`side.ronin_defeated` 且 `side.ronin_done`）。統一結案於 `side.ronin_done`，解鎖稱號「收刃之人」。
 - **地點**：荒漠齒輪塚·遺忘舊庫的岔路（通往六域與通天黑塔營地的樞紐）。
 - **涉及 NPC**：黑鏽浪人、小白。

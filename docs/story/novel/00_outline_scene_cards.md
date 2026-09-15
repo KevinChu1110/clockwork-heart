@@ -104,7 +104,7 @@
 
 | # | ID | 章 | 場景名 | 觸發 | Short | 大綱檔案 |
 |---|-----|-----|--------|------|-------|---------|
-| 53 | SX-01 | 支 | 浪人的岔路 | `side.ronin_done` | 選擇 | [00_sx_outlines.md](00_sx_outlines.md#sx-01--浪人的岔路) |
+| 53 | SX-01 | 支 | 浪人的岔路 | `side.ronin_done` | 選擇 | [bookX_sx01_ronin_crossroads.md](bookX_sx01_ronin_crossroads.md) |
 | 54 | SX-02 | 支 | 長明燈 | `side.lantern_done` | 溫柔 | [00_sx_outlines.md](00_sx_outlines.md#sx-02--長明燈) |
 | 55 | SX-03 | 支 | 橋下巢 | `side.nest_care_done` | 保護 | [00_sx_outlines.md](00_sx_outlines.md#sx-03--橋下巢) |
 | 56 | SX-04 | 支 | 星池願 | `side.star_wish_done` | 願望 | [00_sx_outlines.md](00_sx_outlines.md#sx-04--星池願) |
