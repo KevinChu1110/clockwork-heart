@@ -476,6 +476,7 @@ func _apply_hud_chrome() -> void:
 		ls.content_margin_bottom = 10
 		_log_panel.add_theme_stylebox_override("panel", ls)
 		_log_panel.z_index = 30
+		_log_panel.z_as_relative = false
 		parent_ctrl.add_child(_log_panel)
 		parent_ctrl.move_child(_log_panel, idx)
 		log_label.reparent(_log_panel)
@@ -953,6 +954,8 @@ func _shadow_layer() -> Control:
 		add_child(layer)
 	layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.clip_contents = false
+	layer.z_index = 0
+	layer.z_as_relative = false
 	## 地面 → 軟影 → 角色 → 戰報。畫在 Arena 之後會蓋靴子。
 	if arena and layer.get_index() != arena.get_index() - 1:
 		move_child(layer, arena.get_index())
@@ -1008,18 +1011,22 @@ func _layout_foot_shadow(body: TextureRect) -> void:
 	var frac := _content_bottom_frac(body.texture)
 	var local_feet := Vector2(dr.position.x + dr.size.x * 0.5, dr.position.y + dr.size.y * frac)
 	var feet: Vector2 = body.get_global_transform() * local_feet
-	var sz := Vector2(maxf(dr.size.x * 2.40, 340.0), maxf(dr.size.x * 0.38, 72.0))
+	var sz := Vector2(maxf(dr.size.x * 1.60, 220.0), maxf(dr.size.x * 0.22, 36.0))
 	var s_scale := layer.get_global_transform().get_scale()
-	## 扁橢圓貼在腳前方地面；核要大到縮手機寬還認得出踩在地上。
-	var pos_y := feet.y - (sz.y * s_scale.y) * 0.12
-	var max_bottom := size.y - 8.0
-	if log_label:
-		max_bottom = log_label.global_position.y - 8.0
+	## 扁橢圓貼在腳底地面（約 40% 在腳線上方、60% 在腳線下方落地）
+	var pos_y := feet.y - (sz.y * s_scale.y) * 0.40
+	var panel_top := size.y - 8.0
+	if _log_panel and is_instance_valid(_log_panel):
+		panel_top = _log_panel.global_position.y
+	elif log_label and is_instance_valid(log_label):
+		var lp := log_label.get_parent() as Control
+		if lp is PanelContainer:
+			panel_top = lp.global_position.y
+		else:
+			panel_top = log_label.global_position.y - 36.0
+	var max_bottom := panel_top - 6.0
 	if pos_y + sz.y * s_scale.y > max_bottom:
-		sz.y = maxf(64.0, (max_bottom - pos_y) / maxf(s_scale.y, 0.001))
-		pos_y = feet.y - (sz.y * s_scale.y) * 0.12
-		if pos_y + sz.y * s_scale.y > max_bottom:
-			pos_y = max_bottom - sz.y * s_scale.y
+		sz.y = maxf(20.0, (max_bottom - pos_y) / maxf(s_scale.y, 0.001))
 	sh.size = sz
 	## 幾乎整塊落腳前方地面；底邊不進戰報。
 	sh.global_position = Vector2(feet.x - (sz.x * s_scale.x) * 0.5, pos_y)
