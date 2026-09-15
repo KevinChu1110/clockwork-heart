@@ -132,8 +132,8 @@
    "id": "mob-bundle",
    "cat": "遊戲",
    "title": "🥈 手機化 6／6：首包瘦到 50–80MB 與分包",
-   "status": "已上線",
-   "note": "QA回歸驗收全綠(t_5f90bd63)，79/79 PASSED",
+   "status": "開發中",
+   "note": "Grok回報：exclude filter與文檔在，但五個preset仍是all_resources單包，未真正拆出core/chapter兩個artifact，真機APK/PCK未實重。下一刀：打出core+chapter兩個包，缺包不擋流程驗收",
    "keys": [
     "包體",
     "分包",
