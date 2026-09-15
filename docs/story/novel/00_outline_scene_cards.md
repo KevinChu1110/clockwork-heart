@@ -102,16 +102,16 @@
 
 ## Book X · 外傳／支線（可 Short · 不擋主線）
 
-| # | ID | 章 | 場景名 | 觸發 | Short |
-|---|-----|-----|--------|------|-------|
-| 53 | SX-01 | 支 | 浪人的岔路 | `side.ronin_done` | 選擇 |
-| 54 | SX-02 | 支 | 長明燈 | `side.lantern_done` | 溫柔 |
-| 55 | SX-03 | 支 | 橋下巢 | `side.nest_care_done` | 保護 |
-| 56 | SX-04 | 支 | 星池願 | `side.star_wish_done` | 願望 |
-| 57 | SX-05 | 支 | 釘釘的舊債 | `side.ding_debt_done` | 鐵匠 |
-| 58 | SX-06 | 支 | 霧祠香 | `side.fog_incense_done` | 儀式 |
-| 59 | SX-07 | 後 | 裂縫溢出的災厄 | 裂縫 | 週活 |
-| 60 | SX-08 | 後 | 迴響：若再走一次 | NG+ | 後記 |
+| # | ID | 章 | 場景名 | 觸發 | Short | 大綱檔案 |
+|---|-----|-----|--------|------|-------|---------|
+| 53 | SX-01 | 支 | 浪人的岔路 | `side.ronin_done` | 選擇 | [00_sx_outlines.md](00_sx_outlines.md#sx-01--浪人的岔路) |
+| 54 | SX-02 | 支 | 長明燈 | `side.lantern_done` | 溫柔 | [00_sx_outlines.md](00_sx_outlines.md#sx-02--長明燈) |
+| 55 | SX-03 | 支 | 橋下巢 | `side.nest_care_done` | 保護 | [00_sx_outlines.md](00_sx_outlines.md#sx-03--橋下巢) |
+| 56 | SX-04 | 支 | 星池願 | `side.star_wish_done` | 願望 | [00_sx_outlines.md](00_sx_outlines.md#sx-04--星池願) |
+| 57 | SX-05 | 支 | 釘釘的舊債 | `side.ding_debt_done` | 鐵匠 | [00_sx_outlines.md](00_sx_outlines.md#sx-05--釘釘的舊債) |
+| 58 | SX-06 | 支 | 霧祠香 | `side.fog_incense_done` | 儀式 | [00_sx_outlines.md](00_sx_outlines.md#sx-06--霧祠香) |
+| 59 | SX-07 | 後 | 裂縫溢出的災厄 | 裂縫 | 週活 | [00_sx_outlines.md](00_sx_outlines.md#sx-07--裂縫溢出的災厄) |
+| 60 | SX-08 | 後 | 迴響：若再走一次 | NG+ | 後記 | [00_sx_outlines.md](00_sx_outlines.md#sx-08--迴響若再走一次) |
 
 ---
 
