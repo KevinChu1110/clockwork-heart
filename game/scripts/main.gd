@@ -4132,6 +4132,12 @@ func _on_battle_finished(won: bool) -> void:
 		_explore_play_pose("skill", 0.55)
 	else:
 		_explore_play_pose("hit", 0.5)
+		if _battle_mode != "pvp_snap":
+			var ref: Dictionary = EnergySystem.refund_on_defeat(_battle_mode)
+			var ref_n := int(ref.get("refunded", 0))
+			if ref_n > 0:
+				GameLog.combat(_t("戰鬥失敗：返還能量 %d 點") % ref_n)
+				ui_toast(_t("戰鬥失敗：返還能量 %d 點（現有 %d／%d）") % [ref_n, EnergySystem.current(), EnergySystem.MAX_ENERGY])
 	## 好友挑戰優先收尾（只認殘影戰；殘留的 pending 旗在開戰時已清掉）
 	if _battle_mode == "pvp_snap" and VisitSystem.pending_id() != "":
 		_on_visit_battle_finished(won)
@@ -4959,6 +4965,12 @@ func _resolve_skirmish_inplace(mode: String, once_flag: String, after_win: Calla
 		GameState.hp = clampi(int(res.get("hp_left", GameState.hp)), 1, GameState.effective_max_hp())
 		if once_flag != "":
 			GameState.set_flag(once_flag, true)
+	else:
+		var ref: Dictionary = EnergySystem.refund_on_defeat(mode)
+		var ref_n := int(ref.get("refunded", 0))
+		if ref_n > 0:
+			GameLog.combat(_t("戰鬥失敗：返還能量 %d 點") % ref_n)
+			ui_toast(_t("戰鬥失敗：返還能量 %d 點（現有 %d／%d）") % [ref_n, EnergySystem.current(), EnergySystem.MAX_ENERGY])
 	_explore_play_pose("skill" if won else "hit", 0.5)
 	_world_skirmish_result(mode, won, after_win if won else Callable())
 

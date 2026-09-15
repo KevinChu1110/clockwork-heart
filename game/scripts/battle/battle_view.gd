@@ -3301,7 +3301,7 @@ func _can_offer_ad_revive() -> bool:
 
 
 func _show_defeat_settlement() -> void:
-	BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat)
+	BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode)
 
 
 func _on_ad_revive_success() -> void:

@@ -39,22 +39,25 @@ const COLOR_TEXT_MINT  := Color("#1A7A30")  ## 壓明度薄荷綠
 var _dialog_card: PanelContainer
 var _revive_btn: Button
 var _hint_lbl: Label
+var _tip_lbl: Label
 var _cached_font: Font = null
+var _mode: String = ""
 
 var _on_revive: Callable = Callable()
 var _on_give_up: Callable = Callable()
 
 
-static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "") -> Control:
 	var dlg = load("res://scripts/battle/battle_defeat_dialog.gd").new()
-	dlg.setup(on_revive, on_give_up)
+	dlg.setup(on_revive, on_give_up, mode)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable()) -> void:
+func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "") -> void:
 	_on_revive = on_revive
 	_on_give_up = on_give_up
+	_mode = mode
 
 
 func _ready() -> void:
@@ -158,9 +161,12 @@ func _build_ui() -> void:
 	dc_v.add_child(hint_lbl)
 
 	var tip_lbl := Label.new()
+	_tip_lbl = tip_lbl
 	tip_lbl.text = _t("若是選擇承認敗北，將返回城鎮整頓裝備與招式。")
 	tip_lbl.add_theme_font_size_override("font_size", 15)
 	tip_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		tip_lbl.add_theme_font_override("font", _cached_font)
 	v.add_child(tip_lbl)
 
 	# 底部操作按鈕 (高度 >= 50px)
@@ -251,6 +257,21 @@ func _refresh_display() -> void:
 		else:
 			_revive_btn.disabled = true
 			_revive_btn.text = _t("今日復活次數已達上限 (0/%d)") % cap
+
+	if _tip_lbl:
+		var has_refund := false
+		if es:
+			var target_mode := _mode
+			if target_mode == "" and "last_spent_mode" in es:
+				target_mode = str(es.get("last_spent_mode"))
+			if es.has_method("is_boss_mode") and bool(es.call("is_boss_mode", target_mode)):
+				var spent: int = int(es.get("last_spent_cost")) if "last_spent_cost" in es else 0
+				if spent >= 3 or (spent == 0 and es.has_method("cost_for_mode") and int(es.call("cost_for_mode", target_mode)) >= 3):
+					has_refund = true
+		if has_refund:
+			_tip_lbl.text = _t("若是選擇承認敗北，將返還 2 點能量並返回整頓。")
+		else:
+			_tip_lbl.text = _t("若是選擇承認敗北，將返回城鎮整頓裝備與招式。")
 
 
 func _on_revive_ad_clicked() -> void:
