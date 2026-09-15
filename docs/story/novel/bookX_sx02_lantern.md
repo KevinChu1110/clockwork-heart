@@ -1,7 +1,7 @@
 # SX-02 · 長明燈（場景卡正文 · 第一版）
 
 > 場景卡：SX-02 長明燈  
-> 對齊：`docs/story/novel/00_sx_outlines.md` SX-02；`game/scripts/systems/side_milestones.gd`（`lantern`）；`game/scripts/main.gd`（`_side_lantern_post`）；`game/scripts/world/map_catalog.gd`（`_village_grave`）；`game/data/dialogues/world.json`；`game/scripts/systems/title_catalog.gd`（`title.lamp_keeper`）；`docs/world/CANON.md` 零毛皮零血肉規範、停擺與長眠機制；`docs/world/regions/R01_TODAY_VILLAGE.md` 今日村莊·發條新村；`docs/STORY_BIBLE.md`；`docs/NPC.md` 小白、長眠的先驅玩偶們。  
+> 對齊：`docs/story/novel/00_sx_outlines.md` SX-02；`game/scripts/systems/side_milestones.gd`（`lantern`）；`game/scripts/main.gd`（`_side_lantern_post`）；`game/scripts/world/map_catalog.gd`（`_village_grave`）；`game/data/dialogues/chapter.json`（`c2.lantern`）；`game/scripts/systems/title_catalog.gd`（`title.lamp_keeper`「守燈人」）；`docs/world/CANON.md` 第 4 章停擺（Stasis）與記憶齒輪磨損、零毛皮零血肉規範；`docs/world/regions/R01_TODAY_VILLAGE.md` 今日村莊·發條新村；`docs/STORY_BIBLE.md`。角色：小白（CANON 第 16 行主角設定）、長眠的先驅玩偶們（`00_sx_outlines.md` SX-02 大綱既定稱謂）。  
 > 遊戲機制與 Flag：調查今日村莊·村後墓園的熄滅燈柱（`lantern_post`），借營火與星屑碎餘溫重新點亮，達成 `side.lantern_done`，獲得金幣 20、星屑 1、經驗 15、鐵屑×1（`iron_scrap`），解鎖稱號「守燈人」，完成日常任務「長明一火」。  
 > 用途：小說正文 · 遊戲支線敘事對齊 · 支線定稿  
 
