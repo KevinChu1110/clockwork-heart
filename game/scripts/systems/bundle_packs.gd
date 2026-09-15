@@ -6,6 +6,18 @@ class_name BundlePacks
 const MANIFEST_PATH := "res://data/bundle_manifest.json"
 
 static var _cache: Dictionary = {}
+static var _pack_presence_override: Dictionary = {}
+
+
+static func set_pack_presence_override(pack_name: String, present: Variant) -> void:
+	if present == null:
+		_pack_presence_override.erase(pack_name)
+	else:
+		_pack_presence_override[pack_name] = bool(present)
+
+
+static func clear_pack_presence_overrides() -> void:
+	_pack_presence_override.clear()
 
 
 static func manifest() -> Dictionary:
@@ -64,6 +76,8 @@ static func pack_for_bgm(bgm_id: String) -> String:
 
 
 static func has_pack(pack_name: String) -> bool:
+	if _pack_presence_override.has(pack_name):
+		return bool(_pack_presence_override[pack_name])
 	var packs: Dictionary = manifest().get("packs", {})
 	var spec: Dictionary = packs.get(pack_name, {})
 	var sentinels: Variant = spec.get("sentinels", [])
