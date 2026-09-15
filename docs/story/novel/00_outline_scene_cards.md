@@ -79,7 +79,7 @@
 | 39 | C5-S01 | C5 | 岸上沒有退路 | 維京 | 厚重 | [book5_c5_s01-03_stone_fist.md](book5_c5_s01-03_stone_fist.md) |
 | 40 | C5-S02 | C5 | 對撞與落岩 | 石拳 | 力量 | [book5_c5_s01-03_stone_fist.md](book5_c5_s01-03_stone_fist.md) |
 | 41 | C5-S03 | C5 | 站到最後 | `boss.stonefist_cleared` | 收 | [book5_c5_s01-03_stone_fist.md](book5_c5_s01-03_stone_fist.md) |
-| 42 | CX-S01 | 間 | 六域風物詩 | 蒙太奇 | W7 | |
+| 42 | CX-S01 | 間 | 六域風物詩 | 蒙太奇 | W7 | [bookX_cx_s01_six_realms.md](bookX_cx_s01_six_realms.md) |
 
 ---
 
