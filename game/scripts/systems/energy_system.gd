@@ -12,6 +12,10 @@ const COST_BOSS := 3
 const COST_ARENA_RUN := 1
 const COST_HUNT_RUN := 1
 const COST_VISIT := 0
+const REFUND_BOSS_DEFEAT := 2  ## Boss 戰失敗返還 2 點（扣 3 返 2，實耗 1 點試錯成本）
+
+var last_spent_mode: String = ""
+var last_spent_cost: int = 0
 
 ## 主線大 Boss（耗首領能量）
 const BOSS_MODES := {
@@ -146,6 +150,8 @@ func try_spend_for_battle(mode: String) -> Dictionary:
 	var cost := cost_for_mode(mode)
 	if can_afford(cost):
 		spend(cost)
+		last_spent_mode = mode
+		last_spent_cost = cost
 		return {"ok": true, "cost": cost, "msg": ""}
 	var wait_m := int(ceil(seconds_to_next() / 60.0))
 	return {
@@ -154,6 +160,79 @@ func try_spend_for_battle(mode: String) -> Dictionary:
 		"msg": _t("能量不足（需 %d，現有 %d／%d）。約 %d 分鐘後回復 1 點。") % [
 			cost, current(), MAX_ENERGY, maxi(1, wait_m)
 		],
+	}
+
+
+func is_boss_mode(mode: String) -> bool:
+	if BOSS_MODES.has(mode):
+		return true
+	var WC = load("res://scripts/world/world_content.gd")
+	if WC and WC.has_method("enemy_def"):
+		var def: Dictionary = WC.enemy_def(mode)
+		if bool(def.get("is_boss", false)):
+			return true
+	return false
+
+
+func is_c0_c1_story_battle(mode: String) -> bool:
+	## 序章首戰
+	if mode == "wolf" and not GameState.has_flag("c0_first_battle"):
+		return true
+	## 雷歐初戰
+	if mode == "leo" and not GameState.has_flag("boss.leo_cleared"):
+		return true
+	## 在 C0 或 C1 期間且尚未通關雷歐的主線劇情遭遇
+	if GameState.chapter in ["c0", "c1"] and not GameState.has_flag("boss.leo_cleared"):
+		## 演武場與狩獵場為可重複農資源活動，非主線劇情
+		if (ArenaSystem and ArenaSystem.is_run_active()) or (HuntSystem and HuntSystem.is_run_active()):
+			return false
+		if mode == "wolf" or mode == "leo":
+			return true
+		var WC = load("res://scripts/world/world_content.gd")
+		if WC and WC.has_method("skirmishes"):
+			var sk: Dictionary = WC.skirmishes()
+			for k in sk.keys():
+				var s: Dictionary = sk[k]
+				if str(s.get("mode", "")) == mode and str(s.get("once_flag", "")) != "":
+					return true
+	return false
+
+
+func refund_on_defeat(mode: String = "") -> Dictionary:
+	var target_mode := mode if mode != "" else last_spent_mode
+	var spent := last_spent_cost if (mode == "" or mode == last_spent_mode) else cost_for_mode(target_mode)
+	var refund_amount := 0
+	var reason := ""
+
+	if is_c0_c1_story_battle(target_mode):
+		## C0／C1 主線劇情戰鬥（含雷歐初戰）戰鬥失敗不扣能量：若有消耗則全額返還
+		refund_amount = spent
+		reason = "c0_c1_story"
+	elif is_boss_mode(target_mode):
+		## Boss 戰失敗返還部分能量：扣 3 返還 2，實際只損耗 1 點試錯成本
+		if spent >= COST_BOSS:
+			refund_amount = REFUND_BOSS_DEFEAT
+		elif spent > 1:
+			refund_amount = spent - 1
+		else:
+			refund_amount = 0
+		reason = "boss"
+	else:
+		## 一般怪維持不變、不返還
+		refund_amount = 0
+		reason = "mob"
+
+	if refund_amount > 0:
+		grant(refund_amount)
+
+	if mode == "" or mode == last_spent_mode:
+		last_spent_cost = 0
+
+	return {
+		"refunded": refund_amount,
+		"mode": target_mode,
+		"reason": reason,
+		"current_energy": current(),
 	}
 
 

@@ -2001,5 +2001,8 @@
   "聲音音效": "Audio & Sound",
   "畫面顯示": "Display Settings",
   "存檔備份": "Save Backup",
-  "請選擇您偏好的顯示語系 (即時生效)：": "Please select your preferred display language (takes effect immediately):"
+  "請選擇您偏好的顯示語系 (即時生效)：": "Please select your preferred display language (takes effect immediately):",
+  "戰鬥失敗：返還能量 %d 點": "Battle Defeat: Refunded %d Energy",
+  "戰鬥失敗：返還能量 %d 點（現有 %d／%d）": "Battle Defeat: Refunded %d Energy (Current: %d/%d)",
+  "若是選擇承認敗北，將返還 2 點能量並返回整頓。": "Admitting defeat will refund 2 energy and return to regroup."
 }
