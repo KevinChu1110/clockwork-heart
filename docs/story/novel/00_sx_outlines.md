@@ -16,7 +16,7 @@
 | SX-03 | [橋下巢](bookX_sx03_nest.md) | 日常微光 | 積木斷橋 | 小白（巢中雛鳥） | `side.nest_care_done` | 任務「橋下軟羽」 |
 | SX-04 | [星池願](bookX_sx04_star_wish.md) | 日常微光 | 星落平原 | 小白、星讀 | `side.star_wish_done` | 稱號「許願兔」· 星池一願 |
 | SX-05 | [釘釘的舊債](bookX_sx05_ding_debt.md) | 人情支線 | 演武場、鐵匠鋪 | 釘釘、小白 | `side.ding_debt_done` | 稱號「還債的錘」· 鐵匠的舊債 |
-| SX-06 | 霧祠香 | 日常微光 | 白霧之地·霧祠 | 小白、霧隱 | `side.fog_incense_done` | 任務「霧祠一炷」 |
+| SX-06 | [霧祠香](bookX_sx06_fog_incense.md) | 日常微光 | 白霧之地·霧祠 | 小白、霧隱 | `side.fog_incense_done` | 任務「霧祠一炷」 |
 | SX-07 | 裂縫溢出的災厄 | 通關後週活 | 黑焰傷痕、各域裂縫 | 小白、斷頁、星讀 | 週裂縫活動 | 塔外溢出災厄試煉 |
 | SX-08 | 迴響：若再走一次 | 通關後後記 | 今日村莊·舊閣樓 | 小白、麥穗 | 二週目 NG+ | 晨光後的黑焰迴響 |
 
@@ -85,6 +85,7 @@
 ## SX-06 · 霧祠香
 
 - **章節編號**：SX-06
+- **正文檔案**：[bookX_sx06_fog_incense.md](bookX_sx06_fog_incense.md)
 - **遊戲機制與 Flag 對齊**：調查白霧之地古老霧祠香爐（`incense`），以未燃細香敬奉白狐雕像，達成 `side.fog_incense_done`，獲得騎士碎鐵，完成日常任務「霧祠一炷」。
 - **地點**：白霧之地·霧祠。
 - **涉及 NPC**：小白、霧隱（白霧導師之意象引導）。
