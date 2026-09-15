@@ -256,6 +256,36 @@ func _sync_active_weapon_mirror() -> void:
 		GameState.path_style = line
 
 
+## 鍛造強化當前作用中武器：增加 rolled.atk 並同步 tier、legacy mirror
+func forge_active_weapon(atk_gain: int = 2, new_tier: int = -1) -> Dictionary:
+	_ensure_state()
+	var idx := active_loadout_index()
+	var uid := loadout_uid(idx)
+	if uid == "" and GameState.equip_slots != null:
+		uid = str(GameState.equip_slots.get("weapon", ""))
+	if uid == "" or not GameState.equip_worn.has(uid):
+		GameState.weapon_atk += atk_gain
+		if new_tier > 0:
+			GameState.weapon_tier = new_tier
+		return {"ok": false, "uid": "", "atk": GameState.weapon_atk}
+
+	var w: Dictionary = (GameState.equip_worn[uid] as Dictionary).duplicate(true)
+	var r: Dictionary = (w.get("rolled", {}) as Dictionary).duplicate(true)
+	r["atk"] = int(r.get("atk", 0)) + atk_gain
+	w["rolled"] = r
+	if new_tier > 0:
+		w["tier"] = new_tier
+		GameState.weapon_tier = new_tier
+	else:
+		w["tier"] = maxi(int(w.get("tier", 1)), GameState.weapon_tier)
+	GameState.equip_worn[uid] = w
+	_sync_legacy_weapon()
+	equipment_changed.emit()
+	if SaveManager.has_method("save_game"):
+		SaveManager.save_game()
+	return {"ok": true, "uid": uid, "atk": int(r["atk"]), "inst": w}
+
+
 func loadout_snapshot_for_battle() -> Array:
 	## [{index, uid, name, line, weapon_atk, unlocked, empty}]
 	_ensure_state()

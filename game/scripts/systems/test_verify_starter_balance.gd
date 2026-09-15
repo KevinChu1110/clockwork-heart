@@ -98,9 +98,33 @@ func _initialize() -> void:
 			print("VERIFY_STARTER_BALANCE_FAIL")
 			quit(1)
 			return
+		gs.weapon_atk = w_atk
 
-		print("✓ %s 開局武器 %s (T%d, %s, ATK %d) | 實質 ATK: %d (無雙重累加)" % [
-			r, base_id, inst_tier, str(winst.get("name", "")), w_atk, eff_atk
+		# 驗證鍛造：鍛造成功一次後 effective_atk 必須比鍛造前大 (+2)
+		gs.gold = 500
+		gs.forge_fail_streak = 3
+		var fs: Node = root.get_node_or_null("ForgeSystem")
+		if fs != null:
+			var forge_res: Dictionary = fs.call("try_forge")
+			if not bool(forge_res.get("ok", false)):
+				push_error("%s 鍛造保底應成功，但回傳失敗" % r)
+				print("VERIFY_STARTER_BALANCE_FAIL")
+				quit(1)
+				return
+			var post_forge_atk: int = int(gs.effective_atk())
+			if post_forge_atk <= eff_atk:
+				push_error("%s 鍛造後 effective_atk (%d) 未大於鍛造前 (%d)" % [r, post_forge_atk, eff_atk])
+				print("VERIFY_STARTER_BALANCE_FAIL")
+				quit(1)
+				return
+			if post_forge_atk != eff_atk + 2:
+				push_error("%s 鍛造後 effective_atk 增量應為 2，實際為 %d -> %d" % [r, eff_atk, post_forge_atk])
+				print("VERIFY_STARTER_BALANCE_FAIL")
+				quit(1)
+				return
+
+		print("✓ %s 開局武器 %s (T%d, %s, ATK %d) | 實質 ATK: %d (鍛造後: %d)" % [
+			r, base_id, inst_tier, str(winst.get("name", "")), w_atk, eff_atk, int(gs.effective_atk())
 		])
 
 		# 驗證五族開局皆已習得對應武器線起手技能，且 can_skill 皆為 true
