@@ -5,9 +5,7 @@
 > **依據標準**：  
 > - 世界觀憲章 `docs/world/CANON.md` 第五章「所有敵人本質上也都是玩具」、零毛皮禁令、金屬板件與發條鑰匙核心規範  
 > - 審核準則 `references/review.md` 第 19g-10 條收緊審查法（頭部區域放大裁切＋三項封閉問題自檢）  
-> - 任務編號：`t_6f331585`（盤點現有 11 個非雷歐 Boss/敵人立繪的零毛皮合規性）  
-> 
-> ⛔ **本報告僅進行盤點與審查，不直接產出替換新圖。不合格項目留待後續專項重繪任務執行。**
+> - 任務編號：`t_6f331585`（初始盤點）、`t_63073ba4`（重繪批次1）、`t_b51e9456`（重繪批次2）、`t_0d32007c`（重繪批次3：剩餘不合格全數清零）  
 
 ---
 
@@ -36,16 +34,16 @@
 | 04 | `fog_shade` | 迷霧暗影 | `game/assets/sprites/bosses/fog_shade.png` | `proofs/enemy_audit/fog_shade_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_63073ba4 重繪) |
 | 05 | `forest_sprite` | 森林精靈 | `game/assets/sprites/bosses/forest_sprite.png` | `proofs/enemy_audit/forest_sprite_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_b51e9456 重繪) |
 | 06 | `mirror_wraith` | 鏡中幽靈 | `game/assets/sprites/bosses/mirror_wraith.png` | `proofs/enemy_audit/mirror_wraith_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_b51e9456 重繪) |
-| 07 | `road_bandit` | 荒路匪徒 | `game/assets/sprites/bosses/road_bandit.png` | `proofs/enemy_audit/road_bandit_audit_panel.png` | **無** | **無** | **有** (合格) | ✅ **合格** |
-| 08 | `scar_lord` | 黑焰領主 | `game/assets/sprites/bosses/scar_lord.png` | `proofs/enemy_audit/scar_lord_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
-| 09 | `scar_wisp` | 黑焰幽火 | `game/assets/sprites/bosses/scar_wisp.png` | `proofs/enemy_audit/scar_wisp_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
-| 10 | `sewer_slime` | 下水道史萊姆 | `game/assets/sprites/bosses/sewer_slime.png` | `proofs/enemy_audit/sewer_slime_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
-| 11 | `wreck_captain` | 沉船船長 | `game/assets/sprites/bosses/wreck_captain.png` | `proofs/enemy_audit/wreck_captain_audit_panel.png` | 無 | 無 | **無** (違規) | ❌ **不合格** |
+| 07 | `road_bandit` | 荒路匪徒 | `game/assets/sprites/bosses/road_bandit.png` | `proofs/enemy_audit/road_bandit_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_f1fcef58 重繪) |
+| 08 | `scar_lord` | 黑焰領主 | `game/assets/sprites/bosses/scar_lord.png` | `proofs/enemy_audit/scar_lord_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_0d32007c 重繪) |
+| 09 | `scar_wisp` | 黑焰幽火 | `game/assets/sprites/bosses/scar_wisp.png` | `proofs/enemy_audit/scar_wisp_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_0d32007c 重繪) |
+| 10 | `sewer_slime` | 下水道史萊姆 | `game/assets/sprites/bosses/sewer_slime.png` | `proofs/enemy_audit/sewer_slime_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_0d32007c 重繪) |
+| 11 | `wreck_captain` | 沉船船長 | `game/assets/sprites/bosses/wreck_captain.png` | `proofs/enemy_audit/wreck_captain_audit_panel.png` | **無** (合格) | **無** (合格) | **有** (合格) | ✅ **合格** (t_0d32007c 重繪) |
 
 > **盤點統計**：
 > - 審查總數：11
-> - **合格**：**7** 個（`road_bandit` 已於 `t_f1fcef58` 重繪；`ash_rat`、`coast_raider`、`fog_shade` 已於 `t_63073ba4` 重繪；`bamboo_spirit`、`forest_sprite`、`mirror_wraith` 已於 `t_b51e9456` 依 19g-10 標準成功重繪為發條金屬玩具）
-> - **不合格**：**4** 個（`scar_lord`、`scar_wisp`、`sewer_slime`、`wreck_captain` 留待後續專項重繪）
+> - **合格**：**11** 個（已 100% 全數重繪完成！`road_bandit` 於 `t_f1fcef58`；`ash_rat`、`coast_raider`、`fog_shade` 於 `t_63073ba4`；`bamboo_spirit`、`forest_sprite`、`mirror_wraith` 於 `t_b51e9456`；`scar_lord`、`scar_wisp`、`sewer_slime`、`wreck_captain` 於 `t_0d32007c` 依 19g-10 標準成功重繪為發條金屬/機械玩具）
+> - **不合格**：**0** 個（違規項目已全數清零！）
 
 *(補充：C1 首領守衛泰坦·雷歐 `leo` 已於 `t_2e6dee93` 完成金屬化改造重繪，具備黃銅雙環發條鑰匙與金屬面甲螺栓，為合規資產。)*
 
@@ -155,6 +153,7 @@
   - 完整立繪：`proofs/enemy_audit/road_bandit_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/road_bandit_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/road_bandit_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/road_bandit_compare.png`
 - **三項問題答覆**：
   - ① 毛髮質感：**無**。頭部已改為球形金屬金屬頭，無任何鬍渣或有機毛髮。
   - ② 生物皮膚：**無**。全金屬與磨損鐵皮材質，雙眼為青藍發光鏡片，無肉色皮膚與腮紅。
@@ -165,62 +164,66 @@
 ---
 
 ### 08. 黑焰領主 (scar_lord)
-- **原始資產**：`game/assets/sprites/bosses/scar_lord.png` (220×229 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/scar_lord.png` (280×260 RGBA)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/scar_lord_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/scar_lord_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/scar_lord_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/scar_lord_compare.png`
 - **三項問題答覆**：
-  - ① 毛髮質感：**無**。頂部為黑焰火苗，無毛髮。
-  - ② 生物皮膚：**無**。全覆式黑晶重鎧與怨靈紫焰，無肉色皮膚。
-  - ③ 發條鑰匙與螺栓：**無**。雖然是金屬鎧甲，但整體造型為傳統暗黑魔王/黑騎士，頭部背後**完全沒有發條鑰匙**，鎧甲接縫為尖刺奇幻風格而非玩具板件接縫與螺栓。
-- **判定結果**：❌ **不合格**
-- **違規詳情與後續建議**：犯了與雷歐初期相同的錯誤——「把穿金屬鎧甲當成發條玩具」。後續重繪應在頭部兩側或背部加上顯眼的齒輪咬合箱與黑鐵發條鑰匙，胸甲外露發光核心，鎧甲增加手工玩具螺栓與分片模線。
+  - ① 毛髮質感：**無**。全身為暗黑曜鐵板件與紫晶能量導管，無任何毛髮、鬃毛或毛皮。
+  - ② 生物皮膚：**無**。頭部為暗鐵封閉騎士頭盔配備琥珀黃發光透鏡視縫，胸前鑲嵌紫水晶齒輪動力核心，雙手持握雙鋸齒符文黑鐵刃，四肢為金屬球形關節，零生物皮膚、零腮紅。
+  - ③ 發條鑰匙與螺栓：**有**。**背部正中央外露巨大黃銅齒輪發條鑰匙**，肩甲、胸甲與耳軸皆具備分明的外露十字螺栓、鉚釘與板件接縫。
+- **判定結果**：✅ **合格**
+- **說明**：已於任務 `t_0d32007c` 成功重繪為發條黑鐵領主機偶（Clockwork Dark Knight Automaton），100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
 
 ### 09. 黑焰幽火 (scar_wisp)
-- **原始資產**：`game/assets/sprites/bosses/scar_wisp.png` (84×132 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/scar_wisp.png` (140×220 RGBA)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/scar_wisp_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/scar_wisp_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/scar_wisp_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/scar_wisp_compare.png`
 - **三項問題答覆**：
-  - ① 毛髮質感：**無**。為純暗影火焰與煙霧。
-  - ② 生物皮膚：**無**。純紫色能量體，無肉色皮膚。
-  - ③ 發條鑰匙與螺栓：**無**。純粹飄浮的鬼火，無任何外殼、接縫、螺栓或發條鑰匙。
-- **判定結果**：❌ **不合格**
-- **違規詳情與後續建議**：純能量體不符合玩具世界實體感。建議改為「發條煤油燈偶」或「帶金屬外框與發條鑰匙的漂浮鬼火燈籠玩具」。
+  - ① 毛髮質感：**無**。主體為古董黃銅金屬燈籠罩框、透明玻璃罩與內藏紫火，無毛皮毛髮。
+  - ② 生物皮膚：**無**。前框鑲嵌三顆青藍發光透鏡眼，下方垂吊兩副黃銅多關節機械爪，零肉色皮膚、零腮紅。
+  - ③ 發條鑰匙與螺栓：**有**。**燈籠圓頂頂部外露大型雙環黃銅發條鑰匙**，金屬外框、頂蓋與底座均有清晰的固定螺絲與金屬托架。
+- **判定結果**：✅ **合格**
+- **說明**：已於任務 `t_0d32007c` 成功重繪為發條幽火燈籠機偶（Clockwork Lantern Wisp Toy），100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
 
 ### 10. 下水道史萊姆 (sewer_slime)
-- **原始資產**：`game/assets/sprites/bosses/sewer_slime.png` (126×124 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/sewer_slime.png` (180×180 RGBA)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/sewer_slime_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/sewer_slime_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/sewer_slime_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/sewer_slime_compare.png`
 - **三項問題答覆**：
-  - ① 毛髮質感：**無**。流體凝膠狀，無毛髮。
-  - ② 生物皮膚：**無**。綠白雙色果凍黏液，無生物肉色。
-  - ③ 發條鑰匙與螺栓：**無**。為傳統 RPG 黏液怪，無機械結構，無螺栓，無發條鑰匙。
-- **判定結果**：❌ **不合格**
-- **違規詳情與後續建議**：應改為符合世界觀的玩具型史萊姆——例如「橡膠發條玩具史萊姆」、「半透明凝膠內部包裹著咬合齒輪與發條芯軸」，頂部或背部插著發條鑰匙。
+  - ① 毛髮質感：**無**。半透明薄荷綠橡膠果凍玩具材質，無任何有機毛髮。
+  - ② 生物皮膚：**無**。雙眼為深鐵色十字螺絲釘扣眼，側邊帶有注塑分模線，透明膠體內包裹黃銅咬合齒輪機芯，零生物皮膚、零腮紅。
+  - ③ 發條鑰匙與螺栓：**有**。**頂部右上外露巨大黃銅雙環發條鑰匙**，直接插入體內與內部齒輪機芯相連，雙眼即為十字固定螺栓。
+- **判定結果**：✅ **合格**
+- **說明**：已於任務 `t_0d32007c` 成功重繪為發條橡膠齒輪史萊姆玩具（Clockwork Toy Slime），100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
 
 ### 11. 沉船船長 (wreck_captain)
-- **原始資產**：`game/assets/sprites/bosses/wreck_captain.png` (176×217 RGBA)
+- **原始資產**：`game/assets/sprites/bosses/wreck_captain.png` (240×260 RGBA)
 - **依據截圖**：
   - 完整立繪：`proofs/enemy_audit/wreck_captain_full.png`
   - 頭部裁切放大：`proofs/enemy_audit/wreck_captain_head_crop.png`
   - 審查對照面板：`proofs/enemy_audit/wreck_captain_audit_panel.png`
+  - 重繪前後對比：`proofs/enemy_audit/wreck_captain_compare.png`
 - **三項問題答覆**：
-  - ① 毛髮質感：**無**。帽上有羽毛，下巴為水草/破布，無鬃毛絨毛。
-  - ② 生物皮膚：**無**。為幽靈白骨面具與青藍光眼，無肉色皮膚。
-  - ③ 發條鑰匙與螺栓：**無**。背後插著的是**被擊斃的斷箭殘木**（並非發條鑰匙）；全身衣服為撕裂帆布，武器為腐蝕鐵斧，缺乏發條機械關節與玩具螺栓分片。
-- **判定結果**：❌ **不合格**
-- **違規詳情與後續建議**：背後的斷箭常被誤認，但經特寫驗證並非發條鑰匙，整體仍是傳統不死幽靈海盜。後續應重繪為「廢棄沈船玩具水手人偶」——以拼接船板為身體，背後插著生鏽黃銅船舵造型的發條鑰匙，四肢採用金屬合頁與螺栓連接。
+  - ① 毛髮質感：**無**。海盜帽為風化木板與金屬包邊（金屬船舵帽徽），完全去除有機羽毛與鬍鬚。
+  - ② 生物皮膚：**無**。臉部為雕刻風化木紋人偶面甲與機械接縫分模線，左眼為鉚釘金屬眼罩、右眼為青藍透鏡眼，身軀為鉚接木板與海軍藍大衣，右腿為木製假腿、左腿為木靴，四肢為金屬合頁與球形關節，零人類血肉皮膚。
+  - ③ 發條鑰匙與螺栓：**有**。**背部軸心外露巨大的生鏽黃銅船舵造型發條鑰匙**，頭部、耳軸、胸甲與肢體密布外露螺栓與固定鉚釘。
+- **判定結果**：✅ **合格**
+- **說明**：已於任務 `t_0d32007c` 成功重繪為沉船木偶發條海盜水手（Wreckage Pirate Puppet Automaton），100% 符合 CANON 玩具世界觀與 `review.md 19g-10` 驗收標準，行銷素材可安心選用。
 
 ---
 
@@ -228,21 +231,22 @@
 
 為避免行銷宣傳、FB 排程、短影音與商店截圖再次踩中 `review.md 19g-10` 條款而遭全面退單，即日起行銷團隊選用敵人素材時，**一律嚴格遵守以下白名單與黑名單**：
 
-### 🟢 允許對外發佈之合規敵人白名單 (Whitelist)
+### 🟢 允許對外發佈之合規敵人白名單 (Whitelist - 全數合規)
 1. **守衛泰坦·雷歐 (`leo`)**：已於 `t_2e6dee93` 完成發條機械化改造，具備放射金屬鬃毛、螺栓面甲與黃銅發條鑰匙。
 2. **荒路匪徒 (`road_bandit`)**：已於 `t_f1fcef58` 完成重繪，具備金屬球形頭部、鐵皮胸甲與背部發條鑰匙。
 3. **灰燼鼠 (`ash_rat`)**：已於 `t_63073ba4` 完成重繪，具備上漆白鐵皮與暗灰鐵板件、彈簧金屬尾與背部黃銅發條鑰匙。
 4. **海岸掠奪者 (`coast_raider`)**：已於 `t_63073ba4` 完成重繪，具備牛角鐵盔、銅片玩具鬍、球形關節與背部黃銅發條鑰匙。
 5. **迷霧暗影 (`fog_shade`)**：已於 `t_63073ba4` 完成重繪，具備鍛鐵兜帽、齒輪胸腔、格柵面甲與背部黃銅發條鑰匙。
+6. **竹靈 (`bamboo_spirit`)**：已於 `t_b51e9456` 完成重繪，具備原木機巧面甲、拋光黃銅齒輪杖與背部黃銅齒輪發條鑰匙。
+7. **森林精靈 (`forest_sprite`)**：已於 `t_b51e9456` 完成重繪，具備純白瓷面面甲、沖壓金屬綠葉髮型與背部雙環黃銅發條鑰匙。
+8. **鏡中幽靈 (`mirror_wraith`)**：已於 `t_b51e9456` 完成重繪，具備威尼斯白瓷面具、紫靛金屬胸甲與鏡框側邊巨大黃銅發條鑰匙。
+9. **黑焰領主 (`scar_lord`)**：已於 `t_0d32007c` 完成重繪，具備黑曜暗鐵板件、紫晶齒輪胸芯、雙鋸齒符文刃與背部黃銅發條鑰匙。
+10. **黑焰幽火 (`scar_wisp`)**：已於 `t_0d32007c` 完成重繪，具備黃銅六角燈籠骨架、紫晶齒輪幽火、金屬機械爪與頂部黃銅發條鑰匙。
+11. **下水道史萊姆 (`sewer_slime`)**：已於 `t_0d32007c` 完成重繪，具備半透明薄荷綠果凍體、體內咬合黃銅齒輪機芯、十字螺絲雙眼與頂部黃銅發條鑰匙。
+12. **沉船船長 (`wreck_captain`)**：已於 `t_0d32007c` 完成重繪，具備風化木板拼裝身軀、金屬船舵帽徽、球形合頁關節與背部巨大黃銅船舵發條鑰匙。
 
-### 🔴 嚴格禁止對外發佈之未合規黑名單 (Blacklist - 待後續美術任務重繪)
-- ❌ **森林精靈 (`forest_sprite`)**：含人類肉色皮膚、粉色腮紅與少女髮絲
-- ❌ **竹靈 (`bamboo_spirit`)**：無發條鑰匙與玩具機械結構
-- ❌ **鏡中幽靈 (`mirror_wraith`)**：純幽靈，無玩具機械結構
-- ❌ **黑焰領主 (`scar_lord`)**：純黑鎧魔王，無發條鑰匙與玩具板件
-- ❌ **黑焰幽火 (`scar_wisp`)**：純鬼火，無玩具機械結構
-- ❌ **下水道史萊姆 (`sewer_slime`)**：純黏液怪，無玩具機械結構
-- ❌ **沉船船長 (`wreck_captain`)**：純幽靈海盜，無發條鑰匙（背後為殘箭）
+### 🔴 嚴格禁止對外發佈之未合規黑名單 (Blacklist)
+- **🎉 目前黑名單已全數清零（0 個）！全部 11 位非雷歐敵人＋首領守衛泰坦·雷歐皆已符合零毛皮、零血肉皮膚、具備發條鑰匙與螺栓接縫之世界觀規範。**
 
 ---
 *本報告存檔於 `docs/art/ENEMY_COMPLIANCE_AUDIT.md`，審查截圖依據保存於 `proofs/enemy_audit/`。*
