@@ -71,12 +71,41 @@ func _ready() -> void:
 func _ensure_initial_state() -> void:
 	if not GameState.has_flag("c1_forged"):
 		GameState.set_flag("c1_forged", true)
-	if GameState.weapon_tier < 1:
-		GameState.weapon_tier = 2
-	if GameState.weapon_atk <= 0:
-		GameState.weapon_atk = 9
-	if GameState.weapon_name.is_empty():
-		GameState.weapon_name = "微末之刃"
+	var inst := _current_weapon_inst()
+	if not inst.is_empty():
+		var r: Dictionary = inst.get("rolled", {})
+		GameState.weapon_atk = int(r.get("atk", GameState.weapon_atk))
+		GameState.weapon_tier = maxi(GameState.weapon_tier, int(inst.get("tier", 1)))
+		GameState.weapon_name = str(inst.get("name", GameState.weapon_name))
+	else:
+		if GameState.weapon_tier < 1:
+			GameState.weapon_tier = 1
+		if GameState.weapon_atk <= 0:
+			GameState.weapon_atk = 6
+		if GameState.weapon_name.is_empty():
+			GameState.weapon_name = "微末之刃"
+
+
+func _current_weapon_inst() -> Dictionary:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var es: Node = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if es and es.has_method("active_weapon_inst"):
+			var inst: Dictionary = es.call("active_weapon_inst")
+			if not inst.is_empty():
+				return inst
+	var wuid := str(GameState.equip_slots.get("weapon", "")) if GameState.equip_slots != null else ""
+	if wuid != "" and GameState.equip_worn != null and GameState.equip_worn.has(wuid):
+		return GameState.equip_worn[wuid]
+	return {}
+
+
+func _current_weapon_atk() -> int:
+	var inst := _current_weapon_inst()
+	if not inst.is_empty():
+		var r: Dictionary = inst.get("rolled", {})
+		return int(r.get("atk", 0))
+	return GameState.weapon_atk
 
 
 func _build_ui() -> void:
@@ -320,7 +349,7 @@ func _refresh_display() -> void:
 	var at_max := GameState.weapon_tier >= ForgeSystem.FORGE_MAX_TIER
 	var wname := GameState.weapon_display() if GameState.has_method("weapon_display") else GameState.weapon_name
 	_weapon_label.text = "當前裝備：%s（第 %d 階）" % [wname, GameState.weapon_tier]
-	_atk_label.text = "武器攻擊：+%d" % GameState.weapon_atk
+	_atk_label.text = "武器攻擊：+%d" % _current_weapon_atk()
 	_gold_label.text = "持有金幣：%d" % GameState.gold
 
 	var cost := ForgeSystem.forge_cost()
