@@ -22,18 +22,18 @@ const LEGACY_ACCESSORY_TO := "ring"
 const WEAPON_LOADOUT_SIZE := 3
 const WEAPON_LOADOUT_LEVEL_REQ := [1, 10, 16]
 
-## 五族開局定案武器對照（對齊 equipment.json bases 既有 id，不准自創）
+## 五族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
 const RACE_STARTER_WEAPONS: Dictionary = {
-	"rabbit": "dawn_blade",
-	"lion": "knight_pike",
+	"rabbit": "rusty_blade",
+	"lion": "ash_spear",
 	"fox": "star_rod",
 	"boar": "anvil_hammer",
-	"macaque": "hunt_claw",
+	"macaque": "wrap_gloves",
 }
 
 static func starter_weapon_id_for_race(race: String) -> String:
 	var r := race.to_lower().strip_edges()
-	return str(RACE_STARTER_WEAPONS.get(r, "dawn_blade"))
+	return str(RACE_STARTER_WEAPONS.get(r, "rusty_blade"))
 
 ## 開局／選族裝備該族定案武器（快捷欄第 0 欄）
 func equip_starter_weapon(race: String = "", existing_inst: Dictionary = {}) -> Dictionary:
@@ -78,6 +78,11 @@ func equip_starter_weapon(race: String = "", existing_inst: Dictionary = {}) -> 
 	var line := str(inst.get("line", ""))
 	if line != "":
 		GameState.path_style = line
+		var tree := Engine.get_main_loop()
+		if tree is SceneTree and (tree as SceneTree).root != null:
+			var sk: Node = (tree as SceneTree).root.get_node_or_null("SkillSystem")
+			if sk and sk.has_method("grant_for_weapon_class"):
+				sk.call("grant_for_weapon_class", line)
 
 	equipment_changed.emit()
 	return inst
@@ -249,6 +254,36 @@ func _sync_active_weapon_mirror() -> void:
 	var line := str(inst.get("line", ""))
 	if line != "":
 		GameState.path_style = line
+
+
+## 鍛造強化當前作用中武器：增加 rolled.atk 並同步 tier、legacy mirror
+func forge_active_weapon(atk_gain: int = 2, new_tier: int = -1) -> Dictionary:
+	_ensure_state()
+	var idx := active_loadout_index()
+	var uid := loadout_uid(idx)
+	if uid == "" and GameState.equip_slots != null:
+		uid = str(GameState.equip_slots.get("weapon", ""))
+	if uid == "" or not GameState.equip_worn.has(uid):
+		GameState.weapon_atk += atk_gain
+		if new_tier > 0:
+			GameState.weapon_tier = new_tier
+		return {"ok": false, "uid": "", "atk": GameState.weapon_atk}
+
+	var w: Dictionary = (GameState.equip_worn[uid] as Dictionary).duplicate(true)
+	var r: Dictionary = (w.get("rolled", {}) as Dictionary).duplicate(true)
+	r["atk"] = int(r.get("atk", 0)) + atk_gain
+	w["rolled"] = r
+	if new_tier > 0:
+		w["tier"] = new_tier
+		GameState.weapon_tier = new_tier
+	else:
+		w["tier"] = maxi(int(w.get("tier", 1)), GameState.weapon_tier)
+	GameState.equip_worn[uid] = w
+	_sync_legacy_weapon()
+	equipment_changed.emit()
+	if SaveManager.has_method("save_game"):
+		SaveManager.save_game()
+	return {"ok": true, "uid": uid, "atk": int(r["atk"]), "inst": w}
 
 
 func loadout_snapshot_for_battle() -> Array:

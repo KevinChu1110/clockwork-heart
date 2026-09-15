@@ -60,8 +60,8 @@ func try_forge() -> Dictionary:
 
 	if ok:
 		GameState.weapon_tier += 1
-		GameState.weapon_atk += 2
 		GameState.forge_fail_streak = 0
+		var forged_atk := _apply_forge_atk_gain(2)
 		if AudioManager.has_method("play_craft_success"):
 			AudioManager.play_craft_success()
 		SaveManager.save_game()
@@ -69,7 +69,7 @@ func try_forge() -> Dictionary:
 			"ok": true,
 			"code": "success",
 			"tier": GameState.weapon_tier,
-			"atk": GameState.weapon_atk,
+			"atk": forged_atk,
 			"used_scrap": used_scrap,
 			"cost": cost
 		}
@@ -97,3 +97,28 @@ func try_forge() -> Dictionary:
 				"used_scrap": used_scrap,
 				"cost": cost
 			}
+
+
+func _apply_forge_atk_gain(atk_gain: int = 2) -> int:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var es: Node = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if es and es.has_method("forge_active_weapon"):
+			var res: Dictionary = es.call("forge_active_weapon", atk_gain, GameState.weapon_tier)
+			return int(res.get("atk", GameState.weapon_atk))
+
+	## Fallback: 直接更新 equip_worn 與 legacy mirror
+	var wuid := str(GameState.equip_slots.get("weapon", "")) if GameState.equip_slots != null else ""
+	if wuid != "" and GameState.equip_worn != null and GameState.equip_worn.has(wuid):
+		var w: Dictionary = (GameState.equip_worn[wuid] as Dictionary).duplicate(true)
+		var r: Dictionary = (w.get("rolled", {}) as Dictionary).duplicate(true)
+		r["atk"] = int(r.get("atk", 0)) + atk_gain
+		w["rolled"] = r
+		w["tier"] = GameState.weapon_tier
+		GameState.equip_worn[wuid] = w
+		GameState.weapon_atk = int(r["atk"])
+		return GameState.weapon_atk
+
+	GameState.weapon_atk += atk_gain
+	return GameState.weapon_atk
+
