@@ -15,7 +15,7 @@
 | SX-02 | [長明燈](bookX_sx02_lantern.md) | 日常微光 | 今日村莊·村後墓園 | 小白、先驅玩偶們 | `side.lantern_done` | 稱號「守燈人」· 長明一火 |
 | SX-03 | [橋下巢](bookX_sx03_nest.md) | 日常微光 | 積木斷橋 | 小白（巢中雛鳥） | `side.nest_care_done` | 任務「橋下軟羽」 |
 | SX-04 | [星池願](bookX_sx04_star_wish.md) | 日常微光 | 星落平原 | 小白、星讀 | `side.star_wish_done` | 稱號「許願兔」· 星池一願 |
-| SX-05 | 釘釘的舊債 | 人情支線 | 演武場、鐵匠鋪 | 釘釘、小白 | `side.ding_debt_done` | 稱號「還債的錘」· 鐵匠的舊債 |
+| SX-05 | [釘釘的舊債](bookX_sx05_ding_debt.md) | 人情支線 | 演武場、鐵匠鋪 | 釘釘、小白 | `side.ding_debt_done` | 稱號「還債的錘」· 鐵匠的舊債 |
 | SX-06 | 霧祠香 | 日常微光 | 白霧之地·霧祠 | 小白、霧隱 | `side.fog_incense_done` | 任務「霧祠一炷」 |
 | SX-07 | 裂縫溢出的災厄 | 通關後週活 | 黑焰傷痕、各域裂縫 | 小白、斷頁、星讀 | 週裂縫活動 | 塔外溢出災厄試煉 |
 | SX-08 | 迴響：若再走一次 | 通關後後記 | 今日村莊·舊閣樓 | 小白、麥穗 | 二週目 NG+ | 晨光後的黑焰迴響 |
@@ -73,6 +73,7 @@
 ## SX-05 · 釘釘的舊債
 
 - **章節編號**：SX-05
+- **正文檔案**：[bookX_sx05_ding_debt.md](bookX_sx05_ding_debt.md)
 - **遊戲機制與 Flag 對齊**：在鐵匠鋪與釘釘對話開啟任務（`side.ding_debt_asked`），前往演武場武器架（`weapon_rack`）拾獲【舊主斷劍】（`item.broken_blade`），交回鐵匠鋪重新鍛合，達成 `side.ding_debt_done` 與 `meta.forge_debt_bonus`，解鎖稱號「還債的錘」，完成任務「鐵匠的舊債」。
 - **地點**：騎士域·演武場至騎士域·鐵匠鋪。
 - **涉及 NPC**：釘釘、小白。

@@ -108,7 +108,7 @@
 | 54 | SX-02 | 支 | 長明燈 | `side.lantern_done` | 溫柔 | [bookX_sx02_lantern.md](bookX_sx02_lantern.md) |
 | 55 | SX-03 | 支 | 橋下巢 | `side.nest_care_done` | 保護 | [bookX_sx03_nest.md](bookX_sx03_nest.md) |
 | 56 | SX-04 | 支 | 星池願 | `side.star_wish_done` | 願望 | [bookX_sx04_star_wish.md](bookX_sx04_star_wish.md) |
-| 57 | SX-05 | 支 | 釘釘的舊債 | `side.ding_debt_done` | 鐵匠 | [00_sx_outlines.md](00_sx_outlines.md#sx-05--釘釘的舊債) |
+| 57 | SX-05 | 支 | 釘釘的舊債 | `side.ding_debt_done` | 鐵匠 | [bookX_sx05_ding_debt.md](bookX_sx05_ding_debt.md) |
 | 58 | SX-06 | 支 | 霧祠香 | `side.fog_incense_done` | 儀式 | [00_sx_outlines.md](00_sx_outlines.md#sx-06--霧祠香) |
 | 59 | SX-07 | 後 | 裂縫溢出的災厄 | 裂縫 | 週活 | [00_sx_outlines.md](00_sx_outlines.md#sx-07--裂縫溢出的災厄) |
 | 60 | SX-08 | 後 | 迴響：若再走一次 | NG+ | 後記 | [00_sx_outlines.md](00_sx_outlines.md#sx-08--迴響若再走一次) |
