@@ -71,15 +71,15 @@
 
 ## Book 5 · 風與岸（C4～C5 · 6m 完整）
 
-| # | ID | 章 | 場景名 | 觸發 | Short |
-|---|-----|-----|--------|------|-------|
-| 36 | C4-S01 | C4 | 等風的人 | 遊俠林 | 詩意 |
-| 37 | C4-S02 | C4 | 停拍與風切 | 疾影戰 | 操作爽 |
-| 38 | C4-S03 | C4 | 你追上了風 | `boss.shadowwind_cleared` | 收 |
-| 39 | C5-S01 | C5 | 岸上沒有退路 | 維京 | 厚重 |
-| 40 | C5-S02 | C5 | 對撞與落岩 | 石拳 | 力量 |
-| 41 | C5-S03 | C5 | 站到最後 | `boss.stonefist_cleared` | 收 |
-| 42 | CX-S01 | 間 | 六域風物詩 | 蒙太奇 | W7 |
+| # | ID | 章 | 場景名 | 觸發 | Short | 正文檔案 |
+|---|-----|-----|--------|------|-------|---------|
+| 36 | C4-S01 | C4 | 等風的人 | 遊俠林 | 詩意 | [book5_c4_s01-03_wait_for_wind.md](book5_c4_s01-03_wait_for_wind.md) |
+| 37 | C4-S02 | C4 | 停拍與風切 | 疾影戰 | 操作爽 | [book5_c4_s01-03_wait_for_wind.md](book5_c4_s01-03_wait_for_wind.md) |
+| 38 | C4-S03 | C4 | 你追上了風 | `boss.shadowwind_cleared` | 收 | [book5_c4_s01-03_wait_for_wind.md](book5_c4_s01-03_wait_for_wind.md) |
+| 39 | C5-S01 | C5 | 岸上沒有退路 | 維京 | 厚重 | |
+| 40 | C5-S02 | C5 | 對撞與落岩 | 石拳 | 力量 | |
+| 41 | C5-S03 | C5 | 站到最後 | `boss.stonefist_cleared` | 收 | |
+| 42 | CX-S01 | 間 | 六域風物詩 | 蒙太奇 | W7 | |
 
 ---
 

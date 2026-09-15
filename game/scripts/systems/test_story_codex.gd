@@ -48,6 +48,11 @@ func _initialize() -> void:
 	if not sc.is_unlocked("c3_abo"):
 		push_error("c3_abo unlock fail")
 		ok = false
+	gs.set_flag("boss.shadowwind_cleared", true)
+	sc.try_unlock_all()
+	if not sc.is_unlocked("c4_shadowwind"):
+		push_error("c4_shadowwind unlock fail")
+		ok = false
 	print("unlocked ", sc.unlocked_count(), "/", sc.total_count())
 	if ok:
 		print("CODEX_OK")
