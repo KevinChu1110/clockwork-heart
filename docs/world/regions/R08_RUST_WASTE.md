@@ -1,7 +1,7 @@
 # 區域代號與名稱：R08 荒漠齒輪塚·遺忘舊庫 / Rust Waste: The Forgotten Junkyard
 
 > **所屬沙盤層級**：底層深淵廢棄沙盤界域（Bottom-Tier Abyssal Salvage Diorama Realms）  
-> **沙盤工藝材質套件**：沖壓耐磨生鏽馬口鐵板、粗糙石英砂礫沙盤、斷裂重型鎢鋼外齒輪、斑駁補丁皮革帆布、高黏度抗氧化除鏽潤滑脂與高扭力發條扭簧套件（Weathered Rusted Tinplates, Coarse Quartz Sand Diorama, Fractured Heavy Tungsten Cogs, Patched Stitched Canvas, Heavy-Duty Anti-Oxidation Grease & High-Torque Clockwork Spring Playset）  
+> **沙盤工藝材質套件**：沖壓耐磨生鏽馬口鐵板、粗糙石英砂礫沙盤、斷裂重型鎢鋼外齒輪、斑駁補丁縫合帆布、高黏度抗氧化除鏽潤滑脂與高扭力發條扭簧套件（Weathered Rusted Tinplates, Coarse Quartz Sand Diorama, Fractured Heavy Tungsten Cogs, Patched Stitched Canvas, Heavy-Duty Anti-Oxidation Grease & High-Torque Clockwork Spring Playset）  
 > **推薦探索等級**：Lv. 70 - Lv. 80  
 > **局域走時狀態**：粗礪重度卡頓伴隨狂暴跳拍（秒針每 2.5~3.5 秒在風沙中發出沉重的金屬摩擦聲「喀——嚓！」，時而因鐵砂卡滯而短暫滯澀，時而因扭簧暴釋而猛烈跳格；在強勁狂風與重力沉降中，需在沙塵蔽目時精準捕捉齒輪打滑與生鏽關節咬合節奏穿行）  
 > **開發優先序**：P1（首部曲中後期）
