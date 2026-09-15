@@ -14,7 +14,7 @@
 | SX-01 | [浪人的岔路](bookX_sx01_ronin_crossroads.md) | 人情支線 | 荒漠齒輪塚·遺忘舊庫（岔路） | 黑鏽浪人、小白 | `side.ronin_done` | 稱號「收刃之人」· 岔路分刃 |
 | SX-02 | [長明燈](bookX_sx02_lantern.md) | 日常微光 | 今日村莊·村後墓園 | 小白、先驅玩偶們 | `side.lantern_done` | 稱號「守燈人」· 長明一火 |
 | SX-03 | [橋下巢](bookX_sx03_nest.md) | 日常微光 | 積木斷橋 | 小白（巢中雛鳥） | `side.nest_care_done` | 任務「橋下軟羽」 |
-| SX-04 | 星池願 | 日常微光 | 星落平原 | 小白、星讀 | `side.star_wish_done` | 稱號「許願兔」· 星池一願 |
+| SX-04 | [星池願](bookX_sx04_star_wish.md) | 日常微光 | 星落平原 | 小白、星讀 | `side.star_wish_done` | 稱號「許願兔」· 星池一願 |
 | SX-05 | 釘釘的舊債 | 人情支線 | 演武場、鐵匠鋪 | 釘釘、小白 | `side.ding_debt_done` | 稱號「還債的錘」· 鐵匠的舊債 |
 | SX-06 | 霧祠香 | 日常微光 | 白霧之地·霧祠 | 小白、霧隱 | `side.fog_incense_done` | 任務「霧祠一炷」 |
 | SX-07 | 裂縫溢出的災厄 | 通關後週活 | 黑焰傷痕、各域裂縫 | 小白、斷頁、星讀 | 週裂縫活動 | 塔外溢出災厄試煉 |
@@ -61,6 +61,7 @@
 ## SX-04 · 星池願
 
 - **章節編號**：SX-04
+- **正文檔案**：[bookX_sx04_star_wish.md](bookX_sx04_star_wish.md)
 - **遊戲機制與 Flag 對齊**：調查星落平原淺池（`wish_pool`），於池畔許下無聲心願，達成 `side.star_wish_done`，解鎖稱號「許願兔」，完成日常任務「星池一願」。
 - **地點**：星落平原（許願淺池）。
 - **涉及 NPC**：小白、星讀（星途命運的共鳴意象）。
