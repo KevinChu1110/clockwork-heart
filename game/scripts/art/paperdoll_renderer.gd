@@ -239,6 +239,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "paint_ivory_stock"
 			elif race == "macaque":
 				return "paint_ivory_stock"
+			elif race == "tiger":
+				return "paint_ember_orange"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -249,8 +251,12 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "ear_lion_gilded_mane"
 			elif race == "boar":
 				return "ear_boar_rivet_cowl"
+			elif race == "tiger":
+				return "head_ember_tiger_stock"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
+			if race == "tiger":
+				return "key_turbine_flame"
 			return "key_classic_brass"
 		SLOT_COSTUME:
 			if race == "macaque":
@@ -261,10 +267,14 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_nutcracker_guard"
 			elif race == "boar":
 				return "costume_viking_harness"
+			elif race == "tiger":
+				return "costume_ember_tunic"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
 				return "core_amber_sun"
+			elif race == "tiger":
+				return "core_molten_amber"
 			return "core_cyan_emerald"
 		SLOT_WEAPON:
 			if race == "macaque":
@@ -275,6 +285,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "wpn_knight_lance"
 			elif race == "boar":
 				return "wpn_anvil_greathammer"
+			elif race == "tiger":
+				return "wpn_twin_ember_sabers"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -285,6 +297,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_lion_fan_tail"
 			elif race == "boar":
 				return "curio_spring_tail"
+			elif race == "tiger":
+				return "curio_exhaust_tiger_tail"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"

@@ -109,6 +109,12 @@
             "name": "天元青古銅烤漆",
             "race": "macaque",
             "tier": "rare"
+          },
+          {
+            "id": "paint_ember_orange",
+            "name": "原廠餘燼橙紅",
+            "race": "tiger",
+            "tier": "common"
           }
         ]
       },
@@ -161,6 +167,12 @@
             "name": "同心圓階梯金屬耳罩",
             "race": "macaque",
             "tier": "common"
+          },
+          {
+            "id": "head_ember_tiger_stock",
+            "name": "標準百葉耳與工字鋼樑額板",
+            "race": "tiger",
+            "tier": "common"
           }
         ]
       },
@@ -206,6 +218,11 @@
             "id": "key_winged_angel",
             "name": "展翼天國雙重發條",
             "tier": "legendary"
+          },
+          {
+            "id": "key_turbine_flame",
+            "name": "渦輪火焰發條鑰匙",
+            "tier": "common"
           }
         ]
       },
@@ -275,6 +292,12 @@
             "name": "天元演武者機關甲",
             "race": "macaque",
             "tier": "rare"
+          },
+          {
+            "id": "costume_ember_tunic",
+            "name": "餘燼工匠淬火戰褂",
+            "race": "tiger",
+            "tier": "common"
           }
         ]
       },
@@ -318,6 +341,12 @@
             "id": "core_pilot_visor",
             "name": "護目鏡覆蓋型光學面板",
             "tier": "rare"
+          },
+          {
+            "id": "core_molten_amber",
+            "name": "原廠熔火琥珀核心",
+            "race": "tiger",
+            "tier": "common"
           }
         ]
       },
@@ -367,6 +396,12 @@
             "id": "wpn_anvil_greathammer",
             "name": "鍛爐鐵砧重型戰鎚",
             "weapon_type": "hammer",
+            "tier": "common"
+          },
+          {
+            "id": "wpn_twin_ember_sabers",
+            "name": "齒輪發條雙斬刃",
+            "weapon_type": "dagger",
             "tier": "common"
           }
         ]
@@ -421,13 +456,19 @@
             "id": "curio_floating_musicbox",
             "name": "懸浮微型齒輪八音盒",
             "tier": "epic"
+          },
+          {
+            "id": "curio_exhaust_tiger_tail",
+            "name": "分節排氣管重力虎尾",
+            "race": "tiger",
+            "tier": "common"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 5,
+    "total_races": 6,
     "races": [
       {
         "race_id": "rabbit",
@@ -728,6 +769,72 @@
           "portrait_dialogue": "game/assets/sprites/portraits/spring_macaque.png (384x480) [既有]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/macaque/{slot_id}/{item_id}.png [既有]"
         }
+      },
+      {
+        "race_id": "tiger",
+        "aliases": [
+          "ember_tiger"
+        ],
+        "name_zh": "烈焰虎",
+        "name_en": "The Ember Tiger",
+        "class_archetype": "忍者 (Ninja)",
+        "origin_realm": "R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano",
+        "lore_anchor": "赤焰熔爐地熱耐火試驗工坊走出的淬火玩具，身披幾何排氣狹縫板件，以高速暴擊雙刃與伏擊撲殺見長之兇猛守護者",
+        "proportions": {
+          "head_to_body_ratio": "2.2 ~ 2.4 頭身 (不計耳高)",
+          "posture": "低伏敏捷，重心前傾蓄勢，雙手各持反曲短刃，分節排氣長尾自然向上微捲平衡",
+          "standee_height_px": 840,
+          "standee_width_px": 400
+        },
+        "mechanical_features": {
+          "ears": "短弧鍛黑厚鋼外耳，內耳為三層向下傾斜的微型金屬散熱百葉鰭片，外圈平頭微型鉚釘固定",
+          "face": "餘燼高溫橙紅琺瑯面罩，消光碳黑幾何分塊，額頭以四條工字型鍛鐵加固鋼樑鎖定成「王」字機械構型，拋光鍛黑三角合金小鼻",
+          "limbs": "高溫耐熱烤漆四肢，外露黃銅球窩關節，前臂內建導熱排氣凹槽，足底為壓鑄防滑橡膠膠墊爪盤",
+          "tail": "四節漸縮形耐熱金屬套管與球形軸承串接而成之分節排氣長尾，末端為雙孔微型排氣管嘴",
+          "weapon_system": "雙手獨立持握專利「齒輪發條雙斬刃」，反曲弧刃，刀背內嵌微型齒輪與導熱槽，完全對齊 dagger（忍者·匕）武器體系"
+        },
+        "color_palette": {
+          "primary": "#E65100 (餘燼高溫陽極氧化橙紅)",
+          "secondary": "#2B2B36 (碳黑淬火耐熱鋼板嵌件)",
+          "accent": "#FFA010 (熔火琥珀金發條之心與透鏡眼珠)",
+          "detail": "#8D6E63 (燻黑黃銅齒輪與螺栓關節)",
+          "outline": "#1F1A3A (深藍紫厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "docs/art/ember_tiger_concept.png (928x1152 概念立繪)",
+              "branding/char_tiger.png (400x840 品牌立牌)",
+              "web/media/hero/char_tiger.png (400x840 官網英雄圖)",
+              "web/media/hero/tiger_idle.png (128x128 官網預覽圖)",
+              "game/assets/sprites/player/tiger_idle.png (64x64 基礎待機)",
+              "game/assets/sprites/player/tiger_idle_x3.png (128x128 高畫質待機)",
+              "game/assets/sprites/player/party/tiger_idle.png (128x128 隊伍展示幀)",
+              "game/assets/sprites/player/tiger_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/tiger_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/tiger_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/tiger/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/tiger.png (128x128 HUD戰鬥頭像)",
+              "game/assets/sprites/portraits/ember_tiger.png (384x480 對話框半身像)",
+              "game/assets/sprites/player/paperdoll/tiger/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_tiger.png (400x840) [待產出]",
+          "branding_concept_art": "docs/art/ember_tiger_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_tiger.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/tiger_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/tiger_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/tiger_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/tiger_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/tiger_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/tiger_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/tiger_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/tiger/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/tiger.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/ember_tiger.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/tiger/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -775,7 +882,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 5 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 6 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -797,7 +904,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "五大種族軀幹均維持 2.2~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬) 由渲染器微調縮放 1.05x"
+        "rule": "六大種族軀幹均維持 2.2~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬) 由渲染器微調縮放 1.05x"
       }
     ]
   },
@@ -810,7 +917,8 @@
         "game/assets/sprites/player/paperdoll/lion/",
         "game/assets/sprites/player/paperdoll/fox/",
         "game/assets/sprites/player/paperdoll/boar/",
-        "game/assets/sprites/player/paperdoll/macaque/"
+        "game/assets/sprites/player/paperdoll/macaque/",
+        "game/assets/sprites/player/paperdoll/tiger/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
