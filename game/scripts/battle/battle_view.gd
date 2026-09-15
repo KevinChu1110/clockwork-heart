@@ -10,6 +10,12 @@ const OutlineShader = preload("res://shaders/outline.gdshader")
 const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 
+## 戰鬥站位高台 Y 偏移表：場景如有石橋、高台、懸崖等地形，將站位與陰影錨點自基準地面抬升。
+const BATTLE_PLATFORM_OFFSETS := {
+	"bamboo_spirit": 112.0,  ## 竹林溪流石橋平台
+	"dojo_bamboo": 112.0,
+}
+
 signal battle_finished(won: bool)
 
 @onready var log_label: RichTextLabel = %Log
@@ -1195,6 +1201,7 @@ func _apply_battle_art(mode: String) -> void:
 				enemy_body.custom_minimum_size = Vector2(220, 240)
 			_enemy_base_mod = Color.WHITE
 	enemy_body.modulate = _enemy_base_mod
+	_apply_platform_elevation(mode)
 
 	## 背景解析統一在 SpriteDB.battle_bg_path()（地圖插畫底板，不用量化馬賽克）。
 	var bg := SpriteDB.battle_bg(mode)
@@ -1240,7 +1247,22 @@ func _apply_battle_weapon_overlay() -> void:
 	call_deferred("_layout_battle_equipment_overlays")
 
 
+func _apply_platform_elevation(mode: String) -> void:
+	var offset_y := float(BATTLE_PLATFORM_OFFSETS.get(mode, 0.0))
+	if offset_y == 0.0:
+		var map_id := str(SpriteDB.BATTLE_BG_MAP.get(mode, "")) if SpriteDB else ""
+		offset_y = float(BATTLE_PLATFORM_OFFSETS.get(map_id, 0.0))
+	var epad := get_node_or_null("Arena/EnemySlot/GroundPad") as Control
+	if epad:
+		epad.custom_minimum_size = Vector2(0, 44.0 + offset_y)
+		if not epad.resized.is_connected(_layout_battle_equipment_overlays):
+			epad.resized.connect(_layout_battle_equipment_overlays)
+	call_deferred("_layout_battle_equipment_overlays")
+
+
 func _layout_battle_equipment_overlays() -> void:
+	if enemy_body and is_instance_valid(enemy_body) and _boss_pose == "idle":
+		_enemy_home = enemy_body.position
 	_layout_foot_shadow(player_body)
 	_layout_foot_shadow(enemy_body)
 	if player_body == null:
