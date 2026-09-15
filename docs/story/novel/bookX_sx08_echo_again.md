@@ -1,7 +1,7 @@
 # SX-08 · 迴響：若再走一次（場景卡正文 · 第一版）
 
 > 場景卡：SX-08 迴響：若再走一次  
-> 對齊：`docs/story/novel/00_sx_outlines.md` SX-08；`docs/SCRIPT_C0.md`（C0 序幕、舊閣樓出發、鏽蝕長劍、鑰繩）；`docs/SCRIPT_C6.md`（C6 終章晨光、通關 Flag、晨光中的兔子）；`docs/world/CANON.md` 零毛皮零血肉規範、純機械發條玩具規範、上發條十五圈安全極限、雙子擒縱輪、初源發條鑰匙、記憶齒輪；`docs/world/regions/R01_TODAY_VILLAGE.md` 今日村莊·發條新村、舊閣樓；`docs/NPC.md`（N01 麥穗、N04 舊鑰）；`docs/STORY_BIBLE.md`（初心的第十五圈、麥穗牽掛）；`game/data/npc_lines/maisui_village.json`（`maisui_village`）；`game/data/story/codex.json`（`c0_wheat_home`、`c6_tower_summit`）；`game/scripts/systems/quest_system.gd`（通關里程碑 `m_clear`「晨光見證」、`game_cleared`）；`game/scripts/systems/title_catalog.gd`（`title.cleared`「晨光中的兔子」）；`game/scripts/autoload/game_state.gd`（`game_cleared`）。角色：小白（米白金屬發條兔）、麥穗（今日村莊故鄉同伴/守護家鄉日常）。  
+> 對齊：`docs/story/novel/00_sx_outlines.md` SX-08；`docs/SCRIPT_C0.md`（C0 序幕、舊閣樓出發、鏽蝕長劍、鑰繩）；`docs/SCRIPT_C6.md`（C6 終章晨光、通關 Flag、晨光中的兔子）；`docs/world/CANON.md` 零毛皮零血肉規範、純機械發條玩具規範、上發條十五圈安全極限、雙子擒縱輪、初源發條鑰匙、記憶齒輪；`docs/world/regions/R01_TODAY_VILLAGE.md` 今日村莊·發條新村、舊閣樓；`docs/NPC.md`（N01 麥穗）；`docs/SCRIPT_C0.md`（舊鑰·C0 強制事件）；`docs/STORY_BIBLE.md`（初心的第十五圈、麥穗牽掛）；`game/data/npc_lines/maisui_village.json`（`maisui_village`）；`game/data/story/codex.json`（`c0_wheat_home`、`c6_tower_summit`）；`game/scripts/systems/quest_system.gd`（通關里程碑 `m_clear`「晨光見證」、`game_cleared`）；`game/scripts/systems/title_catalog.gd`（`title.cleared`「晨光中的兔子」）；`game/scripts/autoload/game_state.gd`（`game_cleared`）。角色：小白（米白金屬發條兔）、麥穗（今日村莊故鄉同伴/守護家鄉日常）。  
 > 遊戲機制與 Flag：主線通關（`game_cleared`）後的終章收尾型後記，並作為遊戲核心「每日發條循環（上發條十五圈）」之哲學延伸敘事（連結起點閣樓與終章晨光）。純小說收尾與回望篇章，完全脫鉤已下架的「黑焰迴響（NG+）二週目」玩法系統，不需對應遊戲重啟機制。  
 > 用途：小說正文 · 遊戲支線敘事對齊 · 通關後記定稿  
 
