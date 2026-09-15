@@ -257,4 +257,4 @@
 - `c2_inn_rest = true`：客棧爐火休息，恢復環境動能
 - `flag.c2_wheat_letter = true`：N8 延遲的信已讀（舊鑰真情，不可跳過正文）
 - `c2_corridor_training_done = true`：霧廊看破教學完成，識破真假同色
-- `boss.white_fog_cleared = false`：守衛泰坦·白霧前置準備完成
+- `boss.white_fog_cleared = false`：守衛泰坦·白霧尚未擊破（本四場僅完成前置，旗標維持 false）
