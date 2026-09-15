@@ -13,7 +13,9 @@
 | [book1_c1_s01-04_gate_forge.md](book1_c1_s01-04_gate_forge.md) | **C1-S01~S04 門衛與重鍛**全文 ≈1800 字 |
 | [book1_c1_s05-08_leo_eve.md](book1_c1_s05-08_leo_eve.md) | **C1-S05~S08 星讀至雷歐前夜**全文 ≈1800 字 |
 | [book1_c1_s09-13_leo_climax.md](book1_c1_s09-13_leo_climax.md) | **C1-S09~S13 雷歐高潮～五柱皆危**全文 ≈2600 字 + 對白壓稿 + Short 字幕 |
-| `game/data/story/codex.json` | 手札 7 條（C0～C1 雷歐） |
+| [book1_c2_s01-04_white_fog.md](book1_c2_s01-04_white_fog.md) | **C2-S01~S04 白霧之地至真假同色**全文 ≈2600 字 + 對白壓稿 + Short 字幕 |
+| [book1_c2_s05-07_third_shadow.md](book1_c2_s05-07_third_shadow.md) | **C2-S05~S07 白霧第三個影子至家書與舊影**全文 ≈3400 字 + 對白壓稿 + Short 字幕 |
+| `game/data/story/codex.json` | 手札 8 條（C0～C1 雷歐、C2 白霧仙狐） |
 | `game/scripts/systems/story_codex.gd` | 解鎖邏輯 |
 | 暫停選單 → **旅途手札** | 遊戲內閱讀入口 |
 
@@ -23,8 +25,11 @@
 
 ## 第一部範圍（Book 1）
 
-場景卡 **#01～#18**（C0 離村 → C1 雷歐前夜）  
-本包**寫完正文**的只有 **#02 燃燒之夜**；其餘是標題預約。
+場景卡 **#01～#30**（C0 序章離村 → C1 堡壘雷歐 → C2 白霧之地收束）  
+目前已完成正文進度：
+- **C0**（#01～#08 全部場景卡正文已完稿）
+- **C1**（#09～#23 全部場景卡正文已完稿）
+- **C2**（#24～#30 全部場景卡正文已完稿，含白霧仙狐戰與霧中家書）
 
 建議你審的重點：
 

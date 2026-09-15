@@ -43,7 +43,7 @@
 
 ---
 
-## Book 3 · 霧與真（C2）
+## Book 3 · 霧與真（C2 · 正文已完成）
 
 | # | ID | 章 | 場景名 | 觸發 | Short | 正文檔案 |
 |---|-----|-----|--------|------|-------|---------|
@@ -51,9 +51,9 @@
 | 25 | C2-S02 | C2 | 客棧爐火 | 安全休息 | 喘息 | [book1_c2_s01-04_white_fog.md](book1_c2_s01-04_white_fog.md) |
 | 26 | C2-S03 | C2 | 延遲的信（N8） | `c2_wheat_letter` | 催淚 | [book1_c2_s01-04_white_fog.md](book1_c2_s01-04_white_fog.md) |
 | 27 | C2-S04 | C2 | 真假同色 | 教學看破 | 玩法 | [book1_c2_s01-04_white_fog.md](book1_c2_s01-04_white_fog.md) |
-| 28 | C2-S05 | C2 | 白霧的第三個影子 | Boss 前 | 懸疑 | |
-| 29 | C2-S06 | C2 | 霧散了，路在眼前 | `boss.white_fog_cleared` | 收 | |
-| 30 | C2-S07 | C2 | 家書與舊影 | 支線 | 溫度 | |
+| 28 | C2-S05 | C2 | 白霧的第三個影子 | Boss 前 | 懸疑 | [book1_c2_s05-07_third_shadow.md](book1_c2_s05-07_third_shadow.md) |
+| 29 | C2-S06 | C2 | 霧散了，路在眼前 | `boss.white_fog_cleared` | 收 | [book1_c2_s05-07_third_shadow.md](book1_c2_s05-07_third_shadow.md) |
+| 30 | C2-S07 | C2 | 家書與舊影 | 支線 | 溫度 | [book1_c2_s05-07_third_shadow.md](book1_c2_s05-07_third_shadow.md) |
 
 ---
 

@@ -38,6 +38,11 @@ func _initialize() -> void:
 	if not sc.is_unlocked("c0_wheat_home"):
 		push_error("wheat unlock fail")
 		ok = false
+	gs.set_flag("boss.white_fog_cleared", true)
+	sc.try_unlock_all()
+	if not sc.is_unlocked("c2_white_fog"):
+		push_error("c2_white_fog unlock fail")
+		ok = false
 	print("unlocked ", sc.unlocked_count(), "/", sc.total_count())
 	if ok:
 		print("CODEX_OK")
