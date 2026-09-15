@@ -384,7 +384,7 @@ func _apply_hud_chrome() -> void:
 	## 值卻是墨色 #26242a（改成白底風格時語意翻轉了），於是近黑字畫在近黑底上。
 	## 更麻煩的是後續狀態變化只改 modulate，而 modulate 是乘法，
 	## 近黑乘任何係數只會更黑，那行字沒有任何狀態救得回來。底色修好，狀態變化才有意義。
-	for lab in [player_name_l, enemy_name, player_hp_label, enemy_hp_label, parry_hint, banner]:
+	for lab in [player_hp_label, enemy_hp_label, parry_hint, banner]:
 		if lab:
 			lab.add_theme_font_size_override("font_size", 14 if lab != banner else 16)
 			lab.add_theme_color_override("font_color", Color(0.95, 0.93, 0.88))
@@ -392,15 +392,30 @@ func _apply_hud_chrome() -> void:
 			lab.add_theme_constant_override("shadow_offset_x", 1)
 			lab.add_theme_constant_override("shadow_offset_y", 1)
 
+	var huninn: Font = null
+	if ResourceLoader.exists("res://assets/fonts/jf-openhuninn-2.1.ttf"):
+		huninn = load("res://assets/fonts/jf-openhuninn-2.1.ttf") as Font
+
 	if player_name_l:
-		player_name_l.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
-		player_name_l.add_theme_constant_override("shadow_offset_x", 1)
-		player_name_l.add_theme_constant_override("shadow_offset_y", 1)
+		if huninn:
+			player_name_l.add_theme_font_override("font", huninn)
+		player_name_l.add_theme_font_size_override("font_size", 22)
+		player_name_l.add_theme_color_override("font_color", Color(1.0, 1.0, 1.0))
+		player_name_l.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+		player_name_l.add_theme_constant_override("outline_size", 2)
+		player_name_l.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0))
+		player_name_l.add_theme_constant_override("shadow_offset_x", 0)
+		player_name_l.add_theme_constant_override("shadow_offset_y", 0)
 	if enemy_name:
-		enemy_name.add_theme_color_override("font_color", Color(1.0, 0.75, 0.7))
-		enemy_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.7))
-		enemy_name.add_theme_constant_override("shadow_offset_x", 1)
-		enemy_name.add_theme_constant_override("shadow_offset_y", 1)
+		if huninn:
+			enemy_name.add_theme_font_override("font", huninn)
+		enemy_name.add_theme_font_size_override("font_size", 22)
+		enemy_name.add_theme_color_override("font_color", Color(1.0, 0.85, 0.8))
+		enemy_name.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+		enemy_name.add_theme_constant_override("outline_size", 2)
+		enemy_name.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0))
+		enemy_name.add_theme_constant_override("shadow_offset_x", 0)
+		enemy_name.add_theme_constant_override("shadow_offset_y", 0)
 	if player_hp_label:
 		player_hp_label.add_theme_color_override("font_color", Color(0.88, 0.9, 0.86))
 	if enemy_hp_label:
@@ -2358,6 +2373,31 @@ func _on_telemetry_battle_finished(won: bool) -> void:
 		tel.call("battle_finished", _mode, won)
 
 
+func _unit_display_name(unit_id: String) -> String:
+	if sim:
+		var u: BattleUnit = sim.get_unit(unit_id)
+		if u and u.display_name != "":
+			return u.display_name
+	if unit_id == "player":
+		if GameState.player_name != "":
+			return GameState.player_name
+		var r := str(GameState.player_race).to_lower()
+		match r:
+			"rabbit": return _t("小白")
+			"lion": return _t("烈鬃獅")
+			"fox": return _t("靈尾狐")
+			"boar": return _t("鋼牙豕")
+			"macaque": return _t("靈爪猴")
+			_: return _t("小白")
+	if _is_world_mode(unit_id):
+		var WC = load("res://scripts/world/world_content.gd")
+		if WC:
+			var d: Dictionary = WC.enemy_def(unit_id)
+			if not d.is_empty() and d.get("name", "") != "":
+				return str(d.get("name"))
+	return unit_id
+
+
 func _on_event(kind: String, data: Dictionary) -> void:
 	AudioManager.on_battle_event(kind, data)
 	match kind:
@@ -2404,7 +2444,8 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			var is_crit: bool = bool(data.get("crit", false))
 			var crit_s := _t("暴擊") if is_crit else ""
 			var ks := _t("【王者斬】") if data.get("king_slash", false) else ""
-			_append_log(_t("%s%s 造成 %s 傷害 %s") % [ks, data.get("attacker"), data.get("damage"), crit_s])
+			var aname := _unit_display_name(str(data.get("attacker", "")))
+			_append_log(_t("%s%s 造成 %s 傷害 %s") % [ks, aname, data.get("damage"), crit_s])
 			## 玩家挨打：切受擊姿
 			if str(data.get("defender", "")) == "player":
 				_set_player_pose("hit", true)
@@ -2548,10 +2589,12 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			if left_u == 3 or left_u == 1:
 				_append_log(_t("[color=#aaa]武器剩餘 %d 次[/color]") % left_u)
 		"miss":
-			_append_log(_t("%s 未中") % data.get("attacker"))
+			var aname := _unit_display_name(str(data.get("attacker", "")))
+			_append_log(_t("%s 未中") % aname)
 			_spawn_float(str(data.get("defender")), _t("未中"), Color(0.7, 0.7, 0.8))
 		"skill_cast":
-			_append_log(_t("[color=#8cf]%s 使出 %s[/color]") % [data.get("id"), data.get("skill")])
+			var cname := _unit_display_name(str(data.get("id", "")))
+			_append_log(_t("[color=#8cf]%s 使出 %s[/color]") % [cname, data.get("skill")])
 			var sid := str(data.get("id", ""))
 			var skn := str(data.get("skill", _t("技能")))
 			var cast_hits: int = maxi(1, int(data.get("hits", 1)))

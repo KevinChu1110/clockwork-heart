@@ -11,7 +11,7 @@ const PRACTICE_MULT := 0.35
 ## 三波敵人（WorldContent mode）
 const WAVES: Array[Dictionary] = [
 	{"mode": "ash_rat", "label": "第一波 · 灰燼鼠潮"},
-	{"mode": "road_bandit", "label": "第二波 · 鏽蝕哨兵偶"},
+	{"mode": "road_bandit", "label": "第二波 · 荒路匪徒"},
 	{"mode": "scar_wisp", "label": "第三波 · 焰靈"},
 ]
 
