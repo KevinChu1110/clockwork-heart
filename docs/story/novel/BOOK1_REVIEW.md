@@ -10,6 +10,9 @@
 |------|------|
 | [00_outline_scene_cards.md](00_outline_scene_cards.md) | **60 張**主線／外傳場景卡標題 |
 | [book1_c0_s02_ember_night.md](book1_c0_s02_ember_night.md) | **C0 燃燒之夜**全文 ≈1500 字 + 對白壓稿 + Short 字幕 |
+| [book1_c1_s01-04_gate_forge.md](book1_c1_s01-04_gate_forge.md) | **C1-S01~S04 門衛與重鍛**全文 ≈1800 字 |
+| [book1_c1_s05-08_leo_eve.md](book1_c1_s05-08_leo_eve.md) | **C1-S05~S08 星讀至雷歐前夜**全文 ≈1800 字 |
+| [book1_c1_s09-13_leo_climax.md](book1_c1_s09-13_leo_climax.md) | **C1-S09~S13 雷歐高潮～五柱皆危**全文 ≈2600 字 + 對白壓稿 + Short 字幕 |
 | `game/data/story/codex.json` | 手札 7 條（C0～C1 雷歐） |
 | `game/scripts/systems/story_codex.gd` | 解鎖邏輯 |
 | 暫停選單 → **旅途手札** | 遊戲內閱讀入口 |

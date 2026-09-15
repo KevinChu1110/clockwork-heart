@@ -31,15 +31,15 @@
 
 ---
 
-## Book 2 · 獅子與承認（C1 高潮）
+## Book 2 · 獅子與承認（C1 高潮 · 正文已完成）
 
-| # | ID | 章 | 場景名 | 觸發 | Short |
-|---|-----|-----|--------|------|-------|
-| 19 | C1-S09 | C1 | 王者斬的窗口 | 雷歐戰中 | 格擋 |
-| 20 | C1-S10 | C1 | 打醒的不是獸，是柱 | `boss.leo_cleared` | 高潮 |
-| 21 | C1-S11 | C1 | 金鬃與承認 | 戰後 | 成長 |
-| 22 | C1-S12 | C1 | 五柱皆危 | 轉折說明 | 世界壓 |
-| 23 | C1-S13 | C1 | 有人勸退 | NPC 對話 | 主題再敲 |
+| # | ID | 章 | 場景名 | 觸發 | Short | 正文檔案 |
+|---|-----|-----|--------|------|-------|---------|
+| 19 | C1-S09 | C1 | 王者斬的窗口 | 雷歐戰中 | 格擋 | [book1_c1_s09-13_leo_climax.md](book1_c1_s09-13_leo_climax.md) |
+| 20 | C1-S10 | C1 | 打醒的不是獸，是柱 | `boss.leo_cleared` | 高潮 | [book1_c1_s09-13_leo_climax.md](book1_c1_s09-13_leo_climax.md) |
+| 21 | C1-S11 | C1 | 金鬃與承認 | 戰後 | 成長 | [book1_c1_s09-13_leo_climax.md](book1_c1_s09-13_leo_climax.md) |
+| 22 | C1-S12 | C1 | 五柱皆危 | 轉折說明 | 世界壓 | [book1_c1_s09-13_leo_climax.md](book1_c1_s09-13_leo_climax.md) |
+| 23 | C1-S13 | C1 | 有人勸退 | NPC 對話 | 主題再敲 | [book1_c1_s09-13_leo_climax.md](book1_c1_s09-13_leo_climax.md) |
 
 ---
 
