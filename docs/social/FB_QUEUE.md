@@ -563,7 +563,7 @@ B 灰燼夜行機關裝（消光黑碳素護甲，暗影隱匿疾速風格）
 | Day 1 | 週三 20:00 (09-30) | 阿哲（內容行銷） | 第九族蒸氣企鵝 7 槽切片世界觀工藝長文 | `game/assets/sprites/player/paperdoll/penguin/proof_penguin_all_7_slices.png` | 拆解 7 大發條槽位切片，探討深海導航員玩具世界觀與羽毛轉合金板件工藝取捨／分享數、長文停留時間 | ✅ 已發布（ID: `1335191403004011_122112199899447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112199899447337) |
 | Day 2 | 週四 20:00 (10-01) | 小魚（視覺成果直擊） | 蒸氣企鵝 7 槽裝配成品與洋紅底板驗收對照圖 | `game/assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_compare.png` | 開門見山直擊蒸氣企鵝 7 槽組裝完成立繪與洋紅背板零毛皮去背驗收／單圖停留時間、留言數、分享數 | ✅ 已發布（ID: `1335191403004011_122112213567447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112213567447337) |
 | Day 3 | 週五 20:00 (10-02) | 小玩（平台機制） | 蒸氣企鵝六大戰鬥姿態雙擊放大數蒸氣眼力測驗 | `game/assets/sprites/player/proof_penguin_combat_poses_640.png` | 借平台雙擊放大手勢挑戰數出招噴發蒸氣動作格數／單圖停留時間、放大互動、留言數 | ✅ 已發布（ID: `1335191403004011_122112249033447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112249033447337) |
-| Day 4 | 週六 12:00 (10-03) | Ken（社群互動） | 發條衣櫥種族篩選企鵝外裝二選一秒回投票 | `proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png` | 深海導航員大衣 vs 裸機素體工藝版外觀風格二選一單字回覆／留言數、留言與觸及比 | ✅ 截字問題已於 155fa5a（t_706026f0）修復並重截，2026-09-16 vision 複驗「企鵝」標籤文字完整無裁切、四邊留白充足；待總監審查後開發文單 |
+| Day 4 | 週六 12:00 (10-03) | Ken（社群互動） | 發條衣櫥種族篩選企鵝外裝二選一秒回投票 | `proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png` | 深海導航員大衣 vs 裸機素體工藝版外觀風格二選一單字回覆／留言數、留言與觸及比 | ✅ 已發布（ID: `1335191403004011_122112314757447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112314757447337) |
 
 素材自檢（發文前必須確認檔案存在於 repo 且合規）：
 
@@ -827,7 +827,7 @@ B 裸機素體工藝版（卸除外裝露出金屬龍骨＋純白防撞胸甲，
 | Day 1 | 週三 20:00 (10-07) | 阿哲（內容行銷） | 第七族雲嵐鶴 7 槽切片世界觀工藝長文 | `game/assets/sprites/player/paperdoll/crane/proof_crane_all_7_slices.png` | 拆解 7 大發條槽位切片，探討空中文雅狙擊手世界觀與羽毛轉合金折疊翼片工藝取捨／分享數、長文停留時間 | ✅ 已發布（ID: `1335191403004011_122112249741447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112249741447337) |
 | Day 2 | 週四 20:00 (10-08) | 小魚（視覺成果直擊） | 雲嵐鶴 400×840 官方品牌全尺寸立牌 | `branding/char_crane.png` | 開門見山直擊雲嵐鶴全尺寸立繪、青瓷白外殼與單持機關弓零毛皮驗收／單圖停留時間、留言數、分享數 | ✅ 已發布（ID: `1335191403004011_122112259629447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112259629447337) |
 | Day 3 | 週五 20:00 (10-09) | 小玩（平台機制） | 神殿大廳雲嵐鶴展示雙擊放大數齒輪挑戰 | `proofs/crane_bear_char_creation/proof_party_crane.png` | 借平台雙擊放大手勢挑戰數神殿光柱懸浮同心金色齒輪層數／單圖停留時間、放大互動、留言數 | 依實機截圖對外禁令暫緩（0-MKT2） |
-| Day 4 | 週六 12:00 (10-10) | Ken（社群互動） | 發條衣櫥種族篩選修復版企鵝外裝二選一秒回投票 | `proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png` | 深海導航員大衣 vs 裸機素體工藝版外觀風格二選一單字回覆／留言數、留言與觸及比 | 依實機截圖對外禁令暫緩（0-MKT2） |
+| Day 4 | 週六 12:00 (10-10) | Ken（社群互動） | 發條衣櫥種族篩選修復版企鵝外裝二選一秒回投票 | `proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png` | 深海導航員大衣 vs 裸機素體工藝版外觀風格二選一單字回覆／留言數、留言與觸及比 | ✅ 已發布（ID: `1335191403004011_122112314757447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112314757447337) |
 
 素材自檢（發文前必須確認檔案存在於 repo 且合規）：
 
@@ -941,6 +941,7 @@ test -f proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png
 #### Day 4 · Ken（社群互動）· 145 字
 
 - **形式**：發條衣櫥種族篩選修復版企鵝外裝二選一秒回投票短貼文（80–150 字區間）
+- **狀態**：✅ 已發布（ID: `1335191403004011_122112314757447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112314757447337)
 - **圖**：`proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png`（1280×720，手遊發條衣櫥種族篩選截字修復版實機截圖）
 - **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png`
 - **定位**：鎖定本週於 commit `155fa5a` (t_706026f0) 徹底修復邊界截字問題之「發條衣櫥種族篩選 Chip 列」實機截圖，展示手遊換裝彈窗最新介面與蒸氣企鵝兩款可選外觀，推出風格二選一秒回投票，維持極低互動門檻，引爆社群對外觀造型的討論。
