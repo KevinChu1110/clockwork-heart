@@ -414,7 +414,7 @@ func _build_top_hud() -> void:
 	var psb := StyleBoxFlat.new()
 	psb.bg_color = COLOR_CARD_WARM
 	psb.border_color = COLOR_BORDER
-	psb.set_border_width_all(2)
+	psb.set_border_width_all(1)
 	psb.set_corner_radius_all(26)
 	p_frame.custom_minimum_size = Vector2(52, 52)
 	p_frame.add_theme_stylebox_override("panel", psb)
@@ -481,19 +481,17 @@ func _build_top_hud() -> void:
 	var sbs := StyleBoxFlat.new()
 	sbs.bg_color = COLOR_CARD_WARM
 	sbs.border_color = COLOR_BORDER
-	sbs.set_border_width_all(2)
-	sbs.border_width_bottom = 4
-	sbs.set_corner_radius_all(18)
+	sbs.set_border_width_all(1)
+	sbs.border_width_bottom = 2
+	sbs.set_corner_radius_all(16)
 	sbs.content_margin_left = 12
 	sbs.content_margin_right = 12
-	sbs.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
-	sbs.shadow_size = 4
-	sbs.shadow_offset = Vector2(0, 2)
+	sbs.shadow_size = 0
 	
 	var sbs_h := sbs.duplicate() as StyleBoxFlat
 	sbs_h.bg_color = COLOR_CARD_GOLD
 	var sbs_p := sbs.duplicate() as StyleBoxFlat
-	sbs_p.border_width_bottom = 2
+	sbs_p.border_width_bottom = 1
 	
 	set_btn.add_theme_stylebox_override("normal", sbs)
 	set_btn.add_theme_stylebox_override("hover", sbs_h)
@@ -514,17 +512,15 @@ func _add_clean_capsule(parent: Container, title: String, val: String, accent: C
 	var cap := PanelContainer.new()
 	var csb := StyleBoxFlat.new()
 	csb.bg_color = COLOR_CARD_WARM
-	csb.border_color = COLOR_BORDER
-	csb.set_border_width_all(2)
-	csb.border_width_bottom = 4
-	csb.set_corner_radius_all(18)
+	csb.border_color = Color(0.85, 0.82, 0.76, 0.6)
+	csb.set_border_width_all(1)
+	csb.border_width_bottom = 1
+	csb.set_corner_radius_all(16)
 	csb.content_margin_left = 14
 	csb.content_margin_right = 14
 	csb.content_margin_top = 4
 	csb.content_margin_bottom = 4
-	csb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
-	csb.shadow_size = 4
-	csb.shadow_offset = Vector2(0, 2)
+	csb.shadow_size = 0
 	cap.add_theme_stylebox_override("panel", csb)
 
 	var h := HBoxContainer.new()
@@ -767,34 +763,32 @@ func _build_village_tab() -> void:
 	hero_click.pressed.connect(_on_hero_clicked)
 	_hero_avatar.add_child(hero_click)
 
-	## 3. 頭頂稱號與名字（多巴胺奶油白底襯 + 深藍紫描邊，置於齒輪上方避開核心細節）
+	## 3. 頭頂稱號與名字（精巧微型名牌，上移避開齒輪中央能量光芒與核心，拿掉重陰影）
 	var tag_panel := PanelContainer.new()
 	tag_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	tag_panel.offset_left = -75
-	tag_panel.offset_top = -158
-	tag_panel.offset_right = 75
-	tag_panel.offset_bottom = -112
+	tag_panel.offset_left = -56
+	tag_panel.offset_top = -174
+	tag_panel.offset_right = 56
+	tag_panel.offset_bottom = -132
 	tag_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var tag_sb := StyleBoxFlat.new()
-	tag_sb.bg_color = Color(1.0, 0.992, 0.973, 0.95) # 奶油白 #FFFDF8 @ 95%
+	tag_sb.bg_color = Color(1.0, 0.992, 0.973, 0.92) # 奶油白 #FFFDF8 @ 92%
 	tag_sb.border_color = COLOR_BORDER # #1F1A3A 深藍紫
-	tag_sb.set_border_width_all(2)
-	tag_sb.border_width_bottom = 4
-	tag_sb.set_corner_radius_all(18)
-	tag_sb.content_margin_left = 10
-	tag_sb.content_margin_right = 10
-	tag_sb.content_margin_top = 4
-	tag_sb.content_margin_bottom = 4
-	tag_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.18)
-	tag_sb.shadow_size = 5
-	tag_sb.shadow_offset = Vector2(0, 2)
+	tag_sb.set_border_width_all(1)
+	tag_sb.border_width_bottom = 2
+	tag_sb.set_corner_radius_all(12)
+	tag_sb.content_margin_left = 8
+	tag_sb.content_margin_right = 8
+	tag_sb.content_margin_top = 2
+	tag_sb.content_margin_bottom = 2
+	tag_sb.shadow_size = 0
 	tag_panel.add_theme_stylebox_override("panel", tag_sb)
 
 	var tag_v := VBoxContainer.new()
 	tag_v.alignment = BoxContainer.ALIGNMENT_CENTER
 	tag_v.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	tag_v.add_theme_constant_override("separation", 2)
+	tag_v.add_theme_constant_override("separation", 1)
 
 	_hero_name_tag = Label.new()
 	_hero_name_tag.text = _get_hero_name()
@@ -808,7 +802,7 @@ func _build_village_tab() -> void:
 	var title_l := Label.new()
 	title_l.text = "【初出茅廬】"
 	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	title_l.add_theme_font_size_override("font_size", 12)
+	title_l.add_theme_font_size_override("font_size", 11)
 	title_l.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	title_l.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.6))
 	title_l.add_theme_constant_override("outline_size", 1)
@@ -854,10 +848,10 @@ func _build_village_tab() -> void:
 	left_shops.name = "HallCardsContainer"
 	left_shops.set_anchors_preset(Control.PRESET_LEFT_WIDE)
 	left_shops.offset_left = 32
-	left_shops.offset_top = 16
-	left_shops.offset_right = 272
-	left_shops.offset_bottom = -16
-	left_shops.add_theme_constant_override("separation", 14)
+	left_shops.offset_top = 20
+	left_shops.offset_right = 240
+	left_shops.offset_bottom = -20
+	left_shops.add_theme_constant_override("separation", 10)
 	_village_layer.add_child(left_shops)
 
 	_add_hall_card(left_shops, _t("天宮鐵匠"), "品質轉化 · 裝備鍛造", "鐵", func():
@@ -900,20 +894,18 @@ func _build_village_tab() -> void:
 	rv.add_child(s_name)
 
 	var btn_go := Button.new()
-	btn_go.custom_minimum_size = Vector2(280, 68)
+	btn_go.custom_minimum_size = Vector2(280, 64)
 	btn_go.text = "前往出征"
 	btn_go.add_theme_font_size_override("font_size", 20)
 	var gsb := StyleBoxFlat.new()
 	gsb.bg_color = COLOR_GOLD
 	gsb.border_color = COLOR_BORDER
-	gsb.set_border_width_all(2)
-	gsb.border_width_bottom = 5
-	gsb.set_corner_radius_all(20)
-	gsb.content_margin_top = 12
-	gsb.content_margin_bottom = 12
-	gsb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
-	gsb.shadow_size = 8
-	gsb.shadow_offset = Vector2(0, 3)
+	gsb.set_border_width_all(1)
+	gsb.border_width_bottom = 4
+	gsb.set_corner_radius_all(18)
+	gsb.content_margin_top = 10
+	gsb.content_margin_bottom = 10
+	gsb.shadow_size = 0
 	btn_go.add_theme_stylebox_override("normal", gsb)
 	
 	var gsb_h := gsb.duplicate() as StyleBoxFlat
@@ -936,27 +928,25 @@ func _add_hall_card(parent: Container, title: String, subtitle: String, icon_sym
 	btn.set_meta("hall_title", title)
 	btn.set_meta("hall_subtitle", subtitle)
 	btn.set_meta("hall_icon", icon_symbol)
-	btn.custom_minimum_size = Vector2(240, 72)
+	btn.custom_minimum_size = Vector2(200, 52)
 	
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = COLOR_BG_CREAM
 	sb.border_color = COLOR_BORDER
-	sb.set_border_width_all(2)
-	sb.border_width_bottom = 5
-	sb.set_corner_radius_all(20)
-	sb.content_margin_left = 14
-	sb.content_margin_right = 14
-	sb.content_margin_top = 8
-	sb.content_margin_bottom = 8
-	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
-	sb.shadow_size = 6
-	sb.shadow_offset = Vector2(0, 3)
+	sb.set_border_width_all(1)
+	sb.border_width_bottom = 3
+	sb.set_corner_radius_all(16)
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	sb.shadow_size = 0
 	btn.add_theme_stylebox_override("normal", sb)
 	
 	var sb_h := sb.duplicate() as StyleBoxFlat
 	sb_h.bg_color = COLOR_CARD_GOLD
 	var sb_p := sb.duplicate() as StyleBoxFlat
-	sb_p.border_width_bottom = 2
+	sb_p.border_width_bottom = 1
 	btn.add_theme_stylebox_override("hover", sb_h)
 	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
@@ -964,18 +954,18 @@ func _add_hall_card(parent: Container, title: String, subtitle: String, icon_sym
 	var h := HBoxContainer.new()
 	h.set_anchors_preset(Control.PRESET_FULL_RECT)
 	h.alignment = BoxContainer.ALIGNMENT_CENTER
-	h.add_theme_constant_override("separation", 12)
+	h.add_theme_constant_override("separation", 10)
 	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(h)
 	
 	var icon_box := PanelContainer.new()
-	icon_box.custom_minimum_size = Vector2(46, 46)
+	icon_box.custom_minimum_size = Vector2(36, 36)
 	var isb := StyleBoxFlat.new()
 	isb.bg_color = COLOR_GOLD
 	isb.border_color = COLOR_BORDER
-	isb.set_border_width_all(2)
-	isb.border_width_bottom = 3
-	isb.set_corner_radius_all(14)
+	isb.set_border_width_all(1)
+	isb.border_width_bottom = 2
+	isb.set_corner_radius_all(10)
 	icon_box.add_theme_stylebox_override("panel", isb)
 	icon_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
@@ -983,30 +973,19 @@ func _add_hall_card(parent: Container, title: String, subtitle: String, icon_sym
 	icon_lbl.text = icon_symbol
 	icon_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	icon_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	icon_lbl.add_theme_font_size_override("font_size", 18)
+	icon_lbl.add_theme_font_size_override("font_size", 16)
 	icon_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	icon_box.add_child(icon_lbl)
 	h.add_child(icon_box)
-	
-	var v := VBoxContainer.new()
-	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.add_theme_constant_override("separation", 2)
-	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	
 	var tl := Label.new()
 	tl.text = title
 	tl.add_theme_font_size_override("font_size", 16)
 	tl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	v.add_child(tl)
+	tl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	h.add_child(tl)
 	
-	var sl := Label.new()
-	sl.text = subtitle
-	sl.add_theme_font_size_override("font_size", 12)
-	sl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
-	v.add_child(sl)
-	
-	h.add_child(v)
 	btn.pressed.connect(cb)
 	parent.add_child(btn)
 

@@ -111,6 +111,67 @@ static func panel_style(accent: Color = LINE) -> StyleBoxFlat:
 	return s
 
 
+## ── 次級容器不重複加框規範 (Anti-Nested-Borders / 避免框中框) ──
+## 卡片若已在有框的父容器內，子項目只用純背景色分隔（不加 border、不加陰影），
+## 或邊框寬度降至 1px 且拿掉陰影，避免多重粗黑外框重疊壓過畫面視覺焦點。
+static func sub_panel_style(bg: Color = Color(0.96, 0.94, 0.90, 0.95), radius: int = 16) -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.bg_color = bg
+	s.set_border_width_all(0)
+	s.set_corner_radius_all(radius)
+	s.content_margin_left = 12
+	s.content_margin_right = 12
+	s.content_margin_top = 8
+	s.content_margin_bottom = 8
+	s.shadow_size = 0
+	return s
+
+
+static func sub_card_style(bg: Color = TATA_CARD_BG, is_selected: bool = false, radius: int = 14) -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.set_corner_radius_all(radius)
+	s.content_margin_left = 8
+	s.content_margin_right = 8
+	s.content_margin_top = 6
+	s.content_margin_bottom = 6
+	if is_selected:
+		s.bg_color = Color("#FFF4D0")
+		s.border_color = TATA_ORANGE
+		s.set_border_width_all(2)
+		s.border_width_bottom = 4
+		s.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
+		s.shadow_size = 4
+		s.shadow_offset = Vector2(0, 2)
+	else:
+		s.bg_color = bg
+		s.border_color = BORDER_DARK
+		s.set_border_width_all(1)
+		s.border_width_bottom = 2
+		s.shadow_size = 0
+	return s
+
+
+static func sub_chip_style(is_selected: bool = false, radius: int = 14) -> StyleBoxFlat:
+	var s := StyleBoxFlat.new()
+	s.set_corner_radius_all(radius)
+	s.content_margin_left = 10
+	s.content_margin_right = 10
+	s.content_margin_top = 4
+	s.content_margin_bottom = 4
+	if is_selected:
+		s.bg_color = TATA_YELLOW
+		s.border_color = TATA_ORANGE
+		s.set_border_width_all(2)
+		s.border_width_bottom = 3
+		s.shadow_size = 0
+	else:
+		s.bg_color = Color(0.92, 0.90, 0.86, 0.85)
+		s.set_border_width_all(0)
+		s.border_width_bottom = 0
+		s.shadow_size = 0
+	return s
+
+
 static func panel_style_dark() -> StyleBoxFlat:
 	## HUD / 面板：深色暖木／金邊質感框
 	var s := StyleBoxFlat.new()
@@ -401,14 +462,13 @@ static func name_tag_style() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
 	s.bg_color = Color(0.99, 0.98, 0.95, 0.96)
 	s.border_color = BORDER_DARK
-	s.set_border_width_all(2)
-	s.set_corner_radius_all(5)
+	s.set_border_width_all(1)
+	s.set_corner_radius_all(6)
 	s.content_margin_left = 6
 	s.content_margin_right = 6
 	s.content_margin_top = 1
 	s.content_margin_bottom = 1
-	s.shadow_color = Color(0.12, 0.08, 0.04, 0.15)
-	s.shadow_size = 3
+	s.shadow_size = 0
 	return s
 
 

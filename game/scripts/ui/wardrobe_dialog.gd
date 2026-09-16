@@ -23,7 +23,7 @@ const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 ## 彈窗尺寸標準 (review.md 第 28 條: 740~760px)
 const DIALOG_WIDTH := 750.0
-const DIALOG_HEIGHT := 540.0
+const DIALOG_HEIGHT := 580.0
 const BTN_SIZE := 50.0
 
 ## ── 多巴胺鮮亮高飽和色盤 ──
@@ -391,15 +391,15 @@ func _create_race_filter_bar() -> Control:
 
 	var tip := Label.new()
 	tip.text = "點選切片篩選各族可用部件"
-	tip.add_theme_font_size_override("font_size", 12)
-	tip.add_theme_color_override("font_color", Color("#8A7A99"))
+	tip.add_theme_font_size_override("font_size", 14)
+	tip.add_theme_color_override("font_color", Color("#5E5475"))
 	if _cached_font:
 		tip.add_theme_font_override("font", _cached_font)
 	header_hbox.add_child(tip)
 
 	var chip_scroll := ScrollContainer.new()
 	chip_scroll.name = "FilterScroll"
-	chip_scroll.custom_minimum_size = Vector2(0, 54)
+	chip_scroll.custom_minimum_size = Vector2(0, 44)
 	chip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	chip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	container.add_child(chip_scroll)
@@ -416,7 +416,7 @@ func _create_race_filter_bar() -> Control:
 		var btn := Button.new()
 		btn.name = "Chip_" + rid
 		btn.text = rname
-		btn.custom_minimum_size = Vector2(52, 48)
+		btn.custom_minimum_size = Vector2(50, 38)
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		btn.add_theme_font_size_override("font_size", 14)
 		if _cached_font:
@@ -452,19 +452,21 @@ func _update_filter_chips_visual() -> void:
 		sb.content_margin_left = 10
 		sb.content_margin_right = 10
 		sb.content_margin_top = 4
-		sb.content_margin_bottom = 5
+		sb.content_margin_bottom = 4
 		if is_selected:
 			sb.bg_color = COLOR_GOLD
 			sb.border_color = COLOR_ORANGE
 			sb.set_border_width_all(2)
-			sb.border_width_bottom = 4
+			sb.border_width_bottom = 3
+			sb.shadow_size = 0
 			btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		else:
-			sb.bg_color = COLOR_BG_CREAM
-			sb.border_color = COLOR_BORDER
-			sb.set_border_width_all(1)
-			sb.border_width_bottom = 2
-			btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+			# 次級膠囊採純色分隔，不加深黑邊框與陰影，消除框中框
+			sb.bg_color = Color(0.92, 0.90, 0.86, 0.85)
+			sb.set_border_width_all(0)
+			sb.border_width_bottom = 0
+			sb.shadow_size = 0
+			btn.add_theme_color_override("font_color", Color("#4D456B"))
 		btn.add_theme_stylebox_override("normal", sb)
 
 		var sb_h := sb.duplicate()
@@ -491,7 +493,8 @@ func _get_race_short_name(rid: String) -> String:
 func _create_grid_section(section_title: String, slot_type: String) -> PanelContainer:
 	var panel := PanelContainer.new()
 	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
+	# 次級容器不重複加框：採用純背景色分隔，邊框寬度為 0 且拿掉陰影，避免框中框
+	panel.add_theme_stylebox_override("panel", UiStyle.sub_panel_style(COLOR_CARD_WARM, 16))
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 12)
@@ -524,7 +527,7 @@ func _create_grid_section(section_title: String, slot_type: String) -> PanelCont
 
 	var tip_lbl := Label.new()
 	tip_lbl.text = "點擊卡片即時預覽"
-	tip_lbl.add_theme_font_size_override("font_size", 16)
+	tip_lbl.add_theme_font_size_override("font_size", 14)
 	tip_lbl.add_theme_color_override("font_color", COLOR_SKY)
 	tip_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	tip_lbl.add_theme_constant_override("outline_size", 2)
@@ -534,7 +537,7 @@ func _create_grid_section(section_title: String, slot_type: String) -> PanelCont
 
 	# 捲動容器包覆 GridContainer (每列 4 格)
 	var scroll := ScrollContainer.new()
-	scroll.custom_minimum_size.y = 100
+	scroll.custom_minimum_size.y = 135
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
@@ -614,7 +617,7 @@ func _rebuild_cards() -> void:
 func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Button:
 	var btn := Button.new()
 	btn.name = "Card_%s_%d" % [slot_type, idx]
-	btn.custom_minimum_size = Vector2(96, 116)
+	btn.custom_minimum_size = Vector2(96, 126)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
@@ -623,7 +626,7 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	margin.add_theme_constant_override("margin_left", 4)
 	margin.add_theme_constant_override("margin_top", 4)
 	margin.add_theme_constant_override("margin_right", 4)
-	margin.add_theme_constant_override("margin_bottom", 4)
+	margin.add_theme_constant_override("margin_bottom", 6)
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(margin)
 
@@ -638,7 +641,7 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 
 	# 部件縮圖
 	var thumb := TextureRect.new()
-	thumb.custom_minimum_size = Vector2(40, 40)
+	thumb.custom_minimum_size = Vector2(36, 36)
 	thumb.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	thumb.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	thumb.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -656,14 +659,14 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	else:
 		name_lbl.text = raw_name
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_lbl.add_theme_font_size_override("font_size", 15)
+	name_lbl.add_theme_font_size_override("font_size", 13)
 	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		name_lbl.add_theme_font_override("font", _cached_font)
 	# 商品名一律完整顯示，⛔ 不截斷成「…」（收費點面板玩家要看得到全名）
 	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	name_lbl.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
-	name_lbl.custom_minimum_size.y = 38
+	name_lbl.custom_minimum_size.y = 34
 	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(name_lbl)
@@ -673,13 +676,13 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	badge_lbl.name = "BadgeLabel"
 	badge_lbl.text = ""
 	badge_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	badge_lbl.add_theme_font_size_override("font_size", 16)
+	badge_lbl.add_theme_font_size_override("font_size", 12)
 	badge_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	badge_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	badge_lbl.add_theme_constant_override("outline_size", 3)
+	badge_lbl.add_theme_constant_override("outline_size", 2)
 	if _cached_font:
 		badge_lbl.add_theme_font_override("font", _cached_font)
-	badge_lbl.custom_minimum_size.y = 18
+	badge_lbl.custom_minimum_size.y = 16
 	badge_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(badge_lbl)
 
@@ -760,15 +763,16 @@ func _apply_card_style(btn: Button, is_selected: bool) -> void:
 		sb.bg_color = COLOR_CARD_GOLD         ## 金黃柔和卡片底
 		sb.border_color = COLOR_ORANGE        ## 暖橘立體邊框
 		sb.set_border_width_all(2)
-		sb.border_width_bottom = 5           ## 立體果凍厚底
-		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+		sb.border_width_bottom = 4           ## 立體果凍厚底 (was 5)
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
 		sb.shadow_size = 4
-		sb.shadow_offset = Vector2(0, 3)
+		sb.shadow_offset = Vector2(0, 2)
 	else:
 		sb.bg_color = COLOR_BG_CREAM         ## 陽光童話奶油米白底
 		sb.border_color = COLOR_BORDER       ## 深藍紫描邊
-		sb.set_border_width_all(1)
-		sb.border_width_bottom = 3
+		sb.set_border_width_all(1)           ## 降為 1px
+		sb.border_width_bottom = 2           ## 降為 2px，避免框中框過重 (was 3)
+		sb.shadow_size = 0                   ## 拿掉未選取卡片的陰影，去雜訊
 	btn.add_theme_stylebox_override("normal", sb)
 
 	var sb_h := sb.duplicate()
