@@ -96,6 +96,16 @@ func _process(_delta: float) -> bool:
 				_wait_frames = 0
 
 		5:
+			# 步驟 5: 切換為「獅」篩選，等待渲染穩定並截圖
+			if _wait_frames == 10:
+				_dlg.set_race_filter("lion")
+			elif _wait_frames >= 30:
+				_save_screenshot("proof_wardrobe_filter_lion.png")
+				print("  ✓ 步驟 5 完成：截取 [獅 (Lion)] 篩選狀態")
+				_step = 6
+				_wait_frames = 0
+
+		6:
 			print("=== 全部截圖產出完畢 ===")
 			quit(0)
 			return true
