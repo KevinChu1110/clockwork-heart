@@ -2,6 +2,7 @@
 import os
 from typing import cast
 from PIL import Image, ImageChops
+import numpy as np
 
 REPO_ROOT = "/opt/side/bravesoul-game"
 TIGER_PD = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/tiger"
@@ -14,10 +15,23 @@ def build_walk_assets():
     key = Image.open(f"{TIGER_PD}/winding_key/key_turbine_flame.png").convert("RGBA")
     costume = Image.open(f"{TIGER_PD}/costume/costume_ember_tunic.png").convert("RGBA")
     core = Image.open(f"{TIGER_PD}/optic_core/core_molten_amber.png").convert("RGBA")
-    weapon = Image.open(f"{TIGER_PD}/weapon/wpn_twin_ember_sabers.png").convert("RGBA")
     tail = Image.open(f"{TIGER_PD}/back_curio/curio_exhaust_tiger_tail.png").convert("RGBA")
+    dual_wpn = Image.open(f"{TIGER_PD}/weapon/wpn_twin_ember_sabers.png").convert("RGBA")
     
     w, h = 128, 128
+    
+    # 1. Separate dual weapon into main-hand and off-hand components
+    w_arr = np.array(dual_wpn)
+    main_saber = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    off_saber = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    for y in range(h):
+        for x in range(w):
+            if w_arr[y, x, 3] > 0:
+                if x >= 65:
+                    main_saber.putpixel((x, y), tuple(w_arr[y, x]))
+                else:
+                    off_saber.putpixel((x, y), tuple(w_arr[y, x]))
+                    
     shadow = Image.new("RGBA", (w, h), (0, 0, 0, 0))
     ch_px = chassis.load()
     sh_px = shadow.load()
@@ -73,13 +87,14 @@ def build_walk_assets():
     tail_pivot = (52, 98)
     
     gait_configs = [
-        # Frame 0: Contact 1 (Left forward stride, Right rear stride)
+        # Frame 0: Contact 1 (Left forward stride, Left arm swings rearward)
         {
             "torso_dy": 0,
             "leg_l_rot": 8.0, "leg_l_dx": -2, "leg_l_dy": 0,
             "leg_r_rot": -8.0, "leg_r_dx": 2, "leg_r_dy": 0,
             "tail_rot": 2.0, "tail_dx": 0, "tail_dy": 0,
-            "weapon_rot": -3.0, "weapon_dy": 0,
+            "main_rot": -5.0, "main_dy": 0,
+            "off_rot": -24.0, "off_dx": 4, "off_dy": 0,
         },
         # Frame 1: Passing 1 (Up-bob -3px, Left supporting, Right swinging forward lifted 6px)
         {
@@ -87,15 +102,17 @@ def build_walk_assets():
             "leg_l_rot": 0.0, "leg_l_dx": 0, "leg_l_dy": 0,
             "leg_r_rot": 14.0, "leg_r_dx": -3, "leg_r_dy": -6,
             "tail_rot": -2.0, "tail_dx": 0, "tail_dy": -2,
-            "weapon_rot": 3.0, "weapon_dy": -3,
+            "main_rot": 4.0, "main_dy": -3,
+            "off_rot": 0.0, "off_dx": 0, "off_dy": -3,
         },
-        # Frame 2: Contact 2 (Right forward stride, Left rear stride)
+        # Frame 2: Contact 2 (Right forward stride, Left arm swings forward)
         {
             "torso_dy": 0,
             "leg_l_rot": -8.0, "leg_l_dx": 2, "leg_l_dy": 0,
             "leg_r_rot": 8.0, "leg_r_dx": -2, "leg_r_dy": 0,
             "tail_rot": 2.0, "tail_dx": 0, "tail_dy": 0,
-            "weapon_rot": -3.0, "weapon_dy": 0,
+            "main_rot": -5.0, "main_dy": 0,
+            "off_rot": 22.0, "off_dx": -5, "off_dy": 0,
         },
         # Frame 3: Passing 2 (Up-bob -3px, Right supporting, Left swinging forward lifted 6px)
         {
@@ -103,7 +120,8 @@ def build_walk_assets():
             "leg_l_rot": 14.0, "leg_l_dx": -3, "leg_l_dy": -6,
             "leg_r_rot": 0.0, "leg_r_dx": 0, "leg_r_dy": 0,
             "tail_rot": -2.0, "tail_dx": 0, "tail_dy": -2,
-            "weapon_rot": 3.0, "weapon_dy": -3,
+            "main_rot": 4.0, "main_dy": -3,
+            "off_rot": 0.0, "off_dx": 0, "off_dy": -3,
         },
     ]
 
@@ -161,9 +179,14 @@ def build_walk_assets():
         core_shift.paste(core, (0, tdy), core)
         frame.alpha_composite(core_shift)
         
-        # 9. Weapon (Z: 40)
-        w_shift = weapon.rotate(cfg["weapon_rot"], resample=Image.Resampling.BICUBIC, center=(85, 80), translate=(0, cfg["weapon_dy"]))
-        frame.alpha_composite(w_shift)
+        # 9. Dual Weapons (Z: 40)
+        # Main hand saber:
+        m_shift = main_saber.rotate(cfg["main_rot"], resample=Image.Resampling.BICUBIC, center=(88, 76), translate=(0, cfg["main_dy"]))
+        frame.alpha_composite(m_shift)
+        
+        # Off hand saber:
+        o_shift = off_saber.rotate(cfg["off_rot"], resample=Image.Resampling.BICUBIC, center=(38, 77), translate=(cfg["off_dx"], cfg["off_dy"]))
+        frame.alpha_composite(o_shift)
         
         # 10. Rule 4b-5 strict shadow constraint:
         fr_px = frame.load()
@@ -200,14 +223,32 @@ def build_walk_assets():
     comp.save(idle_x3_p)
     print(f"✓ Saved {idle_x3_p}")
     
-    web_idle_p = f"{WEB_HERO_DIR}/tiger_idle.png"
-    comp.save(web_idle_p)
-    print(f"✓ Saved {web_idle_p}")
-    
     idle_64 = comp.resize((64, 64), Image.Resampling.LANCZOS)
     idle_64_p = f"{PLAYER_DIR}/tiger_idle.png"
     idle_64.save(idle_64_p)
     print(f"✓ Saved {idle_64_p}")
+    
+    hero_idle_p = f"{WEB_HERO_DIR}/tiger_idle.png"
+    comp.save(hero_idle_p)
+    print(f"✓ Saved {hero_idle_p}")
+
+    # 6. Save walk cycle proof (strip)
+    walk_strip = Image.new("RGBA", (128 * 4, 128), (0, 0, 0, 0))
+    for i, fr in enumerate(frames_128):
+        walk_strip.alpha_composite(fr, (i * 128, 0))
+    proof_p = f"{PLAYER_DIR}/proof_tiger_walk_cycle.png"
+    walk_strip.save(proof_p)
+    print(f"✓ Saved {proof_p}")
+
+    # 7. Save idle vs battle comparison proof:
+    battle_p = f"{PLAYER_DIR}/tiger_battle.png"
+    if os.path.exists(battle_p):
+        bat = Image.open(battle_p).convert("RGBA")
+        comp_proof = Image.new("RGBA", (256, 128), (0, 0, 0, 0))
+        comp_proof.alpha_composite(comp, (0, 0))
+        comp_proof.alpha_composite(bat, (128, 0))
+        comp_proof.save(f"{PLAYER_DIR}/proof_tiger_idle_vs_battle.png")
+        print(f"✓ Saved {PLAYER_DIR}/proof_tiger_idle_vs_battle.png")
 
 if __name__ == "__main__":
     build_walk_assets()
