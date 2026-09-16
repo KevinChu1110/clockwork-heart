@@ -127,9 +127,24 @@ def audit():
         print("  ❌ [不合格] 變體差異不足！")
         all_pass = False
 
+    # ─────────────────────────────────────────────────────────────
+    # 6. 門檻 6: 0-ART5 切片 c100 色彩階數與逐像素手繪厚塗審查
+    # ─────────────────────────────────────────────────────────────
+    print("\n--- [門檻 6] 0-ART5 切片 c100 逐像素手繪厚塗檢驗 ---")
+    opaque_cb = int(np.sum(cb_arr[:, :, 3] > 0))
+    colors_cb = len(set(tuple(p) for p in cb_arr.reshape(-1, 4) if p[3] > 0))
+    c100_cb = (colors_cb / opaque_cb * 100) if opaque_cb > 0 else 0
+    print(f"  • 狂戰破陣機關戰鎧 c100: {c100_cb:.2f} (opaque={opaque_cb}, colors={colors_cb}, 規範: >= 10.0)")
+
+    if c100_cb >= 10.0:
+        print("  ✓ [通過] 0-ART5 檢驗合格，非純色平塗占位圖，具備足夠手繪厚塗多階明暗與微雜色！")
+    else:
+        print(f"  ❌ [不合格] c100={c100_cb:.2f} 低於門檻 10.0，判定為平塗占位圖！")
+        all_pass = False
+
     print("\n=======================================================")
     if all_pass:
-        print("🎉 ALL REVIEWS PASSED (0-ART9, 0-ART11, 0-ART12, 4c, CANON)")
+        print("🎉 ALL REVIEWS PASSED (0-ART5, 0-ART9, 0-ART11, 0-ART12, 4c, CANON)")
         return 0
     else:
         print("❌ SOME REVIEWS FAILED")
