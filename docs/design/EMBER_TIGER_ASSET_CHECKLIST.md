@@ -173,12 +173,12 @@
 | **戰鬥特寫姿態** | `game/assets/sprites/player/rabbit_battle.png` | `game/assets/sprites/player/tiger_battle.png` | 128×128 RGBA | ⏳ 待產出 (Pending) |
 | **行走動畫 (0~3 幀, 1x)** | `game/assets/sprites/player/rabbit_walk_{0..3}.png` | `game/assets/sprites/player/tiger_walk_{0..3}.png` | 64×64 RGBA | ⏳ 待產出 (Pending) |
 | **行走動畫 (0~3 幀, 3x)** | `game/assets/sprites/player/rabbit_walk_{0..3}_x3.png` | `game/assets/sprites/player/tiger_walk_{0..3}_x3.png` | 128×128 RGBA | ⏳ 待產出 (Pending) |
-| **戰鬥姿態：待機** | `game/assets/sprites/player/poses/rabbit/idle.png` | `game/assets/sprites/player/poses/tiger/idle.png` | 128×128 RGBA | ⏳ 待產出 (Pending) |
-| **戰鬥姿態：前搖** | `game/assets/sprites/player/poses/rabbit/telegraph.png` | `game/assets/sprites/player/poses/tiger/telegraph.png` | 128×128 RGBA | ⏳ 待產出 (Pending) |
-| **戰鬥姿態：普攻** | `game/assets/sprites/player/poses/rabbit/attack.png` | `game/assets/sprites/player/poses/tiger/attack.png` | 128×128 RGBA | ⏳ 待產出 (Pending) |
-| **戰鬥姿態：大招** | `game/assets/sprites/player/poses/rabbit/skill.png` | `game/assets/sprites/player/poses/tiger/skill.png` | 128×128 RGBA | ⏳ 待產出 (Pending) |
-| **戰鬥姿態：受擊** | `game/assets/sprites/player/poses/rabbit/hit.png` | `game/assets/sprites/player/poses/tiger/hit.png` | 128×128 RGBA | ⏳ 待產出 (Pending) |
-| **戰鬥姿態：復位** | `game/assets/sprites/player/poses/rabbit/recover.png` | `game/assets/sprites/player/poses/tiger/recover.png` | 128×128 RGBA | ⏳ 待產出 (Pending) |
+| **戰鬥姿態：待機** | `game/assets/sprites/player/poses/rabbit/idle.png` | `game/assets/sprites/player/poses/tiger/idle.png` | 128×128 RGBA | ✅ 已產出 (Ready) |
+| **戰鬥姿態：前搖** | `game/assets/sprites/player/poses/rabbit/telegraph.png` | `game/assets/sprites/player/poses/tiger/telegraph.png` | 128×128 RGBA | ✅ 已產出 (Ready) |
+| **戰鬥姿態：普攻** | `game/assets/sprites/player/poses/rabbit/attack.png` | `game/assets/sprites/player/poses/tiger/attack.png` | 128×128 RGBA | ✅ 已產出 (Ready) |
+| **戰鬥姿態：大招** | `game/assets/sprites/player/poses/rabbit/skill.png` | `game/assets/sprites/player/poses/tiger/skill.png` | 128×128 RGBA | ✅ 已產出 (Ready) |
+| **戰鬥姿態：受擊** | `game/assets/sprites/player/poses/rabbit/hit.png` | `game/assets/sprites/player/poses/tiger/hit.png` | 128×128 RGBA | ✅ 已產出 (Ready) |
+| **戰鬥姿態：復位** | `game/assets/sprites/player/poses/rabbit/recover.png` | `game/assets/sprites/player/poses/tiger/recover.png` | 128×128 RGBA | ✅ 已產出 (Ready) |
 | **HUD 戰鬥頭像** | `game/assets/sprites/portraits/rabbit.png` | `game/assets/sprites/portraits/tiger.png` | 128×128 RGBA | ⏳ 待產出 (Pending) |
 | **對話框半身像** | `game/assets/sprites/portraits/rabbit.png` | `game/assets/sprites/portraits/ember_tiger.png` | 384×480 RGBA | ⏳ 待產出 (Pending) |
 
