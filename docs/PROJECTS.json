@@ -1111,6 +1111,16 @@
    "keys": [
     "雲嵐鶴／玄軸熊實"
    ]
+  },
+  {
+   "id": "lobby-hall-badge-removal",
+   "cat": "遊戲",
+   "title": "大廳四殿堂拿掉單字縮寫徽章",
+   "status": "草稿",
+   "note": "審核通過：徽章已移除，文字置中，mobile_lobby 測試綠",
+   "keys": [
+    "大廳四殿堂拿掉單"
+   ]
   }
  ]
 }
