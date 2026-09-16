@@ -169,10 +169,12 @@ const RACES_DATA: Dictionary = {
 		"desc": "玄軸工坊重型機甲，剛毅沉穩的發條巨熊，配置重裝外殼與高扭力擺線核心。",
 		"costumes": [
 			{"id": "costume_ironclad_overalls", "name_zh": "玄軸工坊重裝工作吊帶甲", "desc": "耐衝擊重型鍛造吊帶金屬胸甲"},
+			{"id": "costume_berserker_cuirass", "name_zh": "狂戰破陣機關戰鎧", "desc": "重裝鍛鋼胸甲、雙肩鉸鏈護肩與維京鉚釘板甲"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現重型鍛鐵玄軸素體"}
 		],
 		"chassis": [
 			{"id": "paint_bear_amber", "name_zh": "原廠玄軸琥珀棕", "desc": "沉穩深琥珀琺瑯金屬烤漆"},
+			{"id": "paint_iron_quarry", "name_zh": "重裝礦山玄鐵灰", "desc": "沉穩深冷礦山玄鐵高光琺瑯與黃銅球窩關節"},
 			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白抗衝擊塗裝"}
 		]
 	},
