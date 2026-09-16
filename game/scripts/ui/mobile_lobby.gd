@@ -854,16 +854,16 @@ func _build_village_tab() -> void:
 	left_shops.add_theme_constant_override("separation", 10)
 	_village_layer.add_child(left_shops)
 
-	_add_hall_card(left_shops, _t("天宮鐵匠"), "品質轉化 · 裝備鍛造", "鐵", func():
+	_add_hall_card(left_shops, _t("天宮鐵匠"), "品質轉化 · 裝備鍛造", "", func():
 		open_forge()
 	)
-	_add_hall_card(left_shops, "手藝工坊", "紅黃藍石 · 三合一熔煉", "工", func():
+	_add_hall_card(left_shops, "手藝工坊", "紅黃藍石 · 三合一熔煉", "", func():
 		open_gem_workshop()
 	)
-	_add_hall_card(left_shops, "演武競技", "挑戰對手 · 雙倍抽獎", "武", func():
+	_add_hall_card(left_shops, "演武競技", "挑戰對手 · 雙倍抽獎", "", func():
 		request_battle.emit("arena")
 	)
-	_add_hall_card(left_shops, "冒險委託", "每日簽到 · 懸賞領獎", "委", func():
+	_add_hall_card(left_shops, "冒險委託", "每日簽到 · 懸賞領獎", "", func():
 		open_windup_daily()
 	)
 
@@ -921,13 +921,21 @@ func _build_village_tab() -> void:
 	btn_go.pressed.connect(func(): _switch_tab(Tab.ADVENTURE))
 	rv.add_child(btn_go)
 
-func _add_hall_card(parent: Container, title: String, subtitle: String, icon_symbol: String, cb: Callable) -> void:
+func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, _icon_symbol: String = "", cb_fallback: Callable = Callable()) -> void:
+	var cb: Callable
+	if subtitle_or_cb is Callable:
+		cb = subtitle_or_cb
+	elif cb_fallback.is_valid():
+		cb = cb_fallback
+	else:
+		cb = Callable()
+
 	var btn := Button.new()
 	btn.name = "HallCard_" + title
 	btn.add_to_group("hall_cards")
 	btn.set_meta("hall_title", title)
-	btn.set_meta("hall_subtitle", subtitle)
-	btn.set_meta("hall_icon", icon_symbol)
+	if subtitle_or_cb is String:
+		btn.set_meta("hall_subtitle", subtitle_or_cb)
 	btn.custom_minimum_size = Vector2(200, 52)
 	
 	var sb := StyleBoxFlat.new()
@@ -951,42 +959,18 @@ func _add_hall_card(parent: Container, title: String, subtitle: String, icon_sym
 	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
 	
-	var h := HBoxContainer.new()
-	h.set_anchors_preset(Control.PRESET_FULL_RECT)
-	h.alignment = BoxContainer.ALIGNMENT_CENTER
-	h.add_theme_constant_override("separation", 10)
-	h.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	btn.add_child(h)
-	
-	var icon_box := PanelContainer.new()
-	icon_box.custom_minimum_size = Vector2(36, 36)
-	var isb := StyleBoxFlat.new()
-	isb.bg_color = COLOR_GOLD
-	isb.border_color = COLOR_BORDER
-	isb.set_border_width_all(1)
-	isb.border_width_bottom = 2
-	isb.set_corner_radius_all(10)
-	icon_box.add_theme_stylebox_override("panel", isb)
-	icon_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	
-	var icon_lbl := Label.new()
-	icon_lbl.text = icon_symbol
-	icon_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	icon_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	icon_lbl.add_theme_font_size_override("font_size", 16)
-	icon_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	icon_box.add_child(icon_lbl)
-	h.add_child(icon_box)
-	
 	var tl := Label.new()
 	tl.text = title
 	tl.add_theme_font_size_override("font_size", 16)
 	tl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	tl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	tl.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	h.add_child(tl)
+	tl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(tl)
 	
-	btn.pressed.connect(cb)
+	if cb.is_valid():
+		btn.pressed.connect(cb)
 	parent.add_child(btn)
 
 func _add_texture_button(parent: Container, tex_path: String, sz: Vector2, cb: Callable) -> void:

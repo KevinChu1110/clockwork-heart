@@ -118,12 +118,12 @@ func _test_hall_cards() -> void:
 	else:
 		print("  ok 殿堂卡片數量正確 (4 張)")
 
-	# 1.2 斷言四張卡片的標題關鍵字、圖示格文字，以及無 Emoji / 符號
+	# 1.2 斷言四張卡片的標題關鍵字，以及無單字縮寫徽章、無 Emoji / 符號
 	var expected_cards := [
-		{"keyword": "鐵匠", "full_title": "天宮鐵匠", "icon": "鐵"},
-		{"keyword": "工坊", "full_title": "手藝工坊", "icon": "工"},
-		{"keyword": "演武", "full_title": "演武競技", "icon": "武"},
-		{"keyword": "委託", "full_title": "冒險委託", "icon": "委"},
+		{"keyword": "鐵匠", "full_title": "天宮鐵匠"},
+		{"keyword": "工坊", "full_title": "手藝工坊"},
+		{"keyword": "演武", "full_title": "演武競技"},
+		{"keyword": "委託", "full_title": "冒險委託"},
 	]
 
 	for i in range(cards.size()):
@@ -167,12 +167,11 @@ func _test_hall_cards() -> void:
 		else:
 			print("  ok 卡片 %d 標題符合「%s」" % [i + 1, want_keyword])
 
-		# 斷言圖示格內容
-		var want_icon: String = exp_info["icon"]
-		if found_icon != want_icon:
-			_fail("卡片 %d 圖示應為「%s」，實際為「%s」" % [i + 1, want_icon, found_icon])
+		# 斷言無單字縮寫徽章（Kevin 反饋：不應有奇怪單字縮寫徽章，純文字標題乾淨呈現）
+		if not found_icon.is_empty():
+			_fail("卡片 %d 不應有單字縮寫圖示，實際取得：「%s」" % [i + 1, found_icon])
 		else:
-			print("  ok 卡片 %d 圖示符合「%s」" % [i + 1, want_icon])
+			print("  ok 卡片 %d 無單字縮寫徽章（乾淨純文字）" % [i + 1])
 
 		# 斷言無 Emoji 與系統字型符號 (t_76f84d91 回歸防線)
 		if _has_forbidden_symbols_or_emoji(found_title):
