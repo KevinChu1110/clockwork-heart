@@ -74,7 +74,8 @@ const RACE_FILTER_OPTIONS: Array[Dictionary] = [
 	{"id": "tiger", "name_zh": "虎"},
 	{"id": "bear", "name_zh": "熊"},
 	{"id": "crane", "name_zh": "鶴"},
-	{"id": "penguin", "name_zh": "企鵝"},
+	# ⚠️ 企鵝(penguin) 目前只有設計提案文件，尚無 paperdoll 切片與 spec 條目，
+	# 上線前不可出現在篩選列（會產生空清單）。切片產出後再開回來。
 ]
 
 var current_filter_race: String = "all"
@@ -398,7 +399,7 @@ func _create_race_filter_bar() -> Control:
 
 	var chip_scroll := ScrollContainer.new()
 	chip_scroll.name = "FilterScroll"
-	chip_scroll.custom_minimum_size = Vector2(0, 36)
+	chip_scroll.custom_minimum_size = Vector2(0, 54)
 	chip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	chip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	container.add_child(chip_scroll)
@@ -415,7 +416,7 @@ func _create_race_filter_bar() -> Control:
 		var btn := Button.new()
 		btn.name = "Chip_" + rid
 		btn.text = rname
-		btn.custom_minimum_size = Vector2(46, 30)
+		btn.custom_minimum_size = Vector2(52, 48)
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		btn.add_theme_font_size_override("font_size", 14)
 		if _cached_font:

@@ -210,7 +210,9 @@ const RACES_DATA: Dictionary = {
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane"]
+# ⚠️ penguin 的 RACE_DATA 條目保留供切片產出後啟用，但在切片與 spec 落地前不列入 RACE_KEYS，
+# 否則展示頁會出現一個點下去沒有任何切片的空種族。
 
 ## 節點引用
 @onready var character: PaperdollCharacter = $CenterStage/CharacterContainer/PaperdollCharacter as PaperdollCharacter
@@ -301,11 +303,11 @@ func _init_filter_chips() -> void:
 
 	chip_scroll = ScrollContainer.new()
 	chip_scroll.name = "FilterScroll"
-	chip_scroll.custom_minimum_size = Vector2(0, 36)
+	chip_scroll.custom_minimum_size = Vector2(0, 54)
 	chip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	chip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	chip_scroll.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	chip_scroll.offset_top = -42
+	chip_scroll.offset_top = -60
 	chip_scroll.offset_bottom = -6
 
 	var hbox := HBoxContainer.new()
@@ -323,8 +325,7 @@ func _init_filter_chips() -> void:
 		{"id": "macaque", "label": "猴"},
 		{"id": "tiger", "label": "虎"},
 		{"id": "bear", "label": "熊"},
-		{"id": "crane", "label": "鶴"},
-		{"id": "penguin", "label": "企鵝"}
+		{"id": "crane", "label": "鶴"}
 	]
 
 	var font: Font = null
@@ -337,7 +338,7 @@ func _init_filter_chips() -> void:
 		var chip := Button.new()
 		chip.name = "Chip_" + fid
 		chip.text = flbl
-		chip.custom_minimum_size = Vector2(54, 32)
+		chip.custom_minimum_size = Vector2(54, 48)
 		chip.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		chip.add_theme_font_size_override("font_size", 14)
 		if font:
