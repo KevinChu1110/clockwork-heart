@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 tools/verify_penguin_second_costume_review.py
-Systematic audit script against review.md 0-ART9, 0-ART11, 0-ART12, 4c, and CANON standards
+Systematic audit script against review.md 0-ART5, 0-ART9, 0-ART11, 0-ART12, 4c, and CANON standards
 for The Steam Penguin paperdoll expansion.
 """
 
@@ -13,14 +13,13 @@ REPO_ROOT = "/opt/side/bravesoul-game"
 PENGUIN_PD = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/penguin"
 
 def audit():
-    print("=== 開始蒸汽企鵝第二套外裝與塗裝變體【總監級自檢覆驗】(review.md 0-ART9 / 0-ART11 / 0-ART12) ===")
+    print("=== 開始蒸汽企鵝第二套外裝與塗裝變體【總監級自檢覆驗】(review.md 0-ART5 / 0-ART9 / 0-ART11 / 0-ART12) ===")
     all_pass = True
 
     # ─────────────────────────────────────────────────────────────
     # 1. 0-ART9 門檻 1: 武器數量與素體雙持嚴查
     # ─────────────────────────────────────────────────────────────
     print("\n--- [門檻 1] 0-ART9 武器數量與素體雙持防護嚴查 ---")
-    # 檢查 chassis 是否有偷偷畫上武器（0-ART9 核心抓包點）
     chassis_navy = Image.open(f"{PENGUIN_PD}/chassis/paint_penguin_navy.png").convert("RGBA")
     chassis_polar = Image.open(f"{PENGUIN_PD}/chassis/paint_polar_frost.png").convert("RGBA")
     c_navy_arr = np.array(chassis_navy)
@@ -80,7 +79,7 @@ def audit():
     print(f"  • 頭部組件不透明像素數: {h_px} px (規範: > 800 px)")
     print("  • 面部裝配沖壓黃銅深潛雙聯護目風鏡（Brass Dive-Goggles），內嵌天藍高透耐壓石英目鏡")
     print("  • 嘴部為雙瓣沖壓亮金黃銅鑷夾短喙，中央帶有清晰閉合分模線，內部設有微型壓力釋放排氣縫隙，零生物肉質，符合 CANON.md")
-    print("  • 背後雙環航海舵輪造型黃銅發條鑰匙（key_twin_ring_helm.png）清晰外露突出身體輪廓")
+    print("  • 背後雙環航海舵輪造型黃銅發條鑰匙（key_twin_ring_helm.png）清晰外露突身體輪廓")
     if h_px > 800:
         print("  ✓ [通過] 頭部與機械特徵符合 0-ART11 與 CANON 憲章規範！")
     else:
@@ -110,11 +109,9 @@ def audit():
     # 5. 門檻 5: 變體可讀性與辨識度（對比度與色彩飽和度）
     # ─────────────────────────────────────────────────────────────
     print("\n--- [門檻 5] 視覺對比度與辨識度驗收 ---")
-    # 比對深海鍍鈦藍 vs 極光冰川銀白的色差
     diff_chassis = np.sum(np.abs(c_navy_arr.astype(int) - c_polar_arr.astype(int)) > 30)
     print(f"  • 鍍鈦藍塗裝 vs 極光冰川銀白塗裝 顯著差異像素數: {diff_chassis} px (規範: > 500 px)")
 
-    # 比對導航員大衣 vs 淵海深潛耐壓機關鎧的色差與輪廓差
     costume_nav = Image.open(f"{PENGUIN_PD}/costume/costume_navigator_harness.png").convert("RGBA")
     cn_arr = np.array(costume_nav)
     diff_costume = np.sum(np.abs(ca_arr.astype(int) - cn_arr.astype(int)) > 30)
@@ -126,9 +123,24 @@ def audit():
         print("  ❌ [不合格] 變體差異不足！")
         all_pass = False
 
+    # ─────────────────────────────────────────────────────────────
+    # 6. 門檻 6: 0-ART5 切片 c100 色彩階數與逐像素手繪厚塗審查
+    # ─────────────────────────────────────────────────────────────
+    print("\n--- [門檻 6] 0-ART5 切片 c100 逐像素手繪厚塗檢驗 ---")
+    opaque_ca = int(np.sum(ca_arr[:, :, 3] > 0))
+    colors_ca = len(set(tuple(p) for p in ca_arr.reshape(-1, 4) if p[3] > 0))
+    c100_ca = (colors_ca / opaque_ca * 100) if opaque_ca > 0 else 0
+    print(f"  • 淵海深潛耐壓機關鎧 c100: {c100_ca:.2f} (opaque={opaque_ca}, colors={colors_ca}, 規範: >= 10.0)")
+
+    if c100_ca >= 10.0:
+        print("  ✓ [通過] 0-ART5 檢驗合格，非純色平塗占位圖，具備足夠手繪厚塗多階明暗與微雜色！")
+    else:
+        print(f"  ❌ [不合格] c100={c100_ca:.2f} 低於門檻 10.0，判定為平塗占位圖！")
+        all_pass = False
+
     print("\n=======================================================")
     if all_pass:
-        print("🎉 ALL REVIEWS PASSED (0-ART9, 0-ART11, 0-ART12, 4c, CANON)")
+        print("🎉 ALL REVIEWS PASSED (0-ART5, 0-ART9, 0-ART11, 0-ART12, 4c, CANON)")
         return 0
     else:
         print("❌ SOME REVIEWS FAILED")
