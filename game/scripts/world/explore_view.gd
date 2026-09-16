@@ -1052,7 +1052,8 @@ func _apply_map_art(id: String) -> void:
 	var banner_path := "res://assets/sprites/maps/%s_banner.png" % art_id
 	if not ResourceLoader.exists(banner_path):
 		banner_path = "res://assets/sprites/maps/%s_banner.png" % id
-	if ResourceLoader.exists(banner_path):
+	## 手繪插畫底圖不疊 960x220 像素橫幅，避免產生 1400x150 直角色差接縫與破圖 (t_ef61dc07)
+	if not has_scenic_bg and ResourceLoader.exists(banner_path):
 		_banner.texture = load(banner_path) as Texture2D
 		_banner_base_x = floor_rect.position.x
 		_banner.position = Vector2(_banner_base_x, floor_rect.position.y)
@@ -2071,7 +2072,7 @@ func _update_minimap_markers() -> void:
 
 
 func _update_camera() -> void:
-	## 玩家居中；大地圖可捲動
+	## 玩家居中；大地圖可捲動。夾制必須對齊 FLOOR_RECT，避免極限捲動時露出未繪製底色 (t_ef61dc07)
 	if _scroll == null:
 		return
 	var view := size
@@ -2079,10 +2080,14 @@ func _update_camera() -> void:
 		view = Vector2(1280, 720)
 	var focus := player_pos + PLAYER_SIZE * 0.5
 	var target := focus - view * 0.5
-	var max_x := maxf(0.0, FLOOR_RECT.end.x - view.x + 40.0)
-	var max_y := maxf(0.0, FLOOR_RECT.end.y - view.y + 40.0)
-	_cam.x = clampf(target.x, 0.0, max_x)
-	_cam.y = clampf(target.y, 0.0, max_y)
+	if FLOOR_RECT.size.x >= view.x:
+		_cam.x = clampf(target.x, FLOOR_RECT.position.x, FLOOR_RECT.end.x - view.x)
+	else:
+		_cam.x = FLOOR_RECT.position.x - (view.x - FLOOR_RECT.size.x) * 0.5
+	if FLOOR_RECT.size.y >= view.y:
+		_cam.y = clampf(target.y, FLOOR_RECT.position.y, FLOOR_RECT.end.y - view.y)
+	else:
+		_cam.y = FLOOR_RECT.position.y - (view.y - FLOOR_RECT.size.y) * 0.5
 	_scroll.position = -_cam
 	_update_minimap_markers()
 

@@ -936,6 +936,7 @@ const _HEAD_PROP := {
 	"back": "exit", "exit": "exit", "to": "exit", "leave": "exit",
 	"path": "path", "trail": "path", "climb": "path", "cross": "path", "road": "path",
 	"save": "save",
+	"bridge": "bridge",
 }
 
 ## 順序有意義：先比對細的再比對粗的。campfire 要排在 camp 前面，
@@ -950,7 +951,7 @@ const _TOKEN_PROP := [
 	[["tree", "wood", "orchard", "willow", "canopy", "log", "bamboo", "reed"], "tree"],
 	[["rock", "stone", "bone", "rubble", "ore", "pile", "boulder", "vein", "obsidian"], "rock"],
 	[["sign", "notice", "board", "post", "milepost", "plaque", "mark"], "sign"],
-	[["gate", "arch", "door", "span"], "gate"],
+	[["gate", "arch", "door", "span", "bridge"], "gate"],
 	[["well", "pond", "water", "spring", "fountain", "pool"], "well"],
 	[["boat", "dock", "ship", "wreck", "raft", "hull", "mast", "net"], "boat"],
 	[["banner", "flag"], "banner"],
@@ -988,7 +989,7 @@ static func _fallback_prop_path(entity_id: String) -> String:
 ##     玩家要看得到才知道有東西
 ##   · 玩法標記（dummy／forge／bell）—— 找不到就卡關
 const _SCENERY_PROPS := ["hut", "tower", "gate", "well", "boat", "cliff",
-	"pine", "tree", "rock", "camp", "shrine"]
+	"pine", "tree", "rock", "camp", "shrine", "bridge"]
 
 
 static func is_scenery_prop(entity_id: String) -> bool:
