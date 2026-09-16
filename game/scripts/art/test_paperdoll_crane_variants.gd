@@ -87,6 +87,20 @@ func _initialize() -> void:
 	else:
 		print("  ✓ 成功切回第一套外裝 costume_zephyr_robe")
 
+	# 6. 測試原廠象牙白塗裝 paint_ivory_stock
+	print("\n--- 6. 驗證原廠象牙白塗裝 paint_ivory_stock ---")
+	character.render_character("crane", {"chassis": "paint_ivory_stock"})
+	var ivory_sprite: Sprite2D = character.get_slot_sprite("chassis")
+	if ivory_sprite == null or ivory_sprite.texture == null:
+		push_error("paint_ivory_stock 貼圖載入失敗！")
+		ok = false
+	else:
+		var sz := ivory_sprite.texture.get_size()
+		print("  ✓ paint_ivory_stock 成功載入，貼圖尺寸: %s, 可見度: %s" % [str(sz), str(ivory_sprite.visible)])
+		if int(sz.x) != 128 or int(sz.y) != 128:
+			push_error("paint_ivory_stock 尺寸不為 128x128")
+			ok = false
+
 	character.queue_free()
 	_finish(ok)
 
