@@ -33,13 +33,20 @@ def pad_to_4_5(im: Image.Image, race_name: str) -> Image.Image:
     w, h = im.size
     arr = np.array(im)
     
-    if w == 800 and h == 1680:
+    if (w == 800 and h == 1680) or (w == 1344 and h == 1680):
         # Target: 1344 x 1680 (1344 / 1680 = 0.8 exact)
+        if w == 1344:
+            # 若已經是補過邊的 1344x1680，取出核心 800x1680 重做乾淨補邊
+            arr = arr[:, 272:1072, :]
+            w, h = 800, 1680
         target_w, target_h = 1344, 1680
         pad_l = 272
         pad_r = 272
-        l_pad = np.repeat(arr[:, 0:1, :], pad_l, axis=1)
-        r_pad = np.repeat(arr[:, -1:, :], pad_r, axis=1)
+        # 改採背景米色填滿（取邊角乾淨背景色，避免將邊緣角色像素水平延展產生 smear 條紋）
+        bg_l = arr[0, 0, :]
+        bg_r = arr[0, -1, :]
+        l_pad = np.full((h, pad_l, arr.shape[2]), bg_l, dtype=arr.dtype)
+        r_pad = np.full((h, pad_r, arr.shape[2]), bg_r, dtype=arr.dtype)
         res_arr = np.concatenate([l_pad, arr, r_pad], axis=1)
         res = Image.fromarray(res_arr)
     elif w == 928 and h == 1152:
