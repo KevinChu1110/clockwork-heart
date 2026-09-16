@@ -30,6 +30,8 @@
 | boar_warrior.png | 野豬戰士 | 金屬發條野豬 · 巨錘（256×256 對話框半身像；場上 `player/party/boar_idle.png` 128×128） |
 | macaque.png | 靈爪猴 | 金屬發條猴 · 機關靈爪（128×128 HUD 頭像；場上 `player/party/macaque_idle.png` 128×128） |
 | spring_macaque.png | 靈爪猴 | 金屬發條猴 · 武術家（384×480 對話半身像；立牌 `branding/char_macaque.png` 400×840） |
+| tiger.png | 烈焰虎 | 金屬發條虎 · 齒輪雙斬刃（128×128 HUD 戰鬥頭像；場上 `player/party/tiger_idle.png` 128×128） |
+| ember_tiger.png | 烈焰虎 | 金屬發條虎 · 忍者（384×480 對話框半身像；立牌 `branding/char_tiger.png` 400×840） |
 
 ## 風格錨（ART-01，2026-09-07）
 
