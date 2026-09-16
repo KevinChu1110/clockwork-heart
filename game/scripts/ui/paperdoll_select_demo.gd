@@ -159,10 +159,58 @@ const RACES_DATA: Dictionary = {
 			{"id": "paint_volcano_black", "name_zh": "鍛爐淬火曜黑烤漆", "desc": "曜黑高光耐熱琺瑯與暗金黃銅關節"},
 			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白高光琺瑯塗層"}
 		]
+	},
+	"bear": {
+		"id": "bear",
+		"name_zh": "熊",
+		"name_en": "Iron Bear",
+		"archetype": "戰士 (viking)",
+		"thumb": "res://assets/sprites/player/paperdoll/bear/proof_paperdoll_bear_composite.png",
+		"desc": "玄軸工坊重型機甲，剛毅沉穩的發條巨熊，配置重裝外殼與高扭力擺線核心。",
+		"costumes": [
+			{"id": "costume_ironclad_overalls", "name_zh": "玄軸工坊重裝工作吊帶甲", "desc": "耐衝擊重型鍛造吊帶金屬胸甲"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現重型鍛鐵玄軸素體"}
+		],
+		"chassis": [
+			{"id": "paint_bear_amber", "name_zh": "原廠玄軸琥珀棕", "desc": "沉穩深琥珀琺瑯金屬烤漆"},
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白抗衝擊塗裝"}
+		]
+	},
+	"crane": {
+		"id": "crane",
+		"name_zh": "鶴",
+		"name_en": "Cloud Crane",
+		"archetype": "遊俠 (ranger)",
+		"thumb": "res://assets/sprites/player/paperdoll/crane/proof_paperdoll_crane_composite.png",
+		"desc": "雲嵐機關閣的靈巧玩具，修長纖細的流線身形，搭載輕量雙羽導流翼板與羽翼尾機關。",
+		"costumes": [
+			{"id": "costume_zephyr_robe", "name_zh": "凌雲羽衣輕鋼道袍", "desc": "輕合金陶瓷薄板與雙羽導流道袍"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現修長流線機關素體"}
+		],
+		"chassis": [
+			{"id": "paint_crane_porcelain", "name_zh": "原廠雲嵐白瓷琺瑯", "desc": "清雅雲嵐微光白瓷高光琺瑯"},
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白高光塗層"}
+		]
+	},
+	"penguin": {
+		"id": "penguin",
+		"name_zh": "企鵝",
+		"name_en": "Steam Penguin",
+		"archetype": "遊俠 (ranger)",
+		"thumb": "res://assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_composite.png",
+		"desc": "淵海發條港灣的憨厚重火手，耐高壓鍍鈦燕尾裝甲與防滑金屬腳蹼。",
+		"costumes": [
+			{"id": "costume_steam_navigator", "name_zh": "蒸氣領航者大衣", "desc": "耐壓鍍鈦深藍大衣與黃銅導航儀扣"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現耐壓鍍鈦企鵝素體"}
+		],
+		"chassis": [
+			{"id": "paint_penguin_navy", "name_zh": "原廠深海鍍鈦藍", "desc": "高壓陽極氧化深海鍍鈦藍烤漆"},
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白高光琺瑯塗層"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
 
 ## 節點引用
 @onready var character: PaperdollCharacter = $CenterStage/CharacterContainer/PaperdollCharacter as PaperdollCharacter
@@ -199,8 +247,13 @@ var _race_buttons: Dictionary = {}
 var _breathe_tween: Tween = null
 
 
+var _race_filter_chips: Dictionary = {}
+var _current_filter_race: String = "all"
+
+
 func _ready() -> void:
 	_init_race_buttons()
+	_init_filter_chips()
 	_bind_controls()
 	_update_creation_mode_ui()
 	select_race("rabbit")
@@ -213,12 +266,125 @@ func _exit_tree() -> void:
 
 ## 初始化橫向種族選擇按鈕
 func _init_race_buttons() -> void:
+	var template_btn: Button = get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_rabbit") as Button
 	for rid in RACE_KEYS:
 		var btn_path := "TopRaceBar/ButtonsHBox/BtnRace_" + rid
 		var btn: Button = get_node_or_null(btn_path) as Button
+		if btn == null and race_buttons_container != null and template_btn != null:
+			# 動態補足新種族（熊、鶴、企鵝）按鈕
+			btn = template_btn.duplicate() as Button
+			btn.name = "BtnRace_" + rid
+			var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
+			if name_lbl is Label:
+				name_lbl.text = str(RACES_DATA[rid].get("name_zh", rid))
+			var thumb_rect = btn.get_node_or_null("Margin/VBox/Thumb")
+			if thumb_rect is TextureRect:
+				var thumb_path := str(RACES_DATA[rid].get("thumb", ""))
+				if ResourceLoader.exists(thumb_path):
+					thumb_rect.texture = load(thumb_path) as Texture2D
+				else:
+					thumb_rect.texture = null
+			race_buttons_container.add_child(btn)
 		if btn != null:
 			_race_buttons[rid] = btn
 			btn.pressed.connect(func(): select_race(rid))
+
+
+## 初始化頂部種族篩選 tab/chip 列
+func _init_filter_chips() -> void:
+	var top_bar = get_node_or_null("TopRaceBar")
+	if top_bar == null:
+		return
+	var chip_scroll = get_node_or_null("TopRaceBar/FilterScroll")
+	if chip_scroll != null:
+		return
+
+	chip_scroll = ScrollContainer.new()
+	chip_scroll.name = "FilterScroll"
+	chip_scroll.custom_minimum_size = Vector2(0, 36)
+	chip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	chip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	chip_scroll.set_anchors_preset(Control.PRESET_TOP_WIDE)
+	chip_scroll.offset_top = -42
+	chip_scroll.offset_bottom = -6
+
+	var hbox := HBoxContainer.new()
+	hbox.name = "FilterHBox"
+	hbox.add_theme_constant_override("separation", 8)
+	chip_scroll.add_child(hbox)
+	top_bar.add_child(chip_scroll)
+
+	var filter_defs: Array[Dictionary] = [
+		{"id": "all", "label": "全部"},
+		{"id": "rabbit", "label": "兔"},
+		{"id": "fox", "label": "狐"},
+		{"id": "lion", "label": "獅"},
+		{"id": "boar", "label": "豬"},
+		{"id": "macaque", "label": "猴"},
+		{"id": "tiger", "label": "虎"},
+		{"id": "bear", "label": "熊"},
+		{"id": "crane", "label": "鶴"},
+		{"id": "penguin", "label": "企鵝"}
+	]
+
+	var font: Font = null
+	if ResourceLoader.exists(FONT_PATH):
+		font = load(FONT_PATH) as Font
+
+	for def in filter_defs:
+		var fid: String = def["id"]
+		var flbl: String = def["label"]
+		var chip := Button.new()
+		chip.name = "Chip_" + fid
+		chip.text = flbl
+		chip.custom_minimum_size = Vector2(54, 32)
+		chip.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		chip.add_theme_font_size_override("font_size", 14)
+		if font:
+			chip.add_theme_font_override("font", font)
+		chip.pressed.connect(func(): filter_race(fid))
+		hbox.add_child(chip)
+		_race_filter_chips[fid] = chip
+
+	_update_filter_chips_visual()
+
+
+func filter_race(race_id: String) -> void:
+	_current_filter_race = race_id
+	for rid in _race_buttons.keys():
+		var btn: Button = _race_buttons[rid]
+		if _current_filter_race == "all" or rid == _current_filter_race:
+			btn.visible = true
+		else:
+			btn.visible = false
+	if race_id != "all" and RACES_DATA.has(race_id):
+		select_race(race_id)
+	_update_filter_chips_visual()
+
+
+func _update_filter_chips_visual() -> void:
+	for fid in _race_filter_chips.keys():
+		var chip: Button = _race_filter_chips[fid]
+		var is_active: bool = (str(fid) == _current_filter_race)
+		var sb := StyleBoxFlat.new()
+		sb.set_corner_radius_all(14)
+		if is_active:
+			sb.bg_color = Color("#FFD028") # 金黃
+			sb.border_color = Color("#FFA010") # 暖橘
+			sb.set_border_width_all(2)
+			sb.border_width_bottom = 4
+			chip.add_theme_color_override("font_color", Color("#1F1A3A"))
+		else:
+			sb.bg_color = Color("#FFFDF8") # 奶油白
+			sb.border_color = Color("#1F1A3A") # 深藍紫
+			sb.set_border_width_all(1)
+			sb.border_width_bottom = 2
+			chip.add_theme_color_override("font_color", Color("#1F1A3A"))
+		chip.add_theme_stylebox_override("normal", sb)
+		var sb_h = sb.duplicate()
+		sb_h.bg_color = Color("#FFF4D0")
+		chip.add_theme_stylebox_override("hover", sb_h)
+		chip.add_theme_stylebox_override("pressed", sb_h)
 
 
 ## 綁定控制按鈕
@@ -296,6 +462,9 @@ func confirm_selection() -> void:
 				"boar": gs.player_name = "鋼牙豕"
 				"macaque": gs.player_name = "靈爪猴"
 				"tiger": gs.player_name = "烈焰虎"
+				"bear": gs.player_name = "玄軸熊"
+				"crane": gs.player_name = "雲嵐鶴"
+				"penguin": gs.player_name = "蒸氣企鵝"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)

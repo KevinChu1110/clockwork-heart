@@ -63,6 +63,27 @@ var _btn_reset: Button
 
 var _breathe_tween: Tween = null
 
+## 種族篩選常數與狀態
+const RACE_FILTER_OPTIONS: Array[Dictionary] = [
+	{"id": "all", "name_zh": "全部"},
+	{"id": "rabbit", "name_zh": "兔"},
+	{"id": "fox", "name_zh": "狐"},
+	{"id": "lion", "name_zh": "獅"},
+	{"id": "boar", "name_zh": "野豬"},
+	{"id": "macaque", "name_zh": "猴"},
+	{"id": "tiger", "name_zh": "虎"},
+	{"id": "bear", "name_zh": "熊"},
+	{"id": "crane", "name_zh": "鶴"},
+	{"id": "penguin", "name_zh": "企鵝"},
+]
+
+var current_filter_race: String = "all"
+var _filter_chips: Dictionary = {}
+var _displayed_costumes: Array[Dictionary] = []
+var _displayed_chassis: Array[Dictionary] = []
+var selected_costume_id: String = ""
+var selected_chassis_id: String = ""
+
 ## 執行期狀態
 var current_race: String = "rabbit"
 var costume_index: int = 0
@@ -119,12 +140,13 @@ func _get_save_manager() -> Node:
 	return null
 
 
-func _get_race_data() -> Dictionary:
+func _get_race_data(target_race: String = "") -> Dictionary:
+	var r := target_race if not target_race.is_empty() else current_race
 	var PaperdollSelectClass = load("res://scripts/ui/paperdoll_select_demo.gd")
 	if PaperdollSelectClass and "RACES_DATA" in PaperdollSelectClass:
 		var all_data: Dictionary = PaperdollSelectClass.RACES_DATA
-		if all_data.has(current_race):
-			return all_data[current_race]
+		if all_data.has(r):
+			return all_data[r]
 	return {}
 
 
@@ -134,6 +156,8 @@ func _init_from_game_state() -> void:
 		var r: String = str(gs.player_race).strip_edges().to_lower()
 		if not r.is_empty():
 			current_race = r
+
+	current_filter_race = current_race
 
 	var data := _get_race_data()
 	var costumes: Array = data.get("costumes", [])
@@ -147,18 +171,26 @@ func _init_from_game_state() -> void:
 
 	# 正確對應當前已裝備部件，不從 index 0 開始強制重置
 	costume_index = 0
+	selected_costume_id = ""
 	if not equipped_costume.is_empty() and not costumes.is_empty():
 		for i in range(costumes.size()):
 			if str(costumes[i].get("id", "")) == equipped_costume:
 				costume_index = i
+				selected_costume_id = equipped_costume
 				break
+	elif not costumes.is_empty():
+		selected_costume_id = str(costumes[0].get("id", ""))
 
 	chassis_index = 0
+	selected_chassis_id = ""
 	if not equipped_paint.is_empty() and not chassis_list.is_empty():
 		for i in range(chassis_list.size()):
 			if str(chassis_list[i].get("id", "")) == equipped_paint:
 				chassis_index = i
+				selected_chassis_id = equipped_paint
 				break
+	elif not chassis_list.is_empty():
+		selected_chassis_id = str(chassis_list[0].get("id", ""))
 
 
 func _build_ui() -> void:
@@ -283,8 +315,12 @@ func _build_ui() -> void:
 	var controls_vbox := VBoxContainer.new()
 	controls_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	controls_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	controls_vbox.add_theme_constant_override("separation", 10)
+	controls_vbox.add_theme_constant_override("separation", 8)
 	main_hbox.add_child(controls_vbox)
+
+	# ── 頂部種族篩選 Chip 列 (支援全部/兔/狐/獅/豬/猴/虎/熊/鶴/企鵝) ──
+	var filter_bar := _create_race_filter_bar()
+	controls_vbox.add_child(filter_bar)
 
 	# ── 槽位 1：外裝服飾 (Costume) 卡片網格 ──
 	var costume_box := _create_grid_section("外裝服飾 (Costume)", "costume")
@@ -330,6 +366,124 @@ func _build_ui() -> void:
 	_btn_confirm.add_theme_stylebox_override("pressed", c_h)
 	_btn_confirm.pressed.connect(confirm_selection)
 	actions_hbox.add_child(_btn_confirm)
+
+
+## ── 種族篩選 tab/chip 列建置 ──
+func _create_race_filter_bar() -> Control:
+	var container := VBoxContainer.new()
+	container.name = "RaceFilterContainer"
+	container.add_theme_constant_override("separation", 4)
+
+	var header_hbox := HBoxContainer.new()
+	header_hbox.add_theme_constant_override("separation", 6)
+	container.add_child(header_hbox)
+
+	var label := Label.new()
+	label.text = "種族篩選"
+	label.add_theme_font_size_override("font_size", 14)
+	label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	label.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		label.add_theme_font_override("font", _cached_font)
+	header_hbox.add_child(label)
+
+	var tip := Label.new()
+	tip.text = "點選切片篩選各族可用部件"
+	tip.add_theme_font_size_override("font_size", 12)
+	tip.add_theme_color_override("font_color", Color("#8A7A99"))
+	if _cached_font:
+		tip.add_theme_font_override("font", _cached_font)
+	header_hbox.add_child(tip)
+
+	var chip_scroll := ScrollContainer.new()
+	chip_scroll.name = "FilterScroll"
+	chip_scroll.custom_minimum_size = Vector2(0, 36)
+	chip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	chip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	container.add_child(chip_scroll)
+
+	var hbox := HBoxContainer.new()
+	hbox.name = "ChipsHBox"
+	hbox.add_theme_constant_override("separation", 6)
+	chip_scroll.add_child(hbox)
+
+	_filter_chips.clear()
+	for opt in RACE_FILTER_OPTIONS:
+		var rid: String = str(opt.get("id", ""))
+		var rname: String = str(opt.get("name_zh", rid))
+		var btn := Button.new()
+		btn.name = "Chip_" + rid
+		btn.text = rname
+		btn.custom_minimum_size = Vector2(46, 30)
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.add_theme_font_size_override("font_size", 14)
+		if _cached_font:
+			btn.add_theme_font_override("font", _cached_font)
+		btn.pressed.connect(func(): set_race_filter(rid))
+		hbox.add_child(btn)
+		_filter_chips[rid] = btn
+
+	_update_filter_chips_visual()
+	return container
+
+
+func set_race_filter(race_id: String) -> void:
+	current_filter_race = race_id
+	if race_id != "all":
+		current_race = race_id
+		costume_index = 0
+		chassis_index = 0
+		selected_costume_id = ""
+		selected_chassis_id = ""
+	_update_filter_chips_visual()
+	_rebuild_cards()
+	_update_preview()
+	_update_ui_texts()
+
+
+func _update_filter_chips_visual() -> void:
+	for rid in _filter_chips.keys():
+		var btn: Button = _filter_chips[rid]
+		var is_selected: bool = (str(rid) == current_filter_race)
+		var sb := StyleBoxFlat.new()
+		sb.set_corner_radius_all(14)
+		sb.content_margin_left = 10
+		sb.content_margin_right = 10
+		sb.content_margin_top = 4
+		sb.content_margin_bottom = 5
+		if is_selected:
+			sb.bg_color = COLOR_GOLD
+			sb.border_color = COLOR_ORANGE
+			sb.set_border_width_all(2)
+			sb.border_width_bottom = 4
+			btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		else:
+			sb.bg_color = COLOR_BG_CREAM
+			sb.border_color = COLOR_BORDER
+			sb.set_border_width_all(1)
+			sb.border_width_bottom = 2
+			btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		btn.add_theme_stylebox_override("normal", sb)
+
+		var sb_h := sb.duplicate()
+		sb_h.bg_color = Color("#FFF4D0")
+		btn.add_theme_stylebox_override("hover", sb_h)
+		btn.add_theme_stylebox_override("pressed", sb_h)
+
+
+func _get_race_short_name(rid: String) -> String:
+	match rid:
+		"rabbit": return "兔"
+		"fox": return "狐"
+		"lion": return "獅"
+		"boar": return "野豬"
+		"macaque": return "猴"
+		"tiger": return "虎"
+		"bear": return "熊"
+		"crane": return "鶴"
+		"penguin": return "企鵝"
+		_: return rid
 
 
 ## 建立卡片網格區塊 (卡片網格＋果凍框『✓ 已選用』，多於一頁採 ScrollContainer)
@@ -401,7 +555,7 @@ func _create_grid_section(section_title: String, slot_type: String) -> PanelCont
 	return panel
 
 
-## 重新建置全部卡片
+## 重新建置全部卡片 (支援種族篩選)
 func _rebuild_cards() -> void:
 	if _costume_grid == null or _chassis_grid == null:
 		return
@@ -413,18 +567,42 @@ func _rebuild_cards() -> void:
 		c.queue_free()
 	_costume_cards.clear()
 	_chassis_cards.clear()
+	_displayed_costumes.clear()
+	_displayed_chassis.clear()
 
-	var data := _get_race_data()
-	var costumes: Array = data.get("costumes", [])
-	var chassis_list: Array = data.get("chassis", [])
+	var PaperdollSelectClass = load("res://scripts/ui/paperdoll_select_demo.gd")
+	var all_data: Dictionary = {}
+	if PaperdollSelectClass and "RACES_DATA" in PaperdollSelectClass:
+		all_data = PaperdollSelectClass.RACES_DATA
 
-	for i in range(costumes.size()):
-		var card := _create_item_card("costume", i, costumes[i])
+	var target_races: Array[String] = []
+	if current_filter_race == "all":
+		target_races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
+	else:
+		target_races = [current_filter_race]
+
+	for rid in target_races:
+		if not all_data.has(rid):
+			continue
+		var r_data: Dictionary = all_data[rid]
+		var costumes: Array = r_data.get("costumes", [])
+		for c in costumes:
+			var item := (c as Dictionary).duplicate()
+			item["race_id"] = rid
+			_displayed_costumes.append(item)
+		var chassis_list: Array = r_data.get("chassis", [])
+		for p in chassis_list:
+			var item := (p as Dictionary).duplicate()
+			item["race_id"] = rid
+			_displayed_chassis.append(item)
+
+	for i in range(_displayed_costumes.size()):
+		var card := _create_item_card("costume", i, _displayed_costumes[i])
 		_costume_grid.add_child(card)
 		_costume_cards.append(card)
 
-	for i in range(chassis_list.size()):
-		var card := _create_item_card("chassis", i, chassis_list[i])
+	for i in range(_displayed_chassis.size()):
+		var card := _create_item_card("chassis", i, _displayed_chassis[i])
 		_chassis_grid.add_child(card)
 		_chassis_cards.append(card)
 
@@ -454,6 +632,9 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	margin.add_child(vbox)
 
+	var item_race: String = str(item_data.get("race_id", current_race))
+	var item_id: String = str(item_data.get("id", ""))
+
 	# 部件縮圖
 	var thumb := TextureRect.new()
 	thumb.custom_minimum_size = Vector2(40, 40)
@@ -462,14 +643,19 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	thumb.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	thumb.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	thumb.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	thumb.texture = _get_item_thumbnail(slot_type, str(item_data.get("id", "")))
+	thumb.texture = _get_item_thumbnail(slot_type, item_id, item_race)
 	vbox.add_child(thumb)
 
 	# 部件名稱
 	var name_lbl := Label.new()
-	name_lbl.text = str(item_data.get("name_zh", ""))
+	var raw_name: String = str(item_data.get("name_zh", ""))
+	if current_filter_race == "all":
+		var r_short: String = _get_race_short_name(item_race)
+		name_lbl.text = "[%s] %s" % [r_short, raw_name]
+	else:
+		name_lbl.text = raw_name
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	name_lbl.add_theme_font_size_override("font_size", 16)
+	name_lbl.add_theme_font_size_override("font_size", 15)
 	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		name_lbl.add_theme_font_override("font", _cached_font)
@@ -498,10 +684,15 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 
 	# 點擊即時套用預覽與選取狀態
 	btn.pressed.connect(func():
+		var r_id: String = str(item_data.get("race_id", current_race))
+		if r_id != current_race:
+			current_race = r_id
 		if slot_type == "costume":
 			costume_index = idx
+			selected_costume_id = item_id
 		else:
 			chassis_index = idx
+			selected_chassis_id = item_id
 		_update_card_selection_states()
 		_update_preview()
 		_update_ui_texts()
@@ -511,21 +702,25 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 
 
 ## 取得部件對應之縮圖貼圖
-func _get_item_thumbnail(slot_type: String, item_id: String) -> Texture2D:
+func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String = "") -> Texture2D:
+	var r := item_race if not item_race.is_empty() else current_race
 	if slot_type == "costume":
 		if item_id == "none":
-			var bare_path := "res://assets/sprites/player/paperdoll/%s/composite_preview_bare.png" % current_race
+			var bare_path := "res://assets/sprites/player/paperdoll/%s/composite_preview_bare.png" % r
 			if ResourceLoader.exists(bare_path):
 				return load(bare_path) as Texture2D
-			var stock_chassis := "res://assets/sprites/player/paperdoll/%s/chassis/paint_ivory_stock.png" % current_race
+			var stock_chassis := "res://assets/sprites/player/paperdoll/%s/chassis/paint_ivory_stock.png" % r
 			if ResourceLoader.exists(stock_chassis):
 				return load(stock_chassis) as Texture2D
+			var composite_path := "res://assets/sprites/player/paperdoll/%s/proof_paperdoll_%s_composite.png" % [r, r]
+			if ResourceLoader.exists(composite_path):
+				return load(composite_path) as Texture2D
 		else:
-			var path := "res://assets/sprites/player/paperdoll/%s/costume/%s.png" % [current_race, item_id]
+			var path := "res://assets/sprites/player/paperdoll/%s/costume/%s.png" % [r, item_id]
 			if ResourceLoader.exists(path):
 				return load(path) as Texture2D
 	elif slot_type == "chassis":
-		var path := "res://assets/sprites/player/paperdoll/%s/chassis/%s.png" % [current_race, item_id]
+		var path := "res://assets/sprites/player/paperdoll/%s/chassis/%s.png" % [r, item_id]
 		if ResourceLoader.exists(path):
 			return load(path) as Texture2D
 	return null
@@ -534,11 +729,25 @@ func _get_item_thumbnail(slot_type: String, item_id: String) -> Texture2D:
 ## 更新所有卡片的亮金邊框與『✓ 已選用』狀態
 func _update_card_selection_states() -> void:
 	for i in range(_costume_cards.size()):
-		var is_selected := (i == costume_index)
+		var item: Dictionary = _displayed_costumes[i] if i < _displayed_costumes.size() else {}
+		var item_id: String = str(item.get("id", ""))
+		var item_race: String = str(item.get("race_id", current_race))
+		var is_selected := false
+		if not selected_costume_id.is_empty():
+			is_selected = (item_id == selected_costume_id and item_race == current_race)
+		else:
+			is_selected = (i == costume_index)
 		_apply_card_style(_costume_cards[i], is_selected)
 
 	for i in range(_chassis_cards.size()):
-		var is_selected := (i == chassis_index)
+		var item: Dictionary = _displayed_chassis[i] if i < _displayed_chassis.size() else {}
+		var item_id: String = str(item.get("id", ""))
+		var item_race: String = str(item.get("race_id", current_race))
+		var is_selected := false
+		if not selected_chassis_id.is_empty():
+			is_selected = (item_id == selected_chassis_id and item_race == current_race)
+		else:
+			is_selected = (i == chassis_index)
 		_apply_card_style(_chassis_cards[i], is_selected)
 
 
@@ -610,18 +819,29 @@ func _create_button_style(bg: Color, border: Color = COLOR_BORDER, bottom_border
 func _on_reset_pressed() -> void:
 	costume_index = 0
 	chassis_index = 0
+	selected_costume_id = ""
+	selected_chassis_id = ""
 	_update_card_selection_states()
 	_update_ui_texts()
 	_update_preview()
 
 
 func get_current_selections() -> Dictionary:
-	var data := _get_race_data()
-	var costumes: Array = data.get("costumes", [])
-	var chassis_list: Array = data.get("chassis", [])
+	var cur_costume: Dictionary = {}
+	if costume_index < _displayed_costumes.size():
+		cur_costume = _displayed_costumes[costume_index]
+	var cur_chassis: Dictionary = {}
+	if chassis_index < _displayed_chassis.size():
+		cur_chassis = _displayed_chassis[chassis_index]
 
-	var cur_costume: Dictionary = costumes[costume_index] if costume_index < costumes.size() else {}
-	var cur_chassis: Dictionary = chassis_list[chassis_index] if chassis_index < chassis_list.size() else {}
+	if cur_costume.is_empty() or cur_chassis.is_empty():
+		var data := _get_race_data()
+		var costumes: Array = data.get("costumes", [])
+		var chassis_list: Array = data.get("chassis", [])
+		if cur_costume.is_empty() and costume_index < costumes.size():
+			cur_costume = costumes[costume_index]
+		if cur_chassis.is_empty() and chassis_index < chassis_list.size():
+			cur_chassis = chassis_list[chassis_index]
 
 	var c_id := str(cur_costume.get("id", "none"))
 	var p_id := str(cur_chassis.get("id", "paint_ivory_stock"))
