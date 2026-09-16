@@ -256,7 +256,7 @@ for i in range(num_samples + 1):
     out_y = int(round(cur_y + (w_half + 1.1) * b_ny))
     if 0 <= out_x < w and 0 <= out_y < h:
         if im_closed.getpixel((out_x, out_y))[3] == 0:
-            shadow.putpixel((out_x, out_y), (18, 12, 26, 120))
+            shadow.putpixel((out_x, out_y), (38, 24, 28, 255))
 
 final_sword = Image.new("RGBA", (w, h), (0, 0, 0, 0))
 final_sword.alpha_composite(shadow)
