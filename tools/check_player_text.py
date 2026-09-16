@@ -23,6 +23,7 @@
 
 import glob
 import io
+import json
 import os
 import re
 import sys
@@ -66,6 +67,11 @@ ALLOW = [
 # 那是給簡中玩家認的。這幾個字是刻意的，不是漏網。
 LOCALE_LABEL_LINES = ("简体中文", "日本語", "한국어", "Español")
 
+# 程式內部多語別名常數容錯（如 sprite_db.gd speaker_portrait 支援各語言輸入對齊），非玩家介面繁中文字漏網
+ALIAS_ALLOW_PATTERNS = (
+    "白雾",  # game/scripts/art/sprite_db.gd: speaker_portrait 簡中輸入容錯別名
+)
+
 # 簡體專用字 → 正體。只列「兩岸寫法不同」的，正簡同形字（走、向、台…）不列，
 # 否則會掃出上千個假警報。發現新的就往這裡加。
 SIMPLIFIED = {
@@ -92,8 +98,30 @@ SIMPLIFIED = {
     "黄": "黃", "齐": "齊", "龙": "龍",
 }
 
-# JSON 裡純給開發者看的欄位，不算玩家面
-DEV_JSON_KEYS = ("note", "_comment", "tagline_dev")
+# JSON 裡純給開發者看的欄位，不算玩家面（規格書追蹤、內部命名規範、機械設定與輸出標準）
+DEV_JSON_KEYS = (
+    "note",
+    "_comment",
+    "tagline_dev",
+    "asset_naming_conventions",
+    "mechanical_features",
+    "art_output_standards",
+)
+
+
+def extract_player_strings(data, dev_keys):
+    if isinstance(data, dict):
+        for k, v in data.items():
+            if k in dev_keys:
+                continue
+            if isinstance(k, str) and any("\u4e00" <= c <= "\u9fff" for c in k):
+                yield k
+            yield from extract_player_strings(v, dev_keys)
+    elif isinstance(data, list):
+        for item in data:
+            yield from extract_player_strings(item, dev_keys)
+    elif isinstance(data, str):
+        yield data
 
 
 def visible_html(path: str) -> str:
@@ -117,13 +145,19 @@ def gd_strings(path: str) -> str:
 
 
 def json_player_text(path: str) -> str:
-    out = []
-    for line in io.open(path, encoding="utf-8").read().split("\n"):
-        key = re.match(r'\s*"(\w+)"\s*:', line)
-        if key and key.group(1) in DEV_JSON_KEYS:
-            continue
-        out.append(line)
-    return "\n".join(out)
+    try:
+        with io.open(path, encoding="utf-8") as f:
+            data = json.load(f)
+        strings = list(extract_player_strings(data, set(DEV_JSON_KEYS)))
+        return "\n".join(strings)
+    except Exception:
+        out = []
+        for line in io.open(path, encoding="utf-8").read().split("\n"):
+            key = re.match(r'\s*"(\w+)"\s*:', line)
+            if key and key.group(1) in DEV_JSON_KEYS:
+                continue
+            out.append(line)
+        return "\n".join(out)
 
 
 def allowed(term: str, line: str) -> bool:
@@ -182,6 +216,8 @@ def main() -> None:
             continue
         for line in body.split("\n"):
             if any(lbl in line for lbl in LOCALE_LABEL_LINES):
+                continue
+            if any(pat in line for pat in ALIAS_ALLOW_PATTERNS):
                 continue
             bad = sorted({c for c in line if c in SIMPLIFIED})
             if bad:
