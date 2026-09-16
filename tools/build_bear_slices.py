@@ -76,13 +76,14 @@ def build_all_slices():
     cd.ellipse([80, 54, 90, 64], fill=BRASS_GOLD, outline=OUTLINE, width=1)
     cd.point((83, 57), fill=WHITE_SHINE)
     
-    # Wrist pistons
-    cd.rectangle([36, 70, 39, 78], fill=DARK_IRON, outline=OUTLINE, width=1)
-    cd.line([(37, 71), (37, 77)], fill=WHITE_SHINE)
-    cd.rectangle([85, 70, 88, 78], fill=DARK_IRON, outline=OUTLINE, width=1)
-    cd.line([(86, 71), (86, 77)], fill=WHITE_SHINE)
+    # Torso backing plates
+    cd.rounded_rectangle([44, 56, 84, 90], radius=8, fill=PRIMARY_AMBER, outline=OUTLINE, width=1)
+    cd.rounded_rectangle([50, 72, 78, 88], radius=4, fill=WHITE_PLATE, outline=OUTLINE, width=1)
+    cd.line([(52, 74), (76, 74)], fill=WHITE_SHINE)
+    cd.ellipse([52, 76, 54, 78], fill=BRASS_GOLD)
+    cd.ellipse([74, 76, 76, 78], fill=BRASS_GOLD)
     
-    # Hand clamps
+    # Hand clamps (clean mechanical clenched fists, zero placeholder rods)
     cd.polygon([(32, 80), (35, 76), (42, 78), (44, 84), (37, 85)], fill=DARK_IRON, outline=OUTLINE)
     cd.line([(34, 82), (36, 85)], fill=BRASS_GOLD, width=1)
     cd.polygon([(82, 78), (89, 76), (92, 82), (88, 86), (81, 83)], fill=DARK_IRON, outline=OUTLINE)
@@ -97,13 +98,6 @@ def build_all_slices():
     cd.line([(68, 115), (84, 115)], fill=WHITE_SHINE)
     cd.ellipse([69, 117, 71, 119], fill=BRASS_GOLD)
     cd.ellipse([80, 117, 82, 119], fill=BRASS_GOLD)
-    
-    # Torso backing plates
-    cd.rounded_rectangle([44, 56, 84, 90], radius=8, fill=PRIMARY_AMBER, outline=OUTLINE, width=1)
-    cd.rounded_rectangle([50, 72, 78, 88], radius=4, fill=WHITE_PLATE, outline=OUTLINE, width=1)
-    cd.line([(52, 74), (76, 74)], fill=WHITE_SHINE)
-    cd.ellipse([52, 76, 54, 78], fill=BRASS_GOLD)
-    cd.ellipse([74, 76, 76, 78], fill=BRASS_GOLD)
     
     # Brass Grounding Tail Coupler on base chassis spine
     cd.ellipse([60, 92, 68, 98], fill=BRASS_GOLD, outline=OUTLINE, width=1)
