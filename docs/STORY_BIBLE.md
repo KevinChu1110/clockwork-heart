@@ -171,6 +171,6 @@ C2 休息點（營火／白霧之地客棧）觸發 **N8 延遲的信**——見
 - [x] C0 對白稿（含拔劍三振、麥稈）— SCRIPT_C0  
 - [x] 雷歐場（含體型對照、微末一格、釘釘認劍）— SCRIPT_C1  
 - [x] 魔王三拒＋託付句＋反轉場 — SCRIPT_C6  
-- [ ] C2/C3 域劇本  
-- [ ] 終章兩版微差（若做選擇）細修  
-- [ ] 英譯 itch 短介紹
+- [x] C2/C3 域劇本（含白霧看破、延遲的信、道場問心）— SCRIPT_C2 / SCRIPT_C3（正文見 docs/story/novel/book1_c2_s01-04_white_fog.md、book1_c2_s05-07_third_shadow.md、book1_c3_s01-05_why_we_fight.md，commit 9cbca31/b14bfe3/d56b150，novel-book1 已上線）  
+- [ ] 終章兩版微差（若做選擇）細修 — 現況說明：SCRIPT_C6 與小說 Book6 (C6-S05~S10) 已完成主反轉、三拒誘惑、晨光終章與尾聲條件表；遊戲端雙結局對白微差細修待主線對白完整實裝時補齊  
+- [x] ~~英譯 itch 短介紹~~（作廢：依 docs/BUSINESS.md 定案轉向多平台商業手遊路線，itch 單機發佈路線已終止，後續以手遊雙平台商店介紹取代）
