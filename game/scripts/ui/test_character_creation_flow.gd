@@ -4,7 +4,7 @@ extends SceneTree
 
 var _ok := true
 var _frame := 0
-var _races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger"]
+var _races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear"]
 var _race_textures: Dictionary = {}
 
 
@@ -219,6 +219,26 @@ func _run_test_suite() -> void:
 	_assert(confirmed_data["race"] == "tiger", "訊號回傳正確選取種族 'tiger'")
 	_assert(str(gs.get("player_race")) == "tiger", "confirm_selection 成功將 'tiger' 寫入 GameState")
 	_assert(str(gs.get("player_name")) == "烈焰虎", "confirm_selection 成功將預設英雄名稱設為 '烈焰虎'")
+
+	# 切換至雲嵐鶴並確認
+	confirmed_data["called"] = false
+	demo.call("select_race", "crane")
+	demo.call("confirm_selection")
+
+	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (crane)")
+	_assert(confirmed_data["race"] == "crane", "訊號回傳正確選取種族 'crane'")
+	_assert(str(gs.get("player_race")) == "crane", "confirm_selection 成功將 'crane' 寫入 GameState")
+	_assert(str(gs.get("player_name")) == "雲嵐鶴", "confirm_selection 成功將預設英雄名稱設為 '雲嵐鶴'")
+
+	# 切換至玄軸熊並確認
+	confirmed_data["called"] = false
+	demo.call("select_race", "bear")
+	demo.call("confirm_selection")
+
+	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (bear)")
+	_assert(confirmed_data["race"] == "bear", "訊號回傳正確選取種族 'bear'")
+	_assert(str(gs.get("player_race")) == "bear", "confirm_selection 成功將 'bear' 寫入 GameState")
+	_assert(str(gs.get("player_name")) == "玄軸熊", "confirm_selection 成功將預設英雄名稱設為 '玄軸熊'")
 
 	demo.queue_free()
 

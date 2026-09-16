@@ -32,6 +32,10 @@
 | spring_macaque.png | 靈爪猴 | 金屬發條猴 · 武術家（384×480 對話半身像；立牌 `branding/char_macaque.png` 400×840） |
 | tiger.png | 烈焰虎 | 金屬發條虎 · 齒輪雙斬刃（128×128 HUD 戰鬥頭像；場上 `player/party/tiger_idle.png` 128×128） |
 | ember_tiger.png | 烈焰虎 | 金屬發條虎 · 忍者（384×480 對話框半身像；立牌 `branding/char_tiger.png` 400×840） |
+| crane.png | 雲嵐鶴 | 金屬發條鶴 · 風弦羽翼機關弓（128×128 HUD 戰鬥頭像；場上 `player/party/crane_idle.png` 128×128） |
+| cloud_crane.png | 雲嵐鶴 | 金屬發條鶴 · 遊俠（384×480 對話框半身像；立牌 `branding/char_crane.png` 400×840） |
+| bear.png | 玄軸熊 | 金屬發條熊 · 玄軸偏心重力錘（128×128 HUD 戰鬥頭像；場上 `player/party/bear_idle.png` 128×128） |
+| iron_bear.png | 玄軸熊 | 金屬發條熊 · 戰士（384×480 對話框半身像；立牌 `branding/char_bear.png` 400×840） |
 
 ## 風格錨（ART-01，2026-09-07）
 

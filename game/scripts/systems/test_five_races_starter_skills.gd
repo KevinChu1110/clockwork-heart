@@ -17,7 +17,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	var races = ["rabbit", "lion", "fox", "boar", "macaque", "tiger"]
+	var races = ["rabbit", "lion", "fox", "boar", "macaque", "tiger", "crane", "bear"]
 	var expected_starter_skills = {
 		"rabbit": {"id": "slash", "name": "橫斬", "mult": 1.80, "hits": 1},
 		"lion": {"id": "line_thrust", "name": "一線突刺", "mult": 1.90, "hits": 1},
@@ -25,6 +25,8 @@ func _initialize() -> void:
 		"boar": {"id": "stone_crush", "name": "碎岩鎚", "mult": 1.95, "hits": 1},
 		"macaque": {"id": "combo_fist", "name": "連環拳", "mult": 0.60, "hits": 3},
 		"tiger": {"id": "quick_stab", "name": "急刺", "mult": 1.50, "hits": 1},
+		"crane": {"id": "quick_shot", "name": "速射", "mult": 1.60, "hits": 1},
+		"bear": {"id": "stone_crush", "name": "碎岩鎚", "mult": 1.95, "hits": 1},
 	}
 
 	for r in races:

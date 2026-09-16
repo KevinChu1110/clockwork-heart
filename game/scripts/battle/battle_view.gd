@@ -2485,6 +2485,8 @@ func _unit_display_name(unit_id: String) -> String:
 			"boar": return _t("鋼牙豕")
 			"macaque": return _t("靈爪猴")
 			"tiger": return _t("烈焰虎")
+			"crane": return _t("雲嵐鶴")
+			"bear": return _t("玄軸熊")
 			_: return _t("小白")
 	if _is_world_mode(unit_id):
 		var WC = load("res://scripts/world/world_content.gd")

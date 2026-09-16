@@ -99,6 +99,7 @@ func _init() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	ensure_ui()
 	_init_from_game_state()
+	_update_filter_chips_visual()
 	_rebuild_cards()
 	_update_ui_texts()
 	_update_preview()
@@ -107,6 +108,7 @@ func _init() -> void:
 func _ready() -> void:
 	ensure_ui()
 	_init_from_game_state()
+	_update_filter_chips_visual()
 	_rebuild_cards()
 	_update_ui_texts()
 	_update_preview()
@@ -408,6 +410,12 @@ func _create_race_filter_bar() -> Control:
 	hbox.add_theme_constant_override("separation", 6)
 	chip_scroll.add_child(hbox)
 
+	# 開端保留微小邊距
+	var start_spacer := Control.new()
+	start_spacer.name = "StartSpacer"
+	start_spacer.custom_minimum_size = Vector2(4, 0)
+	hbox.add_child(start_spacer)
+
 	_filter_chips.clear()
 	for opt in RACE_FILTER_OPTIONS:
 		var rid: String = str(opt.get("id", ""))
@@ -424,6 +432,12 @@ func _create_race_filter_bar() -> Control:
 		btn.pressed.connect(func(): set_race_filter(rid))
 		hbox.add_child(btn)
 		_filter_chips[rid] = btn
+
+	# 末端保留右邊距，確保最右側 chip 滾動到終點時不被容器邊界裁剪
+	var end_spacer := Control.new()
+	end_spacer.name = "EndSpacer"
+	end_spacer.custom_minimum_size = Vector2(24, 0)
+	hbox.add_child(end_spacer)
 
 	_update_filter_chips_visual()
 	return container
@@ -460,6 +474,7 @@ func _update_filter_chips_visual() -> void:
 			sb.border_width_bottom = 3
 			sb.shadow_size = 0
 			btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+			_scroll_to_chip(btn)
 		else:
 			# 次級膠囊採純色分隔，不加深黑邊框與陰影，消除框中框
 			sb.bg_color = Color(0.92, 0.90, 0.86, 0.85)
@@ -473,6 +488,32 @@ func _update_filter_chips_visual() -> void:
 		sb_h.bg_color = Color("#FFF4D0")
 		btn.add_theme_stylebox_override("hover", sb_h)
 		btn.add_theme_stylebox_override("pressed", sb_h)
+
+
+func _scroll_to_chip(btn: Button) -> void:
+	call_deferred("_do_scroll_to_chip", btn)
+
+
+func _do_scroll_to_chip(btn: Button) -> void:
+	var scroll := find_child("FilterScroll", true, false) as ScrollContainer
+	if not scroll or not is_instance_valid(scroll) or not is_instance_valid(btn):
+		return
+	var hbar := scroll.get_h_scroll_bar()
+	var view_w: float = scroll.size.x
+	var btn_left: float = btn.position.x
+	var btn_right: float = btn_left + btn.size.x
+	var pad: float = 16.0 # 邊界緩衝，確保左右均不被裁剪
+
+	if btn_right + pad > scroll.scroll_horizontal + view_w:
+		var target := int(btn_right + pad - view_w)
+		if hbar:
+			target = clampi(target, 0, int(hbar.max_value - hbar.page))
+		scroll.scroll_horizontal = target
+	elif btn_left - pad < scroll.scroll_horizontal:
+		var target := int(btn_left - pad)
+		if hbar:
+			target = clampi(target, 0, int(hbar.max_value - hbar.page))
+		scroll.scroll_horizontal = target
 
 
 func _get_race_short_name(rid: String) -> String:

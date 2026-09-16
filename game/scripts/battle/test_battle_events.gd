@@ -1,13 +1,15 @@
 extends SceneTree
 
-var _races := ["rabbit", "lion", "fox", "boar", "macaque", "tiger"]
+var _races := ["rabbit", "lion", "fox", "boar", "macaque", "tiger", "crane", "bear"]
 var _modes := {
 	"rabbit": "road_bandit",
 	"lion": "black_ronin",
 	"fox": "fog_shade",
 	"boar": "coast_raider",
 	"macaque": "bamboo_spirit",
-	"tiger": "road_bandit"
+	"tiger": "road_bandit",
+	"crane": "road_bandit",
+	"bear": "black_ronin"
 }
 var _weapons := {
 	"rabbit": "dawn_blade",
@@ -15,7 +17,9 @@ var _weapons := {
 	"fox": "star_rod",
 	"boar": "anvil_hammer",
 	"macaque": "hunt_claw",
-	"tiger": "star_fang"
+	"tiger": "star_fang",
+	"crane": "reed_bow",
+	"bear": "anvil_hammer"
 }
 
 var _idx := 0

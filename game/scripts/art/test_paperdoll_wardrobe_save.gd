@@ -286,6 +286,82 @@ func _initialize() -> void:
 	else:
 		print("  ✓ 烈焰虎成功換塗裝為原廠象牙白 (paint_ivory_stock)")
 
+	# ── 9. 測試雲嵐鶴 (crane) 專屬換裝與存檔持久化 ──
+	print("\n--- 9. 測試雲嵐鶴 (crane) 換裝切換與存檔持久化 ---")
+	gs.player_race = "crane"
+	gs.paperdoll_slots = {
+		"race": "crane",
+		"costume_id": "costume_zephyr_robe",
+		"paint_id": "paint_crane_porcelain"
+	}
+	var dlg_crane: WardrobeDialog = WardrobeDialog.new()
+	root.add_child(dlg_crane)
+	dlg_crane._ready()
+	if dlg_crane.current_race != "crane":
+		push_error("WardrobeDialog 當前種族非 crane: %s" % dlg_crane.current_race)
+		ok = false
+	else:
+		print("  ✓ WardrobeDialog 正確辨識玩家當前種族為 crane")
+
+	# 切換為裸機素體 (costume index 1: none) 與原廠象牙白 (chassis index 1: paint_ivory_stock)
+	dlg_crane.costume_index = 1
+	dlg_crane.chassis_index = 1
+	dlg_crane._update_card_selection_states()
+	dlg_crane._update_preview()
+	dlg_crane.confirm_selection()
+
+	if str(gs.paperdoll_slots.get("costume_id", "")) != "none":
+		push_error("雲嵐鶴換裝後 costume_id 應為 none，實際為: %s" % str(gs.paperdoll_slots.get("costume_id", "")))
+		ok = false
+	else:
+		print("  ✓ 雲嵐鶴成功換裝為裸機素體 (none)")
+
+	if str(gs.paperdoll_slots.get("paint_id", "")) != "paint_ivory_stock":
+		push_error("雲嵐鶴換裝後 paint_id 應為 paint_ivory_stock，實際為: %s" % str(gs.paperdoll_slots.get("paint_id", "")))
+		ok = false
+	else:
+		print("  ✓ 雲嵐鶴成功換塗裝為原廠象牙白 (paint_ivory_stock)")
+
+	dlg_crane.queue_free()
+
+	# ── 10. 測試玄軸熊 (bear) 專屬換裝與存檔持久化 ──
+	print("\n--- 10. 測試玄軸熊 (bear) 換裝切換與存檔持久化 ---")
+	gs.player_race = "bear"
+	gs.paperdoll_slots = {
+		"race": "bear",
+		"costume_id": "costume_ironclad_overalls",
+		"paint_id": "paint_bear_amber"
+	}
+	var dlg_bear: WardrobeDialog = WardrobeDialog.new()
+	root.add_child(dlg_bear)
+	dlg_bear._ready()
+	if dlg_bear.current_race != "bear":
+		push_error("WardrobeDialog 當前種族非 bear: %s" % dlg_bear.current_race)
+		ok = false
+	else:
+		print("  ✓ WardrobeDialog 正確辨識玩家當前種族為 bear")
+
+	# 切換為裸機素體 (costume index 1: none) 與原廠象牙白 (chassis index 1: paint_ivory_stock)
+	dlg_bear.costume_index = 1
+	dlg_bear.chassis_index = 1
+	dlg_bear._update_card_selection_states()
+	dlg_bear._update_preview()
+	dlg_bear.confirm_selection()
+
+	if str(gs.paperdoll_slots.get("costume_id", "")) != "none":
+		push_error("玄軸熊換裝後 costume_id 應為 none，實際為: %s" % str(gs.paperdoll_slots.get("costume_id", "")))
+		ok = false
+	else:
+		print("  ✓ 玄軸熊成功換裝為裸機素體 (none)")
+
+	if str(gs.paperdoll_slots.get("paint_id", "")) != "paint_ivory_stock":
+		push_error("玄軸熊換裝後 paint_id 應為 paint_ivory_stock，實際為: %s" % str(gs.paperdoll_slots.get("paint_id", "")))
+		ok = false
+	else:
+		print("  ✓ 玄軸熊成功換塗裝為原廠象牙白 (paint_ivory_stock)")
+
+	dlg_bear.queue_free()
+
 	# 恢復測試環境回兔族
 	gs.call("reset_new_game", "rabbit")
 
