@@ -151,6 +151,12 @@
             "name": "原廠深海鍍鈦藍",
             "race": "penguin",
             "tier": "common"
+          },
+          {
+            "id": "paint_polar_frost",
+            "name": "極光冰川銀白鍍鉻烤漆",
+            "race": "penguin",
+            "tier": "rare"
           }
         ]
       },
@@ -403,6 +409,12 @@
             "name": "深海導航員合金防撞工作甲",
             "race": "penguin",
             "tier": "common"
+          },
+          {
+            "id": "costume_abyssal_diver_cuirass",
+            "name": "淵海深潛耐壓機關鎧",
+            "race": "penguin",
+            "tier": "rare"
           }
         ]
       },

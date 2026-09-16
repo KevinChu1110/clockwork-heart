@@ -205,10 +205,12 @@ const RACES_DATA: Dictionary = {
 		"desc": "淵海發條港灣的憨厚重火手，耐高壓鍍鈦燕尾裝甲與防滑金屬腳蹼。",
 		"costumes": [
 			{"id": "costume_navigator_harness", "name_zh": "深海導航員大衣", "desc": "耐壓鍍鈦深藍大衣與黃銅導航儀扣"},
+			{"id": "costume_abyssal_diver_cuirass", "name_zh": "淵海深潛耐壓機關鎧", "desc": "重型深海耐壓合金胸甲、雙肩減壓鉸鏈閥與極地破冰鉚釘護甲"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現耐壓鍍鈦企鵝素體"}
 		],
 		"chassis": [
 			{"id": "paint_penguin_navy", "name_zh": "原廠深海鍍鈦藍", "desc": "高壓陽極氧化深海鍍鈦藍烤漆"},
+			{"id": "paint_polar_frost", "name_zh": "極光冰川銀白", "desc": "極地破冰銀白高光鍍鉻烤漆與耐寒琺瑯"},
 			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白高光琺瑯塗層"}
 		]
 	}
