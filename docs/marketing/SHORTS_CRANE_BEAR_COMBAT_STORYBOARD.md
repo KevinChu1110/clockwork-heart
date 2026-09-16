@@ -2,6 +2,18 @@
 ## 主題：第七族雲嵐鶴與第八族玄軸熊實機戰鬥姿態全實裝（內部企劃代號：mk-crane-bear-shorts）
 
 > **文件狀態**：純分鏡腳本與實機錄影素材清單規劃（⛔ 不產片、不呼叫 Veo/fal、不發 FB、不改官網）。  
+>
+> ## ⛔ 發布前禁令附註（製作人 老周 2026-09-16 補，review.md 0-MKT2）
+>
+> **本分鏡的 Shot 2～4 全為遊戲實機錄影，目前一律不得對外發布。**
+> Kevin 現行裁示（t_4c1dfa0b 決策卡選項 B）：遊戲實機截圖與錄影對外暫不公開，
+> 官網與粉專只放主視覺與官方短片，畫面過關後才解禁。2026-09-16 已因此下架第七週 Day3／Day4 兩則實機貼文。
+>
+> - 本文件屬**內部素材規劃**，過審不等於可發布。
+> - **未解禁前替代方案**：若行銷檔期需要鶴／熊素材，改用 `branding/key_visual_main.png` 的角色局部裁切
+>   與既有官方短片素材，搭配純文案／靜態視覺卡，⛔ 不得夾帶任何實機畫面。
+> - 解禁條件：Kevin 明示實機畫面過關。屆時再由製作人開錄製單，⛔ 不准任何人自行判定已解禁。
+
 > **制定日期**：2026-09-16  
 > **負責人**：側案·行銷總監 阿珊（sidemkt）  
 > **審核對象**：側案製作人 老周（side）、側案策劃總監 小凱（sideplan）、側案美術總監 小柔（sideart）  
@@ -41,7 +53,7 @@
 | **音效原則** | **真實金屬發條實體音效優先** | 發條咬合、風弦破空、齒輪離心旋轉、金屬撞擊、巨錘撼地、碎裂反饋；嚴禁罐頭史詩管弦配樂（第 14 條） |
 | **素材來源真實性** | **100% 基於已合併 main 之功能與既有資產** | 實機鏡次 100% 來自既有 Godot 戰鬥系統與已合併入庫之鶴、熊六大戰鬥姿態檔案；開場 Shot 1 採用核准主視覺 `branding/key_visual_main.png` 局部微距無文字區裁切，絕無概念圖冒充實機（第 16/19/19b/19e 條） |
 | **非檔案識別字真實性**| **100% 對齊程式實作與多語系字典** | 嚴格對齊 `battle_view.gd`、`world_content.gd`、`paperdoll_slots.json` 與 `equipment.json`，嚴禁自創 mode、敵人名、角色名或武器名（第 19e-2 條） |
-| **打擊反饋真實性** | **如實反映普攻實體渲染與實測數據** | 包含受擊閃白（`_flash`）、傷害跳字（`_spawn_float`）、震屏（`_shake`）、打擊停頓（`trigger_hit_stop` 0.08s）；絕不虛構未觸發之技能特效（第 19e-3/19e-4/19e-5 條） |
+| **打擊反饋真實性** | **如實反映普攻實體渲染與實測數據** | 包含受擊閃白（`_flash`）、傷害跳字（`_spawn_float`）、震屏（`_shake`）、打擊停頓（`trigger_hit_stop` 0.08s）；絕不虛構未觸發之技能特效（第 19e-3/19e-4/19e-5 條）。<br>⚠️ **製作人 2026-09-16 複驗更正**：`_shake = 0.35` ＋ `trigger_hit_stop(0.08)` 位於 `battle_view.gd:2571-2574` 的 **`if is_crit:` 暴擊分支內**，普通命中（:2576-2577）只有 `_spawn_float` 跳字與 `_flash` 閃白，**沒有震屏與打擊停頓**。錄影時須錄到**暴擊那一擊**才拍得到 Shot 3 描述的震屏／停頓；剪輯若取到非暴擊幀，須改寫該鏡文案或重錄。 |
 
 ---
 
@@ -53,14 +65,14 @@
 - **核心特徵**：2.3 頭身冷淬青瓷合金白（`#F5F7FA`）琺瑯外殼，頭頂八角丹頂朱砂紅調節閥（`#FF5E8A`），背部三翼凌雲風輪發條鑰匙，雙肢折疊式四階合金翼片。手持「風弦羽翼機關弓」（`wpn_zephyr_wing_bow` / 底層武器庫相容 `reed_bow`, `equipment.json:119`）。
 - **打擊特色**：
   - 超視距遠程精準狙擊，避開近身肉搏，體現「優雅、清脆、穿甲」之遊俠手感。
-  - 出手前搖拉滿弓弦（`telegraph`），風羽箭簇破空直射位移（`_lunge()`），命中觸發精確 0.08s Hitstop 打擊停頓（`battle_view.gd:2192`）、受擊閃白（`_flash()`，`battle_view.gd:2196`）與浮動傷害跳字（`_spawn_float()`，`battle_view.gd:2195`）。
+  - 出手前搖拉滿弓弦（`telegraph`），風羽箭簇破空直射位移（`_lunge()`），命中觸發精確 0.08s Hitstop 打擊停頓（`battle_view.gd:2573`）、受擊閃白（`_flash()`，`battle_view.gd:2574`）與浮動傷害跳字（`_spawn_float()`，`battle_view.gd:2571`）。
   - 技能姿態（`skill`）帶動周身氣流迴旋，折疊合金翼片完全展開如風刃收束，收招（`recover`）乾脆俐落。
 
 ### 2. 玄軸熊（The Iron Bear · 戰士 Viking）
 - **核心特徵**：2.1 頭身焦糖琥珀金屬漆（`#D97724`）搭配雲石乳白板件（`#FFF8E7`），雙層同心圓金屬散熱耳罩，背部十字擺錘發條鑰匙，雙腕外露粗規格黃銅液壓阻尼避震桿。手持「玄軸偏心重力錘」（`wpn_eccentric_gyro_sledge` / 底層武器庫相容 `anvil_hammer`, `equipment.json:262`）。
 - **打擊特色**：
   - 與鋼牙豕（豬族）之直線縱向下劈徹底切割！核心力學為「偏心飛輪離心力圓周橫掃（Centrifugal Sweep）」。
-  - 出手前搖（`telegraph`）伴隨體內偏心陀螺高速旋轉之低頻金屬嗡鳴；攻擊時偏心重力錘揮出 360 度半徑橫掃觸地轟擊（`attack`），引爆大範圍重力震波，觸發屏幕強震（`_shake = 0.35`，`battle_view.gd:2191`）、受擊閃白（`_flash()`）、0.08s 打擊停頓與巨大傷害跳字。
+  - 出手前搖（`telegraph`）伴隨體內偏心陀螺高速旋轉之低頻金屬嗡鳴；攻擊時偏心重力錘揮出 360 度半徑橫掃觸地轟擊（`attack`），引爆大範圍重力震波，觸發屏幕強震（`_shake = 0.35`，`battle_view.gd:2572`）、受擊閃白（`_flash()`）、0.08s 打擊停頓與巨大傷害跳字。
   - 受擊姿態（`hit`）展現加厚鑄鋼板件與液壓阻尼之高防血牛韌性，巍然不退；技能（`skill`）重錘拄地，氣壓閥排氣復位。
 
 ---
@@ -103,7 +115,7 @@ Shot 5 (12.5-15.0s)【合成·點題收束】純黑底板微推，後製疊加�
 |---|---|---|---|---|---|---|---|
 | **Shot 1<br>【風輪微距】** | `0.0-3.0s`<br>(3.0s) | 昏暗工坊微距特寫。雲嵐鶴冷淬青瓷白琺瑯外殼微光流轉，背後三翼凌雲風輪發條鑰匙猛然急轉半圈「喀——嗒！」，頭頂八角朱砂紅丹頂調節閥微孔溢出微量散熱白氣，胸前發條晶石暴亮充能，光芒填滿畫面。 | **官方主視覺基準資產（9:16 無文字微距裁切）**<br>路徑：`branding/key_visual_main.png`<br>（1,735,537 Bytes，1376×768 橫圖）<br>裁切座標：`crop=222:396:455:372`（嚴格避開上方字標） | 極近微距平滑推鏡（Dolly In 105%），焦點自發條鑰匙滑向丹頂調節閥，角色不漂移位移。 | 0.0s 一記清脆乾淨的發條齒輪咬合「喀——嗒！」（`clock.wav`），緊隨高頻風鳴蓄能聲。**零 BGM、零管弦樂。** | （開場 3 秒零文字、無 Logo、無遊戲名，依第 11 條） | **【官方基準資產·9:16】**<br>已存在之核准主視覺，依第 19 條路徑實存，微距裁切無文字區，⛔ 不臨場呼叫 AI 產圖。 |
 | **Shot 2<br>【風弦蓄勢】** | `3.0-6.5s`<br>(3.5s) | 光芒穿透切入天元竹林實機戰鬥。雲嵐鶴單手執持風弦羽翼機關弓，手臂微揚，上下對稱之合金折疊翼刃如扇面優雅展開，極細鎢金絲弦拉緊蓄勢（`telegraph`），對向竹影拳靈（`bamboo_spirit`）進入鎖定對峙。 | **雲嵐鶴（遊俠 Ranger）**<br>待機：`game/assets/sprites/player/poses/crane/idle.png`<br>預警蓄勢：`game/assets/sprites/player/poses/crane/telegraph.png`<br>紙娃娃素體：`game/assets/sprites/player/paperdoll/crane/chassis/paint_crane_porcelain.png` | 平視直式向戰鬥中央平滑推鏡（Push In 108%），鎖定拉弓展開姿態。 | 風弦拉緊高頻金屬微顫「叮——」，竹林清風呼嘯「颼——」（`wind.wav`）。 | （遊戲畫面純淨無文字，無 Logo） | **【實機素材·REC-CRANE-01】**<br>錄製自 Godot `res://scenes/battle/battle.tscn`，`setup("bamboo_spirit")`，由 Sim 自動驅動戰鬥。 |
-| **Shot 3<br>【穿甲狙擊】** | `6.5-10.0s`<br>(3.5s) | 弓弦驟響！鎢金穿甲箭簇離弦暴射，雲嵐鶴向前微突進位移（`_lunge()`，`attack`），箭矢精準貫穿竹影拳靈弱點關節，瞬間觸發精確 0.08s 打擊停頓（Hitstop，`battle_view.gd:2192`）、受擊閃白（`_flash()`，`battle_view.gd:2196`）與金光傷害跳字（`_spawn_float()`，`battle_view.gd:2195`）。 | **雲嵐鶴（遊俠 Ranger）**<br>攻擊：`game/assets/sprites/player/poses/crane/attack.png`<br>受擊（敵方）：`game/assets/sprites/bosses/bamboo_spirit.png`（合規機械傀儡敵人） | 沿箭道軌跡向前平滑推鏡（Push In 115%），聚焦打擊停頓與跳字爆散點。 | 弓弦驟彈暴鳴「錚！」，金屬穿甲透體撞擊音「鏘——！」（`hit.wav`、`slash.wav`）。 | （遊戲原生純淨跳字，無 emoji） | **【實機素材·REC-CRANE-01】**<br>遵循真實因果鏈條，由 `sim.hit` 事件觸發 `_spawn_float` 與 `trigger_hit_stop(0.08)`。 |
+| **Shot 3<br>【穿甲狙擊】** | `6.5-10.0s`<br>(3.5s) | 弓弦驟響！鎢金穿甲箭簇離弦暴射，雲嵐鶴向前微突進位移（`_lunge()`，`attack`），箭矢精準貫穿竹影拳靈弱點關節，瞬間觸發精確 0.08s 打擊停頓（Hitstop，`battle_view.gd:2573`）、受擊閃白（`_flash()`，`battle_view.gd:2574`）與金光傷害跳字（`_spawn_float()`，`battle_view.gd:2571`）。 | **雲嵐鶴（遊俠 Ranger）**<br>攻擊：`game/assets/sprites/player/poses/crane/attack.png`<br>受擊（敵方）：`game/assets/sprites/bosses/bamboo_spirit.png`（合規機械傀儡敵人） | 沿箭道軌跡向前平滑推鏡（Push In 115%），聚焦打擊停頓與跳字爆散點。 | 弓弦驟彈暴鳴「錚！」，金屬穿甲透體撞擊音「鏘——！」（`hit.wav`、`slash.wav`）。 | （遊戲原生純淨跳字，無 emoji） | **【實機素材·REC-CRANE-01】**<br>遵循真實因果鏈條，由 `sim.hit` 事件觸發 `_spawn_float` 與 `trigger_hit_stop(0.08)`。 |
 | **Shot 4<br>【迴旋收羽】** | `10.0-12.5s`<br>(2.5s) | 貫穿氣流引動周身風刃旋轉，雲嵐鶴身軀輕盈微旋釋放風刃迴旋技（`skill`），隨後雙翼階梯合金薄板如東方摺扇般精密收攏歸位（`recover`），恢復挺拔白鶴站姿，畫面邊緣一道白閃切入純黑底板。 | **雲嵐鶴（遊俠 Ranger）**<br>技能：`game/assets/sprites/player/poses/crane/skill.png`<br>收招：`game/assets/sprites/player/poses/crane/recover.png` | 圍繞雲嵐鶴身形順時針微旋環繞（Orbit 105%），著重展現羽片收合機械美感。 | 氣流激盪迴旋風聲（`wind.wav`），多層合金薄板相互咬合收攏清脆金屬聲「喀啦啦」（`break.wav`）。 | （遊戲畫面純淨無文字，無 Logo） | **【實機素材·REC-CRANE-01】**<br>由戰鬥自然過渡至收招姿態，100% 呈現六大姿態切換。 |
 | **Shot 5<br>【點題收束】** | `12.5-15.0s`<br>(2.5s) | 白閃切入純黑底板（`branding/title_plate.png`），中央後製疊加手繪繪本風官方字標《發條之心》（`branding/logo_cn.png`）。下方標語：「給心上弦，重新出發。」底部標註：「開發中畫面 · 官網搶先看」。 | **品牌固定資產**<br>底板：`branding/title_plate.png`<br>字標：`branding/logo_cn.png` | 純黑底板微幅緩推 102%，字標邊緣一道溫暖金色高光掃過。 | 12.8s 一聲清脆悠長的單聲發條「喀嗒」（`clock.wav`），隨後安靜收尾。 | 標題卡由後製無失真疊加官方字標，不得由 AI 生成。<br>官網搶先看 | **【固定資產·合成】**<br>使用官方固定品牌資產，依第 15/16 條不放上架日、價格或下載鈕。 |
 
@@ -117,7 +129,7 @@ Shot 5 (12.5-15.0s)【合成·點題收束】純黑底板微推，後製疊加�
 |---|---|---|---|---|---|---|---|
 | **Shot 1<br>【耳罩排氣】** | `0.0-3.0s`<br>(3.0s) | 昏暗熔爐微距特寫。玄軸熊焦糖琥珀金屬漆在高溫火光下閃爍，雙層同心圓金屬散熱耳罩微孔噴射出兩縷冷凝白氣，背後十字擺錘發條鑰匙急轉半圈「喀——嗒！」，胸口薄荷翡翠發條之心晶石綠芒暴亮，照亮重裝圓弧鑄鋼胸甲。 | **官方主視覺基準資產（9:16 無文字微距裁切）**<br>路徑：`branding/key_visual_main.png`<br>（1,735,537 Bytes，1376×768 橫圖）<br>裁切座標：`crop=222:396:455:372`（避開上方字標） | 極近微距平滑推鏡（Dolly In 105%），景深極淺，焦點由耳罩散熱排氣移向胸口綠寶石核心。 | 0.0s 發條齒輪咬合「喀——嗒！」（`clock.wav`），伴隨高壓氣閥洩壓排氣「嗤——」。**零 BGM。** | （開場 3 秒零文字、無 Logo、無遊戲名，依第 11 條） | **【官方基準資產·9:16】**<br>已存在之核准主視覺，依第 19 條路徑實存，微距裁切無文字區，⛔ 不臨場呼叫 AI 產圖。 |
 | **Shot 2<br>【飛輪蓄轉】** | `3.0-6.5s`<br>(3.5s) | 光芒穿透切入赤焰熔爐黑曜石神壇實機戰鬥。玄軸熊雙手穩握玄軸偏心重力錘長柄，低重心沉身蓄勢（`telegraph`），錘頭右側外露之黃銅偏心飛輪開始高速自轉，陀螺離心動能急遽攀升，對峙黑鏽疤主（`scar_lord`）。 | **玄軸熊（戰士 Viking）**<br>待機：`game/assets/sprites/player/poses/bear/idle.png`<br>預警蓄勢：`game/assets/sprites/player/poses/bear/telegraph.png`<br>紙娃娃素體：`game/assets/sprites/player/paperdoll/bear/chassis/paint_bear_amber.png` | 低角度平滑仰角推進（Push In 110%），展現重裝熊身與偏心錘頭份量感。 | 偏心陀螺高速旋轉引發低頻蜂鳴「嗡嗡嗡——」，齒輪高速咬合音（`fire.wav`）。 | （遊戲畫面純淨無文字，無 Logo） | **【實機素材·REC-BEAR-01】**<br>錄製自 Godot `res://scenes/battle/battle.tscn`，`setup("scar_lord")`，由 Sim 自動驅動戰鬥。 |
-| **Shot 3<br>【撼地重砸】** | `6.5-10.0s`<br>(3.5s) | 離心動能爆發！玄軸熊雙手掄動偏心巨錘揮出 360 度離心圓周橫掃（`_lunge()`，`attack`），重錘轟然砸地，觸發全屏劇烈震顫（`_shake = 0.35`，`battle_view.gd:2191`），黑鏽疤主全身受擊閃白（`_flash()`）、精確 0.08s Hitstop 打擊停頓與大字傷害跳字。 | **玄軸熊（戰士 Viking）**<br>攻擊：`game/assets/sprites/player/poses/bear/attack.png`<br>受擊（敵方）：`game/assets/sprites/bosses/scar_lord.png`（合規黑曜石發條首領） | 隨巨錘下砸軌跡快速下壓推鏡（Dolly Down-In 118%），著重震屏與地面震波。 | 重錘撕裂空氣破空重音（`rock.wav`），戰錘砸地震裂轟鳴「轟——鏘！」（`break.wav`、`hit.wav`）。 | （遊戲原生純淨跳字，無 emoji） | **【實機素材·REC-BEAR-01】**<br>由 `sim.hit` 觸發 `_shake = 0.35` 震屏與 0.08s 打擊停頓，真實反饋。 |
+| **Shot 3<br>【撼地重砸】** | `6.5-10.0s`<br>(3.5s) | 離心動能爆發！玄軸熊雙手掄動偏心巨錘揮出 360 度離心圓周橫掃（`_lunge()`，`attack`），重錘轟然砸地，觸發全屏劇烈震顫（`_shake = 0.35`，`battle_view.gd:2572`），黑鏽疤主全身受擊閃白（`_flash()`）、精確 0.08s Hitstop 打擊停頓與大字傷害跳字。 | **玄軸熊（戰士 Viking）**<br>攻擊：`game/assets/sprites/player/poses/bear/attack.png`<br>受擊（敵方）：`game/assets/sprites/bosses/scar_lord.png`（合規黑曜石發條首領） | 隨巨錘下砸軌跡快速下壓推鏡（Dolly Down-In 118%），著重震屏與地面震波。 | 重錘撕裂空氣破空重音（`rock.wav`），戰錘砸地震裂轟鳴「轟——鏘！」（`break.wav`、`hit.wav`）。 | （遊戲原生純淨跳字，無 emoji） | **【實機素材·REC-BEAR-01】**<br>由 `sim.hit` 觸發 `_shake = 0.35` 震屏與 0.08s 打擊停頓，真實反饋。 |
 | **Shot 4<br>【磐石收招】** | `10.0-12.5s`<br>(2.5s) | 地面震波散開，黑鏽疤主反撲餘震襲來，玄軸熊以重裝鑄鋼胸甲穩穩接下（`hit`），身形如磐石巍然不退；腕部雙連桿液壓阻尼避震桿收縮復位，重錘順勢拄地定格（`skill` / `recover`），金屬火星濺散切純黑。 | **玄軸熊（戰士 Viking）**<br>受擊：`game/assets/sprites/player/poses/bear/hit.png`<br>技能收招：`game/assets/sprites/player/poses/bear/skill.png`<br>姿態恢復：`game/assets/sprites/player/poses/bear/recover.png` | 平視緩推鎖定玄軸熊厚重身軀特寫（Tracking In 106%），呈現泰山磐石防衛反擊質感。 | 餘震撞擊厚鋼金屬鈍響（`rock.wav`），液壓阻尼排氣洩壓「噗哧」，巨錘拄地撞擊音（`hit.wav`）。 | （遊戲畫面純淨無文字，無 Logo） | **【實機素材·REC-BEAR-01】**<br>展現戰士高防高血（def:4, hp:12）之穩健受擊與收招姿態。 |
 | **Shot 5<br>【點題收束】** | `12.5-15.0s`<br>(2.5s) | 白閃切入純黑底板（`branding/title_plate.png`），中央後製疊加手繪繪本風官方字標《發條之心》（`branding/logo_cn.png`）。下方標語：「給心上弦，重新出發。」底部標註：「開發中畫面 · 官網搶先看」。 | **品牌固定資產**<br>底板：`branding/title_plate.png`<br>字標：`branding/logo_cn.png` | 純黑底板微幅緩推 102%，字標邊緣一道溫暖金色高光掃過。 | 12.8s 一聲清脆悠長的單聲發條「喀嗒」（`clock.wav`），隨後安靜收尾。 | 標題卡由後製無失真疊加官方字標，不得由 AI 生成。<br>官網搶先看 | **【固定資產·合成】**<br>使用官方固定品牌資產，依第 15/16 條不放上架日、價格或下載鈕。 |
 
@@ -232,7 +244,7 @@ Shot 5 (12.5-15.0s)【合成·點題收束】純黑底板微推，後製疊加�
 - **畫面效果產生點與實測觀察窗（依據第 19e-4 / 19e-5 條）**：
   - **待機與飛輪蓄勢窗（`sim.time 0.0s～3.8s`）**：玄軸熊保持 `idle` 姿態，進入沉身 `telegraph`，偏心飛輪蓄勢嗡鳴，ATB 蓄力推進。
   - **離心砸地重擊窗（`sim.time 3.8s～4.2s`）**：`sim` 發出 `attack_swing` 事件，觸發 `battle_view.gd` 呼叫 `_lunge("player")` 位移，並切換 `_set_player_pose("attack", true)`，重錘圓周橫掃砸地。
-  - **撼地震屏停頓窗（`sim.time 4.2s～4.6s`）**：`sim` 發出 `hit` 事件，觸發 `battle_view.gd` 呼叫 `_shake = 0.35` 全屏震顫（`battle_view.gd:2191`）、`_flash()` 黑鏽疤主受擊閃白、`_spawn_float()` 傷害跳字，以及 `trigger_hit_stop(0.08)` 精確 0.08 秒命中打擊停頓！
+  - **撼地震屏停頓窗（`sim.time 4.2s～4.6s`）**：`sim` 發出 `hit` 事件，觸發 `battle_view.gd` 呼叫 `_shake = 0.35` 全屏震顫（`battle_view.gd:2572`）、`_flash()` 黑鏽疤主受擊閃白、`_spawn_float()` 傷害跳字，以及 `trigger_hit_stop(0.08)` 精確 0.08 秒命中打擊停頓！
   - **磐石受擊收招窗（`sim.time 4.6s～5.8s`）**：承受反震切換 `hit` 姿態，隨後切換 `skill` 重錘拄地復位與 `recover`，展現泰山磐石防守反擊之厚重感。
 
 ---
