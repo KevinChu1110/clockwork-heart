@@ -41,9 +41,9 @@ def build_crane():
     comp = Image.open(comp_path).convert("RGBA")
 
     # 1. Standee & Candidate (400x840)
-    # Source high-res cutout: /tmp/crane_cut_all.png (center character at X=560..869, Y=85..724)
+    # Source high-res cutout: /tmp/crane_cut_all.png (center character + bow at X=551..979, Y=85..724)
     cutout_all = Image.open("/tmp/crane_cut_all.png").convert("RGBA")
-    char_crop = cutout_all.crop((560, 85, 870, 725))
+    char_crop = cutout_all.crop((551, 85, 980, 725))
     
     # Save high-res concept
     if os.path.exists("/tmp/crane_concept_green.png"):
