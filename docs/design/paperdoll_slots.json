@@ -966,7 +966,9 @@
         },
         "asset_naming_conventions": {
           "status": {
-            "existing": [],
+            "existing": [
+              "game/assets/sprites/player/paperdoll/crane/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ],
             "pending": [
               "docs/art/cloud_crane_concept.png (928x1152 概念立繪)",
               "branding/char_crane.png (400x840 品牌立牌)",
@@ -980,8 +982,7 @@
               "game/assets/sprites/player/crane_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
               "game/assets/sprites/player/poses/crane/ (戰鬥6大動作姿態目錄)",
               "game/assets/sprites/portraits/crane.png (128x128 HUD戰鬥頭像)",
-              "game/assets/sprites/portraits/cloud_crane.png (384x480 對話框半身像)",
-              "game/assets/sprites/player/paperdoll/crane/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+              "game/assets/sprites/portraits/cloud_crane.png (384x480 對話框半身像)"
             ]
           },
           "branding_standee": "branding/char_crane.png (400x840) [待產出]",
@@ -1008,7 +1009,7 @@
         ],
         "name_zh": "玄軸熊",
         "name_en": "The Iron Bear",
-        "class_archetype": "戰士·鎚變體 (Viking - Eccentric Gyro)",
+        "class_archetype": "戰士 (Viking)",
         "origin_realm": "R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano",
         "lore_anchor": "自赤焰熔爐「黑曜石淬火神壇」旁甦醒的守護者發條玩具，通體由高溫焦糖琥珀漆與重型弧面壓鑄鋼板組裝而成，以偏心飛輪離心巨錘與撼地震波見長的沉穩巨靈",
         "proportions": {

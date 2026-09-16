@@ -721,7 +721,7 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "macaque", "aliases": ["monkey"], "name_zh": "靈爪猴", "name_en": "Spring Macaque", "class_archetype": "武術家 (Monk)"},
 				{"race_id": "tiger", "aliases": ["ember_tiger"], "name_zh": "烈焰虎", "name_en": "The Ember Tiger", "class_archetype": "忍者 (Ninja)"},
 				{"race_id": "crane", "aliases": ["cloud_crane", "zephyr_crane"], "name_zh": "雲嵐鶴", "name_en": "The Cloud Crane", "class_archetype": "遊俠 (Ranger)"},
-				{"race_id": "bear", "aliases": ["iron_bear", "heavy_bear"], "name_zh": "玄軸熊", "name_en": "The Iron Bear", "class_archetype": "戰士·鎚變體 (Viking - Eccentric Gyro)"}
+				{"race_id": "bear", "aliases": ["iron_bear", "heavy_bear"], "name_zh": "玄軸熊", "name_en": "The Iron Bear", "class_archetype": "戰士 (Viking)"}
 			]
 		}
 	}

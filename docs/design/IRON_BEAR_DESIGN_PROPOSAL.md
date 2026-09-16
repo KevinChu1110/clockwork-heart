@@ -272,7 +272,7 @@
   ],
   "name_zh": "玄軸熊",
   "name_en": "The Iron Bear",
-  "class_archetype": "戰士·鎚變體 (Viking - Eccentric Gyro)",
+  "class_archetype": "戰士 (Viking)",
   "origin_realm": "R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano",
   "lore_anchor": "自赤焰熔爐「黑曜石淬火神壇」旁甦醒的守護者發條玩具，通體由高溫焦糖琥珀漆與重型弧面壓鑄鋼板組裝而成，以偏心飛輪離心巨錘與撼地震波見長的沉穩巨靈",
   "proportions": {
