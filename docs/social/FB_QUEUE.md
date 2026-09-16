@@ -1087,7 +1087,7 @@ B 裸機素體工藝版（卸除外裝露出金屬龍骨＋純白防撞胸甲，
 | Day 1 | 週三 20:00 (10-14) | 阿哲（內容行銷） | 第八族玄軸熊 7 槽切片世界觀工藝長文 | `game/assets/sprites/player/paperdoll/bear/proof_bear_all_7_slices.png` | 拆解 7 大發條槽位切片，探討重裝戰士玩具世界觀、偏心重力力學與素體去占位短棒工藝堅持／分享數、長文停留時間 | 待總監審查後開發文單 |
 | Day 2 | 週四 20:00 (10-15) | 小魚（視覺成果直擊） | 玄軸熊 400×840 官方品牌全尺寸立牌 | `branding/char_bear.png` | 開門見山直擊玄軸熊全尺寸立繪、鍛鐵重裝與雙手持偏心巨錘零毛皮驗收／單圖停留時間、留言數、分享數 | 待總監審查後開發文單 |
 | Day 3 | 週五 20:00 (10-16) | 小玩（平台機制） | 玄軸熊六大戰鬥姿態雙擊放大數重擊光環挑戰 | `game/assets/sprites/player/proof_bear_combat_poses_768.png` | 借平台雙擊放大手勢挑戰數偏心重力錘在幾格動作中帶有金黃色衝擊／蓄力光環／單圖停留時間、放大互動、留言數 | 待總監審查後開發文單 |
-| Day 4 | 週六 12:00 (10-17) | Ken（社群互動） | 靈爪猴外裝變體對照三選一秒回投票 | `game/assets/sprites/player/paperdoll/macaque/proof_macaque_costume_comparison.png` | 裸機素體 vs 晨曦行者短褂 vs 天元演武機關甲三大外觀風格單選回覆／留言數、留言與觸及比 | 待總監審查後開發文單（素材已修復複驗通過，可排程發文） |
+| Day 4 | 週六 12:00 (10-17) | Ken（社群互動） | 靈爪猴外裝變體對照三選一秒回投票 | `game/assets/sprites/player/paperdoll/macaque/proof_macaque_costume_comparison.png` | 裸機素體 vs 晨曦行者短褂 vs 天元演武機關甲三大外觀風格單選回覆／留言數、留言與觸及比 | ✅ 已發布（ID: `1335191403004011_122112296481447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112296481447337) |
 
 素材自檢（發文前必須確認檔案存在於 repo 且合規）：
 
@@ -1198,7 +1198,7 @@ test -f game/assets/sprites/player/paperdoll/macaque/proof_macaque_costume_compa
 #### Day 4 · Ken（社群互動）· 135 字
 
 - **形式**：靈爪猴外裝變體對照圖（472×205 橫向三格中英對照圖）
-- **狀態**：待總監審查後開發文單（素材已修復複驗通過，可排程發文）
+- **狀態**：✅ 已發布（ID: `1335191403004011_122112296481447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112296481447337)
 - **圖**：`game/assets/sprites/player/paperdoll/macaque/proof_macaque_costume_comparison.png`
 - **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" game/assets/sprites/player/paperdoll/macaque/proof_macaque_costume_comparison.png`
 - **定位**：社群三選一秒回投票！鎖定第五種族「靈爪猴」，釋出最新過審的三大外裝風格對照：【裸機素體】（卸除外裝露出原始米白腹盤與胸口指示燈）vs 【晨曦行者短褂】（日出晨曦橙紅短褂＋金色滾邊與行者腰帶）vs 【天元演武機關甲】（青綠色重裝胸甲＋金色飾邊六角綠寶石核心）。設計極低門檻單字回覆投票，引爆社群對手遊外裝之偏好對話。
