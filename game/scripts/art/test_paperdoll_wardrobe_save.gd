@@ -231,6 +231,45 @@ func _initialize() -> void:
 	else:
 		print("  ✓ WardrobeDialog 關閉時呼吸 tween 確實停止")
 
+	# ── 8. 測試烈焰虎 (tiger) 專屬換裝與存檔持久化 ──
+	print("\n--- 8. 測試烈焰虎 (tiger) 換裝切換與存檔持久化 ---")
+	gs.player_race = "tiger"
+	gs.paperdoll_slots = {
+		"race": "tiger",
+		"costume_id": "costume_ember_tunic",
+		"paint_id": "paint_ember_orange"
+	}
+	var dlg_tiger: WardrobeDialog = WardrobeDialog.new()
+	root.add_child(dlg_tiger)
+	dlg_tiger._ready()
+	if dlg_tiger.current_race != "tiger":
+		push_error("WardrobeDialog 當前種族非 tiger: %s" % dlg_tiger.current_race)
+		ok = false
+	else:
+		print("  ✓ WardrobeDialog 正確辨識玩家當前種族為 tiger")
+
+	# 切換為裸機素體 (costume index 1: none) 與原廠象牙白 (chassis index 1: paint_ivory_stock)
+	dlg_tiger.costume_index = 1
+	dlg_tiger.chassis_index = 1
+	dlg_tiger._update_card_selection_states()
+	dlg_tiger._update_preview()
+	dlg_tiger.confirm_selection()
+
+	if str(gs.paperdoll_slots.get("costume_id", "")) != "none":
+		push_error("烈焰虎換裝後 costume_id 應為 none，實際為: %s" % str(gs.paperdoll_slots.get("costume_id", "")))
+		ok = false
+	else:
+		print("  ✓ 烈焰虎成功換裝為裸機素體 (none)")
+
+	if str(gs.paperdoll_slots.get("paint_id", "")) != "paint_ivory_stock":
+		push_error("烈焰虎換裝後 paint_id 應為 paint_ivory_stock，實際為: %s" % str(gs.paperdoll_slots.get("paint_id", "")))
+		ok = false
+	else:
+		print("  ✓ 烈焰虎成功換塗裝為原廠象牙白 (paint_ivory_stock)")
+
+	# 恢復測試環境回兔族
+	gs.call("reset_new_game", "rabbit")
+
 	_finish(ok)
 
 

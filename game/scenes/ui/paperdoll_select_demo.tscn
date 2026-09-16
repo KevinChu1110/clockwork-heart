@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/lion/proof_paperdoll_lion_composite.png" id="6_thumb_lion"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/boar/proof_paperdoll_boar_composite.png" id="7_thumb_boar"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_composite.png" id="8_thumb_macaque"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/tiger/proof_paperdoll_tiger_composite.png" id="9_thumb_tiger"]
 
 [sub_resource type="Theme" id="Theme_huninn"]
 default_font = ExtResource("2_font")
@@ -218,11 +219,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 12
 alignment = 1
 
 [node name="BtnRace_rabbit" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(220, 116)
+custom_minimum_size = Vector2(170, 116)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -270,7 +271,7 @@ text = "兔 (小白)"
 horizontal_alignment = 1
 
 [node name="BtnRace_fox" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(220, 116)
+custom_minimum_size = Vector2(170, 116)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -317,7 +318,7 @@ text = "狐"
 horizontal_alignment = 1
 
 [node name="BtnRace_lion" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(220, 116)
+custom_minimum_size = Vector2(170, 116)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -364,7 +365,7 @@ text = "獅"
 horizontal_alignment = 1
 
 [node name="BtnRace_boar" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(220, 116)
+custom_minimum_size = Vector2(170, 116)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -411,7 +412,7 @@ text = "野豬"
 horizontal_alignment = 1
 
 [node name="BtnRace_macaque" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(220, 116)
+custom_minimum_size = Vector2(170, 116)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -455,6 +456,53 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 15
 text = "猴"
+horizontal_alignment = 1
+
+[node name="BtnRace_tiger" type="Button" parent="TopRaceBar/ButtonsHBox"]
+custom_minimum_size = Vector2(170, 116)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
+theme_override_styles/hover = SubResource("StyleBox_btn_race_hover")
+theme_override_styles/pressed = SubResource("StyleBox_btn_race_pressed")
+
+[node name="Margin" type="MarginContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_tiger"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 4
+
+[node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_tiger/Margin"]
+layout_mode = 2
+mouse_filter = 2
+alignment = 1
+
+[node name="CheckLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_tiger/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.627451, 0.0627451, 1)
+theme_override_font_sizes/font_size = 12
+horizontal_alignment = 1
+
+[node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_tiger/Margin/VBox"]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("9_thumb_tiger")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_tiger/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 15
+text = "虎"
 horizontal_alignment = 1
 
 [node name="CenterStage" type="PanelContainer" parent="."]

@@ -67,7 +67,8 @@ func _init_races_ui() -> void:
 			{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion"},
 			{"race_id": "fox", "name_zh": "靈尾狐", "name_en": "Astral Fox"},
 			{"race_id": "boar", "name_zh": "鋼牙豕", "name_en": "Forge Boar"},
-			{"race_id": "macaque", "name_zh": "靈爪猴", "name_en": "Spring Macaque"}
+			{"race_id": "macaque", "name_zh": "靈爪猴", "name_en": "Spring Macaque"},
+			{"race_id": "tiger", "name_zh": "烈焰虎", "name_en": "The Ember Tiger"}
 		]
 
 	for i in range(_race_list.size()):
@@ -93,7 +94,8 @@ func _bind_quick_buttons() -> void:
 		"BtnLion": "lion",
 		"BtnFox": "fox",
 		"BtnBoar": "boar",
-		"BtnMacaque": "macaque"
+		"BtnMacaque": "macaque",
+		"BtnTiger": "tiger"
 	}
 
 	for btn_name in button_map.keys():

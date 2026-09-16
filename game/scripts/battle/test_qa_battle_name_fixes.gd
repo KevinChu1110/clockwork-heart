@@ -125,12 +125,13 @@ func _process(_delta: float) -> bool:
 			var e_ronin_name = _battle.call("_unit_display_name", "black_ronin")
 			_assert(e_ronin_name == "黑鏽浪人", "_unit_display_name('black_ronin') 應為 '黑鏽浪人'，實際為: '%s'" % e_ronin_name)
 
-			# 4. 驗證其餘三族開局名稱正確性
+			# 4. 驗證其餘各族開局名稱正確性
 			var gs: Node = root.get_node_or_null("GameState")
 			var other_races := {
 				"fox": "靈尾狐",
 				"boar": "鋼牙豕",
-				"macaque": "靈爪猴"
+				"macaque": "靈爪猴",
+				"tiger": "烈焰虎"
 			}
 			for r in other_races.keys():
 				gs.call("reset_new_game", r)

@@ -684,13 +684,14 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 5,
+			"total_races": 6,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
 				{"race_id": "fox", "name_zh": "靈尾狐", "name_en": "Astral Fox", "class_archetype": "法師 (Mage)"},
 				{"race_id": "boar", "name_zh": "鋼牙豕", "name_en": "Forge Boar", "class_archetype": "戰士 (Viking)"},
-				{"race_id": "macaque", "aliases": ["monkey"], "name_zh": "靈爪猴", "name_en": "Spring Macaque", "class_archetype": "武術家 (Monk)"}
+				{"race_id": "macaque", "aliases": ["monkey"], "name_zh": "靈爪猴", "name_en": "Spring Macaque", "class_archetype": "武術家 (Monk)"},
+				{"race_id": "tiger", "aliases": ["ember_tiger"], "name_zh": "烈焰虎", "name_en": "The Ember Tiger", "class_archetype": "忍者 (Ninja)"}
 			]
 		}
 	}

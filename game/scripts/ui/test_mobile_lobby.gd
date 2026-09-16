@@ -557,7 +557,7 @@ func _test_hero_race_poses() -> void:
 		_fail("無法取得 GameState 單例")
 		return
 
-	var races := ["rabbit", "lion", "fox", "macaque", "boar"]
+	var races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger"]
 	for r in races:
 		gs.player_race = r
 		gs.paperdoll_slots = {}

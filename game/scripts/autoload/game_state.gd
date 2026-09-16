@@ -604,13 +604,14 @@ func from_dict(d: Dictionary) -> void:
 	dmg_variance = float(d.get("dmg_variance", 0.08))
 
 
-## 五族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
+## 六族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
 const RACE_STARTER_WEAPONS: Dictionary = {
 	"rabbit": "rusty_blade",
 	"lion": "ash_spear",
 	"fox": "star_rod",
 	"boar": "anvil_hammer",
 	"macaque": "wrap_gloves",
+	"tiger": "star_fang",
 }
 
 
@@ -625,6 +626,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"fox": default_name = "靈尾狐"
 		"boar": default_name = "鋼牙豕"
 		"macaque": default_name = "靈爪猴"
+		"tiger": default_name = "烈焰虎"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值

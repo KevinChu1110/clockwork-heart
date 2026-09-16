@@ -141,10 +141,26 @@ const RACES_DATA: Dictionary = {
 			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "高韌性象牙白減震琺瑯"},
 			{"id": "paint_bamboo_bronze", "name_zh": "天元青古銅烤漆", "desc": "沉穩青古銅釉面金屬板件與黃銅關節"}
 		]
+	},
+	"tiger": {
+		"id": "tiger",
+		"name_zh": "虎",
+		"name_en": "Tiger",
+		"archetype": "忍者 (ninja)",
+		"thumb": "res://assets/sprites/player/paperdoll/tiger/proof_paperdoll_tiger_composite.png",
+		"desc": "赤焰熔爐淬火工坊的迅捷玩具，雙短刃高頻暴擊，散熱尾管與熔火核心。",
+		"costumes": [
+			{"id": "costume_ember_tunic", "name_zh": "餘燼工匠淬火戰褂", "desc": "耐高溫輕量合金戰褂分件"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現餘燼橙紅機甲素體"}
+		],
+		"chassis": [
+			{"id": "paint_ember_orange", "name_zh": "原廠餘燼橙紅", "desc": "高溫陽極氧化耐熱橙紅烤漆"},
+			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白高光琺瑯塗層"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger"]
 
 ## 節點引用
 @onready var character: PaperdollCharacter = $CenterStage/CharacterContainer/PaperdollCharacter as PaperdollCharacter
@@ -277,6 +293,7 @@ func confirm_selection() -> void:
 				"fox": gs.player_name = "靈尾狐"
 				"boar": gs.player_name = "鋼牙豕"
 				"macaque": gs.player_name = "靈爪猴"
+				"tiger": gs.player_name = "烈焰虎"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)

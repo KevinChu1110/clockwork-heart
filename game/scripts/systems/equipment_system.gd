@@ -22,13 +22,14 @@ const LEGACY_ACCESSORY_TO := "ring"
 const WEAPON_LOADOUT_SIZE := 3
 const WEAPON_LOADOUT_LEVEL_REQ := [1, 10, 16]
 
-## 五族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
+## 六族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
 const RACE_STARTER_WEAPONS: Dictionary = {
 	"rabbit": "rusty_blade",
 	"lion": "ash_spear",
 	"fox": "star_rod",
 	"boar": "anvil_hammer",
 	"macaque": "wrap_gloves",
+	"tiger": "star_fang",
 }
 
 static func starter_weapon_id_for_race(race: String) -> String:
