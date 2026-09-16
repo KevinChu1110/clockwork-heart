@@ -1186,8 +1186,8 @@
    "id": "bear-second-costume",
    "cat": "遊戲",
    "title": "第8種族玄軸熊第二套外裝與塗裝變體",
-   "status": "開發中",
-   "note": "kanban t_a5137aa9 進行中",
+   "status": "測試中",
+   "note": "切片產出與衣櫥換裝接線完成，16/16 測試全綠，vision 自檢合格，送審中",
    "keys": [
     "第8種族玄軸熊第"
    ]
