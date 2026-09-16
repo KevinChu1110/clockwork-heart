@@ -170,7 +170,7 @@ color = Color(1, 0.992157, 0.972549, 1)
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_bottom = 216.0
+offset_bottom = 252.0
 grow_horizontal = 2
 color = Color(1, 0.968627, 0.901961, 0.8)
 
@@ -180,9 +180,9 @@ anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -280.0
-offset_top = 12.0
+offset_top = 8.0
 offset_right = 280.0
-offset_bottom = 68.0
+offset_bottom = 58.0
 grow_horizontal = 2
 theme_override_styles/panel = SubResource("StyleBox_header")
 
@@ -194,7 +194,7 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 20
-text = "發條之心 · 六族紙娃娃試衣間"
+text = "發條之心 · 紙娃娃試衣間"
 horizontal_alignment = 1
 
 [node name="SubTitle" type="Label" parent="HeaderBadge/HeaderVBox"]
@@ -204,14 +204,31 @@ theme_override_font_sizes/font_size = 11
 text = "CLOCKWORK HEART MODULAR PAPER-DOLL DEMO"
 horizontal_alignment = 1
 
+[node name="FilterScroll" type="ScrollContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 40.0
+offset_top = 64.0
+offset_right = -40.0
+offset_bottom = 120.0
+grow_horizontal = 2
+horizontal_scroll_mode = 1
+vertical_scroll_mode = 3
+
+[node name="FilterHBox" type="HBoxContainer" parent="FilterScroll"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/separation = 8
+
 [node name="TopRaceBar" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 40.0
-offset_top = 78.0
+offset_top = 124.0
 offset_right = -40.0
-offset_bottom = 208.0
+offset_bottom = 248.0
 grow_horizontal = 2
 
 [node name="ButtonsHBox" type="HBoxContainer" parent="TopRaceBar"]
@@ -604,9 +621,9 @@ horizontal_alignment = 1
 [node name="CenterStage" type="PanelContainer" parent="."]
 layout_mode = 0
 offset_left = 40.0
-offset_top = 216.0
+offset_top = 254.0
 offset_right = 620.0
-offset_bottom = 696.0
+offset_bottom = 708.0
 theme_override_styles/panel = SubResource("StyleBox_card")
 
 [node name="HeroBadge" type="VBoxContainer" parent="CenterStage"]
@@ -637,12 +654,12 @@ theme_override_font_sizes/font_size = 15
 text = "【劍士 (knight)】"
 
 [node name="Pedestal" type="Polygon2D" parent="CenterStage"]
-position = Vector2(290, 395)
+position = Vector2(290, 375)
 color = Color(0.121569, 0.101961, 0.227451, 0.18)
 polygon = PackedVector2Array(-70, -12, -45, -24, 0, -28, 45, -24, 70, -12, 70, 12, 45, 24, 0, 28, -45, 24, -70, 12)
 
 [node name="CharacterContainer" type="Node2D" parent="CenterStage"]
-position = Vector2(290, 390)
+position = Vector2(290, 370)
 scale = Vector2(2.5, 2.5)
 
 [node name="PaperdollCharacter" parent="CenterStage/CharacterContainer" instance=ExtResource("3_character")]
@@ -664,9 +681,9 @@ vertical_alignment = 1
 [node name="RightControlPanel" type="PanelContainer" parent="."]
 layout_mode = 0
 offset_left = 640.0
-offset_top = 216.0
+offset_top = 254.0
 offset_right = 1240.0
-offset_bottom = 696.0
+offset_bottom = 708.0
 theme_override_styles/panel = SubResource("StyleBox_card")
 
 [node name="Margin" type="MarginContainer" parent="RightControlPanel"]

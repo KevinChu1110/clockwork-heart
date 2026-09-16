@@ -292,28 +292,40 @@ func _init_race_buttons() -> void:
 
 ## 初始化頂部種族篩選 tab/chip 列
 func _init_filter_chips() -> void:
-	var top_bar = get_node_or_null("TopRaceBar")
-	if top_bar == null:
-		return
-	var chip_scroll = get_node_or_null("TopRaceBar/FilterScroll")
-	if chip_scroll != null:
-		return
+	var chip_scroll: ScrollContainer = get_node_or_null("FilterScroll") as ScrollContainer
+	if chip_scroll == null:
+		chip_scroll = get_node_or_null("TopRaceBar/FilterScroll") as ScrollContainer
+	if chip_scroll == null:
+		chip_scroll = ScrollContainer.new()
+		chip_scroll.name = "FilterScroll"
+		chip_scroll.custom_minimum_size = Vector2(0, 56)
+		chip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+		chip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		chip_scroll.set_anchors_preset(Control.PRESET_TOP_WIDE)
+		chip_scroll.offset_left = 40.0
+		chip_scroll.offset_top = 64.0
+		chip_scroll.offset_right = -40.0
+		chip_scroll.offset_bottom = 120.0
+		add_child(chip_scroll)
 
-	chip_scroll = ScrollContainer.new()
-	chip_scroll.name = "FilterScroll"
-	chip_scroll.custom_minimum_size = Vector2(0, 54)
-	chip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-	chip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	chip_scroll.set_anchors_preset(Control.PRESET_TOP_WIDE)
-	chip_scroll.offset_top = -60
-	chip_scroll.offset_bottom = -6
+	var hbox: HBoxContainer = chip_scroll.get_node_or_null("FilterHBox") as HBoxContainer
+	if hbox == null:
+		hbox = HBoxContainer.new()
+		hbox.name = "FilterHBox"
+		hbox.add_theme_constant_override("separation", 8)
+		chip_scroll.add_child(hbox)
 
-	var hbox := HBoxContainer.new()
-	hbox.name = "FilterHBox"
-	hbox.add_theme_constant_override("separation", 8)
-	chip_scroll.add_child(hbox)
-	top_bar.add_child(chip_scroll)
+	# 依照 0-ART10：清空既有按鈕防止重複建立
+	for child in hbox.get_children():
+		child.queue_free()
 
+	# 依照 0-ART10：開端保留微小邊距
+	var start_spacer := Control.new()
+	start_spacer.name = "StartSpacer"
+	start_spacer.custom_minimum_size = Vector2(4, 0)
+	hbox.add_child(start_spacer)
+
+	_race_filter_chips.clear()
 	var filter_defs: Array[Dictionary] = [
 		{"id": "all", "label": "全部"},
 		{"id": "rabbit", "label": "兔"},
@@ -337,7 +349,7 @@ func _init_filter_chips() -> void:
 		var chip := Button.new()
 		chip.name = "Chip_" + fid
 		chip.text = flbl
-		chip.custom_minimum_size = Vector2(54, 48)
+		chip.custom_minimum_size = Vector2(52, 48)
 		chip.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		chip.add_theme_font_size_override("font_size", 14)
 		if font:
@@ -345,6 +357,12 @@ func _init_filter_chips() -> void:
 		chip.pressed.connect(func(): filter_race(fid))
 		hbox.add_child(chip)
 		_race_filter_chips[fid] = chip
+
+	# 依照 0-ART10：末端保留 24px 右邊距，確保最右側 chip 滾動到終點時不被容器邊界裁剪
+	var end_spacer := Control.new()
+	end_spacer.name = "EndSpacer"
+	end_spacer.custom_minimum_size = Vector2(24, 0)
+	hbox.add_child(end_spacer)
 
 	_update_filter_chips_visual()
 
@@ -368,6 +386,10 @@ func _update_filter_chips_visual() -> void:
 		var is_active: bool = (str(fid) == _current_filter_race)
 		var sb := StyleBoxFlat.new()
 		sb.set_corner_radius_all(14)
+		sb.content_margin_left = 12
+		sb.content_margin_right = 12
+		sb.content_margin_top = 4
+		sb.content_margin_bottom = 4
 		if is_active:
 			sb.bg_color = Color("#FFD028") # 金黃
 			sb.border_color = Color("#FFA010") # 暖橘
