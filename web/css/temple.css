@@ -368,6 +368,97 @@ footer a { color: #FFD028 !important; }
 .cta-finale h2 { color: #1F1A3A !important; margin: 0 0 0.5rem; }
 .cta-finale p { color: #1F1A3A !important; opacity: 0.9; }
 
+/* 九大發條種族展示 */
+.races-showcase {
+  margin-top: 2.8rem;
+  padding-top: 2.2rem;
+  border-top: 1px solid rgba(228, 193, 90, 0.25);
+}
+.races-head {
+  margin-bottom: 1.6rem;
+}
+.races-head .sec-title {
+  margin-top: 0.35rem;
+  font-size: 1.8rem;
+}
+.races-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+}
+.race-card {
+  background: #16131C;
+  border: 1px solid rgba(228, 193, 90, 0.4);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.race-card:hover {
+  transform: translateY(-4px);
+  border-color: #FFD028;
+}
+.race-card__media {
+  background: radial-gradient(circle at 50% 60%, #262130 0%, #16131C 75%);
+  padding: 1.2rem 1rem 0.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgba(228, 193, 90, 0.2);
+}
+.race-card__media img {
+  width: auto;
+  max-width: 100%;
+  height: 220px;
+  object-fit: contain;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.5));
+}
+.race-card__body {
+  padding: 1rem 1.1rem 1.2rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.race-card__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+  gap: 0.5rem;
+}
+.race-card__name {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--ivory);
+}
+.race-card__badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.2rem 0.55rem;
+  background: rgba(255, 208, 40, 0.15);
+  color: #FFD028;
+  border: 1px solid rgba(255, 208, 40, 0.5);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.race-card__weapon {
+  margin: 0 0 0.55rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #38A0FF;
+}
+.race-card__desc {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: rgba(244, 235, 212, 0.78);
+  flex: 1;
+}
+
 .tag-live {
   background: #3ECFBF !important;
   color: #1F1A3A !important;
@@ -396,4 +487,10 @@ footer a { color: #FFD028 !important; }
   .hero-cta { flex-direction: column; align-items: stretch; }
   .hero-cta .btn { width: 100%; }
   .cast-minis { grid-template-columns: repeat(3, 1fr); }
+  .races-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .races-grid { grid-template-columns: 1fr; }
+  .race-card__media img { height: 190px; }
 }
