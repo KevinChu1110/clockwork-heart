@@ -1196,8 +1196,8 @@
    "id": "penguin-second-costume",
    "cat": "遊戲",
    "title": "第9種族蒸汽企鵝第二套外裝與塗裝變體",
-   "status": "測試中",
-   "note": "完成淵海深潛耐壓機關鎧手繪厚塗重繪(0-ART5, c100=29.14)，vision 8x對照與實機換裝驗證通過",
+   "status": "已上線",
+   "note": "第二套外裝重畫過審，commit 858d9d1 已推 main，t_f9a11e0a 已結案",
    "keys": [
     "第9種族蒸汽企鵝"
    ]
