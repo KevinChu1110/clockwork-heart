@@ -1008,7 +1008,8 @@
         "asset_naming_conventions": {
           "status": {
             "existing": [
-              "game/assets/sprites/player/paperdoll/crane/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+              "game/assets/sprites/player/paperdoll/crane/{slot_id}/{item_id}.png (紙娃娃切片圖層)",
+              "game/assets/sprites/player/poses/crane/ (戰鬥6大動作姿態目錄)"
             ],
             "pending": [
               "docs/art/cloud_crane_concept.png (928x1152 概念立繪)",
@@ -1021,7 +1022,6 @@
               "game/assets/sprites/player/crane_battle.png (128x128 戰鬥特寫姿態)",
               "game/assets/sprites/player/crane_walk_{0..3}.png (64x64 行走動畫)",
               "game/assets/sprites/player/crane_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
-              "game/assets/sprites/player/poses/crane/ (戰鬥6大動作姿態目錄)",
               "game/assets/sprites/portraits/crane.png (128x128 HUD戰鬥頭像)",
               "game/assets/sprites/portraits/cloud_crane.png (384x480 對話框半身像)"
             ]
@@ -1036,7 +1036,7 @@
           "game_sprite_battle": "game/assets/sprites/player/crane_battle.png (128x128) [待產出]",
           "game_sprite_walk": "game/assets/sprites/player/crane_walk_{0..3}.png (64x64) [待產出]",
           "game_sprite_walk_hi": "game/assets/sprites/player/crane_walk_{0..3}_x3.png (128x128) [待產出]",
-          "game_action_poses": "game/assets/sprites/player/poses/crane/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/crane/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [既有]",
           "portrait_hud": "game/assets/sprites/portraits/crane.png (128x128) [待產出]",
           "portrait_dialogue": "game/assets/sprites/portraits/cloud_crane.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/crane/{slot_id}/{item_id}.png [待產出]"
@@ -1076,7 +1076,8 @@
         "asset_naming_conventions": {
           "status": {
             "existing": [
-              "game/assets/sprites/player/paperdoll/bear/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+              "game/assets/sprites/player/paperdoll/bear/{slot_id}/{item_id}.png (紙娃娃切片圖層)",
+              "game/assets/sprites/player/poses/bear/ (戰鬥6大動作姿態目錄)"
             ],
             "pending": [
               "docs/art/iron_bear_concept.png (928x1152 概念立繪)",
@@ -1089,7 +1090,6 @@
               "game/assets/sprites/player/bear_battle.png (128x128 戰鬥特寫姿態)",
               "game/assets/sprites/player/bear_walk_{0..3}.png (64x64 行走動畫)",
               "game/assets/sprites/player/bear_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
-              "game/assets/sprites/player/poses/bear/ (戰鬥6大動作姿態目錄)",
               "game/assets/sprites/portraits/bear.png (128x128 HUD戰鬥頭像)",
               "game/assets/sprites/portraits/iron_bear.png (384x480 對話框半身像)"
             ]
@@ -1104,7 +1104,7 @@
           "game_sprite_battle": "game/assets/sprites/player/bear_battle.png (128x128) [待產出]",
           "game_sprite_walk": "game/assets/sprites/player/bear_walk_{0..3}.png (64x64) [待產出]",
           "game_sprite_walk_hi": "game/assets/sprites/player/bear_walk_{0..3}_x3.png (128x128) [待產出]",
-          "game_action_poses": "game/assets/sprites/player/poses/bear/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/bear/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [既有]",
           "portrait_hud": "game/assets/sprites/portraits/bear.png (128x128) [待產出]",
           "portrait_dialogue": "game/assets/sprites/portraits/iron_bear.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/bear/{slot_id}/{item_id}.png [待產出]"
