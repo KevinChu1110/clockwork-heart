@@ -931,6 +931,16 @@
    "keys": [
     "第6種族燼虎紙娃"
    ]
+  },
+  {
+   "id": "tiger-combat-poses",
+   "cat": "遊戲",
+   "title": "第6種族烈焰虎6大戰鬥姿態補齊（idle/telegraph/attack/skill/hit/recover）",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "第6種族烈焰虎6"
+   ]
   }
  ]
 }
