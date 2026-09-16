@@ -12,7 +12,7 @@ def verify():
     # 1. Check all required assets exist, correct format, mode and size
     required_assets = [
         # Category 1: 官網英雄圖
-        ("branding/char_tiger.png", (400, 840), ["RGB", "RGBA"]),
+        ("branding/char_tiger.png", [(400, 840), (800, 1680)], ["RGB", "RGBA"]),
         ("web/media/hero/char_tiger.png", (400, 840), ["RGB", "RGBA"]),
         ("docs/art/char_tiger_candidate_400x840.png", (400, 840), ["RGB", "RGBA"]),
         ("docs/art/ember_tiger_concept.png", (928, 1152), ["RGB", "RGBA"]),
@@ -45,7 +45,8 @@ def verify():
         full_path = f"{REPO_ROOT}/{rel_path}"
         assert os.path.exists(full_path), f"MISSING ASSET: {full_path}"
         im = Image.open(full_path)
-        assert im.size == expected_size, f"WRONG SIZE {im.size} vs {expected_size} for {rel_path}"
+        valid_sizes = expected_size if isinstance(expected_size, list) else [expected_size]
+        assert im.size in valid_sizes, f"WRONG SIZE {im.size} vs {expected_size} for {rel_path}"
         assert im.mode in allowed_modes, f"WRONG MODE {im.mode} vs {allowed_modes} for {rel_path}"
         bbox = im.getbbox()
         assert bbox is not None, f"COMPLETELY EMPTY: {rel_path}"

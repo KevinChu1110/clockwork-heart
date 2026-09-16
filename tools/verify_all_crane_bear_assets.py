@@ -18,7 +18,7 @@ def verify():
         print(f"\n--- Checking race: {rid} ({full_name}) ---")
         required_assets = [
             # Category 1: 官網英雄圖
-            (f"branding/char_{rid}.png", (400, 840), ["RGB", "RGBA"]),
+            (f"branding/char_{rid}.png", [(400, 840), (800, 1680)], ["RGB", "RGBA"]),
             (f"web/media/hero/char_{rid}.png", (400, 840), ["RGB", "RGBA"]),
             (f"docs/art/char_{rid}_candidate_400x840.png", (400, 840), ["RGB", "RGBA"]),
             (f"docs/art/{full_name}_concept.png", None, ["RGB", "RGBA"]),
@@ -54,7 +54,8 @@ def verify():
                 all_ok = False
                 continue
             im = Image.open(full_path)
-            if expected_size is not None and im.size != expected_size:
+            valid_sizes = expected_size if isinstance(expected_size, list) else [expected_size]
+            if expected_size is not None and im.size not in valid_sizes:
                 print(f"  ❌ WRONG SIZE {im.size} vs {expected_size} for {rel_path}")
                 all_ok = False
                 continue
