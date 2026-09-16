@@ -55,8 +55,10 @@ def create_crane_paint_zephyr_azure(src_path: str = "", out_path: str = "") -> I
                 (74 <= x <= 82 and 57 <= y <= 65) or
                 (58 <= x <= 70 and 76 <= y <= 84) or
                 ((48 <= x <= 56 or 70 <= x <= 78) and 88 <= y <= 98)):
-                if r > 120 and g > 80:
+                if (r > 120 and g > 80) or (b > 180 and g > 120 and r < 100 and y >= 88):
                     is_joint = True
+            elif (r > 160 and g > 110 and b < 100):
+                is_joint = True
 
             if is_joint:
                 # Rich brass gold joint accent (#FFD028 / #FFA010)
@@ -65,6 +67,12 @@ def create_crane_paint_zephyr_azure(src_path: str = "", out_path: str = "") -> I
                 jg = int(120 + f_j * 88)   # 120..208
                 jb = int(25 + f_j * 35)    # 25..60
                 azure.putpixel((x, y), (jr, jg, jb, a))
+                continue
+
+            # 4. Chest cyan energy core (x: 58..70, y: 59..71)
+            if 58 <= x <= 70 and 59 <= y <= 71 and (b > 180 and g > 110 and r < 100):
+                # Glowing cyan diamond energy core framed in gold
+                azure.putpixel((x, y), (r, g, b, a))
                 continue
 
             # 4. Azure Blue baked enamel ramp:
