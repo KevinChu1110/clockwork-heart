@@ -58,6 +58,6 @@
 - **狐（Fox）**：composite 半透明率 15.7%，尾巴達 46.3%；
 - **獅（Lion）**：composite 半透明率 21.6%，尾巴達 74.6%；
 - **豬（Boar）**：composite 半透明率 12.6%，chassis 達 15.7%；
-- **猴（Macaque）**：composite 半透明率 36.7%，chassis 達 50.2%。
+- **猴（Macaque）**：composite 半透明率 29.1%，chassis 達 50.2%。
 
 依側案美術規範，後續族系將依看板任務排程，比照本手冊之管線逐族推進清理，避免一次性盲目重產引發回歸風險。
