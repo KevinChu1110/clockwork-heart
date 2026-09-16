@@ -116,6 +116,13 @@
 | 8 | **探索行走動畫幀** | `game/assets/sprites/player/tiger_walk_0_x3.png`<br>`game/assets/sprites/player/tiger_walk_1_x3.png`<br>`game/assets/sprites/player/tiger_walk_2_x3.png`<br>`game/assets/sprites/player/tiger_walk_3_x3.png` | 128 × 128 × 4<br>RGBA | 大地圖與村莊走動 4 幀循環動畫，展現黃銅球窩關節與排氣長尾自然擺動。 | ✅ 存在 (`test -f`) |
 | 9 | **紙娃娃核心槽位切片** | `game/assets/sprites/player/paperdoll/tiger/` | 128 × 128<br>RGBA | 7 大槽位完整切片（chassis / head_unit / winding_key / costume / optic_core / weapon / back_curio）。 | ✅ 存在 (`test -f`) |
 | 10 | **原畫概念存檔** | `docs/art/ember_tiger_concept.png` | 928 × 1152<br>RGB | 內部設定與世界觀存檔，高溫赤焰熔爐概念原畫。 | ✅ 存在 (`test -f`) |
+| 11 | **第二套外裝切片：灰燼夜行機關裝** | `game/assets/sprites/player/paperdoll/tiger/costume/costume_ash_ninja_garb.png` | 128 × 128<br>RGBA | `t_b4107f8a` 新增，灰燼夜行機關裝紙娃娃外裝層切片，暗灰碳素防護纖維＋消光黑護甲片＋暗紅能量管。 | ✅ 存在 (`test -f`) |
+| 12 | **塗裝變體切片：鍛爐淬火曜黑** | `game/assets/sprites/player/paperdoll/tiger/chassis/paint_volcano_black.png` | 128 × 128<br>RGBA | `t_b4107f8a` 新增，曜黑耐熱合金底盤塗裝切片，替換原廠象牙白/餘燼橙。 | ✅ 存在 (`test -f`) |
+| 13 | **衣櫥換裝實機：灰燼夜行機關裝** | `proofs/wardrobe_tiger/proof_wardrobe_tiger_ash_ninja.png` | 1280 × 720<br>RGBA | `t_b4107f8a` 新增，手遊發條衣櫥換裝實機截圖，展示烈焰虎灰燼夜行機關裝＋鍛爐淬火曜黑塗裝，零系統 Emoji。 | ✅ 存在 (`test -f`) |
+| 14 | **衣櫥換裝實機：赤焰鍛鐵束腰甲** | `proofs/wardrobe_tiger/proof_wardrobe_tiger_ember_tunic.png` | 1280 × 720<br>RGBA | `t_b4107f8a` 新增，手遊發條衣櫥換裝實機截圖，展示烈焰虎第一套赤焰鍛鐵束腰甲，零系統 Emoji。 | ✅ 存在 (`test -f`) |
+| 15 | **變體矩陣證明圖** | `game/assets/sprites/player/paperdoll/tiger/proof_tiger_variants_matrix.png` | 432 × 432<br>RGBA | `t_b4107f8a` 新增，2 底盤塗裝 × 2 外裝服飾 4 宮格換裝變體矩陣圖。 | ✅ 存在 (`test -f`) |
+| 16 | **外裝對比證明圖** | `game/assets/sprites/player/paperdoll/tiger/proof_tiger_costume_comparison.png` | 472 × 205<br>RGBA | `t_b4107f8a` 新增，赤焰鍛鐵束腰甲 vs 灰燼夜行機關裝並列展示圖。 | ✅ 存在 (`test -f`) |
+| 17 | **底盤塗裝對比證明圖** | `game/assets/sprites/player/paperdoll/tiger/proof_tiger_chassis_comparison.png` | 472 × 205<br>RGBA | `t_b4107f8a` 新增，原廠象牙鍛白 vs 鍛爐淬火曜黑底盤塗裝並列展示圖。 | ✅ 存在 (`test -f`) |
 
 ### 素材實體存在檢驗指令
 
@@ -131,6 +138,13 @@ test -f game/assets/sprites/portraits/ember_tiger.png && echo "✓ 7. 對話半�
 test -f game/assets/sprites/player/tiger_walk_0_x3.png && echo "✓ 8. 行走幀存在"
 test -f game/assets/sprites/player/paperdoll/tiger/proof_tiger_all_7_slices.png && echo "✓ 9. 紙娃娃切片存在"
 test -f docs/art/ember_tiger_concept.png && echo "✓ 10. 概念原畫存在"
+test -f game/assets/sprites/player/paperdoll/tiger/costume/costume_ash_ninja_garb.png && echo "✓ 11. 灰燼夜行機關裝切片存在"
+test -f game/assets/sprites/player/paperdoll/tiger/chassis/paint_volcano_black.png && echo "✓ 12. 鍛爐淬火曜黑底盤切片存在"
+test -f proofs/wardrobe_tiger/proof_wardrobe_tiger_ash_ninja.png && echo "✓ 13. 灰燼夜行衣櫥截圖存在"
+test -f proofs/wardrobe_tiger/proof_wardrobe_tiger_ember_tunic.png && echo "✓ 14. 赤焰鍛鐵衣櫥截圖存在"
+test -f game/assets/sprites/player/paperdoll/tiger/proof_tiger_variants_matrix.png && echo "✓ 15. 變體矩陣圖存在"
+test -f game/assets/sprites/player/paperdoll/tiger/proof_tiger_costume_comparison.png && echo "✓ 16. 外裝對比圖存在"
+test -f game/assets/sprites/player/paperdoll/tiger/proof_tiger_chassis_comparison.png && echo "✓ 17. 底盤對比圖存在"
 ```
 
 ---
@@ -159,7 +173,7 @@ test -f docs/art/ember_tiger_concept.png && echo "✓ 10. 概念原畫存在"
 |:---|:---|:---|:---:|
 | **Persona 規範 (`marketing.md`)** | 採用阿哲（內容行銷，300–600 字長文）與小魚（短影音腳本），信念與手法對齊。 | 阿哲案純中文 488 字，深入世界觀與工藝幕後；小魚案 126 字實機展示；無違規字眼。 | ✅ 合格 |
 | **外觀描述真實性 (`review.md` 19i/19i-11)** | 消光碳黑鋼板＋橘紅色塊、散熱百葉耳、發條鑰匙等部件，逐項在官方立牌可見。 | 八大核心機械部件逐一對照 `branding/char_tiger.png`，零虛構、零過度吹捧。 | ✅ 合格 |
-| **素材紅線隔離 (`review.md` 19g-10)** | 嚴禁夾帶雷歐（Leo）、荒路匪徒或任何未裁示敵人。 | 清單 10 筆資產 100% 為烈焰虎本體，0 敵人、0 雷歐、0 荒路匪徒。 | ✅ 合格 |
+| **素材紅線隔離 (`review.md` 19g-10)** | 嚴禁夾帶雷歐（Leo）、荒路匪徒或任何未裁示敵人。 | 清單 17 筆資產 100% 為烈焰虎本體，0 敵人、0 雷歐、0 荒路匪徒。 | ✅ 合格 |
 | **誠實原則 (`review.md` 16 / 19b)** | 不承諾上架日、不提價格/營收、不放未上線商店連結、標註 `#開發中`。 | 文案末尾明確標註 `#開發中`，僅提供官方網站展示頁，絕無空泛商業承諾。 | ✅ 合格 |
 | **拆單原則 (`review.md` 19g-11)** | 本單僅負責撰寫草稿與盤點素材，不得直接呼叫發文指令。 | 僅寫入本文件與更新索引，未執行 `python3 /root/fb_post.py`，零付費 API 呼叫。 | ✅ 合格 |
 | **實體檔案存在驗證 (`review.md` 19f)** | 列舉之素材檔案必須全部經過 `test -f` 驗證存在。 | 清單內所有檔案均實測存在於 repo，且尺寸與通道模式均通過驗證腳本。 | ✅ 合格 |
@@ -170,7 +184,7 @@ test -f docs/art/ember_tiger_concept.png && echo "✓ 10. 概念原畫存在"
 
 1. **交付物狀態**：
    - 預告文案草稿（阿哲 488 字世界觀長文主案 ＋ 小魚短影音備用案）已完稿。
-   - 烈焰虎本體 10 大官方素材清單盤點完畢，0 敵人夾帶，實體檢驗全部通過。
+   - 烈焰虎本體 17 大官方素材清單盤點完畢，0 敵人夾帶，實體檢驗全部通過。
    - 文案所有細節 100% 與實體圖片對齊，符合 CANON 零毛皮鐵律與 review 規範。
 2. **後續排程建議**：
    - 提請側案製作人老周（side）與策劃總監小凱（sideplan）審核。
