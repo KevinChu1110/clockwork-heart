@@ -1126,8 +1126,8 @@
    "id": "rabbit-pixel-cleanup",
    "cat": "遊戲",
    "title": "兔族素材邊緣模糊像素清理",
-   "status": "草稿",
-   "note": "審核通過：半透明率 22%→0%，paperdoll 14/14 綠",
+   "status": "已上線",
+   "note": "已合併推 main",
    "keys": [
     "兔族素材邊緣模糊"
    ]
