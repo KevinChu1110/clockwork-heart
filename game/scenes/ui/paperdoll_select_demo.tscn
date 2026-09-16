@@ -192,14 +192,14 @@ alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 20
-text = "發條之心 · 五族紙娃娃試衣間"
+text = "發條之心 · 六族紙娃娃試衣間"
 horizontal_alignment = 1
 
 [node name="SubTitle" type="Label" parent="HeaderBadge/HeaderVBox"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.439216, 0.396078, 0.529412, 1)
 theme_override_font_sizes/font_size = 11
-text = "CLOCKWORK HEART MODULAR PAPAR-DOLL DEMO"
+text = "CLOCKWORK HEART MODULAR PAPER-DOLL DEMO"
 horizontal_alignment = 1
 
 [node name="TopRaceBar" type="Control" parent="."]
