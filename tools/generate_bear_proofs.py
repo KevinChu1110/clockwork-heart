@@ -67,27 +67,6 @@ def generate_chassis_comparison():
     # Chassis variants on Overalls: Amber Bronze vs Quarry Iron Grey [NEW] vs Ivory Stock
     c_amber = build_composite("paint_bear_amber.png", "costume_ironclad_overalls.png")
     c_quarry = build_composite("paint_iron_quarry.png", "costume_ironclad_overalls.png")
-    # Ivory stock uses the public paint_ivory_stock if available, or renders cleanly
-    p_ivory_path = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/bear/chassis/paint_ivory_stock.png"
-    if not os.path.exists(p_ivory_path):
-        # Generate clean bear ivory stock chassis
-        ch_base = Image.open(f"{BEAR_DIR}/chassis/paint_bear_amber.png").convert("RGBA")
-        ivory = Image.new("RGBA", ch_base.size, (0, 0, 0, 0))
-        for y in range(ch_base.height):
-            for x in range(ch_base.width):
-                px = cast(tuple[int, int, int, int], ch_base.getpixel((x, y)))
-                if px[3] <= 10: continue
-                lum = int(0.299 * px[0] + 0.587 * px[1] + 0.114 * px[2])
-                if y >= 115 and (px[0] < 60 and px[1] < 60 and px[2] < 80):
-                    ivory.putpixel((x, y), px)
-                elif lum < 50:
-                    ivory.putpixel((x, y), (31, 26, 58, px[3]))
-                elif px[0] > 190 and px[1] > 150 and px[2] < 80:
-                    ivory.putpixel((x, y), px)
-                else:
-                    f = max(0.0, min(1.0, (lum - 40) / 160.0))
-                    ivory.putpixel((x, y), (int(205 + f * 45), int(210 + f * 42), int(218 + f * 34), px[3]))
-        ivory.save(p_ivory_path)
     c_ivory = build_composite("paint_ivory_stock.png", "costume_ironclad_overalls.png")
 
     items = [
