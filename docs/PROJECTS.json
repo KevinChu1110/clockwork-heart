@@ -1206,8 +1206,8 @@
    "id": "repo-hygiene-09-17",
    "cat": "平台",
    "title": "清理未提交殘留工具腳本（tools/ 下 57 個除錯腳本）",
-   "status": "開發中",
-   "note": "開始逐一審查與歸檔 57 支除錯腳本",
+   "status": "測試中",
+   "note": "57 支除錯腳本已歸檔至 tools/scratch/，working tree 完全乾淨，等待驗收",
    "keys": [
     "清理未提交殘留工"
    ]
