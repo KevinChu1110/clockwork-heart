@@ -1171,7 +1171,7 @@ test -f game/assets/sprites/player/paperdoll/macaque/proof_macaque_costume_compa
 - **狀態**：待總監審查後開發文單
 - **圖**：`game/assets/sprites/player/proof_bear_combat_poses_768.png`
 - **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" game/assets/sprites/player/proof_bear_combat_poses_768.png`
-- **定位**：動作先於畫面！借社群平台「雙擊圖片放大檢視細節」原生動作，設計「數偏心重力錘光環」眼力挑戰。引導觀眾放大檢視 6 個動作格中巨錘周圍觸發金黃色蓄力光環、重擊星芒衝擊波與能量光軌的格數（第 2 格 TELEGRAPH 圓環蓄力光、第 3 格 ATTACK 地面重擊星芒、第 4 格 SKILL 頭頂能量光弧，共 3 格），推升單圖停留時間、放大互動率與留言回報。
+- **定位**：動作先於畫面！借社群平台「雙擊圖片放大檢視細節」原生動作，設計「數偏心重力錘光環」眼力挑戰。引導觀眾放大檢視 6 個動作格中巨錘周圍觸發金黃色蓄力光環、重擊星芒衝擊波與能量光軌的格數（總監複驗實數：第 2 格 TELEGRAPH 半月形金黃蓄力光弧、第 3 格 ATTACK 金黃四角衝擊星芒，**共 2 格**。第 4 格 SKILL 的光弧是頭部綠色能量、非武器金黃光環，不計入答案。），推升單圖停留時間、放大互動率與留言回報。
 - **自檢項目（vision 親自查核）**：
   - 六大動作姿態框（1. IDLE 待機、2. TELEGRAPH 蓄力、3. ATTACK 攻擊、4. SKILL 技能、5. HIT 受挫、6. RECOVER 收勢）排版整齊，標籤文字清晰無裁切。
   - 武器一致性：六格皆持握同一把方型金屬偏心巨錘，持握動作邏輯連貫。
@@ -1198,9 +1198,12 @@ test -f game/assets/sprites/player/paperdoll/macaque/proof_macaque_costume_compa
 #### Day 4 · Ken（社群互動）· 128 字
 
 - **形式**：靈爪猴外裝變體對照圖（472×205 橫向三格中英對照圖）
-- **狀態**：待總監審查後開發文單
+- **狀態**：⛔ **素材待修，暫緩開發文單**（總監 2026-09-16 複驗退回）
+  - **退回理由**：對照圖第 2 格「晨曦行者短褂 / Dawn Monk Tunic」的貼圖與第 1 格「裸機素體 / Bare Chassis」**完全一模一樣**，並未套上短褂外裝，屬圖層套用錯誤的錯圖，玩家一眼看得出來，⛔ 不可對外。
+  - **另**：圖上實際是**三格**，原文案寫成二選一，選項與圖面不符。
+  - **修法**：① 美術重出 `proof_macaque_costume_comparison.png`，第 2 格要正確疊上 `costume_dawn_monk_tunic` 圖層；② 素材修好後文案改為三選一（A 裸機素體／B 晨曦行者短褂／C 天元演武機關甲），或裁成只留第 1、3 格再維持二選一。二擇一由行銷定。
 - **圖**：`game/assets/sprites/player/paperdoll/macaque/proof_macaque_costume_comparison.png`
-- **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" game/assets/sprites/player/paperdoll/macaque/proof_macaque_costume_comparison.png`
+- **發法**（素材修好且審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" game/assets/sprites/player/paperdoll/macaque/proof_macaque_costume_comparison.png`
 - **定位**：社群二選一秒回投票！鎖定本週剛完成貼圖去髒去斑修復的第五種族「靈爪猴」，釋出最新過審的兩大外裝風格對照：【裸機素體工藝版】（卸除外裝露出原始米白腹盤與胸口指示燈）vs 【天元演武機關甲】（青綠色重裝胸甲＋金色飾邊六角綠寶石核心）。設計極低門檻單字回覆投票，引爆社群對手遊外裝之偏好對話。
 - **自檢項目（vision 親自查核）**：
   - 橫向三格展示框（裸機素體 / Bare Chassis、晨曦行者短褂 / Dawn Monk Tunic、天元演武機關甲 [新] / Zen Striker），標籤清晰無裁切，右側帶橘黃色高亮框與 NEW 標籤。
