@@ -65,7 +65,7 @@ def main():
 
     # Title Banner
     d.text((pad, 16), "STEAM PENGUIN CHASSIS · 0-ART18 REPAIR & AUDIT PROOF", font=font_title, fill=(255, 218, 64, 255))
-    d.text((pad, 42), "第九族 蒸氣企鵝 · 三大素體塗裝 100% 完稿手繪修復驗收 (頭部補全 · 3D胸腹板件 · 零占位圖)", font=font_sub, fill=(170, 180, 205, 255))
+    d.text((pad, 42), "第九族 蒸氣企鵝 · 三大素體塗裝 100% 完稿手繪修復驗收 (0-QA8 分層規範 · 3D胸腹板件 · 零占位圖)", font=font_sub, fill=(170, 180, 205, 255))
 
     for col_idx, (title, img, fname) in enumerate(items):
         cx = pad + col_idx * (col_w + gap)
@@ -92,14 +92,14 @@ def main():
         d.rectangle([cx, y2, cx + col_w, y2 + col_w], outline=(70, 80, 105, 255), width=1)
         d.text((cx + 8, y2 + col_w + 6), "2. 洋紅去背驗收 (零邊界裁切 · 零懸空雜點)", font=font_meta, fill=(200, 210, 230, 255))
 
-        # Section 3: 4x Zoom of Head & Torso
+        # Section 3: 4x Zoom of Torso Plating (0-QA8)
         y3 = y2 + card_h_block
-        # Crop head & torso from original: x in [32, 88], y in [16, 88] (56x72)
-        crop_torso = img.crop((32, 16, 88, 88))
+        # Crop torso from original: x in [32, 88], y in [48, 104] (56x56)
+        crop_torso = img.crop((32, 48, 88, 104))
         crop_4x = crop_torso.resize((col_w, col_w), Image.Resampling.NEAREST)
         d.rounded_rectangle([cx, y3, cx + col_w, y3 + col_w], radius=6, fill=(35, 38, 48, 255), outline=(70, 80, 105, 255), width=1)
         canvas.alpha_composite(crop_4x, (cx, y3))
-        d.text((cx + 8, y3 + col_w + 6), "3. 頭胸部 4X 特寫 (立體琺瑯 · 能量核心 · 零平塗)", font=font_meta, fill=(255, 200, 80, 255))
+        d.text((cx + 8, y3 + col_w + 6), "3. 軀幹板件 4X 特寫 (立體琺瑯 · 能量核心 · 零平塗 · 0-QA8)", font=font_meta, fill=(255, 200, 80, 255))
 
     out_path = f"{PENGUIN_DIR}/proof_penguin_bare_chassis_audit.png"
     canvas.save(out_path)

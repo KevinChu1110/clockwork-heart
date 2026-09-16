@@ -6,8 +6,8 @@ Definitive production builder for all 3 chassis variants of The Steam Penguin (�
 - paint_polar_frost.png (極光冰川銀白鍍鉻)
 - paint_ivory_stock.png (原廠象牙白高光琺瑯)
 
-Fixes 0-ART18 (橫向排查案延伸):
-1. Restores complete head dome, goggles, cyan lenses, brass beak, and neck collar (0% truncation).
+Fixes 0-ART18 (橫向排查案延伸) & 0-QA8 (圖層架構準則):
+1. 0-QA8: Chassis only renders torso and limbs (Y >= 48). Head is 100% excluded (handled by head_unit).
 2. Procedurally renders 3D curved breastplate, energy core bezel, and panel seams (0% flat placeholders).
 3. Restores smoothly curved flippers/arms on both flanks (0% weapon residue, 0% cutouts).
 4. Verifies c100 >= 10.0 and zero boundary leaks per 0-ART4 / 0-ART5.
@@ -270,56 +270,9 @@ def render_chassis_variant(theme_name: str, theme: dict, master: Image.Image, or
             canvas.putpixel((nx, 49), G_LIGHT)
             canvas.putpixel((nx, 51), G_SHADOW)
 
-    # 10. Head Unit from master mapped to theme
-    for y in range(15, 52):
-        for x in range(34, 88):
-            p = cast(tuple[int, int, int, int], master.getpixel((x, y)))
-            if p[3] > 25:
-                # Goggles and beak keep brass gold
-                is_beak = (64 <= x <= 82 and 40 <= y <= 48 and p[0] > 140 and p[1] > 100)
-                is_goggle_frame = ((47 <= x <= 74 and 29 <= y <= 43) and (p[0] > 140 and p[1] > 100 and p[2] < 90))
-                is_lens = (p[2] > 170 and p[1] > 140 and p[0] < 120 and 48 <= x <= 72 and 30 <= y <= 42)
-
-                if is_beak:
-                    if y <= 43:
-                        col = G_LIGHT if y == 42 else G_SPEC
-                    elif y == 44:
-                        col = G_MID
-                    else:
-                        col = G_SHADOW
-                    canvas.putpixel((x, y), col)
-                elif is_goggle_frame:
-                    canvas.putpixel((x, y), (p[0], p[1], p[2], p[3]))
-                elif is_lens:
-                    canvas.putpixel((x, y), (p[0], p[1], p[2], p[3]))
-                else:
-                    # Head dome helmet shell
-                    if theme_name == "navy":
-                        canvas.putpixel((x, y), (p[0], p[1], p[2], p[3]))
-                    else:
-                        # Map luminance of helmet to theme body ramp
-                        lum = int(0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2])
-                        if lum < 38:
-                            canvas.putpixel((x, y), OUTLINE)
-                        else:
-                            f = max(0.0, min(1.0, (lum - 38) / 48.0))
-                            if theme_name == "polar":
-                                cr = int(180 + f * 75)
-                                cg = int(210 + f * 45)
-                                cb = int(235 + f * 20)
-                            else: # ivory
-                                cr = int(220 + f * 35)
-                                cg = int(210 + f * 42)
-                                cb = int(195 + f * 50)
-                            canvas.putpixel((x, y), (cr, cg, cb, p[3]))
-
-    # Goggle frames enhancement
-    d.ellipse([48, 30, 60, 42], outline=G_MID, width=1)
-    d.ellipse([61, 30, 73, 42], outline=G_MID, width=1)
-    d.line([(59, 35), (62, 35)], fill=G_LIGHT, width=2)
-    canvas.putpixel((52, 33), G_SPEC)
-    canvas.putpixel((65, 33), G_SPEC)
-
+    # 10. ⚠️ 0-QA8 Compliance: NO HEAD DRAWN!
+    # Chassis is strictly torso + limbs (Y >= 48).
+    # Head unit (Z20) handles the helmet, goggles, and beak to prevent double-head artifact.
     return canvas
 
 
