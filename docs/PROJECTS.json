@@ -966,8 +966,8 @@
    "id": "tiger-second-costume",
    "cat": "遊戲",
    "title": "第6種族烈焰虎第二套外裝與塗裝變體",
-   "status": "開發中",
-   "note": "產出第二套外裝與塗裝變體切片與換裝驗證",
+   "status": "測試中",
+   "note": "完成切片產出、衣櫥換裝接線、14項paperdoll測試全綠、自檢review.md通過",
    "keys": [
     "第6種族烈焰虎第"
    ]
