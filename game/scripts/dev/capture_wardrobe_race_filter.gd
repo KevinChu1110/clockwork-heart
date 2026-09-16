@@ -10,6 +10,7 @@ extends SceneTree
 const WardrobeDialog = preload("res://scripts/ui/wardrobe_dialog.gd")
 
 var _out_dir: String = ""
+var _fallback_dir: String = ""
 var _wait_frames: int = 0
 var _step: int = 0
 var _dlg: WardrobeDialog = null
@@ -23,8 +24,10 @@ func _initialize() -> void:
 		win.size = Vector2i(1280, 720)
 
 	var base := ProjectSettings.globalize_path("res://")
-	_out_dir = base.path_join("../screenshots")
+	_out_dir = base.path_join("../proofs/wardrobe_race_filter")
 	DirAccess.make_dir_recursive_absolute(_out_dir)
+	_fallback_dir = base.path_join("../screenshots")
+	DirAccess.make_dir_recursive_absolute(_fallback_dir)
 
 	var gs = root.get_node_or_null("GameState")
 	if gs:
@@ -80,6 +83,19 @@ func _process(_delta: float) -> bool:
 				_wait_frames = 0
 
 		4:
+			# 步驟 4: 切換為「企鵝」篩選，滾動使企鵝 chip 可見，等待渲染穩定並截圖
+			if _wait_frames == 10:
+				_dlg.set_race_filter("penguin")
+				var scroll: ScrollContainer = _dlg.find_child("FilterScroll", true, false) as ScrollContainer
+				if scroll:
+					scroll.scroll_horizontal = 9999
+			elif _wait_frames >= 30:
+				_save_screenshot("proof_wardrobe_filter_penguin.png")
+				print("  ✓ 步驟 4 完成：截取 [企鵝 (Penguin)] 篩選狀態")
+				_step = 5
+				_wait_frames = 0
+
+		5:
 			print("=== 全部截圖產出完畢 ===")
 			quit(0)
 			return true
@@ -100,3 +116,6 @@ func _save_screenshot(filename: String) -> void:
 					print("  [截圖存檔] %s" % full_path)
 				else:
 					push_error("截圖儲存失敗: %d" % err)
+				if not _fallback_dir.is_empty():
+					var fb_path := _fallback_dir.path_join(filename)
+					img.save_png(fb_path)

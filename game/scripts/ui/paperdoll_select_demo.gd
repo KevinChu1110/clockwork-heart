@@ -200,7 +200,7 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_composite.png",
 		"desc": "淵海發條港灣的憨厚重火手，耐高壓鍍鈦燕尾裝甲與防滑金屬腳蹼。",
 		"costumes": [
-			{"id": "costume_steam_navigator", "name_zh": "蒸氣領航者大衣", "desc": "耐壓鍍鈦深藍大衣與黃銅導航儀扣"},
+			{"id": "costume_navigator_harness", "name_zh": "深海導航員大衣", "desc": "耐壓鍍鈦深藍大衣與黃銅導航儀扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現耐壓鍍鈦企鵝素體"}
 		],
 		"chassis": [
@@ -210,9 +210,7 @@ const RACES_DATA: Dictionary = {
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane"]
-# ⚠️ penguin 的 RACE_DATA 條目保留供切片產出後啟用，但在切片與 spec 落地前不列入 RACE_KEYS，
-# 否則展示頁會出現一個點下去沒有任何切片的空種族。
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
 
 ## 節點引用
 @onready var character: PaperdollCharacter = $CenterStage/CharacterContainer/PaperdollCharacter as PaperdollCharacter
@@ -325,7 +323,8 @@ func _init_filter_chips() -> void:
 		{"id": "macaque", "label": "猴"},
 		{"id": "tiger", "label": "虎"},
 		{"id": "bear", "label": "熊"},
-		{"id": "crane", "label": "鶴"}
+		{"id": "crane", "label": "鶴"},
+		{"id": "penguin", "label": "企鵝"}
 	]
 
 	var font: Font = null

@@ -74,8 +74,7 @@ const RACE_FILTER_OPTIONS: Array[Dictionary] = [
 	{"id": "tiger", "name_zh": "虎"},
 	{"id": "bear", "name_zh": "熊"},
 	{"id": "crane", "name_zh": "鶴"},
-	# ⚠️ 企鵝(penguin) 目前只有設計提案文件，尚無 paperdoll 切片與 spec 條目，
-	# 上線前不可出現在篩選列（會產生空清單）。切片產出後再開回來。
+	{"id": "penguin", "name_zh": "企鵝"},
 ]
 
 var current_filter_race: String = "all"
@@ -582,8 +581,7 @@ func _rebuild_cards() -> void:
 
 	var target_races: Array[String] = []
 	if current_filter_race == "all":
-		# ⚠️ penguin 尚無 paperdoll 切片，列進來會出現空白破圖卡片；切片產出後再加回
-		target_races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane"]
+		target_races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
 	else:
 		target_races = [current_filter_race]
 
@@ -725,10 +723,22 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 			var path := "res://assets/sprites/player/paperdoll/%s/costume/%s.png" % [r, item_id]
 			if ResourceLoader.exists(path):
 				return load(path) as Texture2D
+			if r == "penguin" and (item_id == "costume_steam_navigator" or item_id == "costume_navigator_harness"):
+				var alt_costume := "res://assets/sprites/player/paperdoll/penguin/costume/costume_navigator_harness.png"
+				if ResourceLoader.exists(alt_costume):
+					return load(alt_costume) as Texture2D
 	elif slot_type == "chassis":
 		var path := "res://assets/sprites/player/paperdoll/%s/chassis/%s.png" % [r, item_id]
 		if ResourceLoader.exists(path):
 			return load(path) as Texture2D
+		if item_id == "paint_ivory_stock":
+			var fallback_chassis := {
+				"bear": "res://assets/sprites/player/paperdoll/bear/chassis/paint_bear_amber.png",
+				"crane": "res://assets/sprites/player/paperdoll/crane/chassis/paint_crane_porcelain.png",
+				"penguin": "res://assets/sprites/player/paperdoll/penguin/chassis/paint_penguin_navy.png"
+			}
+			if fallback_chassis.has(r) and ResourceLoader.exists(fallback_chassis[r]):
+				return load(fallback_chassis[r]) as Texture2D
 	return null
 
 
