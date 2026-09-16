@@ -32,30 +32,28 @@ def create_tiger_paint_ivory_stock(src_path: str = "", out_path: str = ""):
             if a <= 10:
                 continue
 
-            # Ground soft shadow at base (Y >= 118)
-            if y >= 118 and (r < 75 and g < 75 and b < 85):
+            # Ground soft shadow at base (Y >= 117)
+            if y >= 117 and (r < 75 and g < 75 and b < 85):
                 ivory.putpixel((x, y), (r, g, b, a))
                 opaque_pixels.append((r, g, b))
                 continue
 
             lum = int(0.299 * r + 0.587 * g + 0.114 * b)
 
-            # Dark outline: crisp deep blue-purple #1F1A3A
+            # Dark outline
             if lum < 50:
                 ivory.putpixel((x, y), (31, 26, 58, a))
                 opaque_pixels.append((31, 26, 58))
                 continue
 
-            # Joint check
+            # Mechanical brass ball joints
             is_joint = False
             if ((36 <= x <= 43 and 68 <= y <= 76) or
-                (84 <= x <= 92 and 76 <= y <= 84) or
-                ((49 <= x <= 55 or 71 <= x <= 77) and 93 <= y <= 101)):
-                if r > 120 and g > 50:
+                (86 <= x <= 91 and 78 <= y <= 82)):
+                if r > 130 and g > 60:
                     is_joint = True
 
             if is_joint:
-                # Rich brass gold joint accent
                 f_j = max(0.0, min(1.0, (lum - 50) / 180.0))
                 jr = int(140 + f_j * 115)
                 jg = int(95 + f_j * 100)
@@ -63,11 +61,6 @@ def create_tiger_paint_ivory_stock(src_path: str = "", out_path: str = ""):
                 ivory.putpixel((x, y), (jr, jg, jb, a))
                 opaque_pixels.append((jr, jg, jb))
             else:
-                # Creamy ivory enamel ramp:
-                # Shadow:   (130, 120, 110)
-                # Midtone:  (185, 178, 168)
-                # Light:    (230, 225, 215)
-                # Specular: (252, 250, 245)
                 f = max(0.0, min(1.0, (lum - 50) / 200.0))
                 if f < 0.5:
                     t = f / 0.5
