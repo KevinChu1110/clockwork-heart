@@ -233,7 +233,14 @@ def generate_verification_crops():
     out_bronze = f"{MACAQUE_DIR}/verification_crop_bamboo_bronze.png"
     crop_bronze_large.save(out_bronze)
 
-    print(f"✓ Saved verification crops:\n  • {out_zen}\n  • {out_bronze}")
+    # Crop 3: Dawn Monk Tunic lapel, golden trim, core aperture, and waist sash
+    tunic_slice = Image.open(f"{MACAQUE_DIR}/costume/costume_dawn_monk_tunic.png").convert("RGBA")
+    crop_tunic = tunic_slice.crop((34, 58, 72, 86))
+    crop_tunic_large = crop_tunic.resize((crop_tunic.width * 8, crop_tunic.height * 8), Image.Resampling.NEAREST)
+    out_tunic = f"{MACAQUE_DIR}/verification_crop_dawn_monk_tunic.png"
+    crop_tunic_large.save(out_tunic)
+
+    print(f"✓ Saved verification crops:\n  • {out_zen}\n  • {out_bronze}\n  • {out_tunic}")
 
 if __name__ == "__main__":
     generate_chassis_comparison()
