@@ -536,13 +536,15 @@ B 灰燼夜行機關裝（消光黑碳素護甲，暗影隱匿疾速風格）
 3. **發條衣櫥選裝畫面「種族篩選 Chip 列」實機截圖（`proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png`，`dcdd574` 合入，`b54c652` 上線）**：
    - 1280 × 720，RGBA，手遊規範圓角橫屏彈窗，右上紅底白「✕」關閉按鈕，純手繪賽璐璐 UI，零系統 Emoji。
    - 上方種族篩選 Chip 列支援 9 族即時過濾，當前「企鵝」Chip 選中高亮；左側即時預覽蒸氣企鵝立繪（標籤【企鵝 · 遊俠 (ranger)】），右側提供「深海導航員大衣」與「無外裝 (裸機素體)」實裝卡片。
+   - ⚠️ 【武器數量自檢注意事項（0-ART9 條）】：左側角色因底層 `paint_penguin_navy.png` 素體誤繪入短槍，疊加 weapon 槽後呈現雙持 2 把槍。已標註待美術單修正 chassis 素體後重產實機圖，目前本素材列為『素材待修，暫緩』。
 4. **手遊大廳四殿堂純文字膠囊實機截圖（`proofs/lobby_dopamine/proof_lobby_home.png`，`e765e1e` 合入，`2372888` 上線）**：
    - 1280 × 720，RGBA，陽光神殿古典長廊手遊大廳實機畫面，左側四殿堂（天宮鐵匠、手藝工坊、演武競技、冒險委託）單字縮寫方塊全面移除，改為乾淨純文字膠囊標籤。
 5. **兔族紙娃娃素材邊緣半透明像素清理與玩具指節雕刻（`game/assets/sprites/player/paperdoll/rabbit/proof_paperdoll_rabbit_composite.png`，`3becc46` 合入，`e3adafa` 上線）**：
    - 128 × 128，RGBA，清理兔族切片半透明雜色邊緣並雕刻玩具指節，消除握持懸空感。
 6. **第九族「蒸氣企鵝」紙娃娃裝配與洋紅底板驗收對照圖（`game/assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_compare.png`，`tools/generate_penguin_compare_proof.py` 產製）**：
    - 640 × 380，RGBA，深灰紫卡片背景，左右兩大對稱圓角展示框，帶有中英文字標籤（`1. 裝配成品 (COMPOSITE)`、`2. 洋紅驗收 (MAGENTA PROOF)`）。
-   - 經 `vision_analyze` 查驗：左右雙卡完全無溢出、無裁切、邊距對齊工整；左側展示 7 槽裝配完成立繪，右側以純洋紅 `#FF00FF` 底板嚴格查核去背與邊緣透明度；全金屬鈑金、黃銅短喙、光學透鏡、背後發條鍋爐與雙管火槍，完全零羽毛零毛皮，0 敵人入鏡，徹底排除雷歐與荒路匪徒。
+   - 經 `vision_analyze` 查驗：左右雙卡完全無溢出、無裁切、邊距對齊工整；左側展示 7 槽裝配完成立繪，右側以純洋紅 `#FF00FF` 底板嚴格查核去背與邊緣透明度；全金屬鈑金、黃銅短喙、光學透鏡、背後發條鍋爐，完全零羽毛零毛皮，0 敵人入鏡，徹底排除雷歐與荒路匪徒。
+   - ⚠️ 【武器數量自檢注意事項（0-ART9 條）】：因底層 `paint_penguin_navy.png` 素體誤繪入短槍，疊加 weapon 槽後呈現雙持 2 把不同槍枝。已標註待美術單修正 chassis 素體後重產對照圖，目前本素材列為『素材待修，暫緩』。
 
 發文護欄：
 - 四則全數標註 `#開發中`。
@@ -559,9 +561,9 @@ B 灰燼夜行機關裝（消光黑碳素護甲，暗影隱匿疾速風格）
 | 序 | 排程時間 | Persona | 形式 | 素材（必須存在於 repo） | 核心目的與追蹤指標 | 狀態 |
 |---|---|---|---|---|---|---|
 | Day 1 | 週三 20:00 (09-30) | 阿哲（內容行銷） | 第九族蒸氣企鵝 7 槽切片世界觀工藝長文 | `game/assets/sprites/player/paperdoll/penguin/proof_penguin_all_7_slices.png` | 拆解 7 大發條槽位切片，探討深海導航員玩具世界觀與羽毛轉合金板件工藝取捨／分享數、長文停留時間 | 待總監審查後開發文單 |
-| Day 2 | 週四 20:00 (10-01) | 小魚（視覺成果直擊） | 蒸氣企鵝 7 槽裝配成品與洋紅底板驗收對照圖 | `game/assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_compare.png` | 開門見山直擊蒸氣企鵝 7 槽組裝完成立繪與洋紅背板零毛皮去背驗收／單圖停留時間、留言數、分享數 | 待總監審查後開發文單 |
+| Day 2 | 週四 20:00 (10-01) | 小魚（視覺成果直擊） | 蒸氣企鵝 7 槽裝配成品與洋紅底板驗收對照圖 | `game/assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_compare.png` | 開門見山直擊蒸氣企鵝 7 槽組裝完成立繪與洋紅背板零毛皮去背驗收／單圖停留時間、留言數、分享數 | 素材待修，暫緩（待美術修正 chassis 後重產同名圖再發） |
 | Day 3 | 週五 20:00 (10-02) | 小玩（平台機制） | 蒸氣企鵝六大戰鬥姿態雙擊放大數蒸氣眼力測驗 | `game/assets/sprites/player/proof_penguin_combat_poses_640.png` | 借平台雙擊放大手勢挑戰數出招噴發蒸氣動作格數／單圖停留時間、放大互動、留言數 | 待總監審查後開發文單 |
-| Day 4 | 週六 12:00 (10-03) | Ken（社群互動） | 發條衣櫥種族篩選企鵝外裝二選一秒回投票 | `proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png` | 深海導航員大衣 vs 裸機素體工藝版外觀風格二選一單字回覆／留言數、留言與觸及比 | 待總監審查後開發文單 |
+| Day 4 | 週六 12:00 (10-03) | Ken（社群互動） | 發條衣櫥種族篩選企鵝外裝二選一秒回投票 | `proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png` | 深海導航員大衣 vs 裸機素體工藝版外觀風格二選一單字回覆／留言數、留言與觸及比 | 素材待修，暫緩（待美術修正 chassis 後重產同名圖再發） |
 
 素材自檢（發文前必須確認檔案存在於 repo 且合規）：
 
@@ -613,14 +615,16 @@ test -f proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png
 #### Day 2 · 小魚（視覺成果直擊）· 135 字
 
 - **形式**：蒸氣企鵝紙娃娃 7 槽裝配成品與洋紅底板驗收對照圖（640×380 高清對照圖）
+- **狀態**：素材待修，暫緩（待美術修正 chassis 後重產同名圖再發）
 - **圖**：`game/assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_compare.png`
-- **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" game/assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_compare.png`
+- **發法**（待素材修正過審後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" game/assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_compare.png`
 - **誠實與定位**：開門見山直接給成果！一張圖看懂第九族「蒸氣企鵝」在紙娃娃系統 7 槽裝配後的完整外觀，並對照遊戲開發中最嚴格的洋紅背板（Magenta Chroma-Key Proof）去背與零毛皮驗收。左側展示裝配成品，右側展示高反差洋紅去背，展現 100% 零羽毛、零毛皮、零雜邊之純粹發條機械工藝。
 - **合規與自檢（vision 親自查核）**：
   - 左右雙卡完全無溢出，文字完整無截斷（符合 1104 條）。
   - 角色全身由鍍鈦深藍合金外殼、雲石白防撞胸甲、雙瓣黃銅短喙、天藍石英透鏡、發條鑰匙與背部蒸氣鍋爐組成，完全零羽毛、零毛皮。
   - 0 敵人入鏡，徹底排除雷歐與荒路匪徒。
   - 經 grep `FB_QUEUE.md` 全檔查驗：0 出現於任何『✅ 已發布』表格，符合 review.md 第 19g-13 條規範，杜絕素材重複上檔。
+  - **武器數量實查（對照 review.md 第 0-ART9 條，規範要求：1 把）**：放大 4~6 倍嚴查手部武器，發現角色右手握有無壓力錶之短槍、左手握有帶圓形壓力錶之雙管火槍，呈現【雙持兩把不同火槍】。經查根因為底層素體 `paperdoll/penguin/chassis/paint_penguin_navy.png` 誤將短槍繪死在鰭上，疊加 weapon 槽後變為雙持，違反 ART_DIRECTION.md 2.2「蒸氣企鵝＝一把蒸氣雙管導航火槍」。已通報總監另開美術單修正 chassis 素體，待修正後重新合成產製同名圖再發；本則目前列為『素材待修，暫緩』。
 
 ```text
 開門見山！一張圖看懂第九種族「蒸氣企鵝」的組裝成果：
@@ -675,15 +679,17 @@ test -f proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png
 #### Day 4 · Ken（社群互動）· 145 字
 
 - **形式**：發條衣櫥種族篩選外裝二選一秒回投票短貼文（80–150 字區間）
+- **狀態**：素材待修，暫緩（待美術修正 chassis 後重產同名圖再發）
 - **圖**：`proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png`（1280×720，手遊發條衣櫥新增種族篩選 Chip 列實機截圖）
-- **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png`
+- **發法**（待素材修正過審後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png`
 - **定位**：鎖定本週最新合入 main 之「發條衣櫥種族篩選 Chip 列」與「蒸氣企鵝換裝連線」，展示手遊換裝彈窗實機介面與蒸氣企鵝兩款可選外觀，推出風格二選一秒回投票，維持極低互動門檻，引爆社群對外觀造型的討論。
 - **誠實與自檢（vision 親自查核）**：
   - 100% 來自已合併 main 之手遊衣櫥實機截圖（`proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png`，1280×720）。
   - 上方種族篩選 Chip 列新增「企鵝」標籤且目前高亮選中，右側外裝卡片對齊 `paperdoll_slots.json` 實裝選項：A（深海導航員大衣）與 B（無外裝 / 裸機素體）。
-  - 左側中央角色為蒸氣企鵝，身背發條鍋爐、戴護目鏡、手持雙管火槍，零毛皮零羽毛。
+  - 左側中央角色為蒸氣企鵝，身背發條鍋爐、戴護目鏡、深藍合金外殼，零毛皮零羽毛。
   - 橫屏彈窗規格符合手遊標準，右上帶有紅底白色關閉按鈕（✕），零系統 Emoji，純淨文字無辦公室 PPT 簡報感。
   - 0 敵人入鏡，徹底排除雷歐與荒路匪徒。
+  - **武器數量實查（對照 review.md 第 0-ART9 條，規範要求：1 把）**：放大 4~6 倍嚴查衣櫥彈窗左側預覽角色手部武器，發現右手握短槍、左手握雙管火槍，亦因 chassis 素體繪入短槍問題呈現【雙持兩把不同火槍】。違反 ART_DIRECTION.md 2.2「蒸氣企鵝＝一把蒸氣雙管導航火槍」規範。已通報總監另開美術單修正 chassis 素體，待修正後重新截取同名實機圖再發；本則目前列為『素材待修，暫緩』。
 
 ```text
 發條衣櫥新增種族篩選！第九族蒸氣企鵝首度試裝，你挑哪套？
@@ -720,18 +726,19 @@ B 裸機素體工藝版（卸除外裝露出金屬龍骨＋純白防撞胸甲，
      - 守衛泰坦·雷歐（leo）：0 處入鏡，徹底排除。
      - 荒路匪徒（road_bandit）：0 處入鏡，徹底排除。
      - 0 敵方角色，4 則素材全數為我方合規金屬發條玩具角色（蒸氣企鵝）與手遊 UI，徹底杜絕任何毛皮爭議。
-   - **角色外觀親自查核（vision 開圖確認）**：
-     - Day 1（`proof_penguin_all_7_slices.png`）：7 大槽位切片皆為金屬鈑金、鉚釘螺栓、黃銅發條鑰匙、光學石英透鏡與雙管火槍，0 羽毛、0 皮肉。
-     - Day 2（`proof_paperdoll_penguin_compare.png`）：雙卡對稱工整無溢出，文字完整無截斷；左側為 7 槽裝配完成立繪，右側為洋紅驗收底板；企鵝全身鈑金鉚釘、黃銅短喙、發條鑰匙與背部鍋爐，零毛皮零羽毛，0 敵人入鏡。
-     - Day 3（`proof_penguin_combat_poses_640.png`）：6 大動作分解格全數為純粹機械構裝體，黃銅護目風鏡、深藍金屬外殼與腹部裝甲板，手持雙管火槍，背負發條蒸氣鍋爐，0 毛皮 0 羽毛。
-     - Day 4（`proof_wardrobe_filter_penguin.png`）：手遊衣櫥彈窗實機畫面，種族篩選 Chip 列含「企鵝」，左側蒸氣企鵝穿戴深海導航員大衣，手持雙管火槍，背後發條蒸氣鍋爐，零毛皮零羽毛，零系統 Emoji。
-     - 綜合判定：✅ 合格！
+   - **角色外觀與武器數量親自查核（vision 開圖確認，依 review.md 0-ART9 條放大 4~6 倍嚴查）**：
+     - Day 1（`proof_penguin_all_7_slices.png`）：7 大槽位切片皆為金屬鈑金、鉚釘螺栓、黃銅發條鑰匙、光學石英透鏡與雙管火槍，0 羽毛、0 皮肉；chassis 與 weapon 槽位完全分開獨立展示，武器數量 1 把（gun 銃體系）合格。總監審查合格。
+     - Day 2（`proof_paperdoll_penguin_compare.png`）：雙卡對稱工整無溢出，文字完整無截斷；左側為 7 槽裝配完成立繪，右側為洋紅驗收底板；企鵝全身鈑金鉚釘、黃銅短喙、發條鑰匙與背部鍋爐，零毛皮零羽毛，0 敵人入鏡。⚠️ 武器數量實查（0-ART9 條）：放大 4~6 倍嚴查手部，發現角色右手握短槍、左手握雙管火槍，呈現【雙持兩把不同槍】（根因為 `paint_penguin_navy.png` 素體圖層鰭上繪有槍枝所致）。不符 1 把規範，已通報總監另開美術單修正素體，本則標註『待美術修正 chassis 後重產同名圖再發』，狀態列為『素材待修，暫緩』。
+     - Day 3（`proof_penguin_combat_poses_640.png`）：6 大動作分解格全數為純粹機械構裝體，黃銅護目風鏡、深藍金屬外殼與腹部裝甲板，手持單把雙管火槍（武器數量 1 把合格，0 腰間雜槍），背負發條蒸氣鍋爐，0 毛皮 0 羽毛；蒸氣噴發格數經總監開圖逐格實數確為 4 格（2 鍋爐、3 槍口、4 鍋爐、5 洩壓），備註載明正確。總監審查合格。
+     - Day 4（`proof_wardrobe_filter_penguin.png`）：手遊衣櫥彈窗實機畫面，種族篩選 Chip 列含「企鵝」，零毛皮零羽毛，零系統 Emoji。⚠️ 武器數量實查（0-ART9 條）：左側角色預覽立繪右手持短槍、左手持雙管火槍，亦因 chassis 素體繪入短槍問題呈現【雙持兩把不同槍】。不符 1 把規範，本則標註『待美術修正 chassis 後重產同名圖再發』，狀態列為『素材待修，暫緩』。
+     - 綜合判定：Day 1 與 Day 3 ✅ 審查合格；Day 2 與 Day 4 因底層素體瑕疵標註『素材待修，暫緩』，待美術修復素體並重產同名圖後再行排發。
 3. **排版與文字檢查（1104 條規範）**：
    - 4 則素材經 vision 檢驗，完全無任何邊緣文字裁切，亦無文字互相重疊遮擋現象。
    - 畫面無任何系統原生 Emoji，亦無 ASCII 字符拼湊之假進度條。
-4. **武器與角色規格（ART_DIRECTION.md 2.2 / STEAM_PENGUIN_DESIGN_PROPOSAL.md）**：
+4. **武器與角色規格（ART_DIRECTION.md 2.2 / STEAM_PENGUIN_DESIGN_PROPOSAL.md / review.md 0-ART9 條）**：
    - 兔（小白）＝單手長劍（晨光長劍），不拿雙劍，無垂耳。
-   - 蒸氣企鵝＝遊俠 (Ranger)，武器為蒸氣雙管導航火槍 / 淵海發條水銃（Twin Harpoon-Gun / Nav-Gun, gun 銃體系）。
+   - 蒸氣企鵝＝遊俠 (Ranger)，嚴格遵循「一族一把主武器」鐵則：單持蒸氣雙管導航火槍 / 淵海發條水銃（Twin Harpoon-Gun / Nav-Gun, gun 銃體系），嚴禁雙持兩把不同槍枝。
+   - 依 0-ART9 條規範：往後每張對外角色圖必須放大 4~6 倍實問 vision「兩隻手各握什麼、總共幾把、外型一不一樣」，徹底杜絕素體畫死武器所引發之雙持問題。
    - 外裝服飾：深海導航員大衣（costume_navigator_harness）、無外裝（裸機素體）。
 5. **誠實原則（Honesty，對齊 review.md 第 16/19b/19b-2 條）**：
    - 全數標註 `#開發中`，無上架日、無價格、無未開放商店連結。
