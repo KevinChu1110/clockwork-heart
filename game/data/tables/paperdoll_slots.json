@@ -141,6 +141,12 @@
             "tier": "common"
           },
           {
+            "id": "paint_iron_quarry",
+            "name": "重裝礦山玄鐵灰烤漆",
+            "race": "bear",
+            "tier": "rare"
+          },
+          {
             "id": "paint_penguin_navy",
             "name": "原廠深海鍍鈦藍",
             "race": "penguin",
@@ -385,6 +391,12 @@
             "name": "玄軸工坊重裝工作吊帶甲",
             "race": "bear",
             "tier": "common"
+          },
+          {
+            "id": "costume_berserker_cuirass",
+            "name": "狂戰破陣機關戰鎧",
+            "race": "bear",
+            "tier": "rare"
           },
           {
             "id": "costume_navigator_harness",
