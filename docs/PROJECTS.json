@@ -936,8 +936,8 @@
    "id": "tiger-combat-poses",
    "cat": "遊戲",
    "title": "第6種族烈焰虎6大戰鬥姿態補齊（idle/telegraph/attack/skill/hit/recover）",
-   "status": "草稿",
-   "note": "",
+   "status": "已上線",
+   "note": "6大戰鬥姿態齊全，通過無頭測試與vision自檢，commit cfcb71f 已進 main",
    "keys": [
     "第6種族烈焰虎6"
    ]
