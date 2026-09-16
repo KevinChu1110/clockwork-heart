@@ -519,6 +519,32 @@
       "text": "Cruzaste la Galería de las Sombras sin desenvainar."
     }
   ],
+  "c6.demon_win_refuse_all": [
+    {
+      "speaker": "Núcleo de Inactividad",
+      "text": "[待補] 三次……力量、復仇、安穩……你竟然一次都沒有動搖。"
+    },
+    {
+      "speaker": "Predecesor",
+      "text": "[待補] 發條最鬆的那個……竟然真的走到了這裡，連心臟都沒有磨損一個齒尖。"
+    },
+    {
+      "speaker": "Predecesor",
+      "text": "[待補] ……不。不是不可思議，是應該的。如果連這樣乾淨的心都走不到塔頂，那這座世界原本就不值得被修復。"
+    },
+    {
+      "speaker": "Predecesor",
+      "text": "La próxima vez… no sigas mi camino."
+    },
+    {
+      "speaker": "Predecesor",
+      "text": "[待補] 劍還你。或者——交給下一個跟我們一樣輕的玩具。願他的發條……也永遠不要過緊。"
+    },
+    {
+      "speaker": "Sistema",
+      "text": "150 de oro, 8 de polvo estelar."
+    }
+  ],
   "c6.demon_win": [
     {
       "speaker": "Núcleo de Inactividad",

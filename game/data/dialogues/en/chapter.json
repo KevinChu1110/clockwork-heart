@@ -519,6 +519,32 @@
       "text": "You crossed the Hall of Shadows without drawing your sword."
     }
   ],
+  "c6.demon_win_refuse_all": [
+    {
+      "speaker": "Stasis Core",
+      "text": "[待補] 三次……力量、復仇、安穩……你竟然一次都沒有動搖。"
+    },
+    {
+      "speaker": "Predecessor",
+      "text": "[待補] 發條最鬆的那個……竟然真的走到了這裡，連心臟都沒有磨損一個齒尖。"
+    },
+    {
+      "speaker": "Predecessor",
+      "text": "[待補] ……不。不是不可思議，是應該的。如果連這樣乾淨的心都走不到塔頂，那這座世界原本就不值得被修復。"
+    },
+    {
+      "speaker": "Predecessor",
+      "text": "Next time… don't take my path."
+    },
+    {
+      "speaker": "Predecessor",
+      "text": "[待補] 劍還你。或者——交給下一個跟我們一樣輕的玩具。願他的發條……也永遠不要過緊。"
+    },
+    {
+      "speaker": "System",
+      "text": "150 gold, 8 stardust."
+    }
+  ],
   "c6.demon_win": [
     {
       "speaker": "Stasis Core",

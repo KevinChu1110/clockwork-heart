@@ -7571,7 +7571,10 @@ func _c6_truth_hall() -> void:
 func _go_demon_win() -> void:
 	_grant_boss_loot(150, 8, 0)
 	GameState.hp = GameState.effective_max_hp()
-	_play_dialog(DialogLines.lines("c6.demon_win"), _c6_ending_cut)
+	if GameState.has_flag("c6_refuse_all"):
+		_play_dialog(DialogLines.lines("c6.demon_win_refuse_all"), _c6_ending_cut)
+	else:
+		_play_dialog(DialogLines.lines("c6.demon_win"), _c6_ending_cut)
 
 
 func _c6_ending_cut() -> void:
