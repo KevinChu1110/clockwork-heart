@@ -830,6 +830,8 @@ B 裸機素體工藝版（卸除外裝露出金屬龍骨＋純白防撞胸甲，
 
 素材自檢（發文前必須確認檔案存在於 repo 且合規）：
 
+> ⛔ **實機截圖對外禁令（review.md 0-MKT2 · 審核收尾補上 2026-09-16）**：Day 3（`proof_party_crane.png`）與 Day 4（`proof_wardrobe_filter_penguin.png`）皆為**遊戲實機截圖**。Kevin 現行裁示（t_4c1dfa0b 選項 B）實機截圖／錄影對外一律暫不公開，只放主視覺與官方短片。**這兩則在解禁前不得實際發布**；開發文單時只能執行 Day 1、Day 2，Day 3／Day 4 須改用官方立牌／切片圖重寫配圖，或整則延後。
+
 ```bash
 test -f game/assets/sprites/player/paperdoll/crane/proof_crane_all_7_slices.png
 test -f branding/char_crane.png
@@ -910,6 +912,7 @@ test -f proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png
 - **動作先於畫面**：借社群平台「點擊圖片雙擊放大檢視細節」之原生動作，設計「數金色同心齒輪」眼力測驗。引導觀眾放大檢視發條新村神殿大廳正中央青綠神聖光柱深處咬合旋轉的金色齒輪，找找看總共有幾層同心巨型齒輪在持續轉動，拉長單圖停留時間、推升放大互動率與留言回報。
 - **指標目標**：平均停留時間、放大互動率、留言數。
 - **誠實與自檢（vision 親自查核）**：
+  - ⛔ **發布前禁令附註（review.md 0-MKT2，審核收尾補上）**：Kevin 裁示「遊戲實機截圖／錄影對外一律暫不公開，只放主視覺與官方短片，畫面過關才解禁」（t_4c1dfa0b 選項 B）。本則配圖為**實機截圖**，**未解禁前不得實際發布**。替代方案：改用雲嵐鶴官方品牌立牌 `branding/char_crane.png` 或 7 槽切片 `proof_crane_all_7_slices.png` 重寫「數齒輪」挑戰，或整則延後至解禁後再排。
   - 100% 來自已合併 main 之發條新村手遊大廳實機截圖（`proofs/crane_bear_char_creation/proof_party_crane.png`，1280×720）。
   - 中央展示角色為 Lv.1 雲嵐鶴【初出茅廬】，全金屬球形鳥頭、鈦合金鑷夾喙、機械鉸鏈關節與背後發條構造，完全零毛皮零羽毛。
   - 安全區大廳畫面，0 敵人入鏡，徹底排除雷歐與荒路匪徒。
@@ -940,6 +943,7 @@ test -f proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png
 - **定位**：鎖定本週於 commit `155fa5a` (t_706026f0) 徹底修復邊界截字問題之「發條衣櫥種族篩選 Chip 列」實機截圖，展示手遊換裝彈窗最新介面與蒸氣企鵝兩款可選外觀，推出風格二選一秒回投票，維持極低互動門檻，引爆社群對外觀造型的討論。
 - **誠實與自檢（vision 親自查核）**：
   - 100% 來自已合併 main 之手遊衣櫥實機截圖（`proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png`，1280×720）。
+  - ⛔ **發布前禁令附註（review.md 0-MKT2，審核收尾補上）**：Kevin 裁示「遊戲實機截圖／錄影對外一律暫不公開，只放主視覺與官方短片，畫面過關才解禁」（t_4c1dfa0b 選項 B）。本則配圖為**實機截圖**，**未解禁前不得實際發布**。替代方案：改用官方品牌立牌或角色切片圖重寫「外裝二選一」投票，或整則延後至解禁後再排。
   - 上方種族篩選 Chip 列最右側「企鵝」標籤經 5 倍放大複驗，筆畫完整且右側保留充足留白，截字問題已徹底排除；右側外裝卡片對齊 `paperdoll_slots.json` 實裝選項：A（深海導航員大衣）與 B（無外裝 / 裸機素體）。
   - 左側中央角色為蒸氣企鵝，身背發條鍋爐、戴護目鏡、深藍合金外殼，零毛皮零羽毛。
   - 橫屏彈窗規格符合手遊標準，右上帶有紅底白色關閉按鈕（✕），零系統 Emoji，純淨文字無辦公室 PPT 簡報感。
