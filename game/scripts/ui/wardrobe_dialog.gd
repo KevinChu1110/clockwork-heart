@@ -399,7 +399,7 @@ func _create_race_filter_bar() -> Control:
 
 	var chip_scroll := ScrollContainer.new()
 	chip_scroll.name = "FilterScroll"
-	chip_scroll.custom_minimum_size = Vector2(0, 44)
+	chip_scroll.custom_minimum_size = Vector2(0, 54)
 	chip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	chip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	container.add_child(chip_scroll)
@@ -416,7 +416,8 @@ func _create_race_filter_bar() -> Control:
 		var btn := Button.new()
 		btn.name = "Chip_" + rid
 		btn.text = rname
-		btn.custom_minimum_size = Vector2(50, 38)
+		# ⚠️ 觸控熱區下限 48px，⛔ 不准為了「線條瘦身」再調小（t_bc40f393 已裁定，t_e1cdccf4 曾誤改回 38）
+		btn.custom_minimum_size = Vector2(50, 48)
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		btn.add_theme_font_size_override("font_size", 14)
 		if _cached_font:
@@ -581,7 +582,8 @@ func _rebuild_cards() -> void:
 
 	var target_races: Array[String] = []
 	if current_filter_race == "all":
-		target_races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
+		# ⚠️ penguin 尚無 paperdoll 切片，列進來會出現空白破圖卡片；切片產出後再加回
+		target_races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane"]
 	else:
 		target_races = [current_filter_race]
 
