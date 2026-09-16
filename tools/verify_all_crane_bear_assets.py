@@ -18,8 +18,8 @@ def verify():
         print(f"\n--- Checking race: {rid} ({full_name}) ---")
         required_assets = [
             # Category 1: 官網英雄圖
-            (f"branding/char_{rid}.png", [(400, 840), (800, 1680)], ["RGB", "RGBA"]),
-            (f"web/media/hero/char_{rid}.png", (400, 840), ["RGB", "RGBA"]),
+            (f"branding/char_{rid}.png", [(400, 840), (800, 1680), (1344, 1680)], ["RGB", "RGBA"]),
+            (f"web/media/hero/char_{rid}.png", [(400, 840), (1344, 1680)], ["RGB", "RGBA"]),
             (f"docs/art/char_{rid}_candidate_400x840.png", (400, 840), ["RGB", "RGBA"]),
             (f"docs/art/{full_name}_concept.png", None, ["RGB", "RGBA"]),
             

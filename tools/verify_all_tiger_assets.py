@@ -12,8 +12,8 @@ def verify():
     # 1. Check all required assets exist, correct format, mode and size
     required_assets = [
         # Category 1: 官網英雄圖
-        ("branding/char_tiger.png", [(400, 840), (800, 1680)], ["RGB", "RGBA"]),
-        ("web/media/hero/char_tiger.png", (400, 840), ["RGB", "RGBA"]),
+        ("branding/char_tiger.png", [(400, 840), (800, 1680), (1344, 1680)], ["RGB", "RGBA"]),
+        ("web/media/hero/char_tiger.png", [(400, 840), (1344, 1680)], ["RGB", "RGBA"]),
         ("docs/art/char_tiger_candidate_400x840.png", (400, 840), ["RGB", "RGBA"]),
         ("docs/art/ember_tiger_concept.png", (928, 1152), ["RGB", "RGBA"]),
         
