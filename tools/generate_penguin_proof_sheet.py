@@ -6,12 +6,14 @@ for visual inspection, vision analysis, and proof verification.
 """
 
 import os
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 
 REPO_ROOT = "/opt/side/bravesoul-game"
 POSES_DIR = f"{REPO_ROOT}/game/assets/sprites/player/poses/penguin"
 PROOF_PATH = f"{REPO_ROOT}/game/assets/sprites/player/proof_penguin_combat_poses_640.png"
 PROOF_MAGENTA = f"{REPO_ROOT}/game/assets/sprites/player/proof_penguin_combat_poses_magenta.png"
+
+font = ImageFont.truetype("/usr/share/fonts/opentype/ipafont-gothic/ipag.ttf", 13)
 
 order = ["idle", "telegraph", "attack", "skill", "hit", "recover"]
 titles = [
@@ -43,12 +45,12 @@ for i, p in enumerate(order):
     # Background card on dark sheet
     s_draw.rounded_rectangle([x, y, x + tile_w - 10, y + tile_h - 10], radius=8, fill=(42, 36, 56, 255), outline=(90, 75, 110, 255))
     
-    # Title banner on magenta sheet
-    m_draw.rounded_rectangle([x + 10, y + 2, x + tile_w - 20, y + 22], radius=4, fill=(30, 20, 45, 240), outline=(255, 208, 40, 255))
+    # Background card on magenta sheet
+    m_draw.rounded_rectangle([x, y, x + tile_w - 10, y + tile_h - 10], radius=8, fill=(42, 36, 56, 255), outline=(90, 75, 110, 255))
     
     # Titles
-    s_draw.text((x + 12, y + 8), titles[i], fill=(255, 215, 64, 255))
-    m_draw.text((x + 16, y + 5), titles[i], fill=(255, 255, 255, 255))
+    s_draw.text((x + 12, y + 8), titles[i], font=font, fill=(255, 215, 64, 255))
+    m_draw.text((x + 12, y + 8), titles[i], font=font, fill=(255, 215, 64, 255))
     
     # Sprite
     p_img = Image.open(f"{POSES_DIR}/{p}.png").convert("RGBA")

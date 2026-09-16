@@ -21,19 +21,23 @@ print("=== VERIFYING THE STEAM PENGUIN COMBAT POSES (128x128 RGBA) ===")
 images: dict[str, Image.Image] = {}
 md5s: dict[str, str] = {}
 for p in POSES:
-    for d in [POSES_DIR, BATTLE_DIR]:
-        path = os.path.join(d, f"{p}.png")
+    p_path = os.path.join(POSES_DIR, f"{p}.png")
+    b_path = os.path.join(BATTLE_DIR, f"{p}.png")
+    for path in [p_path, b_path]:
         assert os.path.exists(path), f"FAIL: Missing pose {path}"
+        assert not os.path.islink(path), f"FAIL: {path} must be a physical file, not a symlink!"
         im = Image.open(path)
         assert im.size == (128, 128), f"FAIL: {p} size {im.size} != (128, 128)"
         assert im.mode == "RGBA", f"FAIL: {p} mode {im.mode} != RGBA"
-        if d == POSES_DIR:
-            images[p] = im.convert("RGBA")
-            with open(path, "rb") as f:
-                h = hashlib.md5(f.read()).hexdigest()
-            assert h not in md5s.values(), f"FAIL: Duplicate MD5 hash for {p}!"
-            md5s[p] = h
-            print(f"✓ {p:10s}: exists, size=(128, 128), mode=RGBA, md5={h[:10]}...")
+    
+    with open(p_path, "rb") as f1, open(b_path, "rb") as f2:
+        h1 = hashlib.md5(f1.read()).hexdigest()
+        h2 = hashlib.md5(f2.read()).hexdigest()
+    assert h1 == h2, f"FAIL: MD5 mismatch between poses and battle for {p} ({h1} != {h2})"
+    assert h1 not in md5s.values(), f"FAIL: Duplicate MD5 hash for {p}!"
+    md5s[p] = h1
+    images[p] = Image.open(p_path).convert("RGBA")
+    print(f"✓ {p:10s}: exists, size=(128, 128), mode=RGBA, physical file, md5={h1[:10]}...")
 
 # 2. Margins (no hard clipping)
 print("\n--- Margins Verification (Rule 4c-5 / 16) ---")
