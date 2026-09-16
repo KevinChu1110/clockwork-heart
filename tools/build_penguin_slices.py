@@ -5,6 +5,10 @@ Definitive production script for The Steam Penguin (蒸氣企鵝, 9th Race) 7 Pa
 """
 
 import os
+import sys
+REPO_ROOT = "/opt/side/bravesoul-game"
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
@@ -190,65 +194,11 @@ def build_slices():
     # SLICE 3: CHASSIS & PAINT SHELL (Z: 10)
     # File: chassis/paint_penguin_navy.png
     # Clean chassis: zero weapons in hand, zero key/boiler artifacts, zero yellow markers at feet
+    # Full head restoration, 3D curved belly plate, 0-ART18 compliant
     # ─────────────────────────────────────────────────────────────
-    chassis_img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    ch_draw = ImageDraw.Draw(chassis_img)
-
-    # Clean Ground Contact Shadow (centered under feet at x=52, y=114, radius_x=32, radius_y=5)
-    ch_draw.ellipse([52 - 32, 114 - 4, 52 + 32, 114 + 4], fill=(31, 26, 58, 140))
-    chassis_img = chassis_img.filter(ImageFilter.GaussianBlur(1.4))
-    ch_draw = ImageDraw.Draw(chassis_img)
-
-    for y in range(16, 114):
-        for x in range(10, 115):
-            p = master.getpixel((x, y))
-            if not isinstance(p, tuple) or len(p) < 4: continue
-            r, g, b, a = int(p[0]), int(p[1]), int(p[2]), int(p[3])
-            if a < 25: continue
-
-            # 1. EXCLUDE key and boiler (key is upper x <= 34, y <= 45; boiler is x <= 28, 42 <= y <= 75)
-            if x <= 32 and y <= 45:
-                continue
-            if x <= 28 and 42 <= y <= 75:
-                continue
-
-            # 2. EXCLUDE weapon area (handled exclusively by Z:40)
-            if x >= 74 and 50 <= y <= 88:
-                continue
-
-            # 3. EXCLUDE head & face (handled by Z:20 head_unit)
-            if y <= 48 and x >= 46:
-                continue
-
-            # 4. EXCLUDE raw gray shadow pixels and hollow between legs
-            if y >= 95:
-                # White background or neutral gray shadow
-                if (r > 120 and g > 120 and b > 130) or (r > 200 and g > 200 and b > 200):
-                    continue
-                # Gap between the two legs/feet
-                if 45 <= x <= 56 and y >= 97:
-                    continue
-                # Outside outer bounds of feet
-                if x <= 26 or x >= 78:
-                    continue
-
-            # Feet & Legs: 95 <= y <= 113
-            is_feet = (95 <= y <= 113 and 25 <= x <= 78)
-            # Rear body shell: x <= 48 and 48 <= y <= 95
-            is_rear_body = (x <= 48 and 48 <= y <= 95)
-            # Torso under-base: solid navy under costume so costume swap leaves no hole
-            is_torso_base = (48 <= y <= 95 and 36 <= x <= 80)
-            # Rear flipper & shoulder
-            is_rear_flipper = (35 <= x <= 48 and 50 <= y <= 85)
-            # Forward shoulder/arm base (excluding the weapon)
-            is_fwd_arm_base = (55 <= y <= 75 and 70 <= x <= 78)
-
-            if is_feet or is_rear_body or is_torso_base or is_rear_flipper or is_fwd_arm_base:
-                if is_torso_base and not is_feet and (r > 160 and g > 150):
-                    # Solid navy under-chassis base for belly region
-                    chassis_img.putpixel((x, y), NAVY_PRIMARY)
-                else:
-                    chassis_img.putpixel((x, y), (r, g, b, a))
+    from tools.build_all_penguin_chassis import render_chassis_variant, NAVY_THEME
+    chassis_orig_feet = Image.open(f"{PENGUIN_PD_DIR}/chassis/paint_penguin_navy.png").convert("RGBA")
+    chassis_img = render_chassis_variant("navy", NAVY_THEME, master, chassis_orig_feet)
 
     # ─────────────────────────────────────────────────────────────
     # SLICE 4: HEAD UNIT (Z: 20)
