@@ -1116,8 +1116,8 @@
    "id": "lobby-hall-badge-removal",
    "cat": "遊戲",
    "title": "大廳四殿堂拿掉單字縮寫徽章",
-   "status": "草稿",
-   "note": "審核通過：徽章已移除，文字置中，mobile_lobby 測試綠",
+   "status": "已上線",
+   "note": "已推 main",
    "keys": [
     "大廳四殿堂拿掉單"
    ]
