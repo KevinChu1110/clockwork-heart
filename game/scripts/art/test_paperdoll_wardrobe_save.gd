@@ -248,9 +248,28 @@ func _initialize() -> void:
 	else:
 		print("  ✓ WardrobeDialog 正確辨識玩家當前種族為 tiger")
 
-	# 切換為裸機素體 (costume index 1: none) 與原廠象牙白 (chassis index 1: paint_ivory_stock)
+	# 切換為新外裝 (costume index 1: costume_ash_ninja_garb) 與新塗裝 (chassis index 1: paint_volcano_black)
 	dlg_tiger.costume_index = 1
 	dlg_tiger.chassis_index = 1
+	dlg_tiger._update_card_selection_states()
+	dlg_tiger._update_preview()
+	dlg_tiger.confirm_selection()
+
+	if str(gs.paperdoll_slots.get("costume_id", "")) != "costume_ash_ninja_garb":
+		push_error("烈焰虎換裝後 costume_id 應為 costume_ash_ninja_garb，實際為: %s" % str(gs.paperdoll_slots.get("costume_id", "")))
+		ok = false
+	else:
+		print("  ✓ 烈焰虎成功換裝為灰燼夜行機關裝 (costume_ash_ninja_garb)")
+
+	if str(gs.paperdoll_slots.get("paint_id", "")) != "paint_volcano_black":
+		push_error("烈焰虎換裝後 paint_id 應為 paint_volcano_black，實際為: %s" % str(gs.paperdoll_slots.get("paint_id", "")))
+		ok = false
+	else:
+		print("  ✓ 烈焰虎成功換塗裝為鍛爐淬火曜黑烤漆 (paint_volcano_black)")
+
+	# 切換為裸機素體 (costume index 2: none) 與原廠象牙白 (chassis index 2: paint_ivory_stock)
+	dlg_tiger.costume_index = 2
+	dlg_tiger.chassis_index = 2
 	dlg_tiger._update_card_selection_states()
 	dlg_tiger._update_preview()
 	dlg_tiger.confirm_selection()

@@ -151,10 +151,12 @@ const RACES_DATA: Dictionary = {
 		"desc": "赤焰熔爐淬火工坊的迅捷玩具，雙短刃高頻暴擊，散熱尾管與熔火核心。",
 		"costumes": [
 			{"id": "costume_ember_tunic", "name_zh": "餘燼工匠淬火戰褂", "desc": "耐高溫輕量合金戰褂分件"},
+			{"id": "costume_ash_ninja_garb", "name_zh": "灰燼夜行機關裝", "desc": "曜黑輕量合金機關戰裝與黃金齒輪暗扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現餘燼橙紅機甲素體"}
 		],
 		"chassis": [
 			{"id": "paint_ember_orange", "name_zh": "原廠餘燼橙紅", "desc": "高溫陽極氧化耐熱橙紅烤漆"},
+			{"id": "paint_volcano_black", "name_zh": "鍛爐淬火曜黑烤漆", "desc": "曜黑高光耐熱琺瑯與暗金黃銅關節"},
 			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白高光琺瑯塗層"}
 		]
 	}

@@ -115,6 +115,12 @@
             "name": "原廠餘燼橙紅",
             "race": "tiger",
             "tier": "common"
+          },
+          {
+            "id": "paint_volcano_black",
+            "name": "鍛爐淬火曜黑烤漆",
+            "race": "tiger",
+            "tier": "rare"
           }
         ]
       },
@@ -298,6 +304,12 @@
             "name": "餘燼工匠淬火戰褂",
             "race": "tiger",
             "tier": "common"
+          },
+          {
+            "id": "costume_ash_ninja_garb",
+            "name": "灰燼夜行機關裝",
+            "race": "tiger",
+            "tier": "rare"
           }
         ]
       },
