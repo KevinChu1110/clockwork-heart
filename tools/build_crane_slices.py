@@ -90,19 +90,20 @@ def create_crane_slices():
     # File: weapon/wpn_zephyr_wing_bow.png
     # Zephyr Wing Compound Bow on right side (x: 78..106, y: 48..112)
     weapon_img = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    for y in range(48, 114):
+    # Bow upper blade, cams, pulleys, riser, lower limb
+    for y in range(48, 102):
         for x in range(78, 107):
             raw_p = master.getpixel((x, y))
             if not isinstance(raw_p, tuple) or len(raw_p) < 4: continue
             r, g, b, a = int(raw_p[0]), int(raw_p[1]), int(raw_p[2]), int(raw_p[3])
-            if a < 25: continue
+            if a < 20: continue
             p = (r, g, b, a)
-            # Bow upper blade, cams, pulleys, riser, lower limb
-            is_bow_upper = (y <= 68 and x >= 86)
-            is_bow_tip = (y <= 62 and x >= 92)
-            is_bow_riser = (68 <= y <= 86 and x >= 82 and (r > 120 or g > 120 or b > 140))
-            is_bow_lower = (y >= 84 and x >= 80 and (r > 90 or g > 90 or b > 100))
-            if is_bow_upper or is_bow_tip or is_bow_riser or is_bow_lower:
+            is_bow_upper = (y <= 78 and x >= 94)
+            is_bow_tip = (y <= 62 and x >= 90)
+            is_joint = (76 <= y <= 85 and 91 <= x <= 98)
+            is_lower = (y >= 84 and 80 <= x <= 93)
+            is_grip = (80 <= y <= 85 and 81 <= x <= 91)
+            if is_bow_upper or is_bow_tip or is_joint or is_lower or is_grip:
                 weapon_img.putpixel((x, y), p)
     
     # Refine bow with crisp tungsten wire bowstring & brass cams
@@ -240,9 +241,9 @@ def create_crane_slices():
     shadow_layer = chassis_img.copy().filter(ImageFilter.GaussianBlur(1.8))
     chassis_img = shadow_layer
 
-    # 2. Legs, knees, springs, pistons, and feet (y in [80..122], x in [40..90])
+    # 2. Legs, knees, springs, pistons, and feet (y in [80..122], x in [40..80])
     for y in range(80, 123):
-        for x in range(40, 90):
+        for x in range(40, 80):
             raw_p = master.getpixel((x, y))
             if not isinstance(raw_p, tuple) or len(raw_p) < 4: continue
             r, g, b, a = int(raw_p[0]), int(raw_p[1]), int(raw_p[2]), int(raw_p[3])
@@ -251,15 +252,22 @@ def create_crane_slices():
             # If costume covers the upper thighs, keep chassis legs
             chassis_img.putpixel((x, y), p)
 
-    # 3. Arms and hands (x: 34..50 on left, x: 74..90 on right)
+    # 3. Arms and hands (x: 34..50 on left, x: 74..84 on right)
     for y in range(54, 82):
         for x in range(34, 50): # left arm
             raw_p = master.getpixel((x, y))
             if isinstance(raw_p, tuple) and len(raw_p) >= 4 and int(raw_p[3]) >= 25:
                 chassis_img.putpixel((x, y), (int(raw_p[0]), int(raw_p[1]), int(raw_p[2]), int(raw_p[3])))
-        for x in range(74, 90): # right arm and hand grip
+        for x in range(74, 85): # right arm/sleeve
             raw_p = master.getpixel((x, y))
             if isinstance(raw_p, tuple) and len(raw_p) >= 4 and int(raw_p[3]) >= 25:
+                chassis_img.putpixel((x, y), (int(raw_p[0]), int(raw_p[1]), int(raw_p[2]), int(raw_p[3])))
+
+    # Natural clenched fist at y: 81..84, x: 80..84
+    for y in range(81, 85):
+        for x in range(80, 85):
+            raw_p = master.getpixel((x, y))
+            if isinstance(raw_p, tuple) and len(raw_p) >= 4 and int(raw_p[3]) >= 20:
                 chassis_img.putpixel((x, y), (int(raw_p[0]), int(raw_p[1]), int(raw_p[2]), int(raw_p[3])))
 
     # 4. Underlying torso and neck support (so removing costume leaves a complete chassis)
@@ -274,10 +282,9 @@ def create_crane_slices():
     ch_draw.ellipse([44, 55, 52, 63], fill=(210, 160, 30, 255), outline=(31, 26, 58, 255))
     ch_draw.ellipse([74, 57, 82, 65], fill=(210, 160, 30, 255), outline=(31, 26, 58, 255))
     
-    # Hand grip for bow (so weapon unequip leaves valid hand)
-    ch_draw.ellipse([80, 72, 87, 78], fill=(245, 247, 250, 255), outline=(31, 26, 58, 255))
-    ch_draw.line([(81, 74), (86, 74)], fill=(31, 26, 58, 255))
-    ch_draw.line([(81, 76), (86, 76)], fill=(31, 26, 58, 255))
+    # Crisp outline for bare right fist
+    ch_draw.line([(80, 84), (83, 84)], fill=(31, 26, 58, 255))
+    ch_draw.line([(84, 81), (84, 83)], fill=(31, 26, 58, 255))
 
     # Titanium talons reinforcement
     ch_draw.line([(48, 120), (43, 121)], fill=(31, 26, 58, 255), width=2)
