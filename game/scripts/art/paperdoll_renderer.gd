@@ -241,6 +241,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "paint_ivory_stock"
 			elif race == "tiger":
 				return "paint_ember_orange"
+			elif race == "crane":
+				return "paint_crane_porcelain"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -253,10 +255,14 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "ear_boar_rivet_cowl"
 			elif race == "tiger":
 				return "head_ember_tiger_stock"
+			elif race == "crane":
+				return "head_cloud_crane_stock"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
 				return "key_turbine_flame"
+			elif race == "crane":
+				return "key_tri_wing_zephyr"
 			return "key_classic_brass"
 		SLOT_COSTUME:
 			if race == "macaque":
@@ -269,12 +275,16 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_viking_harness"
 			elif race == "tiger":
 				return "costume_ember_tunic"
+			elif race == "crane":
+				return "costume_zephyr_robe"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
 				return "core_amber_sun"
 			elif race == "tiger":
 				return "core_molten_amber"
+			elif race == "crane":
+				return "core_vermilion_lens"
 			return "core_cyan_emerald"
 		SLOT_WEAPON:
 			if race == "macaque":
@@ -287,6 +297,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "wpn_anvil_greathammer"
 			elif race == "tiger":
 				return "wpn_twin_ember_sabers"
+			elif race == "crane":
+				return "wpn_zephyr_wing_bow"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -299,6 +311,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_spring_tail"
 			elif race == "tiger":
 				return "curio_exhaust_tiger_tail"
+			elif race == "crane":
+				return "curio_origami_crane"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -684,14 +698,15 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 6,
+			"total_races": 7,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
 				{"race_id": "fox", "name_zh": "靈尾狐", "name_en": "Astral Fox", "class_archetype": "法師 (Mage)"},
 				{"race_id": "boar", "name_zh": "鋼牙豕", "name_en": "Forge Boar", "class_archetype": "戰士 (Viking)"},
 				{"race_id": "macaque", "aliases": ["monkey"], "name_zh": "靈爪猴", "name_en": "Spring Macaque", "class_archetype": "武術家 (Monk)"},
-				{"race_id": "tiger", "aliases": ["ember_tiger"], "name_zh": "烈焰虎", "name_en": "The Ember Tiger", "class_archetype": "忍者 (Ninja)"}
+				{"race_id": "tiger", "aliases": ["ember_tiger"], "name_zh": "烈焰虎", "name_en": "The Ember Tiger", "class_archetype": "忍者 (Ninja)"},
+				{"race_id": "crane", "aliases": ["cloud_crane", "zephyr_crane"], "name_zh": "雲嵐鶴", "name_en": "The Cloud Crane", "class_archetype": "遊俠 (Ranger)"}
 			]
 		}
 	}
