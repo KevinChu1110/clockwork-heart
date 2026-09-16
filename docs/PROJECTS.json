@@ -1031,6 +1031,16 @@
    "keys": [
     "第9種族蒸氣企鵝"
    ]
+  },
+  {
+   "id": "paperdoll-race-filter",
+   "cat": "遊戲",
+   "title": "紙娃娃選裝畫面種族篩選 Chip 列",
+   "status": "草稿",
+   "note": "已上線",
+   "keys": [
+    "紙娃娃選裝畫面種"
+   ]
   }
  ]
 }
