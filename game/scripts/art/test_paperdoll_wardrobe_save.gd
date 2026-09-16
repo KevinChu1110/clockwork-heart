@@ -303,9 +303,28 @@ func _initialize() -> void:
 	else:
 		print("  ✓ WardrobeDialog 正確辨識玩家當前種族為 crane")
 
-	# 切換為裸機素體 (costume index 1: none) 與原廠象牙白 (chassis index 1: paint_ivory_stock)
+	# 切換為新外裝 (costume index 1: costume_sky_hunter_mail) 與新塗裝 (chassis index 1: paint_zephyr_azure)
 	dlg_crane.costume_index = 1
 	dlg_crane.chassis_index = 1
+	dlg_crane._update_card_selection_states()
+	dlg_crane._update_preview()
+	dlg_crane.confirm_selection()
+
+	if str(gs.paperdoll_slots.get("costume_id", "")) != "costume_sky_hunter_mail":
+		push_error("雲嵐鶴換裝後 costume_id 應為 costume_sky_hunter_mail，實際為: %s" % str(gs.paperdoll_slots.get("costume_id", "")))
+		ok = false
+	else:
+		print("  ✓ 雲嵐鶴成功換裝為晴空巡獵機關羽甲 (costume_sky_hunter_mail)")
+
+	if str(gs.paperdoll_slots.get("paint_id", "")) != "paint_zephyr_azure":
+		push_error("雲嵐鶴換裝後 paint_id 應為 paint_zephyr_azure，實際為: %s" % str(gs.paperdoll_slots.get("paint_id", "")))
+		ok = false
+	else:
+		print("  ✓ 雲嵐鶴成功換塗裝為晴空凌雲湛藍 (paint_zephyr_azure)")
+
+	# 切換為裸機素體 (costume index 2: none) 與原廠象牙白 (chassis index 2: paint_ivory_stock)
+	dlg_crane.costume_index = 2
+	dlg_crane.chassis_index = 2
 	dlg_crane._update_card_selection_states()
 	dlg_crane._update_preview()
 	dlg_crane.confirm_selection()
@@ -341,9 +360,28 @@ func _initialize() -> void:
 	else:
 		print("  ✓ WardrobeDialog 正確辨識玩家當前種族為 bear")
 
-	# 切換為裸機素體 (costume index 1: none) 與原廠象牙白 (chassis index 1: paint_ivory_stock)
+	# 切換為新外裝 (costume index 1: costume_berserker_cuirass) 與新塗裝 (chassis index 1: paint_iron_quarry)
 	dlg_bear.costume_index = 1
 	dlg_bear.chassis_index = 1
+	dlg_bear._update_card_selection_states()
+	dlg_bear._update_preview()
+	dlg_bear.confirm_selection()
+
+	if str(gs.paperdoll_slots.get("costume_id", "")) != "costume_berserker_cuirass":
+		push_error("玄軸熊換裝後 costume_id 應為 costume_berserker_cuirass，實際為: %s" % str(gs.paperdoll_slots.get("costume_id", "")))
+		ok = false
+	else:
+		print("  ✓ 玄軸熊成功換裝為狂戰破陣機關戰鎧 (costume_berserker_cuirass)")
+
+	if str(gs.paperdoll_slots.get("paint_id", "")) != "paint_iron_quarry":
+		push_error("玄軸熊換裝後 paint_id 應為 paint_iron_quarry，實際為: %s" % str(gs.paperdoll_slots.get("paint_id", "")))
+		ok = false
+	else:
+		print("  ✓ 玄軸熊成功換塗裝為重裝礦山玄鐵灰 (paint_iron_quarry)")
+
+	# 切換為裸機素體 (costume index 2: none) 與原廠象牙白 (chassis index 2: paint_ivory_stock)
+	dlg_bear.costume_index = 2
+	dlg_bear.chassis_index = 2
 	dlg_bear._update_card_selection_states()
 	dlg_bear._update_preview()
 	dlg_bear.confirm_selection()

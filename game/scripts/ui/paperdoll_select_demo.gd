@@ -169,10 +169,12 @@ const RACES_DATA: Dictionary = {
 		"desc": "玄軸工坊重型機甲，剛毅沉穩的發條巨熊，配置重裝外殼與高扭力擺線核心。",
 		"costumes": [
 			{"id": "costume_ironclad_overalls", "name_zh": "玄軸工坊重裝工作吊帶甲", "desc": "耐衝擊重型鍛造吊帶金屬胸甲"},
+			{"id": "costume_berserker_cuirass", "name_zh": "狂戰破陣機關戰鎧", "desc": "重裝鍛鋼胸甲、雙肩鉸鏈護肩與維京鉚釘板甲"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現重型鍛鐵玄軸素體"}
 		],
 		"chassis": [
 			{"id": "paint_bear_amber", "name_zh": "原廠玄軸琥珀棕", "desc": "沉穩深琥珀琺瑯金屬烤漆"},
+			{"id": "paint_iron_quarry", "name_zh": "重裝礦山玄鐵灰", "desc": "沉穩深冷礦山玄鐵高光琺瑯與黃銅球窩關節"},
 			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白抗衝擊塗裝"}
 		]
 	},
@@ -185,10 +187,12 @@ const RACES_DATA: Dictionary = {
 		"desc": "雲嵐機關閣的靈巧玩具，修長纖細的流線身形，搭載輕量雙羽導流翼板與羽翼尾機關。",
 		"costumes": [
 			{"id": "costume_zephyr_robe", "name_zh": "凌雲羽衣輕鋼道袍", "desc": "輕合金陶瓷薄板與雙羽導流道袍"},
+			{"id": "costume_sky_hunter_mail", "name_zh": "晴空巡獵機關羽甲", "desc": "高機動輕合金折疊羽甲與導風肩甲"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現修長流線機關素體"}
 		],
 		"chassis": [
-			{"id": "paint_crane_porcelain", "name_zh": "原廠雲嵐白瓷琺瑯", "desc": "清雅雲嵐微光白瓷高光琺瑯"},
+			{"id": "paint_crane_porcelain", "name_zh": "原廠冷淬青瓷白", "desc": "清雅雲嵐微光白瓷高光琺瑯"},
+			{"id": "paint_zephyr_azure", "name_zh": "晴空凌雲湛藍", "desc": "晴空凌雲深邃湛藍高光琺瑯烤漆"},
 			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白高光塗層"}
 		]
 	},

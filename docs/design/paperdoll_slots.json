@@ -129,6 +129,12 @@
             "tier": "common"
           },
           {
+            "id": "paint_zephyr_azure",
+            "name": "晴空凌雲湛藍烤漆",
+            "race": "crane",
+            "tier": "rare"
+          },
+          {
             "id": "paint_bear_amber",
             "name": "原廠焦糖琥珀烤漆",
             "race": "bear",
@@ -367,6 +373,12 @@
             "name": "凌雲羽衣輕鋼道袍",
             "race": "crane",
             "tier": "common"
+          },
+          {
+            "id": "costume_sky_hunter_mail",
+            "name": "晴空巡獵機關羽甲",
+            "race": "crane",
+            "tier": "rare"
           },
           {
             "id": "costume_ironclad_overalls",
