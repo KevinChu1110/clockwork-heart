@@ -141,7 +141,7 @@ func _initialize() -> void:
 
 	# ── 4. 測試多族反覆動態切換與狀態還原 ──
 	print("\n--- 測試多族快速交替切換與還原 ---")
-	var switch_sequence: Array[String] = ["fox", "lion", "macaque", "boar", "tiger", "crane", "bear", "rabbit"]
+	var switch_sequence: Array[String] = ["fox", "lion", "macaque", "boar", "tiger", "crane", "bear", "penguin", "rabbit"]
 	for target_rid in switch_sequence:
 		preview.switch_to_race(target_rid)
 		print("  • 切換至 %s -> 當前狀態: %s" % [target_rid, preview.get_current_race()])

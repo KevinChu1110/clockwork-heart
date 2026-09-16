@@ -245,6 +245,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "paint_crane_porcelain"
 			elif race == "bear":
 				return "paint_bear_amber"
+			elif race == "penguin":
+				return "paint_penguin_navy"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -261,6 +263,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_cloud_crane_stock"
 			elif race == "bear":
 				return "head_iron_bear_stock"
+			elif race == "penguin":
+				return "head_steam_penguin_stock"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -269,6 +273,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_tri_wing_zephyr"
 			elif race == "bear":
 				return "key_cross_pendulum"
+			elif race == "penguin":
+				return "key_twin_ring_helm"
 			return "key_classic_brass"
 		SLOT_COSTUME:
 			if race == "macaque":
@@ -285,6 +291,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_zephyr_robe"
 			elif race == "bear":
 				return "costume_ironclad_overalls"
+			elif race == "penguin":
+				return "costume_navigator_harness"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -295,6 +303,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "core_vermilion_lens"
 			elif race == "bear":
 				return "core_emerald_lens"
+			elif race == "penguin":
+				return "core_cyan_quartz"
 			return "core_cyan_emerald"
 		SLOT_WEAPON:
 			if race == "macaque":
@@ -311,6 +321,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "wpn_zephyr_wing_bow"
 			elif race == "bear":
 				return "wpn_eccentric_gyro_sledge"
+			elif race == "penguin":
+				return "wpn_twin_harpoon_gun"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -327,6 +339,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_origami_crane"
 			elif race == "bear":
 				return "curio_music_honey_cask"
+			elif race == "penguin":
+				return "curio_mini_steam_boiler"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -712,7 +726,7 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 8,
+			"total_races": 9,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
@@ -721,7 +735,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "macaque", "aliases": ["monkey"], "name_zh": "靈爪猴", "name_en": "Spring Macaque", "class_archetype": "武術家 (Monk)"},
 				{"race_id": "tiger", "aliases": ["ember_tiger"], "name_zh": "烈焰虎", "name_en": "The Ember Tiger", "class_archetype": "忍者 (Ninja)"},
 				{"race_id": "crane", "aliases": ["cloud_crane", "zephyr_crane"], "name_zh": "雲嵐鶴", "name_en": "The Cloud Crane", "class_archetype": "遊俠 (Ranger)"},
-				{"race_id": "bear", "aliases": ["iron_bear", "heavy_bear"], "name_zh": "玄軸熊", "name_en": "The Iron Bear", "class_archetype": "戰士 (Viking)"}
+				{"race_id": "bear", "aliases": ["iron_bear", "heavy_bear"], "name_zh": "玄軸熊", "name_en": "The Iron Bear", "class_archetype": "戰士 (Viking)"},
+				{"race_id": "penguin", "aliases": ["steam_penguin", "frost_penguin"], "name_zh": "蒸氣企鵝", "name_en": "The Steam Penguin", "class_archetype": "遊俠 (Ranger)"}
 			]
 		}
 	}

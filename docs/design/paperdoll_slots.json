@@ -133,6 +133,12 @@
             "name": "原廠焦糖琥珀烤漆",
             "race": "bear",
             "tier": "common"
+          },
+          {
+            "id": "paint_penguin_navy",
+            "name": "原廠深海鍍鈦藍",
+            "race": "penguin",
+            "tier": "common"
           }
         ]
       },
@@ -203,6 +209,12 @@
             "name": "雙層同心圓耳罩與乳白口鼻罩",
             "race": "bear",
             "tier": "common"
+          },
+          {
+            "id": "head_steam_penguin_stock",
+            "name": "沖壓黃銅風鏡與雙瓣短喙",
+            "race": "penguin",
+            "tier": "common"
           }
         ]
       },
@@ -262,6 +274,11 @@
           {
             "id": "key_cross_pendulum",
             "name": "玄軸雙重重錘十字鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_twin_ring_helm",
+            "name": "雙環舵輪造型黃銅鑰匙",
             "tier": "common"
           }
         ]
@@ -356,6 +373,12 @@
             "name": "玄軸工坊重裝工作吊帶甲",
             "race": "bear",
             "tier": "common"
+          },
+          {
+            "id": "costume_navigator_harness",
+            "name": "深海導航員合金防撞工作甲",
+            "race": "penguin",
+            "tier": "common"
           }
         ]
       },
@@ -416,6 +439,12 @@
             "id": "core_emerald_lens",
             "name": "原廠薄荷翡翠透鏡核心",
             "race": "bear",
+            "tier": "common"
+          },
+          {
+            "id": "core_cyan_quartz",
+            "name": "原廠天藍石英透鏡核心",
+            "race": "penguin",
             "tier": "common"
           }
         ]
@@ -484,6 +513,12 @@
             "id": "wpn_eccentric_gyro_sledge",
             "name": "玄軸偏心重力錘",
             "weapon_type": "hammer",
+            "tier": "common"
+          },
+          {
+            "id": "wpn_twin_harpoon_gun",
+            "name": "蒸氣雙管導航火槍",
+            "weapon_type": "gun",
             "tier": "common"
           }
         ]
@@ -556,13 +591,19 @@
             "name": "懸浮發條八音小蜂箱",
             "race": "bear",
             "tier": "common"
+          },
+          {
+            "id": "curio_mini_steam_boiler",
+            "name": "微型黃銅耐壓蒸氣鍋爐",
+            "race": "penguin",
+            "tier": "common"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 8,
+    "total_races": 9,
     "races": [
       {
         "race_id": "rabbit",
@@ -1068,6 +1109,73 @@
           "portrait_dialogue": "game/assets/sprites/portraits/iron_bear.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/bear/{slot_id}/{item_id}.png [待產出]"
         }
+      },
+      {
+        "race_id": "penguin",
+        "aliases": [
+          "steam_penguin",
+          "frost_penguin"
+        ],
+        "name_zh": "蒸氣企鵝",
+        "name_en": "The Steam Penguin",
+        "class_archetype": "遊俠 (Ranger)",
+        "origin_realm": "R05 琉璃汪洋·發條海淵 / Crystal Ocean: The Clockwork Abyss",
+        "lore_anchor": "自琉璃汪洋「水下發條宮殿」旁巡弋守護的發條玩具，通體由耐高壓鍍鈦深藍琺瑯板件與雲石純白防撞胸甲組裝而成，以背部微型蒸氣排氣鍋爐、蒸氣雙管火槍與高壓水銃狙擊見長的深海導航員",
+        "proportions": {
+          "head_to_body_ratio": "2.1 ~ 2.3 頭身 (圓滾憨厚體態)",
+          "posture": "昂首挺胸站立，雙鰭自然端托蒸氣雙管火槍，身軀圓潤低重心，背部舵輪發條鑰匙與微型蒸氣背包平穩自轉排氣",
+          "standee_height_px": 840,
+          "standee_width_px": 400
+        },
+        "mechanical_features": {
+          "head_and_goggles": "半球狀深藍厚鋼頭殼，面部裝配沖壓黃銅框雙聯圓形深潛風鏡，內嵌天藍高透耐壓石英目鏡與微型十字螺釘",
+          "beak": "雙瓣沖壓亮金黃銅鑷夾短喙，中央帶有清晰閉合分模線，內部設有微型壓力釋放排氣縫隙",
+          "chassis_and_wings": "水滴形加厚耐壓鍍鈦深藍外殼，胸腹覆蓋雲石純白防撞合金板，雙臂為雙鉸鏈平滑金屬流線鰭板",
+          "feet_and_tail": "粗柱形油壓減震重腿，足底配置三瓣展開式沖壓防滑橘合金腳蹼；尾部為半圓形壓鑄黃銅配重舵",
+          "weapon_system": "手持專利「蒸氣雙管導航火槍」，雙聯並列鍍鈦耐壓重銃，下掛高壓蒸氣導管與微型指針壓力表，完全對齊 ranger/gun 體系"
+        },
+        "color_palette": {
+          "primary": "#1E3A8A (深海耐壓鍍鈦深藍烤漆)",
+          "secondary": "#FFFDF8 (雲石純白防撞胸甲板件)",
+          "accent": "#FFA010 (暖橘亮金黃銅喙嘴與腳蹼)",
+          "detail": "#38A0FF (琉璃天藍發條之心與透鏡眼珠)",
+          "outline": "#1F1A3A (深藍紫厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "docs/art/steam_penguin_concept.png (928x1152 概念立繪)",
+              "branding/char_penguin.png (400x840 品牌立牌)",
+              "web/media/hero/char_penguin.png (400x840 官網英雄圖)",
+              "web/media/hero/penguin_idle.png (128x128 官網預覽圖)",
+              "game/assets/sprites/player/penguin_idle.png (64x64 基礎待機)",
+              "game/assets/sprites/player/penguin_idle_x3.png (128x128 高畫質待機)",
+              "game/assets/sprites/player/party/penguin_idle.png (128x128 隊伍展示幀)",
+              "game/assets/sprites/player/penguin_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/penguin_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/penguin_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/penguin/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/penguin.png (128x128 HUD戰鬥頭像)",
+              "game/assets/sprites/portraits/steam_penguin.png (384x480 對話框半身像)",
+              "game/assets/sprites/player/paperdoll/penguin/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_penguin.png (400x840) [待產出]",
+          "branding_concept_art": "docs/art/steam_penguin_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_penguin.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/penguin_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/penguin_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/penguin_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/penguin_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/penguin_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/penguin_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/penguin_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/penguin/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/penguin.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/steam_penguin.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/penguin/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -1115,7 +1223,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 8 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 9 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -1137,7 +1245,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "八大種族軀幹均維持 2.0~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬/熊) 由渲染器微調縮放 1.05x"
+        "rule": "九大種族軀幹均維持 2.0~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬/熊) 由渲染器微調縮放 1.05x"
       }
     ]
   },
@@ -1153,7 +1261,8 @@
         "game/assets/sprites/player/paperdoll/macaque/",
         "game/assets/sprites/player/paperdoll/tiger/",
         "game/assets/sprites/player/paperdoll/crane/",
-        "game/assets/sprites/player/paperdoll/bear/"
+        "game/assets/sprites/player/paperdoll/bear/",
+        "game/assets/sprites/player/paperdoll/penguin/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
