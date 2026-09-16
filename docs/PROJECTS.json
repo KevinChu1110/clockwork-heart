@@ -1086,8 +1086,8 @@
    "id": "penguin-combat-poses",
    "cat": "遊戲",
    "title": "第9種族蒸氣企鵝6大戰鬥姿態補齊",
-   "status": "測試中",
-   "note": "6大戰鬥姿態產出完成，verify_penguin_poses 7大自動化測試全綠，Godot headless 測試通過，等待驗收",
+   "status": "開發中",
+   "note": "審核未通過：腰間多出一把未核准的多管槍、皮革腰帶違反零毛皮，退回重畫",
    "keys": [
     "第9種族蒸氣企鵝"
    ]
