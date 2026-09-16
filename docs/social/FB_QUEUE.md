@@ -561,9 +561,9 @@ B 灰燼夜行機關裝（消光黑碳素護甲，暗影隱匿疾速風格）
 | 序 | 排程時間 | Persona | 形式 | 素材（必須存在於 repo） | 核心目的與追蹤指標 | 狀態 |
 |---|---|---|---|---|---|---|
 | Day 1 | 週三 20:00 (09-30) | 阿哲（內容行銷） | 第九族蒸氣企鵝 7 槽切片世界觀工藝長文 | `game/assets/sprites/player/paperdoll/penguin/proof_penguin_all_7_slices.png` | 拆解 7 大發條槽位切片，探討深海導航員玩具世界觀與羽毛轉合金板件工藝取捨／分享數、長文停留時間 | ✅ 已發布（ID: `1335191403004011_122112199899447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112199899447337) |
-| Day 2 | 週四 20:00 (10-01) | 小魚（視覺成果直擊） | 蒸氣企鵝 7 槽裝配成品與洋紅底板驗收對照圖 | `game/assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_compare.png` | 開門見山直擊蒸氣企鵝 7 槽組裝完成立繪與洋紅背板零毛皮去背驗收／單圖停留時間、留言數、分享數 | 素材待修，暫緩（待美術修正 chassis 後重產同名圖再發） |
+| Day 2 | 週四 20:00 (10-01) | 小魚（視覺成果直擊） | 蒸氣企鵝 7 槽裝配成品與洋紅底板驗收對照圖 | `game/assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_compare.png` | 開門見山直擊蒸氣企鵝 7 槽組裝完成立繪與洋紅背板零毛皮去背驗收／單圖停留時間、留言數、分享數 | ✅ 素材已修復解禁，待開發文單（2026-09-16 總監複驗：chassis 已清除內建武器，重產同名圖經 vision 放大確認武器數量 1 把、文字無亂碼無截切） |
 | Day 3 | 週五 20:00 (10-02) | 小玩（平台機制） | 蒸氣企鵝六大戰鬥姿態雙擊放大數蒸氣眼力測驗 | `game/assets/sprites/player/proof_penguin_combat_poses_640.png` | 借平台雙擊放大手勢挑戰數出招噴發蒸氣動作格數／單圖停留時間、放大互動、留言數 | 待總監審查後開發文單 |
-| Day 4 | 週六 12:00 (10-03) | Ken（社群互動） | 發條衣櫥種族篩選企鵝外裝二選一秒回投票 | `proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png` | 深海導航員大衣 vs 裸機素體工藝版外觀風格二選一單字回覆／留言數、留言與觸及比 | 素材待修，暫緩（待美術修正 chassis 後重產同名圖再發） |
+| Day 4 | 週六 12:00 (10-03) | Ken（社群互動） | 發條衣櫥種族篩選企鵝外裝二選一秒回投票 | `proofs/wardrobe_race_filter/proof_wardrobe_filter_penguin.png` | 深海導航員大衣 vs 裸機素體工藝版外觀風格二選一單字回覆／留言數、留言與觸及比 | ⚠️ 素體已修好（武器 1 把），但實機截圖「企鵝」標籤右側被邊框截字，仍暫緩（待 UI 修 chip 列寬後重截同名圖再發） |
 
 素材自檢（發文前必須確認檔案存在於 repo 且合規）：
 
