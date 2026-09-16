@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+"""
+tools/cleanup_render_cache.py
+清理影片渲染生成產生的中間影格快取目錄（如 proofs/render_18s、proofs/five_races_frames）
+避免大量逐格 PNG 佔據磁碟空間與干擾版控。
+"""
 import os, shutil
 
 dirs_to_clean = [

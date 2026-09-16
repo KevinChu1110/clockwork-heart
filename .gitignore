@@ -54,5 +54,10 @@ game/assets/sprites/maps/_backup_prepixel_0827/
 
 # 影片逐格幀與 game/ 根目錄的臨時 proof 截圖，不進 repo
 proofs/macaque_frames/
+proofs/five_races_frames/
+proofs/render_18s/
 game/proof_*.png
 game/proof_*.png.import
+
+# tools/ 底下的一次性除錯與分析腳本歸檔
+tools/scratch/
