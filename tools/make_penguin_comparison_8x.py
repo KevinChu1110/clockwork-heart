@@ -1,72 +1,69 @@
 #!/usr/bin/env python3
-"""
-tools/make_penguin_comparison_8x.py
-Generates an 8x scaled comparison board on magenta:
-Left: head_unit (head_steam_penguin_stock.png)
-Middle: first costume (costume_navigator_harness.png)
-Right: new second costume (costume_abyssal_diver_cuirass.png)
-All cropped to their bbox and placed side by side.
-"""
-
-from PIL import Image, ImageDraw
+import os
+from PIL import Image, ImageDraw, ImageFont
 
 REPO_ROOT = "/opt/side/bravesoul-game"
-PENGUIN_DIR = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/penguin"
+FONT_PATH = f"{REPO_ROOT}/game/assets/fonts/jf-openhuninn-2.1.ttf"
 
-def make_board(out_path="/tmp/penguin_costume_comparison_8x.png"):
-    p_head = f"{PENGUIN_DIR}/head_unit/head_steam_penguin_stock.png"
-    p_c1 = f"{PENGUIN_DIR}/costume/costume_navigator_harness.png"
-    p_c2 = f"{PENGUIN_DIR}/costume/costume_abyssal_diver_cuirass.png"
+def get_font(size: int = 16):
+    if os.path.exists(FONT_PATH):
+        try:
+            return ImageFont.truetype(FONT_PATH, size)
+        except Exception:
+            pass
+    return ImageFont.load_default()
 
-    im_head = Image.open(p_head).convert("RGBA")
-    im_c1 = Image.open(p_c1).convert("RGBA")
-    im_c2 = Image.open(p_c2).convert("RGBA")
+rabbit_p = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/rabbit/chassis/paint_midnight_navy.png"
+bear_p = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/bear/chassis/paint_bear_amber.png"
+pen_navy_p = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/penguin/chassis/paint_penguin_navy.png"
+pen_polar_p = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/penguin/chassis/paint_polar_frost.png"
+pen_ivory_p = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/penguin/chassis/paint_ivory_stock.png"
 
-    # Crop to bbox
-    crop_head = im_head.crop(im_head.getbbox())
-    crop_c1 = im_c1.crop(im_c1.getbbox())
-    crop_c2 = im_c2.crop(im_c2.getbbox())
+items = [
+    ("兔族 (Rabbit Navy)", rabbit_p, (38, 52, 86, 94)),
+    ("熊族 (Bear Amber)", bear_p, (42, 52, 86, 94)),
+    ("企鵝 (Penguin Navy)", pen_navy_p, (38, 52, 86, 94)),
+    ("企鵝 (Penguin Polar)", pen_polar_p, (38, 52, 86, 94)),
+    ("企鵝 (Penguin Ivory)", pen_ivory_p, (38, 52, 86, 94)),
+]
 
-    SCALE = 8
-    def scale_and_magenta(im):
-        w, h = im.size
-        large = im.resize((w * SCALE, h * SCALE), Image.Resampling.NEAREST)
-        mag = Image.new("RGBA", large.size, (255, 0, 255, 255))
-        mag.alpha_composite(large)
-        return mag
+scale = 6
+crop_w = 48
+crop_h = 42
+box_w = crop_w * scale
+box_h = crop_h * scale
+pad = 20
+gap = 16
+header_h = 50
 
-    m_head = scale_and_magenta(crop_head)
-    m_c1 = scale_and_magenta(crop_c1)
-    m_c2 = scale_and_magenta(crop_c2)
+total_w = pad * 2 + len(items) * box_w + (len(items) - 1) * gap
+total_h = header_h + box_h + 40 + pad * 2
 
-    pad = 20
-    header = 50
-    total_w = pad + m_head.width + pad + m_c1.width + pad + m_c2.width + pad
-    max_h = max(m_head.height, m_c1.height, m_c2.height)
-    total_h = header + max_h + pad
+canvas = Image.new("RGBA", (total_w, total_h), (24, 26, 34, 255))
+d = ImageDraw.Draw(canvas)
+font_title = get_font(20)
+font_lbl = get_font(15)
 
-    board = Image.new("RGBA", (total_w, total_h), (25, 20, 35, 255))
-    d = ImageDraw.Draw(board)
+d.text((pad, pad), "Chassis Torso 6x Zoom Comparison (Rabbit vs Bear vs Penguin)", font=font_title, fill=(255, 215, 64, 255))
 
-    # Paste
-    curr_x = pad
-    # 1. Head
-    d.text((curr_x, 15), "1. Head Unit Stock (Ref)", fill=(255, 220, 80, 255))
-    board.paste(m_head, (curr_x, header))
-    curr_x += m_head.width + pad
+for i, (label, path, (x0, y0, x1, y1)) in enumerate(items):
+    x = pad + i * (box_w + gap)
+    y = header_h + pad
 
-    # 2. Costume 1
-    d.text((curr_x, 15), "2. Costume 1 Navigator (Ref)", fill=(255, 220, 80, 255))
-    board.paste(m_c1, (curr_x, header))
-    curr_x += m_c1.width + pad
+    im = Image.open(path).convert("RGBA")
+    # crop region
+    crop = im.crop((x0, y0, x1, y1))
+    # resize 6x NEAREST
+    scaled = crop.resize((box_w, box_h), Image.Resampling.NEAREST)
 
-    # 3. Costume 2
-    d.text((curr_x, 15), "3. Costume 2 Abyssal (New)", fill=(255, 220, 80, 255))
-    board.paste(m_c2, (curr_x, header))
+    # background card
+    bg = Image.new("RGBA", (box_w, box_h), (40, 42, 54, 255))
+    bg.alpha_composite(scaled)
+    canvas.alpha_composite(bg, (x, y))
 
-    board.save(out_path)
-    print(f"✓ Saved 8x comparison board: {out_path} ({total_w}x{total_h})")
-    return out_path
+    d.rectangle([x, y, x + box_w, y + box_h], outline=(100, 110, 130, 255), width=2)
+    d.text((x + 10, y + box_h + 8), label, font=font_lbl, fill=(240, 240, 250, 255))
 
-if __name__ == "__main__":
-    make_board()
+out_p = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/penguin/proof_penguin_chassis_zoom_comparison.png"
+canvas.save(out_p)
+print(f"✓ Saved 6x comparison to {out_p}")
