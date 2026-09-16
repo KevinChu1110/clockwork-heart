@@ -58,6 +58,7 @@ proofs/five_races_frames/
 proofs/render_18s/
 game/proof_*.png
 game/proof_*.png.import
+game/proofs/
 
 # tools/ 底下的一次性除錯與分析腳本歸檔
 tools/scratch/
