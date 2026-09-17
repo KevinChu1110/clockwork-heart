@@ -34,7 +34,7 @@ python3 /root/discord_file.py "<說明>" 檔案...            # 傳圖/影片到
 ## 發佈規則（Kevin 2026-09-04 定案，交接後不變）
 
 1. **內容必須來自 repo 已寫定的文案**（`FB_QUEUE.md`）。⛔ 不准臨場自編就發。要發新東西：先寫進文件、審過、下一輪再發。
-2. **一天最多一則**；同一則不重複發。發完記進 `/root/.fb-warmup-state.json`（`posted[]`：day / persona / topic / output / posted_at / asset）。
+2. **一天最多一則**；同一則不重複發。日界以 CST（UTC+8）為準。狀態檔 `/root/.fb-warmup-state.json` 頂層維護 `last_post_date_cst`（格式 `YYYY-MM-DD`）與 `last_post_time_cst`，`posted[]` 各筆包含 `date_cst`，比對發文一律對齊 CST 日期防跨 UTC 午夜重發；`fb_post.py` 底層內建同日發文防呆阻擋。
 3. ⛔ 上架日期、價格、營收數字、與他人合作 → 一律先問 Kevin。
 4. 全數標 `#開發中`；不放未上線商店連結。
 5. 素材優先序：實機錄影 > `screenshots/` 現有截圖 > `branding/key_visual_main.png` > 產圖（必帶 `--ref` 主視覺）> AI 影片（一週一部，先問）。**不用 AI 畫面冒充實機。**
