@@ -1406,8 +1406,8 @@
    "id": "rabbit-lobby-showcase",
    "cat": "遊戲",
    "title": "小白大廳展示立繪：硬邊金屬、不要 2.5D 頭貼混像素身",
-   "status": "草稿",
-   "note": "先做兔族，九族整包超過一晚",
+   "status": "開發中",
+   "note": "已開 sideart 卡；大廳角色改 NEAREST 避免 128 被 LINEAR 放大起霧",
    "keys": [
     "小白大廳展示立繪"
    ]
