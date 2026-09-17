@@ -106,8 +106,35 @@ def main():
             sys.exit(1)
         print(f"    ✓ [{race}] 0-QA17 通過: 重複欄比例={dup_col_ratio:.2%} (<8%), 色數={unique_colors} (>5000)")
 
+    # 4. 狐族臉部錯位青綠光球否證量測 (review 意見 2)
+    print("\n=== 4. 狐族臉部錯位青綠光球否證量測 ===")
+    fox_img = Image.open(proof_files["fox"]).convert("RGBA")
+    fox_arr = np.array(fox_img)
+    fox_face = fox_arr[380:480, 270:360]
+    face_cyan = (fox_face[:, :, 1] > 120) & (fox_face[:, :, 2] > 100) & (fox_face[:, :, 0] < fox_face[:, :, 1] - 20)
+    cyan_count = np.sum(face_cyan)
+    print(f"  狐族臉部區域 (y:380..480, x:270..360) 孤立青綠像素數: {cyan_count}")
+    if cyan_count > 0:
+        print(f"FAIL: 狐族臉部仍有殘留青綠色像素 ({cyan_count})！")
+        sys.exit(1)
+    print("  ✓ 狐族臉部乾淨，無錯位青綠色發光球！")
+
+    # 5. 0-ART26c 武器渲染量測 (review 意見 1: 獅族手持長槍判定)
+    print("\n=== 5. 0-ART26c 武器渲染量測 ===")
+    lion_img = Image.open(proof_files["lion"]).convert("RGBA")
+    lion_arr = np.array(lion_img)
+    # 獅族右手持長槍區域 (x:240..275, y:360..460)
+    lance_crop = lion_arr[360:460, 240:275]
+    # 長槍槍身主要為金黃/乳白/深青色
+    lance_pixels = np.sum((lance_crop[:, :, 3] > 200) & (lance_crop[:, :, :3].mean(axis=2) > 100))
+    print(f"  獅族長槍區域實機像素數: {lance_pixels}")
+    if lance_pixels < 200:
+        print(f"FAIL: 獅族長槍未正確渲染！(像素數={lance_pixels})")
+        sys.exit(1)
+    print("  ✓ 獅族長槍清晰持於手上，武器槽位渲染通過！")
+
     print("\n==================================================================")
-    print("✓ 全項驗證通過：0-QA18 (1280x720 完整畫面), 0-QA17 (512+LINEAR 平滑無鋸齒), 0-QA15 (無重複)")
+    print("✓ 全項驗證通過：0-QA18 (1280x720 完整畫面), 0-QA17 (512+LINEAR 平滑無鋸齒), 0-QA15 (無重複), 0-ART26c (武器完整渲染), 狐面乾淨")
     print("==================================================================")
 
 if __name__ == "__main__":

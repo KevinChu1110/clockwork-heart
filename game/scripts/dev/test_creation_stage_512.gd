@@ -19,24 +19,24 @@ func _initialize() -> void:
 		print("Race: %-8s | is_stage_512: %-5s | size: %-12s | filter: %d (2=LINEAR)" % [r, str(is_512), str(sz), filter])
 
 	print("\n--- 測試換外裝／塗裝即時重合成 ---")
-	# 兔族切換外裝 (0: nutcracker 512, 1: steam_artisan (fallback 128), 2: royal_parade (fallback 128), 3: none 512)
+	# 兔族切換外裝 (0: nutcracker 512, 1: steam_artisan (LANCZOS), 2: royal_parade (LANCZOS), 3: none 512)
 	demo.call("select_race", "rabbit")
-	print("[Rabbit default 0]: is_512=", demo.call("is_stage_512"), " size=", demo.call("get_stage_texture").get_size() if demo.call("get_stage_texture") else "128 fallback")
+	print("[Rabbit default 0]: is_512=", demo.call("is_stage_512"), " size=", demo.call("get_stage_texture").get_size() if demo.call("get_stage_texture") else "null")
 
 	demo.call("_on_costume_next_pressed") # 1: steam_artisan
-	print("[Rabbit costume 1]: is_512=", demo.call("is_stage_512"), " (expect false, fallback to 128)")
+	print("[Rabbit costume 1]: is_512=", demo.call("is_stage_512"), " size=", demo.call("get_stage_texture").get_size() if demo.call("get_stage_texture") else "null")
 
 	demo.call("_on_costume_next_pressed") # 2: royal_parade
-	print("[Rabbit costume 2]: is_512=", demo.call("is_stage_512"), " (expect false, fallback to 128)")
+	print("[Rabbit costume 2]: is_512=", demo.call("is_stage_512"), " size=", demo.call("get_stage_texture").get_size() if demo.call("get_stage_texture") else "null")
 
 	demo.call("_on_costume_next_pressed") # 3: none
 	print("[Rabbit costume 3 (none)]: is_512=", demo.call("is_stage_512"), " size=", demo.call("get_stage_texture").get_size() if demo.call("get_stage_texture") else "null")
 
-	# 鶴族切換外裝 (0: zephyr_robe 128, 1: sky_hunter 128, 2: none 512)
+	# 鶴族切換外裝 (0: zephyr_robe (LANCZOS), 1: sky_hunter (LANCZOS), 2: none 512)
 	demo.call("select_race", "crane")
-	print("\n[Crane default 0]: is_512=", demo.call("is_stage_512"), " (128 fallback)")
+	print("\n[Crane default 0]: is_512=", demo.call("is_stage_512"), " size=", demo.call("get_stage_texture").get_size() if demo.call("get_stage_texture") else "null")
 	demo.call("_on_costume_next_pressed") # 1: sky_hunter
-	print("[Crane costume 1]: is_512=", demo.call("is_stage_512"), " (128 fallback)")
+	print("[Crane costume 1]: is_512=", demo.call("is_stage_512"), " size=", demo.call("get_stage_texture").get_size() if demo.call("get_stage_texture") else "null")
 	demo.call("_on_costume_next_pressed") # 2: none (裸機素體)
 	print("[Crane costume 2 (none)]: is_512=", demo.call("is_stage_512"), " size=", demo.call("get_stage_texture").get_size() if demo.call("get_stage_texture") else "null")
 

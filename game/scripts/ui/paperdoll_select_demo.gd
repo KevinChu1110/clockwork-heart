@@ -589,7 +589,7 @@ func _apply_current_selections() -> void:
 	_update_stage_512(selections)
 
 	# 更新 UI 顯示文字與標記
-	_update_info_ui(data, cur_costume, cur_chassis)
+	_update_info_ui(data, cur_costume, cur_chassis, selections)
 
 
 var _sprite_512: Sprite2D = null
@@ -650,7 +650,7 @@ func is_stage_512() -> bool:
 
 
 ## 更新 UI 資訊
-func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis: Dictionary) -> void:
+func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis: Dictionary, selections: Dictionary = {}) -> void:
 	var name_zh: String = str(race_data.get("name_zh", ""))
 	var name_en: String = str(race_data.get("name_en", ""))
 	var archetype: String = str(race_data.get("archetype", ""))
@@ -691,13 +691,22 @@ func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis
 		weapon_name_label.text = "%s (%s)" % [wpn_name, default_wpn]
 
 	# 槽位總結
-	if slot_summary_label != null and character != null:
-		var entries := character.get_rendered_entries()
+	if slot_summary_label != null:
+		var total_slots := 7
 		var loaded_count := 0
-		for e in entries:
-			if bool(e.get("is_loaded", false)):
-				loaded_count += 1
-		slot_summary_label.text = "7 大槽位狀態：全部 %d 槽疊合就緒 (載入: %d/%d)" % [entries.size(), loaded_count, entries.size()]
+		if is_stage_512():
+			var entries := PaperdollRenderer.get_sorted_slot_entries_512(_current_race_id, selections)
+			for e in entries:
+				var p: String = str(e.get("texture_path", ""))
+				if p != "" and bool(e.get("is_loaded", false)):
+					loaded_count += 1
+			slot_summary_label.text = "7 大槽位狀態：512 高清合成就緒 (渲染: %d/%d)" % [loaded_count, total_slots]
+		elif character != null:
+			var entries := character.get_rendered_entries()
+			for e in entries:
+				if bool(e.get("is_loaded", false)):
+					loaded_count += 1
+			slot_summary_label.text = "7 大槽位狀態：全部 %d 槽疊合就緒 (載入: %d/%d)" % [entries.size(), loaded_count, entries.size()]
 
 
 ## 更新按鈕選取高亮樣式

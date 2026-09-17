@@ -505,9 +505,9 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 		var p512_clean := "%s/%s/%s/%s_512.png" % [PAPERDOLL_ROOT, rid, sid, clean_id]
 		if ResourceLoader.exists(p512_clean) or FileAccess.file_exists(p512_clean):
 			return p512_clean
-		# 跨族 512 切片共用（外裝／武器／奇玩／鑰匙）
+		# 跨族 512 切片共用（外裝／奇玩／鑰匙）
 		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
-		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
+		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
 					continue
@@ -518,12 +518,6 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 				if clean_id != effective_id and (ResourceLoader.exists(cross_512_clean) or FileAccess.file_exists(cross_512_clean)):
 					return cross_512_clean
 
-		if sid == SLOT_WEAPON:
-			# 該槽位沒有本族／共用 512 切片時回空字串安全隱藏（禁止用兔族劍代替，遵守各族武器設定）
-			return ""
-		elif sid == SLOT_BACK_CURIO:
-			# 非必選槽位若無 512 切片則安全隱藏，不退回 128 破壞 512 合成
-			return ""
 	return resolve_slot_texture_path(rid, sid, iid)
 
 
@@ -569,10 +563,11 @@ static func build_composite_texture_512(race: String, slot_selection: Dictionary
 		var p: String = str(entry.get("texture_path", ""))
 		if p == "":
 			continue
-		if str(entry.get("slot_id", "")) == SLOT_CHASSIS and p.ends_with("_512.png"):
+		var sid: String = str(entry.get("slot_id", ""))
+		if sid == SLOT_CHASSIS and p.ends_with("_512.png"):
 			has_chassis_512 = true
-		elif not p.ends_with("_512.png"):
-			## 任何啟用槽位若無 512 切片，禁止把 128 硬拉大冒充高清，安全退回 128 標準合成
+		elif sid in [SLOT_CHASSIS, SLOT_HEAD_UNIT, SLOT_OPTIC_CORE] and not p.ends_with("_512.png"):
+			## 素體、頭部機關、光學核心必須具備本族 512 高清切片，禁止硬拉大；若缺則安全退回 128
 			return null
 	if not has_chassis_512:
 		return null
