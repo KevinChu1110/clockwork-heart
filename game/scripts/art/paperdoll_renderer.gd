@@ -499,21 +499,14 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 		var p512_clean := "%s/%s/%s/%s_512.png" % [PAPERDOLL_ROOT, rid, sid, clean_id]
 		if ResourceLoader.exists(p512_clean) or FileAccess.file_exists(p512_clean):
 			return p512_clean
-		# 2. 檢查本族原始切片 (<race>/<slot>/<item>.png，供 build_composite_texture_512 以 LANCZOS 升頻)
-		var p_race_128 := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, effective_id]
-		if ResourceLoader.exists(p_race_128) or FileAccess.file_exists(p_race_128):
-			return p_race_128
-		var p_race_128_clean := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, clean_id]
-		if ResourceLoader.exists(p_race_128_clean) or FileAccess.file_exists(p_race_128_clean):
-			return p_race_128_clean
-		# 3. 檢查通用裝備 512 切片 (common/<slot>/)
+		# 2. 檢查通用裝備 512 切片 (common/<slot>/)
 		var p_common_512 := "%s/common/%s/%s_512.png" % [PAPERDOLL_ROOT, sid, effective_id]
 		if ResourceLoader.exists(p_common_512) or FileAccess.file_exists(p_common_512):
 			return p_common_512
 		var p_common_512_clean := "%s/common/%s/%s_512.png" % [PAPERDOLL_ROOT, sid, clean_id]
 		if ResourceLoader.exists(p_common_512_clean) or FileAccess.file_exists(p_common_512_clean):
 			return p_common_512_clean
-		# 跨族 512 切片共用（外裝／奇玩／鑰匙）
+		# 3. 跨族 512 切片共用（外裝／奇玩／鑰匙）
 		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
@@ -525,6 +518,13 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 				var cross_512_clean := "%s/%s/%s/%s_512.png" % [PAPERDOLL_ROOT, other, sid, clean_id]
 				if clean_id != effective_id and (ResourceLoader.exists(cross_512_clean) or FileAccess.file_exists(cross_512_clean)):
 					return cross_512_clean
+		# 4. 檢查本族原始切片 (<race>/<slot>/<item>.png，供 build_composite_texture_512 以 LANCZOS 升頻)
+		var p_race_128 := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, effective_id]
+		if ResourceLoader.exists(p_race_128) or FileAccess.file_exists(p_race_128):
+			return p_race_128
+		var p_race_128_clean := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, clean_id]
+		if ResourceLoader.exists(p_race_128_clean) or FileAccess.file_exists(p_race_128_clean):
+			return p_race_128_clean
 
 	return resolve_slot_texture_path(rid, sid, iid)
 
