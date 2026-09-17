@@ -92,7 +92,71 @@ func _process(_delta: float) -> bool:
 					return _fail("偵測到系統 Emoji: %s (U+%04X)" % [ch, cp])
 			print("  ok 零系統 Emoji 檢查通過")
 
-			## 6. 驗證關閉邏輯
+			## 6. 驗證 12 款道具圖示存在且能載入 (Texture2D)
+			var expected_icons := [
+				"antidote", "bread", "dust_crumb", "friendship_key",
+				"hp_m", "hp_s", "hunt_core", "iron_scrap",
+				"medal", "mist_shard", "windup_fragment", "wolf_fang"
+			]
+			for item_id in expected_icons:
+				var path := "res://assets/icons/items/%s.png" % item_id
+				if not ResourceLoader.exists(path):
+					return _fail("道具圖示檔案不存在: %s" % path)
+				var tex := load(path) as Texture2D
+				if tex == null:
+					return _fail("道具圖示載入失敗: %s" % path)
+				var sz := tex.get_size()
+				if sz.x != 64.0 or sz.y != 64.0:
+					return _fail("道具圖示尺寸非 64x64: %s (size=%s)" % [path, str(sz)])
+			print("  ok 12 款道具圖示全部存在、為 64x64 且可載入")
+
+			## 7. 驗證格子圖示顯示與無圖 fallback
+			var inv_sys: Node = root.get_node_or_null("InventorySystem")
+			if inv_sys:
+				inv_sys.call("add_item", "hp_m", 2)     # 有圖
+				inv_sys.call("add_item", "star_ore", 3) # 無圖 (glyph: 砂)
+				_inv.refresh()
+
+				# 檢查第 0 格 (hp_m，有圖)
+				var cell0: PanelContainer = cells[0]
+				var ic0: TextureRect = cell0.find_child("Icon", true, false)
+				var g0: Label = cell0.find_child("Glyph", true, false)
+				if ic0 == null or not ic0.visible:
+					return _fail("第 0 格 (hp_m) Icon TextureRect 應為 visible")
+				if ic0.texture == null:
+					return _fail("第 0 格 (hp_m) Icon TextureRect 缺少 texture")
+				if g0 and g0.visible:
+					return _fail("第 0 格 (hp_m) 有圖示時 Glyph 不應為 visible")
+				print("  ok 格子有圖示道具 (hp_m) 正常顯示 TextureRect，隱藏單字佔位")
+
+				# 檢查第 1 格 (star_ore，無圖)
+				var cell1: PanelContainer = cells[1]
+				var ic1: TextureRect = cell1.find_child("Icon", true, false)
+				var g1: Label = cell1.find_child("Glyph", true, false)
+				if ic1 and ic1.visible:
+					return _fail("第 1 格 (star_ore) 無圖示時 Icon 不應為 visible")
+				if g1 == null or not g1.visible:
+					return _fail("第 1 格 (star_ore) 無圖示時 Glyph 應為 visible")
+				if g1.text != "砂":
+					return _fail("第 1 格 (star_ore) Glyph 應為「砂」，實際為: %s" % g1.text)
+				print("  ok 格子無圖示道具 (star_ore) 正常 fallback 至單字 glyph")
+
+				# 8. 驗證詳情卡大圖預覽
+				# 選取 hp_m
+				_inv.set("_selected", "hp_m")
+				_inv.refresh()
+				var d_ic: TextureRect = _inv.get("_detail_icon")
+				var d_gly: Label = _inv.get("_detail_glyph")
+				var d_name: Label = _inv.get("_detail_name")
+				if d_ic == null or not d_ic.visible or d_ic.texture == null:
+					return _fail("選取 hp_m 時詳情卡大圖預覽 _detail_icon 應為 visible 且有 texture")
+				if d_gly and d_gly.visible:
+					return _fail("選取 hp_m 時詳情卡 _detail_glyph 不應為 visible")
+				if d_name and d_name.text != "中紅水":
+					return _fail("選取 hp_m 時詳情卡標題應為「中紅水」，實際為: %s" % d_name.text)
+				print("  ok 點選中紅水時詳情卡大圖預覽與標題連動正常")
+
+			## 9. 驗證關閉邏輯
 			_inv.close()
 			if _inv.visible:
 				return _fail("close() 後 visible 仍為 true")

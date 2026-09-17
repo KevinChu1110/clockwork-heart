@@ -34,6 +34,7 @@ const BAG_SLOTS := 24  ## 顯示格數（4×6）
 ## id → {name, desc, kind, stack, heal?, dust?, gold?, key?, color}
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const ITEM_TEXT_FIELDS: PackedStringArray = ["name", "desc"]
+const ITEM_ICON_DIR := "res://assets/icons/items/"
 
 const CATALOG: Dictionary = {
 	"hp_s": {
@@ -44,6 +45,7 @@ const CATALOG: Dictionary = {
 		"heal": 25,
 		"color": Color(0.9, 0.25, 0.25),
 		"glyph": "小",
+		"icon": "res://assets/icons/items/hp_s.png",
 	},
 	"hp_m": {
 		"name": "中紅水",
@@ -53,6 +55,7 @@ const CATALOG: Dictionary = {
 		"heal": 55,
 		"color": Color(0.85, 0.15, 0.2),
 		"glyph": "中",
+		"icon": "res://assets/icons/items/hp_m.png",
 	},
 	"bread": {
 		"name": "乾糧",
@@ -62,6 +65,7 @@ const CATALOG: Dictionary = {
 		"heal": 15,
 		"color": Color(0.75, 0.55, 0.3),
 		"glyph": "糧",
+		"icon": "res://assets/icons/items/bread.png",
 	},
 	"dust_crumb": {
 		"name": "星屑碎",
@@ -71,6 +75,7 @@ const CATALOG: Dictionary = {
 		"dust": 1,
 		"color": Color(0.55, 0.65, 0.95),
 		"glyph": "屑",
+		"icon": "res://assets/icons/items/dust_crumb.png",
 	},
 	"antidote": {
 		"name": "清焰露",
@@ -80,6 +85,7 @@ const CATALOG: Dictionary = {
 		"heal": 10,
 		"color": Color(0.4, 0.75, 0.55),
 		"glyph": "露",
+		"icon": "res://assets/icons/items/antidote.png",
 	},
 	"key_rusty": {
 		"name": "鏽劍（紀念）",
@@ -104,6 +110,7 @@ const CATALOG: Dictionary = {
 		"stack": 99,
 		"color": Color(0.85, 0.7, 0.3),
 		"glyph": "勳",
+		"icon": "res://assets/icons/items/medal.png",
 	},
 	"relic_token": {
 		"name": "秘境印記",
@@ -121,6 +128,7 @@ const CATALOG: Dictionary = {
 		"sell": 8,
 		"color": Color(0.7, 0.7, 0.75),
 		"glyph": "牙",
+		"icon": "res://assets/icons/items/wolf_fang.png",
 	},
 	"mist_shard": {
 		"name": "霧晶",
@@ -130,6 +138,7 @@ const CATALOG: Dictionary = {
 		"sell": 12,
 		"color": Color(0.6, 0.7, 0.9),
 		"glyph": "晶",
+		"icon": "res://assets/icons/items/mist_shard.png",
 	},
 	"sea_shell": {
 		"name": "潮貝",
@@ -178,6 +187,7 @@ const CATALOG: Dictionary = {
 		"tradeable": true,
 		"color": Color(0.85, 0.35, 0.55),
 		"glyph": "核",
+		"icon": "res://assets/icons/items/hunt_core.png",
 	},
 	## 0.12.1 鍛造材料循環
 	"iron_scrap": {
@@ -189,6 +199,7 @@ const CATALOG: Dictionary = {
 		"buy": 14,
 		"color": Color(0.55, 0.55, 0.58),
 		"glyph": "鐵",
+		"icon": "res://assets/icons/items/iron_scrap.png",
 	},
 	"star_ore": {
 		"name": "星砂礦",
@@ -228,6 +239,7 @@ const CATALOG: Dictionary = {
 		"sell": 0,
 		"color": Color(0.85, 0.7, 0.35),
 		"glyph": "鑰",
+		"icon": "res://assets/icons/items/friendship_key.png",
 	},
 	"windup_fragment": {
 		"name": "發條碎片",
@@ -237,8 +249,33 @@ const CATALOG: Dictionary = {
 		"sell": 0,
 		"color": Color(0.95, 0.72, 0.22),
 		"glyph": "條",
+		"icon": "res://assets/icons/items/windup_fragment.png",
 	},
 }
+
+var _item_icon_cache: Dictionary = {}
+
+func get_item_icon_path(id: String) -> String:
+	var d: Dictionary = CATALOG.get(id, {})
+	if d.has("icon"):
+		return str(d["icon"])
+	var p := ITEM_ICON_DIR + id + ".png"
+	if ResourceLoader.exists(p):
+		return p
+	return ""
+
+func get_item_icon(id: String) -> Texture2D:
+	if id.is_empty():
+		return null
+	if _item_icon_cache.has(id):
+		return _item_icon_cache[id]
+	var p := get_item_icon_path(id)
+	if p != "":
+		var tex = load(p) as Texture2D
+		_item_icon_cache[id] = tex
+		return tex
+	_item_icon_cache[id] = null
+	return null
 
 
 func _ready() -> void:
