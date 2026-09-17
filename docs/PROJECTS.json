@@ -1536,8 +1536,8 @@
    "id": "paperdoll-512-lanczos",
    "cat": "遊戲",
    "title": "非兔族缺的 512 切片用 LANCZOS 從現有 128 補齊",
-   "status": "草稿",
-   "note": "不產新圖、不花錢；外裝已有共用 512 的不要重做",
+   "status": "已上線",
+   "note": "八族 chassis/head 512 用 LANCZOS 補齊，審核通過",
    "keys": [
     "非兔族缺的 51"
    ]
