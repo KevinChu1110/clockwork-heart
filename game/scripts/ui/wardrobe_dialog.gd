@@ -471,23 +471,32 @@ func _update_filter_chips_visual() -> void:
 			sb.bg_color = COLOR_GOLD
 			sb.border_color = COLOR_ORANGE
 			sb.set_border_width_all(2)
-			sb.border_width_bottom = 3
-			sb.shadow_size = 0
+			sb.border_width_bottom = 5
+			sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+			sb.shadow_size = 4
+			sb.shadow_offset = Vector2(0, 2)
 			btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 			_scroll_to_chip(btn)
 		else:
-			# 次級膠囊採純色分隔，不加深黑邊框與陰影，消除框中框
+			# 次級膠囊補齊立體厚底質感，對齊規格下限 (>=3px)
 			sb.bg_color = Color(0.92, 0.90, 0.86, 0.85)
-			sb.set_border_width_all(0)
-			sb.border_width_bottom = 0
-			sb.shadow_size = 0
+			sb.border_color = COLOR_BORDER
+			sb.set_border_width_all(1)
+			sb.border_width_bottom = 3
+			sb.shadow_color = Color(0.12, 0.10, 0.23, 0.10)
+			sb.shadow_size = 3
+			sb.shadow_offset = Vector2(0, 1)
 			btn.add_theme_color_override("font_color", Color("#4D456B"))
 		btn.add_theme_stylebox_override("normal", sb)
 
 		var sb_h := sb.duplicate()
 		sb_h.bg_color = Color("#FFF4D0")
 		btn.add_theme_stylebox_override("hover", sb_h)
-		btn.add_theme_stylebox_override("pressed", sb_h)
+
+		var sb_p := sb.duplicate()
+		sb_p.border_width_bottom = max(1, sb.border_width_bottom - 2)
+		sb_p.shadow_size = max(0, sb.shadow_size - 2)
+		btn.add_theme_stylebox_override("pressed", sb_p)
 
 
 func _scroll_to_chip(btn: Button) -> void:
@@ -816,16 +825,18 @@ func _apply_card_style(btn: Button, is_selected: bool) -> void:
 		sb.bg_color = COLOR_CARD_GOLD         ## 金黃柔和卡片底
 		sb.border_color = COLOR_ORANGE        ## 暖橘立體邊框
 		sb.set_border_width_all(2)
-		sb.border_width_bottom = 4           ## 立體果凍厚底 (was 5)
-		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
-		sb.shadow_size = 4
-		sb.shadow_offset = Vector2(0, 2)
+		sb.border_width_bottom = 6           ## 立體果凍厚底 (5~6px)
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.22)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 3)
 	else:
 		sb.bg_color = COLOR_BG_CREAM         ## 陽光童話奶油米白底
 		sb.border_color = COLOR_BORDER       ## 深藍紫描邊
-		sb.set_border_width_all(1)           ## 降為 1px
-		sb.border_width_bottom = 2           ## 降為 2px，避免框中框過重 (was 3)
-		sb.shadow_size = 0                   ## 拿掉未選取卡片的陰影，去雜訊
+		sb.set_border_width_all(1)
+		sb.border_width_bottom = 3           ## 對齊 ART_DAILY_CONSTITUTION.md §3 規格下限 (>=3px)
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12) ## 保留較淺陰影
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
 	btn.add_theme_stylebox_override("normal", sb)
 
 	var sb_h := sb.duplicate()
@@ -836,7 +847,11 @@ func _apply_card_style(btn: Button, is_selected: bool) -> void:
 		sb_h.bg_color = COLOR_CARD_WARM
 		sb_h.border_color = COLOR_ORANGE
 	btn.add_theme_stylebox_override("hover", sb_h)
-	btn.add_theme_stylebox_override("pressed", sb_h)
+
+	var sb_p := sb.duplicate()
+	sb_p.border_width_bottom = max(1, sb.border_width_bottom - 2)
+	sb_p.shadow_size = max(0, sb.shadow_size - 2)
+	btn.add_theme_stylebox_override("pressed", sb_p)
 
 	var badge = btn.find_child("BadgeLabel", true, false)
 	if badge is Label:
