@@ -138,7 +138,6 @@ func _check_aspect(tag: String) -> void:
 	var title_card := _find_named(host, "TitleMenuCard") as Control
 	_assert_card_width(title_card, "標題選單")
 	_assert_title_grid(host)
-	_assert_close_visible(host, "標題")
 
 	var pause: Node = _main.get("_pause_layer")
 	if pause == null:

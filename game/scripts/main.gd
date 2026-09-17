@@ -67,6 +67,8 @@ var _last_explore_map: String = "village"
 var _last_explore_screen: Screen = Screen.C0_VILLAGE
 var _settings_from_title: bool = true
 var _import_armed: bool = false
+var _title_buttons: Array[Button] = []
+var _active_title_btn_idx: int = -1
 
 
 
@@ -2645,6 +2647,74 @@ func _quit_game() -> void:
 	get_tree().quit()
 
 
+func get_title_buttons() -> Array[Button]:
+	return _title_buttons
+
+
+func select_title_button(idx: int) -> void:
+	_select_title_button(idx)
+
+
+func _select_title_button(idx: int) -> void:
+	_active_title_btn_idx = idx
+	for i in range(_title_buttons.size()):
+		_style_title_button(_title_buttons[i], i == idx)
+
+
+func _style_title_button(btn: Button, is_active: bool) -> void:
+	var sb := StyleBoxFlat.new()
+	if is_active:
+		sb.bg_color = Color("#FFA010")  ## 暖橘果凍厚底 (對齊日常憲法 §3)
+		sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 5  ## 5~6px 果凍厚底
+		sb.set_corner_radius_all(18)
+		sb.content_margin_left = 16
+		sb.content_margin_right = 16
+		sb.content_margin_top = 10
+		sb.content_margin_bottom = 12
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.22)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 3)
+		btn.add_theme_color_override("font_color", Color("#1F1A3A"))
+		btn.add_theme_color_override("font_hover_color", Color("#1F1A3A"))
+		btn.add_theme_color_override("font_pressed_color", Color("#1F1A3A"))
+		btn.add_theme_color_override("font_focus_color", Color("#1F1A3A"))
+	else:
+		sb.bg_color = Color("#FFF8E7")  ## 奶油卡底色 (對齊日常憲法 §3)
+		sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 4  ## >=3px (4px)
+		sb.set_corner_radius_all(18)
+		sb.content_margin_left = 16
+		sb.content_margin_right = 16
+		sb.content_margin_top = 10
+		sb.content_margin_bottom = 12
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
+		btn.add_theme_color_override("font_color", Color("#1F1A3A"))
+		btn.add_theme_color_override("font_hover_color", Color("#FFA010"))
+		btn.add_theme_color_override("font_pressed_color", Color("#1F1A3A"))
+		btn.add_theme_color_override("font_focus_color", Color("#1F1A3A"))
+
+	var sb_h := sb.duplicate() as StyleBoxFlat
+	if not is_active:
+		sb_h.bg_color = Color("#FFF4D0")
+	else:
+		sb_h.bg_color = Color("#FFB84D")
+
+	var sb_p := sb.duplicate() as StyleBoxFlat
+	sb_p.border_width_bottom = 2
+
+	btn.add_theme_stylebox_override("normal", sb)
+	btn.add_theme_stylebox_override("hover", sb_h)
+	btn.add_theme_stylebox_override("pressed", sb_p)
+	btn.add_theme_stylebox_override("focus", sb)
+	btn.add_theme_font_size_override("font_size", 18)
+	btn.custom_minimum_size = Vector2(0, 54)
+
+
 ## 標題畫面：全屏大圖 + 左下標題資訊 + 右側選單欄（Kevin：要大圖不要白卡）
 func _title_screen(meta_bb: String, buttons: Array) -> void:
 	_clear_host()
@@ -2676,7 +2746,7 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 		layer.add_child(solid)
 	layer.add_child(bg)
 
-	## 底中選單卡：橫屏 740–760；主選單最多 2 列網格，不要全寬長條往下疊
+	## 底中選單卡：橫屏 740–760；主選單 2 列網格果凍厚底按鈕，移除簡報彈窗✕與空置上半截
 	var m := ResponsiveUi.safe_margin(layer)
 	var scrim := ColorRect.new()
 	scrim.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -2685,44 +2755,23 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	scrim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(scrim)
 
+	## 左上角世界觀與版本資訊（移除重複純文字標題「發條之心 / CLOCKWORK HEART」，保留金屬字標）
 	var info := VBoxContainer.new()
 	info.set_anchors_preset(Control.PRESET_TOP_LEFT)
-	info.offset_left = m.x + 16
-	info.offset_top = m.y + 10
-	info.offset_right = m.x + 640
-	info.offset_bottom = m.y + 150
-	info.add_theme_constant_override("separation", 4)
+	info.offset_left = m.x + 20
+	info.offset_top = m.y + 14
+	info.offset_right = m.x + 580
+	info.offset_bottom = m.y + 100
 	info.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(info)
-	var game_name := Label.new()
-	game_name.text = _t("發條之心")
-	game_name.add_theme_font_size_override("font_size", 48)
-	game_name.add_theme_color_override("font_color", Color(0.98, 0.95, 0.88))
-	game_name.add_theme_color_override("font_outline_color", Color(0.26, 0.18, 0.12, 0.95))
-	game_name.add_theme_constant_override("outline_size", 6)
-	game_name.add_theme_color_override("font_shadow_color", Color(0.15, 0.10, 0.06, 0.65))
-	game_name.add_theme_constant_override("shadow_offset_x", 3)
-	game_name.add_theme_constant_override("shadow_offset_y", 3)
-	game_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	info.add_child(game_name)
-	var en_name := Label.new()
-	en_name.text = "C L O C K W O R K   H E A R T"
-	en_name.add_theme_font_size_override("font_size", 13)
-	en_name.add_theme_color_override("font_color", Color(1.0, 0.85, 0.45, 0.98))
-	en_name.add_theme_color_override("font_outline_color", Color(0.26, 0.18, 0.12, 0.90))
-	en_name.add_theme_constant_override("outline_size", 2)
-	en_name.add_theme_color_override("font_shadow_color", Color(0.15, 0.10, 0.06, 0.60))
-	en_name.add_theme_constant_override("shadow_offset_x", 1)
-	en_name.add_theme_constant_override("shadow_offset_y", 1)
-	en_name.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	info.add_child(en_name)
+
 	var meta_rt := RichTextLabel.new()
 	meta_rt.bbcode_enabled = true
 	meta_rt.fit_content = true
 	meta_rt.text = meta_bb
-	meta_rt.add_theme_font_size_override("normal_font_size", 13)
-	meta_rt.add_theme_color_override("default_color", Color(0.95, 0.92, 0.85))
-	meta_rt.add_theme_color_override("font_shadow_color", Color(0.15, 0.10, 0.06, 0.70))
+	meta_rt.add_theme_font_size_override("normal_font_size", 14)
+	meta_rt.add_theme_color_override("default_color", Color(0.98, 0.95, 0.88, 0.95))
+	meta_rt.add_theme_color_override("font_shadow_color", Color(0.12, 0.10, 0.23, 0.85))
 	meta_rt.add_theme_constant_override("shadow_offset_x", 1)
 	meta_rt.add_theme_constant_override("shadow_offset_y", 1)
 	meta_rt.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -2731,10 +2780,10 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 
 	var menu_host := CenterContainer.new()
 	menu_host.set_anchors_preset(Control.PRESET_FULL_RECT)
-	menu_host.anchor_top = 0.42
+	menu_host.anchor_top = 0.68
 	menu_host.offset_left = m.x
 	menu_host.offset_right = -m.z
-	menu_host.offset_bottom = -m.w - 10.0
+	menu_host.offset_bottom = -m.w - 12.0
 	menu_host.offset_top = 0.0
 	menu_host.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(menu_host)
@@ -2743,48 +2792,58 @@ func _title_screen(meta_bb: String, buttons: Array) -> void:
 	card.name = "TitleMenuCard"
 	card.clip_contents = false
 	ResponsiveUi.apply_dialog_card(card)
-	card.add_theme_stylebox_override("panel", UiStyle.panel_style())
+	var card_sb := StyleBoxFlat.new()
+	card_sb.bg_color = Color(1.0, 0.99, 0.97, 0.94)  ## 陽光童話奶油底
+	card_sb.border_color = Color("#1F1A3A")  ## 深藍紫描邊
+	card_sb.set_border_width_all(2)
+	card_sb.border_width_bottom = 5  ## 果凍厚底
+	card_sb.set_corner_radius_all(22)
+	card_sb.content_margin_left = 16
+	card_sb.content_margin_right = 16
+	card_sb.content_margin_top = 14
+	card_sb.content_margin_bottom = 16
+	card_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.22)
+	card_sb.shadow_size = 12
+	card_sb.shadow_offset = Vector2(0, 4)
+	card.add_theme_stylebox_override("panel", card_sb)
 	menu_host.add_child(card)
-
-	var outer := VBoxContainer.new()
-	outer.add_theme_constant_override("separation", 8)
-	card.add_child(outer)
-
-	var head_row := HBoxContainer.new()
-	head_row.add_theme_constant_override("separation", 8)
-	outer.add_child(head_row)
-	var head_pad := Control.new()
-	head_pad.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head_pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	head_row.add_child(head_pad)
-	var close_cb := Callable()
-	if not buttons.is_empty() and buttons[buttons.size() - 1] is Dictionary:
-		close_cb = (buttons[buttons.size() - 1] as Dictionary).get("cb", Callable())
-	head_row.add_child(ResponsiveUi.make_close_button(close_cb))
 
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.clip_contents = false
-	outer.add_child(scroll)
+	card.add_child(scroll)
+
 	var grid := ResponsiveUi.make_two_col_grid("TitleMenuGrid")
+	grid.add_theme_constant_override("h_separation", 14)
+	grid.add_theme_constant_override("v_separation", 10)
 	scroll.add_child(grid)
-	## 最多 2 列橫向網格；熱區一律 ≥50。不要 VBox 全寬一排往下疊。
+
+	_title_buttons.clear()
+	_active_title_btn_idx = -1
+
+	## 最多 2 列橫向網格；熱區一律 ≥48px。無關閉鈕、無 ✕、無系統 Emoji
 	for i in buttons.size():
 		var bdef: Dictionary = buttons[i]
-		var primary := bool(bdef.get("primary", i == 0))
 		var util := str(bdef.get("tier", "")) == "util"
 		var btn := Button.new()
 		btn.text = str(bdef.get("text", ""))
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		UiStyle.style_button(btn, primary)
+		btn.clip_text = false
 		ResponsiveUi.apply_core_button(btn)
 		if util:
-			btn.modulate.a = 0.88
+			btn.modulate.a = 0.92
+		var btn_idx := i
+		_style_title_button(btn, false)
+		btn.focus_entered.connect(func():
+			_select_title_button(btn_idx)
+		)
 		btn.pressed.connect(bdef.get("cb", Callable()))
 		grid.add_child(btn)
-	var need_h := grid.get_combined_minimum_size().y + 8.0
-	scroll.custom_minimum_size = Vector2(0, minf(need_h, 220.0))
+		_title_buttons.append(btn)
+
+	var need_h := grid.get_combined_minimum_size().y + 4.0
+	scroll.custom_minimum_size = Vector2(0, minf(need_h, 200.0))
 
 
 func _toggle_locale() -> void:
