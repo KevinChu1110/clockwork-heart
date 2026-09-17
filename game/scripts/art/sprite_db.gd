@@ -84,13 +84,13 @@ static func player_equipped_idle(race_override: String = "", slots_override: Dic
 			slots["chassis"] = slots["paint_id"]
 
 	var pr: GDScript = load("res://scripts/art/paperdoll_renderer.gd")
-	## 兔族待機合成優先讀既有 512 切片，失敗才退回 128；其他族維持既有 128 合成
-	if r == "rabbit" and pr:
+	## 有 512 切片的種族一律走 build_composite_texture_512，合成失敗才退回 128
+	if pr:
 		var comp_512: Variant = null
 		if pr.has_method("build_composite_texture_512"):
-			comp_512 = pr.call("build_composite_texture_512", "rabbit", slots)
+			comp_512 = pr.call("build_composite_texture_512", r, slots)
 		if comp_512 == null and pr.has_method("get_race_composite_texture_512"):
-			comp_512 = pr.call("get_race_composite_texture_512", "rabbit", slots)
+			comp_512 = pr.call("get_race_composite_texture_512", r, slots)
 		if comp_512 is Texture2D and comp_512 != null:
 			_equipped_idle_cache[cache_key] = comp_512 as Texture2D
 			return comp_512 as Texture2D

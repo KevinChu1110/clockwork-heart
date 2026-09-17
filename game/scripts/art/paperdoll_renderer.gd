@@ -517,6 +517,13 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 				var cross_512_clean := "%s/%s/%s/%s_512.png" % [PAPERDOLL_ROOT, other, sid, clean_id]
 				if clean_id != effective_id and (ResourceLoader.exists(cross_512_clean) or FileAccess.file_exists(cross_512_clean)):
 					return cross_512_clean
+
+		if sid == SLOT_WEAPON:
+			# 該槽位沒有本族／共用 512 切片時回空字串安全隱藏（禁止用兔族劍代替，遵守各族武器設定）
+			return ""
+		elif sid == SLOT_BACK_CURIO:
+			# 非必選槽位若無 512 切片則安全隱藏，不退回 128 破壞 512 合成
+			return ""
 	return resolve_slot_texture_path(rid, sid, iid)
 
 
