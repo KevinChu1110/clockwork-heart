@@ -126,12 +126,23 @@ func _get_body_base_scale() -> Vector2:
 
 
 func _set_body_tex(tex: Texture2D) -> void:
-	if tex == null or body == null:
+	if body == null:
 		return
-	if body.texture != tex:
-		body.texture = tex
-	var tw := float(tex.get_width())
-	var th := float(tex.get_height())
+	var effective_tex: Texture2D = tex
+	if effective_tex == null or effective_tex.get_width() < 256:
+		var sc := SpriteDB.hero_showcase_hd_tex(SpriteDB.player_race())
+		if sc != null and sc.get_width() >= 256:
+			effective_tex = sc
+		else:
+			effective_tex = null
+	if effective_tex == null:
+		body.texture = null
+		return
+	if body.texture != effective_tex:
+		body.texture = effective_tex
+	body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var tw := float(effective_tex.get_width())
+	var th := float(effective_tex.get_height())
 	var s := 128.0 / tw if tw > 128.0 else 1.0
 	body.scale = Vector2(s, s)
 	## 錨點固定在腳底：每格同高，offset 只跟貼圖高度走，不會上下抖

@@ -475,7 +475,7 @@ static func get_race_composite_texture_512(race: String, slot_selection: Diction
 			var res_512 = load(proof_512)
 			if res_512 is Texture2D:
 				return res_512 as Texture2D
-	return get_race_composite_texture(rid, slot_selection)
+	return null
 
 
 ## 依種族、槽位、選項解析 512 高清切片路徑（優先 *_512.png，若無則退回標準切片）

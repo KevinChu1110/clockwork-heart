@@ -644,8 +644,17 @@ func _build_chrome() -> void:
 	_player.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_player.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_player.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_player.texture = SpriteDB.player_equipped_idle()
-	_player.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR if (_player.texture and _player.texture.get_width() >= 256) else CanvasItem.TEXTURE_FILTER_NEAREST
+	var init_tex := SpriteDB.player_equipped_idle()
+	if init_tex != null and init_tex.get_width() >= 256:
+		_player.texture = init_tex
+		_player.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	else:
+		var sc := SpriteDB.hero_showcase_hd_tex(SpriteDB.player_race())
+		if sc != null and sc.get_width() >= 256:
+			_player.texture = sc
+			_player.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		else:
+			_player.texture = null
 	var player_mat := ShaderMaterial.new()
 	player_mat.shader = OutlineShader
 	_player.material = player_mat
@@ -2110,25 +2119,40 @@ func _update_player_visual() -> void:
 	## 身體：動作姿優先，否則步行／待機（與戰鬥 poses 同源）
 	if _action_pose != "":
 		var pt := SpriteDB.player_pose(_action_pose)
-		if pt:
+		if pt and pt.get_width() >= 256:
 			_player.texture = pt
 		else:
 			var idle_fb := SpriteDB.player_equipped_idle()
-			if idle_fb:
+			if idle_fb and idle_fb.get_width() >= 256:
 				_player.texture = idle_fb
+			else:
+				_player.texture = SpriteDB.hero_showcase_hd_tex(SpriteDB.player_race())
 	elif _moving:
 		var frame := int(_walk_t) % 4
 		var t := SpriteDB.player_equipped_walk(frame)
-		if t:
+		if t and t.get_width() >= 256:
 			_player.texture = t
+		else:
+			var idle_fb := SpriteDB.player_equipped_idle()
+			if idle_fb and idle_fb.get_width() >= 256:
+				_player.texture = idle_fb
+			else:
+				_player.texture = SpriteDB.hero_showcase_hd_tex(SpriteDB.player_race())
 	else:
 		var idle := SpriteDB.player_equipped_idle()
-		if idle:
+		if idle and idle.get_width() >= 256:
 			_player.texture = idle
+		else:
+			_player.texture = SpriteDB.hero_showcase_hd_tex(SpriteDB.player_race())
 	if _player.texture and _player.texture.get_width() >= 256:
 		_player.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	else:
-		_player.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		var sc := SpriteDB.hero_showcase_hd_tex(SpriteDB.player_race())
+		if sc != null and sc.get_width() >= 256:
+			_player.texture = sc
+			_player.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		else:
+			_player.texture = null
 	## 受擊短暫偏紅，其餘維持防具染色
 	if _action_pose == "hit":
 		_player.modulate = SpriteDB.player_armor_modulate() * Color(1.15, 0.75, 0.75, 1)

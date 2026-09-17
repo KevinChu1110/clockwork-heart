@@ -43,13 +43,36 @@ static var _equipped_idle_cache: Dictionary = {}
 static var _equipped_walk_cache: Dictionary = {}
 
 
+## 取得本族官方立牌或 showcase 高清展示貼圖（>=256，LINEAR）
+static func hero_showcase_hd_tex(race: String) -> Texture2D:
+	var r := race.strip_edges().to_lower()
+	if r.is_empty():
+		r = "rabbit"
+	var p_hd := "%s/player/showcase/%s_idle_hd.png" % [ROOT, r]
+	if ResourceLoader.exists(p_hd):
+		var t := tex(p_hd)
+		if t != null and t.get_width() >= 256:
+			return t
+	var p256 := "%s/player/paperdoll/%s/showcase_idle_256.png" % [ROOT, r]
+	if ResourceLoader.exists(p256):
+		var t256 := tex(p256)
+		if t256 != null and t256.get_width() >= 256:
+			return t256
+	var p512 := "%s/player/paperdoll/%s/proof_paperdoll_%s_composite_512.png" % [ROOT, r, r]
+	if ResourceLoader.exists(p512):
+		var t512 := tex(p512)
+		if t512 != null and t512.get_width() >= 256:
+			return t512
+	return null
+
+
 ## 清空紙娃娃即時合成快取（換裝／卸裝／種族變更時呼叫）
 static func clear_equipped_cache() -> void:
 	_equipped_idle_cache.clear()
 	_equipped_walk_cache.clear()
 
 
-## 依據 player_race 與 paperdoll_slots 用 PaperdollRenderer 合成待機圖；合成失敗才退回 player_pose("idle")
+## 依據 player_race 與 paperdoll_slots 用 PaperdollRenderer 合成待機圖；512 合成成功就用 512；失敗改讀本族 showcase_idle_256.png 或官方立牌，⛔ 刪除 128 退路
 static func player_equipped_idle(race_override: String = "", slots_override: Dictionary = {}) -> Texture2D:
 	var r := race_override.strip_edges().to_lower() if not race_override.is_empty() else player_race()
 	if r.is_empty():
@@ -66,16 +89,14 @@ static func player_equipped_idle(race_override: String = "", slots_override: Dic
 		if cached is Texture2D and cached != null:
 			return cached as Texture2D
 
-	# 若尚未自訂服飾紙娃娃槽位，優先使用高解析 256px 大廳展示立繪
+	# 若尚未自訂服飾紙娃娃槽位，優先使用高解析展示立繪 (官方立牌或 showcase_idle_256)
 	var has_custom_costume := (slots.has("costume") and str(slots["costume"]) != "") or (slots.has("costume_id") and str(slots["costume_id"]) != "")
 	var has_custom_chassis := (slots.has("chassis") and str(slots["chassis"]) != "") or (slots.has("paint_id") and str(slots["paint_id"]) != "")
 	if not has_custom_costume and not has_custom_chassis:
-		var showcase_p := "%s/player/paperdoll/%s/showcase_idle_256.png" % [ROOT, r]
-		if ResourceLoader.exists(showcase_p):
-			var sc_tex := tex(showcase_p)
-			if sc_tex != null:
-				_equipped_idle_cache[cache_key] = sc_tex
-				return sc_tex
+		var sc_tex := hero_showcase_hd_tex(r)
+		if sc_tex != null and sc_tex.get_width() >= 256:
+			_equipped_idle_cache[cache_key] = sc_tex
+			return sc_tex
 
 	if not slots.is_empty():
 		if not slots.has("costume") and slots.has("costume_id"):
@@ -84,27 +105,24 @@ static func player_equipped_idle(race_override: String = "", slots_override: Dic
 			slots["chassis"] = slots["paint_id"]
 
 	var pr: GDScript = load("res://scripts/art/paperdoll_renderer.gd")
-	## 有 512 切片的種族一律走 build_composite_texture_512，合成失敗才退回 128
+	## 512 高清合成：成功就用 512（寬度>=256）
 	if pr:
 		var comp_512: Variant = null
 		if pr.has_method("build_composite_texture_512"):
 			comp_512 = pr.call("build_composite_texture_512", r, slots)
 		if comp_512 == null and pr.has_method("get_race_composite_texture_512"):
 			comp_512 = pr.call("get_race_composite_texture_512", r, slots)
-		if comp_512 is Texture2D and comp_512 != null:
+		if comp_512 is Texture2D and comp_512 != null and (comp_512 as Texture2D).get_width() >= 256:
 			_equipped_idle_cache[cache_key] = comp_512 as Texture2D
 			return comp_512 as Texture2D
 
-	if not slots.is_empty():
-		if pr and pr.has_method("get_race_composite_texture"):
-			var comp: Variant = pr.call("get_race_composite_texture", r, slots)
-			if comp is Texture2D and comp != null:
-				_equipped_idle_cache[cache_key] = comp as Texture2D
-				return comp as Texture2D
+	# 512 合成失敗，改讀本族 showcase_idle_256.png 或官方立牌，絕不退回 128 糊圖
+	var sc := hero_showcase_hd_tex(r)
+	if sc != null and sc.get_width() >= 256:
+		_equipped_idle_cache[cache_key] = sc
+		return sc
 
-	var fb := player_pose("idle", r)
-	_equipped_idle_cache[cache_key] = fb
-	return fb
+	return null
 
 
 ## 依據 player_race 與 paperdoll_slots 用 PaperdollRenderer 分部位即時合成走路四幀 (0..3)
