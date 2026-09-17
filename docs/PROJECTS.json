@@ -1606,8 +1606,8 @@
    "id": "lobby-poke-512",
    "cat": "遊戲",
    "title": "大廳戳碰改讀 512 戰鬥姿態＋LINEAR",
-   "status": "草稿",
-   "note": "戰鬥姿態 512 已在主線，戳碰仍 NEAREST／無種族 128 fallback",
+   "status": "測試中",
+   "note": "大廳戳碰 512 已送審，等合主線",
    "keys": [
     "大廳戳碰改讀 5"
    ]
