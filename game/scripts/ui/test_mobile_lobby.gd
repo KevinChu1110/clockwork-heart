@@ -119,13 +119,16 @@ func _test_hall_cards() -> void:
 	else:
 		print("  ok 殿堂卡片數量正確 (4 張)")
 
-	# 1.2 斷言四張卡片的標題關鍵字，以及無單字縮寫徽章、無 Emoji / 符號
+	# 1.2 斷言四張卡片的標題關鍵字、自繪圖示、果凍厚底，以及無單字縮寫徽章、無 Emoji / 符號
 	var expected_cards := [
-		{"keyword": "鐵匠", "full_title": "天宮鐵匠"},
-		{"keyword": "工坊", "full_title": "手藝工坊"},
-		{"keyword": "演武", "full_title": "演武競技"},
-		{"keyword": "委託", "full_title": "冒險委託"},
+		{"keyword": "鐵匠", "full_title": "天宮鐵匠", "icon": "res://assets/icons/hud/icon_hall_forge.png"},
+		{"keyword": "工坊", "full_title": "手藝工坊", "icon": "res://assets/icons/hud/icon_hall_gem.png"},
+		{"keyword": "演武", "full_title": "演武競技", "icon": "res://assets/icons/hud/icon_hall_arena.png"},
+		{"keyword": "委託", "full_title": "冒險委託", "icon": "res://assets/icons/hud/icon_hall_quest.png"},
 	]
+
+	# 先確保在未選取態
+	_lobby.select_hall_card(-1)
 
 	for i in range(cards.size()):
 		var card := cards[i]
@@ -168,6 +171,33 @@ func _test_hall_cards() -> void:
 		else:
 			print("  ok 卡片 %d 標題符合「%s」" % [i + 1, want_keyword])
 
+		# 斷言自繪圖示掛載（非純文字膠囊，有自繪圖示）
+		if card.icon == null:
+			_fail("卡片 %d 缺少自繪圖示 (card.icon 為空)" % [i + 1])
+		elif card.icon.resource_path != exp_info["icon"]:
+			_fail("卡片 %d 圖示路徑不符，預期 %s，實際為 %s" % [i + 1, exp_info["icon"], card.icon.resource_path])
+		else:
+			print("  ok 卡片 %d 自繪圖示正確: %s" % [i + 1, card.icon.resource_path])
+
+		# 斷言熱區高度 >= 48px (review.md 0-UI1)
+		if card.custom_minimum_size.y < 48.0:
+			_fail("卡片 %d 熱區高度未達標 (< 48px): %.1f" % [i + 1, card.custom_minimum_size.y])
+		else:
+			print("  ok 卡片 %d 熱區高度達標: %.1f px" % [i + 1, card.custom_minimum_size.y])
+
+		# 斷言未選取樣式：奶油卡 #FFF8E7、深藍紫描邊 #1F1A3A、底框 >= 3px
+		var sb := card.get_theme_stylebox("normal") as StyleBoxFlat
+		if sb == null:
+			_fail("卡片 %d 缺少 normal StyleBoxFlat" % [i + 1])
+		else:
+			var bg_hex := sb.bg_color.to_html(false).to_upper()
+			if bg_hex != "FFF8E7":
+				_fail("未選取卡片 %d 底色應為奶油卡 #FFF8E7，實際為 #%s" % [i + 1, bg_hex])
+			if sb.border_color.to_html(false).to_upper() != "1F1A3A":
+				_fail("未選取卡片 %d 描邊應為深藍紫 #1F1A3A" % [i + 1])
+			if sb.border_width_bottom < 3:
+				_fail("未選取卡片 %d 底框應 >= 3px，實際為 %d px" % [i + 1, sb.border_width_bottom])
+
 		# 斷言無單字縮寫徽章（Kevin 反饋：不應有奇怪單字縮寫徽章，純文字標題乾淨呈現）
 		if not found_icon.is_empty():
 			_fail("卡片 %d 不應有單字縮寫圖示，實際取得：「%s」" % [i + 1, found_icon])
@@ -182,7 +212,25 @@ func _test_hall_cards() -> void:
 		if _has_forbidden_symbols_or_emoji(found_icon):
 			_fail("卡片 %d 圖示含有禁止符號或 Emoji：「%s」" % [i + 1, found_icon])
 
-	print("  ok 殿堂卡片無 Emoji、無字型殘留符號回歸防線通過")
+	# 測試選取態切換 (某殿堂選取態 -> 暖橘 #FFA010 果凍厚底 5~6px)
+	_lobby.select_hall_card(0)
+	var active_card := cards[0]
+	var active_sb := active_card.get_theme_stylebox("normal") as StyleBoxFlat
+	if active_sb == null or active_sb.bg_color.to_html(false).to_upper() != "FFA010":
+		_fail("選取殿堂卡 0 後，底色應為暖橘 #FFA010")
+	if active_sb == null or active_sb.border_width_bottom < 5 or active_sb.border_width_bottom > 6:
+		_fail("選取殿堂卡 0 後，果凍厚底應為 5~6px，實際為 %d px" % (active_sb.border_width_bottom if active_sb else 0))
+	var other_sb := cards[1].get_theme_stylebox("normal") as StyleBoxFlat
+	if other_sb == null or other_sb.bg_color.to_html(false).to_upper() != "FFF8E7":
+		_fail("選取殿堂卡 0 時，未選取的卡片 1 應維持奶油卡 #FFF8E7")
+
+	# 切回未選取態
+	_lobby.select_hall_card(-1)
+	var reset_sb := active_card.get_theme_stylebox("normal") as StyleBoxFlat
+	if reset_sb == null or reset_sb.bg_color.to_html(false).to_upper() != "FFF8E7":
+		_fail("恢復未選取態後，卡片 0 應恢復奶油卡底色 #FFF8E7")
+
+	print("  ok 殿堂卡片自繪圖示、果凍厚底與無 Emoji 回歸防線通過")
 
 	# 1.3 斷言點擊卡片開啟真畫面，而非僅跳 toast (review.md 第 28、29 條)
 	_test_hall_card_real_screens(cards)

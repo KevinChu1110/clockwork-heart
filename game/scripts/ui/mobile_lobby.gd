@@ -76,6 +76,8 @@ var _adventure_layer: Control
 var _soul_layer: Control
 var _bag_layer: Control
 var _dock_buttons: Array[Button] = []
+var _hall_buttons: Array[Button] = []
+var _active_hall_index: int = -1
 var _char_prev: TextureRect = null
 
 ## 角色動態與姿態
@@ -852,27 +854,30 @@ func _build_village_tab() -> void:
 	## 呼吸動畫
 	_start_breathe_tween()
 
-	## 左側四大殿堂黑曜石金屬浮雕卡牌 (天宮鐵匠、手藝工坊、演武競技、冒險委託)
+	## 左側四大殿堂黑曜石金屬浮雕卡牌 (天宮鐵匠、手藝工坊、演武競技、冒險委託) -> 多巴胺果凍厚底卡
 	var left_shops := VBoxContainer.new()
 	left_shops.name = "HallCardsContainer"
 	left_shops.set_anchors_preset(Control.PRESET_LEFT_WIDE)
 	left_shops.offset_left = 32
 	left_shops.offset_top = 20
-	left_shops.offset_right = 240
+	left_shops.offset_right = 248
 	left_shops.offset_bottom = -20
-	left_shops.add_theme_constant_override("separation", 10)
+	left_shops.add_theme_constant_override("separation", 12)
 	_village_layer.add_child(left_shops)
 
-	_add_hall_card(left_shops, _t("天宮鐵匠"), "品質轉化 · 裝備鍛造", "", func():
+	_hall_buttons.clear()
+	_active_hall_index = -1
+
+	_add_hall_card(left_shops, _t("天宮鐵匠"), "品質轉化 · 裝備鍛造", "res://assets/icons/hud/icon_hall_forge.png", func():
 		open_forge()
 	)
-	_add_hall_card(left_shops, "手藝工坊", "紅黃藍石 · 三合一熔煉", "", func():
+	_add_hall_card(left_shops, "手藝工坊", "紅黃藍石 · 三合一熔煉", "res://assets/icons/hud/icon_hall_gem.png", func():
 		open_gem_workshop()
 	)
-	_add_hall_card(left_shops, "演武競技", "挑戰對手 · 雙倍抽獎", "", func():
+	_add_hall_card(left_shops, "演武競技", "挑戰對手 · 雙倍抽獎", "res://assets/icons/hud/icon_hall_arena.png", func():
 		request_battle.emit("arena")
 	)
-	_add_hall_card(left_shops, "冒險委託", "每日簽到 · 懸賞領獎", "", func():
+	_add_hall_card(left_shops, "冒險委託", "每日簽到 · 懸賞領獎", "res://assets/icons/hud/icon_hall_quest.png", func():
 		open_windup_daily()
 	)
 
@@ -910,7 +915,67 @@ func _build_village_tab() -> void:
 	btn_go.pressed.connect(func(): _switch_tab(Tab.ADVENTURE))
 	rv.add_child(btn_go)
 
-func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, _icon_symbol: String = "", cb_fallback: Callable = Callable()) -> void:
+func get_hall_buttons() -> Array[Button]:
+	return _hall_buttons
+
+func select_hall_card(idx: int) -> void:
+	_select_hall_card(idx)
+
+func _select_hall_card(idx: int) -> void:
+	_active_hall_index = idx
+	for i in range(_hall_buttons.size()):
+		_style_hall_card(_hall_buttons[i], i == idx)
+
+func _style_hall_card(btn: Button, is_active: bool) -> void:
+	var sb := StyleBoxFlat.new()
+	if is_active:
+		sb.bg_color = COLOR_ORANGE
+		sb.border_color = COLOR_BORDER
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 5
+		sb.set_corner_radius_all(18)
+		sb.content_margin_top = 8
+		sb.content_margin_bottom = 8
+		sb.content_margin_left = 14
+		sb.content_margin_right = 14
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 3)
+		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+	else:
+		sb.bg_color = COLOR_CARD_WARM
+		sb.border_color = COLOR_BORDER
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 4
+		sb.set_corner_radius_all(18)
+		sb.content_margin_top = 8
+		sb.content_margin_bottom = 8
+		sb.content_margin_left = 14
+		sb.content_margin_right = 14
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.10)
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
+		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_hover_color", COLOR_ORANGE)
+		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var sb_h := sb.duplicate() as StyleBoxFlat
+	if not is_active:
+		sb_h.bg_color = COLOR_CARD_GOLD
+	else:
+		sb_h.bg_color = Color("#FFB84D")
+
+	var sb_p := sb.duplicate() as StyleBoxFlat
+	sb_p.border_width_bottom = 2
+
+	btn.add_theme_stylebox_override("normal", sb)
+	btn.add_theme_stylebox_override("hover", sb_h)
+	btn.add_theme_stylebox_override("pressed", sb_p)
+	btn.add_theme_stylebox_override("focus", sb)
+
+func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, icon_res_or_symbol: String = "", cb_fallback: Callable = Callable()) -> Button:
 	var cb: Callable
 	if subtitle_or_cb is Callable:
 		cb = subtitle_or_cb
@@ -925,22 +990,44 @@ func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, _ic
 	btn.set_meta("hall_title", title)
 	if subtitle_or_cb is String:
 		btn.set_meta("hall_subtitle", subtitle_or_cb)
-	UiStyle.style_button(btn, false)
-	btn.custom_minimum_size = Vector2(200, 52)
+	btn.custom_minimum_size = Vector2(216, 56)
+	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn.text = title
 
-	var tl := Label.new()
-	tl.text = title
-	tl.add_theme_font_size_override("font_size", 16)
-	tl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	tl.set_anchors_preset(Control.PRESET_FULL_RECT)
-	tl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	tl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	tl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	btn.add_child(tl)
+	# 依 title 或 icon_res_or_symbol 掛載自繪圖示
+	var icon_path := icon_res_or_symbol
+	if icon_path.is_empty() or not icon_path.begins_with("res://"):
+		var icon_map := {
+			"鐵匠": "res://assets/icons/hud/icon_hall_forge.png",
+			"工坊": "res://assets/icons/hud/icon_hall_gem.png",
+			"演武": "res://assets/icons/hud/icon_hall_arena.png",
+			"委託": "res://assets/icons/hud/icon_hall_quest.png",
+		}
+		for k in icon_map:
+			if title.find(k) >= 0:
+				icon_path = icon_map[k]
+				break
 
-	if cb.is_valid():
-		btn.pressed.connect(cb)
+	if not icon_path.is_empty() and ResourceLoader.exists(icon_path):
+		btn.icon = load(icon_path)
+		btn.expand_icon = true
+		btn.add_theme_constant_override("icon_max_width", 32)
+		btn.add_theme_constant_override("h_separation", 10)
+		btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	btn.add_theme_font_size_override("font_size", 18)
+
+	var card_idx := _hall_buttons.size()
+	_hall_buttons.append(btn)
+	_style_hall_card(btn, false)
+
+	btn.pressed.connect(func():
+		_select_hall_card(card_idx)
+		if cb.is_valid():
+			cb.call()
+	)
+
 	parent.add_child(btn)
+	return btn
 
 func _add_texture_button(parent: Container, tex_path: String, sz: Vector2, cb: Callable) -> void:
 	var tb := TextureButton.new()
