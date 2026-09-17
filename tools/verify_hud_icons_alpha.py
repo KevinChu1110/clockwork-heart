@@ -9,7 +9,12 @@ def verify():
     targets = [
         ("icon_energy_key.png", (128, 128)),
         ("icon_gold_coin.png", (128, 128)),
-        ("icon_gem_stardust.png", (128, 128))
+        ("icon_gem_stardust.png", (128, 128)),
+        ("icon_dock_village.png", (128, 128)),
+        ("icon_dock_equip.png", (128, 128)),
+        ("icon_dock_campaign.png", (128, 128)),
+        ("icon_dock_soul.png", (128, 128)),
+        ("icon_dock_bag.png", (128, 128))
     ]
     all_ok = True
     for name, expected_size in targets:
