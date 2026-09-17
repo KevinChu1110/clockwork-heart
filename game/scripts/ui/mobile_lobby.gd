@@ -277,8 +277,21 @@ func _has_custom_paperdoll_outfit(slots: Dictionary) -> bool:
 	return false
 
 
+func _hero_showcase_hd_tex(race: String) -> Texture2D:
+	var p := "res://assets/sprites/player/showcase/%s_idle_hd.png" % race
+	if ResourceLoader.exists(p):
+		return load(p) as Texture2D
+	var p256 := "res://assets/sprites/player/paperdoll/%s/showcase_idle_256.png" % race
+	if ResourceLoader.exists(p256):
+		return load(p256) as Texture2D
+	var p512 := "res://assets/sprites/player/paperdoll/%s/proof_paperdoll_%s_composite_512.png" % [race, race]
+	if ResourceLoader.exists(p512):
+		return load(p512) as Texture2D
+	return null
+
+
 func _hero_display_tex() -> Texture2D:
-	## 大廳／角色分頁：沒自訂外裝時改讀官方品牌立牌高清待機（LINEAR）；有換裝時有 512 走 512，其餘維持既有 128 紙娃娃 (NEAREST)
+	## 大廳／角色分頁：有換裝時 512 合成成功就用 512；失敗改讀官方立牌；沒換裝時讀官方立牌
 	var race := _current_race()
 	var slots := _current_paperdoll_slots()
 	if _has_custom_paperdoll_outfit(slots):
@@ -290,43 +303,40 @@ func _hero_display_tex() -> Texture2D:
 			var hd_cut := "res://assets/sprites/player/showcase/%s_%s_hd_cut.png" % [race, costume]
 			if ResourceLoader.exists(hd_cut):
 				return load(hd_cut) as Texture2D
-		var comp: Texture2D = PaperdollRenderer.get_race_composite_texture(race, slots)
-		if comp != null:
-			return comp
-		var legacy: Texture2D = _get_hero_equipped_idle_texture()
-		if legacy != null:
-			return legacy
-		return _tex_idle
+		# 512 合成失敗，改讀官方立牌或本族 showcase_idle_256，不准退回 128 糊圖
+		var sc := _hero_showcase_hd_tex(race)
+		if sc != null:
+			return sc
+		return null
 
 	# 沒自訂外裝時：九族讀取官方品牌立牌高清展示貼圖
-	var p := "res://assets/sprites/player/showcase/%s_idle_hd.png" % race
-	if ResourceLoader.exists(p):
-		return load(p) as Texture2D
-	var p256 := "res://assets/sprites/player/paperdoll/%s/showcase_idle_256.png" % race
-	if ResourceLoader.exists(p256):
-		return load(p256) as Texture2D
-	var p512 := "res://assets/sprites/player/paperdoll/%s/proof_paperdoll_%s_composite_512.png" % [race, race]
-	if ResourceLoader.exists(p512):
-		return load(p512) as Texture2D
+	var sc := _hero_showcase_hd_tex(race)
+	if sc != null:
+		return sc
 	return _tex_idle
 
 
 func _apply_hero_idle_visual() -> void:
 	var hd: Texture2D = _hero_display_tex()
-	if hd == null:
-		hd = _tex_idle
+	if hd == null or hd.get_width() < 256:
+		var sc := _hero_showcase_hd_tex(_current_race())
+		if sc != null and sc.get_width() >= 256:
+			hd = sc
+		else:
+			hd = null
+
 	if _hero_avatar:
-		_hero_avatar.texture = hd
 		if hd != null and hd.get_width() >= 256:
+			_hero_avatar.texture = hd
 			_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		else:
-			_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			_hero_avatar.texture = null
 	if _char_prev:
-		_char_prev.texture = hd
 		if hd != null and hd.get_width() >= 256:
+			_char_prev.texture = hd
 			_char_prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		else:
-			_char_prev.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+			_char_prev.texture = null
 	_refresh_equip_schematic()
 
 

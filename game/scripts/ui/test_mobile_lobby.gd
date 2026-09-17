@@ -736,19 +736,33 @@ func _test_nine_races_lobby_showcase_hd() -> void:
 			r, htex.get_width(), htex.get_height(), ctex.get_width(), ctex.get_height()
 		])
 
-	# 2. 驗證有換裝時：其他族維持既有紙娃娃 (128)，不准把 128 放大充高清（NEAREST 濾鏡）
+	# 2. 驗證有換裝時：九族 512 合成成功走 512 高清紙娃娃（LINEAR 濾鏡）；合成失敗改讀官方立牌，不准退回 128 糊圖（NEAREST）
 	gs.player_race = "lion"
 	gs.paperdoll_slots = {"costume": "costume_steam_artisan", "chassis": "paint_brass_gold"}
 	_lobby._load_hero_poses()
 	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
 	_lobby._apply_hero_idle_visual()
 	var lion_costume_tex: Texture2D = hero_avatar.texture
-	if lion_costume_tex == null or lion_costume_tex.get_width() != 128:
-		_fail("獅族換裝後應維持既有 128 紙娃娃，實際寬度: %s" % (str(lion_costume_tex.get_width()) if lion_costume_tex else "null"))
-	if hero_avatar.texture_filter != CanvasItem.TEXTURE_FILTER_NEAREST:
-		_fail("獅族換裝後 128 紙娃娃應維持 NEAREST，不准把 128 放大充高清！")
+	if lion_costume_tex == null or lion_costume_tex.get_width() < 256:
+		_fail("獅族換裝後 512 合成成功應為高清紙娃娃 (>=256)，實際寬度: %s" % (str(lion_costume_tex.get_width()) if lion_costume_tex else "null"))
+	if hero_avatar.texture_filter != CanvasItem.TEXTURE_FILTER_LINEAR:
+		_fail("獅族換裝後高清紙娃娃應使用 LINEAR 濾鏡，不准使用 NEAREST！")
 	else:
-		print("  ok 獅族換裝後維持既有 128 紙娃娃且使用 NEAREST 濾鏡")
+		print("  ok 獅族換裝後走 512 高清紙娃娃且使用 LINEAR 濾鏡 (寬度: %d)" % lion_costume_tex.get_width())
+
+	# 2.1 驗證換裝 512 合成失敗時：安全退回官方立牌（>=256，LINEAR），絕不退回 128 糊圖或 NEAREST
+	gs.player_race = "lion"
+	gs.paperdoll_slots = {"costume": "invalid_slot_broken", "chassis": "invalid_chassis_broken"}
+	_lobby._load_hero_poses()
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+	_lobby._apply_hero_idle_visual()
+	var lion_fail_tex: Texture2D = hero_avatar.texture
+	if lion_fail_tex == null or lion_fail_tex.get_width() < 256:
+		_fail("換裝失敗時應改讀官方立牌 (>=256)，不可為空或小於 256，實際: %s" % (str(lion_fail_tex.get_width()) if lion_fail_tex else "null"))
+	if hero_avatar.texture_filter != CanvasItem.TEXTURE_FILTER_LINEAR:
+		_fail("換裝失敗退回官方立牌應使用 LINEAR 濾鏡，不准使用 NEAREST！")
+	else:
+		print("  ok 獅族換裝合成失敗時安全退回官方立牌 (寬度: %d, filter=LINEAR)" % lion_fail_tex.get_width())
 
 	# 3. 驗證有換裝時：兔族有 512 走 512（LINEAR 濾鏡）
 	gs.player_race = "rabbit"
