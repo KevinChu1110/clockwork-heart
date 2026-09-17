@@ -14,7 +14,11 @@ def verify():
         ("icon_dock_equip.png", (128, 128)),
         ("icon_dock_campaign.png", (128, 128)),
         ("icon_dock_soul.png", (128, 128)),
-        ("icon_dock_bag.png", (128, 128))
+        ("icon_dock_bag.png", (128, 128)),
+        ("icon_hall_forge.png", (128, 128)),
+        ("icon_hall_gem.png", (128, 128)),
+        ("icon_hall_arena.png", (128, 128)),
+        ("icon_hall_quest.png", (128, 128))
     ]
     all_ok = True
     for name, expected_size in targets:
