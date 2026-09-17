@@ -49,14 +49,37 @@ def main():
     
     md5_1 = get_md5(p1)
     md5_2 = get_md5(p2)
-    print(f"0-QA15 檢查 (md5 查重):")
+    print("0-QA18 檢查 (1280x720 完整畫面，有場景有 HUD，非貼圖 dump):")
+    for p in [p1, p2]:
+        img = Image.open(p).convert("RGBA")
+        w, h = img.size
+        print(f"  檢查 {p}: 尺寸 {w}x{h}")
+        if (w, h) != (1280, 720):
+            print(f"FAIL: 尺寸不是 1280x720: {w}x{h}")
+            sys.exit(1)
+        arr = np.array(img)
+        corners = [arr[0, 0, 3], arr[0, w-1, 3], arr[h-1, 0, 3], arr[h-1, w-1, 3]]
+        if all(c == 0 for c in corners):
+            print(f"FAIL: {p} 四角全透明，判定為貼圖 dump (0-QA18 違規)！")
+            sys.exit(1)
+        print(f"  ✓ 0-QA18 通過: {p} 為 1280x720 實機渲染畫面，四角不透明。")
+
+    print("\n0-QA15 檢查 (md5 查重):")
     print(f"  兔族: {p1} -> md5: {md5_1}")
     print(f"  獅族: {p2} -> md5: {md5_2}")
     if md5_1 == md5_2:
         print("FAIL: md5 相同！兩張截圖重複！")
         sys.exit(1)
-    else:
-        print("  ✓ PASS: 兩張截圖 md5 完全相異！")
+    # 檢查歷史截圖是否重複
+    hist_md5s = {
+        "777398385f24464351a31d6544a56a48": "歷史獅族截圖",
+        "034441a689e97f5930227ab077c12b97": "歷史兔族截圖"
+    }
+    for m, name in [(md5_1, "兔族"), (md5_2, "獅族")]:
+        if m in hist_md5s:
+            print(f"FAIL: {name}截圖 md5 與{hist_md5s[m]}重複！")
+            sys.exit(1)
+    print("  ✓ PASS: 兩張截圖 md5 完全相異，且與歷史截圖不重複！")
         
     print("\n0-QA17 檢查 (角色區域量測，否證 128 NEAREST 放大):")
     # 大廳角色中央區域大約在 x: 515~765, y: 220~490 (原 1280x720 畫面中央)
