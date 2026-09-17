@@ -517,6 +517,19 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 				var cross_512_clean := "%s/%s/%s/%s_512.png" % [PAPERDOLL_ROOT, other, sid, clean_id]
 				if clean_id != effective_id and (ResourceLoader.exists(cross_512_clean) or FileAccess.file_exists(cross_512_clean)):
 					return cross_512_clean
+
+		# 若無該特定外觀之 512 切片，通用基礎部件退回跨族 512 預設件（鑰匙／武器）
+		if sid == SLOT_WINDING_KEY:
+			var fb_key := "%s/rabbit/winding_key/key_classic_brass_512.png" % PAPERDOLL_ROOT
+			if ResourceLoader.exists(fb_key) or FileAccess.file_exists(fb_key):
+				return fb_key
+		elif sid == SLOT_WEAPON:
+			var fb_wpn := "%s/rabbit/weapon/wpn_dawn_blade_512.png" % PAPERDOLL_ROOT
+			if ResourceLoader.exists(fb_wpn) or FileAccess.file_exists(fb_wpn):
+				return fb_wpn
+		elif sid == SLOT_BACK_CURIO:
+			# 非必選槽位若無 512 切片則安全隱藏，不退回 128 破壞 512 合成
+			return ""
 	return resolve_slot_texture_path(rid, sid, iid)
 
 
