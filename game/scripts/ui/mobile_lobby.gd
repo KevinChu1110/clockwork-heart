@@ -113,6 +113,36 @@ var _selected_region: int = 1 # 0: 閣樓與堡壘, 1: 白霧之地, 2: 道場�
 var _stages_container: VBoxContainer
 var _region_buttons: Array[Button] = []
 
+## 角色分頁武器槽與戰鬥屬性
+var _weapon_slot_buttons: Array[Button] = []
+var _selected_weapon_slot: int = 0
+var _weapon_slot_hint_label: Label = null
+var _char_power_badge: Label = null
+
+const WEAPON_SLOTS: Array[Dictionary] = [
+	{
+		"slot_title": "首選武器",
+		"weapon_name": "鐵劍",
+		"hits": "4 次打擊",
+		"full_text": "首選: 鐵劍 (4次)",
+		"hint": "首選武器 · 鐵劍：近身迅捷連續 4 次斬擊，戰鬥開局起手輪替順位"
+	},
+	{
+		"slot_title": "副手武器",
+		"weapon_name": "獵弓",
+		"hits": "4 次打擊",
+		"full_text": "副手: 獵弓 (4次)",
+		"hint": "副手武器 · 獵弓：中距離精準連續 4 次射擊，壓制敵陣並牽制推進"
+	},
+	{
+		"slot_title": "絕技武器",
+		"weapon_name": "拳套",
+		"hits": "5 連擊",
+		"full_text": "絕技: 拳套 (5連擊)",
+		"hint": "絕技武器 · 拳套：重裝近身蓄力 5 連擊，滿怒時超頻運轉爆發絕技"
+	}
+]
+
 static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
 
@@ -1634,7 +1664,7 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	return c
 
 ## ──────────────────────────────────────────
-## Tab 2 & Tab 5: 角色紙娃娃與背包 (神殿陳列匣)
+## Tab 2 & Tab 5: 角色紙娃娃與背包 (奶油果凍資訊卡)
 ## ──────────────────────────────────────────
 func _build_character_tab() -> void:
 	_char_layer = Control.new()
@@ -1648,28 +1678,58 @@ func _build_character_tab() -> void:
 	panel.offset_right = -50
 	panel.offset_top = 16
 	panel.offset_bottom = -16
-	panel.add_theme_stylebox_override("panel", _create_obsidian_panel(LINE_GOLD))
+	var panel_sb := StyleBoxFlat.new()
+	panel_sb.bg_color = COLOR_BG_CREAM
+	panel_sb.border_color = COLOR_BORDER
+	panel_sb.set_border_width_all(2)
+	panel_sb.border_width_bottom = 5
+	panel_sb.set_corner_radius_all(20)
+	panel_sb.content_margin_left = 20
+	panel_sb.content_margin_right = 20
+	panel_sb.content_margin_top = 16
+	panel_sb.content_margin_bottom = 16
+	panel_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	panel_sb.shadow_size = 8
+	panel_sb.shadow_offset = Vector2(0, 4)
+	panel.add_theme_stylebox_override("panel", panel_sb)
 	_char_layer.add_child(panel)
 
 	var h := HBoxContainer.new()
-	h.add_theme_constant_override("separation", 28)
+	h.add_theme_constant_override("separation", 24)
 	panel.add_child(h)
 
 	var l_card := PanelContainer.new()
-	l_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	l_card.add_theme_stylebox_override("panel", _create_obsidian_panel(LINE_GOLD_SOFT))
+	l_card.custom_minimum_size = Vector2(340, 0)
+	l_card.size_flags_horizontal = Control.SIZE_FILL
+	var l_sb := StyleBoxFlat.new()
+	l_sb.bg_color = COLOR_CARD_WARM
+	l_sb.border_color = COLOR_BORDER
+	l_sb.set_border_width_all(2)
+	l_sb.border_width_bottom = 5
+	l_sb.set_corner_radius_all(20)
+	l_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
+	l_sb.shadow_size = 6
+	l_sb.shadow_offset = Vector2(0, 3)
+	l_card.add_theme_stylebox_override("panel", l_sb)
 	h.add_child(l_card)
 
 	var l_margin := MarginContainer.new()
-	l_margin.add_theme_constant_override("margin_left", 12)
-	l_margin.add_theme_constant_override("margin_top", 12)
-	l_margin.add_theme_constant_override("margin_right", 12)
-	l_margin.add_theme_constant_override("margin_bottom", 12)
+	l_margin.add_theme_constant_override("margin_left", 14)
+	l_margin.add_theme_constant_override("margin_top", 14)
+	l_margin.add_theme_constant_override("margin_right", 14)
+	l_margin.add_theme_constant_override("margin_bottom", 14)
 	l_card.add_child(l_margin)
 
 	var l_vbox := VBoxContainer.new()
 	l_vbox.add_theme_constant_override("separation", 10)
 	l_margin.add_child(l_vbox)
+
+	var l_title := Label.new()
+	l_title.text = _t("機體外觀 · 發條紙娃娃")
+	l_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l_title.add_theme_font_size_override("font_size", 15)
+	l_title.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+	l_vbox.add_child(l_title)
 
 	_char_prev = TextureRect.new()
 	_char_prev.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -1694,58 +1754,304 @@ func _build_character_tab() -> void:
 	var btn_wardrobe := Button.new()
 	btn_wardrobe.name = "BtnWardrobe"
 	btn_wardrobe.text = _t("更衣 · 發條衣櫥")
-	UiStyle.style_button(btn_wardrobe, false)
-	btn_wardrobe.custom_minimum_size = Vector2(0, 50)
+	btn_wardrobe.custom_minimum_size = Vector2(0, 58)
 	btn_wardrobe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn_wardrobe.add_theme_font_size_override("font_size", 16)
+	btn_wardrobe.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_wardrobe.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_wardrobe.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var wsb := StyleBoxFlat.new()
+	wsb.bg_color = COLOR_ORANGE
+	wsb.border_color = COLOR_BORDER
+	wsb.set_border_width_all(2)
+	wsb.border_width_bottom = 5
+	wsb.set_corner_radius_all(18)
+	wsb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	wsb.shadow_size = 5
+	wsb.shadow_offset = Vector2(0, 2)
+	var wsb_h := wsb.duplicate() as StyleBoxFlat
+	wsb_h.bg_color = Color("#FFB84D")
+	var wsb_p := wsb.duplicate() as StyleBoxFlat
+	wsb_p.border_width_bottom = 2
+	btn_wardrobe.add_theme_stylebox_override("normal", wsb)
+	btn_wardrobe.add_theme_stylebox_override("hover", wsb_h)
+	btn_wardrobe.add_theme_stylebox_override("pressed", wsb_p)
+	btn_wardrobe.add_theme_stylebox_override("focus", wsb)
 	btn_wardrobe.pressed.connect(open_wardrobe)
 	l_vbox.add_child(btn_wardrobe)
 
 	var r_v := VBoxContainer.new()
 	r_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	r_v.add_theme_constant_override("separation", 14)
+	r_v.add_theme_constant_override("separation", 12)
 	h.add_child(r_v)
 
-	var title := Label.new()
-	title.text = "三欄武器輪替系統 (原作節奏)"
-	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", COLOR_GOLD_DARK)
-	r_v.add_child(title)
+	# 1. 武器輪替配置標題
+	var w_hdr := HBoxContainer.new()
+	w_hdr.add_theme_constant_override("separation", 12)
+	r_v.add_child(w_hdr)
 
+	var w_title := Label.new()
+	w_title.text = _t("武器輪替配置")
+	w_title.add_theme_font_size_override("font_size", 18)
+	w_title.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	w_hdr.add_child(w_title)
+
+	var w_sub := Label.new()
+	w_sub.text = _t("點擊切換輪替順位 · 三段作戰序列")
+	w_sub.add_theme_font_size_override("font_size", 13)
+	w_sub.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+	w_hdr.add_child(w_sub)
+
+	# 2. 三個武器槽果凍卡
 	var w_row := HBoxContainer.new()
 	w_row.add_theme_constant_override("separation", 12)
 	r_v.add_child(w_row)
 
-	var w_slots := ["首選: 鐵劍 (4次)", "副手: 獵弓 (4次)", "絕技: 拳套 (5連擊)"]
-	for ws in w_slots:
-		var p := PanelContainer.new()
-		p.custom_minimum_size = Vector2(130, 68)
-		var psb := StyleBoxFlat.new()
-		psb.bg_color = COLOR_CARD_WARM
-		psb.border_color = COLOR_BORDER
-		psb.set_border_width_all(2)
-		psb.border_width_bottom = 5
-		psb.set_corner_radius_all(18)
-		p.add_theme_stylebox_override("panel", psb)
-		var l := Label.new()
-		l.text = ws
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		l.add_theme_font_size_override("font_size", 13)
-		l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-		p.add_child(l)
-		w_row.add_child(p)
+	_weapon_slot_buttons.clear()
+	for i in range(WEAPON_SLOTS.size()):
+		var slot_btn := _build_weapon_slot_button(i, WEAPON_SLOTS[i])
+		w_row.add_child(slot_btn)
+		_weapon_slot_buttons.append(slot_btn)
 
-	var stats := RichTextLabel.new()
-	stats.bbcode_enabled = true
-	stats.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	stats.add_theme_font_size_override("normal_font_size", 15)
-	stats.add_theme_color_override("default_color", COLOR_TEXT_DARK)
-	stats.text = "\n[color=#9A6B00][b]機體戰鬥屬性 (有效戰力 482)[/b][/color]\n\n"
-	stats.text += "生命力 (HP): [color=#0E8A7A][b]520[/b][/color]   物理攻擊: [color=#9A6B00][b]95[/b][/color]\n"
-	stats.text += "物理防禦: [color=#2A5580][b]48[/b][/color]   暴擊率: [color=#9A6B00][b]22%[/b][/color]\n"
-	stats.text += "怒氣量表: [color=#A82B1E][b]20 點 (滿怒超頻運轉 +25% 性能)[/b][/color]\n"
-	r_v.add_child(stats)
+	# 3. 武器槽提示卡
+	var hint_p := PanelContainer.new()
+	hint_p.custom_minimum_size = Vector2(0, 36)
+	var hsb := StyleBoxFlat.new()
+	hsb.bg_color = COLOR_CARD_WARM
+	hsb.border_color = COLOR_BORDER
+	hsb.set_border_width_all(1)
+	hsb.border_width_bottom = 3
+	hsb.set_corner_radius_all(10)
+	hsb.content_margin_left = 14
+	hsb.content_margin_right = 14
+	hsb.content_margin_top = 6
+	hsb.content_margin_bottom = 6
+	hint_p.add_theme_stylebox_override("panel", hsb)
+	r_v.add_child(hint_p)
+
+	_weapon_slot_hint_label = Label.new()
+	_weapon_slot_hint_label.text = WEAPON_SLOTS[_selected_weapon_slot]["hint"]
+	_weapon_slot_hint_label.add_theme_font_size_override("font_size", 13)
+	_weapon_slot_hint_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	hint_p.add_child(_weapon_slot_hint_label)
+
+	# 4. 戰鬥屬性標題列
+	var s_hdr := HBoxContainer.new()
+	s_hdr.add_theme_constant_override("separation", 12)
+	r_v.add_child(s_hdr)
+
+	var s_title := Label.new()
+	s_title.text = _t("機體戰鬥屬性")
+	s_title.add_theme_font_size_override("font_size", 18)
+	s_title.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	s_hdr.add_child(s_title)
+
+	var pow_capsule := PanelContainer.new()
+	var pcsb := StyleBoxFlat.new()
+	pcsb.bg_color = COLOR_CARD_GOLD
+	pcsb.border_color = COLOR_BORDER
+	pcsb.set_border_width_all(2)
+	pcsb.border_width_bottom = 3
+	pcsb.set_corner_radius_all(12)
+	pcsb.content_margin_left = 12
+	pcsb.content_margin_right = 12
+	pcsb.content_margin_top = 2
+	pcsb.content_margin_bottom = 2
+	pow_capsule.add_theme_stylebox_override("panel", pcsb)
+	s_hdr.add_child(pow_capsule)
+
+	_char_power_badge = Label.new()
+	var gs := _gs()
+	var cur_pow := 482
+	if gs and gs.has_method("power_score") and int(gs.call("power_score")) > 0:
+		cur_pow = int(gs.call("power_score"))
+	_char_power_badge.text = "有效戰力 %d" % cur_pow
+	_char_power_badge.add_theme_font_size_override("font_size", 13)
+	_char_power_badge.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	pow_capsule.add_child(_char_power_badge)
+
+	# 5. 獨立屬性小卡 (生命／攻擊／防禦／暴擊／怒氣)
+	var stats_v := VBoxContainer.new()
+	stats_v.add_theme_constant_override("separation", 10)
+	stats_v.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	r_v.add_child(stats_v)
+
+	var r1 := HBoxContainer.new()
+	r1.add_theme_constant_override("separation", 10)
+	r1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stats_v.add_child(r1)
+
+	r1.add_child(_build_stat_card("生命力 (HP)", "520", "機體核心", Color("#0E8A7A")))
+	r1.add_child(_build_stat_card("物理攻擊", "95", "打擊破壞", COLOR_GOLD_DARK))
+	r1.add_child(_build_stat_card("物理防禦", "48", "減傷防護", Color("#2A5580")))
+
+	var r2 := HBoxContainer.new()
+	r2.add_theme_constant_override("separation", 10)
+	r2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	stats_v.add_child(r2)
+
+	r2.add_child(_build_stat_card("暴擊率", "22%", "弱點致命", Color("#B83250")))
+	r2.add_child(_build_stat_card("怒氣量表", "20 點", "滿怒超頻運轉 +25% 性能", Color("#A82B1E")))
+
+func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
+	var btn := Button.new()
+	btn.name = "WeaponSlot_%d" % idx
+	btn.custom_minimum_size = Vector2(0, 68)
+	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var v := VBoxContainer.new()
+	v.name = "Content"
+	v.set_anchors_preset(Control.PRESET_FULL_RECT)
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	v.add_theme_constant_override("separation", 2)
+	btn.add_child(v)
+
+	var slot_title := Label.new()
+	slot_title.name = "SlotTitle"
+	slot_title.text = slot_data["slot_title"]
+	slot_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	slot_title.add_theme_font_size_override("font_size", 13)
+	slot_title.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+	v.add_child(slot_title)
+
+	var weapon_info := Label.new()
+	weapon_info.name = "WeaponInfo"
+	weapon_info.text = "%s · %s" % [slot_data["weapon_name"], slot_data["hits"]]
+	weapon_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	weapon_info.add_theme_font_size_override("font_size", 16)
+	weapon_info.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	v.add_child(weapon_info)
+
+	_style_weapon_slot_button(btn, idx == _selected_weapon_slot)
+	var slot_idx := idx
+	btn.pressed.connect(func(): _select_weapon_slot(slot_idx))
+	return btn
+
+func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
+	var sb := StyleBoxFlat.new()
+	sb.set_corner_radius_all(18)
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 5
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 8
+
+	var title_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
+	var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
+
+	if is_selected:
+		sb.bg_color = COLOR_ORANGE
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.22)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 3)
+		if title_lbl:
+			title_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		if info_lbl:
+			info_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	else:
+		sb.bg_color = COLOR_CARD_WARM
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
+		if title_lbl:
+			title_lbl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+		if info_lbl:
+			info_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+
+	var sb_h := sb.duplicate() as StyleBoxFlat
+	if not is_selected:
+		sb_h.bg_color = COLOR_CARD_GOLD
+	else:
+		sb_h.bg_color = Color("#FFB84D")
+
+	var sb_p := sb.duplicate() as StyleBoxFlat
+	sb_p.border_width_bottom = 2
+
+	btn.add_theme_stylebox_override("normal", sb)
+	btn.add_theme_stylebox_override("hover", sb_h)
+	btn.add_theme_stylebox_override("pressed", sb_p)
+	btn.add_theme_stylebox_override("focus", sb)
+
+func select_weapon_slot(idx: int) -> void:
+	_select_weapon_slot(idx)
+
+func get_selected_weapon_slot() -> int:
+	return _selected_weapon_slot
+
+func get_weapon_slot_buttons() -> Array[Button]:
+	return _weapon_slot_buttons
+
+func _select_weapon_slot(idx: int) -> void:
+	if idx < 0 or idx >= _weapon_slot_buttons.size():
+		return
+	_selected_weapon_slot = idx
+	for i in range(_weapon_slot_buttons.size()):
+		_style_weapon_slot_button(_weapon_slot_buttons[i], i == _selected_weapon_slot)
+	if _weapon_slot_hint_label and idx < WEAPON_SLOTS.size():
+		_weapon_slot_hint_label.text = WEAPON_SLOTS[idx]["hint"]
+
+func _build_stat_card(title: String, val_str: String, subtitle: String, val_color: Color) -> PanelContainer:
+	var c := PanelContainer.new()
+	c.name = "StatCard"
+	c.set_meta("is_stat_card", true)
+	c.custom_minimum_size = Vector2(0, 80)
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = COLOR_CARD_WARM
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 5
+	sb.set_corner_radius_all(18)
+	sb.content_margin_left = 16
+	sb.content_margin_right = 16
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 8
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
+	sb.shadow_size = 4
+	sb.shadow_offset = Vector2(0, 2)
+	c.add_theme_stylebox_override("panel", sb)
+
+	var v := VBoxContainer.new()
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_theme_constant_override("separation", 2)
+	c.add_child(v)
+
+	var top_row := HBoxContainer.new()
+	top_row.add_theme_constant_override("separation", 6)
+	v.add_child(top_row)
+
+	var t_lbl := Label.new()
+	t_lbl.name = "TitleLabel"
+	t_lbl.text = title
+	t_lbl.add_theme_font_size_override("font_size", 14)
+	t_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	top_row.add_child(t_lbl)
+
+	if not subtitle.is_empty():
+		var sub_lbl := Label.new()
+		sub_lbl.name = "SubLabel"
+		sub_lbl.text = subtitle
+		sub_lbl.add_theme_font_size_override("font_size", 12)
+		sub_lbl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+		top_row.add_child(sub_lbl)
+
+	var val_row := HBoxContainer.new()
+	val_row.add_theme_constant_override("separation", 6)
+	v.add_child(val_row)
+
+	var v_lbl := Label.new()
+	v_lbl.name = "ValLabel"
+	v_lbl.text = val_str
+	v_lbl.add_theme_font_size_override("font_size", 22)
+	v_lbl.add_theme_color_override("font_color", val_color)
+	val_row.add_child(v_lbl)
+
+	return c
 
 func _build_bag_tab() -> void:
 	_bag_layer = Control.new()
@@ -1856,6 +2162,8 @@ func refresh_hud() -> void:
 		_char_prev.texture = _tex_idle
 	if _power_label:
 		_power_label.text = "戰力 %d" % pow
+	if _char_power_badge:
+		_char_power_badge.text = "有效戰力 %d" % (pow if pow > 0 else 482)
 	if _energy_label:
 		_energy_label.text = _energy_hud_text()
 	if _gold_label:
