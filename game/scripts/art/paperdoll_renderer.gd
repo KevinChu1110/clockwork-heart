@@ -556,13 +556,14 @@ static func get_sorted_slot_entries_512(race: String, slot_selection: Dictionary
 ## 記憶體即時合成 512x512 RGBA8 高清貼圖（大廳／角色分頁／衣櫥即時換裝預覽專用）
 static func build_composite_texture_512(race: String, slot_selection: Dictionary = {}) -> Texture2D:
 	var entries := get_sorted_slot_entries_512(race, slot_selection)
-	var has_any_512 := false
+	var has_chassis_512 := false
 	for entry in entries:
-		var p: String = str(entry.get("texture_path", ""))
-		if p.ends_with("_512.png"):
-			has_any_512 = true
+		if str(entry.get("slot_id", "")) == SLOT_CHASSIS:
+			var p: String = str(entry.get("texture_path", ""))
+			if p.ends_with("_512.png"):
+				has_chassis_512 = true
 			break
-	if not has_any_512:
+	if not has_chassis_512:
 		return null
 	var base_img := Image.create(512, 512, false, Image.FORMAT_RGBA8)
 	base_img.fill(Color(0, 0, 0, 0))
