@@ -1626,8 +1626,8 @@
    "id": "creation-race-thumbs-hd",
    "cat": "遊戲",
    "title": "開局選族種族卡縮圖改讀高清立牌",
-   "status": "測試中",
-   "note": "完成九族種族卡改讀 showcase 高清立牌 (長邊>=928)+LINEAR 濾鏡，通過創角/九族測試與 0-QA18/0-QA17 實機截圖",
+   "status": "已上線",
+   "note": "九族種族卡縮圖改讀高清立牌+LINEAR，審核通過已併 main",
    "keys": [
     "開局選族種族卡縮"
    ]
