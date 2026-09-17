@@ -50,6 +50,7 @@ func _process(_d: float) -> bool:
 		_test_hero_click_and_particles()
 		_test_hero_nameplate()
 		_test_hero_race_poses()
+		_test_nine_races_lobby_showcase_hd()
 		_test_adventure_region_stages()
 		_test_soul_hall_tab()
 		_test_bottom_dock()
@@ -681,6 +682,106 @@ func _test_hero_race_poses() -> void:
 	gs.player_race = "rabbit"
 	gs.paperdoll_slots = {}
 	_lobby._load_hero_poses()
+
+
+## ──────────────────────────────────────────
+## 測試九族大廳中央與角色分頁讀取官方立牌高清待機（t_8bd7c313）
+## ──────────────────────────────────────────
+func _test_nine_races_lobby_showcase_hd() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試九族立牌高清待機")
+		return
+
+	var gs := root.get_node_or_null("GameState")
+	if gs == null:
+		_fail("無法取得 GameState 單例")
+		return
+
+	var all_races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin"]
+	var hero_avatar := _lobby.get("_hero_avatar") as TextureRect
+	if hero_avatar == null:
+		_fail("大廳 _hero_avatar 為空")
+		return
+
+	# 1. 驗證九族未自訂外裝時：大廳中央與角色分頁皆讀取官方立牌高清展示貼圖（寬邊 >= 256，LINEAR 濾鏡）
+	for r in all_races:
+		gs.player_race = r
+		gs.paperdoll_slots = {}
+		_lobby._load_hero_poses()
+		_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+		_lobby._apply_hero_idle_visual()
+
+		var htex: Texture2D = hero_avatar.texture
+		if htex == null:
+			_fail("種族 %s 大廳 _hero_avatar 貼圖為空" % r)
+			continue
+		if htex.get_width() < 256:
+			_fail("種族 %s 大廳待機貼圖寬邊應 >= 256，實際為 %d" % [r, htex.get_width()])
+		if hero_avatar.texture_filter != CanvasItem.TEXTURE_FILTER_LINEAR:
+			_fail("種族 %s 大廳立牌高清待機應開啟 LINEAR 濾鏡" % r)
+
+		# 角色分頁預覽
+		_lobby._switch_tab(MobileLobby.Tab.CHARACTER)
+		var char_prev := _lobby.get("_char_prev") as TextureRect
+		if char_prev == null or char_prev.texture == null:
+			_fail("種族 %s 角色分頁 _char_prev 貼圖為空" % r)
+			continue
+		var ctex: Texture2D = char_prev.texture
+		if ctex.get_width() < 256:
+			_fail("種族 %s 角色分頁預設預覽寬邊應 >= 256，實際為 %d" % [r, ctex.get_width()])
+		if char_prev.texture_filter != CanvasItem.TEXTURE_FILTER_LINEAR:
+			_fail("種族 %s 角色分頁高清待機應開啟 LINEAR 濾鏡" % r)
+
+		print("  ok 種族 %s 官方立牌高清待機驗證通過 (大廳尺寸: %dx%d, 角色分頁: %dx%d, filter=LINEAR)" % [
+			r, htex.get_width(), htex.get_height(), ctex.get_width(), ctex.get_height()
+		])
+
+	# 2. 驗證有換裝時：其他族維持既有紙娃娃 (128)，不准把 128 放大充高清（NEAREST 濾鏡）
+	gs.player_race = "lion"
+	gs.paperdoll_slots = {"costume": "costume_steam_artisan", "chassis": "paint_brass_gold"}
+	_lobby._load_hero_poses()
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+	_lobby._apply_hero_idle_visual()
+	var lion_costume_tex: Texture2D = hero_avatar.texture
+	if lion_costume_tex == null or lion_costume_tex.get_width() != 128:
+		_fail("獅族換裝後應維持既有 128 紙娃娃，實際寬度: %s" % (str(lion_costume_tex.get_width()) if lion_costume_tex else "null"))
+	if hero_avatar.texture_filter != CanvasItem.TEXTURE_FILTER_NEAREST:
+		_fail("獅族換裝後 128 紙娃娃應維持 NEAREST，不准把 128 放大充高清！")
+	else:
+		print("  ok 獅族換裝後維持既有 128 紙娃娃且使用 NEAREST 濾鏡")
+
+	# 3. 驗證有換裝時：兔族有 512 走 512（LINEAR 濾鏡）
+	gs.player_race = "rabbit"
+	gs.paperdoll_slots = {"costume": "costume_nutcracker_guard"}
+	_lobby._load_hero_poses()
+	_lobby._apply_hero_idle_visual()
+	var rabbit_costume_tex: Texture2D = hero_avatar.texture
+	if rabbit_costume_tex == null or rabbit_costume_tex.get_width() < 256:
+		_fail("兔族換裝後應走 512 高清紙娃娃，實際寬度: %s" % (str(rabbit_costume_tex.get_width()) if rabbit_costume_tex else "null"))
+	if hero_avatar.texture_filter != CanvasItem.TEXTURE_FILTER_LINEAR:
+		_fail("兔族 512 紙娃娃應使用 LINEAR 濾鏡")
+	else:
+		print("  ok 兔族換裝後走 512 高清紙娃娃且使用 LINEAR 濾鏡 (寬度: %d)" % rabbit_costume_tex.get_width())
+
+	# 4. 驗證戳碰結束回到官方立牌高清待機
+	gs.player_race = "lion"
+	gs.paperdoll_slots = {}
+	_lobby._load_hero_poses()
+	_lobby._restore_hero_idle()
+	var lion_restored: Texture2D = hero_avatar.texture
+	if lion_restored == null or lion_restored.get_width() < 256:
+		_fail("獅族戳碰動作結束後未回到官方立牌高清待機！")
+	else:
+		print("  ok 獅族戳碰結束後成功回到官方立牌高清待機 (尺寸: %dx%d, filter=%d)" % [
+			lion_restored.get_width(), lion_restored.get_height(), hero_avatar.texture_filter
+		])
+
+	# 恢復預設狀態與發條新村分頁
+	gs.player_race = "rabbit"
+	gs.paperdoll_slots = {}
+	_lobby._load_hero_poses()
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+	_lobby._apply_hero_idle_visual()
 
 
 func _test_adventure_region_stages() -> void:

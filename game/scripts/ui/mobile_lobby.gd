@@ -243,20 +243,38 @@ func _get_hero_equipped_idle_texture() -> Texture2D:
 	return tex
 
 
+func _has_custom_paperdoll_outfit(slots: Dictionary) -> bool:
+	if slots.is_empty():
+		return false
+	for k in slots:
+		if k == "race":
+			continue
+		var v := str(slots[k]).strip_edges().to_lower()
+		if not v.is_empty() and not v in ["none", "empty", "bare", "default"]:
+			return true
+	return false
+
+
 func _hero_display_tex() -> Texture2D:
-	## 大廳／角色分頁：優先使用 512 高清紙娃娃即時合成，讓換裝與外觀完美即時呈現
+	## 大廳／角色分頁：沒自訂外裝時改讀官方品牌立牌高清待機（LINEAR）；有換裝時有 512 走 512，其餘維持既有 128 紙娃娃 (NEAREST)
 	var race := _current_race()
 	var slots := _current_paperdoll_slots()
-	if not slots.is_empty():
+	if _has_custom_paperdoll_outfit(slots):
 		var comp_512: Texture2D = PaperdollRenderer.build_composite_texture_512(race, slots)
 		if comp_512 != null:
 			return comp_512
-	var p256 := "res://assets/sprites/player/paperdoll/%s/showcase_idle_256.png" % race
-	if ResourceLoader.exists(p256):
-		return load(p256) as Texture2D
+		var legacy: Texture2D = _get_hero_equipped_idle_texture()
+		if legacy != null:
+			return legacy
+		return _tex_idle
+
+	# 沒自訂外裝時：九族讀取官方品牌立牌高清展示貼圖
 	var p := "res://assets/sprites/player/showcase/%s_idle_hd.png" % race
 	if ResourceLoader.exists(p):
 		return load(p) as Texture2D
+	var p256 := "res://assets/sprites/player/paperdoll/%s/showcase_idle_256.png" % race
+	if ResourceLoader.exists(p256):
+		return load(p256) as Texture2D
 	var p512 := "res://assets/sprites/player/paperdoll/%s/proof_paperdoll_%s_composite_512.png" % [race, race]
 	if ResourceLoader.exists(p512):
 		return load(p512) as Texture2D
@@ -873,6 +891,7 @@ func _play_random_idle_flavor() -> void:
 	if roll == 0 and _tex_telegraph:
 		## 小伸展站姿
 		_hero_avatar.texture = _tex_telegraph
+		_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		var tw := create_tween()
 		tw.tween_interval(1.2)
 		tw.tween_callback(func():
@@ -882,6 +901,7 @@ func _play_random_idle_flavor() -> void:
 	elif roll == 1 and _tex_recover:
 		## 伸個懶腰
 		_hero_avatar.texture = _tex_recover
+		_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		var tw := create_tween()
 		tw.tween_interval(1.0)
 		tw.tween_callback(func():
@@ -1291,25 +1311,33 @@ func _on_hero_clicked(forced_act: int = -1) -> void:
 	match act_type:
 		0:
 			## 揮劍劈砍姿態 (attack -> recover -> equipped idle)
-			if _tex_attack and _hero_avatar: _hero_avatar.texture = _tex_attack
+			if _tex_attack and _hero_avatar:
+				_hero_avatar.texture = _tex_attack
+				_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 			tw.tween_property(_hero_avatar, "position", Vector2(-110, -165), 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 			tw.tween_property(_hero_avatar, "position", Vector2(-125, -140), 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 			tw.tween_interval(0.4)
 			tw.tween_callback(func():
-				if _tex_recover and _hero_avatar: _hero_avatar.texture = _tex_recover
+				if _tex_recover and _hero_avatar:
+					_hero_avatar.texture = _tex_recover
+					_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 			)
 			tw.tween_interval(0.3)
 			tw.tween_callback(_restore_hero_idle)
 		1:
 			## 聚氣勝利姿態 (skill -> equipped idle)
-			if _tex_skill and _hero_avatar: _hero_avatar.texture = _tex_skill
+			if _tex_skill and _hero_avatar:
+				_hero_avatar.texture = _tex_skill
+				_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 			tw.tween_property(_hero_avatar, "scale", Vector2(1.15, 1.15), 0.15).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 			tw.tween_property(_hero_avatar, "scale", Vector2(1.0, 1.0), 0.2).set_trans(Tween.TRANS_SINE)
 			tw.tween_interval(0.6)
 			tw.tween_callback(_restore_hero_idle)
 		2:
 			## 靈巧後翻大跳躍 (telegraph -> equipped idle)
-			if _tex_telegraph and _hero_avatar: _hero_avatar.texture = _tex_telegraph
+			if _tex_telegraph and _hero_avatar:
+				_hero_avatar.texture = _tex_telegraph
+				_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 			tw.tween_property(_hero_avatar, "position:y", -175.0, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 			tw.parallel().tween_property(_hero_avatar, "scale:x", -1.0, 0.15)
 			tw.tween_property(_hero_avatar, "position:y", -140.0, 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)

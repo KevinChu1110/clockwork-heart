@@ -141,14 +141,10 @@ func _run_test_suite() -> void:
 
 		var avatar: TextureRect = lobby.get("_hero_avatar")
 		_assert(avatar != null, "手遊大廳中 _hero_avatar 存在 (%s)" % r)
-		var starter_weapon := str(GameState.RACE_STARTER_WEAPONS.get(r, ""))
-		var expected_tex: Texture2D = SpriteDB.player_equipped_idle(r, {"weapon": starter_weapon})
 		if avatar != null:
 			_assert(avatar.texture != null, "手遊大廳中 _hero_avatar.texture 不為 null (%s)" % r)
-			_assert(avatar.texture == expected_tex, "手遊大廳中 _hero_avatar.texture 精確使用 %s 族開局裝備素體" % r)
-
-		# 驗證戰鬥與大廳素體貼圖完全一致
-		_assert(avatar.texture == expected_tex, "手遊大廳與戰鬥/SpriteDB 貼圖 100%% 保持一致 (%s)" % r)
+			_assert(avatar.texture.get_width() >= 256, "手遊大廳中 _hero_avatar.texture 採用 %s 族官方品牌高清立牌待機 (寬度 >= 256)" % r)
+			_assert(avatar.texture_filter == CanvasItem.TEXTURE_FILTER_LINEAR, "手遊大廳中 %s 族高清立牌開啟 LINEAR 平滑濾鏡" % r)
 
 		lobby.queue_free()
 
