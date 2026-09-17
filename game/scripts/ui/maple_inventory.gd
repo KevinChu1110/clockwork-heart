@@ -17,6 +17,21 @@ signal assign_hotbar(item_id: String)
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+const ITEM_ICON_DIR := "res://assets/icons/items/"
+static var _icon_cache: Dictionary = {}
+
+static func get_item_icon(id: String) -> Texture2D:
+	if id.is_empty():
+		return null
+	if _icon_cache.has(id):
+		return _icon_cache[id]
+	var p := ITEM_ICON_DIR + id + ".png"
+	if ResourceLoader.exists(p):
+		var tex := load(p) as Texture2D
+		_icon_cache[id] = tex
+		return tex
+	_icon_cache[id] = null
+	return null
 
 ## 彈窗尺寸標準 (橫屏 740~760px)
 const DIALOG_WIDTH := 750.0
@@ -54,6 +69,13 @@ var _bag_ids: Array = []
 var _cached_font: Font = null
 var _last_click_i: int = -1
 var _last_click_t: int = 0
+var _preview_row: HBoxContainer
+var _preview_frame: PanelContainer
+var _detail_icon: TextureRect
+var _detail_glyph: Label
+var _detail_name: Label
+var _detail_count: Label
+var _detail_kind: Label
 
 
 func _ready() -> void:
@@ -232,6 +254,20 @@ func _build() -> void:
 		stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		cell.add_child(stack)
 
+		var icon := TextureRect.new()
+		icon.name = "Icon"
+		icon.set_anchors_preset(Control.PRESET_FULL_RECT)
+		icon.offset_left = 6
+		icon.offset_top = 4
+		icon.offset_right = -6
+		icon.offset_bottom = -6
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		icon.visible = false
+		stack.add_child(icon)
+
 		var g := Label.new()
 		g.name = "Glyph"
 		g.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -280,6 +316,77 @@ func _build() -> void:
 	detail_margin.add_theme_constant_override("margin_bottom", 14)
 	detail_panel.add_child(detail_margin)
 
+	var detail_vbox := VBoxContainer.new()
+	detail_vbox.add_theme_constant_override("separation", 10)
+	detail_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	detail_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	detail_margin.add_child(detail_vbox)
+
+	_preview_row = HBoxContainer.new()
+	_preview_row.add_theme_constant_override("separation", 14)
+	_preview_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_preview_row.visible = false
+	detail_vbox.add_child(_preview_row)
+
+	_preview_frame = PanelContainer.new()
+	_preview_frame.custom_minimum_size = Vector2(80, 80)
+	_preview_frame.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_GOLD, COLOR_BORDER, 2, 4, 16))
+	_preview_row.add_child(_preview_frame)
+
+	var preview_stack := Control.new()
+	preview_stack.set_anchors_preset(Control.PRESET_FULL_RECT)
+	preview_stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_preview_frame.add_child(preview_stack)
+
+	_detail_icon = TextureRect.new()
+	_detail_icon.name = "DetailIcon"
+	_detail_icon.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_detail_icon.offset_left = 6
+	_detail_icon.offset_top = 4
+	_detail_icon.offset_right = -6
+	_detail_icon.offset_bottom = -6
+	_detail_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_detail_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_detail_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_detail_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_detail_icon.visible = false
+	preview_stack.add_child(_detail_icon)
+
+	_detail_glyph = Label.new()
+	_detail_glyph.name = "DetailGlyph"
+	_detail_glyph.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_detail_glyph.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_detail_glyph.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_label_style(_detail_glyph, 36, COLOR_TEXT_DARK)
+	_detail_glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_detail_glyph.visible = false
+	preview_stack.add_child(_detail_glyph)
+
+	var header_vbox := VBoxContainer.new()
+	header_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header_vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	header_vbox.add_theme_constant_override("separation", 4)
+	_preview_row.add_child(header_vbox)
+
+	var name_row := HBoxContainer.new()
+	name_row.add_theme_constant_override("separation", 8)
+	header_vbox.add_child(name_row)
+
+	_detail_name = Label.new()
+	_detail_name.name = "DetailName"
+	_apply_label_style(_detail_name, 20, COLOR_TEXT_DARK)
+	name_row.add_child(_detail_name)
+
+	_detail_count = Label.new()
+	_detail_count.name = "DetailCount"
+	_apply_label_style(_detail_count, 18, COLOR_TEXT_ORANGE)
+	name_row.add_child(_detail_count)
+
+	_detail_kind = Label.new()
+	_detail_kind.name = "DetailKind"
+	_apply_label_style(_detail_kind, 16, Color("#6B5E80"))
+	header_vbox.add_child(_detail_kind)
+
 	_detail = RichTextLabel.new()
 	_detail.bbcode_enabled = true
 	_detail.fit_content = false
@@ -292,7 +399,7 @@ func _build() -> void:
 		_detail.add_theme_font_override("normal_font", _cached_font)
 		_detail.add_theme_font_override("bold_font", _cached_font)
 	_detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	detail_margin.add_child(_detail)
+	detail_vbox.add_child(_detail)
 
 	## 「使用 / 賣出」按鈕 (薄荷綠果凍厚底按鈕，高 52px)
 	_use_btn = Button.new()
@@ -386,6 +493,7 @@ func refresh() -> void:
 
 	for i in _cells.size():
 		var cell: PanelContainer = _cells[i]
+		var icon: TextureRect = cell.find_child("Icon", true, false)
 		var g: Label = cell.find_child("Glyph", true, false)
 		var c: Label = cell.find_child("Count", true, false)
 		if i < list.size():
@@ -393,9 +501,20 @@ func refresh() -> void:
 			var id := str(it.get("id", ""))
 			_bag_ids.append(id)
 			var def: Dictionary = it.get("def", {})
-			if g:
-				g.text = str(def.get("glyph", "·"))
-				g.add_theme_color_override("font_color", def.get("color", COLOR_TEXT_DARK))
+			var icon_tex := get_item_icon(id)
+			if icon_tex != null:
+				if icon:
+					icon.texture = icon_tex
+					icon.visible = true
+				if g:
+					g.visible = false
+			else:
+				if icon:
+					icon.visible = false
+				if g:
+					g.text = str(def.get("glyph", "·"))
+					g.add_theme_color_override("font_color", def.get("color", COLOR_TEXT_DARK))
+					g.visible = true
 			if c:
 				var n := int(it.get("count", 0))
 				c.text = str(n) if n > 1 else ""
@@ -427,8 +546,11 @@ func refresh() -> void:
 				cell.add_theme_stylebox_override("panel", nsb)
 		else:
 			_bag_ids.append("")
+			if icon:
+				icon.visible = false
 			if g:
 				g.text = ""
+				g.visible = false
 			if c:
 				c.text = ""
 			## 空格：溫暖米黃底 + 淡深藍紫邊框
@@ -445,6 +567,8 @@ func refresh() -> void:
 
 func _update_detail(inv: Node) -> void:
 	if _selected == "" or inv == null:
+		if _preview_row:
+			_preview_row.visible = false
 		_detail.text = "[color=#1F1A3A][b]冒險者背包[/b]\n\n請點選左側格子查看道具詳情。\n\n[color=#C2600A]•[/color] 消耗品：使用回復狀態\n[color=#C2600A]•[/color] 素材：點擊使用可賣出金幣\n[color=#C2600A]•[/color] 重要物：劇情關鍵道具[/color]"
 		if _use_btn:
 			_use_btn.disabled = true
@@ -472,12 +596,29 @@ func _update_detail(inv: Node) -> void:
 	var item_name: String = str(def.get("name", _selected))
 	var item_desc: String = str(def.get("desc", ""))
 
-	_detail.text = "[color=#1F1A3A][b][font_size=20]%s[/font_size][/b]  [color=#C2600A]×%d[/color]\n\n[color=#4A3E60]%s[/color]\n\n[color=#C2600A]類型：[/color][color=#1F1A3A]%s[/color][/color]" % [
-		item_name,
-		n,
-		item_desc,
-		kind_s,
-	]
+	var icon_tex := get_item_icon(_selected)
+	if _preview_row:
+		_preview_row.visible = true
+		if _detail_name:
+			_detail_name.text = item_name
+		if _detail_count:
+			_detail_count.text = "×%d" % n
+		if _detail_kind:
+			_detail_kind.text = "類型：%s" % kind_s
+		if icon_tex != null:
+			if _detail_icon:
+				_detail_icon.texture = icon_tex
+				_detail_icon.visible = true
+			if _detail_glyph:
+				_detail_glyph.visible = false
+		else:
+			if _detail_icon:
+				_detail_icon.visible = false
+			if _detail_glyph:
+				_detail_glyph.text = str(def.get("glyph", "·"))
+				_detail_glyph.visible = true
+
+	_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
 
 
 func _on_cell(idx: int, button: int) -> void:

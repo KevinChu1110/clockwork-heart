@@ -1197,6 +1197,17 @@ func _test_bag_tab() -> void:
 					_fail("選中格底色應為柔和金黃 #FFF4D0，實際為 #%s" % first_sb.bg_color.to_html(false).to_upper())
 				print("  ok 背包選取格高亮光暈與資料連動正常: %s" % selected_id)
 
+				var ic0: TextureRect = (cells[0] as PanelContainer).find_child("Icon", true, false)
+				var g0: Label = (cells[0] as PanelContainer).find_child("Glyph", true, false)
+				if ic0 == null or not ic0.visible or ic0.texture == null:
+					_fail("大廳背包第 0 格 (hp_s) 圖示未正常顯示")
+				if g0 and g0.visible:
+					_fail("大廳背包第 0 格 (hp_s) 有圖示時單字 Glyph 不應為 visible")
+				var d_ic: TextureRect = _lobby.get("_bag_detail_icon")
+				if d_ic == null or not d_ic.visible or d_ic.texture == null:
+					_fail("大廳背包選取道具時詳情卡大圖預覽未顯示")
+				print("  ok 大廳背包格子圖示與詳情卡大圖預覽連動正常")
+
 	# 測試完切回發條新村
 	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
 

@@ -116,6 +116,21 @@ func _process(_delta: float) -> bool:
 				if cnt_fc.v > 0.4:
 					_fail("1 號格道具數量應為深藍紫 #1F1A3A，當前字色過淺: %s" % cnt_fc.to_html(false))
 
+				var icons: Array = hotbar.get("_icons")
+				if icons.size() >= 8:
+					var ic0: TextureRect = icons[0]
+					if not ic0.visible:
+						_fail("1 號格有道具 hp_s，圖示應為 visible")
+					elif ic0.texture == null:
+						_fail("1 號格圖示 TextureRect 缺少 texture")
+					else:
+						print("  ok 1 號格道具圖示正常顯示: %s" % ic0.texture.resource_path)
+					for k in range(1, 8):
+						var ick: TextureRect = icons[k]
+						if ick.visible:
+							_fail("空格 %d 圖示不應為 visible" % (k + 1))
+					print("  ok 快捷欄圖示與空格狀態正確")
+
 			print("=== 檢驗 2: 戰鬥畫面血條與怒氣條槽底 ===")
 			var php: ProgressBar = _battle.get("player_hp") as ProgressBar
 			var prage: ProgressBar = _battle.get("player_rage") as ProgressBar

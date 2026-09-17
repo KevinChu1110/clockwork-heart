@@ -8,6 +8,21 @@ const WindowDrag = preload("res://scripts/ui/window_drag.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+const ITEM_ICON_DIR := "res://assets/icons/items/"
+static var _icon_cache: Dictionary = {}
+
+static func get_item_icon(id: String) -> Texture2D:
+	if id.is_empty():
+		return null
+	if _icon_cache.has(id):
+		return _icon_cache[id]
+	var p := ITEM_ICON_DIR + id + ".png"
+	if ResourceLoader.exists(p):
+		var tex := load(p) as Texture2D
+		_icon_cache[id] = tex
+		return tex
+	_icon_cache[id] = null
+	return null
 
 const SLOT_N := 8
 const SLOT_SIZE := Vector2(50, 50)
@@ -30,6 +45,7 @@ var _glyphs: Array = []
 var _counts: Array = []
 var _keys: Array = []
 var _flash: Array = []
+var _icons: Array = []
 var _cached_font: Font = null
 
 
@@ -165,6 +181,21 @@ func _build() -> void:
 		stack.add_child(flash)
 		_flash.append(flash)
 
+		var icon := TextureRect.new()
+		icon.name = "Icon"
+		icon.set_anchors_preset(Control.PRESET_FULL_RECT)
+		icon.offset_left = 5
+		icon.offset_top = 4
+		icon.offset_right = -5
+		icon.offset_bottom = -6
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		icon.visible = false
+		stack.add_child(icon)
+		_icons.append(icon)
+
 		var glyph := Label.new()
 		glyph.set_anchors_preset(Control.PRESET_FULL_RECT)
 		glyph.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -258,16 +289,31 @@ func refresh() -> void:
 	for i in SLOT_N:
 		var id := str(bar[i]) if i < bar.size() else ""
 		var glyph: Label = _glyphs[i]
+		var icon: TextureRect = _icons[i] if i < _icons.size() else null
 		var cnt: Label = _counts[i]
 		var slot: PanelContainer = _slots[i]
 		if id == "" or int(GameState.inventory.get(id, 0)) <= 0:
+			if icon:
+				icon.visible = false
 			glyph.text = ""
+			glyph.visible = false
 			cnt.text = ""
 			slot.add_theme_stylebox_override("panel", _style_slot_empty())
 			continue
 		var def: Dictionary = inv.call("catalog", id)
-		glyph.text = str(def.get("glyph", "·"))
-		glyph.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		var icon_tex := get_item_icon(id)
+		if icon_tex != null:
+			if icon:
+				icon.texture = icon_tex
+				icon.visible = true
+			glyph.text = ""
+			glyph.visible = false
+		else:
+			if icon:
+				icon.visible = false
+			glyph.text = str(def.get("glyph", "·"))
+			glyph.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+			glyph.visible = true
 		var n := int(GameState.inventory.get(id, 0))
 		cnt.text = str(n) if n > 1 else ""
 		slot.add_theme_stylebox_override("panel", _style_slot_filled())
