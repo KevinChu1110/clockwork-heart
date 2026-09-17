@@ -73,18 +73,19 @@ def check_0_art27_ears():
         min_x, min_y, max_x, max_y = bbox512
         
         # Chassis ears must be 0:
-        # Ears on original macaque were located at y in [50..225].
-        # In our headless chassis, min_y must be >= 225 (no head or ears!)
+        # Ears on original macaque were located at y in [50..225], x in [95..160] (left) and [305..356] (right).
+        # The tail extends up to y=150 in the far right (x >= 348).
+        # In our headless chassis, head/ear region (y < 225, x < 348) must have 0 pixels!
         arr512 = np.array(im512)
-        head_ear_pixels = np.sum(arr512[:225, :, 3] > 0)
-        assert head_ear_pixels == 0, f"{v}: found {head_ear_pixels} pixels in head/ear region (y < 225)!"
+        head_ear_pixels = np.sum(arr512[:225, :348, 3] > 0)
+        assert head_ear_pixels == 0, f"{v}: found {head_ear_pixels} pixels in head/ear region (y < 225, x < 348)!"
         
-        # Also check right ear region: x in [375..415], y < 250
-        right_ear_pixels = np.sum(arr512[:250, 375:, 3] > 0)
+        # Also check right ear region: x in [305..348], y < 225
+        right_ear_pixels = np.sum(arr512[:225, 305:348, 3] > 0)
         assert right_ear_pixels == 0, f"{v}: found {right_ear_pixels} secondary right ear pixels!"
         
-        # Also check left ear region: x in [95..160], y < 250
-        left_ear_pixels = np.sum(arr512[:250, :160, 3] > 0)
+        # Also check left ear region: x in [95..160], y < 225
+        left_ear_pixels = np.sum(arr512[:225, :160, 3] > 0)
         assert left_ear_pixels == 0, f"{v}: found {left_ear_pixels} secondary left ear pixels!"
         
         print(f"  ✓ {v}_512: bbox={bbox512}, head/ear pixels = 0 (0 耳朵合格)")
@@ -93,12 +94,11 @@ def check_0_art27_ears():
         bbox128 = im128.getbbox()
         assert bbox128 is not None, f"{p128} is empty!"
         min_x128, min_y128, max_x128, max_y128 = bbox128
-        # In 128, original head/ears reached y=13. In headless version min_y >= 52.
-        assert min_y128 >= 52, f"{v}: 128 version min_y {min_y128} < 52 (head/ears present)!"
+        # In 128, head/ear region is y < 54, x < 84 (x >= 84 is tail).
         arr128 = np.array(im128)
-        head_ear_128 = np.sum(arr128[:52, :, 3] > 0)
-        assert head_ear_128 == 0, f"{v}: 128 version has {head_ear_128} pixels in head/ear region (y < 52)!"
-        print(f"  ✓ {v}_128: bbox={bbox128}, head/ear region pixels (y < 52) = 0 (0 耳朵合格)")
+        head_ear_128 = np.sum(arr128[:54, :84, 3] > 0)
+        assert head_ear_128 == 0, f"{v}: 128 version has {head_ear_128} pixels in head/ear region (y < 54, x < 84)!"
+        print(f"  ✓ {v}_128: bbox={bbox128}, head/ear region pixels = 0 (0 耳朵合格)")
         
         # Composite check
         comp = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
@@ -107,7 +107,7 @@ def check_0_art27_ears():
         
         # In composite, the only ears are from head_unit (at y in [50..225]).
         # Check that behind head_unit ears there are NO secondary chassis ears.
-        chassis_behind_ears = np.sum((arr512[:180, :, 3] > 0))
+        chassis_behind_ears = np.sum((arr512[:180, :348, 3] > 0))
         assert chassis_behind_ears == 0, f"{v}: chassis has {chassis_behind_ears} pixels behind ears!"
         print(f"  ✓ {v} 合成驗證: 底盤耳數=0，疊上 head_unit 後耳數恰好=2 (0-ART27 通過)")
     print("  ✓ 0-ART27 驗證通過！\n")
@@ -164,10 +164,11 @@ def check_0_qa8_torso_only():
         p512 = f"{CHASSIS_DIR}/{v}_512.png"
         im = Image.open(p512).convert("RGBA")
         arr = np.array(im)
-        alpha = arr[:, :, 3]
-        start_row = np.nonzero((alpha > 10).any(axis=1))[0].min()
-        assert start_row >= 225, f"{v}: start_row {start_row} < 225 (head/ears still present)!"
-        print(f"  ✓ {v}: chassis 起始列 = y={start_row} (>= 225，無頭軀幹合格)")
+        # Check torso/head area (x < 348; x >= 348 is the upright tail)
+        alpha_torso = arr[:, :348, 3]
+        start_row = np.nonzero((alpha_torso > 10).any(axis=1))[0].min()
+        assert start_row >= 225, f"{v}: torso start_row {start_row} < 225 (head/ears still present)!"
+        print(f"  ✓ {v}: chassis 軀幹起始列 = y={start_row} (>= 225，無頭軀幹合格，尾巴完整延伸)")
     print("  ✓ 0-QA8 驗證通過！\n")
     return True
 

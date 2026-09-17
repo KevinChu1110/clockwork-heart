@@ -73,7 +73,9 @@ func _run_captures() -> void:
 	_lobby.open_wardrobe()
 	_wardrobe = _lobby.find_child("WardrobeDialog", true, false)
 	if _wardrobe != null:
-		if _wardrobe.has_method("_on_race_chip_selected"):
+		if _wardrobe.has_method("set_race_filter"):
+			_wardrobe.call("set_race_filter", "macaque")
+		elif _wardrobe.has_method("_on_race_chip_selected"):
 			_wardrobe.call("_on_race_chip_selected", "macaque")
 		
 		# 選中第 2 張卡片：無外裝 (裸機素體)
