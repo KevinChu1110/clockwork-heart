@@ -51,6 +51,7 @@ func _process(_d: float) -> bool:
 		_test_hero_race_poses()
 		_test_adventure_region_stages()
 		_test_soul_hall_tab()
+		_test_bottom_dock()
 		return _finish()
 	return false
 
@@ -794,6 +795,96 @@ func _test_soul_hall_tab() -> void:
 
 	print("  ok 聚魂殿堂分頁全部檢查通過")
 	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+
+
+## ──────────────────────────────────────────
+## 8. 斷言底部 Dock 五分頁自繪圖示與果凍厚底 (t_ef0360e2)
+## ──────────────────────────────────────────
+func _test_bottom_dock() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試底部 Dock")
+		return
+
+	var dock_btns: Array = _lobby.get("_dock_buttons")
+	if dock_btns.size() != 5:
+		_fail("底部 Dock 按鈕數量應為 5，實際取得: %d" % dock_btns.size())
+		return
+
+	var expected_titles := ["發條新村", "角色裝備", "四區出征", "聚魂殿堂", "冒險背包"]
+	var expected_icons := [
+		"res://assets/icons/hud/icon_dock_village.png",
+		"res://assets/icons/hud/icon_dock_equip.png",
+		"res://assets/icons/hud/icon_dock_campaign.png",
+		"res://assets/icons/hud/icon_dock_soul.png",
+		"res://assets/icons/hud/icon_dock_bag.png",
+	]
+
+	# 測試預設停留發條新村 (Tab.VILLAGE)
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+
+	for i in range(5):
+		var btn := dock_btns[i] as Button
+		if btn == null:
+			_fail("Dock 按鈕 %d 無效" % i)
+			continue
+
+		# 8.1 斷言按鈕標題與無 emoji
+		if btn.text != expected_titles[i]:
+			_fail("Dock 按鈕 %d 標題應為「%s」，實際為「%s」" % [i, expected_titles[i], btn.text])
+		if _has_forbidden_symbols_or_emoji(btn.text):
+			_fail("Dock 按鈕 %d 標題含有禁止符號或 Emoji：「%s」" % [i, btn.text])
+
+		# 8.2 斷言自繪圖示掛載
+		if btn.icon == null:
+			_fail("Dock 按鈕 %d 缺少自繪圖示 (btn.icon 為空)" % i)
+		elif btn.icon.resource_path != expected_icons[i]:
+			_fail("Dock 按鈕 %d 圖示路徑不符，預期 %s，實際為 %s" % [i, expected_icons[i], btn.icon.resource_path])
+
+		# 8.3 斷言觸控熱區 >= 48px (review.md 0-UI1)
+		if btn.custom_minimum_size.y < 48:
+			_fail("Dock 按鈕 %d 熱區高度未達標 (< 48px): %.1f" % [i, btn.custom_minimum_size.y])
+
+		# 8.4 斷言選取/未選取樣式與果凍厚底 (ART_DAILY_CONSTITUTION §3/§6)
+		var sb := btn.get_theme_stylebox("normal") as StyleBoxFlat
+		if sb == null:
+			_fail("Dock 按鈕 %d 缺少 normal StyleBoxFlat" % i)
+			continue
+
+		if i == 0:
+			# 已選取：暖橘色 (#FFA010) 果凍厚底 5~6px，深藍紫描邊 #1F1A3A
+			var bg_hex := sb.bg_color.to_html(false).to_upper()
+			if bg_hex != "FFA010":
+				_fail("已選取 Dock 按鈕底色應為暖橘 #FFA010，實際為 #%s" % bg_hex)
+			if sb.border_color.to_html(false).to_upper() != "1F1A3A":
+				_fail("已選取 Dock 按鈕描邊應為深藍紫 #1F1A3A")
+			if sb.border_width_bottom < 5 or sb.border_width_bottom > 6:
+				_fail("已選取 Dock 按鈕果凍厚底應為 5~6px，實際為 %d px" % sb.border_width_bottom)
+		else:
+			# 未選取：溫暖米黃卡片底 (#FFF8E7)，底框 >= 3px #1F1A3A
+			var bg_hex := sb.bg_color.to_html(false).to_upper()
+			if bg_hex != "FFF8E7":
+				_fail("未選取 Dock 按鈕 %d 底色應為奶油卡 #FFF8E7，實際為 #%s" % [i, bg_hex])
+			if sb.border_color.to_html(false).to_upper() != "1F1A3A":
+				_fail("未選取 Dock 按鈕 %d 描邊應為深藍紫 #1F1A3A" % i)
+			if sb.border_width_bottom < 3:
+				_fail("未選取 Dock 按鈕 %d 底框應 >= 3px，實際為 %d px" % [i, sb.border_width_bottom])
+
+	# 測試切換到另一個分頁 (Tab.CHARACTER)
+	_lobby._switch_tab(MobileLobby.Tab.CHARACTER)
+	var active_btn := dock_btns[1] as Button
+	var active_sb := active_btn.get_theme_stylebox("normal") as StyleBoxFlat
+	if active_sb.bg_color.to_html(false).to_upper() != "FFA010":
+		_fail("切換到角色裝備後，按鈕 1 底色應為暖橘 #FFA010")
+	if active_sb.border_width_bottom < 5 or active_sb.border_width_bottom > 6:
+		_fail("切換到角色裝備後，按鈕 1 果凍厚底應為 5~6px")
+
+	var inactive_btn := dock_btns[0] as Button
+	var inactive_sb := inactive_btn.get_theme_stylebox("normal") as StyleBoxFlat
+	if inactive_sb.bg_color.to_html(false).to_upper() != "FFF8E7":
+		_fail("切換後按鈕 0 應恢復奶油卡底色 #FFF8E7")
+
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+	print("  ok 底部 Dock 五分頁自繪圖示、果凍厚底與切換狀態全部檢查通過")
 
 
 func _finish() -> bool:

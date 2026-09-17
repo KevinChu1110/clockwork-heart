@@ -545,7 +545,7 @@ func _build_bottom_dock() -> void:
 	dock.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
 	dock.offset_left = 24
 	dock.offset_right = -24
-	dock.offset_top = -84
+	dock.offset_top = -88
 	dock.offset_bottom = -12
 	
 	var dsb := StyleBoxFlat.new()
@@ -554,6 +554,10 @@ func _build_bottom_dock() -> void:
 	dsb.set_border_width_all(2)
 	dsb.border_width_bottom = 5
 	dsb.set_corner_radius_all(20)
+	dsb.content_margin_left = 10
+	dsb.content_margin_right = 10
+	dsb.content_margin_top = 6
+	dsb.content_margin_bottom = 7
 	dsb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
 	dsb.shadow_size = 12
 	dsb.shadow_offset = Vector2(0, 4)
@@ -566,11 +570,11 @@ func _build_bottom_dock() -> void:
 	dock.add_child(h)
 
 	var tabs := [
-		{"tab": Tab.VILLAGE, "title": _t("發條新村")},
-		{"tab": Tab.CHARACTER, "title": _t("角色裝備")},
-		{"tab": Tab.ADVENTURE, "title": _t("四區出征")},
-		{"tab": Tab.SOUL_HALL, "title": _t("聚魂殿堂")},
-		{"tab": Tab.BAG, "title": _t("冒險背包")},
+		{"tab": Tab.VILLAGE, "title": _t("發條新村"), "icon": "res://assets/icons/hud/icon_dock_village.png"},
+		{"tab": Tab.CHARACTER, "title": _t("角色裝備"), "icon": "res://assets/icons/hud/icon_dock_equip.png"},
+		{"tab": Tab.ADVENTURE, "title": _t("四區出征"), "icon": "res://assets/icons/hud/icon_dock_campaign.png"},
+		{"tab": Tab.SOUL_HALL, "title": _t("聚魂殿堂"), "icon": "res://assets/icons/hud/icon_dock_soul.png"},
+		{"tab": Tab.BAG, "title": _t("冒險背包"), "icon": "res://assets/icons/hud/icon_dock_bag.png"},
 	]
 
 	_dock_buttons.clear()
@@ -579,6 +583,13 @@ func _build_bottom_dock() -> void:
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.custom_minimum_size = Vector2(0, 56)
 		btn.text = str(d["title"])
+		var icon_path := str(d["icon"])
+		if ResourceLoader.exists(icon_path):
+			btn.icon = load(icon_path)
+			btn.expand_icon = true
+			btn.add_theme_constant_override("icon_max_width", 32)
+			btn.add_theme_constant_override("h_separation", 8)
+			btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		btn.add_theme_font_size_override("font_size", 18)
 		var t: Tab = d["tab"]
 		btn.pressed.connect(func(): _switch_tab(t))
@@ -588,15 +599,15 @@ func _build_bottom_dock() -> void:
 func _style_dock_button(btn: Button, is_active: bool) -> void:
 	var sb := StyleBoxFlat.new()
 	if is_active:
-		sb.bg_color = COLOR_GOLD
+		sb.bg_color = COLOR_ORANGE
 		sb.border_color = COLOR_BORDER
 		sb.set_border_width_all(2)
 		sb.border_width_bottom = 5
 		sb.set_corner_radius_all(18)
 		sb.content_margin_top = 8
 		sb.content_margin_bottom = 8
-		sb.content_margin_left = 14
-		sb.content_margin_right = 14
+		sb.content_margin_left = 12
+		sb.content_margin_right = 12
 		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 		sb.shadow_size = 6
 		sb.shadow_offset = Vector2(0, 3)
@@ -611,18 +622,20 @@ func _style_dock_button(btn: Button, is_active: bool) -> void:
 		sb.set_corner_radius_all(18)
 		sb.content_margin_top = 8
 		sb.content_margin_bottom = 8
-		sb.content_margin_left = 14
-		sb.content_margin_right = 14
+		sb.content_margin_left = 12
+		sb.content_margin_right = 12
 		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.10)
 		sb.shadow_size = 4
 		sb.shadow_offset = Vector2(0, 2)
 		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-		btn.add_theme_color_override("font_hover_color", COLOR_GOLD_DARK)
+		btn.add_theme_color_override("font_hover_color", COLOR_ORANGE)
 		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 
 	var sb_h := sb.duplicate() as StyleBoxFlat
 	if not is_active:
 		sb_h.bg_color = COLOR_CARD_GOLD
+	else:
+		sb_h.bg_color = Color("#FFB84D")
 
 	var sb_p := sb.duplicate() as StyleBoxFlat
 	sb_p.border_width_bottom = 2
