@@ -400,6 +400,53 @@ func _initialize() -> void:
 
 	dlg_bear.queue_free()
 
+	# ── 跨種族穿裝：兔子穿維京裝，本體仍是兔 ──
+	gs.call("reset_new_game", "rabbit")
+	var dlg_cross: WardrobeDialog = WardrobeDialog.new()
+	dlg_cross.creation_mode = false
+	root.add_child(dlg_cross)
+	dlg_cross.set_race_filter("all")
+	var viking_idx := -1
+	for i in range(dlg_cross._displayed_costumes.size()):
+		if str(dlg_cross._displayed_costumes[i].get("id", "")) == "costume_viking_harness":
+			viking_idx = i
+			break
+	if viking_idx < 0:
+		push_error("全部外裝庫找不到 costume_viking_harness")
+		ok = false
+	else:
+		dlg_cross.costume_index = viking_idx
+		dlg_cross.selected_costume_id = "costume_viking_harness"
+		dlg_cross._update_card_selection_states()
+		dlg_cross._update_preview()
+		if dlg_cross.current_race != "rabbit":
+			push_error("穿維京裝後本體種族被改成 %s（應保持 rabbit）" % dlg_cross.current_race)
+			ok = false
+		else:
+			print("  ✓ 兔子穿維京裝時本體仍是 rabbit")
+		var cross_sel: Dictionary = dlg_cross.get_current_selections()
+		if str(cross_sel.get("costume", "")) != "costume_viking_harness":
+			push_error("跨族選裝後 costume 應為 viking_harness，實際 %s" % str(cross_sel.get("costume", "")))
+			ok = false
+		if str(cross_sel.get("race", "")) != "rabbit":
+			push_error("跨族選裝後 selections.race 應為 rabbit，實際 %s" % str(cross_sel.get("race", "")))
+			ok = false
+		var cross_path := PaperdollRenderer.resolve_slot_texture_path("rabbit", "costume", "costume_viking_harness")
+		if cross_path.find("viking_harness") < 0:
+			push_error("跨族切片路徑未解析到維京裝：%s" % cross_path)
+			ok = false
+		else:
+			print("  ✓ 兔族可解析豬族維京裝切片：%s" % cross_path)
+		dlg_cross.confirm_selection()
+		if str(gs.player_race).to_lower() != "rabbit":
+			push_error("確認換裝後 player_race 被改成 %s" % str(gs.player_race))
+			ok = false
+		if str(gs.paperdoll_slots.get("costume", "")) != "costume_viking_harness" and str(gs.paperdoll_slots.get("costume_id", "")) != "costume_viking_harness":
+			push_error("確認後未寫入維京裝")
+			ok = false
+		else:
+			print("  ✓ 兔子確認穿上維京裝且種族不變")
+
 	# 恢復測試環境回兔族
 	gs.call("reset_new_game", "rabbit")
 
