@@ -17,6 +17,7 @@ signal cancelled()
 
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 const PaperdollCharacter = preload("res://scripts/art/paperdoll_character.gd")
+const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
@@ -568,6 +569,11 @@ func reset_to_default() -> void:
 
 
 ## 套用並重新渲染紙娃娃
+func _get_character() -> PaperdollCharacter:
+	if character == null:
+		character = get_node_or_null("CenterStage/CharacterContainer/PaperdollCharacter") as PaperdollCharacter
+	return character
+
 func _apply_current_selections() -> void:
 	var data: Dictionary = RACES_DATA[_current_race_id]
 	var costumes: Array = data.get("costumes", [])
@@ -583,15 +589,76 @@ func _apply_current_selections() -> void:
 		selections["chassis"] = cur_chassis["id"]
 
 	# 驅動紙娃娃節點渲染
-	if character != null:
-		character.render_character(_current_race_id, selections)
+	var ch := _get_character()
+	if ch != null:
+		ch.render_character(_current_race_id, selections)
+
+	# 中央舞台九族改讀 512 高清合成（合成失敗安全退回 128）
+	_update_stage_512(selections)
 
 	# 更新 UI 顯示文字與標記
-	_update_info_ui(data, cur_costume, cur_chassis)
+	_update_info_ui(data, cur_costume, cur_chassis, selections)
+
+
+var _sprite_512: Sprite2D = null
+
+func _ensure_stage_sprite_512() -> void:
+	if _sprite_512 != null and is_instance_valid(_sprite_512):
+		return
+	var ch := _get_character()
+	if ch == null:
+		return
+	_sprite_512 = ch.get_node_or_null("Sprite512") as Sprite2D
+	if _sprite_512 == null:
+		_sprite_512 = Sprite2D.new()
+		_sprite_512.name = "Sprite512"
+		_sprite_512.centered = false
+		_sprite_512.position = Vector2(-64, -120)
+		_sprite_512.scale = Vector2(0.25, 0.25)
+		_sprite_512.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		ch.add_child(_sprite_512)
+
+func _update_stage_512(selections: Dictionary) -> void:
+	var ch := _get_character()
+	if ch == null:
+		return
+	_ensure_stage_sprite_512()
+
+	var tex_512: Texture2D = PaperdollRenderer.build_composite_texture_512(_current_race_id, selections)
+	if tex_512 == null:
+		var idle_candidate: Texture2D = SpriteDB.player_equipped_idle(_current_race_id, selections)
+		if idle_candidate != null and idle_candidate.get_width() >= 512 and idle_candidate.get_height() >= 512:
+			tex_512 = idle_candidate
+
+	var layers := ch.get_node_or_null("Layers") as CanvasItem
+	if tex_512 != null:
+		_sprite_512.texture = tex_512
+		_sprite_512.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		_sprite_512.visible = true
+		if layers != null:
+			layers.visible = false
+	else:
+		# 合成失敗安全退回 128 模組切片疊合渲染，不准借別族圖 (0-ART26)
+		_sprite_512.texture = null
+		_sprite_512.visible = false
+		if layers != null:
+			layers.visible = true
+
+func get_stage_texture() -> Texture2D:
+	if _sprite_512 != null and _sprite_512.visible and _sprite_512.texture != null:
+		return _sprite_512.texture
+	return null
+
+func get_stage_sprite_512() -> Sprite2D:
+	return _sprite_512
+
+func is_stage_512() -> bool:
+	var t := get_stage_texture()
+	return t != null and t.get_width() == 512 and t.get_height() == 512
 
 
 ## 更新 UI 資訊
-func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis: Dictionary) -> void:
+func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis: Dictionary, selections: Dictionary = {}) -> void:
 	var name_zh: String = str(race_data.get("name_zh", ""))
 	var name_en: String = str(race_data.get("name_en", ""))
 	var archetype: String = str(race_data.get("archetype", ""))
@@ -632,13 +699,22 @@ func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis
 		weapon_name_label.text = "%s (%s)" % [wpn_name, default_wpn]
 
 	# 槽位總結
-	if slot_summary_label != null and character != null:
-		var entries := character.get_rendered_entries()
+	if slot_summary_label != null:
+		var total_slots := 7
 		var loaded_count := 0
-		for e in entries:
-			if bool(e.get("is_loaded", false)):
-				loaded_count += 1
-		slot_summary_label.text = "7 大槽位狀態：全部 %d 槽疊合就緒 (載入: %d/%d)" % [entries.size(), loaded_count, entries.size()]
+		if is_stage_512():
+			var entries := PaperdollRenderer.get_sorted_slot_entries_512(_current_race_id, selections)
+			for e in entries:
+				var p: String = str(e.get("texture_path", ""))
+				if p != "" and bool(e.get("is_loaded", false)):
+					loaded_count += 1
+			slot_summary_label.text = "7 大槽位狀態：512 高清合成就緒 (渲染: %d/%d)" % [loaded_count, total_slots]
+		elif character != null:
+			var entries := character.get_rendered_entries()
+			for e in entries:
+				if bool(e.get("is_loaded", false)):
+					loaded_count += 1
+			slot_summary_label.text = "7 大槽位狀態：全部 %d 槽疊合就緒 (載入: %d/%d)" % [entries.size(), loaded_count, entries.size()]
 
 
 ## 更新按鈕選取高亮樣式
@@ -772,6 +848,12 @@ func save_proof_screenshot(target_path: String = "") -> String:
 	# Fallback: 若在無頭純合成模式，儲存中心角色合成圖
 	if character != null:
 		var char_path := global_path.replace(".png", "_character.png")
+		if _sprite_512 != null and _sprite_512.visible and _sprite_512.texture != null:
+			var img512 := _sprite_512.texture.get_image()
+			if img512 != null and not img512.is_empty():
+				img512.save_png(char_path)
+				print("[PaperdollSelectDemo] 儲存角色 512 高清合成圖備用截圖至：%s" % char_path)
+				return char_path
 		character.save_composite_png(char_path)
 		print("[PaperdollSelectDemo] 儲存角色合成圖備用截圖至：%s" % char_path)
 		return char_path
