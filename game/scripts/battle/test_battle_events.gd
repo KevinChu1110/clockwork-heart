@@ -70,7 +70,8 @@ func _process(_delta: float) -> bool:
 
 		if _sim:
 			_sim.connect("event", func(kind: String, data: Dictionary):
-				print("  t=%.2f [%s] %s" % [_sim.get("time"), kind, str(data)])
+				var cur_time: float = _sim.get("time") if _sim else 0.0
+				print("  t=%.2f [%s] %s" % [cur_time, kind, str(data)])
 			)
 		return false
 
