@@ -21,8 +21,9 @@ func _initialize() -> void:
 	var repo_proofs := base.path_join("../proofs/qa_round13")
 	_out_dirs.append(repo_proofs)
 
-	var ws_proofs := "/root/.hermes/kanban/boards/side-bravesoul/workspaces/t_9d6493fb/proofs/qa_round13"
-	_out_dirs.append(ws_proofs)
+	var ws_env := OS.get_environment("HERMES_KANBAN_WORKSPACE")
+	if not ws_env.is_empty():
+		_out_dirs.append(ws_env.path_join("proofs/qa_round13"))
 
 	for d in _out_dirs:
 		DirAccess.make_dir_recursive_absolute(d)
