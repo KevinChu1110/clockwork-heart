@@ -761,12 +761,10 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 			var bare_512 := "res://assets/sprites/player/paperdoll/%s/composite_preview_bare_512.png" % r
 			if ResourceLoader.exists(bare_512):
 				return load(bare_512) as Texture2D
-			var bare_rab_512 := "res://assets/sprites/player/paperdoll/rabbit/composite_preview_bare_512.png"
-			if ResourceLoader.exists(bare_rab_512):
-				return load(bare_rab_512) as Texture2D
 			var bare_comp := PaperdollRenderer.build_composite_texture_512(r, {"costume": "none"})
 			if bare_comp != null:
 				return bare_comp
+			return null
 
 		# 1. 優先 512 切片 (common/costume/ -> 本族 512 -> 去前綴 512)
 		var p_common_512 := "res://assets/sprites/player/paperdoll/common/costume/%s_512.png" % item_id
@@ -782,15 +780,12 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 		if ResourceLoader.exists(p_common_512_clean):
 			return load(p_common_512_clean) as Texture2D
 
-		# 2. 檢查高清展示立牌裁切 (showcase/*_hd_cut.png, 長邊 >= 512)
+		# 2. 檢查高清展示立牌裁切 (showcase/*_hd_cut.png, 長邊 >= 512，僅限本族)
 		var hd_cut := "res://assets/sprites/player/showcase/%s_%s_hd_cut.png" % [r, item_id]
 		if ResourceLoader.exists(hd_cut):
 			return load(hd_cut) as Texture2D
-		var hd_cut_rab := "res://assets/sprites/player/showcase/rabbit_%s_hd_cut.png" % item_id
-		if ResourceLoader.exists(hd_cut_rab):
-			return load(hd_cut_rab) as Texture2D
 
-		# 3. 跨族 512 衣服切片共用
+		# 3. 跨族 512 衣服切片共用（同件衣服若在別族目錄下）
 		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
 		for other in all_races:
 			if other == r:
@@ -799,10 +794,8 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 			if ResourceLoader.exists(cross_512):
 				return load(cross_512) as Texture2D
 
-		# 4. 共用 512 衣服切片 fallback（禁止把 128 切片塞進小格）
-		var fallback_common := "res://assets/sprites/player/paperdoll/common/costume/costume_viking_harness_512.png"
-		if ResourceLoader.exists(fallback_common):
-			return load(fallback_common) as Texture2D
+		# 4. 找不到任何 512 切片時回 null（UI 顯示無縮圖佔位，禁止拿另一件衣服冒充）
+		return null
 
 	elif slot_type == "chassis":
 		# 1. 優先 512 底盤切片 (本族 chassis/*_512.png，長邊 512)
