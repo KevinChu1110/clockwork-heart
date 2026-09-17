@@ -435,8 +435,42 @@ func _initialize() -> void:
 		if cross_path.find("viking_harness") < 0:
 			push_error("跨族切片路徑未解析到維京裝：%s" % cross_path)
 			ok = false
+		var fox_path := PaperdollRenderer.resolve_slot_texture_path("fox", "costume", "costume_viking_harness")
+		if fox_path.find("viking_harness") < 0:
+			push_error("狐族也應共用維京裝切片：%s" % fox_path)
+			ok = false
+		elif fox_path.get_file() != cross_path.get_file():
+			print("  ~ 兔/狐維京裝檔名不同（仍可接受）：%s vs %s" % [cross_path, fox_path])
 		else:
-			print("  ✓ 兔族可解析豬族維京裝切片：%s" % cross_path)
+			print("  ✓ 兔與狐共用同一件維京裝切片檔名")
+
+		var rab_512_viking := PaperdollRenderer.resolve_slot_texture_path_512("rabbit", "costume", "costume_viking_harness")
+		var fox_512_viking := PaperdollRenderer.resolve_slot_texture_path_512("fox", "costume", "costume_viking_harness")
+		if rab_512_viking.find("viking_harness") < 0 or fox_512_viking.find("viking_harness") < 0:
+			push_error("512 維京裝未正確解析: %s, %s" % [rab_512_viking, fox_512_viking])
+			ok = false
+		elif rab_512_viking != fox_512_viking:
+			push_error("兔與狐 512 維京裝未解析至同一共用檔案: %s vs %s" % [rab_512_viking, fox_512_viking])
+			ok = false
+		else:
+			print("  ✓ 兔與狐 512 維京裝解析至同一共用檔案: %s" % rab_512_viking)
+
+		var rab_512_astral := PaperdollRenderer.resolve_slot_texture_path_512("rabbit", "costume", "costume_astral_cape")
+		var fox_512_astral := PaperdollRenderer.resolve_slot_texture_path_512("fox", "costume", "costume_astral_cape")
+		if rab_512_astral != fox_512_astral or rab_512_astral.find("astral_cape") < 0:
+			push_error("512 星紋斗篷未正確共用解析: %s vs %s" % [rab_512_astral, fox_512_astral])
+			ok = false
+		else:
+			print("  ✓ 兔與狐 512 星紋斗篷解析至同一共用檔案: %s" % rab_512_astral)
+
+		var rab_512_monk := PaperdollRenderer.resolve_slot_texture_path_512("rabbit", "costume", "costume_dawn_monk_tunic")
+		var fox_512_monk := PaperdollRenderer.resolve_slot_texture_path_512("fox", "costume", "costume_dawn_monk_tunic")
+		if rab_512_monk != fox_512_monk or rab_512_monk.find("dawn_monk_tunic") < 0:
+			push_error("512 武道短褙未正確共用解析: %s vs %s" % [rab_512_monk, fox_512_monk])
+			ok = false
+		else:
+			print("  ✓ 兔與狐 512 武道短褙解析至同一共用檔案: %s" % rab_512_monk)
+
 		dlg_cross.confirm_selection()
 		if str(gs.player_race).to_lower() != "rabbit":
 			push_error("確認換裝後 player_race 被改成 %s" % str(gs.player_race))
