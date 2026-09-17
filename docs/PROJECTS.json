@@ -1656,8 +1656,8 @@
    "id": "macaque-chassis-no-head",
    "cat": "遊戲",
    "title": "猴族底盤切片拿掉頭與耳（疊頭套變多耳）",
-   "status": "草稿",
-   "note": "主線 macaque/chassis 兩件 512 不透明從 y≈52 起，整顆頭臉耳還在素體上",
+   "status": "開發中",
+   "note": "猴族底盤切片拿掉頭與耳",
    "keys": [
     "猴族底盤切片拿掉"
    ]
