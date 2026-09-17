@@ -1276,8 +1276,8 @@
    "id": "ui-hud-jelly",
    "cat": "遊戲",
    "title": "大廳 HUD 圖示化＋果凍按鈕質感修正",
-   "status": "開發中",
-   "note": "已開卡：sideart 產三張 HUD 圖示(t_abf4ee15)，sideworker 整合圖示+果凍按鈕質感統一(t_06fb9ba8)",
+   "status": "測試中",
+   "note": "完成頂部HUD三資源圖示整合＋四大殿堂卡片、前往出征與設置按鈕果凍厚底質感統一，無頭測試通過，截圖已複驗",
    "keys": [
     "大廳 HUD 圖"
    ]

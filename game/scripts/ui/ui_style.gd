@@ -295,18 +295,18 @@ static func chip_style() -> StyleBoxFlat:
 
 static func button_normal() -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(0.98, 0.97, 0.94, 0.96)
+	s.bg_color = Color(0.99, 0.98, 0.95, 1.0)
 	s.border_color = Color("#1F1A3A")
 	s.set_border_width_all(2)
-	s.border_width_bottom = 5
+	s.border_width_bottom = 6
 	s.set_corner_radius_all(18)
 	s.content_margin_left = 18
 	s.content_margin_right = 18
 	s.content_margin_top = 10
 	s.content_margin_bottom = 12
-	s.shadow_color = Color(0.25, 0.18, 0.10, 0.2)
-	s.shadow_size = 5
-	s.shadow_offset = Vector2(0, 3)
+	s.shadow_color = Color(0.12, 0.10, 0.23, 0.22)
+	s.shadow_size = 8
+	s.shadow_offset = Vector2(0, 4)
 	return s
 
 
@@ -319,10 +319,12 @@ static func button_hover() -> StyleBoxFlat:
 
 static func button_pressed() -> StyleBoxFlat:
 	var s := button_normal()
-	s.bg_color = Color(0.92, 0.88, 0.82, 1.0)
+	s.bg_color = Color(0.94, 0.91, 0.86, 1.0)
 	s.border_width_bottom = 2
 	s.content_margin_top = 13
 	s.content_margin_bottom = 9
+	s.shadow_size = 4
+	s.shadow_offset = Vector2(0, 2)
 	return s
 
 
@@ -338,7 +340,7 @@ static func button_primary() -> StyleBoxFlat:
 	## 塔塔風超大果凍金黃按鈕 (Jelly Gold Button)
 	var s := StyleBoxFlat.new()
 	s.bg_color = TATA_YELLOW
-	s.border_color = Color(1.0, 0.96, 0.75, 1.0)
+	s.border_color = Color("#1F1A3A")
 	s.set_border_width_all(2)
 	s.border_width_bottom = 6
 	s.set_corner_radius_all(20)
@@ -346,7 +348,7 @@ static func button_primary() -> StyleBoxFlat:
 	s.content_margin_right = 22
 	s.content_margin_top = 11
 	s.content_margin_bottom = 14
-	s.shadow_color = Color(1.0, 0.65, 0.10, 0.55)
+	s.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
 	s.shadow_size = 8
 	s.shadow_offset = Vector2(0, 4)
 	return s
@@ -358,11 +360,20 @@ static func button_primary_hover() -> StyleBoxFlat:
 	return s
 
 
+static func button_primary_pressed() -> StyleBoxFlat:
+	var s := button_primary()
+	s.bg_color = Color(0.95, 0.75, 0.15, 1.0)
+	s.border_width_bottom = 2
+	s.content_margin_top = 14
+	s.content_margin_bottom = 11
+	return s
+
+
 static func style_button(btn: Button, primary: bool = false) -> void:
 	if primary:
 		btn.add_theme_stylebox_override("normal", button_primary())
 		btn.add_theme_stylebox_override("hover", button_primary_hover())
-		btn.add_theme_stylebox_override("pressed", button_primary())
+		btn.add_theme_stylebox_override("pressed", button_primary_pressed())
 		btn.add_theme_stylebox_override("focus", button_primary_hover())
 		btn.add_theme_stylebox_override("disabled", button_disabled())
 		btn.add_theme_color_override("font_color", Color("#1F1A3A"))

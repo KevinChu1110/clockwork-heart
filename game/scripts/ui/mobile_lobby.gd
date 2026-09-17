@@ -464,8 +464,8 @@ func _build_top_hud() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(spacer)
 
-	## 奶油白三寶膠囊
-	_energy_label = _add_clean_capsule(h, "能量", "—", COLOR_GOLD_DARK)
+	## 奶油白三寶膠囊（帶對應發條核心圖示與果凍厚底質感）
+	_energy_label = _add_clean_capsule(h, "能量", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_energy_key.png")
 	var energy_cap: PanelContainer = _energy_label.get_parent().get_parent() as PanelContainer
 	if energy_cap:
 		energy_cap.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -473,35 +473,14 @@ func _build_top_hud() -> void:
 			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
 				open_energy_dialog()
 		)
-	_gold_label = _add_clean_capsule(h, "金幣", "—", COLOR_GOLD_DARK)
-	_gem_label = _add_clean_capsule(h, "星屑", "—", COLOR_GOLD_DARK)
+	_gold_label = _add_clean_capsule(h, "金幣", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_gold_coin.png")
+	_gem_label = _add_clean_capsule(h, "星屑", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_gem_stardust.png")
 
 	var set_btn := Button.new()
 	set_btn.text = "設置"
+	UiStyle.style_button(set_btn, false)
 	set_btn.custom_minimum_size = Vector2(80, 50)
 	set_btn.add_theme_font_size_override("font_size", 15)
-	var sbs := StyleBoxFlat.new()
-	sbs.bg_color = COLOR_CARD_WARM
-	sbs.border_color = COLOR_BORDER
-	sbs.set_border_width_all(1)
-	sbs.border_width_bottom = 2
-	sbs.set_corner_radius_all(16)
-	sbs.content_margin_left = 12
-	sbs.content_margin_right = 12
-	sbs.shadow_size = 0
-	
-	var sbs_h := sbs.duplicate() as StyleBoxFlat
-	sbs_h.bg_color = COLOR_CARD_GOLD
-	var sbs_p := sbs.duplicate() as StyleBoxFlat
-	sbs_p.border_width_bottom = 1
-	
-	set_btn.add_theme_stylebox_override("normal", sbs)
-	set_btn.add_theme_stylebox_override("hover", sbs_h)
-	set_btn.add_theme_stylebox_override("pressed", sbs_p)
-	set_btn.add_theme_stylebox_override("focus", sbs)
-	set_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	set_btn.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
-	set_btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	set_btn.pressed.connect(func():
 		var s_scn := load("res://scripts/ui/mobile_settings.gd")
 		var s_ui: Control = s_scn.new()
@@ -510,33 +489,48 @@ func _build_top_hud() -> void:
 	)
 	h.add_child(set_btn)
 
-func _add_clean_capsule(parent: Container, title: String, val: String, accent: Color) -> Label:
+func _add_clean_capsule(parent: Container, title: String, val: String, accent: Color, icon_path: String = "") -> Label:
 	var cap := PanelContainer.new()
 	var csb := StyleBoxFlat.new()
 	csb.bg_color = COLOR_CARD_WARM
-	csb.border_color = Color(0.85, 0.82, 0.76, 0.6)
-	csb.set_border_width_all(1)
-	csb.border_width_bottom = 1
+	csb.border_color = COLOR_BORDER
+	csb.set_border_width_all(2)
+	csb.border_width_bottom = 4
 	csb.set_corner_radius_all(16)
-	csb.content_margin_left = 14
+	csb.content_margin_left = 12
 	csb.content_margin_right = 14
 	csb.content_margin_top = 4
-	csb.content_margin_bottom = 4
-	csb.shadow_size = 0
+	csb.content_margin_bottom = 5
+	csb.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
+	csb.shadow_size = 4
+	csb.shadow_offset = Vector2(0, 2)
 	cap.add_theme_stylebox_override("panel", csb)
 
 	var h := HBoxContainer.new()
-	h.add_theme_constant_override("separation", 8)
+	h.add_theme_constant_override("separation", 6)
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+
+	if not icon_path.is_empty() and ResourceLoader.exists(icon_path):
+		var icon_rect := TextureRect.new()
+		icon_rect.texture = load(icon_path)
+		icon_rect.custom_minimum_size = Vector2(22, 22)
+		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon_rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		h.add_child(icon_rect)
+
 	var il := Label.new()
 	il.text = title
 	il.add_theme_font_size_override("font_size", 13)
 	il.add_theme_color_override("font_color", accent)
+	il.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	h.add_child(il)
 
 	var vl := Label.new()
 	vl.text = val
 	vl.add_theme_font_size_override("font_size", 15)
 	vl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	vl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	h.add_child(vl)
 
 	cap.add_child(h)
@@ -896,30 +890,10 @@ func _build_village_tab() -> void:
 	rv.add_child(s_name)
 
 	var btn_go := Button.new()
-	btn_go.custom_minimum_size = Vector2(280, 64)
 	btn_go.text = "前往出征"
+	UiStyle.style_button(btn_go, true)
+	btn_go.custom_minimum_size = Vector2(280, 64)
 	btn_go.add_theme_font_size_override("font_size", 20)
-	var gsb := StyleBoxFlat.new()
-	gsb.bg_color = COLOR_GOLD
-	gsb.border_color = COLOR_BORDER
-	gsb.set_border_width_all(1)
-	gsb.border_width_bottom = 4
-	gsb.set_corner_radius_all(18)
-	gsb.content_margin_top = 10
-	gsb.content_margin_bottom = 10
-	gsb.shadow_size = 0
-	btn_go.add_theme_stylebox_override("normal", gsb)
-	
-	var gsb_h := gsb.duplicate() as StyleBoxFlat
-	gsb_h.bg_color = Color("#FFE066")
-	var gsb_p := gsb.duplicate() as StyleBoxFlat
-	gsb_p.border_width_bottom = 2
-	btn_go.add_theme_stylebox_override("hover", gsb_h)
-	btn_go.add_theme_stylebox_override("pressed", gsb_p)
-	btn_go.add_theme_stylebox_override("focus", gsb)
-	btn_go.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	btn_go.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
-	btn_go.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	btn_go.pressed.connect(func(): _switch_tab(Tab.ADVENTURE))
 	rv.add_child(btn_go)
 
@@ -938,29 +912,9 @@ func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, _ic
 	btn.set_meta("hall_title", title)
 	if subtitle_or_cb is String:
 		btn.set_meta("hall_subtitle", subtitle_or_cb)
+	UiStyle.style_button(btn, false)
 	btn.custom_minimum_size = Vector2(200, 52)
-	
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = COLOR_BG_CREAM
-	sb.border_color = COLOR_BORDER
-	sb.set_border_width_all(1)
-	sb.border_width_bottom = 3
-	sb.set_corner_radius_all(16)
-	sb.content_margin_left = 12
-	sb.content_margin_right = 12
-	sb.content_margin_top = 4
-	sb.content_margin_bottom = 4
-	sb.shadow_size = 0
-	btn.add_theme_stylebox_override("normal", sb)
-	
-	var sb_h := sb.duplicate() as StyleBoxFlat
-	sb_h.bg_color = COLOR_CARD_GOLD
-	var sb_p := sb.duplicate() as StyleBoxFlat
-	sb_p.border_width_bottom = 1
-	btn.add_theme_stylebox_override("hover", sb_h)
-	btn.add_theme_stylebox_override("pressed", sb_p)
-	btn.add_theme_stylebox_override("focus", sb)
-	
+
 	var tl := Label.new()
 	tl.text = title
 	tl.add_theme_font_size_override("font_size", 16)
@@ -970,7 +924,7 @@ func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, _ic
 	tl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	tl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	btn.add_child(tl)
-	
+
 	if cb.is_valid():
 		btn.pressed.connect(cb)
 	parent.add_child(btn)
@@ -1640,27 +1594,10 @@ func _build_character_tab() -> void:
 	var btn_wardrobe := Button.new()
 	btn_wardrobe.name = "BtnWardrobe"
 	btn_wardrobe.text = _t("更衣 · 發條衣櫥")
+	UiStyle.style_button(btn_wardrobe, false)
 	btn_wardrobe.custom_minimum_size = Vector2(0, 50)
 	btn_wardrobe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn_wardrobe.add_theme_font_size_override("font_size", 16)
-	var wsb := StyleBoxFlat.new()
-	wsb.bg_color = COLOR_CARD_WARM
-	wsb.border_color = COLOR_BORDER
-	wsb.set_border_width_all(2)
-	wsb.border_width_bottom = 5
-	wsb.set_corner_radius_all(18)
-	btn_wardrobe.add_theme_stylebox_override("normal", wsb)
-	var wsb_h := wsb.duplicate() as StyleBoxFlat
-	wsb_h.bg_color = COLOR_CARD_GOLD
-	wsb_h.border_color = COLOR_BORDER
-	var wsb_p := wsb.duplicate() as StyleBoxFlat
-	wsb_p.border_width_bottom = 2
-	btn_wardrobe.add_theme_stylebox_override("hover", wsb_h)
-	btn_wardrobe.add_theme_stylebox_override("pressed", wsb_p)
-	btn_wardrobe.add_theme_stylebox_override("focus", wsb)
-	btn_wardrobe.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	btn_wardrobe.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
-	btn_wardrobe.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	btn_wardrobe.pressed.connect(open_wardrobe)
 	l_vbox.add_child(btn_wardrobe)
 
