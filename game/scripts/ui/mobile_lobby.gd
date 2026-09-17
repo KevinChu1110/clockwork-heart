@@ -80,6 +80,8 @@ var _soul_layer: Control
 var _bag_layer: Control
 var _dock_buttons: Array[Button] = []
 var _hall_buttons: Array[Button] = []
+var _settings_button: Button = null
+var _sortie_button: Button = null
 var _active_hall_index: int = -1
 var _char_prev: TextureRect = null
 var _cached_font: Font = null
@@ -537,16 +539,25 @@ func _build_top_hud() -> void:
 	_gem_label = _add_clean_capsule(h, "星屑", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_gem_stardust.png")
 
 	var set_btn := Button.new()
+	set_btn.name = "SettingsButton"
 	set_btn.text = "設置"
 	UiStyle.style_button(set_btn, false)
-	set_btn.custom_minimum_size = Vector2(80, 50)
-	set_btn.add_theme_font_size_override("font_size", 15)
+	var settings_icon_path := "res://assets/icons/hud/icon_btn_settings.png"
+	if ResourceLoader.exists(settings_icon_path):
+		set_btn.icon = load(settings_icon_path)
+		set_btn.expand_icon = true
+		set_btn.add_theme_constant_override("icon_max_width", 26)
+		set_btn.add_theme_constant_override("h_separation", 6)
+		set_btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	set_btn.custom_minimum_size = Vector2(104, 50)
+	set_btn.add_theme_font_size_override("font_size", 16)
 	set_btn.pressed.connect(func():
 		var s_scn := load("res://scripts/ui/mobile_settings.gd")
 		var s_ui: Control = s_scn.new()
 		s_ui.z_index = 80
 		add_child(s_ui)
 	)
+	_settings_button = set_btn
 	h.add_child(set_btn)
 
 func _add_clean_capsule(parent: Container, title: String, val: String, accent: Color, icon_path: String = "") -> Label:
@@ -968,12 +979,27 @@ func _build_village_tab() -> void:
 	rv.add_child(s_name)
 
 	var btn_go := Button.new()
+	btn_go.name = "SortieButton"
 	btn_go.text = "前往出征"
 	UiStyle.style_button(btn_go, true)
+	var sortie_icon_path := "res://assets/icons/hud/icon_btn_sortie.png"
+	if ResourceLoader.exists(sortie_icon_path):
+		btn_go.icon = load(sortie_icon_path)
+		btn_go.expand_icon = true
+		btn_go.add_theme_constant_override("icon_max_width", 36)
+		btn_go.add_theme_constant_override("h_separation", 10)
+		btn_go.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	btn_go.custom_minimum_size = Vector2(280, 64)
 	btn_go.add_theme_font_size_override("font_size", 20)
 	btn_go.pressed.connect(func(): _switch_tab(Tab.ADVENTURE))
+	_sortie_button = btn_go
 	rv.add_child(btn_go)
+
+func get_settings_button() -> Button:
+	return _settings_button
+
+func get_sortie_button() -> Button:
+	return _sortie_button
 
 func get_hall_buttons() -> Array[Button]:
 	return _hall_buttons
