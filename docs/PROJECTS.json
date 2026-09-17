@@ -1716,8 +1716,8 @@
    "id": "lobby-no-128-merge",
    "cat": "遊戲",
    "title": "把已過審的大廳換裝失敗不准退回128合進主線",
-   "status": "草稿",
-   "note": "wt/t_13cd0644 已過審未進 origin/main",
+   "status": "開發中",
+   "note": "開始合併 wt/t_13cd0644 到 main",
    "keys": [
     "把已過審的大廳換"
    ]
