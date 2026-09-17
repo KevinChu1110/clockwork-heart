@@ -1582,7 +1582,8 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 
 	var num_l := Label.new()
 	num_l.text = str(s["num"])
-	num_l.add_theme_font_size_override("font_size", 15)
+	# 字級下限：ART_DAILY_CONSTITUTION §「輔助不准再縮去塞字」；t_b8e32048 審核收尾改回 18
+	num_l.add_theme_font_size_override("font_size", 18)
 	num_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	num_badge.add_child(num_l)
 	t_row.add_child(num_badge)
@@ -1613,7 +1614,8 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 
 	var typ_l := Label.new()
 	typ_l.text = str(s["type"])
-	typ_l.add_theme_font_size_override("font_size", 12)
+	# 字級下限：ART_DAILY_CONSTITUTION §「輔助不准再縮去塞字」；t_b8e32048 審核收尾改回 13
+	typ_l.add_theme_font_size_override("font_size", 13)
 	typ_l.add_theme_color_override("font_color", Color("#A02818") if is_boss else COLOR_TEXT_DARK)
 	typ_badge.add_child(typ_l)
 	inf_row.add_child(typ_badge)
