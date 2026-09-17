@@ -1286,8 +1286,8 @@
    "id": "ui-dock-jelly",
    "cat": "遊戲",
    "title": "大廳底部 Dock 圖示化＋果凍厚底",
-   "status": "測試中",
-   "note": "底部 Dock 接上五自繪圖示＋果凍厚底實作完成，測試全綠，待審核驗收",
+   "status": "已上線",
+   "note": "底部 Dock 五自繪圖示＋果凍厚底，審核通過並合併 main",
    "keys": [
     "大廳底部 Doc"
    ]
