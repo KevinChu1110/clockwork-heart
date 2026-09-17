@@ -21,8 +21,11 @@ const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
 const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
 const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃卡片底
 const COLOR_CARD_GOLD  := Color("#FFF4D0")  ## 金黃柔和卡片底
+const COLOR_CARD_SKY   := Color("#F0F7FF")  ## 柔和天藍卡片底
 const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
 const COLOR_GOLD_DARK  := Color("#9A6B00")  ## 壓明度金強調文字
+const COLOR_TEXT_ORANGE:= Color("#C2600A")  ## 壓明度暖橘（亮底文字專用）
+const FONT_HUNINN      := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 ## ── 希臘神殿 · 黑曜石 × 古典金標準色盤 (對齊 temple.css 與 docs/LOBBY_UI_REDESIGN.md) ──
 const OBSIDIAN_BASE      := Color(0.043, 0.039, 0.055, 1.0)  ## #0B0A0E：黑曜石最深底色
@@ -79,6 +82,17 @@ var _dock_buttons: Array[Button] = []
 var _hall_buttons: Array[Button] = []
 var _active_hall_index: int = -1
 var _char_prev: TextureRect = null
+var _cached_font: Font = null
+var _bag_grid: GridContainer = null
+var _bag_cells: Array = []
+var _bag_ids: Array = []
+var _selected_bag_item: String = ""
+var _bag_detail: RichTextLabel = null
+var _bag_use_btn: Button = null
+var _bag_hb_btn: Button = null
+var _bag_tip: Label = null
+var _last_bag_click_i: int = -1
+var _last_bag_click_t: int = 0
 
 ## 角色動態與姿態
 var _profile_avatar: TextureRect
@@ -122,6 +136,12 @@ static func _gs() -> Node:
 		return (loop as SceneTree).root.get_node_or_null("GameState")
 	return null
 
+static func _get_inv_sys() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).root.get_node_or_null("InventorySystem")
+	return null
+
 func _get_hero_name() -> String:
 	var gs := _gs()
 	if gs and "player_name" in gs:
@@ -133,6 +153,14 @@ func _get_hero_name() -> String:
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+	if ResourceLoader.exists(FONT_HUNINN):
+		_cached_font = load(FONT_HUNINN) as Font
+	var inv := _get_inv_sys()
+	if inv and inv.has_signal("inventory_changed"):
+		inv.inventory_changed.connect(func():
+			if _current_tab == Tab.BAG:
+				_refresh_bag_tab()
+		)
 	_load_hero_poses()
 	_build_ui()
 	refresh_hud()
@@ -659,6 +687,8 @@ func _switch_tab(target: Tab) -> void:
 		_soul_layer.visible = (target == Tab.SOUL_HALL)
 	if _bag_layer:
 		_bag_layer.visible = (target == Tab.BAG)
+		if target == Tab.BAG:
+			_refresh_bag_tab()
 
 	for i in range(_dock_buttons.size()):
 		var is_active := (i == int(target))
@@ -1747,6 +1777,44 @@ func _build_character_tab() -> void:
 	stats.text += "怒氣量表: [color=#A82B1E][b]20 點 (滿怒超頻運轉 +25% 性能)[/b][/color]\n"
 	r_v.add_child(stats)
 
+func _create_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg
+	sb.border_color = border
+	sb.set_border_width_all(border_w)
+	sb.border_width_bottom = bottom_w
+	sb.set_corner_radius_all(radius)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	sb.shadow_size = 8
+	sb.shadow_offset = Vector2(0, 4)
+	return sb
+
+func _create_button_style(bg: Color, border: Color = COLOR_BORDER, bottom_border: int = 5, radius: int = 18, border_w: int = 2) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg
+	sb.border_color = border
+	sb.set_border_width_all(border_w)
+	sb.border_width_bottom = bottom_border
+	sb.set_corner_radius_all(radius)
+	sb.content_margin_left = 16
+	sb.content_margin_right = 16
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 10
+	if bottom_border > 2:
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+		sb.shadow_size = 5
+		sb.shadow_offset = Vector2(0, 3)
+	return sb
+
+func _apply_label_style(lbl: Label, size: int, color: Color = COLOR_TEXT_DARK, outline_col: Color = Color(0, 0, 0, 0), outline_sz: int = 0) -> void:
+	lbl.add_theme_font_size_override("font_size", size)
+	lbl.add_theme_color_override("font_color", color)
+	if outline_sz > 0:
+		lbl.add_theme_color_override("font_outline_color", outline_col)
+		lbl.add_theme_constant_override("outline_size", outline_sz)
+	if _cached_font:
+		lbl.add_theme_font_override("font", _cached_font)
+
 func _build_bag_tab() -> void:
 	_bag_layer = Control.new()
 	_bag_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1755,50 +1823,393 @@ func _build_bag_tab() -> void:
 
 	var panel := PanelContainer.new()
 	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
-	panel.offset_left = 60
-	panel.offset_right = -60
+	panel.offset_left = 50
+	panel.offset_right = -50
 	panel.offset_top = 16
 	panel.offset_bottom = -16
-	panel.add_theme_stylebox_override("panel", _create_obsidian_panel(LINE_GOLD))
+	var psb := _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 2, 5, 20)
+	panel.add_theme_stylebox_override("panel", psb)
 	_bag_layer.add_child(panel)
 
-	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 16)
-	panel.add_child(v)
+	var panel_margin := MarginContainer.new()
+	panel_margin.add_theme_constant_override("margin_left", 20)
+	panel_margin.add_theme_constant_override("margin_right", 20)
+	panel_margin.add_theme_constant_override("margin_top", 16)
+	panel_margin.add_theme_constant_override("margin_bottom", 16)
+	panel.add_child(panel_margin)
 
-	var t := Label.new()
-	t.text = "冒險者背包 (道具與戰魂倉庫)"
-	t.add_theme_font_size_override("font_size", 20)
-	t.add_theme_color_override("font_color", COLOR_GOLD_DARK)
-	v.add_child(t)
+	var outer_vbox := VBoxContainer.new()
+	outer_vbox.add_theme_constant_override("separation", 10)
+	panel_margin.add_child(outer_vbox)
 
-	var grid := GridContainer.new()
-	grid.columns = 8
-	grid.add_theme_constant_override("h_separation", 12)
-	grid.add_theme_constant_override("v_separation", 12)
-	v.add_child(grid)
+	# ── 頂部標題與裝飾分隔線 ──
+	var head_row := HBoxContainer.new()
+	head_row.custom_minimum_size.y = 44
+	head_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	outer_vbox.add_child(head_row)
 
+	var title_v := VBoxContainer.new()
+	title_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head_row.add_child(title_v)
+
+	var title_lbl := Label.new()
+	title_lbl.text = _t("冒險者背包")
+	_apply_label_style(title_lbl, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 4)
+	title_v.add_child(title_lbl)
+
+	var sub_lbl := Label.new()
+	sub_lbl.text = _t("道具與戰魂倉庫 · 點選格子查看詳情")
+	_apply_label_style(sub_lbl, 16, COLOR_TEXT_DARK)
+	title_v.add_child(sub_lbl)
+
+	var rule := ColorRect.new()
+	rule.custom_minimum_size = Vector2(0, 3)
+	rule.color = COLOR_ORANGE
+	outer_vbox.add_child(rule)
+
+	# ── 主體內容雙欄排列 (左側 4×6 物品果凍格 + 右側道具詳情與操作按鈕) ──
+	var body := HBoxContainer.new()
+	body.add_theme_constant_override("separation", 20)
+	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	outer_vbox.add_child(body)
+
+	# 左側：物品格子區 (GridContainer 4×6 = 24 格)
+	var grid_panel := PanelContainer.new()
+	grid_panel.custom_minimum_size = Vector2(340, 0)
+	grid_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	grid_panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
+	body.add_child(grid_panel)
+
+	var grid_margin := MarginContainer.new()
+	grid_margin.add_theme_constant_override("margin_left", 12)
+	grid_margin.add_theme_constant_override("margin_right", 12)
+	grid_margin.add_theme_constant_override("margin_top", 12)
+	grid_margin.add_theme_constant_override("margin_bottom", 12)
+	grid_panel.add_child(grid_margin)
+
+	_bag_grid = GridContainer.new()
+	_bag_grid.columns = 4
+	_bag_grid.add_theme_constant_override("h_separation", 8)
+	_bag_grid.add_theme_constant_override("v_separation", 6)
+	_bag_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_bag_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	grid_margin.add_child(_bag_grid)
+
+	_bag_cells.clear()
 	for i in range(24):
-		var sp := PanelContainer.new()
-		sp.custom_minimum_size = Vector2(72, 72)
-		var ssb := StyleBoxFlat.new()
-		ssb.bg_color = COLOR_CARD_WARM
-		ssb.border_color = COLOR_BORDER
-		ssb.set_border_width_all(1)
-		ssb.border_width_bottom = 3
-		ssb.set_corner_radius_all(8)
-		sp.add_theme_stylebox_override("panel", ssb)
-		var l := Label.new()
-		l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		l.add_theme_font_size_override("font_size", 12)
-		l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-		if i == 0: l.text = "鐵劍"
-		elif i == 1: l.text = "紅藥水x10"
-		elif i == 2: l.text = "紅寶石"
-		elif i == 3: l.text = "全衡之魂"
-		sp.add_child(l)
-		grid.add_child(sp)
+		var cell := PanelContainer.new()
+		cell.custom_minimum_size = Vector2(68, 56)
+		cell.mouse_filter = Control.MOUSE_FILTER_STOP
+		var cs := _create_panel_style(COLOR_CARD_WARM, Color(0.20, 0.16, 0.30, 0.35), 2, 3, 16)
+		cell.add_theme_stylebox_override("panel", cs)
+		_bag_grid.add_child(cell)
+		_bag_cells.append(cell)
+
+		var stack := Control.new()
+		stack.set_anchors_preset(Control.PRESET_FULL_RECT)
+		stack.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cell.add_child(stack)
+
+		var g := Label.new()
+		g.name = "Glyph"
+		g.set_anchors_preset(Control.PRESET_FULL_RECT)
+		g.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		g.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		_apply_label_style(g, 24, COLOR_TEXT_DARK)
+		g.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		stack.add_child(g)
+
+		var c := Label.new()
+		c.name = "Count"
+		c.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+		c.offset_left = -34
+		c.offset_top = -20
+		c.offset_right = -4
+		c.offset_bottom = -2
+		c.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		c.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+		_apply_label_style(c, 16, COLOR_TEXT_DARK, Color("#FFFFFF"), 2)
+		c.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		stack.add_child(c)
+
+		var idx := i
+		cell.gui_input.connect(func(ev: InputEvent):
+			_on_bag_cell_input(idx, ev)
+		)
+
+	# 右側：道具明細與操作按鈕區
+	var right := VBoxContainer.new()
+	right.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	right.add_theme_constant_override("separation", 10)
+	body.add_child(right)
+
+	# 道具詳情卡片 (溫暖米黃底 + 深藍紫立體邊框)
+	var detail_panel := PanelContainer.new()
+	detail_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	detail_panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
+	right.add_child(detail_panel)
+
+	var detail_margin := MarginContainer.new()
+	detail_margin.add_theme_constant_override("margin_left", 16)
+	detail_margin.add_theme_constant_override("margin_right", 16)
+	detail_margin.add_theme_constant_override("margin_top", 14)
+	detail_margin.add_theme_constant_override("margin_bottom", 14)
+	detail_panel.add_child(detail_margin)
+
+	_bag_detail = RichTextLabel.new()
+	_bag_detail.bbcode_enabled = true
+	_bag_detail.scroll_active = true
+	_bag_detail.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_bag_detail.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_bag_detail.add_theme_font_size_override("normal_font_size", 16)
+	_bag_detail.add_theme_font_size_override("bold_font_size", 20)
+	if _cached_font:
+		_bag_detail.add_theme_font_override("normal_font", _cached_font)
+		_bag_detail.add_theme_font_override("bold_font", _cached_font)
+	_bag_detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	detail_margin.add_child(_bag_detail)
+
+	# 按鈕列 (「使用 / 賣出」薄荷綠 + 「放到快捷欄」天藍)
+	var btn_row := HBoxContainer.new()
+	btn_row.add_theme_constant_override("separation", 14)
+	right.add_child(btn_row)
+
+	_bag_use_btn = Button.new()
+	_bag_use_btn.text = _t("使用 / 賣出")
+	_bag_use_btn.custom_minimum_size = Vector2(0, 52)
+	_bag_use_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_bag_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+	_bag_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
+	_bag_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
+	_bag_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_bag_use_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_bag_use_btn.add_theme_font_override("font", _cached_font)
+	_bag_use_btn.pressed.connect(_on_bag_use_pressed)
+	btn_row.add_child(_bag_use_btn)
+
+	_bag_hb_btn = Button.new()
+	_bag_hb_btn.text = _t("放到快捷欄")
+	_bag_hb_btn.custom_minimum_size = Vector2(0, 52)
+	_bag_hb_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_bag_hb_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18))
+	_bag_hb_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5DB3FF"), COLOR_BORDER, 5, 18))
+	_bag_hb_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_SKY, COLOR_BORDER, 2, 18))
+	_bag_hb_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_bag_hb_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_bag_hb_btn.add_theme_constant_override("outline_size", 3)
+	_bag_hb_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_bag_hb_btn.add_theme_font_override("font", _cached_font)
+	_bag_hb_btn.pressed.connect(_on_bag_hotbar_pressed)
+	btn_row.add_child(_bag_hb_btn)
+
+	# 操作提示
+	_bag_tip = Label.new()
+	_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
+	_bag_tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_apply_label_style(_bag_tip, 16, Color("#6B5E80"))
+	right.add_child(_bag_tip)
+
+	_refresh_bag_tab()
+
+func _on_bag_cell_input(idx: int, ev: InputEvent) -> void:
+	if not (ev is InputEventMouseButton and ev.pressed):
+		return
+	var button := (ev as InputEventMouseButton).button_index
+	if idx < 0 or idx >= _bag_ids.size():
+		return
+	var id := str(_bag_ids[idx])
+	if id == "":
+		_selected_bag_item = ""
+		_refresh_bag_tab()
+		return
+	if button == MOUSE_BUTTON_RIGHT:
+		_selected_bag_item = id
+		var inv := _get_inv_sys()
+		if inv and inv.has_method("use_item"):
+			inv.call("use_item", id)
+		refresh_hud()
+		_refresh_bag_tab()
+		return
+	if button == MOUSE_BUTTON_LEFT:
+		var now := Time.get_ticks_msec()
+		if _last_bag_click_i == idx and now - _last_bag_click_t < 350:
+			_selected_bag_item = id
+			var inv := _get_inv_sys()
+			if inv and inv.has_method("use_item"):
+				inv.call("use_item", id)
+			refresh_hud()
+			_last_bag_click_i = -1
+			_refresh_bag_tab()
+			return
+		_last_bag_click_i = idx
+		_last_bag_click_t = now
+		_selected_bag_item = id
+		_refresh_bag_tab()
+
+func _on_bag_use_pressed() -> void:
+	if _selected_bag_item == "":
+		return
+	var inv := _get_inv_sys()
+	if inv and inv.has_method("use_item"):
+		inv.call("use_item", _selected_bag_item)
+	refresh_hud()
+	_refresh_bag_tab()
+
+func _on_bag_hotbar_pressed() -> void:
+	if _selected_bag_item == "":
+		return
+	var inv := _get_inv_sys()
+	if inv:
+		if inv.has_method("ensure_hotbar"):
+			inv.call("ensure_hotbar")
+		var placed := false
+		var gs := _gs()
+		if gs and gs.get("hotbar") is Array:
+			var hb: Array = gs.hotbar
+			for i in range(hb.size()):
+				if str(hb[i]) == "" or str(hb[i]) == _selected_bag_item:
+					inv.call("set_hotbar", i, _selected_bag_item)
+					placed = true
+					break
+			if not placed:
+				inv.call("set_hotbar", 0, _selected_bag_item)
+	_refresh_bag_tab()
+
+func _refresh_bag_tab() -> void:
+	if _bag_layer == null:
+		return
+	var inv := _get_inv_sys()
+	if inv and inv.has_method("grant_starter"):
+		var gs := _gs()
+		if gs and not gs.has_flag("inv.starter_given"):
+			inv.call("grant_starter")
+
+	_bag_ids.clear()
+	var list: Array = inv.call("bag_list") if (inv and inv.has_method("bag_list")) else []
+
+	# 若目前已選取的道具已經不在背包內，且背包還有道具，重選第一個
+	if _selected_bag_item != "":
+		var found := false
+		for it in list:
+			if it is Dictionary and str(it.get("id", "")) == _selected_bag_item:
+				found = true
+				break
+		if not found:
+			_selected_bag_item = str(list[0].get("id", "")) if list.size() > 0 else ""
+	elif list.size() > 0:
+		_selected_bag_item = str(list[0].get("id", ""))
+
+	for i in range(_bag_cells.size()):
+		var cell: PanelContainer = _bag_cells[i]
+		var g: Label = cell.find_child("Glyph", true, false)
+		var c: Label = cell.find_child("Count", true, false)
+		if i < list.size():
+			var it: Dictionary = list[i]
+			var id := str(it.get("id", ""))
+			_bag_ids.append(id)
+			var def: Dictionary = it.get("def", {})
+			if g:
+				g.text = str(def.get("glyph", "·"))
+				g.add_theme_color_override("font_color", def.get("color", COLOR_TEXT_DARK))
+			if c:
+				var n := int(it.get("count", 0))
+				c.text = str(n) if n > 1 else ""
+
+			var sel := (id == _selected_bag_item)
+			if sel:
+				# 選取中：金黃柔和底 + 亮金橘厚邊框 (5px 厚底) + 金黃光暈
+				var asb := StyleBoxFlat.new()
+				asb.bg_color = COLOR_CARD_GOLD
+				asb.border_color = COLOR_ORANGE
+				asb.set_border_width_all(3)
+				asb.border_width_bottom = 5
+				asb.set_corner_radius_all(16)
+				asb.shadow_color = Color(1.0, 0.63, 0.06, 0.35)
+				asb.shadow_size = 6
+				asb.shadow_offset = Vector2(0, 3)
+				cell.add_theme_stylebox_override("panel", asb)
+			else:
+				# 未選取有道具：柔和天藍底 + 深藍紫立體邊框
+				var nsb := StyleBoxFlat.new()
+				nsb.bg_color = COLOR_CARD_SKY
+				nsb.border_color = COLOR_BORDER
+				nsb.set_border_width_all(2)
+				nsb.border_width_bottom = 4
+				nsb.set_corner_radius_all(16)
+				nsb.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
+				nsb.shadow_size = 4
+				nsb.shadow_offset = Vector2(0, 2)
+				cell.add_theme_stylebox_override("panel", nsb)
+		else:
+			_bag_ids.append("")
+			if g:
+				g.text = ""
+			if c:
+				c.text = ""
+			# 空格：溫暖米黃底 + 淡深藍紫邊框
+			var empty := StyleBoxFlat.new()
+			empty.bg_color = COLOR_CARD_WARM
+			empty.border_color = Color(0.20, 0.16, 0.30, 0.35)
+			empty.set_border_width_all(2)
+			empty.border_width_bottom = 3
+			empty.set_corner_radius_all(16)
+			cell.add_theme_stylebox_override("panel", empty)
+
+	_update_bag_detail(inv)
+
+func _update_bag_detail(inv: Node) -> void:
+	if _bag_detail == null:
+		return
+	if _selected_bag_item == "" or inv == null:
+		_bag_detail.text = "[color=#1F1A3A][b][font_size=20]冒險者背包[/font_size][/b]\n\n請點選左側格子查看道具詳情。\n\n[color=#C2600A]•[/color] 消耗品：使用回復狀態\n[color=#C2600A]•[/color] 素材：點擊使用可賣出金幣\n[color=#C2600A]•[/color] 重要物：劇情關鍵道具[/color]"
+		if _bag_use_btn:
+			_bag_use_btn.disabled = true
+			_bag_use_btn.text = _t("使用 / 賣出")
+		if _bag_hb_btn:
+			_bag_hb_btn.disabled = true
+		return
+
+	if _bag_hb_btn:
+		_bag_hb_btn.disabled = false
+
+	var def: Dictionary = inv.call("catalog", _selected_bag_item) as Dictionary if inv.has_method("catalog") else {}
+	var n: int = int(inv.call("count", _selected_bag_item)) if inv.has_method("count") else 0
+	var kind: String = str(def.get("kind", ""))
+	var kind_s: String = kind
+	match kind:
+		"consumable":
+			kind_s = _t("消耗品")
+			if _bag_use_btn:
+				_bag_use_btn.disabled = false
+				_bag_use_btn.text = _t("使用道具")
+		"material":
+			kind_s = _t("素材（點擊使用可賣出）")
+			if _bag_use_btn:
+				_bag_use_btn.disabled = false
+				_bag_use_btn.text = _t("賣出 (+%d金)" % int(def.get("sell", 1)))
+		"key":
+			kind_s = _t("重要道具")
+			if _bag_use_btn:
+				_bag_use_btn.disabled = true
+				_bag_use_btn.text = _t("無法使用")
+		_:
+			kind_s = _t("道具")
+			if _bag_use_btn:
+				_bag_use_btn.disabled = false
+				_bag_use_btn.text = _t("使用 / 賣出")
+
+	var item_name: String = str(def.get("name", _selected_bag_item))
+	var item_desc: String = str(def.get("desc", ""))
+
+	_bag_detail.text = "[color=#1F1A3A][b][font_size=20]%s[/font_size][/b]  [color=#C2600A]×%d[/color]\n\n[color=#4A3E60]%s[/color]\n\n[color=#C2600A]類型：[/color][color=#1F1A3A]%s[/color][/color]" % [
+		item_name,
+		n,
+		item_desc,
+		kind_s,
+	]
 
 func _fmt_int(n: int) -> String:
 	var neg := n < 0
