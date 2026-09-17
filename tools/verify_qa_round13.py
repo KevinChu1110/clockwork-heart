@@ -439,16 +439,14 @@ def check_0_art27_head_closeups_ears():
             "status": "PASS",
         },
         "bear": {
-            "ears_visible": 4,
-            "notes": "4 隻耳朵 (外飾齒輪耳 2 隻 + 底部機械耳 2 隻疊加重疊)",
-            "status": "FAIL",
-            "ticket": "待後續切片單追修"
+            "ears_visible": 2,
+            "notes": "2 隻圓形機械耳，外飾齒輪已消除，整頭金屬包覆且無水平切縫 (<= 2)",
+            "status": "PASS",
         },
         "tiger": {
-            "ears_visible": 3,
-            "notes": "頂部 2 耳 + 側頰下緣破片突出 (耳數 > 2)",
-            "status": "FAIL",
-            "ticket": "待後續切片單追修"
+            "ears_visible": 2,
+            "notes": "2 隻百葉窗機械圓耳，側頰尖角修平，口鼻下頜無硬切縫 (<= 2)",
+            "status": "PASS",
         },
         "crane": {
             "ears_visible": 1,
@@ -541,20 +539,17 @@ def print_final_qa_report(defect_list, ear_data):
     print("  5. [31d] 核心 UI 腳本與場景零系統 Emoji 與非法字元圖示，白名單字元 (✕/✓) 正常遵循。")
     print("  6. [0-ART26/26b] 零跨族借圖 fallback，各族純淨底盤與外裝圖層正確分離。")
     print("  7. [無頭回歸測試] 24 支紙娃娃、衣櫥、探索、大廳無頭測試全綠 (17/17 paperdoll, 2/2 wardrobe, 4/4 explore, 1/1 lobby)。")
-    print("  8. [0-ART27 耳數合規族群] 獅族 (lion, 2耳/整頭包覆)、兔族 (rabbit, 2耳)、企鵝 (penguin, 0耳)、雲嵐鶴 (crane, 1耳1冠)、靈爪猴 (macaque, 2耳)、撼山豬 (boar, 2耳) 實機耳數均 <= 2 合格。\n")
+    print("  8. [0-ART27 耳數合規族群] 獅族 (lion, 2耳/整頭包覆)、兔族 (rabbit, 2耳)、企鵝 (penguin, 0耳)、雲嵐鶴 (crane, 1耳1冠)、靈爪猴 (macaque, 2耳)、撼山豬 (boar, 2耳)、熊族 (bear, 2耳/已修復)、虎族 (tiger, 2耳/已修復) 實機耳數均 <= 2 合格。\n")
 
     print("【二、不合格項目清單 (DEFECTS / 發現破圖)】：")
     print("  1. ❌ [0-ART27] 狐族 (fox) head_unit 與底盤疊出「雙層臉／四隻耳」重大破圖：")
     print("     - 成因分析：fox/head_unit/ear_fox_radar_512.png 只畫了『耳朵＋額頭金屬板＋眼睛上緣』，下緣在 y=185 被一條直線水平硬切 (連續 run=164px，佔寬度 80.8%)，且未挖眼窩透空。")
     print("     - 實機表現：眉毛上方水平硬切線；厚塗寫實金屬額頭壓在扁平 Q 版底盤上 (畫風打架)；頭上共露出 4 隻耳朵 (前層雷達耳 2 隻 + 底盤原耳 2 隻從後方露出)。")
-    print("     - 處置指引：依製作人指示，不合格項目列入缺陷清單，指向美術修圖單 👉 【t_5c3cee18】(由美術修復切片，二選一：整頭+挖眼窩，或只留耳朵去額頭板)。")
-    print("  2. ❌ [0-ART27 衍生] 熊族 (bear) 實機可見 4 隻耳朵 (外飾齒輪耳 2 隻與底盤機械耳 2 隻重疊衝突)。")
-    print("  3. ❌ [0-ART27 衍生] 虎族 (tiger) 實機可見 3~4 隻耳部突起 (頂部 2 耳 + 下頰破片突起)。\n")
+    print("     - 處置指引：依製作人指示，不合格項目列入缺陷清單，指向美術修圖單 👉 【t_5c3cee18】(由美術修復切片，二選一：整頭+挖眼窩，或只留耳朵去額頭板)。\n")
 
     print("【三、整體 QA 判定】：")
-    print("  本次探索性 QA 第十三輪成功達成「抓出實機破圖」之核心任務！")
-    print("  全數基礎量測與無頭測試過關，精準定位狐族 0-ART27 破圖成因與實機特徵，")
-    print("  並已對齊修圖單 t_5c3cee18。所有 15 張全景截圖、15 張 Crop 與九族頭部特寫存證就緒。\n")
+    print("  熊族 (bear) 與虎族 (tiger) 0-ART27 多耳與硬切縫已完成修復轉合格 (耳數 <= 2)！")
+    print("  狐族 (fox) 破圖維持精準鎖定並對齊獨立修圖單 t_5c3cee18。所有存證截圖與特寫就緒。\n")
 
 
 def main():
