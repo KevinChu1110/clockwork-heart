@@ -2,6 +2,8 @@ extends SceneTree
 ## 《發條之心》開局選族創角與戰鬥/大廳素體一致性無頭自動化測試
 ## 執行方式：godot --path game --headless -s res://scripts/ui/test_character_creation_flow.gd
 
+const SpriteDB = preload("res://scripts/art/sprite_db.gd")
+
 var _ok := true
 var _frame := 0
 var _races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear"]
@@ -239,6 +241,16 @@ func _run_test_suite() -> void:
 	_assert(confirmed_data["race"] == "bear", "訊號回傳正確選取種族 'bear'")
 	_assert(str(gs.get("player_race")) == "bear", "confirm_selection 成功將 'bear' 寫入 GameState")
 	_assert(str(gs.get("player_name")) == "玄軸熊", "confirm_selection 成功將預設英雄名稱設為 '玄軸熊'")
+
+	# 切換至蒸氣企鵝並確認
+	confirmed_data["called"] = false
+	demo.call("select_race", "penguin")
+	demo.call("confirm_selection")
+
+	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (penguin)")
+	_assert(confirmed_data["race"] == "penguin", "訊號回傳正確選取種族 'penguin'")
+	_assert(str(gs.get("player_race")) == "penguin", "confirm_selection 成功將 'penguin' 寫入 GameState")
+	_assert(str(gs.get("player_name")) == "蒸氣企鵝", "confirm_selection 成功將預設英雄名稱設為 '蒸氣企鵝'")
 
 	demo.queue_free()
 
