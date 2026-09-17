@@ -131,11 +131,17 @@ static func player_equipped_walk(frame: int, race_override: String = "", slots_o
 		if not slots.has("chassis") and slots.has("paint_id"):
 			slots["chassis"] = slots["paint_id"]
 		var pr: GDScript = load("res://scripts/art/paperdoll_renderer.gd")
-		if pr and pr.has_method("get_race_walk_composite_texture"):
-			var comp: Variant = pr.call("get_race_walk_composite_texture", r, f, slots)
-			if comp is Texture2D and comp != null:
-				_equipped_walk_cache[cache_key] = comp as Texture2D
-				return comp as Texture2D
+		if pr:
+			if pr.has_method("build_walk_composite_texture_512"):
+				var comp_512: Variant = pr.call("build_walk_composite_texture_512", r, f, slots)
+				if comp_512 is Texture2D and comp_512 != null:
+					_equipped_walk_cache[cache_key] = comp_512 as Texture2D
+					return comp_512 as Texture2D
+			if pr.has_method("get_race_walk_composite_texture"):
+				var comp: Variant = pr.call("get_race_walk_composite_texture", r, f, slots)
+				if comp is Texture2D and comp != null:
+					_equipped_walk_cache[cache_key] = comp as Texture2D
+					return comp as Texture2D
 
 	var fb_tex := tex("%s/player/%s_walk_%d_x3.png" % [ROOT, r, f])
 	if fb_tex == null and r != "rabbit":
