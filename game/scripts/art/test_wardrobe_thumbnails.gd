@@ -64,6 +64,39 @@ func _initialize() -> void:
 				else:
 					print("  [OK] Chassis thumbnail loaded: race=", race_id, " id=", p_id, " size=", sz)
 	
+	var PaperdollClass = preload("res://scripts/art/paperdoll_renderer.gd")
+	var expected_keys := {
+		"rabbit": "key_classic_brass",
+		"fox": "key_classic_brass",
+		"lion": "key_classic_brass",
+		"boar": "key_classic_brass",
+		"macaque": "key_classic_brass",
+		"tiger": "key_turbine_flame",
+		"bear": "key_cross_pendulum",
+		"crane": "key_tri_wing_zephyr",
+		"penguin": "key_twin_ring_helm",
+	}
+	for r_id in expected_keys.keys():
+		total_count += 1
+		var exp_key: String = expected_keys[r_id]
+		var key_path := PaperdollClass.resolve_slot_texture_path_512(r_id, "winding_key", exp_key)
+		if not key_path.ends_with("_512.png") or key_path.find(exp_key) < 0:
+			print("  [FAIL] Winding key resolution mismatch (0-ART26): race=", r_id, " exp=", exp_key, " got=", key_path)
+			failed_count += 1
+		else:
+			print("  [OK] Winding key 512 matches item_id: race=", r_id, " path=", key_path)
+
+		# Verify non-classic_brass races NEVER fallback to classic brass
+		if exp_key != "key_classic_brass" and key_path.find("key_classic_brass") >= 0:
+			print("  [FAIL] Borrowed rabbit classic brass (0-ART26): race=", r_id, " path=", key_path)
+			failed_count += 1
+
+		# Verify unknown key does NOT fallback to rabbit classic brass 512
+		var unknown_path := PaperdollClass.resolve_slot_texture_path_512(r_id, "winding_key", "key_unknown_nonexistent")
+		if unknown_path.find("key_classic_brass_512") >= 0:
+			print("  [FAIL] Unknown key fell back to classic brass 512 (0-ART26): race=", r_id, " got=", unknown_path)
+			failed_count += 1
+
 	dlg.free()
 	print("\n--- Summary ---")
 	print("Total tested: ", total_count, " Failed: ", failed_count)
