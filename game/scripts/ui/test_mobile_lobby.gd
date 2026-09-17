@@ -636,11 +636,11 @@ func _test_hero_race_poses() -> void:
 			_fail("種族 %s 之 _tex_hit 為空" % r)
 
 		if r == "rabbit":
-			# 兔族回歸：attack 應指向 poses/attack.png
-			if tex_attack.resource_path != "res://assets/sprites/player/poses/attack.png":
-				_fail("兔族 _tex_attack 路徑非 res://assets/sprites/player/poses/attack.png: %s" % tex_attack.resource_path)
+			# 兔族：attack 應指向 512 高清姿態
+			if not tex_attack.resource_path.ends_with("attack_512.png") or tex_attack.get_width() < 256:
+				_fail("兔族 _tex_attack 應指向 512 高清姿態: %s (寬度: %d)" % [tex_attack.resource_path, tex_attack.get_width()])
 			else:
-				print("  ok 兔族回歸：_tex_attack 指向既有 poses/attack.png")
+				print("  ok 兔族 _tex_attack 指向 512 高清姿態: %s (寬度: %d)" % [tex_attack.resource_path, tex_attack.get_width()])
 
 		# 驗證動作變數不可全指向同一張 Texture2D (review.md 第 4b)
 		if tex_idle == tex_attack and tex_attack == tex_skill and tex_skill == tex_recover:
@@ -762,6 +762,23 @@ func _test_nine_races_lobby_showcase_hd() -> void:
 		_fail("兔族 512 紙娃娃應使用 LINEAR 濾鏡")
 	else:
 		print("  ok 兔族換裝後走 512 高清紙娃娃且使用 LINEAR 濾鏡 (寬度: %d)" % rabbit_costume_tex.get_width())
+
+	# 3.1 驗證兔族與獅族戳碰動作期間使用 512 貼圖且濾鏡為 LINEAR
+	for poke_race in ["rabbit", "lion"]:
+		gs.player_race = poke_race
+		gs.paperdoll_slots = {}
+		_lobby._load_hero_poses()
+		_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+		for act in [0, 1, 2]:
+			_lobby._on_hero_clicked(act)
+			var act_tex: Texture2D = hero_avatar.texture
+			if act_tex == null or act_tex.get_width() != 512 or act_tex.get_height() != 512:
+				_fail("種族 %s 戳碰動作 %d 貼圖尺寸應為 512x512，實際為: %s" % [poke_race, act, str(act_tex.get_size()) if act_tex else "null"])
+			if hero_avatar.texture_filter != CanvasItem.TEXTURE_FILTER_LINEAR:
+				_fail("種族 %s 戳碰動作 %d 濾鏡應為 LINEAR，不可為 NEAREST！" % [poke_race, act])
+			else:
+				print("  ok 種族 %s 戳碰動作 %d 貼圖為 512x512 且濾鏡為 LINEAR" % [poke_race, act])
+			_lobby._restore_hero_idle()
 
 	# 4. 驗證戳碰結束回到官方立牌高清待機
 	gs.player_race = "lion"
