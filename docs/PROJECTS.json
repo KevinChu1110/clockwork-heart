@@ -1406,8 +1406,8 @@
    "id": "rabbit-lobby-showcase",
    "cat": "遊戲",
    "title": "小白大廳展示立繪：硬邊金屬、不要 2.5D 頭貼混像素身",
-   "status": "測試中",
-   "note": "完成256px硬邊展示立繪產出、板件/鑰匙/硬邊三項vision全過、實機截圖proof_lobby_village/char通過",
+   "status": "已上線",
+   "note": "立繪過審，大廳與角色分頁已接上高清",
    "keys": [
     "小白大廳展示立繪"
    ]
