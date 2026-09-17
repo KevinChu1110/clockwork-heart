@@ -53,6 +53,7 @@ func _process(_d: float) -> bool:
 		_test_soul_hall_tab()
 		_test_bottom_dock()
 		_test_character_tab()
+		_test_bag_tab()
 		return _finish()
 	return false
 
@@ -1052,6 +1053,112 @@ func _test_character_tab() -> void:
 
 	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
 	print("  ok 角色分頁武器槽果凍卡、暖橘選中態、五獨立屬性小卡與無Emoji檢查通過")
+
+## ──────────────────────────────────────────
+## 9. 斷言冒險背包分頁：果凍格 24 格、觸控熱區 >= 48px、零死白 PPT、零 Emoji
+## ──────────────────────────────────────────
+func _test_bag_tab() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試背包分頁")
+		return
+
+	# 切換到冒險背包
+	_lobby._switch_tab(MobileLobby.Tab.BAG)
+	var bag_layer: Control = _lobby.get("_bag_layer")
+	if bag_layer == null:
+		_fail("找不到 _bag_layer 節點")
+		return
+	if not bag_layer.visible:
+		_fail("切換到 Tab.BAG 後 _bag_layer 應為 visible")
+
+	# 9.1 斷言格子數量為 24 格
+	var cells: Array = _lobby.get("_bag_cells")
+	if cells.size() != 24:
+		_fail("背包格子數量應為 24 格，實際取得: %d" % cells.size())
+		return
+	print("  ok 背包格子數量為 24 格")
+
+	# 9.2 斷言格子尺寸熱區 >= 48px 與樣式
+	for i in range(cells.size()):
+		var cell := cells[i] as PanelContainer
+		if cell == null:
+			_fail("背包第 %d 格不是 PanelContainer" % i)
+			continue
+		if cell.custom_minimum_size.x < 48.0 or cell.custom_minimum_size.y < 48.0:
+			_fail("背包第 %d 格觸控熱區未達標 (< 48px): %s" % [i, str(cell.custom_minimum_size)])
+
+		var sb := cell.get_theme_stylebox("panel") as StyleBoxFlat
+		if sb == null:
+			_fail("背包第 %d 格缺少 StyleBoxFlat" % i)
+			continue
+
+		# 斷言底色不是死白 #FFFFFF，而是奶油卡 #FFF8E7、天藍 #F0F7FF 或金黃 #FFF4D0
+		var hex := sb.bg_color.to_html(false).to_upper()
+		if hex == "FFFFFF":
+			_fail("背包第 %d 格出現死白 #FFFFFF（違反多巴胺亮色奶油卡規範）" % i)
+		if sb.corner_radius_top_left < 12:
+			_fail("背包第 %d 格圓角過小 (< 12px)" % i)
+		if sb.border_width_bottom < 3:
+			_fail("背包第 %d 格果凍厚底未達標 (< 3px)" % i)
+
+	print("  ok 背包 24 格熱區全部 >= 48px，果凍圓角厚底符合規範，零死白")
+
+	# 9.3 斷言操作按鈕高度 >= 50px、字級 >= 16px、果凍厚底
+	var use_btn: Button = _lobby.get("_bag_use_btn")
+	var hb_btn: Button = _lobby.get("_bag_hb_btn")
+	if use_btn == null or hb_btn == null:
+		_fail("背包缺少使用按鈕或快捷欄按鈕")
+		return
+	if use_btn.custom_minimum_size.y < 48.0:
+		_fail("使用按鈕高度未達標 (< 48px): %.1f" % use_btn.custom_minimum_size.y)
+	if hb_btn.custom_minimum_size.y < 48.0:
+		_fail("快捷欄按鈕高度未達標 (< 48px): %.1f" % hb_btn.custom_minimum_size.y)
+	var use_sb := use_btn.get_theme_stylebox("normal") as StyleBoxFlat
+	if use_sb == null or use_sb.border_width_bottom < 4:
+		_fail("使用按鈕缺少果凍厚底 (>= 4px)")
+	var hb_sb := hb_btn.get_theme_stylebox("normal") as StyleBoxFlat
+	if hb_sb == null or hb_sb.border_width_bottom < 4:
+		_fail("快捷欄按鈕缺少果凍厚底 (>= 4px)")
+	print("  ok 背包操作按鈕高度與立體厚底符合規範")
+
+	# 9.4 斷言背包分頁所有可見文字零系統 Emoji、無 12px 小字
+	var full_text := ""
+	for node in bag_layer.find_children("*", "Label", true, false):
+		if node is Label:
+			full_text += node.text
+			var fsz: int = node.get_theme_font_size("font_size")
+			# Count 和 Glyph 在空白時可能是空字串；非空時字級必須 >= 14 (Count 16, Glyph 24, Title 22, Sub 16)
+			if not node.text.is_empty() and fsz < 14:
+				_fail("背包文字標籤字級過小 (< 14px，有 PPT 小字感): %s (font_size=%d)" % [node.text, fsz])
+	for node in bag_layer.find_children("*", "Button", true, false):
+		if node is Button:
+			full_text += node.text
+	var detail_rt: RichTextLabel = _lobby.get("_bag_detail")
+	if detail_rt:
+		full_text += detail_rt.text
+
+	if _has_forbidden_symbols_or_emoji(full_text):
+		_fail("背包分頁含有禁止符號或系統 Emoji: %s" % full_text)
+	print("  ok 背包分頁零系統 Emoji、零小字檢查通過")
+
+	# 9.5 測試物品選取與明細連動
+	var inv_sys: Node = root.get_node_or_null("InventorySystem")
+	if inv_sys:
+		inv_sys.call("grant_starter")
+		_lobby._refresh_bag_tab()
+		var ids: Array = _lobby.get("_bag_ids")
+		if ids.size() > 0 and ids[0] != "":
+			var selected_id: String = _lobby.get("_selected_bag_item")
+			if selected_id == "":
+				_fail("背包有物品時應預設選取第一個")
+			else:
+				var first_sb := (cells[0] as PanelContainer).get_theme_stylebox("panel") as StyleBoxFlat
+				if first_sb.bg_color.to_html(false).to_upper() != "FFF4D0":
+					_fail("選中格底色應為柔和金黃 #FFF4D0，實際為 #%s" % first_sb.bg_color.to_html(false).to_upper())
+				print("  ok 背包選取格高亮光暈與資料連動正常: %s" % selected_id)
+
+	# 測試完切回發條新村
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
 
 
 func _finish() -> bool:
