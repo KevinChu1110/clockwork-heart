@@ -3,15 +3,15 @@
 [ext_resource type="Script" path="res://scripts/ui/paperdoll_select_demo.gd" id="1_script"]
 [ext_resource type="FontFile" uid="uid://cy6fae1dr7lys" path="res://assets/fonts/jf-openhuninn-2.1.ttf" id="2_font"]
 [ext_resource type="PackedScene" path="res://scenes/actors/paperdoll_character.tscn" id="3_character"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/rabbit/proof_paperdoll_rabbit_composite.png" id="4_thumb_rabbit"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/fox/proof_paperdoll_fox_composite.png" id="5_thumb_fox"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/lion/proof_paperdoll_lion_composite.png" id="6_thumb_lion"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/boar/proof_paperdoll_boar_composite.png" id="7_thumb_boar"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_composite.png" id="8_thumb_macaque"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/tiger/proof_paperdoll_tiger_composite.png" id="9_thumb_tiger"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/crane/proof_paperdoll_crane_composite.png" id="10_thumb_crane"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/bear/proof_paperdoll_bear_composite.png" id="11_thumb_bear"]
-[ext_resource type="Texture2D" path="res://assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_composite.png" id="12_thumb_penguin"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/rabbit_idle_hd.png" id="4_thumb_rabbit"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/fox_idle_hd.png" id="5_thumb_fox"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/lion_idle_hd.png" id="6_thumb_lion"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/boar_idle_hd.png" id="7_thumb_boar"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/macaque_idle_hd.png" id="8_thumb_macaque"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/tiger_idle_hd.png" id="9_thumb_tiger"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/crane_idle_hd.png" id="10_thumb_crane"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/bear_idle_hd.png" id="11_thumb_bear"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/penguin_idle_hd.png" id="12_thumb_penguin"]
 
 [sub_resource type="Theme" id="Theme_huninn"]
 default_font = ExtResource("2_font")
@@ -277,6 +277,7 @@ theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_rabbit/Margin/VBox"]
+texture_filter = 2
 custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
 mouse_filter = 2
@@ -320,6 +321,7 @@ theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_fox/Margin/VBox"]
+texture_filter = 2
 custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
 mouse_filter = 2
@@ -363,6 +365,7 @@ theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_lion/Margin/VBox"]
+texture_filter = 2
 custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
 mouse_filter = 2
@@ -406,6 +409,7 @@ theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_boar/Margin/VBox"]
+texture_filter = 2
 custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
 mouse_filter = 2
@@ -449,6 +453,7 @@ theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_macaque/Margin/VBox"]
+texture_filter = 2
 custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
 mouse_filter = 2
@@ -492,6 +497,7 @@ theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_tiger/Margin/VBox"]
+texture_filter = 2
 custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
 mouse_filter = 2
@@ -535,6 +541,7 @@ theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_crane/Margin/VBox"]
+texture_filter = 2
 custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
 mouse_filter = 2
@@ -578,6 +585,7 @@ theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_bear/Margin/VBox"]
+texture_filter = 2
 custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
 mouse_filter = 2
@@ -621,6 +629,7 @@ theme_override_constants/separation = 4
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_penguin/Margin/VBox"]
+texture_filter = 2
 custom_minimum_size = Vector2(56, 56)
 layout_mode = 2
 mouse_filter = 2
