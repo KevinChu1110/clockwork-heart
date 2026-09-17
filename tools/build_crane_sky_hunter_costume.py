@@ -63,14 +63,32 @@ def create_crane_costume_sky_hunter_mail(out_path: str = "") -> Image.Image:
 
     pixels: dict[tuple[int, int], tuple[int, int, int, int]] = {}
 
+    # Helper to draw 3D domed gold rivet
+    def draw_3d_rivet(cx: int, cy: int, rad: float = 1.4):
+        for dy in [-2, -1, 0, 1, 2]:
+            for dx in [-2, -1, 0, 1, 2]:
+                dist = math.hypot(dx, dy)
+                if dist <= rad:
+                    nx = dx / rad
+                    ny = dy / rad
+                    # Top-left highlight
+                    glint = max(0.0, -nx * 0.7 - ny * 0.7)
+                    if glint > 0.55:
+                        rr, rg, rb = 255.0, 252.0, 220.0  # pure pale gold glint
+                    elif glint > 0.15:
+                        rr, rg, rb = 255.0, 220.0, 50.0   # bright gold
+                    else:
+                        rr, rg, rb = 220.0, 160.0, 25.0   # warm gold midtone
+                    if dist > rad - 0.4:
+                        rr, rg, rb = 140.0, 85.0, 15.0    # rich amber-bronze rim shadow
+                    pixels[(cx + dx, cy + dy)] = (clamp(rr), clamp(rg), clamp(rb), 255)
+
     # ─────────────────────────────────────────────────────────────
-    # 1. GORGET COLLAR & BEZEL RING (Y: 52..71)
+    # 1. GORGET COLLAR & BEZEL RING (Y: 52..73)
     # ─────────────────────────────────────────────────────────────
-    # Center aperture around chest heart: center is (64.0, 65.0)
-    # Heart diamond aperture: dx_d + dy_d <= 1.0 (hollowed for gem)
-    for y in range(52, 73):
+    # Center aperture around chest heart: center is (64.0, 65.5)
+    for y in range(52, 74):
         for x in range(48, 80):
-            # Skip if weapon is in front
             if wpn_a(x, y) > 50:
                 continue
 
@@ -82,34 +100,56 @@ def create_crane_costume_sky_hunter_mail(out_path: str = "") -> Image.Image:
             if dist_d <= 0.90:
                 continue
 
-            # Heart bezel ring (ornate polished brass #FFD028 / #FFA010)
+            # Heart bezel ring (3D sculpted polished brass gold with directional light)
             if dist_d <= 1.35:
-                br = 255.0 - (dist_d - 0.90) * 55.0
-                bg = 208.0 - (dist_d - 0.90) * 75.0
-                bb = 38.0 + (dist_d - 0.90) * 35.0
-                # Bevel outline
-                if dist_d > 1.25:
+                angle = math.atan2(y - 65.5, x - 64.0)
+                dot_b = -math.cos(angle + math.pi * 0.25)
+                if dot_b > 0.5:
+                    br, bg, bb = 255.0, 248.0, 195.0
+                elif dot_b > -0.1:
+                    br = 255.0 - (1.0 - dot_b) * 20.0
+                    bg = 212.0 - (1.0 - dot_b) * 40.0
+                    bb = 45.0 + (1.0 - dot_b) * 20.0
+                else:
+                    br = 200.0 + dot_b * 55.0
+                    bg = 135.0 + dot_b * 40.0
+                    bb = 25.0
+                if dist_d > 1.25 or dist_d < 0.98:
                     br = 31.0; bg = 26.0; bb = 58.0
                 pixels[(x, y)] = (clamp(br), clamp(bg), clamp(bb), 255)
                 continue
 
-            # Gorget collar plates (X: 52..76, Y: 52..62)
+            # Upgraded Gorget Collar Plates (X: 52..76, Y: 52..62)
             if y <= 62 and 52 <= x <= 76:
                 n = noise(x, y) * 4.0
-                # Deep navy-cobalt armor plate with high-gloss reflection
-                br = 28.0 + n
-                bg = 56.0 + n
-                bb = 120.0 + n
                 if y == 52:
-                    # Top gold rim
-                    br = 245.0; bg = 195.0; bb = 40.0
+                    # Top gold rim with highlight glint at center/left
+                    if 56 <= x <= 64:
+                        br, bg, bb = 255.0, 248.0, 195.0
+                    else:
+                        br, bg, bb = 248.0, 205.0, 45.0
                 elif y == 62:
                     # Seam groove outline
-                    br = 31.0; bg = 26.0; bb = 58.0
-                elif x in (56, 72) and y in (55, 59):
-                    # Gold rivets
-                    br = 255.0; bg = 210.0; bb = 45.0
+                    br, bg, bb = 31.0, 26.0, 58.0
+                elif y == 57 and abs(x - 64) <= 8:
+                    # Aerodynamic golden chevron trim rib pointing toward heart bezel
+                    br, bg, bb = 255.0, 218.0, 48.0
+                else:
+                    dx_g = (x - 60.0) / 12.0
+                    dy_g = (y - 54.0) / 7.0
+                    dot_g = -(dx_g * -0.6 + dy_g * -0.6)
+                    
+                    dist_glint = math.hypot(x - 58.0, y - 54.0)
+                    spec_g = max(0.0, 1.0 - dist_glint / 3.8) ** 1.6
+
+                    br = 22.0 + dot_g * 25.0 + spec_g * 195.0 + n
+                    bg = 55.0 + dot_g * 55.0 + spec_g * 185.0 + n
+                    bb = 130.0 + dot_g * 65.0 + spec_g * 70.0 + n
+
                 pixels[(x, y)] = (clamp(br), clamp(bg), clamp(bb), 255)
+
+    draw_3d_rivet(55, 59, 1.3)
+    draw_3d_rivet(73, 59, 1.3)
 
     # ─────────────────────────────────────────────────────────────
     # 2. DUAL AERO-VANE PAULDRONS (SHOULDER GUARDS)
@@ -177,27 +217,58 @@ def create_crane_costume_sky_hunter_mail(out_path: str = "") -> Image.Image:
             if not (49 <= x <= 77):
                 continue
 
-            # Vertical center seam at x == 64
-            is_center_seam = (x == 64)
-            # Lateral seams at x == 56, x == 72
-            is_lat_seam = (x in (56, 72))
-            # Horizontal plate seam at y == 70
+            # Boundaries
+            is_left_edge = (x == 49)
+            is_right_edge = (x == 77)
             is_horiz_seam = (y == 70)
+            is_center_seam = (x == 64 and y >= 70)
+            is_lat_seam = (x in (55, 73) and y >= 70)
 
-            if is_center_seam or is_lat_seam or is_horiz_seam:
-                pr, pg, pb = 31.0, 26.0, 58.0  # #1F1A3A seam groove
-            elif x in (52, 60, 68, 75) and y in (65, 73):
-                # Gold rivets
-                pr, pg, pb = 255.0, 212.0, 42.0
+            if is_left_edge or is_right_edge or is_horiz_seam or is_center_seam or is_lat_seam:
+                pr, pg, pb = 31.0, 26.0, 58.0  # Deep crease
+                pixels[(x, y)] = (clamp(pr), clamp(pg), clamp(pb), 255)
+                continue
+
+            # Golden plate trims:
+            if y == 69 and (50 <= x <= 56 or 72 <= x <= 76):
+                pr, pg, pb = 255.0, 215.0, 48.0
+                pixels[(x, y)] = (clamp(pr), clamp(pg), clamp(pb), 255)
+                continue
+
+            is_bevel_lip = (y == 71)
+
+            n = noise(x, y) * 4.0
+
+            if y < 70:
+                dx = (x - 64.0) / 14.0
+                dy = (y - 66.0) / 4.0
+                dist_spec = math.hypot(x - 53.5, y - 65.5)
+                spec = max(0.0, 1.0 - dist_spec / 3.6) ** 1.5
+
+                dot_c = -(dx * -0.65 + dy * -0.5)
+                pr = 25.0 + dot_c * 30.0 + spec * 180.0 + n
+                pg = 68.0 + dot_c * 60.0 + spec * 170.0 + n
+                pb = 155.0 + dot_c * 70.0 + spec * 65.0 + n
             else:
-                # Cobalt & Navy steel armor plate
-                n = noise(x, y) * 5.0
-                # Left side slightly cooler, right side has highlight
-                f_light = (x - 48) / 30.0
-                pr = 22.0 + f_light * 25.0 + n
-                pg = 60.0 + f_light * 65.0 + n
-                pb = 140.0 + f_light * 80.0 + n
+                dx = (x - 64.0) / 14.0
+                dy = (y - 73.0) / 3.0
+                dot_c = -(dx * -0.55 + dy * -0.4)
+
+                bounce = max(0.0, (y - 73.0) / 3.0) * 20.0
+                bevel = 48.0 if is_bevel_lip else 0.0
+
+                pr = 24.0 + dot_c * 25.0 + bevel * 0.7 + bounce * 0.5 + n
+                pg = 62.0 + dot_c * 55.0 + bevel * 0.9 + bounce * 0.4 + n
+                pb = 148.0 + dot_c * 65.0 + bevel * 1.1 + n
+
             pixels[(x, y)] = (clamp(pr), clamp(pg), clamp(pb), 255)
+
+    draw_3d_rivet(52, 66, 1.3)
+    draw_3d_rivet(75, 66, 1.3)
+    draw_3d_rivet(52, 73, 1.3)
+    draw_3d_rivet(75, 73, 1.3)
+    draw_3d_rivet(60, 74, 1.2)
+    draw_3d_rivet(68, 74, 1.2)
 
     # ─────────────────────────────────────────────────────────────
     # 4. RANGER COG-BUCKLE BELT (Y: 76..81, X: 46..80)

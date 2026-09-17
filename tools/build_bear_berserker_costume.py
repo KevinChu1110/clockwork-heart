@@ -66,10 +66,11 @@ GOLD_KEYS = [
 
 STEEL_KEYS = [
     (0.00, np.array([26.0, 24.0, 35.0])),   # cavity black
-    (0.28, np.array([48.0, 54.0, 70.0])),   # cold slate steel
-    (0.58, np.array([72.0, 82.0, 104.0])),  # brushed gunmetal
-    (0.82, np.array([108.0, 122.0, 148.0])),# bevel highlight
-    (1.00, np.array([165.0, 178.0, 202.0])) # metallic edge
+    (0.25, np.array([48.0, 54.0, 70.0])),   # cold slate steel
+    (0.50, np.array([72.0, 82.0, 104.0])),  # brushed gunmetal
+    (0.72, np.array([115.0, 130.0, 158.0])),# bevel highlight
+    (0.88, np.array([168.0, 182.0, 208.0])),# metallic glint
+    (1.00, np.array([230.0, 240.0, 252.0])) # specular spark
 ]
 
 def create_masterpiece_cuirass(out_path: str = "") -> Image.Image:
@@ -239,13 +240,49 @@ def create_masterpiece_cuirass(out_path: str = "") -> Image.Image:
             if is_edge:
                 put_px(x, y, OUTLINE[:3])
                 continue
+
+            # Y == 55: Polished brass-gold upper collar rim
             if y == 55:
-                t_g = 0.50 + 0.32 * (1.0 - abs((x - 64)/18.0)) + total_grain[y, x]
+                dx = (x - 64.0) / 18.0
+                t_g = 0.68 - abs(dx) * 0.30 + (0.28 if 53 <= x <= 61 else 0.0) + total_grain[y, x]
                 put_px(x, y, interp_ramp(GOLD_KEYS, t_g))
                 continue
-            dy = (y - 54.0) / 9.0
+
+            # Lamella dividing seam at Y == 58
+            if y == 58:
+                put_px(x, y, OUTLINE[:3])
+                continue
+
+            # Upper Lamella (Y: 56..57): Forged steel with strong specular highlight on upper-left
+            if y in (56, 57):
+                dx = (x - 64.0) / 18.0
+                t_s = 0.55 - (x - 56.0) * 0.035 - (y - 56.0) * 0.12 + total_grain[y, x]
+                if y == 56 and 52 <= x <= 62:
+                    t_s += 0.35  # Rich specular glint
+                put_px(x, y, interp_ramp(STEEL_KEYS, t_s))
+                continue
+
+            # Lower Lamella (Y: 59..62):
+            # 3D Domed Gold Rivets at X in [52, 60, 68, 76] on Y == 60
+            is_rivet = False
+            for rx in [52, 60, 68, 76]:
+                dist_r = math.sqrt((x - rx)**2 + (y - 60.5)**2)
+                if dist_r <= 1.4:
+                    t_r = 0.75 - (x - rx) * 0.35 - (y - 60.5) * 0.45
+                    put_px(x, y, interp_ramp(GOLD_KEYS, t_r))
+                    is_rivet = True
+                    break
+            if is_rivet:
+                continue
+
+            # Lower forged plate with fluted curvature & bevel
             dx = (x - 64.0) / 18.0
-            t_s = 0.52 - dy * 0.32 - abs(dx) * 0.22 + (0.18 if (y == 56 and abs(dx) < 0.6) else 0.0) + total_grain[y, x]
+            dy = (y - 59.0) / 3.0
+            flute = math.cos((x - 64.0) * 0.75) * 0.15
+            t_s = 0.46 - (x - 56.0) * 0.025 - dy * 0.20 + flute + total_grain[y, x]
+            if y == 62:
+                # Bottom bevel highlight lip
+                t_s += 0.25
             put_px(x, y, interp_ramp(STEEL_KEYS, t_s))
 
     # Mid Torso Heavy Cuirass (Y: 62..78, X: 44..84)
@@ -284,33 +321,58 @@ def create_masterpiece_cuirass(out_path: str = "") -> Image.Image:
                 put_px(x, y, OUTLINE[:3])
                 continue
 
-            # Barrel curvature for Viking chest
+            # Horizontal plate overlap seam between upper & lower pectorals at Y == 70
+            if y == 70 and (left_seam_x + 0.5 <= x <= right_seam_x - 0.5):
+                # Seam groove outline
+                put_px(x, y, OUTLINE[:3])
+                continue
+
+            # 3D Domed Gold Rivets on pectoral plates:
+            # Upper left: (52, 66), Upper right: (76, 66)
+            # Lower left: (53, 74), Lower right: (75, 74)
+            is_pect_rivet = False
+            for rx, ry in [(52, 66), (76, 66), (53, 74), (75, 74)]:
+                dist_r = math.sqrt((x - rx)**2 + (y - ry)**2)
+                if dist_r <= 1.4:
+                    t_r = 0.75 - (x - rx) * 0.35 - (y - ry) * 0.45
+                    put_px(x, y, interp_ramp(GOLD_KEYS, t_r))
+                    is_pect_rivet = True
+                    break
+            if is_pect_rivet:
+                continue
+
+            # Pectoral Plates: Rich Crimson with 3D Curvature & Highlights
             dx = (x - 64.0) / 16.0
             dy = (y - 70.0) / 8.0
             nx = dx * 0.95
             ny = dy * 0.65
 
-            # Soft diffuse specular lobe around top-left (x: 53..56, y: 64..67)
-            dist_spec = math.sqrt((x - 54.0)**2 + (y - 65.5)**2)
-            spec = max(0.0, 1.0 - dist_spec / 4.5) ** 1.8
-
+            # Directional diffuse lighting
             dot = -(nx * -0.55 + ny * -0.65)
-            t_c = 0.48 + dot * 0.35 + spec * 0.32 - (0.12 if dy > 0.4 else 0.0) + total_grain[y, x]
 
-            # Battle-worn micro-wear scratches and paint cracks
-            # Crack 1 on left chest: (50, 67) -> (53, 69)
+            # Prominent specular glint on upper-left chest (X: 51..56, Y: 64..67)
+            dist_spec = math.sqrt((x - 53.5)**2 + (y - 65.5)**2)
+            spec = max(0.0, 1.0 - dist_spec / 4.0) ** 1.6
+
+            # Beveled highlight lip on lower plate top edge (Y == 71)
+            bevel_lip = 0.22 if y == 71 else 0.0
+
+            # Ambient bounce from golden belt below
+            ambient_bounce = 0.15 * max(0.0, (y - 72) / 6.0) if y >= 72 else 0.0
+
+            t_c = 0.52 + dot * 0.38 + spec * 0.42 + bevel_lip + ambient_bounce - (0.15 if dy > 0.4 and y < 70 else 0.0) + total_grain[y, x]
+
+            # Battle-wear scratches
             if (x, y) in [(50, 67), (51, 68), (52, 68), (53, 69)]:
-                t_c = 0.16 # dark crevice
+                t_c = 0.16
             elif (x, y) in [(51, 69), (52, 69), (54, 70)]:
-                t_c = 0.72 # caught highlight rim
+                t_c = 0.72
 
-            # Scuff 2 on lower right plate: (75, 72) -> (77, 74)
             if (x, y) in [(75, 72), (76, 73), (77, 73)]:
                 t_c = 0.20
             elif (x, y) in [(75, 73), (76, 74)]:
                 t_c = 0.68
 
-            # Paint chip near edge: (49, 74) exposes dark primer steel
             if (x, y) == (49, 74):
                 put_px(x, y, interp_ramp(STEEL_KEYS, 0.45))
                 continue
