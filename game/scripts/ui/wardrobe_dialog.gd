@@ -752,43 +752,72 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	return btn
 
 
-## 取得部件對應之縮圖貼圖
+## 取得部件對應之縮圖貼圖（優先 512 高清切片，禁止把 128 像素切片塞進小格）
 func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String = "") -> Texture2D:
 	var r := item_race if not item_race.is_empty() else current_race
-	var thumb_id := item_id
-	if slot_type == "costume" and item_id == "none":
-		thumb_id = "none"
-	var dedicated := "res://assets/sprites/player/showcase/thumbs/thumb_%s_%s.png" % [slot_type, thumb_id]
-	if ResourceLoader.exists(dedicated):
-		return load(dedicated) as Texture2D
+
 	if slot_type == "costume":
-		if item_id == "none":
+		if item_id in ["none", "bare", "empty"]:
 			var bare_512 := "res://assets/sprites/player/paperdoll/%s/composite_preview_bare_512.png" % r
 			if ResourceLoader.exists(bare_512):
 				return load(bare_512) as Texture2D
-			var bare_path := "res://assets/sprites/player/paperdoll/%s/composite_preview_bare.png" % r
-			if ResourceLoader.exists(bare_path):
-				return load(bare_path) as Texture2D
-		else:
-			var hd_cut := "res://assets/sprites/player/showcase/%s_%s_hd_cut.png" % [r, item_id]
-			if ResourceLoader.exists(hd_cut):
-				return load(hd_cut) as Texture2D
-			var path512 := "res://assets/sprites/player/paperdoll/%s/costume/%s_512.png" % [r, item_id]
-			if ResourceLoader.exists(path512):
-				return load(path512) as Texture2D
-			var path := "res://assets/sprites/player/paperdoll/%s/costume/%s.png" % [r, item_id]
-			if ResourceLoader.exists(path):
-				return load(path) as Texture2D
+			var bare_comp := PaperdollRenderer.build_composite_texture_512(r, {"costume": "none"})
+			if bare_comp != null:
+				return bare_comp
+			return null
+
+		# 1. 優先 512 切片 (common/costume/ -> 本族 512 -> 去前綴 512)
+		var p_common_512 := "res://assets/sprites/player/paperdoll/common/costume/%s_512.png" % item_id
+		if ResourceLoader.exists(p_common_512):
+			return load(p_common_512) as Texture2D
+
+		var path512 := "res://assets/sprites/player/paperdoll/%s/costume/%s_512.png" % [r, item_id]
+		if ResourceLoader.exists(path512):
+			return load(path512) as Texture2D
+
+		var clean_id := item_id.trim_prefix("costume_")
+		var p_common_512_clean := "res://assets/sprites/player/paperdoll/common/costume/%s_512.png" % clean_id
+		if ResourceLoader.exists(p_common_512_clean):
+			return load(p_common_512_clean) as Texture2D
+
+		# 2. 檢查高清展示立牌裁切 (showcase/*_hd_cut.png, 長邊 >= 512，僅限本族)
+		var hd_cut := "res://assets/sprites/player/showcase/%s_%s_hd_cut.png" % [r, item_id]
+		if ResourceLoader.exists(hd_cut):
+			return load(hd_cut) as Texture2D
+
+		# 3. 跨族 512 衣服切片共用（同件衣服若在別族目錄下）
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
+		for other in all_races:
+			if other == r:
+				continue
+			var cross_512 := "res://assets/sprites/player/paperdoll/%s/costume/%s_512.png" % [other, item_id]
+			if ResourceLoader.exists(cross_512):
+				return load(cross_512) as Texture2D
+
+		# 4. 找不到任何 512 切片時回 null（UI 顯示無縮圖佔位，禁止拿另一件衣服冒充）
+		return null
+
 	elif slot_type == "chassis":
-		var ch_thumb := "res://assets/sprites/player/showcase/thumbs/thumb_%s.png" % item_id
-		if ResourceLoader.exists(ch_thumb):
-			return load(ch_thumb) as Texture2D
+		# 1. 優先 512 底盤切片 (本族 chassis/*_512.png，長邊 512)
 		var path512 := "res://assets/sprites/player/paperdoll/%s/chassis/%s_512.png" % [r, item_id]
 		if ResourceLoader.exists(path512):
 			return load(path512) as Texture2D
-		var path := "res://assets/sprites/player/paperdoll/%s/chassis/%s.png" % [r, item_id]
-		if ResourceLoader.exists(path):
-			return load(path) as Texture2D
+
+		# 2. 跨族 512 底盤共用
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
+		for other in all_races:
+			if other == r:
+				continue
+			var cross_ch_512 := "res://assets/sprites/player/paperdoll/%s/chassis/%s_512.png" % [other, item_id]
+			if ResourceLoader.exists(cross_ch_512):
+				return load(cross_ch_512) as Texture2D
+
+		var clean_id := item_id.trim_prefix("paint_")
+		for other in all_races:
+			var cross_clean := "res://assets/sprites/player/paperdoll/%s/chassis/%s_512.png" % [other, clean_id]
+			if ResourceLoader.exists(cross_clean):
+				return load(cross_clean) as Texture2D
+
 	return null
 
 
@@ -948,6 +977,11 @@ func _update_preview() -> void:
 	if _preview_rect == null:
 		return
 	var sel := get_current_selections()
+	var idle_tex: Texture2D = SpriteDB.player_equipped_idle(current_race, sel)
+	if idle_tex != null:
+		_preview_rect.texture = idle_tex
+		_preview_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		return
 	var tex_512: Texture2D = PaperdollRenderer.get_race_composite_texture_512(current_race, sel)
 	if tex_512 != null:
 		_preview_rect.texture = tex_512

@@ -517,6 +517,13 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 				var cross_512_clean := "%s/%s/%s/%s_512.png" % [PAPERDOLL_ROOT, other, sid, clean_id]
 				if clean_id != effective_id and (ResourceLoader.exists(cross_512_clean) or FileAccess.file_exists(cross_512_clean)):
 					return cross_512_clean
+
+		if sid == SLOT_WEAPON:
+			# 該槽位沒有本族／共用 512 切片時回空字串安全隱藏（禁止用兔族劍代替，遵守各族武器設定）
+			return ""
+		elif sid == SLOT_BACK_CURIO:
+			# 非必選槽位若無 512 切片則安全隱藏，不退回 128 破壞 512 合成
+			return ""
 	return resolve_slot_texture_path(rid, sid, iid)
 
 
@@ -623,6 +630,40 @@ const RABBIT_WALK_GAIT: Array[Dictionary] = [
 	},
 ]
 
+const RABBIT_WALK_GAIT_512: Array[Dictionary] = [
+	{
+		"name": "Frame 0",
+		"torso_dy": 0,
+		"leg_l_rot": 8.5, "leg_l_dx": -4, "leg_l_dy": 0,
+		"leg_r_rot": -8.5, "leg_r_dx": 4, "leg_r_dy": 0,
+	},
+	{
+		"name": "Frame 1",
+		"torso_dy": -4,
+		"leg_l_rot": 6.0, "leg_l_dx": 0, "leg_l_dy": 0,
+		"leg_r_rot": 12.0, "leg_r_dx": -8, "leg_r_dy": -12,
+	},
+	{
+		"name": "Frame 2",
+		"torso_dy": 0,
+		"leg_l_rot": -8.5, "leg_l_dx": 4, "leg_l_dy": 0,
+		"leg_r_rot": 8.5, "leg_r_dx": -4, "leg_r_dy": 0,
+	},
+	{
+		"name": "Frame 3",
+		"torso_dy": -4,
+		"leg_l_rot": 12.0, "leg_l_dx": -8, "leg_l_dy": -12,
+		"leg_r_rot": 6.0, "leg_r_dx": 0, "leg_r_dy": 0,
+	},
+]
+
+const NON_RABBIT_WALK_GAIT: Array[Dictionary] = [
+	{"name": "Frame 0", "rot": -3.2, "dx": -5, "dy": 0},
+	{"name": "Frame 1", "rot": 0.0,  "dx": 0,  "dy": -5},
+	{"name": "Frame 2", "rot": 3.2,  "dx": 5,  "dy": 0},
+	{"name": "Frame 3", "rot": 0.0,  "dx": 0,  "dy": -5},
+]
+
 static func _rotate_and_translate_layer(src: Image, angle_deg: float, pivot: Vector2, translate: Vector2i) -> Image:
 	var dst := Image.create(128, 128, false, Image.FORMAT_RGBA8)
 	dst.fill(Color(0, 0, 0, 0))
@@ -669,6 +710,49 @@ static func _rotate_and_translate_layer(src: Image, angle_deg: float, pivot: Vec
 
 	return dst
 
+static func _rotate_and_translate_layer_512(src: Image, angle_deg: float, pivot: Vector2, translate: Vector2i) -> Image:
+	var dst := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+	dst.fill(Color(0, 0, 0, 0))
+	if src == null or src.is_empty():
+		return dst
+	if is_zero_approx(angle_deg):
+		var src_rect := Rect2i(0, 0, 512, 512)
+		dst.blend_rect(src, src_rect, translate)
+		return dst
+
+	var rad := deg_to_rad(angle_deg)
+	var cos_a := cos(rad)
+	var sin_a := sin(rad)
+
+	for y in range(512):
+		for x in range(512):
+			var tx: float = float(x - translate.x) - pivot.x
+			var ty: float = float(y - translate.y) - pivot.y
+			var sx: float = pivot.x + tx * cos_a + ty * sin_a
+			var sy: float = pivot.y - tx * sin_a + ty * cos_a
+
+			var x0: int = int(floor(sx))
+			var y0: int = int(floor(sy))
+			if x0 < 0 or x0 + 1 >= 512 or y0 < 0 or y0 + 1 >= 512:
+				continue
+
+			var fx: float = sx - float(x0)
+			var fy: float = sy - float(y0)
+
+			var c00: Color = src.get_pixel(x0, y0)
+			var c10: Color = src.get_pixel(x0 + 1, y0)
+			var c01: Color = src.get_pixel(x0, y0 + 1)
+			var c11: Color = src.get_pixel(x0 + 1, y0 + 1)
+
+			var c0: Color = c00.lerp(c10, fx)
+			var c1: Color = c01.lerp(c11, fx)
+			var c: Color = c0.lerp(c1, fy)
+
+			if c.a > 0.02:
+				dst.set_pixel(x, y, c)
+
+	return dst
+
 static func _blend_slot(canvas: Image, entry_map: Dictionary, slot_id: String, offset: Vector2i) -> void:
 	var entry: Dictionary = entry_map.get(slot_id, {})
 	var tex: Texture2D = entry.get("texture", null)
@@ -678,12 +762,188 @@ static func _blend_slot(canvas: Image, entry_map: Dictionary, slot_id: String, o
 	if img == null or img.is_empty():
 		return
 	if img.get_format() != Image.FORMAT_RGBA8:
+		img = img.duplicate()
 		img.convert(Image.FORMAT_RGBA8)
+	if img.get_width() != canvas.get_width() or img.get_height() != canvas.get_height():
+		img = img.duplicate()
+		img.resize(canvas.get_width(), canvas.get_height(), Image.INTERPOLATE_LANCZOS)
 	var rect := Rect2i(0, 0, img.get_width(), img.get_height())
 	canvas.blend_rect(img, rect, offset)
 
+## 依據種族、幀數 (0..3) 與換裝選擇，以 512 高清切片執行期即時動態合成走路四幀
+static func build_walk_composite_image_512(race: String, frame: int, slot_selection: Dictionary = {}) -> Image:
+	var rid := race.to_lower().strip_edges()
+	var f_idx := posmod(frame, 4)
+
+	var entries := get_sorted_slot_entries_512(rid, slot_selection)
+	var entry_map := {}
+	for e in entries:
+		entry_map[str(e.get("slot_id", ""))] = e
+
+	var chassis_entry: Dictionary = entry_map.get(SLOT_CHASSIS, {})
+	var chassis_tex: Texture2D = chassis_entry.get("texture", null)
+	if chassis_tex == null:
+		return null
+	var chassis_path: String = str(chassis_entry.get("texture_path", ""))
+	if not chassis_path.ends_with("_512.png"):
+		return null
+
+	var chassis_img: Image = chassis_tex.get_image()
+	if chassis_img == null or chassis_img.is_empty():
+		return null
+	if chassis_img.get_width() != 512 or chassis_img.get_height() != 512:
+		return null
+	if chassis_img.get_format() != Image.FORMAT_RGBA8:
+		chassis_img = chassis_img.duplicate()
+		chassis_img.convert(Image.FORMAT_RGBA8)
+
+	# 非兔族：依 z_index 疊合各 512 切片，並施以步態步履擺動與起伏
+	if rid != "rabbit":
+		var gait: Dictionary = NON_RABBIT_WALK_GAIT[f_idx]
+		var rot: float = float(gait.get("rot", 0.0))
+		var trans := Vector2i(int(gait.get("dx", 0)), int(gait.get("dy", 0)))
+		var pivot := Vector2(256.0, 488.0)
+
+		var base_canvas := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+		base_canvas.fill(Color(0, 0, 0, 0))
+
+		for entry in entries:
+			var tex: Texture2D = entry.get("texture", null)
+			if tex == null:
+				continue
+			var layer_img: Image = tex.get_image()
+			if layer_img == null or layer_img.is_empty():
+				continue
+			if layer_img.get_format() != Image.FORMAT_RGBA8:
+				layer_img = layer_img.duplicate()
+				layer_img.convert(Image.FORMAT_RGBA8)
+			if layer_img.get_width() != 512 or layer_img.get_height() != 512:
+				layer_img = layer_img.duplicate()
+				layer_img.resize(512, 512, Image.INTERPOLATE_LANCZOS)
+			base_canvas.blend_rect(layer_img, Rect2i(0, 0, 512, 512), Vector2i.ZERO)
+
+		return _rotate_and_translate_layer_512(base_canvas, rot, pivot, trans)
+
+	# 1. 兔族：分解 chassis 軀幹、骨盆、雙腿與影子 (512x512)
+	var shadow_img := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+	var torso_chassis := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+	var pelvis := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+	var leg_l := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+	var leg_r := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+
+	for y in range(512):
+		for x in range(512):
+			var c: Color = chassis_img.get_pixel(x, y)
+			if c.a <= 0.0:
+				continue
+			if y >= 472 and (c.a <= 200.0 / 255.0 or (c.r < 50.0 / 255.0 and c.g < 50.0 / 255.0 and c.b < 70.0 / 255.0)):
+				shadow_img.set_pixel(x, y, c)
+				continue
+			if y < 392:
+				torso_chassis.set_pixel(x, y, c)
+			else:
+				if x <= 248:
+					leg_l.set_pixel(x, y, c)
+				else:
+					leg_r.set_pixel(x, y, c)
+			# 骨盆完整覆蓋切割線上下各 12px (y=380..404)，隨軀幹位移消除接縫橫向空洞 (Rule 4b-13)
+			if y >= 380 and y <= 404:
+				pelvis.set_pixel(x, y, c)
+
+	var gait: Dictionary = RABBIT_WALK_GAIT_512[f_idx]
+	var tdy: int = int(gait.get("torso_dy", 0))
+	var pivot_l := Vector2(208, 392)
+	var pivot_r := Vector2(284, 392)
+
+	# 2. 雙腿各自關節位移與旋轉 (Rule 4b-7 / 4b-7-1)
+	var lr_rot: float = float(gait.get("leg_r_rot", 0.0))
+	var lr_trans := Vector2i(int(gait.get("leg_r_dx", 0)), int(gait.get("leg_r_dy", 0)))
+	var leg_r_tx := _rotate_and_translate_layer_512(leg_r, lr_rot, pivot_r, lr_trans)
+
+	var ll_rot: float = float(gait.get("leg_l_rot", 0.0))
+	var ll_trans := Vector2i(int(gait.get("leg_l_dx", 0)), int(gait.get("leg_l_dy", 0)))
+	var leg_l_tx := _rotate_and_translate_layer_512(leg_l, ll_rot, pivot_l, ll_trans)
+
+	# 3. 依 z_index 階梯與部位上下關係疊合
+	var canvas := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+	canvas.fill(Color(0, 0, 0, 0))
+	var full_rect := Rect2i(0, 0, 512, 512)
+
+	# 腳底軟影帶（固定在基底）
+	canvas.blend_rect(shadow_img, full_rect, Vector2i.ZERO)
+
+	# z=5: winding_key（隨軀幹微幅浮沉）
+	_blend_slot(canvas, entry_map, SLOT_WINDING_KEY, Vector2i(0, tdy))
+
+	# z=8: back_curio
+	_blend_slot(canvas, entry_map, SLOT_BACK_CURIO, Vector2i(0, tdy))
+
+	# 後腿
+	canvas.blend_rect(leg_r_tx, full_rect, Vector2i.ZERO)
+
+	# 骨盆底層
+	canvas.blend_rect(pelvis, full_rect, Vector2i(0, tdy))
+
+	# 前腿
+	canvas.blend_rect(leg_l_tx, full_rect, Vector2i.ZERO)
+
+	# 軀幹主機體
+	canvas.blend_rect(torso_chassis, full_rect, Vector2i(0, tdy))
+
+	# z=20: head_unit
+	_blend_slot(canvas, entry_map, SLOT_HEAD_UNIT, Vector2i(0, tdy))
+
+	# z=25: costume 玩具外裝獨立層即時疊合（下擺隨雙腿分段位移與旋轉，防止布料遮蔽腿部步態 Rule 4b-12）
+	var costume_entry: Dictionary = entry_map.get(SLOT_COSTUME, {})
+	var costume_tex: Texture2D = costume_entry.get("texture", null)
+	if costume_tex:
+		var cos_img: Image = costume_tex.get_image()
+		if cos_img and not cos_img.is_empty():
+			if cos_img.get_format() != Image.FORMAT_RGBA8:
+				cos_img = cos_img.duplicate()
+				cos_img.convert(Image.FORMAT_RGBA8)
+			if cos_img.get_width() != 512 or cos_img.get_height() != 512:
+				cos_img = cos_img.duplicate()
+				cos_img.resize(512, 512, Image.INTERPOLATE_LANCZOS)
+			var cos_torso := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+			var cos_skirt_l := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+			var cos_skirt_r := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+			for y in range(512):
+				for x in range(512):
+					var c: Color = cos_img.get_pixel(x, y)
+					if c.a <= 0.0:
+						continue
+					if y < 392:
+						cos_torso.set_pixel(x, y, c)
+					else:
+						if x <= 248:
+							cos_skirt_l.set_pixel(x, y, c)
+						else:
+							cos_skirt_r.set_pixel(x, y, c)
+			var c_lr_rot: float = lr_rot * 0.7
+			var c_lr_trans := Vector2i(int(round(float(lr_trans.x) * 0.7)), int(round(float(lr_trans.y) * 0.7)))
+			var cos_skirt_r_tx := _rotate_and_translate_layer_512(cos_skirt_r, c_lr_rot, pivot_r, c_lr_trans)
+			var c_ll_rot: float = ll_rot * 0.7
+			var c_ll_trans := Vector2i(int(round(float(ll_trans.x) * 0.7)), int(round(float(ll_trans.y) * 0.7)))
+			var cos_skirt_l_tx := _rotate_and_translate_layer_512(cos_skirt_l, c_ll_rot, pivot_l, c_ll_trans)
+
+			canvas.blend_rect(cos_skirt_r_tx, full_rect, Vector2i(0, tdy))
+			canvas.blend_rect(cos_skirt_l_tx, full_rect, Vector2i(0, tdy))
+			canvas.blend_rect(cos_torso, full_rect, Vector2i(0, tdy))
+
+	# z=30: optic_core
+	_blend_slot(canvas, entry_map, SLOT_OPTIC_CORE, Vector2i(0, tdy))
+
+	# z=40: weapon 手持武器獨立層即時疊合
+	_blend_slot(canvas, entry_map, SLOT_WEAPON, Vector2i(0, tdy))
+
+	return canvas
+
 ## 依據種族、幀數 (0..3) 與換裝選擇，執行期分部位即時合成走路姿態
 static func build_walk_composite_image(race: String, frame: int, slot_selection: Dictionary = {}) -> Image:
+	var img_512 := build_walk_composite_image_512(race, frame, slot_selection)
+	if img_512 != null and not img_512.is_empty():
+		return img_512
 	var rid := race.to_lower().strip_edges()
 	var f_idx := posmod(frame, 4)
 	if rid != "rabbit":
@@ -838,7 +1098,16 @@ static func build_walk_composite_image(race: String, frame: int, slot_selection:
 
 	return canvas
 
+static func build_walk_composite_texture_512(race: String, frame: int, slot_selection: Dictionary = {}) -> Texture2D:
+	var img := build_walk_composite_image_512(race, frame, slot_selection)
+	if img != null and not img.is_empty():
+		return ImageTexture.create_from_image(img)
+	return null
+
 static func build_walk_composite_texture(race: String, frame: int, slot_selection: Dictionary = {}) -> Texture2D:
+	var tex_512 := build_walk_composite_texture_512(race, frame, slot_selection)
+	if tex_512 != null:
+		return tex_512
 	var img := build_walk_composite_image(race, frame, slot_selection)
 	if img != null and not img.is_empty():
 		return ImageTexture.create_from_image(img)

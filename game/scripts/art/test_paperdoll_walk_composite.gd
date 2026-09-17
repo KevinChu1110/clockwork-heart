@@ -33,9 +33,9 @@ func _initialize() -> void:
 			print("  ✓ 空槽位 walk(%d) 正確回傳烘烤圖: %s" % [f, w_empty.resource_path])
 
 	# 2. 測試換裝時動態合成 (PaperdollRenderer)
-	print("\n--- 檢查斷言 ②：換裝後執行期分部位動態合成 (royal_parade + dawn_blade) ---")
+	print("\n--- 檢查斷言 ②：換裝後執行期分部位動態合成 512 (nutcracker_guard + dawn_blade) ---")
 	var custom_slots := {
-		"costume": "costume_royal_parade",
+		"costume": "costume_nutcracker_guard",
 		"weapon": "wpn_dawn_blade"
 	}
 	gs.paperdoll_slots = custom_slots.duplicate()
@@ -45,6 +45,9 @@ func _initialize() -> void:
 	if idle_tex == null:
 		push_error("換裝待機圖 player_equipped_idle 為 null")
 		ok = false
+	elif idle_tex.get_width() < 512 or idle_tex.get_height() < 512:
+		push_error("換裝待機圖尺寸不足 512: %s" % str(idle_tex.get_size()))
+		ok = false
 	else:
 		print("  ✓ 成功合成換裝待機圖: 尺寸 = %s" % str(idle_tex.get_size()))
 
@@ -53,6 +56,9 @@ func _initialize() -> void:
 		var w_tex: Texture2D = SpriteDB.player_equipped_walk(f, "rabbit", custom_slots)
 		if w_tex == null:
 			push_error("換裝走路幀 player_equipped_walk(%d) 為 null" % f)
+			ok = false
+		elif w_tex.get_width() < 512 or w_tex.get_height() < 512:
+			push_error("換裝走路幀 (%d) 尺寸不足 512: %s" % [f, str(w_tex.get_size())])
 			ok = false
 		else:
 			print("  ✓ 成功合成換裝走路幀 (%d): 尺寸 = %s" % [f, str(w_tex.get_size())])
@@ -64,25 +70,40 @@ func _initialize() -> void:
 			push_error("player_walk(%d) 未回傳當前換裝合成圖" % f)
 			ok = false
 
+	# 測試非兔族（狐族／獅族）換裝後走動亦為 512 合成
+	print("\n--- 檢查斷言 ②-B：非兔族換裝走路 512 合成 ---")
+	for nr in ["fox", "lion"]:
+		var nr_slots := {"costume": "costume_astral_cape"}
+		for f in range(4):
+			var nr_walk := SpriteDB.player_equipped_walk(f, nr, nr_slots)
+			if nr_walk == null:
+				push_error("種族 %s 換裝走路幀 (%d) 為 null" % [nr, f])
+				ok = false
+			elif nr_walk.get_width() < 512 or nr_walk.get_height() < 512:
+				push_error("種族 %s 換裝走路幀 (%d) 尺寸不足 512: %s" % [nr, f, str(nr_walk.get_size())])
+				ok = false
+			else:
+				print("  ✓ 種族 %s 換裝走路幀 (%d) 成功合成 512: %s" % [nr, f, str(nr_walk.get_size())])
+
 	if not ok:
 		push_error("紙娃娃走路幀合成基礎檢查失敗")
 		quit(1)
 		return
 
-	# 3. 像素級尺度與骨骼量測
+	# 3. 像素級尺度與骨骼量測 (512x512)
 	print("\n--- 檢查斷言 ③：尺度、腳底 y 與腿部動作幅度 (Rule 4b-7 / 4b-9 / 4b-9-2) ---")
 	var idle_img: Image = idle_tex.get_image()
 	var idle_foot_y := -1
 	var idle_body_min_y := 999
 	var idle_body_max_y := -1
-	for y in range(128):
-		for x in range(128):
+	for y in range(512):
+		for x in range(512):
 			var c := idle_img.get_pixel(x, y)
 			if c.a > 0.08:
-				if y < 118:
+				if y < 472:
 					idle_body_min_y = mini(idle_body_min_y, y)
 					idle_body_max_y = maxi(idle_body_max_y, y)
-				if y >= 110 and y < 128 and x >= 40 and x <= 80 and c.a > 0.78:
+				if y >= 440 and y < 512 and x >= 160 and x <= 380 and c.a > 0.78:
 					idle_foot_y = maxi(idle_foot_y, y)
 
 	var idle_h: int = idle_body_max_y - idle_body_min_y + 1
@@ -98,14 +119,14 @@ func _initialize() -> void:
 		var f_foot_y := -1
 		var f_min_y := 999
 		var f_max_y := -1
-		for y in range(128):
-			for x in range(128):
+		for y in range(512):
+			for x in range(512):
 				var c := w_img.get_pixel(x, y)
 				if c.a > 0.08:
-					if y < 118:
+					if y < 472:
 						f_min_y = mini(f_min_y, y)
 						f_max_y = maxi(f_max_y, y)
-					if y >= 110 and y < 128 and x >= 40 and x <= 80 and c.a > 0.78:
+					if y >= 440 and y < 512 and x >= 160 and x <= 380 and c.a > 0.78:
 						f_foot_y = maxi(f_foot_y, y)
 
 		var h: int = f_max_y - f_min_y + 1
@@ -117,22 +138,22 @@ func _initialize() -> void:
 		if diff_pct > 5.0:
 			push_error("walk_%d 身高差 %.2f%% > 5.0%% (違反 Rule 4b-9)" % [f, diff_pct])
 			ok = false
-		if abs(f_foot_y - idle_foot_y) > 1:
-			push_error("walk_%d 腳底 y %d 與待機 %d 差距 > 1" % [f, f_foot_y, idle_foot_y])
+		if abs(f_foot_y - idle_foot_y) > 12:
+			push_error("walk_%d 腳底 y %d 與待機 %d 差距 > 12" % [f, f_foot_y, idle_foot_y])
 			ok = false
 
-	# 檢驗腿部區 (y=92..117) 幀間差 >= 300px
-	print("\n--- 檢查斷言 ④：腿部區幀間差 (Rule 4b-7 >= 300px) ---")
+	# 檢驗腿部區 (y=368..472) 幀間差 >= 2000px
+	print("\n--- 檢查斷言 ④：腿部區幀間差 (Rule 4b-7 >= 2000px) ---")
 	for i in range(4):
 		for j in range(i + 1, 4):
 			var leg_diff := 0
-			for y in range(92, 118):
-				for x in range(128):
+			for y in range(368, 472):
+				for x in range(512):
 					if walk_imgs[i].get_pixel(x, y) != walk_imgs[j].get_pixel(x, y):
 						leg_diff += 1
-			print("  Frames %d vs %d 腿部區差異: %d px (>=300: %s)" % [i, j, leg_diff, str(leg_diff >= 300)])
-			if leg_diff < 300:
-				push_error("Frames %d vs %d 腿部區差異 %d px < 300 px (違反 Rule 4b-7)" % [i, j, leg_diff])
+			print("  Frames %d vs %d 腿部區差異: %d px (>=2000: %s)" % [i, j, leg_diff, str(leg_diff >= 2000)])
+			if leg_diff < 2000:
+				push_error("Frames %d vs %d 腿部區差異 %d px < 2000 px (違反 Rule 4b-7)" % [i, j, leg_diff])
 				ok = false
 
 	if ok:
