@@ -170,8 +170,8 @@ def render_hp_m(size=512) -> Image.Image:
     # Bottle body: rectangular base with chamfered top corners (x: 135..377, y: 200..450)
     body_box = (x >= 140) & (x <= 372) & (y >= 210) & (y <= 445)
     # Chamfered shoulders
-    chamfer_l = (y >= 170) & (y <= 210) & (y >= 210 - (x - 140.0) * 0.8)
-    chamfer_r = (y >= 170) & (y <= 210) & (y >= 210 - (372.0 - x) * 0.8)
+    chamfer_l = (y >= 170) & (y <= 210) & (x >= 140) & (x <= 256) & (y >= 210 - (x - 140.0) * 0.8)
+    chamfer_r = (y >= 170) & (y <= 210) & (x >= 256) & (x <= 372) & (y >= 210 - (372.0 - x) * 0.8)
     neck_mask = (x >= 210) & (x <= 302) & (y >= 125) & (y <= 175)
     
     # Winding key stopper at top
