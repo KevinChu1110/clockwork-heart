@@ -1506,8 +1506,8 @@
    "id": "paperdoll-overlay",
    "cat": "遊戲",
    "title": "紙娃娃改共用裝備蓋圖：不每族重畫全身",
-   "status": "草稿",
-   "note": "程式已改走合成；美術補衣服層",
+   "status": "開發中",
+   "note": "大廳/衣櫃改 overlay 合成優先",
    "keys": [
     "紙娃娃改共用裝備"
    ]
