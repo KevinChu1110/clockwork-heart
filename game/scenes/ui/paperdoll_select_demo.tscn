@@ -637,7 +637,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="EndSpacer" type="Control" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(24, 0)
+custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
 
 [node name="CenterStage" type="PanelContainer" parent="."]

@@ -154,6 +154,8 @@ def main():
         ("screenshots/proof_creation_race_bar_unselected.png", "白金兔"),
         ("screenshots/proof_creation_crane_selected.png", "雲嵐鶴"),
         ("screenshots/proof_creation_penguin_selected.png", "蒸氣企鵝"),
+        ("screenshots/proof_creation_scroll_max_full.png", "蒸氣企鵝(橫滑終點選中)"),
+        ("screenshots/proof_creation_scroll_max_unselected_full.png", "蒸氣企鵝(橫滑終點未選)"),
     ]
 
     all_res = {}
