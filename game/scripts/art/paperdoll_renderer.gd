@@ -135,12 +135,20 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		var custom_slice_clean := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, clean_id]
 		if ResourceLoader.exists(custom_slice_clean) or FileAccess.file_exists(custom_slice_clean):
 			return custom_slice_clean
-		# 若指定的 item_id 在該族不存在（例如切換種族時殘留他族武器），退回該族預設部件
-		var def_id := _get_default_variant_id(rid, sid)
-		if def_id != "" and def_id != effective_id:
-			var def_slice := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, rid, sid, def_id]
-			if ResourceLoader.exists(def_slice) or FileAccess.file_exists(def_slice):
-				return def_slice
+		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限九大正式族系）
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
+		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
+			for other in all_races:
+				if str(other) == rid:
+					continue
+				var cross := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, other, sid, effective_id]
+				if ResourceLoader.exists(cross) or FileAccess.file_exists(cross):
+					return cross
+				var cross_clean := "%s/%s/%s/%s.png" % [PAPERDOLL_ROOT, other, sid, clean_id]
+				if clean_id != effective_id and (ResourceLoader.exists(cross_clean) or FileAccess.file_exists(cross_clean)):
+					return cross_clean
+		# 本族沒有這件裝備時不要偷偷換回本族預設，否則跨族換裝會失敗
+		# （預設件只在 item_id 為空時由 _get_default_variant_id 處理）
 
 	# 2. 通用裝備紙娃娃目錄 (weapon, armor, accessory, key, curio)
 	if sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
@@ -446,6 +454,98 @@ static func get_race_composite_texture(race: String, slot_selection: Dictionary 
 			if res is Texture2D:
 				return res as Texture2D
 	return build_composite_texture(rid, slot_selection)
+
+
+## 取得 512 高清合成貼圖（大廳／角色分頁／高清立繪展示專用）
+static func get_race_composite_texture_512(race: String, slot_selection: Dictionary = {}) -> Texture2D:
+	var rid := race.to_lower().strip_edges()
+	var comp_512 := build_composite_texture_512(rid, slot_selection)
+	if comp_512 != null:
+		return comp_512
+	var proof_512 := "%s/%s/proof_paperdoll_%s_composite_512.png" % [PAPERDOLL_ROOT, rid, rid]
+	if ResourceLoader.exists(proof_512):
+		var res_512 = load(proof_512)
+		if res_512 is Texture2D:
+			return res_512 as Texture2D
+	return get_race_composite_texture(rid, slot_selection)
+
+
+## 依種族、槽位、選項解析 512 高清切片路徑（優先 *_512.png，若無則退回標準切片）
+static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id: String = "") -> String:
+	var rid := race.to_lower().strip_edges()
+	var sid := slot_id.to_lower().strip_edges()
+	var iid := item_id.strip_edges()
+	if iid in ["none", "empty", "bare"]:
+		return ""
+	var effective_id := iid if iid != "" else _get_default_variant_id(rid, sid)
+	if effective_id != "":
+		var p512 := "%s/%s/%s/%s_512.png" % [PAPERDOLL_ROOT, rid, sid, effective_id]
+		if ResourceLoader.exists(p512) or FileAccess.file_exists(p512):
+			return p512
+		var clean_id := effective_id
+		for pfx in ["wpn_", "costume_", "key_", "curio_", "paint_", "ear_", "core_"]:
+			if clean_id.begins_with(pfx):
+				clean_id = clean_id.trim_prefix(pfx)
+				break
+		var p512_clean := "%s/%s/%s/%s_512.png" % [PAPERDOLL_ROOT, rid, sid, clean_id]
+		if ResourceLoader.exists(p512_clean) or FileAccess.file_exists(p512_clean):
+			return p512_clean
+	return resolve_slot_texture_path(rid, sid, iid)
+
+
+## 取得 512 畫布依 z_index 排序之圖層清單
+static func get_sorted_slot_entries_512(race: String, slot_selection: Dictionary = {}) -> Array[Dictionary]:
+	var entries: Array[Dictionary] = []
+	var sorted_slots := get_slots_sorted_by_z()
+	for slot_def in sorted_slots:
+		var sid: String = str(slot_def.get("slot_id", ""))
+		var chosen_item: String = str(slot_selection.get(sid, ""))
+		var path := resolve_slot_texture_path_512(race, sid, chosen_item)
+		var texture: Texture2D = get_slot_texture(path)
+		entries.append({
+			"slot_id": sid,
+			"name_zh": str(slot_def.get("name_zh", "")),
+			"name_en": str(slot_def.get("name_en", "")),
+			"layer_z_index": int(slot_def.get("layer_z_index", 0)),
+			"required": bool(slot_def.get("required", false)),
+			"chosen_item": chosen_item,
+			"texture_path": path,
+			"texture": texture,
+			"is_loaded": texture != null
+		})
+	return entries
+
+
+## 記憶體即時合成 512x512 RGBA8 高清貼圖（大廳／角色分頁／衣櫥即時換裝預覽專用）
+static func build_composite_texture_512(race: String, slot_selection: Dictionary = {}) -> Texture2D:
+	var entries := get_sorted_slot_entries_512(race, slot_selection)
+	var has_any_512 := false
+	for entry in entries:
+		var p: String = str(entry.get("texture_path", ""))
+		if p.ends_with("_512.png"):
+			has_any_512 = true
+			break
+	if not has_any_512:
+		return null
+	var base_img := Image.create(512, 512, false, Image.FORMAT_RGBA8)
+	base_img.fill(Color(0, 0, 0, 0))
+	for entry in entries:
+		var tex: Texture2D = entry.get("texture", null)
+		if tex == null:
+			continue
+		var layer_img: Image = tex.get_image()
+		if layer_img == null or layer_img.is_empty():
+			continue
+		if layer_img.get_format() != Image.FORMAT_RGBA8:
+			layer_img.convert(Image.FORMAT_RGBA8)
+		# 若圖層為 128，放大 4 倍配合 512 畫布；若已是 512 則直接貼合
+		if layer_img.get_width() != 512 or layer_img.get_height() != 512:
+			layer_img.resize(512, 512, Image.INTERPOLATE_NEAREST)
+		var src_rect := Rect2i(0, 0, 512, 512)
+		base_img.blend_rect(layer_img, src_rect, Vector2i.ZERO)
+	if base_img != null and not base_img.is_empty():
+		return ImageTexture.create_from_image(base_img)
+	return null
 
 
 ## ── 執行期走路姿態動態合成 (PaperdollRenderer Walk Kinematics) ──

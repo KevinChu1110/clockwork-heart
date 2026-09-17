@@ -82,6 +82,7 @@ var _dock_buttons: Array[Button] = []
 var _hall_buttons: Array[Button] = []
 var _active_hall_index: int = -1
 var _char_prev: TextureRect = null
+var _equip_schematic: VBoxContainer = null
 var _cached_font: Font = null
 var _bag_grid: GridContainer = null
 var _bag_cells: Array = []
@@ -242,6 +243,133 @@ func _get_hero_equipped_idle_texture() -> Texture2D:
 	return tex
 
 
+func _hero_display_tex() -> Texture2D:
+	## 大廳／角色分頁：優先使用 512 高清紙娃娃即時合成，讓換裝與外觀完美即時呈現
+	var race := _current_race()
+	var slots := _current_paperdoll_slots()
+	if not slots.is_empty():
+		var comp_512: Texture2D = PaperdollRenderer.build_composite_texture_512(race, slots)
+		if comp_512 != null:
+			return comp_512
+	var p256 := "res://assets/sprites/player/paperdoll/%s/showcase_idle_256.png" % race
+	if ResourceLoader.exists(p256):
+		return load(p256) as Texture2D
+	var p := "res://assets/sprites/player/showcase/%s_idle_hd.png" % race
+	if ResourceLoader.exists(p):
+		return load(p) as Texture2D
+	var p512 := "res://assets/sprites/player/paperdoll/%s/proof_paperdoll_%s_composite_512.png" % [race, race]
+	if ResourceLoader.exists(p512):
+		return load(p512) as Texture2D
+	return _tex_idle
+
+
+func _apply_hero_idle_visual() -> void:
+	var hd: Texture2D = _hero_display_tex()
+	if hd == null:
+		hd = _tex_idle
+	if _hero_avatar:
+		_hero_avatar.texture = hd
+		if hd != null and hd.get_width() >= 256:
+			_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		else:
+			_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	if _char_prev:
+		_char_prev.texture = hd
+		if hd != null and hd.get_width() >= 256:
+			_char_prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		else:
+			_char_prev.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_refresh_equip_schematic()
+
+
+func _current_race() -> String:
+	var gs := _gs()
+	var race := "rabbit"
+	if gs and "player_race" in gs:
+		race = str(gs.player_race).strip_edges().to_lower()
+		if race.is_empty():
+			race = "rabbit"
+	return race
+
+
+func _current_paperdoll_slots() -> Dictionary:
+	var gs := _gs()
+	var slots: Dictionary = {}
+	if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
+		slots = (gs.paperdoll_slots as Dictionary).duplicate()
+	return slots
+
+
+func _variant_display_name(slot_id: String, item_id: String) -> String:
+	var iid := item_id.strip_edges()
+	if iid.is_empty() or iid in ["none", "empty", "bare"]:
+		return "未裝備"
+	var def: Dictionary = PaperdollRenderer.get_slot_def(slot_id)
+	var variants: Variant = def.get("sample_variants", [])
+	if variants is Array:
+		for v in variants:
+			if v is Dictionary and str(v.get("id", "")) == iid:
+				var n := str(v.get("name", "")).strip_edges()
+				if n != "":
+					return n
+	var clean := iid
+	for pfx in ["wpn_", "costume_", "key_", "curio_", "paint_", "ear_", "core_"]:
+		if clean.begins_with(pfx):
+			clean = clean.trim_prefix(pfx)
+			break
+	return clean.replace("_", " ")
+
+
+func _refresh_equip_schematic() -> void:
+	if _equip_schematic == null:
+		return
+	for c in _equip_schematic.get_children():
+		c.queue_free()
+	var race := _current_race()
+	var slots := _current_paperdoll_slots()
+	var entries: Array = PaperdollRenderer.get_sorted_slot_entries(race, slots)
+	var want := ["costume", "weapon", "winding_key", "back_curio"]
+	for sid in want:
+		var entry: Dictionary = {}
+		for e in entries:
+			if e is Dictionary and str(e.get("slot_id", "")) == sid:
+				entry = e
+				break
+		var slot_title := str(entry.get("name_zh", sid))
+		if slot_title == "玩具外裝與服飾":
+			slot_title = "外裝"
+		elif slot_title == "手持武器外觀":
+			slot_title = "武器"
+		elif slot_title == "背部發條鑰匙":
+			slot_title = "發條"
+		elif slot_title == "隨身奇玩與尾部機關":
+			slot_title = "奇玩"
+		var item_id := str(entry.get("chosen_item", ""))
+		if item_id.strip_edges().is_empty():
+			var tpath := str(entry.get("texture_path", ""))
+			item_id = tpath.get_file().get_basename()
+		var item_name := _variant_display_name(sid, item_id)
+		var tex: Texture2D = entry.get("texture", null)
+		_add_equip_chip(_equip_schematic, slot_title, item_name, tex)
+
+
+func _add_equip_chip(parent: Container, slot_title: String, item_name: String, tex: Texture2D) -> void:
+	var btn := Button.new()
+	btn.custom_minimum_size = Vector2(0, 52)
+	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	UiStyle.style_button(btn, false)
+	btn.add_theme_font_size_override("font_size", 13)
+	if tex != null:
+		btn.icon = tex
+		btn.expand_icon = true
+		btn.add_theme_constant_override("icon_max_width", 36)
+		btn.add_theme_constant_override("h_separation", 8)
+	btn.text = "%s  %s" % [slot_title, item_name]
+	btn.pressed.connect(func(): open_wardrobe())
+	parent.add_child(btn)
+
+
 func _start_breathe_tween() -> void:
 	if _breathe_tween and _breathe_tween.is_valid():
 		_breathe_tween.kill()
@@ -262,12 +390,10 @@ func _start_breathe_tween() -> void:
 
 func _restore_hero_idle() -> void:
 	_tex_idle = _get_hero_equipped_idle_texture()
-	if _hero_avatar and _tex_idle:
-		_hero_avatar.texture = _tex_idle
+	_apply_hero_idle_visual()
+	if _hero_avatar:
 		_hero_avatar.position = Vector2(-125, -140)
 		_hero_avatar.scale = Vector2.ONE
-	if _char_prev and _tex_idle:
-		_char_prev.texture = _tex_idle
 	if _speech_bubble:
 		_speech_bubble.visible = false
 	_is_interacting = false
@@ -303,9 +429,9 @@ func _load_hero_poses() -> void:
 		_tex_hit = load("res://assets/sprites/player/poses/hit.png")
 
 	if _hero_avatar and _tex_idle and not _is_interacting:
-		_hero_avatar.texture = _tex_idle
-	if _char_prev and _tex_idle:
-		_char_prev.texture = _tex_idle
+		_apply_hero_idle_visual()
+	elif _char_prev and _tex_idle:
+		_apply_hero_idle_visual()
 
 static var _shadow_tex_cache: Texture2D = null
 
@@ -390,8 +516,8 @@ func _build_ui() -> void:
 ## ──────────────────────────────────────────
 func _create_obsidian_panel(accent: Color = COLOR_BORDER) -> StyleBoxFlat:
 	var s := StyleBoxFlat.new()
-	s.bg_color = COLOR_BG_CREAM
-	s.border_color = COLOR_BORDER
+	s.bg_color = Color(1.0, 0.956, 0.815, 0.90)  ## 暖金奶油半透明，避免死白 PPT 橫條
+	s.border_color = accent
 	s.set_border_width_all(2)
 	s.border_width_bottom = 5
 	s.set_corner_radius_all(20)
@@ -402,6 +528,20 @@ func _create_obsidian_panel(accent: Color = COLOR_BORDER) -> StyleBoxFlat:
 	s.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 	s.shadow_size = 10
 	s.shadow_offset = Vector2(0, 4)
+	return s
+
+
+func _create_banner_panel() -> StyleBoxFlat:
+	## 頂欄／底 Dock 大橫條：暖金玻璃，讓神殿背景透出來
+	var s := StyleBoxFlat.new()
+	s.bg_color = Color(1.0, 0.94, 0.78, 0.70)
+	s.border_color = COLOR_BORDER
+	s.set_border_width_all(2)
+	s.border_width_bottom = 5
+	s.set_corner_radius_all(20)
+	s.shadow_color = Color(0.12, 0.10, 0.23, 0.16)
+	s.shadow_size = 8
+	s.shadow_offset = Vector2(0, 3)
 	return s
 
 ## ──────────────────────────────────────────
@@ -450,16 +590,7 @@ func _build_top_hud() -> void:
 	top_bar.offset_top = 10
 	top_bar.offset_bottom = 74
 	
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = COLOR_BG_CREAM
-	sb.border_color = COLOR_BORDER
-	sb.set_border_width_all(2)
-	sb.border_width_bottom = 5
-	sb.set_corner_radius_all(20)
-	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
-	sb.shadow_size = 8
-	sb.shadow_offset = Vector2(0, 3)
-	top_bar.add_theme_stylebox_override("panel", sb)
+	top_bar.add_theme_stylebox_override("panel", _create_banner_panel())
 	add_child(top_bar)
 
 	var h := HBoxContainer.new()
@@ -537,10 +668,17 @@ func _build_top_hud() -> void:
 	_gem_label = _add_clean_capsule(h, "星屑", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_gem_stardust.png")
 
 	var set_btn := Button.new()
+	set_btn.name = "SettingsButton"
 	set_btn.text = "設置"
 	UiStyle.style_button(set_btn, false)
-	set_btn.custom_minimum_size = Vector2(80, 50)
+	set_btn.custom_minimum_size = Vector2(108, 50)
 	set_btn.add_theme_font_size_override("font_size", 15)
+	var set_icon := "res://assets/icons/hud/icon_settings_gear.png"
+	if ResourceLoader.exists(set_icon):
+		set_btn.icon = load(set_icon)
+		set_btn.expand_icon = true
+		set_btn.add_theme_constant_override("icon_max_width", 22)
+		set_btn.add_theme_constant_override("h_separation", 6)
 	set_btn.pressed.connect(func():
 		var s_scn := load("res://scripts/ui/mobile_settings.gd")
 		var s_ui: Control = s_scn.new()
@@ -608,17 +746,11 @@ func _build_bottom_dock() -> void:
 	dock.offset_top = -88
 	dock.offset_bottom = -12
 	
-	var dsb := StyleBoxFlat.new()
-	dsb.bg_color = COLOR_BG_CREAM
-	dsb.border_color = COLOR_BORDER
-	dsb.set_border_width_all(2)
-	dsb.border_width_bottom = 5
-	dsb.set_corner_radius_all(20)
+	var dsb := _create_banner_panel()
 	dsb.content_margin_left = 10
 	dsb.content_margin_right = 10
 	dsb.content_margin_top = 6
 	dsb.content_margin_bottom = 7
-	dsb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
 	dsb.shadow_size = 12
 	dsb.shadow_offset = Vector2(0, 4)
 	dock.add_theme_stylebox_override("panel", dsb)
@@ -781,7 +913,7 @@ func _build_village_tab() -> void:
 	_hero_shadow.offset_bottom = 116
 	_hero_shadow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_hero_shadow.stretch_mode = TextureRect.STRETCH_SCALE
-	_hero_shadow.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_hero_shadow.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	_hero_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hero_shadow.texture = _soft_shadow_tex()
 	_hero_shadow.pivot_offset = Vector2(80, 21)
@@ -824,8 +956,7 @@ func _build_village_tab() -> void:
 	_hero_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_hero_avatar.pivot_offset = Vector2(125, 240)
-	if _tex_idle:
-		_hero_avatar.texture = _tex_idle
+	_apply_hero_idle_visual()
 	stage_anchor.add_child(_hero_avatar)
 
 	var hero_click := Button.new()
@@ -941,6 +1072,18 @@ func _build_village_tab() -> void:
 		open_windup_daily()
 	)
 
+	## 裝備示意：高清立繪旁列出當前外裝／武器／發條／奇玩
+	_equip_schematic = VBoxContainer.new()
+	_equip_schematic.name = "EquipSchematic"
+	_equip_schematic.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_equip_schematic.offset_left = -300
+	_equip_schematic.offset_top = 16
+	_equip_schematic.offset_right = -28
+	_equip_schematic.offset_bottom = 250
+	_equip_schematic.add_theme_constant_override("separation", 8)
+	_village_layer.add_child(_equip_schematic)
+	_refresh_equip_schematic()
+
 	## 右側：多巴胺奶油白戰情報告板 (專注於主線推進)
 	var right_card := PanelContainer.new()
 	right_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
@@ -968,10 +1111,17 @@ func _build_village_tab() -> void:
 	rv.add_child(s_name)
 
 	var btn_go := Button.new()
+	btn_go.name = "GoCampaignButton"
 	btn_go.text = "前往出征"
 	UiStyle.style_button(btn_go, true)
 	btn_go.custom_minimum_size = Vector2(280, 64)
 	btn_go.add_theme_font_size_override("font_size", 20)
+	var go_icon := "res://assets/icons/hud/icon_go_campaign.png"
+	if ResourceLoader.exists(go_icon):
+		btn_go.icon = load(go_icon)
+		btn_go.expand_icon = true
+		btn_go.add_theme_constant_override("icon_max_width", 28)
+		btn_go.add_theme_constant_override("h_separation", 8)
 	btn_go.pressed.connect(func(): _switch_tab(Tab.ADVENTURE))
 	rv.add_child(btn_go)
 
@@ -1814,8 +1964,7 @@ func _build_character_tab() -> void:
 	_char_prev.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_char_prev.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_char_prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	if _tex_idle:
-		_char_prev.texture = _tex_idle
+	_apply_hero_idle_visual()
 	_char_prev.mouse_filter = Control.MOUSE_FILTER_PASS
 	l_vbox.add_child(_char_prev)
 
@@ -2615,9 +2764,9 @@ func refresh_hud() -> void:
 	if _hero_avatar:
 		_load_hero_poses()
 		if not _is_interacting and _tex_idle:
-			_hero_avatar.texture = _tex_idle
+			_apply_hero_idle_visual()
 	if _char_prev and _tex_idle:
-		_char_prev.texture = _tex_idle
+		_apply_hero_idle_visual()
 	if _power_label:
 		_power_label.text = "戰力 %d" % pow
 	if _char_power_badge:
@@ -2683,10 +2832,7 @@ func open_wardrobe() -> void:
 		dlg.connect("outfit_saved", func(_race: String, _selections: Dictionary):
 			_load_hero_poses()
 			refresh_hud()
-			if _hero_avatar and _tex_idle and not _is_interacting:
-				_hero_avatar.texture = _tex_idle
-			if _char_prev and _tex_idle:
-				_char_prev.texture = _tex_idle
+			_apply_hero_idle_visual()
 			_show_toast(_t("換裝完成！新外裝已生效"))
 		)
 
@@ -2696,9 +2842,9 @@ func open_wardrobe() -> void:
 	var restore_prev := func():
 		_load_hero_poses()
 		if _hero_avatar and _tex_idle and not _is_interacting:
-			_hero_avatar.texture = _tex_idle
-		if _char_prev and _tex_idle:
-			_char_prev.texture = _tex_idle
+			_apply_hero_idle_visual()
+		elif _char_prev and _tex_idle:
+			_apply_hero_idle_visual()
 		if _char_prev:
 			_char_prev.visible = true
 	dlg.tree_exited.connect(restore_prev)
