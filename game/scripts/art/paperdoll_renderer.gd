@@ -469,11 +469,12 @@ static func get_race_composite_texture_512(race: String, slot_selection: Diction
 	var comp_512 := build_composite_texture_512(rid, slot_selection)
 	if comp_512 != null:
 		return comp_512
-	var proof_512 := "%s/%s/proof_paperdoll_%s_composite_512.png" % [PAPERDOLL_ROOT, rid, rid]
-	if ResourceLoader.exists(proof_512):
-		var res_512 = load(proof_512)
-		if res_512 is Texture2D:
-			return res_512 as Texture2D
+	if slot_selection.is_empty():
+		var proof_512 := "%s/%s/proof_paperdoll_%s_composite_512.png" % [PAPERDOLL_ROOT, rid, rid]
+		if ResourceLoader.exists(proof_512):
+			var res_512 = load(proof_512)
+			if res_512 is Texture2D:
+				return res_512 as Texture2D
 	return get_race_composite_texture(rid, slot_selection)
 
 
@@ -558,11 +559,14 @@ static func build_composite_texture_512(race: String, slot_selection: Dictionary
 	var entries := get_sorted_slot_entries_512(race, slot_selection)
 	var has_chassis_512 := false
 	for entry in entries:
-		if str(entry.get("slot_id", "")) == SLOT_CHASSIS:
-			var p: String = str(entry.get("texture_path", ""))
-			if p.ends_with("_512.png"):
-				has_chassis_512 = true
-			break
+		var p: String = str(entry.get("texture_path", ""))
+		if p == "":
+			continue
+		if str(entry.get("slot_id", "")) == SLOT_CHASSIS and p.ends_with("_512.png"):
+			has_chassis_512 = true
+		elif not p.ends_with("_512.png"):
+			## 任何啟用槽位若無 512 切片，禁止把 128 硬拉大冒充高清，安全退回 128 標準合成
+			return null
 	if not has_chassis_512:
 		return null
 	var base_img := Image.create(512, 512, false, Image.FORMAT_RGBA8)
