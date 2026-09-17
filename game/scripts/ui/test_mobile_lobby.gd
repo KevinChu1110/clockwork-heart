@@ -53,6 +53,8 @@ func _process(_d: float) -> bool:
 		_test_adventure_region_stages()
 		_test_soul_hall_tab()
 		_test_bottom_dock()
+		_test_character_tab()
+		_test_bag_tab()
 		return _finish()
 	return false
 
@@ -973,6 +975,230 @@ func _test_bottom_dock() -> void:
 
 	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
 	print("  ok 底部 Dock 五分頁自繪圖示、果凍厚底與切換狀態全部檢查通過")
+
+## ──────────────────────────────────────────
+## 9. 斷言角色分頁：三欄武器槽果凍卡（暖橘選中態）、五獨立屬性小卡、無死白PPT長文
+## ──────────────────────────────────────────
+func _test_character_tab() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試角色分頁")
+		return
+
+	_lobby._switch_tab(MobileLobby.Tab.CHARACTER)
+	var char_layer = _lobby.get("_char_layer") as Control
+	if char_layer == null or not char_layer.visible:
+		_fail("切換至 Tab.CHARACTER 後，_char_layer 應可見")
+		return
+
+	# 1. 斷言外框不是黑曜石，是陽光童話奶油底
+	var panel := char_layer.get_child(0) as PanelContainer
+	if panel == null:
+		_fail("角色分頁缺少主面板 PanelContainer")
+		return
+	var psb := panel.get_theme_stylebox("panel") as StyleBoxFlat
+	if psb == null:
+		_fail("角色分頁主面板缺少 StyleBoxFlat")
+	else:
+		if psb.bg_color.to_html(false).to_upper() != "FFFDF8":
+			_fail("角色分頁主面板底色應為奶油米白 #FFFDF8，實際為 #%s" % psb.bg_color.to_html(false).to_upper())
+		if psb.border_color.to_html(false).to_upper() != "1F1A3A":
+			_fail("角色分頁主面板描邊應為深藍紫 #1F1A3A")
+		if psb.border_width_bottom < 5:
+			_fail("角色分頁主面板果凍厚底應 >= 5px")
+
+	# 2. 斷言左側更衣按鈕存在且熱區 >= 50px
+	var btn_wardrobe = _lobby.find_child("BtnWardrobe", true, false) as Button
+	if btn_wardrobe == null:
+		_fail("角色分頁缺少 BtnWardrobe 按鈕")
+	else:
+		if btn_wardrobe.custom_minimum_size.y < 50.0:
+			_fail("BtnWardrobe 高度小於 50px: %f" % btn_wardrobe.custom_minimum_size.y)
+		var wsb := btn_wardrobe.get_theme_stylebox("normal") as StyleBoxFlat
+		if wsb and wsb.bg_color.to_html(false).to_upper() != "FFA010":
+			_fail("BtnWardrobe 底色應為暖橘 #FFA010")
+
+	# 3. 斷言三個武器槽果凍卡
+	var w_btns: Array[Button] = []
+	if _lobby.has_method("get_weapon_slot_buttons"):
+		w_btns = _lobby.get_weapon_slot_buttons()
+	if w_btns.size() != 3:
+		_fail("武器槽數量應為 3，實際為: %d" % w_btns.size())
+		return
+
+	# 驗證武器槽按鈕尺寸與選中態
+	_lobby.select_weapon_slot(0)
+	for i in range(3):
+		var b := w_btns[i]
+		if b.custom_minimum_size.y < 50.0:
+			_fail("武器槽 %d 熱區高度小於 50px: %f" % [i, b.custom_minimum_size.y])
+		var sb := b.get_theme_stylebox("normal") as StyleBoxFlat
+		if sb == null:
+			_fail("武器槽 %d 缺少 StyleBoxFlat" % i)
+			continue
+		if sb.border_width_bottom < 5:
+			_fail("武器槽 %d 果凍厚底應 >= 5px" % i)
+		if sb.corner_radius_top_left < 18:
+			_fail("武器槽 %d 圓角應 >= 18px" % i)
+		if i == 0:
+			if sb.bg_color.to_html(false).to_upper() != "FFA010":
+				_fail("選中的武器槽 0 底色應為暖橘 #FFA010，實際為 #%s" % sb.bg_color.to_html(false).to_upper())
+		else:
+			if sb.bg_color.to_html(false).to_upper() != "FFF8E7":
+				_fail("未選中的武器槽 %d 底色應為奶油卡 #FFF8E7，實際為 #%s" % [i, sb.bg_color.to_html(false).to_upper()])
+
+	# 測試切換武器槽選中態
+	_lobby.select_weapon_slot(1)
+	var sb1 := w_btns[1].get_theme_stylebox("normal") as StyleBoxFlat
+	var sb0 := w_btns[0].get_theme_stylebox("normal") as StyleBoxFlat
+	if sb1.bg_color.to_html(false).to_upper() != "FFA010" or sb0.bg_color.to_html(false).to_upper() != "FFF8E7":
+		_fail("切換至武器槽 1 後，選中態底色切換異常")
+	_lobby.select_weapon_slot(0)
+
+	# 4. 斷言 5 個獨立屬性小卡存在，且無舊版長篇 BBCode 文章
+	var rtls: Array[Node] = []
+	for node in char_layer.find_children("*", "RichTextLabel", true, false):
+		rtls.append(node)
+	if not rtls.is_empty():
+		_fail("角色分頁仍殘留 RichTextLabel 文章，應全部改為獨立屬性小卡")
+
+	var stat_cards: Array[Node] = []
+	for n in char_layer.find_children("*", "PanelContainer", true, false):
+		if n.has_meta("is_stat_card"):
+			var t_lbl = n.find_child("TitleLabel", true, false)
+			var v_lbl = n.find_child("ValLabel", true, false)
+			if t_lbl is Label and v_lbl is Label:
+				stat_cards.append(n)
+	print("  [角色分頁] 找到獨立屬性小卡數量: %d" % stat_cards.size())
+	if stat_cards.size() != 5:
+		_fail("獨立屬性小卡數量應為 5（生命／攻擊／防禦／暴擊／怒氣），實際為: %d" % stat_cards.size())
+	else:
+		var found_titles: Array[String] = []
+		for sc in stat_cards:
+			var tl := (sc.find_child("TitleLabel", true, false) as Label).text
+			found_titles.append(tl)
+		for req in ["生命", "攻擊", "防禦", "暴擊", "怒氣"]:
+			var matched := false
+			for ft in found_titles:
+				if ft.find(req) >= 0:
+					matched = true
+					break
+			if not matched:
+				_fail("屬性小卡缺少: %s" % req)
+
+	# 5. 檢查無禁制符號與 Emoji
+	for lbl in char_layer.find_children("*", "Label", true, false):
+		var lt: String = (lbl as Label).text
+		if _has_forbidden_symbols_or_emoji(lt):
+			_fail("角色分頁文字包含禁制符號或 Emoji: %s" % lt)
+
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+	print("  ok 角色分頁武器槽果凍卡、暖橘選中態、五獨立屬性小卡與無Emoji檢查通過")
+
+## ──────────────────────────────────────────
+## 9. 斷言冒險背包分頁：果凍格 24 格、觸控熱區 >= 48px、零死白 PPT、零 Emoji
+## ──────────────────────────────────────────
+func _test_bag_tab() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試背包分頁")
+		return
+
+	# 切換到冒險背包
+	_lobby._switch_tab(MobileLobby.Tab.BAG)
+	var bag_layer: Control = _lobby.get("_bag_layer")
+	if bag_layer == null:
+		_fail("找不到 _bag_layer 節點")
+		return
+	if not bag_layer.visible:
+		_fail("切換到 Tab.BAG 後 _bag_layer 應為 visible")
+
+	# 9.1 斷言格子數量為 24 格
+	var cells: Array = _lobby.get("_bag_cells")
+	if cells.size() != 24:
+		_fail("背包格子數量應為 24 格，實際取得: %d" % cells.size())
+		return
+	print("  ok 背包格子數量為 24 格")
+
+	# 9.2 斷言格子尺寸熱區 >= 48px 與樣式
+	for i in range(cells.size()):
+		var cell := cells[i] as PanelContainer
+		if cell == null:
+			_fail("背包第 %d 格不是 PanelContainer" % i)
+			continue
+		if cell.custom_minimum_size.x < 48.0 or cell.custom_minimum_size.y < 48.0:
+			_fail("背包第 %d 格觸控熱區未達標 (< 48px): %s" % [i, str(cell.custom_minimum_size)])
+
+		var sb := cell.get_theme_stylebox("panel") as StyleBoxFlat
+		if sb == null:
+			_fail("背包第 %d 格缺少 StyleBoxFlat" % i)
+			continue
+
+		# 斷言底色不是死白 #FFFFFF，而是奶油卡 #FFF8E7、天藍 #F0F7FF 或金黃 #FFF4D0
+		var hex := sb.bg_color.to_html(false).to_upper()
+		if hex == "FFFFFF":
+			_fail("背包第 %d 格出現死白 #FFFFFF（違反多巴胺亮色奶油卡規範）" % i)
+		if sb.corner_radius_top_left < 12:
+			_fail("背包第 %d 格圓角過小 (< 12px)" % i)
+		if sb.border_width_bottom < 3:
+			_fail("背包第 %d 格果凍厚底未達標 (< 3px)" % i)
+
+	print("  ok 背包 24 格熱區全部 >= 48px，果凍圓角厚底符合規範，零死白")
+
+	# 9.3 斷言操作按鈕高度 >= 50px、字級 >= 16px、果凍厚底
+	var use_btn: Button = _lobby.get("_bag_use_btn")
+	var hb_btn: Button = _lobby.get("_bag_hb_btn")
+	if use_btn == null or hb_btn == null:
+		_fail("背包缺少使用按鈕或快捷欄按鈕")
+		return
+	if use_btn.custom_minimum_size.y < 48.0:
+		_fail("使用按鈕高度未達標 (< 48px): %.1f" % use_btn.custom_minimum_size.y)
+	if hb_btn.custom_minimum_size.y < 48.0:
+		_fail("快捷欄按鈕高度未達標 (< 48px): %.1f" % hb_btn.custom_minimum_size.y)
+	var use_sb := use_btn.get_theme_stylebox("normal") as StyleBoxFlat
+	if use_sb == null or use_sb.border_width_bottom < 4:
+		_fail("使用按鈕缺少果凍厚底 (>= 4px)")
+	var hb_sb := hb_btn.get_theme_stylebox("normal") as StyleBoxFlat
+	if hb_sb == null or hb_sb.border_width_bottom < 4:
+		_fail("快捷欄按鈕缺少果凍厚底 (>= 4px)")
+	print("  ok 背包操作按鈕高度與立體厚底符合規範")
+
+	# 9.4 斷言背包分頁所有可見文字零系統 Emoji、無 12px 小字
+	var full_text := ""
+	for node in bag_layer.find_children("*", "Label", true, false):
+		if node is Label:
+			full_text += node.text
+			var fsz: int = node.get_theme_font_size("font_size")
+			# Count 和 Glyph 在空白時可能是空字串；非空時字級必須 >= 14 (Count 16, Glyph 24, Title 22, Sub 16)
+			if not node.text.is_empty() and fsz < 14:
+				_fail("背包文字標籤字級過小 (< 14px，有 PPT 小字感): %s (font_size=%d)" % [node.text, fsz])
+	for node in bag_layer.find_children("*", "Button", true, false):
+		if node is Button:
+			full_text += node.text
+	var detail_rt: RichTextLabel = _lobby.get("_bag_detail")
+	if detail_rt:
+		full_text += detail_rt.text
+
+	if _has_forbidden_symbols_or_emoji(full_text):
+		_fail("背包分頁含有禁止符號或系統 Emoji: %s" % full_text)
+	print("  ok 背包分頁零系統 Emoji、零小字檢查通過")
+
+	# 9.5 測試物品選取與明細連動
+	var inv_sys: Node = root.get_node_or_null("InventorySystem")
+	if inv_sys:
+		inv_sys.call("grant_starter")
+		_lobby._refresh_bag_tab()
+		var ids: Array = _lobby.get("_bag_ids")
+		if ids.size() > 0 and ids[0] != "":
+			var selected_id: String = _lobby.get("_selected_bag_item")
+			if selected_id == "":
+				_fail("背包有物品時應預設選取第一個")
+			else:
+				var first_sb := (cells[0] as PanelContainer).get_theme_stylebox("panel") as StyleBoxFlat
+				if first_sb.bg_color.to_html(false).to_upper() != "FFF4D0":
+					_fail("選中格底色應為柔和金黃 #FFF4D0，實際為 #%s" % first_sb.bg_color.to_html(false).to_upper())
+				print("  ok 背包選取格高亮光暈與資料連動正常: %s" % selected_id)
+
+	# 測試完切回發條新村
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
 
 
 func _finish() -> bool:
