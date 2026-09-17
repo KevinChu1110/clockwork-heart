@@ -57,7 +57,7 @@ const RACES_DATA: Dictionary = {
 		"name_zh": "白金兔",
 		"name_en": "Whitey",
 		"archetype": "劍士 (knight)",
-		"thumb": "res://assets/sprites/player/paperdoll/rabbit/proof_paperdoll_rabbit_composite.png",
+		"thumb": "res://assets/sprites/player/showcase/rabbit_idle_hd.png",
 		"desc": "發條之心的守護象徵，身形輕巧，搭載高響應晨曦核心與剛性長耳。",
 		"costumes": [
 			{"id": "costume_nutcracker_guard", "name_zh": "胡桃鉗近衛軍裝", "desc": "經典紅藍胡桃鉗金屬禮服與黃銅肩章"},
@@ -76,7 +76,7 @@ const RACES_DATA: Dictionary = {
 		"name_zh": "靈尾狐",
 		"name_en": "Fox",
 		"archetype": "法師 (mage)",
-		"thumb": "res://assets/sprites/player/paperdoll/fox/proof_paperdoll_fox_composite.png",
+		"thumb": "res://assets/sprites/player/showcase/fox_idle_hd.png",
 		"desc": "掌握星軌共鳴的靈動玩具法師，具備金屬雷達耳與分節發條尾。",
 		"costumes": [
 			{"id": "costume_astral_cape", "name_zh": "星紋見習占星斗篷", "desc": "深藍琺瑯釉面與星芒金屬扣"},
@@ -94,7 +94,7 @@ const RACES_DATA: Dictionary = {
 		"name_zh": "烈鬃獅",
 		"name_en": "Lion",
 		"archetype": "騎士 (knight)",
-		"thumb": "res://assets/sprites/player/paperdoll/lion/proof_paperdoll_lion_composite.png",
+		"thumb": "res://assets/sprites/player/showcase/lion_idle_hd.png",
 		"desc": "恪守騎士榮譽的黃銅機甲獅，配備金色板件鬃毛與折疊尾翼。",
 		"costumes": [
 			{"id": "costume_nutcracker_guard", "name_zh": "胡桃鉗近衛軍裝", "desc": "典禮侍衛金屬胸甲與禮服分件"},
@@ -112,7 +112,7 @@ const RACES_DATA: Dictionary = {
 		"name_zh": "鋼牙豕",
 		"name_en": "Boar",
 		"archetype": "戰士 (viking)",
-		"thumb": "res://assets/sprites/player/paperdoll/boar/proof_paperdoll_boar_composite.png",
+		"thumb": "res://assets/sprites/player/showcase/boar_idle_hd.png",
 		"desc": "熔爐鐵匠鋪的重型開拓者，金屬鉚釘獠牙與強韌彈簧衝擊核心。",
 		"costumes": [
 			{"id": "costume_viking_harness", "name_zh": "粗獷鍛爐護胸鐵束帶", "desc": "鉚釘加固厚重鍛鐵戰士胸甲"},
@@ -130,7 +130,7 @@ const RACES_DATA: Dictionary = {
 		"name_zh": "靈爪猴",
 		"name_en": "Macaque",
 		"archetype": "武術家 (monk)",
-		"thumb": "res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_composite.png",
+		"thumb": "res://assets/sprites/player/showcase/macaque_idle_hd.png",
 		"desc": "敏捷靈活的彈簧行者，同軸金屬耳與伸縮爪刃，機巧多變。",
 		"costumes": [
 			{"id": "costume_dawn_monk_tunic", "name_zh": "晨曦行者武道短褂", "desc": "輕量合金武道短褂分件"},
@@ -147,7 +147,7 @@ const RACES_DATA: Dictionary = {
 		"name_zh": "烈焰虎",
 		"name_en": "Tiger",
 		"archetype": "忍者 (ninja)",
-		"thumb": "res://assets/sprites/player/paperdoll/tiger/proof_paperdoll_tiger_composite.png",
+		"thumb": "res://assets/sprites/player/showcase/tiger_idle_hd.png",
 		"desc": "赤焰熔爐淬火工坊的迅捷玩具，雙短刃高頻暴擊，散熱尾管與熔火核心。",
 		"costumes": [
 			{"id": "costume_ember_tunic", "name_zh": "餘燼工匠淬火戰褂", "desc": "耐高溫輕量合金戰褂分件"},
@@ -165,7 +165,7 @@ const RACES_DATA: Dictionary = {
 		"name_zh": "玄軸熊",
 		"name_en": "Iron Bear",
 		"archetype": "戰士 (viking)",
-		"thumb": "res://assets/sprites/player/paperdoll/bear/proof_paperdoll_bear_composite.png",
+		"thumb": "res://assets/sprites/player/showcase/bear_idle_hd.png",
 		"desc": "玄軸工坊重型機甲，剛毅沉穩的發條巨熊，配置重裝外殼與高扭力擺線核心。",
 		"costumes": [
 			{"id": "costume_ironclad_overalls", "name_zh": "玄軸工坊重裝工作吊帶甲", "desc": "耐衝擊重型鍛造吊帶金屬胸甲"},
@@ -183,7 +183,7 @@ const RACES_DATA: Dictionary = {
 		"name_zh": "雲嵐鶴",
 		"name_en": "Cloud Crane",
 		"archetype": "遊俠 (ranger)",
-		"thumb": "res://assets/sprites/player/paperdoll/crane/proof_paperdoll_crane_composite.png",
+		"thumb": "res://assets/sprites/player/showcase/crane_idle_hd.png",
 		"desc": "雲嵐機關閣的靈巧玩具，修長纖細的流線身形，搭載輕量雙羽導流翼板與羽翼尾機關。",
 		"costumes": [
 			{"id": "costume_zephyr_robe", "name_zh": "凌雲羽衣輕鋼道袍", "desc": "輕合金陶瓷薄板與雙羽導流道袍"},
@@ -201,7 +201,7 @@ const RACES_DATA: Dictionary = {
 		"name_zh": "蒸氣企鵝",
 		"name_en": "Steam Penguin",
 		"archetype": "遊俠 (ranger)",
-		"thumb": "res://assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_composite.png",
+		"thumb": "res://assets/sprites/player/showcase/penguin_idle_hd.png",
 		"desc": "淵海發條港灣的憨厚重火手，耐高壓鍍鈦燕尾裝甲與防滑金屬腳蹼。",
 		"costumes": [
 			{"id": "costume_navigator_harness", "name_zh": "深海導航員大衣", "desc": "耐壓鍍鈦深藍大衣與黃銅導航儀扣"},
@@ -300,6 +300,14 @@ func _init_race_buttons() -> void:
 			if check_lbl is Label:
 				check_lbl.text = ""
 				check_lbl.visible = false
+			var thumb_rect = btn.get_node_or_null("Margin/VBox/Thumb")
+			if thumb_rect is TextureRect:
+				thumb_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+				var thumb_path := str(RACES_DATA[rid].get("thumb", ""))
+				if ResourceLoader.exists(thumb_path):
+					thumb_rect.texture = load(thumb_path) as Texture2D
+				else:
+					thumb_rect.texture = null
 			btn.pressed.connect(func(): select_race(rid))
 
 
