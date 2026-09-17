@@ -3,6 +3,7 @@ extends SceneTree
 ## godot --headless -s res://scripts/ui/test_mobile_lobby.gd
 
 var _ok := true
+const MobileLobby = preload("res://scripts/ui/mobile_lobby.gd")
 var _step := 0
 var _wait := 0
 var _lobby: Node = null
@@ -710,6 +711,34 @@ func _test_adventure_region_stages() -> void:
 		if _lobby.get("_selected_region") != r:
 			_fail("地區切換至 %d 失敗，_selected_region 不符" % r)
 
+		# 驗證地區膠囊果凍厚底與配色規格 (review.md 0-UI1, 0-QA11, ART_DAILY_CONSTITUTION.md §3)
+		var reg_btns: Array = _lobby.get("_region_buttons")
+		if reg_btns.size() != 4:
+			_fail("地區膠囊數量應為 4，實際: %d" % reg_btns.size())
+		else:
+			for bi in range(reg_btns.size()):
+				var btn := reg_btns[bi] as Button
+				if btn.custom_minimum_size.y < 48:
+					_fail("地區膠囊 %d 觸控高度應 >= 48px，實際: %f" % [bi, btn.custom_minimum_size.y])
+				var sb := btn.get_theme_stylebox("normal") as StyleBoxFlat
+				if sb == null:
+					_fail("地區膠囊 %d 缺少 normal StyleBoxFlat" % bi)
+					continue
+				if bi == r:
+					if sb.bg_color.to_html(false).to_upper() != "FFA010":
+						_fail("選中地區膠囊底色應為 #FFA010 (COLOR_ORANGE)，實際: #%s" % sb.bg_color.to_html(false))
+					if sb.border_width_bottom < 5 or sb.border_width_bottom > 6:
+						_fail("選中地區膠囊厚底應為 5~6px，實際: %d" % sb.border_width_bottom)
+					if sb.corner_radius_top_left < 18:
+						_fail("選中地區膠囊圓角應 >= 18px，實際: %d" % sb.corner_radius_top_left)
+				else:
+					if sb.bg_color.to_html(false).to_upper() != "FFF8E7":
+						_fail("未選地區膠囊底色應為 #FFF8E7 (COLOR_CARD_WARM)，實際: #%s" % sb.bg_color.to_html(false))
+					if sb.border_width_bottom < 3:
+						_fail("未選地區膠囊厚底應 >= 3px，實際: %d" % sb.border_width_bottom)
+					if sb.border_color.to_html(false).to_upper() != "1F1A3A":
+						_fail("未選地區膠囊描邊應為 #1F1A3A (COLOR_BORDER)，實際: #%s" % sb.border_color.to_html(false))
+
 		var stages_box = _lobby.get("_stages_container") as Node
 		if stages_box == null:
 			_fail("無法取得 _stages_container")
@@ -735,12 +764,23 @@ func _test_adventure_region_stages() -> void:
 
 		for i in range(cards.size()):
 			var card := cards[i]
+			var csb := card.get_theme_stylebox("panel") as StyleBoxFlat
+			if csb == null:
+				_fail("關卡卡片缺少 StyleBoxFlat panel")
+			else:
+				if csb.corner_radius_top_left < 18:
+					_fail("關卡卡片圓角應 >= 18px，實際: %d" % csb.corner_radius_top_left)
+				if csb.border_width_bottom < 5 or csb.border_width_bottom > 6:
+					_fail("關卡卡片厚底應為 5~6px，實際: %d" % csb.border_width_bottom)
+
 			var num_str := "%d-%d" % [r + 1, i + 1]
 			var found_num := false
 			var found_name := false
 			var labels: Array[Label] = []
 			_collect_labels(card, labels)
 			for lbl in labels:
+				if _has_forbidden_symbols_or_emoji(lbl.text):
+					_fail("關卡卡片文字含禁止符號: %s" % lbl.text)
 				if lbl.text == num_str:
 					found_num = true
 				if i == 0 and lbl.text == expected_first_names[r]:
