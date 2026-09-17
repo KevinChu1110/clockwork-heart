@@ -1621,6 +1621,16 @@
    "keys": [
     "狐族底盤切片拿掉"
    ]
+  },
+  {
+   "id": "creation-race-thumbs-hd",
+   "cat": "遊戲",
+   "title": "開局選族種族卡縮圖改讀高清立牌",
+   "status": "草稿",
+   "note": "現況仍指向 128 composite proof",
+   "keys": [
+    "開局選族種族卡縮"
+   ]
   }
  ]
 }
