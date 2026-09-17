@@ -54,7 +54,7 @@ static func get_variant_spec_name(id: String, fallback: String = "") -> String:
 const RACES_DATA: Dictionary = {
 	"rabbit": {
 		"id": "rabbit",
-		"name_zh": "兔 (小白)",
+		"name_zh": "白金兔",
 		"name_en": "Whitey",
 		"archetype": "劍士 (knight)",
 		"thumb": "res://assets/sprites/player/paperdoll/rabbit/proof_paperdoll_rabbit_composite.png",
@@ -73,7 +73,7 @@ const RACES_DATA: Dictionary = {
 	},
 	"fox": {
 		"id": "fox",
-		"name_zh": "狐",
+		"name_zh": "靈尾狐",
 		"name_en": "Fox",
 		"archetype": "法師 (mage)",
 		"thumb": "res://assets/sprites/player/paperdoll/fox/proof_paperdoll_fox_composite.png",
@@ -91,7 +91,7 @@ const RACES_DATA: Dictionary = {
 	},
 	"lion": {
 		"id": "lion",
-		"name_zh": "獅",
+		"name_zh": "烈鬃獅",
 		"name_en": "Lion",
 		"archetype": "騎士 (knight)",
 		"thumb": "res://assets/sprites/player/paperdoll/lion/proof_paperdoll_lion_composite.png",
@@ -109,7 +109,7 @@ const RACES_DATA: Dictionary = {
 	},
 	"boar": {
 		"id": "boar",
-		"name_zh": "野豬",
+		"name_zh": "鋼牙豕",
 		"name_en": "Boar",
 		"archetype": "戰士 (viking)",
 		"thumb": "res://assets/sprites/player/paperdoll/boar/proof_paperdoll_boar_composite.png",
@@ -127,7 +127,7 @@ const RACES_DATA: Dictionary = {
 	},
 	"macaque": {
 		"id": "macaque",
-		"name_zh": "猴",
+		"name_zh": "靈爪猴",
 		"name_en": "Macaque",
 		"archetype": "武術家 (monk)",
 		"thumb": "res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_composite.png",
@@ -144,7 +144,7 @@ const RACES_DATA: Dictionary = {
 	},
 	"tiger": {
 		"id": "tiger",
-		"name_zh": "虎",
+		"name_zh": "烈焰虎",
 		"name_en": "Tiger",
 		"archetype": "忍者 (ninja)",
 		"thumb": "res://assets/sprites/player/paperdoll/tiger/proof_paperdoll_tiger_composite.png",
@@ -162,7 +162,7 @@ const RACES_DATA: Dictionary = {
 	},
 	"bear": {
 		"id": "bear",
-		"name_zh": "熊",
+		"name_zh": "玄軸熊",
 		"name_en": "Iron Bear",
 		"archetype": "戰士 (viking)",
 		"thumb": "res://assets/sprites/player/paperdoll/bear/proof_paperdoll_bear_composite.png",
@@ -180,7 +180,7 @@ const RACES_DATA: Dictionary = {
 	},
 	"crane": {
 		"id": "crane",
-		"name_zh": "鶴",
+		"name_zh": "雲嵐鶴",
 		"name_en": "Cloud Crane",
 		"archetype": "遊俠 (ranger)",
 		"thumb": "res://assets/sprites/player/paperdoll/crane/proof_paperdoll_crane_composite.png",
@@ -198,7 +198,7 @@ const RACES_DATA: Dictionary = {
 	},
 	"penguin": {
 		"id": "penguin",
-		"name_zh": "企鵝",
+		"name_zh": "蒸氣企鵝",
 		"name_en": "Steam Penguin",
 		"archetype": "遊俠 (ranger)",
 		"thumb": "res://assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_composite.png",
@@ -277,7 +277,7 @@ func _init_race_buttons() -> void:
 		var btn_path := "TopRaceBar/ButtonsHBox/BtnRace_" + rid
 		var btn: Button = get_node_or_null(btn_path) as Button
 		if btn == null and race_buttons_container != null and template_btn != null:
-			# 動態補足新種族（熊、鶴、企鵝）按鈕
+			# 動態補足新種族按鈕
 			btn = template_btn.duplicate() as Button
 			btn.name = "BtnRace_" + rid
 			var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
@@ -293,6 +293,13 @@ func _init_race_buttons() -> void:
 			race_buttons_container.add_child(btn)
 		if btn != null:
 			_race_buttons[rid] = btn
+			var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
+			if name_lbl is Label:
+				name_lbl.text = str(RACES_DATA[rid].get("name_zh", rid))
+			var check_lbl = btn.get_node_or_null("Margin/VBox/CheckLabel")
+			if check_lbl is Label:
+				check_lbl.text = ""
+				check_lbl.visible = false
 			btn.pressed.connect(func(): select_race(rid))
 
 
@@ -334,15 +341,15 @@ func _init_filter_chips() -> void:
 	_race_filter_chips.clear()
 	var filter_defs: Array[Dictionary] = [
 		{"id": "all", "label": "全部"},
-		{"id": "rabbit", "label": "兔"},
-		{"id": "fox", "label": "狐"},
-		{"id": "lion", "label": "獅"},
-		{"id": "boar", "label": "豬"},
-		{"id": "macaque", "label": "猴"},
-		{"id": "tiger", "label": "虎"},
-		{"id": "bear", "label": "熊"},
-		{"id": "crane", "label": "鶴"},
-		{"id": "penguin", "label": "企鵝"}
+		{"id": "rabbit", "label": "白金兔"},
+		{"id": "fox", "label": "靈尾狐"},
+		{"id": "lion", "label": "烈鬃獅"},
+		{"id": "boar", "label": "鋼牙豕"},
+		{"id": "macaque", "label": "靈爪猴"},
+		{"id": "tiger", "label": "烈焰虎"},
+		{"id": "crane", "label": "雲嵐鶴"},
+		{"id": "bear", "label": "玄軸熊"},
+		{"id": "penguin", "label": "蒸氣企鵝"}
 	]
 
 	var font: Font = null
@@ -627,20 +634,89 @@ func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis
 
 
 ## 更新按鈕選取高亮樣式
+const COLOR_BORDER := Color("#1F1A3A")      ## 深藍紫描邊
+const COLOR_ORANGE := Color("#FFA010")      ## 暖橘選中果凍厚底
+const COLOR_CARD_WARM := Color("#FFF8E7")   ## 奶油未選底
+const COLOR_TEXT_DARK := Color("#1F1A3A")   ## 深色文字
+
 func _update_race_buttons_visual() -> void:
 	for rid in _race_buttons.keys():
 		var btn: Button = _race_buttons[rid]
 		var is_selected: bool = (rid == _current_race_id)
+
+		# 依 review.md 31d：零系統 Emoji、零字元當圖示
 		var check_lbl = btn.get_node_or_null("Margin/VBox/CheckLabel")
 		if check_lbl is Label:
-			check_lbl.text = "✓ 已選" if is_selected else ""
-			check_lbl.modulate = Color(0.98, 0.65, 0.1) if is_selected else Color(1, 1, 1, 0)
+			check_lbl.text = ""
+			check_lbl.visible = false
 
-		# 邊框高亮反饋
+		var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
+		if name_lbl is Label:
+			name_lbl.text = str(RACES_DATA[rid].get("name_zh", rid))
+			name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+
+		# 依日常憲法 §3 & review.md 0-QA11 / 0-UI1:
+		# 未選取＝奶油卡＋深藍紫描邊底框 ≥3px (設為 4px)
+		# 選中＝暖橘 #FFA010 果凍厚底 5~6px (設為 5px)
+		var sb := StyleBoxFlat.new()
+		sb.set_corner_radius_all(16)
+		sb.border_color = COLOR_BORDER
+		sb.set_border_width_all(2)
 		if is_selected:
-			btn.modulate = Color(1.0, 0.98, 0.9)
+			sb.bg_color = COLOR_ORANGE
+			sb.border_width_bottom = 5
+			sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+			sb.shadow_size = 6
+			sb.shadow_offset = Vector2(0, 3)
 		else:
-			btn.modulate = Color(0.9, 0.9, 0.94)
+			sb.bg_color = COLOR_CARD_WARM
+			sb.border_width_bottom = 4
+			sb.shadow_color = Color(0.12, 0.10, 0.23, 0.10)
+			sb.shadow_size = 4
+			sb.shadow_offset = Vector2(0, 2)
+
+		var sb_h := sb.duplicate() as StyleBoxFlat
+		sb_h.bg_color = Color("#FFB84D") if is_selected else Color("#FFF4D0")
+
+		var sb_p := sb.duplicate() as StyleBoxFlat
+		sb_p.border_width_bottom = max(1, sb.border_width_bottom - 2)
+
+		btn.add_theme_stylebox_override("normal", sb)
+		btn.add_theme_stylebox_override("hover", sb_h)
+		btn.add_theme_stylebox_override("pressed", sb_p)
+		btn.add_theme_stylebox_override("focus", sb)
+
+		btn.modulate = Color.WHITE
+
+		if is_selected:
+			_scroll_to_race_btn(btn)
+
+
+func _scroll_to_race_btn(btn: Button) -> void:
+	call_deferred("_do_scroll_to_race_btn", btn)
+
+
+func _do_scroll_to_race_btn(btn: Button) -> void:
+	var scroll := get_node_or_null("TopRaceBar") as ScrollContainer
+	if not scroll or not is_instance_valid(scroll) or not is_instance_valid(btn):
+		return
+	var hbar := scroll.get_h_scroll_bar()
+	var view_w: float = scroll.size.x
+	if view_w <= 0.0:
+		return
+	var btn_left: float = btn.position.x
+	var btn_right: float = btn.position.x + btn.size.x
+	var pad: float = 24.0
+	if btn_right + pad > scroll.scroll_horizontal + view_w:
+		var target: int = int(ceil(btn_right + pad - view_w))
+		if hbar:
+			target = clampi(target, 0, int(hbar.max_value))
+		scroll.scroll_horizontal = target
+	elif btn_left - pad < scroll.scroll_horizontal:
+		var target: int = int(floor(max(0.0, btn_left - pad)))
+		if hbar:
+			target = clampi(target, 0, int(hbar.max_value))
+		scroll.scroll_horizontal = target
 
 
 ## 取得當前種族
