@@ -1415,7 +1415,7 @@ func _build_adventure_tab() -> void:
 	for i in range(regions.size()):
 		var rb := Button.new()
 		rb.text = regions[i]
-		rb.custom_minimum_size = Vector2(175, 50)
+		rb.custom_minimum_size = Vector2(230, 52)
 		rb.add_theme_font_size_override("font_size", 16)
 		_style_region_button(rb, i == _selected_region)
 		var r_idx := i
@@ -1433,16 +1433,16 @@ func _build_adventure_tab() -> void:
 func _style_region_button(btn: Button, is_selected: bool) -> void:
 	var sb := StyleBoxFlat.new()
 	if is_selected:
-		sb.bg_color = COLOR_GOLD
+		sb.bg_color = COLOR_ORANGE
 		sb.border_color = COLOR_BORDER
 		sb.set_border_width_all(2)
 		sb.border_width_bottom = 5
 		sb.set_corner_radius_all(20)
 		sb.content_margin_top = 8
 		sb.content_margin_bottom = 8
-		sb.content_margin_left = 14
-		sb.content_margin_right = 14
-		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+		sb.content_margin_left = 16
+		sb.content_margin_right = 16
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.22)
 		sb.shadow_size = 6
 		sb.shadow_offset = Vector2(0, 3)
 		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -1452,24 +1452,24 @@ func _style_region_button(btn: Button, is_selected: bool) -> void:
 		sb.bg_color = COLOR_CARD_WARM
 		sb.border_color = COLOR_BORDER
 		sb.set_border_width_all(2)
-		sb.border_width_bottom = 5
+		sb.border_width_bottom = 4
 		sb.set_corner_radius_all(20)
 		sb.content_margin_top = 8
 		sb.content_margin_bottom = 8
-		sb.content_margin_left = 14
-		sb.content_margin_right = 14
+		sb.content_margin_left = 16
+		sb.content_margin_right = 16
 		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
 		sb.shadow_size = 4
 		sb.shadow_offset = Vector2(0, 2)
 		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-		btn.add_theme_color_override("font_hover_color", COLOR_GOLD_DARK)
+		btn.add_theme_color_override("font_hover_color", COLOR_ORANGE)
 		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 
 	var sb_h := sb.duplicate() as StyleBoxFlat
 	if not is_selected:
 		sb_h.bg_color = COLOR_CARD_GOLD
 	else:
-		sb_h.bg_color = Color("#FFE066")
+		sb_h.bg_color = Color("#FFB84D")
 
 	var sb_p := sb.duplicate() as StyleBoxFlat
 	sb_p.border_width_bottom = 2
@@ -1524,8 +1524,9 @@ func _refresh_region_stages() -> void:
 
 	var grid := GridContainer.new()
 	grid.columns = 2
+	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 20)
-	grid.add_theme_constant_override("v_separation", 16)
+	grid.add_theme_constant_override("v_separation", 18)
 	_stages_container.add_child(grid)
 
 	for s in stages_data:
@@ -1534,64 +1535,108 @@ func _refresh_region_stages() -> void:
 
 func _build_stage_card(s: Dictionary) -> PanelContainer:
 	var c := PanelContainer.new()
-	c.custom_minimum_size = Vector2(430, 105)
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c.custom_minimum_size = Vector2(520, 145)
 	var csb := StyleBoxFlat.new()
 	var is_boss: bool = str(s["type"]).find("首領") >= 0
-	csb.bg_color = COLOR_CARD_WARM
-	csb.border_color = CORAL_RUST if is_boss else COLOR_BORDER
+	csb.bg_color = Color("#FFF5F0") if is_boss else COLOR_CARD_WARM
+	csb.border_color = Color("#D04838") if is_boss else COLOR_BORDER
 	csb.set_border_width_all(2)
-	csb.border_width_bottom = 4
-	csb.set_corner_radius_all(10)
-	csb.content_margin_left = 16
-	csb.content_margin_right = 16
-	csb.content_margin_top = 12
-	csb.content_margin_bottom = 12
-	csb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
-	csb.shadow_size = 6
+	csb.border_width_bottom = 6 if is_boss else 5
+	csb.set_corner_radius_all(18)
+	csb.content_margin_left = 18
+	csb.content_margin_right = 18
+	csb.content_margin_top = 16
+	csb.content_margin_bottom = 16
+	csb.shadow_color = Color(0.63, 0.22, 0.16, 0.18) if is_boss else Color(0.12, 0.10, 0.23, 0.14)
+	csb.shadow_size = 8
+	csb.shadow_offset = Vector2(0, 3)
 	c.add_theme_stylebox_override("panel", csb)
 
 	var h := HBoxContainer.new()
 	h.alignment = BoxContainer.ALIGNMENT_CENTER
-	h.add_theme_constant_override("separation", 14)
+	h.add_theme_constant_override("separation", 16)
 	c.add_child(h)
 
 	var v := VBoxContainer.new()
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	v.add_theme_constant_override("separation", 6)
+	v.add_theme_constant_override("separation", 8)
 	h.add_child(v)
 
 	var t_row := HBoxContainer.new()
-	t_row.add_theme_constant_override("separation", 8)
+	t_row.add_theme_constant_override("separation", 10)
+	t_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+
+	var num_badge := PanelContainer.new()
+	var nsb := StyleBoxFlat.new()
+	nsb.bg_color = COLOR_ORANGE if is_boss else COLOR_GOLD
+	nsb.border_color = COLOR_BORDER
+	nsb.set_border_width_all(2)
+	nsb.border_width_bottom = 3
+	nsb.set_corner_radius_all(10)
+	nsb.content_margin_left = 8
+	nsb.content_margin_right = 8
+	nsb.content_margin_top = 2
+	nsb.content_margin_bottom = 2
+	num_badge.add_theme_stylebox_override("panel", nsb)
+
 	var num_l := Label.new()
 	num_l.text = str(s["num"])
-	num_l.add_theme_font_size_override("font_size", 18)
-	num_l.add_theme_color_override("font_color", COLOR_GOLD_DARK)
-	t_row.add_child(num_l)
+	num_l.add_theme_font_size_override("font_size", 15)
+	num_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	num_badge.add_child(num_l)
+	t_row.add_child(num_badge)
 
 	var name_l := Label.new()
 	name_l.text = str(s["name"])
-	name_l.add_theme_font_size_override("font_size", 16)
+	name_l.add_theme_font_size_override("font_size", 17)
 	name_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	name_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	t_row.add_child(name_l)
 	v.add_child(t_row)
 
 	var inf_row := HBoxContainer.new()
-	inf_row.add_theme_constant_override("separation", 14)
+	inf_row.add_theme_constant_override("separation", 12)
+
+	var typ_badge := PanelContainer.new()
+	var tsb := StyleBoxFlat.new()
+	tsb.bg_color = Color("#FFE4D6") if is_boss else Color("#EDE7D8")
+	tsb.border_color = Color("#D04838") if is_boss else Color(0.12, 0.10, 0.23, 0.35)
+	tsb.set_border_width_all(1)
+	tsb.border_width_bottom = 2
+	tsb.set_corner_radius_all(8)
+	tsb.content_margin_left = 8
+	tsb.content_margin_right = 8
+	tsb.content_margin_top = 2
+	tsb.content_margin_bottom = 2
+	typ_badge.add_theme_stylebox_override("panel", tsb)
+
 	var typ_l := Label.new()
 	typ_l.text = str(s["type"])
-	typ_l.add_theme_font_size_override("font_size", 13)
-	typ_l.add_theme_color_override("font_color", CORAL_RUST if is_boss else COLOR_TEXT_DARK)
-	inf_row.add_child(typ_l)
+	typ_l.add_theme_font_size_override("font_size", 12)
+	typ_l.add_theme_color_override("font_color", Color("#A02818") if is_boss else COLOR_TEXT_DARK)
+	typ_badge.add_child(typ_l)
+	inf_row.add_child(typ_badge)
 
 	var pwr_l := Label.new()
 	pwr_l.text = "推薦戰力: %d" % int(s["power"])
 	pwr_l.add_theme_font_size_override("font_size", 13)
-	pwr_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	pwr_l.add_theme_color_override("font_color", COLOR_GOLD_DARK if not is_boss else Color("#A02818"))
+	pwr_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	inf_row.add_child(pwr_l)
+
+	var cost_l := Label.new()
+	cost_l.text = "消耗能量: %d" % int(s["cost"])
+	cost_l.add_theme_font_size_override("font_size", 13)
+	cost_l.add_theme_color_override("font_color", Color("#5A5275"))
+	cost_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	inf_row.add_child(cost_l)
+
 	v.add_child(inf_row)
 
 	var btn_battle := Button.new()
-	btn_battle.custom_minimum_size = Vector2(145, 50)
+	btn_battle.custom_minimum_size = Vector2(145, 52)
+	btn_battle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	btn_battle.text = "挑戰首領" if is_boss else "出征"
 	btn_battle.add_theme_font_size_override("font_size", 16)
 	var bsb := StyleBoxFlat.new()
