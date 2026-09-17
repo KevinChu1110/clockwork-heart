@@ -1271,6 +1271,16 @@
    "keys": [
     "📣 第十五週 F"
    ]
+  },
+  {
+   "id": "ui-hud-jelly",
+   "cat": "遊戲",
+   "title": "大廳 HUD 圖示化＋果凍按鈕質感修正",
+   "status": "草稿",
+   "note": "回應 Kevin 多次 UI 反饋：頂部資源膠囊/殿堂卡片仍是純文字白底黑框無圖示，開兩張卡(t_abf4ee15 sideart 產圖示, t_06fb9ba8 sideworker 整合)修正",
+   "keys": [
+    "大廳 HUD 圖"
+   ]
   }
  ]
 }
