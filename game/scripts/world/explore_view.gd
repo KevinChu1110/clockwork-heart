@@ -645,7 +645,7 @@ func _build_chrome() -> void:
 	_player.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_player.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_player.texture = SpriteDB.player_equipped_idle()
-	_player.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_player.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR if (_player.texture and _player.texture.get_width() >= 256) else CanvasItem.TEXTURE_FILTER_NEAREST
 	var player_mat := ShaderMaterial.new()
 	player_mat.shader = OutlineShader
 	_player.material = player_mat
@@ -2125,6 +2125,10 @@ func _update_player_visual() -> void:
 		var idle := SpriteDB.player_equipped_idle()
 		if idle:
 			_player.texture = idle
+	if _player.texture and _player.texture.get_width() >= 256:
+		_player.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	else:
+		_player.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 	## 受擊短暫偏紅，其餘維持防具染色
 	if _action_pose == "hit":
 		_player.modulate = SpriteDB.player_armor_modulate() * Color(1.15, 0.75, 0.75, 1)

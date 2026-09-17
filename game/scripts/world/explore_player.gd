@@ -115,13 +115,27 @@ func _apply_shadow_profile() -> void:
 	shadow.visible = gp == null or gp.shadows_enabled()
 
 
+func _get_body_base_scale() -> Vector2:
+	if body == null or body.texture == null:
+		return Vector2.ONE
+	var tw := float(body.texture.get_width())
+	if tw > 128.0:
+		var s := 128.0 / tw
+		return Vector2(s, s)
+	return Vector2.ONE
+
+
 func _set_body_tex(tex: Texture2D) -> void:
 	if tex == null or body == null:
 		return
 	if body.texture != tex:
 		body.texture = tex
+	var tw := float(tex.get_width())
+	var th := float(tex.get_height())
+	var s := 128.0 / tw if tw > 128.0 else 1.0
+	body.scale = Vector2(s, s)
 	## 錨點固定在腳底：每格同高，offset 只跟貼圖高度走，不會上下抖
-	body.offset = Vector2(0, -tex.get_height() * 0.5 + 8.0)
+	body.offset = Vector2(0, -th * 0.5 + (8.0 / s))
 
 
 func _update_visual() -> void:
@@ -228,17 +242,18 @@ func play_action_pose(pose: String, duration: float = 0.4) -> void:
 		return
 	if _action_tween and _action_tween.is_valid():
 		_action_tween.kill()
+	var base_s := _get_body_base_scale()
 	match pose:
 		"attack", "skill":
-			body.scale = Vector2(1.1, 0.94)
+			body.scale = base_s * Vector2(1.1, 0.94)
 		"hit":
-			body.scale = Vector2(0.92, 1.06)
+			body.scale = base_s * Vector2(0.92, 1.06)
 		"telegraph":
-			body.scale = Vector2(0.97, 1.05)
+			body.scale = base_s * Vector2(0.97, 1.05)
 		_:
-			body.scale = Vector2.ONE
+			body.scale = base_s
 	_action_tween = create_tween()
-	_action_tween.tween_property(body, "scale", Vector2.ONE, 0.14)
+	_action_tween.tween_property(body, "scale", base_s, 0.14)
 	_update_visual()
 
 
@@ -253,15 +268,16 @@ func _start_breathe_tween() -> void:
 		return
 	if _breathe_tween and _breathe_tween.is_valid():
 		_breathe_tween.kill()
+	var base_s := _get_body_base_scale()
 	if body:
-		body.scale = Vector2.ONE
+		body.scale = base_s
 	if shadow:
 		shadow.scale = Vector2.ONE
 	_breathe_tween = create_tween().set_loops()
-	_breathe_tween.tween_property(body, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	_breathe_tween.tween_property(body, "scale", base_s * Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
 	if shadow:
 		_breathe_tween.parallel().tween_property(shadow, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
-	_breathe_tween.tween_property(body, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+	_breathe_tween.tween_property(body, "scale", base_s * Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
 	if shadow:
 		_breathe_tween.parallel().tween_property(shadow, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
 
@@ -271,6 +287,6 @@ func _stop_breathe_tween() -> void:
 		_breathe_tween.kill()
 		_breathe_tween = null
 	if body:
-		body.scale = Vector2.ONE
+		body.scale = _get_body_base_scale()
 	if shadow:
 		shadow.scale = Vector2.ONE
