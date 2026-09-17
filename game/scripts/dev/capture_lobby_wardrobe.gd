@@ -30,9 +30,9 @@ func _initialize() -> void:
 		gs.paperdoll_slots = {
 			"race": "rabbit",
 			"costume": "costume_nutcracker_guard",
-			"chassis": "paint_midnight_navy",
+			"chassis": "paint_ivory_stock",
 			"costume_id": "costume_nutcracker_guard",
-			"paint_id": "paint_midnight_navy"
+			"paint_id": "paint_ivory_stock"
 		}
 
 	_lobby = MobileLobby.new()

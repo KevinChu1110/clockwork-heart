@@ -205,7 +205,7 @@ func _get_hero_portrait(race: String) -> Texture2D:
 	var r := race.to_lower().strip_edges()
 	var p_path := ""
 	match r:
-		"rabbit": p_path = "res://assets/sprites/portraits/rabbit.png"
+		"rabbit": p_path = "res://assets/sprites/portraits/rabbit_hd.png"
 		"fox": p_path = "res://assets/sprites/portraits/fox_mage.png"
 		"lion": p_path = "res://assets/sprites/portraits/lion_knight.png"
 		"boar": p_path = "res://assets/sprites/portraits/boar_warrior.png"
@@ -244,22 +244,24 @@ func _get_hero_equipped_idle_texture() -> Texture2D:
 
 
 func _hero_display_tex() -> Texture2D:
-	## 大廳／角色分頁：優先使用 512 高清紙娃娃即時合成，讓換裝與外觀完美即時呈現
+	## 裝備蓋在素體上（紙娃娃）。高清全身立繪最多當各族一張看板，不當每套衣服。
 	var race := _current_race()
 	var slots := _current_paperdoll_slots()
 	if not slots.is_empty():
 		var comp_512: Texture2D = PaperdollRenderer.build_composite_texture_512(race, slots)
 		if comp_512 != null:
 			return comp_512
-	var p256 := "res://assets/sprites/player/paperdoll/%s/showcase_idle_256.png" % race
-	if ResourceLoader.exists(p256):
-		return load(p256) as Texture2D
-	var p := "res://assets/sprites/player/showcase/%s_idle_hd.png" % race
-	if ResourceLoader.exists(p):
-		return load(p) as Texture2D
-	var p512 := "res://assets/sprites/player/paperdoll/%s/proof_paperdoll_%s_composite_512.png" % [race, race]
-	if ResourceLoader.exists(p512):
-		return load(p512) as Texture2D
+		var comp: Texture2D = PaperdollRenderer.get_race_composite_texture(race, slots)
+		if comp != null:
+			return comp
+	var costume := str(slots.get("costume", slots.get("costume_id", ""))).strip_edges()
+	if not costume.is_empty():
+		var hd_cut := "res://assets/sprites/player/showcase/%s_%s_hd_cut.png" % [race, costume]
+		if ResourceLoader.exists(hd_cut):
+			return load(hd_cut) as Texture2D
+	var idle := "res://assets/sprites/player/showcase/%s_idle_hd.png" % race
+	if ResourceLoader.exists(idle):
+		return load(idle) as Texture2D
 	return _tex_idle
 
 

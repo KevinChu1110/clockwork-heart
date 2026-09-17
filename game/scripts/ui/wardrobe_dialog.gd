@@ -281,13 +281,13 @@ func _build_ui() -> void:
 	stage_panel.add_child(stage_vbox)
 
 	_preview_rect = TextureRect.new()
-	_preview_rect.custom_minimum_size = Vector2(210, 210)
+	_preview_rect.custom_minimum_size = Vector2(220, 280)
 	_preview_rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_preview_rect.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_preview_rect.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_preview_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_preview_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_preview_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	_preview_rect.pivot_offset = Vector2(105, 195)
+	_preview_rect.pivot_offset = Vector2(110, 250)
 	stage_vbox.add_child(_preview_rect)
 
 	var badge_box := VBoxContainer.new()
@@ -381,7 +381,7 @@ func _create_race_filter_bar() -> Control:
 	container.add_child(header_hbox)
 
 	var label := Label.new()
-	label.text = "種族篩選"
+	label.text = "外裝庫"
 	label.add_theme_font_size_override("font_size", 14)
 	label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	label.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -391,7 +391,7 @@ func _create_race_filter_bar() -> Control:
 	header_hbox.add_child(label)
 
 	var tip := Label.new()
-	tip.text = "點選切片篩選各族可用部件"
+	tip.text = "點「全部」可跨族穿：騎士／法師／遊俠／格鬥／維京"
 	tip.add_theme_font_size_override("font_size", 14)
 	tip.add_theme_color_override("font_color", Color("#5E5475"))
 	if _cached_font:
@@ -667,7 +667,7 @@ func _rebuild_cards() -> void:
 func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Button:
 	var btn := Button.new()
 	btn.name = "Card_%s_%d" % [slot_type, idx]
-	btn.custom_minimum_size = Vector2(96, 126)
+	btn.custom_minimum_size = Vector2(110, 148)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 
@@ -691,7 +691,7 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 
 	# 部件縮圖
 	var thumb := TextureRect.new()
-	thumb.custom_minimum_size = Vector2(36, 36)
+	thumb.custom_minimum_size = Vector2(72, 72)
 	thumb.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	thumb.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	thumb.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -736,11 +736,8 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	badge_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(badge_lbl)
 
-	# 點擊即時套用預覽與選取狀態
+	# 點擊即時套用預覽：外裝／塗裝跨種族穿，不改動物本體
 	btn.pressed.connect(func():
-		var r_id: String = str(item_data.get("race_id", current_race))
-		if r_id != current_race:
-			current_race = r_id
 		if slot_type == "costume":
 			costume_index = idx
 			selected_costume_id = item_id
@@ -758,37 +755,40 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 ## 取得部件對應之縮圖貼圖
 func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String = "") -> Texture2D:
 	var r := item_race if not item_race.is_empty() else current_race
+	var thumb_id := item_id
+	if slot_type == "costume" and item_id == "none":
+		thumb_id = "none"
+	var dedicated := "res://assets/sprites/player/showcase/thumbs/thumb_%s_%s.png" % [slot_type, thumb_id]
+	if ResourceLoader.exists(dedicated):
+		return load(dedicated) as Texture2D
 	if slot_type == "costume":
 		if item_id == "none":
+			var bare_512 := "res://assets/sprites/player/paperdoll/%s/composite_preview_bare_512.png" % r
+			if ResourceLoader.exists(bare_512):
+				return load(bare_512) as Texture2D
 			var bare_path := "res://assets/sprites/player/paperdoll/%s/composite_preview_bare.png" % r
 			if ResourceLoader.exists(bare_path):
 				return load(bare_path) as Texture2D
-			var stock_chassis := "res://assets/sprites/player/paperdoll/%s/chassis/paint_ivory_stock.png" % r
-			if ResourceLoader.exists(stock_chassis):
-				return load(stock_chassis) as Texture2D
-			var composite_path := "res://assets/sprites/player/paperdoll/%s/proof_paperdoll_%s_composite.png" % [r, r]
-			if ResourceLoader.exists(composite_path):
-				return load(composite_path) as Texture2D
 		else:
+			var hd_cut := "res://assets/sprites/player/showcase/%s_%s_hd_cut.png" % [r, item_id]
+			if ResourceLoader.exists(hd_cut):
+				return load(hd_cut) as Texture2D
+			var path512 := "res://assets/sprites/player/paperdoll/%s/costume/%s_512.png" % [r, item_id]
+			if ResourceLoader.exists(path512):
+				return load(path512) as Texture2D
 			var path := "res://assets/sprites/player/paperdoll/%s/costume/%s.png" % [r, item_id]
 			if ResourceLoader.exists(path):
 				return load(path) as Texture2D
-			if r == "penguin" and (item_id == "costume_steam_navigator" or item_id == "costume_navigator_harness"):
-				var alt_costume := "res://assets/sprites/player/paperdoll/penguin/costume/costume_navigator_harness.png"
-				if ResourceLoader.exists(alt_costume):
-					return load(alt_costume) as Texture2D
 	elif slot_type == "chassis":
+		var ch_thumb := "res://assets/sprites/player/showcase/thumbs/thumb_%s.png" % item_id
+		if ResourceLoader.exists(ch_thumb):
+			return load(ch_thumb) as Texture2D
+		var path512 := "res://assets/sprites/player/paperdoll/%s/chassis/%s_512.png" % [r, item_id]
+		if ResourceLoader.exists(path512):
+			return load(path512) as Texture2D
 		var path := "res://assets/sprites/player/paperdoll/%s/chassis/%s.png" % [r, item_id]
 		if ResourceLoader.exists(path):
 			return load(path) as Texture2D
-		if item_id == "paint_ivory_stock":
-			var fallback_chassis := {
-				"bear": "res://assets/sprites/player/paperdoll/bear/chassis/paint_bear_amber.png",
-				"crane": "res://assets/sprites/player/paperdoll/crane/chassis/paint_crane_porcelain.png",
-				"penguin": "res://assets/sprites/player/paperdoll/penguin/chassis/paint_penguin_navy.png"
-			}
-			if fallback_chassis.has(r) and ResourceLoader.exists(fallback_chassis[r]):
-				return load(fallback_chassis[r]) as Texture2D
 	return null
 
 
@@ -800,7 +800,7 @@ func _update_card_selection_states() -> void:
 		var item_race: String = str(item.get("race_id", current_race))
 		var is_selected := false
 		if not selected_costume_id.is_empty():
-			is_selected = (item_id == selected_costume_id and item_race == current_race)
+			is_selected = (item_id == selected_costume_id)
 		else:
 			is_selected = (i == costume_index)
 		_apply_card_style(_costume_cards[i], is_selected)
@@ -811,7 +811,7 @@ func _update_card_selection_states() -> void:
 		var item_race: String = str(item.get("race_id", current_race))
 		var is_selected := false
 		if not selected_chassis_id.is_empty():
-			is_selected = (item_id == selected_chassis_id and item_race == current_race)
+			is_selected = (item_id == selected_chassis_id)
 		else:
 			is_selected = (i == chassis_index)
 		_apply_card_style(_chassis_cards[i], is_selected)
@@ -948,16 +948,21 @@ func _update_preview() -> void:
 	if _preview_rect == null:
 		return
 	var sel := get_current_selections()
+	var tex_512: Texture2D = PaperdollRenderer.get_race_composite_texture_512(current_race, sel)
+	if tex_512 != null:
+		_preview_rect.texture = tex_512
+		_preview_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		return
 	var img := PaperdollRenderer.build_composite_image(current_race, sel)
 	if img != null and not img.is_empty():
-		# 高解析度超取樣 (256x256 LANCZOS)：對齊 UI 顯示密度，徹底消除 128x128 放大模糊與鋸齒
-		var hires := img.duplicate()
-		hires.resize(256, 256, Image.INTERPOLATE_LANCZOS)
-		_preview_rect.texture = ImageTexture.create_from_image(hires)
-	else:
-		var tex := PaperdollRenderer.get_race_composite_texture(current_race, sel)
-		if tex != null:
-			_preview_rect.texture = tex
+		_preview_rect.texture = ImageTexture.create_from_image(img)
+		_preview_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		return
+	var costume := str(sel.get("costume", sel.get("costume_id", "")))
+	var hd_cut := "res://assets/sprites/player/showcase/%s_%s_hd_cut.png" % [current_race, costume]
+	if ResourceLoader.exists(hd_cut):
+		_preview_rect.texture = load(hd_cut) as Texture2D
+		_preview_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 
 
 ## 確認換裝並寫入 GameState 與存檔

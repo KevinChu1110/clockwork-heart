@@ -66,6 +66,17 @@ static func player_equipped_idle(race_override: String = "", slots_override: Dic
 		if cached is Texture2D and cached != null:
 			return cached as Texture2D
 
+	# 若尚未自訂服飾紙娃娃槽位，優先使用高解析 256px 大廳展示立繪
+	var has_custom_costume := (slots.has("costume") and str(slots["costume"]) != "") or (slots.has("costume_id") and str(slots["costume_id"]) != "")
+	var has_custom_chassis := (slots.has("chassis") and str(slots["chassis"]) != "") or (slots.has("paint_id") and str(slots["paint_id"]) != "")
+	if not has_custom_costume and not has_custom_chassis:
+		var showcase_p := "%s/player/paperdoll/%s/showcase_idle_256.png" % [ROOT, r]
+		if ResourceLoader.exists(showcase_p):
+			var sc_tex := tex(showcase_p)
+			if sc_tex != null:
+				_equipped_idle_cache[cache_key] = sc_tex
+				return sc_tex
+
 	if not slots.is_empty():
 		if not slots.has("costume") and slots.has("costume_id"):
 			slots["costume"] = slots["costume_id"]
@@ -512,6 +523,9 @@ static func player_pose(pose: String, race_override: String = "") -> Texture2D:
 			if race_idle:
 				return race_idle
 		else:
+			var rab_showcase := tex("%s/player/paperdoll/rabbit/showcase_idle_256.png" % ROOT)
+			if rab_showcase:
+				return rab_showcase
 			var rab_idle := tex("%s/player/poses/idle.png" % ROOT)
 			if rab_idle:
 				return rab_idle
