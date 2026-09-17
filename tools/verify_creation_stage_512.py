@@ -49,7 +49,12 @@ def main():
         "rabbit": "proofs/creation_stage_512/proof_creation_stage_rabbit_512.png",
         "fox": "proofs/creation_stage_512/proof_creation_stage_fox_512.png",
         "crane": "proofs/creation_stage_512/proof_creation_stage_crane_512.png",
-        "lion": "proofs/creation_stage_512/proof_creation_stage_lion_512.png"
+        "lion": "proofs/creation_stage_512/proof_creation_stage_lion_512.png",
+        "boar": "proofs/creation_stage_512/proof_creation_stage_boar_512.png",
+        "macaque": "proofs/creation_stage_512/proof_creation_stage_macaque_512.png",
+        "tiger": "proofs/creation_stage_512/proof_creation_stage_tiger_512.png",
+        "bear": "proofs/creation_stage_512/proof_creation_stage_bear_512.png",
+        "penguin": "proofs/creation_stage_512/proof_creation_stage_penguin_512.png",
     }
 
     print("==================================================================")

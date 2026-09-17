@@ -109,8 +109,8 @@ func _run_captures() -> void:
 	assert(crane_tex.get_width() == 512 and crane_tex.get_height() == 512, "鶴族貼圖尺寸非 512x512")
 	await _capture_frame("proof_creation_stage_crane_512.png")
 
-	# ── 4. 獅族 (lion) 512 中央舞台 (備援非兔族驗證：胡桃鉗軍裝) ──
-	print("\n>>> [4/4 獅族] 選取烈鬃獅 (costume_nutcracker_guard + paint_brass_gold)...")
+	# ── 4. 獅族 (lion) 512 中央舞台 ──
+	print("\n>>> [4/9 獅族] 選取烈鬃獅 (costume_nutcracker_guard + paint_brass_gold)...")
 	_demo.call("select_race", "lion")
 	_demo.call("reset_to_default")
 	await _wait_frames(12)
@@ -126,6 +126,96 @@ func _run_captures() -> void:
 	assert(is_lion_512, "獅族舞台未正確走 512 合成")
 	assert(lion_tex.get_width() == 512 and lion_tex.get_height() == 512, "獅族貼圖尺寸非 512x512")
 	await _capture_frame("proof_creation_stage_lion_512.png")
+
+	# ── 5. 鋼牙豕 (boar) 512 中央舞台 ──
+	print("\n>>> [5/9 鋼牙豕] 選取鋼牙豕 (costume_viking_harness + paint_ivory_stock)...")
+	_demo.call("select_race", "boar")
+	_demo.call("reset_to_default")
+	await _wait_frames(12)
+
+	var is_boar_512: bool = bool(_demo.call("is_stage_512"))
+	var boar_tex: Texture2D = _demo.call("get_stage_texture")
+	var boar_sprite: Sprite2D = _demo.call("get_stage_sprite_512")
+	print("  [鋼牙豕舞台] is_stage_512: %s, 貼圖尺寸: %s, 濾鏡: %d" % [
+		str(is_boar_512),
+		str(boar_tex.get_size()) if boar_tex else "null",
+		boar_sprite.texture_filter if boar_sprite else -1
+	])
+	assert(is_boar_512, "鋼牙豕舞台未正確走 512 合成")
+	assert(boar_tex.get_width() == 512 and boar_tex.get_height() == 512, "鋼牙豕貼圖尺寸非 512x512")
+	await _capture_frame("proof_creation_stage_boar_512.png")
+
+	# ── 6. 靈爪猴 (macaque) 512 中央舞台 ──
+	print("\n>>> [6/9 靈爪猴] 選取靈爪猴 (costume_dawn_monk_tunic + paint_ivory_stock)...")
+	_demo.call("select_race", "macaque")
+	_demo.call("reset_to_default")
+	await _wait_frames(12)
+
+	var is_mac_512: bool = bool(_demo.call("is_stage_512"))
+	var mac_tex: Texture2D = _demo.call("get_stage_texture")
+	var mac_sprite: Sprite2D = _demo.call("get_stage_sprite_512")
+	print("  [靈爪猴舞台] is_stage_512: %s, 貼圖尺寸: %s, 濾鏡: %d" % [
+		str(is_mac_512),
+		str(mac_tex.get_size()) if mac_tex else "null",
+		mac_sprite.texture_filter if mac_sprite else -1
+	])
+	assert(is_mac_512, "靈爪猴舞台未正確走 512 合成")
+	assert(mac_tex.get_width() == 512 and mac_tex.get_height() == 512, "靈爪猴貼圖尺寸非 512x512")
+	await _capture_frame("proof_creation_stage_macaque_512.png")
+
+	# ── 7. 烈焰虎 (tiger) 512 中央舞台 ──
+	print("\n>>> [7/9 烈焰虎] 選取烈焰虎 (costume_ember_tunic + paint_ember_orange)...")
+	_demo.call("select_race", "tiger")
+	_demo.call("reset_to_default")
+	await _wait_frames(12)
+
+	var is_tig_512: bool = bool(_demo.call("is_stage_512"))
+	var tig_tex: Texture2D = _demo.call("get_stage_texture")
+	var tig_sprite: Sprite2D = _demo.call("get_stage_sprite_512")
+	print("  [烈焰虎舞台] is_stage_512: %s, 貼圖尺寸: %s, 濾鏡: %d" % [
+		str(is_tig_512),
+		str(tig_tex.get_size()) if tig_tex else "null",
+		tig_sprite.texture_filter if tig_sprite else -1
+	])
+	assert(is_tig_512, "烈焰虎舞台未正確走 512 合成")
+	assert(tig_tex.get_width() == 512 and tig_tex.get_height() == 512, "烈焰虎貼圖尺寸非 512x512")
+	await _capture_frame("proof_creation_stage_tiger_512.png")
+
+	# ── 8. 玄軸熊 (bear) 512 中央舞台 ──
+	print("\n>>> [8/9 玄軸熊] 選取玄軸熊 (costume_ironclad_overalls + paint_bear_amber)...")
+	_demo.call("select_race", "bear")
+	_demo.call("reset_to_default")
+	await _wait_frames(12)
+
+	var is_bear_512: bool = bool(_demo.call("is_stage_512"))
+	var bear_tex: Texture2D = _demo.call("get_stage_texture")
+	var bear_sprite: Sprite2D = _demo.call("get_stage_sprite_512")
+	print("  [玄軸熊舞台] is_stage_512: %s, 貼圖尺寸: %s, 濾鏡: %d" % [
+		str(is_bear_512),
+		str(bear_tex.get_size()) if bear_tex else "null",
+		bear_sprite.texture_filter if bear_sprite else -1
+	])
+	assert(is_bear_512, "玄軸熊舞台未正確走 512 合成")
+	assert(bear_tex.get_width() == 512 and bear_tex.get_height() == 512, "玄軸熊貼圖尺寸非 512x512")
+	await _capture_frame("proof_creation_stage_bear_512.png")
+
+	# ── 9. 蒸汽企鵝 (penguin) 512 中央舞台 ──
+	print("\n>>> [9/9 蒸汽企鵝] 選取蒸汽企鵝 (costume_navigator_harness + paint_penguin_navy)...")
+	_demo.call("select_race", "penguin")
+	_demo.call("reset_to_default")
+	await _wait_frames(12)
+
+	var is_pen_512: bool = bool(_demo.call("is_stage_512"))
+	var pen_tex: Texture2D = _demo.call("get_stage_texture")
+	var pen_sprite: Sprite2D = _demo.call("get_stage_sprite_512")
+	print("  [蒸汽企鵝舞台] is_stage_512: %s, 貼圖尺寸: %s, 濾鏡: %d" % [
+		str(is_pen_512),
+		str(pen_tex.get_size()) if pen_tex else "null",
+		pen_sprite.texture_filter if pen_sprite else -1
+	])
+	assert(is_pen_512, "蒸汽企鵝舞台未正確走 512 合成")
+	assert(pen_tex.get_width() == 512 and pen_tex.get_height() == 512, "蒸汽企鵝貼圖尺寸非 512x512")
+	await _capture_frame("proof_creation_stage_penguin_512.png")
 
 	print("\n=== 開局選族中央舞台 512 截圖生成完畢 ===")
 	_demo.queue_free()
