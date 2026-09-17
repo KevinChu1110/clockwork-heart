@@ -2298,6 +2298,7 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 		_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
 	if t:
 		player_body.texture = t
+		player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_layout_foot_shadow(player_body)
 	if _player_pose_tween and _player_pose_tween.is_valid():
 		_player_pose_tween.kill()
