@@ -481,6 +481,47 @@ func _initialize() -> void:
 		else:
 			print("  ✓ 兔子確認穿上維京裝且種族不變")
 
+	# ── 5. 測試衣櫥一鍵隨機混搭按鈕 (t_9265459b) ──
+	var dlg_rand: WardrobeDialog = WardrobeDialog.new()
+	dlg_rand.creation_mode = false
+	root.add_child(dlg_rand)
+	var btn_rand = dlg_rand.find_child("BtnRandom", true, false)
+	if btn_rand is Button:
+		print("  ✓ 找到『隨機』按鈕 (BtnRandom)")
+		if btn_rand.text != "隨機":
+			push_error("BtnRandom 按鈕文字應為『隨機』，實際: %s" % btn_rand.text)
+			ok = false
+		if btn_rand.custom_minimum_size.y < 50.0:
+			push_error("BtnRandom 按鈕高度小於 50px 規範")
+			ok = false
+	else:
+		push_error("未找到 BtnRandom 按鈕")
+		ok = false
+
+	# 測試點擊隨機按鈕：僅更新預覽，不寫入存檔與 GameState
+	var saved_costume_before = str(gs.paperdoll_slots.get("costume_id", gs.paperdoll_slots.get("costume", "")))
+	dlg_rand.randomize_selection()
+	var rand1_sel = dlg_rand.get_current_selections()
+	var saved_costume_after = str(gs.paperdoll_slots.get("costume_id", gs.paperdoll_slots.get("costume", "")))
+	if saved_costume_before != saved_costume_after:
+		push_error("隨機混搭不應直接寫入存檔！")
+		ok = false
+	else:
+		print("  ✓ 隨機混搭僅套入預覽，未直接寫入存檔")
+
+	# 測試再次隨機可產出不同組合
+	dlg_rand.randomize_selection()
+	var rand2_sel = dlg_rand.get_current_selections()
+	print("  ✓ 隨機 1 組合: costume=%s, chassis=%s" % [rand1_sel.get("costume"), rand1_sel.get("chassis")])
+	print("  ✓ 隨機 2 組合: costume=%s, chassis=%s" % [rand2_sel.get("costume"), rand2_sel.get("chassis")])
+	if rand1_sel.get("costume") == rand2_sel.get("costume") and rand1_sel.get("chassis") == rand2_sel.get("chassis"):
+		push_error("連續兩次隨機結果完全相同")
+		ok = false
+	else:
+		print("  ✓ 連續隨機成功產生不同外觀組合")
+
+	dlg_rand.queue_free()
+
 	# 恢復測試環境回兔族
 	gs.call("reset_new_game", "rabbit")
 

@@ -60,6 +60,7 @@ var _chassis_cards: Array[Button] = []
 
 var _btn_confirm: Button
 var _btn_reset: Button
+var _btn_random: Button
 
 var _breathe_tween: Tween = null
 
@@ -335,13 +336,13 @@ func _build_ui() -> void:
 	# ── 底部操作按鈕列 ──
 	var actions_hbox := HBoxContainer.new()
 	actions_hbox.custom_minimum_size.y = BTN_SIZE
-	actions_hbox.add_theme_constant_override("separation", 12)
+	actions_hbox.add_theme_constant_override("separation", 10)
 	controls_vbox.add_child(actions_hbox)
 
 	_btn_reset = Button.new()
 	_btn_reset.name = "BtnReset"
 	_btn_reset.text = "還原預設"
-	_btn_reset.custom_minimum_size = Vector2(130, BTN_SIZE)
+	_btn_reset.custom_minimum_size = Vector2(100, BTN_SIZE)
 	_btn_reset.add_theme_font_size_override("font_size", 16)
 	_btn_reset.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -352,6 +353,22 @@ func _build_ui() -> void:
 	_btn_reset.add_theme_stylebox_override("pressed", r_h)
 	_btn_reset.pressed.connect(_on_reset_pressed)
 	actions_hbox.add_child(_btn_reset)
+
+	_btn_random = Button.new()
+	_btn_random.name = "BtnRandom"
+	_btn_random.text = "隨機"
+	_btn_random.custom_minimum_size = Vector2(80, BTN_SIZE)
+	_btn_random.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_random.add_theme_font_size_override("font_size", 16)
+	_btn_random.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_random.add_theme_font_override("font", _cached_font)
+	_btn_random.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18, 2))
+	var rand_h := _create_button_style(Color("#62B6FF"), COLOR_BORDER, 3, 18, 2)
+	_btn_random.add_theme_stylebox_override("hover", rand_h)
+	_btn_random.add_theme_stylebox_override("pressed", rand_h)
+	_btn_random.pressed.connect(_on_random_pressed)
+	actions_hbox.add_child(_btn_random)
 
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
@@ -834,7 +851,10 @@ func _update_card_selection_states() -> void:
 		var item_race: String = str(item.get("race_id", current_race))
 		var is_selected := false
 		if not selected_costume_id.is_empty():
-			is_selected = (item_id == selected_costume_id)
+			if current_filter_race == "all":
+				is_selected = (i == costume_index)
+			else:
+				is_selected = (item_id == selected_costume_id)
 		else:
 			is_selected = (i == costume_index)
 		_apply_card_style(_costume_cards[i], is_selected)
@@ -845,7 +865,10 @@ func _update_card_selection_states() -> void:
 		var item_race: String = str(item.get("race_id", current_race))
 		var is_selected := false
 		if not selected_chassis_id.is_empty():
-			is_selected = (item_id == selected_chassis_id)
+			if current_filter_race == "all":
+				is_selected = (i == chassis_index)
+			else:
+				is_selected = (item_id == selected_chassis_id)
 		else:
 			is_selected = (i == chassis_index)
 		_apply_card_style(_chassis_cards[i], is_selected)
@@ -931,6 +954,34 @@ func _on_reset_pressed() -> void:
 	_update_card_selection_states()
 	_update_ui_texts()
 	_update_preview()
+
+
+func _on_random_pressed() -> void:
+	randomize_selection()
+
+
+## 隨機挑選一組外觀（在 current_filter_race 篩選範圍內，純預覽不寫存檔）
+func randomize_selection() -> void:
+	if _displayed_costumes.is_empty() and _displayed_chassis.is_empty():
+		return
+
+	if not _displayed_costumes.is_empty():
+		var new_c_idx := randi() % _displayed_costumes.size()
+		if _displayed_costumes.size() > 1 and new_c_idx == costume_index:
+			new_c_idx = (new_c_idx + 1 + (randi() % (_displayed_costumes.size() - 1))) % _displayed_costumes.size()
+		costume_index = new_c_idx
+		selected_costume_id = str(_displayed_costumes[costume_index].get("id", ""))
+
+	if not _displayed_chassis.is_empty():
+		var new_p_idx := randi() % _displayed_chassis.size()
+		if _displayed_chassis.size() > 1 and new_p_idx == chassis_index:
+			new_p_idx = (new_p_idx + 1 + (randi() % (_displayed_chassis.size() - 1))) % _displayed_chassis.size()
+		chassis_index = new_p_idx
+		selected_chassis_id = str(_displayed_chassis[chassis_index].get("id", ""))
+
+	_update_card_selection_states()
+	_update_preview()
+	_update_ui_texts()
 
 
 func get_current_selections() -> Dictionary:
