@@ -322,6 +322,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "core_emerald_lens"
 			elif race == "penguin":
 				return "core_cyan_quartz"
+			elif race == "boar":
+				return "core_molten_crimson"
 			return "core_cyan_emerald"
 		SLOT_WEAPON:
 			if race == "macaque":
@@ -721,6 +723,12 @@ static func get_sorted_slot_entries_512(race: String, slot_selection: Dictionary
 					head_variant = "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 			if head_variant != "" and (ResourceLoader.exists(head_variant) or FileAccess.file_exists(head_variant)):
 				path = head_variant
+		elif sid == SLOT_OPTIC_CORE and rid == "boar":
+			var paint := str(slot_selection.get(SLOT_CHASSIS, slot_selection.get("paint_id", "")))
+			if paint.find("crimson") >= 0 or paint.find("molten") >= 0:
+				var p_core := "%s/%s/%s/core_molten_crimson_512.png" % [PAPERDOLL_ROOT, rid, sid]
+				if ResourceLoader.exists(p_core) or FileAccess.file_exists(p_core):
+					path = p_core
 		var texture: Texture2D = get_slot_texture(path)
 		entries.append({
 			"slot_id": sid,

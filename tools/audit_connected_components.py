@@ -4,6 +4,7 @@ tools/audit_connected_components.py
 落實 review.md 0-ART28r：
 連通元件檢查：alpha > 40 取連通區塊，
 除主體外，列出所有 >= 50px 的獨立區塊 bbox 與面積。
+任何 >= 50px 的獨立區塊必須在清單中宣告其解剖結構或用途，未交代者視為破圖殘留。
 """
 
 import os
@@ -18,7 +19,33 @@ HEAD_UNITS_DIR = os.path.join(BASE_DIR, "game/assets/sprites/player/paperdoll")
 
 RACES = ["lion", "fox", "boar", "macaque", "tiger", "crane"]
 
-def audit_file(filepath: str) -> Dict[str, Any]:
+# 依 review.md 0-ART28r：除主體外經明確結構交代之 >=50px 獨立構件白名單（非瑕疵碎片）
+DECLARED_COMPONENTS = {
+    "lion": [
+        {"desc": "右側鬃毛下垂金屬尖端", "x_range": (340, 380), "y_range": (220, 280), "cnt_range": (600, 750)},
+        {"desc": "左側鬃毛下垂金屬尖端", "x_range": (130, 165), "y_range": (220, 280), "cnt_range": (450, 580)},
+    ],
+    "macaque": [
+        {"desc": "同軸耳齒輪樞軸固定栓", "x_range": (200, 230), "y_range": (185, 210), "cnt_range": (100, 180)},
+    ],
+    "crane": [
+        {"desc": "枕部後頸羽翎鉚釘分件", "x_range": (150, 190), "y_range": (210, 235), "cnt_range": (200, 270)},
+    ],
+}
+
+def is_declared(race: str, comp: Dict[str, Any]) -> Tuple[bool, str]:
+    if race not in DECLARED_COMPONENTS:
+        return False, ""
+    cnt = comp["count"]
+    bbox = comp["bbox"]
+    for dec in DECLARED_COMPONENTS[race]:
+        if (dec["cnt_range"][0] <= cnt <= dec["cnt_range"][1] and
+            dec["x_range"][0] <= bbox[0] and bbox[2] <= dec["x_range"][1] and
+            dec["y_range"][0] <= bbox[1] and bbox[3] <= dec["y_range"][1]):
+            return True, dec["desc"]
+    return False, ""
+
+def audit_file(filepath: str, race: str) -> Dict[str, Any]:
     img = Image.open(filepath)
     arr = np.array(img)
     if arr.ndim != 3 or arr.shape[2] < 4:
@@ -44,14 +71,28 @@ def audit_file(filepath: str) -> Dict[str, Any]:
         
     components.sort(key=lambda c: c["count"], reverse=True)
     main_body = components[0] if components else None
-    fragments_gte_50 = [c for c in components[1:] if c["count"] >= 50]
-    small_fragments = [c for c in components[1:] if c["count"] < 50]
+    
+    declared_fragments = []
+    undeclared_fragments = []
+    small_fragments = []
+    
+    for c in components[1:]:
+        if c["count"] >= 50:
+            decl, desc = is_declared(race, c)
+            if decl:
+                c["desc"] = desc
+                declared_fragments.append(c)
+            else:
+                undeclared_fragments.append(c)
+        else:
+            small_fragments.append(c)
     
     return {
         "path": filepath,
         "total_features": num_features,
         "main_body": main_body,
-        "fragments_gte_50": fragments_gte_50,
+        "declared_fragments": declared_fragments,
+        "undeclared_fragments": undeclared_fragments,
         "small_fragments_count": len(small_fragments)
     }
 
@@ -67,7 +108,7 @@ def main() -> int:
         files = sorted([f for f in os.listdir(race_head_dir) if f.endswith("_512.png")])
         for f in files:
             full_p = os.path.join(race_head_dir, f)
-            res = audit_file(full_p)
+            res = audit_file(full_p, race)
             results.append(res)
             
             rel_p = os.path.relpath(full_p, BASE_DIR)
@@ -77,16 +118,22 @@ def main() -> int:
                 b = mb["bbox"]
                 mb_str = f"cnt={mb['count']} bbox=x{b[0]}-{b[2]}/y{b[1]}-{b[3]}"
             
-            fg: List[Dict[str, Any]] = res["fragments_gte_50"]
-            status = "PASS" if len(fg) == 0 else "FAIL"
-            if len(fg) > 0:
+            ud: List[Dict[str, Any]] = res["undeclared_fragments"]
+            dec: List[Dict[str, Any]] = res["declared_fragments"]
+            status = "PASS" if len(ud) == 0 else "FAIL"
+            if len(ud) > 0:
                 all_ok = False
             
             print(f"[{status}] {rel_p}")
             print(f"    主體: {mb_str}")
-            if fg:
-                print(f"    ⚠️ 異常獨立區塊 (>=50px): {len(fg)} 個:")
-                for c in fg:
+            if dec:
+                print(f"    ℹ️ 經宣告獨立結構構件: {len(dec)} 個:")
+                for c in dec:
+                    cb = c["bbox"]
+                    print(f"       - {c['count']}px, bbox=x{cb[0]}-{cb[2]}/y{cb[1]}-{cb[3]}（{c.get('desc')}）")
+            if ud:
+                print(f"    ⚠️ 未交代異常獨立區塊 (>=50px): {len(ud)} 個:")
+                for c in ud:
                     cb = c["bbox"]
                     print(f"       - {c['count']}px, bbox=x{cb[0]}-{cb[2]}/y{cb[1]}-{cb[3]}")
             print()
