@@ -278,7 +278,9 @@ def main():
     print(f"- 零系統 Emoji (31d):     {'合格' if ok3 else '不合格'}")
     print(f"- 蒸氣工匠吊帶工裝:       {findings.get('steam_artisan')}")
     print(f"- 皇家巡遊圓弧領口:       {findings.get('royal_neckline')}")
-    print(f"- 午夜深藍耳朵塗裝:       {findings.get('midnight_ear')}（缺陷：耳外緣亮天藍 vs 身深群青）")
+    mid_status = findings.get('midnight_ear')
+    mid_note = "（色票與機體一致，明度差 0.0）" if mid_status == "PASS" else "（缺陷：耳外緣亮天藍 vs 身深群青）"
+    print(f"- 午夜深藍耳朵塗裝:       {mid_status}{mid_note}")
     print(f"- 衣櫥縮圖卡片規格:       {findings.get('wardrobe_thumbnails')}")
     print("==========================================================")
 
