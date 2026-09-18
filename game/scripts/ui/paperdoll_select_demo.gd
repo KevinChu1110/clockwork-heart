@@ -593,7 +593,7 @@ func _apply_current_selections() -> void:
 	if ch != null:
 		ch.render_character(_current_race_id, selections)
 
-	# 中央舞台九族改讀 512 高清合成（合成失敗安全退回 128）
+	# 中央舞台九族改讀 512 高清合成（合成失敗改讀立牌／showcase 256，不退回 128）
 	_update_stage_512(selections)
 
 	# 更新 UI 顯示文字與標記
