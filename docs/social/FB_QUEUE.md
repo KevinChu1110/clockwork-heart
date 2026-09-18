@@ -2557,7 +2557,7 @@ C【午夜深藍 [新]】（深邃夜巡耐磨鍍層，冷峻暗夜行者）
 >   - ⛔ **不可對外名單**：`守衛泰坦·雷歐`（真實身分為毛皮獅獸人，嚴禁任何戰鬥/對話半身像/部位破壞鏡頭）、`road_bandit` 荒路匪徒（舊版人類盜匪立繪，含其戰鬥畫面一律不可對外）。  
 >   - ⛔ **0-MKT2 實機截圖禁令**：本檔期 100% 遵守 0-MKT2 禁令，完全不選用任何 `proofs/` 底下之遊戲實機 HUD/大廳/戰鬥截圖，亦不使用任何未過審解禁之回歸驗收實機圖。  
 >   - ✅ **解禁與選用名單**：4 則素材全數為我方合規之紙娃娃外裝/塗裝矩陣對照圖、動作姿態分解圖與行走動畫幀精靈圖：
->     1. `game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix.png`（第二種族雲嵐鶴 2×3 雙塗裝 × 雙外裝矩陣對照圖）
+>     1. `game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix_hd.png`（第二種族雲嵐鶴 2×3 雙塗裝 × 雙外裝矩陣對照圖，2048×1616 HD）
 >     2. `game/assets/sprites/player/proof_lion_combat_poses_640.png`（第三種族烈鬃獅六大戰鬥動作姿態分解圖）
 >     3. `game/assets/sprites/player/poses/fox/proof_fox_combat_six_poses_heights.png`（第四種族靈尾狐六大戰鬥動作姿態與高度基準圖）
 >     4. `game/assets/sprites/player/proof_lion_walk_cycle_640.png`（第三種族烈鬃獅四階連續行走動畫步態精靈圖）
@@ -2580,7 +2580,7 @@ C【午夜深藍 [新]】（深邃夜巡耐磨鍍層，冷峻暗夜行者）
 本週素材 100% 採用紙娃娃模組矩陣、動作姿態圖與步態精靈圖，**完全不含實機大廳/戰鬥截圖**，完美避開 0-MKT2 實機截圖暫緩禁令，排程過審後可安全執行。
 
 本週 4 則策略：
-1. **阿哲**以「世界觀與設計取捨幕後」切入，推出第二種族雲嵐鶴 2×3 雙塗裝 × 雙外裝矩陣圖（`game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix.png`）518 字長文主案。深入探討世界憲章「零毛皮、零羽毛」鐵律，拆解天元雲海的機關神射手如何徹底摒棄傳統奇幻中鳥類生物的羽毛、肉質與血肉軀幹。改以冷淬青瓷白與晴空凌雲湛藍雙塗裝合金鈑金、咬合齒輪與球形機械關節鑄造，胸前鑲嵌青藍能量核心，背部懸浮機械摺紙鶴，左手單持機關複合短弓。誠實分享從裸像素體、凌雲羽衣輕鋼道袍到晴空巡獵機關羽甲的工藝演進與世界觀堅持。
+1. **阿哲**以「世界觀與設計取捨幕後」切入，推出第二種族雲嵐鶴 2×3 雙塗裝 × 雙外裝矩陣圖（`game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix_hd.png`）518 字長文主案。深入探討世界憲章「零毛皮、零羽毛」鐵律，拆解天元雲海的機關神射手如何徹底摒棄傳統奇幻中鳥類生物的羽毛、肉質與血肉軀幹。改以冷淬青瓷白與晴空凌雲湛藍雙塗裝合金鈑金、咬合齒輪與球形機械關節鑄造，胸前鑲嵌青藍能量核心，背部懸浮機械摺紙鶴，左手單持機關複合短弓。誠實分享從裸像素體、凌雲羽衣輕鋼道袍到晴空巡獵機關羽甲的工藝演進與世界觀堅持。
 2. **小魚**貫徹「畫面自己會說話、開門見山給結果」之視覺亮點路線，推出第三種族烈鬃獅六大戰鬥姿態分解圖（`game/assets/sprites/player/proof_lion_combat_poses_640.png`），開門見山直擊成果，呈現黃銅發條騎士從立正待機、屈膝防禦、跨步突進、斜向戒備、核心蓄力同心圓震波到旋轉發條推槍突刺的完整機械連貫動作。右手單持金屬錐形騎兵長槍，全金屬齒輪鬃毛與背部旋轉鑰匙，100% 零毛皮、零肉質、零文字亂碼，直擊皇家機關騎士之戰鬥風采。
 3. **小玩**貫徹「動作先於畫面」的平台機制路線，借社群平台「雙擊圖片放大檢視細節」原生動作，利用第四種族靈尾狐六大戰鬥姿態圖（`game/assets/sprites/player/poses/fox/proof_fox_combat_six_poses_heights.png`），設計「數法杖釋放出的青藍色法術能量球」眼力測驗。引導觀眾放大檢視 6 個動作格中法杖頂端與周圍凝聚出的散發青藍微光圓形法術球格數（經 vision 逐格實數：第 3 格 attack 前端凝聚 1 顆小法術球、第 5 格 skill 杖頂與身前凝聚 2 顆大能量球，共 2 個動作格出現法術球；第 1 格待機、第 2 格前搖、第 4 格收招、第 6 格受擊僅為杖端常態水晶透鏡無凝聚法術球，遵循 0-MKT5 逐格複查鐵則），推升單圖停留時間與互動率。
 4. **Ken**延續社群互動，鎖定第三種族「烈鬃獅」四階連續行走動畫步態圖（`game/assets/sprites/player/proof_lion_walk_cycle_640.png`），推出「黃銅騎士起步出巡四步中哪一格步伐最威風」單字秒回投票（1 vs 2 vs 3 vs 4），維持極低互動門檻，引爆社群對機械玩具步態節奏之趣味對話。
@@ -2590,8 +2590,8 @@ C【午夜深藍 [新]】（深邃夜巡耐磨鍍層，冷峻暗夜行者）
 ### 本週合進 main 的素材與解禁新資產盤點（對照 git log 與 docs/PROJECTS.json）
 
 依據 `git log --since="7 days ago" --oneline` 與 repo 內合規資產庫盤點：
-1. **第二種族「雲嵐鶴」雙塗裝 × 雙外裝矩陣圖（`game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix.png`）**：
-   - 512 × 404，RGBA，深灰底，2 列 × 3 行共 6 格展示矩陣（上列原廠青瓷白：裸像素體、凌雲羽衣輕鋼道袍、晴空巡獵機關羽甲；下列晴空凌雲湛藍：裸像素體、凌雲羽衣輕鋼道袍、晴空巡獵機關羽甲，下列三格與上列右格帶有橘黃高亮選取框與「NEW」標籤）。
+1. **第二種族「雲嵐鶴」雙塗裝 × 雙外裝矩陣圖（`game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix_hd.png`）**：
+   - 2048 × 1616，RGBA，深灰底，2 列 × 3 行共 6 格展示矩陣（依 19g-16 由 512 原切片組裝，長邊 2048 >= 1200px）。上列原廠青瓷白：裸像素體、凌雲羽衣輕鋼道袍、晴空巡獵機關羽甲；下列晴空凌雲湛藍：裸像素體、凌雲羽衣輕鋼道袍、晴空巡獵機關羽甲，下列三格與上列右格帶有橘黃高亮選取框與「NEW」標籤。
    - 經 `vision_analyze` 查驗：六格外裝造型與塗裝層次分明，中文標籤清晰完整無裁切；角色左手單持 1 柄機關複合短弓、右手自然垂放，武器數量每格剛好 1 把待機配裝合格，0 占位短棒，符合 0-ART9/0-ART11/0-ART12 規範；胸前青藍能量核心與背部懸浮機械紙鶴運轉清晰，100% 零毛皮零羽毛，0 敵人入鏡。
 2. **第三種族「烈鬃獅」六大戰鬥動作姿態分解圖（`game/assets/sprites/player/proof_lion_combat_poses_640.png`）**：
    - 384 × 256，RGBA，深藍紫底，2 行 × 3 列共 6 大獨立動作展示格（上左待機立槍、上中屈膝平端防禦、上右揚槍突進、下左斜下戒備、下中同心圓能量波紋蓄力、下右發條殘影橫推突刺）。
@@ -2617,7 +2617,7 @@ C【午夜深藍 [新]】（深邃夜巡耐磨鍍層，冷峻暗夜行者）
 
 | 序 | 排程時間 | Persona | 形式 | 素材（必須存在於 repo） | 核心目的與追蹤指標 | 狀態 |
 |---|---|---|---|---|---|---|
-| Day 1 | 週三 20:00 (11-25) | 阿哲（內容行銷） | 雲嵐鶴雙塗裝雙外裝矩陣工藝長文 | `game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix.png` | 從第二族機關射手談「零羽毛、零肉體」世界觀憲章與輕鋼道袍機關工藝深度／分享數、長文停留時間 | 待總監審查後開發文單 |
+| Day 1 | 週三 20:00 (11-25) | 阿哲（內容行銷） | 雲嵐鶴雙塗裝雙外裝矩陣工藝長文 | `game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix_hd.png` | 從第二族機關射手談「零羽毛、零肉體」世界觀憲章與輕鋼道袍機關工藝深度／分享數、長文停留時間 | 待總監審查後開發文單 |
 | Day 2 | 週四 20:00 (11-26) | 小魚（視覺成果直擊） | 烈鬃獅六大戰鬥姿態視覺直擊 | `game/assets/sprites/player/proof_lion_combat_poses_640.png` | 開門見山直擊第三族烈鬃獅六大戰鬥姿態、持槍平推與發條旋轉突刺動態／單圖停留時間、留言數、分享數 | 待總監審查後開發文單 |
 | Day 3 | 週五 20:00 (11-27) | 小玩（平台機制） | 靈尾狐六大戰鬥姿態雙擊放大數法術光球挑戰 | `game/assets/sprites/player/poses/fox/proof_fox_combat_six_poses_heights.png` | 借平台雙擊放大手勢挑戰數六直欄動作格中法杖釋放凝聚青藍法術光球的格數（共 2 格）／單圖停留時間、放大互動、留言數 | 待總監審查後開發文單 |
 | Day 4 | 週六 12:00 (11-28) | Ken（社群互動） | 烈鬃獅四步連續行走步態秒回投票 | `game/assets/sprites/player/proof_lion_walk_cycle_640.png` | 第 1 步起步 vs 第 2 步邁步 vs 第 3 步落地 vs 第 4 步蹬地威風步態單字秒回／留言數、留言與觸及比 | 待總監審查後開發文單 |
@@ -2625,7 +2625,7 @@ C【午夜深藍 [新]】（深邃夜巡耐磨鍍層，冷峻暗夜行者）
 素材自檢（發文前必須確認檔案存在於 repo 且合規）：
 
 ```bash
-test -f game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix.png
+test -f game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix_hd.png
 test -f game/assets/sprites/player/proof_lion_combat_poses_640.png
 test -f game/assets/sprites/player/poses/fox/proof_fox_combat_six_poses_heights.png
 test -f game/assets/sprites/player/proof_lion_walk_cycle_640.png
@@ -2637,8 +2637,8 @@ test -f game/assets/sprites/player/proof_lion_walk_cycle_640.png
 
 - **形式**：世界觀、角色小傳、開發幕後長文（300–600 字區間）
 - **狀態**：待總監審查後開發文單
-- **圖**：`game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix.png`（512×404，第二種族雲嵐鶴 2×3 雙塗裝 × 雙外裝矩陣對照圖）
-- **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix.png`
+- **圖**：`game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix_hd.png`（2048×1616，第二種族雲嵐鶴 2×3 雙塗裝 × 雙外裝矩陣對照圖，長邊 2048 >= 1200px 符合 19g-16）
+- **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix_hd.png`
 - **定位**：第二種族「雲嵐鶴」雙塗裝 × 雙外裝矩陣對照首度正式亮相！深入探討白板頂端「所有生命皆為發條玩具」的世界憲章鐵律。拆解翱翔於天元雲海的機關神射手，如何徹底摒棄傳統奇幻中鶴族或禽類的羽毛、肉翼與鳥類生物軀體。改以冷淬青瓷白與晴空凌雲湛藍雙色金屬板件、精密滾珠軸承與黃銅發條鑰匙拼裝而成。背部配備鋼絲牽引的微型懸浮金屬紙鶴，胸前跳動著青藍微光的能量核心，左手單持機關複合短弓。誠實分享從裸像素體、凌雲羽衣輕鋼道袍到晴空巡獵機關羽甲的工藝演進與世界觀堅持。
 - **自檢項目（vision 親自查核）**：
   - 角色全身由青瓷白/湛藍金屬板件、球型鳥喙面罩、赤紅光學鏡片、青藍能量核心、背後黃銅發條鑰匙與金屬爪足組成，完全零毛皮、零肉質、零羽毛。
@@ -2766,7 +2766,7 @@ test -f game/assets/sprites/player/proof_lion_walk_cycle_640.png
    四篇切入點、長度、目的完全不同，明確包含一則純粹平台機制路線（小玩），絕非四篇都在介紹遊戲。
 2. **當週素材與 CANON 零毛皮 / 19g-10 排除名單親自查核**：
    - **4 條素材路徑經 `test -f` 實測全數存在於 repo**：
-     - `game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix.png`（512×404，雲嵐鶴雙塗裝 × 雙外裝矩陣對照圖）
+     - `game/assets/sprites/player/paperdoll/crane/proof_crane_variants_matrix_hd.png`（2048×1616，雲嵐鶴雙塗裝 × 雙外裝矩陣對照圖，長邊 2048 >= 1200px 符合 19g-16）
      - `game/assets/sprites/player/proof_lion_combat_poses_640.png`（384×256，烈鬃獅六大戰鬥姿態分解圖）
      - `game/assets/sprites/player/poses/fox/proof_fox_combat_six_poses_heights.png`（768×164，靈尾狐六大戰鬥姿態與高度基準圖）
      - `game/assets/sprites/player/proof_lion_walk_cycle_640.png`（640×160，烈鬃獅四階連續行走動畫步態圖）
@@ -2775,7 +2775,7 @@ test -f game/assets/sprites/player/proof_lion_walk_cycle_640.png
      - 荒路匪徒（road_bandit）：0 處入鏡，徹底排除。
      - 0 敵方角色，4 則素材全數為我方合規金屬發條玩具角色（雲嵐鶴、烈鬃獅、靈尾狐）之模組矩陣、動作分解與步態精靈圖，完全不含遊戲實機 HUD/大廳/戰鬥截圖，零 0-MKT2 禁令衝突，徹底杜絕毛皮爭議。
    - **角色外觀、持握姿勢與武器數量親自查核（vision 開圖確認，依 review.md 0-ART9 / 0-ART11 / 0-ART12 / 0-ART17 / 0-MKT7 條放大嚴查）**：
-     - Day 1（`proof_crane_variants_matrix.png`）：512×404 矩陣對照圖，深灰底乾淨無雜物；球型鳥喙面甲、赤紅光學透鏡雙眼、背部黃銅發條鑰匙與懸浮機關折鶴，零毛皮、零羽毛。手部與武器實查：左手單持 1 柄機關複合短弓、右手自然空手垂放，無多餘武器，武器數量每格剛好 1 把合格，持握姿勢經 vision 複驗無誤。相鄰兩格外裝與塗裝完全不同（通過 19g-14 查核）。總監審查合格。
+     - Day 1（`proof_crane_variants_matrix_hd.png`）：2048×1616 矩陣對照圖，深灰底乾淨無雜物，長邊 2048 >= 1200px 符合 19g-16；球型鳥喙面甲、赤紅光學透鏡雙眼、背部黃銅發條鑰匙與懸浮機關折鶴，零毛皮、零羽毛。手部與武器實查：左手單持 1 柄機關複合短弓、右手自然空手垂放，無多餘武器，武器數量每格剛好 1 把合格，持握姿勢經 vision 複驗無誤。相鄰兩格外裝與塗裝完全不同（通過 19g-14 查核）。總監審查合格。
      - Day 2（`proof_lion_combat_poses_640.png`）：384×256 六大戰鬥姿態圖，深藍紫底；黃銅板件、齒輪鬃毛、背部旋轉發條鑰匙與雙眼青綠光芒，零毛皮、零肉質。手部與武器實查：六格共用同 1 柄金屬錐形騎兵長槍，持握隨招式切換（第 1/3/5 格右手單持、第 2/6 格雙手橫握、第 4 格左手反持），武器數量每格剛好 1 把合格；持握描述經總監 vision 複驗後已據實修正（0-MKT7 改字不退單）。全圖零文字標籤，零豆腐塊缺字。總監審查合格。
      - Day 3（`proof_fox_combat_six_poses_heights.png`）：768×164 六直欄動作與高度基準圖，深灰底；金屬狐面罩、鉚釘接縫、背部黃銅發條鑰匙與青綠核心寶石，零毛皮、零肉質。手部與武器實查：每格角色均以左手單持 1 柄鑲嵌發光青色水晶的金屬長法杖，右手空手配合施法動作，武器數量剛好 1 把合格。英文字標與數值完整無截字、零豆腐塊。第 3 格與第 5 格凝聚法術光球，答案精確為 2 格（0-MKT5 逐格驗證通過）。總監審查合格。
      - Day 4（`proof_lion_walk_cycle_640.png`）：640×160 連續行走步態圖，純淨白底；黃銅面甲、齒輪鬃毛、球形機械關節與背部發條鑰匙，零毛皮、零肉質。手部與武器實查：四格角色均以右手單持 1 柄金屬長槍斜上豎立、左手自然垂放，武器數量剛好 1 把合格。腳底帶柔和投影，邊界無硬切無破圖。總監審查合格。
