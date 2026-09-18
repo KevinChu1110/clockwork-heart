@@ -290,6 +290,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_cross_pendulum"
 			elif race == "penguin":
 				return "key_twin_ring_helm"
+			elif race == "fox":
+				return ""
 			return "key_classic_brass"
 		SLOT_COSTUME:
 			if race == "macaque":
@@ -343,7 +345,7 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 			if race == "macaque":
 				return "curio_spring_tail"
 			elif race == "fox":
-				return "curio_fox_astral_tail"
+				return ""
 			elif race == "lion":
 				return "curio_lion_fan_tail"
 			elif race == "boar":
@@ -535,7 +537,10 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 				elif clean_id.find("ivory") >= 0:
 					var p_l := "%s/%s/%s/ear_lion_gilded_mane_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_l) or FileAccess.file_exists(p_l): return p_l
-				elif clean_id.find("brass") >= 0 or clean_id.find("gold") >= 0 or clean_id.find("stock") >= 0:
+				elif clean_id.find("brass") >= 0 or clean_id.find("gold") >= 0:
+					var p_l := "%s/%s/%s/ear_lion_gilded_mane_brass_512.png" % [PAPERDOLL_ROOT, rid, sid]
+					if ResourceLoader.exists(p_l) or FileAccess.file_exists(p_l): return p_l
+				elif clean_id.find("stock") >= 0:
 					var p_l := "%s/%s/%s/ear_lion_gilded_mane_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_l) or FileAccess.file_exists(p_l): return p_l
 			elif rid == "fox":
@@ -545,7 +550,10 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 				elif clean_id.find("ivory") >= 0:
 					var p_f := "%s/%s/%s/ear_fox_radar_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_f) or FileAccess.file_exists(p_f): return p_f
-				elif clean_id.find("orange") >= 0 or clean_id.find("stock") >= 0:
+				elif clean_id.find("orange") >= 0:
+					var p_f := "%s/%s/%s/ear_fox_radar_orange_512.png" % [PAPERDOLL_ROOT, rid, sid]
+					if ResourceLoader.exists(p_f) or FileAccess.file_exists(p_f): return p_f
+				elif clean_id.find("stock") >= 0:
 					var p_f := "%s/%s/%s/ear_fox_radar_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_f) or FileAccess.file_exists(p_f): return p_f
 			elif rid == "boar":
@@ -555,14 +563,20 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 				elif clean_id.find("brass") >= 0 or clean_id.find("gold") >= 0:
 					var p_b := "%s/%s/%s/ear_boar_rivet_cowl_brass_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_b) or FileAccess.file_exists(p_b): return p_b
-				elif clean_id.find("ivory") >= 0 or clean_id.find("stock") >= 0:
+				elif clean_id.find("ivory") >= 0:
+					var p_b := "%s/%s/%s/ear_boar_rivet_cowl_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
+					if ResourceLoader.exists(p_b) or FileAccess.file_exists(p_b): return p_b
+				elif clean_id.find("stock") >= 0:
 					var p_b := "%s/%s/%s/ear_boar_rivet_cowl_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_b) or FileAccess.file_exists(p_b): return p_b
 			elif rid == "macaque":
 				if clean_id.find("bronze") >= 0 or clean_id.find("bamboo") >= 0:
 					var p_m := "%s/%s/%s/ear_macaque_coaxial_bronze_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_m) or FileAccess.file_exists(p_m): return p_m
-				elif clean_id.find("ivory") >= 0 or clean_id.find("stock") >= 0:
+				elif clean_id.find("ivory") >= 0:
+					var p_m := "%s/%s/%s/ear_macaque_coaxial_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
+					if ResourceLoader.exists(p_m) or FileAccess.file_exists(p_m): return p_m
+				elif clean_id.find("stock") >= 0:
 					var p_m := "%s/%s/%s/ear_macaque_coaxial_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_m) or FileAccess.file_exists(p_m): return p_m
 			elif rid == "tiger":
@@ -572,7 +586,10 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 				elif clean_id.find("ivory") >= 0:
 					var p_t := "%s/%s/%s/head_ember_tiger_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_t) or FileAccess.file_exists(p_t): return p_t
-				elif clean_id.find("ember") >= 0 or clean_id.find("orange") >= 0 or clean_id.find("stock") >= 0:
+				elif clean_id.find("ember") >= 0 or clean_id.find("orange") >= 0:
+					var p_t := "%s/%s/%s/head_ember_tiger_ember_512.png" % [PAPERDOLL_ROOT, rid, sid]
+					if ResourceLoader.exists(p_t) or FileAccess.file_exists(p_t): return p_t
+				elif clean_id.find("stock") >= 0:
 					var p_t := "%s/%s/%s/head_ember_tiger_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_t) or FileAccess.file_exists(p_t): return p_t
 			elif rid == "crane":
@@ -582,7 +599,10 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 				elif clean_id.find("ivory") >= 0:
 					var p_c := "%s/%s/%s/head_cloud_crane_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
-				elif clean_id.find("porcelain") >= 0 or clean_id.find("stock") >= 0:
+				elif clean_id.find("porcelain") >= 0:
+					var p_c := "%s/%s/%s/head_cloud_crane_porcelain_512.png" % [PAPERDOLL_ROOT, rid, sid]
+					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
+				elif clean_id.find("stock") >= 0:
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
@@ -652,40 +672,52 @@ static func get_sorted_slot_entries_512(race: String, slot_selection: Dictionary
 					head_variant = "%s/%s/%s/ear_lion_gilded_mane_midnight_512.png" % [PAPERDOLL_ROOT, rid, sid]
 				elif paint.find("ivory") >= 0:
 					head_variant = "%s/%s/%s/ear_lion_gilded_mane_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
-				elif paint.find("brass") >= 0 or paint.find("gold") >= 0 or paint.find("stock") >= 0:
+				elif paint.find("brass") >= 0 or paint.find("gold") >= 0:
+					head_variant = "%s/%s/%s/ear_lion_gilded_mane_brass_512.png" % [PAPERDOLL_ROOT, rid, sid]
+				elif paint.find("stock") >= 0:
 					head_variant = "%s/%s/%s/ear_lion_gilded_mane_512.png" % [PAPERDOLL_ROOT, rid, sid]
 			elif rid == "fox":
 				if paint.find("emerald") >= 0 or paint.find("glaze") >= 0:
 					head_variant = "%s/%s/%s/ear_fox_radar_emerald_512.png" % [PAPERDOLL_ROOT, rid, sid]
 				elif paint.find("ivory") >= 0:
 					head_variant = "%s/%s/%s/ear_fox_radar_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
-				elif paint.find("orange") >= 0 or paint.find("stock") >= 0:
+				elif paint.find("orange") >= 0:
+					head_variant = "%s/%s/%s/ear_fox_radar_orange_512.png" % [PAPERDOLL_ROOT, rid, sid]
+				elif paint.find("stock") >= 0:
 					head_variant = "%s/%s/%s/ear_fox_radar_512.png" % [PAPERDOLL_ROOT, rid, sid]
 			elif rid == "boar":
 				if paint.find("crimson") >= 0 or paint.find("molten") >= 0:
 					head_variant = "%s/%s/%s/ear_boar_rivet_cowl_crimson_512.png" % [PAPERDOLL_ROOT, rid, sid]
 				elif paint.find("brass") >= 0 or paint.find("gold") >= 0:
 					head_variant = "%s/%s/%s/ear_boar_rivet_cowl_brass_512.png" % [PAPERDOLL_ROOT, rid, sid]
-				elif paint.find("ivory") >= 0 or paint.find("stock") >= 0:
+				elif paint.find("ivory") >= 0:
+					head_variant = "%s/%s/%s/ear_boar_rivet_cowl_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
+				elif paint.find("stock") >= 0:
 					head_variant = "%s/%s/%s/ear_boar_rivet_cowl_512.png" % [PAPERDOLL_ROOT, rid, sid]
 			elif rid == "macaque":
 				if paint.find("bronze") >= 0 or paint.find("bamboo") >= 0:
 					head_variant = "%s/%s/%s/ear_macaque_coaxial_bronze_512.png" % [PAPERDOLL_ROOT, rid, sid]
-				elif paint.find("ivory") >= 0 or paint.find("stock") >= 0:
+				elif paint.find("ivory") >= 0:
+					head_variant = "%s/%s/%s/ear_macaque_coaxial_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
+				elif paint.find("stock") >= 0:
 					head_variant = "%s/%s/%s/ear_macaque_coaxial_512.png" % [PAPERDOLL_ROOT, rid, sid]
 			elif rid == "tiger":
 				if paint.find("volcano") >= 0 or paint.find("black") >= 0:
 					head_variant = "%s/%s/%s/head_ember_tiger_volcano_512.png" % [PAPERDOLL_ROOT, rid, sid]
 				elif paint.find("ivory") >= 0:
 					head_variant = "%s/%s/%s/head_ember_tiger_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
-				elif paint.find("ember") >= 0 or paint.find("orange") >= 0 or paint.find("stock") >= 0:
+				elif paint.find("ember") >= 0 or paint.find("orange") >= 0:
+					head_variant = "%s/%s/%s/head_ember_tiger_ember_512.png" % [PAPERDOLL_ROOT, rid, sid]
+				elif paint.find("stock") >= 0:
 					head_variant = "%s/%s/%s/head_ember_tiger_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 			elif rid == "crane":
 				if paint.find("azure") >= 0 or paint.find("zephyr") >= 0:
 					head_variant = "%s/%s/%s/head_cloud_crane_azure_512.png" % [PAPERDOLL_ROOT, rid, sid]
 				elif paint.find("ivory") >= 0:
 					head_variant = "%s/%s/%s/head_cloud_crane_ivory_512.png" % [PAPERDOLL_ROOT, rid, sid]
-				elif paint.find("porcelain") >= 0 or paint.find("stock") >= 0:
+				elif paint.find("porcelain") >= 0:
+					head_variant = "%s/%s/%s/head_cloud_crane_porcelain_512.png" % [PAPERDOLL_ROOT, rid, sid]
+				elif paint.find("stock") >= 0:
 					head_variant = "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 			if head_variant != "" and (ResourceLoader.exists(head_variant) or FileAccess.file_exists(head_variant)):
 				path = head_variant
