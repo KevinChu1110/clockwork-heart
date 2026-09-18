@@ -758,6 +758,11 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 
 	if slot_type == "costume":
 		if item_id in ["none", "bare", "empty"]:
+			var bare_part_512 := "res://assets/sprites/player/paperdoll/%s/costume/costume_none_512.png" % r
+			if not ResourceLoader.exists(bare_part_512):
+				bare_part_512 = "res://assets/sprites/player/paperdoll/%s/costume/costume_bare_512.png" % r
+			if ResourceLoader.exists(bare_part_512):
+				return load(bare_part_512) as Texture2D
 			var bare_512 := "res://assets/sprites/player/paperdoll/%s/composite_preview_bare_512.png" % r
 			if ResourceLoader.exists(bare_512):
 				return load(bare_512) as Texture2D
