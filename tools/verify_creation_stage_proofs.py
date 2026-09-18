@@ -5,9 +5,7 @@ import numpy as np
 
 img_paths = [
     "proofs/creation_stage_no_128_fallback/proof_creation_rabbit_stage_512_hd.png",
-    "proofs/creation_stage_no_128_fallback/proof_creation_rabbit_stage_fallback_hd.png",
-    "proofs/proof_creation_rabbit_stage_512_hd.png",
-    "proofs/proof_creation_rabbit_stage_fallback_hd.png"
+    "proofs/creation_stage_no_128_fallback/proof_creation_rabbit_stage_fallback_hd.png"
 ]
 
 all_ok = True

@@ -8,7 +8,6 @@ extends SceneTree
 const DemoScene = preload("res://scenes/ui/paperdoll_select_demo.tscn")
 
 var _out_dir: String = ""
-var _proofs_dir: String = ""
 var _demo: Node = null
 
 func _initialize() -> void:
@@ -20,9 +19,7 @@ func _initialize() -> void:
 
 	var base := ProjectSettings.globalize_path("res://")
 	_out_dir = base.path_join("../proofs/creation_stage_no_128_fallback")
-	_proofs_dir = base.path_join("../proofs")
 	DirAccess.make_dir_recursive_absolute(_out_dir)
-	DirAccess.make_dir_recursive_absolute(_proofs_dir)
 
 	_run_captures()
 
@@ -38,10 +35,8 @@ func _capture_frame(filename: String) -> void:
 	if img:
 		var p1 := _out_dir.path_join(filename)
 		var err1 := img.save_png(p1)
-		var p2 := _proofs_dir.path_join(filename)
-		var err2 := img.save_png(p2)
-		if err1 == OK and err2 == OK:
-			print("  ✓ 成功存證截圖至: %s 與 %s" % [p1, p2])
+		if err1 == OK:
+			print("  ✓ 成功存證截圖至: %s" % p1)
 		else:
 			push_error("截圖儲存失敗: %s" % filename)
 
