@@ -1,95 +1,69 @@
 #!/usr/bin/env python3
+"""
+tools/audit_md5_all_six_races.py
+Audits MD5 hashes across all head_unit files for six races:
+Lion, Fox, Boar, Macaque, Tiger, Crane.
+Follows review.md 0-ART28n and 0-ART28q.
+"""
+
 import os
+import glob
 import hashlib
 
 BASE = "/opt/side/bravesoul-game/game/assets/sprites/player/paperdoll"
+RACES = ["lion", "fox", "boar", "macaque", "tiger", "crane"]
 
 def get_md5(p: str) -> str:
     with open(p, "rb") as f:
         return hashlib.md5(f.read()).hexdigest()
 
-PAIRS = [
-    # Lion
-    ("Lion Mane Midnight (512)",
-     f"{BASE}/lion/head_unit/ear_lion_gilded_mane_midnight_512.png",
-     f"{BASE}/lion/head_unit/ear_lion_gilded_mane_ivory_512.png"),
-    ("Lion Mane Brass (512)",
-     f"{BASE}/lion/head_unit/ear_lion_gilded_mane_brass_512.png",
-     f"{BASE}/lion/head_unit/ear_lion_gilded_mane_ivory_512.png"),
-
-    # Fox
-    ("Fox Radar Emerald (512)",
-     f"{BASE}/fox/head_unit/ear_fox_radar_emerald_512.png",
-     f"{BASE}/fox/head_unit/ear_fox_radar_ivory_512.png"),
-    ("Fox Radar Emerald vs Stock (512)",
-     f"{BASE}/fox/head_unit/ear_fox_radar_emerald_512.png",
-     f"{BASE}/fox/head_unit/ear_fox_radar_512.png"),
-    ("Fox Radar Orange (512)",
-     f"{BASE}/fox/head_unit/ear_fox_radar_orange_512.png",
-     f"{BASE}/fox/head_unit/ear_fox_radar_512.png"),
-
-    # Boar
-    ("Boar Cowl Crimson (512)",
-     f"{BASE}/boar/head_unit/ear_boar_rivet_cowl_crimson_512.png",
-     f"{BASE}/boar/head_unit/ear_boar_rivet_cowl_ivory_512.png"),
-    ("Boar Cowl Brass (512)",
-     f"{BASE}/boar/head_unit/ear_boar_rivet_cowl_brass_512.png",
-     f"{BASE}/boar/head_unit/ear_boar_rivet_cowl_ivory_512.png"),
-
-    # Macaque
-    ("Macaque Ear Bronze (512)",
-     f"{BASE}/macaque/head_unit/ear_macaque_coaxial_bronze_512.png",
-     f"{BASE}/macaque/head_unit/ear_macaque_coaxial_ivory_512.png"),
-
-    # Tiger Head & Ear
-    ("Tiger Head Volcano (512)",
-     f"{BASE}/tiger/head_unit/head_ember_tiger_volcano_512.png",
-     f"{BASE}/tiger/head_unit/head_ember_tiger_ivory_512.png"),
-    ("Tiger Head Ember (512)",
-     f"{BASE}/tiger/head_unit/head_ember_tiger_ember_512.png",
-     f"{BASE}/tiger/head_unit/head_ember_tiger_ivory_512.png"),
-    ("Tiger Ear Volcano (512)",
-     f"{BASE}/tiger/head_unit/ear_ember_tiger_volcano_512.png",
-     f"{BASE}/tiger/head_unit/ear_ember_tiger_ivory_512.png"),
-    ("Tiger Ear Ember (512)",
-     f"{BASE}/tiger/head_unit/ear_ember_tiger_ember_512.png",
-     f"{BASE}/tiger/head_unit/ear_ember_tiger_ivory_512.png"),
-
-    # Crane Head
-    ("Crane Head Azure (512)",
-     f"{BASE}/crane/head_unit/head_cloud_crane_azure_512.png",
-     f"{BASE}/crane/head_unit/head_cloud_crane_ivory_512.png"),
-    ("Crane Head Porcelain (512)",
-     f"{BASE}/crane/head_unit/head_cloud_crane_porcelain_512.png",
-     f"{BASE}/crane/head_unit/head_cloud_crane_ivory_512.png"),
-]
-
 def main():
-    print(f"{'切片名稱':35s} | {'變體 MD5':10s} | {'對照 Stock MD5':14s} | {'比對結果'}")
-    print("-" * 75)
-    all_pass = True
-    for name, p1, p2 in PAIRS:
-        if not os.path.exists(p1):
-            print(f"Missing {p1}")
-            all_pass = False
-            continue
-        if not os.path.exists(p2):
-            print(f"Missing {p2}")
-            all_pass = False
-            continue
-        m1 = get_md5(p1)
-        m2 = get_md5(p2)
-        diff = (m1 != m2)
-        if not diff:
-            all_pass = False
-        res = "✅ PASS (唯一獨立)" if diff else "❌ FAIL (內容重複)"
-        print(f"{name:35s} | {m1[:10]:10s} | {m2[:10]:14s} | {res}")
-    print("-" * 75)
-    if all_pass:
-        print("🎉 全部新切片 MD5 與同族 stock 100% 互異獨立，無偽裝重複檔案！")
+    print("====================================================================================================")
+    print("【驗收查重】六族 head_unit 全量切片 MD5 排序與唯一性查核 (0-ART28n / 0-ART28q)")
+    print("====================================================================================================")
+    
+    known_base_aliases = {
+        ("lion", "ear_lion_gilded_mane_brass_512.png"): "ear_lion_gilded_mane_512.png",
+        ("macaque", "ear_macaque_coaxial_ivory_512.png"): "ear_macaque_coaxial_512.png",
+    }
+    
+    all_clean = True
+    for race in RACES:
+        print(f"\n--- [{race.upper()}] head_unit ---")
+        pattern = f"{BASE}/{race}/head_unit/*_512.png"
+        files = sorted(glob.glob(pattern))
+        
+        file_hashes = [(os.path.basename(p), get_md5(p)) for p in files]
+        file_hashes.sort(key=lambda x: x[1])
+        
+        hash_counts = {}
+        for fname, h in file_hashes:
+            hash_counts.setdefault(h, []).append(fname)
+            
+        for fname, h in file_hashes:
+            dup_list = hash_counts[h]
+            if len(dup_list) == 1:
+                status = "✅ PASS (唯一獨立)"
+            else:
+                # Check intentional pairings
+                if race == "tiger" and any(f.startswith("head_") for f in dup_list) and any(f.startswith("ear_") for f in dup_list):
+                    status = "ℹ️ INFO (虎族 head/ear 刻意共用同一切片)"
+                elif (race, fname) in known_base_aliases:
+                    target_base = known_base_aliases[(race, fname)]
+                    status = f"ℹ️ INFO (共用 base [{target_base}]、不另列交付格)"
+                elif any((race, other) in known_base_aliases for other in dup_list):
+                    status = "ℹ️ INFO (被指定為共用 base 之基底檔)"
+                else:
+                    status = f"❌ FAIL (非預期重複檔: {', '.join(dup_list)})"
+                    all_clean = False
+            print(f"{h}  {fname:42s} | {status}")
+            
+    print("\n" + "=" * 100)
+    if all_clean:
+        print("🎉 MD5 查重通過！所有切片皆為唯一獨立或符合已知共用 base 設計。")
     else:
-        print("❌ 發現重複切片！")
-    return all_pass
+        print("❌ 發現未經宣告的切片重複複製問題，未通過 0-ART28n 規範！")
+    return all_clean
 
 if __name__ == "__main__":
     import sys

@@ -228,10 +228,10 @@ def build_boar():
         f"{BASE_DIR}/boar/head_unit/ear_boar_rivet_cowl_brass.png"
     )
 
-    # Ivory alias (copy of stock)
-    shutil.copyfile(src_512, f"{BASE_DIR}/boar/head_unit/ear_boar_rivet_cowl_ivory_512.png")
-    shutil.copyfile(f"{BASE_DIR}/boar/head_unit/ear_boar_rivet_cowl.png", f"{BASE_DIR}/boar/head_unit/ear_boar_rivet_cowl_ivory.png")
-    print("✓ Boar (Crimson, Brass, Ivory alias) completed!")
+    # Ivory
+    import subprocess
+    subprocess.run(["python3", "tools/generate_boar_ivory_final.py"], check=True)
+    print("✓ Boar (Crimson, Brass, Ivory) completed!")
 
 # ════════════════════════════════════════════════════════════════
 # 4. MACAQUE

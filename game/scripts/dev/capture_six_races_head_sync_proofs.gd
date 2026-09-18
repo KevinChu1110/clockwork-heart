@@ -21,6 +21,7 @@ const TARGETS: Array[Dictionary] = [
 	# 3. 鋼牙豕
 	{"race": "boar", "chassis": "paint_molten_crimson", "full": "proof_wardrobe_boar_crimson.png", "comp": "composite_512_boar_crimson.png"},
 	{"race": "boar", "chassis": "paint_brass_gold", "full": "proof_wardrobe_boar_brass.png", "comp": "composite_512_boar_brass.png"},
+	{"race": "boar", "chassis": "paint_ivory_stock", "full": "proof_wardrobe_boar_ivory.png", "comp": "composite_512_boar_ivory.png"},
 	
 	# 4. 靈爪猴
 	{"race": "macaque", "chassis": "paint_bamboo_bronze", "full": "proof_wardrobe_macaque_bronze.png", "comp": "composite_512_macaque_bronze.png"},
@@ -52,7 +53,7 @@ func _wait_frames(n: int) -> void:
 		await process_frame
 
 func _capture(full_fn: String, comp_fn: String = "") -> void:
-	await _wait_frames(3)
+	await _wait_frames(5)
 	await RenderingServer.frame_post_draw
 	var vp := root.get_viewport()
 	if vp == null:

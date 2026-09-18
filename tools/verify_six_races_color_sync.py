@@ -31,6 +31,9 @@ TEST_PAIRS = [
     ("Lion", "Ivory Stock",
      f"{BASE}/lion/head_unit/ear_lion_gilded_mane_ivory_512.png",
      f"{BASE}/lion/chassis/paint_ivory_stock_512.png"),
+    ("Lion", "Brass Gold",
+     f"{BASE}/lion/head_unit/ear_lion_gilded_mane_brass_512.png",
+     f"{BASE}/lion/chassis/paint_brass_gold_512.png"),
      
     # Fox
     ("Fox", "Emerald Glaze",
@@ -50,11 +53,17 @@ TEST_PAIRS = [
     ("Boar", "Brass Gold",
      f"{BASE}/boar/head_unit/ear_boar_rivet_cowl_brass_512.png",
      f"{BASE}/boar/chassis/paint_brass_gold_512.png"),
+    ("Boar", "Ivory Stock",
+     f"{BASE}/boar/head_unit/ear_boar_rivet_cowl_ivory_512.png",
+     f"{BASE}/boar/chassis/paint_ivory_stock_512.png"),
 
     # Macaque
     ("Macaque", "Bamboo Bronze",
      f"{BASE}/macaque/head_unit/ear_macaque_coaxial_bronze_512.png",
      f"{BASE}/macaque/chassis/paint_bamboo_bronze_512.png"),
+    ("Macaque", "Ivory Stock",
+     f"{BASE}/macaque/head_unit/ear_macaque_coaxial_ivory_512.png",
+     f"{BASE}/macaque/chassis/paint_ivory_stock_512.png"),
 
     # Tiger
     ("Tiger Head", "Volcano Black",
@@ -146,7 +155,7 @@ def main():
         
     print("-" * 105)
     if all_pass:
-        print("🎉 全部 17 組新切片新公式平均色距全部 < 60.0、色階數 > 10000、平坦區 < 10%，全部通過驗收！")
+        print(f"🎉 全部 {len(TEST_PAIRS)} 組切片新公式平均色距全部 < 60.0、色階數 > 10000、平坦區 < 10%，全部通過驗收！")
     else:
         print("❌ 部分切片未達到合格標準，請修正！")
     return all_pass
