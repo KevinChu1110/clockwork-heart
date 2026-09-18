@@ -383,15 +383,14 @@ static func build_paperdoll_map(race: String, slot_selection: Dictionary = {}) -
 static func get_slot_texture(path: String) -> Texture2D:
 	if path == "" or (not ResourceLoader.exists(path) and not FileAccess.file_exists(path)):
 		return null
-	if ResourceLoader.exists(path):
-		var res = load(path)
-		if res is Texture2D:
-			return res as Texture2D
-	# 若尚未產生 .import 快取，使用 Image.load_from_file 安全即時載入
 	if FileAccess.file_exists(path):
 		var img := Image.load_from_file(path)
 		if img != null and not img.is_empty():
 			return ImageTexture.create_from_image(img)
+	if ResourceLoader.exists(path):
+		var res = load(path)
+		if res is Texture2D:
+			return res as Texture2D
 	return null
 
 
