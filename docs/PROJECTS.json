@@ -1736,8 +1736,8 @@
    "id": "explore-battle-no-128-merge",
    "cat": "遊戲",
    "title": "把已過審的探索與戰鬥換裝失敗不准退回128合進主線",
-   "status": "開發中",
-   "note": "開始合併 wt/t_a5b3be99 到 origin/main",
+   "status": "測試中",
+   "note": "已併入主線並生成實機存證",
    "keys": [
     "把已過審的探索與"
    ]
