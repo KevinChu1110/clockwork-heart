@@ -15,7 +15,8 @@ import hashlib
 import numpy as np
 from PIL import Image
 
-REPO_ROOT = os.environ.get("HERMES_KANBAN_WORKSPACE", os.getcwd())
+ws = os.environ.get("HERMES_KANBAN_WORKSPACE", "")
+REPO_ROOT = ws if ws and os.path.exists(os.path.join(ws, "game")) else os.getcwd()
 CHASSIS_DIR = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/boar/chassis"
 HEAD_DIR = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/boar/head_unit"
 CORE_DIR = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/boar/optic_core"
