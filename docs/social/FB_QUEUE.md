@@ -2359,7 +2359,7 @@ C【灰燼夜行機關裝】（暗夜碳黑匿蹤忍裝，高對比金色管線�
 
 | 序 | 排程時間 | Persona | 形式 | 素材（必須存在於 repo） | 核心目的與追蹤指標 | 狀態 |
 |---|---|---|---|---|---|---|
-| Day 1 | 週三 20:00 (11-18) | 阿哲（內容行銷） | 玄軸熊三大經典外裝對照工藝長文 | `game/assets/sprites/player/paperdoll/bear/proof_bear_costume_comparison.png` | 從第八族工坊巨獸談「所有生命皆為發條玩具」世界觀憲章與狂戰破陣戰鎧工藝深度／分享數、長文停留時間 | 待總監審查後開發文單（已重新複驗合格，2026-09-17：先前核准版本被 0-ART18 覆蓋出第3格胸腹平塗色塊缺陷，經 t_296e4e33 重繪厚塗光影漸層後已重新複驗合格） |
+| Day 1 | 週三 20:00 (11-18) | 阿哲（內容行銷） | 玄軸熊三大經典外裝對照工藝長文 | `game/assets/sprites/player/paperdoll/bear/proof_bear_costume_comparison.png` | 從第八族工坊巨獸談「所有生命皆為發條玩具」世界觀憲章與狂戰破陣戰鎧工藝深度／分享數、長文停留時間 | ✅ 已發布（發布時間：2026-09-18 09:55，ID: `1335191403004011_122112710847447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112710847447337) |
 | Day 2 | 週四 20:00 (11-19) | 小魚（視覺成果直擊） | 雲嵐鶴三大底盤塗裝對照 | `game/assets/sprites/player/paperdoll/crane/proof_crane_chassis_comparison.png` | 開門見山直擊第二族雲嵐鶴三大底盤塗裝、冷淬青瓷白與晴空凌雲湛藍高光質感／單圖停留時間、留言數、分享數 | 待總監審查後開發文單（已重新複驗合格，2026-09-17：先前核准版本被 0-ART18 覆蓋出新缺陷，經 t_296e4e33 修復後已重新複驗合格） |
 | Day 3 | 週五 20:00 (11-20) | 小玩（平台機制） | 五大底盤胸腹核心 600% 顯微放大數藍色菱形能量水晶挑戰 | `game/assets/sprites/player/paperdoll/penguin/proof_penguin_chassis_zoom_comparison.png` | 借平台雙擊放大手勢挑戰數五格顯微特寫中散發青藍微光的菱形能量水晶總數（共 3 處）／單圖停留時間、放大互動、留言數 | 待總監審查後開發文單 |
 | Day 4 | 週六 12:00 (11-21) | Ken（社群互動） | 白金兔三大底盤塗裝風格出巡秒回投票 | `game/assets/sprites/player/paperdoll/rabbit/proof_rabbit_chassis_comparison.png` | 原廠象牙白 vs 黃銅原金 vs 午夜深藍三大塗裝風格單選回覆／留言數、留言與觸及比 | 待總監審查後開發文單 |
@@ -2378,7 +2378,7 @@ test -f game/assets/sprites/player/paperdoll/rabbit/proof_rabbit_chassis_compari
 #### Day 1 · 阿哲（內容行銷）· 512 字
 
 - **形式**：世界觀、角色小傳、開發幕後長文（300–600 字區間）
-- **狀態**：待總監審查後開發文單
+- **狀態**：✅ 已發布（發布時間：2026-09-18 09:55，ID: `1335191403004011_122112710847447337`）[貼文連結](https://www.facebook.com/122110055895447337/posts/122112710847447337)
 - **圖**：`game/assets/sprites/player/paperdoll/bear/proof_bear_costume_comparison.png`（472×205，第八種族玄軸熊三大經典外裝對照圖）
 - **發法**（審過後由獨立任務執行）：`python3 /root/fb_post.py photo "<文案>" game/assets/sprites/player/paperdoll/bear/proof_bear_costume_comparison.png`
 - **定位**：第八種族「玄軸熊」三大經典外裝對照首度正式亮相！深入探討白板頂端「所有生命皆為發條玩具」的世界憲章鐵律。拆解兼具工坊匠人與破陣猛士的機關巨獸，如何徹底摒棄傳統奇幻中熊族的生物毛皮、鋒利爪牙與肉質軀體。改以高溫琥珀合金板件、外露咬合齒輪與精密鉚釘拼裝而成。面額由精密帆布金屬素體縫合而成，雙耳鑲嵌微型旋轉齒輪，背部搭載蒸氣排氣管與蜂蜜機關罐，胸前跳動著翡翠綠發條之心能量核心。誠實分享從裸機素體、玄軸工坊工作吊帶甲到狂戰破陣機關戰鎧 [新] 的工藝取捨與世界觀堅持。
