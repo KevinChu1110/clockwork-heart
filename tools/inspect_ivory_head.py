@@ -1,22 +1,16 @@
 from PIL import Image
+import numpy as np
 
-r_dir = "/opt/side/bravesoul-game/game/assets/sprites/player/paperdoll/rabbit"
-ch_ivory = Image.open(f"{r_dir}/chassis/paint_ivory_stock.png").convert("RGBA")
+p = 'game/assets/sprites/player/paperdoll/boar/head_unit/ear_boar_rivet_cowl_ivory_512.png'
+im = Image.open(p).convert('RGBA')
+print("ear_boar_rivet_cowl_ivory_512 bbox:", im.getbbox())
 
-ch_data = ch_ivory.load()
-for y in range(42, 65):
-    line = ""
-    for x in range(34, 94):
-        a = ch_data[x, y][3]
-        if a == 0:
-            line += " "
-        else:
-            r, g, b = ch_data[x, y][:3]
-            lum = (r + g + b) / 3
-            if lum > 200:
-                line += "W" # White/Ivory
-            elif lum > 120:
-                line += "m" # medium
-            else:
-                line += "D" # Dark
-    print(f"y={y:2d}: {line}")
+# Let's inspect rows 160 to 250 of ear_boar_rivet_cowl_ivory_512!
+arr = np.array(im)
+alpha = arr[:, :, 3]
+for y in range(160, 250, 5):
+    xs = np.where(alpha[y] > 0)[0]
+    if len(xs) > 0:
+        print(f"y={y}: min_x={xs.min()}, max_x={xs.max()}, count={len(xs)}")
+    else:
+        print(f"y={y}: EMPTY")
