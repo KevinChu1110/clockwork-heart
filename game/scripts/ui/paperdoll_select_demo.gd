@@ -601,6 +601,7 @@ func _apply_current_selections() -> void:
 
 
 var _sprite_512: Sprite2D = null
+var force_composite_512_fail: bool = false
 
 func _ensure_stage_sprite_512() -> void:
 	if _sprite_512 != null and is_instance_valid(_sprite_512):
@@ -624,12 +625,15 @@ func _update_stage_512(selections: Dictionary) -> void:
 		return
 	_ensure_stage_sprite_512()
 
-	var tex_512: Texture2D = PaperdollRenderer.build_composite_texture_512(_current_race_id, selections)
-	if tex_512 == null:
-		var idle_candidate: Texture2D = SpriteDB.player_equipped_idle(_current_race_id, selections)
-		if idle_candidate != null and idle_candidate.get_width() >= 256:
-			tex_512 = idle_candidate
+	var tex_512: Texture2D = null
+	if not force_composite_512_fail:
+		tex_512 = PaperdollRenderer.build_composite_texture_512(_current_race_id, selections)
+		if tex_512 == null:
+			var idle_candidate: Texture2D = SpriteDB.player_equipped_idle(_current_race_id, selections)
+			if idle_candidate != null and idle_candidate.get_width() >= 256:
+				tex_512 = idle_candidate
 
+	# 合成失敗改讀官方立牌或本族 showcase idle 256，不准退回 128 模組切片 (0-ART26)
 	if tex_512 == null or tex_512.get_width() < 256:
 		var sc := SpriteDB.hero_showcase_hd_tex(_current_race_id)
 		if sc != null and sc.get_width() >= 256:
@@ -640,13 +644,14 @@ func _update_stage_512(selections: Dictionary) -> void:
 		_sprite_512.texture = tex_512
 		_sprite_512.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		var tw := float(tex_512.get_width())
+		var th := float(tex_512.get_height())
 		var s := 128.0 / tw if tw > 0.0 else 0.25
 		_sprite_512.scale = Vector2(s, s)
+		_sprite_512.position = Vector2(-64.0, 8.0 - th * s)
 		_sprite_512.visible = true
 		if layers != null:
 			layers.visible = false
 	else:
-		# 合成失敗改讀官方立牌／512，不准退回 128 模組切片 (0-ART26)
 		_sprite_512.texture = null
 		_sprite_512.visible = false
 		if layers != null:
