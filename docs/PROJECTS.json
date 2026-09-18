@@ -1756,8 +1756,8 @@
    "id": "creation-stage-no-128-merge",
    "cat": "遊戲",
    "title": "把已過審的開局選族失敗不准退回128合進主線",
-   "status": "測試中",
-   "note": "已合併至主線，完成驗證與實機存證，待審核",
+   "status": "已上線",
+   "note": "製作人審核通過：兩張實機圖 vision 放大確認高清無馬賽克，creation 3/3、paperdoll 17/17 全綠，已在 main",
    "keys": [
     "把已過審的開局選"
    ]
