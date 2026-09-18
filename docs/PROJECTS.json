@@ -1376,8 +1376,8 @@
    "id": "ui-ppt-clean2",
    "cat": "遊戲",
    "title": "大廳第二輪清 PPT：設置/出征圖示＋頂底欄半透明",
-   "status": "測試中",
-   "note": "實機截圖 proofs/ui_ppt_clean/，test_mobile_lobby 綠",
+   "status": "已上線",
+   "note": "設置/出征圖示與頂底欄半透明已確認在main，test_mobile_lobby綠",
    "keys": [
     "大廳第二輪清 P"
    ]
