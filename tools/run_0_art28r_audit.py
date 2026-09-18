@@ -25,6 +25,9 @@ target_files = [
     f"{BEAR_DIR}/head_unit/head_iron_bear_amber_512.png",
     f"{BEAR_DIR}/head_unit/head_iron_bear_quarry_512.png",
     f"{BEAR_DIR}/head_unit/head_iron_bear_stock_512.png",
+    # Weapon 128 & 512
+    f"{BEAR_DIR}/weapon/wpn_eccentric_gyro_sledge.png",
+    f"{BEAR_DIR}/weapon/wpn_eccentric_gyro_sledge_512.png",
     # Composites
     f"{PROOFS_DIR}/composite_512_bear_amber.png",
     f"{PROOFS_DIR}/composite_512_bear_quarry.png",

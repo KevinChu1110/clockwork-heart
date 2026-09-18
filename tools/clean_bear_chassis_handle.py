@@ -13,7 +13,7 @@ import numpy as np
 REPO_ROOT = "/opt/side/bravesoul-game"
 CHASSIS_DIR = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/bear/chassis"
 
-# 59 個直柄與懸空鏈條座標 (在 2dc69e75 時均為透明)
+# 舊素體殘留切片座標
 LEAKED_COORDS_128 = [
     (30, 93), (30, 94), (30, 95), (30, 96), (30, 97), (30, 98),
     (31, 92), (31, 93), (31, 94), (31, 95), (31, 96), (31, 97),
@@ -40,13 +40,12 @@ def clean_chassis():
         for x, y in LEAKED_COORDS_128:
             arr128[y, x] = [0, 0, 0, 0]
             
-        # 清理拳頭左下緣的黃色條紋線，消除武士刀柄纏繩條紋歧義，還原為自然金屬拳套
+        # 清理握拳手腕處的黃色直柄殘留線（正確座標在 x=86..89, y=82..85）
         fill_color = [35, 42, 56, 255] if "quarry" in name else [50, 55, 68, 255]
-        outline_color = [31, 26, 58, 255]
-        arr128[82, 34] = fill_color
-        arr128[83, 35] = fill_color
-        arr128[84, 35] = fill_color
-        arr128[85, 36] = outline_color
+        arr128[82, 86] = fill_color
+        arr128[83, 87] = fill_color
+        arr128[84, 88] = fill_color
+        arr128[85, 89] = fill_color
         
         # 清理 x <= 27, y < 110 的邊界雜質
         for y in range(110):
@@ -83,6 +82,16 @@ def clean_chassis():
             for x in range(150, 166):
                 if arr512[y, x, 3] < 20:
                     arr512[y, x] = [0, 0, 0, 0]
+                    
+        # 握拳處 512 高清色斑清理：清除殘留之黃色直柄殘留 (R>180, G>150, B<110)
+        sub_fist = arr512[326:346, 342:362]
+        r_f = sub_fist[:, :, 0].astype(int)
+        g_f = sub_fist[:, :, 1].astype(int)
+        b_f = sub_fist[:, :, 2].astype(int)
+        a_f = sub_fist[:, :, 3].astype(int)
+        y_mask = (r_f > 180) & (g_f > 150) & (b_f < 110) & (a_f > 50)
+        sub_fist[y_mask] = fill_color
+        arr512[326:346, 342:362] = sub_fist
                     
         clean512_final = Image.fromarray(arr512)
         clean512_final.save(p512)
