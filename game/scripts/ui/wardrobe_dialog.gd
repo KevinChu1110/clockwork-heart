@@ -771,14 +771,14 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 				return bare_comp
 			return null
 
-		# 1. 優先 512 切片 (common/costume/ -> 本族 512 -> 去前綴 512)
-		var p_common_512 := "res://assets/sprites/player/paperdoll/common/costume/%s_512.png" % item_id
-		if ResourceLoader.exists(p_common_512):
-			return load(p_common_512) as Texture2D
-
+		# 1. 優先 512 切片 (本族 512 -> 通用 common/costume/ -> 去前綴 512)
 		var path512 := "res://assets/sprites/player/paperdoll/%s/costume/%s_512.png" % [r, item_id]
 		if ResourceLoader.exists(path512):
 			return load(path512) as Texture2D
+
+		var p_common_512 := "res://assets/sprites/player/paperdoll/common/costume/%s_512.png" % item_id
+		if ResourceLoader.exists(p_common_512):
+			return load(p_common_512) as Texture2D
 
 		var clean_id := item_id.trim_prefix("costume_")
 		var p_common_512_clean := "res://assets/sprites/player/paperdoll/common/costume/%s_512.png" % clean_id
