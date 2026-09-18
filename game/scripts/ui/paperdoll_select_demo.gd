@@ -627,22 +627,30 @@ func _update_stage_512(selections: Dictionary) -> void:
 	var tex_512: Texture2D = PaperdollRenderer.build_composite_texture_512(_current_race_id, selections)
 	if tex_512 == null:
 		var idle_candidate: Texture2D = SpriteDB.player_equipped_idle(_current_race_id, selections)
-		if idle_candidate != null and idle_candidate.get_width() >= 512 and idle_candidate.get_height() >= 512:
+		if idle_candidate != null and idle_candidate.get_width() >= 256:
 			tex_512 = idle_candidate
 
+	if tex_512 == null or tex_512.get_width() < 256:
+		var sc := SpriteDB.hero_showcase_hd_tex(_current_race_id)
+		if sc != null and sc.get_width() >= 256:
+			tex_512 = sc
+
 	var layers := ch.get_node_or_null("Layers") as CanvasItem
-	if tex_512 != null:
+	if tex_512 != null and tex_512.get_width() >= 256:
 		_sprite_512.texture = tex_512
 		_sprite_512.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		var tw := float(tex_512.get_width())
+		var s := 128.0 / tw if tw > 0.0 else 0.25
+		_sprite_512.scale = Vector2(s, s)
 		_sprite_512.visible = true
 		if layers != null:
 			layers.visible = false
 	else:
-		# 合成失敗安全退回 128 模組切片疊合渲染，不准借別族圖 (0-ART26)
+		# 合成失敗改讀官方立牌／512，不准退回 128 模組切片 (0-ART26)
 		_sprite_512.texture = null
 		_sprite_512.visible = false
 		if layers != null:
-			layers.visible = true
+			layers.visible = false
 
 func get_stage_texture() -> Texture2D:
 	if _sprite_512 != null and _sprite_512.visible and _sprite_512.texture != null:
@@ -654,7 +662,7 @@ func get_stage_sprite_512() -> Sprite2D:
 
 func is_stage_512() -> bool:
 	var t := get_stage_texture()
-	return t != null and t.get_width() == 512 and t.get_height() == 512
+	return t != null and t.get_width() >= 256
 
 
 ## 更新 UI 資訊

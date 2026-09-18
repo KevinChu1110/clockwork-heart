@@ -1109,11 +1109,12 @@ func _get_player_equipped_idle_texture() -> Texture2D:
 				if base_id != "":
 					slots["weapon"] = base_id
 	var tex: Texture2D = SpriteDB.player_equipped_idle(_player_race, slots)
-	if tex == null:
-		tex = SpriteDB.player_pose("idle", _player_race)
-	if tex == null:
-		tex = SpriteDB.player_battle()
-	return tex
+	if tex != null and tex.get_width() >= 256:
+		return tex
+	var sc := SpriteDB.hero_showcase_hd_tex(_player_race)
+	if sc != null and sc.get_width() >= 256:
+		return sc
+	return null
 
 
 func _apply_battle_art(mode: String) -> void:
@@ -1122,11 +1123,18 @@ func _apply_battle_art(mode: String) -> void:
 	_player_race = SpriteDB.player_race()
 	_player_pose = "idle"
 	var ptex := _get_player_equipped_idle_texture()
-	if ptex == null:
-		ptex = SpriteDB.player_battle()
-	if ptex:
+	if ptex != null and ptex.get_width() >= 256:
 		player_body.texture = ptex
+		player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		_player_tex_has_baked_shadow = _texture_has_baked_shadow(ptex)
+	else:
+		var sc := SpriteDB.hero_showcase_hd_tex(_player_race)
+		if sc != null and sc.get_width() >= 256:
+			player_body.texture = sc
+			player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+			_player_tex_has_baked_shadow = _texture_has_baked_shadow(sc)
+		else:
+			player_body.texture = null
 	player_body.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	player_body.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	player_body.custom_minimum_size = Vector2(200, 250)
@@ -2285,20 +2293,22 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 	var t: Texture2D = null
 	if pose == "idle":
 		t = _get_player_equipped_idle_texture()
-		_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
 	else:
 		t = SpriteDB.player_pose(pose, _player_race)
-		if t == null:
+		if t == null or t.get_width() < 256:
 			t = _get_player_equipped_idle_texture()
-			_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
-		else:
-			_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
-	if t == null:
-		t = SpriteDB.player_battle()
-		_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
-	if t:
+	if t != null and t.get_width() >= 256:
 		player_body.texture = t
 		player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		_player_tex_has_baked_shadow = _texture_has_baked_shadow(t)
+	else:
+		var sc := SpriteDB.hero_showcase_hd_tex(_player_race)
+		if sc != null and sc.get_width() >= 256:
+			player_body.texture = sc
+			player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+			_player_tex_has_baked_shadow = _texture_has_baked_shadow(sc)
+		else:
+			player_body.texture = null
 	_layout_foot_shadow(player_body)
 	if _player_pose_tween and _player_pose_tween.is_valid():
 		_player_pose_tween.kill()

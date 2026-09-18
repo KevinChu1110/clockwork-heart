@@ -115,24 +115,37 @@ func _apply_shadow_profile() -> void:
 	shadow.visible = gp == null or gp.shadows_enabled()
 
 
+const LOGICAL_BASE_HEIGHT := 512.0
+
+
 func _get_body_base_scale() -> Vector2:
 	if body == null or body.texture == null:
 		return Vector2.ONE
-	var tw := float(body.texture.get_width())
-	if tw > 128.0:
-		var s := 128.0 / tw
+	var th := float(body.texture.get_height())
+	if th > LOGICAL_BASE_HEIGHT:
+		var s := LOGICAL_BASE_HEIGHT / th
 		return Vector2(s, s)
 	return Vector2.ONE
 
 
 func _set_body_tex(tex: Texture2D) -> void:
-	if tex == null or body == null:
+	if body == null:
 		return
-	if body.texture != tex:
-		body.texture = tex
-	var tw := float(tex.get_width())
-	var th := float(tex.get_height())
-	var s := 128.0 / tw if tw > 128.0 else 1.0
+	var effective_tex: Texture2D = tex
+	if effective_tex == null or (not _moving and effective_tex.get_width() < 256):
+		var sc := SpriteDB.hero_showcase_hd_tex(SpriteDB.player_race())
+		if sc != null and sc.get_width() >= 256:
+			effective_tex = sc
+		else:
+			effective_tex = null
+	if effective_tex == null:
+		body.texture = null
+		return
+	if body.texture != effective_tex:
+		body.texture = effective_tex
+	body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	var th := float(effective_tex.get_height())
+	var s := LOGICAL_BASE_HEIGHT / th if th > LOGICAL_BASE_HEIGHT else 1.0
 	body.scale = Vector2(s, s)
 	## 錨點固定在腳底：每格同高，offset 只跟貼圖高度走，不會上下抖
 	body.offset = Vector2(0, -th * 0.5 + (8.0 / s))
