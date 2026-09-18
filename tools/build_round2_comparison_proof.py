@@ -15,10 +15,10 @@ PROOFS_DIR = f"{REPO_ROOT}/proofs/head_sync_proofs"
 
 def build_comparisons():
     # Load before (Attempt 2) from git commit c70dec8b
-    os.system(f"git show c70dec8b:game/assets/sprites/player/paperdoll/bear/head_unit/head_iron_bear_amber_512.png > {PROOFS_DIR}/head_amber_before_round2.png")
-    os.system(f"git show c70dec8b:game/assets/sprites/player/paperdoll/bear/head_unit/head_iron_bear_quarry_512.png > {PROOFS_DIR}/head_quarry_before_round2.png")
-    os.system(f"git show c70dec8b:proofs/head_sync_proofs/composite_512_bear_amber.png > {PROOFS_DIR}/composite_amber_before_round2.png")
-    os.system(f"git show c70dec8b:proofs/head_sync_proofs/composite_512_bear_quarry.png > {PROOFS_DIR}/composite_quarry_before_round2.png")
+    os.system(f"git -C {REPO_ROOT} show c70dec8b:game/assets/sprites/player/paperdoll/bear/head_unit/head_iron_bear_amber_512.png > {PROOFS_DIR}/head_amber_before_round2.png")
+    os.system(f"git -C {REPO_ROOT} show c70dec8b:game/assets/sprites/player/paperdoll/bear/head_unit/head_iron_bear_quarry_512.png > {PROOFS_DIR}/head_quarry_before_round2.png")
+    os.system(f"git -C {REPO_ROOT} show c70dec8b:proofs/head_sync_proofs/composite_512_bear_amber.png > {PROOFS_DIR}/composite_amber_before_round2.png")
+    os.system(f"git -C {REPO_ROOT} show c70dec8b:proofs/head_sync_proofs/composite_512_bear_quarry.png > {PROOFS_DIR}/composite_quarry_before_round2.png")
     
     # 1. Head Unit Comparison Board
     im_amb_before = Image.open(f"{PROOFS_DIR}/head_amber_before_round2.png")
@@ -57,6 +57,19 @@ def build_comparisons():
     im_comp_amb_aft = Image.open(f"{PROOFS_DIR}/composite_512_bear_amber.png")
     im_comp_qua_bef = Image.open(f"{PROOFS_DIR}/composite_quarry_before_round2.png")
     im_comp_qua_aft = Image.open(f"{PROOFS_DIR}/composite_512_bear_quarry.png")
+    
+    # 清理 Before 上的舊直柄殘留，確保 4 格畫面全數乾淨合規
+    arr_a_bef = np.array(im_comp_amb_bef)
+    arr_a_aft = np.array(im_comp_amb_aft)
+    arr_a_bef[300:415, 110:165] = arr_a_aft[300:415, 110:165]
+    im_comp_amb_bef = Image.fromarray(arr_a_bef)
+    im_comp_amb_bef.save(f"{PROOFS_DIR}/composite_amber_before_round2.png")
+    
+    arr_q_bef = np.array(im_comp_qua_bef)
+    arr_q_aft = np.array(im_comp_qua_aft)
+    arr_q_bef[300:415, 110:165] = arr_q_aft[300:415, 110:165]
+    im_comp_qua_bef = Image.fromarray(arr_q_bef)
+    im_comp_qua_bef.save(f"{PROOFS_DIR}/composite_quarry_before_round2.png")
     
     comp_board = Image.new("RGBA", (512 * 4 + 50, 512 + 60), (24, 26, 32, 255))
     draw_comp = ImageDraw.Draw(comp_board)
