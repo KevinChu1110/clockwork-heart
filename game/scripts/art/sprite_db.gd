@@ -43,6 +43,29 @@ static var _equipped_idle_cache: Dictionary = {}
 static var _equipped_walk_cache: Dictionary = {}
 
 
+## 取得本族官方立牌或 showcase 高清展示貼圖（>=256，LINEAR）
+static func hero_showcase_hd_tex(race: String) -> Texture2D:
+	var r := race.strip_edges().to_lower()
+	if r.is_empty():
+		r = "rabbit"
+	var p_hd := "%s/player/showcase/%s_idle_hd.png" % [ROOT, r]
+	if ResourceLoader.exists(p_hd):
+		var t := tex(p_hd)
+		if t != null and t.get_width() >= 256:
+			return t
+	var p256 := "%s/player/paperdoll/%s/showcase_idle_256.png" % [ROOT, r]
+	if ResourceLoader.exists(p256):
+		var t256 := tex(p256)
+		if t256 != null and t256.get_width() >= 256:
+			return t256
+	var p512 := "%s/player/paperdoll/%s/proof_paperdoll_%s_composite_512.png" % [ROOT, r, r]
+	if ResourceLoader.exists(p512):
+		var t512 := tex(p512)
+		if t512 != null and t512.get_width() >= 256:
+			return t512
+	return null
+
+
 ## 清空紙娃娃即時合成快取（換裝／卸裝／種族變更時呼叫）
 static func clear_equipped_cache() -> void:
 	_equipped_idle_cache.clear()
