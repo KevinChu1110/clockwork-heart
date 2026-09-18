@@ -220,11 +220,20 @@ func _run() -> void:
 	await _capture("proof_07_wardrobe_rabbit_midnight.png", "comp_07_rabbit_midnight.png")
 
 	# ─── 8. 衣櫥隨機混搭鈕功能回歸 (t_9265459b) ───
-	print("\n>>> [8/8] 衣櫥隨機混搭鈕 (t_9265459b) 觸發測試...")
+	print("\n>>> [8/9] 衣櫥隨機混搭鈕 (t_9265459b) 觸發測試...")
 	_trigger_random_mix()
 	await _wait_frames(25)
 	await _capture("proof_08_wardrobe_random_mix.png", "comp_08_wardrobe_random_mix.png")
 
-	print("\n=== QA Round 16 全部 8 組實機全景截圖與 512 高清合成存證完成 ===")
+	# ─── 9. 鋼牙豕 (Boar)：Ivory Stock (paint_ivory_stock) 抽查 (0-ART28q) ───
+	print("\n>>> [9/9] 豬族 Ivory Stock (paint_ivory_stock) 抽查...")
+	_switch_race("boar")
+	await _wait_frames(15)
+	_select_costume_by_id("none")
+	_select_chassis_by_id("paint_ivory_stock")
+	await _wait_frames(25)
+	await _capture("proof_wardrobe_boar_ivory.png", "comp_wardrobe_boar_ivory.png")
+
+	print("\n=== QA Round 16 全部 9 組實機全景截圖與 512 高清合成存證完成 ===")
 	_lobby.queue_free()
 	quit(0)

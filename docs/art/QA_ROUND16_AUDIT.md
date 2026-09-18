@@ -27,5 +27,5 @@
 | 17. 雲嵐鶴·原廠冷淬青瓷 (Crane Porcelain) | `proofs/qa_round16/proof_06_wardrobe_crane_azure.png` (可選格) | Head: (151.8, 148.9, 158.1)<br>Chassis: (135.6, 136.5, 142.7)<br>**ΔE: 25.6** (< 60.0 PASS)<br>色階數: 21,645，平坦比: 0.12% | **通過**：冷淬青瓷色距 25.6 通過，MD5 獨立。 |
 | 18. 兔族午夜深藍耳修正 (t_7e6cf338 回歸) | `proofs/qa_round16/proof_07_wardrobe_rabbit_midnight.png`<br>`proofs/qa_round16/comp_07_rabbit_midnight.png` | 耳色對齊深群青 (54, 100, 182)<br>明度差 0.0，無亮天藍錯色 | **通過**：雙耳外殼與身體主色一致為午夜深藍／深群青，樞軸結構嵌合緊密，零毛皮零破圖。 |
 | 19. 衣櫥一鍵隨機混搭鈕 (t_9265459b 回歸) | `proofs/qa_round16/proof_08_wardrobe_random_mix.png`<br>`proofs/qa_round16/comp_08_wardrobe_random_mix.png` | 天藍色多巴胺果凍按鈕<br>高度 >= 48px，即時響應 | **通過**：點擊後即時混搭（象牙白 + 皇家巡遊禮服），預覽動態更新無報錯，UI 100% 零 Emoji。 |
-| 20. MD5 全量目錄排查 (0-ART28n / 0-ART28q) | `tools/audit_md5_all_six_races.py` | 六族 `head_unit/*_512.png` 全量雜湊排序比對 | **通過**：除獅族 brass/macaque ivory 指向 base、虎族 head/ear 刻意共用外，其餘切片 100% 獨立互異，野豬象牙白為全新獨立切片 `f50a4667fb`。 |
+| 20. MD5 全量目錄排查 (0-ART28n / 0-ART28q) | `tools/audit_md5_all_six_races.py` | 六族 `head_unit/*_512.png` 全量雜湊排序比對 | **通過**：除獅族 brass/macaque ivory 指向 base、虎族 head/ear 刻意共用外，其餘切片 100% 獨立互異，野豬象牙白為全新獨立切片 `246d0bb97b`。 |
 | 21. 無頭測試與引擎冒煙 | Godot 引擎無頭執行 | 17/17 全數通過 | **通過**：`godot --headless --quit-after 3` 零 SCRIPT ERROR；`TEST_FILTER=paperdoll ./tools/run_tests.sh` 17/17 跑綠。 |
