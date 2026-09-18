@@ -92,6 +92,37 @@ func _initialize() -> void:
 	else:
 		print("  ✓ 兔族換裝合成失敗時安全退回展示立牌: 尺寸 = %dx%d (>=256)" % [rab_fail_tex.get_width(), rab_fail_tex.get_height()])
 
+	# 2-B. 驗證 512 走路合成失敗時安全退回本族預設 512 走路幀（四幀會動，絕不退回 128/x3，絕不借兔步）
+	print("\n--- 檢查斷言 ②-B：走路 512 合成失敗安全退回本族預設 512 走路四幀 ---")
+	var test_walk_races := ["rabbit", "lion", "penguin"]
+	var rab_fail_walks: Array[Texture2D] = []
+	for r in test_walk_races:
+		var r_walks: Array[Texture2D] = []
+		for f in range(4):
+			SpriteDB.clear_equipped_cache()
+			var fw := SpriteDB.player_equipped_walk(f, r, broken_slots)
+			if fw == null or fw.get_width() < 256:
+				_fail("種族 %s 換裝失敗走路幀 %d 應 >= 256，實際: %s" % [r, f, (str(fw.get_width()) if fw else "null")])
+			else:
+				r_walks.append(fw)
+				if r == "rabbit":
+					rab_fail_walks.append(fw)
+		if r == "penguin" and rab_fail_walks.size() == 4 and r_walks.size() == 4:
+			# 企鵝絕不借兔步
+			var p_img := r_walks[0].get_image()
+			var r_img := rab_fail_walks[0].get_image()
+			var diffs := 0
+			for y in range(0, 512, 8):
+				for x in range(0, 512, 8):
+					if p_img.get_pixel(x, y) != r_img.get_pixel(x, y):
+						diffs += 1
+			if diffs == 0:
+				_fail("企鵝換裝失敗走路幀借用兔步！")
+			else:
+				print("  ✓ 企鵝換裝失敗走路幀保持本族 512 (未借兔步，差異採樣: %d)" % diffs)
+		if r_walks.size() == 4:
+			print("  ✓ 種族 %s 換裝失敗走路四幀皆為本族 >= 256 (512x512)" % r)
+
 	# 3. 驗證 PaperdollRenderer.get_race_composite_texture_512 失敗時不再退回 128
 	print("\n--- 檢查斷言 ③：PaperdollRenderer.get_race_composite_texture_512 失敗回傳 null ---")
 	var comp_fail: Texture2D = PaperdollRenderer.get_race_composite_texture_512("rabbit", broken_slots)
