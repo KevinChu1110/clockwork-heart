@@ -424,14 +424,8 @@ func _create_race_filter_bar() -> Control:
 
 	var hbox := HBoxContainer.new()
 	hbox.name = "ChipsHBox"
-	hbox.add_theme_constant_override("separation", 6)
+	hbox.add_theme_constant_override("separation", 4)
 	chip_scroll.add_child(hbox)
-
-	# 開端保留微小邊距
-	var start_spacer := Control.new()
-	start_spacer.name = "StartSpacer"
-	start_spacer.custom_minimum_size = Vector2(4, 0)
-	hbox.add_child(start_spacer)
 
 	_filter_chips.clear()
 	for opt in RACE_FILTER_OPTIONS:
@@ -440,8 +434,8 @@ func _create_race_filter_bar() -> Control:
 		var btn := Button.new()
 		btn.name = "Chip_" + rid
 		btn.text = rname
-		# ⚠️ 觸控熱區下限 48px，⛔ 不准為了「線條瘦身」再調小（t_bc40f393 已裁定，t_e1cdccf4 曾誤改回 38）
-		btn.custom_minimum_size = Vector2(50, 48)
+		# ⚠️ 觸控熱區下限 48px，寬度 46px 確保九族＋全部（共10顆標籤）在各螢幕寬度下完整容納不被切半
+		btn.custom_minimum_size = Vector2(46, 48)
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		btn.add_theme_font_size_override("font_size", 14)
 		if _cached_font:
@@ -453,7 +447,7 @@ func _create_race_filter_bar() -> Control:
 	# 末端保留右邊距，確保最右側 chip 滾動到終點時不被容器邊界裁剪
 	var end_spacer := Control.new()
 	end_spacer.name = "EndSpacer"
-	end_spacer.custom_minimum_size = Vector2(24, 0)
+	end_spacer.custom_minimum_size = Vector2(8, 0)
 	hbox.add_child(end_spacer)
 
 	_update_filter_chips_visual()
@@ -480,8 +474,8 @@ func _update_filter_chips_visual() -> void:
 		var is_selected: bool = (str(rid) == current_filter_race)
 		var sb := StyleBoxFlat.new()
 		sb.set_corner_radius_all(14)
-		sb.content_margin_left = 10
-		sb.content_margin_right = 10
+		sb.content_margin_left = 6
+		sb.content_margin_right = 6
 		sb.content_margin_top = 4
 		sb.content_margin_bottom = 4
 		if is_selected:
@@ -610,13 +604,25 @@ func _create_grid_section(section_title: String, slot_type: String) -> PanelCont
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	vbox.add_child(scroll)
 
+	# 透過 ScrollMargin 邊距隔離垂直捲軸，確保捲軸不覆蓋最右側卡片邊框與內容 (對齊 t_1db22c2d 規範)
+	var scroll_margin := MarginContainer.new()
+	scroll_margin.name = "ScrollMargin"
+	scroll_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll_margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll_margin.add_theme_constant_override("margin_left", 2)
+	scroll_margin.add_theme_constant_override("margin_right", 18)
+	scroll_margin.add_theme_constant_override("margin_top", 2)
+	scroll_margin.add_theme_constant_override("margin_bottom", 6)
+	scroll_margin.mouse_filter = Control.MOUSE_FILTER_PASS
+	scroll.add_child(scroll_margin)
+
 	var grid := GridContainer.new()
 	grid.name = "GridCostume" if slot_type == "costume" else "GridChassis"
 	grid.columns = 4
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid.add_theme_constant_override("h_separation", 8)
 	grid.add_theme_constant_override("v_separation", 8)
-	scroll.add_child(grid)
+	scroll_margin.add_child(grid)
 
 	if slot_type == "costume":
 		_costume_grid = grid
