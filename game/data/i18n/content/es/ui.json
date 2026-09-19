@@ -2004,5 +2004,8 @@
   "請選擇您偏好的顯示語系 (即時生效)：": "Seleccione su idioma de visualización preferido (se aplica al instante):",
   "戰鬥失敗：返還能量 %d 點": "Derrota en combate: %d de energía reembolsada",
   "戰鬥失敗：返還能量 %d 點（現有 %d／%d）": "Derrota en combate: %d de energía reembolsada (actual: %d/%d)",
-  "若是選擇承認敗北，將返還 2 點能量並返回整頓。": "Si aceptas la derrota, recuperarás 2 de energía y volverás a reagruparte."
+  "若是選擇承認敗北，將返還 2 點能量並返回整頓。": "Si aceptas la derrota, recuperarás 2 de energía y volverás a reagruparte.",
+  "一鍵合成": "Fusionar todo",
+  "合成 %d 組，%d 顆升階。": "Fusionados %d grupos, %d mejorados.",
+  "沒有可合成的戰魂（需 3 顆同星、同品質、同階且未入魂）。": "No hay almas para fusionar (se requieren 3 almas no equipadas de la misma estrella, calidad y rango)."
 }

@@ -144,6 +144,67 @@ func _initialize() -> void:
 	else:
 		print("shen lv10 OK ", ss.soul_display(shen))
 
+	## 一鍵合成測試：連鎖合成、3階上限、入槽保護、空狀態
+	gs.souls = []
+	gs.soul_slots = [""]
+	var empty_fa: Dictionary = ss.fuse_all()
+	if bool(empty_fa.get("ok", true)) or int(empty_fa.get("groups", -1)) != 0:
+		push_error("fuse_all empty fail %s" % empty_fa)
+		ok = false
+	else:
+		print("fuse_all empty OK")
+
+	# 放入 9 顆 0 階凡品固甲之魂（未入槽）
+	for i in 9:
+		gs.souls.append({
+			"id": "def_0_%d" % i, "star": "固甲之魂", "quality": "凡", "level": 0, "equipped": false
+		})
+	# 放入 1 顆 0 階已入魂固甲之魂（不可被吃）
+	gs.souls.append({
+		"id": "def_equipped", "star": "固甲之魂", "quality": "凡", "level": 0, "equipped": true
+	})
+	gs.soul_slots = ["def_equipped"]
+	# 放入 3 顆 3 階凡品旋簧之魂（已達 3 階上限，不可合成）
+	for i in 3:
+		gs.souls.append({
+			"id": "hp_cap_%d" % i, "star": "旋簧之魂", "quality": "凡", "level": 3, "equipped": false
+		})
+
+	var fa: Dictionary = ss.fuse_all()
+	if not bool(fa.get("ok", false)):
+		push_error("fuse_all should succeed %s" % fa)
+		ok = false
+	elif int(fa.get("groups", 0)) != 4 or int(fa.get("upgraded", 0)) != 4:
+		push_error("fuse_all should fuse 4 groups, 4 upgraded, got %s" % fa)
+		ok = false
+	elif str(fa.get("msg", "")).find("合成 4 組，4 顆升階") < 0:
+		push_error("fuse_all msg format mismatch: %s" % fa.get("msg"))
+		ok = false
+	else:
+		# 檢查結果：
+		# 1. 入魂的 def_equipped 仍在
+		var eq_found := false
+		var def_2_count := 0
+		var hp_3_count := 0
+		for s in gs.souls:
+			if s.get("id") == "def_equipped":
+				eq_found = true
+			if s.get("star") == "固甲之魂" and int(s.get("level", 0)) == 2 and not bool(s.get("equipped", false)):
+				def_2_count += 1
+			if s.get("star") == "旋簧之魂" and int(s.get("level", 0)) == 3:
+				hp_3_count += 1
+		if not eq_found:
+			push_error("fuse_all ate equipped soul")
+			ok = false
+		elif def_2_count != 1:
+			push_error("fuse_all expected 1 level-2 def soul, got %d" % def_2_count)
+			ok = false
+		elif hp_3_count != 3:
+			push_error("fuse_all touched capped 3-star souls, left %d" % hp_3_count)
+			ok = false
+		else:
+			print("fuse_all chain 9->3->1 (4 groups, capped, equipped safe) OK")
+
 	## 入魂對比：空槽應顯示從 0 起的增減
 	gs.souls = [{
 		"id": "cmp1", "star": "銳齒之魂", "quality": "凡", "level": 0, "equipped": false

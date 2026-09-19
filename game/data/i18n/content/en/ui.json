@@ -2004,5 +2004,8 @@
   "請選擇您偏好的顯示語系 (即時生效)：": "Please select your preferred display language (takes effect immediately):",
   "戰鬥失敗：返還能量 %d 點": "Battle Defeat: Refunded %d Energy",
   "戰鬥失敗：返還能量 %d 點（現有 %d／%d）": "Battle Defeat: Refunded %d Energy (Current: %d/%d)",
-  "若是選擇承認敗北，將返還 2 點能量並返回整頓。": "Admitting defeat will refund 2 energy and return to regroup."
+  "若是選擇承認敗北，將返還 2 點能量並返回整頓。": "Admitting defeat will refund 2 energy and return to regroup.",
+  "一鍵合成": "Fuse All",
+  "合成 %d 組，%d 顆升階。": "Fused %d groups, %d upgraded.",
+  "沒有可合成的戰魂（需 3 顆同星、同品質、同階且未入魂）。": "No souls can be fused (requires 3 unequipped souls of same star, quality, and tier)."
 }

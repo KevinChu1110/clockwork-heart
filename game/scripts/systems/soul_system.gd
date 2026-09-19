@@ -837,6 +837,67 @@ func fuse(star: String, quality: String, level: int) -> Dictionary:
 	return soul
 
 
+## 一鍵合成：迴圈跑遍所有可合成的星/品質/階組，直到沒有任何可合成的組為止
+func fuse_all() -> Dictionary:
+	var total_groups := 0
+	var upgraded_count := 0
+	var safety_cap := 10000
+	var did_fuse := true
+	while did_fuse and safety_cap > 0:
+		did_fuse = false
+		var counts: Dictionary = {}
+		for s in bag_souls():
+			var star := str(s.get("star", ""))
+			var quality := str(s.get("quality", ""))
+			var level := int(s.get("level", 0))
+			var cap := fuse_max_level(quality)
+			if level + 1 > cap:
+				continue
+			var key := "%s|%s|%d" % [star, quality, level]
+			if not counts.has(key):
+				counts[key] = {
+					"star": star,
+					"quality": quality,
+					"level": level,
+					"count": 0,
+				}
+			counts[key]["count"] += 1
+
+		for key in counts.keys():
+			var item: Dictionary = counts[key]
+			var star: String = item["star"]
+			var quality: String = item["quality"]
+			var level: int = item["level"]
+			var count: int = item["count"]
+			var times: int = count / FUSE_COUNT
+			for _i in times:
+				if can_fuse(star, quality, level):
+					var res: Dictionary = fuse(star, quality, level)
+					if not res.is_empty():
+						total_groups += 1
+						upgraded_count += 1
+						did_fuse = true
+						safety_cap -= 1
+						if safety_cap <= 0:
+							break
+			if safety_cap <= 0:
+				break
+
+	if total_groups == 0:
+		return {
+			"ok": false,
+			"groups": 0,
+			"upgraded": 0,
+			"msg": _t("沒有可合成的戰魂（需 3 顆同星、同品質、同階且未入魂）。"),
+		}
+	return {
+		"ok": true,
+		"groups": total_groups,
+		"upgraded": upgraded_count,
+		"msg": _t("合成 %d 組，%d 顆升階。") % [total_groups, upgraded_count],
+	}
+
+
 func grant_starter_soul() -> Dictionary:
 	## C1 教學：凡·銳齒之魂
 	var soul := {
