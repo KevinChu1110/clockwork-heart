@@ -69,7 +69,7 @@ func _scroll_menu_to_fuse_btn() -> void:
 		if s is ScrollContainer:
 			var vsb: VScrollBar = s.get_v_scroll_bar()
 			if vsb:
-				vsb.value = 180.0
+				vsb.value = 224.0
 
 func _process(_delta: float) -> bool:
 	_wait += 1
