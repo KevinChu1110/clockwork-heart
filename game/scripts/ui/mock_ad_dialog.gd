@@ -149,7 +149,7 @@ func _build_ui() -> void:
 	ab_m.add_child(ab_v)
 
 	var sponsor_title := Label.new()
-	sponsor_title.text = _t("發條之心工坊 · 冒險熱情贊助")
+	sponsor_title.text = _t("發條工坊 · 上鍊補給")
 	sponsor_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sponsor_title.add_theme_font_size_override("font_size", 20)
 	sponsor_title.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -161,7 +161,7 @@ func _build_ui() -> void:
 	if reward_type == "revive":
 		sponsor_desc.text = _t("齒輪重新咬合，金屬骨架再度充能！\n贊助商為倒下的玩具勇者提供重返戰場的二次機會。")
 	else:
-		sponsor_desc.text = _t("玩具世界的發條需要充足動能！\n感謝您觀看贊助內容，冒險動能即刻補充完畢。")
+		sponsor_desc.text = _t("發條鬆了跑不動？轉動發條就有力氣！\n歇口氣看看工坊消息，冒險動能馬上補滿。")
 	sponsor_desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sponsor_desc.add_theme_font_size_override("font_size", 16)
 	sponsor_desc.add_theme_color_override("font_color", COLOR_TEXT_DARK)
