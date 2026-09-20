@@ -1816,8 +1816,8 @@
    "id": "dummy-settlement-card",
    "cat": "遊戲",
    "title": "木人樁試招結束顯示本次DPS/總傷害數據卡",
-   "status": "測試中",
-   "note": "木人樁試招結算數據卡實作完成，無頭測試與冒煙皆通過",
+   "status": "已上線",
+   "note": "木人樁DPS數據卡(t_5e74fb61)已審核通過並在main，kanban已done",
    "keys": [
     "木人樁試招結束顯"
    ]
