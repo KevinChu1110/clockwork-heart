@@ -291,7 +291,12 @@ func _init_race_buttons() -> void:
 					thumb_rect.texture = load(thumb_path) as Texture2D
 				else:
 					thumb_rect.texture = null
-			race_buttons_container.add_child(btn)
+			var end_spacer = race_buttons_container.get_node_or_null("EndSpacer")
+			if end_spacer != null:
+				race_buttons_container.add_child(btn)
+				race_buttons_container.move_child(end_spacer, -1)
+			else:
+				race_buttons_container.add_child(btn)
 		if btn != null:
 			_race_buttons[rid] = btn
 			var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
@@ -803,16 +808,15 @@ func _do_scroll_to_race_btn(btn: Button) -> void:
 		return
 	var btn_left: float = btn.position.x
 	var btn_right: float = btn.position.x + btn.size.x
-	var pad: float = 24.0
+	var pad: float = 32.0
+	var max_scroll: int = int(hbar.max_value - hbar.page) if hbar else 999999
 	if btn_right + pad > scroll.scroll_horizontal + view_w:
 		var target: int = int(ceil(btn_right + pad - view_w))
-		if hbar:
-			target = clampi(target, 0, int(hbar.max_value))
+		target = clampi(target, 0, max_scroll)
 		scroll.scroll_horizontal = target
 	elif btn_left - pad < scroll.scroll_horizontal:
 		var target: int = int(floor(max(0.0, btn_left - pad)))
-		if hbar:
-			target = clampi(target, 0, int(hbar.max_value))
+		target = clampi(target, 0, max_scroll)
 		scroll.scroll_horizontal = target
 
 
