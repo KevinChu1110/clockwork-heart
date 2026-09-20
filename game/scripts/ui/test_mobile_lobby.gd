@@ -56,6 +56,7 @@ func _process(_d: float) -> bool:
 		_test_bottom_dock()
 		_test_character_tab()
 		_test_bag_tab()
+		_test_settings_and_sortie_buttons()
 		return _finish()
 	return false
 
@@ -1342,6 +1343,69 @@ func _test_bag_tab() -> void:
 
 	# 測試完切回發條新村
 	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+
+
+## ──────────────────────────────────────────
+## 10. 斷言設置鈕與前往出征鈕自繪圖示與果凍厚底 (t_d9bbed37)
+## ──────────────────────────────────────────
+func _test_settings_and_sortie_buttons() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試設置與出征按鈕")
+		return
+
+	# 10.1 右上設置鈕
+	var set_btn: Button = _lobby.get_settings_button()
+	if set_btn == null:
+		_fail("大廳右上設置按鈕未找到")
+		return
+
+	if set_btn.text != "設置":
+		_fail("設置按鈕文字應為「設置」，實際為「%s」" % set_btn.text)
+	if _has_forbidden_symbols_or_emoji(set_btn.text):
+		_fail("設置按鈕文字含有禁止符號或 Emoji：「%s」" % set_btn.text)
+
+	if set_btn.icon == null:
+		_fail("設置按鈕缺少自繪圖示 (btn.icon 為空)")
+	elif set_btn.icon.resource_path != "res://assets/icons/hud/icon_btn_settings.png":
+		_fail("設置按鈕圖示路徑不符，實際為: %s" % set_btn.icon.resource_path)
+
+	if set_btn.custom_minimum_size.y < 48:
+		_fail("設置按鈕熱區高度不足 48px，實際為: %f" % set_btn.custom_minimum_size.y)
+
+	var set_sb := set_btn.get_theme_stylebox("normal") as StyleBoxFlat
+	if set_sb == null:
+		_fail("設置按鈕缺少 StyleBoxFlat 樣式")
+	elif set_sb.border_width_bottom < 5:
+		_fail("設置按鈕果凍厚底不足 5px，實際為: %d" % set_sb.border_width_bottom)
+
+	print("  ok 大廳右上設置按鈕自繪圖示與果凍厚底檢查通過")
+
+	# 10.2 右側前往出征主按鈕
+	var sortie_btn: Button = _lobby.get_sortie_button()
+	if sortie_btn == null:
+		_fail("大廳前往出征按鈕未找到")
+		return
+
+	if sortie_btn.text != "前往出征":
+		_fail("出征按鈕文字應為「前往出征」，實際為「%s」" % sortie_btn.text)
+	if _has_forbidden_symbols_or_emoji(sortie_btn.text):
+		_fail("出征按鈕文字含有禁止符號或 Emoji：「%s」" % sortie_btn.text)
+
+	if sortie_btn.icon == null:
+		_fail("出征按鈕缺少自繪圖示 (btn.icon 為空)")
+	elif sortie_btn.icon.resource_path != "res://assets/icons/hud/icon_btn_sortie.png":
+		_fail("出征按鈕圖示路徑不符，實際為: %s" % sortie_btn.icon.resource_path)
+
+	if sortie_btn.custom_minimum_size.x < 280 or sortie_btn.custom_minimum_size.y < 64:
+		_fail("出征按鈕尺寸應至少為 280x64，實際為: %s" % str(sortie_btn.custom_minimum_size))
+
+	var sortie_sb := sortie_btn.get_theme_stylebox("normal") as StyleBoxFlat
+	if sortie_sb == null:
+		_fail("出征按鈕缺少 StyleBoxFlat 樣式")
+	elif sortie_sb.border_width_bottom < 5:
+		_fail("出征按鈕果凍厚底不足 5px，實際為: %d" % sortie_sb.border_width_bottom)
+
+	print("  ok 大廳前往出征按鈕自繪圖示與果凍厚底檢查通過")
 
 
 func _finish() -> bool:
