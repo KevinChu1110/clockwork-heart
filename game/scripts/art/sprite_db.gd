@@ -155,24 +155,14 @@ static func player_equipped_walk(frame: int, race_override: String = "", slots_o
 		if comp_512 is Texture2D and comp_512 != null and (comp_512 as Texture2D).get_width() >= 256:
 			_equipped_walk_cache[cache_key] = comp_512 as Texture2D
 			return comp_512 as Texture2D
-		# 若特定換裝 512 合成失敗，退至該族預設 512 走路幀（保證動畫連續，絕不退回靜態立牌）
+		# 512 合成失敗時：改讀本族預設 512 走路四幀（保證動畫連續，絕不退回 128/x3，不准借兔步，不准每幀塞同一張立牌）
 		if not slots.is_empty():
 			var def_512: Variant = pr.call("build_walk_composite_texture_512", r, f, {})
 			if def_512 is Texture2D and def_512 != null and (def_512 as Texture2D).get_width() >= 256:
 				_equipped_walk_cache[cache_key] = def_512 as Texture2D
 				return def_512 as Texture2D
 
-	if pr and pr.has_method("get_race_walk_composite_texture"):
-		var comp: Variant = pr.call("get_race_walk_composite_texture", r, f, slots)
-		if comp is Texture2D and comp != null:
-			_equipped_walk_cache[cache_key] = comp as Texture2D
-			return comp as Texture2D
-
-	var fb_tex := tex("%s/player/%s_walk_%d_x3.png" % [ROOT, r, f])
-	if fb_tex == null and r != "rabbit":
-		fb_tex = tex("%s/player/rabbit_walk_%d_x3.png" % [ROOT, f])
-	_equipped_walk_cache[cache_key] = fb_tex
-	return fb_tex
+	return null
 
 
 static func player_idle() -> Texture2D:
@@ -202,6 +192,8 @@ static func player_walk(frame: int) -> Texture2D:
 		return player_equipped_walk(frame)
 	var i := posmod(frame, 4)
 	var r := player_race()
+	if r == "penguin":
+		return player_equipped_walk(i)
 	var t := tex("%s/player/%s_walk_%d_x3.png" % [ROOT, r, i])
 	if t:
 		return t
