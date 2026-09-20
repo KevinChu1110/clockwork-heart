@@ -548,7 +548,8 @@ static func player_battle() -> Texture2D:
 ## pose: idle | telegraph | attack | recover | skill | hit
 ## 0.16.2：poses/*.png 已用 rabbit_idle_x3 錨重產，戰鬥優先讀專用姿態。
 ## 0.17.0：支援多種族專用姿態目錄（poses/<race>/<pose>.png），非兔族優先讀專用姿態。
-## 0.18.0：優先讀 512 高清姿態（poses/<race>/<pose>_512.png），缺檔才回 128；嚴禁跨族借圖。
+## 0.18.0：優先讀 512 高清姿態（poses/<race>/<pose>_512.png）；嚴禁跨族借圖。
+## 0.19.0：九族五大戰鬥姿態優先讀本族 *_512.png（寬度>=256）；缺檔或讀取失敗回空，⛔ 刪除 128 退路，嚴禁跨族借圖。
 static func player_pose(pose: String, race_override: String = "") -> Texture2D:
 	var key := pose
 	if key == "":
@@ -557,17 +558,17 @@ static func player_pose(pose: String, race_override: String = "") -> Texture2D:
 	if key == "idle":
 		if r != "rabbit":
 			var race_idle_512 := tex("%s/player/poses/%s/idle_512.png" % [ROOT, r])
-			if race_idle_512:
+			if race_idle_512 and race_idle_512.get_width() >= 256:
 				return race_idle_512
 			var race_idle := tex("%s/player/poses/%s/idle.png" % [ROOT, r])
 			if race_idle:
 				return race_idle
 		else:
 			var rab_showcase := tex("%s/player/paperdoll/rabbit/showcase_idle_256.png" % ROOT)
-			if rab_showcase:
+			if rab_showcase and rab_showcase.get_width() >= 256:
 				return rab_showcase
 			var rab_idle_512 := tex("%s/player/poses/idle_512.png" % ROOT)
-			if rab_idle_512:
+			if rab_idle_512 and rab_idle_512.get_width() >= 256:
 				return rab_idle_512
 			var rab_idle := tex("%s/player/poses/idle.png" % ROOT)
 			if rab_idle:
@@ -575,26 +576,17 @@ static func player_pose(pose: String, race_override: String = "") -> Texture2D:
 		return player_idle()
 	if r != "rabbit":
 		var race_t_512 := tex("%s/player/poses/%s/%s_512.png" % [ROOT, r, key])
-		if race_t_512:
+		if race_t_512 and race_t_512.get_width() >= 256:
 			return race_t_512
-		var race_t := tex("%s/player/poses/%s/%s.png" % [ROOT, r, key])
-		if race_t:
-			return race_t
-		# 0-ART26: 缺件回空或回 128，不准改成別族 pose、不准借兔劍圖
+		# 0-ART26: 戰鬥五大動作姿態缺 512 或寬度<256 回空，⛔ 刪除 128 退路，不准回 128 再放大，不准跨族借圖
 		return null
-	## 兔族專用姿態（優先讀 512，缺檔才回 128）
+	## 兔族專用戰鬥姿態（優先讀 512，寬度>=256；缺 512 回空，⛔ 刪除 128 退路）
 	var t_512 := tex("%s/player/poses/rabbit/%s_512.png" % [ROOT, key])
-	if t_512:
+	if t_512 and t_512.get_width() >= 256:
 		return t_512
 	t_512 = tex("%s/player/poses/%s_512.png" % [ROOT, key])
-	if t_512:
+	if t_512 and t_512.get_width() >= 256:
 		return t_512
-	var t := tex("%s/player/poses/rabbit/%s.png" % [ROOT, key])
-	if t:
-		return t
-	t = tex("%s/player/poses/%s.png" % [ROOT, key])
-	if t:
-		return t
 	return null
 
 

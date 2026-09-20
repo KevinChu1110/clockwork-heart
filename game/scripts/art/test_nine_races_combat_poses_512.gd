@@ -35,6 +35,16 @@ func _initialize() -> void:
 	else:
 		print("  ✓ 0-ART26 守護成功: 不存在種族安全回傳 null，無借圖行為")
 
+	# 驗證 0-QA22 防護：無 512 或無效動作姿態安全回傳 null，絕不退回 128 糊圖
+	print("\n--- 驗證 0-QA22 防護（無 128 糊圖退路） ---")
+	for r in ["rabbit", "lion", "fox"]:
+		var invalid_tex: Texture2D = SpriteDB.player_pose("invalid_test_pose", r)
+		if invalid_tex != null:
+			push_error("0-QA22 違反: 種族 %s 無效姿態退回了非空貼圖: %s (寬度: %d)" % [r, invalid_tex.resource_path, invalid_tex.get_width()])
+			ok = false
+		else:
+			print("  ✓ 種族 %s 無效姿態安全回傳 null，無 128 退路" % r)
+
 	if ok:
 		print("\nNINE_RACES_COMBAT_POSES_512_OK")
 		quit(0)

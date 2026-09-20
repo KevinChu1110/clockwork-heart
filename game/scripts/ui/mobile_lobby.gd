@@ -475,6 +475,18 @@ func _load_hero_poses() -> void:
 	_tex_recover = SpriteDB.player_pose("recover", race)
 	_tex_hit = SpriteDB.player_pose("hit", race)
 
+	# 0-ART26 / 0-QA22: 動作姿態貼圖寬度必須 >= 256，否則視為無效，絕不退回 128 糊圖
+	if _tex_attack != null and _tex_attack.get_width() < 256:
+		_tex_attack = null
+	if _tex_skill != null and _tex_skill.get_width() < 256:
+		_tex_skill = null
+	if _tex_telegraph != null and _tex_telegraph.get_width() < 256:
+		_tex_telegraph = null
+	if _tex_recover != null and _tex_recover.get_width() < 256:
+		_tex_recover = null
+	if _tex_hit != null and _tex_hit.get_width() < 256:
+		_tex_hit = null
+
 	if _tex_idle == null:
 		_tex_idle = SpriteDB.player_idle()
 
