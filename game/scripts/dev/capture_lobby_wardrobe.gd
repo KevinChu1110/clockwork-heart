@@ -22,6 +22,13 @@ func _initialize() -> void:
 	_out_dir = base.path_join("../screenshots")
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 
+	if not root.has_node("GameFont"):
+		var gf_cls = load("res://scripts/autoload/game_font.gd")
+		if gf_cls:
+			var gf = gf_cls.new()
+			gf.name = "GameFont"
+			root.add_child(gf)
+
 	var gs = root.get_node_or_null("GameState")
 	if gs:
 		gs.player_race = "rabbit"
@@ -37,7 +44,6 @@ func _initialize() -> void:
 
 	_lobby = MobileLobby.new()
 	root.add_child(_lobby)
-	_lobby._ready()
 	# 切換至角色分頁 (Tab.CHARACTER = 1)
 	_lobby._switch_tab(MobileLobby.Tab.CHARACTER)
 	_step = 1

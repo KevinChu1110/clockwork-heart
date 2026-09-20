@@ -513,6 +513,8 @@ static func _soft_shadow_tex() -> Texture2D:
 	return _shadow_tex_cache
 
 func _build_ui() -> void:
+	if _content_root != null:
+		return
 	## 1. 背景插畫（神殿黑曜石底圖 / LINEAR 平滑採樣）
 	var bg := TextureRect.new()
 	bg.name = "TempleLobbyBg"
@@ -2012,8 +2014,7 @@ func _build_character_tab() -> void:
 	var l_title := Label.new()
 	l_title.text = _t("機體外觀 · 發條紙娃娃")
 	l_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	l_title.add_theme_font_size_override("font_size", 15)
-	l_title.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+	_apply_label_style(l_title, 15, COLOR_GOLD_DARK)
 	l_vbox.add_child(l_title)
 
 	_char_prev = TextureRect.new()
@@ -2077,14 +2078,12 @@ func _build_character_tab() -> void:
 
 	var w_title := Label.new()
 	w_title.text = _t("武器輪替配置")
-	w_title.add_theme_font_size_override("font_size", 18)
-	w_title.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_apply_label_style(w_title, 18, COLOR_TEXT_DARK)
 	w_hdr.add_child(w_title)
 
 	var w_sub := Label.new()
 	w_sub.text = _t("點擊切換輪替順位 · 三段作戰序列")
-	w_sub.add_theme_font_size_override("font_size", 13)
-	w_sub.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+	_apply_label_style(w_sub, 13, COLOR_GOLD_DARK)
 	w_hdr.add_child(w_sub)
 
 	# 2. 三個武器槽果凍卡
@@ -2116,8 +2115,7 @@ func _build_character_tab() -> void:
 
 	_weapon_slot_hint_label = Label.new()
 	_weapon_slot_hint_label.text = WEAPON_SLOTS[_selected_weapon_slot]["hint"]
-	_weapon_slot_hint_label.add_theme_font_size_override("font_size", 13)
-	_weapon_slot_hint_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_apply_label_style(_weapon_slot_hint_label, 13, COLOR_TEXT_DARK)
 	hint_p.add_child(_weapon_slot_hint_label)
 
 	# 4. 戰鬥屬性標題列
@@ -2127,8 +2125,7 @@ func _build_character_tab() -> void:
 
 	var s_title := Label.new()
 	s_title.text = _t("機體戰鬥屬性")
-	s_title.add_theme_font_size_override("font_size", 18)
-	s_title.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_apply_label_style(s_title, 18, COLOR_TEXT_DARK)
 	s_hdr.add_child(s_title)
 
 	var pow_capsule := PanelContainer.new()
@@ -2151,8 +2148,7 @@ func _build_character_tab() -> void:
 	if gs and gs.has_method("power_score") and int(gs.call("power_score")) > 0:
 		cur_pow = int(gs.call("power_score"))
 	_char_power_badge.text = "有效戰力 %d" % cur_pow
-	_char_power_badge.add_theme_font_size_override("font_size", 13)
-	_char_power_badge.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_apply_label_style(_char_power_badge, 13, COLOR_TEXT_DARK)
 	pow_capsule.add_child(_char_power_badge)
 
 	# 5. 獨立屬性小卡 (生命／攻擊／防禦／暴擊／怒氣)
@@ -2196,16 +2192,14 @@ func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 	slot_title.name = "SlotTitle"
 	slot_title.text = slot_data["slot_title"]
 	slot_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	slot_title.add_theme_font_size_override("font_size", 13)
-	slot_title.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+	_apply_label_style(slot_title, 13, COLOR_GOLD_DARK)
 	v.add_child(slot_title)
 
 	var weapon_info := Label.new()
 	weapon_info.name = "WeaponInfo"
 	weapon_info.text = "%s · %s" % [slot_data["weapon_name"], slot_data["hits"]]
 	weapon_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	weapon_info.add_theme_font_size_override("font_size", 16)
-	weapon_info.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_apply_label_style(weapon_info, 16, COLOR_TEXT_DARK)
 	v.add_child(weapon_info)
 
 	_style_weapon_slot_button(btn, idx == _selected_weapon_slot)
@@ -2312,16 +2306,14 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 	var t_lbl := Label.new()
 	t_lbl.name = "TitleLabel"
 	t_lbl.text = title
-	t_lbl.add_theme_font_size_override("font_size", 14)
-	t_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_apply_label_style(t_lbl, 14, COLOR_TEXT_DARK)
 	top_row.add_child(t_lbl)
 
 	if not subtitle.is_empty():
 		var sub_lbl := Label.new()
 		sub_lbl.name = "SubLabel"
 		sub_lbl.text = subtitle
-		sub_lbl.add_theme_font_size_override("font_size", 12)
-		sub_lbl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+		_apply_label_style(sub_lbl, 12, COLOR_GOLD_DARK)
 		top_row.add_child(sub_lbl)
 
 	var val_row := HBoxContainer.new()
@@ -2331,8 +2323,7 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 	var v_lbl := Label.new()
 	v_lbl.name = "ValLabel"
 	v_lbl.text = val_str
-	v_lbl.add_theme_font_size_override("font_size", 22)
-	v_lbl.add_theme_color_override("font_color", val_color)
+	_apply_label_style(v_lbl, 22, val_color)
 	val_row.add_child(v_lbl)
 
 	return c

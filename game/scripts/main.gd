@@ -2081,7 +2081,7 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 		b.scroll_active = true
 	if bool(extras.get("soul_pity", false)):
 		b.fit_content = false
-		b.custom_minimum_size = Vector2(680, 96)
+		b.custom_minimum_size = Vector2(680, 122)
 		b.scroll_active = true
 
 	var btn_gap := 6.0
@@ -2095,7 +2095,7 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 		chrome_h += 70.0
 	var body_h := body_h_limit if (body.length() > 280 or extras.has("body_h")) else minf(body_h_limit, ceilf(float(body.length()) / 26.0) * 20.0)
 	if bool(extras.get("soul_pity", false)):
-		body_h = 96.0
+		body_h = 122.0
 	var screen_h := float(get_viewport_rect().size.y)
 	var avail_h := maxf(110.0, screen_h - chrome_h - body_h - 14.0)
 	if bool(extras.get("soul_pity", false)):

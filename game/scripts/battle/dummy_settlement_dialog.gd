@@ -90,8 +90,8 @@ func _build_ui() -> void:
 	if ResourceLoader.exists(FONT_PATH) and _cached_font == null:
 		_cached_font = load(FONT_PATH) as Font
 
-	# 1. 全螢幕半透明遮罩 (Scrim)
-	var scrim := ResponsiveUi.make_scrim(ResponsiveUi.SCRIM_COLOR)
+	# 1. 全螢幕半透明遮罩 (Scrim) - 輕透半透明遮罩，使背後戰鬥場景清晰可見
+	var scrim := ResponsiveUi.make_scrim(Color(0.05, 0.04, 0.08, 0.42))
 	add_child(scrim)
 
 	# 2. 置中容器
@@ -218,7 +218,7 @@ func _build_ui() -> void:
 
 	_tip_label = Label.new()
 	_tip_label.name = "TipLabel"
-	_tip_label.text = _t("木人樁為不消耗能量的選配練習。可在武術館兵器架調配各色兵刃，體會不同招式的出招前搖與段數節奏。")
+	_tip_label.text = _t("木人樁為不消耗能量的自由試招訓練。可在武術館兵器架調配各色兵刃，體會不同招式的出招前搖與段數節奏。")
 	_tip_label.add_theme_font_size_override("font_size", 14)
 	_tip_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_tip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

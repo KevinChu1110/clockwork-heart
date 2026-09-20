@@ -1,10 +1,12 @@
 extends SceneTree
-## 木人樁試招結算數據卡實機截圖產生器 (t_5e74fb61)
+## 木人樁試招結算數據卡實機截圖產生器 (t_f761d9e4)
+## 背景包含木人樁戰鬥場景，前景為半透明遮罩與浮空數據結算卡
 
 const DummySettlementDialogScript := preload("res://scripts/battle/dummy_settlement_dialog.gd")
 
 var _step := 0
 var _wait := 0
+var _battle: Control = null
 var _dlg: Control = null
 var _out_dirs: Array[String] = []
 
@@ -26,12 +28,30 @@ func _initialize() -> void:
 	for d in _out_dirs:
 		DirAccess.make_dir_recursive_absolute(d)
 
-	var stats := {
-		"total_damage": 500,
-		"elapsed_time": 12.8,
-		"dps": 39.1,
-	}
-	_dlg = DummySettlementDialogScript.show_dialog(root, stats)
+	if not root.has_node("GameFont"):
+		var gf_cls = load("res://scripts/autoload/game_font.gd")
+		if gf_cls:
+			var gf = gf_cls.new()
+			gf.name = "GameFont"
+			root.add_child(gf)
+
+	var gs = root.get_node_or_null("GameState")
+	if gs:
+		gs.player_race = "rabbit"
+		gs.player_name = "小白"
+		gs.chapter = "c0"
+		gs.paperdoll_slots = {
+			"race": "rabbit",
+			"costume": "costume_nutcracker_guard",
+			"chassis": "paint_ivory_stock",
+			"costume_id": "costume_nutcracker_guard",
+			"paint_id": "paint_ivory_stock"
+		}
+
+	# 建立戰鬥節點
+	var b_scn: PackedScene = load("res://scenes/battle/battle.tscn")
+	_battle = b_scn.instantiate()
+	root.add_child(_battle)
 
 
 func _shot(filename: String) -> void:
@@ -55,10 +75,22 @@ func _process(_delta: float) -> bool:
 	_wait += 1
 	match _step:
 		0:
-			if _wait >= 10:
-				_shot("proof_dummy_settlement_card.png")
+			if _wait >= 5:
+				if _battle.has_method("setup"):
+					_battle.call("setup", "training_dummy")
+				var stats := {
+					"total_damage": 500,
+					"elapsed_time": 12.8,
+					"dps": 39.1,
+				}
+				_dlg = DummySettlementDialogScript.show_dialog(root, stats)
 				_step = 1
+				_wait = 0
 		1:
+			if _wait >= 25:
+				_shot("proof_dummy_settlement_card.png")
+				_step = 2
+		2:
 			print("CAPTURE_DUMMY_SETTLEMENT_CARD_OK")
 			quit(0)
 			return true
