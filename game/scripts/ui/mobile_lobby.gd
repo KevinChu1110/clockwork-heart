@@ -1,6 +1,6 @@
 class_name MobileLobby
 extends Control
-## 勇者之魂 (Clockwork Heart) - 神殿黑曜石 × 古典黃金齒輪手遊大廳
+## 發條之心 (Clockwork Heart) - 神殿黑曜石 × 古典黃金齒輪手遊大廳
 ## 視覺特徵：希臘神殿石柱 + 深邃黑曜石地坪 + 古典黃金齒輪 + 白兔多姿態動態待機 (無 Emoji、無系統字型符號)
 
 signal request_battle(mode: String)
