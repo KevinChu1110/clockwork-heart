@@ -2948,16 +2948,13 @@ func _go_title_wall() -> void:
 	var newly: Array[String] = TitleCatalog.evaluate_all()
 	SaveManager.save_game()
 	AudioManager.play_ui()
-	var body: String = TitleCatalog.wall_bbcode()
-	body += _t("\n\n已解鎖：%s") % TitleCatalog.unlocked_names_line()
-	if not newly.is_empty():
-		body = _t("[color=#fc8]新解鎖：%s[/color]\n\n") % "、".join(newly) + body
-	var buttons: Array = [
-		{"text": _t("返回標題"), "cb": _go_title},
-	]
-	if GameState.has_flag("game_cleared"):
-		buttons.append({"text": _t("堡壘"), "cb": _go_c1_town})
-	_panel(Loc.t("panel.titles"), body, buttons)
+	_clear_host()
+	_reset_fade()
+	var dlg_scn: GDScript = load("res://scripts/ui/title_wall_dialog.gd")
+	var dlg: Control = dlg_scn.new()
+	var fortress_cb: Callable = _go_c1_town if GameState.has_flag("game_cleared") else Callable()
+	dlg.setup(newly, _go_title, fortress_cb, _t("返回標題"))
+	host.add_child(dlg)
 
 
 func _new_game() -> void:
@@ -5179,14 +5176,13 @@ func _go_title_wall_from_town() -> void:
 	## 從城內看稱號後回廣場
 	var newly: Array[String] = TitleCatalog.evaluate_all()
 	SaveManager.save_game()
-	var body: String = TitleCatalog.wall_bbcode()
-	if not newly.is_empty():
-		body = _t("[color=#fc8]新解鎖：%s[/color]\n\n") % "、".join(newly) + body
-	_panel(
-		_t("稱號牆 · 堡壘"),
-		body,
-		[{"text": _t("回到廣場"), "cb": _go_c1_town}]
-	)
+	AudioManager.play_ui()
+	_clear_host()
+	_reset_fade()
+	var dlg_scn: GDScript = load("res://scripts/ui/title_wall_dialog.gd")
+	var dlg: Control = dlg_scn.new()
+	dlg.setup(newly, _go_c1_town, Callable(), _t("回到廣場"))
+	host.add_child(dlg)
 
 
 func _c1_star() -> void:

@@ -96,11 +96,51 @@ func _process(_d: float) -> bool:
 			for c in _main.get_children():
 				if c.get_script() and str(c.get_script().resource_path).ends_with("mobile_settings.gd"):
 					found_settings = true
+					c.queue_free()
 					break
 			if found_settings:
 				print("  ok 設置子選單 開啟 MobileSettings 視窗")
 			else:
 				_expect_buttons("設置子選單", ["連線", "顯示", "返回"])
+			_main.call("_go_title")
+			_main.call("_go_title_wall")
+			_step = 4
+			_wait = 0
+		4:
+			if _wait < 8:
+				return false
+			var host: Node = _main.get("host")
+			var dlg: Node = null
+			if host:
+				for c in host.get_children():
+					if c.get_script() and str(c.get_script().resource_path).ends_with("title_wall_dialog.gd"):
+						dlg = c
+						break
+			if dlg == null:
+				_fail("找不到 TitleWallDialog 稱號牆視窗")
+				return _finish()
+			print("  ok 稱號牆開啟 TitleWallDialog")
+			var card_count: int = dlg.call("get_card_count")
+			var tc: Node = root.get_node_or_null("TitleCatalog")
+			var want_count: int = tc.call("total_count") if tc else 24
+			if card_count != want_count:
+				_fail("卡片數 %d != 稱號總數 %d" % [card_count, want_count])
+			else:
+				print("  ok 卡片數等於稱號數：%d" % card_count)
+			var cards: Array = dlg.call("get_cards")
+			var has_unlocked := false
+			var has_locked := false
+			for card in cards:
+				if card.has_meta("is_unlocked"):
+					if card.get_meta("is_unlocked"):
+						has_unlocked = true
+					else:
+						has_locked = true
+			if not has_locked:
+				_fail("預期新檔有多數未解鎖稱號卡片")
+			else:
+				print("  ok 稱號卡片已解鎖/未解鎖狀態可明確分辨")
+			_expect_buttons("稱號牆", ["返回標題"])
 			return _finish()
 	return false
 
