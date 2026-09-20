@@ -1184,7 +1184,7 @@ func _load_map(id: String) -> void:
 				])
 			_entities.append(e)
 	if _mmap_label:
-		_mmap_label.text = "%s  ·  %.0f×%.0f" % [str(data.get("title", id)), msize.x, msize.y]
+		_mmap_label.text = str(data.get("title", id))
 
 
 func _ent(id: String, pos: Vector2, size: Vector2, label: String, color: Color, solid: bool = false) -> Dictionary:
@@ -1675,8 +1675,10 @@ func _rebuild_entities() -> void:
 		##
 		## 注意這裡不能只把 tex 設成 null：那會掉進下面的色塊 fallback，
 		## 變成在漂亮底圖上畫一個半透明彩色方框，比疊 sprite 還糟。
+		## 有手繪底圖的地圖，若實體無貼圖（tex == null），直接視為純互動熱區，
+		## 不疊半透明除錯色塊也不留影子。
 		var hide_scenery := _has_scenic_bg and (
-			SpriteDB.is_scenery_prop(str(e.id)) or SpriteDB.is_arrow_marker(str(e.id)) or str(e.id) == "fire"
+			tex == null or SpriteDB.is_scenery_prop(str(e.id)) or SpriteDB.is_arrow_marker(str(e.id)) or str(e.id) == "fire"
 		)
 		if hide_scenery:
 			## 看不見的東西不該有影子
