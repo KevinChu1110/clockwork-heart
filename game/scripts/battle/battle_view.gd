@@ -40,11 +40,13 @@ signal battle_finished(won: bool)
 @onready var hazard_fx: TextureRect = %HazardFX
 
 const BattleDefeatDialogScript := preload("res://scripts/battle/battle_defeat_dialog.gd")
+const DummySettlementDialogScript := preload("res://scripts/battle/dummy_settlement_dialog.gd")
 
 var sim: BattleSim
 var _mode: String = "wolf"
 var _ended: bool = false
 var _revived_by_ad: bool = false
+var _dummy_settlement_dialog: Control = null
 var _in_parry_slowmo: bool = false
 var _player_home: Vector2
 var _enemy_home: Vector2
@@ -3395,6 +3397,11 @@ func _on_end(won: bool) -> void:
 				_show_defeat_settlement()
 				return
 	banner.visible = true
+	if _mode == "training_dummy":
+		if get_tree():
+			await get_tree().create_timer(1.0).timeout
+		_show_dummy_settlement(won)
+		return
 	await get_tree().create_timer(1.6).timeout
 	battle_finished.emit(won)
 
@@ -3782,7 +3789,29 @@ func _on_btn_flee_pressed() -> void:
 		return
 	_ended = true
 	_stop_breathe_tween()
+	if _mode == "training_dummy":
+		if sim != null:
+			sim.sim_paused = true
+		_show_dummy_settlement(false)
+		return
 	battle_finished.emit(false)
+
+
+func _show_dummy_settlement(won: bool) -> void:
+	if _dummy_settlement_dialog != null and is_instance_valid(_dummy_settlement_dialog):
+		return
+	var stats: Dictionary = {}
+	if sim != null and sim.has_method("get_dummy_combat_stats"):
+		stats = sim.get_dummy_combat_stats()
+	else:
+		stats = {"total_damage": 0, "elapsed_time": 0.0, "dps": 0.0}
+	_dummy_settlement_dialog = DummySettlementDialogScript.show_dialog(
+		self,
+		stats,
+		func():
+			_dummy_settlement_dialog = null
+			battle_finished.emit(won)
+	)
 
 
 func _award_xp(n: int) -> void:

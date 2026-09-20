@@ -25,6 +25,7 @@ const PARRY_EARLY_GRACE := 0.35  ## = time_model.parry_early_grace_sec
 
 var units: Dictionary = {}  ## id -> BattleUnit
 var time: float = 0.0
+var total_player_damage: int = 0
 var finished: bool = false
 var won: bool = false
 var rng: RandomNumberGenerator
@@ -469,6 +470,8 @@ func _apply_player_hit_on_fog(attacker: BattleUnit, target: BattleUnit, dmg: int
 		return
 	## 本體破綻
 	var dealt := target.take_damage(dmg)
+	if attacker.team == BattleUnit.Team.PLAYER and dealt > 0:
+		total_player_damage += dealt
 	if skill_name != "":
 		_emit("skill_hit", {
 			"attacker": attacker.id,
@@ -586,6 +589,7 @@ func _resolve_strike(u: BattleUnit) -> void:
 		if target.id == player_id:
 			_check_auto_berserk(target)
 		if u.team == BattleUnit.Team.PLAYER and dealt > 0:
+			total_player_damage += dealt
 			_process_part_damage(target, dealt, target.telegraph_active)
 		## 出手也累積戰意，否則戰意只能靠挨打累積，而挨到滿之前人就死了。
 		## 多段武器：首段全額、後段三成——快武器本就揮得快，別再疊怒速
@@ -735,6 +739,8 @@ func _resolve_skill(u: BattleUnit) -> void:
 			dmg = _statue_filter_damage(target, dmg)
 		var dealt := target.take_damage(dmg)
 		total_dealt += dealt
+		if u.team == BattleUnit.Team.PLAYER and dealt > 0:
+			total_player_damage += dealt
 		_emit("skill_hit", {
 			"attacker": u.id,
 			"defender": target.id,
@@ -1161,6 +1167,8 @@ func _perfect_parry(boss: BattleUnit) -> void:
 				clash_dmg = maxi(4, int(clash_dmg * 0.5))
 			clash_dmg = p.scale_outgoing(clash_dmg)
 			var dealt_b := boss.take_damage(clash_dmg)
+			if dealt_b > 0:
+				total_player_damage += dealt_b
 			_emit("skill_hit", {
 				"attacker": p.id,
 				"defender": boss.id,
@@ -1178,6 +1186,8 @@ func _perfect_parry(boss: BattleUnit) -> void:
 			if falcon_mode and boss.id == "falcon":
 				dmg = _falcon_filter_damage(boss, dmg)
 			var dealt := boss.take_damage(dmg)
+			if dealt > 0:
+				total_player_damage += dealt
 			_emit("skill_hit", {
 				"attacker": p.id,
 				"defender": boss.id,
@@ -1772,6 +1782,20 @@ static func make_dummy_fight(player_stats: Dictionary) -> BattleSim:
 	dummy.speed = 0.0
 	sim.add_unit(dummy)
 	return sim
+
+
+## 木人樁試招戰鬥數據統計（總傷害、耗時、DPS）
+func get_dummy_combat_stats() -> Dictionary:
+	var dummy := get_unit("training_dummy")
+	var dummy_loss := (dummy.max_hp - dummy.hp) if dummy != null else 0
+	var total_dmg: int = maxi(total_player_damage, dummy_loss)
+	var elapsed: float = maxf(0.0, time)
+	var dps: float = (float(total_dmg) / elapsed) if elapsed > 0.001 else 0.0
+	return {
+		"total_damage": total_dmg,
+		"elapsed_time": elapsed,
+		"dps": dps,
+	}
 
 
 static func make_leo_fight(player_stats: Dictionary) -> BattleSim:
