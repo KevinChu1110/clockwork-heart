@@ -5451,6 +5451,13 @@ func _go_gem_case_panel() -> void:
 	GemSystem._ensure_bag()
 	var body: String = GemSystem.gem_case_status_bbcode()
 	var buttons: Array = []
+	buttons.append({
+		"text": _t("一鍵鑲嵌（自動填補空孔）"),
+		"cb": func():
+			var r_auto: Dictionary = GemSystem.auto_socket()
+			_show_toast(str(r_auto.get("msg", "")))
+			_go_gem_case_panel()
+	})
 	buttons.append({"text": _t("重新盤點"), "cb": _go_gem_case_panel})
 	buttons.append({"text": _t("前往熔煉與鑲嵌"), "cb": _go_gem_panel})
 	buttons.append({"text": Loc.t("pause.equip"), "cb": _go_equip_panel})
@@ -5507,6 +5514,14 @@ func _go_gem_panel() -> void:
 							_go_gem_panel()
 					})
 					fuse_n += 1
+		## 一鍵鑲嵌：自動填補當前穿戴空孔位
+		buttons.append({
+			"text": _t("一鍵鑲嵌（自動填補空孔）"),
+			"cb": func():
+				var r_auto: Dictionary = GemSystem.auto_socket()
+				_show_toast(str(r_auto.get("msg", "")))
+				_go_gem_panel()
+		})
 		## 鑲嵌：背包前幾顆寶石 × 已穿武器／防具
 		var worn_targets: Array = []
 		for slot in ["weapon", "armor"]:
