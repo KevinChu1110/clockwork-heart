@@ -296,6 +296,148 @@ func socket(equip_uid: String, gem_id: String) -> Dictionary:
 	}
 
 
+## 取得當前穿戴裝備（武器、防具）中尚未鑲嵌寶石之空孔位清單
+func get_empty_worn_sockets() -> Array:
+	_ensure_bag()
+	var empty_sockets: Array = []
+	for slot in ["weapon", "armor"]:
+		var inst: Dictionary = {}
+		var uid := str(GameState.equip_slots.get(slot, "")) if GameState.equip_slots else ""
+		if uid != "" and GameState.equip_worn and GameState.equip_worn.has(uid):
+			inst = GameState.equip_worn[uid]
+		elif uid == "" and GameState.equip_worn:
+			for w_uid in GameState.equip_worn.keys():
+				var item: Dictionary = GameState.equip_worn[w_uid]
+				if str(item.get("slot", "")) == slot:
+					inst = item
+					uid = str(w_uid)
+					break
+		if not inst.is_empty() and uid != "":
+			var g: Variant = inst.get("gem", {})
+			var has_gem: bool = false
+			if typeof(g) == TYPE_DICTIONARY and not (g as Dictionary).is_empty():
+				if str((g as Dictionary).get("color", "")) != "":
+					has_gem = true
+			if not has_gem:
+				empty_sockets.append({
+					"slot": slot,
+					"slot_name": _t("武器") if slot == "weapon" else _t("防具"),
+					"uid": uid,
+					"name": str(inst.get("name", _t("武器") if slot == "weapon" else _t("防具"))),
+				})
+	return empty_sockets
+
+
+## 一鍵鑲嵌：自動將背包寶石填補進當前穿戴裝備的閒置空孔位
+## 規則：只填補未鑲嵌的空孔，絕不覆蓋已鑲嵌寶石。
+## 優先填補武器再防具；挑選時以高階等級優先（5級→1級），同級時依部位相性（武器偏攻擊/暴擊、防具偏防禦/生命）。
+func auto_socket() -> Dictionary:
+	if not unlocked():
+		return {"ok": false, "count": 0, "msg": _t("寶石工坊需達到 Lv%d。") % UNLOCK_LEVEL}
+	_ensure_bag()
+
+	# 檢查是否有穿戴裝備
+	var has_any_worn := false
+	for slot in ["weapon", "armor"]:
+		var uid := str(GameState.equip_slots.get(slot, "")) if GameState.equip_slots else ""
+		if uid != "" and GameState.equip_worn and GameState.equip_worn.has(uid):
+			has_any_worn = true
+			break
+		elif uid == "" and GameState.equip_worn:
+			for w_uid in GameState.equip_worn.keys():
+				if str(GameState.equip_worn[w_uid].get("slot", "")) == slot:
+					has_any_worn = true
+					break
+	if not has_any_worn:
+		return {"ok": false, "count": 0, "msg": _t("目前未穿戴任何武器或防具。")}
+
+	var empty_slots: Array = get_empty_worn_sockets()
+	if empty_slots.is_empty():
+		return {"ok": false, "count": 0, "msg": _t("目前穿戴裝備皆已鑲嵌寶石，無閒置空孔。")}
+
+	if GameState.gem_bag.is_empty():
+		return {"ok": false, "count": 0, "msg": _t("背包沒有可鑲嵌的寶石。")}
+
+	var socketed_count := 0
+	var socketed_details: Array = []
+	var total_spent_gold := 0
+
+	for target in empty_slots:
+		var slot := str(target.get("slot", ""))
+		var uid := str(target.get("uid", ""))
+		var target_name := str(target.get("name", slot))
+
+		if GameState.gem_bag.is_empty():
+			break
+
+		# 依規則挑選最佳可用寶石：
+		# 1. 優先最高等級 (level * 1000)
+		# 2. 部位相性加權：
+		#    武器：黃(攻擊%) 300 > 紅(暴擊) 200 > 藍(命中) 100
+		#    防具：黃(防禦%) 300 > 紅(生命%) 200 > 藍(迴避) 100
+		# 3. 背包既有順序 (-i)
+		var best_gem_idx := -1
+		var best_score := -999999
+
+		for i in GameState.gem_bag.size():
+			var g: Dictionary = GameState.gem_bag[i]
+			var lv := clampi(int(g.get("level", 1)), 1, MAX_LEVEL)
+			var cost := socket_cost(lv)
+			if GameState.gold < cost:
+				continue
+
+			var color := str(g.get("color", ""))
+			var color_pref := 0
+			if slot == "weapon":
+				match color:
+					"yellow": color_pref = 300
+					"red": color_pref = 200
+					"blue": color_pref = 100
+			else:
+				match color:
+					"yellow": color_pref = 300
+					"red": color_pref = 200
+					"blue": color_pref = 100
+
+			var score := lv * 1000 + color_pref - i
+			if score > best_score:
+				best_score = score
+				best_gem_idx = i
+
+		if best_gem_idx == -1:
+			continue
+
+		var chosen_gem: Dictionary = GameState.gem_bag[best_gem_idx]
+		var gid := str(chosen_gem.get("id", ""))
+		var glabel := gem_label(chosen_gem)
+		var g_cost := socket_cost(int(chosen_gem.get("level", 1)))
+
+		var res := socket(uid, gid)
+		if bool(res.get("ok", false)):
+			socketed_count += 1
+			total_spent_gold += g_cost
+			socketed_details.append("%s: %s" % [target_name, glabel])
+
+	if socketed_count == 0:
+		var min_cost := 999999
+		for g in GameState.gem_bag:
+			var c := socket_cost(int(g.get("level", 1)))
+			if c < min_cost:
+				min_cost = c
+		if GameState.gold < min_cost:
+			return {"ok": false, "count": 0, "msg": _t("金幣不足，無法鑲嵌（需 %d 金）。") % min_cost}
+		return {"ok": false, "count": 0, "msg": _t("無法自動鑲嵌寶石。")}
+
+	var details_str := "、".join(socketed_details)
+	return {
+		"ok": true,
+		"count": socketed_count,
+		"total_gold": total_spent_gold,
+		"details": socketed_details,
+		"msg": _t("一鍵鑲嵌完成：成功填補 %d 個空孔（%s）！") % [socketed_count, details_str],
+	}
+
+
 ## 彙總已穿裝備上的寶石加成（給 GameState.effective_* 用）
 func worn_bonuses() -> Dictionary:
 	var out := {

@@ -177,6 +177,13 @@ func _process(_delta: float) -> bool:
 				return _fail("缺少重新盤點按鈕或高度未達 >= 50px")
 			print("  ok 重新盤點按鈕存在且高度 >= 50px")
 
+			var btn_auto := _find_named(_dlg, "BtnAutoSocket") as Button
+			if btn_auto == null or btn_auto.custom_minimum_size.y < 50.0:
+				return _fail("缺少一鍵鑲嵌按鈕或高度未達 >= 50px")
+			print("  ok 一鍵鑲嵌按鈕存在且高度 >= 50px")
+			btn_auto.pressed.emit()
+			print("  ok 點擊一鍵鑲嵌按鈕成功觸發")
+
 			# 檢查全體節點字級與零 Emoji
 			if not _check_font_sizes_and_emoji(_dlg):
 				return false
