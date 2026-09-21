@@ -83,60 +83,77 @@
 </head>
 <body data-page="home">
 
-  <header class="hero">
-    <img class="bg" src="media/hero/key_visual_greece_gears.png" alt="發條之心主視覺：金屬發條玩具小隊" />
-    <div class="hero-overlay"></div>
-    <div class="hero-copy">
-      <div class="hero-board">
-        <span class="kicker">Clockwork Heart · 開發中</span>
-        <h1>發條玩具醒了<em>你是那隻兔子</em></h1>
-        <p>橫屏動作 RPG。扮演金屬發條兔「小白」：15 點發條打仗、拆敵人零件。主線單機可通關，不必連線。</p>
-        <div class="hero-cta">
-          <a class="btn btn-primary" href="#trailers">看官方短片</a>
-          <a class="btn btn-ghost" href="pages/download.html">下載 PC 測試包</a>
-          <a class="btn btn-ghost" id="cta-facebook" href="https://www.facebook.com/1335191403004011" target="_blank" rel="noopener">官方粉專</a>
+  <header class="hero hero--workshop">
+    <img class="bg" src="media/hero/hero_workshop_bg.png" alt="發條之心工坊機械儀表主視覺：黑鋼工匠殿堂與發條玩具機械" />
+    <div class="hero-workshop-stage">
+      <!-- 頂部金色浮雕標題 -->
+      <div class="hero-title-plate">
+        <img src="media/hero/title_c_gold.png" alt="發條之心 · CLOCKWORK HEART" class="hero-title-img" />
+        <h1 class="sr-only">發條之心 · CLOCKWORK HEART</h1>
+      </div>
+
+      <!-- 核心角色卡（奶油金屬儀表板，展示小白） -->
+      <div class="workshop-char-card" id="workshop-char-card">
+        <img src="media/hero/card_char_rabbit.png" alt="白金兔·小白：九大發條種族·劍士。發條體力 15/15，機關弱點：聽聲鎖定，作戰特性：部位破壞，初始武裝：破曉長劍" class="workshop-char-card__img" />
+        <div class="sr-only">
+          <h2>白金兔·小白</h2>
+          <p>九大發條種族 · 劍士</p>
+          <ul>
+            <li>發條體力 : 15 / 15</li>
+            <li>機關弱點 : 聽聲鎖定</li>
+            <li>作戰特性 : 部位破壞</li>
+            <li>初始武裝 : 破曉長劍</li>
+          </ul>
         </div>
-        <p class="note">手機商店還沒上架。現在能玩的是 PC 開發測試包。</p>
+      </div>
+
+      <!-- 雙主按鈕（左琥珀立即啟動、右翡翠探索世界） -->
+      <div class="workshop-btn-group">
+        <a href="#trailers" class="btn-workshop btn-workshop--amber" title="立即啟動">
+          <img src="media/hero/btn_launch_amber.png" alt="立即啟動" class="btn-workshop__img" />
+        </a>
+        <a href="#cast" class="btn-workshop btn-workshop--emerald" title="探索世界">
+          <img src="media/hero/btn_explore_emerald.png" alt="探索世界" class="btn-workshop__img" />
+        </a>
+      </div>
+
+      <!-- 底部核心玩法三功能卡（三件事就夠 · 核心玩法） -->
+      <div class="workshop-features-section" id="play">
+        <div class="workshop-features-header">
+          <img src="media/hero/subheader_three_things.png" alt="三件事就夠 · 核心玩法" class="subheader-img" />
+          <h2 class="sr-only">三件事就夠 · 核心玩法</h2>
+        </div>
+        <div class="workshop-cards-grid">
+          <article class="workshop-feature-card">
+            <img src="media/hero/feature_card_stamina.png" alt="發條當體力：攻擊、閃避、招式都吃 15 點發條 / 用完就得停，節奏自己抓" class="feature-card-img" />
+            <div class="sr-only">
+              <h3>發條當體力</h3>
+              <p>攻擊、閃避、招式都吃 15 點發條。用完就得停，節奏自己抓。</p>
+            </div>
+          </article>
+          <article class="workshop-feature-card">
+            <img src="media/hero/feature_card_break.png" alt="打頭目拆零件：聽弱點、拆部位 / 不是堆傷害數字，把機關一塊塊拆掉" class="feature-card-img" />
+            <div class="sr-only">
+              <h3>打頭目拆零件</h3>
+              <p>聽弱點、拆部位。不是堆傷害數字，是把機關一塊塊拆掉。</p>
+            </div>
+          </article>
+          <article class="workshop-feature-card">
+            <img src="media/hero/feature_card_halls.png" alt="四大殿堂養成：鍛造、聚魂、工坊、武術 / 鍛造失敗不掉階，主線不鎖付費" class="feature-card-img" />
+            <div class="sr-only">
+              <h3>四大殿堂養成</h3>
+              <p>鍛造、聚魂、工坊、武術。鍛造失敗不掉階，主線不鎖付費。</p>
+            </div>
+          </article>
+        </div>
+        <div class="workshop-features-links">
+          <a class="btn btn-ghost" href="pages/systems.html">養成細節</a>
+          <a class="btn btn-ghost" href="pages/guide.html">新手指南</a>
+          <a class="btn btn-ghost" href="pages/download.html">下載 PC 測試包</a>
+        </div>
       </div>
     </div>
   </header>
-
-  <section class="band band--cream" id="play">
-    <div class="container">
-      <div class="sec-head">
-        <p class="sec-kicker">怎麼玩</p>
-        <h2 class="sec-title">三件事就夠</h2>
-        <p class="sec-lead">沒有藍條、沒有連線門檻。每天上線，把發條上滿再出門。</p>
-      </div>
-      <div class="play-list">
-        <article class="play-row">
-          <div class="n">15</div>
-          <div>
-            <h3>發條當體力</h3>
-            <p>攻擊、閃避、招式都吃 15 點發條。用完就得停，節奏自己抓。</p>
-          </div>
-        </article>
-        <article class="play-row">
-          <div class="n">拆</div>
-          <div>
-            <h3>打頭目拆零件</h3>
-            <p>聽弱點、拆部位。不是堆傷害數字，是把機關一塊塊拆掉。</p>
-          </div>
-        </article>
-        <article class="play-row">
-          <div class="n">殿</div>
-          <div>
-            <h3>四大殿堂養成</h3>
-            <p>鍛造、聚魂、工坊、武術。鍛造失敗不掉階。戰魂有保底，主線不鎖付費。</p>
-          </div>
-        </article>
-      </div>
-      <div style="margin-top:1.4rem">
-        <a class="btn btn-ghost" href="pages/systems.html">養成細節</a>
-        <a class="btn btn-ghost" href="pages/guide.html">新手指南</a>
-      </div>
-    </div>
-  </section>
 
   <section class="band band--cream" id="cast">
     <div class="container">
