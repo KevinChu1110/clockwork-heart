@@ -81,6 +81,7 @@ var _bag_layer: Control
 var _dock_buttons: Array[Button] = []
 var _hall_buttons: Array[Button] = []
 var _settings_button: Button = null
+var _shop_button: Button = null
 var _sortie_button: Button = null
 var _active_hall_index: int = -1
 var _char_prev: TextureRect = null
@@ -729,7 +730,40 @@ func _build_top_hud() -> void:
 				open_energy_dialog()
 		)
 	_gold_label = _add_clean_capsule(h, "金幣", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_gold_coin.png")
+	var gold_cap: PanelContainer = _gold_label.get_parent().get_parent() as PanelContainer
+	if gold_cap:
+		gold_cap.mouse_filter = Control.MOUSE_FILTER_STOP
+		gold_cap.gui_input.connect(func(ev: InputEvent):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				open_shop()
+		)
 	_gem_label = _add_clean_capsule(h, "星屑", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_gem_stardust.png")
+	var gem_cap: PanelContainer = _gem_label.get_parent().get_parent() as PanelContainer
+	if gem_cap:
+		gem_cap.mouse_filter = Control.MOUSE_FILTER_STOP
+		gem_cap.gui_input.connect(func(ev: InputEvent):
+			if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+				open_shop()
+		)
+
+	var shop_btn := Button.new()
+	shop_btn.name = "ShopButton"
+	shop_btn.text = "商城"
+	UiStyle.style_button(shop_btn, false)
+	var shop_icon_path := "res://assets/icons/hud/icon_btn_shop.png"
+	if ResourceLoader.exists(shop_icon_path):
+		shop_btn.icon = load(shop_icon_path)
+		shop_btn.expand_icon = true
+		shop_btn.add_theme_constant_override("icon_max_width", 26)
+		shop_btn.add_theme_constant_override("h_separation", 6)
+		shop_btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
+	shop_btn.custom_minimum_size = Vector2(104, 50)
+	shop_btn.add_theme_font_size_override("font_size", 16)
+	shop_btn.pressed.connect(func():
+		open_shop()
+	)
+	_shop_button = shop_btn
+	h.add_child(shop_btn)
 
 	var set_btn := Button.new()
 	set_btn.name = "SettingsButton"
@@ -1197,6 +1231,9 @@ func _build_village_tab() -> void:
 
 func get_settings_button() -> Button:
 	return _settings_button
+
+func get_shop_button() -> Button:
+	return _shop_button
 
 func get_sortie_button() -> Button:
 	return _sortie_button
@@ -3108,6 +3145,24 @@ func open_energy_dialog() -> Control:
 		push_error("無法載入 EnergyLackDialog")
 		return null
 	var dlg: Control = EnergyLackClass.new() as Control
+	dlg.z_index = 85
+	dlg.tree_exited.connect(func():
+		refresh_hud()
+	)
+	add_child(dlg)
+	return dlg
+
+
+## 開啟商城/儲值彈窗
+func open_shop() -> Control:
+	var existing = get_node_or_null("ShopDialog")
+	if existing != null:
+		return existing
+	var ShopClass: GDScript = load("res://scripts/ui/shop_dialog.gd")
+	if ShopClass == null:
+		push_error("無法載入 ShopDialog")
+		return null
+	var dlg: Control = ShopClass.new() as Control
 	dlg.z_index = 85
 	dlg.tree_exited.connect(func():
 		refresh_hud()
