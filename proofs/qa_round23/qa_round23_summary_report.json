@@ -1,0 +1,38 @@
+{
+  "round": 23,
+  "task": "t_8dcc454e",
+  "topic": "大廳語系即時刷新＋商城六語系合併後找破圖與探索性 QA",
+  "items": {
+    "item_1_six_locales_i18n_inspection": {
+      "status": "pass",
+      "locales_tested": ["zh_TW", "zh_CN", "en", "ja", "ko", "es"],
+      "details": "六語系實機全景截圖逐一檢驗通過。頂部狀態列（能量、金幣、星屑、戰力、商城、設置）、左側四大殿堂入口、出征面板標題/按鈕、底部五頁籤、角色稱號皆正確經由 Loc.locale_changed 即時動態刷新，無殘留繁中，各語系文字語義一致。"
+    },
+    "item_2_zero_system_emoji": {
+      "status": "pass",
+      "details": "大廳全介面所有按鈕與圖示（發條鑰匙、齒輪金幣、星屑晶石、商城寶箱、設定雙齒輪、天宮鐵匠、手藝工坊、演武競技、冒險委託、底部五頁籤圖示等）均為自製向量/像素遊戲資產，100%零作業系統原生 Emoji 殘留。"
+    },
+    "item_3_dopamine_palette_and_jelly_buttons": {
+      "status": "pass",
+      "details": "介面維持多巴胺鮮亮高飽和色盤（明黃、暖橘、薄荷綠、天藍、深藍紫描邊），按鈕具備果凍厚底反光與圓角，無泥土暗沉，非辦公室 PPT 簡報感。"
+    },
+    "item_4_text_overflow_and_clipping_inspection": {
+      "status": "fail",
+      "details": "經 Vision 逐圖排查，發現西語（es）長文字排版截斷缺陷：1. 右下角出征戰情報告板關卡名稱標籤（_sortie_stage_label）在西語 'Región 2 · Tierras de la Niebla Blanca (2-4 JEFE)' 下超出 308px 面板寬度，尾端字串被裁切；2. 右上角裝備槽位按鈕（_equip_schematic）在西語長文字（例如 'Uniforme de guardia Cascanueces' 等）超出 272px 容器寬度且未設置 text_overrun_behavior 或字體自適應，導致文字右側截斷。已依規範另開修復卡並 link 本卡。"
+    },
+    "item_5_unit_and_smoke_tests": {
+      "status": "pass",
+      "result": "無頭冒煙測試 0 錯誤；TEST_FILTER=shop (2/2) 與 TEST_FILTER=i18n (1/1) 單元測試全數通過。"
+    }
+  },
+  "proof_files": [
+    "proofs/qa_round23/proof_lobby_i18n_zh_TW.png",
+    "proofs/qa_round23/proof_lobby_i18n_zh_CN.png",
+    "proofs/qa_round23/proof_lobby_i18n_en.png",
+    "proofs/qa_round23/proof_lobby_i18n_ja.png",
+    "proofs/qa_round23/proof_lobby_i18n_ko.png",
+    "proofs/qa_round23/proof_lobby_i18n_es.png"
+  ],
+  "verdict": "fail",
+  "verdict_reason": "六語系即時刷新與零原生 Emoji 驗收通過；但在西語（es）環境下發現出征關卡名稱與右上裝備槽長文字溢出截斷缺陷，已依規範另開修復卡交由工程師處理。"
+}
