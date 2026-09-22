@@ -3,7 +3,10 @@ extends SceneTree
 ## 執行方式：godot --path game --headless -s res://../tools/capture_shop_i18n.gd
 
 const FRAMES := 8
-const OUT_DIR := "/opt/side/bravesoul-game/proofs/shop_skeleton"
+# ⛔ 不要指到別張卡已交付的 proof 資料夾（例如 proofs/shop_skeleton）。
+# 那裡的 proof_01~05 是 annotate_qa_proofs.py 以 proof_shop_dialog_main.png 為底產的標註圖，
+# 本腳本若寫進同一層，會讓後續重跑 annotate 拿到被覆蓋的底圖，五張標註圖全變成同一張。
+const OUT_DIR := "/opt/side/bravesoul-game/proofs/qa_round22"
 const LOCALES := ["zh_TW", "zh_CN", "en", "ja", "ko", "es"]
 
 var _lobby: Control = null
