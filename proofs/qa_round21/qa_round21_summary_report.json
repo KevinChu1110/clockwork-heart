@@ -1,0 +1,27 @@
+{
+  "round": 21,
+  "task": "t_633a85aa",
+  "items": {
+    "item_1_boar_neckline": {
+      "status": "pass",
+      "details": "野豬 512 高清舞台與衣櫥換裝正常渲染，頭部 (Y<=176) 與底盤 (Y>=170) 自然交疊，最低 Alpha 238，零破圖、零白邊、零斷層縫隙。"
+    },
+    "item_2_web_c_regression": {
+      "status": "pass",
+      "details": "覆蓋 1280/1920/768/390/360 五種裝置，工坊儀表完整呈現、雙按鈕尺寸合規，九族卡片 100% 載入解碼，影片區自適應排版正常，零 emoji、零世界觀違和字。"
+    },
+    "item_3_dummy_settlement_card": {
+      "status": "pass",
+      "details": "木人樁試招結算數據卡符合手遊橫屏規範（寬760px、圓角24px、立體果凍厚底按鈕>=50px、字級16~32px帶深色描邊、零emoji），42%半透明遮罩透視戰鬥背景，標準與高額數值均無排版溢出或截斷。"
+    },
+    "item_4_gem_autosocket": {
+      "status": "pass",
+      "details": "手藝工坊寶石櫃分頁 BtnAutoSocket 一鍵鑲嵌按鈕正常呈現，符合薄荷綠 (#4ED86A) 5px 果凍厚底規範，點擊後自動掃描裝備並填補空孔位，提示訊息展示正確，無文字截斷或重疊。"
+    },
+    "item_5_post_round20_commits": {
+      "status": "pass",
+      "details": "commit 7de702c2 清理成效卓越（工作區 0 未提交雜檔、UID 伴隨檔齊全無編譯警告）；fbd6506b/72a18dff 官網九族卡立繪解碼完全（9族立繪100%呈現無灰底未解碼）；無頭測試 dummy (2/2)、gem (3/3)、paperdoll (17/17) 全數綠燈。"
+    }
+  },
+  "verdict": "pass"
+}

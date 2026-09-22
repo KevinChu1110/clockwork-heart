@@ -1,0 +1,990 @@
+{
+  "devices": {
+    "desktop_1280": {
+      "hero": {
+        "heroVisible": true,
+        "heroRect": {
+          "width": 1280,
+          "height": 900
+        },
+        "btnLaunch": {
+          "width": 270,
+          "height": 55,
+          "x": 360,
+          "y": -1968
+        },
+        "btnExplore": {
+          "width": 270,
+          "height": 55,
+          "x": 650,
+          "y": -1968
+        },
+        "featuresCount": 3
+      }
+    },
+    "desktop_1920": {
+      "hero": {
+        "heroVisible": true,
+        "heroRect": {
+          "width": 1920,
+          "height": 1080
+        },
+        "btnLaunch": {
+          "width": 270,
+          "height": 55,
+          "x": 680,
+          "y": -2061
+        },
+        "btnExplore": {
+          "width": 270,
+          "height": 55,
+          "x": 970,
+          "y": -2061
+        },
+        "featuresCount": 3
+      }
+    },
+    "tablet_768": {
+      "hero": {
+        "heroVisible": true,
+        "heroRect": {
+          "width": 768,
+          "height": 1024
+        },
+        "btnLaunch": {
+          "width": 270,
+          "height": 55,
+          "x": 104,
+          "y": -2743
+        },
+        "btnExplore": {
+          "width": 270,
+          "height": 55,
+          "x": 394,
+          "y": -2743
+        },
+        "featuresCount": 3
+      }
+    },
+    "mobile_390": {
+      "hero": {
+        "heroVisible": true,
+        "heroRect": {
+          "width": 390,
+          "height": 1228
+        },
+        "btnLaunch": {
+          "width": 164,
+          "height": 34,
+          "x": 21,
+          "y": -4363
+        },
+        "btnExplore": {
+          "width": 164,
+          "height": 34,
+          "x": 205,
+          "y": -4363
+        },
+        "featuresCount": 3
+      }
+    },
+    "mobile_360": {
+      "hero": {
+        "heroVisible": true,
+        "heroRect": {
+          "width": 360,
+          "height": 1210
+        },
+        "btnLaunch": {
+          "width": 151,
+          "height": 31,
+          "x": 19,
+          "y": -4055
+        },
+        "btnExplore": {
+          "width": 151,
+          "height": 31,
+          "x": 190,
+          "y": -4055
+        },
+        "featuresCount": 3
+      }
+    }
+  },
+  "races_grid": {
+    "desktop_1280": {
+      "count": 9,
+      "allLoaded": true,
+      "cards": [
+        {
+          "idx": 0,
+          "name": "白金兔",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 50,
+            "y": -506
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 1,
+          "name": "烈鬃獅",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 450,
+            "y": -506
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 2,
+          "name": "靈尾狐",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 849,
+            "y": -506
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 3,
+          "name": "鋼牙豕",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 50,
+            "y": 138
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 4,
+          "name": "靈爪猴",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 450,
+            "y": 138
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 5,
+          "name": "烈焰虎",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 849,
+            "y": 138
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 6,
+          "name": "雲嵐鶴",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 50,
+            "y": 782
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 7,
+          "name": "玄軸熊",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 450,
+            "y": 782
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 8,
+          "name": "蒸氣企鵝",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 849,
+            "y": 782
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        }
+      ]
+    },
+    "desktop_1920": {
+      "count": 9,
+      "allLoaded": true,
+      "cards": [
+        {
+          "idx": 0,
+          "name": "白金兔",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 370,
+            "y": -416
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 1,
+          "name": "烈鬃獅",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 770,
+            "y": -416
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 2,
+          "name": "靈尾狐",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 1169,
+            "y": -416
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 3,
+          "name": "鋼牙豕",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 370,
+            "y": 228
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 4,
+          "name": "靈爪猴",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 770,
+            "y": 228
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 5,
+          "name": "烈焰虎",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 1169,
+            "y": 228
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 6,
+          "name": "雲嵐鶴",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 370,
+            "y": 872
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 7,
+          "name": "玄軸熊",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 770,
+            "y": 872
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 8,
+          "name": "蒸氣企鵝",
+          "rect": {
+            "width": 381,
+            "height": 625,
+            "x": 1169,
+            "y": 872
+          },
+          "imgRect": {
+            "width": 347,
+            "height": 445
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        }
+      ]
+    },
+    "tablet_768": {
+      "count": 9,
+      "allLoaded": true,
+      "cards": [
+        {
+          "idx": 0,
+          "name": "白金兔",
+          "rect": {
+            "width": 358,
+            "height": 597,
+            "x": 16,
+            "y": -821
+          },
+          "imgRect": {
+            "width": 324,
+            "height": 417
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 1,
+          "name": "烈鬃獅",
+          "rect": {
+            "width": 358,
+            "height": 597,
+            "x": 394,
+            "y": -821
+          },
+          "imgRect": {
+            "width": 324,
+            "height": 417
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 2,
+          "name": "靈尾狐",
+          "rect": {
+            "width": 358,
+            "height": 597,
+            "x": 16,
+            "y": -205
+          },
+          "imgRect": {
+            "width": 324,
+            "height": 417
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 3,
+          "name": "鋼牙豕",
+          "rect": {
+            "width": 358,
+            "height": 597,
+            "x": 394,
+            "y": -205
+          },
+          "imgRect": {
+            "width": 324,
+            "height": 417
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 4,
+          "name": "靈爪猴",
+          "rect": {
+            "width": 358,
+            "height": 597,
+            "x": 16,
+            "y": 411
+          },
+          "imgRect": {
+            "width": 324,
+            "height": 417
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 5,
+          "name": "烈焰虎",
+          "rect": {
+            "width": 358,
+            "height": 597,
+            "x": 394,
+            "y": 411
+          },
+          "imgRect": {
+            "width": 324,
+            "height": 417
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 6,
+          "name": "雲嵐鶴",
+          "rect": {
+            "width": 358,
+            "height": 597,
+            "x": 16,
+            "y": 1027
+          },
+          "imgRect": {
+            "width": 324,
+            "height": 417
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 7,
+          "name": "玄軸熊",
+          "rect": {
+            "width": 358,
+            "height": 597,
+            "x": 394,
+            "y": 1027
+          },
+          "imgRect": {
+            "width": 324,
+            "height": 417
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 8,
+          "name": "蒸氣企鵝",
+          "rect": {
+            "width": 358,
+            "height": 597,
+            "x": 16,
+            "y": 1644
+          },
+          "imgRect": {
+            "width": 324,
+            "height": 417
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        }
+      ]
+    },
+    "mobile_390": {
+      "count": 9,
+      "allLoaded": true,
+      "cards": [
+        {
+          "idx": 0,
+          "name": "白金兔",
+          "rect": {
+            "width": 370,
+            "height": 612,
+            "x": 10,
+            "y": -2126
+          },
+          "imgRect": {
+            "width": 336,
+            "height": 432
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 1,
+          "name": "烈鬃獅",
+          "rect": {
+            "width": 370,
+            "height": 612,
+            "x": 10,
+            "y": -1496
+          },
+          "imgRect": {
+            "width": 336,
+            "height": 432
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 2,
+          "name": "靈尾狐",
+          "rect": {
+            "width": 370,
+            "height": 612,
+            "x": 10,
+            "y": -865
+          },
+          "imgRect": {
+            "width": 336,
+            "height": 432
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 3,
+          "name": "鋼牙豕",
+          "rect": {
+            "width": 370,
+            "height": 612,
+            "x": 10,
+            "y": -234
+          },
+          "imgRect": {
+            "width": 336,
+            "height": 432
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 4,
+          "name": "靈爪猴",
+          "rect": {
+            "width": 370,
+            "height": 612,
+            "x": 10,
+            "y": 397
+          },
+          "imgRect": {
+            "width": 336,
+            "height": 432
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 5,
+          "name": "烈焰虎",
+          "rect": {
+            "width": 370,
+            "height": 612,
+            "x": 10,
+            "y": 1028
+          },
+          "imgRect": {
+            "width": 336,
+            "height": 432
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 6,
+          "name": "雲嵐鶴",
+          "rect": {
+            "width": 370,
+            "height": 612,
+            "x": 10,
+            "y": 1658
+          },
+          "imgRect": {
+            "width": 336,
+            "height": 432
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 7,
+          "name": "玄軸熊",
+          "rect": {
+            "width": 370,
+            "height": 612,
+            "x": 10,
+            "y": 2289
+          },
+          "imgRect": {
+            "width": 336,
+            "height": 432
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 8,
+          "name": "蒸氣企鵝",
+          "rect": {
+            "width": 370,
+            "height": 612,
+            "x": 10,
+            "y": 2920
+          },
+          "imgRect": {
+            "width": 336,
+            "height": 432
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        }
+      ]
+    },
+    "mobile_360": {
+      "count": 9,
+      "allLoaded": true,
+      "cards": [
+        {
+          "idx": 0,
+          "name": "白金兔",
+          "rect": {
+            "width": 340,
+            "height": 574,
+            "x": 10,
+            "y": -1871
+          },
+          "imgRect": {
+            "width": 306,
+            "height": 394
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 1,
+          "name": "烈鬃獅",
+          "rect": {
+            "width": 340,
+            "height": 574,
+            "x": 10,
+            "y": -1278
+          },
+          "imgRect": {
+            "width": 306,
+            "height": 394
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 2,
+          "name": "靈尾狐",
+          "rect": {
+            "width": 340,
+            "height": 574,
+            "x": 10,
+            "y": -684
+          },
+          "imgRect": {
+            "width": 306,
+            "height": 394
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 3,
+          "name": "鋼牙豕",
+          "rect": {
+            "width": 340,
+            "height": 574,
+            "x": 10,
+            "y": -91
+          },
+          "imgRect": {
+            "width": 306,
+            "height": 394
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        },
+        {
+          "idx": 4,
+          "name": "靈爪猴",
+          "rect": {
+            "width": 340,
+            "height": 574,
+            "x": 10,
+            "y": 502
+          },
+          "imgRect": {
+            "width": 306,
+            "height": 394
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 5,
+          "name": "烈焰虎",
+          "rect": {
+            "width": 340,
+            "height": 574,
+            "x": 10,
+            "y": 1096
+          },
+          "imgRect": {
+            "width": 306,
+            "height": 394
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 6,
+          "name": "雲嵐鶴",
+          "rect": {
+            "width": 340,
+            "height": 574,
+            "x": 10,
+            "y": 1689
+          },
+          "imgRect": {
+            "width": 306,
+            "height": 394
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 7,
+          "name": "玄軸熊",
+          "rect": {
+            "width": 340,
+            "height": 574,
+            "x": 10,
+            "y": 2282
+          },
+          "imgRect": {
+            "width": 306,
+            "height": 394
+          },
+          "imgLoaded": true,
+          "naturalWidth": 1344,
+          "naturalHeight": 1680
+        },
+        {
+          "idx": 8,
+          "name": "蒸氣企鵝",
+          "rect": {
+            "width": 340,
+            "height": 574,
+            "x": 10,
+            "y": 2875
+          },
+          "imgRect": {
+            "width": 306,
+            "height": 394
+          },
+          "imgLoaded": true,
+          "naturalWidth": 928,
+          "naturalHeight": 1160
+        }
+      ]
+    }
+  },
+  "trailers": {
+    "desktop_1280": {
+      "landscape": {
+        "width": 654,
+        "height": 499,
+        "y": 1676
+      },
+      "portrait": {
+        "width": 503,
+        "height": 602,
+        "y": 1676
+      },
+      "isSideBySide": true,
+      "isStacked": false
+    },
+    "desktop_1920": {
+      "landscape": {
+        "width": 654,
+        "height": 499,
+        "y": 1773
+      },
+      "portrait": {
+        "width": 503,
+        "height": 602,
+        "y": 1773
+      },
+      "isSideBySide": true,
+      "isStacked": false
+    },
+    "tablet_768": {
+      "landscape": {
+        "width": 736,
+        "height": 545,
+        "y": 2429
+      },
+      "portrait": {
+        "width": 736,
+        "height": 602,
+        "y": 2997
+      },
+      "isSideBySide": false,
+      "isStacked": true
+    },
+    "mobile_390": {
+      "landscape": {
+        "width": 370,
+        "height": 339,
+        "y": 3691
+      },
+      "portrait": {
+        "width": 370,
+        "height": 602,
+        "y": 4053
+      },
+      "isSideBySide": false,
+      "isStacked": true
+    },
+    "mobile_360": {
+      "landscape": {
+        "width": 340,
+        "height": 322,
+        "y": 3609
+      },
+      "portrait": {
+        "width": 340,
+        "height": 602,
+        "y": 3954
+      },
+      "isSideBySide": false,
+      "isStacked": true
+    }
+  },
+  "cta_buttons": {},
+  "audit": {
+    "broken_assets": [],
+    "console_errors": [],
+    "emoji_matches": [],
+    "world_canon_violations": []
+  }
+}
