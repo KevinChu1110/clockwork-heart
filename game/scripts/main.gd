@@ -5944,7 +5944,7 @@ func _skill_tutor_continuous_cb(sid: String) -> Callable:
 		
 		var line: String = ""
 		if leveled:
-			line = _t("連續指點 %d 次（耗 %d 金），招式突破！升至 %s (Lv.%d)！") % [count, spent, nm, end_lv]
+			line = _t("連續指點 %d 次（耗 %d 金），招式突破！升至 %s！") % [count, spent, nm]
 		else:
 			var reason_text: String = ""
 			if stop_reason == "no_gold":
