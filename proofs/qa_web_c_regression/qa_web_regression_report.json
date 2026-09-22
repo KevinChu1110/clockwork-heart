@@ -1,0 +1,529 @@
+{
+  "screenshots": {
+    "desktop_fullpage": "/opt/side/bravesoul-game/proofs/qa_web_c_regression/proof_desktop_fullpage.png",
+    "mobile_fullpage": "/opt/side/bravesoul-game/proofs/qa_web_c_regression/proof_mobile_fullpage.png"
+  },
+  "races_grid": {
+    "desktop": {
+      "gridDisplay": "grid",
+      "gridColumns": "380.531px 380.547px 380.531px",
+      "cardCount": 9,
+      "cards": [
+        {
+          "idx": 0,
+          "name": "白金兔",
+          "badge": "劍士",
+          "weapon": "武器：晨曦發條單手長劍",
+          "rect": {
+            "x": 50,
+            "y": 1927.671875,
+            "width": 380.53125,
+            "height": 624.78125
+          },
+          "imgComplete": true,
+          "naturalSize": "1344x1680"
+        },
+        {
+          "idx": 1,
+          "name": "烈鬃獅",
+          "badge": "騎士",
+          "weapon": "武器：皇家黃銅突刺長槍",
+          "rect": {
+            "x": 449.71875,
+            "y": 1927.671875,
+            "width": 380.546875,
+            "height": 624.78125
+          },
+          "imgComplete": true,
+          "naturalSize": "928x1160"
+        },
+        {
+          "idx": 2,
+          "name": "靈尾狐",
+          "badge": "法師",
+          "weapon": "武器：星盤晶核秘術法杖",
+          "rect": {
+            "x": 849.453125,
+            "y": 1927.671875,
+            "width": 380.53125,
+            "height": 624.78125
+          },
+          "imgComplete": true,
+          "naturalSize": "928x1160"
+        },
+        {
+          "idx": 3,
+          "name": "鋼牙豕",
+          "badge": "戰士",
+          "weapon": "武器：鍛爐鐵砧重型戰鎚",
+          "rect": {
+            "x": 50,
+            "y": 2571.640625,
+            "width": 380.53125,
+            "height": 624.78125
+          },
+          "imgComplete": true,
+          "naturalSize": "928x1160"
+        },
+        {
+          "idx": 4,
+          "name": "靈爪猴",
+          "badge": "武術家",
+          "weapon": "武器：機關發條靈爪護手",
+          "rect": {
+            "x": 449.71875,
+            "y": 2571.640625,
+            "width": 380.546875,
+            "height": 624.78125
+          },
+          "imgComplete": true,
+          "naturalSize": "1344x1680"
+        },
+        {
+          "idx": 5,
+          "name": "烈焰虎",
+          "badge": "忍者",
+          "weapon": "武器：齒輪發條雙斬刃",
+          "rect": {
+            "x": 849.453125,
+            "y": 2571.640625,
+            "width": 380.53125,
+            "height": 624.78125
+          },
+          "imgComplete": true,
+          "naturalSize": "1344x1680"
+        },
+        {
+          "idx": 6,
+          "name": "雲嵐鶴",
+          "badge": "遊俠",
+          "weapon": "武器：風弦羽翼機關弓",
+          "rect": {
+            "x": 50,
+            "y": 3215.609375,
+            "width": 380.53125,
+            "height": 624.78125
+          },
+          "imgComplete": true,
+          "naturalSize": "1344x1680"
+        },
+        {
+          "idx": 7,
+          "name": "玄軸熊",
+          "badge": "戰士",
+          "weapon": "武器：玄軸偏心重力錘",
+          "rect": {
+            "x": 449.71875,
+            "y": 3215.609375,
+            "width": 380.546875,
+            "height": 624.78125
+          },
+          "imgComplete": true,
+          "naturalSize": "1344x1680"
+        },
+        {
+          "idx": 8,
+          "name": "蒸氣企鵝",
+          "badge": "遊俠",
+          "weapon": "武器：蒸氣雙管導航火槍",
+          "rect": {
+            "x": 849.453125,
+            "y": 3215.609375,
+            "width": 380.53125,
+            "height": 624.78125
+          },
+          "imgComplete": true,
+          "naturalSize": "928x1160"
+        }
+      ]
+    },
+    "mobile": {
+      "gridDisplay": "grid",
+      "gridColumns": "370px",
+      "cardCount": 9,
+      "cards": [
+        {
+          "idx": 0,
+          "name": "白金兔",
+          "rect": {
+            "x": 10,
+            "y": 2555,
+            "width": 370,
+            "height": 612
+          },
+          "imgComplete": true
+        },
+        {
+          "idx": 1,
+          "name": "烈鬃獅",
+          "rect": {
+            "x": 10,
+            "y": 3185,
+            "width": 370,
+            "height": 612
+          },
+          "imgComplete": true
+        },
+        {
+          "idx": 2,
+          "name": "靈尾狐",
+          "rect": {
+            "x": 10,
+            "y": 3816,
+            "width": 370,
+            "height": 612
+          },
+          "imgComplete": true
+        },
+        {
+          "idx": 3,
+          "name": "鋼牙豕",
+          "rect": {
+            "x": 10,
+            "y": 4447,
+            "width": 370,
+            "height": 612
+          },
+          "imgComplete": true
+        },
+        {
+          "idx": 4,
+          "name": "靈爪猴",
+          "rect": {
+            "x": 10,
+            "y": 5078,
+            "width": 370,
+            "height": 612
+          },
+          "imgComplete": true
+        },
+        {
+          "idx": 5,
+          "name": "烈焰虎",
+          "rect": {
+            "x": 10,
+            "y": 5709,
+            "width": 370,
+            "height": 612
+          },
+          "imgComplete": true
+        },
+        {
+          "idx": 6,
+          "name": "雲嵐鶴",
+          "rect": {
+            "x": 10,
+            "y": 6339,
+            "width": 370,
+            "height": 612
+          },
+          "imgComplete": true
+        },
+        {
+          "idx": 7,
+          "name": "玄軸熊",
+          "rect": {
+            "x": 10,
+            "y": 6970,
+            "width": 370,
+            "height": 612
+          },
+          "imgComplete": true
+        },
+        {
+          "idx": 8,
+          "name": "蒸氣企鵝",
+          "rect": {
+            "x": 10,
+            "y": 7601,
+            "width": 370,
+            "height": 612
+          },
+          "imgComplete": true
+        }
+      ]
+    }
+  },
+  "cta_buttons": {
+    "desktop": [
+      {
+        "name": "立即啟動 (amber)",
+        "found": true,
+        "href": "#trailers",
+        "visible": true,
+        "rect": {
+          "width": 270,
+          "height": 55,
+          "x": 360,
+          "y": 466
+        },
+        "clickable": true
+      },
+      {
+        "name": "探索世界 (emerald)",
+        "found": true,
+        "href": "#cast",
+        "visible": true,
+        "rect": {
+          "width": 270,
+          "height": 55,
+          "x": 650,
+          "y": 466
+        },
+        "clickable": true
+      },
+      {
+        "name": "養成細節",
+        "found": true,
+        "href": "pages/systems.html",
+        "visible": true,
+        "rect": {
+          "width": 118,
+          "height": 55,
+          "x": 424,
+          "y": 816
+        },
+        "clickable": true
+      },
+      {
+        "name": "新手指南",
+        "found": true,
+        "href": "pages/guide.html",
+        "visible": true,
+        "rect": {
+          "width": 118,
+          "height": 55,
+          "x": 558,
+          "y": 816
+        },
+        "clickable": true
+      },
+      {
+        "name": "下載 PC 測試包 (hero)",
+        "found": true,
+        "href": "pages/download.html",
+        "visible": true,
+        "rect": {
+          "width": 164,
+          "height": 55,
+          "x": 692,
+          "y": 816
+        },
+        "clickable": true
+      },
+      {
+        "name": "下載測試包 (finale)",
+        "found": true,
+        "href": "pages/download.html",
+        "visible": true,
+        "rect": {
+          "width": 133,
+          "height": 55,
+          "x": 508,
+          "y": 5020
+        },
+        "clickable": true
+      },
+      {
+        "name": "官方粉專 (finale)",
+        "found": true,
+        "href": "https://www.facebook.com/1335191403004011",
+        "visible": true,
+        "rect": {
+          "width": 118,
+          "height": 55,
+          "x": 655,
+          "y": 5020
+        },
+        "clickable": true
+      }
+    ],
+    "mobile": [
+      {
+        "name": "立即啟動 (amber)",
+        "found": true,
+        "href": "#trailers",
+        "visible": true,
+        "rect": {
+          "width": 164,
+          "height": 34,
+          "x": 21,
+          "y": 318
+        },
+        "clickable": true
+      },
+      {
+        "name": "探索世界 (emerald)",
+        "found": true,
+        "href": "#cast",
+        "visible": true,
+        "rect": {
+          "width": 164,
+          "height": 34,
+          "x": 205,
+          "y": 318
+        },
+        "clickable": true
+      },
+      {
+        "name": "養成細節",
+        "found": true,
+        "href": "pages/systems.html",
+        "visible": true,
+        "rect": {
+          "width": 118,
+          "height": 55,
+          "x": 69,
+          "y": 1120
+        },
+        "clickable": true
+      },
+      {
+        "name": "新手指南",
+        "found": true,
+        "href": "pages/guide.html",
+        "visible": true,
+        "rect": {
+          "width": 118,
+          "height": 55,
+          "x": 203,
+          "y": 1120
+        },
+        "clickable": true
+      },
+      {
+        "name": "下載 PC 測試包 (hero)",
+        "found": true,
+        "href": "pages/download.html",
+        "visible": true,
+        "rect": {
+          "width": 164,
+          "height": 55,
+          "x": 113,
+          "y": 1191
+        },
+        "clickable": true
+      },
+      {
+        "name": "下載測試包 (finale)",
+        "found": true,
+        "href": "pages/download.html",
+        "visible": true,
+        "rect": {
+          "width": 296,
+          "height": 55,
+          "x": 47,
+          "y": 9565
+        },
+        "clickable": true
+      },
+      {
+        "name": "官方粉專 (finale)",
+        "found": true,
+        "href": "https://www.facebook.com/1335191403004011",
+        "visible": true,
+        "rect": {
+          "width": 296,
+          "height": 55,
+          "x": 47,
+          "y": 9634
+        },
+        "clickable": true
+      }
+    ]
+  },
+  "trailers": {
+    "desktop": {
+      "gridFound": true,
+      "landscape": {
+        "found": true,
+        "rect": {
+          "width": 654,
+          "height": 499,
+          "x": 50,
+          "y": 4110
+        },
+        "aspectRatio": "1.31"
+      },
+      "portrait": {
+        "found": true,
+        "rect": {
+          "width": 503,
+          "height": 602,
+          "x": 727,
+          "y": 4110
+        },
+        "phoneRect": {
+          "width": 240,
+          "height": 442
+        }
+      },
+      "isSideBySide": true
+    },
+    "mobile": {
+      "gridFound": true,
+      "landscape": {
+        "found": true,
+        "rect": {
+          "width": 370,
+          "height": 339,
+          "x": 10,
+          "y": 8372
+        }
+      },
+      "portrait": {
+        "found": true,
+        "rect": {
+          "width": 370,
+          "height": 602,
+          "x": 10,
+          "y": 8734
+        },
+        "phoneRect": {
+          "width": 240,
+          "height": 442
+        }
+      },
+      "isStacked": true
+    }
+  },
+  "legacy_elements_audit": {
+    "matches": [
+      {
+        "term": "神殿",
+        "reason": "可能殘留舊版神殿文字",
+        "count": 0
+      },
+      {
+        "term": "希臘",
+        "reason": "可能殘留舊版希臘柱/神殿概念",
+        "count": 0
+      },
+      {
+        "term": "itch.io",
+        "reason": "可能殘留舊版 itch 平台連結",
+        "count": 0
+      },
+      {
+        "term": "Steam",
+        "reason": "可能殘留舊版 Steam 預約",
+        "count": 0
+      },
+      {
+        "term": "毛皮",
+        "reason": "世界觀禁忌：零毛皮（若是正文宣導零毛皮則正常）",
+        "count": 2
+      }
+    ],
+    "fxLayerVisible": false,
+    "heroWorkshopActive": true
+  },
+  "broken_links_audit": {
+    "missing_local_files": [],
+    "total_checked": 33,
+    "anchor_targets": {
+      "#trailers": true,
+      "#cast": true
+    }
+  }
+}

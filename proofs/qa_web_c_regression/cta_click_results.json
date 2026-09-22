@@ -1,0 +1,56 @@
+{
+  "desktop": {
+    "btn_launch_amber": {
+      "y": 3917,
+      "hash": "#trailers",
+      "success": true
+    },
+    "btn_explore_emerald": {
+      "y": 965,
+      "hash": "#cast",
+      "success": true
+    },
+    "nav_systems": {
+      "status": 200,
+      "url": "http://127.0.0.1:8998/pages/systems.html",
+      "title": "系統與養成 — 發條之心 (Clockwork Heart)",
+      "success": true
+    },
+    "nav_guide": {
+      "status": 200,
+      "url": "http://127.0.0.1:8998/pages/guide.html",
+      "title": "遊戲指南 — 發條之心 (Clockwork Heart)",
+      "success": true
+    },
+    "nav_download_hero": {
+      "status": 200,
+      "url": "http://127.0.0.1:8998/pages/download.html",
+      "title": "開發測試包下載 — 發條之心 (Clockwork Heart)",
+      "success": true
+    },
+    "nav_download_finale": {
+      "status": 200,
+      "url": "http://127.0.0.1:8998/pages/download.html",
+      "title": "開發測試包下載 — 發條之心 (Clockwork Heart)",
+      "success": true
+    }
+  },
+  "mobile": {
+    "btn_launch_amber": {
+      "y": 8246,
+      "hash": "#trailers",
+      "success": true
+    },
+    "btn_explore_emerald": {
+      "y": 1285,
+      "hash": "#cast",
+      "success": true
+    },
+    "nav_download_finale": {
+      "status": 200,
+      "url": "http://127.0.0.1:8998/pages/download.html",
+      "title": "開發測試包下載 — 發條之心 (Clockwork Heart)",
+      "success": true
+    }
+  }
+}
