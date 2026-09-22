@@ -252,6 +252,31 @@ func _build_ui() -> void:
 	btn_refresh_case.pressed.connect(_refresh_case_view)
 	grid_head.add_child(btn_refresh_case)
 
+	var btn_auto_socket := Button.new()
+	btn_auto_socket.name = "BtnAutoSocket"
+	btn_auto_socket.text = "一鍵鑲嵌"
+	btn_auto_socket.custom_minimum_size = Vector2(130, 50)
+	btn_auto_socket.add_theme_font_size_override("font_size", 16)
+	btn_auto_socket.add_theme_color_override("font_color", Color.WHITE)
+	btn_auto_socket.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	btn_auto_socket.add_theme_constant_override("outline_size", 4)
+	if _cached_font:
+		btn_auto_socket.add_theme_font_override("font", _cached_font)
+	btn_auto_socket.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 16, 2))
+	btn_auto_socket.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE584"), COLOR_BORDER, 5, 16, 2))
+	btn_auto_socket.add_theme_stylebox_override("pressed", _create_button_style(Color("#36B850"), COLOR_BORDER, 2, 16, 2))
+	btn_auto_socket.pressed.connect(func():
+		var res: Dictionary = GemSystem.auto_socket()
+		_msg_label.text = str(res.get("msg", ""))
+		if bool(res.get("ok", false)):
+			_msg_label.add_theme_color_override("font_color", COLOR_MINT)
+		else:
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+		SaveManager.save_game()
+		_refresh_case_view()
+	)
+	grid_head.add_child(btn_auto_socket)
+
 	_case_grid = GridContainer.new()
 	_case_grid.name = "CaseGrid"
 	_case_grid.columns = 5
