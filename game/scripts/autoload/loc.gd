@@ -3,6 +3,9 @@ extends Node
 ## 用法：Loc.t("key") 或 Loc.t("key", {"name": "x"})
 ## 對話仍可暫用中文原文；新文案優先 key。
 
+signal locale_changed(new_locale: String)
+
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const DEFAULT_LOCALE := "zh_TW"
 
 ## 支援的語言。順序＝標題頁語言鈕循環的順序。
@@ -105,7 +108,11 @@ func set_locale(code: String) -> void:
 	if not _tables.has(code):
 		_load_locale(code)
 	if _tables.has(code):
+		var old_locale := locale
 		locale = code
+		ContentLoc.reload()
+		if old_locale != code:
+			locale_changed.emit(locale)
 
 
 func _load_locale(code: String) -> void:

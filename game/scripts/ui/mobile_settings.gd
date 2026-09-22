@@ -444,7 +444,7 @@ func _select_language(code: String) -> void:
 		if loc and loc.has_method("set_locale"):
 			loc.call("set_locale", code)
 	_refresh_lang_selection()
-	_show_toast("語言已成功切換！")
+	_show_toast(_t("語言已成功切換！"))
 
 
 ## ──────────────────────────────────────────

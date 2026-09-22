@@ -83,6 +83,12 @@ var _hall_buttons: Array[Button] = []
 var _settings_button: Button = null
 var _shop_button: Button = null
 var _sortie_button: Button = null
+var _sortie_title_label: Label = null
+var _sortie_stage_label: Label = null
+var _energy_title_label: Label = null
+var _gold_title_label: Label = null
+var _gem_title_label: Label = null
+var _hero_title_tag: Label = null
 var _active_hall_index: int = -1
 var _char_prev: TextureRect = null
 var _equip_schematic: VBoxContainer = null
@@ -219,9 +225,32 @@ func _ready() -> void:
 		)
 	_load_hero_poses()
 	_build_ui()
+	_connect_loc_signal()
+	_apply_locale_texts()
 	refresh_hud()
 	_switch_tab(Tab.VILLAGE)
 	call_deferred("_apply_safe")
+
+func _exit_tree() -> void:
+	var loc := _get_loc_node()
+	if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+		loc.locale_changed.disconnect(_on_locale_changed)
+
+func _get_loc_node() -> Node:
+	if Engine.get_main_loop() is SceneTree:
+		var st := Engine.get_main_loop() as SceneTree
+		if st.root:
+			return st.root.get_node_or_null("Loc")
+	return null
+
+func _connect_loc_signal() -> void:
+	var loc := _get_loc_node()
+	if loc and loc.has_signal("locale_changed"):
+		if not loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.connect(_on_locale_changed)
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_apply_locale_texts()
 
 func _apply_safe() -> void:
 	ResponsiveUi.apply_safe_margins(self)
@@ -364,7 +393,7 @@ func _current_paperdoll_slots() -> Dictionary:
 func _variant_display_name(slot_id: String, item_id: String) -> String:
 	var iid := item_id.strip_edges()
 	if iid.is_empty() or iid in ["none", "empty", "bare"]:
-		return "未裝備"
+		return _t("未裝備")
 	var def: Dictionary = PaperdollRenderer.get_slot_def(slot_id)
 	var variants: Variant = def.get("sample_variants", [])
 	if variants is Array:
@@ -372,13 +401,13 @@ func _variant_display_name(slot_id: String, item_id: String) -> String:
 			if v is Dictionary and str(v.get("id", "")) == iid:
 				var n := str(v.get("name", "")).strip_edges()
 				if n != "":
-					return n
+					return _t(n)
 	var clean := iid
 	for pfx in ["wpn_", "costume_", "key_", "curio_", "paint_", "ear_", "core_"]:
 		if clean.begins_with(pfx):
 			clean = clean.trim_prefix(pfx)
 			break
-	return clean.replace("_", " ")
+	return _t(clean.replace("_", " "))
 
 
 func _refresh_equip_schematic() -> void:
@@ -398,13 +427,15 @@ func _refresh_equip_schematic() -> void:
 				break
 		var slot_title := str(entry.get("name_zh", sid))
 		if slot_title == "玩具外裝與服飾":
-			slot_title = "外裝"
+			slot_title = _t("外裝")
 		elif slot_title == "手持武器外觀":
-			slot_title = "武器"
+			slot_title = _t("武器")
 		elif slot_title == "背部發條鑰匙":
-			slot_title = "發條"
+			slot_title = _t("發條")
 		elif slot_title == "隨身奇玩與尾部機關":
-			slot_title = "奇玩"
+			slot_title = _t("奇玩")
+		else:
+			slot_title = _t(slot_title)
 		var item_id := str(entry.get("chosen_item", ""))
 		if item_id.strip_edges().is_empty():
 			var tpath := str(entry.get("texture_path", ""))
@@ -709,7 +740,7 @@ func _build_top_hud() -> void:
 	var pwr_row := HBoxContainer.new()
 	pwr_row.add_theme_constant_override("separation", 4)
 	_power_label = Label.new()
-	_power_label.text = "戰力 0"
+	_power_label.text = _t("戰力 %d") % 0
 	_power_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_power_label.add_theme_font_size_override("font_size", 13)
 	pwr_row.add_child(_power_label)
@@ -722,6 +753,8 @@ func _build_top_hud() -> void:
 
 	## 奶油白三寶膠囊（帶對應發條核心圖示與果凍厚底質感）
 	_energy_label = _add_clean_capsule(h, "能量", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_energy_key.png")
+	if _energy_label.has_meta("title_label"):
+		_energy_title_label = _energy_label.get_meta("title_label") as Label
 	var energy_cap: PanelContainer = _energy_label.get_parent().get_parent() as PanelContainer
 	if energy_cap:
 		energy_cap.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -730,6 +763,8 @@ func _build_top_hud() -> void:
 				open_energy_dialog()
 		)
 	_gold_label = _add_clean_capsule(h, "金幣", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_gold_coin.png")
+	if _gold_label.has_meta("title_label"):
+		_gold_title_label = _gold_label.get_meta("title_label") as Label
 	var gold_cap: PanelContainer = _gold_label.get_parent().get_parent() as PanelContainer
 	if gold_cap:
 		gold_cap.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -738,6 +773,8 @@ func _build_top_hud() -> void:
 				open_shop()
 		)
 	_gem_label = _add_clean_capsule(h, "星屑", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_gem_stardust.png")
+	if _gem_label.has_meta("title_label"):
+		_gem_title_label = _gem_label.get_meta("title_label") as Label
 	var gem_cap: PanelContainer = _gem_label.get_parent().get_parent() as PanelContainer
 	if gem_cap:
 		gem_cap.mouse_filter = Control.MOUSE_FILTER_STOP
@@ -748,7 +785,7 @@ func _build_top_hud() -> void:
 
 	var shop_btn := Button.new()
 	shop_btn.name = "ShopButton"
-	shop_btn.text = "商城"
+	shop_btn.text = _t("商城")
 	UiStyle.style_button(shop_btn, false)
 	var shop_icon_path := "res://assets/icons/hud/icon_btn_shop.png"
 	if ResourceLoader.exists(shop_icon_path):
@@ -767,7 +804,7 @@ func _build_top_hud() -> void:
 
 	var set_btn := Button.new()
 	set_btn.name = "SettingsButton"
-	set_btn.text = "設置"
+	set_btn.text = _t("設置")
 	UiStyle.style_button(set_btn, false)
 	var settings_icon_path := "res://assets/icons/hud/icon_btn_settings.png"
 	if ResourceLoader.exists(settings_icon_path):
@@ -818,7 +855,8 @@ func _add_clean_capsule(parent: Container, title: String, val: String, accent: C
 		h.add_child(icon_rect)
 
 	var il := Label.new()
-	il.text = title
+	il.text = _t(title)
+	il.set_meta("key", title)
 	il.add_theme_font_size_override("font_size", 13)
 	il.add_theme_color_override("font_color", accent)
 	il.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -826,6 +864,7 @@ func _add_clean_capsule(parent: Container, title: String, val: String, accent: C
 
 	var vl := Label.new()
 	vl.text = val
+	vl.set_meta("title_label", il)
 	vl.add_theme_font_size_override("font_size", 15)
 	vl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	vl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -862,11 +901,11 @@ func _build_bottom_dock() -> void:
 	dock.add_child(h)
 
 	var tabs := [
-		{"tab": Tab.VILLAGE, "title": _t("發條新村"), "icon": "res://assets/icons/hud/icon_dock_village.png"},
-		{"tab": Tab.CHARACTER, "title": _t("角色裝備"), "icon": "res://assets/icons/hud/icon_dock_equip.png"},
-		{"tab": Tab.ADVENTURE, "title": _t("四區出征"), "icon": "res://assets/icons/hud/icon_dock_campaign.png"},
-		{"tab": Tab.SOUL_HALL, "title": _t("聚魂殿堂"), "icon": "res://assets/icons/hud/icon_dock_soul.png"},
-		{"tab": Tab.BAG, "title": _t("冒險背包"), "icon": "res://assets/icons/hud/icon_dock_bag.png"},
+		{"tab": Tab.VILLAGE, "title": "發條新村", "icon": "res://assets/icons/hud/icon_dock_village.png"},
+		{"tab": Tab.CHARACTER, "title": "角色裝備", "icon": "res://assets/icons/hud/icon_dock_equip.png"},
+		{"tab": Tab.ADVENTURE, "title": "四區出征", "icon": "res://assets/icons/hud/icon_dock_campaign.png"},
+		{"tab": Tab.SOUL_HALL, "title": "聚魂殿堂", "icon": "res://assets/icons/hud/icon_dock_soul.png"},
+		{"tab": Tab.BAG, "title": "冒險背包", "icon": "res://assets/icons/hud/icon_dock_bag.png"},
 	]
 
 	_dock_buttons.clear()
@@ -874,7 +913,8 @@ func _build_bottom_dock() -> void:
 		var btn := Button.new()
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		btn.custom_minimum_size = Vector2(0, 56)
-		btn.text = str(d["title"])
+		btn.set_meta("dock_key", str(d["title"]))
+		btn.text = _t(str(d["title"]))
 		var icon_path := str(d["icon"])
 		if ResourceLoader.exists(icon_path):
 			btn.icon = load(icon_path)
@@ -1104,13 +1144,14 @@ func _build_village_tab() -> void:
 	tag_v.add_child(_hero_name_tag)
 
 	var title_l := Label.new()
-	title_l.text = "【初出茅廬】"
+	title_l.text = "【%s】" % _t("初出茅廬")
 	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_l.add_theme_font_size_override("font_size", 11)
 	title_l.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	title_l.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.6))
 	title_l.add_theme_constant_override("outline_size", 1)
 	tag_v.add_child(title_l)
+	_hero_title_tag = title_l
 
 	tag_panel.add_child(tag_v)
 	_hero_avatar.add_child(tag_panel)
@@ -1138,7 +1179,7 @@ func _build_village_tab() -> void:
 	_speech_bubble.add_theme_stylebox_override("panel", bub_sb)
 
 	_speech_label = Label.new()
-	_speech_label.text = "背後的發條上得剛剛好，出發吧！"
+	_speech_label.text = _t("背後的發條上得剛剛好，出發吧！")
 	_speech_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_speech_label.add_theme_font_size_override("font_size", 14)
 	_speech_bubble.add_child(_speech_label)
@@ -1161,7 +1202,7 @@ func _build_village_tab() -> void:
 	_hall_buttons.clear()
 	_active_hall_index = -1
 
-	_add_hall_card(left_shops, _t("天宮鐵匠"), "品質轉化 · 裝備鍛造", "res://assets/icons/hud/icon_hall_forge.png", func():
+	_add_hall_card(left_shops, "天宮鐵匠", "品質轉化 · 裝備鍛造", "res://assets/icons/hud/icon_hall_forge.png", func():
 		open_forge()
 	)
 	_add_hall_card(left_shops, "手藝工坊", "紅黃藍石 · 三合一熔煉", "res://assets/icons/hud/icon_hall_gem.png", func():
@@ -1201,20 +1242,22 @@ func _build_village_tab() -> void:
 	right_card.add_child(rv)
 
 	var ch_lbl := Label.new()
-	ch_lbl.text = "冒險出征 · 當前主線"
+	ch_lbl.text = _t("冒險出征 · 當前主線")
 	ch_lbl.add_theme_font_size_override("font_size", 14)
 	ch_lbl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	rv.add_child(ch_lbl)
+	_sortie_title_label = ch_lbl
 
 	var s_name := Label.new()
 	s_name.text = _t("第二地區 · 白霧之地 (2-4 BOSS)")
 	s_name.add_theme_font_size_override("font_size", 17)
 	s_name.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	rv.add_child(s_name)
+	_sortie_stage_label = s_name
 
 	var btn_go := Button.new()
 	btn_go.name = "SortieButton"
-	btn_go.text = "前往出征"
+	btn_go.text = _t("前往出征")
 	UiStyle.style_button(btn_go, true)
 	var sortie_icon_path := "res://assets/icons/hud/icon_btn_sortie.png"
 	if ResourceLoader.exists(sortie_icon_path):
@@ -1311,11 +1354,13 @@ func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, ico
 	btn.name = "HallCard_" + title
 	btn.add_to_group("hall_cards")
 	btn.set_meta("hall_title", title)
+	btn.set_meta("hall_title_key", title)
 	if subtitle_or_cb is String:
 		btn.set_meta("hall_subtitle", subtitle_or_cb)
+		btn.set_meta("hall_subtitle_key", subtitle_or_cb)
 	btn.custom_minimum_size = Vector2(216, 56)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	btn.text = title
+	btn.text = _t(title)
 
 	# 依 title 或 icon_res_or_symbol 掛載自繪圖示
 	var icon_path := icon_res_or_symbol
@@ -2997,7 +3042,7 @@ func refresh_hud() -> void:
 	if _char_prev and _tex_idle:
 		_apply_hero_idle_visual()
 	if _power_label:
-		_power_label.text = "戰力 %d" % pow
+		_power_label.text = _t("戰力 %d") % pow
 	if _char_power_badge:
 		_char_power_badge.text = "有效戰力 %d" % (pow if pow > 0 else 482)
 	if _energy_label:
@@ -3006,6 +3051,46 @@ func refresh_hud() -> void:
 		_gold_label.text = _fmt_int(gold)
 	if _gem_label:
 		_gem_label.text = _fmt_int(dust)
+
+func _apply_locale_texts() -> void:
+	if _energy_title_label and is_instance_valid(_energy_title_label):
+		_energy_title_label.text = _t("能量")
+	if _gold_title_label and is_instance_valid(_gold_title_label):
+		_gold_title_label.text = _t("金幣")
+	if _gem_title_label and is_instance_valid(_gem_title_label):
+		_gem_title_label.text = _t("星屑")
+	if _shop_button and is_instance_valid(_shop_button):
+		_shop_button.text = _t("商城")
+	if _settings_button and is_instance_valid(_settings_button):
+		_settings_button.text = _t("設置")
+
+	for btn in _hall_buttons:
+		if is_instance_valid(btn):
+			var k := str(btn.get_meta("hall_title_key", ""))
+			if not k.is_empty():
+				btn.text = _t(k)
+
+	if _sortie_title_label and is_instance_valid(_sortie_title_label):
+		_sortie_title_label.text = _t("冒險出征 · 當前主線")
+	if _sortie_stage_label and is_instance_valid(_sortie_stage_label):
+		_sortie_stage_label.text = _t("第二地區 · 白霧之地 (2-4 BOSS)")
+	if _sortie_button and is_instance_valid(_sortie_button):
+		_sortie_button.text = _t("前往出征")
+
+	for btn in _dock_buttons:
+		if is_instance_valid(btn):
+			var k := str(btn.get_meta("dock_key", ""))
+			if not k.is_empty():
+				btn.text = _t(k)
+
+	if _speech_label and is_instance_valid(_speech_label):
+		_speech_label.text = _t("背後的發條上得剛剛好，出發吧！")
+
+	if _hero_title_tag and is_instance_valid(_hero_title_tag):
+		_hero_title_tag.text = "【%s】" % _t("初出茅廬")
+
+	_refresh_equip_schematic()
+	refresh_hud()
 
 func _show_toast(msg: String) -> void:
 	var toast := Label.new()
