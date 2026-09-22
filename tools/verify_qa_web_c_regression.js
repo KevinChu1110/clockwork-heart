@@ -138,19 +138,23 @@ async function runRegression() {
 
         await desktopPage.goto(`http://127.0.0.1:${PORT}/index.html`, { waitUntil: 'networkidle' });
 
-        // Ensure all images are loaded
+        // Ensure all images are loaded and decoded, and scroll through page so offscreen async images are rasterized
         await desktopPage.evaluate(async () => {
             const imgs = Array.from(document.querySelectorAll('img'));
             for (const img of imgs) {
                 img.loading = 'eager';
-                if (!img.complete) {
-                    await new Promise(r => {
-                        img.onload = r;
-                        img.onerror = r;
-                        setTimeout(r, 1000);
-                    });
-                }
             }
+            await Promise.all(imgs.map(async img => {
+                if (img.decode) {
+                    try { await img.decode(); } catch (e) {}
+                }
+            }));
+            const step = 600;
+            for (let y = 0; y < document.body.scrollHeight; y += step) {
+                window.scrollTo(0, y);
+                await new Promise(r => setTimeout(r, 40));
+            }
+            window.scrollTo(0, 0);
             // Pause videos for clean shots
             document.querySelectorAll('video').forEach(v => v.pause());
         });
@@ -317,18 +321,23 @@ async function runRegression() {
         const mobilePage = await mobileContext.newPage();
         await mobilePage.goto(`http://127.0.0.1:${PORT}/index.html`, { waitUntil: 'networkidle' });
 
+        // Ensure all images are loaded and decoded, and scroll through page so offscreen async images are rasterized
         await mobilePage.evaluate(async () => {
             const imgs = Array.from(document.querySelectorAll('img'));
             for (const img of imgs) {
                 img.loading = 'eager';
-                if (!img.complete) {
-                    await new Promise(r => {
-                        img.onload = r;
-                        img.onerror = r;
-                        setTimeout(r, 1000);
-                    });
-                }
             }
+            await Promise.all(imgs.map(async img => {
+                if (img.decode) {
+                    try { await img.decode(); } catch (e) {}
+                }
+            }));
+            const step = 500;
+            for (let y = 0; y < document.body.scrollHeight; y += step) {
+                window.scrollTo(0, y);
+                await new Promise(r => setTimeout(r, 40));
+            }
+            window.scrollTo(0, 0);
             document.querySelectorAll('video').forEach(v => v.pause());
         });
 
