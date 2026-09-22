@@ -62,3 +62,6 @@ game/proofs/
 
 # tools/ 底下的一次性除錯與分析腳本歸檔
 tools/scratch/
+
+# proofs/ 底下的臨時截圖與排查產物歸檔
+proofs/scratch/
