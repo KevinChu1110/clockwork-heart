@@ -1298,6 +1298,53 @@ func tutor_train(id: String) -> Dictionary:
 	return add_mastery(id, TUTOR_MASTERY)
 
 
+func tutor_train_continuous(id: String) -> Dictionary:
+	## 連續指點：重覆指點直到 ①升階成功 ②金幣不足 ③已達MAX_LV
+	if not can_tutor(id):
+		return {
+			"count": 0,
+			"spent_gold": 0,
+			"leveled": false,
+			"stop_reason": "cannot_tutor",
+			"start_lv": get_lv(id),
+			"end_lv": get_lv(id),
+			"name": display_name(id)
+		}
+	var start_lv: int = get_lv(id)
+	var count: int = 0
+	var spent: int = 0
+	var last_res: Dictionary = {}
+	var stop_reason: String = ""
+
+	while true:
+		if get_lv(id) >= MAX_LV:
+			stop_reason = "max_lv"
+			break
+		if GameState.gold < TUTOR_COST:
+			stop_reason = "no_gold"
+			break
+		last_res = tutor_train(id)
+		if last_res.is_empty():
+			stop_reason = "cannot_tutor"
+			break
+		count += 1
+		spent += TUTOR_COST
+		if bool(last_res.get("leveled", false)):
+			stop_reason = "leveled"
+			break
+
+	return {
+		"count": count,
+		"spent_gold": spent,
+		"leveled": bool(last_res.get("leveled", false)),
+		"stop_reason": stop_reason,
+		"start_lv": start_lv,
+		"end_lv": get_lv(id),
+		"name": display_name(id),
+		"mastery": get_mastery(id)
+	}
+
+
 func panel_status_bbcode() -> String:
 	ensure_skill_map()
 	var lines: PackedStringArray = []

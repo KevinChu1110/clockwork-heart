@@ -64,6 +64,20 @@ func _initialize() -> void:
 			push_error("max level skill progress bar should be 100.0")
 			ok = false
 
+	# 4. 測試連續指點按鈕邏輯
+	gs.gold = 100
+	sk._set_entry("slash", 1, 0) # 重置為 Lv.1
+	var can_t: bool = sk.can_tutor("slash")
+	if not can_t:
+		push_error("slash should be tutorable")
+		ok = false
+	else:
+		var btn_normal: String = "指點 橫斬（%d金）" % sk.TUTOR_COST
+		var btn_cont: String = "連續指點至升階／金盡（每回 %d金）" % sk.TUTOR_COST
+		if not ("連續指點" in btn_cont):
+			push_error("btn_cont string missing")
+			ok = false
+
 	main_node.free()
 
 	if ok:

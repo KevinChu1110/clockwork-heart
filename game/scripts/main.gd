@@ -5740,13 +5740,20 @@ func _go_skill_panel() -> void:
 			item["text"] = _t("【%s · Lv%d】已達極階") % [base_name2, slv2]
 			item["disabled"] = true
 			item["font_disabled_color"] = UiStyle.INK
+			buttons.append(item)
 		elif can_t:
 			item["text"] = _t("指點 %s（%d金）") % [base_name2, SkillSystem.TUTOR_COST]
 			item["cb"] = _skill_tutor_cb(sid2)
+			buttons.append(item)
+			var cont_item := {
+				"text": _t("連續指點至升階／金盡（每回 %d金）") % SkillSystem.TUTOR_COST,
+				"cb": _skill_tutor_continuous_cb(sid2),
+			}
+			buttons.append(cont_item)
 		else:
 			item["text"] = _t("指點 %s（需 %d 金 · 金幣不足）") % [base_name2, SkillSystem.TUTOR_COST]
 			item["disabled"] = true
-		buttons.append(item)
+			buttons.append(item)
 	## 可習得
 	for d in SkillSystem.CATALOG:
 		var sid: String = str(d.get("id", ""))
@@ -5902,6 +5909,37 @@ func _skill_tutor_cb(sid: String) -> Callable:
 			line = _t("體悟！升至 %s") % str(res.get("name", ""))
 		_play_dialog([
 			{"speaker": _t("灰鬚"), "text": _t("手腕轉一下。對，這樣。")},
+			{"speaker": _t("系統"), "text": line},
+		], _go_skill_panel)
+
+
+func _skill_tutor_continuous_cb(sid: String) -> Callable:
+	return func():
+		if not SkillSystem.can_tutor(sid):
+			_play_dialog(DialogLines.lines("skill.tutor_deny"), _go_skill_panel)
+			return
+		var res: Dictionary = SkillSystem.tutor_train_continuous(sid)
+		SaveManager.save_game()
+		var count: int = int(res.get("count", 0))
+		var spent: int = int(res.get("spent_gold", 0))
+		var leveled: bool = bool(res.get("leveled", false))
+		var end_lv: int = int(res.get("end_lv", 1))
+		var nm: String = str(res.get("name", sid))
+		var stop_reason: String = str(res.get("stop_reason", ""))
+		
+		var line: String = ""
+		if leveled:
+			line = _t("連續指點 %d 次（耗 %d 金），招式突破！升至 %s (Lv.%d)！") % [count, spent, nm, end_lv]
+		else:
+			var reason_text: String = ""
+			if stop_reason == "no_gold":
+				reason_text = _t("（金幣已用盡）")
+			elif stop_reason == "max_lv":
+				reason_text = _t("（已達極階）")
+			line = _t("連續指點 %d 次（耗 %d 金）%s。當前：%s") % [count, spent, reason_text, SkillSystem.mastery_progress_line(sid)]
+
+		_play_dialog([
+			{"speaker": _t("灰鬚"), "text": _t("連貫發力，身隨意動！很好，記住這股勁！") if leveled else _t("一口氣練了幾輪，招式愈發純熟。歇口氣再來。")},
 			{"speaker": _t("系統"), "text": line},
 		], _go_skill_panel)
 

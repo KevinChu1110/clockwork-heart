@@ -86,6 +86,43 @@ func _initialize() -> void:
 	else:
 		print("tutor OK mastery=", sk.get_mastery("slash"))
 
+	## 連續指點測試
+	# 狀況一：熟練快滿時，連續指點能自動推進至升階停止
+	sk.learn("slash", 1) # 重置為 Lv.1
+	# MASTERY_NEED[2] = 20
+	var need_2: int = sk.mastery_need_for_next("slash")
+	sk._set_entry("slash", 1, need_2 - 5) # 距升級只差 5 點
+	gs.gold = 200 # 足夠多次指點
+	var cont_res: Dictionary = sk.tutor_train_continuous("slash")
+	if not bool(cont_res.get("leveled", false)) or sk.get_lv("slash") != 2:
+		push_error("continuous tutor should level up: %s" % cont_res)
+		ok = false
+	elif cont_res.get("count") != 1 or cont_res.get("spent_gold") != 40 or gs.gold != 160:
+		push_error("continuous tutor count/gold mismatch: count=%s spent=%s gold=%d" % [cont_res.get("count"), cont_res.get("spent_gold"), gs.gold])
+		ok = false
+	else:
+		print("continuous tutor leveled OK")
+
+	# 狀況二：金幣不足停止
+	gs.gold = 50 # 只能指點 1 次 (需要 40，指點後剩 10)
+	sk._set_entry("slash", 2, 0) # Lv.2 剛開始，MASTERY_NEED[3]=40，需要多次指點才能滿
+	var cont_no_gold: Dictionary = sk.tutor_train_continuous("slash")
+	if cont_no_gold.get("stop_reason") != "no_gold" or cont_no_gold.get("count") != 1 or gs.gold != 10:
+		push_error("continuous tutor no_gold fail: %s, gold=%d" % [cont_no_gold, gs.gold])
+		ok = false
+	else:
+		print("continuous tutor no_gold OK")
+
+	# 狀況三：滿階 MAX_LV 停止
+	sk.learn("slash", sk.MAX_LV)
+	gs.gold = 100
+	var cont_max: Dictionary = sk.tutor_train_continuous("slash")
+	if cont_max.get("count") != 0 or cont_max.get("stop_reason") != "cannot_tutor" and cont_max.get("stop_reason") != "max_lv":
+		push_error("continuous tutor max_lv fail: %s" % cont_max)
+		ok = false
+	else:
+		print("continuous tutor max_lv OK")
+
 	## 舊存檔相容
 	gs.skill_data = {}
 	gs.skill_slash_lv = 2
