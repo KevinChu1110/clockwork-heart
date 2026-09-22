@@ -4,7 +4,7 @@ extends SceneTree
 
 const FRAMES := 8
 const OUT_DIR := "/opt/side/bravesoul-game/proofs/qa_lobby_i18n"
-const LOCALES := ["zh_TW", "en", "ja", "ko", "es"]
+const LOCALES := ["zh_TW", "zh_CN", "en", "ja", "ko", "es"]
 
 var _lobby: Control = null
 var _loc_node: Node = null
@@ -67,10 +67,23 @@ func _verify_texts(code: String) -> void:
 	var shop_btn: Button = _lobby.get_shop_button()
 	var set_btn: Button = _lobby.get_settings_button()
 	var sortie_btn: Button = _lobby.get_sortie_button()
+	var pwr_lbl: Label = _lobby.get("_power_label")
+	var nrg_title: Label = _lobby.get("_energy_title_label")
+	var gold_title: Label = _lobby.get("_gold_title_label")
+	var gem_title: Label = _lobby.get("_gem_title_label")
 	
-	print("    [%s] 商城鈕文字: %s" % [code, shop_btn.text if shop_btn else "null"])
-	print("    [%s] 設置鈕文字: %s" % [code, set_btn.text if set_btn else "null"])
-	print("    [%s] 出征鈕文字: %s" % [code, sortie_btn.text if sortie_btn else "null"])
+	print("    [%s] 頂部狀態: 能量=%s, 金幣=%s, 星屑=%s, %s" % [
+		code,
+		nrg_title.text if nrg_title else "null",
+		gold_title.text if gold_title else "null",
+		gem_title.text if gem_title else "null",
+		pwr_lbl.text if pwr_lbl else "null"
+	])
+	print("    [%s] 商城鈕: %s, 設置鈕: %s" % [
+		code,
+		shop_btn.text if shop_btn else "null",
+		set_btn.text if set_btn else "null"
+	])
 
 	var dock_btns: Array = _lobby.get("_dock_buttons")
 	if dock_btns and dock_btns.size() >= 5:
@@ -85,6 +98,23 @@ func _verify_texts(code: String) -> void:
 		for b in hall_btns:
 			hall_texts.append((b as Button).text)
 		print("    [%s] 左側四入口: %s" % [code, " | ".join(hall_texts)])
+
+	var sortie_title: Label = _lobby.get("_sortie_title_label")
+	var sortie_stage: Label = _lobby.get("_sortie_stage_label")
+	print("    [%s] 出征面板: 標題=%s, 關卡=%s, 出征鈕=%s" % [
+		code,
+		sortie_title.text if sortie_title else "null",
+		sortie_stage.text if sortie_stage else "null",
+		sortie_btn.text if sortie_btn else "null"
+	])
+
+	var speech_lbl: Label = _lobby.get("_speech_label")
+	var hero_title: Label = _lobby.get("_hero_title_tag")
+	print("    [%s] 台詞與稱號: 台詞=%s, 稱號=%s" % [
+		code,
+		speech_lbl.text if speech_lbl else "null",
+		hero_title.text if hero_title else "null"
+	])
 
 
 func _save_screenshot(abs_path: String) -> void:
