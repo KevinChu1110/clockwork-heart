@@ -1,0 +1,38 @@
+{
+  "round": 22,
+  "task": "t_0f022e01",
+  "topic": "商城骨架五語系 i18n 合併後探索性 QA",
+  "items": {
+    "item_1_six_locales_i18n_inspection": {
+      "status": "pass",
+      "locales_tested": ["zh_TW", "zh_CN", "en", "ja", "ko", "es"],
+      "details": "六語系實機截圖逐一檢驗通過。品項名稱、描述、價格佔位字串、按鈕標籤（模擬購買/去廣告/看廣告）全部完整呈現，無任何文字溢出、截斷或重疊。長文字語系（es/en）按鈕內文字距邊距良好。"
+    },
+    "item_2_zero_system_emoji": {
+      "status": "pass",
+      "details": "商城彈窗、關閉鈕（向量✕）、IAP品項圖示（能量鑰匙、聚魂石、鍛造鐵砧）均為自製向量美術資產，100%零作業系統原生 Emoji 殘留，符合 review.md 規範。"
+    },
+    "item_3_dopamine_palette_and_jelly_buttons": {
+      "status": "pass",
+      "details": "商城彈窗寬度 750px 置中於 42% 半透明 Scrim 遮罩，採用奶油米白底色搭配深藍紫描邊，按鈕採用多巴胺鮮亮色盤（橙色、薄荷綠、桃粉、明黃），且具備 5px 立體果凍厚底與高度 >= 50px 規範，非死白 PPT。"
+    },
+    "item_4_ad_and_iap_flow": {
+      "status": "pass",
+      "details": "無頭環境驗證去廣告買斷切換（has_removed_ads = true，按鈕禁用）與獎勵廣告領取（免看廣告直接領取/觀看廣告領取+3能量），0 SCRIPT ERROR。"
+    },
+    "item_5_unit_tests": {
+      "status": "pass",
+      "test_filter": "shop",
+      "result": "TESTS PASSED (2/2): test_gem_workshop, test_shop_dialog 全綠。"
+    }
+  },
+  "proof_files": [
+    "proofs/shop_skeleton/proof_shop_i18n_zh_TW.png",
+    "proofs/shop_skeleton/proof_shop_i18n_zh_CN.png",
+    "proofs/shop_skeleton/proof_shop_i18n_en.png",
+    "proofs/shop_skeleton/proof_shop_i18n_ja.png",
+    "proofs/shop_skeleton/proof_shop_i18n_ko.png",
+    "proofs/shop_skeleton/proof_shop_i18n_es.png"
+  ],
+  "verdict": "pass"
+}
