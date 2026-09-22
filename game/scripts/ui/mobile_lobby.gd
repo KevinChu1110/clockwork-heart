@@ -450,14 +450,25 @@ func _add_equip_chip(parent: Container, slot_title: String, item_name: String, t
 	btn.custom_minimum_size = Vector2(0, 52)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+	btn.clip_text = true
+	btn.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	UiStyle.style_button(btn, false)
-	btn.add_theme_font_size_override("font_size", 13)
+	var full_text := "%s  %s" % [slot_title, item_name]
+	if full_text.length() > 36:
+		btn.add_theme_font_size_override("font_size", 10)
+	elif full_text.length() > 24:
+		btn.add_theme_font_size_override("font_size", 11)
+	elif full_text.length() > 16:
+		btn.add_theme_font_size_override("font_size", 12)
+	else:
+		btn.add_theme_font_size_override("font_size", 13)
 	if tex != null:
 		btn.icon = tex
 		btn.expand_icon = true
-		btn.add_theme_constant_override("icon_max_width", 36)
-		btn.add_theme_constant_override("h_separation", 8)
-	btn.text = "%s  %s" % [slot_title, item_name]
+		btn.add_theme_constant_override("icon_max_width", 32)
+		btn.add_theme_constant_override("h_separation", 6)
+	btn.text = full_text
+	btn.tooltip_text = "%s: %s" % [slot_title, item_name]
 	btn.pressed.connect(func(): open_wardrobe())
 	parent.add_child(btn)
 
@@ -1219,9 +1230,9 @@ func _build_village_tab() -> void:
 	_equip_schematic = VBoxContainer.new()
 	_equip_schematic.name = "EquipSchematic"
 	_equip_schematic.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	_equip_schematic.offset_left = -300
+	_equip_schematic.offset_left = -364
 	_equip_schematic.offset_top = 16
-	_equip_schematic.offset_right = -28
+	_equip_schematic.offset_right = -20
 	_equip_schematic.offset_bottom = 250
 	_equip_schematic.add_theme_constant_override("separation", 8)
 	_village_layer.add_child(_equip_schematic)
@@ -1230,15 +1241,15 @@ func _build_village_tab() -> void:
 	## 右側：多巴胺奶油白戰情報告板 (專注於主線推進)
 	var right_card := PanelContainer.new()
 	right_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	right_card.offset_left = -340
-	right_card.offset_top = -170
-	right_card.offset_right = -32
+	right_card.offset_left = -364
+	right_card.offset_top = -210
+	right_card.offset_right = -20
 	right_card.offset_bottom = -16
 	right_card.add_theme_stylebox_override("panel", _create_obsidian_panel(COLOR_BORDER))
 	_village_layer.add_child(right_card)
 
 	var rv := VBoxContainer.new()
-	rv.add_theme_constant_override("separation", 10)
+	rv.add_theme_constant_override("separation", 8)
 	right_card.add_child(rv)
 
 	var ch_lbl := Label.new()
@@ -1249,9 +1260,14 @@ func _build_village_tab() -> void:
 	_sortie_title_label = ch_lbl
 
 	var s_name := Label.new()
-	s_name.text = _t("第二地區 · 白霧之地 (2-4 BOSS)")
-	s_name.add_theme_font_size_override("font_size", 17)
+	var stage_name_text := _t("第二地區 · 白霧之地 (2-4 BOSS)")
+	s_name.text = stage_name_text
+	s_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	s_name.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if stage_name_text.length() > 30:
+		s_name.add_theme_font_size_override("font_size", 15)
+	else:
+		s_name.add_theme_font_size_override("font_size", 16)
 	rv.add_child(s_name)
 	_sortie_stage_label = s_name
 
@@ -3073,7 +3089,12 @@ func _apply_locale_texts() -> void:
 	if _sortie_title_label and is_instance_valid(_sortie_title_label):
 		_sortie_title_label.text = _t("冒險出征 · 當前主線")
 	if _sortie_stage_label and is_instance_valid(_sortie_stage_label):
-		_sortie_stage_label.text = _t("第二地區 · 白霧之地 (2-4 BOSS)")
+		var cur_stage_text := _t("第二地區 · 白霧之地 (2-4 BOSS)")
+		_sortie_stage_label.text = cur_stage_text
+		if cur_stage_text.length() > 30:
+			_sortie_stage_label.add_theme_font_size_override("font_size", 15)
+		else:
+			_sortie_stage_label.add_theme_font_size_override("font_size", 16)
 	if _sortie_button and is_instance_valid(_sortie_button):
 		_sortie_button.text = _t("前往出征")
 
