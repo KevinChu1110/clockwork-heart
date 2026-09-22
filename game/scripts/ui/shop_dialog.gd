@@ -15,7 +15,14 @@ signal closed()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
+
+static func tr_ui(s: String) -> String:
+	return _t(s)
 
 ## ── 多巴胺鮮亮色盤 ──
 const COLOR_GOLD        := Color("#FFD028")  ## 金黃
@@ -141,7 +148,8 @@ func _build_ui() -> void:
 	v.add_child(head)
 
 	var title_lbl := Label.new()
-	title_lbl.text = "發條補給 · 道具商城"
+	title_lbl.name = "ShopTitleLabel"
+	title_lbl.text = _t("發條補給 · 道具商城")
 	title_lbl.add_theme_font_size_override("font_size", 22)
 	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -152,7 +160,7 @@ func _build_ui() -> void:
 	head.add_child(title_lbl)
 
 	# 骨架標籤
-	var mode_pill := _create_info_pill("商業化測試骨架", COLOR_MINT)
+	var mode_pill := _create_info_pill(_t("商業化測試骨架"), COLOR_MINT)
 	head.add_child(mode_pill)
 
 	# 右上「✕」關閉按鈕 (50x50, 果凍厚底 5px)
@@ -179,7 +187,7 @@ func _build_ui() -> void:
 	notice_box.add_child(nm)
 
 	var notice_lbl := Label.new()
-	notice_lbl.text = "商業變現模型：定價帶待定（docs/BUSINESS.md 定案）。全品項為測試佔位 Mock 邏輯，點擊不扣款。"
+	notice_lbl.text = _t("商業變現模型：定價帶待定（docs/BUSINESS.md 定案）。全品項為測試佔位 Mock 邏輯，點擊不扣款。")
 	notice_lbl.add_theme_font_size_override("font_size", 14)
 	notice_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -193,8 +201,8 @@ func _build_ui() -> void:
 
 	# 服務 1：一次性去廣告服務卡
 	var remove_ads_card := _build_service_card(
-		"免廣告特權",
-		"買斷免除全廣告播映，直接領取所有獎勵",
+		_t("免廣告特權"),
+		_t("買斷免除全廣告播映，直接領取所有獎勵"),
 		"RemoveAdsCard"
 	)
 	remove_ads_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -202,7 +210,7 @@ func _build_ui() -> void:
 
 	var ra_v: VBoxContainer = remove_ads_card.get_node("Margin/VBox")
 	_remove_ads_status_lbl = Label.new()
-	_remove_ads_status_lbl.text = "狀態：未購買（NT$ 60 TODO: 定價待定）"
+	_remove_ads_status_lbl.text = _t("狀態：未購買（NT$ 60 TODO: 定價待定）")
 	_remove_ads_status_lbl.add_theme_font_size_override("font_size", 13)
 	_remove_ads_status_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
 	if _cached_font:
@@ -211,7 +219,7 @@ func _build_ui() -> void:
 
 	_remove_ads_btn = Button.new()
 	_remove_ads_btn.name = "RemoveAdsBtn"
-	_remove_ads_btn.text = "一次性去廣告（Mock買斷）"
+	_remove_ads_btn.text = _t("一次性去廣告（Mock買斷）")
 	_remove_ads_btn.custom_minimum_size = Vector2(0, 50)
 	_remove_ads_btn.add_theme_font_size_override("font_size", 16)
 	_remove_ads_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
@@ -228,8 +236,8 @@ func _build_ui() -> void:
 
 	# 服務 2：獎勵型廣告補給卡
 	var reward_ad_card := _build_service_card(
-		"工坊贊助補給",
-		"觀看工坊廣告短片，立即補充 3 點能量",
+		_t("工坊贊助補給"),
+		_t("觀看工坊廣告短片，立即補充 3 點能量"),
 		"RewardAdCard"
 	)
 	reward_ad_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -237,7 +245,7 @@ func _build_ui() -> void:
 
 	var rad_v: VBoxContainer = reward_ad_card.get_node("Margin/VBox")
 	var rad_note_lbl := Label.new()
-	rad_note_lbl.text = "每日免費補給 · 無需消耗金幣"
+	rad_note_lbl.text = _t("每日免費補給 · 無需消耗金幣")
 	rad_note_lbl.add_theme_font_size_override("font_size", 13)
 	rad_note_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
 	if _cached_font:
@@ -246,7 +254,7 @@ func _build_ui() -> void:
 
 	_reward_ad_btn = Button.new()
 	_reward_ad_btn.name = "WatchAdBtn"
-	_reward_ad_btn.text = "觀看廣告領取 (+3能量)"
+	_reward_ad_btn.text = _t("觀看廣告領取 (+3能量)")
 	_reward_ad_btn.custom_minimum_size = Vector2(0, 50)
 	_reward_ad_btn.add_theme_font_size_override("font_size", 16)
 	_reward_ad_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
@@ -262,7 +270,7 @@ func _build_ui() -> void:
 
 	# ── 3 個佔位品項卡 (IAP 禮包區) ──
 	var items_title := Label.new()
-	items_title.text = "熱門儲值品項（佔位預覽）"
+	items_title.text = _t("熱門儲值品項（佔位預覽）")
 	items_title.add_theme_font_size_override("font_size", 17)
 	items_title.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -281,7 +289,7 @@ func _build_ui() -> void:
 	# ── 底部即時回饋提示列 ──
 	_status_msg_lbl = Label.new()
 	_status_msg_lbl.name = "StatusMessageLabel"
-	_status_msg_lbl.text = "歡迎來到發條工坊商城！請點擊各項功能進行模擬測試。"
+	_status_msg_lbl.text = _t("歡迎來到發條工坊商城！請點擊各項功能進行模擬測試。")
 	_status_msg_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_status_msg_lbl.add_theme_font_size_override("font_size", 14)
 	_status_msg_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
@@ -359,7 +367,7 @@ func _build_iap_item_card(item: Dictionary) -> PanelContainer:
 		head_h.add_child(icon_rect)
 
 	var name_lbl := Label.new()
-	name_lbl.text = str(item["title"])
+	name_lbl.text = _t(str(item["title"]))
 	name_lbl.add_theme_font_size_override("font_size", 16)
 	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -368,7 +376,7 @@ func _build_iap_item_card(item: Dictionary) -> PanelContainer:
 
 	# 內容描述
 	var desc_lbl := Label.new()
-	desc_lbl.text = str(item["desc"])
+	desc_lbl.text = _t(str(item["desc"]))
 	desc_lbl.custom_minimum_size = Vector2(0, 36)
 	desc_lbl.add_theme_font_size_override("font_size", 12)
 	desc_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
@@ -383,7 +391,7 @@ func _build_iap_item_card(item: Dictionary) -> PanelContainer:
 	iv.add_child(price_h)
 
 	var price_lbl := Label.new()
-	price_lbl.text = str(item["price_label"])
+	price_lbl.text = _t(str(item["price_label"]))
 	price_lbl.add_theme_font_size_override("font_size", 18)
 	price_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	if _cached_font:
@@ -391,7 +399,7 @@ func _build_iap_item_card(item: Dictionary) -> PanelContainer:
 	price_h.add_child(price_lbl)
 
 	var note_lbl := Label.new()
-	note_lbl.text = "(%s)" % str(item["pricing_note"])
+	note_lbl.text = "(%s)" % _t(str(item["pricing_note"]))
 	note_lbl.add_theme_font_size_override("font_size", 11)
 	note_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
 	if _cached_font:
@@ -401,7 +409,7 @@ func _build_iap_item_card(item: Dictionary) -> PanelContainer:
 	# 購買按鈕 (熱區 >= 50px，果凍厚底 5px)
 	var buy_btn := Button.new()
 	buy_btn.name = "BuyBtn_" + str(item["id"])
-	buy_btn.text = "模擬購買"
+	buy_btn.text = _t("模擬購買")
 	buy_btn.custom_minimum_size = Vector2(0, 50)
 	buy_btn.add_theme_font_size_override("font_size", 16)
 	buy_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
@@ -457,23 +465,23 @@ func _refresh_services_state() -> void:
 
 	if _remove_ads_btn:
 		if has_removed:
-			_remove_ads_btn.text = "已擁有去廣告特權"
+			_remove_ads_btn.text = _t("已擁有去廣告特權")
 			_remove_ads_btn.disabled = true
 			if _remove_ads_status_lbl:
-				_remove_ads_status_lbl.text = "狀態：已啟用買斷特權（永久免廣告）"
+				_remove_ads_status_lbl.text = _t("狀態：已啟用買斷特權（永久免廣告）")
 				_remove_ads_status_lbl.add_theme_color_override("font_color", COLOR_TEXT_MINT)
 		else:
-			_remove_ads_btn.text = "一次性去廣告（Mock買斷）"
+			_remove_ads_btn.text = _t("一次性去廣告（Mock買斷）")
 			_remove_ads_btn.disabled = false
 			if _remove_ads_status_lbl:
-				_remove_ads_status_lbl.text = "狀態：未購買（NT$ 60 TODO: 定價待定）"
+				_remove_ads_status_lbl.text = _t("狀態：未購買（NT$ 60 TODO: 定價待定）")
 				_remove_ads_status_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
 
 	if _reward_ad_btn:
 		if has_removed:
-			_reward_ad_btn.text = "免看廣告直接領取 (+3能量)"
+			_reward_ad_btn.text = _t("免看廣告直接領取 (+3能量)")
 		else:
-			_reward_ad_btn.text = "觀看廣告領取 (+3能量)"
+			_reward_ad_btn.text = _t("觀看廣告領取 (+3能量)")
 
 
 func _on_remove_ads_clicked() -> void:
@@ -487,7 +495,7 @@ func _on_remove_ads_clicked() -> void:
 		gs.set_flag("has_removed_ads", true)
 
 	_refresh_services_state()
-	_set_status("【模擬買斷成功】已啟用一次性去廣告服務！所有廣告節點已免除。")
+	_set_status(_t("【模擬買斷成功】已啟用一次性去廣告服務！所有廣告節點已免除。"))
 
 
 func _on_watch_ad_clicked() -> void:
@@ -502,7 +510,7 @@ func _on_watch_ad_clicked() -> void:
 	if has_removed:
 		# 已去廣告：直接跳過播放領取獎勵
 		_grant_ad_energy()
-		_set_status("【免廣告特權生效】已跳過廣告播映，直接領取 3 點發條能量！")
+		_set_status(_t("【免廣告特權生效】已跳過廣告播映，直接領取 3 點發條能量！"))
 		return
 
 	# 未去廣告：開啟 MockAdDialog 假播映彈窗
@@ -511,9 +519,9 @@ func _on_watch_ad_clicked() -> void:
 		"energy",
 		func():
 			_grant_ad_energy()
-			_set_status("【觀看廣告成功】發條補給完成！已領取 3 點發條能量。"),
+			_set_status(_t("【觀看廣告成功】發條補給完成！已領取 3 點發條能量。")),
 		func():
-			_set_status("廣告播放已中斷，未領取獎勵。")
+			_set_status(_t("廣告播放已中斷，未領取獎勵。"))
 	)
 
 
@@ -530,13 +538,13 @@ func _on_iap_item_clicked(item_id: String) -> void:
 	match item_id:
 		"energy_pack":
 			_grant_energy()
-			_set_status("【模擬購買成功】已購入發條能量補給箱，能量 +15 點！")
+			_set_status(_t("【模擬購買成功】已購入發條能量補給箱，能量 +15 點！"))
 		"soul_pack":
 			_grant_soul_stones()
-			_set_status("【模擬購買成功】已購入神殿聚魂召喚包，聚魂石 ×10 入庫！")
+			_set_status(_t("【模擬購買成功】已購入神殿聚魂召喚包，聚魂石 ×10 入庫！"))
 		"forge_pack":
 			_grant_forge_mats()
-			_set_status("【模擬購買成功】已購入工坊鍛造資源箱，金幣 +500 與鍛造精粹入庫！")
+			_set_status(_t("【模擬購買成功】已購入工坊鍛造資源箱，金幣 +500 與鍛造精粹入庫！"))
 
 
 func _grant_energy() -> void:

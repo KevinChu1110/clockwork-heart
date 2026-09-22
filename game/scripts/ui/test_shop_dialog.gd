@@ -140,6 +140,98 @@ func _initialize() -> void:
 
 	shop.queue_free()
 
+	# 6.5. 驗證商城六語系 i18n 切換
+	print("── 開始驗證商城六語系 i18n 完整切換 ──")
+	var loc_node: Node = root.get_node_or_null("Loc")
+	if loc_node == null:
+		_fail("Loc autoload missing")
+	else:
+		var locales_expected := {
+			"zh_TW": {
+				"title": "發條補給 · 道具商城",
+				"energy_title": "發條能量補給箱",
+				"soul_title": "神殿聚魂召喚包",
+				"forge_title": "工坊鍛造資源箱",
+				"buy_btn": "模擬購買",
+				"remove_btn": "一次性去廣告（Mock買斷）",
+				"todo_note": "TODO: 定價待定"
+			},
+			"zh_CN": {
+				"title": "发条补给 · 道具商城",
+				"energy_title": "发条能量补给箱",
+				"soul_title": "神殿聚魂召唤包",
+				"forge_title": "工坊锻造资源箱",
+				"buy_btn": "模拟购买",
+				"remove_btn": "一次性去广告（Mock买断）",
+				"todo_note": "TODO: 定价待定"
+			},
+			"en": {
+				"title": "Clockwork Supply · Item Shop",
+				"energy_title": "Clockwork Energy Supply Box",
+				"soul_title": "Temple Soul Summon Pack",
+				"forge_title": "Workshop Forging Resource Box",
+				"buy_btn": "Mock Purchase",
+				"remove_btn": "Remove Ads (Mock Purchase)",
+				"todo_note": "TODO: Pricing TBD"
+			},
+			"ja": {
+				"title": "ぜんまい補給 · アイテムショップ",
+				"energy_title": "ぜんまいエネルギー補給箱",
+				"soul_title": "神殿魂集め召喚パック",
+				"forge_title": "工房鍛造リソース箱",
+				"buy_btn": "モック購入",
+				"remove_btn": "広告削除（モック購入）",
+				"todo_note": "TODO: 価格未定"
+			},
+			"ko": {
+				"title": "태엽 보급 · 아이템 상점",
+				"energy_title": "태엽 에너지 보급 상자",
+				"soul_title": "신전 집혼 소환 팩",
+				"forge_title": "공방 단조 자원 상자",
+				"buy_btn": "모의 구매",
+				"remove_btn": "광고 제거 (목업 구매)",
+				"todo_note": "TODO: 가격 미정"
+			},
+			"es": {
+				"title": "Suministros de cuerda · Tienda de objetos",
+				"energy_title": "Caja de suministros de energía de cuerda",
+				"soul_title": "Paquete de invocación de almas del templo",
+				"forge_title": "Caja de recursos de forja del taller",
+				"buy_btn": "Compra simulada",
+				"remove_btn": "Eliminar anuncios (Compra simulada)",
+				"todo_note": "TODO: Precio por determinar"
+			}
+		}
+
+		for code in ["zh_TW", "zh_CN", "en", "ja", "ko", "es"]:
+			gs.has_removed_ads = false
+			loc_node.call("set_locale", code)
+			var lang_shop: Control = ShopClass.new()
+			root.add_child(lang_shop)
+			lang_shop._ready()
+
+			var exp: Dictionary = locales_expected[code]
+
+			var title_l: Label = lang_shop.find_child("ShopTitleLabel", true, false) as Label
+			if title_l == null or title_l.text != exp["title"]:
+				_fail("[%s] 商城標題翻譯不符，預期: %s，實際: %s" % [code, exp["title"], title_l.text if title_l else "null"])
+
+			var e_card: PanelContainer = lang_shop.find_child("IapCard_energy_pack", true, false) as PanelContainer
+			var s_btn: Button = lang_shop.find_child("RemoveAdsBtn", true, false) as Button
+			if s_btn == null or s_btn.text != exp["remove_btn"]:
+				_fail("[%s] 去廣告按鈕翻譯不符，預期: %s，實際: %s" % [code, exp["remove_btn"], s_btn.text if s_btn else "null"])
+
+			var e_buy: Button = lang_shop.find_child("BuyBtn_energy_pack", true, false) as Button
+			if e_buy == null or e_buy.text != exp["buy_btn"]:
+				_fail("[%s] 能量箱購買鈕翻譯不符，預期: %s，實際: %s" % [code, exp["buy_btn"], e_buy.text if e_buy else "null"])
+
+			_check_no_emoji_in_node(lang_shop)
+			print("  ok [%s] 語系商城彈窗標題/按鈕/品項 i18n 驗證通過" % code)
+			lang_shop.queue_free()
+
+		# 測試完成後復原為繁中
+		loc_node.call("set_locale", "zh_TW")
+
 	# 7. 大廳整合測試：大廳商城入口按鈕
 	print("── 開始驗證大廳商城入口整合 ──")
 	var LobbyClass: GDScript = load("res://scripts/ui/mobile_lobby.gd")
@@ -204,7 +296,9 @@ func _check_no_emoji_in_node(node: Node) -> void:
 
 func _finish() -> void:
 	if _ok:
+		print("SHOP_DIALOG_OK")
 		print("SHOP_DIALOG_UNIT_TESTS_PASS")
 	else:
+		print("SHOP_DIALOG_FAIL")
 		print("SHOP_DIALOG_UNIT_TESTS_FAILED")
 	quit(0 if _ok else 1)
