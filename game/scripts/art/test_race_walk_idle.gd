@@ -14,7 +14,7 @@ func _initialize() -> void:
 		_finish(false)
 		return
 
-	var races := ["rabbit", "lion", "fox", "boar", "macaque", "tiger", "crane", "bear", "tortoise", "elephant", "frog"]
+	var races := ["rabbit", "lion", "fox", "boar", "macaque", "tiger", "crane", "bear", "tortoise", "elephant", "frog", "panda"]
 
 	# 1. 取得兔族基準素材
 	gs.set("player_race", "rabbit")

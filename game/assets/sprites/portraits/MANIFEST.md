@@ -42,6 +42,8 @@
 | colossus_elephant.png | 鋼岳象 | 金屬發條象 · 戰士（384×480 對話半身像；立牌 `branding/char_elephant.png` 400×840 / 1344×1680） |
 | frog.png | 碧簧蛙 | 金屬發條蛙 · 碧葉旋刃機關鏢（128×128 HUD 戰鬥頭像；場上 `player/party/frog_idle.png` 128×128） |
 | spring_frog.png | 碧簧蛙 | 金屬發條蛙 · 忍者（384×480 對話框半身像；立牌 `branding/char_frog.png` 400×840 / 1344×1680） |
+| panda.png | 瓷韻熊貓 | 生漆瓷韻熊貓 · 乾坤太極機關拳套（128×128 HUD 戰鬥頭像；場上 `player/party/panda_idle.png` 128×128） |
+| porcelain_panda.png | 瓷韻熊貓 | 生漆瓷韻熊貓 · 武術家（384×480 對話框半身像；立牌 `branding/char_panda.png` 400×840 / 1344×1680） |
 
 ## 風格錨（ART-01，2026-09-07）
 
