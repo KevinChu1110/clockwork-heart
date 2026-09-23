@@ -263,10 +263,25 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "paint_frog_emerald", "name_zh": "原廠薄荷翡翠綠", "desc": "原廠薄荷翡翠綠高光琺瑯烤漆"}
 		]
+	},
+	"panda": {
+		"id": "panda",
+		"name_zh": "瓷韻熊貓",
+		"name_en": "The Porcelain Panda",
+		"archetype": "武術家 (Monk)",
+		"thumb": "res://assets/sprites/player/showcase/panda_idle_hd.png",
+		"desc": "自天元竹林悟道的發條陶瓷熊貓，黑白高溫生漆陶瓷板件，青古銅榫卯鉸鏈與太極重力平衡陀。",
+		"costumes": [
+			{"id": "costume_panda_zen_apprentice_robe", "name_zh": "禪道學徒生漆長袍", "desc": "高溫黑白生漆陶瓷板件與天元道場武道長袍"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現黑白雙色陶瓷機體素體"}
+		],
+		"chassis": [
+			{"id": "paint_panda_porcelain", "name_zh": "羊脂白瓷生漆塗裝", "desc": "原廠羊脂白玉冰裂瓷與黑生漆高光塗裝"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
 
 ## 節點引用
 @onready var character: PaperdollCharacter = $CenterStage/CharacterContainer/PaperdollCharacter as PaperdollCharacter
@@ -415,7 +430,8 @@ func _init_filter_chips() -> void:
 		{"id": "penguin", "label": "蒸氣企鵝"},
 		{"id": "tortoise", "label": "玄機龜"},
 		{"id": "elephant", "label": "鋼岳象"},
-		{"id": "frog", "label": "碧簧蛙"}
+		{"id": "frog", "label": "碧簧蛙"},
+		{"id": "panda", "label": "瓷韻熊貓"}
 	]
 
 	var font: Font = null
@@ -569,6 +585,7 @@ func confirm_selection() -> void:
 				"tortoise": gs.player_name = "玄機龜"
 				"elephant": gs.player_name = "鋼岳象"
 				"frog": gs.player_name = "碧簧蛙"
+				"panda": gs.player_name = "瓷韻熊貓"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)

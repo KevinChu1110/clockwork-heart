@@ -13,7 +13,8 @@ func _initialize() -> void:
 	var known_512_costumes := [
 		"none", "bare", "empty",
 		"costume_viking_harness", "costume_dawn_monk_tunic",
-		"costume_astral_cape", "costume_nutcracker_guard"
+		"costume_astral_cape", "costume_nutcracker_guard",
+		"costume_panda_zen_apprentice_robe"
 	]
 	
 	for race_id in races.keys():
@@ -78,6 +79,7 @@ func _initialize() -> void:
 		"tortoise": "key_tai_chi_dual_fish",
 		"elephant": "key_heavy_cross_wheel",
 		"frog": "key_twin_wing_concentric",
+		"panda": "key_panda_taiji_ruyi_brass",
 	}
 	for r_id in expected_keys.keys():
 		total_count += 1

@@ -618,6 +618,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"tortoise": "shard_focus",
 	"elephant": "notch_axe",
 	"frog": "mist_darts",
+	"panda": "wrap_gloves",
 }
 
 
@@ -639,6 +640,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"tortoise": default_name = "玄機龜"
 		"elephant": default_name = "鋼岳象"
 		"frog": default_name = "碧簧蛙"
+		"panda": default_name = "瓷韻熊貓"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值

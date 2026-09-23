@@ -652,6 +652,20 @@ func _test_hero_portrait() -> void:
 		else:
 			print("  ok 碧簧蛙 (frog) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
 
+	# 1.7 驗證瓷韻熊貓專屬頭像讀取，不為空且非小白兔 fallback
+	var panda_tex: Texture2D = _lobby.call("_get_hero_portrait", "panda")
+	if panda_tex == null:
+		_fail("瓷韻熊貓 (panda) 大廳頭像貼圖為空")
+	else:
+		var path: String = panda_tex.resource_path
+		print("  [瓷韻熊貓頭像路徑] %s" % path)
+		if not path.ends_with("portraits/panda.png"):
+			_fail("瓷韻熊貓大廳頭像路徑應為 res://assets/sprites/portraits/panda.png，實際為: %s" % path)
+		elif path.find("rabbit") >= 0:
+			_fail("瓷韻熊貓大廳頭像不應退回小白兔 (rabbit)")
+		else:
+			print("  ok 瓷韻熊貓 (panda) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
+
 	# 2. 驗證切換玩家種族為玄機龜時，左上角 _profile_avatar 更新為玄機龜頭像
 	var gs := root.get_node_or_null("GameState")
 	if gs:
@@ -695,6 +709,20 @@ func _test_hero_portrait() -> void:
 				_fail("切換為碧簧蛙後 _profile_avatar 應為 portraits/frog.png，實際為: %s" % fpath)
 			else:
 				print("  ok 大廳 _profile_avatar 在碧簧蛙種族下正確顯示 frog.png")
+
+		# 2.7 驗證切換玩家種族為瓷韻熊貓時，左上角 _profile_avatar 更新為瓷韻熊貓頭像
+		gs.player_race = "panda"
+		if _lobby.has_method("refresh_hud"):
+			_lobby.call("refresh_hud")
+		var avatar_pa = _lobby.get("_profile_avatar") as TextureRect
+		if avatar_pa == null or avatar_pa.texture == null:
+			_fail("大廳 _profile_avatar 為空或無貼圖 (panda)")
+		else:
+			var papath: String = avatar_pa.texture.resource_path
+			if not papath.ends_with("portraits/panda.png"):
+				_fail("切換為瓷韻熊貓後 _profile_avatar 應為 portraits/panda.png，實際為: %s" % papath)
+			else:
+				print("  ok 大廳 _profile_avatar 在瓷韻熊貓種族下正確顯示 panda.png")
 
 
 ## ──────────────────────────────────────────
@@ -798,7 +826,7 @@ func _test_nine_races_lobby_showcase_hd() -> void:
 		_fail("無法取得 GameState 單例")
 		return
 
-	var all_races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog"]
+	var all_races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
 	var hero_avatar := _lobby.get("_hero_avatar") as TextureRect
 	if hero_avatar == null:
 		_fail("大廳 _hero_avatar 為空")

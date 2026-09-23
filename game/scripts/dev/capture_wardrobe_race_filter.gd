@@ -161,6 +161,24 @@ func _process(_delta: float) -> bool:
 				_wait_frames = 0
 
 		9:
+			# 步驟 9: 切換為「瓷韻熊貓」篩選，滾動使貓 chip 可見，等待渲染穩定並截圖
+			if _wait_frames == 10:
+				var gs = root.get_node_or_null("GameState")
+				if gs:
+					gs.player_race = "panda"
+					gs.player_name = "瓷韻熊貓"
+				_dlg.set_race_filter("panda")
+			elif _wait_frames == 25:
+				var scroll: ScrollContainer = _dlg.find_child("FilterScroll", true, false) as ScrollContainer
+				if scroll:
+					scroll.scroll_horizontal = 9999
+			elif _wait_frames >= 30:
+				_save_screenshot("proof_wardrobe_filter_panda.png")
+				print("  ✓ 步驟 9 完成：截取 [瓷韻熊貓 (Panda)] 篩選狀態")
+				_step = 10
+				_wait_frames = 0
+
+		10:
 			print("=== 全部截圖產出完畢 ===")
 			quit(0)
 			return true

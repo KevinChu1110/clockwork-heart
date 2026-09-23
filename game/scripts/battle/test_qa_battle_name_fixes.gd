@@ -137,7 +137,8 @@ func _process(_delta: float) -> bool:
 				"penguin": "蒸氣企鵝",
 				"tortoise": "玄機龜",
 				"elephant": "鋼岳象",
-				"frog": "碧簧蛙"
+				"frog": "碧簧蛙",
+				"panda": "瓷韻熊貓"
 			}
 			for r in other_races.keys():
 				gs.call("reset_new_game", r)

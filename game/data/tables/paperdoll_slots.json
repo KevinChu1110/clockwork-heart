@@ -196,7 +196,7 @@
           },
           {
             "id": "paint_panda_porcelain",
-            "name": "原廠羊脂白玉冰裂瓷生漆雙色",
+            "name": "羊脂白瓷生漆塗裝",
             "race": "panda",
             "tier": "common"
           },
@@ -540,7 +540,7 @@
           },
           {
             "id": "costume_panda_zen_apprentice_robe",
-            "name": "天元道場生漆沖壓練功甲",
+            "name": "禪道學徒生漆長袍",
             "race": "panda",
             "tier": "common"
           }

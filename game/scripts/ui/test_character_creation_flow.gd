@@ -6,7 +6,7 @@ const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 
 var _ok := true
 var _frame := 0
-var _races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog"]
+var _races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
 var _race_textures: Dictionary = {}
 
 
@@ -277,6 +277,16 @@ func _run_test_suite() -> void:
 	_assert(confirmed_data["race"] == "frog", "訊號回傳正確選取種族 'frog'")
 	_assert(str(gs.get("player_race")) == "frog", "confirm_selection 成功將 'frog' 寫入 GameState")
 	_assert(str(gs.get("player_name")) == "碧簧蛙", "confirm_selection 成功將預設英雄名稱設為 '碧簧蛙'")
+
+	# 切換至瓷韻熊貓並確認
+	confirmed_data["called"] = false
+	demo.call("select_race", "panda")
+	demo.call("confirm_selection")
+
+	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (panda)")
+	_assert(confirmed_data["race"] == "panda", "訊號回傳正確選取種族 'panda'")
+	_assert(str(gs.get("player_race")) == "panda", "confirm_selection 成功將 'panda' 寫入 GameState")
+	_assert(str(gs.get("player_name")) == "瓷韻熊貓", "confirm_selection 成功將預設英雄名稱設為 '瓷韻熊貓'")
 
 	demo.queue_free()
 
