@@ -157,6 +157,18 @@
             "name": "極光冰川銀白鍍鉻烤漆",
             "race": "penguin",
             "tier": "rare"
+          },
+          {
+            "id": "paint_tortoise_jade",
+            "name": "原廠青銅古翠綠",
+            "race": "tortoise",
+            "tier": "common"
+          },
+          {
+            "id": "paint_basalt_black",
+            "name": "玄武黑曜淬火黑",
+            "race": "tortoise",
+            "tier": "rare"
           }
         ]
       },
@@ -233,6 +245,12 @@
             "name": "沖壓黃銅風鏡與雙瓣短喙",
             "race": "penguin",
             "tier": "common"
+          },
+          {
+            "id": "head_xuanji_tortoise_stock",
+            "name": "沖壓青銅頂盔與套筒縮頸",
+            "race": "tortoise",
+            "tier": "common"
           }
         ]
       },
@@ -297,6 +315,11 @@
           {
             "id": "key_twin_ring_helm",
             "name": "雙環舵輪造型黃銅鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_tai_chi_dual_fish",
+            "name": "太極雙魚造型黃銅鑰匙",
             "tier": "common"
           }
         ]
@@ -415,6 +438,18 @@
             "name": "淵海深潛耐壓機關鎧",
             "race": "penguin",
             "tier": "rare"
+          },
+          {
+            "id": "costume_zen_dojo_harness",
+            "name": "天元道場玄機護甲",
+            "race": "tortoise",
+            "tier": "common"
+          },
+          {
+            "id": "costume_bagua_master_robe",
+            "name": "乾坤八卦宗師道鎧",
+            "race": "tortoise",
+            "tier": "rare"
           }
         ]
       },
@@ -481,6 +516,12 @@
             "id": "core_cyan_quartz",
             "name": "原廠天藍石英透鏡核心",
             "race": "penguin",
+            "tier": "common"
+          },
+          {
+            "id": "core_amber_quartz",
+            "name": "原廠琥珀石英透鏡核心",
+            "race": "tortoise",
             "tier": "common"
           }
         ]
@@ -555,6 +596,12 @@
             "id": "wpn_twin_harpoon_gun",
             "name": "蒸氣雙管導航火槍",
             "weapon_type": "gun",
+            "tier": "common"
+          },
+          {
+            "id": "wpn_bagua_astrolabe",
+            "name": "玄機八卦發條星盤",
+            "weapon_type": "crystal",
             "tier": "common"
           }
         ]
@@ -633,13 +680,19 @@
             "name": "微型黃銅耐壓蒸氣鍋爐",
             "race": "penguin",
             "tier": "common"
+          },
+          {
+            "id": "curio_bagua_armillary_rings",
+            "name": "雙聯微型八卦經緯金屬環",
+            "race": "tortoise",
+            "tier": "common"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 9,
+    "total_races": 10,
     "races": [
       {
         "race_id": "rabbit",
@@ -1212,6 +1265,73 @@
           "portrait_dialogue": "game/assets/sprites/portraits/steam_penguin.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/penguin/{slot_id}/{item_id}.png [待產出]"
         }
+      },
+      {
+        "race_id": "tortoise",
+        "aliases": [
+          "xuanji_tortoise",
+          "mystic_turtle"
+        ],
+        "name_zh": "玄機龜",
+        "name_en": "The Xuanji Tortoise",
+        "class_archetype": "法師 (Mage)",
+        "origin_realm": "R09 竹影道場·天元竹林 / Bamboo Grove: Zen Puppet Dojo",
+        "lore_anchor": "自天元竹林「青石武鬥古道場·演武坪」太極齒輪陣旁靜臥參悟的發條玄龜，通體由厚重青古銅龜甲板件與深墨綠生漆琺瑯組裝而成，以背部旋轉八卦發條甲、浮空護體靈晶與結界壁壘見長的機關術宗師",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (穩重低重心圓闊體態)",
+          "posture": "扎實站立，左掌平託懸浮八卦發條靈晶，身軀低重心穩健，背部太極雙魚發條鑰匙沉穩自轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "半球狀深翠厚鋼頭殼，配置三段套筒式黃銅拋光液壓縮頸與雙瓣沖壓亮金短顎，面部鑲嵌雙聯高透琥珀石英鏡片",
+          "carapace": "八卦分瓣沖壓青古銅重裝背甲，板件帶有45度精密倒角與微型十字螺栓，中嵌黃銅太極陰陽齒輪紋理",
+          "plastron_and_limbs": "胸腹覆蓋圓弧雲石純白防撞合金板，四肢為四柱液壓重載減震腿柱，足底配置四瓣展開式沖壓防滑深翠金屬鈍爪",
+          "tail": "三節鉸鏈沖壓黃銅避雷接地短尾舵，平貼於底盤後端維持重心平衡",
+          "weapon_system": "手持專利「玄機八卦發條星盤 / 磐甲浮空護體靈晶」，直徑36px六角多面體晶核懸浮於左掌上方，外環雙聯黃銅八卦經緯儀同心逆向自轉，完全對齊 mage/crystal 體系"
+        },
+        "color_palette": {
+          "primary": "#2D6A4F (青古銅深翠綠金屬烤漆)",
+          "secondary": "#FFFDF8 (雲石純白防撞胸甲板件)",
+          "accent": "#FFD028 (天元金黃黃銅螺栓與太極鑰匙)",
+          "detail": "#4ED86A (薄荷翡翠發條之心晶石與靈晶核心)",
+          "outline": "#1F1A3A (深藍紫厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "docs/art/xuanji_tortoise_concept.png (928x1152 概念立繪)",
+              "branding/char_tortoise.png (400x840 品牌立牌)",
+              "web/media/hero/char_tortoise.png (400x840 官網英雄圖)",
+              "web/media/hero/tortoise_idle.png (128x128 官網預覽圖)",
+              "game/assets/sprites/player/tortoise_idle.png (64x64 基礎待機)",
+              "game/assets/sprites/player/tortoise_idle_x3.png (128x128 高畫質待機)",
+              "game/assets/sprites/player/party/tortoise_idle.png (128x128 隊伍展示幀)",
+              "game/assets/sprites/player/tortoise_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/tortoise_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/tortoise_walk_{0..3}_x3.png (128x128 高畫質行走動畫)",
+              "game/assets/sprites/player/poses/tortoise/ (戰鬥6大動作姿態目錄)",
+              "game/assets/sprites/portraits/tortoise.png (128x128 HUD戰鬥頭像)",
+              "game/assets/sprites/portraits/xuanji_tortoise.png (384x480 對話框半身像)",
+              "game/assets/sprites/player/paperdoll/tortoise/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_tortoise.png (400x840) [待產出]",
+          "branding_concept_art": "docs/art/xuanji_tortoise_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_tortoise.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/tortoise_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/tortoise_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/tortoise_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/tortoise_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/tortoise_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/tortoise_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/tortoise_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/tortoise/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/tortoise.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/xuanji_tortoise.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/tortoise/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -1259,7 +1379,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 9 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 10 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -1281,7 +1401,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "九大種族軀幹均維持 2.0~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬/熊) 由渲染器微調縮放 1.05x"
+        "rule": "十大種族軀幹均維持 2.0~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬/熊) 由渲染器微調縮放 1.05x"
       }
     ]
   },
@@ -1298,7 +1418,8 @@
         "game/assets/sprites/player/paperdoll/tiger/",
         "game/assets/sprites/player/paperdoll/crane/",
         "game/assets/sprites/player/paperdoll/bear/",
-        "game/assets/sprites/player/paperdoll/penguin/"
+        "game/assets/sprites/player/paperdoll/penguin/",
+        "game/assets/sprites/player/paperdoll/tortoise/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
