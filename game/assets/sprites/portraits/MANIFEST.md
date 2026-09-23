@@ -36,6 +36,12 @@
 | cloud_crane.png | 雲嵐鶴 | 金屬發條鶴 · 遊俠（384×480 對話框半身像；立牌 `branding/char_crane.png` 400×840） |
 | bear.png | 玄軸熊 | 金屬發條熊 · 玄軸偏心重力錘（128×128 HUD 戰鬥頭像；場上 `player/party/bear_idle.png` 128×128） |
 | iron_bear.png | 玄軸熊 | 金屬發條熊 · 戰士（384×480 對話框半身像；立牌 `branding/char_bear.png` 400×840） |
+| tortoise.png | 玄機龜 | 金屬發條龜 · 玄機八卦發條星盤（128×128 HUD 戰鬥頭像；場上 `player/party/tortoise_idle.png` 128×128） |
+| xuanji_tortoise.png | 玄機龜 | 金屬發條龜 · 法師（384×480 對話半身像；立牌 `branding/char_tortoise.png` 400×840 / 1344×1680） |
+| elephant.png | 鋼岳象 | 金屬發條象 · 巨輪開山重斧（128×128 HUD 戰鬥頭像；場上 `player/party/elephant_idle.png` 128×128） |
+| colossus_elephant.png | 鋼岳象 | 金屬發條象 · 戰士（384×480 對話半身像；立牌 `branding/char_elephant.png` 400×840 / 1344×1680） |
+| frog.png | 碧簧蛙 | 金屬發條蛙 · 碧葉旋刃機關鏢（128×128 HUD 戰鬥頭像；場上 `player/party/frog_idle.png` 128×128） |
+| spring_frog.png | 碧簧蛙 | 金屬發條蛙 · 忍者（384×480 對話框半身像；立牌 `branding/char_frog.png` 400×840 / 1344×1680） |
 
 ## 風格錨（ART-01，2026-09-07）
 
