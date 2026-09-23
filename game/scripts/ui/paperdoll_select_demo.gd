@@ -241,10 +241,12 @@ const RACES_DATA: Dictionary = {
 		"desc": "巨輪工坊的開山巨靈，黃銅鉚接板件與六節套筒液壓長鼻。",
 		"costumes": [
 			{"id": "costume_cog_workshop_overalls", "name_zh": "巨輪工坊厚鋼工裝", "desc": "重型齒輪鉚接工裝與厚鋼護膝吊帶"},
+			{"id": "costume_colossus_bastion_plate", "name_zh": "鋼岳要塞重裝戰鎧", "desc": "高爐鎢鋼重裝胸甲、雙層齒輪鉸鏈護肩與下擺護甲"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現黃銅原金重裝素體"}
 		],
 		"chassis": [
-			{"id": "paint_elephant_brass", "name_zh": "原廠巨輪工坊黃銅原金", "desc": "重型工業黃銅原金與拋光金屬護甲"}
+			{"id": "paint_elephant_brass", "name_zh": "原廠巨輪工坊黃銅原金", "desc": "重型工業黃銅原金與拋光金屬護甲"},
+			{"id": "paint_tungsten_iron", "name_zh": "高爐鎢鋼淬火黑", "desc": "高爐鎢鋼淬火黑外殼與沉穩金屬消光厚板件"}
 		]
 	}
 }

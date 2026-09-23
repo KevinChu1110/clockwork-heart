@@ -479,6 +479,12 @@
             "name": "巨輪工坊先鋒吊帶甲",
             "race": "elephant",
             "tier": "common"
+          },
+          {
+            "id": "costume_colossus_bastion_plate",
+            "name": "鋼岳要塞重裝戰鎧",
+            "race": "elephant",
+            "tier": "rare"
           }
         ]
       },
