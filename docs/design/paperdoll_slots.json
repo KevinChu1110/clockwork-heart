@@ -1563,7 +1563,7 @@
           "game_sprite_battle": "game/assets/sprites/player/frog_battle.png (128x128) [待產出]",
           "game_sprite_walk": "game/assets/sprites/player/frog_walk_{0..3}.png (64x64) [待產出]",
           "game_sprite_walk_hi": "game/assets/sprites/player/frog_walk_{0..3}_x3.png (128x128) [待產出]",
-          "game_action_poses": "game/assets/sprites/player/poses/frog/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/frog/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [既有]",
           "portrait_hud": "game/assets/sprites/portraits/frog.png (128x128) [待產出]",
           "portrait_dialogue": "game/assets/sprites/portraits/spring_frog.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/frog/{slot_id}/{item_id}.png [待產出]"
