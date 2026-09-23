@@ -231,10 +231,25 @@ const RACES_DATA: Dictionary = {
 			{"id": "paint_tortoise_jade", "name_zh": "原廠青銅古翠綠", "desc": "青古銅深翠綠金屬琺瑯烤漆"},
 			{"id": "paint_basalt_black", "name_zh": "玄武黑曜淬火黑", "desc": "玄武黑曜淬火黑鋼與電氣青藍導線烤漆"}
 		]
+	},
+	"elephant": {
+		"id": "elephant",
+		"name_zh": "鋼岳象",
+		"name_en": "The Colossus Elephant",
+		"archetype": "戰士 (Viking)",
+		"thumb": "res://assets/sprites/player/showcase/elephant_idle_hd.png",
+		"desc": "巨輪工坊的開山巨靈，黃銅鉚接板件與六節套筒液壓長鼻。",
+		"costumes": [
+			{"id": "costume_cog_workshop_overalls", "name_zh": "巨輪工坊厚鋼工裝", "desc": "重型齒輪鉚接工裝與厚鋼護膝吊帶"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現黃銅原金重裝素體"}
+		],
+		"chassis": [
+			{"id": "paint_elephant_brass", "name_zh": "原廠巨輪工坊黃銅原金", "desc": "重型工業黃銅原金與拋光金屬護甲"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant"]
 
 ## 節點引用
 @onready var character: PaperdollCharacter = $CenterStage/CharacterContainer/PaperdollCharacter as PaperdollCharacter
@@ -381,7 +396,8 @@ func _init_filter_chips() -> void:
 		{"id": "crane", "label": "雲嵐鶴"},
 		{"id": "bear", "label": "玄軸熊"},
 		{"id": "penguin", "label": "蒸氣企鵝"},
-		{"id": "tortoise", "label": "玄機龜"}
+		{"id": "tortoise", "label": "玄機龜"},
+		{"id": "elephant", "label": "鋼岳象"}
 	]
 
 	var font: Font = null
@@ -533,6 +549,7 @@ func confirm_selection() -> void:
 				"crane": gs.player_name = "雲嵐鶴"
 				"penguin": gs.player_name = "蒸氣企鵝"
 				"tortoise": gs.player_name = "玄機龜"
+				"elephant": gs.player_name = "鋼岳象"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)

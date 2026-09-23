@@ -76,6 +76,7 @@ func _initialize() -> void:
 		"crane": "key_tri_wing_zephyr",
 		"penguin": "key_twin_ring_helm",
 		"tortoise": "key_tai_chi_dual_fish",
+		"elephant": "key_heavy_cross_wheel",
 	}
 	for r_id in expected_keys.keys():
 		total_count += 1

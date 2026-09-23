@@ -125,6 +125,24 @@ func _process(_delta: float) -> bool:
 				_wait_frames = 0
 
 		7:
+			# 步驟 7: 切換為「鋼岳象」篩選，滾動使象 chip 可見，等待渲染穩定並截圖
+			if _wait_frames == 10:
+				var gs = root.get_node_or_null("GameState")
+				if gs:
+					gs.player_race = "elephant"
+					gs.player_name = "鋼岳象"
+				_dlg.set_race_filter("elephant")
+			elif _wait_frames == 25:
+				var scroll: ScrollContainer = _dlg.find_child("FilterScroll", true, false) as ScrollContainer
+				if scroll:
+					scroll.scroll_horizontal = 9999
+			elif _wait_frames >= 30:
+				_save_screenshot("proof_wardrobe_filter_elephant.png")
+				print("  ✓ 步驟 7 完成：截取 [鋼岳象 (Elephant)] 篩選狀態")
+				_step = 8
+				_wait_frames = 0
+
+		8:
 			print("=== 全部截圖產出完畢 ===")
 			quit(0)
 			return true

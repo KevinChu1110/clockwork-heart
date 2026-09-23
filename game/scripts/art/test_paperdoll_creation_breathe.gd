@@ -61,7 +61,7 @@ func _run_test_suite() -> void:
 	_assert(char_node != null, "預覽角色 PaperdollCharacter 節點存在")
 
 	# 2. 切換種族時呼吸不中斷
-	var races := ["fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "rabbit"]
+	var races := ["fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "rabbit"]
 	for r in races:
 		demo.call("select_race", r)
 		var running_after_race: bool = bool(demo.call("is_breathe_running"))

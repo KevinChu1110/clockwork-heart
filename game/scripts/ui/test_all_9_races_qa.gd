@@ -4,7 +4,7 @@ const MobileLobby = preload("res://scripts/ui/mobile_lobby.gd")
 const DemoScene = preload("res://scenes/ui/paperdoll_select_demo.tscn")
 const WardrobeDialog = preload("res://scripts/ui/wardrobe_dialog.gd")
 
-const RACES = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise"]
+const RACES = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant"]
 
 var _frame := 0
 

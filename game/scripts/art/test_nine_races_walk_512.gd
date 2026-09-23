@@ -15,7 +15,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	var all_races := ["rabbit", "lion", "fox", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise"]
+	var all_races := ["rabbit", "lion", "fox", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant"]
 	var broken_slots := {
 		"costume": "broken_invalid_costume_999",
 		"chassis": "broken_invalid_chassis_999"

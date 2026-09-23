@@ -624,6 +624,20 @@ func _test_hero_portrait() -> void:
 		else:
 			print("  ok 玄機龜 (tortoise) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
 
+	# 1.5 驗證鋼岳象專屬頭像讀取，不為空且非小白兔 fallback
+	var elephant_tex: Texture2D = _lobby.call("_get_hero_portrait", "elephant")
+	if elephant_tex == null:
+		_fail("鋼岳象 (elephant) 大廳頭像貼圖為空")
+	else:
+		var path: String = elephant_tex.resource_path
+		print("  [鋼岳象頭像路徑] %s" % path)
+		if not path.ends_with("portraits/elephant.png"):
+			_fail("鋼岳象大廳頭像路徑應為 res://assets/sprites/portraits/elephant.png，實際為: %s" % path)
+		elif path.find("rabbit") >= 0:
+			_fail("鋼岳象大廳頭像不應退回小白兔 (rabbit)")
+		else:
+			print("  ok 鋼岳象 (elephant) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
+
 	# 2. 驗證切換玩家種族為玄機龜時，左上角 _profile_avatar 更新為玄機龜頭像
 	var gs := root.get_node_or_null("GameState")
 	if gs:
@@ -640,6 +654,20 @@ func _test_hero_portrait() -> void:
 			else:
 				print("  ok 大廳 _profile_avatar 在玄機龜種族下正確顯示 tortoise.png")
 
+		# 2.5 驗證切換玩家種族為鋼岳象時，左上角 _profile_avatar 更新為鋼岳象頭像
+		gs.player_race = "elephant"
+		if _lobby.has_method("refresh_hud"):
+			_lobby.call("refresh_hud")
+		var avatar_el = _lobby.get("_profile_avatar") as TextureRect
+		if avatar_el == null or avatar_el.texture == null:
+			_fail("大廳 _profile_avatar 為空或無貼圖 (elephant)")
+		else:
+			var epath: String = avatar_el.texture.resource_path
+			if not epath.ends_with("portraits/elephant.png"):
+				_fail("切換為鋼岳象後 _profile_avatar 應為 portraits/elephant.png，實際為: %s" % epath)
+			else:
+				print("  ok 大廳 _profile_avatar 在鋼岳象種族下正確顯示 elephant.png")
+
 
 ## ──────────────────────────────────────────
 ## 5. 斷言大廳各族真戰鬥姿態（非兔族戳碰非同一張底圖，review.md 第 4b）
@@ -654,7 +682,7 @@ func _test_hero_race_poses() -> void:
 		_fail("無法取得 GameState 單例")
 		return
 
-	var races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise"]
+	var races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise", "elephant"]
 	for r in races:
 		gs.player_race = r
 		gs.paperdoll_slots = {}
@@ -742,7 +770,7 @@ func _test_nine_races_lobby_showcase_hd() -> void:
 		_fail("無法取得 GameState 單例")
 		return
 
-	var all_races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise"]
+	var all_races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise", "elephant"]
 	var hero_avatar := _lobby.get("_hero_avatar") as TextureRect
 	if hero_avatar == null:
 		_fail("大廳 _hero_avatar 為空")
