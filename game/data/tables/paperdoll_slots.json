@@ -1328,7 +1328,7 @@
           "game_sprite_battle": "game/assets/sprites/player/tortoise_battle.png (128x128) [既有]",
           "game_sprite_walk": "game/assets/sprites/player/tortoise_walk_{0..3}.png (64x64) [既有]",
           "game_sprite_walk_hi": "game/assets/sprites/player/tortoise_walk_{0..3}_x3.png (128x128) [既有]",
-          "game_action_poses": "game/assets/sprites/player/poses/tortoise/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/tortoise/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [既有]",
           "portrait_hud": "game/assets/sprites/portraits/tortoise.png (128x128) [既有]",
           "portrait_dialogue": "game/assets/sprites/portraits/xuanji_tortoise.png (384x480) [既有]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/tortoise/{slot_id}/{item_id}.png [既有]"
