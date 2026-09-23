@@ -1,0 +1,89 @@
+{
+  "round": 31,
+  "task": "t_9ea7d365",
+  "topic": "探索性 QA 第三十一輪：瓷韻熊貓全流程（骨架/切片/官方資產/創角/大廳/衣櫥/探索/戰鬥）合併後找破圖",
+  "verified_items": {
+    "item_1_panda_character_creation": {
+      "status": "pass",
+      "proofs": [
+        "proof_01_creation_panda_default.png",
+        "proof_02_creation_panda_bare.png"
+      ],
+      "crop": "crop_creation_panda_512.png",
+      "details": "創角流暢完整：頂部種族橫滑卡片第十三族『瓷韻熊貓』選中高亮；左側舞台即時以 512 高清合成渲染瓷韻熊貓 7 大槽位；切換預設外裝【禪道學徒生漆長袍＋羊脂白瓷生漆塗裝】與【無外裝 (裸機素體)】，黑眼圈瓷裂紋路、球窩旋轉關節、乾坤太極拳套與太極如意發條鑰匙圖層 Z-Order 正確無穿模無破圖；confirm_selection 成功將 player_race='panda' 與預設名稱『瓷韻熊貓』寫入 GameState 持久化存檔槽位。"
+    },
+    "item_2_wardrobe_race_filter_and_equip": {
+      "status": "pass",
+      "proofs": [
+        "proof_03_wardrobe_filter_all.png",
+        "proof_04_wardrobe_panda_robe_equipped.png",
+        "proof_05_wardrobe_panda_bare_equipped.png"
+      ],
+      "crops": [
+        "crop_wardrobe_panda_cards.png",
+        "crop_wardrobe_preview_panda.png"
+      ],
+      "details": "衣櫥功能完善：1. 『全部』篩選完整列出 13 族跨族外裝；2. 切換為第十三族『貓』篩選時，FilterScroll 滾動至末端高亮貓族 Chip，卡片網格精確顯示【禪道學徒生漆長袍】、【無外裝 (裸機素體)】及塗裝【羊脂白瓷生漆塗裝】；3. 換裝即時更新左側 512 預覽舞台與選中態橘框『✔ 已套用』；4. 切換為裸機素體即時生效；抽查跨族外裝換裝切換無狀態污染。"
+    },
+    "item_3_lobby_avatar_and_six_locales": {
+      "status": "pass",
+      "proofs": [
+        "proof_06_lobby_panda_zh_TW.png",
+        "proof_06_lobby_panda_zh_CN.png",
+        "proof_06_lobby_panda_en.png",
+        "proof_06_lobby_panda_ja.png",
+        "proof_06_lobby_panda_ko.png",
+        "proof_06_lobby_panda_es.png"
+      ],
+      "crops": [
+        "crop_lobby_panda_char.png",
+        "crop_lobby_panda_avatar.png"
+      ],
+      "details": "手遊大廳完美展示：1. 瓷韻熊貓以 512 高清合成待機姿態站立於中央神殿地台，旋轉發條齒輪與青綠色光暈自然，嚴格遵循禁止退回 128 糊圖標準；2. 左上角頭像框精準載入 portraits/panda.png 像素頭像；3. 六語系 (zh_TW, zh_CN, en, ja, ko, es) 即時切換無未翻譯 key（無 MISSING_TRANSLATION、無 raw key）；4. 頂部能量/金幣/星屑、左側四殿堂、右側裝備欄與底部 Dock 全面採用自繪像素圖示，100% 零系統 Emoji 殘留。"
+    },
+    "item_4_lobby_shop_instant_refresh": {
+      "status": "pass",
+      "proof": "proof_07_lobby_with_shop_en.png",
+      "details": "大廳連動商城即時刷新（0-QA25 檢查）：以 en 英文環境呼叫 open_shop()，彈窗在多巴胺米白亮色底正常彈出，商品標籤與按鈕佈局無重疊、無跑版，關閉後大廳背景與英雄待機狀態無異常。"
+    },
+    "item_5_explore_panda_display": {
+      "status": "pass",
+      "proof": "proof_08_explore_panda.png",
+      "crop": "crop_explore_panda_sprite.png",
+      "details": "探索場景 (ExploreView) 瓷韻熊貓行走與待機展示正常：地圖正確讀取瓷韻熊貓專屬高解析資產 (panda_idle_hd 1344x1680 / 512x512 高清合成)，角色錨點正確落於腳底，零浮空、零穿模，禁止退回 128 糊圖檢查通過。"
+    },
+    "item_6_battle_panda_combat_and_name_fallback": {
+      "status": "pass",
+      "proofs": [
+        "proof_09_battle_panda_combat.png",
+        "proof_10_battle_fallback_empty_name.png"
+      ],
+      "crops": [
+        "crop_battle_panda_sprite.png",
+        "crop_battle_nameplates_log.png"
+      ],
+      "details": "戰鬥全流程正常：1. 瓷韻熊貓出戰對戰狼，PlayerBody 貼圖尺寸 512x512 高清合成，站姿、血條與名稱板對照精確，無白邊穿模；2. 清除 player_name 時，戰鬥單位名稱依 race fallback 自動對照為『瓷韻熊貓』；3. 打擊事件觸發暴擊傷害 88 點，戰鬥日誌文字排版正常，無溢出截斷。"
+    },
+    "item_7_panda_paperdoll_slices_and_skeleton": {
+      "status": "pass",
+      "proof": "proof_11_panda_paperdoll_slices_verification.png",
+      "crop": "crop_panda_paperdoll_stage.png",
+      "details": "瓷韻熊貓（第十三族 panda）7 大槽位紙娃娃切片與骨架驗收通過：DevPaperdollPreview 成功切換至 panda，控制面板正確識別『瓷韻熊貓 (panda)』，7 大槽位 z_index 階梯式疊合（winding_key Z:5 至 weapon Z:40）完整載入且狀態全綠，雙足錨點 (64, 120) 正確對齊，無任何報錯、無空指針異常。"
+    },
+    "item_8_vision_verification": {
+      "status": "pass",
+      "details": "經 Vision 視覺顯微分析審核：1. 零毛皮 (100% 黑白雙色白瓷生漆金屬板件、球窩旋轉關節與太極如意黃銅發條鑰匙)；2. 零破圖 (輪廓封閉清晰，無壞像素、無白邊溢出)；3. 零穿模 (7大槽位圖層 Z-Order 階梯層疊完全正確)；4. 零 Emoji 殘留；5. 零 Fallback 退回小白兔；6. 創角/衣櫥/大廳/戰鬥四場景全線貫通。"
+    }
+  },
+  "metrics": {
+    "total_screenshots": 16,
+    "total_crops": 9,
+    "all_screenshots_unique": true,
+    "all_resolutions_1280x720": true,
+    "emoji_count": 0,
+    "missing_translations_count": 0,
+    "panda_skeleton_slots_loaded": "7/7",
+    "official_assets_verified": 22
+  },
+  "conclusion": "探索性 QA 第三十一輪全項合格。瓷韻熊貓（第十三族）全流程（骨架/7槽切片/官方資產套件/創角/大廳/衣櫥/探索/戰鬥）經實機全流程與顯微量測檢驗，零破圖、零穿模、零毛皮、零 Emoji 殘留、i18n 六語系完整、嚴格不退回 128 糊圖。同意結案並提請審查。"
+}
