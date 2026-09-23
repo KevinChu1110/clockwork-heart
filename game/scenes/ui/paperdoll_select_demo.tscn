@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/penguin_idle_hd.png" id="12_thumb_penguin"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/tortoise_idle_hd.png" id="13_thumb_tortoise"]
 [ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/elephant_idle_hd.png" id="14_thumb_elephant"]
+[ext_resource type="Texture2D" path="res://assets/sprites/player/showcase/frog_idle_hd.png" id="15_thumb_frog"]
 
 [sub_resource type="Theme" id="Theme_huninn"]
 default_font = ExtResource("2_font")
@@ -732,6 +733,50 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "鋼岳象"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BtnRace_frog" type="Button" parent="TopRaceBar/ButtonsHBox"]
+custom_minimum_size = Vector2(148, 108)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
+theme_override_styles/hover = SubResource("StyleBox_btn_race_hover")
+theme_override_styles/pressed = SubResource("StyleBox_btn_race_pressed")
+
+[node name="Margin" type="MarginContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_frog"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_frog/Margin"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_constants/separation = 4
+alignment = 1
+
+[node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_frog/Margin/VBox"]
+texture_filter = 2
+custom_minimum_size = Vector2(56, 56)
+layout_mode = 2
+mouse_filter = 2
+texture = ExtResource("15_thumb_frog")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_frog/Margin/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_font_sizes/font_size = 16
+text = "碧簧蛙"
 horizontal_alignment = 1
 vertical_alignment = 1
 

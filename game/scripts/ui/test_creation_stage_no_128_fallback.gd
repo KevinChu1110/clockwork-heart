@@ -14,7 +14,7 @@ func _initialize() -> void:
 	demo.set("creation_mode", true)
 	root.add_child(demo)
 
-	var races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant"]
+	var races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog"]
 
 	# ── 1. 測試成功路徑 (512 高清紙娃娃) ──
 	print("\n--- [Phase 1] 成功路徑 512 高清驗證 ---")

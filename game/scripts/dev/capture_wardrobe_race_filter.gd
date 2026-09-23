@@ -143,6 +143,24 @@ func _process(_delta: float) -> bool:
 				_wait_frames = 0
 
 		8:
+			# 步驟 8: 切換為「碧簧蛙」篩選，滾動使蛙 chip 可見，等待渲染穩定並截圖
+			if _wait_frames == 10:
+				var gs = root.get_node_or_null("GameState")
+				if gs:
+					gs.player_race = "frog"
+					gs.player_name = "碧簧蛙"
+				_dlg.set_race_filter("frog")
+			elif _wait_frames == 25:
+				var scroll: ScrollContainer = _dlg.find_child("FilterScroll", true, false) as ScrollContainer
+				if scroll:
+					scroll.scroll_horizontal = 9999
+			elif _wait_frames >= 30:
+				_save_screenshot("proof_wardrobe_filter_frog.png")
+				print("  ✓ 步驟 8 完成：截取 [碧簧蛙 (Frog)] 篩選狀態")
+				_step = 9
+				_wait_frames = 0
+
+		9:
 			print("=== 全部截圖產出完畢 ===")
 			quit(0)
 			return true

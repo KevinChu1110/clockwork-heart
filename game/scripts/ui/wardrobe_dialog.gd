@@ -78,6 +78,7 @@ const RACE_FILTER_OPTIONS: Array[Dictionary] = [
 	{"id": "penguin", "name_zh": "企鵝"},
 	{"id": "tortoise", "name_zh": "龜"},
 	{"id": "elephant", "name_zh": "象"},
+	{"id": "frog", "name_zh": "蛙"},
 ]
 
 var current_filter_race: String = "all"
@@ -551,6 +552,7 @@ func _get_race_short_name(rid: String) -> String:
 		"penguin": return "企鵝"
 		"tortoise": return "龜"
 		"elephant": return "象"
+		"frog": return "蛙"
 		_: return rid
 
 
@@ -658,7 +660,7 @@ func _rebuild_cards() -> void:
 
 	var target_races: Array[String] = []
 	if current_filter_race == "all":
-		target_races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant"]
+		target_races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog"]
 	else:
 		target_races = [current_filter_race]
 
@@ -818,7 +820,7 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 			return load(hd_cut) as Texture2D
 
 		# 3. 跨族 512 衣服切片共用（同件衣服若在別族目錄下）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog"]
 		for other in all_races:
 			if other == r:
 				continue
@@ -836,7 +838,7 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 			return load(path512) as Texture2D
 
 		# 2. 跨族 512 底盤共用
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog"]
 		for other in all_races:
 			if other == r:
 				continue

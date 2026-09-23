@@ -75,7 +75,15 @@ func _process(_delta: float) -> bool:
 			# 等待滾動與渲染完成後截取鋼岳象選中圖
 			if _wait_frames >= 25:
 				_save_viewport("proof_creation_elephant_selected.png")
-				print("=== 創角種族列截圖完成 (含鋼岳象第十一族) ===")
+				# 切換至碧簧蛙 (第十二族)
+				_demo.call("select_race", "frog")
+				_wait_frames = 0
+				_step = 6
+		6:
+			# 等待滾動與渲染完成後截取碧簧蛙選中圖
+			if _wait_frames >= 25:
+				_save_viewport("proof_creation_frog_selected.png")
+				print("=== 創角種族列截圖完成 (含碧簧蛙第十二族) ===")
 				quit(0)
 				return true
 	return false
