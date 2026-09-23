@@ -86,6 +86,7 @@ func _process(_delta: float) -> bool:
 			# 步驟 4: 切換為「企鵝」篩選，滾動使企鵝 chip 可見，等待渲染穩定並截圖
 			if _wait_frames == 10:
 				_dlg.set_race_filter("penguin")
+			elif _wait_frames == 25:
 				var scroll: ScrollContainer = _dlg.find_child("FilterScroll", true, false) as ScrollContainer
 				if scroll:
 					scroll.scroll_horizontal = 9999
@@ -106,6 +107,20 @@ func _process(_delta: float) -> bool:
 				_wait_frames = 0
 
 		6:
+			# 步驟 6: 切換為「玄機龜」篩選，滾動使龜 chip 可見，等待渲染穩定並截圖
+			if _wait_frames == 10:
+				_dlg.set_race_filter("tortoise")
+			elif _wait_frames == 25:
+				var scroll: ScrollContainer = _dlg.find_child("FilterScroll", true, false) as ScrollContainer
+				if scroll:
+					scroll.scroll_horizontal = 9999
+			elif _wait_frames >= 30:
+				_save_screenshot("proof_wardrobe_filter_tortoise.png")
+				print("  ✓ 步驟 6 完成：截取 [玄機龜 (Tortoise)] 篩選狀態")
+				_step = 7
+				_wait_frames = 0
+
+		7:
 			print("=== 全部截圖產出完畢 ===")
 			quit(0)
 			return true

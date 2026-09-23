@@ -8,7 +8,7 @@ func _initialize() -> void:
 	demo.creation_mode = true
 	root.add_child(demo)
 
-	var races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
+	var races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise"]
 	for r in races:
 		demo.call("select_race", r)
 		var is_512 = demo.call("is_stage_512")

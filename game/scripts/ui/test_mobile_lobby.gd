@@ -610,7 +610,7 @@ func _test_hero_race_poses() -> void:
 		_fail("無法取得 GameState 單例")
 		return
 
-	var races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear"]
+	var races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise"]
 	for r in races:
 		gs.player_race = r
 		gs.paperdoll_slots = {}
@@ -698,7 +698,7 @@ func _test_nine_races_lobby_showcase_hd() -> void:
 		_fail("無法取得 GameState 單例")
 		return
 
-	var all_races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin"]
+	var all_races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise"]
 	var hero_avatar := _lobby.get("_hero_avatar") as TextureRect
 	if hero_avatar == null:
 		_fail("大廳 _hero_avatar 為空")

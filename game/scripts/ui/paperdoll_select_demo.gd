@@ -214,10 +214,25 @@ const RACES_DATA: Dictionary = {
 			{"id": "paint_polar_frost", "name_zh": "極光冰川銀白", "desc": "極地破冰銀白高光鍍鉻烤漆與耐寒琺瑯"},
 			{"id": "paint_ivory_stock", "name_zh": "原廠象牙白", "desc": "標準型象牙白高光琺瑯塗層"}
 		]
+	},
+	"tortoise": {
+		"id": "tortoise",
+		"name_zh": "玄機龜",
+		"name_en": "The Xuanji Tortoise",
+		"archetype": "法師 (mage)",
+		"thumb": "res://assets/sprites/player/showcase/tortoise_idle_hd.png",
+		"desc": "竹影道場的機關術宗師，青古銅龜甲板件與浮空八卦發條星盤。",
+		"costumes": [
+			{"id": "costume_zen_dojo_harness", "name_zh": "天元道場玄機護甲", "desc": "青古銅龜甲與乾坤道袍飾帶"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現青古銅玄機素體"}
+		],
+		"chassis": [
+			{"id": "paint_tortoise_jade", "name_zh": "原廠青銅古翠綠", "desc": "青古銅深翠綠金屬琺瑯烤漆"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise"]
 
 ## 節點引用
 @onready var character: PaperdollCharacter = $CenterStage/CharacterContainer/PaperdollCharacter as PaperdollCharacter
@@ -363,7 +378,8 @@ func _init_filter_chips() -> void:
 		{"id": "tiger", "label": "烈焰虎"},
 		{"id": "crane", "label": "雲嵐鶴"},
 		{"id": "bear", "label": "玄軸熊"},
-		{"id": "penguin", "label": "蒸氣企鵝"}
+		{"id": "penguin", "label": "蒸氣企鵝"},
+		{"id": "tortoise", "label": "玄機龜"}
 	]
 
 	var font: Font = null

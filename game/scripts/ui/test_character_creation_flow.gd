@@ -6,7 +6,7 @@ const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 
 var _ok := true
 var _frame := 0
-var _races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear"]
+var _races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise"]
 var _race_textures: Dictionary = {}
 
 

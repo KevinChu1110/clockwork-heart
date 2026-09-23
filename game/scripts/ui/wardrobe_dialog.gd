@@ -76,6 +76,7 @@ const RACE_FILTER_OPTIONS: Array[Dictionary] = [
 	{"id": "bear", "name_zh": "熊"},
 	{"id": "crane", "name_zh": "鶴"},
 	{"id": "penguin", "name_zh": "企鵝"},
+	{"id": "tortoise", "name_zh": "龜"},
 ]
 
 var current_filter_race: String = "all"
@@ -525,14 +526,14 @@ func _do_scroll_to_chip(btn: Button) -> void:
 	var pad: float = 16.0 # 邊界緩衝，確保左右均不被裁剪
 
 	if btn_right + pad > scroll.scroll_horizontal + view_w:
-		var target := int(btn_right + pad - view_w)
+		var target := int(ceil(btn_right + pad - view_w))
 		if hbar:
-			target = clampi(target, 0, int(hbar.max_value - hbar.page))
+			target = clampi(target, 0, int(hbar.max_value))
 		scroll.scroll_horizontal = target
 	elif btn_left - pad < scroll.scroll_horizontal:
-		var target := int(btn_left - pad)
+		var target := int(floor(max(0.0, btn_left - pad)))
 		if hbar:
-			target = clampi(target, 0, int(hbar.max_value - hbar.page))
+			target = clampi(target, 0, int(hbar.max_value))
 		scroll.scroll_horizontal = target
 
 
@@ -547,6 +548,7 @@ func _get_race_short_name(rid: String) -> String:
 		"bear": return "熊"
 		"crane": return "鶴"
 		"penguin": return "企鵝"
+		"tortoise": return "龜"
 		_: return rid
 
 
@@ -654,7 +656,7 @@ func _rebuild_cards() -> void:
 
 	var target_races: Array[String] = []
 	if current_filter_race == "all":
-		target_races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
+		target_races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise"]
 	else:
 		target_races = [current_filter_race]
 
@@ -814,7 +816,7 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 			return load(hd_cut) as Texture2D
 
 		# 3. 跨族 512 衣服切片共用（同件衣服若在別族目錄下）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise"]
 		for other in all_races:
 			if other == r:
 				continue
@@ -832,7 +834,7 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 			return load(path512) as Texture2D
 
 		# 2. 跨族 512 底盤共用
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise"]
 		for other in all_races:
 			if other == r:
 				continue
