@@ -1,0 +1,53 @@
+{
+  "round": 24,
+  "task": "t_a37ca836",
+  "topic": "探索性 QA 第二十四輪：大廳西語修復合併後回歸驗收",
+  "verified_commit": "abe99b35",
+  "items": {
+    "item_1_spanish_es_clipping_fix_verification": {
+      "status": "pass",
+      "details": "西語（es）實機截圖逐項檢驗通過：1. 右下角出征戰情報告板關卡名稱『Región 2 · Tierras de la Niebla Blanca (2-4 JEFE)』已啟用 AUTOWRAP_WORD_SMART 且面板高度自適應至 210px，長文字工整換行雙行顯示，無截斷、無超出面板；2. 右上角裝備槽位按鈕容器寬度擴展至 364px，啟用 text_overrun_behavior (OVERRUN_TRIM_ELLIPSIS) 與字級動態縮放（10~13px），最長 48 字元之『Cuerda  Llave de Cuerda de Bronce de Doble Orificio』等字串工整容納於按鈕內，右側留有安全邊距，無溢出螢幕邊界。"
+    },
+    "item_2_five_locales_non_regression_inspection": {
+      "status": "pass",
+      "locales_tested": ["zh_TW", "zh_CN", "en", "ja", "ko"],
+      "details": "其餘五語系實機截圖對比驗證通過：繁中、簡中、英文、日文、韓文之右上角裝備按鈕、右下角出征戰報板、頂部 HUD 與底部 Dock 頁籤排版均完全正常，無因西語排版調整引起的文字重疊、錯位或溢出破壞。"
+    },
+    "item_3_zero_system_emoji": {
+      "status": "pass",
+      "details": "六語系全介面 100% 採用自繪向量與像素遊戲圖示（發條鑰匙、齒輪金幣、星屑晶石、天宮鐵匠、手藝工坊、演武競技、冒險委託、出征標籤等），無任何作業系統原生 Emoji 廉價感符號。"
+    },
+    "item_4_dopamine_palette_and_jelly_buttons": {
+      "status": "pass",
+      "details": "維持陽光童話·奶油米白底與多巴胺鮮亮高飽和色盤，圓角 18~24px，按鈕具備 4~6px 果凍厚底立體質感與深色描邊，符合 ART_DAILY_CONSTITUTION 規範。"
+    },
+    "item_5_unit_and_smoke_tests": {
+      "status": "pass",
+      "details": "TEST_FILTER=lobby ./tools/run_tests.sh (test_mobile_lobby 1/1 通過)、TEST_FILTER=i18n ./tools/run_tests.sh (test_i18n 1/1 通過)、Godot 無頭冒煙測試 0 錯誤退出。"
+    }
+  },
+  "proof_files": [
+    "proofs/qa_round24/proof_lobby_i18n_es.png",
+    "proofs/qa_round24/proof_lobby_i18n_zh_TW.png",
+    "proofs/qa_round24/proof_lobby_i18n_zh_CN.png",
+    "proofs/qa_round24/proof_lobby_i18n_en.png",
+    "proofs/qa_round24/proof_lobby_i18n_ja.png",
+    "proofs/qa_round24/proof_lobby_i18n_ko.png"
+  ],
+  "crops": [
+    "proofs/qa_round24/crops/crop_lobby_es_equip.png",
+    "proofs/qa_round24/crops/crop_lobby_es_sortie.png",
+    "proofs/qa_round24/crops/crop_lobby_zh_TW_equip.png",
+    "proofs/qa_round24/crops/crop_lobby_zh_TW_sortie.png",
+    "proofs/qa_round24/crops/crop_lobby_zh_CN_equip.png",
+    "proofs/qa_round24/crops/crop_lobby_zh_CN_sortie.png",
+    "proofs/qa_round24/crops/crop_lobby_en_equip.png",
+    "proofs/qa_round24/crops/crop_lobby_en_sortie.png",
+    "proofs/qa_round24/crops/crop_lobby_ja_equip.png",
+    "proofs/qa_round24/crops/crop_lobby_ja_sortie.png",
+    "proofs/qa_round24/crops/crop_lobby_ko_equip.png",
+    "proofs/qa_round24/crops/crop_lobby_ko_sortie.png"
+  ],
+  "verdict": "pass",
+  "verdict_reason": "大廳西語（es）長文字溢出與截斷問題確認完全修復；五語系回歸無連帶破壞；lobby 與 i18n 單元測試全綠、無頭冒煙 0 錯誤；0-QA24/0-QA25 驗收指標全數達成。"
+}
