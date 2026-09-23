@@ -1906,8 +1906,8 @@
    "id": "tortoise-paperdoll-support",
    "cat": "遊戲",
    "title": "第10種族玄機龜紙娃娃創角、衣櫥與戰鬥大廳支援",
-   "status": "測試中",
-   "note": "程式實作與多維度無頭測試全綠，實機截圖完成，送審 sideqa",
+   "status": "已上線",
+   "note": "sideqa 審查通過，創角、衣櫥、大廳頭像與戰鬥支援全綠",
    "keys": [
     "第10種族玄機龜"
    ]
