@@ -49,6 +49,7 @@ func _process(_d: float) -> bool:
 		_test_soft_shadow()
 		_test_hero_click_and_particles()
 		_test_hero_nameplate()
+		_test_hero_portrait()
 		_test_hero_race_poses()
 		_test_nine_races_lobby_showcase_hd()
 		_test_adventure_region_stages()
@@ -595,6 +596,49 @@ func _test_hero_nameplate() -> void:
 	# 4.4 驗證色彩主次
 	var name_color: Color = name_tag.get_theme_color("font_color")
 	print("  [文字顏色] 角色名顏色: %s, 稱號顏色: %s" % [str(name_color), str(title_tag.get_theme_color("font_color"))])
+
+
+## ──────────────────────────────────────────
+## 4.5 斷言大廳左上角頭像 (_get_hero_portrait) 正確對照，含玄機龜專屬頭像 (防止退回小白兔)
+## ──────────────────────────────────────────
+func _test_hero_portrait() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試英雄頭像")
+		return
+
+	if not _lobby.has_method("_get_hero_portrait"):
+		_fail("大廳缺少 _get_hero_portrait 方法")
+		return
+
+	# 1. 驗證玄機龜專屬頭像讀取，不為空且非小白兔 fallback
+	var tortoise_tex: Texture2D = _lobby.call("_get_hero_portrait", "tortoise")
+	if tortoise_tex == null:
+		_fail("玄機龜 (tortoise) 大廳頭像貼圖為空")
+	else:
+		var path: String = tortoise_tex.resource_path
+		print("  [玄機龜頭像路徑] %s" % path)
+		if not path.ends_with("portraits/tortoise.png"):
+			_fail("玄機龜大廳頭像路徑應為 res://assets/sprites/portraits/tortoise.png，實際為: %s" % path)
+		elif path.find("rabbit") >= 0:
+			_fail("玄機龜大廳頭像不應退回小白兔 (rabbit)")
+		else:
+			print("  ok 玄機龜 (tortoise) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
+
+	# 2. 驗證切換玩家種族為玄機龜時，左上角 _profile_avatar 更新為玄機龜頭像
+	var gs := root.get_node_or_null("GameState")
+	if gs:
+		gs.player_race = "tortoise"
+		if _lobby.has_method("refresh_hud"):
+			_lobby.call("refresh_hud")
+		var avatar = _lobby.get("_profile_avatar") as TextureRect
+		if avatar == null or avatar.texture == null:
+			_fail("大廳 _profile_avatar 為空或無貼圖")
+		else:
+			var apath: String = avatar.texture.resource_path
+			if not apath.ends_with("portraits/tortoise.png"):
+				_fail("切換為玄機龜後 _profile_avatar 應為 portraits/tortoise.png，實際為: %s" % apath)
+			else:
+				print("  ok 大廳 _profile_avatar 在玄機龜種族下正確顯示 tortoise.png")
 
 
 ## ──────────────────────────────────────────

@@ -133,12 +133,21 @@ func _process(_delta: float) -> bool:
 				"macaque": "靈爪猴",
 				"tiger": "烈焰虎",
 				"crane": "雲嵐鶴",
-				"bear": "玄軸熊"
+				"bear": "玄軸熊",
+				"penguin": "蒸氣企鵝",
+				"tortoise": "玄機龜"
 			}
 			for r in other_races.keys():
 				gs.call("reset_new_game", r)
 				var stats = BattleSim.gather_player_stats()
-				_assert(str(stats.get("name")) == other_races[r], "五族 [%s] gather_player_stats 名稱應為 '%s'，實際為: '%s'" % [r, other_races[r], stats.get("name")])
+				_assert(str(stats.get("name")) == other_races[r], "各族 [%s] gather_player_stats 名稱應為 '%s'，實際為: '%s'" % [r, other_races[r], stats.get("name")])
+				# 驗證 _unit_display_name 在 sim 為空且 player_name 為空時 fallback 各族中文名
+				gs.player_name = ""
+				var saved_sim = _battle.get("sim")
+				_battle.set("sim", null)
+				var fallback_name = _battle.call("_unit_display_name", "player")
+				_assert(fallback_name == other_races[r], "各族 [%s] _unit_display_name 備援名稱應為 '%s'，實際為: '%s'" % [r, other_races[r], fallback_name])
+				_battle.set("sim", saved_sim)
 
 			# 5. 驗證 hit 事件日誌不洩漏 id
 			_battle.call("_on_event", "hit", {
