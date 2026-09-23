@@ -1,0 +1,89 @@
+{
+  "round": 29,
+  "task": "t_56320167",
+  "topic": "探索性 QA 第二十九輪：碧簧蛙全流程（骨架/切片/戰鬥姿勢/官方資產/創角）合併後找破圖",
+  "verified_items": {
+    "item_1_frog_character_creation": {
+      "status": "pass",
+      "proofs": [
+        "proof_01_creation_frog_default.png",
+        "proof_02_creation_frog_bare.png"
+      ],
+      "crop": "crop_creation_frog_512.png",
+      "details": "創角流暢完整：頂部種族橫滑卡片第十二族『碧簧蛙』選中高亮；左側舞台即時以 512 高清合成渲染碧簧蛙 7 大槽位；切換預設外裝【碧簧巡林客工裝＋原廠薄荷翡翠綠】與【無外裝 (裸機素體)】，雙聯凸透鏡眼、折疊板簧足柱、蓮花齒輪鏢與同心發條輪盤圖層 Z-Order 正確無穿模無破圖；confirm_selection 成功將 player_race='frog' 與預設名稱『碧簧蛙』寫入 GameState 持久化存檔槽位。"
+    },
+    "item_2_wardrobe_race_filter_and_equip": {
+      "status": "pass",
+      "proofs": [
+        "proof_03_wardrobe_filter_all.png",
+        "proof_04_wardrobe_frog_courier_equipped.png",
+        "proof_05_wardrobe_frog_bare_equipped.png"
+      ],
+      "crops": [
+        "crop_wardrobe_frog_cards.png",
+        "crop_wardrobe_preview_frog.png"
+      ],
+      "details": "衣櫥功能完善：1. 『全部』篩選完整列出 12 族跨族外裝；2. 切換為第十二族『蛙』篩選時，FilterScroll 滾動至末端高亮蛙族 Chip，卡片網格精確顯示【碧簧巡林客工裝】、【無外裝 (裸機素體)】及塗裝【原廠薄荷翡翠綠】；3. 換裝即時更新左側 512 預覽舞台與選中態橘框『✓ 已選用』；4. 切換為裸機素體即時生效；抽查跨族外裝（象/龜）換裝切換無污染。"
+    },
+    "item_3_lobby_avatar_and_six_locales": {
+      "status": "pass",
+      "proofs": [
+        "proof_06_lobby_frog_zh_TW.png",
+        "proof_06_lobby_frog_zh_CN.png",
+        "proof_06_lobby_frog_en.png",
+        "proof_06_lobby_frog_ja.png",
+        "proof_06_lobby_frog_ko.png",
+        "proof_06_lobby_frog_es.png"
+      ],
+      "crops": [
+        "crop_lobby_frog_char.png",
+        "crop_lobby_frog_avatar.png"
+      ],
+      "details": "手遊大廳完美展示：1. 碧簧蛙以 512 高清合成待機姿態站立於中央神殿地台，倒影與光效自然，嚴格遵循禁止退回 128 糊圖標準；2. 左上角頭像框精準載入 portraits/frog.png 像素頭像；3. 六語系 (zh_TW, zh_CN, en, ja, ko, es) 即時切換無未翻譯 key（無 MISSING_TRANSLATION、無 raw key）；4. 頂部能量/金幣/星屑、左側四殿堂、右側裝備欄與底部 Dock 全面採用自繪像素圖示，100% 零系統 Emoji 殘留。"
+    },
+    "item_4_lobby_shop_instant_refresh": {
+      "status": "pass",
+      "proof": "proof_07_lobby_with_shop_en.png",
+      "details": "大廳連動商城即時刷新（0-QA25 檢查）：以 en 英文環境呼叫 open_shop()，彈窗在多巴胺米白亮色底正常彈出，商品標籤與按鈕佈局無重疊、無跑版，關閉後大廳背景與英雄待機狀態無異常。"
+    },
+    "item_5_explore_frog_display": {
+      "status": "pass",
+      "proof": "proof_08_explore_frog.png",
+      "crop": "crop_explore_frog_sprite.png",
+      "details": "探索場景 (ExploreView) 碧簧蛙行走與待機展示正常：地圖正確讀取碧簧蛙專屬高解析資產 (frog_idle_hd 1344x1680 / 512x512 高清合成)，角色錨點正確落於腳底，零浮空、零穿模，禁止退回 128 糊圖檢查通過。"
+    },
+    "item_6_battle_frog_combat_and_name_fallback": {
+      "status": "pass",
+      "proofs": [
+        "proof_09_battle_frog_combat.png",
+        "proof_10_battle_fallback_empty_name.png"
+      ],
+      "crops": [
+        "crop_battle_frog_sprite.png",
+        "crop_battle_nameplates_log.png"
+      ],
+      "details": "戰鬥全流程正常：1. 碧簧蛙出戰對戰狼，PlayerBody 貼圖尺寸 512x512 高清合成，站姿、血條與名稱板對照精確，無白邊穿模；2. 清除 player_name 時，戰鬥單位名稱依 race fallback 自動對照為『碧簧蛙』；3. 打擊事件觸發暴擊傷害 77 點，戰鬥日誌文字排版正常，無溢出截斷。"
+    },
+    "item_7_frog_paperdoll_slices_and_skeleton": {
+      "status": "pass",
+      "proof": "proof_11_frog_paperdoll_slices_verification.png",
+      "crop": "crop_frog_paperdoll_stage.png",
+      "details": "碧簧蛙（第十二族 frog）7 大槽位紙娃娃切片與骨架驗收通過：DevPaperdollPreview 成功切換至 frog，控制面板正確識別『碧簧蛙 (frog)』，7 大槽位 z_index 階梯式疊合（winding_key Z:5 至 weapon Z:40）完整載入且狀態全綠，雙足錨點 (64, 120) 正確對齊，無任何報錯、無空指針異常。"
+    },
+    "item_8_vision_verification": {
+      "status": "pass",
+      "details": "經 Vision 視覺顯微分析審核：1. 零毛皮 (100% 綠金琺瑯烤漆金屬沖壓外殼、鉚釘接合與黃銅機械關節)；2. 零破圖 (輪廓封閉清晰，無壞像素、無白邊溢出)；3. 零穿模 (7大槽位圖層 Z-Order 階梯層疊完全正確)；4. 背部發條輪盤機構 (key_twin_wing_concentric) 精確就位；5. 武器蓮花齒輪鏢 (wpn_lotus_cog_dart) 輪廓分明、高辨識度。"
+    }
+  },
+  "metrics": {
+    "total_screenshots": 16,
+    "total_crops": 9,
+    "all_screenshots_unique": true,
+    "all_resolutions_1280x720": true,
+    "emoji_count": 0,
+    "missing_translations_count": 0,
+    "frog_skeleton_slots_loaded": "7/7",
+    "official_assets_verified": 22
+  },
+  "conclusion": "探索性 QA 第二十九輪全項合格。碧簧蛙（第十二族）全流程（骨架/7槽切片/6大戰鬥姿勢/官方資產套件/創角/大廳/衣櫥/探索/戰鬥）經實機全流程與顯微量測檢驗，零破圖、零穿模、零毛皮、零 Emoji 殘留、i18n 六語系完整、嚴格不退回 128 糊圖。同意結案並提請審查。"
+}
