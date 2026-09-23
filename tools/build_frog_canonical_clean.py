@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 build_frog_canonical_clean.py
-Definitive, 100% decoupled modular sprite builder for Spring-Leg Frog (碧簧蛙 / 碧綠蛙) 7 Paperdoll Slices.
+Definitive, 100% decoupled modular sprite builder for Spring-Leg Frog (碧簧蛙 / 碧簧蛙) 7 Paperdoll Slices.
 Follows:
 - docs/design/paperdoll_slots.json
 - docs/design/SPRING_FROG_DESIGN_PROPOSAL.md

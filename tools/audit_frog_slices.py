@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 audit_frog_slices.py
-Rigorous automated audit script for Spring-Leg Frog (碧簧蛙 / 碧綠蛙) paperdoll slices against:
+Rigorous automated audit script for Spring-Leg Frog (碧簧蛙 / 碧簧蛙) paperdoll slices against:
 - review.md 0-ART5 (c100 color richness, anti-placeholder)
 - review.md 0-ART9 / 0-ART11 (no weapon baked into chassis)
 - review.md 0-ART18 (bare chassis multi-tone depth, no flat placeholder blocks)
