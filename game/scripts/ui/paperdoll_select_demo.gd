@@ -224,10 +224,12 @@ const RACES_DATA: Dictionary = {
 		"desc": "竹影道場的機關術宗師，青古銅龜甲板件與浮空八卦發條星盤。",
 		"costumes": [
 			{"id": "costume_zen_dojo_harness", "name_zh": "天元道場玄機護甲", "desc": "青古銅龜甲與乾坤道袍飾帶"},
+			{"id": "costume_bagua_master_robe", "name_zh": "乾坤八卦宗師道鎧", "desc": "玄奧乾坤八卦紋金屬道鎧與太極護心鏡板"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現青古銅玄機素體"}
 		],
 		"chassis": [
-			{"id": "paint_tortoise_jade", "name_zh": "原廠青銅古翠綠", "desc": "青古銅深翠綠金屬琺瑯烤漆"}
+			{"id": "paint_tortoise_jade", "name_zh": "原廠青銅古翠綠", "desc": "青古銅深翠綠金屬琺瑯烤漆"},
+			{"id": "paint_basalt_black", "name_zh": "玄武黑曜淬火黑", "desc": "玄武黑曜淬火黑鋼與電氣青藍導線烤漆"}
 		]
 	}
 }
