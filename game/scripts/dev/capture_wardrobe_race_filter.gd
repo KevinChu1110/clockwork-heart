@@ -109,6 +109,10 @@ func _process(_delta: float) -> bool:
 		6:
 			# 步驟 6: 切換為「玄機龜」篩選，滾動使龜 chip 可見，等待渲染穩定並截圖
 			if _wait_frames == 10:
+				var gs = root.get_node_or_null("GameState")
+				if gs:
+					gs.player_race = "tortoise"
+					gs.player_name = "玄機龜"
 				_dlg.set_race_filter("tortoise")
 			elif _wait_frames == 25:
 				var scroll: ScrollContainer = _dlg.find_child("FilterScroll", true, false) as ScrollContainer

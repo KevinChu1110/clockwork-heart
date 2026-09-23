@@ -248,6 +248,16 @@ func _run_test_suite() -> void:
 	_assert(str(gs.get("player_race")) == "penguin", "confirm_selection 成功將 'penguin' 寫入 GameState")
 	_assert(str(gs.get("player_name")) == "蒸氣企鵝", "confirm_selection 成功將預設英雄名稱設為 '蒸氣企鵝'")
 
+	# 切換至玄機龜並確認
+	confirmed_data["called"] = false
+	demo.call("select_race", "tortoise")
+	demo.call("confirm_selection")
+
+	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (tortoise)")
+	_assert(confirmed_data["race"] == "tortoise", "訊號回傳正確選取種族 'tortoise'")
+	_assert(str(gs.get("player_race")) == "tortoise", "confirm_selection 成功將 'tortoise' 寫入 GameState")
+	_assert(str(gs.get("player_name")) == "玄機龜", "confirm_selection 成功將預設英雄名稱設為 '玄機龜'")
+
 	demo.queue_free()
 
 	# 清理第 3 存檔槽測試殘留

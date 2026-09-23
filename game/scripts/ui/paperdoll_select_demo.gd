@@ -530,6 +530,7 @@ func confirm_selection() -> void:
 				"bear": gs.player_name = "玄軸熊"
 				"crane": gs.player_name = "雲嵐鶴"
 				"penguin": gs.player_name = "蒸氣企鵝"
+				"tortoise": gs.player_name = "玄機龜"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
