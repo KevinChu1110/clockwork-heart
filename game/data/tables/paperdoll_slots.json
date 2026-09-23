@@ -1414,8 +1414,7 @@
         },
         "asset_naming_conventions": {
           "status": {
-            "existing": [],
-            "pending": [
+            "existing": [
               "docs/art/colossus_elephant_concept.png (928x1152 概念立繪)",
               "branding/char_elephant.png (400x840 品牌立牌)",
               "web/media/hero/char_elephant.png (400x840 官網英雄圖)",
@@ -1430,22 +1429,23 @@
               "game/assets/sprites/portraits/elephant.png (128x128 HUD戰鬥頭像)",
               "game/assets/sprites/portraits/colossus_elephant.png (384x480 對話框半身像)",
               "game/assets/sprites/player/paperdoll/elephant/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
-            ]
+            ],
+            "pending": []
           },
-          "branding_standee": "branding/char_elephant.png (400x840) [待產出]",
-          "branding_concept_art": "docs/art/colossus_elephant_concept.png (928x1152) [待產出]",
-          "web_hero": "web/media/hero/char_elephant.png (400x840) [待產出]",
-          "web_preview": "web/media/hero/elephant_idle.png (128x128) [待產出]",
-          "game_sprite_idle_base": "game/assets/sprites/player/elephant_idle.png (64x64) [待產出]",
-          "game_sprite_idle_hi": "game/assets/sprites/player/elephant_idle_x3.png (128x128) [待產出]",
-          "game_sprite_party_idle": "game/assets/sprites/player/party/elephant_idle.png (128x128) [待產出]",
-          "game_sprite_battle": "game/assets/sprites/player/elephant_battle.png (128x128) [待產出]",
-          "game_sprite_walk": "game/assets/sprites/player/elephant_walk_{0..3}.png (64x64) [待產出]",
-          "game_sprite_walk_hi": "game/assets/sprites/player/elephant_walk_{0..3}_x3.png (128x128) [待產出]",
-          "game_action_poses": "game/assets/sprites/player/poses/elephant/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
-          "portrait_hud": "game/assets/sprites/portraits/elephant.png (128x128) [待產出]",
-          "portrait_dialogue": "game/assets/sprites/portraits/colossus_elephant.png (384x480) [待產出]",
-          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/elephant/{slot_id}/{item_id}.png [待產出]"
+          "branding_standee": "branding/char_elephant.png (400x840) [既有]",
+          "branding_concept_art": "docs/art/colossus_elephant_concept.png (928x1152) [既有]",
+          "web_hero": "web/media/hero/char_elephant.png (400x840) [既有]",
+          "web_preview": "web/media/hero/elephant_idle.png (128x128) [既有]",
+          "game_sprite_idle_base": "game/assets/sprites/player/elephant_idle.png (64x64) [既有]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/elephant_idle_x3.png (128x128) [既有]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/elephant_idle.png (128x128) [既有]",
+          "game_sprite_battle": "game/assets/sprites/player/elephant_battle.png (128x128) [既有]",
+          "game_sprite_walk": "game/assets/sprites/player/elephant_walk_{0..3}.png (64x64) [既有]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/elephant_walk_{0..3}_x3.png (128x128) [既有]",
+          "game_action_poses": "game/assets/sprites/player/poses/elephant/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [既有]",
+          "portrait_hud": "game/assets/sprites/portraits/elephant.png (128x128) [既有]",
+          "portrait_dialogue": "game/assets/sprites/portraits/colossus_elephant.png (384x480) [既有]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/elephant/{slot_id}/{item_id}.png [既有]"
         }
       }
     ]
