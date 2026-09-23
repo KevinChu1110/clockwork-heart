@@ -71,19 +71,29 @@ def verify_frog_skeleton_json():
     assert frog_spec.get("name_zh") == "碧簧蛙", f"frog name_zh 錯誤: {frog_spec.get('name_zh')}"
     assert frog_spec.get("class_archetype") == "忍者 (Ninja)", f"frog class 錯誤: {frog_spec.get('class_archetype')}"
 
-    # 檢查 7 大槽位皆包含 frog 項目
+    # 檢查 7 大槽位皆包含 frog 專屬部件定義
     slots_arch = data.get("slots_architecture", {})
     slots = slots_arch.get("slots", []) if isinstance(slots_arch, dict) else data.get("paperdoll_slots", [])
     assert len(slots) == 7, f"槽位數非 7 大槽位: {len(slots)}"
+    expected_frog_items = {
+        "chassis": "paint_frog_emerald",
+        "head_unit": "head_spring_frog_stock",
+        "winding_key": "key_twin_wing_concentric",
+        "costume": "costume_spring_forest_courier",
+        "optic_core": "core_azure_aperture",
+        "weapon": "wpn_lotus_cog_dart",
+        "back_curio": "curio_lotus_leaf_parasol"
+    }
     slots_checked = {}
     for slot in slots:
         sid = slot.get("slot_id")
         items = slot.get("sample_variants", []) or slot.get("items", [])
-        frog_items = [it for it in items if isinstance(it, dict) and it.get("race") == "frog"]
-        slots_checked[sid] = len(frog_items)
-        assert len(frog_items) >= 1, f"槽位 {sid} 缺少 frog 資料定義"
+        expected_id = expected_frog_items.get(sid)
+        found = [it for it in items if isinstance(it, dict) and it.get("id") == expected_id]
+        assert len(found) >= 1, f"槽位 {sid} 缺少 frog 預期部件 {expected_id}"
+        slots_checked[sid] = found[0].get("name")
 
-    print("  ✓ [通過] 碧箸蛙（第十二族 frog）骨架資料表 7 大槽位驗證完整：", slots_checked)
+    print("  ✓ [通過] 碧箸蛙（第十二族 frog）骨架資料表 7 大槽位部件驗證完整：", slots_checked)
     return frog_spec, slots_checked
 
 
