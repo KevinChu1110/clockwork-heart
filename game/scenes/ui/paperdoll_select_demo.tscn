@@ -215,22 +215,33 @@ theme_override_font_sizes/font_size = 11
 text = "CLOCKWORK HEART MODULAR PAPER-DOLL DEMO"
 horizontal_alignment = 1
 
-[node name="FilterScroll" type="ScrollContainer" parent="."]
+[node name="RaceTabBar" type="HBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 40.0
 offset_top = 64.0
 offset_right = -40.0
-offset_bottom = 120.0
+offset_bottom = 116.0
 grow_horizontal = 2
-horizontal_scroll_mode = 1
-vertical_scroll_mode = 3
+alignment = 1
+theme_override_constants/separation = 16
 
-[node name="FilterHBox" type="HBoxContainer" parent="FilterScroll"]
+[node name="BtnTab_launch" type="Button" parent="RaceTabBar"]
+custom_minimum_size = Vector2(160, 48)
 layout_mode = 2
-size_flags_vertical = 4
-theme_override_constants/separation = 8
+mouse_default_cursor_shape = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "首發"
+
+[node name="BtnTab_expansion" type="Button" parent="RaceTabBar"]
+custom_minimum_size = Vector2(160, 48)
+layout_mode = 2
+mouse_default_cursor_shape = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 18
+text = "擴充"
 
 [node name="TopRaceBar" type="ScrollContainer" parent="."]
 layout_mode = 1
@@ -246,15 +257,17 @@ vertical_scroll_mode = 3
 
 [node name="ButtonsHBox" type="HBoxContainer" parent="TopRaceBar"]
 layout_mode = 2
+size_flags_horizontal = 3
 size_flags_vertical = 3
-theme_override_constants/separation = 12
+alignment = 1
+theme_override_constants/separation = 10
 
 [node name="StartSpacer" type="Control" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(4, 0)
 layout_mode = 2
 
 [node name="BtnRace_rabbit" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -298,7 +311,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_fox" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -342,7 +355,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_lion" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -386,7 +399,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_boar" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -430,7 +443,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_macaque" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -474,7 +487,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_tiger" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -518,7 +531,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_crane" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -562,7 +575,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_bear" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -606,7 +619,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_penguin" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -650,7 +663,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_tortoise" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -694,7 +707,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_elephant" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -738,7 +751,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_frog" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -782,7 +795,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="BtnRace_panda" type="Button" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(148, 108)
+custom_minimum_size = Vector2(136, 108)
 layout_mode = 2
 mouse_default_cursor_shape = 2
 theme_override_styles/normal = SubResource("StyleBox_btn_race_normal")
@@ -826,7 +839,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="EndSpacer" type="Control" parent="TopRaceBar/ButtonsHBox"]
-custom_minimum_size = Vector2(40, 0)
+custom_minimum_size = Vector2(8, 0)
 layout_mode = 2
 
 [node name="CenterStage" type="PanelContainer" parent="."]

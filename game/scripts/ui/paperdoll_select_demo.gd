@@ -283,9 +283,18 @@ const RACES_DATA: Dictionary = {
 
 const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
 
+const TAB_LAUNCH := "launch"
+const TAB_EXPANSION := "expansion"
+
+const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
+
 ## 節點引用
 @onready var character: PaperdollCharacter = $CenterStage/CharacterContainer/PaperdollCharacter as PaperdollCharacter
 @onready var race_buttons_container: HBoxContainer = $TopRaceBar/ButtonsHBox as HBoxContainer
+@onready var race_tab_bar: HBoxContainer = get_node_or_null("RaceTabBar") as HBoxContainer
+@onready var btn_tab_launch: Button = get_node_or_null("RaceTabBar/BtnTab_launch") as Button
+@onready var btn_tab_expansion: Button = get_node_or_null("RaceTabBar/BtnTab_expansion") as Button
 
 @onready var hero_title_label: Label = $CenterStage/HeroBadge/Margin/HBox/HeroTitleLabel as Label
 @onready var hero_archetype_label: Label = $CenterStage/HeroBadge/Margin/HBox/HeroArchetypeLabel as Label
@@ -316,7 +325,7 @@ var _costume_index: int = 0
 var _chassis_index: int = 0
 var _race_buttons: Dictionary = {}
 var _breathe_tween: Tween = null
-
+var _current_tab: String = TAB_LAUNCH
 
 var _race_filter_chips: Dictionary = {}
 var _current_filter_race: String = "all"
@@ -324,9 +333,10 @@ var _current_filter_race: String = "all"
 
 func _ready() -> void:
 	_init_race_buttons()
-	_init_filter_chips()
+	_init_category_tabs()
 	_bind_controls()
 	_update_creation_mode_ui()
+	switch_tab(TAB_LAUNCH)
 	select_race("rabbit")
 	_start_breathe_tween()
 
@@ -381,127 +391,145 @@ func _init_race_buttons() -> void:
 			btn.pressed.connect(func(): select_race(rid))
 
 
-## 初始化頂部種族篩選 tab/chip 列
-func _init_filter_chips() -> void:
-	var chip_scroll: ScrollContainer = get_node_or_null("FilterScroll") as ScrollContainer
-	if chip_scroll == null:
-		chip_scroll = get_node_or_null("TopRaceBar/FilterScroll") as ScrollContainer
-	if chip_scroll == null:
-		chip_scroll = ScrollContainer.new()
-		chip_scroll.name = "FilterScroll"
-		chip_scroll.custom_minimum_size = Vector2(0, 56)
-		chip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
-		chip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-		chip_scroll.set_anchors_preset(Control.PRESET_TOP_WIDE)
-		chip_scroll.offset_left = 40.0
-		chip_scroll.offset_top = 64.0
-		chip_scroll.offset_right = -40.0
-		chip_scroll.offset_bottom = 120.0
-		add_child(chip_scroll)
+## 初始化頂部「首發｜擴充」分頁 tab
+func _init_category_tabs() -> void:
+	if race_tab_bar == null:
+		race_tab_bar = get_node_or_null("RaceTabBar") as HBoxContainer
+	if race_tab_bar == null:
+		race_tab_bar = HBoxContainer.new()
+		race_tab_bar.name = "RaceTabBar"
+		race_tab_bar.alignment = BoxContainer.ALIGNMENT_CENTER
+		race_tab_bar.set_anchors_preset(Control.PRESET_TOP_WIDE)
+		race_tab_bar.offset_left = 40.0
+		race_tab_bar.offset_top = 64.0
+		race_tab_bar.offset_right = -40.0
+		race_tab_bar.offset_bottom = 116.0
+		race_tab_bar.add_theme_constant_override("separation", 16)
+		add_child(race_tab_bar)
+		move_child(race_tab_bar, 3)
 
-	var hbox: HBoxContainer = chip_scroll.get_node_or_null("FilterHBox") as HBoxContainer
-	if hbox == null:
-		hbox = HBoxContainer.new()
-		hbox.name = "FilterHBox"
-		hbox.add_theme_constant_override("separation", 8)
-		chip_scroll.add_child(hbox)
+	if btn_tab_launch == null:
+		btn_tab_launch = race_tab_bar.get_node_or_null("BtnTab_launch") as Button
+	if btn_tab_launch == null:
+		btn_tab_launch = Button.new()
+		btn_tab_launch.name = "BtnTab_launch"
+		btn_tab_launch.text = "首發"
+		btn_tab_launch.custom_minimum_size = Vector2(160, 48)
+		btn_tab_launch.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn_tab_launch.add_theme_font_size_override("font_size", 18)
+		if ResourceLoader.exists(FONT_PATH):
+			btn_tab_launch.add_theme_font_override("font", load(FONT_PATH) as Font)
+		race_tab_bar.add_child(btn_tab_launch)
 
-	# 依照 0-ART10：清空既有按鈕防止重複建立
-	for child in hbox.get_children():
-		child.queue_free()
+	if btn_tab_expansion == null:
+		btn_tab_expansion = race_tab_bar.get_node_or_null("BtnTab_expansion") as Button
+	if btn_tab_expansion == null:
+		btn_tab_expansion = Button.new()
+		btn_tab_expansion.name = "BtnTab_expansion"
+		btn_tab_expansion.text = "擴充"
+		btn_tab_expansion.custom_minimum_size = Vector2(160, 48)
+		btn_tab_expansion.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn_tab_expansion.add_theme_font_size_override("font_size", 18)
+		if ResourceLoader.exists(FONT_PATH):
+			btn_tab_expansion.add_theme_font_override("font", load(FONT_PATH) as Font)
+		race_tab_bar.add_child(btn_tab_expansion)
 
-	# 依照 0-ART10：開端保留微小邊距
-	var start_spacer := Control.new()
-	start_spacer.name = "StartSpacer"
-	start_spacer.custom_minimum_size = Vector2(4, 0)
-	hbox.add_child(start_spacer)
+	if not btn_tab_launch.pressed.is_connected(_on_tab_launch_pressed):
+		btn_tab_launch.pressed.connect(_on_tab_launch_pressed)
+	if not btn_tab_expansion.pressed.is_connected(_on_tab_expansion_pressed):
+		btn_tab_expansion.pressed.connect(_on_tab_expansion_pressed)
 
-	_race_filter_chips.clear()
-	var filter_defs: Array[Dictionary] = [
-		{"id": "all", "label": "全部"},
-		{"id": "rabbit", "label": "白金兔"},
-		{"id": "fox", "label": "靈尾狐"},
-		{"id": "lion", "label": "烈鬃獅"},
-		{"id": "boar", "label": "鋼牙豕"},
-		{"id": "macaque", "label": "靈爪猴"},
-		{"id": "tiger", "label": "烈焰虎"},
-		{"id": "crane", "label": "雲嵐鶴"},
-		{"id": "bear", "label": "玄軸熊"},
-		{"id": "penguin", "label": "蒸氣企鵝"},
-		{"id": "tortoise", "label": "玄機龜"},
-		{"id": "elephant", "label": "鋼岳象"},
-		{"id": "frog", "label": "碧簧蛙"},
-		{"id": "panda", "label": "瓷韻熊貓"}
-	]
-
-	var font: Font = null
-	if ResourceLoader.exists(FONT_PATH):
-		font = load(FONT_PATH) as Font
-
-	for def in filter_defs:
-		var fid: String = def["id"]
-		var flbl: String = def["label"]
-		var chip := Button.new()
-		chip.name = "Chip_" + fid
-		chip.text = flbl
-		chip.custom_minimum_size = Vector2(52, 48)
-		chip.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-		chip.add_theme_font_size_override("font_size", 14)
-		if font:
-			chip.add_theme_font_override("font", font)
-		chip.pressed.connect(func(): filter_race(fid))
-		hbox.add_child(chip)
-		_race_filter_chips[fid] = chip
-
-	# 依照 0-ART10：末端保留 24px 右邊距，確保最右側 chip 滾動到終點時不被容器邊界裁剪
-	var end_spacer := Control.new()
-	end_spacer.name = "EndSpacer"
-	end_spacer.custom_minimum_size = Vector2(24, 0)
-	hbox.add_child(end_spacer)
-
-	_update_filter_chips_visual()
+	_update_tabs_visual()
 
 
-func filter_race(race_id: String) -> void:
-	_current_filter_race = race_id
+func _on_tab_launch_pressed() -> void:
+	switch_tab(TAB_LAUNCH)
+
+
+func _on_tab_expansion_pressed() -> void:
+	switch_tab(TAB_EXPANSION)
+
+
+func get_current_tab() -> String:
+	return _current_tab
+
+
+func switch_tab(tab_name: String) -> void:
+	if tab_name == "首發" or tab_name == "launch":
+		_current_tab = TAB_LAUNCH
+	elif tab_name == "擴充" or tab_name == "expansion":
+		_current_tab = TAB_EXPANSION
+	else:
+		_current_tab = TAB_LAUNCH
+
+	_update_tabs_visual()
+	_update_race_buttons_visibility()
+	_update_race_buttons_visual()
+
+	var scroll := get_node_or_null("TopRaceBar") as ScrollContainer
+	if scroll:
+		scroll.scroll_horizontal = 0
+
+
+func _update_race_buttons_visibility() -> void:
+	var active_races: Array[String] = LAUNCH_RACES if _current_tab == TAB_LAUNCH else EXPANSION_RACES
 	for rid in _race_buttons.keys():
 		var btn: Button = _race_buttons[rid]
-		if _current_filter_race == "all" or rid == _current_filter_race:
-			btn.visible = true
-		else:
-			btn.visible = false
+		if btn:
+			btn.visible = (rid in active_races)
+
+
+func _update_tabs_visual() -> void:
+	if btn_tab_launch == null or btn_tab_expansion == null:
+		return
+	var is_launch := (_current_tab == TAB_LAUNCH)
+	_apply_tab_style(btn_tab_launch, is_launch)
+	_apply_tab_style(btn_tab_expansion, not is_launch)
+
+
+func _apply_tab_style(btn: Button, is_active: bool) -> void:
+	var sb := StyleBoxFlat.new()
+	sb.set_corner_radius_all(16)
+	sb.border_color = Color("#1F1A3A") # 深藍紫
+	sb.border_width_left = 2
+	sb.border_width_top = 2
+	sb.border_width_right = 2
+	sb.content_margin_left = 20
+	sb.content_margin_right = 20
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 8
+
+	if is_active:
+		sb.bg_color = Color("#FFD028") # 多巴胺金黃
+		sb.border_width_bottom = 5     # 立體果凍厚底
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
+		btn.add_theme_color_override("font_color", Color("#1F1A3A"))
+	else:
+		sb.bg_color = Color("#FFF8E7") # 奶油米白底
+		sb.border_width_bottom = 3
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.08)
+		sb.shadow_size = 2
+		sb.shadow_offset = Vector2(0, 1)
+		btn.add_theme_color_override("font_color", Color("#5A5270"))
+
+	var sb_h := sb.duplicate() as StyleBoxFlat
+	sb_h.bg_color = Color("#FFE066") if is_active else Color("#FFF1D6")
+
+	var sb_p := sb.duplicate() as StyleBoxFlat
+	sb_p.border_width_bottom = max(1, sb.border_width_bottom - 2)
+
+	btn.add_theme_stylebox_override("normal", sb)
+	btn.add_theme_stylebox_override("hover", sb_h)
+	btn.add_theme_stylebox_override("pressed", sb_p)
+	btn.add_theme_stylebox_override("focus", sb)
+
+
+## 相容舊呼叫介面
+func filter_race(race_id: String) -> void:
 	if race_id != "all" and RACES_DATA.has(race_id):
 		select_race(race_id)
-	_update_filter_chips_visual()
-
-
-func _update_filter_chips_visual() -> void:
-	for fid in _race_filter_chips.keys():
-		var chip: Button = _race_filter_chips[fid]
-		var is_active: bool = (str(fid) == _current_filter_race)
-		var sb := StyleBoxFlat.new()
-		sb.set_corner_radius_all(14)
-		sb.content_margin_left = 12
-		sb.content_margin_right = 12
-		sb.content_margin_top = 4
-		sb.content_margin_bottom = 4
-		if is_active:
-			sb.bg_color = Color("#FFD028") # 金黃
-			sb.border_color = Color("#FFA010") # 暖橘
-			sb.set_border_width_all(2)
-			sb.border_width_bottom = 4
-			chip.add_theme_color_override("font_color", Color("#1F1A3A"))
-		else:
-			sb.bg_color = Color("#FFFDF8") # 奶油白
-			sb.border_color = Color("#1F1A3A") # 深藍紫
-			sb.set_border_width_all(1)
-			sb.border_width_bottom = 2
-			chip.add_theme_color_override("font_color", Color("#1F1A3A"))
-		chip.add_theme_stylebox_override("normal", sb)
-		var sb_h = sb.duplicate()
-		sb_h.bg_color = Color("#FFF4D0")
-		chip.add_theme_stylebox_override("hover", sb_h)
-		chip.add_theme_stylebox_override("pressed", sb_h)
 
 
 ## 綁定控制按鈕
@@ -600,7 +628,13 @@ func select_race(race_id: String) -> void:
 	_costume_index = 0
 	_chassis_index = 0
 
-	_update_race_buttons_visual()
+	if race_id in LAUNCH_RACES and _current_tab != TAB_LAUNCH:
+		switch_tab(TAB_LAUNCH)
+	elif race_id in EXPANSION_RACES and _current_tab != TAB_EXPANSION:
+		switch_tab(TAB_EXPANSION)
+	else:
+		_update_race_buttons_visual()
+
 	_apply_current_selections()
 
 
@@ -862,7 +896,7 @@ func _update_race_buttons_visual() -> void:
 
 		btn.modulate = Color.WHITE
 
-		if is_selected:
+		if is_selected and btn.visible:
 			_scroll_to_race_btn(btn)
 
 

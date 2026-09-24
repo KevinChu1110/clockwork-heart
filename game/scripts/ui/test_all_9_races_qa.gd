@@ -28,13 +28,15 @@ func _run_qa() -> void:
 	demo.set("creation_mode", true)
 	root.add_child(demo)
 
-	# 驗證 chip 列
-	var chip_scroll = demo.get_node_or_null("FilterScroll") as ScrollContainer
-	if chip_scroll == null:
-		errors.append("DemoScene 缺少 FilterScroll 節點")
-		print("❌ 缺少 FilterScroll")
+	# 驗證頂部首發／擴充分頁 tab 列
+	var tab_bar = demo.get_node_or_null("RaceTabBar") as HBoxContainer
+	var tab_launch = demo.get_node_or_null("RaceTabBar/BtnTab_launch") as Button
+	var tab_expansion = demo.get_node_or_null("RaceTabBar/BtnTab_expansion") as Button
+	if tab_bar == null or tab_launch == null or tab_expansion == null:
+		errors.append("DemoScene 缺少 RaceTabBar 或分頁按鈕節點")
+		print("❌ 缺少 RaceTabBar 或分頁按鈕")
 	else:
-		print("✓ FilterScroll 存在，尺寸: %s, 位置: %s" % [chip_scroll.size, chip_scroll.position])
+		print("✓ RaceTabBar 與分頁 tab 存在，tab_launch: '%s', tab_expansion: '%s'" % [tab_launch.text, tab_expansion.text])
 
 	for rid in RACES:
 		demo.call("select_race", rid)
