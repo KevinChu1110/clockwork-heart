@@ -261,7 +261,7 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/showcase/frog_idle_hd.png",
 		"desc": "翡翠深林的靈動斥候，沖壓翠綠琺瑯馬口鐵板，雙聯凸透鏡眼與折疊板簧足柱。",
 		"costumes": [
-			{"id": "costume_spring_forest_courier", "name_zh": "碧箸巡林客工裝", "desc": "輕量油布披肩與黃銅齒輪滾邊巡林工裝"},
+			{"id": "costume_spring_forest_courier", "name_zh": "碧箐巡林客工裝", "desc": "輕量油布披肩與黃銅齒輪滾邊巡林工裝"},
 			{"id": "costume_astral_cape", "name_zh": "星紋斗篷", "desc": "深藍琺瑯釉面與星芒金屬扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現翠綠琺瑯跳蛙素體"}
 		],
@@ -309,6 +309,18 @@ const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
 const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+
+## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
+static func has_race_assets(race_id: String) -> bool:
+	if not RACES_DATA.has(race_id):
+		return false
+	var thumb_path: String = str(RACES_DATA[race_id].get("thumb", ""))
+	if thumb_path.is_empty() or not ResourceLoader.exists(thumb_path):
+		return false
+	var PaperdollRenderer = load("res://scripts/art/paperdoll_renderer.gd")
+	if PaperdollRenderer and PaperdollRenderer.has_method("has_race_assets"):
+		return PaperdollRenderer.has_race_assets(race_id)
+	return true
 
 ## 節點引用
 @onready var character: PaperdollCharacter = $CenterStage/CharacterContainer/PaperdollCharacter as PaperdollCharacter
@@ -403,6 +415,11 @@ func _init_race_buttons() -> void:
 	for rid in RACE_KEYS:
 		var btn_path := "TopRaceBar/ButtonsHBox/BtnRace_" + rid
 		var btn: Button = get_node_or_null(btn_path) as Button
+		# 若該種族尚無美術立繪與切片資源，前端防護不露出空卡
+		if not has_race_assets(rid):
+			if btn != null:
+				btn.visible = false
+			continue
 		if btn == null and race_buttons_container != null and template_btn != null:
 			# 動態補足新種族按鈕
 			btn = template_btn.duplicate() as Button
@@ -528,7 +545,9 @@ func _update_race_buttons_visibility() -> void:
 	for rid in _race_buttons.keys():
 		var btn: Button = _race_buttons[rid]
 		if btn:
-			btn.visible = (rid in active_races)
+			var is_in_tab: bool = (rid in active_races)
+			var has_assets: bool = has_race_assets(rid)
+			btn.visible = (is_in_tab and has_assets)
 
 
 func _update_tabs_visual() -> void:
@@ -675,7 +694,7 @@ func confirm_selection() -> void:
 
 ## 選取指定種族
 func select_race(race_id: String) -> void:
-	if not RACES_DATA.has(race_id):
+	if not RACES_DATA.has(race_id) or not has_race_assets(race_id):
 		race_id = "rabbit"
 	_current_race_id = race_id
 	_costume_index = 0

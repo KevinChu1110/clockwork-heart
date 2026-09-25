@@ -85,8 +85,17 @@ const RACE_FILTER_OPTIONS: Array[Dictionary] = [
 	{"id": "elephant", "name_zh": "象"},
 	{"id": "frog", "name_zh": "蛙"},
 	{"id": "panda", "name_zh": "貓"},
-	{"id": "fawn", "name_zh": "鹿"},
+	{"id": "fawn", "name_zh": "鹿", "hidden": true},
 ]
+
+## 檢查種族是否具備美術立繪與切片資源
+func _has_race_assets(race_id: String) -> bool:
+	if race_id == "all":
+		return true
+	var PaperdollSelectClass = load("res://scripts/ui/paperdoll_select_demo.gd")
+	if PaperdollSelectClass and PaperdollSelectClass.has_method("has_race_assets"):
+		return PaperdollSelectClass.has_race_assets(race_id)
+	return true
 
 var current_filter_race: String = "all"
 var _filter_chips: Dictionary = {}
@@ -204,7 +213,7 @@ func _init_from_game_state() -> void:
 	var gs = _get_game_state()
 	if gs and "player_race" in gs:
 		var r: String = str(gs.player_race).strip_edges().to_lower()
-		if not r.is_empty():
+		if not r.is_empty() and _has_race_assets(r):
 			current_race = r
 
 	current_filter_race = current_race
@@ -476,7 +485,11 @@ func _create_race_filter_bar() -> Control:
 
 	_filter_chips.clear()
 	for opt in RACE_FILTER_OPTIONS:
+		if opt.get("hidden", false):
+			continue
 		var rid: String = str(opt.get("id", ""))
+		if not _has_race_assets(rid):
+			continue
 		var rname: String = str(opt.get("name_zh", rid))
 		var btn := Button.new()
 		btn.name = "Chip_" + rid
@@ -502,6 +515,8 @@ func _create_race_filter_bar() -> Control:
 
 
 func set_race_filter(race_id: String) -> void:
+	if race_id != "all" and not _has_race_assets(race_id):
+		return
 	current_filter_race = race_id
 	if race_id != "all":
 		current_race = race_id
@@ -706,9 +721,13 @@ func _rebuild_cards() -> void:
 
 	var target_races: Array[String] = []
 	if current_filter_race == "all":
-		target_races = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+		var candidates: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+		for cr in candidates:
+			if _has_race_assets(cr):
+				target_races.append(cr)
 	else:
-		target_races = [current_filter_race]
+		if _has_race_assets(current_filter_race):
+			target_races = [current_filter_race]
 
 	for rid in target_races:
 		if not all_data.has(rid):
