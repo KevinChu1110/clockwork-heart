@@ -21,7 +21,17 @@ const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 
 static func _t(s: String) -> String:
-	return ContentLoc.text("ui", s)
+	var res := ContentLoc.text("ui", s)
+	if res != s:
+		return res
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var loc_t = str(loc.call("t", s))
+			if loc_t != "" and loc_t != s:
+				return loc_t
+	return res
 
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
@@ -371,6 +381,7 @@ func _ready() -> void:
 	_connect_loc_signal()
 	_update_creation_mode_ui()
 	_update_tab_texts()
+	_update_right_panel_labels()
 	switch_tab(TAB_LAUNCH)
 	select_race("rabbit")
 	_start_breathe_tween()
@@ -395,10 +406,35 @@ func _connect_loc_signal() -> void:
 
 
 func _on_locale_changed(_new_locale: String = "") -> void:
-	_apply_current_selections()
-	_update_race_buttons_text()
-	_update_creation_mode_ui()
 	_update_tab_texts()
+	_update_right_panel_labels()
+	_update_creation_mode_ui()
+	_update_race_buttons_text()
+	_apply_current_selections()
+
+
+func _update_right_panel_labels() -> void:
+	var panel_title = get_node_or_null("RightControlPanel/Margin/VBox/PanelTitle") as Label
+	if panel_title and is_instance_valid(panel_title):
+		panel_title.text = _t("即時換裝控制項 · 模組槽位調配")
+
+	var costume_slot = get_node_or_null("RightControlPanel/Margin/VBox/CostumeControl/SlotLabel") as Label
+	if costume_slot and is_instance_valid(costume_slot):
+		costume_slot.text = _t("• 外裝服飾槽 (Costume Slot - Z:25)")
+
+	var chassis_slot = get_node_or_null("RightControlPanel/Margin/VBox/ChassisControl/SlotLabel") as Label
+	if chassis_slot and is_instance_valid(chassis_slot):
+		chassis_slot.text = _t("• 軀體塗裝槽 (Chassis Shell - Z:10)")
+
+	var weapon_slot = get_node_or_null("RightControlPanel/Margin/VBox/WeaponControl/SlotLabel") as Label
+	if weapon_slot and is_instance_valid(weapon_slot):
+		weapon_slot.text = _t("• 手持武器槽 (Weapon Slot - Z:40)")
+
+	if btn_reset_default and is_instance_valid(btn_reset_default):
+		btn_reset_default.text = _t("重設預設")
+
+	if btn_capture_proof and is_instance_valid(btn_capture_proof):
+		btn_capture_proof.text = _t("儲存驗證截圖")
 
 
 func _update_tab_texts() -> void:
@@ -435,7 +471,7 @@ func _init_race_buttons() -> void:
 			btn.name = "BtnRace_" + rid
 			var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
 			if name_lbl is Label:
-				name_lbl.text = str(RACES_DATA[rid].get("name_zh", rid))
+				name_lbl.text = _t(str(RACES_DATA[rid].get("name_zh", rid)))
 			var thumb_rect = btn.get_node_or_null("Margin/VBox/Thumb")
 			if thumb_rect is TextureRect:
 				var thumb_path := str(RACES_DATA[rid].get("thumb", ""))
@@ -453,7 +489,7 @@ func _init_race_buttons() -> void:
 			_race_buttons[rid] = btn
 			var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
 			if name_lbl is Label:
-				name_lbl.text = str(RACES_DATA[rid].get("name_zh", rid))
+				name_lbl.text = _t(str(RACES_DATA[rid].get("name_zh", rid)))
 			var check_lbl = btn.get_node_or_null("Margin/VBox/CheckLabel")
 			if check_lbl is Label:
 				check_lbl.text = ""
@@ -934,7 +970,8 @@ func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis
 	if weapon_name_label != null:
 		var default_wpn := str(PaperdollRenderer._get_default_variant_id(_current_race_id, "weapon"))
 		var wpn_name := get_variant_spec_name(default_wpn, default_wpn)
-		weapon_name_label.text = "%s (%s)" % [wpn_name, default_wpn]
+		var loc_wpn := _t(wpn_name)
+		weapon_name_label.text = "%s (%s)" % [loc_wpn, default_wpn]
 
 	# 槽位總結
 	if slot_summary_label != null:
@@ -946,13 +983,15 @@ func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis
 				var p: String = str(e.get("texture_path", ""))
 				if p != "" and bool(e.get("is_loaded", false)):
 					loaded_count += 1
-			slot_summary_label.text = "7 大槽位狀態：512 高清合成就緒 (渲染: %d/%d)" % [loaded_count, total_slots]
+			var fmt_512 := _t("7 大槽位狀態：512 高清合成就緒 (渲染: %d/%d)")
+			slot_summary_label.text = fmt_512 % [loaded_count, total_slots]
 		elif character != null:
 			var entries := character.get_rendered_entries()
 			for e in entries:
 				if bool(e.get("is_loaded", false)):
 					loaded_count += 1
-			slot_summary_label.text = "7 大槽位狀態：全部 %d 槽疊合就緒 (載入: %d/%d)" % [entries.size(), loaded_count, entries.size()]
+			var fmt_all := _t("7 大槽位狀態：全部 %d 槽疊合就緒 (載入: %d/%d)")
+			slot_summary_label.text = fmt_all % [entries.size(), loaded_count, entries.size()]
 
 
 ## 更新按鈕選取高亮樣式
@@ -974,7 +1013,7 @@ func _update_race_buttons_visual() -> void:
 
 		var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
 		if name_lbl is Label:
-			name_lbl.text = str(RACES_DATA[rid].get("name_zh", rid))
+			name_lbl.text = _t(str(RACES_DATA[rid].get("name_zh", rid)))
 			name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 
 		# 依日常憲法 §3 & review.md 0-QA11 / 0-UI1:
