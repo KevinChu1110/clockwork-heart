@@ -370,6 +370,7 @@ func _ready() -> void:
 	_bind_controls()
 	_connect_loc_signal()
 	_update_creation_mode_ui()
+	_update_tab_texts()
 	switch_tab(TAB_LAUNCH)
 	select_race("rabbit")
 	_start_breathe_tween()
@@ -397,6 +398,14 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	_apply_current_selections()
 	_update_race_buttons_text()
 	_update_creation_mode_ui()
+	_update_tab_texts()
+
+
+func _update_tab_texts() -> void:
+	if btn_tab_launch and is_instance_valid(btn_tab_launch):
+		btn_tab_launch.text = _t("首發")
+	if btn_tab_expansion and is_instance_valid(btn_tab_expansion):
+		btn_tab_expansion.text = _t("擴充")
 
 
 func _update_race_buttons_text() -> void:
@@ -508,6 +517,7 @@ func _init_category_tabs() -> void:
 	if not btn_tab_expansion.pressed.is_connected(_on_tab_expansion_pressed):
 		btn_tab_expansion.pressed.connect(_on_tab_expansion_pressed)
 
+	_update_tab_texts()
 	_update_tabs_visual()
 
 
@@ -524,9 +534,9 @@ func get_current_tab() -> String:
 
 
 func switch_tab(tab_name: String) -> void:
-	if tab_name == "首發" or tab_name == "launch":
+	if tab_name == "首發" or tab_name == "launch" or tab_name == _t("首發"):
 		_current_tab = TAB_LAUNCH
-	elif tab_name == "擴充" or tab_name == "expansion":
+	elif tab_name == "擴充" or tab_name == "expansion" or tab_name == _t("擴充"):
 		_current_tab = TAB_EXPANSION
 	else:
 		_current_tab = TAB_LAUNCH
@@ -632,9 +642,12 @@ func _bind_controls() -> void:
 				var sb = btn_capture_proof.get_theme_stylebox("normal")
 				if sb:
 					btn_confirm.add_theme_stylebox_override("normal", sb.duplicate())
-			btn_confirm.text = "確認選擇 · 踏上旅途"
+			btn_confirm.text = _t("確認選擇 · 踏上旅途") if creation_mode else _t("確認選擇")
 			actions_row.add_child(btn_confirm)
-		btn_confirm.pressed.connect(confirm_selection)
+		else:
+			btn_confirm.text = _t("確認選擇 · 踏上旅途") if creation_mode else _t("確認選擇")
+		if not btn_confirm.pressed.is_connected(confirm_selection):
+			btn_confirm.pressed.connect(confirm_selection)
 
 		btn_back = get_node_or_null("RightControlPanel/Margin/VBox/ActionsRow/BtnBack") as Button
 		if btn_back == null:
@@ -647,18 +660,29 @@ func _bind_controls() -> void:
 				var sb = btn_reset_default.get_theme_stylebox("normal")
 				if sb:
 					btn_back.add_theme_stylebox_override("normal", sb.duplicate())
-			btn_back.text = "返回"
+			btn_back.text = _t("返回")
 			btn_back.visible = creation_mode
 			actions_row.add_child(btn_back)
-		btn_back.pressed.connect(func(): close())
+		else:
+			btn_back.text = _t("返回")
+			btn_back.visible = creation_mode
+		if not btn_back.pressed.is_connected(_on_back_pressed):
+			btn_back.pressed.connect(_on_back_pressed)
+
+
+func _on_back_pressed() -> void:
+	close()
 
 
 func _update_creation_mode_ui() -> void:
-	if btn_confirm:
-		btn_confirm.text = "確認選擇 · 踏上旅途" if creation_mode else "確認選擇"
-	if btn_back:
+	if btn_confirm and is_instance_valid(btn_confirm):
+		btn_confirm.text = _t("確認選擇 · 踏上旅途") if creation_mode else _t("確認選擇")
+	if btn_back and is_instance_valid(btn_back):
+		btn_back.text = _t("返回")
 		btn_back.visible = creation_mode
-	if btn_capture_proof:
+	if btn_reset_default and is_instance_valid(btn_reset_default):
+		btn_reset_default.text = _t("還原預設")
+	if btn_capture_proof and is_instance_valid(btn_capture_proof):
 		btn_capture_proof.visible = not creation_mode
 
 

@@ -3,6 +3,7 @@ extends SceneTree
 ## 執行方式：godot --path game --headless -s res://scripts/ui/test_creation_race_tabs.gd
 
 const DemoScene = preload("res://scenes/ui/paperdoll_select_demo.tscn")
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 
 var _ok := true
 var _frame := 0
@@ -56,8 +57,19 @@ func _run_test_suite() -> void:
 	_assert(btn_expansion != null, "BtnTab_expansion (擴充 tab) 節點存在")
 
 	if btn_launch and btn_expansion:
-		_assert(btn_launch.text == "首發", "首發 tab 文字為 '首發'，零 emoji")
-		_assert(btn_expansion.text == "擴充", "擴充 tab 文字為 '擴充'，零 emoji")
+		var exp_launch_text := ContentLoc.text("ui", "首發")
+		var exp_exp_text := ContentLoc.text("ui", "擴充")
+		_assert(btn_launch.text == exp_launch_text, "首發 tab 文字為 Loc 結果 ('%s')，零 emoji" % exp_launch_text)
+		_assert(btn_expansion.text == exp_exp_text, "擴充 tab 文字為 Loc 結果 ('%s')，零 emoji" % exp_exp_text)
+
+	var btn_confirm = demo_node.get_node_or_null("RightControlPanel/Margin/VBox/ActionsRow/BtnConfirm") as Button
+	var btn_back = demo_node.get_node_or_null("RightControlPanel/Margin/VBox/ActionsRow/BtnBack") as Button
+	if btn_confirm:
+		var exp_confirm_text := ContentLoc.text("ui", "確認選擇 · 踏上旅途")
+		_assert(btn_confirm.text == exp_confirm_text, "確認鈕文字為 Loc 結果 ('%s')" % exp_confirm_text)
+	if btn_back:
+		var exp_back_text := ContentLoc.text("ui", "返回")
+		_assert(btn_back.text == exp_back_text, "返回鈕文字為 Loc 結果 ('%s')" % exp_back_text)
 
 		var launch_min_size: Vector2 = btn_launch.custom_minimum_size
 		var exp_min_size: Vector2 = btn_expansion.custom_minimum_size
@@ -164,6 +176,34 @@ func _run_test_suite() -> void:
 	_assert(demo_node.call("get_current_tab") == "launch", "選取 macaque 時自動維持在 launch 分頁")
 	demo_node.call("select_race", "crane")
 	_assert(demo_node.call("get_current_tab") == "expansion", "選取 crane 時自動智慧跳轉至 expansion 分頁")
+
+	# 9. 語系即時切換驗證 (en / ja / zh_TW)
+	var loc_node = root.get_node_or_null("Loc")
+	if loc_node:
+		loc_node.call("set_locale", "en")
+		_assert(btn_launch.text == "Launch", "en 語系下首發 tab 即時切換為 'Launch'")
+		_assert(btn_expansion.text == "Expansion", "en 語系下擴充 tab 即時切換為 'Expansion'")
+		if btn_confirm:
+			_assert(btn_confirm.text == "Confirm Selection · Begin Journey", "en 語系下確認鈕即時切換為 'Confirm Selection · Begin Journey'")
+		if btn_back:
+			_assert(btn_back.text == "Back", "en 語系下返回鈕即時切換為 'Back'")
+
+		loc_node.call("set_locale", "ja")
+		_assert(btn_launch.text == "初期", "ja 語系下首發 tab 即時切換為 '初期'")
+		_assert(btn_expansion.text == "拡張", "ja 語系下擴充 tab 即時切換為 '拡張'")
+		if btn_confirm:
+			_assert(btn_confirm.text == "選択確認 · 旅立ち", "ja 語系下確認鈕即時切換為 '選択確認 · 旅立ち'")
+		if btn_back:
+			_assert(btn_back.text == "戻る", "ja 語系下返回鈕即時切換為 '戻る'")
+
+		# 切回 zh_TW
+		loc_node.call("set_locale", "zh_TW")
+		_assert(btn_launch.text == "首發", "切回 zh_TW 後首發 tab 為 '首發'")
+		_assert(btn_expansion.text == "擴充", "切回 zh_TW 後擴充 tab 為 '擴充'")
+		if btn_confirm:
+			_assert(btn_confirm.text == "確認選擇 · 踏上旅途", "切回 zh_TW 後確認鈕為 '確認選擇 · 踏上旅途'")
+		if btn_back:
+			_assert(btn_back.text == "返回", "切回 zh_TW 後返回鈕為 '返回'")
 
 	demo_node.queue_free()
 	print("=== 創角種族列首發／擴充分頁單元測試完畢 ===")
