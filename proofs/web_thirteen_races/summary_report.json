@@ -1,0 +1,52 @@
+{
+  "task_id": "t_dc0f70d7",
+  "title": "官網與文案｜開局已有十三族，對外仍寫十大種族",
+  "verified_at": "2026-09-26",
+  "verifier": "sideworker (阿宏)",
+  "changes": {
+    "files_modified": [
+      "docs/ART_DAILY_CONSTITUTION.md",
+      "docs/ART_DIRECTION.md",
+      "web/css/temple.css",
+      "web/index.html",
+      "web/llms.txt",
+      "web/pages/gallery.html",
+      "web/pages/walkthrough.html"
+    ],
+    "races_added_to_web": [
+      {
+        "race_id": "elephant",
+        "name": "鋼岳象",
+        "profession": "戰士",
+        "weapon": "武器：巨輪開山重斧",
+        "card_image": "media/hero/char_elephant.png"
+      },
+      {
+        "race_id": "frog",
+        "name": "碧簧蛙",
+        "profession": "忍者",
+        "weapon": "武器：碧簧機關重鐧",
+        "card_image": "media/hero/char_frog.png"
+      },
+      {
+        "race_id": "panda",
+        "name": "瓷韻熊貓",
+        "profession": "武術家",
+        "weapon": "武器：乾坤太極機關拳套",
+        "card_image": "media/hero/char_panda.png"
+      }
+    ]
+  },
+  "verification_results": {
+    "grep_old_ten_races_cleared": true,
+    "races_grid_total_count": 13,
+    "images_loaded_and_verified": true,
+    "desktop_and_mobile_responsive": true,
+    "vision_verified": [
+      "proof_card_11_elephant.png",
+      "proof_card_12_frog.png",
+      "proof_card_13_panda.png",
+      "proof_mobile_card_13_panda.png"
+    ]
+  }
+}
