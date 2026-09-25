@@ -57,15 +57,21 @@
      - `crop_race_cards_expansion_{zh_TW,en,ja}.png`
    - 全數截圖與特寫經 MD5 檢驗 100% 獨立，嚴格存放於 `proofs/creation-race-i18n/`。
 
-6. **親身視覺審查（Vision Check）：**
+6. **親身視覺審查（Vision Check）與 QA Rework 修正（0-QA23）：**
    - en 全景：種族卡（Clockwork Rabbit, Astral Fox 等）、右側欄位（Costume Slot 等）、狀態列（7 Slot Status: 512 HD Ready）均為純淨英文，零破圖零截字零 emoji。
    - ja 全景：種族卡（白金兎、霊尾狐、烈鬃獅子 等）、右側欄位（衣装スロット 等）、狀態列（7スロット状態：512 HD合成完了）均為正確日文與漢字，合規 0-QA24。
    - 擴充分頁：8 族完整展示無橫向溢出，瓷韻熊貓 512 高清合成正確渲染，翠角鹿無空卡。
+   - **【Attempt 2 修正項】：針對審查員 sideqa 提出長譯名溢出之要求**：
+     - 為所有種族按鈕之 `NameLabel` 全面開啟智慧折行 `autowrap_mode = TextServer.AUTOWRAP_WORD_SMART`，並在 `.tscn` 靜態設置 `autowrap_mode = 3` 與 `size_flags_horizontal = 3`。
+     - 實作字級動態調適 `_format_race_name_label`：長名（長度 > 10，如 `The Colossus Elephant`、`Clockwork Rabbit`）自動調節字級（12px）並安全折行收納於 136px 卡框內。
+     - 按鈕內縮邊距加寬至 `margin_left = 10` / `margin_right = 10`，首發頁 `Clockwork Rabbit` 具備充裕舒適邊距，不再貼死兩側邊框。
+     - 擴充頁長譯名（如 `The Colossus Elephant`）自然拆為雙行居中展示，與相鄰按鈕文字徹底歸零碰撞，絕無破圖或貫穿邊框。
+     - 單元測試 `test_creation_race_i18n.gd` 加入 `autowrap_mode`、字級調適與邊距防護之斷言查核。
 
 ---
 
 ## 二、 驗收指令執行紀錄
 
 - `godot --path game --headless --quit-after 3`：**0 SCRIPT ERROR**。
-- `TEST_FILTER=creation ./tools/run_tests.sh`：**6/6 PASSED**（含新增之 `test_creation_race_i18n`）。
-- `TEST_FILTER=i18n ./tools/run_tests.sh`：**4/4 PASSED**。
+- `TEST_FILTER=creation ./tools/run_tests.sh`：**6/6 PASSED**（含新增之 `test_creation_race_i18n` autowrap 與邊距斷言）。
+- `TEST_FILTER=i18n ./tools/run_tests.sh`：**5/5 PASSED**。

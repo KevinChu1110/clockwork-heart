@@ -282,15 +282,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_rabbit/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_rabbit/Margin/VBox"]
@@ -304,11 +304,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_rabbit/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "白金兔"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_fox" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -326,15 +328,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_fox/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_fox/Margin/VBox"]
@@ -348,11 +350,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_fox/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "靈尾狐"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_lion" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -370,15 +374,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_lion/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_lion/Margin/VBox"]
@@ -392,11 +396,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_lion/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "烈鬃獅"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_boar" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -414,15 +420,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_boar/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_boar/Margin/VBox"]
@@ -436,11 +442,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_boar/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "鋼牙豕"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_macaque" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -458,15 +466,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_macaque/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_macaque/Margin/VBox"]
@@ -480,11 +488,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_macaque/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "靈爪猴"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_tiger" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -502,15 +512,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_tiger/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_tiger/Margin/VBox"]
@@ -524,11 +534,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_tiger/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "烈焰虎"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_crane" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -546,15 +558,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_crane/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_crane/Margin/VBox"]
@@ -568,11 +580,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_crane/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "雲嵐鶴"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_bear" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -590,15 +604,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_bear/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_bear/Margin/VBox"]
@@ -612,11 +626,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_bear/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "玄軸熊"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_penguin" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -634,15 +650,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_penguin/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_penguin/Margin/VBox"]
@@ -656,11 +672,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_penguin/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "蒸氣企鵝"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_tortoise" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -678,15 +696,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_tortoise/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_tortoise/Margin/VBox"]
@@ -700,11 +718,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_tortoise/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "玄機龜"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_elephant" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -722,15 +742,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_elephant/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_elephant/Margin/VBox"]
@@ -744,11 +764,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_elephant/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "鋼岳象"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_frog" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -766,15 +788,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_frog/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_frog/Margin/VBox"]
@@ -788,11 +810,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_frog/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "碧箸蛙"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="BtnRace_panda" type="Button" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(136, 108)
@@ -810,15 +834,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
-theme_override_constants/margin_bottom = 6
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 4
 
 [node name="VBox" type="VBoxContainer" parent="TopRaceBar/ButtonsHBox/BtnRace_panda/Margin"]
 layout_mode = 2
 mouse_filter = 2
-theme_override_constants/separation = 4
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Thumb" type="TextureRect" parent="TopRaceBar/ButtonsHBox/BtnRace_panda/Margin/VBox"]
@@ -832,11 +856,13 @@ stretch_mode = 5
 
 [node name="NameLabel" type="Label" parent="TopRaceBar/ButtonsHBox/BtnRace_panda/Margin/VBox"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
 theme_override_font_sizes/font_size = 16
 text = "瓷韻熊貓"
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="EndSpacer" type="Control" parent="TopRaceBar/ButtonsHBox"]
 custom_minimum_size = Vector2(8, 0)

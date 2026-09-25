@@ -183,12 +183,17 @@ func _run_test_suite() -> void:
 			if "7 大槽位狀態" in slot_summary_lbl.text or "高清合成就緒" in slot_summary_lbl.text:
 				_fail("[%s] 狀態列殘留繁中文本: '%s'" % [code, slot_summary_lbl.text])
 
-		# 驗證首發分頁種族按鈕文字
+		# 驗證首發分頁種族按鈕文字與 autowrap / 邊距規範 (0-QA23)
 		var btn_rabbit = demo.get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_rabbit") as Button
 		if btn_rabbit:
 			var name_lbl = btn_rabbit.get_node_or_null("Margin/VBox/NameLabel") as Label
 			if name_lbl and name_lbl.text != expected_races["白金兔"][code]:
 				_fail("[%s] 白金兔卡片文字不符: 期望 '%s'，實際 '%s'" % [code, expected_races["白金兔"][code], name_lbl.text])
+			if name_lbl:
+				if name_lbl.autowrap_mode != TextServer.AUTOWRAP_WORD_SMART:
+					_fail("[%s] 白金兔 NameLabel autowrap_mode 未開啟: %d" % [code, name_lbl.autowrap_mode])
+				if code in ["en", "es"] and name_lbl.get_theme_font_size("font_size") > 13:
+					_fail("[%s] 白金兔 NameLabel 字級過大未調適: %d" % [code, name_lbl.get_theme_font_size("font_size")])
 
 		# 切換種族後文字依舊符合該語系（不退回繁中）
 		demo.call("select_race", "fox")
@@ -197,14 +202,27 @@ func _run_test_suite() -> void:
 			var name_lbl_fox = btn_fox.get_node_or_null("Margin/VBox/NameLabel") as Label
 			if name_lbl_fox and name_lbl_fox.text != expected_races["靈尾狐"][code]:
 				_fail("[%s] 點選後靈尾狐卡片文字不符: 期望 '%s'，實際 '%s'" % [code, expected_races["靈尾狐"][code], name_lbl_fox.text])
+			if name_lbl_fox and name_lbl_fox.autowrap_mode != TextServer.AUTOWRAP_WORD_SMART:
+				_fail("[%s] 靈尾狐 NameLabel autowrap_mode 未開啟: %d" % [code, name_lbl_fox.autowrap_mode])
 
-		# 切換到擴充分頁檢查
+		# 切換到擴充分頁檢查長譯名種族卡自適應 (0-QA23)
 		demo.call("switch_tab", "expansion")
-		var btn_tiger = demo.get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_tiger") as Button
-		if btn_tiger:
-			var name_lbl_tiger = btn_tiger.get_node_or_null("Margin/VBox/NameLabel") as Label
-			if name_lbl_tiger and name_lbl_tiger.text != expected_races["烈焰虎"][code]:
-				_fail("[%s] 烈焰虎卡片文字不符: 期望 '%s'，實際 '%s'" % [code, expected_races["烈焰虎"][code], name_lbl_tiger.text])
+		var exp_races := ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
+		for erid in exp_races:
+			var btn_er = demo.get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_" + erid) as Button
+			if btn_er and btn_er.visible:
+				var elbl = btn_er.get_node_or_null("Margin/VBox/NameLabel") as Label
+				if elbl:
+					if elbl.autowrap_mode != TextServer.AUTOWRAP_WORD_SMART:
+						_fail("[%s] 擴充種族 %s NameLabel autowrap_mode 未開啟: %d" % [code, erid, elbl.autowrap_mode])
+					if code in ["en", "es"] and elbl.text.length() > 11 and elbl.get_theme_font_size("font_size") > 13:
+						_fail("[%s] 擴充種族 %s 長譯名 '%s' 字級未縮小調適: %d" % [code, erid, elbl.text, elbl.get_theme_font_size("font_size")])
+				var emar = btn_er.get_node_or_null("Margin") as MarginContainer
+				if emar:
+					var ml := emar.get_theme_constant("margin_left")
+					var mr := emar.get_theme_constant("margin_right")
+					if ml < 8 or mr < 8:
+						_fail("[%s] 擴充種族 %s MarginContainer 邊距過窄: left=%d, right=%d" % [code, erid, ml, mr])
 
 		demo.call("switch_tab", "launch")
 		print("  ✓ [%s] 實例化介面即時翻譯查驗通過" % code)

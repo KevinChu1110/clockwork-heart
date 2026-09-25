@@ -7,8 +7,8 @@ extends SceneTree
 ## 3. 局部 Crops 供顯微比對。
 ## 執行方式：xvfb-run -a godot --path game --rendering-driver opengl3 -s res://scripts/dev/capture_creation_race_i18n.gd
 
-const OUT_DIR := "/opt/side/bravesoul-game/proofs/creation-race-i18n"
-const CROPS_DIR := "/opt/side/bravesoul-game/proofs/creation-race-i18n/crops"
+var OUT_DIR := "/opt/side/bravesoul-game/proofs/creation-race-i18n"
+var CROPS_DIR := "/opt/side/bravesoul-game/proofs/creation-race-i18n/crops"
 
 var _step := 0
 var _wait := 0
@@ -23,6 +23,10 @@ func _initialize() -> void:
 	var win := root.get_window()
 	if win != null:
 		win.size = Vector2i(1280, 720)
+
+	var resolved_dir := ProjectSettings.globalize_path("res://../proofs/creation-race-i18n")
+	OUT_DIR = resolved_dir
+	CROPS_DIR = resolved_dir + "/crops"
 
 	DirAccess.make_dir_recursive_absolute(OUT_DIR)
 	DirAccess.make_dir_recursive_absolute(CROPS_DIR)

@@ -382,6 +382,7 @@ func _ready() -> void:
 	_update_creation_mode_ui()
 	_update_tab_texts()
 	_update_right_panel_labels()
+	_update_race_buttons_text()
 	switch_tab(TAB_LAUNCH)
 	select_race("rabbit")
 	_start_breathe_tween()
@@ -444,14 +445,55 @@ func _update_tab_texts() -> void:
 		btn_tab_expansion.text = _t("擴充")
 
 
+## 設定種族按鈕內部佈局與自適應邊距
+func _setup_race_button_node(btn: Button, rid: String) -> void:
+	if btn == null:
+		return
+	var margin = btn.get_node_or_null("Margin") as MarginContainer
+	if margin:
+		margin.add_theme_constant_override("margin_left", 10)
+		margin.add_theme_constant_override("margin_right", 10)
+		margin.add_theme_constant_override("margin_top", 4)
+		margin.add_theme_constant_override("margin_bottom", 4)
+	var vbox = btn.get_node_or_null("Margin/VBox") as VBoxContainer
+	if vbox:
+		vbox.add_theme_constant_override("separation", 2)
+	var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel") as Label
+	if name_lbl and RACES_DATA.has(rid):
+		var rname: String = str(RACES_DATA[rid].get("name_zh", rid))
+		_format_race_name_label(name_lbl, _t(rname))
+
+
+## 種族名稱標籤格式化：啟用智慧詞折行、置中並依文字長度自適應字級，避免溢出碰撞 (0-QA23)
+func _format_race_name_label(name_lbl: Label, loc_text: String) -> void:
+	if name_lbl == null:
+		return
+	name_lbl.text = loc_text
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	name_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	name_lbl.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	name_lbl.custom_minimum_size = Vector2(0, 32)
+	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+
+	# 字級動態調適：確保在 en/es 語系長譯名下文字安全收納於卡框內，絕不溢出或跨卡重疊
+	var tlen := loc_text.length()
+	if tlen <= 5:
+		name_lbl.add_theme_font_size_override("font_size", 15)
+	elif tlen <= 10:
+		name_lbl.add_theme_font_size_override("font_size", 13)
+	elif tlen <= 20:
+		name_lbl.add_theme_font_size_override("font_size", 12)
+	else:
+		name_lbl.add_theme_font_size_override("font_size", 11)
+
+
 func _update_race_buttons_text() -> void:
 	for rid in _race_buttons.keys():
 		var btn: Button = _race_buttons[rid]
 		if btn and is_instance_valid(btn):
-			var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
-			if name_lbl is Label and RACES_DATA.has(rid):
-				var rname: String = str(RACES_DATA[rid].get("name_zh", rid))
-				name_lbl.text = _t(rname)
+			_setup_race_button_node(btn, rid)
 
 
 ## 初始化橫向種族選擇按鈕
@@ -469,9 +511,6 @@ func _init_race_buttons() -> void:
 			# 動態補足新種族按鈕
 			btn = template_btn.duplicate() as Button
 			btn.name = "BtnRace_" + rid
-			var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
-			if name_lbl is Label:
-				name_lbl.text = _t(str(RACES_DATA[rid].get("name_zh", rid)))
 			var thumb_rect = btn.get_node_or_null("Margin/VBox/Thumb")
 			if thumb_rect is TextureRect:
 				var thumb_path := str(RACES_DATA[rid].get("thumb", ""))
@@ -487,9 +526,7 @@ func _init_race_buttons() -> void:
 				race_buttons_container.add_child(btn)
 		if btn != null:
 			_race_buttons[rid] = btn
-			var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
-			if name_lbl is Label:
-				name_lbl.text = _t(str(RACES_DATA[rid].get("name_zh", rid)))
+			_setup_race_button_node(btn, rid)
 			var check_lbl = btn.get_node_or_null("Margin/VBox/CheckLabel")
 			if check_lbl is Label:
 				check_lbl.text = ""
@@ -1012,9 +1049,8 @@ func _update_race_buttons_visual() -> void:
 			check_lbl.visible = false
 
 		var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
-		if name_lbl is Label:
-			name_lbl.text = _t(str(RACES_DATA[rid].get("name_zh", rid)))
-			name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		if name_lbl is Label and RACES_DATA.has(rid):
+			_format_race_name_label(name_lbl, _t(str(RACES_DATA[rid].get("name_zh", rid))))
 
 		# 依日常憲法 §3 & review.md 0-QA11 / 0-UI1:
 		# 未選取＝奶油卡＋深藍紫描邊底框 ≥3px (設為 4px)
