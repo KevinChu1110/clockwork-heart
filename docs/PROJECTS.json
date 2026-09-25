@@ -2136,8 +2136,8 @@
    "id": "windup-sortie-cta",
    "cat": "遊戲",
    "title": "每日發條做完接到既有出征入口",
-   "status": "草稿",
-   "note": "看板已開，等工程做完再改開發中",
+   "status": "開發中",
+   "note": "阿翔接手開發：WindupDailyDialog complete 後加前往出征果凍按鈕並導向出征分頁",
    "keys": [
     "每日發條做完接到"
    ]
