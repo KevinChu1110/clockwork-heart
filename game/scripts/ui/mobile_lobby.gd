@@ -209,8 +209,8 @@ func _get_hero_name() -> String:
 	if gs and "player_name" in gs:
 		var pname: String = str(gs.player_name).strip_edges()
 		if not pname.is_empty():
-			return pname
-	return DEFAULT_HERO_NAME
+			return _t(pname)
+	return _t(DEFAULT_HERO_NAME)
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
