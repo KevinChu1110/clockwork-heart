@@ -3227,6 +3227,11 @@ func open_gem_workshop() -> Control:
 	return dlg
 
 
+## 切換至出征分頁（與右側看板「前往出征」按鈕同一條入口）
+func go_to_sortie() -> void:
+	_switch_tab(Tab.ADVENTURE)
+
+
 ## 開啟冒險委託每日上發條彈窗
 func open_windup_daily() -> Control:
 	var existing = get_node_or_null("WindupDailyDialog")
@@ -3241,6 +3246,10 @@ func open_windup_daily() -> Control:
 	dlg.tree_exited.connect(func():
 		refresh_hud()
 	)
+	if dlg.has_signal("sortie_requested"):
+		dlg.sortie_requested.connect(func():
+			_switch_tab(Tab.ADVENTURE)
+		)
 	add_child(dlg)
 	return dlg
 

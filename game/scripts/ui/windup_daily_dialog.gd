@@ -12,6 +12,7 @@ extends Control
 ## 7. 零 emoji、零系統字型符號。
 
 signal closed()
+signal sortie_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
@@ -39,6 +40,9 @@ var _unlock_label: Label
 var _milestone_label: Label
 var _choices_box: HBoxContainer
 var _msg_label: Label
+var _foot_box: HBoxContainer
+var _btn_leave: Button
+var _btn_sortie: Button
 var _choice_buttons: Array[Button] = []
 var _cached_font: Font = null
 
@@ -216,26 +220,45 @@ func _build_ui() -> void:
 	_choices_box.add_theme_constant_override("separation", 16)
 	v.add_child(_choices_box)
 
-	# 底部關閉按鈕列 (金黃立體厚底 5px)
-	var foot := HBoxContainer.new()
-	foot.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.add_child(foot)
+	# 底部關閉/出征按鈕列 (金黃立體厚底 5px / 薄荷綠立體果凍厚底 6px)
+	_foot_box = HBoxContainer.new()
+	_foot_box.name = "FootButtons"
+	_foot_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	_foot_box.add_theme_constant_override("separation", 16)
+	v.add_child(_foot_box)
 
-	var btn_leave := Button.new()
-	btn_leave.name = "BtnCloseWindup"
-	btn_leave.text = "離開委託"
-	btn_leave.custom_minimum_size = Vector2(180, 52)
-	btn_leave.add_theme_font_size_override("font_size", 18)
-	btn_leave.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	btn_leave.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	btn_leave.add_theme_constant_override("outline_size", 1)
+	_btn_leave = Button.new()
+	_btn_leave.name = "BtnCloseWindup"
+	_btn_leave.text = "離開委託"
+	_btn_leave.custom_minimum_size = Vector2(180, 52)
+	_btn_leave.add_theme_font_size_override("font_size", 18)
+	_btn_leave.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_leave.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_leave.add_theme_constant_override("outline_size", 1)
 	if _cached_font:
-		btn_leave.add_theme_font_override("font", _cached_font)
-	btn_leave.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 20, 2))
-	btn_leave.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 20, 2))
-	btn_leave.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 20, 2))
-	btn_leave.pressed.connect(_on_close)
-	foot.add_child(btn_leave)
+		_btn_leave.add_theme_font_override("font", _cached_font)
+	_btn_leave.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 20, 2))
+	_btn_leave.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 20, 2))
+	_btn_leave.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 20, 2))
+	_btn_leave.pressed.connect(_on_close)
+	_foot_box.add_child(_btn_leave)
+
+	_btn_sortie = Button.new()
+	_btn_sortie.name = "BtnGoSortie"
+	_btn_sortie.text = "前往出征"
+	_btn_sortie.custom_minimum_size = Vector2(240, 52)
+	_btn_sortie.add_theme_font_size_override("font_size", 18)
+	_btn_sortie.add_theme_color_override("font_color", Color.WHITE)
+	_btn_sortie.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_sortie.add_theme_constant_override("outline_size", 4)
+	if _cached_font:
+		_btn_sortie.add_theme_font_override("font", _cached_font)
+	_btn_sortie.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 6, 20, 2))
+	_btn_sortie.add_theme_stylebox_override("hover", _create_button_style(Color("#68E882"), COLOR_BORDER, 6, 20, 2))
+	_btn_sortie.add_theme_stylebox_override("pressed", _create_button_style(Color("#3BBF55"), COLOR_BORDER, 2, 20, 2))
+	_btn_sortie.pressed.connect(_on_go_to_sortie)
+	_btn_sortie.visible = false
+	_foot_box.add_child(_btn_sortie)
 
 
 func _refresh_display() -> void:
@@ -262,7 +285,7 @@ func _refresh_display() -> void:
 			_unlock_label.text = unlock_text
 		_unlock_label.visible = true
 
-		_msg_label.text = "今日委託獎勵已領取，明日將輪替新個案。"
+		_msg_label.text = "今日委託獎勵已領取：金幣 +25、星塵 +1、發條碎片 +1（明日輪替新個案）"
 		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 
 		var done_btn := Button.new()
@@ -279,6 +302,11 @@ func _refresh_display() -> void:
 			done_btn.add_theme_font_override("font", _cached_font)
 		done_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#EFEAE0"), COLOR_BORDER, 3, 20, 2))
 		_choices_box.add_child(done_btn)
+
+		if _btn_sortie:
+			_btn_sortie.visible = true
+		if _btn_leave:
+			_btn_leave.custom_minimum_size = Vector2(160, 52)
 	else:
 		_prompt_label.text = str(c.get("prompt", "請選擇行動為發條玩具轉緊發條："))
 		_prompt_label.add_theme_color_override("font_color", COLOR_SKY)
@@ -287,6 +315,11 @@ func _refresh_display() -> void:
 
 		_msg_label.text = "完成委託獎勵：金幣 +25、星塵 +1、發條碎片 +1"
 		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+
+		if _btn_sortie:
+			_btn_sortie.visible = false
+		if _btn_leave:
+			_btn_leave.custom_minimum_size = Vector2(180, 52)
 
 		var choices: Array = c.get("choices", [])
 		for i in range(choices.size()):
@@ -325,6 +358,21 @@ func _on_choice_selected(choice_id: String) -> void:
 	else:
 		_msg_label.text = str(r.get("msg", "領取失敗"))
 		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
+
+
+func get_sortie_button() -> Button:
+	return _btn_sortie
+
+
+func _on_go_to_sortie() -> void:
+	sortie_requested.emit()
+	var p := get_parent()
+	if p:
+		if p.has_method("go_to_sortie"):
+			p.go_to_sortie()
+		elif p.has_method("_switch_tab"):
+			p.call("_switch_tab", 2)
+	_on_close()
 
 
 func _on_close() -> void:

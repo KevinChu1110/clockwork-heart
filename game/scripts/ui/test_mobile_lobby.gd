@@ -378,11 +378,45 @@ func _test_hall_card_real_screens(cards: Array[Button]) -> void:
 					else:
 						print("  ok 成功完成委託並領取獎勵，當日狀態切換為已完成")
 
-		windup_dlg._on_close()
-		if not windup_dlg.is_queued_for_deletion():
-			_fail("WindupDailyDialog 關閉失敗 (未標記 queue_free)")
-		else:
-			print("  ok WindupDailyDialog 成功關閉 (已標記 queue_free)")
+					# 驗證完成後出現「前往出征」主按鈕 (高 >= 50px、零 emoji)
+					var sortie_btn = _find_named(windup_dlg, "BtnGoSortie") as Button
+					if sortie_btn == null or not is_instance_valid(sortie_btn):
+						_fail("完成委託後缺少「前往出征」按鈕 (BtnGoSortie)")
+					elif not sortie_btn.visible:
+						_fail("完成委託後「前往出征」按鈕未顯示 (visible=false)")
+					elif sortie_btn.custom_minimum_size.y < 50.0:
+						_fail("「前往出征」按鈕高度小於 50px: %.1f" % sortie_btn.custom_minimum_size.y)
+					elif _has_forbidden_symbols_or_emoji(sortie_btn.text):
+						_fail("「前往出征」按鈕包含禁用的 emoji 或符號: %s" % sortie_btn.text)
+					else:
+						print("  ok 完成委託後成功顯示「前往出征」主按鈕 (高 %.1fpx，零 emoji)" % sortie_btn.custom_minimum_size.y)
+						# 點擊「前往出征」，應關閉彈窗並切換至既有出征 (ADVENTURE) 分頁
+						sortie_btn.pressed.emit()
+						if not windup_dlg.is_queued_for_deletion():
+							_fail("點擊「前往出征」後 WindupDailyDialog 未標記關閉")
+						elif _lobby._current_tab != MobileLobby.Tab.ADVENTURE:
+							_fail("點擊「前往出征」後大廳未切換至出征(ADVENTURE)分頁")
+						else:
+							print("  ok 點擊「前往出征」成功關閉彈窗並切換至出征分頁")
+
+					# 再次開啟彈窗（當日已完成狀態），驗證依然看得到「前往出征」按鈕
+					var windup_dlg2 = _lobby.open_windup_daily()
+					if windup_dlg2 == null or not is_instance_valid(windup_dlg2):
+						_fail("當日完成後再次開啟 WindupDailyDialog 失敗")
+					else:
+						var sortie_btn2 = _find_named(windup_dlg2, "BtnGoSortie") as Button
+						if sortie_btn2 == null or not sortie_btn2.visible:
+							_fail("當日已完成狀態下再開彈窗未顯示「前往出征」按鈕")
+						else:
+							print("  ok 當日已完成狀態下再開彈窗依然顯示「前往出征」按鈕")
+						windup_dlg2._on_close()
+						if not windup_dlg2.is_queued_for_deletion():
+							_fail("WindupDailyDialog2 關閉失敗 (未標記 queue_free)")
+						else:
+							print("  ok WindupDailyDialog2 成功關閉 (已標記 queue_free)")
+
+					_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+					return
 
 
 
