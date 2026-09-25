@@ -2161,6 +2161,16 @@
    "keys": [
     "碧簧蛙玩家可見名"
    ]
+  },
+  {
+   "id": "wardrobe-shared-2nd",
+   "cat": "遊戲",
+   "title": "熊貓與蛙衣櫥第二套外裝改掛既有共用衣服",
+   "status": "草稿",
+   "note": "不產新圖，掛 dawn_monk_tunic／astral_cape",
+   "keys": [
+    "熊貓與蛙衣櫥第二"
+   ]
   }
  ]
 }
