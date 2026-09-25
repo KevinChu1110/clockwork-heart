@@ -278,16 +278,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "paint_panda_porcelain", "name_zh": "羊脂白瓷生漆塗裝", "desc": "原廠羊脂白玉冰裂瓷與黑生漆高光塗裝"}
 		]
+	},
+	"fawn": {
+		"id": "fawn",
+		"name_zh": "翠角鹿",
+		"name_en": "The Emerald Fawn",
+		"archetype": "遊俠 (Ranger)",
+		"thumb": "res://assets/sprites/player/showcase/fawn_idle_hd.png",
+		"desc": "自翡翠深林守護巡林的發條小鹿，米白淺褐薄鐵皮板件，精密黃銅游標卡尺角尺天線與減震馬蹄墊。",
+		"costumes": [
+			{"id": "costume_fawn_emerald_scout_tunic", "name_zh": "翡翠林緣巡守工裝", "desc": "墨綠輕布料披肩配黃銅皮扣巡守工裝"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現米白淺褐原木紋金屬素體"}
+		],
+		"chassis": [
+			{"id": "chassis_fawn_timber_tinplate_default", "name_zh": "雙色沖壓原木紋金屬板", "desc": "沖壓雙色象牙米白與淺褐原木紋金屬板，黃銅鉚釘包邊"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
 
 ## 節點引用
 @onready var character: PaperdollCharacter = $CenterStage/CharacterContainer/PaperdollCharacter as PaperdollCharacter
@@ -614,6 +629,7 @@ func confirm_selection() -> void:
 				"elephant": gs.player_name = "鋼岳象"
 				"frog": gs.player_name = "碧簧蛙"
 				"panda": gs.player_name = "瓷韻熊貓"
+				"fawn": gs.player_name = "翠角鹿"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)

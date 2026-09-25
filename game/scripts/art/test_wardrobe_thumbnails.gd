@@ -10,6 +10,7 @@ func _initialize() -> void:
 	
 	var races = PaperdollSelectClass.RACES_DATA
 	var dlg = WardrobeDialog.new()
+	var PaperdollClass = preload("res://scripts/art/paperdoll_renderer.gd")
 	var known_512_costumes := [
 		"none", "bare", "empty",
 		"costume_viking_harness", "costume_dawn_monk_tunic",
@@ -21,13 +22,14 @@ func _initialize() -> void:
 		print("\nTesting race: ", race_id)
 		dlg.current_race = race_id
 		var r_data = races[race_id]
+		var has_assets: bool = PaperdollClass.has_race_assets(race_id)
 		
 		# Test costumes (512 優先，無 512 切片時回 null 走無縮圖佔位，禁止塞 128 像素或借圖)
 		for c in r_data.get("costumes", []):
 			total_count += 1
 			var c_id = str(c.get("id", ""))
 			var tex: Texture2D = dlg._get_item_thumbnail("costume", c_id)
-			if c_id in known_512_costumes:
+			if c_id in known_512_costumes and has_assets:
 				if tex == null:
 					print("  [FAIL] Required 512 costume thumbnail is NULL: race=", race_id, " id=", c_id)
 					failed_count += 1
@@ -49,12 +51,22 @@ func _initialize() -> void:
 					else:
 						print("  [OK] Custom 512 costume thumbnail loaded: race=", race_id, " id=", c_id, " size=", sz)
 		
-		# Test chassis (全數必須具備 512 切片)
+		# Test chassis (全數已出圖族系必須具備 512 切片，先行建置骨架族安全回傳 null)
 		for p in r_data.get("chassis", []):
 			total_count += 1
 			var p_id = str(p.get("id", ""))
 			var tex: Texture2D = dlg._get_item_thumbnail("chassis", p_id)
-			if tex == null:
+			if not has_assets:
+				if tex == null:
+					print("  [OK] No 512 chassis slice available, safely returned NULL placeholder (0-ART26): race=", race_id, " id=", p_id)
+				else:
+					var sz := tex.get_size()
+					if max(sz.x, sz.y) < 512:
+						print("  [FAIL] Disallowed 128 chassis thumbnail returned: race=", race_id, " id=", p_id, " size=", sz)
+						failed_count += 1
+					else:
+						print("  [OK] Chassis thumbnail loaded: race=", race_id, " id=", p_id, " size=", sz)
+			elif tex == null:
 				print("  [FAIL] Chassis thumbnail is NULL: race=", race_id, " id=", p_id)
 				failed_count += 1
 			else:
@@ -65,7 +77,6 @@ func _initialize() -> void:
 				else:
 					print("  [OK] Chassis thumbnail loaded: race=", race_id, " id=", p_id, " size=", sz)
 	
-	var PaperdollClass = preload("res://scripts/art/paperdoll_renderer.gd")
 	var expected_keys := {
 		"rabbit": "key_classic_brass",
 		"fox": "key_classic_brass",
