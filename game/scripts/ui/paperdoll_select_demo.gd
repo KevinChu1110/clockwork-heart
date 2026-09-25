@@ -18,6 +18,10 @@ signal cancelled()
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 const PaperdollCharacter = preload("res://scripts/art/paperdoll_character.gd")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
 
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
@@ -251,13 +255,14 @@ const RACES_DATA: Dictionary = {
 	},
 	"frog": {
 		"id": "frog",
-		"name_zh": "碧簧蛙",
+		"name_zh": "碧箸蛙",
 		"name_en": "The Spring-Leg Frog",
 		"archetype": "忍者 (Ninja)",
 		"thumb": "res://assets/sprites/player/showcase/frog_idle_hd.png",
 		"desc": "翡翠深林的靈動斥候，沖壓翠綠琺瑯馬口鐵板，雙聯凸透鏡眼與折疊板簧足柱。",
 		"costumes": [
-			{"id": "costume_spring_forest_courier", "name_zh": "碧簧巡林客工裝", "desc": "輕量油布披肩與黃銅齒輪滾邊巡林工裝"},
+			{"id": "costume_spring_forest_courier", "name_zh": "碧箸巡林客工裝", "desc": "輕量油布披肩與黃銅齒輪滾邊巡林工裝"},
+			{"id": "costume_astral_cape", "name_zh": "星紋斗篷", "desc": "深藍琺瑯釉面與星芒金屬扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現翠綠琺瑯跳蛙素體"}
 		],
 		"chassis": [
@@ -273,6 +278,7 @@ const RACES_DATA: Dictionary = {
 		"desc": "自天元竹林悟道的發條陶瓷熊貓，黑白高溫生漆陶瓷板件，青古銅榫卯鉸鏈與太極重力平衡陀。",
 		"costumes": [
 			{"id": "costume_panda_zen_apprentice_robe", "name_zh": "禪道學徒生漆長袍", "desc": "高溫黑白生漆陶瓷板件與天元道場武道長袍"},
+			{"id": "costume_dawn_monk_tunic", "name_zh": "晨曦武道短裋", "desc": "輕量合金武道短裋分件，武術家長袍"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現黑白雙色陶瓷機體素體"}
 		],
 		"chassis": [
@@ -350,6 +356,7 @@ func _ready() -> void:
 	_init_race_buttons()
 	_init_category_tabs()
 	_bind_controls()
+	_connect_loc_signal()
 	_update_creation_mode_ui()
 	switch_tab(TAB_LAUNCH)
 	select_race("rabbit")
@@ -358,6 +365,36 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	_stop_breathe_tween()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var loc := (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var loc := (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_apply_current_selections()
+	_update_race_buttons_text()
+	_update_creation_mode_ui()
+
+
+func _update_race_buttons_text() -> void:
+	for rid in _race_buttons.keys():
+		var btn: Button = _race_buttons[rid]
+		if btn and is_instance_valid(btn):
+			var name_lbl = btn.get_node_or_null("Margin/VBox/NameLabel")
+			if name_lbl is Label and RACES_DATA.has(rid):
+				var rname: String = str(RACES_DATA[rid].get("name_zh", rid))
+				name_lbl.text = _t(rname)
 
 
 ## 初始化橫向種族選擇按鈕
@@ -804,33 +841,51 @@ func _update_info_ui(race_data: Dictionary, cur_costume: Dictionary, cur_chassis
 	var archetype: String = str(race_data.get("archetype", ""))
 	var desc: String = str(race_data.get("desc", ""))
 
+	var loc_name := _t(name_zh)
 	if hero_title_label != null:
-		hero_title_label.text = "%s (%s)" % [name_zh, name_en]
+		if ContentLoc.locale() == "zh_TW":
+			hero_title_label.text = "%s (%s)" % [name_zh, name_en]
+		else:
+			if loc_name != name_zh and loc_name != name_en:
+				hero_title_label.text = "%s (%s)" % [loc_name, name_en]
+			else:
+				hero_title_label.text = loc_name
+
 	if hero_archetype_label != null:
 		if archetype == "未定案":
-			hero_archetype_label.text = "【未定案】"
+			hero_archetype_label.text = "【%s】" % _t("未定案")
 		elif archetype.is_empty():
 			hero_archetype_label.text = ""
 		else:
-			hero_archetype_label.text = "【%s】" % archetype
+			var arch_key := archetype
+			if "(" in arch_key:
+				arch_key = arch_key.split("(")[0].strip_edges()
+			var loc_arch := _t(arch_key)
+			if ContentLoc.locale() == "zh_TW":
+				hero_archetype_label.text = "【%s】" % archetype
+			else:
+				hero_archetype_label.text = "【%s】" % loc_arch
+
 	if hero_desc_label != null:
-		hero_desc_label.text = desc
+		hero_desc_label.text = _t(desc)
 
 	# 外裝顯示
 	if costume_name_label != null:
 		var c_id := str(cur_costume.get("id", "none"))
 		var c_name := get_variant_spec_name(c_id, str(cur_costume.get("name_zh", "未裝備")))
-		costume_name_label.text = "%s [%s]" % [c_name, c_id]
+		var loc_c_name := _t(c_name)
+		costume_name_label.text = "%s [%s]" % [loc_c_name, c_id]
 	if costume_desc_label != null:
-		costume_desc_label.text = str(cur_costume.get("desc", "標準外觀"))
+		costume_desc_label.text = _t(str(cur_costume.get("desc", "標準外觀")))
 
 	# 塗裝顯示
 	if chassis_name_label != null:
 		var ch_id := str(cur_chassis.get("id", "paint_ivory_stock"))
 		var ch_name := get_variant_spec_name(ch_id, str(cur_chassis.get("name_zh", "原廠塗裝")))
-		chassis_name_label.text = "%s [%s]" % [ch_name, ch_id]
+		var loc_ch_name := _t(ch_name)
+		chassis_name_label.text = "%s [%s]" % [loc_ch_name, ch_id]
 	if chassis_desc_label != null:
-		chassis_desc_label.text = str(cur_chassis.get("desc", "外殼拋光烤漆"))
+		chassis_desc_label.text = _t(str(cur_chassis.get("desc", "外殼拋光烤漆")))
 
 	# 武器顯示
 	if weapon_name_label != null:

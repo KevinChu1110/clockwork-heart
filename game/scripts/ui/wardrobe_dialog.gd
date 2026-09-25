@@ -19,6 +19,11 @@ signal cancelled()
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
+
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 ## 彈窗尺寸標準 (review.md 第 28 條: 740~760px)
@@ -118,11 +123,48 @@ func _ready() -> void:
 	_rebuild_cards()
 	_update_ui_texts()
 	_update_preview()
+	_connect_loc_signal()
 	_start_breathe_tween()
 
 
 func _exit_tree() -> void:
 	_stop_breathe_tween()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var loc := (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var loc := (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_ui_texts()
+	_refresh_card_texts()
+
+
+func _refresh_card_texts() -> void:
+	for cards in [_costume_cards, _chassis_cards]:
+		for btn in cards:
+			if not is_instance_valid(btn):
+				continue
+			var name_lbl = btn.find_child("NameLabel", true, false)
+			if name_lbl is Label and name_lbl.has_meta("raw_name"):
+				var raw_name: String = str(name_lbl.get_meta("raw_name", ""))
+				var loc_name := _t(raw_name)
+				var item_race: String = str(name_lbl.get_meta("item_race", ""))
+				if current_filter_race == "all" and not item_race.is_empty():
+					var r_short: String = _get_race_short_name(item_race)
+					name_lbl.text = "[%s] %s" % [r_short, loc_name]
+				else:
+					name_lbl.text = loc_name
 
 
 func ensure_ui() -> void:
@@ -735,12 +777,16 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 
 	# 部件名稱
 	var name_lbl := Label.new()
+	name_lbl.name = "NameLabel"
 	var raw_name: String = str(item_data.get("name_zh", ""))
+	name_lbl.set_meta("raw_name", raw_name)
+	name_lbl.set_meta("item_race", item_race)
+	var loc_name := _t(raw_name)
 	if current_filter_race == "all":
 		var r_short: String = _get_race_short_name(item_race)
-		name_lbl.text = "[%s] %s" % [r_short, raw_name]
+		name_lbl.text = "[%s] %s" % [r_short, loc_name]
 	else:
-		name_lbl.text = raw_name
+		name_lbl.text = loc_name
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.add_theme_font_size_override("font_size", 13)
 	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -1040,9 +1086,17 @@ func _update_ui_texts() -> void:
 		p_name = str(gs.player_name)
 
 	if _badge_name_label:
-		_badge_name_label.text = "%s" % p_name
+		_badge_name_label.text = "%s" % _t(p_name)
 	if _badge_race_label:
-		_badge_race_label.text = "【%s · %s】" % [race_name_zh, archetype]
+		var loc_race := _t(race_name_zh)
+		var clean_arch := archetype
+		if "(" in clean_arch:
+			clean_arch = clean_arch.split("(")[0].strip_edges()
+		var loc_arch := _t(clean_arch)
+		if ContentLoc.locale() == "zh_TW":
+			_badge_race_label.text = "【%s · %s】" % [race_name_zh, archetype]
+		else:
+			_badge_race_label.text = "【%s · %s】" % [loc_race, loc_arch]
 
 
 func _update_preview() -> void:
