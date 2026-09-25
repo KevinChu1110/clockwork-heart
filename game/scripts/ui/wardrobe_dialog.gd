@@ -58,6 +58,13 @@ var _preview_rect: TextureRect
 var _badge_name_label: Label
 var _badge_race_label: Label
 
+var _filter_title_lbl: Label
+var _filter_tip_lbl: Label
+var _costume_section_title: Label
+var _costume_section_tip: Label
+var _chassis_section_title: Label
+var _chassis_section_tip: Label
+
 var _costume_grid: GridContainer
 var _chassis_grid: GridContainer
 var _costume_cards: Array[Button] = []
@@ -123,6 +130,7 @@ func _init() -> void:
 	_rebuild_cards()
 	_update_ui_texts()
 	_update_preview()
+	_connect_loc_signal()
 
 
 func _ready() -> void:
@@ -157,6 +165,7 @@ func _connect_loc_signal() -> void:
 func _on_locale_changed(_new_locale: String = "") -> void:
 	_update_ui_texts()
 	_refresh_card_texts()
+	_update_card_selection_states()
 
 
 func _refresh_card_texts() -> void:
@@ -171,7 +180,7 @@ func _refresh_card_texts() -> void:
 				var item_race: String = str(name_lbl.get_meta("item_race", ""))
 				if current_filter_race == "all" and not item_race.is_empty():
 					var r_short: String = _get_race_short_name(item_race)
-					name_lbl.text = "[%s] %s" % [r_short, loc_name]
+					name_lbl.text = "[%s] %s" % [_t(r_short), loc_name]
 				else:
 					name_lbl.text = loc_name
 
@@ -293,7 +302,7 @@ func _build_ui() -> void:
 	top_bar.add_child(title_vbox)
 
 	_title_label = Label.new()
-	_title_label.text = "發條衣櫥 · 英雄換裝"
+	_title_label.text = _t("發條衣櫥 · 英雄換裝")
 	_title_label.add_theme_font_size_override("font_size", 22)
 	_title_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	_title_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -303,7 +312,7 @@ func _build_ui() -> void:
 	title_vbox.add_child(_title_label)
 
 	_subtitle_label = Label.new()
-	_subtitle_label.text = "個人化外觀部件即時切換 · 零數值純視覺展示"
+	_subtitle_label.text = _t("個人化外觀部件即時切換 · 零數值純視覺展示")
 	_subtitle_label.add_theme_font_size_override("font_size", 16)
 	_subtitle_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -397,7 +406,7 @@ func _build_ui() -> void:
 
 	_btn_reset = Button.new()
 	_btn_reset.name = "BtnReset"
-	_btn_reset.text = "還原預設"
+	_btn_reset.text = _t("還原預設")
 	_btn_reset.custom_minimum_size = Vector2(100, BTN_SIZE)
 	_btn_reset.add_theme_font_size_override("font_size", 16)
 	_btn_reset.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -412,7 +421,7 @@ func _build_ui() -> void:
 
 	_btn_random = Button.new()
 	_btn_random.name = "BtnRandom"
-	_btn_random.text = "隨機"
+	_btn_random.text = _t("隨機")
 	_btn_random.custom_minimum_size = Vector2(80, BTN_SIZE)
 	_btn_random.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_btn_random.add_theme_font_size_override("font_size", 16)
@@ -428,7 +437,7 @@ func _build_ui() -> void:
 
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
-	_btn_confirm.text = "確認換裝 · 套用新外觀"
+	_btn_confirm.text = _t("確認換裝 · 套用新外觀")
 	_btn_confirm.custom_minimum_size = Vector2(0, BTN_SIZE)
 	_btn_confirm.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_btn_confirm.add_theme_font_size_override("font_size", 18)
@@ -453,23 +462,23 @@ func _create_race_filter_bar() -> Control:
 	header_hbox.add_theme_constant_override("separation", 6)
 	container.add_child(header_hbox)
 
-	var label := Label.new()
-	label.text = "外裝庫"
-	label.add_theme_font_size_override("font_size", 14)
-	label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
-	label.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	label.add_theme_constant_override("outline_size", 2)
+	_filter_title_lbl = Label.new()
+	_filter_title_lbl.text = _t("外裝庫")
+	_filter_title_lbl.add_theme_font_size_override("font_size", 14)
+	_filter_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	_filter_title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_filter_title_lbl.add_theme_constant_override("outline_size", 2)
 	if _cached_font:
-		label.add_theme_font_override("font", _cached_font)
-	header_hbox.add_child(label)
+		_filter_title_lbl.add_theme_font_override("font", _cached_font)
+	header_hbox.add_child(_filter_title_lbl)
 
-	var tip := Label.new()
-	tip.text = "點「全部」可跨族穿：騎士／法師／遊俠／格鬥／維京"
-	tip.add_theme_font_size_override("font_size", 14)
-	tip.add_theme_color_override("font_color", Color("#5E5475"))
+	_filter_tip_lbl = Label.new()
+	_filter_tip_lbl.text = _t("點「全部」可跨族穿：騎士／法師／遊俠／格鬥／維京")
+	_filter_tip_lbl.add_theme_font_size_override("font_size", 14)
+	_filter_tip_lbl.add_theme_color_override("font_color", Color("#5E5475"))
 	if _cached_font:
-		tip.add_theme_font_override("font", _cached_font)
-	header_hbox.add_child(tip)
+		_filter_tip_lbl.add_theme_font_override("font", _cached_font)
+	header_hbox.add_child(_filter_tip_lbl)
 
 	var chip_scroll := ScrollContainer.new()
 	chip_scroll.name = "FilterScroll"
@@ -493,7 +502,7 @@ func _create_race_filter_bar() -> Control:
 		var rname: String = str(opt.get("name_zh", rid))
 		var btn := Button.new()
 		btn.name = "Chip_" + rid
-		btn.text = rname
+		btn.text = _t(rname)
 		# ⚠️ 觸控熱區下限 48px，寬度 46px 確保九族＋全部（共10顆標籤）在各螢幕寬度下完整容納不被切半
 		btn.custom_minimum_size = Vector2(46, 48)
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
@@ -640,7 +649,7 @@ func _create_grid_section(section_title: String, slot_type: String) -> PanelCont
 	vbox.add_child(header_hbox)
 
 	var title_lbl := Label.new()
-	title_lbl.text = section_title
+	title_lbl.text = _t(section_title)
 	title_lbl.add_theme_font_size_override("font_size", 16)
 	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -654,7 +663,7 @@ func _create_grid_section(section_title: String, slot_type: String) -> PanelCont
 	header_hbox.add_child(spacer)
 
 	var tip_lbl := Label.new()
-	tip_lbl.text = "點擊卡片即時預覽"
+	tip_lbl.text = _t("點擊卡片即時預覽")
 	tip_lbl.add_theme_font_size_override("font_size", 14)
 	tip_lbl.add_theme_color_override("font_color", COLOR_SKY)
 	tip_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -662,6 +671,13 @@ func _create_grid_section(section_title: String, slot_type: String) -> PanelCont
 	if _cached_font:
 		tip_lbl.add_theme_font_override("font", _cached_font)
 	header_hbox.add_child(tip_lbl)
+
+	if slot_type == "costume":
+		_costume_section_title = title_lbl
+		_costume_section_tip = tip_lbl
+	else:
+		_chassis_section_title = title_lbl
+		_chassis_section_tip = tip_lbl
 
 	# 捲動容器包覆 GridContainer (每列 4 格)
 	var scroll := ScrollContainer.new()
@@ -803,7 +819,7 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	var loc_name := _t(raw_name)
 	if current_filter_race == "all":
 		var r_short: String = _get_race_short_name(item_race)
-		name_lbl.text = "[%s] %s" % [r_short, loc_name]
+		name_lbl.text = "[%s] %s" % [_t(r_short), loc_name]
 	else:
 		name_lbl.text = loc_name
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -993,7 +1009,7 @@ func _apply_card_style(btn: Button, is_selected: bool) -> void:
 
 	var badge = btn.find_child("BadgeLabel", true, false)
 	if badge is Label:
-		badge.text = "✓ 已選用" if is_selected else ""
+		badge.text = _t("✓ 已選用") if is_selected else ""
 
 
 func _create_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:
@@ -1095,6 +1111,37 @@ func get_current_selections() -> Dictionary:
 
 
 func _update_ui_texts() -> void:
+	if _title_label:
+		_title_label.text = _t("發條衣櫥 · 英雄換裝")
+	if _subtitle_label:
+		_subtitle_label.text = _t("個人化外觀部件即時切換 · 零數值純視覺展示")
+	if _filter_title_lbl:
+		_filter_title_lbl.text = _t("外裝庫")
+	if _filter_tip_lbl:
+		_filter_tip_lbl.text = _t("點「全部」可跨族穿：騎士／法師／遊俠／格鬥／維京")
+	if _costume_section_title:
+		_costume_section_title.text = _t("外裝服飾 (Costume)")
+	if _costume_section_tip:
+		_costume_section_tip.text = _t("點擊卡片即時預覽")
+	if _chassis_section_title:
+		_chassis_section_title.text = _t("機體塗裝 (Chassis / Paint)")
+	if _chassis_section_tip:
+		_chassis_section_tip.text = _t("點擊卡片即時預覽")
+	if _btn_reset:
+		_btn_reset.text = _t("還原預設")
+	if _btn_random:
+		_btn_random.text = _t("隨機")
+	if _btn_confirm:
+		_btn_confirm.text = _t("確認換裝 · 套用新外觀")
+
+	for opt in RACE_FILTER_OPTIONS:
+		var rid: String = str(opt.get("id", ""))
+		if _filter_chips.has(rid):
+			var btn: Button = _filter_chips[rid]
+			if is_instance_valid(btn):
+				var rname: String = str(opt.get("name_zh", rid))
+				btn.text = _t(rname)
+
 	var data := _get_race_data()
 	var race_name_zh := str(data.get("name_zh", current_race))
 	var archetype := str(data.get("archetype", ""))
