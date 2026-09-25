@@ -205,6 +205,12 @@
             "name": "天青雨過冰裂青瓷漆面",
             "race": "panda",
             "tier": "rare"
+          },
+          {
+            "id": "chassis_fawn_timber_tinplate_default",
+            "name": "沖壓雙色象牙米白與淺褐原木紋金屬板",
+            "race": "fawn",
+            "tier": "common"
           }
         ]
       },
@@ -305,6 +311,12 @@
             "name": "雙聯青古銅球窩半球耳罩",
             "race": "panda",
             "tier": "common"
+          },
+          {
+            "id": "head_fawn_vernier_caliper_horns",
+            "name": "雙聯黃銅游標卡尺角尺天線",
+            "race": "fawn",
+            "tier": "common"
           }
         ]
       },
@@ -389,6 +401,11 @@
           {
             "id": "key_panda_taiji_ruyi_brass",
             "name": "青銅太極如意發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_fawn_clover_leaf_brass",
+            "name": "黃銅四葉草風葉發條鑰匙",
             "tier": "common"
           }
         ]
@@ -543,6 +560,12 @@
             "name": "禪道學徒生漆長袍",
             "race": "panda",
             "tier": "common"
+          },
+          {
+            "id": "costume_fawn_emerald_scout_tunic",
+            "name": "翡翠林緣巡守背帶工裝",
+            "race": "fawn",
+            "tier": "common"
           }
         ]
       },
@@ -633,6 +656,12 @@
             "id": "core_obsidian_amber_quartz",
             "name": "墨玉琥珀金光學核心",
             "race": "panda",
+            "tier": "common"
+          },
+          {
+            "id": "face_fawn_amber_lens_alert_eyes",
+            "name": "琥珀金雙凸光學鏡片眼睛",
+            "race": "fawn",
             "tier": "common"
           }
         ]
@@ -731,6 +760,12 @@
             "id": "wpn_panda_taiji_cestus",
             "name": "乾坤太極機關拳套",
             "weapon_type": "fist",
+            "tier": "common"
+          },
+          {
+            "id": "weapon_fawn_vernier_shortbow",
+            "name": "翠木角尺複合機關弓",
+            "weapon_type": "bow",
             "tier": "common"
           }
         ]
@@ -833,13 +868,19 @@
             "name": "微型發條懸浮太極八音盒",
             "race": "panda",
             "tier": "common"
+          },
+          {
+            "id": "curio_fawn_floating_pinecone_chime",
+            "name": "懸浮發條小松果風鈴",
+            "race": "fawn",
+            "tier": "common"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 13,
+    "total_races": 14,
     "races": [
       {
         "race_id": "rabbit",
@@ -1679,10 +1720,80 @@
           "game_sprite_battle": "game/assets/sprites/player/panda_battle.png (128x128) [既有]",
           "game_sprite_walk": "game/assets/sprites/player/panda_walk_{0..3}.png (64x64) [既有]",
           "game_sprite_walk_hi": "game/assets/sprites/player/panda_walk_{0..3}_x3.png (128x128) [既有]",
-          "game_action_poses": "game/assets/sprites/player/poses/panda/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/panda/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [既有]",
           "portrait_hud": "game/assets/sprites/portraits/panda.png (128x128) [既有]",
           "portrait_dialogue": "game/assets/sprites/portraits/porcelain_panda.png (384x480) [既有]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/panda/{slot_id}/{item_id}.png [既有]"
+        }
+      },
+      {
+        "race_id": "fawn",
+        "aliases": [
+          "emerald_fawn",
+          "clockwork_deer",
+          "verdant_fawn"
+        ],
+        "name_zh": "翠角鹿",
+        "name_en": "The Emerald Fawn",
+        "class_archetype": "遊俠 (Ranger)",
+        "origin_realm": "R03 翡翠深林·發條蔓谷 / Emerald Woods: Vine & Gear Forest",
+        "lore_anchor": "自翡翠深林「巨木樹屋聚落」與「觀風石碑塔」旁巡林守護的發條小鹿，通體由米白與淺褐雙色沖壓薄鐵皮板件、雙聯精密黃銅游標卡尺角尺天線與足底減震橡膠馬蹄墊組裝而成，以單持翠木角尺複合機關弓、聽風對表與停拍弱點速射見長的深林遊俠",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (靈動修長高辨識體態)",
+          "posture": "側身巡候聽風架式，左手單持翠木角尺複合短弓斜指前方，右手自然微曲搭弦，足踏防滑減震馬蹄墊，背部黃銅四葉草風葉鑰匙輕快自轉",
+          "standee_height_px": 840,
+          "standee_width_px": 440
+        },
+        "mechanical_features": {
+          "head_and_neck": "圓潤緊湊沖壓雙色薄鐵皮頭部，配備雙聯琥珀光學凸透鏡眼睛與水平微型散熱網隙，頸部為雙節金屬減震襯套",
+          "ears": "雙聯長形薄鐵皮聽風立耳，內部貼合高靈敏銅絲共鳴拾音網，可 360 度轉動對焦",
+          "antlers": "雙聯精密黃銅游標卡尺角尺天線，主幹帶有公差刻度，分枝為可滑動調整之木工角尺測距卡爪，尖端附帶微型風向葉片",
+          "torso_and_limbs": "胸腹為象牙米白金屬板件，背甲為淺褐暖木紋烤漆，中央嵌有圓形風簧擒縱擺輪視窗；四肢關節為黃銅鉸鏈與外露避震彈簧，足底包裹黑橡膠減震蹄墊",
+          "tail": "短圓錐形黃銅散熱配重金屬短尾，整合底盤微平衡阻尼栓",
+          "weapon_system": "左手單持專利「翠木角尺複合機關弓 / 聽風游標短弓」，弓臂整合雙聯微型發條滑輪與游標瞄準卡爪，完全符合 0-MKT7 與 ranger/bow 體系"
+        },
+        "color_palette": {
+          "primary": "#FFFDF8 (象牙米白金屬板)",
+          "secondary": "#C4783A (淺褐暖木紋烤漆板件)",
+          "accent": "#FFD028 (游標金黃銅角尺與晶石)",
+          "detail": "#4ED86A (薄荷藤蔓翠綠雕紋)",
+          "warm_highlight": "#FFA010 (暖橘發條黃銅鑰匙與銷釘)",
+          "outline": "#1F1A3A (深藍紫厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "docs/art/emerald_fawn_concept.png (928x1152 概念立繪)",
+              "branding/char_fawn.png (400x840 品牌立牌)",
+              "web/media/hero/char_fawn.png (400x840 官網英雄圖)",
+              "web/media/hero/fawn_idle.png (128x128 官網預覽圖)",
+              "game/assets/sprites/player/fawn_idle.png (64x64 基礎待機)",
+              "game/assets/sprites/player/fawn_idle_x3.png (128x128 高畫質待機)",
+              "game/assets/sprites/player/battle/fawn/fawn_idle.png (128x128 戰鬥待機)",
+              "game/assets/sprites/player/battle/fawn/fawn_telegraph.png (128x128 出招前搖)",
+              "game/assets/sprites/player/battle/fawn/fawn_attack.png (128x128 普攻出手)",
+              "game/assets/sprites/player/battle/fawn/fawn_skill.png (128x128 技能大招)",
+              "game/assets/sprites/player/battle/fawn/fawn_hit.png (128x128 受擊硬直)",
+              "game/assets/sprites/player/battle/fawn/fawn_recover.png (128x128 復位待命)",
+              "game/assets/sprites/player/paperdoll/chassis/chassis_fawn_timber_tinplate_default.png (7大槽位切片)",
+              "game/assets/sprites/player/paperdoll/head/head_fawn_vernier_caliper_horns.png (7大槽位切片)"
+            ]
+          },
+          "branding_standee": "branding/char_fawn.png (400x840) [待產出]",
+          "branding_concept_art": "docs/art/emerald_fawn_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_fawn.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/fawn_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/fawn_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/fawn_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/fawn_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/battle/fawn/fawn_idle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/fawn_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/fawn_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/fawn/{attack,hit,idle,recover,skill,telegraph}.png (128x128) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/fawn.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/emerald_fawn.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/fawn/{slot_id}/{item_id}.png [待產出]"
         }
       }
     ]
@@ -1731,7 +1842,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 13 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 14 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -1753,7 +1864,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "十三大種族軀幹均維持 2.0~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬/熊/象) 由渲染器微調縮放 1.05x"
+        "rule": "十四大種族軀幹均維持 2.0~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬/熊/象) 由渲染器微調縮放 1.05x"
       }
     ]
   },
@@ -1774,7 +1885,8 @@
         "game/assets/sprites/player/paperdoll/tortoise/",
         "game/assets/sprites/player/paperdoll/elephant/",
         "game/assets/sprites/player/paperdoll/frog/",
-        "game/assets/sprites/player/paperdoll/panda/"
+        "game/assets/sprites/player/paperdoll/panda/",
+        "game/assets/sprites/player/paperdoll/fawn/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
