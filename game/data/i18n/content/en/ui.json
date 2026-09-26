@@ -2282,5 +2282,17 @@
   "良": "Fine",
   "優": "Rare",
   "精": "Epic",
-  "極": "Mythic"
+  "極": "Mythic",
+  "音量調節與聲效開關": "Volume & Sound Effects",
+  "背景音樂 (BGM)": "Music (BGM)",
+  "戰鬥音效 (SFX)": "Sound Effects (SFX)",
+  "顯示模式與渲染設定": "Display & Rendering",
+  "全螢幕沉浸模式": "Fullscreen Immersive Mode",
+  "切換顯示模式": "Switch Display Mode",
+  "已切換顯示模式！": "Display mode switched!",
+  "雲端與本機存檔備份": "Cloud & Local Save Backup",
+  "匯出存檔備份檔 (JSON)": "Export Save Backup (JSON)",
+  "從外部備份還原存檔": "Restore Save from Backup",
+  "存檔備份已成功匯出至本機！": "Save backup successfully exported locally!",
+  "請選擇要還原的備份存檔...": "Please select backup save to restore..."
 }
