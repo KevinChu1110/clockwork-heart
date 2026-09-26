@@ -3671,10 +3671,16 @@ func _on_end(won: bool) -> void:
 		elif _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
 			var col_xp: int = Formulas.colossus_xp(GameState.level, GameState.get_level_cap())
 			_colossus_exp_gain = col_xp
+			var scrap_gain: int = 0
+			if sim != null and won:
+				for mat in sim.pending_part_materials:
+					if str(mat) == "iron_scrap":
+						scrap_gain += 1
 			if not drop_part.is_empty():
 				drop_part["is_colossus"] = true
 				drop_part["mode"] = _mode
 				drop_part["exp_gain"] = col_xp
+				drop_part["scrap_gain"] = scrap_gain
 			if col_xp > 0:
 				_award_xp(col_xp)
 	else:
@@ -3715,13 +3721,15 @@ func _show_victory_settlement(drop_part: Dictionary) -> void:
 	if _victory_settlement_dialog != null and is_instance_valid(_victory_settlement_dialog):
 		_victory_settlement_dialog.queue_free()
 	var exp_val: int = int(drop_part.get("exp_gain", _colossus_exp_gain if _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"] else -1))
+	var scrap_val: int = int(drop_part.get("scrap_gain", -1))
 	_victory_settlement_dialog = BattleVictoryDialogScript.show_dialog(
 		self,
 		drop_part,
 		func():
 			_victory_settlement_dialog = null
 			battle_finished.emit(true),
-		exp_val
+		exp_val,
+		scrap_val
 	)
 
 

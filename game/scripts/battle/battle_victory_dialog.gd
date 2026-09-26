@@ -44,6 +44,9 @@ var _desc_lbl: Label
 var _exp_panel: PanelContainer
 var _exp_tag_lbl: Label
 var _exp_lbl: Label
+var _scrap_panel: PanelContainer
+var _scrap_tag_lbl: Label
+var _scrap_lbl: Label
 var _btn_equip: Button
 var _btn_confirm: Button
 var _btn_close: Button
@@ -53,17 +56,18 @@ var _part: Dictionary = {}
 var _on_confirm: Callable = Callable()
 var _is_equipped: bool = false
 var _exp_gain: int = 0
+var _scrap_gain: int = 0
 var _is_colossus: bool = false
 
 
-static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1) -> Control:
+static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1) -> Control:
 	var dlg = load("res://scripts/battle/battle_victory_dialog.gd").new()
-	dlg.setup(part, on_confirm, exp_gain)
+	dlg.setup(part, on_confirm, exp_gain, scrap_gain)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1) -> void:
+func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1) -> void:
 	_part = part.duplicate(true)
 	_on_confirm = on_confirm
 	if exp_gain >= 0:
@@ -74,6 +78,15 @@ func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: i
 		_exp_gain = int(_part["exp"])
 	else:
 		_exp_gain = 0
+
+	if scrap_gain >= 0:
+		_scrap_gain = scrap_gain
+	elif _part.has("scrap_gain"):
+		_scrap_gain = int(_part["scrap_gain"])
+	elif _part.has("iron_scrap"):
+		_scrap_gain = int(_part["iron_scrap"])
+	else:
+		_scrap_gain = 0
 	_is_colossus = bool(_part.get("is_colossus", false)) or str(_part.get("mode", "")).begins_with("colossus_")
 	if _dialog_card == null:
 		_build_ui()
@@ -297,6 +310,42 @@ func _build_ui() -> void:
 		_exp_lbl.add_theme_font_override("font", _cached_font)
 	exp_row.add_child(_exp_lbl)
 
+	# ── 部位破壞鐵屑獲得展示列 (ScrapRewardPanel) ──
+	_scrap_panel = PanelContainer.new()
+	_scrap_panel.name = "ScrapRewardPanel"
+	_scrap_panel.add_theme_stylebox_override("panel", _create_inner_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 3, 14))
+	v.add_child(_scrap_panel)
+
+	var scrap_margin := MarginContainer.new()
+	scrap_margin.add_theme_constant_override("margin_left", 16)
+	scrap_margin.add_theme_constant_override("margin_right", 16)
+	scrap_margin.add_theme_constant_override("margin_top", 6)
+	scrap_margin.add_theme_constant_override("margin_bottom", 6)
+	_scrap_panel.add_child(scrap_margin)
+
+	var scrap_row := HBoxContainer.new()
+	scrap_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	scrap_row.add_theme_constant_override("separation", 10)
+	scrap_margin.add_child(scrap_row)
+
+	_scrap_tag_lbl = Label.new()
+	_scrap_tag_lbl.name = "ScrapTagLabel"
+	_scrap_tag_lbl.text = _t("部位破壞")
+	_scrap_tag_lbl.add_theme_font_size_override("font_size", 14)
+	_scrap_tag_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	if _cached_font:
+		_scrap_tag_lbl.add_theme_font_override("font", _cached_font)
+	scrap_row.add_child(_scrap_tag_lbl)
+
+	_scrap_lbl = Label.new()
+	_scrap_lbl.name = "ScrapLabel"
+	_scrap_lbl.text = "鐵屑 +0"
+	_scrap_lbl.add_theme_font_size_override("font_size", 16)
+	_scrap_lbl.add_theme_color_override("font_color", COLOR_SKY)
+	if _cached_font:
+		_scrap_lbl.add_theme_font_override("font", _cached_font)
+	scrap_row.add_child(_scrap_lbl)
+
 	# ── 底部按鈕區（橫屏雙拇指操作，高度 >= 50px）──
 	var btn_row := HBoxContainer.new()
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -391,6 +440,16 @@ func _refresh_display() -> void:
 			_exp_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
 		else:
 			_exp_panel.visible = false
+
+	if _scrap_panel != null and _scrap_lbl != null:
+		if _scrap_tag_lbl != null:
+			_scrap_tag_lbl.text = _t("部位破壞")
+		if _scrap_gain > 0:
+			_scrap_panel.visible = true
+			_scrap_lbl.text = _t("鐵屑 +%d") % _scrap_gain
+			_scrap_lbl.add_theme_color_override("font_color", COLOR_SKY)
+		else:
+			_scrap_panel.visible = false
 
 
 func _is_player_max_level() -> bool:

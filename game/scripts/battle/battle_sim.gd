@@ -2467,8 +2467,11 @@ static func make_world_fight(player_stats: Dictionary, mode: String) -> BattleSi
 		e.windup_time = float(def.get("windup", 0.3))
 		e.recover_time = float(def.get("recover", 0.45))
 		e.king_slash_cd = float(def.get("king_slash_cd", 3.0))
-		_attach_boss_part(e, _t("溢能尖角"), 0.26, "spike", "enrage", "", "", "溢能尖角")
-		_attach_boss_part(e, _t("溢能核心"), 0.28, "core", "expose", "", "", "溢能核心")
+		var is_colossus: bool = mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"] or str(def.get("id", "")) in ["colossus_lion", "colossus_puppet", "colossus_elephant"]
+		var spike_mat: String = "iron_scrap" if is_colossus else ""
+		var core_mat: String = "iron_scrap" if is_colossus else ""
+		_attach_boss_part(e, _t("溢能尖角"), 0.26, "spike", "enrage", spike_mat, "", "溢能尖角")
+		_attach_boss_part(e, _t("溢能核心"), 0.28, "core", "expose", core_mat, "", "溢能核心")
 		sim.focus_part_id = "core"
 	sim.add_unit(e)
 
