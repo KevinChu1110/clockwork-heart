@@ -646,6 +646,12 @@ static func _boss_art_key(mode: String) -> String:
 			return "chrono"
 		"echo":
 			return "echo"
+		"colossus_lion":
+			return "leo"
+		"colossus_puppet":
+			return "mirror_wraith"
+		"colossus_elephant":
+			return "boar"
 		_:
 			return mode
 

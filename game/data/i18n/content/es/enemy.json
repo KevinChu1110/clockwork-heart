@@ -37,5 +37,14 @@
   },
   "heart_demon": {
     "name": "Demonio interior"
+  },
+  "colossus_lion": {
+    "name": "León de Cuerda Desbocado"
+  },
+  "colossus_puppet": {
+    "name": "Marioneta del Reloj de Niebla"
+  },
+  "colossus_elephant": {
+    "name": "Coloso de Vapor de Husillo Negro"
   }
 }

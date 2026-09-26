@@ -2095,6 +2095,9 @@ func _style_submode_button(btn: Button, is_selected: bool) -> void:
 	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
 
+func switch_adventure_submode(mode: int) -> void:
+	_switch_adventure_submode(mode)
+
 func _switch_adventure_submode(mode: int) -> void:
 	_adventure_submode = mode
 	_refresh_adventure_submode_ui()
@@ -2133,6 +2136,8 @@ func _on_colossus_card_pressed(s: Dictionary) -> void:
 		_show_toast(_t("今日剩餘: %d 次") % int(res.get("remaining", 0)))
 		_refresh_adventure_submode_ui()
 		_refresh_region_stages()
+		var boss_key: String = str(s.get("boss_key", s.get("id", "")))
+		request_battle.emit(boss_key)
 	else:
 		_show_colossus_limit_dialog()
 
