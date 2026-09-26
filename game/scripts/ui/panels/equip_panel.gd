@@ -111,9 +111,12 @@ func open() -> void:
 	root.add_child(title)
 
 	var b := EquipmentSystem.bonus_totals()
+	var cb: Dictionary = CoreSystem.total_core_bonuses() if CoreSystem != null else {}
 	var sum := Label.new()
 	sum.text = _t("總加成  攻+%d  防+%d  血+%d  ·  暴擊 %.1f%%  暴傷 +%.0f%%") % [
-		int(b.atk), int(b.def), int(b.hp),
+		int(b.atk) + int(cb.get("atk", 0)),
+		int(b.def) + int(cb.get("def", 0)),
+		int(b.hp) + int(cb.get("hp", 0)),
 		GameState.effective_crit(), GameState.effective_crit_dmg(),
 	]
 	sum.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -467,12 +470,21 @@ func _core_slot_card(def: Dictionary) -> Control:
 	lab.add_theme_color_override("font_color", UiStyle.INK_DIM)
 	box.add_child(lab)
 
+	var norm_slot := CoreSystem.normalize_slot_id(slot_id) if CoreSystem != null else slot_id
+	var part: Dictionary = CoreSystem.get_player_part(norm_slot) if CoreSystem != null else {}
+	var tier_id: String = str(part.get("tier", "white"))
+	var tier_name: String = str(part.get("tier_name", "白"))
+	var tier_color: Color = CoreSystem.get_tier_color(tier_id) if CoreSystem != null else Color(0.72, 0.62, 0.82, 0.9)
+	var count: int = int(part.get("calibration_count", 0))
+	var max_cnt: int = int(part.get("max_calibrations", 7))
+	var remains: int = maxi(0, max_cnt - count)
+
 	var cell := PanelContainer.new()
 	cell.name = "Cell"
 	cell.custom_minimum_size = Vector2(88, 88)
 	var st := StyleBoxFlat.new()
 	st.bg_color = Color(0.96, 0.95, 0.98, 1)
-	st.border_color = Color(0.72, 0.62, 0.82, 0.9)
+	st.border_color = tier_color
 	st.set_border_width_all(2)
 	st.set_corner_radius_all(10)
 	cell.add_theme_stylebox_override("panel", st)
@@ -493,23 +505,27 @@ func _core_slot_card(def: Dictionary) -> Control:
 	var t: Texture2D = SpriteDB.core_slot_icon(slot_id)
 	if t:
 		icon.texture = t
-	inner.add_child(icon)
-
-	var part := CoreSystem.get_player_part(slot_id)
-	var tier_id: String = str(part.get("tier", "white"))
-	var tier_name: String = str(part.get("tier_name", "白"))
-	var tier_color: Color = CoreSystem.get_tier_color(tier_id)
-	var count: int = int(part.get("calibration_count", 0))
-	var max_cnt: int = int(part.get("max_calibrations", 7))
-	var remains: int = maxi(0, max_cnt - count)
 	icon.modulate = tier_color
+	inner.add_child(icon)
 
 	var btn := Button.new()
 	btn.name = "SlotButton"
 	btn.flat = true
 	btn.custom_minimum_size = Vector2(88, 88)
 	btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	btn.tooltip_text = "%s\n%s" % [slot_name, slot_desc]
+	var tt_desc := slot_desc
+	if not part.is_empty() and CoreSystem != null:
+		var pstats: Dictionary = CoreSystem.get_part_stats(part)
+		var stat_parts: Array[String] = []
+		if int(pstats.get("atk", 0)) > 0: stat_parts.append("攻+%d" % int(pstats.atk))
+		if int(pstats.get("def", 0)) > 0: stat_parts.append("防+%d" % int(pstats.def))
+		if int(pstats.get("hp", 0)) > 0: stat_parts.append("血+%d" % int(pstats.hp))
+		if float(pstats.get("crit", 0.0)) > 0.0: stat_parts.append("暴擊+%.1f%%" % float(pstats.crit))
+		if float(pstats.get("crit_dmg", 0.0)) > 0.0: stat_parts.append("暴傷+%.0f%%" % float(pstats.crit_dmg))
+		tt_desc = "%s (%s階)\n%s\n%s" % [slot_name, tier_name, slot_desc, " · ".join(stat_parts)]
+	else:
+		tt_desc = "%s\n%s" % [slot_name, slot_desc]
+	btn.tooltip_text = tt_desc
 	cell.add_child(btn)
 
 	# 色階名稱與剩餘校準次數
@@ -574,7 +590,19 @@ func _core_slot_card(def: Dictionary) -> Control:
 		var tnm: String = str(p.get("tier_name", "白"))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
 		if is_instance_valid(_core_hint_label):
-			_core_hint_label.text = _t("【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）") % [slot_name, slot_desc, tnm, rem]
+			var stat_parts: Array[String] = []
+			if not p.is_empty() and CoreSystem != null:
+				var pstats: Dictionary = CoreSystem.get_part_stats(p)
+				if int(pstats.get("atk", 0)) > 0: stat_parts.append("攻+%d" % int(pstats.atk))
+				if int(pstats.get("def", 0)) > 0: stat_parts.append("防+%d" % int(pstats.def))
+				if int(pstats.get("hp", 0)) > 0: stat_parts.append("血+%d" % int(pstats.hp))
+				if float(pstats.get("crit", 0.0)) > 0.0: stat_parts.append("暴擊+%.1f%%" % float(pstats.crit))
+				if float(pstats.get("crit_dmg", 0.0)) > 0.0: stat_parts.append("暴傷+%.0f%%" % float(pstats.crit_dmg))
+			var s_stat := " · ".join(stat_parts)
+			if not s_stat.is_empty():
+				_core_hint_label.text = _t("【%s · %s階】%s（%s · 剩餘校準：%d 次）") % [slot_name, tnm, slot_desc, s_stat, rem]
+			else:
+				_core_hint_label.text = _t("【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）") % [slot_name, slot_desc, tnm, rem]
 			_core_hint_label.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
 	)
 

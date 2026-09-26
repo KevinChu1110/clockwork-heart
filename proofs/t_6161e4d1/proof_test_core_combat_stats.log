@@ -1,0 +1,58 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+WARNING: Started the engine as `root`/superuser. This is a security risk, and subsystems like audio may not work correctly.
+Set the environment variable `GODOT_SILENCE_ROOT_WARNING` to 1 to silence this warning.
+     at: setup2 (main/main.cpp:3577)
+
+── 開始執行機芯數值接入戰鬥攻擊防禦血量驗證 (test_core_combat_stats.gd) ──
+
+--- 1. 檢驗機芯五槽基礎數值嚴格鎖定白名單（只准 ATK/DEF/HP/CRIT/CRIT_DMG） ---
+  ✓ 五槽在所有八色階之基礎數值皆 100% 符合 ALLOWED_STATS 白名單，零非法屬性
+
+--- 2. 檢驗裝上高階機芯後 effective_atk / def / max_hp 必須大於白板 ---
+[DataTables] combat/equipment/items_meta/weapon_classes/pacing/core_color_tiers loaded
+  [無機芯] ATK=18, DEF=6, HP=50, CRIT=8.1%, CRIT_DMG=56%
+  [白板機芯] ATK=23, DEF=10, HP=90, CRIT=9.6%, CRIT_DMG=58%
+  [金階機芯] ATK=70, DEF=46, HP=450, CRIT=21.6%, CRIT_DMG=86%
+  [紅階機芯] ATK=124, DEF=86, HP=850, CRIT=36.1%, CRIT_DMG=118%
+  ✓ 高階機芯各項實質戰鬥屬性均嚴格大於白板機芯
+
+--- 3. 檢驗八色階數值階梯嚴格單調遞增（灰 < 白 < 橘 < 藍 < 紫 < 金 < 綠 < 紅） ---
+  色階 [gray] -> 總加成: 攻+0, 防+0, 血+20, 暴擊+0.0%, 暴傷+0%
+  色階 [white] -> 總加成: 攻+5, 防+4, 血+40, 暴擊+1.5%, 暴傷+3%
+  色階 [orange] -> 總加成: 攻+10, 防+8, 血+80, 暴擊+3.0%, 暴傷+6%
+  色階 [blue] -> 總加成: 攻+19, 防+15, 血+150, 暴擊+5.5%, 暴傷+12%
+  色階 [purple] -> 總加成: 攻+33, 防+26, 血+260, 暴擊+9.0%, 暴傷+20%
+  色階 [gold] -> 總加成: 攻+52, 防+40, 血+400, 暴擊+13.5%, 暴傷+31%
+  色階 [green] -> 總加成: 攻+76, 防+58, 血+580, 暴擊+19.5%, 暴傷+44%
+  色階 [red] -> 總加成: 攻+106, 防+80, 血+800, 暴擊+28.0%, 暴傷+62%
+  ✓ 八色階五槽加總數值呈現穩定階梯式成長
+
+--- 4. 檢驗機芯校準（微調屬性）即時疊加至 effective_* ---
+  發條發電機校準前 ATK: 20 -> 校準後 ATK: 32 (Delta: +12)
+  ✓ 校準微調屬性完美即時反饋至角色實質攻擊力
+
+--- 5. 檢驗戰鬥實機計算：白板機芯與高階機芯打出來的傷害／受傷明顯不同 ---
+  【同一角色同一關卡戰鬥對照】
+  白板機芯: 攻擊力=23.0, 防禦力=10.0 | 對敵造成傷害: 18 | 承受怪物傷害: 22
+  紅階機芯: 攻擊力=124.0, 防禦力=86.0 | 對敵造成傷害: 119 | 承受怪物傷害: 1
+  ✓ 戰鬥傷害、受傷與 BattleSim 蒐集皆產生質的突破，完全符合設計規範
+
+--- 6. 檢驗硬限制鎖死：時間模型常數防竄改斷言（改動測試必紅） ---
+  [時間模型基準核查]
+  atb_fill_per_sec(10.0) = 25.00 (鎖定值: 25.0)
+  atb_max() = 100.00 (鎖定值: 100.0)
+  atb_seconds_to_full(10.0) = 4.00 s (鎖定值: 4.0 s)
+  strike_duration() = 0.080 s (鎖定值: 0.08 s)
+  boss_telegraph_sec() = 1.85 s (鎖定值: 1.85 s)
+  boss_parry_window_sec() = 0.85 s (鎖定值: 0.85 s)
+  ✓ 時間模型常數硬限制防護 100% 健全，改動測試必紅
+
+--- 7. 檢驗零系統 Emoji 與六語系文字健全 ---
+  ✓ 六語系機芯槽位名稱皆無系統 Emoji，字串健全
+
+=======================================================
+CORE_COMBAT_STATS_OK
+=======================================================
+[DataTables] combat/equipment/items_meta/weapon_classes/pacing/core_color_tiers loaded
+DisplaySettings apply mode=fullscreen res=1280x720 vsync=true
+GraphicsProfile apply choice=auto applied=high scale=1.0 size=(1280, 720) shadows=true particles=true vfx=true method=gl_compatibility
