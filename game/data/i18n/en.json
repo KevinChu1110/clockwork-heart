@@ -865,5 +865,7 @@
   "戰鬥經驗": "Combat EXP",
   "經驗 +%d": "EXP +%d",
   "經驗 +0（已達上限）": "EXP +0 (Max Level)",
-  "經驗 +0": "EXP +0"
+  "經驗 +0": "EXP +0",
+  "部位破壞": "Part Break",
+  "鐵屑 +%d": "Scrap Iron +%d"
 }
