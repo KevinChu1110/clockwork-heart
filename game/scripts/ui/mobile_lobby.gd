@@ -98,6 +98,8 @@ var _cached_font: Font = null
 var _bag_grid: GridContainer = null
 var _bag_cells: Array = []
 var _bag_ids: Array = []
+var _bag_title_lbl: Label = null
+var _bag_sub_lbl: Label = null
 var _selected_bag_item: String = ""
 var _bag_detail: RichTextLabel = null
 var _bag_use_btn: Button = null
@@ -2656,15 +2658,15 @@ func _build_bag_tab() -> void:
 	title_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head_row.add_child(title_v)
 
-	var title_lbl := Label.new()
-	title_lbl.text = _t("冒險者背包")
-	_apply_label_style(title_lbl, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 4)
-	title_v.add_child(title_lbl)
+	_bag_title_lbl = Label.new()
+	_bag_title_lbl.text = _t("冒險者背包")
+	_apply_label_style(_bag_title_lbl, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 4)
+	title_v.add_child(_bag_title_lbl)
 
-	var sub_lbl := Label.new()
-	sub_lbl.text = _t("道具與戰魂倉庫 · 點選格子查看詳情")
-	_apply_label_style(sub_lbl, 16, COLOR_TEXT_DARK)
-	title_v.add_child(sub_lbl)
+	_bag_sub_lbl = Label.new()
+	_bag_sub_lbl.text = _t("道具與戰魂倉庫 · 點選格子查看詳情")
+	_apply_label_style(_bag_sub_lbl, 16, COLOR_TEXT_DARK)
+	title_v.add_child(_bag_sub_lbl)
 
 	var rule := ColorRect.new()
 	rule.custom_minimum_size = Vector2(0, 3)
@@ -2912,7 +2914,7 @@ func _on_bag_cell_input(idx: int, ev: InputEvent) -> void:
 	var id := str(_bag_ids[idx])
 	if id == "":
 		_selected_bag_item = ""
-		_refresh_bag_tab()
+		_refresh_bag_tab(false)
 		return
 	if button == MOUSE_BUTTON_RIGHT:
 		_selected_bag_item = id
@@ -2967,7 +2969,7 @@ func _on_bag_hotbar_pressed() -> void:
 				inv.call("set_hotbar", 0, _selected_bag_item)
 	_refresh_bag_tab()
 
-func _refresh_bag_tab() -> void:
+func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 	if _bag_layer == null:
 		return
 	var inv := _get_inv_sys()
@@ -2987,9 +2989,10 @@ func _refresh_bag_tab() -> void:
 				found = true
 				break
 		if not found:
-			_selected_bag_item = str(list[0].get("id", "")) if list.size() > 0 else ""
-	elif list.size() > 0:
+			_selected_bag_item = str(list[0].get("id", "")) if (list.size() > 0 and allow_auto_select) else ""
+	elif list.size() > 0 and allow_auto_select:
 		_selected_bag_item = str(list[0].get("id", ""))
+
 
 	for i in range(_bag_cells.size()):
 		var cell: PanelContainer = _bag_cells[i]
@@ -3070,16 +3073,24 @@ func _update_bag_detail(inv: Node) -> void:
 	if _selected_bag_item == "" or inv == null:
 		if _bag_preview_row:
 			_bag_preview_row.visible = false
-		_bag_detail.text = "[color=#1F1A3A][b][font_size=20]冒險者背包[/font_size][/b]\n\n請點選左側格子查看道具詳情。\n\n[color=#C2600A]•[/color] 消耗品：使用回復狀態\n[color=#C2600A]•[/color] 素材：點擊使用可賣出金幣\n[color=#C2600A]•[/color] 重要物：劇情關鍵道具[/color]"
+		_bag_detail.text = "[color=#1F1A3A][b][font_size=20]%s[/font_size][/b]\n\n%s\n\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s[/color]" % [
+			_t("冒險者背包"),
+			_t("請點選左側格子查看道具詳情。"),
+			_t("消耗品：使用回復狀態"),
+			_t("素材：點擊使用可賣出金幣"),
+			_t("重要物：劇情關鍵道具")
+		]
 		if _bag_use_btn:
 			_bag_use_btn.disabled = true
 			_bag_use_btn.text = _t("使用 / 賣出")
 		if _bag_hb_btn:
 			_bag_hb_btn.disabled = true
+			_bag_hb_btn.text = _t("放到快捷欄")
 		return
 
 	if _bag_hb_btn:
 		_bag_hb_btn.disabled = false
+		_bag_hb_btn.text = _t("放到快捷欄")
 
 	var def: Dictionary = inv.call("catalog", _selected_bag_item) as Dictionary if inv.has_method("catalog") else {}
 	var n: int = int(inv.call("count", _selected_bag_item)) if inv.has_method("count") else 0
@@ -3095,7 +3106,7 @@ func _update_bag_detail(inv: Node) -> void:
 			kind_s = _t("素材（點擊使用可賣出）")
 			if _bag_use_btn:
 				_bag_use_btn.disabled = false
-				_bag_use_btn.text = _t("賣出 (+%d金)" % int(def.get("sell", 1)))
+				_bag_use_btn.text = _t("賣出 (+%d金)") % int(def.get("sell", 1))
 		"key":
 			kind_s = _t("重要道具")
 			if _bag_use_btn:
@@ -3107,8 +3118,8 @@ func _update_bag_detail(inv: Node) -> void:
 				_bag_use_btn.disabled = false
 				_bag_use_btn.text = _t("使用 / 賣出")
 
-	var item_name: String = str(def.get("name", _selected_bag_item))
-	var item_desc: String = str(def.get("desc", ""))
+	var item_name: String = _t(str(def.get("name", _selected_bag_item)))
+	var item_desc: String = _t(str(def.get("desc", "")))
 
 	var icon_tex := get_item_icon(_selected_bag_item)
 	if _bag_preview_row:
@@ -3354,6 +3365,16 @@ func _apply_locale_texts() -> void:
 					v_lbl.text = _t(v_k)
 
 	_refresh_equip_schematic()
+
+	if _bag_title_lbl and is_instance_valid(_bag_title_lbl):
+		_bag_title_lbl.text = _t("冒險者背包")
+	if _bag_sub_lbl and is_instance_valid(_bag_sub_lbl):
+		_bag_sub_lbl.text = _t("道具與戰魂倉庫 · 點選格子查看詳情")
+	if _bag_tip and is_instance_valid(_bag_tip):
+		_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
+	if _bag_layer and is_instance_valid(_bag_layer):
+		_update_bag_detail(_get_inv_sys())
+
 	refresh_hud()
 
 func _show_toast(msg: String) -> void:
