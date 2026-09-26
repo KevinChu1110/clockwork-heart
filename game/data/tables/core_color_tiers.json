@@ -164,6 +164,22 @@
     "break_on_fail": false,
     "delete_on_fail": false,
     "iron_scrap_cost": 5,
+    "roll_weights": {
+      "fail": 20,
+      "maintain": 40,
+      "jump_1": 30,
+      "jump_2": 10
+    },
+    "roll_rates": {
+      "fail": 0.20,
+      "maintain": 0.40,
+      "jump_1": 0.30,
+      "jump_2": 0.10
+    },
+    "pity_rule": {
+      "pity_attempt": 7,
+      "min_jump": 1
+    },
     "stat_weights": {
       "ATK": 2.0,
       "DEF": 1.5,
