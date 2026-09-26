@@ -98,6 +98,8 @@ var equip_slots: Dictionary = {
 	"weapon": "", "armor": "",
 	"ring": "", "necklace": "", "bracelet": "", "earring": "", "amulet": "", "belt": "",
 }
+## 機芯五槽部件（0.25 核心循環支柱二）：slot_id -> part_dict
+var core_slots: Dictionary = {}
 ## 真正多武器欄（原作：升級解鎖更多武器欄；非器魂快捷）
 ## 長度 3；元素＝equip uid 或 ""。equip_slots.weapon 與 active 欄同步。
 var weapon_loadout: Array = ["", "", ""]
@@ -184,6 +186,7 @@ func effective_atk() -> int:
 	var pid := _migrate_path_style(path_style)
 	if wline != "" and wline == pid:
 		a += 2
+	a += core_bonus_atk()
 	var gb := _gem_bonuses()
 	a = int(round(float(a) * (1.0 + float(gb.get("atk_pct", 0.0)))))
 	return a
@@ -193,6 +196,7 @@ func effective_def() -> int:
 	var d := def_stat + soul_bonus_def() + equip_bonus_def()
 	var wb := weapon_class_bonuses()
 	d += int(wb.get("def", 0))
+	d += core_bonus_def()
 	var gb := _gem_bonuses()
 	d = int(round(float(d) * (1.0 + float(gb.get("def_pct", 0.0)))))
 	return d
@@ -202,6 +206,7 @@ func effective_max_hp() -> int:
 	var h := max_hp + soul_bonus_hp() + equip_bonus_hp()
 	var wb := weapon_class_bonuses()
 	h += int(wb.get("hp", 0))
+	h += core_bonus_hp()
 	var gb := _gem_bonuses()
 	h = int(round(float(h) * (1.0 + float(gb.get("hp_pct", 0.0)))))
 	return h
@@ -212,6 +217,7 @@ func effective_crit() -> float:
 	var wb := weapon_class_bonuses()
 	c += float(_gem_bonuses().get("crit", 0.0))
 	c += float(wb.get("crit", 0))
+	c += core_bonus_crit()
 	return c
 
 
@@ -233,7 +239,55 @@ func effective_eva() -> float:
 
 
 func effective_crit_dmg() -> float:
-	return crit_dmg + equip_bonus_crit_dmg()
+	return crit_dmg + equip_bonus_crit_dmg() + core_bonus_crit_dmg()
+
+
+## 機芯五槽實質加成（0.25 核心循環支柱二）
+## 嚴格硬限制：只准動攻擊、防禦、血量、暴擊、爆傷；絕不更動時間模型（ATB／攻速／前搖）
+func core_bonus_atk() -> int:
+	return int(_core_bonus_cached().get("atk", 0))
+
+
+func core_bonus_def() -> int:
+	return int(_core_bonus_cached().get("def", 0))
+
+
+func core_bonus_hp() -> int:
+	return int(_core_bonus_cached().get("hp", 0))
+
+
+func core_bonus_crit() -> float:
+	return float(_core_bonus_cached().get("crit", 0.0))
+
+
+func core_bonus_crit_dmg() -> float:
+	return float(_core_bonus_cached().get("crit_dmg", 0.0))
+
+
+func _core_bonus_cached() -> Dictionary:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var cs: Node = (tree as SceneTree).root.get_node_or_null("CoreSystem")
+		if cs and cs.has_method("total_core_bonuses"):
+			return cs.call("total_core_bonuses")
+	var CsClass = load("res://scripts/systems/core_system.gd")
+	if CsClass and CsClass.has_method("get_total_bonuses"):
+		return CsClass.get_total_bonuses(core_slots)
+	return {"atk": 0, "def": 0, "hp": 0, "crit": 0.0, "crit_dmg": 0.0}
+
+
+func heal_full() -> void:
+	hp = effective_max_hp()
+
+
+func ensure_core_slots(default_tier: String = "white") -> void:
+	var CsClass = load("res://scripts/systems/core_system.gd")
+	if CsClass == null:
+		return
+	var all_slots = CsClass.ALL_SLOT_IDS
+	for sid in all_slots:
+		if not core_slots.has(sid) or core_slots[sid] == null or (core_slots[sid] is Dictionary and (core_slots[sid] as Dictionary).is_empty()):
+			core_slots[sid] = CsClass.create_part_by_tier(sid, default_tier)
 
 
 func effective_variance() -> float:
@@ -550,6 +604,7 @@ func to_dict() -> Dictionary:
 		"equip_bag": equip_bag.duplicate(true),
 		"equip_worn": equip_worn.duplicate(true),
 		"equip_slots": equip_slots.duplicate(true),
+		"core_slots": core_slots.duplicate(true),
 		"weapon_loadout": weapon_loadout.duplicate(),
 		"weapon_loadout_active": weapon_loadout_active,
 		"gem_bag": gem_bag.duplicate(true),
@@ -637,6 +692,7 @@ func from_dict(d: Dictionary) -> void:
 		"weapon": "", "armor": "",
 		"ring": "", "necklace": "", "bracelet": "", "earring": "", "amulet": "", "belt": "",
 	})
+	core_slots = _dict_field(d, "core_slots", {})
 	weapon_loadout = _array_field(d, "weapon_loadout", ["", "", ""])
 	## 只補不截：截斷會讓 round-trip 測試／手動加長陣列靜默丟資料；玩法層 _ensure 再用前 3 格
 	while weapon_loadout.size() < 3:

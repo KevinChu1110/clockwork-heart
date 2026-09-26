@@ -107,6 +107,72 @@ const PROHIBITED_STATS: Array[String] = [
 	"RECOVERY_TIME"
 ]
 
+const TIER_DEFAULT_SCORES: Dictionary = {
+	TIER_GRAY: -1,
+	TIER_WHITE: 0,
+	TIER_ORANGE: 3,
+	TIER_BLUE: 15,
+	TIER_PURPLE: 30,
+	TIER_GOLD: 45,
+	TIER_GREEN: 60,
+	TIER_RED: 75,
+}
+
+## 各槽位在八色階下的基礎靜態數值加成
+## 嚴格遵循硬限制：只准動 ATK/DEF/HP/CRIT/CRIT_DMG，零時間模型改動
+const TIER_BASE_STATS: Dictionary = {
+	SLOT_MAINSPRING: {
+		TIER_GRAY: {"ATK": 0, "HP": 5},
+		TIER_WHITE: {"ATK": 2, "HP": 10},
+		TIER_ORANGE: {"ATK": 4, "HP": 20},
+		TIER_BLUE: {"ATK": 8, "HP": 40},
+		TIER_PURPLE: {"ATK": 14, "HP": 70},
+		TIER_GOLD: {"ATK": 22, "HP": 110},
+		TIER_GREEN: {"ATK": 32, "HP": 160},
+		TIER_RED: {"ATK": 45, "HP": 220},
+	},
+	SLOT_CHASSIS: {
+		TIER_GRAY: {"DEF": 0, "HP": 5},
+		TIER_WHITE: {"DEF": 2, "HP": 10},
+		TIER_ORANGE: {"DEF": 4, "HP": 20},
+		TIER_BLUE: {"DEF": 7, "HP": 40},
+		TIER_PURPLE: {"DEF": 12, "HP": 70},
+		TIER_GOLD: {"DEF": 18, "HP": 110},
+		TIER_GREEN: {"DEF": 26, "HP": 160},
+		TIER_RED: {"DEF": 36, "HP": 220},
+	},
+	SLOT_ESCAPEMENT: {
+		TIER_GRAY: {"CRIT": 0.0, "CRIT_DMG": 0.0},
+		TIER_WHITE: {"CRIT": 1.0, "CRIT_DMG": 2.0},
+		TIER_ORANGE: {"CRIT": 2.0, "CRIT_DMG": 4.0},
+		TIER_BLUE: {"CRIT": 3.5, "CRIT_DMG": 8.0},
+		TIER_PURPLE: {"CRIT": 5.5, "CRIT_DMG": 13.0},
+		TIER_GOLD: {"CRIT": 8.0, "CRIT_DMG": 20.0},
+		TIER_GREEN: {"CRIT": 11.5, "CRIT_DMG": 28.0},
+		TIER_RED: {"CRIT": 16.0, "CRIT_DMG": 38.0},
+	},
+	SLOT_GEAR_TRAIN: {
+		TIER_GRAY: {"ATK": 0, "DEF": 0},
+		TIER_WHITE: {"ATK": 2, "DEF": 1},
+		TIER_ORANGE: {"ATK": 4, "DEF": 2},
+		TIER_BLUE: {"ATK": 7, "DEF": 4},
+		TIER_PURPLE: {"ATK": 12, "DEF": 7},
+		TIER_GOLD: {"ATK": 18, "DEF": 11},
+		TIER_GREEN: {"ATK": 26, "DEF": 16},
+		TIER_RED: {"ATK": 36, "DEF": 22},
+	},
+	SLOT_SOUL_CORE: {
+		TIER_GRAY: {"ATK": 0, "DEF": 0, "HP": 10, "CRIT": 0.0, "CRIT_DMG": 0.0},
+		TIER_WHITE: {"ATK": 1, "DEF": 1, "HP": 20, "CRIT": 0.5, "CRIT_DMG": 1.0},
+		TIER_ORANGE: {"ATK": 2, "DEF": 2, "HP": 40, "CRIT": 1.0, "CRIT_DMG": 2.0},
+		TIER_BLUE: {"ATK": 4, "DEF": 4, "HP": 70, "CRIT": 2.0, "CRIT_DMG": 4.0},
+		TIER_PURPLE: {"ATK": 7, "DEF": 7, "HP": 120, "CRIT": 3.5, "CRIT_DMG": 7.0},
+		TIER_GOLD: {"ATK": 12, "DEF": 11, "HP": 180, "CRIT": 5.5, "CRIT_DMG": 11.0},
+		TIER_GREEN: {"ATK": 18, "DEF": 16, "HP": 260, "CRIT": 8.0, "CRIT_DMG": 16.0},
+		TIER_RED: {"ATK": 25, "DEF": 22, "HP": 360, "CRIT": 12.0, "CRIT_DMG": 24.0},
+	},
+}
+
 const TABLE_PATH: String = "res://data/tables/core_color_tiers.json"
 
 
@@ -198,9 +264,28 @@ static func get_tier_modulate(score: int) -> Color:
 	return info.get("modulate", Color.WHITE)
 
 
+## 正規化槽位代號（支援別名相容）
+static func normalize_slot_id(slot_id: String) -> String:
+	var s := slot_id.strip_edges().to_lower()
+	match s:
+		"spring_generator", "slot_01", "generator", "發條發電機", "0", "mainspring":
+			return SLOT_MAINSPRING
+		"chassis_armor", "slot_02", "armor", "機殼裝甲", "1", "chassis":
+			return SLOT_CHASSIS
+		"escapement_governor", "slot_03", "governor", "擒縱調速器", "2", "escapement":
+			return SLOT_ESCAPEMENT
+		"transmission_gears", "slot_04", "gears", "傳動齒輪組", "3", "gear_train":
+			return SLOT_GEAR_TRAIN
+		"resonance_core", "slot_05", "core", "共鳴核心", "4", "soul_core":
+			return SLOT_SOUL_CORE
+		_:
+			return s
+
+
 ## 取得槽位中文名
 static func get_slot_name(slot_id: String) -> String:
-	return str(SLOT_NAMES.get(slot_id, slot_id))
+	var norm := normalize_slot_id(slot_id)
+	return str(SLOT_NAMES.get(norm, slot_id))
 
 
 ## 取得五槽完整定義表
@@ -217,7 +302,8 @@ static func get_slot_defs() -> Dictionary:
 
 ## 建立全新機芯部件資料結構
 static func create_part(slot_id: String, initial_score: int = 0, initial_stats: Dictionary = {}) -> Dictionary:
-	if not (slot_id in ALL_SLOT_IDS):
+	var norm_slot := normalize_slot_id(slot_id)
+	if not (norm_slot in ALL_SLOT_IDS):
 		push_warning("未知機芯槽位：%s" % slot_id)
 
 	# 驗證 initial_stats，若含非法屬性則排除
@@ -231,9 +317,9 @@ static func create_part(slot_id: String, initial_score: int = 0, initial_stats: 
 
 	var tier_info := get_tier_by_score(initial_score)
 	return {
-		"uid": "core_%s_%d" % [slot_id, Time.get_unix_time_from_system() * 1000 + randi() % 1000],
-		"slot": slot_id,
-		"slot_name": get_slot_name(slot_id),
+		"uid": "core_%s_%d" % [norm_slot, Time.get_unix_time_from_system() * 1000 + randi() % 1000],
+		"slot": norm_slot,
+		"slot_name": get_slot_name(norm_slot),
 		"score": initial_score,
 		"tier": tier_info.get("id", TIER_WHITE),
 		"tier_name": tier_info.get("name", "白"),
@@ -367,3 +453,119 @@ static func calibrate(part: Dictionary, roll_success: bool = true, stat_delta: D
 			"is_broken": false,
 			"destroyed": false
 		}
+
+
+## 取得指定槽位與色階的基礎數值加成
+static func get_tier_base_stats(slot_id: String, tier_id: String) -> Dictionary:
+	var norm_slot := normalize_slot_id(slot_id)
+	var slot_tiers: Dictionary = TIER_BASE_STATS.get(norm_slot, {})
+	var base: Dictionary = slot_tiers.get(tier_id, slot_tiers.get(TIER_WHITE, {}))
+	return base.duplicate(true)
+
+
+## 取得單一機芯部件的實質戰鬥加成數值（含色階基礎值與校準增量）
+## 硬限制：僅產出 ATK/DEF/HP/CRIT/CRIT_DMG，零時間模型改動
+static func get_part_stats(part: Dictionary) -> Dictionary:
+	if part == null or part.is_empty():
+		return {"atk": 0, "def": 0, "hp": 0, "crit": 0.0, "crit_dmg": 0.0}
+	var slot_id := normalize_slot_id(str(part.get("slot", "")))
+	var tier_id := str(part.get("tier", ""))
+	if tier_id.is_empty():
+		var sc: int = int(part.get("score", 0))
+		tier_id = str(get_tier_by_score(sc).get("id", TIER_WHITE))
+	var base := get_tier_base_stats(slot_id, tier_id)
+	var rolled: Dictionary = part.get("stats", {})
+
+	var atk_val: int = int(base.get("ATK", 0)) + int(rolled.get("ATK", 0))
+	var def_val: int = int(base.get("DEF", 0)) + int(rolled.get("DEF", 0))
+	var hp_val: int = int(base.get("HP", 0)) + int(rolled.get("HP", 0))
+	var crit_val: float = float(base.get("CRIT", 0.0)) + float(rolled.get("CRIT", 0.0))
+	var crit_dmg_val: float = float(base.get("CRIT_DMG", 0.0)) + float(rolled.get("CRIT_DMG", 0.0))
+
+	return {
+		"atk": atk_val,
+		"def": def_val,
+		"hp": hp_val,
+		"crit": crit_val,
+		"crit_dmg": crit_dmg_val
+	}
+
+
+## 彙整所有已裝備槽位部件的總戰鬥屬性加成
+static func get_total_bonuses(slots: Dictionary) -> Dictionary:
+	var total := {"atk": 0, "def": 0, "hp": 0, "crit": 0.0, "crit_dmg": 0.0}
+	if slots == null or slots.is_empty():
+		return total
+	for sid in ALL_SLOT_IDS:
+		var part: Variant = slots.get(sid, null)
+		if part == null or typeof(part) != TYPE_DICTIONARY or (part as Dictionary).is_empty():
+			for k in slots.keys():
+				if normalize_slot_id(str(k)) == sid:
+					part = slots[k]
+					break
+		if typeof(part) == TYPE_DICTIONARY and not (part as Dictionary).is_empty():
+			var pstats: Dictionary = get_part_stats(part as Dictionary)
+			total["atk"] = int(total["atk"]) + int(pstats.get("atk", 0))
+			total["def"] = int(total["def"]) + int(pstats.get("def", 0))
+			total["hp"] = int(total["hp"]) + int(pstats.get("hp", 0))
+			total["crit"] = float(total["crit"]) + float(pstats.get("crit", 0.0))
+			total["crit_dmg"] = float(total["crit_dmg"]) + float(pstats.get("crit_dmg", 0.0))
+	return total
+
+
+## 運行時彙總玩家當前裝備五槽機芯戰鬥加成
+func total_core_bonuses() -> Dictionary:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and "core_slots" in gs:
+			return get_total_bonuses(gs.get("core_slots"))
+	return {"atk": 0, "def": 0, "hp": 0, "crit": 0.0, "crit_dmg": 0.0}
+
+
+## 快速建立出廠白板部件
+static func create_white_part(slot_id: String) -> Dictionary:
+	return create_part(slot_id, 0)
+
+
+## 快速建立指定色階部件
+static func create_part_by_tier(slot_id: String, tier_id: String, bonus_stats: Dictionary = {}) -> Dictionary:
+	var norm_slot := normalize_slot_id(slot_id)
+	var sc: int = int(TIER_DEFAULT_SCORES.get(tier_id, 0))
+	return create_part(norm_slot, sc, bonus_stats)
+
+
+## 裝備部件至 GameState.core_slots
+func equip_part(slot_id: String, part: Dictionary) -> bool:
+	var norm := normalize_slot_id(slot_id)
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and "core_slots" in gs:
+			gs.core_slots[norm] = part.duplicate(true)
+			return true
+	return false
+
+
+## 卸下部件
+func unequip_part(slot_id: String) -> Dictionary:
+	var norm := normalize_slot_id(slot_id)
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and "core_slots" in gs and gs.core_slots.has(norm):
+			var old: Dictionary = gs.core_slots[norm]
+			gs.core_slots.erase(norm)
+			return old
+	return {}
+
+
+## 取得已裝備部件
+func get_equipped_part(slot_id: String) -> Dictionary:
+	var norm := normalize_slot_id(slot_id)
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and "core_slots" in gs:
+			return (gs.core_slots.get(norm, {}) as Dictionary).duplicate(true)
+	return {}
