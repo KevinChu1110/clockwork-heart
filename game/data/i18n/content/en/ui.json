@@ -2282,5 +2282,17 @@
   "良": "Fine",
   "優": "Rare",
   "精": "Epic",
-  "極": "Mythic"
+  "極": "Mythic",
+  "抽魂 · 封靈罐": "Soul Draw · Soul Canister",
+  "soul.draw_title": "Soul Draw · Soul Canister",
+  "上緊——抽一格": "Wind Up — Draw 1",
+  "soul.btn_pull": "Wind Up — Draw 1",
+  "去玩具堆邊緣": "To the Toy-pile Edge",
+  "soul.btn_continue": "To the Toy-pile Edge",
+  "封靈票 ×%d · 今日已抽 %d": "Soul Tickets ×%d · Pulled Today: %d",
+  "soul.tickets_status": "Soul Tickets ×%d · Pulled Today: %d",
+  "封靈票不足": "Not enough Soul Tickets",
+  "soul.err_tickets": "Not enough Soul Tickets",
+  "今天抽魂次數滿了，明天再轉": "Daily soul pulls are full — come back tomorrow",
+  "err.daily_cap_pull": "Daily soul pulls are full — come back tomorrow"
 }

@@ -10,24 +10,71 @@ const EconScript := preload("res://scripts/systems/wave8/w8_economy.gd")
 const ConfigK1 := preload("res://scripts/systems/wave8/w8_k1_config.gd")
 const CardScript := preload("res://scripts/ui/soul_draw/soul_result_card_view.gd")
 const DailyScript := preload("res://scripts/systems/wave8/w8_daily_cycle.gd")
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+
+static func _t(s: String) -> String:
+	var res := ContentLoc.text("ui", s)
+	if res != s:
+		return res
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var loc_t = str(loc.call("t", s))
+			if loc_t != "" and loc_t != s:
+				return loc_t
+	return res
 
 var pool
 var loadout
 var econ
 var daily
 var card
+var _title_lbl: Label
 var _ticket_lbl: Label
 var _log: RichTextLabel
 var _btn: Button
+var _cont_btn: Button
 var _err: Label
 var _font: Font = null
+var _last_err_key: String = ""
+
+
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_refresh()
 
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	_load_font()
 	_build()
+	_connect_loc_signal()
 	var k1 = ConfigK1.new()
 	k1.load_from()
 	econ = EconScript.new()
@@ -65,17 +112,19 @@ func _build() -> void:
 	add_child(outer_panel)
 
 	# 2. 標題（一級字 26px，深暖褐 INK，封靈罐）
-	var title := Label.new()
-	title.text = "抽魂 · 封靈罐"
-	title.position = Vector2(40, 24)
-	title.add_theme_font_size_override("font_size", 26)
-	title.add_theme_color_override("font_color", UiStyle.INK)
+	_title_lbl = Label.new()
+	_title_lbl.name = "TitleLabel"
+	_title_lbl.text = _t("抽魂 · 封靈罐")
+	_title_lbl.position = Vector2(40, 24)
+	_title_lbl.add_theme_font_size_override("font_size", 26)
+	_title_lbl.add_theme_color_override("font_color", UiStyle.INK)
 	if _font != null:
-		title.add_theme_font_override("font", _font)
-	add_child(title)
+		_title_lbl.add_theme_font_override("font", _font)
+	add_child(_title_lbl)
 
 	# 3. 票數資訊（二級字 18px，深暖褐次級字）
 	_ticket_lbl = Label.new()
+	_ticket_lbl.name = "TicketLabel"
 	_ticket_lbl.position = Vector2(40, 62)
 	_ticket_lbl.add_theme_font_size_override("font_size", 18)
 	_ticket_lbl.add_theme_color_override("font_color", UiStyle.INK_DIM)
@@ -95,6 +144,7 @@ func _build() -> void:
 
 	# 5. 錯誤提示（三級字 16px，深色 DANGER，不可亮底亮字）
 	_err = Label.new()
+	_err.name = "ErrorLabel"
 	_err.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	_err.offset_left = -200
 	_err.offset_right = 200
@@ -109,7 +159,8 @@ func _build() -> void:
 
 	# 6. 主按鈕「上緊——抽一格」（UiStyle.style_button(btn, true)，高度 54px ≥ 50px）
 	_btn = Button.new()
-	_btn.text = "上緊——抽一格"
+	_btn.name = "PullBtn"
+	_btn.text = _t("上緊——抽一格")
 	_btn.custom_minimum_size = Vector2(300, 54)
 	_btn.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	_btn.offset_left = -150
@@ -123,20 +174,20 @@ func _build() -> void:
 	add_child(_btn)
 
 	# 7. 次按鈕「去玩具堆邊緣（C0）」（UiStyle.style_button(btn, false)，高度 50px ≥ 50px）
-	var cont := Button.new()
-	cont.name = "ContinueBtn"
-	cont.text = "去玩具堆邊緣"
-	cont.custom_minimum_size = Vector2(300, 50)
-	cont.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	cont.offset_left = -150
-	cont.offset_right = 150
-	cont.offset_top = -66
-	cont.offset_bottom = -16
-	cont.pressed.connect(func() -> void: continue_requested.emit())
-	UiStyle.style_button(cont, false)
+	_cont_btn = Button.new()
+	_cont_btn.name = "ContinueBtn"
+	_cont_btn.text = _t("去玩具堆邊緣")
+	_cont_btn.custom_minimum_size = Vector2(300, 50)
+	_cont_btn.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	_cont_btn.offset_left = -150
+	_cont_btn.offset_right = 150
+	_cont_btn.offset_top = -66
+	_cont_btn.offset_bottom = -16
+	_cont_btn.pressed.connect(func() -> void: continue_requested.emit())
+	UiStyle.style_button(_cont_btn, false)
 	if _font != null:
-		cont.add_theme_font_override("font", _font)
-	add_child(cont)
+		_cont_btn.add_theme_font_override("font", _font)
+	add_child(_cont_btn)
 
 	# 8. 相容性 log（不可見，不覆蓋畫面）
 	_log = RichTextLabel.new()
@@ -145,16 +196,39 @@ func _build() -> void:
 
 
 func _refresh() -> void:
-	_ticket_lbl.text = "封靈票 ×%d · 今日已抽 %d" % [econ.soul_tickets, daily.daily_soul_pulls]
+	if _title_lbl and is_instance_valid(_title_lbl):
+		_title_lbl.text = _t("抽魂 · 封靈罐")
+	if _btn and is_instance_valid(_btn):
+		_btn.text = _t("上緊——抽一格")
+	if _cont_btn and is_instance_valid(_cont_btn):
+		_cont_btn.text = _t("去玩具堆邊緣")
+	if _ticket_lbl and is_instance_valid(_ticket_lbl):
+		var tickets: int = econ.soul_tickets if econ != null else 0
+		var pulls: int = daily.daily_soul_pulls if daily != null else 0
+		_ticket_lbl.text = _t("封靈票 ×%d · 今日已抽 %d") % [tickets, pulls]
+	if _err and is_instance_valid(_err):
+		if _last_err_key == "lack_tickets":
+			_err.text = _t("封靈票不足")
+		elif _last_err_key == "daily_cap":
+			_err.text = _t("err.daily_cap_pull")
+			if _err.text == "err.daily_cap_pull" and card != null and card.has_method("tr_key"):
+				_err.text = card.tr_key("err.daily_cap_pull")
+		elif _last_err_key == "":
+			_err.text = ""
 
 
 func _on_pull() -> void:
+	_last_err_key = ""
 	_err.text = ""
 	if not daily.can_soul_pull():
-		_err.text = card.tr_key("err.daily_cap_pull")
+		_last_err_key = "daily_cap"
+		_err.text = _t("err.daily_cap_pull")
+		if _err.text == "err.daily_cap_pull" and card != null and card.has_method("tr_key"):
+			_err.text = card.tr_key("err.daily_cap_pull")
 		return
 	if not econ.spend_soul_pull():
-		_err.text = "封靈票不足"
+		_last_err_key = "lack_tickets"
+		_err.text = _t("封靈票不足")
 		return
 	daily.note_soul_pull()
 	card.show_placeholder("soul.pull_start")

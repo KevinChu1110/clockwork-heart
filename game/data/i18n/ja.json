@@ -320,7 +320,7 @@
   "reward.daily_event": "This tick is done! (Rewards pocketed)",
   "reward.stamina_regen": "Wind stamina spun back one tick~",
   "reward.ad_regen": "After the short show, wind +{WindStamina}",
-  "err.daily_cap_pull": "Daily soul pulls are full — come back tomorrow",
+  "err.daily_cap_pull": "本日の抽魂上限に達しました。明日また回してください",
   "err.daily_cap_sweep": "Daily sweeps are full",
   "err.daily_gold_cap": "Daily gold cap hit — go enhance something",
   "daily.title": "今日、誰を巻き上げる？",
@@ -473,5 +473,16 @@
   "良": "良",
   "優": "優",
   "精": "精",
-  "極": "極"
+  "極": "極",
+  "抽魂 · 封靈罐": "抽魂 · 封霊缶",
+  "soul.draw_title": "抽魂 · 封霊缶",
+  "上緊——抽一格": "巻き上げ——一回引く",
+  "soul.btn_pull": "巻き上げ——一回引く",
+  "去玩具堆邊緣": "玩具の山の縁へ",
+  "soul.btn_continue": "玩具の山の縁へ",
+  "封靈票 ×%d · 今日已抽 %d": "封霊券 ×%d · 本日抽選 %d",
+  "soul.tickets_status": "封霊券 ×%d · 本日抽選 %d",
+  "封靈票不足": "封霊券が不足しています",
+  "soul.err_tickets": "封霊券が不足しています",
+  "今天抽魂次數滿了，明天再轉": "本日の抽魂上限に達しました。明日また回してください"
 }

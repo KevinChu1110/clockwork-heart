@@ -320,7 +320,7 @@
   "reward.daily_event": "這格發條轉完了！（獎勵進口袋）",
   "reward.stamina_regen": "發條自己轉回一格～",
   "reward.ad_regen": "看完小劇場，發條＋{WindStamina}",
-  "err.daily_cap_pull": "今天抽魂次數滿了，明天再轉",
+  "err.daily_cap_pull": "今天抽魂次数满了，明天再转",
   "err.daily_cap_sweep": "今天掃蕩次數滿了",
   "err.daily_gold_cap": "今天金幣裝太滿，先去強化吧",
   "daily.title": "今天，谁需要上发条？",
@@ -473,5 +473,16 @@
   "良": "良",
   "優": "优",
   "精": "精",
-  "極": "极"
+  "極": "极",
+  "抽魂 · 封靈罐": "抽魂 · 封灵罐",
+  "soul.draw_title": "抽魂 · 封灵罐",
+  "上緊——抽一格": "上紧——抽一格",
+  "soul.btn_pull": "上紧——抽一格",
+  "去玩具堆邊緣": "去玩具堆边缘",
+  "soul.btn_continue": "去玩具堆边缘",
+  "封靈票 ×%d · 今日已抽 %d": "封灵票 ×%d · 今日已抽 %d",
+  "soul.tickets_status": "封灵票 ×%d · 今日已抽 %d",
+  "封靈票不足": "封灵票不足",
+  "soul.err_tickets": "封灵票不足",
+  "今天抽魂次數滿了，明天再轉": "今天抽魂次数满了，明天再转"
 }
