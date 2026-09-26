@@ -56,9 +56,24 @@ func _initialize() -> void:
 	if bosses.size() != 3:
 		_fail("巨偶數量應為 3，實際為 %d（不准自創第四隻）" % bosses.size())
 	var expected_bosses := [
-		{"name": "失控發條獅", "level": 12, "id": "colossus_lion"},
-		{"name": "霧鐘提線人偶", "level": 20, "id": "colossus_puppet"},
-		{"name": "黑鏽蒸氣巨象", "level": 28, "id": "colossus_elephant"},
+		{
+			"name": "失控發條獅",
+			"level": 12,
+			"id": "colossus_lion",
+			"blurb": "胸膛主簧卡死的黃銅巡遊發條獅，板件咬合劇烈震顫，等待卸下過載零件重歸平靜。",
+		},
+		{
+			"name": "霧鐘提線人偶",
+			"level": 20,
+			"id": "colossus_puppet",
+			"blurb": "白銀鉸鏈與黃銅牽引線組裝的報時人偶，大鐘停擺後齒輪錯位，懸空懸臂正狂亂擺動。",
+		},
+		{
+			"name": "黑鏽蒸氣巨象",
+			"level": 28,
+			"id": "colossus_elephant",
+			"blurb": "冷軋鋼板與雙活塞驅動的重工金屬巨象，身嵌黑鏽管柱，背部發條嘶鳴著滾燙蒸氣。",
+		},
 	]
 	for i in range(expected_bosses.size()):
 		var b: Dictionary = bosses[i]
@@ -68,7 +83,17 @@ func _initialize() -> void:
 			_fail("巨偶 %d 等級不符：預期 Lv%d，實際 Lv%d" % [i, expected_bosses[i]["level"], b.get("level")])
 		if int(b.get("cost", -1)) != 0:
 			_fail("巨偶 %d 本期不應消耗體力/能量（cost 應為 0）" % i)
-	print("  ✓ 三隻停擺巨偶資料完全符合規範")
+		var blurb := str(b.get("blurb", ""))
+		if blurb.is_empty():
+			_fail("巨偶 %d 缺少世界觀副標 (blurb)" % i)
+		var b_len := blurb.length()
+		if b_len < 20 or b_len > 40:
+			_fail("巨偶 %d 副標字數未落在 20–40 字之內: %d 字 (%s)" % [i, b_len, blurb])
+		for c in blurb:
+			var code := c.unicode_at(0)
+			if (code >= 0x1F300 and code <= 0x1F9FF) or (code >= 0x2600 and code <= 0x27BF):
+				_fail("巨偶 %d 副標含有違禁 emoji: %s" % [i, blurb])
+	print("  ✓ 三隻停擺巨偶資料與世界觀副標完全符合規範")
 
 	# --- 2. 檢驗每日次數限制與同日第 4 次被拒 ---
 	print("--- 2. 檢驗每日次數限制與同日第 4 次被拒 ---")
@@ -180,6 +205,9 @@ func _initialize() -> void:
 		"失控發條獅",
 		"霧鐘提線人偶",
 		"黑鏽蒸氣巨象",
+		"胸膛主簧卡死的黃銅巡遊發條獅，板件咬合劇烈震顫，等待卸下過載零件重歸平靜。",
+		"白銀鉸鏈與黃銅牽引線組裝的報時人偶，大鐘停擺後齒輪錯位，懸空懸臂正狂亂擺動。",
+		"冷軋鋼板與雙活塞驅動的重工金屬巨象，身嵌黑鏽管柱，背部發條嘶鳴著滾燙蒸氣。",
 		"明天再來",
 		"四區主線",
 		"停擺巨偶 · 今日剩餘: %d/3",

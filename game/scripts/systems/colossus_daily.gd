@@ -22,6 +22,7 @@ const BOSSES: Array[Dictionary] = [
 		"power": 320,
 		"is_colossus": true,
 		"boss_key": "colossus_lion",
+		"blurb": "胸膛主簧卡死的黃銅巡遊發條獅，板件咬合劇烈震顫，等待卸下過載零件重歸平靜。",
 	},
 	{
 		"id": "colossus_puppet",
@@ -33,6 +34,7 @@ const BOSSES: Array[Dictionary] = [
 		"power": 480,
 		"is_colossus": true,
 		"boss_key": "colossus_puppet",
+		"blurb": "白銀鉸鏈與黃銅牽引線組裝的報時人偶，大鐘停擺後齒輪錯位，懸空懸臂正狂亂擺動。",
 	},
 	{
 		"id": "colossus_elephant",
@@ -44,6 +46,7 @@ const BOSSES: Array[Dictionary] = [
 		"power": 650,
 		"is_colossus": true,
 		"boss_key": "colossus_elephant",
+		"blurb": "冷軋鋼板與雙活塞驅動的重工金屬巨象，身嵌黑鏽管柱，背部發條嘶鳴著滾燙蒸氣。",
 	},
 ]
 

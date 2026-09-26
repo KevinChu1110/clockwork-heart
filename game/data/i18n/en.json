@@ -882,6 +882,9 @@
   "CALIBRATE_FAIL": "Calibration failed: safety spring protects gear",
   "校準未達標，安全彈簧保護不碎裝": "Calibration failed: safety spring protects gear",
   "前往停擺巨偶": "Go to Stalled Colossus",
+  "胸膛主簧卡死的黃銅巡遊發條獅，板件咬合劇烈震顫，等待卸下過載零件重歸平靜。": "A brass parade clockwork lion with a jammed mainspring; shuddering plates await relief from overloaded parts.",
+  "白銀鉸鏈與黃銅牽引線組裝的報時人偶，大鐘停擺後齒輪錯位，懸空懸臂正狂亂擺動。": "A timekeeping marionette of silver hinges and brass cables; gear misalignment flails its hanging arms wildly.",
+  "冷軋鋼板與雙活塞驅動的重工金屬巨象，身嵌黑鏽管柱，背部發條嘶鳴著滾燙蒸氣。": "A heavy metal elephant driven by rolled steel and dual pistons, fitted with black-rust pipes venting scalding steam.",
   "暴擊+%.1f%%": "Crit+%.1f%%",
   "暴傷+%.0f%%": "CritDmg+%.0f%%"
 }
