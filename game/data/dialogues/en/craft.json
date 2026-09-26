@@ -62,7 +62,7 @@
     },
     {
       "speaker": "System",
-      "text": "Playstyle: {play}. {pro}"
+      "text": "Playstyle: {play} {pro}"
     },
     {
       "speaker": "System",

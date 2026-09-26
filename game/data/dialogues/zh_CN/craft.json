@@ -62,7 +62,7 @@
     },
     {
       "speaker": "系统",
-      "text": "玩法：{play}。{pro}"
+      "text": "玩法：{play}{pro}"
     },
     {
       "speaker": "系统",

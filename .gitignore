@@ -10,6 +10,7 @@ extension_api.json
 *.swp
 .idea/
 .vscode/
+*.uid
 
 # secrets — never commit
 .env

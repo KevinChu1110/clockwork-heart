@@ -9,6 +9,8 @@ extends SceneTree
 ## 6. 即時刷新與 GameState.path_display() 語系切換。
 
 const LOCALES := ["zh_TW", "zh_CN", "en", "ja", "ko", "es"]
+const _ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const DialogLines = preload("res://scripts/systems/dialog_lines.gd")
 
 var _ok := true
 var _started := false
@@ -47,9 +49,11 @@ func _process(_delta: float) -> bool:
 
 	if _ok:
 		print("\n=== ✓ test_weapon_classes_i18n 全部通過！ ===")
+		print("WEAPON_CLASSES_I18N_OK")
 		quit(0)
 	else:
 		print("\n=== ✗ test_weapon_classes_i18n 測試失敗！ ===")
+		print("WEAPON_CLASSES_I18N_FAIL")
 		quit(1)
 	return true
 
@@ -205,6 +209,43 @@ func _run_all_tests() -> void:
 			var txt_all := "%s %s %s %s" % [c.get("name", ""), c.get("title", ""), c.get("tagline", ""), c.get("play", "")]
 			if _has_emoji(txt_all):
 				_fail("[%s] %s 包含系統 emoji！文字: %s" % [lc, cid, txt_all])
+
+		# ── 7. 驗證職業名「武鬥」六語系映射 ──
+		var expected_monk := {
+			"zh_TW": "武鬥",
+			"zh_CN": "武斗",
+			"en": "Monk",
+			"ja": "武闘",
+			"ko": "무투",
+			"es": "Monje"
+		}
+		var monk_val := _ContentLoc.text("ui", "武鬥")
+		if monk_val != expected_monk[lc]:
+			_fail("[%s] 職業名「武鬥」錯誤: 期望 '%s'，實際 '%s'" % [lc, expected_monk[lc], monk_val])
+		else:
+			print("  ✓ [%s] 職業名「武鬥」驗證通過: %s" % [lc, monk_val])
+
+		# ── 8. 驗證選定流派確認對話無雙句號 (forge.path_chosen) ──
+		DialogLines.reload()
+		for c in all_classes:
+			var cid := str(c.get("id", ""))
+			var tip := str(c.get("play", ""))
+			var pros: Array = c.get("pros", [])
+			var pro0 := str(pros[0]) if pros.size() > 0 else ""
+			var lines: Array = DialogLines.lines("forge.path_chosen", {
+				"path": "%s%s%s" % [c.get("name", cid), sep, c.get("title", "")],
+				"play": tip,
+				"pro": pro0,
+				"power": 100,
+			})
+			if lines.size() < 2:
+				_fail("[%s] %s forge.path_chosen 句數不足: %d" % [lc, cid, lines.size()])
+				continue
+			var play_text: String = str(lines[1].get("text", ""))
+			if play_text.contains("..") or play_text.contains("。。"):
+				_fail("[%s] %s forge.path_chosen 出現雙句號: %s" % [lc, cid, play_text])
+
+	print("  ✓ [全部語系] 12 流派 forge.path_chosen 對話皆無雙句號（.. 或 。。）")
 
 	# 測試完恢復繁體中文
 	_loc_node.call("set_locale", "zh_TW")
