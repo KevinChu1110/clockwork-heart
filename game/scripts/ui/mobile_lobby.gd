@@ -3518,6 +3518,24 @@ func open_gem_workshop() -> Control:
 	return dlg
 
 
+## 開啟招式心法彈窗
+func open_skill_dialog() -> Control:
+	var existing = get_node_or_null("SkillDialog")
+	if existing != null:
+		return existing
+	var SkillClass: GDScript = load("res://scripts/ui/skill_dialog.gd")
+	if SkillClass == null:
+		push_error("無法載入 SkillDialog")
+		return null
+	var dlg: Control = SkillClass.new() as Control
+	dlg.z_index = 80
+	dlg.tree_exited.connect(func():
+		refresh_hud()
+	)
+	add_child(dlg)
+	return dlg
+
+
 ## 切換至出征分頁（與右側看板「前往出征」按鈕同一條入口）
 func go_to_sortie() -> void:
 	_switch_tab(Tab.ADVENTURE)

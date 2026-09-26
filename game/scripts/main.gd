@@ -70,6 +70,7 @@ var _settings_from_title: bool = true
 var _import_armed: bool = false
 var _title_buttons: Array[Button] = []
 var _active_title_btn_idx: int = -1
+var _active_panel_func: Callable = Callable()
 
 
 
@@ -145,8 +146,17 @@ func _ready() -> void:
 	_saves_ui.on_new_game = func(slot: int) -> void:
 		_go_character_creation(slot)
 	_saves_ui.on_close = _go_title
+	if Loc and Loc.has_signal("locale_changed"):
+		Loc.locale_changed.connect(_on_locale_changed)
 	_ensure_fade()
 	_go_title()
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	if _active_panel_func.is_valid():
+		_active_panel_func.call()
+	elif _current == Screen.TITLE:
+		_go_title()
 
 
 ## 幫每張過場配一張專屬插畫：<scene_id>_1、<scene_id>_2⋯
@@ -375,9 +385,9 @@ func _is_modal_node(n: Node) -> bool:
 	var scr = n.get_script()
 	if scr and scr is Script:
 		sname = scr.resource_path.get_file().get_basename()
-	if sname in ["wardrobe_dialog", "forge_dialog", "gem_workshop_dialog", "windup_daily_dialog", "energy_lack_dialog", "mobile_settings", "mock_ad_dialog"]:
+	if sname in ["wardrobe_dialog", "forge_dialog", "gem_workshop_dialog", "windup_daily_dialog", "energy_lack_dialog", "mobile_settings", "mock_ad_dialog", "skill_dialog"]:
 		return true
-	if n.name in ["WardrobeDialog", "ForgeDialog", "GemWorkshopDialog", "WindupDailyDialog", "EnergyLackDialog", "SettingsCard", "MobileSettings", "MockAdDialog"]:
+	if n.name in ["WardrobeDialog", "ForgeDialog", "GemWorkshopDialog", "WindupDailyDialog", "EnergyLackDialog", "SettingsCard", "MobileSettings", "MockAdDialog", "SkillDialog"]:
 		return true
 	return false
 
@@ -1448,6 +1458,7 @@ func _online_on_result(res: Dictionary) -> void:
 
 func _go_starpath_panel() -> void:
 	## 每日發條儀表板：一天要開遊戲時先看這裡
+	_active_panel_func = _go_starpath_panel
 	QuestSystem.refresh_daily()
 	OnlineGate.refresh_candle_soft()
 	var body := "[color=#fc9]%s[/color]\n\n" % RegionCatalog.next_objective_line()
@@ -1489,6 +1500,7 @@ func _go_starpath_panel() -> void:
 
 
 func _go_daily_panel() -> void:
+	_active_panel_func = _go_daily_panel
 	## 單一入口：今天誰需要上發條（邏輯在 WindupDailySystem）
 	WindupDailySystem.refresh()
 	var body := WindupDailySystem.panel_bbcode()
@@ -1497,7 +1509,7 @@ func _go_daily_panel() -> void:
 		var c: Dictionary = WindupDailySystem.todays_case()
 		for ch in c.get("choices", []):
 			var cid := str(ch.get("id", ""))
-			var lab := str(ch.get("label", cid))
+			var lab := _t(str(ch.get("label", cid)))
 			buttons.append({"text": lab, "cb": func():
 				var r: Dictionary = WindupDailySystem.complete(cid)
 				_play_dialog([{"speaker": _t("系統"), "text": str(r.get("msg", ""))}], _go_daily_panel)
@@ -1509,6 +1521,7 @@ func _go_daily_panel() -> void:
 
 
 func _go_quest_panel() -> void:
+	_active_panel_func = _go_quest_panel
 	var body := _t("長遠任務（完成後可領獎）\n\n") + QuestSystem.list_missions_bbcode()
 	var buttons: Array = []
 	for m in QuestSystem.missions():
@@ -1579,6 +1592,7 @@ func _title_settings_or_hub_back() -> void:
 
 
 func _hub_back() -> void:
+	_active_panel_func = Callable()
 	## 標題／章節／探索：回到合理畫面
 	if GameState.chapter == "title" or _current == Screen.TITLE:
 		_go_title()
@@ -2496,6 +2510,7 @@ func proof_show_tutor() -> void:
 
 
 func _go_title() -> void:
+	_active_panel_func = Callable()
 	if _paused:
 		_close_pause()
 	_reset_fade()
@@ -5771,7 +5786,7 @@ func _go_skill_panel() -> void:
 		if SkillSystem.is_learned(sid):
 			continue
 		if SkillSystem.is_unlocked(sid):
-			var nm: String = str(d.get("name", sid))
+			var nm: String = str(SkillSystem.def_of(sid).get("name", sid))
 			buttons.append({
 				"text": _t("體悟：%s") % nm,
 				"cb": _skill_unlock_cb(sid),

@@ -881,6 +881,11 @@ func ensure_skill_map() -> void:
 	_sync_legacy_slash()
 
 
+func profession_name(prof: String) -> String:
+	var raw := str(PROFESSION_NAME.get(prof, prof))
+	return ContentLoc.text("ui", raw)
+
+
 ## 招式名與說明在非繁中會被 ContentLoc 換掉。翻在這裡而不是各個顯示點，
 ## 是因為 def_of() 是整個目錄唯一的讀取入口 —— 下游怎麼用都吃得到。
 func def_of(id: String) -> Dictionary:
@@ -1210,9 +1215,10 @@ func pick_battle_skill(hp_ratio: float = 1.0, weapon_line: String = "") -> Dicti
 			best_heal = d
 	if not best_heal.is_empty():
 		var hid: String = str(best_heal.get("id", ""))
+		var hdef: Dictionary = def_of(hid)
 		return {
 			"id": hid,
-			"name": str(best_heal.get("name", hid)),
+			"name": str(hdef.get("name", str(best_heal.get("name", hid)))),
 			"kind": "heal",
 			"mult": 0.0,
 			"hits": 1,
@@ -1239,9 +1245,10 @@ func pick_battle_skill(hp_ratio: float = 1.0, weapon_line: String = "") -> Dicti
 		## 當前線沒有已學攻擊技 → 不硬塞跨線橫斬
 		return {}
 	var sid2: String = str(best.get("id", ""))
+	var bdef: Dictionary = def_of(sid2)
 	var out := {
 		"id": sid2,
-		"name": str(best.get("name", sid2)),
+		"name": str(bdef.get("name", str(best.get("name", sid2)))),
 		"kind": "attack",
 		"mult": mult_for(sid2),
 		"hits": hits_for(sid2),
@@ -1356,7 +1363,7 @@ func panel_status_bbcode() -> String:
 	var pid := _path_id()
 	var prof := profession_of(pid)
 	if prof != "":
-		var pname := str(PROFESSION_NAME.get(prof, prof))
+		var pname := profession_name(prof)
 		var wpair: Array = weapons_of_profession(prof)
 		var wlabels: PackedStringArray = []
 		for w in wpair:
@@ -1382,7 +1389,7 @@ func panel_status_bbcode() -> String:
 	for prof_key in ["knight", "viking", "ninja", "monk", "mage", "ranger"]:
 		var any_visible := false
 		var block: PackedStringArray = []
-		var pname2 := str(PROFESSION_NAME.get(prof_key, prof_key))
+		var pname2 := profession_name(prof_key)
 		block.append(_t("[color=#8cf]— %s —[/color]") % pname2)
 		for w in weapons_of_profession(prof_key):
 			var wline := str(w)
@@ -1392,14 +1399,16 @@ func panel_status_bbcode() -> String:
 					continue
 				var sid: String = str(d.get("id", ""))
 				shown[sid] = true
-				var name: String = str(d.get("name", sid))
+				var d_loc: Dictionary = def_of(sid)
+				var name: String = str(d_loc.get("name", str(d.get("name", sid))))
 				var slv: int = get_lv(sid)
 				if slv <= 0:
 					if is_unlocked(sid):
 						block.append(_t("    [color=#aaa]· %s — 可體悟[/color]") % name)
 						any_visible = true
 					else:
-						block.append("    [color=#666]· ？？？ — %s[/color]" % str(d.get("unlock_hint", _t("未解鎖"))))
+						var uh: String = str(d_loc.get("unlock_hint", str(d.get("unlock_hint", _t("未解鎖")))))
+						block.append("    [color=#666]· ？？？ — %s[/color]" % uh)
 					continue
 				any_visible = true
 				var kind: String = str(d.get("kind", "attack"))
@@ -1415,7 +1424,7 @@ func panel_status_bbcode() -> String:
 				block.append("[b]    · %s · Lv%d[/b]  %s · %s" % [name, slv, mastery_progress_line(sid), stat_line])
 				if slv < MAX_LV:
 					var next_key := "lv%d" % (slv + 1)
-					var preview: String = str(d.get(next_key, _t("下級：效果↑")))
+					var preview: String = str(d_loc.get(next_key, str(d.get(next_key, _t("下級：效果↑")))))
 					block.append(_t("      [color=#8cf]%s[/color]") % preview)
 		## 只顯示與玩家有關或已解鎖任一一招的職業區塊，避免面板爆炸
 		## 但至少永遠顯示當前職業
