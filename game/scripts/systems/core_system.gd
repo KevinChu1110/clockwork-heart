@@ -627,7 +627,7 @@ static func get_total_bonuses(slots: Dictionary) -> Dictionary:
 
 
 ## 運行時彙總玩家當前裝備五槽機芯戰鬥加成
-func total_core_bonuses() -> Dictionary:
+static func total_core_bonuses() -> Dictionary:
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:
 		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
@@ -649,7 +649,7 @@ static func create_part_by_tier(slot_id: String, tier_id: String, bonus_stats: D
 
 
 ## 裝備部件至 GameState.core_slots
-func equip_part(slot_id: String, part: Dictionary) -> bool:
+static func equip_part(slot_id: String, part: Dictionary) -> bool:
 	var norm := normalize_slot_id(slot_id)
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:
@@ -661,7 +661,7 @@ func equip_part(slot_id: String, part: Dictionary) -> bool:
 
 
 ## 卸下部件
-func unequip_part(slot_id: String) -> Dictionary:
+static func unequip_part(slot_id: String) -> Dictionary:
 	var norm := normalize_slot_id(slot_id)
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:
@@ -674,7 +674,7 @@ func unequip_part(slot_id: String) -> Dictionary:
 
 
 ## 取得已裝備部件
-func get_equipped_part(slot_id: String) -> Dictionary:
+static func get_equipped_part(slot_id: String) -> Dictionary:
 	var norm := normalize_slot_id(slot_id)
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:
