@@ -169,7 +169,27 @@ func _apply_look() -> void:
 		portrait.custom_minimum_size = Vector2(96, 120)
 
 
+func _ensure_nodes() -> void:
+	if choices == null:
+		choices = get_node_or_null("%Choices") as VBoxContainer
+	if speaker_label == null:
+		speaker_label = get_node_or_null("%Speaker") as Label
+	if body_label == null:
+		body_label = get_node_or_null("%Body") as RichTextLabel
+	if continue_hint == null:
+		continue_hint = get_node_or_null("%ContinueHint") as Label
+	if accent == null:
+		accent = get_node_or_null("%Accent") as ColorRect
+	if portrait == null:
+		portrait = get_node_or_null("%Portrait") as TextureRect
+	if portrait_frame == null:
+		portrait_frame = get_node_or_null("%PortraitFrame") as PanelContainer
+	if panel == null:
+		panel = get_node_or_null("Panel") as PanelContainer
+
+
 func play(lines: Array) -> void:
+	_ensure_nodes()
 	_lines = lines
 	_index = 0
 	visible = true
@@ -182,6 +202,28 @@ func play(lines: Array) -> void:
 		var tw := create_tween()
 		tw.tween_property(_dim, "modulate:a", 1.0, 0.18)
 	_show_current()
+
+
+func _is_touch() -> bool:
+	if force_touch_mode != null:
+		return bool(force_touch_mode)
+	return DisplayServer.is_touchscreen_available()
+
+
+func _adapt_touch_text(t: String) -> String:
+	if not _is_touch():
+		return t
+	if t == _t("王者斬必擋。火圈先亮再落，亮了按 J。") or t == "王者斬必擋。火圈先亮再落，亮了按 J。":
+		return _t("王者斬必擋。火圈先亮再落，亮了點閃避。")
+	if t == _t("風切前會先響。響了按 J。") or t == "風切前會先響。響了按 J。":
+		return _t("風切前會先響。響了點閃避。")
+	if t == _t("牠停下來的那一拍才吃滿傷害。風聲響起就按 J。") or t == "牠停下來的那一拍才吃滿傷害。風聲響起就按 J。":
+		return _t("牠停下來的那一拍才吃滿傷害。風聲響起就點閃避。")
+	if t == _t("衝來時按 J 硬碰，岩甲會裂。落石也按 J。") or t == "衝來時按 J 硬碰，岩甲會裂。落石也按 J。":
+		return _t("衝來時點閃避硬碰，岩甲會裂。落石也點閃避。")
+	if t == _t("地先亮，再落石。亮了按 J。") or t == "地先亮，再落石。亮了按 J。":
+		return _t("地先亮，再落石。亮了點閃避。")
+	return t
 
 
 func _show_current() -> void:
@@ -222,7 +264,7 @@ func _show_current() -> void:
 		if accent:
 			accent.color = COLOR_ORANGE
 
-	_full_text = str(line.get("text", ""))
+	_full_text = _adapt_touch_text(str(line.get("text", "")))
 	_type_i = 0
 	_type_accum = 0.0
 	body_label.text = ""

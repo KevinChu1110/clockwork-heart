@@ -45,6 +45,23 @@ const EquipPanelScn = preload("res://scripts/ui/panels/equip_panel.gd")
 const SaveSlotsPanelScn = preload("res://scripts/ui/panels/save_slots_panel.gd")
 const EnergyLackDialogScn = preload("res://scripts/ui/energy_lack_dialog.gd")
 var _dialogue: DialogueBox
+var force_touch_mode: Variant = null:
+	set(v):
+		force_touch_mode = v
+		if _dialogue != null:
+			_dialogue.force_touch_mode = v
+
+
+func _is_touch() -> bool:
+	if force_touch_mode != null:
+		return bool(force_touch_mode)
+	if _dialogue != null and _dialogue.force_touch_mode != null:
+		return bool(_dialogue.force_touch_mode)
+	return DisplayServer.is_touchscreen_available()
+
+
+func _chapter_hint(desktop_text: String, touch_text: String) -> String:
+	return _t(touch_text) if _is_touch() else _t(desktop_text)
 var _cutscene: Control  ## CutscenePlayer
 var _explore: Control  ## ExploreView
 ## 戰鬥結束後探索場景重建時補播的姿態
@@ -1832,7 +1849,28 @@ func _play_dialog(lines: Array, after: Callable = Callable(), choice_ctx: String
 		_explore.call("set_frozen", true)
 	_after_dialogue = after
 	AudioManager.play_ui()
-	_dialogue.play(lines)
+	if _is_touch():
+		var adapted: Array = []
+		for item in lines:
+			if item is Dictionary:
+				var d: Dictionary = (item as Dictionary).duplicate(true)
+				var orig_text: String = str(d.get("text", ""))
+				if orig_text == _t("王者斬必擋。火圈先亮再落，亮了按 J。") or orig_text == "王者斬必擋。火圈先亮再落，亮了按 J。":
+					d["text"] = _t("王者斬必擋。火圈先亮再落，亮了點閃避。")
+				elif orig_text == _t("風切前會先響。響了按 J。") or orig_text == "風切前會先響。響了按 J。":
+					d["text"] = _t("風切前會先響。響了點閃避。")
+				elif orig_text == _t("牠停下來的那一拍才吃滿傷害。風聲響起就按 J。") or orig_text == "牠停下來的那一拍才吃滿傷害。風聲響起就按 J。":
+					d["text"] = _t("牠停下來的那一拍才吃滿傷害。風聲響起就點閃避。")
+				elif orig_text == _t("衝來時按 J 硬碰，岩甲會裂。落石也按 J。") or orig_text == "衝來時按 J 硬碰，岩甲會裂。落石也按 J。":
+					d["text"] = _t("衝來時點閃避硬碰，岩甲會裂。落石也點閃避。")
+				elif orig_text == _t("地先亮，再落石。亮了按 J。") or orig_text == "地先亮，再落石。亮了按 J。":
+					d["text"] = _t("地先亮，再落石。亮了點閃避。")
+				adapted.append(d)
+			else:
+				adapted.append(item)
+		_dialogue.play(adapted)
+	else:
+		_dialogue.play(lines)
 
 
 func _on_dialogue_finished() -> void:
@@ -6890,7 +6928,7 @@ func _interact_wild(id: String) -> void:
 					{"speaker": _t("灰鬚"), "text": _t("（灰鬚的話還在耳邊）獅子不聽人話。聽刀。")},
 					{"speaker": _t("灰鬚"), "text": _t("你不是去證明你強。你是去讓它想起——它該守什麼。")},
 					{"speaker": _t("雷歐"), "text": _t("渺小的兔子……也想挑戰獅衛之王？")},
-					{"speaker": _t("系統"), "text": _t("王者斬必擋。火圈先亮再落，亮了按 J。")},
+					{"speaker": _t("系統"), "text": _chapter_hint("王者斬必擋。火圈先亮再落，亮了按 J。", "王者斬必擋。火圈先亮再落，亮了點閃避。")},
 				], func(): _start_battle("leo"))
 
 
@@ -7376,7 +7414,7 @@ func _interact_forest(id: String) -> void:
 			else:
 				_play_dialog([
 					{"speaker": _t("旁白"), "text": _t("箭道地面一道淺痕——風曾割過這裡。")},
-					{"speaker": _t("系統"), "text": _t("風切前會先響。響了按 J。")},
+					{"speaker": _t("系統"), "text": _chapter_hint("風切前會先響。響了按 J。", "風切前會先響。響了點閃避。")},
 				], func():
 					GameState.set_flag("c4_arrow_tip", true)
 					SaveManager.save_game()
@@ -7413,7 +7451,7 @@ func _c4_try_falcon() -> void:
 	_play_dialog([
 		{"speaker": _t("疾影"), "text": _t("……把發條最鬆的送來了？眼睛，跟得上我嗎？")},
 		{"speaker": _t("疾影"), "text": _t("追，會迷路。等，才見我。頭銜追不上風。")},
-		{"speaker": _t("系統"), "text": _t("牠停下來的那一拍才吃滿傷害。風聲響起就按 J。")},
+		{"speaker": _t("系統"), "text": _chapter_hint("牠停下來的那一拍才吃滿傷害。風聲響起就按 J。", "牠停下來的那一拍才吃滿傷害。風聲響起就點閃避。")},
 	], func(): _start_battle("falcon"))
 
 
@@ -7545,7 +7583,7 @@ func _c5_try_boar() -> void:
 	_play_dialog([
 		{"speaker": _t("石拳"), "text": _t("……把發條最鬆的送來了？還站著？那就接下這一拳——")},
 		{"speaker": _t("石拳"), "text": _t("力氣該砸向誰？頭銜砸不開岸。")},
-		{"speaker": _t("系統"), "text": _t("衝來時按 J 硬碰，岩甲會裂。落石也按 J。")},
+		{"speaker": _t("系統"), "text": _chapter_hint("衝來時按 J 硬碰，岩甲會裂。落石也按 J。", "衝來時點閃避硬碰，岩甲會裂。落石也點閃避。")},
 	], func(): _start_battle("boar"))
 
 
