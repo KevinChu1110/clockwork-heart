@@ -4281,7 +4281,7 @@ func _on_battle_finished(won: bool) -> void:
 	if _battle_mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
 		SaveManager.save_game()
 		## 停擺巨偶戰結束：返回手遊大廳出征分頁並鎖定停擺巨偶子模式
-		_go_mobile_lobby(2, 3)
+		_go_mobile_lobby(2, 1)
 		return
 	if _battle_mode == "wolf":
 		if won:

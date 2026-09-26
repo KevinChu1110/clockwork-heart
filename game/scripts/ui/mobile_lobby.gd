@@ -2243,6 +2243,8 @@ func _select_region(r: int) -> void:
 	_refresh_region_stages()
 
 func _refresh_region_stages() -> void:
+	if _stages_container == null or not is_instance_valid(_stages_container):
+		return
 	for c in _stages_container.get_children():
 		_stages_container.remove_child(c)
 		c.queue_free()

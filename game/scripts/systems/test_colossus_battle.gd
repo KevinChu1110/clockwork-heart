@@ -139,6 +139,23 @@ func _initialize() -> void:
 		_fail("前搖與格擋窗口遭竄改")
 	print("  ✓ 時間模型常數鎖定無偏移")
 
+	# 5. 驗證戰鬥結束返回大廳出征分頁 (2) 與停擺巨偶子模式 (1 = AdventureSubMode.COLOSSUS)
+	print("--- 5. 驗證巨偶戰鬥結束返回大廳分頁與鎖定停擺巨偶子模式 ---")
+	var MobileLobbyClass = load("res://scripts/ui/mobile_lobby.gd")
+	if MobileLobbyClass:
+		var lobby = MobileLobbyClass.new()
+		root.add_child(lobby)
+		lobby.switch_tab(2)
+		lobby.switch_adventure_submode(1)
+		if lobby._current_tab != 2:
+			_fail("返回大廳分頁應為 2 (ADVENTURE)")
+		if lobby._adventure_submode != 1:
+			_fail("返回大廳子模式應為 1 (COLOSSUS)")
+		if lobby._reg_bar != null and lobby._reg_bar.visible:
+			_fail("鎖定停擺巨偶子模式時四區橫列應被隱藏")
+		print("  ✓ 巨偶戰鬥結束返回手遊大廳出征分頁並鎖定停擺巨偶子模式驗證通過")
+		lobby.queue_free()
+
 	if _ok:
 		print("TEST_COLOSSUS_BATTLE_OK")
 		quit(0)

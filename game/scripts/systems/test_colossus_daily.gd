@@ -1,7 +1,7 @@
 extends SceneTree
 ## 停擺巨偶每日出征與戰鬥掉落單元測試 (test_colossus_daily.gd)
 ## 依據任務 t_f093ee0b 驗證規範：
-## 1. 停擺巨偶三張占位卡（失控發條獅 Lv12、霧鐘提線人偶 Lv20、黑鏑蒸汽巨象 Lv28，無第四隻）
+## 1. 停擺巨偶三張占位卡（失控發條獅 Lv12、霧鐘提線人偶 Lv20、黑鏽蒸氣巨象 Lv28，無第四隻）
 ## 2. 每日初始次數為 3，點擊開戰消耗 1 次當日次數；剩餘次數正確遞減
 ## 3. 同一天內出征滿 3 次後，第 4 次被拒並提示「今日挑戰次數已用盡，請明天再來！」彈窗
 ## 4. 跨日重置（改 debug_day 隔日後次數回到 3）
@@ -58,7 +58,7 @@ func _initialize() -> void:
 	var expected_bosses := [
 		{"name": "失控發條獅", "level": 12, "id": "colossus_lion"},
 		{"name": "霧鐘提線人偶", "level": 20, "id": "colossus_puppet"},
-		{"name": "黑鏑蒸汽巨象", "level": 28, "id": "colossus_elephant"},
+		{"name": "黑鏽蒸氣巨象", "level": 28, "id": "colossus_elephant"},
 	]
 	for i in range(expected_bosses.size()):
 		var b: Dictionary = bosses[i]
@@ -179,7 +179,7 @@ func _initialize() -> void:
 		"停擺巨偶",
 		"失控發條獅",
 		"霧鐘提線人偶",
-		"黑鏑蒸汽巨象",
+		"黑鏽蒸氣巨象",
 		"明天再來",
 		"四區主線",
 		"停擺巨偶 · 今日剩餘: %d/3",
