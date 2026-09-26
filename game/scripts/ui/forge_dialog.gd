@@ -9,6 +9,7 @@ extends Control
 ## 5. 字級 16~24px 加粗帶深色厚描邊，零小字。
 ## 6. 連接既有鍛造系統與連敗保底進度 (3 格保底)。
 ## 7. 零 emoji、零系統字型符號。
+## 8. 六語系多國語言支援 (ContentLoc / Loc.locale_changed 即時切換)。
 
 signal closed()
 
@@ -18,7 +19,17 @@ const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
-	return ContentLoc.text("ui", s)
+	var res := ContentLoc.text("ui", s)
+	if res != s:
+		return res
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var loc_t = str(loc.call("t", s))
+			if loc_t != "" and loc_t != s:
+				return loc_t
+	return res
 
 ## ── 多巴胺鮮亮高飽和色盤 ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
@@ -37,6 +48,7 @@ const COLOR_TEXT_ORANGE:= Color("#C2600A")  ## 壓明度暖橘（亮底文字專
 const COLOR_TEXT_PINK  := Color("#D62E5C")  ## 壓明度珊瑚粉（亮底文字專用）
 
 var _dialog_card: PanelContainer
+var _title_lbl: Label
 var _weapon_label: Label
 var _atk_label: Label
 var _gold_label: Label
@@ -54,6 +66,43 @@ var _btn_close: Button
 var _cached_font: Font = null
 
 
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_ui_texts()
+	_refresh_display()
+
+
+func _update_ui_texts() -> void:
+	if _title_lbl and is_instance_valid(_title_lbl):
+		_title_lbl.text = _t("天宮鐵匠 · 裝備鍛造")
+	if _btn_close and is_instance_valid(_btn_close):
+		_btn_close.text = _t("離開鐵匠鋪")
+
+
 func _ready() -> void:
 	name = "ForgeDialog"
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -63,8 +112,10 @@ func _ready() -> void:
 	if ResourceLoader.exists(FONT_PATH):
 		_cached_font = load(FONT_PATH) as Font
 
+	_connect_loc_signal()
 	_ensure_initial_state()
 	_build_ui()
+	_update_ui_texts()
 	_refresh_display()
 
 
@@ -153,16 +204,17 @@ func _build_ui() -> void:
 	head.add_theme_constant_override("separation", 10)
 	v.add_child(head)
 
-	var title_lbl := Label.new()
-	title_lbl.text = _t("天宮鐵匠 · 裝備鍛造")
-	title_lbl.add_theme_font_size_override("font_size", 22)
-	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
-	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	title_lbl.add_theme_constant_override("outline_size", 4)
+	_title_lbl = Label.new()
+	_title_lbl.name = "TitleLabel"
+	_title_lbl.text = _t("天宮鐵匠 · 裝備鍛造")
+	_title_lbl.add_theme_font_size_override("font_size", 22)
+	_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	_title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_title_lbl.add_theme_constant_override("outline_size", 4)
 	if _cached_font:
-		title_lbl.add_theme_font_override("font", _cached_font)
-	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head.add_child(title_lbl)
+		_title_lbl.add_theme_font_override("font", _cached_font)
+	_title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(_title_lbl)
 
 	var close_btn := ResponsiveUi.make_close_button(_on_close)
 	head.add_child(close_btn)
@@ -190,7 +242,8 @@ func _build_ui() -> void:
 	s_margin.add_child(sv)
 
 	_weapon_label = Label.new()
-	_weapon_label.text = "當前裝備：微末之刃（第 2 階）"
+	_weapon_label.name = "WeaponLabel"
+	_weapon_label.text = ""
 	_weapon_label.add_theme_font_size_override("font_size", 18)
 	_weapon_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_weapon_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -205,13 +258,18 @@ func _build_ui() -> void:
 	stats_grid.add_theme_constant_override("v_separation", 6)
 	sv.add_child(stats_grid)
 
-	_atk_label = _create_info_label(stats_grid, "武器攻擊：+9")
-	_gold_label = _create_info_label(stats_grid, "持有金幣：0")
-	_cost_label = _create_info_label(stats_grid, "升階花費：80 金幣")
-	_rate_label = _create_info_label(stats_grid, "基礎成功率：77%")
+	_atk_label = _create_info_label(stats_grid, "")
+	_atk_label.name = "AtkLabel"
+	_gold_label = _create_info_label(stats_grid, "")
+	_gold_label.name = "GoldLabel"
+	_cost_label = _create_info_label(stats_grid, "")
+	_cost_label.name = "CostLabel"
+	_rate_label = _create_info_label(stats_grid, "")
+	_rate_label.name = "RateLabel"
 
 	_slots_label = Label.new()
-	_slots_label.text = "魂槽開放：1/4 槽"
+	_slots_label.name = "SlotsLabel"
+	_slots_label.text = ""
 	_slots_label.add_theme_font_size_override("font_size", 16)
 	_slots_label.add_theme_color_override("font_color", COLOR_SKY)
 	_slots_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -238,7 +296,8 @@ func _build_ui() -> void:
 	pm.add_child(pv)
 
 	_pity_title_label = Label.new()
-	_pity_title_label.text = "鍛造連敗保底 0/3 · 滿 3 格釘釘摔錘必成功"
+	_pity_title_label.name = "PityTitleLabel"
+	_pity_title_label.text = ""
 	_pity_title_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_pity_title_label.add_theme_font_size_override("font_size", 17)
 	_pity_title_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
@@ -268,7 +327,8 @@ func _build_ui() -> void:
 		_pity_bars.append(seg)
 
 	_pity_sub_label = Label.new()
-	_pity_sub_label.text = "升階失敗累積 1 格 · 升階成功清空進度"
+	_pity_sub_label.name = "PitySubLabel"
+	_pity_sub_label.text = ""
 	_pity_sub_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_pity_sub_label.add_theme_font_size_override("font_size", 16)
 	_pity_sub_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -280,6 +340,7 @@ func _build_ui() -> void:
 
 	# 訊息回饋
 	_msg_label = Label.new()
+	_msg_label.name = "MsgLabel"
 	_msg_label.text = ""
 	_msg_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_msg_label.add_theme_font_size_override("font_size", 16)
@@ -299,7 +360,7 @@ func _build_ui() -> void:
 	# 主要按鈕：強化升階 (薄荷綠立體果凍厚底 6px)
 	_btn_forge = Button.new()
 	_btn_forge.name = "BtnForge"
-	_btn_forge.text = "強化升階（消耗 80 金幣）"
+	_btn_forge.text = ""
 	_btn_forge.custom_minimum_size = Vector2(280, 52)
 	_btn_forge.add_theme_font_size_override("font_size", 18)
 	_btn_forge.add_theme_color_override("font_color", Color.WHITE)
@@ -317,7 +378,7 @@ func _build_ui() -> void:
 	# 次要按鈕：離開鐵匠鋪 (金黃立體厚底 5px)
 	_btn_close = Button.new()
 	_btn_close.name = "BtnCloseForge"
-	_btn_close.text = "離開鐵匠鋪"
+	_btn_close.text = _t("離開鐵匠鋪")
 	_btn_close.custom_minimum_size = Vector2(160, 52)
 	_btn_close.add_theme_font_size_override("font_size", 18)
 	_btn_close.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -346,23 +407,26 @@ func _create_info_label(parent: Container, text: String) -> Label:
 
 
 func _refresh_display() -> void:
+	if not is_instance_valid(_weapon_label) or not is_instance_valid(_btn_forge):
+		return
+
 	var at_max := GameState.weapon_tier >= ForgeSystem.FORGE_MAX_TIER
 	var wname := GameState.weapon_display() if GameState.has_method("weapon_display") else GameState.weapon_name
-	_weapon_label.text = "當前裝備：%s（第 %d 階）" % [wname, GameState.weapon_tier]
-	_atk_label.text = "武器攻擊：+%d" % _current_weapon_atk()
-	_gold_label.text = "持有金幣：%d" % GameState.gold
+	_weapon_label.text = _t("當前裝備：%s（第 %d 階）") % [wname, GameState.weapon_tier]
+	_atk_label.text = _t("武器攻擊：+%d") % _current_weapon_atk()
+	_gold_label.text = _t("持有金幣：%d") % GameState.gold
 
 	var cost := ForgeSystem.forge_cost()
 	if at_max:
-		_cost_label.text = "升階花費：已達上限"
-		_rate_label.text = "成功率：已封頂"
-		_btn_forge.text = "鍛造已封頂"
+		_cost_label.text = _t("升階花費：已達上限")
+		_rate_label.text = _t("成功率：已封頂")
+		_btn_forge.text = _t("鍛造已封頂")
 		_btn_forge.disabled = true
 	else:
-		_cost_label.text = "升階花費：%d 金幣" % cost
+		_cost_label.text = _t("升階花費：%d 金幣") % cost
 		var rate_pct := int(ForgeSystem.forge_rate_base() * 100.0)
-		_rate_label.text = "基礎成功率：%d%%" % rate_pct
-		_btn_forge.text = "強化升階（消耗 %d 金幣）" % cost
+		_rate_label.text = _t("基礎成功率：%d%%") % rate_pct
+		_btn_forge.text = _t("強化升階（消耗 %d 金幣）") % cost
 		_btn_forge.disabled = false
 
 	# 魂槽狀態
@@ -373,26 +437,26 @@ func _refresh_display() -> void:
 			next_slot = need
 			break
 	if next_slot > 0:
-		_slots_label.text = "魂槽開放：%d/%d 槽（下一槽需器階 %d）" % [slots, SoulSystem.SLOT_TIERS.size(), next_slot]
+		_slots_label.text = _t("魂槽開放：%d/%d 槽（下一槽需器階 %d）") % [slots, SoulSystem.SLOT_TIERS.size(), next_slot]
 	else:
-		_slots_label.text = "魂槽開放：%d/%d 槽（已全數開放）" % [slots, SoulSystem.SLOT_TIERS.size()]
+		_slots_label.text = _t("魂槽開放：%d/%d 槽（已全數開放）") % [slots, SoulSystem.SLOT_TIERS.size()]
 
 	# 保底進度條
 	var streak: int = clampi(GameState.forge_fail_streak, 0, 3)
 	if at_max:
-		_pity_title_label.text = "器階已達上限 · 鍛造已封頂"
-		_pity_sub_label.text = "所有階級均已鍛造完成"
+		_pity_title_label.text = _t("器階已達上限 · 鍛造已封頂")
+		_pity_sub_label.text = _t("所有階級均已鍛造完成")
 	elif streak < 3:
-		_pity_title_label.text = "鍛造連敗保底 %d/3 · 滿 3 格釘釘摔錘必成功" % streak
+		_pity_title_label.text = _t("鍛造連敗保底 %d/3 · 滿 3 格釘釘摔錘必成功") % streak
 		if streak == 2:
-			_pity_sub_label.text = "再失敗 1 次將觸發第 3 格摔錘保底"
+			_pity_sub_label.text = _t("再失敗 1 次將觸發第 3 格摔錘保底")
 		elif streak == 1:
-			_pity_sub_label.text = "升階失敗累積 1 格 · 升階成功清空進度"
+			_pity_sub_label.text = _t("升階失敗累積 1 格 · 升階成功清空進度")
 		else:
-			_pity_sub_label.text = "累積 3 次升階失敗將啟動必成功保底機制"
+			_pity_sub_label.text = _t("累積 3 次升階失敗將啟動必成功保底機制")
 	else:
-		_pity_title_label.text = "保底已滿 3/3 · 本次升階釘釘摔錘必成功！"
-		_pity_sub_label.text = "保底已觸發 · 釘釘發脾氣必定升階"
+		_pity_title_label.text = _t("保底已滿 3/3 · 本次升階釘釘摔錘必成功！")
+		_pity_sub_label.text = _t("保底已觸發 · 釘釘發脾氣必定升階")
 
 	for i in range(_pity_bars.size()):
 		_pity_bars[i].value = 1.0 if streak > i else 0.0
@@ -402,22 +466,22 @@ func _on_forge_pressed() -> void:
 	var res: Dictionary = ForgeSystem.try_forge()
 	match str(res.get("code", "")):
 		"tier_max":
-			_msg_label.text = "器階已達上限，無法再進行鍛造！"
+			_msg_label.text = _t("器階已達上限，無法再進行鍛造！")
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		"no_gold":
 			var cost: int = int(res.get("cost", ForgeSystem.forge_cost()))
-			_msg_label.text = "金幣不足！升階需要 %d 金幣。" % cost
+			_msg_label.text = _t("金幣不足！升階需要 %d 金幣。") % cost
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 		"success":
-			var scrap_tip := "（消耗鐵屑穩火）" if bool(res.get("used_scrap", false)) else ""
-			_msg_label.text = "鍛造成功！升階至第 %d 階，攻擊力上升！%s" % [GameState.weapon_tier, scrap_tip]
+			var scrap_tip := _t("（消耗鐵屑穩火）") if bool(res.get("used_scrap", false)) else ""
+			_msg_label.text = _t("鍛造成功！升階至第 %d 階，攻擊力上升！%s") % [GameState.weapon_tier, scrap_tip]
 			_msg_label.add_theme_color_override("font_color", COLOR_MINT)
 		"pity_break":
-			_msg_label.text = "鍛造失敗！釘釘摔錘了，吃塊消氣餅回復體力！"
+			_msg_label.text = _t("鍛造失敗！釘釘摔錘了，吃塊消氣餅回復體力！")
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 		"failed":
 			var streak: int = int(res.get("fail_streak", GameState.forge_fail_streak))
-			_msg_label.text = "鍛造失敗！累積 1 格保底進度（目前 %d/3 格）。" % streak
+			_msg_label.text = _t("鍛造失敗！累積 1 格保底進度（目前 %d/3 格）。") % streak
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 	_refresh_display()
 
