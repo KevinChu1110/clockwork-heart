@@ -2340,5 +2340,22 @@
   "（進入堡壘後解鎖）": "(Unlocks once you enter the Keep)",
   "（進入騎士堡後解鎖）": "(Unlocks once you enter the Knight Keep)",
   "（魂器升至 %s）": "(Vessel rose to %s)",
-  "（點燃熔爐可再加一條產線）": "(Light the furnace for one more line)"
+  "（點燃熔爐可再加一條產線）": "(Light the furnace for one more line)",
+  "推薦戰力: %d": "Rec. Power: %d",
+  "推薦戰力": "Recommended Power",
+  "消耗能量: %d": "Energy Cost: %d",
+  "消耗能量": "Energy Cost",
+  "出征": "Sortie",
+  "挑戰首領": "Challenge Boss",
+  "有效戰力 %d": "Effective Power %d",
+  "有效戰力": "Effective Power",
+  "一鍵吸收灰魂": "Absorb Gray Souls",
+  "一鍵吸收灰魂 (換經驗)": "Absorb Gray Souls (EXP)",
+  "聚魂十連": "Draw 10 Souls",
+  "前哨雜魚": "Outpost Minion",
+  "精英戰鬥": "Elite Battle",
+  "首領部位破壞": "Boss Part Break",
+  "市集街道 · 潛伏暗哨": "Market Street · Lurking Scout",
+  "下水道口 · 腐化黏怪": "Sewer Mouth · Corrupted Slime",
+  "新人": "Rookie"
 }
