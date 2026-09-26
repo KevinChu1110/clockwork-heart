@@ -86,9 +86,22 @@ func _disconnect_loc_signal() -> void:
 			loc.locale_changed.disconnect(_on_locale_changed)
 
 
+func _is_touch() -> bool:
+	if force_touch_mode != null:
+		return bool(force_touch_mode)
+	return DisplayServer.is_touchscreen_available()
+
+
 func _on_locale_changed(_new_locale: String = "") -> void:
 	if continue_hint:
 		continue_hint.text = _hint_text(force_touch_mode)
+	if visible and _index < _lines.size():
+		var cur_line: Dictionary = _lines[_index]
+		var sp_key := str(cur_line.get("src_speaker", cur_line.get("speaker", "")))
+		if sp_key != "":
+			speaker_label.text = _t(sp_key)
+		_full_text = _format_line_text(cur_line)
+		body_label.text = _full_text
 
 
 func _ready() -> void:
@@ -199,7 +212,8 @@ func _show_current() -> void:
 
 	var line: Dictionary = _lines[_index]
 	var sp: String = str(line.get("speaker", ""))
-	speaker_label.text = sp
+	var sp_key := str(line.get("src_speaker", sp))
+	speaker_label.text = _t(sp_key) if sp_key != "" else sp
 	## 半身像
 	var ptex: Texture2D = SpriteDB.speaker_portrait(sp)
 	if portrait and portrait_frame:
@@ -222,7 +236,7 @@ func _show_current() -> void:
 		if accent:
 			accent.color = COLOR_ORANGE
 
-	_full_text = str(line.get("text", ""))
+	_full_text = _format_line_text(line)
 	_type_i = 0
 	_type_accum = 0.0
 	body_label.text = ""
@@ -328,4 +342,82 @@ func _unhandled_input(event: InputEvent) -> void:
 	if GameInputGate.matches(event, GameInputGate.CONFIRM) or GameInputGate.matches(event, GameInputGate.INTERACT):
 		if not _waiting_choice:
 			_skip_or_advance()
-			get_viewport().set_input_as_handled()
+
+
+func _format_line_text(line: Dictionary) -> String:
+	var touch := _is_touch()
+	var desk_t := str(line.get("desktop_text", ""))
+	var touch_t := str(line.get("touch_text", ""))
+	if touch and touch_t != "":
+		return _t(touch_t)
+	elif not touch and desk_t != "":
+		return _t(desk_t)
+
+	var raw := str(line.get("text", ""))
+	var mapped := _map_tutorial_text(raw, touch)
+	if mapped != "":
+		return mapped
+	if touch:
+		return _kh(raw)
+	return raw
+
+
+func _map_tutorial_text(raw: String, touch: bool) -> String:
+	match raw:
+		"王者斬必擋。火圈先亮再落，亮了按 J。", "王者斬必擋。火圈先亮再落，亮了點閃避。":
+			return _t("王者斬必擋。火圈先亮再落，亮了點閃避。") if touch else _t("王者斬必擋。火圈先亮再落，亮了按 J。")
+		"Tab 鎖本體，發白再出手。砍到幻影會反咬、變慢。", "點鎖定鎖本體，發白再出手。砍到幻影會反咬、變慢。":
+			return _t("點鎖定鎖本體，發白再出手。砍到幻影會反咬、變慢。") if touch else _t("Tab 鎖本體，發白再出手。砍到幻影會反咬、變慢。")
+		"風切前會先響。響了按 J。", "風切前會先響。響了點閃避。":
+			return _t("風切前會先響。響了點閃避。") if touch else _t("風切前會先響。響了按 J。")
+		"牠停下來的那一拍才吃滿傷害。風聲響起就按 J。", "牠停下來的那一拍才吃滿傷害。風聲響起就點閃避。":
+			return _t("牠停下來的那一拍才吃滿傷害。風聲響起就點閃避。") if touch else _t("牠停下來的那一拍才吃滿傷害。風聲響起就按 J。")
+		"衝來時按 J 硬碰，岩甲會裂。落石也按 J。", "衝來時點閃避硬碰，岩甲會裂。落石也點閃避。":
+			return _t("衝來時點閃避硬碰，岩甲會裂。落石也點閃避。") if touch else _t("衝來時按 J 硬碰，岩甲會裂。落石也按 J。")
+		"發白那一瞬才打得中。Tab 換目標。", "發白那一瞬才打得中。點鎖定換目標。", \
+		"Only the white flash can be hit. Tab switches targets.", "Only the white flash can be hit. Tap Lock to switch targets.", \
+		"白く光る一瞬しか当たらない。Tab で標的を切り替え。", "白く光る一瞬しか当たらない。ロックをタップで標的を切り替え。", \
+		"하얗게 빛나는 순간만 맞힐 수 있다. Tab으로 대상 전환.", "하얗게 빛나는 순간만 맞힐 수 있다. 잠금 탭으로 대상 전환.", \
+		"Solo se acierta en el destello blanco. Tab cambia de objetivo.", "Solo se acierta en el destello blanco. Toca Fijar para cambiar de objetivo.", \
+		"发白那一瞬才打得中。Tab 换目标。", "发白那一瞬才打得中。点锁定换目标。":
+			return _t("發白那一瞬才打得中。點鎖定換目標。") if touch else _t("發白那一瞬才打得中。Tab 換目標。")
+		"地先亮，再落石。亮了按 J。", "地先亮，再落石。亮了點閃避。", \
+		"The ground lights up, then rocks fall. Press J on the light.", "The ground lights up, then rocks fall. Tap Dodge on the light.", \
+		"地面が光ってから石が落ちる。光ったら J。", "地面が光ってから石が落ちる。光ったら回避をタップ。", \
+		"땅이 먼저 빛나고, 돌이 떨어진다. 빛나면 J.", "땅이 먼저 빛나고, 돌이 떨어진다. 빛나면 회피 탭.", \
+		"El suelo brilla primero, luego caen rocas. Con el brillo, pulsa J.", "El suelo brilla primero, luego caen rocas. Con el brillo, toca Esquivar.", \
+		"地先亮，再落石。亮了点闪避。":
+			return _t("地先亮，再落石。亮了點閃避。") if touch else _t("地先亮，再落石。亮了按 J。")
+	return ""
+
+
+func _kh(t: String) -> String:
+	if not _is_touch():
+		return t
+	var dodge := _t("點閃避")
+	var lock_t := _t("點鎖定")
+	# 中文鍵名替換
+	t = t.replace("【Tab/1-3】", "【%s】" % lock_t)
+	t = t.replace("【Tab】", "【%s】" % lock_t)
+	t = t.replace("Tab/1/2/3", lock_t)
+	t = t.replace("Tab 切換", "%s切換" % lock_t)
+	t = t.replace("Tab 鎖定", "%s鎖定" % lock_t)
+	t = t.replace("Tab 鎖本體", "%s鎖本體" % lock_t)
+	t = t.replace("Tab 鎖", "%s鎖" % lock_t)
+	t = t.replace("Tab 換目標", "%s換目標" % lock_t)
+	t = t.replace("Tab 換", "%s換" % lock_t)
+	t = t.replace("Tab", lock_t)
+	t = t.replace("【J】", "【%s】" % dodge)
+	t = t.replace("（J）", "（%s）" % dodge)
+	t = t.replace("按 J", dodge)
+	t = t.replace("靠 J", "靠" + dodge)
+	# 英文鍵名替換
+	t = t.replace("Tab switches targets", "%s switches targets" % _t("Tap Lock"))
+	t = t.replace("Tab switches", "%s switches" % _t("Tap Lock"))
+	t = t.replace("Tab to switch", "%s to switch" % _t("Tap Lock"))
+	t = t.replace("Tab locks", "%s locks" % _t("Tap Lock"))
+	t = t.replace("Tab ", "%s " % _t("Tap Lock"))
+	t = t.replace("Press J on the light", "%s on the light" % _t("Tap Dodge"))
+	t = t.replace("press J", _t("tap Dodge"))
+	t = t.replace("Press J", _t("Tap Dodge"))
+	return t

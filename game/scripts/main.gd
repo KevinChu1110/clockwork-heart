@@ -85,6 +85,28 @@ func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
 
 
+var force_touch_mode: Variant = null  ## 測試/截圖強制覆寫觸控模式；null 為自動判定
+
+
+func _is_touch() -> bool:
+	if force_touch_mode != null:
+		return bool(force_touch_mode)
+	if _dialogue and is_instance_valid(_dialogue) and _dialogue.get("force_touch_mode") != null:
+		return bool(_dialogue.force_touch_mode)
+	return DisplayServer.is_touchscreen_available()
+
+
+func _tutorial_dialog_line(speaker: String, desk_zh: String, touch_zh: String) -> Dictionary:
+	var key := touch_zh if _is_touch() else desk_zh
+	return {
+		"speaker": _t(speaker),
+		"src_speaker": speaker,
+		"text": _t(key),
+		"desktop_text": desk_zh,
+		"touch_text": touch_zh,
+	}
+
+
 func _ready() -> void:
 	_dialogue = _dialogue_scene.instantiate()
 	add_child(_dialogue)
@@ -1832,6 +1854,8 @@ func _play_dialog(lines: Array, after: Callable = Callable(), choice_ctx: String
 		_explore.call("set_frozen", true)
 	_after_dialogue = after
 	AudioManager.play_ui()
+	if _dialogue and is_instance_valid(_dialogue) and force_touch_mode != null:
+		_dialogue.force_touch_mode = force_touch_mode
 	_dialogue.play(lines)
 
 
@@ -6890,7 +6914,7 @@ func _interact_wild(id: String) -> void:
 					{"speaker": _t("灰鬚"), "text": _t("（灰鬚的話還在耳邊）獅子不聽人話。聽刀。")},
 					{"speaker": _t("灰鬚"), "text": _t("你不是去證明你強。你是去讓它想起——它該守什麼。")},
 					{"speaker": _t("雷歐"), "text": _t("渺小的兔子……也想挑戰獅衛之王？")},
-					{"speaker": _t("系統"), "text": _t("王者斬必擋。火圈先亮再落，亮了按 J。")},
+					_tutorial_dialog_line("系統", "王者斬必擋。火圈先亮再落，亮了按 J。", "王者斬必擋。火圈先亮再落，亮了點閃避。"),
 				], func(): _start_battle("leo"))
 
 
@@ -7074,7 +7098,7 @@ func _c2_try_fog_boss() -> void:
 		return
 	_play_dialog([
 		{"speaker": _t("白霧"), "text": _t("嘻嘻～真的假的，你分得清嗎？")},
-		{"speaker": _t("系統"), "text": _t("Tab 鎖本體，發白再出手。砍到幻影會反咬、變慢。")},
+		_tutorial_dialog_line("系統", "Tab 鎖本體，發白再出手。砍到幻影會反咬、變慢。", "點鎖定鎖本體，發白再出手。砍到幻影會反咬、變慢。"),
 	], func(): _start_battle("fog"))
 
 
@@ -7376,7 +7400,7 @@ func _interact_forest(id: String) -> void:
 			else:
 				_play_dialog([
 					{"speaker": _t("旁白"), "text": _t("箭道地面一道淺痕——風曾割過這裡。")},
-					{"speaker": _t("系統"), "text": _t("風切前會先響。響了按 J。")},
+					_tutorial_dialog_line("系統", "風切前會先響。響了按 J。", "風切前會先響。響了點閃避。"),
 				], func():
 					GameState.set_flag("c4_arrow_tip", true)
 					SaveManager.save_game()
@@ -7413,7 +7437,7 @@ func _c4_try_falcon() -> void:
 	_play_dialog([
 		{"speaker": _t("疾影"), "text": _t("……把發條最鬆的送來了？眼睛，跟得上我嗎？")},
 		{"speaker": _t("疾影"), "text": _t("追，會迷路。等，才見我。頭銜追不上風。")},
-		{"speaker": _t("系統"), "text": _t("牠停下來的那一拍才吃滿傷害。風聲響起就按 J。")},
+		_tutorial_dialog_line("系統", "牠停下來的那一拍才吃滿傷害。風聲響起就按 J。", "牠停下來的那一拍才吃滿傷害。風聲響起就點閃避。"),
 	], func(): _start_battle("falcon"))
 
 
@@ -7545,7 +7569,7 @@ func _c5_try_boar() -> void:
 	_play_dialog([
 		{"speaker": _t("石拳"), "text": _t("……把發條最鬆的送來了？還站著？那就接下這一拳——")},
 		{"speaker": _t("石拳"), "text": _t("力氣該砸向誰？頭銜砸不開岸。")},
-		{"speaker": _t("系統"), "text": _t("衝來時按 J 硬碰，岩甲會裂。落石也按 J。")},
+		_tutorial_dialog_line("系統", "衝來時按 J 硬碰，岩甲會裂。落石也按 J。", "衝來時點閃避硬碰，岩甲會裂。落石也點閃避。"),
 	], func(): _start_battle("boar"))
 
 
