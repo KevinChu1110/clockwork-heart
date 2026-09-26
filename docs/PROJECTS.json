@@ -2496,8 +2496,8 @@
    "id": "qa-round39",
    "cat": "平台",
    "title": "探索性 QA：英文戰鬥頂欄修復合主線後找破圖",
-   "status": "開發中",
-   "note": "sideqa 小婷開工，探索性 QA 第 39 輪截圖與審查",
+   "status": "測試中",
+   "note": "sideqa 小婷完成探索性 QA 第 39 輪截圖與審查，送審 side",
    "keys": [
     "探索性 QA：英"
    ]
