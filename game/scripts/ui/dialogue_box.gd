@@ -18,6 +18,7 @@ const COLOR_SKY        := Color("#38A0FF")  ## 晴空蔚藍
 const COLOR_CARD_WARM  := Color("#FFF8E7")  ## 溫暖米黃底
 
 var _cached_font: Font = null
+var force_touch_mode: Variant = null  ## 測試/截圖強制覆寫觸控模式；null 為自動判定
 
 
 func _get_font() -> Font:
@@ -30,9 +31,10 @@ static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
 
 
-static func _hint_text() -> String:
+static func _hint_text(force_touch: Variant = null) -> String:
 	## 觸控裝置沒鍵盤；桌面兩者都提
-	if DisplayServer.is_touchscreen_available():
+	var is_touch: bool = force_touch if force_touch != null else DisplayServer.is_touchscreen_available()
+	if is_touch:
 		return _t("▼ 點一下繼續")
 	return _t("▼ 點擊 / Space 繼續")
 
@@ -59,6 +61,36 @@ const TYPE_CPS := 48.0
 var _dim: ColorRect
 
 
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	if continue_hint:
+		continue_hint.text = _hint_text(force_touch_mode)
+
+
 func _ready() -> void:
 	visible = false
 	choices.visible = false
@@ -66,6 +98,7 @@ func _ready() -> void:
 	z_index = 100
 	_ensure_dim()
 	_apply_look()
+	_connect_loc_signal()
 
 
 func _ensure_dim() -> void:
@@ -115,7 +148,7 @@ func _apply_look() -> void:
 		continue_hint.add_theme_font_size_override("font_size", 16)
 		if f:
 			continue_hint.add_theme_font_override("font", f)
-		continue_hint.text = _hint_text()
+		continue_hint.text = _hint_text(force_touch_mode)
 	if accent:
 		accent.color = COLOR_ORANGE
 		accent.custom_minimum_size = Vector2(4, 0)
@@ -234,7 +267,7 @@ func _finish_typing() -> void:
 			choices.add_child(btn)
 	else:
 		continue_hint.visible = true
-		continue_hint.text = _hint_text()
+		continue_hint.text = _hint_text(force_touch_mode)
 
 
 func _skip_or_advance() -> void:

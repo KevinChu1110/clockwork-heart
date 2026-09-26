@@ -95,5 +95,5 @@ unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0.72, 0.68, 0.6, 1)
 theme_override_font_sizes/font_size = 13
-text = "▼  Space / E  繼續"
+text = "▼ 點擊 / Space 繼續"
 horizontal_alignment = 2
