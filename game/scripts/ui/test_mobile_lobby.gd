@@ -58,6 +58,7 @@ func _process(_d: float) -> bool:
 		_test_character_tab()
 		_test_bag_tab()
 		_test_settings_and_sortie_buttons()
+		_test_dock_and_topbar_i18n()
 		return _finish()
 	return false
 
@@ -1568,6 +1569,71 @@ func _test_settings_and_sortie_buttons() -> void:
 		_fail("出征按鈕果凍厚底不足 5px，實際為: %d" % sortie_sb.border_width_bottom)
 
 	print("  ok 大廳前往出征按鈕自繪圖示與果凍厚底檢查通過")
+
+
+## ──────────────────────────────────────────
+## 11. 斷言大廳 Dock 頁籤與頂欄三寶六語系即時切換 (t_a93ad08c)
+## ──────────────────────────────────────────
+func _test_dock_and_topbar_i18n() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試六語系切換")
+		return
+
+	var loc_node: Node = root.get_node_or_null("Loc")
+	if loc_node == null:
+		_fail("Loc autoload 未找到，無法測試六語系切換")
+		return
+
+	var expected_data := {
+		"zh_TW": {
+			"nrg": "能量", "gold": "金幣", "gem": "星屑",
+			"dock": ["發條新村", "角色裝備", "四區出征", "聚魂殿堂", "冒險背包"]
+		},
+		"zh_CN": {
+			"nrg": "能量", "gold": "金币", "gem": "星屑",
+			"dock": ["发条新村", "角色装备", "四区出征", "聚魂殿堂", "冒险背包"]
+		},
+		"en": {
+			"nrg": "Energy", "gold": "Gold", "gem": "Stardust",
+			"dock": ["Cogwheel Hamlet", "Hero Gear", "Four Regions", "Soul Hall", "Adventure Bag"]
+		},
+		"ja": {
+			"nrg": "エネルギー", "gold": "金", "gem": "星屑",
+			"dock": ["ぜんまい新村", "キャラ装備", "四区出征", "聚魂殿", "冒険バッグ"]
+		},
+		"ko": {
+			"nrg": "에너지", "gold": "골드", "gem": "별가루",
+			"dock": ["태엽 신촌", "캐릭터 장비", "4구역 출정", "영혼의 전당", "모험 배낭"]
+		},
+		"es": {
+			"nrg": "Energía", "gold": "Oro", "gem": "Polvo estelar",
+			"dock": ["Aldea Mecánica", "Equipo de héroe", "Cuatro Regiones", "Salón del Alma", "Bolsa de aventura"]
+		},
+	}
+
+	var dock_btns: Array = _lobby.get("_dock_buttons")
+	var nrg_title: Label = _lobby.get("_energy_title_label")
+	var gold_title: Label = _lobby.get("_gold_title_label")
+	var gem_title: Label = _lobby.get("_gem_title_label")
+
+	for code in ["zh_CN", "en", "ja", "ko", "es", "zh_TW"]:
+		loc_node.call("set_locale", code)
+		var exp_dict: Dictionary = expected_data[code]
+
+		if nrg_title == null or nrg_title.text != exp_dict["nrg"]:
+			_fail("[%s] 頂欄能量標籤應為「%s」，實際為「%s」" % [code, exp_dict["nrg"], nrg_title.text if nrg_title else "null"])
+		if gold_title == null or gold_title.text != exp_dict["gold"]:
+			_fail("[%s] 頂欄金幣標籤應為「%s」，實際為「%s」" % [code, exp_dict["gold"], gold_title.text if gold_title else "null"])
+		if gem_title == null or gem_title.text != exp_dict["gem"]:
+			_fail("[%s] 頂欄星屑標籤應為「%s」，實際為「%s」" % [code, exp_dict["gem"], gem_title.text if gem_title else "null"])
+
+		var exp_dock: Array = exp_dict["dock"]
+		for i in range(5):
+			var btn := dock_btns[i] as Button
+			if btn == null or btn.text != exp_dock[i]:
+				_fail("[%s] Dock 按鈕 %d 標題應為「%s」，實際為「%s」" % [code, i, exp_dock[i], btn.text if btn else "null"])
+
+	print("  ok 大廳頂欄三寶與底部 Dock 六語系即時切換全部檢查通過")
 
 
 func _finish() -> bool:
