@@ -2706,8 +2706,8 @@
    "id": "w8-hub-i18n",
    "cat": "遊戲",
    "title": "W8 Hub 殼玩家可見字六語系",
-   "status": "開發中",
-   "note": "阿翔接手：W8 Hub 玩家可見字六語系（en/ja/ko/es/zh_CN/zh_TW）與 locale_changed 響應",
+   "status": "測試中",
+   "note": "W8 Hub 玩家可見字六語系在地化與即時刷新完成，單元測試綠，實機截圖存證完畢，送審 sideqa",
    "keys": [
     "W8 Hub 殼"
    ]
