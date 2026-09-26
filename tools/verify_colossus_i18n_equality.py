@@ -5,7 +5,7 @@ locales = ["zh_TW", "zh_CN", "en", "ja", "ko", "es"]
 boss_mapping = {
     "colossus_lion": "失控發條獅",
     "colossus_puppet": "霧鐘提線人偶",
-    "colossus_elephant": "黑鏽蒸氣巨象"
+    "colossus_elephant": "黑鐧蒸汽巨象"
 }
 
 all_ok = True

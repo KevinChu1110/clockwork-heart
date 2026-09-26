@@ -2293,12 +2293,12 @@ func _refresh_region_stages() -> void:
 		grid.add_child(sc)
 
 func _build_stage_card(s: Dictionary) -> PanelContainer:
+	var is_colossus: bool = bool(s.get("is_colossus", false))
 	var c := PanelContainer.new()
 	c.name = "StageCard_%s" % str(s.get("num", "")).replace("-", "_")
 	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	c.custom_minimum_size = Vector2(520, 145)
+	c.custom_minimum_size = Vector2(520, 185) if is_colossus else Vector2(520, 145)
 	var csb := StyleBoxFlat.new()
-	var is_colossus: bool = bool(s.get("is_colossus", false))
 	var is_boss: bool = str(s.get("type", "")).find("首領") >= 0 or is_colossus
 	csb.bg_color = Color("#FFF5F0") if is_boss else COLOR_CARD_WARM
 	csb.border_color = Color("#D04838") if is_boss else COLOR_BORDER
@@ -2363,6 +2363,18 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	name_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	t_row.add_child(name_l)
 	v.add_child(t_row)
+
+	## 停擺巨偶世界觀副標（20–40 字，不截字、不換行壓住出征鈕）
+	if is_colossus and s.has("blurb") and not str(s["blurb"]).is_empty():
+		var blurb_l := Label.new()
+		blurb_l.name = "StageBlurbLabel"
+		var blurb_text := _t(str(s["blurb"]))
+		blurb_l.text = blurb_text
+		blurb_l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		blurb_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		blurb_l.add_theme_font_size_override("font_size", 12)
+		blurb_l.add_theme_color_override("font_color", Color("#8C4426"))
+		v.add_child(blurb_l)
 
 	## 區域抗性門檻（綠黃紅三檔，熱區 >= 48px，多巴胺果凍厚底）
 	var stage_num := str(s.get("num", ""))
