@@ -137,6 +137,14 @@ var _hero_shadow: TextureRect
 var _hero_name_tag: Label
 var _speech_bubble: PanelContainer
 var _speech_label: Label
+const HERO_SPEECH_KEYS: Array[String] = [
+	"看我的旋風斬～喝！",
+	"背後的發條上得剛剛好，出發吧！",
+	"聽見神殿齒輪的轉動聲了嗎？",
+	"神殿的以太核心正在共鳴……",
+	"隨時準備好去挑戰大首領！"
+]
+var _current_speech_index: int = 1
 var _particles_root: Control
 var _breathe_tween: Tween
 var _bubble_tween: Tween
@@ -1242,11 +1250,13 @@ func _build_village_tab() -> void:
 	_speech_bubble.add_theme_stylebox_override("panel", bub_sb)
 
 	_speech_label = Label.new()
-	_speech_label.text = _t("背後的發條上得剛剛好，出發吧！")
+	_speech_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_speech_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_speech_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_speech_label.add_theme_font_size_override("font_size", 14)
 	_speech_bubble.add_child(_speech_label)
 	_hero_avatar.add_child(_speech_bubble)
+	_update_speech_bubble_text()
 
 	## 呼吸動畫
 	_start_breathe_tween()
@@ -1529,22 +1539,30 @@ func _add_texture_button(parent: Container, tex_path: String, sz: Vector2, cb: C
 ## ──────────────────────────────────────────
 ## 點擊主角：切換動態姿態 + 爆發黃金以太粒子 + 氣泡
 ## ──────────────────────────────────────────
-func _on_hero_clicked(forced_act: int = -1) -> void:
+func _update_speech_bubble_text() -> void:
+	if not _speech_label or not is_instance_valid(_speech_label):
+		return
+	if _current_speech_index < 0 or _current_speech_index >= HERO_SPEECH_KEYS.size():
+		_current_speech_index = 1
+	var cur_loc := ContentLoc.locale()
+	if cur_loc in ["en", "es"]:
+		_speech_label.add_theme_font_size_override("font_size", 13)
+	else:
+		_speech_label.add_theme_font_size_override("font_size", 14)
+	_speech_label.text = _t(HERO_SPEECH_KEYS[_current_speech_index])
+
+func _on_hero_clicked(forced_act: int = -1, forced_speech: int = -1) -> void:
 	_is_interacting = true
 	var act_type := forced_act if forced_act >= 0 else (randi() % 3)
 
 	if _breathe_tween and _breathe_tween.is_valid():
 		_breathe_tween.kill()
 
-	var speech_lines := [
-		"看我的旋風斬～喝！",
-		"背後的發條上得剛剛好，出發吧！",
-		"聽見神殿齒輪的轉動聲了嗎？",
-		"神殿的以太核心正在共鳴……",
-		"隨時準備好去挑戰大首領！"
-	]
-	if _speech_label:
-		_speech_label.text = speech_lines[randi() % speech_lines.size()]
+	if forced_speech >= 0 and forced_speech < HERO_SPEECH_KEYS.size():
+		_current_speech_index = forced_speech
+	else:
+		_current_speech_index = randi() % HERO_SPEECH_KEYS.size()
+	_update_speech_bubble_text()
 	if _speech_bubble:
 		_speech_bubble.visible = true
 		_speech_bubble.modulate.a = 0.0
@@ -1820,7 +1838,7 @@ func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
 
 	var cl := Label.new()
 	cl.name = "CostLabel"
-	cl.text = "金幣 %d" % int(gd["cost"])
+	cl.text = "%s %d" % [_t("金幣"), int(gd["cost"])]
 	cl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	cl.add_theme_font_size_override("font_size", 13)
 	cl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
@@ -1889,7 +1907,7 @@ func _do_gourd_draw(idx: int, is_ten: bool) -> void:
 	else:
 		for i in range(1, 4):
 			_gourd_lit[i] = false
-		_show_toast("聚魂完畢！獲得了戰魂碎片與戰魂經驗！")
+		_show_toast(_t("聚魂完畢！獲得了戰魂碎片與戰魂經驗！"))
 	
 	_refresh_gourds_ui()
 
@@ -3306,8 +3324,7 @@ func _apply_locale_texts() -> void:
 			if not k.is_empty():
 				btn.text = _t(k)
 
-	if _speech_label and is_instance_valid(_speech_label):
-		_speech_label.text = _t("背後的發條上得剛剛好，出發吧！")
+	_update_speech_bubble_text()
 
 	if _hero_title_tag and is_instance_valid(_hero_title_tag):
 		_hero_title_tag.text = "【%s】" % _t("初出茅廬")

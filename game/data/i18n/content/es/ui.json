@@ -2059,7 +2059,7 @@
   "背包（點擊裝備）": "Bolsa (toca para equipar)",
   "背包（點武器裝入第 %d 欄）": "Bolsa (toca un arma para la ranura %d)",
   "背包：秘境印記×1 · 中紅水×1": "Bolsa: sello de lugar oculto ×1 · poción roja mediana ×1",
-  "背後的發條上得剛剛好，出發吧！": "¡La cuerda de tu espalda está a punto, en marcha!",
+  "背後的發條上得剛剛好，出發吧！": "¡La cuerda de mi espalda está perfecta, en marcha!",
   "背景音樂 (BGM)": "Música (BGM)",
   "胡桃鉗皇家守衛": "Guardia Real Cascanueces",
   "胡桃鉗近衛軍裝": "Uniforme de Guardia Cascanueces",
@@ -2896,5 +2896,10 @@
   "獅 · 黃銅背心": "León · Chaleco de latón",
   "狐 · 圍巾長衫": "Zorro · Túnica con bufanda",
   "野豬 · 工匠工裙": "Jabalí · Delantal de artesano",
-  "搪瓷碎屑": "Fragmento de esmalte"
+  "搪瓷碎屑": "Fragmento de esmalte",
+  "看我的旋風斬～喝！": "¡Mira mi Corte Torbellino... Ja!",
+  "聽見神殿齒輪的轉動聲了嗎？": "¿Oyes el girar de los engranajes del templo?",
+  "神殿的以太核心正在共鳴……": "El núcleo de éter del templo está resonando...",
+  "隨時準備好去挑戰大首領！": "¡Siempre listos para desafiar al Gran Jefe!",
+  "聚魂完畢！獲得了戰魂碎片與戰魂經驗！": "¡Reunión de almas completada! ¡Obtuviste fragmentos de alma y EXP de alma!"
 }
