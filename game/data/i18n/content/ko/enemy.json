@@ -37,5 +37,14 @@
   },
   "heart_demon": {
     "name": "심마"
+  },
+  "colossus_lion": {
+    "name": "폭주 태엽 사자"
+  },
+  "colossus_puppet": {
+    "name": "안개종 꼭두각시 인형"
+  },
+  "colossus_elephant": {
+    "name": "흑적 증기 거상"
   }
 }

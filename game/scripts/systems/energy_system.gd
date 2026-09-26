@@ -101,6 +101,9 @@ func cost_for_mode(mode: String) -> int:
 	## 的話，重開遊戲後下一場不管打誰都免費。
 	if VisitSystem and VisitSystem.pending_id() != "" and mode == "pvp_snap":
 		return 0
+	## 停擺巨偶：每日免費次數機制，不消耗能量
+	if mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
+		return 0
 	if BOSS_MODES.has(mode):
 		var flag := str(STORY_BOSS_CLEAR.get(mode, ""))
 		if flag != "" and not GameState.has_flag(flag):

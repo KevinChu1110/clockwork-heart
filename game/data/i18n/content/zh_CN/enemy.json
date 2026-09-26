@@ -37,5 +37,14 @@
   },
   "heart_demon": {
     "name": "心魔"
+  },
+  "colossus_lion": {
+    "name": "失控发条狮"
+  },
+  "colossus_puppet": {
+    "name": "雾钟提线人偶"
+  },
+  "colossus_elephant": {
+    "name": "黑镝蒸汽巨象"
   }
 }

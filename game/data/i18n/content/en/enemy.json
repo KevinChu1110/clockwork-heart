@@ -37,5 +37,14 @@
   },
   "heart_demon": {
     "name": "Heart Demon"
+  },
+  "colossus_lion": {
+    "name": "Rampant Clockwork Lion"
+  },
+  "colossus_puppet": {
+    "name": "Mistbell Marionette"
+  },
+  "colossus_elephant": {
+    "name": "Black Spindle Steam Colossus"
   }
 }

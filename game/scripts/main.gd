@@ -2598,7 +2598,7 @@ func _title_meta() -> String:
 	return "[i]%s[/i]\n[color=#c4b08a]v%s · %s[/color]" % [Loc.t("title.tagline"), ver, week]
 
 
-func _go_mobile_lobby() -> void:
+func _go_mobile_lobby(default_tab: int = -1, default_submode: int = -1) -> void:
 	_clear_host()
 	_reset_fade()
 	_current = Screen.LOBBY
@@ -2609,6 +2609,10 @@ func _go_mobile_lobby() -> void:
 	)
 	lobby.connect("request_settings", _open_mobile_settings)
 	host.add_child(lobby)
+	if default_tab >= 0 and lobby.has_method("switch_tab"):
+		lobby.call("switch_tab", default_tab)
+	if default_submode >= 0 and lobby.has_method("switch_adventure_submode"):
+		lobby.call("switch_adventure_submode", default_submode)
 
 
 ## 標題子選單：開始遊戲（旅途相關集中在這）
@@ -4273,6 +4277,11 @@ func _on_battle_finished(won: bool) -> void:
 	## 好友挑戰優先收尾（只認殘影戰；殘留的 pending 旗在開戰時已清掉）
 	if _battle_mode == "pvp_snap" and VisitSystem.pending_id() != "":
 		_on_visit_battle_finished(won)
+		return
+	if _battle_mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
+		SaveManager.save_game()
+		## 停擺巨偶戰結束：返回手遊大廳出征分頁並鎖定停擺巨偶子模式
+		_go_mobile_lobby(2, 3)
 		return
 	if _battle_mode == "wolf":
 		if won:

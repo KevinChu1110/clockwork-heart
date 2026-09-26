@@ -1223,9 +1223,15 @@ func _apply_battle_art(mode: String) -> void:
 		"training_dummy":
 			enemy_body.custom_minimum_size = Vector2(200, 250)
 			_enemy_base_mod = Color(1.0, 1.0, 1.0)
-		"leo":
+		"leo", "colossus_lion":
 			enemy_body.custom_minimum_size = Vector2(280, 310)
 			_enemy_base_mod = Color(1.05, 0.95, 0.8)
+		"colossus_puppet":
+			enemy_body.custom_minimum_size = Vector2(260, 290)
+			_enemy_base_mod = Color(0.9, 0.95, 1.05)
+		"colossus_elephant":
+			enemy_body.custom_minimum_size = Vector2(300, 320)
+			_enemy_base_mod = Color(1.05, 0.95, 0.85)
 		"fog":
 			enemy_body.custom_minimum_size = Vector2(240, 270)
 			_enemy_base_mod = Color(0.85, 0.9, 1.0)

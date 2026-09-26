@@ -51,6 +51,25 @@ static func _enemy_def_raw(mode: String) -> Dictionary:
 				"id": "black_ronin", "name": "黑鏽浪人", "max_hp": 160, "atk": 14, "def": 7, "speed": 12.5,
 				"is_boss": false, "art": "black_ronin", "art_fallback": "road_bandit",
 			}
+		## 停擺巨偶（三隻占位首領，沿用既有首領美術與戰鬥系統）
+		"colossus_lion":
+			return {
+				"id": "colossus_lion", "name": "失控發條獅", "max_hp": 320, "atk": 14, "def": 6, "speed": 10.0,
+				"kin": "viking", "is_boss": true, "art": "colossus_lion", "art_fallback": "leo",
+				"windup": 0.3, "recover": 0.45, "king_slash_cd": 3.0,
+			}
+		"colossus_puppet":
+			return {
+				"id": "colossus_puppet", "name": "霧鐘提線人偶", "max_hp": 480, "atk": 17, "def": 8, "speed": 11.5,
+				"kin": "ninja", "is_boss": true, "art": "colossus_puppet", "art_fallback": "mirror_wraith",
+				"windup": 0.28, "recover": 0.42, "king_slash_cd": 2.8,
+			}
+		"colossus_elephant":
+			return {
+				"id": "colossus_elephant", "name": "黑鏑蒸汽巨象", "max_hp": 650, "atk": 21, "def": 11, "speed": 8.5,
+				"kin": "knight", "is_boss": true, "art": "colossus_elephant", "art_fallback": "boar",
+				"windup": 0.32, "recover": 0.48, "king_slash_cd": 3.2,
+			}
 		## 秘境小 Boss
 		"scar_lord":
 			return {

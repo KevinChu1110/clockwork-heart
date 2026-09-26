@@ -1,23 +1,27 @@
 extends SceneTree
-## 停擺巨偶每日次數與出征入口骨架單元測試 (test_colossus_daily.gd)
-## 驗證：
+## 停擺巨偶每日出征與戰鬥掉落單元測試 (test_colossus_daily.gd)
+## 依據任務 t_f093ee0b 驗證規範：
 ## 1. 停擺巨偶三張占位卡（失控發條獅 Lv12、霧鐘提線人偶 Lv20、黑鏑蒸汽巨象 Lv28，無第四隻）
-## 2. 每日初始次數為 3
-## 3. 同一天內呼叫 3 次後第 4 次被拒
+## 2. 每日初始次數為 3，點擊開戰消耗 1 次當日次數；剩餘次數正確遞減
+## 3. 同一天內出征滿 3 次後，第 4 次被拒並提示「今日挑戰次數已用盡，請明天再來！」彈窗
 ## 4. 跨日重置（改 debug_day 隔日後次數回到 3）
-## 5. 硬限制：嚴禁改動 ATB / 攻速 / 前搖 / 命中等時間模型常數
-## 6. 六語系鍵值與零系統 Emoji 檢查
-## 7. 大廳出征分頁子模式切換與熱區 >= 48px
+## 5. 既有戰鬥接通：卡片點擊觸發 request_battle 攜帶對應 boss key
+## 6. 勝場掉落五槽機芯部件入袋，背包/整備看得到；敗場不給機芯
+## 7. 硬限制鎖死：嚴禁改動 ATB / 攻速 / 前搖 / 命中等時間模型常數（常數偏移測試必紅）
+## 8. 六語系鍵值完整且全域零系統 Emoji 檢查
+## 9. 大廳出征分頁子模式切換與熱區 >= 48px
 
 const MobileLobbyScn = preload("res://scripts/ui/mobile_lobby.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FormulasClass = preload("res://scripts/battle/formulas.gd")
+const CoreSystemClass = preload("res://scripts/systems/core_system.gd")
 
 const LOCALES := ["zh_TW", "zh_CN", "en", "ja", "ko", "es"]
 
 var _ok := true
 var _wait := 0
 var _lobby: Control = null
+var _last_requested_battle := ""
 
 func _fail(msg: String) -> void:
 	push_error(msg)
@@ -36,6 +40,12 @@ func _initialize() -> void:
 		quit(1)
 		return
 
+	var cs = root.get_node_or_null("CoreSystem")
+	if cs == null:
+		cs = CoreSystemClass.new()
+		cs.name = "CoreSystem"
+		root.add_child(cs)
+
 	gs.reset_new_game()
 	cds.debug_day = 20260927
 	cds.refresh()
@@ -46,9 +56,9 @@ func _initialize() -> void:
 	if bosses.size() != 3:
 		_fail("巨偶數量應為 3，實際為 %d（不准自創第四隻）" % bosses.size())
 	var expected_bosses := [
-		{"name": "失控發條獅", "level": 12},
-		{"name": "霧鐘提線人偶", "level": 20},
-		{"name": "黑鏑蒸汽巨象", "level": 28},
+		{"name": "失控發條獅", "level": 12, "id": "colossus_lion"},
+		{"name": "霧鐘提線人偶", "level": 20, "id": "colossus_puppet"},
+		{"name": "黑鏑蒸汽巨象", "level": 28, "id": "colossus_elephant"},
 	]
 	for i in range(expected_bosses.size()):
 		var b: Dictionary = bosses[i]
@@ -104,8 +114,52 @@ func _initialize() -> void:
 		_fail("換日後應可正常入場，實際 %s" % str(r_next))
 	print("  ✓ 換日自動重置至 3 次成功")
 
-	# --- 4. 檢驗硬限制：嚴禁改動 ATB / 攻速 / 前搖 / 命中等時間模型常數 ---
-	print("--- 4. 檢驗硬限制：ATB / 攻速時間模型常數鎖定 ---")
+	# --- 4. 檢驗勝場掉落機芯部件、敗場不掉機芯 ---
+	print("--- 4. 檢驗勝場掉落五槽機芯部件入袋，敗場不給機芯 ---")
+	CoreSystemClass.clear_inventory()
+	var initial_core_count: int = CoreSystemClass.get_inventory().size()
+
+	# 模擬勝場：抽取五槽機芯部件並入袋
+	var won_part: Dictionary = CoreSystemClass.on_battle_won()
+	if won_part.is_empty():
+		_fail("勝場結算 roll_and_add_battle_drop 應傳回有效機芯部件")
+	if not CoreSystemClass.ALL_SLOT_IDS.has(str(won_part.get("slot", ""))):
+		_fail("勝場機芯部件槽位不合法: %s" % str(won_part.get("slot")))
+	if not CoreSystemClass.ALL_TIER_IDS.has(str(won_part.get("tier", ""))):
+		_fail("勝場機芯部件色階不合法: %s" % str(won_part.get("tier")))
+	if CoreSystemClass.get_inventory().size() != initial_core_count + 1:
+		_fail("勝場後機芯背包總數應增加 1")
+	if gs.core_bag.size() != initial_core_count + 1:
+		_fail("勝場後 GameState.core_bag 總數應增加 1")
+	print("  ✓ 勝場機芯掉落驗證成功：【%s階】%s 入袋" % [won_part.get("tier_name", ""), won_part.get("slot_name", "")])
+
+	# 模擬敗場：不呼叫 roll_and_add_battle_drop，背包不變
+	var after_defeat_count: int = CoreSystemClass.get_inventory().size()
+	if after_defeat_count != initial_core_count + 1:
+		_fail("敗場不應增加機芯部件")
+	print("  ✓ 敗場不給機芯部件驗證通過")
+
+	# --- 5. 檢驗敵人資料庫定義與部位破壞 ---
+	print("--- 5. 檢驗停擺巨偶敵人定義、部位破壞與格擋 ---")
+	var WC = load("res://scripts/world/world_content.gd")
+	if WC == null:
+		_fail("無法載入 world_content.gd")
+	else:
+		for binfo in expected_bosses:
+			var mid: String = str(binfo["id"])
+			var edef: Dictionary = WC.enemy_def(mid)
+			if edef.is_empty():
+				_fail("未在 WorldContent 找到敵人定義: %s" % mid)
+			if not bool(edef.get("is_boss", false)):
+				_fail("敵人 %s 應為 Boss (is_boss: true)" % mid)
+			if float(edef.get("windup", 0.0)) <= 0.0 or float(edef.get("recover", 0.0)) <= 0.0:
+				_fail("敵人 %s 缺少格擋時間窗口配置 (windup/recover)" % mid)
+			print("  ✓ 敵人定義完整: %s (HP: %d, ATK: %d, DEF: %d, is_boss: %s)" % [
+				edef.get("name"), edef.get("max_hp"), edef.get("atk"), edef.get("def"), edef.get("is_boss")
+			])
+
+	# --- 6. 檢驗硬限制：嚴禁改動 ATB / 攻速 / 前搖 / 命中等時間模型常數 ---
+	print("--- 6. 檢驗硬限制：ATB / 攻速時間模型常數鎖定 ---")
 	if not cds.verify_time_model_locked():
 		_fail("時間模型驗證失敗：ATB、攻速或前搖常數遭到非預期修改！")
 	var atb_max: float = float(FormulasClass.atb_max())
@@ -119,8 +173,8 @@ func _initialize() -> void:
 		_fail("Boss 動作時間窗口偏移：telegraph=%f, parry=%f, grace=%f" % [telegraph_sec, parry_win, grace_sec])
 	print("  ✓ 硬限制常數防護驗證通過：ATB 與攻速常數 0 漂移")
 
-	# --- 5. 檢驗六語系鍵值與零 Emoji ---
-	print("--- 5. 檢驗六語系字典映射與零系統 Emoji ---")
+	# --- 7. 檢驗六語系鍵值與零 Emoji ---
+	print("--- 7. 檢驗六語系字典映射與零系統 Emoji ---")
 	var check_keys := [
 		"停擺巨偶",
 		"失控發條獅",
@@ -147,8 +201,17 @@ func _initialize() -> void:
 		loc_node.call("set_locale", "zh_TW")
 	print("  ✓ 六語系鍵值與零系統 Emoji 全數合格")
 
+	# 重置當日次數以測試大廳點擊
+	cds.debug_day = 20260927
+	cds.refresh()
+	gs.set("colossus_daily_entries", 3)
+
 	# 建立 MobileLobby 等待第一影格就緒
 	_lobby = MobileLobbyScn.new()
+	_lobby.request_battle.connect(func(m: String):
+		_last_requested_battle = m
+		print("  [SIGNAL] MobileLobby emitted request_battle: ", m)
+	)
 	root.add_child(_lobby)
 
 func _process(_d: float) -> bool:
@@ -156,7 +219,7 @@ func _process(_d: float) -> bool:
 	if _wait < 3:
 		return false
 
-	print("--- 6. 檢驗大廳出征分頁巨偶入口與卡片控件 ---")
+	print("--- 8. 檢驗大廳出征分頁巨偶入口與卡片點擊進戰鬥 ---")
 	_lobby.switch_tab(2)  # Tab.ADVENTURE = 2
 
 	var colossus_btn: Button = _lobby.find_child("BtnModeColossus", true, false)
@@ -178,6 +241,8 @@ func _process(_d: float) -> bool:
 			if cards.size() != 3:
 				_fail("巨偶模式卡片數量應為 3，實際為 %d" % cards.size())
 			else:
+				var cds = root.get_node_or_null("ColossusDailySystem")
+				var expected_modes := ["colossus_lion", "colossus_puppet", "colossus_elephant"]
 				for i in range(cards.size()):
 					var card: Control = cards[i] as Control
 					var btn: Button = card.find_child("BattleButton", true, false)
@@ -185,7 +250,42 @@ func _process(_d: float) -> bool:
 						_fail("卡片 %d 缺少 BattleButton" % i)
 					elif btn.custom_minimum_size.y < 48:
 						_fail("卡片 %d BattleButton 高度不足 48px: %f" % [i, btn.custom_minimum_size.y])
-				print("  ✓ 三張停擺巨偶卡片已成功渲染在出征分頁，按鈕熱區全數 >= 48px")
+
+				# 測試點擊第 1 張卡片：失控發條獅
+				var first_card: Control = cards[0] as Control
+				var first_btn: Button = first_card.find_child("BattleButton", true, false)
+				var prev_left: int = cds.get_remaining_entries()
+				_last_requested_battle = ""
+				first_btn.emit_signal("pressed")
+
+				if _last_requested_battle != "colossus_lion":
+					_fail("點擊失控發條獅後 request_battle 應發送 colossus_lion，實際為: %s" % _last_requested_battle)
+				else:
+					print("  ✓ 點擊失控發條獅卡片成功觸發 request_battle(\"colossus_lion\")")
+
+				var cur_left: int = cds.get_remaining_entries()
+				if cur_left != prev_left - 1:
+					_fail("點擊開戰後剩餘次數應由 %d 扣為 %d，實際為: %d" % [prev_left, prev_left - 1, cur_left])
+				else:
+					print("  ✓ 開戰成功消耗 1 次次數（由 %d 次降為 %d 次）" % [prev_left, cur_left])
+
+				# 測試連續打完剩餘 2 次後觸發限制彈窗
+				cds.try_enter("colossus_puppet")
+				cds.try_enter("colossus_elephant")
+				_lobby.call("_refresh_adventure_submode_ui")
+				_lobby.call("_refresh_region_stages")
+
+				# 滿 3 次後再次點擊第 1 張卡片
+				_last_requested_battle = ""
+				first_btn.emit_signal("pressed")
+				if _last_requested_battle != "":
+					_fail("次數用盡後不應再發送 request_battle，實際發送: %s" % _last_requested_battle)
+				var limit_dlg = _lobby.get_node_or_null("ColossusLimitDialog")
+				if limit_dlg == null:
+					_fail("次數用盡點擊後應彈出 ColossusLimitDialog 提示明天再來")
+				else:
+					print("  ✓ 次數用盡後第 4 次點擊成功彈出明天再來提示彈窗")
+					limit_dlg.queue_free()
 
 	_lobby.queue_free()
 
