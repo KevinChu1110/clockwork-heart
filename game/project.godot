@@ -51,6 +51,7 @@ EnergySystem="*res://scripts/systems/energy_system.gd"
 VisitSystem="*res://scripts/systems/visit_system.gd"
 Telemetry="*res://scripts/autoload/telemetry.gd"
 ForgeSystem="*res://scripts/systems/forge_system.gd"
+CoreSystem="*res://scripts/systems/core_system.gd"
 
 [display]
 

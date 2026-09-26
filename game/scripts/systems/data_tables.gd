@@ -7,6 +7,7 @@ const EQUIP_PATH := "res://data/tables/equipment.json"
 const ITEMS_META_PATH := "res://data/tables/items_meta.json"
 const WEAPON_CLASS_PATH := "res://data/tables/weapon_classes.json"
 const PACING_PATH := "res://data/tables/pacing_s1.json"
+const CORE_COLOR_TIERS_PATH := "res://data/tables/core_color_tiers.json"
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const WEAPON_CLASS_TEXT_FIELDS: PackedStringArray = ["name", "title", "tagline", "play", "pros", "cons"]
 
@@ -15,6 +16,7 @@ var equipment: Dictionary = {}
 var items_meta: Dictionary = {}
 var weapon_classes: Dictionary = {}
 var pacing: Dictionary = {}
+var core_color_tiers: Dictionary = {}
 var loaded: bool = false
 
 
@@ -28,9 +30,10 @@ func reload() -> void:
 	items_meta = _load_json(ITEMS_META_PATH)
 	weapon_classes = _load_json(WEAPON_CLASS_PATH)
 	pacing = _load_json(PACING_PATH)
+	core_color_tiers = _load_json(CORE_COLOR_TIERS_PATH)
 	loaded = not combat.is_empty()
 	if loaded:
-		print("[DataTables] combat/equipment/items_meta/weapon_classes/pacing loaded")
+		print("[DataTables] combat/equipment/items_meta/weapon_classes/pacing/core_color_tiers loaded")
 
 
 func _load_json(path: String) -> Dictionary:
@@ -121,6 +124,47 @@ func expedition_suggest_lv_table() -> Dictionary:
 	var slv = pacing.get("expedition_suggest_lv", {})
 	if slv is Dictionary:
 		return slv
+	return {}
+
+
+func get_core_color_tiers() -> Dictionary:
+	if not loaded or core_color_tiers.is_empty():
+		reload()
+	return core_color_tiers
+
+
+func get_core_slots() -> Dictionary:
+	var cct := get_core_color_tiers()
+	var s: Variant = cct.get("slots", {})
+	if s is Dictionary:
+		return s
+	return {}
+
+
+func get_core_tier_by_score(score: int) -> Dictionary:
+	var cct := get_core_color_tiers()
+	var tiers: Array = cct.get("tiers", [])
+	var target_id := ""
+	if score < 0:
+		target_id = "gray"
+	elif score == 0:
+		target_id = "white"
+	elif score >= 1 and score <= 4:
+		target_id = "orange"
+	elif score >= 5 and score <= 22:
+		target_id = "blue"
+	elif score >= 23 and score <= 39:
+		target_id = "purple"
+	elif score >= 40 and score <= 54:
+		target_id = "gold"
+	elif score >= 55 and score <= 69:
+		target_id = "green"
+	else:
+		target_id = "red"
+
+	for t in tiers:
+		if t is Dictionary and str((t as Dictionary).get("id", "")) == target_id:
+			return t as Dictionary
 	return {}
 
 
