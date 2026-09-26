@@ -2506,8 +2506,8 @@
    "id": "sortie-stage-i18n",
    "cat": "遊戲",
    "title": "大廳出征十六張關卡卡名稱六語系",
-   "status": "草稿",
-   "note": "地區膠囊已翻、關卡名沒走 ContentLoc",
+   "status": "已上線",
+   "note": "審查通過：十六張關卡名六語系、資料表繁中 key、en/ja 實機合格",
    "keys": [
     "大廳出征十六張關"
    ]
