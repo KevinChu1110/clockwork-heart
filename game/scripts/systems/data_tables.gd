@@ -6,6 +6,8 @@ const COMBAT_PATH := "res://data/tables/combat.json"
 const EQUIP_PATH := "res://data/tables/equipment.json"
 const ITEMS_META_PATH := "res://data/tables/items_meta.json"
 const WEAPON_CLASS_PATH := "res://data/tables/weapon_classes.json"
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const WEAPON_CLASS_TEXT_FIELDS: PackedStringArray = ["name", "title", "tagline", "play", "pros", "cons"]
 
 var combat: Dictionary = {}
 var equipment: Dictionary = {}
@@ -75,9 +77,11 @@ func craft_recipes() -> Array:
 
 
 func weapon_class_list() -> Array:
+	if not loaded or weapon_classes.is_empty():
+		reload()
 	var a: Variant = weapon_classes.get("classes", [])
 	if a is Array:
-		return a
+		return ContentLoc.apply_all("weapon_class", a, WEAPON_CLASS_TEXT_FIELDS)
 	return []
 
 

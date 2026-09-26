@@ -6706,6 +6706,7 @@ func _go_path_panel(from_forge: bool = false) -> void:
 	if not TutorialSystem.seen("paths"):
 		_show_explore_hint(Loc.t("tut.hud_paths"))
 		TutorialSystem.mark("paths")
+	_active_panel_func = func(): _go_path_panel_ui(from_forge)
 	_go_path_panel_ui(from_forge)
 
 
@@ -6716,9 +6717,11 @@ func _go_path_panel_ui(from_forge: bool = false) -> void:
 		"lv": GameState.level,
 	})
 	var buttons: Array = []
+	var lc := Loc.locale
+	var sep := " · " if (lc == "en" or lc == "es") else ("・" if lc == "ja" else "·")
 	for c in DataTables.weapon_class_list():
 		var id := str(c.get("id", ""))
-		var label := "%s·%s" % [c.get("name", id), c.get("title", "")]
+		var label := "%s%s%s" % [c.get("name", id), sep, c.get("title", "")]
 		var cid := id
 		buttons.append({"text": label, "cb": func(): _set_path_and_back(cid, from_forge)})
 	if from_forge:

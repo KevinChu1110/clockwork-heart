@@ -1,0 +1,194 @@
+{
+  "sword": {
+    "name": "Espada",
+    "title": "Caballero · Espada",
+    "tagline": "El Filo Equilibrado",
+    "play": "Distancia corta a media, alternando ataques básicos y habilidades de furia. Esta clase también puede usar lanza.",
+    "pros": [
+      "Ataque y defensa equilibrados, el más fácil de dominar",
+      "Ritmo estable, encadena furia fluidamente",
+      "Mayor variedad de equipo, ideal para principiantes"
+    ],
+    "cons": [
+      "Ráfaga inferior a las armas de fuego y magia",
+      "Menor solidez que el martillo y hacha",
+      "No alcanza objetivos lejanos"
+    ]
+  },
+  "spear": {
+    "name": "Lanza",
+    "title": "Caballero · Lanza",
+    "tagline": "Un Paso Más Allá de la Espada",
+    "play": "Mantén la distancia y contraataca cuando el enemigo avance. Esta clase también puede usar espada.",
+    "pros": [
+      "Gran ventaja a media distancia",
+      "Beneficios adicionales en choques y contraataques",
+      "Excelente control del campo de batalla"
+    ],
+    "cons": [
+      "Difícil de maniobrar en espacios estrechos",
+      "Giro lento",
+      "Tasa de crítico algo baja"
+    ]
+  },
+  "axe": {
+    "name": "Hacha",
+    "title": "Vikingo · Hacha",
+    "tagline": "Cada Golpe Debe Pesar",
+    "play": "Aprovecha las aberturas con golpes pesados. Esta clase también puede usar martillo.",
+    "pros": [
+      "El mayor daño de un solo impacto",
+      "Muy eficaz contra armaduras pesadas y puños de piedra",
+      "Un solo hachazo intimida al rival"
+    ],
+    "cons": [
+      "Ataque lento",
+      "Gran desventaja si falla el golpe",
+      "Falta de agilidad"
+    ]
+  },
+  "hammer": {
+    "name": "Martillo",
+    "title": "Vikingo · Martillo",
+    "tagline": "El Último en Pie",
+    "play": "Resiste a pie firme hasta desgastar al adversario. Esta clase también puede usar hacha.",
+    "pros": [
+      "Mayor vitalidad y defensa",
+      "Ligera bonificación oculta al forjar",
+      "Soporta golpes demoledores sin caer"
+    ],
+    "cons": [
+      "Uno de los daños más bajos",
+      "Lento para eliminar enemigos menores",
+      "Difícil perseguir o escapar"
+    ]
+  },
+  "dagger": {
+    "name": "Daga",
+    "title": "Ninja · Daga",
+    "tagline": "Instinto Asesino Bajo la Manga",
+    "play": "Acércate rápidamente con combos de estocadas veloces. Esta clase también puede usar dardos.",
+    "pros": [
+      "Gran ráfaga a quemarropa",
+      "Rápido ritmo de estocadas continuas",
+      "Excelente crítico"
+    ],
+    "cons": [
+      "Constitución frágil",
+      "Vulnerable al hostigamiento a distancia",
+      "Bajo margen de error"
+    ]
+  },
+  "dart": {
+    "name": "Dardo",
+    "title": "Ninja · Dardo",
+    "tagline": "Finta y Golpe en un Solo Movimiento",
+    "play": "Ráfagas veloces de dardos y sombras engañosas. Esta clase también puede usar dagas.",
+    "pros": [
+      "Velocidad de combo muy rápida",
+      "Gran sinergia con el estilo de anticipación en la niebla",
+      "Excelente crítico y puntería"
+    ],
+    "cons": [
+      "Bajo daño por impacto",
+      "No resiste muchos golpes",
+      "Depende mucho del posicionamiento"
+    ]
+  },
+  "fist": {
+    "name": "Puño",
+    "title": "Monje · Puño",
+    "tagline": "La Constancia Rompe Toda Postura",
+    "play": "Pégate al enemigo con ráfagas continuas de golpes. Esta clase también puede usar garras.",
+    "pros": [
+      "Ataques rápidos que rompen posturas fácilmente",
+      "Muy efectivo contra Abo en el dojo",
+      "Combina bien con curación en situaciones críticas"
+    ],
+    "cons": [
+      "Poco daño por puñetazo",
+      "Escalado de daño de arma lento",
+      "No alcanza a enemigos lejanos"
+    ]
+  },
+  "claw": {
+    "name": "Garra",
+    "title": "Monje · Garra",
+    "tagline": "Desgarra la Línea Defensiva",
+    "play": "Encadena zarpazos sucesivos. Esta clase también puede usar puños.",
+    "pros": [
+      "Ruptura rápida de guardia",
+      "Combina crítico y ráfaga continua",
+      "Ritmo agresivo de abalanza"
+    ],
+    "cons": [
+      "Defensa delgada",
+      "Alcance corto",
+      "Alto costo al cometer errores"
+    ]
+  },
+  "magic": {
+    "name": "Báculo",
+    "title": "Mago · Báculo",
+    "tagline": "Polvo de Estrellas como Tinta",
+    "play": "Marca el ritmo con hechizos y vasijas de almas. Esta clase también puede usar cristal.",
+    "pros": [
+      "Mayor multiplicador de daño de habilidad",
+      "Máxima sinergia con almas de batalla y observación estelar",
+      "Impacta en áreas amplias"
+    ],
+    "cons": [
+      "Baja defensa física",
+      "Consume polvo estelar rápidamente",
+      "Muy vulnerable en combate cuerpo a cuerpo"
+    ]
+  },
+  "crystal": {
+    "name": "Cristal",
+    "title": "Mago · Cristal",
+    "tagline": "Teje el Escudo en una Hoja",
+    "play": "Lucha con firmeza, resistiendo con almas de combate y barreras. Esta clase también puede usar báculo.",
+    "pros": [
+      "Defensa, salud y apoyo equilibrados",
+      "Las ranuras de alma rinden al máximo",
+      "Gran aguante en combates prolongados"
+    ],
+    "cons": [
+      "Daño más moderado",
+      "Arranque lento al inicio",
+      "Requiere bastantes materiales"
+    ]
+  },
+  "bow": {
+    "name": "Arco",
+    "title": "Guardabosques · Arco",
+    "tagline": "Aquel que Espera al Viento",
+    "play": "Mantén las distancias y dispara con seguridad. Esta clase también puede usar armas de fuego.",
+    "pros": [
+      "Ataque seguro desde lejos",
+      "El crítico escala cada vez más alto",
+      "Recompensa calcular el momento y el viento"
+    ],
+    "cons": [
+      "Muy peligroso si te acorralan",
+      "Carga de furia algo lenta",
+      "Pocas opciones de armadura pesada"
+    ]
+  },
+  "gun": {
+    "name": "Pistola",
+    "title": "Guardabosques · Pistola",
+    "tagline": "Un Disparo Decide la Vida o la Muerte",
+    "play": "Apunta y dispara con paciencia desde lejos. Esta clase también puede usar arco.",
+    "pros": [
+      "Potencia de ráfaga extrema",
+      "Oportunidad de abatir objetivos a distancia",
+      "Disparos muy contundentes"
+    ],
+    "cons": [
+      "Recarga y recuperación lentas",
+      "Peligro extremo en distancias cortas",
+      "Tolerancia nula a los errores"
+    ]
+  }
+}

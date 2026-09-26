@@ -1,0 +1,194 @@
+{
+  "sword": {
+    "name": "Sword",
+    "title": "Knight · Sword",
+    "tagline": "A Balanced Edge",
+    "play": "Close to mid range, alternating normal strikes and rage skills. The spear is also playable in this class.",
+    "pros": [
+      "Balanced offense and defense, easiest to master",
+      "Steady rhythm, seamless rage skill transitions",
+      "Widest gear options, beginner-friendly"
+    ],
+    "cons": [
+      "Burst falls behind guns and spells",
+      "Less sturdy than hammer and axe",
+      "Cannot hit distant foes"
+    ]
+  },
+  "spear": {
+    "name": "Spear",
+    "title": "Knight · Spear",
+    "tagline": "A Step Beyond the Sword",
+    "play": "Hold spacing and counter when they push in. The sword is also playable in this class.",
+    "pros": [
+      "Dominant at mid-range",
+      "Bonus advantages on clash and counter",
+      "Keeps the field under control"
+    ],
+    "cons": [
+      "Struggles in narrow terrain",
+      "Slow turning",
+      "Lower crit rate"
+    ]
+  },
+  "axe": {
+    "name": "Axe",
+    "title": "Viking · Axe",
+    "tagline": "Every Blow Must Have Weight",
+    "play": "Exploit openings with heavy strikes. The hammer is also playable in this class.",
+    "pros": [
+      "Highest single-hit damage",
+      "Highly effective against heavy armor and stone fists",
+      "A single cleave strikes fear into foes"
+    ],
+    "cons": [
+      "Slow swings",
+      "Heavy penalty on misses",
+      "Lacks agility"
+    ]
+  },
+  "hammer": {
+    "name": "Hammer",
+    "title": "Viking · Hammer",
+    "tagline": "Last One Standing",
+    "play": "Stand firm, soak damage, and outlast the foe. The axe is also playable in this class.",
+    "pros": [
+      "Thickest health and defense",
+      "Slightly boosted forge success chance",
+      "Survives heavy strikes without faltering"
+    ],
+    "cons": [
+      "Lowest damage tier",
+      "Slow at clearing small mobs",
+      "Cannot chase or escape easily"
+    ]
+  },
+  "dagger": {
+    "name": "Dagger",
+    "title": "Ninja · Dagger",
+    "tagline": "Killing Intent Hidden in the Sleeve",
+    "play": "Get in close with rapid stabbing combos. Darts are also playable in this class.",
+    "pros": [
+      "Fierce point-blank burst",
+      "Relentless multi-stab rhythm",
+      "High critical strikes"
+    ],
+    "cons": [
+      "Fragile frame",
+      "Vulnerable to kiting",
+      "Low room for error"
+    ]
+  },
+  "dart": {
+    "name": "Dart",
+    "title": "Ninja · Dart",
+    "tagline": "A Feint and Strike as One",
+    "play": "High-speed feints and dart volleys. Daggers are also playable in this class.",
+    "pros": [
+      "Rapid combo speed",
+      "Synergizes with reading tells through white fog",
+      "Great crit and accuracy"
+    ],
+    "cons": [
+      "Low single-hit damage",
+      "Cannot take many hits",
+      "Heavily reliant on footwork"
+    ]
+  },
+  "fist": {
+    "name": "Fist",
+    "title": "Monk · Fist",
+    "tagline": "Diligence Breaks Any Stance",
+    "play": "Close in for relentless flurry strikes. Claws are also playable in this class.",
+    "pros": [
+      "Fast attacks, breaks guard rapidly",
+      "Smooth match against Abo in the dojo",
+      "Pairs well with crisis healing skills"
+    ],
+    "cons": [
+      "Low single-punch damage",
+      "Slow weapon damage scaling",
+      "Cannot reach distant targets"
+    ]
+  },
+  "claw": {
+    "name": "Claw",
+    "title": "Monk · Claw",
+    "tagline": "Tear the Frontline Open",
+    "play": "Rapid claw slash combos. Fists are also playable in this class.",
+    "pros": [
+      "Fast guard break",
+      "Combines crit with multi-hit burst",
+      "Aggressive pounce rhythm"
+    ],
+    "cons": [
+      "Thin defense",
+      "Short reach",
+      "High cost on mistake"
+    ]
+  },
+  "magic": {
+    "name": "Staff",
+    "title": "Mage · Staff",
+    "tagline": "Stardust as Ink",
+    "play": "Set the rhythm with spells and soul vessels. Crystals are also playable in this class.",
+    "pros": [
+      "Highest skill damage multiplier",
+      "Best synergy with combat souls and stargazing",
+      "Hits wide areas"
+    ],
+    "cons": [
+      "Low physical defense",
+      "Burns stardust quickly",
+      "Vulnerable when rushed"
+    ]
+  },
+  "crystal": {
+    "name": "Crystal",
+    "title": "Mage · Crystal",
+    "tagline": "Weave the Barrier into a Blade",
+    "play": "Fight methodically, sustained by combat souls and barriers. The staff is also playable in this class.",
+    "pros": [
+      "Solid defense, health, and support",
+      "Soul slots shine exceptionally",
+      "Survives long, outlasts encounters"
+    ],
+    "cons": [
+      "Milder damage output",
+      "Slow wind-up early game",
+      "Demands significant materials"
+    ]
+  },
+  "bow": {
+    "name": "Bow",
+    "title": "Ranger · Bow",
+    "tagline": "One Who Waits for the Wind",
+    "play": "Keep distance and snipe safely. Guns are also playable in this class.",
+    "pros": [
+      "Safe damage from long range",
+      "Crit scales higher and higher",
+      "Rewards reading wind and timing"
+    ],
+    "cons": [
+      "Perilous when foes get close",
+      "Slower rage build-up",
+      "Light armor options"
+    ]
+  },
+  "gun": {
+    "name": "Gun",
+    "title": "Ranger · Gun",
+    "tagline": "One Crack Decides All",
+    "play": "Snipe patiently from afar. The bow is also playable in this class.",
+    "pros": [
+      "Extreme burst power",
+      "Potential to eliminate targets at range",
+      "Deeply satisfying hits"
+    ],
+    "cons": [
+      "Slow reload and recovery",
+      "Deadly dangerous when cornered",
+      "Zero tolerance for mistakes"
+    ]
+  }
+}

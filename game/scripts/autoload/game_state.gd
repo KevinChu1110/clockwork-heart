@@ -398,34 +398,44 @@ func _migrate_path_style(p: String) -> String:
 func path_display() -> String:
 	var id := _migrate_path_style(path_style)
 	if id == "":
-		return "未選武器流派"
+		if Engine.get_main_loop() is SceneTree:
+			var loc: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("Loc")
+			if loc != null and loc.has_method("t"):
+				return str(loc.call("t", "path.none"))
+		return _ContentLoc.text("ui", "未選武器流派")
+	var lc := _ContentLoc.locale()
+	var sep := " · " if (lc == "en" or lc == "es") else ("・" if lc == "ja" else "·")
 	if Engine.get_main_loop() is SceneTree:
 		var dt: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("DataTables")
 		if dt and dt.has_method("weapon_class_def"):
 			var d: Dictionary = dt.call("weapon_class_def", id)
 			if not d.is_empty():
-				return "%s·%s" % [str(d.get("name", id)), str(d.get("title", ""))]
+				return "%s%s%s" % [str(d.get("name", id)), sep, str(d.get("title", ""))]
 	match id:
 		"sword":
-			return "劍·劍士"
+			return "%s%s%s" % [_ContentLoc.text("ui", "劍"), sep, _ContentLoc.text("ui", "騎士·劍")]
 		"bow":
-			return "弓·遊俠"
+			return "%s%s%s" % [_ContentLoc.text("ui", "弓"), sep, _ContentLoc.text("ui", "遊俠·弓")]
 		"magic":
-			return "法·星法"
+			return "%s%s%s" % [_ContentLoc.text("ui", "杖"), sep, _ContentLoc.text("ui", "法師·杖")]
 		"fist":
-			return "拳·拳師"
+			return "%s%s%s" % [_ContentLoc.text("ui", "拳"), sep, _ContentLoc.text("ui", "武鬥·拳")]
 		"axe":
-			return "斧·斧衛"
+			return "%s%s%s" % [_ContentLoc.text("ui", "斧"), sep, _ContentLoc.text("ui", "維京·斧")]
 		"hammer":
-			return "鎚·鎚守"
+			return "%s%s%s" % [_ContentLoc.text("ui", "鎚"), sep, _ContentLoc.text("ui", "維京·鎚")]
 		"spear":
-			return "槍·槍騎"
+			return "%s%s%s" % [_ContentLoc.text("ui", "長槍"), sep, _ContentLoc.text("ui", "騎士·槍")]
 		"gun":
-			return "火槍·火銃"
+			return "%s%s%s" % [_ContentLoc.text("ui", "火槍"), sep, _ContentLoc.text("ui", "遊俠·銃")]
 		"dart":
-			return "鏢·影鏢"
+			return "%s%s%s" % [_ContentLoc.text("ui", "鏢"), sep, _ContentLoc.text("ui", "忍者·鏢")]
 		"crystal":
-			return "水晶·晶使"
+			return "%s%s%s" % [_ContentLoc.text("ui", "水晶"), sep, _ContentLoc.text("ui", "法師·晶")]
+		"dagger":
+			return "%s%s%s" % [_ContentLoc.text("ui", "匕首"), sep, _ContentLoc.text("ui", "忍者·匕")]
+		"claw":
+			return "%s%s%s" % [_ContentLoc.text("ui", "爪"), sep, _ContentLoc.text("ui", "武鬥·爪")]
 		_:
 			return id
 
