@@ -585,25 +585,41 @@ func _core_slot_card(def: Dictionary) -> Control:
 		var tc: Color = CoreSystem.get_tier_color(tid)
 		var cnt: int = int(p.get("calibration_count", 0))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - cnt)
+		var scrap: int = CoreSystem.get_player_scrap()
+		var cost: int = CoreSystem.get_calibration_scrap_cost()
+		var has_scrap: bool = (scrap >= cost)
+
 		icon.modulate = tc
 		tier_lbl.text = _t(tnm + "階")
 		tier_lbl.add_theme_color_override("font_color", tc if tid != "white" else UiStyle.KEY_STRONG)
 		count_lbl.text = _t("剩餘 %d 次") % rem
-		btn_cal.disabled = (rem <= 0)
-		btn_cal.text = _t("校準") if rem > 0 else _t("已達上限")
-		UiStyle.style_button(btn_cal, rem > 0)
+
+		var can_cal := (rem > 0 and has_scrap)
+		btn_cal.disabled = not can_cal
+		if rem <= 0:
+			btn_cal.text = _t("已達上限")
+		elif not has_scrap:
+			btn_cal.text = _t("鐵屑不足")
+		else:
+			btn_cal.text = _t("校準")
+		UiStyle.style_button(btn_cal, can_cal)
 		btn_cal.custom_minimum_size = Vector2(88, 50)
 		btn_cal.add_theme_font_size_override("font_size", 12)
-		return {"tier_name": tnm, "remains": rem, "part": p}
+		return {"tier_name": tnm, "remains": rem, "part": p, "has_scrap": has_scrap}
+
+	box.set_meta("update_ui", update_card_ui)
+	update_card_ui.call()
 
 	btn_cal.pressed.connect(func():
 		AudioManager.play_ui()
 		var res: Dictionary = CoreSystem.calibrate_player_part(slot_id)
-		var info: Dictionary = update_card_ui.call()
+		_refresh_all_core_slots()
+		var p = CoreSystem.get_player_part(slot_id)
+		var tnm: String = str(p.get("tier_name", "白"))
+		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
 		if is_instance_valid(_core_hint_label):
-			var tnm: String = str(info.get("tier_name", ""))
-			var rem: int = int(info.get("remains", 0))
-			_core_hint_label.text = _t("【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）") % [slot_name, res.get("message", ""), tnm, rem]
+			var tip: String = str(res.get("message", ""))
+			_core_hint_label.text = _t("【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）") % [slot_name, tip, tnm, rem]
 			_core_hint_label.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
 	)
 
@@ -612,6 +628,8 @@ func _core_slot_card(def: Dictionary) -> Control:
 		var p = CoreSystem.get_player_part(slot_id)
 		var tnm: String = str(p.get("tier_name", "白"))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
+		var scrap: int = CoreSystem.get_player_scrap()
+		var cost: int = CoreSystem.get_calibration_scrap_cost()
 		if is_instance_valid(_core_hint_label):
 			var stat_parts: Array[String] = []
 			if not p.is_empty() and CoreSystem != null:
@@ -622,14 +640,30 @@ func _core_slot_card(def: Dictionary) -> Control:
 				if float(pstats.get("crit", 0.0)) > 0.0: stat_parts.append("暴擊+%.1f%%" % float(pstats.crit))
 				if float(pstats.get("crit_dmg", 0.0)) > 0.0: stat_parts.append("暴傷+%.0f%%" % float(pstats.crit_dmg))
 			var s_stat := " · ".join(stat_parts)
-			if not s_stat.is_empty():
-				_core_hint_label.text = _t("【%s · %s階】%s（%s · 剩餘校準：%d 次）") % [slot_name, tnm, slot_desc, s_stat, rem]
+			if rem <= 0:
+				_core_hint_label.text = _t("【%s】%s（已達最大校準次數上限 7 次）") % [slot_name, slot_desc]
+			elif scrap < cost:
+				_core_hint_label.text = _t("【%s】%s · 鐵屑不足（持有 %d/%d）· 剩餘校準 %d 次") % [slot_name, slot_desc, scrap, cost, rem]
 			else:
-				_core_hint_label.text = _t("【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）") % [slot_name, slot_desc, tnm, rem]
+				if not s_stat.is_empty():
+					_core_hint_label.text = _t("【%s · %s階】%s（%s · 剩餘校準：%d 次）") % [slot_name, tnm, slot_desc, s_stat, rem]
+				else:
+					_core_hint_label.text = _t("【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）") % [slot_name, slot_desc, tnm, rem]
 			_core_hint_label.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
 	)
 
 	return box
+
+
+func _refresh_all_core_slots() -> void:
+	if is_instance_valid(_host):
+		var core_row = _host.ui_host().find_child("CoreSlotsRow", true, false)
+		if core_row:
+			for box in core_row.get_children():
+				if box is Control and box.has_meta("update_ui"):
+					var fn = box.get_meta("update_ui")
+					if fn is Callable:
+						fn.call()
 
 
 func _bag_cell(inst: Dictionary) -> Control:

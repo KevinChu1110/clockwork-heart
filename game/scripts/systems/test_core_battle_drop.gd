@@ -203,6 +203,10 @@ func _test_equip_and_calibrate_dropped_part(cs: Node, gs: Node) -> void:
 	_assert(str(equipped.get("uid", "")) == str(gold_part.get("uid", "")), "已裝備部件 uid 應為剛裝上的金階部件")
 	_assert(str(equipped.get("tier", "")) == "gold", "已裝備部件色階應為 gold")
 
+	# 模擬戰鬥掉落獲得鐵屑，確保具備校準素材
+	if gs and "inventory" in gs and gs.inventory is Dictionary:
+		gs.inventory["iron_scrap"] = 20
+
 	# 對這顆剛裝備的部件進行第 1 次校準
 	var cal_res: Dictionary = cs.calibrate_player_part(slot_id, true, {"ATK": 5, "HP": 15}, 6)
 	_assert(cal_res.get("ok", false) == true, "校準剛掉落部件應成功")

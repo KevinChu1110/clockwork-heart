@@ -8,6 +8,7 @@ extends Node
 ## 5. 硬限制：數值只准動 ATK/DEF/HP/CRIT/CRIT_DMG；不准動 ATB、攻速、前搖、命中等時間模型
 
 const MAX_CALIBRATIONS: int = 7
+const CALIBRATION_SCRAP_COST: int = 5
 
 signal part_calibrated(slot_id: String, part: Dictionary, result: Dictionary)
 signal part_dropped(part: Dictionary)
@@ -528,6 +529,61 @@ static func reset_player_parts() -> void:
 			gs.core_slots.clear()
 
 
+## 取得單次校準所需消耗的鐵屑數量（優先從 DataTables / core_color_tiers.json 讀取）
+static func get_calibration_scrap_cost() -> int:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var dt: Node = (loop as SceneTree).root.get_node_or_null("DataTables")
+		if dt and dt.has_method("get_calibration_scrap_cost"):
+			return int(dt.call("get_calibration_scrap_cost"))
+	if FileAccess.file_exists(TABLE_PATH):
+		var f := FileAccess.open(TABLE_PATH, FileAccess.READ)
+		if f:
+			var data = JSON.parse_string(f.get_as_text())
+			if typeof(data) == TYPE_DICTIONARY and data.has("calibration_rules"):
+				var cr = data["calibration_rules"]
+				if typeof(cr) == TYPE_DICTIONARY and cr.has("iron_scrap_cost"):
+					return int(cr["iron_scrap_cost"])
+	return CALIBRATION_SCRAP_COST
+
+
+## 取得玩家當前持有的鐵屑數量
+static func get_player_scrap() -> int:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var inv: Node = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+		if inv and inv.has_method("count"):
+			return int(inv.call("count", "iron_scrap"))
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs and "inventory" in gs and gs.inventory is Dictionary:
+			return int(gs.inventory.get("iron_scrap", 0))
+	return 0
+
+
+## 檢查玩家是否有足夠鐵屑進行校準
+static func has_enough_scrap_to_calibrate() -> bool:
+	return get_player_scrap() >= get_calibration_scrap_cost()
+
+
+## 扣除玩家鐵屑
+static func consume_player_scrap(amount: int) -> bool:
+	if amount <= 0:
+		return true
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var inv: Node = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+		if inv and inv.has_method("remove_item"):
+			return bool(inv.call("remove_item", "iron_scrap", amount))
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs and "inventory" in gs and gs.inventory is Dictionary:
+			var cur: int = int(gs.inventory.get("iron_scrap", 0))
+			if cur < amount:
+				return false
+			gs.inventory["iron_scrap"] = cur - amount
+			return true
+	return false
+
+
 ## 執行玩家機芯部件單次校準
 ## roll_success: null 為預設成功，可顯式指定 true/false
 static func calibrate_player_part(slot_id: String, roll_success: Variant = null, stat_delta: Dictionary = {}, score_delta: int = 0) -> Dictionary:
@@ -545,6 +601,24 @@ static func calibrate_player_part(slot_id: String, roll_success: Variant = null,
 			"is_broken": bool(part.get("is_broken", false)),
 			"destroyed": false
 		}
+
+	var cost := get_calibration_scrap_cost()
+	var cur_scrap := get_player_scrap()
+	if cur_scrap < cost:
+		return {
+			"ok": false,
+			"rejected": true,
+			"code": "INSUFFICIENT_SCRAP",
+			"message": "鐵屑不足！校準需要 %d 鐵屑。" % cost,
+			"part": part,
+			"scrap_cost": cost,
+			"current_scrap": cur_scrap,
+			"calibration_count": int(part.get("calibration_count", 0)),
+			"is_broken": bool(part.get("is_broken", false)),
+			"destroyed": false
+		}
+
+	consume_player_scrap(cost)
 
 	var is_success: bool = true
 	if roll_success != null:
@@ -570,6 +644,10 @@ static func calibrate_player_part(slot_id: String, roll_success: Variant = null,
 				final_stats = {"ATK": 2}
 
 	var res := calibrate(part, is_success, final_stats, final_score_delta)
+	res["used_scrap"] = cost
+	res["scrap_cost"] = cost
+	res["remaining_scrap"] = get_player_scrap()
+
 	player_parts[norm] = part
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:

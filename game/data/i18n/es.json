@@ -852,5 +852,14 @@
   "今日剩餘: %d 次": "Restantes Hoy: %d",
   "巨偶-1": "Coloso-1",
   "巨偶-2": "Coloso-2",
-  "巨偶-3": "Coloso-3"
+  "巨偶-3": "Coloso-3",
+  "鐵屑不足": "Chatarra insuficiente",
+  "鐵屑不足！校準需要 %d 鐵屑。": "¡Chatarra insuficiente! La calibración requiere %d de chatarra.",
+  "鐵屑不足！每次校準需要 %d 鐵屑。": "¡Chatarra insuficiente! Cada calibración requiere %d de chatarra.",
+  "【%s】%s · 鐵屑不足（持有 %d/%d）· 剩餘校準 %d 次": "[%s] %s · Chatarra insuficiente (%d/%d) · %d calibraciones restantes",
+  "【%s】%s（目前色階：%s階 · 每次消耗 %d 鐵屑 · 剩餘校準 %d 次）": "[%s] %s (Nivel actual: %s · Costo: %d chatarra · %d calibraciones restantes)",
+  "【%s】%s · 目前色階：%s階（剩餘 %d 次）": "[%s] %s · Nivel actual: %s (%d restantes)",
+  "【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）": "[%s] %s (Nivel actual: %s · Calibraciones restantes: %d)",
+  "【%s】%s（目前色階：%s階 · 剩餘校準 %d 次）": "[%s] %s (Nivel actual: %s · %d calibraciones restantes)",
+  "【%s】%s（已達最大校準次數上限 7 次）": "[%s] %s (Se alcanzó el límite máximo de 7 calibraciones)"
 }

@@ -133,6 +133,14 @@ func get_core_color_tiers() -> Dictionary:
 	return core_color_tiers
 
 
+func get_calibration_scrap_cost() -> int:
+	var cct := get_core_color_tiers()
+	var cr: Variant = cct.get("calibration_rules", {})
+	if cr is Dictionary and cr.has("iron_scrap_cost"):
+		return int(cr.get("iron_scrap_cost", 5))
+	return 5
+
+
 func get_core_slots() -> Dictionary:
 	var cct := get_core_color_tiers()
 	var s: Variant = cct.get("slots", {})

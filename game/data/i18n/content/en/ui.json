@@ -3054,5 +3054,14 @@
   "今日剩餘: %d 次": "Left Today: %d",
   "巨偶-1": "Colossus-1",
   "巨偶-2": "Colossus-2",
-  "巨偶-3": "Colossus-3"
+  "巨偶-3": "Colossus-3",
+  "鐵屑不足": "Insufficient Scrap",
+  "鐵屑不足！校準需要 %d 鐵屑。": "Not enough scrap iron! Calibration requires %d scrap iron.",
+  "鐵屑不足！每次校準需要 %d 鐵屑。": "Not enough scrap iron! Each calibration requires %d scrap iron.",
+  "【%s】%s · 鐵屑不足（持有 %d/%d）· 剩餘校準 %d 次": "[%s] %s · Insufficient Scrap (%d/%d held) · %d Calibrations Left",
+  "【%s】%s（目前色階：%s階 · 每次消耗 %d 鐵屑 · 剩餘校準 %d 次）": "[%s] %s (Current Tier: %s · Cost: %d Scrap · %d Calibrations Left)",
+  "【%s】%s · 目前色階：%s階（剩餘 %d 次）": "[%s] %s · Current Tier: %s (%d Left)",
+  "【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）": "[%s] %s (Current Tier: %s · Calibrations Left: %d)",
+  "【%s】%s（目前色階：%s階 · 剩餘校準 %d 次）": "[%s] %s (Current Tier: %s · %d Calibrations Left)",
+  "【%s】%s（已達最大校準次數上限 7 次）": "[%s] %s (Reached max 7 calibrations)"
 }

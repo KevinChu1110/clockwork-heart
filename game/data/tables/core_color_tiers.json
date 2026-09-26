@@ -163,6 +163,7 @@
     "max_attempts": 7,
     "break_on_fail": false,
     "delete_on_fail": false,
+    "iron_scrap_cost": 5,
     "stat_weights": {
       "ATK": 2.0,
       "DEF": 1.5,

@@ -48,6 +48,11 @@ func _process(_delta: float) -> bool:
 				gs.call("set_flag", "c1_forged", true)
 				gs.call("set_flag", "c1_entered_city", true)
 				gs.call("set_flag", "tut_done", true)
+				var inv_sys: Node = root.get_node_or_null("InventorySystem")
+				if inv_sys and inv_sys.has_method("add_item"):
+					inv_sys.call("add_item", "iron_scrap", 100)
+				elif "inventory" in gs and gs.inventory is Dictionary:
+					gs.inventory["iron_scrap"] = 100
 
 			# 預先校準幾個槽位展示多樣色階（橘階、藍階、紫階）
 			var CoreSystem = load("res://scripts/systems/core_system.gd")

@@ -95,6 +95,7 @@ func _disconnect_loc_signal() -> void:
 func _on_locale_changed(_new_locale: String = "") -> void:
 	_update_ui_texts()
 	_refresh_display()
+	_refresh_all_forge_core_slots()
 
 
 func _update_ui_texts() -> void:
@@ -118,6 +119,7 @@ func _ready() -> void:
 	_build_ui()
 	_update_ui_texts()
 	_refresh_display()
+	_refresh_all_forge_core_slots()
 
 
 func _ensure_initial_state() -> void:
@@ -576,20 +578,36 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 		var tc: Color = CoreSystem.get_tier_color(tid)
 		var cnt: int = int(p.get("calibration_count", 0))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - cnt)
+		var scrap: int = CoreSystem.get_player_scrap()
+		var cost: int = CoreSystem.get_calibration_scrap_cost()
+		var has_scrap: bool = (scrap >= cost)
+
 		icon.modulate = tc
 		tier_lbl.text = _t(tnm + "階")
 		tier_lbl.add_theme_color_override("font_color", tc if tid != "white" else COLOR_TEXT_DARK)
 		count_lbl.text = _t("剩餘 %d 次") % rem
-		btn_cal.disabled = (rem <= 0)
-		btn_cal.text = _t("校準") if rem > 0 else _t("已達上限")
-		return {"tier_name": tnm, "remains": rem, "part": p}
+
+		var can_cal := (rem > 0 and has_scrap)
+		btn_cal.disabled = not can_cal
+		if rem <= 0:
+			btn_cal.text = _t("已達上限")
+		elif not has_scrap:
+			btn_cal.text = _t("鐵屑不足")
+		else:
+			btn_cal.text = _t("校準")
+		return {"tier_name": tnm, "remains": rem, "part": p, "has_scrap": has_scrap}
+
+	card.set_meta("update_ui", update_forge_card_ui)
+	update_forge_card_ui.call()
 
 	btn_cal.pressed.connect(func():
 		AudioManager.play_ui()
 		var res: Dictionary = CoreSystem.calibrate_player_part(slot_id)
-		var info: Dictionary = update_forge_card_ui.call()
-		var tnm: String = str(info.get("tier_name", ""))
-		var rem: int = int(info.get("remains", 0))
+		_refresh_all_forge_core_slots()
+		_refresh_display()
+		var p = CoreSystem.get_player_part(slot_id)
+		var tnm: String = str(p.get("tier_name", "白"))
+		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
 		if is_instance_valid(_msg_label):
 			var tip: String = str(res.get("message", ""))
 			_msg_label.text = _t("【%s】%s · 目前色階：%s階（剩餘 %d 次）") % [slot_name, tip, tnm, rem]
@@ -604,12 +622,29 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 		var p = CoreSystem.get_player_part(slot_id)
 		var tnm: String = str(p.get("tier_name", "白"))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
+		var scrap: int = CoreSystem.get_player_scrap()
+		var cost: int = CoreSystem.get_calibration_scrap_cost()
 		if is_instance_valid(_msg_label):
-			_msg_label.text = _t("【%s】%s（目前色階：%s階 · 剩餘校準 %d 次）") % [slot_name, slot_desc, tnm, rem]
+			if rem <= 0:
+				_msg_label.text = _t("【%s】%s（已達最大校準次數上限 7 次）") % [slot_name, slot_desc]
+			elif scrap < cost:
+				_msg_label.text = _t("【%s】%s · 鐵屑不足（持有 %d/%d）· 剩餘校準 %d 次") % [slot_name, slot_desc, scrap, cost, rem]
+			else:
+				_msg_label.text = _t("【%s】%s（目前色階：%s階 · 每次消耗 %d 鐵屑 · 剩餘校準 %d 次）") % [slot_name, slot_desc, tnm, cost, rem]
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	)
 
 	return card
+
+
+func _refresh_all_forge_core_slots() -> void:
+	var core_row = find_child("ForgeCoreSlotsRow", true, false)
+	if core_row:
+		for card in core_row.get_children():
+			if card is Control and card.has_meta("update_ui"):
+				var fn = card.get_meta("update_ui")
+				if fn is Callable:
+					fn.call()
 
 
 func _refresh_display() -> void:
