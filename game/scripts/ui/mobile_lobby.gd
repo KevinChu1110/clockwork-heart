@@ -1364,6 +1364,16 @@ func _style_hall_card(btn: Button, is_active: bool) -> void:
 	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
 
+	var t_lbl := btn.get_node_or_null("TextContainer/TitleLabel") as Label
+	var s_lbl := btn.get_node_or_null("TextContainer/SubtitleLabel") as Label
+	if t_lbl:
+		t_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if s_lbl:
+		if is_active:
+			s_lbl.add_theme_color_override("font_color", Color("#4A240A"))
+		else:
+			s_lbl.add_theme_color_override("font_color", Color("#6B6278"))
+
 func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, icon_res_or_symbol: String = "", cb_fallback: Callable = Callable()) -> Button:
 	var cb: Callable
 	if subtitle_or_cb is Callable:
@@ -1376,14 +1386,16 @@ func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, ico
 	var btn := Button.new()
 	btn.name = "HallCard_" + title
 	btn.add_to_group("hall_cards")
-	btn.set_meta("hall_title", title)
+	btn.set_meta("hall_title", _t(title))
 	btn.set_meta("hall_title_key", title)
+	var sub_str := ""
 	if subtitle_or_cb is String:
-		btn.set_meta("hall_subtitle", subtitle_or_cb)
-		btn.set_meta("hall_subtitle_key", subtitle_or_cb)
+		sub_str = subtitle_or_cb
+		btn.set_meta("hall_subtitle", _t(sub_str))
+		btn.set_meta("hall_subtitle_key", sub_str)
 	btn.custom_minimum_size = Vector2(216, 56)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	btn.text = _t(title)
+	btn.text = ""
 
 	# 依 title 或 icon_res_or_symbol 掛載自繪圖示
 	var icon_path := icon_res_or_symbol
@@ -1403,9 +1415,48 @@ func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, ico
 		btn.icon = load(icon_path)
 		btn.expand_icon = true
 		btn.add_theme_constant_override("icon_max_width", 32)
-		btn.add_theme_constant_override("h_separation", 10)
-		btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
-	btn.add_theme_font_size_override("font_size", 18)
+		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
+
+	# 內部文字排版：主標題 + 副標題（offset_left=58 避開左側 icon 與 x=100 掃描列）
+	var tc := VBoxContainer.new()
+	tc.name = "TextContainer"
+	tc.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tc.set_anchors_preset(Control.PRESET_FULL_RECT)
+	tc.offset_left = 58
+	tc.offset_right = -8
+	tc.offset_top = 4
+	tc.offset_bottom = -6
+	tc.alignment = BoxContainer.ALIGNMENT_CENTER
+	tc.add_theme_constant_override("separation", 1)
+	btn.add_child(tc)
+
+	var cur_loc := ContentLoc.locale()
+	var t_translated := _t(title)
+	var s_translated := _t(sub_str) if not sub_str.is_empty() else ""
+
+	var t_lbl := Label.new()
+	t_lbl.name = "TitleLabel"
+	t_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	t_lbl.text = t_translated
+	t_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	if cur_loc in ["en", "es"] and t_translated.length() > 14:
+		t_lbl.add_theme_font_size_override("font_size", 13)
+	else:
+		t_lbl.add_theme_font_size_override("font_size", 15)
+	t_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	tc.add_child(t_lbl)
+
+	var s_lbl := Label.new()
+	s_lbl.name = "SubtitleLabel"
+	s_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	s_lbl.text = s_translated
+	s_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	if cur_loc in ["en", "es"]:
+		s_lbl.add_theme_font_size_override("font_size", 9)
+	else:
+		s_lbl.add_theme_font_size_override("font_size", 10)
+	s_lbl.add_theme_color_override("font_color", Color("#6B6278"))
+	tc.add_child(s_lbl)
 
 	var card_idx := _hall_buttons.size()
 	_hall_buttons.append(btn)
@@ -3087,11 +3138,33 @@ func _apply_locale_texts() -> void:
 	if _settings_button and is_instance_valid(_settings_button):
 		_settings_button.text = _t("設置")
 
+	var cur_loc := ContentLoc.locale()
 	for btn in _hall_buttons:
 		if is_instance_valid(btn):
-			var k := str(btn.get_meta("hall_title_key", ""))
-			if not k.is_empty():
-				btn.text = _t(k)
+			var title_k := str(btn.get_meta("hall_title_key", ""))
+			var sub_k := str(btn.get_meta("hall_subtitle_key", ""))
+			var title_t := _t(title_k) if not title_k.is_empty() else ""
+			var sub_t := _t(sub_k) if not sub_k.is_empty() else ""
+
+			btn.set_meta("hall_title", title_t)
+			btn.set_meta("hall_subtitle", sub_t)
+			btn.text = ""
+
+			var t_lbl := btn.get_node_or_null("TextContainer/TitleLabel") as Label
+			if t_lbl:
+				t_lbl.text = title_t
+				if cur_loc in ["en", "es"] and title_t.length() > 14:
+					t_lbl.add_theme_font_size_override("font_size", 13)
+				else:
+					t_lbl.add_theme_font_size_override("font_size", 15)
+
+			var s_lbl := btn.get_node_or_null("TextContainer/SubtitleLabel") as Label
+			if s_lbl:
+				s_lbl.text = sub_t
+				if cur_loc in ["en", "es"]:
+					s_lbl.add_theme_font_size_override("font_size", 9)
+				else:
+					s_lbl.add_theme_font_size_override("font_size", 10)
 
 	if _sortie_title_label and is_instance_valid(_sortie_title_label):
 		_sortie_title_label.text = _t("冒險出征 · 當前主線")
