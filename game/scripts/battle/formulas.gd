@@ -386,3 +386,57 @@ static func arena_xp(max_hp: int, practice: bool = false) -> int:
 	if practice:
 		xp_n = maxi(1, int(round(float(xp_n) * 0.35)))
 	return maxi(1, xp_n)
+
+
+## ──────────────────────────────────────────
+## 第一季節奏：出征關卡區域抗性與受傷係數（不改命中/ATB/怒氣）
+## 達標（差 <= 0）：安全（綠），受傷 ×1.0
+## 差 1–4：吃力（黃），受傷 ×1.2
+## 差 >= 5：過載（紅），受傷 ×1.5
+## ──────────────────────────────────────────
+static func underlevel_damage_multiplier(player_lv: int, suggest_lv: int) -> float:
+	if suggest_lv <= 0:
+		return 1.0
+	var diff := suggest_lv - player_lv
+	if diff <= 0:
+		return 1.0
+	elif diff <= 4:
+		return 1.2
+	else:
+		return 1.5
+
+
+static func resistance_tier(player_lv: int, suggest_lv: int) -> Dictionary:
+	var mult := underlevel_damage_multiplier(player_lv, suggest_lv)
+	var diff := maxi(0, suggest_lv - player_lv)
+	if suggest_lv <= 0 or diff == 0:
+		return {
+			"tier": "safe",
+			"tier_name": "安全",
+			"mult": 1.0,
+			"diff": 0,
+			"suggest_lv": suggest_lv
+		}
+	elif diff <= 4:
+		return {
+			"tier": "strained",
+			"tier_name": "吃力",
+			"mult": 1.2,
+			"diff": diff,
+			"suggest_lv": suggest_lv
+		}
+	else:
+		return {
+			"tier": "overload",
+			"tier_name": "過載",
+			"mult": 1.5,
+			"diff": diff,
+			"suggest_lv": suggest_lv
+		}
+
+
+static func apply_underlevel_damage(dmg: int, mult: float) -> int:
+	if mult <= 1.001 or dmg <= 0:
+		return dmg
+	return maxi(1, int(round(float(dmg) * mult)))
+

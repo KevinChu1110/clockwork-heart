@@ -115,6 +115,15 @@ func suggest_lv_table() -> Dictionary:
 	return {}
 
 
+func expedition_suggest_lv_table() -> Dictionary:
+	if not loaded or pacing.is_empty():
+		reload()
+	var slv = pacing.get("expedition_suggest_lv", {})
+	if slv is Dictionary:
+		return slv
+	return {}
+
+
 func _dig(root: Dictionary, path: String, default: Variant) -> Variant:
 	var cur: Variant = root
 	for part in path.split("."):

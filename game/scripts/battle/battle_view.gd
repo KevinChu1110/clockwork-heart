@@ -3565,6 +3565,7 @@ func _try_wheat_save(hp_after: int) -> void:
 
 func _on_end(won: bool) -> void:
 	_ended = true
+	GameState.clear_expedition_stage()
 	if not won:
 		_stop_breathe_tween()
 	_release_hp_authority()

@@ -2978,5 +2978,18 @@
   "點下一步 · 部分步驟可「稍後再說」": "Toca Siguiente · Algunos pasos se pueden omitir con «Más tarde»",
   "點一下繼續": "Toca para continuar",
   "點下一步": "Toca Siguiente",
-  "本季上限": "Límite temp."
+  "本季上限": "Límite temp.",
+  "安全": "Seguro",
+  "吃力": "Difícil",
+  "過載": "Sobrecarga",
+  "區域抗性 · 安全": "Resistencia · Seguro",
+  "區域抗性 · 吃力": "Resistencia · Difícil",
+  "區域抗性 · 過載": "Resistencia · Sobrecarga",
+  "受傷 ×1.0": "Daño ×1.0",
+  "受傷 ×1.2": "Daño ×1.2",
+  "受傷 ×1.5": "Daño ×1.5",
+  "建議 Lv.%d": "Nivel rec. %d",
+  "區域抗性安全：等級達標，受傷正常 (×1.0)": "Resistencia seguro: Nivel adecuado, daño normal (x1.0)",
+  "區域抗性吃力：未達建議 Lv%d，受到傷害 ×1.2": "Resistencia difícil: Inferior a Nivel rec. %d, daño x1.2",
+  "區域抗性過載：低於建議 Lv%d 超過 5 級，受到傷害 ×1.5！": "Resistencia sobrecarga: 5+ niveles bajo Nivel rec. %d, daño x1.5!"
 }

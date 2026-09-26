@@ -140,9 +140,17 @@ static func regions() -> Array:
 	]
 
 
+static func _gs() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).root.get_node_or_null("GameState")
+	return null
+
+
 static func _flags_ok(need: Array) -> bool:
+	var gs := _gs()
 	for f in need:
-		if not GameState.has_flag(str(f)):
+		if gs and not gs.has_flag(str(f)):
 			return false
 	return true
 
@@ -153,7 +161,8 @@ static func stage_state(stage: Dictionary) -> String:
 	if not _flags_ok(unlock):
 		return "locked"
 	var cf := str(stage.get("clear_flag", ""))
-	if cf != "" and GameState.has_flag(cf):
+	var gs := _gs()
+	if cf != "" and gs and gs.has_flag(cf):
 		return "cleared"
 	return "open"
 
@@ -188,6 +197,7 @@ static func next_objective() -> Dictionary:
 ## 主線指引、雷歐前的軟提示與出征關卡皆以本表為準。
 const PACING_TABLE_PATH := "res://data/tables/pacing_s1.json"
 static var SUGGEST_LV: Dictionary = _load_suggest_lv()
+static var EXPEDITION_SUGGEST_LV: Dictionary = _load_expedition_suggest_lv()
 
 
 static func _load_suggest_lv() -> Dictionary:
@@ -209,10 +219,37 @@ static func _load_suggest_lv() -> Dictionary:
 	return {}
 
 
+static func _load_expedition_suggest_lv() -> Dictionary:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var dt: Node = (loop as SceneTree).root.get_node_or_null("DataTables")
+		if dt and dt.has_method("expedition_suggest_lv_table"):
+			var tbl: Dictionary = dt.call("expedition_suggest_lv_table")
+			if not tbl.is_empty():
+				return tbl.duplicate()
+	if FileAccess.file_exists(PACING_TABLE_PATH):
+		var f := FileAccess.open(PACING_TABLE_PATH, FileAccess.READ)
+		if f != null:
+			var data = JSON.parse_string(f.get_as_text())
+			if data is Dictionary:
+				var slv = data.get("expedition_suggest_lv", {})
+				if slv is Dictionary:
+					return slv.duplicate()
+	return {}
+
+
+static func expedition_suggest_lv(stage_num: String) -> int:
+	if EXPEDITION_SUGGEST_LV.is_empty():
+		EXPEDITION_SUGGEST_LV = _load_expedition_suggest_lv()
+	return int(EXPEDITION_SUGGEST_LV.get(stage_num, 0))
+
+
 static func suggest_lv(stage_id: String) -> int:
 	if SUGGEST_LV.is_empty():
 		SUGGEST_LV = _load_suggest_lv()
-	return int(SUGGEST_LV.get(stage_id, 0))
+	if SUGGEST_LV.has(stage_id):
+		return int(SUGGEST_LV.get(stage_id, 0))
+	return expedition_suggest_lv(stage_id)
 
 
 static func next_objective_line() -> String:
@@ -228,7 +265,9 @@ static func next_objective_line() -> String:
 	## 等級還不到就把數字講出來。鍛造完 Lv2 直衝雷歐是 0% 勝率，
 	## 而指引只寫「下一站：雷歐」——玩家照著走會撞牆，還不知道該練到幾級。
 	var need := suggest_lv(str(o.get("id", "")))
-	if need > 0 and GameState.level < need:
+	var gs := _gs()
+	var p_lv := int(gs.get("level")) if gs and "level" in gs else 1
+	if need > 0 and p_lv < need:
 		line += _t("（建議 Lv%d）") % need
 	return line
 

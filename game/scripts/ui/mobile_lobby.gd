@@ -2052,8 +2052,8 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	csb.set_corner_radius_all(18)
 	csb.content_margin_left = 18
 	csb.content_margin_right = 18
-	csb.content_margin_top = 16
-	csb.content_margin_bottom = 16
+	csb.content_margin_top = 14
+	csb.content_margin_bottom = 14
 	csb.shadow_color = Color(0.63, 0.22, 0.16, 0.18) if is_boss else Color(0.12, 0.10, 0.23, 0.14)
 	csb.shadow_size = 8
 	csb.shadow_offset = Vector2(0, 3)
@@ -2066,7 +2066,7 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 
 	var v := VBoxContainer.new()
 	v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	v.add_theme_constant_override("separation", 8)
+	v.add_theme_constant_override("separation", 6)
 	h.add_child(v)
 
 	var t_row := HBoxContainer.new()
@@ -2108,6 +2108,85 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	name_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	t_row.add_child(name_l)
 	v.add_child(t_row)
+
+	## 區域抗性門檻（綠黃紅三檔，熱區 >= 48px，多巴胺果凍厚底）
+	var stage_num := str(s.get("num", ""))
+	var RC = load("res://scripts/world/region_catalog.gd")
+	var sug_lv := int(RC.call("expedition_suggest_lv", stage_num)) if RC else 0
+	var player_lv := 1
+	var gs := _gs()
+	if gs and "level" in gs:
+		player_lv = int(gs.get("level"))
+	var F = load("res://scripts/battle/formulas.gd")
+	var tier_info: Dictionary = F.call("resistance_tier", player_lv, sug_lv) if F else {}
+	var tier: String = str(tier_info.get("tier", "safe"))
+	var tier_name: String = str(tier_info.get("tier_name", "安全"))
+
+	var res_row := HBoxContainer.new()
+	res_row.add_theme_constant_override("separation", 10)
+	res_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+
+	var res_badge := Button.new()
+	res_badge.name = "ResistBadge"
+	res_badge.custom_minimum_size = Vector2(90, 48)
+	res_badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	res_badge.text = _t(tier_name)
+	res_badge.add_theme_font_size_override("font_size", 14)
+
+	var rsb := StyleBoxFlat.new()
+	rsb.set_border_width_all(2)
+	rsb.border_width_bottom = 4
+	rsb.border_color = COLOR_BORDER
+	rsb.set_corner_radius_all(14)
+	rsb.content_margin_left = 10
+	rsb.content_margin_right = 10
+	rsb.content_margin_top = 4
+	rsb.content_margin_bottom = 4
+	if tier == "safe":
+		rsb.bg_color = Color("#4ED86A")  ## 薄荷綠（安全）
+	elif tier == "strained":
+		rsb.bg_color = Color("#FFD028")  ## 金黃（吃力）
+	else:
+		rsb.bg_color = Color("#FF5E8A")  ## 珊瑚粉紅（過載）
+
+	var rsb_h := rsb.duplicate() as StyleBoxFlat
+	rsb_h.bg_color = rsb.bg_color.lightened(0.12)
+	var rsb_p := rsb.duplicate() as StyleBoxFlat
+	rsb_p.border_width_bottom = 2
+
+	res_badge.add_theme_stylebox_override("normal", rsb)
+	res_badge.add_theme_stylebox_override("hover", rsb_h)
+	res_badge.add_theme_stylebox_override("pressed", rsb_p)
+	res_badge.add_theme_stylebox_override("focus", rsb)
+	res_badge.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	res_badge.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	res_badge.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var toast_msg := ""
+	if tier == "safe":
+		toast_msg = _t("區域抗性安全：等級達標，受傷正常 (×1.0)")
+	elif tier == "strained":
+		toast_msg = _t("區域抗性吃力：未達建議 Lv%d，受到傷害 ×1.2") % sug_lv
+	else:
+		toast_msg = _t("區域抗性過載：低於建議 Lv%d 超過 5 級，受到傷害 ×1.5！") % sug_lv
+	res_badge.pressed.connect(func(): _show_toast(toast_msg))
+	res_row.add_child(res_badge)
+
+	var res_hint_l := Label.new()
+	res_hint_l.name = "ResistHintLabel"
+	res_hint_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	res_hint_l.add_theme_font_size_override("font_size", 13)
+	if tier == "safe":
+		res_hint_l.text = _t("建議 Lv.%d") % sug_lv
+		res_hint_l.add_theme_color_override("font_color", Color("#2E7D32"))
+	elif tier == "strained":
+		res_hint_l.text = (_t("建議 Lv.%d") % sug_lv) + " · " + _t("受傷 ×1.2")
+		res_hint_l.add_theme_color_override("font_color", Color("#9A6200"))
+	else:
+		res_hint_l.text = (_t("建議 Lv.%d") % sug_lv) + " · " + _t("受傷 ×1.5")
+		res_hint_l.add_theme_color_override("font_color", Color("#C0392B"))
+	res_row.add_child(res_hint_l)
+	v.add_child(res_row)
 
 	var inf_row := HBoxContainer.new()
 	inf_row.add_theme_constant_override("separation", 12)
@@ -2192,7 +2271,13 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	btn_battle.add_theme_stylebox_override("pressed", bsb_p)
 	btn_battle.add_theme_stylebox_override("focus", bsb)
 	var m: String = str(s["mode"])
-	btn_battle.pressed.connect(func(): request_battle.emit(m))
+	btn_battle.pressed.connect(func():
+		var g := _gs()
+		if g:
+			g.set("current_expedition_stage", stage_num)
+			g.set("current_suggest_lv", sug_lv)
+		request_battle.emit(m)
+	)
 	h.add_child(btn_battle)
 
 	return c

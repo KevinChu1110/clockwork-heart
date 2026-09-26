@@ -33,6 +33,15 @@ var play_time: float = 0.0
 ## 舊存檔 sword|soul|iron 會對應到 sword|magic|hammer
 var path_style: String = ""
 
+## 當前出征關卡與建議等級（由出征頁寫入，戰鬥後重置）
+var current_expedition_stage: String = ""
+var current_suggest_lv: int = 0
+
+func clear_expedition_stage() -> void:
+	current_expedition_stage = ""
+	current_suggest_lv = 0
+
+
 ## 簡易面板（之後接裝備／戰魂）
 var max_hp: int = 50
 var hp: int = 50
