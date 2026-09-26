@@ -3036,8 +3036,8 @@
    "id": "merge-colossus-scrap-calibrate",
    "cat": "平台",
    "title": "把已過審的巨偶部位鐵屑與鐵匠校準跳階合進主線",
-   "status": "開發中",
-   "note": "sideworker2 開始合併巨偶部位鐵屑與鐵匠校準跳階",
+   "status": "已上線",
+   "note": "巨偶部位鐵屑與鐵匠校準跳階皆已合入主線",
    "keys": [
     "把已過審的巨偶部"
    ]
