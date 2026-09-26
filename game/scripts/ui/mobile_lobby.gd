@@ -176,6 +176,12 @@ var _weapon_slot_buttons: Array[Button] = []
 var _selected_weapon_slot: int = 0
 var _weapon_slot_hint_label: Label = null
 var _char_power_badge: Label = null
+var _char_doll_title_label: Label = null
+var _btn_wardrobe: Button = null
+var _char_weapon_title_label: Label = null
+var _char_weapon_sub_label: Label = null
+var _char_stat_title_label: Label = null
+var _stat_cards: Array[PanelContainer] = []
 
 const WEAPON_SLOTS: Array[Dictionary] = [
 	{
@@ -2228,6 +2234,7 @@ func _build_character_tab() -> void:
 	l_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_apply_label_style(l_title, 15, COLOR_GOLD_DARK)
 	l_vbox.add_child(l_title)
+	_char_doll_title_label = l_title
 
 	_char_prev = TextureRect.new()
 	_char_prev.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2277,6 +2284,7 @@ func _build_character_tab() -> void:
 	btn_wardrobe.add_theme_stylebox_override("focus", wsb)
 	btn_wardrobe.pressed.connect(open_wardrobe)
 	l_vbox.add_child(btn_wardrobe)
+	_btn_wardrobe = btn_wardrobe
 
 	var r_v := VBoxContainer.new()
 	r_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -2292,11 +2300,13 @@ func _build_character_tab() -> void:
 	w_title.text = _t("武器輪替配置")
 	_apply_label_style(w_title, 18, COLOR_TEXT_DARK)
 	w_hdr.add_child(w_title)
+	_char_weapon_title_label = w_title
 
 	var w_sub := Label.new()
 	w_sub.text = _t("點擊切換輪替順位 · 三段作戰序列")
 	_apply_label_style(w_sub, 13, COLOR_GOLD_DARK)
 	w_hdr.add_child(w_sub)
+	_char_weapon_sub_label = w_sub
 
 	# 2. 三個武器槽果凍卡
 	var w_row := HBoxContainer.new()
@@ -2326,8 +2336,10 @@ func _build_character_tab() -> void:
 	r_v.add_child(hint_p)
 
 	_weapon_slot_hint_label = Label.new()
-	_weapon_slot_hint_label.text = WEAPON_SLOTS[_selected_weapon_slot]["hint"]
-	_apply_label_style(_weapon_slot_hint_label, 13, COLOR_TEXT_DARK)
+	var init_hint := _t(WEAPON_SLOTS[_selected_weapon_slot]["hint"])
+	_weapon_slot_hint_label.text = init_hint
+	var init_h_sz := 12 if init_hint.length() > 70 else 13
+	_apply_label_style(_weapon_slot_hint_label, init_h_sz, COLOR_TEXT_DARK)
 	hint_p.add_child(_weapon_slot_hint_label)
 
 	# 4. 戰鬥屬性標題列
@@ -2339,6 +2351,7 @@ func _build_character_tab() -> void:
 	s_title.text = _t("機體戰鬥屬性")
 	_apply_label_style(s_title, 18, COLOR_TEXT_DARK)
 	s_hdr.add_child(s_title)
+	_char_stat_title_label = s_title
 
 	var pow_capsule := PanelContainer.new()
 	var pcsb := StyleBoxFlat.new()
@@ -2369,22 +2382,36 @@ func _build_character_tab() -> void:
 	stats_v.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	r_v.add_child(stats_v)
 
+	_stat_cards.clear()
 	var r1 := HBoxContainer.new()
 	r1.add_theme_constant_override("separation", 10)
 	r1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stats_v.add_child(r1)
 
-	r1.add_child(_build_stat_card("生命力 (HP)", "520", "機體核心", Color("#0E8A7A")))
-	r1.add_child(_build_stat_card("物理攻擊", "95", "打擊破壞", COLOR_GOLD_DARK))
-	r1.add_child(_build_stat_card("物理防禦", "48", "減傷防護", Color("#2A5580")))
+	var sc1 := _build_stat_card("生命力 (HP)", "520", "機體核心", Color("#0E8A7A"))
+	r1.add_child(sc1)
+	_stat_cards.append(sc1)
+
+	var sc2 := _build_stat_card("物理攻擊", "95", "打擊破壞", COLOR_GOLD_DARK)
+	r1.add_child(sc2)
+	_stat_cards.append(sc2)
+
+	var sc3 := _build_stat_card("物理防禦", "48", "減傷防護", Color("#2A5580"))
+	r1.add_child(sc3)
+	_stat_cards.append(sc3)
 
 	var r2 := HBoxContainer.new()
 	r2.add_theme_constant_override("separation", 10)
 	r2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stats_v.add_child(r2)
 
-	r2.add_child(_build_stat_card("暴擊率", "22%", "弱點致命", Color("#B83250")))
-	r2.add_child(_build_stat_card("怒氣量表", "20 點", "滿怒超頻運轉 +25% 性能", Color("#A82B1E")))
+	var sc4 := _build_stat_card("暴擊率", "22%", "弱點致命", Color("#B83250"))
+	r2.add_child(sc4)
+	_stat_cards.append(sc4)
+
+	var sc5 := _build_stat_card("怒氣量表", "20 點", "滿怒超頻運轉 +25% 性能", Color("#A82B1E"))
+	r2.add_child(sc5)
+	_stat_cards.append(sc5)
 
 func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 	var btn := Button.new()
@@ -2402,16 +2429,20 @@ func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 
 	var slot_title := Label.new()
 	slot_title.name = "SlotTitle"
-	slot_title.text = slot_data["slot_title"]
+	var t_text := _t(slot_data["slot_title"])
+	slot_title.text = t_text
 	slot_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_apply_label_style(slot_title, 13, COLOR_GOLD_DARK)
+	var t_sz := 11 if t_text.length() > 14 else 13
+	_apply_label_style(slot_title, t_sz, COLOR_GOLD_DARK)
 	v.add_child(slot_title)
 
 	var weapon_info := Label.new()
 	weapon_info.name = "WeaponInfo"
-	weapon_info.text = "%s · %s" % [slot_data["weapon_name"], slot_data["hits"]]
+	var w_text := "%s · %s" % [_t(slot_data["weapon_name"]), _t(slot_data["hits"])]
+	weapon_info.text = w_text
 	weapon_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_apply_label_style(weapon_info, 16, COLOR_TEXT_DARK)
+	var w_sz := 13 if w_text.length() > 22 else (14 if w_text.length() > 18 else 16)
+	_apply_label_style(weapon_info, w_sz, COLOR_TEXT_DARK)
 	v.add_child(weapon_info)
 
 	_style_weapon_slot_button(btn, idx == _selected_weapon_slot)
@@ -2482,12 +2513,18 @@ func _select_weapon_slot(idx: int) -> void:
 	for i in range(_weapon_slot_buttons.size()):
 		_style_weapon_slot_button(_weapon_slot_buttons[i], i == _selected_weapon_slot)
 	if _weapon_slot_hint_label and idx < WEAPON_SLOTS.size():
-		_weapon_slot_hint_label.text = WEAPON_SLOTS[idx]["hint"]
+		var hint_text := _t(WEAPON_SLOTS[idx]["hint"])
+		_weapon_slot_hint_label.text = hint_text
+		var h_sz := 12 if hint_text.length() > 70 else 13
+		_weapon_slot_hint_label.add_theme_font_size_override("font_size", h_sz)
 
 func _build_stat_card(title: String, val_str: String, subtitle: String, val_color: Color) -> PanelContainer:
 	var c := PanelContainer.new()
 	c.name = "StatCard"
 	c.set_meta("is_stat_card", true)
+	c.set_meta("stat_title_key", title)
+	c.set_meta("stat_val_key", val_str)
+	c.set_meta("stat_subtitle_key", subtitle)
 	c.custom_minimum_size = Vector2(0, 80)
 	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
@@ -2517,15 +2554,19 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 
 	var t_lbl := Label.new()
 	t_lbl.name = "TitleLabel"
-	t_lbl.text = title
-	_apply_label_style(t_lbl, 14, COLOR_TEXT_DARK)
+	var t_text := _t(title)
+	t_lbl.text = t_text
+	var t_sz := 12 if t_text.length() > 14 else 14
+	_apply_label_style(t_lbl, t_sz, COLOR_TEXT_DARK)
 	top_row.add_child(t_lbl)
 
 	if not subtitle.is_empty():
 		var sub_lbl := Label.new()
 		sub_lbl.name = "SubLabel"
-		sub_lbl.text = subtitle
-		_apply_label_style(sub_lbl, 12, COLOR_GOLD_DARK)
+		var sub_text := _t(subtitle)
+		sub_lbl.text = sub_text
+		var sub_sz := 10 if sub_text.length() > 24 else (11 if sub_text.length() > 16 else 12)
+		_apply_label_style(sub_lbl, sub_sz, COLOR_GOLD_DARK)
 		top_row.add_child(sub_lbl)
 
 	var val_row := HBoxContainer.new()
@@ -2534,7 +2575,7 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 
 	var v_lbl := Label.new()
 	v_lbl.name = "ValLabel"
-	v_lbl.text = val_str
+	v_lbl.text = _t(val_str)
 	_apply_label_style(v_lbl, 22, val_color)
 	val_row.add_child(v_lbl)
 
@@ -3237,6 +3278,80 @@ func _apply_locale_texts() -> void:
 
 	if _hero_title_tag and is_instance_valid(_hero_title_tag):
 		_hero_title_tag.text = "【%s】" % _t("初出茅廬")
+
+	if _char_doll_title_label and is_instance_valid(_char_doll_title_label):
+		_char_doll_title_label.text = _t("機體外觀 · 發條紙娃娃")
+	if _btn_wardrobe and is_instance_valid(_btn_wardrobe):
+		_btn_wardrobe.text = _t("更衣 · 發條衣櫥")
+	if _char_weapon_title_label and is_instance_valid(_char_weapon_title_label):
+		_char_weapon_title_label.text = _t("武器輪替配置")
+	if _char_weapon_sub_label and is_instance_valid(_char_weapon_sub_label):
+		_char_weapon_sub_label.text = _t("點擊切換輪替順位 · 三段作戰序列")
+	if _char_stat_title_label and is_instance_valid(_char_stat_title_label):
+		_char_stat_title_label.text = _t("機體戰鬥屬性")
+	if _char_power_badge and is_instance_valid(_char_power_badge):
+		var gs := _gs()
+		var cur_pow := 482
+		if gs and gs.has_method("power_score") and int(gs.call("power_score")) > 0:
+			cur_pow = int(gs.call("power_score"))
+		_char_power_badge.text = _t("有效戰力 %d") % cur_pow
+
+	for i in range(_weapon_slot_buttons.size()):
+		if i < WEAPON_SLOTS.size() and is_instance_valid(_weapon_slot_buttons[i]):
+			var btn := _weapon_slot_buttons[i]
+			var title_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
+			if title_lbl:
+				var t_text := _t(WEAPON_SLOTS[i]["slot_title"])
+				title_lbl.text = t_text
+				if t_text.length() > 14:
+					title_lbl.add_theme_font_size_override("font_size", 11)
+				else:
+					title_lbl.add_theme_font_size_override("font_size", 13)
+			var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
+			if info_lbl:
+				var w_text := "%s · %s" % [_t(WEAPON_SLOTS[i]["weapon_name"]), _t(WEAPON_SLOTS[i]["hits"])]
+				info_lbl.text = w_text
+				if w_text.length() > 22:
+					info_lbl.add_theme_font_size_override("font_size", 13)
+				elif w_text.length() > 18:
+					info_lbl.add_theme_font_size_override("font_size", 14)
+				else:
+					info_lbl.add_theme_font_size_override("font_size", 16)
+
+	if _weapon_slot_hint_label and is_instance_valid(_weapon_slot_hint_label):
+		if _selected_weapon_slot < WEAPON_SLOTS.size():
+			var hint_text := _t(WEAPON_SLOTS[_selected_weapon_slot]["hint"])
+			_weapon_slot_hint_label.text = hint_text
+			if hint_text.length() > 70:
+				_weapon_slot_hint_label.add_theme_font_size_override("font_size", 12)
+			else:
+				_weapon_slot_hint_label.add_theme_font_size_override("font_size", 13)
+
+	for card in _stat_cards:
+		if is_instance_valid(card):
+			var t_lbl := card.find_child("TitleLabel", true, false) as Label
+			if t_lbl:
+				var t_text := _t(str(card.get_meta("stat_title_key", "")))
+				t_lbl.text = t_text
+				if t_text.length() > 14:
+					t_lbl.add_theme_font_size_override("font_size", 12)
+				else:
+					t_lbl.add_theme_font_size_override("font_size", 14)
+			var sub_lbl := card.find_child("SubLabel", true, false) as Label
+			if sub_lbl:
+				var sub_text := _t(str(card.get_meta("stat_subtitle_key", "")))
+				sub_lbl.text = sub_text
+				if sub_text.length() > 24:
+					sub_lbl.add_theme_font_size_override("font_size", 10)
+				elif sub_text.length() > 16:
+					sub_lbl.add_theme_font_size_override("font_size", 11)
+				else:
+					sub_lbl.add_theme_font_size_override("font_size", 12)
+			var v_lbl := card.find_child("ValLabel", true, false) as Label
+			if v_lbl:
+				var v_k := str(card.get_meta("stat_val_key", ""))
+				if not v_k.is_empty():
+					v_lbl.text = _t(v_k)
 
 	_refresh_equip_schematic()
 	refresh_hud()

@@ -59,6 +59,7 @@ func _process(_d: float) -> bool:
 		_test_bag_tab()
 		_test_settings_and_sortie_buttons()
 		_test_dock_and_topbar_i18n()
+		_test_character_tab_i18n()
 		return _finish()
 	return false
 
@@ -81,6 +82,13 @@ func _has_forbidden_symbols_or_emoji(text: String) -> bool:
 		var cp := text.unicode_at(i)
 		# 雜項符號與 Dingbats (0x2600-0x27BF) 以及 Emoji 區域 (0x1F300-0x1FAFF)
 		if (cp >= 0x2600 and cp <= 0x27BF) or (cp >= 0x1F300 and cp <= 0x1FAFF):
+			return true
+	return false
+
+func _has_cjk_characters(text: String) -> bool:
+	for i in range(text.length()):
+		var cp := text.unicode_at(i)
+		if (cp >= 0x4E00 and cp <= 0x9FFF) or (cp >= 0x3400 and cp <= 0x4DBF):
 			return true
 	return false
 
@@ -1634,6 +1642,227 @@ func _test_dock_and_topbar_i18n() -> void:
 				_fail("[%s] Dock 按鈕 %d 標題應為「%s」，實際為「%s」" % [code, i, exp_dock[i], btn.text if btn else "null"])
 
 	print("  ok 大廳頂欄三寶與底部 Dock 六語系即時切換全部檢查通過")
+
+
+func _test_character_tab_i18n() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試角色分頁六語系")
+		return
+
+	var loc_node: Node = root.get_node_or_null("Loc")
+	if loc_node == null:
+		_fail("Loc autoload 未找到，無法測試角色分頁六語系")
+		return
+
+	_lobby._switch_tab(MobileLobby.Tab.CHARACTER)
+	var char_layer = _lobby.get("_char_layer") as Control
+	if char_layer == null or not char_layer.visible:
+		_fail("切換至 Tab.CHARACTER 失敗")
+		return
+
+	var expected_char_data := {
+		"zh_TW": {
+			"doll_title": "機體外觀 · 發條紙娃娃",
+			"wardrobe": "更衣 · 發條衣櫥",
+			"weapon_title": "武器輪替配置",
+			"weapon_sub": "點擊切換輪替順位 · 三段作戰序列",
+			"stat_title": "機體戰鬥屬性",
+			"power_prefix": "有效戰力",
+			"slots": [
+				{"title": "首選武器", "name": "鐵劍", "hits": "4 次打擊", "hint": "首選武器 · 鐵劍：近身迅捷連續 4 次斬擊，戰鬥開局起手輪替順位"},
+				{"title": "副手武器", "name": "獵弓", "hits": "4 次打擊", "hint": "副手武器 · 獵弓：中距離精準連續 4 次射擊，壓制敵陣並牽制推進"},
+				{"title": "絕技武器", "name": "拳套", "hits": "5 連擊", "hint": "絕技武器 · 拳套：重裝近身蓄力 5 連擊，滿怒時超頻運轉爆發絕技"}
+			],
+			"cards": [
+				{"title": "生命力 (HP)", "sub": "機體核心", "val": "520"},
+				{"title": "物理攻擊", "sub": "打擊破壞", "val": "95"},
+				{"title": "物理防禦", "sub": "減傷防護", "val": "48"},
+				{"title": "暴擊率", "sub": "弱點致命", "val": "22%"},
+				{"title": "怒氣量表", "sub": "滿怒超頻運轉 +25% 性能", "val": "20 點"}
+			]
+		},
+		"zh_CN": {
+			"doll_title": "机体外观 · 发条纸娃娃",
+			"wardrobe": "更衣 · 发条衣橱",
+			"weapon_title": "武器轮替配置",
+			"weapon_sub": "点击切换轮替顺位 · 三段作战序列",
+			"stat_title": "机体战斗属性",
+			"power_prefix": "有效战力",
+			"slots": [
+				{"title": "首选武器", "name": "铁剑", "hits": "4 次打击", "hint": "首选武器 · 铁剑：近身迅捷连续 4 次斩击，战斗开局起手轮替顺位"},
+				{"title": "副手武器", "name": "猎弓", "hits": "4 次打击", "hint": "副手武器 · 猎弓：中距离精准连续 4 次射击，压制敌阵并牵制推进"},
+				{"title": "绝技武器", "name": "拳套", "hits": "5 连击", "hint": "绝技武器 · 拳套：重装近身蓄力 5 连击，满怒时超频运转爆发绝技"}
+			],
+			"cards": [
+				{"title": "生命力 (HP)", "sub": "机体核心", "val": "520"},
+				{"title": "物理攻击", "sub": "打击破坏", "val": "95"},
+				{"title": "物理防御", "sub": "减伤防护", "val": "48"},
+				{"title": "暴击率", "sub": "弱点致命", "val": "22%"},
+				{"title": "怒气量表", "sub": "满怒超频运转 +25% 性能", "val": "20 点"}
+			]
+		},
+		"en": {
+			"doll_title": "Chassis Appearance · Clockwork Paperdoll",
+			"wardrobe": "Wardrobe · Clockwork Closet",
+			"weapon_title": "Weapon Rotation Loadout",
+			"weapon_sub": "Tap to Switch Order · 3-Stage Combat Sequence",
+			"stat_title": "Chassis Combat Stats",
+			"power_prefix": "Effective Power",
+			"slots": [
+				{"title": "Primary Weapon", "name": "Iron Sword", "hits": "4 Strikes", "hint": "Primary Weapon · Iron Sword: Swift 4-hit melee slashes, starting order in combat"},
+				{"title": "Secondary Weapon", "name": "Hunting Bow", "hits": "4 Strikes", "hint": "Secondary Weapon · Hunting Bow: Precise mid-range 4-shot volley to suppress and harass foes"},
+				{"title": "Special Weapon", "name": "Gauntlets", "hits": "5-Hit Combo", "hint": "Special Weapon · Gauntlets: Heavy charged 5-hit melee combo, unleashing special move when rage is full"}
+			],
+			"cards": [
+				{"title": "Health (HP)", "sub": "Chassis Core", "val": "520"},
+				{"title": "Physical ATK", "sub": "Impact Damage", "val": "95"},
+				{"title": "Physical DEF", "sub": "Damage Reduction", "val": "48"},
+				{"title": "CRIT Rate", "sub": "Lethal Weakpoint", "val": "22%"},
+				{"title": "Rage Gauge", "sub": "Max Rage Overclock +25% Boost", "val": "20 pts"}
+			]
+		},
+		"ja": {
+			"doll_title": "機体外見 · ゼンマイ紙人形",
+			"wardrobe": "着替え · ゼンマイ衣装棚",
+			"weapon_title": "武器ローテーション配置",
+			"weapon_sub": "タップで順位切替 · 3段階戦闘シークエンス",
+			"stat_title": "機体戦闘属性",
+			"power_prefix": "有効戦力",
+			"slots": [
+				{"title": "メイン武器", "name": "鉄の剣", "hits": "4回打撃", "hint": "メイン武器 · 鉄の剣：素早い近接4回斬撃、戦闘開始時の初手ローテーション"},
+				{"title": "サブ武器", "name": "猟弓", "hits": "4回打撃", "hint": "サブ武器 · 猟弓：中距離からの的確な4連射、敵陣を制圧し前進を牽制"},
+				{"title": "絶技武器", "name": "拳套", "hits": "5連撃", "hint": "絶技武器 · 拳套：重装近接溜め5連撃、怒気最大時にオーバークロックで絶技炸裂"}
+			],
+			"cards": [
+				{"title": "生命力 (HP)", "sub": "機体コア", "val": "520"},
+				{"title": "物理攻撃", "sub": "打撃破壊", "val": "95"},
+				{"title": "物理防御", "sub": "被ダメージ軽減", "val": "48"},
+				{"title": "会心率", "sub": "弱点急所", "val": "22%"},
+				{"title": "怒気ゲージ", "sub": "怒気MAXオーバークロック +25%性能", "val": "20 pt"}
+			]
+		},
+		"ko": {
+			"doll_title": "기체 외형 · 태엽 종이인형",
+			"wardrobe": "옷 갈아입기 · 태엽 옷장",
+			"weapon_title": "무기 로테이션 배치",
+			"weapon_sub": "터치하여 순서 전환 · 3단계 전투 시퀀스",
+			"stat_title": "기체 전투 속성",
+			"power_prefix": "유효 전투력",
+			"slots": [
+				{"title": "주 무기", "name": "철검", "hits": "4회 타격", "hint": "주 무기 · 철검: 민첩한 근접 연속 4회 베기, 전투 시작 첫 로테이션 순서"},
+				{"title": "보조 무기", "name": "사냥활", "hits": "4회 타격", "hint": "보조 무기 · 사냥활: 중거리 정밀 연속 4회 사격, 적진을 제압하고 진격을 견제"},
+				{"title": "필살 무기", "name": "건틀릿", "hits": "5연타", "hint": "필살 무기 · 건틀릿: 중장갑 근접 차지 5연타, 분노 폭발 시 오버클럭 필살기 발동"}
+			],
+			"cards": [
+				{"title": "생명력 (HP)", "sub": "기체 코어", "val": "520"},
+				{"title": "물리 공격", "sub": "타격 파괴", "val": "95"},
+				{"title": "물리 방어", "sub": "피해 감소", "val": "48"},
+				{"title": "치명타율", "sub": "약점 치명타", "val": "22%"},
+				{"title": "분노 게이지", "sub": "최대 분노 오버클럭 +25% 성능", "val": "20 pt"}
+			]
+		},
+		"es": {
+			"doll_title": "Aspecto del Chasis · Muñeco de Cuerda",
+			"wardrobe": "Vestuario · Armario de Cuerda",
+			"weapon_title": "Rotación de Armas",
+			"weapon_sub": "Toca para cambiar orden · Secuencia de combate de 3 fases",
+			"stat_title": "Atributos de Combate",
+			"power_prefix": "Poder Efectivo",
+			"slots": [
+				{"title": "Arma Principal", "name": "Espada de Hierro", "hits": "4 Golpes", "hint": "Arma Principal · Espada de Hierro: 4 cortes rápidos cuerpo a cuerpo, inicio de combate"},
+				{"title": "Arma Secundaria", "name": "Arco de Caza", "hits": "4 Golpes", "hint": "Arma Secundaria · Arco de Caza: 4 disparos precisos de medio alcance para reprimir y frenar"},
+				{"title": "Arma Especial", "name": "Guantelete", "hits": "5 Golpes", "hint": "Arma Especial · Guantelete: Combo cargado pesado de 5 golpes, desata técnica especial con furia máxima"}
+			],
+			"cards": [
+				{"title": "Salud (HP)", "sub": "Núcleo del Chasis", "val": "520"},
+				{"title": "Ataque Físico", "sub": "Daño de Impacto", "val": "95"},
+				{"title": "Defensa Física", "sub": "Reducción de Daño", "val": "48"},
+				{"title": "Prob. Crítica", "sub": "Punto Débil", "val": "22%"},
+				{"title": "Medidor de Furia", "sub": "Sobrecarga de Furia Máx. +25% Rendimiento", "val": "20 pts"}
+			]
+		}
+	}
+
+	for code in ["zh_CN", "en", "ja", "ko", "es", "zh_TW"]:
+		loc_node.call("set_locale", code)
+		var exp: Dictionary = expected_char_data[code]
+
+		var doll_lbl = _lobby.get("_char_doll_title_label") as Label
+		if doll_lbl == null or doll_lbl.text != exp["doll_title"]:
+			_fail("[%s] 角色外觀標題應為「%s」，實際為「%s」" % [code, exp["doll_title"], doll_lbl.text if doll_lbl else "null"])
+
+		var btn_wardrobe = _lobby.find_child("BtnWardrobe", true, false) as Button
+		if btn_wardrobe == null or btn_wardrobe.text != exp["wardrobe"]:
+			_fail("[%s] 更衣按鈕應為「%s」，實際為「%s」" % [code, exp["wardrobe"], btn_wardrobe.text if btn_wardrobe else "null"])
+
+		var w_title_lbl = _lobby.get("_char_weapon_title_label") as Label
+		if w_title_lbl == null or w_title_lbl.text != exp["weapon_title"]:
+			_fail("[%s] 武器輪替標題應為「%s」，實際為「%s」" % [code, exp["weapon_title"], w_title_lbl.text if w_title_lbl else "null"])
+
+		var w_sub_lbl = _lobby.get("_char_weapon_sub_label") as Label
+		if w_sub_lbl == null or w_sub_lbl.text != exp["weapon_sub"]:
+			_fail("[%s] 武器輪替副標題應為「%s」，實際為「%s」" % [code, exp["weapon_sub"], w_sub_lbl.text if w_sub_lbl else "null"])
+
+		var s_title_lbl = _lobby.get("_char_stat_title_label") as Label
+		if s_title_lbl == null or s_title_lbl.text != exp["stat_title"]:
+			_fail("[%s] 戰鬥屬性標題應為「%s」，實際為「%s」" % [code, exp["stat_title"], s_title_lbl.text if s_title_lbl else "null"])
+
+		var p_badge = _lobby.get("_char_power_badge") as Label
+		if p_badge == null or not p_badge.text.begins_with(exp["power_prefix"]):
+			_fail("[%s] 戰力徽章應以「%s」開頭，實際為「%s」" % [code, exp["power_prefix"], p_badge.text if p_badge else "null"])
+
+		var w_btns: Array[Button] = _lobby.get_weapon_slot_buttons()
+		var exp_slots: Array = exp["slots"]
+		for i in range(3):
+			var b := w_btns[i]
+			var t_node := b.get_node_or_null("Content/SlotTitle") as Label
+			var w_node := b.get_node_or_null("Content/WeaponInfo") as Label
+			var exp_s: Dictionary = exp_slots[i]
+			if t_node == null or t_node.text != exp_s["title"]:
+				_fail("[%s] 武器槽 %d 標題應為「%s」，實際為「%s」" % [code, i, exp_s["title"], t_node.text if t_node else "null"])
+			var exp_w_info := "%s · %s" % [exp_s["name"], exp_s["hits"]]
+			if w_node == null or w_node.text != exp_w_info:
+				_fail("[%s] 武器槽 %d 武器資訊應為「%s」，實際為「%s」" % [code, i, exp_w_info, w_node.text if w_node else "null"])
+
+			_lobby.select_weapon_slot(i)
+			var hint_lbl = _lobby.get("_weapon_slot_hint_label") as Label
+			if hint_lbl == null or hint_lbl.text != exp_s["hint"]:
+				_fail("[%s] 武器槽 %d 提示應為「%s」，實際為「%s」" % [code, i, exp_s["hint"], hint_lbl.text if hint_lbl else "null"])
+
+		_lobby.select_weapon_slot(0)
+
+		var stat_cards: Array[PanelContainer] = []
+		var sc_var = _lobby.get("_stat_cards")
+		if sc_var is Array:
+			for c in sc_var:
+				if c is PanelContainer:
+					stat_cards.append(c as PanelContainer)
+		var exp_cards: Array = exp["cards"]
+		if stat_cards.size() != 5:
+			_fail("[%s] 屬性小卡數量應為 5，實際為 %d" % [code, stat_cards.size()])
+		else:
+			for i in range(5):
+				var sc := stat_cards[i]
+				var t_lbl := sc.find_child("TitleLabel", true, false) as Label
+				var sub_lbl := sc.find_child("SubLabel", true, false) as Label
+				var v_lbl := sc.find_child("ValLabel", true, false) as Label
+				var exp_c: Dictionary = exp_cards[i]
+				if t_lbl == null or t_lbl.text != exp_c["title"]:
+					_fail("[%s] 屬性卡 %d 標題應為「%s」，實際為「%s」" % [code, i, exp_c["title"], t_lbl.text if t_lbl else "null"])
+				if sub_lbl == null or sub_lbl.text != exp_c["sub"]:
+					_fail("[%s] 屬性卡 %d 副標應為「%s」，實際為「%s」" % [code, i, exp_c["sub"], sub_lbl.text if sub_lbl else "null"])
+				if v_lbl == null or v_lbl.text != exp_c["val"]:
+					_fail("[%s] 屬性卡 %d 數值應為「%s」，實際為「%s」" % [code, i, exp_c["val"], v_lbl.text if v_lbl else "null"])
+
+		if code in ["en", "es"]:
+			for lbl in char_layer.find_children("*", "Label", true, false):
+				var lt: String = (lbl as Label).text
+				if _has_cjk_characters(lt):
+					_fail("[%s] 角色分頁存在未翻譯中文殘留: %s" % [code, lt])
+
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+	loc_node.call("set_locale", "zh_TW")
+	print("  ok 角色分頁武器槽與屬性小卡六語系（zh_TW/zh_CN/en/ja/ko/es）即時切換全部檢查通過")
 
 
 func _finish() -> bool:
