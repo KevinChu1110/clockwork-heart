@@ -186,6 +186,7 @@ var _weapon_slot_buttons: Array[Button] = []
 var _selected_weapon_slot: int = 0
 var _weapon_slot_hint_label: Label = null
 var _char_power_badge: Label = null
+var _char_level_badge: Label = null
 var _char_doll_title_label: Label = null
 var _btn_wardrobe: Button = null
 var _char_weapon_title_label: Label = null
@@ -2404,6 +2405,25 @@ func _build_character_tab() -> void:
 	_apply_label_style(_char_power_badge, 13, COLOR_TEXT_DARK)
 	pow_capsule.add_child(_char_power_badge)
 
+	var lv_capsule := PanelContainer.new()
+	var lcsb := StyleBoxFlat.new()
+	lcsb.bg_color = COLOR_CARD_WARM
+	lcsb.border_color = COLOR_BORDER
+	lcsb.set_border_width_all(2)
+	lcsb.border_width_bottom = 3
+	lcsb.set_corner_radius_all(12)
+	lcsb.content_margin_left = 12
+	lcsb.content_margin_right = 12
+	lcsb.content_margin_top = 2
+	lcsb.content_margin_bottom = 2
+	lv_capsule.add_theme_stylebox_override("panel", lcsb)
+	s_hdr.add_child(lv_capsule)
+
+	_char_level_badge = Label.new()
+	_update_char_level_badge()
+	_apply_label_style(_char_level_badge, 13, COLOR_TEXT_DARK)
+	lv_capsule.add_child(_char_level_badge)
+
 	# 5. 獨立屬性小卡 (生命／攻擊／防禦／暴擊／怒氣)
 	var stats_v := VBoxContainer.new()
 	stats_v.add_theme_constant_override("separation", 10)
@@ -3212,20 +3232,42 @@ func _energy_hud_text() -> String:
 		s += " " + (_t("%d分") % maxi(1, m))
 	return s
 
+func _update_char_level_badge() -> void:
+	if not _char_level_badge or not is_instance_valid(_char_level_badge):
+		return
+	var gs := _gs()
+	var cur_lv := 1
+	var cap := 30
+	if gs:
+		cur_lv = maxi(1, int(gs.level))
+		if gs.has_method("get_level_cap"):
+			cap = int(gs.call("get_level_cap"))
+	if cur_lv >= cap:
+		_char_level_badge.text = "Lv.%d · %s" % [cur_lv, _t("本季上限")]
+	else:
+		_char_level_badge.text = "Lv.%d" % cur_lv
+
+
 func refresh_hud() -> void:
 	var gs := _gs()
 	var lv := 1
+	var cap := 30
 	var gold := 0
 	var dust := 0
 	var pow := 0
 	if gs:
 		lv = maxi(1, int(gs.level))
+		if gs.has_method("get_level_cap"):
+			cap = int(gs.call("get_level_cap"))
 		gold = int(gs.gold)
 		dust = int(gs.stardust)
 		if gs.has_method("power_score"):
 			pow = int(gs.call("power_score"))
 	if _lv_label:
-		_lv_label.text = "Lv.%d" % lv
+		if lv >= cap:
+			_lv_label.text = "Lv.%d · %s" % [lv, _t("本季上限")]
+		else:
+			_lv_label.text = "Lv.%d" % lv
 	if _name_label:
 		_name_label.text = _get_hero_name()
 	if _hero_name_tag:
@@ -3243,6 +3285,7 @@ func refresh_hud() -> void:
 		_power_label.text = _t("戰力 %d") % pow
 	if _char_power_badge:
 		_char_power_badge.text = _t("有效戰力 %d") % (pow if pow > 0 else 482)
+	_update_char_level_badge()
 	if _energy_label:
 		_energy_label.text = _energy_hud_text()
 	if _gold_label:
@@ -3345,6 +3388,7 @@ func _apply_locale_texts() -> void:
 		if gs and gs.has_method("power_score") and int(gs.call("power_score")) > 0:
 			cur_pow = int(gs.call("power_score"))
 		_char_power_badge.text = _t("有效戰力 %d") % cur_pow
+	_update_char_level_badge()
 
 	for i in range(_weapon_slot_buttons.size()):
 		if i < WEAPON_SLOTS.size() and is_instance_valid(_weapon_slot_buttons[i]):

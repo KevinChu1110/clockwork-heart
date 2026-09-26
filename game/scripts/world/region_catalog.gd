@@ -184,19 +184,34 @@ static func next_objective() -> Dictionary:
 	return fallback
 
 
-## 各關建議等級（test_boss_curve 量出來「照這個等級來會贏」的數字）。
-## 只放在這裡一份：主線指引、雷歐前的軟提示都讀它。
-const SUGGEST_LV := {
-	"r1_s2": 10,   ## 雷歐：Lv8 只有 23%，Lv10 100%
-	"r2_s1": 20,   ## 白霧（輿圖寫 18+）
-	"r3_s1": 26,   ## 阿波
-	"r3_s2": 30,   ## 疾影
-	"r3_s3": 30,   ## 石拳
-	"r4_s2": 30,   ## 魔王
-}
+## 各關建議等級：讀取 pacing_s1.json（表上未定義關卡維持 0）。
+## 主線指引、雷歐前的軟提示與出征關卡皆以本表為準。
+const PACING_TABLE_PATH := "res://data/tables/pacing_s1.json"
+static var SUGGEST_LV: Dictionary = _load_suggest_lv()
+
+
+static func _load_suggest_lv() -> Dictionary:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var dt: Node = (loop as SceneTree).root.get_node_or_null("DataTables")
+		if dt and dt.has_method("suggest_lv_table"):
+			var tbl: Dictionary = dt.call("suggest_lv_table")
+			if not tbl.is_empty():
+				return tbl.duplicate()
+	if FileAccess.file_exists(PACING_TABLE_PATH):
+		var f := FileAccess.open(PACING_TABLE_PATH, FileAccess.READ)
+		if f != null:
+			var data = JSON.parse_string(f.get_as_text())
+			if data is Dictionary:
+				var slv = data.get("suggest_lv", {})
+				if slv is Dictionary:
+					return slv.duplicate()
+	return {}
 
 
 static func suggest_lv(stage_id: String) -> int:
+	if SUGGEST_LV.is_empty():
+		SUGGEST_LV = _load_suggest_lv()
 	return int(SUGGEST_LV.get(stage_id, 0))
 
 
