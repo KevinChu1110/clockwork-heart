@@ -3126,8 +3126,8 @@
    "id": "merge-colossus-weights-blurb",
    "cat": "平台",
    "title": "把已過審的巨偶色階權重與出征卡副標合進主線",
-   "status": "草稿",
-   "note": "等兩張過審單合進 main",
+   "status": "開發中",
+   "note": "開始合併巨偶權重與出征卡副標至主線",
    "keys": [
     "把已過審的巨偶色"
    ]
