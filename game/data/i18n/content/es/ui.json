@@ -2991,5 +2991,11 @@
   "建議 Lv.%d": "Nivel rec. %d",
   "區域抗性安全：等級達標，受傷正常 (×1.0)": "Resistencia seguro: Nivel adecuado, daño normal (x1.0)",
   "區域抗性吃力：未達建議 Lv%d，受到傷害 ×1.2": "Resistencia difícil: Inferior a Nivel rec. %d, daño x1.2",
-  "區域抗性過載：低於建議 Lv%d 超過 5 級，受到傷害 ×1.5！": "Resistencia sobrecarga: 5+ niveles bajo Nivel rec. %d, daño x1.5!"
+  "區域抗性過載：低於建議 Lv%d 超過 5 級，受到傷害 ×1.5！": "Resistencia sobrecarga: 5+ niveles bajo Nivel rec. %d, daño x1.5!",
+  "地先亮，再落石。亮了按 J。": "El suelo brilla primero, luego caen rocas. Con el brillo, pulsa J.",
+  "王者斬必擋。火圈先亮再落，亮了點閃避。": "Para siempre el Corte del Rey. El anillo de fuego brilla antes de caer: toca Esquivar al brillo.",
+  "風切前會先響。響了點閃避。": "El corte de viento suena antes. Cuando suene, toca Esquivar.",
+  "牠停下來的那一拍才吃滿傷害。風聲響起就點閃避。": "Solo recibe todo el daño en el compás en que se detiene. Toca Esquivar cuando suene el viento.",
+  "衝來時點閃避硬碰，岩甲會裂。落石也點閃避。": "Cuando cargue, toca Esquivar para chocar; la coraza de roca se agrieta. Toca Esquivar también con las rocas.",
+  "地先亮，再落石。亮了點閃避。": "El suelo brilla primero, luego caen rocas. Con el brillo, toca Esquivar."
 }
