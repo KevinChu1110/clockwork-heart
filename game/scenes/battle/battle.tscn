@@ -110,6 +110,7 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "格擋提示"
 horizontal_alignment = 1
+autowrap_mode = 3
 
 [node name="Countdown" type="Label" parent="SideBars/CenterHint"]
 unique_name_in_owner = true

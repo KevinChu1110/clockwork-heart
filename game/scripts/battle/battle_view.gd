@@ -441,11 +441,12 @@ func _apply_hud_chrome() -> void:
 	if center_hint:
 		center_hint.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	if parry_hint:
-		parry_hint.autowrap_mode = TextServer.AUTOWRAP_OFF
+		parry_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		parry_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		parry_hint.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 		parry_hint.add_theme_constant_override("shadow_offset_x", 1)
 		parry_hint.add_theme_constant_override("shadow_offset_y", 1)
-		## 這行寫著要按哪一顆鍵，是全場最該讀得到的字；字級 16px 保持橫屏單行不折行
+		## 這行寫著要按哪一顆鍵，是全場最該讀得到的字；字級 16px 保持橫屏排版不撐破
 		parry_hint.add_theme_font_size_override("font_size", 16)
 	if countdown:
 		countdown.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
@@ -1861,6 +1862,7 @@ func _ensure_part_hud() -> void:
 	sb.shadow_offset = Vector2(0, 2)
 	part_panel.add_theme_stylebox_override("panel", sb)
 	part_panel.size_flags_horizontal = Control.SIZE_SHRINK_END
+	part_panel.custom_minimum_size.x = 220
 
 	_part_box = VBoxContainer.new()
 	_part_box.name = "PartBars"
@@ -1874,6 +1876,8 @@ func _ensure_part_hud() -> void:
 	_focus_hint = Label.new()
 	_focus_hint.name = "PartFocusHint"
 	_focus_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	_focus_hint.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	_focus_hint.clip_text = true
 	if huninn:
 		_focus_hint.add_theme_font_override("font", huninn)
 	_focus_hint.add_theme_font_size_override("font_size", 13)
@@ -1907,12 +1911,16 @@ func _ensure_part_hud() -> void:
 		var pname := _t(raw_name)
 		lab.text = ("%s·%s" % [tag, pname]) if tag != "" else pname
 		lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		lab.custom_minimum_size.x = 88
-		lab.add_theme_font_size_override("font_size", 13)
+		lab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		lab.custom_minimum_size.x = 96
+		lab.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		lab.clip_text = true
+		lab.add_theme_font_size_override("font_size", 12)
 		lab.add_theme_color_override("font_color", Color.WHITE)
 		lab.modulate = Color("#1F1A3A")
 		var bar := ProgressBar.new()
-		bar.custom_minimum_size = Vector2(104, 12)
+		bar.custom_minimum_size = Vector2(80, 12)
+		bar.size_flags_horizontal = Control.SIZE_SHRINK_END
 		bar.max_value = float(p.get("max_hp", 1))
 		bar.value = float(p.get("hp", 0))
 		bar.show_percentage = false
