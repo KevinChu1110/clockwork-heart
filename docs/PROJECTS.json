@@ -2836,8 +2836,8 @@
    "id": "sortie-resist-tags",
    "cat": "遊戲",
    "title": "出征關卡卡區域抗性綠黃紅＋未達門檻易傷",
-   "status": "草稿",
-   "note": "等 pacing 表；不准改命中／ATB",
+   "status": "測試中",
+   "note": "測試與審查全數通過，待合進主線",
    "keys": [
     "出征關卡卡區域抗"
    ]
