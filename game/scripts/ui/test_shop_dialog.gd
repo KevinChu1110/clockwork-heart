@@ -216,7 +216,18 @@ func _initialize() -> void:
 			if title_l == null or title_l.text != exp["title"]:
 				_fail("[%s] 商城標題翻譯不符，預期: %s，實際: %s" % [code, exp["title"], title_l.text if title_l else "null"])
 
-			var e_card: PanelContainer = lang_shop.find_child("IapCard_energy_pack", true, false) as PanelContainer
+			var e_title_l: Label = lang_shop.find_child("ItemTitleLabel_energy_pack", true, false) as Label
+			if e_title_l == null or e_title_l.text != exp["energy_title"]:
+				_fail("[%s] 能量箱品項標題翻譯不符，預期: %s，實際: %s" % [code, exp["energy_title"], e_title_l.text if e_title_l else "null"])
+
+			var s_title_l: Label = lang_shop.find_child("ItemTitleLabel_soul_pack", true, false) as Label
+			if s_title_l == null or s_title_l.text != exp["soul_title"]:
+				_fail("[%s] 召喚包品項標題翻譯不符，預期: %s，實際: %s" % [code, exp["soul_title"], s_title_l.text if s_title_l else "null"])
+
+			var f_title_l: Label = lang_shop.find_child("ItemTitleLabel_forge_pack", true, false) as Label
+			if f_title_l == null or f_title_l.text != exp["forge_title"]:
+				_fail("[%s] 資源箱品項標題翻譯不符，預期: %s，實際: %s" % [code, exp["forge_title"], f_title_l.text if f_title_l else "null"])
+
 			var s_btn: Button = lang_shop.find_child("RemoveAdsBtn", true, false) as Button
 			if s_btn == null or s_btn.text != exp["remove_btn"]:
 				_fail("[%s] 去廣告按鈕翻譯不符，預期: %s，實際: %s" % [code, exp["remove_btn"], s_btn.text if s_btn else "null"])
@@ -228,6 +239,41 @@ func _initialize() -> void:
 			_check_no_emoji_in_node(lang_shop)
 			print("  ok [%s] 語系商城彈窗標題/按鈕/品項 i18n 驗證通過" % code)
 			lang_shop.queue_free()
+
+		# 6.6. 驗證開著彈窗時即時切換語系 (Loc.locale_changed 動態刷新品項名稱與說明)
+		print("── 開始驗證開著商城動態切換語系 (Loc.locale_changed) ──")
+		loc_node.call("set_locale", "zh_TW")
+		var dynamic_shop: Control = ShopClass.new()
+		root.add_child(dynamic_shop)
+		dynamic_shop._ready()
+
+		var dyn_e_title: Label = dynamic_shop.find_child("ItemTitleLabel_energy_pack", true, false) as Label
+		var dyn_e_desc: Label = dynamic_shop.find_child("ItemDescLabel_energy_pack", true, false) as Label
+		var dyn_s_title: Label = dynamic_shop.find_child("ItemTitleLabel_soul_pack", true, false) as Label
+		var dyn_s_desc: Label = dynamic_shop.find_child("ItemDescLabel_soul_pack", true, false) as Label
+		var dyn_f_title: Label = dynamic_shop.find_child("ItemTitleLabel_forge_pack", true, false) as Label
+		var dyn_f_desc: Label = dynamic_shop.find_child("ItemDescLabel_forge_pack", true, false) as Label
+
+		if dyn_e_title.text != "發條能量補給箱":
+			_fail("動態切換初始狀態 energy_title 應為發條能量補給箱，實際: %s" % dyn_e_title.text)
+
+		for code in ["en", "ja", "ko", "es", "zh_CN", "zh_TW"]:
+			loc_node.call("set_locale", code)
+			var exp: Dictionary = locales_expected[code]
+			if dyn_e_title.text != exp["energy_title"]:
+				_fail("[動態切換 %s] energy_title 應為 %s，實際: %s" % [code, exp["energy_title"], dyn_e_title.text])
+			if dyn_s_title.text != exp["soul_title"]:
+				_fail("[動態切換 %s] soul_title 應為 %s，實際: %s" % [code, exp["soul_title"], dyn_s_title.text])
+			if dyn_f_title.text != exp["forge_title"]:
+				_fail("[動態切換 %s] forge_title 應為 %s，實際: %s" % [code, exp["forge_title"], dyn_f_title.text])
+
+			# 驗證說明文字不是空的且已隨語系變換
+			if dyn_e_desc.text.is_empty() or dyn_s_desc.text.is_empty() or dyn_f_desc.text.is_empty():
+				_fail("[動態切換 %s] 品項說明文字為空" % code)
+
+			print("  ok [動態切換 %s] 開著商城切換語系即時刷新品項名稱與說明成功" % code)
+
+		dynamic_shop.queue_free()
 
 		# 測試完成後復原為繁中
 		loc_node.call("set_locale", "zh_TW")

@@ -41,9 +41,22 @@ const COLOR_TEXT_MINT   := Color("#1A7A30")  ## 壓明度薄荷綠
 const COLOR_TEXT_MUTED  := Color("#6E6885")  ## 輔助深藍灰
 
 var _dialog_card: PanelContainer
+var _title_lbl: Label
+var _mode_pill_lbl: Label
+var _notice_lbl: Label
+var _remove_ads_title_lbl: Label
+var _remove_ads_desc_lbl: Label
 var _remove_ads_btn: Button
 var _remove_ads_status_lbl: Label
+var _reward_ad_title_lbl: Label
+var _reward_ad_desc_lbl: Label
+var _reward_ad_note_lbl: Label
 var _reward_ad_btn: Button
+var _items_title_lbl: Label
+var _item_name_labels: Dictionary = {}
+var _item_desc_labels: Dictionary = {}
+var _item_buy_buttons: Dictionary = {}
+var _item_note_labels: Dictionary = {}
 var _status_msg_lbl: Label
 var _cached_font: Font = null
 
@@ -98,8 +111,79 @@ func _ready() -> void:
 	if ResourceLoader.exists(FONT_PATH):
 		_cached_font = load(FONT_PATH) as Font
 
+	_connect_loc_signal()
 	_build_ui()
+	_apply_locale_texts()
 	_refresh_services_state()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_apply_locale_texts()
+	_refresh_services_state()
+
+
+func _apply_locale_texts() -> void:
+	if _title_lbl and is_instance_valid(_title_lbl):
+		_title_lbl.text = _t("發條補給 · 道具商城")
+	if _mode_pill_lbl and is_instance_valid(_mode_pill_lbl):
+		_mode_pill_lbl.text = _t("商業化測試骨架")
+	if _notice_lbl and is_instance_valid(_notice_lbl):
+		_notice_lbl.text = _t("商業變現模型：定價帶待定（docs/BUSINESS.md 定案）。全品項為測試佔位 Mock 邏輯，點擊不扣款。")
+	if _remove_ads_title_lbl and is_instance_valid(_remove_ads_title_lbl):
+		_remove_ads_title_lbl.text = _t("免廣告特權")
+	if _remove_ads_desc_lbl and is_instance_valid(_remove_ads_desc_lbl):
+		_remove_ads_desc_lbl.text = _t("買斷免除全廣告播映，直接領取所有獎勵")
+	if _reward_ad_title_lbl and is_instance_valid(_reward_ad_title_lbl):
+		_reward_ad_title_lbl.text = _t("工坊贊助補給")
+	if _reward_ad_desc_lbl and is_instance_valid(_reward_ad_desc_lbl):
+		_reward_ad_desc_lbl.text = _t("觀看工坊廣告短片，立即補充 3 點能量")
+	if _reward_ad_note_lbl and is_instance_valid(_reward_ad_note_lbl):
+		_reward_ad_note_lbl.text = _t("每日免費補給 · 無需消耗金幣")
+	if _items_title_lbl and is_instance_valid(_items_title_lbl):
+		_items_title_lbl.text = _t("熱門儲值品項（佔位預覽）")
+
+	for item in _iap_items:
+		var item_id: String = str(item["id"])
+		if _item_name_labels.has(item_id):
+			var nl: Label = _item_name_labels[item_id]
+			if nl and is_instance_valid(nl):
+				nl.text = _t(str(item["title"]))
+		if _item_desc_labels.has(item_id):
+			var dl: Label = _item_desc_labels[item_id]
+			if dl and is_instance_valid(dl):
+				dl.text = _t(str(item["desc"]))
+		if _item_buy_buttons.has(item_id):
+			var bb: Button = _item_buy_buttons[item_id]
+			if bb and is_instance_valid(bb):
+				bb.text = _t("模擬購買")
+		if _item_note_labels.has(item_id):
+			var ntl: Label = _item_note_labels[item_id]
+			if ntl and is_instance_valid(ntl):
+				ntl.text = "(%s)" % _t(str(item["pricing_note"]))
+
+	if _status_msg_lbl and is_instance_valid(_status_msg_lbl):
+		_status_msg_lbl.text = _t("歡迎來到發條工坊商城！請點擊各項功能進行模擬測試。")
 
 
 func _build_ui() -> void:
@@ -147,20 +231,21 @@ func _build_ui() -> void:
 	head.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(head)
 
-	var title_lbl := Label.new()
-	title_lbl.name = "ShopTitleLabel"
-	title_lbl.text = _t("發條補給 · 道具商城")
-	title_lbl.add_theme_font_size_override("font_size", 22)
-	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
-	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	title_lbl.add_theme_constant_override("outline_size", 3)
+	_title_lbl = Label.new()
+	_title_lbl.name = "ShopTitleLabel"
+	_title_lbl.text = _t("發條補給 · 道具商城")
+	_title_lbl.add_theme_font_size_override("font_size", 22)
+	_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	_title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_title_lbl.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
-		title_lbl.add_theme_font_override("font", _cached_font)
-	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head.add_child(title_lbl)
+		_title_lbl.add_theme_font_override("font", _cached_font)
+	_title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(_title_lbl)
 
 	# 骨架標籤
 	var mode_pill := _create_info_pill(_t("商業化測試骨架"), COLOR_MINT)
+	_mode_pill_lbl = mode_pill.get_child(0) as Label
 	head.add_child(mode_pill)
 
 	# 右上「✕」關閉按鈕 (50x50, 果凍厚底 5px)
@@ -186,13 +271,13 @@ func _build_ui() -> void:
 	nm.add_theme_constant_override("margin_bottom", 4)
 	notice_box.add_child(nm)
 
-	var notice_lbl := Label.new()
-	notice_lbl.text = _t("商業變現模型：定價帶待定（docs/BUSINESS.md 定案）。全品項為測試佔位 Mock 邏輯，點擊不扣款。")
-	notice_lbl.add_theme_font_size_override("font_size", 14)
-	notice_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_notice_lbl = Label.new()
+	_notice_lbl.text = _t("商業變現模型：定價帶待定（docs/BUSINESS.md 定案）。全品項為測試佔位 Mock 邏輯，點擊不扣款。")
+	_notice_lbl.add_theme_font_size_override("font_size", 14)
+	_notice_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
-		notice_lbl.add_theme_font_override("font", _cached_font)
-	nm.add_child(notice_lbl)
+		_notice_lbl.add_theme_font_override("font", _cached_font)
+	nm.add_child(_notice_lbl)
 
 	# ── 特殊增值服務列（去廣告買斷 ＋ 觀看廣告領取獎勵）──
 	var services_h := HBoxContainer.new()
@@ -205,6 +290,8 @@ func _build_ui() -> void:
 		_t("買斷免除全廣告播映，直接領取所有獎勵"),
 		"RemoveAdsCard"
 	)
+	_remove_ads_title_lbl = remove_ads_card.get_node("Margin/VBox").get_child(0) as Label
+	_remove_ads_desc_lbl = remove_ads_card.get_node("Margin/VBox").get_child(1) as Label
 	remove_ads_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	services_h.add_child(remove_ads_card)
 
@@ -240,17 +327,19 @@ func _build_ui() -> void:
 		_t("觀看工坊廣告短片，立即補充 3 點能量"),
 		"RewardAdCard"
 	)
+	_reward_ad_title_lbl = reward_ad_card.get_node("Margin/VBox").get_child(0) as Label
+	_reward_ad_desc_lbl = reward_ad_card.get_node("Margin/VBox").get_child(1) as Label
 	reward_ad_card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	services_h.add_child(reward_ad_card)
 
 	var rad_v: VBoxContainer = reward_ad_card.get_node("Margin/VBox")
-	var rad_note_lbl := Label.new()
-	rad_note_lbl.text = _t("每日免費補給 · 無需消耗金幣")
-	rad_note_lbl.add_theme_font_size_override("font_size", 13)
-	rad_note_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	_reward_ad_note_lbl = Label.new()
+	_reward_ad_note_lbl.text = _t("每日免費補給 · 無需消耗金幣")
+	_reward_ad_note_lbl.add_theme_font_size_override("font_size", 13)
+	_reward_ad_note_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
 	if _cached_font:
-		rad_note_lbl.add_theme_font_override("font", _cached_font)
-	rad_v.add_child(rad_note_lbl)
+		_reward_ad_note_lbl.add_theme_font_override("font", _cached_font)
+	rad_v.add_child(_reward_ad_note_lbl)
 
 	_reward_ad_btn = Button.new()
 	_reward_ad_btn.name = "WatchAdBtn"
@@ -269,13 +358,13 @@ func _build_ui() -> void:
 	rad_v.add_child(_reward_ad_btn)
 
 	# ── 3 個佔位品項卡 (IAP 禮包區) ──
-	var items_title := Label.new()
-	items_title.text = _t("熱門儲值品項（佔位預覽）")
-	items_title.add_theme_font_size_override("font_size", 17)
-	items_title.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_items_title_lbl = Label.new()
+	_items_title_lbl.text = _t("熱門儲值品項（佔位預覽）")
+	_items_title_lbl.add_theme_font_size_override("font_size", 17)
+	_items_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
-		items_title.add_theme_font_override("font", _cached_font)
-	v.add_child(items_title)
+		_items_title_lbl.add_theme_font_override("font", _cached_font)
+	v.add_child(_items_title_lbl)
 
 	var items_grid := HBoxContainer.new()
 	items_grid.add_theme_constant_override("separation", 10)
@@ -336,8 +425,9 @@ func _build_service_card(title: String, desc: String, card_name: String) -> Pane
 
 
 func _build_iap_item_card(item: Dictionary) -> PanelContainer:
+	var item_id := str(item["id"])
 	var card := PanelContainer.new()
-	card.name = "IapCard_" + str(item["id"])
+	card.name = "IapCard_" + item_id
 	card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 16))
 
 	var m := MarginContainer.new()
@@ -367,15 +457,18 @@ func _build_iap_item_card(item: Dictionary) -> PanelContainer:
 		head_h.add_child(icon_rect)
 
 	var name_lbl := Label.new()
+	name_lbl.name = "ItemTitleLabel_" + item_id
 	name_lbl.text = _t(str(item["title"]))
 	name_lbl.add_theme_font_size_override("font_size", 16)
 	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		name_lbl.add_theme_font_override("font", _cached_font)
 	head_h.add_child(name_lbl)
+	_item_name_labels[item_id] = name_lbl
 
 	# 內容描述
 	var desc_lbl := Label.new()
+	desc_lbl.name = "ItemDescLabel_" + item_id
 	desc_lbl.text = _t(str(item["desc"]))
 	desc_lbl.custom_minimum_size = Vector2(0, 36)
 	desc_lbl.add_theme_font_size_override("font_size", 12)
@@ -383,6 +476,7 @@ func _build_iap_item_card(item: Dictionary) -> PanelContainer:
 	if _cached_font:
 		desc_lbl.add_theme_font_override("font", _cached_font)
 	iv.add_child(desc_lbl)
+	_item_desc_labels[item_id] = desc_lbl
 
 	# 定價與 TODO 備註
 	var price_h := HBoxContainer.new()
@@ -399,16 +493,18 @@ func _build_iap_item_card(item: Dictionary) -> PanelContainer:
 	price_h.add_child(price_lbl)
 
 	var note_lbl := Label.new()
+	note_lbl.name = "ItemNoteLabel_" + item_id
 	note_lbl.text = "(%s)" % _t(str(item["pricing_note"]))
 	note_lbl.add_theme_font_size_override("font_size", 11)
 	note_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
 	if _cached_font:
 		note_lbl.add_theme_font_override("font", _cached_font)
 	price_h.add_child(note_lbl)
+	_item_note_labels[item_id] = note_lbl
 
 	# 購買按鈕 (熱區 >= 50px，果凍厚底 5px)
 	var buy_btn := Button.new()
-	buy_btn.name = "BuyBtn_" + str(item["id"])
+	buy_btn.name = "BuyBtn_" + item_id
 	buy_btn.text = _t("模擬購買")
 	buy_btn.custom_minimum_size = Vector2(0, 50)
 	buy_btn.add_theme_font_size_override("font_size", 16)
@@ -423,9 +519,9 @@ func _build_iap_item_card(item: Dictionary) -> PanelContainer:
 	buy_btn.add_theme_stylebox_override("hover", _create_button_style(accent.lightened(0.15), COLOR_BORDER, 5, 16))
 	buy_btn.add_theme_stylebox_override("pressed", _create_button_style(accent.darkened(0.15), COLOR_BORDER, 2, 16))
 
-	var item_id := str(item["id"])
 	buy_btn.pressed.connect(func(): _on_iap_item_clicked(item_id))
 	iv.add_child(buy_btn)
+	_item_buy_buttons[item_id] = buy_btn
 
 	return card
 
