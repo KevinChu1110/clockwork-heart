@@ -2846,8 +2846,8 @@
    "id": "chapter-press-j-touch",
    "cat": "遊戲",
    "title": "章節教學對白殘留按 J 改觸控＋六語系",
-   "status": "測試中",
-   "note": "sideqa 審查通過 (commit bf4de56f)，待合入主線",
+   "status": "已上線",
+   "note": "章節教學對白按J改觸控與六語系已合入主線",
    "keys": [
     "章節教學對白殘留"
    ]
