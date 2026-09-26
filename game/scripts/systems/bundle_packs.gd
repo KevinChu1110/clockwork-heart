@@ -4,6 +4,10 @@ class_name BundlePacks
 ## 之後新地圖預設進 chapter，除非前綴是 village／road／town（大廳＋C0）。
 
 const MANIFEST_PATH := "res://data/bundle_manifest.json"
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
 
 static var _cache: Dictionary = {}
 static var _pack_presence_override: Dictionary = {}
@@ -95,4 +99,4 @@ static func can_enter_map(map_id: String) -> bool:
 
 static func missing_pack_line(map_id: String) -> String:
 	var pack := pack_for_map(map_id)
-	return "後續章節尚未下載（需要 %s 包）" % pack
+	return _t("後續章節尚未下載（需要 %s 包）") % pack
