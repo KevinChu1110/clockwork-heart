@@ -343,12 +343,12 @@ func _process(_delta: float) -> bool:
 			if qls_ja.size() < 2:
 				_fail("ja 下裝備格未正確產生 (size=%d)" % qls_ja.size())
 			else:
-				if qls_ja[0] != "上品 · sword":
-					_fail("ja 下騎士軍刀品質子標籤應為 '上品 · sword'，實際: '%s'" % qls_ja[0])
+				if qls_ja[0] != "上品 · 剣":
+					_fail("ja 下騎士軍刀品質子標籤應為 '上品 · 剣'，實際: '%s'" % qls_ja[0])
 				else:
 					print("  ✓ [ja] 裝備格品質子標籤 騎士軍刀 -> %s" % qls_ja[0])
-				if qls_ja[1] != "秘宝 · sword":
-					_fail("ja 下晨光長劍品質子標籤應為 '秘宝 · sword'，實際: '%s'" % qls_ja[1])
+				if qls_ja[1] != "秘宝 · 剣":
+					_fail("ja 下晨光長劍品質子標籤應為 '秘宝 · 剣'，實際: '%s'" % qls_ja[1])
 				else:
 					print("  ✓ [ja] 裝備格品質子標籤 晨光長劍 -> %s" % qls_ja[1])
 
@@ -364,12 +364,12 @@ func _process(_delta: float) -> bool:
 			if qls_es.size() < 2:
 				_fail("es 下裝備格未正確產生 (size=%d)" % qls_es.size())
 			else:
-				if qls_es[0] != "Raro · sword":
-					_fail("es 下騎士軍刀品質子標籤應為 'Raro · sword'，實際: '%s'" % qls_es[0])
+				if qls_es[0] != "Raro · Espada":
+					_fail("es 下騎士軍刀品質子標籤應為 'Raro · Espada'，實際: '%s'" % qls_es[0])
 				else:
 					print("  ✓ [es] 裝備格品質子標籤 騎士軍刀 (即時刷新) -> %s" % qls_es[0])
-				if qls_es[1] != "Legendario · sword":
-					_fail("es 下晨光長劍品質子標籤應為 'Legendario · sword'，實際: '%s'" % qls_es[1])
+				if qls_es[1] != "Legendario · Espada":
+					_fail("es 下晨光長劍品質子標籤應為 'Legendario · Espada'，實際: '%s'" % qls_es[1])
 				else:
 					print("  ✓ [es] 裝備格品質子標籤 晨光長劍 (即時刷新) -> %s" % qls_es[1])
 				if _has_cjk(qls_es[0]) or _has_cjk(qls_es[1]):

@@ -138,7 +138,7 @@ func _scan_dir(path: String, used: Dictionary) -> void:
 	var dir := DirAccess.open(path)
 	if dir == null:
 		return
-	var re := RegEx.create_from_string('Loc\\.t\\(\\s*"([a-z0-9_.]+)"')
+	var re := RegEx.create_from_string('(?<![A-Za-z0-9_])Loc\\.t\\(\\s*"([a-z0-9_.]+)"')
 	for f in dir.get_files():
 		if not f.ends_with(".gd"):
 			continue

@@ -276,7 +276,7 @@ func _ready() -> void:
 	if inv and inv.has_signal("inventory_changed"):
 		inv.inventory_changed.connect(func():
 			if _current_tab == Tab.BAG:
-				_refresh_bag_tab()
+				_refresh_bag_tab(false)
 		)
 	_load_hero_poses()
 	_build_ui()
