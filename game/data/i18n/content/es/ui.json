@@ -2973,5 +2973,9 @@
   "對撞！點閃避卸力剝岩甲  %.1fs": "¡Choca! Toca Esquivar para desviar la fuerza y arrancar coraza  %.1fs",
   "等衝鋒對撞 · 落岩點閃避進安全": "Espera la carga · toca Esquivar para ponerte a salvo",
   "現在點閃避！": "¡Toca Esquivar ahora!",
-  "準備閃避": "Prepárate para esquivar"
+  "準備閃避": "Prepárate para esquivar",
+  "點一下繼續 · 部分步驟可「稍後再說」": "Toca para continuar · Algunos pasos se pueden omitir con «Más tarde»",
+  "點下一步 · 部分步驟可「稍後再說」": "Toca Siguiente · Algunos pasos se pueden omitir con «Más tarde»",
+  "點一下繼續": "Toca para continuar",
+  "點下一步": "Toca Siguiente"
 }

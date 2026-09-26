@@ -2973,5 +2973,9 @@
   "對撞！點閃避卸力剝岩甲  %.1fs": "Clash! Tap Dodge to parry and crack armor  %.1fs",
   "等衝鋒對撞 · 落岩點閃避進安全": "Wait for clash · tap Dodge for rocks and safety",
   "現在點閃避！": "Tap Dodge now!",
-  "準備閃避": "Ready to Dodge"
+  "準備閃避": "Ready to Dodge",
+  "點一下繼續 · 部分步驟可「稍後再說」": "Tap to continue · Some steps can be skipped with \"Later\"",
+  "點下一步 · 部分步驟可「稍後再說」": "Tap Next · Some steps can be skipped with \"Later\"",
+  "點一下繼續": "Tap to continue",
+  "點下一步": "Tap Next"
 }

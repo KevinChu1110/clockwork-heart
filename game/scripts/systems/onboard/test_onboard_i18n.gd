@@ -96,6 +96,14 @@ func _run_test_suite() -> void:
 		"ko": "스페이스바 / 다음 · 일부 단계는 「나중에」로 건너뛰기 가능",
 		"es": "Espacio / Siguiente · Algunos pasos se pueden omitir con «Más tarde»"
 	}
+	var exp_hint_touch := {
+		"zh_TW": "點一下繼續 · 部分步驟可「稍後再說」",
+		"zh_CN": "点一下继续 · 部分步骤可「稍后再说」",
+		"en": "Tap to continue · Some steps can be skipped with \"Later\"",
+		"ja": "タップで進む · 一部の手順は「あとで」でスキップ可能",
+		"ko": "탭하여 계속 · 일부 단계는 「나중에」로 건너뛰기 가능",
+		"es": "Toca para continuar · Algunos pasos se pueden omitir con «Más tarde»"
+	}
 	var exp_seal := {
 		"zh_TW": "封靈",
 		"zh_CN": "封灵",
@@ -135,9 +143,15 @@ func _run_test_suite() -> void:
 
 		var t_hint := ContentLoc.text("ui", "空白鍵／下一步 · 部分步驟可「稍後再說」")
 		if t_hint != exp_hint[code]:
-			_fail("[%s] 底部提示 翻譯不符: 預期 '%s', 實際 '%s'" % [code, exp_hint[code], t_hint])
+			_fail("[%s] 桌面底部提示 翻譯不符: 預期 '%s', 實際 '%s'" % [code, exp_hint[code], t_hint])
 		else:
-			print("  [OK] [%s] 底部提示 => %s" % [code, t_hint])
+			print("  [OK] [%s] 桌面底部提示 => %s" % [code, t_hint])
+
+		var t_hint_touch := ContentLoc.text("ui", "點一下繼續 · 部分步驟可「稍後再說」")
+		if t_hint_touch != exp_hint_touch[code]:
+			_fail("[%s] 觸控底部提示 翻譯不符: 預期 '%s', 實際 '%s'" % [code, exp_hint_touch[code], t_hint_touch])
+		else:
+			print("  [OK] [%s] 觸控底部提示 => %s" % [code, t_hint_touch])
 
 		var t_seal := ContentLoc.text("ui", "封靈")
 		if t_seal != exp_seal[code]:
@@ -183,11 +197,23 @@ func _run_test_suite() -> void:
 		else:
 			print("  [OK] 動態切換 [%s] NodeTitle => %s" % [code, node_lbl.text])
 
-		# 驗證底部提示
+		# 驗證底部提示（桌面模式與觸控模式切換）
+		view.set("force_touch_mode", false)
 		if hint_lbl.text != exp_hint[code]:
-			_fail("動態切換 [%s] HintLabel 文字不符: 預期 '%s', 實際 '%s'" % [code, exp_hint[code], hint_lbl.text])
+			_fail("動態切換桌面 [%s] HintLabel 文字不符: 預期 '%s', 實際 '%s'" % [code, exp_hint[code], hint_lbl.text])
 		else:
-			print("  [OK] 動態切換 [%s] HintLabel => %s" % [code, hint_lbl.text])
+			print("  [OK] 動態切換桌面 [%s] HintLabel => %s" % [code, hint_lbl.text])
+
+		view.set("force_touch_mode", true)
+		if hint_lbl.text != exp_hint_touch[code]:
+			_fail("動態切換觸控 [%s] HintLabel 文字不符: 預期 '%s', 實際 '%s'" % [code, exp_hint_touch[code], hint_lbl.text])
+		else:
+			print("  [OK] 動態切換觸控 [%s] HintLabel => %s" % [code, hint_lbl.text])
+
+		# 嚴格驗證觸控模式下絕不可出現空白鍵/Space/スペース/스페이스/Espacio 等字眼
+		for forbidden in ["空白鍵", "空格键", "Space", "スペース", "스페이스", "Espacio"]:
+			if forbidden in hint_lbl.text:
+				_fail("觸控模式下 [%s] HintLabel 出現違禁鍵名 '%s': %s" % [code, forbidden, hint_lbl.text])
 
 	# 3. 測試進展至 N07（含兩顆按鈕可見與結果卡）
 	print("\n--- 測試 N07 步驟之雙按鈕與結果卡六語系 ---")

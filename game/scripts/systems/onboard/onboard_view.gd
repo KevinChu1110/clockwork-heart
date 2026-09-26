@@ -11,6 +11,10 @@ const I18N_PATH := "res://data/i18n/zh_TW.json"
 
 var flow
 var card
+var force_touch_mode: Variant = null:  ## 測試/截圖強制覆寫觸控模式；null 為自動判定
+	set(v):
+		force_touch_mode = v
+		_update_ui_texts()
 var _panel: PanelContainer
 var _dialog: Label
 var _node_lbl: Label
@@ -32,6 +36,26 @@ static func _t(s: String) -> String:
 			if loc_t != "" and loc_t != s:
 				return loc_t
 	return res
+
+
+static func is_touch_device(force_touch: Variant = null) -> bool:
+	if force_touch != null:
+		return bool(force_touch)
+	return DisplayServer.is_touchscreen_available()
+
+
+static func hint_text(force_touch: Variant = null) -> String:
+	if is_touch_device(force_touch):
+		return _t("點一下繼續 · 部分步驟可「稍後再說」")
+	return _t("空白鍵／下一步 · 部分步驟可「稍後再說」")
+
+
+func _is_touch() -> bool:
+	return is_touch_device(force_touch_mode)
+
+
+func _hint_text() -> String:
+	return hint_text(force_touch_mode)
 
 
 func _tr(key: String) -> String:
@@ -90,7 +114,7 @@ func _update_ui_texts() -> void:
 	if _btn_skip and is_instance_valid(_btn_skip):
 		_btn_skip.text = _t("稍後再說")
 	if _hint and is_instance_valid(_hint):
-		_hint.text = _t("空白鍵／下一步 · 部分步驟可「稍後再說」")
+		_hint.text = _hint_text()
 
 
 func _build() -> void:
@@ -188,7 +212,7 @@ func _build() -> void:
 	_hint = Label.new()
 	_hint.name = "HintLabel"
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hint.text = _t("空白鍵／下一步 · 部分步驟可「稍後再說」")
+	_hint.text = _hint_text()
 	_hint.add_theme_font_size_override("font_size", 16)
 	_hint.add_theme_color_override("font_color", UiStyle.INK_DIM)
 	vbox.add_child(_hint)
