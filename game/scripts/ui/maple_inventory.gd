@@ -500,6 +500,8 @@ func _build() -> void:
 
 func open() -> void:
 	visible = true
+	if _card == null:
+		_build()
 	_update_ui_texts()
 	var inv: Node = null
 	if Engine.get_main_loop() is SceneTree:
@@ -554,6 +556,7 @@ func refresh() -> void:
 			var id := str(it.get("id", ""))
 			_bag_ids.append(id)
 			var def: Dictionary = it.get("def", {})
+			cell.tooltip_text = str(def.get("name", id))
 			var icon_tex := get_item_icon(id)
 			if icon_tex != null:
 				if icon:
@@ -565,7 +568,8 @@ func refresh() -> void:
 				if icon:
 					icon.visible = false
 				if g:
-					g.text = str(def.get("glyph", "·"))
+					var raw_glyph := str(def.get("glyph", "·"))
+					g.text = ContentLoc.text("ui", raw_glyph)
 					g.add_theme_color_override("font_color", def.get("color", COLOR_TEXT_DARK))
 					g.visible = true
 			if c:
@@ -599,6 +603,7 @@ func refresh() -> void:
 				cell.add_theme_stylebox_override("panel", nsb)
 		else:
 			_bag_ids.append("")
+			cell.tooltip_text = ""
 			if icon:
 				icon.visible = false
 			if g:
@@ -622,13 +627,14 @@ func _update_detail(inv: Node) -> void:
 	if _selected == "" or inv == null:
 		if _preview_row:
 			_preview_row.visible = false
-		_detail.text = "[color=#1F1A3A][b]%s[/b]\n\n%s\n\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s[/color]" % [
-			_t("冒險者背包"),
-			_t("請點選左側格子查看道具詳情。"),
-			_t("消耗品：使用回復狀態"),
-			_t("素材：點擊使用可賣出金幣"),
-			_t("重要物：劇情關鍵道具")
-		]
+		if _detail:
+			_detail.text = "[color=#1F1A3A][b]%s[/b]\n\n%s\n\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s[/color]" % [
+				_t("冒險者背包"),
+				_t("請點選左側格子查看道具詳情。"),
+				_t("消耗品：使用回復狀態"),
+				_t("素材：點擊使用可賣出金幣"),
+				_t("重要物：劇情關鍵道具")
+			]
 		if _use_btn:
 			_use_btn.disabled = true
 			_use_btn.text = _t("使用 / 賣出")
@@ -680,10 +686,12 @@ func _update_detail(inv: Node) -> void:
 			if _detail_icon:
 				_detail_icon.visible = false
 			if _detail_glyph:
-				_detail_glyph.text = str(def.get("glyph", "·"))
+				var raw_glyph := str(def.get("glyph", "·"))
+				_detail_glyph.text = ContentLoc.text("ui", raw_glyph)
 				_detail_glyph.visible = true
 
-	_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
+	if _detail:
+		_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
 
 
 func _on_cell(idx: int, button: int) -> void:

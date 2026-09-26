@@ -47,6 +47,7 @@ var _keys: Array = []
 var _flash: Array = []
 var _icons: Array = []
 var _cached_font: Font = null
+var _menu_label: Label = null
 
 
 func _get_font() -> Font:
@@ -117,6 +118,7 @@ func _ready() -> void:
 	custom_minimum_size = Vector2(520, 72)
 	size = Vector2(520, 72)
 	_build()
+	_connect_loc_signal()
 	call_deferred("_place_default")
 	if Engine.get_main_loop() is SceneTree:
 		var inv: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InventorySystem")
@@ -127,6 +129,33 @@ func _ready() -> void:
 				inv.hotbar_changed.connect(refresh)
 	refresh()
 	WindowDrag.attach(self, _bar, "hotbar")
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	if _menu_label and is_instance_valid(_menu_label):
+		_menu_label.text = ContentLoc.text("ui", "選單")
+	refresh()
 
 
 func _place_default() -> void:
@@ -259,23 +288,30 @@ func _build() -> void:
 	menu_btn.mouse_filter = Control.MOUSE_FILTER_STOP
 	menu_btn.add_theme_stylebox_override("panel", _style_slot_menu())
 	row.add_child(menu_btn)
-	var ml := Label.new()
-	ml.text = ContentLoc.text("ui", "選單")
-	ml.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	ml.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	ml.add_theme_font_size_override("font_size", 16)
-	ml.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	ml.add_theme_color_override("font_outline_color", Color.WHITE)
-	ml.add_theme_constant_override("outline_size", 2)
+	_menu_label = Label.new()
+	_menu_label.text = ContentLoc.text("ui", "選單")
+	_menu_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_menu_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_menu_label.add_theme_font_size_override("font_size", 16)
+	_menu_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_menu_label.add_theme_color_override("font_outline_color", Color.WHITE)
+	_menu_label.add_theme_constant_override("outline_size", 2)
 	if f:
-		ml.add_theme_font_override("font", f)
-	ml.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	menu_btn.add_child(ml)
+		_menu_label.add_theme_font_override("font", f)
+	_menu_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	menu_btn.add_child(_menu_label)
 	menu_btn.gui_input.connect(func(ev: InputEvent):
 		if GameInputGate.primary_pointer_pressed(ev):
 			get_viewport().set_input_as_handled()
 			GameInputGate.inject(GameInputGate.CANCEL)
 	)
+
+
+static func _gs() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).root.get_node_or_null("GameState")
+	return null
 
 
 func refresh() -> void:
@@ -285,22 +321,26 @@ func refresh() -> void:
 	if inv == null or not inv.has_method("ensure_hotbar"):
 		return
 	inv.call("ensure_hotbar")
-	var bar: Array = GameState.hotbar
+	var gs := _gs()
+	var bar: Array = gs.hotbar if (gs and "hotbar" in gs and gs.hotbar != null) else []
+	var inv_dict: Dictionary = gs.inventory if (gs and "inventory" in gs and gs.inventory != null) else {}
 	for i in SLOT_N:
 		var id := str(bar[i]) if i < bar.size() else ""
 		var glyph: Label = _glyphs[i]
 		var icon: TextureRect = _icons[i] if i < _icons.size() else null
 		var cnt: Label = _counts[i]
 		var slot: PanelContainer = _slots[i]
-		if id == "" or int(GameState.inventory.get(id, 0)) <= 0:
+		if id == "" or int(inv_dict.get(id, 0)) <= 0:
 			if icon:
 				icon.visible = false
 			glyph.text = ""
 			glyph.visible = false
 			cnt.text = ""
+			slot.tooltip_text = ""
 			slot.add_theme_stylebox_override("panel", _style_slot_empty())
 			continue
 		var def: Dictionary = inv.call("catalog", id)
+		slot.tooltip_text = str(def.get("name", id))
 		var icon_tex := get_item_icon(id)
 		if icon_tex != null:
 			if icon:
@@ -311,10 +351,11 @@ func refresh() -> void:
 		else:
 			if icon:
 				icon.visible = false
-			glyph.text = str(def.get("glyph", "·"))
+			var raw_glyph := str(def.get("glyph", "·"))
+			glyph.text = ContentLoc.text("ui", raw_glyph)
 			glyph.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 			glyph.visible = true
-		var n := int(GameState.inventory.get(id, 0))
+		var n := int(inv_dict.get(id, 0))
 		cnt.text = str(n) if n > 1 else ""
 		slot.add_theme_stylebox_override("panel", _style_slot_filled())
 

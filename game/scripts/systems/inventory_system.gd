@@ -280,6 +280,33 @@ func get_item_icon(id: String) -> Texture2D:
 
 func _ready() -> void:
 	ensure_hotbar()
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	inventory_changed.emit()
+	hotbar_changed.emit()
 
 
 func ensure_hotbar() -> void:
@@ -297,18 +324,39 @@ func ensure_hotbar() -> void:
 ## 但每筆裡面沒有 id 欄位，所以補一個再交給 apply()。
 func catalog(id: String) -> Dictionary:
 	var d: Dictionary = CATALOG.get(id, {})
-	if d.is_empty() or ContentLoc.locale() == "zh_TW":
+	if d.is_empty():
 		return d
+	if ContentLoc.locale() == "zh_TW":
+		return d
+	var raw_name: String = str(d.get("name", id))
+	var raw_desc: String = str(d.get("desc", ""))
 	var with_id := d.duplicate(true)
 	with_id["id"] = id
 	var out: Dictionary = ContentLoc.apply("item", with_id, ITEM_TEXT_FIELDS)
 	out.erase("id")
+	if str(out.get("name", "")) == raw_name:
+		var t_name: String = ContentLoc.text("ui", raw_name)
+		if t_name != raw_name:
+			out["name"] = t_name
+	if str(out.get("desc", "")) == raw_desc:
+		var t_desc: String = ContentLoc.text("ui", raw_desc)
+		if t_desc != raw_desc:
+			out["desc"] = t_desc
 	return out
 
 
 func item_name(id: String) -> String:
-	var d := catalog(id)
-	return str(d.get("name", id))
+	if CATALOG.has(id):
+		var d := catalog(id)
+		return str(d.get("name", id))
+	return ContentLoc.text("ui", id)
+
+
+func item_desc(id: String) -> String:
+	if CATALOG.has(id):
+		var d := catalog(id)
+		return str(d.get("desc", ""))
+	return ContentLoc.text("ui", id)
 
 
 func count(id: String) -> int:
@@ -384,7 +432,7 @@ func bag_list() -> Array:
 	for id in GameState.inventory.keys():
 		var c := int(GameState.inventory[id])
 		if c > 0 and CATALOG.has(id):
-			out.append({"id": id, "count": c, "def": CATALOG[id]})
+			out.append({"id": id, "count": c, "def": catalog(id)})
 	out.sort_custom(func(a, b): return str(a.get("id")) < str(b.get("id")))
 	return out
 
