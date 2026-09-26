@@ -485,5 +485,16 @@
   "匯出存檔備份檔 (JSON)": "Exportar partida guardada (JSON)",
   "從外部備份還原存檔": "Restaurar desde copia",
   "存檔備份已成功匯出至本機！": "¡Copia de seguridad exportada localmente!",
-  "請選擇要還原的備份存檔...": "Seleccione la copia para restaurar..."
+  "請選擇要還原的備份存檔...": "Seleccione la copia para restaurar...",
+  "抽魂 · 封靈罐": "Extracción de Almas · Recipiente de Almas",
+  "soul.draw_title": "Extracción de Almas · Recipiente de Almas",
+  "上緊——抽一格": "Dar Cuerda — Extraer 1",
+  "soul.btn_pull": "Dar Cuerda — Extraer 1",
+  "去玩具堆邊緣": "Ir a la orilla del montón",
+  "soul.btn_continue": "Ir a la orilla del montón",
+  "封靈票 ×%d · 今日已抽 %d": "Boletos de Alma ×%d · Extraídas Hoy: %d",
+  "soul.tickets_status": "Boletos de Alma ×%d · Extraídas Hoy: %d",
+  "封靈票不足": "Boletos de alma insuficientes",
+  "soul.err_tickets": "Boletos de alma insuficientes",
+  "今天抽魂次數滿了，明天再轉": "Límite diario de invocaciones alcanzado, vuelve mañana"
 }
