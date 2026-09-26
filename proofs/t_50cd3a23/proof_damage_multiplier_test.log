@@ -1,0 +1,23 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+WARNING: Started the engine as `root`/superuser. This is a security risk, and subsystems like audio may not work correctly.
+Set the environment variable `GODOT_SILENCE_ROOT_WARNING` to 1 to silence this warning.
+     at: setup2 (main/main.cpp:3577)
+── 開始執行出征區域抗性與三檔易傷驗證 (test_expedition_resistance.gd) ──
+--- 1. 檢驗 16 張出征卡建議等級讀表 ---
+  ✓ 16 張出征關卡建議等級讀表全數符合 pacing_s1.json
+--- 2. 檢驗三檔係數與達標不加倍 ---
+  ✓ 三檔係數完全符合: 達標=1.0, 差 1–4=1.2, 差 >=5=1.5
+--- 3. 檢驗 resistance_tier 結構 ---
+  ✓ resistance_tier safe/strained/overload 檔位結構正確
+--- 4. 檢驗受傷放大與四捨五入 ---
+  ✓ 受到傷害受傷放大與四捨五入計算正確 (20 -> 20/24/30)
+--- 5. 檢驗 BattleUnit 實戰受傷係數 ---
+  ✓ BattleUnit 受擊驗證通過: 綠標=30, 黃標=36 (1.2x), 紅標=45 (1.5x), 敵人=30 (不加成)
+--- 6. 檢驗六語系翻譯鍵值 ---
+  ✓ 六語系 (zh_TW, zh_CN, en, ja, ko, es) 區域抗性文字健全度 100% 齊備
+--- 7. 檢驗時間模型與命中等核心數值無變動 ---
+  ✓ 核心時間模型與命中模型完全守護，零改動
+EXPEDITION_RESISTANCE_OK
+[DataTables] combat/equipment/items_meta/weapon_classes/pacing loaded
+DisplaySettings apply mode=fullscreen res=1280x720 vsync=true
+GraphicsProfile apply choice=auto applied=high scale=1.0 size=(1280, 720) shadows=true particles=true vfx=true method=gl_compatibility
