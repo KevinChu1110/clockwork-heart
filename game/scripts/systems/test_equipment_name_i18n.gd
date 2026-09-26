@@ -21,6 +21,30 @@ var _gs: Node = null
 var _dt: Node = null
 var _eq_sys: Node = null
 var _lobby: MobileLobby = null
+var _host: MockHost = null
+var _equip_ui: RefCounted = null
+
+class MockHost extends Control:
+	var ui_container: Control
+	func _init():
+		set_anchors_preset(Control.PRESET_FULL_RECT)
+		ui_container = Control.new()
+		ui_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+		add_child(ui_container)
+	func ui_host() -> Control:
+		return ui_container
+	func ui_clear_host() -> void:
+		for c in ui_container.get_children():
+			ui_container.remove_child(c)
+			c.queue_free()
+	func ui_reset_fade() -> void:
+		pass
+	func ui_refresh_hud() -> void:
+		pass
+	func ui_goto(_target: String) -> void:
+		pass
+	func ui_toast(_msg: String) -> void:
+		pass
 
 func _fail(msg: String) -> void:
 	push_error(msg)
@@ -127,6 +151,15 @@ func _initialize() -> void:
 		"es": "Manos vacías"
 	}
 
+	var expected_qualities := {
+		"zh_TW": {"凡品": "凡品", "良品": "良品", "上品": "上品", "極品": "極品", "秘寶": "秘寶"},
+		"zh_CN": {"凡品": "凡品", "良品": "良品", "上品": "上品", "極品": "极品", "秘寶": "秘宝"},
+		"en": {"凡品": "Common", "良品": "Uncommon", "上品": "Rare", "極品": "Epic", "秘寶": "Legendary"},
+		"ja": {"凡品": "凡品", "良品": "良品", "上品": "上品", "極品": "極品", "秘寶": "秘宝"},
+		"ko": {"凡品": "일반", "良品": "고급", "上品": "희귀", "極品": "영웅", "秘寶": "전설"},
+		"es": {"凡品": "Común", "良品": "Poco común", "上品": "Raro", "極品": "Épico", "秘寶": "Legendario"}
+	}
+
 	for code in LOCALES:
 		if _loc_node:
 			_loc_node.call("set_locale", code)
@@ -205,6 +238,18 @@ func _initialize() -> void:
 			if _has_cjk(name_rb):
 				_fail("[%s] 鏽劍含有未翻譯中文: %s" % [code, name_rb])
 
+		# (f) 裝備品質標籤六語系驗證
+		for q_key in expected_qualities[code].keys():
+			var q_trans := ContentLoc.text("ui", q_key)
+			var exp_val: String = expected_qualities[code][q_key]
+			if q_trans != exp_val:
+				_fail("[%s] 品質標籤 '%s' 翻譯錯誤: 期望 '%s'，實際 '%s'" % [code, q_key, exp_val, q_trans])
+			else:
+				print("  ✓ [%s] 品質標籤 %s -> %s" % [code, q_key, q_trans])
+			if code in ["en", "es"]:
+				if _has_cjk(q_trans):
+					_fail("[%s] 品質標籤 '%s' 含有未翻譯中文: %s" % [code, q_key, q_trans])
+
 	# ── 2. 測試大廳角色分頁切語系 (review.md 0-QA25) ──
 	_loc_node.call("set_locale", "zh_TW")
 	_lobby = MobileLobby.new()
@@ -275,10 +320,89 @@ func _process(_delta: float) -> bool:
 				if def_val_lbl == null or def_val_lbl.text != "48":
 					_fail("ja 下防禦數值應保持 48，实际: %s" % (def_val_lbl.text if def_val_lbl else "null"))
 
+			# ── 3. 測試裝備格品質子標籤切語系即時刷新 (review.md 0-QA24, 0-QA25) ──
+			_lobby.queue_free()
+			_lobby = null
+			_host = MockHost.new()
+			root.add_child(_host)
+			if _eq_sys:
+				_eq_sys.call("add_to_bag", _eq_sys.call("roll_instance", "knight_saber", "rare"))
+				_eq_sys.call("add_to_bag", _eq_sys.call("roll_instance", "dawn_blade", "epic"))
+				_eq_sys.call("add_to_bag", _eq_sys.call("roll_instance", "ash_mail", "common"))
+			var EquipPanelScn: GDScript = load("res://scripts/ui/panels/equip_panel.gd")
+			_equip_ui = EquipPanelScn.new(_host)
+			_loc_node.call("set_locale", "ja")
+			_equip_ui.call("open")
+			_step = 4
+			_wait = 0
+		4:
+			if _wait < 4:
+				return false
+			# 檢查 ja 下的品質子標籤
+			var qls_ja := _get_equip_bag_quality_labels(_host)
+			if qls_ja.size() < 2:
+				_fail("ja 下裝備格未正確產生 (size=%d)" % qls_ja.size())
+			else:
+				if qls_ja[0] != "上品 · sword":
+					_fail("ja 下騎士軍刀品質子標籤應為 '上品 · sword'，實際: '%s'" % qls_ja[0])
+				else:
+					print("  ✓ [ja] 裝備格品質子標籤 騎士軍刀 -> %s" % qls_ja[0])
+				if qls_ja[1] != "秘宝 · sword":
+					_fail("ja 下晨光長劍品質子標籤應為 '秘宝 · sword'，實際: '%s'" % qls_ja[1])
+				else:
+					print("  ✓ [ja] 裝備格品質子標籤 晨光長劍 -> %s" % qls_ja[1])
+
+			# 切換到 es 測試即時刷新（不要只在進畫面時讀一次）
+			_step = 5
+			_wait = 0
+			_loc_node.call("set_locale", "es")
+		5:
+			if _wait < 4:
+				return false
+			# 檢查 es 下的品質子標籤
+			var qls_es := _get_equip_bag_quality_labels(_host)
+			if qls_es.size() < 2:
+				_fail("es 下裝備格未正確產生 (size=%d)" % qls_es.size())
+			else:
+				if qls_es[0] != "Raro · sword":
+					_fail("es 下騎士軍刀品質子標籤應為 'Raro · sword'，實際: '%s'" % qls_es[0])
+				else:
+					print("  ✓ [es] 裝備格品質子標籤 騎士軍刀 (即時刷新) -> %s" % qls_es[0])
+				if qls_es[1] != "Legendario · sword":
+					_fail("es 下晨光長劍品質子標籤應為 'Legendario · sword'，實際: '%s'" % qls_es[1])
+				else:
+					print("  ✓ [es] 裝備格品質子標籤 晨光長劍 (即時刷新) -> %s" % qls_es[1])
+				if _has_cjk(qls_es[0]) or _has_cjk(qls_es[1]):
+					_fail("es 下品質子標籤仍殘留中文: %s / %s" % [qls_es[0], qls_es[1]])
+
+			if _host and is_instance_valid(_host):
+				_host.queue_free()
+				_host = null
 			_finish()
 			return true
 
 	return false
+
+func _get_equip_bag_quality_labels(host: MockHost) -> Array[String]:
+	var res: Array[String] = []
+	if host == null:
+		return res
+	var layer = host.ui_container.get_node_or_null("EquipLayer")
+	if layer == null:
+		return res
+	var bag_grid: GridContainer = null
+	var grids := layer.find_children("", "GridContainer", true, false)
+	for g in grids:
+		if (g as GridContainer).columns == 4:
+			bag_grid = g as GridContainer
+			break
+	if bag_grid == null:
+		return res
+	for cell in bag_grid.get_children():
+		var labels := cell.find_children("", "Label", true, false)
+		if labels.size() >= 2:
+			res.append((labels[1] as Label).text)
+	return res
 
 func _finish() -> bool:
 	_loc_node.call("set_locale", "zh_TW")

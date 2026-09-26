@@ -24,17 +24,20 @@ func _init(host: Node) -> void:
 	_host = host
 
 
+func _on_locale_changed(_new_loc: String = "") -> void:
+	if is_instance_valid(_layer) and _layer.is_inside_tree():
+		open()
+
+
 func open() -> void:
 	if not _connected_loc:
-		_connected_loc = true
 		var tree := Engine.get_main_loop()
 		if tree is SceneTree and (tree as SceneTree).root != null:
 			var loc: Node = (tree as SceneTree).root.get_node_or_null("Loc")
 			if loc and loc.has_signal("locale_changed"):
-				loc.locale_changed.connect(func(_new_loc):
-					if is_instance_valid(_layer) and _layer.is_inside_tree():
-						open()
-				)
+				if not loc.locale_changed.is_connected(_on_locale_changed):
+					loc.locale_changed.connect(_on_locale_changed)
+				_connected_loc = true
 	EquipmentSystem._ensure_state()
 	_host.ui_clear_host()
 	_host.ui_reset_fade()
@@ -47,7 +50,7 @@ func open() -> void:
 	_host.ui_host().add_child(layer)
 	var bg := ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = Color(0.969, 0.965, 0.973, 1)
+	bg.color = Color(0.08, 0.06, 0.12, 0.65)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(bg)
 	var scroll := ScrollContainer.new()
