@@ -886,5 +886,11 @@
   "白銀鉸鏈與黃銅牽引線組裝的報時人偶，大鐘停擺後齒輪錯位，懸空懸臂正狂亂擺動。": "Una marioneta con bisagras de plata y cables de latón; con el gran reloj parado, sus brazos oscilan sin control.",
   "冷軋鋼板與雙活塞驅動的重工金屬巨象，身嵌黑鏽管柱，背部發條嘶鳴著滾燙蒸氣。": "Un elefante de metal pesado con placas de acero y doble pistón, con tubos de óxido negro que silban vapor ardiente.",
   "暴擊+%.1f%%": "Crít+%.1f%%",
-  "暴傷+%.0f%%": "DañoCrít+%.0f%%"
+  "暴傷+%.0f%%": "DañoCrít+%.0f%%",
+  "推薦 Lv.%d": "Rec. Nv.%d",
+  "未達 Lv.%d 不可出征": "Requiere Nv.%d para salir",
+  "需達 Lv.%d": "Requiere Nv.%d",
+  "未達標": "Bloqueado",
+  "等級未達 Lv.%d，低於推薦等級 10 級以上不可出征！": "¡Nivel inferior a Nv.%d; no se puede salir con 10+ niveles por debajo del recomendado!",
+  "等級未達 Lv.%d，低於推薦等級 10 級以上不可出征": "Nivel inferior a Nv.%d; no se puede salir con 10+ niveles por debajo del recomendado"
 }

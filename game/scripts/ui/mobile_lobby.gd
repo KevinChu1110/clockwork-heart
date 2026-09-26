@@ -2131,13 +2131,22 @@ func _on_colossus_card_pressed(s: Dictionary) -> void:
 	var CDS: Node = (loop as SceneTree).root.get_node_or_null("ColossusDailySystem")
 	if CDS == null:
 		return
-	var res: Dictionary = CDS.call("try_enter", str(s.get("id", "")))
+	var gs := _gs()
+	var player_lv := int(gs.get("level")) if (gs and "level" in gs) else 1
+	var sug_lv := int(s.get("level", 0))
+	var req_lv := int(s.get("req_level", sug_lv - 10))
+	if player_lv < req_lv:
+		_show_toast(_t("等級未達 Lv.%d，低於推薦等級 10 級以上不可出征！") % req_lv)
+		return
+	var res: Dictionary = CDS.call("try_enter", str(s.get("id", "")), player_lv)
 	if bool(res.get("ok", false)):
 		_show_toast(_t("今日剩餘: %d 次") % int(res.get("remaining", 0)))
 		_refresh_adventure_submode_ui()
 		_refresh_region_stages()
 		var boss_key: String = str(s.get("boss_key", s.get("id", "")))
 		request_battle.emit(boss_key)
+	elif str(res.get("reason", "")) == "level_too_low":
+		_show_toast(_t("等級未達 Lv.%d，低於推薦等級 10 級以上不可出征！") % req_lv)
 	else:
 		_show_colossus_limit_dialog()
 
@@ -2381,10 +2390,12 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	var stage_num := str(s.get("num", ""))
 	var RC = load("res://scripts/world/region_catalog.gd")
 	var sug_lv := int(s.get("level", 0)) if is_colossus else (int(RC.call("expedition_suggest_lv", stage_num)) if RC else 0)
+	var req_lv := int(s.get("req_level", sug_lv - 10)) if is_colossus else 0
 	var player_lv := 1
 	var gs := _gs()
 	if gs and "level" in gs:
 		player_lv = int(gs.get("level"))
+	var is_locked: bool = is_colossus and (player_lv < req_lv)
 	var F = load("res://scripts/battle/formulas.gd")
 	var tier_info: Dictionary = F.call("resistance_tier", player_lv, sug_lv) if F else {}
 	var tier: String = str(tier_info.get("tier", "safe"))
@@ -2398,7 +2409,7 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	res_badge.name = "ResistBadge"
 	res_badge.custom_minimum_size = Vector2(90, 48)
 	res_badge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	res_badge.text = _t(tier_name)
+	res_badge.text = _t("未達標") if is_locked else _t(tier_name)
 	res_badge.add_theme_font_size_override("font_size", 14)
 
 	var rsb := StyleBoxFlat.new()
@@ -2410,7 +2421,9 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	rsb.content_margin_right = 10
 	rsb.content_margin_top = 4
 	rsb.content_margin_bottom = 4
-	if tier == "safe":
+	if is_locked:
+		rsb.bg_color = Color("#7D7588")  ## 深灰紫（未達門檻）
+	elif tier == "safe":
 		rsb.bg_color = Color("#4ED86A")  ## 薄荷綠（安全）
 	elif tier == "strained":
 		rsb.bg_color = Color("#FFD028")  ## 金黃（吃力）
@@ -2426,12 +2439,19 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	res_badge.add_theme_stylebox_override("hover", rsb_h)
 	res_badge.add_theme_stylebox_override("pressed", rsb_p)
 	res_badge.add_theme_stylebox_override("focus", rsb)
-	res_badge.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	res_badge.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
-	res_badge.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+	if is_locked:
+		res_badge.add_theme_color_override("font_color", Color("#F5F3F8"))
+		res_badge.add_theme_color_override("font_hover_color", Color("#FFFFFF"))
+		res_badge.add_theme_color_override("font_pressed_color", Color("#E0DCE8"))
+	else:
+		res_badge.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		res_badge.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+		res_badge.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 
 	var toast_msg := ""
-	if tier == "safe":
+	if is_locked:
+		toast_msg = _t("等級未達 Lv.%d，低於推薦等級 10 級以上不可出征！") % req_lv
+	elif tier == "safe":
 		toast_msg = _t("區域抗性安全：等級達標，受傷正常 (×1.0)")
 	elif tier == "strained":
 		toast_msg = _t("區域抗性吃力：未達建議 Lv%d，受到傷害 ×1.2") % sug_lv
@@ -2444,15 +2464,29 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	res_hint_l.name = "ResistHintLabel"
 	res_hint_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	res_hint_l.add_theme_font_size_override("font_size", 13)
-	if tier == "safe":
-		res_hint_l.text = _t("建議 Lv.%d") % sug_lv
-		res_hint_l.add_theme_color_override("font_color", Color("#2E7D32"))
-	elif tier == "strained":
-		res_hint_l.text = (_t("建議 Lv.%d") % sug_lv) + " · " + _t("受傷 ×1.2")
-		res_hint_l.add_theme_color_override("font_color", Color("#9A6200"))
+	if is_locked:
+		res_hint_l.text = (_t("推薦 Lv.%d") % sug_lv) + " · " + (_t("未達 Lv.%d 不可出征") % req_lv)
+		res_hint_l.add_theme_color_override("font_color", Color("#A03828"))
+	elif is_colossus:
+		if tier == "safe":
+			res_hint_l.text = _t("推薦 Lv.%d") % sug_lv
+			res_hint_l.add_theme_color_override("font_color", Color("#2E7D32"))
+		elif tier == "strained":
+			res_hint_l.text = (_t("推薦 Lv.%d") % sug_lv) + " · " + _t("受傷 ×1.2")
+			res_hint_l.add_theme_color_override("font_color", Color("#9A6200"))
+		else:
+			res_hint_l.text = (_t("推薦 Lv.%d") % sug_lv) + " · " + _t("受傷 ×1.5")
+			res_hint_l.add_theme_color_override("font_color", Color("#C0392B"))
 	else:
-		res_hint_l.text = (_t("建議 Lv.%d") % sug_lv) + " · " + _t("受傷 ×1.5")
-		res_hint_l.add_theme_color_override("font_color", Color("#C0392B"))
+		if tier == "safe":
+			res_hint_l.text = _t("建議 Lv.%d") % sug_lv
+			res_hint_l.add_theme_color_override("font_color", Color("#2E7D32"))
+		elif tier == "strained":
+			res_hint_l.text = (_t("建議 Lv.%d") % sug_lv) + " · " + _t("受傷 ×1.2")
+			res_hint_l.add_theme_color_override("font_color", Color("#9A6200"))
+		else:
+			res_hint_l.text = (_t("建議 Lv.%d") % sug_lv) + " · " + _t("受傷 ×1.5")
+			res_hint_l.add_theme_color_override("font_color", Color("#C0392B"))
 	res_row.add_child(res_hint_l)
 	v.add_child(res_row)
 
@@ -2513,7 +2547,9 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 			var CDS: Node = (loop as SceneTree).root.get_node_or_null("ColossusDailySystem")
 			if CDS and CDS.has_method("get_remaining_entries"):
 				colossus_left = int(CDS.call("get_remaining_entries"))
-		if colossus_left > 0:
+		if is_locked:
+			btn_battle.text = _t("需達 Lv.%d") % req_lv
+		elif colossus_left > 0:
 			btn_battle.text = _t("出征")
 		else:
 			btn_battle.text = _t("明天再來")
@@ -2521,7 +2557,16 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 		btn_battle.text = _t("挑戰首領") if is_boss else _t("出征")
 	btn_battle.add_theme_font_size_override("font_size", 16)
 	var bsb := StyleBoxFlat.new()
-	if is_boss:
+	if is_locked:
+		bsb.bg_color = Color("#8E8898")  ## 灰色厚底立體按鈕（灰掉）
+		bsb.border_color = COLOR_BORDER
+		bsb.set_border_width_all(2)
+		bsb.border_width_bottom = 5
+		bsb.set_corner_radius_all(18)
+		bsb.shadow_color = Color(0.12, 0.10, 0.23, 0.18)
+		bsb.shadow_size = 6
+		bsb.shadow_offset = Vector2(0, 3)
+	elif is_boss:
 		bsb.bg_color = COLOR_ORANGE
 		bsb.border_color = COLOR_BORDER
 		bsb.set_border_width_all(2)
@@ -2540,13 +2585,19 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 		bsb.shadow_size = 6
 		bsb.shadow_offset = Vector2(0, 3)
 
-	btn_battle.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	btn_battle.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
-	btn_battle.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+	if is_locked:
+		btn_battle.add_theme_color_override("font_color", Color("#F5F3F8"))
+		btn_battle.add_theme_color_override("font_hover_color", Color("#FFFFFF"))
+		btn_battle.add_theme_color_override("font_pressed_color", Color("#E0DCE8"))
+	else:
+		btn_battle.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		btn_battle.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+		btn_battle.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 
 	var bsb_h := bsb.duplicate() as StyleBoxFlat
-	bsb_h.bg_color = Color("#FFB84D") if is_boss else Color("#FFE066")
+	bsb_h.bg_color = Color("#A09AA8") if is_locked else (Color("#FFB84D") if is_boss else Color("#FFE066"))
 	var bsb_p := bsb.duplicate() as StyleBoxFlat
+	bsb_p.bg_color = Color("#7A7484") if is_locked else bsb.bg_color
 	bsb_p.border_width_bottom = 2
 
 	btn_battle.add_theme_stylebox_override("normal", bsb)
@@ -2556,7 +2607,10 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 
 	if is_colossus:
 		btn_battle.pressed.connect(func():
-			_on_colossus_card_pressed(s)
+			if is_locked:
+				_show_toast(_t("等級未達 Lv.%d，低於推薦等級 10 級以上不可出征！") % req_lv)
+			else:
+				_on_colossus_card_pressed(s)
 		)
 	else:
 		var m: String = str(s["mode"])

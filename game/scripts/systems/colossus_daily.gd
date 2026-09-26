@@ -6,6 +6,7 @@ extends Node
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 
 const MAX_DAILY_ENTRIES := 3
+const LEVEL_GATE_OFFSET := 10
 
 ## 測試用：>0 時覆寫本地日（YYYYMMDD）。正式遊玩維持 -1。
 var debug_day: int = -1
@@ -17,6 +18,7 @@ const BOSSES: Array[Dictionary] = [
 		"num": "巨偶-1",
 		"name": "失控發條獅",
 		"level": 12,
+		"req_level": 2,
 		"type": "停擺巨偶",
 		"cost": 0,
 		"power": 320,
@@ -29,6 +31,7 @@ const BOSSES: Array[Dictionary] = [
 		"num": "巨偶-2",
 		"name": "霧鐘提線人偶",
 		"level": 20,
+		"req_level": 10,
 		"type": "停擺巨偶",
 		"cost": 0,
 		"power": 480,
@@ -41,6 +44,7 @@ const BOSSES: Array[Dictionary] = [
 		"num": "巨偶-3",
 		"name": "黑鏽蒸氣巨象",
 		"level": 28,
+		"req_level": 18,
 		"type": "停擺巨偶",
 		"cost": 0,
 		"power": 650,
@@ -85,8 +89,37 @@ func get_remaining_entries() -> int:
 func can_enter() -> bool:
 	return get_remaining_entries() > 0
 
-## 模擬出征嘗試：同一天呼叫 3 次成功，第 4 次被拒
-func try_enter(boss_id: String = "") -> Dictionary:
+static func get_req_level(boss_level: int) -> int:
+	return boss_level - LEVEL_GATE_OFFSET
+
+func get_boss_by_id(boss_id: String) -> Dictionary:
+	for b in BOSSES:
+		if b.get("id") == boss_id or b.get("boss_key") == boss_id:
+			return b
+	return {}
+
+func get_required_level(boss_id: String) -> int:
+	var b := get_boss_by_id(boss_id)
+	if not b.is_empty():
+		return int(b.get("req_level", int(b.get("level", 10)) - LEVEL_GATE_OFFSET))
+	return 1
+
+## 檢驗特定巨偶是否達到入場門檻（王等級 - 10 級）
+func can_enter_boss(boss_id: String, player_lv: int = -1) -> bool:
+	if not can_enter():
+		return false
+	var plv := player_lv
+	if plv < 0:
+		var gs := _gs()
+		if gs and "level" in gs:
+			plv = int(gs.get("level"))
+		else:
+			plv = 1
+	var req := get_required_level(boss_id)
+	return plv >= req
+
+## 模擬出征嘗試：同一天呼叫 3 次成功，第 4 次被拒；若等級低於門檻則被拒
+func try_enter(boss_id: String = "", player_lv: int = -1) -> Dictionary:
 	refresh()
 	var gs := _gs()
 	if gs == null:
@@ -96,6 +129,17 @@ func try_enter(boss_id: String = "") -> Dictionary:
 			"remaining": 0,
 			"message": _t("遊戲狀態未就緒"),
 		}
+	var check_lv: int = player_lv
+	if check_lv >= 0 and not boss_id.is_empty():
+		var req := get_required_level(boss_id)
+		if check_lv < req:
+			return {
+				"ok": false,
+				"reason": "level_too_low",
+				"required_level": req,
+				"remaining": int(gs.get("colossus_daily_entries")),
+				"message": _t("等級未達 Lv.%d，低於推薦等級 10 級以上不可出征") % req,
+			}
 	var left: int = int(gs.get("colossus_daily_entries"))
 	if left <= 0:
 		return {
@@ -113,6 +157,16 @@ func try_enter(boss_id: String = "") -> Dictionary:
 		"boss_id": boss_id,
 		"message": _t("出征就緒"),
 	}
+
+func try_enter_boss(boss_id: String, player_lv: int = -1) -> Dictionary:
+	var plv := player_lv
+	if plv < 0:
+		var gs := _gs()
+		if gs and "level" in gs:
+			plv = int(gs.get("level"))
+		else:
+			plv = 1
+	return try_enter(boss_id, plv)
 
 func get_bosses() -> Array[Dictionary]:
 	return BOSSES

@@ -139,6 +139,42 @@ func _initialize() -> void:
 		_fail("換日後應可正常入場，實際 %s" % str(r_next))
 	print("  ✓ 換日自動重置至 3 次成功")
 
+	# --- 3.5 檢驗停擺巨偶推薦等級與入場門檻限制（低於王等級 10 級不能進）---
+	print("--- 3.5 檢驗推薦等級與等級門檻限制（低於王等級 10 級不能進）---")
+	if cds.get_required_level("colossus_lion") != 2:
+		_fail("失控發條獅門檻應為 Lv2，實際為 %d" % cds.get_required_level("colossus_lion"))
+	if cds.get_required_level("colossus_puppet") != 10:
+		_fail("霧鐘提線人偶門檻應為 Lv10，實際為 %d" % cds.get_required_level("colossus_puppet"))
+	if cds.get_required_level("colossus_elephant") != 18:
+		_fail("黑鏽蒸氣巨象門檻應為 Lv18，實際為 %d" % cds.get_required_level("colossus_elephant"))
+
+	# 獅門檻 2：Lv1 不能進、Lv2 能進
+	if cds.can_enter_boss("colossus_lion", 1):
+		_fail("失控發條獅 Lv1 應不能進")
+	if not cds.can_enter_boss("colossus_lion", 2):
+		_fail("失控發條獅 Lv2 應能進")
+
+	# 提線門檻 10：Lv9 不能進、Lv10 能進
+	if cds.can_enter_boss("colossus_puppet", 9):
+		_fail("霧鐘提線人偶 Lv9 應不能進")
+	if not cds.can_enter_boss("colossus_puppet", 10):
+		_fail("霧鐘提線人偶 Lv10 應能進")
+
+	# 巨象門檻 18：Lv1 不能進、Lv18 能進
+	if cds.can_enter_boss("colossus_elephant", 1):
+		_fail("黑鏽蒸氣巨象 Lv1 應不能進")
+	if not cds.can_enter_boss("colossus_elephant", 18):
+		_fail("黑鏽蒸氣巨象 Lv18 應能進")
+
+	# 檢驗 try_enter 等級未達回傳 level_too_low
+	var r_low = cds.try_enter("colossus_elephant", 1)
+	if bool(r_low.get("ok", true)) or str(r_low.get("reason", "")) != "level_too_low":
+		_fail("Lv1 嘗試進巨象應回傳 level_too_low，實際: %s" % str(r_low))
+	var r_pass = cds.try_enter("colossus_elephant", 18)
+	if not bool(r_pass.get("ok", false)):
+		_fail("Lv18 嘗試進巨象應成功，實際: %s" % str(r_pass))
+	print("  ✓ 單元測試等級門檻驗證通過：Lv1 不能進巨象、Lv18 能進；獅門檻 2、提線門檻 10 全數吻合")
+
 	# --- 4. 檢驗勝場掉落機芯部件、敗場不掉機芯 ---
 	print("--- 4. 檢驗勝場掉落五槽機芯部件入袋，敗場不給機芯 ---")
 	CoreSystemClass.clear_inventory()
@@ -212,6 +248,12 @@ func _initialize() -> void:
 		"四區主線",
 		"停擺巨偶 · 今日剩餘: %d/3",
 		"今日挑戰次數已用盡，請明天再來！",
+		"推薦 Lv.%d",
+		"未達 Lv.%d 不可出征",
+		"需達 Lv.%d",
+		"未達標",
+		"等級未達 Lv.%d，低於推薦等級 10 級以上不可出征！",
+		"等級未達 Lv.%d，低於推薦等級 10 級以上不可出征",
 	]
 	var loc_node: Node = root.get_node_or_null("Loc")
 	for loc in LOCALES:
@@ -229,10 +271,11 @@ func _initialize() -> void:
 		loc_node.call("set_locale", "zh_TW")
 	print("  ✓ 六語系鍵值與零系統 Emoji 全數合格")
 
-	# 重置當日次數以測試大廳點擊
+	# 重置當日次數並設定足夠等級 (Lv20) 以測試大廳點擊
 	cds.debug_day = 20260927
 	cds.refresh()
 	gs.set("colossus_daily_entries", 3)
+	gs.set("level", 20)
 
 	# 建立 MobileLobby 等待第一影格就緒
 	_lobby = MobileLobbyScn.new()
@@ -278,6 +321,46 @@ func _process(_d: float) -> bool:
 						_fail("卡片 %d 缺少 BattleButton" % i)
 					elif btn.custom_minimum_size.y < 48:
 						_fail("卡片 %d BattleButton 高度不足 48px: %f" % [i, btn.custom_minimum_size.y])
+
+				# 驗證三張出征卡顯示推薦等級與出征按鈕
+				var expected_levels := [12, 20, 28]
+				for i in range(cards.size()):
+					var card: Control = cards[i] as Control
+					var hint_l: Label = card.find_child("ResistHintLabel", true, false)
+					if hint_l == null:
+						_fail("卡片 %d 缺少 ResistHintLabel" % i)
+					elif not hint_l.text.contains(str(expected_levels[i])):
+						_fail("卡片 %d 未顯示推薦等級 Lv%d，實際為: %s" % [i, expected_levels[i], hint_l.text])
+				print("  ✓ 三張停擺巨偶出征卡皆完整顯示推薦等級 (Lv12, Lv20, Lv28)")
+
+				# 測試低等級阻擋：當玩家為 Lv1 時，巨象 (門檻 18) 出征鈕灰掉 (高 >= 50px) 且說明不能進
+				var gs = root.get_node_or_null("GameState")
+				if gs:
+					gs.set("level", 1)
+				_lobby.call("_refresh_region_stages")
+				var colossus_grid_low: GridContainer = _lobby.find_child("ColossusStagesGrid", true, false)
+				var cards_low := colossus_grid_low.get_children()
+				var ele_card: Control = cards_low[2] as Control
+				var ele_btn: Button = ele_card.find_child("BattleButton", true, false)
+				var ele_hint: Label = ele_card.find_child("ResistHintLabel", true, false)
+				if ele_btn.custom_minimum_size.y < 50:
+					_fail("巨象出征鈕高度未達 50px: %f" % ele_btn.custom_minimum_size.y)
+				if not ele_btn.text.contains("18"):
+					_fail("Lv1 時巨象出征鈕應標註需達門檻 18，實際文字: %s" % ele_btn.text)
+				if not ele_hint.text.contains("18") or not ele_hint.text.contains("不可出征"):
+					_fail("Lv1 時巨象卡片應有一句話說明未達 Lv.18 不可出征，實際: %s" % ele_hint.text)
+				_last_requested_battle = ""
+				ele_btn.emit_signal("pressed")
+				if _last_requested_battle != "":
+					_fail("Lv1 點擊巨象出征鈕不應進入戰鬥，實際發送: %s" % _last_requested_battle)
+				print("  ✓ 低等角色 (Lv1) 巨象出征鈕灰掉 (高 >= 50px)、顯示門檻說明且打不開最高階巨偶驗證通過")
+
+				# 恢復足夠等級 (Lv20) 刷新，進行開戰測試
+				if gs:
+					gs.set("level", 20)
+				_lobby.call("_refresh_region_stages")
+				var colossus_grid_ok: GridContainer = _lobby.find_child("ColossusStagesGrid", true, false)
+				cards = colossus_grid_ok.get_children()
 
 				# 測試點擊第 1 張卡片：失控發條獅
 				var first_card: Control = cards[0] as Control

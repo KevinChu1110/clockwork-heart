@@ -3088,5 +3088,11 @@
   "白銀鉸鏈與黃銅牽引線組裝的報時人偶，大鐘停擺後齒輪錯位，懸空懸臂正狂亂擺動。": "A timekeeping marionette of silver hinges and brass cables; gear misalignment flails its hanging arms wildly.",
   "冷軋鋼板與雙活塞驅動的重工金屬巨象，身嵌黑鏽管柱，背部發條嘶鳴著滾燙蒸氣。": "A heavy metal elephant driven by rolled steel and dual pistons, fitted with black-rust pipes venting scalding steam.",
   "暴擊+%.1f%%": "Crit+%.1f%%",
-  "暴傷+%.0f%%": "CritDmg+%.0f%%"
+  "暴傷+%.0f%%": "CritDmg+%.0f%%",
+  "推薦 Lv.%d": "Rec. Lv.%d",
+  "未達 Lv.%d 不可出征": "Requires Lv.%d to sortie",
+  "需達 Lv.%d": "Requires Lv.%d",
+  "未達標": "Locked",
+  "等級未達 Lv.%d，低於推薦等級 10 級以上不可出征！": "Requires Lv.%d; cannot sortie if 10+ levels below recommended!",
+  "等級未達 Lv.%d，低於推薦等級 10 級以上不可出征": "Requires Lv.%d; cannot sortie if 10+ levels below recommended"
 }
