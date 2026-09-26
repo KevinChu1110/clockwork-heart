@@ -5,7 +5,7 @@ const OnboardScript := preload("res://scripts/systems/onboard/onboard_view.gd")
 const SoulScript := preload("res://scripts/ui/soul_draw/soul_draw_play_view.gd")
 const RuntimeScript := preload("res://scripts/systems/wave8/w8_runtime.gd")
 const UiStyle := preload("res://scripts/ui/ui_style.gd")
-const I18N_PATH := "res://data/i18n/zh_TW.json"
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 enum Phase { ONBOARD, SOUL, CHAPTER }
@@ -20,6 +20,66 @@ var _i18n: Dictionary = {}
 var _child: Node = null
 var _font: Font = null
 
+var _btn_first_clear: Button = null
+var _btn_sweep: Button = null
+var _btn_sim_regen: Button = null
+var _btn_goto_soul: Button = null
+var _hint_lbl: Label = null
+var _info_lbl: Label = null
+
+
+static func get_current_locale() -> String:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc != null and loc.get("locale") != null:
+			return str(loc.get("locale"))
+	return ContentLoc.locale()
+
+
+static func _t(s: String) -> String:
+	var res := ContentLoc.text("ui", s)
+	if res != s:
+		return res
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var loc_t = str(loc.call("t", s))
+			if loc_t != "" and loc_t != s:
+				return loc_t
+	return res
+
+
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_load_i18n()
+	_refresh_all()
+
 
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -31,18 +91,32 @@ func _ready() -> void:
 
 	if ResourceLoader.exists(FONT_PATH):
 		_font = load(FONT_PATH) as Font
-	if FileAccess.file_exists(I18N_PATH):
-		var parsed = JSON.parse_string(FileAccess.get_file_as_string(I18N_PATH))
-		if typeof(parsed) == TYPE_DICTIONARY:
-			_i18n = parsed as Dictionary
+	_load_i18n()
 	_build_shell()
+	_connect_loc_signal()
 	runtime = RuntimeScript.new()
 	runtime.setup()
 	_goto(Phase.ONBOARD)
 
 
+func _load_i18n() -> void:
+	var lc := get_current_locale()
+	var path := "res://data/i18n/%s.json" % lc
+	if not FileAccess.file_exists(path):
+		path = "res://data/i18n/zh_TW.json"
+	if FileAccess.file_exists(path):
+		var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+		if typeof(parsed) == TYPE_DICTIONARY:
+			_i18n = parsed as Dictionary
+
+
 func _tr(key: String) -> String:
-	return str(_i18n.get(key, key))
+	var res := _t(key)
+	if res != key:
+		return res
+	if _i18n.has(key):
+		return str(_i18n[key])
+	return key
 
 
 func _apply_label(lbl: Label, font_size: int, color: Color, outline: bool = false) -> void:
@@ -98,8 +172,53 @@ func _clear_host() -> void:
 	if _child != null and is_instance_valid(_child):
 		_child.queue_free()
 	_child = null
+	_btn_first_clear = null
+	_btn_sweep = null
+	_btn_sim_regen = null
+	_btn_goto_soul = null
+	_hint_lbl = null
+	_info_lbl = null
+	_chapter_panel = null
 	for c in _host.get_children():
 		c.queue_free()
+
+
+func _refresh_banner() -> void:
+	if _banner == null:
+		return
+	match phase:
+		Phase.ONBOARD:
+			_banner.text = _t("玩具堆邊緣 · 新手引導")
+		Phase.SOUL:
+			_banner.text = _t("玩具堆邊緣 · 聚魂抽取")
+		Phase.CHAPTER:
+			var wind: int = int(runtime.daily.wind) if (runtime and runtime.daily) else 0
+			var wind_max: int = int(runtime.daily.wind_max) if (runtime and runtime.daily) else 0
+			_banner.text = _t("玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d") % [wind, wind_max]
+
+
+func _refresh_chapter_buttons() -> void:
+	if _btn_first_clear != null and is_instance_valid(_btn_first_clear):
+		_btn_first_clear.text = _t("首通 玩具堆邊緣")
+	if _btn_sweep != null and is_instance_valid(_btn_sweep):
+		_btn_sweep.text = _t("掃蕩 玩具堆邊緣")
+	if _btn_sim_regen != null and is_instance_valid(_btn_sim_regen):
+		_btn_sim_regen.text = _t("等 8 分（模擬回復）")
+	if _btn_goto_soul != null and is_instance_valid(_btn_goto_soul):
+		_btn_goto_soul.text = _t("前往聚魂")
+
+
+func _refresh_chapter_hint() -> void:
+	if _hint_lbl != null and is_instance_valid(_hint_lbl):
+		_hint_lbl.text = _t("引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。")
+
+
+func _refresh_all() -> void:
+	_refresh_banner()
+	if phase == Phase.CHAPTER and _chapter_panel != null:
+		_refresh_chapter_info()
+		_refresh_chapter_buttons()
+		_refresh_chapter_hint()
 
 
 func _goto(p: int) -> void:
@@ -107,29 +226,30 @@ func _goto(p: int) -> void:
 	_clear_host()
 	match p:
 		Phase.ONBOARD:
-			_banner.text = "玩具堆邊緣 · 新手引導"
+			_refresh_banner()
 			var v = OnboardScript.new()
 			v.set_anchors_preset(Control.PRESET_FULL_RECT)
 			_host.add_child(v)
 			_child = v
 			v.finished.connect(func() -> void:
-				_flash("新手引導完成，前往聚魂")
+				_flash(_t("新手引導完成，前往聚魂"))
 				_goto(Phase.SOUL)
 			)
 		Phase.SOUL:
-			_banner.text = "玩具堆邊緣 · 聚魂抽取"
+			_refresh_banner()
 			var v = SoulScript.new()
 			v.set_anchors_preset(Control.PRESET_FULL_RECT)
 			_host.add_child(v)
 			_child = v
 			v.continue_requested.connect(func() -> void:
-				_flash("前往玩具堆邊緣")
+				_flash(_t("前往玩具堆邊緣"))
 				_goto(Phase.CHAPTER)
 			)
 		Phase.CHAPTER:
-			_banner.text = "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d" % [runtime.daily.wind, runtime.daily.wind_max]
 			_build_chapter_panel()
-			_refresh_daily_event_ui()
+			_refresh_chapter_info()
+			_refresh_chapter_buttons()
+			_refresh_chapter_hint()
 
 
 func _build_chapter_panel() -> void:
@@ -153,66 +273,76 @@ func _build_chapter_panel() -> void:
 	info.name = "Info"
 	info.position = Vector2(36, 26)
 	_apply_label(info, 22, UiStyle.INK)
-	info.text = "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d" % [
-		runtime.econ.gold, runtime.econ.soul_tickets, runtime.growth.level,
-		runtime.daily.wind, runtime.daily.wind_max, runtime.daily.daily_sweeps
-	]
 	_chapter_panel.add_child(info)
+	_info_lbl = info
 
 	var row := HBoxContainer.new()
+	row.name = "ButtonRow"
 	row.position = Vector2(36, 144)
 	row.add_theme_constant_override("separation", 16)
 	_chapter_panel.add_child(row)
 
 	var b1 := Button.new()
-	b1.text = "首通 玩具堆邊緣"
+	b1.name = "BtnFirstClear"
 	b1.custom_minimum_size = Vector2(210, 52)
 	UiStyle.style_button(b1, true)
 	b1.pressed.connect(_on_first_clear)
 	row.add_child(b1)
+	_btn_first_clear = b1
 
 	var b2 := Button.new()
-	b2.text = "掃蕩 玩具堆邊緣"
+	b2.name = "BtnSweep"
 	b2.custom_minimum_size = Vector2(210, 52)
 	UiStyle.style_button(b2, false)
 	b2.pressed.connect(_on_sweep)
 	row.add_child(b2)
+	_btn_sweep = b2
 
 	var b3 := Button.new()
-	b3.text = "等 8 分（模擬回復）"
+	b3.name = "BtnSimRegen"
 	b3.custom_minimum_size = Vector2(220, 52)
 	UiStyle.style_button(b3, false)
 	b3.pressed.connect(_on_sim_regen)
 	row.add_child(b3)
+	_btn_sim_regen = b3
 
 	var b4 := Button.new()
-	b4.text = "前往聚魂"
+	b4.name = "BtnGotoSoul"
 	b4.custom_minimum_size = Vector2(160, 52)
 	UiStyle.style_button(b4, false)
 	b4.pressed.connect(func() -> void: _goto(Phase.SOUL))
 	row.add_child(b4)
+	_btn_goto_soul = b4
 
 	_build_daily_event_block()
 
 	var hint := Label.new()
 	hint.name = "Hint"
 	hint.position = Vector2(36, 460)
-	hint.text = "引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。"
 	_apply_label(hint, 17, Color(0.36, 0.26, 0.18, 1.0))
 	_chapter_panel.add_child(hint)
+	_hint_lbl = hint
 
 
 func _refresh_chapter_info() -> void:
 	if _chapter_panel == null:
 		return
-	var info: Label = _chapter_panel.get_node_or_null("Info") as Label
+	var info: Label = _info_lbl
+	if info == null:
+		info = _chapter_panel.get_node_or_null("Info") as Label
 	if info == null:
 		return
-	info.text = "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d" % [
-		runtime.econ.gold, runtime.econ.soul_tickets, runtime.growth.level,
-		runtime.daily.wind, runtime.daily.wind_max, runtime.daily.daily_sweeps
+	var gold: int = int(runtime.econ.gold) if (runtime and runtime.econ) else 0
+	var tickets: int = int(runtime.econ.soul_tickets) if (runtime and runtime.econ) else 0
+	var level: int = int(runtime.growth.level) if (runtime and runtime.growth) else 1
+	var wind: int = int(runtime.daily.wind) if (runtime and runtime.daily) else 0
+	var wind_max: int = int(runtime.daily.wind_max) if (runtime and runtime.daily) else 0
+	var sweeps: int = int(runtime.daily.daily_sweeps) if (runtime and runtime.daily) else 0
+
+	info.text = _t("章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d") % [
+		gold, tickets, level, wind, wind_max, sweeps
 	]
-	_banner.text = "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d" % [runtime.daily.wind, runtime.daily.wind_max]
+	_refresh_banner()
 	_refresh_daily_event_ui()
 
 
@@ -226,7 +356,7 @@ func _on_first_clear() -> void:
 	if bool(r.get("ok", false)):
 		_flash(_tr(str(r.get("toastKey", "reward.first_clear"))))
 	else:
-		_flash("首通失敗：%s" % str(r.get("error", "")))
+		_flash(_t("首通失敗：%s") % str(r.get("error", "")))
 	_refresh_chapter_info()
 
 
@@ -241,9 +371,9 @@ func _on_sweep() -> void:
 		if err == "daily_sweep_cap":
 			_flash(_tr("err.daily_cap_sweep"))
 		elif err == "already_cleared_use_sweep" or err == "cannot_sweep":
-			_flash("需先首通，或發條／掃蕩次數不足")
+			_flash(_t("需先首通，或發條／掃蕩次數不足"))
 		else:
-			_flash("掃蕩失敗：%s" % err)
+			_flash(_t("掃蕩失敗：%s") % err)
 	_refresh_chapter_info()
 
 
@@ -321,7 +451,7 @@ func _refresh_daily_event_ui() -> void:
 		var label_key: String = "daily.%s.%s" % [day_id, cid]
 		var label: String = _tr(label_key)
 		if label == label_key:
-			label = str(choice.get("label", cid))
+			label = _t(str(choice.get("label", cid)))
 		var b := Button.new()
 		b.text = label
 		b.custom_minimum_size = Vector2(220, 52)
@@ -342,6 +472,6 @@ func _on_daily_pick(choice_id: String) -> void:
 		if err == "already_picked":
 			_flash(_tr("daily.already"))
 		else:
-			_flash("日常發條失敗：%s" % err)
+			_flash(_t("日常發條失敗：%s") % err)
 	_refresh_chapter_info()
 	_refresh_daily_event_ui()
