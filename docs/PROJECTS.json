@@ -2376,8 +2376,8 @@
    "id": "title-wall-i18n",
    "cat": "遊戲",
    "title": "稱號牆標題按鈕與解鎖狀態六語系",
-   "status": "測試中",
-   "note": "稱號牆chrome六語系動態切換、單元測試綠燈、實機截圖完成",
+   "status": "已上線",
+   "note": "稱號牆 chrome 六語系已合進 main",
    "keys": [
     "稱號牆標題按鈕與"
    ]
