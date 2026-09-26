@@ -6,10 +6,42 @@ const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const TITLE_TEXT_FIELDS: PackedStringArray = ["name", "desc"]
 
 
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
+
+
 ## 稱號名與說明在非繁中會被 ContentLoc 換掉。所有讀 ENTRIES 的地方都改走
 ## 這支 —— 直接 for e in ENTRIES 會拿到未翻的原文。
 func entries() -> Array:
-	return ContentLoc.apply_all("title", ENTRIES, TITLE_TEXT_FIELDS, "flag")
+	var rows := ContentLoc.apply_all("title", ENTRIES, TITLE_TEXT_FIELDS, "flag")
+	var out: Array = []
+	for i in rows.size():
+		var item: Dictionary = (rows[i] as Dictionary).duplicate(true)
+		var raw_dict: Dictionary = ENTRIES[i] if i < ENTRIES.size() else {}
+		var raw_name: String = str(raw_dict.get("name", item.get("name", "")))
+		var raw_desc: String = str(raw_dict.get("desc", item.get("desc", "")))
+		var flag: String = str(item.get("flag", ""))
+		item["raw_name"] = raw_name
+		item["raw_desc"] = raw_desc
+		var t_name: String = _t(raw_name)
+		if t_name == raw_name and flag != "":
+			t_name = ContentLoc.t("title", flag, "name", raw_name)
+		if t_name != "":
+			item["name"] = t_name
+		var t_desc: String = _t(raw_desc)
+		if t_desc == raw_desc and flag != "":
+			t_desc = ContentLoc.t("title", flag, "desc", raw_desc)
+		if t_desc != "":
+			item["desc"] = t_desc
+		out.append(item)
+	return out
+
+
+func get_entry(flag: String) -> Dictionary:
+	for e in entries():
+		if str(e.get("flag", "")) == flag:
+			return e
+	return {}
 
 
 const ENTRIES: Array[Dictionary] = [

@@ -129,6 +129,45 @@ func _run_test_suite() -> void:
 		"es": "Nuevos títulos desbloqueados: %s",
 	}
 
+	var sample_titles := {
+		"zh_TW": {
+			"title.claw_parry": {"name": "以劍抵爪", "desc": "對雷歐完美格擋至少一次。"},
+			"title.cleared": {"name": "晨光中的兔子", "desc": "通關終章。"},
+			"title.star_wisher": {"name": "許願兔", "desc": "在星落淺池許下一願——不必說出口。"},
+			"title.wood_mentor": {"name": "木劍之約", "desc": "把練習的夢想交到小芽手裡。"},
+		},
+		"zh_CN": {
+			"title.claw_parry": {"name": "以剑抵爪", "desc": "对雷欧完美格挡至少一次。"},
+			"title.cleared": {"name": "晨光中的兔子", "desc": "通关终章。"},
+			"title.star_wisher": {"name": "许愿兔", "desc": "在星落浅池许下一愿——不必说出口。"},
+			"title.wood_mentor": {"name": "木剑之约", "desc": "把练习的梦想交到小芽手里。"},
+		},
+		"en": {
+			"title.claw_parry": {"name": "Sword Against Claw", "desc": "Land at least one perfect parry on Leo."},
+			"title.cleared": {"name": "Rabbit in the Morning Light", "desc": "Clear the final chapter."},
+			"title.star_wisher": {"name": "Wishing Rabbit", "desc": "Make a wish at the Starfall shallows — no need to say it aloud."},
+			"title.wood_mentor": {"name": "Promise of the Wooden Sword", "desc": "Put the dream of practice into Sprout's hands."},
+		},
+		"ja": {
+			"title.claw_parry": {"name": "剣もて爪を受く", "desc": "レオに完璧なパリィを一度以上。"},
+			"title.cleared": {"name": "朝光の中の兎", "desc": "終章をクリア。"},
+			"title.star_wisher": {"name": "願う兎", "desc": "星落の浅池でひとつ願った——口に出さなくていい。"},
+			"title.wood_mentor": {"name": "木剣の約束", "desc": "稽古という夢を芽の手に渡した。"},
+		},
+		"ko": {
+			"title.claw_parry": {"name": "검으로 발톱을 받다", "desc": "레오에게 완벽한 패링을 한 번 이상."},
+			"title.cleared": {"name": "아침빛 속의 토끼", "desc": "종장 클리어."},
+			"title.star_wisher": {"name": "소원 비는 토끼", "desc": "성락 얕은 못에서 한 가지 빌었다——입 밖에 낼 필요는 없다."},
+			"title.wood_mentor": {"name": "목검의 약속", "desc": "연습이라는 꿈을 새싹의 손에 쥐여 주었다."},
+		},
+		"es": {
+			"title.claw_parry": {"name": "Espada contra zarpa", "desc": "Para a Leo a la perfección al menos una vez."},
+			"title.cleared": {"name": "El conejo del amanecer", "desc": "Termina el capítulo final."},
+			"title.star_wisher": {"name": "Conejo que pide deseos", "desc": "Pide un deseo en las aguas de Estrellas Caídas; no hace falta decirlo en voz alta."},
+			"title.wood_mentor": {"name": "Promesa de la espada de madera", "desc": "Pon el sueño de practicar en manos de Brote."},
+		},
+	}
+
 	for code in LOCALES:
 		if loc_node:
 			loc_node.call("set_locale", code)
@@ -233,8 +272,20 @@ func _run_test_suite() -> void:
 					_fail("[%s] 卡片解鎖狀態文字未更新: 期望 '%s', 實際 '%s'" % [code, exp_badge, badge.text])
 				_check_no_system_emoji(badge.text, "%s 卡片狀態" % code)
 
-		print("  ✓ [%s] TitleWallDialog 實體畫面即時刷新全部驗證通過 (標題=%s, 按鈕=%s, 狀態=%s)" % [
-			code, title_lbl.text, back_btn.text, expected_unlocked[code]
+		# 驗證稱號卡片名稱與解鎖條件隨語系即時切換（抽 4 個稱號名與條件驗證）
+		for t_flag in sample_titles[code].keys():
+			var exp_t = sample_titles[code][t_flag]
+			var card_name: String = dlg.call("get_card_name_text", t_flag)
+			var card_desc: String = dlg.call("get_card_desc_text", t_flag)
+			if card_name != exp_t["name"]:
+				_fail("[%s] 稱號 [%s] 名稱未刷新: 期望 '%s', 實際 '%s'" % [code, t_flag, exp_t["name"], card_name])
+			if card_desc != exp_t["desc"]:
+				_fail("[%s] 稱號 [%s] 條件說明未刷新: 期望 '%s', 實際 '%s'" % [code, t_flag, exp_t["desc"], card_desc])
+			_check_no_system_emoji(card_name, "%s 稱號名 %s" % [code, t_flag])
+			_check_no_system_emoji(card_desc, "%s 稱號條件 %s" % [code, t_flag])
+
+		print("  ✓ [%s] TitleWallDialog 實體畫面即時刷新全部驗證通過 (標題=%s, 按鈕=%s, 狀態=%s, 抽驗稱號=%s)" % [
+			code, title_lbl.text, back_btn.text, expected_unlocked[code], dlg.call("get_card_name_text", "title.claw_parry")
 		])
 
 	dlg.queue_free()

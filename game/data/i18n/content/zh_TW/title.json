@@ -1,0 +1,98 @@
+{
+  "title.claw_parry": {
+    "name": "以劍抵爪",
+    "desc": "對雷歐完美格擋至少一次。"
+  },
+  "title.fog_seer": {
+    "name": "看破者",
+    "desc": "看破白霧，走過霧隱。"
+  },
+  "title.guard_breaker": {
+    "name": "破架之人",
+    "desc": "單場對阿波破防兩次以上。"
+  },
+  "title.gale_chaser": {
+    "name": "追風的",
+    "desc": "等來疾影的停拍。"
+  },
+  "title.shore_last": {
+    "name": "岸上最後",
+    "desc": "站到石拳承認力氣的方向。"
+  },
+  "title.no_worship": {
+    "name": "我不慕強權",
+    "desc": "塔底三拒皆滿。"
+  },
+  "title.cleared": {
+    "name": "晨光中的兔子",
+    "desc": "通關終章。"
+  },
+  "title.rift_walker": {
+    "name": "裂縫行者",
+    "desc": "裂縫勝場達到五次。"
+  },
+  "title.arena_challenger": {
+    "name": "演武挑戰者",
+    "desc": "演武場五波試煉通關一次。"
+  },
+  "title.echo_walker": {
+    "name": "迴響行者",
+    "desc": "黑鏽迴響任意層再通關。"
+  },
+  "title.wheat_keeper": {
+    "name": "鑰繩還在",
+    "desc": "鑰繩替你擋過一擊。"
+  },
+  "title.featured_fan": {
+    "name": "週焦點獵人",
+    "desc": "四套裂縫皆至少鎮壓過一次。"
+  },
+  "title.wood_mentor": {
+    "name": "木劍之約",
+    "desc": "把練習的夢想交到小芽手裡。"
+  },
+  "title.scar_walker": {
+    "name": "疤地行者",
+    "desc": "踏平黑鏽疤地的主宰。"
+  },
+  "title.mirror_break": {
+    "name": "破鏡之人",
+    "desc": "在鏡廊戰勝自己的捷徑。"
+  },
+  "title.wreck_end": {
+    "name": "沉船終結者",
+    "desc": "讓船長影再沉一次。"
+  },
+  "title.world_wanderer": {
+    "name": "世界漫遊者",
+    "desc": "造訪三十處不同的土地。"
+  },
+  "title.treasure_rabbit": {
+    "name": "拾荒兔",
+    "desc": "打開十二個世界寶箱。"
+  },
+  "title.debt_smith": {
+    "name": "還債的錘",
+    "desc": "替釘釘把舊主斷劍送回爐火。"
+  },
+  "title.true_post": {
+    "name": "真信使",
+    "desc": "把霧隱的真信送到行商驛站。"
+  },
+  "title.ronin_path": {
+    "name": "收刃之人",
+    "desc": "在岔路勸下（或戰勝）黑鏽浪人。"
+  },
+  "title.lore_reader": {
+    "name": "讀矛盾的人",
+    "desc": "讀完絲絨典籍架上的黑鏽三說。"
+  },
+  "title.lamp_keeper": {
+    "name": "守燈人",
+    "desc": "把村後墓園的長明燈重新點亮。"
+  },
+  "title.star_wisher": {
+    "name": "許願兔",
+    "desc": "在星落淺池許下一願——不必說出口。"
+  }
+}

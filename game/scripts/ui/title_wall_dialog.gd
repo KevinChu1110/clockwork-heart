@@ -119,14 +119,18 @@ func _update_ui_texts() -> void:
 	if _title_lbl and is_instance_valid(_title_lbl):
 		_title_lbl.text = _t("成就 · 稱號牆")
 
+	var tc: Node = Engine.get_main_loop().root.get_node_or_null("TitleCatalog") if Engine.get_main_loop() else null
+
 	if _count_lbl and is_instance_valid(_count_lbl):
-		var tc: Node = Engine.get_main_loop().root.get_node_or_null("TitleCatalog") if Engine.get_main_loop() else null
 		var unlocked_num: int = tc.unlocked_count() if tc and tc.has_method("unlocked_count") else 0
 		var total_num: int = tc.total_count() if tc and tc.has_method("total_count") else 24
 		_count_lbl.text = _t("（已解鎖 %d／%d）") % [unlocked_num, total_num]
 
 	if _banner_lbl and is_instance_valid(_banner_lbl):
-		_banner_lbl.text = _t("新解鎖稱號：%s") % "、".join(_newly)
+		var translated_newly: Array[String] = []
+		for t_name in _newly:
+			translated_newly.append(_t(t_name))
+		_banner_lbl.text = _t("新解鎖稱號：%s") % "、".join(translated_newly)
 
 	if _back_btn and is_instance_valid(_back_btn):
 		_back_btn.text = _t(_back_key)
@@ -134,12 +138,44 @@ func _update_ui_texts() -> void:
 	if _fortress_btn and is_instance_valid(_fortress_btn):
 		_fortress_btn.text = _t("堡壘")
 
+	var entries_map: Dictionary = {}
+	if tc and tc.has_method("entries"):
+		for e in tc.entries():
+			if typeof(e) == TYPE_DICTIONARY:
+				entries_map[str(e.get("flag", ""))] = e
+
 	for card in _cards:
-		if is_instance_valid(card):
-			var badge_lbl: Label = card.find_child("BadgeLabel", true, false) as Label
-			if badge_lbl and is_instance_valid(badge_lbl):
-				var unlocked: bool = card.get_meta("is_unlocked", false)
-				badge_lbl.text = _t("已解鎖") if unlocked else _t("未解鎖")
+		if not is_instance_valid(card):
+			continue
+		var unlocked: bool = card.get_meta("is_unlocked", false)
+		var flag: String = str(card.get_meta("flag", ""))
+		var raw_name: String = str(card.get_meta("raw_name", ""))
+		var raw_desc: String = str(card.get_meta("raw_desc", ""))
+
+		var badge_lbl: Label = card.find_child("BadgeLabel", true, false) as Label
+		if badge_lbl and is_instance_valid(badge_lbl):
+			badge_lbl.text = _t("已解鎖") if unlocked else _t("未解鎖")
+
+		var e_info: Dictionary = entries_map.get(flag, {})
+		var t_name: String = str(e_info.get("name", ""))
+		if t_name == "":
+			t_name = _t(raw_name)
+		if t_name == raw_name and flag != "":
+			t_name = ContentLoc.t("title", flag, "name", raw_name)
+
+		var t_desc: String = str(e_info.get("desc", ""))
+		if t_desc == "":
+			t_desc = _t(raw_desc)
+		if t_desc == raw_desc and flag != "":
+			t_desc = ContentLoc.t("title", flag, "desc", raw_desc)
+
+		var name_lbl: Label = card.find_child("NameLabel", true, false) as Label
+		if name_lbl and is_instance_valid(name_lbl):
+			name_lbl.text = t_name
+
+		var desc_lbl: Label = card.find_child("DescLabel", true, false) as Label
+		if desc_lbl and is_instance_valid(desc_lbl):
+			desc_lbl.text = t_desc
 
 
 func _rebuild() -> void:
@@ -199,16 +235,23 @@ func _apply_label_style(lbl: Label, size: int, color: Color = COLOR_TEXT_DARK, o
 func _build_ui() -> void:
 	_built = true
 
-	# 0. 底層風景圖（避免黑底，若有標題／村莊底圖則帶入）
+	# 0. 底層風景圖（避免黑底，若後方已存在大廳/城鎮等全屏場景則不重複蓋死）
+	var has_parent_bg := false
+	if get_parent() != null:
+		for sibling in get_parent().get_children():
+			if sibling != self and ("Lobby" in sibling.name or "Town" in sibling.name or "Title" in sibling.name):
+				has_parent_bg = true
+				break
 	var bg_tex: Texture2D = null
-	for path in [
-		"res://assets/sprites/illustrations/title_bg_clockwork.png",
-		"res://assets/sprites/illustrations/title_bg.png",
-		"res://assets/sprites/maps/village_bg.png"
-	]:
-		if ResourceLoader.exists(path):
-			bg_tex = load(path) as Texture2D
-			break
+	if not has_parent_bg:
+		for path in [
+			"res://assets/sprites/illustrations/title_bg_clockwork.png",
+			"res://assets/sprites/illustrations/title_bg.png",
+			"res://assets/sprites/maps/village_bg.png"
+		]:
+			if ResourceLoader.exists(path):
+				bg_tex = load(path) as Texture2D
+				break
 	if bg_tex:
 		var bg_art := TextureRect.new()
 		bg_art.name = "BackgroundArt"
@@ -314,7 +357,10 @@ func _build_ui() -> void:
 
 		_banner_lbl = Label.new()
 		_banner_lbl.name = "NewlyUnlockedLabel"
-		_banner_lbl.text = _t("新解鎖稱號：%s") % "、".join(_newly)
+		var translated_newly: Array[String] = []
+		for t_name in _newly:
+			translated_newly.append(_t(t_name))
+		_banner_lbl.text = _t("新解鎖稱號：%s") % "、".join(translated_newly)
 		_apply_label_style(_banner_lbl, 16, COLOR_TEXT_GOLD, COLOR_BORDER, 2)
 		_banner_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		banner_panel.add_child(_banner_lbl)
@@ -399,7 +445,16 @@ func _create_title_card(entry: Dictionary, unlocked: bool, index: int) -> PanelC
 	card.custom_minimum_size = Vector2(330, 84)
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 	card.set_meta("is_unlocked", unlocked)
-	card.set_meta("flag", str(entry.get("flag", "")))
+	var flag: String = str(entry.get("flag", ""))
+	card.set_meta("flag", flag)
+	var raw_name: String = str(entry.get("raw_name", ""))
+	if raw_name == "":
+		raw_name = str(entry.get("name", ""))
+	var raw_desc: String = str(entry.get("raw_desc", ""))
+	if raw_desc == "":
+		raw_desc = str(entry.get("desc", ""))
+	card.set_meta("raw_name", raw_name)
+	card.set_meta("raw_desc", raw_desc)
 
 	# 卡片底板：已解鎖＝暖橘果凍厚底 5px；未解鎖＝壓暗奶油底
 	var card_sb := StyleBoxFlat.new()
@@ -509,6 +564,31 @@ func get_card_count() -> int:
 
 func get_cards() -> Array[PanelContainer]:
 	return _cards
+
+
+func get_card_by_flag(flag: String) -> PanelContainer:
+	for card in _cards:
+		if is_instance_valid(card) and str(card.get_meta("flag", "")) == flag:
+			return card
+	return null
+
+
+func get_card_name_text(flag: String) -> String:
+	var card := get_card_by_flag(flag)
+	if card:
+		var lbl: Label = card.find_child("NameLabel", true, false) as Label
+		if lbl:
+			return lbl.text
+	return ""
+
+
+func get_card_desc_text(flag: String) -> String:
+	var card := get_card_by_flag(flag)
+	if card:
+		var lbl: Label = card.find_child("DescLabel", true, false) as Label
+		if lbl:
+			return lbl.text
+	return ""
 
 
 func _on_close() -> void:
