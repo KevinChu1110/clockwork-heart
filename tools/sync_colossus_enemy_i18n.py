@@ -5,32 +5,32 @@ data = {
     "zh_TW": {
         "colossus_lion": {"name": "失控發條獅"},
         "colossus_puppet": {"name": "霧鐘提線人偶"},
-        "colossus_elephant": {"name": "黑鉚蒸汽巨象"}
+        "colossus_elephant": {"name": "黑鏽蒸氣巨象"}
     },
     "zh_CN": {
         "colossus_lion": {"name": "失控发条狮"},
         "colossus_puppet": {"name": "雾钟提线人偶"},
-        "colossus_elephant": {"name": "黑铆蒸汽巨象"}
+        "colossus_elephant": {"name": "黑锈蒸气巨象"}
     },
     "en": {
         "colossus_lion": {"name": "Rampant Clockwork Lion"},
         "colossus_puppet": {"name": "Mistbell Marionette"},
-        "colossus_elephant": {"name": "Black-Rivet Steam Colossus"}
+        "colossus_elephant": {"name": "Black-Rust Steam Colossus"}
     },
     "ja": {
         "colossus_lion": {"name": "暴走のぜんまい獅子"},
         "colossus_puppet": {"name": "霧鐘の操り人形"},
-        "colossus_elephant": {"name": "黒鋲の蒸気巨象"}
+        "colossus_elephant": {"name": "黒錆の蒸気巨象"}
     },
     "ko": {
         "colossus_lion": {"name": "폭주 태엽 사자"},
         "colossus_puppet": {"name": "안개종 꼭두각시 인형"},
-        "colossus_elephant": {"name": "검은리벳 증기 거상"}
+        "colossus_elephant": {"name": "검은녹 증기 거상"}
     },
     "es": {
         "colossus_lion": {"name": "León de Cuerda Desbocado"},
         "colossus_puppet": {"name": "Marioneta de Reloj de Niebla"},
-        "colossus_elephant": {"name": "Coloso de Vapor de Remache Negro"}
+        "colossus_elephant": {"name": "Coloso de Vapor de Óxido Negro"}
     }
 }
 
