@@ -48,7 +48,10 @@ const _ContentLoc := preload("res://scripts/systems/content_loc.gd")
 
 
 func weapon_display() -> String:
-	return _ContentLoc.text("weapon", weapon_name)
+	var t := _ContentLoc.text("weapon", weapon_name)
+	if t == weapon_name:
+		t = _ContentLoc.text("ui", weapon_name)
+	return t
 
 var weapon_atk: int = 0
 var weapon_tier: int = 0

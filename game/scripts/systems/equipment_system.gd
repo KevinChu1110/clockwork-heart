@@ -105,6 +105,13 @@ static func _t(s: String) -> String:
 
 func _ready() -> void:
 	_ensure_state()
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var loc: Node = (tree as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			loc.locale_changed.connect(func(_new_loc):
+				equipment_changed.emit()
+			)
 
 
 func _ensure_state() -> void:
@@ -656,13 +663,39 @@ func bonus_totals() -> Dictionary:
 	return t
 
 
+static func display_name(inst: Variant) -> String:
+	var raw_name := ""
+	if inst is Dictionary:
+		raw_name = str((inst as Dictionary).get("name", ""))
+		if raw_name == "":
+			var bid := str((inst as Dictionary).get("base_id", ""))
+			if bid != "":
+				var dt: Node = null
+				var tree := Engine.get_main_loop()
+				if tree is SceneTree and (tree as SceneTree).root != null:
+					dt = (tree as SceneTree).root.get_node_or_null("DataTables")
+				var bases: Dictionary = dt.equip_bases() if dt and dt.has_method("equip_bases") else {}
+				raw_name = str(bases.get(bid, {}).get("name", bid))
+	elif inst is String:
+		raw_name = str(inst)
+	if raw_name == "銹劍":
+		raw_name = "鏽劍"
+	if raw_name == "":
+		return _t("（空）")
+	var t := ContentLoc.text("weapon", raw_name)
+	if t == raw_name:
+		t = ContentLoc.text("ui", raw_name)
+	return t
+
+
 func label(inst: Dictionary) -> String:
 	if inst.is_empty():
 		return _t("（空）")
 	var r: Dictionary = inst.get("rolled", {})
+	var q_lbl := _t(str(inst.get("quality_label", "")))
 	return _t("%s〔%s〕攻%d 防%d 暴%.0f%%") % [
-		inst.get("name", "?"),
-		inst.get("quality_label", ""),
+		display_name(inst),
+		q_lbl,
 		int(r.get("atk", 0)),
 		int(r.get("def", 0)),
 		float(r.get("crit", 0)),

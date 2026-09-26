@@ -560,7 +560,7 @@ func inspect_gem_case() -> Dictionary:
 					break
 
 		var is_equipped: bool = not inst.is_empty()
-		var equip_name: String = str(inst.get("name", slot_name)) if is_equipped else ""
+		var equip_name: String = EquipmentSystem.display_name(inst) if is_equipped else ""
 		var g: Variant = inst.get("gem", {}) if is_equipped else {}
 		var has_gem: bool = false
 		var gem_info: Dictionary = {}

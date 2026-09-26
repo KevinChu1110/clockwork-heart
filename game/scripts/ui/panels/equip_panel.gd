@@ -12,6 +12,8 @@ const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 var _host: Node
 ## 點空武器欄後，等背包選一把裝進去（-1＝無）
 var _pending_loadout: int = -1
+var _layer: Control = null
+var _connected_loc: bool = false
 
 
 static func _t(s: String) -> String:
@@ -23,6 +25,16 @@ func _init(host: Node) -> void:
 
 
 func open() -> void:
+	if not _connected_loc:
+		_connected_loc = true
+		var tree := Engine.get_main_loop()
+		if tree is SceneTree and (tree as SceneTree).root != null:
+			var loc: Node = (tree as SceneTree).root.get_node_or_null("Loc")
+			if loc and loc.has_signal("locale_changed"):
+				loc.locale_changed.connect(func(_new_loc):
+					if is_instance_valid(_layer) and _layer.is_inside_tree():
+						open()
+				)
 	EquipmentSystem._ensure_state()
 	_host.ui_clear_host()
 	_host.ui_reset_fade()
@@ -31,6 +43,7 @@ func open() -> void:
 	layer.name = "EquipLayer"
 	layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	_layer = layer
 	_host.ui_host().add_child(layer)
 	var bg := ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -257,9 +270,9 @@ func _loadout_card(index: int) -> Control:
 		name_l.add_theme_color_override("font_color", UiStyle.INK_DIM)
 	else:
 		var line := str(inst.get("line", ""))
-		name_l.text = str(inst.get("name", "?"))
+		name_l.text = EquipmentSystem.display_name(inst)
 		if line != "":
-			name_l.text += "\n[%s]" % line
+			name_l.text += "\n[%s]" % _t(line)
 		name_l.add_theme_color_override("font_color", UiStyle.INK)
 	inner.add_child(name_l)
 
@@ -358,7 +371,7 @@ func _slot_card(slot: String, compact: bool = false, unlocked: bool = true) -> C
 		name_l.text = _t("（空）")
 		name_l.add_theme_color_override("font_color", UiStyle.INK_DIM)
 	else:
-		name_l.text = str(inst.get("name", "?"))
+		name_l.text = EquipmentSystem.display_name(inst)
 		name_l.add_theme_color_override("font_color", UiStyle.INK)
 	inner.add_child(name_l)
 	if not inst.is_empty():
@@ -409,18 +422,18 @@ func _bag_cell(inst: Dictionary) -> Control:
 		icon.texture = t
 	col.add_child(icon)
 	var nl := Label.new()
-	nl.text = str(inst.get("name", "?"))
+	nl.text = EquipmentSystem.display_name(inst)
 	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	nl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	nl.add_theme_font_size_override("font_size", 10)
 	nl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(nl)
 	var ql := Label.new()
-	ql.text = str(inst.get("quality_label", ""))
+	ql.text = _t(str(inst.get("quality_label", "")))
 	if is_weapon:
 		var line := str(inst.get("line", ""))
 		if line != "":
-			ql.text = "%s · %s" % [ql.text, line]
+			ql.text = "%s · %s" % [ql.text, _t(line)]
 	ql.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ql.add_theme_font_size_override("font_size", 10)
 	ql.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
