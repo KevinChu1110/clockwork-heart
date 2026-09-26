@@ -3,6 +3,7 @@ extends Control
 ## 模組邊界：只顯示；抽獎在 soul_draw_v2。
 
 const UiStyle := preload("res://scripts/ui/ui_style.gd")
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const DEFAULT_CARD := "res://assets/sprites/pack_a/v2/ui/soul_result_card.png"
 const I18N_PATH := "res://data/i18n/zh_TW.json"
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
@@ -59,7 +60,28 @@ func _load_i18n() -> void:
 			_i18n = parsed as Dictionary
 
 
+static func _t(s: String) -> String:
+	var res := ContentLoc.text("ui", s)
+	if res != s:
+		return res
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var loc_t = str(loc.call("t", s))
+			if loc_t != "" and loc_t != s:
+				return loc_t
+	return res
+
+
 func tr_key(key: String) -> String:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var res = str(loc.call("t", key))
+			if res != "" and res != key:
+				return res
 	if _i18n.has(key):
 		return str(_i18n[key])
 	return key
@@ -161,7 +183,7 @@ func show_placeholder(toast_key: String = "soul.pull_start", card_path: String =
 		path = DEFAULT_CARD
 	if ResourceLoader.exists(path) or FileAccess.file_exists(path):
 		_art.texture = load(path) as Texture2D
-	_badge_lbl.text = "封靈"
+	_badge_lbl.text = _t("封靈")
 	_badge.add_theme_stylebox_override("panel", _build_badge_style(COLOR_GOLD))
 	_label.text = tr_key(toast_key)
 	_drop_lbl.text = ""
