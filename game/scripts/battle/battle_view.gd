@@ -140,6 +140,7 @@ static func _kin_hint(kin: String) -> String:
 func setup(mode: String) -> void:
 	_mode = mode
 	_ended = false
+	_connect_loc_signal()
 	_claim_hp_authority()
 	_telemetry_watch(mode)
 	_apply_hud_chrome()
@@ -1594,9 +1595,36 @@ func _inventory_node() -> Node:
 	return null
 
 
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_refresh_part_bars()
+	_refresh_part_focus_hint()
+
+
 ## 逃跑不走 _on_end()，戰鬥畫面直接被清掉。不在這裡交還的話，
 ## InventorySystem 會一直握著指向已釋放節點的 Callable。
 func _exit_tree() -> void:
+	_disconnect_loc_signal()
 	_stop_breathe_tween()
 	_release_hp_authority()
 	## 完美格擋慢鏡／命中定格若在收場瞬間還沒播完，恢復用的 tween 會隨
@@ -1875,7 +1903,8 @@ func _ensure_part_hud() -> void:
 				tag = _t("盔")
 			"def_down":
 				tag = _t("甲")
-		var pname := str(p.get("name", pid))
+		var raw_name := str(p.get("raw_name", p.get("name", pid)))
+		var pname := _t(raw_name)
 		lab.text = ("%s·%s" % [tag, pname]) if tag != "" else pname
 		lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		lab.custom_minimum_size.x = 88
@@ -1900,7 +1929,9 @@ func _ensure_part_hud() -> void:
 	_refresh_part_focus_hint()
 
 
-func _refresh_part_bars(boss: BattleUnit) -> void:
+func _refresh_part_bars(boss: BattleUnit = null) -> void:
+	if boss == null and sim != null:
+		boss = sim._primary_boss_unit()
 	if boss == null or boss.parts.is_empty():
 		return
 	if _part_box == null:
@@ -1911,6 +1942,8 @@ func _refresh_part_bars(boss: BattleUnit) -> void:
 		var lab: Label = _part_labels.get(pid) as Label
 		if bar == null:
 			continue
+		if bar.get_parent() is Control:
+			(bar.get_parent() as Control).tooltip_text = _t("點一下鎖這個部位")
 		bar.max_value = float(p.get("max_hp", 1))
 		bar.value = float(p.get("hp", 0))
 		var broken := bool(p.get("broken", false))
@@ -1928,11 +1961,12 @@ func _refresh_part_bars(boss: BattleUnit) -> void:
 					tag2 = _t("靴")
 				"crown", "crest":
 					tag2 = _t("冠")
-			var nm := str(p.get("name", pid))
+			var raw_nm := str(p.get("raw_name", p.get("name", pid)))
+			var nm := _t(raw_nm)
 			if tag2 != "":
 				nm = "%s·%s" % [tag2, nm]
 			if broken:
-				lab.text = "%s [已破]" % nm
+				lab.text = "%s [%s]" % [nm, _t("已破")]
 				lab.modulate = Color(0.60, 0.58, 0.68)
 			elif focused:
 				lab.text = "%s%s" % [mark, nm]

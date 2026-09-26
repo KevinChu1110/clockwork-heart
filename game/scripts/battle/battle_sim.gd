@@ -1828,8 +1828,8 @@ static func make_leo_fight(player_stats: Dictionary) -> BattleSim:
 	leo.recover_time = 0.45
 	leo.king_slash_cd = 2.5  ## 進半血後首發前的冷卻
 	## 旗艦雙部位：盔（破→更兇）／盾（破→降防），可 Tab 鎖定
-	_attach_boss_part(leo, _t("獅衛重盔"), 0.28, "helm", "enrage")
-	_attach_boss_part(leo, _t("獅衛重盾"), 0.32, "shield", "def_down")
+	_attach_boss_part(leo, _t("獅衛重盔"), 0.28, "helm", "enrage", "", "", "獅衛重盔")
+	_attach_boss_part(leo, _t("獅衛重盾"), 0.32, "shield", "def_down", "", "", "獅衛重盾")
 	sim.focus_part_id = "shield"
 	sim.add_unit(leo)
 	sim.setup_hazard("fire_ring", 5.5)  ## 副機制：火圈閃避
@@ -1866,8 +1866,8 @@ static func make_falcon_fight(player_stats: Dictionary) -> BattleSim:
 	f.speed = 16.0
 	f.windup_time = 0.2
 	f.recover_time = 0.35
-	_attach_boss_part(f, _t("疾影羽冠"), 0.26, "crest", "enrage")
-	_attach_boss_part(f, _t("疾影雙翼"), 0.30, "wings", "slow_break")
+	_attach_boss_part(f, _t("疾影羽冠"), 0.26, "crest", "enrage", "", "", "疾影羽冠")
+	_attach_boss_part(f, _t("疾影雙翼"), 0.30, "wings", "slow_break", "", "", "疾影雙翼")
 	sim.focus_part_id = "wings"
 	sim.add_unit(f)
 	sim.setup_hazard("wind_cut", 4.5)
@@ -1906,8 +1906,8 @@ static func make_boar_fight(player_stats: Dictionary) -> BattleSim:
 	b.speed = 7.5
 	b.windup_time = 0.35
 	b.recover_time = 0.5
-	_attach_boss_part(b, _t("石角堅岩"), 0.30, "horn", "enrage")
-	_attach_boss_part(b, _t("岩甲外殼"), 0.34, "shell", "def_down")
+	_attach_boss_part(b, _t("石角堅岩"), 0.30, "horn", "enrage", "", "", "石角堅岩")
+	_attach_boss_part(b, _t("岩甲外殼"), 0.34, "shell", "def_down", "", "", "岩甲外殼")
 	sim.focus_part_id = "shell"
 	sim.add_unit(b)
 	sim.setup_hazard("rockfall", 5.0)
@@ -1940,8 +1940,8 @@ static func make_wrath_fight(player_stats: Dictionary) -> BattleSim:
 	w.windup_time = 0.28
 	w.recover_time = 0.42
 	w.king_slash_cd = 3.0
-	_attach_boss_part(w, _t("怒焰面具"), 0.28, "mask", "enrage")
-	_attach_boss_part(w, _t("無臉軀甲"), 0.32, "plate", "def_down")
+	_attach_boss_part(w, _t("怒焰面具"), 0.28, "mask", "enrage", "", "", "怒焰面具")
+	_attach_boss_part(w, _t("無臉軀甲"), 0.32, "plate", "def_down", "", "", "無臉軀甲")
 	sim.focus_part_id = "plate"
 	sim.add_unit(w)
 	sim.setup_hazard("fire_ring", 2.2)
@@ -2102,8 +2102,8 @@ static func make_tide_fight(player_stats: Dictionary) -> BattleSim:
 	t.speed = 9.0
 	t.windup_time = 0.3
 	t.recover_time = 0.45
-	_attach_boss_part(t, _t("刺胞囊"), 0.28, "sac", "enrage")
-	_attach_boss_part(t, _t("潮甲"), 0.32, "tide_plate", "def_down")
+	_attach_boss_part(t, _t("刺胞囊"), 0.28, "sac", "enrage", "", "", "刺胞囊")
+	_attach_boss_part(t, _t("潮甲"), 0.32, "tide_plate", "def_down", "", "", "潮甲")
 	sim.focus_part_id = "tide_plate"
 	sim.add_unit(t)
 	return sim
@@ -2167,8 +2167,8 @@ static func make_chrono_fight(player_stats: Dictionary) -> BattleSim:
 	c.windup_time = 0.3
 	c.recover_time = 0.42
 	c.king_slash_cd = 4.0
-	_attach_boss_part(c, _t("時針機關"), 0.28, "hand", "enrage")
-	_attach_boss_part(c, _t("時牢外殼"), 0.32, "case", "def_down")
+	_attach_boss_part(c, _t("時針機關"), 0.28, "hand", "enrage", "", "", "時針機關")
+	_attach_boss_part(c, _t("時牢外殼"), 0.32, "case", "def_down", "", "", "時牢外殼")
 	sim.focus_part_id = "case"
 	sim.add_unit(c)
 	sim.setup_hazard("bomb", 2.8)
@@ -2209,8 +2209,8 @@ static func make_abo_fight(player_stats: Dictionary) -> BattleSim:
 	abo.speed = 8.0
 	abo.windup_time = 0.32
 	abo.recover_time = 0.5
-	_attach_boss_part(abo, _t("鋼腕護具"), 0.28, "gauntlet", "enrage")
-	_attach_boss_part(abo, _t("鋼鐵護甲"), 0.32, "mail", "def_down")
+	_attach_boss_part(abo, _t("鋼腕護具"), 0.28, "gauntlet", "enrage", "", "", "鋼腕護具")
+	_attach_boss_part(abo, _t("鋼鐵護甲"), 0.32, "mail", "def_down", "", "", "鋼鐵護甲")
 	sim.focus_part_id = "mail"
 	sim.add_unit(abo)
 	sim.abo_base_defense = abo.defense
@@ -2251,8 +2251,8 @@ static func make_demon_fight(player_stats: Dictionary) -> BattleSim:
 	demon.windup_time = 0.28
 	demon.recover_time = 0.42
 	demon.king_slash_cd = 4.0
-	_attach_boss_part(demon, _t("黑鏽之角"), 0.28, "horn", "enrage")
-	_attach_boss_part(demon, _t("黑鏽核心"), 0.32, "core", "expose")
+	_attach_boss_part(demon, _t("黑鏽之角"), 0.28, "horn", "enrage", "", "", "黑鏽之角")
+	_attach_boss_part(demon, _t("黑鏽核心"), 0.32, "core", "expose", "", "", "黑鏽核心")
 	sim.focus_part_id = "core"
 	sim.add_unit(demon)
 	sim.setup_hazard("time_clock", 6.0)  ## 副機制：控時時鐘
@@ -2296,8 +2296,8 @@ static func make_fog_fight(player_stats: Dictionary) -> BattleSim:
 	real_u.defense = 9
 	real_u.speed = 12.0
 	## 白霧 Tab 用於切目標，部位改為被動磨（鎖本體時 splash）；仍顯示血條
-	_attach_boss_part(real_u, _t("霧帷"), 0.28, "veil", "def_down")
-	_attach_boss_part(real_u, _t("真影核"), 0.30, "true_core", "expose")
+	_attach_boss_part(real_u, _t("霧帷"), 0.28, "veil", "def_down", "", "", "霧帷")
+	_attach_boss_part(real_u, _t("真影核"), 0.30, "true_core", "expose", "", "", "真影核")
 	sim.focus_part_id = "body"
 	sim.add_unit(real_u)
 
@@ -2458,8 +2458,8 @@ static func make_world_fight(player_stats: Dictionary, mode: String) -> BattleSi
 		e.windup_time = float(def.get("windup", 0.3))
 		e.recover_time = float(def.get("recover", 0.45))
 		e.king_slash_cd = float(def.get("king_slash_cd", 3.0))
-		_attach_boss_part(e, _t("溢能尖角"), 0.26, "spike", "enrage")
-		_attach_boss_part(e, _t("溢能核心"), 0.28, "core", "expose")
+		_attach_boss_part(e, _t("溢能尖角"), 0.26, "spike", "enrage", "", "", "溢能尖角")
+		_attach_boss_part(e, _t("溢能核心"), 0.28, "core", "expose", "", "", "溢能核心")
 		sim.focus_part_id = "core"
 	sim.add_unit(e)
 
@@ -2476,7 +2476,8 @@ static func _attach_boss_part(
 	part_id: String = "",
 	effect: String = "",
 	material: String = "",
-	ptype: String = ""
+	ptype: String = "",
+	raw_name: String = ""
 ) -> void:
 	if u == null or not u.is_boss:
 		return
@@ -2505,9 +2506,11 @@ static func _attach_boss_part(
 				mat = "oak_resin"
 			_:
 				mat = "iron_scrap"
+	var rname := raw_name if raw_name != "" else part_name
 	u.parts.append({
 		"id": pid,
 		"name": part_name,
+		"raw_name": rname,
 		"max_hp": max_hp,
 		"hp": max_hp,
 		"broken": false,
@@ -2530,7 +2533,8 @@ static func _sync_legacy_part_fields(u: BattleUnit) -> void:
 		if not bool(p.get("broken", false)):
 			pick = p
 			break
-	u.part_name = str(pick.get("name", ""))
+	var rname := str(pick.get("raw_name", pick.get("name", "")))
+	u.part_name = _t(rname) if rname != "" else str(pick.get("name", ""))
 	u.part_max_hp = int(pick.get("max_hp", 0))
 	u.part_hp = int(pick.get("hp", 0))
 	u.part_broken = bool(pick.get("broken", false))
@@ -2570,7 +2574,8 @@ func part_focus_label() -> String:
 		return _t("本體")
 	for p in boss.parts:
 		if str(p.get("id", "")) == focus_part_id:
-			return str(p.get("name", focus_part_id))
+			var rname := str(p.get("raw_name", p.get("name", focus_part_id)))
+			return _t(rname)
 	return _t("本體")
 
 
