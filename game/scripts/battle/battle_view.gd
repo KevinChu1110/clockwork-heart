@@ -3591,7 +3591,9 @@ func _on_end(won: bool) -> void:
 	var drop_part: Dictionary = {}
 	if won and _mode != "training_dummy":
 		if CoreSystem != null:
-			drop_part = CoreSystem.roll_and_add_battle_drop()
+			var is_colossus := _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]
+			var drop_source := "colossus" if is_colossus else "stage"
+			drop_part = CoreSystem.roll_and_add_battle_drop(null, drop_source)
 			BattleSim.last_victory_core_part = drop_part
 			var tnm: String = str(drop_part.get("tier_name", "白"))
 			var snm: String = str(drop_part.get("slot_name", "機芯部件"))
