@@ -2238,5 +2238,17 @@
   "7 大槽位狀態：512 高清合成就緒 (渲染: %d/%d)": "Estado de 7 Ranuras: 512 HD Listo (Renderizado: %d/%d)",
   "7 大槽位狀態：全部 %d 槽疊合就緒 (載入: %d/%d)": "Estado de 7 Ranuras: Las %d Ranuras Listas (Cargadas: %d/%d)",
   "重設預設": "Restablecer",
-  "儲存驗證截圖": "Guardar Captura de Verificación"
+  "儲存驗證截圖": "Guardar Captura de Verificación",
+  "音量調節與聲效開關": "Ajuste de volumen y sonido",
+  "背景音樂 (BGM)": "Música (BGM)",
+  "戰鬥音效 (SFX)": "Efectos de sonido (SFX)",
+  "顯示模式與渲染設定": "Modo de pantalla y renderizado",
+  "全螢幕沉浸模式": "Modo inmersivo pantalla completa",
+  "切換顯示模式": "Cambiar modo de pantalla",
+  "已切換顯示模式！": "¡Modo de pantalla cambiado!",
+  "雲端與本機存檔備份": "Copia de seguridad local y nube",
+  "匯出存檔備份檔 (JSON)": "Exportar partida guardada (JSON)",
+  "從外部備份還原存檔": "Restaurar desde copia",
+  "存檔備份已成功匯出至本機！": "¡Copia de seguridad exportada localmente!",
+  "請選擇要還原的備份存檔...": "Seleccione la copia para restaurar..."
 }

@@ -46,6 +46,19 @@ var _tab_buttons: Array[Button] = []
 var _content_container: Control
 var _lang_grid: GridContainer
 
+var _title_l: Label
+var _lang_tip_l: Label
+var _audio_title_l: Label
+var _bgm_label: Label
+var _sfx_label: Label
+var _display_title_l: Label
+var _fullscreen_label: Label
+var _quality_title_l: Label
+var _backup_title_l: Label
+var _btn_export: Button
+var _btn_import: Button
+var _ad_title_l: Label
+
 ## 音量滑桿
 var _bgm_slider: HSlider
 var _bgm_val_l: Label
@@ -67,6 +80,35 @@ static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
 
 
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var loc := (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var loc := (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_ui_texts()
+
+
 func _ready() -> void:
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -77,6 +119,7 @@ func _ready() -> void:
 	_grabber_tex = _create_circle_texture(24, COLOR_GOLD, COLOR_BORDER, 3)
 
 	_build_ui()
+	_update_ui_texts()
 	_switch_tab(Tab.LANGUAGE)
 
 
@@ -185,11 +228,12 @@ func _build_ui() -> void:
 	header.add_theme_constant_override("separation", 10)
 	v_main.add_child(header)
 
-	var title_l := Label.new()
-	title_l.text = _t("系統設定")
-	_apply_label_style(title_l, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 4)
-	title_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	header.add_child(title_l)
+	_title_l = Label.new()
+	_title_l.name = "TitleLabel"
+	_title_l.text = _t("系統設定")
+	_apply_label_style(_title_l, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 4)
+	_title_l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(_title_l)
 
 	## 右上「✕」關閉按鈕 (50x50，珊瑚粉果凍厚底按鈕)
 	var close_btn := ResponsiveUi.make_close_button(_on_close)
@@ -304,10 +348,10 @@ func _build_language_panel() -> void:
 	root_p.add_theme_constant_override("separation", 12)
 	_content_container.add_child(root_p)
 
-	var tip := Label.new()
-	tip.text = _t("請選擇您偏好的顯示語系 (即時生效)：")
-	_apply_label_style(tip, 16, COLOR_TEXT_DARK)
-	root_p.add_child(tip)
+	_lang_tip_l = Label.new()
+	_lang_tip_l.text = _t("請選擇您偏好的顯示語系 (即時生效)：")
+	_apply_label_style(_lang_tip_l, 16, COLOR_TEXT_DARK)
+	root_p.add_child(_lang_tip_l)
 
 	_lang_grid = GridContainer.new()
 	_lang_grid.columns = 2
@@ -365,7 +409,7 @@ func _build_lang_card(item: Dictionary) -> Button:
 
 	var check_icon := Label.new()
 	check_icon.name = "CheckIcon"
-	check_icon.text = "✓ 已選用"
+	check_icon.text = _t("✓ 已選用")
 	_apply_label_style(check_icon, 16, COLOR_TEXT_ORANGE, COLOR_BORDER, 2)
 	check_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	h.add_child(check_icon)
@@ -411,7 +455,7 @@ func _refresh_lang_selection() -> void:
 					sub_l.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 				if check_l:
 					check_l.visible = true
-					check_l.text = "✓ 已選用"
+					check_l.text = _t("✓ 已選用")
 					check_l.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 					check_l.add_theme_color_override("font_outline_color", COLOR_BORDER)
 					check_l.add_theme_constant_override("outline_size", 2)
@@ -443,7 +487,7 @@ func _select_language(code: String) -> void:
 		var loc: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("Loc")
 		if loc and loc.has_method("set_locale"):
 			loc.call("set_locale", code)
-	_refresh_lang_selection()
+	_update_ui_texts()
 	_show_toast(_t("語言已成功切換！"))
 
 
@@ -486,19 +530,19 @@ func _build_audio_panel() -> void:
 	root_p.add_theme_constant_override("separation", 22)
 	_content_container.add_child(root_p)
 
-	var title := Label.new()
-	title.text = "音量調節與聲效開關"
-	_apply_label_style(title, 18, COLOR_TEXT_DARK)
-	root_p.add_child(title)
+	_audio_title_l = Label.new()
+	_audio_title_l.text = _t("音量調節與聲效開關")
+	_apply_label_style(_audio_title_l, 18, COLOR_TEXT_DARK)
+	root_p.add_child(_audio_title_l)
 
 	## BGM 滑桿行
 	var bgm_row := HBoxContainer.new()
 	bgm_row.add_theme_constant_override("separation", 16)
-	var bgm_icon := Label.new()
-	bgm_icon.text = "背景音樂 (BGM)"
-	bgm_icon.custom_minimum_size = Vector2(160, 0)
-	_apply_label_style(bgm_icon, 16, COLOR_TEXT_DARK)
-	bgm_row.add_child(bgm_icon)
+	_bgm_label = Label.new()
+	_bgm_label.text = _t("背景音樂 (BGM)")
+	_bgm_label.custom_minimum_size = Vector2(160, 0)
+	_apply_label_style(_bgm_label, 16, COLOR_TEXT_DARK)
+	bgm_row.add_child(_bgm_label)
 
 	_bgm_slider = HSlider.new()
 	_bgm_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -532,11 +576,11 @@ func _build_audio_panel() -> void:
 	## SFX 滑桿行
 	var sfx_row := HBoxContainer.new()
 	sfx_row.add_theme_constant_override("separation", 16)
-	var sfx_icon := Label.new()
-	sfx_icon.text = "戰鬥音效 (SFX)"
-	sfx_icon.custom_minimum_size = Vector2(160, 0)
-	_apply_label_style(sfx_icon, 16, COLOR_TEXT_DARK)
-	sfx_row.add_child(sfx_icon)
+	_sfx_label = Label.new()
+	_sfx_label.text = _t("戰鬥音效 (SFX)")
+	_sfx_label.custom_minimum_size = Vector2(160, 0)
+	_apply_label_style(_sfx_label, 16, COLOR_TEXT_DARK)
+	sfx_row.add_child(_sfx_label)
 
 	_sfx_slider = HSlider.new()
 	_sfx_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -575,21 +619,21 @@ func _build_display_panel() -> void:
 	root_p.add_theme_constant_override("separation", 20)
 	_content_container.add_child(root_p)
 
-	var title := Label.new()
-	title.text = "顯示模式與渲染設定"
-	_apply_label_style(title, 18, COLOR_TEXT_DARK)
-	root_p.add_child(title)
+	_display_title_l = Label.new()
+	_display_title_l.text = _t("顯示模式與渲染設定")
+	_apply_label_style(_display_title_l, 18, COLOR_TEXT_DARK)
+	root_p.add_child(_display_title_l)
 
 	var row_fs := HBoxContainer.new()
 	row_fs.alignment = BoxContainer.ALIGNMENT_CENTER
-	var lbl_fs := Label.new()
-	lbl_fs.text = "全螢幕沉浸模式"
-	lbl_fs.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_apply_label_style(lbl_fs, 16, COLOR_TEXT_DARK)
-	row_fs.add_child(lbl_fs)
+	_fullscreen_label = Label.new()
+	_fullscreen_label.text = _t("全螢幕沉浸模式")
+	_fullscreen_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_apply_label_style(_fullscreen_label, 16, COLOR_TEXT_DARK)
+	row_fs.add_child(_fullscreen_label)
 
 	_fullscreen_btn = Button.new()
-	_fullscreen_btn.text = "切換顯示模式"
+	_fullscreen_btn.text = _t("切換顯示模式")
 	_fullscreen_btn.custom_minimum_size = Vector2(170, 50)
 	_fullscreen_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 20))
 	_fullscreen_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5DB3FF"), COLOR_BORDER, 5, 20))
@@ -605,15 +649,15 @@ func _build_display_panel() -> void:
 			var ds: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("DisplaySettings")
 			if ds and ds.has_method("cycle_mode"):
 				ds.call("cycle_mode")
-				_show_toast("已切換顯示模式！")
+				_show_toast(_t("已切換顯示模式！"))
 	)
 	row_fs.add_child(_fullscreen_btn)
 	root_p.add_child(row_fs)
 
-	var q_title := Label.new()
-	q_title.text = _loc_t("display.quality")
-	_apply_label_style(q_title, 16, COLOR_TEXT_DARK)
-	root_p.add_child(q_title)
+	_quality_title_l = Label.new()
+	_quality_title_l.text = _loc_t("display.quality")
+	_apply_label_style(_quality_title_l, 16, COLOR_TEXT_DARK)
+	root_p.add_child(_quality_title_l)
 
 	var q_row := HBoxContainer.new()
 	q_row.add_theme_constant_override("separation", 10)
@@ -635,6 +679,7 @@ func _build_display_panel() -> void:
 		var qid := str(opt["id"])
 		qb.pressed.connect(_on_quality_picked.bind(qid))
 		qb.set_meta("quality_id", qid)
+		qb.set_meta("quality_key", str(opt["key"]))
 		q_row.add_child(qb)
 	_quality_buttons = q_row
 	_refresh_quality_buttons()
@@ -651,42 +696,42 @@ func _build_backup_panel() -> void:
 	root_p.add_theme_constant_override("separation", 18)
 	_content_container.add_child(root_p)
 
-	var title := Label.new()
-	title.text = "雲端與本機存檔備份"
-	_apply_label_style(title, 18, COLOR_TEXT_DARK)
-	root_p.add_child(title)
+	_backup_title_l = Label.new()
+	_backup_title_l.text = _t("雲端與本機存檔備份")
+	_apply_label_style(_backup_title_l, 18, COLOR_TEXT_DARK)
+	root_p.add_child(_backup_title_l)
 
-	var btn_exp := Button.new()
-	btn_exp.text = "匯出存檔備份檔 (JSON)"
-	btn_exp.custom_minimum_size = Vector2(0, 52)
-	btn_exp.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 20))
-	btn_exp.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 20))
-	btn_exp.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 20))
-	btn_exp.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	btn_exp.add_theme_font_size_override("font_size", 18)
+	_btn_export = Button.new()
+	_btn_export.text = _t("匯出存檔備份檔 (JSON)")
+	_btn_export.custom_minimum_size = Vector2(0, 52)
+	_btn_export.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 20))
+	_btn_export.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 20))
+	_btn_export.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 20))
+	_btn_export.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_export.add_theme_font_size_override("font_size", 18)
 	if _cached_font:
-		btn_exp.add_theme_font_override("font", _cached_font)
-	btn_exp.pressed.connect(func():
-		_show_toast("存檔備份已成功匯出至本機！")
+		_btn_export.add_theme_font_override("font", _cached_font)
+	_btn_export.pressed.connect(func():
+		_show_toast(_t("存檔備份已成功匯出至本機！"))
 	)
-	root_p.add_child(btn_exp)
+	root_p.add_child(_btn_export)
 
-	var btn_imp := Button.new()
-	btn_imp.text = "從外部備份還原存檔"
-	btn_imp.custom_minimum_size = Vector2(0, 52)
-	btn_imp.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 20))
-	btn_imp.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB338"), COLOR_BORDER, 5, 20))
-	btn_imp.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 20))
-	btn_imp.add_theme_color_override("font_color", Color("#FFFFFF"))
-	btn_imp.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	btn_imp.add_theme_constant_override("outline_size", 3)
-	btn_imp.add_theme_font_size_override("font_size", 18)
+	_btn_import = Button.new()
+	_btn_import.text = _t("從外部備份還原存檔")
+	_btn_import.custom_minimum_size = Vector2(0, 52)
+	_btn_import.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 20))
+	_btn_import.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB338"), COLOR_BORDER, 5, 20))
+	_btn_import.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 20))
+	_btn_import.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_btn_import.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_import.add_theme_constant_override("outline_size", 3)
+	_btn_import.add_theme_font_size_override("font_size", 18)
 	if _cached_font:
-		btn_imp.add_theme_font_override("font", _cached_font)
-	btn_imp.pressed.connect(func():
-		_show_toast("請選擇要還原的備份存檔...")
+		_btn_import.add_theme_font_override("font", _cached_font)
+	_btn_import.pressed.connect(func():
+		_show_toast(_t("請選擇要還原的備份存檔..."))
 	)
-	root_p.add_child(btn_imp)
+	root_p.add_child(_btn_import)
 
 	## ── 商業化與功能測試開關 ──
 	var sep_ad := ColorRect.new()
@@ -694,10 +739,10 @@ func _build_backup_panel() -> void:
 	sep_ad.color = COLOR_ORANGE
 	root_p.add_child(sep_ad)
 
-	var ad_title := Label.new()
-	ad_title.text = _t("加值權限與功能測試")
-	_apply_label_style(ad_title, 18, COLOR_TEXT_DARK)
-	root_p.add_child(ad_title)
+	_ad_title_l = Label.new()
+	_ad_title_l.text = _t("加值權限與功能測試")
+	_apply_label_style(_ad_title_l, 18, COLOR_TEXT_DARK)
+	root_p.add_child(_ad_title_l)
 
 	var btn_remove_ads := Button.new()
 	btn_remove_ads.name = "RemoveAdsBtn"
@@ -837,3 +882,59 @@ func _show_toast(msg: String) -> void:
 	tw.tween_interval(1.2)
 	tw.tween_property(toast, "modulate:a", 0.0, 0.4)
 	tw.tween_callback(toast.queue_free)
+
+
+func _update_ui_texts() -> void:
+	if _title_l:
+		_title_l.text = _t("系統設定")
+
+	var tab_names := [
+		_t("語言切換"),
+		_t("聲音音效"),
+		_t("畫面顯示"),
+		_t("存檔備份"),
+	]
+	for i in range(mini(_tab_buttons.size(), tab_names.size())):
+		if _tab_buttons[i]:
+			_tab_buttons[i].text = tab_names[i]
+
+	if _lang_tip_l:
+		_lang_tip_l.text = _t("請選擇您偏好的顯示語系 (即時生效)：")
+	_refresh_lang_selection()
+
+	if _audio_title_l:
+		_audio_title_l.text = _t("音量調節與聲效開關")
+	if _bgm_label:
+		_bgm_label.text = _t("背景音樂 (BGM)")
+	if _sfx_label:
+		_sfx_label.text = _t("戰鬥音效 (SFX)")
+
+	if _display_title_l:
+		_display_title_l.text = _t("顯示模式與渲染設定")
+	if _fullscreen_label:
+		_fullscreen_label.text = _t("全螢幕沉浸模式")
+	if _fullscreen_btn:
+		_fullscreen_btn.text = _t("切換顯示模式")
+	if _quality_title_l:
+		_quality_title_l.text = _loc_t("display.quality")
+	_update_quality_button_texts()
+
+	if _backup_title_l:
+		_backup_title_l.text = _t("雲端與本機存檔備份")
+	if _btn_export:
+		_btn_export.text = _t("匯出存檔備份檔 (JSON)")
+	if _btn_import:
+		_btn_import.text = _t("從外部備份還原存檔")
+	if _ad_title_l:
+		_ad_title_l.text = _t("加值權限與功能測試")
+	_refresh_remove_ads_button()
+
+
+func _update_quality_button_texts() -> void:
+	if _quality_buttons == null:
+		return
+	for child in _quality_buttons.get_children():
+		var b := child as Button
+		if b and b.has_meta("quality_key"):
+			b.text = _loc_t(str(b.get_meta("quality_key")))
+
