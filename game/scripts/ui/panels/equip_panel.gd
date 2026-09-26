@@ -50,11 +50,26 @@ func open() -> void:
 	bg.color = Color(0.969, 0.965, 0.973, 1)
 	bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	layer.add_child(bg)
+	var scroll := ScrollContainer.new()
+	scroll.name = "EquipScroll"
+	scroll.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	layer.add_child(scroll)
+	var scroll_margin := MarginContainer.new()
+	scroll_margin.name = "ScrollMargin"
+	scroll_margin.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll_margin.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll_margin.add_theme_constant_override("margin_top", 16)
+	scroll_margin.add_theme_constant_override("margin_bottom", 24)
+	scroll.add_child(scroll_margin)
 	var center := CenterContainer.new()
-	center.set_anchors_preset(Control.PRESET_FULL_RECT)
-	center.mouse_filter = Control.MOUSE_FILTER_STOP
-	layer.add_child(center)
+	center.name = "EquipCenter"
+	center.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	center.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll_margin.add_child(center)
 	var card := PanelContainer.new()
+	card.name = "EquipCard"
 	card.custom_minimum_size = Vector2(560, 0)
 	card.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	center.add_child(card)

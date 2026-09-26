@@ -2896,5 +2896,10 @@
   "獅 · 黃銅背心": "Lion · Brass Vest",
   "狐 · 圍巾長衫": "Fox · Scarf Tunic",
   "野豬 · 工匠工裙": "Boar · Artisan Apron",
-  "搪瓷碎屑": "Enamel Chips"
+  "搪瓷碎屑": "Enamel Chips",
+  "凡品": "Common",
+  "良品": "Uncommon",
+  "上品": "Rare",
+  "極品": "Epic",
+  "秘寶": "Legendary"
 }
