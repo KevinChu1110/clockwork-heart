@@ -2536,8 +2536,8 @@
    "id": "qa-round40",
    "cat": "平台",
    "title": "探索性 QA：體力不足＋戰敗復活六語系合主線後找破圖",
-   "status": "草稿",
-   "note": "等兩張變現彈窗六語系合主線後實機巡檢",
+   "status": "測試中",
+   "note": "實機巡檢完成，產出 proofs/qa-round40 全景與 CHECKLIST",
    "keys": [
     "探索性 QA：體"
    ]
