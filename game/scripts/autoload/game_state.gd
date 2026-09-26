@@ -33,6 +33,15 @@ var play_time: float = 0.0
 ## 舊存檔 sword|soul|iron 會對應到 sword|magic|hammer
 var path_style: String = ""
 
+## 當前出征關卡與建議等級（由出征頁寫入，戰鬥後重置）
+var current_expedition_stage: String = ""
+var current_suggest_lv: int = 0
+
+func clear_expedition_stage() -> void:
+	current_expedition_stage = ""
+	current_suggest_lv = 0
+
+
 ## 簡易面板（之後接裝備／戰魂）
 var max_hp: int = 50
 var hp: int = 50
@@ -319,6 +328,33 @@ func add_stardust(n: int) -> void:
 	stardust = maxi(0, stardust + n)
 
 
+const PACING_TABLE_PATH := "res://data/tables/pacing_s1.json"
+const DEFAULT_LEVEL_CAP := 30
+var _level_cap_cached: int = -1
+
+
+func get_level_cap() -> int:
+	if _level_cap_cached > 0:
+		return _level_cap_cached
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var dt: Node = (loop as SceneTree).root.get_node_or_null("DataTables")
+		if dt and dt.has_method("level_cap"):
+			_level_cap_cached = int(dt.call("level_cap"))
+			if _level_cap_cached > 0:
+				return _level_cap_cached
+	if FileAccess.file_exists(PACING_TABLE_PATH):
+		var f := FileAccess.open(PACING_TABLE_PATH, FileAccess.READ)
+		if f != null:
+			var data = JSON.parse_string(f.get_as_text())
+			if data is Dictionary:
+				_level_cap_cached = int(data.get("s1_cap", data.get("level_cap", DEFAULT_LEVEL_CAP)))
+				if _level_cap_cached > 0:
+					return _level_cap_cached
+	_level_cap_cached = DEFAULT_LEVEL_CAP
+	return _level_cap_cached
+
+
 ## 升級所需經驗（Lv1→2 約 50，之後緩升）
 func xp_to_next() -> int:
 	return 40 + level * 25 + (level * level) / 2
@@ -334,7 +370,8 @@ func add_xp(n: int) -> Dictionary:
 	xp += gained
 	var levels := 0
 	var msgs: PackedStringArray = []
-	while level < 40 and xp >= xp_to_next():
+	var cap := get_level_cap()
+	while level < cap and xp >= xp_to_next():
 		xp -= xp_to_next()
 		level += 1
 		levels += 1

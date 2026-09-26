@@ -6,6 +6,7 @@ const COMBAT_PATH := "res://data/tables/combat.json"
 const EQUIP_PATH := "res://data/tables/equipment.json"
 const ITEMS_META_PATH := "res://data/tables/items_meta.json"
 const WEAPON_CLASS_PATH := "res://data/tables/weapon_classes.json"
+const PACING_PATH := "res://data/tables/pacing_s1.json"
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const WEAPON_CLASS_TEXT_FIELDS: PackedStringArray = ["name", "title", "tagline", "play", "pros", "cons"]
 
@@ -13,6 +14,7 @@ var combat: Dictionary = {}
 var equipment: Dictionary = {}
 var items_meta: Dictionary = {}
 var weapon_classes: Dictionary = {}
+var pacing: Dictionary = {}
 var loaded: bool = false
 
 
@@ -25,9 +27,10 @@ func reload() -> void:
 	equipment = _load_json(EQUIP_PATH)
 	items_meta = _load_json(ITEMS_META_PATH)
 	weapon_classes = _load_json(WEAPON_CLASS_PATH)
+	pacing = _load_json(PACING_PATH)
 	loaded = not combat.is_empty()
 	if loaded:
-		print("[DataTables] combat/equipment/items_meta/weapon_classes loaded")
+		print("[DataTables] combat/equipment/items_meta/weapon_classes/pacing loaded")
 
 
 func _load_json(path: String) -> Dictionary:
@@ -95,6 +98,30 @@ func weapon_class_def(id: String) -> Dictionary:
 func log_max_lines() -> int:
 	var w: Dictionary = items_meta.get("log", {})
 	return int(w.get("max_lines", 2000))
+
+
+func level_cap() -> int:
+	if not loaded or pacing.is_empty():
+		reload()
+	return int(pacing.get("s1_cap", pacing.get("level_cap", 30)))
+
+
+func suggest_lv_table() -> Dictionary:
+	if not loaded or pacing.is_empty():
+		reload()
+	var slv = pacing.get("suggest_lv", {})
+	if slv is Dictionary:
+		return slv
+	return {}
+
+
+func expedition_suggest_lv_table() -> Dictionary:
+	if not loaded or pacing.is_empty():
+		reload()
+	var slv = pacing.get("expedition_suggest_lv", {})
+	if slv is Dictionary:
+		return slv
+	return {}
 
 
 func _dig(root: Dictionary, path: String, default: Variant) -> Variant:

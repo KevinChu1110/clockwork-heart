@@ -2806,8 +2806,8 @@
    "id": "core-loop-gate",
    "cat": "世界觀",
    "title": "核心循環改版：寫准入閘門六題（只寫文件）",
-   "status": "草稿",
-   "note": "四支柱對 PRODUCT_LOCK 第9節六題作答；只寫文件不改玩法",
+   "status": "已上線",
+   "note": "准入六題已過審：Pacing／八色階／停擺巨偶可開工，自動巡邏本季不做",
    "keys": [
     "核心循環改版：寫"
    ]
@@ -2820,6 +2820,36 @@
    "note": "新手引導觸控用語與六語系已通過審查並合進公開主線推遠端",
    "keys": [
     "把已過審的新手引"
+   ]
+  },
+  {
+   "id": "pacing-s1-cap",
+   "cat": "遊戲",
+   "title": "第一季節奏：等級上限改 Lv30",
+   "status": "測試中",
+   "note": "等級上限改Lv30、pacing_s1.json讀表、單元測試綠、實機截圖完成",
+   "keys": [
+    "第一季節奏：等級"
+   ]
+  },
+  {
+   "id": "sortie-resist-tags",
+   "cat": "遊戲",
+   "title": "出征關卡卡區域抗性綠黃紅＋未達門檻易傷",
+   "status": "草稿",
+   "note": "等 pacing 表；不准改命中／ATB",
+   "keys": [
+    "出征關卡卡區域抗"
+   ]
+  },
+  {
+   "id": "chapter-press-j-touch",
+   "cat": "遊戲",
+   "title": "章節教學對白殘留按 J 改觸控＋六語系",
+   "status": "測試中",
+   "note": "sideqa 審查通過 (commit bf4de56f)，待合入主線",
+   "keys": [
+    "章節教學對白殘留"
    ]
   }
  ]

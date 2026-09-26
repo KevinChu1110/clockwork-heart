@@ -35,6 +35,8 @@ var weapon_class: String = ""
 var pressure_left: float = 0.0
 ## 本場第一次受擊尚可減傷（遠距疾走／反應窗）
 var first_hit_guard: bool = true
+## 區域抗性易傷係數（未達建議等級受傷加成，預設 1.0）
+var underlevel_damage_mult: float = 1.0
 
 ## 技能
 var can_skill: bool = false
@@ -153,6 +155,8 @@ func take_damage(amount: int) -> int:
 		incoming = int(st.get("damage", amount))
 		pressure_left = float(st.get("pressure", pressure_left))
 		first_hit_guard = bool(st.get("first_hit_guard", first_hit_guard))
+		if underlevel_damage_mult > 1.001:
+			incoming = Formulas.apply_underlevel_damage(incoming, underlevel_damage_mult)
 	var dealt := mini(hp, maxi(0, incoming))
 	hp -= dealt
 	if dealt > 0:

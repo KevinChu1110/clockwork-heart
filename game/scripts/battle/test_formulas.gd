@@ -479,6 +479,93 @@ func _initialize() -> void:
 	else:
 		print("xp split OK field=", f0, " arena=", a0, " dim40=", f40)
 
+	## ── 區域抗性門檻與受傷加成單測（t_50cd3a23）──
+	print("--- 檢驗出征區域抗性三檔係數與達標不加倍 ---")
+	# 1. 達標（差 <= 0）：安全（綠），係數 1.0
+	if abs(Formulas.underlevel_damage_multiplier(10, 10) - 1.0) > 0.001:
+		push_error("underlevel: met level should be 1.0")
+		ok = false
+	if abs(Formulas.underlevel_damage_multiplier(15, 10) - 1.0) > 0.001:
+		push_error("underlevel: over level should be 1.0")
+		ok = false
+	if abs(Formulas.underlevel_damage_multiplier(5, 0) - 1.0) > 0.001:
+		push_error("underlevel: no suggest lv should be 1.0")
+		ok = false
+
+	# 2. 差 1–4：吃力（黃），係數 1.2
+	for diff in [1, 2, 3, 4]:
+		var m := Formulas.underlevel_damage_multiplier(10, 10 + diff)
+		if abs(m - 1.2) > 0.001:
+			push_error("underlevel: diff %d should be 1.2, got %s" % [diff, m])
+			ok = false
+
+	# 3. 差 >= 5：過載（紅），係數 1.5
+	for diff in [5, 6, 10, 20]:
+		var m := Formulas.underlevel_damage_multiplier(10, 10 + diff)
+		if abs(m - 1.5) > 0.001:
+			push_error("underlevel: diff %d should be 1.5, got %s" % [diff, m])
+			ok = false
+
+	# 4. 檔位字典驗證
+	var t_safe: Dictionary = Formulas.resistance_tier(10, 10)
+	var t_strain: Dictionary = Formulas.resistance_tier(10, 12)
+	var t_over: Dictionary = Formulas.resistance_tier(10, 16)
+	if t_safe.get("tier") != "safe" or abs(float(t_safe.get("mult", 0.0)) - 1.0) > 0.001:
+		push_error("resistance_tier safe mismatch")
+		ok = false
+	if t_strain.get("tier") != "strained" or abs(float(t_strain.get("mult", 0.0)) - 1.2) > 0.001:
+		push_error("resistance_tier strained mismatch")
+		ok = false
+	if t_over.get("tier") != "overload" or abs(float(t_over.get("mult", 0.0)) - 1.5) > 0.001:
+		push_error("resistance_tier overload mismatch")
+		ok = false
+
+	# 5. 受傷計算與四捨五入驗證（以 20 點傷害為例）
+	var dmg_base := 20
+	var dmg_safe := Formulas.apply_underlevel_damage(dmg_base, 1.0)
+	var dmg_strained := Formulas.apply_underlevel_damage(dmg_base, 1.2)
+	var dmg_overload := Formulas.apply_underlevel_damage(dmg_base, 1.5)
+	if dmg_safe != 20:
+		push_error("apply_underlevel_damage safe expected 20, got %d" % dmg_safe)
+		ok = false
+	if dmg_strained != 24:
+		push_error("apply_underlevel_damage strained expected 24, got %d" % dmg_strained)
+		ok = false
+	if dmg_overload != 30:
+		push_error("apply_underlevel_damage overload expected 30, got %d" % dmg_overload)
+		ok = false
+
+	# 6. 實戰 BattleUnit.take_damage 驗證
+	var p_test := BattleUnit.new()
+	p_test.team = BattleUnit.Team.PLAYER
+	p_test.weapon_class = "sword"
+	p_test.max_hp = 100
+	p_test.hp = 100
+	p_test.underlevel_damage_mult = 1.0
+	p_test.take_damage(20)
+	var lost_safe: int = 100 - p_test.hp
+
+	p_test.hp = 100
+	p_test.underlevel_damage_mult = 1.2
+	p_test.take_damage(20)
+	var lost_strained: int = 100 - p_test.hp
+
+	p_test.hp = 100
+	p_test.underlevel_damage_mult = 1.5
+	p_test.take_damage(20)
+	var lost_overload: int = 100 - p_test.hp
+
+	if lost_safe != 20:
+		push_error("unit take_damage safe expected 20 lost, got %d" % lost_safe)
+		ok = false
+	if lost_strained != 24:
+		push_error("unit take_damage strained expected 24 lost (x1.2), got %d" % lost_strained)
+		ok = false
+	if lost_overload != 30:
+		push_error("unit take_damage overload expected 30 lost (x1.5), got %d" % lost_overload)
+		ok = false
+	print("  ✓ 出征抗性三檔受傷驗證通過: 綠標(安全)=%d, 黃標(吃力)=%d (1.2x), 紅標(過載)=%d (1.5x)" % [lost_safe, lost_strained, lost_overload])
+
 	if ok:
 		print("TEST_OK")
 		quit(0)

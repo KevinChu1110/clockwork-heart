@@ -1970,6 +1970,8 @@ static func _apply_player_skill_stats(sim: Variant, p: BattleUnit, player_stats:
 	p.dmg_variance = float(player_stats.get("dmg_variance", Formulas.default_variance()))
 	p.hit = float(player_stats.get("hit", 0.0))
 	p.eva = float(player_stats.get("eva", 0.0))
+	## 區域抗性易傷係數（未達建議等級受傷加成）
+	p.underlevel_damage_mult = float(player_stats.get("underlevel_damage_mult", 1.0))
 	## 流派姿態 + 風姿（時間模型 0.15）
 	_apply_weapon_class(p, player_stats)
 	## 多武器欄：此時單位可能尚未 add_unit，直接傳 p
@@ -2355,6 +2357,11 @@ static func gather_player_stats() -> Dictionary:
 		"weapon_name": g.get("weapon_name"),
 		"weapon_loadout_active": g.get("weapon_loadout_active"),
 	}
+	if g != null and "current_suggest_lv" in g and int(g.get("current_suggest_lv")) > 0:
+		var s_lv: int = int(g.get("current_suggest_lv"))
+		var p_lv: int = int(g.get("level"))
+		stats["suggest_lv"] = s_lv
+		stats["underlevel_damage_mult"] = Formulas.underlevel_damage_multiplier(p_lv, s_lv)
 	var eq: Node = rt.get_node_or_null("EquipmentSystem")
 	if eq and eq.has_method("loadout_snapshot_for_battle"):
 		stats["weapon_loadout"] = eq.call("loadout_snapshot_for_battle")

@@ -2977,5 +2977,19 @@
   "點一下繼續 · 部分步驟可「稍後再說」": "Tap to continue · Some steps can be skipped with \"Later\"",
   "點下一步 · 部分步驟可「稍後再說」": "Tap Next · Some steps can be skipped with \"Later\"",
   "點一下繼續": "Tap to continue",
-  "點下一步": "Tap Next"
+  "點下一步": "Tap Next",
+  "本季上限": "Season Cap",
+  "安全": "Safe",
+  "吃力": "Strained",
+  "過載": "Overload",
+  "區域抗性 · 安全": "Zone Resist · Safe",
+  "區域抗性 · 吃力": "Zone Resist · Strained",
+  "區域抗性 · 過載": "Zone Resist · Overload",
+  "受傷 ×1.0": "Dmg ×1.0",
+  "受傷 ×1.2": "Dmg ×1.2",
+  "受傷 ×1.5": "Dmg ×1.5",
+  "建議 Lv.%d": "Rec. Lv.%d",
+  "區域抗性安全：等級達標，受傷正常 (×1.0)": "Zone Resist Safe: Level met, normal damage (x1.0)",
+  "區域抗性吃力：未達建議 Lv%d，受到傷害 ×1.2": "Zone Resist Strained: Below Rec. Lv%d, taking x1.2 damage",
+  "區域抗性過載：低於建議 Lv%d 超過 5 級，受到傷害 ×1.5！": "Zone Resist Overload: 5+ levels below Rec. Lv%d, taking x1.5 damage!"
 }
