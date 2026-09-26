@@ -439,6 +439,9 @@ func _update_right_panel_labels() -> void:
 
 
 func _update_tab_texts() -> void:
+	var main_title = get_node_or_null("HeaderBadge/HeaderVBox/MainTitle") as Label
+	if main_title and is_instance_valid(main_title):
+		main_title.text = _t("發條之心 · 紙娃娃試衣間")
 	if btn_tab_launch and is_instance_valid(btn_tab_launch):
 		btn_tab_launch.text = _t("首發")
 	if btn_tab_expansion and is_instance_valid(btn_tab_expansion):
