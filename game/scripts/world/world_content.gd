@@ -66,7 +66,7 @@ static func _enemy_def_raw(mode: String) -> Dictionary:
 			}
 		"colossus_elephant":
 			return {
-				"id": "colossus_elephant", "name": "黑鏑蒸汽巨象", "max_hp": 650, "atk": 21, "def": 11, "speed": 8.5,
+				"id": "colossus_elephant", "name": "黑鏽蒸氣巨象", "max_hp": 650, "atk": 21, "def": 11, "speed": 8.5,
 				"kin": "knight", "is_boss": true, "art": "colossus_elephant", "art_fallback": "boar",
 				"windup": 0.32, "recover": 0.48, "king_slash_cd": 3.2,
 			}

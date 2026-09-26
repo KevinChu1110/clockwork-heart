@@ -37,7 +37,7 @@ const BOSSES: Array[Dictionary] = [
 	{
 		"id": "colossus_elephant",
 		"num": "巨偶-3",
-		"name": "黑鏑蒸汽巨象",
+		"name": "黑鏽蒸氣巨象",
 		"level": 28,
 		"type": "停擺巨偶",
 		"cost": 0,

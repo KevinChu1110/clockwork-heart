@@ -3,7 +3,7 @@ extends SceneTree
 ## 依據規範：review.md 0-QA5, 0-QA23, 0-QA25, 0-QA26
 ## 驗收產出（framebuffer 直接擷取，零 PIL 假圖）：
 ## 1. proofs/t_ffcab064/proof_colossus_sortie.png
-##    橫屏出征分頁：看得見「停擺巨偶」入口按鈕、今日剩餘次數 (3/3)、三張占位卡（失控發條獅 Lv12、霧鐘提線人偶 Lv20、黑鏑蒸汽巨象 Lv28），零系統 emoji
+##    橫屏出征分頁：看得見「停擺巨偶」入口按鈕、今日剩餘次數 (3/3)、三張占位卡（失控發條獅 Lv12、霧鐘提線人偶 Lv20、黑鏽蒸氣巨象 Lv28），零系統 emoji
 ## 2. proofs/t_ffcab064/proof_colossus_limit_dialog.png
 ##    同日滿 3 次後提示「今日挑戰次數已用盡，請明天再來！」彈窗，沿用既有體力不足彈窗樣式與果凍鈕
 
