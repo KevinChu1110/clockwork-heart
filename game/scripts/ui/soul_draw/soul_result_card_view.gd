@@ -5,7 +5,6 @@ extends Control
 const UiStyle := preload("res://scripts/ui/ui_style.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const DEFAULT_CARD := "res://assets/sprites/pack_a/v2/ui/soul_result_card.png"
-const I18N_PATH := "res://data/i18n/zh_TW.json"
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 ## ── 多巴胺字典色盤（只用這五色） ──
@@ -41,11 +40,46 @@ var _drop_lbl: Label
 var _i18n: Dictionary = {}
 var _font: Font = null
 
+var _is_showing_drop: bool = false
+var _current_drop: Dictionary = {}
+var _current_toast_key: String = "soul.pull_start"
+var _current_card_path: String = DEFAULT_CARD
+
+
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	refresh()
+
 
 func _ready() -> void:
 	_load_font()
 	_load_i18n()
 	_ensure()
+	_connect_loc_signal()
 
 
 func _load_font() -> void:
@@ -53,9 +87,22 @@ func _load_font() -> void:
 		_font = load(FONT_PATH) as Font
 
 
+static func get_current_locale() -> String:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc != null and loc.get("locale") != null:
+			return str(loc.get("locale"))
+	return ContentLoc.locale()
+
+
 func _load_i18n() -> void:
-	if FileAccess.file_exists(I18N_PATH):
-		var parsed = JSON.parse_string(FileAccess.get_file_as_string(I18N_PATH))
+	var lc := get_current_locale()
+	var path := "res://data/i18n/%s.json" % lc
+	if not FileAccess.file_exists(path):
+		path = "res://data/i18n/zh_TW.json"
+	if FileAccess.file_exists(path):
+		var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
 		if typeof(parsed) == TYPE_DICTIONARY:
 			_i18n = parsed as Dictionary
 
@@ -175,27 +222,51 @@ func _build_badge_style(color: Color) -> StyleBoxFlat:
 
 
 func show_placeholder(toast_key: String = "soul.pull_start", card_path: String = DEFAULT_CARD) -> void:
+	_is_showing_drop = false
+	_current_drop = {}
+	_current_toast_key = toast_key
+	_current_card_path = card_path
+	_render_placeholder()
+
+
+func _render_placeholder() -> void:
 	_ensure()
-	if _i18n.is_empty():
-		_load_i18n()
-	var path := card_path
+	_load_i18n()
+	var path := _current_card_path
 	if not ResourceLoader.exists(path) and not FileAccess.file_exists(path):
 		path = DEFAULT_CARD
 	if ResourceLoader.exists(path) or FileAccess.file_exists(path):
 		_art.texture = load(path) as Texture2D
 	_badge_lbl.text = _t("封靈")
 	_badge.add_theme_stylebox_override("panel", _build_badge_style(COLOR_GOLD))
-	_label.text = tr_key(toast_key)
+	_label.text = tr_key(_current_toast_key)
 	_drop_lbl.text = ""
 
 
 func show_drop(drop: Dictionary, card_path: String = DEFAULT_CARD) -> void:
-	var key: String = str(drop.get("toastKey", "soul.pull_part"))
-	show_placeholder(key, card_path)
-	var kind_str: String = str(drop.get("kind", ""))
-	var drop_id: String = str(drop.get("DropId", ""))
-	var kind_display: String = KIND_NAMES.get(kind_str, kind_str)
-	var name_display: String = DROP_NAMES.get(drop_id, drop_id)
+	_is_showing_drop = true
+	_current_drop = drop
+	_current_card_path = card_path
+	_current_toast_key = str(drop.get("toastKey", "soul.pull_part"))
+	_render_drop()
+
+
+func _render_drop() -> void:
+	_ensure()
+	_load_i18n()
+	var path := _current_card_path
+	if not ResourceLoader.exists(path) and not FileAccess.file_exists(path):
+		path = DEFAULT_CARD
+	if ResourceLoader.exists(path) or FileAccess.file_exists(path):
+		_art.texture = load(path) as Texture2D
+	_label.text = tr_key(_current_toast_key)
+
+	var kind_str: String = str(_current_drop.get("kind", ""))
+	var drop_id: String = str(_current_drop.get("DropId", ""))
+	var kind_raw: String = KIND_NAMES.get(kind_str, kind_str)
+	var name_raw: String = DROP_NAMES.get(drop_id, drop_id)
+	var kind_display: String = _t(kind_raw)
+	var name_display: String = _t(name_raw)
 
 	var badge_col := COLOR_GOLD
 	match kind_str:
@@ -211,3 +282,10 @@ func show_drop(drop: Dictionary, card_path: String = DEFAULT_CARD) -> void:
 	_badge_lbl.text = kind_display
 	_badge.add_theme_stylebox_override("panel", _build_badge_style(badge_col))
 	_drop_lbl.text = "【%s】 %s" % [kind_display, name_display]
+
+
+func refresh() -> void:
+	if _is_showing_drop:
+		_render_drop()
+	else:
+		_render_placeholder()

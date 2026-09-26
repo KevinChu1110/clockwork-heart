@@ -184,4 +184,190 @@ func _run_test_suite() -> void:
 		else:
 			print("  ✓ [%s] View 錯誤提示即時刷新: %s" % [code, err_lbl.text])
 
+	# 3. 測試 SoulResultCard 結果卡即時切換六語系（掉落種類與名稱）
+	print("\n--- 3. 測試 SoulResultCard 結果卡即時切換六語系 ---")
+	var card = view.card
+	if card == null:
+		_fail("找不到 view.card")
+		view.queue_free()
+		return
+
+	var badge_lbl: Label = card.get_node_or_null("RarityBadge/BadgeLabel")
+	var drop_lbl: Label = card.get_node_or_null("DropIdLabel")
+	if badge_lbl == null or drop_lbl == null:
+		_fail("SoulResultCard 缺少 BadgeLabel 或 DropIdLabel")
+		view.queue_free()
+		return
+
+	var test_drops := [
+		{
+			"drop": {"DropId": "drop_brass_gear", "kind": "part"},
+			"expected_badge": {
+				"zh_TW": "零件",
+				"zh_CN": "零件",
+				"en": "Part",
+				"ja": "パーツ",
+				"ko": "부품",
+				"es": "Pieza"
+			},
+			"expected_drop_lbl": {
+				"zh_TW": "【零件】 黃銅齒輪",
+				"zh_CN": "【零件】 黄铜齿轮",
+				"en": "【Part】 Brass Gear",
+				"ja": "【パーツ】 真鍮の歯車",
+				"ko": "【부품】 황동 톱니바퀴",
+				"es": "【Pieza】 Engranaje de latón"
+			}
+		},
+		{
+			"drop": {"DropId": "drop_spring_coil", "kind": "part"},
+			"expected_badge": {
+				"zh_TW": "零件",
+				"zh_CN": "零件",
+				"en": "Part",
+				"ja": "パーツ",
+				"ko": "부품",
+				"es": "Pieza"
+			},
+			"expected_drop_lbl": {
+				"zh_TW": "【零件】 發條游絲",
+				"zh_CN": "【零件】 发条游丝",
+				"en": "【Part】 Balance Spring",
+				"ja": "【パーツ】 ヒゲゼンマイ",
+				"ko": "【부품】 태엽 헤어스프링",
+				"es": "【Pieza】 Espiral de cuerda"
+			}
+		},
+		{
+			"drop": {"DropId": "drop_core_shard", "kind": "part"},
+			"expected_badge": {
+				"zh_TW": "零件",
+				"zh_CN": "零件",
+				"en": "Part",
+				"ja": "パーツ",
+				"ko": "부품",
+				"es": "Pieza"
+			},
+			"expected_drop_lbl": {
+				"zh_TW": "【零件】 核心碎片",
+				"zh_CN": "【零件】 核心碎片",
+				"en": "【Part】 Core Shard",
+				"ja": "【パーツ】 コアの破片",
+				"ko": "【부품】 코어 조각",
+				"es": "【Pieza】 Fragmento de núcleo"
+			}
+		},
+		{
+			"drop": {"DropId": "outfit_cream", "kind": "outfit"},
+			"expected_badge": {
+				"zh_TW": "換裝",
+				"zh_CN": "换装",
+				"en": "Outfit",
+				"ja": "着せ替え",
+				"ko": "의상",
+				"es": "Atuendo"
+			},
+			"expected_drop_lbl": {
+				"zh_TW": "【換裝】 小白 · 奶油便服",
+				"zh_CN": "【换装】 小白 · 奶油便服",
+				"en": "【Outfit】 Shiro · Cream Casual",
+				"ja": "【着せ替え】 小白・クリーム普段着",
+				"ko": "【의상】 시로 · 크림 일상복",
+				"es": "【Atuendo】 Blanco · Atuendo Crema"
+			}
+		},
+		{
+			"drop": {"DropId": "outfit_brass_vest", "kind": "outfit"},
+			"expected_badge": {
+				"zh_TW": "換裝",
+				"zh_CN": "换装",
+				"en": "Outfit",
+				"ja": "着せ替え",
+				"ko": "의상",
+				"es": "Atuendo"
+			},
+			"expected_drop_lbl": {
+				"zh_TW": "【換裝】 獅 · 黃銅背心",
+				"zh_CN": "【换装】 狮 · 黄铜背心",
+				"en": "【Outfit】 Lion · Brass Vest",
+				"ja": "【着せ替え】 獅子・真鍮ベスト",
+				"ko": "【의상】 사자 · 황동 조끼",
+				"es": "【Atuendo】 León · Chaleco de latón"
+			}
+		},
+		{
+			"drop": {"DropId": "outfit_scarf_tunic", "kind": "outfit"},
+			"expected_badge": {
+				"zh_TW": "換裝",
+				"zh_CN": "换装",
+				"en": "Outfit",
+				"ja": "着せ替え",
+				"ko": "의상",
+				"es": "Atuendo"
+			},
+			"expected_drop_lbl": {
+				"zh_TW": "【換裝】 狐 · 圍巾長衫",
+				"zh_CN": "【换装】 狐 · 围巾长衫",
+				"en": "【Outfit】 Fox · Scarf Tunic",
+				"ja": "【着せ替え】 狐・マフラー長羽織",
+				"ko": "【의상】 여우 · 목도리 긴옷",
+				"es": "【Atuendo】 Zorro · Túnica con bufanda"
+			}
+		},
+		{
+			"drop": {"DropId": "outfit_worker_apron", "kind": "outfit"},
+			"expected_badge": {
+				"zh_TW": "換裝",
+				"zh_CN": "换装",
+				"en": "Outfit",
+				"ja": "着せ替え",
+				"ko": "의상",
+				"es": "Atuendo"
+			},
+			"expected_drop_lbl": {
+				"zh_TW": "【換裝】 野豬 · 工匠工裙",
+				"zh_CN": "【换装】 野猪 · 工匠工裙",
+				"en": "【Outfit】 Boar · Artisan Apron",
+				"ja": "【着せ替え】 猪・職人エプロン",
+				"ko": "【의상】 멧돼지 · 장인 작업치마",
+				"es": "【Atuendo】 Jabalí · Delantal de artesano"
+			}
+		},
+		{
+			"drop": {"DropId": "junk_enamel_chip", "kind": "junk"},
+			"expected_badge": {
+				"zh_TW": "雜件",
+				"zh_CN": "杂件",
+				"en": "Junk",
+				"ja": "ジャンク",
+				"ko": "잡동사니",
+				"es": "Chatarra"
+			},
+			"expected_drop_lbl": {
+				"zh_TW": "【雜件】 搪瓷碎屑",
+				"zh_CN": "【杂件】 搪瓷碎屑",
+				"en": "【Junk】 Enamel Chips",
+				"ja": "【ジャンク】 エナメル片",
+				"ko": "【잡동사니】 에나멜 조각",
+				"es": "【Chatarra】 Fragmento de esmalte"
+			}
+		}
+	]
+
+	for td in test_drops:
+		var d: Dictionary = td["drop"]
+		card.show_drop(d)
+		for code in LOCALES:
+			loc_node.call("set_locale", code)
+			var exp_b: String = td["expected_badge"][code]
+			var exp_d: String = td["expected_drop_lbl"][code]
+			if badge_lbl.text != exp_b:
+				_fail("Card 刷新 [%s] 種類徽章文字錯誤: 預期 '%s' 實得 '%s'" % [code, exp_b, badge_lbl.text])
+			else:
+				print("  ✓ [%s] Card 徽章即時刷新符合: %s" % [code, badge_lbl.text])
+			if drop_lbl.text != exp_d:
+				_fail("Card 刷新 [%s] 掉落名稱文字錯誤: 預期 '%s' 實得 '%s'" % [code, exp_d, drop_lbl.text])
+			else:
+				print("  ✓ [%s] Card 掉落名即時刷新符合: %s" % [code, drop_lbl.text])
+
 	view.queue_free()

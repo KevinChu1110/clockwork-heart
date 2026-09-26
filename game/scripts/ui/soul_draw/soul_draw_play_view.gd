@@ -215,6 +215,8 @@ func _refresh() -> void:
 				_err.text = card.tr_key("err.daily_cap_pull")
 		elif _last_err_key == "":
 			_err.text = ""
+		if card and is_instance_valid(card) and card.has_method("refresh"):
+			card.refresh()
 
 
 func _on_pull() -> void:
