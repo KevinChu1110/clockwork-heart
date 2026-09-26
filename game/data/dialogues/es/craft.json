@@ -62,7 +62,7 @@
     },
     {
       "speaker": "Sistema",
-      "text": "Estilo de juego: {play}. {pro}"
+      "text": "Estilo de juego: {play} {pro}"
     },
     {
       "speaker": "Sistema",

@@ -62,7 +62,7 @@
     },
     {
       "speaker": "システム",
-      "text": "遊び方：{play}。{pro}"
+      "text": "遊び方：{play}{pro}"
     },
     {
       "speaker": "システム",
