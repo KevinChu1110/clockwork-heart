@@ -2356,8 +2356,8 @@
    "id": "lobby-dock-i18n",
    "cat": "遊戲",
    "title": "大廳 Dock 頁籤與頂欄能量／金幣／星屑六語系",
-   "status": "測試中",
-   "note": "完成大廳 Dock 頁籤與頂欄三資源名六語系落地，測試通過並附 en/ja 全景實機截圖",
+   "status": "已上線",
+   "note": "大廳 Dock 頁籤與頂欄三資源名六語系已合進 main",
    "keys": [
     "大廳 Dock "
    ]
