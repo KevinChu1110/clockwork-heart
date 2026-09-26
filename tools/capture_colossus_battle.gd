@@ -7,7 +7,7 @@ extends SceneTree
 ##    - proof_colossus_battle_running.png: 橫屏戰鬥中（看得到巨偶戰與既有 HUD，零系統 emoji）
 ##    - proof_colossus_battle_victory.png: 勝場結算（看得到機芯掉落彈窗，零系統 emoji）
 
-var OUT_DIR_NAME := "proofs/t_f093ee0b"
+var OUT_DIR_NAME := "proofs/t_57fe8e45"
 
 var _step := 0
 var _wait := 0
@@ -68,7 +68,7 @@ func _initialize() -> void:
 		gs.set("hp", 120)
 		gs.set("max_hp", 120)
 
-	print("── 開始執行停擺巨偶戰鬥實機截圖 (t_f093ee0b) ──")
+	print("── 開始執行停擺巨偶戰鬥實機截圖 (t_57fe8e45) ──")
 	print("   OUT_DIR: ", _out_dir)
 
 	_setup_battle_stage()
@@ -135,13 +135,16 @@ func _process(_delta: float) -> bool:
 						"score": 85,
 						"stats": {"ATK": 28, "HP": 140}
 					}
+				dropped_part["is_colossus"] = true
+				dropped_part["mode"] = "colossus_lion"
+				dropped_part["exp_gain"] = 82
 				var DlgClass = load("res://scripts/battle/battle_victory_dialog.gd")
 				if DlgClass:
-					_victory_dlg = DlgClass.show_dialog(root, dropped_part)
+					_victory_dlg = DlgClass.show_dialog(root, dropped_part, Callable(), 82)
 			elif _wait >= 25:
 				var path := "%s/proof_colossus_battle_victory.png" % _out_dir
 				_save_screenshot(path)
-				print("  ✓ [2/2] 巨偶勝場機芯部件結算實機截圖完成: %s" % path)
+				print("  ✓ [2/2] 巨偶勝場機芯部件與經驗結算實機截圖完成: %s" % path)
 
 				if is_instance_valid(_victory_dlg):
 					_victory_dlg.queue_free()

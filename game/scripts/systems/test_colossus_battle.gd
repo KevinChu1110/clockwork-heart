@@ -61,7 +61,7 @@ func _initialize() -> void:
 
 	var boss_keys := ["colossus_lion", "colossus_puppet", "colossus_elephant"]
 	for bk in boss_keys:
-		var sim: BattleSim = BattleSimClass.make_world_fight(player_stats, bk)
+		var sim = BattleSimClass.make_world_fight(player_stats, bk)
 		if sim == null:
 			_fail("未能建立巨偶戰鬥模擬: %s" % bk)
 			continue

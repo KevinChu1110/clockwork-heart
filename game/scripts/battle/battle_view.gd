@@ -50,6 +50,7 @@ var _ended: bool = false
 var _revived_by_ad: bool = false
 var _dummy_settlement_dialog: Control = null
 var _victory_settlement_dialog: Control = null
+var _colossus_exp_gain: int = 0
 var _in_parry_slowmo: bool = false
 var _player_home: Vector2
 var _enemy_home: Vector2
@@ -143,6 +144,7 @@ static func _kin_hint(kin: String) -> String:
 func setup(mode: String) -> void:
 	_mode = mode
 	_ended = false
+	_colossus_exp_gain = 0
 	_connect_loc_signal()
 	_claim_hp_authority()
 	_telemetry_watch(mode)
@@ -3666,6 +3668,15 @@ func _on_end(won: bool) -> void:
 		elif _mode in ["wrath", "tide", "statue", "chrono"]:
 			_grant_rift_rewards(_mode)
 			GameState.add_stardust(2)
+		elif _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
+			var col_xp: int = Formulas.colossus_xp(GameState.level, GameState.get_level_cap())
+			_colossus_exp_gain = col_xp
+			if not drop_part.is_empty():
+				drop_part["is_colossus"] = true
+				drop_part["mode"] = _mode
+				drop_part["exp_gain"] = col_xp
+			if col_xp > 0:
+				_award_xp(col_xp)
 	else:
 		if _mode == "training_dummy":
 			banner.text = _t("試招結束")
@@ -3703,12 +3714,14 @@ func _on_end(won: bool) -> void:
 func _show_victory_settlement(drop_part: Dictionary) -> void:
 	if _victory_settlement_dialog != null and is_instance_valid(_victory_settlement_dialog):
 		_victory_settlement_dialog.queue_free()
+	var exp_val: int = int(drop_part.get("exp_gain", _colossus_exp_gain if _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"] else -1))
 	_victory_settlement_dialog = BattleVictoryDialogScript.show_dialog(
 		self,
 		drop_part,
 		func():
 			_victory_settlement_dialog = null
-			battle_finished.emit(true)
+			battle_finished.emit(true),
+		exp_val
 	)
 
 

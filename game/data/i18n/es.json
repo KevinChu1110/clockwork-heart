@@ -861,5 +861,9 @@
   "【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）": "[%s] %s (Nivel actual: %s · Calibraciones restantes: %d)",
   "【%s】%s（目前色階：%s階 · 剩餘校準 %d 次）": "[%s] %s (Nivel actual: %s · %d calibraciones restantes)",
   "【%s】%s（已達最大校準次數上限 7 次）": "[%s] %s (Se alcanzó el límite máximo de 7 calibraciones)",
-  "黑鏽蒸氣巨象": "Coloso de Vapor de Óxido Negro"
+  "黑鏽蒸氣巨象": "Coloso de Vapor de Óxido Negro",
+  "戰鬥經驗": "EXP de combate",
+  "經驗 +%d": "EXP +%d",
+  "經驗 +0（已達上限）": "EXP +0 (Nivel máx.)",
+  "經驗 +0": "EXP +0"
 }

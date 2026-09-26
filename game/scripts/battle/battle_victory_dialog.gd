@@ -41,6 +41,9 @@ var _slot_name_lbl: Label
 var _tier_lbl: Label
 var _stats_lbl: Label
 var _desc_lbl: Label
+var _exp_panel: PanelContainer
+var _exp_tag_lbl: Label
+var _exp_lbl: Label
 var _btn_equip: Button
 var _btn_confirm: Button
 var _btn_close: Button
@@ -49,18 +52,29 @@ var _cached_font: Font = null
 var _part: Dictionary = {}
 var _on_confirm: Callable = Callable()
 var _is_equipped: bool = false
+var _exp_gain: int = 0
+var _is_colossus: bool = false
 
 
-static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1) -> Control:
 	var dlg = load("res://scripts/battle/battle_victory_dialog.gd").new()
-	dlg.setup(part, on_confirm)
+	dlg.setup(part, on_confirm, exp_gain)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(part: Dictionary = {}, on_confirm: Callable = Callable()) -> void:
+func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1) -> void:
 	_part = part.duplicate(true)
 	_on_confirm = on_confirm
+	if exp_gain >= 0:
+		_exp_gain = exp_gain
+	elif _part.has("exp_gain"):
+		_exp_gain = int(_part["exp_gain"])
+	elif _part.has("exp"):
+		_exp_gain = int(_part["exp"])
+	else:
+		_exp_gain = 0
+	_is_colossus = bool(_part.get("is_colossus", false)) or str(_part.get("mode", "")).begins_with("colossus_")
 	if _dialog_card == null:
 		_build_ui()
 	_refresh_display()
@@ -247,6 +261,42 @@ func _build_ui() -> void:
 		_desc_lbl.add_theme_font_override("font", _cached_font)
 	info_col.add_child(_desc_lbl)
 
+	# ── 經驗獲得展示列 (ExpRewardPanel) ──
+	_exp_panel = PanelContainer.new()
+	_exp_panel.name = "ExpRewardPanel"
+	_exp_panel.add_theme_stylebox_override("panel", _create_inner_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 3, 14))
+	v.add_child(_exp_panel)
+
+	var exp_margin := MarginContainer.new()
+	exp_margin.add_theme_constant_override("margin_left", 16)
+	exp_margin.add_theme_constant_override("margin_right", 16)
+	exp_margin.add_theme_constant_override("margin_top", 6)
+	exp_margin.add_theme_constant_override("margin_bottom", 6)
+	_exp_panel.add_child(exp_margin)
+
+	var exp_row := HBoxContainer.new()
+	exp_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	exp_row.add_theme_constant_override("separation", 10)
+	exp_margin.add_child(exp_row)
+
+	_exp_tag_lbl = Label.new()
+	_exp_tag_lbl.name = "ExpTagLabel"
+	_exp_tag_lbl.text = _t("戰鬥經驗")
+	_exp_tag_lbl.add_theme_font_size_override("font_size", 14)
+	_exp_tag_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	if _cached_font:
+		_exp_tag_lbl.add_theme_font_override("font", _cached_font)
+	exp_row.add_child(_exp_tag_lbl)
+
+	_exp_lbl = Label.new()
+	_exp_lbl.name = "ExpLabel"
+	_exp_lbl.text = "經驗 +0"
+	_exp_lbl.add_theme_font_size_override("font_size", 16)
+	_exp_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
+	if _cached_font:
+		_exp_lbl.add_theme_font_override("font", _cached_font)
+	exp_row.add_child(_exp_lbl)
+
 	# ── 底部按鈕區（橫屏雙拇指操作，高度 >= 50px）──
 	var btn_row := HBoxContainer.new()
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -322,6 +372,38 @@ func _refresh_display() -> void:
 		if float(pstats.get("crit_dmg", 0.0)) > 0.0: stat_parts.append("暴傷+%.0f%%" % float(pstats.crit_dmg))
 	_stats_lbl.text = " · ".join(stat_parts) if not stat_parts.is_empty() else _t("標準數值")
 	_desc_lbl.text = _t("可校準 7 次 · 安全彈簧保護不碎裝")
+
+	if _exp_panel != null and _exp_lbl != null:
+		if _exp_tag_lbl != null:
+			_exp_tag_lbl.text = _t("戰鬥經驗")
+		var is_max_lvl := _is_player_max_level()
+		if _exp_gain > 0:
+			_exp_panel.visible = true
+			_exp_lbl.text = _t("經驗 +%d") % _exp_gain
+			_exp_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
+		elif _is_colossus and is_max_lvl:
+			_exp_panel.visible = true
+			_exp_lbl.text = _t("經驗 +0（已達上限）")
+			_exp_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+		elif _is_colossus:
+			_exp_panel.visible = true
+			_exp_lbl.text = _t("經驗 +0")
+			_exp_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+		else:
+			_exp_panel.visible = false
+
+
+func _is_player_max_level() -> bool:
+	if bool(_part.get("is_max_level", false)):
+		return true
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs:
+			var cap: int = int(gs.call("get_level_cap")) if gs.has_method("get_level_cap") else 30
+			var cur_lv: int = int(gs.get("level"))
+			return cur_lv >= cap
+	return false
 
 
 func _on_equip_pressed() -> void:

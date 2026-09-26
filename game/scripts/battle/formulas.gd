@@ -388,6 +388,14 @@ static func arena_xp(max_hp: int, practice: bool = false) -> int:
 	return maxi(1, xp_n)
 
 
+## 停擺巨偶勝場經驗（每日高光）：依玩家當前等級給予約 20% 升級所需經驗；滿等 (Lv30) 不加。
+static func colossus_xp(player_level: int, level_cap: int = 30) -> int:
+	if player_level >= level_cap:
+		return 0
+	var xp_req := 40 + player_level * 25 + (player_level * player_level) / 2
+	return int(round(float(xp_req) * 0.20))
+
+
 ## ──────────────────────────────────────────
 ## 第一季節奏：出征關卡區域抗性與受傷係數（不改命中/ATB/怒氣）
 ## 達標（差 <= 0）：安全（綠），受傷 ×1.0
