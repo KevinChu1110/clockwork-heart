@@ -1620,6 +1620,43 @@ func _disconnect_loc_signal() -> void:
 func _on_locale_changed(_new_locale: String = "") -> void:
 	_refresh_part_bars()
 	_refresh_part_focus_hint()
+	var prl := get_node_or_null("SideBars/PlayerSide/PlayerRageLabel") as Label
+	if prl:
+		prl.text = Loc.t("battle.rage")
+	var ptag := get_node_or_null("Arena/PlayerSlot/PlayerTag") as Label
+	if ptag:
+		ptag.text = Loc.t("battle.ally")
+	var etag := get_node_or_null("Arena/EnemySlot/EnemyTag") as Label
+	if etag:
+		etag.text = Loc.t("battle.enemy")
+	if sim:
+		var p: BattleUnit = sim.get_unit("player")
+		if p:
+			if GameState.player_name in ["小白", "Xiaobai", "シロ", "시로", "Blanco"]:
+				p.display_name = ContentLoc.text("ui", "小白")
+			else:
+				p.display_name = ContentLoc.text("ui", GameState.player_name)
+		var e: BattleUnit = _primary_enemy()
+		if e and (_mode == "dummy" or _mode == "training_dummy"):
+			e.display_name = _t("木人樁")
+	if (_mode == "dummy" or _mode == "training_dummy") and parry_hint:
+		parry_hint.text = _kh(_t("木人樁不反擊 · 自由試刀 · 右上可結束"))
+	_refresh_hud()
+	if _btn_lock and is_instance_valid(_btn_lock):
+		_btn_lock.text = _t("鎖定")
+	if _btn_switch and is_instance_valid(_btn_switch):
+		_btn_switch.text = _t("換武")
+	if _btn_skill and is_instance_valid(_btn_skill):
+		_btn_skill.text = _t("技能")
+	if _btn_pause and is_instance_valid(_btn_pause):
+		_btn_pause.text = _t("暫停")
+	if _btn_attack and is_instance_valid(_btn_attack):
+		_btn_attack.text = _t("攻擊")
+	if btn_flee and is_instance_valid(btn_flee):
+		if _mode == "dummy" or _mode == "training_dummy":
+			btn_flee.text = _t("結束試招")
+		else:
+			btn_flee.text = Loc.t("battle.flee")
 
 
 ## 逃跑不走 _on_end()，戰鬥畫面直接被清掉。不在這裡交還的話，

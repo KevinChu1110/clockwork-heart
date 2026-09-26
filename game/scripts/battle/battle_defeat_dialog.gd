@@ -8,6 +8,7 @@ extends Control
 ## 4. 圓角 18~24px，按鈕立體果凍厚底 (bottom border 5~6px)。
 ## 5. 零系統 emoji、零開發用語。
 ## 6. 連接 EnergySystem 看廣告復活二次機會邏輯。
+## 7. 支援 Loc.locale_changed 即時動態刷新全視窗六語系。
 
 signal revive_selected()
 signal give_up_selected()
@@ -37,14 +38,57 @@ const COLOR_TEXT_PINK  := Color("#D62E5C")  ## 壓明度珊瑚粉
 const COLOR_TEXT_MINT  := Color("#1A7A30")  ## 壓明度薄荷綠
 
 var _dialog_card: PanelContainer
-var _revive_btn: Button
+var _title_lbl: Label
+var _sub_lbl: Label
 var _hint_lbl: Label
 var _tip_lbl: Label
+var _revive_btn: Button
+var _give_up_btn: Button
 var _cached_font: Font = null
 var _mode: String = ""
+var _is_built: bool = false
 
 var _on_revive: Callable = Callable()
 var _on_give_up: Callable = Callable()
+
+
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_ui_texts()
+
+
+func _update_ui_texts() -> void:
+	if _title_lbl and is_instance_valid(_title_lbl):
+		_title_lbl.text = _t("戰鬥失敗")
+	if _sub_lbl and is_instance_valid(_sub_lbl):
+		_sub_lbl.text = _t("發條動能耗盡，齒輪暫時停擺！")
+	if _give_up_btn and is_instance_valid(_give_up_btn):
+		_give_up_btn.text = _t("結束戰鬥")
+	_refresh_display()
 
 
 static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "") -> Control:
@@ -58,6 +102,8 @@ func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), 
 	_on_revive = on_revive
 	_on_give_up = on_give_up
 	_mode = mode
+	if is_inside_tree():
+		_refresh_display()
 
 
 func _ready() -> void:
@@ -66,19 +112,25 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	z_index = 95
 
-	if ResourceLoader.exists(FONT_PATH):
+	if ResourceLoader.exists(FONT_PATH) and _cached_font == null:
 		_cached_font = load(FONT_PATH) as Font
 
-	_build_ui()
-	_refresh_display()
+	if not _is_built:
+		_build_ui()
+	_connect_loc_signal()
+	_update_ui_texts()
 
 
 func _build_ui() -> void:
+	if _is_built:
+		return
+	_is_built = true
+
 	# 1. 全螢幕遮罩 (Scrim)
 	var scrim := ResponsiveUi.make_scrim(ResponsiveUi.SCRIM_COLOR)
 	add_child(scrim)
 
-	# 2. 置中卡片 (寬 750px)
+	# 2. 置中卡片 (寬 750px，符合 740~760 規範)
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -107,16 +159,17 @@ func _build_ui() -> void:
 	head.add_theme_constant_override("separation", 10)
 	v.add_child(head)
 
-	var title_lbl := Label.new()
-	title_lbl.text = _t("戰鬥失敗")
-	title_lbl.add_theme_font_size_override("font_size", 22)
-	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_PINK)
-	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	title_lbl.add_theme_constant_override("outline_size", 3)
+	_title_lbl = Label.new()
+	_title_lbl.name = "TitleLbl"
+	_title_lbl.text = _t("戰鬥失敗")
+	_title_lbl.add_theme_font_size_override("font_size", 22)
+	_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_PINK)
+	_title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_title_lbl.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
-		title_lbl.add_theme_font_override("font", _cached_font)
-	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head.add_child(title_lbl)
+		_title_lbl.add_theme_font_override("font", _cached_font)
+	_title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(_title_lbl)
 
 	var close_btn := ResponsiveUi.make_close_button(_on_give_up_clicked)
 	head.add_child(close_btn)
@@ -143,31 +196,32 @@ func _build_ui() -> void:
 	dc_v.add_theme_constant_override("separation", 8)
 	dc_m.add_child(dc_v)
 
-	var sub_lbl := Label.new()
-	sub_lbl.text = _t("發條動能耗盡，齒輪暫時停擺！")
-	sub_lbl.add_theme_font_size_override("font_size", 19)
-	sub_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_sub_lbl = Label.new()
+	_sub_lbl.name = "SubLbl"
+	_sub_lbl.text = _t("發條動能耗盡，齒輪暫時停擺！")
+	_sub_lbl.add_theme_font_size_override("font_size", 19)
+	_sub_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
-		sub_lbl.add_theme_font_override("font", _cached_font)
-	dc_v.add_child(sub_lbl)
+		_sub_lbl.add_theme_font_override("font", _cached_font)
+	dc_v.add_child(_sub_lbl)
 
-	var hint_lbl := Label.new()
-	_hint_lbl = hint_lbl
-	hint_lbl.text = _t("二次機會：觀看贊助廣告即可重新上鍊，立即以 50% 生命值重返戰場！")
-	hint_lbl.add_theme_font_size_override("font_size", 15)
-	hint_lbl.add_theme_color_override("font_color", COLOR_TEXT_MINT)
+	_hint_lbl = Label.new()
+	_hint_lbl.name = "HintLbl"
+	_hint_lbl.text = _t("二次機會：觀看贊助廣告即可重新上鍊，立即以 50% 生命值重返戰場！")
+	_hint_lbl.add_theme_font_size_override("font_size", 15)
+	_hint_lbl.add_theme_color_override("font_color", COLOR_TEXT_MINT)
 	if _cached_font:
-		hint_lbl.add_theme_font_override("font", _cached_font)
-	dc_v.add_child(hint_lbl)
+		_hint_lbl.add_theme_font_override("font", _cached_font)
+	dc_v.add_child(_hint_lbl)
 
-	var tip_lbl := Label.new()
-	_tip_lbl = tip_lbl
-	tip_lbl.text = _t("若是選擇承認敗北，將返回城鎮整頓裝備與招式。")
-	tip_lbl.add_theme_font_size_override("font_size", 15)
-	tip_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_tip_lbl = Label.new()
+	_tip_lbl.name = "TipLbl"
+	_tip_lbl.text = _t("若是選擇承認敗北，將返回城鎮整頓裝備與招式。")
+	_tip_lbl.add_theme_font_size_override("font_size", 15)
+	_tip_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
-		tip_lbl.add_theme_font_override("font", _cached_font)
-	v.add_child(tip_lbl)
+		_tip_lbl.add_theme_font_override("font", _cached_font)
+	v.add_child(_tip_lbl)
 
 	# 底部操作按鈕 (高度 >= 50px)
 	var btn_h := HBoxContainer.new()
@@ -193,19 +247,19 @@ func _build_ui() -> void:
 	btn_h.add_child(_revive_btn)
 
 	# 結束戰鬥按鈕 (溫暖米黃/橙底)
-	var give_up_btn := Button.new()
-	give_up_btn.name = "GiveUpBtn"
-	give_up_btn.text = _t("結束戰鬥")
-	give_up_btn.custom_minimum_size = Vector2(180, 52)
-	give_up_btn.add_theme_font_size_override("font_size", 18)
-	give_up_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_give_up_btn = Button.new()
+	_give_up_btn.name = "GiveUpBtn"
+	_give_up_btn.text = _t("結束戰鬥")
+	_give_up_btn.custom_minimum_size = Vector2(180, 52)
+	_give_up_btn.add_theme_font_size_override("font_size", 18)
+	_give_up_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
-		give_up_btn.add_theme_font_override("font", _cached_font)
-	give_up_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 6))
-	give_up_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFF0D0"), COLOR_BORDER, 6))
-	give_up_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#FFE0A0"), COLOR_BORDER, 2))
-	give_up_btn.pressed.connect(_on_give_up_clicked)
-	btn_h.add_child(give_up_btn)
+		_give_up_btn.add_theme_font_override("font", _cached_font)
+	_give_up_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 6))
+	_give_up_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFF0D0"), COLOR_BORDER, 6))
+	_give_up_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#FFE0A0"), COLOR_BORDER, 2))
+	_give_up_btn.pressed.connect(_on_give_up_clicked)
+	btn_h.add_child(_give_up_btn)
 
 
 func _is_ad_removed() -> bool:
@@ -241,13 +295,13 @@ func _refresh_display() -> void:
 			can_claim = bool(es.call("can_claim_ad_revive"))
 
 	var ad_removed := _is_ad_removed()
-	if _hint_lbl:
+	if _hint_lbl and is_instance_valid(_hint_lbl):
 		if ad_removed:
 			_hint_lbl.text = _t("二次機會：已移除廣告，可直接重新上鍊，立即以 50% 生命值重返戰場！")
 		else:
 			_hint_lbl.text = _t("二次機會：觀看贊助廣告即可重新上鍊，立即以 50% 生命值重返戰場！")
 
-	if _revive_btn:
+	if _revive_btn and is_instance_valid(_revive_btn):
 		if can_claim:
 			_revive_btn.disabled = false
 			if ad_removed:
@@ -258,7 +312,7 @@ func _refresh_display() -> void:
 			_revive_btn.disabled = true
 			_revive_btn.text = _t("今日復活次數已達上限 (0/%d)") % cap
 
-	if _tip_lbl:
+	if _tip_lbl and is_instance_valid(_tip_lbl):
 		var has_refund := false
 		if es:
 			var target_mode := _mode
@@ -313,6 +367,30 @@ func _on_give_up_clicked() -> void:
 	if _on_give_up.is_valid():
 		_on_give_up.call()
 	queue_free()
+
+
+func get_title_text() -> String:
+	return _title_lbl.text if _title_lbl and is_instance_valid(_title_lbl) else ""
+
+
+func get_subtitle_text() -> String:
+	return _sub_lbl.text if _sub_lbl and is_instance_valid(_sub_lbl) else ""
+
+
+func get_hint_text() -> String:
+	return _hint_lbl.text if _hint_lbl and is_instance_valid(_hint_lbl) else ""
+
+
+func get_tip_text() -> String:
+	return _tip_lbl.text if _tip_lbl and is_instance_valid(_tip_lbl) else ""
+
+
+func get_revive_button_text() -> String:
+	return _revive_btn.text if _revive_btn and is_instance_valid(_revive_btn) else ""
+
+
+func get_give_up_button_text() -> String:
+	return _give_up_btn.text if _give_up_btn and is_instance_valid(_give_up_btn) else ""
 
 
 func _create_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:
