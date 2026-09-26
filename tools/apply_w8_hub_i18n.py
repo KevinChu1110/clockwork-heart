@@ -1,0 +1,222 @@
+import json
+import os
+
+TRANSLATIONS = {
+    "zh_TW": {
+        "玩具堆邊緣 · 新手引導": "玩具堆邊緣 · 新手引導",
+        "玩具堆邊緣 · 聚魂抽取": "玩具堆邊緣 · 聚魂抽取",
+        "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d": "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d",
+        "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d": "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d",
+        "首通 玩具堆邊緣": "首通 玩具堆邊緣",
+        "掃蕩 玩具堆邊緣": "掃蕩 玩具堆邊緣",
+        "等 8 分（模擬回復）": "等 8 分（模擬回復）",
+        "前往聚魂": "前往聚魂",
+        "引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。": "引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。",
+        "新手引導完成，前往聚魂": "新手引導完成，前往聚魂",
+        "前往玩具堆邊緣": "前往玩具堆邊緣",
+        "需先首通，或發條／掃蕩次數不足": "需先首通，或發條／掃蕩次數不足",
+        "首通失敗：%s": "首通失敗：%s",
+        "掃蕩失敗：%s": "掃蕩失敗：%s",
+        "日常發條失敗：%s": "日常發條失敗：%s",
+        "w8.hub.banner_onboard": "玩具堆邊緣 · 新手引導",
+        "w8.hub.banner_soul": "玩具堆邊緣 · 聚魂抽取",
+        "w8.hub.banner_chapter": "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d",
+        "w8.hub.chapter_info": "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d",
+        "w8.hub.btn_first_clear": "首通 玩具堆邊緣",
+        "w8.hub.btn_sweep": "掃蕩 玩具堆邊緣",
+        "w8.hub.btn_sim_regen": "等 8 分（模擬回復）",
+        "w8.hub.btn_goto_soul": "前往聚魂",
+        "w8.hub.hint": "引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。",
+        "w8.hub.toast_onboard_done": "新手引導完成，前往聚魂",
+        "w8.hub.toast_goto_outskirts": "前往玩具堆邊緣",
+        "w8.hub.err_need_first_clear": "需先首通，或發條／掃蕩次數不足",
+        "w8.hub.err_first_clear_fail": "首通失敗：%s",
+        "w8.hub.err_sweep_fail": "掃蕩失敗：%s",
+        "w8.hub.err_daily_fail": "日常發條失敗：%s"
+    },
+    "zh_CN": {
+        "玩具堆邊緣 · 新手引導": "玩具堆边缘 · 新手引导",
+        "玩具堆邊緣 · 聚魂抽取": "玩具堆边缘 · 聚魂抽取",
+        "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d": "玩具堆边缘 · 首通与扫荡 · 发条 %d/%d",
+        "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d": "章节「玩具堆边缘」\n金币 %d · 聚魂券 %d · 等级 %d\n发条 %d/%d · 今日扫荡 %d",
+        "首通 玩具堆邊緣": "首通 玩具堆边缘",
+        "掃蕩 玩具堆邊緣": "扫荡 玩具堆边缘",
+        "等 8 分（模擬回復）": "等 8 分（模拟回复）",
+        "前往聚魂": "前往聚魂",
+        "引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。": "引导流程：新手引导 → 聚魂抽取 → 章节挑战。日常发条每日一选，漏天不补。",
+        "新手引導完成，前往聚魂": "新手引导完成，前往聚魂",
+        "前往玩具堆邊緣": "前往玩具堆边缘",
+        "需先首通，或發條／掃蕩次數不足": "需先首通，或发条／扫荡次数不足",
+        "首通失敗：%s": "首通失败：%s",
+        "掃蕩失敗：%s": "扫荡失败：%s",
+        "日常發條失敗：%s": "日常发条失败：%s",
+        "w8.hub.banner_onboard": "玩具堆边缘 · 新手引导",
+        "w8.hub.banner_soul": "玩具堆边缘 · 聚魂抽取",
+        "w8.hub.banner_chapter": "玩具堆边缘 · 首通与扫荡 · 发条 %d/%d",
+        "w8.hub.chapter_info": "章节「玩具堆边缘」\n金币 %d · 聚魂券 %d · 等级 %d\n发条 %d/%d · 今日扫荡 %d",
+        "w8.hub.btn_first_clear": "首通 玩具堆边缘",
+        "w8.hub.btn_sweep": "扫荡 玩具堆边缘",
+        "w8.hub.btn_sim_regen": "等 8 分（模拟回复）",
+        "w8.hub.btn_goto_soul": "前往聚魂",
+        "w8.hub.hint": "引导流程：新手引导 → 聚魂抽取 → 章节挑战。日常发条每日一选，漏天不补。",
+        "w8.hub.toast_onboard_done": "新手引导完成，前往聚魂",
+        "w8.hub.toast_goto_outskirts": "前往玩具堆边缘",
+        "w8.hub.err_need_first_clear": "需先首通，或发条／扫荡次数不足",
+        "w8.hub.err_first_clear_fail": "首通失败：%s",
+        "w8.hub.err_sweep_fail": "扫荡失败：%s",
+        "w8.hub.err_daily_fail": "日常发条失败：%s"
+    },
+    "en": {
+        "玩具堆邊緣 · 新手引導": "Toy-pile Edge · Novice Guide",
+        "玩具堆邊緣 · 聚魂抽取": "Toy-pile Edge · Soul Drawing",
+        "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d": "Toy-pile Edge · First Clear & Sweep · Wind-up %d/%d",
+        "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d": "Chapter \"Toy-pile Edge\"\nGold %d · Soul Tickets %d · Level %d\nWind-up %d/%d · Sweeps Today %d",
+        "首通 玩具堆邊緣": "First Clear: Toy-pile Edge",
+        "掃蕩 玩具堆邊緣": "Sweep: Toy-pile Edge",
+        "等 8 分（模擬回復）": "Wait 8 min (Sim Regen)",
+        "前往聚魂": "Go to Soul Draw",
+        "引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。": "Guide Flow: Novice Guide → Soul Drawing → Chapter Challenge. Daily wind-up once per day; missed days cannot be made up.",
+        "新手引導完成，前往聚魂": "Novice guide complete, proceeding to soul drawing",
+        "前往玩具堆邊緣": "Proceeding to Toy-pile Edge",
+        "需先首通，或發條／掃蕩次數不足": "Must first clear, or insufficient wind-up/sweeps",
+        "首通失敗：%s": "First clear failed: %s",
+        "掃蕩失敗：%s": "Sweep failed: %s",
+        "日常發條失敗：%s": "Daily wind-up failed: %s",
+        "w8.hub.banner_onboard": "Toy-pile Edge · Novice Guide",
+        "w8.hub.banner_soul": "Toy-pile Edge · Soul Drawing",
+        "w8.hub.banner_chapter": "Toy-pile Edge · First Clear & Sweep · Wind-up %d/%d",
+        "w8.hub.chapter_info": "Chapter \"Toy-pile Edge\"\nGold %d · Soul Tickets %d · Level %d\nWind-up %d/%d · Sweeps Today %d",
+        "w8.hub.btn_first_clear": "First Clear: Toy-pile Edge",
+        "w8.hub.btn_sweep": "Sweep: Toy-pile Edge",
+        "w8.hub.btn_sim_regen": "Wait 8 min (Sim Regen)",
+        "w8.hub.btn_goto_soul": "Go to Soul Draw",
+        "w8.hub.hint": "Guide Flow: Novice Guide → Soul Drawing → Chapter Challenge. Daily wind-up once per day; missed days cannot be made up.",
+        "w8.hub.toast_onboard_done": "Novice guide complete, proceeding to soul drawing",
+        "w8.hub.toast_goto_outskirts": "Proceeding to Toy-pile Edge",
+        "w8.hub.err_need_first_clear": "Must first clear, or insufficient wind-up/sweeps",
+        "w8.hub.err_first_clear_fail": "First clear failed: %s",
+        "w8.hub.err_sweep_fail": "Sweep failed: %s",
+        "w8.hub.err_daily_fail": "Daily wind-up failed: %s"
+    },
+    "ja": {
+        "玩具堆邊緣 · 新手引導": "玩具の山の縁 · 初心者ガイド",
+        "玩具堆邊緣 · 聚魂抽取": "玩具の山の縁 · 魂寄せガチャ",
+        "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d": "玩具の山の縁 · 初回クリアと掃討 · ぜんまい %d/%d",
+        "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d": "章「玩具の山の縁」\nゴールド %d · 魂寄せ券 %d · レベル %d\nぜんまい %d/%d · 今日の掃討 %d",
+        "首通 玩具堆邊緣": "初回クリア 玩具の山の縁",
+        "掃蕩 玩具堆邊緣": "掃討 玩具の山の縁",
+        "等 8 分（模擬回復）": "8分待機（回復シミュレーション）",
+        "前往聚魂": "魂寄せへ",
+        "引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。": "進行ガイド：初心者ガイド → 魂寄せガチャ → 章チャレンジ。デイリーぜんまいは1日1回、逃した日は補填されません。",
+        "新手引導完成，前往聚魂": "初心者ガイド完了、魂寄せへ進みます",
+        "前往玩具堆邊緣": "玩具の山の縁へ進みます",
+        "需先首通，或發條／掃蕩次數不足": "初回クリアが必要、またはぜんまい／掃討回数が不足しています",
+        "首通失敗：%s": "初回クリア失敗：%s",
+        "掃蕩失敗：%s": "掃討失敗：%s",
+        "日常發條失敗：%s": "デイリーぜんまい失敗：%s",
+        "w8.hub.banner_onboard": "玩具の山の縁 · 初心者ガイド",
+        "w8.hub.banner_soul": "玩具の山の縁 · 魂寄せガチャ",
+        "w8.hub.banner_chapter": "玩具の山の縁 · 初回クリアと掃討 · ぜんまい %d/%d",
+        "w8.hub.chapter_info": "章「玩具の山の縁」\nゴールド %d · 魂寄せ券 %d · レベル %d\nぜんまい %d/%d · 今日の掃討 %d",
+        "w8.hub.btn_first_clear": "初回クリア 玩具の山の縁",
+        "w8.hub.btn_sweep": "掃討 玩具の山の縁",
+        "w8.hub.btn_sim_regen": "8分待機（回復シミュレーション）",
+        "w8.hub.btn_goto_soul": "魂寄せへ",
+        "w8.hub.hint": "進行ガイド：初心者ガイド → 魂寄せガチャ → 章チャレンジ。デイリーぜんまいは1日1回、逃した日は補填されません。",
+        "w8.hub.toast_onboard_done": "初心者ガイド完了、魂寄せへ進みます",
+        "w8.hub.toast_goto_outskirts": "玩具の山の縁へ進みます",
+        "w8.hub.err_need_first_clear": "初回クリアが必要、またはぜんまい／掃討回数が不足しています",
+        "w8.hub.err_first_clear_fail": "初回クリア失敗：%s",
+        "w8.hub.err_sweep_fail": "掃討失敗：%s",
+        "w8.hub.err_daily_fail": "デイリーぜんまい失敗：%s"
+    },
+    "ko": {
+        "玩具堆邊緣 · 新手引導": "장난감 더미 가장자리 · 초보자 가이드",
+        "玩具堆邊緣 · 聚魂抽取": "장난감 더미 가장자리 · 영혼 뽑기",
+        "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d": "장난감 더미 가장자리 · 첫 클리어 및 소탕 · 태엽 %d/%d",
+        "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d": "챕터 「장난감 더미 가장자리」\n골드 %d · 영혼 티켓 %d · 레벨 %d\n태엽 %d/%d · 오늘 소탕 %d",
+        "首通 玩具堆邊緣": "첫 클리어 장난감 더미 가장자리",
+        "掃蕩 玩具堆邊緣": "소탕 장난감 더미 가장자리",
+        "等 8 分（模擬回復）": "8분 대기 (회복 시뮬레이션)",
+        "前往聚魂": "영혼 뽑기로 이동",
+        "引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。": "진행 가이드: 초보자 가이드 → 영혼 뽑기 → 챕터 도전. 일일 태엽은 하루 한 번 선택, 지나간 날은 보충되지 않습니다.",
+        "新手引導完成，前往聚魂": "초보자 가이드 완료, 영혼 뽑기로 이동합니다",
+        "前往玩具堆邊緣": "장난감 더미 가장자리로 이동합니다",
+        "需先首通，或發條／掃蕩次數不足": "먼저 첫 클리어가 필요하거나 태엽/소탕 횟수가 부족합니다",
+        "首通失敗：%s": "첫 클리어 실패: %s",
+        "掃蕩失敗：%s": "소탕 실패: %s",
+        "日常發條失敗：%s": "일일 태엽 실패: %s",
+        "w8.hub.banner_onboard": "장난감 더미 가장자리 · 초보자 가이드",
+        "w8.hub.banner_soul": "장난감 더미 가장자리 · 영혼 뽑기",
+        "w8.hub.banner_chapter": "장난감 더미 가장자리 · 첫 클리어 및 소탕 · 태엽 %d/%d",
+        "w8.hub.chapter_info": "챕터 「장난감 더미 가장자리」\n골드 %d · 영혼 티켓 %d · 레벨 %d\n태엽 %d/%d · 오늘 소탕 %d",
+        "w8.hub.btn_first_clear": "첫 클리어 장난감 더미 가장자리",
+        "w8.hub.btn_sweep": "소탕 장난감 더미 가장자리",
+        "w8.hub.btn_sim_regen": "8분 대기 (회복 시뮬레이션)",
+        "w8.hub.btn_goto_soul": "영혼 뽑기로 이동",
+        "w8.hub.hint": "진행 가이드: 초보자 가이드 → 영혼 뽑기 → 챕터 도전. 일일 태엽은 하루 한 번 선택, 지나간 날은 보충되지 않습니다.",
+        "w8.hub.toast_onboard_done": "초보자 가이드 완료, 영혼 뽑기로 이동합니다",
+        "w8.hub.toast_goto_outskirts": "장난감 더미 가장자리로 이동합니다",
+        "w8.hub.err_need_first_clear": "먼저 첫 클리어가 필요하거나 태엽/소탕 횟수가 부족합니다",
+        "w8.hub.err_first_clear_fail": "첫 클리어 실패: %s",
+        "w8.hub.err_sweep_fail": "소탕 실패: %s",
+        "w8.hub.err_daily_fail": "일일 태엽 실패: %s"
+    },
+    "es": {
+        "玩具堆邊緣 · 新手引導": "Orilla del montón · Guía de principiante",
+        "玩具堆邊緣 · 聚魂抽取": "Orilla del montón · Extracción de almas",
+        "玩具堆邊緣 · 首通與掃蕩 · 發條 %d/%d": "Orilla del montón · Primera victoria y barrido · Cuerda %d/%d",
+        "章節「玩具堆邊緣」\n金幣 %d · 聚魂券 %d · 等級 %d\n發條 %d/%d · 今日掃蕩 %d": "Capítulo \"Orilla del montón\"\nOro %d · Boletos de alma %d · Nivel %d\nCuerda %d/%d · Barridos hoy %d",
+        "首通 玩具堆邊緣": "Primera victoria: Orilla del montón",
+        "掃蕩 玩具堆邊緣": "Barrer: Orilla del montón",
+        "等 8 分（模擬回復）": "Esperar 8 min (Simulación de recarga)",
+        "前往聚魂": "Ir a extracción de almas",
+        "引導流程：新手引導 → 聚魂抽取 → 章節挑戰。日常發條每日一選，漏天不補。": "Flujo de guía: Guía de principiante → Extracción de almas → Desafío de capítulo. La cuerda diaria se elige una vez al día; los días perdidos no se recuperan.",
+        "新手引導完成，前往聚魂": "Guía completada, procediendo a extracción de almas",
+        "前往玩具堆邊緣": "Dirigiéndose a Orilla del montón",
+        "需先首通，或發條／掃蕩次數不足": "Se requiere primera victoria o cuerda/barridos insuficientes",
+        "首通失敗：%s": "Error en primera victoria: %s",
+        "掃蕩失敗：%s": "Error en barrido: %s",
+        "日常發條失敗：%s": "Error en cuerda diaria: %s",
+        "w8.hub.banner_onboard": "Orilla del montón · Guía de principiante",
+        "w8.hub.banner_soul": "Orilla del montón · Extracción de almas",
+        "w8.hub.banner_chapter": "Orilla del montón · Primera victoria y barrido · Cuerda %d/%d",
+        "w8.hub.chapter_info": "Capítulo \"Orilla del montón\"\nOro %d · Boletos de alma %d · Nivel %d\nCuerda %d/%d · Barridos hoy %d",
+        "w8.hub.btn_first_clear": "Primera victoria: Orilla del montón",
+        "w8.hub.btn_sweep": "Barrer: Orilla del montón",
+        "w8.hub.btn_sim_regen": "Esperar 8 min (Simulación de recarga)",
+        "w8.hub.btn_goto_soul": "Ir a extracción de almas",
+        "w8.hub.hint": "Flujo de guía: Guía de principiante → Extracción de almas → Desafío de capítulo. La cuerda diaria se elige una vez al día; los días perdidos no se recuperan.",
+        "w8.hub.toast_onboard_done": "Guía completada, procediendo a extracción de almas",
+        "w8.hub.toast_goto_outskirts": "Dirigiéndose a Orilla del montón",
+        "w8.hub.err_need_first_clear": "Se requiere primera victoria o cuerda/barridos insuficientes",
+        "w8.hub.err_first_clear_fail": "Error en primera victoria: %s",
+        "w8.hub.err_sweep_fail": "Error en barrido: %s",
+        "w8.hub.err_daily_fail": "Error en cuerda diaria: %s"
+    }
+}
+
+base_dir = "game/data/i18n"
+
+for lang, terms in TRANSLATIONS.items():
+    # 1. Update content/<lang>/ui.json
+    ui_path = os.path.join(base_dir, "content", lang, "ui.json")
+    if os.path.exists(ui_path):
+        with open(ui_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        for k, v in terms.items():
+            data[k] = v
+        with open(ui_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        print(f"Updated {ui_path}")
+
+    # 2. Update <lang>.json
+    lang_path = os.path.join(base_dir, f"{lang}.json")
+    if os.path.exists(lang_path):
+        with open(lang_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        for k, v in terms.items():
+            data[k] = v
+        with open(lang_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        print(f"Updated {lang_path}")
