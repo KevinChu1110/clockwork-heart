@@ -28,6 +28,17 @@ const DEFAULT_DROP_TIER_WEIGHTS: Dictionary = {
 	"red": 5,
 }
 
+const DEFAULT_COLOSSUS_DROP_TIER_WEIGHTS: Dictionary = {
+	"gray": 20,
+	"white": 180,
+	"orange": 200,
+	"blue": 250,
+	"purple": 180,
+	"gold": 100,
+	"green": 50,
+	"red": 20,
+}
+
 const SLOT_MAINSPRING: String = "mainspring"
 const SLOT_CHASSIS: String = "chassis"
 const SLOT_ESCAPEMENT: String = "escapement"
@@ -1172,23 +1183,45 @@ static func get_equipped_part(slot_id: String) -> Dictionary:
 	return {}
 
 
-## 取得八色階掉落機率權重表
-static func get_drop_weights() -> Dictionary:
-	var weights := DEFAULT_DROP_TIER_WEIGHTS.duplicate()
+## 取得八色階掉落機率權重表（支援來源：關卡／巨偶，預設 stage）
+static func get_drop_weights(source: String = "stage") -> Dictionary:
+	var is_colossus := (source == "colossus" or source.begins_with("colossus_"))
+	var default_weights: Dictionary = DEFAULT_COLOSSUS_DROP_TIER_WEIGHTS if is_colossus else DEFAULT_DROP_TIER_WEIGHTS
+	var weights := default_weights.duplicate()
 	if FileAccess.file_exists(TABLE_PATH):
 		var f := FileAccess.open(TABLE_PATH, FileAccess.READ)
 		if f:
 			var data = JSON.parse_string(f.get_as_text())
 			if typeof(data) == TYPE_DICTIONARY and data.has("tiers") and typeof(data["tiers"]) == TYPE_ARRAY:
 				for tdef in data["tiers"]:
-					if typeof(tdef) == TYPE_DICTIONARY and tdef.has("id") and tdef.has("drop_weight"):
-						weights[str(tdef["id"])] = int(tdef["drop_weight"])
+					if typeof(tdef) == TYPE_DICTIONARY and tdef.has("id"):
+						var tid := str(tdef["id"])
+						if is_colossus and tdef.has("colossus_drop_weight"):
+							weights[tid] = int(tdef["colossus_drop_weight"])
+						elif not is_colossus and tdef.has("drop_weight"):
+							weights[tid] = int(tdef["drop_weight"])
 	return weights
 
 
-## 依權重隨機抽取八色階之一
-static func roll_tier(rng: RandomNumberGenerator = null) -> String:
-	var weights := get_drop_weights()
+static func _parse_roll_args(arg1: Variant, arg2: String) -> Array:
+	var rng: RandomNumberGenerator = null
+	var source: String = "stage"
+	if arg1 is RandomNumberGenerator:
+		rng = arg1
+		source = arg2
+	elif typeof(arg1) == TYPE_STRING:
+		source = str(arg1)
+	else:
+		source = arg2
+	return [rng, source]
+
+
+## 依權重隨機抽取八色階之一（支援傳入來源：關卡／巨偶）
+static func roll_tier(arg1: Variant = null, arg2: String = "stage") -> String:
+	var parsed: Array = _parse_roll_args(arg1, arg2)
+	var rng: RandomNumberGenerator = parsed[0]
+	var source: String = parsed[1]
+	var weights := get_drop_weights(source)
 	var total_w: int = 0
 	for tid in ALL_TIER_IDS:
 		total_w += int(weights.get(tid, 0))
@@ -1209,11 +1242,20 @@ static func roll_slot(rng: RandomNumberGenerator = null) -> String:
 	return ALL_SLOT_IDS[idx]
 
 
-## 隨機生成一顆五槽機芯戰利品部件（遵循 create_part 規格與八色階權重）
-static func roll_battle_drop(rng: RandomNumberGenerator = null) -> Dictionary:
+## 隨機生成一顆五槽機芯戰利品部件（遵循 create_part 規格與八色階權重，支援傳入來源關卡／巨偶）
+static func roll_battle_drop(arg1: Variant = null, arg2: String = "stage") -> Dictionary:
+	var parsed: Array = _parse_roll_args(arg1, arg2)
+	var rng: RandomNumberGenerator = parsed[0]
+	var source: String = parsed[1]
 	var slot_id := roll_slot(rng)
-	var tier_id := roll_tier(rng)
-	return create_part_by_tier(slot_id, tier_id)
+	var tier_id := roll_tier(rng, source)
+	var part := create_part_by_tier(slot_id, tier_id)
+	if source == "colossus" or source.begins_with("colossus_"):
+		part["is_colossus"] = true
+		part["drop_source"] = source
+	else:
+		part["drop_source"] = "stage"
+	return part
 
 
 ## 將機芯部件加入背包／庫存（同步 GameState.core_bag 與 CoreSystem.inventory）
@@ -1293,13 +1335,13 @@ static func remove_part_from_inventory(part_uid: String) -> Dictionary:
 	return removed
 
 
-## 戰鬥勝利結算掉落：抽取部件、入袋並傳回
-static func roll_and_add_battle_drop(rng: RandomNumberGenerator = null) -> Dictionary:
-	var part := roll_battle_drop(rng)
+## 戰鬥勝利結算掉落：抽取部件、入袋並傳回（支援傳入來源：關卡／巨偶）
+static func roll_and_add_battle_drop(arg1: Variant = null, arg2: String = "stage") -> Dictionary:
+	var part := roll_battle_drop(arg1, arg2)
 	add_part_to_inventory(part)
 	return part
 
 
-## 戰鬥勝利掛鉤（別名）
-static func on_battle_won(rng: RandomNumberGenerator = null) -> Dictionary:
-	return roll_and_add_battle_drop(rng)
+## 戰鬥勝利掛鉤（別名，支援傳入來源：關卡／巨偶）
+static func on_battle_won(arg1: Variant = null, arg2: String = "stage") -> Dictionary:
+	return roll_and_add_battle_drop(arg1, arg2)

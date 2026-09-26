@@ -1,0 +1,9 @@
+== 無頭測試 · 6 個 · 單項上限 120s ==
+  ok    test_colossus_defeat_hint  TEST_COLOSSUS_DEFEAT_HINT_OK
+  ok    test_colossus_battle  TEST_COLOSSUS_BATTLE_OK
+  ok    test_colossus_daily  TEST_COLOSSUS_DAILY_OK
+  ok    test_colossus_exp  TEST_COLOSSUS_EXP_OK
+  ok    test_colossus_part_scrap  TEST_COLOSSUS_PART_SCRAP_OK
+  ok    test_windup_to_colossus  TEST_WINDUP_TO_COLOSSUS_OK
+
+TESTS PASSED (6/6)

@@ -414,11 +414,11 @@ func _refresh_display() -> void:
 	var stat_parts: Array[String] = []
 	if cs != null:
 		var pstats: Dictionary = cs.get_part_stats(_part)
-		if int(pstats.get("atk", 0)) > 0: stat_parts.append("攻+%d" % int(pstats.atk))
-		if int(pstats.get("def", 0)) > 0: stat_parts.append("防+%d" % int(pstats.def))
-		if int(pstats.get("hp", 0)) > 0: stat_parts.append("血+%d" % int(pstats.hp))
-		if float(pstats.get("crit", 0.0)) > 0.0: stat_parts.append("暴擊+%.1f%%" % float(pstats.crit))
-		if float(pstats.get("crit_dmg", 0.0)) > 0.0: stat_parts.append("暴傷+%.0f%%" % float(pstats.crit_dmg))
+		if int(pstats.get("atk", 0)) > 0: stat_parts.append(_t("攻+%d") % int(pstats.atk))
+		if int(pstats.get("def", 0)) > 0: stat_parts.append(_t("防+%d") % int(pstats.def))
+		if int(pstats.get("hp", 0)) > 0: stat_parts.append(_t("血+%d") % int(pstats.hp))
+		if float(pstats.get("crit", 0.0)) > 0.0: stat_parts.append(_t("暴擊+%.1f%%") % float(pstats.crit))
+		if float(pstats.get("crit_dmg", 0.0)) > 0.0: stat_parts.append(_t("暴傷+%.0f%%") % float(pstats.crit_dmg))
 	_stats_lbl.text = " · ".join(stat_parts) if not stat_parts.is_empty() else _t("標準數值")
 	_desc_lbl.text = _t("可校準 7 次 · 安全彈簧保護不碎裝")
 

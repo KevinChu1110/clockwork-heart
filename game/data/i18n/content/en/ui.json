@@ -3083,5 +3083,7 @@
   "已達極限紅階，微調維持頂階": "At Red tier cap: fine-tuned, maintained peak",
   "CALIBRATE_FAIL": "Calibration failed: safety spring protects gear",
   "校準未達標，安全彈簧保護不碎裝": "Calibration failed: safety spring protects gear",
-  "前往停擺巨偶": "Go to Stalled Colossus"
+  "前往停擺巨偶": "Go to Stalled Colossus",
+  "暴擊+%.1f%%": "Crit+%.1f%%",
+  "暴傷+%.0f%%": "CritDmg+%.0f%%"
 }

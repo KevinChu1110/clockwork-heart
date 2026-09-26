@@ -36,7 +36,10 @@ func _initialize() -> void:
 	# 1. 驗證資料層 core_color_tiers.json 八色階掉落權重
 	_test_drop_weights_table()
 
-	# 2. 驗證機芯部件隨機抽取與 create_part 規格合規
+	# 2. 驗證停擺巨偶獨立掉落權重與期望色階指數大於普通關卡
+	_test_colossus_vs_stage_drop_weights(cs)
+
+	# 3. 驗證機芯部件隨機抽取與 create_part 規格合規
 	_test_roll_battle_drop(cs)
 
 	# 3. 驗證戰鬥勝利後 inventory / core_bag 增加一顆機芯部件
@@ -95,6 +98,67 @@ func _test_drop_weights_table() -> void:
 
 	_assert(total_w == 1000, "八色階掉落總權重應為 1000，實際為: %d" % total_w)
 	print("  ✓ 八色階掉落機率權重健全，總權重: %d" % total_w)
+
+
+func _test_colossus_vs_stage_drop_weights(cs: Node) -> void:
+	print("\n--- 2. 檢驗停擺巨偶獨立掉落權重與期望色階指數高於普通關卡 ---")
+	var s_weights := CoreSystemClass.get_drop_weights("stage")
+	var c_weights := CoreSystemClass.get_drop_weights("colossus")
+
+	_assert(c_weights.size() == 8, "巨偶掉落權重表應包含八色階")
+	var total_cw := 0
+	for tid in CoreSystemClass.ALL_TIER_IDS:
+		var w: int = int(c_weights.get(tid, 0))
+		_assert(w > 0, "巨偶色階 %s 權重應大於 0: %d" % [tid, w])
+		total_cw += w
+	_assert(total_cw == 1000, "巨偶八色階總權重應為 1000: %d" % total_cw)
+
+	# 灰權重不准比普通關卡高
+	var c_gray := int(c_weights.get("gray", 0))
+	var s_gray := int(s_weights.get("gray", 0))
+	_assert(c_gray <= s_gray, "巨偶灰權重 (%d) 不准比普通關卡 (%d) 高" % [c_gray, s_gray])
+
+	# 白與橘仍可掉落
+	_assert(int(c_weights.get("white", 0)) > 0, "巨偶白階仍應可掉")
+	_assert(int(c_weights.get("orange", 0)) > 0, "巨偶橘階仍應可掉")
+
+	# 紫＋金＋綠＋紅合計明顯高於普通關卡
+	var s_high := int(s_weights.get("purple", 0)) + int(s_weights.get("gold", 0)) + int(s_weights.get("green", 0)) + int(s_weights.get("red", 0))
+	var c_high := int(c_weights.get("purple", 0)) + int(c_weights.get("gold", 0)) + int(c_weights.get("green", 0)) + int(c_weights.get("red", 0))
+	_assert(c_high > s_high * 2, "巨偶高階(紫+金+綠+紅)合計 (%d) 應明顯高於普通關卡 (%d)" % [c_high, s_high])
+	print("  ✓ 高階權重比對：普通關卡 = %d (%.1f%%), 巨偶 = %d (%.1f%%)" % [s_high, float(s_high) / 10.0, c_high, float(c_high) / 10.0])
+
+	# 固定種子模擬證明巨偶期望色階指數 > 普通關卡
+	var rng_stage := RandomNumberGenerator.new()
+	rng_stage.seed = 20260927
+	var rng_colossus := RandomNumberGenerator.new()
+	rng_colossus.seed = 20260927
+
+	var stage_sum := 0.0
+	var colossus_sum := 0.0
+	var n_rolls := 3000
+	var stage_high_n := 0
+	var colossus_high_n := 0
+
+	for i in range(n_rolls):
+		var p_s: Dictionary = cs.roll_battle_drop(rng_stage, "stage")
+		var p_c: Dictionary = cs.roll_battle_drop(rng_colossus, "colossus")
+		var s_idx := CoreSystemClass.get_tier_index(str(p_s.get("tier", "")))
+		var c_idx := CoreSystemClass.get_tier_index(str(p_c.get("tier", "")))
+		stage_sum += s_idx
+		colossus_sum += c_idx
+		if s_idx >= 4:
+			stage_high_n += 1
+		if c_idx >= 4:
+			colossus_high_n += 1
+
+	var stage_avg := stage_sum / float(n_rolls)
+	var colossus_avg := colossus_sum / float(n_rolls)
+	print("  ✓ 固定種子 (%d 次) 期望色階指數：普通關卡 = %.3f, 巨偶 = %.3f" % [n_rolls, stage_avg, colossus_avg])
+	print("  ✓ 固定種子高階掉出次數：普通關卡 = %d (%.1f%%), 巨偶 = %d (%.1f%%)" % [stage_high_n, (float(stage_high_n)/n_rolls)*100.0, colossus_high_n, (float(colossus_high_n)/n_rolls)*100.0])
+
+	_assert(colossus_avg > stage_avg, "巨偶期望色階指數 (%.3f) 應大於普通關卡 (%.3f)" % [colossus_avg, stage_avg])
+	_assert(colossus_high_n > stage_high_n * 2, "巨偶高階實際掉落次數應明顯高於普通關卡")
 
 
 func _test_roll_battle_drop(cs: Node) -> void:

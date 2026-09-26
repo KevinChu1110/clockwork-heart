@@ -104,9 +104,11 @@ func _initialize() -> void:
 	var pre_count := CoreSystemClass.get_inventory().size()
 
 	# 勝場
-	var victory_part := CoreSystemClass.roll_and_add_battle_drop()
+	var victory_part := CoreSystemClass.roll_and_add_battle_drop(null, "colossus")
 	if victory_part.is_empty():
 		_fail("勝場未掉落機芯部件")
+	if not bool(victory_part.get("is_colossus", false)):
+		_fail("巨偶掉落部件缺少 is_colossus 標記")
 	var post_victory_count := CoreSystemClass.get_inventory().size()
 	if post_victory_count != pre_count + 1:
 		_fail("勝場後機芯背包未增加 1 件")
@@ -155,6 +157,48 @@ func _initialize() -> void:
 			_fail("鎖定停擺巨偶子模式時四區橫列應被隱藏")
 		print("  ✓ 巨偶戰鬥結束返回手遊大廳出征分頁並鎖定停擺巨偶子模式驗證通過")
 		lobby.queue_free()
+
+	# 6. 驗證停擺巨偶勝場機芯獨立權重與期望色階指數大於普通關卡
+	print("--- 6. 驗證停擺巨偶機芯獨立權重與期望色階指數 ---")
+	var s_w := CoreSystemClass.get_drop_weights("stage")
+	var c_w := CoreSystemClass.get_drop_weights("colossus")
+
+	# 紫+金+綠+紅合計明顯高於普通關卡
+	var s_high := int(s_w.get("purple", 0)) + int(s_w.get("gold", 0)) + int(s_w.get("green", 0)) + int(s_w.get("red", 0))
+	var c_high := int(c_w.get("purple", 0)) + int(c_w.get("gold", 0)) + int(c_w.get("green", 0)) + int(c_w.get("red", 0))
+	if c_high <= s_high * 2:
+		_fail("巨偶高階掉落權重合計 (%d) 未明顯高於普通關卡 (%d)" % [c_high, s_high])
+
+	# 灰權重不准比普通關卡高
+	if int(c_w.get("gray", 0)) > int(s_w.get("gray", 0)):
+		_fail("巨偶灰權重高於普通關卡")
+
+	# 白／橘仍可掉
+	if int(c_w.get("white", 0)) <= 0 or int(c_w.get("orange", 0)) <= 0:
+		_fail("巨偶白或橘權重應大於 0")
+
+	# 固定種子證明巨偶期望色階指數 > 普通關卡
+	var rng_s := RandomNumberGenerator.new()
+	rng_s.seed = 20260927
+	var rng_c := RandomNumberGenerator.new()
+	rng_c.seed = 20260927
+
+	var sum_s := 0.0
+	var sum_c := 0.0
+	var samples := 2000
+	for i in range(samples):
+		var p_s: Dictionary = cs.roll_battle_drop(rng_s, "stage")
+		var p_c: Dictionary = cs.roll_battle_drop(rng_c, "colossus")
+		sum_s += CoreSystemClass.get_tier_index(str(p_s.get("tier", "")))
+		sum_c += CoreSystemClass.get_tier_index(str(p_c.get("tier", "")))
+
+	var avg_s := sum_s / float(samples)
+	var avg_c := sum_c / float(samples)
+	print("  ✓ 固定種子模擬證明：普通關卡期望色階指數 = %.3f, 巨偶期望色階指數 = %.3f" % [avg_s, avg_c])
+	if avg_c <= avg_s:
+		_fail("巨偶期望色階指數應大於普通關卡")
+	else:
+		print("  ✓ 巨偶期望色階指數 (%.3f) > 普通關卡 (%.3f) 驗證通過" % [avg_c, avg_s])
 
 	if _ok:
 		print("TEST_COLOSSUS_BATTLE_OK")

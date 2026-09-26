@@ -65,7 +65,9 @@
       "modulate": [0.557, 0.557, 0.576, 1.0],
       "desc": "失調機芯（分數 < 0）",
       "drop_weight": 50,
-      "drop_rate_pct": 5.0
+      "drop_rate_pct": 5.0,
+      "colossus_drop_weight": 20,
+      "colossus_drop_rate_pct": 2.0
     },
     {
       "tier": 1,
@@ -78,7 +80,9 @@
       "modulate": [1.0, 1.0, 1.0, 1.0],
       "desc": "出廠白板（分數 0）",
       "drop_weight": 450,
-      "drop_rate_pct": 45.0
+      "drop_rate_pct": 45.0,
+      "colossus_drop_weight": 180,
+      "colossus_drop_rate_pct": 18.0
     },
     {
       "tier": 2,
@@ -91,7 +95,9 @@
       "modulate": [1.0, 0.627, 0.063, 1.0],
       "desc": "微調部件（分數 1~4）",
       "drop_weight": 240,
-      "drop_rate_pct": 24.0
+      "drop_rate_pct": 24.0,
+      "colossus_drop_weight": 200,
+      "colossus_drop_rate_pct": 20.0
     },
     {
       "tier": 3,
@@ -104,7 +110,9 @@
       "modulate": [0.22, 0.627, 1.0, 1.0],
       "desc": "標準部件（分數 5~22）",
       "drop_weight": 150,
-      "drop_rate_pct": 15.0
+      "drop_rate_pct": 15.0,
+      "colossus_drop_weight": 250,
+      "colossus_drop_rate_pct": 25.0
     },
     {
       "tier": 4,
@@ -117,7 +125,9 @@
       "modulate": [0.659, 0.333, 0.969, 1.0],
       "desc": "精準部件（分數 23~39）",
       "drop_weight": 60,
-      "drop_rate_pct": 6.0
+      "drop_rate_pct": 6.0,
+      "colossus_drop_weight": 180,
+      "colossus_drop_rate_pct": 18.0
     },
     {
       "tier": 5,
@@ -130,7 +140,9 @@
       "modulate": [1.0, 0.816, 0.157, 1.0],
       "desc": "卓越部件（分數 40~54）",
       "drop_weight": 30,
-      "drop_rate_pct": 3.0
+      "drop_rate_pct": 3.0,
+      "colossus_drop_weight": 100,
+      "colossus_drop_rate_pct": 10.0
     },
     {
       "tier": 6,
@@ -143,7 +155,9 @@
       "modulate": [0.306, 0.847, 0.416, 1.0],
       "desc": "完美部件（分數 55~69）",
       "drop_weight": 15,
-      "drop_rate_pct": 1.5
+      "drop_rate_pct": 1.5,
+      "colossus_drop_weight": 50,
+      "colossus_drop_rate_pct": 5.0
     },
     {
       "tier": 7,
@@ -156,7 +170,9 @@
       "modulate": [1.0, 0.369, 0.541, 1.0],
       "desc": "極限超越（分數 70+）",
       "drop_weight": 5,
-      "drop_rate_pct": 0.5
+      "drop_rate_pct": 0.5,
+      "colossus_drop_weight": 20,
+      "colossus_drop_rate_pct": 2.0
     }
   ],
   "calibration_rules": {
@@ -189,6 +205,12 @@
     }
   },
   "battle_drop_rules": {
+    "enabled": true,
+    "parts_per_victory": 1,
+    "total_weight": 1000,
+    "allowed_slots": ["mainspring", "chassis", "escapement", "gear_train", "soul_core"]
+  },
+  "colossus_drop_rules": {
     "enabled": true,
     "parts_per_victory": 1,
     "total_weight": 1000,

@@ -881,5 +881,7 @@
   "已達極限紅階，微調維持頂階": "Nivel Rojo máximo: ajuste fino, mantiene cima",
   "CALIBRATE_FAIL": "Calibración no alcanzada: resorte de seguridad protege",
   "校準未達標，安全彈簧保護不碎裝": "Calibración no alcanzada: resorte de seguridad protege",
-  "前往停擺巨偶": "Ir al Coloso Paralizado"
+  "前往停擺巨偶": "Ir al Coloso Paralizado",
+  "暴擊+%.1f%%": "Crít+%.1f%%",
+  "暴傷+%.0f%%": "DañoCrít+%.0f%%"
 }

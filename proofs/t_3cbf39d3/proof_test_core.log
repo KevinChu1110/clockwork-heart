@@ -1,0 +1,7 @@
+== 無頭測試 · 4 個 · 單項上限 120s ==
+  ok    test_core_battle_drop  CORE_BATTLE_DROP_OK
+  ok    test_core_color_tiers  CORE_COLOR_TIERS_OK
+  ok    test_core_combat_stats  CORE_COMBAT_STATS_OK
+  ok    test_core_slots_ui  TEST_CORE_SLOTS_UI_OK
+
+TESTS PASSED (4/4)
