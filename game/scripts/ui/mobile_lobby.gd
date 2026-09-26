@@ -10,6 +10,8 @@ const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
+const SpriteDB = preload("res://scripts/art/sprite_db.gd")
+const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 
 ## ── 多巴胺鮮亮色盤標準 (對齊 mobile_settings / maple_hud / review.md) ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
@@ -418,6 +420,7 @@ func _refresh_equip_schematic() -> void:
 	if _equip_schematic == null:
 		return
 	for c in _equip_schematic.get_children():
+		_equip_schematic.remove_child(c)
 		c.queue_free()
 	var race := _current_race()
 	var slots := _current_paperdoll_slots()
