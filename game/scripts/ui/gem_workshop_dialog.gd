@@ -9,11 +9,26 @@ extends Control
 ## 5. 字級 16~24px 加粗帶深色厚描邊，零 13px 以下小字。
 ## 6. 徹底移除 RichTextLabel BBCode 長文牆，全面改為果凍卡片網格與實體拇指按鈕。
 ## 7. 零系統 Emoji、零字元圖示。
+## 8. 六語系多國語言支援 (ContentLoc / Loc.locale_changed 即時切換)。
 
 signal closed()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+
+static func _t(s: String) -> String:
+	var res := ContentLoc.text("ui", s)
+	if res != s:
+		return res
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var loc_t = str(loc.call("t", s))
+			if loc_t != "" and loc_t != s:
+				return loc_t
+	return res
 
 ## ── 多巴胺鮮亮高飽和色盤 ──
 const COLOR_GOLD        := Color("#FFD028")  ## 金黃
@@ -47,6 +62,7 @@ enum Tab {
 var _current_tab: Tab = Tab.SMELT
 
 var _dialog_card: PanelContainer
+var _title_lbl: Label
 var _tab_smelt_btn: Button
 var _tab_case_btn: Button
 
@@ -57,10 +73,64 @@ var _furnace_bar: PanelContainer
 var _case_view: VBoxContainer
 var _case_slots_row: HBoxContainer
 var _case_bonus_panel: PanelContainer
+var _grid_title: Label
+var _btn_refresh_case: Button
+var _btn_auto_socket: Button
 var _case_grid: GridContainer
 
 var _msg_label: Label
+var _btn_close: Button
 var _cached_font: Font = null
+
+
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_ui_texts()
+	if _current_tab == Tab.SMELT:
+		_refresh_smelt_view()
+	else:
+		_refresh_case_view()
+
+
+func _update_ui_texts() -> void:
+	if _title_lbl and is_instance_valid(_title_lbl):
+		_title_lbl.text = _t("手藝工坊 · 寶石熔煉與寶石櫃")
+	if _tab_smelt_btn and is_instance_valid(_tab_smelt_btn):
+		_tab_smelt_btn.text = _t("寶石熔煉與合成")
+	if _tab_case_btn and is_instance_valid(_tab_case_btn):
+		_tab_case_btn.text = _t("寶石櫃盤點檢視")
+	if _grid_title and is_instance_valid(_grid_title):
+		_grid_title.text = _t("倉庫寶石儲備盤點（各階數量）")
+	if _btn_refresh_case and is_instance_valid(_btn_refresh_case):
+		_btn_refresh_case.text = _t("重新盤點")
+	if _btn_auto_socket and is_instance_valid(_btn_auto_socket):
+		_btn_auto_socket.text = _t("一鍵鑲嵌")
+	if _btn_close and is_instance_valid(_btn_close):
+		_btn_close.text = _t("離開工坊")
 
 
 func _ready() -> void:
@@ -72,7 +142,9 @@ func _ready() -> void:
 	if ResourceLoader.exists(FONT_PATH):
 		_cached_font = load(FONT_PATH) as Font
 
+	_connect_loc_signal()
 	_build_ui()
+	_update_ui_texts()
 	_switch_tab(Tab.SMELT)
 
 
@@ -122,16 +194,17 @@ func _build_ui() -> void:
 	head.add_theme_constant_override("separation", 10)
 	v.add_child(head)
 
-	var title_lbl := Label.new()
-	title_lbl.text = "手藝工坊 · 寶石熔煉與寶石櫃"
-	title_lbl.add_theme_font_size_override("font_size", 22)
-	title_lbl.add_theme_color_override("font_color", COLOR_SKY)
-	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	title_lbl.add_theme_constant_override("outline_size", 4)
+	_title_lbl = Label.new()
+	_title_lbl.name = "TitleLabel"
+	_title_lbl.text = _t("手藝工坊 · 寶石熔煉與寶石櫃")
+	_title_lbl.add_theme_font_size_override("font_size", 22)
+	_title_lbl.add_theme_color_override("font_color", COLOR_SKY)
+	_title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_title_lbl.add_theme_constant_override("outline_size", 4)
 	if _cached_font:
-		title_lbl.add_theme_font_override("font", _cached_font)
-	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head.add_child(title_lbl)
+		_title_lbl.add_theme_font_override("font", _cached_font)
+	_title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(_title_lbl)
 
 	var close_btn := ResponsiveUi.make_close_button(_on_close)
 	head.add_child(close_btn)
@@ -149,7 +222,7 @@ func _build_ui() -> void:
 
 	_tab_smelt_btn = Button.new()
 	_tab_smelt_btn.name = "TabSmeltBtn"
-	_tab_smelt_btn.text = "寶石熔煉與合成"
+	_tab_smelt_btn.text = _t("寶石熔煉與合成")
 	_tab_smelt_btn.custom_minimum_size = Vector2(220, 50)
 	_tab_smelt_btn.add_theme_font_size_override("font_size", 16)
 	if _cached_font:
@@ -159,7 +232,7 @@ func _build_ui() -> void:
 
 	_tab_case_btn = Button.new()
 	_tab_case_btn.name = "TabCaseBtn"
-	_tab_case_btn.text = "寶石櫃盤點檢視"
+	_tab_case_btn.text = _t("寶石櫃盤點檢視")
 	_tab_case_btn.custom_minimum_size = Vector2(220, 50)
 	_tab_case_btn.add_theme_font_size_override("font_size", 16)
 	if _cached_font:
@@ -231,43 +304,44 @@ func _build_ui() -> void:
 	var grid_head := HBoxContainer.new()
 	cgw_v.add_child(grid_head)
 
-	var grid_title := _create_label("倉庫寶石儲備盤點（各階數量）", 18, COLOR_TEXT_DARK, true)
-	grid_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	grid_head.add_child(grid_title)
+	_grid_title = _create_label(_t("倉庫寶石儲備盤點（各階數量）"), 18, COLOR_TEXT_DARK, true)
+	_grid_title.name = "GridTitle"
+	_grid_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_grid_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	grid_head.add_child(_grid_title)
 
-	var btn_refresh_case := Button.new()
-	btn_refresh_case.name = "BtnRefreshCase"
-	btn_refresh_case.text = "重新盤點"
-	btn_refresh_case.custom_minimum_size = Vector2(130, 50)
-	btn_refresh_case.add_theme_font_size_override("font_size", 16)
-	btn_refresh_case.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	btn_refresh_case.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	btn_refresh_case.add_theme_constant_override("outline_size", 1)
+	_btn_refresh_case = Button.new()
+	_btn_refresh_case.name = "BtnRefreshCase"
+	_btn_refresh_case.text = _t("重新盤點")
+	_btn_refresh_case.custom_minimum_size = Vector2(130, 50)
+	_btn_refresh_case.add_theme_font_size_override("font_size", 16)
+	_btn_refresh_case.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_refresh_case.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_refresh_case.add_theme_constant_override("outline_size", 1)
 	if _cached_font:
-		btn_refresh_case.add_theme_font_override("font", _cached_font)
-	btn_refresh_case.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 16, 2))
-	btn_refresh_case.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 16, 2))
-	btn_refresh_case.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 16, 2))
-	btn_refresh_case.pressed.connect(_refresh_case_view)
-	grid_head.add_child(btn_refresh_case)
+		_btn_refresh_case.add_theme_font_override("font", _cached_font)
+	_btn_refresh_case.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 16, 2))
+	_btn_refresh_case.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 16, 2))
+	_btn_refresh_case.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 16, 2))
+	_btn_refresh_case.pressed.connect(_refresh_case_view)
+	grid_head.add_child(_btn_refresh_case)
 
-	var btn_auto_socket := Button.new()
-	btn_auto_socket.name = "BtnAutoSocket"
-	btn_auto_socket.text = "一鍵鑲嵌"
-	btn_auto_socket.custom_minimum_size = Vector2(130, 50)
-	btn_auto_socket.add_theme_font_size_override("font_size", 16)
-	btn_auto_socket.add_theme_color_override("font_color", Color.WHITE)
-	btn_auto_socket.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	btn_auto_socket.add_theme_constant_override("outline_size", 4)
+	_btn_auto_socket = Button.new()
+	_btn_auto_socket.name = "BtnAutoSocket"
+	_btn_auto_socket.text = _t("一鍵鑲嵌")
+	_btn_auto_socket.custom_minimum_size = Vector2(130, 50)
+	_btn_auto_socket.add_theme_font_size_override("font_size", 16)
+	_btn_auto_socket.add_theme_color_override("font_color", Color.WHITE)
+	_btn_auto_socket.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_auto_socket.add_theme_constant_override("outline_size", 4)
 	if _cached_font:
-		btn_auto_socket.add_theme_font_override("font", _cached_font)
-	btn_auto_socket.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 16, 2))
-	btn_auto_socket.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE584"), COLOR_BORDER, 5, 16, 2))
-	btn_auto_socket.add_theme_stylebox_override("pressed", _create_button_style(Color("#36B850"), COLOR_BORDER, 2, 16, 2))
-	btn_auto_socket.pressed.connect(func():
+		_btn_auto_socket.add_theme_font_override("font", _cached_font)
+	_btn_auto_socket.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 16, 2))
+	_btn_auto_socket.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE584"), COLOR_BORDER, 5, 16, 2))
+	_btn_auto_socket.add_theme_stylebox_override("pressed", _create_button_style(Color("#36B850"), COLOR_BORDER, 2, 16, 2))
+	_btn_auto_socket.pressed.connect(func():
 		var res: Dictionary = GemSystem.auto_socket()
-		_msg_label.text = str(res.get("msg", ""))
+		_msg_label.text = _t(str(res.get("msg", "")))
 		if bool(res.get("ok", false)):
 			_msg_label.add_theme_color_override("font_color", COLOR_MINT)
 		else:
@@ -275,7 +349,7 @@ func _build_ui() -> void:
 		SaveManager.save_game()
 		_refresh_case_view()
 	)
-	grid_head.add_child(btn_auto_socket)
+	grid_head.add_child(_btn_auto_socket)
 
 	_case_grid = GridContainer.new()
 	_case_grid.name = "CaseGrid"
@@ -303,21 +377,21 @@ func _build_ui() -> void:
 	foot_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(foot_row)
 
-	var btn_close := Button.new()
-	btn_close.name = "BtnCloseGemWorkshop"
-	btn_close.text = "離開工坊"
-	btn_close.custom_minimum_size = Vector2(180, 50)
-	btn_close.add_theme_font_size_override("font_size", 18)
-	btn_close.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	btn_close.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	btn_close.add_theme_constant_override("outline_size", 1)
+	_btn_close = Button.new()
+	_btn_close.name = "BtnCloseGemWorkshop"
+	_btn_close.text = _t("離開工坊")
+	_btn_close.custom_minimum_size = Vector2(180, 50)
+	_btn_close.add_theme_font_size_override("font_size", 18)
+	_btn_close.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_close.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_close.add_theme_constant_override("outline_size", 1)
 	if _cached_font:
-		btn_close.add_theme_font_override("font", _cached_font)
-	btn_close.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18, 2))
-	btn_close.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18, 2))
-	btn_close.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 18, 2))
-	btn_close.pressed.connect(_on_close)
-	foot_row.add_child(btn_close)
+		_btn_close.add_theme_font_override("font", _cached_font)
+	_btn_close.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18, 2))
+	_btn_close.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18, 2))
+	_btn_close.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 18, 2))
+	_btn_close.pressed.connect(_on_close)
+	foot_row.add_child(_btn_close)
 
 
 func _switch_tab(tab: Tab) -> void:
@@ -378,15 +452,15 @@ func _refresh_smelt_view() -> void:
 
 	var left_lines: int = GemSystem.smelt_left_today()
 	var total_lines: int = GemSystem.smelt_lines_per_day()
-	var line_info := _create_label("今日熔煉產線：%d / %d 線" % [left_lines, total_lines], 18, COLOR_TEXT_DARK, true)
+	var line_info := _create_label(_t("今日熔煉產線：%d / %d 線") % [left_lines, total_lines], 18, COLOR_TEXT_DARK, true)
 	row1.add_child(line_info)
 
 	if GemSystem.furnace_unlocked():
-		var furnace_tag := _create_label("· 熔爐已點燃（雙線並行）", 16, COLOR_SKY, true)
+		var furnace_tag := _create_label(_t("· 熔爐已點燃（雙線並行）"), 16, COLOR_SKY, true)
 		row1.add_child(furnace_tag)
 	elif GemSystem.furnace_can_unlock():
 		var btn_unlock := Button.new()
-		btn_unlock.text = "點燃熔爐"
+		btn_unlock.text = _t("點燃熔爐")
 		btn_unlock.custom_minimum_size = Vector2(100, 36)
 		btn_unlock.add_theme_font_size_override("font_size", 16)
 		btn_unlock.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -399,7 +473,7 @@ func _refresh_smelt_view() -> void:
 		btn_unlock.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 1, 14, 2))
 		btn_unlock.pressed.connect(func():
 			var u_res: Dictionary = GemSystem.unlock_furnace("auto")
-			_msg_label.text = str(u_res.get("msg", ""))
+			_msg_label.text = _t(str(u_res.get("msg", "")))
 			_refresh_smelt_view()
 		)
 		row1.add_child(btn_unlock)
@@ -408,7 +482,7 @@ func _refresh_smelt_view() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row1.add_child(spacer)
 
-	var rule_lbl := _create_label("3碎片→1級 · 3顆同級可合成", 16, COLOR_TEXT_MUTED)
+	var rule_lbl := _create_label(_t("3碎片→1級 · 3顆同級可合成"), 16, COLOR_TEXT_MUTED)
 	row1.add_child(rule_lbl)
 
 	# 2. 刷新三色寶石果凍卡片
@@ -432,15 +506,15 @@ func _build_single_smelt_card(col: String) -> PanelContainer:
 		"red":
 			bg_col = COLOR_CARD_PINK
 			title_col = COLOR_TEXT_PINK
-			sub_text = "暴擊·生命"
+			sub_text = _t("暴擊·生命")
 		"yellow":
 			bg_col = COLOR_CARD_GOLD
 			title_col = COLOR_TEXT_GOLD
-			sub_text = "攻擊·防禦"
+			sub_text = _t("攻擊·防禦")
 		"blue":
 			bg_col = COLOR_CARD_SKY
 			title_col = COLOR_SKY
-			sub_text = "命中·迴避"
+			sub_text = _t("命中·迴避")
 
 	card.add_theme_stylebox_override("panel", _create_panel_style(bg_col, COLOR_BORDER, 2, 4, 16))
 
@@ -459,7 +533,7 @@ func _build_single_smelt_card(col: String) -> PanelContainer:
 	var top_row := HBoxContainer.new()
 	v.add_child(top_row)
 
-	var name_lbl := _create_label(GemSystem.color_label(col), 20, title_col, true)
+	var name_lbl := _create_label(_t(GemSystem.color_label(col)), 20, title_col, true)
 	top_row.add_child(name_lbl)
 
 	var sub_lbl := _create_label("（%s）" % sub_text, 16, COLOR_TEXT_MUTED)
@@ -481,7 +555,7 @@ func _build_single_smelt_card(col: String) -> PanelContainer:
 	var s_row := HBoxContainer.new()
 	sm.add_child(s_row)
 
-	var s_title := _create_label("碎片儲備", 16, COLOR_TEXT_DARK)
+	var s_title := _create_label(_t("碎片儲備"), 16, COLOR_TEXT_DARK)
 	s_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	s_row.add_child(s_title)
 
@@ -498,7 +572,7 @@ func _build_single_smelt_card(col: String) -> PanelContainer:
 	for lv in range(1, GemSystem.MAX_LEVEL + 1):
 		var num: int = GemSystem.count_of(col, lv)
 		var num_col := COLOR_TEXT_DARK if num > 0 else COLOR_TEXT_DIM
-		var lv_lbl := _create_label("%d階:%d" % [lv, num], 16, num_col, num > 0)
+		var lv_lbl := _create_label(_t("%d階:%d") % [lv, num], 16, num_col, num > 0)
 		stock_row.add_child(lv_lbl)
 
 	# 操作按鈕區 (高度 >= 50px)
@@ -512,7 +586,7 @@ func _build_single_smelt_card(col: String) -> PanelContainer:
 
 	if can_s:
 		# 可熔煉時主按鈕暖橘果凍厚底 5~6px
-		btn_smelt.text = "熔煉 1 級寶石"
+		btn_smelt.text = _t("熔煉 1 級寶石")
 		btn_smelt.add_theme_color_override("font_color", Color.WHITE)
 		btn_smelt.add_theme_color_override("font_outline_color", COLOR_BORDER)
 		btn_smelt.add_theme_constant_override("outline_size", 4)
@@ -521,7 +595,7 @@ func _build_single_smelt_card(col: String) -> PanelContainer:
 		btn_smelt.add_theme_stylebox_override("pressed", _create_button_style(Color("#E58A05"), COLOR_BORDER, 2, 16, 2))
 		btn_smelt.pressed.connect(func():
 			var res: Dictionary = GemSystem.smelt(col)
-			_msg_label.text = str(res.get("msg", "熔煉完成！"))
+			_msg_label.text = _t(str(res.get("msg", "熔煉完成！")))
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 			SaveManager.save_game()
 			_refresh_smelt_view()
@@ -529,9 +603,9 @@ func _build_single_smelt_card(col: String) -> PanelContainer:
 	else:
 		btn_smelt.disabled = true
 		if GemSystem.smelt_left_today() <= 0:
-			btn_smelt.text = "今日產線已盡"
+			btn_smelt.text = _t("今日產線已盡")
 		else:
-			btn_smelt.text = "碎片不足(需3)"
+			btn_smelt.text = _t("碎片不足(需3)")
 		btn_smelt.add_theme_color_override("font_color", COLOR_TEXT_DIM)
 		btn_smelt.add_theme_stylebox_override("disabled", _create_disabled_button_style(16))
 	v.add_child(btn_smelt)
@@ -551,7 +625,7 @@ func _build_single_smelt_card(col: String) -> PanelContainer:
 		btn_fuse.add_theme_font_override("font", _cached_font)
 
 	if fuse_target_lv != -1:
-		btn_fuse.text = "合成 %d 級 → %d 級" % [fuse_target_lv, fuse_target_lv + 1]
+		btn_fuse.text = _t("合成 %d 級 → %d 級") % [fuse_target_lv, fuse_target_lv + 1]
 		btn_fuse.add_theme_color_override("font_color", Color.WHITE)
 		btn_fuse.add_theme_color_override("font_outline_color", COLOR_BORDER)
 		btn_fuse.add_theme_constant_override("outline_size", 4)
@@ -560,14 +634,14 @@ func _build_single_smelt_card(col: String) -> PanelContainer:
 		btn_fuse.add_theme_stylebox_override("pressed", _create_button_style(Color("#268FE8"), COLOR_BORDER, 2, 16, 2))
 		btn_fuse.pressed.connect(func():
 			var res: Dictionary = GemSystem.fuse(col, fuse_target_lv)
-			_msg_label.text = str(res.get("msg", "合成完成！"))
+			_msg_label.text = _t(str(res.get("msg", "合成完成！")))
 			_msg_label.add_theme_color_override("font_color", COLOR_SKY)
 			SaveManager.save_game()
 			_refresh_smelt_view()
 		)
 	else:
 		btn_fuse.disabled = true
-		btn_fuse.text = "合成(需3同級)"
+		btn_fuse.text = _t("合成(需3同級)")
 		btn_fuse.add_theme_color_override("font_color", COLOR_TEXT_DIM)
 		btn_fuse.add_theme_stylebox_override("disabled", _create_disabled_button_style(16))
 	v.add_child(btn_fuse)
@@ -602,7 +676,7 @@ func _refresh_case_view() -> void:
 	bv.add_theme_constant_override("separation", 4)
 	bm.add_child(bv)
 
-	var bonus_title := _create_label("全身穿戴寶石六維總加成", 18, COLOR_TEXT_DARK, true)
+	var bonus_title := _create_label(_t("全身穿戴寶石六維總加成"), 18, COLOR_TEXT_DARK, true)
 	bv.add_child(bonus_title)
 
 	var wb: Dictionary = survey.get("worn_bonuses", {})
@@ -619,12 +693,12 @@ func _refresh_case_view() -> void:
 	b_grid.add_theme_constant_override("v_separation", 2)
 	bv.add_child(b_grid)
 
-	b_grid.add_child(_create_label("暴擊：+%.1f" % crit_v, 16, COLOR_TEXT_PINK if crit_v > 0 else COLOR_TEXT_DARK, crit_v > 0))
-	b_grid.add_child(_create_label("攻擊加成：+%.1f%%" % atk_pct_v, 16, COLOR_TEXT_GOLD if atk_pct_v > 0 else COLOR_TEXT_DARK, atk_pct_v > 0))
-	b_grid.add_child(_create_label("命中：+%.1f" % hit_v, 16, COLOR_SKY if hit_v > 0 else COLOR_TEXT_DARK, hit_v > 0))
-	b_grid.add_child(_create_label("生命加成：+%.1f%%" % hp_pct_v, 16, COLOR_TEXT_PINK if hp_pct_v > 0 else COLOR_TEXT_DARK, hp_pct_v > 0))
-	b_grid.add_child(_create_label("防禦加成：+%.1f%%" % def_pct_v, 16, COLOR_TEXT_GOLD if def_pct_v > 0 else COLOR_TEXT_DARK, def_pct_v > 0))
-	b_grid.add_child(_create_label("迴避：+%.1f" % eva_v, 16, COLOR_SKY if eva_v > 0 else COLOR_TEXT_DARK, eva_v > 0))
+	b_grid.add_child(_create_label(_t("暴擊：+%.1f") % crit_v, 16, COLOR_TEXT_PINK if crit_v > 0 else COLOR_TEXT_DARK, crit_v > 0))
+	b_grid.add_child(_create_label(_t("攻擊加成：+%.1f%%") % atk_pct_v, 16, COLOR_TEXT_GOLD if atk_pct_v > 0 else COLOR_TEXT_DARK, atk_pct_v > 0))
+	b_grid.add_child(_create_label(_t("命中：+%.1f") % hit_v, 16, COLOR_SKY if hit_v > 0 else COLOR_TEXT_DARK, hit_v > 0))
+	b_grid.add_child(_create_label(_t("生命加成：+%.1f%%") % hp_pct_v, 16, COLOR_TEXT_PINK if hp_pct_v > 0 else COLOR_TEXT_DARK, hp_pct_v > 0))
+	b_grid.add_child(_create_label(_t("防禦加成：+%.1f%%") % def_pct_v, 16, COLOR_TEXT_GOLD if def_pct_v > 0 else COLOR_TEXT_DARK, def_pct_v > 0))
+	b_grid.add_child(_create_label(_t("迴避：+%.1f") % eva_v, 16, COLOR_SKY if eva_v > 0 else COLOR_TEXT_DARK, eva_v > 0))
 
 	# 3. 寶石庫存網格 (15 種寶石小卡)
 	for c in _case_grid.get_children():
@@ -658,17 +732,17 @@ func _build_slot_card(s: Dictionary) -> PanelContainer:
 	var eq_name := str(s.get("equip_name", ""))
 	var has_g := bool(s.get("has_gem", false))
 
-	var head_txt := "%s孔位" % s_name
+	var head_txt := _t("%s孔位") % _t(s_name)
 	if is_eq and not eq_name.is_empty():
-		head_txt += "【%s】" % eq_name
+		head_txt += "【%s】" % _t(eq_name)
 	var head_lbl := _create_label(head_txt, 18, COLOR_TEXT_DARK, true)
 	v.add_child(head_lbl)
 
 	if not is_eq:
-		var status_lbl := _create_label("未穿戴裝備", 16, COLOR_TEXT_MUTED)
+		var status_lbl := _create_label(_t("未穿戴裝備"), 16, COLOR_TEXT_MUTED)
 		v.add_child(status_lbl)
 	elif not has_g:
-		var status_lbl := _create_label("孔位閒置 · 未鑲嵌寶石", 16, COLOR_TEXT_MUTED)
+		var status_lbl := _create_label(_t("孔位閒置 · 未鑲嵌寶石"), 16, COLOR_TEXT_MUTED)
 		v.add_child(status_lbl)
 	else:
 		var g: Dictionary = s.get("gem", {})
@@ -687,7 +761,7 @@ func _build_slot_card(s: Dictionary) -> PanelContainer:
 			"blue":
 				col_t = COLOR_SKY
 
-		var gem_lbl := _create_label("已鑲嵌：%s (%s) · %s %s" % [glabel, stars, bname, btext], 16, col_t, true)
+		var gem_lbl := _create_label(_t("已鑲嵌：%s (%s) · %s %s") % [glabel, _t(stars), _t(bname), btext], 16, col_t, true)
 		v.add_child(gem_lbl)
 
 	return card
@@ -730,11 +804,11 @@ func _build_gem_inventory_cell(col: String, lv: int, qty: int) -> PanelContainer
 	v.add_theme_constant_override("separation", 1)
 	m.add_child(v)
 
-	var name_txt := "%s %d級" % [GemSystem.color_label(col), lv]
+	var name_txt := _t("%s %d級") % [_t(GemSystem.color_label(col)), lv]
 	var n_lbl := _create_label(name_txt, 16, text_col, not is_empty, HORIZONTAL_ALIGNMENT_CENTER)
 	v.add_child(n_lbl)
 
-	var q_txt := "持有 %d 顆" % qty if not is_empty else "0 顆"
+	var q_txt := _t("持有 %d 顆") % qty if not is_empty else _t("0 顆")
 	var q_lbl := _create_label(q_txt, 16, qty_col, not is_empty, HORIZONTAL_ALIGNMENT_CENTER)
 	v.add_child(q_lbl)
 
