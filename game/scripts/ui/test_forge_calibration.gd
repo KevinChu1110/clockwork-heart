@@ -68,6 +68,7 @@ func _run_tests() -> void:
 	print("=== 開始 test_forge_calibration 單元測試 ===")
 	_test_data_layer_cost_and_scrap_limits()
 	_test_combat_seconds_hard_limits()
+	_test_calibration_rolls_and_seventh_pity()
 	_test_equip_panel_calibration_ui()
 	_test_forge_dialog_calibration_ui()
 	_test_i18n_instant_refresh()
@@ -190,6 +191,106 @@ func _test_combat_seconds_hard_limits() -> void:
 	if not is_equal_approx(standard_parry_sec, 0.85):
 		_fail("Boss 格擋窗口時間被改動！預期 0.85，實際: %f" % standard_parry_sec)
 	print("  [PASS] 戰鬥秒數常數全數未被改動（符合 PRODUCT_LOCK 規範）")
+
+
+func _test_calibration_rolls_and_seventh_pity() -> void:
+	print("\n--- [Check 2.5] 機芯校準跳階、失敗不碎裝、第七次保底與紅階封頂 ---")
+	var CoreSystem = load("res://scripts/systems/core_system.gd")
+
+	# A. 驗證跳階類型：維持同階 (maintain)、跳一階 (jump_1)、跳兩階 (jump_2)
+	CoreSystem.reset_player_parts()
+	_set_player_scrap(100)
+	var slot := "mainspring"
+	var part: Dictionary = CoreSystem.get_player_part(slot)
+
+	# 1. 測試 maintain
+	var res_m: Dictionary = CoreSystem.calibrate_player_part(slot, "maintain")
+	if not bool(res_m.get("ok", false)) or str(res_m.get("roll_type")) != "maintain":
+		_fail("指定 maintain 校準應回傳 ok=true 且 roll_type=maintain")
+	if str(res_m.get("prev_tier")) != str(res_m.get("new_tier")):
+		_fail("maintain 應維持同階，但色階改變: %s -> %s" % [res_m.get("prev_tier"), res_m.get("new_tier")])
+	print("  [PASS] 維持同階 (maintain) 驗證成功：色階維持 %s，次數=%d" % [res_m.get("new_tier"), res_m.get("calibration_count")])
+
+	# 2. 測試 jump_1 (白 -> 橘)
+	var res_j1: Dictionary = CoreSystem.calibrate_player_part(slot, "jump_1")
+	if not bool(res_j1.get("ok", false)) or str(res_j1.get("roll_type")) != "jump_1":
+		_fail("指定 jump_1 校準應回傳 ok=true 且 roll_type=jump_1")
+	if str(res_j1.get("new_tier")) != "orange":
+		_fail("白階跳一階應為 orange，實際為: %s" % str(res_j1.get("new_tier")))
+	if int(res_j1.get("tier_jump", 0)) != 1:
+		_fail("jump_1 tier_jump 應為 1，實際為: %d" % int(res_j1.get("tier_jump", 0)))
+	print("  [PASS] 跳一階 (jump_1) 驗證成功：白階 -> 橘階，次數=%d" % int(res_j1.get("calibration_count")))
+
+	# 3. 測試 jump_2 (橘 -> 紫)
+	var res_j2: Dictionary = CoreSystem.calibrate_player_part(slot, "jump_2")
+	if not bool(res_j2.get("ok", false)) or str(res_j2.get("roll_type")) != "jump_2":
+		_fail("指定 jump_2 校準應回傳 ok=true 且 roll_type=jump_2")
+	if str(res_j2.get("new_tier")) != "purple":
+		_fail("橘階跳兩階應為 purple，實際為: %s" % str(res_j2.get("new_tier")))
+	if int(res_j2.get("tier_jump", 0)) != 2:
+		_fail("jump_2 tier_jump 應為 2，實際為: %d" % int(res_j2.get("tier_jump", 0)))
+	print("  [PASS] 跳兩階 (jump_2) 驗證成功：橘階 -> 紫階，次數=%d" % int(res_j2.get("calibration_count")))
+
+	# B. 驗證第七次未跳階保底機制
+	CoreSystem.reset_player_parts()
+	_set_player_scrap(100)
+	var slot_pity := "chassis"
+	var part_pity: Dictionary = CoreSystem.get_player_part(slot_pity)
+
+	# 前 6 次連續 maintain（模擬運氣極差、完全未跳階）
+	for i in range(1, 7):
+		var r_pre: Dictionary = CoreSystem.calibrate_player_part(slot_pity, "maintain")
+		if not bool(r_pre.get("ok", false)):
+			_fail("前 6 次微調應成功，次數 %d" % i)
+		if str(part_pity.get("tier")) != "white":
+			_fail("前 6 次 maintain 應維持白階，目前為: %s" % str(part_pity.get("tier")))
+
+	if int(part_pity.get("calibration_count", 0)) != 6:
+		_fail("第 6 次校準後次數應為 6，實際為: %d" % int(part_pity.get("calibration_count", 0)))
+	if bool(part_pity.get("has_jumped_tier", false)):
+		_fail("前 6 次 maintain 後 has_jumped_tier 應為 false")
+
+	# 第 7 次校準：隨機即使骰出 fail 或 maintain，也必須觸發保底至少跳一階！
+	var roll_check: Dictionary = CoreSystem.roll_calibration_type(part_pity, 0)
+	if not bool(roll_check.get("pity_triggered", false)):
+		_fail("第 7 次未跳階部件 roll_calibration_type 應觸發保底 pity_triggered = true")
+	if str(roll_check.get("roll_type")) != "jump_1":
+		_fail("第 7 次未跳階保底應為 jump_1，實際為: %s" % str(roll_check.get("roll_type")))
+
+	# 實質執行第 7 次校準（不指定 roll_success，走自然擲骰）
+	var res_pity: Dictionary = CoreSystem.calibrate_player_part(slot_pity)
+	if not bool(res_pity.get("ok", false)):
+		_fail("第 7 次保底校準 ok 應為 true")
+	if int(part_pity.get("calibration_count", 0)) != 7:
+		_fail("第 7 次校準後次數應為 7，實際為: %d" % int(part_pity.get("calibration_count", 0)))
+	if str(part_pity.get("tier")) == "white":
+		_fail("第 7 次保底後色階應已跳階，不應仍為白階")
+	if not bool(res_pity.get("pity_triggered", false)):
+		_fail("第 7 次校準結果中 pity_triggered 應為 true")
+	print("  [PASS] 第七次保底機制驗證成功：前 6 次無跳階，第 7 次保底突破至 %s階！" % str(part_pity.get("tier_name")))
+
+	# C. 驗證紅階封頂：已是紅階時再校準維持紅階、不溢階、仍扣次數與鐵屑
+	CoreSystem.reset_player_parts()
+	_set_player_scrap(20)
+	var slot_red := "escapement"
+	var red_part: Dictionary = CoreSystem.create_part_by_tier(slot_red, "red")
+	var gs: Node = root.get_node_or_null("GameState")
+	if gs and "core_slots" in gs:
+		gs.core_slots[slot_red] = red_part
+	CoreSystem.player_parts[slot_red] = red_part
+
+	var scrap_before_red: int = CoreSystem.get_player_scrap()
+	var res_red: Dictionary = CoreSystem.calibrate_player_part(slot_red, "jump_2")
+	if not bool(res_red.get("ok", false)):
+		_fail("紅階校準 ok 應為 true")
+	if str(red_part.get("tier")) != "red":
+		_fail("紅階部件校準後應維持紅階，不溢階，實際為: %s" % str(red_part.get("tier")))
+	if int(red_part.get("calibration_count", 0)) != 1:
+		_fail("紅階部件校準後次數應為 1，實際為: %d" % int(red_part.get("calibration_count", 0)))
+	var scrap_after_red: int = CoreSystem.get_player_scrap()
+	if scrap_after_red != scrap_before_red - 5:
+		_fail("紅階校準仍應扣除 5 鐵屑，實際扣除: %d" % (scrap_before_red - scrap_after_red))
+	print("  [PASS] 紅階封頂驗證成功：維持紅階、不溢階、次數 +1、正常扣除鐵屑")
 
 class MockHost extends Node:
 	var _ui_root: Control
@@ -394,5 +495,24 @@ func _test_i18n_instant_refresh() -> void:
 	if btn_cal0 and not btn_cal0.text.contains("校準"):
 		_fail("切換回 zh_TW 後按鈕文字未恢復: " + btn_cal0.text)
 	print("  [PASS] 語系成功切換回繁中: %s" % (btn_cal0.text if btn_cal0 else ""))
+
+	# 驗證校準結果句切換語系即時刷新
+	var msg_lbl: Label = null
+	for lbl in dlg.find_children("", "Label", true, false):
+		if lbl.name.to_lower().contains("msg") or lbl == dlg.get("_msg_label"):
+			msg_lbl = lbl
+			break
+	if btn_cal0 and msg_lbl:
+		btn_cal0.pressed.emit()
+		var zh_msg := msg_lbl.text
+		if loc_node:
+			loc_node.call("set_locale", "en")
+		var en_msg := msg_lbl.text
+		if en_msg == zh_msg:
+			_fail("切換至英語後，校準結果句未即時刷新: %s" % en_msg)
+		else:
+			print("  [PASS] 校準結果句英語即時刷新驗證成功: %s" % en_msg)
+		if loc_node:
+			loc_node.call("set_locale", "zh_TW")
 
 	dlg.queue_free()

@@ -65,6 +65,7 @@ var _msg_label: Label
 var _btn_forge: Button
 var _btn_close: Button
 var _cached_font: Font = null
+var _last_calibrate_state: Dictionary = {}
 
 
 func _enter_tree() -> void:
@@ -96,6 +97,32 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	_update_ui_texts()
 	_refresh_display()
 	_refresh_all_forge_core_slots()
+	_update_calibrate_message()
+
+
+func _update_calibrate_message() -> void:
+	if not is_instance_valid(_msg_label) or _last_calibrate_state.is_empty():
+		return
+	var sname: String = _t(str(_last_calibrate_state.get("slot_name", "")))
+	var tip_key: String = str(_last_calibrate_state.get("tip_key", ""))
+	var default_tip: String = str(_last_calibrate_state.get("tip", ""))
+	var tip: String = default_tip
+	if not tip_key.is_empty():
+		var trans := _t(tip_key)
+		if trans != tip_key:
+			tip = trans
+		else:
+			tip = _t(default_tip)
+	else:
+		tip = _t(default_tip)
+	var raw_tnm: String = str(_last_calibrate_state.get("tier_name", "白"))
+	var tnm: String = _t(raw_tnm)
+	var rem: int = int(_last_calibrate_state.get("rem", 0))
+	_msg_label.text = _t("【%s】%s · 目前色階：%s階（剩餘 %d 次）") % [sname, tip, tnm, rem]
+	if bool(_last_calibrate_state.get("ok", false)):
+		_msg_label.add_theme_color_override("font_color", COLOR_MINT)
+	else:
+		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 
 
 func _update_ui_texts() -> void:
@@ -608,13 +635,17 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 		var p = CoreSystem.get_player_part(slot_id)
 		var tnm: String = str(p.get("tier_name", "白"))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
-		if is_instance_valid(_msg_label):
-			var tip: String = str(res.get("message", ""))
-			_msg_label.text = _t("【%s】%s · 目前色階：%s階（剩餘 %d 次）") % [slot_name, tip, tnm, rem]
-			if bool(res.get("ok", false)):
-				_msg_label.add_theme_color_override("font_color", COLOR_MINT)
-			else:
-				_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+		var tip: String = str(res.get("message", ""))
+		var tip_k: String = str(res.get("message_key", ""))
+		_last_calibrate_state = {
+			"slot_name": slot_name,
+			"tip": tip,
+			"tip_key": tip_k,
+			"tier_name": tnm,
+			"rem": rem,
+			"ok": bool(res.get("ok", false))
+		}
+		_update_calibrate_message()
 	)
 
 	btn.pressed.connect(func():

@@ -141,6 +141,22 @@ func get_calibration_scrap_cost() -> int:
 	return 5
 
 
+func get_calibration_roll_weights() -> Dictionary:
+	var cct := get_core_color_tiers()
+	var cr: Variant = cct.get("calibration_rules", {})
+	if cr is Dictionary and cr.has("roll_weights") and cr["roll_weights"] is Dictionary:
+		return cr["roll_weights"].duplicate()
+	return {"fail": 20, "maintain": 40, "jump_1": 30, "jump_2": 10}
+
+
+func get_calibration_pity_rule() -> Dictionary:
+	var cct := get_core_color_tiers()
+	var cr: Variant = cct.get("calibration_rules", {})
+	if cr is Dictionary and cr.has("pity_rule") and cr["pity_rule"] is Dictionary:
+		return cr["pity_rule"].duplicate()
+	return {"pity_attempt": 7, "min_jump": 1}
+
+
 func get_core_slots() -> Dictionary:
 	var cct := get_core_color_tiers()
 	var s: Variant = cct.get("slots", {})

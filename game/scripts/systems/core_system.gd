@@ -78,6 +78,52 @@ const ALL_TIER_IDS: Array[String] = [
 	TIER_RED
 ]
 
+const TIER_ORDER: Array[String] = [
+	TIER_GRAY,
+	TIER_WHITE,
+	TIER_ORANGE,
+	TIER_BLUE,
+	TIER_PURPLE,
+	TIER_GOLD,
+	TIER_GREEN,
+	TIER_RED
+]
+
+const TIER_MIN_SCORES: Dictionary = {
+	TIER_GRAY: -10,
+	TIER_WHITE: 0,
+	TIER_ORANGE: 1,
+	TIER_BLUE: 5,
+	TIER_PURPLE: 23,
+	TIER_GOLD: 40,
+	TIER_GREEN: 55,
+	TIER_RED: 70
+}
+
+const TIER_MAX_SCORES: Dictionary = {
+	TIER_GRAY: -1,
+	TIER_WHITE: 0,
+	TIER_ORANGE: 4,
+	TIER_BLUE: 22,
+	TIER_PURPLE: 39,
+	TIER_GOLD: 54,
+	TIER_GREEN: 69,
+	TIER_RED: 999999
+}
+
+static var calibration_seed: Variant = null
+
+static func set_calibration_seed(s: Variant) -> void:
+	calibration_seed = s
+
+static func get_tier_index(tier_id: String) -> int:
+	var idx := TIER_ORDER.find(tier_id)
+	return idx if idx >= 0 else 1
+
+static func get_tier_id_by_index(index: int) -> String:
+	var clamped := clampi(index, 0, TIER_ORDER.size() - 1)
+	return TIER_ORDER[clamped]
+
 const TIER_NAMES: Dictionary = {
 	TIER_GRAY: "灰",
 	TIER_WHITE: "白",
@@ -350,6 +396,9 @@ static func create_part(slot_id: String, initial_score: int = 0, initial_stats: 
 		"max_calibrations": MAX_CALIBRATIONS,
 		"stats": sanitized_stats,
 		"is_broken": false,
+		"tier_jump_count": 0,
+		"has_jumped_tier": false,
+		"initial_tier": tier_info.get("id", TIER_WHITE),
 		"history": []
 	}
 
@@ -363,12 +412,264 @@ static func can_calibrate(part: Dictionary) -> bool:
 	return int(part.get("calibration_count", 0)) < MAX_CALIBRATIONS
 
 
+static func get_calibration_roll_weights() -> Dictionary:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var dt: Node = (loop as SceneTree).root.get_node_or_null("DataTables")
+		if dt and dt.has_method("get_calibration_roll_weights"):
+			return dt.call("get_calibration_roll_weights")
+	if FileAccess.file_exists(TABLE_PATH):
+		var f := FileAccess.open(TABLE_PATH, FileAccess.READ)
+		if f:
+			var data = JSON.parse_string(f.get_as_text())
+			if typeof(data) == TYPE_DICTIONARY and data.has("calibration_rules"):
+				var cr = data["calibration_rules"]
+				if typeof(cr) == TYPE_DICTIONARY and cr.has("roll_weights"):
+					return cr["roll_weights"]
+	return {"fail": 20, "maintain": 40, "jump_1": 30, "jump_2": 10}
+
+
+static func get_calibration_pity_rule() -> Dictionary:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var dt: Node = (loop as SceneTree).root.get_node_or_null("DataTables")
+		if dt and dt.has_method("get_calibration_pity_rule"):
+			return dt.call("get_calibration_pity_rule")
+	if FileAccess.file_exists(TABLE_PATH):
+		var f := FileAccess.open(TABLE_PATH, FileAccess.READ)
+		if f:
+			var data = JSON.parse_string(f.get_as_text())
+			if typeof(data) == TYPE_DICTIONARY and data.has("calibration_rules"):
+				var cr = data["calibration_rules"]
+				if typeof(cr) == TYPE_DICTIONARY and cr.has("pity_rule"):
+					return cr["pity_rule"]
+	return {"pity_attempt": 7, "min_jump": 1}
+
+
+## 判定單次機芯校準結果型別：fail / maintain / jump_1 / jump_2
+## 含第七次未跳階保底與紅階封頂邏輯
+static func roll_calibration_type(part: Dictionary, seed_val: Variant = null) -> Dictionary:
+	var cur_score: int = int(part.get("score", 0))
+	var tier_info := get_tier_by_score(cur_score)
+	var cur_tier_id := str(tier_info.get("id", TIER_WHITE))
+	var cur_tier_idx := get_tier_index(cur_tier_id)
+	var cur_count: int = int(part.get("calibration_count", 0))
+	var is_7th_attempt: bool = (cur_count + 1 == MAX_CALIBRATIONS)
+
+	# 檢查是否曾經跳過階
+	var has_jumped: bool = bool(part.get("has_jumped_tier", false)) or int(part.get("tier_jump_count", 0)) > 0
+	if not has_jumped:
+		var hist: Array = part.get("history", [])
+		for h in hist:
+			if typeof(h) == TYPE_DICTIONARY and int(h.get("tier_jump", 0)) > 0:
+				has_jumped = true
+				break
+
+	# 讀取權重
+	var weights := get_calibration_roll_weights()
+	var w_fail: int = int(weights.get("fail", 20))
+	var w_maintain: int = int(weights.get("maintain", 40))
+	var w_jump1: int = int(weights.get("jump_1", 30))
+	var w_jump2: int = int(weights.get("jump_2", 10))
+	var total_w := w_fail + w_maintain + w_jump1 + w_jump2
+	if total_w <= 0:
+		total_w = 100
+		w_fail = 20
+		w_maintain = 40
+		w_jump1 = 30
+		w_jump2 = 10
+
+	var rng := RandomNumberGenerator.new()
+	if seed_val != null:
+		rng.seed = int(seed_val)
+	elif calibration_seed != null:
+		rng.seed = int(calibration_seed)
+	else:
+		rng.randomize()
+
+	var roll_val := rng.randi_range(0, total_w - 1)
+	var roll_type := "fail"
+	if roll_val < w_fail:
+		roll_type = "fail"
+	elif roll_val < w_fail + w_maintain:
+		roll_type = "maintain"
+	elif roll_val < w_fail + w_maintain + w_jump1:
+		roll_type = "jump_1"
+	else:
+		roll_type = "jump_2"
+
+	var pity_triggered: bool = false
+	# 第七次保底：同一部件第七次若還沒跳過階，保底至少跳一階；已是最高紅階就維持紅、仍扣次數
+	if is_7th_attempt and not has_jumped:
+		if cur_tier_idx >= 7:
+			# 已是最高紅階：維持紅、仍扣次數
+			roll_type = "maintain"
+			pity_triggered = false
+		else:
+			# 尚未跳過階且非紅階：保底至少跳一階
+			pity_triggered = true
+			if roll_type == "fail" or roll_type == "maintain":
+				roll_type = "jump_1"
+
+	# 紅階封頂檢驗：已是最高紅階就維持紅
+	if cur_tier_idx >= 7:
+		if roll_type == "jump_1" or roll_type == "jump_2":
+			roll_type = "maintain"
+
+	return {
+		"roll_type": roll_type,
+		"pity_triggered": pity_triggered,
+		"cur_tier_idx": cur_tier_idx,
+		"cur_tier_id": cur_tier_id,
+		"cur_score": cur_score
+	}
+
+
+## 計算特定 roll_type 對應的 score_delta、stat_delta 與 tier_jump
+## 硬限制：僅動 ATK/DEF/HP/CRIT/CRIT_DMG，零時間模型改動
+static func calculate_roll_deltas(slot_id: String, roll_type: String, cur_tier_idx: int, cur_score: int) -> Dictionary:
+	var norm := normalize_slot_id(slot_id)
+	var score_delta := 0
+	var stat_delta: Dictionary = {}
+	var tier_jump := 0
+	var target_tier_idx := cur_tier_idx
+
+	match roll_type:
+		"fail":
+			score_delta = 0
+			stat_delta = {}
+			tier_jump = 0
+			target_tier_idx = cur_tier_idx
+		"maintain":
+			tier_jump = 0
+			target_tier_idx = cur_tier_idx
+			if cur_tier_idx >= 7: # 紅階維持紅階微調
+				score_delta = 1
+			elif cur_tier_idx == 1: # 白階 (0分)
+				score_delta = 0
+			else:
+				var max_s: int = int(TIER_MAX_SCORES.get(get_tier_id_by_index(cur_tier_idx), cur_score))
+				score_delta = 1 if cur_score < max_s else 0
+			
+			match norm:
+				SLOT_MAINSPRING:
+					stat_delta = {"ATK": 1, "HP": 5}
+				SLOT_CHASSIS:
+					stat_delta = {"DEF": 1, "HP": 8}
+				SLOT_ESCAPEMENT:
+					stat_delta = {"CRIT": 0.5, "CRIT_DMG": 1.0}
+				SLOT_GEAR_TRAIN:
+					stat_delta = {"ATK": 1, "DEF": 1}
+				SLOT_SOUL_CORE:
+					stat_delta = {"ATK": 1, "DEF": 1, "HP": 5}
+				_:
+					stat_delta = {"ATK": 1}
+
+		"jump_1":
+			if cur_tier_idx >= 7:
+				target_tier_idx = 7
+				tier_jump = 0
+				score_delta = 1
+			else:
+				target_tier_idx = cur_tier_idx + 1
+				tier_jump = 1
+				var target_tier_id := get_tier_id_by_index(target_tier_idx)
+				var min_s: int = int(TIER_MIN_SCORES.get(target_tier_id, cur_score + 1))
+				score_delta = maxi(1, min_s - cur_score)
+
+			match norm:
+				SLOT_MAINSPRING:
+					stat_delta = {"ATK": 3, "HP": 12}
+				SLOT_CHASSIS:
+					stat_delta = {"DEF": 3, "HP": 18}
+				SLOT_ESCAPEMENT:
+					stat_delta = {"CRIT": 1.0, "CRIT_DMG": 3.0}
+				SLOT_GEAR_TRAIN:
+					stat_delta = {"ATK": 2, "DEF": 2}
+				SLOT_SOUL_CORE:
+					stat_delta = {"ATK": 2, "DEF": 2, "HP": 18}
+				_:
+					stat_delta = {"ATK": 2}
+
+		"jump_2":
+			if cur_tier_idx >= 7:
+				target_tier_idx = 7
+				tier_jump = 0
+				score_delta = 2
+			elif cur_tier_idx == 6: # 綠階跳兩階封頂於紅階
+				target_tier_idx = 7
+				tier_jump = 1
+				var min_s: int = int(TIER_MIN_SCORES.get(TIER_RED, 70))
+				score_delta = maxi(2, min_s - cur_score)
+			else:
+				target_tier_idx = cur_tier_idx + 2
+				tier_jump = 2
+				var target_tier_id := get_tier_id_by_index(target_tier_idx)
+				var min_s: int = int(TIER_MIN_SCORES.get(target_tier_id, cur_score + 2))
+				score_delta = maxi(2, min_s - cur_score)
+
+			match norm:
+				SLOT_MAINSPRING:
+					stat_delta = {"ATK": 6, "HP": 25}
+				SLOT_CHASSIS:
+					stat_delta = {"DEF": 6, "HP": 35}
+				SLOT_ESCAPEMENT:
+					stat_delta = {"CRIT": 2.0, "CRIT_DMG": 5.0}
+				SLOT_GEAR_TRAIN:
+					stat_delta = {"ATK": 4, "DEF": 4}
+				SLOT_SOUL_CORE:
+					stat_delta = {"ATK": 4, "DEF": 4, "HP": 35}
+				_:
+					stat_delta = {"ATK": 4}
+
+	return {
+		"score_delta": score_delta,
+		"stat_delta": stat_delta,
+		"tier_jump": tier_jump,
+		"target_tier_idx": target_tier_idx
+	}
+
+
+## 取得結果對應之繁中提示與多語言 key
+static func get_calibration_result_message(roll_type: String, pity_triggered: bool, is_red_cap: bool) -> Dictionary:
+	if roll_type == "fail":
+		return {
+			"key": "CALIBRATE_FAIL",
+			"text": "校準未達標，安全彈簧保護不碎裝"
+		}
+	elif pity_triggered:
+		return {
+			"key": "CALIBRATE_PITY_JUMP",
+			"text": "第七次保底啟動！突破跳階成功"
+		}
+	elif is_red_cap:
+		return {
+			"key": "CALIBRATE_RED_MAX",
+			"text": "已達極限紅階，微調維持頂階"
+		}
+	elif roll_type == "jump_2":
+		return {
+			"key": "CALIBRATE_JUMP_2",
+			"text": "極限跳兩階！發條大幅進階"
+		}
+	elif roll_type == "jump_1":
+		return {
+			"key": "CALIBRATE_JUMP_1",
+			"text": "跳一階成功！發條突破進階"
+		}
+	else: # maintain
+		return {
+			"key": "CALIBRATE_MAINTAIN",
+			"text": "校準微調完成，維持同階"
+		}
+
+
 ## 對機芯部件進行校準
 ## roll_success: 本次校準判定是否成功
 ## stat_delta: 成功或微調時變動的數值（只准含 ATK/DEF/HP/CRIT/CRIT_DMG）
 ## score_delta: 變動的分數
-## 回傳結果包含 ok, rejected, code, part, calibration_count, is_broken 等
-static func calibrate(part: Dictionary, roll_success: bool = true, stat_delta: Dictionary = {}, score_delta: int = 0) -> Dictionary:
+## 回傳結果包含 ok, rejected, code, roll_type, tier_jump, pity_triggered, part 等
+static func calibrate(part: Dictionary, roll_success: bool = true, stat_delta: Dictionary = {}, score_delta: int = 0, roll_type: String = "", tier_jump: int = 0, pity_triggered: bool = false, message_override: String = "", message_key: String = "") -> Dictionary:
 	if part == null or part.is_empty():
 		return {
 			"ok": false,
@@ -412,6 +713,26 @@ static func calibrate(part: Dictionary, roll_success: bool = true, stat_delta: D
 	current_count += 1
 	part["calibration_count"] = current_count
 
+	var prev_score: int = int(part.get("score", 0))
+	var prev_tier: String = str(part.get("tier", TIER_WHITE))
+	var prev_tier_idx: int = get_tier_index(prev_tier)
+
+	if roll_type.is_empty():
+		if not roll_success:
+			roll_type = "fail"
+		elif tier_jump > 0:
+			roll_type = "jump_%d" % mini(tier_jump, 2)
+		else:
+			roll_type = "maintain"
+
+	var msg_text := message_override
+	var msg_k := message_key
+	if msg_text.is_empty():
+		var is_red_cap := (prev_tier_idx >= 7 and roll_success)
+		var msg_info := get_calibration_result_message(roll_type, pity_triggered, is_red_cap)
+		msg_text = str(msg_info.get("text", "發條校準完成"))
+		msg_k = str(msg_info.get("key", "CALIBRATE_MAINTAIN"))
+
 	if roll_success:
 		# 成功：套用數值與分數調整
 		var stats: Dictionary = part.get("stats", {})
@@ -421,20 +742,33 @@ static func calibrate(part: Dictionary, roll_success: bool = true, stat_delta: D
 			stats[s_upper] = cur_val + stat_delta[sk]
 		part["stats"] = stats
 
-		var new_score: int = int(part.get("score", 0)) + score_delta
+		var new_score: int = prev_score + score_delta
 		part["score"] = new_score
 		var tier_info := get_tier_by_score(new_score)
-		part["tier"] = tier_info.get("id", TIER_WHITE)
+		var new_tier: String = str(tier_info.get("id", TIER_WHITE))
+		part["tier"] = new_tier
 		part["tier_name"] = tier_info.get("name", "白")
 		part["is_broken"] = false
+
+		var new_tier_idx: int = get_tier_index(new_tier)
+		var actual_jump: int = maxi(0, new_tier_idx - prev_tier_idx)
+		if tier_jump == 0 and actual_jump > 0:
+			tier_jump = actual_jump
+
+		if tier_jump > 0:
+			part["tier_jump_count"] = int(part.get("tier_jump_count", 0)) + tier_jump
+			part["has_jumped_tier"] = true
 
 		var entry := {
 			"attempt": current_count,
 			"success": true,
+			"roll_type": roll_type,
+			"tier_jump": tier_jump,
+			"pity_triggered": pity_triggered,
 			"score_delta": score_delta,
 			"stat_delta": stat_delta.duplicate(),
 			"new_score": new_score,
-			"new_tier": part["tier"]
+			"new_tier": new_tier
 		}
 		var hist: Array = part.get("history", [])
 		hist.append(entry)
@@ -444,9 +778,19 @@ static func calibrate(part: Dictionary, roll_success: bool = true, stat_delta: D
 			"ok": true,
 			"rejected": false,
 			"code": "SUCCESS",
-			"message": "發條校準成功",
+			"roll_type": roll_type,
+			"tier_jump": tier_jump,
+			"pity_triggered": pity_triggered,
+			"message": msg_text,
+			"message_key": msg_k,
 			"part": part,
 			"calibration_count": current_count,
+			"prev_tier": prev_tier,
+			"new_tier": new_tier,
+			"prev_score": prev_score,
+			"new_score": new_score,
+			"score_delta": score_delta,
+			"stat_delta": stat_delta,
 			"is_broken": false,
 			"destroyed": false
 		}
@@ -457,10 +801,13 @@ static func calibrate(part: Dictionary, roll_success: bool = true, stat_delta: D
 		var entry := {
 			"attempt": current_count,
 			"success": false,
+			"roll_type": "fail",
+			"tier_jump": 0,
+			"pity_triggered": false,
 			"score_delta": 0,
 			"stat_delta": {},
-			"new_score": part.get("score", 0),
-			"new_tier": part.get("tier", TIER_WHITE)
+			"new_score": prev_score,
+			"new_tier": prev_tier
 		}
 		var hist: Array = part.get("history", [])
 		hist.append(entry)
@@ -470,9 +817,19 @@ static func calibrate(part: Dictionary, roll_success: bool = true, stat_delta: D
 			"ok": false,
 			"rejected": false,
 			"code": "CALIBRATION_FAILED",
-			"message": "校準未達標，安全彈簧啟動：裝備完好無損，不碎裝",
+			"roll_type": "fail",
+			"tier_jump": 0,
+			"pity_triggered": false,
+			"message": msg_text,
+			"message_key": msg_k,
 			"part": part,
 			"calibration_count": current_count,
+			"prev_tier": prev_tier,
+			"new_tier": prev_tier,
+			"prev_score": prev_score,
+			"new_score": prev_score,
+			"score_delta": 0,
+			"stat_delta": {},
 			"is_broken": false,
 			"destroyed": false
 		}
@@ -585,8 +942,8 @@ static func consume_player_scrap(amount: int) -> bool:
 
 
 ## 執行玩家機芯部件單次校準
-## roll_success: null 為預設成功，可顯式指定 true/false
-static func calibrate_player_part(slot_id: String, roll_success: Variant = null, stat_delta: Dictionary = {}, score_delta: int = 0) -> Dictionary:
+## roll_success: null 為標準隨機擲骰（含跳階/保底）；也可顯式指定 true/false 或 "fail"/"maintain"/"jump_1"/"jump_2"
+static func calibrate_player_part(slot_id: String, roll_success: Variant = null, stat_delta: Dictionary = {}, score_delta: int = 0, seed_val: Variant = null) -> Dictionary:
 	var norm := normalize_slot_id(slot_id)
 	var part := get_player_part(norm)
 
@@ -620,30 +977,65 @@ static func calibrate_player_part(slot_id: String, roll_success: Variant = null,
 
 	consume_player_scrap(cost)
 
-	var is_success: bool = true
-	if roll_success != null:
-		is_success = bool(roll_success)
+	var cur_score: int = int(part.get("score", 0))
+	var tier_info := get_tier_by_score(cur_score)
+	var cur_tier_id := str(tier_info.get("id", TIER_WHITE))
+	var cur_tier_idx := get_tier_index(cur_tier_id)
 
+	var roll_type := ""
+	var is_success := true
+	var pity_triggered := false
+	var tier_jump := 0
 	var final_stats := stat_delta.duplicate()
 	var final_score_delta := score_delta
 
-	if is_success and final_stats.is_empty() and final_score_delta == 0:
-		final_score_delta = 6
-		match norm:
-			SLOT_MAINSPRING:
-				final_stats = {"ATK": 3, "HP": 10}
-			SLOT_CHASSIS:
-				final_stats = {"DEF": 3, "HP": 15}
-			SLOT_ESCAPEMENT:
-				final_stats = {"CRIT": 1, "CRIT_DMG": 2}
-			SLOT_GEAR_TRAIN:
-				final_stats = {"ATK": 2, "DEF": 2}
-			SLOT_SOUL_CORE:
-				final_stats = {"ATK": 2, "DEF": 2, "HP": 15}
-			_:
-				final_stats = {"ATK": 2}
+	if typeof(roll_success) == TYPE_STRING:
+		roll_type = str(roll_success).to_lower()
+		is_success = (roll_type != "fail")
+		var roll_data := calculate_roll_deltas(norm, roll_type, cur_tier_idx, cur_score)
+		if final_stats.is_empty():
+			final_stats = roll_data.stat_delta
+		if final_score_delta == 0:
+			final_score_delta = roll_data.score_delta
+		tier_jump = roll_data.tier_jump
+	elif typeof(roll_success) == TYPE_BOOL:
+		is_success = bool(roll_success)
+		if not is_success:
+			roll_type = "fail"
+			final_stats = {}
+			final_score_delta = 0
+			tier_jump = 0
+		else:
+			if not final_stats.is_empty() or final_score_delta != 0:
+				# 向後相容既有自訂參數
+				var test_score := cur_score + final_score_delta
+				var test_tier_idx := get_tier_index(str(get_tier_by_score(test_score).get("id", TIER_WHITE)))
+				tier_jump = maxi(0, test_tier_idx - cur_tier_idx)
+				roll_type = ("jump_%d" % mini(tier_jump, 2)) if tier_jump > 0 else "maintain"
+			else:
+				var roll_res := roll_calibration_type(part, seed_val)
+				roll_type = str(roll_res.roll_type)
+				if roll_type == "fail":
+					roll_type = "maintain"
+				pity_triggered = bool(roll_res.pity_triggered)
+				var roll_data := calculate_roll_deltas(norm, roll_type, cur_tier_idx, cur_score)
+				final_stats = roll_data.stat_delta
+				final_score_delta = roll_data.score_delta
+				tier_jump = roll_data.tier_jump
+	else:
+		# 正常玩家點擊：roll_success == null
+		var roll_res := roll_calibration_type(part, seed_val)
+		roll_type = str(roll_res.roll_type)
+		pity_triggered = bool(roll_res.pity_triggered)
+		is_success = (roll_type != "fail")
+		var roll_data := calculate_roll_deltas(norm, roll_type, cur_tier_idx, cur_score)
+		if final_stats.is_empty():
+			final_stats = roll_data.stat_delta
+		if final_score_delta == 0:
+			final_score_delta = roll_data.score_delta
+		tier_jump = roll_data.tier_jump
 
-	var res := calibrate(part, is_success, final_stats, final_score_delta)
+	var res := calibrate(part, is_success, final_stats, final_score_delta, roll_type, tier_jump, pity_triggered)
 	res["used_scrap"] = cost
 	res["scrap_cost"] = cost
 	res["remaining_scrap"] = get_player_scrap()
