@@ -6,6 +6,7 @@ const FlowScript := preload("res://scripts/systems/onboard/onboard_flow.gd")
 const CardScript := preload("res://scripts/ui/soul_draw/soul_result_card_view.gd")
 const UiStyle := preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const I18N_PATH := "res://data/i18n/zh_TW.json"
 
 var flow
@@ -19,20 +20,77 @@ var _btn_skip: Button
 var _i18n: Dictionary = {}
 
 
+static func _t(s: String) -> String:
+	var res := ContentLoc.text("ui", s)
+	if res != s:
+		return res
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var loc_t = str(loc.call("t", s))
+			if loc_t != "" and loc_t != s:
+				return loc_t
+	return res
+
+
+func _tr(key: String) -> String:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var res = str(loc.call("t", key))
+			if res != "" and res != key:
+				return res
+	return str(_i18n.get(key, key))
+
+
 func _ready() -> void:
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	if FileAccess.file_exists(I18N_PATH):
 		var parsed = JSON.parse_string(FileAccess.get_file_as_string(I18N_PATH))
 		if typeof(parsed) == TYPE_DICTIONARY:
 			_i18n = parsed as Dictionary
+	_connect_loc_signal()
 	_build()
 	flow = FlowScript.new()
 	flow.load_bingo()
 	_show_current()
 
 
-func _tr(key: String) -> String:
-	return str(_i18n.get(key, key))
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_ui_texts()
+	_show_current()
+
+
+func _update_ui_texts() -> void:
+	if _btn_next and is_instance_valid(_btn_next):
+		_btn_next.text = _t("下一步")
+	if _btn_skip and is_instance_valid(_btn_skip):
+		_btn_skip.text = _t("稍後再說")
+	if _hint and is_instance_valid(_hint):
+		_hint.text = _t("空白鍵／下一步 · 部分步驟可「稍後再說」")
 
 
 func _build() -> void:
@@ -110,7 +168,7 @@ func _build() -> void:
 
 	_btn_next = Button.new()
 	_btn_next.name = "BtnNext"
-	_btn_next.text = "下一步"
+	_btn_next.text = _t("下一步")
 	_btn_next.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	UiStyle.style_button(_btn_next, true)
 	_btn_next.custom_minimum_size = Vector2(0, 50)
@@ -119,7 +177,7 @@ func _build() -> void:
 
 	_btn_skip = Button.new()
 	_btn_skip.name = "BtnSkip"
-	_btn_skip.text = "稍後再說"
+	_btn_skip.text = _t("稍後再說")
 	_btn_skip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	UiStyle.style_button(_btn_skip, false)
 	_btn_skip.custom_minimum_size = Vector2(0, 50)
@@ -130,18 +188,24 @@ func _build() -> void:
 	_hint = Label.new()
 	_hint.name = "HintLabel"
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_hint.text = "空白鍵／下一步 · 部分步驟可「稍後再說」"
+	_hint.text = _t("空白鍵／下一步 · 部分步驟可「稍後再說」")
 	_hint.add_theme_font_size_override("font_size", 16)
 	_hint.add_theme_color_override("font_color", UiStyle.INK_DIM)
 	vbox.add_child(_hint)
 
 
 func _show_current() -> void:
+	if flow == null:
+		return
 	if flow.done:
-		_node_lbl.text = "新手完成"
-		_dialog.text = _tr("onb.n08")
-		_btn_next.disabled = true
-		_btn_skip.visible = false
+		if _node_lbl and is_instance_valid(_node_lbl):
+			_node_lbl.text = _t("新手完成")
+		if _dialog and is_instance_valid(_dialog):
+			_dialog.text = _tr("onb.n08")
+		if _btn_next and is_instance_valid(_btn_next):
+			_btn_next.disabled = true
+		if _btn_skip and is_instance_valid(_btn_skip):
+			_btn_skip.visible = false
 		if not has_meta("_emitted_finished"):
 			set_meta("_emitted_finished", true)
 			finished.emit()
@@ -149,15 +213,20 @@ func _show_current() -> void:
 	var cur: Dictionary = flow.current()
 	var node: String = str(cur.get("node", ""))
 	var key: String = str(cur.get("key", ""))
-	_node_lbl.text = "新手引導 · 第 %d／%d 步" % [flow.step_index + 1, flow.steps().size()]
-	_dialog.text = _tr(key)
-	_btn_skip.visible = flow.can_skip_current()
+	if _node_lbl and is_instance_valid(_node_lbl):
+		_node_lbl.text = _t("新手引導 · 第 %d／%d 步") % [flow.step_index + 1, flow.steps().size()]
+	if _dialog and is_instance_valid(_dialog):
+		_dialog.text = _tr(key)
+	if _btn_skip and is_instance_valid(_btn_skip):
+		_btn_skip.visible = flow.can_skip_current()
 	# N07／N08 秀結果卡
 	if node in ["N07", "N08"]:
-		card.visible = true
-		card.show_placeholder(str(cur.get("cue", "soul.pull_start")))
+		if card and is_instance_valid(card):
+			card.visible = true
+			card.show_placeholder(str(cur.get("cue", "soul.pull_start")))
 	else:
-		card.visible = false
+		if card and is_instance_valid(card):
+			card.visible = false
 
 
 func _advance(skip: bool) -> void:
