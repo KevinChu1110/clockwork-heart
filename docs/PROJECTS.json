@@ -2826,8 +2826,8 @@
    "id": "pacing-s1-cap",
    "cat": "遊戲",
    "title": "第一季節奏：等級上限改 Lv30",
-   "status": "草稿",
-   "note": "不改戰鬥秒數；建議等級讀 pacing_s1.json",
+   "status": "測試中",
+   "note": "等級上限改Lv30、pacing_s1.json讀表、單元測試綠、實機截圖完成",
    "keys": [
     "第一季節奏：等級"
    ]
