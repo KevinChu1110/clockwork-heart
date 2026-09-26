@@ -9,6 +9,7 @@ extends Control
 ## 5. 字級 16~32px 加粗帶深色厚描邊，零小字。
 ## 6. 零 emoji、零系統字型符號。
 ## 7. 「招」軸訓練回饋，不混用「器／魂」用語。
+## 8. 六語系多國語言支援 (ContentLoc / Loc.locale_changed 即時切換)。
 
 signal confirmed()
 
@@ -45,6 +46,18 @@ var _tip_label: Label
 var _confirm_btn: Button
 var _cached_font: Font = null
 
+var _title_lbl: Label
+var _sub_lbl: Label
+var _card1_header_lbl: Label
+var _card1_sub_lbl: Label
+var _card1_unit_lbl: Label
+var _card2_header_lbl: Label
+var _card2_sub_lbl: Label
+var _card2_unit_lbl: Label
+var _card3_header_lbl: Label
+var _card3_sub_lbl: Label
+var _card3_unit_lbl: Label
+
 var _total_damage: int = 0
 var _elapsed_time: float = 0.0
 var _dps: float = 0.0
@@ -66,6 +79,37 @@ func setup(stats: Dictionary = {}, on_confirm: Callable = Callable()) -> void:
 
 	if _dialog_card == null:
 		_build_ui()
+	_update_ui_texts()
+	_refresh_display()
+
+
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_ui_texts()
 	_refresh_display()
 
 
@@ -75,11 +119,14 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	z_index = 95
 
-	if ResourceLoader.exists(FONT_PATH):
+	if ResourceLoader.exists(FONT_PATH) and _cached_font == null:
 		_cached_font = load(FONT_PATH) as Font
+
+	_connect_loc_signal()
 
 	if _dialog_card == null:
 		_build_ui()
+	_update_ui_texts()
 	_refresh_display()
 
 
@@ -129,25 +176,23 @@ func _build_ui() -> void:
 	title_col.add_theme_constant_override("separation", 2)
 	head.add_child(title_col)
 
-	var title_lbl := Label.new()
-	title_lbl.name = "TitleLabel"
-	title_lbl.text = _t("木人試招數據卡")
-	title_lbl.add_theme_font_size_override("font_size", 22)
-	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	title_lbl.add_theme_constant_override("outline_size", 2)
+	_title_lbl = Label.new()
+	_title_lbl.name = "TitleLabel"
+	_title_lbl.add_theme_font_size_override("font_size", 22)
+	_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_title_lbl.add_theme_constant_override("outline_size", 2)
 	if _cached_font:
-		title_lbl.add_theme_font_override("font", _cached_font)
-	title_col.add_child(title_lbl)
+		_title_lbl.add_theme_font_override("font", _cached_font)
+	title_col.add_child(_title_lbl)
 
-	var sub_lbl := Label.new()
-	sub_lbl.name = "SubTitleLabel"
-	sub_lbl.text = _t("武術館「招」軸訓練回饋 · 能量消耗 0")
-	sub_lbl.add_theme_font_size_override("font_size", 13)
-	sub_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	_sub_lbl = Label.new()
+	_sub_lbl.name = "SubTitleLabel"
+	_sub_lbl.add_theme_font_size_override("font_size", 13)
+	_sub_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	if _cached_font:
-		sub_lbl.add_theme_font_override("font", _cached_font)
-	title_col.add_child(sub_lbl)
+		_sub_lbl.add_theme_font_override("font", _cached_font)
+	title_col.add_child(_sub_lbl)
 
 	var close_btn := ResponsiveUi.make_close_button(_on_confirm_clicked)
 	head.add_child(close_btn)
@@ -168,39 +213,39 @@ func _build_ui() -> void:
 	var res1 := _build_metric_card(
 		"TotalDamageCard",
 		"DamageValueLabel",
-		_t("本次總傷害"),
-		_t("招式命中累積"),
 		COLOR_CARD_GOLD,
-		COLOR_TEXT_GOLD,
-		"點"
+		COLOR_TEXT_GOLD
 	)
 	_damage_label = res1.value_label
+	_card1_header_lbl = res1.header_label
+	_card1_sub_lbl = res1.sub_label
+	_card1_unit_lbl = res1.unit_label
 	stats_hbox.add_child(res1.card)
 
 	# 卡片 2: 戰鬥耗時
 	var res2 := _build_metric_card(
 		"ElapsedTimeCard",
 		"TimeValueLabel",
-		_t("試招耗時"),
-		_t("戰鬥歷程秒數"),
 		COLOR_CARD_WARM,
-		COLOR_TEXT_ORANGE,
-		"秒"
+		COLOR_TEXT_ORANGE
 	)
 	_time_label = res2.value_label
+	_card2_header_lbl = res2.header_label
+	_card2_sub_lbl = res2.sub_label
+	_card2_unit_lbl = res2.unit_label
 	stats_hbox.add_child(res2.card)
 
 	# 卡片 3: 本次DPS
 	var res3 := _build_metric_card(
 		"DpsCard",
 		"DpsValueLabel",
-		_t("秒傷 (DPS)"),
-		_t("每秒平均輸出"),
 		COLOR_CARD_AMBER,
-		COLOR_TEXT_AMBER,
-		"點 / 秒"
+		COLOR_TEXT_AMBER
 	)
 	_dps_label = res3.value_label
+	_card3_header_lbl = res3.header_label
+	_card3_sub_lbl = res3.sub_label
+	_card3_unit_lbl = res3.unit_label
 	stats_hbox.add_child(res3.card)
 
 	# ── 提示說明卡片 ──
@@ -218,7 +263,6 @@ func _build_ui() -> void:
 
 	_tip_label = Label.new()
 	_tip_label.name = "TipLabel"
-	_tip_label.text = _t("木人樁為不消耗能量的自由試招訓練。可在武術館兵器架調配各色兵刃，體會不同招式的出招前搖與段數節奏。")
 	_tip_label.add_theme_font_size_override("font_size", 14)
 	_tip_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_tip_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -232,7 +276,6 @@ func _build_ui() -> void:
 
 	_confirm_btn = Button.new()
 	_confirm_btn.name = "ConfirmButton"
-	_confirm_btn.text = _t("完成試招")
 	_confirm_btn.custom_minimum_size = Vector2(240, 52)
 	_confirm_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_confirm_btn.add_theme_font_size_override("font_size", 18)
@@ -254,8 +297,43 @@ func _build_ui() -> void:
 	_confirm_btn.pressed.connect(_on_confirm_clicked)
 	btn_center.add_child(_confirm_btn)
 
+	_update_ui_texts()
 
-func _build_metric_card(card_name: String, val_name: String, title_text: String, sub_text: String, bg_col: Color, accent_col: Color, unit_text: String = "點") -> Dictionary:
+
+func _update_ui_texts() -> void:
+	if _title_lbl and is_instance_valid(_title_lbl):
+		_title_lbl.text = _t("木人試招數據卡")
+	if _sub_lbl and is_instance_valid(_sub_lbl):
+		_sub_lbl.text = _t("武術館「招」軸訓練回饋 · 能量消耗 0")
+
+	if _card1_header_lbl and is_instance_valid(_card1_header_lbl):
+		_card1_header_lbl.text = _t("本次總傷害")
+	if _card1_sub_lbl and is_instance_valid(_card1_sub_lbl):
+		_card1_sub_lbl.text = _t("招式命中累積")
+	if _card1_unit_lbl and is_instance_valid(_card1_unit_lbl):
+		_card1_unit_lbl.text = _t("點")
+
+	if _card2_header_lbl and is_instance_valid(_card2_header_lbl):
+		_card2_header_lbl.text = _t("試招耗時")
+	if _card2_sub_lbl and is_instance_valid(_card2_sub_lbl):
+		_card2_sub_lbl.text = _t("戰鬥歷程秒數")
+	if _card2_unit_lbl and is_instance_valid(_card2_unit_lbl):
+		_card2_unit_lbl.text = _t("秒")
+
+	if _card3_header_lbl and is_instance_valid(_card3_header_lbl):
+		_card3_header_lbl.text = _t("秒傷 (DPS)")
+	if _card3_sub_lbl and is_instance_valid(_card3_sub_lbl):
+		_card3_sub_lbl.text = _t("每秒平均輸出")
+	if _card3_unit_lbl and is_instance_valid(_card3_unit_lbl):
+		_card3_unit_lbl.text = _t("點 / 秒")
+
+	if _tip_label and is_instance_valid(_tip_label):
+		_tip_label.text = _t("木人樁為不消耗能量的自由試招訓練。可在武術館兵器架調配各色兵刃，體會不同招式的出招前搖與段數節奏。")
+	if _confirm_btn and is_instance_valid(_confirm_btn):
+		_confirm_btn.text = _t("完成試招")
+
+
+func _build_metric_card(card_name: String, val_name: String, bg_col: Color, accent_col: Color) -> Dictionary:
 	var card := PanelContainer.new()
 	card.name = card_name
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -278,7 +356,6 @@ func _build_metric_card(card_name: String, val_name: String, title_text: String,
 
 	var h_lbl := Label.new()
 	h_lbl.name = "HeaderLabel"
-	h_lbl.text = title_text
 	h_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	h_lbl.add_theme_font_size_override("font_size", 16)
 	h_lbl.add_theme_color_override("font_color", accent_col)
@@ -306,7 +383,6 @@ func _build_metric_card(card_name: String, val_name: String, title_text: String,
 
 	var u_lbl := Label.new()
 	u_lbl.name = "UnitLabel"
-	u_lbl.text = unit_text
 	u_lbl.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
 	u_lbl.add_theme_font_size_override("font_size", 14)
 	u_lbl.add_theme_color_override("font_color", accent_col)
@@ -316,7 +392,6 @@ func _build_metric_card(card_name: String, val_name: String, title_text: String,
 
 	var sub_tag := Label.new()
 	sub_tag.name = "SubTagLabel"
-	sub_tag.text = sub_text
 	sub_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	sub_tag.add_theme_font_size_override("font_size", 12)
 	sub_tag.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
@@ -324,7 +399,13 @@ func _build_metric_card(card_name: String, val_name: String, title_text: String,
 		sub_tag.add_theme_font_override("font", _cached_font)
 	cv.add_child(sub_tag)
 
-	return {"card": card, "value_label": val_lbl}
+	return {
+		"card": card,
+		"value_label": val_lbl,
+		"header_label": h_lbl,
+		"sub_label": sub_tag,
+		"unit_label": u_lbl
+	}
 
 
 func _refresh_display() -> void:
@@ -365,6 +446,22 @@ func get_time_text() -> String:
 
 func get_dps_text() -> String:
 	return _dps_label.text if _dps_label else ""
+
+
+func get_title_text() -> String:
+	return _title_lbl.text if _title_lbl else ""
+
+
+func get_subtitle_text() -> String:
+	return _sub_lbl.text if _sub_lbl else ""
+
+
+func get_tip_text() -> String:
+	return _tip_label.text if _tip_label else ""
+
+
+func get_confirm_text() -> String:
+	return _confirm_btn.text if _confirm_btn else ""
 
 
 func _create_floating_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:
