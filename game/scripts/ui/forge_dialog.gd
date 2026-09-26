@@ -278,6 +278,46 @@ func _build_ui() -> void:
 		_slots_label.add_theme_font_override("font", _cached_font)
 	sv.add_child(_slots_label)
 
+	# 機芯五槽部位槽位列 (亮金黃柔和卡片底)
+	var core_panel := PanelContainer.new()
+	core_panel.name = "ForgeCoreSlotsPanel"
+	core_panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_GOLD, COLOR_BORDER, 2, 4, 18))
+	v.add_child(core_panel)
+
+	var cm := MarginContainer.new()
+	cm.add_theme_constant_override("margin_left", 14)
+	cm.add_theme_constant_override("margin_right", 14)
+	cm.add_theme_constant_override("margin_top", 8)
+	cm.add_theme_constant_override("margin_bottom", 8)
+	core_panel.add_child(cm)
+
+	var cv := VBoxContainer.new()
+	cv.add_theme_constant_override("separation", 6)
+	cm.add_child(cv)
+
+	var core_head := HBoxContainer.new()
+	cv.add_child(core_head)
+
+	var core_title := Label.new()
+	core_title.name = "ForgeCoreSlotsTitle"
+	core_title.text = _t("機芯五槽部位")
+	core_title.add_theme_font_size_override("font_size", 16)
+	core_title.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	core_title.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	core_title.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		core_title.add_theme_font_override("font", _cached_font)
+	core_head.add_child(core_title)
+
+	var core_row := HBoxContainer.new()
+	core_row.name = "ForgeCoreSlotsRow"
+	core_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	core_row.add_theme_constant_override("separation", 10)
+	cv.add_child(core_row)
+
+	for def in SpriteDB.CORE_SLOT_DEFS:
+		core_row.add_child(_create_forge_core_slot(def))
+
 	# 既有連敗保底進度條區塊 (珊瑚粉卡片底)
 	var pity_panel := PanelContainer.new()
 	pity_panel.name = "PityContainer"
@@ -404,6 +444,79 @@ func _create_info_label(parent: Container, text: String) -> Label:
 		l.add_theme_font_override("font", _cached_font)
 	parent.add_child(l)
 	return l
+
+
+func _create_forge_core_slot(def: Dictionary) -> Control:
+	var slot_id := str(def.get("id", ""))
+	var slot_name := _t(str(def.get("name", "")))
+	var slot_desc := _t(str(def.get("desc", "")))
+
+	var card := PanelContainer.new()
+	card.name = "SlotCard_" + slot_id
+	card.custom_minimum_size = Vector2(128, 70)
+	card.add_theme_stylebox_override("panel", _create_panel_style(Color("#FFFDF8"), COLOR_BORDER, 2, 3, 12))
+
+	var row := HBoxContainer.new()
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 6)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	card.add_child(row)
+
+	var icon := TextureRect.new()
+	icon.name = "SlotIcon"
+	icon.custom_minimum_size = Vector2(48, 48)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var t: Texture2D = SpriteDB.core_slot_icon(slot_id)
+	if t:
+		icon.texture = t
+	row.add_child(icon)
+
+	var col := VBoxContainer.new()
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	col.add_theme_constant_override("separation", 2)
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(col)
+
+	var name_lbl := Label.new()
+	name_lbl.name = "SlotName"
+	name_lbl.text = slot_name
+	name_lbl.add_theme_font_size_override("font_size", 12)
+	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	name_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	name_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		name_lbl.add_theme_font_override("font", _cached_font)
+	col.add_child(name_lbl)
+
+	var desc_lbl := Label.new()
+	desc_lbl.name = "SlotDesc"
+	desc_lbl.text = slot_desc
+	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	desc_lbl.add_theme_font_size_override("font_size", 9)
+	desc_lbl.add_theme_color_override("font_color", COLOR_TEXT_GOLD)
+	if _cached_font:
+		desc_lbl.add_theme_font_override("font", _cached_font)
+	col.add_child(desc_lbl)
+
+	var btn := Button.new()
+	btn.name = "SlotButton"
+	btn.flat = true
+	btn.custom_minimum_size = Vector2(128, 70)
+	btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	btn.tooltip_text = "%s\n%s" % [slot_name, slot_desc]
+	card.add_child(btn)
+
+	btn.pressed.connect(func():
+		AudioManager.play_ui()
+		if is_instance_valid(_msg_label):
+			_msg_label.text = _t("【%s】%s") % [slot_name, slot_desc]
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	)
+
+	return card
 
 
 func _refresh_display() -> void:
