@@ -2966,8 +2966,8 @@
    "id": "clockwork-patrol",
    "cat": "遊戲",
    "title": "發條自動巡邏全自動離線結算",
-   "status": "草稿",
-   "note": "t_4284dd5f: 離線背景結算收益，拔除領取按鈕，接軌每日發條",
+   "status": "開發中",
+   "note": "派工 sideworker2 執行",
    "keys": [
     "發條自動巡邏全自"
    ]
