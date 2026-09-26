@@ -1,0 +1,158 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "title": "機芯八色階與五槽位校準規則表",
+    "description": "CORE_LOOP 支柱二資料層：分數對照八色階、七次校準上限、失敗不碎裝安全彈簧",
+    "hard_limits": {
+      "allowed_stats": ["ATK", "DEF", "HP", "CRIT", "CRIT_DMG"],
+      "locked_stats_prohibited": ["ATB", "SPEED", "ATTACK_SPEED", "WINDUP", "HIT", "MISS"],
+      "max_calibrations_per_part": 7,
+      "break_on_fail": false,
+      "delete_on_fail": false
+    }
+  },
+  "slots": {
+    "mainspring": {
+      "id": "mainspring",
+      "name": "發條發電機",
+      "name_en": "Mainspring Dynamo",
+      "description": "決定發條核心動能與耐久基礎",
+      "allowed_stats": ["ATK", "HP"],
+      "default_base_stat": "ATK"
+    },
+    "chassis": {
+      "id": "chassis",
+      "name": "機殼裝甲",
+      "name_en": "Chassis Armor",
+      "description": "決定機體外殼抗衝擊與防禦力",
+      "allowed_stats": ["DEF", "HP"],
+      "default_base_stat": "DEF"
+    },
+    "escapement": {
+      "id": "escapement",
+      "name": "擒縱調速器",
+      "name_en": "Escapement Regulator",
+      "description": "決定精密釋能的暴擊率與暴擊傷害",
+      "allowed_stats": ["CRIT", "CRIT_DMG"],
+      "default_base_stat": "CRIT"
+    },
+    "gear_train": {
+      "id": "gear_train",
+      "name": "傳動齒輪組",
+      "name_en": "Gear Train Assembly",
+      "description": "齒輪力矩傳遞，強化攻防綜合效能",
+      "allowed_stats": ["ATK", "DEF"],
+      "default_base_stat": "ATK"
+    },
+    "soul_core": {
+      "id": "soul_core",
+      "name": "共鳴核心",
+      "name_en": "Resonance Core",
+      "description": "玩具之魂核心，提供全域屬性加護",
+      "allowed_stats": ["ATK", "DEF", "HP", "CRIT", "CRIT_DMG"],
+      "default_base_stat": "HP"
+    }
+  },
+  "tiers": [
+    {
+      "tier": 0,
+      "id": "gray",
+      "name": "灰",
+      "name_en": "Gray",
+      "min_score": null,
+      "max_score": -1,
+      "hex": "#8E8E93",
+      "modulate": [0.557, 0.557, 0.576, 1.0],
+      "desc": "失調機芯（分數 < 0）"
+    },
+    {
+      "tier": 1,
+      "id": "white",
+      "name": "白",
+      "name_en": "White",
+      "min_score": 0,
+      "max_score": 0,
+      "hex": "#FFFFFF",
+      "modulate": [1.0, 1.0, 1.0, 1.0],
+      "desc": "出廠白板（分數 0）"
+    },
+    {
+      "tier": 2,
+      "id": "orange",
+      "name": "橘",
+      "name_en": "Orange",
+      "min_score": 1,
+      "max_score": 4,
+      "hex": "#FFA010",
+      "modulate": [1.0, 0.627, 0.063, 1.0],
+      "desc": "微調部件（分數 1~4）"
+    },
+    {
+      "tier": 3,
+      "id": "blue",
+      "name": "藍",
+      "name_en": "Blue",
+      "min_score": 5,
+      "max_score": 22,
+      "hex": "#38A0FF",
+      "modulate": [0.22, 0.627, 1.0, 1.0],
+      "desc": "標準部件（分數 5~22）"
+    },
+    {
+      "tier": 4,
+      "id": "purple",
+      "name": "紫",
+      "name_en": "Purple",
+      "min_score": 23,
+      "max_score": 39,
+      "hex": "#A855F7",
+      "modulate": [0.659, 0.333, 0.969, 1.0],
+      "desc": "精準部件（分數 23~39）"
+    },
+    {
+      "tier": 5,
+      "id": "gold",
+      "name": "金",
+      "name_en": "Gold",
+      "min_score": 40,
+      "max_score": 54,
+      "hex": "#FFD028",
+      "modulate": [1.0, 0.816, 0.157, 1.0],
+      "desc": "卓越部件（分數 40~54）"
+    },
+    {
+      "tier": 6,
+      "id": "green",
+      "name": "綠",
+      "name_en": "Green",
+      "min_score": 55,
+      "max_score": 69,
+      "hex": "#4ED86A",
+      "modulate": [0.306, 0.847, 0.416, 1.0],
+      "desc": "完美部件（分數 55~69）"
+    },
+    {
+      "tier": 7,
+      "id": "red",
+      "name": "紅",
+      "name_en": "Red",
+      "min_score": 70,
+      "max_score": null,
+      "hex": "#FF5E8A",
+      "modulate": [1.0, 0.369, 0.541, 1.0],
+      "desc": "極限超越（分數 70+）"
+    }
+  ],
+  "calibration_rules": {
+    "max_attempts": 7,
+    "break_on_fail": false,
+    "delete_on_fail": false,
+    "stat_weights": {
+      "ATK": 2.0,
+      "DEF": 1.5,
+      "HP": 0.2,
+      "CRIT": 50.0,
+      "CRIT_DMG": 25.0
+    }
+  }
+}
