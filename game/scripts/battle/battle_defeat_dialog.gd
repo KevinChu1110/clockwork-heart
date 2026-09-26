@@ -42,10 +42,12 @@ var _title_lbl: Label
 var _sub_lbl: Label
 var _hint_lbl: Label
 var _tip_lbl: Label
+var _part_hint_lbl: Label
 var _revive_btn: Button
 var _give_up_btn: Button
 var _cached_font: Font = null
 var _mode: String = ""
+var _part_name: String = ""
 var _is_built: bool = false
 
 var _on_revive: Callable = Callable()
@@ -91,17 +93,18 @@ func _update_ui_texts() -> void:
 	_refresh_display()
 
 
-static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "") -> Control:
+static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "") -> Control:
 	var dlg = load("res://scripts/battle/battle_defeat_dialog.gd").new()
-	dlg.setup(on_revive, on_give_up, mode)
+	dlg.setup(on_revive, on_give_up, mode, part_name)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "") -> void:
+func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "") -> void:
 	_on_revive = on_revive
 	_on_give_up = on_give_up
 	_mode = mode
+	_part_name = part_name
 	if is_inside_tree():
 		_refresh_display()
 
@@ -204,6 +207,17 @@ func _build_ui() -> void:
 	if _cached_font:
 		_sub_lbl.add_theme_font_override("font", _cached_font)
 	dc_v.add_child(_sub_lbl)
+
+	_part_hint_lbl = Label.new()
+	_part_hint_lbl.name = "PartHintLbl"
+	_part_hint_lbl.add_theme_font_size_override("font_size", 16)
+	_part_hint_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	_part_hint_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_part_hint_lbl.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		_part_hint_lbl.add_theme_font_override("font", _cached_font)
+	_part_hint_lbl.visible = false
+	dc_v.add_child(_part_hint_lbl)
 
 	_hint_lbl = Label.new()
 	_hint_lbl.name = "HintLbl"
@@ -327,6 +341,23 @@ func _refresh_display() -> void:
 		else:
 			_tip_lbl.text = _t("若是選擇承認敗北，將返回城鎮整頓裝備與招式。")
 
+	if _part_hint_lbl and is_instance_valid(_part_hint_lbl):
+		var is_colossus := _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]
+		if is_colossus:
+			var target_part := _part_name
+			if target_part == "":
+				var WC = load("res://scripts/world/world_content.gd")
+				if WC and WC.has_method("colossus_weak_part"):
+					target_part = str(WC.call("colossus_weak_part", _mode))
+				else:
+					target_part = "溢能核心"
+			var localized_part := _t(target_part)
+			_part_hint_lbl.text = _t("下次先破壞%s") % [localized_part]
+			_part_hint_lbl.visible = true
+		else:
+			_part_hint_lbl.text = ""
+			_part_hint_lbl.visible = false
+
 
 func _on_revive_ad_clicked() -> void:
 	var es: Node = null
@@ -383,6 +414,14 @@ func get_hint_text() -> String:
 
 func get_tip_text() -> String:
 	return _tip_lbl.text if _tip_lbl and is_instance_valid(_tip_lbl) else ""
+
+
+func get_part_hint_text() -> String:
+	return _part_hint_lbl.text if _part_hint_lbl and is_instance_valid(_part_hint_lbl) else ""
+
+
+func is_part_hint_visible() -> bool:
+	return _part_hint_lbl.visible if _part_hint_lbl and is_instance_valid(_part_hint_lbl) else false
 
 
 func get_revive_button_text() -> String:

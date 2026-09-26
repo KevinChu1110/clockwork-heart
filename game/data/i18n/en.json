@@ -861,5 +861,6 @@
   "【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）": "[%s] %s (Current Tier: %s · Calibrations Left: %d)",
   "【%s】%s（目前色階：%s階 · 剩餘校準 %d 次）": "[%s] %s (Current Tier: %s · %d Calibrations Left)",
   "【%s】%s（已達最大校準次數上限 7 次）": "[%s] %s (Reached max 7 calibrations)",
-  "黑鏽蒸氣巨象": "Black-Rust Steam Colossus"
+  "黑鏽蒸氣巨象": "Black-Rust Steam Colossus",
+  "下次先破壞%s": "Next time destroy %s first"
 }
