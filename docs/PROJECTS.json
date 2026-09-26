@@ -2966,8 +2966,8 @@
    "id": "clockwork-patrol",
    "cat": "遊戲",
    "title": "發條自動巡邏全自動離線結算",
-   "status": "開發中",
-   "note": "派工 sideworker2 執行",
+   "status": "已上線",
+   "note": "本季不做（准入未過），工作副本不准合進主線",
    "keys": [
     "發條自動巡邏全自"
    ]
