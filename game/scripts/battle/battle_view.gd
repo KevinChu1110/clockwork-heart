@@ -255,6 +255,12 @@ func setup(mode: String) -> void:
 
 	sim.event.connect(_on_event)
 	sim.battle_ended.connect(_on_end)
+	var p: BattleUnit = sim.get_unit("player")
+	if p:
+		if GameState.player_name in ["", "小白", "Xiaobai", "シロ", "시로", "Blanco"]:
+			p.display_name = ContentLoc.text("ui", "小白")
+		else:
+			p.display_name = ContentLoc.text("ui", GameState.player_name)
 	_refresh_hud()
 	_ensure_coach()
 	AudioManager.battle_start(_mode)
@@ -283,49 +289,49 @@ func setup(mode: String) -> void:
 	if mode == "leo":
 		_append_log(_t("雷歐：渺小的兔子……也想挑戰獅衛之王？"))
 		_append_log(_t("[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後按 J 跳開[/color]"))
-		parry_hint.text = _kh(_t("【J】格擋　·　【Tab】鎖部位　·　火圈後躍出"))
+		parry_hint.text = _default_parry_hint_text()
 		_flash_coach(_t("先鎖盾磨掉，防禦會降。盔可破，但牠會暴。"), 3.6)
 	elif mode == "fog":
 		_append_log(_t("白霧：嘻嘻～真的假的，你分得清嗎？"))
 		_append_log(_t("[color=#8cf]分身多 · 本體發白才打得中 · 砍幻影會反咬、變慢[/color]"))
-		parry_hint.text = _kh(_t("【Tab/1-3】鎖目標　·　本體發白才輸出　·　別打幻影"))
+		parry_hint.text = _default_parry_hint_text()
 	elif mode == "demon":
 		_append_log(_t("停擺核：那就來——用你的微末，撞我的千年。"))
 		_append_log(_t("[color=#c8f]黑鏽必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]"))
-		parry_hint.text = _kh(_t("【J】必殺格擋　·　【Tab】鎖部位　·　時鐘窗"))
+		parry_hint.text = _default_parry_hint_text()
 	elif mode == "abo":
 		_append_log(_t("阿波：來。打我的架勢——用拳，不是用嘴。"))
 		_append_log(_t("[color=#9c9]打散架勢 · 散開時傷害吃滿 · 重拳要擋[/color]"))
-		parry_hint.text = _kh(_t("打散架勢　·　【Tab】鎖部位　·　重拳【J】"))
+		parry_hint.text = _default_parry_hint_text()
 	elif mode == "falcon":
 		_append_log(_t("疾影：把發條最鬆的送來了？眼睛，跟得上我嗎？"))
 		_append_log(_t("[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起按 J[/color]"))
-		parry_hint.text = _kh(_t("等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】"))
+		parry_hint.text = _default_parry_hint_text()
 	elif mode == "boar":
 		_append_log(_t("石拳：……把發條最鬆的送來了？還站著？那就接下這一拳——"))
 		_append_log(_t("[color=#c96]衝來按 J 硬碰，岩甲會裂 · 落石按 J[/color]"))
-		parry_hint.text = _kh(_t("衝鋒對撞【J】　·　【Tab】鎖角／甲　·　落岩【J】"))
+		parry_hint.text = _default_parry_hint_text()
 	elif mode == "wrath":
 		_append_log(_t("無臉：…………（焰在顫）"))
 		_append_log(_t("[color=#f84]裂縫·怒火：密火圈 · 漏閃疊灼燒，滿 3 層大爆[/color]"))
-		parry_hint.text = _kh(_t("密火圈【J】　·　【Tab】鎖部位"))
+		parry_hint.text = _default_parry_hint_text()
 	elif mode == "tide":
 		_append_log(_t("潮聲：刺胞在裂縫裡孵化……"))
 		_append_log(_t("[color=#6cf]裂縫·潮噬：時間內解決刺胞 · 本體會輪流擋普攻或技能，看情況換手[/color]"))
-		parry_hint.text = _kh(_t("先清刺胞　·　【Tab】鎖潮甲／囊"))
+		parry_hint.text = _default_parry_hint_text()
 	elif mode == "statue":
 		_append_log(_t("石響：三尊輪流亮起。"))
 		_append_log(_t("[color=#ca8]裂縫·石像：只打發光石像 · 落岩 · 全滅後打本體[/color]"))
-		parry_hint.text = _kh(_t("鎖發光石像 · 落岩按 J"))
+		parry_hint.text = _default_parry_hint_text()
 	elif mode == "chrono":
 		_append_log(_t("時牢：倒數的焰在腳下盤成環。"))
 		_append_log(_t("[color=#a8f]裂縫·時牢：炸彈窗按 J 拆除 · 落岩進安全[/color]"))
-		parry_hint.text = _kh(_t("炸彈／落岩【J】　·　【Tab】鎖外殼"))
+		parry_hint.text = _default_parry_hint_text()
 	elif mode == "training_dummy":
 		_append_log(_t("木人樁：靜止不動，供武者試招。"))
-		parry_hint.text = _kh(_t("木人樁不反擊 · 自由試刀 · 右上可結束"))
+		parry_hint.text = _default_parry_hint_text()
 	else:
-		parry_hint.text = _kh(Loc.t("tut.battle"))
+		parry_hint.text = _default_parry_hint_text()
 	## 有多部位的 Boss：通用 HUD／教學（白霧／石像除外——Tab 另有用途）
 	if _boss_has_parts():
 		_ensure_part_hud()
@@ -1617,7 +1623,43 @@ func _disconnect_loc_signal() -> void:
 			loc.locale_changed.disconnect(_on_locale_changed)
 
 
+func _default_parry_hint_text() -> String:
+	match _mode:
+		"leo":
+			return _kh(_t("【J】格擋　·　【Tab】鎖部位　·　火圈後躍出"))
+		"fog":
+			return _kh(_t("【Tab/1-3】鎖目標　·　本體發白才輸出　·　別打幻影"))
+		"demon":
+			return _kh(_t("【J】必殺格擋　·　【Tab】鎖部位　·　時鐘窗"))
+		"abo":
+			return _kh(_t("打散架勢　·　【Tab】鎖部位　·　重拳【J】"))
+		"falcon":
+			return _kh(_t("等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】"))
+		"boar":
+			return _kh(_t("衝鋒對撞【J】　·　【Tab】鎖角／甲　·　落岩【J】"))
+		"wrath":
+			return _kh(_t("密火圈【J】　·　【Tab】鎖部位"))
+		"tide":
+			return _kh(_t("先清刺胞　·　【Tab】鎖潮甲／囊"))
+		"statue":
+			return _kh(_t("鎖發光石像 · 落岩按 J"))
+		"chrono":
+			return _kh(_t("炸彈／落岩【J】　·　【Tab】鎖外殼"))
+		"training_dummy", "dummy":
+			return _kh(_t("木人樁不反擊 · 自由試刀 · 右上可結束"))
+		_:
+			return _kh(Loc.t("tut.battle"))
+
+
 func _on_locale_changed(_new_locale: String = "") -> void:
+	if parry_hint:
+		var e_tele := false
+		if sim:
+			var pe := _primary_enemy()
+			if pe and pe.telegraph_active:
+				e_tele = true
+		if not e_tele:
+			parry_hint.text = _default_parry_hint_text()
 	_refresh_part_bars()
 	_refresh_part_focus_hint()
 	var prl := get_node_or_null("SideBars/PlayerSide/PlayerRageLabel") as Label
@@ -1636,11 +1678,45 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 				p.display_name = ContentLoc.text("ui", "小白")
 			else:
 				p.display_name = ContentLoc.text("ui", GameState.player_name)
+		var WC = load("res://scripts/world/world_content.gd")
+		for u in sim.units.values():
+			if u is BattleUnit and u.team == BattleUnit.Team.ENEMY:
+				var target_id: String = str(u.id) if (WC and WC.is_world_battle(str(u.id))) else _mode
+				if WC and WC.is_world_battle(target_id):
+					var d: Dictionary = WC.enemy_def(target_id)
+					if not d.is_empty() and d.get("name", "") != "":
+						u.display_name = str(d.get("name"))
+				elif u.id in ["dummy", "training_dummy"] or _mode in ["dummy", "training_dummy"]:
+					u.display_name = _t("木人樁")
+				elif u.id == "wolf" or _mode == "wolf":
+					u.display_name = _t("失控的鏽蝕玩具")
+				elif u.id == "leo" or _mode == "leo":
+					u.display_name = _t("守衛泰坦·雷歐")
+				elif u.id == "falcon" or _mode == "falcon":
+					u.display_name = _t("疾影")
+				elif u.id == "boar" or _mode == "boar":
+					u.display_name = _t("石拳")
+				elif u.id == "wrath" or _mode == "wrath":
+					u.display_name = _t("無臉·怒火")
+				elif u.id == "tide" or _mode == "tide":
+					u.display_name = _t("無臉·潮噬")
+				elif u.id == "chrono" or _mode == "chrono":
+					u.display_name = _t("無臉·時牢")
+				elif u.id == "abo" or _mode == "abo":
+					u.display_name = _t("阿波熊貓")
+				elif u.id == "demon" or _mode == "demon":
+					u.display_name = _t("停擺核")
+				elif u.id == "white_fog" or _mode == "fog":
+					u.display_name = _t("白霧（本體）")
 		var e: BattleUnit = _primary_enemy()
-		if e and (_mode == "dummy" or _mode == "training_dummy"):
-			e.display_name = _t("木人樁")
-	if (_mode == "dummy" or _mode == "training_dummy") and parry_hint:
-		parry_hint.text = _kh(_t("木人樁不反擊 · 自由試刀 · 右上可結束"))
+		if e:
+			var target_id: String = str(e.id) if (WC and WC.is_world_battle(str(e.id))) else _mode
+			if WC and WC.is_world_battle(target_id):
+				var d: Dictionary = WC.enemy_def(target_id)
+				if not d.is_empty() and d.get("name", "") != "":
+					e.display_name = str(d.get("name"))
+			elif e.id in ["dummy", "training_dummy"] or _mode in ["dummy", "training_dummy"]:
+				e.display_name = _t("木人樁")
 	_refresh_hud()
 	if _btn_lock and is_instance_valid(_btn_lock):
 		_btn_lock.text = _t("鎖定")
@@ -2036,8 +2112,9 @@ func _refresh_part_focus_hint() -> void:
 		## 保留各 Boss 專屬提示時，把鎖定資訊併入尾端
 		if _mode == "leo":
 			parry_hint.text = _kh(tip)
-		elif not parry_hint.text.contains(tip.substr(0, 3)):
-			parry_hint.text = _kh("%s　·　%s" % [parry_hint.text, tip])
+		else:
+			var base_hint := _default_parry_hint_text()
+			parry_hint.text = _kh("%s　·　%s" % [base_hint, tip])
 	if _focus_hint:
 		_focus_hint.text = _t("部位鎖定 → %s") % label
 		if sim.focus_part_id != "" and sim.focus_part_id != "body":
@@ -2591,6 +2668,18 @@ func _unit_display_name(unit_id: String) -> String:
 			var d: Dictionary = WC.enemy_def(unit_id)
 			if not d.is_empty() and d.get("name", "") != "":
 				return str(d.get("name"))
+	match unit_id:
+		"training_dummy", "dummy": return _t("木人樁")
+		"wolf": return _t("失控的鏽蝕玩具")
+		"leo": return _t("守衛泰坦·雷歐")
+		"falcon": return _t("疾影")
+		"boar": return _t("石拳")
+		"wrath": return _t("無臉·怒火")
+		"tide": return _t("無臉·潮噬")
+		"chrono": return _t("無臉·時牢")
+		"abo": return _t("阿波熊貓")
+		"demon": return _t("停擺核")
+		"white_fog": return _t("白霧（本體）")
 	return unit_id
 
 
