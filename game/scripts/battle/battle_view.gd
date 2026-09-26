@@ -43,6 +43,7 @@ const BattleDefeatDialogScript := preload("res://scripts/battle/battle_defeat_di
 const DummySettlementDialogScript := preload("res://scripts/battle/dummy_settlement_dialog.gd")
 
 var sim: BattleSim
+var force_touch_mode: Variant = null  ## 測試/截圖強制覆寫觸控模式；null 為自動判定
 var _mode: String = "wolf"
 var _ended: bool = false
 var _revived_by_ad: bool = false
@@ -278,57 +279,72 @@ func setup(mode: String) -> void:
 		])
 		_flash_coach(_t("這是對方留下的打法，不是即時對戰。"), 2.8)
 	_flash_coach(_mode_coach_intro(mode), 3.2)
-	_append_log(_t("[color=#8cf]右側拇指：攻擊／技能／換武／鎖定／暫停／逃離。[/color]"))
+	_append_trans_log("[color=#8cf]右側拇指：攻擊／技能／換武／鎖定／暫停／逃離。[/color]")
 	if GameState.ng_plus > 0:
-		_append_log(_t("[color=#c8f]黑鏽迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]") % [
+		_append_trans_log("[color=#c8f]黑鏽迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]", [
 			GameState.ng_plus, ng_m
 		])
 		_flash_coach(_t("二周目：敵人更硬，空檔更窄。一樣等綠了再擋。"), 2.5)
 	if GameState.stain_flame:
-		_append_log(_t("[color=#a88]沾焰：刃上有一層不肯散的灰。攻擊略升。[/color]"))
+		_append_trans_log("[color=#a88]沾焰：刃上有一層不肯散的灰。攻擊略升。[/color]")
 	if mode == "leo":
-		_append_log(_t("雷歐：渺小的兔子……也想挑戰獅衛之王？"))
-		_append_log(_t("[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後按 J 跳開[/color]"))
+		_append_trans_log("雷歐：渺小的兔子……也想挑戰獅衛之王？")
+		_append_dual_log(
+			"[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後按 J 跳開[/color]",
+			"[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後點閃避跳開[/color]"
+		)
 		parry_hint.text = _default_parry_hint_text()
 		_flash_coach(_t("先鎖盾磨掉，防禦會降。盔可破，但牠會暴。"), 3.6)
 	elif mode == "fog":
-		_append_log(_t("白霧：嘻嘻～真的假的，你分得清嗎？"))
-		_append_log(_t("[color=#8cf]分身多 · 本體發白才打得中 · 砍幻影會反咬、變慢[/color]"))
+		_append_trans_log("白霧：嘻嘻～真的假的，你分得清嗎？")
+		_append_trans_log("[color=#8cf]分身多 · 本體發白才打得中 · 砍幻影會反咬、變慢[/color]")
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "demon":
-		_append_log(_t("停擺核：那就來——用你的微末，撞我的千年。"))
-		_append_log(_t("[color=#c8f]黑鏽必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]"))
+		_append_trans_log("停擺核：那就來——用你的微末，撞我的千年。")
+		_append_dual_log(
+			"[color=#c8f]黑鏽必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]",
+			"[color=#c8f]黑鏽必殺必擋 · 時鐘到就點閃避 · 半血時記得選『我拒絕』[/color]"
+		)
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "abo":
-		_append_log(_t("阿波：來。打我的架勢——用拳，不是用嘴。"))
-		_append_log(_t("[color=#9c9]打散架勢 · 散開時傷害吃滿 · 重拳要擋[/color]"))
+		_append_trans_log("阿波：來。打我的架勢——用拳，不是用嘴。")
+		_append_trans_log("[color=#9c9]打散架勢 · 散開時傷害吃滿 · 重拳要擋[/color]")
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "falcon":
-		_append_log(_t("疾影：把發條最鬆的送來了？眼睛，跟得上我嗎？"))
-		_append_log(_t("[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起按 J[/color]"))
+		_append_trans_log("疾影：把發條最鬆的送來了？眼睛，跟得上我嗎？")
+		_append_dual_log(
+			"[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起按 J[/color]",
+			"[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起點閃避[/color]"
+		)
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "boar":
-		_append_log(_t("石拳：……把發條最鬆的送來了？還站著？那就接下這一拳——"))
-		_append_log(_t("[color=#c96]衝來按 J 硬碰，岩甲會裂 · 落石按 J[/color]"))
+		_append_trans_log("石拳：……把發條最鬆的送來了？還站著？那就接下這一拳——")
+		_append_dual_log(
+			"[color=#c96]衝來按 J 硬碰，岩甲會裂 · 落石按 J[/color]",
+			"[color=#c96]衝來點閃避硬碰，岩甲會裂 · 落石點閃避[/color]"
+		)
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "wrath":
-		_append_log(_t("無臉：…………（焰在顫）"))
-		_append_log(_t("[color=#f84]裂縫·怒火：密火圈 · 漏閃疊灼燒，滿 3 層大爆[/color]"))
+		_append_trans_log("無臉：…………（焰在顫）")
+		_append_trans_log("[color=#f84]裂縫·怒火：密火圈 · 漏閃疊灼燒，滿 3 層大爆[/color]")
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "tide":
-		_append_log(_t("潮聲：刺胞在裂縫裡孵化……"))
-		_append_log(_t("[color=#6cf]裂縫·潮噬：時間內解決刺胞 · 本體會輪流擋普攻或技能，看情況換手[/color]"))
+		_append_trans_log("潮聲：刺胞在裂縫裡孵化……")
+		_append_trans_log("[color=#6cf]裂縫·潮噬：時間內解決刺胞 · 本體會輪流擋普攻或技能，看情況換手[/color]")
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "statue":
-		_append_log(_t("石響：三尊輪流亮起。"))
-		_append_log(_t("[color=#ca8]裂縫·石像：只打發光石像 · 落岩 · 全滅後打本體[/color]"))
+		_append_trans_log("石響：三尊輪流亮起。")
+		_append_trans_log("[color=#ca8]裂縫·石像：只打發光石像 · 落岩 · 全滅後打本體[/color]")
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "chrono":
-		_append_log(_t("時牢：倒數的焰在腳下盤成環。"))
-		_append_log(_t("[color=#a8f]裂縫·時牢：炸彈窗按 J 拆除 · 落岩進安全[/color]"))
+		_append_trans_log("時牢：倒數的焰在腳下盤成環。")
+		_append_dual_log(
+			"[color=#a8f]裂縫·時牢：炸彈窗按 J 拆除 · 落岩進安全[/color]",
+			"[color=#a8f]裂縫·時牢：炸彈窗點閃避拆除 · 落岩進安全[/color]"
+		)
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "training_dummy":
-		_append_log(_t("木人樁：靜止不動，供武者試招。"))
+		_append_trans_log("木人樁：靜止不動，供武者試招。")
 		parry_hint.text = _default_parry_hint_text()
 	else:
 		parry_hint.text = _default_parry_hint_text()
@@ -336,7 +352,10 @@ func setup(mode: String) -> void:
 	if _boss_has_parts():
 		_ensure_part_hud()
 		if _part_lock_enabled():
-			_append_log(_t("[color=#fc0]部位破壞：Tab 鎖定部位／本體 · 破甲降防 · 破冠／角會激怒[/color]"))
+			_append_dual_log(
+				"[color=#fc0]部位破壞：Tab 鎖定部位／本體 · 破甲降防 · 破冠／角會激怒[/color]",
+				"[color=#fc0]部位破壞：點鎖定部位／本體 · 破甲降防 · 破冠／角會激怒[/color]"
+			)
 
 
 static func _style_field_tag(lbl: Label, text_col: Color, shrink_mode: int = Control.SIZE_SHRINK_CENTER) -> void:
@@ -734,23 +753,41 @@ func _ensure_coach() -> void:
 func _mode_coach_intro(mode: String) -> String:
 	match mode:
 		"leo":
-			return _t("提示：倒數變綠立刻按 J 格擋！火圈亮起後再按 J 躍出")
+			return _battle_hint_text(
+				"提示：倒數變綠立刻按 J 格擋！火圈亮起後再按 J 躍出",
+				"提示：倒數變綠立刻點閃避格擋！火圈亮起後再點閃避躍出"
+			)
 		"fog":
-			return _t("提示：Tab 鎖本體 · 本體發白才砍 · 打錯幻影會痛")
+			return _battle_hint_text(
+				"提示：Tab 鎖本體 · 本體發白才砍 · 打錯幻影會痛",
+				"提示：點鎖定鎖本體 · 本體發白才砍 · 打錯幻影會痛"
+			)
 		"abo":
 			return _t("用技能打散架勢比較快 · 散開後全力打")
 		"falcon":
-			return _t("提示：別追殘影 · 等停拍再打 · 風切預告按 J")
+			return _battle_hint_text(
+				"提示：別追殘影 · 等停拍再打 · 風切預告按 J",
+				"提示：別追殘影 · 等停拍再打 · 風切預告點閃避"
+			)
 		"boar":
-			return _t("提示：衝鋒時對撞（J）剝甲 · 落岩進安全區")
+			return _battle_hint_text(
+				"提示：衝鋒時對撞（J）剝甲 · 落岩進安全區",
+				"提示：衝鋒時對撞點閃避剝甲 · 落岩進安全區"
+			)
 		"demon":
-			return _t("提示：必殺與時鐘都靠 J · 血量階段記得「我拒絕」")
+			return _battle_hint_text(
+				"提示：必殺與時鐘都靠 J · 血量階段記得「我拒絕」",
+				"提示：必殺與時鐘都點閃避 · 血量階段記得「我拒絕」"
+			)
 		"wolf":
 			return _t("提示：自動互砍 · 怒氣滿會放招 · 撐住就好")
 		"training_dummy":
 			return _t("木人試招：木人不會還手 · 測試出招節奏與技能傷害 · 隨時可按右上結束")
 		_:
-			return _t("時機窗：按 J 或點畫面")
+			return _battle_hint_text(
+				"時機窗：按 J 或點畫面",
+				"時機窗：點閃避"
+			)
 
 
 func _flash_coach(text: String, sec: float = 2.4) -> void:
@@ -1541,7 +1578,7 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_focus_next"):
 		## Tab：白霧切目標；其餘有部位的 Boss 切部位鎖定
 		if _mode == "fog":
-			var tid := sim.cycle_player_target(1)
+			var tid: String = sim.cycle_player_target(1)
 			if tid != "":
 				_append_log(_t("鎖定：%s") % sim.get_unit(tid).display_name)
 			get_viewport().set_input_as_handled()
@@ -1626,25 +1663,55 @@ func _disconnect_loc_signal() -> void:
 func _default_parry_hint_text() -> String:
 	match _mode:
 		"leo":
-			return _kh(_t("【J】格擋　·　【Tab】鎖部位　·　火圈後躍出"))
+			return _battle_hint_text(
+				"【J】格擋　·　【Tab】鎖部位　·　火圈後躍出",
+				"【點閃避】格擋　·　【點鎖定】鎖部位　·　火圈後躍出"
+			)
 		"fog":
-			return _kh(_t("【Tab/1-3】鎖目標　·　本體發白才輸出　·　別打幻影"))
+			return _battle_hint_text(
+				"【Tab/1-3】鎖目標　·　本體發白才輸出　·　別打幻影",
+				"【點鎖定】鎖目標　·　本體發白才輸出　·　別打幻影"
+			)
 		"demon":
-			return _kh(_t("【J】必殺格擋　·　【Tab】鎖部位　·　時鐘窗"))
+			return _battle_hint_text(
+				"【J】必殺格擋　·　【Tab】鎖部位　·　時鐘窗",
+				"【點閃避】必殺格擋　·　【點鎖定】鎖部位　·　時鐘窗"
+			)
 		"abo":
-			return _kh(_t("打散架勢　·　【Tab】鎖部位　·　重拳【J】"))
+			return _battle_hint_text(
+				"打散架勢　·　【Tab】鎖部位　·　重拳【J】",
+				"打散架勢　·　【點鎖定】鎖部位　·　重拳【點閃避】"
+			)
 		"falcon":
-			return _kh(_t("等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】"))
+			return _battle_hint_text(
+				"等【停拍】　·　【Tab】鎖翼／冠　·　風切【J】",
+				"等【停拍】　·　【點鎖定】鎖翼／冠　·　風切【點閃避】"
+			)
 		"boar":
-			return _kh(_t("衝鋒對撞【J】　·　【Tab】鎖角／甲　·　落岩【J】"))
+			return _battle_hint_text(
+				"衝鋒對撞【J】　·　【Tab】鎖角／甲　·　落岩【J】",
+				"衝鋒對撞【點閃避】　·　【點鎖定】鎖角／甲　·　落岩【點閃避】"
+			)
 		"wrath":
-			return _kh(_t("密火圈【J】　·　【Tab】鎖部位"))
+			return _battle_hint_text(
+				"密火圈【J】　·　【Tab】鎖部位",
+				"密火圈【點閃避】　·　【點鎖定】鎖部位"
+			)
 		"tide":
-			return _kh(_t("先清刺胞　·　【Tab】鎖潮甲／囊"))
+			return _battle_hint_text(
+				"先清刺胞　·　【Tab】鎖潮甲／囊",
+				"先清刺胞　·　【點鎖定】鎖潮甲／囊"
+			)
 		"statue":
-			return _kh(_t("鎖發光石像 · 落岩按 J"))
+			return _battle_hint_text(
+				"鎖發光石像 · 落岩按 J",
+				"鎖發光石像 · 落岩點閃避"
+			)
 		"chrono":
-			return _kh(_t("炸彈／落岩【J】　·　【Tab】鎖外殼"))
+			return _battle_hint_text(
+				"炸彈／落岩【J】　·　【Tab】鎖外殼",
+				"炸彈／落岩【點閃避】　·　【點鎖定】鎖外殼"
+			)
 		"training_dummy", "dummy":
 			return _kh(_t("木人樁不反擊 · 自由試刀 · 右上可結束"))
 		_:
@@ -1660,8 +1727,11 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 				e_tele = true
 		if not e_tele:
 			parry_hint.text = _default_parry_hint_text()
+	if _mode == "fog":
+		_update_white_fog_tab_hint()
 	_refresh_part_bars()
 	_refresh_part_focus_hint()
+	_refresh_log_display()
 	var prl := get_node_or_null("SideBars/PlayerSide/PlayerRageLabel") as Label
 	if prl:
 		prl.text = Loc.t("battle.rage")
@@ -1870,21 +1940,18 @@ func _refresh_hud() -> void:
 					countdown.add_theme_color_override("font_color", Color(0.85, 0.95, 1.0))
 					countdown_sub.visible = true
 					countdown_sub.text = _t("破綻！攻擊本體才有效")
-					parry_hint.text = _kh(_t("破綻中 · 確認鎖定本體(鍵2) · 剩餘約 %.1fs") % sim.fog_vuln_left)
+					var vuln_fmt := _battle_hint_text(
+						"破綻中 · 確認鎖定本體(鍵2) · 剩餘約 %.1fs",
+						"破綻中 · 確認鎖定本體 · 剩餘約 %.1fs"
+					)
+					parry_hint.text = _kh(vuln_fmt % sim.fog_vuln_left)
 					parry_hint.modulate = Color(0.7, 0.95, 1.0)
 				else:
 					enemy_body.modulate = Color(0.7, 0.75, 0.9)
 					telegraph.visible = false
 					countdown.visible = false
 					countdown_sub.visible = false
-					var punit: BattleUnit = sim.get_unit("player")
-					var lock_n := _t("本體")
-					if punit and punit.target_id != "":
-						var lt := sim.get_unit(punit.target_id)
-						if lt:
-							lock_n = lt.display_name
-					parry_hint.text = _kh(_t("鎖定中：%s · Tab/1/2/3 切換 · 等本體發白") % lock_n)
-					parry_hint.modulate = Color(0.85, 0.85, 0.95)
+					_update_white_fog_tab_hint()
 		else:
 			enemy_name.text = e.display_name
 			if _mode == "pvp_snap":
@@ -1927,10 +1994,28 @@ func _refresh_hud() -> void:
 					_update_chrono_hud()
 
 
+func _update_white_fog_tab_hint() -> void:
+	if _mode != "fog" or parry_hint == null:
+		return
+	var lock_n := _t("本體")
+	if sim:
+		var punit: BattleUnit = sim.get_unit("player")
+		if punit and punit.target_id != "":
+			var lt = sim.get_unit(punit.target_id)
+			if lt:
+				lock_n = lt.display_name
+	var fmt := _battle_hint_text(
+		"鎖定中：%s · Tab/1/2/3 切換 · 等本體發白",
+		"鎖定中：%s · 點鎖定切換 · 等本體發白"
+	)
+	parry_hint.text = _kh(fmt % lock_n)
+	parry_hint.modulate = Color(0.85, 0.85, 0.95)
+
+
 func _boss_has_parts() -> bool:
 	if sim == null:
 		return false
-	var boss := sim._primary_boss_unit()
+	var boss = sim._primary_boss_unit()
 	return boss != null and not boss.parts.is_empty()
 
 
@@ -2105,16 +2190,20 @@ func _refresh_part_bars(boss: BattleUnit = null) -> void:
 func _refresh_part_focus_hint() -> void:
 	if sim == null or not _part_lock_enabled():
 		return
-	var label := sim.part_focus_label()
-	var tip := _kh(_t("鎖定：%s　·　Tab 切換　·　破甲降防／破冠激怒") % label).replace("　·　", " · ")
-	var boss := sim._primary_boss_unit()
+	var label: String = sim.part_focus_label()
+	var tip_fmt := _battle_hint_text(
+		"鎖定：%s　·　Tab 切換　·　破甲降防／破冠激怒",
+		"鎖定：%s　·　點鎖定切換　·　破甲降防／破冠激怒"
+	)
+	var tip := _kh((tip_fmt % label).replace("　·　", " · "))
+	var boss = sim._primary_boss_unit()
 	if parry_hint and boss and not boss.telegraph_active:
 		## 保留各 Boss 專屬提示時，把鎖定資訊併入尾端
 		if _mode == "leo":
-			parry_hint.text = _kh(tip)
+			parry_hint.text = tip
 		else:
 			var base_hint := _default_parry_hint_text()
-			parry_hint.text = _kh("%s　·　%s" % [base_hint, tip])
+			parry_hint.text = "%s　·　%s" % [base_hint, tip]
 	if _focus_hint:
 		_focus_hint.text = _t("部位鎖定 → %s") % label
 		if sim.focus_part_id != "" and sim.focus_part_id != "body":
@@ -2180,7 +2269,7 @@ func _update_chrono_hud() -> void:
 	countdown.add_theme_color_override("font_color", Color(0.85, 0.7, 1.0))
 	countdown_sub.visible = true
 	countdown_sub.text = _t("炸彈拆除 · 落岩進安全")
-	parry_hint.text = _kh(_t("預告後按 J"))
+	parry_hint.text = _battle_hint_text("預告後按 J", "預告後點閃避")
 	parry_hint.modulate = Color(0.9, 0.8, 1.0)
 
 
@@ -2204,7 +2293,7 @@ func _update_wrath_hud() -> void:
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.7, 0.35))
 		countdown_sub.text = _t("灼燒 %d/%d · 密火圈漏閃會疊層") % [st, BattleSim.BURN_STACK_MAX]
 		parry_hint.modulate = Color(1, 0.75, 0.5)
-	parry_hint.text = _kh(_t("密火圈：預告後按 J · 必殺可格擋"))
+	parry_hint.text = _battle_hint_text("密火圈：預告後按 J · 必殺可格擋", "密火圈：預告後點閃避 · 必殺可格擋")
 	enemy_body.modulate = Color(1.1 + st * 0.08, 0.5 - st * 0.05, 0.35)
 
 
@@ -2229,15 +2318,15 @@ func _update_hazard_hud() -> void:
 		countdown.text = _t("注意")
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.6, 0.25))
 		countdown_sub.text = _t("%s 即將生效… %.1fs") % [nm, sim.hazard_timer]
-		parry_hint.text = _kh(_t("準備：黃色「閃」出現時按 J"))
+		parry_hint.text = _battle_hint_text("準備：黃色「閃」出現時按 J", "準備：黃色「閃」出現時點閃避")
 		parry_hint.modulate = Color(1, 0.7, 0.4)
 	elif sim.hazard_phase == "window":
 		telegraph.visible = true
 		telegraph.color = Color(1.0, 0.9, 0.2, 0.25 + 0.1 * sin(Time.get_ticks_msec() * 0.03))
 		countdown.text = _t("閃")
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.95, 0.3))
-		countdown_sub.text = _t("%s！現在按 J 或滑鼠  %.1fs") % [nm, sim.hazard_timer]
-		parry_hint.text = _kh(_t("互動窗：按 J"))
+		countdown_sub.text = _battle_hint_text("%s！現在按 J 或滑鼠  %.1fs", "%s！現在點閃避  %.1fs") % [nm, sim.hazard_timer]
+		parry_hint.text = _battle_hint_text("互動窗：按 J", "互動窗：點閃避")
 		parry_hint.modulate = Color(1, 1, 0.5)
 		_pulse_countdown()
 
@@ -2309,22 +2398,22 @@ func _update_boar_hud() -> void:
 		if win:
 			countdown.text = _t("撞")
 			countdown.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
-			countdown_sub.text = _t("對撞！按 J 卸力剝岩甲  %.1fs") % e.state_timer
+			countdown_sub.text = _battle_hint_text("對撞！按 J 卸力剝岩甲  %.1fs", "對撞！點閃避卸力剝岩甲  %.1fs") % e.state_timer
 			parry_hint.text = _kh(_t("現在對撞"))
 			parry_hint.modulate = Color(1, 0.9, 0.4)
 		else:
 			countdown.text = _t("衝")
 			countdown.add_theme_color_override("font_color", Color(1.0, 0.5, 0.35))
 			countdown_sub.text = _t("石拳衝鋒蓄力… 準備對撞")
-			parry_hint.text = _kh(_t("準備 J"))
+			parry_hint.text = _battle_hint_text("準備 J", "準備閃避")
 			parry_hint.modulate = Color(1, 0.6, 0.4)
-		telegraph.visible = true
-		telegraph.color = Color(0.9, 0.4, 0.2, 0.2)
+			telegraph.visible = true
+			telegraph.color = Color(0.9, 0.4, 0.2, 0.2)
 	else:
 		countdown.text = _t("甲%d") % sim.boar_armor
 		countdown.add_theme_color_override("font_color", Color(0.85, 0.7, 0.45))
 		countdown_sub.text = _t("岩甲 %d 層 · 對撞可剝") % sim.boar_armor
-		parry_hint.text = _kh(_t("等衝鋒對撞 · 落岩按 J 進安全"))
+		parry_hint.text = _battle_hint_text("等衝鋒對撞 · 落岩按 J 進安全", "等衝鋒對撞 · 落岩點閃避進安全")
 		parry_hint.modulate = Color(0.9, 0.85, 0.7)
 		telegraph.visible = false
 		enemy_body.modulate = Color(0.85, 0.8, 0.75) if sim.boar_armor > 0 else Color(1.1, 0.95, 0.85)
@@ -2371,11 +2460,11 @@ func _update_parry_countdown(e: BattleUnit) -> void:
 		else:
 			_set_boss_pose("telegraph")
 
-	var remain := e.state_timer
-	var in_window := remain <= BattleSim.PARRY_WINDOW and remain > 0.0
+	var remain: float = float(e.state_timer)
+	var in_window: bool = remain <= BattleSim.PARRY_WINDOW and remain > 0.0
 
 	## 整段前搖的「距離出手」秒數（顯示用）
-	var display_sec := remain
+	var display_sec: float = remain
 	## 倒數桶：3 / 2 / 1 / 格擋
 	var bucket: int
 	if in_window:
@@ -2397,7 +2486,7 @@ func _update_parry_countdown(e: BattleUnit) -> void:
 		telegraph.color = Color(0.2, 0.9, 0.35, 0.22 + 0.12 * sin(Time.get_ticks_msec() * 0.025))
 		countdown.text = _t("格擋")
 		countdown.add_theme_color_override("font_color", Color(0.4, 1.0, 0.45))
-		countdown_sub.text = _t("現在按 J 或滑鼠左鍵！")
+		countdown_sub.text = _battle_hint_text("現在按 J 或滑鼠左鍵！", "現在點閃避！")
 		countdown_sub.add_theme_color_override("font_color", Color(0.6, 1.0, 0.65))
 		if _parry_note_left <= 0.0:
 			parry_hint.text = _kh(_t("格擋時機！（剩餘 %.1f 秒）") % remain)
@@ -2611,7 +2700,7 @@ func _primary_enemy() -> BattleUnit:
 		return sim.get_unit("chrono")
 	if sim.units.has("white_fog"):
 		return sim.get_unit("white_fog")
-	var enemies := sim.living_of(BattleUnit.Team.ENEMY)
+	var enemies: Array = sim.living_of(BattleUnit.Team.ENEMY)
 	if not enemies.is_empty():
 		return enemies[0]
 	if sim.units.has("leo"):
@@ -2957,7 +3046,11 @@ func _on_event(kind: String, data: Dictionary) -> void:
 		"hazard_warn":
 			_append_log(_t("[color=#fa6]%s 預告…[/color]") % _hazard_name(str(data.get("kind"))))
 		"hazard_window":
-			_append_log(_t("[color=#ff5]%s 互動窗！按 J[/color]") % _hazard_name(str(data.get("kind"))))
+			_append_dual_log(
+				"[color=#ff5]%s 互動窗！按 J[/color]",
+				"[color=#ff5]%s 互動窗！點閃避[/color]",
+				[_hazard_name(str(data.get("kind")))]
+			)
 		"hazard_resolve":
 			var ok := bool(data.get("success", false))
 			var msg := str(data.get("msg", ""))
@@ -3646,19 +3739,75 @@ static func _adapt_log_colors(text: String) -> String:
 
 const MAX_LOG_LINES := 4
 var _log_history: Array[String] = []
+var _log_records: Array[Dictionary] = []
 
 
-func _append_log(t: String) -> void:
-	var line := _adapt_log_colors(_kh(t))
+func _render_log_record(record: Dictionary) -> String:
+	var raw := ""
+	match record.get("type", "plain"):
+		"dual":
+			var k: String = str(record.get("touch", "")) if _is_touch() else str(record.get("desktop", ""))
+			raw = _t(k)
+			var args: Array = record.get("args", [])
+			if not args.is_empty():
+				raw = raw % args
+		"trans":
+			raw = _t(str(record.get("key", "")))
+			var args: Array = record.get("args", [])
+			if not args.is_empty():
+				raw = raw % args
+		_:
+			raw = str(record.get("text", ""))
+	var line := _adapt_log_colors(_kh(raw))
 	if not line.begins_with("[b]"):
 		line = "[b]%s[/b]" % line
+	return line
+
+
+func _append_log_record(record: Dictionary) -> void:
+	_log_records.append(record)
+	while _log_records.size() > MAX_LOG_LINES:
+		_log_records.pop_front()
+	var line := _render_log_record(record)
 	_log_history.append(line)
 	while _log_history.size() > MAX_LOG_LINES:
 		_log_history.pop_front()
+	_update_log_label()
+
+
+func _update_log_label() -> void:
 	if log_label:
 		log_label.clear()
 		for i in range(_log_history.size()):
 			log_label.append_text(_log_history[i] + ("\n" if i < _log_history.size() - 1 else ""))
+
+
+func _refresh_log_display() -> void:
+	_log_history.clear()
+	for rec in _log_records:
+		_log_history.append(_render_log_record(rec))
+	_update_log_label()
+
+
+func _append_log(t: String) -> void:
+	_append_log_record({"type": "plain", "text": t})
+
+
+func _append_dual_log(desktop_text: String, touch_text: String, args: Array = []) -> void:
+	_append_log_record({
+		"type": "dual",
+		"desktop": desktop_text,
+		"touch": touch_text,
+		"args": args
+	})
+
+
+func _append_trans_log(key: String, args: Array = []) -> void:
+	_append_log_record({
+		"type": "trans",
+		"key": key,
+		"args": args
+	})
 
 
 ## ── 不用鍵盤也能打 ──
@@ -3667,19 +3816,50 @@ static func _touch() -> bool:
 	return DisplayServer.is_touchscreen_available()
 
 
+func _is_touch() -> bool:
+	if force_touch_mode != null:
+		return bool(force_touch_mode)
+	return DisplayServer.is_touchscreen_available()
+
+
+func _battle_hint_text(desktop_text: String, touch_text: String) -> String:
+	return _t(touch_text) if _is_touch() else _t(desktop_text)
+
+
 func _kh(t: String) -> String:
-	if not _touch():
+	if not _is_touch():
 		return t
-	var tap := _t("點畫面")
-	var foe := _t("點敵人")
-	t = t.replace("【Tab/1-3】", "【%s】" % foe)
-	t = t.replace("【Tab】", "【%s】" % foe)
-	t = t.replace("Tab ", foe + " ")
-	t = t.replace("Tab", foe)
-	t = t.replace("【J】", "【%s】" % tap)
-	t = t.replace("（J）", "（%s）" % tap)
-	t = t.replace("按 J", tap)
-	t = t.replace("靠 J", "靠" + tap)
+	var dodge := _t("點閃避")
+	var lock_t := _t("點鎖定")
+	# 中文鍵名替換
+	t = t.replace("【Tab/1-3】", "【%s】" % lock_t)
+	t = t.replace("【Tab】", "【%s】" % lock_t)
+	t = t.replace("Tab/1/2/3", lock_t)
+	t = t.replace("Tab 切換", "%s切換" % lock_t)
+	t = t.replace("Tab ", lock_t + " ")
+	t = t.replace("Tab", lock_t)
+	t = t.replace("【J】", "【%s】" % dodge)
+	t = t.replace("（J）", "（%s）" % dodge)
+	t = t.replace("按 J", dodge)
+	t = t.replace("靠 J", "靠" + dodge)
+	# 英文鍵名替換
+	t = t.replace("[Tab/1-3]", "[%s]" % _t("Tap Lock"))
+	t = t.replace("[Tab]", "[%s]" % _t("Tap Lock"))
+	t = t.replace("Tab/1/2/3", _t("Tap Lock"))
+	t = t.replace("Tab to switch", "%s to switch" % _t("Tap Lock"))
+	t = t.replace("Tab:", "%s:" % _t("Tap Lock"))
+	t = t.replace("Tab ", "%s " % _t("Tap Lock"))
+	t = t.replace("[J]", "[%s]" % _t("Tap Dodge"))
+	t = t.replace("(J)", "(%s)" % _t("Tap Dodge"))
+	t = t.replace("press J", _t("tap Dodge"))
+	t = t.replace("Press J", _t("Tap Dodge"))
+	# 日文鍵名替換
+	t = t.replace("Tab で", "%sで" % _t("ロックタップ"))
+	t = t.replace("Tab/1/2/3 で切替", "%sで切替" % _t("ロックタップ"))
+	t = t.replace("Tab で切替", "%sで切替" % _t("ロックタップ"))
+	t = t.replace("J で", "%sで" % _t("回避タップ"))
+	t = t.replace("J を押して", "%sして" % _t("回避をタップ"))
+	t = t.replace("Jを押す", _t("回避をタップ"))
 	return t
 
 
@@ -3828,7 +4008,7 @@ func _thumb_cycle_lock(dir: int) -> void:
 	if sim == null or _ended or sim.sim_paused:
 		return
 	if _mode == "fog":
-		var tid := sim.cycle_player_target(dir)
+		var tid: String = sim.cycle_player_target(dir)
 		if tid != "":
 			_append_log(_t("鎖定：%s") % sim.get_unit(tid).display_name)
 		return
@@ -3890,7 +4070,7 @@ func _enemy_tap() -> void:
 	if _parry_window_open():
 		_do_parry()
 	elif _mode == "fog":
-		var tid := sim.cycle_player_target(1)
+		var tid: String = sim.cycle_player_target(1)
 		if tid != "":
 			_append_log(_t("鎖定：%s") % sim.get_unit(tid).display_name)
 	elif _part_lock_enabled():
@@ -3919,7 +4099,7 @@ func _on_weapon_cell_gui(ev: InputEvent, index: int) -> void:
 func _on_part_row_gui(ev: InputEvent, pid: String) -> void:
 	if not _tap_ok(ev) or not _part_lock_enabled():
 		return
-	var boss := sim._primary_boss_unit()
+	var boss = sim._primary_boss_unit()
 	if boss == null:
 		return
 	for p in boss.parts:
