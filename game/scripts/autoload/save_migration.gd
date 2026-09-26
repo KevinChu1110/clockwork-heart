@@ -15,7 +15,7 @@ extends RefCounted
 
 ## 目前的存檔版本。改動存檔結構時：這裡 +1、GameState.VERSION 同步 +1、
 ## 下面補一支 _vN_to_vN1()、然後去 test_save_slots.gd 加一個舊檔情境。
-const CURRENT := 9
+const CURRENT := 10
 
 ## 沒寫 version 的存檔一律當第 1 版。0.13 之前的檔就是這種。
 const OLDEST := 1
@@ -112,6 +112,8 @@ static func _step(from_v: int, d: Dictionary) -> Dictionary:
 			return _v7_to_v8(d)
 		8:
 			return _v8_to_v9(d)
+		9:
+			return _v9_to_v10(d)
 	return {}
 
 
@@ -376,4 +378,17 @@ static func _v8_to_v9(d: Dictionary) -> Dictionary:
 		d["gem_smelt_day"] = ""
 	if not d.has("gem_smelt_used"):
 		d["gem_smelt_used"] = 0
+	return d
+
+
+## 9 → 10：停擺巨偶每日出征次數與日期
+static func _v9_to_v10(d: Dictionary) -> Dictionary:
+	if not d.has("colossus_daily_day"):
+		d["colossus_daily_day"] = 0
+	if not d.has("colossus_daily_entries"):
+		d["colossus_daily_entries"] = 3
+	if not d.has("current_expedition_stage"):
+		d["current_expedition_stage"] = ""
+	if not d.has("current_suggest_lv"):
+		d["current_suggest_lv"] = 0
 	return d

@@ -837,5 +837,20 @@
   "點一下繼續 · 部分步驟可「稍後再說」": "Toca para continuar · Algunos pasos se pueden omitir con «Más tarde»",
   "點下一步 · 部分步驟可「稍後再說」": "Toca Siguiente · Algunos pasos se pueden omitir con «Más tarde»",
   "點一下繼續": "Toca para continuar",
-  "點下一步": "Toca Siguiente"
+  "點下一步": "Toca Siguiente",
+  "停擺巨偶": "Coloso Paralizado",
+  "失控發條獅": "León de Cuerda Desbocado",
+  "霧鐘提線人偶": "Marioneta de Reloj de Niebla",
+  "黑鏑蒸汽巨象": "Elefante de Vapor Punta Negra",
+  "四區主線": "Historia Principal de 4 Regiones",
+  "明天再來": "Vuelve Mañana",
+  "停擺巨偶 · 今日剩餘: %d/3": "Coloso Paralizado · Restantes Hoy: %d/3",
+  "今日挑戰次數已用盡，請明天再來！": "¡Intentos diarios agotados. Por favor vuelve mañana!",
+  "停擺巨偶挑戰": "Desafío del Coloso Paralizado",
+  "每日挑戰上限 3 次，每日 00:00 自動重置挑戰次數。": "Límite diario: 3 intentos. Se reinicia a las 00:00.",
+  "消耗: 1 次": "Consumo: 1 Intento",
+  "今日剩餘: %d 次": "Restantes Hoy: %d",
+  "巨偶-1": "Coloso-1",
+  "巨偶-2": "Coloso-2",
+  "巨偶-3": "Coloso-3"
 }
