@@ -16,6 +16,7 @@ signal closed()
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const CoreSystem = preload("res://scripts/systems/core_system.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
@@ -453,18 +454,30 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 
 	var card := PanelContainer.new()
 	card.name = "SlotCard_" + slot_id
-	card.custom_minimum_size = Vector2(128, 70)
-	card.add_theme_stylebox_override("panel", _create_panel_style(Color("#FFFDF8"), COLOR_BORDER, 2, 3, 12))
+	card.custom_minimum_size = Vector2(132, 118)
+	card.add_theme_stylebox_override("panel", _create_panel_style(Color("#FFFDF8"), COLOR_BORDER, 2, 3, 14))
+
+	var vcol := VBoxContainer.new()
+	vcol.alignment = BoxContainer.ALIGNMENT_CENTER
+	vcol.add_theme_constant_override("separation", 3)
+	card.add_child(vcol)
+
+	# 上半部點選選取區域（含 SlotButton）
+	var top_area := PanelContainer.new()
+	top_area.custom_minimum_size = Vector2(124, 52)
+	var top_sb := StyleBoxEmpty.new()
+	top_area.add_theme_stylebox_override("panel", top_sb)
+	vcol.add_child(top_area)
 
 	var row := HBoxContainer.new()
 	row.alignment = BoxContainer.ALIGNMENT_CENTER
 	row.add_theme_constant_override("separation", 6)
 	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	card.add_child(row)
+	top_area.add_child(row)
 
 	var icon := TextureRect.new()
 	icon.name = "SlotIcon"
-	icon.custom_minimum_size = Vector2(48, 48)
+	icon.custom_minimum_size = Vector2(38, 38)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -474,9 +487,18 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 		icon.texture = t
 	row.add_child(icon)
 
+	var part := CoreSystem.get_player_part(slot_id)
+	var tier_id: String = str(part.get("tier", "white"))
+	var tier_name: String = str(part.get("tier_name", "白"))
+	var tier_color: Color = CoreSystem.get_tier_color(tier_id)
+	var count: int = int(part.get("calibration_count", 0))
+	var max_cnt: int = int(part.get("max_calibrations", 7))
+	var remains: int = maxi(0, max_cnt - count)
+	icon.modulate = tier_color
+
 	var col := VBoxContainer.new()
 	col.alignment = BoxContainer.ALIGNMENT_CENTER
-	col.add_theme_constant_override("separation", 2)
+	col.add_theme_constant_override("separation", 1)
 	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	row.add_child(col)
 
@@ -491,28 +513,99 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 		name_lbl.add_theme_font_override("font", _cached_font)
 	col.add_child(name_lbl)
 
+	var tier_lbl := Label.new()
+	tier_lbl.name = "TierLabel"
+	tier_lbl.text = _t(tier_name + "階")
+	tier_lbl.add_theme_font_size_override("font_size", 11)
+	tier_lbl.add_theme_color_override("font_color", tier_color if tier_id != "white" else COLOR_TEXT_DARK)
+	tier_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	tier_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		tier_lbl.add_theme_font_override("font", _cached_font)
+	col.add_child(tier_lbl)
+
+	var count_lbl := Label.new()
+	count_lbl.name = "CountLabel"
+	count_lbl.text = _t("剩餘 %d 次") % remains
+	count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	count_lbl.add_theme_font_size_override("font_size", 10)
+	count_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	count_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	count_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		count_lbl.add_theme_font_override("font", _cached_font)
+	vcol.add_child(count_lbl)
+
 	var desc_lbl := Label.new()
 	desc_lbl.name = "SlotDesc"
 	desc_lbl.text = slot_desc
-	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	desc_lbl.add_theme_font_size_override("font_size", 9)
-	desc_lbl.add_theme_color_override("font_color", COLOR_TEXT_GOLD)
-	if _cached_font:
-		desc_lbl.add_theme_font_override("font", _cached_font)
-	col.add_child(desc_lbl)
+	desc_lbl.visible = false
+	card.add_child(desc_lbl)
 
+	# 點選檢視按鈕（熱區 >= 48px）
 	var btn := Button.new()
 	btn.name = "SlotButton"
 	btn.flat = true
-	btn.custom_minimum_size = Vector2(128, 70)
+	btn.custom_minimum_size = Vector2(124, 52)
 	btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	btn.tooltip_text = "%s\n%s" % [slot_name, slot_desc]
-	card.add_child(btn)
+	top_area.add_child(btn)
+
+	# 單次拇指校準按鈕（尺寸 118x48，熱區 >= 48px）
+	var btn_cal := Button.new()
+	btn_cal.name = "BtnCalibrate"
+	btn_cal.custom_minimum_size = Vector2(118, 48)
+	btn_cal.text = _t("校準") if remains > 0 else _t("已達上限")
+	btn_cal.disabled = (remains <= 0)
+	btn_cal.add_theme_font_size_override("font_size", 13)
+	btn_cal.add_theme_color_override("font_color", Color.WHITE)
+	btn_cal.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	btn_cal.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		btn_cal.add_theme_font_override("font", _cached_font)
+	btn_cal.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 4, 14, 2))
+	btn_cal.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB74D"), COLOR_BORDER, 4, 14, 2))
+	btn_cal.add_theme_stylebox_override("pressed", _create_button_style(Color("#F57C00"), COLOR_BORDER, 2, 14, 2))
+	btn_cal.add_theme_stylebox_override("disabled", _create_button_style(Color("#D0DDD2"), COLOR_BORDER, 2, 14, 2))
+	vcol.add_child(btn_cal)
+
+	var update_forge_card_ui = func():
+		var p = CoreSystem.get_player_part(slot_id)
+		var tid: String = str(p.get("tier", "white"))
+		var tnm: String = str(p.get("tier_name", "白"))
+		var tc: Color = CoreSystem.get_tier_color(tid)
+		var cnt: int = int(p.get("calibration_count", 0))
+		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - cnt)
+		icon.modulate = tc
+		tier_lbl.text = _t(tnm + "階")
+		tier_lbl.add_theme_color_override("font_color", tc if tid != "white" else COLOR_TEXT_DARK)
+		count_lbl.text = _t("剩餘 %d 次") % rem
+		btn_cal.disabled = (rem <= 0)
+		btn_cal.text = _t("校準") if rem > 0 else _t("已達上限")
+		return {"tier_name": tnm, "remains": rem, "part": p}
+
+	btn_cal.pressed.connect(func():
+		AudioManager.play_ui()
+		var res: Dictionary = CoreSystem.calibrate_player_part(slot_id)
+		var info: Dictionary = update_forge_card_ui.call()
+		var tnm: String = str(info.get("tier_name", ""))
+		var rem: int = int(info.get("remains", 0))
+		if is_instance_valid(_msg_label):
+			var tip: String = str(res.get("message", ""))
+			_msg_label.text = _t("【%s】%s · 目前色階：%s階（剩餘 %d 次）") % [slot_name, tip, tnm, rem]
+			if bool(res.get("ok", false)):
+				_msg_label.add_theme_color_override("font_color", COLOR_MINT)
+			else:
+				_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	)
 
 	btn.pressed.connect(func():
 		AudioManager.play_ui()
+		var p = CoreSystem.get_player_part(slot_id)
+		var tnm: String = str(p.get("tier_name", "白"))
+		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
 		if is_instance_valid(_msg_label):
-			_msg_label.text = _t("【%s】%s") % [slot_name, slot_desc]
+			_msg_label.text = _t("【%s】%s（目前色階：%s階 · 剩餘校準 %d 次）") % [slot_name, slot_desc, tnm, rem]
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	)
 

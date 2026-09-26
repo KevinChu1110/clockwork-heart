@@ -3024,5 +3024,10 @@
   "校準次數": "Calibraciones",
   "校準成功": "Calibración Exitosa",
   "校準未達標": "Calibración No Alcanzada",
-  "安全彈簧": "Resorte de Seguridad"
+  "安全彈簧": "Resorte de Seguridad",
+  "校準": "Calibrar",
+  "剩餘 %d 次": "%d Restantes",
+  "剩餘次數": "Restantes",
+  "已達上限": "Límite Máximo",
+  "校準發條機芯": "Calibrar Núcleo"
 }

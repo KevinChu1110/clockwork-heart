@@ -8,6 +8,7 @@ extends RefCounted
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
+const CoreSystem := preload("res://scripts/systems/core_system.gd")
 
 var _host: Node
 ## 點空武器欄後，等背包選一把裝進去（-1＝無）
@@ -454,8 +455,8 @@ func _core_slot_card(def: Dictionary) -> Control:
 
 	var box := VBoxContainer.new()
 	box.name = "CoreSlot_" + slot_id
-	box.custom_minimum_size = Vector2(96, 0)
-	box.add_theme_constant_override("separation", 4)
+	box.custom_minimum_size = Vector2(104, 0)
+	box.add_theme_constant_override("separation", 3)
 
 	var lab := Label.new()
 	lab.name = "SlotNameLabel"
@@ -494,6 +495,15 @@ func _core_slot_card(def: Dictionary) -> Control:
 		icon.texture = t
 	inner.add_child(icon)
 
+	var part := CoreSystem.get_player_part(slot_id)
+	var tier_id: String = str(part.get("tier", "white"))
+	var tier_name: String = str(part.get("tier_name", "白"))
+	var tier_color: Color = CoreSystem.get_tier_color(tier_id)
+	var count: int = int(part.get("calibration_count", 0))
+	var max_cnt: int = int(part.get("max_calibrations", 7))
+	var remains: int = maxi(0, max_cnt - count)
+	icon.modulate = tier_color
+
 	var btn := Button.new()
 	btn.name = "SlotButton"
 	btn.flat = true
@@ -502,10 +512,69 @@ func _core_slot_card(def: Dictionary) -> Control:
 	btn.tooltip_text = "%s\n%s" % [slot_name, slot_desc]
 	cell.add_child(btn)
 
+	# 色階名稱與剩餘校準次數
+	var tier_lbl := Label.new()
+	tier_lbl.name = "TierLabel"
+	tier_lbl.text = _t(tier_name + "階")
+	tier_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tier_lbl.add_theme_font_size_override("font_size", 11)
+	tier_lbl.add_theme_color_override("font_color", tier_color if tier_id != "white" else UiStyle.KEY_STRONG)
+	box.add_child(tier_lbl)
+
+	var count_lbl := Label.new()
+	count_lbl.name = "CountLabel"
+	count_lbl.text = _t("剩餘 %d 次") % remains
+	count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	count_lbl.add_theme_font_size_override("font_size", 10)
+	count_lbl.add_theme_color_override("font_color", UiStyle.INK_DIM)
+	box.add_child(count_lbl)
+
+	# 單次校準按鈕（單手拇指點擊，熱區 >= 48px）
+	var btn_cal := Button.new()
+	btn_cal.name = "BtnCalibrate"
+	btn_cal.text = _t("校準") if remains > 0 else _t("已達上限")
+	btn_cal.disabled = (remains <= 0)
+	UiStyle.style_button(btn_cal, remains > 0)
+	btn_cal.custom_minimum_size = Vector2(88, 50)
+	btn_cal.add_theme_font_size_override("font_size", 12)
+	box.add_child(btn_cal)
+
+	var update_card_ui = func():
+		var p = CoreSystem.get_player_part(slot_id)
+		var tid: String = str(p.get("tier", "white"))
+		var tnm: String = str(p.get("tier_name", "白"))
+		var tc: Color = CoreSystem.get_tier_color(tid)
+		var cnt: int = int(p.get("calibration_count", 0))
+		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - cnt)
+		icon.modulate = tc
+		tier_lbl.text = _t(tnm + "階")
+		tier_lbl.add_theme_color_override("font_color", tc if tid != "white" else UiStyle.KEY_STRONG)
+		count_lbl.text = _t("剩餘 %d 次") % rem
+		btn_cal.disabled = (rem <= 0)
+		btn_cal.text = _t("校準") if rem > 0 else _t("已達上限")
+		UiStyle.style_button(btn_cal, rem > 0)
+		btn_cal.custom_minimum_size = Vector2(88, 50)
+		btn_cal.add_theme_font_size_override("font_size", 12)
+		return {"tier_name": tnm, "remains": rem, "part": p}
+
+	btn_cal.pressed.connect(func():
+		AudioManager.play_ui()
+		var res: Dictionary = CoreSystem.calibrate_player_part(slot_id)
+		var info: Dictionary = update_card_ui.call()
+		if is_instance_valid(_core_hint_label):
+			var tnm: String = str(info.get("tier_name", ""))
+			var rem: int = int(info.get("remains", 0))
+			_core_hint_label.text = _t("【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）") % [slot_name, res.get("message", ""), tnm, rem]
+			_core_hint_label.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
+	)
+
 	btn.pressed.connect(func():
 		AudioManager.play_ui()
+		var p = CoreSystem.get_player_part(slot_id)
+		var tnm: String = str(p.get("tier_name", "白"))
+		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
 		if is_instance_valid(_core_hint_label):
-			_core_hint_label.text = _t("【%s】%s") % [slot_name, slot_desc]
+			_core_hint_label.text = _t("【%s】%s（目前色階：%s階 · 剩餘校準：%d 次）") % [slot_name, slot_desc, tnm, rem]
 			_core_hint_label.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
 	)
 

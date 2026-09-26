@@ -9,6 +9,10 @@ extends Node
 
 const MAX_CALIBRATIONS: int = 7
 
+signal part_calibrated(slot_id: String, part: Dictionary, result: Dictionary)
+
+static var player_parts: Dictionary = {}
+
 const SLOT_MAINSPRING: String = "mainspring"
 const SLOT_CHASSIS: String = "chassis"
 const SLOT_ESCAPEMENT: String = "escapement"
@@ -367,3 +371,113 @@ static func calibrate(part: Dictionary, roll_success: bool = true, stat_delta: D
 			"is_broken": false,
 			"destroyed": false
 		}
+
+
+## 標準槽位預設數值
+static func get_slot_default_stats(slot_id: String) -> Dictionary:
+	var norm := normalize_slot_id(slot_id)
+	match norm:
+		SLOT_MAINSPRING:
+			return {"ATK": 10, "HP": 30}
+		SLOT_CHASSIS:
+			return {"DEF": 10, "HP": 50}
+		SLOT_ESCAPEMENT:
+			return {"CRIT": 2, "CRIT_DMG": 4}
+		SLOT_GEAR_TRAIN:
+			return {"ATK": 6, "DEF": 6}
+		SLOT_SOUL_CORE:
+			return {"HP": 40, "ATK": 5, "DEF": 5}
+	return {"ATK": 5}
+
+
+## 正規化槽位識別碼（相容 SpriteDB 與 CoreSystem 命名）
+static func normalize_slot_id(slot_id: String) -> String:
+	match str(slot_id).strip_edges().to_lower():
+		"mainspring", "spring_generator", "slot_01", "generator", "發條發電機", "0":
+			return SLOT_MAINSPRING
+		"chassis", "chassis_armor", "slot_02", "armor", "機殼裝甲", "1":
+			return SLOT_CHASSIS
+		"escapement", "escapement_governor", "slot_03", "governor", "擒縱調速器", "2":
+			return SLOT_ESCAPEMENT
+		"gear_train", "transmission_gears", "slot_04", "gears", "傳動齒輪組", "3":
+			return SLOT_GEAR_TRAIN
+		"soul_core", "resonance_core", "slot_05", "core", "共鳴核心", "4":
+			return SLOT_SOUL_CORE
+		_:
+			return slot_id
+
+
+## 取得玩家槽位機芯部件（若無則自動初始化白板）
+static func get_player_part(slot_id: String) -> Dictionary:
+	var norm := normalize_slot_id(slot_id)
+	if not player_parts.has(norm):
+		var base_stats := get_slot_default_stats(norm)
+		player_parts[norm] = create_part(norm, 0, base_stats)
+	return player_parts[norm]
+
+
+## 取得所有五槽玩家部件
+static func get_all_player_parts() -> Dictionary:
+	var res := {}
+	for sid in ALL_SLOT_IDS:
+		res[sid] = get_player_part(sid)
+	return res
+
+
+## 重置玩家部件（測試或新遊戲用）
+static func reset_player_parts() -> void:
+	player_parts.clear()
+
+
+## 執行玩家機芯部件單次校準
+## roll_success: null 為預設成功，可顯式指定 true/false
+static func calibrate_player_part(slot_id: String, roll_success: Variant = null, stat_delta: Dictionary = {}, score_delta: int = 0) -> Dictionary:
+	var norm := normalize_slot_id(slot_id)
+	var part := get_player_part(norm)
+
+	if not can_calibrate(part):
+		return {
+			"ok": false,
+			"rejected": true,
+			"code": "MAX_CALIBRATION_REACHED",
+			"message": "已達最大校準次數上限（7 次），無法再校準",
+			"part": part,
+			"calibration_count": int(part.get("calibration_count", MAX_CALIBRATIONS)),
+			"is_broken": bool(part.get("is_broken", false)),
+			"destroyed": false
+		}
+
+	var is_success: bool = true
+	if roll_success != null:
+		is_success = bool(roll_success)
+
+	var final_stats := stat_delta.duplicate()
+	var final_score_delta := score_delta
+
+	if is_success and final_stats.is_empty() and final_score_delta == 0:
+		final_score_delta = 6
+		match norm:
+			SLOT_MAINSPRING:
+				final_stats = {"ATK": 3, "HP": 10}
+			SLOT_CHASSIS:
+				final_stats = {"DEF": 3, "HP": 15}
+			SLOT_ESCAPEMENT:
+				final_stats = {"CRIT": 1, "CRIT_DMG": 2}
+			SLOT_GEAR_TRAIN:
+				final_stats = {"ATK": 2, "DEF": 2}
+			SLOT_SOUL_CORE:
+				final_stats = {"ATK": 2, "DEF": 2, "HP": 15}
+			_:
+				final_stats = {"ATK": 2}
+
+	var res := calibrate(part, is_success, final_stats, final_score_delta)
+	player_parts[norm] = part
+
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var cs: Node = (loop as SceneTree).root.get_node_or_null("CoreSystem")
+		if cs and cs.has_signal("part_calibrated"):
+			cs.emit_signal("part_calibrated", norm, part, res)
+
+	return res
+
