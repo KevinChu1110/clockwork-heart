@@ -16,9 +16,23 @@ signal assign_hotbar(item_id: String)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 const ITEM_ICON_DIR := "res://assets/icons/items/"
 static var _icon_cache: Dictionary = {}
+
+static func _t(s: String) -> String:
+	var res := ContentLoc.text("ui", s)
+	if res != s:
+		return res
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var loc_t = str(loc.call("t", s))
+			if loc_t != "" and loc_t != s:
+				return loc_t
+	return res
 
 static func get_item_icon(id: String) -> Texture2D:
 	if id.is_empty():
@@ -61,6 +75,7 @@ var _grid: GridContainer
 var _cells: Array = []
 var _detail: RichTextLabel
 var _title: Label
+var _sub_title: Label
 var _use_btn: Button
 var _hb_btn: Button
 var _tip: Label
@@ -88,6 +103,46 @@ func _ready() -> void:
 		_cached_font = load(FONT_PATH) as Font
 
 	_build()
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_ui_texts()
+	refresh()
+
+
+func _update_ui_texts() -> void:
+	if _title and is_instance_valid(_title):
+		_title.text = _t("物品欄")
+	if _sub_title and is_instance_valid(_sub_title):
+		_sub_title.text = _t("冒險者背包 · 點選格子查看詳情")
+	if _use_btn and is_instance_valid(_use_btn):
+		_use_btn.text = _t("使用 / 賣出")
+	if _hb_btn and is_instance_valid(_hb_btn):
+		_hb_btn.text = _t("放到快捷欄")
+	if _tip and is_instance_valid(_tip):
+		_tip.text = _t("左鍵點選查看 · 雙擊或右鍵快速使用")
 
 
 func _create_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:
@@ -179,14 +234,12 @@ func _build() -> void:
 	head_row.add_child(title_box)
 
 	_title = Label.new()
-	_title.text = "物品欄"
 	_apply_label_style(_title, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 4)
 	title_box.add_child(_title)
 
-	var sub_title := Label.new()
-	sub_title.text = "冒險者背包 · 點選格子查看詳情"
-	_apply_label_style(sub_title, 16, COLOR_TEXT_DARK)
-	title_box.add_child(sub_title)
+	_sub_title = Label.new()
+	_apply_label_style(_sub_title, 16, COLOR_TEXT_DARK)
+	title_box.add_child(_sub_title)
 
 	## 右上圓形「✕」關閉按鈕 (50x50，珊瑚粉果凍厚底按鈕)
 	var close_btn := Button.new()
@@ -403,7 +456,6 @@ func _build() -> void:
 
 	## 「使用 / 賣出」按鈕 (薄荷綠果凍厚底按鈕，高 52px)
 	_use_btn = Button.new()
-	_use_btn.text = "使用 / 賣出"
 	_use_btn.custom_minimum_size = Vector2(0, 52)
 	_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
 	_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
@@ -421,7 +473,6 @@ func _build() -> void:
 
 	## 「放到快捷欄」按鈕 (天藍果凍厚底按鈕，高 52px)
 	_hb_btn = Button.new()
-	_hb_btn.text = "放到快捷欄"
 	_hb_btn.custom_minimum_size = Vector2(0, 52)
 	_hb_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18))
 	_hb_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5DB3FF"), COLOR_BORDER, 5, 18))
@@ -440,14 +491,16 @@ func _build() -> void:
 
 	## 操作提示標籤 (字級 16px 加粗，深藍紫文字)
 	_tip = Label.new()
-	_tip.text = "左鍵點選查看 · 雙擊或右鍵快速使用"
 	_tip.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_apply_label_style(_tip, 16, Color("#6B5E80"))
 	right.add_child(_tip)
 
+	_update_ui_texts()
+
 
 func open() -> void:
 	visible = true
+	_update_ui_texts()
 	var inv: Node = null
 	if Engine.get_main_loop() is SceneTree:
 		inv = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InventorySystem")
@@ -569,17 +622,27 @@ func _update_detail(inv: Node) -> void:
 	if _selected == "" or inv == null:
 		if _preview_row:
 			_preview_row.visible = false
-		_detail.text = "[color=#1F1A3A][b]冒險者背包[/b]\n\n請點選左側格子查看道具詳情。\n\n[color=#C2600A]•[/color] 消耗品：使用回復狀態\n[color=#C2600A]•[/color] 素材：點擊使用可賣出金幣\n[color=#C2600A]•[/color] 重要物：劇情關鍵道具[/color]"
+		_detail.text = "[color=#1F1A3A][b]%s[/b]\n\n%s\n\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s[/color]" % [
+			_t("冒險者背包"),
+			_t("請點選左側格子查看道具詳情。"),
+			_t("消耗品：使用回復狀態"),
+			_t("素材：點擊使用可賣出金幣"),
+			_t("重要物：劇情關鍵道具")
+		]
 		if _use_btn:
 			_use_btn.disabled = true
+			_use_btn.text = _t("使用 / 賣出")
 		if _hb_btn:
 			_hb_btn.disabled = true
+			_hb_btn.text = _t("放到快捷欄")
 		return
 
 	if _use_btn:
 		_use_btn.disabled = false
+		_use_btn.text = _t("使用 / 賣出")
 	if _hb_btn:
 		_hb_btn.disabled = false
+		_hb_btn.text = _t("放到快捷欄")
 
 	var def: Dictionary = inv.call("catalog", _selected) as Dictionary
 	var n: int = int(inv.call("count", _selected))
@@ -587,11 +650,13 @@ func _update_detail(inv: Node) -> void:
 	var kind_s: String = kind
 	match kind:
 		"consumable":
-			kind_s = "消耗品"
+			kind_s = _t("消耗品")
 		"material":
-			kind_s = "素材（點擊使用可賣出）"
+			kind_s = _t("素材（點擊使用可賣出）")
 		"key":
-			kind_s = "重要道具"
+			kind_s = _t("重要道具")
+		_:
+			kind_s = _t(kind) if kind != "" else ""
 
 	var item_name: String = str(def.get("name", _selected))
 	var item_desc: String = str(def.get("desc", ""))
@@ -604,7 +669,7 @@ func _update_detail(inv: Node) -> void:
 		if _detail_count:
 			_detail_count.text = "×%d" % n
 		if _detail_kind:
-			_detail_kind.text = "類型：%s" % kind_s
+			_detail_kind.text = _t("類型：%s") % kind_s
 		if icon_tex != null:
 			if _detail_icon:
 				_detail_icon.texture = icon_tex
