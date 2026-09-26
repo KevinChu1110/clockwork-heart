@@ -4,6 +4,7 @@ extends SceneTree
 
 var _ok := true
 const MobileLobby = preload("res://scripts/ui/mobile_lobby.gd")
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 var _step := 0
 var _wait := 0
 var _lobby: Node = null
@@ -60,6 +61,7 @@ func _process(_d: float) -> bool:
 		_test_settings_and_sortie_buttons()
 		_test_dock_and_topbar_i18n()
 		_test_character_tab_i18n()
+		_test_adventure_stages_i18n()
 		return _finish()
 	return false
 
@@ -1863,6 +1865,99 @@ func _test_character_tab_i18n() -> void:
 	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
 	loc_node.call("set_locale", "zh_TW")
 	print("  ok 角色分頁武器槽與屬性小卡六語系（zh_TW/zh_CN/en/ja/ko/es）即時切換全部檢查通過")
+
+
+func _test_adventure_stages_i18n() -> void:
+	if _lobby == null or not is_instance_valid(_lobby):
+		_fail("大廳節點無效，無法測試出征關卡卡片六語系切換")
+		return
+
+	var loc_node: Node = root.get_node_or_null("Loc")
+	if loc_node == null:
+		_fail("缺少 Loc 節點，無法測試語系切換")
+		return
+
+	var raw_stages: Array = MobileLobby.REGION_STAGES
+	if raw_stages.size() != 4:
+		_fail("MobileLobby.REGION_STAGES 地區數量應為 4，實際: %d" % raw_stages.size())
+		return
+
+	# 1. 斷言資料表只存繁中 key，未烤進任何譯文
+	var expected_raw_names := [
+		["荒路哨站 · 發條灰鼠", "堡外野原 · 荒路殘兵", "堡壘廣場 · 守門暗哨", "閣樓大門 · 大型殘兵"],
+		["白霧外緣 · 守望關隘", "市集街道 · 潛伏暗哨", "下水道口 · 腐化黏怪", "聖獅內殿 · 狂暴守護者"],
+		["白霧村外 · 霧影遊魂", "霧崖小徑 · 林間風妖", "鏡廊入口 · 鏡廊殘影", "白霧核心 · 白霧"],
+		["石岸潮襲 · 潮襲海盜", "潮岸沉船 · 船長殘影", "疤地焰徑 · 疤地焰靈", "通天塔底 · 塔底"],
+	]
+
+	for r in range(4):
+		var reg: Array = raw_stages[r]
+		if reg.size() != 4:
+			_fail("地區 %d 關卡數應為 4" % r)
+			continue
+		for i in range(4):
+			var s: Dictionary = reg[i]
+			var num_str := "%d-%d" % [r + 1, i + 1]
+			if str(s.get("num", "")) != num_str:
+				_fail("關卡編號應為 %s，實際為 %s" % [num_str, s.get("num", "")])
+			if str(s.get("name", "")) != expected_raw_names[r][i]:
+				_fail("資料表地區 %d 關卡 %d 名稱應為繁中 key「%s」，實際為「%s」" % [r, i, expected_raw_names[r][i], s.get("name", "")])
+
+	# 2. 測試六語系即時切換與卡片渲染
+	_lobby._switch_tab(MobileLobby.Tab.ADVENTURE)
+
+	for code in ["zh_CN", "en", "ja", "ko", "es", "zh_TW"]:
+		loc_node.call("set_locale", code)
+
+		for r in range(4):
+			_lobby._select_region(r)
+			var stages_box = _lobby.get("_stages_container") as Node
+			if stages_box == null:
+				_fail("[%s] 地區 %d 無法取得 _stages_container" % [code, r])
+				continue
+			var grid: GridContainer = null
+			for c in stages_box.get_children():
+				if c is GridContainer and not c.is_queued_for_deletion():
+					grid = c as GridContainer
+			if grid == null:
+				_fail("[%s] 地區 %d 未找到 GridContainer" % [code, r])
+				continue
+
+			var cards: Array[PanelContainer] = []
+			for c in grid.get_children():
+				if c is PanelContainer and not c.is_queued_for_deletion():
+					cards.append(c as PanelContainer)
+
+			if cards.size() != 4:
+				_fail("[%s] 地區 %d 關卡卡片數量應為 4，實際: %d" % [code, r, cards.size()])
+				continue
+
+			for i in range(4):
+				var card := cards[i]
+				var name_lbl := card.find_child("StageNameLabel", true, false) as Label
+				if name_lbl == null:
+					_fail("[%s] 地區 %d 關卡 %d 找不到 StageNameLabel" % [code, r, i])
+					continue
+
+				var raw_name: String = str(expected_raw_names[r][i])
+				var exp_name: String = ContentLoc.text("ui", raw_name)
+				if name_lbl.text != exp_name:
+					_fail("[%s] 關卡 %d-%d 名稱應為「%s」，實際為「%s」" % [code, r + 1, i + 1, exp_name, name_lbl.text])
+
+				if _has_forbidden_symbols_or_emoji(name_lbl.text):
+					_fail("[%s] 關卡 %d-%d 名稱含禁止符號或 Emoji: %s" % [code, r + 1, i + 1, name_lbl.text])
+
+				if code in ["en", "es"]:
+					if _has_cjk_characters(name_lbl.text):
+						_fail("[%s] 關卡 %d-%d 名稱存在中文殘留: %s" % [code, r + 1, i + 1, name_lbl.text])
+
+				# 確保資料表本體仍未被污染
+				if str(MobileLobby.REGION_STAGES[r][i]["name"]) != raw_name:
+					_fail("[%s] 資料表 REGION_STAGES[%d][%d] 被污染，非繁中 key" % [code, r, i])
+
+	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
+	loc_node.call("set_locale", "zh_TW")
+	print("  ok 出征分頁十六張關卡卡名稱六語系（zh_TW/zh_CN/en/ja/ko/es）即時切換全部檢查通過，資料表保持繁中 key")
 
 
 func _finish() -> bool:
