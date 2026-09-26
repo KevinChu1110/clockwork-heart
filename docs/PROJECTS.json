@@ -2986,8 +2986,8 @@
    "id": "forge-calibrate-cost",
    "cat": "遊戲",
    "title": "鐵匠校準每次消耗鐵屑",
-   "status": "開發中",
-   "note": "派工實作",
+   "status": "測試中",
+   "note": "完成鐵匠校準每次消耗5鐵屑機制、沒屑灰掉禁用提示不足、測試全綠、實機截圖存入 proofs/forge_calibrate_cost/",
    "keys": [
     "鐵匠校準每次消耗"
    ]
