@@ -1,0 +1,41 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+
+── 開始執行關卡勝利掉落五槽機芯部件驗證 (test_core_battle_drop.gd) ──
+
+--- 1. 檢驗 core_color_tiers.json 八色階掉落權重配置 ---
+  ✓ 色階 [gray]: drop_weight = 50 (約 5.0%)
+  ✓ 色階 [white]: drop_weight = 450 (約 45.0%)
+  ✓ 色階 [orange]: drop_weight = 240 (約 24.0%)
+  ✓ 色階 [blue]: drop_weight = 150 (約 15.0%)
+  ✓ 色階 [purple]: drop_weight = 60 (約 6.0%)
+  ✓ 色階 [gold]: drop_weight = 30 (約 3.0%)
+  ✓ 色階 [green]: drop_weight = 15 (約 1.5%)
+  ✓ 色階 [red]: drop_weight = 5 (約 0.5%)
+  ✓ 八色階掉落機率權重健全，總權重: 1000
+
+--- 2. 檢驗機芯部件隨機抽取與 create_part 規格合規性 ---
+  ✓ 500 次抽樣檢驗全部符合 create_part 規格，五槽與八色階覆蓋率 100%
+
+--- 3. 檢驗模擬戰鬥勝利後 inventory / core_bag 增加一顆部件 ---
+  ✓ GameState.core_bag 與 GameState.core_inventory 同步確認無誤
+  ✓ 戰鬥勝利掉落機芯部件入袋驗證通過：獲得【紫階】擒縱調速器
+
+--- 4. 檢驗同一關連打，背包累積機芯部件 ---
+  ✓ 同一關連打 3 場累積機芯部件成功，累計部件數: 4，全數具備獨立 UID
+
+--- 5. 檢驗剛掉落的部件可立即裝備並在鐵匠處進行校準 ---
+  ✓ 剛掉落之機芯部件立即替換裝備成功，並於鐵匠成功校準 1 次（次數 1/7）
+
+--- 6. 檢驗硬限制：ATB/攻速/前搖/命中時間模型鎖死，改動測試必紅 ---
+  ✓ 時間模型常數硬限制防護 100% 鎖死，改動測試必紅確認
+
+--- 7. 檢驗戰鬥勝利結算卡片 (BattleVictoryDialog) UI 結構與手遊人體工學 ---
+  ✓ 戰鬥勝利結算卡片 UI 節點結構、熱區（>=48px）、圖示染色與操作邏輯全部合規
+
+--- 8. 檢驗六語系 i18n 完整度與全域零系統 Emoji ---
+  ✓ 六語系 (zh_TW, zh_CN, en, ja, ko, es) 完整齊備，零系統 Emoji 檢核通過
+── 全部關卡勝利掉落機芯部件單元測試通過 ──
+CORE_BATTLE_DROP_OK
+[DataTables] combat/equipment/items_meta/weapon_classes/pacing/core_color_tiers loaded
+DisplaySettings apply mode=fullscreen res=1280x720 vsync=true
+GraphicsProfile apply choice=auto applied=high scale=1.0 size=(1280, 720) shadows=true particles=true vfx=true method=gl_compatibility
