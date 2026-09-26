@@ -37,14 +37,54 @@ const COLOR_TEXT_MINT  := Color("#1A7A30")  ## 壓明度薄荷綠
 const COLOR_TEXT_GOLD  := Color("#9A6B00")  ## 壓明度金黃
 
 var _dialog_card: PanelContainer
+var _title_lbl: Label
 var _energy_val_label: Label
 var _status_detail_label: Label
 var _desc_lbl: Label
 var _ad_btn: Button
+var _back_btn: Button
 var _cached_font: Font = null
+var _is_built: bool = false
 
 var _on_granted: Callable = Callable()
 var _on_close: Callable = Callable()
+
+
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_ui_texts()
+
+
+func _update_ui_texts() -> void:
+	if _title_lbl and is_instance_valid(_title_lbl):
+		_title_lbl.text = _t("能量不足")
+	if _back_btn and is_instance_valid(_back_btn):
+		_back_btn.text = _t("稍後再來")
+	_refresh_display()
 
 
 static func show_dialog(parent: Node, on_granted: Callable = Callable(), on_close: Callable = Callable()) -> Control:
@@ -60,6 +100,11 @@ func setup(on_granted: Callable = Callable(), on_close: Callable = Callable()) -
 
 
 func _ready() -> void:
+	if _is_built:
+		_refresh_display()
+		return
+	_is_built = true
+
 	name = "EnergyLackDialog"
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -69,7 +114,8 @@ func _ready() -> void:
 		_cached_font = load(FONT_PATH) as Font
 
 	_build_ui()
-	_refresh_display()
+	_connect_loc_signal()
+	_update_ui_texts()
 
 
 func _build_ui() -> void:
@@ -116,16 +162,17 @@ func _build_ui() -> void:
 	head.add_theme_constant_override("separation", 10)
 	v.add_child(head)
 
-	var title_lbl := Label.new()
-	title_lbl.text = _t("能量不足")
-	title_lbl.add_theme_font_size_override("font_size", 22)
-	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
-	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	title_lbl.add_theme_constant_override("outline_size", 3)
+	_title_lbl = Label.new()
+	_title_lbl.name = "TitleLbl"
+	_title_lbl.text = _t("能量不足")
+	_title_lbl.add_theme_font_size_override("font_size", 22)
+	_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	_title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_title_lbl.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
-		title_lbl.add_theme_font_override("font", _cached_font)
-	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head.add_child(title_lbl)
+		_title_lbl.add_theme_font_override("font", _cached_font)
+	_title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(_title_lbl)
 
 	var close_btn := ResponsiveUi.make_close_button(_on_close_clicked)
 	head.add_child(close_btn)
@@ -153,6 +200,7 @@ func _build_ui() -> void:
 	sc_m.add_child(sc_v)
 
 	_energy_val_label = Label.new()
+	_energy_val_label.name = "EnergyValLabel"
 	_energy_val_label.text = _t("當前能量：—")
 	_energy_val_label.add_theme_font_size_override("font_size", 20)
 	_energy_val_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -161,18 +209,19 @@ func _build_ui() -> void:
 	sc_v.add_child(_energy_val_label)
 
 	_status_detail_label = Label.new()
+	_status_detail_label.name = "StatusDetailLabel"
 	_status_detail_label.text = _t("自然回復：—")
 	_status_detail_label.add_theme_font_size_override("font_size", 15)
 	_status_detail_label.add_theme_color_override("font_color", COLOR_TEXT_GOLD)
 	sc_v.add_child(_status_detail_label)
 
-	var desc_lbl := Label.new()
-	_desc_lbl = desc_lbl
-	desc_lbl.text = _t("出發探索或挑戰戰鬥需要充足的發條能量。\n您可以稍候等待能量自然回復，或是觀看廣告立即補充 3 點能量！")
-	desc_lbl.add_theme_font_size_override("font_size", 16)
-	desc_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	v.add_child(desc_lbl)
+	_desc_lbl = Label.new()
+	_desc_lbl.name = "DescLbl"
+	_desc_lbl.text = _t("出發探索或挑戰戰鬥需要充足的發條能量。\n您可以稍候等待能量自然回復，或是觀看廣告立即補充 3 點能量！")
+	_desc_lbl.add_theme_font_size_override("font_size", 16)
+	_desc_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(_desc_lbl)
 
 	# 底部雙操作按鈕 (高度 >= 50px)
 	var btn_h := HBoxContainer.new()
@@ -198,19 +247,19 @@ func _build_ui() -> void:
 	btn_h.add_child(_ad_btn)
 
 	# 返回按鈕 (溫暖米黃/橙底)
-	var back_btn := Button.new()
-	back_btn.name = "BackBtn"
-	back_btn.text = _t("稍後再來")
-	back_btn.custom_minimum_size = Vector2(180, 52)
-	back_btn.add_theme_font_size_override("font_size", 18)
-	back_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_back_btn = Button.new()
+	_back_btn.name = "BackBtn"
+	_back_btn.text = _t("稍後再來")
+	_back_btn.custom_minimum_size = Vector2(180, 52)
+	_back_btn.add_theme_font_size_override("font_size", 18)
+	_back_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
-		back_btn.add_theme_font_override("font", _cached_font)
-	back_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 6))
-	back_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFF0D0"), COLOR_BORDER, 6))
-	back_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#FFE0A0"), COLOR_BORDER, 2))
-	back_btn.pressed.connect(_on_close_clicked)
-	btn_h.add_child(back_btn)
+		_back_btn.add_theme_font_override("font", _cached_font)
+	_back_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 6))
+	_back_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFF0D0"), COLOR_BORDER, 6))
+	_back_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#FFE0A0"), COLOR_BORDER, 2))
+	_back_btn.pressed.connect(_on_close_clicked)
+	btn_h.add_child(_back_btn)
 
 
 func _is_ad_removed() -> bool:
