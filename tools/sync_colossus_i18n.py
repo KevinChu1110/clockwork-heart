@@ -6,7 +6,7 @@ translations = {
         "停擺巨偶": "停擺巨偶",
         "失控發條獅": "失控發條獅",
         "霧鐘提線人偶": "霧鐘提線人偶",
-        "黑鏑蒸汽巨象": "黑鏑蒸汽巨象",
+        "黑鉚蒸汽巨象": "黑鉚蒸汽巨象",
         "四區主線": "四區主線",
         "明天再來": "明天再來",
         "停擺巨偶 · 今日剩餘: %d/3": "停擺巨偶 · 今日剩餘: %d/3",
@@ -24,7 +24,7 @@ translations = {
         "停擺巨偶": "停摆巨偶",
         "失控發條獅": "失控发条狮",
         "霧鐘提線人偶": "雾钟提线人偶",
-        "黑鏑蒸汽巨象": "黑镝蒸汽巨象",
+        "黑鉚蒸汽巨象": "黑铆蒸汽巨象",
         "四區主線": "四区主线",
         "明天再來": "明天再来",
         "停擺巨偶 · 今日剩餘: %d/3": "停摆巨偶 · 今日剩余: %d/3",
@@ -42,7 +42,7 @@ translations = {
         "停擺巨偶": "Stalled Colossus",
         "失控發條獅": "Rampant Clockwork Lion",
         "霧鐘提線人偶": "Mistbell Marionette",
-        "黑鏑蒸汽巨象": "Black-Tipped Steam Colossus Elephant",
+        "黑鉚蒸汽巨象": "Black-Rivet Steam Colossus",
         "四區主線": "Four Regions Main",
         "明天再來": "Return Tomorrow",
         "停擺巨偶 · 今日剩餘: %d/3": "Stalled Colossus · Left Today: %d/3",
@@ -60,7 +60,7 @@ translations = {
         "停擺巨偶": "停止した巨偶",
         "失控發條獅": "暴走のぜんまい獅子",
         "霧鐘提線人偶": "霧鐘の操り人形",
-        "黑鏑蒸汽巨象": "黒鏑の蒸気巨象",
+        "黑鉚蒸汽巨象": "黒鋲の蒸気巨象",
         "四區主線": "四地区本編",
         "明天再來": "また明日",
         "停擺巨偶 · 今日剩餘: %d/3": "停止した巨偶 · 本日の残り: %d/3",
@@ -78,7 +78,7 @@ translations = {
         "停擺巨偶": "멈춰 선 거신",
         "失控發條獅": "폭주 태엽 사자",
         "霧鐘提線人偶": "안개종 꼭두각시 인형",
-        "黑鏑蒸汽巨象": "흑적 증기 거상",
+        "黑鉚蒸汽巨象": "검은리벳 증기 거상",
         "四區主線": "4개 구역 본선",
         "明天再來": "내일 다시 오세요",
         "停擺巨偶 · 今日剩餘: %d/3": "멈춰 선 거신 · 오늘 남은 횟수: %d/3",
@@ -96,7 +96,7 @@ translations = {
         "停擺巨偶": "Coloso Paralizado",
         "失控發條獅": "León de Cuerda Desbocado",
         "霧鐘提線人偶": "Marioneta de Reloj de Niebla",
-        "黑鏑蒸汽巨象": "Elefante de Vapor Punta Negra",
+        "黑鉚蒸汽巨象": "Coloso de Vapor de Remache Negro",
         "四區主線": "Historia Principal de 4 Regiones",
         "明天再來": "Vuelve Mañana",
         "停擺巨偶 · 今日剩餘: %d/3": "Coloso Paralizado · Restantes Hoy: %d/3",
@@ -112,22 +112,33 @@ translations = {
     }
 }
 
+old_keys = ["黑鏑蒸汽巨象", "黑镝蒸汽巨象", "黑鏽蒸氣巨象", "黑锈蒸汽巨象"]
+
 for loc, kv in translations.items():
     p = f"game/data/i18n/content/{loc}/ui.json"
-    with open(p, "r", encoding="utf-8") as f:
-        d = json.load(f)
-    for k, v in kv.items():
-        d[k] = v
-    with open(p, "w", encoding="utf-8") as f:
-        json.dump(d, f, ensure_ascii=False, indent=2)
-    print(f"Updated {p}")
+    if os.path.exists(p):
+        with open(p, "r", encoding="utf-8") as f:
+            d = json.load(f)
+        for ok in old_keys:
+            if ok in d:
+                del d[ok]
+        for k, v in kv.items():
+            d[k] = v
+        with open(p, "w", encoding="utf-8") as f:
+            json.dump(d, f, ensure_ascii=False, indent=2)
+            f.write("\n")
+        print(f"Updated {p}")
 
     p2 = f"game/data/i18n/{loc}.json"
     if os.path.exists(p2):
         with open(p2, "r", encoding="utf-8") as f:
             d2 = json.load(f)
+        for ok in old_keys:
+            if ok in d2:
+                del d2[ok]
         for k, v in kv.items():
             d2[k] = v
         with open(p2, "w", encoding="utf-8") as f:
             json.dump(d2, f, ensure_ascii=False, indent=2)
+            f.write("\n")
         print(f"Updated {p2}")
