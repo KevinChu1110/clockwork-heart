@@ -837,5 +837,20 @@
   "點一下繼續 · 部分步驟可「稍後再說」": "Tap to continue · Some steps can be skipped with \"Later\"",
   "點下一步 · 部分步驟可「稍後再說」": "Tap Next · Some steps can be skipped with \"Later\"",
   "點一下繼續": "Tap to continue",
-  "點下一步": "Tap Next"
+  "點下一步": "Tap Next",
+  "停擺巨偶": "Stalled Colossus",
+  "失控發條獅": "Rampant Clockwork Lion",
+  "霧鐘提線人偶": "Mistbell Marionette",
+  "黑鏑蒸汽巨象": "Black-Tipped Steam Colossus Elephant",
+  "四區主線": "Four Regions Main",
+  "明天再來": "Return Tomorrow",
+  "停擺巨偶 · 今日剩餘: %d/3": "Stalled Colossus · Left Today: %d/3",
+  "今日挑戰次數已用盡，請明天再來！": "Daily attempts exhausted. Please return tomorrow!",
+  "停擺巨偶挑戰": "Stalled Colossus Challenge",
+  "每日挑戰上限 3 次，每日 00:00 自動重置挑戰次數。": "Daily limit: 3 attempts. Resets daily at 00:00.",
+  "消耗: 1 次": "Cost: 1 Attempt",
+  "今日剩餘: %d 次": "Left Today: %d",
+  "巨偶-1": "Colossus-1",
+  "巨偶-2": "Colossus-2",
+  "巨偶-3": "Colossus-3"
 }

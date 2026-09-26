@@ -3039,5 +3039,20 @@
   "可校準 7 次 · 安全彈簧保護不碎裝": "7 calibraciones restantes · Resorte de seguridad",
   "機芯部件背包（點擊替換裝備）": "Mochila de núcleos (Tocar para cambiar)",
   "標準數值": "Estadísticas estándar",
-  "已成功替換裝備至【%s】槽位！": "¡Equipado con éxito en la ranura [%s]!"
+  "已成功替換裝備至【%s】槽位！": "¡Equipado con éxito en la ranura [%s]!",
+  "停擺巨偶": "Coloso Paralizado",
+  "失控發條獅": "León de Cuerda Desbocado",
+  "霧鐘提線人偶": "Marioneta de Reloj de Niebla",
+  "黑鏑蒸汽巨象": "Elefante de Vapor Punta Negra",
+  "四區主線": "Historia Principal de 4 Regiones",
+  "明天再來": "Vuelve Mañana",
+  "停擺巨偶 · 今日剩餘: %d/3": "Coloso Paralizado · Restantes Hoy: %d/3",
+  "今日挑戰次數已用盡，請明天再來！": "¡Intentos diarios agotados. Por favor vuelve mañana!",
+  "停擺巨偶挑戰": "Desafío del Coloso Paralizado",
+  "每日挑戰上限 3 次，每日 00:00 自動重置挑戰次數。": "Límite diario: 3 intentos. Se reinicia a las 00:00.",
+  "消耗: 1 次": "Consumo: 1 Intento",
+  "今日剩餘: %d 次": "Restantes Hoy: %d",
+  "巨偶-1": "Coloso-1",
+  "巨偶-2": "Coloso-2",
+  "巨偶-3": "Coloso-3"
 }

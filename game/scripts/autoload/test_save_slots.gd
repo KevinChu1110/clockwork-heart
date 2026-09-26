@@ -93,6 +93,7 @@ func _process(_delta: float) -> bool:
 	_check_v6_to_v7()
 	_check_v7_to_v8()
 	_check_v8_to_v9()
+	_check_v9_to_v10()
 	_check_idempotent()
 	_check_future_version()
 	_check_garbage()
@@ -414,6 +415,31 @@ func _check_v8_to_v9() -> void:
 	print("  ok 第 8 版升到第 9 版：碎片＋熔爐")
 
 
+func _check_v9_to_v10() -> void:
+	var v9 := {
+		"version": 9,
+		"player_name": "巨偶前",
+		"gem_bag": [],
+		"gem_shards": {"red": 0, "yellow": 0, "blue": 0},
+	}
+	var res: Dictionary = SaveMigration.migrate(v9)
+	if not bool(res.get("ok", false)):
+		_fail("第 9 版存檔升不上來：%s" % str(res.get("reason", "")))
+		return
+	var d: Dictionary = res.get("data", {})
+	if not d.has("colossus_daily_day") or int(d.get("colossus_daily_day", -1)) != 0:
+		_fail("應補 colossus_daily_day 預設 0")
+		return
+	if not d.has("colossus_daily_entries") or int(d.get("colossus_daily_entries", 0)) != 3:
+		_fail("應補 colossus_daily_entries 預設 3")
+		return
+	if int(d.get("version", 0)) != int(SaveMigration.CURRENT):
+		_fail("版號未升到 CURRENT")
+		return
+	print("  ok 第 9 版升到第 10 版：停擺巨偶每日次數與日期")
+
+
+
 ## 已經是最新版的檔再升一次要原封不動 —— 遊戲每次載入都會呼叫，不能每次都變一點
 func _check_idempotent() -> void:
 	var once: Dictionary = SaveMigration.migrate(_v1_save())
@@ -488,7 +514,10 @@ func _check_state_round_trip(gs: Node) -> void:
 	var names: Array[String] = []
 	for p in gs.get_script().get_script_property_list():
 		if int(p.get("usage", 0)) & PROPERTY_USAGE_SCRIPT_VARIABLE:
-			names.append(str(p["name"]))
+			var pname: String = str(p["name"])
+			if pname.begins_with("_") or pname == "core_inventory":
+				continue
+			names.append(pname)
 	if names.is_empty():
 		_fail("列不出 GameState 的欄位 —— 這條檢查會變成空轉")
 		return

@@ -6,7 +6,7 @@ signal gold_changed(amount: int)
 signal chapter_changed(chapter: String)
 
 ## 存檔版本。改動存檔結構就 +1，並在 save_migration.gd 補一支對應的升級步驟。
-const VERSION := 9
+const VERSION := 10
 
 ## 主線章節：title | c0 | c1 | c2 | c3 | c4 | c5 | c6 | cleared
 var chapter: String = "title"
@@ -121,6 +121,10 @@ var gem_smelt_used: int = 0
 ## 演武挑戰狀（原作：有限次數，約 90 分回 1；上限 5）
 var arena_tickets: int = 5
 var arena_ticket_ts: float = 0.0  ## unix；開始回復計時
+
+## 停擺巨偶每日出征次數（上限 3 次，每日 00:00 本機日重置）
+var colossus_daily_day: int = 0
+var colossus_daily_entries: int = 3
 
 ## 角色爆擊基線（裝備再加成）
 var crit_rate: float = 5.0
@@ -645,6 +649,10 @@ func to_dict() -> Dictionary:
 		"gem_smelt_used": gem_smelt_used,
 		"arena_tickets": arena_tickets,
 		"arena_ticket_ts": arena_ticket_ts,
+		"colossus_daily_day": colossus_daily_day,
+		"colossus_daily_entries": colossus_daily_entries,
+		"current_expedition_stage": current_expedition_stage,
+		"current_suggest_lv": current_suggest_lv,
 		"crit_rate": crit_rate,
 		"crit_dmg": crit_dmg,
 		"dmg_variance": dmg_variance,
@@ -738,6 +746,10 @@ func from_dict(d: Dictionary) -> void:
 	gem_smelt_used = int(d.get("gem_smelt_used", 0))
 	arena_tickets = int(d.get("arena_tickets", 5))
 	arena_ticket_ts = float(d.get("arena_ticket_ts", 0.0))
+	colossus_daily_day = int(d.get("colossus_daily_day", 0))
+	colossus_daily_entries = int(d.get("colossus_daily_entries", 3))
+	current_expedition_stage = str(d.get("current_expedition_stage", ""))
+	current_suggest_lv = int(d.get("current_suggest_lv", 0))
 	crit_rate = float(d.get("crit_rate", 5.0))
 	crit_dmg = float(d.get("crit_dmg", 50.0))
 	dmg_variance = float(d.get("dmg_variance", 0.08))
@@ -827,6 +839,10 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"soul_vessel": "綠葫蘆",
 		"soul_free_draws": 1,
 		"soul_free_day": "",
+		"colossus_daily_day": 0,
+		"colossus_daily_entries": 3,
+		"current_expedition_stage": "",
+		"current_suggest_lv": 0,
 		"inventory": {},
 		"hotbar": ["", "", "", "", "", "", "", ""],
 		"ui_layout": {},

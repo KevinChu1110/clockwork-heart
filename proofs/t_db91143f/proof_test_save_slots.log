@@ -1,0 +1,4 @@
+== 無頭測試 · 1 個 · 單項上限 120s ==
+  ok    test_save_slots  SAVE_SLOTS_OK
+
+TESTS PASSED (1/1)

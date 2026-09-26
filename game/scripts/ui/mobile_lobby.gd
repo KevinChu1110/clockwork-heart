@@ -181,6 +181,14 @@ var _selected_region: int = 1 # 0: 閣樓與堡壘, 1: 白霧之地, 2: 道場�
 var _stages_container: VBoxContainer
 var _region_buttons: Array[Button] = []
 
+## 出征分頁子模式：0 = 四區主線, 1 = 停擺巨偶
+enum AdventureSubMode { REGIONS, COLOSSUS }
+var _adventure_submode: int = AdventureSubMode.REGIONS
+var _submode_bar: HBoxContainer = null
+var _btn_mode_regions: Button = null
+var _btn_mode_colossus: Button = null
+var _reg_bar: HBoxContainer = null
+
 ## 角色分頁武器槽與戰鬥屬性
 var _weapon_slot_buttons: Array[Button] = []
 var _selected_weapon_slot: int = 0
@@ -1048,6 +1056,9 @@ func _style_dock_button(btn: Button, is_active: bool) -> void:
 	btn.add_theme_stylebox_override("hover", sb_h)
 	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
+
+func switch_tab(target: int) -> void:
+	_switch_tab(target as Tab)
 
 func _switch_tab(target: Tab) -> void:
 	_current_tab = target
@@ -1934,10 +1945,34 @@ func _build_adventure_tab() -> void:
 	v.add_theme_constant_override("separation", 14)
 	panel.add_child(v)
 
+	## 頂部出征子模式導航（四區主線 / 停擺巨偶入口）
+	var mode_bar := HBoxContainer.new()
+	mode_bar.alignment = BoxContainer.ALIGNMENT_CENTER
+	mode_bar.add_theme_constant_override("separation", 20)
+	v.add_child(mode_bar)
+	_submode_bar = mode_bar
+
+	_btn_mode_regions = Button.new()
+	_btn_mode_regions.name = "BtnModeRegions"
+	_btn_mode_regions.text = _t("四區主線")
+	_btn_mode_regions.custom_minimum_size = Vector2(240, 50)
+	_btn_mode_regions.add_theme_font_size_override("font_size", 16)
+	_btn_mode_regions.pressed.connect(func(): _switch_adventure_submode(AdventureSubMode.REGIONS))
+	mode_bar.add_child(_btn_mode_regions)
+
+	_btn_mode_colossus = Button.new()
+	_btn_mode_colossus.name = "BtnModeColossus"
+	_btn_mode_colossus.custom_minimum_size = Vector2(380, 50)
+	_btn_mode_colossus.add_theme_font_size_override("font_size", 16)
+	_btn_mode_colossus.pressed.connect(func(): _switch_adventure_submode(AdventureSubMode.COLOSSUS))
+	mode_bar.add_child(_btn_mode_colossus)
+	_refresh_colossus_mode_btn_text()
+
 	var reg_bar := HBoxContainer.new()
 	reg_bar.alignment = BoxContainer.ALIGNMENT_CENTER
 	reg_bar.add_theme_constant_override("separation", 16)
 	v.add_child(reg_bar)
+	_reg_bar = reg_bar
 
 	_region_buttons.clear()
 	for i in range(REGION_KEYS.size()):
@@ -1957,6 +1992,7 @@ func _build_adventure_tab() -> void:
 	_stages_container.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	v.add_child(_stages_container)
 
+	_refresh_adventure_submode_ui()
 	_refresh_region_stages()
 
 func _style_region_button(btn: Button, is_selected: bool) -> void:
@@ -2008,6 +2044,193 @@ func _style_region_button(btn: Button, is_selected: bool) -> void:
 	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
 
+func _style_submode_button(btn: Button, is_selected: bool) -> void:
+	if btn == null or not is_instance_valid(btn):
+		return
+	var sb := StyleBoxFlat.new()
+	if is_selected:
+		sb.bg_color = COLOR_ORANGE
+		sb.border_color = COLOR_BORDER
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 5
+		sb.set_corner_radius_all(18)
+		sb.content_margin_top = 8
+		sb.content_margin_bottom = 8
+		sb.content_margin_left = 18
+		sb.content_margin_right = 18
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 3)
+		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+	else:
+		sb.bg_color = COLOR_CARD_WARM
+		sb.border_color = COLOR_BORDER
+		sb.set_border_width_all(2)
+		sb.border_width_bottom = 4
+		sb.set_corner_radius_all(18)
+		sb.content_margin_top = 8
+		sb.content_margin_bottom = 8
+		sb.content_margin_left = 18
+		sb.content_margin_right = 18
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
+		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_hover_color", COLOR_ORANGE)
+		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var sb_h := sb.duplicate() as StyleBoxFlat
+	if not is_selected:
+		sb_h.bg_color = COLOR_CARD_GOLD
+	else:
+		sb_h.bg_color = Color("#FFB84D")
+
+	var sb_p := sb.duplicate() as StyleBoxFlat
+	sb_p.border_width_bottom = 2
+
+	btn.add_theme_stylebox_override("normal", sb)
+	btn.add_theme_stylebox_override("hover", sb_h)
+	btn.add_theme_stylebox_override("pressed", sb_p)
+	btn.add_theme_stylebox_override("focus", sb)
+
+func _switch_adventure_submode(mode: int) -> void:
+	_adventure_submode = mode
+	_refresh_adventure_submode_ui()
+	_refresh_region_stages()
+
+func _refresh_adventure_submode_ui() -> void:
+	if _reg_bar and is_instance_valid(_reg_bar):
+		_reg_bar.visible = (_adventure_submode == AdventureSubMode.REGIONS)
+	if _btn_mode_regions and is_instance_valid(_btn_mode_regions):
+		_btn_mode_regions.text = _t("四區主線")
+		_style_submode_button(_btn_mode_regions, _adventure_submode == AdventureSubMode.REGIONS)
+	if _btn_mode_colossus and is_instance_valid(_btn_mode_colossus):
+		_refresh_colossus_mode_btn_text()
+		_style_submode_button(_btn_mode_colossus, _adventure_submode == AdventureSubMode.COLOSSUS)
+
+func _refresh_colossus_mode_btn_text() -> void:
+	if _btn_mode_colossus == null or not is_instance_valid(_btn_mode_colossus):
+		return
+	var left := 3
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var CDS: Node = (loop as SceneTree).root.get_node_or_null("ColossusDailySystem")
+		if CDS and CDS.has_method("get_remaining_entries"):
+			left = int(CDS.call("get_remaining_entries"))
+	_btn_mode_colossus.text = _t("停擺巨偶 · 今日剩餘: %d/3") % left
+
+func _on_colossus_card_pressed(s: Dictionary) -> void:
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		return
+	var CDS: Node = (loop as SceneTree).root.get_node_or_null("ColossusDailySystem")
+	if CDS == null:
+		return
+	var res: Dictionary = CDS.call("try_enter", str(s.get("id", "")))
+	if bool(res.get("ok", false)):
+		_show_toast(_t("今日剩餘: %d 次") % int(res.get("remaining", 0)))
+		_refresh_adventure_submode_ui()
+		_refresh_region_stages()
+	else:
+		_show_colossus_limit_dialog()
+
+func _show_colossus_limit_dialog() -> Control:
+	var existing = get_node_or_null("ColossusLimitDialog")
+	if existing != null:
+		return existing
+	var dlg := Control.new()
+	dlg.name = "ColossusLimitDialog"
+	dlg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	dlg.mouse_filter = Control.MOUSE_FILTER_STOP
+	dlg.z_index = 90
+
+	var scrim := ResponsiveUi.make_scrim(ResponsiveUi.SCRIM_COLOR)
+	dlg.add_child(scrim)
+	var scrim_btn := Button.new()
+	scrim_btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	scrim_btn.flat = true
+	var esb := StyleBoxEmpty.new()
+	scrim_btn.add_theme_stylebox_override("normal", esb)
+	scrim_btn.pressed.connect(func(): dlg.queue_free())
+	scrim.add_child(scrim_btn)
+
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	dlg.add_child(center)
+
+	var card := PanelContainer.new()
+	card.name = "ColossusLimitCard"
+	ResponsiveUi.apply_dialog_card(card)
+	card.custom_minimum_size = Vector2(720, 360)
+	card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
+	center.add_child(card)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 28)
+	margin.add_theme_constant_override("margin_right", 28)
+	margin.add_theme_constant_override("margin_top", 24)
+	margin.add_theme_constant_override("margin_bottom", 24)
+	card.add_child(margin)
+
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 18)
+	margin.add_child(v)
+
+	var head := HBoxContainer.new()
+	v.add_child(head)
+
+	var title_lbl := Label.new()
+	title_lbl.name = "ColossusLimitTitle"
+	title_lbl.text = _t("停擺巨偶挑戰")
+	title_lbl.add_theme_font_size_override("font_size", 22)
+	title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	title_lbl.add_theme_constant_override("outline_size", 3)
+	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(title_lbl)
+
+	var close_btn := ResponsiveUi.make_close_button(func(): dlg.queue_free())
+	head.add_child(close_btn)
+
+	var sep := ColorRect.new()
+	sep.custom_minimum_size = Vector2(0, 3)
+	sep.color = COLOR_ORANGE
+	v.add_child(sep)
+
+	var desc_lbl := Label.new()
+	desc_lbl.name = "ColossusLimitDesc"
+	desc_lbl.text = _t("今日挑戰次數已用盡，請明天再來！") + "\n\n" + _t("每日挑戰上限 3 次，每日 00:00 自動重置挑戰次數。")
+	desc_lbl.add_theme_font_size_override("font_size", 16)
+	desc_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	v.add_child(desc_lbl)
+
+	var btn_row := HBoxContainer.new()
+	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_child(btn_row)
+
+	var ok_btn := Button.new()
+	ok_btn.name = "ConfirmButton"
+	ok_btn.text = _t("確定")
+	ok_btn.custom_minimum_size = Vector2(200, 52)
+	ok_btn.add_theme_font_size_override("font_size", 18)
+	var bsb := StyleBoxFlat.new()
+	bsb.bg_color = COLOR_GOLD
+	bsb.border_color = COLOR_BORDER
+	bsb.set_border_width_all(2)
+	bsb.border_width_bottom = 5
+	bsb.set_corner_radius_all(18)
+	ok_btn.add_theme_stylebox_override("normal", bsb)
+	ok_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	ok_btn.pressed.connect(func(): dlg.queue_free())
+	btn_row.add_child(ok_btn)
+
+	add_child(dlg)
+	return dlg
+
 func _select_region(r: int) -> void:
 	_selected_region = r
 	for i in range(_region_buttons.size()):
@@ -2018,6 +2241,30 @@ func _refresh_region_stages() -> void:
 	for c in _stages_container.get_children():
 		_stages_container.remove_child(c)
 		c.queue_free()
+
+	if _adventure_submode == AdventureSubMode.COLOSSUS:
+		var grid := GridContainer.new()
+		grid.name = "ColossusStagesGrid"
+		grid.columns = 2
+		grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		grid.add_theme_constant_override("h_separation", 20)
+		grid.add_theme_constant_override("v_separation", 18)
+		_stages_container.add_child(grid)
+
+		var bosses: Array = []
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var CDS: Node = (loop as SceneTree).root.get_node_or_null("ColossusDailySystem")
+			if CDS and CDS.has_method("get_bosses"):
+				bosses = CDS.call("get_bosses")
+		if bosses.is_empty():
+			var ColossusClass: GDScript = load("res://scripts/systems/colossus_daily.gd")
+			if ColossusClass:
+				bosses = ColossusClass.BOSSES
+		for b in bosses:
+			var sc := _build_stage_card(b)
+			grid.add_child(sc)
+		return
 
 	var all_stages := REGION_STAGES
 
@@ -2044,7 +2291,8 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	c.custom_minimum_size = Vector2(520, 145)
 	var csb := StyleBoxFlat.new()
-	var is_boss: bool = str(s["type"]).find("首領") >= 0
+	var is_colossus: bool = bool(s.get("is_colossus", false))
+	var is_boss: bool = str(s.get("type", "")).find("首領") >= 0 or is_colossus
 	csb.bg_color = Color("#FFF5F0") if is_boss else COLOR_CARD_WARM
 	csb.border_color = Color("#D04838") if is_boss else COLOR_BORDER
 	csb.set_border_width_all(2)
@@ -2112,7 +2360,7 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	## 區域抗性門檻（綠黃紅三檔，熱區 >= 48px，多巴胺果凍厚底）
 	var stage_num := str(s.get("num", ""))
 	var RC = load("res://scripts/world/region_catalog.gd")
-	var sug_lv := int(RC.call("expedition_suggest_lv", stage_num)) if RC else 0
+	var sug_lv := int(s.get("level", 0)) if is_colossus else (int(RC.call("expedition_suggest_lv", stage_num)) if RC else 0)
 	var player_lv := 1
 	var gs := _gs()
 	if gs and "level" in gs:
@@ -2223,7 +2471,10 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 
 	var cost_l := Label.new()
 	cost_l.name = "CostLabel"
-	cost_l.text = _t("消耗能量: %d") % int(s["cost"])
+	if is_colossus:
+		cost_l.text = _t("消耗: 1 次")
+	else:
+		cost_l.text = _t("消耗能量: %d") % int(s["cost"])
 	cost_l.add_theme_font_size_override("font_size", 13)
 	cost_l.add_theme_color_override("font_color", Color("#5A5275"))
 	cost_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -2235,7 +2486,19 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	btn_battle.name = "BattleButton"
 	btn_battle.custom_minimum_size = Vector2(145, 52)
 	btn_battle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	btn_battle.text = _t("挑戰首領") if is_boss else _t("出征")
+	var colossus_left := 3
+	if is_colossus:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var CDS: Node = (loop as SceneTree).root.get_node_or_null("ColossusDailySystem")
+			if CDS and CDS.has_method("get_remaining_entries"):
+				colossus_left = int(CDS.call("get_remaining_entries"))
+		if colossus_left > 0:
+			btn_battle.text = _t("出征")
+		else:
+			btn_battle.text = _t("明天再來")
+	else:
+		btn_battle.text = _t("挑戰首領") if is_boss else _t("出征")
 	btn_battle.add_theme_font_size_override("font_size", 16)
 	var bsb := StyleBoxFlat.new()
 	if is_boss:
@@ -2270,14 +2533,20 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	btn_battle.add_theme_stylebox_override("hover", bsb_h)
 	btn_battle.add_theme_stylebox_override("pressed", bsb_p)
 	btn_battle.add_theme_stylebox_override("focus", bsb)
-	var m: String = str(s["mode"])
-	btn_battle.pressed.connect(func():
-		var g := _gs()
-		if g:
-			g.set("current_expedition_stage", stage_num)
-			g.set("current_suggest_lv", sug_lv)
-		request_battle.emit(m)
-	)
+
+	if is_colossus:
+		btn_battle.pressed.connect(func():
+			_on_colossus_card_pressed(s)
+		)
+	else:
+		var m: String = str(s["mode"])
+		btn_battle.pressed.connect(func():
+			var g := _gs()
+			if g:
+				g.set("current_expedition_stage", stage_num)
+				g.set("current_suggest_lv", sug_lv)
+			request_battle.emit(m)
+		)
 	h.add_child(btn_battle)
 
 	return c
@@ -3429,6 +3698,11 @@ func _apply_locale_texts() -> void:
 			_sortie_stage_label.add_theme_font_size_override("font_size", 16)
 	if _sortie_button and is_instance_valid(_sortie_button):
 		_sortie_button.text = _t("前往出征")
+
+	if _btn_mode_regions and is_instance_valid(_btn_mode_regions):
+		_btn_mode_regions.text = _t("四區主線")
+	if _btn_mode_colossus and is_instance_valid(_btn_mode_colossus):
+		_refresh_colossus_mode_btn_text()
 
 	for i in range(_region_buttons.size()):
 		if i < REGION_KEYS.size() and is_instance_valid(_region_buttons[i]):
