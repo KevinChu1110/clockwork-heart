@@ -2920,7 +2920,8 @@ func _on_bag_cell_input(idx: int, ev: InputEvent) -> void:
 		_selected_bag_item = id
 		var inv := _get_inv_sys()
 		if inv and inv.has_method("use_item"):
-			inv.call("use_item", id)
+			var res: Dictionary = inv.call("use_item", id)
+			_show_bag_msg(res)
 		refresh_hud()
 		_refresh_bag_tab()
 		return
@@ -2930,7 +2931,8 @@ func _on_bag_cell_input(idx: int, ev: InputEvent) -> void:
 			_selected_bag_item = id
 			var inv := _get_inv_sys()
 			if inv and inv.has_method("use_item"):
-				inv.call("use_item", id)
+				var res: Dictionary = inv.call("use_item", id)
+				_show_bag_msg(res)
 			refresh_hud()
 			_last_bag_click_i = -1
 			_refresh_bag_tab()
@@ -2945,9 +2947,21 @@ func _on_bag_use_pressed() -> void:
 		return
 	var inv := _get_inv_sys()
 	if inv and inv.has_method("use_item"):
-		inv.call("use_item", _selected_bag_item)
+		var res: Dictionary = inv.call("use_item", _selected_bag_item)
+		_show_bag_msg(res)
 	refresh_hud()
 	_refresh_bag_tab()
+
+func _show_bag_msg(res: Dictionary) -> void:
+	var msg := str(res.get("msg", ""))
+	if msg == "":
+		return
+	var main_node = get_parent()
+	while main_node != null and not main_node.has_method("_show_toast"):
+		main_node = main_node.get_parent()
+	if main_node != null and bool(res.get("ok", false)):
+		return
+	_show_toast(msg)
 
 func _on_bag_hotbar_pressed() -> void:
 	if _selected_bag_item == "":
@@ -3110,7 +3124,7 @@ func _update_bag_detail(inv: Node) -> void:
 		"key":
 			kind_s = _t("重要道具")
 			if _bag_use_btn:
-				_bag_use_btn.disabled = true
+				_bag_use_btn.disabled = false
 				_bag_use_btn.text = _t("無法使用")
 		_:
 			kind_s = _t("道具")
@@ -3377,14 +3391,21 @@ func _apply_locale_texts() -> void:
 
 	refresh_hud()
 
+var _current_toast: Label = null
+
 func _show_toast(msg: String) -> void:
+	if _current_toast and is_instance_valid(_current_toast):
+		_current_toast.queue_free()
+		_current_toast = null
 	var toast := Label.new()
+	_current_toast = toast
 	toast.text = msg
 	toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	toast.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	toast.offset_left = -200
-	toast.offset_right = 200
+	var toast_w := clampi(int(msg.length() * 11) + 48, 360, 800)
+	toast.offset_left = -int(toast_w / 2)
+	toast.offset_right = int(toast_w / 2)
 	toast.offset_top = 80
 	toast.offset_bottom = 126
 	var tsb := StyleBoxFlat.new()
@@ -3393,6 +3414,8 @@ func _show_toast(msg: String) -> void:
 	tsb.set_border_width_all(1)
 	tsb.border_width_bottom = 3
 	tsb.set_corner_radius_all(8)
+	tsb.content_margin_left = 16
+	tsb.content_margin_right = 16
 	toast.add_theme_stylebox_override("normal", tsb)
 	toast.add_theme_color_override("font_color", INK_IVORY)
 	toast.add_theme_font_size_override("font_size", 15)

@@ -389,28 +389,38 @@ func bag_list() -> Array:
 	return out
 
 
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
+
+
 func use_item(id: String) -> Dictionary:
 	## {ok, msg, heal, dust, sold}
 	if id == "" or not has_item(id):
-		return {"ok": false, "msg": "沒有這個道具。"}
+		return {"ok": false, "msg": _t("沒有這個道具。")}
 	var def: Dictionary = catalog(id)
 	var kind := str(def.get("kind", ""))
 	match kind:
 		"consumable":
 			if not remove_item(id, 1):
-				return {"ok": false, "msg": "使用失敗。"}
+				return {"ok": false, "msg": _t("使用失敗。")}
 			var msg_parts: PackedStringArray = []
 			var healed := 0
 			if def.has("heal"):
 				healed = _apply_heal(int(def.get("heal", 0)))
-				msg_parts.append("HP +%d" % healed)
+				msg_parts.append(_t("HP +%d") % healed)
 			if def.has("dust"):
 				var d: int = int(def.get("dust", 0))
 				GameState.add_stardust(d)
-				msg_parts.append("星屑 +%d" % d)
+				msg_parts.append(_t("星屑 +%d") % d)
+			var item_title := str(def.get("name", id))
+			var msg_str := ""
+			if msg_parts.is_empty():
+				msg_str = _t("使用【%s】") % item_title
+			else:
+				msg_str = _t("使用【%s】· %s") % [item_title, " · ".join(msg_parts)]
 			var res := {
 				"ok": true,
-				"msg": "使用【%s】%s" % [str(def.get("name", id)), " · ".join(msg_parts)],
+				"msg": msg_str,
 				"heal": healed,
 				"id": id,
 			}
@@ -420,7 +430,7 @@ func use_item(id: String) -> Dictionary:
 			## 賣出 1 個
 			var sell: int = int(def.get("sell", 1))
 			if not remove_item(id, 1):
-				return {"ok": false, "msg": "賣出失敗。"}
+				return {"ok": false, "msg": _t("賣出失敗。")}
 			GameState.add_gold(sell)
 			if Engine.get_main_loop() is SceneTree:
 				var qs: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("QuestSystem")
@@ -428,16 +438,16 @@ func use_item(id: String) -> Dictionary:
 					qs.call("track_day", "sell", 1)
 			var res2 := {
 				"ok": true,
-				"msg": "賣出【%s】· 金 +%d" % [str(def.get("name", id)), sell],
+				"msg": _t("賣出【%s】· 金 +%d") % [str(def.get("name", id)), sell],
 				"sold": sell,
 				"id": id,
 			}
 			item_used.emit(id, res2)
 			return res2
 		"key":
-			return {"ok": false, "msg": "【%s】是重要物品，不能消耗。" % str(def.get("name", id))}
+			return {"ok": false, "msg": _t("【%s】是重要物品，不能消耗。") % str(def.get("name", id))}
 		_:
-			return {"ok": false, "msg": "無法使用。"}
+			return {"ok": false, "msg": _t("無法使用。")}
 
 
 func use_hotbar_slot(slot: int) -> Dictionary:
@@ -448,7 +458,7 @@ func use_hotbar_slot(slot: int) -> Dictionary:
 	if id == "":
 		## 靜默失敗會讓新玩家以為快捷欄根本沒作用——第一次嘗試就得到零回饋，
 		## 這個功能對他而言等於不存在
-		return {"ok": false, "msg": "第 %d 格是空的。開 I 背包指派道具。" % (slot + 1)}
+		return {"ok": false, "msg": _t("第 %d 格是空的。開 I 背包指派道具。") % (slot + 1)}
 	return use_item(id)
 
 
@@ -528,7 +538,7 @@ func sell_all_materials() -> Dictionary:
 			gold_n += sell * n
 			cnt += n
 	if cnt <= 0:
-		return {"ok": false, "gold": 0, "count": 0, "msg": "沒有可賣的材料。"}
+		return {"ok": false, "gold": 0, "count": 0, "msg": _t("沒有可賣的材料。")}
 	GameState.add_gold(gold_n)
 	if Engine.get_main_loop() is SceneTree:
 		var qs: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("QuestSystem")
@@ -538,7 +548,7 @@ func sell_all_materials() -> Dictionary:
 		"ok": true,
 		"gold": gold_n,
 		"count": cnt,
-		"msg": "賣出材料 %d 件 · 金 +%d" % [cnt, gold_n],
+		"msg": _t("賣出材料 %d 件 · 金 +%d") % [cnt, gold_n],
 	}
 
 
