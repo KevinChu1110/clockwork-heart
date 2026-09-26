@@ -892,5 +892,10 @@
   "需達 Lv.%d": "Requiere Nv.%d",
   "未達標": "Bloqueado",
   "等級未達 Lv.%d，低於推薦等級 10 級以上不可出征！": "¡Nivel inferior a Nv.%d; no se puede salir con 10+ niveles por debajo del recomendado!",
-  "等級未達 Lv.%d，低於推薦等級 10 級以上不可出征": "Nivel inferior a Nv.%d; no se puede salir con 10+ niveles por debajo del recomendado"
+  "等級未達 Lv.%d，低於推薦等級 10 級以上不可出征": "Nivel inferior a Nv.%d; no se puede salir con 10+ niveles por debajo del recomendado",
+  "發條格擋": "Parada de Cuerda",
+  "巨偶蓄力中… %.1f 秒後可格擋": "Coloso cargando… se podrá parar en %.1f s",
+  "蓄力必殺": "Golpe Cargado",
+  "現在按 J 或點發條格擋！": "¡Pulsa J o toca Parada de Cuerda ahora!",
+  "現在點發條格擋！": "¡Toca Parada de Cuerda ahora!"
 }

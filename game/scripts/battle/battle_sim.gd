@@ -73,6 +73,9 @@ const PART_FLEE_CHANCE_ENRAGE := 0.18
 ## 測試／腳本：下一破強制逃走一次
 var force_next_part_flee: bool = false
 
+## 停擺巨偶模式：三隻占位巨偶（失控發條獅／霧鐘提線人偶／黑鏽蒸氣巨象）
+var colossus_mode: bool = false
+
 ## 白霧模式：僅看破破綻可傷本體；幻影反噬
 var fog_mode: bool = false
 var fog_vuln_cd: float = 0.0
@@ -1035,8 +1038,27 @@ func _start_king_slash(u: BattleUnit) -> void:
 	if not foes.is_empty():
 		u.target_id = foes[0].id
 	var skill_label := _t("黑鏽必殺") if demon_mode else _t("王者斬")
+	if is_colossus_mode() or u.id in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
+		skill_label = _t("蓄力必殺")
 	_emit("king_slash_start", {"id": u.id, "windup": KING_SLASH_WINDUP, "label": skill_label})
 	_emit("state", {"id": u.id, "state": "telegraph"})
+
+
+func is_colossus_mode() -> bool:
+	if colossus_mode:
+		return true
+	for u in units.values():
+		if u.is_boss and u.id in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
+			return true
+	return false
+
+
+func trigger_colossus_windup() -> bool:
+	for u in units.values():
+		if u.is_boss and (is_colossus_mode() or u.id in ["colossus_lion", "colossus_puppet", "colossus_elephant"]):
+			_start_king_slash(u)
+			return true
+	return false
 
 
 ## 玩家現在按下去有沒有東西可以接。給 UI 用（顯示倒數、變綠）。
@@ -2470,6 +2492,7 @@ static func make_world_fight(player_stats: Dictionary, mode: String) -> BattleSi
 		e.recover_time = float(def.get("recover", 0.45))
 		e.king_slash_cd = float(def.get("king_slash_cd", 3.0))
 		var is_colossus: bool = mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"] or str(def.get("id", "")) in ["colossus_lion", "colossus_puppet", "colossus_elephant"]
+		sim.colossus_mode = is_colossus
 		var spike_mat: String = "iron_scrap" if is_colossus else ""
 		var core_mat: String = "iron_scrap" if is_colossus else ""
 		_attach_boss_part(e, _t("溢能尖角"), 0.26, "spike", "enrage", spike_mat, "", "溢能尖角")

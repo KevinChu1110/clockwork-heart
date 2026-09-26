@@ -127,6 +127,49 @@ func _is_world_miniboss(mode: String) -> bool:
 	return WC != null and WC.is_miniboss(mode)
 
 
+func _is_colossus_fight() -> bool:
+	if _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
+		return true
+	if sim != null and sim.has_method("is_colossus_mode") and sim.is_colossus_mode():
+		return true
+	return false
+
+
+func _is_enemy_telegraphing() -> bool:
+	if sim == null:
+		return false
+	var b = sim._telegraphing_boss()
+	return b != null and b.telegraph_active
+
+
+func _update_thumb_attack_text(txt: String) -> void:
+	if _btn_attack == null or not is_instance_valid(_btn_attack):
+		return
+	var loc := ContentLoc.locale()
+	if txt == _t("發條格擋") or txt.contains("Parry") or txt.contains("パリィ") or txt.contains("패링") or txt.contains("Parada"):
+		_btn_attack.custom_minimum_size = Vector2(108, 72)
+		_btn_attack.add_theme_constant_override("line_spacing", 2)
+		if loc == "en":
+			_btn_attack.text = "Windup\nParry"
+			_btn_attack.add_theme_font_size_override("font_size", 12)
+		elif loc == "es":
+			_btn_attack.text = "Parada de\nCuerda"
+			_btn_attack.add_theme_font_size_override("font_size", 11)
+		elif loc == "ja":
+			_btn_attack.text = "ぜんまい\nパリィ"
+			_btn_attack.add_theme_font_size_override("font_size", 12)
+		elif loc == "ko":
+			_btn_attack.text = "태엽\n패링"
+			_btn_attack.add_theme_font_size_override("font_size", 13)
+		else:
+			_btn_attack.text = txt
+			_btn_attack.add_theme_font_size_override("font_size", 15)
+	else:
+		_btn_attack.custom_minimum_size = Vector2(88, 72)
+		_btn_attack.text = txt
+		_btn_attack.add_theme_font_size_override("font_size", 17)
+
+
 ## 原作互剋盤提示（R2 §2）：剋制純靠數值互抵，提示玩家換裝
 static func _kin_hint(kin: String) -> String:
 	match kin:
@@ -1807,7 +1850,10 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	if _btn_pause and is_instance_valid(_btn_pause):
 		_btn_pause.text = _t("暫停")
 	if _btn_attack and is_instance_valid(_btn_attack):
-		_btn_attack.text = _t("攻擊")
+		if _is_colossus_fight() and _is_enemy_telegraphing():
+			_update_thumb_attack_text(_t("發條格擋"))
+		else:
+			_update_thumb_attack_text(_t("攻擊"))
 	if btn_flee and is_instance_valid(btn_flee):
 		if _mode == "dummy" or _mode == "training_dummy":
 			btn_flee.text = _t("結束試招")
@@ -1982,6 +2028,8 @@ func _refresh_hud() -> void:
 				countdown.visible = false
 				countdown_sub.visible = false
 				telegraph.visible = false
+				if _is_colossus_fight() and _btn_attack and is_instance_valid(_btn_attack) and _btn_attack.text != _t("攻擊"):
+					_update_thumb_attack_text(_t("攻擊"))
 				if _part_lock_enabled() and not e.telegraph_active:
 					parry_hint.modulate = Color(1, 1, 1)
 					_refresh_part_focus_hint()
@@ -2462,6 +2510,8 @@ func _update_parry_countdown(e: BattleUnit) -> void:
 	countdown_sub.visible = true
 	## 蓄力全程保持 telegraph 幀；進入格擋窗略強調
 	if e.telegraph_active:
+		if _is_colossus_fight():
+			_update_thumb_attack_text(_t("發條格擋"))
 		if e.state_timer <= BattleSim.PARRY_WINDOW:
 			if _boss_pose != "attack":
 				_set_boss_pose("telegraph")
@@ -2494,9 +2544,13 @@ func _update_parry_countdown(e: BattleUnit) -> void:
 
 	if in_window:
 		telegraph.color = Color(0.2, 0.9, 0.35, 0.22 + 0.12 * sin(Time.get_ticks_msec() * 0.025))
-		countdown.text = _t("格擋")
+		if _is_colossus_fight():
+			countdown.text = _t("發條格擋")
+			countdown_sub.text = _battle_hint_text(_t("現在按 J 或點發條格擋！"), _t("現在點發條格擋！"))
+		else:
+			countdown.text = _t("格擋")
+			countdown_sub.text = _battle_hint_text("現在按 J 或滑鼠左鍵！", "現在點閃避！")
 		countdown.add_theme_color_override("font_color", Color(0.4, 1.0, 0.45))
-		countdown_sub.text = _battle_hint_text("現在按 J 或滑鼠左鍵！", "現在點閃避！")
 		countdown_sub.add_theme_color_override("font_color", Color(0.6, 1.0, 0.65))
 		if _parry_note_left <= 0.0:
 			parry_hint.text = _kh(_t("格擋時機！（剩餘 %.1f 秒）") % remain)
@@ -2508,7 +2562,10 @@ func _update_parry_countdown(e: BattleUnit) -> void:
 		telegraph.color = Color(1, 0.25, 0.2, 0.2 + 0.1 * sin(Time.get_ticks_msec() * 0.02))
 		countdown.text = str(bucket)
 		countdown.add_theme_color_override("font_color", Color(1, 0.85, 0.3))
-		countdown_sub.text = _t("王者斬蓄力中… %.1f 秒後可格擋") % maxf(0.0, remain - BattleSim.PARRY_WINDOW)
+		if _is_colossus_fight():
+			countdown_sub.text = _t("巨偶蓄力中… %.1f 秒後可格擋") % maxf(0.0, remain - BattleSim.PARRY_WINDOW)
+		else:
+			countdown_sub.text = _t("王者斬蓄力中… %.1f 秒後可格擋") % maxf(0.0, remain - BattleSim.PARRY_WINDOW)
 		countdown_sub.add_theme_color_override("font_color", Color(1, 0.7, 0.55))
 		if _parry_note_left <= 0.0:
 			parry_hint.text = _kh(_t("準備：倒數到「格擋」再按"))
@@ -4038,6 +4095,9 @@ func _ensure_thumb_hud() -> void:
 	_btn_attack = _thumb_btn(_t("攻擊"), true, _on_thumb_attack)
 	_btn_attack.name = "ThumbAttack"
 	_btn_attack.custom_minimum_size = Vector2(88, 72)
+	_btn_attack.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if _is_colossus_fight() and _is_enemy_telegraphing():
+		_update_thumb_attack_text(_t("發條格擋"))
 	bot.add_child(_btn_attack)
 
 	_layout_thumb_hud()
