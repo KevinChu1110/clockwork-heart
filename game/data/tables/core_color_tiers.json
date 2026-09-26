@@ -63,7 +63,9 @@
       "max_score": -1,
       "hex": "#8E8E93",
       "modulate": [0.557, 0.557, 0.576, 1.0],
-      "desc": "失調機芯（分數 < 0）"
+      "desc": "失調機芯（分數 < 0）",
+      "drop_weight": 50,
+      "drop_rate_pct": 5.0
     },
     {
       "tier": 1,
@@ -74,7 +76,9 @@
       "max_score": 0,
       "hex": "#FFFFFF",
       "modulate": [1.0, 1.0, 1.0, 1.0],
-      "desc": "出廠白板（分數 0）"
+      "desc": "出廠白板（分數 0）",
+      "drop_weight": 450,
+      "drop_rate_pct": 45.0
     },
     {
       "tier": 2,
@@ -85,7 +89,9 @@
       "max_score": 4,
       "hex": "#FFA010",
       "modulate": [1.0, 0.627, 0.063, 1.0],
-      "desc": "微調部件（分數 1~4）"
+      "desc": "微調部件（分數 1~4）",
+      "drop_weight": 240,
+      "drop_rate_pct": 24.0
     },
     {
       "tier": 3,
@@ -96,7 +102,9 @@
       "max_score": 22,
       "hex": "#38A0FF",
       "modulate": [0.22, 0.627, 1.0, 1.0],
-      "desc": "標準部件（分數 5~22）"
+      "desc": "標準部件（分數 5~22）",
+      "drop_weight": 150,
+      "drop_rate_pct": 15.0
     },
     {
       "tier": 4,
@@ -107,7 +115,9 @@
       "max_score": 39,
       "hex": "#A855F7",
       "modulate": [0.659, 0.333, 0.969, 1.0],
-      "desc": "精準部件（分數 23~39）"
+      "desc": "精準部件（分數 23~39）",
+      "drop_weight": 60,
+      "drop_rate_pct": 6.0
     },
     {
       "tier": 5,
@@ -118,7 +128,9 @@
       "max_score": 54,
       "hex": "#FFD028",
       "modulate": [1.0, 0.816, 0.157, 1.0],
-      "desc": "卓越部件（分數 40~54）"
+      "desc": "卓越部件（分數 40~54）",
+      "drop_weight": 30,
+      "drop_rate_pct": 3.0
     },
     {
       "tier": 6,
@@ -129,7 +141,9 @@
       "max_score": 69,
       "hex": "#4ED86A",
       "modulate": [0.306, 0.847, 0.416, 1.0],
-      "desc": "完美部件（分數 55~69）"
+      "desc": "完美部件（分數 55~69）",
+      "drop_weight": 15,
+      "drop_rate_pct": 1.5
     },
     {
       "tier": 7,
@@ -140,7 +154,9 @@
       "max_score": null,
       "hex": "#FF5E8A",
       "modulate": [1.0, 0.369, 0.541, 1.0],
-      "desc": "極限超越（分數 70+）"
+      "desc": "極限超越（分數 70+）",
+      "drop_weight": 5,
+      "drop_rate_pct": 0.5
     }
   ],
   "calibration_rules": {
@@ -154,5 +170,11 @@
       "CRIT": 50.0,
       "CRIT_DMG": 25.0
     }
+  },
+  "battle_drop_rules": {
+    "enabled": true,
+    "parts_per_victory": 1,
+    "total_weight": 1000,
+    "allowed_slots": ["mainspring", "chassis", "escapement", "gear_train", "soul_core"]
   }
 }

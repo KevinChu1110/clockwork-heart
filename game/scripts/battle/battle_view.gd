@@ -41,6 +41,7 @@ signal battle_finished(won: bool)
 
 const BattleDefeatDialogScript := preload("res://scripts/battle/battle_defeat_dialog.gd")
 const DummySettlementDialogScript := preload("res://scripts/battle/dummy_settlement_dialog.gd")
+const BattleVictoryDialogScript := preload("res://scripts/battle/battle_victory_dialog.gd")
 
 var sim: BattleSim
 var force_touch_mode: Variant = null  ## 測試/截圖強制覆寫觸控模式；null 為自動判定
@@ -48,6 +49,7 @@ var _mode: String = "wolf"
 var _ended: bool = false
 var _revived_by_ad: bool = false
 var _dummy_settlement_dialog: Control = null
+var _victory_settlement_dialog: Control = null
 var _in_parry_slowmo: bool = false
 var _player_home: Vector2
 var _enemy_home: Vector2
@@ -3577,6 +3579,15 @@ func _on_end(won: bool) -> void:
 		BattleSim.last_victory_part_loot = sim.pending_part_materials.duplicate() if won else []
 	else:
 		BattleSim.last_victory_part_loot = []
+
+	var drop_part: Dictionary = {}
+	if won and _mode != "training_dummy":
+		if CoreSystem != null:
+			drop_part = CoreSystem.roll_and_add_battle_drop()
+			BattleSim.last_victory_core_part = drop_part
+			var tnm: String = str(drop_part.get("tier_name", "白"))
+			var snm: String = str(drop_part.get("slot_name", "機芯部件"))
+			_append_log(_t("[color=#fc8]掉落機芯部件：【%s階】%s[/color]") % [tnm, snm])
 	if won:
 		if sim != null and sim.boss_fled:
 			banner.text = _t("趕　跑")
@@ -3669,8 +3680,30 @@ func _on_end(won: bool) -> void:
 			await get_tree().create_timer(1.0).timeout
 		_show_dummy_settlement(won)
 		return
+	if won and not drop_part.is_empty():
+		if get_tree():
+			await get_tree().create_timer(1.0).timeout
+		_show_victory_settlement(drop_part)
+		if DisplayServer.get_name() == "headless" and force_touch_mode == null:
+			if get_tree():
+				await get_tree().create_timer(0.2).timeout
+				if is_instance_valid(_victory_settlement_dialog):
+					_victory_settlement_dialog._on_confirm_pressed()
+		return
 	await get_tree().create_timer(1.6).timeout
 	battle_finished.emit(won)
+
+
+func _show_victory_settlement(drop_part: Dictionary) -> void:
+	if _victory_settlement_dialog != null and is_instance_valid(_victory_settlement_dialog):
+		_victory_settlement_dialog.queue_free()
+	_victory_settlement_dialog = BattleVictoryDialogScript.show_dialog(
+		self,
+		drop_part,
+		func():
+			_victory_settlement_dialog = null
+			battle_finished.emit(true)
+	)
 
 
 func _can_offer_ad_revive() -> bool:

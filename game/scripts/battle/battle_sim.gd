@@ -58,6 +58,8 @@ var parts_break_stage: int = 0
 var pending_part_materials: Array = []
 ## 上一場勝利的掉落暫存（不進存檔）
 static var last_victory_part_loot: Array = []
+## 上一場勝利的機芯戰利品掉落暫存（不進存檔）
+static var last_victory_core_part: Dictionary = {}
 ## 全破後對本體傷害加成（對齊 boss.py BROKEN_BODY_DAMAGE_BONUS）
 const ALL_PARTS_BROKEN_BODY_MULT := 1.5
 ## 原作：破部位後可能逃走（主線聖獸／魔王關閉；裂縫／秘境可開）
