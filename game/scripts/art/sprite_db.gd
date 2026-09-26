@@ -1218,15 +1218,15 @@ static func core_slot_icon(key: String) -> Texture2D:
 	var k := key.strip_edges().to_lower()
 	var fname := ""
 	match k:
-		"spring_generator", "slot_01", "generator", "發條發電機", "0":
+		"spring_generator", "mainspring", "slot_01", "generator", "發條發電機", "0":
 			fname = "slot_01_spring_generator.png"
-		"chassis_armor", "slot_02", "armor", "機殼裝甲", "1":
+		"chassis_armor", "chassis", "slot_02", "armor", "機殼裝甲", "1":
 			fname = "slot_02_chassis_armor.png"
-		"escapement_governor", "slot_03", "governor", "擒縱調速器", "2":
+		"escapement_governor", "escapement", "slot_03", "governor", "擒縱調速器", "2":
 			fname = "slot_03_escapement_governor.png"
-		"transmission_gears", "slot_04", "gears", "傳動齒輪組", "3":
+		"transmission_gears", "gear_train", "slot_04", "gears", "傳動齒輪組", "3":
 			fname = "slot_04_transmission_gears.png"
-		"resonance_core", "slot_05", "core", "共鳴核心", "4":
+		"resonance_core", "soul_core", "slot_05", "core", "共鳴核心", "4":
 			fname = "slot_05_resonance_core.png"
 		_:
 			if k.ends_with(".png"):
