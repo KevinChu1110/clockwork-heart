@@ -10,8 +10,22 @@ extends Node
 const MAX_CALIBRATIONS: int = 7
 
 signal part_calibrated(slot_id: String, part: Dictionary, result: Dictionary)
+signal part_dropped(part: Dictionary)
 
 static var player_parts: Dictionary = {}
+static var core_inventory: Array = []
+static var inventory: Array = []
+
+const DEFAULT_DROP_TIER_WEIGHTS: Dictionary = {
+	"gray": 50,
+	"white": 450,
+	"orange": 240,
+	"blue": 150,
+	"purple": 60,
+	"gold": 30,
+	"green": 15,
+	"red": 5,
+}
 
 const SLOT_MAINSPRING: String = "mainspring"
 const SLOT_CHASSIS: String = "chassis"
@@ -304,6 +318,9 @@ static func get_slot_defs() -> Dictionary:
 	return res
 
 
+static var _uid_counter: int = 0
+
+
 ## 建立全新機芯部件資料結構
 static func create_part(slot_id: String, initial_score: int = 0, initial_stats: Dictionary = {}) -> Dictionary:
 	var norm_slot := normalize_slot_id(slot_id)
@@ -319,9 +336,10 @@ static func create_part(slot_id: String, initial_score: int = 0, initial_stats: 
 		else:
 			push_warning("機芯部件初始數值含有不合規屬性：%s，已自動過濾" % sk)
 
+	_uid_counter += 1
 	var tier_info := get_tier_by_score(initial_score)
 	return {
-		"uid": "core_%s_%d" % [norm_slot, Time.get_unix_time_from_system() * 1000 + randi() % 1000],
+		"uid": "core_%s_%d_%d" % [norm_slot, int(Time.get_unix_time_from_system() * 1000), _uid_counter],
 		"slot": norm_slot,
 		"slot_name": get_slot_name(norm_slot),
 		"score": initial_score,
@@ -682,3 +700,136 @@ static func get_equipped_part(slot_id: String) -> Dictionary:
 		if gs and "core_slots" in gs:
 			return (gs.core_slots.get(norm, {}) as Dictionary).duplicate(true)
 	return {}
+
+
+## 取得八色階掉落機率權重表
+static func get_drop_weights() -> Dictionary:
+	var weights := DEFAULT_DROP_TIER_WEIGHTS.duplicate()
+	if FileAccess.file_exists(TABLE_PATH):
+		var f := FileAccess.open(TABLE_PATH, FileAccess.READ)
+		if f:
+			var data = JSON.parse_string(f.get_as_text())
+			if typeof(data) == TYPE_DICTIONARY and data.has("tiers") and typeof(data["tiers"]) == TYPE_ARRAY:
+				for tdef in data["tiers"]:
+					if typeof(tdef) == TYPE_DICTIONARY and tdef.has("id") and tdef.has("drop_weight"):
+						weights[str(tdef["id"])] = int(tdef["drop_weight"])
+	return weights
+
+
+## 依權重隨機抽取八色階之一
+static func roll_tier(rng: RandomNumberGenerator = null) -> String:
+	var weights := get_drop_weights()
+	var total_w: int = 0
+	for tid in ALL_TIER_IDS:
+		total_w += int(weights.get(tid, 0))
+	if total_w <= 0:
+		return TIER_WHITE
+	var roll_val: int = rng.randi_range(1, total_w) if rng != null else (randi() % total_w + 1)
+	var accum: int = 0
+	for tid in ALL_TIER_IDS:
+		accum += int(weights.get(tid, 0))
+		if roll_val <= accum:
+			return tid
+	return TIER_WHITE
+
+
+## 隨機抽取五槽之一
+static func roll_slot(rng: RandomNumberGenerator = null) -> String:
+	var idx: int = rng.randi_range(0, ALL_SLOT_IDS.size() - 1) if rng != null else (randi() % ALL_SLOT_IDS.size())
+	return ALL_SLOT_IDS[idx]
+
+
+## 隨機生成一顆五槽機芯戰利品部件（遵循 create_part 規格與八色階權重）
+static func roll_battle_drop(rng: RandomNumberGenerator = null) -> Dictionary:
+	var slot_id := roll_slot(rng)
+	var tier_id := roll_tier(rng)
+	return create_part_by_tier(slot_id, tier_id)
+
+
+## 將機芯部件加入背包／庫存（同步 GameState.core_bag 與 CoreSystem.inventory）
+static func add_part_to_inventory(part: Dictionary) -> void:
+	if part == null or part.is_empty():
+		return
+	var part_copy: Dictionary = part.duplicate(true)
+	var tree := Engine.get_main_loop()
+	var gs: Node = null
+	var cs: Node = null
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var root = (tree as SceneTree).root
+		gs = root.get_node_or_null("GameState")
+		cs = root.get_node_or_null("CoreSystem")
+
+	if gs and gs.has_method("add_core_part"):
+		gs.call("add_core_part", part_copy)
+		core_inventory = gs.core_bag
+		inventory = core_inventory
+	else:
+		core_inventory.append(part_copy)
+		inventory = core_inventory
+
+	if cs and cs.has_signal("part_dropped"):
+		cs.emit_signal("part_dropped", part_copy)
+
+
+## 取得當前機芯背包清單
+static func get_inventory() -> Array:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and "core_bag" in gs and typeof(gs.core_bag) == TYPE_ARRAY:
+			core_inventory = gs.core_bag
+			inventory = core_inventory
+			return gs.core_bag
+	inventory = core_inventory
+	return core_inventory
+
+
+## 清空機芯背包（測試用）
+static func clear_inventory() -> void:
+	core_inventory.clear()
+	inventory.clear()
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs:
+			if "core_bag" in gs and typeof(gs.core_bag) == TYPE_ARRAY:
+				gs.core_bag.clear()
+			if "core_inventory" in gs and typeof(gs.core_inventory) == TYPE_ARRAY:
+				gs.core_inventory.clear()
+
+
+## 從背包移除指定 uid 之部件
+static func remove_part_from_inventory(part_uid: String) -> Dictionary:
+	var removed := {}
+	var tree := Engine.get_main_loop()
+	var gs: Node = null
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		gs = (tree as SceneTree).root.get_node_or_null("GameState")
+
+	if gs and gs.has_method("remove_core_part"):
+		var r = gs.call("remove_core_part", part_uid)
+		if typeof(r) == TYPE_DICTIONARY:
+			removed = r
+		core_inventory = gs.core_bag
+		inventory = core_inventory
+	else:
+		for i in range(core_inventory.size()):
+			var p: Dictionary = core_inventory[i]
+			if str(p.get("uid", "")) == part_uid:
+				removed = p
+				core_inventory.remove_at(i)
+				break
+		inventory = core_inventory
+	return removed
+
+
+## 戰鬥勝利結算掉落：抽取部件、入袋並傳回
+static func roll_and_add_battle_drop(rng: RandomNumberGenerator = null) -> Dictionary:
+	var part := roll_battle_drop(rng)
+	add_part_to_inventory(part)
+	return part
+
+
+## 戰鬥勝利掛鉤（別名）
+static func on_battle_won(rng: RandomNumberGenerator = null) -> Dictionary:
+	return roll_and_add_battle_drop(rng)

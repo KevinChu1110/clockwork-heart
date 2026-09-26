@@ -430,7 +430,10 @@ func bag_list() -> Array:
 	ensure_hotbar()
 	var out: Array = []
 	for id in GameState.inventory.keys():
-		var c := int(GameState.inventory[id])
+		var val = GameState.inventory[id]
+		if not (val is int or val is float):
+			continue
+		var c := int(val)
 		if c > 0 and CATALOG.has(id):
 			out.append({"id": id, "count": c, "def": catalog(id)})
 	out.sort_custom(func(a, b): return str(a.get("id")) < str(b.get("id")))

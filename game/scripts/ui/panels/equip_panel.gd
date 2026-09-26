@@ -192,6 +192,29 @@ func open() -> void:
 
 	root.add_child(_core_hint_label)
 
+	## ── 機芯部件背包 ──
+	var core_parts: Array = CoreSystem.get_inventory() if CoreSystem != null else []
+	if not core_parts.is_empty():
+		var cbag_h := Label.new()
+		cbag_h.text = _t("機芯部件背包（點擊替換裝備）")
+		cbag_h.add_theme_font_size_override("font_size", 13)
+		cbag_h.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
+		root.add_child(cbag_h)
+
+		var cbag_grid := GridContainer.new()
+		cbag_grid.name = "CoreBagGrid"
+		cbag_grid.columns = 4
+		cbag_grid.add_theme_constant_override("h_separation", 8)
+		cbag_grid.add_theme_constant_override("v_separation", 8)
+		root.add_child(cbag_grid)
+
+		var cn := 0
+		for cp in core_parts:
+			if cn >= 12:
+				break
+			cbag_grid.add_child(_core_bag_cell(cp))
+			cn += 1
+
 	## ── 飾品六槽 ──
 	var acc_h := Label.new()
 	if EquipmentSystem.accessories_unlocked():
@@ -705,3 +728,78 @@ func unequip(slot: String) -> void:
 	var r: Dictionary = EquipmentSystem.unequip(slot)
 	_host.ui_toast(str(r.get("msg", "")))
 	open()
+
+
+func _core_bag_cell(part: Dictionary) -> Control:
+	var cell := PanelContainer.new()
+	cell.name = "CoreBagCell_" + str(part.get("uid", ""))
+	cell.custom_minimum_size = Vector2(110, 118)
+
+	var slot_id: String = str(part.get("slot", "mainspring"))
+	var tier_id: String = str(part.get("tier", "white"))
+	var tier_name: String = str(part.get("tier_name", "白"))
+	var slot_name: String = str(part.get("slot_name", ""))
+	if slot_name.is_empty() and CoreSystem != null:
+		slot_name = CoreSystem.get_slot_name(slot_id)
+
+	var tier_color: Color = CoreSystem.get_tier_color(tier_id) if CoreSystem != null else Color.WHITE
+
+	var st := StyleBoxFlat.new()
+	st.bg_color = Color(0.97, 0.96, 0.98, 1)
+	st.border_color = tier_color
+	st.set_border_width_all(2)
+	st.set_corner_radius_all(10)
+	cell.add_theme_stylebox_override("panel", st)
+
+	var vb := VBoxContainer.new()
+	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_theme_constant_override("separation", 2)
+	cell.add_child(vb)
+
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(40, 40)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if SpriteDB != null:
+		var tex: Texture2D = SpriteDB.core_slot_icon(slot_id)
+		if tex:
+			icon.texture = tex
+	icon.modulate = tier_color
+	vb.add_child(icon)
+
+	var name_lbl := Label.new()
+	name_lbl.text = _t(slot_name)
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.add_theme_font_size_override("font_size", 11)
+	name_lbl.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
+	vb.add_child(name_lbl)
+
+	var tier_lbl := Label.new()
+	tier_lbl.text = "【%s】" % _t(tier_name + "階")
+	tier_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	tier_lbl.add_theme_font_size_override("font_size", 10)
+	tier_lbl.add_theme_color_override("font_color", tier_color if tier_id != "white" else UiStyle.KEY_STRONG)
+	vb.add_child(tier_lbl)
+
+	var btn := Button.new()
+	btn.name = "EquipButton"
+	btn.text = _t("裝備")
+	btn.custom_minimum_size = Vector2(64, 30)
+	btn.focus_mode = Control.FOCUS_NONE
+	UiStyle.style_button(btn, true)
+	btn.add_theme_font_size_override("font_size", 10)
+	btn.pressed.connect(func():
+		AudioManager.play_ui()
+		if CoreSystem != null:
+			var old_part: Dictionary = CoreSystem.get_player_part(slot_id)
+			CoreSystem.remove_part_from_inventory(str(part.get("uid", "")))
+			if not old_part.is_empty():
+				CoreSystem.add_part_to_inventory(old_part)
+			CoreSystem.equip_part(slot_id, part)
+		open()
+	)
+	vb.add_child(btn)
+
+	return cell

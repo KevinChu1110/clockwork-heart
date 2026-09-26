@@ -1,0 +1,329 @@
+Godot Engine v4.7.1.stable.official.a13da4feb - https://godotengine.org
+WARNING: Started the engine as `root`/superuser. This is a security risk, and subsystems like audio may not work correctly.
+Set the environment variable `GODOT_SILENCE_ROOT_WARNING` to 1 to silence this warning.
+     at: setup2 (main/main.cpp:3577)
+
+── 開始執行關卡勝利掉落五槽機芯部件驗證 (test_core_battle_drop.gd) ──
+
+--- 1. 檢驗 core_color_tiers.json 八色階掉落權重配置 ---
+  ✓ 色階 [gray]: drop_weight = 50 (約 5.0%)
+  ✓ 色階 [white]: drop_weight = 450 (約 45.0%)
+  ✓ 色階 [orange]: drop_weight = 240 (約 24.0%)
+  ✓ 色階 [blue]: drop_weight = 150 (約 15.0%)
+  ✓ 色階 [purple]: drop_weight = 60 (約 6.0%)
+  ✓ 色階 [gold]: drop_weight = 30 (約 3.0%)
+  ✓ 色階 [green]: drop_weight = 15 (約 1.5%)
+  ✓ 色階 [red]: drop_weight = 5 (約 0.5%)
+  ✓ 八色階掉落機率權重健全，總權重: 1000
+
+--- 2. 檢驗機芯部件隨機抽取與 create_part 規格合規性 ---
+  ✓ 500 次抽樣檢驗全部符合 create_part 規格，五槽與八色階覆蓋率 100%
+
+--- 3. 檢驗模擬戰鬥勝利後 inventory / core_bag 增加一顆部件 ---
+  ✓ GameState.core_bag 與 GameState.core_inventory 同步確認無誤
+  ✓ 戰鬥勝利掉落機芯部件入袋驗證通過：獲得【白階】發條發電機
+
+--- 4. 檢驗同一關連打，背包累積機芯部件 ---
+  ✓ 同一關連打 3 場累積機芯部件成功，累計部件數: 4，全數具備獨立 UID
+
+--- 5. 檢驗剛掉落的部件可立即裝備並在鐵匠處進行校準 ---
+  ✓ 剛掉落之機芯部件立即替換裝備成功，並於鐵匠成功校準 1 次（次數 1/7）
+
+--- 6. 檢驗硬限制：ATB/攻速/前搖/命中時間模型鎖死，改動測試必紅 ---
+  ✓ 時間模型常數硬限制防護 100% 鎖死，改動測試必紅確認
+
+--- 7. 檢驗戰鬥勝利結算卡片 (BattleVictoryDialog) UI 結構與手遊人體工學 ---
+  ✓ 戰鬥勝利結算卡片 UI 節點結構、熱區（>=48px）、圖示染色與操作邏輯全部合規
+
+--- 8. 檢驗六語系 i18n 完整度與全域零系統 Emoji ---
+  ✓ 六語系 (zh_TW, zh_CN, en, ja, ko, es) 完整齊備，零系統 Emoji 檢核通過
+── 全部關卡勝利掉落機芯部件單元測試通過 ──
+CORE_BATTLE_DROP_OK
+ERROR: Cannot open file 'res://.godot/imported/parry.wav-bd17b32003f1fc044c326ad83f386707.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/parry.wav-bd17b32003f1fc044c326ad83f386707.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/parry.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/hit.wav-27e178036f6cee6545e9f025a3865a36.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/hit.wav-27e178036f6cee6545e9f025a3865a36.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/hit.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/slash.wav-6d06df839d7456f0160e63961009fbb5.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/slash.wav-6d06df839d7456f0160e63961009fbb5.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/slash.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/fire.wav-64abd174ae2d5b39b1ff5c753b5615a1.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/fire.wav-64abd174ae2d5b39b1ff5c753b5615a1.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/fire.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/wind.wav-ba4aa26f8cbd79935f21e49813c744dc.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/wind.wav-ba4aa26f8cbd79935f21e49813c744dc.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/wind.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/rock.wav-e452b2db71b630e4939f04ca8ef006a9.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/rock.wav-e452b2db71b630e4939f04ca8ef006a9.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/rock.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/clock.wav-6903b68f17c1ce92d2bdd40cbe9c47b9.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/clock.wav-6903b68f17c1ce92d2bdd40cbe9c47b9.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/clock.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/reveal.wav-1770000167d7c4c6283e8fd7da9e6226.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/reveal.wav-1770000167d7c4c6283e8fd7da9e6226.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/reveal.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/break.wav-c70d53fba6f21044400035c17a57ebd3.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/break.wav-c70d53fba6f21044400035c17a57ebd3.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/break.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/stop.wav-a73d2e179f21894a00a02d1439eb3a07.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/stop.wav-a73d2e179f21894a00a02d1439eb3a07.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/stop.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/clash.wav-28c56d9971055cc0a90e81d8ea24c5ff.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/clash.wav-28c56d9971055cc0a90e81d8ea24c5ff.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/clash.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/victory.wav-d747c65c83bb1dc7254ad538b97f6989.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/victory.wav-d747c65c83bb1dc7254ad538b97f6989.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/victory.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/defeat.wav-df86edfd3df71ccf1f8f1f0e2e7cb130.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/defeat.wav-df86edfd3df71ccf1f8f1f0e2e7cb130.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/defeat.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/ui.wav-85bce0825693cc49e8f30569c34177ac.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/ui.wav-85bce0825693cc49e8f30569c34177ac.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/ui.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/interact.wav-10b4f614f05fe9e3de7e105d34de8623.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/interact.wav-10b4f614f05fe9e3de7e105d34de8623.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/interact.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/step.wav-e00804de73c2ffef8d860615dbda46a4.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/step.wav-e00804de73c2ffef8d860615dbda46a4.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/step.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/warn.wav-b4d83d1afb127cb629c776e81e64f99d.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/warn.wav-b4d83d1afb127cb629c776e81e64f99d.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/warn.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/dodge.wav-caec6cdf212b5330f771bebf8d2abcc1.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/dodge.wav-caec6cdf212b5330f771bebf8d2abcc1.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/dodge.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Cannot open file 'res://.godot/imported/battle_start.wav-49130ae6e6d2fac321a685c2f421de63.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://.godot/imported/battle_start.wav-49130ae6e6d2fac321a685c2f421de63.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+ERROR: Failed loading resource: res://assets/audio/sfx/battle_start.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _preload_sfx (res://scripts/autoload/audio_manager.gd:74)
+       [1] _ready (res://scripts/autoload/audio_manager.gd:34)
+[DataTables] combat/equipment/items_meta/weapon_classes/pacing/core_color_tiers loaded
+DisplaySettings apply mode=fullscreen res=1280x720 vsync=true
+GraphicsProfile apply choice=auto applied=high scale=1.0 size=(1280, 720) shadows=true particles=true vfx=true method=gl_compatibility

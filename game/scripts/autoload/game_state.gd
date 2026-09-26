@@ -100,6 +100,10 @@ var equip_slots: Dictionary = {
 }
 ## 機芯五槽部件（0.25 核心循環支柱二）：slot_id -> part_dict
 var core_slots: Dictionary = {}
+## 機芯部件背包（0.25 核心循環支柱二）：未裝備機芯部件列表 [part_dict, ...]
+var core_bag: Array = []
+## 同義別名，支援以 core_inventory 讀寫
+var core_inventory: Array = []
 ## 真正多武器欄（原作：升級解鎖更多武器欄；非器魂快捷）
 ## 長度 3；元素＝equip uid 或 ""。equip_slots.weapon 與 active 欄同步。
 var weapon_loadout: Array = ["", "", ""]
@@ -288,6 +292,32 @@ func ensure_core_slots(default_tier: String = "white") -> void:
 	for sid in all_slots:
 		if not core_slots.has(sid) or core_slots[sid] == null or (core_slots[sid] is Dictionary and (core_slots[sid] as Dictionary).is_empty()):
 			core_slots[sid] = CsClass.create_part_by_tier(sid, default_tier)
+
+
+func add_core_part(part: Dictionary) -> void:
+	if part == null or part.is_empty():
+		return
+	core_bag.append(part.duplicate(true))
+	core_inventory = core_bag
+
+
+func get_core_parts() -> Array:
+	return core_bag
+
+
+func remove_core_part(part_uid: String) -> Dictionary:
+	var target_idx := -1
+	for i in range(core_bag.size()):
+		var p: Dictionary = core_bag[i]
+		if str(p.get("uid", "")) == part_uid:
+			target_idx = i
+			break
+	if target_idx >= 0:
+		var removed: Dictionary = core_bag[target_idx]
+		core_bag.remove_at(target_idx)
+		core_inventory = core_bag
+		return removed
+	return {}
 
 
 func effective_variance() -> float:
@@ -605,6 +635,7 @@ func to_dict() -> Dictionary:
 		"equip_worn": equip_worn.duplicate(true),
 		"equip_slots": equip_slots.duplicate(true),
 		"core_slots": core_slots.duplicate(true),
+		"core_bag": core_bag.duplicate(true),
 		"weapon_loadout": weapon_loadout.duplicate(),
 		"weapon_loadout_active": weapon_loadout_active,
 		"gem_bag": gem_bag.duplicate(true),
@@ -693,6 +724,8 @@ func from_dict(d: Dictionary) -> void:
 		"ring": "", "necklace": "", "bracelet": "", "earring": "", "amulet": "", "belt": "",
 	})
 	core_slots = _dict_field(d, "core_slots", {})
+	core_bag = _array_field(d, "core_bag", [])
+	core_inventory = core_bag
 	weapon_loadout = _array_field(d, "weapon_loadout", ["", "", ""])
 	## 只補不截：截斷會讓 round-trip 測試／手動加長陣列靜默丟資料；玩法層 _ensure 再用前 3 格
 	while weapon_loadout.size() < 3:

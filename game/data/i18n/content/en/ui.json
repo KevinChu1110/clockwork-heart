@@ -3029,5 +3029,15 @@
   "剩餘 %d 次": "%d Left",
   "剩餘次數": "Remaining",
   "已達上限": "Max Reached",
-  "校準發條機芯": "Calibrate Core"
+  "校準發條機芯": "Calibrate Core",
+  "戰鬥勝利": "Victory",
+  "關卡討伐成功！獲得戰利品機芯部件": "Stage cleared! Core part looted.",
+  "立即裝備": "Equip Now",
+  "收下完成": "Collect",
+  "已裝備": "Equipped",
+  "機芯部件": "Core Part",
+  "可校準 7 次 · 安全彈簧保護不碎裝": "Can calibrate 7 times · Safety spring protected",
+  "機芯部件背包（點擊替換裝備）": "Core Parts Bag (Tap to swap)",
+  "標準數值": "Standard Stats",
+  "已成功替換裝備至【%s】槽位！": "Equipped to slot [%s] successfully!"
 }

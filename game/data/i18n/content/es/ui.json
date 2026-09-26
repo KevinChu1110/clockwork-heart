@@ -3029,5 +3029,15 @@
   "剩餘 %d 次": "%d Restantes",
   "剩餘次數": "Restantes",
   "已達上限": "Límite Máximo",
-  "校準發條機芯": "Calibrar Núcleo"
+  "校準發條機芯": "Calibrar Núcleo",
+  "戰鬥勝利": "Victoria",
+  "關卡討伐成功！獲得戰利品機芯部件": "¡Victoria! Has obtenido una pieza de núcleo.",
+  "立即裝備": "Equipar ahora",
+  "收下完成": "Recoger",
+  "已裝備": "Equipado",
+  "機芯部件": "Pieza de núcleo",
+  "可校準 7 次 · 安全彈簧保護不碎裝": "7 calibraciones restantes · Resorte de seguridad",
+  "機芯部件背包（點擊替換裝備）": "Mochila de núcleos (Tocar para cambiar)",
+  "標準數值": "Estadísticas estándar",
+  "已成功替換裝備至【%s】槽位！": "¡Equipado con éxito en la ranura [%s]!"
 }
