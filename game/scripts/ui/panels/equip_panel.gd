@@ -20,6 +20,28 @@ static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
 
 
+static func _weapon_line_name(line: String) -> String:
+	if line == "":
+		return ""
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var eq: Node = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if eq != null and eq.has_method("weapon_line_name"):
+			return str(eq.call("weapon_line_name", line))
+		var dt: Node = (tree as SceneTree).root.get_node_or_null("DataTables")
+		if dt != null and dt.has_method("weapon_class_def"):
+			var cdef: Dictionary = dt.call("weapon_class_def", line)
+			var nm := str(cdef.get("name", ""))
+			if nm != "":
+				return nm
+	if DataTables != null and DataTables.has_method("weapon_class_def"):
+		var cdef: Dictionary = DataTables.weapon_class_def(line)
+		var nm := str(cdef.get("name", ""))
+		if nm != "":
+			return nm
+	return line
+
+
 func _init(host: Node) -> void:
 	_host = host
 
@@ -290,7 +312,7 @@ func _loadout_card(index: int) -> Control:
 		var line := str(inst.get("line", ""))
 		name_l.text = EquipmentSystem.display_name(inst)
 		if line != "":
-			name_l.text += "\n[%s]" % _t(line)
+			name_l.text += "\n[%s]" % _weapon_line_name(line)
 		name_l.add_theme_color_override("font_color", UiStyle.INK)
 	inner.add_child(name_l)
 
@@ -406,7 +428,7 @@ func _slot_card(slot: String, compact: bool = false, unlocked: bool = true) -> C
 
 func _bag_cell(inst: Dictionary) -> Control:
 	var cell := PanelContainer.new()
-	cell.custom_minimum_size = Vector2(110, 110)
+	cell.custom_minimum_size = Vector2(110, 118)
 	var is_weapon := EquipmentSystem.normalize_slot(str(inst.get("slot", ""))) == "weapon"
 	var highlight := _pending_loadout >= 0 and is_weapon
 	var st := StyleBoxFlat.new()
@@ -415,6 +437,51 @@ func _bag_cell(inst: Dictionary) -> Control:
 	st.set_border_width_all(2)
 	st.set_corner_radius_all(8)
 	cell.add_theme_stylebox_override("panel", st)
+
+	var margin := MarginContainer.new()
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_theme_constant_override("margin_left", 6)
+	margin.add_theme_constant_override("margin_right", 6)
+	margin.add_theme_constant_override("margin_top", 4)
+	margin.add_theme_constant_override("margin_bottom", 6)
+	cell.add_child(margin)
+
+	var col := VBoxContainer.new()
+	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	col.add_theme_constant_override("separation", 2)
+	margin.add_child(col)
+
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(48, 48)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var t: Texture2D = SpriteDB.equip_icon_for_inst(inst)
+	if t:
+		icon.texture = t
+	col.add_child(icon)
+
+	var nl := Label.new()
+	nl.text = EquipmentSystem.display_name(inst)
+	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	nl.autowrap_mode = TextServer.AUTOWRAP_WORD
+	nl.add_theme_font_size_override("font_size", 10)
+	nl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(nl)
+
+	var ql := Label.new()
+	ql.text = _t(str(inst.get("quality_label", "")))
+	if is_weapon:
+		var line := str(inst.get("line", ""))
+		if line != "":
+			ql.text = "%s · %s" % [ql.text, _weapon_line_name(line)]
+	ql.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	ql.add_theme_font_size_override("font_size", 10)
+	ql.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
+	ql.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	col.add_child(ql)
+
 	var btn := Button.new()
 	btn.flat = true
 	btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
@@ -426,37 +493,7 @@ func _bag_cell(inst: Dictionary) -> Control:
 		wear(uid)
 	)
 	cell.add_child(btn)
-	var col := VBoxContainer.new()
-	col.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.alignment = BoxContainer.ALIGNMENT_CENTER
-	btn.add_child(col)
-	var icon := TextureRect.new()
-	icon.custom_minimum_size = Vector2(56, 56)
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var t: Texture2D = SpriteDB.equip_icon_for_inst(inst)
-	if t:
-		icon.texture = t
-	col.add_child(icon)
-	var nl := Label.new()
-	nl.text = EquipmentSystem.display_name(inst)
-	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	nl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	nl.add_theme_font_size_override("font_size", 10)
-	nl.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.add_child(nl)
-	var ql := Label.new()
-	ql.text = _t(str(inst.get("quality_label", "")))
-	if is_weapon:
-		var line := str(inst.get("line", ""))
-		if line != "":
-			ql.text = "%s · %s" % [ql.text, _t(line)]
-	ql.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	ql.add_theme_font_size_override("font_size", 10)
-	ql.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
-	ql.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	col.add_child(ql)
+
 	return cell
 
 

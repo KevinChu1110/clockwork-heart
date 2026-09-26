@@ -349,8 +349,7 @@ func get_weapon_wall_summary() -> Dictionary:
 			wname = str(inst.get("name", _t("未知武器")))
 			line = str(inst.get("line", ""))
 			if line != "":
-				var cdef: Dictionary = DataTables.weapon_class_def(line)
-				line_name = str(cdef.get("name", line))
+				line_name = weapon_line_name(line)
 		loadouts.append({
 			"index": i,
 			"unlocked": unlocked,
@@ -686,6 +685,31 @@ static func display_name(inst: Variant) -> String:
 	if t == raw_name:
 		t = ContentLoc.text("ui", raw_name)
 	return t
+
+
+static func weapon_line_name(line: String) -> String:
+	if line == "":
+		return ""
+	var dt: Node = null
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		dt = (tree as SceneTree).root.get_node_or_null("DataTables")
+	if dt != null and dt.has_method("weapon_class_def"):
+		var cdef: Dictionary = dt.call("weapon_class_def", line)
+		var nm := str(cdef.get("name", ""))
+		if nm != "":
+			return nm
+	var lc := ContentLoc.locale()
+	if lc != "zh_TW":
+		var t_name := ContentLoc.t("weapon_class", line, "name", "")
+		if t_name != "":
+			return t_name
+	const DEFAULT_WEAPON_CLASSES: Dictionary = {
+		"sword": "劍", "spear": "長槍", "axe": "斧", "hammer": "鎚",
+		"dagger": "匕首", "dart": "鏢", "fist": "拳", "claw": "爪",
+		"magic": "法杖", "crystal": "寶珠", "bow": "弓", "gun": "火槍",
+	}
+	return str(DEFAULT_WEAPON_CLASSES.get(line, line))
 
 
 func label(inst: Dictionary) -> String:
