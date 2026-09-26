@@ -166,16 +166,43 @@ func todays_commissions_raw() -> Array[Dictionary]:
 
 ## 讀目錄一律走這兩支，直接用常數會拿到未翻的原文
 func commissions() -> Array:
-	return ContentLoc.apply_all("quest", todays_commissions_raw(), QUEST_TEXT_FIELDS)
+	var rows := todays_commissions_raw()
+	var out: Array = []
+	for r in rows:
+		var item: Dictionary = r.duplicate(true)
+		var raw_name: String = str(r.get("name", ""))
+		var raw_desc: String = str(r.get("desc", ""))
+		var qid: String = str(r.get("id", ""))
+		var t_name: String = _t(raw_name)
+		if t_name == raw_name:
+			t_name = ContentLoc.t("quest", qid, "name", raw_name)
+		var t_desc: String = _t(raw_desc)
+		if t_desc == raw_desc:
+			t_desc = ContentLoc.t("quest", qid, "desc", raw_desc)
+		item["name"] = t_name
+		item["desc"] = t_desc
+		out.append(item)
+	return out
 
 
 func missions() -> Array:
-	var all: Array = ContentLoc.apply_all("quest", MISSIONS, QUEST_TEXT_FIELDS)
 	var out: Array = []
-	for m in all:
-		if str(m.get("id", "")) in HIDDEN_MISSION_IDS:
+	for m in MISSIONS:
+		var qid: String = str(m.get("id", ""))
+		if qid in HIDDEN_MISSION_IDS:
 			continue
-		out.append(m)
+		var item: Dictionary = m.duplicate(true)
+		var raw_name: String = str(m.get("name", ""))
+		var raw_desc: String = str(m.get("desc", ""))
+		var t_name: String = _t(raw_name)
+		if t_name == raw_name:
+			t_name = ContentLoc.t("quest", qid, "name", raw_name)
+		var t_desc: String = _t(raw_desc)
+		if t_desc == raw_desc:
+			t_desc = ContentLoc.t("quest", qid, "desc", raw_desc)
+		item["name"] = t_name
+		item["desc"] = t_desc
+		out.append(item)
 	return out
 
 
@@ -201,9 +228,10 @@ func claim_commission(id: String) -> Dictionary:
 		if str(c.get("id", "")) != id:
 			continue
 		if commission_claimed(id):
-			return {"ok": false, "msg": "此委託今日已領。"}
+			return {"ok": false, "msg": _t("此委託今日已領。")}
 		if not commission_done(c):
-			return {"ok": false, "msg": "尚未完成：%s" % str(c.get("desc", ""))}
+			var d_str: String = _t(str(c.get("desc", "")))
+			return {"ok": false, "msg": _t("尚未完成：%s") % d_str}
 		var gold_n := int(c.get("gold", 0))
 		var dust_n := int(c.get("dust", 0))
 		var xp_n := int(c.get("xp", 0))
@@ -221,14 +249,18 @@ func claim_commission(id: String) -> Dictionary:
 		SaveManager.save_game()
 		var lv_s := ""
 		if int(xr.get("levels", 0)) > 0:
-			lv_s = " · 升級！"
+			lv_s = _t(" · 升級！")
+		var raw_name: String = str(c.get("name", id))
+		var t_name: String = _t(raw_name)
+		if t_name == raw_name:
+			t_name = ContentLoc.t("quest", id, "name", raw_name)
 		return {
 			"ok": true,
-			"msg": "委託「%s」：金 %d · 星屑 %d · 經驗 %d%s · 鐵屑×1" % [
-				c.get("name", id), gold_n, dust_n, int(xr.get("gained", xp_n)), lv_s
+			"msg": _t("委託「%s」：金 %d · 星屑 %d · 經驗 %d%s · 鐵屑×1") % [
+				t_name, gold_n, dust_n, int(xr.get("gained", xp_n)), lv_s
 			],
 		}
-	return {"ok": false, "msg": "找不到委託。"}
+	return {"ok": false, "msg": _t("找不到委託。")}
 
 
 func list_commissions_bbcode() -> String:
@@ -278,7 +310,7 @@ func claim_daily() -> Dictionary:
 	## 回傳 {ok, gold, dust, streak, msg}
 	refresh_daily()
 	if bool(GameState.get_flag(DAILY_CLAIMED, false)):
-		return {"ok": false, "msg": "今日獎勵已領過。明天再來。"}
+		return {"ok": false, "msg": _t("今日獎勵已領過。明天再來。")}
 	## 補給仍可領，但不再靠連續登入加碼；里程碑改走 WindupDailySystem 累計次數。
 	var streak := int(GameState.get_flag(DAILY_STREAK, 0))
 	GameState.set_flag(DAILY_CLAIMED, true)
@@ -303,7 +335,7 @@ func claim_daily() -> Dictionary:
 		"gold": gold_n,
 		"dust": dust_n,
 		"streak": streak,
-		"msg": "每日補給：金 %d · 星屑 %d · 上發條累計 %d 次%s" % [gold_n, dust_n, streak, bonus],
+		"msg": _t("每日補給：金 %d · 星屑 %d · 上發條累計 %d 次%s") % [gold_n, dust_n, streak, bonus],
 	}
 
 
@@ -353,9 +385,9 @@ func claim_mission(id: String) -> Dictionary:
 		if str(m.get("id", "")) != id:
 			continue
 		if mission_claimed(id):
-			return {"ok": false, "msg": "已領過此任務獎勵。"}
+			return {"ok": false, "msg": _t("已領過此任務獎勵。")}
 		if not mission_done(m):
-			return {"ok": false, "msg": "條件尚未達成。"}
+			return {"ok": false, "msg": _t("條件尚未達成。")}
 		var gold_n := int(m.get("gold", 0))
 		var dust_n := int(m.get("dust", 0))
 		var xp_n := int(m.get("xp", gold_n * MISSION_XP_PER_GOLD))
@@ -368,11 +400,15 @@ func claim_mission(id: String) -> Dictionary:
 			if g and g.has_method("add_contrib"):
 				g.call("add_contrib", 15)
 		SaveManager.save_game()
-		var lv_s := " · 升級！" if int(xr.get("levels", 0)) > 0 else ""
-		return {"ok": true, "msg": "任務「%s」完成：金 %d · 星屑 %d · 經驗 %d%s" % [
-			m.get("name", id), gold_n, dust_n, int(xr.get("gained", xp_n)), lv_s
+		var lv_s := _t(" · 升級！") if int(xr.get("levels", 0)) > 0 else ""
+		var raw_name: String = str(m.get("name", id))
+		var t_name: String = _t(raw_name)
+		if t_name == raw_name:
+			t_name = ContentLoc.t("quest", id, "name", raw_name)
+		return {"ok": true, "msg": _t("任務「%s」完成：金 %d · 星屑 %d · 經驗 %d%s") % [
+			t_name, gold_n, dust_n, int(xr.get("gained", xp_n)), lv_s
 		]}
-	return {"ok": false, "msg": "找不到任務。"}
+	return {"ok": false, "msg": _t("找不到任務。")}
 
 
 func list_missions_bbcode() -> String:
@@ -383,9 +419,9 @@ func list_missions_bbcode() -> String:
 		var prog := mini(need, _mission_progress(m))
 		var mark := "✓" if mission_claimed(id) else ("●" if prog >= need else "·")
 		var gold_n := int(m.get("gold", 0))
-		lines.append("%s [b]%s[/b]  %d/%d\n   %s\n   [color=#8a8070]金 %d · 星屑 %d · 經驗 %d[/color]" % [
+		lines.append("%s [b]%s[/b]  %d/%d\n   %s\n   [color=#8a8070]%s[/color]" % [
 			mark, m.get("name", id), prog, need, m.get("desc", ""),
-			gold_n, int(m.get("dust", 0)), int(m.get("xp", gold_n * MISSION_XP_PER_GOLD)),
+			_t("金 %d · 星屑 %d · 經驗 %d") % [gold_n, int(m.get("dust", 0)), int(m.get("xp", gold_n * MISSION_XP_PER_GOLD))],
 		])
 	return "\n".join(lines)
 
@@ -455,19 +491,19 @@ func starpath_summary_bbcode() -> String:
 		if ar and ar.has_method("is_unlocked") and bool(ar.call("is_unlocked")):
 			var left_a: int = int(ar.call("daily_left"))
 			var best: int = int(ar.call("best_score"))
-			lines.append("[b]演武場[/b]  有獎剩 %d · 最佳 %d 分" % [left_a, best])
+			lines.append(_t("[b]演武場[/b]  有獎剩 %d · 最佳 %d 分") % [left_a, best])
 		elif ar:
-			lines.append("[b]演武場[/b]  （進堡壘後解鎖）")
+			lines.append(_t("[b]演武場[/b]  （進堡壘後解鎖）"))
 		var ht: Node = tree.root.get_node_or_null("HuntSystem")
 		if ht and ht.has_method("is_unlocked") and bool(ht.call("is_unlocked")):
 			var left_h: int = int(ht.call("daily_left"))
-			lines.append("[b]野外獵場[/b]  有獎剩 %d" % left_h)
+			lines.append(_t("[b]野外獵場[/b]  有獎剩 %d") % left_h)
 		elif ht:
-			lines.append("[b]野外獵場[/b]  （進堡壘後解鎖）")
+			lines.append(_t("[b]野外獵場[/b]  （進堡壘後解鎖）"))
 	lines.append("")
-	lines.append("[b]旅人足跡[/b]  地圖上的半透明旅人＝殘影；留言石可留字")
+	lines.append(_t("[b]旅人足跡[/b]  地圖上的半透明旅人＝殘影；留言石可留字"))
 	var rew := starpath_reward_count()
 	var todo := starpath_todo_count()
 	lines.append("")
-	lines.append("[color=#8a8070]可領 %d · 今日待辦約 %d[/color]" % [rew, todo])
+	lines.append(_t("[color=#8a8070]可領 %d · 今日待辦約 %d[/color]") % [rew, todo])
 	return "\n".join(lines)

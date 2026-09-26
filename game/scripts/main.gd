@@ -1536,7 +1536,9 @@ func _go_quest_panel() -> void:
 		buttons.append({"text": _t("（暫無待領任務）"), "cb": _go_quest_panel})
 	buttons.append({"text": _t("今天，誰需要上發條？"), "cb": _go_daily_panel})
 	buttons.append({"text": Loc.t("btn.back"), "cb": _hub_back})
-	_panel(Loc.t("panel.quests"), body, buttons)
+	var cur_loc: String = Loc.locale if Loc else "zh_TW"
+	var q_body_h := 206.0 if cur_loc == "en" else 200.0
+	_panel(Loc.t("panel.quests"), body, buttons, {"body_h": q_body_h})
 
 
 func _go_material_shop() -> void:
@@ -1882,6 +1884,8 @@ func _on_choice(i: int) -> void:
 
 func _clear_host() -> void:
 	_explore = null
+	if host == null:
+		return
 	for c in host.get_children():
 		if c is CanvasItem:
 			(c as CanvasItem).hide()
@@ -1969,6 +1973,8 @@ func _panel(title: String, body: String, buttons: Array, extras: Dictionary = {}
 		_show_toast(_t("戰鬥中不能開這個。先打完，或按「逃離」。"))
 		return
 	_clear_host()
+	if host == null:
+		return
 	_reset_fade()
 	## 進選單時確保沒有殘留過場擋滑鼠
 	if _cutscene and is_instance_valid(_cutscene) and _cutscene.visible:

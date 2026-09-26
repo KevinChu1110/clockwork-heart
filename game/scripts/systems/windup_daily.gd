@@ -202,8 +202,8 @@ func summary_line() -> String:
 	refresh()
 	var c := todays_case()
 	if is_done_today():
-		return _t("· 今天已替「%s」上過發條") % str(c.get("npc", ""))
-	return _t("[color=#fc6]● 今天，誰需要上發條？ → %s[/color]") % str(c.get("title", ""))
+		return _t("· 今天已替「%s」上過發條") % _t(str(c.get("npc", "")))
+	return _t("[color=#fc6]● 今天，誰需要上發條？ → %s[/color]") % _t(str(c.get("title", "")))
 
 
 func complete(choice_id: String = "") -> Dictionary:
