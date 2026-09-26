@@ -79,6 +79,14 @@ func _run_test_suite() -> void:
 		"ko": "출정하기",
 		"es": "Partir a la Batalla"
 	}
+	var expected_colossus := {
+		"zh_TW": "前往停擺巨偶",
+		"zh_CN": "前往停摆巨偶",
+		"en": "Go to Stalled Colossus",
+		"ja": "停止した巨偶へ",
+		"ko": "멈춰 선 거신으로",
+		"es": "Ir al Coloso Paralizado"
+	}
 	var expected_done := {
 		"zh_TW": "今日委託已完成（當日不可再領）",
 		"zh_CN": "今日委托已完成（当日不可再领）",
@@ -117,6 +125,12 @@ func _run_test_suite() -> void:
 			_fail("語系 [%s] 前往出征翻譯不符: 期望 '%s'，實際 '%s'" % [code, expected_sortie[code], t_sortie])
 		else:
 			print("  ✓ [%s] 前往出征 -> %s" % [code, t_sortie])
+
+		var t_colossus := ContentLoc.text("ui", "前往停擺巨偶")
+		if t_colossus != expected_colossus[code]:
+			_fail("語系 [%s] 前往停擺巨偶翻譯不符: 期望 '%s'，實際 '%s'" % [code, expected_colossus[code], t_colossus])
+		else:
+			print("  ✓ [%s] 前往停擺巨偶 -> %s" % [code, t_colossus])
 
 		var t_done := ContentLoc.text("ui", "今日委託已完成（當日不可再領）")
 		if t_done != expected_done[code]:
@@ -188,19 +202,27 @@ func _run_test_suite() -> void:
 	# 驗證已完成狀態 (done)
 	var ws = root_node.get_node_or_null("WindupDailySystem")
 	var gs = root_node.get_node_or_null("GameState")
+	var cds = root_node.get_node_or_null("ColossusDailySystem")
 	if gs:
 		gs.call("set_flag", "windup.done", true)
+		gs.set("colossus_daily_entries", 3)
 	if ws:
 		ws.call("refresh")
 	dialog.call("_refresh_display")
 
 	var btn_sortie: Button = dialog.find_child("BtnGoSortie", true, false)
+	var btn_colossus: Button = dialog.find_child("BtnGoColossus", true, false)
 	var btn_done: Button = dialog.find_child("BtnDoneStatus", true, false)
 
 	if not btn_sortie or btn_sortie.text != expected_sortie["ja"]:
 		_fail("ja 已完成狀態下出征鈕文字不符: %s" % (btn_sortie.text if btn_sortie else "null"))
 	else:
 		print("  ✓ [ja] 出征鈕 -> ", btn_sortie.text)
+
+	if not btn_colossus or not btn_colossus.visible or btn_colossus.text != expected_colossus["ja"]:
+		_fail("ja 有巨偶次數時巨偶鈕未顯示或文字不符: %s" % (btn_colossus.text if btn_colossus else "null"))
+	else:
+		print("  ✓ [ja] 前往停擺巨偶鈕 -> ", btn_colossus.text)
 
 	if not btn_done or btn_done.text != expected_done["ja"]:
 		_fail("ja 已完成狀態下已完成鈕文字不符: %s" % (btn_done.text if btn_done else "null"))
@@ -215,14 +237,33 @@ func _run_test_suite() -> void:
 	else:
 		print("  ✓ [en] 出征鈕動態變更 -> ", btn_sortie.text)
 
+	if btn_colossus.text != expected_colossus["en"]:
+		_fail("en 有巨偶次數時巨偶鈕文字未連動: %s" % btn_colossus.text)
+	else:
+		print("  ✓ [en] 前往停擺巨偶鈕動態變更 -> ", btn_colossus.text)
+
 	if btn_done.text != expected_done["en"]:
 		_fail("en 已完成狀態下已完成鈕文字不符: %s" % btn_done.text)
 	else:
 		print("  ✓ [en] 今日已完成鈕動態變更 -> ", btn_done.text)
 
+	# 驗證巨偶次數為 0 時隱藏巨偶按鈕，但出征按鈕維持顯示
+	if gs:
+		gs.set("colossus_daily_entries", 0)
+	dialog.call("_refresh_display")
+	if btn_colossus.visible:
+		_fail("巨偶次數用完時，前往停擺巨偶按鈕不應顯示 (visible 應為 false)")
+	else:
+		print("  ✓ 巨偶次數為 0 時，前往停擺巨偶按鈕成功隱藏 (visible=false)")
+	if not btn_sortie.visible:
+		_fail("巨偶次數用完時，前往出征按鈕仍應維持顯示")
+	else:
+		print("  ✓ 巨偶次數為 0 時，前往出征按鈕維持正常顯示")
+
 	# 還原狀態
 	if gs:
 		gs.call("set_flag", "windup.done", false)
+		gs.set("colossus_daily_entries", 3)
 	dialog.queue_free()
 	if loc_node:
 		loc_node.call("set_locale", "zh_TW")

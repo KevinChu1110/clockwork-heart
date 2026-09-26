@@ -3,6 +3,8 @@ extends Node
 ## Autoload：ArenaSystem
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
+const WorldContent := preload("res://scripts/world/world_content.gd")
+const Formulas := preload("res://scripts/battle/formulas.gd")
 
 const DAILY_CAP := 3  ## 相容舊日結統計；有獎開戰改走挑戰狀
 const PRACTICE_MULT := 0.35

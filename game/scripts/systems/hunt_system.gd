@@ -3,6 +3,8 @@ extends Node
 ## Autoload：HuntSystem
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
+const WorldContent := preload("res://scripts/world/world_content.gd")
+const Formulas := preload("res://scripts/battle/formulas.gd")
 
 const DAILY_CAP := 5
 ## 練習場次（日 cap 用完後）的獎勵倍率：金、材料、經驗共用一個數字

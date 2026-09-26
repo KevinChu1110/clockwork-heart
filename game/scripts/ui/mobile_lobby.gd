@@ -3966,6 +3966,13 @@ func open_skill_dialog() -> Control:
 ## 切換至出征分頁（與右側看板「前往出征」按鈕同一條入口）
 func go_to_sortie() -> void:
 	_switch_tab(Tab.ADVENTURE)
+	_switch_adventure_submode(AdventureSubMode.REGIONS)
+
+
+## 切換至出征分頁並開啟停擺巨偶模式
+func go_to_colossus() -> void:
+	_switch_tab(Tab.ADVENTURE)
+	_switch_adventure_submode(AdventureSubMode.COLOSSUS)
 
 
 ## 開啟冒險委託每日上發條彈窗
@@ -3984,7 +3991,11 @@ func open_windup_daily() -> Control:
 	)
 	if dlg.has_signal("sortie_requested"):
 		dlg.sortie_requested.connect(func():
-			_switch_tab(Tab.ADVENTURE)
+			go_to_sortie()
+		)
+	if dlg.has_signal("colossus_requested"):
+		dlg.colossus_requested.connect(func():
+			go_to_colossus()
 		)
 	add_child(dlg)
 	return dlg

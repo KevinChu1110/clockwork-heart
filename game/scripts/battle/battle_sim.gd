@@ -7,6 +7,8 @@ signal event(kind: String, data: Dictionary)
 signal battle_ended(won: bool)
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
+const BattleUnit := preload("res://scripts/battle/battle_unit.gd")
+const Formulas := preload("res://scripts/battle/formulas.gd")
 
 const ATB_MAX := 100.0  ## = combat.json time_model.atb_max（0.15 鎖）
 const RAGE_MAX := 100.0  ## = combat.json rage.max

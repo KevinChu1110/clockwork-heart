@@ -61,11 +61,11 @@ func _initialize() -> void:
 
 	var boss_keys := ["colossus_lion", "colossus_puppet", "colossus_elephant"]
 	for bk in boss_keys:
-		var sim = BattleSimClass.make_world_fight(player_stats, bk)
+		var sim: Variant = BattleSimClass.make_world_fight(player_stats, bk)
 		if sim == null:
 			_fail("未能建立巨偶戰鬥模擬: %s" % bk)
 			continue
-		var enemy = sim.get_unit(bk)
+		var enemy: Variant = sim.get_unit(bk)
 		if enemy == null:
 			_fail("戰鬥中未找到敵方單位: %s" % bk)
 			continue

@@ -14,6 +14,7 @@ extends Control
 
 signal closed()
 signal sortie_requested()
+signal colossus_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -49,6 +50,7 @@ var _msg_label: Label
 var _foot_box: HBoxContainer
 var _btn_leave: Button
 var _btn_sortie: Button
+var _btn_colossus: Button
 var _btn_done: Button
 var _choice_buttons: Array[Button] = []
 var _cached_font: Font = null
@@ -315,6 +317,23 @@ func _build_ui() -> void:
 	_btn_sortie.visible = false
 	_foot_box.add_child(_btn_sortie)
 
+	_btn_colossus = Button.new()
+	_btn_colossus.name = "BtnGoColossus"
+	_btn_colossus.text = _t("前往停擺巨偶")
+	_btn_colossus.custom_minimum_size = Vector2(240, 52)
+	_btn_colossus.add_theme_font_size_override("font_size", 18)
+	_btn_colossus.add_theme_color_override("font_color", Color.WHITE)
+	_btn_colossus.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_colossus.add_theme_constant_override("outline_size", 4)
+	if _cached_font:
+		_btn_colossus.add_theme_font_override("font", _cached_font)
+	_btn_colossus.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 6, 20, 2))
+	_btn_colossus.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB83D"), COLOR_BORDER, 6, 20, 2))
+	_btn_colossus.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08B08"), COLOR_BORDER, 2, 20, 2))
+	_btn_colossus.pressed.connect(_on_go_to_colossus)
+	_btn_colossus.visible = false
+	_foot_box.add_child(_btn_colossus)
+
 
 func _update_ui_texts() -> void:
 	if _title_label:
@@ -323,6 +342,8 @@ func _update_ui_texts() -> void:
 		_btn_leave.text = _t("離開委託")
 	if _btn_sortie:
 		_btn_sortie.text = _t("前往出征")
+	if _btn_colossus:
+		_btn_colossus.text = _t("前往停擺巨偶")
 	if _btn_done and is_instance_valid(_btn_done):
 		_btn_done.text = _t("今日委託已完成（當日不可再領）")
 
@@ -333,6 +354,8 @@ func _refresh_display() -> void:
 		ws.call("refresh")
 	var c: Dictionary = ws.call("todays_case") if ws else {}
 	var is_done := bool(ws.call("is_done_today")) if ws else false
+	var colossus_left := _get_colossus_remaining_entries()
+	var has_colossus_entries := (colossus_left > 0)
 
 	var raw_npc: String = str(c.get("npc", "NPC"))
 	var raw_title: String = str(c.get("title", "未命名個案"))
@@ -389,8 +412,12 @@ func _refresh_display() -> void:
 
 		if _btn_sortie:
 			_btn_sortie.visible = true
+			_btn_sortie.custom_minimum_size = Vector2(210, 52) if has_colossus_entries else Vector2(240, 52)
+		if _btn_colossus:
+			_btn_colossus.visible = has_colossus_entries
+			_btn_colossus.custom_minimum_size = Vector2(240, 52)
 		if _btn_leave:
-			_btn_leave.custom_minimum_size = Vector2(160, 52)
+			_btn_leave.custom_minimum_size = Vector2(150, 52) if has_colossus_entries else Vector2(160, 52)
 	else:
 		if _btn_done and is_instance_valid(_btn_done):
 			_btn_done.queue_free()
@@ -414,6 +441,8 @@ func _refresh_display() -> void:
 
 		if _btn_sortie:
 			_btn_sortie.visible = false
+		if _btn_colossus:
+			_btn_colossus.visible = false
 		if _btn_leave:
 			_btn_leave.custom_minimum_size = Vector2(180, 52)
 
@@ -465,6 +494,29 @@ func get_sortie_button() -> Button:
 	return _btn_sortie
 
 
+func get_colossus_button() -> Button:
+	return _btn_colossus
+
+
+func _get_colossus_system() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		return (loop as SceneTree).root.get_node_or_null("ColossusDailySystem")
+	return null
+
+
+func _get_colossus_remaining_entries() -> int:
+	var cds := _get_colossus_system()
+	if cds and cds.has_method("get_remaining_entries"):
+		return int(cds.call("get_remaining_entries"))
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs and "colossus_daily_entries" in gs:
+			return int(gs.get("colossus_daily_entries"))
+	return 3
+
+
 func _on_go_to_sortie() -> void:
 	sortie_requested.emit()
 	var p := get_parent()
@@ -473,6 +525,25 @@ func _on_go_to_sortie() -> void:
 			p.go_to_sortie()
 		elif p.has_method("_switch_tab"):
 			p.call("_switch_tab", 2)
+	_on_close()
+
+
+func _on_go_to_colossus() -> void:
+	colossus_requested.emit()
+	var p := get_parent()
+	if p:
+		if p.has_method("go_to_colossus"):
+			p.go_to_colossus()
+		elif p.has_method("go_to_sortie"):
+			p.go_to_sortie()
+			if p.has_method("switch_adventure_submode"):
+				p.switch_adventure_submode(1)
+			elif p.has_method("_switch_adventure_submode"):
+				p.call("_switch_adventure_submode", 1)
+		elif p.has_method("_switch_tab"):
+			p.call("_switch_tab", 2)
+			if p.has_method("_switch_adventure_submode"):
+				p.call("_switch_adventure_submode", 1)
 	_on_close()
 
 
