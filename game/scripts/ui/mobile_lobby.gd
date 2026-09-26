@@ -2342,7 +2342,8 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	num_badge.add_theme_stylebox_override("panel", nsb)
 
 	var num_l := Label.new()
-	num_l.text = str(s["num"])
+	# 審核收尾 t_70cfb681：徽章編號也要過翻譯層，否則英/韓/西語會露出「巨偶-1」中文
+	num_l.text = _t(str(s["num"]))
 	# 字級下限：ART_DAILY_CONSTITUTION §「輔助不准再縮去塞字」；t_b8e32048 審核收尾改回 18
 	num_l.add_theme_font_size_override("font_size", 18)
 	num_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
