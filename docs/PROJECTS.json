@@ -2626,8 +2626,8 @@
    "id": "weapon-class-i18n",
    "cat": "遊戲",
    "title": "武術館兵器架十二流派名稱與說明六語系",
-   "status": "測試中",
-   "note": "十二流派六語系 ContentLoc 補齊、S/E 修正，單元測試綠燈，實機截圖交付送審 sideqa",
+   "status": "已上線",
+   "note": "十二流派六語系審核通過",
    "keys": [
     "武術館兵器架十二"
    ]
