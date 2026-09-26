@@ -1719,6 +1719,9 @@ func _default_parry_hint_text() -> String:
 
 
 func _on_locale_changed(_new_locale: String = "") -> void:
+	_parry_note_left = 0.0
+	if _coach and _coach.visible:
+		_coach.text = _kh(_mode_coach_intro(_mode))
 	if parry_hint:
 		var e_tele := false
 		if sim:
@@ -1788,6 +1791,13 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 			elif e.id in ["dummy", "training_dummy"] or _mode in ["dummy", "training_dummy"]:
 				e.display_name = _t("木人樁")
 	_refresh_hud()
+	if sim:
+		if sim.hazard_kind != "" and sim.hazard_phase != "idle":
+			_update_hazard_hud()
+		else:
+			var e_curr := _primary_enemy()
+			if e_curr and e_curr.telegraph_active:
+				_update_parry_countdown(e_curr)
 	if _btn_lock and is_instance_valid(_btn_lock):
 		_btn_lock.text = _t("鎖定")
 	if _btn_switch and is_instance_valid(_btn_switch):
@@ -1966,32 +1976,33 @@ func _refresh_hud() -> void:
 			enemy_hp_label.text = "HP %d / %d" % [e.hp, e.max_hp]
 			if _boss_has_parts() and e.parts.size() > 0:
 				_refresh_part_bars(e)
-			if e.telegraph_active and not sim.sim_paused:
+			if e.telegraph_active and (sim.hazard_kind == "" or sim.hazard_phase == "idle"):
 				_update_parry_countdown(e)
 			elif not sim.sim_paused:
-				countdown.visible = false
-				countdown_sub.visible = false
-				telegraph.visible = false
-				if _part_lock_enabled() and not e.telegraph_active:
-					parry_hint.modulate = Color(1, 1, 1)
-					_refresh_part_focus_hint()
-				elif _mode == "demon":
-					parry_hint.modulate = Color(1, 1, 1)
-					parry_hint.text = _kh(_t("黑鏽必殺可格擋 · 階段誘惑選「我拒絕」"))
-				elif _mode == "abo":
-					_update_abo_guard_hud()
-				elif _mode == "falcon":
-					_update_falcon_hud()
-				elif _mode == "boar":
-					_update_boar_hud()
-				elif _mode == "wrath":
-					_update_wrath_hud()
-				elif _mode == "tide":
-					_update_tide_hud()
-				elif _mode == "statue":
-					_update_statue_hud()
-				elif _mode == "chrono":
-					_update_chrono_hud()
+				if sim.hazard_kind == "" or sim.hazard_phase == "idle":
+					countdown.visible = false
+					countdown_sub.visible = false
+					telegraph.visible = false
+					if _part_lock_enabled() and not e.telegraph_active:
+						parry_hint.modulate = Color(1, 1, 1)
+						_refresh_part_focus_hint()
+					elif _mode == "demon":
+						parry_hint.modulate = Color(1, 1, 1)
+						parry_hint.text = _kh(_t("黑鏽必殺可格擋 · 階段誘惑選「我拒絕」"))
+					elif _mode == "abo":
+						_update_abo_guard_hud()
+					elif _mode == "falcon":
+						_update_falcon_hud()
+					elif _mode == "boar":
+						_update_boar_hud()
+					elif _mode == "wrath":
+						_update_wrath_hud()
+					elif _mode == "tide":
+						_update_tide_hud()
+					elif _mode == "statue":
+						_update_statue_hud()
+					elif _mode == "chrono":
+						_update_chrono_hud()
 
 
 func _update_white_fog_tab_hint() -> void:
@@ -2198,12 +2209,13 @@ func _refresh_part_focus_hint() -> void:
 	var tip := _kh((tip_fmt % label).replace("　·　", " · "))
 	var boss = sim._primary_boss_unit()
 	if parry_hint and boss and not boss.telegraph_active:
-		## 保留各 Boss 專屬提示時，把鎖定資訊併入尾端
-		if _mode == "leo":
-			parry_hint.text = tip
-		else:
-			var base_hint := _default_parry_hint_text()
-			parry_hint.text = "%s　·　%s" % [base_hint, tip]
+		if sim.hazard_kind == "" or sim.hazard_phase == "idle":
+			## 保留各 Boss 專屬提示時，把鎖定資訊併入尾端
+			if _mode == "leo":
+				parry_hint.text = tip
+			else:
+				var base_hint := _default_parry_hint_text()
+				parry_hint.text = "%s　·　%s" % [base_hint, tip]
 	if _focus_hint:
 		_focus_hint.text = _t("部位鎖定 → %s") % label
 		if sim.focus_part_id != "" and sim.focus_part_id != "body":
@@ -2241,7 +2253,7 @@ func _update_statue_hud() -> void:
 		countdown.text = _t("本體")
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.85, 0.5))
 		countdown_sub.text = _t("石像盡碎 · 殘響現身")
-		parry_hint.text = _kh(_t("輸出本體 · 落岩仍要 J"))
+		parry_hint.text = _battle_hint_text("輸出本體 · 落岩仍要 J", "輸出本體 · 落岩仍要點閃避")
 		if _boss_art_key != "echo":
 			_boss_art_key = "echo"
 			_set_boss_pose(_boss_pose if _boss_pose != "" else "idle")
@@ -2501,7 +2513,7 @@ func _update_parry_countdown(e: BattleUnit) -> void:
 		countdown_sub.text = _t("王者斬蓄力中… %.1f 秒後可格擋") % maxf(0.0, remain - BattleSim.PARRY_WINDOW)
 		countdown_sub.add_theme_color_override("font_color", Color(1, 0.7, 0.55))
 		if _parry_note_left <= 0.0:
-			parry_hint.text = _kh(_t("準備：倒數到「格擋」再按"))
+			parry_hint.text = _battle_hint_text("準備：倒數到「格擋」再按", "準備：倒數到「格擋」再點閃避")
 			parry_hint.modulate = Color(1, 0.55, 0.45)
 		if bucket != _last_cd_bucket:
 			_last_cd_bucket = bucket
@@ -3832,6 +3844,10 @@ func _kh(t: String) -> String:
 	var dodge := _t("點閃避")
 	var lock_t := _t("點鎖定")
 	# 中文鍵名替換
+	t = t.replace("按 J 或滑鼠左鍵", dodge)
+	t = t.replace("按 J 或滑鼠", dodge)
+	t = t.replace("按 J 或點畫面", dodge)
+	t = t.replace("滑鼠左鍵", dodge)
 	t = t.replace("【Tab/1-3】", "【%s】" % lock_t)
 	t = t.replace("【Tab】", "【%s】" % lock_t)
 	t = t.replace("Tab/1/2/3", lock_t)
@@ -3842,7 +3858,18 @@ func _kh(t: String) -> String:
 	t = t.replace("（J）", "（%s）" % dodge)
 	t = t.replace("按 J", dodge)
 	t = t.replace("靠 J", "靠" + dodge)
+	t = t.replace("準備 J", "準備" + dodge)
+	t = t.replace("仍要 J", "仍要" + dodge)
+	t = t.replace("再按", "再" + dodge)
 	# 英文鍵名替換
+	t = t.replace("press J or left-click now", _t("Tap Dodge now"))
+	t = t.replace("Press J or left-click now", _t("Tap Dodge now"))
+	t = t.replace("press J or left-click", _t("tap Dodge"))
+	t = t.replace("Press J or left-click", _t("Tap Dodge"))
+	t = t.replace("press J or click", _t("tap Dodge"))
+	t = t.replace("Press J or click", _t("Tap Dodge"))
+	t = t.replace("press J or tap the screen", _t("tap Dodge"))
+	t = t.replace("Press J or tap the screen", _t("Tap Dodge"))
 	t = t.replace("[Tab/1-3]", "[%s]" % _t("Tap Lock"))
 	t = t.replace("[Tab]", "[%s]" % _t("Tap Lock"))
 	t = t.replace("Tab/1/2/3", _t("Tap Lock"))
@@ -3854,6 +3881,10 @@ func _kh(t: String) -> String:
 	t = t.replace("press J", _t("tap Dodge"))
 	t = t.replace("Press J", _t("Tap Dodge"))
 	# 日文鍵名替換
+	t = t.replace("今すぐ J か左クリック", _t("今すぐ回避をタップ"))
+	t = t.replace("J か左クリック", _t("回避をタップ"))
+	t = t.replace("J かクリック", _t("回避をタップ"))
+	t = t.replace("J か画面タップ", _t("回避をタップ"))
 	t = t.replace("Tab で", "%sで" % _t("ロックタップ"))
 	t = t.replace("Tab/1/2/3 で切替", "%sで切替" % _t("ロックタップ"))
 	t = t.replace("Tab で切替", "%sで切替" % _t("ロックタップ"))
