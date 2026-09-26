@@ -39,14 +39,14 @@ const BOSSES: Array[Dictionary] = [
 	{
 		"id": "colossus_elephant",
 		"num": "巨偶-3",
-		"name": "黑鐧蒸汽巨象",
+		"name": "黑鏽蒸氣巨象",
 		"level": 28,
 		"type": "停擺巨偶",
 		"cost": 0,
 		"power": 650,
 		"is_colossus": true,
 		"boss_key": "colossus_elephant",
-		"blurb": "冷軋鋼板與雙活塞驅動的重工金屬巨象，手握黑鐧管柱，背部發條嘶鳴著滾燙蒸汽。",
+		"blurb": "冷軋鋼板與雙活塞驅動的重工金屬巨象，身嵌黑鏽管柱，背部發條嘶鳴著滾燙蒸氣。",
 	},
 ]
 

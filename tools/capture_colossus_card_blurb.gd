@@ -3,7 +3,7 @@ extends SceneTree
 ## 依據規範：review.md 0-QA5, 0-QA23, 0-QA25, 0-QA26
 ## 驗收產出（framebuffer 直接擷取，零 PIL 假圖）：
 ## 1. proofs/t_6cecd2f1/proof_colossus_blurb_zh_tw.png
-##    繁中橫屏出征卡：失控發條獅、霧鐘提線人偶、黑鐧蒸汽巨象三張卡完整顯示 20–40 字副標，不截字、不壓住出征鈕
+##    繁中橫屏出征卡：失控發條獅、霧鐘提線人偶、黑鏽蒸氣巨象三張卡完整顯示 20–40 字副標，不截字、不壓住出征鈕
 ## 2. proofs/t_6cecd2f1/proof_colossus_blurb_en.png
 ##    英文橫屏出征卡：三張卡英文副標無溢出，排版整齊，零 emoji
 ## 3. proofs/t_6cecd2f1/proof_colossus_blurb_ja.png
