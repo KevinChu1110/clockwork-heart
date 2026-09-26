@@ -9,8 +9,8 @@ const CutscenePlayerScript = preload("res://scripts/ui/cutscene_player.gd")
 var _ok := true
 var _step := 0
 var _wait := 0
-var _dbox: DialogueBox = null
-var _cutscene: CutscenePlayer = null
+var _dbox: Control = null
+var _cutscene: Control = null
 
 
 func _fail(msg: String) -> void:

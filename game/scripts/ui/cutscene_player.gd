@@ -8,6 +8,7 @@ signal finished
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
+const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH        := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 ## ── 多巴胺鮮亮高飽和色盤 ──
@@ -16,6 +17,24 @@ const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
 const COLOR_TEXT_MUTED := Color("#4A3E60")  ## 深藍紫次要提示字
 
 var _cached_font: Font = null
+var force_touch_mode: Variant = null  ## 測試/截圖強制覆寫觸控模式；null 為自動判定
+
+
+static func _t(s: String) -> String:
+	return ContentLoc.text("ui", s)
+
+
+static func _hint_text(force_touch: Variant = null) -> String:
+	## 觸控裝置沒鍵盤；桌面兩者都提
+	var is_touch: bool = force_touch if force_touch != null else DisplayServer.is_touchscreen_available()
+	if is_touch:
+		return _t("▼ 點一下繼續")
+	return _t("▼ 點擊 / Space 繼續")
+
+
+func _update_hint_text() -> void:
+	if _hint:
+		_hint.text = _hint_text(force_touch_mode)
 
 
 func _get_font() -> Font:
@@ -47,6 +66,35 @@ var _hint: Label
 var _black: ColorRect
 
 
+func _enter_tree() -> void:
+	_connect_loc_signal()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_hint_text()
+
+
 func _ready() -> void:
 	visible = false
 	## 隱藏時絕不擋滑鼠（這是標題「卡選單」主因之一）
@@ -54,6 +102,8 @@ func _ready() -> void:
 	z_index = 110
 	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_build()
+	_connect_loc_signal()
+	_update_hint_text()
 
 
 func _build() -> void:
@@ -148,7 +198,7 @@ func _build() -> void:
 	v.add_child(_body)
 
 	_hint = Label.new()
-	_hint.text = "▼  Space / E  繼續"
+	_hint.text = _hint_text(force_touch_mode)
 	_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_hint.add_theme_font_size_override("font_size", 16)
 	_hint.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
@@ -181,6 +231,7 @@ func play(slides: Array, after: Callable = Callable()) -> void:
 	_bg.modulate.a = 0.0
 	_portrait.modulate.a = 0.0
 	_caption_panel.modulate.a = 0.0
+	_update_hint_text()
 	_show_slide()
 
 
