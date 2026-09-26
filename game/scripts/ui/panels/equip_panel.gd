@@ -14,6 +14,7 @@ var _host: Node
 var _pending_loadout: int = -1
 var _layer: Control = null
 var _connected_loc: bool = false
+var _core_hint_label: Label = null
 
 
 static func _t(s: String) -> String:
@@ -34,11 +35,6 @@ static func _weapon_line_name(line: String) -> String:
 			var nm := str(cdef.get("name", ""))
 			if nm != "":
 				return nm
-	if DataTables != null and DataTables.has_method("weapon_class_def"):
-		var cdef: Dictionary = DataTables.weapon_class_def(line)
-		var nm := str(cdef.get("name", ""))
-		if nm != "":
-			return nm
 	return line
 
 
@@ -166,6 +162,31 @@ func open() -> void:
 	armor_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	root.add_child(armor_row)
 	armor_row.add_child(_slot_card("armor"))
+
+	## ── 機芯五槽 ──
+	var core_h := Label.new()
+	core_h.text = _t("機芯五槽")
+	core_h.add_theme_font_size_override("font_size", 13)
+	core_h.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
+	root.add_child(core_h)
+
+	var core_row := HBoxContainer.new()
+	core_row.name = "CoreSlotsRow"
+	core_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	core_row.add_theme_constant_override("separation", 8)
+	root.add_child(core_row)
+
+	_core_hint_label = Label.new()
+	_core_hint_label.name = "CoreHintLabel"
+	_core_hint_label.text = _t("點擊機芯部位可檢視構造說明")
+	_core_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_core_hint_label.add_theme_font_size_override("font_size", 11)
+	_core_hint_label.add_theme_color_override("font_color", UiStyle.INK_DIM)
+
+	for def in SpriteDB.CORE_SLOT_DEFS:
+		core_row.add_child(_core_slot_card(def))
+
+	root.add_child(_core_hint_label)
 
 	## ── 飾品六槽 ──
 	var acc_h := Label.new()
@@ -423,6 +444,71 @@ func _slot_card(slot: String, compact: bool = false, unlocked: bool = true) -> C
 			unequip(slot)
 		)
 		box.add_child(btn)
+	return box
+
+
+func _core_slot_card(def: Dictionary) -> Control:
+	var slot_id := str(def.get("id", ""))
+	var slot_name := _t(str(def.get("name", "")))
+	var slot_desc := _t(str(def.get("desc", "")))
+
+	var box := VBoxContainer.new()
+	box.name = "CoreSlot_" + slot_id
+	box.custom_minimum_size = Vector2(96, 0)
+	box.add_theme_constant_override("separation", 4)
+
+	var lab := Label.new()
+	lab.name = "SlotNameLabel"
+	lab.text = slot_name
+	lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lab.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	lab.add_theme_font_size_override("font_size", 11)
+	lab.add_theme_color_override("font_color", UiStyle.INK_DIM)
+	box.add_child(lab)
+
+	var cell := PanelContainer.new()
+	cell.name = "Cell"
+	cell.custom_minimum_size = Vector2(88, 88)
+	var st := StyleBoxFlat.new()
+	st.bg_color = Color(0.96, 0.95, 0.98, 1)
+	st.border_color = Color(0.72, 0.62, 0.82, 0.9)
+	st.set_border_width_all(2)
+	st.set_corner_radius_all(10)
+	cell.add_theme_stylebox_override("panel", st)
+	box.add_child(cell)
+
+	var inner := VBoxContainer.new()
+	inner.alignment = BoxContainer.ALIGNMENT_CENTER
+	inner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	cell.add_child(inner)
+
+	var icon := TextureRect.new()
+	icon.name = "SlotIcon"
+	icon.custom_minimum_size = Vector2(56, 56)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var t: Texture2D = SpriteDB.core_slot_icon(slot_id)
+	if t:
+		icon.texture = t
+	inner.add_child(icon)
+
+	var btn := Button.new()
+	btn.name = "SlotButton"
+	btn.flat = true
+	btn.custom_minimum_size = Vector2(88, 88)
+	btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	btn.tooltip_text = "%s\n%s" % [slot_name, slot_desc]
+	cell.add_child(btn)
+
+	btn.pressed.connect(func():
+		AudioManager.play_ui()
+		if is_instance_valid(_core_hint_label):
+			_core_hint_label.text = _t("【%s】%s") % [slot_name, slot_desc]
+			_core_hint_label.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
+	)
+
 	return box
 
 

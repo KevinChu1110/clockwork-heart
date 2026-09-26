@@ -1171,3 +1171,70 @@ static func speaker_portrait(speaker: String) -> Texture2D:
 	if by_id:
 		return by_id
 	return boss_icon(id) if id != "" else null
+
+
+## ── 機芯五槽圖示 ──
+const CORE_SLOT_DIR := "res://assets/icons/core_slots"
+
+const CORE_SLOT_DEFS: Array[Dictionary] = [
+	{
+		"id": "spring_generator",
+		"slot_index": 0,
+		"name": "發條發電機",
+		"icon_file": "slot_01_spring_generator.png",
+		"desc": "機芯主發條與動力源",
+	},
+	{
+		"id": "chassis_armor",
+		"slot_index": 1,
+		"name": "機殼裝甲",
+		"icon_file": "slot_02_chassis_armor.png",
+		"desc": "保護精緻齒輪的鍛造外殼",
+	},
+	{
+		"id": "escapement_governor",
+		"slot_index": 2,
+		"name": "擒縱調速器",
+		"icon_file": "slot_03_escapement_governor.png",
+		"desc": "控制律動與頻率的精密游絲擺輪",
+	},
+	{
+		"id": "transmission_gears",
+		"slot_index": 3,
+		"name": "傳動齒輪組",
+		"icon_file": "slot_04_transmission_gears.png",
+		"desc": "咬合傳遞動力的齒輪傳動軸",
+	},
+	{
+		"id": "resonance_core",
+		"slot_index": 4,
+		"name": "共鳴核心",
+		"icon_file": "slot_05_resonance_core.png",
+		"desc": "凝聚星芒與發條律動的共振核心",
+	},
+]
+
+static func core_slot_icon(key: String) -> Texture2D:
+	var k := key.strip_edges().to_lower()
+	var fname := ""
+	match k:
+		"spring_generator", "slot_01", "generator", "發條發電機", "0":
+			fname = "slot_01_spring_generator.png"
+		"chassis_armor", "slot_02", "armor", "機殼裝甲", "1":
+			fname = "slot_02_chassis_armor.png"
+		"escapement_governor", "slot_03", "governor", "擒縱調速器", "2":
+			fname = "slot_03_escapement_governor.png"
+		"transmission_gears", "slot_04", "gears", "傳動齒輪組", "3":
+			fname = "slot_04_transmission_gears.png"
+		"resonance_core", "slot_05", "core", "共鳴核心", "4":
+			fname = "slot_05_resonance_core.png"
+		_:
+			if k.ends_with(".png"):
+				fname = k
+			else:
+				fname = ""
+	if fname == "":
+		return null
+	var path := "%s/%s" % [CORE_SLOT_DIR, fname]
+	return tex(path)
+
