@@ -3737,7 +3737,21 @@ func _can_offer_ad_revive() -> bool:
 
 
 func _show_defeat_settlement() -> void:
-	BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode)
+	var part_hint := ""
+	if _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
+		var e: BattleUnit = sim.get_unit(_mode) if sim else null
+		if e and not e.parts.is_empty():
+			for p in e.parts:
+				if not p.get("broken", false):
+					part_hint = str(p.get("raw_name", p.get("name", "")))
+					break
+			if part_hint == "":
+				part_hint = str(e.parts[0].get("raw_name", e.parts[0].get("name", "")))
+		if part_hint == "":
+			var WC = load("res://scripts/world/world_content.gd")
+			if WC and WC.has_method("colossus_weak_part"):
+				part_hint = str(WC.call("colossus_weak_part", _mode))
+	BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint)
 
 
 func _on_ad_revive_success() -> void:

@@ -3067,5 +3067,6 @@
   "戰鬥經驗": "EXP de combate",
   "經驗 +%d": "EXP +%d",
   "經驗 +0（已達上限）": "EXP +0 (Nivel máx.)",
-  "經驗 +0": "EXP +0"
+  "經驗 +0": "EXP +0",
+  "下次先破壞%s": "La próxima vez destruye primero %s"
 }
