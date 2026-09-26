@@ -40,8 +40,14 @@ var _newly: Array[String] = []
 var _back_cb: Callable = Callable()
 var _fortress_cb: Callable = Callable()
 var _back_text: String = "返回標題"
+var _back_key: String = "返回標題"
 
 var _dialog_card: PanelContainer
+var _title_lbl: Label
+var _count_lbl: Label
+var _banner_lbl: Label
+var _back_btn: Button
+var _fortress_btn: Button
 var _card_grid: GridContainer
 var _cards: Array[PanelContainer] = []
 var _cached_font: Font = null
@@ -58,6 +64,12 @@ func setup(newly: Array[String], back_cb: Callable, fortress_cb: Callable = Call
 	_fortress_cb = fortress_cb
 	if back_text != "":
 		_back_text = back_text
+		if "廣場" in back_text or "Square" in back_text or "広場" in back_text or "plaza" in back_text or "광장" in back_text:
+			_back_key = "回到廣場"
+		elif "標題" in back_text or "title" in back_text.to_lower() or "タイトル" in back_text or "타이틀" in back_text or "título" in back_text:
+			_back_key = "返回標題"
+		else:
+			_back_key = back_text
 	if is_inside_tree():
 		_rebuild()
 
@@ -71,14 +83,74 @@ func _ready() -> void:
 	if ResourceLoader.exists(FONT_PATH):
 		_cached_font = load(FONT_PATH) as Font
 
+	_connect_loc_signal()
+
 	if not _built:
 		_build_ui()
+	_update_ui_texts()
+
+
+func _exit_tree() -> void:
+	_disconnect_loc_signal()
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _disconnect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
+			loc.locale_changed.disconnect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	_update_ui_texts()
+
+
+func _update_ui_texts() -> void:
+	if _title_lbl and is_instance_valid(_title_lbl):
+		_title_lbl.text = _t("成就 · 稱號牆")
+
+	if _count_lbl and is_instance_valid(_count_lbl):
+		var tc: Node = Engine.get_main_loop().root.get_node_or_null("TitleCatalog") if Engine.get_main_loop() else null
+		var unlocked_num: int = tc.unlocked_count() if tc and tc.has_method("unlocked_count") else 0
+		var total_num: int = tc.total_count() if tc and tc.has_method("total_count") else 24
+		_count_lbl.text = _t("（已解鎖 %d／%d）") % [unlocked_num, total_num]
+
+	if _banner_lbl and is_instance_valid(_banner_lbl):
+		_banner_lbl.text = _t("新解鎖稱號：%s") % "、".join(_newly)
+
+	if _back_btn and is_instance_valid(_back_btn):
+		_back_btn.text = _t(_back_key)
+
+	if _fortress_btn and is_instance_valid(_fortress_btn):
+		_fortress_btn.text = _t("堡壘")
+
+	for card in _cards:
+		if is_instance_valid(card):
+			var badge_lbl: Label = card.find_child("BadgeLabel", true, false) as Label
+			if badge_lbl and is_instance_valid(badge_lbl):
+				var unlocked: bool = card.get_meta("is_unlocked", false)
+				badge_lbl.text = _t("已解鎖") if unlocked else _t("未解鎖")
 
 
 func _rebuild() -> void:
 	for c in get_children():
 		c.queue_free()
 	_cards.clear()
+	_title_lbl = null
+	_count_lbl = null
+	_banner_lbl = null
+	_back_btn = null
+	_fortress_btn = null
 	_built = false
 	_build_ui()
 
@@ -195,23 +267,23 @@ func _build_ui() -> void:
 	head.add_theme_constant_override("separation", 10)
 	v_main.add_child(head)
 
-	var title_lbl := Label.new()
-	title_lbl.name = "TitleLabel"
-	title_lbl.text = _t("成就 · 稱號牆")
-	_apply_label_style(title_lbl, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 3)
-	head.add_child(title_lbl)
+	_title_lbl = Label.new()
+	_title_lbl.name = "TitleLabel"
+	_title_lbl.text = _t("成就 · 稱號牆")
+	_apply_label_style(_title_lbl, 22, COLOR_TEXT_ORANGE, COLOR_BORDER, 3)
+	head.add_child(_title_lbl)
 
 	# 稱號統計進度
 	var tc: Node = Engine.get_main_loop().root.get_node_or_null("TitleCatalog") if Engine.get_main_loop() else null
 	var unlocked_num: int = tc.unlocked_count() if tc and tc.has_method("unlocked_count") else 0
 	var total_num: int = tc.total_count() if tc and tc.has_method("total_count") else 24
 
-	var count_lbl := Label.new()
-	count_lbl.name = "CountLabel"
-	count_lbl.text = _t("（已解鎖 %d／%d）") % [unlocked_num, total_num]
-	_apply_label_style(count_lbl, 18, COLOR_TEXT_GOLD, COLOR_BORDER, 2)
-	count_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	head.add_child(count_lbl)
+	_count_lbl = Label.new()
+	_count_lbl.name = "CountLabel"
+	_count_lbl.text = _t("（已解鎖 %d／%d）") % [unlocked_num, total_num]
+	_apply_label_style(_count_lbl, 18, COLOR_TEXT_GOLD, COLOR_BORDER, 2)
+	_count_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(_count_lbl)
 
 	# 右上「✕」關閉按鈕 (50x50，珊瑚粉果凍厚底按鈕)
 	var close_btn := ResponsiveUi.make_close_button(_on_close)
@@ -240,12 +312,12 @@ func _build_ui() -> void:
 		banner_panel.add_theme_stylebox_override("panel", b_sb)
 		v_main.add_child(banner_panel)
 
-		var banner_lbl := Label.new()
-		banner_lbl.name = "NewlyUnlockedLabel"
-		banner_lbl.text = _t("新解鎖稱號：%s") % "、".join(_newly)
-		_apply_label_style(banner_lbl, 16, COLOR_TEXT_GOLD, COLOR_BORDER, 2)
-		banner_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-		banner_panel.add_child(banner_lbl)
+		_banner_lbl = Label.new()
+		_banner_lbl.name = "NewlyUnlockedLabel"
+		_banner_lbl.text = _t("新解鎖稱號：%s") % "、".join(_newly)
+		_apply_label_style(_banner_lbl, 16, COLOR_TEXT_GOLD, COLOR_BORDER, 2)
+		_banner_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		banner_panel.add_child(_banner_lbl)
 
 	# 5. 稱號卡片網格 (2 欄滾動區)
 	var scroll := ScrollContainer.new()
@@ -275,39 +347,39 @@ func _build_ui() -> void:
 	v_main.add_child(foot)
 
 	# 返回標題 / 回到廣場 果凍按鈕 (高度 >= 50px)
-	var back_btn := Button.new()
-	back_btn.name = "BackBtn"
-	back_btn.text = _t(_back_text)
-	back_btn.custom_minimum_size = Vector2(220, 52)
-	back_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 20))
-	back_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB236"), COLOR_BORDER, 5, 20))
-	back_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08805"), COLOR_BORDER, 2, 20))
-	back_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
-	back_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	back_btn.add_theme_constant_override("outline_size", 3)
-	back_btn.add_theme_font_size_override("font_size", 20)
+	_back_btn = Button.new()
+	_back_btn.name = "BackBtn"
+	_back_btn.text = _t(_back_key)
+	_back_btn.custom_minimum_size = Vector2(220, 52)
+	_back_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 20))
+	_back_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB236"), COLOR_BORDER, 5, 20))
+	_back_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08805"), COLOR_BORDER, 2, 20))
+	_back_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_back_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_back_btn.add_theme_constant_override("outline_size", 3)
+	_back_btn.add_theme_font_size_override("font_size", 20)
 	if _cached_font:
-		back_btn.add_theme_font_override("font", _cached_font)
-	back_btn.pressed.connect(_on_close)
-	foot.add_child(back_btn)
+		_back_btn.add_theme_font_override("font", _cached_font)
+	_back_btn.pressed.connect(_on_close)
+	foot.add_child(_back_btn)
 
 	# 通關後若有堡壘入口，做成次要果凍按鈕
 	if _fortress_cb.is_valid():
-		var fortress_btn := Button.new()
-		fortress_btn.name = "FortressBtn"
-		fortress_btn.text = _t("堡壘")
-		fortress_btn.custom_minimum_size = Vector2(180, 52)
-		fortress_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 20))
-		fortress_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#66E27F"), COLOR_BORDER, 5, 20))
-		fortress_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#3CB855"), COLOR_BORDER, 2, 20))
-		fortress_btn.add_theme_color_override("font_color", COLOR_BORDER)
-		fortress_btn.add_theme_color_override("font_outline_color", Color("#FFFFFF"))
-		fortress_btn.add_theme_constant_override("outline_size", 2)
-		fortress_btn.add_theme_font_size_override("font_size", 20)
+		_fortress_btn = Button.new()
+		_fortress_btn.name = "FortressBtn"
+		_fortress_btn.text = _t("堡壘")
+		_fortress_btn.custom_minimum_size = Vector2(180, 52)
+		_fortress_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 20))
+		_fortress_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#66E27F"), COLOR_BORDER, 5, 20))
+		_fortress_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#3CB855"), COLOR_BORDER, 2, 20))
+		_fortress_btn.add_theme_color_override("font_color", COLOR_BORDER)
+		_fortress_btn.add_theme_color_override("font_outline_color", Color("#FFFFFF"))
+		_fortress_btn.add_theme_constant_override("outline_size", 2)
+		_fortress_btn.add_theme_font_size_override("font_size", 20)
 		if _cached_font:
-			fortress_btn.add_theme_font_override("font", _cached_font)
-		fortress_btn.pressed.connect(_on_fortress)
-		foot.add_child(fortress_btn)
+			_fortress_btn.add_theme_font_override("font", _cached_font)
+		_fortress_btn.pressed.connect(_on_fortress)
+		foot.add_child(_fortress_btn)
 
 
 func _populate_title_cards(tc: Node) -> void:
