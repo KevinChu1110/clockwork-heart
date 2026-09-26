@@ -94,6 +94,9 @@ var _hero_title_tag: Label = null
 var _active_hall_index: int = -1
 var _char_prev: TextureRect = null
 var _equip_schematic: VBoxContainer = null
+var _patrol_sidebar: PanelContainer = null
+var _patrol_log_label: Label = null
+var _patrol_status_tag: Label = null
 var _cached_font: Font = null
 var _bag_grid: GridContainer = null
 var _bag_cells: Array = []
@@ -283,6 +286,7 @@ func _ready() -> void:
 	_build_ui()
 	_connect_loc_signal()
 	_apply_locale_texts()
+	_settle_and_bind_patrol()
 	refresh_hud()
 	_switch_tab(Tab.VILLAGE)
 	call_deferred("_apply_safe")
@@ -508,12 +512,21 @@ func _refresh_equip_schematic() -> void:
 
 func _add_equip_chip(parent: Container, slot_title: String, item_name: String, tex: Texture2D) -> void:
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(0, 52)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	btn.clip_text = true
 	btn.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	UiStyle.style_button(btn, false)
+	btn.custom_minimum_size = Vector2(0, 34)
+	for state in ["normal", "hover", "pressed", "focus"]:
+		var sb := btn.get_theme_stylebox(state)
+		if sb is StyleBoxFlat:
+			var sbf := sb.duplicate() as StyleBoxFlat
+			sbf.content_margin_top = 2
+			sbf.content_margin_bottom = 2
+			sbf.content_margin_left = 8
+			sbf.content_margin_right = 8
+			btn.add_theme_stylebox_override(state, sbf)
 	var full_text := "%s  %s" % [slot_title, item_name]
 	if full_text.length() > 36:
 		btn.add_theme_font_size_override("font_size", 10)
@@ -526,7 +539,7 @@ func _add_equip_chip(parent: Container, slot_title: String, item_name: String, t
 	if tex != null:
 		btn.icon = tex
 		btn.expand_icon = true
-		btn.add_theme_constant_override("icon_max_width", 32)
+		btn.add_theme_constant_override("icon_max_width", 26)
 		btn.add_theme_constant_override("h_separation", 6)
 	btn.text = full_text
 	btn.tooltip_text = "%s: %s" % [slot_title, item_name]
@@ -1294,20 +1307,82 @@ func _build_village_tab() -> void:
 	_equip_schematic.name = "EquipSchematic"
 	_equip_schematic.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	_equip_schematic.offset_left = -364
-	_equip_schematic.offset_top = 16
+	_equip_schematic.offset_top = 8
 	_equip_schematic.offset_right = -20
-	_equip_schematic.offset_bottom = 250
-	_equip_schematic.add_theme_constant_override("separation", 8)
+	_equip_schematic.offset_bottom = 162
+	_equip_schematic.add_theme_constant_override("separation", 4)
 	_village_layer.add_child(_equip_schematic)
 	_refresh_equip_schematic()
 
+	## 大廳側欄：多巴胺發條巡邏自律運轉日誌板
+	_patrol_sidebar = PanelContainer.new()
+	_patrol_sidebar.name = "PatrolSidebar"
+	_patrol_sidebar.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_patrol_sidebar.offset_left = -364
+	_patrol_sidebar.offset_top = 170
+	_patrol_sidebar.offset_right = -20
+	_patrol_sidebar.offset_bottom = 308
+	var p_sb := StyleBoxFlat.new()
+	p_sb.bg_color = Color(1.0, 0.975, 0.90, 1.0)
+	p_sb.border_color = COLOR_BORDER
+	p_sb.set_border_width_all(2)
+	p_sb.border_width_bottom = 4
+	p_sb.set_corner_radius_all(16)
+	p_sb.content_margin_top = 8
+	p_sb.content_margin_bottom = 8
+	p_sb.content_margin_left = 14
+	p_sb.content_margin_right = 14
+	p_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.18)
+	p_sb.shadow_size = 6
+	p_sb.shadow_offset = Vector2(0, 3)
+	_patrol_sidebar.add_theme_stylebox_override("panel", p_sb)
+	_village_layer.add_child(_patrol_sidebar)
+
+	var pv := VBoxContainer.new()
+	pv.add_theme_constant_override("separation", 4)
+	_patrol_sidebar.add_child(pv)
+
+	var p_hdr := HBoxContainer.new()
+	pv.add_child(p_hdr)
+
+	var p_title := Label.new()
+	p_title.name = "PatrolTitleLabel"
+	p_title.text = _t("發條巡邏 · 自律日誌")
+	p_title.add_theme_font_size_override("font_size", 13)
+	p_title.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+	p_hdr.add_child(p_title)
+
+	var p_spacer := Control.new()
+	p_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	p_hdr.add_child(p_spacer)
+
+	var p_status := Label.new()
+	p_status.name = "PatrolStatusTag"
+	p_status.text = _t("自律運轉中")
+	p_status.add_theme_font_size_override("font_size", 11)
+	p_status.add_theme_color_override("font_color", COLOR_MINT)
+	p_hdr.add_child(p_status)
+	_patrol_status_tag = p_status
+
+	var p_log := Label.new()
+	p_log.name = "PatrolLogLabel"
+	p_log.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	p_log.add_theme_font_size_override("font_size", 12)
+	p_log.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	p_log.text = _t("【自律巡邏】背後發條依動能持續運轉中，巡邏已解鎖地圖區域……")
+	pv.add_child(p_log)
+	_patrol_log_label = p_log
+
+	_refresh_patrol_sidebar()
+
 	## 右側：多巴胺奶油白戰情報告板 (專注於主線推進)
 	var right_card := PanelContainer.new()
+	right_card.name = "RightCard"
 	right_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
 	right_card.offset_left = -364
 	right_card.offset_top = -210
 	right_card.offset_right = -20
-	right_card.offset_bottom = -16
+	right_card.offset_bottom = -14
 	right_card.add_theme_stylebox_override("panel", _create_obsidian_panel(COLOR_BORDER))
 	_village_layer.add_child(right_card)
 
@@ -1362,6 +1437,41 @@ func get_sortie_button() -> Button:
 
 func get_hall_buttons() -> Array[Button]:
 	return _hall_buttons
+
+func get_patrol_sidebar() -> PanelContainer:
+	return _patrol_sidebar
+
+func get_patrol_log_label() -> Label:
+	return _patrol_log_label
+
+func _get_patrol_system() -> Node:
+	if Engine.get_main_loop() is SceneTree:
+		var st := Engine.get_main_loop() as SceneTree
+		if st.root:
+			return st.root.get_node_or_null("ClockworkPatrolSystem")
+	return null
+
+func _settle_and_bind_patrol() -> void:
+	var patrol_node := _get_patrol_system()
+	if patrol_node:
+		if patrol_node.has_signal("patrol_settled") and not patrol_node.patrol_settled.is_connected(_on_patrol_settled):
+			patrol_node.patrol_settled.connect(_on_patrol_settled)
+		if patrol_node.has_method("settle_offline_patrol"):
+			patrol_node.call("settle_offline_patrol")
+	_refresh_patrol_sidebar()
+
+func _on_patrol_settled(_res: Dictionary) -> void:
+	_refresh_patrol_sidebar()
+	refresh_hud()
+
+func _refresh_patrol_sidebar() -> void:
+	if _patrol_log_label == null or not is_instance_valid(_patrol_log_label):
+		return
+	var patrol_node := _get_patrol_system()
+	if patrol_node and patrol_node.has_method("get_latest_patrol_log_text"):
+		var text: String = str(patrol_node.call("get_latest_patrol_log_text"))
+		if not text.is_empty():
+			_patrol_log_label.text = text
 
 func select_hall_card(idx: int) -> void:
 	_select_hall_card(idx)

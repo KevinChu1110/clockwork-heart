@@ -52,6 +52,7 @@ VisitSystem="*res://scripts/systems/visit_system.gd"
 Telemetry="*res://scripts/autoload/telemetry.gd"
 ForgeSystem="*res://scripts/systems/forge_system.gd"
 CoreSystem="*res://scripts/systems/core_system.gd"
+ClockworkPatrolSystem="*res://scripts/systems/clockwork_patrol.gd"
 
 [display]
 

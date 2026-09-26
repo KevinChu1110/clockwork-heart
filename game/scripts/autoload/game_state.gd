@@ -141,7 +141,20 @@ func get_flag(key: String, default: Variant = false) -> Variant:
 
 
 func has_flag(key: String) -> bool:
-	return bool(flags.get(key, false))
+	if not flags.has(key):
+		return false
+	var v: Variant = flags[key]
+	if v is bool:
+		return v
+	if v is int or v is float:
+		return v != 0
+	if v is String:
+		return not (v as String).is_empty()
+	if v is Array:
+		return not (v as Array).is_empty()
+	if v is Dictionary:
+		return not (v as Dictionary).is_empty()
+	return v != null
 
 
 func add_gold(n: int) -> void:
