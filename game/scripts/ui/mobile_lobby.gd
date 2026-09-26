@@ -155,8 +155,18 @@ var _tex_hit: Texture2D
 ## 聚魂殿封靈罐四階狀態
 var _gourd_lit: Array[bool] = [true, false, false, false]
 var _gourd_btns: Array[Button] = []
+var _gourd_btn_absorb: Button = null
+var _gourd_btn_draw: Button = null
+var _soul_title_label: Label = null
+var _soul_desc_label: Label = null
 
 ## 四地區出征
+const REGION_KEYS: Array[String] = [
+	"第一地區 · 閣樓與堡壘",
+	"第二地區 · 白霧之地",
+	"第三地區 · 道場與西林",
+	"第四地區 · 潮岸與終境",
+]
 var _selected_region: int = 1 # 0: 閣樓與堡壘, 1: 白霧之地, 2: 道場與西林, 3: 潮岸與終境
 var _stages_container: VBoxContainer
 var _region_buttons: Array[Button] = []
@@ -1582,6 +1592,7 @@ func _build_soul_hall_tab() -> void:
 	t.add_theme_font_size_override("font_size", 24)
 	t.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 	v.add_child(t)
+	_soul_title_label = t
 
 	var desc := Label.new()
 	desc.text = _t("聚引四大共鳴核心之魂：銳齒(攻) · 固甲(防) · 旋簧(血) · 全衡(衡)。點擊點亮更高階封靈罐！")
@@ -1589,6 +1600,7 @@ func _build_soul_hall_tab() -> void:
 	desc.add_theme_font_size_override("font_size", 13)
 	desc.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	v.add_child(desc)
+	_soul_desc_label = desc
 
 	var gourd_row := HBoxContainer.new()
 	gourd_row.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -1617,7 +1629,8 @@ func _build_soul_hall_tab() -> void:
 	v.add_child(bot_h)
 
 	var btn_absorb := Button.new()
-	btn_absorb.text = "一鍵吸收灰魂 (換經驗)"
+	btn_absorb.name = "BtnAbsorb"
+	btn_absorb.text = _t("一鍵吸收灰魂")
 	btn_absorb.custom_minimum_size = Vector2(210, 52)
 	btn_absorb.add_theme_font_size_override("font_size", 16)
 	var asb := StyleBoxFlat.new()
@@ -1645,12 +1658,14 @@ func _build_soul_hall_tab() -> void:
 	btn_absorb.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
 	btn_absorb.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	btn_absorb.pressed.connect(func():
-		_show_toast("已將廢魂轉化為 480 戰魂經驗值！")
+		_show_toast(_t("已將廢魂轉化為 480 戰魂經驗值！"))
 	)
 	bot_h.add_child(btn_absorb)
+	_gourd_btn_absorb = btn_absorb
 
 	var btn_draw := Button.new()
-	btn_draw.text = "聚魂十連"
+	btn_draw.name = "BtnDrawTen"
+	btn_draw.text = _t("聚魂十連")
 	btn_draw.custom_minimum_size = Vector2(220, 56)
 	btn_draw.add_theme_font_size_override("font_size", 18)
 	var dsb := StyleBoxFlat.new()
@@ -1679,6 +1694,7 @@ func _build_soul_hall_tab() -> void:
 	btn_draw.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
 	btn_draw.pressed.connect(func(): _do_gourd_draw(0, true))
 	bot_h.add_child(btn_draw)
+	_gourd_btn_draw = btn_draw
 
 func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
 	var btn := Button.new()
@@ -1695,6 +1711,8 @@ func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
 
 	var circle := PanelContainer.new()
 	circle.custom_minimum_size = Vector2(56, 56)
+	circle.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	circle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	var csb := StyleBoxFlat.new()
 	csb.bg_color = gd["color"] as Color
 	csb.set_corner_radius_all(28)
@@ -1707,7 +1725,10 @@ func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
 	nl.name = "NameLabel"
 	nl.text = str(gd["name"])
 	nl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	nl.add_theme_font_size_override("font_size", 16)
+	nl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	nl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	nl.custom_minimum_size = Vector2(130, 36)
+	nl.add_theme_font_size_override("font_size", 13)
 	nl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	v.add_child(nl)
 
@@ -1723,8 +1744,17 @@ func _build_gourd_card(gd: Dictionary, idx: int) -> Button:
 	return btn
 
 func _refresh_gourds_ui() -> void:
+	const GOURD_NAMES := ["綠階封靈罐", "藍階封靈罐", "紫階封靈罐", "橙階封靈罐"]
 	for i in range(_gourd_btns.size()):
 		var b := _gourd_btns[i]
+		if i < GOURD_NAMES.size():
+			var nl: Label = b.find_child("NameLabel", true, false) as Label
+			if nl:
+				nl.text = _t(GOURD_NAMES[i])
+			var cl: Label = b.find_child("CostLabel", true, false) as Label
+			if cl:
+				var costs := [80, 200, 500, 1000]
+				cl.text = "%s %d" % [_t("金幣"), costs[i]]
 		var is_lit := _gourd_lit[i]
 		var sb := StyleBoxFlat.new()
 		sb.set_corner_radius_all(18)
@@ -1805,15 +1835,10 @@ func _build_adventure_tab() -> void:
 	v.add_child(reg_bar)
 
 	_region_buttons.clear()
-	var regions: Array[String] = [
-		_t("第一地區 · 閣樓與堡壘"),
-		_t("第二地區 · 白霧之地"),
-		_t("第三地區 · 道場與西林"),
-		_t("第四地區 · 潮岸與終境"),
-	]
-	for i in range(regions.size()):
+	for i in range(REGION_KEYS.size()):
 		var rb := Button.new()
-		rb.text = regions[i]
+		rb.name = "RegionBtn_%d" % i
+		rb.text = _t(REGION_KEYS[i])
 		rb.custom_minimum_size = Vector2(230, 52)
 		rb.add_theme_font_size_override("font_size", 16)
 		_style_region_button(rb, i == _selected_region)
@@ -1886,6 +1911,7 @@ func _select_region(r: int) -> void:
 
 func _refresh_region_stages() -> void:
 	for c in _stages_container.get_children():
+		_stages_container.remove_child(c)
 		c.queue_free()
 
 	var all_stages := [
@@ -1934,6 +1960,7 @@ func _refresh_region_stages() -> void:
 
 func _build_stage_card(s: Dictionary) -> PanelContainer:
 	var c := PanelContainer.new()
+	c.name = "StageCard_%s" % str(s.get("num", "")).replace("-", "_")
 	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	c.custom_minimum_size = Vector2(520, 145)
 	var csb := StyleBoxFlat.new()
@@ -1988,7 +2015,8 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	t_row.add_child(num_badge)
 
 	var name_l := Label.new()
-	name_l.text = str(s["name"])
+	name_l.name = "StageNameLabel"
+	name_l.text = _t(str(s["name"]))
 	name_l.add_theme_font_size_override("font_size", 17)
 	name_l.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	name_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -2012,7 +2040,8 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	typ_badge.add_theme_stylebox_override("panel", tsb)
 
 	var typ_l := Label.new()
-	typ_l.text = str(s["type"])
+	typ_l.name = "StageTypeLabel"
+	typ_l.text = _t(str(s["type"]))
 	# 字級下限：ART_DAILY_CONSTITUTION §「輔助不准再縮去塞字」；t_b8e32048 審核收尾改回 13
 	typ_l.add_theme_font_size_override("font_size", 13)
 	typ_l.add_theme_color_override("font_color", Color("#A02818") if is_boss else COLOR_TEXT_DARK)
@@ -2020,14 +2049,16 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	inf_row.add_child(typ_badge)
 
 	var pwr_l := Label.new()
-	pwr_l.text = "推薦戰力: %d" % int(s["power"])
+	pwr_l.name = "PowerLabel"
+	pwr_l.text = _t("推薦戰力: %d") % int(s["power"])
 	pwr_l.add_theme_font_size_override("font_size", 13)
 	pwr_l.add_theme_color_override("font_color", COLOR_GOLD_DARK if not is_boss else Color("#A02818"))
 	pwr_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	inf_row.add_child(pwr_l)
 
 	var cost_l := Label.new()
-	cost_l.text = "消耗能量: %d" % int(s["cost"])
+	cost_l.name = "CostLabel"
+	cost_l.text = _t("消耗能量: %d") % int(s["cost"])
 	cost_l.add_theme_font_size_override("font_size", 13)
 	cost_l.add_theme_color_override("font_color", Color("#5A5275"))
 	cost_l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
@@ -2036,9 +2067,10 @@ func _build_stage_card(s: Dictionary) -> PanelContainer:
 	v.add_child(inf_row)
 
 	var btn_battle := Button.new()
+	btn_battle.name = "BattleButton"
 	btn_battle.custom_minimum_size = Vector2(145, 52)
 	btn_battle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	btn_battle.text = "挑戰首領" if is_boss else "出征"
+	btn_battle.text = _t("挑戰首領") if is_boss else _t("出征")
 	btn_battle.add_theme_font_size_override("font_size", 16)
 	var bsb := StyleBoxFlat.new()
 	if is_boss:
@@ -2276,7 +2308,7 @@ func _build_character_tab() -> void:
 	var cur_pow := 482
 	if gs and gs.has_method("power_score") and int(gs.call("power_score")) > 0:
 		cur_pow = int(gs.call("power_score"))
-	_char_power_badge.text = "有效戰力 %d" % cur_pow
+	_char_power_badge.text = _t("有效戰力 %d") % cur_pow
 	_apply_label_style(_char_power_badge, 13, COLOR_TEXT_DARK)
 	pow_capsule.add_child(_char_power_badge)
 
@@ -3067,7 +3099,7 @@ func refresh_hud() -> void:
 	if _power_label:
 		_power_label.text = _t("戰力 %d") % pow
 	if _char_power_badge:
-		_char_power_badge.text = "有效戰力 %d" % (pow if pow > 0 else 482)
+		_char_power_badge.text = _t("有效戰力 %d") % (pow if pow > 0 else 482)
 	if _energy_label:
 		_energy_label.text = _energy_hud_text()
 	if _gold_label:
@@ -3104,6 +3136,22 @@ func _apply_locale_texts() -> void:
 			_sortie_stage_label.add_theme_font_size_override("font_size", 16)
 	if _sortie_button and is_instance_valid(_sortie_button):
 		_sortie_button.text = _t("前往出征")
+
+	for i in range(_region_buttons.size()):
+		if i < REGION_KEYS.size() and is_instance_valid(_region_buttons[i]):
+			_region_buttons[i].text = _t(REGION_KEYS[i])
+	if _stages_container and is_instance_valid(_stages_container):
+		_refresh_region_stages()
+
+	if _soul_title_label and is_instance_valid(_soul_title_label):
+		_soul_title_label.text = _t("聚魂殿 · 封靈罐四階")
+	if _soul_desc_label and is_instance_valid(_soul_desc_label):
+		_soul_desc_label.text = _t("聚引四大共鳴核心之魂：銳齒(攻) · 固甲(防) · 旋簧(血) · 全衡(衡)。點擊點亮更高階封靈罐！")
+	if _gourd_btn_absorb and is_instance_valid(_gourd_btn_absorb):
+		_gourd_btn_absorb.text = _t("一鍵吸收灰魂")
+	if _gourd_btn_draw and is_instance_valid(_gourd_btn_draw):
+		_gourd_btn_draw.text = _t("聚魂十連")
+	_refresh_gourds_ui()
 
 	for btn in _dock_buttons:
 		if is_instance_valid(btn):

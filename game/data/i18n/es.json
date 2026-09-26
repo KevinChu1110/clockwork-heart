@@ -523,5 +523,22 @@
   "（消耗鐵屑穩火）": " (Hierro residual usado para avivar el fuego)",
   "鍛造成功！升階至第 %d 階，攻擊力上升！%s": "¡Forja exitosa! ¡Subido a Rango %d, ataque aumentado!%s",
   "鍛造失敗！釘釘摔錘了，吃塊消氣餅回復體力！": "¡Forja fallida! Ding ha estampado el martillo, ¡come una galleta de calmar ánimos para reponer energía!",
-  "鍛造失敗！累積 1 格保底進度（目前 %d/3 格）。": "¡Forja fallida! Acumulada 1 barra de garantía (actualmente %d/3 barras)."
+  "鍛造失敗！累積 1 格保底進度（目前 %d/3 格）。": "¡Forja fallida! Acumulada 1 barra de garantía (actualmente %d/3 barras).",
+  "推薦戰力: %d": "Poder Rec.: %d",
+  "推薦戰力": "Poder Recomendado",
+  "消耗能量: %d": "Consumo Energía: %d",
+  "消耗能量": "Consumo de Energía",
+  "出征": "Batalla",
+  "挑戰首領": "Desafiar Jefe",
+  "有效戰力 %d": "Poder Efectivo %d",
+  "有效戰力": "Poder Efectivo",
+  "一鍵吸收灰魂": "Absorber Almas Grises",
+  "一鍵吸收灰魂 (換經驗)": "Absorber Almas Grises (EXP)",
+  "聚魂十連": "Invocar 10 Almas",
+  "前哨雜魚": "Esbirro de Avanzada",
+  "精英戰鬥": "Combate de Élite",
+  "首領部位破壞": "Destrucción de Partes de Jefe",
+  "市集街道 · 潛伏暗哨": "Calle del Mercado · Vigía Oculto",
+  "下水道口 · 腐化黏怪": "Boca de Cloaca · Cieno Corrupto",
+  "新人": "Novato"
 }
