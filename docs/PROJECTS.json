@@ -3291,6 +3291,16 @@
    "keys": [
     "整備裝備機芯前跟"
    ]
+  },
+  {
+   "id": "bag-core-dismantle",
+   "cat": "遊戲",
+   "title": "多餘未裝備機芯拆成既有鐵屑",
+   "status": "草稿",
+   "note": "派工 sideworker2，不准新道具",
+   "keys": [
+    "多餘未裝備機芯拆"
+   ]
   }
  ]
 }
