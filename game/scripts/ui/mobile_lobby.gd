@@ -3394,7 +3394,7 @@ func _build_bag_tab() -> void:
 func _build_core_bag_section() -> PanelContainer:
 	var cp := PanelContainer.new()
 	cp.name = "CoreBagPanel"
-	cp.custom_minimum_size = Vector2(0, 140)
+	cp.custom_minimum_size = Vector2(0, 204)
 	cp.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
 	_core_bag_panel = cp
 
@@ -3432,7 +3432,7 @@ func _build_core_bag_section() -> PanelContainer:
 	# 卡片橫向滾動容器
 	var scroll := ScrollContainer.new()
 	scroll.name = "CoreScroll"
-	scroll.custom_minimum_size = Vector2(0, 98)
+	scroll.custom_minimum_size = Vector2(0, 156)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	c_vbox.add_child(scroll)
@@ -3494,7 +3494,7 @@ func _create_lobby_core_card(part: Dictionary, card_idx: int = 0) -> Control:
 	if uid.is_empty():
 		uid = str(card_idx)
 	card.name = "CoreCard_" + uid
-	card.custom_minimum_size = Vector2(136, 92)
+	card.custom_minimum_size = Vector2(146, 154)
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var cs := StyleBoxFlat.new()
@@ -3507,6 +3507,20 @@ func _create_lobby_core_card(part: Dictionary, card_idx: int = 0) -> Control:
 	cs.shadow_size = 4
 	cs.shadow_offset = Vector2(0, 2)
 	card.add_theme_stylebox_override("panel", cs)
+
+	# 全卡點擊換裝按鈕（底層），供點擊卡片換裝
+	var btn := Button.new()
+	btn.name = "CardButton"
+	btn.flat = true
+	btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.pressed.connect(func():
+		_play_ui_sound()
+		open_equip_panel(true)
+	)
+	card.add_child(btn)
 
 	var margin := MarginContainer.new()
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -3529,7 +3543,7 @@ func _create_lobby_core_card(part: Dictionary, card_idx: int = 0) -> Control:
 	vb.add_child(top_row)
 
 	var icon := TextureRect.new()
-	icon.custom_minimum_size = Vector2(28, 28)
+	icon.custom_minimum_size = Vector2(26, 26)
 	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -3569,22 +3583,56 @@ func _create_lobby_core_card(part: Dictionary, card_idx: int = 0) -> Control:
 	action_lbl.name = "ActionLabel"
 	action_lbl.text = _t("更換裝備")
 	action_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_apply_label_style(action_lbl, 14, COLOR_TEXT_ORANGE)
+	_apply_label_style(action_lbl, 12, COLOR_TEXT_ORANGE)
 	action_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vb.add_child(action_lbl)
 
-	var btn := Button.new()
-	btn.name = "CardButton"
-	btn.flat = true
-	btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	btn.mouse_filter = Control.MOUSE_FILTER_STOP
-	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	btn.focus_mode = Control.FOCUS_NONE
-	btn.pressed.connect(func():
+	# 「拆解」果凍厚底按鈕（高 ≥ 50px，零系統 emoji）
+	var dismantle_btn := Button.new()
+	dismantle_btn.name = "DismantleButton"
+	dismantle_btn.text = _t("拆解")
+	dismantle_btn.custom_minimum_size = Vector2(126, 50)
+	dismantle_btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	dismantle_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	dismantle_btn.focus_mode = Control.FOCUS_NONE
+
+	# 果凍厚底樣式 (多巴胺鮮亮珊瑚粉色 #FF5E8A, 5px 果凍厚底)
+	var dis_normal := _create_button_style(Color("#FF5E8A"), COLOR_BORDER, 5, 14, 2)
+	var dis_pressed := _create_button_style(Color("#E04E78"), COLOR_BORDER, 2, 14, 2)
+	var dis_hover := _create_button_style(Color("#FF7096"), COLOR_BORDER, 5, 14, 2)
+	dismantle_btn.add_theme_stylebox_override("normal", dis_normal)
+	dismantle_btn.add_theme_stylebox_override("pressed", dis_pressed)
+	dismantle_btn.add_theme_stylebox_override("hover", dis_hover)
+
+	dismantle_btn.add_theme_font_size_override("font_size", 16)
+	dismantle_btn.add_theme_color_override("font_color", Color.WHITE)
+	dismantle_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	dismantle_btn.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		dismantle_btn.add_theme_font_override("font", _cached_font)
+
+	var target_uid := uid
+	dismantle_btn.pressed.connect(func():
 		_play_ui_sound()
-		open_equip_panel(true)
+		var res: Dictionary = {}
+		if CoreSys != null:
+			res = CoreSys.dismantle_part(target_uid)
+		else:
+			var gs := _gs()
+			if gs and gs.has_method("dismantle_core_part"):
+				res = gs.dismantle_core_part(target_uid)
+
+		if bool(res.get("ok", false)):
+			var scrap_gain: int = int(res.get("iron_scrap", 0))
+			_show_toast(_t("已拆解機芯，獲得 %d 鐵屑") % scrap_gain)
+			_refresh_core_bag()
+			_refresh_bag_tab(false)
+			refresh_hud()
+		else:
+			var reason_k: String = str(res.get("message", "已裝備槽上的機芯不可拆"))
+			_show_toast(_t(reason_k))
 	)
-	card.add_child(btn)
+	vb.add_child(dismantle_btn)
 
 	return card
 

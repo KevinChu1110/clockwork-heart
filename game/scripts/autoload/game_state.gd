@@ -324,6 +324,13 @@ func remove_core_part(part_uid: String) -> Dictionary:
 	return {}
 
 
+func dismantle_core_part(part_uid: String) -> Dictionary:
+	var CsClass = load("res://scripts/systems/core_system.gd")
+	if CsClass != null:
+		return CsClass.dismantle_part(part_uid)
+	return {"ok": false, "message": "CoreSystem not available"}
+
+
 func effective_variance() -> float:
 	return dmg_variance
 
