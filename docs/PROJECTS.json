@@ -3226,8 +3226,8 @@
    "id": "merge-core-tier-i18n",
    "cat": "平台",
    "title": "把已過審的機芯八色階六語系合進主線",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "已合入主線並通過 i18n 相關測試，送審 sideqa",
    "keys": [
     "把已過審的機芯八"
    ]
