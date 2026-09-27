@@ -785,6 +785,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"otter": "notch_axe",
 	"raccoon": "flint_gun",
 	"hedgehog": "mist_darts",
+	"wolf": "rusty_blade",
 }
 
 
@@ -815,6 +816,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"otter": default_name = "浪花海獺"
 		"raccoon": default_name = "星巡浣熊"
 		"hedgehog": default_name = "棘輪刺蝟"
+		"wolf": default_name = "荒原鋼狼"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
