@@ -354,16 +354,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_cat_obsidian_steel_default", "name_zh": "冷軋曜黑碳化鋼板件", "desc": "高硬度冷軋曜黑碳化鋼板件，象牙米白琺瑯面頰，足底黑色工程矽膠靜音墊"}
 		]
+	},
+	"pangolin": {
+		"id": "pangolin",
+		"name_zh": "沙鱗穿山甲",
+		"name_en": "The Dune Pangolin",
+		"archetype": "武術家 (Monk)",
+		"thumb": "res://assets/sprites/player/showcase/pangolin_idle_hd.png",
+		"desc": "自遺忘舊庫零件沙丘穿梭而出的發條穿山甲，沖壓暖橘覆鱗板件，扇形拾音耳與七節覆鱗尾。",
+		"costumes": [
+			{"id": "costume_pangolin_scavenger_tinker_vest", "name_zh": "齒輪營地拾荒工匠工裝背心", "desc": "齒輪營地拾荒工匠帆布工裝背心，斜背螺絲起子工具皮帶"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現暖橘電鍍金屬覆鱗與象牙米白琺瑯面頰板"}
+		],
+		"chassis": [
+			{"id": "chassis_pangolin_dune_orange_default", "name_zh": "沖壓耐磨暖橘金屬覆鱗板件", "desc": "沖壓耐磨暖橘金屬覆鱗板件，象牙米白琺瑯面腹甲，足底黑色工程矽膠防滑墊"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -834,6 +849,7 @@ func confirm_selection() -> void:
 				"hound": gs.player_name = "星軌犬"
 				"owl": gs.player_name = "靈鐘鴞"
 				"cat": gs.player_name = "幽影貓"
+				"pangolin": gs.player_name = "沙鱗穿山甲"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
