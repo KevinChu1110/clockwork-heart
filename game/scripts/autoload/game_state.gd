@@ -790,6 +790,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"kangaroo": "wrap_gloves",
 	"squirrel": "rusty_blade",
 	"salamander": "anvil_hammer",
+	"viper": "star_fang",
 }
 
 
@@ -825,6 +826,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"kangaroo": default_name = "鐵拳袋鼠"
 		"squirrel": default_name = "巡林松鼠"
 		"salamander": default_name = "熔火蜥蜴"
+		"viper": default_name = "竹影青蛇"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
