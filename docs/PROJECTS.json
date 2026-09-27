@@ -2736,8 +2736,8 @@
    "id": "merge-i18n-0926",
    "cat": "平台",
    "title": "把已過審的六語系與裝備面板修復合進主線",
-   "status": "測試中",
-   "note": "六條已依序合併進 main 並 push origin/main，相關單元測試與冒煙全綠，送 sideqa 審查",
+   "status": "已上線",
+   "note": "審查通過批次同步，對應看板卡皆為 done",
    "keys": [
     "把已過審的六語系"
    ]
