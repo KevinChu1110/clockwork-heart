@@ -3576,8 +3576,8 @@
    "id": "pangolin-official-assets",
    "cat": "遊戲",
    "title": "第十八族沙鱗穿山甲官方資產套件補齊",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "四類官方資產產出，128/512雙規格齊全，無頭測試全綠，待sideqa驗收",
    "keys": [
     "第十八族沙鱗穿山"
    ]
