@@ -1,5 +1,5 @@
 extends SceneTree
-## 《發條之心》第十八族沙鱗穿山甲 (pangolin) 骨架先行建置驗證
+## 《發條之心》第十八族沙鱗穿山甲 (pangolin) 骨架與切片正式驗證
 ## 執行方式：godot --path game --headless -s res://scripts/art/test_paperdoll_pangolin_skeleton.gd
 
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
@@ -8,7 +8,7 @@ const WardrobeDialog = preload("res://scripts/ui/wardrobe_dialog.gd")
 
 func _initialize() -> void:
 	var ok := true
-	print("=== 開始第十八族沙鱗穿山甲 (pangolin) 骨架先行建置測試 ===")
+	print("=== 開始第十八族沙鱗穿山甲 (pangolin) 骨架與切片正式驗證 ===")
 
 	# 1. 驗證規格檔 (paperdoll_slots.json) 讀取與種族數
 	var spec: Dictionary = PaperdollRenderer.get_spec()
@@ -88,26 +88,28 @@ func _initialize() -> void:
 	else:
 		print("  ✓ poses/pangolin 目錄存在")
 
-	# 3. 驗證零美術佔位圖（無任何 png / webp / jpg 圖片產生，只放 .gitkeep）
+	# 3. 驗證 7 大槽位美術切片均已就緒 (128x128 與 512x512)
 	var pangolin_global_dir := ProjectSettings.globalize_path(base_path)
-	var da := DirAccess.open(pangolin_global_dir)
-	var image_files_found: Array[String] = []
-	if da:
-		for sid in expected_slots:
-			var sub_da := DirAccess.open("%s/%s" % [pangolin_global_dir, sid])
-			if sub_da:
-				sub_da.list_dir_begin()
-				var fn := sub_da.get_next()
-				while fn != "":
-					if fn.ends_with(".png") or fn.ends_with(".webp") or fn.ends_with(".jpg"):
-						image_files_found.append("%s/%s" % [sid, fn])
-					fn = sub_da.get_next()
-				sub_da.list_dir_end()
-	if not image_files_found.is_empty():
-		push_error("發現意外產生的圖片檔案（違背零美術佔位圖要求）: %s" % str(image_files_found))
+	var missing_files: Array[String] = []
+	var expected_slice_files := {
+		"back_curio": ["curio_pangolin_segmented_scale_tail.png", "curio_pangolin_segmented_scale_tail_512.png"],
+		"chassis": ["chassis_pangolin_dune_orange_default.png", "chassis_pangolin_dune_orange_default_512.png"],
+		"costume": ["costume_pangolin_scavenger_tinker_vest.png", "costume_pangolin_scavenger_tinker_vest_512.png"],
+		"head_unit": ["head_pangolin_brass_acoustic_ears.png", "head_pangolin_brass_acoustic_ears_512.png"],
+		"optic_core": ["face_pangolin_sky_blue_optic_domes.png", "face_pangolin_sky_blue_optic_domes_512.png"],
+		"weapon": ["weapon_pangolin_dune_drill_claw.png", "weapon_pangolin_dune_drill_claw_512.png"],
+		"winding_key": ["key_pangolin_coil_scale_spiral_gold.png", "key_pangolin_coil_scale_spiral_gold_512.png"]
+	}
+	for sid in expected_slots:
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [pangolin_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("沙鱗穿山甲切片檔案缺失: %s" % str(missing_files))
 		ok = false
 	else:
-		print("  ✓ 嚴格恪守零美術佔位圖，7 槽位目錄下無任何圖片資產，僅保留 .gitkeep")
+		print("  ✓ 沙鱗穿山甲 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 4. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog) 能讀到 pangolin
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -168,25 +170,26 @@ func _initialize() -> void:
 	else:
 		print("  ✓ WardrobeDialog 種族過濾晶片包含 pangolin (穿山甲)")
 
-	# 驗證無圖時走安全 fallback，回傳 null，不崩潰且不借圖
-	var dummy_map: Dictionary = PaperdollRenderer.build_paperdoll_map("pangolin")
-	var dummy_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("pangolin")
-	if dummy_map.size() != 7:
-		push_error("build_paperdoll_map('pangolin') 槽位數不為 7: %d" % dummy_map.size())
+	# 驗證 7 大槽位切片貼圖解析與載入
+	var pangolin_map: Dictionary = PaperdollRenderer.build_paperdoll_map("pangolin")
+	var pangolin_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("pangolin")
+	if pangolin_map.size() != 7:
+		push_error("build_paperdoll_map('pangolin') 槽位數不為 7: %d" % pangolin_map.size())
 		ok = false
 	for sid in expected_slots:
-		var tex: Texture2D = dummy_tex.get(sid)
-		if tex != null:
-			push_error("pangolin 尚未出圖，槽位 %s 貼圖預期為 null，但載入了: %s" % [sid, str(tex)])
+		var tex: Texture2D = pangolin_tex.get(sid)
+		if tex == null:
+			push_error("槽位 %s 貼圖載入失敗，為 null！" % sid)
 			ok = false
-	print("  ✓ PaperdollRenderer 針對無圖 pangolin 7 大槽位安全解析並回傳 null，無例外")
+		else:
+			print("  ✓ 槽位 %-12s 成功載入貼圖: %s (%dx%d)" % [sid, str(pangolin_map.get(sid)), tex.get_width(), tex.get_height()])
 
-	# 驗證前端防護守衛 has_race_assets 回傳 false（未具備素材前安全隱藏，不露出空卡）
-	if PaperdollSelectClass.has_race_assets("pangolin"):
-		push_error("PaperdollSelectClass.has_race_assets('pangolin') 預期回傳 false (安全隱藏)，但回傳 true！")
+	# 驗證前端防護守衛 has_race_assets 回傳 true
+	if not PaperdollSelectClass.has_race_assets("pangolin"):
+		push_error("PaperdollSelectClass.has_race_assets('pangolin') 回傳 false！")
 		ok = false
 	else:
-		print("  ✓ PaperdollSelectClass.has_race_assets('pangolin') 正確回傳 false，創角介面安全隱藏未就緒新族")
+		print("  ✓ PaperdollSelectClass.has_race_assets('pangolin') 正確回傳 true，創角與衣櫥介面完全解鎖！")
 
 	print("\n=======================================================")
 	if ok:
