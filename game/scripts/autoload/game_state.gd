@@ -787,6 +787,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"hedgehog": "mist_darts",
 	"wolf": "rusty_blade",
 	"seahorse": "shard_focus",
+	"kangaroo": "wrap_gloves",
 }
 
 
@@ -819,6 +820,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"hedgehog": default_name = "棘輪刺蝟"
 		"wolf": default_name = "荒原鋼狼"
 		"seahorse": default_name = "琉璃海馬"
+		"kangaroo": default_name = "鐵拳袋鼠"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值

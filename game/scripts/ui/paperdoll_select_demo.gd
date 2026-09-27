@@ -444,16 +444,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_seahorse_abyssal_cyan_default", "name_zh": "琉璃海馬原廠海藍琺瑯烤漆素體", "desc": "多巴胺海藍琺瑯烤漆，鍍鈦水平防壓加強筋，五節高彈錳鋼螺旋板簧尾"}
 		]
+	},
+	"kangaroo": {
+		"id": "kangaroo",
+		"name_zh": "鐵拳袋鼠",
+		"name_en": "The Boxer Kangaroo",
+		"archetype": "武術家 (Monk)",
+		"thumb": "res://assets/sprites/player/showcase/kangaroo_idle_hd.png",
+		"desc": "巨輪城動力廣場的發條拳擊家，焦糖暖褐赤銅板件，雙螺旋減震彈簧腿與氣壓活塞雙拳套。",
+		"costumes": [
+			{"id": "costume_kangaroo_champion_belt_harness", "name_zh": "巨輪城工匠拳王加固背帶皮甲", "desc": "半圓形奶油米白琺瑯沖壓齒輪袋，加固棕褐皮帶與胡桃鉗朱紅滾邊"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現焦糖暖褐赤銅金屬裝甲與冷軋鎢鋼螺旋彈簧腿"}
+		],
+		"chassis": [
+			{"id": "chassis_kangaroo_caramel_bronze_default", "name_zh": "鐵拳袋鼠原廠焦糖暖褐赤銅素體", "desc": "多巴胺焦糖暖褐赤銅烤漆，冷軋鎢鋼雙螺旋彈簧腿，分節重力平衡長尾"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -930,6 +945,7 @@ func confirm_selection() -> void:
 				"hedgehog": gs.player_name = "棘輪刺蝟"
 				"wolf": gs.player_name = "荒原鋼狼"
 				"seahorse": gs.player_name = "琉璃海馬"
+				"kangaroo": gs.player_name = "鐵拳袋鼠"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
