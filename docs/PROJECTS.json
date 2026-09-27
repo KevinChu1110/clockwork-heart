@@ -3546,8 +3546,8 @@
    "id": "cat-combat-poses",
    "cat": "遊戲",
    "title": "第十七族幽影貓6大戰鬥姿態補齊",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "完成6大戰鬥姿態128/512雙規格LANCZOS、無頭測試全綠、實機戰鬥截圖就緒送審sideqa",
    "keys": [
     "第十七族幽影貓6"
    ]
