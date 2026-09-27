@@ -429,16 +429,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_wolf_warm_orange_default", "name_zh": "廢土多巴胺暖橘防鏽烤漆鋼板", "desc": "廢土多巴胺暖橘防鏽烤漆鋼板，象牙米白琺瑯面頰板與胸腹減震板，足底黑色工業矽膠行軍靴"}
 		]
+	},
+	"seahorse": {
+		"id": "seahorse",
+		"name_zh": "琉璃海馬",
+		"name_en": "The Crystal Seahorse",
+		"archetype": "法師 (Mage)",
+		"thumb": "res://assets/sprites/player/showcase/seahorse_idle_hd.png",
+		"desc": "穿梭於琉璃汪洋海淵的發條海馬學者，高透海藍琺瑯烤漆，象牙米白陶瓷面頰與雙聯深海藍寶石透鏡目鏡。",
+		"costumes": [
+			{"id": "costume_seahorse_abyssal_scholar_harness", "name_zh": "海淵天宮星象輕甲工裝", "desc": "象牙白陶瓷釉面胸甲，兩側海藍鍍鈦弧形護肩，腰間附防腐蝕背帶與氣壓計"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現高透光海藍琺瑯烤漆裝甲板與象牙米白陶瓷胸板"}
+		],
+		"chassis": [
+			{"id": "chassis_seahorse_abyssal_cyan_default", "name_zh": "琉璃海馬原廠海藍琺瑯烤漆素體", "desc": "多巴胺海藍琺瑯烤漆，鍍鈦水平防壓加強筋，五節高彈錳鋼螺旋板簧尾"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -914,6 +929,7 @@ func confirm_selection() -> void:
 				"raccoon": gs.player_name = "星巡浣熊"
 				"hedgehog": gs.player_name = "棘輪刺蝟"
 				"wolf": gs.player_name = "荒原鋼狼"
+				"seahorse": gs.player_name = "琉璃海馬"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
