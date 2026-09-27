@@ -3596,8 +3596,8 @@
    "id": "otter-paperdoll",
    "cat": "遊戲",
    "title": "第十九族浪花海獺(otter)7大部件槽位紙娃娃切片產出",
-   "status": "測試中",
-   "note": "完成 7 槽切片 128/512 雙規格並通過無頭測試與 Vision 審核，送審 sideart",
+   "status": "已上線",
+   "note": "完成 7 槽切片 128/512 雙規格並通過無頭測試與 Vision 審核，合入主線",
    "keys": [
     "第十九族浪花海獺"
    ]
@@ -3616,8 +3616,8 @@
    "id": "otter-combat-poses",
    "cat": "遊戲",
    "title": "第十九族浪花海獺(otter)六大戰鬥姿勢補齊",
-   "status": "測試中",
-   "note": "完成自測與實機截圖，request-review sideart",
+   "status": "已上線",
+   "note": "六大戰鬥姿勢補齊通過審查，合入主線",
    "keys": [
     "第十九族浪花海獺"
    ]
@@ -3630,6 +3630,26 @@
    "note": "sideqa 複驗通過：官網英雄圖/戰鬥特寫/行走動畫/HUD頭像全數齊備且合規",
    "keys": [
     "第十九族浪花海獺"
+   ]
+  },
+  {
+   "id": "raccoon-paperdoll",
+   "cat": "遊戲",
+   "title": "第二十族星巡浣熊(raccoon)7大部件槽位紙娃娃切片產出",
+   "status": "已上線",
+   "note": "星巡浣熊7大部件槽位紙娃娃切片審查通過，全量化指標合規無頭測試全綠",
+   "keys": [
+    "第二十族星巡浣熊"
+   ]
+  },
+  {
+   "id": "raccoon-combat-poses",
+   "cat": "遊戲",
+   "title": "第二十族星巡浣熊(raccoon)六大戰鬥姿勢補齊（128x128/512x512 LANCZOS）",
+   "status": "已上線",
+   "note": "sideqa 審查通過，全量無頭測試全綠，六大戰鬥姿態高清貼圖與實機無破圖",
+   "keys": [
+    "第二十族星巡浣熊"
    ]
   }
  ]

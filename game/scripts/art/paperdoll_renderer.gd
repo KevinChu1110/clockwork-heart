@@ -142,8 +142,8 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		var common_slice_clean := "%s/common/%s/%s.png" % [PAPERDOLL_ROOT, sid, clean_id]
 		if ResourceLoader.exists(common_slice_clean) or FileAccess.file_exists(common_slice_clean):
 			return common_slice_clean
-		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限十九大正式族系）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter"]
+		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限二十大正式族系）
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon"]
 		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
 			for other in all_races:
 				if str(other) == rid:
@@ -282,6 +282,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "chassis_pangolin_dune_orange_default"
 			elif race == "otter":
 				return "chassis_otter_abyssal_cyan_default"
+			elif race == "raccoon":
+				return "chassis_raccoon_orbit_aqua_default"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -320,6 +322,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_pangolin_brass_acoustic_ears"
 			elif race == "otter":
 				return "head_otter_diver_bell_visor"
+			elif race == "raccoon":
+				return "head_raccoon_parabolic_radar_dish"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -350,6 +354,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_pangolin_coil_scale_spiral_gold"
 			elif race == "otter":
 				return "key_otter_nautical_rudder_helm"
+			elif race == "raccoon":
+				return "key_raccoon_quad_solar_sail"
 			elif race == "fox":
 				return ""
 			return "key_classic_brass"
@@ -390,6 +396,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_pangolin_scavenger_tinker_vest"
 			elif race == "otter":
 				return "costume_otter_deepsea_salvage_harness"
+			elif race == "raccoon":
+				return "costume_raccoon_space_explorer_harness"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -422,6 +430,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "face_pangolin_sky_blue_optic_domes"
 			elif race == "otter":
 				return "face_otter_phosphor_green_gauges"
+			elif race == "raccoon":
+				return "face_raccoon_hud_polarizer_visor"
 			elif race == "boar":
 				return "core_molten_crimson"
 			return "core_cyan_emerald"
@@ -462,6 +472,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "weapon_pangolin_dune_drill_claw"
 			elif race == "otter":
 				return "weapon_otter_abyssal_anchor_cleaver"
+			elif race == "raccoon":
+				return "weapon_raccoon_anti_gravity_pulse_blaster"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -500,6 +512,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_pangolin_segmented_scale_tail"
 			elif race == "otter":
 				return "curio_otter_articulated_rudder_tail"
+			elif race == "raccoon":
+				return "curio_raccoon_coaxial_ring_antenna_tail"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -747,7 +761,7 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
@@ -1312,7 +1326,7 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 19,
+			"total_races": 20,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
@@ -1332,7 +1346,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "owl", "aliases": ["chrono_owl", "clockwork_owl", "belltower_owl", "astral_owl"], "name_zh": "靈鐘鴞", "name_en": "The Chrono Owl", "class_archetype": "法師 (Mage)"},
 				{"race_id": "cat", "aliases": ["umbral_cat", "shadow_cat", "clockwork_cat", "nightprowl_cat"], "name_zh": "幽影貓", "name_en": "The Umbral Cat", "class_archetype": "忍者 (Ninja)"},
 				{"race_id": "pangolin", "aliases": ["dune_pangolin", "sand_pangolin", "clockwork_pangolin", "armored_pangolin"], "name_zh": "沙鱗穿山甲", "name_en": "The Dune Pangolin", "class_archetype": "武術家 (Monk)"},
-				{"race_id": "otter", "aliases": ["tidal_otter", "abyssal_otter", "clockwork_otter", "diver_otter"], "name_zh": "浪花海獺", "name_en": "The Tidal Otter", "class_archetype": "戰士 (Viking)"}
+				{"race_id": "otter", "aliases": ["tidal_otter", "abyssal_otter", "clockwork_otter", "diver_otter"], "name_zh": "浪花海獺", "name_en": "The Tidal Otter", "class_archetype": "戰士 (Viking)"},
+				{"race_id": "raccoon", "aliases": ["orbit_raccoon", "starfall_raccoon", "astro_raccoon", "space_raccoon"], "name_zh": "星巡浣熊", "name_en": "The Orbit Raccoon", "class_archetype": "遊俠 (Ranger)"}
 			]
 		}
 	}
