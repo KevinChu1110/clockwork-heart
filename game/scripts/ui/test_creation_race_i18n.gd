@@ -1,10 +1,10 @@
 extends SceneTree
 ## 創角種族卡與欄位標題六語系單元測試 (Creation Race & Slots i18n Test)
 ## 驗證：
-## 1. 六語系 ui.json 包含所有 13 種族名稱、欄位標題、狀態列與按鈕翻譯。
+## 1. 六語系 ui.json 包含所有 14 種族名稱、欄位標題、狀態列與按鈕翻譯。
 ## 2. 創角介面在六語系切換下，已在畫面上的種族按鈕、欄位標題與狀態列即時刷新。
 ## 3. 切換種族卡高亮時，種族卡文字不退回繁體中文。
-## 4. 翠角鹿 (fawn) 因美術資源未齊保持隱藏，不露出空卡。
+## 4. 翠角鹿 (fawn) 正式上線並完成六語系落地。
 
 const DemoScene = preload("res://scenes/ui/paperdoll_select_demo.tscn")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -104,6 +104,10 @@ func _run_test_suite() -> void:
 		"瓷韻熊貓": {
 			"zh_TW": "瓷韻熊貓", "zh_CN": "瓷韵熊猫", "en": "The Porcelain Panda",
 			"ja": "磁韻パンダ", "ko": "도운 판다", "es": "Panda de Porcelana"
+		},
+		"翠角鹿": {
+			"zh_TW": "翠角鹿", "zh_CN": "翠角鹿", "en": "The Emerald Fawn",
+			"ja": "翠角鹿", "ko": "취각록", "es": "El Ciervo Esmeralda"
 		},
 	}
 
@@ -207,7 +211,7 @@ func _run_test_suite() -> void:
 
 		# 切換到擴充分頁檢查長譯名種族卡自適應 (0-QA23)
 		demo.call("switch_tab", "expansion")
-		var exp_races := ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
+		var exp_races := ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
 		for erid in exp_races:
 			var btn_er = demo.get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_" + erid) as Button
 			if btn_er and btn_er.visible:
@@ -227,12 +231,13 @@ func _run_test_suite() -> void:
 		demo.call("switch_tab", "launch")
 		print("  ✓ [%s] 實例化介面即時翻譯查驗通過" % code)
 
-	# 3. 驗證翠角鹿 (fawn) 安全隱藏
+	# 3. 驗證翠角鹿 (fawn) 在擴充分頁正常可見且已本地化
+	demo.call("switch_tab", "expansion")
 	var btn_fawn = demo.get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_fawn") as Button
-	if btn_fawn != null and btn_fawn.visible:
-		_fail("翠角鹿 (fawn) 未具備立繪資源，前端應隱藏，但目前為 visible")
+	if btn_fawn == null or not btn_fawn.visible:
+		_fail("翠角鹿 (fawn) 已具備正式美術切片與立繪，應在擴充分頁 visible，但目前為 null 或隱藏")
 	else:
-		print("  ✓ 翠角鹿防護守衛生效（隱藏空卡）")
+		print("  ✓ 翠角鹿擴充按鈕正常可見且已本地化")
 
 	demo.queue_free()
 
