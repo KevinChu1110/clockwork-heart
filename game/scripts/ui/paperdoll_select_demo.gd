@@ -400,7 +400,7 @@ static func has_race_assets(race_id: String) -> bool:
 	if not RACES_DATA.has(race_id):
 		return false
 	var thumb_path: String = str(RACES_DATA[race_id].get("thumb", ""))
-	if thumb_path.is_empty() or not ResourceLoader.exists(thumb_path):
+	if thumb_path.is_empty() or not (ResourceLoader.exists(thumb_path) or FileAccess.file_exists(thumb_path)):
 		return false
 	var PaperdollRenderer = load("res://scripts/art/paperdoll_renderer.gd")
 	if PaperdollRenderer and PaperdollRenderer.has_method("has_race_assets"):
