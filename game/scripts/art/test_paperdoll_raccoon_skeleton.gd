@@ -88,26 +88,28 @@ func _initialize() -> void:
 	else:
 		print("  ✓ poses/raccoon 目錄存在")
 
-	# 3. 驗證零美術佔位圖（無任何 png / webp / jpg 圖片產生，只放 .gitkeep）
+	# 3. 驗證 7 大槽位美術切片均已就緒 (128x128 與 512x512)
 	var raccoon_global_dir := ProjectSettings.globalize_path(base_path)
-	var da := DirAccess.open(raccoon_global_dir)
-	var image_files_found: Array[String] = []
-	if da:
-		for sid in expected_slots:
-			var sub_da := DirAccess.open("%s/%s" % [raccoon_global_dir, sid])
-			if sub_da:
-				sub_da.list_dir_begin()
-				var fn := sub_da.get_next()
-				while fn != "":
-					if fn.ends_with(".png") or fn.ends_with(".webp") or fn.ends_with(".jpg"):
-						image_files_found.append("%s/%s" % [sid, fn])
-					fn = sub_da.get_next()
-				sub_da.list_dir_end()
-	if not image_files_found.is_empty():
-		push_error("發現意外產生的圖片檔案（違背零美術佔位圖要求）: %s" % str(image_files_found))
+	var missing_files: Array[String] = []
+	var expected_slice_files := {
+		"back_curio": ["curio_raccoon_coaxial_ring_antenna_tail.png", "curio_raccoon_coaxial_ring_antenna_tail_512.png"],
+		"chassis": ["chassis_raccoon_orbit_aqua_default.png", "chassis_raccoon_orbit_aqua_default_512.png"],
+		"costume": ["costume_raccoon_space_explorer_harness.png", "costume_raccoon_space_explorer_harness_512.png"],
+		"head_unit": ["head_raccoon_parabolic_radar_dish.png", "head_raccoon_parabolic_radar_dish_512.png"],
+		"optic_core": ["face_raccoon_hud_polarizer_visor.png", "face_raccoon_hud_polarizer_visor_512.png"],
+		"weapon": ["weapon_raccoon_anti_gravity_pulse_blaster.png", "weapon_raccoon_anti_gravity_pulse_blaster_512.png"],
+		"winding_key": ["key_raccoon_quad_solar_sail.png", "key_raccoon_quad_solar_sail_512.png"]
+	}
+	for sid in expected_slots:
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [raccoon_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("星巡浣熊切片檔案缺失: %s" % str(missing_files))
 		ok = false
 	else:
-		print("  ✓ 嚴格恪守零美術佔位圖，7 槽位目錄下無任何圖片資產，僅保留 .gitkeep")
+		print("  ✓ 星巡浣熊 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 4. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog) 能讀到 raccoon
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -168,25 +170,26 @@ func _initialize() -> void:
 	else:
 		print("  ✓ WardrobeDialog 種族過濾晶片包含 raccoon (浣熊)")
 
-	# 驗證無圖時走安全 fallback，回傳 null，不崩潰且不借圖
-	var dummy_map: Dictionary = PaperdollRenderer.build_paperdoll_map("raccoon")
-	var dummy_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("raccoon")
-	if dummy_map.size() != 7:
-		push_error("build_paperdoll_map('raccoon') 槽位數不為 7: %d" % dummy_map.size())
+	# 驗證 7 大槽位切片貼圖解析與載入
+	var raccoon_map: Dictionary = PaperdollRenderer.build_paperdoll_map("raccoon")
+	var raccoon_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("raccoon")
+	if raccoon_map.size() != 7:
+		push_error("build_paperdoll_map('raccoon') 槽位數不為 7: %d" % raccoon_map.size())
 		ok = false
 	for sid in expected_slots:
-		var tex: Texture2D = dummy_tex.get(sid)
-		if tex != null:
-			push_error("raccoon 尚未出圖，槽位 %s 貼圖預期為 null，但載入了: %s" % [sid, str(tex)])
+		var tex: Texture2D = raccoon_tex.get(sid)
+		if tex == null:
+			push_error("槽位 %s 貼圖載入失敗，為 null！" % sid)
 			ok = false
-	print("  ✓ PaperdollRenderer 針對無圖 raccoon 7 大槽位安全解析並回傳 null，無例外")
+		else:
+			print("  ✓ 槽位 %-12s 成功載入貼圖: %s (%dx%d)" % [sid, str(raccoon_map.get(sid)), tex.get_width(), tex.get_height()])
 
-	# 驗證前端防護守衛 has_race_assets 回傳 false（未具備素材前安全隱藏，不露出空卡）
-	if PaperdollSelectClass.has_race_assets("raccoon"):
-		push_error("PaperdollSelectClass.has_race_assets('raccoon') 預期回傳 false (安全隱藏)，但回傳 true！")
+	# 驗證前端防護守衛 has_race_assets 回傳 true（具備素材後正式解鎖）
+	if not PaperdollSelectClass.has_race_assets("raccoon"):
+		push_error("PaperdollSelectClass.has_race_assets('raccoon') 回傳 false！")
 		ok = false
 	else:
-		print("  ✓ PaperdollSelectDemo.has_race_assets('raccoon') 正確回傳 false，創角介面安全隱藏未就緒新族")
+		print("  ✓ PaperdollSelectClass.has_race_assets('raccoon') 正確回傳 true，創角與衣櫥介面完全解鎖！")
 
 	print("\n=======================================================")
 	if ok:
