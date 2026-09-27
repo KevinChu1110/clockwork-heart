@@ -12,6 +12,7 @@ const CALIBRATION_SCRAP_COST: int = 5
 
 signal part_calibrated(slot_id: String, part: Dictionary, result: Dictionary)
 signal part_dropped(part: Dictionary)
+signal part_dismantled(part: Dictionary, scrap_gain: int)
 
 static var player_parts: Dictionary = {}
 static var core_inventory: Array = []
@@ -156,6 +157,18 @@ const TIER_ORDER: Array[String] = [
 	TIER_GREEN,
 	TIER_RED
 ]
+
+## 機芯拆解回收鐵屑數量表（寫死對照表，精神對齊既有裝備拆解：灰1／白2／橘3／藍4／紫5／金6／綠8／紅10）
+const CORE_DISMANTLE_SCRAP_MAP: Dictionary = {
+	TIER_GRAY: 1,
+	TIER_WHITE: 2,
+	TIER_ORANGE: 3,
+	TIER_BLUE: 4,
+	TIER_PURPLE: 5,
+	TIER_GOLD: 6,
+	TIER_GREEN: 8,
+	TIER_RED: 10,
+}
 
 const TIER_MIN_SCORES: Dictionary = {
 	TIER_GRAY: -10,
@@ -1425,3 +1438,131 @@ static func roll_and_add_battle_drop(arg1: Variant = null, arg2: String = "stage
 ## 戰鬥勝利掛鉤（別名，支援傳入來源：關卡／巨偶，支援指定槽位鎖定）
 static func on_battle_won(arg1: Variant = null, arg2: String = "stage", slot_override: String = "") -> Dictionary:
 	return roll_and_add_battle_drop(arg1, arg2, slot_override)
+
+
+## 取得機芯拆解所能獲得的鐵屑數量（寫死對照表：灰1／白2／橘3／藍4／紫5／金6／綠8／紅10）
+static func get_dismantle_scrap_yield(part: Dictionary) -> int:
+	if part.is_empty():
+		return 0
+	var tier_id: String = str(part.get("tier", TIER_WHITE)).to_lower().strip_edges()
+	match tier_id:
+		"灰", "gray": return 1
+		"白", "white": return 2
+		"橘", "orange": return 3
+		"藍", "青", "blue": return 4
+		"紫", "purple": return 5
+		"金", "gold": return 6
+		"綠", "green": return 8
+		"紅", "red": return 10
+	if CORE_DISMANTLE_SCRAP_MAP.has(tier_id):
+		return int(CORE_DISMANTLE_SCRAP_MAP[tier_id])
+	return 2
+
+
+## 增加玩家鐵屑（使用既有道具 iron_scrap）
+static func add_player_scrap(amount: int) -> bool:
+	if amount <= 0:
+		return true
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var inv: Node = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+		if inv and inv.has_method("add_item"):
+			var ok = bool(inv.call("add_item", "iron_scrap", amount))
+			if ok:
+				return true
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs and "inventory" in gs and gs.inventory is Dictionary:
+			var cur: int = int(gs.inventory.get("iron_scrap", 0))
+			gs.inventory["iron_scrap"] = cur + amount
+			return true
+	return false
+
+
+## 檢查指定部件是否為已裝備狀態（已裝備槽上的機芯不可拆）
+static func is_part_equipped(part_or_uid: Variant) -> bool:
+	var target_uid := ""
+	if typeof(part_or_uid) == TYPE_STRING:
+		target_uid = str(part_or_uid).strip_edges()
+	elif typeof(part_or_uid) == TYPE_DICTIONARY:
+		target_uid = str(part_or_uid.get("uid", "")).strip_edges()
+
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs and "core_slots" in gs and gs.core_slots is Dictionary:
+			for sid in gs.core_slots.keys():
+				var sp = gs.core_slots[sid]
+				if typeof(sp) == TYPE_DICTIONARY and not sp.is_empty():
+					if not target_uid.is_empty() and str(sp.get("uid", "")) == target_uid:
+						return true
+					if typeof(part_or_uid) == TYPE_DICTIONARY and sp == part_or_uid:
+						return true
+	return false
+
+
+## 拆解未裝備機芯部件為既有鐵屑 (iron_scrap)
+## 遵循規範：已裝備不可拆、各色階對照表、扣除背包部件、鐵屑入袋
+static func dismantle_part(part_or_uid: Variant) -> Dictionary:
+	var uid := ""
+	var target_part: Dictionary = {}
+	if typeof(part_or_uid) == TYPE_STRING:
+		uid = str(part_or_uid).strip_edges()
+	elif typeof(part_or_uid) == TYPE_DICTIONARY:
+		target_part = part_or_uid
+		uid = str(part_or_uid.get("uid", "")).strip_edges()
+
+	if uid.is_empty() and target_part.is_empty():
+		return {"ok": false, "reason": "invalid_argument", "message": "無效的機芯參數"}
+
+	# 1. 檢查是否已裝備槽位：已裝備不可拆解！
+	if is_part_equipped(part_or_uid):
+		return {"ok": false, "reason": "is_equipped", "message": "已裝備槽上的機芯不可拆"}
+
+	# 2. 檢查背包中是否存在此機芯
+	var inv_list := get_inventory()
+	var found_idx := -1
+	for i in range(inv_list.size()):
+		var p = inv_list[i]
+		if typeof(p) == TYPE_DICTIONARY:
+			if not uid.is_empty() and str(p.get("uid", "")) == uid:
+				target_part = p
+				found_idx = i
+				break
+			elif target_part.is_empty() == false and p == target_part:
+				target_part = p
+				found_idx = i
+				break
+
+	if found_idx < 0:
+		return {"ok": false, "reason": "not_in_inventory", "message": "背包中找不到該未裝備機芯"}
+
+	# 3. 計算獲得鐵屑數量
+	var scrap_gain := get_dismantle_scrap_yield(target_part)
+
+	# 4. 從背包中移除機芯
+	var part_uid_to_remove: String = uid if not uid.is_empty() else str(target_part.get("uid", ""))
+	var removed_part := remove_part_from_inventory(part_uid_to_remove)
+	if removed_part.is_empty():
+		if found_idx >= 0 and found_idx < core_inventory.size():
+			removed_part = core_inventory[found_idx]
+			core_inventory.remove_at(found_idx)
+			inventory = core_inventory
+
+	# 5. 增加鐵屑到玩家背包 (iron_scrap)
+	add_player_scrap(scrap_gain)
+
+	# 6. 發出通知訊號
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var cs: Node = (tree as SceneTree).root.get_node_or_null("CoreSystem")
+		if cs and cs.has_signal("part_dismantled"):
+			cs.emit_signal("part_dismantled", target_part, scrap_gain)
+
+	return {
+		"ok": true,
+		"iron_scrap": scrap_gain,
+		"scrap": scrap_gain,
+		"part": target_part,
+		"tier": target_part.get("tier", TIER_WHITE),
+		"message": "成功拆解機芯，獲得 %d 鐵屑" % scrap_gain
+	}
