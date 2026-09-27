@@ -3100,5 +3100,7 @@
   "巨偶蓄力中… %.1f 秒後可格擋": "Colossus charging… parryable in %.1f s",
   "蓄力必殺": "Charged Strike",
   "現在按 J 或點發條格擋！": "Press J or tap Windup Parry now!",
-  "現在點發條格擋！": "Tap Windup Parry now!"
+  "現在點發條格擋！": "Tap Windup Parry now!",
+  "吃力 · 受傷 ×1.2": "Strained · Dmg ×1.2",
+  "過載 · 受傷 ×1.5": "Overload · Dmg ×1.5"
 }

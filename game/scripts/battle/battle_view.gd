@@ -28,6 +28,7 @@ signal battle_finished(won: bool)
 @onready var player_name_l: Label = %PlayerName
 @onready var banner: Label = %Banner
 @onready var parry_hint: Label = %ParryHint
+@onready var resist_notice: Label = get_node_or_null("%ResistNotice") as Label
 @onready var countdown: Label = %Countdown
 @onready var countdown_sub: Label = %CountdownSub
 @onready var telegraph: ColorRect = %TelegraphFlash
@@ -116,6 +117,15 @@ static var _feet_frac_cache: Dictionary = {}
 ## `_t("A %d") % [n]` 查得到表，`_t("A %d" % [n])` 查不到。
 static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
+
+
+## 玩家 underlevel 易傷係數戰鬥提示（安全 ×1.0 不顯示；吃力 ×1.2；過載 ×1.5）
+static func format_underlevel_vulnerability(mult: float) -> String:
+	if mult >= 1.49:
+		return _t("過載") + " · " + _t("受傷 ×1.5")
+	elif mult >= 1.19:
+		return _t("吃力") + " · " + _t("受傷 ×1.2")
+	return ""
 
 func _is_world_mode(mode: String) -> bool:
 	var WC = load("res://scripts/world/world_content.gd")
@@ -530,6 +540,17 @@ func _apply_hud_chrome() -> void:
 		countdown_sub.add_theme_constant_override("shadow_offset_x", 1)
 		countdown_sub.add_theme_constant_override("shadow_offset_y", 1)
 
+	_ensure_resist_hud()
+	if resist_notice:
+		if huninn:
+			resist_notice.add_theme_font_override("font", huninn)
+		resist_notice.add_theme_font_size_override("font_size", 13)
+		resist_notice.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
+		resist_notice.add_theme_constant_override("shadow_offset_x", 1)
+		resist_notice.add_theme_constant_override("shadow_offset_y", 1)
+		resist_notice.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+		resist_notice.add_theme_constant_override("outline_size", 2)
+
 	## 戰鬥 log：多巴胺亮色底板（奶油白 #FFFDF8，深藍紫描邊 #1F1A3A，圓角 20px）
 	if log_label and log_label.get_parent() and not (log_label.get_parent() is PanelContainer):
 		var parent_ctrl: Control = log_label.get_parent() as Control
@@ -661,12 +682,82 @@ func _apply_safe_hud() -> void:
 		_log_panel.offset_top = -224.0 - m.w
 	if _rage_ready:
 		_rage_ready.offset_left = m.x + 16.0
-		_rage_ready.offset_top = m.y + 156.0
+		var r_top: float = m.y + 156.0
+		if resist_notice and resist_notice.visible:
+			r_top = m.y + 182.0
+		_rage_ready.offset_top = r_top
 
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_RESIZED and _hud_styled:
 		_apply_safe_hud()
+
+
+func _ensure_resist_hud() -> void:
+	if resist_notice != null and is_instance_valid(resist_notice):
+		return
+	if has_node("%ResistNotice"):
+		resist_notice = get_node("%ResistNotice") as Label
+		return
+	var player_side := get_node_or_null("SideBars/PlayerSide") as Control
+	if player_side == null:
+		return
+	resist_notice = Label.new()
+	resist_notice.name = "ResistNotice"
+	resist_notice.unique_name_in_owner = true
+	resist_notice.visible = false
+	resist_notice.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	resist_notice.add_theme_font_size_override("font_size", 13)
+	player_side.add_child(resist_notice)
+
+
+func _apply_resist_notice_style(bg_col: Color, font_col: Color) -> void:
+	if resist_notice == null:
+		return
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg_col
+	sb.set_corner_radius_all(6)
+	sb.set_border_width_all(1)
+	sb.border_width_bottom = 3
+	sb.border_color = Color("#1F1A3A")
+	sb.content_margin_left = 8
+	sb.content_margin_right = 8
+	sb.content_margin_top = 2
+	sb.content_margin_bottom = 2
+	resist_notice.add_theme_stylebox_override("normal", sb)
+	resist_notice.add_theme_color_override("font_color", font_col)
+
+
+func _update_resist_notice(p: BattleUnit = null) -> void:
+	_ensure_resist_hud()
+	if resist_notice == null:
+		return
+	var mult: float = 1.0
+	if p != null:
+		mult = p.underlevel_damage_mult
+	elif sim != null and sim.player != null:
+		mult = sim.player.underlevel_damage_mult
+	elif sim != null and sim.player_stats != null and sim.player_stats.has("underlevel_damage_mult"):
+		mult = float(sim.player_stats.get("underlevel_damage_mult", 1.0))
+	elif GameState != null and int(GameState.get("current_suggest_lv")) > 0:
+		var s_lv := int(GameState.get("current_suggest_lv"))
+		var p_lv := int(GameState.get("level"))
+		var F = load("res://scripts/battle/formulas.gd")
+		if F and F.has_method("underlevel_damage_multiplier"):
+			mult = float(F.call("underlevel_damage_multiplier", p_lv, s_lv))
+
+	var txt := format_underlevel_vulnerability(mult)
+	if txt != "":
+		resist_notice.text = txt
+		if mult >= 1.49:
+			_apply_resist_notice_style(Color("#FF5E8A"), Color("#FFFFFF"))
+		else:
+			_apply_resist_notice_style(Color("#FFD028"), Color("#1F1A3A"))
+		resist_notice.visible = true
+	else:
+		resist_notice.text = ""
+		resist_notice.visible = false
+	_apply_safe_hud()
 
 
 func _ensure_weapon_dock() -> void:
@@ -1975,6 +2066,7 @@ func _refresh_hud() -> void:
 		if okey != _overlay_key:
 			_overlay_key = okey
 			_layout_battle_equipment_overlays()
+	_update_resist_notice(p)
 	## 場地機制 HUD（火圈／時鐘）優先於一般提示
 	if sim.hazard_kind != "" and sim.hazard_phase != "idle":
 		_update_hazard_hud()

@@ -3100,5 +3100,7 @@
   "巨偶蓄力中… %.1f 秒後可格擋": "Coloso cargando… se podrá parar en %.1f s",
   "蓄力必殺": "Golpe Cargado",
   "現在按 J 或點發條格擋！": "¡Pulsa J o toca Parada de Cuerda ahora!",
-  "現在點發條格擋！": "¡Toca Parada de Cuerda ahora!"
+  "現在點發條格擋！": "¡Toca Parada de Cuerda ahora!",
+  "吃力 · 受傷 ×1.2": "Difícil · Daño ×1.2",
+  "過載 · 受傷 ×1.5": "Sobrecarga · Daño ×1.5"
 }
