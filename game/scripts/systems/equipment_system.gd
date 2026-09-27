@@ -47,6 +47,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"hedgehog": "mist_darts",
 	"wolf": "rusty_blade",
 	"seahorse": "shard_focus",
+	"kangaroo": "wrap_gloves",
 }
 
 static func starter_weapon_id_for_race(race: String) -> String:
