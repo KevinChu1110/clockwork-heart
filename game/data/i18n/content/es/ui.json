@@ -3102,5 +3102,18 @@
   "現在按 J 或點發條格擋！": "¡Pulsa J o toca Parada de Cuerda ahora!",
   "現在點發條格擋！": "¡Toca Parada de Cuerda ahora!",
   "吃力 · 受傷 ×1.2": "Difícil · Daño ×1.2",
-  "過載 · 受傷 ×1.5": "Sobrecarga · Daño ×1.5"
+  "過載 · 受傷 ×1.5": "Sobrecarga · Daño ×1.5",
+  "灰": "Gris",
+  "白": "Blanco",
+  "橘": "Naranja",
+  "藍": "Azul",
+  "紫": "Púrpura",
+  "金": "Dorado",
+  "綠": "Verde",
+  "紅": "Rojo",
+  "【%s】": "[%s]",
+  "【白階】": "[Grado Blanco]",
+  "【%s · %s階】%s（%s · 剩餘校準：%d 次）": "[%s · Nivel %s] %s (%s · Calibraciones restantes: %d)",
+  "%s (%s階)\n%s\n%s": "%s (Nivel %s)\n%s\n%s",
+  "[color=#fc8]掉落機芯部件：【%s階】%s[/color]": "[color=#fc8]Pieza de mecanismo obtenida: [%s] %s[/color]"
 }

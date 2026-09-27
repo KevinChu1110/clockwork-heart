@@ -3102,5 +3102,18 @@
   "現在按 J 或點發條格擋！": "Press J or tap Windup Parry now!",
   "現在點發條格擋！": "Tap Windup Parry now!",
   "吃力 · 受傷 ×1.2": "Strained · Dmg ×1.2",
-  "過載 · 受傷 ×1.5": "Overload · Dmg ×1.5"
+  "過載 · 受傷 ×1.5": "Overload · Dmg ×1.5",
+  "灰": "Gray",
+  "白": "White",
+  "橘": "Orange",
+  "藍": "Blue",
+  "紫": "Purple",
+  "金": "Gold",
+  "綠": "Green",
+  "紅": "Red",
+  "【%s】": "[%s]",
+  "【白階】": "[White Tier]",
+  "【%s · %s階】%s（%s · 剩餘校準：%d 次）": "[%s · %s Tier] %s (%s · Calibrations Left: %d)",
+  "%s (%s階)\n%s\n%s": "%s (%s Tier)\n%s\n%s",
+  "[color=#fc8]掉落機芯部件：【%s階】%s[/color]": "[color=#fc8]Core part looted: [%s Tier] %s[/color]"
 }

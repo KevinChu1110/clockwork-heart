@@ -3748,8 +3748,8 @@ func _on_end(won: bool) -> void:
 			var drop_source := "colossus" if is_colossus else "stage"
 			drop_part = CoreSystem.roll_and_add_battle_drop(null, drop_source)
 			BattleSim.last_victory_core_part = drop_part
-			var tnm: String = str(drop_part.get("tier_name", "白"))
-			var snm: String = str(drop_part.get("slot_name", "機芯部件"))
+			var tnm: String = _t(str(drop_part.get("tier_name", "白")))
+			var snm: String = _t(str(drop_part.get("slot_name", "機芯部件")))
 			_append_log(_t("[color=#fc8]掉落機芯部件：【%s階】%s[/color]") % [tnm, snm])
 	if won:
 		if sim != null and sim.boss_fled:

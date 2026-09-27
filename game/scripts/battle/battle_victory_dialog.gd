@@ -249,7 +249,7 @@ func _build_ui() -> void:
 
 	_tier_lbl = Label.new()
 	_tier_lbl.name = "TierLabel"
-	_tier_lbl.text = "【白階】"
+	_tier_lbl.text = _t("【%s】") % _t("白階")
 	_tier_lbl.add_theme_font_size_override("font_size", 16)
 	_tier_lbl.add_theme_color_override("font_color", COLOR_GOLD)
 	if _cached_font:
@@ -382,7 +382,7 @@ func _refresh_display() -> void:
 
 	if _part.is_empty():
 		_slot_name_lbl.text = _t("機芯部件")
-		_tier_lbl.text = _t("【白階】")
+		_tier_lbl.text = _t("【%s】") % _t("白階")
 		_stats_lbl.text = ""
 		_desc_lbl.text = _t("已收進機芯背包")
 		return
@@ -402,7 +402,7 @@ func _refresh_display() -> void:
 		tier_color = cs.get_tier_color(tier_id)
 
 	_slot_name_lbl.text = _t(slot_name)
-	_tier_lbl.text = "【%s】" % _t(tier_name + "階")
+	_tier_lbl.text = _t("【%s】") % _t(tier_name + "階")
 	_tier_lbl.add_theme_color_override("font_color", tier_color if tier_id != "white" else COLOR_TEXT_DARK)
 
 	if sdb != null and _slot_icon != null:
