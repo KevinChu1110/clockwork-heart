@@ -46,5 +46,15 @@
     "4-2": 24,
     "4-3": 26,
     "4-4": 28
+  },
+  "pacing_timeline": {
+    "target_combat_hours_min": 40.0,
+    "target_combat_hours_max": 60.0,
+    "target_calendar_days_min": 7.0,
+    "target_calendar_days_max": 14.0,
+    "white_gear_hours": 47.44,
+    "white_gear_days": 11.01,
+    "calibrated_core_hours": 40.77,
+    "calibrated_core_days": 8.49
   }
 }

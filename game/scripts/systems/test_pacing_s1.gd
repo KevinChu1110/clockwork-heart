@@ -79,6 +79,17 @@ func _test_pacing_json() -> void:
 			_fail("endgame 區間不符：應為 26~30，得 %s~%s" % [str(eg.get("min_lv")), str(eg.get("max_lv"))])
 		print("  ok 章節節奏定義覆蓋 C0–C3 (1–15)、C4–C6 (16–25)、高難 (26–30)")
 
+	var pt: Dictionary = data.get("pacing_timeline", {})
+	if not pt.is_empty():
+		var h_min: float = float(pt.get("target_combat_hours_min", 0.0))
+		var h_max: float = float(pt.get("target_combat_hours_max", 0.0))
+		var d_min: float = float(pt.get("target_calendar_days_min", 0.0))
+		var d_max: float = float(pt.get("target_calendar_days_max", 0.0))
+		if h_min != 40.0 or h_max != 60.0 or d_min != 7.0 or d_max != 14.0:
+			_fail("pacing_timeline 目標區間不符：應為 40~60h 與 7~14d")
+		else:
+			print("  ok pacing_timeline 目標區間鎖定為 40~60h 與 7~14d")
+
 
 func _test_level_cap(gs: Node) -> void:
 	print("--- 2. 檢驗 GameState 等級上限與 add_xp 行為 ---")
