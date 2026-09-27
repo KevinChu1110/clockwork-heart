@@ -459,16 +459,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_kangaroo_caramel_bronze_default", "name_zh": "鐵拳袋鼠原廠焦糖暖褐赤銅素體", "desc": "多巴胺焦糖暖褐赤銅烤漆，冷軋鎢鋼雙螺旋彈簧腿，分節重力平衡長尾"}
 		]
+	},
+	"squirrel": {
+		"id": "squirrel",
+		"name_zh": "巡林松鼠",
+		"name_en": "The Timber Squirrel",
+		"archetype": "騎士 (Knight)",
+		"thumb": "res://assets/sprites/player/showcase/squirrel_idle_hd.png",
+		"desc": "翡翠深林巨木樹屋的特快信差與巡守騎士，栗木暖褐銅板素體，西洋擊劍花劍與九節齒輪大尾巴。",
+		"costumes": [
+			{"id": "costume_squirrel_canopy_courier_harness", "name_zh": "林冠信差遊俠短披風與擊劍皮扣裝甲", "desc": "翡翠墨綠單側輕量披風，金黃齒輪搭扣皮革胸帶與沖壓藤蔓銅徽"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現栗木暖褐沖壓銅板裝甲與九節齒輪陀螺大尾巴"}
+		],
+		"chassis": [
+			{"id": "chassis_squirrel_chestnut_bronze_default", "name_zh": "巡林松鼠原廠栗木暖褐沖壓銅板素體", "desc": "多巴胺栗木暖褐烤漆，奶油琺瑯面頰與胸板，鎢鋼冷軋球窩關節"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -946,6 +961,7 @@ func confirm_selection() -> void:
 				"wolf": gs.player_name = "荒原鋼狼"
 				"seahorse": gs.player_name = "琉璃海馬"
 				"kangaroo": gs.player_name = "鐵拳袋鼠"
+				"squirrel": gs.player_name = "巡林松鼠"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)

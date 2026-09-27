@@ -142,8 +142,8 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		var common_slice_clean := "%s/common/%s/%s.png" % [PAPERDOLL_ROOT, sid, clean_id]
 		if ResourceLoader.exists(common_slice_clean) or FileAccess.file_exists(common_slice_clean):
 			return common_slice_clean
-		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限二十四大正式族系）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo"]
+		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限二十五大正式族系）
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel"]
 		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
 			for other in all_races:
 				if str(other) == rid:
@@ -292,6 +292,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "chassis_seahorse_abyssal_cyan_default"
 			elif race == "kangaroo":
 				return "chassis_kangaroo_caramel_bronze_default"
+			elif race == "squirrel":
+				return "chassis_squirrel_chestnut_bronze_default"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -340,6 +342,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_seahorse_crown_visor"
 			elif race == "kangaroo":
 				return "head_kangaroo_steampunk_boxer_visor"
+			elif race == "squirrel":
+				return "head_squirrel_timber_fencer_beret"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -380,6 +384,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_seahorse_trident_coral_spire"
 			elif race == "kangaroo":
 				return "key_kangaroo_champion_double_ring"
+			elif race == "squirrel":
+				return "key_squirrel_acorn_filigree"
 			elif race == "fox":
 				return ""
 			return "key_classic_brass"
@@ -430,6 +436,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_seahorse_abyssal_scholar_harness"
 			elif race == "kangaroo":
 				return "costume_kangaroo_champion_belt_harness"
+			elif race == "squirrel":
+				return "costume_squirrel_canopy_courier_harness"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -472,6 +480,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "optic_seahorse_ocean_sapphire"
 			elif race == "kangaroo":
 				return "optic_kangaroo_amber_dial_core"
+			elif race == "squirrel":
+				return "face_squirrel_mint_crosshair_lens"
 			elif race == "boar":
 				return "core_molten_crimson"
 			return "core_cyan_emerald"
@@ -522,6 +532,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "weapon_seahorse_abyssal_prism_astrolabe"
 			elif race == "kangaroo":
 				return "weapon_kangaroo_piston_brass_knuckle"
+			elif race == "squirrel":
+				return "weapon_squirrel_emerald_clockwork_foil"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -570,6 +582,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_seahorse_twin_propeller_fins"
 			elif race == "kangaroo":
 				return "curio_kangaroo_steam_exhaust_backpack"
+			elif race == "squirrel":
+				return "curio_squirrel_articulated_cog_gyro_tail"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -817,7 +831,7 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
@@ -1382,7 +1396,7 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 24,
+			"total_races": 25,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
@@ -1407,7 +1421,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "hedgehog", "aliases": ["ratchet_hedgehog", "bazaar_hedgehog", "needle_hedgehog", "dawn_hedgehog"], "name_zh": "棘輪刺蝟", "name_en": "The Ratchet Hedgehog", "class_archetype": "忍者 (Ninja)"},
 				{"race_id": "wolf", "aliases": ["scrap_wolf", "dune_wolf", "rust_wolf", "wasteland_wolf"], "name_zh": "荒原鋼狼", "name_en": "The Scrap Wolf", "class_archetype": "騎士 (Knight)"},
 				{"race_id": "seahorse", "aliases": ["crystal_seahorse", "abyssal_seahorse", "ocean_seahorse", "tide_seahorse"], "name_zh": "琉璃海馬", "name_en": "The Crystal Seahorse", "class_archetype": "法師 (Mage)"},
-				{"race_id": "kangaroo", "aliases": ["boxer_kangaroo", "steam_kangaroo", "brass_kangaroo", "champion_kangaroo"], "name_zh": "鐵拳袋鼠", "name_en": "The Boxer Kangaroo", "class_archetype": "武術家 (Monk)"}
+				{"race_id": "kangaroo", "aliases": ["boxer_kangaroo", "steam_kangaroo", "brass_kangaroo", "champion_kangaroo"], "name_zh": "鐵拳袋鼠", "name_en": "The Boxer Kangaroo", "class_archetype": "武術家 (Monk)"},
+				{"race_id": "squirrel", "aliases": ["timber_squirrel", "canopy_squirrel", "emerald_squirrel", "courier_squirrel"], "name_zh": "巡林松鼠", "name_en": "The Timber Squirrel", "class_archetype": "騎士 (Knight)"}
 			]
 		}
 	}

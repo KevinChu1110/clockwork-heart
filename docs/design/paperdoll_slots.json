@@ -271,6 +271,12 @@
             "name": "鐵拳袋鼠原廠焦糖暖褐赤銅素體",
             "race": "kangaroo",
             "tier": "common"
+          },
+          {
+            "id": "chassis_squirrel_chestnut_bronze_default",
+            "name": "巡林松鼠原廠栗木暖褐沖壓銅板素體",
+            "race": "squirrel",
+            "tier": "common"
           }
         ]
       },
@@ -437,6 +443,12 @@
             "name": "蒸氣拳擊長耳護額頭盔",
             "race": "kangaroo",
             "tier": "common"
+          },
+          {
+            "id": "head_squirrel_timber_fencer_beret",
+            "name": "折疊薄銅耳與巡林擊劍貝雷帽",
+            "race": "squirrel",
+            "tier": "common"
           }
         ]
       },
@@ -576,6 +588,11 @@
           {
             "id": "key_kangaroo_champion_double_ring",
             "name": "沖壓黃銅雙環冠軍發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_squirrel_acorn_filigree",
+            "name": "三環橡果鏤空黃銅發條鑰匙",
             "tier": "common"
           }
         ]
@@ -796,6 +813,12 @@
             "name": "巨輪城工匠拳王加固背帶皮甲",
             "race": "kangaroo",
             "tier": "common"
+          },
+          {
+            "id": "costume_squirrel_canopy_courier_harness",
+            "name": "林冠信差遊俠短披風與擊劍皮扣裝甲",
+            "race": "squirrel",
+            "tier": "common"
           }
         ]
       },
@@ -952,6 +975,12 @@
             "id": "optic_kangaroo_amber_dial_core",
             "name": "雙聯琥珀光學儀表目鏡",
             "race": "kangaroo",
+            "tier": "common"
+          },
+          {
+            "id": "face_squirrel_mint_crosshair_lens",
+            "name": "薄荷嫩綠十字準星光學目鏡",
+            "race": "squirrel",
             "tier": "common"
           }
         ]
@@ -1116,6 +1145,12 @@
             "id": "weapon_kangaroo_piston_brass_knuckle",
             "name": "氣壓活塞衝壓黃銅拳套",
             "weapon_type": "fist",
+            "tier": "common"
+          },
+          {
+            "id": "weapon_squirrel_emerald_clockwork_foil",
+            "name": "翡翠發條細劍",
+            "weapon_type": "sword",
             "tier": "common"
           }
         ]
@@ -1284,13 +1319,19 @@
             "name": "雙聯微型高壓蒸氣散熱背包",
             "race": "kangaroo",
             "tier": "common"
+          },
+          {
+            "id": "curio_squirrel_articulated_cog_gyro_tail",
+            "name": "九節鉸鏈同軸沖壓鏤空黃銅齒輪陀螺大尾巴",
+            "race": "squirrel",
+            "tier": "common"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 24,
+    "total_races": 25,
     "races": [
       {
         "race_id": "rabbit",
@@ -2906,6 +2947,77 @@
           "portrait_dialogue": "game/assets/sprites/portraits/boxer_kangaroo.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/kangaroo/{slot_id}/{item_id}.png [待產出]"
         }
+      },
+      {
+        "race_id": "squirrel",
+        "aliases": [
+          "timber_squirrel",
+          "canopy_squirrel",
+          "emerald_squirrel",
+          "courier_squirrel"
+        ],
+        "name_zh": "巡林松鼠",
+        "name_en": "The Timber Squirrel",
+        "class_archetype": "騎士 (Knight)",
+        "origin_realm": "R03 翡翠深林·發條蔓谷 / Emerald Woods: Vine & Gear Forest",
+        "lore_anchor": "常駐於翡翠深林「巨木樹屋聚落」與「觀風石碑塔」的發條巡林信差，穿梭於「蔓谷天梯引道」、「發條藤蔓彈射平台」與「高架重軌引橋」之間，通體由沖壓栗木暖褐薄銅板件、溫潤奶油米白琺瑯面頰、折疊薄銅耳與擊劍貝雷帽、薄荷嫩綠光學水晶目鏡、三環橡果鏤空黃銅發條鑰匙與九節齒輪陀螺大尾巴組裝而成，以右手單持翡翠發條細劍、林間靈巧騰躍與停拍看破突刺見長的林冠擊劍客",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (西洋花劍擊劍架式、靈巧林冠信差身軀)",
+          "posture": "靈巧擊劍戒備架式，右手單持翡翠發條細劍斜指斜下方，左手微曲收束於腰間維持平衡，身後九節齒輪蓬鬆大尾巴微幅擺動，背部三環橡果鏤空黃銅鑰匙勻速自轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "沖壓栗木暖褐薄銅頭殼，配有溫潤奶油米白琺瑯面頰板與雙顆外露微型沉頭螺釘，頭頂斜戴翡翠墨綠微縮金屬貝雷帽配金色發條飛羽，雙眼為圓形薄荷嫩綠光學水晶目鏡內刻同心圓十字準星",
+          "ears": "雙聯折疊式薄銅風向感知耳，耳根由雙軸黃銅萬向節鉸鏈支撐，耳背帶有杏仁金橙色導角漆面與風向刻度槽，隨林間風向靈活微幅偏轉",
+          "torso_and_limbs": "背部與軀幹覆蓋沖壓栗木暖褐薄銅板件（#8B5A2B），面頰與胸腹前側為溫潤奶油米白琺瑯板件（#FFFDF8），四肢關節為冷軋鎢鋼球窩鉸鏈（#4A5568），足部為防滑耐磨工程橡膠金屬爪靴配三枚抓地齒",
+          "tail": "由九節同軸鉸鏈串接的沖壓鏤空黃銅齒輪蓬鬆大尾巴，中央貫穿彈性軟鋼絲傳動軸與高轉速陀螺平衡儀，待機時豎立微幅擺動，突刺時展開維持動態平衡",
+          "weapon_system": "右手單持專利「翡翠發條細劍 / 穿林機關花劍」，金黃鏤空齒輪圓盤護手配鎢鋼刻度細針刃，左手自然微曲收束維持平衡，完全符合 0-MKT7 與 knight/sword 體系，底層掛載 equipment.json 既有 meager_edge 與 knight_saber"
+        },
+        "color_palette": {
+          "primary": "#8B5A2B (沖壓栗木暖褐薄銅板件)",
+          "secondary": "#FFFDF8 (溫潤奶油米白琺瑯面頰與前胸護板)",
+          "accent": "#FFD028 (多巴胺金黃三環橡果發條鑰匙與齒輪搭扣)",
+          "detail": "#4ED86A (薄荷嫩綠光學水晶目鏡與細劍晶核)",
+          "warm_highlight": "#D27D2D (杏仁金橙大尾巴外層齒輪片與耳背飾板)",
+          "costume_emerald": "#2D8A4E (深林翡翠墨綠短披風與擊劍貝雷帽)",
+          "titanium_frame": "#4A5568 (冷軋鎢鋼四肢球窩關節與細針刃劍身)",
+          "outline": "#1F1A3A (深藍紫厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_squirrel.png (品牌形象立牌)",
+              "web/media/hero/char_squirrel.png (官網英雄展示立繪)",
+              "docs/art/timber_squirrel_concept.png (概念立繪)",
+              "game/assets/sprites/player/squirrel_idle.png (64x64 待機)",
+              "game/assets/sprites/player/squirrel_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/squirrel_idle.png (隊伍待機)",
+              "game/assets/sprites/player/squirrel_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/squirrel_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/squirrel_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/poses/squirrel/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/squirrel.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/timber_squirrel.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/squirrel/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_squirrel.png (400x840) [待產出]",
+          "branding_concept_art": "docs/art/timber_squirrel_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_squirrel.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/squirrel_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/squirrel_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/squirrel_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/squirrel_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/squirrel_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/squirrel_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/squirrel_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/squirrel/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/squirrel.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/timber_squirrel.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/squirrel/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -2953,7 +3065,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 24 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 25 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -2975,7 +3087,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "二十四大種族軀幹均維持 2.0~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬/熊/象) 由渲染器微調縮放 1.05x"
+        "rule": "二十五大種族軀幹均維持 2.0~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬/熊/象) 由渲染器微調縮放 1.05x"
       }
     ]
   },
@@ -3007,7 +3119,8 @@
         "game/assets/sprites/player/paperdoll/hedgehog/",
         "game/assets/sprites/player/paperdoll/wolf/",
         "game/assets/sprites/player/paperdoll/seahorse/",
-        "game/assets/sprites/player/paperdoll/kangaroo/"
+        "game/assets/sprites/player/paperdoll/kangaroo/",
+        "game/assets/sprites/player/paperdoll/squirrel/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
