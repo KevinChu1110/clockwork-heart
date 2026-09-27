@@ -3113,5 +3113,16 @@
   "【金階】": "[Grado Dorado]",
   "【綠階】": "[Grado Verde]",
   "【紅階】": "[Grado Rojo]",
-  "鐵屑 +0": "Chatarra +0"
+  "鐵屑 +0": "Chatarra +0",
+  "灰": "Gris",
+  "白": "Blanco",
+  "橘": "Naranja",
+  "藍": "Azul",
+  "紫": "Púrpura",
+  "金": "Dorado",
+  "綠": "Verde",
+  "紅": "Rojo",
+  "【%s · %s階】%s（%s · 剩餘校準：%d 次）": "[%s · Nivel %s] %s (%s · Calibraciones restantes: %d)",
+  "%s (%s階)\n%s\n%s": "%s (Nivel %s)\n%s\n%s",
+  "[color=#fc8]掉落機芯部件：【%s階】%s[/color]": "[color=#fc8]Pieza de mecanismo obtenida: [%s] %s[/color]"
 }

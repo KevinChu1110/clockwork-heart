@@ -609,6 +609,8 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 		var cost: int = CoreSystem.get_calibration_scrap_cost()
 		var has_scrap: bool = (scrap >= cost)
 
+		name_lbl.text = _t(str(def.get("name", "")))
+		btn.tooltip_text = "%s\n%s" % [_t(str(def.get("name", ""))), _t(str(def.get("desc", "")))]
 		icon.modulate = tc
 		tier_lbl.text = _t(tnm + "階")
 		tier_lbl.add_theme_color_override("font_color", tc if tid != "white" else COLOR_TEXT_DARK)
@@ -638,7 +640,7 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 		var tip: String = str(res.get("message", ""))
 		var tip_k: String = str(res.get("message_key", ""))
 		_last_calibrate_state = {
-			"slot_name": slot_name,
+			"slot_name": str(def.get("name", "")),
 			"tip": tip,
 			"tip_key": tip_k,
 			"tier_name": tnm,
@@ -651,17 +653,19 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 	btn.pressed.connect(func():
 		AudioManager.play_ui()
 		var p = CoreSystem.get_player_part(slot_id)
-		var tnm: String = str(p.get("tier_name", "白"))
+		var tnm: String = _t(str(p.get("tier_name", "白")))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
 		var scrap: int = CoreSystem.get_player_scrap()
 		var cost: int = CoreSystem.get_calibration_scrap_cost()
+		var sname: String = _t(str(def.get("name", "")))
+		var sdesc: String = _t(str(def.get("desc", "")))
 		if is_instance_valid(_msg_label):
 			if rem <= 0:
-				_msg_label.text = _t("【%s】%s（已達最大校準次數上限 7 次）") % [slot_name, slot_desc]
+				_msg_label.text = _t("【%s】%s（已達最大校準次數上限 7 次）") % [sname, sdesc]
 			elif scrap < cost:
-				_msg_label.text = _t("【%s】%s · 鐵屑不足（持有 %d/%d）· 剩餘校準 %d 次") % [slot_name, slot_desc, scrap, cost, rem]
+				_msg_label.text = _t("【%s】%s · 鐵屑不足（持有 %d/%d）· 剩餘校準 %d 次") % [sname, sdesc, scrap, cost, rem]
 			else:
-				_msg_label.text = _t("【%s】%s（目前色階：%s階 · 每次消耗 %d 鐵屑 · 剩餘校準 %d 次）") % [slot_name, slot_desc, tnm, cost, rem]
+				_msg_label.text = _t("【%s】%s（目前色階：%s階 · 每次消耗 %d 鐵屑 · 剩餘校準 %d 次）") % [sname, sdesc, tnm, cost, rem]
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	)
 

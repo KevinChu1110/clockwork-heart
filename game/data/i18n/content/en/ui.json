@@ -3113,5 +3113,16 @@
   "【金階】": "[Gold Tier]",
   "【綠階】": "[Green Tier]",
   "【紅階】": "[Red Tier]",
-  "鐵屑 +0": "Scrap Iron +0"
+  "鐵屑 +0": "Scrap Iron +0",
+  "灰": "Gray",
+  "白": "White",
+  "橘": "Orange",
+  "藍": "Blue",
+  "紫": "Purple",
+  "金": "Gold",
+  "綠": "Green",
+  "紅": "Red",
+  "【%s · %s階】%s（%s · 剩餘校準：%d 次）": "[%s · %s Tier] %s (%s · Calibrations Left: %d)",
+  "%s (%s階)\n%s\n%s": "%s (%s Tier)\n%s\n%s",
+  "[color=#fc8]掉落機芯部件：【%s階】%s[/color]": "[color=#fc8]Core part looted: [%s Tier] %s[/color]"
 }
