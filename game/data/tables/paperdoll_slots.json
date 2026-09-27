@@ -235,6 +235,12 @@
             "name": "沖壓耐磨暖橘金屬覆鱗板件",
             "race": "pangolin",
             "tier": "common"
+          },
+          {
+            "id": "chassis_otter_abyssal_cyan_default",
+            "name": "深海天藍耐壓電鍍合金板件",
+            "race": "otter",
+            "tier": "common"
           }
         ]
       },
@@ -365,6 +371,12 @@
             "name": "沖壓薄黃銅扇形防砂拾音耳",
             "race": "pangolin",
             "tier": "common"
+          },
+          {
+            "id": "head_otter_diver_bell_visor",
+            "name": "古典潛水鐘頭盔護架",
+            "race": "otter",
+            "tier": "common"
           }
         ]
       },
@@ -474,6 +486,11 @@
           {
             "id": "key_pangolin_coil_scale_spiral_gold",
             "name": "同心渦卷金鱗發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_otter_nautical_rudder_helm",
+            "name": "雙舵輪金黃航海發條鑰匙",
             "tier": "common"
           }
         ]
@@ -658,6 +675,12 @@
             "name": "齒輪營地拾荒工匠工裝背心",
             "race": "pangolin",
             "tier": "common"
+          },
+          {
+            "id": "costume_otter_deepsea_salvage_harness",
+            "name": "海淵打撈工匠耐壓雙肩吊帶工裝",
+            "race": "otter",
+            "tier": "common"
           }
         ]
       },
@@ -778,6 +801,12 @@
             "id": "face_pangolin_sky_blue_optic_domes",
             "name": "雙聯星輝天藍雙聯透鏡光學目鏡",
             "race": "pangolin",
+            "tier": "common"
+          },
+          {
+            "id": "face_otter_phosphor_green_gauges",
+            "name": "雙聯薄荷螢綠石英泡罩目鏡",
+            "race": "otter",
             "tier": "common"
           }
         ]
@@ -906,6 +935,12 @@
             "id": "weapon_pangolin_dune_drill_claw",
             "name": "渦輪掘進破甲機關爪",
             "weapon_type": "claw",
+            "tier": "common"
+          },
+          {
+            "id": "weapon_otter_abyssal_anchor_cleaver",
+            "name": "海錨防禦重斧",
+            "weapon_type": "axe",
             "tier": "common"
           }
         ]
@@ -1038,13 +1073,19 @@
             "name": "七節沖壓厚鋼金屬覆鱗尾",
             "race": "pangolin",
             "tier": "common"
+          },
+          {
+            "id": "curio_otter_articulated_rudder_tail",
+            "name": "五節鉸鏈龍骨轉向舵尾",
+            "race": "otter",
+            "tier": "common"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 18,
+    "total_races": 19,
     "races": [
       {
         "race_id": "rabbit",
@@ -2235,6 +2276,75 @@
           "portrait_dialogue": "game/assets/sprites/portraits/dune_pangolin.png (384x480) [既有]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/pangolin/{slot_id}/{item_id}.png [既有]"
         }
+      },
+      {
+        "race_id": "otter",
+        "aliases": [
+          "tidal_otter",
+          "abyssal_otter",
+          "clockwork_otter",
+          "diver_otter"
+        ],
+        "name_zh": "浪花海獺",
+        "name_en": "The Tidal Otter",
+        "class_archetype": "戰士 (Viking)",
+        "origin_realm": "R05 琉璃汪洋·發條海淵 / Crystal Ocean: The Clockwork Abyss",
+        "lore_anchor": "穿梭於琉璃汪洋「水下發條宮殿」與「藍晶石海淵平原」的發條海獺，漫步於「海淵地表與馬賽克步道」的「發條珊瑚群」之間，通體由深海耐壓天藍鍍鈦板件、象牙米白琺瑯面腹甲、青銅防水透氣拾音耳、吸震黑色矽膠潛水靴與五節龍骨舵尾組裝而成，以右手單持海錨防禦重斧、踏浪浮力下墜破勢與巨斧旋渦重劈見長的海淵開拓戰士",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (圓滾滾敦實流線型耐壓體態)",
+          "posture": "踏浪伏波沉錨架式，右手單提青銅海錨重斧橫架身前，左手平伸化掌導流，身後五節龍骨舵尾自然翹起，背部雙舵輪發條鑰匙勻速自轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "圓潤球形耐壓金屬頭部，配有象牙米白琺瑯面頰板與前額水壓平衡閥，雙眼為直徑24px薄荷螢綠石英泡罩光學目鏡，內含同心圓水壓測距儀刻度圈與左右六根鍍銀流速探針鬍鬚",
+          "ears": "一對微型青銅防水透氣拾音耳閥，內嵌防砂隔水濾膜，外緣帶有黃銅緊固圓環",
+          "torso_and_limbs": "背部與側身覆蓋厚度1.5mm多巴胺天藍耐壓電鍍合金板件，前胸覆蓋圓弧象牙米白減壓琺瑯護板，四肢末端裝配吸震防滑厚底黑色工程矽膠潛水靴與金屬防衝撞踏板",
+          "tail": "由五節沖壓鍍鈦金屬龍骨鉸接而成的扁平槳舵尾，尾端中央整合反向旋轉微型黃銅雙螺旋槳推進器",
+          "weapon_system": "右手單持專利「海錨防禦重斧 / 琉璃破障重斧」，重型青銅海錨月牙破障厚刃配合耐壓鋼索與高壓氣閥，左手空手導向平衡，完全符合 0-MKT7 與 viking/axe 體系，底層掛載 equipment.json 既有 split_greataxe"
+        },
+        "color_palette": {
+          "primary": "#38A0FF (多巴胺天藍耐壓電鍍合金板件)",
+          "secondary": "#FFFDF8 (象牙米白琺瑯面頰與前胸減壓腹板)",
+          "accent": "#FFD028 (多巴胺金黃黃銅航海舵輪發條鑰匙與耳廓銅圈)",
+          "detail": "#4ED86A (薄荷螢綠深海磷光儀表晶核目鏡透鏡光圈)",
+          "warm_highlight": "#FF5E8A (珊瑚粉耐壓密封矽膠圈與洩氣安全閥)",
+          "outline": "#1F1A3A (深藍紫厚描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_otter.png (品牌形象立牌)",
+              "web/media/hero/char_otter.png (官網英雄展示立繪)",
+              "docs/art/tidal_otter_concept.png (概念立繪)",
+              "game/assets/sprites/player/otter_idle.png (64x64 待機)",
+              "game/assets/sprites/player/otter_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/otter_idle.png (隊伍待機)",
+              "game/assets/sprites/player/otter_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/otter_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/otter_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/poses/otter/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/otter.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/tidal_otter.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/otter/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_otter.png (400x840) [待產出]",
+          "branding_concept_art": "docs/art/tidal_otter_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_otter.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/otter_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/otter_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/otter_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/otter_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/otter_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/otter_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/otter_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/otter/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/otter.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/tidal_otter.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/otter/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -2282,7 +2392,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 18 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 19 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -2304,7 +2414,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "十八大種族軀幹均維持 2.0~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬/熊/象) 由渲染器微調縮放 1.05x"
+        "rule": "十九大種族軀幹均維持 2.0~2.5 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分寬肩 (如獅/豬/熊/象) 由渲染器微調縮放 1.05x"
       }
     ]
   },
@@ -2330,7 +2440,8 @@
         "game/assets/sprites/player/paperdoll/hound/",
         "game/assets/sprites/player/paperdoll/owl/",
         "game/assets/sprites/player/paperdoll/cat/",
-        "game/assets/sprites/player/paperdoll/pangolin/"
+        "game/assets/sprites/player/paperdoll/pangolin/",
+        "game/assets/sprites/player/paperdoll/otter/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",

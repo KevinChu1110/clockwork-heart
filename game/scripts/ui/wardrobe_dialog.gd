@@ -97,6 +97,7 @@ const RACE_FILTER_OPTIONS: Array[Dictionary] = [
 	{"id": "owl", "name_zh": "鴞"},
 	{"id": "cat", "name_zh": "貓"},
 	{"id": "pangolin", "name_zh": "穿山甲"},
+	{"id": "otter", "name_zh": "海獺"},
 ]
 
 ## 檢查種族是否具備美術立繪與切片資源
@@ -635,6 +636,7 @@ func _get_race_short_name(rid: String) -> String:
 		"owl": return "鴞"
 		"cat": return "貓"
 		"pangolin": return "穿山甲"
+		"otter": return "海獺"
 		_: return rid
 
 
@@ -749,7 +751,7 @@ func _rebuild_cards() -> void:
 
 	var target_races: Array[String] = []
 	if current_filter_race == "all":
-		var candidates: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin"]
+		var candidates: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter"]
 		for cr in candidates:
 			if _has_race_assets(cr):
 				target_races.append(cr)
@@ -917,7 +919,7 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 			return load(hd_cut) as Texture2D
 
 		# 3. 跨族 512 衣服切片共用（同件衣服若在別族目錄下）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter"]
 		for other in all_races:
 			if other == r:
 				continue
@@ -935,7 +937,7 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 			return load(path512) as Texture2D
 
 		# 2. 跨族 512 底盤共用
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter"]
 		for other in all_races:
 			if other == r:
 				continue

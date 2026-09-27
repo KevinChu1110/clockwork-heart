@@ -369,16 +369,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_pangolin_dune_orange_default", "name_zh": "沖壓耐磨暖橘金屬覆鱗板件", "desc": "沖壓耐磨暖橘金屬覆鱗板件，象牙米白琺瑯面腹甲，足底黑色工程矽膠防滑墊"}
 		]
+	},
+	"otter": {
+		"id": "otter",
+		"name_zh": "浪花海獺",
+		"name_en": "The Tidal Otter",
+		"archetype": "戰士 (Viking)",
+		"thumb": "res://assets/sprites/player/showcase/otter_idle_hd.png",
+		"desc": "穿梭於琉璃汪洋水下發條宮殿的發條海獺，深海天藍耐壓電鍍合金板件，象牙米白琺瑯面腹甲與五節龍骨舵尾。",
+		"costumes": [
+			{"id": "costume_otter_deepsea_salvage_harness", "name_zh": "海淵打撈工匠耐壓雙肩吊帶工裝", "desc": "海淵打撈工匠耐壓雙肩吊帶工裝，胸前掛載微型黃銅洩壓閥與螺栓套筒皮帶"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現天藍電鍍耐壓板件與象牙米白琺瑯面腹甲"}
+		],
+		"chassis": [
+			{"id": "chassis_otter_abyssal_cyan_default", "name_zh": "深海天藍耐壓電鍍合金板件", "desc": "深海天藍耐壓電鍍合金板件，象牙米白琺瑯面頰與前胸腹板，足底黑色工程矽膠防滑靴"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -850,6 +865,7 @@ func confirm_selection() -> void:
 				"owl": gs.player_name = "靈鐘鴞"
 				"cat": gs.player_name = "幽影貓"
 				"pangolin": gs.player_name = "沙鱗穿山甲"
+				"otter": gs.player_name = "浪花海獺"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
