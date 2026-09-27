@@ -61,26 +61,29 @@ func _initialize() -> void:
 	else:
 		print("  ✓ poses/hound 目錄存在")
 
-	# 3. 驗證零美術佔位圖（無任何 png / webp / jpg 圖片產生）
-	var hound_global_dir := ProjectSettings.globalize_path(base_path)
-	var da := DirAccess.open(hound_global_dir)
-	var image_files_found: Array[String] = []
-	if da:
-		for sid in expected_slots:
-			var sub_da := DirAccess.open("%s/%s" % [hound_global_dir, sid])
-			if sub_da:
-				sub_da.list_dir_begin()
-				var fn := sub_da.get_next()
-				while fn != "":
-					if fn.ends_with(".png") or fn.ends_with(".webp") or fn.ends_with(".jpg"):
-						image_files_found.append("%s/%s" % [sid, fn])
-					fn = sub_da.get_next()
-				sub_da.list_dir_end()
-	if not image_files_found.is_empty():
-		push_error("發現意外產生的圖片檔案（違背零美術佔位圖要求）: %s" % str(image_files_found))
-		ok = false
-	else:
-		print("  ✓ 嚴格恪守零美術佔位圖，7 槽位目錄下無任何圖片資產")
+	# 3. 驗證 7 大槽位專屬切片完整存在 (128px 與 512px 雙規格)
+	var expected_slices := [
+		["back_curio", "curio_hound_floating_micro_satellite"],
+		["chassis", "chassis_hound_polymer_astro_default"],
+		["costume", "costume_hound_space_explorer_harness"],
+		["head_unit", "head_hound_radar_leaf_antennas"],
+		["optic_core", "face_hound_dot_matrix_led_eyes"],
+		["weapon", "weapon_hound_stellar_beacon_lance"],
+		["winding_key", "key_hound_four_blade_antenna_gold"]
+	]
+	for item in expected_slices:
+		var sid: String = item[0]
+		var item_id: String = item[1]
+		var p128 := "%s/%s/%s.png" % [base_path, sid, item_id]
+		var p512 := "%s/%s/%s_512.png" % [base_path, sid, item_id]
+		if not ResourceLoader.exists(p128) and not FileAccess.file_exists(p128):
+			push_error("缺少 128px 切片檔案: %s" % p128)
+			ok = false
+		if not ResourceLoader.exists(p512) and not FileAccess.file_exists(p512):
+			push_error("缺少 512px 切片檔案: %s" % p512)
+			ok = false
+	if ok:
+		print("  ✓ 星軌犬 7 大槽位 128px 與 512px 專屬切片全數完備")
 
 	# 4. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog) 能讀到 hound
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -132,25 +135,26 @@ func _initialize() -> void:
 	else:
 		print("  ✓ WardrobeDialog 種族過濾晶片包含 hound (犬)")
 
-	# 驗證無圖時走安全 fallback，回傳 null，不崩潰且不借圖
-	var dummy_map: Dictionary = PaperdollRenderer.build_paperdoll_map("hound")
-	var dummy_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("hound")
-	if dummy_map.size() != 7:
-		push_error("build_paperdoll_map('hound') 槽位數不為 7: %d" % dummy_map.size())
+	# 5. 驗證 7 大槽位切片貼圖解析與載入
+	var hound_map: Dictionary = PaperdollRenderer.build_paperdoll_map("hound")
+	var hound_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("hound")
+	if hound_map.size() != 7:
+		push_error("build_paperdoll_map('hound') 槽位數不為 7: %d" % hound_map.size())
 		ok = false
 	for sid in expected_slots:
-		var tex: Texture2D = dummy_tex.get(sid)
-		if tex != null:
-			push_error("hound 尚未出圖，槽位 %s 貼圖預期為 null，但載入了: %s" % [sid, str(tex)])
+		var tex: Texture2D = hound_tex.get(sid)
+		if tex == null:
+			push_error("槽位 %s 貼圖載入失敗，為 null！" % sid)
 			ok = false
-	print("  ✓ PaperdollRenderer 針對無圖 hound 7 大槽位安全解析並回傳 null，無例外")
+		else:
+			print("  ✓ 槽位 %-12s 成功載入貼圖: %s (%dx%d)" % [sid, str(hound_map.get(sid)), tex.get_width(), tex.get_height()])
 
-	# 驗證前端防護守衛 has_race_assets 回傳 false（未具備素材前安全隱藏，不露出空卡）
-	if PaperdollSelectClass.has_race_assets("hound"):
-		push_error("PaperdollSelectClass.has_race_assets('hound') 預期回傳 false (安全隱藏)，但回傳 true！")
+	# 驗證前端防護守衛 has_race_assets 回傳 true
+	if not PaperdollSelectClass.has_race_assets("hound"):
+		push_error("PaperdollSelectClass.has_race_assets('hound') 回傳 false！")
 		ok = false
 	else:
-		print("  ✓ PaperdollSelectClass.has_race_assets('hound') 正確回傳 false，創角介面安全隱藏未就緒新族")
+		print("  ✓ PaperdollSelectClass.has_race_assets('hound') 正確回傳 true，創角與衣櫥介面完全解鎖！")
 
 	print("\n=======================================================")
 	if ok:
