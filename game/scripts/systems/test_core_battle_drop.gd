@@ -347,9 +347,12 @@ func _test_victory_dialog_ui(root: Window, cs: Node) -> void:
 	if btn_close:
 		_assert(btn_close.custom_minimum_size.x >= 50 and btn_close.custom_minimum_size.y >= 50, "CloseButton 尺寸未達 50px")
 
-	# 點擊「立即裝備」按鈕測試
+	# 點擊「立即裝備」按鈕測試（若槽位已有件則跳出確認窗，點擊確認替換）
 	if btn_equip:
 		btn_equip.pressed.emit()
+		var btn_confirm_rep: Button = dlg.find_child("BtnConfirmReplace", true, false) as Button
+		if btn_confirm_rep:
+			btn_confirm_rep.pressed.emit()
 		_assert(btn_equip.disabled == true, "點擊立即裝備後按鈕應被禁用")
 		_assert(btn_equip.text.contains("已裝備"), "按鈕文字應切換為已裝備")
 
