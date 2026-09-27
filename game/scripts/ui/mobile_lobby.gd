@@ -114,6 +114,11 @@ var _bag_detail_glyph: Label = null
 var _bag_detail_name: Label = null
 var _bag_detail_count: Label = null
 var _bag_detail_kind: Label = null
+var _core_bag_panel: PanelContainer = null
+var _core_title_lbl: Label = null
+var _core_empty_lbl: Label = null
+var _core_cards_box: HBoxContainer = null
+var _equip_panel_instance: RefCounted = null
 const ITEM_ICON_DIR := "res://assets/icons/items/"
 static var _icon_cache: Dictionary = {}
 
@@ -3246,6 +3251,10 @@ func _build_bag_tab() -> void:
 	detail_panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
 	right.add_child(detail_panel)
 
+	# 未裝備機芯部件區塊 (既有機芯背包)
+	var core_panel := _build_core_bag_section()
+	right.add_child(core_panel)
+
 	var detail_margin := MarginContainer.new()
 	detail_margin.add_theme_constant_override("margin_left", 16)
 	detail_margin.add_theme_constant_override("margin_right", 16)
@@ -3380,6 +3389,213 @@ func _build_bag_tab() -> void:
 	right.add_child(_bag_tip)
 
 	_refresh_bag_tab()
+
+
+func _build_core_bag_section() -> PanelContainer:
+	var cp := PanelContainer.new()
+	cp.name = "CoreBagPanel"
+	cp.custom_minimum_size = Vector2(0, 140)
+	cp.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
+	_core_bag_panel = cp
+
+	var c_margin := MarginContainer.new()
+	c_margin.add_theme_constant_override("margin_left", 12)
+	c_margin.add_theme_constant_override("margin_right", 12)
+	c_margin.add_theme_constant_override("margin_top", 8)
+	c_margin.add_theme_constant_override("margin_bottom", 8)
+	cp.add_child(c_margin)
+
+	var c_vbox := VBoxContainer.new()
+	c_vbox.add_theme_constant_override("separation", 6)
+	c_margin.add_child(c_vbox)
+
+	# 標題行
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 10)
+	c_vbox.add_child(head)
+
+	_core_title_lbl = Label.new()
+	_core_title_lbl.name = "CoreTitleLabel"
+	_core_title_lbl.text = _t("機芯部件背包（點擊替換裝備）")
+	_apply_label_style(_core_title_lbl, 16, COLOR_TEXT_ORANGE, COLOR_BORDER, 3)
+	head.add_child(_core_title_lbl)
+
+	# 空狀態提示（當無未裝備機芯時防破版）
+	_core_empty_lbl = Label.new()
+	_core_empty_lbl.name = "CoreEmptyLabel"
+	_core_empty_lbl.text = _t("背包暫無未裝備機芯部件")
+	_apply_label_style(_core_empty_lbl, 14, Color("#6B5E80"))
+	_core_empty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_core_empty_lbl.visible = false
+	c_vbox.add_child(_core_empty_lbl)
+
+	# 卡片橫向滾動容器
+	var scroll := ScrollContainer.new()
+	scroll.name = "CoreScroll"
+	scroll.custom_minimum_size = Vector2(0, 98)
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	c_vbox.add_child(scroll)
+
+	_core_cards_box = HBoxContainer.new()
+	_core_cards_box.name = "CoreCardsBox"
+	_core_cards_box.add_theme_constant_override("separation", 10)
+	scroll.add_child(_core_cards_box)
+
+	return cp
+
+
+func _refresh_core_bag() -> void:
+	if _core_bag_panel == null or _core_cards_box == null:
+		return
+
+	for c in _core_cards_box.get_children():
+		_core_cards_box.remove_child(c)
+		c.queue_free()
+
+	var CoreSys := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	var core_parts: Array = []
+	if CoreSys != null:
+		core_parts = CoreSys.get_inventory()
+
+	if core_parts.is_empty():
+		_core_bag_panel.visible = false
+		if _core_empty_lbl:
+			_core_empty_lbl.visible = true
+		return
+
+	_core_bag_panel.visible = true
+	if _core_empty_lbl:
+		_core_empty_lbl.visible = false
+
+	var idx := 0
+	for part in core_parts:
+		if not (part is Dictionary):
+			continue
+		var card := _create_lobby_core_card(part, idx)
+		if card:
+			_core_cards_box.add_child(card)
+		idx += 1
+
+
+func _create_lobby_core_card(part: Dictionary, card_idx: int = 0) -> Control:
+	var CoreSys := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	var slot_id: String = str(part.get("slot", "mainspring"))
+	var tier_id: String = str(part.get("tier", "white"))
+	var tier_name: String = str(part.get("tier_name", "白"))
+	var slot_name: String = str(part.get("slot_name", ""))
+	if slot_name.is_empty() and CoreSys != null:
+		slot_name = CoreSys.get_slot_name(slot_id)
+
+	var tier_color: Color = CoreSys.get_tier_color(tier_id) if CoreSys != null else Color.WHITE
+
+	var card := PanelContainer.new()
+	var uid: String = str(part.get("uid", ""))
+	if uid.is_empty():
+		uid = str(card_idx)
+	card.name = "CoreCard_" + uid
+	card.custom_minimum_size = Vector2(136, 92)
+	card.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	var cs := StyleBoxFlat.new()
+	cs.bg_color = COLOR_CARD_WARM
+	cs.border_color = tier_color
+	cs.set_border_width_all(2)
+	cs.border_width_bottom = 4
+	cs.set_corner_radius_all(14)
+	cs.shadow_color = Color(tier_color.r, tier_color.g, tier_color.b, 0.25)
+	cs.shadow_size = 4
+	cs.shadow_offset = Vector2(0, 2)
+	card.add_theme_stylebox_override("panel", cs)
+
+	var margin := MarginContainer.new()
+	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	margin.add_theme_constant_override("margin_left", 8)
+	margin.add_theme_constant_override("margin_right", 8)
+	margin.add_theme_constant_override("margin_top", 4)
+	margin.add_theme_constant_override("margin_bottom", 6)
+	card.add_child(margin)
+
+	var vb := VBoxContainer.new()
+	vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	vb.add_theme_constant_override("separation", 2)
+	margin.add_child(vb)
+
+	var top_row := HBoxContainer.new()
+	top_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	top_row.add_theme_constant_override("separation", 6)
+	vb.add_child(top_row)
+
+	var icon := TextureRect.new()
+	icon.custom_minimum_size = Vector2(28, 28)
+	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var sdb = preload("res://scripts/art/sprite_db.gd")
+	if sdb != null:
+		var tex: Texture2D = sdb.core_slot_icon(slot_id)
+		if tex:
+			icon.texture = tex
+	icon.modulate = tier_color
+	top_row.add_child(icon)
+
+	var swatch := ColorRect.new()
+	swatch.name = "ColorSwatch"
+	swatch.custom_minimum_size = Vector2(8, 16)
+	swatch.color = tier_color
+	swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top_row.add_child(swatch)
+
+	var tier_lbl := Label.new()
+	tier_lbl.name = "TierLabel"
+	var t_key := tier_name if tier_name.ends_with("階") else (tier_name + "階")
+	tier_lbl.text = _t(t_key)
+	_apply_label_style(tier_lbl, 14, tier_color if tier_id != "white" else COLOR_TEXT_DARK, COLOR_BORDER, 2)
+	tier_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	top_row.add_child(tier_lbl)
+
+	var slot_lbl := Label.new()
+	slot_lbl.name = "SlotLabel"
+	slot_lbl.text = _t(slot_name)
+	slot_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_apply_label_style(slot_lbl, 14, COLOR_TEXT_DARK)
+	slot_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vb.add_child(slot_lbl)
+
+	var action_lbl := Label.new()
+	action_lbl.name = "ActionLabel"
+	action_lbl.text = _t("更換裝備")
+	action_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_apply_label_style(action_lbl, 14, COLOR_TEXT_ORANGE)
+	action_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vb.add_child(action_lbl)
+
+	var btn := Button.new()
+	btn.name = "CardButton"
+	btn.flat = true
+	btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.pressed.connect(func():
+		_play_ui_sound()
+		open_equip_panel(true)
+	)
+	card.add_child(btn)
+
+	return card
+
+
+func _play_ui_sound() -> void:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var am: Node = (tree as SceneTree).root.get_node_or_null("AudioManager")
+		if am and am.has_method("play_ui"):
+			am.call("play_ui")
+
 
 func _on_bag_cell_input(idx: int, ev: InputEvent) -> void:
 	if not (ev is InputEventMouseButton and ev.pressed):
@@ -3556,6 +3772,7 @@ func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 			cell.add_theme_stylebox_override("panel", empty)
 
 	_update_bag_detail(inv)
+	_refresh_core_bag()
 
 func _update_bag_detail(inv: Node) -> void:
 	if _bag_detail == null:
@@ -3890,8 +4107,13 @@ func _apply_locale_texts() -> void:
 		_bag_sub_lbl.text = _t("道具與戰魂倉庫 · 點選格子查看詳情")
 	if _bag_tip and is_instance_valid(_bag_tip):
 		_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
+	if _core_title_lbl and is_instance_valid(_core_title_lbl):
+		_core_title_lbl.text = _t("機芯部件背包（點擊替換裝備）")
+	if _core_empty_lbl and is_instance_valid(_core_empty_lbl):
+		_core_empty_lbl.text = _t("背包暫無未裝備機芯部件")
 	if _bag_layer and is_instance_valid(_bag_layer):
 		_update_bag_detail(_get_inv_sys())
+		_refresh_core_bag()
 
 	refresh_hud()
 
@@ -4104,6 +4326,80 @@ func open_shop() -> Control:
 	)
 	add_child(dlg)
 	return dlg
+
+
+## 開啟角色裝備/整備面板並滾動至機芯五槽
+func open_equip_panel(scroll_to_core: bool = false) -> Control:
+	var existing = get_node_or_null("EquipLayer")
+	if existing != null and is_instance_valid(existing):
+		existing.queue_free()
+	var EquipPanelScn: GDScript = load("res://scripts/ui/panels/equip_panel.gd")
+	if EquipPanelScn == null:
+		push_error("無法載入 EquipPanel")
+		return null
+	_equip_panel_instance = EquipPanelScn.new(self)
+	_equip_panel_instance.open("core" if scroll_to_core else "")
+	var layer: Control = _equip_panel_instance._layer
+	if layer != null:
+		layer.z_index = 85
+		if scroll_to_core:
+			call_deferred("_do_scroll_to_core", layer)
+	return layer
+
+
+func _do_scroll_to_core(layer: Control) -> void:
+	if not is_instance_valid(layer):
+		return
+	var scroll := layer.find_child("EquipScroll", true, false) as ScrollContainer
+	if scroll:
+		scroll.scroll_vertical = 240
+
+
+func close_equip_panel() -> void:
+	var layer = get_node_or_null("EquipLayer")
+	if layer != null and is_instance_valid(layer):
+		if layer.get_parent() != null:
+			layer.get_parent().remove_child(layer)
+		layer.queue_free()
+	_equip_panel_instance = null
+	_refresh_bag_tab()
+	refresh_hud()
+
+
+# EquipPanel host 介面支援
+func ui_clear_host() -> void:
+	var old = get_node_or_null("EquipLayer")
+	if old != null and is_instance_valid(old):
+		if old.get_parent() != null:
+			old.get_parent().remove_child(old)
+		old.queue_free()
+
+
+func ui_reset_fade() -> void:
+	pass
+
+
+func ui_host() -> Control:
+	return self
+
+
+func ui_refresh_hud() -> void:
+	refresh_hud()
+
+
+func ui_toast(msg: String) -> void:
+	_show_toast(msg)
+
+
+func ui_goto(target: String) -> bool:
+	if target == "hub":
+		close_equip_panel()
+		return true
+	var p := get_parent()
+	if p != null and p.has_method("ui_goto"):
+		return bool(p.call("ui_goto", target))
+	return false
+
 
 
 

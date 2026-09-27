@@ -48,7 +48,15 @@ func _on_locale_changed(_new_loc: String = "") -> void:
 		open()
 
 
-func open() -> void:
+func scroll_to_core() -> void:
+	if not is_instance_valid(_layer):
+		return
+	var scroll := _layer.find_child("EquipScroll", true, false) as ScrollContainer
+	if scroll:
+		scroll.scroll_vertical = 240
+
+
+func open(scroll_target: String = "") -> void:
 	if not _connected_loc:
 		var tree := Engine.get_main_loop()
 		if tree is SceneTree and (tree as SceneTree).root != null:
@@ -169,6 +177,7 @@ func open() -> void:
 
 	## ── 機芯五槽 ──
 	var core_h := Label.new()
+	core_h.name = "CoreHeader"
 	core_h.text = _t("機芯五槽")
 	core_h.add_theme_font_size_override("font_size", 13)
 	core_h.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
@@ -274,6 +283,8 @@ func open() -> void:
 	)
 	actions.add_child(btn_back)
 	_host.ui_refresh_hud()
+	if scroll_target == "core":
+		call_deferred("scroll_to_core")
 
 
 func _loadout_card(index: int) -> Control:
@@ -844,7 +855,7 @@ func _core_bag_cell(part: Dictionary) -> Control:
 			if not old_part.is_empty():
 				CoreSystem.add_part_to_inventory(old_part)
 			CoreSystem.equip_part(slot_id, part)
-		open()
+		open("core")
 	)
 	vb.add_child(btn)
 
