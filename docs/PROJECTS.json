@@ -2696,8 +2696,8 @@
    "id": "equip-panel-wrap",
    "cat": "遊戲",
    "title": "裝備面板：英文道具名不可單字中折行、繁中品質標籤不可殘留 sword",
-   "status": "測試中",
-   "note": "t_1b3d687b 測試審查通過，待合進 main",
+   "status": "已上線",
+   "note": "審查通過批次同步，對應看板卡皆為 done",
    "keys": [
     "裝備面板：英文道"
    ]
