@@ -4,7 +4,7 @@ extends SceneTree
 
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 
-const RACES := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+const RACES := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound"]
 const POSES := ["attack", "hit", "skill", "telegraph", "recover"]
 
 func _initialize() -> void:
