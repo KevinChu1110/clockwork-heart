@@ -3676,8 +3676,8 @@
    "id": "squirrel-paperdoll",
    "cat": "遊戲",
    "title": "第二十五族巡林松鼠(squirrel)骨架與7大部件槽位",
-   "status": "開發中",
-   "note": "資料表骨架與空目錄先行建置中",
+   "status": "測試中",
+   "note": "骨架與空目錄先行建置完成，已推至分支 agent/20260928-squirrel-skeleton，待 sideqa 審查",
    "keys": [
     "第二十五族巡林松"
    ]
