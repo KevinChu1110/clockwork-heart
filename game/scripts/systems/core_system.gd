@@ -13,6 +13,7 @@ const CALIBRATION_SCRAP_COST: int = 5
 signal part_calibrated(slot_id: String, part: Dictionary, result: Dictionary)
 signal part_dropped(part: Dictionary)
 signal part_dismantled(part: Dictionary, scrap_gain: int)
+signal part_unequipped(slot_id: String, part: Dictionary)
 
 static var player_parts: Dictionary = {}
 static var core_inventory: Array = []
@@ -965,6 +966,8 @@ static func reset_player_parts() -> void:
 		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
 		if gs and "core_slots" in gs:
 			gs.core_slots.clear()
+			if gs.has_method("ensure_core_slots"):
+				gs.ensure_core_slots("white")
 
 
 ## 取得單次校準所需消耗的鐵屑數量（優先從 DataTables / core_color_tiers.json 讀取）
@@ -1249,16 +1252,33 @@ static func equip_part(slot_id: String, part: Dictionary) -> bool:
 	return false
 
 
-## 卸下部件
+## 卸下部件至未裝備背包
 static func unequip_part(slot_id: String) -> Dictionary:
 	var norm := normalize_slot_id(slot_id)
 	var tree := Engine.get_main_loop()
+	var cs: Node = null
 	if tree is SceneTree and (tree as SceneTree).root != null:
-		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		var root = (tree as SceneTree).root
+		cs = root.get_node_or_null("CoreSystem")
+		var gs: Node = root.get_node_or_null("GameState")
 		if gs and "core_slots" in gs and gs.core_slots.has(norm):
 			var old: Dictionary = gs.core_slots[norm]
 			gs.core_slots.erase(norm)
+			if player_parts.has(norm):
+				player_parts.erase(norm)
+			if not old.is_empty():
+				add_part_to_inventory(old)
+			if cs and cs.has_signal("part_unequipped"):
+				cs.emit_signal("part_unequipped", norm, old)
 			return old
+	if player_parts.has(norm):
+		var old: Dictionary = player_parts[norm]
+		player_parts.erase(norm)
+		if not old.is_empty():
+			add_part_to_inventory(old)
+		if cs and cs.has_signal("part_unequipped"):
+			cs.emit_signal("part_unequipped", norm, old)
+		return old
 	return {}
 
 

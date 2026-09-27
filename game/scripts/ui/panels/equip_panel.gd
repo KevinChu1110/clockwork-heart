@@ -9,6 +9,9 @@ extends RefCounted
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const CoreSystem := preload("res://scripts/systems/core_system.gd")
+const SpriteDB := preload("res://scripts/art/sprite_db.gd")
+const CoreReplaceDialogScript := preload("res://scripts/ui/core_replace_dialog.gd")
+const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 
 var _host: Node
 ## 點空武器欄後，等背包選一把裝進去（-1＝無）
@@ -16,6 +19,9 @@ var _pending_loadout: int = -1
 var _layer: Control = null
 var _connected_loc: bool = false
 var _core_hint_label: Label = null
+var _active_compare_slot: String = ""
+var _active_compare_old: Dictionary = {}
+var _active_compare_new: Dictionary = {}
 
 
 static func _t(s: String) -> String:
@@ -39,13 +45,61 @@ static func _weapon_line_name(line: String) -> String:
 	return line
 
 
+static func _style_unequip_jelly_button(btn: Button) -> void:
+	btn.custom_minimum_size = Vector2(88, 50)
+	btn.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn.focus_mode = Control.FOCUS_NONE
+
+	# 多巴胺珊瑚粉 (#FF5E8A) 果凍厚底 5px，深藍紫描邊 (#1F1A3A)
+	var normal_sb := StyleBoxFlat.new()
+	normal_sb.bg_color = Color("#FF5E8A")
+	normal_sb.border_color = Color("#1F1A3A")
+	normal_sb.set_border_width_all(2)
+	normal_sb.border_width_bottom = 5
+	normal_sb.set_corner_radius_all(14)
+	normal_sb.content_margin_left = 6
+	normal_sb.content_margin_right = 6
+	normal_sb.content_margin_top = 4
+	normal_sb.content_margin_bottom = 6
+	btn.add_theme_stylebox_override("normal", normal_sb)
+
+	var hover_sb := normal_sb.duplicate() as StyleBoxFlat
+	hover_sb.bg_color = Color("#FF7096")
+	btn.add_theme_stylebox_override("hover", hover_sb)
+	btn.add_theme_stylebox_override("focus", hover_sb)
+
+	var pressed_sb := normal_sb.duplicate() as StyleBoxFlat
+	pressed_sb.bg_color = Color("#E04E78")
+	pressed_sb.border_width_bottom = 2
+	pressed_sb.content_margin_top = 7
+	pressed_sb.content_margin_bottom = 3
+	btn.add_theme_stylebox_override("pressed", pressed_sb)
+
+	var disabled_sb := normal_sb.duplicate() as StyleBoxFlat
+	disabled_sb.bg_color = Color(0.85, 0.85, 0.88, 0.8)
+	disabled_sb.border_color = Color(0.65, 0.65, 0.7, 0.8)
+	disabled_sb.border_width_bottom = 2
+	btn.add_theme_stylebox_override("disabled", disabled_sb)
+
+	btn.add_theme_font_size_override("font_size", 13)
+	btn.add_theme_color_override("font_color", Color.WHITE)
+	btn.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	btn.add_theme_constant_override("outline_size", 3)
+
+
 func _init(host: Node) -> void:
 	_host = host
 
 
 func _on_locale_changed(_new_loc: String = "") -> void:
 	if is_instance_valid(_layer) and _layer.is_inside_tree():
-		open()
+		var keep_slot := _active_compare_slot
+		var keep_old := _active_compare_old
+		var keep_new := _active_compare_new
+		open("core" if not keep_slot.is_empty() else "")
+		if not keep_slot.is_empty():
+			_show_core_replace_dialog(keep_slot, keep_old, keep_new)
 
 
 func scroll_to_core() -> void:
@@ -100,7 +154,8 @@ func open(scroll_target: String = "") -> void:
 	scroll_margin.add_child(center)
 	var card := PanelContainer.new()
 	card.name = "EquipCard"
-	card.custom_minimum_size = Vector2(560, 0)
+	ResponsiveUi.apply_dialog_card(card)
+	card.custom_minimum_size.y = 0
 	card.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	center.add_child(card)
 	var margin := MarginContainer.new()
@@ -111,12 +166,24 @@ func open(scroll_target: String = "") -> void:
 	root.add_theme_constant_override("separation", 10)
 	margin.add_child(root)
 
+	var head := HBoxContainer.new()
+	head.alignment = BoxContainer.ALIGNMENT_CENTER
+	root.add_child(head)
+
 	var title := Label.new()
 	title.text = _t("裝備")
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 18)
 	title.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
-	root.add_child(title)
+	head.add_child(title)
+
+	var close_btn := ResponsiveUi.make_close_button(func():
+		AudioManager.play_ui()
+		_pending_loadout = -1
+		_host.ui_goto("hub")
+	)
+	head.add_child(close_btn)
 
 	var b := EquipmentSystem.bonus_totals()
 	var cb: Dictionary = CoreSystem.total_core_bonuses() if CoreSystem != null else {}
@@ -505,7 +572,7 @@ func _core_slot_card(def: Dictionary) -> Control:
 	box.add_child(lab)
 
 	var norm_slot := CoreSystem.normalize_slot_id(slot_id) if CoreSystem != null else slot_id
-	var part: Dictionary = CoreSystem.get_player_part(norm_slot) if CoreSystem != null else {}
+	var part: Dictionary = CoreSystem.get_equipped_part(norm_slot) if CoreSystem != null else {}
 	var tier_id: String = str(part.get("tier", "white"))
 	var tier_name: String = str(part.get("tier_name", "白"))
 	var tier_color: Color = CoreSystem.get_tier_color(tier_id) if CoreSystem != null else Color(0.72, 0.62, 0.82, 0.9)
@@ -565,7 +632,7 @@ func _core_slot_card(def: Dictionary) -> Control:
 	# 色階名稱與剩餘校準次數
 	var tier_lbl := Label.new()
 	tier_lbl.name = "TierLabel"
-	tier_lbl.text = _t(tier_name + "階")
+	tier_lbl.text = _t(tier_name + "階") if not part.is_empty() else _t("未裝備")
 	tier_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	tier_lbl.add_theme_font_size_override("font_size", 11)
 	tier_lbl.add_theme_color_override("font_color", tier_color if tier_id != "white" else UiStyle.KEY_STRONG)
@@ -573,7 +640,7 @@ func _core_slot_card(def: Dictionary) -> Control:
 
 	var count_lbl := Label.new()
 	count_lbl.name = "CountLabel"
-	count_lbl.text = _t("剩餘 %d 次") % remains
+	count_lbl.text = _t("剩餘 %d 次") % remains if not part.is_empty() else ""
 	count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	count_lbl.add_theme_font_size_override("font_size", 10)
 	count_lbl.add_theme_color_override("font_color", UiStyle.INK_DIM)
@@ -583,14 +650,29 @@ func _core_slot_card(def: Dictionary) -> Control:
 	var btn_cal := Button.new()
 	btn_cal.name = "BtnCalibrate"
 	btn_cal.text = _t("校準") if remains > 0 else _t("已達上限")
-	btn_cal.disabled = (remains <= 0)
-	UiStyle.style_button(btn_cal, remains > 0)
+	btn_cal.disabled = (remains <= 0 or part.is_empty())
+	UiStyle.style_button(btn_cal, remains > 0 and not part.is_empty())
 	btn_cal.custom_minimum_size = Vector2(88, 50)
 	btn_cal.add_theme_font_size_override("font_size", 12)
 	box.add_child(btn_cal)
 
+	# 卸下果凍厚底按鈕（高 >= 50px、熱區 >= 48px，零系統 emoji，空槽不出現）
+	var btn_unequip := Button.new()
+	btn_unequip.name = "BtnUnequip"
+	btn_unequip.text = _t("卸下")
+	_style_unequip_jelly_button(btn_unequip)
+	btn_unequip.pressed.connect(func():
+		if AudioManager != null:
+			AudioManager.play_ui()
+		if CoreSystem != null:
+			CoreSystem.unequip_part(slot_id)
+		open("core")
+	)
+	if not part.is_empty():
+		box.add_child(btn_unequip)
+
 	var update_card_ui = func():
-		var p = CoreSystem.get_player_part(slot_id)
+		var p = CoreSystem.get_equipped_part(slot_id)
 		var tid: String = str(p.get("tier", "white"))
 		var tnm: String = str(p.get("tier_name", "白"))
 		var tc: Color = CoreSystem.get_tier_color(tid)
@@ -601,13 +683,15 @@ func _core_slot_card(def: Dictionary) -> Control:
 		var has_scrap: bool = (scrap >= cost)
 
 		icon.modulate = tc
-		tier_lbl.text = _t(tnm + "階")
+		tier_lbl.text = _t(tnm + "階") if not p.is_empty() else _t("未裝備")
 		tier_lbl.add_theme_color_override("font_color", tc if tid != "white" else UiStyle.KEY_STRONG)
-		count_lbl.text = _t("剩餘 %d 次") % rem
+		count_lbl.text = _t("剩餘 %d 次") % rem if not p.is_empty() else ""
 
-		var can_cal := (rem > 0 and has_scrap)
+		var can_cal := (not p.is_empty() and rem > 0 and has_scrap)
 		btn_cal.disabled = not can_cal
-		if rem <= 0:
+		if p.is_empty():
+			btn_cal.text = _t("未裝備")
+		elif rem <= 0:
 			btn_cal.text = _t("已達上限")
 		elif not has_scrap:
 			btn_cal.text = _t("鐵屑不足")
@@ -616,6 +700,18 @@ func _core_slot_card(def: Dictionary) -> Control:
 		UiStyle.style_button(btn_cal, can_cal)
 		btn_cal.custom_minimum_size = Vector2(88, 50)
 		btn_cal.add_theme_font_size_override("font_size", 12)
+
+		var bu: Button = box.find_child("BtnUnequip", true, false) as Button
+		if not p.is_empty():
+			if bu == null:
+				box.add_child(btn_unequip)
+				bu = btn_unequip
+			bu.visible = true
+			bu.text = _t("卸下")
+		else:
+			if bu != null:
+				bu.visible = false
+
 		return {"tier_name": tnm, "remains": rem, "part": p, "has_scrap": has_scrap}
 
 	box.set_meta("update_ui", update_card_ui)
@@ -625,7 +721,7 @@ func _core_slot_card(def: Dictionary) -> Control:
 		AudioManager.play_ui()
 		var res: Dictionary = CoreSystem.calibrate_player_part(slot_id)
 		_refresh_all_core_slots()
-		var p = CoreSystem.get_player_part(slot_id)
+		var p = CoreSystem.get_equipped_part(slot_id)
 		var tnm: String = _t(str(p.get("tier_name", "白")))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
 		if is_instance_valid(_core_hint_label):
@@ -646,7 +742,7 @@ func _core_slot_card(def: Dictionary) -> Control:
 
 	btn.pressed.connect(func():
 		AudioManager.play_ui()
-		var p = CoreSystem.get_player_part(slot_id)
+		var p = CoreSystem.get_equipped_part(slot_id)
 		var tnm: String = _t(str(p.get("tier_name", "白")))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
 		var scrap: int = CoreSystem.get_player_scrap()
@@ -848,15 +944,55 @@ func _core_bag_cell(part: Dictionary) -> Control:
 	UiStyle.style_button(btn, true)
 	btn.add_theme_font_size_override("font_size", 10)
 	btn.pressed.connect(func():
-		AudioManager.play_ui()
-		if CoreSystem != null:
-			var old_part: Dictionary = CoreSystem.get_player_part(slot_id)
+		if AudioManager != null:
+			AudioManager.play_ui()
+		if CoreSystem == null:
+			return
+		var norm_slot := CoreSystem.normalize_slot_id(slot_id)
+		var old_part: Dictionary = CoreSystem.get_equipped_part(norm_slot)
+		if old_part.is_empty():
+			# 空槽維持一鍵直裝
 			CoreSystem.remove_part_from_inventory(str(part.get("uid", "")))
-			if not old_part.is_empty():
-				CoreSystem.add_part_to_inventory(old_part)
-			CoreSystem.equip_part(slot_id, part)
-		open("core")
+			CoreSystem.equip_part(norm_slot, part)
+			open("core")
+		else:
+			# 已有機芯的槽：先跳出色階比較確認
+			_show_core_replace_dialog(norm_slot, old_part, part)
 	)
 	vb.add_child(btn)
 
 	return cell
+
+
+func _show_core_replace_dialog(norm_slot: String, old_part: Dictionary, new_part: Dictionary) -> Control:
+	var target_parent: Node = _layer if is_instance_valid(_layer) else (_host.ui_host() if _host != null and _host.has_method("ui_host") else null)
+	if target_parent == null:
+		return null
+	var existing = target_parent.get_node_or_null("CompareLayer")
+	if existing != null and is_instance_valid(existing):
+		existing.queue_free()
+
+	_active_compare_slot = norm_slot
+	_active_compare_old = old_part
+	_active_compare_new = new_part
+
+	var on_confirm = func():
+		_active_compare_slot = ""
+		_active_compare_old = {}
+		_active_compare_new = {}
+		if CoreSystem != null:
+			CoreSystem.remove_part_from_inventory(str(new_part.get("uid", "")))
+			if not old_part.is_empty():
+				CoreSystem.add_part_to_inventory(old_part)
+			CoreSystem.equip_part(norm_slot, new_part)
+		open("core")
+
+	var on_cancel = func():
+		_active_compare_slot = ""
+		_active_compare_old = {}
+		_active_compare_new = {}
+		# 取消則新件留在背包、舊件仍在此槽上，槽與背包不變
+
+	var dlg = CoreReplaceDialogScript.show_dialog(target_parent, norm_slot, old_part, new_part, on_confirm, on_cancel, "free")
+	return dlg
+

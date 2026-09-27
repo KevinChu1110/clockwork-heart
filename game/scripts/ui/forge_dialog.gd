@@ -483,7 +483,7 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 
 	var card := PanelContainer.new()
 	card.name = "SlotCard_" + slot_id
-	card.custom_minimum_size = Vector2(132, 118)
+	card.custom_minimum_size = Vector2(132, 0)
 	card.add_theme_stylebox_override("panel", _create_panel_style(Color("#FFFDF8"), COLOR_BORDER, 2, 3, 14))
 
 	var vcol := VBoxContainer.new()
@@ -516,13 +516,13 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 		icon.texture = t
 	row.add_child(icon)
 
-	var part := CoreSystem.get_player_part(slot_id)
+	var part := CoreSystem.get_equipped_part(slot_id)
 	var tier_id: String = str(part.get("tier", "white"))
 	var tier_name: String = str(part.get("tier_name", "白"))
-	var tier_color: Color = CoreSystem.get_tier_color(tier_id)
+	var tier_color: Color = CoreSystem.get_tier_color(tier_id) if not part.is_empty() else Color(0.72, 0.62, 0.82, 0.5)
 	var count: int = int(part.get("calibration_count", 0))
 	var max_cnt: int = int(part.get("max_calibrations", 7))
-	var remains: int = maxi(0, max_cnt - count)
+	var remains: int = maxi(0, max_cnt - count) if not part.is_empty() else 0
 	icon.modulate = tier_color
 
 	var col := VBoxContainer.new()
@@ -544,9 +544,9 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 
 	var tier_lbl := Label.new()
 	tier_lbl.name = "TierLabel"
-	tier_lbl.text = _t(tier_name + "階")
+	tier_lbl.text = _t(tier_name + "階") if not part.is_empty() else _t("未裝備")
 	tier_lbl.add_theme_font_size_override("font_size", 11)
-	tier_lbl.add_theme_color_override("font_color", tier_color if tier_id != "white" else COLOR_TEXT_DARK)
+	tier_lbl.add_theme_color_override("font_color", tier_color if (not part.is_empty() and tier_id != "white") else COLOR_TEXT_DARK)
 	tier_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	tier_lbl.add_theme_constant_override("outline_size", 1)
 	if _cached_font:
@@ -555,7 +555,7 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 
 	var count_lbl := Label.new()
 	count_lbl.name = "CountLabel"
-	count_lbl.text = _t("剩餘 %d 次") % remains
+	count_lbl.text = _t("剩餘 %d 次") % remains if not part.is_empty() else ""
 	count_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	count_lbl.add_theme_font_size_override("font_size", 10)
 	count_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -585,7 +585,9 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 	btn_cal.name = "BtnCalibrate"
 	btn_cal.custom_minimum_size = Vector2(118, 48)
 	btn_cal.text = _t("校準") if remains > 0 else _t("已達上限")
-	btn_cal.disabled = (remains <= 0)
+	if part.is_empty():
+		btn_cal.text = _t("未裝備")
+	btn_cal.disabled = (remains <= 0 or part.is_empty())
 	btn_cal.add_theme_font_size_override("font_size", 13)
 	btn_cal.add_theme_color_override("font_color", Color.WHITE)
 	btn_cal.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -598,13 +600,37 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 	btn_cal.add_theme_stylebox_override("disabled", _create_button_style(Color("#D0DDD2"), COLOR_BORDER, 2, 14, 2))
 	vcol.add_child(btn_cal)
 
+	# 卸下果凍厚底按鈕（高 >= 50px、熱區 >= 48px，零系統 emoji，空槽不出現）
+	var btn_unequip := Button.new()
+	btn_unequip.name = "BtnUnequip"
+	btn_unequip.custom_minimum_size = Vector2(118, 50)
+	btn_unequip.text = _t("卸下")
+	btn_unequip.add_theme_font_size_override("font_size", 13)
+	btn_unequip.add_theme_color_override("font_color", Color.WHITE)
+	btn_unequip.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	btn_unequip.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		btn_unequip.add_theme_font_override("font", _cached_font)
+	btn_unequip.add_theme_stylebox_override("normal", _create_button_style(Color("#FF5E8A"), COLOR_BORDER, 5, 14, 2))
+	btn_unequip.add_theme_stylebox_override("hover", _create_button_style(Color("#FF7096"), COLOR_BORDER, 5, 14, 2))
+	btn_unequip.add_theme_stylebox_override("pressed", _create_button_style(Color("#E04E78"), COLOR_BORDER, 2, 14, 2))
+	btn_unequip.add_theme_stylebox_override("disabled", _create_button_style(Color("#D0DDD2"), COLOR_BORDER, 2, 14, 2))
+	btn_unequip.pressed.connect(func():
+		AudioManager.play_ui()
+		CoreSystem.unequip_part(slot_id)
+		_refresh_all_forge_core_slots()
+		_refresh_display()
+	)
+	if not part.is_empty():
+		vcol.add_child(btn_unequip)
+
 	var update_forge_card_ui = func():
-		var p = CoreSystem.get_player_part(slot_id)
+		var p = CoreSystem.get_equipped_part(slot_id)
 		var tid: String = str(p.get("tier", "white"))
 		var tnm: String = str(p.get("tier_name", "白"))
-		var tc: Color = CoreSystem.get_tier_color(tid)
+		var tc: Color = CoreSystem.get_tier_color(tid) if not p.is_empty() else Color(0.72, 0.62, 0.82, 0.5)
 		var cnt: int = int(p.get("calibration_count", 0))
-		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - cnt)
+		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - cnt) if not p.is_empty() else 0
 		var scrap: int = CoreSystem.get_player_scrap()
 		var cost: int = CoreSystem.get_calibration_scrap_cost()
 		var has_scrap: bool = (scrap >= cost)
@@ -612,18 +638,32 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 		name_lbl.text = _t(str(def.get("name", "")))
 		btn.tooltip_text = "%s\n%s" % [_t(str(def.get("name", ""))), _t(str(def.get("desc", "")))]
 		icon.modulate = tc
-		tier_lbl.text = _t(tnm + "階")
-		tier_lbl.add_theme_color_override("font_color", tc if tid != "white" else COLOR_TEXT_DARK)
-		count_lbl.text = _t("剩餘 %d 次") % rem
+		tier_lbl.text = _t(tnm + "階") if not p.is_empty() else _t("未裝備")
+		tier_lbl.add_theme_color_override("font_color", tc if (not p.is_empty() and tid != "white") else COLOR_TEXT_DARK)
+		count_lbl.text = _t("剩餘 %d 次") % rem if not p.is_empty() else ""
 
-		var can_cal := (rem > 0 and has_scrap)
+		var can_cal := (not p.is_empty() and rem > 0 and has_scrap)
 		btn_cal.disabled = not can_cal
-		if rem <= 0:
+		if p.is_empty():
+			btn_cal.text = _t("未裝備")
+		elif rem <= 0:
 			btn_cal.text = _t("已達上限")
 		elif not has_scrap:
 			btn_cal.text = _t("鐵屑不足")
 		else:
 			btn_cal.text = _t("校準")
+
+		var bu: Button = card.find_child("BtnUnequip", true, false) as Button
+		if not p.is_empty():
+			if bu == null:
+				vcol.add_child(btn_unequip)
+				bu = btn_unequip
+			bu.visible = true
+			bu.text = _t("卸下")
+		else:
+			if bu != null:
+				bu.visible = false
+
 		return {"tier_name": tnm, "remains": rem, "part": p, "has_scrap": has_scrap}
 
 	card.set_meta("update_ui", update_forge_card_ui)
@@ -631,10 +671,13 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 
 	btn_cal.pressed.connect(func():
 		AudioManager.play_ui()
+		var p_check = CoreSystem.get_equipped_part(slot_id)
+		if p_check.is_empty():
+			return
 		var res: Dictionary = CoreSystem.calibrate_player_part(slot_id)
 		_refresh_all_forge_core_slots()
 		_refresh_display()
-		var p = CoreSystem.get_player_part(slot_id)
+		var p = CoreSystem.get_equipped_part(slot_id)
 		var tnm: String = str(p.get("tier_name", "白"))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
 		var tip: String = str(res.get("message", ""))
@@ -652,13 +695,18 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 
 	btn.pressed.connect(func():
 		AudioManager.play_ui()
-		var p = CoreSystem.get_player_part(slot_id)
+		var p = CoreSystem.get_equipped_part(slot_id)
+		var sname: String = _t(str(def.get("name", "")))
+		var sdesc: String = _t(str(def.get("desc", "")))
+		if p.is_empty():
+			if is_instance_valid(_msg_label):
+				_msg_label.text = _t("【%s】未裝備機芯") % sname
+				_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+			return
 		var tnm: String = _t(str(p.get("tier_name", "白")))
 		var rem: int = maxi(0, int(p.get("max_calibrations", 7)) - int(p.get("calibration_count", 0)))
 		var scrap: int = CoreSystem.get_player_scrap()
 		var cost: int = CoreSystem.get_calibration_scrap_cost()
-		var sname: String = _t(str(def.get("name", "")))
-		var sdesc: String = _t(str(def.get("desc", "")))
 		if is_instance_valid(_msg_label):
 			if rem <= 0:
 				_msg_label.text = _t("【%s】%s（已達最大校準次數上限 7 次）") % [sname, sdesc]
