@@ -3316,8 +3316,8 @@
    "id": "merge-bag-core-dismantle",
    "cat": "平台",
    "title": "把已過審的多餘機芯拆鐵屑合進主線",
-   "status": "草稿",
-   "note": "看板已派",
+   "status": "測試中",
+   "note": "完成合入主線與無頭測試驗證，送審中",
    "keys": [
     "把已過審的多餘機"
    ]
