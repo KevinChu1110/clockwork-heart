@@ -88,26 +88,29 @@ func _initialize() -> void:
 	else:
 		print("  ✓ poses/owl 目錄存在")
 
-	# 3. 驗證零美術佔位圖（無任何 png / webp / jpg 圖片產生）
+	# 3. 驗證 7 大槽位美術切片均已就緒 (128x128 與 512x512)
 	var owl_global_dir := ProjectSettings.globalize_path(base_path)
 	var da := DirAccess.open(owl_global_dir)
-	var image_files_found: Array[String] = []
-	if da:
-		for sid in expected_slots:
-			var sub_da := DirAccess.open("%s/%s" % [owl_global_dir, sid])
-			if sub_da:
-				sub_da.list_dir_begin()
-				var fn := sub_da.get_next()
-				while fn != "":
-					if fn.ends_with(".png") or fn.ends_with(".webp") or fn.ends_with(".jpg"):
-						image_files_found.append("%s/%s" % [sid, fn])
-					fn = sub_da.get_next()
-				sub_da.list_dir_end()
-	if not image_files_found.is_empty():
-		push_error("發現意外產生的圖片檔案（違背零美術佔位圖要求）: %s" % str(image_files_found))
+	var missing_files: Array[String] = []
+	var expected_slice_files := {
+		"back_curio": ["curio_owl_floating_micro_orrery.png", "curio_owl_floating_micro_orrery_512.png"],
+		"chassis": ["chassis_owl_brass_lamellae_default.png", "chassis_owl_brass_lamellae_default_512.png"],
+		"costume": ["costume_owl_dawn_astronomer_robe.png", "costume_owl_dawn_astronomer_robe_512.png"],
+		"head_unit": ["head_owl_brass_plume_antennas.png", "head_owl_brass_plume_antennas_512.png"],
+		"optic_core": ["face_owl_clockface_lens_dusk_gold.png", "face_owl_clockface_lens_dusk_gold_512.png"],
+		"weapon": ["weapon_owl_armillary_escapement_scepter.png", "weapon_owl_armillary_escapement_scepter_512.png"],
+		"winding_key": ["key_owl_sun_moon_astrolabe_gold.png", "key_owl_sun_moon_astrolabe_gold_512.png"]
+	}
+	for sid in expected_slots:
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [owl_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("靈鐘鴞切片檔案缺失: %s" % str(missing_files))
 		ok = false
 	else:
-		print("  ✓ 嚴格恪守零美術佔位圖，7 槽位目錄下無任何圖片資產")
+		print("  ✓ 靈鐘鴞 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 4. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog) 能讀到 owl
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -168,25 +171,26 @@ func _initialize() -> void:
 	else:
 		print("  ✓ WardrobeDialog 種族過濾晶片包含 owl (鴞)")
 
-	# 驗證無圖時走安全 fallback，回傳 null，不崩潰且不借圖
-	var dummy_map: Dictionary = PaperdollRenderer.build_paperdoll_map("owl")
-	var dummy_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("owl")
-	if dummy_map.size() != 7:
-		push_error("build_paperdoll_map('owl') 槽位數不為 7: %d" % dummy_map.size())
+	# 驗證 7 大槽位切片貼圖解析與載入
+	var owl_map: Dictionary = PaperdollRenderer.build_paperdoll_map("owl")
+	var owl_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("owl")
+	if owl_map.size() != 7:
+		push_error("build_paperdoll_map('owl') 槽位數不為 7: %d" % owl_map.size())
 		ok = false
 	for sid in expected_slots:
-		var tex: Texture2D = dummy_tex.get(sid)
-		if tex != null:
-			push_error("owl 尚未出圖，槽位 %s 貼圖預期為 null，但載入了: %s" % [sid, str(tex)])
+		var tex: Texture2D = owl_tex.get(sid)
+		if tex == null:
+			push_error("槽位 %s 貼圖載入失敗，為 null！" % sid)
 			ok = false
-	print("  ✓ PaperdollRenderer 針對無圖 owl 7 大槽位安全解析並回傳 null，無例外")
+		else:
+			print("  ✓ 槽位 %-12s 成功載入貼圖: %s (%dx%d)" % [sid, str(owl_map.get(sid)), tex.get_width(), tex.get_height()])
 
-	# 驗證前端防護守衛 has_race_assets 回傳 false（未具備素材前安全隱藏，不露出空卡）
-	if PaperdollSelectClass.has_race_assets("owl"):
-		push_error("PaperdollSelectClass.has_race_assets('owl') 預期回傳 false (安全隱藏)，但回傳 true！")
+	# 驗證前端防護守衛 has_race_assets 回傳 true
+	if not PaperdollSelectClass.has_race_assets("owl"):
+		push_error("PaperdollSelectClass.has_race_assets('owl') 回傳 false！")
 		ok = false
 	else:
-		print("  ✓ PaperdollSelectClass.has_race_assets('owl') 正確回傳 false，創角介面安全隱藏未就緒新族")
+		print("  ✓ PaperdollSelectClass.has_race_assets('owl') 正確回傳 true，創角與衣櫥介面完全解鎖！")
 
 	print("\n=======================================================")
 	if ok:
