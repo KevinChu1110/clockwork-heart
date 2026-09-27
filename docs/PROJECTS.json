@@ -3331,6 +3331,16 @@
    "keys": [
     "整備已裝備機芯可"
    ]
+  },
+  {
+   "id": "battle-hud-core-dots",
+   "cat": "遊戲",
+   "title": "戰鬥 HUD 顯示已裝備五槽色階點",
+   "status": "草稿",
+   "note": "看板已派",
+   "keys": [
+    "戰鬥 HUD 顯"
+   ]
   }
  ]
 }
