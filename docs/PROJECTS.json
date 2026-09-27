@@ -3566,8 +3566,8 @@
    "id": "pangolin-combat-poses",
    "cat": "遊戲",
    "title": "第十八族沙鱗穿山甲6大戰鬥姿態補齊",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "六大戰鬥姿態雙規格產出完成，0-ART量化稽核與無頭測試全綠，Vision實機戰鬥截圖就緒，送交 sideqa 審查",
    "keys": [
     "第十八族沙鱗穿山"
    ]
