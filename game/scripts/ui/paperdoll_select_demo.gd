@@ -309,16 +309,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_fawn_timber_tinplate_default", "name_zh": "雙色沖壓原木紋金屬板", "desc": "沖壓雙色象牙米白與淺褐原木紋金屬板，黃銅鉚釘包邊"}
 		]
+	},
+	"hound": {
+		"id": "hound",
+		"name_zh": "星軌犬",
+		"name_en": "The Orbit Hound",
+		"archetype": "騎士 (Knight)",
+		"thumb": "res://assets/sprites/player/showcase/hound_idle_hd.png",
+		"desc": "自星穹軌道巡弋守望的太空發條小狗，乳白工程塑料板件，高透聚碳酸酯胸腔視窗與微型雷達葉片耳。",
+		"costumes": [
+			{"id": "costume_hound_space_explorer_harness", "name_zh": "太空探索防護背帶", "desc": "輕量航天防護背帶，微型冷氣儲罐與塑料卡扣"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現象牙乳白工程塑料素體"}
+		],
+		"chassis": [
+			{"id": "chassis_hound_polymer_astro_default", "name_zh": "模組化乳白工程塑料板件", "desc": "高抗衝擊乳白工程塑料拼裝板件，夜光透窗與天藍飾線"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -786,6 +801,7 @@ func confirm_selection() -> void:
 				"frog": gs.player_name = "碧簧蛙"
 				"panda": gs.player_name = "瓷韻熊貓"
 				"fawn": gs.player_name = "翠角鹿"
+				"hound": gs.player_name = "星軌犬"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)

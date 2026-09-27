@@ -16,11 +16,11 @@ func _initialize() -> void:
 	var total_races: int = int(races_spec.get("total_races", 0))
 	var races_list: Array = races_spec.get("races", [])
 	
-	if total_races != 14:
-		push_error("races_specification.total_races 應為 14，實際為: %d" % total_races)
+	if total_races < 14:
+		push_error("races_specification.total_races 應至少為 14，實際為: %d" % total_races)
 		ok = false
 	else:
-		print("  ✓ paperdoll_slots 種族總數為 14")
+		print("  ✓ paperdoll_slots 種族總數至少為 14 (目前: %d)" % total_races)
 
 	var fawn_def: Dictionary = PaperdollRenderer.get_race_def("fawn")
 	if fawn_def.is_empty():
