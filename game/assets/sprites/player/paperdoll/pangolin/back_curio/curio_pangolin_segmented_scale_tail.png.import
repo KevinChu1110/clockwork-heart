@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://0vvt0jgyjy4g"
-path="res://.godot/imported/curio_pangolin_segmented_scale_tail.png-99c47125b549e447675205e333679591.ctex"
+path="res://.godot/imported/curio_pangolin_segmented_scale_tail.png-dec7cd39b5d51d54f841af2337afcd12.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/pangolin/back_curio/curio_pangolin_segmented_scale_tail.png"
-dest_files=["res://.godot/imported/curio_pangolin_segmented_scale_tail.png-99c47125b549e447675205e333679591.ctex"]
+source_file="res://assets/paperdoll/pangolin/back_curio/curio_pangolin_segmented_scale_tail.png"
+dest_files=["res://.godot/imported/curio_pangolin_segmented_scale_tail.png-dec7cd39b5d51d54f841af2337afcd12.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://4wa2bh7o2mx"
-path="res://.godot/imported/key_hound_four_blade_antenna_gold_512.png-10da18e865d74c035d9b6eccbe05fa1d.ctex"
+path="res://.godot/imported/key_hound_four_blade_antenna_gold_512.png-4e53ca3cbd97fd3f6c1a456a5e577ec0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hound/winding_key/key_hound_four_blade_antenna_gold_512.png"
-dest_files=["res://.godot/imported/key_hound_four_blade_antenna_gold_512.png-10da18e865d74c035d9b6eccbe05fa1d.ctex"]
+source_file="res://assets/paperdoll/hound/winding_key/key_hound_four_blade_antenna_gold_512.png"
+dest_files=["res://.godot/imported/key_hound_four_blade_antenna_gold_512.png-4e53ca3cbd97fd3f6c1a456a5e577ec0.ctex"]
 
 [params]
 

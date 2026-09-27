@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://diguxhg1qivxr"
-path="res://.godot/imported/core_amber_sun_512.png-077b13d65efb6ffe87941ce641a04155.ctex"
+path="res://.godot/imported/core_amber_sun_512.png-af371b9a10f5bc4d766a8803fbf12e35.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/optic_core/core_amber_sun_512.png"
-dest_files=["res://.godot/imported/core_amber_sun_512.png-077b13d65efb6ffe87941ce641a04155.ctex"]
+source_file="res://assets/paperdoll/lion/optic_core/core_amber_sun_512.png"
+dest_files=["res://.godot/imported/core_amber_sun_512.png-af371b9a10f5bc4d766a8803fbf12e35.ctex"]
 
 [params]
 

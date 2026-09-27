@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ddwmg66rdcvoq"
-path="res://.godot/imported/key_hedgehog_ratchet_and_pawl_cross.png-85a7db818e3d8c70bab04daba9825725.ctex"
+path="res://.godot/imported/key_hedgehog_ratchet_and_pawl_cross.png-7a37ce011b36e6223e70638590a7d1cb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hedgehog/winding_key/key_hedgehog_ratchet_and_pawl_cross.png"
-dest_files=["res://.godot/imported/key_hedgehog_ratchet_and_pawl_cross.png-85a7db818e3d8c70bab04daba9825725.ctex"]
+source_file="res://assets/paperdoll/hedgehog/winding_key/key_hedgehog_ratchet_and_pawl_cross.png"
+dest_files=["res://.godot/imported/key_hedgehog_ratchet_and_pawl_cross.png-7a37ce011b36e6223e70638590a7d1cb.ctex"]
 
 [params]
 

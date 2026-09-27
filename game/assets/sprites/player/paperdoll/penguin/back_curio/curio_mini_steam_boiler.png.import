@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dm00ycm5esf7p"
-path="res://.godot/imported/curio_mini_steam_boiler.png-39c9effb126f3ce7d1c0e82ec84c697f.ctex"
+path="res://.godot/imported/curio_mini_steam_boiler.png-f830ad0a05f4b22cb3cf1773ed9ff102.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/back_curio/curio_mini_steam_boiler.png"
-dest_files=["res://.godot/imported/curio_mini_steam_boiler.png-39c9effb126f3ce7d1c0e82ec84c697f.ctex"]
+source_file="res://assets/paperdoll/penguin/back_curio/curio_mini_steam_boiler.png"
+dest_files=["res://.godot/imported/curio_mini_steam_boiler.png-f830ad0a05f4b22cb3cf1773ed9ff102.ctex"]
 
 [params]
 

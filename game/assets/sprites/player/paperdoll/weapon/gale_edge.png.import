@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://smsux8bungeo"
-path="res://.godot/imported/gale_edge.png-79f9ca8e9da8bf8f455e248a74e06738.ctex"
+path="res://.godot/imported/gale_edge.png-81d72509dd549f2b264a38f38f184eda.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/gale_edge.png"
-dest_files=["res://.godot/imported/gale_edge.png-79f9ca8e9da8bf8f455e248a74e06738.ctex"]
+source_file="res://assets/paperdoll/weapon/gale_edge.png"
+dest_files=["res://.godot/imported/gale_edge.png-81d72509dd549f2b264a38f38f184eda.ctex"]
 
 [params]
 

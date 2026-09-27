@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cqm0ogfcs68en"
-path="res://.godot/imported/head_owl_brass_plume_antennas.png-f5de9e83112e642ab88b4f1ca135ce00.ctex"
+path="res://.godot/imported/head_owl_brass_plume_antennas.png-191b5a2f5b680eb4b0c33a3a42f65782.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/owl/head_unit/head_owl_brass_plume_antennas.png"
-dest_files=["res://.godot/imported/head_owl_brass_plume_antennas.png-f5de9e83112e642ab88b4f1ca135ce00.ctex"]
+source_file="res://assets/paperdoll/owl/head_unit/head_owl_brass_plume_antennas.png"
+dest_files=["res://.godot/imported/head_owl_brass_plume_antennas.png-191b5a2f5b680eb4b0c33a3a42f65782.ctex"]
 
 [params]
 

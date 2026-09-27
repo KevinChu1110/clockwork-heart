@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3jk020ux3v4q"
-path="res://.godot/imported/head_cloud_crane_azure.png-5ac170874c8d8e50b2df931c2ab575bc.ctex"
+path="res://.godot/imported/head_cloud_crane_azure.png-d5683ae10d9fda0a489f0e11d4eaf52a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/head_unit/head_cloud_crane_azure.png"
-dest_files=["res://.godot/imported/head_cloud_crane_azure.png-5ac170874c8d8e50b2df931c2ab575bc.ctex"]
+source_file="res://assets/paperdoll/crane/head_unit/head_cloud_crane_azure.png"
+dest_files=["res://.godot/imported/head_cloud_crane_azure.png-d5683ae10d9fda0a489f0e11d4eaf52a.ctex"]
 
 [params]
 

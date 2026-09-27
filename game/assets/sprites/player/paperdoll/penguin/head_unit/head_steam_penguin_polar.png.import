@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dbbgbq2duhmda"
-path="res://.godot/imported/head_steam_penguin_polar.png-ada744c6ab2bf749586affe917390162.ctex"
+path="res://.godot/imported/head_steam_penguin_polar.png-89eaa64b45ce6a01557d27a64d0db134.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/head_unit/head_steam_penguin_polar.png"
-dest_files=["res://.godot/imported/head_steam_penguin_polar.png-ada744c6ab2bf749586affe917390162.ctex"]
+source_file="res://assets/paperdoll/penguin/head_unit/head_steam_penguin_polar.png"
+dest_files=["res://.godot/imported/head_steam_penguin_polar.png-89eaa64b45ce6a01557d27a64d0db134.ctex"]
 
 [params]
 

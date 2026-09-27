@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://j7okyropjo7n"
-path="res://.godot/imported/costume_astral_observer.png-6678d5deb01d74b659e5f671b62aea51.ctex"
+path="res://.godot/imported/costume_astral_observer.png-b772704c89426371d455e53aaecb66d8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fox/costume/costume_astral_observer.png"
-dest_files=["res://.godot/imported/costume_astral_observer.png-6678d5deb01d74b659e5f671b62aea51.ctex"]
+source_file="res://assets/paperdoll/fox/costume/costume_astral_observer.png"
+dest_files=["res://.godot/imported/costume_astral_observer.png-b772704c89426371d455e53aaecb66d8.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ba8utcu1nmqj3"
-path="res://.godot/imported/face_hedgehog_watchmaker_precision_loupe.png-b359ed539c9509e3f0d6a7e02eb4f2d0.ctex"
+path="res://.godot/imported/face_hedgehog_watchmaker_precision_loupe.png-b06664cc291ad55aa5626fb9eca8f29c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hedgehog/optic_core/face_hedgehog_watchmaker_precision_loupe.png"
-dest_files=["res://.godot/imported/face_hedgehog_watchmaker_precision_loupe.png-b359ed539c9509e3f0d6a7e02eb4f2d0.ctex"]
+source_file="res://assets/paperdoll/hedgehog/optic_core/face_hedgehog_watchmaker_precision_loupe.png"
+dest_files=["res://.godot/imported/face_hedgehog_watchmaker_precision_loupe.png-b06664cc291ad55aa5626fb9eca8f29c.ctex"]
 
 [params]
 

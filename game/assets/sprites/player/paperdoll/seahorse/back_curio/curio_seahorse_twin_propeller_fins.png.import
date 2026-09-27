@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://qxn8bo28ybqa"
-path="res://.godot/imported/curio_seahorse_twin_propeller_fins.png-f2432764e50d1a793f49ed34b50dfe92.ctex"
+path="res://.godot/imported/curio_seahorse_twin_propeller_fins.png-3c4208a4742a881fe4216896a3076b95.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seahorse/back_curio/curio_seahorse_twin_propeller_fins.png"
-dest_files=["res://.godot/imported/curio_seahorse_twin_propeller_fins.png-f2432764e50d1a793f49ed34b50dfe92.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seahorse/back_curio/curio_seahorse_twin_propeller_fins.png"
+dest_files=["res://.godot/imported/curio_seahorse_twin_propeller_fins.png-3c4208a4742a881fe4216896a3076b95.ctex"]
 
 [params]
 

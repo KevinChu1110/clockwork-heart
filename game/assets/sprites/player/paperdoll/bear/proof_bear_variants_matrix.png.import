@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dssi3a5n0suxo"
-path="res://.godot/imported/proof_bear_variants_matrix.png-0275d522623abbf90ef3fef093e5e017.ctex"
+path="res://.godot/imported/proof_bear_variants_matrix.png-b36c34aeb18c4f0acfc8e62263d37b6a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/proof_bear_variants_matrix.png"
-dest_files=["res://.godot/imported/proof_bear_variants_matrix.png-0275d522623abbf90ef3fef093e5e017.ctex"]
+source_file="res://assets/paperdoll/bear/proof_bear_variants_matrix.png"
+dest_files=["res://.godot/imported/proof_bear_variants_matrix.png-b36c34aeb18c4f0acfc8e62263d37b6a.ctex"]
 
 [params]
 

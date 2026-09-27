@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://xjtjd7ko4u5r"
-path="res://.godot/imported/proof_paperdoll_frog_composite.png-5d56ec71c07b44d0758ffbc935ce61cd.ctex"
+path="res://.godot/imported/proof_paperdoll_frog_composite.png-73ac1b60b11ab532a3809f21197f9a33.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/frog/proof_paperdoll_frog_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_frog_composite.png-5d56ec71c07b44d0758ffbc935ce61cd.ctex"]
+source_file="res://assets/paperdoll/frog/proof_paperdoll_frog_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_frog_composite.png-73ac1b60b11ab532a3809f21197f9a33.ctex"]
 
 [params]
 

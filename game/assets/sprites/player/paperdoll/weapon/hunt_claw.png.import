@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bd82vwamgkj78"
-path="res://.godot/imported/hunt_claw.png-9cb1e54faf32ce36a96eb8b6eaf7aaae.ctex"
+path="res://.godot/imported/hunt_claw.png-8d93afb596047d1e154b17f92632ca39.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/hunt_claw.png"
-dest_files=["res://.godot/imported/hunt_claw.png-9cb1e54faf32ce36a96eb8b6eaf7aaae.ctex"]
+source_file="res://assets/paperdoll/weapon/hunt_claw.png"
+dest_files=["res://.godot/imported/hunt_claw.png-8d93afb596047d1e154b17f92632ca39.ctex"]
 
 [params]
 

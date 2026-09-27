@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cn54sm8161pqt"
-path="res://.godot/imported/proof_chassis_swap_boar.png-8d792c67370e13d4ba4b4381ddd4c562.ctex"
+path="res://.godot/imported/proof_chassis_swap_boar.png-42eaed730b1aec27f90c8a438bcfa996.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/proof_chassis_swap_boar.png"
-dest_files=["res://.godot/imported/proof_chassis_swap_boar.png-8d792c67370e13d4ba4b4381ddd4c562.ctex"]
+source_file="res://assets/paperdoll/boar/proof_chassis_swap_boar.png"
+dest_files=["res://.godot/imported/proof_chassis_swap_boar.png-42eaed730b1aec27f90c8a438bcfa996.ctex"]
 
 [params]
 

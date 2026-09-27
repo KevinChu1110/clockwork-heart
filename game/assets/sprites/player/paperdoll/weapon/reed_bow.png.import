@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://k4gsy2qlpa7h"
-path="res://.godot/imported/reed_bow.png-5776a2f93d996ee626a123d63d635a2d.ctex"
+path="res://.godot/imported/reed_bow.png-a80e43f5e15a9929837f6fa483acbc53.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/reed_bow.png"
-dest_files=["res://.godot/imported/reed_bow.png-5776a2f93d996ee626a123d63d635a2d.ctex"]
+source_file="res://assets/paperdoll/weapon/reed_bow.png"
+dest_files=["res://.godot/imported/reed_bow.png-a80e43f5e15a9929837f6fa483acbc53.ctex"]
 
 [params]
 

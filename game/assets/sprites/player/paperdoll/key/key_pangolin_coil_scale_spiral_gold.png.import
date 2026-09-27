@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c3psl774lbrv0"
-path="res://.godot/imported/key_pangolin_coil_scale_spiral_gold.png-e8b4393ca88c406727b0d3d2732f989f.ctex"
+path="res://.godot/imported/key_pangolin_coil_scale_spiral_gold.png-88f45c633592487cbaf3690f9a90dd87.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/key/key_pangolin_coil_scale_spiral_gold.png"
-dest_files=["res://.godot/imported/key_pangolin_coil_scale_spiral_gold.png-e8b4393ca88c406727b0d3d2732f989f.ctex"]
+source_file="res://assets/paperdoll/key/key_pangolin_coil_scale_spiral_gold.png"
+dest_files=["res://.godot/imported/key_pangolin_coil_scale_spiral_gold.png-88f45c633592487cbaf3690f9a90dd87.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dpyfjgy5ef4wh"
-path="res://.godot/imported/blade_ring.png-a77eab4e13d2efddfd8a9d539766fc70.ctex"
+path="res://.godot/imported/blade_ring.png-dd4cf7b61bd1386c12db3debe8b3e0ec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/accessory/blade_ring.png"
-dest_files=["res://.godot/imported/blade_ring.png-a77eab4e13d2efddfd8a9d539766fc70.ctex"]
+source_file="res://assets/paperdoll/accessory/blade_ring.png"
+dest_files=["res://.godot/imported/blade_ring.png-dd4cf7b61bd1386c12db3debe8b3e0ec.ctex"]
 
 [params]
 

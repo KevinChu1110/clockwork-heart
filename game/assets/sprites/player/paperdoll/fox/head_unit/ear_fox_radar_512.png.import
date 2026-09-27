@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ct2igryhv882k"
-path="res://.godot/imported/ear_fox_radar_512.png-2eeda4f59ae00e2d0f439c6f4d45dd96.ctex"
+path="res://.godot/imported/ear_fox_radar_512.png-6e84b9ac3ed2a9c113e007550521ad4e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fox/head_unit/ear_fox_radar_512.png"
-dest_files=["res://.godot/imported/ear_fox_radar_512.png-2eeda4f59ae00e2d0f439c6f4d45dd96.ctex"]
+source_file="res://assets/paperdoll/fox/head_unit/ear_fox_radar_512.png"
+dest_files=["res://.godot/imported/ear_fox_radar_512.png-6e84b9ac3ed2a9c113e007550521ad4e.ctex"]
 
 [params]
 

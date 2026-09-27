@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cwtyihc08jgkh"
-path="res://.godot/imported/chassis_pangolin_dune_orange_default_512.png-284cb1f8081af686613aa570bdd2b270.ctex"
+path="res://.godot/imported/chassis_pangolin_dune_orange_default_512.png-ec25ac392c3241c2ab4136c67b66e3fb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/pangolin/chassis/chassis_pangolin_dune_orange_default_512.png"
-dest_files=["res://.godot/imported/chassis_pangolin_dune_orange_default_512.png-284cb1f8081af686613aa570bdd2b270.ctex"]
+source_file="res://assets/paperdoll/pangolin/chassis/chassis_pangolin_dune_orange_default_512.png"
+dest_files=["res://.godot/imported/chassis_pangolin_dune_orange_default_512.png-ec25ac392c3241c2ab4136c67b66e3fb.ctex"]
 
 [params]
 

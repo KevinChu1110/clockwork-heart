@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://uqjxgxyrlxbf"
-path="res://.godot/imported/curio_hound_floating_micro_satellite.png-557d63ec58fcbc02d4d11e87bb40f43b.ctex"
+path="res://.godot/imported/curio_hound_floating_micro_satellite.png-f0c264638af1b497d3a30b5c2358f44a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hound/back_curio/curio_hound_floating_micro_satellite.png"
-dest_files=["res://.godot/imported/curio_hound_floating_micro_satellite.png-557d63ec58fcbc02d4d11e87bb40f43b.ctex"]
+source_file="res://assets/paperdoll/hound/back_curio/curio_hound_floating_micro_satellite.png"
+dest_files=["res://.godot/imported/curio_hound_floating_micro_satellite.png-f0c264638af1b497d3a30b5c2358f44a.ctex"]
 
 [params]
 

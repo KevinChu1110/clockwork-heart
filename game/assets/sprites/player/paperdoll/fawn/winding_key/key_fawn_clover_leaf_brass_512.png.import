@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ea6gjasmgag3"
-path="res://.godot/imported/key_fawn_clover_leaf_brass_512.png-6d9250caf5e90fa159023f3dc80f6cf2.ctex"
+path="res://.godot/imported/key_fawn_clover_leaf_brass_512.png-08d198685be550d22e60a3b92a87489c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fawn/winding_key/key_fawn_clover_leaf_brass_512.png"
-dest_files=["res://.godot/imported/key_fawn_clover_leaf_brass_512.png-6d9250caf5e90fa159023f3dc80f6cf2.ctex"]
+source_file="res://assets/paperdoll/fawn/winding_key/key_fawn_clover_leaf_brass_512.png"
+dest_files=["res://.godot/imported/key_fawn_clover_leaf_brass_512.png-08d198685be550d22e60a3b92a87489c.ctex"]
 
 [params]
 

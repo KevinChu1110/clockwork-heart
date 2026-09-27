@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byovfws2rwoi7"
-path="res://.godot/imported/dawn_blade.png-3f0a27a8e1fd0c0fcff978fdca4dd9f2.ctex"
+path="res://.godot/imported/dawn_blade.png-c942652ff80bdf95d51914b045dc115b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/dawn_blade.png"
-dest_files=["res://.godot/imported/dawn_blade.png-3f0a27a8e1fd0c0fcff978fdca4dd9f2.ctex"]
+source_file="res://assets/paperdoll/weapon/dawn_blade.png"
+dest_files=["res://.godot/imported/dawn_blade.png-c942652ff80bdf95d51914b045dc115b.ctex"]
 
 [params]
 

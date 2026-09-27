@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bwrx235mb16bc"
-path="res://.godot/imported/weapon_pangolin_dune_drill_claw_512.png-da3ffff3da087e3f9b075599e28ed2fc.ctex"
+path="res://.godot/imported/weapon_pangolin_dune_drill_claw_512.png-40fdfdbe62da689bed4eb4edd0df5a6d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/pangolin/weapon/weapon_pangolin_dune_drill_claw_512.png"
-dest_files=["res://.godot/imported/weapon_pangolin_dune_drill_claw_512.png-da3ffff3da087e3f9b075599e28ed2fc.ctex"]
+source_file="res://assets/paperdoll/pangolin/weapon/weapon_pangolin_dune_drill_claw_512.png"
+dest_files=["res://.godot/imported/weapon_pangolin_dune_drill_claw_512.png-40fdfdbe62da689bed4eb4edd0df5a6d.ctex"]
 
 [params]
 

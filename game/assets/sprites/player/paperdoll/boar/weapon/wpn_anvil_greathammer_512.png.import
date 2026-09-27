@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bdltbi1omeo4a"
-path="res://.godot/imported/wpn_anvil_greathammer_512.png-5ab9f90a30dc1df9e66a1dbf94a8a069.ctex"
+path="res://.godot/imported/wpn_anvil_greathammer_512.png-dc188ac9e5c4a468ac0325f84408ffcf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/weapon/wpn_anvil_greathammer_512.png"
-dest_files=["res://.godot/imported/wpn_anvil_greathammer_512.png-5ab9f90a30dc1df9e66a1dbf94a8a069.ctex"]
+source_file="res://assets/paperdoll/boar/weapon/wpn_anvil_greathammer_512.png"
+dest_files=["res://.godot/imported/wpn_anvil_greathammer_512.png-dc188ac9e5c4a468ac0325f84408ffcf.ctex"]
 
 [params]
 

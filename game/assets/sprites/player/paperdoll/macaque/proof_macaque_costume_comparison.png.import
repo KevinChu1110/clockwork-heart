@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cuw6yk0d5lwbn"
-path="res://.godot/imported/proof_macaque_costume_comparison.png-e8cc9f63b9edcc6c499ebc9e34ac7874.ctex"
+path="res://.godot/imported/proof_macaque_costume_comparison.png-898370ba289d932995857e0a0a2be52a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/proof_macaque_costume_comparison.png"
-dest_files=["res://.godot/imported/proof_macaque_costume_comparison.png-e8cc9f63b9edcc6c499ebc9e34ac7874.ctex"]
+source_file="res://assets/paperdoll/macaque/proof_macaque_costume_comparison.png"
+dest_files=["res://.godot/imported/proof_macaque_costume_comparison.png-898370ba289d932995857e0a0a2be52a.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://candumbr2l84n"
-path="res://.godot/imported/proof_macaque_chassis_comparison.png-e0654f7c1dad561c29e6fdc21b575bd3.ctex"
+path="res://.godot/imported/proof_macaque_chassis_comparison.png-0d4db38d5a0b84c7703d82709e5d15c7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/proof_macaque_chassis_comparison.png"
-dest_files=["res://.godot/imported/proof_macaque_chassis_comparison.png-e0654f7c1dad561c29e6fdc21b575bd3.ctex"]
+source_file="res://assets/paperdoll/macaque/proof_macaque_chassis_comparison.png"
+dest_files=["res://.godot/imported/proof_macaque_chassis_comparison.png-0d4db38d5a0b84c7703d82709e5d15c7.ctex"]
 
 [params]
 

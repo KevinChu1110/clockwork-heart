@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d0hjw024s5mkv"
-path="res://.godot/imported/costume_zen_striker_512.png-27805b3ade1082193c116627b8f8374e.ctex"
+path="res://.godot/imported/costume_zen_striker_512.png-57b69a29a2e6d51c355bdadbd669eb93.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/costume/costume_zen_striker_512.png"
-dest_files=["res://.godot/imported/costume_zen_striker_512.png-27805b3ade1082193c116627b8f8374e.ctex"]
+source_file="res://assets/paperdoll/macaque/costume/costume_zen_striker_512.png"
+dest_files=["res://.godot/imported/costume_zen_striker_512.png-57b69a29a2e6d51c355bdadbd669eb93.ctex"]
 
 [params]
 

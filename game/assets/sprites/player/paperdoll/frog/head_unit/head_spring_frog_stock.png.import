@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://djms3v48vgm8a"
-path="res://.godot/imported/head_spring_frog_stock.png-7d9294fbfdc2f0025567fecae13d3382.ctex"
+path="res://.godot/imported/head_spring_frog_stock.png-d63a023725a2f4357309d982b69868e3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/frog/head_unit/head_spring_frog_stock.png"
-dest_files=["res://.godot/imported/head_spring_frog_stock.png-7d9294fbfdc2f0025567fecae13d3382.ctex"]
+source_file="res://assets/paperdoll/frog/head_unit/head_spring_frog_stock.png"
+dest_files=["res://.godot/imported/head_spring_frog_stock.png-d63a023725a2f4357309d982b69868e3.ctex"]
 
 [params]
 

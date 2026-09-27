@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://q7jf140agmho"
-path="res://.godot/imported/weapon_fawn_vernier_shortbow.png-fbec24da4a3c3f85e64759bebbceeff5.ctex"
+path="res://.godot/imported/weapon_fawn_vernier_shortbow.png-37b8612a29640a99bb9f9bebe3d5488f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fawn/weapon/weapon_fawn_vernier_shortbow.png"
-dest_files=["res://.godot/imported/weapon_fawn_vernier_shortbow.png-fbec24da4a3c3f85e64759bebbceeff5.ctex"]
+source_file="res://assets/paperdoll/fawn/weapon/weapon_fawn_vernier_shortbow.png"
+dest_files=["res://.godot/imported/weapon_fawn_vernier_shortbow.png-37b8612a29640a99bb9f9bebe3d5488f.ctex"]
 
 [params]
 

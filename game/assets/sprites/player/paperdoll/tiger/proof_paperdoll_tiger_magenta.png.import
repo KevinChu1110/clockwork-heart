@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://borm1vr3swto7"
-path="res://.godot/imported/proof_paperdoll_tiger_magenta.png-0cec0b8b2d90fb378fc68df6daf7f458.ctex"
+path="res://.godot/imported/proof_paperdoll_tiger_magenta.png-12e31b785e49c479a937d233f14cba92.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tiger/proof_paperdoll_tiger_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_tiger_magenta.png-0cec0b8b2d90fb378fc68df6daf7f458.ctex"]
+source_file="res://assets/paperdoll/tiger/proof_paperdoll_tiger_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_tiger_magenta.png-12e31b785e49c479a937d233f14cba92.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bqrxbqtb7j5qj"
-path="res://.godot/imported/ear_ember_tiger_volcano.png-7b5cee0f4c58bd71267d305b54a45429.ctex"
+path="res://.godot/imported/ear_ember_tiger_volcano.png-1909760ddad6268875f3498199bf1019.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tiger/head_unit/ear_ember_tiger_volcano.png"
-dest_files=["res://.godot/imported/ear_ember_tiger_volcano.png-7b5cee0f4c58bd71267d305b54a45429.ctex"]
+source_file="res://assets/paperdoll/tiger/head_unit/ear_ember_tiger_volcano.png"
+dest_files=["res://.godot/imported/ear_ember_tiger_volcano.png-1909760ddad6268875f3498199bf1019.ctex"]
 
 [params]
 

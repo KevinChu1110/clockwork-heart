@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c5c5x7iqtdny5"
-path="res://.godot/imported/proof_fox_chassis_128_vs_512.png-ef30a221fd5212dbb3485df00a35c654.ctex"
+path="res://.godot/imported/proof_fox_chassis_128_vs_512.png-a67cbcfee7fd52c91a7b6467add00d1c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fox/proof_fox_chassis_128_vs_512.png"
-dest_files=["res://.godot/imported/proof_fox_chassis_128_vs_512.png-ef30a221fd5212dbb3485df00a35c654.ctex"]
+source_file="res://assets/paperdoll/fox/proof_fox_chassis_128_vs_512.png"
+dest_files=["res://.godot/imported/proof_fox_chassis_128_vs_512.png-a67cbcfee7fd52c91a7b6467add00d1c.ctex"]
 
 [params]
 

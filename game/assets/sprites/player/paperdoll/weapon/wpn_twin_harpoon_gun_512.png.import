@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ci3yi3g5jx03s"
-path="res://.godot/imported/wpn_twin_harpoon_gun_512.png-23de9f165702c4711c0d1b481b457a59.ctex"
+path="res://.godot/imported/wpn_twin_harpoon_gun_512.png-a00fd911393b72125cb97f0bb027b697.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/wpn_twin_harpoon_gun_512.png"
-dest_files=["res://.godot/imported/wpn_twin_harpoon_gun_512.png-23de9f165702c4711c0d1b481b457a59.ctex"]
+source_file="res://assets/paperdoll/weapon/wpn_twin_harpoon_gun_512.png"
+dest_files=["res://.godot/imported/wpn_twin_harpoon_gun_512.png-a00fd911393b72125cb97f0bb027b697.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://74m7qy2w3tqb"
-path="res://.godot/imported/chassis_hound_polymer_astro_default.png-c4c07556e722f05772719e140fc890a1.ctex"
+path="res://.godot/imported/chassis_hound_polymer_astro_default.png-f5d5d4831ce23b6b0da3582314c929bf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hound/chassis/chassis_hound_polymer_astro_default.png"
-dest_files=["res://.godot/imported/chassis_hound_polymer_astro_default.png-c4c07556e722f05772719e140fc890a1.ctex"]
+source_file="res://assets/paperdoll/hound/chassis/chassis_hound_polymer_astro_default.png"
+dest_files=["res://.godot/imported/chassis_hound_polymer_astro_default.png-f5d5d4831ce23b6b0da3582314c929bf.ctex"]
 
 [params]
 

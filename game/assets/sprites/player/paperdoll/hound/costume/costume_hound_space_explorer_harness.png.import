@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cooed4a66323t"
-path="res://.godot/imported/costume_hound_space_explorer_harness.png-68199f42d5070230222ed25fbcc66c6f.ctex"
+path="res://.godot/imported/costume_hound_space_explorer_harness.png-fda991c8db76e10564cd8fff39fcfb1f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hound/costume/costume_hound_space_explorer_harness.png"
-dest_files=["res://.godot/imported/costume_hound_space_explorer_harness.png-68199f42d5070230222ed25fbcc66c6f.ctex"]
+source_file="res://assets/paperdoll/hound/costume/costume_hound_space_explorer_harness.png"
+dest_files=["res://.godot/imported/costume_hound_space_explorer_harness.png-fda991c8db76e10564cd8fff39fcfb1f.ctex"]
 
 [params]
 

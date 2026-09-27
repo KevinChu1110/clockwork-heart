@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dibwsg5gervhd"
-path="res://.godot/imported/shadow_chakram.png-3741812d95a946029b3bcc595253fbf8.ctex"
+path="res://.godot/imported/shadow_chakram.png-813ff0a840766a8f02349ae5a6410689.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/shadow_chakram.png"
-dest_files=["res://.godot/imported/shadow_chakram.png-3741812d95a946029b3bcc595253fbf8.ctex"]
+source_file="res://assets/paperdoll/weapon/shadow_chakram.png"
+dest_files=["res://.godot/imported/shadow_chakram.png-813ff0a840766a8f02349ae5a6410689.ctex"]
 
 [params]
 

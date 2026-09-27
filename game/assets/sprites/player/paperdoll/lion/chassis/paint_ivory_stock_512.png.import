@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcniv1ay20ci6"
-path="res://.godot/imported/paint_ivory_stock_512.png-ea5ab78783e58900c6894b8564910e03.ctex"
+path="res://.godot/imported/paint_ivory_stock_512.png-c807e83f622f6f7e39f8c3246d7bf9ea.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/chassis/paint_ivory_stock_512.png"
-dest_files=["res://.godot/imported/paint_ivory_stock_512.png-ea5ab78783e58900c6894b8564910e03.ctex"]
+source_file="res://assets/paperdoll/lion/chassis/paint_ivory_stock_512.png"
+dest_files=["res://.godot/imported/paint_ivory_stock_512.png-c807e83f622f6f7e39f8c3246d7bf9ea.ctex"]
 
 [params]
 

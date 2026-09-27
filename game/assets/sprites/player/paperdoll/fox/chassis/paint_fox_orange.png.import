@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dl8q5gtokhwnp"
-path="res://.godot/imported/paint_fox_orange.png-8c6d273a783612047272d8467559641b.ctex"
+path="res://.godot/imported/paint_fox_orange.png-e5a53dbe224f11ac22acdfb7488e5018.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fox/chassis/paint_fox_orange.png"
-dest_files=["res://.godot/imported/paint_fox_orange.png-8c6d273a783612047272d8467559641b.ctex"]
+source_file="res://assets/paperdoll/fox/chassis/paint_fox_orange.png"
+dest_files=["res://.godot/imported/paint_fox_orange.png-e5a53dbe224f11ac22acdfb7488e5018.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cxl13wox4eatd"
-path="res://.godot/imported/proof_paperdoll_hound_composite.png-15394275513f68b84cc840efaea4dd4b.ctex"
+path="res://.godot/imported/proof_paperdoll_hound_composite.png-4ff9abd0ffa91afac62e3be8685e3455.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hound/proof_paperdoll_hound_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_hound_composite.png-15394275513f68b84cc840efaea4dd4b.ctex"]
+source_file="res://assets/paperdoll/hound/proof_paperdoll_hound_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_hound_composite.png-4ff9abd0ffa91afac62e3be8685e3455.ctex"]
 
 [params]
 

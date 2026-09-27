@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bfkhdtlryu2eq"
-path="res://.godot/imported/paint_midnight_navy.png-2a23dafeddb475149bf1a2557cb288e9.ctex"
+path="res://.godot/imported/paint_midnight_navy.png-d7469862718e1d0a2c4953e461696e18.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/chassis/paint_midnight_navy.png"
-dest_files=["res://.godot/imported/paint_midnight_navy.png-2a23dafeddb475149bf1a2557cb288e9.ctex"]
+source_file="res://assets/paperdoll/rabbit/chassis/paint_midnight_navy.png"
+dest_files=["res://.godot/imported/paint_midnight_navy.png-d7469862718e1d0a2c4953e461696e18.ctex"]
 
 [params]
 

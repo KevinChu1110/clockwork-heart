@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://do1snrp1cutph"
-path="res://.godot/imported/face_owl_clockface_lens_dusk_gold_512.png-adf1f1c98e8c8cd1ba898145fe6eb650.ctex"
+path="res://.godot/imported/face_owl_clockface_lens_dusk_gold_512.png-27cfc87901efea9d9a35bd492928532b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/owl/optic_core/face_owl_clockface_lens_dusk_gold_512.png"
-dest_files=["res://.godot/imported/face_owl_clockface_lens_dusk_gold_512.png-adf1f1c98e8c8cd1ba898145fe6eb650.ctex"]
+source_file="res://assets/paperdoll/owl/optic_core/face_owl_clockface_lens_dusk_gold_512.png"
+dest_files=["res://.godot/imported/face_owl_clockface_lens_dusk_gold_512.png-27cfc87901efea9d9a35bd492928532b.ctex"]
 
 [params]
 

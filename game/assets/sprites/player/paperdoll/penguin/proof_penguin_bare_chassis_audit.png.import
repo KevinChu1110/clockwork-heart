@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbh1w5l8g2qem"
-path="res://.godot/imported/proof_penguin_bare_chassis_audit.png-c3c1337f88190c86492ae79ca9dfda8b.ctex"
+path="res://.godot/imported/proof_penguin_bare_chassis_audit.png-0e35d53df6016193a2fb64da7b34cb08.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/proof_penguin_bare_chassis_audit.png"
-dest_files=["res://.godot/imported/proof_penguin_bare_chassis_audit.png-c3c1337f88190c86492ae79ca9dfda8b.ctex"]
+source_file="res://assets/paperdoll/penguin/proof_penguin_bare_chassis_audit.png"
+dest_files=["res://.godot/imported/proof_penguin_bare_chassis_audit.png-0e35d53df6016193a2fb64da7b34cb08.ctex"]
 
 [params]
 

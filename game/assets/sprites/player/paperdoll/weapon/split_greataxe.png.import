@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ds3oosy7drila"
-path="res://.godot/imported/split_greataxe.png-5d3856a9ba791b15fc4f9bea284557e6.ctex"
+path="res://.godot/imported/split_greataxe.png-e8917356e5b7c95a56ba1f6353798210.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/split_greataxe.png"
-dest_files=["res://.godot/imported/split_greataxe.png-5d3856a9ba791b15fc4f9bea284557e6.ctex"]
+source_file="res://assets/paperdoll/weapon/split_greataxe.png"
+dest_files=["res://.godot/imported/split_greataxe.png-e8917356e5b7c95a56ba1f6353798210.ctex"]
 
 [params]
 

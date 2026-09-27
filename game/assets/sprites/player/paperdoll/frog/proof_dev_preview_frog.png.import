@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bugro3jt3kr31"
-path="res://.godot/imported/proof_dev_preview_frog.png-09ff1e20cf36b028598f1f4548e72b39.ctex"
+path="res://.godot/imported/proof_dev_preview_frog.png-6060554a4f1e604e8103c31176cdfd6b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/frog/proof_dev_preview_frog.png"
-dest_files=["res://.godot/imported/proof_dev_preview_frog.png-09ff1e20cf36b028598f1f4548e72b39.ctex"]
+source_file="res://assets/paperdoll/frog/proof_dev_preview_frog.png"
+dest_files=["res://.godot/imported/proof_dev_preview_frog.png-6060554a4f1e604e8103c31176cdfd6b.ctex"]
 
 [params]
 

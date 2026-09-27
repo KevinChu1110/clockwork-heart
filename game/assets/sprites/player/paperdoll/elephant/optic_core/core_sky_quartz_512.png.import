@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b06lh8to8jew4"
-path="res://.godot/imported/core_sky_quartz_512.png-1451480daf369572d902727235771624.ctex"
+path="res://.godot/imported/core_sky_quartz_512.png-90e70579a88765718f62d68dcb6b705d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/elephant/optic_core/core_sky_quartz_512.png"
-dest_files=["res://.godot/imported/core_sky_quartz_512.png-1451480daf369572d902727235771624.ctex"]
+source_file="res://assets/paperdoll/elephant/optic_core/core_sky_quartz_512.png"
+dest_files=["res://.godot/imported/core_sky_quartz_512.png-90e70579a88765718f62d68dcb6b705d.ctex"]
 
 [params]
 

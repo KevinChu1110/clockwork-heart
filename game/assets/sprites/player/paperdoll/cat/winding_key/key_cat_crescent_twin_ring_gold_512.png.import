@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcc06gw5kod4q"
-path="res://.godot/imported/key_cat_crescent_twin_ring_gold_512.png-4ea6402d048cc7a849b59af29fc1f7d1.ctex"
+path="res://.godot/imported/key_cat_crescent_twin_ring_gold_512.png-317ed7dda3d3e5fc53fad6582c4fb29a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/cat/winding_key/key_cat_crescent_twin_ring_gold_512.png"
-dest_files=["res://.godot/imported/key_cat_crescent_twin_ring_gold_512.png-4ea6402d048cc7a849b59af29fc1f7d1.ctex"]
+source_file="res://assets/paperdoll/cat/winding_key/key_cat_crescent_twin_ring_gold_512.png"
+dest_files=["res://.godot/imported/key_cat_crescent_twin_ring_gold_512.png-317ed7dda3d3e5fc53fad6582c4fb29a.ctex"]
 
 [params]
 

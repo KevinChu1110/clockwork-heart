@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ge55vcwrybak"
-path="res://.godot/imported/proof_fox_variants_matrix.png-67c1455f06ca7c2d3acade9b9d4df2cd.ctex"
+path="res://.godot/imported/proof_fox_variants_matrix.png-04af423995b13c9179b56f04a402ddf0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fox/proof_fox_variants_matrix.png"
-dest_files=["res://.godot/imported/proof_fox_variants_matrix.png-67c1455f06ca7c2d3acade9b9d4df2cd.ctex"]
+source_file="res://assets/paperdoll/fox/proof_fox_variants_matrix.png"
+dest_files=["res://.godot/imported/proof_fox_variants_matrix.png-04af423995b13c9179b56f04a402ddf0.ctex"]
 
 [params]
 

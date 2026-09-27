@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bm6kjti04rop5"
-path="res://.godot/imported/face_fawn_amber_lens_alert_eyes.png-1d79b9d2cf5d20494432807c10b006c8.ctex"
+path="res://.godot/imported/face_fawn_amber_lens_alert_eyes.png-1a76b7392c8720a92d612cc6edf78b91.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fawn/optic_core/face_fawn_amber_lens_alert_eyes.png"
-dest_files=["res://.godot/imported/face_fawn_amber_lens_alert_eyes.png-1d79b9d2cf5d20494432807c10b006c8.ctex"]
+source_file="res://assets/paperdoll/fawn/optic_core/face_fawn_amber_lens_alert_eyes.png"
+dest_files=["res://.godot/imported/face_fawn_amber_lens_alert_eyes.png-1a76b7392c8720a92d612cc6edf78b91.ctex"]
 
 [params]
 

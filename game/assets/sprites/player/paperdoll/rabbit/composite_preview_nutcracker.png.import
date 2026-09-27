@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://7m8lxexq5dso"
-path="res://.godot/imported/composite_preview_nutcracker.png-96ee6b3eb27c7dc3df2633052effb2bf.ctex"
+path="res://.godot/imported/composite_preview_nutcracker.png-c76a259b777e7ad4e593a359d668e226.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/composite_preview_nutcracker.png"
-dest_files=["res://.godot/imported/composite_preview_nutcracker.png-96ee6b3eb27c7dc3df2633052effb2bf.ctex"]
+source_file="res://assets/paperdoll/rabbit/composite_preview_nutcracker.png"
+dest_files=["res://.godot/imported/composite_preview_nutcracker.png-c76a259b777e7ad4e593a359d668e226.ctex"]
 
 [params]
 

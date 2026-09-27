@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cd60piuk05qg8"
-path="res://.godot/imported/key_owl_sun_moon_astrolabe_gold.png-27c15f176a68dda05c29a6dce85e331b.ctex"
+path="res://.godot/imported/key_owl_sun_moon_astrolabe_gold.png-ecc339a546cad0f17a47351bc16b5554.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/key/key_owl_sun_moon_astrolabe_gold.png"
-dest_files=["res://.godot/imported/key_owl_sun_moon_astrolabe_gold.png-27c15f176a68dda05c29a6dce85e331b.ctex"]
+source_file="res://assets/paperdoll/key/key_owl_sun_moon_astrolabe_gold.png"
+dest_files=["res://.godot/imported/key_owl_sun_moon_astrolabe_gold.png-ecc339a546cad0f17a47351bc16b5554.ctex"]
 
 [params]
 

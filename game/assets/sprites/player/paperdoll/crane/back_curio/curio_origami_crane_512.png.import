@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c1gffmewj0fg8"
-path="res://.godot/imported/curio_origami_crane_512.png-61b5ad0c30265bed1c8ef78d5bb3ab59.ctex"
+path="res://.godot/imported/curio_origami_crane_512.png-e07caf296c62ec958b0251406861e98f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/back_curio/curio_origami_crane_512.png"
-dest_files=["res://.godot/imported/curio_origami_crane_512.png-61b5ad0c30265bed1c8ef78d5bb3ab59.ctex"]
+source_file="res://assets/paperdoll/crane/back_curio/curio_origami_crane_512.png"
+dest_files=["res://.godot/imported/curio_origami_crane_512.png-e07caf296c62ec958b0251406861e98f.ctex"]
 
 [params]
 

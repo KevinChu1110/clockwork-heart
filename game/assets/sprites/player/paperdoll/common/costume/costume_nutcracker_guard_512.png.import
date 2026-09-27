@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pt3phm6pfxcp"
-path="res://.godot/imported/costume_nutcracker_guard_512.png-11aeabee277df773f4cfa0903915becb.ctex"
+path="res://.godot/imported/costume_nutcracker_guard_512.png-bb22541aa663b5d42a78201766cbb55a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/common/costume/costume_nutcracker_guard_512.png"
-dest_files=["res://.godot/imported/costume_nutcracker_guard_512.png-11aeabee277df773f4cfa0903915becb.ctex"]
+source_file="res://assets/paperdoll/common/costume/costume_nutcracker_guard_512.png"
+dest_files=["res://.godot/imported/costume_nutcracker_guard_512.png-bb22541aa663b5d42a78201766cbb55a.ctex"]
 
 [params]
 

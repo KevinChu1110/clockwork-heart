@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cvqni5bxiaca6"
-path="res://.godot/imported/proof_paperdoll_hedgehog_composite.png-c1bfab807bb92a720010e448db1c0f29.ctex"
+path="res://.godot/imported/proof_paperdoll_hedgehog_composite.png-b3d9b3820c15cc78fa45fdc271af05a7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hedgehog/proof_paperdoll_hedgehog_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_hedgehog_composite.png-c1bfab807bb92a720010e448db1c0f29.ctex"]
+source_file="res://assets/paperdoll/hedgehog/proof_paperdoll_hedgehog_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_hedgehog_composite.png-b3d9b3820c15cc78fa45fdc271af05a7.ctex"]
 
 [params]
 

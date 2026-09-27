@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b3puq1sjdlhf0"
-path="res://.godot/imported/proof_elephant_chassis_comparison.png-52309ac6b0b332e34571e5321ae128f1.ctex"
+path="res://.godot/imported/proof_elephant_chassis_comparison.png-c1a319f61864ac95dbbec7f9ee9a4318.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/elephant/proof_elephant_chassis_comparison.png"
-dest_files=["res://.godot/imported/proof_elephant_chassis_comparison.png-52309ac6b0b332e34571e5321ae128f1.ctex"]
+source_file="res://assets/paperdoll/elephant/proof_elephant_chassis_comparison.png"
+dest_files=["res://.godot/imported/proof_elephant_chassis_comparison.png-c1a319f61864ac95dbbec7f9ee9a4318.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ds7v1wtayji3e"
-path="res://.godot/imported/key_twin_wing_concentric.png-a262637012366f61b87866cc08cf1f57.ctex"
+path="res://.godot/imported/key_twin_wing_concentric.png-a205e47b4fa02f8191734fdd6f647c5d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/key/key_twin_wing_concentric.png"
-dest_files=["res://.godot/imported/key_twin_wing_concentric.png-a262637012366f61b87866cc08cf1f57.ctex"]
+source_file="res://assets/paperdoll/key/key_twin_wing_concentric.png"
+dest_files=["res://.godot/imported/key_twin_wing_concentric.png-a205e47b4fa02f8191734fdd6f647c5d.ctex"]
 
 [params]
 

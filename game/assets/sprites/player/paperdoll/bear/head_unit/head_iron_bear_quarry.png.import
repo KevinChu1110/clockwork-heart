@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://jiy8s81qtisy"
-path="res://.godot/imported/head_iron_bear_quarry.png-1947d9bb763f92f9a7545e2d5f73ee41.ctex"
+path="res://.godot/imported/head_iron_bear_quarry.png-68e89297380f98885defe1729e744991.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/head_unit/head_iron_bear_quarry.png"
-dest_files=["res://.godot/imported/head_iron_bear_quarry.png-1947d9bb763f92f9a7545e2d5f73ee41.ctex"]
+source_file="res://assets/paperdoll/bear/head_unit/head_iron_bear_quarry.png"
+dest_files=["res://.godot/imported/head_iron_bear_quarry.png-68e89297380f98885defe1729e744991.ctex"]
 
 [params]
 

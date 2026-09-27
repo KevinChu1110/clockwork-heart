@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b6300e4v14nys"
-path="res://.godot/imported/curio_lion_fan_tail.png-cd2ab142c6c9d81db25e6ebe69dba860.ctex"
+path="res://.godot/imported/curio_lion_fan_tail.png-ec9b7d01fa563fd7c9def8694e30dd02.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/back_curio/curio_lion_fan_tail.png"
-dest_files=["res://.godot/imported/curio_lion_fan_tail.png-cd2ab142c6c9d81db25e6ebe69dba860.ctex"]
+source_file="res://assets/paperdoll/lion/back_curio/curio_lion_fan_tail.png"
+dest_files=["res://.godot/imported/curio_lion_fan_tail.png-ec9b7d01fa563fd7c9def8694e30dd02.ctex"]
 
 [params]
 

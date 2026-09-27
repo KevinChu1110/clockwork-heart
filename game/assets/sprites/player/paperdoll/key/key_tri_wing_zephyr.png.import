@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bcahxbjlnuvk6"
-path="res://.godot/imported/key_tri_wing_zephyr.png-1302f910cb12c7dd5a2c878f6810234b.ctex"
+path="res://.godot/imported/key_tri_wing_zephyr.png-7281f3ac1740feaabb031f30b78817e1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/key/key_tri_wing_zephyr.png"
-dest_files=["res://.godot/imported/key_tri_wing_zephyr.png-1302f910cb12c7dd5a2c878f6810234b.ctex"]
+source_file="res://assets/paperdoll/key/key_tri_wing_zephyr.png"
+dest_files=["res://.godot/imported/key_tri_wing_zephyr.png-7281f3ac1740feaabb031f30b78817e1.ctex"]
 
 [params]
 
