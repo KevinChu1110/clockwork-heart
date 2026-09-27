@@ -3706,8 +3706,8 @@
    "id": "falcon-paperdoll",
    "cat": "遊戲",
    "title": "第二十八族疾影神隼(falcon)紙娃娃",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "骨架先行建置完成（t_1fb81256），待審查與切片產出",
    "keys": [
     "第二十八族疾影神"
    ]
