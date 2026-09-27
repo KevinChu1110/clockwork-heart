@@ -3099,5 +3099,16 @@
   "巨偶蓄力中… %.1f 秒後可格擋": "Coloso cargando… se podrá parar en %.1f s",
   "蓄力必殺": "Golpe Cargado",
   "現在按 J 或點發條格擋！": "¡Pulsa J o toca Parada de Cuerda ahora!",
-  "現在點發條格擋！": "¡Toca Parada de Cuerda ahora!"
+  "現在點發條格擋！": "¡Toca Parada de Cuerda ahora!",
+  "已收進機芯背包": "Guardado en la bolsa de núcleos",
+  "【%s】": "[%s]",
+  "【灰階】": "[Grado Gris]",
+  "【白階】": "[Grado Blanco]",
+  "【橘階】": "[Grado Naranja]",
+  "【藍階】": "[Grado Azul]",
+  "【紫階】": "[Grado Púrpura]",
+  "【金階】": "[Grado Dorado]",
+  "【綠階】": "[Grado Verde]",
+  "【紅階】": "[Grado Rojo]",
+  "鐵屑 +0": "Chatarra +0"
 }
