@@ -158,8 +158,9 @@ def build_all():
         kd.point((tx, ty), fill=WHITE_SHINE)
 
     # Clean thick outline around key
-    k_px = key_img.load()
+    k_px = key_img.copy().load()
     if k_px is not None:
+        outline_points = set()
         for y in range(int(kcy - r_blade - 3), int(kcy + r_blade + 4)):
             for x in range(int(kcx - r_blade - 3), int(kcx + r_blade + 4)):
                 p = k_px[x, y]
@@ -167,7 +168,9 @@ def build_all():
                     for nx, ny in [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]:
                         np_px = k_px[nx, ny]
                         if isinstance(np_px, tuple) and np_px[3] == 0:
-                            kd.point((nx, ny), fill=OUTLINE)
+                            outline_points.add((nx, ny))
+        for pt in outline_points:
+            key_img.putpixel(pt, OUTLINE)
 
     print("  ✓ Slice 1 Winding Key completed, bbox:", key_img.getbbox())
 
