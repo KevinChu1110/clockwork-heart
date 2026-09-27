@@ -270,8 +270,10 @@ def build_all():
     # ─────────────────────────────────────────────────────────────
     # 3. SHOWCASE HD (game/assets/sprites/player/showcase/hedgehog_idle_hd.png)
     # ─────────────────────────────────────────────────────────────
+    # Conforms to 0-ART25 & 0-QA7 edge safety margin (>= 8px left/right transparent margin)
     showcase_hd = Image.new("RGBA", (800, 1200), (0, 0, 0, 0))
-    sh_scale = 1000.0 / char_crop_512.height
+    max_showcase_w = 780.0
+    sh_scale = min(1000.0 / char_crop_512.height, max_showcase_w / char_crop_512.width)
     sc_w = int(round(char_crop_512.width * sh_scale))
     sc_h = int(round(char_crop_512.height * sh_scale))
     scaled_showcase = char_crop_512.resize((sc_w, sc_h), Image.Resampling.LANCZOS)
