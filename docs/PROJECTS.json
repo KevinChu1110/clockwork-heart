@@ -3606,8 +3606,8 @@
    "id": "raccoon-skeleton",
    "cat": "遊戲",
    "title": "第二十族星巡浣熊(raccoon)資料表骨架與空目錄先行建置",
-   "status": "開發中",
-   "note": "骨架代碼與資料表建置完成，測試跑綠",
+   "status": "測試中",
+   "note": "骨架建置完成，推送至 origin/agent/20260927-orbit-raccoon-skeleton，送審 sideqa",
    "keys": [
     "第二十族星巡浣熊"
    ]
