@@ -3336,8 +3336,8 @@
    "id": "battle-hud-core-dots",
    "cat": "遊戲",
    "title": "戰鬥 HUD 顯示已裝備五槽色階點",
-   "status": "測試中",
-   "note": "戰鬥 HUD 五槽色階點已送審",
+   "status": "已上線",
+   "note": "審查通過批次同步，對應看板卡皆為 done",
    "keys": [
     "戰鬥 HUD 顯"
    ]
