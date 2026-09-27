@@ -3746,11 +3746,27 @@ func _on_end(won: bool) -> void:
 		if CoreSystem != null:
 			var is_colossus := _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]
 			var drop_source := "colossus" if is_colossus else "stage"
-			drop_part = CoreSystem.roll_and_add_battle_drop(null, drop_source)
+			var target_slot := ""
+			var first_broken := {}
+			if is_colossus and sim != null:
+				var enemy_unit: BattleUnit = sim.get_unit(_mode)
+				first_broken = sim.get_first_broken_part(enemy_unit)
+				if not first_broken.is_empty():
+					var p_key := str(first_broken.get("raw_name", first_broken.get("part_name", "")))
+					var p_id := str(first_broken.get("part_id", ""))
+					target_slot = CoreSystem.get_colossus_part_slot(_mode, p_key)
+					if target_slot == "" and p_id != "":
+						target_slot = CoreSystem.get_colossus_part_slot(_mode, p_id)
+			BattleSim.last_victory_first_broken_part = first_broken
+			drop_part = CoreSystem.roll_and_add_battle_drop(null, drop_source, target_slot)
 			BattleSim.last_victory_core_part = drop_part
 			var tnm: String = _t(str(drop_part.get("tier_name", "白")))
 			var snm: String = _t(str(drop_part.get("slot_name", "機芯部件")))
-			_append_log(_t("[color=#fc8]掉落機芯部件：【%s階】%s[/color]") % [tnm, snm])
+			if target_slot != "" and not first_broken.is_empty():
+				var bp_name: String = str(first_broken.get("part_name", ""))
+				_append_log(_t("[color=#fc8]部位破壞（%s）鎖定槽位：【%s階】%s[/color]") % [bp_name, tnm, snm])
+			else:
+				_append_log(_t("[color=#fc8]掉落機芯部件：【%s階】%s[/color]") % [tnm, snm])
 	if won:
 		if sim != null and sim.boss_fled:
 			banner.text = _t("趕　跑")

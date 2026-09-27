@@ -58,6 +58,10 @@ var parts_break_unlocked: bool = false
 var parts_break_stage: int = 0
 ## 破部位掉落（僅打贏才入袋；由 View／Main 結算）
 var pending_part_materials: Array = []
+## 本場破壞部位歷史順序記錄（{boss_id, part_id, part_name, raw_name}）
+var broken_parts_order: Array = []
+## 上一場勝利首個破壞部位暫存（不進存檔）
+static var last_victory_first_broken_part: Dictionary = {}
 ## 上一場勝利的掉落暫存（不進存檔）
 static var last_victory_part_loot: Array = []
 ## 上一場勝利的機芯戰利品掉落暫存（不進存檔）
@@ -2844,6 +2848,18 @@ func _finish_part_break(
 		target.telegraph_active = false
 		target.state = BattleUnit.State.RECOVER
 		target.state_timer = 1.2
+	var raw_pname := part_name
+	if target and not target.parts.is_empty():
+		for p in target.parts:
+			if str(p.get("id", "")) == part_id or str(p.get("name", "")) == part_name:
+				raw_pname = str(p.get("raw_name", p.get("name", part_name)))
+				break
+	broken_parts_order.append({
+		"boss_id": str(target.id) if target else "",
+		"part_id": part_id,
+		"part_name": part_name,
+		"raw_name": raw_pname,
+	})
 	_emit("part_broken", {
 		"boss_id": target.id,
 		"part_id": part_id,
@@ -2854,6 +2870,22 @@ func _finish_part_break(
 		"hp": target.hp,
 		"max_hp": target.max_hp,
 	})
+
+
+## 取得本場戰鬥首個被破壞的部位資訊；若未紀錄且傳入敵方單位則由其 parts 中掃描首個 broken 為 true 者
+func get_first_broken_part(enemy: BattleUnit = null) -> Dictionary:
+	if not broken_parts_order.is_empty():
+		return (broken_parts_order[0] as Dictionary).duplicate(true)
+	if enemy != null and not enemy.parts.is_empty():
+		for p in enemy.parts:
+			if bool(p.get("broken", false)):
+				return {
+					"boss_id": str(enemy.id),
+					"part_id": str(p.get("id", "")),
+					"part_name": str(p.get("name", "")),
+					"raw_name": str(p.get("raw_name", p.get("name", ""))),
+				}
+	return {}
 
 
 ## 戰鬥中切換真正武器欄（1／2／3 手動；耗盡時 auto=true）。各欄獨立使用次數。
