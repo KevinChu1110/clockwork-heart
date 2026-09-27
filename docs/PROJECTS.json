@@ -3166,8 +3166,8 @@
    "id": "victory-core-drop-i18n",
    "cat": "遊戲",
    "title": "勝利結算機芯掉落卡六語系不露中文",
-   "status": "草稿",
-   "note": "派工：槽位名／色階／立即裝備過翻譯層，en/ja 實機零中文",
+   "status": "開發中",
+   "note": "已開卡派 sideworker",
    "keys": [
     "勝利結算機芯掉落"
    ]
