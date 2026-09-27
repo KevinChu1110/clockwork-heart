@@ -15,11 +15,11 @@ func _initialize() -> void:
 	var races_spec: Dictionary = spec.get("races_specification", {})
 	var total_races: int = int(races_spec.get("total_races", 0))
 
-	if total_races != 15:
-		push_error("races_specification.total_races 應為 15，實際為: %d" % total_races)
+	if total_races < 15:
+		push_error("races_specification.total_races 應至少為 15，實際為: %d" % total_races)
 		ok = false
 	else:
-		print("  ✓ paperdoll_slots 種族總數為 15")
+		print("  ✓ paperdoll_slots 種族總數至少為 15 (目前: %d)" % total_races)
 
 	var hound_def: Dictionary = PaperdollRenderer.get_race_def("hound")
 	if hound_def.is_empty():

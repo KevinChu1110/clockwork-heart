@@ -324,16 +324,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_hound_polymer_astro_default", "name_zh": "模組化乳白工程塑料板件", "desc": "高抗衝擊乳白工程塑料拼裝板件，夜光透窗與天藍飾線"}
 		]
+	},
+	"owl": {
+		"id": "owl",
+		"name_zh": "靈鐘鴞",
+		"name_en": "The Chrono Owl",
+		"archetype": "法師 (Mage)",
+		"thumb": "res://assets/sprites/player/showcase/owl_idle_hd.png",
+		"desc": "自晨曦小鎮懸吊齒輪鐘樓守候天文走時的發條鐘鴞，沖壓黃銅疊片羽板，雙聯鐘面目鏡與擒縱陀飛輪透窗。",
+		"costumes": [
+			{"id": "costume_owl_dawn_astronomer_robe", "name_zh": "晨曦觀星學者短披肩斗篷", "desc": "深藍天鵝絨短披肩斗篷，金色星紋刺繡與黃銅胸針"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現沖壓黃銅疊片羽翼與午夜曜藍烤漆合金素體"}
+		],
+		"chassis": [
+			{"id": "chassis_owl_brass_lamellae_default", "name_zh": "沖壓黃銅疊片羽翼板件", "desc": "沖壓黃銅疊片羽翼板件，午夜曜藍外裝烤漆，胸前高透石英擒縱陀飛輪透窗"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -802,6 +817,7 @@ func confirm_selection() -> void:
 				"panda": gs.player_name = "瓷韻熊貓"
 				"fawn": gs.player_name = "翠角鹿"
 				"hound": gs.player_name = "星軌犬"
+				"owl": gs.player_name = "靈鐘鴞"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
