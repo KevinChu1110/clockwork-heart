@@ -474,16 +474,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_squirrel_chestnut_bronze_default", "name_zh": "巡林松鼠原廠栗木暖褐沖壓銅板素體", "desc": "多巴胺栗木暖褐烤漆，奶油琺瑯面頰與胸板，鎢鋼冷軋球窩關節"}
 		]
+	},
+	"salamander": {
+		"id": "salamander",
+		"name_zh": "熔火蜥蜴",
+		"name_en": "The Magma Salamander",
+		"archetype": "戰士 (Viking)",
+		"thumb": "res://assets/sprites/player/showcase/salamander_idle_hd.png",
+		"desc": "赤焰熔爐管網深處的耐火工兵與鍛造戰士，黑曜鎢鋼素體，熔爐衝壓巨錘與五節重鋼同軸阻尼大尾巴。",
+		"costumes": [
+			{"id": "costume_salamander_foundry_sapper_apron", "name_zh": "地熱工兵耐火鉚接圍裙", "desc": "耐磨皮質圍裙，珊瑚粉金屬扣帶與金黃腰帶，胸前微型蒸氣壓力錶"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現黑曜鎢鋼冷軋薄板件與五節重鋼同軸阻尼大尾巴"}
+		],
+		"chassis": [
+			{"id": "chassis_salamander_magma_tungsten_default", "name_zh": "熔火蜥蜴原廠黑曜鎢鋼耐熱金屬素體", "desc": "黑曜鎢鋼冷軋薄板件，熔岩暖金飾邊，奶油米白琺瑯面罩"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -962,6 +977,7 @@ func confirm_selection() -> void:
 				"seahorse": gs.player_name = "琉璃海馬"
 				"kangaroo": gs.player_name = "鐵拳袋鼠"
 				"squirrel": gs.player_name = "巡林松鼠"
+				"salamander": gs.player_name = "熔火蜥蜴"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
