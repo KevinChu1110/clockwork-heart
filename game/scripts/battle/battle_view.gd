@@ -165,9 +165,10 @@ func _update_thumb_attack_text(txt: String) -> void:
 			_btn_attack.text = txt
 			_btn_attack.add_theme_font_size_override("font_size", 15)
 	else:
-		_btn_attack.custom_minimum_size = Vector2(88, 72)
+		_btn_attack.custom_minimum_size = Vector2(108, 72)
+		_btn_attack.autowrap_mode = TextServer.AUTOWRAP_OFF
 		_btn_attack.text = txt
-		_btn_attack.add_theme_font_size_override("font_size", 17)
+		_btn_attack.add_theme_font_size_override("font_size", 16)
 
 
 ## 原作互剋盤提示（R2 §2）：剋制純靠數值互抵，提示玩家換裝
@@ -178,7 +179,7 @@ static func _kin_hint(kin: String) -> String:
 		"monk":
 			return _t("敵手皮粗血厚（防爆低）——鏢匕的爆擊剋得住。")
 		"viking":
-			return _t("敵手筋骨結實（防爆高）——爆擊難進，斧鎚硬砸最實在。")
+			return _t("敵手金屬板件厚實（防爆高）——爆擊難進，發條重擊最實在。")
 		"knight":
 			return _t("敵手甲厚步沉（迴避低）——重武器慢也打得中。")
 	return ""
@@ -280,9 +281,9 @@ func setup(mode: String) -> void:
 		## 原作互剋：看敵屬換裝的提示
 		var WC = load("res://scripts/world/world_content.gd")
 		if WC:
-			var kh := _kin_hint(str((WC.enemy_def(mode) as Dictionary).get("kin", "")))
-			if kh != "":
-				call_deferred("_append_log", "[color=#8df]%s[/color]" % kh)
+			var kin_val := str((WC.enemy_def(mode) as Dictionary).get("kin", ""))
+			if _kin_hint(kin_val) != "":
+				call_deferred("_append_log_record", {"type": "kin_hint", "kin": kin_val})
 	else:
 		sim = BattleSim.make_tutorial_wolf_fight(stats)
 	## 體型對照已撤：玩家回饋「看不懂、畫面花、不需要」
@@ -2884,9 +2885,12 @@ func _on_event(kind: String, data: Dictionary) -> void:
 		"hit":
 			var is_crit: bool = bool(data.get("crit", false))
 			var crit_s := _t("暴擊") if is_crit else ""
-			var ks := _t("【王者斬】") if data.get("king_slash", false) else ""
+			var ks := ""
+			if data.get("king_slash", false):
+				ks = _t("【王者斬】") + " "
 			var aname := _unit_display_name(str(data.get("attacker", "")))
-			_append_log(_t("%s%s 造成 %s 傷害 %s") % [ks, aname, data.get("damage"), crit_s])
+			var hit_msg := _t("%s%s 造成 %s 傷害 %s") % [ks, aname, data.get("damage"), crit_s]
+			_append_log(hit_msg.strip_edges())
 			## 玩家挨打：切受擊姿
 			if str(data.get("defender", "")) == "player":
 				_set_player_pose("hit", true)
@@ -3879,6 +3883,10 @@ var _log_records: Array[Dictionary] = []
 func _render_log_record(record: Dictionary) -> String:
 	var raw := ""
 	match record.get("type", "plain"):
+		"kin_hint":
+			var kin: String = str(record.get("kin", ""))
+			var kh := _kin_hint(kin)
+			raw = "[color=#8df]%s[/color]" % kh
 		"dual":
 			var k: String = str(record.get("touch", "")) if _is_touch() else str(record.get("desktop", ""))
 			raw = _t(k)
@@ -3892,6 +3900,7 @@ func _render_log_record(record: Dictionary) -> String:
 				raw = raw % args
 		_:
 			raw = str(record.get("text", ""))
+	raw = raw.replace("[The King's Cut]", "[lb]The King's Cut[rb]").replace("[Corte del Rey]", "[lb]Corte del Rey[rb]")
 	var line := _adapt_log_colors(_kh(raw))
 	if not line.begins_with("[b]"):
 		line = "[b]%s[/b]" % line
@@ -4094,8 +4103,9 @@ func _ensure_thumb_hud() -> void:
 		btn_flee.custom_minimum_size = Vector2(72, 56)
 	_btn_attack = _thumb_btn(_t("攻擊"), true, _on_thumb_attack)
 	_btn_attack.name = "ThumbAttack"
-	_btn_attack.custom_minimum_size = Vector2(88, 72)
-	_btn_attack.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_btn_attack.custom_minimum_size = Vector2(108, 72)
+	_btn_attack.autowrap_mode = TextServer.AUTOWRAP_OFF
+	_btn_attack.add_theme_font_size_override("font_size", 16)
 	if _is_colossus_fight() and _is_enemy_telegraphing():
 		_update_thumb_attack_text(_t("發條格擋"))
 	bot.add_child(_btn_attack)
