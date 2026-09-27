@@ -3596,8 +3596,8 @@
    "id": "otter-paperdoll",
    "cat": "遊戲",
    "title": "第十九族浪花海獺(otter)7大部件槽位紙娃娃切片產出",
-   "status": "草稿",
-   "note": "t_74282b08",
+   "status": "測試中",
+   "note": "完成 7 槽切片 128/512 雙規格並通過無頭測試與 Vision 審核，送審 sideart",
    "keys": [
     "第十九族浪花海獺"
    ]
