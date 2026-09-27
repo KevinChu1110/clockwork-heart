@@ -3336,8 +3336,8 @@
    "id": "battle-hud-core-dots",
    "cat": "遊戲",
    "title": "戰鬥 HUD 顯示已裝備五槽色階點",
-   "status": "草稿",
-   "note": "看板已派",
+   "status": "開發中",
+   "note": "阿宏開始執行戰鬥 HUD 五槽機芯色階點開發",
    "keys": [
     "戰鬥 HUD 顯"
    ]
