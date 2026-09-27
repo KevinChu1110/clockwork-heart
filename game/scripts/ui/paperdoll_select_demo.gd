@@ -519,16 +519,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_falcon_aero_brass_default", "name_zh": "疾影神隼原廠曜金冷軋合金素體", "desc": "象牙米白琺瑯冷軋薄鋼板件，內嵌高剛性疊片黃銅羽板，琥珀石英雙聯鷹眼目鏡"}
 		]
+	},
+	"ram": {
+		"id": "ram",
+		"name_zh": "星盤靈羊",
+		"name_en": "The Astral Ram",
+		"archetype": "法師 (Mage)",
+		"thumb": "res://assets/sprites/player/showcase/ram_idle_hd.png",
+		"desc": "星穹軌道空間站的巡禮法師偶，象牙白聚合物素體，星軌游絲共鳴杖與雙螺旋超導游絲盤角。",
+		"costumes": [
+			{"id": "costume_ram_gravity_starlight_robe", "name_zh": "星軌漫步者引力法袍", "desc": "天藍色防靜電披肩法袍搭配珊瑚粉滾邊，重疊弧面琺瑯雲紋防護胸甲"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現象牙白工程聚合物塑料素體與弧面沖壓琺瑯雲紋疊片"}
+		],
+		"chassis": [
+			{"id": "chassis_ram_astral_polymer_default", "name_zh": "星穹象牙白聚合物素體", "desc": "高光象牙白工程塑料板件，弧面琺瑯雲紋疊片，星光琥珀金色點陣LED目鏡"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -1010,6 +1025,7 @@ func confirm_selection() -> void:
 				"salamander": gs.player_name = "熔火蜥蜴"
 				"viper": gs.player_name = "竹影青蛇"
 				"falcon": gs.player_name = "疾影神隼"
+				"ram": gs.player_name = "星盤靈羊"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)

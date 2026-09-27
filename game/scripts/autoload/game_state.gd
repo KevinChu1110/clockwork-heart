@@ -792,6 +792,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"salamander": "anvil_hammer",
 	"viper": "star_fang",
 	"falcon": "hunt_claw",
+	"ram": "star_rod",
 }
 
 
@@ -829,6 +830,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"salamander": default_name = "熔火蜥蜴"
 		"viper": default_name = "竹影青蛇"
 		"falcon": default_name = "疾影神隼"
+		"ram": default_name = "星盤靈羊"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
