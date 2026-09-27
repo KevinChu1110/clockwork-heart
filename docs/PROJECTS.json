@@ -3286,8 +3286,8 @@
    "id": "forge-core-replace-compare",
    "cat": "遊戲",
    "title": "整備裝備機芯前跟現有槽比色階再確認",
-   "status": "草稿",
-   "note": "派工 sideworker，對齊勝利結算比較窗",
+   "status": "開發中",
+   "note": "看板已派",
    "keys": [
     "整備裝備機芯前跟"
    ]
