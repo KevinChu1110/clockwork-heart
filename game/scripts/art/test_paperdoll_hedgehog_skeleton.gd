@@ -88,26 +88,28 @@ func _initialize() -> void:
 	else:
 		print("  ✓ poses/hedgehog 目錄存在")
 
-	# 3. 驗證零美術佔位圖（無任何 png / webp / jpg 圖片產生，只放 .gitkeep）
+	# 3. 驗證 7 大槽位美術切片均已就緒 (128x128 與 512x512)
 	var hedgehog_global_dir := ProjectSettings.globalize_path(base_path)
-	var da := DirAccess.open(hedgehog_global_dir)
-	var image_files_found: Array[String] = []
-	if da:
-		for sid in expected_slots:
-			var sub_da := DirAccess.open("%s/%s" % [hedgehog_global_dir, sid])
-			if sub_da:
-				sub_da.list_dir_begin()
-				var fn := sub_da.get_next()
-				while fn != "":
-					if fn.ends_with(".png") or fn.ends_with(".webp") or fn.ends_with(".jpg"):
-						image_files_found.append("%s/%s" % [sid, fn])
-					fn = sub_da.get_next()
-				sub_da.list_dir_end()
-	if not image_files_found.is_empty():
-		push_error("發現意外產生的圖片檔案（違背零美術佔位圖要求）: %s" % str(image_files_found))
+	var missing_files: Array[String] = []
+	var expected_slice_files := {
+		"back_curio": ["curio_hedgehog_spring_steel_quill_pack.png", "curio_hedgehog_spring_steel_quill_pack_512.png"],
+		"chassis": ["chassis_hedgehog_amber_brass_default.png", "chassis_hedgehog_amber_brass_default_512.png"],
+		"costume": ["costume_hedgehog_marionette_tailor_vest.png", "costume_hedgehog_marionette_tailor_vest_512.png"],
+		"head_unit": ["head_hedgehog_brass_tuning_fork_ears.png", "head_hedgehog_brass_tuning_fork_ears_512.png"],
+		"optic_core": ["face_hedgehog_watchmaker_precision_loupe.png", "face_hedgehog_watchmaker_precision_loupe_512.png"],
+		"weapon": ["weapon_hedgehog_ratchet_needle_dart.png", "weapon_hedgehog_ratchet_needle_dart_512.png"],
+		"winding_key": ["key_hedgehog_ratchet_and_pawl_cross.png", "key_hedgehog_ratchet_and_pawl_cross_512.png"]
+	}
+	for sid in expected_slots:
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [hedgehog_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("棘輪刺蝟切片檔案缺失: %s" % str(missing_files))
 		ok = false
 	else:
-		print("  ✓ 嚴格恪守零美術佔位圖，7 槽位目錄下無任何圖片資產，僅保留 .gitkeep")
+		print("  ✓ 棘輪刺蝟 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 4. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog) 能讀到 hedgehog
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -134,13 +136,13 @@ func _initialize() -> void:
 	else:
 		print("  ✓ PaperdollSelectDemo.RACE_KEYS 包含 hedgehog")
 
-	# 驗證防護守衛 has_race_assets 正常運作（尚未產圖時應為 false，不露出空卡）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("hedgehog")
-	if has_assets:
-		push_error("尚未產圖前 has_race_assets('hedgehog') 應回傳 false，防止空卡露出！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('hedgehog') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ 零美術佔位防護守衛生效：has_race_assets('hedgehog') 正確回傳 false（安全隱藏）")
+		print("  ✓ 防護守衛生效：has_race_assets('hedgehog') 正確回傳 true（展示正常）")
 
 	# 5. 驗證 GameState 與 EquipmentSystem 開局武器配置對齊 dart (mist_darts)
 	var gs = root.get_node_or_null("GameState")
@@ -178,6 +180,49 @@ func _initialize() -> void:
 	assert(default_weapon == "weapon_hedgehog_ratchet_needle_dart", "weapon 預設不符")
 	assert(default_curio == "curio_hedgehog_spring_steel_quill_pack", "curio 預設不符")
 	print("  ✓ PaperdollRenderer 7 大槽位預設款式 ID 解析 100% 正確")
+
+	# 7. 驗證衣櫥種族清單與 7 大槽位貼圖載入
+	var filter_found := false
+	for rf in WardrobeDialog.RACE_FILTER_OPTIONS:
+		if rf.get("id") == "hedgehog":
+			filter_found = true
+			if rf.get("name_zh") != "刺蝟":
+				push_error("WardrobeDialog.RACE_FILTER_OPTIONS hedgehog name_zh 應為 '刺蝟'，實際為: %s" % str(rf.get("name_zh")))
+				ok = false
+			break
+	if not filter_found:
+		push_error("WardrobeDialog.RACE_FILTER_OPTIONS 未包含 hedgehog！")
+		ok = false
+	else:
+		print("  ✓ WardrobeDialog 種族過濾晶片包含 hedgehog (刺蝟)")
+
+	var hedgehog_map: Dictionary = PaperdollRenderer.build_paperdoll_map("hedgehog")
+	var hedgehog_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("hedgehog")
+	if hedgehog_map.size() != 7:
+		push_error("build_paperdoll_map('hedgehog') 槽位數不為 7: %d" % hedgehog_map.size())
+		ok = false
+	for sid in expected_slots:
+		var tex: Texture2D = hedgehog_tex.get(sid)
+		if tex == null:
+			push_error("槽位 %s 貼圖載入失敗，為 null！" % sid)
+			ok = false
+		else:
+			print("  ✓ 槽位 %-12s 成功載入貼圖資產: %s" % [sid, str(tex.get_size())])
+
+	# 驗證合成貼圖
+	var comp_tex: Texture2D = PaperdollRenderer.get_race_composite_texture("hedgehog")
+	if comp_tex == null:
+		push_error("PaperdollRenderer.get_race_composite_texture('hedgehog') 回傳 null！")
+		ok = false
+	else:
+		print("  ✓ 成功取得棘輪刺蝟 128x128 合成展示貼圖: %s" % str(comp_tex.get_size()))
+
+	var comp_512: Texture2D = PaperdollRenderer.get_race_composite_texture_512("hedgehog")
+	if comp_512 == null:
+		push_error("PaperdollRenderer.get_race_composite_texture_512('hedgehog') 回傳 null！")
+		ok = false
+	else:
+		print("  ✓ 成功取得棘輪刺蝟 512x512 高清合成展示貼圖: %s" % str(comp_512.get_size()))
 
 	print("\n==========================================")
 	if ok:
