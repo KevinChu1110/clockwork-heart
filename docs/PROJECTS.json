@@ -3416,8 +3416,8 @@
    "id": "fawn-i18n",
    "cat": "遊戲",
    "title": "🎮 翠角鹿(fawn)玩家可見名稱六語系落地",
-   "status": "開發中",
-   "note": "已派工 t_b9db63af，sideworker2 執行中",
+   "status": "測試中",
+   "note": "六語系 ui.json 補齊鹿 key，創角與衣櫥實機截圖與無頭測試全綠，提請審查",
    "keys": [
     "🎮 翠角鹿(fa"
    ]
