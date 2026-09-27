@@ -13,7 +13,7 @@ from typing import cast
 from PIL import Image, ImageDraw, ImageFilter, ImageChops, ImageOps
 import numpy as np
 
-REPO_ROOT = "/opt/side/bravesoul-game"
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 BASE_DIR = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/hound"
 PLAYER_DIR = f"{REPO_ROOT}/game/assets/sprites/player"
 OUT_DIR = f"{REPO_ROOT}/game/assets/sprites/player/poses/hound"
