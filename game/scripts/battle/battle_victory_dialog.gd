@@ -240,7 +240,7 @@ func _build_ui() -> void:
 
 	_slot_name_lbl = Label.new()
 	_slot_name_lbl.name = "SlotNameLabel"
-	_slot_name_lbl.text = "發條發電機"
+	_slot_name_lbl.text = ""
 	_slot_name_lbl.add_theme_font_size_override("font_size", 18)
 	_slot_name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -249,7 +249,7 @@ func _build_ui() -> void:
 
 	_tier_lbl = Label.new()
 	_tier_lbl.name = "TierLabel"
-	_tier_lbl.text = "【白階】"
+	_tier_lbl.text = ""
 	_tier_lbl.add_theme_font_size_override("font_size", 16)
 	_tier_lbl.add_theme_color_override("font_color", COLOR_GOLD)
 	if _cached_font:
@@ -258,7 +258,7 @@ func _build_ui() -> void:
 
 	_stats_lbl = Label.new()
 	_stats_lbl.name = "StatsLabel"
-	_stats_lbl.text = "攻+10 · 血+30"
+	_stats_lbl.text = ""
 	_stats_lbl.add_theme_font_size_override("font_size", 14)
 	_stats_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -303,7 +303,7 @@ func _build_ui() -> void:
 
 	_exp_lbl = Label.new()
 	_exp_lbl.name = "ExpLabel"
-	_exp_lbl.text = "經驗 +0"
+	_exp_lbl.text = ""
 	_exp_lbl.add_theme_font_size_override("font_size", 16)
 	_exp_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
 	if _cached_font:
@@ -339,7 +339,7 @@ func _build_ui() -> void:
 
 	_scrap_lbl = Label.new()
 	_scrap_lbl.name = "ScrapLabel"
-	_scrap_lbl.text = "鐵屑 +0"
+	_scrap_lbl.text = ""
 	_scrap_lbl.add_theme_font_size_override("font_size", 16)
 	_scrap_lbl.add_theme_color_override("font_color", COLOR_SKY)
 	if _cached_font:
@@ -392,35 +392,63 @@ func _refresh_display() -> void:
 
 	var slot_id: String = str(_part.get("slot", "mainspring"))
 	var tier_id: String = str(_part.get("tier", "white"))
-	var tier_name: String = str(_part.get("tier_name", "白"))
+	var tier_name: String = str(_part.get("tier_name", ""))
 	var slot_name: String = str(_part.get("slot_name", ""))
-	if slot_name.is_empty() and cs != null:
-		slot_name = cs.get_slot_name(slot_id)
+
+	var norm_slot: String = slot_id
+	if cs != null:
+		norm_slot = cs.normalize_slot_id(slot_id)
+		if slot_name.is_empty():
+			slot_name = cs.get_slot_name(norm_slot)
+		if tier_name.is_empty() and cs.TIER_NAMES.has(tier_id):
+			tier_name = str(cs.TIER_NAMES.get(tier_id, "白"))
+	if slot_name.is_empty():
+		slot_name = "發條發電機"
+	if tier_name.is_empty():
+		tier_name = "白"
 
 	var tier_color: Color = Color.WHITE
 	if cs != null:
 		tier_color = cs.get_tier_color(tier_id)
 
 	_slot_name_lbl.text = _t(slot_name)
-	_tier_lbl.text = "【%s】" % _t(tier_name + "階")
+
+	var bracket_tier_key := "【%s階】" % tier_name
+	_tier_lbl.text = _t(bracket_tier_key) if _t(bracket_tier_key) != bracket_tier_key else (_t("【%s】") % _t(tier_name + "階"))
 	_tier_lbl.add_theme_color_override("font_color", tier_color if tier_id != "white" else COLOR_TEXT_DARK)
 
 	if sdb != null and _slot_icon != null:
-		var tex: Texture2D = sdb.core_slot_icon(slot_id)
+		var tex: Texture2D = sdb.core_slot_icon(norm_slot)
 		if tex:
 			_slot_icon.texture = tex
 		_slot_icon.modulate = tier_color
 
 	var stat_parts: Array[String] = []
+	var pstats := {}
 	if cs != null:
-		var pstats: Dictionary = cs.get_part_stats(_part)
-		if int(pstats.get("atk", 0)) > 0: stat_parts.append(_t("攻+%d") % int(pstats.atk))
-		if int(pstats.get("def", 0)) > 0: stat_parts.append(_t("防+%d") % int(pstats.def))
-		if int(pstats.get("hp", 0)) > 0: stat_parts.append(_t("血+%d") % int(pstats.hp))
-		if float(pstats.get("crit", 0.0)) > 0.0: stat_parts.append(_t("暴擊+%.1f%%") % float(pstats.crit))
-		if float(pstats.get("crit_dmg", 0.0)) > 0.0: stat_parts.append(_t("暴傷+%.0f%%") % float(pstats.crit_dmg))
+		pstats = cs.get_part_stats(_part)
+	else:
+		var raw_s: Dictionary = _part.get("stats", {})
+		pstats = {
+			"atk": int(raw_s.get("ATK", raw_s.get("atk", 0))),
+			"def": int(raw_s.get("DEF", raw_s.get("def", 0))),
+			"hp": int(raw_s.get("HP", raw_s.get("hp", 0))),
+			"crit": float(raw_s.get("CRIT", raw_s.get("crit", 0.0))),
+			"crit_dmg": float(raw_s.get("CRIT_DMG", raw_s.get("crit_dmg", 0.0)))
+		}
+	if int(pstats.get("atk", 0)) > 0: stat_parts.append(_t("攻+%d") % int(pstats.atk))
+	if int(pstats.get("def", 0)) > 0: stat_parts.append(_t("防+%d") % int(pstats.def))
+	if int(pstats.get("hp", 0)) > 0: stat_parts.append(_t("血+%d") % int(pstats.hp))
+	if float(pstats.get("crit", 0.0)) > 0.0: stat_parts.append(_t("暴擊+%.1f%%") % float(pstats.crit))
+	if float(pstats.get("crit_dmg", 0.0)) > 0.0: stat_parts.append(_t("暴傷+%.0f%%") % float(pstats.crit_dmg))
 	_stats_lbl.text = " · ".join(stat_parts) if not stat_parts.is_empty() else _t("標準數值")
-	_desc_lbl.text = _t("可校準 7 次 · 安全彈簧保護不碎裝")
+
+	if _is_equipped:
+		_desc_lbl.text = _t("已成功替換裝備至【%s】槽位！") % _slot_name_lbl.text
+		_desc_lbl.add_theme_color_override("font_color", COLOR_MINT)
+	else:
+		_desc_lbl.text = _t("可校準 7 次 · 安全彈簧保護不碎裝")
+		_desc_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
 
 	if _exp_panel != null and _exp_lbl != null:
 		if _exp_tag_lbl != null:
@@ -440,6 +468,7 @@ func _refresh_display() -> void:
 			_exp_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
 		else:
 			_exp_panel.visible = false
+			_exp_lbl.text = _t("經驗 +0")
 
 	if _scrap_panel != null and _scrap_lbl != null:
 		if _scrap_tag_lbl != null:
@@ -450,6 +479,7 @@ func _refresh_display() -> void:
 			_scrap_lbl.add_theme_color_override("font_color", COLOR_SKY)
 		else:
 			_scrap_panel.visible = false
+			_scrap_lbl.text = _t("鐵屑 +0")
 
 
 func _is_player_max_level() -> bool:

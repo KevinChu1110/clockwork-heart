@@ -3102,5 +3102,16 @@
   "現在按 J 或點發條格擋！": "Press J or tap Windup Parry now!",
   "現在點發條格擋！": "Tap Windup Parry now!",
   "吃力 · 受傷 ×1.2": "Strained · Dmg ×1.2",
-  "過載 · 受傷 ×1.5": "Overload · Dmg ×1.5"
+  "過載 · 受傷 ×1.5": "Overload · Dmg ×1.5",
+  "已收進機芯背包": "Stored in Core Bag",
+  "【%s】": "[%s]",
+  "【灰階】": "[Gray Tier]",
+  "【白階】": "[White Tier]",
+  "【橘階】": "[Orange Tier]",
+  "【藍階】": "[Blue Tier]",
+  "【紫階】": "[Purple Tier]",
+  "【金階】": "[Gold Tier]",
+  "【綠階】": "[Green Tier]",
+  "【紅階】": "[Red Tier]",
+  "鐵屑 +0": "Scrap Iron +0"
 }
