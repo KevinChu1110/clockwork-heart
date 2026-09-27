@@ -92,7 +92,7 @@ const RACE_FILTER_OPTIONS: Array[Dictionary] = [
 	{"id": "elephant", "name_zh": "象"},
 	{"id": "frog", "name_zh": "蛙"},
 	{"id": "panda", "name_zh": "貓"},
-	{"id": "fawn", "name_zh": "鹿", "hidden": true},
+	{"id": "fawn", "name_zh": "鹿"},
 ]
 
 ## 檢查種族是否具備美術立繪與切片資源
@@ -485,6 +485,10 @@ func _create_race_filter_bar() -> Control:
 	chip_scroll.custom_minimum_size = Vector2(0, 54)
 	chip_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	chip_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	chip_scroll.resized.connect(func():
+		if _filter_chips.has(current_filter_race):
+			_scroll_to_chip(_filter_chips[current_filter_race])
+	)
 	container.add_child(chip_scroll)
 
 	var hbox := HBoxContainer.new()
@@ -590,20 +594,20 @@ func _do_scroll_to_chip(btn: Button) -> void:
 	if not scroll or not is_instance_valid(scroll) or not is_instance_valid(btn):
 		return
 	var hbar := scroll.get_h_scroll_bar()
-	var view_w: float = scroll.size.x
+	var view_w: float = hbar.page if (hbar and hbar.page > 0.0) else scroll.size.x
 	var btn_left: float = btn.position.x
 	var btn_right: float = btn_left + btn.size.x
-	var pad: float = 16.0 # 邊界緩衝，確保左右均不被裁剪
+	var pad: float = 24.0 # 邊界緩衝，確保左右均不被裁剪，文字與按鈕完全可見
 
 	if btn_right + pad > scroll.scroll_horizontal + view_w:
 		var target := int(ceil(btn_right + pad - view_w))
 		if hbar:
-			target = clampi(target, 0, int(hbar.max_value))
+			target = clampi(target, 0, int(hbar.max_value - hbar.page))
 		scroll.scroll_horizontal = target
 	elif btn_left - pad < scroll.scroll_horizontal:
 		var target := int(floor(max(0.0, btn_left - pad)))
 		if hbar:
-			target = clampi(target, 0, int(hbar.max_value))
+			target = clampi(target, 0, int(hbar.max_value - hbar.page))
 		scroll.scroll_horizontal = target
 
 

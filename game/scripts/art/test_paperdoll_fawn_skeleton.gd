@@ -58,26 +58,29 @@ func _initialize() -> void:
 	else:
 		print("  ✓ poses/fawn 目錄存在")
 
-	# 3. 驗證零美術佔位圖（無任何 png / webp 圖片產生）
-	var fawn_global_dir := ProjectSettings.globalize_path(base_path)
-	var da := DirAccess.open(fawn_global_dir)
-	var image_files_found: Array[String] = []
-	if da:
-		for sid in expected_slots:
-			var sub_da := DirAccess.open("%s/%s" % [fawn_global_dir, sid])
-			if sub_da:
-				sub_da.list_dir_begin()
-				var fn := sub_da.get_next()
-				while fn != "":
-					if fn.ends_with(".png") or fn.ends_with(".webp") or fn.ends_with(".jpg"):
-						image_files_found.append("%s/%s" % [sid, fn])
-					fn = sub_da.get_next()
-				sub_da.list_dir_end()
-	if not image_files_found.is_empty():
-		push_error("發現意外產生的圖片檔案（違背零美術佔位圖要求）: %s" % str(image_files_found))
-		ok = false
-	else:
-		print("  ✓ 嚴格恪守零美術佔位圖，7 槽位目錄下無任何圖片資產")
+	# 3. 驗證 7 大槽位專屬切片完整存在 (128px 與 512px 雙規格)
+	var expected_slices := [
+		["back_curio", "curio_fawn_floating_pinecone_chime"],
+		["chassis", "chassis_fawn_timber_tinplate_default"],
+		["costume", "costume_fawn_emerald_scout_tunic"],
+		["head_unit", "head_fawn_vernier_caliper_horns"],
+		["optic_core", "face_fawn_amber_lens_alert_eyes"],
+		["weapon", "weapon_fawn_vernier_shortbow"],
+		["winding_key", "key_fawn_clover_leaf_brass"]
+	]
+	for item in expected_slices:
+		var sid: String = item[0]
+		var item_id: String = item[1]
+		var p128 := "%s/%s/%s.png" % [base_path, sid, item_id]
+		var p512 := "%s/%s/%s_512.png" % [base_path, sid, item_id]
+		if not ResourceLoader.exists(p128) and not FileAccess.file_exists(p128):
+			push_error("缺少 128px 切片檔案: %s" % p128)
+			ok = false
+		if not ResourceLoader.exists(p512) and not FileAccess.file_exists(p512):
+			push_error("缺少 512px 切片檔案: %s" % p512)
+			ok = false
+	if ok:
+		print("  ✓ 翠角鹿 7 大槽位 128px 與 512px 專屬切片全數完備")
 
 	# 4. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog) 能讀到 fawn
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -113,25 +116,36 @@ func _initialize() -> void:
 	for rf in WardrobeDialog.RACE_FILTER_OPTIONS:
 		if rf.get("id") == "fawn":
 			filter_found = true
+			if rf.get("hidden", false):
+				push_error("WardrobeDialog.RACE_FILTER_OPTIONS 中 fawn 仍被標記為 hidden！")
+				ok = false
 			break
 	if not filter_found:
 		push_error("WardrobeDialog.RACE_FILTER_OPTIONS 未包含 fawn！")
 		ok = false
 	else:
-		print("  ✓ WardrobeDialog 種族過濾晶片包含 fawn (鹿)")
+		print("  ✓ WardrobeDialog 種族過濾晶片包含 fawn (鹿) 且無隱藏標記")
 
-	# 驗證無圖時走安全 fallback，不退回 128
-	var dummy_map: Dictionary = PaperdollRenderer.build_paperdoll_map("fawn")
-	var dummy_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("fawn")
-	if dummy_map.size() != 7:
-		push_error("build_paperdoll_map('fawn') 槽位數不為 7: %d" % dummy_map.size())
+	# 5. 驗證 7 大槽位切片貼圖解析與載入
+	var fawn_map: Dictionary = PaperdollRenderer.build_paperdoll_map("fawn")
+	var fawn_tex: Dictionary = PaperdollRenderer.build_paperdoll_textures("fawn")
+	if fawn_map.size() != 7:
+		push_error("build_paperdoll_map('fawn') 槽位數不為 7: %d" % fawn_map.size())
 		ok = false
 	for sid in expected_slots:
-		var tex: Texture2D = dummy_tex.get(sid)
-		if tex != null:
-			push_error("fawn 尚未出圖，槽位 %s 貼圖預期為 null，但載入了: %s" % [sid, str(tex)])
+		var tex: Texture2D = fawn_tex.get(sid)
+		if tex == null:
+			push_error("槽位 %s 貼圖載入失敗，為 null！" % sid)
 			ok = false
-	print("  ✓ PaperdollRenderer 針對無圖 fawn 7 大槽位安全解析並回傳 null，無例外")
+		else:
+			print("  ✓ 槽位 %-12s 成功載入貼圖: %s (%dx%d)" % [sid, str(fawn_map.get(sid)), tex.get_width(), tex.get_height()])
+
+	# 驗證前端防護守衛 has_race_assets 回傳 true
+	if not PaperdollSelectClass.has_race_assets("fawn"):
+		push_error("PaperdollSelectClass.has_race_assets('fawn') 回傳 false！")
+		ok = false
+	else:
+		print("  ✓ PaperdollSelectClass.has_race_assets('fawn') 正確回傳 true，創角與衣櫥介面完全解鎖！")
 
 	print("\n=======================================================")
 	if ok:
