@@ -952,12 +952,9 @@ static func consume_player_scrap(amount: int) -> bool:
 	return false
 
 
-## 執行玩家機芯部件單次校準
-## roll_success: null 為標準隨機擲骰（含跳階/保底）；也可顯式指定 true/false 或 "fail"/"maintain"/"jump_1"/"jump_2"
-static func calibrate_player_part(slot_id: String, roll_success: Variant = null, stat_delta: Dictionary = {}, score_delta: int = 0, seed_val: Variant = null) -> Dictionary:
-	var norm := normalize_slot_id(slot_id)
-	var part := get_player_part(norm)
-
+## 對任意機芯部件執行單次完整校準（含隨機擲骰、跳階、第七次保底與安全彈簧不碎裝）
+## 參數 roll_success: null 為標準隨機擲骰；也可顯式指定 true/false 或 "fail"/"maintain"/"jump_1"/"jump_2"
+static func calibrate_part(part: Dictionary, roll_success: Variant = null, stat_delta: Dictionary = {}, score_delta: int = 0, seed_val: Variant = null) -> Dictionary:
 	if not can_calibrate(part):
 		return {
 			"ok": false,
@@ -970,24 +967,8 @@ static func calibrate_player_part(slot_id: String, roll_success: Variant = null,
 			"destroyed": false
 		}
 
-	var cost := get_calibration_scrap_cost()
-	var cur_scrap := get_player_scrap()
-	if cur_scrap < cost:
-		return {
-			"ok": false,
-			"rejected": true,
-			"code": "INSUFFICIENT_SCRAP",
-			"message": "鐵屑不足！校準需要 %d 鐵屑。" % cost,
-			"part": part,
-			"scrap_cost": cost,
-			"current_scrap": cur_scrap,
-			"calibration_count": int(part.get("calibration_count", 0)),
-			"is_broken": bool(part.get("is_broken", false)),
-			"destroyed": false
-		}
-
-	consume_player_scrap(cost)
-
+	var slot_id := str(part.get("slot", SLOT_MAINSPRING))
+	var norm := normalize_slot_id(slot_id)
 	var cur_score: int = int(part.get("score", 0))
 	var tier_info := get_tier_by_score(cur_score)
 	var cur_tier_id := str(tier_info.get("id", TIER_WHITE))
@@ -1034,7 +1015,7 @@ static func calibrate_player_part(slot_id: String, roll_success: Variant = null,
 				final_score_delta = roll_data.score_delta
 				tier_jump = roll_data.tier_jump
 	else:
-		# 正常玩家點擊：roll_success == null
+		# 正常隨機擲骰：roll_success == null
 		var roll_res := roll_calibration_type(part, seed_val)
 		roll_type = str(roll_res.roll_type)
 		pity_triggered = bool(roll_res.pity_triggered)
@@ -1046,7 +1027,46 @@ static func calibrate_player_part(slot_id: String, roll_success: Variant = null,
 			final_score_delta = roll_data.score_delta
 		tier_jump = roll_data.tier_jump
 
-	var res := calibrate(part, is_success, final_stats, final_score_delta, roll_type, tier_jump, pity_triggered)
+	return calibrate(part, is_success, final_stats, final_score_delta, roll_type, tier_jump, pity_triggered)
+
+
+## 執行玩家機芯部件單次校準
+## roll_success: null 為標準隨機擲骰（含跳階/保底）；也可顯式指定 true/false 或 "fail"/"maintain"/"jump_1"/"jump_2"
+static func calibrate_player_part(slot_id: String, roll_success: Variant = null, stat_delta: Dictionary = {}, score_delta: int = 0, seed_val: Variant = null) -> Dictionary:
+	var norm := normalize_slot_id(slot_id)
+	var part := get_player_part(norm)
+
+	if not can_calibrate(part):
+		return {
+			"ok": false,
+			"rejected": true,
+			"code": "MAX_CALIBRATION_REACHED",
+			"message": "已達最大校準次數上限（7 次），無法再校準",
+			"part": part,
+			"calibration_count": int(part.get("calibration_count", MAX_CALIBRATIONS)),
+			"is_broken": bool(part.get("is_broken", false)),
+			"destroyed": false
+		}
+
+	var cost := get_calibration_scrap_cost()
+	var cur_scrap := get_player_scrap()
+	if cur_scrap < cost:
+		return {
+			"ok": false,
+			"rejected": true,
+			"code": "INSUFFICIENT_SCRAP",
+			"message": "鐵屑不足！校準需要 %d 鐵屑。" % cost,
+			"part": part,
+			"scrap_cost": cost,
+			"current_scrap": cur_scrap,
+			"calibration_count": int(part.get("calibration_count", 0)),
+			"is_broken": bool(part.get("is_broken", false)),
+			"destroyed": false
+		}
+
+	consume_player_scrap(cost)
+
+	var res := calibrate_part(part, roll_success, stat_delta, score_delta, seed_val)
 	res["used_scrap"] = cost
 	res["scrap_cost"] = cost
 	res["remaining_scrap"] = get_player_scrap()
