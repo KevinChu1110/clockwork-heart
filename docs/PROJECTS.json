@@ -3346,8 +3346,8 @@
    "id": "merge-forge-core-unequip",
    "cat": "平台",
    "title": "把已過審的整備機芯卸回背包合進主線",
-   "status": "開發中",
-   "note": "合併已過審的整備機芯卸回背包",
+   "status": "測試中",
+   "note": "已合併入 main 並推送 origin/main，送審測試",
    "keys": [
     "把已過審的整備機"
    ]
