@@ -2140,6 +2140,8 @@ func _on_colossus_card_pressed(s: Dictionary) -> void:
 		return
 	var res: Dictionary = CDS.call("try_enter", str(s.get("id", "")), player_lv)
 	if bool(res.get("ok", false)):
+		if gs:
+			gs.set("current_suggest_lv", sug_lv)
 		_show_toast(_t("今日剩餘: %d 次") % int(res.get("remaining", 0)))
 		_refresh_adventure_submode_ui()
 		_refresh_region_stages()
