@@ -2536,7 +2536,9 @@
         },
         "asset_naming_conventions": {
           "status": {
-            "existing": [],
+            "existing": [
+              "game/assets/sprites/player/poses/hedgehog/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)"
+            ],
             "pending": [
               "branding/char_hedgehog.png (品牌形象立牌)",
               "web/media/hero/char_hedgehog.png (官網英雄展示立繪)",
@@ -2547,7 +2549,6 @@
               "game/assets/sprites/player/hedgehog_battle.png (128x128 戰鬥特寫姿態)",
               "game/assets/sprites/player/hedgehog_walk_{0..3}.png (64x64 行走動畫)",
               "game/assets/sprites/player/hedgehog_walk_{0..3}_x3.png (128x128 行走動畫)",
-              "game/assets/sprites/player/poses/hedgehog/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
               "game/assets/sprites/portraits/hedgehog.png (HUD 戰鬥頭像)",
               "game/assets/sprites/portraits/ratchet_hedgehog.png (對話半身像)",
               "game/assets/sprites/player/paperdoll/hedgehog/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
@@ -2563,7 +2564,7 @@
           "game_sprite_battle": "game/assets/sprites/player/hedgehog_battle.png (128x128) [待產出]",
           "game_sprite_walk": "game/assets/sprites/player/hedgehog_walk_{0..3}.png (64x64) [待產出]",
           "game_sprite_walk_hi": "game/assets/sprites/player/hedgehog_walk_{0..3}_x3.png (128x128) [待產出]",
-          "game_action_poses": "game/assets/sprites/player/poses/hedgehog/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/hedgehog/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [既有]",
           "portrait_hud": "game/assets/sprites/portraits/hedgehog.png (128x128) [待產出]",
           "portrait_dialogue": "game/assets/sprites/portraits/ratchet_hedgehog.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/hedgehog/{slot_id}/{item_id}.png [待產出]"
