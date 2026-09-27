@@ -178,18 +178,6 @@ def build_all():
         by = int(round(kcy + 14.0 * np.sin(rad)))
         kd.ellipse([bx - 1, by - 1, bx + 1, by + 1], fill=GOLD_SHINE, outline=OUTLINE)
 
-    # Clean thick outline around key
-    k_px = key_img.load()
-    if k_px is not None:
-        for y in range(int(kcy - r_outer - 2), int(kcy + r_outer + 3)):
-            for x in range(int(kcx - r_outer - 2), int(kcx + r_outer + 3)):
-                p = k_px[x, y]
-                if isinstance(p, tuple) and p[3] > 100:
-                    for nx, ny in [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]:
-                        np_px = k_px[nx, ny]
-                        if isinstance(np_px, tuple) and np_px[3] == 0:
-                            kd.point((nx, ny), fill=OUTLINE)
-
     print("  ✓ Slice 1 Winding Key completed, bbox:", key_img.getbbox())
 
     # ─────────────────────────────────────────────────────────────
@@ -263,17 +251,13 @@ def build_all():
     for sx, sy in [(92, 52), (112, 70), (106, 44)]:
         cd.point((sx, sy), fill=GOLD_SHINE)
 
-    # Clean thick outline on orbital elements
-    c_px = curio_img.load()
-    if c_px is not None:
-        for y in range(int(ocy - 17), int(ocy + 18)):
-            for x in range(int(ocx - 19), int(ocx + 20)):
-                p = c_px[x, y]
-                if isinstance(p, tuple) and p[3] > 80:
-                    for nx, ny in [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]:
-                        np_px = c_px[nx, ny]
-                        if isinstance(np_px, tuple) and np_px[3] == 0:
-                            cd.point((nx, ny), fill=OUTLINE)
+    # Clean thick outline on orbital elements (using immutable snapshot to prevent accidental flood-fill)
+    curio_snap = np.array(curio_img)[:, :, 3] > 80
+    for y in range(int(ocy - 17), int(ocy + 18)):
+        for x in range(int(ocx - 19), int(ocx + 20)):
+            if not curio_snap[y, x]:
+                if curio_snap[y-1, x] or curio_snap[y+1, x] or curio_snap[y, x-1] or curio_snap[y, x+1]:
+                    curio_img.putpixel((x, y), OUTLINE)
 
     print("  ✓ Slice 2 Back Curio completed, bbox:", curio_img.getbbox())
 
