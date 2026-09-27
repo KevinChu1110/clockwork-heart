@@ -142,8 +142,8 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		var common_slice_clean := "%s/common/%s/%s.png" % [PAPERDOLL_ROOT, sid, clean_id]
 		if ResourceLoader.exists(common_slice_clean) or FileAccess.file_exists(common_slice_clean):
 			return common_slice_clean
-		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限二十七大正式族系）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper"]
+		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限二十八大正式族系）
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon"]
 		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
 			for other in all_races:
 				if str(other) == rid:
@@ -298,6 +298,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "chassis_salamander_magma_tungsten_default"
 			elif race == "viper":
 				return "chassis_viper_bamboo_lacquer_default"
+			elif race == "falcon":
+				return "chassis_falcon_aero_brass_default"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -352,6 +354,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_salamander_radiator_crest_horns"
 			elif race == "viper":
 				return "head_viper_carved_bamboo_crest_hood"
+			elif race == "falcon":
+				return "head_falcon_streamlined_beak_visor"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -398,6 +402,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_salamander_four_vane_heatsink"
 			elif race == "viper":
 				return "key_viper_bamboo_leaf_fan"
+			elif race == "falcon":
+				return "key_falcon_aero_twin_quill"
 			elif race == "fox":
 				return ""
 			return "key_classic_brass"
@@ -454,6 +460,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_salamander_foundry_sapper_apron"
 			elif race == "viper":
 				return "costume_viper_zen_dojo_shinobi_wrap"
+			elif race == "falcon":
+				return "costume_falcon_skyline_warden_harness"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -502,6 +510,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "face_salamander_amber_dial_lens"
 			elif race == "viper":
 				return "face_viper_emerald_glass_optic"
+			elif race == "falcon":
+				return "face_falcon_amber_quartz_optic"
 			elif race == "boar":
 				return "core_molten_crimson"
 			return "core_cyan_emerald"
@@ -558,6 +568,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "weapon_salamander_foundry_stamping_sledgehammer"
 			elif race == "viper":
 				return "weapon_viper_gale_bamboo_dagger"
+			elif race == "falcon":
+				return "weapon_falcon_shadow_talon_claw"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -612,6 +624,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_salamander_segmented_damping_tail"
 			elif race == "viper":
 				return "curio_viper_articulated_bamboo_tail"
+			elif race == "falcon":
+				return "curio_falcon_aerodynamic_rudder_tail"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -859,7 +873,7 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
@@ -1424,7 +1438,7 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 27,
+			"total_races": 28,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
@@ -1452,7 +1466,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "kangaroo", "aliases": ["boxer_kangaroo", "steam_kangaroo", "brass_kangaroo", "champion_kangaroo"], "name_zh": "鐵拳袋鼠", "name_en": "The Boxer Kangaroo", "class_archetype": "武術家 (Monk)"},
 				{"race_id": "squirrel", "aliases": ["timber_squirrel", "canopy_squirrel", "emerald_squirrel", "courier_squirrel"], "name_zh": "巡林松鼠", "name_en": "The Timber Squirrel", "class_archetype": "騎士 (Knight)"},
 				{"race_id": "salamander", "aliases": ["magma_salamander", "foundry_salamander", "crucible_salamander", "sapper_salamander"], "name_zh": "熔火蜥蜴", "name_en": "The Magma Salamander", "class_archetype": "戰士 (Viking)"},
-				{"race_id": "viper", "aliases": ["bamboo_viper", "shadow_viper", "zen_viper", "shinobi_viper"], "name_zh": "竹影青蛇", "name_en": "The Bamboo Viper", "class_archetype": "忍者 (Ninja)"}
+				{"race_id": "viper", "aliases": ["bamboo_viper", "shadow_viper", "zen_viper", "shinobi_viper"], "name_zh": "竹影青蛇", "name_en": "The Bamboo Viper", "class_archetype": "忍者 (Ninja)"},
+				{"race_id": "falcon", "aliases": ["swift_falcon", "shadow_falcon", "skyline_falcon", "aero_falcon"], "name_zh": "疾影神隼", "name_en": "The Swift Falcon", "class_archetype": "武術家 (Monk)"}
 			]
 		}
 	}
