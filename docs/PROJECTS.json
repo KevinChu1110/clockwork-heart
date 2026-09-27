@@ -3386,8 +3386,8 @@
    "id": "fawn-official-assets",
    "cat": "遊戲",
    "title": "第十四族翠角鹿官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
-   "status": "測試中",
-   "note": "四類官方資產全數產出與驗證通過，送審 sideqa (t_98c47cd0)",
+   "status": "已上線",
+   "note": "官方資產套件已過審，t_98c47cd0 done",
    "keys": [
     "第十四族翠角鹿官"
    ]
