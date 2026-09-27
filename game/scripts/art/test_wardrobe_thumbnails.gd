@@ -91,6 +91,7 @@ func _initialize() -> void:
 		"elephant": "key_heavy_cross_wheel",
 		"frog": "key_twin_wing_concentric",
 		"panda": "key_panda_taiji_ruyi_brass",
+		"fawn": "key_fawn_clover_leaf_brass",
 	}
 	for r_id in expected_keys.keys():
 		total_count += 1

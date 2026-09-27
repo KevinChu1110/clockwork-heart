@@ -3236,6 +3236,7 @@ func _unit_display_name(unit_id: String) -> String:
 			"elephant": return _t("鋼岳象")
 			"frog": return _t("碧簧蛙")
 			"panda": return _t("瓷韻熊貓")
+			"fawn": return _t("翠角鹿")
 			_: return _t("小白")
 	if _is_world_mode(unit_id):
 		var WC = load("res://scripts/world/world_content.gd")

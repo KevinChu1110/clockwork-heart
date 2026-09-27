@@ -179,6 +179,24 @@ func _process(_delta: float) -> bool:
 				_wait_frames = 0
 
 		10:
+			# 步驟 10: 切換為「翠角鹿」篩選，滾動使鹿 chip 可見，等待渲染穩定並截圖
+			if _wait_frames == 10:
+				var gs = root.get_node_or_null("GameState")
+				if gs:
+					gs.player_race = "fawn"
+					gs.player_name = "翠角鹿"
+				_dlg.set_race_filter("fawn")
+			elif _wait_frames == 25:
+				var scroll: ScrollContainer = _dlg.find_child("FilterScroll", true, false) as ScrollContainer
+				if scroll:
+					scroll.scroll_horizontal = 9999
+			elif _wait_frames >= 30:
+				_save_screenshot("proof_wardrobe_filter_fawn.png")
+				print("  ✓ 步驟 10 完成：截取 [翠角鹿 (Fawn)] 篩選狀態")
+				_step = 11
+				_wait_frames = 0
+
+		11:
 			print("=== 全部截圖產出完畢 ===")
 			quit(0)
 			return true

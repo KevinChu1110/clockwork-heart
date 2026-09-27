@@ -340,6 +340,7 @@ func _get_hero_portrait(race: String) -> Texture2D:
 		"elephant": p_path = "res://assets/sprites/portraits/elephant.png"
 		"frog": p_path = "res://assets/sprites/portraits/frog.png"
 		"panda": p_path = "res://assets/sprites/portraits/panda.png"
+		"fawn": p_path = "res://assets/sprites/portraits/fawn.png"
 		_: p_path = "res://assets/sprites/portraits/rabbit.png"
 	if ResourceLoader.exists(p_path):
 		return load(p_path) as Texture2D

@@ -1,5 +1,5 @@
 extends SceneTree
-## 翠角鹿（第十四族）全流程實機截圖產生器 (創角、戰鬥、大廳與特寫裁剪)
+## 翠角鹿（第十四族）全流程實機截圖產生器 (創角、戰鬥、大廳、衣櫥與特寫裁剪)
 ## 執行方式：
 ## xvfb-run -a godot --path game --rendering-driver opengl3 -s res://scripts/dev/capture_fawn_flow_qa.gd
 
@@ -97,7 +97,29 @@ func _process(_delta: float) -> bool:
 				_wait_frames = 0
 
 		4:
-			# 步驟 4: 生成特寫裁切圖與 128 合成檢驗圖
+			# 步驟 4: 建立衣櫥畫面並篩選翠角鹿
+			if _wait_frames == 1:
+				var gs: Node = root.get_node_or_null("GameState")
+				if gs:
+					gs.call("reset_new_game", "fawn")
+				var wardrobe_script = load("res://scripts/ui/wardrobe_dialog.gd")
+				if wardrobe_script:
+					var w = wardrobe_script.new()
+					root.add_child(w)
+					if w.has_method("set_race_filter"):
+						w.call("set_race_filter", "fawn")
+					_current_node = w
+			elif _wait_frames >= 30:
+				_save_screenshot("proof_wardrobe_fawn.png")
+				print("  ✓ 步驟 4 完成：衣櫥畫面篩選翠角鹿 -> proof_wardrobe_fawn.png")
+				if _current_node:
+					_current_node.queue_free()
+					_current_node = null
+				_step = 5
+				_wait_frames = 0
+
+		5:
+			# 步驟 5: 生成特寫裁切圖與 128 合成檢驗圖
 			_generate_crops()
 			print("=== 翠角鹿全流程實機截圖完成 ===")
 			quit(0)
@@ -121,6 +143,7 @@ func _save_screenshot(filename: String) -> void:
 	var err := img.save_png(file_path)
 	if err == OK:
 		print("  [截圖存檔] %s" % file_path)
+		# 複製一份到 proofs/ 目錄供存證
 		var base := ProjectSettings.globalize_path("res://")
 		var proofs_dir := base.path_join("../proofs")
 		DirAccess.make_dir_recursive_absolute(proofs_dir)

@@ -711,6 +711,20 @@ func _test_hero_portrait() -> void:
 		else:
 			print("  ok 瓷韻熊貓 (panda) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
 
+	# 1.8 驗證翠角鹿專屬頭像讀取，不為空且非小白兔 fallback
+	var fawn_tex: Texture2D = _lobby.call("_get_hero_portrait", "fawn")
+	if fawn_tex == null:
+		_fail("翠角鹿 (fawn) 大廳頭像貼圖為空")
+	else:
+		var path: String = fawn_tex.resource_path
+		print("  [翠角鹿頭像路徑] %s" % path)
+		if not path.ends_with("portraits/fawn.png"):
+			_fail("翠角鹿大廳頭像路徑應為 res://assets/sprites/portraits/fawn.png，實際為: %s" % path)
+		elif path.find("rabbit") >= 0:
+			_fail("翠角鹿大廳頭像不應退回小白兔 (rabbit)")
+		else:
+			print("  ok 翠角鹿 (fawn) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
+
 	# 2. 驗證切換玩家種族為玄機龜時，左上角 _profile_avatar 更新為玄機龜頭像
 	var gs := root.get_node_or_null("GameState")
 	if gs:
@@ -769,6 +783,20 @@ func _test_hero_portrait() -> void:
 			else:
 				print("  ok 大廳 _profile_avatar 在瓷韻熊貓種族下正確顯示 panda.png")
 
+		# 2.8 驗證切換玩家種族為翠角鹿時，左上角 _profile_avatar 更新為翠角鹿頭像
+		gs.player_race = "fawn"
+		if _lobby.has_method("refresh_hud"):
+			_lobby.call("refresh_hud")
+		var avatar_fa = _lobby.get("_profile_avatar") as TextureRect
+		if avatar_fa == null or avatar_fa.texture == null:
+			_fail("大廳 _profile_avatar 為空或無貼圖 (fawn)")
+		else:
+			var fapath: String = avatar_fa.texture.resource_path
+			if not fapath.ends_with("portraits/fawn.png"):
+				_fail("切換為翠角鹿後 _profile_avatar 應為 portraits/fawn.png，實際為: %s" % fapath)
+			else:
+				print("  ok 大廳 _profile_avatar 在翠角鹿種族下正確顯示 fawn.png")
+
 
 ## ──────────────────────────────────────────
 ## 5. 斷言大廳各族真戰鬥姿態（非兔族戳碰非同一張底圖，review.md 第 4b）
@@ -783,7 +811,7 @@ func _test_hero_race_poses() -> void:
 		_fail("無法取得 GameState 單例")
 		return
 
-	var races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog"]
+	var races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
 	for r in races:
 		gs.player_race = r
 		gs.paperdoll_slots = {}
@@ -871,7 +899,7 @@ func _test_nine_races_lobby_showcase_hd() -> void:
 		_fail("無法取得 GameState 單例")
 		return
 
-	var all_races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
+	var all_races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
 	var hero_avatar := _lobby.get("_hero_avatar") as TextureRect
 	if hero_avatar == null:
 		_fail("大廳 _hero_avatar 為空")
