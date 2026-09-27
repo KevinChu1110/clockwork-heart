@@ -780,6 +780,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"fawn": "reed_bow",
 	"hound": "ash_spear",
 	"owl": "star_rod",
+	"cat": "star_fang",
 }
 
 
@@ -805,6 +806,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"fawn": default_name = "翠角鹿"
 		"hound": default_name = "星軌犬"
 		"owl": default_name = "靈鐘鴞"
+		"cat": default_name = "幽影貓"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值

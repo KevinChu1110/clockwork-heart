@@ -40,6 +40,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"fawn": "reed_bow",
 	"hound": "ash_spear",
 	"owl": "star_rod",
+	"cat": "star_fang",
 }
 
 static func starter_weapon_id_for_race(race: String) -> String:
