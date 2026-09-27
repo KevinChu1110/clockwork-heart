@@ -3676,8 +3676,8 @@
    "id": "squirrel-paperdoll",
    "cat": "遊戲",
    "title": "第二十五族巡林松鼠(squirrel)紙娃娃",
-   "status": "草稿",
-   "note": "測試中",
+   "status": "測試中",
+   "note": "骨架與空目錄已合 main (3aea4f51)，等 7 大部件切片",
    "keys": [
     "第二十五族巡林松"
    ]
