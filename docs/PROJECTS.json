@@ -2666,8 +2666,8 @@
    "id": "equip-quality-i18n",
    "cat": "遊戲",
    "title": "裝備品質標籤 ja／ko／es／zh_CN 補齊",
-   "status": "測試中",
-   "note": "裝備品質標籤五語系補齊與即時刷新已自測通過，待 sideqa 審查",
+   "status": "已上線",
+   "note": "審查通過批次同步，對應看板卡皆為 done",
    "keys": [
     "裝備品質標籤 j"
    ]
