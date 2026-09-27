@@ -3416,8 +3416,8 @@
    "id": "fawn-i18n",
    "cat": "遊戲",
    "title": "🎮 翠角鹿(fawn)玩家可見名稱六語系落地",
-   "status": "草稿",
-   "note": "本輪未開卡（原卡t_e2d62391已撤），等 t_e1af3f95 完成且下輪佇列有空缺再開",
+   "status": "開發中",
+   "note": "已派工 t_b9db63af，sideworker2 執行中",
    "keys": [
     "🎮 翠角鹿(fa"
    ]
