@@ -3626,8 +3626,8 @@
    "id": "otter-official-assets",
    "cat": "遊戲",
    "title": "第十九族浪花海獺(otter)官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
-   "status": "測試中",
-   "note": "官方資產套件補齊完成，已完成雙規格驗證與Vision自檢，送審 sideqa",
+   "status": "已上線",
+   "note": "sideqa 複驗通過：官網英雄圖/戰鬥特寫/行走動畫/HUD頭像全數齊備且合規",
    "keys": [
     "第十九族浪花海獺"
    ]
