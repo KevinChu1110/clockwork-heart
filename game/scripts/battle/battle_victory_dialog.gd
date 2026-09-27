@@ -52,6 +52,28 @@ var _btn_confirm: Button
 var _btn_close: Button
 var _cached_font: Font = null
 
+# ── 機芯替換比較彈窗 (Compare Modal) ──
+var _compare_layer: Control = null
+var _compare_card: PanelContainer = null
+var _cmp_title_lbl: Label = null
+var _cmp_sub_lbl: Label = null
+var _cmp_slot_lbl: Label = null
+var _cmp_old_tag_lbl: Label = null
+var _cmp_old_name_lbl: Label = null
+var _cmp_old_tier_lbl: Label = null
+var _cmp_old_stats_lbl: Label = null
+var _cmp_old_icon: TextureRect = null
+var _cmp_new_tag_lbl: Label = null
+var _cmp_new_name_lbl: Label = null
+var _cmp_new_tier_lbl: Label = null
+var _cmp_new_stats_lbl: Label = null
+var _cmp_new_icon: TextureRect = null
+var _btn_confirm_replace: Button = null
+var _btn_cancel_replace: Button = null
+var _btn_compare_close: Button = null
+var _current_cmp_old_part: Dictionary = {}
+var _current_cmp_slot_id: String = ""
+
 var _part: Dictionary = {}
 var _on_confirm: Callable = Callable()
 var _is_equipped: bool = false
@@ -118,6 +140,8 @@ func _exit_tree() -> void:
 
 func _on_locale_changed(_new_loc: String = "") -> void:
 	_refresh_display()
+	if _compare_layer != null and _compare_layer.visible:
+		_refresh_compare_display()
 
 
 func _build_ui() -> void:
@@ -495,21 +519,458 @@ func _is_player_max_level() -> bool:
 	return false
 
 
+func _get_slot_name_for(norm_slot: String) -> String:
+	var cs = _cs()
+	var sname := ""
+	if cs != null and cs.has_method("get_slot_name"):
+		sname = str(cs.call("get_slot_name", norm_slot))
+	if sname.is_empty():
+		sname = "發條發電機"
+	return sname
+
+
+func _get_bracket_tier_text(part: Dictionary) -> String:
+	var cs = _cs()
+	var tier_id: String = str(part.get("tier", "white"))
+	var tier_name: String = str(part.get("tier_name", ""))
+	if tier_name.is_empty() and cs != null and "TIER_NAMES" in cs and cs.TIER_NAMES.has(tier_id):
+		tier_name = str(cs.TIER_NAMES.get(tier_id, "白"))
+	if tier_name.is_empty():
+		tier_name = "白"
+	var bracket_tier_key := "【%s階】" % tier_name
+	return _t(bracket_tier_key) if _t(bracket_tier_key) != bracket_tier_key else (_t("【%s】") % _t(tier_name + "階"))
+
+
+func _get_part_tier_color(part: Dictionary) -> Color:
+	var cs = _cs()
+	var tier_id: String = str(part.get("tier", "white"))
+	if cs != null and cs.has_method("get_tier_color"):
+		return cs.call("get_tier_color", tier_id)
+	return Color.WHITE
+
+
+func _format_stats_string(part: Dictionary) -> String:
+	var cs = _cs()
+	var stat_parts: Array[String] = []
+	var pstats := {}
+	if cs != null and cs.has_method("get_part_stats"):
+		pstats = cs.call("get_part_stats", part)
+	else:
+		var raw_s: Dictionary = part.get("stats", {})
+		pstats = {
+			"atk": int(raw_s.get("ATK", raw_s.get("atk", 0))),
+			"def": int(raw_s.get("DEF", raw_s.get("def", 0))),
+			"hp": int(raw_s.get("HP", raw_s.get("hp", 0))),
+			"crit": float(raw_s.get("CRIT", raw_s.get("crit", 0.0))),
+			"crit_dmg": float(raw_s.get("CRIT_DMG", raw_s.get("crit_dmg", 0.0)))
+		}
+	if int(pstats.get("atk", 0)) > 0: stat_parts.append(_t("攻+%d") % int(pstats.atk))
+	if int(pstats.get("def", 0)) > 0: stat_parts.append(_t("防+%d") % int(pstats.def))
+	if int(pstats.get("hp", 0)) > 0: stat_parts.append(_t("血+%d") % int(pstats.hp))
+	if float(pstats.get("crit", 0.0)) > 0.0: stat_parts.append(_t("暴擊+%.1f%%") % float(pstats.crit))
+	if float(pstats.get("crit_dmg", 0.0)) > 0.0: stat_parts.append(_t("暴傷+%.0f%%") % float(pstats.crit_dmg))
+	return " · ".join(stat_parts) if not stat_parts.is_empty() else _t("標準數值")
+
+
 func _on_equip_pressed() -> void:
 	if _part.is_empty():
 		return
 	var a = _audio()
 	if a != null:
 		a.play_ui()
-	var slot_id: String = str(_part.get("slot", ""))
+	var slot_id: String = str(_part.get("slot", "mainspring"))
+	var cs = _cs()
+	var norm_slot: String = slot_id
+	if cs != null and cs.has_method("normalize_slot_id"):
+		norm_slot = str(cs.call("normalize_slot_id", slot_id))
+
+	var old_part: Dictionary = {}
+	if cs != null and cs.has_method("get_equipped_part"):
+		old_part = cs.call("get_equipped_part", norm_slot)
+
+	if old_part.is_empty():
+		_do_equip(norm_slot)
+	else:
+		_show_replace_comparison(norm_slot, old_part)
+
+
+func _do_equip(norm_slot: String) -> void:
 	var cs = _cs()
 	if cs != null:
-		cs.equip_part(slot_id, _part)
+		cs.equip_part(norm_slot, _part)
 	_is_equipped = true
 	_btn_equip.text = _t("已裝備")
 	_btn_equip.disabled = true
 	_desc_lbl.text = _t("已成功替換裝備至【%s】槽位！") % _slot_name_lbl.text
 	_desc_lbl.add_theme_color_override("font_color", COLOR_MINT)
+	if _compare_layer != null:
+		_compare_layer.visible = false
+
+
+func _show_replace_comparison(norm_slot: String, old_part: Dictionary) -> void:
+	_current_cmp_slot_id = norm_slot
+	_current_cmp_old_part = old_part.duplicate(true)
+	if _compare_layer == null:
+		_build_compare_ui()
+	_refresh_compare_display()
+	_compare_layer.visible = true
+
+
+func _on_cancel_replace() -> void:
+	var a = _audio()
+	if a != null:
+		a.play_ui()
+	if _compare_layer != null:
+		_compare_layer.visible = false
+	_desc_lbl.text = _t("新部件已保留在機芯背包中")
+	_desc_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+
+
+func _on_confirm_replace() -> void:
+	var a = _audio()
+	if a != null:
+		a.play_ui()
+	_do_equip(_current_cmp_slot_id)
+
+
+func _build_compare_ui() -> void:
+	if _compare_layer != null:
+		return
+
+	if ResourceLoader.exists(FONT_PATH) and _cached_font == null:
+		_cached_font = load(FONT_PATH) as Font
+
+	_compare_layer = Control.new()
+	_compare_layer.name = "CompareLayer"
+	_compare_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_compare_layer.mouse_filter = Control.MOUSE_FILTER_STOP
+	_compare_layer.z_index = 10
+	add_child(_compare_layer)
+
+	# 1. 全螢幕半透明遮罩
+	var scrim := ResponsiveUi.make_scrim(Color(0.05, 0.04, 0.08, 0.6))
+	scrim.name = "CompareScrim"
+	_compare_layer.add_child(scrim)
+
+	# 2. 置中容器
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_compare_layer.add_child(center)
+
+	# 3. 比較卡片
+	_compare_card = PanelContainer.new()
+	_compare_card.name = "CompareCard"
+	ResponsiveUi.apply_dialog_card(_compare_card)
+	_compare_card.custom_minimum_size = Vector2(740, 440)
+	_compare_card.add_theme_stylebox_override("panel", _create_floating_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
+	center.add_child(_compare_card)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 24)
+	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_top", 18)
+	margin.add_theme_constant_override("margin_bottom", 20)
+	_compare_card.add_child(margin)
+
+	var v := VBoxContainer.new()
+	v.add_theme_constant_override("separation", 10)
+	margin.add_child(v)
+
+	# ── 標題列 + 關閉按鈕 ──
+	var head := HBoxContainer.new()
+	head.add_theme_constant_override("separation", 10)
+	v.add_child(head)
+
+	var title_col := VBoxContainer.new()
+	title_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title_col.add_theme_constant_override("separation", 2)
+	head.add_child(title_col)
+
+	_cmp_title_lbl = Label.new()
+	_cmp_title_lbl.name = "CompareTitleLabel"
+	_cmp_title_lbl.text = _t("機芯替換確認")
+	_cmp_title_lbl.add_theme_font_size_override("font_size", 22)
+	_cmp_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_cmp_title_lbl.add_theme_font_override("font", _cached_font)
+	title_col.add_child(_cmp_title_lbl)
+
+	_cmp_sub_lbl = Label.new()
+	_cmp_sub_lbl.name = "CompareSubtitleLabel"
+	_cmp_sub_lbl.text = _t("該槽位已有裝備機芯，是否確認替換？")
+	_cmp_sub_lbl.add_theme_font_size_override("font_size", 13)
+	_cmp_sub_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	if _cached_font:
+		_cmp_sub_lbl.add_theme_font_override("font", _cached_font)
+	title_col.add_child(_cmp_sub_lbl)
+
+	_btn_compare_close = _create_close_button()
+	_btn_compare_close.name = "CompareCloseButton"
+	_btn_compare_close.pressed.connect(_on_cancel_replace)
+	head.add_child(_btn_compare_close)
+
+	# ── 槽位提示標籤 ──
+	_cmp_slot_lbl = Label.new()
+	_cmp_slot_lbl.name = "CompareSlotLabel"
+	_cmp_slot_lbl.text = ""
+	_cmp_slot_lbl.add_theme_font_size_override("font_size", 15)
+	_cmp_slot_lbl.add_theme_color_override("font_color", COLOR_SKY)
+	if _cached_font:
+		_cmp_slot_lbl.add_theme_font_override("font", _cached_font)
+	v.add_child(_cmp_slot_lbl)
+
+	# ── 舊件 vs 新件 並排比較區 ──
+	var cmp_row := HBoxContainer.new()
+	cmp_row.add_theme_constant_override("separation", 14)
+	cmp_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	v.add_child(cmp_row)
+
+	# 左側：舊件卡片
+	var old_panel := PanelContainer.new()
+	old_panel.name = "OldPartCard"
+	old_panel.custom_minimum_size = Vector2(300, 180)
+	old_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	old_panel.add_theme_stylebox_override("panel", _create_inner_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 16))
+	cmp_row.add_child(old_panel)
+
+	var old_margin := MarginContainer.new()
+	old_margin.add_theme_constant_override("margin_left", 14)
+	old_margin.add_theme_constant_override("margin_right", 14)
+	old_margin.add_theme_constant_override("margin_top", 12)
+	old_margin.add_theme_constant_override("margin_bottom", 12)
+	old_panel.add_child(old_margin)
+
+	var old_vb := VBoxContainer.new()
+	old_vb.add_theme_constant_override("separation", 8)
+	old_margin.add_child(old_vb)
+
+	_cmp_old_tag_lbl = Label.new()
+	_cmp_old_tag_lbl.name = "OldTagLabel"
+	_cmp_old_tag_lbl.text = _t("現有裝備")
+	_cmp_old_tag_lbl.add_theme_font_size_override("font_size", 13)
+	_cmp_old_tag_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	if _cached_font:
+		_cmp_old_tag_lbl.add_theme_font_override("font", _cached_font)
+	old_vb.add_child(_cmp_old_tag_lbl)
+
+	var old_info_row := HBoxContainer.new()
+	old_info_row.add_theme_constant_override("separation", 10)
+	old_vb.add_child(old_info_row)
+
+	var old_icon_box := PanelContainer.new()
+	old_icon_box.custom_minimum_size = Vector2(56, 56)
+	var o_icon_st := StyleBoxFlat.new()
+	o_icon_st.bg_color = Color(0.96, 0.95, 0.98, 1)
+	o_icon_st.border_color = COLOR_BORDER
+	o_icon_st.set_border_width_all(2)
+	o_icon_st.set_corner_radius_all(12)
+	old_icon_box.add_theme_stylebox_override("panel", o_icon_st)
+	old_info_row.add_child(old_icon_box)
+
+	_cmp_old_icon = TextureRect.new()
+	_cmp_old_icon.name = "OldSlotIcon"
+	_cmp_old_icon.custom_minimum_size = Vector2(44, 44)
+	_cmp_old_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_cmp_old_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_cmp_old_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_cmp_old_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	old_icon_box.add_child(_cmp_old_icon)
+
+	var old_text_col := VBoxContainer.new()
+	old_text_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	old_text_col.add_theme_constant_override("separation", 2)
+	old_info_row.add_child(old_text_col)
+
+	_cmp_old_name_lbl = Label.new()
+	_cmp_old_name_lbl.name = "OldSlotNameLabel"
+	_cmp_old_name_lbl.text = ""
+	_cmp_old_name_lbl.add_theme_font_size_override("font_size", 15)
+	_cmp_old_name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_cmp_old_name_lbl.add_theme_font_override("font", _cached_font)
+	old_text_col.add_child(_cmp_old_name_lbl)
+
+	_cmp_old_tier_lbl = Label.new()
+	_cmp_old_tier_lbl.name = "OldTierLabel"
+	_cmp_old_tier_lbl.text = ""
+	_cmp_old_tier_lbl.add_theme_font_size_override("font_size", 15)
+	if _cached_font:
+		_cmp_old_tier_lbl.add_theme_font_override("font", _cached_font)
+	old_text_col.add_child(_cmp_old_tier_lbl)
+
+	_cmp_old_stats_lbl = Label.new()
+	_cmp_old_stats_lbl.name = "OldStatsLabel"
+	_cmp_old_stats_lbl.text = ""
+	_cmp_old_stats_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_cmp_old_stats_lbl.add_theme_font_size_override("font_size", 13)
+	_cmp_old_stats_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_cmp_old_stats_lbl.add_theme_font_override("font", _cached_font)
+	old_vb.add_child(_cmp_old_stats_lbl)
+
+	# 中間：箭頭指示
+	var mid_box := VBoxContainer.new()
+	mid_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	var arrow_lbl := Label.new()
+	arrow_lbl.name = "ArrowIndicator"
+	arrow_lbl.text = "➔"
+	arrow_lbl.add_theme_font_size_override("font_size", 24)
+	arrow_lbl.add_theme_color_override("font_color", COLOR_BORDER)
+	if _cached_font:
+		arrow_lbl.add_theme_font_override("font", _cached_font)
+	mid_box.add_child(arrow_lbl)
+	cmp_row.add_child(mid_box)
+
+	# 右側：新件卡片
+	var new_panel := PanelContainer.new()
+	new_panel.name = "NewPartCard"
+	new_panel.custom_minimum_size = Vector2(300, 180)
+	new_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	new_panel.add_theme_stylebox_override("panel", _create_inner_card_style(COLOR_CARD_GOLD, COLOR_BORDER, 2, 4, 16))
+	cmp_row.add_child(new_panel)
+
+	var new_margin := MarginContainer.new()
+	new_margin.add_theme_constant_override("margin_left", 14)
+	new_margin.add_theme_constant_override("margin_right", 14)
+	new_margin.add_theme_constant_override("margin_top", 12)
+	new_margin.add_theme_constant_override("margin_bottom", 12)
+	new_panel.add_child(new_margin)
+
+	var new_vb := VBoxContainer.new()
+	new_vb.add_theme_constant_override("separation", 8)
+	new_margin.add_child(new_vb)
+
+	_cmp_new_tag_lbl = Label.new()
+	_cmp_new_tag_lbl.name = "NewTagLabel"
+	_cmp_new_tag_lbl.text = _t("新獲戰利品")
+	_cmp_new_tag_lbl.add_theme_font_size_override("font_size", 13)
+	_cmp_new_tag_lbl.add_theme_color_override("font_color", COLOR_ORANGE)
+	if _cached_font:
+		_cmp_new_tag_lbl.add_theme_font_override("font", _cached_font)
+	new_vb.add_child(_cmp_new_tag_lbl)
+
+	var new_info_row := HBoxContainer.new()
+	new_info_row.add_theme_constant_override("separation", 10)
+	new_vb.add_child(new_info_row)
+
+	var new_icon_box := PanelContainer.new()
+	new_icon_box.custom_minimum_size = Vector2(56, 56)
+	var n_icon_st := StyleBoxFlat.new()
+	n_icon_st.bg_color = Color(0.96, 0.95, 0.98, 1)
+	n_icon_st.border_color = COLOR_BORDER
+	n_icon_st.set_border_width_all(2)
+	n_icon_st.set_corner_radius_all(12)
+	new_icon_box.add_theme_stylebox_override("panel", n_icon_st)
+	new_info_row.add_child(new_icon_box)
+
+	_cmp_new_icon = TextureRect.new()
+	_cmp_new_icon.name = "NewSlotIcon"
+	_cmp_new_icon.custom_minimum_size = Vector2(44, 44)
+	_cmp_new_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_cmp_new_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_cmp_new_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_cmp_new_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	new_icon_box.add_child(_cmp_new_icon)
+
+	var new_text_col := VBoxContainer.new()
+	new_text_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	new_text_col.add_theme_constant_override("separation", 2)
+	new_info_row.add_child(new_text_col)
+
+	_cmp_new_name_lbl = Label.new()
+	_cmp_new_name_lbl.name = "NewSlotNameLabel"
+	_cmp_new_name_lbl.text = ""
+	_cmp_new_name_lbl.add_theme_font_size_override("font_size", 15)
+	_cmp_new_name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_cmp_new_name_lbl.add_theme_font_override("font", _cached_font)
+	new_text_col.add_child(_cmp_new_name_lbl)
+
+	_cmp_new_tier_lbl = Label.new()
+	_cmp_new_tier_lbl.name = "NewTierLabel"
+	_cmp_new_tier_lbl.text = ""
+	_cmp_new_tier_lbl.add_theme_font_size_override("font_size", 15)
+	if _cached_font:
+		_cmp_new_tier_lbl.add_theme_font_override("font", _cached_font)
+	new_text_col.add_child(_cmp_new_tier_lbl)
+
+	_cmp_new_stats_lbl = Label.new()
+	_cmp_new_stats_lbl.name = "NewStatsLabel"
+	_cmp_new_stats_lbl.text = ""
+	_cmp_new_stats_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_cmp_new_stats_lbl.add_theme_font_size_override("font_size", 13)
+	_cmp_new_stats_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_cmp_new_stats_lbl.add_theme_font_override("font", _cached_font)
+	new_vb.add_child(_cmp_new_stats_lbl)
+
+	# ── 底部按鈕區 ──
+	var btn_row := HBoxContainer.new()
+	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_row.add_theme_constant_override("separation", 20)
+	v.add_child(btn_row)
+
+	_btn_cancel_replace = Button.new()
+	_btn_cancel_replace.name = "BtnCancelReplace"
+	_btn_cancel_replace.text = _t("取消替換")
+	_btn_cancel_replace.custom_minimum_size = Vector2(210, 52)
+	_btn_cancel_replace.focus_mode = Control.FOCUS_NONE
+	_style_button(_btn_cancel_replace, COLOR_CARD_WARM, COLOR_BORDER)
+	_btn_cancel_replace.pressed.connect(_on_cancel_replace)
+	btn_row.add_child(_btn_cancel_replace)
+
+	_btn_confirm_replace = Button.new()
+	_btn_confirm_replace.name = "BtnConfirmReplace"
+	_btn_confirm_replace.text = _t("確認替換")
+	_btn_confirm_replace.custom_minimum_size = Vector2(210, 52)
+	_btn_confirm_replace.focus_mode = Control.FOCUS_NONE
+	_style_button(_btn_confirm_replace, COLOR_SKY, COLOR_BORDER)
+	_btn_confirm_replace.pressed.connect(_on_confirm_replace)
+	btn_row.add_child(_btn_confirm_replace)
+
+
+func _refresh_compare_display() -> void:
+	if _cmp_title_lbl == null:
+		return
+
+	_cmp_title_lbl.text = _t("機芯替換確認")
+	_cmp_sub_lbl.text = _t("該槽位已有裝備機芯，是否確認替換？")
+
+	var sname := _get_slot_name_for(_current_cmp_slot_id)
+	_cmp_slot_lbl.text = _t("槽位：%s") % _t(sname)
+
+	# 舊件資訊
+	_cmp_old_tag_lbl.text = _t("現有裝備")
+	_cmp_old_name_lbl.text = _t(sname)
+	_cmp_old_tier_lbl.text = _get_bracket_tier_text(_current_cmp_old_part)
+	var old_color := _get_part_tier_color(_current_cmp_old_part)
+	var old_tier_id := str(_current_cmp_old_part.get("tier", "white"))
+	_cmp_old_tier_lbl.add_theme_color_override("font_color", old_color if old_tier_id != "white" else COLOR_TEXT_DARK)
+	_cmp_old_stats_lbl.text = _format_stats_string(_current_cmp_old_part)
+
+	# 新件資訊
+	_cmp_new_tag_lbl.text = _t("新獲戰利品")
+	_cmp_new_name_lbl.text = _t(sname)
+	_cmp_new_tier_lbl.text = _get_bracket_tier_text(_part)
+	var new_color := _get_part_tier_color(_part)
+	var new_tier_id := str(_part.get("tier", "white"))
+	_cmp_new_tier_lbl.add_theme_color_override("font_color", new_color if new_tier_id != "white" else COLOR_TEXT_DARK)
+	_cmp_new_stats_lbl.text = _format_stats_string(_part)
+
+	var sdb = _sprite_db()
+	if sdb != null:
+		var tex: Texture2D = sdb.core_slot_icon(_current_cmp_slot_id)
+		if tex:
+			if _cmp_old_icon:
+				_cmp_old_icon.texture = tex
+				_cmp_old_icon.modulate = old_color
+			if _cmp_new_icon:
+				_cmp_new_icon.texture = tex
+				_cmp_new_icon.modulate = new_color
+
+	_btn_cancel_replace.text = _t("取消替換")
+	_btn_confirm_replace.text = _t("確認替換")
 
 
 func _on_confirm_pressed() -> void:

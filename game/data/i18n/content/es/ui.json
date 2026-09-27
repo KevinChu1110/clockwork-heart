@@ -3124,5 +3124,13 @@
   "紅": "Rojo",
   "【%s · %s階】%s（%s · 剩餘校準：%d 次）": "[%s · Nivel %s] %s (%s · Calibraciones restantes: %d)",
   "%s (%s階)\n%s\n%s": "%s (Nivel %s)\n%s\n%s",
-  "[color=#fc8]掉落機芯部件：【%s階】%s[/color]": "[color=#fc8]Pieza de mecanismo obtenida: [%s] %s[/color]"
+  "[color=#fc8]掉落機芯部件：【%s階】%s[/color]": "[color=#fc8]Pieza de mecanismo obtenida: [%s] %s[/color]",
+  "機芯替換確認": "Confirmar reemplazo de núcleo",
+  "該槽位已有裝備機芯，是否確認替換？": "Ya hay un núcleo equipado en esta ranura. ¿Confirmar reemplazo?",
+  "現有裝備": "Equipamiento actual",
+  "新獲戰利品": "Nuevo botín",
+  "確認替換": "Confirmar reemplazo",
+  "取消替換": "Conservar actual",
+  "新部件已保留在機芯背包中": "La nueva pieza se guardó en el inventario",
+  "槽位：%s": "Ranura: %s"
 }

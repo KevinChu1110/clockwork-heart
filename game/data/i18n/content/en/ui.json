@@ -3124,5 +3124,13 @@
   "紅": "Red",
   "【%s · %s階】%s（%s · 剩餘校準：%d 次）": "[%s · %s Tier] %s (%s · Calibrations Left: %d)",
   "%s (%s階)\n%s\n%s": "%s (%s Tier)\n%s\n%s",
-  "[color=#fc8]掉落機芯部件：【%s階】%s[/color]": "[color=#fc8]Core part looted: [%s Tier] %s[/color]"
+  "[color=#fc8]掉落機芯部件：【%s階】%s[/color]": "[color=#fc8]Core part looted: [%s Tier] %s[/color]",
+  "機芯替換確認": "Core Replacement",
+  "該槽位已有裝備機芯，是否確認替換？": "A core is already equipped in this slot. Confirm replacement?",
+  "現有裝備": "Currently Equipped",
+  "新獲戰利品": "New Loot",
+  "確認替換": "Confirm Replace",
+  "取消替換": "Keep Current",
+  "新部件已保留在機芯背包中": "New part kept in core inventory",
+  "槽位：%s": "Slot: %s"
 }
