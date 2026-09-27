@@ -3356,8 +3356,8 @@
    "id": "merge-battle-hud-dots",
    "cat": "平台",
    "title": "把已過審的戰鬥 HUD 五槽色階點合進主線",
-   "status": "測試中",
-   "note": "已合併入 main (commit 6280e73f) 並推至 origin/main，測試全綠，送審 sideqa",
+   "status": "已上線",
+   "note": "五槽色階點已合進 main 並過審",
    "keys": [
     "把已過審的戰鬥 "
    ]
