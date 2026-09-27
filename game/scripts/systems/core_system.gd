@@ -69,6 +69,63 @@ const SLOT_NAMES_EN: Dictionary = {
 	SLOT_SOUL_CORE: "Resonance Core"
 }
 
+## 停擺巨偶部位對應五槽對照表（0-QA27 對齊既有三隻巨偶 parts）
+## 破壞部位決定掉落機芯部件槽位：
+## 失控發條獅：溢能尖角 -> 發條發電機 (mainspring)、溢能核心 -> 共鳴核心 (soul_core)
+## 霧鐘提線人偶：溢能尖角 -> 傳動齒輪組 (gear_train)、溢能核心 -> 擒縱調速器 (escapement)
+## 黑鏽蒸氣巨象：溢能尖角 -> 機殼裝甲 (chassis)、溢能核心 -> 共鳴核心 (soul_core)
+const COLOSSUS_PART_SLOT_MAP: Dictionary = {
+	"colossus_lion": {
+		"溢能尖角": SLOT_MAINSPRING,
+		"spike": SLOT_MAINSPRING,
+		"溢能核心": SLOT_SOUL_CORE,
+		"core": SLOT_SOUL_CORE,
+	},
+	"colossus_puppet": {
+		"溢能尖角": SLOT_GEAR_TRAIN,
+		"spike": SLOT_GEAR_TRAIN,
+		"溢能核心": SLOT_ESCAPEMENT,
+		"core": SLOT_ESCAPEMENT,
+	},
+	"colossus_elephant": {
+		"溢能尖角": SLOT_CHASSIS,
+		"spike": SLOT_CHASSIS,
+		"溢能核心": SLOT_SOUL_CORE,
+		"core": SLOT_SOUL_CORE,
+	},
+}
+
+
+## 查詢停擺巨偶部位對應之機芯五槽代號（若未指定或非巨偶部位則傳回空字串）
+static func get_colossus_part_slot(boss_id: String = "", part_key: String = "") -> String:
+	var bid := boss_id.strip_edges().to_lower()
+	var pkey := part_key.strip_edges()
+
+	# 1. 優先查特定巨偶部位表 (boss_id, part_name / part_id)
+	if COLOSSUS_PART_SLOT_MAP.has(bid):
+		var bmap: Dictionary = COLOSSUS_PART_SLOT_MAP[bid]
+		if bmap.has(pkey):
+			return normalize_slot_id(str(bmap[pkey]))
+		if bmap.has(pkey.to_lower()):
+			return normalize_slot_id(str(bmap[pkey.to_lower()]))
+
+	# 2. 通用別名與語意對應
+	match pkey.to_lower():
+		"mainspring", "spring", "發條", "發條部位", "發條發電機", "背後主發條":
+			return SLOT_MAINSPRING
+		"chassis", "機殼", "機殼部位", "機殼裝甲", "外殼", "裝甲":
+			return SLOT_CHASSIS
+		"escapement", "governor", "調速器", "調速器部位", "擒縱調速器", "鐘擺":
+			return SLOT_ESCAPEMENT
+		"gear_train", "gears", "齒輪", "齒輪部位", "傳動齒輪組", "齒輪組":
+			return SLOT_GEAR_TRAIN
+		"soul_core", "core", "核心", "核心部位", "共鳴核心", "溢能核心":
+			return SLOT_SOUL_CORE
+		"溢能尖角", "spike":
+			return SLOT_MAINSPRING
+
+	return ""
+
 const TIER_GRAY: String = "gray"
 const TIER_WHITE: String = "white"
 const TIER_ORANGE: String = "orange"
@@ -1262,12 +1319,13 @@ static func roll_slot(rng: RandomNumberGenerator = null) -> String:
 	return ALL_SLOT_IDS[idx]
 
 
-## 隨機生成一顆五槽機芯戰利品部件（遵循 create_part 規格與八色階權重，支援傳入來源關卡／巨偶）
-static func roll_battle_drop(arg1: Variant = null, arg2: String = "stage") -> Dictionary:
+## 隨機生成一顆五槽機芯戰利品部件（遵循 create_part 規格與八色階權重，支援傳入來源關卡／巨偶，支援指定槽位鎖定）
+static func roll_battle_drop(arg1: Variant = null, arg2: String = "stage", slot_override: String = "") -> Dictionary:
 	var parsed: Array = _parse_roll_args(arg1, arg2)
 	var rng: RandomNumberGenerator = parsed[0]
 	var source: String = parsed[1]
-	var slot_id := roll_slot(rng)
+	var norm_slot_override := normalize_slot_id(slot_override) if slot_override != "" else ""
+	var slot_id: String = norm_slot_override if norm_slot_override in ALL_SLOT_IDS else roll_slot(rng)
 	var tier_id := roll_tier(rng, source)
 	var part := create_part_by_tier(slot_id, tier_id)
 	if source == "colossus" or source.begins_with("colossus_"):
@@ -1275,6 +1333,8 @@ static func roll_battle_drop(arg1: Variant = null, arg2: String = "stage") -> Di
 		part["drop_source"] = source
 	else:
 		part["drop_source"] = "stage"
+	if norm_slot_override in ALL_SLOT_IDS:
+		part["slot_locked_by_part"] = true
 	return part
 
 
@@ -1355,13 +1415,13 @@ static func remove_part_from_inventory(part_uid: String) -> Dictionary:
 	return removed
 
 
-## 戰鬥勝利結算掉落：抽取部件、入袋並傳回（支援傳入來源：關卡／巨偶）
-static func roll_and_add_battle_drop(arg1: Variant = null, arg2: String = "stage") -> Dictionary:
-	var part := roll_battle_drop(arg1, arg2)
+## 戰鬥勝利結算掉落：抽取部件、入袋並傳回（支援傳入來源：關卡／巨偶，支援指定槽位鎖定）
+static func roll_and_add_battle_drop(arg1: Variant = null, arg2: String = "stage", slot_override: String = "") -> Dictionary:
+	var part := roll_battle_drop(arg1, arg2, slot_override)
 	add_part_to_inventory(part)
 	return part
 
 
-## 戰鬥勝利掛鉤（別名，支援傳入來源：關卡／巨偶）
-static func on_battle_won(arg1: Variant = null, arg2: String = "stage") -> Dictionary:
-	return roll_and_add_battle_drop(arg1, arg2)
+## 戰鬥勝利掛鉤（別名，支援傳入來源：關卡／巨偶，支援指定槽位鎖定）
+static func on_battle_won(arg1: Variant = null, arg2: String = "stage", slot_override: String = "") -> Dictionary:
+	return roll_and_add_battle_drop(arg1, arg2, slot_override)
