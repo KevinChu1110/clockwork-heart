@@ -4391,6 +4391,46 @@
    "keys": [
     "探索性 QA 第"
    ]
+  },
+  {
+   "id": "woodpecker-slices",
+   "cat": "遊戲",
+   "title": "第四十八族振律啄木鳥(woodpecker)7大部件槽位紙娃娃切片與雙規格資產",
+   "status": "已上線",
+   "note": "sideqa/側案審核通過，t_1789c430 done，合入main",
+   "keys": [
+    "第四十八族振律啄"
+   ]
+  },
+  {
+   "id": "woodpecker-poses",
+   "cat": "遊戲",
+   "title": "第四十八族振律啄木鳥(woodpecker)六大戰鬥姿態補齊",
+   "status": "已上線",
+   "note": "第四十八族振律啄木鳥六大戰鬥姿態雙規格補齊，審核通過",
+   "keys": [
+    "第四十八族振律啄"
+   ]
+  },
+  {
+   "id": "armadillo-paperdoll",
+   "cat": "遊戲",
+   "title": "第四十九族熔鎧犰狳(armadillo)7大部件槽位紙娃娃切片與雙規格資產",
+   "status": "開發中",
+   "note": "第49族熔鎧犰狳切片動工中",
+   "keys": [
+    "第四十九族熔鎧犰"
+   ]
+  },
+  {
+   "id": "caterpillar-proposal",
+   "cat": "世界觀",
+   "title": "第五十種動物紙娃娃角色設計提案",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "第五十種動物紙娃"
+   ]
   }
  ]
 }
