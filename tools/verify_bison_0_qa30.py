@@ -4,7 +4,7 @@
 1. game/data/tables/paperdoll_slots.json 與 docs/design/paperdoll_slots.json 100% 一致
 2. bison 正表 aliases 與 paperdoll_renderer.gd fallback 表 aliases 100% 對齊一致
 3. 全部 44 族 aliases 在正表與 fallback 表 100% 逐族對齊，零分歧
-4. bison 7 大部件目錄與 poses/bison 目錄存在且恪守零佔位圖（僅有 .gitkeep）
+4. bison 7 大部件切片（128px 與 512px LANCZOS）完整齊備，poses/bison 恪守零佔位圖（僅保留 .gitkeep）
 """
 import json
 import os
@@ -69,25 +69,33 @@ for rid, t_aliases in table_races_map.items():
         diffs.append(f"種族 {rid} aliases 分歧: 正表={t_aliases} vs fallback={fallback_races_map[rid]}")
 
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
-print(f"✓ 3. 全量 44 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
+print("✓ 3. 全量 44 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/bison 保持零佔位圖（僅保留 .gitkeep）
-slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
+# 4. 驗證 7 大槽位切片檔案齊備且非空，poses/bison 保持零佔位圖
+slots_items = [
+    ("chassis", "chassis_bison_rusted_tinplate_default"),
+    ("head_unit", "head_bison_riveted_brow_horn_crest"),
+    ("winding_key", "key_bison_heavy_cross_t_bar_cast_iron"),
+    ("costume", "costume_bison_junkyard_demolition_cuirass"),
+    ("optic_core", "face_bison_amber_pressure_gauge_eye"),
+    ("weapon", "weapon_bison_wasteland_anvil_crusher_hammer"),
+    ("back_curio", "curio_bison_twin_vent_exhaust_stack")
+]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/bison")
-image_exts = (".png", ".webp", ".jpg", ".jpeg")
 
-for s in slots:
-    s_dir = os.path.join(base_paperdoll, s)
-    assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"{s_dir} 缺少 .gitkeep"
-    slot_images = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert not slot_images, f"{s_dir} 發現非預期圖片檔案（先行骨架嚴守零佔位圖規則）: {slot_images}"
+for s, item_id in slots_items:
+    p128 = os.path.join(base_paperdoll, s, f"{item_id}.png")
+    p512 = os.path.join(base_paperdoll, s, f"{item_id}_512.png")
+    assert os.path.isfile(p128), f"缺少 128px 切片檔案: {p128}"
+    assert os.path.isfile(p512), f"缺少 512px 切片檔案: {p512}"
+    assert os.path.getsize(p128) > 0, f"128px 切片檔案為空: {p128}"
+    assert os.path.getsize(p512) > 0, f"512px 切片檔案為空: {p512}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/bison")
 assert os.path.isdir(poses_dir), f"poses/bison 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/bison 缺少 .gitkeep"
-poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
+poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith((".png", ".webp", ".jpg", ".jpeg"))]
 assert not poses_images, f"poses/bison 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-print("✓ 4. 7 大槽位空目錄與 poses/bison 恪守零美術佔位圖（僅保留 .gitkeep）規範")
+print("✓ 4. 7 大槽位切片雙規格齊備，poses/bison 恪守零美術佔位圖規範")
 print("=== 0-QA30 查驗 100% 通過！ ===")
