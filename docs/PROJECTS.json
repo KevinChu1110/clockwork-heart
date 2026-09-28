@@ -3976,8 +3976,8 @@
    "id": "courser-paperdoll",
    "cat": "遊戲",
    "title": "第三十七族鐵蹄駿駒(courser)7大部件槽位紙娃娃切片與雙規格資產",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "7大槽位雙規格LANCZOS切片產出，0-ART與無頭測試全綠，送審sideqa (t_b00d10fd)",
    "keys": [
     "第三十七族鐵蹄駿"
    ]
