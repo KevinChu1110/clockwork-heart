@@ -4296,8 +4296,8 @@
    "id": "bison-combat-poses",
    "cat": "遊戲",
    "title": "第四十四族撼地野牛(bison)六大戰鬥姿態補齊",
-   "status": "開發中",
-   "note": "阿宏開始補齊撼地野牛六大戰鬥姿態雙規格資產",
+   "status": "測試中",
+   "note": "六大戰鬥姿態雙規格補齊，測試全綠且Vision複驗通過，交付sideqa審查",
    "keys": [
     "第四十四族撼地野"
    ]
