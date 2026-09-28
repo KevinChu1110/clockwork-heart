@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://brixny0o4rii1"
-path="res://.godot/imported/hawk_longbow.png-73792eaa0ed6294bd21eb1fc4ec7e516.ctex"
+path="res://.godot/imported/hawk_longbow.png-bb61e85d783f23297da276a096f70d98.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/hawk_longbow.png"
-dest_files=["res://.godot/imported/hawk_longbow.png-73792eaa0ed6294bd21eb1fc4ec7e516.ctex"]
+source_file="res://assets/paperdoll/weapon/hawk_longbow.png"
+dest_files=["res://.godot/imported/hawk_longbow.png-bb61e85d783f23297da276a096f70d98.ctex"]
 
 [params]
 

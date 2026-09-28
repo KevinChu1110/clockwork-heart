@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dpom33xqmlwyu"
-path="res://.godot/imported/face_beaver_amber_surveyor_lens_512.png-96e54979cb9ad1bd5e940636d18cdf5f.ctex"
+path="res://.godot/imported/face_beaver_amber_surveyor_lens_512.png-f0d56ef3cde281789c23998ca088ad82.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/beaver/optic_core/face_beaver_amber_surveyor_lens_512.png"
-dest_files=["res://.godot/imported/face_beaver_amber_surveyor_lens_512.png-96e54979cb9ad1bd5e940636d18cdf5f.ctex"]
+source_file="res://assets/sprites/player/paperdoll/beaver/optic_core/face_beaver_amber_surveyor_lens_512.png"
+dest_files=["res://.godot/imported/face_beaver_amber_surveyor_lens_512.png-f0d56ef3cde281789c23998ca088ad82.ctex"]
 
 [params]
 

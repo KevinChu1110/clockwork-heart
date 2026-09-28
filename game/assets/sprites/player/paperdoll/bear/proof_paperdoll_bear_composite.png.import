@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bnjqvoijp6w64"
-path="res://.godot/imported/proof_paperdoll_bear_composite.png-f8ad7cdb370505376d8d4f625548250b.ctex"
+path="res://.godot/imported/proof_paperdoll_bear_composite.png-68739d447d1512e50576911846e88a0b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/proof_paperdoll_bear_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_bear_composite.png-f8ad7cdb370505376d8d4f625548250b.ctex"]
+source_file="res://assets/paperdoll/bear/proof_paperdoll_bear_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_bear_composite.png-68739d447d1512e50576911846e88a0b.ctex"]
 
 [params]
 

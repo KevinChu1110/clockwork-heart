@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://hy2i6n84exkd"
-path="res://.godot/imported/chassis_beaver_brass_timber_default.png-8a81ff5fae043d6842109adbfc6c91d4.ctex"
+path="res://.godot/imported/chassis_beaver_brass_timber_default.png-848cacbc68ade436a9a3afd3903e59dc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/beaver/chassis/chassis_beaver_brass_timber_default.png"
-dest_files=["res://.godot/imported/chassis_beaver_brass_timber_default.png-8a81ff5fae043d6842109adbfc6c91d4.ctex"]
+source_file="res://assets/sprites/player/paperdoll/beaver/chassis/chassis_beaver_brass_timber_default.png"
+dest_files=["res://.godot/imported/chassis_beaver_brass_timber_default.png-848cacbc68ade436a9a3afd3903e59dc.ctex"]
 
 [params]
 

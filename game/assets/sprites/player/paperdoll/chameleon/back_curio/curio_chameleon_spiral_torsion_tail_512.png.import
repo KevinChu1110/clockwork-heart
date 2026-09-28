@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b1v76lo587r8g"
-path="res://.godot/imported/curio_chameleon_spiral_torsion_tail_512.png-ba0c84a12ae671aa4d45238790f98361.ctex"
+path="res://.godot/imported/curio_chameleon_spiral_torsion_tail_512.png-c2eac5c689f2d9b25ba6cc6d6101ac06.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/chameleon/back_curio/curio_chameleon_spiral_torsion_tail_512.png"
-dest_files=["res://.godot/imported/curio_chameleon_spiral_torsion_tail_512.png-ba0c84a12ae671aa4d45238790f98361.ctex"]
+source_file="res://assets/sprites/player/paperdoll/chameleon/back_curio/curio_chameleon_spiral_torsion_tail_512.png"
+dest_files=["res://.godot/imported/curio_chameleon_spiral_torsion_tail_512.png-c2eac5c689f2d9b25ba6cc6d6101ac06.ctex"]
 
 [params]
 

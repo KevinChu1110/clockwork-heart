@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dyjs0q3ierie3"
-path="res://.godot/imported/weapon_seahorse_abyssal_prism_astrolabe.png-2cd7327475a152c8fb9c2ff66c5a74f4.ctex"
+path="res://.godot/imported/weapon_seahorse_abyssal_prism_astrolabe.png-93eee6589dfb1b98ee5950ccfbdcb535.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seahorse/weapon/weapon_seahorse_abyssal_prism_astrolabe.png"
-dest_files=["res://.godot/imported/weapon_seahorse_abyssal_prism_astrolabe.png-2cd7327475a152c8fb9c2ff66c5a74f4.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seahorse/weapon/weapon_seahorse_abyssal_prism_astrolabe.png"
+dest_files=["res://.godot/imported/weapon_seahorse_abyssal_prism_astrolabe.png-93eee6589dfb1b98ee5950ccfbdcb535.ctex"]
 
 [params]
 

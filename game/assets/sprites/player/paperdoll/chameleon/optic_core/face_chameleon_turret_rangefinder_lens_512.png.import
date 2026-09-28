@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bqnty80f8h3eg"
-path="res://.godot/imported/face_chameleon_turret_rangefinder_lens_512.png-eab4141c2952c3d00fc54015918e291b.ctex"
+path="res://.godot/imported/face_chameleon_turret_rangefinder_lens_512.png-1d0d33b1ec5bd519dc810815abf58dfc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/chameleon/optic_core/face_chameleon_turret_rangefinder_lens_512.png"
-dest_files=["res://.godot/imported/face_chameleon_turret_rangefinder_lens_512.png-eab4141c2952c3d00fc54015918e291b.ctex"]
+source_file="res://assets/sprites/player/paperdoll/chameleon/optic_core/face_chameleon_turret_rangefinder_lens_512.png"
+dest_files=["res://.godot/imported/face_chameleon_turret_rangefinder_lens_512.png-1d0d33b1ec5bd519dc810815abf58dfc.ctex"]
 
 [params]
 

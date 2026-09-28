@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c7pq2m7ugumte"
-path="res://.godot/imported/verification_crop_weapon.png-ac497b691c071b7d68816bdaa8b38f24.ctex"
+path="res://.godot/imported/verification_crop_weapon.png-4c0497ce03854c46cdf459b72d10f6bc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/verification_crop_weapon.png"
-dest_files=["res://.godot/imported/verification_crop_weapon.png-ac497b691c071b7d68816bdaa8b38f24.ctex"]
+source_file="res://assets/paperdoll/boar/verification_crop_weapon.png"
+dest_files=["res://.godot/imported/verification_crop_weapon.png-4c0497ce03854c46cdf459b72d10f6bc.ctex"]
 
 [params]
 

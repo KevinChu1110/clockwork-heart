@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://1w1xwahhjrhb"
-path="res://.godot/imported/costume_sky_hunter_mail_512.png-d2f74531e00547450a7c717d4e20b5a8.ctex"
+path="res://.godot/imported/costume_sky_hunter_mail_512.png-020a558fbc9e125816332b75e12f93ac.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/costume/costume_sky_hunter_mail_512.png"
-dest_files=["res://.godot/imported/costume_sky_hunter_mail_512.png-d2f74531e00547450a7c717d4e20b5a8.ctex"]
+source_file="res://assets/paperdoll/crane/costume/costume_sky_hunter_mail_512.png"
+dest_files=["res://.godot/imported/costume_sky_hunter_mail_512.png-020a558fbc9e125816332b75e12f93ac.ctex"]
 
 [params]
 

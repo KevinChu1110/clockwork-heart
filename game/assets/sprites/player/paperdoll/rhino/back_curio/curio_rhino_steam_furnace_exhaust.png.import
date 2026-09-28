@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1isoct2xddkr"
-path="res://.godot/imported/curio_rhino_steam_furnace_exhaust.png-4d89cc7d5bed0379d64656b0b7bc5c92.ctex"
+path="res://.godot/imported/curio_rhino_steam_furnace_exhaust.png-b7da8d56247cefef18aa1cdb05b14e69.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rhino/back_curio/curio_rhino_steam_furnace_exhaust.png"
-dest_files=["res://.godot/imported/curio_rhino_steam_furnace_exhaust.png-4d89cc7d5bed0379d64656b0b7bc5c92.ctex"]
+source_file="res://assets/paperdoll/rhino/back_curio/curio_rhino_steam_furnace_exhaust.png"
+dest_files=["res://.godot/imported/curio_rhino_steam_furnace_exhaust.png-b7da8d56247cefef18aa1cdb05b14e69.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bur2bwbf0gknp"
-path="res://.godot/imported/key_cross_pendulum.png-548f83e08422aabba161226f394af55f.ctex"
+path="res://.godot/imported/key_cross_pendulum.png-c4368d1d7d669de54d6f000e2b7f7dc7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/winding_key/key_cross_pendulum.png"
-dest_files=["res://.godot/imported/key_cross_pendulum.png-548f83e08422aabba161226f394af55f.ctex"]
+source_file="res://assets/paperdoll/bear/winding_key/key_cross_pendulum.png"
+dest_files=["res://.godot/imported/key_cross_pendulum.png-c4368d1d7d669de54d6f000e2b7f7dc7.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ecmr62huaoik"
-path="res://.godot/imported/head_ram_spiral_balance_horns.png-c1b3f0bb80f25dce36e21f0fea6de920.ctex"
+path="res://.godot/imported/head_ram_spiral_balance_horns.png-70fb12054248d6d4865fd1d738a31059.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/ram/head_unit/head_ram_spiral_balance_horns.png"
-dest_files=["res://.godot/imported/head_ram_spiral_balance_horns.png-c1b3f0bb80f25dce36e21f0fea6de920.ctex"]
+source_file="res://assets/paperdoll/ram/head_unit/head_ram_spiral_balance_horns.png"
+dest_files=["res://.godot/imported/head_ram_spiral_balance_horns.png-70fb12054248d6d4865fd1d738a31059.ctex"]
 
 [params]
 

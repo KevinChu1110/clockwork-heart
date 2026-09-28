@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://benvqvcpt1u2i"
-path="res://.godot/imported/costume_raccoon_space_explorer_harness_512.png-4afce75482f765110f7be53c54ca6462.ctex"
+path="res://.godot/imported/costume_raccoon_space_explorer_harness_512.png-e04058a91233d45cc88e6c6314ca6d52.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raccoon/costume/costume_raccoon_space_explorer_harness_512.png"
-dest_files=["res://.godot/imported/costume_raccoon_space_explorer_harness_512.png-4afce75482f765110f7be53c54ca6462.ctex"]
+source_file="res://assets/paperdoll/raccoon/costume/costume_raccoon_space_explorer_harness_512.png"
+dest_files=["res://.godot/imported/costume_raccoon_space_explorer_harness_512.png-e04058a91233d45cc88e6c6314ca6d52.ctex"]
 
 [params]
 

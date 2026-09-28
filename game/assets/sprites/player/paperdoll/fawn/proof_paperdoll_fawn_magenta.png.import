@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pbijngbl4i40"
-path="res://.godot/imported/proof_paperdoll_fawn_magenta.png-918a799ed9e2334c30ca67d635fe1730.ctex"
+path="res://.godot/imported/proof_paperdoll_fawn_magenta.png-423cfeb7241bfde251b543fbb585f6c5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fawn/proof_paperdoll_fawn_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_fawn_magenta.png-918a799ed9e2334c30ca67d635fe1730.ctex"]
+source_file="res://assets/paperdoll/fawn/proof_paperdoll_fawn_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_fawn_magenta.png-423cfeb7241bfde251b543fbb585f6c5.ctex"]
 
 [params]
 

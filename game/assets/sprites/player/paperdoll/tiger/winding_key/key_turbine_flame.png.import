@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ba8od2vwq8pqx"
-path="res://.godot/imported/key_turbine_flame.png-b684ffb60adcd6ca8b9633301b8a6a56.ctex"
+path="res://.godot/imported/key_turbine_flame.png-ca715a874a17539207cdfeb7064901a7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tiger/winding_key/key_turbine_flame.png"
-dest_files=["res://.godot/imported/key_turbine_flame.png-b684ffb60adcd6ca8b9633301b8a6a56.ctex"]
+source_file="res://assets/paperdoll/tiger/winding_key/key_turbine_flame.png"
+dest_files=["res://.godot/imported/key_turbine_flame.png-ca715a874a17539207cdfeb7064901a7.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://biltmsrd7hn3u"
-path="res://.godot/imported/verification_crop_eyes.png-a1d88f6f2758d12d6b7ad47ad53a3d80.ctex"
+path="res://.godot/imported/verification_crop_eyes.png-6e2d76d69d5bad0920be5ba4784b1240.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tiger/verification_crop_eyes.png"
-dest_files=["res://.godot/imported/verification_crop_eyes.png-a1d88f6f2758d12d6b7ad47ad53a3d80.ctex"]
+source_file="res://assets/paperdoll/tiger/verification_crop_eyes.png"
+dest_files=["res://.godot/imported/verification_crop_eyes.png-6e2d76d69d5bad0920be5ba4784b1240.ctex"]
 
 [params]
 

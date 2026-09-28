@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://7i3qha5hq63w"
-path="res://.godot/imported/verification_crop_costume.png-9c85ea839b9b6270ee3ef0a2cc737773.ctex"
+path="res://.godot/imported/verification_crop_costume.png-73faefabb74b9ef9a6acec2a71bbf3d6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/verification_crop_costume.png"
-dest_files=["res://.godot/imported/verification_crop_costume.png-9c85ea839b9b6270ee3ef0a2cc737773.ctex"]
+source_file="res://assets/paperdoll/crane/verification_crop_costume.png"
+dest_files=["res://.godot/imported/verification_crop_costume.png-73faefabb74b9ef9a6acec2a71bbf3d6.ctex"]
 
 [params]
 

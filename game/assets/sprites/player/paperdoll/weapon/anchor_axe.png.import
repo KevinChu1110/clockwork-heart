@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://0actgftp545g"
-path="res://.godot/imported/anchor_axe.png-29701a3ecead7f7c64c0fbb37e51f4c5.ctex"
+path="res://.godot/imported/anchor_axe.png-d76689e53ef2de6d5a822445de16e64d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/anchor_axe.png"
-dest_files=["res://.godot/imported/anchor_axe.png-29701a3ecead7f7c64c0fbb37e51f4c5.ctex"]
+source_file="res://assets/paperdoll/weapon/anchor_axe.png"
+dest_files=["res://.godot/imported/anchor_axe.png-d76689e53ef2de6d5a822445de16e64d.ctex"]
 
 [params]
 

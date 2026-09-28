@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dmanhaawsnbxq"
-path="res://.godot/imported/weapon_cat_shadowspring_stiletto_512.png-f2f395777eeaf85427a18c5235cc9456.ctex"
+path="res://.godot/imported/weapon_cat_shadowspring_stiletto_512.png-451dae336023922af39eae3cec7062aa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/cat/weapon/weapon_cat_shadowspring_stiletto_512.png"
-dest_files=["res://.godot/imported/weapon_cat_shadowspring_stiletto_512.png-f2f395777eeaf85427a18c5235cc9456.ctex"]
+source_file="res://assets/paperdoll/cat/weapon/weapon_cat_shadowspring_stiletto_512.png"
+dest_files=["res://.godot/imported/weapon_cat_shadowspring_stiletto_512.png-451dae336023922af39eae3cec7062aa.ctex"]
 
 [params]
 

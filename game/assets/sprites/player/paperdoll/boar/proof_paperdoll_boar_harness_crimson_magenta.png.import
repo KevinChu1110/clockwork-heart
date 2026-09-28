@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bl6l3hlov0fx6"
-path="res://.godot/imported/proof_paperdoll_boar_harness_crimson_magenta.png-afbbc32624fc76f4d3ee2eca57866672.ctex"
+path="res://.godot/imported/proof_paperdoll_boar_harness_crimson_magenta.png-c20933beb529066967fb6b05a1ea2730.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/proof_paperdoll_boar_harness_crimson_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_boar_harness_crimson_magenta.png-afbbc32624fc76f4d3ee2eca57866672.ctex"]
+source_file="res://assets/paperdoll/boar/proof_paperdoll_boar_harness_crimson_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_boar_harness_crimson_magenta.png-c20933beb529066967fb6b05a1ea2730.ctex"]
 
 [params]
 

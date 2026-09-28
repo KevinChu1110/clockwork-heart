@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b3rs17u1jtwmq"
-path="res://.godot/imported/head_colossus_elephant_stock.png-f2093d5f1f99aa74ca713e17ea4e44a8.ctex"
+path="res://.godot/imported/head_colossus_elephant_stock.png-9b6a7faf8ecc193927b129baa3e40868.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/elephant/head_unit/head_colossus_elephant_stock.png"
-dest_files=["res://.godot/imported/head_colossus_elephant_stock.png-f2093d5f1f99aa74ca713e17ea4e44a8.ctex"]
+source_file="res://assets/paperdoll/elephant/head_unit/head_colossus_elephant_stock.png"
+dest_files=["res://.godot/imported/head_colossus_elephant_stock.png-9b6a7faf8ecc193927b129baa3e40868.ctex"]
 
 [params]
 

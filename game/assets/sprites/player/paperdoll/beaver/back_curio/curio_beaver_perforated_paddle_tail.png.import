@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bf2fflmvid8hu"
-path="res://.godot/imported/curio_beaver_perforated_paddle_tail.png-f66fc9e9fdae49a591de64752297026b.ctex"
+path="res://.godot/imported/curio_beaver_perforated_paddle_tail.png-169a93a3fd94ed5b65fa7170549b83c9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/beaver/back_curio/curio_beaver_perforated_paddle_tail.png"
-dest_files=["res://.godot/imported/curio_beaver_perforated_paddle_tail.png-f66fc9e9fdae49a591de64752297026b.ctex"]
+source_file="res://assets/sprites/player/paperdoll/beaver/back_curio/curio_beaver_perforated_paddle_tail.png"
+dest_files=["res://.godot/imported/curio_beaver_perforated_paddle_tail.png-169a93a3fd94ed5b65fa7170549b83c9.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cklnngwexeqj8"
-path="res://.godot/imported/key_courser_baroque_trefoil_gold.png-be094b60c2a92506a9a4ebcef946b22d.ctex"
+path="res://.godot/imported/key_courser_baroque_trefoil_gold.png-f22e90976df9d449bfcdfc5a36661de1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/courser/winding_key/key_courser_baroque_trefoil_gold.png"
-dest_files=["res://.godot/imported/key_courser_baroque_trefoil_gold.png-be094b60c2a92506a9a4ebcef946b22d.ctex"]
+source_file="res://assets/paperdoll/courser/winding_key/key_courser_baroque_trefoil_gold.png"
+dest_files=["res://.godot/imported/key_courser_baroque_trefoil_gold.png-f22e90976df9d449bfcdfc5a36661de1.ctex"]
 
 [params]
 

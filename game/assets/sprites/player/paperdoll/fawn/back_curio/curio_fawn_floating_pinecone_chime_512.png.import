@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://copuo5w5ywn3e"
-path="res://.godot/imported/curio_fawn_floating_pinecone_chime_512.png-8e585832400cbe954b9c2a09411b65ed.ctex"
+path="res://.godot/imported/curio_fawn_floating_pinecone_chime_512.png-651258af79472a97ab2f2e0e594d1ec8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fawn/back_curio/curio_fawn_floating_pinecone_chime_512.png"
-dest_files=["res://.godot/imported/curio_fawn_floating_pinecone_chime_512.png-8e585832400cbe954b9c2a09411b65ed.ctex"]
+source_file="res://assets/paperdoll/fawn/back_curio/curio_fawn_floating_pinecone_chime_512.png"
+dest_files=["res://.godot/imported/curio_fawn_floating_pinecone_chime_512.png-651258af79472a97ab2f2e0e594d1ec8.ctex"]
 
 [params]
 

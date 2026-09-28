@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://by824fn2dq27m"
-path="res://.godot/imported/weapon_chameleon_mirage_compound_bow_512.png-52da73badaad8ed537aa30e3610e0cb9.ctex"
+path="res://.godot/imported/weapon_chameleon_mirage_compound_bow_512.png-393b3bd194b6836445e148a28dad4171.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/chameleon/weapon/weapon_chameleon_mirage_compound_bow_512.png"
-dest_files=["res://.godot/imported/weapon_chameleon_mirage_compound_bow_512.png-52da73badaad8ed537aa30e3610e0cb9.ctex"]
+source_file="res://assets/sprites/player/paperdoll/chameleon/weapon/weapon_chameleon_mirage_compound_bow_512.png"
+dest_files=["res://.godot/imported/weapon_chameleon_mirage_compound_bow_512.png-393b3bd194b6836445e148a28dad4171.ctex"]
 
 [params]
 

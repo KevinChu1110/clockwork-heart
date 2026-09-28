@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bkfkk5lg0fa8o"
-path="res://.godot/imported/head_bat_sonar_parabolic_crest.png-772a290b84a6f423825d2ab7a09f05e3.ctex"
+path="res://.godot/imported/head_bat_sonar_parabolic_crest.png-6db05004e07107210fd9a0ea3a6e5052.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bat/head_unit/head_bat_sonar_parabolic_crest.png"
-dest_files=["res://.godot/imported/head_bat_sonar_parabolic_crest.png-772a290b84a6f423825d2ab7a09f05e3.ctex"]
+source_file="res://assets/paperdoll/bat/head_unit/head_bat_sonar_parabolic_crest.png"
+dest_files=["res://.godot/imported/head_bat_sonar_parabolic_crest.png-6db05004e07107210fd9a0ea3a6e5052.ctex"]
 
 [params]
 

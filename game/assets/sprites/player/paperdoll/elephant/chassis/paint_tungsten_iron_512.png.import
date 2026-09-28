@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c5v0em2pmxv3l"
-path="res://.godot/imported/paint_tungsten_iron_512.png-1fddf6b0e5a47cfd15ae8fdf94265027.ctex"
+path="res://.godot/imported/paint_tungsten_iron_512.png-9969444d2af1759689447bb43b8ce3a4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/elephant/chassis/paint_tungsten_iron_512.png"
-dest_files=["res://.godot/imported/paint_tungsten_iron_512.png-1fddf6b0e5a47cfd15ae8fdf94265027.ctex"]
+source_file="res://assets/paperdoll/elephant/chassis/paint_tungsten_iron_512.png"
+dest_files=["res://.godot/imported/paint_tungsten_iron_512.png-9969444d2af1759689447bb43b8ce3a4.ctex"]
 
 [params]
 

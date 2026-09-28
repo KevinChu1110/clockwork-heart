@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://csetu8kml13ac"
-path="res://.godot/imported/proof_paperdoll_rhino_composite.png-d2d684b52a5c1728c1844ce15317fca9.ctex"
+path="res://.godot/imported/proof_paperdoll_rhino_composite.png-d1e9d8d602abdd359541c9ad40e14034.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rhino/proof_paperdoll_rhino_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_rhino_composite.png-d2d684b52a5c1728c1844ce15317fca9.ctex"]
+source_file="res://assets/paperdoll/rhino/proof_paperdoll_rhino_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_rhino_composite.png-d1e9d8d602abdd359541c9ad40e14034.ctex"]
 
 [params]
 

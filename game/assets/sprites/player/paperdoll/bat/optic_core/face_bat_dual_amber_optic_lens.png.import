@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ceqrki5p0jpmj"
-path="res://.godot/imported/face_bat_dual_amber_optic_lens.png-9ede8438eb2185895f92d33fb74e53ab.ctex"
+path="res://.godot/imported/face_bat_dual_amber_optic_lens.png-68c2bc62159f93dd56c9b55b79c4bdea.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bat/optic_core/face_bat_dual_amber_optic_lens.png"
-dest_files=["res://.godot/imported/face_bat_dual_amber_optic_lens.png-9ede8438eb2185895f92d33fb74e53ab.ctex"]
+source_file="res://assets/paperdoll/bat/optic_core/face_bat_dual_amber_optic_lens.png"
+dest_files=["res://.godot/imported/face_bat_dual_amber_optic_lens.png-68c2bc62159f93dd56c9b55b79c4bdea.ctex"]
 
 [params]
 

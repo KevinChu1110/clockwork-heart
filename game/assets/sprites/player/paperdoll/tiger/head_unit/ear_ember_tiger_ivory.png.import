@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bxgwaes61g0ne"
-path="res://.godot/imported/ear_ember_tiger_ivory.png-496a42cda81983b18f21fee82e3d61d7.ctex"
+path="res://.godot/imported/ear_ember_tiger_ivory.png-4c84f04e3cf6bab45b0eb9b153c3b42a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tiger/head_unit/ear_ember_tiger_ivory.png"
-dest_files=["res://.godot/imported/ear_ember_tiger_ivory.png-496a42cda81983b18f21fee82e3d61d7.ctex"]
+source_file="res://assets/paperdoll/tiger/head_unit/ear_ember_tiger_ivory.png"
+dest_files=["res://.godot/imported/ear_ember_tiger_ivory.png-4c84f04e3cf6bab45b0eb9b153c3b42a.ctex"]
 
 [params]
 

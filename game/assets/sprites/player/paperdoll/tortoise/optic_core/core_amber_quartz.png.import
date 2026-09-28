@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bdcf61il2w3sx"
-path="res://.godot/imported/core_amber_quartz.png-c7d3da41257de1b9a297e0894338cf6e.ctex"
+path="res://.godot/imported/core_amber_quartz.png-2f0aa56e38850fb9846a89981e18fdfc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tortoise/optic_core/core_amber_quartz.png"
-dest_files=["res://.godot/imported/core_amber_quartz.png-c7d3da41257de1b9a297e0894338cf6e.ctex"]
+source_file="res://assets/paperdoll/tortoise/optic_core/core_amber_quartz.png"
+dest_files=["res://.godot/imported/core_amber_quartz.png-2f0aa56e38850fb9846a89981e18fdfc.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bo6sg57l1jjlf"
-path="res://.godot/imported/head_steam_penguin_stock_512.png-a44292b965339f4b1f50bcfbecdcc553.ctex"
+path="res://.godot/imported/head_steam_penguin_stock_512.png-bf4876c63b0e83af6788c626e609b2b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/head_unit/head_steam_penguin_stock_512.png"
-dest_files=["res://.godot/imported/head_steam_penguin_stock_512.png-a44292b965339f4b1f50bcfbecdcc553.ctex"]
+source_file="res://assets/paperdoll/penguin/head_unit/head_steam_penguin_stock_512.png"
+dest_files=["res://.godot/imported/head_steam_penguin_stock_512.png-bf4876c63b0e83af6788c626e609b2b9.ctex"]
 
 [params]
 

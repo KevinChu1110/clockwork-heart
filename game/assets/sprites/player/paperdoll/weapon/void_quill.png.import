@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://kmp58n1ah7bn"
-path="res://.godot/imported/void_quill.png-b5c0cb026ec6c4e92f781d4592541fbe.ctex"
+path="res://.godot/imported/void_quill.png-803b5994d858c4cabeeccb584b7dd412.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/void_quill.png"
-dest_files=["res://.godot/imported/void_quill.png-b5c0cb026ec6c4e92f781d4592541fbe.ctex"]
+source_file="res://assets/paperdoll/weapon/void_quill.png"
+dest_files=["res://.godot/imported/void_quill.png-803b5994d858c4cabeeccb584b7dd412.ctex"]
 
 [params]
 

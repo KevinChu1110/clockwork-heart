@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://jxah4vhwb2iy"
-path="res://.godot/imported/costume_ram_gravity_starlight_robe_512.png-7388ed7c822b82e2824888890f8ce35f.ctex"
+path="res://.godot/imported/costume_ram_gravity_starlight_robe_512.png-fe271c412a010d586b0f6227d95b7f1d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/ram/costume/costume_ram_gravity_starlight_robe_512.png"
-dest_files=["res://.godot/imported/costume_ram_gravity_starlight_robe_512.png-7388ed7c822b82e2824888890f8ce35f.ctex"]
+source_file="res://assets/paperdoll/ram/costume/costume_ram_gravity_starlight_robe_512.png"
+dest_files=["res://.godot/imported/costume_ram_gravity_starlight_robe_512.png-fe271c412a010d586b0f6227d95b7f1d.ctex"]
 
 [params]
 

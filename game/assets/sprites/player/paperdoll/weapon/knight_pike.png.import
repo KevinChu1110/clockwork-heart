@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d3wh66we66x38"
-path="res://.godot/imported/knight_pike.png-410734ea07be066508a0227d61e8170f.ctex"
+path="res://.godot/imported/knight_pike.png-15167ac5ef3cffd70b73edb17437d23c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/knight_pike.png"
-dest_files=["res://.godot/imported/knight_pike.png-410734ea07be066508a0227d61e8170f.ctex"]
+source_file="res://assets/paperdoll/weapon/knight_pike.png"
+dest_files=["res://.godot/imported/knight_pike.png-15167ac5ef3cffd70b73edb17437d23c.ctex"]
 
 [params]
 

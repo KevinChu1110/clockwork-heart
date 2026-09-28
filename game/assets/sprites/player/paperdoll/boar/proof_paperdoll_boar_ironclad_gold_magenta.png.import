@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bjklnfg75nnvb"
-path="res://.godot/imported/proof_paperdoll_boar_ironclad_gold_magenta.png-bf3469bf306886b5124aecf3aac20820.ctex"
+path="res://.godot/imported/proof_paperdoll_boar_ironclad_gold_magenta.png-8b1d426637f8a3922df790762d02b252.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/proof_paperdoll_boar_ironclad_gold_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_boar_ironclad_gold_magenta.png-bf3469bf306886b5124aecf3aac20820.ctex"]
+source_file="res://assets/paperdoll/boar/proof_paperdoll_boar_ironclad_gold_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_boar_ironclad_gold_magenta.png-8b1d426637f8a3922df790762d02b252.ctex"]
 
 [params]
 

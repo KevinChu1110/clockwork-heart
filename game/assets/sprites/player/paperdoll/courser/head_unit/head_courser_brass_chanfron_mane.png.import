@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bpo5p4m5c40h7"
-path="res://.godot/imported/head_courser_brass_chanfron_mane.png-5c78912c0a56b4d98d12864996c0abff.ctex"
+path="res://.godot/imported/head_courser_brass_chanfron_mane.png-ddfa788c242e09dd97d9a46462667b94.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/courser/head_unit/head_courser_brass_chanfron_mane.png"
-dest_files=["res://.godot/imported/head_courser_brass_chanfron_mane.png-5c78912c0a56b4d98d12864996c0abff.ctex"]
+source_file="res://assets/paperdoll/courser/head_unit/head_courser_brass_chanfron_mane.png"
+dest_files=["res://.godot/imported/head_courser_brass_chanfron_mane.png-ddfa788c242e09dd97d9a46462667b94.ctex"]
 
 [params]
 

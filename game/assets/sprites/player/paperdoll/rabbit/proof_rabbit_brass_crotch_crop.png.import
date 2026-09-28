@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bnhpr72immc2i"
-path="res://.godot/imported/proof_rabbit_brass_crotch_crop.png-bc41100916e9e0b842bc7a10fc127240.ctex"
+path="res://.godot/imported/proof_rabbit_brass_crotch_crop.png-da6bc0be5a7a752ecd33bd939fa0e8de.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/proof_rabbit_brass_crotch_crop.png"
-dest_files=["res://.godot/imported/proof_rabbit_brass_crotch_crop.png-bc41100916e9e0b842bc7a10fc127240.ctex"]
+source_file="res://assets/paperdoll/rabbit/proof_rabbit_brass_crotch_crop.png"
+dest_files=["res://.godot/imported/proof_rabbit_brass_crotch_crop.png-da6bc0be5a7a752ecd33bd939fa0e8de.ctex"]
 
 [params]
 

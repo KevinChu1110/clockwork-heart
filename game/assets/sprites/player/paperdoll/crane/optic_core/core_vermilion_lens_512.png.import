@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c1uglsngmf21v"
-path="res://.godot/imported/core_vermilion_lens_512.png-f2a1b866cfb226ab7c14cbe92d502b1f.ctex"
+path="res://.godot/imported/core_vermilion_lens_512.png-2a2167b72094e63314a5827675dbb5c4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/optic_core/core_vermilion_lens_512.png"
-dest_files=["res://.godot/imported/core_vermilion_lens_512.png-f2a1b866cfb226ab7c14cbe92d502b1f.ctex"]
+source_file="res://assets/paperdoll/crane/optic_core/core_vermilion_lens_512.png"
+dest_files=["res://.godot/imported/core_vermilion_lens_512.png-2a2167b72094e63314a5827675dbb5c4.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1sft0vjnpray"
-path="res://.godot/imported/verification_crop_quarry_grey.png-cd1b99cc2b65441859d35931047920a8.ctex"
+path="res://.godot/imported/verification_crop_quarry_grey.png-c9ac50005878588f88a735eb31de7397.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/verification_crop_quarry_grey.png"
-dest_files=["res://.godot/imported/verification_crop_quarry_grey.png-cd1b99cc2b65441859d35931047920a8.ctex"]
+source_file="res://assets/paperdoll/bear/verification_crop_quarry_grey.png"
+dest_files=["res://.godot/imported/verification_crop_quarry_grey.png-c9ac50005878588f88a735eb31de7397.ctex"]
 
 [params]
 

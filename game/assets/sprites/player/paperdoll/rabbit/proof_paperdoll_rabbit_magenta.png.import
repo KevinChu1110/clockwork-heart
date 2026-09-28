@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bqevoatkgkjb3"
-path="res://.godot/imported/proof_paperdoll_rabbit_magenta.png-b42bd827794a4c2fdd3f5ccfb9b3be78.ctex"
+path="res://.godot/imported/proof_paperdoll_rabbit_magenta.png-bac5c3c02828ee11466bdae195fec486.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/proof_paperdoll_rabbit_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_rabbit_magenta.png-b42bd827794a4c2fdd3f5ccfb9b3be78.ctex"]
+source_file="res://assets/paperdoll/rabbit/proof_paperdoll_rabbit_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_rabbit_magenta.png-bac5c3c02828ee11466bdae195fec486.ctex"]
 
 [params]
 

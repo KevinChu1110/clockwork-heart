@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3bsx7wprx7rb"
-path="res://.godot/imported/curio_ram_gravity_orbit_rings_512.png-566f55a348044b6f8800e4cb4fddb791.ctex"
+path="res://.godot/imported/curio_ram_gravity_orbit_rings_512.png-33e7115a46677ce7aa030f8830c5e47e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/ram/back_curio/curio_ram_gravity_orbit_rings_512.png"
-dest_files=["res://.godot/imported/curio_ram_gravity_orbit_rings_512.png-566f55a348044b6f8800e4cb4fddb791.ctex"]
+source_file="res://assets/paperdoll/ram/back_curio/curio_ram_gravity_orbit_rings_512.png"
+dest_files=["res://.godot/imported/curio_ram_gravity_orbit_rings_512.png-33e7115a46677ce7aa030f8830c5e47e.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://qktlasmd67yt"
-path="res://.godot/imported/proof_paperdoll_crane_composite.png-7b71505566f0684991cf41095a045d91.ctex"
+path="res://.godot/imported/proof_paperdoll_crane_composite.png-a2d5721c996e4ab8b21b87c331813938.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/proof_paperdoll_crane_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_crane_composite.png-7b71505566f0684991cf41095a045d91.ctex"]
+source_file="res://assets/paperdoll/crane/proof_paperdoll_crane_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_crane_composite.png-a2d5721c996e4ab8b21b87c331813938.ctex"]
 
 [params]
 

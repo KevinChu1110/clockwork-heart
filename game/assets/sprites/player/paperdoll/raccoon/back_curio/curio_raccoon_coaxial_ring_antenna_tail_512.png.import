@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b8o1caes0i3uv"
-path="res://.godot/imported/curio_raccoon_coaxial_ring_antenna_tail_512.png-d36b19f0cb05208f5e466dc03b751e74.ctex"
+path="res://.godot/imported/curio_raccoon_coaxial_ring_antenna_tail_512.png-e1c046d5dff769bbcdb4ec48b4dccffe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raccoon/back_curio/curio_raccoon_coaxial_ring_antenna_tail_512.png"
-dest_files=["res://.godot/imported/curio_raccoon_coaxial_ring_antenna_tail_512.png-d36b19f0cb05208f5e466dc03b751e74.ctex"]
+source_file="res://assets/paperdoll/raccoon/back_curio/curio_raccoon_coaxial_ring_antenna_tail_512.png"
+dest_files=["res://.godot/imported/curio_raccoon_coaxial_ring_antenna_tail_512.png-e1c046d5dff769bbcdb4ec48b4dccffe.ctex"]
 
 [params]
 

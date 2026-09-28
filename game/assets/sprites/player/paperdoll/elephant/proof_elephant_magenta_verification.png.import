@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://2hdmy2dff85w"
-path="res://.godot/imported/proof_elephant_magenta_verification.png-59793be9c3e4e484553048d57865db76.ctex"
+path="res://.godot/imported/proof_elephant_magenta_verification.png-075726a791beaa36a2a5fd41ce113038.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/elephant/proof_elephant_magenta_verification.png"
-dest_files=["res://.godot/imported/proof_elephant_magenta_verification.png-59793be9c3e4e484553048d57865db76.ctex"]
+source_file="res://assets/paperdoll/elephant/proof_elephant_magenta_verification.png"
+dest_files=["res://.godot/imported/proof_elephant_magenta_verification.png-075726a791beaa36a2a5fd41ce113038.ctex"]
 
 [params]
 

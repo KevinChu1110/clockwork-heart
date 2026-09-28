@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ovrthsrw5ixx"
-path="res://.godot/imported/paint_crane_porcelain.png-29394c0c1e34f96cea9de91308a3bc63.ctex"
+path="res://.godot/imported/paint_crane_porcelain.png-b9701c1cfc54e7d5e0068f351c38a626.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/chassis/paint_crane_porcelain.png"
-dest_files=["res://.godot/imported/paint_crane_porcelain.png-29394c0c1e34f96cea9de91308a3bc63.ctex"]
+source_file="res://assets/paperdoll/crane/chassis/paint_crane_porcelain.png"
+dest_files=["res://.godot/imported/paint_crane_porcelain.png-b9701c1cfc54e7d5e0068f351c38a626.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://tdusy4klckh7"
-path="res://.godot/imported/curio_bat_articulated_starwing_mantle.png-2004443e5608b579bf8570b73d9b7e71.ctex"
+path="res://.godot/imported/curio_bat_articulated_starwing_mantle.png-9278e7a470292792680df89a480cd273.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bat/back_curio/curio_bat_articulated_starwing_mantle.png"
-dest_files=["res://.godot/imported/curio_bat_articulated_starwing_mantle.png-2004443e5608b579bf8570b73d9b7e71.ctex"]
+source_file="res://assets/paperdoll/bat/back_curio/curio_bat_articulated_starwing_mantle.png"
+dest_files=["res://.godot/imported/curio_bat_articulated_starwing_mantle.png-9278e7a470292792680df89a480cd273.ctex"]
 
 [params]
 
