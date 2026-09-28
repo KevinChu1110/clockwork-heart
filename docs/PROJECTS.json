@@ -4246,8 +4246,8 @@
    "id": "swan-official-assets",
    "cat": "遊戲",
    "title": "第四十三族旋音天鵝(swan)官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "官方資產套件齊備，0-ART全過，無頭測試全綠，Vision複驗合規，提請sideqa審查 (t_a3ab04d4)",
    "keys": [
     "第四十三族旋音天"
    ]
