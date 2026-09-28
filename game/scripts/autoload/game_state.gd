@@ -809,6 +809,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"swan": "ash_spear",
 	"bison": "anvil_hammer",
 	"gecko": "mist_darts",
+	"badger": "hunt_claw",
 }
 
 
@@ -863,6 +864,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"swan": default_name = "旋音天鵝"
 		"bison": default_name = "撼地野牛"
 		"gecko": default_name = "巡管守宮"
+		"badger": default_name = "破星蜜獾"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
