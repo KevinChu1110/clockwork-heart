@@ -609,16 +609,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_gorilla_brass_heavy_default", "name_zh": "鋼臂巨猩重型沖壓黃銅素體", "desc": "沖壓黃銅板件，鎢鋼前臂配球窩外露關節，菱形防滑金屬掌板"}
 		]
+	},
+	"peacock": {
+		"id": "peacock",
+		"name_zh": "稜鏡孔雀",
+		"name_en": "The Prism Peacock",
+		"archetype": "法師 (Mage)",
+		"thumb": "res://assets/sprites/player/showcase/peacock_idle_hd.png",
+		"desc": "晨曦小鎮的光學法師，彩釉琺瑯金屬素體，萬花筒雙色寶石目鏡與聚能稜鏡。",
+		"costumes": [
+			{"id": "costume_peacock_marionette_court_cuirass", "name_zh": "木偶宮廷巴洛克金線胸甲", "desc": "奶油米白琺瑯面甲，多巴胺金卷草金紋與水滴寶石搭扣"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現彩釉琺瑯金屬板件與鉸接機械開屏晶扇"}
+		],
+		"chassis": [
+			{"id": "chassis_peacock_glazed_porcelain_default", "name_zh": "稜鏡孔雀彩釉琺瑯金屬素體", "desc": "彩釉琺瑯外殼，黃銅球窩卡扣，芭蕾丁字步站姿"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -1106,6 +1121,7 @@ func confirm_selection() -> void:
 				"rhino": gs.player_name = "重角犀牛"
 				"bat": gs.player_name = "星翼蝙蝠"
 				"gorilla": gs.player_name = "鋼臂巨猩"
+				"peacock": gs.player_name = "稜鏡孔雀"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
