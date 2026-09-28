@@ -1,53 +1,49 @@
-from PIL import Image
+#!/usr/bin/env python3
+import os
+import math
+from typing import cast
+from PIL import Image, ImageChops, ImageOps
+import numpy as np
 
-repo = "/opt/side/bravesoul-game"
-r_dir = f"{repo}/game/assets/sprites/player/paperdoll/rabbit"
+REPO_ROOT = "/opt/side/bravesoul-game"
+BASE_DIR = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/armadillo"
 
-# Let's load the composite image used in wardrobe_dialog
-# When wardrobe_dialog opens with rabbit + costume_nutcracker_guard + paint_midnight_navy:
-chassis = Image.open(f"{r_dir}/chassis/paint_midnight_navy.png").convert("RGBA")
-head = Image.open(f"{r_dir}/head_unit/ear_rabbit_straight.png").convert("RGBA")
-key = Image.open(f"{r_dir}/winding_key/key_classic_brass.png").convert("RGBA")
-costume = Image.open(f"{r_dir}/costume/costume_nutcracker_guard.png").convert("RGBA")
-optic = Image.open(f"{r_dir}/optic_core/core_cyan_emerald.png").convert("RGBA")
-weapon = Image.open(f"{r_dir}/weapon/wpn_dawn_blade.png").convert("RGBA")
-curio = Image.open(f"{r_dir}/back_curio/curio_clockwork_pigeon.png").convert("RGBA")
+key_src = Image.open(f"{BASE_DIR}/winding_key/key_armadillo_crucible_four_leaf_key.png").convert("RGBA")
+curio_src = Image.open(f"{BASE_DIR}/back_curio/curio_armadillo_segmented_cast_iron_carapace.png").convert("RGBA")
+chassis_src = Image.open(f"{BASE_DIR}/chassis/chassis_armadillo_crucible_iron_default.png").convert("RGBA")
+head_src = Image.open(f"{BASE_DIR}/head_unit/head_armadillo_quenched_visor_cowl.png").convert("RGBA")
+costume_src = Image.open(f"{BASE_DIR}/costume/costume_armadillo_foundry_anvil_cuirass.png").convert("RGBA")
+optic_src = Image.open(f"{BASE_DIR}/optic_core/face_armadillo_amber_refractory_lens.png").convert("RGBA")
+weapon_src = Image.open(f"{BASE_DIR}/weapon/weapon_armadillo_black_iron_heavy_sword.png").convert("RGBA")
 
-# Layer order from paperdoll_slots.json:
-# winding_key (5)
-# back_curio (8)
-# chassis (10)
-# head_unit (20)
-# costume (25)
-# optic_core (30)
-# weapon (40)
+# Extract raw crops
+wpn_bbox = weapon_src.getbbox()
+assert wpn_bbox is not None
+weapon_raw = weapon_src.crop(wpn_bbox)
+wpn_center = ((wpn_bbox[0] + wpn_bbox[2]) / 2.0, (wpn_bbox[1] + wpn_bbox[3]) / 2.0)
 
-comp = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
-comp.alpha_composite(key)
-comp.alpha_composite(curio)
-comp.alpha_composite(chassis)
-comp.alpha_composite(head)
-comp.alpha_composite(costume)
-comp.alpha_composite(optic)
-comp.alpha_composite(weapon)
+key_bbox = key_src.getbbox()
+assert key_bbox is not None
+key_raw = key_src.crop(key_bbox)
+key_center = ((key_bbox[0] + key_bbox[2]) / 2.0, (key_bbox[1] + key_bbox[3]) / 2.0)
 
-comp.save("/tmp/test_rabbit_composite.png")
+print(f"wpn_bbox={wpn_bbox}, wpn_center={wpn_center}")
+print(f"key_bbox={key_bbox}, key_center={key_center}")
 
-# Now let's put it on the wardrobe dialog background color (OBSIDIAN_DEEP = Color(0.027, 0.024, 0.039) -> RGB(7, 6, 10))
-bg = Image.new("RGBA", (128, 128), (7, 6, 10, 255))
-bg.alpha_composite(comp)
-bg.save("/tmp/test_rabbit_on_dark_bg.png")
+# Body core: curio, chassis, head, costume, optic
+body_core = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+body_core.alpha_composite(curio_src)
+body_core.alpha_composite(chassis_src)
+body_core.alpha_composite(head_src)
+body_core.alpha_composite(costume_src)
+body_core.alpha_composite(optic_src)
 
-# 4x zoom
-zoom = bg.resize((512, 512), getattr(Image, 'Resampling', Image).NEAREST)
-zoom.save("/tmp/test_rabbit_4x.png")
+# Full composite with key and weapon
+full_comp = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
+full_comp.alpha_composite(key_src)
+full_comp.alpha_composite(body_core)
+full_comp.alpha_composite(weapon_src)
 
-# Crop ears and head
-ears_crop = bg.crop((35, 5, 95, 65)).resize((240, 240), getattr(Image, 'Resampling', Image).NEAREST)
-ears_crop.save("/tmp/test_ears_crop.png")
-
-# Crop hand and weapon
-weapon_crop = bg.crop((30, 65, 95, 125)).resize((260, 240), getattr(Image, 'Resampling', Image).NEAREST)
-weapon_crop.save("/tmp/test_weapon_crop.png")
-
-print("Saved inspection crops successfully!")
+proof_comp = Image.open(f"{BASE_DIR}/proof_paperdoll_armadillo_composite.png").convert("RGBA")
+diff = ImageChops.difference(full_comp, proof_comp)
+print(f"Diff vs proof_paperdoll_armadillo_composite: {diff.getbbox()}")
