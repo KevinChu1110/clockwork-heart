@@ -806,6 +806,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"seal": "wrap_gloves",
 	"raven": "star_rod",
 	"kite": "reed_bow",
+	"swan": "ash_spear",
 }
 
 
@@ -857,6 +858,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"seal": default_name = "拍浪海豹"
 		"raven": default_name = "星儀渡鴉"
 		"kite": default_name = "熱流赤鳶"
+		"swan": default_name = "旋音天鵝"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
