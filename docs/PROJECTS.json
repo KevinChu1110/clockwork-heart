@@ -3956,8 +3956,8 @@
    "id": "peacock-combat-poses",
    "cat": "遊戲",
    "title": "第三十五族稜鏡孔雀六大戰鬥姿態補齊",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "完成六大動作姿態雙規格產出與自檢，request-review sideqa",
    "keys": [
     "第三十五族稜鏡孔"
    ]
