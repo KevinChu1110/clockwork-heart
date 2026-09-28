@@ -3776,8 +3776,8 @@
    "id": "sailfish-official-assets",
    "cat": "遊戲",
    "title": "第三十一族破浪旗魚(sailfish)官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "官方資產套件完成，全項量化稽核 PASS，待 sideqa 審查",
    "keys": [
     "第三十一族破浪旗"
    ]
