@@ -3756,8 +3756,8 @@
    "id": "sailfish-combat-poses",
    "cat": "遊戲",
    "title": "第三十一族破浪旗魚六大戰鬥動作姿態補齊",
-   "status": "測試中",
-   "note": "完成六大動作姿態產出與自檢，送審 sideqa",
+   "status": "已上線",
+   "note": "sideqa審查通過，六大戰鬥姿態雙規格補齊，27項poses測試與48項paperdoll測試全綠入main",
    "keys": [
     "第三十一族破浪旗"
    ]
