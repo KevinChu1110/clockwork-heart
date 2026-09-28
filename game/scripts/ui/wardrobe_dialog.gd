@@ -17,6 +17,7 @@ signal cancelled()
 @export var creation_mode: bool = false
 
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
+const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
