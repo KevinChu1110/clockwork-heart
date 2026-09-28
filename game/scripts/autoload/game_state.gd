@@ -813,6 +813,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"capybara": "shard_focus",
 	"woodpecker": "flint_gun",
 	"armadillo": "meager_edge",
+	"caterpillar": "anvil_hammer",
 }
 
 
@@ -871,6 +872,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"capybara": default_name = "澄心水豚"
 		"woodpecker": default_name = "振律啄木鳥"
 		"armadillo": default_name = "熔鎧犰狳"
+		"caterpillar": default_name = "風箱毛蟲"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
