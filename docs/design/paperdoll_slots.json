@@ -337,6 +337,12 @@
             "name": "稜鏡孔雀彩釉琺瑯金屬素體",
             "race": "peacock",
             "tier": "common"
+          },
+          {
+            "id": "chassis_meerkat_tinplate_default",
+            "name": "沙哨狐獴沖壓馬口鐵金屬素體",
+            "race": "meerkat",
+            "tier": "common"
           }
         ]
       },
@@ -569,6 +575,12 @@
             "name": "巴洛克冠羽稜鏡天線",
             "race": "peacock",
             "tier": "common"
+          },
+          {
+            "id": "head_meerkat_scavenger_cowl_ears",
+            "name": "拾荒風鏡金屬面甲與微型集音漏斗耳",
+            "race": "meerkat",
+            "tier": "common"
           }
         ]
       },
@@ -763,6 +775,11 @@
           {
             "id": "key_peacock_filigree_sunburst_key",
             "name": "晨曦巴洛克日曜鏤空發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_meerkat_high_torque_scrap_key",
+            "name": "荒漠生鏽高扭力發條鑰匙",
             "tier": "common"
           }
         ]
@@ -1049,6 +1066,12 @@
             "name": "木偶宮廷巴洛克金線胸甲",
             "race": "peacock",
             "tier": "common"
+          },
+          {
+            "id": "costume_meerkat_patched_canvas_poncho",
+            "name": "廢土補丁帆布防沙短斗篷",
+            "race": "meerkat",
+            "tier": "common"
           }
         ]
       },
@@ -1271,6 +1294,12 @@
             "id": "face_peacock_kaleidoscope_gem_lens",
             "name": "萬花筒雙色寶石折光透鏡",
             "race": "peacock",
+            "tier": "common"
+          },
+          {
+            "id": "face_meerkat_periscope_rangefinder_lens",
+            "name": "潛望式黃銅測距目鏡",
+            "race": "meerkat",
             "tier": "common"
           }
         ]
@@ -1501,6 +1530,12 @@
             "id": "weapon_peacock_kaleidoscope_prism_focus",
             "name": "萬花筒聚能稜鏡",
             "weapon_type": "crystal",
+            "tier": "common"
+          },
+          {
+            "id": "weapon_meerkat_rusted_coil_spring_gun",
+            "name": "生鏽彈簧刺銃",
+            "weapon_type": "gun",
             "tier": "common"
           }
         ]
@@ -1735,13 +1770,19 @@
             "name": "鉸接萬花筒機械開屏晶扇",
             "race": "peacock",
             "tier": "common"
+          },
+          {
+            "id": "curio_meerkat_tripod_grounding_tail",
+            "name": "鉸接多節生鏽金屬三腳平衡接地擺尾",
+            "race": "meerkat",
+            "tier": "common"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 35,
+    "total_races": 36,
     "races": [
       {
         "race_id": "rabbit",
@@ -4150,6 +4191,77 @@
           "portrait_dialogue": "game/assets/sprites/portraits/prism_peacock.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/peacock/{slot_id}/{item_id}.png [待產出]"
         }
+      },
+      {
+        "race_id": "meerkat",
+        "aliases": [
+          "sentry_meerkat",
+          "desert_meerkat",
+          "rust_meerkat",
+          "scavenger_meerkat"
+        ],
+        "name_zh": "沙哨狐獴",
+        "name_en": "The Sentry Meerkat",
+        "class_archetype": "遊俠 (Ranger)",
+        "origin_realm": "R08 荒漠齒輪塚·遺忘舊庫 / Rust Waste: The Forgotten Junkyard",
+        "lore_anchor": "常年駐守於荒漠齒輪塚「巨型零件殘骸沙丘」與「拾荒拼裝聚落·齒輪營地」，巡弋於「舊庫重型吊裝龍門架」、「零件分揀斜坡裂谷」、「冷卻熔渣重力傾卸滑道·舊庫受料口」、「軌道廢棄排障滑道·舊庫分揀倉」、「大齒輪懸索天梯·舊庫總站」與「廢料沉降磁吸緩衝沙漏」，身軀由沖壓防鏽馬口鐵板件與黃銅鉚釘拼裝、配備拾荒風鏡金屬面甲與微型集音漏斗耳、潛望式黃銅測距目鏡、廢土補丁帆布防沙短斗篷、鉸接多節生鏽金屬三腳平衡接地擺尾與荒漠生鏽高扭力發條鑰匙，右手單持專屬生鏽彈簧刺銃，以高點哨兵狙擊、三腳接地抵消後座與瞬發破甲暴擊見長的廢土遊俠",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (可愛Q版直立哨兵、挺拔身姿與單筒潛望鏡剪影)",
+          "posture": "身軀直立挺拔，身後鉸接金屬三腳平衡擺尾接地維持三點重心，左手自然置於腰際微調潛望鏡測距旋鈕，右手單持生鏽彈簧刺銃斜抱身前，頭頂潛望測距鏡隨走時轉動，微型集音耳輕微顫動，展現高度專注的哨兵待命姿態",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "拾荒風鏡金屬面甲與微型集音漏斗耳，右眼延伸出黃銅單筒潛望式測距目鏡（鑲嵌直徑 8px 晶透琥珀金 #FFB703 石英鏡片），左眼為光澤黃銅墊圈眼眸，轉動時發出細碎調焦棘爪齒輪聲",
+          "ears": "頭部兩側微型黃銅漏斗薄片集音耳，內部裝有薄膜發條震動傳感片，隨風沙走時節奏同軸微幅自轉",
+          "torso_and_limbs": "主軀幹由沖壓耐磨馬口鐵板件與黃銅鉚釘拼裝，面部與腹部覆蓋奶油米白（#FFFDF8）防鏽漆面與亮橘警示斜紋，雙腿為粗壯鐵皮腿柱配外露鉚釘棘輪軸承，腳底鑲嵌防滑深棕聚合物橡膠墊",
+          "tail": "鉸接多節生鏽金屬三腳平衡接地擺尾，由5節沖壓金屬骨節組成，尾端配有活動式三腳折疊金屬爪，待機垂地平衡，射擊時爪片展開抓地吸收後座力",
+          "weapon_system": "右手單持專屬「生鏽彈簧刺銃（Rusted Coil Spring-Gun）」，雙層高張力發條線圈槍機，前端固定折疊發條刺刀，完全符合 0-MKT7 與 ranger/gun 體系，底層掛載 equipment.json 既有 blackpowder_rifle 與 flint_gun"
+        },
+        "color_palette": {
+          "primary": "#D49B4B (沙丘赭石褐，沖壓馬口鐵主外甲色)",
+          "secondary": "#FFA010 (廢土多巴胺亮橘，斗篷拼布與警示斜紋)",
+          "brass_gear": "#FFD028 (拋光黃銅鉚釘、發條鑰匙與潛望鏡身)",
+          "tinplate_gray": "#514E59 (生鏽馬口鐵青灰，骨架、槍身與齒輪關節底色)",
+          "cream_ivory": "#FFFDF8 (陽光奶油米白，面頰板、腹部護板溫暖底色)",
+          "amber_optic": "#FFB703 (晶透琥珀金，潛望鏡片與測距光標焦點)",
+          "verdigris_teal": "#2A9D8F (氧化銅綠彩，螺絲墊圈與斗篷點綴)",
+          "outline": "#2E1F18 (深暖褐手繪外輪廓立體描邊，確保沙盤背景清晰立體)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_meerkat.png (品牌形象立牌)",
+              "web/media/hero/char_meerkat.png (官網英雄展示立繪)",
+              "docs/art/sentry_meerkat_concept.png (概念立繪)",
+              "game/assets/sprites/player/meerkat_idle.png (64x64 待機)",
+              "game/assets/sprites/player/meerkat_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/meerkat_idle.png (隊伍待機)",
+              "game/assets/sprites/player/meerkat_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/meerkat_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/meerkat_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/poses/meerkat/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/meerkat.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/sentry_meerkat.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/meerkat/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_meerkat.png (400x840) [待產出]",
+          "branding_concept_art": "docs/art/sentry_meerkat_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_meerkat.png (400x840) [待產出]",
+          "web_preview": "web/media/hero/meerkat_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/meerkat_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/meerkat_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/meerkat_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/meerkat_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/meerkat_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/meerkat_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/meerkat/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/meerkat.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/sentry_meerkat.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/meerkat/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -4197,7 +4309,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 35 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 36 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -4219,7 +4331,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "三十五大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲) 由渲染器微調縮放適配"
+        "rule": "三十六大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷) 由渲染器微調縮放適配"
       }
     ]
   },
@@ -4262,7 +4374,8 @@
         "game/assets/sprites/player/paperdoll/rhino/",
         "game/assets/sprites/player/paperdoll/bat/",
         "game/assets/sprites/player/paperdoll/gorilla/",
-        "game/assets/sprites/player/paperdoll/peacock/"
+        "game/assets/sprites/player/paperdoll/peacock/",
+        "game/assets/sprites/player/paperdoll/meerkat/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
