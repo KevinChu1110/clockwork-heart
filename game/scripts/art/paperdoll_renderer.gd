@@ -143,7 +143,7 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		if ResourceLoader.exists(common_slice_clean) or FileAccess.file_exists(common_slice_clean):
 			return common_slice_clean
 		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限四十四重大正式族系）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko"]
 		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
 			for other in all_races:
 				if str(other) == rid:
@@ -332,6 +332,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "chassis_swan_silver_enamel_default"
 			elif race == "bison":
 				return "chassis_bison_rusted_tinplate_default"
+			elif race == "gecko":
+				return "chassis_gecko_brass_patina_default"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -420,6 +422,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_swan_tiara_beak_visor"
 			elif race == "bison":
 				return "head_bison_riveted_brow_horn_crest"
+			elif race == "gecko":
+				return "head_gecko_conduit_scout_crest_cowl"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -500,6 +504,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_swan_octave_dual_loop_brass"
 			elif race == "bison":
 				return "key_bison_heavy_cross_t_bar_cast_iron"
+			elif race == "gecko":
+				return "key_gecko_dual_ring_relief_valve_brass"
 			elif race == "fox":
 				return ""
 			return "key_classic_brass"
@@ -590,6 +596,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_swan_theatre_herald_cuirass"
 			elif race == "bison":
 				return "costume_bison_junkyard_demolition_cuirass"
+			elif race == "gecko":
+				return "costume_gecko_highpressure_stealth_harness"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -672,6 +680,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "face_swan_prismatic_crystal_monocle"
 			elif race == "bison":
 				return "face_bison_amber_pressure_gauge_eye"
+			elif race == "gecko":
+				return "face_gecko_dual_slit_aperture_quartz_lens"
 			elif race == "boar":
 				return "core_molten_crimson"
 			return "core_cyan_emerald"
@@ -762,6 +772,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "weapon_swan_octave_spiral_lance"
 			elif race == "bison":
 				return "weapon_bison_wasteland_anvil_crusher_hammer"
+			elif race == "gecko":
+				return "weapon_gecko_conduit_ratchet_dart"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -850,6 +862,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_swan_spring_steel_ballet_wings"
 			elif race == "bison":
 				return "curio_bison_twin_vent_exhaust_stack"
+			elif race == "gecko":
+				return "curio_gecko_segmented_gear_balance_tail"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -1097,7 +1111,7 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
@@ -1707,7 +1721,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "raven", "aliases": ["armillary_raven", "astronomer_raven", "horologist_raven", "celestial_raven"], "name_zh": "星儀渡鴉", "name_en": "The Armillary Raven", "class_archetype": "法師 (Mage)"},
 				{"race_id": "kite", "aliases": ["thermal_kite", "crucible_kite", "glider_kite", "soaring_kite"], "name_zh": "熱流赤鳶", "name_en": "The Thermal Kite", "class_archetype": "遊俠 (Ranger)"},
 				{"race_id": "swan", "aliases": ["melodic_swan", "clockwork_swan", "silver_swan", "opera_swan"], "name_zh": "旋音天鵝", "name_en": "The Melodic Swan", "class_archetype": "騎士 (Knight)"},
-				{"race_id": "bison", "aliases": ["groundshaker_bison", "clockwork_bison", "scrap_bison", "iron_bison"], "name_zh": "撼地野牛", "name_en": "The Groundshaker Bison", "class_archetype": "戰士 (Viking)"}
+				{"race_id": "bison", "aliases": ["groundshaker_bison", "clockwork_bison", "scrap_bison", "iron_bison"], "name_zh": "撼地野牛", "name_en": "The Groundshaker Bison", "class_archetype": "戰士 (Viking)"},
+				{"race_id": "gecko", "aliases": ["conduit_gecko", "clockwork_gecko", "brass_gecko", "wallrunner_gecko"], "name_zh": "巡管守宮", "name_en": "The Conduit Gecko", "class_archetype": "忍者 (Ninja)"}
 			]
 		}
 	}
