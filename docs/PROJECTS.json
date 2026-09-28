@@ -4396,8 +4396,8 @@
    "id": "badger-official-assets",
    "cat": "遊戲",
    "title": "第四十六族破星蜜獾(badger)官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
-   "status": "開發中",
-   "note": "開始補齊第四十六族破星蜜獾官方資產套件",
+   "status": "測試中",
+   "note": "完成第四十六族破星蜜獾官方資產套件，無頭測試全綠，驗收圖經Vision複驗通過，request-review給side",
    "keys": [
     "第四十六族破星蜜"
    ]
