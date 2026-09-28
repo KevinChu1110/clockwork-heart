@@ -3976,8 +3976,8 @@
    "id": "meerkat-combat-poses",
    "cat": "遊戲",
    "title": "第三十六族沙哨狐獴6大戰鬥姿態補齊",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "六大戰鬥姿態128/512雙規格圖檔齊全，無頭測試全綠，Vision實機複驗合格，送審 sideqa",
    "keys": [
     "第三十六族沙哨狐"
    ]
