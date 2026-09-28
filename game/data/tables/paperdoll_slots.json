@@ -427,6 +427,12 @@
             "name": "多節沖壓銅環風箱底盤",
             "tier": "common",
             "race": "caterpillar"
+          },
+          {
+            "id": "chassis_cuttlefish_abyssal_cyan_default",
+            "name": "鍍鈦合金與琉璃海藍搪瓷素體底盤",
+            "tier": "common",
+            "race": "cuttlefish"
           }
         ]
       },
@@ -749,6 +755,12 @@
             "name": "雙探針風箱護額頭盔",
             "tier": "common",
             "race": "caterpillar"
+          },
+          {
+            "id": "head_cuttlefish_diving_cowl_fins",
+            "name": "深潛圓頂頭盔與氣動平衡側鰭",
+            "tier": "common",
+            "race": "cuttlefish"
           }
         ]
       },
@@ -1018,6 +1030,11 @@
           {
             "id": "key_caterpillar_dual_ring_bellows_key",
             "name": "雙環重裝風箱發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_cuttlefish_tri_vane_turbine_brass",
+            "name": "三葉深海渦輪水流發條鑰匙",
             "tier": "common"
           }
         ]
@@ -1394,6 +1411,12 @@
             "name": "蔓谷深林工兵板甲",
             "tier": "common",
             "race": "caterpillar"
+          },
+          {
+            "id": "costume_cuttlefish_abyssal_shinobi_cuirass",
+            "name": "海淵夜行輕量耐壓背心",
+            "tier": "common",
+            "race": "cuttlefish"
           }
         ]
       },
@@ -1707,6 +1730,12 @@
             "name": "雙圓琥珀聚光透鏡",
             "tier": "common",
             "race": "caterpillar"
+          },
+          {
+            "id": "face_cuttlefish_dual_quartz_optic_lens",
+            "name": "雙聯水下耐壓石英探照目鏡",
+            "tier": "common",
+            "race": "cuttlefish"
           }
         ]
       },
@@ -2027,6 +2056,12 @@
             "name": "蔓谷風箱重壓鎚",
             "tier": "common",
             "weapon_type": "hammer"
+          },
+          {
+            "id": "weapon_cuttlefish_abyssal_inksmoke_dagger",
+            "name": "海淵墨影雙鋒匕",
+            "tier": "common",
+            "weapon_type": "dagger"
           }
         ]
       },
@@ -2350,13 +2385,19 @@
             "name": "分節軟鋼風箱蓄壓氣包",
             "tier": "common",
             "race": "caterpillar"
+          },
+          {
+            "id": "curio_cuttlefish_pneumatic_ink_siphon",
+            "name": "氣動高壓發煙雙聯墨囊氣罐",
+            "tier": "common",
+            "race": "cuttlefish"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 50,
+    "total_races": 51,
     "races": [
       {
         "race_id": "rabbit",
@@ -5903,6 +5944,80 @@
           "portrait_dialogue": "game/assets/sprites/portraits/bellows_caterpillar.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/caterpillar/{slot_id}/{item_id}.png [待產出]"
         }
+      },
+      {
+        "race_id": "cuttlefish",
+        "aliases": [
+          "inksmoke_cuttlefish",
+          "abyssal_cuttlefish",
+          "mimic_cuttlefish",
+          "clockwork_cuttlefish"
+        ],
+        "name_zh": "墨影烏賊",
+        "name_en": "The Inksmoke Cuttlefish",
+        "class_archetype": "忍者 (Ninja)",
+        "origin_realm": "R05 琉璃汪洋·發條海淵 / Crystal Ocean: The Clockwork Abyss",
+        "lore_anchor": "穿行於琉璃汪洋·發條海淵「海淵地表與馬賽克步道」、「發條珊瑚群」與「水下發條宮殿與氧氣泡罩」，巡檢「磷光水母街燈與流體排氣柱」、「水下丁達爾藍晶光柱」與「天頂巨型青銅錨鏈秒針」，駐守「深淵排污豎井管道·耐壓吊籠」、「晨曦天軌 5 號深海浮標月台」與「深海熱液湧泉管道」，配合小黃鴨船長·舵手巴克、海馬信差·碧浪與深海鐘錶貝·珠貝長老；通體覆蓋高抗壓防腐鍍鈦薄板外殼與琉璃海藍搪瓷底盤、深潛圓頂頭盔與氣動平衡側鰭、三葉深海渦輪水流發條鑰匙、海淵夜行輕量耐壓背心、雙聯水下耐壓石英探照目鏡、氣動高壓發煙雙聯墨囊氣罐，右手反握專屬海淵墨影雙鋒匕，以2.2頭身流線型體態、四對分節軟鋼機械觸肢滾足、流體阻尼水下煙幕遁術、弱點死角連刺見長的深海暗影匿蹤忍者",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (19 世紀末古典鐵皮發條潛水烏賊玩具與鐘錶水下氣動發煙機關偶)",
+          "posture": "2.2 頭身矮萌身軀微伏，四對短小金屬觸肢抓地平穩，右手反握主鋒匕橫於胸前，左手短匕斜指向下，三葉渦輪發條鑰匙隨海淵秒針律動沉穩旋轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "一體沖壓成型鐘形鍍鈦深潛頭盔（#38A0FF），頂部裝配黃銅洩壓閥門（#FFD028），兩側對稱鉸接一對薄沖壓黃銅波浪平衡側鰭，眼窩處精準中空供 optic_core 穿透",
+          "ears": "頭部兩側對稱鉸接薄沖壓黃銅波浪平衡側鰭（#FFD028），隨水流與走時律動微動，無生物耳廓",
+          "torso_and_limbs": "高抗壓防腐沖壓鍍鈦薄板外殼（#38A0FF）嵌合象牙白防滑陶瓷釉襯板（#FFFDF8），下身配置四對分節軟鋼機械觸肢滾足與耐磨橡膠吸盤",
+          "tail": "背部上側裝載雙聯垂直排列沖壓鍍鈦氣動高壓發煙墨囊氣罐（#38A0FF），頂部配備微型氣壓表與虹吸發煙噴嘴，底部連接柔性黃銅編織輸氣軟管",
+          "weapon_system": "右手單手反握主短匕於身前、左爪持副匕微屈護胸專屬「海淵墨影雙鋒匕（Abyssal Inksmoke Twin Daggers）」，雙持鍍鈦弧刃短匕帶深藍流體導槽，底層掛載 equipment.json 既有 star_fang (tier 2) 與 nebula_needle (tier 3)"
+        },
+        "color_palette": {
+          "base": "#FFFDF8 (基底象牙白陶瓷釉/拋光鋁鎳金屬，面甲眼周高光、腹部內層襯板與關節活動襯墊)",
+          "primary": "#38A0FF (主色多巴胺海天藍，沖壓鍍鈦圓頂頭盔外殼、側鰭主體、雙鋒短匕護手與背部氣罐塗裝)",
+          "secondary": "#4ED86A (次色薄荷冷翡翠，石英目鏡內部刻度發光圈、側鰭邊緣防撞膠條與短匕刃面高光)",
+          "accent": "#FF5E8A (點綴色多巴胺珊瑚粉，發條鑰匙中心轉軸鉚釘、氣罐壓力警戒指針與頭頂洩壓氣閥按鈕)",
+          "metal": "#FFD028 (金屬天元黃銅金與海軍深藍防鏽漆板 #1A3558，深海發條鐘錶玩具精緻感)",
+          "outline": "#1F1A3A (深藍紫/深暖褐手繪立體外輪廓描邊，確保明亮清爽零泥土髒黑)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_cuttlefish.png (品牌形象立牌)",
+              "web/media/hero/char_cuttlefish.png (官網英雄展示立繪)",
+              "docs/art/inksmoke_cuttlefish_concept.png (概念立繪)",
+              "game/assets/sprites/player/cuttlefish_idle.png (64x64 待機)",
+              "game/assets/sprites/player/cuttlefish_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/cuttlefish_idle.png (隊伍待機)",
+              "web/media/hero/cuttlefish_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/cuttlefish_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/cuttlefish_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/cuttlefish_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/cuttlefish_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/cuttlefish_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/cuttlefish_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/cuttlefish/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/cuttlefish.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/cuttlefish_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/inksmoke_cuttlefish.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/cuttlefish/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_cuttlefish.png (420x840 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/inksmoke_cuttlefish_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_cuttlefish.png (420x840 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/cuttlefish_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/cuttlefish_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/cuttlefish_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/cuttlefish_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/cuttlefish_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/cuttlefish_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/cuttlefish_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/cuttlefish/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/cuttlefish.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/inksmoke_cuttlefish.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/cuttlefish/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -5950,7 +6065,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 50 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 51 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -5972,7 +6087,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "五十重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲) 由渲染器微調縮放適配"
+        "rule": "五十一重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心) 由渲染器微調縮放適配"
       }
     ]
   },
@@ -6030,7 +6145,8 @@
         "game/assets/sprites/player/paperdoll/capybara/",
         "game/assets/sprites/player/paperdoll/woodpecker/",
         "game/assets/sprites/player/paperdoll/armadillo/",
-        "game/assets/sprites/player/paperdoll/caterpillar/"
+        "game/assets/sprites/player/paperdoll/caterpillar/",
+        "game/assets/sprites/player/paperdoll/cuttlefish/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",

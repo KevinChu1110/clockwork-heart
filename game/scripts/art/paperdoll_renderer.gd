@@ -143,7 +143,7 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		if ResourceLoader.exists(common_slice_clean) or FileAccess.file_exists(common_slice_clean):
 			return common_slice_clean
 		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限四十四重大正式族系）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish"]
 		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
 			for other in all_races:
 				if str(other) == rid:
@@ -344,6 +344,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "chassis_armadillo_crucible_iron_default"
 			elif race == "caterpillar":
 				return "chassis_caterpillar_brass_bellows_default"
+			elif race == "cuttlefish":
+				return "chassis_cuttlefish_abyssal_cyan_default"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -444,6 +446,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_armadillo_quenched_visor_cowl"
 			elif race == "caterpillar":
 				return "head_caterpillar_sensor_bellows_cowl"
+			elif race == "cuttlefish":
+				return "head_cuttlefish_diving_cowl_fins"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -536,6 +540,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_armadillo_crucible_four_leaf_key"
 			elif race == "caterpillar":
 				return "key_caterpillar_dual_ring_bellows_key"
+			elif race == "cuttlefish":
+				return "key_cuttlefish_tri_vane_turbine_brass"
 			elif race == "fox":
 				return ""
 			return "key_classic_brass"
@@ -638,6 +644,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_armadillo_foundry_anvil_cuirass"
 			elif race == "caterpillar":
 				return "costume_caterpillar_deepwood_sapper_cuirass"
+			elif race == "cuttlefish":
+				return "costume_cuttlefish_abyssal_shinobi_cuirass"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -732,6 +740,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "face_armadillo_amber_refractory_lens"
 			elif race == "caterpillar":
 				return "face_caterpillar_amber_condenser_lens"
+			elif race == "cuttlefish":
+				return "face_cuttlefish_dual_quartz_optic_lens"
 			elif race == "boar":
 				return "core_molten_crimson"
 			return "core_cyan_emerald"
@@ -834,6 +844,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "weapon_armadillo_black_iron_heavy_sword"
 			elif race == "caterpillar":
 				return "weapon_caterpillar_vine_valley_compression_hammer"
+			elif race == "cuttlefish":
+				return "weapon_cuttlefish_abyssal_inksmoke_dagger"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -934,6 +946,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_armadillo_segmented_cast_iron_carapace"
 			elif race == "caterpillar":
 				return "curio_caterpillar_segmented_pressure_pack"
+			elif race == "cuttlefish":
+				return "curio_cuttlefish_pneumatic_ink_siphon"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -1181,7 +1195,7 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
@@ -1746,7 +1760,7 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 50,
+			"total_races": 51,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
@@ -1797,7 +1811,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "capybara", "aliases": ["serene_capybara", "zen_capybara", "clockwork_capybara", "crystal_capybara"], "name_zh": "澄心水豚", "name_en": "The Serene Capybara", "class_archetype": "法師 (Mage)"},
 				{"race_id": "woodpecker", "aliases": ["resonance_woodpecker", "percussion_woodpecker", "clockwork_woodpecker", "brass_woodpecker"], "name_zh": "振律啄木鳥", "name_en": "The Resonance Woodpecker", "class_archetype": "遊俠 (Ranger)"},
 				{"race_id": "armadillo", "aliases": ["crucible_armadillo", "molten_armadillo", "quenched_armadillo", "clockwork_armadillo"], "name_zh": "熔鎧犰狳", "name_en": "The Crucible Armadillo", "class_archetype": "騎士 (Knight)"},
-				{"race_id": "caterpillar", "aliases": ["bellows_caterpillar", "segmented_caterpillar", "clockwork_caterpillar", "crawler_caterpillar"], "name_zh": "風箱毛蟲", "name_en": "The Bellows Caterpillar", "class_archetype": "戰士 (Viking)"}
+				{"race_id": "caterpillar", "aliases": ["bellows_caterpillar", "segmented_caterpillar", "clockwork_caterpillar", "crawler_caterpillar"], "name_zh": "風箱毛蟲", "name_en": "The Bellows Caterpillar", "class_archetype": "戰士 (Viking)"},
+				{"race_id": "cuttlefish", "aliases": ["inksmoke_cuttlefish", "abyssal_cuttlefish", "mimic_cuttlefish", "clockwork_cuttlefish"], "name_zh": "墨影烏賊", "name_en": "The Inksmoke Cuttlefish", "class_archetype": "忍者 (Ninja)"}
 			]
 		}
 	}
