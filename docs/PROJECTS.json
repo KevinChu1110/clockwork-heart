@@ -4006,8 +4006,8 @@
    "id": "beaver-combat-poses",
    "cat": "遊戲",
    "title": "第三十八族劈木河狸(beaver)6大戰鬥姿態補齊",
-   "status": "開發中",
-   "note": "開始製作 attack/hit/idle/recover/skill/telegraph 六大戰鬥姿態",
+   "status": "測試中",
+   "note": "完成 attack/hit/idle/recover/skill/telegraph 六大戰鬥姿態雙規格產出與測試，送審 sideqa",
    "keys": [
     "第三十八族劈木河"
    ]
