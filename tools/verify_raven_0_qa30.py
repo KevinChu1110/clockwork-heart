@@ -4,7 +4,7 @@
 1. game/data/tables/paperdoll_slots.json 與 docs/design/paperdoll_slots.json 100% 一致
 2. raven 正表 aliases 與 paperdoll_renderer.gd fallback 表 aliases 100% 對齊一致
 3. 全部 41 族 aliases 在正表與 fallback 表 100% 逐族對齊，零分歧
-4. raven 7 大部件目錄與 poses/raven 目錄存在且恪守零佔位圖（僅有 .gitkeep）
+4. raven 7 大部件切片圖檔 100% 就緒，且 poses/raven 目錄存在且恪守零佔位圖（僅有 .gitkeep）
 """
 import json
 import os
@@ -71,17 +71,26 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3. 全量 41 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/raven 保持零佔位圖（僅保留 .gitkeep）
+# 4. 驗證 7 大槽位切片已就緒，且 poses/raven 保持零佔位圖（僅保留 .gitkeep）
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/raven")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
+expected_slices = {
+    "back_curio": ["curio_raven_articulated_steampunk_wings.png", "curio_raven_articulated_steampunk_wings_512.png"],
+    "chassis": ["chassis_raven_obsidian_brass_default.png", "chassis_raven_obsidian_brass_default_512.png"],
+    "costume": ["costume_raven_horologist_scholar_robe.png", "costume_raven_horologist_scholar_robe_512.png"],
+    "head_unit": ["head_raven_astronomer_hood_beak.png", "head_raven_astronomer_hood_beak_512.png"],
+    "optic_core": ["face_raven_astrolabe_monocle_lens.png", "face_raven_astrolabe_monocle_lens_512.png"],
+    "weapon": ["weapon_raven_armillary_wand.png", "weapon_raven_armillary_wand_512.png"],
+    "winding_key": ["key_raven_armillary_sphere_brass.png", "key_raven_armillary_sphere_brass_512.png"]
+}
 
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"{s_dir} 缺少 .gitkeep"
-    slot_images = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert not slot_images, f"{s_dir} 發現非預期圖片檔案（先行骨架嚴守零佔位圖規則）: {slot_images}"
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/raven")
 assert os.path.isdir(poses_dir), f"poses/raven 目錄不存在: {poses_dir}"
@@ -89,5 +98,5 @@ assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/raven 缺少 
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
 assert not poses_images, f"poses/raven 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-print("✓ 4. 7 大槽位空目錄與 poses/raven 恪守零美術佔位圖（僅保留 .gitkeep）規範")
+print("✓ 4. 7 大槽位切片圖檔 100% 就緒，poses/raven 恪守 .gitkeep 規範")
 print("=== 0-QA30 查驗 100% 通過！ ===")
