@@ -142,8 +142,8 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		var common_slice_clean := "%s/common/%s/%s.png" % [PAPERDOLL_ROOT, sid, clean_id]
 		if ResourceLoader.exists(common_slice_clean) or FileAccess.file_exists(common_slice_clean):
 			return common_slice_clean
-		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限四十大正式族系）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal"]
+		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限四十一重大正式族系）
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven"]
 		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
 			for other in all_races:
 				if str(other) == rid:
@@ -324,6 +324,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "chassis_stoat_ivory_tinplate_default"
 			elif race == "seal":
 				return "chassis_seal_marine_titanium_default"
+			elif race == "raven":
+				return "chassis_raven_obsidian_brass_default"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -404,6 +406,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_stoat_aerodynamic_hood_ears"
 			elif race == "seal":
 				return "head_seal_streamline_cowl_sonar"
+			elif race == "raven":
+				return "head_raven_astronomer_hood_beak"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -476,6 +480,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_stoat_whirlwind_tri_ring_brass"
 			elif race == "seal":
 				return "key_seal_marine_propeller_brass"
+			elif race == "raven":
+				return "key_raven_armillary_sphere_brass"
 			elif race == "fox":
 				return ""
 			return "key_classic_brass"
@@ -558,6 +564,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_stoat_scavenger_wind_cape"
 			elif race == "seal":
 				return "costume_seal_deepsea_diver_harness"
+			elif race == "raven":
+				return "costume_raven_horologist_scholar_robe"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -632,6 +640,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "face_stoat_sapphire_crosshair_lens"
 			elif race == "seal":
 				return "face_seal_cyan_quartz_convex_lens"
+			elif race == "raven":
+				return "face_raven_astrolabe_monocle_lens"
 			elif race == "boar":
 				return "core_molten_crimson"
 			return "core_cyan_emerald"
@@ -714,6 +724,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "weapon_stoat_crescent_dagger"
 			elif race == "seal":
 				return "weapon_seal_clapper_gauntlets"
+			elif race == "raven":
+				return "weapon_raven_armillary_wand"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -794,6 +806,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_stoat_flexible_segmented_tail"
 			elif race == "seal":
 				return "curio_seal_hydro_ducted_tail_flukes"
+			elif race == "raven":
+				return "curio_raven_articulated_steampunk_wings"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -1041,7 +1055,7 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
@@ -1606,7 +1620,7 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 40,
+			"total_races": 41,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
@@ -1647,7 +1661,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "courser", "aliases": ["ironhoof_courser", "cavalry_courser", "dawn_courser", "patrol_courser"], "name_zh": "鐵蹄駿駒", "name_en": "The Ironhoof Courser", "class_archetype": "騎士 (Knight)"},
 				{"race_id": "beaver", "aliases": ["woodchopper_beaver", "sapper_beaver", "timber_beaver", "lumber_beaver"], "name_zh": "劈木河狸", "name_en": "The Woodchopper Beaver", "class_archetype": "戰士 (Viking)"},
 				{"race_id": "stoat", "aliases": ["whirling_stoat", "scavenger_stoat", "conduit_stoat", "sandstorm_stoat"], "name_zh": "旋刃伶鼬", "name_en": "The Whirling Stoat", "class_archetype": "忍者 (Ninja)"},
-				{"race_id": "seal", "aliases": ["clapping_seal", "wave_seal", "abyssal_seal", "pneumatic_seal"], "name_zh": "拍浪海豹", "name_en": "The Clapping Seal", "class_archetype": "武術家 (Monk)"}
+				{"race_id": "seal", "aliases": ["clapping_seal", "wave_seal", "abyssal_seal", "pneumatic_seal"], "name_zh": "拍浪海豹", "name_en": "The Clapping Seal", "class_archetype": "武術家 (Monk)"},
+				{"race_id": "raven", "aliases": ["armillary_raven", "astronomer_raven", "horologist_raven", "celestial_raven"], "name_zh": "星儀渡鴉", "name_en": "The Armillary Raven", "class_archetype": "法師 (Mage)"}
 			]
 		}
 	}
