@@ -3946,8 +3946,8 @@
    "id": "soul-auto-equip",
    "cat": "遊戲",
    "title": "聚魂殿一鍵配置最佳戰魂",
-   "status": "草稿",
-   "note": "已建立項目",
+   "status": "測試中",
+   "note": "已完成開發與單元/整合測試，送審 sideqa",
    "keys": [
     "聚魂殿一鍵配置最"
    ]
