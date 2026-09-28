@@ -71,17 +71,26 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3. 全量 43 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/swan 保持零佔位圖（僅保留 .gitkeep）
+# 4. 驗證 7 大槽位切片已就緒，且 poses/swan 保持零佔位圖（僅保留 .gitkeep）
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/swan")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
+expected_slices = {
+    "back_curio": ["curio_swan_spring_steel_ballet_wings.png", "curio_swan_spring_steel_ballet_wings_512.png"],
+    "chassis": ["chassis_swan_silver_enamel_default.png", "chassis_swan_silver_enamel_default_512.png"],
+    "costume": ["costume_swan_theatre_herald_cuirass.png", "costume_swan_theatre_herald_cuirass_512.png"],
+    "head_unit": ["head_swan_tiara_beak_visor.png", "head_swan_tiara_beak_visor_512.png"],
+    "optic_core": ["face_swan_prismatic_crystal_monocle.png", "face_swan_prismatic_crystal_monocle_512.png"],
+    "weapon": ["weapon_swan_octave_spiral_lance.png", "weapon_swan_octave_spiral_lance_512.png"],
+    "winding_key": ["key_swan_octave_dual_loop_brass.png", "key_swan_octave_dual_loop_brass_512.png"]
+}
 
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"{s_dir} 缺少 .gitkeep"
-    slot_images = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert not slot_images, f"{s_dir} 發現非預期圖片檔案（先行骨架嚴守零佔位圖規則）: {slot_images}"
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/swan")
 assert os.path.isdir(poses_dir), f"poses/swan 目錄不存在: {poses_dir}"
@@ -89,5 +98,5 @@ assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/swan 缺少 .
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
 assert not poses_images, f"poses/swan 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-print("✓ 4. 7 大槽位空目錄與 poses/swan 恪守零美術佔位圖（僅保留 .gitkeep）規範")
+print("✓ 4. 7 大槽位切片已全數就緒且 poses/swan 恪守零美術佔位圖（僅保留 .gitkeep）規範")
 print("=== 0-QA30 查驗 100% 通過！ ===")
