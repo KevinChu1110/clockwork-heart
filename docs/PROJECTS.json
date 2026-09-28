@@ -3966,8 +3966,8 @@
    "id": "courser-skeleton",
    "cat": "遊戲",
    "title": "第三十七族鐵蹄駿駒(courser)資料表骨架與空目錄先行建置",
-   "status": "測試中",
-   "note": "完成資料表骨架與空目錄建置，測試全數通過，送審 sideqa",
+   "status": "已上線",
+   "note": "sideqa 已審核通過 (t_f3e823e3 done)，kanban 顯示 done",
    "keys": [
     "第三十七族鐵蹄駿"
    ]
