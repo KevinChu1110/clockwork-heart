@@ -71,7 +71,7 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3. 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位切片已就緒，且 poses/armadillo 保持零佔位圖（僅保留 .gitkeep）
+# 4. 驗證 7 大槽位切片已就緒，且 poses/armadillo 保持零佔位圖（僅保留 .gitkeep 與正式 6 姿勢雙規格）
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/armadillo")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
@@ -96,7 +96,9 @@ poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/armadillo"
 assert os.path.isdir(poses_dir), f"poses/armadillo 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/armadillo 缺少 .gitkeep"
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
-assert not poses_images, f"poses/armadillo 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
+valid_poses = {f"{p}{s}.png" for p in ["idle", "telegraph", "attack", "recover", "skill", "hit"] for s in ["", "_512"]}
+unexpected_poses = [fn for fn in poses_images if fn not in valid_poses]
+assert not unexpected_poses, f"poses/armadillo 發現非預期圖片檔案（違反零佔位圖規則）: {unexpected_poses}"
 
-print("✓ 4. 7 大槽位切片已全數就緒且 poses/armadillo 恪守零美術佔位圖（僅保留 .gitkeep）規範")
+print("✓ 4. 7 大槽位切片已全數就緒且 poses/armadillo 恪守零美術佔位圖規範")
 print("=== 0-QA30 查驗 100% 通過！ ===")
