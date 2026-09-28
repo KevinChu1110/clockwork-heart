@@ -3931,6 +3931,56 @@
    "keys": [
     "第三十五族稜鏡孔"
    ]
+  },
+  {
+   "id": "meerkat-skeleton",
+   "cat": "遊戲",
+   "title": "第三十六族沙哨狐獴資料表骨架與空目錄先行建置",
+   "status": "已上線",
+   "note": "審查通過（t_77520a09）",
+   "keys": [
+    "第三十六族沙哨狐"
+   ]
+  },
+  {
+   "id": "soul-auto-equip",
+   "cat": "遊戲",
+   "title": "聚魂殿一鍵配置最佳戰魂",
+   "status": "已上線",
+   "note": "sideqa 已審核通過 (t_98f3e112 done)",
+   "keys": [
+    "聚魂殿一鍵配置最"
+   ]
+  },
+  {
+   "id": "courser-proposal",
+   "cat": "世界觀",
+   "title": "第三十七族鐵蹄駿駒紙娃娃角色設計提案",
+   "status": "已上線",
+   "note": "文件已在 main，狀態補正",
+   "keys": [
+    "第三十七族鐵蹄駿"
+   ]
+  },
+  {
+   "id": "courser-skeleton",
+   "cat": "遊戲",
+   "title": "第三十七族鐵蹄駿駒(courser)資料表骨架與空目錄先行建置",
+   "status": "已上線",
+   "note": "sideqa 已審核通過 (t_f3e823e3 done)，kanban 顯示 done",
+   "keys": [
+    "第三十七族鐵蹄駿"
+   ]
+  },
+  {
+   "id": "beaver-proposal",
+   "cat": "世界觀",
+   "title": "第三十八族劈木河狸紙娃娃角色設計提案",
+   "status": "測試中",
+   "note": "完成劈木河狸設計提案三份文件，待審核",
+   "keys": [
+    "第三十八族劈木河"
+   ]
   }
  ]
 }

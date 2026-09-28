@@ -799,6 +799,8 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"bat": "mist_darts",
 	"gorilla": "wrap_gloves",
 	"peacock": "shard_focus",
+	"meerkat": "flint_gun",
+	"courser": "rusty_blade",
 }
 
 
@@ -843,6 +845,8 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"bat": default_name = "星翼蝙蝠"
 		"gorilla": default_name = "鋼臂巨猩"
 		"peacock": default_name = "稜鏡孔雀"
+		"meerkat": default_name = "沙哨狐獴"
+		"courser": default_name = "鐵蹄駿駒"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
