@@ -4196,8 +4196,8 @@
    "id": "swan-skeleton",
    "cat": "遊戲",
    "title": "第四十三族旋音天鵝(swan)資料表骨架與空目錄先行建置",
-   "status": "測試中",
-   "note": "骨架與空目錄建置完成，無頭測試全綠，送交 sideqa 審查 (t_bf80a0ec)",
+   "status": "已上線",
+   "note": "第四十三族旋音天鵝骨架合進 main (t_bf80a0ec)",
    "keys": [
     "第四十三族旋音天"
    ]
