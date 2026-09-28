@@ -4436,8 +4436,8 @@
    "id": "armadillo-combat-poses",
    "cat": "遊戲",
    "title": "第四十九族熔鎧犰狳(armadillo)六大戰鬥姿勢補齊",
-   "status": "開發中",
-   "note": "開始補齊第四十九族熔鎧犰狳六大戰鬥姿勢",
+   "status": "測試中",
+   "note": "六大戰鬥姿態雙規格補齊，測試全綠，送審 sideqa",
    "keys": [
     "第四十九族熔鎧犰"
    ]
