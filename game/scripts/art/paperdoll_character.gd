@@ -8,6 +8,7 @@ extends Node2D
 
 signal character_rendered(race: String, slot_selections: Dictionary)
 
+const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 const CANVAS_DEFAULT_WIDTH := 128
 const CANVAS_DEFAULT_HEIGHT := 128
 const ROOT_ANCHOR_DEFAULT := Vector2(64, 120)

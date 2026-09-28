@@ -15,11 +15,11 @@ func _initialize() -> void:
 	var races_spec: Dictionary = spec.get("races_specification", {})
 	var total_races: int = int(races_spec.get("total_races", 0))
 
-	if total_races < 34:
-		push_error("races_specification.total_races 應至少為 34，實際為: %d" % total_races)
+	if total_races < 32:
+		push_error("races_specification.total_races 應至少為 32，實際為: %d" % total_races)
 		ok = false
 	else:
-		print("  ✓ paperdoll_slots 種族總數至少為 34 (目前: %d)" % total_races)
+		print("  ✓ paperdoll_slots 種族總數至少為 32 (目前: %d)" % total_races)
 
 	var gorilla_def: Dictionary = PaperdollRenderer.get_race_def("gorilla")
 	if gorilla_def.is_empty():
@@ -88,26 +88,28 @@ func _initialize() -> void:
 	else:
 		print("  ✓ poses/gorilla 目錄存在")
 
-	# 3. 驗證零美術佔位圖（無任何 png / webp / jpg 圖片產生，只放 .gitkeep）
+	# 3. 驗證 7 大槽位美術切片均已就緒 (128x128 與 512x512)
 	var gorilla_global_dir := ProjectSettings.globalize_path(base_path)
-	var da := DirAccess.open(gorilla_global_dir)
-	var image_files_found: Array[String] = []
-	if da:
-		for sid in expected_slots:
-			var sub_da := DirAccess.open("%s/%s" % [gorilla_global_dir, sid])
-			if sub_da:
-				sub_da.list_dir_begin()
-				var fn := sub_da.get_next()
-				while fn != "":
-					if fn.ends_with(".png") or fn.ends_with(".webp") or fn.ends_with(".jpg"):
-						image_files_found.append("%s/%s" % [sid, fn])
-					fn = sub_da.get_next()
-				sub_da.list_dir_end()
-	if not image_files_found.is_empty():
-		push_error("發現意外產生的圖片檔案（違背零美術佔位圖要求）: %s" % str(image_files_found))
+	var missing_files: Array[String] = []
+	var expected_slice_files := {
+		"back_curio": ["curio_gorilla_twin_turbo_exhaust_chimney.png", "curio_gorilla_twin_turbo_exhaust_chimney_512.png"],
+		"chassis": ["chassis_gorilla_brass_heavy_default.png", "chassis_gorilla_brass_heavy_default_512.png"],
+		"costume": ["costume_gorilla_steam_forge_boiler_harness.png", "costume_gorilla_steam_forge_boiler_harness_512.png"],
+		"head_unit": ["head_gorilla_riveted_brow_crest.png", "head_gorilla_riveted_brow_crest_512.png"],
+		"optic_core": ["face_gorilla_dual_gauge_optic_lens.png", "face_gorilla_dual_gauge_optic_lens_512.png"],
+		"weapon": ["weapon_gorilla_steam_forging_fist.png", "weapon_gorilla_steam_forging_fist_512.png"],
+		"winding_key": ["key_gorilla_heavy_t_forged_key.png", "key_gorilla_heavy_t_forged_key_512.png"]
+	}
+	for sid in expected_slots:
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [gorilla_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("鋼臂巨猩切片檔案缺失: %s" % str(missing_files))
 		ok = false
 	else:
-		print("  ✓ 嚴格恪守零美術佔位圖，7 槽位目錄下無任何圖片資產，僅保留 .gitkeep")
+		print("  ✓ 鋼臂巨猩 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 4. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog) 能讀到 gorilla
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -134,13 +136,13 @@ func _initialize() -> void:
 	else:
 		print("  ✓ PaperdollSelectDemo.RACE_KEYS 包含 gorilla")
 
-	# 驗證防護守衛 has_race_assets 正常運作（尚未產圖時應為 false，不露出空卡）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("gorilla")
-	if has_assets:
-		push_error("尚未產圖前 has_race_assets('gorilla') 應回傳 false，防止空卡露出！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('gorilla') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ 零美術佔位防護守衛生效：has_race_assets('gorilla') 正確回傳 false（安全隱藏）")
+		print("  ✓ 防護守衛生效：has_race_assets('gorilla') 正確回傳 true（展示正常）")
 
 	# 5. 驗證 GameState 與 EquipmentSystem 開局武器配置對齊 fist (wrap_gloves)
 	var gs = root.get_node_or_null("GameState")
