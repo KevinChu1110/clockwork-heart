@@ -403,6 +403,24 @@
             "name": "高密度聚合物平頭抗衝擊素體",
             "race": "badger",
             "tier": "common"
+          },
+          {
+            "id": "chassis_capybara_porcelain_timber_default",
+            "name": "溫潤青瓷椴木禪意底盤",
+            "race": "capybara",
+            "tier": "common"
+          },
+          {
+            "id": "chassis_woodpecker_tinplate_brass_default",
+            "name": "鍍鎳鐵皮黃銅高剛性素體底盤",
+            "race": "woodpecker",
+            "tier": "common"
+          },
+          {
+            "id": "chassis_armadillo_crucible_iron_default",
+            "name": "耐火鑄鐵球鉸素體底盤",
+            "tier": "common",
+            "race": "armadillo"
           }
         ]
       },
@@ -701,6 +719,24 @@
             "name": "平頭防暴沖壓護額",
             "race": "badger",
             "tier": "common"
+          },
+          {
+            "id": "head_capybara_zen_monk_cowl_hat",
+            "name": "天元禪修竹笠斗笠",
+            "race": "capybara",
+            "tier": "common"
+          },
+          {
+            "id": "head_woodpecker_scarlet_crest_cowl",
+            "name": "振律多巴胺亮紅散熱冠羽頭盔",
+            "race": "woodpecker",
+            "tier": "common"
+          },
+          {
+            "id": "head_armadillo_quenched_visor_cowl",
+            "name": "黑曜淬火面甲頭盔",
+            "tier": "common",
+            "race": "armadillo"
           }
         ]
       },
@@ -950,6 +986,21 @@
           {
             "id": "key_badger_four_vane_antenna_gold",
             "name": "四葉天線金黃發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_capybara_bamboo_dual_ring_gold",
+            "name": "三葉竹節雙環金黃發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_woodpecker_high_frequency_percussion_key",
+            "name": "雙葉調速高頻音叉發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_armadillo_crucible_four_leaf_key",
+            "name": "四葉散熱鍛造發條鑰匙",
             "tier": "common"
           }
         ]
@@ -1302,6 +1353,24 @@
             "name": "軌道高抗衝擊防護工裝",
             "race": "badger",
             "tier": "common"
+          },
+          {
+            "id": "costume_capybara_tea_ceremony_wrap",
+            "name": "道場茶道防塵練功袍",
+            "race": "capybara",
+            "tier": "common"
+          },
+          {
+            "id": "costume_woodpecker_skyspire_inspector_harness",
+            "name": "摩天工坊高空巡檢鉚接工裝",
+            "race": "woodpecker",
+            "tier": "common"
+          },
+          {
+            "id": "costume_armadillo_foundry_anvil_cuirass",
+            "name": "熔爐鐵砧重裝板甲",
+            "tier": "common",
+            "race": "armadillo"
           }
         ]
       },
@@ -1591,6 +1660,24 @@
             "name": "琥珀點陣 LED 護目面罩",
             "race": "badger",
             "tier": "common"
+          },
+          {
+            "id": "face_capybara_amber_zen_lens",
+            "name": "安詳微瞇琥珀石英目鏡",
+            "race": "capybara",
+            "tier": "common"
+          },
+          {
+            "id": "face_woodpecker_precision_gauge_monocle",
+            "name": "同軸同心圓測振壓力目鏡",
+            "race": "woodpecker",
+            "tier": "common"
+          },
+          {
+            "id": "face_armadillo_amber_refractory_lens",
+            "name": "琥珀耐熱石英目鏡",
+            "tier": "common",
+            "race": "armadillo"
           }
         ]
       },
@@ -1887,6 +1974,24 @@
             "name": "逐星裂空機關爪",
             "weapon_type": "claw",
             "tier": "common"
+          },
+          {
+            "id": "weapon_capybara_serene_taiji_crystal",
+            "name": "澄心太極護體靈晶",
+            "weapon_type": "crystal",
+            "tier": "common"
+          },
+          {
+            "id": "weapon_woodpecker_resonance_pneumatic_heavy_gun",
+            "name": "振律重型氣動火銃",
+            "weapon_type": "gun",
+            "tier": "common"
+          },
+          {
+            "id": "weapon_armadillo_black_iron_heavy_sword",
+            "name": "玄鐵重破大劍",
+            "tier": "common",
+            "weapon_type": "sword"
           }
         ]
       },
@@ -2186,13 +2291,31 @@
             "name": "雙聯冷氣反推推進背包",
             "race": "badger",
             "tier": "common"
+          },
+          {
+            "id": "curio_capybara_steaming_tea_kettle_backpack",
+            "name": "地熱竹香茶爐背包",
+            "race": "capybara",
+            "tier": "common"
+          },
+          {
+            "id": "curio_woodpecker_riveted_tinplate_prop_tail",
+            "name": "鋼板沖壓三角抗震支撐尾板",
+            "race": "woodpecker",
+            "tier": "common"
+          },
+          {
+            "id": "curio_armadillo_segmented_cast_iron_carapace",
+            "name": "多節沖壓鑄鐵散熱背甲",
+            "tier": "common",
+            "race": "armadillo"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 46,
+    "total_races": 49,
     "races": [
       {
         "race_id": "rabbit",
@@ -5440,6 +5563,229 @@
           "portrait_dialogue": "game/assets/sprites/portraits/starbreaker_badger.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/badger/{slot_id}/{item_id}.png [既有]"
         }
+      },
+      {
+        "race_id": "capybara",
+        "aliases": [
+          "serene_capybara",
+          "zen_capybara",
+          "clockwork_capybara",
+          "crystal_capybara"
+        ],
+        "name_zh": "澄心水豚",
+        "name_en": "The Serene Capybara",
+        "class_archetype": "法師 (Mage)",
+        "origin_realm": "R09 竹影道場·天元竹林 / Bamboo Grove: Zen Puppet Dojo",
+        "lore_anchor": "漫步於竹影道場·天元竹林「發條天元竹海」與「青石武鬥古道場·演武坪」，巡防「山門竹煙茶舍」、「飛瀑木簧水碓」、「古老重型零件輸送翻斗軌道·竹林終端站」、「晨曦天軌 9 號演武道場月台」、「凌雲青竹懸索天梯·道場總站」、「天元雲海風帆渡口」與「翠竹彈力阻尼編織網」，並駐守「山門竹煙茶舍」，配合陶瓷熊貓武僧、木雕竹葉青蛇、演武木人童子、煮茶發條偶·阿茶與醉步發條武鬥熊貓·阿波泰坦；通體覆蓋溫潤生漆象牙白青瓷板件與高剛性打磨椴木、天元禪修竹笠斗笠、三葉竹節雙環金黃發條鑰匙、道場茶道防塵練功袍、安詳微瞇琥珀石英目鏡、地熱竹香茶爐背包，右手單持專屬澄心太極護體靈晶，以太極流體阻尼化勁、活得久耗得起、安詳定力織盾成刃見長的天元竹海禪意護盾法師",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (古典東方發條茶道伺服機械偶、浴盆發條水豚動作玩偶與禪意斗笠剪影)",
+          "posture": "側身 45 度穩健立正，雙足穩踏地面，身形微微下沉，右手掌心微托懸浮之澄心太極護體靈晶，左掌微屈結定心禪印，神情安詳恬淡，背後茶爐背包裊裊吐出一縷白煙，三葉竹節發條鑰匙勻速自轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "天然椴木精雕方鈍面罩與雙孔微型黃銅排氣水閥，眼窩精準挖空中空，臉頰兩側帶有珊瑚粉微型散熱孔",
+          "ears": "沖壓半圓黃銅回音小耳廓，內置微型音叉片，隨聲波微幅震顫",
+          "torso_and_limbs": "象牙米白青瓷板件（#FFFDF8）與打磨椴木複合榫卯結構，腹部嵌裝高透石英視窗可見黃銅平衡陀；四肢短粗沉穩外露純平黃銅螺栓與球窩關節",
+          "tail": "扁平圓形黃銅減速陀飛輪洩壓蓋，表面平雕太極游絲紋路，內裝微型平衡陀維持重心，無生物肉質尾",
+          "weapon_system": "右手單持專屬「澄心太極護體靈晶（Serene Taiji Shield Crystal）」，八角青玉盤嵌裝雙同軸反向旋轉黃銅太極齒輪環與浮空玉刃，完全符合 0-MKT7 與 mage/crystal 體系，底層掛載 equipment.json 既有 prism_scepter (tier 3) 與 shard_focus (tier 1)"
+        },
+        "color_palette": {
+          "primary": "#FFFDF8 (基底象牙奶油白，青瓷面甲、胸膛主色與道場練功袍裡襯)",
+          "secondary": "#4ED86A (主色竹翠綠，澄心太極靈晶本體、青瓷漸層釉色與斗笠邊緣飾線)",
+          "brass_gear": "#FFD028 (裝飾多巴胺金黃，三葉竹節發條鑰匙、靈晶黃銅太極外環與目鏡)",
+          "accent_gold": "#FFA010 (裝飾暖橘，斗笠頂部發條小金橘配重塊、茶道結飾與茶爐火苗透鏡)",
+          "core_cyan": "#38A0FF (提神天藍，靈晶運轉光暈、目鏡施法高光與清泉法陣符文)",
+          "blush_coral": "#FF5E8A (腮紅珊瑚粉，鼻吻兩側微型散熱孔與茶道服領口結繩)",
+          "outline": "#1F1A3A (深暖褐/深藍紫手繪立體外輪廓描邊，確保明亮清爽零泥土髒黑)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_capybara.png (品牌形象立牌)",
+              "web/media/hero/char_capybara.png (官網英雄展示立繪)",
+              "docs/art/serene_capybara_concept.png (概念立繪)",
+              "game/assets/sprites/player/capybara_idle.png (64x64 待機)",
+              "game/assets/sprites/player/capybara_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/capybara_idle.png (隊伍待機)",
+              "web/media/hero/capybara_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/capybara_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/capybara_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/capybara_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/capybara_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/capybara_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/capybara_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/capybara/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/capybara.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/capybara_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/serene_capybara.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/capybara/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_capybara.png (420x840 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/serene_capybara_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_capybara.png (420x840 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/capybara_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/capybara_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/capybara_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/capybara_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/capybara_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/capybara_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/capybara_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/capybara/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/capybara.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/serene_capybara.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/capybara/{slot_id}/{item_id}.png [待產出]"
+        }
+      },
+      {
+        "race_id": "woodpecker",
+        "aliases": [
+          "resonance_woodpecker",
+          "percussion_woodpecker",
+          "clockwork_woodpecker",
+          "brass_woodpecker"
+        ],
+        "name_zh": "振律啄木鳥",
+        "name_en": "The Resonance Woodpecker",
+        "class_archetype": "遊俠 (Ranger)",
+        "origin_realm": "R04 黃銅都市·巨輪城 / Brass Metropolis: The Great Cog City",
+        "lore_anchor": "穿行於黃銅都市·巨輪城「摩天齒輪工坊群」與「自律工廠與天街吊橋」，巡檢「高壓蒸氣管道網」、「鎢絲防爆街燈」與「高架重軌引橋·巨輪城站」，駐守「中央動力廣場」，配合總工技師·銅齒、管道巡檢員·小鎢與鋼岳巨象、幽影夜貓、鐵拳袋鼠、鋼臂巨猩、星儀渡鴉與巡管守宮；通體覆蓋沖壓薄鋼板鍍鎳防鏽板件與高剛性冷軋鎢鋼骨架、振律多巴胺亮紅散熱冠羽頭盔、雙葉調速高頻音叉發條鑰匙、摩天工坊高空巡檢鉚接工裝、同軸同心圓測振壓力目鏡、鋼板沖壓三角抗震支撐尾板，右手單持專屬振律重型氣動火銃，以X型雙前雙後對趾磁吸機械爪扣合鋼樑、三角尾板接地抗震鎖死、音頻諧振穿甲高頻點射、超遠距致命狙擊見長的巨輪城摩天工坊高空巡檢火槍遊俠",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (古典鐵皮發條啄木鳥敲擊玩具、鐘錶工坊高頻擒縱測振鳥與高空狙擊手剪影)",
+          "posture": "側身 45 度穩健立正，X 型對趾雙爪咬合地面，身後三角抗震尾板接地支撐，雙手端持振律重型氣動火銃，神情專注冷靜，頭頂猩紅冠羽隨氣壓微微張合，雙葉音叉發條鑰匙勻速自轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "八角截面車削冷軋鎢鋼精密長鑿喙，雙頰帶有雙聯微型排氣孔，眼窩處精準鏤空中空供 optic_core 穿透，頭頂裝配三階層疊式磷銅多巴胺猩紅烤漆彈簧散熱羽片與微型音叉",
+          "ears": "沖壓圓弧黃銅側向測振受音孔，內置高靈敏微型諧振膜片與減震黃銅外罩，無生物耳廓",
+          "torso_and_limbs": "亮面沖壓鍍鎳薄鋼板胸腹外殼（#FFFDF8），腹部嵌圓形高透石英視窗可窺見擒縱調速輪與指針式氣壓表，四肢為高剛性黃銅球鉸鏈",
+          "tail": "三層鉚接加固之冷軋鋼板三角抗震支撐尾板，末端包覆耐磨黑色橡膠緩衝墊，開火時重重接地抵消後坐力，無生物肉質尾",
+          "weapon_system": "右手主持槍身握把扣引扳機、左手托護木防滑握槽專屬「振律重型氣動火銃（Resonance Pneumatic Heavy Gun）」，冷軋鎢鋼八角槍管搭配高壓儲氣筒與多孔消焰散熱針型槍口，完全符合 0-MKT7 與 ranger/gun 體系，底層掛載 equipment.json 既有 flint_gun (tier 1) 與 blackpowder_rifle (tier 2)"
+        },
+        "color_palette": {
+          "base": "#FFFDF8 (基底鍍鎳冷亮銀/象牙白，胸腹主色與面甲受光面)",
+          "primary": "#FFD028 (主色天元黃銅金，雙翼覆羽沖壓銅片、發條鑰匙與機械關節)",
+          "secondary": "#FF5E8A (次色多巴胺鮮亮猩紅，頭頂散熱冠羽、工裝警示條與目鏡同心圓游標)",
+          "accent": "#FFA010 (點綴晨曦暖橘，工裝防墜反光標識與氣閥調速鈕)",
+          "core_cyan": "#38A0FF (提神晴空亮天藍，目鏡光學鍍膜、排氣微光與高頻諧振震波)",
+          "outline": "#1F1A3A (深暖褐/深藍紫手繪立體外輪廓描邊，確保明亮清爽零泥土髒黑)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_woodpecker.png (品牌形象立牌)",
+              "web/media/hero/char_woodpecker.png (官網英雄展示立繪)",
+              "docs/art/resonance_woodpecker_concept.png (概念立繪)",
+              "game/assets/sprites/player/woodpecker_idle.png (64x64 待機)",
+              "game/assets/sprites/player/woodpecker_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/woodpecker_idle.png (隊伍待機)",
+              "web/media/hero/woodpecker_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/woodpecker_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/woodpecker_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/woodpecker_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/woodpecker_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/woodpecker_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/woodpecker_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/woodpecker/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/woodpecker.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/woodpecker_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/resonance_woodpecker.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/woodpecker/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_woodpecker.png (420x840 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/resonance_woodpecker_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_woodpecker.png (420x840 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/woodpecker_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/woodpecker_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/woodpecker_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/woodpecker_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/woodpecker_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/woodpecker_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/woodpecker_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/woodpecker/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/woodpecker.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/resonance_woodpecker.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/woodpecker/{slot_id}/{item_id}.png [待產出]"
+        }
+      },
+      {
+        "race_id": "armadillo",
+        "aliases": [
+          "crucible_armadillo",
+          "molten_armadillo",
+          "quenched_armadillo",
+          "clockwork_armadillo"
+        ],
+        "name_zh": "熔鎧犰狳",
+        "name_en": "The Crucible Armadillo",
+        "class_archetype": "騎士 (Knight)",
+        "origin_realm": "R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano",
+        "lore_anchor": "穿行於赤焰熔爐·鍛造火山「黑曜石淬火神壇」、「金色熔流鐵水池」與「重型鍛造工坊與衝壓懸橋」，巡檢「黃銅洩壓儀表塔」、「黑曜淬火石磚步道」與「晨曦天軌 6 號熔爐重載貨運月台」，駐守「高壓地熱升空彈射井」與「冷卻熔渣重力傾卸滑道」，配合矮人鐵匠大師·重錘布隆、陶土魔像學徒·黏土泥泥與熔爐溫控長老·坩堝老爹；通體覆蓋高耐熱粗獷鑄鐵板件與耐高溫合金彈簧骨架、黑曜淬火面甲頭盔、四葉散熱鍛造發條鑰匙、熔爐鐵砧重裝板甲、琥珀耐熱石英目鏡、多節沖壓鑄鐵散熱背甲，右手單持專屬玄鐵重破大劍，以低重心四點扎地步態、多節沖壓鑄鐵背甲蜷曲反震、霸體蓄能破陣重斬、熔爐鐵砧重裝防禦見長的高溫鍛造火山重裝板甲騎士",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (19 世紀末古典鐵皮發條犰狳自動機與鐘錶工坊抗震滾珠機關偶)",
+          "posture": "側身 45 度穩健扎地，低重心四點立正，身後散熱重尾自然垂地平衡，雙手端持玄鐵重破大劍立於身前，神情沉穩堅毅，四葉散熱發條鑰匙勻速自轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "一體鑄造弧形黑曜淬火防濺面甲，前額覆蓋金黃衝壓防濺鋼檐，眼窩處精準中空中空供 optic_core 穿透，下巴雙向收縮金屬護頰，兩側點綴多巴胺珊瑚粉散熱孔",
+          "ears": "短粗靈巧的折疊黃銅耳鰭，內嵌高溫抗震彈簧與散熱百葉通風孔，無生物耳廓",
+          "torso_and_limbs": "重裝雙層沖壓高耐熱鑄鐵球鉸底盤（#2B2630），腹部包覆耐熱象牙白陶瓷隔熱層（#FFFDF8），四肢為帶矽膠密封圈的黃銅球鉸鏈",
+          "tail": "四節同心金屬套筒串聯而成的靈動多節鑄鐵散熱重尾，末端裝配鈍圓形防撞配重塊，戰鬥中自然貼地吸收後坐力",
+          "weapon_system": "右手主持大劍劍柄、垂直立於身前專屬「玄鐵重破大劍（Black Iron Heavy Greatsword）」，高溫淬火玄鐵鑄鍛劍刃搭配黃銅加厚十字格擋護手，底層掛載 equipment.json 既有 meager_edge (tier 1) 與 iron_blade (tier 2)"
+        },
+        "color_palette": {
+          "base": "#FFFDF8 (基底象牙白陶瓷釉/拋光耐熱鋁鎳合金，腹部隔熱層與關節受光高光)",
+          "primary": "#FFD028 (主色天元黃銅金，甲片外緣包邊、外露鉚釘、發條鑰匙與劍柄護手)",
+          "secondary": "#FFA010 (次色晨曦多巴胺暖橘，面甲目鏡光芒、劍刃淬火高溫紋路與背甲縫隙熱浪流光)",
+          "accent": "#FF5E8A (點綴色多巴胺珊瑚粉，洩壓警示閥門、發條軸承裝飾點與散熱小標記)",
+          "metal": "#2B2630 (深曜石鑄鐵藍黑/消光黑曜石耐火塗料，高階金屬玩具厚重質感)",
+          "outline": "#1F1A3A (深藍紫/深暖褐手繪立體外輪廓描邊，確保明亮清爽零泥土髒黑)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_armadillo.png (品牌形象立牌)",
+              "web/media/hero/char_armadillo.png (官網英雄展示立繪)",
+              "docs/art/crucible_armadillo_concept.png (概念立繪)",
+              "game/assets/sprites/player/armadillo_idle.png (64x64 待機)",
+              "game/assets/sprites/player/armadillo_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/armadillo_idle.png (隊伍待機)",
+              "web/media/hero/armadillo_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/armadillo_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/armadillo_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/armadillo_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/armadillo_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/armadillo_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/armadillo_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/armadillo/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/armadillo.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/armadillo_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/crucible_armadillo.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/armadillo/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_armadillo.png (420x840 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/crucible_armadillo_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_armadillo.png (420x840 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/armadillo_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/armadillo_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/armadillo_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/armadillo_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/armadillo_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/armadillo_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/armadillo_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/armadillo/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/armadillo.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/crucible_armadillo.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/armadillo/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -5487,7 +5833,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 46 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 49 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -5509,7 +5855,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "四十六重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝) 由渲染器微調縮放適配"
+        "rule": "四十九重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲) 由渲染器微調縮放適配"
       }
     ]
   },
@@ -5563,7 +5909,10 @@
         "game/assets/sprites/player/paperdoll/swan/",
         "game/assets/sprites/player/paperdoll/bison/",
         "game/assets/sprites/player/paperdoll/gecko/",
-        "game/assets/sprites/player/paperdoll/badger/"
+        "game/assets/sprites/player/paperdoll/badger/",
+        "game/assets/sprites/player/paperdoll/capybara/",
+        "game/assets/sprites/player/paperdoll/woodpecker/",
+        "game/assets/sprites/player/paperdoll/armadillo/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",

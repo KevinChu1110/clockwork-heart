@@ -789,16 +789,61 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_badger_polymer_space_default", "name_zh": "高密度聚合物平頭抗衝擊素體", "desc": "工程聚合物塑料模組覆深空消光曜黑塗層，背部嵌裝象牙白消光隆脊板件"}
 		]
+	},
+	"capybara": {
+		"id": "capybara",
+		"name_zh": "澄心水豚",
+		"name_en": "The Serene Capybara",
+		"archetype": "法師 (Mage)",
+		"thumb": "res://assets/sprites/player/showcase/capybara_idle_hd.png",
+		"desc": "天元竹林道場禪意護盾法師，溫潤青瓷椴木禪意底盤，天元禪修竹笠斗笠與澄心太極護體靈晶。",
+		"costumes": [
+			{"id": "costume_capybara_tea_ceremony_wrap", "name_zh": "道場茶道防塵練功袍", "desc": "雙層加厚靛藍與米白粗麻禪袍，飾以暖金滾邊與多巴胺珊瑚粉茶道編織結"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現溫潤青瓷椴木禪意底盤與高透石英機芯視窗"}
+		],
+		"chassis": [
+			{"id": "chassis_capybara_porcelain_timber_default", "name_zh": "溫潤青瓷椴木禪意底盤", "desc": "象牙米白青瓷板件與打磨椴木複合榫卯結構，腹部嵌裝高透石英視窗可見黃銅平衡陀"}
+		]
+	},
+	"woodpecker": {
+		"id": "woodpecker",
+		"name_zh": "振律啄木鳥",
+		"name_en": "The Resonance Woodpecker",
+		"archetype": "遊俠 (Ranger)",
+		"thumb": "res://assets/sprites/player/showcase/woodpecker_idle_hd.png",
+		"desc": "巨輪城摩天工坊高空巡檢火槍遊俠，鍍鎳鐵皮黃銅高剛性素體底盤，振律多巴胺亮紅散熱冠羽頭盔與振律重型氣動火銃。",
+		"costumes": [
+			{"id": "costume_woodpecker_skyspire_inspector_harness", "name_zh": "摩天工坊高空巡檢鉚接工裝", "desc": "雙層深灰耐磨帆布背帶與沖壓加固黃銅護胸板，飾有多巴胺亮橘防墜反光標識"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現鍍鎳薄鐵皮與鑄造黃銅素體底盤與高透石英機芯視窗"}
+		],
+		"chassis": [
+			{"id": "chassis_woodpecker_tinplate_brass_default", "name_zh": "鍍鎳鐵皮黃銅高剛性素體底盤", "desc": "沖壓薄鋼板鍍鎳鏡面處理搭配鑄造黃銅骨架，腹部嵌圓形高透石英視窗"}
+		]
+	},
+	"armadillo": {
+		"id": "armadillo",
+		"name_zh": "熔鎧犰狳",
+		"name_en": "The Crucible Armadillo",
+		"archetype": "騎士 (Knight)",
+		"thumb": "res://assets/sprites/player/showcase/armadillo_idle_hd.png",
+		"desc": "赤焰熔爐鍛造神壇重裝板甲騎士，耐火鑄鐵球鉸素體底盤，黑曜淬火面甲頭盔與玄鐵重破大劍。",
+		"costumes": [
+			{"id": "costume_armadillo_foundry_anvil_cuirass", "name_zh": "熔爐鐵砧重裝板甲", "desc": "雙層沖壓鑄鐵護胸板與厚帆布隔熱襯墊，外鑲暖金黃銅防撞護角"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現消光黑曜鑄鐵與黃銅球鉸素體底盤與高透石英機芯視窗"}
+		],
+		"chassis": [
+			{"id": "chassis_armadillo_crucible_iron_default", "name_zh": "耐火鑄鐵球鉸素體底盤", "desc": "高耐熱鑄鐵球鉸底盤搭配黃銅關節環，腹部包覆耐熱象牙白陶瓷隔熱層"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -1298,6 +1343,9 @@ func confirm_selection() -> void:
 				"bison": gs.player_name = "撼地野牛"
 				"gecko": gs.player_name = "巡管守宮"
 				"badger": gs.player_name = "破星蜜獾"
+				"capybara": gs.player_name = "澄心水豚"
+				"woodpecker": gs.player_name = "振律啄木鳥"
+				"armadillo": gs.player_name = "熔鎧犰狳"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)

@@ -4283,16 +4283,6 @@
    ]
   },
   {
-   "id": "bison-slices",
-   "cat": "遊戲",
-   "title": "第四十四族撼地野牛7大部件槽位紙娃娃切片與雙規格資產",
-   "status": "測試中",
-   "note": "完成切片產出與雙規格資產，送審 sideqa",
-   "keys": [
-    "第四十四族撼地野"
-   ]
-  },
-  {
    "id": "bison-combat-poses",
    "cat": "遊戲",
    "title": "第四十四族撼地野牛(bison)六大戰鬥姿態補齊",
@@ -4336,8 +4326,8 @@
    "id": "badger-slices",
    "cat": "遊戲",
    "title": "第四十六族破星蜜獾(badger)7大部件槽位紙娃娃切片與雙規格資產",
-   "status": "測試中",
-   "note": "破星蜜獾 7 大槽位切片與雙規格資產完成，0-ART 稽核與無頭測試全綠，交付審核",
+   "status": "已上線",
+   "note": "破星蜜獾 7 大槽位切片與雙規格資產完成，QA通過合入 main",
    "keys": [
     "第四十六族破星蜜"
    ]
@@ -4353,13 +4343,53 @@
    ]
   },
   {
+   "id": "capybara-skeleton",
+   "cat": "遊戲",
+   "title": "第四十七族澄心水豚(capybara)資料表骨架與空目錄先行建置",
+   "status": "已上線",
+   "note": "骨架與空目錄先行建置完成，無頭測試全綠，合入 main",
+   "keys": [
+    "第四十七族澄心水"
+   ]
+  },
+  {
+   "id": "woodpecker-skeleton",
+   "cat": "遊戲",
+   "title": "第四十八族振律啄木鳥(woodpecker)資料表骨架與空目錄先行建置",
+   "status": "已上線",
+   "note": "骨架與空目錄先行建置完成，無頭測試全綠，合入 main",
+   "keys": [
+    "第四十八族振律啄"
+   ]
+  },
+  {
+   "id": "armadillo-skeleton",
+   "cat": "遊戲",
+   "title": "第四十九族熔鎧犰狳(armadillo)資料表骨架與空目錄先行建置",
+   "status": "已上線",
+   "note": "骨架與空目錄先行建置完成，無頭測試全綠，合入 main",
+   "keys": [
+    "第四十九族熔鎧犰"
+   ]
+  },
+  {
    "id": "badger-combat-poses",
    "cat": "遊戲",
    "title": "第四十六族破星蜜獾(badger)六大戰鬥姿態補齊",
-   "status": "測試中",
-   "note": "六大姿態雙規格齊備，無頭測試全綠，交付審核",
+   "status": "已上線",
+   "note": "六大姿態雙規格齊備，無頭測試全綠，QA通過合入 main",
    "keys": [
     "第四十六族破星蜜"
+   ]
+  },
+  {
+   "id": "qa-round50",
+   "cat": "平台",
+   "title": "探索性 QA 第五十輪：撼地野牛/破星蜜獾/熔鎧犰狳合main後找破圖",
+   "status": "測試中",
+   "note": "探索性 QA 驗證中",
+   "keys": [
+    "探索性 QA 第"
    ]
   }
  ]
