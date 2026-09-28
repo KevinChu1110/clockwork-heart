@@ -3706,8 +3706,8 @@
    "id": "ram-paperdoll",
    "cat": "遊戲",
    "title": "第二十九族星盤靈羊(ram)紙娃娃",
-   "status": "測試中",
-   "note": "第二十九族星盤靈羊(ram)7大槽位切片已產出並通過0-ART/0-QA全稽核，等待sideqa審查",
+   "status": "已上線",
+   "note": "QA過",
    "keys": [
     "第二十九族星盤靈"
    ]
