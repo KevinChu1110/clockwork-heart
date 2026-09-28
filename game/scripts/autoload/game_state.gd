@@ -796,6 +796,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"chameleon": "reed_bow",
 	"sailfish": "ash_spear",
 	"rhino": "notch_axe",
+	"bat": "mist_darts",
 }
 
 
@@ -837,6 +838,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"chameleon": default_name = "幻彩變色龍"
 		"sailfish": default_name = "破浪旗魚"
 		"rhino": default_name = "重角犀牛"
+		"bat": default_name = "星翼蝙蝠"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
