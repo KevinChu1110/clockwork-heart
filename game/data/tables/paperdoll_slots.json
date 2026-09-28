@@ -4145,7 +4145,7 @@
           "game_sprite_battle": "game/assets/sprites/player/peacock_battle.png (128x128) [待產出]",
           "game_sprite_walk": "game/assets/sprites/player/peacock_walk_{0..3}.png (64x64) [待產出]",
           "game_sprite_walk_hi": "game/assets/sprites/player/peacock_walk_{0..3}_x3.png (128x128) [待產出]",
-          "game_action_poses": "game/assets/sprites/player/poses/peacock/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/peacock/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [既有]",
           "portrait_hud": "game/assets/sprites/portraits/peacock.png (128x128) [待產出]",
           "portrait_dialogue": "game/assets/sprites/portraits/prism_peacock.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/peacock/{slot_id}/{item_id}.png [待產出]"

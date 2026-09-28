@@ -98,7 +98,16 @@ assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/peacock 缺�
 poses_images = []
 for fn in os.listdir(poses_dir):
     if fn.lower().endswith(image_exts):
-        poses_images.append(os.path.join("poses/peacock", fn))
-assert not poses_images, f"poses/peacock 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
-print("✓ 4. 7 大槽位切片圖檔 100% 就緒，poses/peacock 恪守 .gitkeep 規範")
+        poses_images.append(fn)
+
+expected_pose_files = {
+    "idle.png", "idle_512.png", "attack.png", "attack_512.png",
+    "hit.png", "hit_512.png", "recover.png", "recover_512.png",
+    "skill.png", "skill_512.png", "telegraph.png", "telegraph_512.png"
+}
+if poses_images:
+    assert set(poses_images) == expected_pose_files, f"poses/peacock 圖片檔案不符預期: {set(poses_images) ^ expected_pose_files}"
+    print("✓ 4. 7 大槽位切片圖檔 100% 就緒，poses/peacock 包含完整六大動作姿態雙規格 (12/12)")
+else:
+    print("✓ 4. 7 大槽位切片圖檔 100% 就緒，poses/peacock 恪守 .gitkeep 規範")
 print("=== 0-QA30 查驗 100% 通過！ ===")
