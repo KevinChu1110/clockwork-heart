@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://j0t6sv4bg2yl"
-path="res://.godot/imported/key_panda_taiji_ruyi_brass_512.png-1e261ba9d854629bc4c26fb4505492fc.ctex"
+path="res://.godot/imported/key_panda_taiji_ruyi_brass_512.png-d64848a7ca9574fdd1f694c755aa8fd4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/panda/winding_key/key_panda_taiji_ruyi_brass_512.png"
-dest_files=["res://.godot/imported/key_panda_taiji_ruyi_brass_512.png-1e261ba9d854629bc4c26fb4505492fc.ctex"]
+source_file="res://assets/paperdoll/panda/winding_key/key_panda_taiji_ruyi_brass_512.png"
+dest_files=["res://.godot/imported/key_panda_taiji_ruyi_brass_512.png-d64848a7ca9574fdd1f694c755aa8fd4.ctex"]
 
 [params]
 

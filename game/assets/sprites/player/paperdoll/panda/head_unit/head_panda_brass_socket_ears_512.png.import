@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dvas577je2aq3"
-path="res://.godot/imported/head_panda_brass_socket_ears_512.png-4b3d762a35c42f2ab9a867aa1c71718a.ctex"
+path="res://.godot/imported/head_panda_brass_socket_ears_512.png-47011ac9b73b136c71ff03ef4fd02cd9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/panda/head_unit/head_panda_brass_socket_ears_512.png"
-dest_files=["res://.godot/imported/head_panda_brass_socket_ears_512.png-4b3d762a35c42f2ab9a867aa1c71718a.ctex"]
+source_file="res://assets/paperdoll/panda/head_unit/head_panda_brass_socket_ears_512.png"
+dest_files=["res://.godot/imported/head_panda_brass_socket_ears_512.png-47011ac9b73b136c71ff03ef4fd02cd9.ctex"]
 
 [params]
 

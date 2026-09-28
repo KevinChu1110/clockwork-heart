@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://sgu7c144yhvl"
-path="res://.godot/imported/curio_otter_articulated_rudder_tail_512.png-e23534ed5eb2033374e57d6ee6a1f730.ctex"
+path="res://.godot/imported/curio_otter_articulated_rudder_tail_512.png-88a4970b93721f1a49a050376a47537e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/otter/back_curio/curio_otter_articulated_rudder_tail_512.png"
-dest_files=["res://.godot/imported/curio_otter_articulated_rudder_tail_512.png-e23534ed5eb2033374e57d6ee6a1f730.ctex"]
+source_file="res://assets/paperdoll/otter/back_curio/curio_otter_articulated_rudder_tail_512.png"
+dest_files=["res://.godot/imported/curio_otter_articulated_rudder_tail_512.png-88a4970b93721f1a49a050376a47537e.ctex"]
 
 [params]
 

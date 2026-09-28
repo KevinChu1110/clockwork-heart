@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://jhg4bffk0qrm"
-path="res://.godot/imported/paint_panda_porcelain.png-fdad0eb563484c16e52f1096cd886f0c.ctex"
+path="res://.godot/imported/paint_panda_porcelain.png-5749ee483118fe8db2251e5be7235932.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/panda/chassis/paint_panda_porcelain.png"
-dest_files=["res://.godot/imported/paint_panda_porcelain.png-fdad0eb563484c16e52f1096cd886f0c.ctex"]
+source_file="res://assets/paperdoll/panda/chassis/paint_panda_porcelain.png"
+dest_files=["res://.godot/imported/paint_panda_porcelain.png-5749ee483118fe8db2251e5be7235932.ctex"]
 
 [params]
 

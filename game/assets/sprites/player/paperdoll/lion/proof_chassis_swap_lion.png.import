@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://neu2ohavjtlm"
-path="res://.godot/imported/proof_chassis_swap_lion.png-a78291c4cd9839e3c14d104e2e670e80.ctex"
+path="res://.godot/imported/proof_chassis_swap_lion.png-0779c2670dbf22ba4fcc3f6cf4461607.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/proof_chassis_swap_lion.png"
-dest_files=["res://.godot/imported/proof_chassis_swap_lion.png-a78291c4cd9839e3c14d104e2e670e80.ctex"]
+source_file="res://assets/paperdoll/lion/proof_chassis_swap_lion.png"
+dest_files=["res://.godot/imported/proof_chassis_swap_lion.png-0779c2670dbf22ba4fcc3f6cf4461607.ctex"]
 
 [params]
 

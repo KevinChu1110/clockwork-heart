@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drot7hrv2meij"
-path="res://.godot/imported/proof_paperdoll_panda_composite.png-388014cb1b9bd0d375ecd83b9b49d80e.ctex"
+path="res://.godot/imported/proof_paperdoll_panda_composite.png-8a80c78ae9ef3def1a2a4ebd25ded0f5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/panda/proof_paperdoll_panda_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_panda_composite.png-388014cb1b9bd0d375ecd83b9b49d80e.ctex"]
+source_file="res://assets/paperdoll/panda/proof_paperdoll_panda_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_panda_composite.png-8a80c78ae9ef3def1a2a4ebd25ded0f5.ctex"]
 
 [params]
 

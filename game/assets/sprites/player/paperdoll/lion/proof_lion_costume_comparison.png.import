@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://beo6bln5hcxgb"
-path="res://.godot/imported/proof_lion_costume_comparison.png-4ed91500689a269fa112d19b6f119288.ctex"
+path="res://.godot/imported/proof_lion_costume_comparison.png-9c420fd231530022f20e79db57c4ed75.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/proof_lion_costume_comparison.png"
-dest_files=["res://.godot/imported/proof_lion_costume_comparison.png-4ed91500689a269fa112d19b6f119288.ctex"]
+source_file="res://assets/paperdoll/lion/proof_lion_costume_comparison.png"
+dest_files=["res://.godot/imported/proof_lion_costume_comparison.png-9c420fd231530022f20e79db57c4ed75.ctex"]
 
 [params]
 

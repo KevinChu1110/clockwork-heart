@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c25bj4yehy33g"
-path="res://.godot/imported/weapon_owl_armillary_escapement_scepter.png-e3f7d3b2a4041f605a0a660d7c571e16.ctex"
+path="res://.godot/imported/weapon_owl_armillary_escapement_scepter.png-68de659efe1a288585b671f96440fdd4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/owl/weapon/weapon_owl_armillary_escapement_scepter.png"
-dest_files=["res://.godot/imported/weapon_owl_armillary_escapement_scepter.png-e3f7d3b2a4041f605a0a660d7c571e16.ctex"]
+source_file="res://assets/paperdoll/owl/weapon/weapon_owl_armillary_escapement_scepter.png"
+dest_files=["res://.godot/imported/weapon_owl_armillary_escapement_scepter.png-68de659efe1a288585b671f96440fdd4.ctex"]
 
 [params]
 

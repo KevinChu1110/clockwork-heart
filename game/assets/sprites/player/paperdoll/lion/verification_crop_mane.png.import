@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pk6v0v805hym"
-path="res://.godot/imported/verification_crop_mane.png-b7d7db37f380d545c8259f8e0b90e1cc.ctex"
+path="res://.godot/imported/verification_crop_mane.png-7d7b795794f93a5d653d91486c266065.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/verification_crop_mane.png"
-dest_files=["res://.godot/imported/verification_crop_mane.png-b7d7db37f380d545c8259f8e0b90e1cc.ctex"]
+source_file="res://assets/paperdoll/lion/verification_crop_mane.png"
+dest_files=["res://.godot/imported/verification_crop_mane.png-7d7b795794f93a5d653d91486c266065.ctex"]
 
 [params]
 

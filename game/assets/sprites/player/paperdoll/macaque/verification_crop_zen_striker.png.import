@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b5q7a2jom074r"
-path="res://.godot/imported/verification_crop_zen_striker.png-b6136c8cb2cc727c9cd7f2915928fe38.ctex"
+path="res://.godot/imported/verification_crop_zen_striker.png-9f5c9c4849460172bdc5cfa3aee6b3fc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/verification_crop_zen_striker.png"
-dest_files=["res://.godot/imported/verification_crop_zen_striker.png-b6136c8cb2cc727c9cd7f2915928fe38.ctex"]
+source_file="res://assets/paperdoll/macaque/verification_crop_zen_striker.png"
+dest_files=["res://.godot/imported/verification_crop_zen_striker.png-9f5c9c4849460172bdc5cfa3aee6b3fc.ctex"]
 
 [params]
 
