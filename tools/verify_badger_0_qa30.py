@@ -71,17 +71,26 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3. 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/badger 保持零佔位圖（僅保留 .gitkeep）
+# 4. 驗證 7 大槽位切片已就緒，且 poses/badger 保持零佔位圖（僅保留 .gitkeep）
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/badger")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
+expected_slices = {
+    "back_curio": ["curio_badger_dual_coldgas_reaction_thruster.png", "curio_badger_dual_coldgas_reaction_thruster_512.png"],
+    "chassis": ["chassis_badger_polymer_space_default.png", "chassis_badger_polymer_space_default_512.png"],
+    "costume": ["costume_badger_eva_heavy_harness.png", "costume_badger_eva_heavy_harness_512.png"],
+    "head_unit": ["head_badger_flathead_ballistic_visor.png", "head_badger_flathead_ballistic_visor_512.png"],
+    "optic_core": ["face_badger_amber_led_matrix_visor.png", "face_badger_amber_led_matrix_visor_512.png"],
+    "weapon": ["weapon_badger_starbreaker_ripper_claw.png", "weapon_badger_starbreaker_ripper_claw_512.png"],
+    "winding_key": ["key_badger_four_vane_antenna_gold.png", "key_badger_four_vane_antenna_gold_512.png"]
+}
 
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"{s_dir} 缺少 .gitkeep"
-    slot_images = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert not slot_images, f"{s_dir} 發現非預期圖片檔案（先行骨架嚴守零佔位圖規則）: {slot_images}"
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/badger")
 assert os.path.isdir(poses_dir), f"poses/badger 目錄不存在: {poses_dir}"
@@ -89,5 +98,5 @@ assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/badger 缺少
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
 assert not poses_images, f"poses/badger 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-print("✓ 4. 7 大槽位空目錄與 poses/badger 恪守零美術佔位圖（僅保留 .gitkeep）規範")
+print("✓ 4. 7 大槽位切片已全數就緒且 poses/badger 恪守零美術佔位圖（僅保留 .gitkeep）規範")
 print("=== 0-QA30 查驗 100% 通過！ ===")
