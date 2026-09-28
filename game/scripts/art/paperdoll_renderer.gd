@@ -143,7 +143,7 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		if ResourceLoader.exists(common_slice_clean) or FileAccess.file_exists(common_slice_clean):
 			return common_slice_clean
 		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限四十四重大正式族系）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo"]
 		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
 			for other in all_races:
 				if str(other) == rid:
@@ -340,6 +340,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "chassis_capybara_porcelain_timber_default"
 			elif race == "woodpecker":
 				return "chassis_woodpecker_tinplate_brass_default"
+			elif race == "armadillo":
+				return "chassis_armadillo_crucible_iron_default"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -436,6 +438,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_capybara_zen_monk_cowl_hat"
 			elif race == "woodpecker":
 				return "head_woodpecker_scarlet_crest_cowl"
+			elif race == "armadillo":
+				return "head_armadillo_quenched_visor_cowl"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -524,6 +528,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_capybara_bamboo_dual_ring_gold"
 			elif race == "woodpecker":
 				return "key_woodpecker_high_frequency_percussion_key"
+			elif race == "armadillo":
+				return "key_armadillo_crucible_four_leaf_key"
 			elif race == "fox":
 				return ""
 			return "key_classic_brass"
@@ -622,6 +628,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_capybara_tea_ceremony_wrap"
 			elif race == "woodpecker":
 				return "costume_woodpecker_skyspire_inspector_harness"
+			elif race == "armadillo":
+				return "costume_armadillo_foundry_anvil_cuirass"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -712,6 +720,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "face_capybara_amber_zen_lens"
 			elif race == "woodpecker":
 				return "face_woodpecker_precision_gauge_monocle"
+			elif race == "armadillo":
+				return "face_armadillo_amber_refractory_lens"
 			elif race == "boar":
 				return "core_molten_crimson"
 			return "core_cyan_emerald"
@@ -810,6 +820,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "weapon_capybara_serene_taiji_crystal"
 			elif race == "woodpecker":
 				return "weapon_woodpecker_resonance_pneumatic_heavy_gun"
+			elif race == "armadillo":
+				return "weapon_armadillo_black_iron_heavy_sword"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -906,6 +918,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_capybara_steaming_tea_kettle_backpack"
 			elif race == "woodpecker":
 				return "curio_woodpecker_riveted_tinplate_prop_tail"
+			elif race == "armadillo":
+				return "curio_armadillo_segmented_cast_iron_carapace"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -1153,7 +1167,7 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
@@ -1767,7 +1781,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "gecko", "aliases": ["conduit_gecko", "clockwork_gecko", "brass_gecko", "wallrunner_gecko"], "name_zh": "巡管守宮", "name_en": "The Conduit Gecko", "class_archetype": "忍者 (Ninja)"},
 				{"race_id": "badger", "aliases": ["starbreaker_badger", "astral_badger", "clockwork_badger", "space_badger"], "name_zh": "破星蜜獾", "name_en": "The Starbreaker Honey Badger", "class_archetype": "武術家 (Monk)"},
 				{"race_id": "capybara", "aliases": ["serene_capybara", "zen_capybara", "clockwork_capybara", "crystal_capybara"], "name_zh": "澄心水豚", "name_en": "The Serene Capybara", "class_archetype": "法師 (Mage)"},
-				{"race_id": "woodpecker", "aliases": ["resonance_woodpecker", "percussion_woodpecker", "clockwork_woodpecker", "brass_woodpecker"], "name_zh": "振律啄木鳥", "name_en": "The Resonance Woodpecker", "class_archetype": "遊俠 (Ranger)"}
+				{"race_id": "woodpecker", "aliases": ["resonance_woodpecker", "percussion_woodpecker", "clockwork_woodpecker", "brass_woodpecker"], "name_zh": "振律啄木鳥", "name_en": "The Resonance Woodpecker", "class_archetype": "遊俠 (Ranger)"},
+				{"race_id": "armadillo", "aliases": ["crucible_armadillo", "molten_armadillo", "quenched_armadillo", "clockwork_armadillo"], "name_zh": "熔鎧犰狳", "name_en": "The Crucible Armadillo", "class_archetype": "騎士 (Knight)"}
 			]
 		}
 	}
