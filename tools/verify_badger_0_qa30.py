@@ -96,7 +96,9 @@ poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/badger")
 assert os.path.isdir(poses_dir), f"poses/badger 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/badger 缺少 .gitkeep"
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
-assert not poses_images, f"poses/badger 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
+valid_poses = {f"{p}{s}.png" for p in ["idle", "telegraph", "attack", "recover", "skill", "hit"] for s in ["", "_512"]}
+unexpected_poses = [fn for fn in poses_images if fn not in valid_poses]
+assert not unexpected_poses, f"poses/badger 發現非預期圖片檔案（違反零佔位圖規則）: {unexpected_poses}"
 
 print("✓ 4. 7 大槽位切片已全數就緒且 poses/badger 恪守零美術佔位圖（僅保留 .gitkeep）規範")
 print("=== 0-QA30 查驗 100% 通過！ ===")

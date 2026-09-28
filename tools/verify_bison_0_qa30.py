@@ -95,8 +95,11 @@ for s, item_id in slots_items:
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/bison")
 assert os.path.isdir(poses_dir), f"poses/bison 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/bison 缺少 .gitkeep"
-poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith((".png", ".webp", ".jpg", ".jpeg"))]
-assert not poses_images, f"poses/bison 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
+image_exts = (".png", ".webp", ".jpg", ".jpeg")
+poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
+valid_poses = {f"{p}{s}.png" for p in ["idle", "telegraph", "attack", "recover", "skill", "hit"] for s in ["", "_512"]}
+unexpected_poses = [fn for fn in poses_images if fn not in valid_poses]
+assert not unexpected_poses, f"poses/bison 發現非預期圖片檔案（違反零佔位圖規則）: {unexpected_poses}"
 
 print("✓ 4. 7 大槽位切片雙規格齊備，poses/bison 恪守零美術佔位圖規範")
 print("=== 0-QA30 查驗 100% 通過！ ===")

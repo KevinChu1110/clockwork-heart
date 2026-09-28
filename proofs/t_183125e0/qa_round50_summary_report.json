@@ -1,0 +1,318 @@
+{
+  "task_id": "t_183125e0",
+  "title": "探索性 QA 第五十輪：撼野牛/破星蜜獾切片/熔鎧犰狳骨架合main後找破圖",
+  "reviewer": "sideqa (小婷)",
+  "status": "PASS",
+  "total_races": 49,
+  "proofs": {
+    "proof_01_dev_paperdoll_badger_default.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 168647,
+      "md5": "cd9038ec5d652c2f40d80706f825062b"
+    },
+    "proof_02_dev_paperdoll_badger_bare.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 168618,
+      "md5": "1f504d0cdb6b9d5dcd5a39632473c9db"
+    },
+    "proof_03_dev_paperdoll_badger_unarmed.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 160440,
+      "md5": "2fd6604171fbe9d6b65d7e764fe1d907"
+    },
+    "proof_04_badger_512_composite_stage.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 257258,
+      "md5": "901421cdfdaf812e8b5008ab411bc2f6"
+    },
+    "proof_05_dev_paperdoll_bison_default.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 167789,
+      "md5": "70c25a71be6fbec5d3ec8053cdc7467c"
+    },
+    "proof_06_bison_512_composite_stage.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 255466,
+      "md5": "6d5c014ac0e42a58675329aadf4e5621"
+    },
+    "proof_07_badger_combat_poses_stage.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 322405,
+      "md5": "5daa2bf4a1f0a3fff634cfa831e2639a"
+    },
+    "proof_08_bison_combat_poses_stage.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 321318,
+      "md5": "b5fb3593f3d4e8da664abb63fbee734f"
+    },
+    "proof_09_creation_flow_audit_badger_armadillo.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 268571,
+      "md5": "192228cb0bf3844c639642579e05846b"
+    },
+    "proof_10_wardrobe_flow_audit_badger.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 447688,
+      "md5": "6fdac1db289a04fba90f79899cce913c"
+    },
+    "proof_11_battle_flow_audit_badger_and_bison.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 1226706,
+      "md5": "fa1cd6a499fb266da51dbbfec03c6191"
+    },
+    "proof_12_i18n_and_emoji_audit.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 234738,
+      "md5": "8b85e9dd46fd263e1ed2028ffeafee14"
+    }
+  },
+  "crops": {
+    "crop_01_badger_paperdoll_7_slots.png": {
+      "source": "proof_01_dev_paperdoll_badger_default.png",
+      "box": [
+        300,
+        320,
+        520,
+        560
+      ],
+      "size": [
+        220,
+        240
+      ],
+      "md5": "27ebc59c6910fae0746b339b2306a5ac"
+    },
+    "crop_02_badger_bare_chassis.png": {
+      "source": "proof_02_dev_paperdoll_badger_bare.png",
+      "box": [
+        300,
+        320,
+        520,
+        560
+      ],
+      "size": [
+        220,
+        240
+      ],
+      "md5": "47b5c247dbb0352159fdfc2682f0b6f8"
+    },
+    "crop_03_badger_unarmed.png": {
+      "source": "proof_03_dev_paperdoll_badger_unarmed.png",
+      "box": [
+        300,
+        320,
+        520,
+        560
+      ],
+      "size": [
+        220,
+        240
+      ],
+      "md5": "3d5e0d6cb5d1e15f2f828475138694ef"
+    },
+    "crop_04_badger_512_torso.png": {
+      "source": "proof_04_badger_512_composite_stage.png",
+      "box": [
+        120,
+        120,
+        560,
+        580
+      ],
+      "size": [
+        440,
+        460
+      ],
+      "md5": "747ad64e89c343c3ea4801feef2892fb"
+    },
+    "crop_05_bison_paperdoll_7_slots.png": {
+      "source": "proof_05_dev_paperdoll_bison_default.png",
+      "box": [
+        300,
+        320,
+        520,
+        560
+      ],
+      "size": [
+        220,
+        240
+      ],
+      "md5": "8fca9dc11f88bab7b3a219054aad2042"
+    },
+    "crop_06_bison_512_torso.png": {
+      "source": "proof_06_bison_512_composite_stage.png",
+      "box": [
+        120,
+        120,
+        560,
+        580
+      ],
+      "size": [
+        440,
+        460
+      ],
+      "md5": "47498f113dfb5324ec759c17b7c57a8f"
+    },
+    "crop_07_badger_attack_and_skill_poses.png": {
+      "source": "proof_07_badger_combat_poses_stage.png",
+      "box": [
+        420,
+        80,
+        840,
+        420
+      ],
+      "size": [
+        420,
+        340
+      ],
+      "md5": "d55c0162e948e52cd7b7394ab726c989"
+    },
+    "crop_08_bison_attack_and_skill_poses.png": {
+      "source": "proof_08_bison_combat_poses_stage.png",
+      "box": [
+        420,
+        80,
+        840,
+        420
+      ],
+      "size": [
+        420,
+        340
+      ],
+      "md5": "39b4abaa6ec53de8c6891815fa24409e"
+    },
+    "crop_09_creation_badger_and_guard.png": {
+      "source": "proof_09_creation_flow_audit_badger_armadillo.png",
+      "box": [
+        650,
+        120,
+        1220,
+        600
+      ],
+      "size": [
+        570,
+        480
+      ],
+      "md5": "666156143278bd621f2c822098cb61ce"
+    },
+    "crop_10_wardrobe_badger_cards.png": {
+      "source": "proof_10_wardrobe_flow_audit_badger.png",
+      "box": [
+        50,
+        120,
+        680,
+        620
+      ],
+      "size": [
+        630,
+        500
+      ],
+      "md5": "da87bf386fc2ffab40377d9f7bc3f9e6"
+    },
+    "crop_11_battle_badger_combat_log.png": {
+      "source": "proof_11_battle_flow_audit_badger_and_bison.png",
+      "box": [
+        30,
+        30,
+        600,
+        300
+      ],
+      "size": [
+        570,
+        270
+      ],
+      "md5": "6f84f3426e0c5fe41fbd9e25e3757e42"
+    },
+    "crop_12_i18n_emoji_audit_summary.png": {
+      "source": "proof_12_i18n_and_emoji_audit.png",
+      "box": [
+        40,
+        60,
+        1240,
+        680
+      ],
+      "size": [
+        1200,
+        620
+      ],
+      "md5": "a70e2db6df096effb713da283e4bdc38"
+    }
+  },
+  "i18n": {
+    "zh_TW": {
+      "total_keys": 1455,
+      "emoji_count": 0
+    },
+    "zh_CN": {
+      "total_keys": 3344,
+      "emoji_count": 0
+    },
+    "en": {
+      "total_keys": 3344,
+      "emoji_count": 0
+    },
+    "ja": {
+      "total_keys": 3344,
+      "emoji_count": 0
+    },
+    "ko": {
+      "total_keys": 3344,
+      "emoji_count": 0
+    },
+    "es": {
+      "total_keys": 3344,
+      "emoji_count": 0
+    }
+  },
+  "canon": {
+    "bison": "compliant",
+    "badger": "compliant",
+    "armadillo": "compliant"
+  },
+  "quality_gates": {
+    "0-QA5": "100% xvfb-run opengl3 真實 Framebuffer 渲染",
+    "0-QA15": "24 個圖檔 MD5 100% 獨立唯一，無重複檔名或相同內容",
+    "0-QA16": "洋紅底無孔洞 (0 px)、素體無殘留黑框、無平塗佔位色塊",
+    "0-QA17": "實機截圖完整呈現 Dev預覽、512原寸、姿態舞台、創角、衣櫥、戰鬥、i18n看板",
+    "0-QA23": "獨立目錄 proofs/t_183125e0/ 交付，絕無跨卡覆蓋",
+    "0-QA24_25": "六語系 ui.json 專有名詞對齊，切換語系同步連動",
+    "0-QA30": "全 49 族 正表與 fallback 表 aliases 100% 完全對齊",
+    "0-QA31": "切片與目鏡色彩豐富度達標",
+    "0-UI1_31d": "全畫面 100% 徹底清除系統 Emoji，按鈕熱區高度 >= 48px",
+    "CANON.md": "100% 零真毛皮、零血肉、零生物特徵，覺醒發條玩具世界觀"
+  }
+}
