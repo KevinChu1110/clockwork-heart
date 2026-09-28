@@ -3933,13 +3933,33 @@
    ]
   },
   {
-   "id": "gorilla-combat-poses",
+   "id": "peacock-paperdoll",
    "cat": "遊戲",
-   "title": "第三十四族鋼臂巨猩六大戰鬥姿態補齊",
+   "title": "第三十五族稜鏡孔雀紙娃娃切片與資產",
    "status": "測試中",
-   "note": "完成六大姿態生成、無頭測試、0-QA16/ART量化稽核與實機戰鬥截圖，送審 sideqa (t_73992abf)",
+   "note": "7大槽位切片已就緒，測試中",
+   "keys": [
+    "第三十五族稜鏡孔"
+   ]
+  },
+  {
+   "id": "gorilla-official-assets",
+   "cat": "遊戲",
+   "title": "第三十四族鋼臂巨猩官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
+   "status": "測試中",
+   "note": "官方資產四件套產出完成，自測與驗證卡全數通過，準備 request-review (t_ff540d5f)",
    "keys": [
     "第三十四族鋼臂巨"
+   ]
+  },
+  {
+   "id": "peacock-combat-poses",
+   "cat": "遊戲",
+   "title": "第三十五族稜鏡孔雀六大戰鬥姿態補齊",
+   "status": "測試中",
+   "note": "完成六大動作姿態雙規格產出與自檢，request-review sideqa",
+   "keys": [
+    "第三十五族稜鏡孔"
    ]
   }
  ]
