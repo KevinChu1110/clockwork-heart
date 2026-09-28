@@ -1,0 +1,328 @@
+{
+  "task_id": "t_95b8cb93",
+  "title": "探索性 QA 第三十七輪：撼地野牛骨架＋巡管守宮切片合main後找破圖",
+  "reviewer": "sideqa (小婷)",
+  "status": "PASS",
+  "total_races": 45,
+  "reviewed_races": [
+    "bison (撼地野牛, 第四十四族)",
+    "gecko (巡管守宮, 第四十五族)"
+  ],
+  "proofs_count": 12,
+  "crops_count": 12,
+  "proofs": {
+    "proof_01_dev_paperdoll_gecko_default.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 171733,
+      "md5": "292b4f2379d2e4b78861ea9815c8308f"
+    },
+    "proof_02_dev_paperdoll_gecko_bare.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 175451,
+      "md5": "466731821e7031714bbf6712e0189e51"
+    },
+    "proof_03_dev_paperdoll_gecko_unarmed.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 170372,
+      "md5": "551dd3529fce9e130d4b9e9d9004d192"
+    },
+    "proof_04_gecko_512_composite_stage.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 233940,
+      "md5": "2b837cebc6c66349c508cc6631be59db"
+    },
+    "proof_05_gecko_official_standee_and_showcase.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 42684,
+      "md5": "740bab6fe7a0e98e7d9e3f169bf0db81"
+    },
+    "proof_06_creation_flow_audit_gecko.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 255223,
+      "md5": "b9b2bd389214e1b22fb7d3c0e3d5e90c"
+    },
+    "proof_07_creation_flow_audit_bison_hidden.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 265072,
+      "md5": "5216d2801a96109258ddd5fab28823cd"
+    },
+    "proof_08_wardrobe_flow_audit_gecko.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 447403,
+      "md5": "11fc4cdc2b03ae76979bdaab061972d7"
+    },
+    "proof_09_battle_flow_audit_gecko.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 1233128,
+      "md5": "1460fdc3de99a7b0bc7c4dfce080e371"
+    },
+    "proof_10_battle_flow_audit_bison.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 1218426,
+      "md5": "9214a3a29869423ec28e5be7e14f23d0"
+    },
+    "proof_11_lobby_flow_audit_gecko.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 998228,
+      "md5": "7f28d71042f2cb50f8abaac487830fdd"
+    },
+    "proof_12_i18n_and_emoji_audit.png": {
+      "size": [
+        1280,
+        720
+      ],
+      "bytes": 246029,
+      "md5": "c7d44f8ccb62e8b7fca8449d6ccf5e8a"
+    }
+  },
+  "crops": {
+    "crop_01_gecko_paperdoll_7_slots.png": {
+      "source": "proof_01_dev_paperdoll_gecko_default.png",
+      "box": [
+        300,
+        320,
+        520,
+        560
+      ],
+      "size": [
+        220,
+        240
+      ],
+      "md5": "12826dcf6c0e7a18171bfd92e2da1e12"
+    },
+    "crop_02_gecko_bare_chassis.png": {
+      "source": "proof_02_dev_paperdoll_gecko_bare.png",
+      "box": [
+        300,
+        320,
+        520,
+        560
+      ],
+      "size": [
+        220,
+        240
+      ],
+      "md5": "a35cb346ecc8c14f28abbb1196d7ea0f"
+    },
+    "crop_03_gecko_unarmed.png": {
+      "source": "proof_03_dev_paperdoll_gecko_unarmed.png",
+      "box": [
+        300,
+        320,
+        520,
+        560
+      ],
+      "size": [
+        220,
+        240
+      ],
+      "md5": "b2a29a432c0f593f9dfd4e311e7391e7"
+    },
+    "crop_04_gecko_512_torso.png": {
+      "source": "proof_04_gecko_512_composite_stage.png",
+      "box": [
+        120,
+        120,
+        560,
+        580
+      ],
+      "size": [
+        440,
+        460
+      ],
+      "md5": "efded32a8bf021487f40075d33fde6c7"
+    },
+    "crop_05_gecko_showcase_standee.png": {
+      "source": "proof_05_gecko_official_standee_and_showcase.png",
+      "box": [
+        100,
+        80,
+        460,
+        640
+      ],
+      "size": [
+        360,
+        560
+      ],
+      "md5": "9d04c8637ed4b6e33fc72cc90dfd97c1"
+    },
+    "crop_06_creation_gecko_card.png": {
+      "source": "proof_06_creation_flow_audit_gecko.png",
+      "box": [
+        650,
+        120,
+        1220,
+        600
+      ],
+      "size": [
+        570,
+        480
+      ],
+      "md5": "326f39192fd2bcda8179d057c3fb85e1"
+    },
+    "crop_07_creation_bison_hidden.png": {
+      "source": "proof_07_creation_flow_audit_bison_hidden.png",
+      "box": [
+        40,
+        580,
+        1240,
+        700
+      ],
+      "size": [
+        1200,
+        120
+      ],
+      "md5": "62f69bbe768b9ef1cd9b5d062cf4c863"
+    },
+    "crop_08_wardrobe_gecko_cards.png": {
+      "source": "proof_08_wardrobe_flow_audit_gecko.png",
+      "box": [
+        50,
+        120,
+        680,
+        620
+      ],
+      "size": [
+        630,
+        500
+      ],
+      "md5": "7249fc22c7b6187e4f8db0f58f220f54"
+    },
+    "crop_09_battle_gecko_nameplates_log.png": {
+      "source": "proof_09_battle_flow_audit_gecko.png",
+      "box": [
+        30,
+        30,
+        600,
+        300
+      ],
+      "size": [
+        570,
+        270
+      ],
+      "md5": "6d453079ca8e10e2567c1e64c418df0c"
+    },
+    "crop_10_battle_bison_nameplates_log.png": {
+      "source": "proof_10_battle_flow_audit_bison.png",
+      "box": [
+        30,
+        30,
+        600,
+        300
+      ],
+      "size": [
+        570,
+        270
+      ],
+      "md5": "f23f6ed112acd88f2fb6d7be9c50e39c"
+    },
+    "crop_11_lobby_gecko_avatar.png": {
+      "source": "proof_11_lobby_flow_audit_gecko.png",
+      "box": [
+        20,
+        20,
+        450,
+        140
+      ],
+      "size": [
+        430,
+        120
+      ],
+      "md5": "a37f32cd8eac905dfa201c8b981beb54"
+    },
+    "crop_12_i18n_emoji_audit_dashboard.png": {
+      "source": "proof_12_i18n_and_emoji_audit.png",
+      "box": [
+        40,
+        60,
+        1240,
+        680
+      ],
+      "size": [
+        1200,
+        620
+      ],
+      "md5": "b489e54c604ff10ea6bbae51871c2286"
+    }
+  },
+  "i18n_audit": {
+    "zh_TW": {
+      "total_keys": 1419,
+      "bison_ok": true,
+      "gecko_ok": true,
+      "emoji_count": 0
+    },
+    "zh_CN": {
+      "total_keys": 3308,
+      "bison_ok": true,
+      "gecko_ok": true,
+      "emoji_count": 0
+    },
+    "en": {
+      "total_keys": 3308,
+      "bison_ok": true,
+      "gecko_ok": true,
+      "emoji_count": 0
+    },
+    "ja": {
+      "total_keys": 3308,
+      "bison_ok": true,
+      "gecko_ok": true,
+      "emoji_count": 0
+    },
+    "ko": {
+      "total_keys": 3308,
+      "bison_ok": true,
+      "gecko_ok": true,
+      "emoji_count": 0
+    },
+    "es": {
+      "total_keys": 3308,
+      "bison_ok": true,
+      "gecko_ok": true,
+      "emoji_count": 0
+    }
+  },
+  "canon_audit": {
+    "bison": "compliant",
+    "gecko": "compliant"
+  },
+  "findings": [
+    "撼地野牛 (bison) 目前為資料表骨架先行建置，7 大槽位切片與戰鬥姿態尚未產出（依流程安全隱藏於創角與衣櫥，零破圖）",
+    "巡管守宮 (gecko) 7 大槽位切片已全數就緒，六大戰鬥姿態 (poses/gecko) 待後續工項產出",
+    "巡管守宮官方資產套件（官網英雄圖/戰鬥特寫/行走動畫/HUD頭像）待後續工項產出"
+  ]
+}
