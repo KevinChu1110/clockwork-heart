@@ -142,8 +142,8 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		var common_slice_clean := "%s/common/%s/%s.png" % [PAPERDOLL_ROOT, sid, clean_id]
 		if ResourceLoader.exists(common_slice_clean) or FileAccess.file_exists(common_slice_clean):
 			return common_slice_clean
-		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限三十三大正式族系）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat"]
+		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限三十四大正式族系）
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla"]
 		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
 			for other in all_races:
 				if str(other) == rid:
@@ -310,6 +310,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "chassis_rhino_molten_iron_default"
 			elif race == "bat":
 				return "chassis_bat_astral_polymer_default"
+			elif race == "gorilla":
+				return "chassis_gorilla_brass_heavy_default"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -376,6 +378,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_rhino_crucible_battering_crest"
 			elif race == "bat":
 				return "head_bat_sonar_parabolic_crest"
+			elif race == "gorilla":
+				return "head_gorilla_riveted_brow_crest"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -434,6 +438,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_rhino_crucible_crosshair_key"
 			elif race == "bat":
 				return "key_bat_orbital_pulsar_key"
+			elif race == "gorilla":
+				return "key_gorilla_heavy_t_forged_key"
 			elif race == "fox":
 				return ""
 			return "key_classic_brass"
@@ -502,6 +508,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_rhino_crucible_smith_plate"
 			elif race == "bat":
 				return "costume_bat_orbital_stealth_harness"
+			elif race == "gorilla":
+				return "costume_gorilla_steam_forge_boiler_harness"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -562,6 +570,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "face_rhino_dual_amber_pyro_optic"
 			elif race == "bat":
 				return "face_bat_dual_amber_optic_lens"
+			elif race == "gorilla":
+				return "face_gorilla_dual_gauge_optic_lens"
 			elif race == "boar":
 				return "core_molten_crimson"
 			return "core_cyan_emerald"
@@ -630,6 +640,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "weapon_rhino_crucible_breaker_axe"
 			elif race == "bat":
 				return "weapon_bat_superconducting_pulse_dart"
+			elif race == "gorilla":
+				return "weapon_gorilla_steam_forging_fist"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -696,6 +708,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_rhino_steam_furnace_exhaust"
 			elif race == "bat":
 				return "curio_bat_articulated_starwing_mantle"
+			elif race == "gorilla":
+				return "curio_gorilla_twin_turbo_exhaust_chimney"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -943,7 +957,7 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
@@ -1508,7 +1522,7 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 33,
+			"total_races": 34,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
@@ -1542,7 +1556,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "chameleon", "aliases": ["mirage_chameleon", "prismatic_chameleon", "scout_chameleon", "wasteland_chameleon"], "name_zh": "幻彩變色龍", "name_en": "The Mirage Chameleon", "class_archetype": "遊俠 (Ranger)"},
 				{"race_id": "sailfish", "aliases": ["hydrofoil_sailfish", "abyssal_sailfish", "wave_sailfish", "streamline_sailfish"], "name_zh": "破浪旗魚", "name_en": "The Hydrofoil Sailfish", "class_archetype": "騎士 (Knight)"},
 				{"race_id": "rhino", "aliases": ["heavyhorn_rhino", "crucible_rhino", "molten_rhino", "battering_rhino"], "name_zh": "重角犀牛", "name_en": "The Heavyhorn Rhino", "class_archetype": "戰士 (Viking)"},
-				{"race_id": "bat", "aliases": ["starwing_bat", "orbital_bat", "astral_bat", "pulsar_bat"], "name_zh": "星翼蝙蝠", "name_en": "The Starwing Bat", "class_archetype": "忍者 (Ninja)"}
+				{"race_id": "bat", "aliases": ["starwing_bat", "orbital_bat", "astral_bat", "pulsar_bat"], "name_zh": "星翼蝙蝠", "name_en": "The Starwing Bat", "class_archetype": "忍者 (Ninja)"},
+				{"race_id": "gorilla", "aliases": ["steelarm_gorilla", "steam_gorilla", "forge_gorilla", "heavy_gorilla"], "name_zh": "鋼臂巨猩", "name_en": "The Steelarm Gorilla", "class_archetype": "武術家 (Monk)"}
 			]
 		}
 	}
