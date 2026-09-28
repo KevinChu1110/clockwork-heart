@@ -4146,8 +4146,8 @@
    "id": "seal-official-assets",
    "cat": "遊戲",
    "title": "第四十族拍浪海豹(seal)官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
-   "status": "開發中",
-   "note": "開始補齊拍浪海豹官方資產套件 (t_51edccf1)",
+   "status": "測試中",
+   "note": "完成拍浪海豹官方資產套件補齊，推送至 agent/20260928-seal-official-assets，等待 sideqa 審核 (t_51edccf1)",
    "keys": [
     "第四十族拍浪海豹"
    ]
