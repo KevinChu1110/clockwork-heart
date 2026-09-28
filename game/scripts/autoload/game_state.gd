@@ -803,6 +803,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"courser": "rusty_blade",
 	"beaver": "notch_axe",
 	"stoat": "star_fang",
+	"seal": "wrap_gloves",
 }
 
 
@@ -851,6 +852,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"courser": default_name = "鐵蹄駿駒"
 		"beaver": default_name = "劈木河狸"
 		"stoat": default_name = "旋刃伶鼬"
+		"seal": default_name = "拍浪海豹"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
