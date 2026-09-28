@@ -61,6 +61,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"peacock": "shard_focus",
 	"meerkat": "flint_gun",
 	"courser": "rusty_blade",
+	"beaver": "notch_axe",
 }
 
 static func starter_weapon_id_for_race(race: String) -> String:
