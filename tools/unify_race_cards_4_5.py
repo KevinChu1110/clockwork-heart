@@ -45,6 +45,7 @@ RACES = [
     ("rhino", "重角犀牛"),
     ("courser", "鐵蹄駿駒"),
     ("beaver", "劈木河狸"),
+    ("seal", "拍浪海豹"),
 ]
 
 def pad_to_4_5(im: Image.Image, race_name: str) -> Image.Image:
