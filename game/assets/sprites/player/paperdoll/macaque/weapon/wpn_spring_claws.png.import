@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bhwwm3dqc6u21"
-path="res://.godot/imported/wpn_spring_claws.png-e078839eeac32726874b0e1273429101.ctex"
+path="res://.godot/imported/wpn_spring_claws.png-1c2cf96adeb39dd08f1b5c205d462146.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/weapon/wpn_spring_claws.png"
-dest_files=["res://.godot/imported/wpn_spring_claws.png-e078839eeac32726874b0e1273429101.ctex"]
+source_file="res://assets/paperdoll/macaque/weapon/wpn_spring_claws.png"
+dest_files=["res://.godot/imported/wpn_spring_claws.png-1c2cf96adeb39dd08f1b5c205d462146.ctex"]
 
 [params]
 

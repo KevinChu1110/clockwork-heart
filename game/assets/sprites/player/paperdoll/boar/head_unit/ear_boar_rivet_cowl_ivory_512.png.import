@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bfo427okcoh7a"
-path="res://.godot/imported/ear_boar_rivet_cowl_ivory_512.png-55fe59a1fc3ba056d63f84fd3b1996d3.ctex"
+path="res://.godot/imported/ear_boar_rivet_cowl_ivory_512.png-3582f1b7d31ea947b1b868dd6a7af8e6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/head_unit/ear_boar_rivet_cowl_ivory_512.png"
-dest_files=["res://.godot/imported/ear_boar_rivet_cowl_ivory_512.png-55fe59a1fc3ba056d63f84fd3b1996d3.ctex"]
+source_file="res://assets/paperdoll/boar/head_unit/ear_boar_rivet_cowl_ivory_512.png"
+dest_files=["res://.godot/imported/ear_boar_rivet_cowl_ivory_512.png-3582f1b7d31ea947b1b868dd6a7af8e6.ctex"]
 
 [params]
 

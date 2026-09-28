@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c1jm65tlvxgs4"
-path="res://.godot/imported/proof_boar_chassis_comparison.png-5f47dad53d95b2bada9965bf76964a38.ctex"
+path="res://.godot/imported/proof_boar_chassis_comparison.png-520fb4fed1ad729cd8deec474c5424de.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/proof_boar_chassis_comparison.png"
-dest_files=["res://.godot/imported/proof_boar_chassis_comparison.png-5f47dad53d95b2bada9965bf76964a38.ctex"]
+source_file="res://assets/paperdoll/boar/proof_boar_chassis_comparison.png"
+dest_files=["res://.godot/imported/proof_boar_chassis_comparison.png-520fb4fed1ad729cd8deec474c5424de.ctex"]
 
 [params]
 

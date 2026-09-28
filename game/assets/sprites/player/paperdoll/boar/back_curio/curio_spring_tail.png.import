@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://vt8rueeotwxt"
-path="res://.godot/imported/curio_spring_tail.png-8ff1794cd046a98af528b78c4e3ac0d9.ctex"
+path="res://.godot/imported/curio_spring_tail.png-4ddd0e2926e4ff15f8f1bb4c21cb9b2d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/back_curio/curio_spring_tail.png"
-dest_files=["res://.godot/imported/curio_spring_tail.png-8ff1794cd046a98af528b78c4e3ac0d9.ctex"]
+source_file="res://assets/paperdoll/boar/back_curio/curio_spring_tail.png"
+dest_files=["res://.godot/imported/curio_spring_tail.png-4ddd0e2926e4ff15f8f1bb4c21cb9b2d.ctex"]
 
 [params]
 

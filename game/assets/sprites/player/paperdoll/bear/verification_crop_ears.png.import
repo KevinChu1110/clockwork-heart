@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cxl1ajuyhk5nm"
-path="res://.godot/imported/verification_crop_ears.png-717ea80edb3b0b242cfaeb158e5a7697.ctex"
+path="res://.godot/imported/verification_crop_ears.png-33179463afb8cf4b7d4a18dd8e748e11.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/verification_crop_ears.png"
-dest_files=["res://.godot/imported/verification_crop_ears.png-717ea80edb3b0b242cfaeb158e5a7697.ctex"]
+source_file="res://assets/paperdoll/bear/verification_crop_ears.png"
+dest_files=["res://.godot/imported/verification_crop_ears.png-33179463afb8cf4b7d4a18dd8e748e11.ctex"]
 
 [params]
 

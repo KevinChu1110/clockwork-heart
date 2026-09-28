@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://os1qjumuodgl"
-path="res://.godot/imported/paint_bear_amber.png-987dcb67438df94d52f013b7f1ff6324.ctex"
+path="res://.godot/imported/paint_bear_amber.png-4e2ecaf5f3391427a2ebf525c6f545d6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/chassis/paint_bear_amber.png"
-dest_files=["res://.godot/imported/paint_bear_amber.png-987dcb67438df94d52f013b7f1ff6324.ctex"]
+source_file="res://assets/paperdoll/bear/chassis/paint_bear_amber.png"
+dest_files=["res://.godot/imported/paint_bear_amber.png-4e2ecaf5f3391427a2ebf525c6f545d6.ctex"]
 
 [params]
 

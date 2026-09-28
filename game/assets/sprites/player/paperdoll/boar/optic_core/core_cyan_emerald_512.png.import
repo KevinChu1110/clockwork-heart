@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bfynp3y63yllc"
-path="res://.godot/imported/core_cyan_emerald_512.png-fee3eb4e89692a2439412b3a2d31f23b.ctex"
+path="res://.godot/imported/core_cyan_emerald_512.png-026c199627fa78ccb0394193b9bbed1a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/optic_core/core_cyan_emerald_512.png"
-dest_files=["res://.godot/imported/core_cyan_emerald_512.png-fee3eb4e89692a2439412b3a2d31f23b.ctex"]
+source_file="res://assets/paperdoll/boar/optic_core/core_cyan_emerald_512.png"
+dest_files=["res://.godot/imported/core_cyan_emerald_512.png-026c199627fa78ccb0394193b9bbed1a.ctex"]
 
 [params]
 

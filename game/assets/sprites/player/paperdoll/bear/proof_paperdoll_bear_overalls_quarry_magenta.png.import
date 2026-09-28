@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b7y5frpyk840m"
-path="res://.godot/imported/proof_paperdoll_bear_overalls_quarry_magenta.png-1b63b7deaa2ecc532be4d18415072280.ctex"
+path="res://.godot/imported/proof_paperdoll_bear_overalls_quarry_magenta.png-d4ae7ae2dc6cb706d52b21d0bb3a6a58.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/proof_paperdoll_bear_overalls_quarry_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_bear_overalls_quarry_magenta.png-1b63b7deaa2ecc532be4d18415072280.ctex"]
+source_file="res://assets/paperdoll/bear/proof_paperdoll_bear_overalls_quarry_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_bear_overalls_quarry_magenta.png-d4ae7ae2dc6cb706d52b21d0bb3a6a58.ctex"]
 
 [params]
 

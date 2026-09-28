@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://chp2dolu5tgqq"
-path="res://.godot/imported/verification_crop_tusks.png-f6396e81c1750f3098b1441bdf2fa126.ctex"
+path="res://.godot/imported/verification_crop_tusks.png-6b117374c3498280faee666ba8c29916.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/verification_crop_tusks.png"
-dest_files=["res://.godot/imported/verification_crop_tusks.png-f6396e81c1750f3098b1441bdf2fa126.ctex"]
+source_file="res://assets/paperdoll/boar/verification_crop_tusks.png"
+dest_files=["res://.godot/imported/verification_crop_tusks.png-6b117374c3498280faee666ba8c29916.ctex"]
 
 [params]
 

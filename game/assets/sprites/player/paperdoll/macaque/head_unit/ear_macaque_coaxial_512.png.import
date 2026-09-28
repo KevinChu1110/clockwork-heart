@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b7wk65ky20ie4"
-path="res://.godot/imported/ear_macaque_coaxial_512.png-c08716ac76056705f8419e397897914a.ctex"
+path="res://.godot/imported/ear_macaque_coaxial_512.png-2d69a2d0b2623b9ec0954eae33b2ba00.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/head_unit/ear_macaque_coaxial_512.png"
-dest_files=["res://.godot/imported/ear_macaque_coaxial_512.png-c08716ac76056705f8419e397897914a.ctex"]
+source_file="res://assets/paperdoll/macaque/head_unit/ear_macaque_coaxial_512.png"
+dest_files=["res://.godot/imported/ear_macaque_coaxial_512.png-2d69a2d0b2623b9ec0954eae33b2ba00.ctex"]
 
 [params]
 
