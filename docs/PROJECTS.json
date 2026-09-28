@@ -4356,8 +4356,8 @@
    "id": "capybara-skeleton",
    "cat": "遊戲",
    "title": "第四十七族澄心水豚(capybara)資料表骨架與空目錄先行建置",
-   "status": "草稿",
-   "note": "骨架與空目錄先行建置中",
+   "status": "測試中",
+   "note": "骨架與空目錄先行建置完成，無頭測試全綠，交付 sideqa 審核",
    "keys": [
     "第四十七族澄心水"
    ]
