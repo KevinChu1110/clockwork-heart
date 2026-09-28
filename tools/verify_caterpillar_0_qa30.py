@@ -55,6 +55,13 @@ gd_path = os.path.join(repo_root, "game/scripts/art/paperdoll_renderer.gd")
 with open(gd_path, "r", encoding="utf-8") as f:
     gd_content = f.read()
 
+# 0-QA33 防護查驗：檢查 fallback 表 total_races 必須 100% 精確為 50
+m_total = re.search(r'"races_specification":\s*\{\s*"total_races":\s*(\d+)', gd_content)
+assert m_total is not None, "paperdoll_renderer.gd 未找到 races_specification.total_races 定義！"
+fallback_total_races = int(m_total.group(1))
+assert fallback_total_races == 50, f"fallback 表 total_races 應為 50，實際為 {fallback_total_races}（0-QA33 規範）"
+print(f"✓ 3.1 fallback 表 total_races 精確為 50 (實際: {fallback_total_races})，符合 0-QA33 規範")
+
 fallback_races_map = {}
 for line in gd_content.splitlines():
     m = re.search(r'\{\s*"race_id":\s*"([^"]+)"', line)
