@@ -86,17 +86,26 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3. 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/caterpillar 目錄存在且恪守零美術佔位圖（僅保留 .gitkeep）
+# 4. 驗證 7 大槽位切片已就緒，且 poses/caterpillar 保持零佔位圖（僅保留 .gitkeep）
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/caterpillar")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
+expected_slices = {
+    "back_curio": ["curio_caterpillar_segmented_pressure_pack.png", "curio_caterpillar_segmented_pressure_pack_512.png"],
+    "chassis": ["chassis_caterpillar_brass_bellows_default.png", "chassis_caterpillar_brass_bellows_default_512.png"],
+    "costume": ["costume_caterpillar_deepwood_sapper_cuirass.png", "costume_caterpillar_deepwood_sapper_cuirass_512.png"],
+    "head_unit": ["head_caterpillar_sensor_bellows_cowl.png", "head_caterpillar_sensor_bellows_cowl_512.png"],
+    "optic_core": ["face_caterpillar_amber_condenser_lens.png", "face_caterpillar_amber_condenser_lens_512.png"],
+    "weapon": ["weapon_caterpillar_vine_valley_compression_hammer.png", "weapon_caterpillar_vine_valley_compression_hammer_512.png"],
+    "winding_key": ["key_caterpillar_dual_ring_bellows_key.png", "key_caterpillar_dual_ring_bellows_key_512.png"]
+}
 
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"槽位目錄缺少 .gitkeep: {s_dir}"
-    slot_images = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert not slot_images, f"槽位目錄 {s} 發現非預期圖片檔案（違反零佔位圖規則）: {slot_images}"
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/caterpillar")
 assert os.path.isdir(poses_dir), f"poses/caterpillar 目錄不存在: {poses_dir}"
@@ -104,7 +113,7 @@ assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/caterpillar �
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
 assert not poses_images, f"poses/caterpillar 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-print("✓ 4. 7 大槽位空目錄與 poses/caterpillar 均已就緒，且恪守零美術佔位圖（僅保留 .gitkeep）規範")
+print("✓ 4. 7 大槽位切片已全數就緒且 poses/caterpillar 恪守零美術佔位圖（僅保留 .gitkeep）規範")
 
 # 5. 驗證開局武器符合 equipment.json 既有 ID
 equip_path = os.path.join(repo_root, "game/data/tables/equipment.json")
