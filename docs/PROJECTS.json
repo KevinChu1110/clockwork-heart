@@ -3973,31 +3973,51 @@
    ]
   },
   {
-   "id": "beaver-proposal",
-   "cat": "世界觀",
-   "title": "第三十八族劈木河狸紙娃娃角色設計提案",
+   "id": "courser-paperdoll",
+   "cat": "遊戲",
+   "title": "第三十七族鐵蹄駿駒(courser)7大部件槽位紙娃娃切片與雙規格資產",
    "status": "已上線",
-   "note": "設計提案分支已通過審核並合入主線",
+   "note": "sideqa審查通過：7槽切片雙規格齊全、0-ART量化稽核全過、無頭測試全綠、Vision複驗無破圖無穿模 (t_b00d10fd)",
    "keys": [
-    "第三十八族劈木河"
+    "第三十七族鐵蹄駿"
    ]
   },
   {
-   "id": "beaver-skeleton",
+   "id": "courser-combat-poses",
    "cat": "遊戲",
-   "title": "第三十八族劈木河狸(beaver)資料表骨架與空目錄先行建置",
+   "title": "第三十七族鐵蹄駿駒(courser)六大戰鬥姿態補齊",
    "status": "已上線",
-   "note": "資料表骨架與空目錄分支已通過審核並合入主線",
+   "note": "sideqa審核通過(t_888b2579 done)，已merge main",
    "keys": [
-    "第三十八族劈木河"
+    "第三十七族鐵蹄駿"
    ]
   },
   {
    "id": "beaver-paperdoll",
    "cat": "遊戲",
    "title": "第三十八族劈木河狸(beaver)7大部件槽位紙娃娃切片與雙規格資產",
+   "status": "已上線",
+   "note": "7大部件槽位切片與雙規格資產已審查通過並合進 main（t_f33dd153 done）",
+   "keys": [
+    "第三十八族劈木河"
+   ]
+  },
+  {
+   "id": "beaver-combat-poses",
+   "cat": "遊戲",
+   "title": "第三十八族劈木河狸(beaver)6大戰鬥姿態補齊",
    "status": "測試中",
-   "note": "劈木河狸 7 大槽位紙娃娃切片與雙規格資產產出完成，待審查",
+   "note": "劈木河狸 6 大戰鬥姿態審核通過，待後續官方資產補齊與合併",
+   "keys": [
+    "第三十八族劈木河"
+   ]
+  },
+  {
+   "id": "beaver-official-assets",
+   "cat": "遊戲",
+   "title": "第三十八族劈木河狸(beaver)官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
+   "status": "測試中",
+   "note": "官方資產套件（官網英雄圖／戰鬥特寫／行走四幀／HUD頭像與半身像）已補齊並通過無頭測試與Vision複驗，送審測試員",
    "keys": [
     "第三十八族劈木河"
    ]
