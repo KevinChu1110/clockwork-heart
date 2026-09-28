@@ -71,24 +71,34 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3. 全量 36 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大部件目錄與 poses/meerkat 目錄存在且恪守零佔位圖（僅有 .gitkeep）
+# 4. 驗證 7 大槽位切片已就緒，且 poses/meerkat 保持零佔位圖
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/meerkat")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
+expected_slices = {
+    "back_curio": ["curio_meerkat_tripod_grounding_tail.png", "curio_meerkat_tripod_grounding_tail_512.png"],
+    "chassis": ["chassis_meerkat_tinplate_default.png", "chassis_meerkat_tinplate_default_512.png"],
+    "costume": ["costume_meerkat_patched_canvas_poncho.png", "costume_meerkat_patched_canvas_poncho_512.png"],
+    "head_unit": ["head_meerkat_scavenger_cowl_ears.png", "head_meerkat_scavenger_cowl_ears_512.png"],
+    "optic_core": ["face_meerkat_periscope_rangefinder_lens.png", "face_meerkat_periscope_rangefinder_lens_512.png"],
+    "weapon": ["weapon_meerkat_rusted_coil_spring_gun.png", "weapon_meerkat_rusted_coil_spring_gun_512.png"],
+    "winding_key": ["key_meerkat_high_torque_scrap_key.png", "key_meerkat_high_torque_scrap_key_512.png"]
+}
 
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    keep = os.path.join(s_dir, ".gitkeep")
-    assert os.path.exists(keep), f"缺少 .gitkeep: {keep}"
-    img_files = [f for f in os.listdir(s_dir) if f.lower().endswith(image_exts)]
-    assert not img_files, f"槽位 {s} 發現非預期圖片檔案（違反零佔位圖規則）: {img_files}"
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/meerkat")
 assert os.path.isdir(poses_dir), f"poses/meerkat 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/meerkat 缺少 .gitkeep"
-poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
+poses_images = []
+for fn in os.listdir(poses_dir):
+    if fn.lower().endswith(image_exts):
+        poses_images.append(os.path.join("poses/meerkat", fn))
 assert not poses_images, f"poses/meerkat 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
-
-print("✓ 4. 7 大槽位與 poses/meerkat 空目錄就緒，恪守零佔位圖（僅保留 .gitkeep）")
+print("✓ 4. 7 大槽位切片圖檔 100% 就緒，poses/meerkat 恪守 .gitkeep 規範")
 print("=== 0-QA30 查驗 100% 通過！ ===")
