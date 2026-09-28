@@ -88,26 +88,28 @@ func _initialize() -> void:
 	else:
 		print("  ✓ poses/bat 目錄存在")
 
-	# 3. 驗證零美術佔位圖（無任何 png / webp / jpg 圖片產生，只放 .gitkeep）
+	# 3. 驗證 7 大槽位美術切片均已就緒 (128x128 與 512x512)
 	var bat_global_dir := ProjectSettings.globalize_path(base_path)
-	var da := DirAccess.open(bat_global_dir)
-	var image_files_found: Array[String] = []
-	if da:
-		for sid in expected_slots:
-			var sub_da := DirAccess.open("%s/%s" % [bat_global_dir, sid])
-			if sub_da:
-				sub_da.list_dir_begin()
-				var fn := sub_da.get_next()
-				while fn != "":
-					if fn.ends_with(".png") or fn.ends_with(".webp") or fn.ends_with(".jpg"):
-						image_files_found.append("%s/%s" % [sid, fn])
-					fn = sub_da.get_next()
-				sub_da.list_dir_end()
-	if not image_files_found.is_empty():
-		push_error("發現意外產生的圖片檔案（違背零美術佔位圖要求）: %s" % str(image_files_found))
+	var missing_files: Array[String] = []
+	var expected_slice_files := {
+		"back_curio": ["curio_bat_articulated_starwing_mantle.png", "curio_bat_articulated_starwing_mantle_512.png"],
+		"chassis": ["chassis_bat_astral_polymer_default.png", "chassis_bat_astral_polymer_default_512.png"],
+		"costume": ["costume_bat_orbital_stealth_harness.png", "costume_bat_orbital_stealth_harness_512.png"],
+		"head_unit": ["head_bat_sonar_parabolic_crest.png", "head_bat_sonar_parabolic_crest_512.png"],
+		"optic_core": ["face_bat_dual_amber_optic_lens.png", "face_bat_dual_amber_optic_lens_512.png"],
+		"weapon": ["weapon_bat_superconducting_pulse_dart.png", "weapon_bat_superconducting_pulse_dart_512.png"],
+		"winding_key": ["key_bat_orbital_pulsar_key.png", "key_bat_orbital_pulsar_key_512.png"]
+	}
+	for sid in expected_slots:
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [bat_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("星翼蝙蝠切片檔案缺失: %s" % str(missing_files))
 		ok = false
 	else:
-		print("  ✓ 嚴格恪守零美術佔位圖，7 槽位目錄下無任何圖片資產，僅保留 .gitkeep")
+		print("  ✓ 星翼蝙蝠 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 4. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog) 能讀到 bat
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -134,13 +136,13 @@ func _initialize() -> void:
 	else:
 		print("  ✓ PaperdollSelectDemo.RACE_KEYS 包含 bat")
 
-	# 驗證防護守衛 has_race_assets 正常運作（尚未產圖時應為 false，不露出空卡）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("bat")
-	if has_assets:
-		push_error("尚未產圖前 has_race_assets('bat') 應回傳 false，防止空卡露出！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('bat') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ 零美術佔位防護守衛生效：has_race_assets('bat') 正確回傳 false（安全隱藏）")
+		print("  ✓ 防護守衛生效：has_race_assets('bat') 正確回傳 true（展示正常）")
 
 	# 5. 驗證 GameState 與 EquipmentSystem 開局武器配置對齊 dart (mist_darts)
 	var gs = root.get_node_or_null("GameState")

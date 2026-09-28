@@ -71,29 +71,35 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3. 全量 33 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證空目錄與零佔位圖
+# 4. 驗證 7 大槽位切片已就緒，且 poses/bat 保持零佔位圖
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/bat")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
-found_images = []
+expected_slices = {
+    "back_curio": ["curio_bat_articulated_starwing_mantle.png", "curio_bat_articulated_starwing_mantle_512.png"],
+    "chassis": ["chassis_bat_astral_polymer_default.png", "chassis_bat_astral_polymer_default_512.png"],
+    "costume": ["costume_bat_orbital_stealth_harness.png", "costume_bat_orbital_stealth_harness_512.png"],
+    "head_unit": ["head_bat_sonar_parabolic_crest.png", "head_bat_sonar_parabolic_crest_512.png"],
+    "optic_core": ["face_bat_dual_amber_optic_lens.png", "face_bat_dual_amber_optic_lens_512.png"],
+    "weapon": ["weapon_bat_superconducting_pulse_dart.png", "weapon_bat_superconducting_pulse_dart_512.png"],
+    "winding_key": ["key_bat_orbital_pulsar_key.png", "key_bat_orbital_pulsar_key_512.png"]
+}
 
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    keep = os.path.join(s_dir, ".gitkeep")
-    assert os.path.exists(keep), f"缺少 .gitkeep: {keep}"
-    for fn in os.listdir(s_dir):
-        if fn.lower().endswith(image_exts):
-            found_images.append(os.path.join(s, fn))
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/bat")
 assert os.path.isdir(poses_dir), f"poses/bat 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/bat 缺少 .gitkeep"
+poses_images = []
 for fn in os.listdir(poses_dir):
     if fn.lower().endswith(image_exts):
-        found_images.append(os.path.join("poses/bat", fn))
-
-assert not found_images, f"發現非預期圖片檔案（違反零佔位圖規則）: {found_images}"
-print("✓ 4. 7 大槽位與 poses/bat 空目錄結構就緒，零佔位圖，恪守 .gitkeep 規範")
+        poses_images.append(os.path.join("poses/bat", fn))
+assert not poses_images, f"poses/bat 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
+print("✓ 4. 7 大槽位切片圖檔 100% 就緒，poses/bat 恪守 .gitkeep 規範")
 
 print("=== 0-QA30 查驗 100% 通過！ ===")
