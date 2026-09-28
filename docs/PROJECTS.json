@@ -4206,8 +4206,8 @@
    "id": "kite-official-assets",
    "cat": "遊戲",
    "title": "第四十二族熱流赤鳶(kite)官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "官方資產套件齊全、無頭測試全綠、Vision 複驗合規，送審 sideqa (t_da7de2b4)",
    "keys": [
     "第四十二族熱流赤"
    ]
