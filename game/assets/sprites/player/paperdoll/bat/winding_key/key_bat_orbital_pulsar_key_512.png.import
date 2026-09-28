@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dqwftppp74qbm"
-path="res://.godot/imported/key_bat_orbital_pulsar_key_512.png-cd3c67c6fce88125b8a87b18ec63e6e8.ctex"
+path="res://.godot/imported/key_bat_orbital_pulsar_key_512.png-505edb7f764668d77d0516b1550f2023.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/bat/winding_key/key_bat_orbital_pulsar_key_512.png"
-dest_files=["res://.godot/imported/key_bat_orbital_pulsar_key_512.png-cd3c67c6fce88125b8a87b18ec63e6e8.ctex"]
+source_file="res://assets/sprites/player/paperdoll/bat/winding_key/key_bat_orbital_pulsar_key_512.png"
+dest_files=["res://.godot/imported/key_bat_orbital_pulsar_key_512.png-505edb7f764668d77d0516b1550f2023.ctex"]
 
 [params]
 

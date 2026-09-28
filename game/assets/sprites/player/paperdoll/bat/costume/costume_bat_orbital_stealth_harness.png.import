@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dap6101na66yy"
-path="res://.godot/imported/costume_bat_orbital_stealth_harness.png-f1df66eba02f06d6ba7e09a89a422d71.ctex"
+path="res://.godot/imported/costume_bat_orbital_stealth_harness.png-09049355fd8c632521f7499820b2f555.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/bat/costume/costume_bat_orbital_stealth_harness.png"
-dest_files=["res://.godot/imported/costume_bat_orbital_stealth_harness.png-f1df66eba02f06d6ba7e09a89a422d71.ctex"]
+source_file="res://assets/sprites/player/paperdoll/bat/costume/costume_bat_orbital_stealth_harness.png"
+dest_files=["res://.godot/imported/costume_bat_orbital_stealth_harness.png-09049355fd8c632521f7499820b2f555.ctex"]
 
 [params]
 

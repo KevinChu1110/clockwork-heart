@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://g5ga4pu386gq"
-path="res://.godot/imported/face_bat_dual_amber_optic_lens_512.png-c2a4ea89a273158707327f2d1593dff2.ctex"
+uid="uid://cd1cmj5sh56fb"
+path="res://.godot/imported/idle_512.png-28887f9a17b604017b1b47f57e3e58c1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bat/optic_core/face_bat_dual_amber_optic_lens_512.png"
-dest_files=["res://.godot/imported/face_bat_dual_amber_optic_lens_512.png-c2a4ea89a273158707327f2d1593dff2.ctex"]
+source_file="res://assets/sprites/player/poses/bat/idle_512.png"
+dest_files=["res://.godot/imported/idle_512.png-28887f9a17b604017b1b47f57e3e58c1.ctex"]
 
 [params]
 

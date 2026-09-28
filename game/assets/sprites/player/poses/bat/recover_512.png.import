@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://g5ga4pu386gq"
-path="res://.godot/imported/face_bat_dual_amber_optic_lens_512.png-c2a4ea89a273158707327f2d1593dff2.ctex"
+uid="uid://dqsawwop4csgm"
+path="res://.godot/imported/recover_512.png-2d4e35f2d7447c8339f105257f555b4d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bat/optic_core/face_bat_dual_amber_optic_lens_512.png"
-dest_files=["res://.godot/imported/face_bat_dual_amber_optic_lens_512.png-c2a4ea89a273158707327f2d1593dff2.ctex"]
+source_file="res://assets/sprites/player/poses/bat/recover_512.png"
+dest_files=["res://.godot/imported/recover_512.png-2d4e35f2d7447c8339f105257f555b4d.ctex"]
 
 [params]
 

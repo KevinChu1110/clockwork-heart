@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bsvmytjmmuoqm"
-path="res://.godot/imported/chassis_bat_astral_polymer_default.png-a546497083a8c5a29647a26094941640.ctex"
+path="res://.godot/imported/chassis_bat_astral_polymer_default.png-b20fec5f11bd096f093a58c86432e379.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/bat/chassis/chassis_bat_astral_polymer_default.png"
-dest_files=["res://.godot/imported/chassis_bat_astral_polymer_default.png-a546497083a8c5a29647a26094941640.ctex"]
+source_file="res://assets/sprites/player/paperdoll/bat/chassis/chassis_bat_astral_polymer_default.png"
+dest_files=["res://.godot/imported/chassis_bat_astral_polymer_default.png-b20fec5f11bd096f093a58c86432e379.ctex"]
 
 [params]
 
