@@ -4176,11 +4176,10 @@
    "id": "kite-skeleton",
    "cat": "遊戲",
    "title": "第四十二族熱流赤鳶(kite)資料表骨架與空目錄先行建置",
-   "status": "測試中",
-   "note": "第四十二族熱流赤鳶骨架與空目錄建置完成，等待 sideqa 審核",
+   "status": "已上線",
+   "note": "合進 main (t_68edc9b9)",
    "keys": [
     "第四十二族熱流赤"
-
    ]
   }
  ]
