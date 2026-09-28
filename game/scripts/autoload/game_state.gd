@@ -802,6 +802,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"meerkat": "flint_gun",
 	"courser": "rusty_blade",
 	"beaver": "notch_axe",
+	"stoat": "star_fang",
 }
 
 
@@ -849,6 +850,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"meerkat": default_name = "沙哨狐獴"
 		"courser": default_name = "鐵蹄駿駒"
 		"beaver": default_name = "劈木河狸"
+		"stoat": default_name = "旋刃伶鼬"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
