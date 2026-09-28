@@ -120,6 +120,7 @@ const RACE_FILTER_OPTIONS: Array[Dictionary] = [
 	{"id": "stoat", "name_zh": "伶鼬"},
 	{"id": "seal", "name_zh": "海豹"},
 	{"id": "raven", "name_zh": "渡鴉"},
+	{"id": "kite", "name_zh": "赤鳶"},
 ]
 
 ## 檢查種族是否具備美術立繪與切片資源
@@ -681,6 +682,7 @@ func _get_race_short_name(rid: String) -> String:
 		"stoat": return "伶鼬"
 		"seal": return "海豹"
 		"raven": return "渡鴉"
+		"kite": return "赤鳶"
 		_: return rid
 
 
@@ -795,7 +797,7 @@ func _rebuild_cards() -> void:
 
 	var target_races: Array[String] = []
 	if current_filter_race == "all":
-		var candidates: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven"]
+		var candidates: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite"]
 		for cr in candidates:
 			if _has_race_assets(cr):
 				target_races.append(cr)
@@ -924,6 +926,18 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	return btn
 
 
+static func _load_texture_safe(path: String) -> Texture2D:
+	if path.is_empty():
+		return null
+	if ResourceLoader.exists(path):
+		return load(path) as Texture2D
+	if FileAccess.file_exists(path):
+		var img := Image.load_from_file(path)
+		if img != null and not img.is_empty():
+			return ImageTexture.create_from_image(img)
+	return null
+
+
 ## 取得部件對應之縮圖貼圖（優先 512 高清切片，禁止把 128 像素切片塞進小格）
 func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String = "") -> Texture2D:
 	var r := item_race if not item_race.is_empty() else current_race
@@ -931,13 +945,13 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 	if slot_type == "costume":
 		if item_id in ["none", "bare", "empty"]:
 			var bare_part_512 := "res://assets/sprites/player/paperdoll/%s/costume/costume_none_512.png" % r
-			if not ResourceLoader.exists(bare_part_512):
+			if not (ResourceLoader.exists(bare_part_512) or FileAccess.file_exists(bare_part_512)):
 				bare_part_512 = "res://assets/sprites/player/paperdoll/%s/costume/costume_bare_512.png" % r
-			if ResourceLoader.exists(bare_part_512):
-				return load(bare_part_512) as Texture2D
+			if ResourceLoader.exists(bare_part_512) or FileAccess.file_exists(bare_part_512):
+				return _load_texture_safe(bare_part_512)
 			var bare_512 := "res://assets/sprites/player/paperdoll/%s/composite_preview_bare_512.png" % r
-			if ResourceLoader.exists(bare_512):
-				return load(bare_512) as Texture2D
+			if ResourceLoader.exists(bare_512) or FileAccess.file_exists(bare_512):
+				return _load_texture_safe(bare_512)
 			var bare_comp := PaperdollRenderer.build_composite_texture_512(r, {"costume": "none"})
 			if bare_comp != null:
 				return bare_comp
@@ -945,31 +959,31 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 
 		# 1. 優先 512 切片 (本族 512 -> 通用 common/costume/ -> 去前綴 512)
 		var path512 := "res://assets/sprites/player/paperdoll/%s/costume/%s_512.png" % [r, item_id]
-		if ResourceLoader.exists(path512):
-			return load(path512) as Texture2D
+		if ResourceLoader.exists(path512) or FileAccess.file_exists(path512):
+			return _load_texture_safe(path512)
 
 		var p_common_512 := "res://assets/sprites/player/paperdoll/common/costume/%s_512.png" % item_id
-		if ResourceLoader.exists(p_common_512):
-			return load(p_common_512) as Texture2D
+		if ResourceLoader.exists(p_common_512) or FileAccess.file_exists(p_common_512):
+			return _load_texture_safe(p_common_512)
 
 		var clean_id := item_id.trim_prefix("costume_")
 		var p_common_512_clean := "res://assets/sprites/player/paperdoll/common/costume/%s_512.png" % clean_id
-		if ResourceLoader.exists(p_common_512_clean):
-			return load(p_common_512_clean) as Texture2D
+		if ResourceLoader.exists(p_common_512_clean) or FileAccess.file_exists(p_common_512_clean):
+			return _load_texture_safe(p_common_512_clean)
 
 		# 2. 檢查高清展示立牌裁切 (showcase/*_hd_cut.png, 長邊 >= 512，僅限本族)
 		var hd_cut := "res://assets/sprites/player/showcase/%s_%s_hd_cut.png" % [r, item_id]
-		if ResourceLoader.exists(hd_cut):
-			return load(hd_cut) as Texture2D
+		if ResourceLoader.exists(hd_cut) or FileAccess.file_exists(hd_cut):
+			return _load_texture_safe(hd_cut)
 
 		# 3. 跨族 512 衣服切片共用（同件衣服若在別族目錄下）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite"]
 		for other in all_races:
 			if other == r:
 				continue
 			var cross_512 := "res://assets/sprites/player/paperdoll/%s/costume/%s_512.png" % [other, item_id]
-			if ResourceLoader.exists(cross_512):
-				return load(cross_512) as Texture2D
+			if ResourceLoader.exists(cross_512) or FileAccess.file_exists(cross_512):
+				return _load_texture_safe(cross_512)
 
 		# 4. 找不到任何 512 切片時回 null（UI 顯示無縮圖佔位，禁止拿另一件衣服冒充）
 		return null
@@ -977,23 +991,23 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 	elif slot_type == "chassis":
 		# 1. 優先 512 底盤切片 (本族 chassis/*_512.png，長邊 512)
 		var path512 := "res://assets/sprites/player/paperdoll/%s/chassis/%s_512.png" % [r, item_id]
-		if ResourceLoader.exists(path512):
-			return load(path512) as Texture2D
+		if ResourceLoader.exists(path512) or FileAccess.file_exists(path512):
+			return _load_texture_safe(path512)
 
 		# 2. 跨族 512 底盤共用
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite"]
 		for other in all_races:
 			if other == r:
 				continue
 			var cross_ch_512 := "res://assets/sprites/player/paperdoll/%s/chassis/%s_512.png" % [other, item_id]
-			if ResourceLoader.exists(cross_ch_512):
-				return load(cross_ch_512) as Texture2D
+			if ResourceLoader.exists(cross_ch_512) or FileAccess.file_exists(cross_ch_512):
+				return _load_texture_safe(cross_ch_512)
 
 		var clean_id := item_id.trim_prefix("paint_")
 		for other in all_races:
 			var cross_clean := "res://assets/sprites/player/paperdoll/%s/chassis/%s_512.png" % [other, clean_id]
-			if ResourceLoader.exists(cross_clean):
-				return load(cross_clean) as Texture2D
+			if ResourceLoader.exists(cross_clean) or FileAccess.file_exists(cross_clean):
+				return _load_texture_safe(cross_clean)
 
 	return null
 
