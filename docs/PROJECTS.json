@@ -3746,8 +3746,8 @@
    "id": "sailfish-paperdoll",
    "cat": "遊戲",
    "title": "第三十一族破浪旗魚7大部件槽位紙娃娃切片與雙規格資產",
-   "status": "測試中",
-   "note": "破浪旗魚7大槽位切片已產出並通過0-ART稽核與無頭測試，已推入main，提交sideqa審查",
+   "status": "已上線",
+   "note": "sideqa審查通過，7大部件雙規格切片與測試全綠入main",
    "keys": [
     "第三十一族破浪旗"
    ]
