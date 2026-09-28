@@ -21,7 +21,7 @@ from PIL import Image, ImageChops
 import numpy as np
 from scipy.ndimage import binary_fill_holes, label
 
-REPO_ROOT = "/opt/side/bravesoul-game"
+REPO_ROOT = os.environ.get("REPO_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 POSES_DIR = f"{REPO_ROOT}/game/assets/sprites/player/poses/bison"
 EXPECTED_SHADOW = [66, 65, 63, 60, 49, 31, 0, 0, 0, 0]
 POSES = ['idle', 'attack', 'hit', 'recover', 'skill', 'telegraph']
