@@ -792,6 +792,176 @@ func bag_souls() -> Array:
 	return out
 
 
+func calc_soul_score(s: Dictionary) -> int:
+	if s.is_empty():
+		return 0
+	var b: Dictionary = calc_soul_bonus(s)
+	return int(b.get("atk", 0)) + int(b.get("def", 0)) + int(b.get("hp", 0))
+
+
+static func _soul_quality_rank(q: String) -> int:
+	match q:
+		"神": return 60
+		"秘境": return 50
+		"稀世": return 40
+		"大吉": return 30
+		"吉": return 20
+		"凡": return 10
+		"大凶": return 0
+		_: return 0
+
+
+func auto_equip_best() -> Dictionary:
+	ensure_slots()
+	var n: int = slot_count()
+	if n <= 0:
+		return {
+			"ok": false,
+			"changed": false,
+			"msg": _t("器階不足，尚無魂槽。先找釘釘養器。"),
+			"lines": PackedStringArray(),
+			"changes": [],
+			"total_delta": {"atk": 0, "def": 0, "hp": 0}
+		}
+
+	if GameState.souls.is_empty():
+		return {
+			"ok": false,
+			"changed": false,
+			"msg": _t("背包內無可配置戰魂。"),
+			"lines": PackedStringArray(),
+			"changes": [],
+			"total_delta": {"atk": 0, "def": 0, "hp": 0}
+		}
+
+	# 依三圍總分降序排序所有可用戰魂（含已裝備與未裝備）
+	var all_candidates: Array = GameState.souls.duplicate()
+	all_candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var sa := calc_soul_score(a)
+		var sb := calc_soul_score(b)
+		if sa != sb:
+			return sa > sb
+		var qa := _soul_quality_rank(str(a.get("quality", "")))
+		var qb := _soul_quality_rank(str(b.get("quality", "")))
+		if qa != qb:
+			return qa > qb
+		var la := int(a.get("level", 0))
+		var lb := int(b.get("level", 0))
+		if la != lb:
+			return la > lb
+		return str(a.get("id", "")) < str(b.get("id", ""))
+	)
+
+	var target_n: int = mini(n, all_candidates.size())
+	var top_candidates: Array = all_candidates.slice(0, target_n)
+
+	# 規劃各槽配置
+	var new_slots: Array = []
+	for i in range(n):
+		new_slots.append("")
+
+	var remaining_top: Array = []
+	for s in top_candidates:
+		remaining_top.append(s)
+
+	# 第一階段：保留原本就已在槽位上且屬於最佳組合的戰魂，避免無謂換位
+	for i in range(n):
+		var cur_id := str(GameState.soul_slots[i])
+		if cur_id != "":
+			for j in range(remaining_top.size()):
+				if str(remaining_top[j].get("id", "")) == cur_id:
+					new_slots[i] = cur_id
+					remaining_top.remove_at(j)
+					break
+
+	# 第二階段：對空置槽位依序填入最佳組合中剩餘的最高分戰魂
+	for i in range(n):
+		if new_slots[i] == "" and not remaining_top.is_empty():
+			var pick: Dictionary = remaining_top.pop_front()
+			new_slots[i] = str(pick.get("id", ""))
+
+	# 檢查差異並以既有 compare_embed 產生對比文字
+	var lines: PackedStringArray = []
+	var changes: Array[Dictionary] = []
+	var total_da := 0
+	var total_dd := 0
+	var total_dh := 0
+
+	for i in range(n):
+		var old_id := str(GameState.soul_slots[i])
+		var new_id: String = new_slots[i]
+		if old_id != new_id:
+			var cmp: Dictionary = compare_embed(new_id, i)
+			var l: String = str(cmp.get("line", ""))
+			lines.append(l)
+			var da: int = int(cmp.get("atk", 0))
+			var dd: int = int(cmp.get("def", 0))
+			var dh: int = int(cmp.get("hp", 0))
+			total_da += da
+			total_dd += dd
+			total_dh += dh
+			changes.append({
+				"slot": i,
+				"old_id": old_id,
+				"new_id": new_id,
+				"line": l,
+				"da": da,
+				"dd": dd,
+				"dh": dh,
+			})
+
+	if changes.is_empty():
+		return {
+			"ok": true,
+			"changed": false,
+			"msg": _t("目前已是最佳戰魂配置，無需調整。"),
+			"lines": PackedStringArray(),
+			"changes": [],
+			"total_delta": {"atk": 0, "def": 0, "hp": 0}
+		}
+
+	# 套用新配置到 GameState
+	for i in range(n):
+		var old_id := str(GameState.soul_slots[i])
+		if old_id != "" and not (old_id in new_slots):
+			_set_soul_equipped(old_id, false)
+
+	for i in range(n):
+		var new_id: String = new_slots[i]
+		GameState.soul_slots[i] = new_id
+		if new_id != "":
+			_set_soul_equipped(new_id, true)
+
+	var msg_lines: PackedStringArray = [_t("已一鍵配置最佳戰魂：")]
+	for l in lines:
+		msg_lines.append(l)
+	if lines.size() > 1:
+		var total_bits: PackedStringArray = []
+		if total_da > 0:
+			total_bits.append(_t("攻+%d") % total_da)
+		elif total_da < 0:
+			total_bits.append(_t("攻%d") % total_da)
+		if total_dd > 0:
+			total_bits.append(_t("防+%d") % total_dd)
+		elif total_dd < 0:
+			total_bits.append(_t("防%d") % total_dd)
+		if total_dh > 0:
+			total_bits.append(_t("血+%d") % total_dh)
+		elif total_dh < 0:
+			total_bits.append(_t("血%d") % total_dh)
+		if not total_bits.is_empty():
+			msg_lines.append(_t("總計：%s") % " ".join(total_bits))
+
+	return {
+		"ok": true,
+		"changed": true,
+		"msg": "\n".join(msg_lines),
+		"lines": lines,
+		"changes": changes,
+		"total_delta": {"atk": total_da, "def": total_dd, "hp": total_dh}
+	}
+
+
 func fuse_max_level(quality: String) -> int:
 	if quality == "神":
 		return SHEN_MAX_LEVEL
