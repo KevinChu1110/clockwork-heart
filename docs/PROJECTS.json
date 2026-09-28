@@ -4226,8 +4226,8 @@
    "id": "swan-combat-poses",
    "cat": "遊戲",
    "title": "第四十三族旋音天鵝(swan)六大戰鬥姿態補齊",
-   "status": "測試中",
-   "note": "完成六大戰鬥姿態雙規格產出與測試，送審 sideqa (t_bd5713df)",
+   "status": "已上線",
+   "note": "六大戰鬥姿態雙規格已審查通過(t_bd5713df done)，合main",
    "keys": [
     "第四十三族旋音天"
    ]
