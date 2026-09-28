@@ -88,26 +88,28 @@ func _initialize() -> void:
 	else:
 		print("  ✓ poses/peacock 目錄存在")
 
-	# 3. 驗證零美術佔位圖（無任何 png / webp / jpg 圖片產生，只放 .gitkeep）
+	# 3. 驗證 7 大槽位美術切片均已就緒 (128x128 與 512x512)
 	var peacock_global_dir := ProjectSettings.globalize_path(base_path)
-	var da := DirAccess.open(peacock_global_dir)
-	var image_files_found: Array[String] = []
-	if da:
-		for sid in expected_slots:
-			var sub_da := DirAccess.open("%s/%s" % [peacock_global_dir, sid])
-			if sub_da:
-				sub_da.list_dir_begin()
-				var fn := sub_da.get_next()
-				while fn != "":
-					if fn.ends_with(".png") or fn.ends_with(".webp") or fn.ends_with(".jpg"):
-						image_files_found.append("%s/%s" % [sid, fn])
-					fn = sub_da.get_next()
-				sub_da.list_dir_end()
-	if not image_files_found.is_empty():
-		push_error("發現意外產生的圖片檔案（違背零美術佔位圖要求）: %s" % str(image_files_found))
+	var missing_files: Array[String] = []
+	var expected_slice_files := {
+		"back_curio": ["curio_peacock_articulated_kaleidoscope_fan.png", "curio_peacock_articulated_kaleidoscope_fan_512.png"],
+		"chassis": ["chassis_peacock_glazed_porcelain_default.png", "chassis_peacock_glazed_porcelain_default_512.png"],
+		"costume": ["costume_peacock_marionette_court_cuirass.png", "costume_peacock_marionette_court_cuirass_512.png"],
+		"head_unit": ["head_peacock_baroque_diadem_prism.png", "head_peacock_baroque_diadem_prism_512.png"],
+		"optic_core": ["face_peacock_kaleidoscope_gem_lens.png", "face_peacock_kaleidoscope_gem_lens_512.png"],
+		"weapon": ["weapon_peacock_kaleidoscope_prism_focus.png", "weapon_peacock_kaleidoscope_prism_focus_512.png"],
+		"winding_key": ["key_peacock_filigree_sunburst_key.png", "key_peacock_filigree_sunburst_key_512.png"]
+	}
+	for sid in expected_slots:
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [peacock_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("稜鏡孔雀切片檔案缺失: %s" % str(missing_files))
 		ok = false
 	else:
-		print("  ✓ 嚴格恪守零美術佔位圖，7 槽位目錄下無任何圖片資產，僅保留 .gitkeep")
+		print("  ✓ 稜鏡孔雀 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 4. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog) 能讀到 peacock
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -134,13 +136,13 @@ func _initialize() -> void:
 	else:
 		print("  ✓ PaperdollSelectDemo.RACE_KEYS 包含 peacock")
 
-	# 驗證防護守衛 has_race_assets 正常運作（尚未產圖時應為 false，不露出空卡）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("peacock")
-	if has_assets:
-		push_error("尚未產圖前 has_race_assets('peacock') 應回傳 false，防止空卡露出！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('peacock') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ 零美術佔位防護守衛生效：has_race_assets('peacock') 正確回傳 false（安全隱藏）")
+		print("  ✓ 防護守衛生效：has_race_assets('peacock') 正確回傳 true（展示正常）")
 
 	# 5. 驗證 GameState 與 EquipmentSystem 開局武器配置對齊 crystal (shard_focus)
 	var gs = root.get_node_or_null("GameState")
