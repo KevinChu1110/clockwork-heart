@@ -4026,8 +4026,8 @@
    "id": "courser-official-assets",
    "cat": "遊戲",
    "title": "第三十七族鐵蹄駿駒(courser)官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
-   "status": "開發中",
-   "note": "開始補齊第三十七族鐵蹄駿駒官方資產套件（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
+   "status": "測試中",
+   "note": "官方資產套件已完成自測、生成4張驗收卡並經Vision驗證，無頭測試全綠，推送至 origin/agent/20260928-courser-official-assets，交由 sideqa 審查",
    "keys": [
     "第三十七族鐵蹄駿"
    ]
