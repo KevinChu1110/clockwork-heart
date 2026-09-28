@@ -1,5 +1,5 @@
 extends SceneTree
-## 《發條之心》第四十九族熔鎧犰狳 (armadillo) 骨架先行建置驗證
+## 《發條之心》第四十九族熔鎧犰狳 (armadillo) 骨架與切片就緒驗證
 ## 執行方式：godot --path game --headless -s res://scripts/art/test_paperdoll_armadillo_skeleton.gd
 
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
@@ -8,7 +8,7 @@ const WardrobeDialog = preload("res://scripts/ui/wardrobe_dialog.gd")
 
 func _initialize() -> void:
 	var ok := true
-	print("=== 開始第四十九族熔鎧犰狳 (armadillo) 骨架先行建置測試 ===")
+	print("=== 開始第四十九族熔鎧犰狳 (armadillo) 骨架與切片就緒測試 ===")
 
 	# 1. 驗證規格檔 (paperdoll_slots.json) 讀取與種族數
 	var spec: Dictionary = PaperdollRenderer.get_spec()
@@ -69,35 +69,30 @@ func _initialize() -> void:
 		else:
 			print("  ✓ 0-QA30 查驗合格：正表與 fallback 表 armadillo aliases 100%% 對齊一致: %s" % str(fallback_aliases))
 
-	# 2. 驗證 7 大槽位目錄與既有族完全一致，且恪守零美術佔位圖（僅保留 .gitkeep）
+	# 2. 驗證 7 大槽位美術切片均已就緒 (128x128 與 512x512)
 	var expected_slots := ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 	var base_path := "res://assets/sprites/player/paperdoll/armadillo"
-	var image_exts := [".png", ".webp", ".jpg", ".jpeg"]
+	var armadillo_global_dir := ProjectSettings.globalize_path(base_path)
+	var missing_files: Array[String] = []
+	var expected_slice_files := {
+		"back_curio": ["curio_armadillo_segmented_cast_iron_carapace.png", "curio_armadillo_segmented_cast_iron_carapace_512.png"],
+		"chassis": ["chassis_armadillo_crucible_iron_default.png", "chassis_armadillo_crucible_iron_default_512.png"],
+		"costume": ["costume_armadillo_foundry_anvil_cuirass.png", "costume_armadillo_foundry_anvil_cuirass_512.png"],
+		"head_unit": ["head_armadillo_quenched_visor_cowl.png", "head_armadillo_quenched_visor_cowl_512.png"],
+		"optic_core": ["face_armadillo_amber_refractory_lens.png", "face_armadillo_amber_refractory_lens_512.png"],
+		"weapon": ["weapon_armadillo_black_iron_heavy_sword.png", "weapon_armadillo_black_iron_heavy_sword_512.png"],
+		"winding_key": ["key_armadillo_crucible_four_leaf_key.png", "key_armadillo_crucible_four_leaf_key_512.png"]
+	}
 	for sid in expected_slots:
-		var slot_dir := "%s/%s" % [base_path, sid]
-		var global_slot_dir := ProjectSettings.globalize_path(slot_dir)
-		if not DirAccess.dir_exists_absolute(global_slot_dir):
-			push_error("熔鎧犰狳槽位目錄不存在: %s" % slot_dir)
-			ok = false
-		else:
-			var gitkeep_file := "%s/.gitkeep" % global_slot_dir
-			if not FileAccess.file_exists(gitkeep_file):
-				push_error("熔鎧犰狳槽位目錄缺少 .gitkeep: %s" % slot_dir)
-				ok = false
-			# 檢查無圖片
-			var da := DirAccess.open(global_slot_dir)
-			if da:
-				da.list_dir_begin()
-				var fn := da.get_next()
-				while fn != "":
-					if not da.current_is_dir():
-						for ext in image_exts:
-							if fn.ends_with(ext):
-								push_error("先行骨架發現非預期圖片檔案（違反零佔位圖規則）: %s/%s" % [sid, fn])
-								ok = false
-					fn = da.get_next()
-				da.list_dir_end()
-			print("  ✓ 槽位目錄存在且恪守零佔位圖: %s" % sid)
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [armadillo_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("熔鎧犰狳切片檔案缺失: %s" % str(missing_files))
+		ok = false
+	else:
+		print("  ✓ 熔鎧犰狳 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 驗證 poses/armadillo 目錄
 	var poses_armadillo := "res://assets/sprites/player/poses/armadillo"
@@ -120,13 +115,13 @@ func _initialize() -> void:
 		var armadillo_rdata: Dictionary = races_data["armadillo"]
 		print("  ✓ PaperdollSelectDemo.RACES_DATA 正確納入 armadillo: %s" % armadillo_rdata.get("name_zh"))
 
-	# 驗證 has_race_assets 防護守衛（因為尚無切片與立繪，必須返回 false 安全隱藏）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("armadillo")
-	if has_assets:
-		push_error("尚未產出切片立繪前，has_race_assets('armadillo') 應為 false（安全隱藏防護守衛）！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('armadillo') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ has_race_assets('armadillo') 正確回傳 false（安全隱藏未解鎖族群，不露出空卡）")
+		print("  ✓ 防護守衛生效：has_race_assets('armadillo') 正確回傳 true（展示正常）")
 
 	var filter_found := false
 	for rf in WardrobeDialog.RACE_FILTER_OPTIONS:
@@ -167,9 +162,9 @@ func _initialize() -> void:
 		print("  • 槽位 %s 解析 fallback 路徑: %s" % [sid, path_res])
 
 	if ok:
-		print("\n🎉 第四十九族熔鎧犰狳 (armadillo) 骨架先行建置測試全部 PASS！")
+		print("\n🎉 第四十九族熔鎧犰狳 (armadillo) 骨架與切片就緒測試全部 PASS！")
 		print("PAPERDOLL_ARMADILLO_SKELETON_OK")
 		quit(0)
 	else:
-		printerr("\n❌ 第四十九族熔鎧犰狳 (armadillo) 骨架先行建置測試有失敗項目！")
+		printerr("\n❌ 第四十九族熔鎧犰狳 (armadillo) 骨架與切片就緒測試有失敗項目！")
 		quit(1)
