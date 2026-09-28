@@ -16,7 +16,7 @@ from typing import cast
 from PIL import Image, ImageOps
 import numpy as np
 
-REPO_ROOT = "/root/.hermes/kanban/boards/side-bravesoul/workspaces/t_80f63a7e"
+REPO_ROOT = os.environ.get("REPO_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BASE_DIR = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/badger"
 OUT_DIR = f"{REPO_ROOT}/game/assets/sprites/player/poses/badger"
 os.makedirs(OUT_DIR, exist_ok=True)

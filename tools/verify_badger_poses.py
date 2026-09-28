@@ -20,7 +20,7 @@ from PIL import Image, ImageChops
 import numpy as np
 from scipy.ndimage import binary_fill_holes, label
 
-REPO_ROOT = "/root/.hermes/kanban/boards/side-bravesoul/workspaces/t_80f63a7e"
+REPO_ROOT = os.environ.get("REPO_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 POSES_DIR = f"{REPO_ROOT}/game/assets/sprites/player/poses/badger"
 EXPECTED_SHADOW = [64, 63, 61, 57, 47, 29, 0, 0, 0, 0]
 POSES = ['idle', 'attack', 'hit', 'recover', 'skill', 'telegraph']

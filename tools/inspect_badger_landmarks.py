@@ -6,7 +6,7 @@ import os
 from PIL import Image
 import numpy as np
 
-REPO_ROOT = "/root/.hermes/kanban/boards/side-bravesoul/workspaces/t_80f63a7e"
+REPO_ROOT = os.environ.get("REPO_ROOT", os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 BASE_DIR = f"{REPO_ROOT}/game/assets/sprites/player/paperdoll/badger"
 
 slices = [
