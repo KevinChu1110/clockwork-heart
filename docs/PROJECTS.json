@@ -4196,8 +4196,8 @@
    "id": "kite-poses",
    "cat": "遊戲",
    "title": "第四十二族熱流赤鳶六大戰鬥姿態補齊",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "開始補齊 idle/telegraph/attack/skill/hit/recover 六大戰鬥姿態",
    "keys": [
     "第四十二族熱流赤"
    ]
