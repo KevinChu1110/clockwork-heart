@@ -11,7 +11,7 @@
 > - `docs/world/regions/R06_MOLTEN_FOUNDRY.md`（第 1 行區域代號與名稱「R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano」、第 4 行「高耐熱粗獷鑄鐵板件、黑曜石淬火耐火磚、金色液態流光鐵水池、重型鍛打氣動連桿與高壓黃銅洩壓儀表套件」、第 6 行「局域走時狀態：齒輪超頻過載伴隨重錘敲擊律動（秒針每 1.5 秒急促跳動一格，伴隨重型鐵砧沉重打擊聲「鏘——噹！」；高溫熱浪引發發條金屬微幅熱脹，需精準掌握過載散熱節奏穿行）」、第 19 行「金色液態鐵水熔池（Golden Molten Iron Basins）」、第 20 行「黑曜淬火石磚步道（Obsidian Quenched Brick Walkways）」、第 21 行「重型鍛造工坊與衝壓懸橋（Heavy Forging Foundries & Stamping Bridges）」、第 22 行「黃銅洩壓儀表塔（Brass Pressure-Gauge Clocktowers）」、第 30 行「晨曦天軌 6 號熔爐重載貨運月台（Dawn Rail Heavy Freight Platform 6）」、第 32 行「高壓地熱噴射升空彈射井（Geothermal Ejection Launch Silo）」、第 33 行「冷卻熔渣重力排料傾卸滑道（Slag Gravity Dump Chute）」、第 35 行「磁吸隔熱排渣護欄網（Magnetic Slag-Retention Grid）」、第 43 行「重裝鑄鐵矮人玩偶與大型四葉散熱鍛造發條鑰匙」、第 47 行「淬火冷卻噴淋池（Quenching Shower Station）」、第 55 行「矮人鐵匠大師·重錘布隆」、第 64 行「陶土魔像學徒·黏土泥泥」、第 72 行「熔爐溫控長老·坩堝老爹」、第 101 行及第 238 行「黑曜石淬火神壇（Obsidian Quenched Great Anvil）」、第 237 行「金色熔流鐵水池」、第 240 行「高壓地熱升空彈射井」、第 241 行「冷卻熔渣重力傾卸滑道」、第 252 行特產武器「玄鐵重破大劍（Black Iron Heavy Greatsword）」、第 255 行代表素材「玄鐵精煉鑄錠」、第 256 行代表素材「耐高溫合金彈簧」、第 257 行代表素材「熔岩黑曜石拳板」、第 258 行代表素材「耐火石墨潤滑膏」、第 259 行「七煞星軸」、第 260 行「廉貞星軸」、第 263 行「高溫過熱淬火窗口」）  
 > - `docs/PRODUCT_LOCK_0.20.md`（§1.6 體驗支柱、§3.1 核心循環、§5.2 包體規範、§9 准入門檻）  
 > - `game/data/tables/weapon_classes.json`（騎士正式名稱 `knight`，長劍標籤宣言 `\"平衡的刃\"`，武器 `sword`，數值 `atk: 2, def: 1, hp: 0, crit: 1.0, speed: 0`，新手武器 `meager_edge`）  
-> - `game/data/tables/equipment.json`（長劍正式 line: `\"sword\"`，初階武器：第 34 行 `meager_edge` 微末之刃，高階相容武器：第 47 行 `iron_blade` 鐵劍）  
+> - `game/data/tables/equipment.json`（長劍正式 line: `\"sword\"`，初階武器：第 34 行 `meager_edge` 微末之刃，高階相容武器：第 36 行 `knight_saber` 騎士軍刀）  
 
 ---
 
@@ -105,7 +105,7 @@
 底層完全掛載於 `weapon_classes.json` 的 `sword`（騎士·劍）類別，享有 `sword` 既有的「平衡的刃」標籤宣言（Tagline: `\"平衡的刃\"`）、攻防平均最好上手、出招節奏穩怒氣接得順、裝備選擇最多之特性（`atk: 2, def: 1, hp: 0, crit: 1.0, speed: 0`），完美呼應 `R06_MOLTEN_FOUNDRY.md` 第 6 行「秒針每 1.5 秒急促跳動一格，伴隨重型鐵砧沉重打擊聲鏘——噹！」之高溫重鍛金屬律動！
 
 - **既有武器 ID 對齊（嚴格遵守規範）**：  
-  在資料表關聯層，原生武器可完全向下相容掛載既有 `equipment.json` 中 `slot: \"weapon\"`、`line: \"sword\"` 的初階裝備 `meager_edge`（微末之刃）與高階裝備 `iron_blade`（鐵劍），完全不破壞既有數值平衡。
+  在資料表關聯層，原生武器可完全向下相容掛載既有 `equipment.json` 中 `slot: \"weapon\"`、`line: \"sword\"` 的初階裝備 `meager_edge`（微末之刃）與高階裝備 `knight_saber`（騎士軍刀），完全不破壞既有數值平衡。
 
 ### 1.3 差異化定位：與既有 4 款長劍騎士（白金兔、荒原鋼狼、巡林松鼠、鐵蹄駿駒）絕不撞型之論證
 
@@ -360,7 +360,7 @@
 - [x] **review.md 0-PLAN1 必查點 3（區域編號查驗）**：精準掛載 `R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano`，編號與區域名稱與既有檔案第 1 行 100% 一致。
 - [x] **review.md 0-PLAN1 必查點 4（盤點表職業中文名）**：第 1.1 節既有四十八族盤點表職業中文名稱全數採用正式標準名稱（騎士/法師/戰士/武術家/忍者/遊俠），精確盤點既有 48 族（含第 43 族旋音天鵝、第 44 族撼地野牛、第 45 族巡管守宮、第 46 族破星蜜獾、第 47 族澄心水豚、第 48 族振律啄木鳥）。
 - [x] **review.md 23f-1（單一職業標籤）**：職業名稱唯一嚴格對齊為 `騎士 (Knight)`，無任何雙標籤或自創詞。
-- [x] **review.md 23f-2（武器名稱前後一致）**：原生專屬武器在全文所有章節、表格與 JSON 片段中均統一稱作「玄鐵重破大劍」，精確落地於 `R06_MOLTEN_FOUNDRY.md` 第 252 行特產武器，相容武器精確對齊既有 `equipment.json` 之 `meager_edge`（微末之刃）與 `iron_blade`（鐵劍）。
+- [x] **review.md 23f-2（武器名稱前後一致）**：原生專屬武器在全文所有章節、表格與 JSON 片段中均統一稱作「玄鐵重破大劍」，精確落地於 `R06_MOLTEN_FOUNDRY.md` 第 252 行特產武器，相容武器精確對齊既有 `equipment.json` 之 `meager_edge`（微末之刃）與 `knight_saber`（騎士軍刀）。
 - [x] **review.md 23f-4 / CANON 零毛皮鐵律**：全篇 100% 清除所有生物皮毛、真角質鱗片、肉質、血液等軟組織字眼，全面轉譯為沖壓薄鋼板、高耐熱粗獷鑄鐵板件、黑曜石淬火耐火磚、琥珀石英目鏡、四葉散熱發條鑰匙與多節沖壓鑄鐵散熱背甲。
 - [x] **review.md 0-MKT7（單持無穿模規範）**：明確指定右手主持玄鐵重破大劍劍柄、左臂微屈護於身前，全圖精確為 1 把武器，0 佔位短棒，0 多餘浮動武器，0 雙持穿模違規。
 - [x] **review.md 0-QA30 前置防護**：aliases 預先定案 `crucible_armadillo`, `molten_armadillo`, `quenched_armadillo`, `clockwork_armadillo`，為下游骨架單建立唯一真相源。

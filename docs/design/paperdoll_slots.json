@@ -5737,7 +5737,7 @@
           "ears": "短粗靈巧的折疊黃銅耳鰭，內嵌高溫抗震彈簧與散熱百葉通風孔，無生物耳廓",
           "torso_and_limbs": "重裝雙層沖壓高耐熱鑄鐵球鉸底盤（#2B2630），腹部包覆耐熱象牙白陶瓷隔熱層（#FFFDF8），四肢為帶矽膠密封圈的黃銅球鉸鏈",
           "tail": "四節同心金屬套筒串聯而成的靈動多節鑄鐵散熱重尾，末端裝配鈍圓形防撞配重塊，戰鬥中自然貼地吸收後坐力",
-          "weapon_system": "右手主持大劍劍柄、垂直立於身前專屬「玄鐵重破大劍（Black Iron Heavy Greatsword）」，高溫淬火玄鐵鑄鍛劍刃搭配黃銅加厚十字格擋護手，底層掛載 equipment.json 既有 meager_edge (tier 1) 與 iron_blade (tier 2)"
+          "weapon_system": "右手主持大劍劍柄、垂直立於身前專屬「玄鐵重破大劍（Black Iron Heavy Greatsword）」，高溫淬火玄鐵鑄鍛劍刃搭配黃銅加厚十字格擋護手，底層掛載 equipment.json 既有 meager_edge (tier 2) 與 knight_saber (tier 3)"
         },
         "color_palette": {
           "base": "#FFFDF8 (基底象牙白陶瓷釉/拋光耐熱鋁鎳合金，腹部隔熱層與關節受光高光)",
