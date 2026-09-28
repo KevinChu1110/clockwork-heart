@@ -564,16 +564,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_sailfish_abyssal_titanium_default", "name_zh": "破浪旗魚深海鍍鈦骨架素體", "desc": "抗侵蝕陽極氧化鈷藍鍍鈦板件，象牙白陶瓷胸腹，雙葉螺旋推進尾"}
 		]
+	},
+	"rhino": {
+		"id": "rhino",
+		"name_zh": "重角犀牛",
+		"name_en": "The Heavyhorn Rhino",
+		"archetype": "戰士 (Viking)",
+		"thumb": "res://assets/sprites/player/showcase/rhino_idle_hd.png",
+		"desc": "赤焰熔爐的破陣先鋒，粗砂鑄鐵重裝裝甲，雙聯衝壓重角與熔爐破陣重鋼戰斧。",
+		"costumes": [
+			{"id": "costume_rhino_crucible_smith_plate", "name_zh": "熔火鍛造重裝護胸甲", "desc": "黑曜耐火弧面胸甲，胸口鉚接拋光黃銅鐵砧浮雕與暖橘警示壓條"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現消光粗砂黑鑄鐵板件與黑曜淬火耐火層"}
+		],
+		"chassis": [
+			{"id": "chassis_rhino_molten_iron_default", "name_zh": "重角犀牛熔鑄粗鐵素體", "desc": "粗砂黑鑄鐵板件，球窩關節配防燙天藍耐熱圈，發條配重短尾"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -1058,6 +1073,7 @@ func confirm_selection() -> void:
 				"ram": gs.player_name = "星盤靈羊"
 				"chameleon": gs.player_name = "幻彩變色龍"
 				"sailfish": gs.player_name = "破浪旗魚"
+				"rhino": gs.player_name = "重角犀牛"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
