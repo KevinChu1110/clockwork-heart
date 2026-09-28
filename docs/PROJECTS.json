@@ -4166,8 +4166,8 @@
    "id": "raven-combat-poses",
    "cat": "遊戲",
    "title": "第四十一族星儀渡鴉六大戰鬥姿態補齊",
-   "status": "測試中",
-   "note": "六大戰鬥姿態雙規格補齊，無頭測試全綠，Vision複驗通過",
+   "status": "已上線",
+   "note": "合進 main (t_28849f7f)",
    "keys": [
     "第四十一族星儀渡"
    ]
