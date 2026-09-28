@@ -4316,8 +4316,8 @@
    "id": "badger-proposal",
    "cat": "世界觀",
    "title": "第四十六種動物破星蜜獾紙娃娃角色設計提案",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "完成docs/world、docs/art、docs/design三處文件撰寫，待sideqa審查",
    "keys": [
     "第四十六種動物破"
    ]
