@@ -3986,8 +3986,8 @@
    "id": "courser-combat-poses",
    "cat": "遊戲",
    "title": "第三十七族鐵蹄駿駒(courser)六大戰鬥姿態補齊",
-   "status": "測試中",
-   "note": "完成六大動作姿態雙規格產出、無頭測試全綠、實機截圖完成，送審 sideqa",
+   "status": "已上線",
+   "note": "sideqa審核通過(t_888b2579 done)，已merge main",
    "keys": [
     "第三十七族鐵蹄駿"
    ]
