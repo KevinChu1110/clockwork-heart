@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bv64tt6jblqhy"
-path="res://.godot/imported/costume_toucan_vine_valley_scout_harness_512.png-6e4ce9e610874b23af34c8005cb977c6.ctex"
+path="res://.godot/imported/costume_toucan_vine_valley_scout_harness_512.png-cf11c3d79415c2ad24d3b24d2078e4eb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/toucan/costume/costume_toucan_vine_valley_scout_harness_512.png"
-dest_files=["res://.godot/imported/costume_toucan_vine_valley_scout_harness_512.png-6e4ce9e610874b23af34c8005cb977c6.ctex"]
+source_file="res://assets/paperdoll/toucan/costume/costume_toucan_vine_valley_scout_harness_512.png"
+dest_files=["res://.godot/imported/costume_toucan_vine_valley_scout_harness_512.png-cf11c3d79415c2ad24d3b24d2078e4eb.ctex"]
 
 [params]
 

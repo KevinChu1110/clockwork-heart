@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bepthmqo3vo2i"
-path="res://.godot/imported/costume_bison_junkyard_demolition_cuirass_512.png-6b37e66e0b822ffdbcae62f8d26b1f0e.ctex"
+path="res://.godot/imported/costume_bison_junkyard_demolition_cuirass_512.png-1d2c1a7caaa29314fc974c786fa67223.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bison/costume/costume_bison_junkyard_demolition_cuirass_512.png"
-dest_files=["res://.godot/imported/costume_bison_junkyard_demolition_cuirass_512.png-6b37e66e0b822ffdbcae62f8d26b1f0e.ctex"]
+source_file="res://assets/paperdoll/bison/costume/costume_bison_junkyard_demolition_cuirass_512.png"
+dest_files=["res://.godot/imported/costume_bison_junkyard_demolition_cuirass_512.png-1d2c1a7caaa29314fc974c786fa67223.ctex"]
 
 [params]
 

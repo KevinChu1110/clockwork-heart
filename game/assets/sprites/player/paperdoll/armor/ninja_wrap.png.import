@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://davejtuxdy70c"
-path="res://.godot/imported/ninja_wrap.png-ece9ee14024da2e803c9d5ddeb82d52b.ctex"
+path="res://.godot/imported/ninja_wrap.png-00e1003ba179b59d7c92e179410bd171.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/armor/ninja_wrap.png"
-dest_files=["res://.godot/imported/ninja_wrap.png-ece9ee14024da2e803c9d5ddeb82d52b.ctex"]
+source_file="res://assets/paperdoll/armor/ninja_wrap.png"
+dest_files=["res://.godot/imported/ninja_wrap.png-00e1003ba179b59d7c92e179410bd171.ctex"]
 
 [params]
 

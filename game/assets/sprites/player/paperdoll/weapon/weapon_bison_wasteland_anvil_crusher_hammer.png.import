@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cjbiir7i58cyw"
-path="res://.godot/imported/weapon_bison_wasteland_anvil_crusher_hammer.png-ce43fba1f3c50a7d5dfac4e3dcb21fa9.ctex"
+path="res://.godot/imported/weapon_bison_wasteland_anvil_crusher_hammer.png-8b61ec3323ca279eb1f605a25eeaec01.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/weapon_bison_wasteland_anvil_crusher_hammer.png"
-dest_files=["res://.godot/imported/weapon_bison_wasteland_anvil_crusher_hammer.png-ce43fba1f3c50a7d5dfac4e3dcb21fa9.ctex"]
+source_file="res://assets/paperdoll/weapon/weapon_bison_wasteland_anvil_crusher_hammer.png"
+dest_files=["res://.godot/imported/weapon_bison_wasteland_anvil_crusher_hammer.png-8b61ec3323ca279eb1f605a25eeaec01.ctex"]
 
 [params]
 

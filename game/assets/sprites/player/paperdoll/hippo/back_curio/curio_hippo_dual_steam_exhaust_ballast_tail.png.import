@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qggpe3rxzqqjh"
-path="res://.godot/imported/curio_hippo_dual_steam_exhaust_ballast_tail.png-5bf313cef5a0c4f62cc102cc98fb04d2.ctex"
+uid="uid://ys71u3xqw8if"
+path="res://.godot/imported/curio_hippo_dual_steam_exhaust_ballast_tail.png-9cb4e1093b4489631bb63c1cc9e09116.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hippo/back_curio/curio_hippo_dual_steam_exhaust_ballast_tail.png"
-dest_files=["res://.godot/imported/curio_hippo_dual_steam_exhaust_ballast_tail.png-5bf313cef5a0c4f62cc102cc98fb04d2.ctex"]
+source_file="res://assets/paperdoll/hippo/back_curio/curio_hippo_dual_steam_exhaust_ballast_tail.png"
+dest_files=["res://.godot/imported/curio_hippo_dual_steam_exhaust_ballast_tail.png-9cb4e1093b4489631bb63c1cc9e09116.ctex"]
 
 [params]
 

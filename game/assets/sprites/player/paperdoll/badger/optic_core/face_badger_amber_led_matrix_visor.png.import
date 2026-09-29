@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bycjwe4ct12ll"
-path="res://.godot/imported/face_badger_amber_led_matrix_visor.png-307c362f7f121d22f7f8e14ead6aa078.ctex"
+path="res://.godot/imported/face_badger_amber_led_matrix_visor.png-08eebc4d6c2b7549e82a66d755947892.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/badger/optic_core/face_badger_amber_led_matrix_visor.png"
-dest_files=["res://.godot/imported/face_badger_amber_led_matrix_visor.png-307c362f7f121d22f7f8e14ead6aa078.ctex"]
+source_file="res://assets/sprites/player/paperdoll/badger/optic_core/face_badger_amber_led_matrix_visor.png"
+dest_files=["res://.godot/imported/face_badger_amber_led_matrix_visor.png-08eebc4d6c2b7549e82a66d755947892.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://djb8fq7k1fc1e"
-path="res://.godot/imported/paint_bamboo_bronze_512.png-f4fede302276975d887a4fa8a89f2713.ctex"
+path="res://.godot/imported/paint_bamboo_bronze_512.png-4a212df92e4bae72bf26a18d68d9c1e0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/chassis/paint_bamboo_bronze_512.png"
-dest_files=["res://.godot/imported/paint_bamboo_bronze_512.png-f4fede302276975d887a4fa8a89f2713.ctex"]
+source_file="res://assets/paperdoll/macaque/chassis/paint_bamboo_bronze_512.png"
+dest_files=["res://.godot/imported/paint_bamboo_bronze_512.png-4a212df92e4bae72bf26a18d68d9c1e0.ctex"]
 
 [params]
 

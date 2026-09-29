@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pw1xertrahb53"
-path="res://.godot/imported/curio_mole_cold_gas_thruster_tail.png-e91cbafcf0a9a8f57b7f26ef74ae2630.ctex"
+uid="uid://hfg1j5q0ns41"
+path="res://.godot/imported/curio_mole_cold_gas_thruster_tail.png-bfce2b323d904e267e1860cd293648d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/mole/back_curio/curio_mole_cold_gas_thruster_tail.png"
-dest_files=["res://.godot/imported/curio_mole_cold_gas_thruster_tail.png-e91cbafcf0a9a8f57b7f26ef74ae2630.ctex"]
+source_file="res://assets/paperdoll/mole/back_curio/curio_mole_cold_gas_thruster_tail.png"
+dest_files=["res://.godot/imported/curio_mole_cold_gas_thruster_tail.png-bfce2b323d904e267e1860cd293648d9.ctex"]
 
 [params]
 

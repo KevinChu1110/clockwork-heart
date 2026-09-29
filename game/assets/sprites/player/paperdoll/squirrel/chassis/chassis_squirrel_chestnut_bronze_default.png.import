@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://wa15r7x2khcd"
-path="res://.godot/imported/chassis_squirrel_chestnut_bronze_default.png-49e3c34b1b302741f74ad1832985001f.ctex"
+path="res://.godot/imported/chassis_squirrel_chestnut_bronze_default.png-ad70a84e28647248c86fa40ef80c16b5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/squirrel/chassis/chassis_squirrel_chestnut_bronze_default.png"
-dest_files=["res://.godot/imported/chassis_squirrel_chestnut_bronze_default.png-49e3c34b1b302741f74ad1832985001f.ctex"]
+source_file="res://assets/sprites/player/paperdoll/squirrel/chassis/chassis_squirrel_chestnut_bronze_default.png"
+dest_files=["res://.godot/imported/chassis_squirrel_chestnut_bronze_default.png-ad70a84e28647248c86fa40ef80c16b5.ctex"]
 
 [params]
 

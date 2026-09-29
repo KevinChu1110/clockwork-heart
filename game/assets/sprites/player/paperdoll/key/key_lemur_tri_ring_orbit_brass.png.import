@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cqrflpomup8ru"
-path="res://.godot/imported/key_lemur_tri_ring_orbit_brass.png-89e2bedf8e7da67491cecb63b0380720.ctex"
+path="res://.godot/imported/key_lemur_tri_ring_orbit_brass.png-8265cbf0b0546edc57d82041f841c365.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_lemur_tri_ring_orbit_brass.png"
-dest_files=["res://.godot/imported/key_lemur_tri_ring_orbit_brass.png-89e2bedf8e7da67491cecb63b0380720.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_lemur_tri_ring_orbit_brass.png"
+dest_files=["res://.godot/imported/key_lemur_tri_ring_orbit_brass.png-8265cbf0b0546edc57d82041f841c365.ctex"]
 
 [params]
 

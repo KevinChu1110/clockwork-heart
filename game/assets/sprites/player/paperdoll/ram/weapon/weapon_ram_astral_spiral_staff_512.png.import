@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://mkcgy04g3rw1"
-path="res://.godot/imported/weapon_ram_astral_spiral_staff_512.png-8bb5ffb315da088521e56de7fe57d84e.ctex"
+path="res://.godot/imported/weapon_ram_astral_spiral_staff_512.png-27f4b7d91d585bc7c4eb8db49a49ffa7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/ram/weapon/weapon_ram_astral_spiral_staff_512.png"
-dest_files=["res://.godot/imported/weapon_ram_astral_spiral_staff_512.png-8bb5ffb315da088521e56de7fe57d84e.ctex"]
+source_file="res://assets/paperdoll/ram/weapon/weapon_ram_astral_spiral_staff_512.png"
+dest_files=["res://.godot/imported/weapon_ram_astral_spiral_staff_512.png-27f4b7d91d585bc7c4eb8db49a49ffa7.ctex"]
 
 [params]
 

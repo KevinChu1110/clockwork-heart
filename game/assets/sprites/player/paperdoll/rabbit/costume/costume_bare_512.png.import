@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ck6ucdqw2o3og"
-path="res://.godot/imported/costume_bare_512.png-67b28359b922180228301becc97eb7e5.ctex"
+path="res://.godot/imported/costume_bare_512.png-030969426855f79e3621102bcedabb86.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/costume/costume_bare_512.png"
-dest_files=["res://.godot/imported/costume_bare_512.png-67b28359b922180228301becc97eb7e5.ctex"]
+source_file="res://assets/paperdoll/rabbit/costume/costume_bare_512.png"
+dest_files=["res://.godot/imported/costume_bare_512.png-030969426855f79e3621102bcedabb86.ctex"]
 
 [params]
 

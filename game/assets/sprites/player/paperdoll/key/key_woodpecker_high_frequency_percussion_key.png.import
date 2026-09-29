@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bcalkmvqdunqo"
-path="res://.godot/imported/key_woodpecker_high_frequency_percussion_key.png-6a3839b755dbf72941ffa638bc4889fc.ctex"
+path="res://.godot/imported/key_woodpecker_high_frequency_percussion_key.png-5bcbd3bc380cb9067decdc2a983c1719.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_woodpecker_high_frequency_percussion_key.png"
-dest_files=["res://.godot/imported/key_woodpecker_high_frequency_percussion_key.png-6a3839b755dbf72941ffa638bc4889fc.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_woodpecker_high_frequency_percussion_key.png"
+dest_files=["res://.godot/imported/key_woodpecker_high_frequency_percussion_key.png-5bcbd3bc380cb9067decdc2a983c1719.ctex"]
 
 [params]
 

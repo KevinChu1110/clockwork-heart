@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://di0ie7at5270"
-path="res://.godot/imported/verification_crop_combat_head.png-665a1ffbab79024949eb886e1bb66f4f.ctex"
+path="res://.godot/imported/verification_crop_combat_head.png-262a5b7d6bfae6f0a35de89907391681.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/verification_crop_combat_head.png"
-dest_files=["res://.godot/imported/verification_crop_combat_head.png-665a1ffbab79024949eb886e1bb66f4f.ctex"]
+source_file="res://assets/paperdoll/bear/verification_crop_combat_head.png"
+dest_files=["res://.godot/imported/verification_crop_combat_head.png-262a5b7d6bfae6f0a35de89907391681.ctex"]
 
 [params]
 

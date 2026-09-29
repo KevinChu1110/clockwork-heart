@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://irfhpadiz94sm"
-path="res://.godot/imported/chassis_mole_milky_polymer_default_512.png-9cf4089928971ae9e80f64d815838f25.ctex"
+uid="uid://1lqi5i0vvea3"
+path="res://.godot/imported/chassis_mole_milky_polymer_default_512.png-fba66eb65e992ed95042ad88eeba30f0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/mole/chassis/chassis_mole_milky_polymer_default_512.png"
-dest_files=["res://.godot/imported/chassis_mole_milky_polymer_default_512.png-9cf4089928971ae9e80f64d815838f25.ctex"]
+source_file="res://assets/paperdoll/mole/chassis/chassis_mole_milky_polymer_default_512.png"
+dest_files=["res://.godot/imported/chassis_mole_milky_polymer_default_512.png-fba66eb65e992ed95042ad88eeba30f0.ctex"]
 
 [params]
 

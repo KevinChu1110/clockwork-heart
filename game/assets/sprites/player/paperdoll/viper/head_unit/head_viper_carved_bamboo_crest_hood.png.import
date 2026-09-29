@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bqcsx8la6msa0"
-path="res://.godot/imported/head_viper_carved_bamboo_crest_hood.png-8f3a0d4092dc92739af3285fb7cfd93f.ctex"
+path="res://.godot/imported/head_viper_carved_bamboo_crest_hood.png-b11b7ddb7784caae1784f2c417a01106.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/viper/head_unit/head_viper_carved_bamboo_crest_hood.png"
-dest_files=["res://.godot/imported/head_viper_carved_bamboo_crest_hood.png-8f3a0d4092dc92739af3285fb7cfd93f.ctex"]
+source_file="res://assets/sprites/player/paperdoll/viper/head_unit/head_viper_carved_bamboo_crest_hood.png"
+dest_files=["res://.godot/imported/head_viper_carved_bamboo_crest_hood.png-b11b7ddb7784caae1784f2c417a01106.ctex"]
 
 [params]
 

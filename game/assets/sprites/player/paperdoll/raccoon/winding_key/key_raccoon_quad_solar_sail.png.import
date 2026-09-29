@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cai6ckg31rxps"
-path="res://.godot/imported/key_raccoon_quad_solar_sail.png-ba34180f615400caf0254717226b1aac.ctex"
+path="res://.godot/imported/key_raccoon_quad_solar_sail.png-6c7038ecf10aea63b2e630f6c1b012d3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raccoon/winding_key/key_raccoon_quad_solar_sail.png"
-dest_files=["res://.godot/imported/key_raccoon_quad_solar_sail.png-ba34180f615400caf0254717226b1aac.ctex"]
+source_file="res://assets/paperdoll/raccoon/winding_key/key_raccoon_quad_solar_sail.png"
+dest_files=["res://.godot/imported/key_raccoon_quad_solar_sail.png-6c7038ecf10aea63b2e630f6c1b012d3.ctex"]
 
 [params]
 

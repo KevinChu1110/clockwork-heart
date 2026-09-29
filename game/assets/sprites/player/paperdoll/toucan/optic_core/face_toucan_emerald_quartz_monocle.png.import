@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dev4q6hq3pp8k"
-path="res://.godot/imported/face_toucan_emerald_quartz_monocle.png-317a63d02d045b9a84e305b4b2b181b4.ctex"
+path="res://.godot/imported/face_toucan_emerald_quartz_monocle.png-b6a06dcc787f06d815c232214fb5aa60.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/toucan/optic_core/face_toucan_emerald_quartz_monocle.png"
-dest_files=["res://.godot/imported/face_toucan_emerald_quartz_monocle.png-317a63d02d045b9a84e305b4b2b181b4.ctex"]
+source_file="res://assets/paperdoll/toucan/optic_core/face_toucan_emerald_quartz_monocle.png"
+dest_files=["res://.godot/imported/face_toucan_emerald_quartz_monocle.png-b6a06dcc787f06d815c232214fb5aa60.ctex"]
 
 [params]
 

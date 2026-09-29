@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://onhvwgw2ctje"
-path="res://.godot/imported/costume_scarab_crucible_artisan_apron.png-42f8c0e0dc912de3de9cb3f9b3fe4de3.ctex"
+path="res://.godot/imported/costume_scarab_crucible_artisan_apron.png-3299051206dc82eaee187be67ea901a9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/scarab/costume/costume_scarab_crucible_artisan_apron.png"
-dest_files=["res://.godot/imported/costume_scarab_crucible_artisan_apron.png-42f8c0e0dc912de3de9cb3f9b3fe4de3.ctex"]
+source_file="res://assets/paperdoll/scarab/costume/costume_scarab_crucible_artisan_apron.png"
+dest_files=["res://.godot/imported/costume_scarab_crucible_artisan_apron.png-3299051206dc82eaee187be67ea901a9.ctex"]
 
 [params]
 

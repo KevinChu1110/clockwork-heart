@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cvg5amlsrf51v"
-path="res://.godot/imported/head_fawn_vernier_caliper_horns_512.png-539c66a3472a7b6b4c50f8df30a368f0.ctex"
+path="res://.godot/imported/head_fawn_vernier_caliper_horns_512.png-a6e6a2713851250e6aa036fd5edd5809.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fawn/head_unit/head_fawn_vernier_caliper_horns_512.png"
-dest_files=["res://.godot/imported/head_fawn_vernier_caliper_horns_512.png-539c66a3472a7b6b4c50f8df30a368f0.ctex"]
+source_file="res://assets/paperdoll/fawn/head_unit/head_fawn_vernier_caliper_horns_512.png"
+dest_files=["res://.godot/imported/head_fawn_vernier_caliper_horns_512.png-a6e6a2713851250e6aa036fd5edd5809.ctex"]
 
 [params]
 

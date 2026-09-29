@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ekapwfnasxx4"
-path="res://.godot/imported/proof_paperdoll_armadillo_magenta.png-699b1006ff137ec4b3aa4303754f88c7.ctex"
+path="res://.godot/imported/proof_paperdoll_armadillo_magenta.png-5b9d63686b04318a40c9aafd85a805c1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/armadillo/proof_paperdoll_armadillo_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_armadillo_magenta.png-699b1006ff137ec4b3aa4303754f88c7.ctex"]
+source_file="res://assets/sprites/player/paperdoll/armadillo/proof_paperdoll_armadillo_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_armadillo_magenta.png-5b9d63686b04318a40c9aafd85a805c1.ctex"]
 
 [params]
 

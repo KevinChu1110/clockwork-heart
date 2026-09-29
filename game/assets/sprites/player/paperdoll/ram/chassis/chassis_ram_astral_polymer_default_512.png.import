@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://di20qkaul3xq7"
-path="res://.godot/imported/chassis_ram_astral_polymer_default_512.png-bf6b698027fe5a3cd3851dbd524005b0.ctex"
+path="res://.godot/imported/chassis_ram_astral_polymer_default_512.png-643334fe7ea06f03a41ab440fae5222a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/ram/chassis/chassis_ram_astral_polymer_default_512.png"
-dest_files=["res://.godot/imported/chassis_ram_astral_polymer_default_512.png-bf6b698027fe5a3cd3851dbd524005b0.ctex"]
+source_file="res://assets/paperdoll/ram/chassis/chassis_ram_astral_polymer_default_512.png"
+dest_files=["res://.godot/imported/chassis_ram_astral_polymer_default_512.png-643334fe7ea06f03a41ab440fae5222a.ctex"]
 
 [params]
 

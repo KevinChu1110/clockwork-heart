@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bnjh5ond8mra3"
-path="res://.godot/imported/head_cat_brass_acoustic_ears.png-b1083e8b89f5da3dbcd73b8f1c37abf3.ctex"
+path="res://.godot/imported/head_cat_brass_acoustic_ears.png-bc7eb49375c7f95b23402b0835c97e78.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/cat/head_unit/head_cat_brass_acoustic_ears.png"
-dest_files=["res://.godot/imported/head_cat_brass_acoustic_ears.png-b1083e8b89f5da3dbcd73b8f1c37abf3.ctex"]
+source_file="res://assets/paperdoll/cat/head_unit/head_cat_brass_acoustic_ears.png"
+dest_files=["res://.godot/imported/head_cat_brass_acoustic_ears.png-bc7eb49375c7f95b23402b0835c97e78.ctex"]
 
 [params]
 

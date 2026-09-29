@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://o0jm5d0cae3l"
-path="res://.godot/imported/face_walrus_quartz_dome_eyes.png-35816b8a05027154a694cf342cc3c98c.ctex"
+path="res://.godot/imported/face_walrus_quartz_dome_eyes.png-4f375abbf6bf862eb4b237f9dcd3a714.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/walrus/optic_core/face_walrus_quartz_dome_eyes.png"
-dest_files=["res://.godot/imported/face_walrus_quartz_dome_eyes.png-35816b8a05027154a694cf342cc3c98c.ctex"]
+source_file="res://assets/paperdoll/walrus/optic_core/face_walrus_quartz_dome_eyes.png"
+dest_files=["res://.godot/imported/face_walrus_quartz_dome_eyes.png-4f375abbf6bf862eb4b237f9dcd3a714.ctex"]
 
 [params]
 

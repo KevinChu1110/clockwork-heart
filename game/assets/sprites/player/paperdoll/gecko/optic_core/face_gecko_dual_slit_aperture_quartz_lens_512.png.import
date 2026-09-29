@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dx3xm83btn3c1"
-path="res://.godot/imported/face_gecko_dual_slit_aperture_quartz_lens_512.png-e5deee3bbef05a4508297af9cdb16dd7.ctex"
+path="res://.godot/imported/face_gecko_dual_slit_aperture_quartz_lens_512.png-ea0fc3739d8fbb42a3d2794f065f2925.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/gecko/optic_core/face_gecko_dual_slit_aperture_quartz_lens_512.png"
-dest_files=["res://.godot/imported/face_gecko_dual_slit_aperture_quartz_lens_512.png-e5deee3bbef05a4508297af9cdb16dd7.ctex"]
+source_file="res://assets/paperdoll/gecko/optic_core/face_gecko_dual_slit_aperture_quartz_lens_512.png"
+dest_files=["res://.godot/imported/face_gecko_dual_slit_aperture_quartz_lens_512.png-ea0fc3739d8fbb42a3d2794f065f2925.ctex"]
 
 [params]
 

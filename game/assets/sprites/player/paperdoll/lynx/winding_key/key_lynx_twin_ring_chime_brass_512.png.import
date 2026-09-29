@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://iwwee0uxoc53p"
-path="res://.godot/imported/key_lynx_twin_ring_chime_brass_512.png-191cbc82d72a97c409c6965febe73bf7.ctex"
+uid="uid://63m7v1gjxfk6"
+path="res://.godot/imported/key_lynx_twin_ring_chime_brass_512.png-b98ff966355a1b386846ef9bfb63705a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lynx/winding_key/key_lynx_twin_ring_chime_brass_512.png"
-dest_files=["res://.godot/imported/key_lynx_twin_ring_chime_brass_512.png-191cbc82d72a97c409c6965febe73bf7.ctex"]
+source_file="res://assets/paperdoll/lynx/winding_key/key_lynx_twin_ring_chime_brass_512.png"
+dest_files=["res://.godot/imported/key_lynx_twin_ring_chime_brass_512.png-b98ff966355a1b386846ef9bfb63705a.ctex"]
 
 [params]
 

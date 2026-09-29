@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bggcvvdmob6uk"
-path="res://.godot/imported/wpn_astral_staff_512.png-6ed0bb3b382b06cd60d2f9832a863077.ctex"
+path="res://.godot/imported/wpn_astral_staff_512.png-d614b66f1e43668c43214762a6d13394.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/wpn_astral_staff_512.png"
-dest_files=["res://.godot/imported/wpn_astral_staff_512.png-6ed0bb3b382b06cd60d2f9832a863077.ctex"]
+source_file="res://assets/paperdoll/weapon/wpn_astral_staff_512.png"
+dest_files=["res://.godot/imported/wpn_astral_staff_512.png-d614b66f1e43668c43214762a6d13394.ctex"]
 
 [params]
 

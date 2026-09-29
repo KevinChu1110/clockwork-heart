@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://qs11oxww8wdtc"
-path="res://.godot/imported/weapon_camel_sundial_refraction_rod_512.png-f4322d7137fe699106a39a62e1659643.ctex"
+uid="uid://bdfkcp8wy3usa"
+path="res://.godot/imported/weapon_camel_sundial_refraction_rod_512.png-ca0577ef93b50b4aab26836a1a2095b6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/camel/weapon/weapon_camel_sundial_refraction_rod_512.png"
-dest_files=["res://.godot/imported/weapon_camel_sundial_refraction_rod_512.png-f4322d7137fe699106a39a62e1659643.ctex"]
+source_file="res://assets/paperdoll/camel/weapon/weapon_camel_sundial_refraction_rod_512.png"
+dest_files=["res://.godot/imported/weapon_camel_sundial_refraction_rod_512.png-ca0577ef93b50b4aab26836a1a2095b6.ctex"]
 
 [params]
 

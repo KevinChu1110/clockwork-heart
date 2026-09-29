@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://co4kd4nks4p55"
-path="res://.godot/imported/wpn_zephyr_wing_bow.png-81ba7ef245dabc2580ae9069e162955e.ctex"
+path="res://.godot/imported/wpn_zephyr_wing_bow.png-6e3f05cc52e758e9358ea3dee6981673.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/wpn_zephyr_wing_bow.png"
-dest_files=["res://.godot/imported/wpn_zephyr_wing_bow.png-81ba7ef245dabc2580ae9069e162955e.ctex"]
+source_file="res://assets/paperdoll/weapon/wpn_zephyr_wing_bow.png"
+dest_files=["res://.godot/imported/wpn_zephyr_wing_bow.png-6e3f05cc52e758e9358ea3dee6981673.ctex"]
 
 [params]
 

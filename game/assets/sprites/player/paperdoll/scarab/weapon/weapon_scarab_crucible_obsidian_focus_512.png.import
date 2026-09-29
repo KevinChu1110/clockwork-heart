@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://xcsj20p0l72u"
-path="res://.godot/imported/weapon_scarab_crucible_obsidian_focus_512.png-d34d0ddb1a49acf5e097c2ce2d24e1eb.ctex"
+path="res://.godot/imported/weapon_scarab_crucible_obsidian_focus_512.png-99506294a5a02f49259985841aa13b61.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/scarab/weapon/weapon_scarab_crucible_obsidian_focus_512.png"
-dest_files=["res://.godot/imported/weapon_scarab_crucible_obsidian_focus_512.png-d34d0ddb1a49acf5e097c2ce2d24e1eb.ctex"]
+source_file="res://assets/paperdoll/scarab/weapon/weapon_scarab_crucible_obsidian_focus_512.png"
+dest_files=["res://.godot/imported/weapon_scarab_crucible_obsidian_focus_512.png-99506294a5a02f49259985841aa13b61.ctex"]
 
 [params]
 

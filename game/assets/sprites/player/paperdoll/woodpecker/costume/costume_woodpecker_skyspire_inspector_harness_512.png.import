@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c4ddkpnmho80u"
-path="res://.godot/imported/costume_woodpecker_skyspire_inspector_harness_512.png-d073a2ca581180c6dcfc27034ee5754e.ctex"
+path="res://.godot/imported/costume_woodpecker_skyspire_inspector_harness_512.png-4df62b3bc6857550a454742a01d1db89.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/woodpecker/costume/costume_woodpecker_skyspire_inspector_harness_512.png"
-dest_files=["res://.godot/imported/costume_woodpecker_skyspire_inspector_harness_512.png-d073a2ca581180c6dcfc27034ee5754e.ctex"]
+source_file="res://assets/sprites/player/paperdoll/woodpecker/costume/costume_woodpecker_skyspire_inspector_harness_512.png"
+dest_files=["res://.godot/imported/costume_woodpecker_skyspire_inspector_harness_512.png-4df62b3bc6857550a454742a01d1db89.ctex"]
 
 [params]
 

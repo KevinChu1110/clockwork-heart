@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://j0rfeo7hemgu"
-path="res://.godot/imported/weapon_armadillo_black_iron_heavy_sword.png-a151f4c18f95f812f7cddc4d6528b78d.ctex"
+path="res://.godot/imported/weapon_armadillo_black_iron_heavy_sword.png-752cab101c721db1b6deadc80ebfdf2c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/armadillo/weapon/weapon_armadillo_black_iron_heavy_sword.png"
-dest_files=["res://.godot/imported/weapon_armadillo_black_iron_heavy_sword.png-a151f4c18f95f812f7cddc4d6528b78d.ctex"]
+source_file="res://assets/sprites/player/paperdoll/armadillo/weapon/weapon_armadillo_black_iron_heavy_sword.png"
+dest_files=["res://.godot/imported/weapon_armadillo_black_iron_heavy_sword.png-752cab101c721db1b6deadc80ebfdf2c.ctex"]
 
 [params]
 

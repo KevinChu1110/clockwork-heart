@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bst6yo2pev15s"
-path="res://.godot/imported/chassis_crab_molten_iron_default.png-79e137d5b774e98f8741cb389c7bf393.ctex"
+path="res://.godot/imported/chassis_crab_molten_iron_default.png-2b727e97b69f9f835726e054afd8f707.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crab/chassis/chassis_crab_molten_iron_default.png"
-dest_files=["res://.godot/imported/chassis_crab_molten_iron_default.png-79e137d5b774e98f8741cb389c7bf393.ctex"]
+source_file="res://assets/paperdoll/crab/chassis/chassis_crab_molten_iron_default.png"
+dest_files=["res://.godot/imported/chassis_crab_molten_iron_default.png-2b727e97b69f9f835726e054afd8f707.ctex"]
 
 [params]
 

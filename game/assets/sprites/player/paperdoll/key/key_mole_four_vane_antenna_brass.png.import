@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7sezo5gkt11mm"
-path="res://.godot/imported/key_mole_four_vane_antenna_brass.png-334134726fd9a447225c281211f80afa.ctex"
+uid="uid://bu41yo3kcf1ki"
+path="res://.godot/imported/key_mole_four_vane_antenna_brass.png-0555adf54bdb51cf25b1e8b170aa7d73.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/key/key_mole_four_vane_antenna_brass.png"
-dest_files=["res://.godot/imported/key_mole_four_vane_antenna_brass.png-334134726fd9a447225c281211f80afa.ctex"]
+source_file="res://assets/paperdoll/key/key_mole_four_vane_antenna_brass.png"
+dest_files=["res://.godot/imported/key_mole_four_vane_antenna_brass.png-0555adf54bdb51cf25b1e8b170aa7d73.ctex"]
 
 [params]
 

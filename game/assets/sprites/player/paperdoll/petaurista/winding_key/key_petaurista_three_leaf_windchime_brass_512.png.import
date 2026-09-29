@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://eue6xox229sue"
-path="res://.godot/imported/key_petaurista_three_leaf_windchime_brass_512.png-5c57b06528d6627f6669939583ff6da6.ctex"
+uid="uid://y0cdm1ti2w3m"
+path="res://.godot/imported/key_petaurista_three_leaf_windchime_brass_512.png-d7779d0dda0105060c645c80845e0f1c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/petaurista/winding_key/key_petaurista_three_leaf_windchime_brass_512.png"
-dest_files=["res://.godot/imported/key_petaurista_three_leaf_windchime_brass_512.png-5c57b06528d6627f6669939583ff6da6.ctex"]
+source_file="res://assets/paperdoll/petaurista/winding_key/key_petaurista_three_leaf_windchime_brass_512.png"
+dest_files=["res://.godot/imported/key_petaurista_three_leaf_windchime_brass_512.png-d7779d0dda0105060c645c80845e0f1c.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drd8afegxdpq0"
-path="res://.godot/imported/chassis_lemur_orbit_polymer_default.png-213bd0460e5b3fe99bd4d06e45a9229f.ctex"
+path="res://.godot/imported/chassis_lemur_orbit_polymer_default.png-382fa22d21ba6e58689ab3e0c32d9ae0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/lemur/chassis/chassis_lemur_orbit_polymer_default.png"
-dest_files=["res://.godot/imported/chassis_lemur_orbit_polymer_default.png-213bd0460e5b3fe99bd4d06e45a9229f.ctex"]
+source_file="res://assets/sprites/player/paperdoll/lemur/chassis/chassis_lemur_orbit_polymer_default.png"
+dest_files=["res://.godot/imported/chassis_lemur_orbit_polymer_default.png-382fa22d21ba6e58689ab3e0c32d9ae0.ctex"]
 
 [params]
 

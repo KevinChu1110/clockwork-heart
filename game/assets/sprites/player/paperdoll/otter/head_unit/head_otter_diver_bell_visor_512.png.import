@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3mnb6p4yww8d"
-path="res://.godot/imported/head_otter_diver_bell_visor_512.png-59ecdced0b3617130e887be4beb7f868.ctex"
+path="res://.godot/imported/head_otter_diver_bell_visor_512.png-2a868cceacafaa3f4662074907f6feb5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/otter/head_unit/head_otter_diver_bell_visor_512.png"
-dest_files=["res://.godot/imported/head_otter_diver_bell_visor_512.png-59ecdced0b3617130e887be4beb7f868.ctex"]
+source_file="res://assets/paperdoll/otter/head_unit/head_otter_diver_bell_visor_512.png"
+dest_files=["res://.godot/imported/head_otter_diver_bell_visor_512.png-2a868cceacafaa3f4662074907f6feb5.ctex"]
 
 [params]
 

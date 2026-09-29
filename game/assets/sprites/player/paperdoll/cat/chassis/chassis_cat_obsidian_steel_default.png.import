@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cu2k3o38cbca4"
-path="res://.godot/imported/chassis_cat_obsidian_steel_default.png-5e57972527e078330a71e1162d37de58.ctex"
+path="res://.godot/imported/chassis_cat_obsidian_steel_default.png-d1248fa2851001f5c5432502a1f43d58.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/cat/chassis/chassis_cat_obsidian_steel_default.png"
-dest_files=["res://.godot/imported/chassis_cat_obsidian_steel_default.png-5e57972527e078330a71e1162d37de58.ctex"]
+source_file="res://assets/paperdoll/cat/chassis/chassis_cat_obsidian_steel_default.png"
+dest_files=["res://.godot/imported/chassis_cat_obsidian_steel_default.png-d1248fa2851001f5c5432502a1f43d58.ctex"]
 
 [params]
 

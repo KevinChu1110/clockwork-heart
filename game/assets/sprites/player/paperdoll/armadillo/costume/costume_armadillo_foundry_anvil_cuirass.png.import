@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cfqkl4h48vo3r"
-path="res://.godot/imported/costume_armadillo_foundry_anvil_cuirass.png-724a7b7ded6f3a6088547f0a896b9bdb.ctex"
+path="res://.godot/imported/costume_armadillo_foundry_anvil_cuirass.png-55749f4ccb81fa837b132a9159939b67.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/armadillo/costume/costume_armadillo_foundry_anvil_cuirass.png"
-dest_files=["res://.godot/imported/costume_armadillo_foundry_anvil_cuirass.png-724a7b7ded6f3a6088547f0a896b9bdb.ctex"]
+source_file="res://assets/sprites/player/paperdoll/armadillo/costume/costume_armadillo_foundry_anvil_cuirass.png"
+dest_files=["res://.godot/imported/costume_armadillo_foundry_anvil_cuirass.png-55749f4ccb81fa837b132a9159939b67.ctex"]
 
 [params]
 

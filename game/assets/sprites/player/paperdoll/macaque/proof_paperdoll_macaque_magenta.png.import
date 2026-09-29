@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dklu5hvov48cp"
-path="res://.godot/imported/proof_paperdoll_macaque_magenta.png-4666df86f150a6e1944e6a2b33675ecd.ctex"
+path="res://.godot/imported/proof_paperdoll_macaque_magenta.png-16e25f321c85fd3b6ca43bfe5d2005ec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_macaque_magenta.png-4666df86f150a6e1944e6a2b33675ecd.ctex"]
+source_file="res://assets/paperdoll/macaque/proof_paperdoll_macaque_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_macaque_magenta.png-16e25f321c85fd3b6ca43bfe5d2005ec.ctex"]
 
 [params]
 

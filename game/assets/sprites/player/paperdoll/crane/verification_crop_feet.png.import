@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dlvc1i46et26y"
-path="res://.godot/imported/verification_crop_feet.png-e5ee9f79c5fa17e895ccf17b99ebec43.ctex"
+path="res://.godot/imported/verification_crop_feet.png-86066415997d425a91b03e054fba2d06.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/verification_crop_feet.png"
-dest_files=["res://.godot/imported/verification_crop_feet.png-e5ee9f79c5fa17e895ccf17b99ebec43.ctex"]
+source_file="res://assets/paperdoll/crane/verification_crop_feet.png"
+dest_files=["res://.godot/imported/verification_crop_feet.png-86066415997d425a91b03e054fba2d06.ctex"]
 
 [params]
 

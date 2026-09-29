@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dk15p5nl1du3b"
-path="res://.godot/imported/key_tai_chi_dual_fish.png-e3c5b4f99e949949a69b82785b827739.ctex"
+path="res://.godot/imported/key_tai_chi_dual_fish.png-63718e51f62f5e138aedbd6beb3aa22c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/key/key_tai_chi_dual_fish.png"
-dest_files=["res://.godot/imported/key_tai_chi_dual_fish.png-e3c5b4f99e949949a69b82785b827739.ctex"]
+source_file="res://assets/paperdoll/key/key_tai_chi_dual_fish.png"
+dest_files=["res://.godot/imported/key_tai_chi_dual_fish.png-63718e51f62f5e138aedbd6beb3aa22c.ctex"]
 
 [params]
 

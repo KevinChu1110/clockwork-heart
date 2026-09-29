@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wls07sddzac2n"
-path="res://.godot/imported/weapon_lynx_dawn_marionette_steel_claws.png-84b0c6cec7f3db290274926f44b19731.ctex"
+uid="uid://daroaiq358yat"
+path="res://.godot/imported/weapon_lynx_dawn_marionette_steel_claws.png-e7459655ea51cc8cf08069f0b2c3f038.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lynx/weapon/weapon_lynx_dawn_marionette_steel_claws.png"
-dest_files=["res://.godot/imported/weapon_lynx_dawn_marionette_steel_claws.png-84b0c6cec7f3db290274926f44b19731.ctex"]
+source_file="res://assets/paperdoll/lynx/weapon/weapon_lynx_dawn_marionette_steel_claws.png"
+dest_files=["res://.godot/imported/weapon_lynx_dawn_marionette_steel_claws.png-e7459655ea51cc8cf08069f0b2c3f038.ctex"]
 
 [params]
 

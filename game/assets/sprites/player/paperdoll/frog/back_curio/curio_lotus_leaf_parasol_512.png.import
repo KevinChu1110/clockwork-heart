@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dg5arfrbuyniw"
-path="res://.godot/imported/curio_lotus_leaf_parasol_512.png-433ada437d4e6a430c3fdf17517b3b46.ctex"
+path="res://.godot/imported/curio_lotus_leaf_parasol_512.png-efe79ba0e0d64576e1f005f7ecc2af3e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/frog/back_curio/curio_lotus_leaf_parasol_512.png"
-dest_files=["res://.godot/imported/curio_lotus_leaf_parasol_512.png-433ada437d4e6a430c3fdf17517b3b46.ctex"]
+source_file="res://assets/paperdoll/frog/back_curio/curio_lotus_leaf_parasol_512.png"
+dest_files=["res://.godot/imported/curio_lotus_leaf_parasol_512.png-efe79ba0e0d64576e1f005f7ecc2af3e.ctex"]
 
 [params]
 

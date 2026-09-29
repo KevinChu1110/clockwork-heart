@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8fzaaw974437j"
-path="res://.godot/imported/key_hippo_dual_valve_handwheel_brass.png-8f144582d62c3a567612dedcdc8080b7.ctex"
+uid="uid://ciqbkhw7mi35f"
+path="res://.godot/imported/key_hippo_dual_valve_handwheel_brass.png-61ba31855ebd0347a7d4004b9d6513fd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hippo/winding_key/key_hippo_dual_valve_handwheel_brass.png"
-dest_files=["res://.godot/imported/key_hippo_dual_valve_handwheel_brass.png-8f144582d62c3a567612dedcdc8080b7.ctex"]
+source_file="res://assets/paperdoll/hippo/winding_key/key_hippo_dual_valve_handwheel_brass.png"
+dest_files=["res://.godot/imported/key_hippo_dual_valve_handwheel_brass.png-61ba31855ebd0347a7d4004b9d6513fd.ctex"]
 
 [params]
 

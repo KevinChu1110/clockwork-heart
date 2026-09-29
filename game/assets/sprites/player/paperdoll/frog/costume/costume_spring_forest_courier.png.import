@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bxo6ymxbrxgq5"
-path="res://.godot/imported/costume_spring_forest_courier.png-abc4a3e019d46db53fbdb83597ce9fe4.ctex"
+path="res://.godot/imported/costume_spring_forest_courier.png-2588a0c66cc14488634d478998b5f2e7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/frog/costume/costume_spring_forest_courier.png"
-dest_files=["res://.godot/imported/costume_spring_forest_courier.png-abc4a3e019d46db53fbdb83597ce9fe4.ctex"]
+source_file="res://assets/paperdoll/frog/costume/costume_spring_forest_courier.png"
+dest_files=["res://.godot/imported/costume_spring_forest_courier.png-2588a0c66cc14488634d478998b5f2e7.ctex"]
 
 [params]
 

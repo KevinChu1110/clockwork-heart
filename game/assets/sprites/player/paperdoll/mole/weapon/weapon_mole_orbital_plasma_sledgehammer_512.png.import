@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hqw01t6uglr2c"
-path="res://.godot/imported/weapon_mole_orbital_plasma_sledgehammer_512.png-512c91d59e5444b0db4edd6894261359.ctex"
+uid="uid://dvi5gsalvewbk"
+path="res://.godot/imported/weapon_mole_orbital_plasma_sledgehammer_512.png-1b21e2484aa1d65ec388c46b914d449a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/mole/weapon/weapon_mole_orbital_plasma_sledgehammer_512.png"
-dest_files=["res://.godot/imported/weapon_mole_orbital_plasma_sledgehammer_512.png-512c91d59e5444b0db4edd6894261359.ctex"]
+source_file="res://assets/paperdoll/mole/weapon/weapon_mole_orbital_plasma_sledgehammer_512.png"
+dest_files=["res://.godot/imported/weapon_mole_orbital_plasma_sledgehammer_512.png-1b21e2484aa1d65ec388c46b914d449a.ctex"]
 
 [params]
 

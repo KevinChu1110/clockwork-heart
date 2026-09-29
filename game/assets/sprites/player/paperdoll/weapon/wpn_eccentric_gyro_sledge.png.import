@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cubkfh8qtyr3l"
-path="res://.godot/imported/wpn_eccentric_gyro_sledge.png-0b5754262cf560f08cc885babcdb6a3d.ctex"
+path="res://.godot/imported/wpn_eccentric_gyro_sledge.png-1b18f640e6bf1d19c80dada58c3779a6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/wpn_eccentric_gyro_sledge.png"
-dest_files=["res://.godot/imported/wpn_eccentric_gyro_sledge.png-0b5754262cf560f08cc885babcdb6a3d.ctex"]
+source_file="res://assets/paperdoll/weapon/wpn_eccentric_gyro_sledge.png"
+dest_files=["res://.godot/imported/wpn_eccentric_gyro_sledge.png-1b18f640e6bf1d19c80dada58c3779a6.ctex"]
 
 [params]
 

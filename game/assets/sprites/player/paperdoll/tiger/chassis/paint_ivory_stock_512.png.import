@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dtreg83e3gkg1"
-path="res://.godot/imported/paint_ivory_stock_512.png-6c95e8d89a661df263d6bea26a30a1b8.ctex"
+path="res://.godot/imported/paint_ivory_stock_512.png-0f8af6a18be77f0ed1e2a499e49aab5e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tiger/chassis/paint_ivory_stock_512.png"
-dest_files=["res://.godot/imported/paint_ivory_stock_512.png-6c95e8d89a661df263d6bea26a30a1b8.ctex"]
+source_file="res://assets/paperdoll/tiger/chassis/paint_ivory_stock_512.png"
+dest_files=["res://.godot/imported/paint_ivory_stock_512.png-0f8af6a18be77f0ed1e2a499e49aab5e.ctex"]
 
 [params]
 

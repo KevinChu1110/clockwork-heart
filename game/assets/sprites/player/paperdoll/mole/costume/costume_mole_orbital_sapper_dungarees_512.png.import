@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8uiuvak7s66uo"
-path="res://.godot/imported/costume_mole_orbital_sapper_dungarees_512.png-aeaee8c92d0f9044b5fd5e6b74fa6a43.ctex"
+uid="uid://cw8v5s77bk6sk"
+path="res://.godot/imported/costume_mole_orbital_sapper_dungarees_512.png-5f998467e202c32da4e3b76ee27ec99c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/mole/costume/costume_mole_orbital_sapper_dungarees_512.png"
-dest_files=["res://.godot/imported/costume_mole_orbital_sapper_dungarees_512.png-aeaee8c92d0f9044b5fd5e6b74fa6a43.ctex"]
+source_file="res://assets/paperdoll/mole/costume/costume_mole_orbital_sapper_dungarees_512.png"
+dest_files=["res://.godot/imported/costume_mole_orbital_sapper_dungarees_512.png-5f998467e202c32da4e3b76ee27ec99c.ctex"]
 
 [params]
 

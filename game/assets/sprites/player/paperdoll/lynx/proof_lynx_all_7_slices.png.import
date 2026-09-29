@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2u4q3dqsnv6b0"
-path="res://.godot/imported/proof_lynx_all_7_slices.png-60832cbcaa87b3bdbf730c0b93dc1b36.ctex"
+uid="uid://tanxyb1ph10n"
+path="res://.godot/imported/proof_lynx_all_7_slices.png-10e4ec4cad674a49ba93386dd77c6ab6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lynx/proof_lynx_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_lynx_all_7_slices.png-60832cbcaa87b3bdbf730c0b93dc1b36.ctex"]
+source_file="res://assets/paperdoll/lynx/proof_lynx_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_lynx_all_7_slices.png-10e4ec4cad674a49ba93386dd77c6ab6.ctex"]
 
 [params]
 

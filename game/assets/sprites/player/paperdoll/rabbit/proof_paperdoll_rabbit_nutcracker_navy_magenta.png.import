@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bnids7m7lvtno"
-path="res://.godot/imported/proof_paperdoll_rabbit_nutcracker_navy_magenta.png-e78e2630132ebe816fb3264a469d5263.ctex"
+path="res://.godot/imported/proof_paperdoll_rabbit_nutcracker_navy_magenta.png-98c266f7254f57d6c2dbbca94bf94fd8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/proof_paperdoll_rabbit_nutcracker_navy_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_rabbit_nutcracker_navy_magenta.png-e78e2630132ebe816fb3264a469d5263.ctex"]
+source_file="res://assets/paperdoll/rabbit/proof_paperdoll_rabbit_nutcracker_navy_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_rabbit_nutcracker_navy_magenta.png-98c266f7254f57d6c2dbbca94bf94fd8.ctex"]
 
 [params]
 

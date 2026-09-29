@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3e616gfi00kt"
-path="res://.godot/imported/head_raccoon_parabolic_radar_dish_512.png-57b7db35409c4654787293fb4b03f104.ctex"
+path="res://.godot/imported/head_raccoon_parabolic_radar_dish_512.png-d409d1276434a9eddd7190757a90c166.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raccoon/head_unit/head_raccoon_parabolic_radar_dish_512.png"
-dest_files=["res://.godot/imported/head_raccoon_parabolic_radar_dish_512.png-57b7db35409c4654787293fb4b03f104.ctex"]
+source_file="res://assets/paperdoll/raccoon/head_unit/head_raccoon_parabolic_radar_dish_512.png"
+dest_files=["res://.godot/imported/head_raccoon_parabolic_radar_dish_512.png-d409d1276434a9eddd7190757a90c166.ctex"]
 
 [params]
 

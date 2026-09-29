@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://gqop59hou6hdf"
-path="res://.godot/imported/key_takin_tri_leaf_zen_brass_512.png-e209af5892ea6551528d566a50201411.ctex"
+uid="uid://cvauk7kgbylln"
+path="res://.godot/imported/key_takin_tri_leaf_zen_brass_512.png-ec5b33735cd741d3fc5ea0b180611bb0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/key/key_takin_tri_leaf_zen_brass_512.png"
-dest_files=["res://.godot/imported/key_takin_tri_leaf_zen_brass_512.png-e209af5892ea6551528d566a50201411.ctex"]
+source_file="res://assets/paperdoll/key/key_takin_tri_leaf_zen_brass_512.png"
+dest_files=["res://.godot/imported/key_takin_tri_leaf_zen_brass_512.png-ec5b33735cd741d3fc5ea0b180611bb0.ctex"]
 
 [params]
 

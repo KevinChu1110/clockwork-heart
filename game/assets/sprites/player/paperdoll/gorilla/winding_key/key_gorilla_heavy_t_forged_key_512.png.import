@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pi1q46hinmmh"
-path="res://.godot/imported/key_gorilla_heavy_t_forged_key_512.png-41b612f3207327be012d2f7baf0bf2f9.ctex"
+path="res://.godot/imported/key_gorilla_heavy_t_forged_key_512.png-d254516cb2b39aee046ff8fb2aa93f1d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/gorilla/winding_key/key_gorilla_heavy_t_forged_key_512.png"
-dest_files=["res://.godot/imported/key_gorilla_heavy_t_forged_key_512.png-41b612f3207327be012d2f7baf0bf2f9.ctex"]
+source_file="res://assets/paperdoll/gorilla/winding_key/key_gorilla_heavy_t_forged_key_512.png"
+dest_files=["res://.godot/imported/key_gorilla_heavy_t_forged_key_512.png-d254516cb2b39aee046ff8fb2aa93f1d.ctex"]
 
 [params]
 

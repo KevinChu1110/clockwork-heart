@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcnqqr2t65js6"
-path="res://.godot/imported/proof_paperdoll_seahorse_composite.png-dc3a2a308b8f80697a2968f04364fa5a.ctex"
+path="res://.godot/imported/proof_paperdoll_seahorse_composite.png-4cadaaca56a3c9762489d3942619d320.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seahorse/proof_paperdoll_seahorse_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_seahorse_composite.png-dc3a2a308b8f80697a2968f04364fa5a.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seahorse/proof_paperdoll_seahorse_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_seahorse_composite.png-4cadaaca56a3c9762489d3942619d320.ctex"]
 
 [params]
 

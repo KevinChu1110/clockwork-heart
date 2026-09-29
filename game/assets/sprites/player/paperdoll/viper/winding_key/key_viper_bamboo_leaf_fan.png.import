@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cplayjanu683f"
-path="res://.godot/imported/key_viper_bamboo_leaf_fan.png-800e3f214ab1ec8de795121ec70a1c56.ctex"
+path="res://.godot/imported/key_viper_bamboo_leaf_fan.png-864b8cb3c9e2667b106d2ad803e78edd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/viper/winding_key/key_viper_bamboo_leaf_fan.png"
-dest_files=["res://.godot/imported/key_viper_bamboo_leaf_fan.png-800e3f214ab1ec8de795121ec70a1c56.ctex"]
+source_file="res://assets/sprites/player/paperdoll/viper/winding_key/key_viper_bamboo_leaf_fan.png"
+dest_files=["res://.godot/imported/key_viper_bamboo_leaf_fan.png-864b8cb3c9e2667b106d2ad803e78edd.ctex"]
 
 [params]
 

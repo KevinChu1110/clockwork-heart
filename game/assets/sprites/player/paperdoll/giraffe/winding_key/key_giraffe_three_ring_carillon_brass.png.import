@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mjph0dnyrn8wr"
-path="res://.godot/imported/key_giraffe_three_ring_carillon_brass.png-50ff3e39abe8a622dc2cd3ddea16b9d7.ctex"
+uid="uid://xhu76v722mnh"
+path="res://.godot/imported/key_giraffe_three_ring_carillon_brass.png-489a188f4cf91e9dbb99bce8bb1abf05.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/giraffe/winding_key/key_giraffe_three_ring_carillon_brass.png"
-dest_files=["res://.godot/imported/key_giraffe_three_ring_carillon_brass.png-50ff3e39abe8a622dc2cd3ddea16b9d7.ctex"]
+source_file="res://assets/paperdoll/giraffe/winding_key/key_giraffe_three_ring_carillon_brass.png"
+dest_files=["res://.godot/imported/key_giraffe_three_ring_carillon_brass.png-489a188f4cf91e9dbb99bce8bb1abf05.ctex"]
 
 [params]
 

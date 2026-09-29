@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ci7wyvpxcvufi"
-path="res://.godot/imported/optic_seahorse_ocean_sapphire_512.png-fa606602d301257ebafc8611333b5e35.ctex"
+path="res://.godot/imported/optic_seahorse_ocean_sapphire_512.png-bf6c90cce299163f6b29715324e9ec30.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seahorse/optic_core/optic_seahorse_ocean_sapphire_512.png"
-dest_files=["res://.godot/imported/optic_seahorse_ocean_sapphire_512.png-fa606602d301257ebafc8611333b5e35.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seahorse/optic_core/optic_seahorse_ocean_sapphire_512.png"
+dest_files=["res://.godot/imported/optic_seahorse_ocean_sapphire_512.png-bf6c90cce299163f6b29715324e9ec30.ctex"]
 
 [params]
 

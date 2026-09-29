@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://km3f6sf8lkxf6"
-path="res://.godot/imported/proof_hippo_all_7_slices.png-8f2c9a23de634ed04f36a8626970e56e.ctex"
+uid="uid://cwao0olqg56wn"
+path="res://.godot/imported/proof_hippo_all_7_slices.png-89d06961b539776f8f2417ef0ca6d49c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hippo/proof_hippo_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_hippo_all_7_slices.png-8f2c9a23de634ed04f36a8626970e56e.ctex"]
+source_file="res://assets/paperdoll/hippo/proof_hippo_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_hippo_all_7_slices.png-89d06961b539776f8f2417ef0ca6d49c.ctex"]
 
 [params]
 

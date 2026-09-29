@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bmpprjp2gkoyl"
-path="res://.godot/imported/costume_stoat_scavenger_wind_cape_512.png-eae7b12d6acd46096172615844f0bea7.ctex"
+path="res://.godot/imported/costume_stoat_scavenger_wind_cape_512.png-a471f5671ecd592a720e11813283f5b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/stoat/costume/costume_stoat_scavenger_wind_cape_512.png"
-dest_files=["res://.godot/imported/costume_stoat_scavenger_wind_cape_512.png-eae7b12d6acd46096172615844f0bea7.ctex"]
+source_file="res://assets/sprites/player/paperdoll/stoat/costume/costume_stoat_scavenger_wind_cape_512.png"
+dest_files=["res://.godot/imported/costume_stoat_scavenger_wind_cape_512.png-a471f5671ecd592a720e11813283f5b9.ctex"]
 
 [params]
 

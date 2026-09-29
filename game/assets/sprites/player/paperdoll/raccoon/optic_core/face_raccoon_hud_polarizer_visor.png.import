@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cvibdnga18aqg"
-path="res://.godot/imported/face_raccoon_hud_polarizer_visor.png-db2bf09364d519dca9530b3ae8789eb9.ctex"
+path="res://.godot/imported/face_raccoon_hud_polarizer_visor.png-f724cc4090111505f6ad4b0d0695352c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raccoon/optic_core/face_raccoon_hud_polarizer_visor.png"
-dest_files=["res://.godot/imported/face_raccoon_hud_polarizer_visor.png-db2bf09364d519dca9530b3ae8789eb9.ctex"]
+source_file="res://assets/paperdoll/raccoon/optic_core/face_raccoon_hud_polarizer_visor.png"
+dest_files=["res://.godot/imported/face_raccoon_hud_polarizer_visor.png-f724cc4090111505f6ad4b0d0695352c.ctex"]
 
 [params]
 

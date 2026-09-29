@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b1aifwvpvs34o"
-path="res://.godot/imported/proof_paperdoll_gorilla_composite.png-83e3e76b057979b091c3f1161d417b22.ctex"
+path="res://.godot/imported/proof_paperdoll_gorilla_composite.png-032101b5ea30e140602046ac92ab50c2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/gorilla/proof_paperdoll_gorilla_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_gorilla_composite.png-83e3e76b057979b091c3f1161d417b22.ctex"]
+source_file="res://assets/paperdoll/gorilla/proof_paperdoll_gorilla_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_gorilla_composite.png-032101b5ea30e140602046ac92ab50c2.ctex"]
 
 [params]
 

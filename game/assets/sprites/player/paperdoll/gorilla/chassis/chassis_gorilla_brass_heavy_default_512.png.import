@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drgwmtfw1e47k"
-path="res://.godot/imported/chassis_gorilla_brass_heavy_default_512.png-a81113dce4e2607a146a90750ea8d885.ctex"
+path="res://.godot/imported/chassis_gorilla_brass_heavy_default_512.png-f78a3c23c14ab030ca2f06da6445a1f9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/gorilla/chassis/chassis_gorilla_brass_heavy_default_512.png"
-dest_files=["res://.godot/imported/chassis_gorilla_brass_heavy_default_512.png-a81113dce4e2607a146a90750ea8d885.ctex"]
+source_file="res://assets/paperdoll/gorilla/chassis/chassis_gorilla_brass_heavy_default_512.png"
+dest_files=["res://.godot/imported/chassis_gorilla_brass_heavy_default_512.png-f78a3c23c14ab030ca2f06da6445a1f9.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://06g5auu0p864"
-path="res://.godot/imported/attack.png-3864fc14183178ebc0bb888b349cf9b8.ctex"
+path="res://.godot/imported/attack.png-ab39b47a4c6ce89d83c2d561e93eadb3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/marmot/poses/attack.png"
-dest_files=["res://.godot/imported/attack.png-3864fc14183178ebc0bb888b349cf9b8.ctex"]
+source_file="res://assets/sprites/player/paperdoll/marmot/poses/attack.png"
+dest_files=["res://.godot/imported/attack.png-ab39b47a4c6ce89d83c2d561e93eadb3.ctex"]
 
 [params]
 

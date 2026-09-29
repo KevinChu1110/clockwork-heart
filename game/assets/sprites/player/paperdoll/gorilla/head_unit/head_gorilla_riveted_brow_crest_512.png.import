@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://yd1rbcmb0vnc"
-path="res://.godot/imported/head_gorilla_riveted_brow_crest_512.png-9651448504e0b8ed349c1878d6fb1aac.ctex"
+path="res://.godot/imported/head_gorilla_riveted_brow_crest_512.png-ca55659b2733666a214ed95e4f278743.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/gorilla/head_unit/head_gorilla_riveted_brow_crest_512.png"
-dest_files=["res://.godot/imported/head_gorilla_riveted_brow_crest_512.png-9651448504e0b8ed349c1878d6fb1aac.ctex"]
+source_file="res://assets/paperdoll/gorilla/head_unit/head_gorilla_riveted_brow_crest_512.png"
+dest_files=["res://.godot/imported/head_gorilla_riveted_brow_crest_512.png-ca55659b2733666a214ed95e4f278743.ctex"]
 
 [params]
 

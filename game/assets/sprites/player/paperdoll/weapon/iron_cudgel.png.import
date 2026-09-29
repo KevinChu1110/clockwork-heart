@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bke3ijaebw6vr"
-path="res://.godot/imported/iron_cudgel.png-1e4c04f0ce88c527304cfaf485efcfd8.ctex"
+path="res://.godot/imported/iron_cudgel.png-54b794efddd3c2dbd9bbe7bb15aa49ae.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/iron_cudgel.png"
-dest_files=["res://.godot/imported/iron_cudgel.png-1e4c04f0ce88c527304cfaf485efcfd8.ctex"]
+source_file="res://assets/paperdoll/weapon/iron_cudgel.png"
+dest_files=["res://.godot/imported/iron_cudgel.png-54b794efddd3c2dbd9bbe7bb15aa49ae.ctex"]
 
 [params]
 

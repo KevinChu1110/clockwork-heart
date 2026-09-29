@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b27c0q4l1wkht"
-path="res://.godot/imported/paint_midnight_navy.png-bd27e513ee64730e8044eb6bb0a62abc.ctex"
+path="res://.godot/imported/paint_midnight_navy.png-07f62a84ff5aa08d950c2c47bcf5eafb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/chassis/paint_midnight_navy.png"
-dest_files=["res://.godot/imported/paint_midnight_navy.png-bd27e513ee64730e8044eb6bb0a62abc.ctex"]
+source_file="res://assets/paperdoll/lion/chassis/paint_midnight_navy.png"
+dest_files=["res://.godot/imported/paint_midnight_navy.png-07f62a84ff5aa08d950c2c47bcf5eafb.ctex"]
 
 [params]
 

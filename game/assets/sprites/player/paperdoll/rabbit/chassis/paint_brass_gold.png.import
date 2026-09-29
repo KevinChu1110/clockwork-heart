@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://0f25d6o5mxbe"
-path="res://.godot/imported/paint_brass_gold.png-b2ef8a6f383284f91b1c0c9acefd7ed2.ctex"
+path="res://.godot/imported/paint_brass_gold.png-2057c5cfe6a6be4c7bd6182bb355548c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/chassis/paint_brass_gold.png"
-dest_files=["res://.godot/imported/paint_brass_gold.png-b2ef8a6f383284f91b1c0c9acefd7ed2.ctex"]
+source_file="res://assets/paperdoll/rabbit/chassis/paint_brass_gold.png"
+dest_files=["res://.godot/imported/paint_brass_gold.png-2057c5cfe6a6be4c7bd6182bb355548c.ctex"]
 
 [params]
 

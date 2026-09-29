@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bsf7wo3xcpv1l"
-path="res://.godot/imported/chassis_bison_rusted_tinplate_default_512.png-f4b735c3d2c4ca52eb13aecb2c481456.ctex"
+path="res://.godot/imported/chassis_bison_rusted_tinplate_default_512.png-4ba63066ade2a6c8996b1007c8b6c552.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bison/chassis/chassis_bison_rusted_tinplate_default_512.png"
-dest_files=["res://.godot/imported/chassis_bison_rusted_tinplate_default_512.png-f4b735c3d2c4ca52eb13aecb2c481456.ctex"]
+source_file="res://assets/paperdoll/bison/chassis/chassis_bison_rusted_tinplate_default_512.png"
+dest_files=["res://.godot/imported/chassis_bison_rusted_tinplate_default_512.png-4ba63066ade2a6c8996b1007c8b6c552.ctex"]
 
 [params]
 

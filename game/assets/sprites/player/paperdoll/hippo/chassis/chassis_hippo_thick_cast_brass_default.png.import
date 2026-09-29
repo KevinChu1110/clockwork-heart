@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://m3ggeaq1k1je3"
-path="res://.godot/imported/chassis_hippo_thick_cast_brass_default.png-68f55a9a8736096a2b8dc94599b3b27f.ctex"
+uid="uid://bh7tl30avfv4s"
+path="res://.godot/imported/chassis_hippo_thick_cast_brass_default.png-0615a929525a6aeb72fc951519c490a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hippo/chassis/chassis_hippo_thick_cast_brass_default.png"
-dest_files=["res://.godot/imported/chassis_hippo_thick_cast_brass_default.png-68f55a9a8736096a2b8dc94599b3b27f.ctex"]
+source_file="res://assets/paperdoll/hippo/chassis/chassis_hippo_thick_cast_brass_default.png"
+dest_files=["res://.godot/imported/chassis_hippo_thick_cast_brass_default.png-0615a929525a6aeb72fc951519c490a2.ctex"]
 
 [params]
 

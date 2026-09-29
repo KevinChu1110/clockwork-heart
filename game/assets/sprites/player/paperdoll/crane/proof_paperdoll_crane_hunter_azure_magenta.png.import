@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cettfes018o0v"
-path="res://.godot/imported/proof_paperdoll_crane_hunter_azure_magenta.png-5d5422fef518ead8a9ce420845bbe134.ctex"
+path="res://.godot/imported/proof_paperdoll_crane_hunter_azure_magenta.png-355c904af313457940dbbb108944849e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/proof_paperdoll_crane_hunter_azure_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_crane_hunter_azure_magenta.png-5d5422fef518ead8a9ce420845bbe134.ctex"]
+source_file="res://assets/paperdoll/crane/proof_paperdoll_crane_hunter_azure_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_crane_hunter_azure_magenta.png-355c904af313457940dbbb108944849e.ctex"]
 
 [params]
 

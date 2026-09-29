@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://tlbf928f06ys7"
-path="res://.godot/imported/proof_paperdoll_mole_magenta.png-46aeea0455c397444b447161d42f71e9.ctex"
+uid="uid://d4nxwukfrehr5"
+path="res://.godot/imported/proof_paperdoll_mole_magenta.png-7de821741cdf93bc12dbc9d4d8e42f31.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/mole/proof_paperdoll_mole_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_mole_magenta.png-46aeea0455c397444b447161d42f71e9.ctex"]
+source_file="res://assets/paperdoll/mole/proof_paperdoll_mole_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_mole_magenta.png-7de821741cdf93bc12dbc9d4d8e42f31.ctex"]
 
 [params]
 

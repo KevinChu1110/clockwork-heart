@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://db7jnvykgpjv7"
-path="res://.godot/imported/costume_wolf_scavenger_scrap_plate_armor.png-8d1c6d95159bdc9b7b55072e48d32fcd.ctex"
+path="res://.godot/imported/costume_wolf_scavenger_scrap_plate_armor.png-18c82c7d9a82ce0f538ab5b8e047bdd0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/wolf/costume/costume_wolf_scavenger_scrap_plate_armor.png"
-dest_files=["res://.godot/imported/costume_wolf_scavenger_scrap_plate_armor.png-8d1c6d95159bdc9b7b55072e48d32fcd.ctex"]
+source_file="res://assets/sprites/player/paperdoll/wolf/costume/costume_wolf_scavenger_scrap_plate_armor.png"
+dest_files=["res://.godot/imported/costume_wolf_scavenger_scrap_plate_armor.png-18c82c7d9a82ce0f538ab5b8e047bdd0.ctex"]
 
 [params]
 

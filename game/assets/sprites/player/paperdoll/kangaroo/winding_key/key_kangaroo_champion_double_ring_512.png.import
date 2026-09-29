@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dbxxg24exw7w0"
-path="res://.godot/imported/key_kangaroo_champion_double_ring_512.png-bdbf83ea1d1b8fe162202b5cac677779.ctex"
+path="res://.godot/imported/key_kangaroo_champion_double_ring_512.png-3caf9d3f8ad19cf8e1983b2df79899bd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/kangaroo/winding_key/key_kangaroo_champion_double_ring_512.png"
-dest_files=["res://.godot/imported/key_kangaroo_champion_double_ring_512.png-bdbf83ea1d1b8fe162202b5cac677779.ctex"]
+source_file="res://assets/sprites/player/paperdoll/kangaroo/winding_key/key_kangaroo_champion_double_ring_512.png"
+dest_files=["res://.godot/imported/key_kangaroo_champion_double_ring_512.png-3caf9d3f8ad19cf8e1983b2df79899bd.ctex"]
 
 [params]
 

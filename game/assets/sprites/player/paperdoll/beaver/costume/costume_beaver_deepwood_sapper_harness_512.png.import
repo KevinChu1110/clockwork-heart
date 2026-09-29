@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://de0wqquvl5qva"
-path="res://.godot/imported/costume_beaver_deepwood_sapper_harness_512.png-e2e4850f67b2ed48263332ecdbd42517.ctex"
+path="res://.godot/imported/costume_beaver_deepwood_sapper_harness_512.png-feee9664a170693198dfa02be54f91b4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/beaver/costume/costume_beaver_deepwood_sapper_harness_512.png"
-dest_files=["res://.godot/imported/costume_beaver_deepwood_sapper_harness_512.png-e2e4850f67b2ed48263332ecdbd42517.ctex"]
+source_file="res://assets/sprites/player/paperdoll/beaver/costume/costume_beaver_deepwood_sapper_harness_512.png"
+dest_files=["res://.godot/imported/costume_beaver_deepwood_sapper_harness_512.png-feee9664a170693198dfa02be54f91b4.ctex"]
 
 [params]
 

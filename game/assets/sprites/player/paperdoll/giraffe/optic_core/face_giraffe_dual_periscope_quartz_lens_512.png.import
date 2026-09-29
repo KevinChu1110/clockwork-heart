@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://wfmrgh80e93yk"
-path="res://.godot/imported/face_giraffe_dual_periscope_quartz_lens_512.png-2b5b88d49be1ec06bab03517fdf28fdc.ctex"
+uid="uid://c3lfh7nqlap6q"
+path="res://.godot/imported/face_giraffe_dual_periscope_quartz_lens_512.png-aa74c3a506429b1a2f433a4260d837e5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/giraffe/optic_core/face_giraffe_dual_periscope_quartz_lens_512.png"
-dest_files=["res://.godot/imported/face_giraffe_dual_periscope_quartz_lens_512.png-2b5b88d49be1ec06bab03517fdf28fdc.ctex"]
+source_file="res://assets/paperdoll/giraffe/optic_core/face_giraffe_dual_periscope_quartz_lens_512.png"
+dest_files=["res://.godot/imported/face_giraffe_dual_periscope_quartz_lens_512.png-aa74c3a506429b1a2f433a4260d837e5.ctex"]
 
 [params]
 

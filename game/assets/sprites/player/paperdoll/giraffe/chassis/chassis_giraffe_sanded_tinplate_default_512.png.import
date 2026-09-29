@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://n0po1w53lhput"
-path="res://.godot/imported/chassis_giraffe_sanded_tinplate_default_512.png-c233195fa0ee6a93f01d059526b1b81e.ctex"
+uid="uid://cfh3arfcvu3lj"
+path="res://.godot/imported/chassis_giraffe_sanded_tinplate_default_512.png-450d5bcc746226e3b21933b089034e7e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/giraffe/chassis/chassis_giraffe_sanded_tinplate_default_512.png"
-dest_files=["res://.godot/imported/chassis_giraffe_sanded_tinplate_default_512.png-c233195fa0ee6a93f01d059526b1b81e.ctex"]
+source_file="res://assets/paperdoll/giraffe/chassis/chassis_giraffe_sanded_tinplate_default_512.png"
+dest_files=["res://.godot/imported/chassis_giraffe_sanded_tinplate_default_512.png-450d5bcc746226e3b21933b089034e7e.ctex"]
 
 [params]
 

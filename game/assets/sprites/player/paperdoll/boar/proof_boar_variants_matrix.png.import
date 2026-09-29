@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dyd46f0h63phf"
-path="res://.godot/imported/proof_boar_variants_matrix.png-c0b8fe43536c60487896462d290b504d.ctex"
+path="res://.godot/imported/proof_boar_variants_matrix.png-63d6053560700d20ab043b9c2f63c46a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/proof_boar_variants_matrix.png"
-dest_files=["res://.godot/imported/proof_boar_variants_matrix.png-c0b8fe43536c60487896462d290b504d.ctex"]
+source_file="res://assets/paperdoll/boar/proof_boar_variants_matrix.png"
+dest_files=["res://.godot/imported/proof_boar_variants_matrix.png-63d6053560700d20ab043b9c2f63c46a.ctex"]
 
 [params]
 

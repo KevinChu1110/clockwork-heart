@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dalcolvs3wo1o"
-path="res://.godot/imported/key_sailfish_abyssal_helm_trident.png-0adf7cc4fcb0adabee20472bb1621dfa.ctex"
+path="res://.godot/imported/key_sailfish_abyssal_helm_trident.png-319f11fe912dc26bda2143210181cff4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_sailfish_abyssal_helm_trident.png"
-dest_files=["res://.godot/imported/key_sailfish_abyssal_helm_trident.png-0adf7cc4fcb0adabee20472bb1621dfa.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_sailfish_abyssal_helm_trident.png"
+dest_files=["res://.godot/imported/key_sailfish_abyssal_helm_trident.png-319f11fe912dc26bda2143210181cff4.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://lvnv5jjsdt64"
-path="res://.godot/imported/key_chameleon_prismatic_trivane.png-9e703c5862367ba8c9ed70c0a98cc672.ctex"
+path="res://.godot/imported/key_chameleon_prismatic_trivane.png-e501e5bfc6281e1b6f9a008108c3b4c6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/chameleon/winding_key/key_chameleon_prismatic_trivane.png"
-dest_files=["res://.godot/imported/key_chameleon_prismatic_trivane.png-9e703c5862367ba8c9ed70c0a98cc672.ctex"]
+source_file="res://assets/sprites/player/paperdoll/chameleon/winding_key/key_chameleon_prismatic_trivane.png"
+dest_files=["res://.godot/imported/key_chameleon_prismatic_trivane.png-e501e5bfc6281e1b6f9a008108c3b4c6.ctex"]
 
 [params]
 

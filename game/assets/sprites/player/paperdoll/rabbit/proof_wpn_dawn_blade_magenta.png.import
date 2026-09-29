@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dvyd0u5meqmhd"
-path="res://.godot/imported/proof_wpn_dawn_blade_magenta.png-2e0a668e268b02b51ae7a0a8b05f011a.ctex"
+path="res://.godot/imported/proof_wpn_dawn_blade_magenta.png-10db22149b7ae189a11dbbf7e055b64a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/proof_wpn_dawn_blade_magenta.png"
-dest_files=["res://.godot/imported/proof_wpn_dawn_blade_magenta.png-2e0a668e268b02b51ae7a0a8b05f011a.ctex"]
+source_file="res://assets/paperdoll/rabbit/proof_wpn_dawn_blade_magenta.png"
+dest_files=["res://.godot/imported/proof_wpn_dawn_blade_magenta.png-10db22149b7ae189a11dbbf7e055b64a.ctex"]
 
 [params]
 

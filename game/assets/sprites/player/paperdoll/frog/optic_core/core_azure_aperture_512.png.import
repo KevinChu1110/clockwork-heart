@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c18xce4ojeu76"
-path="res://.godot/imported/core_azure_aperture_512.png-e5cf05056b9a2d7abf2515c75b8cf03b.ctex"
+path="res://.godot/imported/core_azure_aperture_512.png-cec371f84c5f16e0778c3f3349f02d7f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/frog/optic_core/core_azure_aperture_512.png"
-dest_files=["res://.godot/imported/core_azure_aperture_512.png-e5cf05056b9a2d7abf2515c75b8cf03b.ctex"]
+source_file="res://assets/paperdoll/frog/optic_core/core_azure_aperture_512.png"
+dest_files=["res://.godot/imported/core_azure_aperture_512.png-cec371f84c5f16e0778c3f3349f02d7f.ctex"]
 
 [params]
 

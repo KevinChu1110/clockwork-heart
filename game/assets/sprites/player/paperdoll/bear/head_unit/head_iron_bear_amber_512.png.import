@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://6qqajlh2nfs6"
-path="res://.godot/imported/head_iron_bear_amber_512.png-0b382a5e76e29e4ca039acf16a5d2917.ctex"
+path="res://.godot/imported/head_iron_bear_amber_512.png-7894fe7aeee7f615843e88fc1cd3232c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/head_unit/head_iron_bear_amber_512.png"
-dest_files=["res://.godot/imported/head_iron_bear_amber_512.png-0b382a5e76e29e4ca039acf16a5d2917.ctex"]
+source_file="res://assets/paperdoll/bear/head_unit/head_iron_bear_amber_512.png"
+dest_files=["res://.godot/imported/head_iron_bear_amber_512.png-7894fe7aeee7f615843e88fc1cd3232c.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://xfswok4xoh1"
-path="res://.godot/imported/key_gorilla_heavy_t_forged_key.png-1a61f997ea8574b03039b31fd167e6c2.ctex"
+path="res://.godot/imported/key_gorilla_heavy_t_forged_key.png-3ee4b10ff7561fe525f6de2b20b99f99.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_gorilla_heavy_t_forged_key.png"
-dest_files=["res://.godot/imported/key_gorilla_heavy_t_forged_key.png-1a61f997ea8574b03039b31fd167e6c2.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_gorilla_heavy_t_forged_key.png"
+dest_files=["res://.godot/imported/key_gorilla_heavy_t_forged_key.png-3ee4b10ff7561fe525f6de2b20b99f99.ctex"]
 
 [params]
 

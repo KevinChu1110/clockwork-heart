@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://sk0llim4i3e48"
-path="res://.godot/imported/proof_paperdoll_lynx_magenta.png-01a7eb1593883d5e3d24987b76db34b1.ctex"
+uid="uid://c4d38ax4aav36"
+path="res://.godot/imported/proof_paperdoll_lynx_magenta.png-273fe14047418b7beea800a0331ad4c6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lynx/proof_paperdoll_lynx_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_lynx_magenta.png-01a7eb1593883d5e3d24987b76db34b1.ctex"]
+source_file="res://assets/paperdoll/lynx/proof_paperdoll_lynx_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_lynx_magenta.png-273fe14047418b7beea800a0331ad4c6.ctex"]
 
 [params]
 

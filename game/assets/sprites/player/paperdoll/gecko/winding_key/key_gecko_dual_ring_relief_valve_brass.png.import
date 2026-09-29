@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://btq6vprcmlc0g"
-path="res://.godot/imported/key_gecko_dual_ring_relief_valve_brass.png-66bd6cf2c10bb5bffc9e216c40c3eb99.ctex"
+path="res://.godot/imported/key_gecko_dual_ring_relief_valve_brass.png-a417966a4d934c0f17dc7fbdfc914ee5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/gecko/winding_key/key_gecko_dual_ring_relief_valve_brass.png"
-dest_files=["res://.godot/imported/key_gecko_dual_ring_relief_valve_brass.png-66bd6cf2c10bb5bffc9e216c40c3eb99.ctex"]
+source_file="res://assets/paperdoll/gecko/winding_key/key_gecko_dual_ring_relief_valve_brass.png"
+dest_files=["res://.godot/imported/key_gecko_dual_ring_relief_valve_brass.png-a417966a4d934c0f17dc7fbdfc914ee5.ctex"]
 
 [params]
 

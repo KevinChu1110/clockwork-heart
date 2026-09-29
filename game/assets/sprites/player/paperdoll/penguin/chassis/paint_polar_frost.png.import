@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ct864dps7v8gx"
-path="res://.godot/imported/paint_polar_frost.png-e9dab3d607d9d9ea9dc7a862ade70dfd.ctex"
+path="res://.godot/imported/paint_polar_frost.png-f176b9e347d9e61c3d2dccffc0ee6ac6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/chassis/paint_polar_frost.png"
-dest_files=["res://.godot/imported/paint_polar_frost.png-e9dab3d607d9d9ea9dc7a862ade70dfd.ctex"]
+source_file="res://assets/paperdoll/penguin/chassis/paint_polar_frost.png"
+dest_files=["res://.godot/imported/paint_polar_frost.png-f176b9e347d9e61c3d2dccffc0ee6ac6.ctex"]
 
 [params]
 

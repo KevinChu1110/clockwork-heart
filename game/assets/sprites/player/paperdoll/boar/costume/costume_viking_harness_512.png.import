@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://42r4mkyg6ev3"
-path="res://.godot/imported/costume_viking_harness_512.png-2239c1abe1106b8fecfbe74cf00a643f.ctex"
+path="res://.godot/imported/costume_viking_harness_512.png-697c3ff01bd87ee221e37477b84c4b91.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/costume/costume_viking_harness_512.png"
-dest_files=["res://.godot/imported/costume_viking_harness_512.png-2239c1abe1106b8fecfbe74cf00a643f.ctex"]
+source_file="res://assets/paperdoll/boar/costume/costume_viking_harness_512.png"
+dest_files=["res://.godot/imported/costume_viking_harness_512.png-697c3ff01bd87ee221e37477b84c4b91.ctex"]
 
 [params]
 

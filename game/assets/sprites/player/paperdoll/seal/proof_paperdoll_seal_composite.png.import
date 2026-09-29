@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://nsfvvu4ln4le"
-path="res://.godot/imported/proof_paperdoll_seal_composite.png-798e9f28f2e6807e815dd136646097c1.ctex"
+path="res://.godot/imported/proof_paperdoll_seal_composite.png-bade94617ba5991dc195ab9d0f3e5a33.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seal/proof_paperdoll_seal_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_seal_composite.png-798e9f28f2e6807e815dd136646097c1.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seal/proof_paperdoll_seal_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_seal_composite.png-bade94617ba5991dc195ab9d0f3e5a33.ctex"]
 
 [params]
 

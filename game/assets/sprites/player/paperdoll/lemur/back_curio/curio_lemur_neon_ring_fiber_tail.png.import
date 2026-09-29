@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bryj45sm5qhx6"
-path="res://.godot/imported/curio_lemur_neon_ring_fiber_tail.png-9072db5a259452d272af1594225ddab0.ctex"
+path="res://.godot/imported/curio_lemur_neon_ring_fiber_tail.png-9d978e8e9b09fae60024d3b4c9a662af.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/lemur/back_curio/curio_lemur_neon_ring_fiber_tail.png"
-dest_files=["res://.godot/imported/curio_lemur_neon_ring_fiber_tail.png-9072db5a259452d272af1594225ddab0.ctex"]
+source_file="res://assets/sprites/player/paperdoll/lemur/back_curio/curio_lemur_neon_ring_fiber_tail.png"
+dest_files=["res://.godot/imported/curio_lemur_neon_ring_fiber_tail.png-9d978e8e9b09fae60024d3b4c9a662af.ctex"]
 
 [params]
 

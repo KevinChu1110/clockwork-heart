@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://96edbs3btpchg"
-path="res://.godot/imported/weapon_giraffe_belfry_celestial_bow_512.png-d84f884bc84973608dd845bcbba4bbfb.ctex"
+uid="uid://epi0bs1qvgnk"
+path="res://.godot/imported/weapon_giraffe_belfry_celestial_bow_512.png-6eeb734a4dbdabd99f0e7d1d08ce2003.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/giraffe/weapon/weapon_giraffe_belfry_celestial_bow_512.png"
-dest_files=["res://.godot/imported/weapon_giraffe_belfry_celestial_bow_512.png-d84f884bc84973608dd845bcbba4bbfb.ctex"]
+source_file="res://assets/paperdoll/giraffe/weapon/weapon_giraffe_belfry_celestial_bow_512.png"
+dest_files=["res://.godot/imported/weapon_giraffe_belfry_celestial_bow_512.png-6eeb734a4dbdabd99f0e7d1d08ce2003.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drmmixh03kl5a"
-path="res://.godot/imported/curio_owl_floating_micro_orrery.png-5f278d82a66efe5cff84eda647dde9f2.ctex"
+path="res://.godot/imported/curio_owl_floating_micro_orrery.png-edd8eb260b3908cdae264cbd3d271cf0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/owl/back_curio/curio_owl_floating_micro_orrery.png"
-dest_files=["res://.godot/imported/curio_owl_floating_micro_orrery.png-5f278d82a66efe5cff84eda647dde9f2.ctex"]
+source_file="res://assets/paperdoll/owl/back_curio/curio_owl_floating_micro_orrery.png"
+dest_files=["res://.godot/imported/curio_owl_floating_micro_orrery.png-edd8eb260b3908cdae264cbd3d271cf0.ctex"]
 
 [params]
 

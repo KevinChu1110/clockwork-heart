@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drsno1gyfo5dt"
-path="res://.godot/imported/proof_bear_costume_comparison.png-78fd6cf00daa1b4363972fc8b53a3b50.ctex"
+path="res://.godot/imported/proof_bear_costume_comparison.png-caaba033238de1d2674813c41d0c931b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/proof_bear_costume_comparison.png"
-dest_files=["res://.godot/imported/proof_bear_costume_comparison.png-78fd6cf00daa1b4363972fc8b53a3b50.ctex"]
+source_file="res://assets/paperdoll/bear/proof_bear_costume_comparison.png"
+dest_files=["res://.godot/imported/proof_bear_costume_comparison.png-caaba033238de1d2674813c41d0c931b.ctex"]
 
 [params]
 

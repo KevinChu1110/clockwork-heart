@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://kdrb5obxnhi3"
-path="res://.godot/imported/key_classic_brass_512.png-6629b1cf8a8ab7f90cf60c38288105e8.ctex"
+path="res://.godot/imported/key_classic_brass_512.png-e618091482b1df44178129bc677b9639.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/winding_key/key_classic_brass_512.png"
-dest_files=["res://.godot/imported/key_classic_brass_512.png-6629b1cf8a8ab7f90cf60c38288105e8.ctex"]
+source_file="res://assets/paperdoll/macaque/winding_key/key_classic_brass_512.png"
+dest_files=["res://.godot/imported/key_classic_brass_512.png-e618091482b1df44178129bc677b9639.ctex"]
 
 [params]
 

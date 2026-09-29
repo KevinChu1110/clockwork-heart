@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b60whoxxwupcq"
-path="res://.godot/imported/proof_paperdoll_rabbit_royal_navy_magenta.png-c8e91659fa1d95a0823d6d2ba05160f9.ctex"
+path="res://.godot/imported/proof_paperdoll_rabbit_royal_navy_magenta.png-4455e724df9346ca88e5e2512ad9b75c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/proof_paperdoll_rabbit_royal_navy_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_rabbit_royal_navy_magenta.png-c8e91659fa1d95a0823d6d2ba05160f9.ctex"]
+source_file="res://assets/paperdoll/rabbit/proof_paperdoll_rabbit_royal_navy_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_rabbit_royal_navy_magenta.png-4455e724df9346ca88e5e2512ad9b75c.ctex"]
 
 [params]
 

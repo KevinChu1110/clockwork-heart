@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bwvff6rue1ij"
-path="res://.godot/imported/costume_fawn_emerald_scout_tunic_512.png-57334710012e35c386056d548c988268.ctex"
+path="res://.godot/imported/costume_fawn_emerald_scout_tunic_512.png-767a732b11352ada3184b0fcec807cf6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fawn/costume/costume_fawn_emerald_scout_tunic_512.png"
-dest_files=["res://.godot/imported/costume_fawn_emerald_scout_tunic_512.png-57334710012e35c386056d548c988268.ctex"]
+source_file="res://assets/paperdoll/fawn/costume/costume_fawn_emerald_scout_tunic_512.png"
+dest_files=["res://.godot/imported/costume_fawn_emerald_scout_tunic_512.png-767a732b11352ada3184b0fcec807cf6.ctex"]
 
 [params]
 

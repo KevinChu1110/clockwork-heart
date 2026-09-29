@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ble140wly72hl"
-path="res://.godot/imported/core_emerald_lens.png-d64024ff7b9a817ee531eedb58b6b039.ctex"
+path="res://.godot/imported/core_emerald_lens.png-df938b3554678699760b33532f9b9584.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/optic_core/core_emerald_lens.png"
-dest_files=["res://.godot/imported/core_emerald_lens.png-d64024ff7b9a817ee531eedb58b6b039.ctex"]
+source_file="res://assets/paperdoll/bear/optic_core/core_emerald_lens.png"
+dest_files=["res://.godot/imported/core_emerald_lens.png-df938b3554678699760b33532f9b9584.ctex"]
 
 [params]
 

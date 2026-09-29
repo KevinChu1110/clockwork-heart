@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dsyksaapewnqu"
-path="res://.godot/imported/head_xuanji_tortoise_stock_512.png-115e69d40001d42821dd8915115010b7.ctex"
+path="res://.godot/imported/head_xuanji_tortoise_stock_512.png-6522753e87c69b7fe230dc8e163a6c40.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tortoise/head_unit/head_xuanji_tortoise_stock_512.png"
-dest_files=["res://.godot/imported/head_xuanji_tortoise_stock_512.png-115e69d40001d42821dd8915115010b7.ctex"]
+source_file="res://assets/paperdoll/tortoise/head_unit/head_xuanji_tortoise_stock_512.png"
+dest_files=["res://.godot/imported/head_xuanji_tortoise_stock_512.png-6522753e87c69b7fe230dc8e163a6c40.ctex"]
 
 [params]
 

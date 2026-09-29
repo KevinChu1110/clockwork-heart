@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcoq8bnjoux2y"
-path="res://.godot/imported/notch_axe.png-44780bac32470b2650b42d535a165145.ctex"
+path="res://.godot/imported/notch_axe.png-c70f8ed7245bd78495dc8833d44793d1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/notch_axe.png"
-dest_files=["res://.godot/imported/notch_axe.png-44780bac32470b2650b42d535a165145.ctex"]
+source_file="res://assets/paperdoll/weapon/notch_axe.png"
+dest_files=["res://.godot/imported/notch_axe.png-c70f8ed7245bd78495dc8833d44793d1.ctex"]
 
 [params]
 

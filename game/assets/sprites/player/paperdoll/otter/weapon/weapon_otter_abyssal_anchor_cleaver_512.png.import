@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dkv6k54c7n037"
-path="res://.godot/imported/weapon_otter_abyssal_anchor_cleaver_512.png-e34c8f734eb3c920a7f422b9a40ead9f.ctex"
+path="res://.godot/imported/weapon_otter_abyssal_anchor_cleaver_512.png-23a001f88415f48853a8073499a25b5e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/otter/weapon/weapon_otter_abyssal_anchor_cleaver_512.png"
-dest_files=["res://.godot/imported/weapon_otter_abyssal_anchor_cleaver_512.png-e34c8f734eb3c920a7f422b9a40ead9f.ctex"]
+source_file="res://assets/paperdoll/otter/weapon/weapon_otter_abyssal_anchor_cleaver_512.png"
+dest_files=["res://.godot/imported/weapon_otter_abyssal_anchor_cleaver_512.png-23a001f88415f48853a8073499a25b5e.ctex"]
 
 [params]
 

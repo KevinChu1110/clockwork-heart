@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c17a618xvrex6"
-path="res://.godot/imported/verification_crop_viking_ironclad.png-3fc6bc6566adbe1cb40a7fcea984ac80.ctex"
+path="res://.godot/imported/verification_crop_viking_ironclad.png-42a6206c01a10a1547837df0331a3abc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/verification_crop_viking_ironclad.png"
-dest_files=["res://.godot/imported/verification_crop_viking_ironclad.png-3fc6bc6566adbe1cb40a7fcea984ac80.ctex"]
+source_file="res://assets/paperdoll/boar/verification_crop_viking_ironclad.png"
+dest_files=["res://.godot/imported/verification_crop_viking_ironclad.png-42a6206c01a10a1547837df0331a3abc.ctex"]
 
 [params]
 

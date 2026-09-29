@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://gdxd5e7c6s0nc"
-path="res://.godot/imported/curio_petaurista_bamboo_weave_rudder_tail.png-4a69d7c8e202440b46ef15e9c83179dd.ctex"
+uid="uid://cijikda3ml4vk"
+path="res://.godot/imported/curio_petaurista_bamboo_weave_rudder_tail.png-abc0bd070329d001aefdb84af0069449.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/petaurista/back_curio/curio_petaurista_bamboo_weave_rudder_tail.png"
-dest_files=["res://.godot/imported/curio_petaurista_bamboo_weave_rudder_tail.png-4a69d7c8e202440b46ef15e9c83179dd.ctex"]
+source_file="res://assets/paperdoll/petaurista/back_curio/curio_petaurista_bamboo_weave_rudder_tail.png"
+dest_files=["res://.godot/imported/curio_petaurista_bamboo_weave_rudder_tail.png-abc0bd070329d001aefdb84af0069449.ctex"]
 
 [params]
 

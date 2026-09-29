@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://decggo8j84i8p"
-path="res://.godot/imported/proof_paperdoll_raccoon_magenta.png-1a3227cf4bbaf08aa2ffaee727640360.ctex"
+path="res://.godot/imported/proof_paperdoll_raccoon_magenta.png-de3990917bdbd578eac556f5906983fc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raccoon/proof_paperdoll_raccoon_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_raccoon_magenta.png-1a3227cf4bbaf08aa2ffaee727640360.ctex"]
+source_file="res://assets/paperdoll/raccoon/proof_paperdoll_raccoon_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_raccoon_magenta.png-de3990917bdbd578eac556f5906983fc.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://boq7btai2l637"
-path="res://.godot/imported/costume_crab_furnace_sapper_cuirass_512.png-a33d60b09a8a945955f6aa8081d4ef51.ctex"
+path="res://.godot/imported/costume_crab_furnace_sapper_cuirass_512.png-4d6a0737ed19adc9134623c6d127f056.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crab/costume/costume_crab_furnace_sapper_cuirass_512.png"
-dest_files=["res://.godot/imported/costume_crab_furnace_sapper_cuirass_512.png-a33d60b09a8a945955f6aa8081d4ef51.ctex"]
+source_file="res://assets/paperdoll/crab/costume/costume_crab_furnace_sapper_cuirass_512.png"
+dest_files=["res://.godot/imported/costume_crab_furnace_sapper_cuirass_512.png-4d6a0737ed19adc9134623c6d127f056.ctex"]
 
 [params]
 

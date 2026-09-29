@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c6fypk7llktc5"
-path="res://.godot/imported/key_toucan_tri_vane_canopy_rotor_brass_512.png-a3282ca0683e52cb3efcb34747cfaef4.ctex"
+path="res://.godot/imported/key_toucan_tri_vane_canopy_rotor_brass_512.png-04e0ffaca46e78325bf0108b151fee66.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/toucan/winding_key/key_toucan_tri_vane_canopy_rotor_brass_512.png"
-dest_files=["res://.godot/imported/key_toucan_tri_vane_canopy_rotor_brass_512.png-a3282ca0683e52cb3efcb34747cfaef4.ctex"]
+source_file="res://assets/paperdoll/toucan/winding_key/key_toucan_tri_vane_canopy_rotor_brass_512.png"
+dest_files=["res://.godot/imported/key_toucan_tri_vane_canopy_rotor_brass_512.png-04e0ffaca46e78325bf0108b151fee66.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b2l5ft0iumvc2"
-path="res://.godot/imported/proof_paperdoll_walrus_magenta.png-be1480699195ea398e073e36b5d5ff4f.ctex"
+path="res://.godot/imported/proof_paperdoll_walrus_magenta.png-c1317a38dc466224c2d899c432d39f26.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/walrus/proof_paperdoll_walrus_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_walrus_magenta.png-be1480699195ea398e073e36b5d5ff4f.ctex"]
+source_file="res://assets/paperdoll/walrus/proof_paperdoll_walrus_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_walrus_magenta.png-c1317a38dc466224c2d899c432d39f26.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xt5qhrp38uvny"
-path="res://.godot/imported/face_hippo_dual_pressure_gauge_quartz_lens_512.png-93765420910b7de77d63707d4c64df08.ctex"
+uid="uid://npixf7lunm4e"
+path="res://.godot/imported/face_hippo_dual_pressure_gauge_quartz_lens_512.png-7fb3d0936378342f98ffe77ad35fd145.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hippo/optic_core/face_hippo_dual_pressure_gauge_quartz_lens_512.png"
-dest_files=["res://.godot/imported/face_hippo_dual_pressure_gauge_quartz_lens_512.png-93765420910b7de77d63707d4c64df08.ctex"]
+source_file="res://assets/paperdoll/hippo/optic_core/face_hippo_dual_pressure_gauge_quartz_lens_512.png"
+dest_files=["res://.godot/imported/face_hippo_dual_pressure_gauge_quartz_lens_512.png-7fb3d0936378342f98ffe77ad35fd145.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbtrf7yr3at46"
-path="res://.godot/imported/paint_molten_crimson_512.png-58bcbb49c699c60a32228ebc4e837faa.ctex"
+path="res://.godot/imported/paint_molten_crimson_512.png-7b581411aab29c31a7442cf81f19a088.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/boar/chassis/paint_molten_crimson_512.png"
-dest_files=["res://.godot/imported/paint_molten_crimson_512.png-58bcbb49c699c60a32228ebc4e837faa.ctex"]
+source_file="res://assets/paperdoll/boar/chassis/paint_molten_crimson_512.png"
+dest_files=["res://.godot/imported/paint_molten_crimson_512.png-7b581411aab29c31a7442cf81f19a088.ctex"]
 
 [params]
 

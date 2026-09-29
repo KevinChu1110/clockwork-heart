@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b13msq46i7fin"
-path="res://.godot/imported/blackpowder_rifle.png-6eaa1f83ac9a52e3ac03d1b259d63ef9.ctex"
+path="res://.godot/imported/blackpowder_rifle.png-ed7b81bd45257070a1cc17c9c5c066d7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/blackpowder_rifle.png"
-dest_files=["res://.godot/imported/blackpowder_rifle.png-6eaa1f83ac9a52e3ac03d1b259d63ef9.ctex"]
+source_file="res://assets/paperdoll/weapon/blackpowder_rifle.png"
+dest_files=["res://.godot/imported/blackpowder_rifle.png-ed7b81bd45257070a1cc17c9c5c066d7.ctex"]
 
 [params]
 

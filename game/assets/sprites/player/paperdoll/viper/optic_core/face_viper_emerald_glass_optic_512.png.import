@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://lk42mdr2elxm"
-path="res://.godot/imported/face_viper_emerald_glass_optic_512.png-946a7d34f164a246a3efeca80ee68316.ctex"
+path="res://.godot/imported/face_viper_emerald_glass_optic_512.png-f0ee7bc340de53f6baaedb6a5a4c872e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/viper/optic_core/face_viper_emerald_glass_optic_512.png"
-dest_files=["res://.godot/imported/face_viper_emerald_glass_optic_512.png-946a7d34f164a246a3efeca80ee68316.ctex"]
+source_file="res://assets/sprites/player/paperdoll/viper/optic_core/face_viper_emerald_glass_optic_512.png"
+dest_files=["res://.godot/imported/face_viper_emerald_glass_optic_512.png-f0ee7bc340de53f6baaedb6a5a4c872e.ctex"]
 
 [params]
 

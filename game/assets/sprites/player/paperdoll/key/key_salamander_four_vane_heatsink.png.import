@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://63q821nkorw8"
-path="res://.godot/imported/key_salamander_four_vane_heatsink.png-053655c42f695e029a5990de87fefb76.ctex"
+path="res://.godot/imported/key_salamander_four_vane_heatsink.png-0312106140531f3a788f7313677d99a5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_salamander_four_vane_heatsink.png"
-dest_files=["res://.godot/imported/key_salamander_four_vane_heatsink.png-053655c42f695e029a5990de87fefb76.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_salamander_four_vane_heatsink.png"
+dest_files=["res://.godot/imported/key_salamander_four_vane_heatsink.png-0312106140531f3a788f7313677d99a5.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dk07xwcfogolj"
-path="res://.godot/imported/key_armadillo_crucible_four_leaf_key.png-8d6711d2128b288dbdbe10ad2397e868.ctex"
+path="res://.godot/imported/key_armadillo_crucible_four_leaf_key.png-c945bb8675d75c9a02f03bd9c41282b1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_armadillo_crucible_four_leaf_key.png"
-dest_files=["res://.godot/imported/key_armadillo_crucible_four_leaf_key.png-8d6711d2128b288dbdbe10ad2397e868.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_armadillo_crucible_four_leaf_key.png"
+dest_files=["res://.godot/imported/key_armadillo_crucible_four_leaf_key.png-c945bb8675d75c9a02f03bd9c41282b1.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xi0lt7enrucfc"
-path="res://.godot/imported/proof_giraffe_all_7_slices.png-4dda0ec79eefffc04acedae72058cbe1.ctex"
+uid="uid://ckebuu5em2uq"
+path="res://.godot/imported/proof_giraffe_all_7_slices.png-78f353285c040fc63e21d697fc044ec0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/giraffe/proof_giraffe_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_giraffe_all_7_slices.png-4dda0ec79eefffc04acedae72058cbe1.ctex"]
+source_file="res://assets/paperdoll/giraffe/proof_giraffe_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_giraffe_all_7_slices.png-78f353285c040fc63e21d697fc044ec0.ctex"]
 
 [params]
 

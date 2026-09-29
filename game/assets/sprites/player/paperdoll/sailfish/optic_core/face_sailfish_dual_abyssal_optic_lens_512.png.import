@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cdmf3g5lmq81o"
-path="res://.godot/imported/face_sailfish_dual_abyssal_optic_lens_512.png-afac7b15a6eafc0ccac69b7f32060062.ctex"
+path="res://.godot/imported/face_sailfish_dual_abyssal_optic_lens_512.png-654e371f0247462aa09518b4c17fc691.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/sailfish/optic_core/face_sailfish_dual_abyssal_optic_lens_512.png"
-dest_files=["res://.godot/imported/face_sailfish_dual_abyssal_optic_lens_512.png-afac7b15a6eafc0ccac69b7f32060062.ctex"]
+source_file="res://assets/sprites/player/paperdoll/sailfish/optic_core/face_sailfish_dual_abyssal_optic_lens_512.png"
+dest_files=["res://.godot/imported/face_sailfish_dual_abyssal_optic_lens_512.png-654e371f0247462aa09518b4c17fc691.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://chwxylhoqu7im"
-path="res://.godot/imported/head_armadillo_quenched_visor_cowl.png-7b1adf1fca7ca69f2394932863fb131f.ctex"
+path="res://.godot/imported/head_armadillo_quenched_visor_cowl.png-abe3e78b1cc67ccb5b46e9a933b68b82.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/armadillo/head_unit/head_armadillo_quenched_visor_cowl.png"
-dest_files=["res://.godot/imported/head_armadillo_quenched_visor_cowl.png-7b1adf1fca7ca69f2394932863fb131f.ctex"]
+source_file="res://assets/sprites/player/paperdoll/armadillo/head_unit/head_armadillo_quenched_visor_cowl.png"
+dest_files=["res://.godot/imported/head_armadillo_quenched_visor_cowl.png-abe3e78b1cc67ccb5b46e9a933b68b82.ctex"]
 
 [params]
 

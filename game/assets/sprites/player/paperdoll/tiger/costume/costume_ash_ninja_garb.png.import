@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bt48iqk808mwj"
-path="res://.godot/imported/costume_ash_ninja_garb.png-121f5b5304c1c88829d349c4df3676e4.ctex"
+path="res://.godot/imported/costume_ash_ninja_garb.png-efc2a039b4c41c34483fda02dc205565.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tiger/costume/costume_ash_ninja_garb.png"
-dest_files=["res://.godot/imported/costume_ash_ninja_garb.png-121f5b5304c1c88829d349c4df3676e4.ctex"]
+source_file="res://assets/paperdoll/tiger/costume/costume_ash_ninja_garb.png"
+dest_files=["res://.godot/imported/costume_ash_ninja_garb.png-efc2a039b4c41c34483fda02dc205565.ctex"]
 
 [params]
 

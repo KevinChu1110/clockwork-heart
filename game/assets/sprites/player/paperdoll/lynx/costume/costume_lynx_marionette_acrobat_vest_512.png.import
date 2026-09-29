@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://62wv48fv7hka1"
-path="res://.godot/imported/costume_lynx_marionette_acrobat_vest_512.png-601319b95886f0fc2826656f39c5a757.ctex"
+uid="uid://5nxfr2vouj7w"
+path="res://.godot/imported/costume_lynx_marionette_acrobat_vest_512.png-9447d4e1411d183d6327ee1d43bff164.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lynx/costume/costume_lynx_marionette_acrobat_vest_512.png"
-dest_files=["res://.godot/imported/costume_lynx_marionette_acrobat_vest_512.png-601319b95886f0fc2826656f39c5a757.ctex"]
+source_file="res://assets/paperdoll/lynx/costume/costume_lynx_marionette_acrobat_vest_512.png"
+dest_files=["res://.godot/imported/costume_lynx_marionette_acrobat_vest_512.png-9447d4e1411d183d6327ee1d43bff164.ctex"]
 
 [params]
 

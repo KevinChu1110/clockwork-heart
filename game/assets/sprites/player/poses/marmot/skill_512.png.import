@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://doxpra1mftc22"
-path="res://.godot/imported/skill_512.png-c04df99f0a8caaa6dd939f38aaea2f37.ctex"
+path="res://.godot/imported/skill_512.png-fc13268eebbd3dab7c53ddc09b5ed82a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/marmot/poses/skill_512.png"
-dest_files=["res://.godot/imported/skill_512.png-c04df99f0a8caaa6dd939f38aaea2f37.ctex"]
+source_file="res://assets/paperdoll/marmot/poses/skill_512.png"
+dest_files=["res://.godot/imported/skill_512.png-fc13268eebbd3dab7c53ddc09b5ed82a.ctex"]
 
 [params]
 

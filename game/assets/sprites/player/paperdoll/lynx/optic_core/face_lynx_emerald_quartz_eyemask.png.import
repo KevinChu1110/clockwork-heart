@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://lc0u74cfyvbnw"
-path="res://.godot/imported/face_lynx_emerald_quartz_eyemask.png-b0fb989a00d6ed794dc38e5a994b88be.ctex"
+uid="uid://dl6410hwuhj5e"
+path="res://.godot/imported/face_lynx_emerald_quartz_eyemask.png-142f3bc11874744df879a9eabdb0f4c3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lynx/optic_core/face_lynx_emerald_quartz_eyemask.png"
-dest_files=["res://.godot/imported/face_lynx_emerald_quartz_eyemask.png-b0fb989a00d6ed794dc38e5a994b88be.ctex"]
+source_file="res://assets/paperdoll/lynx/optic_core/face_lynx_emerald_quartz_eyemask.png"
+dest_files=["res://.godot/imported/face_lynx_emerald_quartz_eyemask.png-142f3bc11874744df879a9eabdb0f4c3.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ck3yg055f3eio"
-path="res://.godot/imported/proof_bat_all_7_slices.png-5dc01e6e6cc6445dedd32f9d8e4f9f0c.ctex"
+path="res://.godot/imported/proof_bat_all_7_slices.png-a16782004682241ba5a57f8ec7412896.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bat/proof_bat_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_bat_all_7_slices.png-5dc01e6e6cc6445dedd32f9d8e4f9f0c.ctex"]
+source_file="res://assets/paperdoll/bat/proof_bat_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_bat_all_7_slices.png-a16782004682241ba5a57f8ec7412896.ctex"]
 
 [params]
 

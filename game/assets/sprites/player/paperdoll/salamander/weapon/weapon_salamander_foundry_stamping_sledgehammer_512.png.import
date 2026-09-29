@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dl6qab3cg26pg"
-path="res://.godot/imported/weapon_salamander_foundry_stamping_sledgehammer_512.png-4dc310c545660b068f38435e17fa52ff.ctex"
+path="res://.godot/imported/weapon_salamander_foundry_stamping_sledgehammer_512.png-2c59b20fa58a63cf6c4a93d08c829ea5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/salamander/weapon/weapon_salamander_foundry_stamping_sledgehammer_512.png"
-dest_files=["res://.godot/imported/weapon_salamander_foundry_stamping_sledgehammer_512.png-4dc310c545660b068f38435e17fa52ff.ctex"]
+source_file="res://assets/sprites/player/paperdoll/salamander/weapon/weapon_salamander_foundry_stamping_sledgehammer_512.png"
+dest_files=["res://.godot/imported/weapon_salamander_foundry_stamping_sledgehammer_512.png-2c59b20fa58a63cf6c4a93d08c829ea5.ctex"]
 
 [params]
 

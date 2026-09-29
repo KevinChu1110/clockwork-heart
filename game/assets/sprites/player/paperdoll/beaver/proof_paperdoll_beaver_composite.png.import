@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://docqj5og4p4li"
-path="res://.godot/imported/proof_paperdoll_beaver_composite.png-124454ad2deb89fa0a55715288c5fc4f.ctex"
+path="res://.godot/imported/proof_paperdoll_beaver_composite.png-6dbe89edbde14575271fc9b246326ded.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/beaver/proof_paperdoll_beaver_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_beaver_composite.png-124454ad2deb89fa0a55715288c5fc4f.ctex"]
+source_file="res://assets/paperdoll/beaver/proof_paperdoll_beaver_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_beaver_composite.png-6dbe89edbde14575271fc9b246326ded.ctex"]
 
 [params]
 

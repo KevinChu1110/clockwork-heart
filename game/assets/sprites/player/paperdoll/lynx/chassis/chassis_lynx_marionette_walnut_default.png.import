@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mo0omaycljd4w"
-path="res://.godot/imported/chassis_lynx_marionette_walnut_default.png-43d8e31319a25c1d1fe0b5c132b7f4d0.ctex"
+uid="uid://3r2t37kvwqum"
+path="res://.godot/imported/chassis_lynx_marionette_walnut_default.png-bdd717d506733269aa383cd9e80a81ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lynx/chassis/chassis_lynx_marionette_walnut_default.png"
-dest_files=["res://.godot/imported/chassis_lynx_marionette_walnut_default.png-43d8e31319a25c1d1fe0b5c132b7f4d0.ctex"]
+source_file="res://assets/paperdoll/lynx/chassis/chassis_lynx_marionette_walnut_default.png"
+dest_files=["res://.godot/imported/chassis_lynx_marionette_walnut_default.png-bdd717d506733269aa383cd9e80a81ed.ctex"]
 
 [params]
 

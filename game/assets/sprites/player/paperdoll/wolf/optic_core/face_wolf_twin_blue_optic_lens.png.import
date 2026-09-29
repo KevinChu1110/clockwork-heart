@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://4iem15ka3u4x"
-path="res://.godot/imported/face_wolf_twin_blue_optic_lens.png-9b9a2ee7fa19983024f018b311b9c2c0.ctex"
+path="res://.godot/imported/face_wolf_twin_blue_optic_lens.png-c11cefd5754d549adbadb43644cf54b0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/wolf/optic_core/face_wolf_twin_blue_optic_lens.png"
-dest_files=["res://.godot/imported/face_wolf_twin_blue_optic_lens.png-9b9a2ee7fa19983024f018b311b9c2c0.ctex"]
+source_file="res://assets/sprites/player/paperdoll/wolf/optic_core/face_wolf_twin_blue_optic_lens.png"
+dest_files=["res://.godot/imported/face_wolf_twin_blue_optic_lens.png-c11cefd5754d549adbadb43644cf54b0.ctex"]
 
 [params]
 

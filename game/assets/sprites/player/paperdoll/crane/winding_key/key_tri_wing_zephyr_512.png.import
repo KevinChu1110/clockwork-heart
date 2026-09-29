@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cw88yk3n2ee4j"
-path="res://.godot/imported/key_tri_wing_zephyr_512.png-07bac1e8e85ce45f755bc0247d35c053.ctex"
+path="res://.godot/imported/key_tri_wing_zephyr_512.png-cc8652687545c8c02dec52b870e4a82d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/winding_key/key_tri_wing_zephyr_512.png"
-dest_files=["res://.godot/imported/key_tri_wing_zephyr_512.png-07bac1e8e85ce45f755bc0247d35c053.ctex"]
+source_file="res://assets/paperdoll/crane/winding_key/key_tri_wing_zephyr_512.png"
+dest_files=["res://.godot/imported/key_tri_wing_zephyr_512.png-cc8652687545c8c02dec52b870e4a82d.ctex"]
 
 [params]
 

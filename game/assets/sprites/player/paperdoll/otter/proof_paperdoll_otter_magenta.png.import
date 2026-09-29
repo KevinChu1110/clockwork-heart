@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cpj167f7j1i6q"
-path="res://.godot/imported/proof_paperdoll_otter_magenta.png-3253e45f12ac08c2c5c86d1b4fe63536.ctex"
+path="res://.godot/imported/proof_paperdoll_otter_magenta.png-403d1b1ffa41e57c1f475ae87310aff3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/otter/proof_paperdoll_otter_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_otter_magenta.png-3253e45f12ac08c2c5c86d1b4fe63536.ctex"]
+source_file="res://assets/paperdoll/otter/proof_paperdoll_otter_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_otter_magenta.png-403d1b1ffa41e57c1f475ae87310aff3.ctex"]
 
 [params]
 

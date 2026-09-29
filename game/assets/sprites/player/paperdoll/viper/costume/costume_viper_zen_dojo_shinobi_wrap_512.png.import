@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://u5xc48kv6clp"
-path="res://.godot/imported/costume_viper_zen_dojo_shinobi_wrap_512.png-2db1aebd01fbac2fe387305fcd8ed648.ctex"
+path="res://.godot/imported/costume_viper_zen_dojo_shinobi_wrap_512.png-bd07888ba1f382a65d46aa1c58c89e99.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/viper/costume/costume_viper_zen_dojo_shinobi_wrap_512.png"
-dest_files=["res://.godot/imported/costume_viper_zen_dojo_shinobi_wrap_512.png-2db1aebd01fbac2fe387305fcd8ed648.ctex"]
+source_file="res://assets/sprites/player/paperdoll/viper/costume/costume_viper_zen_dojo_shinobi_wrap_512.png"
+dest_files=["res://.godot/imported/costume_viper_zen_dojo_shinobi_wrap_512.png-bd07888ba1f382a65d46aa1c58c89e99.ctex"]
 
 [params]
 

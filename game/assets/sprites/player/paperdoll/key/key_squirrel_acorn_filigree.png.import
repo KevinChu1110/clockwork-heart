@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d05eu1erpnl17"
-path="res://.godot/imported/key_squirrel_acorn_filigree.png-588b7e9c1d2c5687698bff417eb2ddba.ctex"
+path="res://.godot/imported/key_squirrel_acorn_filigree.png-6fc4297686170e7a32a69eab4ba5363d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_squirrel_acorn_filigree.png"
-dest_files=["res://.godot/imported/key_squirrel_acorn_filigree.png-588b7e9c1d2c5687698bff417eb2ddba.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_squirrel_acorn_filigree.png"
+dest_files=["res://.godot/imported/key_squirrel_acorn_filigree.png-6fc4297686170e7a32a69eab4ba5363d.ctex"]
 
 [params]
 

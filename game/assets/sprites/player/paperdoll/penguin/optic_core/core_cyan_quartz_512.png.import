@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://j8js2m487wq2"
-path="res://.godot/imported/core_cyan_quartz_512.png-5d3e5ed19bbdef45de7b3b059d1787a7.ctex"
+path="res://.godot/imported/core_cyan_quartz_512.png-c27e01b51e49f4172eeaf3cf6b3b6d87.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/optic_core/core_cyan_quartz_512.png"
-dest_files=["res://.godot/imported/core_cyan_quartz_512.png-5d3e5ed19bbdef45de7b3b059d1787a7.ctex"]
+source_file="res://assets/paperdoll/penguin/optic_core/core_cyan_quartz_512.png"
+dest_files=["res://.godot/imported/core_cyan_quartz_512.png-c27e01b51e49f4172eeaf3cf6b3b6d87.ctex"]
 
 [params]
 

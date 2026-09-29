@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pnoarrf1hmijy"
-path="res://.godot/imported/costume_camel_scavenger_astronomer_robe.png-328dbe94d3541aefb6169979274a3457.ctex"
+uid="uid://d2gn0loar0vao"
+path="res://.godot/imported/costume_camel_scavenger_astronomer_robe.png-cc53654927f1857abfd509495438a7b6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/camel/costume/costume_camel_scavenger_astronomer_robe.png"
-dest_files=["res://.godot/imported/costume_camel_scavenger_astronomer_robe.png-328dbe94d3541aefb6169979274a3457.ctex"]
+source_file="res://assets/paperdoll/camel/costume/costume_camel_scavenger_astronomer_robe.png"
+dest_files=["res://.godot/imported/costume_camel_scavenger_astronomer_robe.png-cc53654927f1857abfd509495438a7b6.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bc6drr2aauyxr"
-path="res://.godot/imported/face_seal_cyan_quartz_convex_lens_512.png-893cc79a5be8834dabb416a6f71d876f.ctex"
+path="res://.godot/imported/face_seal_cyan_quartz_convex_lens_512.png-5314015d960d0f918cfafdef34763898.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seal/optic_core/face_seal_cyan_quartz_convex_lens_512.png"
-dest_files=["res://.godot/imported/face_seal_cyan_quartz_convex_lens_512.png-893cc79a5be8834dabb416a6f71d876f.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seal/optic_core/face_seal_cyan_quartz_convex_lens_512.png"
+dest_files=["res://.godot/imported/face_seal_cyan_quartz_convex_lens_512.png-5314015d960d0f918cfafdef34763898.ctex"]
 
 [params]
 

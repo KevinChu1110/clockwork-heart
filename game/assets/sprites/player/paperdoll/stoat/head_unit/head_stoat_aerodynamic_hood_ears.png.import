@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://da0n3ajjb2bxq"
-path="res://.godot/imported/head_stoat_aerodynamic_hood_ears.png-a4af38185306003fe8b246774e3c84c0.ctex"
+path="res://.godot/imported/head_stoat_aerodynamic_hood_ears.png-e70912629b96ce0343a40c640cba1915.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/stoat/head_unit/head_stoat_aerodynamic_hood_ears.png"
-dest_files=["res://.godot/imported/head_stoat_aerodynamic_hood_ears.png-a4af38185306003fe8b246774e3c84c0.ctex"]
+source_file="res://assets/sprites/player/paperdoll/stoat/head_unit/head_stoat_aerodynamic_hood_ears.png"
+dest_files=["res://.godot/imported/head_stoat_aerodynamic_hood_ears.png-e70912629b96ce0343a40c640cba1915.ctex"]
 
 [params]
 

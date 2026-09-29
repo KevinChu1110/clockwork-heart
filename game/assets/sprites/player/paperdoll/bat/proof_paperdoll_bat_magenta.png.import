@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://chpd82moy3ccb"
-path="res://.godot/imported/proof_paperdoll_bat_magenta.png-fb7a2fe07b4dc25f76e567cc6d3906c6.ctex"
+path="res://.godot/imported/proof_paperdoll_bat_magenta.png-50732a05fdb0bd3bb034918419e0ae13.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bat/proof_paperdoll_bat_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_bat_magenta.png-fb7a2fe07b4dc25f76e567cc6d3906c6.ctex"]
+source_file="res://assets/paperdoll/bat/proof_paperdoll_bat_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_bat_magenta.png-50732a05fdb0bd3bb034918419e0ae13.ctex"]
 
 [params]
 

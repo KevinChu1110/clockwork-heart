@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://6e07t35ojp5d"
-path="res://.godot/imported/weapon_seal_clapper_gauntlets.png-3d5a4d35aeb9d674da5b09df2cfb5360.ctex"
+path="res://.godot/imported/weapon_seal_clapper_gauntlets.png-54f71ae2dbb0ba9b4c243fbb182a4ba6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seal/weapon/weapon_seal_clapper_gauntlets.png"
-dest_files=["res://.godot/imported/weapon_seal_clapper_gauntlets.png-3d5a4d35aeb9d674da5b09df2cfb5360.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seal/weapon/weapon_seal_clapper_gauntlets.png"
+dest_files=["res://.godot/imported/weapon_seal_clapper_gauntlets.png-54f71ae2dbb0ba9b4c243fbb182a4ba6.ctex"]
 
 [params]
 

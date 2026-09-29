@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ysrbbb3eugsf"
-path="res://.godot/imported/chassis_gecko_brass_patina_default.png-171f20e1272814c6a191f4bed404436e.ctex"
+path="res://.godot/imported/chassis_gecko_brass_patina_default.png-9b0b892388caa51e5e1ff619372ceab0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/gecko/chassis/chassis_gecko_brass_patina_default.png"
-dest_files=["res://.godot/imported/chassis_gecko_brass_patina_default.png-171f20e1272814c6a191f4bed404436e.ctex"]
+source_file="res://assets/paperdoll/gecko/chassis/chassis_gecko_brass_patina_default.png"
+dest_files=["res://.godot/imported/chassis_gecko_brass_patina_default.png-9b0b892388caa51e5e1ff619372ceab0.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hok2b74phvtmu"
-path="res://.godot/imported/weapon_hippo_steamvalve_piston_heavy_lance_512.png-90ed70f571cbc0ae5c2c52c22293affd.ctex"
+uid="uid://ds56p57gwoxu3"
+path="res://.godot/imported/weapon_hippo_steamvalve_piston_heavy_lance_512.png-9620e854259a5d616b0dfbc87a90516e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hippo/weapon/weapon_hippo_steamvalve_piston_heavy_lance_512.png"
-dest_files=["res://.godot/imported/weapon_hippo_steamvalve_piston_heavy_lance_512.png-90ed70f571cbc0ae5c2c52c22293affd.ctex"]
+source_file="res://assets/paperdoll/hippo/weapon/weapon_hippo_steamvalve_piston_heavy_lance_512.png"
+dest_files=["res://.godot/imported/weapon_hippo_steamvalve_piston_heavy_lance_512.png-9620e854259a5d616b0dfbc87a90516e.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dn0mt44oveicg"
-path="res://.godot/imported/proof_penguin_chassis_comparison.png-40de70e4f5b49d07809858db7b75213f.ctex"
+path="res://.godot/imported/proof_penguin_chassis_comparison.png-d885fc083cd8b3acafa89a8980111f3c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/proof_penguin_chassis_comparison.png"
-dest_files=["res://.godot/imported/proof_penguin_chassis_comparison.png-40de70e4f5b49d07809858db7b75213f.ctex"]
+source_file="res://assets/paperdoll/penguin/proof_penguin_chassis_comparison.png"
+dest_files=["res://.godot/imported/proof_penguin_chassis_comparison.png-d885fc083cd8b3acafa89a8980111f3c.ctex"]
 
 [params]
 

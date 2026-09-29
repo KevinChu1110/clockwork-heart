@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1e80pipp5jxy"
-path="res://.godot/imported/wpn_bagua_astrolabe.png-f3df8e2366ef564eaae49c577bd4bd26.ctex"
+path="res://.godot/imported/wpn_bagua_astrolabe.png-b41581719b6166b406d2c17e4586a00c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tortoise/weapon/wpn_bagua_astrolabe.png"
-dest_files=["res://.godot/imported/wpn_bagua_astrolabe.png-f3df8e2366ef564eaae49c577bd4bd26.ctex"]
+source_file="res://assets/paperdoll/tortoise/weapon/wpn_bagua_astrolabe.png"
+dest_files=["res://.godot/imported/wpn_bagua_astrolabe.png-b41581719b6166b406d2c17e4586a00c.ctex"]
 
 [params]
 

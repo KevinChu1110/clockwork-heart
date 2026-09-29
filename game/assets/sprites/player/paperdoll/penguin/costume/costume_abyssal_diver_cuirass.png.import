@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b86tk4qgjs1ay"
-path="res://.godot/imported/costume_abyssal_diver_cuirass.png-02aab39ab9ddb10762cce35d10a8bbdc.ctex"
+path="res://.godot/imported/costume_abyssal_diver_cuirass.png-5be470134d52176a66a084b0b8366769.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/costume/costume_abyssal_diver_cuirass.png"
-dest_files=["res://.godot/imported/costume_abyssal_diver_cuirass.png-02aab39ab9ddb10762cce35d10a8bbdc.ctex"]
+source_file="res://assets/paperdoll/penguin/costume/costume_abyssal_diver_cuirass.png"
+dest_files=["res://.godot/imported/costume_abyssal_diver_cuirass.png-5be470134d52176a66a084b0b8366769.ctex"]
 
 [params]
 

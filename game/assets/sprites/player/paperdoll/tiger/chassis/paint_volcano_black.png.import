@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cimfxygv5nn8a"
-path="res://.godot/imported/paint_volcano_black.png-97f3b6c822662666d9ecb8cd2d135439.ctex"
+path="res://.godot/imported/paint_volcano_black.png-94027fb1f2f75017a72c106bf4b2ce60.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tiger/chassis/paint_volcano_black.png"
-dest_files=["res://.godot/imported/paint_volcano_black.png-97f3b6c822662666d9ecb8cd2d135439.ctex"]
+source_file="res://assets/paperdoll/tiger/chassis/paint_volcano_black.png"
+dest_files=["res://.godot/imported/paint_volcano_black.png-94027fb1f2f75017a72c106bf4b2ce60.ctex"]
 
 [params]
 

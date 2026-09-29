@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://8f6hkapt23nq"
-path="res://.godot/imported/head_salamander_radiator_crest_horns.png-23c327fc414cf059914d7420a36062e8.ctex"
+path="res://.godot/imported/head_salamander_radiator_crest_horns.png-9dc0349b615f84a871fc510e413711b2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/salamander/head_unit/head_salamander_radiator_crest_horns.png"
-dest_files=["res://.godot/imported/head_salamander_radiator_crest_horns.png-23c327fc414cf059914d7420a36062e8.ctex"]
+source_file="res://assets/sprites/player/paperdoll/salamander/head_unit/head_salamander_radiator_crest_horns.png"
+dest_files=["res://.godot/imported/head_salamander_radiator_crest_horns.png-9dc0349b615f84a871fc510e413711b2.ctex"]
 
 [params]
 

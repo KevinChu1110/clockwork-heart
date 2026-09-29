@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://km44cvhaylpi"
-path="res://.godot/imported/face_woodpecker_precision_gauge_monocle.png-e20b7b3d3afc25c0f58567667f02353b.ctex"
+path="res://.godot/imported/face_woodpecker_precision_gauge_monocle.png-c138644197e1c3d5b06623d9b8d0a999.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/woodpecker/optic_core/face_woodpecker_precision_gauge_monocle.png"
-dest_files=["res://.godot/imported/face_woodpecker_precision_gauge_monocle.png-e20b7b3d3afc25c0f58567667f02353b.ctex"]
+source_file="res://assets/sprites/player/paperdoll/woodpecker/optic_core/face_woodpecker_precision_gauge_monocle.png"
+dest_files=["res://.godot/imported/face_woodpecker_precision_gauge_monocle.png-c138644197e1c3d5b06623d9b8d0a999.ctex"]
 
 [params]
 

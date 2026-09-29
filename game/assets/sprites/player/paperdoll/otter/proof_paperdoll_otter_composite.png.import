@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b601lwos8bl1s"
-path="res://.godot/imported/proof_paperdoll_otter_composite.png-f0f2bb534b2d8354bfa1179220a41717.ctex"
+path="res://.godot/imported/proof_paperdoll_otter_composite.png-fa2f0aa4633c39a2a8f261abbe43fd20.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/otter/proof_paperdoll_otter_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_otter_composite.png-f0f2bb534b2d8354bfa1179220a41717.ctex"]
+source_file="res://assets/paperdoll/otter/proof_paperdoll_otter_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_otter_composite.png-fa2f0aa4633c39a2a8f261abbe43fd20.ctex"]
 
 [params]
 

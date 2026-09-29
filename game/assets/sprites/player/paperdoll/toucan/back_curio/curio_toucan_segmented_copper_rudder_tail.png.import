@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pp8sfaqwuhct"
-path="res://.godot/imported/curio_toucan_segmented_copper_rudder_tail.png-345444157e5aef94d316324390f808f2.ctex"
+path="res://.godot/imported/curio_toucan_segmented_copper_rudder_tail.png-573a2c98d59a3149581fb32c8d3d01f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/toucan/back_curio/curio_toucan_segmented_copper_rudder_tail.png"
-dest_files=["res://.godot/imported/curio_toucan_segmented_copper_rudder_tail.png-345444157e5aef94d316324390f808f2.ctex"]
+source_file="res://assets/paperdoll/toucan/back_curio/curio_toucan_segmented_copper_rudder_tail.png"
+dest_files=["res://.godot/imported/curio_toucan_segmented_copper_rudder_tail.png-573a2c98d59a3149581fb32c8d3d01f7.ctex"]
 
 [params]
 

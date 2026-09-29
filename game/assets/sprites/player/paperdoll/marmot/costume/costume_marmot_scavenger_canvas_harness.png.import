@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3wba6uf4u5nj"
-path="res://.godot/imported/costume_marmot_scavenger_canvas_harness.png-e0a963436fa988895aa08f20b8d4e277.ctex"
+path="res://.godot/imported/costume_marmot_scavenger_canvas_harness.png-77a670b3e8d5d24d4edee6f193d175c4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/marmot/costume/costume_marmot_scavenger_canvas_harness.png"
-dest_files=["res://.godot/imported/costume_marmot_scavenger_canvas_harness.png-e0a963436fa988895aa08f20b8d4e277.ctex"]
+source_file="res://assets/sprites/player/paperdoll/marmot/costume/costume_marmot_scavenger_canvas_harness.png"
+dest_files=["res://.godot/imported/costume_marmot_scavenger_canvas_harness.png-77a670b3e8d5d24d4edee6f193d175c4.ctex"]
 
 [params]
 

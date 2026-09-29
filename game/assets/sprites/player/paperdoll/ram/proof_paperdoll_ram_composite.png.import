@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dp2yd5j73gh8b"
-path="res://.godot/imported/proof_paperdoll_ram_composite.png-3e21c3a7fd36e1dc72a48108b2c11d45.ctex"
+path="res://.godot/imported/proof_paperdoll_ram_composite.png-ae2515247645d872b6cf4a30ec2cef5b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/ram/proof_paperdoll_ram_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_ram_composite.png-3e21c3a7fd36e1dc72a48108b2c11d45.ctex"]
+source_file="res://assets/paperdoll/ram/proof_paperdoll_ram_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_ram_composite.png-ae2515247645d872b6cf4a30ec2cef5b.ctex"]
 
 [params]
 

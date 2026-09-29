@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cg7rlxovqfb05"
-path="res://.godot/imported/chassis_seal_marine_titanium_default.png-351346110d21bac4b0a3f7040a2fb3f5.ctex"
+path="res://.godot/imported/chassis_seal_marine_titanium_default.png-48564c26bdc8af608f90105396fe9378.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seal/chassis/chassis_seal_marine_titanium_default.png"
-dest_files=["res://.godot/imported/chassis_seal_marine_titanium_default.png-351346110d21bac4b0a3f7040a2fb3f5.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seal/chassis/chassis_seal_marine_titanium_default.png"
+dest_files=["res://.godot/imported/chassis_seal_marine_titanium_default.png-48564c26bdc8af608f90105396fe9378.ctex"]
 
 [params]
 

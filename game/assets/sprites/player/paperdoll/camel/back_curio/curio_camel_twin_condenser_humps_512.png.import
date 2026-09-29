@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://yvyxetahy60qm"
-path="res://.godot/imported/curio_camel_twin_condenser_humps_512.png-65449fc21a15704dc78620eb83c2fe18.ctex"
+uid="uid://bpjpuhqylyq61"
+path="res://.godot/imported/curio_camel_twin_condenser_humps_512.png-a788e6082a057c2db89d4788417a1c0b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/camel/back_curio/curio_camel_twin_condenser_humps_512.png"
-dest_files=["res://.godot/imported/curio_camel_twin_condenser_humps_512.png-65449fc21a15704dc78620eb83c2fe18.ctex"]
+source_file="res://assets/paperdoll/camel/back_curio/curio_camel_twin_condenser_humps_512.png"
+dest_files=["res://.godot/imported/curio_camel_twin_condenser_humps_512.png-a788e6082a057c2db89d4788417a1c0b.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://q657ayli3mu6"
-path="res://.godot/imported/idle.png-9d19cc6103e6621d008f2369fd3a86d7.ctex"
+path="res://.godot/imported/idle.png-02b479341fc8e97fcb2d47b707fe6c91.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/marmot/poses/idle.png"
-dest_files=["res://.godot/imported/idle.png-9d19cc6103e6621d008f2369fd3a86d7.ctex"]
+source_file="res://assets/paperdoll/marmot/poses/idle.png"
+dest_files=["res://.godot/imported/idle.png-02b479341fc8e97fcb2d47b707fe6c91.ctex"]
 
 [params]
 

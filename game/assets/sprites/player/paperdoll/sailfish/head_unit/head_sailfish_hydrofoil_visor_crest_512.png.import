@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://0c1sb17tcqhf"
-path="res://.godot/imported/head_sailfish_hydrofoil_visor_crest_512.png-353e12aa9e8b8f3c106c1b7ea09c7764.ctex"
+path="res://.godot/imported/head_sailfish_hydrofoil_visor_crest_512.png-974a64d98f3c7a034d131e33e4a4988e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/sailfish/head_unit/head_sailfish_hydrofoil_visor_crest_512.png"
-dest_files=["res://.godot/imported/head_sailfish_hydrofoil_visor_crest_512.png-353e12aa9e8b8f3c106c1b7ea09c7764.ctex"]
+source_file="res://assets/sprites/player/paperdoll/sailfish/head_unit/head_sailfish_hydrofoil_visor_crest_512.png"
+dest_files=["res://.godot/imported/head_sailfish_hydrofoil_visor_crest_512.png-974a64d98f3c7a034d131e33e4a4988e.ctex"]
 
 [params]
 

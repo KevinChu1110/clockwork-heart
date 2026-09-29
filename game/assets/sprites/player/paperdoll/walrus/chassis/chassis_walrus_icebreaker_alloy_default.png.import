@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bp2n6rifoslpv"
-path="res://.godot/imported/chassis_walrus_icebreaker_alloy_default.png-212961f2c2a2de4a84f37be73532b3aa.ctex"
+path="res://.godot/imported/chassis_walrus_icebreaker_alloy_default.png-33d78d1fe705be6502172071384c6945.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/walrus/chassis/chassis_walrus_icebreaker_alloy_default.png"
-dest_files=["res://.godot/imported/chassis_walrus_icebreaker_alloy_default.png-212961f2c2a2de4a84f37be73532b3aa.ctex"]
+source_file="res://assets/paperdoll/walrus/chassis/chassis_walrus_icebreaker_alloy_default.png"
+dest_files=["res://.godot/imported/chassis_walrus_icebreaker_alloy_default.png-33d78d1fe705be6502172071384c6945.ctex"]
 
 [params]
 

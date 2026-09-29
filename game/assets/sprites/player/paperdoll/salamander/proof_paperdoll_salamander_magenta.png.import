@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://4eyx55pnxpof"
-path="res://.godot/imported/proof_paperdoll_salamander_magenta.png-4c0e44c4123f509eff63ffd2ccef4821.ctex"
+path="res://.godot/imported/proof_paperdoll_salamander_magenta.png-41f0a3582a9898a31d2cc57b1abcb3cb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/salamander/proof_paperdoll_salamander_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_salamander_magenta.png-4c0e44c4123f509eff63ffd2ccef4821.ctex"]
+source_file="res://assets/sprites/player/paperdoll/salamander/proof_paperdoll_salamander_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_salamander_magenta.png-41f0a3582a9898a31d2cc57b1abcb3cb.ctex"]
 
 [params]
 

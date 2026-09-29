@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dj4a1pn26iexh"
-path="res://.godot/imported/proof_elephant_variants_matrix.png-b952201aac927c9bc38d709a656c03b2.ctex"
+path="res://.godot/imported/proof_elephant_variants_matrix.png-b438bd100326e3a8a01a418e4fd235ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/elephant/proof_elephant_variants_matrix.png"
-dest_files=["res://.godot/imported/proof_elephant_variants_matrix.png-b952201aac927c9bc38d709a656c03b2.ctex"]
+source_file="res://assets/paperdoll/elephant/proof_elephant_variants_matrix.png"
+dest_files=["res://.godot/imported/proof_elephant_variants_matrix.png-b438bd100326e3a8a01a418e4fd235ed.ctex"]
 
 [params]
 

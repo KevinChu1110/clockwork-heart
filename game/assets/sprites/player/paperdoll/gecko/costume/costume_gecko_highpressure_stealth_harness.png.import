@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c4q4iv48kqjgn"
-path="res://.godot/imported/costume_gecko_highpressure_stealth_harness.png-e148dbdef6ab74015d84b2ec766498e1.ctex"
+path="res://.godot/imported/costume_gecko_highpressure_stealth_harness.png-1a5e52742efd743a2a47ce800b76cf20.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/gecko/costume/costume_gecko_highpressure_stealth_harness.png"
-dest_files=["res://.godot/imported/costume_gecko_highpressure_stealth_harness.png-e148dbdef6ab74015d84b2ec766498e1.ctex"]
+source_file="res://assets/paperdoll/gecko/costume/costume_gecko_highpressure_stealth_harness.png"
+dest_files=["res://.godot/imported/costume_gecko_highpressure_stealth_harness.png-1a5e52742efd743a2a47ce800b76cf20.ctex"]
 
 [params]
 

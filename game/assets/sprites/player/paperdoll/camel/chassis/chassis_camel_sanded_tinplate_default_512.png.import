@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://sljbvo11xn41w"
-path="res://.godot/imported/chassis_camel_sanded_tinplate_default_512.png-9ab1d61247159fd290dc5f7b6a0147be.ctex"
+uid="uid://c4vtjhd1oum0u"
+path="res://.godot/imported/chassis_camel_sanded_tinplate_default_512.png-a5b931936b421bb90dda05b17057bdf7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/camel/chassis/chassis_camel_sanded_tinplate_default_512.png"
-dest_files=["res://.godot/imported/chassis_camel_sanded_tinplate_default_512.png-9ab1d61247159fd290dc5f7b6a0147be.ctex"]
+source_file="res://assets/paperdoll/camel/chassis/chassis_camel_sanded_tinplate_default_512.png"
+dest_files=["res://.godot/imported/chassis_camel_sanded_tinplate_default_512.png-a5b931936b421bb90dda05b17057bdf7.ctex"]
 
 [params]
 

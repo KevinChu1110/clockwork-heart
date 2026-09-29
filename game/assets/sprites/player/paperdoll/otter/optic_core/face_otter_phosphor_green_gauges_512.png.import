@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d2j040oqoichy"
-path="res://.godot/imported/face_otter_phosphor_green_gauges_512.png-c070a9c4396d821756789db9922eca66.ctex"
+path="res://.godot/imported/face_otter_phosphor_green_gauges_512.png-fbf461d5cee6371dfe8c3808aeae17e7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/otter/optic_core/face_otter_phosphor_green_gauges_512.png"
-dest_files=["res://.godot/imported/face_otter_phosphor_green_gauges_512.png-c070a9c4396d821756789db9922eca66.ctex"]
+source_file="res://assets/paperdoll/otter/optic_core/face_otter_phosphor_green_gauges_512.png"
+dest_files=["res://.godot/imported/face_otter_phosphor_green_gauges_512.png-fbf461d5cee6371dfe8c3808aeae17e7.ctex"]
 
 [params]
 

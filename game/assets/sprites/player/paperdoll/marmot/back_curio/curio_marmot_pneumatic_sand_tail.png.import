@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://du8mnt5rkf0mk"
-path="res://.godot/imported/curio_marmot_pneumatic_sand_tail.png-9844dfb5e672d3346cea30c2899f245b.ctex"
+path="res://.godot/imported/curio_marmot_pneumatic_sand_tail.png-721887630a1cd0ae9f67279bfed67881.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/marmot/back_curio/curio_marmot_pneumatic_sand_tail.png"
-dest_files=["res://.godot/imported/curio_marmot_pneumatic_sand_tail.png-9844dfb5e672d3346cea30c2899f245b.ctex"]
+source_file="res://assets/sprites/player/paperdoll/marmot/back_curio/curio_marmot_pneumatic_sand_tail.png"
+dest_files=["res://.godot/imported/curio_marmot_pneumatic_sand_tail.png-721887630a1cd0ae9f67279bfed67881.ctex"]
 
 [params]
 

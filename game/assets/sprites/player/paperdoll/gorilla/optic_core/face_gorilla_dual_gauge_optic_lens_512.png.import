@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bxwgaimwenfnm"
-path="res://.godot/imported/face_gorilla_dual_gauge_optic_lens_512.png-050c456a7d5b308ea9d9b58306e0ca56.ctex"
+path="res://.godot/imported/face_gorilla_dual_gauge_optic_lens_512.png-073124b5fb64c51bc27d7342501fafb2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/gorilla/optic_core/face_gorilla_dual_gauge_optic_lens_512.png"
-dest_files=["res://.godot/imported/face_gorilla_dual_gauge_optic_lens_512.png-050c456a7d5b308ea9d9b58306e0ca56.ctex"]
+source_file="res://assets/paperdoll/gorilla/optic_core/face_gorilla_dual_gauge_optic_lens_512.png"
+dest_files=["res://.godot/imported/face_gorilla_dual_gauge_optic_lens_512.png-073124b5fb64c51bc27d7342501fafb2.ctex"]
 
 [params]
 

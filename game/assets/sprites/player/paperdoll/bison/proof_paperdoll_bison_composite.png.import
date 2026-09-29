@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bww6rs4dbt3ij"
-path="res://.godot/imported/proof_paperdoll_bison_composite.png-5ab2ee78148f9fa3bf6bdea10f8c5823.ctex"
+path="res://.godot/imported/proof_paperdoll_bison_composite.png-3f8dca01f47d71c0f61996377f12c8b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bison/proof_paperdoll_bison_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_bison_composite.png-5ab2ee78148f9fa3bf6bdea10f8c5823.ctex"]
+source_file="res://assets/paperdoll/bison/proof_paperdoll_bison_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_bison_composite.png-3f8dca01f47d71c0f61996377f12c8b9.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://skw2a5jefcdy"
-path="res://.godot/imported/weapon_hound_stellar_beacon_lance.png-b6df6edd27866e420c98a75358321338.ctex"
+path="res://.godot/imported/weapon_hound_stellar_beacon_lance.png-a7847ac5ebd3585073179704b31bd025.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/weapon_hound_stellar_beacon_lance.png"
-dest_files=["res://.godot/imported/weapon_hound_stellar_beacon_lance.png-b6df6edd27866e420c98a75358321338.ctex"]
+source_file="res://assets/paperdoll/weapon/weapon_hound_stellar_beacon_lance.png"
+dest_files=["res://.godot/imported/weapon_hound_stellar_beacon_lance.png-a7847ac5ebd3585073179704b31bd025.ctex"]
 
 [params]
 

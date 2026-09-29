@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pe4j8tqiykwt"
-path="res://.godot/imported/weapon_rhino_crucible_breaker_axe_512.png-13fdded972b42b416912e693c88bd1bd.ctex"
+path="res://.godot/imported/weapon_rhino_crucible_breaker_axe_512.png-bde05cfaac0020344273c3045e1f1533.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rhino/weapon/weapon_rhino_crucible_breaker_axe_512.png"
-dest_files=["res://.godot/imported/weapon_rhino_crucible_breaker_axe_512.png-13fdded972b42b416912e693c88bd1bd.ctex"]
+source_file="res://assets/paperdoll/rhino/weapon/weapon_rhino_crucible_breaker_axe_512.png"
+dest_files=["res://.godot/imported/weapon_rhino_crucible_breaker_axe_512.png-bde05cfaac0020344273c3045e1f1533.ctex"]
 
 [params]
 

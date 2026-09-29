@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://csed4ke07y64a"
-path="res://.godot/imported/costume_walrus_abyssal_peacoat_cuirass.png-2a250c9e3cefc9a1916bc6cd3d6574ad.ctex"
+path="res://.godot/imported/costume_walrus_abyssal_peacoat_cuirass.png-d85d9cc90eca1bbe729febdd116d2b78.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/walrus/costume/costume_walrus_abyssal_peacoat_cuirass.png"
-dest_files=["res://.godot/imported/costume_walrus_abyssal_peacoat_cuirass.png-2a250c9e3cefc9a1916bc6cd3d6574ad.ctex"]
+source_file="res://assets/paperdoll/walrus/costume/costume_walrus_abyssal_peacoat_cuirass.png"
+dest_files=["res://.godot/imported/costume_walrus_abyssal_peacoat_cuirass.png-d85d9cc90eca1bbe729febdd116d2b78.ctex"]
 
 [params]
 

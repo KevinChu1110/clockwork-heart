@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b8wasfksgvjdc"
-path="res://.godot/imported/curio_sailfish_clockwork_sailfin_mantle_512.png-fca2e2582c2f6906d8f51dcadbd4f7c0.ctex"
+path="res://.godot/imported/curio_sailfish_clockwork_sailfin_mantle_512.png-2f6239c07b060522da41003a59586c6b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/sailfish/back_curio/curio_sailfish_clockwork_sailfin_mantle_512.png"
-dest_files=["res://.godot/imported/curio_sailfish_clockwork_sailfin_mantle_512.png-fca2e2582c2f6906d8f51dcadbd4f7c0.ctex"]
+source_file="res://assets/sprites/player/paperdoll/sailfish/back_curio/curio_sailfish_clockwork_sailfin_mantle_512.png"
+dest_files=["res://.godot/imported/curio_sailfish_clockwork_sailfin_mantle_512.png-2f6239c07b060522da41003a59586c6b.ctex"]
 
 [params]
 

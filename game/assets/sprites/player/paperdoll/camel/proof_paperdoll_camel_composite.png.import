@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://momkbktktunuv"
-path="res://.godot/imported/proof_paperdoll_camel_composite.png-aefd38c55b18faa4d6df35d620c53bc9.ctex"
+uid="uid://3exje2s481ll"
+path="res://.godot/imported/proof_paperdoll_camel_composite.png-92361bbf1d1720a457947a82f5bb17d4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/camel/proof_paperdoll_camel_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_camel_composite.png-aefd38c55b18faa4d6df35d620c53bc9.ctex"]
+source_file="res://assets/paperdoll/camel/proof_paperdoll_camel_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_camel_composite.png-92361bbf1d1720a457947a82f5bb17d4.ctex"]
 
 [params]
 

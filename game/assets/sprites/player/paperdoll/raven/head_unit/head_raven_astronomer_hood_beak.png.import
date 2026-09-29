@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b60qn1aoeo1k6"
-path="res://.godot/imported/head_raven_astronomer_hood_beak.png-7a82298e7b60b24e5e6e4781da032a16.ctex"
+path="res://.godot/imported/head_raven_astronomer_hood_beak.png-6755652497f54ffe4c2655e3301ffef4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raven/head_unit/head_raven_astronomer_hood_beak.png"
-dest_files=["res://.godot/imported/head_raven_astronomer_hood_beak.png-7a82298e7b60b24e5e6e4781da032a16.ctex"]
+source_file="res://assets/paperdoll/raven/head_unit/head_raven_astronomer_hood_beak.png"
+dest_files=["res://.godot/imported/head_raven_astronomer_hood_beak.png-6755652497f54ffe4c2655e3301ffef4.ctex"]
 
 [params]
 

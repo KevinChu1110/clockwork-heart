@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ruz91fr7f1n1v"
-path="res://.godot/imported/head_lynx_bazaar_marionette_tufted_cowl.png-416d64b08f4f7c95f488d2933bbb1f09.ctex"
+uid="uid://cfesn6365750t"
+path="res://.godot/imported/head_lynx_bazaar_marionette_tufted_cowl.png-1d399bff661bfd482dfda4ab06c2ea0d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lynx/head_unit/head_lynx_bazaar_marionette_tufted_cowl.png"
-dest_files=["res://.godot/imported/head_lynx_bazaar_marionette_tufted_cowl.png-416d64b08f4f7c95f488d2933bbb1f09.ctex"]
+source_file="res://assets/paperdoll/lynx/head_unit/head_lynx_bazaar_marionette_tufted_cowl.png"
+dest_files=["res://.godot/imported/head_lynx_bazaar_marionette_tufted_cowl.png-1d399bff661bfd482dfda4ab06c2ea0d.ctex"]
 
 [params]
 

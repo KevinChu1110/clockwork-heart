@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dk7d0xgy52y8e"
-path="res://.godot/imported/wpn_knight_lance_512.png-cd18dff2420b8cc8c1f1dc02c9671d0e.ctex"
+path="res://.godot/imported/wpn_knight_lance_512.png-40bc888972b8e382589e5a6364715289.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/weapon/wpn_knight_lance_512.png"
-dest_files=["res://.godot/imported/wpn_knight_lance_512.png-cd18dff2420b8cc8c1f1dc02c9671d0e.ctex"]
+source_file="res://assets/paperdoll/lion/weapon/wpn_knight_lance_512.png"
+dest_files=["res://.godot/imported/wpn_knight_lance_512.png-40bc888972b8e382589e5a6364715289.ctex"]
 
 [params]
 

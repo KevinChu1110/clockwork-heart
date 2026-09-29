@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ct2er3h2nw4ul"
-path="res://.godot/imported/verification_crop_lance.png-700fdc87213161d4137b7c593d10ef8b.ctex"
+path="res://.godot/imported/verification_crop_lance.png-b202696048357a5f24966dabc5c66d22.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/verification_crop_lance.png"
-dest_files=["res://.godot/imported/verification_crop_lance.png-700fdc87213161d4137b7c593d10ef8b.ctex"]
+source_file="res://assets/paperdoll/lion/verification_crop_lance.png"
+dest_files=["res://.godot/imported/verification_crop_lance.png-b202696048357a5f24966dabc5c66d22.ctex"]
 
 [params]
 

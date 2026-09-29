@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c0pgdghji85to"
-path="res://.godot/imported/proof_race_switch_verified.png-0c502e3310dd28b27d1b825ecca9d723.ctex"
+path="res://.godot/imported/proof_race_switch_verified.png-4495eeabf7ab19468b06239285f5fc94.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/proof_race_switch_verified.png"
-dest_files=["res://.godot/imported/proof_race_switch_verified.png-0c502e3310dd28b27d1b825ecca9d723.ctex"]
+source_file="res://assets/paperdoll/rabbit/proof_race_switch_verified.png"
+dest_files=["res://.godot/imported/proof_race_switch_verified.png-4495eeabf7ab19468b06239285f5fc94.ctex"]
 
 [params]
 

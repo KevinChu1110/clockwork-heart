@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://p6vhsh9olky3c"
-path="res://.godot/imported/costume_giraffe_dawn_herald_woolen_cape.png-15197f2123b1ed9756caa2e15147f94d.ctex"
+uid="uid://p80galocrh2a"
+path="res://.godot/imported/costume_giraffe_dawn_herald_woolen_cape.png-401d10e1266837b114c44a91a9bd16b7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/giraffe/costume/costume_giraffe_dawn_herald_woolen_cape.png"
-dest_files=["res://.godot/imported/costume_giraffe_dawn_herald_woolen_cape.png-15197f2123b1ed9756caa2e15147f94d.ctex"]
+source_file="res://assets/paperdoll/giraffe/costume/costume_giraffe_dawn_herald_woolen_cape.png"
+dest_files=["res://.godot/imported/costume_giraffe_dawn_herald_woolen_cape.png-401d10e1266837b114c44a91a9bd16b7.ctex"]
 
 [params]
 

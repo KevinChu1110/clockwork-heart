@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://be8q7ehrysv8g"
-path="res://.godot/imported/face_salamander_amber_dial_lens_512.png-f8ae2d004e514d4b92932096430333b7.ctex"
+path="res://.godot/imported/face_salamander_amber_dial_lens_512.png-346c4cc90847427ec1ea97f1fe6b89da.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/salamander/optic_core/face_salamander_amber_dial_lens_512.png"
-dest_files=["res://.godot/imported/face_salamander_amber_dial_lens_512.png-f8ae2d004e514d4b92932096430333b7.ctex"]
+source_file="res://assets/sprites/player/paperdoll/salamander/optic_core/face_salamander_amber_dial_lens_512.png"
+dest_files=["res://.godot/imported/face_salamander_amber_dial_lens_512.png-346c4cc90847427ec1ea97f1fe6b89da.ctex"]
 
 [params]
 

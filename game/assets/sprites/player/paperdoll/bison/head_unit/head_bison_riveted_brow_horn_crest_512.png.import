@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dh2a0d7kyiitu"
-path="res://.godot/imported/head_bison_riveted_brow_horn_crest_512.png-632eae86ec82190ec3586fc08506b86d.ctex"
+path="res://.godot/imported/head_bison_riveted_brow_horn_crest_512.png-79bec0c16c6bf8d244b5f63e3691f9e2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bison/head_unit/head_bison_riveted_brow_horn_crest_512.png"
-dest_files=["res://.godot/imported/head_bison_riveted_brow_horn_crest_512.png-632eae86ec82190ec3586fc08506b86d.ctex"]
+source_file="res://assets/paperdoll/bison/head_unit/head_bison_riveted_brow_horn_crest_512.png"
+dest_files=["res://.godot/imported/head_bison_riveted_brow_horn_crest_512.png-79bec0c16c6bf8d244b5f63e3691f9e2.ctex"]
 
 [params]
 

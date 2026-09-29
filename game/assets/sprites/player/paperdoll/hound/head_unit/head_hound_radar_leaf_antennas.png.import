@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcekktrok8odq"
-path="res://.godot/imported/head_hound_radar_leaf_antennas.png-1a038df178919bc488be36005f4642ef.ctex"
+path="res://.godot/imported/head_hound_radar_leaf_antennas.png-dfdd5fd14926c4aa3d8860cd31db1436.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hound/head_unit/head_hound_radar_leaf_antennas.png"
-dest_files=["res://.godot/imported/head_hound_radar_leaf_antennas.png-1a038df178919bc488be36005f4642ef.ctex"]
+source_file="res://assets/paperdoll/hound/head_unit/head_hound_radar_leaf_antennas.png"
+dest_files=["res://.godot/imported/head_hound_radar_leaf_antennas.png-dfdd5fd14926c4aa3d8860cd31db1436.ctex"]
 
 [params]
 

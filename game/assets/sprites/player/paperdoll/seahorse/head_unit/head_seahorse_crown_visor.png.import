@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://j6ki8jb78t6f"
-path="res://.godot/imported/head_seahorse_crown_visor.png-d7f16bc79713cef8470d34d3087eceed.ctex"
+path="res://.godot/imported/head_seahorse_crown_visor.png-792cde2e52c16c2f0a6f72e159ce500b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seahorse/head_unit/head_seahorse_crown_visor.png"
-dest_files=["res://.godot/imported/head_seahorse_crown_visor.png-d7f16bc79713cef8470d34d3087eceed.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seahorse/head_unit/head_seahorse_crown_visor.png"
+dest_files=["res://.godot/imported/head_seahorse_crown_visor.png-792cde2e52c16c2f0a6f72e159ce500b.ctex"]
 
 [params]
 

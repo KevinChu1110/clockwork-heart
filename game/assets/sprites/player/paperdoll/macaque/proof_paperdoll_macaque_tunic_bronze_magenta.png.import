@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://buwt2cd3gqwx7"
-path="res://.godot/imported/proof_paperdoll_macaque_tunic_bronze_magenta.png-192a965b33c4d4c28c4250b0f2d01b94.ctex"
+path="res://.godot/imported/proof_paperdoll_macaque_tunic_bronze_magenta.png-e74da1a8f74792ecc01a8bdda98a8646.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_tunic_bronze_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_macaque_tunic_bronze_magenta.png-192a965b33c4d4c28c4250b0f2d01b94.ctex"]
+source_file="res://assets/paperdoll/macaque/proof_paperdoll_macaque_tunic_bronze_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_macaque_tunic_bronze_magenta.png-e74da1a8f74792ecc01a8bdda98a8646.ctex"]
 
 [params]
 

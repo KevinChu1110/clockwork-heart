@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cxvdpriea0otu"
-path="res://.godot/imported/key_marmot_dual_pawl_brass_512.png-c28984b08308325a7e9e978ec710e9e4.ctex"
+path="res://.godot/imported/key_marmot_dual_pawl_brass_512.png-b16758aa1073cc1ff71506185a26048e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_marmot_dual_pawl_brass_512.png"
-dest_files=["res://.godot/imported/key_marmot_dual_pawl_brass_512.png-c28984b08308325a7e9e978ec710e9e4.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_marmot_dual_pawl_brass_512.png"
+dest_files=["res://.godot/imported/key_marmot_dual_pawl_brass_512.png-b16758aa1073cc1ff71506185a26048e.ctex"]
 
 [params]
 

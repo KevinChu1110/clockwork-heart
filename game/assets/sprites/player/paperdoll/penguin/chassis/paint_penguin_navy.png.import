@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cmurhcf3iggjy"
-path="res://.godot/imported/paint_penguin_navy.png-20cec2a74d7335aea512c29c7d635150.ctex"
+path="res://.godot/imported/paint_penguin_navy.png-61477a40bbc03f8bf3215a2d82a8d067.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/chassis/paint_penguin_navy.png"
-dest_files=["res://.godot/imported/paint_penguin_navy.png-20cec2a74d7335aea512c29c7d635150.ctex"]
+source_file="res://assets/paperdoll/penguin/chassis/paint_penguin_navy.png"
+dest_files=["res://.godot/imported/paint_penguin_navy.png-61477a40bbc03f8bf3215a2d82a8d067.ctex"]
 
 [params]
 

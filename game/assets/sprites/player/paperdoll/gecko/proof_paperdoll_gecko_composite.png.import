@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cpd6omxexiy7u"
-path="res://.godot/imported/proof_paperdoll_gecko_composite.png-0d0132f62fa8c9fcf09e3c1b51a7442c.ctex"
+path="res://.godot/imported/proof_paperdoll_gecko_composite.png-b8af0681f2661e496f8996a2d8608da7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/gecko/proof_paperdoll_gecko_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_gecko_composite.png-0d0132f62fa8c9fcf09e3c1b51a7442c.ctex"]
+source_file="res://assets/paperdoll/gecko/proof_paperdoll_gecko_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_gecko_composite.png-b8af0681f2661e496f8996a2d8608da7.ctex"]
 
 [params]
 

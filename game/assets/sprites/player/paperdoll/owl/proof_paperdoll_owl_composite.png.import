@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://4scheif42qyl"
-path="res://.godot/imported/proof_paperdoll_owl_composite.png-1a86c59d9fa29548a19cec3dde8d02cf.ctex"
+path="res://.godot/imported/proof_paperdoll_owl_composite.png-089d216be6112b80001cb3bd46e06820.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/owl/proof_paperdoll_owl_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_owl_composite.png-1a86c59d9fa29548a19cec3dde8d02cf.ctex"]
+source_file="res://assets/paperdoll/owl/proof_paperdoll_owl_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_owl_composite.png-089d216be6112b80001cb3bd46e06820.ctex"]
 
 [params]
 

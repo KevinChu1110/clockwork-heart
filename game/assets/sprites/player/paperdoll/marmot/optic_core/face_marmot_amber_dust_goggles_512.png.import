@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://wlxofhu61xhg"
-path="res://.godot/imported/face_marmot_amber_dust_goggles_512.png-537969f283a799f5f494cb46b77cf518.ctex"
+path="res://.godot/imported/face_marmot_amber_dust_goggles_512.png-ca2ccce2f5e1c724e5889f04c262bde5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/marmot/optic_core/face_marmot_amber_dust_goggles_512.png"
-dest_files=["res://.godot/imported/face_marmot_amber_dust_goggles_512.png-537969f283a799f5f494cb46b77cf518.ctex"]
+source_file="res://assets/sprites/player/paperdoll/marmot/optic_core/face_marmot_amber_dust_goggles_512.png"
+dest_files=["res://.godot/imported/face_marmot_amber_dust_goggles_512.png-ca2ccce2f5e1c724e5889f04c262bde5.ctex"]
 
 [params]
 

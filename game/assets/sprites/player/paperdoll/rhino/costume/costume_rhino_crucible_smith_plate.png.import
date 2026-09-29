@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://btftmjae87rvp"
-path="res://.godot/imported/costume_rhino_crucible_smith_plate.png-b5ea83f29cb17ce61750811d9ca863ff.ctex"
+path="res://.godot/imported/costume_rhino_crucible_smith_plate.png-e4b1730d33a1adbde83e79ccf264b643.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rhino/costume/costume_rhino_crucible_smith_plate.png"
-dest_files=["res://.godot/imported/costume_rhino_crucible_smith_plate.png-b5ea83f29cb17ce61750811d9ca863ff.ctex"]
+source_file="res://assets/paperdoll/rhino/costume/costume_rhino_crucible_smith_plate.png"
+dest_files=["res://.godot/imported/costume_rhino_crucible_smith_plate.png-e4b1730d33a1adbde83e79ccf264b643.ctex"]
 
 [params]
 

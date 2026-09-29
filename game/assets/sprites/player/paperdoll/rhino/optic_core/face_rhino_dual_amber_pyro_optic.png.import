@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cmow3xa2s21ky"
-path="res://.godot/imported/face_rhino_dual_amber_pyro_optic.png-4f87058bc108efe3c3a39977a74e4d58.ctex"
+path="res://.godot/imported/face_rhino_dual_amber_pyro_optic.png-82ea9ee401b4bb59ff0252b7e225ca50.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rhino/optic_core/face_rhino_dual_amber_pyro_optic.png"
-dest_files=["res://.godot/imported/face_rhino_dual_amber_pyro_optic.png-4f87058bc108efe3c3a39977a74e4d58.ctex"]
+source_file="res://assets/paperdoll/rhino/optic_core/face_rhino_dual_amber_pyro_optic.png"
+dest_files=["res://.godot/imported/face_rhino_dual_amber_pyro_optic.png-82ea9ee401b4bb59ff0252b7e225ca50.ctex"]
 
 [params]
 

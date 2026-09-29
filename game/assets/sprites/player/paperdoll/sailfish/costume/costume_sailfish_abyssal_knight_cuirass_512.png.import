@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://hyreagtqteq6"
-path="res://.godot/imported/costume_sailfish_abyssal_knight_cuirass_512.png-2f9791934f9fa33eefd0a46a68759373.ctex"
+path="res://.godot/imported/costume_sailfish_abyssal_knight_cuirass_512.png-b905d1beec6aa407aa4070e72703cd90.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/sailfish/costume/costume_sailfish_abyssal_knight_cuirass_512.png"
-dest_files=["res://.godot/imported/costume_sailfish_abyssal_knight_cuirass_512.png-2f9791934f9fa33eefd0a46a68759373.ctex"]
+source_file="res://assets/sprites/player/paperdoll/sailfish/costume/costume_sailfish_abyssal_knight_cuirass_512.png"
+dest_files=["res://.godot/imported/costume_sailfish_abyssal_knight_cuirass_512.png-b905d1beec6aa407aa4070e72703cd90.ctex"]
 
 [params]
 

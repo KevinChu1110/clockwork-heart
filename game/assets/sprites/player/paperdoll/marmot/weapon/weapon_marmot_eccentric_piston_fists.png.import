@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://7gulqth8t2k7"
-path="res://.godot/imported/weapon_marmot_eccentric_piston_fists.png-5e1820de8c98c942d5fa330402e97a3c.ctex"
+path="res://.godot/imported/weapon_marmot_eccentric_piston_fists.png-efa1951397038869c642dcd955c49581.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/marmot/weapon/weapon_marmot_eccentric_piston_fists.png"
-dest_files=["res://.godot/imported/weapon_marmot_eccentric_piston_fists.png-5e1820de8c98c942d5fa330402e97a3c.ctex"]
+source_file="res://assets/sprites/player/paperdoll/marmot/weapon/weapon_marmot_eccentric_piston_fists.png"
+dest_files=["res://.godot/imported/weapon_marmot_eccentric_piston_fists.png-efa1951397038869c642dcd955c49581.ctex"]
 
 [params]
 

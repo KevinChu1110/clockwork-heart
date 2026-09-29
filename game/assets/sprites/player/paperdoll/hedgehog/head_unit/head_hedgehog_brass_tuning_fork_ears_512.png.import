@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbp1olxbyaxap"
-path="res://.godot/imported/head_hedgehog_brass_tuning_fork_ears_512.png-fddd3ea96912ad48876bc1657c16a994.ctex"
+path="res://.godot/imported/head_hedgehog_brass_tuning_fork_ears_512.png-77dc3dc8b08b48709c389c30164337cf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hedgehog/head_unit/head_hedgehog_brass_tuning_fork_ears_512.png"
-dest_files=["res://.godot/imported/head_hedgehog_brass_tuning_fork_ears_512.png-fddd3ea96912ad48876bc1657c16a994.ctex"]
+source_file="res://assets/paperdoll/hedgehog/head_unit/head_hedgehog_brass_tuning_fork_ears_512.png"
+dest_files=["res://.godot/imported/head_hedgehog_brass_tuning_fork_ears_512.png-77dc3dc8b08b48709c389c30164337cf.ctex"]
 
 [params]
 

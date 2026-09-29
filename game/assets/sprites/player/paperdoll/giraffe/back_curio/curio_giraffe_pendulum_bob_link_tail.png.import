@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://n07vgh0wgfxl5"
-path="res://.godot/imported/curio_giraffe_pendulum_bob_link_tail.png-8b222f7862958dbdeb99fc1dbcbff330.ctex"
+uid="uid://cf0aob85qtccu"
+path="res://.godot/imported/curio_giraffe_pendulum_bob_link_tail.png-95cfa18b3bc88ec80878870ae28f3823.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/giraffe/back_curio/curio_giraffe_pendulum_bob_link_tail.png"
-dest_files=["res://.godot/imported/curio_giraffe_pendulum_bob_link_tail.png-8b222f7862958dbdeb99fc1dbcbff330.ctex"]
+source_file="res://assets/paperdoll/giraffe/back_curio/curio_giraffe_pendulum_bob_link_tail.png"
+dest_files=["res://.godot/imported/curio_giraffe_pendulum_bob_link_tail.png-95cfa18b3bc88ec80878870ae28f3823.ctex"]
 
 [params]
 

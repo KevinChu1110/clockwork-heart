@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://blyvoveeqpe0u"
-path="res://.godot/imported/showcase_idle_256.png-05682a8ca292b1c04907326e47a12a8d.ctex"
+path="res://.godot/imported/showcase_idle_256.png-29eb5804a845e28ea5052d9ed3994077.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/showcase_idle_256.png"
-dest_files=["res://.godot/imported/showcase_idle_256.png-05682a8ca292b1c04907326e47a12a8d.ctex"]
+source_file="res://assets/paperdoll/rabbit/showcase_idle_256.png"
+dest_files=["res://.godot/imported/showcase_idle_256.png-29eb5804a845e28ea5052d9ed3994077.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://uwolue4q9q0f5"
-path="res://.godot/imported/head_giraffe_telescoping_periscope_cowl.png-6a7700c847173233fa52a7f2417b4362.ctex"
+uid="uid://blm8v4jigqmnc"
+path="res://.godot/imported/head_giraffe_telescoping_periscope_cowl.png-444872dc90080d6755076e54cdf2541a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/giraffe/head_unit/head_giraffe_telescoping_periscope_cowl.png"
-dest_files=["res://.godot/imported/head_giraffe_telescoping_periscope_cowl.png-6a7700c847173233fa52a7f2417b4362.ctex"]
+source_file="res://assets/paperdoll/giraffe/head_unit/head_giraffe_telescoping_periscope_cowl.png"
+dest_files=["res://.godot/imported/head_giraffe_telescoping_periscope_cowl.png-444872dc90080d6755076e54cdf2541a.ctex"]
 
 [params]
 

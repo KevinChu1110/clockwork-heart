@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dsyn7juehimks"
-path="res://.godot/imported/prism_scepter.png-1230c95892adba68494bf04cf77b5396.ctex"
+path="res://.godot/imported/prism_scepter.png-6079cf45aa55cab252dc7db83db2b8b8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/prism_scepter.png"
-dest_files=["res://.godot/imported/prism_scepter.png-1230c95892adba68494bf04cf77b5396.ctex"]
+source_file="res://assets/paperdoll/weapon/prism_scepter.png"
+dest_files=["res://.godot/imported/prism_scepter.png-6079cf45aa55cab252dc7db83db2b8b8.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bja15k5uvhxls"
-path="res://.godot/imported/chassis_toucan_canopy_alloy_default_512.png-41979b7906d164e9748f5afa91903310.ctex"
+path="res://.godot/imported/chassis_toucan_canopy_alloy_default_512.png-39058f228a45978a69d06a65d51868f2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/toucan/chassis/chassis_toucan_canopy_alloy_default_512.png"
-dest_files=["res://.godot/imported/chassis_toucan_canopy_alloy_default_512.png-41979b7906d164e9748f5afa91903310.ctex"]
+source_file="res://assets/paperdoll/toucan/chassis/chassis_toucan_canopy_alloy_default_512.png"
+dest_files=["res://.godot/imported/chassis_toucan_canopy_alloy_default_512.png-39058f228a45978a69d06a65d51868f2.ctex"]
 
 [params]
 

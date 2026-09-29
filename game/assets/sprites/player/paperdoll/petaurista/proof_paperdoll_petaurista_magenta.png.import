@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8srjbd5ba5cie"
-path="res://.godot/imported/proof_paperdoll_petaurista_magenta.png-6d96aaafaa277e958818af4021acd105.ctex"
+uid="uid://cvikkwsarjcga"
+path="res://.godot/imported/proof_paperdoll_petaurista_magenta.png-fce79ff21755403a5db27a4ab90b33e3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/petaurista/proof_paperdoll_petaurista_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_petaurista_magenta.png-6d96aaafaa277e958818af4021acd105.ctex"]
+source_file="res://assets/paperdoll/petaurista/proof_paperdoll_petaurista_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_petaurista_magenta.png-fce79ff21755403a5db27a4ab90b33e3.ctex"]
 
 [params]
 

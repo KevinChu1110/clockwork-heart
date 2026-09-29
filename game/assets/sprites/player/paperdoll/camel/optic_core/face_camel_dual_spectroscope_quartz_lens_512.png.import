@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://j0lqx4lyrd7vw"
-path="res://.godot/imported/face_camel_dual_spectroscope_quartz_lens_512.png-4c3b515c355840eedca87aeb3030b120.ctex"
+uid="uid://car0r0rhmyhee"
+path="res://.godot/imported/face_camel_dual_spectroscope_quartz_lens_512.png-80dc7c334cfb282df45312a67999af70.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/camel/optic_core/face_camel_dual_spectroscope_quartz_lens_512.png"
-dest_files=["res://.godot/imported/face_camel_dual_spectroscope_quartz_lens_512.png-4c3b515c355840eedca87aeb3030b120.ctex"]
+source_file="res://assets/paperdoll/camel/optic_core/face_camel_dual_spectroscope_quartz_lens_512.png"
+dest_files=["res://.godot/imported/face_camel_dual_spectroscope_quartz_lens_512.png-80dc7c334cfb282df45312a67999af70.ctex"]
 
 [params]
 

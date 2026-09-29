@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dwut0gk3n2s3d"
-path="res://.godot/imported/curio_dual_pressure_gauge_512.png-b5d79c899f2eca8c4e1fe6feaad67620.ctex"
+path="res://.godot/imported/curio_dual_pressure_gauge_512.png-72157ce6e961ef4e07a8fc0b9c4dfaac.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/elephant/back_curio/curio_dual_pressure_gauge_512.png"
-dest_files=["res://.godot/imported/curio_dual_pressure_gauge_512.png-b5d79c899f2eca8c4e1fe6feaad67620.ctex"]
+source_file="res://assets/paperdoll/elephant/back_curio/curio_dual_pressure_gauge_512.png"
+dest_files=["res://.godot/imported/curio_dual_pressure_gauge_512.png-72157ce6e961ef4e07a8fc0b9c4dfaac.ctex"]
 
 [params]
 

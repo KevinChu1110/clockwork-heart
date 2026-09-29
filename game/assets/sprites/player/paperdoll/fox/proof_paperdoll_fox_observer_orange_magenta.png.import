@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://gdhfv50gwu0l"
-path="res://.godot/imported/proof_paperdoll_fox_observer_orange_magenta.png-1edba16243269b8e3e4b59b1c984691b.ctex"
+path="res://.godot/imported/proof_paperdoll_fox_observer_orange_magenta.png-9d2b943ffc3c5a4554fe9add7917328a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fox/proof_paperdoll_fox_observer_orange_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_fox_observer_orange_magenta.png-1edba16243269b8e3e4b59b1c984691b.ctex"]
+source_file="res://assets/paperdoll/fox/proof_paperdoll_fox_observer_orange_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_fox_observer_orange_magenta.png-9d2b943ffc3c5a4554fe9add7917328a.ctex"]
 
 [params]
 

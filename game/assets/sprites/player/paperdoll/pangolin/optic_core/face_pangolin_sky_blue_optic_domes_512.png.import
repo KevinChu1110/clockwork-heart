@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bgnetgdnf6atm"
-path="res://.godot/imported/face_pangolin_sky_blue_optic_domes_512.png-3d7118c4e55755d043c33f1f770d7e34.ctex"
+path="res://.godot/imported/face_pangolin_sky_blue_optic_domes_512.png-5b7652bf11bd81f460a853bc1c11e693.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/pangolin/optic_core/face_pangolin_sky_blue_optic_domes_512.png"
-dest_files=["res://.godot/imported/face_pangolin_sky_blue_optic_domes_512.png-3d7118c4e55755d043c33f1f770d7e34.ctex"]
+source_file="res://assets/paperdoll/pangolin/optic_core/face_pangolin_sky_blue_optic_domes_512.png"
+dest_files=["res://.godot/imported/face_pangolin_sky_blue_optic_domes_512.png-5b7652bf11bd81f460a853bc1c11e693.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://fyafds82sniv"
-path="res://.godot/imported/head_walrus_tungsten_tusk_cowl.png-7263028a6d2f2f55249b1d0657ae7804.ctex"
+path="res://.godot/imported/head_walrus_tungsten_tusk_cowl.png-c5eb2a00d1a4e2968c37fadeaf9cd8e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/walrus/head_unit/head_walrus_tungsten_tusk_cowl.png"
-dest_files=["res://.godot/imported/head_walrus_tungsten_tusk_cowl.png-7263028a6d2f2f55249b1d0657ae7804.ctex"]
+source_file="res://assets/paperdoll/walrus/head_unit/head_walrus_tungsten_tusk_cowl.png"
+dest_files=["res://.godot/imported/head_walrus_tungsten_tusk_cowl.png-c5eb2a00d1a4e2968c37fadeaf9cd8e8.ctex"]
 
 [params]
 

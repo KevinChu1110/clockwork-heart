@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dwj2i4blteu1t"
-path="res://.godot/imported/proof_raccoon_all_7_slices.png-51f2d81c9149180d9c1dc85cbbd0f6ef.ctex"
+path="res://.godot/imported/proof_raccoon_all_7_slices.png-8bbd4de84dc37218e1ddcca03aa478db.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raccoon/proof_raccoon_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_raccoon_all_7_slices.png-51f2d81c9149180d9c1dc85cbbd0f6ef.ctex"]
+source_file="res://assets/paperdoll/raccoon/proof_raccoon_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_raccoon_all_7_slices.png-8bbd4de84dc37218e1ddcca03aa478db.ctex"]
 
 [params]
 

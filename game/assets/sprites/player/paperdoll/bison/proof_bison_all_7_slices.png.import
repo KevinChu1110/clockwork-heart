@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://gonag2efyceo"
-path="res://.godot/imported/proof_bison_all_7_slices.png-57111443ac58d036cb19c325b5904130.ctex"
+path="res://.godot/imported/proof_bison_all_7_slices.png-68aec50957733e3c2c72127df4cfe780.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bison/proof_bison_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_bison_all_7_slices.png-57111443ac58d036cb19c325b5904130.ctex"]
+source_file="res://assets/paperdoll/bison/proof_bison_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_bison_all_7_slices.png-68aec50957733e3c2c72127df4cfe780.ctex"]
 
 [params]
 

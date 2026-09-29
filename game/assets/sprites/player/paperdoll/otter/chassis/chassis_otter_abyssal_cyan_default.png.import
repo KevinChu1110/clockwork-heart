@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dgbqclbmsenke"
-path="res://.godot/imported/chassis_otter_abyssal_cyan_default.png-a605897534cde975a2869a3801da712b.ctex"
+path="res://.godot/imported/chassis_otter_abyssal_cyan_default.png-3e92ef9e1b69b1da1dffec78b8509d07.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/otter/chassis/chassis_otter_abyssal_cyan_default.png"
-dest_files=["res://.godot/imported/chassis_otter_abyssal_cyan_default.png-a605897534cde975a2869a3801da712b.ctex"]
+source_file="res://assets/paperdoll/otter/chassis/chassis_otter_abyssal_cyan_default.png"
+dest_files=["res://.godot/imported/chassis_otter_abyssal_cyan_default.png-3e92ef9e1b69b1da1dffec78b8509d07.ctex"]
 
 [params]
 

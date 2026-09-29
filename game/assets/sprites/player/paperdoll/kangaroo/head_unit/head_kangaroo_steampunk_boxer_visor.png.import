@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dew21kx0hgcaa"
-path="res://.godot/imported/head_kangaroo_steampunk_boxer_visor.png-a4d41149c6cfb2e77478e0010a14f3d0.ctex"
+path="res://.godot/imported/head_kangaroo_steampunk_boxer_visor.png-81a970148396230dace9cd466a2c73ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/kangaroo/head_unit/head_kangaroo_steampunk_boxer_visor.png"
-dest_files=["res://.godot/imported/head_kangaroo_steampunk_boxer_visor.png-a4d41149c6cfb2e77478e0010a14f3d0.ctex"]
+source_file="res://assets/sprites/player/paperdoll/kangaroo/head_unit/head_kangaroo_steampunk_boxer_visor.png"
+dest_files=["res://.godot/imported/head_kangaroo_steampunk_boxer_visor.png-81a970148396230dace9cd466a2c73ed.ctex"]
 
 [params]
 

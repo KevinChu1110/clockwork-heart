@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://0aoi0r5smpmj"
-path="res://.godot/imported/verification_crop_head.png-6c81cbcbe0a0b04e891148769a278956.ctex"
+path="res://.godot/imported/verification_crop_head.png-c4924830b50db361eead235fc006fb0c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/verification_crop_head.png"
-dest_files=["res://.godot/imported/verification_crop_head.png-6c81cbcbe0a0b04e891148769a278956.ctex"]
+source_file="res://assets/paperdoll/penguin/verification_crop_head.png"
+dest_files=["res://.godot/imported/verification_crop_head.png-c4924830b50db361eead235fc006fb0c.ctex"]
 
 [params]
 

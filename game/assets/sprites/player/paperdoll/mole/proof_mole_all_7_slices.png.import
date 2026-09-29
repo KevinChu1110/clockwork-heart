@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://xydh5bm4skgxp"
-path="res://.godot/imported/proof_mole_all_7_slices.png-3d00088044d1b83b30f89ff98a7524d6.ctex"
+uid="uid://rwalx4mfc7e4"
+path="res://.godot/imported/proof_mole_all_7_slices.png-c6f67c8d019206861e661cf45e4ff677.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/mole/proof_mole_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_mole_all_7_slices.png-3d00088044d1b83b30f89ff98a7524d6.ctex"]
+source_file="res://assets/paperdoll/mole/proof_mole_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_mole_all_7_slices.png-c6f67c8d019206861e661cf45e4ff677.ctex"]
 
 [params]
 

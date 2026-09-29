@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dd2s6gmlhw5ku"
-path="res://.godot/imported/costume_ironclad_overalls_512.png-c32f53e5261478088e9c6b8aa1c138a3.ctex"
+path="res://.godot/imported/costume_ironclad_overalls_512.png-4f00801161fc2ebd886896a55b80c3de.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/costume/costume_ironclad_overalls_512.png"
-dest_files=["res://.godot/imported/costume_ironclad_overalls_512.png-c32f53e5261478088e9c6b8aa1c138a3.ctex"]
+source_file="res://assets/paperdoll/bear/costume/costume_ironclad_overalls_512.png"
+dest_files=["res://.godot/imported/costume_ironclad_overalls_512.png-4f00801161fc2ebd886896a55b80c3de.ctex"]
 
 [params]
 

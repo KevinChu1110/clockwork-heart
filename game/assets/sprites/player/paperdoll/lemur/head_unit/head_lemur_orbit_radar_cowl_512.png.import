@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://co26wxf38o0xm"
-path="res://.godot/imported/head_lemur_orbit_radar_cowl_512.png-e2aa9430d18deff05145a62209260529.ctex"
+path="res://.godot/imported/head_lemur_orbit_radar_cowl_512.png-e40a695883c0343b61891ac4cdc8573f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/lemur/head_unit/head_lemur_orbit_radar_cowl_512.png"
-dest_files=["res://.godot/imported/head_lemur_orbit_radar_cowl_512.png-e2aa9430d18deff05145a62209260529.ctex"]
+source_file="res://assets/sprites/player/paperdoll/lemur/head_unit/head_lemur_orbit_radar_cowl_512.png"
+dest_files=["res://.godot/imported/head_lemur_orbit_radar_cowl_512.png-e40a695883c0343b61891ac4cdc8573f.ctex"]
 
 [params]
 

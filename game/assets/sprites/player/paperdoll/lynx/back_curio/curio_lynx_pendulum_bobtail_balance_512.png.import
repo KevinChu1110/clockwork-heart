@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://m29uqfa9am3sp"
-path="res://.godot/imported/curio_lynx_pendulum_bobtail_balance_512.png-612f6dc80ab52121bf53d8cf50e75358.ctex"
+uid="uid://bh18x8jik1hjf"
+path="res://.godot/imported/curio_lynx_pendulum_bobtail_balance_512.png-bb84293c06fa1602e7f7fa8f9c40f5b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lynx/back_curio/curio_lynx_pendulum_bobtail_balance_512.png"
-dest_files=["res://.godot/imported/curio_lynx_pendulum_bobtail_balance_512.png-612f6dc80ab52121bf53d8cf50e75358.ctex"]
+source_file="res://assets/paperdoll/lynx/back_curio/curio_lynx_pendulum_bobtail_balance_512.png"
+dest_files=["res://.godot/imported/curio_lynx_pendulum_bobtail_balance_512.png-bb84293c06fa1602e7f7fa8f9c40f5b9.ctex"]
 
 [params]
 

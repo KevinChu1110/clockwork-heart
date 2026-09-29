@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d3tc7diuem47y"
-path="res://.godot/imported/key_bison_heavy_cross_t_bar_cast_iron_512.png-a99cca0ea2a3dca5d449c51cec6a569b.ctex"
+path="res://.godot/imported/key_bison_heavy_cross_t_bar_cast_iron_512.png-fbbab2f3caa6b6326c09bd5a9e7eae66.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bison/winding_key/key_bison_heavy_cross_t_bar_cast_iron_512.png"
-dest_files=["res://.godot/imported/key_bison_heavy_cross_t_bar_cast_iron_512.png-a99cca0ea2a3dca5d449c51cec6a569b.ctex"]
+source_file="res://assets/paperdoll/bison/winding_key/key_bison_heavy_cross_t_bar_cast_iron_512.png"
+dest_files=["res://.godot/imported/key_bison_heavy_cross_t_bar_cast_iron_512.png-fbbab2f3caa6b6326c09bd5a9e7eae66.ctex"]
 
 [params]
 

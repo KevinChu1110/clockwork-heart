@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://mhrqfdk1bna5"
-path="res://.godot/imported/weapon_raccoon_anti_gravity_pulse_blaster.png-22ecc22b4ded695b42a37b6c6cd60716.ctex"
+path="res://.godot/imported/weapon_raccoon_anti_gravity_pulse_blaster.png-e530ac01946a4646bff51e86bebb0524.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/weapon_raccoon_anti_gravity_pulse_blaster.png"
-dest_files=["res://.godot/imported/weapon_raccoon_anti_gravity_pulse_blaster.png-22ecc22b4ded695b42a37b6c6cd60716.ctex"]
+source_file="res://assets/paperdoll/weapon/weapon_raccoon_anti_gravity_pulse_blaster.png"
+dest_files=["res://.godot/imported/weapon_raccoon_anti_gravity_pulse_blaster.png-e530ac01946a4646bff51e86bebb0524.ctex"]
 
 [params]
 

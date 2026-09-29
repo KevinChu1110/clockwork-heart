@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b7bihwikjx2le"
-path="res://.godot/imported/weapon_hedgehog_ratchet_needle_dart.png-e6240f00761c98bec6eec07e44165372.ctex"
+path="res://.godot/imported/weapon_hedgehog_ratchet_needle_dart.png-2eb7e6d58aa644bbbfaacb5c7331025b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/weapon/weapon_hedgehog_ratchet_needle_dart.png"
-dest_files=["res://.godot/imported/weapon_hedgehog_ratchet_needle_dart.png-e6240f00761c98bec6eec07e44165372.ctex"]
+source_file="res://assets/sprites/player/paperdoll/weapon/weapon_hedgehog_ratchet_needle_dart.png"
+dest_files=["res://.godot/imported/weapon_hedgehog_ratchet_needle_dart.png-2eb7e6d58aa644bbbfaacb5c7331025b.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dqjryvlpsnyo2"
-path="res://.godot/imported/costume_astral_cape_512.png-59105387cc8d1ae070e7f3a4992549db.ctex"
+path="res://.godot/imported/costume_astral_cape_512.png-3155f7ae73a36154d242490626da11f2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/common/costume/costume_astral_cape_512.png"
-dest_files=["res://.godot/imported/costume_astral_cape_512.png-59105387cc8d1ae070e7f3a4992549db.ctex"]
+source_file="res://assets/paperdoll/common/costume/costume_astral_cape_512.png"
+dest_files=["res://.godot/imported/costume_astral_cape_512.png-3155f7ae73a36154d242490626da11f2.ctex"]
 
 [params]
 

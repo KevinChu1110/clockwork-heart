@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b64kasrixmec8"
-path="res://.godot/imported/head_pangolin_brass_acoustic_ears_512.png-8a3e8df110c20224c54580d7a04475db.ctex"
+path="res://.godot/imported/head_pangolin_brass_acoustic_ears_512.png-c208e23e8f70f84e859ab4164a97b4e2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/pangolin/head_unit/head_pangolin_brass_acoustic_ears_512.png"
-dest_files=["res://.godot/imported/head_pangolin_brass_acoustic_ears_512.png-8a3e8df110c20224c54580d7a04475db.ctex"]
+source_file="res://assets/paperdoll/pangolin/head_unit/head_pangolin_brass_acoustic_ears_512.png"
+dest_files=["res://.godot/imported/head_pangolin_brass_acoustic_ears_512.png-c208e23e8f70f84e859ab4164a97b4e2.ctex"]
 
 [params]
 

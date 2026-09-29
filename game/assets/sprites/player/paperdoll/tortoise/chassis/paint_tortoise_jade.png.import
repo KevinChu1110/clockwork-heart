@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d38nwui76dr63"
-path="res://.godot/imported/paint_tortoise_jade.png-fc6b2a84888bb961727c559b5c9c8d33.ctex"
+path="res://.godot/imported/paint_tortoise_jade.png-5458c575a91c46d71f9fcf9895bb1397.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tortoise/chassis/paint_tortoise_jade.png"
-dest_files=["res://.godot/imported/paint_tortoise_jade.png-fc6b2a84888bb961727c559b5c9c8d33.ctex"]
+source_file="res://assets/paperdoll/tortoise/chassis/paint_tortoise_jade.png"
+dest_files=["res://.godot/imported/paint_tortoise_jade.png-5458c575a91c46d71f9fcf9895bb1397.ctex"]
 
 [params]
 

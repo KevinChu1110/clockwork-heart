@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://brdh4uhht814c"
-path="res://.godot/imported/costume_salamander_foundry_sapper_apron_512.png-500c64154974da70d4b68195adabc86f.ctex"
+path="res://.godot/imported/costume_salamander_foundry_sapper_apron_512.png-91a84f6bffb358e7fb0e84b201ad705b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/salamander/costume/costume_salamander_foundry_sapper_apron_512.png"
-dest_files=["res://.godot/imported/costume_salamander_foundry_sapper_apron_512.png-500c64154974da70d4b68195adabc86f.ctex"]
+source_file="res://assets/sprites/player/paperdoll/salamander/costume/costume_salamander_foundry_sapper_apron_512.png"
+dest_files=["res://.godot/imported/costume_salamander_foundry_sapper_apron_512.png-91a84f6bffb358e7fb0e84b201ad705b.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dxwe5s6aqeuyv"
-path="res://.godot/imported/chassis_badger_polymer_space_default_512.png-65bc678de626e5d5d7180a15e66efa1f.ctex"
+path="res://.godot/imported/chassis_badger_polymer_space_default_512.png-a43888e75d7f3256fb84f7d68b8d96ee.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/badger/chassis/chassis_badger_polymer_space_default_512.png"
-dest_files=["res://.godot/imported/chassis_badger_polymer_space_default_512.png-65bc678de626e5d5d7180a15e66efa1f.ctex"]
+source_file="res://assets/sprites/player/paperdoll/badger/chassis/chassis_badger_polymer_space_default_512.png"
+dest_files=["res://.godot/imported/chassis_badger_polymer_space_default_512.png-a43888e75d7f3256fb84f7d68b8d96ee.ctex"]
 
 [params]
 

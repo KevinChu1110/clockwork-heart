@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dudniqjsb7q1v"
-path="res://.godot/imported/proof_paperdoll_squirrel_magenta.png-7d496a35ce95272853c0ca6cd03b9920.ctex"
+path="res://.godot/imported/proof_paperdoll_squirrel_magenta.png-ca68a708ecae66063261c21d7424761d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/squirrel/proof_paperdoll_squirrel_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_squirrel_magenta.png-7d496a35ce95272853c0ca6cd03b9920.ctex"]
+source_file="res://assets/sprites/player/paperdoll/squirrel/proof_paperdoll_squirrel_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_squirrel_magenta.png-ca68a708ecae66063261c21d7424761d.ctex"]
 
 [params]
 

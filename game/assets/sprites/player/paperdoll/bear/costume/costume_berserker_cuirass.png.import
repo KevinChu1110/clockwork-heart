@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dv82ynmf8wtvf"
-path="res://.godot/imported/costume_berserker_cuirass.png-50260adb0963ef93e7f609474931ed0e.ctex"
+path="res://.godot/imported/costume_berserker_cuirass.png-93c36ca13fe8610e72ae2786e8104353.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bear/costume/costume_berserker_cuirass.png"
-dest_files=["res://.godot/imported/costume_berserker_cuirass.png-50260adb0963ef93e7f609474931ed0e.ctex"]
+source_file="res://assets/paperdoll/bear/costume/costume_berserker_cuirass.png"
+dest_files=["res://.godot/imported/costume_berserker_cuirass.png-93c36ca13fe8610e72ae2786e8104353.ctex"]
 
 [params]
 

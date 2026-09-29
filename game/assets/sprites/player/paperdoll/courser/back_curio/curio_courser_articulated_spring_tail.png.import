@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://q1pqw6er2re6"
-path="res://.godot/imported/curio_courser_articulated_spring_tail.png-9f9fa8c318fd9b496971f70a02e5197c.ctex"
+path="res://.godot/imported/curio_courser_articulated_spring_tail.png-644459c4fdab4d872efac3ce9ea3956e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/courser/back_curio/curio_courser_articulated_spring_tail.png"
-dest_files=["res://.godot/imported/curio_courser_articulated_spring_tail.png-9f9fa8c318fd9b496971f70a02e5197c.ctex"]
+source_file="res://assets/paperdoll/courser/back_curio/curio_courser_articulated_spring_tail.png"
+dest_files=["res://.godot/imported/curio_courser_articulated_spring_tail.png-644459c4fdab4d872efac3ce9ea3956e.ctex"]
 
 [params]
 

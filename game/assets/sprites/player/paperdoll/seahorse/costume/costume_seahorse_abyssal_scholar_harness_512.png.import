@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://wngnad6db26j"
-path="res://.godot/imported/costume_seahorse_abyssal_scholar_harness_512.png-47cfc7b08dfeefb68948fdcd6d4677b0.ctex"
+path="res://.godot/imported/costume_seahorse_abyssal_scholar_harness_512.png-952a64f1188e26d28a57fdcbe56ca5a0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seahorse/costume/costume_seahorse_abyssal_scholar_harness_512.png"
-dest_files=["res://.godot/imported/costume_seahorse_abyssal_scholar_harness_512.png-47cfc7b08dfeefb68948fdcd6d4677b0.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seahorse/costume/costume_seahorse_abyssal_scholar_harness_512.png"
+dest_files=["res://.godot/imported/costume_seahorse_abyssal_scholar_harness_512.png-952a64f1188e26d28a57fdcbe56ca5a0.ctex"]
 
 [params]
 

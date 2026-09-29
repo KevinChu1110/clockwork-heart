@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bqmtvuqv0k5xf"
-path="res://.godot/imported/key_scarab_crucible_cross_fire_brass.png-9dae6cdcefd4a0f20c1ed5daadc64433.ctex"
+path="res://.godot/imported/key_scarab_crucible_cross_fire_brass.png-4ead7800f7783fcd75020ff4ea5c8061.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/scarab/winding_key/key_scarab_crucible_cross_fire_brass.png"
-dest_files=["res://.godot/imported/key_scarab_crucible_cross_fire_brass.png-9dae6cdcefd4a0f20c1ed5daadc64433.ctex"]
+source_file="res://assets/paperdoll/scarab/winding_key/key_scarab_crucible_cross_fire_brass.png"
+dest_files=["res://.godot/imported/key_scarab_crucible_cross_fire_brass.png-4ead7800f7783fcd75020ff4ea5c8061.ctex"]
 
 [params]
 

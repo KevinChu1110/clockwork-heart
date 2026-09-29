@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://mm4p7kq9dakcp"
-path="res://.godot/imported/head_mole_orbital_mining_visor_cowl_512.png-aa84ff299488ae6932b11c3f8eaf9ced.ctex"
+uid="uid://1v4ge0innw2f"
+path="res://.godot/imported/head_mole_orbital_mining_visor_cowl_512.png-3a9e45aa093a42b6dba9d417e493eec2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/mole/head_unit/head_mole_orbital_mining_visor_cowl_512.png"
-dest_files=["res://.godot/imported/head_mole_orbital_mining_visor_cowl_512.png-aa84ff299488ae6932b11c3f8eaf9ced.ctex"]
+source_file="res://assets/paperdoll/mole/head_unit/head_mole_orbital_mining_visor_cowl_512.png"
+dest_files=["res://.godot/imported/head_mole_orbital_mining_visor_cowl_512.png-3a9e45aa093a42b6dba9d417e493eec2.ctex"]
 
 [params]
 

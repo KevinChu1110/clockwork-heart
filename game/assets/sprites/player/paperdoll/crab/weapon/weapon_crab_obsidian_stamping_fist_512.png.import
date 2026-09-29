@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bxp0gqijxlsd2"
-path="res://.godot/imported/weapon_crab_obsidian_stamping_fist_512.png-cc8469e0bcb9638a869c4f419adaff74.ctex"
+path="res://.godot/imported/weapon_crab_obsidian_stamping_fist_512.png-abda38cc6ab89dd5e40fc045ef83d6c2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crab/weapon/weapon_crab_obsidian_stamping_fist_512.png"
-dest_files=["res://.godot/imported/weapon_crab_obsidian_stamping_fist_512.png-cc8469e0bcb9638a869c4f419adaff74.ctex"]
+source_file="res://assets/paperdoll/crab/weapon/weapon_crab_obsidian_stamping_fist_512.png"
+dest_files=["res://.godot/imported/weapon_crab_obsidian_stamping_fist_512.png-abda38cc6ab89dd5e40fc045ef83d6c2.ctex"]
 
 [params]
 

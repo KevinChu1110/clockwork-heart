@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cc3pihv04n43t"
-path="res://.godot/imported/chassis_stoat_ivory_tinplate_default_512.png-cf73a847574f1ec745d619870337b701.ctex"
+path="res://.godot/imported/chassis_stoat_ivory_tinplate_default_512.png-4432e90404166a14247f3ccc75b10a59.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/stoat/chassis/chassis_stoat_ivory_tinplate_default_512.png"
-dest_files=["res://.godot/imported/chassis_stoat_ivory_tinplate_default_512.png-cf73a847574f1ec745d619870337b701.ctex"]
+source_file="res://assets/sprites/player/paperdoll/stoat/chassis/chassis_stoat_ivory_tinplate_default_512.png"
+dest_files=["res://.godot/imported/chassis_stoat_ivory_tinplate_default_512.png-4432e90404166a14247f3ccc75b10a59.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b482j2op3xixp"
-path="res://.godot/imported/key_raven_armillary_sphere_brass.png-25f66035d085fd1385ab7042e3753ed8.ctex"
+path="res://.godot/imported/key_raven_armillary_sphere_brass.png-c341fef55301300780773f507d3cdffe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/key/key_raven_armillary_sphere_brass.png"
-dest_files=["res://.godot/imported/key_raven_armillary_sphere_brass.png-25f66035d085fd1385ab7042e3753ed8.ctex"]
+source_file="res://assets/paperdoll/key/key_raven_armillary_sphere_brass.png"
+dest_files=["res://.godot/imported/key_raven_armillary_sphere_brass.png-c341fef55301300780773f507d3cdffe.ctex"]
 
 [params]
 

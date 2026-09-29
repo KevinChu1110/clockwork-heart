@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cqyg0gver8now"
-path="res://.godot/imported/proof_paperdoll_lemur_composite.png-4878bf9de9afa21fc5db84eacf81c0cd.ctex"
+path="res://.godot/imported/proof_paperdoll_lemur_composite.png-55a821aa83fc35ef58c24e4df485f064.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/lemur/proof_paperdoll_lemur_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_lemur_composite.png-4878bf9de9afa21fc5db84eacf81c0cd.ctex"]
+source_file="res://assets/sprites/player/paperdoll/lemur/proof_paperdoll_lemur_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_lemur_composite.png-55a821aa83fc35ef58c24e4df485f064.ctex"]
 
 [params]
 

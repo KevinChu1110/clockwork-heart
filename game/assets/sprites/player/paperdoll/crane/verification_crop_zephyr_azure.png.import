@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bdg6lwib1q4e4"
-path="res://.godot/imported/verification_crop_zephyr_azure.png-4ffbb0b8b9350d1877a247a83bd5cf89.ctex"
+path="res://.godot/imported/verification_crop_zephyr_azure.png-e9599a96ec22a72e7fd18b5e130869c8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/crane/verification_crop_zephyr_azure.png"
-dest_files=["res://.godot/imported/verification_crop_zephyr_azure.png-4ffbb0b8b9350d1877a247a83bd5cf89.ctex"]
+source_file="res://assets/paperdoll/crane/verification_crop_zephyr_azure.png"
+dest_files=["res://.godot/imported/verification_crop_zephyr_azure.png-e9599a96ec22a72e7fd18b5e130869c8.ctex"]
 
 [params]
 

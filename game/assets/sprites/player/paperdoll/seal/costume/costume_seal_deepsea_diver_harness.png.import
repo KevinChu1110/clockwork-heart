@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cpv5njk48qftp"
-path="res://.godot/imported/costume_seal_deepsea_diver_harness.png-7a1171d3d7fe6636c9e966d92ce6fb25.ctex"
+path="res://.godot/imported/costume_seal_deepsea_diver_harness.png-e5a768c67ed90bb881193333c148ab82.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seal/costume/costume_seal_deepsea_diver_harness.png"
-dest_files=["res://.godot/imported/costume_seal_deepsea_diver_harness.png-7a1171d3d7fe6636c9e966d92ce6fb25.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seal/costume/costume_seal_deepsea_diver_harness.png"
+dest_files=["res://.godot/imported/costume_seal_deepsea_diver_harness.png-e5a768c67ed90bb881193333c148ab82.ctex"]
 
 [params]
 

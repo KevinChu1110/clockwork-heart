@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ch8kweehe7a1q"
-path="res://.godot/imported/curio_scarab_twin_vent_exhaust_tail.png-d2d5469939abf83d88fc661237558357.ctex"
+path="res://.godot/imported/curio_scarab_twin_vent_exhaust_tail.png-ca423de3725fa8055dbfb0a5fcd535a3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/scarab/back_curio/curio_scarab_twin_vent_exhaust_tail.png"
-dest_files=["res://.godot/imported/curio_scarab_twin_vent_exhaust_tail.png-d2d5469939abf83d88fc661237558357.ctex"]
+source_file="res://assets/paperdoll/scarab/back_curio/curio_scarab_twin_vent_exhaust_tail.png"
+dest_files=["res://.godot/imported/curio_scarab_twin_vent_exhaust_tail.png-ca423de3725fa8055dbfb0a5fcd535a3.ctex"]
 
 [params]
 

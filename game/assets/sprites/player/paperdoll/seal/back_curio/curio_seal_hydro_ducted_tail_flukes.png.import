@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c5phvmg38keuw"
-path="res://.godot/imported/curio_seal_hydro_ducted_tail_flukes.png-93760bcf80366519253b119238ebebd3.ctex"
+path="res://.godot/imported/curio_seal_hydro_ducted_tail_flukes.png-2980514180847228bef2b6ee3da819e5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seal/back_curio/curio_seal_hydro_ducted_tail_flukes.png"
-dest_files=["res://.godot/imported/curio_seal_hydro_ducted_tail_flukes.png-93760bcf80366519253b119238ebebd3.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seal/back_curio/curio_seal_hydro_ducted_tail_flukes.png"
+dest_files=["res://.godot/imported/curio_seal_hydro_ducted_tail_flukes.png-2980514180847228bef2b6ee3da819e5.ctex"]
 
 [params]
 

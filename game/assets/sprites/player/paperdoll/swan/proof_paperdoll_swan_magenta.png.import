@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cju8i8ok1yat7"
-path="res://.godot/imported/proof_paperdoll_swan_magenta.png-bc8818ff06fbd74fe12fcdc7d90d613c.ctex"
+path="res://.godot/imported/proof_paperdoll_swan_magenta.png-d9efd0b3cca3f95f21dd8b172906abf1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/swan/proof_paperdoll_swan_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_swan_magenta.png-bc8818ff06fbd74fe12fcdc7d90d613c.ctex"]
+source_file="res://assets/sprites/player/paperdoll/swan/proof_paperdoll_swan_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_swan_magenta.png-d9efd0b3cca3f95f21dd8b172906abf1.ctex"]
 
 [params]
 

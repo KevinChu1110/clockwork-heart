@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c12pul48u52u8"
-path="res://.godot/imported/face_bison_amber_pressure_gauge_eye.png-d6aff2dbb84d1f4798ac904ab070c37a.ctex"
+path="res://.godot/imported/face_bison_amber_pressure_gauge_eye.png-fe61f2ff7b540ea8cd8a38004f5a4a3f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/bison/optic_core/face_bison_amber_pressure_gauge_eye.png"
-dest_files=["res://.godot/imported/face_bison_amber_pressure_gauge_eye.png-d6aff2dbb84d1f4798ac904ab070c37a.ctex"]
+source_file="res://assets/paperdoll/bison/optic_core/face_bison_amber_pressure_gauge_eye.png"
+dest_files=["res://.godot/imported/face_bison_amber_pressure_gauge_eye.png-fe61f2ff7b540ea8cd8a38004f5a4a3f.ctex"]
 
 [params]
 

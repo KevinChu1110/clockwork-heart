@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d3280l07qda62"
-path="res://.godot/imported/weapon_badger_starbreaker_ripper_claw.png-347b6af0363a5f04b47fc40f66f28826.ctex"
+path="res://.godot/imported/weapon_badger_starbreaker_ripper_claw.png-5ea3fec0483dae322c668e7a4003c137.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/badger/weapon/weapon_badger_starbreaker_ripper_claw.png"
-dest_files=["res://.godot/imported/weapon_badger_starbreaker_ripper_claw.png-347b6af0363a5f04b47fc40f66f28826.ctex"]
+source_file="res://assets/sprites/player/paperdoll/badger/weapon/weapon_badger_starbreaker_ripper_claw.png"
+dest_files=["res://.godot/imported/weapon_badger_starbreaker_ripper_claw.png-5ea3fec0483dae322c668e7a4003c137.ctex"]
 
 [params]
 

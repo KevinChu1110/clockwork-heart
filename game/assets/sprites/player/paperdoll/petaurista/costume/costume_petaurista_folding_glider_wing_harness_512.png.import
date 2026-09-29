@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://suw9pglw7bupt"
-path="res://.godot/imported/costume_petaurista_folding_glider_wing_harness_512.png-2027d1fa539f4027d53de90de730a777.ctex"
+uid="uid://dfbsc7wwxidor"
+path="res://.godot/imported/costume_petaurista_folding_glider_wing_harness_512.png-1822d192e38629845af21100473e23ea.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/petaurista/costume/costume_petaurista_folding_glider_wing_harness_512.png"
-dest_files=["res://.godot/imported/costume_petaurista_folding_glider_wing_harness_512.png-2027d1fa539f4027d53de90de730a777.ctex"]
+source_file="res://assets/paperdoll/petaurista/costume/costume_petaurista_folding_glider_wing_harness_512.png"
+dest_files=["res://.godot/imported/costume_petaurista_folding_glider_wing_harness_512.png-1822d192e38629845af21100473e23ea.ctex"]
 
 [params]
 

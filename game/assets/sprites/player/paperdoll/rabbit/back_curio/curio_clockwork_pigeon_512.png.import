@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d220s7d7vtjhh"
-path="res://.godot/imported/curio_clockwork_pigeon_512.png-c2f07d552a182432d3633d437f34971c.ctex"
+path="res://.godot/imported/curio_clockwork_pigeon_512.png-e012eca90c05bdb2fe21684d2704c371.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/back_curio/curio_clockwork_pigeon_512.png"
-dest_files=["res://.godot/imported/curio_clockwork_pigeon_512.png-c2f07d552a182432d3633d437f34971c.ctex"]
+source_file="res://assets/paperdoll/rabbit/back_curio/curio_clockwork_pigeon_512.png"
+dest_files=["res://.godot/imported/curio_clockwork_pigeon_512.png-e012eca90c05bdb2fe21684d2704c371.ctex"]
 
 [params]
 

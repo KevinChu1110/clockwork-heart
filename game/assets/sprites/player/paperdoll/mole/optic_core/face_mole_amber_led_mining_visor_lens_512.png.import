@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://benau2rrnxf9q"
-path="res://.godot/imported/face_mole_amber_led_mining_visor_lens_512.png-218e22aa0cb30becf46bda0c01458416.ctex"
+uid="uid://benau2rrnxgaq"
+path="res://.godot/imported/face_mole_amber_led_mining_visor_lens_512.png-a2d5863f60a3d048cac4589128b8d5b1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/mole/optic_core/face_mole_amber_led_mining_visor_lens_512.png"
-dest_files=["res://.godot/imported/face_mole_amber_led_mining_visor_lens_512.png-218e22aa0cb30becf46bda0c01458416.ctex"]
+source_file="res://assets/paperdoll/mole/optic_core/face_mole_amber_led_mining_visor_lens_512.png"
+dest_files=["res://.godot/imported/face_mole_amber_led_mining_visor_lens_512.png-a2d5863f60a3d048cac4589128b8d5b1.ctex"]
 
 [params]
 

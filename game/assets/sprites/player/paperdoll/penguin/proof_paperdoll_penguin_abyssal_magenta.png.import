@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bwo5fo7qfi8a0"
-path="res://.godot/imported/proof_paperdoll_penguin_abyssal_magenta.png-2c84639021d2a87a39a92b0190b57a1b.ctex"
+path="res://.godot/imported/proof_paperdoll_penguin_abyssal_magenta.png-5584890501c6d7a8e3ad4e6e1e837a83.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/penguin/proof_paperdoll_penguin_abyssal_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_penguin_abyssal_magenta.png-2c84639021d2a87a39a92b0190b57a1b.ctex"]
+source_file="res://assets/paperdoll/penguin/proof_paperdoll_penguin_abyssal_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_penguin_abyssal_magenta.png-5584890501c6d7a8e3ad4e6e1e837a83.ctex"]
 
 [params]
 

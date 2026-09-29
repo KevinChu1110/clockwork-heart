@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c76libsqsr0tw"
-path="res://.godot/imported/chassis_fawn_timber_tinplate_default_512.png-b3327b64f72a683f0d4086a45136efea.ctex"
+path="res://.godot/imported/chassis_fawn_timber_tinplate_default_512.png-51ddc7f3570a1516cb987b1c43d3f895.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fawn/chassis/chassis_fawn_timber_tinplate_default_512.png"
-dest_files=["res://.godot/imported/chassis_fawn_timber_tinplate_default_512.png-b3327b64f72a683f0d4086a45136efea.ctex"]
+source_file="res://assets/paperdoll/fawn/chassis/chassis_fawn_timber_tinplate_default_512.png"
+dest_files=["res://.godot/imported/chassis_fawn_timber_tinplate_default_512.png-51ddc7f3570a1516cb987b1c43d3f895.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://23in8e7ii8rf1"
-path="res://.godot/imported/costume_hippo_greatcog_high_pressure_cuirass.png-7ab5d70b815a8a7d9aa192775f4ff464.ctex"
+uid="uid://1nk30rqktm4o"
+path="res://.godot/imported/costume_hippo_greatcog_high_pressure_cuirass.png-801f6514b2a0c932b3540c698e95f908.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/hippo/costume/costume_hippo_greatcog_high_pressure_cuirass.png"
-dest_files=["res://.godot/imported/costume_hippo_greatcog_high_pressure_cuirass.png-7ab5d70b815a8a7d9aa192775f4ff464.ctex"]
+source_file="res://assets/paperdoll/hippo/costume/costume_hippo_greatcog_high_pressure_cuirass.png"
+dest_files=["res://.godot/imported/costume_hippo_greatcog_high_pressure_cuirass.png-801f6514b2a0c932b3540c698e95f908.ctex"]
 
 [params]
 

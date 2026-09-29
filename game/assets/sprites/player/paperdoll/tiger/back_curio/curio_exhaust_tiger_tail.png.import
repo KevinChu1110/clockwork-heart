@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://8vm47bryr2l4"
-path="res://.godot/imported/curio_exhaust_tiger_tail.png-1132faa70269ce874d1f9b824b63a2b1.ctex"
+path="res://.godot/imported/curio_exhaust_tiger_tail.png-3e209e79abfc0dd35cce8a6778926e1f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tiger/back_curio/curio_exhaust_tiger_tail.png"
-dest_files=["res://.godot/imported/curio_exhaust_tiger_tail.png-1132faa70269ce874d1f9b824b63a2b1.ctex"]
+source_file="res://assets/paperdoll/tiger/back_curio/curio_exhaust_tiger_tail.png"
+dest_files=["res://.godot/imported/curio_exhaust_tiger_tail.png-3e209e79abfc0dd35cce8a6778926e1f.ctex"]
 
 [params]
 

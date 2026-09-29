@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ei0un2blabi5"
-path="res://.godot/imported/key_seal_marine_propeller_brass_512.png-c7b2d3d2b2683156f43e44c94ec3e78a.ctex"
+path="res://.godot/imported/key_seal_marine_propeller_brass_512.png-40590afb8019a5eb3cb959bccc5a6aec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/seal/winding_key/key_seal_marine_propeller_brass_512.png"
-dest_files=["res://.godot/imported/key_seal_marine_propeller_brass_512.png-c7b2d3d2b2683156f43e44c94ec3e78a.ctex"]
+source_file="res://assets/sprites/player/paperdoll/seal/winding_key/key_seal_marine_propeller_brass_512.png"
+dest_files=["res://.godot/imported/key_seal_marine_propeller_brass_512.png-40590afb8019a5eb3cb959bccc5a6aec.ctex"]
 
 [params]
 

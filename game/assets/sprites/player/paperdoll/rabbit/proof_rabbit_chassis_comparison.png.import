@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://baqtea7mc82vh"
-path="res://.godot/imported/proof_rabbit_chassis_comparison.png-690cf9d5ff33bbca69045a20ec8f8602.ctex"
+path="res://.godot/imported/proof_rabbit_chassis_comparison.png-ce65ae556e3ee5f5542fae7a54ad6f97.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/proof_rabbit_chassis_comparison.png"
-dest_files=["res://.godot/imported/proof_rabbit_chassis_comparison.png-690cf9d5ff33bbca69045a20ec8f8602.ctex"]
+source_file="res://assets/paperdoll/rabbit/proof_rabbit_chassis_comparison.png"
+dest_files=["res://.godot/imported/proof_rabbit_chassis_comparison.png-ce65ae556e3ee5f5542fae7a54ad6f97.ctex"]
 
 [params]
 

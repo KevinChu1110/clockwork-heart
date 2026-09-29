@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c20e62tnccigl"
-path="res://.godot/imported/curio_walrus_dual_ballast_tanks.png-fcd8dcb9098b95eaa7f45bd56876109a.ctex"
+path="res://.godot/imported/curio_walrus_dual_ballast_tanks.png-e73aad0c1bc56b348538ffdd14b3691c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/walrus/back_curio/curio_walrus_dual_ballast_tanks.png"
-dest_files=["res://.godot/imported/curio_walrus_dual_ballast_tanks.png-fcd8dcb9098b95eaa7f45bd56876109a.ctex"]
+source_file="res://assets/paperdoll/walrus/back_curio/curio_walrus_dual_ballast_tanks.png"
+dest_files=["res://.godot/imported/curio_walrus_dual_ballast_tanks.png-e73aad0c1bc56b348538ffdd14b3691c.ctex"]
 
 [params]
 

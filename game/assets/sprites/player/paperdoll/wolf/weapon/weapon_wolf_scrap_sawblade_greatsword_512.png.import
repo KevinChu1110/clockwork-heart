@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drl2hebsgc0e4"
-path="res://.godot/imported/weapon_wolf_scrap_sawblade_greatsword_512.png-4197027b96c1319323b73bcee065f7c2.ctex"
+path="res://.godot/imported/weapon_wolf_scrap_sawblade_greatsword_512.png-cb10f831babce05cc58fb38c96b932ef.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/wolf/weapon/weapon_wolf_scrap_sawblade_greatsword_512.png"
-dest_files=["res://.godot/imported/weapon_wolf_scrap_sawblade_greatsword_512.png-4197027b96c1319323b73bcee065f7c2.ctex"]
+source_file="res://assets/sprites/player/paperdoll/wolf/weapon/weapon_wolf_scrap_sawblade_greatsword_512.png"
+dest_files=["res://.godot/imported/weapon_wolf_scrap_sawblade_greatsword_512.png-cb10f831babce05cc58fb38c96b932ef.ctex"]
 
 [params]
 

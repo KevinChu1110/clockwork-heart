@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ceyo8y4600wck"
-path="res://.godot/imported/chassis_sailfish_abyssal_titanium_default.png-5853a3089d17bae0e8c7e41965e51a42.ctex"
+path="res://.godot/imported/chassis_sailfish_abyssal_titanium_default.png-2c68c25edbbaeb2edba2f708c01c4644.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/sailfish/chassis/chassis_sailfish_abyssal_titanium_default.png"
-dest_files=["res://.godot/imported/chassis_sailfish_abyssal_titanium_default.png-5853a3089d17bae0e8c7e41965e51a42.ctex"]
+source_file="res://assets/sprites/player/paperdoll/sailfish/chassis/chassis_sailfish_abyssal_titanium_default.png"
+dest_files=["res://.godot/imported/chassis_sailfish_abyssal_titanium_default.png-2c68c25edbbaeb2edba2f708c01c4644.ctex"]
 
 [params]
 

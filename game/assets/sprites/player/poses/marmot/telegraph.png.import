@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dit3yrt8m437b"
-path="res://.godot/imported/telegraph.png-e5deb1af16dc7db8cf00b787036c8d97.ctex"
+path="res://.godot/imported/telegraph.png-a0224cdcfa63b1b5418c9a2bc3a3ec85.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/marmot/poses/telegraph.png"
-dest_files=["res://.godot/imported/telegraph.png-e5deb1af16dc7db8cf00b787036c8d97.ctex"]
+source_file="res://assets/paperdoll/marmot/poses/telegraph.png"
+dest_files=["res://.godot/imported/telegraph.png-a0224cdcfa63b1b5418c9a2bc3a3ec85.ctex"]
 
 [params]
 

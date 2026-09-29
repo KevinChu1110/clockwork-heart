@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://lh2eibvs69zrn"
-path="res://.godot/imported/proof_paperdoll_giraffe_composite.png-d6e33db12dccd7768f0a22a05041ae11.ctex"
+uid="uid://dq8nb62b2u884"
+path="res://.godot/imported/proof_paperdoll_giraffe_composite.png-a26129cf30b3f7cdeeabdc9d3e3ea35f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/giraffe/proof_paperdoll_giraffe_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_giraffe_composite.png-d6e33db12dccd7768f0a22a05041ae11.ctex"]
+source_file="res://assets/paperdoll/giraffe/proof_paperdoll_giraffe_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_giraffe_composite.png-a26129cf30b3f7cdeeabdc9d3e3ea35f.ctex"]
 
 [params]
 

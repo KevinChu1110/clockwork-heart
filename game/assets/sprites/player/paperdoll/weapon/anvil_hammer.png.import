@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c5esdrola54jt"
-path="res://.godot/imported/anvil_hammer.png-12f667c246f9033449a2fb21880df298.ctex"
+path="res://.godot/imported/anvil_hammer.png-4e1ad2a9ebca3dfb84376189e0c69fe7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/anvil_hammer.png"
-dest_files=["res://.godot/imported/anvil_hammer.png-12f667c246f9033449a2fb21880df298.ctex"]
+source_file="res://assets/paperdoll/weapon/anvil_hammer.png"
+dest_files=["res://.godot/imported/anvil_hammer.png-4e1ad2a9ebca3dfb84376189e0c69fe7.ctex"]
 
 [params]
 

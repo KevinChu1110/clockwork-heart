@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dl8q5egnm18wd"
-path="res://.godot/imported/weapon_raven_armillary_wand.png-2783aa399aac9fc58dbab811e0cb8aeb.ctex"
+path="res://.godot/imported/weapon_raven_armillary_wand.png-45503cf3c2d3c91313591efec32d4f25.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/weapon_raven_armillary_wand.png"
-dest_files=["res://.godot/imported/weapon_raven_armillary_wand.png-2783aa399aac9fc58dbab811e0cb8aeb.ctex"]
+source_file="res://assets/paperdoll/weapon/weapon_raven_armillary_wand.png"
+dest_files=["res://.godot/imported/weapon_raven_armillary_wand.png-45503cf3c2d3c91313591efec32d4f25.ctex"]
 
 [params]
 

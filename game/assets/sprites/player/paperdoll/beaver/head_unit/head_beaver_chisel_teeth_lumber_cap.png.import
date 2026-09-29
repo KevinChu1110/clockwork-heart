@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cbdhy8bgwunc3"
-path="res://.godot/imported/head_beaver_chisel_teeth_lumber_cap.png-a579e01d05fb77a541721a489311d384.ctex"
+path="res://.godot/imported/head_beaver_chisel_teeth_lumber_cap.png-6f9da87742a078afa16b23ebafa5c5d0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/beaver/head_unit/head_beaver_chisel_teeth_lumber_cap.png"
-dest_files=["res://.godot/imported/head_beaver_chisel_teeth_lumber_cap.png-a579e01d05fb77a541721a489311d384.ctex"]
+source_file="res://assets/sprites/player/paperdoll/beaver/head_unit/head_beaver_chisel_teeth_lumber_cap.png"
+dest_files=["res://.godot/imported/head_beaver_chisel_teeth_lumber_cap.png-6f9da87742a078afa16b23ebafa5c5d0.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ci044nd1y70vp"
-path="res://.godot/imported/weapon_toucan_canopy_prism_pneumatic_arquebus.png-b24c2e2eca59261d422a75aba570af05.ctex"
+path="res://.godot/imported/weapon_toucan_canopy_prism_pneumatic_arquebus.png-cfbbe40fbbc97eb67b894d174373ee65.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/toucan/weapon/weapon_toucan_canopy_prism_pneumatic_arquebus.png"
-dest_files=["res://.godot/imported/weapon_toucan_canopy_prism_pneumatic_arquebus.png-b24c2e2eca59261d422a75aba570af05.ctex"]
+source_file="res://assets/paperdoll/toucan/weapon/weapon_toucan_canopy_prism_pneumatic_arquebus.png"
+dest_files=["res://.godot/imported/weapon_toucan_canopy_prism_pneumatic_arquebus.png-cfbbe40fbbc97eb67b894d174373ee65.ctex"]
 
 [params]
 

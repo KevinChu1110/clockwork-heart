@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://vhc2em2b4opk"
-path="res://.godot/imported/proof_paperdoll_macaque_zen_bronze_magenta.png-fac408350f4d8c33835a2ff49398c860.ctex"
+path="res://.godot/imported/proof_paperdoll_macaque_zen_bronze_magenta.png-d3ed6d3e8e0433bd97209d237ac239b0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/macaque/proof_paperdoll_macaque_zen_bronze_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_macaque_zen_bronze_magenta.png-fac408350f4d8c33835a2ff49398c860.ctex"]
+source_file="res://assets/paperdoll/macaque/proof_paperdoll_macaque_zen_bronze_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_macaque_zen_bronze_magenta.png-d3ed6d3e8e0433bd97209d237ac239b0.ctex"]
 
 [params]
 

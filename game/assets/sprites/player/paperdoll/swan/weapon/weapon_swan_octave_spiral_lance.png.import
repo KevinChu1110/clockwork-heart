@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cwhc3xbbtcxqc"
-path="res://.godot/imported/weapon_swan_octave_spiral_lance.png-402e72d010112ba446bbc43fcb2e46ae.ctex"
+path="res://.godot/imported/weapon_swan_octave_spiral_lance.png-60c421481460728dc61cc5faaf3d25ad.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/swan/weapon/weapon_swan_octave_spiral_lance.png"
-dest_files=["res://.godot/imported/weapon_swan_octave_spiral_lance.png-402e72d010112ba446bbc43fcb2e46ae.ctex"]
+source_file="res://assets/sprites/player/paperdoll/swan/weapon/weapon_swan_octave_spiral_lance.png"
+dest_files=["res://.godot/imported/weapon_swan_octave_spiral_lance.png-60c421481460728dc61cc5faaf3d25ad.ctex"]
 
 [params]
 
