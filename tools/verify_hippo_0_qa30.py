@@ -88,17 +88,27 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3.2 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/hippo 恪守零美術佔位圖規範
+# 4. 驗證 7 大槽位切片已全數就緒 (128x128 與 512x512) 且 poses/hippo 恪守零美術佔位圖
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/hippo")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
 
+expected_slices = {
+    "back_curio": ["curio_hippo_dual_steam_exhaust_ballast_tail.png", "curio_hippo_dual_steam_exhaust_ballast_tail_512.png"],
+    "chassis": ["chassis_hippo_thick_cast_brass_default.png", "chassis_hippo_thick_cast_brass_default_512.png"],
+    "costume": ["costume_hippo_greatcog_high_pressure_cuirass.png", "costume_hippo_greatcog_high_pressure_cuirass_512.png"],
+    "head_unit": ["head_hippo_ballast_safety_valve_cowl.png", "head_hippo_ballast_safety_valve_cowl_512.png"],
+    "optic_core": ["face_hippo_dual_pressure_gauge_quartz_lens.png", "face_hippo_dual_pressure_gauge_quartz_lens_512.png"],
+    "weapon": ["weapon_hippo_steamvalve_piston_heavy_lance.png", "weapon_hippo_steamvalve_piston_heavy_lance_512.png"],
+    "winding_key": ["key_hippo_dual_valve_handwheel_brass.png", "key_hippo_dual_valve_handwheel_brass_512.png"]
+}
+
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"缺少 .gitkeep: {s_dir}"
-    images = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert not images, f"槽位 {s} 發現非預期圖片檔案（違反零佔位圖規範）: {images}"
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/hippo")
 assert os.path.isdir(poses_dir), f"poses/hippo 目錄不存在: {poses_dir}"
@@ -106,7 +116,7 @@ assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/hippo 缺少 
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
 assert not poses_images, f"poses/hippo 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-print("✓ 4. 7 大槽位目錄與 poses/hippo 均已建立且恪守零美術佔位圖規範（僅保留 .gitkeep）")
+print("✓ 4. 7 大槽位切片已全數就緒且 poses/hippo 恪守零美術佔位圖規範")
 
 # 5. 驗證開局武器符合 equipment.json 既有 ID (ash_spear)
 equip_path = os.path.join(repo_root, "game/data/tables/equipment.json")
