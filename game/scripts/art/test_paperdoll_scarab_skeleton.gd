@@ -76,36 +76,30 @@ func _initialize() -> void:
 		else:
 			print("  ✓ 0-QA30 查驗合格：正表與 fallback 表 scarab aliases 100%% 對齊一致: %s" % str(fallback_aliases))
 
-	# 2. 驗證 7 大槽位空目錄與 poses/scarab 目錄存在且恪守零佔位圖（僅保留 .gitkeep）
+	# 2. 驗證 7 大槽位 128x128 與 512x512 切片圖層全數就緒
 	var expected_slots := ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 	var base_path := "res://assets/sprites/player/paperdoll/scarab"
-	var image_exts := [".png", ".webp", ".jpg", ".jpeg"]
-
+	var scarab_global_dir := ProjectSettings.globalize_path(base_path)
+	var expected_slice_files := {
+		"back_curio": ["curio_scarab_twin_vent_exhaust_tail.png", "curio_scarab_twin_vent_exhaust_tail_512.png"],
+		"chassis": ["chassis_scarab_obsidian_forge_default.png", "chassis_scarab_obsidian_forge_default_512.png"],
+		"costume": ["costume_scarab_crucible_artisan_apron.png", "costume_scarab_crucible_artisan_apron_512.png"],
+		"head_unit": ["head_scarab_quenched_obsidian_cowl.png", "head_scarab_quenched_obsidian_cowl_512.png"],
+		"optic_core": ["face_scarab_amber_crystal_visor.png", "face_scarab_amber_crystal_visor_512.png"],
+		"weapon": ["weapon_scarab_crucible_obsidian_focus.png", "weapon_scarab_crucible_obsidian_focus_512.png"],
+		"winding_key": ["key_scarab_crucible_cross_fire_brass.png", "key_scarab_crucible_cross_fire_brass_512.png"]
+	}
+	var missing_files: Array[String] = []
 	for sid in expected_slots:
-		var slot_dir := "%s/%s" % [base_path, sid]
-		var global_slot_dir := ProjectSettings.globalize_path(slot_dir)
-		if not DirAccess.dir_exists_absolute(global_slot_dir):
-			push_error("黑曜金龜槽位目錄不存在: %s" % slot_dir)
-			ok = false
-		else:
-			var gitkeep_file := "%s/.gitkeep" % global_slot_dir
-			if not FileAccess.file_exists(gitkeep_file):
-				push_error("黑曜金龜槽位目錄缺少 .gitkeep: %s" % slot_dir)
-				ok = false
-			# 檢查無圖片
-			var da := DirAccess.open(global_slot_dir)
-			if da:
-				da.list_dir_begin()
-				var fn := da.get_next()
-				while fn != "":
-					if not da.current_is_dir():
-						for ext in image_exts:
-							if fn.ends_with(ext):
-								push_error("先行骨架發現非預期圖片檔案（違反零佔位圖規則）: %s/%s" % [sid, fn])
-								ok = false
-					fn = da.get_next()
-				da.list_dir_end()
-			print("  ✓ 槽位目錄存在且恪守零佔位圖: %s" % sid)
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [scarab_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("黑曜金龜切片檔案缺失: %s" % str(missing_files))
+		ok = false
+	else:
+		print("  ✓ 黑曜金龜 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 驗證 poses/scarab 目錄
 	var poses_scarab := "res://assets/sprites/player/poses/scarab"
@@ -117,19 +111,7 @@ func _initialize() -> void:
 		if not FileAccess.file_exists("%s/.gitkeep" % global_poses_dir):
 			push_error("poses/scarab 缺少 .gitkeep")
 			ok = false
-		var da_poses := DirAccess.open(global_poses_dir)
-		if da_poses:
-			da_poses.list_dir_begin()
-			var fn_pos := da_poses.get_next()
-			while fn_pos != "":
-				if not da_poses.current_is_dir():
-					for ext in image_exts:
-						if fn_pos.ends_with(ext):
-							push_error("poses/scarab 發現非預期圖片檔案（違反零佔位圖規則）: %s" % fn_pos)
-							ok = false
-				fn_pos = da_poses.get_next()
-			da_poses.list_dir_end()
-		print("  ✓ poses/scarab 目錄存在且恪守 .gitkeep（零佔位圖）")
+		print("  ✓ poses/scarab 目錄存在且恪守 .gitkeep")
 
 	# 3. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog)
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -140,13 +122,13 @@ func _initialize() -> void:
 		var scarab_rdata: Dictionary = races_data["scarab"]
 		print("  ✓ PaperdollSelectDemo.RACES_DATA 正確納入 scarab: %s" % scarab_rdata.get("name_zh"))
 
-	# 驗證 has_race_assets 防護守衛（尚未產出切片與立繪前，必須返回 false 安全隱藏）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("scarab")
-	if has_assets:
-		push_error("尚未產出切片立繪前，has_race_assets('scarab') 應為 false（安全隱藏防護守衛）！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('scarab') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ has_race_assets('scarab') 正確回傳 false（安全隱藏未解鎖族群，不露出空卡）")
+		print("  ✓ 防護守衛生效：has_race_assets('scarab') 正確回傳 true（展示正常）")
 
 	var filter_found := false
 	for rf in WardrobeDialog.RACE_FILTER_OPTIONS:
