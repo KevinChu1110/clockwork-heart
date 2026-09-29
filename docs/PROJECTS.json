@@ -4746,8 +4746,8 @@
    "id": "petaurista-skeleton",
    "cat": "遊戲",
    "title": "第五十八族嵐翼鼯鼠(petaurista)資料表骨架與空目錄先行建置",
-   "status": "開發中",
-   "note": "開始建置第五十八族嵐翼鼯鼠資料表骨架與空目錄",
+   "status": "測試中",
+   "note": "骨架先行建置完成，0-QA30/33與無頭測試全綠，待 sideqa 審查",
    "keys": [
     "第五十八族嵐翼鼯"
    ]
