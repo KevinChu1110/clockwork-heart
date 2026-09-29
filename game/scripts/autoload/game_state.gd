@@ -828,6 +828,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"takin": "notch_axe",
 	"lemur": "star_fang",
 	"marmot": "wrap_gloves",
+	"firefly": "star_rod",
 }
 
 
@@ -901,6 +902,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"takin": default_name = "破竹羚牛"
 		"lemur": default_name = "星環狐猴"
 		"marmot": default_name = "碎石旱獺"
+		"firefly": default_name = "靈燈飛螢"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
