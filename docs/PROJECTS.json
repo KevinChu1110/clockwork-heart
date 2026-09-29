@@ -4756,8 +4756,8 @@
    "id": "petaurista-paperdoll",
    "cat": "遊戲",
    "title": "第五十八族嵐翼鼯鼠(petaurista)7大部件槽位紙娃娃切片與雙規格資產",
-   "status": "測試中",
-   "note": "7大部件切片與雙規格資產產出完成，0-ART/0-QA量化稽核與無頭測試全綠，待 sideqa 審查 (t_426c9478)",
+   "status": "已上線",
+   "note": "審核通過並合併進 main (6faa5cdf)",
    "keys": [
     "第五十八族嵐翼鼯"
    ]
