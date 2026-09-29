@@ -301,7 +301,7 @@ def generate_poses() -> dict[str, Image.Image]:
     # 3. ATTACK (天弦發射·穿甲光矢貫穿 / Celestial Arrow Snipe Thrust)
     # Violent forward release! Head and neck lunge forward (head x+13, y-1; torso x+10, y=0).
     # Bow thrusts forward in upright follow-through (+18 deg, target=(98, 67), scale=1.10).
-    # Key spins forward (+62 deg, target=(76, 21), scale=1.02).
+    # Key spins forward (+62 deg, target=(76, 27), scale=1.02).
     # Clean, pure dynamic sprite silhouette with zero 1px vector lines.
     # =========================================================================
     atk_offsets = {
@@ -332,7 +332,7 @@ def generate_poses() -> dict[str, Image.Image]:
     }
     dst_atk = [(base_landmarks[k][0] + atk_offsets[k][0], base_landmarks[k][1] + atk_offsets[k][1]) for k in base_landmarks] + anchors
     warped_atk_body = warp_image_idw(body_core, src_pts, dst_atk)
-    atk_key = place_rotated_element(key_raw, deg=62, target_center=(76, 21), scale=1.02)
+    atk_key = place_rotated_element(key_raw, deg=62, target_center=(76, 27), scale=1.02)
     atk_weapon = place_rotated_element(weapon_raw, deg=18, target_center=(98, 67), scale=1.10)
 
     atk_canvas = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
@@ -343,32 +343,32 @@ def generate_poses() -> dict[str, Image.Image]:
 
     # =========================================================================
     # 4. SKILL (天頂鐘鳴·天弦貫日雨 / Zenith Chime: Celestial Arrow Barrage)
-    # Grand sniping overdrive! Neck extends upward (head y-8, x+2; torso y-5, x+2).
+    # Grand sniping overdrive! Neck extends upward (head y-7, x+2; torso y-4, x+2).
     # Bow held upright aloft to the right (+22 deg, target=(97, 52), scale=1.10) - completely clear of face/eyes!
-    # Three-ring carillon key spins at maximum overdrive (+90 deg, target=(66, 17), scale=1.08).
+    # Three-ring carillon key spins at maximum overdrive (+90 deg, target=(66, 28), scale=1.08).
     # High-elevation stance with zero vector hair lines.
     # =========================================================================
     skill_offsets = {
-        "ossicone_l": (1, -8),
-        "ossicone_r": (3, -8),
-        "cowl_top": (2, -8),
-        "optic_l": (2, -7),
-        "optic_r": (2, -7),
-        "cowl_chin": (2, -6),
-        "neck_mid": (2, -5),
-        "neck_base": (2, -4),
-        "chest_brooch": (2, -4),
-        "cape_shoulder_l": (1, -4),
-        "cape_shoulder_r": (3, -4),
-        "cape_flank_l": (1, -3),
-        "cape_flank_r": (3, -3),
-        "pelvis": (1, -2),
-        "tail_joint": (0, -2),
-        "tail_bob": (-1, -1),
-        "leg_back_l": (0, -1),
-        "leg_front_l": (1, -1),
-        "leg_front_r": (2, -1),
-        "leg_back_r": (2, -1),
+        "ossicone_l": (1, -7),
+        "ossicone_r": (3, -7),
+        "cowl_top": (2, -7),
+        "optic_l": (2, -6),
+        "optic_r": (2, -6),
+        "cowl_chin": (2, -5),
+        "neck_mid": (2, -4),
+        "neck_base": (2, -3),
+        "chest_brooch": (2, -3),
+        "cape_shoulder_l": (1, -3),
+        "cape_shoulder_r": (3, -3),
+        "cape_flank_l": (1, -2),
+        "cape_flank_r": (3, -2),
+        "pelvis": (1, -1),
+        "tail_joint": (0, -1),
+        "tail_bob": (-1, 0),
+        "leg_back_l": (0, 0),
+        "leg_front_l": (1, 0),
+        "leg_front_r": (2, 0),
+        "leg_back_r": (2, 0),
         "hoof_back_l": (0, 0),
         "hoof_front_l": (0, 0),
         "hoof_front_r": (1, 0),
@@ -376,7 +376,7 @@ def generate_poses() -> dict[str, Image.Image]:
     }
     dst_skill = [(base_landmarks[k][0] + skill_offsets[k][0], base_landmarks[k][1] + skill_offsets[k][1]) for k in base_landmarks] + anchors
     warped_skill_body = warp_image_idw(body_core, src_pts, dst_skill)
-    skill_key = place_rotated_element(key_raw, deg=90, target_center=(66, 17), scale=1.08)
+    skill_key = place_rotated_element(key_raw, deg=90, target_center=(66, 28), scale=1.08)
     skill_weapon = place_rotated_element(weapon_raw, deg=22, target_center=(97, 52), scale=1.10)
 
     skill_canvas = Image.new("RGBA", (128, 128), (0, 0, 0, 0))
