@@ -4696,8 +4696,8 @@
    "id": "bison-official-assets",
    "cat": "遊戲",
    "title": "第四十四族撼地野牛(bison)官方資產套件補齊",
-   "status": "草稿",
-   "note": "補齊官網英雄圖/戰鬥特寫/行走動畫/HUD頭像",
+   "status": "測試中",
+   "note": "全套官方資產產出完畢，無頭驗證全綠，送審 sideqa",
    "keys": [
     "第四十四族撼地野"
    ]
