@@ -1074,16 +1074,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_firefly_emerald_tinplate_default", "name_zh": "深林沖壓薄銅馬口鐵底盤", "desc": "沖壓薄銅深林耐磨烤漆板件配象牙白絕緣底板，黃銅球窩關節與防滑橡膠吸附減震墊"}
 		]
+	},
+	"manta": {
+		"id": "manta",
+		"name_zh": "潮汐蝠魟",
+		"name_en": "The Tidal Manta",
+		"archetype": "遊俠 (Ranger)",
+		"thumb": "res://assets/sprites/player/showcase/manta_idle_hd.png",
+		"desc": "琉璃汪洋發條海淵穿浪遊俠，沖壓鍍鈦底盤配雙聯導流頭角、耐高壓石英目鏡與專屬海淵流體脈衝複合機關弓。",
+		"costumes": [
+			{"id": "costume_manta_diver_harness_cuirass", "name_zh": "深海潛水工裝編織輕量胸甲", "desc": "輕量金屬編織背心，配鍍鈦護胸與洩壓閥卡扣，飾以天元金黃與落日暖橘警示條"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現天藍沖壓耐蝕鍍鈦金屬板件與奶油米白絕緣底板"}
+		],
+		"chassis": [
+			{"id": "chassis_manta_titanium_default", "name_zh": "深海沖壓耐蝕鍍鈦金屬底盤", "desc": "沖壓耐蝕鍍鈦金屬深海防鏽烤漆板件配奶油米白抗壓底板，黃銅球窩關節與防滑橡膠吸附墊"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -1602,6 +1617,7 @@ func confirm_selection() -> void:
 				"lemur": gs.player_name = "星環狐猴"
 				"marmot": gs.player_name = "碎石旱獺"
 				"firefly": gs.player_name = "靈燈飛螢"
+				"manta": gs.player_name = "潮汐蝠魟"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
