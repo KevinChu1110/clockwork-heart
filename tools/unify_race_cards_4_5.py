@@ -51,6 +51,8 @@ RACES = [
     ("gecko", "巡管守宮"),
     ("hippo", "重閥河馬"),
     ("petaurista", "嵐翼鼯鼠"),
+    ("lynx", "提線猞猁"),
+    ("scarab", "黑曜金龜"),
 ]
 
 def pad_to_4_5(im: Image.Image, race_name: str) -> Image.Image:
@@ -122,7 +124,9 @@ def main():
     
     for race_id, race_label in RACES:
         src_path = os.path.join(BRANDING_DIR, f"char_{race_id}.png")
-        assert os.path.exists(src_path), f"Missing {src_path}"
+        if not os.path.exists(src_path):
+            print(f"  - [{race_label:6s} ({race_id:8s})]: {src_path} not found, skipping")
+            continue
         
         im = Image.open(src_path)
         orig_size = im.size
