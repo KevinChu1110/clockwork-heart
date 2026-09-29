@@ -5220,8 +5220,8 @@
    "id": "kingfisher-poses",
    "cat": "遊戲",
    "title": "第六十八族穿雲翠鳥(kingfisher)六大戰鬥姿態補齊",
-   "status": "草稿",
-   "note": "t_c5ed7c44",
+   "status": "測試中",
+   "note": "六大動作姿態與雙規格完成，等待 sideqa 審查",
    "keys": [
     "第六十八族穿雲翠"
    ]
