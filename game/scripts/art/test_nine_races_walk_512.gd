@@ -15,7 +15,7 @@ func _initialize() -> void:
 		quit(1)
 		return
 
-	var all_races := ["rabbit", "lion", "fox", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "pangolin", "otter", "hedgehog", "kangaroo", "wolf", "viper", "sailfish", "rhino", "courser", "beaver", "seal", "crab", "bison", "gecko", "hippo", "petaurista", "scarab"]
+	var all_races := ["rabbit", "lion", "fox", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "pangolin", "otter", "hedgehog", "kangaroo", "wolf", "viper", "sailfish", "rhino", "courser", "beaver", "seal", "crab", "bison", "gecko", "hippo", "petaurista", "scarab", "walrus"]
 	var broken_slots := {
 		"costume": "broken_invalid_costume_999",
 		"chassis": "broken_invalid_chassis_999"
