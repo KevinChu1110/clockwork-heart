@@ -113,7 +113,16 @@ poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/camel")
 assert os.path.isdir(poses_dir), f"poses/camel 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/camel 缺少 .gitkeep"
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
-assert not poses_images, f"poses/camel 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
+expected_poses = {
+    'idle.png', 'idle_512.png',
+    'telegraph.png', 'telegraph_512.png',
+    'attack.png', 'attack_512.png',
+    'recover.png', 'recover_512.png',
+    'skill.png', 'skill_512.png',
+    'hit.png', 'hit_512.png'
+}
+unexpected = set(poses_images) - expected_poses
+assert not unexpected, f"poses/camel 發現非預期圖片檔案（違反零佔位圖規則）: {unexpected}"
 
 print("✓ 4. 7 大槽位切片已全數就緒且 poses/camel 恪守零美術佔位圖規範")
 

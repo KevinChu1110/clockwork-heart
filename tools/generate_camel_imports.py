@@ -56,7 +56,7 @@ game_dir = os.path.join(REPO_ROOT, "game")
 generated_count = 0
 for root, dirs, files in os.walk(game_dir):
     for f in files:
-        if "camel" in f and f.endswith(".png"):
+        if ("camel" in f or "poses/camel" in root) and f.endswith(".png"):
             full_path = os.path.join(root, f)
             import_path = full_path + ".import"
             if not os.path.exists(import_path):
