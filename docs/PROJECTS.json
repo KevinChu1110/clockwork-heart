@@ -4976,8 +4976,8 @@
    "id": "walrus-official-assets",
    "cat": "遊戲",
    "title": "第六十二族破冰海象(walrus)官方資產套件補齊",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "官方資產套件全數補齊，已推至分支 agent/20260929-walrus-official-assets-t337880fc，提交審查",
    "keys": [
     "第六十二族破冰海"
    ]
