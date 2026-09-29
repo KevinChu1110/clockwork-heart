@@ -818,6 +818,8 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"crab": "wrap_gloves",
 	"camel": "star_rod",
 	"giraffe": "reed_bow",
+	"hippo": "ash_spear",
+	"mole": "anvil_hammer",
 }
 
 
@@ -881,6 +883,8 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"crab": default_name = "熔砧石蟹"
 		"camel": default_name = "日晷駱駝"
 		"giraffe": default_name = "鐘塔長頸鹿"
+		"hippo": default_name = "重閥河馬"
+		"mole": default_name = "星岩鼴鼠"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
