@@ -4636,8 +4636,8 @@
    "id": "giraffe-combat-poses",
    "cat": "遊戲",
    "title": "第五十五族鐘塔長頸鹿(giraffe)六大戰鬥姿勢補齊",
-   "status": "開發中",
-   "note": "開始依 pipeline 建置六大戰鬥姿態",
+   "status": "測試中",
+   "note": "六大戰鬥姿態完成，0-ART/0-QA量化全過，送審 sideqa",
    "keys": [
     "第五十五族鐘塔長"
    ]
