@@ -5170,8 +5170,8 @@
    "id": "kingfisher-skeleton",
    "cat": "遊戲",
    "title": "第六十八族穿雲翠鳥(kingfisher)資料表骨架與空目錄先行建置",
-   "status": "開發中",
-   "note": "開始建置資料表骨架、目錄結構與相依配置",
+   "status": "測試中",
+   "note": "資料表骨架與空目錄建置完成，待審查合入 main (t_ce02b3ac)",
    "keys": [
     "第六十八族穿雲翠"
    ]
