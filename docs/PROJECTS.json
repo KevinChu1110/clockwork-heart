@@ -4936,8 +4936,8 @@
    "id": "walrus-paperdoll",
    "cat": "遊戲",
    "title": "第六十二族破冰海象(walrus)7大部件槽位紙娃娃切片與雙規格資產",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "切片與雙規格資產完成，sideqa 審查通過待合併",
    "keys": [
     "第六十二族破冰海"
    ]
