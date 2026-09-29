@@ -4611,6 +4611,16 @@
    "keys": [
     "第五十六種動物紙"
    ]
+  },
+  {
+   "id": "cuttlefish-official-assets",
+   "cat": "遊戲",
+   "title": "第五十一族墨紋烏賊(cuttlefish)官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
+   "status": "草稿",
+   "note": "已過審合main（t_ece2a18e done），補上清單遺漏",
+   "keys": [
+    "第五十一族墨紋烏"
+   ]
   }
  ]
 }
