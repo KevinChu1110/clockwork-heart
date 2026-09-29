@@ -73,6 +73,8 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"capybara": "shard_focus",
 	"woodpecker": "flint_gun",
 	"armadillo": "meager_edge",
+	"caterpillar": "anvil_hammer",
+	"cuttlefish": "star_fang",
 }
 
 static func starter_weapon_id_for_race(race: String) -> String:

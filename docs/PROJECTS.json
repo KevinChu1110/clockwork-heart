@@ -4443,13 +4443,33 @@
    ]
   },
   {
+   "id": "caterpillar-skeleton",
+   "cat": "遊戲",
+   "title": "第50族風箱毛蟲資料表骨架與空目錄先行建置",
+   "status": "已上線",
+   "note": "骨架與空目錄建置完成，通過0-QA30與無頭測試 (t_483ce95b)",
+   "keys": [
+    "第50族風箱毛蟲"
+   ]
+  },
+  {
    "id": "cuttlefish-proposal",
    "cat": "世界觀",
    "title": "第五十一種動物紙娃娃角色設計提案",
-   "status": "測試中",
-   "note": "完成第五十一種動物墨影烏賊(cuttlefish)設計提案，待審核",
+   "status": "已上線",
+   "note": "完成第五十一種動物墨影烏賊(cuttlefish)設計提案，審查通過",
    "keys": [
     "第五十一種動物紙"
+   ]
+  },
+  {
+   "id": "cuttlefish-skeleton",
+   "cat": "遊戲",
+   "title": "第五十一族墨紋烏賊(cuttlefish)資料表骨架與空目錄先行建置",
+   "status": "測試中",
+   "note": "建立第七大槽位空目錄與資料表正表/fallback骨架，通過0-QA30/0-QA33驗證 (t_286417e3)",
+   "keys": [
+    "第五十一族墨紋烏"
    ]
   },
   {
@@ -4460,6 +4480,16 @@
    "note": "完成第五十二種動物熔砧石蟹(The Anvil Crab)設計提案，待審核",
    "keys": [
     "第五十二種動物紙"
+   ]
+  },
+  {
+   "id": "crab-skeleton",
+   "cat": "遊戲",
+   "title": "第五十二族熔矽石蟹(crab)資料表骨架與空目錄先行建置",
+   "status": "草稿",
+   "note": "建立第七大槽位空目錄與資料表正表/fallback骨架，通過0-QA30/0-QA33驗證 (t_c8dce277)",
+   "keys": [
+    "第五十二族熔矽石"
    ]
   }
  ]
