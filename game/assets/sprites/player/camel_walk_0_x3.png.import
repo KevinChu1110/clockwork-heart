@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d3bb18umr153s"
-path="res://.godot/imported/camel_idle_x3.png-bebf27e0dbea7f2a5477d94254af4203.ctex"
+uid="uid://d5lf6xrtcote"
+path="res://.godot/imported/camel_walk_0_x3.png-364cbe44f87b42f2ae03def71efa1db2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/camel_idle_x3.png"
-dest_files=["res://.godot/imported/camel_idle_x3.png-bebf27e0dbea7f2a5477d94254af4203.ctex"]
+source_file="res://assets/sprites/player/camel_walk_0_x3.png"
+dest_files=["res://.godot/imported/camel_walk_0_x3.png-364cbe44f87b42f2ae03def71efa1db2.ctex"]
 
 [params]
 
