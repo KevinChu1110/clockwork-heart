@@ -53,6 +53,7 @@ RACES = [
     ("petaurista", "嵐翼鼯鼠"),
     ("lynx", "提線猞猁"),
     ("scarab", "黑曜金龜"),
+    ("walrus", "破冰海象"),
     ("takin", "破竹羚牛"),
 ]
 
