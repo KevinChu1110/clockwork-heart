@@ -76,36 +76,30 @@ func _initialize() -> void:
 		else:
 			print("  ✓ 0-QA30 查驗合格：正表與 fallback 表 kingfisher aliases 100%% 對齊一致: %s" % str(fallback_aliases))
 
-	# 2. 驗證 7 大槽位空目錄與 poses/kingfisher、player/kingfisher 目錄存在且恪守零佔位圖（僅保留 .gitkeep）
+	# 2. 驗證 7 大槽位 128x128 與 512x512 切片圖層全數就緒
 	var expected_slots := ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 	var base_path := "res://assets/sprites/player/paperdoll/kingfisher"
-	var image_exts := [".png", ".webp", ".jpg", ".jpeg"]
-
+	var kf_global_dir := ProjectSettings.globalize_path(base_path)
+	var expected_slice_files := {
+		"back_curio": ["curio_kingfisher_bamboo_wings_spring_tail.png", "curio_kingfisher_bamboo_wings_spring_tail_512.png"],
+		"chassis": ["chassis_kingfisher_enamel_default.png", "chassis_kingfisher_enamel_default_512.png"],
+		"costume": ["costume_kingfisher_dojo_lacquer_cuirass.png", "costume_kingfisher_dojo_lacquer_cuirass_512.png"],
+		"head_unit": ["head_kingfisher_beak_lance_cowl.png", "head_kingfisher_beak_lance_cowl_512.png"],
+		"optic_core": ["face_kingfisher_zen_slate_goggles.png", "face_kingfisher_zen_slate_goggles_512.png"],
+		"weapon": ["weapon_kingfisher_bamboo_spring_lance.png", "weapon_kingfisher_bamboo_spring_lance_512.png"],
+		"winding_key": ["key_kingfisher_zen_taichi_gear_brass.png", "key_kingfisher_zen_taichi_gear_brass_512.png"]
+	}
+	var missing_files: Array[String] = []
 	for sid in expected_slots:
-		var slot_dir := "%s/%s" % [base_path, sid]
-		var global_slot_dir := ProjectSettings.globalize_path(slot_dir)
-		if not DirAccess.dir_exists_absolute(global_slot_dir):
-			push_error("穿雲翠鳥槽位目錄不存在: %s" % slot_dir)
-			ok = false
-		else:
-			var gitkeep_file := "%s/.gitkeep" % global_slot_dir
-			if not FileAccess.file_exists(gitkeep_file):
-				push_error("穿雲翠鳥槽位目錄缺少 .gitkeep: %s" % slot_dir)
-				ok = false
-			# 檢查無圖片
-			var da := DirAccess.open(global_slot_dir)
-			if da:
-				da.list_dir_begin()
-				var fn := da.get_next()
-				while fn != "":
-					if not da.current_is_dir():
-						for ext in image_exts:
-							if fn.ends_with(ext):
-								push_error("先行骨架發現非預期圖片檔案（違反零佔位圖規則）: %s/%s" % [sid, fn])
-								ok = false
-					fn = da.get_next()
-				da.list_dir_end()
-			print("  ✓ 槽位目錄存在且恪守零佔位圖: %s" % sid)
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [kf_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("穿雲翠鳥切片檔案缺失: %s" % str(missing_files))
+		ok = false
+	else:
+		print("  ✓ 穿雲翠鳥 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 驗證 poses/kingfisher 目錄
 	var poses_kingfisher := "res://assets/sprites/player/poses/kingfisher"
@@ -119,18 +113,6 @@ func _initialize() -> void:
 			ok = false
 		print("  ✓ poses/kingfisher 目錄存在且恪守 .gitkeep")
 
-	# 驗證 player/kingfisher 目錄
-	var player_kingfisher := "res://assets/sprites/player/kingfisher"
-	var global_pk_dir := ProjectSettings.globalize_path(player_kingfisher)
-	if not DirAccess.dir_exists_absolute(global_pk_dir):
-		push_error("player/kingfisher 目錄不存在: %s" % player_kingfisher)
-		ok = false
-	else:
-		if not FileAccess.file_exists("%s/.gitkeep" % global_pk_dir):
-			push_error("player/kingfisher 缺少 .gitkeep")
-			ok = false
-		print("  ✓ player/kingfisher 目錄存在且恪守 .gitkeep")
-
 	# 3. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog)
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
 	if not races_data.has("kingfisher"):
@@ -140,13 +122,13 @@ func _initialize() -> void:
 		var kingfisher_rdata: Dictionary = races_data["kingfisher"]
 		print("  ✓ PaperdollSelectDemo.RACES_DATA 正確納入 kingfisher: %s" % kingfisher_rdata.get("name_zh"))
 
-	# 驗證 has_race_assets 防護守衛（尚未產出切片與立繪前，必須返回 false 安全隱藏）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("kingfisher")
-	if has_assets:
-		push_error("尚未產出切片立繪前，has_race_assets('kingfisher') 應為 false（安全隱藏防護守衛）！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('kingfisher') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ has_race_assets('kingfisher') 正確回傳 false（安全隱藏未解鎖族群，不露出空卡）")
+		print("  ✓ 防護守衛生效：has_race_assets('kingfisher') 正確回傳 true（展示正常）")
 
 	var filter_found := false
 	for rf in WardrobeDialog.RACE_FILTER_OPTIONS:
@@ -187,9 +169,9 @@ func _initialize() -> void:
 		print("  • 槽位 %s 解析 fallback 路徑: %s" % [sid, path_res])
 
 	if ok:
-		print("\n🎉 第六十八族穿雲翠鳥 (kingfisher) 資料表骨架先行建置測試全部 PASS！")
+		print("\n🎉 第六十八族穿雲翠鳥 (kingfisher) 資料表骨架與切片驗證測試全部 PASS！")
 		print("PAPERDOLL_KINGFISHER_SKELETON_OK")
 		quit(0)
 	else:
-		printerr("\n❌ 第六十八族穿雲翠鳥 (kingfisher) 資料表骨架先行建置測試有失敗項目！")
+		printerr("\n❌ 第六十八族穿雲翠鳥 (kingfisher) 資料表骨架與切片驗證測試有失敗項目！")
 		quit(1)
