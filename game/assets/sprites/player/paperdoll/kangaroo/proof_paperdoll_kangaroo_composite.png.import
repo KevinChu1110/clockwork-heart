@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://j4leq2427ntl"
-path="res://.godot/imported/proof_paperdoll_kangaroo_composite.png-d18cbf2ae440e3133f7ecb781fcf125e.ctex"
+path="res://.godot/imported/proof_paperdoll_kangaroo_composite.png-10c4cf6e0abaec9b516ff76b81afc286.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/kangaroo/proof_paperdoll_kangaroo_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_kangaroo_composite.png-d18cbf2ae440e3133f7ecb781fcf125e.ctex"]
+source_file="res://assets/sprites/player/paperdoll/kangaroo/proof_paperdoll_kangaroo_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_kangaroo_composite.png-10c4cf6e0abaec9b516ff76b81afc286.ctex"]
 
 [params]
 

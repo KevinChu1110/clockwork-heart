@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dujjyyl23at5v"
-path="res://.godot/imported/mist_darts.png-6b538b7b5350b7531914fd17b5e53b65.ctex"
+path="res://.godot/imported/mist_darts.png-2b6386f10b0422dcb339189b5737117e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/mist_darts.png"
-dest_files=["res://.godot/imported/mist_darts.png-6b538b7b5350b7531914fd17b5e53b65.ctex"]
+source_file="res://assets/paperdoll/weapon/mist_darts.png"
+dest_files=["res://.godot/imported/mist_darts.png-2b6386f10b0422dcb339189b5737117e.ctex"]
 
 [params]
 

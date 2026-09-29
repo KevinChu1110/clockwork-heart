@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bbaw543pv0vq2"
-path="res://.godot/imported/curio_raven_articulated_steampunk_wings_512.png-48eeaafbd9692ee7c348b0e777317502.ctex"
+path="res://.godot/imported/curio_raven_articulated_steampunk_wings_512.png-75f8f8b47eef2a7d1ccfac3a218a32af.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raven/back_curio/curio_raven_articulated_steampunk_wings_512.png"
-dest_files=["res://.godot/imported/curio_raven_articulated_steampunk_wings_512.png-48eeaafbd9692ee7c348b0e777317502.ctex"]
+source_file="res://assets/paperdoll/raven/back_curio/curio_raven_articulated_steampunk_wings_512.png"
+dest_files=["res://.godot/imported/curio_raven_articulated_steampunk_wings_512.png-75f8f8b47eef2a7d1ccfac3a218a32af.ctex"]
 
 [params]
 

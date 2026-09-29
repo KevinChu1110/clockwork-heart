@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c5xnjdp1suyuu"
-path="res://.godot/imported/head_badger_flathead_ballistic_visor_512.png-aa88b03b6eec3ac86b82b3253784be6c.ctex"
+path="res://.godot/imported/head_badger_flathead_ballistic_visor_512.png-27ccc1482d2833562a4e28521134c259.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/badger/head_unit/head_badger_flathead_ballistic_visor_512.png"
-dest_files=["res://.godot/imported/head_badger_flathead_ballistic_visor_512.png-aa88b03b6eec3ac86b82b3253784be6c.ctex"]
+source_file="res://assets/sprites/player/paperdoll/badger/head_unit/head_badger_flathead_ballistic_visor_512.png"
+dest_files=["res://.godot/imported/head_badger_flathead_ballistic_visor_512.png-27ccc1482d2833562a4e28521134c259.ctex"]
 
 [params]
 

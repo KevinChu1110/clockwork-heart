@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dctutqhngxn2d"
-path="res://.godot/imported/key_beaver_sawtooth_cog_brass.png-ca1e9aa9cfd3a829581b31ca2f1cdfaa.ctex"
+path="res://.godot/imported/key_beaver_sawtooth_cog_brass.png-ecb15cfd9b0f19102f2709a1fc669a4d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_beaver_sawtooth_cog_brass.png"
-dest_files=["res://.godot/imported/key_beaver_sawtooth_cog_brass.png-ca1e9aa9cfd3a829581b31ca2f1cdfaa.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_beaver_sawtooth_cog_brass.png"
+dest_files=["res://.godot/imported/key_beaver_sawtooth_cog_brass.png-ecb15cfd9b0f19102f2709a1fc669a4d.ctex"]
 
 [params]
 

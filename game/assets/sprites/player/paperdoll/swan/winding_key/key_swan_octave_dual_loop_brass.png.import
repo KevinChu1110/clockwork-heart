@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://t4avor6fr8bg"
-path="res://.godot/imported/key_swan_octave_dual_loop_brass.png-5bc25fab23dd167a63b6deb06e7f0360.ctex"
+path="res://.godot/imported/key_swan_octave_dual_loop_brass.png-c19691148b677d6c2db8cdbad11e6449.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/swan/winding_key/key_swan_octave_dual_loop_brass.png"
-dest_files=["res://.godot/imported/key_swan_octave_dual_loop_brass.png-5bc25fab23dd167a63b6deb06e7f0360.ctex"]
+source_file="res://assets/sprites/player/paperdoll/swan/winding_key/key_swan_octave_dual_loop_brass.png"
+dest_files=["res://.godot/imported/key_swan_octave_dual_loop_brass.png-c19691148b677d6c2db8cdbad11e6449.ctex"]
 
 [params]
 

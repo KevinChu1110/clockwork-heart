@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://briibij8jr2lg"
-path="res://.godot/imported/weapon_gorilla_steam_forging_fist.png-3f2018b82f1430530820926b26d6e6c9.ctex"
+path="res://.godot/imported/weapon_gorilla_steam_forging_fist.png-98fc52490ec9e2f7a96bf446b343b519.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/weapon/weapon_gorilla_steam_forging_fist.png"
-dest_files=["res://.godot/imported/weapon_gorilla_steam_forging_fist.png-3f2018b82f1430530820926b26d6e6c9.ctex"]
+source_file="res://assets/sprites/player/paperdoll/weapon/weapon_gorilla_steam_forging_fist.png"
+dest_files=["res://.godot/imported/weapon_gorilla_steam_forging_fist.png-98fc52490ec9e2f7a96bf446b343b519.ctex"]
 
 [params]
 

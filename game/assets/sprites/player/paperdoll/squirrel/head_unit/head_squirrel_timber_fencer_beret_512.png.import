@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://updxoyrdm2s1"
-path="res://.godot/imported/head_squirrel_timber_fencer_beret_512.png-caba001d1f9763f81cdd85ebc81e7efb.ctex"
+path="res://.godot/imported/head_squirrel_timber_fencer_beret_512.png-5c055a4d7797e6349ca922cd2abc325b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/squirrel/head_unit/head_squirrel_timber_fencer_beret_512.png"
-dest_files=["res://.godot/imported/head_squirrel_timber_fencer_beret_512.png-caba001d1f9763f81cdd85ebc81e7efb.ctex"]
+source_file="res://assets/sprites/player/paperdoll/squirrel/head_unit/head_squirrel_timber_fencer_beret_512.png"
+dest_files=["res://.godot/imported/head_squirrel_timber_fencer_beret_512.png-5c055a4d7797e6349ca922cd2abc325b.ctex"]
 
 [params]
 

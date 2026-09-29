@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b6dbkf4wo1aaq"
-path="res://.godot/imported/weapon_sailfish_hydrofoil_lance.png-9bd145eb5e0d2f0f4bb6bb45ae018bf9.ctex"
+path="res://.godot/imported/weapon_sailfish_hydrofoil_lance.png-8b3e5cb5f4f426f6241c986f8f7d4455.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/weapon/weapon_sailfish_hydrofoil_lance.png"
-dest_files=["res://.godot/imported/weapon_sailfish_hydrofoil_lance.png-9bd145eb5e0d2f0f4bb6bb45ae018bf9.ctex"]
+source_file="res://assets/sprites/player/paperdoll/weapon/weapon_sailfish_hydrofoil_lance.png"
+dest_files=["res://.godot/imported/weapon_sailfish_hydrofoil_lance.png-8b3e5cb5f4f426f6241c986f8f7d4455.ctex"]
 
 [params]
 

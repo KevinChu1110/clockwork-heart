@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://nct2sw7exksr"
-path="res://.godot/imported/weapon_courser_cavalry_saber.png-265e6759d512129b2105b4beb8c46f02.ctex"
+path="res://.godot/imported/weapon_courser_cavalry_saber.png-883323595e9a60512725b38024175945.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/weapon_courser_cavalry_saber.png"
-dest_files=["res://.godot/imported/weapon_courser_cavalry_saber.png-265e6759d512129b2105b4beb8c46f02.ctex"]
+source_file="res://assets/paperdoll/weapon/weapon_courser_cavalry_saber.png"
+dest_files=["res://.godot/imported/weapon_courser_cavalry_saber.png-883323595e9a60512725b38024175945.ctex"]
 
 [params]
 

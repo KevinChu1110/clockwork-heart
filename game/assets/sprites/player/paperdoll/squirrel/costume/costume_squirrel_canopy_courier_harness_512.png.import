@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dqp6ysavvcj70"
-path="res://.godot/imported/costume_squirrel_canopy_courier_harness_512.png-f44fb20602442d968aa8f844f1f5e058.ctex"
+path="res://.godot/imported/costume_squirrel_canopy_courier_harness_512.png-8e3d08cb14fbbd030445896e02bc45cf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/squirrel/costume/costume_squirrel_canopy_courier_harness_512.png"
-dest_files=["res://.godot/imported/costume_squirrel_canopy_courier_harness_512.png-f44fb20602442d968aa8f844f1f5e058.ctex"]
+source_file="res://assets/sprites/player/paperdoll/squirrel/costume/costume_squirrel_canopy_courier_harness_512.png"
+dest_files=["res://.godot/imported/costume_squirrel_canopy_courier_harness_512.png-8e3d08cb14fbbd030445896e02bc45cf.ctex"]
 
 [params]
 

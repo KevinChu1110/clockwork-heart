@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://6ovsjbcmqdwj"
-path="res://.godot/imported/costume_bagua_master_robe_512.png-1c7fa374bc3010ead3ee239f7650b594.ctex"
+path="res://.godot/imported/costume_bagua_master_robe_512.png-d643db195e27c43c090b7ef13788649f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tortoise/costume/costume_bagua_master_robe_512.png"
-dest_files=["res://.godot/imported/costume_bagua_master_robe_512.png-1c7fa374bc3010ead3ee239f7650b594.ctex"]
+source_file="res://assets/paperdoll/tortoise/costume/costume_bagua_master_robe_512.png"
+dest_files=["res://.godot/imported/costume_bagua_master_robe_512.png-d643db195e27c43c090b7ef13788649f.ctex"]
 
 [params]
 

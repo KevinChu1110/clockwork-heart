@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c85kuyhhwqtr8"
-path="res://.godot/imported/key_stoat_whirlwind_tri_ring_brass.png-f9646a0ac237293cf83828d04fe8f1a8.ctex"
+path="res://.godot/imported/key_stoat_whirlwind_tri_ring_brass.png-44c17f3f1037bd1bbd92a4aac9eb6079.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/stoat/winding_key/key_stoat_whirlwind_tri_ring_brass.png"
-dest_files=["res://.godot/imported/key_stoat_whirlwind_tri_ring_brass.png-f9646a0ac237293cf83828d04fe8f1a8.ctex"]
+source_file="res://assets/sprites/player/paperdoll/stoat/winding_key/key_stoat_whirlwind_tri_ring_brass.png"
+dest_files=["res://.godot/imported/key_stoat_whirlwind_tri_ring_brass.png-44c17f3f1037bd1bbd92a4aac9eb6079.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d367rxdpnd2b5"
-path="res://.godot/imported/wrap_gloves.png-1571ae3b0a0a1da93b1c51e1d080ce5d.ctex"
+path="res://.godot/imported/wrap_gloves.png-3d6a3bd517b46109ca503ac6caa7117c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/wrap_gloves.png"
-dest_files=["res://.godot/imported/wrap_gloves.png-1571ae3b0a0a1da93b1c51e1d080ce5d.ctex"]
+source_file="res://assets/paperdoll/weapon/wrap_gloves.png"
+dest_files=["res://.godot/imported/wrap_gloves.png-3d6a3bd517b46109ca503ac6caa7117c.ctex"]
 
 [params]
 

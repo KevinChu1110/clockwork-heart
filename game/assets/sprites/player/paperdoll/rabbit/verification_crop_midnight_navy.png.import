@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://llp63wk4oc6h"
-path="res://.godot/imported/verification_crop_midnight_navy.png-67b4a79049749bcb4eeabe8427fc402f.ctex"
+path="res://.godot/imported/verification_crop_midnight_navy.png-82561b7c2f4e1194595ca15042204f48.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/verification_crop_midnight_navy.png"
-dest_files=["res://.godot/imported/verification_crop_midnight_navy.png-67b4a79049749bcb4eeabe8427fc402f.ctex"]
+source_file="res://assets/paperdoll/rabbit/verification_crop_midnight_navy.png"
+dest_files=["res://.godot/imported/verification_crop_midnight_navy.png-82561b7c2f4e1194595ca15042204f48.ctex"]
 
 [params]
 

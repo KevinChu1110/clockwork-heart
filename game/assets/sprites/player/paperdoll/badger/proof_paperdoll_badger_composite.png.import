@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drbq2nac5nqj"
-path="res://.godot/imported/proof_paperdoll_badger_composite.png-846d174b7aa6ba8f151072da2ccf6dbf.ctex"
+path="res://.godot/imported/proof_paperdoll_badger_composite.png-adcbdc53d0c1c5ea046a7e4ea55b658f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/badger/proof_paperdoll_badger_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_badger_composite.png-846d174b7aa6ba8f151072da2ccf6dbf.ctex"]
+source_file="res://assets/sprites/player/paperdoll/badger/proof_paperdoll_badger_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_badger_composite.png-adcbdc53d0c1c5ea046a7e4ea55b658f.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bvk3hishtq847"
-path="res://.godot/imported/proof_raven_all_7_slices.png-1f9060dc0a5b9bf1c5f26abde8b37e7b.ctex"
+path="res://.godot/imported/proof_raven_all_7_slices.png-889bb04c4cb77c763cc1e334813df8a6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raven/proof_raven_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_raven_all_7_slices.png-1f9060dc0a5b9bf1c5f26abde8b37e7b.ctex"]
+source_file="res://assets/paperdoll/raven/proof_raven_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_raven_all_7_slices.png-889bb04c4cb77c763cc1e334813df8a6.ctex"]
 
 [params]
 

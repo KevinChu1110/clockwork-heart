@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c4r46lisvr5w1"
-path="res://.godot/imported/weapon_stoat_crescent_dagger.png-bce3cde6c2e634d296ef4f148e1f6f67.ctex"
+path="res://.godot/imported/weapon_stoat_crescent_dagger.png-5378b7de5eb4542effee76a2cd854ebc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/stoat/weapon/weapon_stoat_crescent_dagger.png"
-dest_files=["res://.godot/imported/weapon_stoat_crescent_dagger.png-bce3cde6c2e634d296ef4f148e1f6f67.ctex"]
+source_file="res://assets/sprites/player/paperdoll/stoat/weapon/weapon_stoat_crescent_dagger.png"
+dest_files=["res://.godot/imported/weapon_stoat_crescent_dagger.png-5378b7de5eb4542effee76a2cd854ebc.ctex"]
 
 [params]
 

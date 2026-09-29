@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://pj0gg1x58ej1"
-path="res://.godot/imported/proof_paperdoll_tortoise_composite.png-6f601d270a87ad652122d21ea2e421d3.ctex"
+path="res://.godot/imported/proof_paperdoll_tortoise_composite.png-2b6d12af5ec00c63a3506e7399f57890.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tortoise/proof_paperdoll_tortoise_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_tortoise_composite.png-6f601d270a87ad652122d21ea2e421d3.ctex"]
+source_file="res://assets/paperdoll/tortoise/proof_paperdoll_tortoise_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_tortoise_composite.png-2b6d12af5ec00c63a3506e7399f57890.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cfowmyidlco01"
-path="res://.godot/imported/key_badger_four_vane_antenna_gold.png-9cc4f13a63c535927ec01e9150a183dd.ctex"
+path="res://.godot/imported/key_badger_four_vane_antenna_gold.png-5e6e25ea6327694d424892954e07022a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_badger_four_vane_antenna_gold.png"
-dest_files=["res://.godot/imported/key_badger_four_vane_antenna_gold.png-9cc4f13a63c535927ec01e9150a183dd.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_badger_four_vane_antenna_gold.png"
+dest_files=["res://.godot/imported/key_badger_four_vane_antenna_gold.png-5e6e25ea6327694d424892954e07022a.ctex"]
 
 [params]
 

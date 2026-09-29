@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dc8kdw6owtqi1"
-path="res://.godot/imported/curio_steam_exhaust.png-8c65a4eba9f51f93a1d41f5fc9a09250.ctex"
+path="res://.godot/imported/curio_steam_exhaust.png-1e079f9b823d0186e3f736afde4d2e0e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/back_curio/curio_steam_exhaust.png"
-dest_files=["res://.godot/imported/curio_steam_exhaust.png-8c65a4eba9f51f93a1d41f5fc9a09250.ctex"]
+source_file="res://assets/paperdoll/rabbit/back_curio/curio_steam_exhaust.png"
+dest_files=["res://.godot/imported/curio_steam_exhaust.png-1e079f9b823d0186e3f736afde4d2e0e.ctex"]
 
 [params]
 

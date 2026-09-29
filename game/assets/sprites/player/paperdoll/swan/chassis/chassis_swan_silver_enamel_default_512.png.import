@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dpoot35de57in"
-path="res://.godot/imported/chassis_swan_silver_enamel_default_512.png-734143155b5744cd31a29289e5cc38ad.ctex"
+path="res://.godot/imported/chassis_swan_silver_enamel_default_512.png-21944b84b87cb5ada0cb459cf55ed06c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/swan/chassis/chassis_swan_silver_enamel_default_512.png"
-dest_files=["res://.godot/imported/chassis_swan_silver_enamel_default_512.png-734143155b5744cd31a29289e5cc38ad.ctex"]
+source_file="res://assets/sprites/player/paperdoll/swan/chassis/chassis_swan_silver_enamel_default_512.png"
+dest_files=["res://.godot/imported/chassis_swan_silver_enamel_default_512.png-21944b84b87cb5ada0cb459cf55ed06c.ctex"]
 
 [params]
 

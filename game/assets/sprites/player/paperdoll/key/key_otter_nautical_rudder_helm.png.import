@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ibkitdj0016t"
-path="res://.godot/imported/key_otter_nautical_rudder_helm.png-40c9036a0ffb5fe63621171e2e287bd0.ctex"
+path="res://.godot/imported/key_otter_nautical_rudder_helm.png-f452f0bd22c6effdc7914ed277e78250.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_otter_nautical_rudder_helm.png"
-dest_files=["res://.godot/imported/key_otter_nautical_rudder_helm.png-40c9036a0ffb5fe63621171e2e287bd0.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_otter_nautical_rudder_helm.png"
+dest_files=["res://.godot/imported/key_otter_nautical_rudder_helm.png-f452f0bd22c6effdc7914ed277e78250.ctex"]
 
 [params]
 

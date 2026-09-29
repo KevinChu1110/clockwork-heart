@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://beku6g1dneg56"
-path="res://.godot/imported/face_stoat_sapphire_crosshair_lens.png-d2bf34bc9d11edea3148c0aa449c182f.ctex"
+path="res://.godot/imported/face_stoat_sapphire_crosshair_lens.png-9a106fa2cad9acb0d6ce3789de57572d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/stoat/optic_core/face_stoat_sapphire_crosshair_lens.png"
-dest_files=["res://.godot/imported/face_stoat_sapphire_crosshair_lens.png-d2bf34bc9d11edea3148c0aa449c182f.ctex"]
+source_file="res://assets/sprites/player/paperdoll/stoat/optic_core/face_stoat_sapphire_crosshair_lens.png"
+dest_files=["res://.godot/imported/face_stoat_sapphire_crosshair_lens.png-9a106fa2cad9acb0d6ce3789de57572d.ctex"]
 
 [params]
 

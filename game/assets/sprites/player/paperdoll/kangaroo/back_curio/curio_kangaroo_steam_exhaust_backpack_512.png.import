@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://n45ym07frjxs"
-path="res://.godot/imported/curio_kangaroo_steam_exhaust_backpack_512.png-6cf317781a7e919e2a0d798e061178dd.ctex"
+path="res://.godot/imported/curio_kangaroo_steam_exhaust_backpack_512.png-8e206ae4c0346e2d8c4359d3be0826ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/kangaroo/back_curio/curio_kangaroo_steam_exhaust_backpack_512.png"
-dest_files=["res://.godot/imported/curio_kangaroo_steam_exhaust_backpack_512.png-6cf317781a7e919e2a0d798e061178dd.ctex"]
+source_file="res://assets/sprites/player/paperdoll/kangaroo/back_curio/curio_kangaroo_steam_exhaust_backpack_512.png"
+dest_files=["res://.godot/imported/curio_kangaroo_steam_exhaust_backpack_512.png-8e206ae4c0346e2d8c4359d3be0826ed.ctex"]
 
 [params]
 

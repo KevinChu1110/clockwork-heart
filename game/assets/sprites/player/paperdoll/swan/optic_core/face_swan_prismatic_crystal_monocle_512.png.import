@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b07xpxhxbj5d"
-path="res://.godot/imported/face_swan_prismatic_crystal_monocle_512.png-2c09bedec5af661592e799fcbf1c320c.ctex"
+path="res://.godot/imported/face_swan_prismatic_crystal_monocle_512.png-7a52d20ed9e3deab6126b3e536695791.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/swan/optic_core/face_swan_prismatic_crystal_monocle_512.png"
-dest_files=["res://.godot/imported/face_swan_prismatic_crystal_monocle_512.png-2c09bedec5af661592e799fcbf1c320c.ctex"]
+source_file="res://assets/sprites/player/paperdoll/swan/optic_core/face_swan_prismatic_crystal_monocle_512.png"
+dest_files=["res://.godot/imported/face_swan_prismatic_crystal_monocle_512.png-7a52d20ed9e3deab6126b3e536695791.ctex"]
 
 [params]
 

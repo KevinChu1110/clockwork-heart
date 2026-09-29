@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://duqevfyari6l0"
-path="res://.godot/imported/curio_swan_spring_steel_ballet_wings.png-714fe1ad5093b9335106df2c452b8376.ctex"
+path="res://.godot/imported/curio_swan_spring_steel_ballet_wings.png-a8c29e488f39f8642922ab83bea3e915.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/swan/back_curio/curio_swan_spring_steel_ballet_wings.png"
-dest_files=["res://.godot/imported/curio_swan_spring_steel_ballet_wings.png-714fe1ad5093b9335106df2c452b8376.ctex"]
+source_file="res://assets/sprites/player/paperdoll/swan/back_curio/curio_swan_spring_steel_ballet_wings.png"
+dest_files=["res://.godot/imported/curio_swan_spring_steel_ballet_wings.png-a8c29e488f39f8642922ab83bea3e915.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c17rl3rdqvsv2"
-path="res://.godot/imported/costume_ember_tunic.png-4c269281cac80bd942b2d4503eb32439.ctex"
+path="res://.godot/imported/costume_ember_tunic.png-d3a2223846226f2e3df37e9ca293d05e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tiger/costume/costume_ember_tunic.png"
-dest_files=["res://.godot/imported/costume_ember_tunic.png-4c269281cac80bd942b2d4503eb32439.ctex"]
+source_file="res://assets/paperdoll/tiger/costume/costume_ember_tunic.png"
+dest_files=["res://.godot/imported/costume_ember_tunic.png-d3a2223846226f2e3df37e9ca293d05e.ctex"]
 
 [params]
 

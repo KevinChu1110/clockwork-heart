@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c6ombu2a2pq4q"
-path="res://.godot/imported/key_rhino_crucible_crosshair_key_512.png-9cb38e9b8d7c840e344a034b52ea9c91.ctex"
+path="res://.godot/imported/key_rhino_crucible_crosshair_key_512.png-f35a2557883bf0bdfe92ecb4fe20128a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rhino/winding_key/key_rhino_crucible_crosshair_key_512.png"
-dest_files=["res://.godot/imported/key_rhino_crucible_crosshair_key_512.png-9cb38e9b8d7c840e344a034b52ea9c91.ctex"]
+source_file="res://assets/paperdoll/rhino/winding_key/key_rhino_crucible_crosshair_key_512.png"
+dest_files=["res://.godot/imported/key_rhino_crucible_crosshair_key_512.png-f35a2557883bf0bdfe92ecb4fe20128a.ctex"]
 
 [params]
 

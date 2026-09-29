@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bq43ssxc4viug"
-path="res://.godot/imported/costume_raven_horologist_scholar_robe_512.png-69a4d99064aa99b4eb1ed8ef7f17cce7.ctex"
+path="res://.godot/imported/costume_raven_horologist_scholar_robe_512.png-2d37564b0f09252e576e34e6c0f7454a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/raven/costume/costume_raven_horologist_scholar_robe_512.png"
-dest_files=["res://.godot/imported/costume_raven_horologist_scholar_robe_512.png-69a4d99064aa99b4eb1ed8ef7f17cce7.ctex"]
+source_file="res://assets/paperdoll/raven/costume/costume_raven_horologist_scholar_robe_512.png"
+dest_files=["res://.godot/imported/costume_raven_horologist_scholar_robe_512.png-2d37564b0f09252e576e34e6c0f7454a.ctex"]
 
 [params]
 

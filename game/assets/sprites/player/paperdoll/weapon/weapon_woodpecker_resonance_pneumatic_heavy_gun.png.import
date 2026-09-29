@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://f0lmmusft6qd"
-path="res://.godot/imported/weapon_woodpecker_resonance_pneumatic_heavy_gun.png-f023b5703c8418104f703a4ba22f6fe5.ctex"
+path="res://.godot/imported/weapon_woodpecker_resonance_pneumatic_heavy_gun.png-6ec7ebd60738daa6d5379d6862d30fdc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/weapon/weapon_woodpecker_resonance_pneumatic_heavy_gun.png"
-dest_files=["res://.godot/imported/weapon_woodpecker_resonance_pneumatic_heavy_gun.png-f023b5703c8418104f703a4ba22f6fe5.ctex"]
+source_file="res://assets/sprites/player/paperdoll/weapon/weapon_woodpecker_resonance_pneumatic_heavy_gun.png"
+dest_files=["res://.godot/imported/weapon_woodpecker_resonance_pneumatic_heavy_gun.png-6ec7ebd60738daa6d5379d6862d30fdc.ctex"]
 
 [params]
 

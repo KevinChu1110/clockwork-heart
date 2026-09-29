@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b7c0icyuo66gd"
-path="res://.godot/imported/weapon_viper_gale_bamboo_dagger_512.png-3d4c63b31a5a53307d87854f44737c0d.ctex"
+path="res://.godot/imported/weapon_viper_gale_bamboo_dagger_512.png-9848ba65c365c79d2d5b5b91fe93f319.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/viper/weapon/weapon_viper_gale_bamboo_dagger_512.png"
-dest_files=["res://.godot/imported/weapon_viper_gale_bamboo_dagger_512.png-3d4c63b31a5a53307d87854f44737c0d.ctex"]
+source_file="res://assets/sprites/player/paperdoll/viper/weapon/weapon_viper_gale_bamboo_dagger_512.png"
+dest_files=["res://.godot/imported/weapon_viper_gale_bamboo_dagger_512.png-9848ba65c365c79d2d5b5b91fe93f319.ctex"]
 
 [params]
 

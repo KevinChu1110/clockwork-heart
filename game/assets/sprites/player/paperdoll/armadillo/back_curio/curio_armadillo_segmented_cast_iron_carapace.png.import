@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://i0cmigcjw52u"
-path="res://.godot/imported/curio_armadillo_segmented_cast_iron_carapace.png-1a8ca840a4acccb8e51ea991cedac2d4.ctex"
+path="res://.godot/imported/curio_armadillo_segmented_cast_iron_carapace.png-42463dd1b71e4e894fa53202a591567d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/armadillo/back_curio/curio_armadillo_segmented_cast_iron_carapace.png"
-dest_files=["res://.godot/imported/curio_armadillo_segmented_cast_iron_carapace.png-1a8ca840a4acccb8e51ea991cedac2d4.ctex"]
+source_file="res://assets/sprites/player/paperdoll/armadillo/back_curio/curio_armadillo_segmented_cast_iron_carapace.png"
+dest_files=["res://.godot/imported/curio_armadillo_segmented_cast_iron_carapace.png-42463dd1b71e4e894fa53202a591567d.ctex"]
 
 [params]
 

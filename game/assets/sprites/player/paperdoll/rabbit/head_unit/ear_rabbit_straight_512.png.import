@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bx5soafmgi2w8"
-path="res://.godot/imported/ear_rabbit_straight_512.png-64ee2556e3c76a484fc3a092884208f9.ctex"
+path="res://.godot/imported/ear_rabbit_straight_512.png-8e1451c2ab5656e0c6a9d4d535cae765.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/rabbit/head_unit/ear_rabbit_straight_512.png"
-dest_files=["res://.godot/imported/ear_rabbit_straight_512.png-64ee2556e3c76a484fc3a092884208f9.ctex"]
+source_file="res://assets/paperdoll/rabbit/head_unit/ear_rabbit_straight_512.png"
+dest_files=["res://.godot/imported/ear_rabbit_straight_512.png-8e1451c2ab5656e0c6a9d4d535cae765.ctex"]
 
 [params]
 

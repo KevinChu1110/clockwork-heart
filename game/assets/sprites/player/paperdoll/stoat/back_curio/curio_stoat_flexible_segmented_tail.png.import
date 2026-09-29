@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dagl7niki1ssg"
-path="res://.godot/imported/curio_stoat_flexible_segmented_tail.png-e92bd28b66e446c0af91a8c2786eef34.ctex"
+path="res://.godot/imported/curio_stoat_flexible_segmented_tail.png-a75bb2e9c6205cbfe3e3764b2abda861.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/stoat/back_curio/curio_stoat_flexible_segmented_tail.png"
-dest_files=["res://.godot/imported/curio_stoat_flexible_segmented_tail.png-e92bd28b66e446c0af91a8c2786eef34.ctex"]
+source_file="res://assets/sprites/player/paperdoll/stoat/back_curio/curio_stoat_flexible_segmented_tail.png"
+dest_files=["res://.godot/imported/curio_stoat_flexible_segmented_tail.png-a75bb2e9c6205cbfe3e3764b2abda861.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bdjhdh388rkn6"
-path="res://.godot/imported/chassis_viper_bamboo_lacquer_default.png-16eaa5fdbe84fa03be85a3f7b8239b58.ctex"
+path="res://.godot/imported/chassis_viper_bamboo_lacquer_default.png-898cefcb6ef64619d4a57c363205abe5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/viper/chassis/chassis_viper_bamboo_lacquer_default.png"
-dest_files=["res://.godot/imported/chassis_viper_bamboo_lacquer_default.png-16eaa5fdbe84fa03be85a3f7b8239b58.ctex"]
+source_file="res://assets/sprites/player/paperdoll/viper/chassis/chassis_viper_bamboo_lacquer_default.png"
+dest_files=["res://.godot/imported/chassis_viper_bamboo_lacquer_default.png-898cefcb6ef64619d4a57c363205abe5.ctex"]
 
 [params]
 

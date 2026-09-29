@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cd4ovlwgo178e"
-path="res://.godot/imported/knight_saber.png-df9d2c5a59004c6f5d39e925094e6493.ctex"
+path="res://.godot/imported/knight_saber.png-8b32d7a39de25bee2783474ef176f013.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/knight_saber.png"
-dest_files=["res://.godot/imported/knight_saber.png-df9d2c5a59004c6f5d39e925094e6493.ctex"]
+source_file="res://assets/paperdoll/weapon/knight_saber.png"
+dest_files=["res://.godot/imported/knight_saber.png-8b32d7a39de25bee2783474ef176f013.ctex"]
 
 [params]
 

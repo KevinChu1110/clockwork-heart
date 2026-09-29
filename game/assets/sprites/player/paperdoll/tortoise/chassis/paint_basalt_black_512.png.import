@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cnwpehruf5rr7"
-path="res://.godot/imported/paint_basalt_black_512.png-3cbfc03ed0486cb5f3ef43a04213f2ac.ctex"
+path="res://.godot/imported/paint_basalt_black_512.png-ba53a63aca7f113bfd209d3ae352ad30.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/tortoise/chassis/paint_basalt_black_512.png"
-dest_files=["res://.godot/imported/paint_basalt_black_512.png-3cbfc03ed0486cb5f3ef43a04213f2ac.ctex"]
+source_file="res://assets/paperdoll/tortoise/chassis/paint_basalt_black_512.png"
+dest_files=["res://.godot/imported/paint_basalt_black_512.png-ba53a63aca7f113bfd209d3ae352ad30.ctex"]
 
 [params]
 

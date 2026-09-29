@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dwaehsn0x6n7"
-path="res://.godot/imported/chassis_wolf_warm_orange_default_512.png-34f34fe769f1cb1802d83dc5d2a838a8.ctex"
+path="res://.godot/imported/chassis_wolf_warm_orange_default_512.png-215307da0edb51ae1faf358f43d3b764.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/wolf/chassis/chassis_wolf_warm_orange_default_512.png"
-dest_files=["res://.godot/imported/chassis_wolf_warm_orange_default_512.png-34f34fe769f1cb1802d83dc5d2a838a8.ctex"]
+source_file="res://assets/sprites/player/paperdoll/wolf/chassis/chassis_wolf_warm_orange_default_512.png"
+dest_files=["res://.godot/imported/chassis_wolf_warm_orange_default_512.png-215307da0edb51ae1faf358f43d3b764.ctex"]
 
 [params]
 

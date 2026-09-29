@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cme3rou3isjj7"
-path="res://.godot/imported/head_swan_tiara_beak_visor.png-9826202766e82ccbfc50704526c027ac.ctex"
+path="res://.godot/imported/head_swan_tiara_beak_visor.png-50e13397ebd2a1c19e2691caad4be1b6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/swan/head_unit/head_swan_tiara_beak_visor.png"
-dest_files=["res://.godot/imported/head_swan_tiara_beak_visor.png-9826202766e82ccbfc50704526c027ac.ctex"]
+source_file="res://assets/sprites/player/paperdoll/swan/head_unit/head_swan_tiara_beak_visor.png"
+dest_files=["res://.godot/imported/head_swan_tiara_beak_visor.png-50e13397ebd2a1c19e2691caad4be1b6.ctex"]
 
 [params]
 

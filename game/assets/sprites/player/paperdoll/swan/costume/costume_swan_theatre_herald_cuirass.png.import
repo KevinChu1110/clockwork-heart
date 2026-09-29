@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ddp6bwi238kw5"
-path="res://.godot/imported/costume_swan_theatre_herald_cuirass.png-ecf00cecf97c0204e7c79bc036461c13.ctex"
+path="res://.godot/imported/costume_swan_theatre_herald_cuirass.png-67943cd41ff9c3f4da6277e8dfdf08ee.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/swan/costume/costume_swan_theatre_herald_cuirass.png"
-dest_files=["res://.godot/imported/costume_swan_theatre_herald_cuirass.png-ecf00cecf97c0204e7c79bc036461c13.ctex"]
+source_file="res://assets/sprites/player/paperdoll/swan/costume/costume_swan_theatre_herald_cuirass.png"
+dest_files=["res://.godot/imported/costume_swan_theatre_herald_cuirass.png-67943cd41ff9c3f4da6277e8dfdf08ee.ctex"]
 
 [params]
 

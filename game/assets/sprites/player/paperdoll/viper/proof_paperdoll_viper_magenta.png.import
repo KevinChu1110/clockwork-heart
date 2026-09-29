@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cg1p8hciaw8ek"
-path="res://.godot/imported/proof_paperdoll_viper_magenta.png-22547b4469553659657a93d379aba0ec.ctex"
+path="res://.godot/imported/proof_paperdoll_viper_magenta.png-54c6501298d0405c0ed3551e4d83f8c6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/viper/proof_paperdoll_viper_magenta.png"
-dest_files=["res://.godot/imported/proof_paperdoll_viper_magenta.png-22547b4469553659657a93d379aba0ec.ctex"]
+source_file="res://assets/sprites/player/paperdoll/viper/proof_paperdoll_viper_magenta.png"
+dest_files=["res://.godot/imported/proof_paperdoll_viper_magenta.png-54c6501298d0405c0ed3551e4d83f8c6.ctex"]
 
 [params]
 
