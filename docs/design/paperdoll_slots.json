@@ -477,6 +477,12 @@
             "name": "提線木偶精雕胡桃木矮萌底盤",
             "tier": "common",
             "race": "lynx"
+          },
+          {
+            "id": "chassis_scarab_obsidian_forge_default",
+            "name": "黑曜耐火鑄鐵矮萌底盤",
+            "tier": "common",
+            "race": "scarab"
           }
         ]
       },
@@ -849,6 +855,12 @@
             "name": "歐風提線雙天線金耳兜帽",
             "tier": "common",
             "race": "lynx"
+          },
+          {
+            "id": "head_scarab_quenched_obsidian_cowl",
+            "name": "黑曜淬火雙叉金角面罩",
+            "tier": "common",
+            "race": "scarab"
           }
         ]
       },
@@ -1160,6 +1172,11 @@
           {
             "id": "key_lynx_twin_ring_chime_brass",
             "name": "雙環八音風鈴黃銅發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_scarab_crucible_cross_fire_brass",
+            "name": "四葉鍛造十字火紋黃銅發條鑰匙",
             "tier": "common"
           }
         ]
@@ -1586,6 +1603,12 @@
             "name": "晨曦小鎮提線雜技工裝背心",
             "tier": "common",
             "race": "lynx"
+          },
+          {
+            "id": "costume_scarab_crucible_artisan_apron",
+            "name": "赤焰熔爐隔熱工匠護裙",
+            "tier": "common",
+            "race": "scarab"
           }
         ]
       },
@@ -1949,6 +1972,12 @@
             "name": "雙色翡翠寶石目鏡彩釉面甲",
             "tier": "common",
             "race": "lynx"
+          },
+          {
+            "id": "face_scarab_amber_crystal_visor",
+            "name": "熔金琥珀透鏡耐火面甲",
+            "tier": "common",
+            "race": "scarab"
           }
         ]
       },
@@ -2319,6 +2348,12 @@
             "name": "晨曦提線裂空機關爪",
             "tier": "common",
             "weapon_type": "claw"
+          },
+          {
+            "id": "weapon_scarab_crucible_obsidian_focus",
+            "name": "赤焰黑曜護體靈晶",
+            "tier": "common",
+            "weapon_type": "crystal"
           }
         ]
       },
@@ -2692,13 +2727,19 @@
             "name": "雙節同軸鐘擺平衡配重短尾",
             "tier": "common",
             "race": "lynx"
+          },
+          {
+            "id": "curio_scarab_twin_vent_exhaust_tail",
+            "name": "雙聯微型高壓洩壓排煙管短尾",
+            "tier": "common",
+            "race": "scarab"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 58,
+    "total_races": 59,
     "races": [
       {
         "race_id": "rabbit",
@@ -6847,6 +6888,81 @@
           "portrait_dialogue": "game/assets/sprites/portraits/marionette_lynx.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/lynx/{slot_id}/{item_id}.png [既有]"
         }
+      },
+      {
+        "race_id": "scarab",
+        "aliases": [
+          "obsidian_scarab",
+          "crucible_scarab",
+          "forge_beetle",
+          "clockwork_scarab",
+          "volcano_scarab"
+        ],
+        "name_zh": "黑曜金龜",
+        "name_en": "The Obsidian Scarab",
+        "class_archetype": "法師 (Mage)",
+        "origin_realm": "R06 赤焰熔爐·鍛造火山 / Molten Foundry: Crucible Volcano",
+        "lore_anchor": "駐守於赤焰熔爐·鍛造火山「火山口中央鍛造神壇」與「黑曜石淬火神壇」，穿行於「金色液態鐵水熔池」兩岸的「黑曜淬火石磚步道」與「耐火排煙管樹」，跨越「重型鍛造工坊與衝壓懸橋」，仰望「黃銅洩壓儀表塔」，巡邏「晨曦天軌 6 號熔爐重載貨運月台」、「高壓地熱噴射升空彈射井」與「冷卻熔渣重力排料傾卸滑道」，依託「磁吸隔熱排渣護欄網」與「淬火冷卻噴淋池」，結伴矮人鐵匠大師·布隆、陶土魔像學徒·泥泥與熔爐溫控長老·坩堝老爹；通體覆蓋高溫淬火黑曜岩底盤與象牙白瓷腮板、黑曜淬火雙叉金角面罩、熔金琥珀水晶目鏡、赤焰熔爐隔熱工匠護裙、可開合雙扇黑曜亮面鞘翅、雙聯微型高壓洩壓排煙管短尾、四葉鍛造十字火紋黃銅發條鑰匙，右手單持專屬赤焰黑曜護體靈晶，以2.2頭身矮萌微胖體態、六足精工黃銅球窩鉸鏈、熔爐地熱晶核吸納、多面晶刃反震破勢與織盾成刃見長的高溫火山機關造物法師",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (1900s-1930s 歐洲古典發條鐵皮聖甲蟲與維多利亞鐘錶地熱自動偶)",
+          "posture": "2.2 頭身矮萌身軀微側30度穩健站姿，六足微屈下沉抓地，右手向前虛托浮空旋轉靈晶，左手收胸結印，背後四葉發條鑰匙隨秒針每1.5秒跳拍一格勻速自轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "打磨黑曜岩半球形頭罩（#2B2630），前額挺立雙叉黃銅機械調諧觸角（#FFD028），兩腮鑲嵌溫潤象牙白瓷耐火腮板（#FFFDF8），眼眶處鏤空透光",
+          "ears": "無外耳，以額前雙叉黃銅機械調諧觸角（#FFD028）替代，內置微型熱電偶合金絲隨秒針微顫測溫",
+          "torso_and_limbs": "高耐熱粗砂鑄鐵模組（#2B2630）沖壓外殼，胸腹鑲嵌白瓷耐火襯板，四肢為精工黃銅球窩轉動鉸鏈與矽膠吸震軟墊",
+          "tail": "雙聯微型高壓洩壓排煙管短尾（#FFD028 / #2B2630），兩根仰角黃銅排氣短管，每隔數秒噴出微型白色蒸氣圈",
+          "weapon_system": "右手單持專屬「赤焰黑曜護體靈晶（Crucible Obsidian Shield-Focus）」，浮空旋轉多面黑曜晶核配雙黃銅刻度調諧環，底層掛載 equipment.json 既有 shard_focus (tier 1)"
+        },
+        "color_palette": {
+          "base": "#FFFDF8 (基底象牙白瓷耐火高光，兩腮腮板、胸腹襯板高光)",
+          "primary": "#FFA010 (主色多巴胺暖橘，隔熱工匠圍裙、琥珀透鏡、鞘翅彩繪飾條)",
+          "secondary": "#4ED86A (次色多巴胺薄荷淺綠，圍裙密封飾條、靈晶能量外圈光暈)",
+          "accent": "#FF5E8A (點綴色多巴胺珊瑚粉，發條鑰匙中心鉚釘與口袋刺繡印記)",
+          "metal": "#FFD028 (金屬赤焰黃銅金，四葉發條鑰匙、雙叉觸角、鉸鏈與靈晶調諧環)",
+          "outline": "#1F1A3A (深藍紫手繪立體外輪廓描邊，確保明亮清爽零泥土髒黑)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_scarab.png (品牌形象立牌)",
+              "web/media/hero/char_scarab.png (官網英雄展示立繪)",
+              "docs/art/obsidian_scarab_concept.png (概念立繪)",
+              "game/assets/sprites/player/scarab_idle.png (64x64 待機)",
+              "game/assets/sprites/player/scarab_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/scarab_idle.png (隊伍待機)",
+              "web/media/hero/scarab_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/scarab_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/scarab_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/scarab_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/scarab_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/scarab_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/scarab_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/scarab/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/scarab.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/scarab_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/obsidian_scarab.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/scarab/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_scarab.png (420x840 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/obsidian_scarab_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_scarab.png (420x840 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/scarab_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/scarab_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/scarab_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/scarab_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/scarab_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/scarab_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/scarab_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/scarab/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/scarab.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/obsidian_scarab.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/scarab/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -6894,7 +7010,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 58 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 59 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -6916,7 +7032,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "五十九重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩、重閥河馬沖壓厚鑄耐壓黃銅矮萌體態與巨輪城重裝抗震高壓鉚釘胸甲、星岩鼴鼠乳白工程塑料矮萌體態與軌道高抗衝擊防護工裝背帶褲、嵐翼鼯鼠溫潤白瓷面甲矮萌體態與天元竹林摺疊翼膜暗忍胸甲、提線猞猁精雕胡桃木與晨曦小鎮提線雜技工裝背心) 由渲染器微調縮放適配"
+        "rule": "六十重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩、重閥河馬沖壓厚鑄耐壓黃銅矮萌體態與巨輪城重裝抗震高壓鉚釘胸甲、星岩鼴鼠乳白工程塑料矮萌體態與軌道高抗衝擊防護工裝背帶褲、嵐翼鼯鼠溫潤白瓷面甲矮萌體態與天元竹林摺疊翼膜暗忍胸甲、提線猞猁精雕胡桃木與晨曦小鎮提線雜技工裝背心、黑曜金龜高耐熱鑄鐵底盤與赤焰熔爐隔熱工匠護裙) 由渲染器微調縮放適配"
       }
     ]
   },
@@ -6982,7 +7098,8 @@
         "game/assets/sprites/player/paperdoll/hippo/",
         "game/assets/sprites/player/paperdoll/mole/",
         "game/assets/sprites/player/paperdoll/petaurista/",
-        "game/assets/sprites/player/paperdoll/lynx/"
+        "game/assets/sprites/player/paperdoll/lynx/",
+        "game/assets/sprites/player/paperdoll/scarab/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
