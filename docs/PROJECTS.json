@@ -4846,8 +4846,8 @@
    "id": "scarab-official-assets",
    "cat": "遊戲",
    "title": "第六十族黑曜金龜(scarab)官方資產套件補齊",
-   "status": "開發中",
-   "note": "開始補齊官網英雄圖/戰鬥特寫/行走動畫/HUD頭像",
+   "status": "測試中",
+   "note": "官方資產套件全數補齊，通過自測與 Vision 驗收，送審 sideqa",
    "keys": [
     "第六十族黑曜金龜"
    ]
