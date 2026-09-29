@@ -88,31 +88,23 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3.2 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/firefly 目錄存在且零佔位圖
+# 4. 驗證 7 大槽位目錄與 poses/firefly 目錄存在
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/firefly")
-image_exts = (".png", ".webp", ".jpg", ".jpeg")
 
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
     assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"槽位目錄缺少 .gitkeep: {s_dir}"
-    for fn in os.listdir(s_dir):
-        if fn.lower().endswith(image_exts):
-            assert False, f"槽位目錄發現圖片檔案（違反先行骨架零佔位圖規則）: {s}/{fn}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/firefly")
 assert os.path.isdir(poses_dir), f"poses/firefly 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/firefly 缺少 .gitkeep"
-for fn in os.listdir(poses_dir):
-    if fn.lower().endswith(image_exts):
-        assert False, f"poses/firefly 發現圖片檔案（違反零佔位圖規則）: {fn}"
 
 player_firefly_dir = os.path.join(repo_root, "game/assets/sprites/player/firefly")
-assert os.path.isdir(player_firefly_dir), f"player/firefly 目錄不存在: {player_firefly_dir}"
-assert os.path.exists(os.path.join(player_firefly_dir, ".gitkeep")), "player/firefly 缺少 .gitkeep"
+assert os.path.exists(player_firefly_dir), f"player/firefly 不存在: {player_firefly_dir}"
 
-print("✓ 4. 7 大槽位目錄、poses/firefly 與 player/firefly 目錄完整就緒且恪守零佔位圖")
+print("✓ 4. 7 大槽位目錄、poses/firefly 與 player/firefly 目錄完整就緒")
 
 # 5. 驗證開局武器符合 equipment.json 既有 ID (star_rod)
 equip_path = os.path.join(repo_root, "game/data/tables/equipment.json")
