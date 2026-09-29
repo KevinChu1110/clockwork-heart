@@ -4716,8 +4716,8 @@
    "id": "gecko-official-assets",
    "cat": "遊戲",
    "title": "第四十五族巡管守宮(gecko)官方資產套件補齊（官網英雄圖／戰鬥特寫／行走動畫／HUD頭像）",
-   "status": "草稿",
-   "note": "開發完成，自測全綠，送審 sideqa",
+   "status": "測試中",
+   "note": "送審 sideqa",
    "keys": [
     "第四十五族巡管守"
    ]
