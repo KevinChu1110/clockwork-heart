@@ -457,6 +457,12 @@
             "name": "沖壓厚鑄黃銅鎢鋼矮萌底盤",
             "tier": "common",
             "race": "hippo"
+          },
+          {
+            "id": "chassis_mole_milky_polymer_default",
+            "name": "乳白工程塑料合金採礦爪矮萌底盤",
+            "tier": "common",
+            "race": "mole"
           }
         ]
       },
@@ -809,6 +815,12 @@
             "name": "沖壓金屬面甲活動大頜兜帽",
             "tier": "common",
             "race": "hippo"
+          },
+          {
+            "id": "head_mole_orbital_mining_visor_cowl",
+            "name": "防爆聚碳酸酯採礦護目兜帽",
+            "tier": "common",
+            "race": "mole"
           }
         ]
       },
@@ -1103,6 +1115,11 @@
           {
             "id": "key_hippo_dual_valve_handwheel_brass",
             "name": "雙聯閥門輪轂黃銅發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_mole_four_vane_antenna_brass",
+            "name": "四葉微型發條天線鑰匙",
             "tier": "common"
           }
         ]
@@ -1509,6 +1526,12 @@
             "name": "巨輪城重裝抗震高壓鉚釘胸甲",
             "tier": "common",
             "race": "hippo"
+          },
+          {
+            "id": "costume_mole_orbital_sapper_dungarees",
+            "name": "軌道高抗衝擊防護工裝背帶褲",
+            "tier": "common",
+            "race": "mole"
           }
         ]
       },
@@ -1852,6 +1875,12 @@
             "name": "雙聯同軸高壓石英壓力表目鏡",
             "tier": "common",
             "race": "hippo"
+          },
+          {
+            "id": "face_mole_amber_led_mining_visor_lens",
+            "name": "琥珀點陣LED採礦護目目鏡",
+            "tier": "common",
+            "race": "mole"
           }
         ]
       },
@@ -2202,6 +2231,12 @@
             "name": "重閥活塞衝刺長槍",
             "tier": "common",
             "weapon_type": "spear"
+          },
+          {
+            "id": "weapon_mole_orbital_plasma_sledgehammer",
+            "name": "星穹高頻等離子重鎚",
+            "tier": "common",
+            "weapon_type": "hammer"
           }
         ]
       },
@@ -2555,13 +2590,19 @@
             "name": "雙聯蒸氣排氣壓載水箱短尾",
             "tier": "common",
             "race": "hippo"
+          },
+          {
+            "id": "curio_mole_cold_gas_thruster_tail",
+            "name": "圓筒微型冷氣反推噴嘴短尾",
+            "tier": "common",
+            "race": "mole"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 55,
+    "total_races": 56,
     "races": [
       {
         "race_id": "rabbit",
@@ -6485,6 +6526,81 @@
           "portrait_dialogue": "game/assets/sprites/portraits/steamvalve_hippo.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/hippo/{slot_id}/{item_id}.png [既有]"
         }
+      },
+      {
+        "race_id": "mole",
+        "aliases": [
+          "asteroid_mole",
+          "prospector_mole",
+          "orbital_mole",
+          "space_mole",
+          "clockwork_mole"
+        ],
+        "name_zh": "星岩鼴鼠",
+        "name_en": "The Asteroid Mole",
+        "class_archetype": "戰士 (Viking)",
+        "origin_realm": "R07 星穹軌道·外星基地 / Starfall Orbit: Polymer Space Station",
+        "lore_anchor": "巡弋於星穹軌道·外星基地「聚合物太空艙模組」與「高光懸空螢光軌道」，巡檢「太陽能帆板與微型排氣天線」與「太空拼裝維修船塢」，守望「高壓地熱升空彈射井·軌道受壓對接艙」與「垂直磁浮天軌·星穹軌道月台」，維護清理「軌道廢棄排障滑道」，依託防護「失重慣性磁力捕捉網」，並在「高真空抗靜電除塵室」保養除塵，配合宇航機器人隊長·螺栓隊長、太空發條小狗·萊卡波波與軌道站資深工程師·光纖婆婆；通體覆蓋高密度乳白工程塑料板件（ABS/POM）與冷軋鎢鋼骨架、防爆聚碳酸酯採礦護目頭盔、雙聯超導微型雷達葉片耳、軌道高抗衝擊防護工裝背帶褲、琥珀點陣LED採礦護目目鏡、圓筒形微型冷氣反推短尾、四葉微型發條天線鑰匙，雙手持握專屬星穹高頻等離子重鎚，以2.2頭身矮萌微胖體態、四足磁吸防滑工程矽膠吸盤滾足、失重磁吸定點霸體、高頻電漿震盪碎岩見長的高軌空間站採礦工程師與鋼鐵重裝戰士",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (1950s-1970s 古典鐵皮發條掘地鼴鼠與太空探索工程自動偶)",
+          "posture": "2.2 頭身矮萌身軀沉穩屹立，四足磁吸吸盤牢牢吸附地面，雙爪平穩握持等離子重鎚立於身前偏右，背部冷氣噴管微幅排氣，天線發條鑰匙隨秒針每3.0秒跳拍一格勻速旋轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "乳白高密度工程塑料圓形面甲（#FFFDF8 / #38A0FF），前端配備防爆聚碳酸酯採礦護目罩與黃銅微型過濾閥，眼窩處精準中空供 optic_core 穿透",
+          "ears": "頭部兩側對稱安裝雙聯超導微型雷達葉片耳（#FFD028 / #4ED86A），超薄黃銅片與薄荷光纖編織，隨走時脈衝微幅自轉，無生物耳廓",
+          "torso_and_limbs": "高密度工程塑料板件（#FFFDF8）包覆冷軋鎢鋼框架，雙臂為重型沖壓合金多齒採礦爪，下身配置四足圓柱形腿部與防滑耐磨磁吸矽膠吸盤滾足",
+          "tail": "短粗圓筒形高密度塑料冷氣反推排氣噴嘴（#38A0FF / #FF5E8A），末端帶珊瑚粉防撞橡膠環與四孔定向反推微型噴孔",
+          "weapon_system": "單手挽持專屬「星穹高頻等離子重鎚（Orbital Plasma Sledgehammer）」，透明聚碳酸酯鎚身內嵌高頻電漿環，下砸釋放引力震盪，底層掛載 equipment.json 既有 anvil_hammer (tier 1)、iron_cudgel (tier 2) 與 bastion_blade (tier 3)"
+        },
+        "color_palette": {
+          "base": "#FFFDF8 (基底象牙白工程塑料/拋光鋁鎳金屬，面罩基座高光、腹部抗靜電襯板與活動襯墊)",
+          "primary": "#38A0FF (主色多巴胺天藍，太空採礦防護外殼、胸甲塗裝與重鎚鎚頭外罩)",
+          "secondary": "#4ED86A (次色薄荷冷翡翠，雷達天線導光纖維、等離子重鎚聚能環與面罩刻度光圈)",
+          "accent": "#FF5E8A (點綴色多巴胺珊瑚粉，冷氣反推噴嘴防撞環、重鎚過載指示燈與發條軸心按鈕)",
+          "metal": "#FFD028 (金屬天元黃銅金，四葉發條天線鑰匙、採礦爪同軸齒輪與重鎚金屬握柄)",
+          "outline": "#1F1A3A (深藍紫手繪立體外輪廓描邊，確保明亮清爽零泥土髒黑)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_mole.png (品牌形象立牌)",
+              "web/media/hero/char_mole.png (官網英雄展示立繪)",
+              "docs/art/asteroid_mole_concept.png (概念立繪)",
+              "game/assets/sprites/player/mole_idle.png (64x64 待機)",
+              "game/assets/sprites/player/mole_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/mole_idle.png (隊伍待機)",
+              "web/media/hero/mole_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/mole_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/mole_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/mole_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/mole_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/mole_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/mole_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/mole/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/mole.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/mole_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/asteroid_mole.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/mole/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_mole.png (420x840 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/asteroid_mole_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_mole.png (420x840 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/mole_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/mole_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/mole_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/mole_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/mole_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/mole_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/mole_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/mole/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/mole.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/asteroid_mole.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/mole/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -6532,7 +6648,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 55 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 56 種動物素體"
       },
       {
         "slot_id": "weapon",

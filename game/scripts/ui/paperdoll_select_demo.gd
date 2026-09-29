@@ -924,16 +924,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_hippo_thick_cast_brass_default", "name_zh": "沖壓厚鑄黃銅鎢鋼矮萌底盤", "desc": "沖壓厚鑄耐壓黃銅板件包覆冷軋鎢鋼框架，四足圓柱形活塞避震腿與加厚黃銅防滑蹄蓋"}
 		]
+	},
+	"mole": {
+		"id": "mole",
+		"name_zh": "星岩鼴鼠",
+		"name_en": "The Asteroid Mole",
+		"archetype": "戰士 (Viking)",
+		"thumb": "res://assets/sprites/player/showcase/mole_idle_hd.png",
+		"desc": "高軌空間站採礦工程師與鋼鐵重裝戰士，乳白工程塑料合金採礦爪矮萌底盤，雙聯超導微型雷達葉片耳、防護工裝背帶褲與專屬星穹高頻等離子重鎚。",
+		"costumes": [
+			{"id": "costume_mole_orbital_sapper_dungarees", "name_zh": "軌道高抗衝擊防護工裝背帶褲", "desc": "多巴胺天藍高強度防護背帶工裝褲，薄荷綠螢光安全指示帶與黃銅快拆卡扣"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現乳白高密度工程塑料合金採礦爪底盤"}
+		],
+		"chassis": [
+			{"id": "chassis_mole_milky_polymer_default", "name_zh": "乳白工程塑料合金採礦爪矮萌底盤", "desc": "高密度乳白工程塑料板件包覆冷軋鎢鋼框架，重型沖壓合金多齒採礦爪與四足防滑矽膠吸盤"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -1442,6 +1457,7 @@ func confirm_selection() -> void:
 				"camel": gs.player_name = "日晷駱駝"
 				"giraffe": gs.player_name = "鐘塔長頸鹿"
 				"hippo": gs.player_name = "重閥河馬"
+				"mole": gs.player_name = "星岩鼴鼠"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
