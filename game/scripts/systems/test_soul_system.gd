@@ -357,6 +357,101 @@ func _initialize() -> void:
 		else:
 			print("pity panel first-screen OK")
 
+	## == 一鍵配置最佳戰魂 auto_equip_best 測試 ==
+	# 1. 無魂槽門檻
+	gs.weapon_tier = 0
+	ss.ensure_slots()
+	var r_no_slot: Dictionary = ss.auto_equip_best()
+	if bool(r_no_slot.get("ok", true)) or bool(r_no_slot.get("changed", true)):
+		push_error("auto_equip_best tier 0 should deny: %s" % r_no_slot)
+		ok = false
+	else:
+		print("auto_equip_best no slots OK")
+
+	# 2. 空背包
+	gs.weapon_tier = 11
+	ss.ensure_slots()
+	if ss.slot_count() != 3:
+		push_error("tier 11 should have 3 slots, got %d" % ss.slot_count())
+		ok = false
+	gs.souls = []
+	gs.soul_slots = ["", "", ""]
+	var r_empty: Dictionary = ss.auto_equip_best()
+	if bool(r_empty.get("ok", true)) or bool(r_empty.get("changed", true)):
+		push_error("auto_equip_best empty bag should deny: %s" % r_empty)
+		ok = false
+	else:
+		print("auto_equip_best empty bag OK")
+
+	# 3. 4顆以上戰魂，3槽從空到填滿最佳組合
+	# 準備 4 顆不同戰力戰魂：
+	# s1 (神·銳齒, score 9), s2 (稀世·固甲, score 6), s3 (吉·旋簧, score 13), s4 (凡·銳齒, score 2)
+	var s_divine := {
+		"id": "test_divine", "star": "銳齒之魂", "quality": "神", "level": 0, "equipped": false
+	}
+	var s_rare := {
+		"id": "test_rare", "star": "固甲之魂", "quality": "稀世", "level": 0, "equipped": false
+	}
+	var s_good := {
+		"id": "test_good", "star": "旋簧之魂", "quality": "吉", "level": 0, "equipped": false
+	}
+	var s_mortal := {
+		"id": "test_mortal", "star": "銳齒之魂", "quality": "凡", "level": 0, "equipped": false
+	}
+	gs.souls = [s_mortal, s_good, s_rare, s_divine]
+	gs.soul_slots = ["", "", ""]
+
+	var r_fill: Dictionary = ss.auto_equip_best()
+	if not bool(r_fill.get("ok", false)) or not bool(r_fill.get("changed", false)):
+		push_error("auto_equip_best 4 souls fill 3 slots failed: %s" % r_fill)
+		ok = false
+	else:
+		# 分數最高前三名為 s_good(13), s_divine(9), s_rare(6)
+		var equipped_ids: Array = [
+			str(gs.soul_slots[0]), str(gs.soul_slots[1]), str(gs.soul_slots[2])
+		]
+		if not ("test_good" in equipped_ids) or not ("test_divine" in equipped_ids) or not ("test_rare" in equipped_ids):
+			push_error("auto_equip_best slots missing top souls: %s" % equipped_ids)
+			ok = false
+		elif "test_mortal" in equipped_ids:
+			push_error("auto_equip_best should not equip lowest soul: %s" % equipped_ids)
+			ok = false
+		elif ss.bag_souls().size() != 1 or str(ss.bag_souls()[0].get("id", "")) != "test_mortal":
+			push_error("bag should only retain test_mortal, got: %s" % ss.bag_souls())
+			ok = false
+		elif r_fill.get("lines", []).size() != 3:
+			push_error("auto_equip_best should have 3 lines, got: %s" % r_fill.get("lines"))
+			ok = false
+		else:
+			print("auto_equip_best 4 souls fill 3 slots OK lines=\n", r_fill.get("msg"))
+
+	# 4. 已經是最佳配置時再次呼叫，不重複變更
+	var r_again: Dictionary = ss.auto_equip_best()
+	if not bool(r_again.get("ok", false)) or bool(r_again.get("changed", true)):
+		push_error("auto_equip_best when optimal should not change: %s" % r_again)
+		ok = false
+	else:
+		print("auto_equip_best idempotent OK: %s" % r_again.get("msg"))
+
+	# 5. 其中一槽被換成次級魂，呼叫後精準更新該槽
+	# 把槽2強制換成 test_mortal
+	ss.equip_soul("test_mortal", 2)
+	if str(gs.soul_slots[2]) != "test_mortal":
+		push_error("equip_soul test_mortal failed")
+		ok = false
+	var r_swap: Dictionary = ss.auto_equip_best()
+	if not bool(r_swap.get("ok", false)) or not bool(r_swap.get("changed", false)):
+		push_error("auto_equip_best upgrade suboptimal slot failed: %s" % r_swap)
+		ok = false
+	elif r_swap.get("changes", []).size() != 1:
+		push_error("auto_equip_best should only change 1 slot, got %d" % r_swap.get("changes", []).size())
+		ok = false
+	elif str(gs.soul_slots[2]) == "test_mortal":
+		push_error("slot 2 should be replaced with better soul")
+		ok = false
+	else:
+		print("auto_equip_best upgrade single slot OK:\n", r_swap.get("msg"))
+
 	if ok:
 		print("SOUL_OK")
 		quit(0)
