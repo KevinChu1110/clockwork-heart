@@ -463,6 +463,12 @@
             "name": "乳白工程塑料合金採礦爪矮萌底盤",
             "tier": "common",
             "race": "mole"
+          },
+          {
+            "id": "chassis_petaurista_lacquered_bamboo_default",
+            "name": "生漆竹木拼花矮萌底盤",
+            "tier": "common",
+            "race": "petaurista"
           }
         ]
       },
@@ -821,6 +827,12 @@
             "name": "防爆聚碳酸酯採礦護目兜帽",
             "tier": "common",
             "race": "mole"
+          },
+          {
+            "id": "head_petaurista_zen_bamboo_ninja_cowl",
+            "name": "白瓷竹葉耳暗忍面甲兜帽",
+            "tier": "common",
+            "race": "petaurista"
           }
         ]
       },
@@ -1120,6 +1132,11 @@
           {
             "id": "key_mole_four_vane_antenna_brass",
             "name": "四葉微型發條天線鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_petaurista_three_leaf_windchime_brass",
+            "name": "三葉禪韻風鈴黃銅發條鑰匙",
             "tier": "common"
           }
         ]
@@ -1532,6 +1549,12 @@
             "name": "軌道高抗衝擊防護工裝背帶褲",
             "tier": "common",
             "race": "mole"
+          },
+          {
+            "id": "costume_petaurista_folding_glider_wing_harness",
+            "name": "天元竹林摺疊翼膜暗忍胸甲",
+            "tier": "common",
+            "race": "petaurista"
           }
         ]
       },
@@ -1881,6 +1904,12 @@
             "name": "琥珀點陣LED採礦護目目鏡",
             "tier": "common",
             "race": "mole"
+          },
+          {
+            "id": "face_petaurista_obsidian_goggle_cinnabar_mask",
+            "name": "黑曜石英目鏡硃砂忍者面甲",
+            "tier": "common",
+            "race": "petaurista"
           }
         ]
       },
@@ -2237,6 +2266,12 @@
             "name": "星穹高頻等離子重鎚",
             "tier": "common",
             "weapon_type": "hammer"
+          },
+          {
+            "id": "weapon_petaurista_zen_octagonal_bamboo_dart",
+            "name": "竹影八卦旋刃機關鏢",
+            "tier": "common",
+            "weapon_type": "dart"
           }
         ]
       },
@@ -2596,13 +2631,19 @@
             "name": "圓筒微型冷氣反推噴嘴短尾",
             "tier": "common",
             "race": "mole"
+          },
+          {
+            "id": "curio_petaurista_bamboo_weave_rudder_tail",
+            "name": "多節同軸竹編平衡舵短尾",
+            "tier": "common",
+            "race": "petaurista"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 56,
+    "total_races": 57,
     "races": [
       {
         "race_id": "rabbit",
@@ -6600,6 +6641,81 @@
           "portrait_dialogue": "game/assets/sprites/portraits/asteroid_mole.png (384x480) [待產出]",
           "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/mole/{slot_id}/{item_id}.png [既有]"
         }
+      },
+      {
+        "race_id": "petaurista",
+        "aliases": [
+          "stormwing_petaurista",
+          "flying_squirrel",
+          "glider",
+          "zen_petaurista",
+          "clockwork_petaurista"
+        ],
+        "name_zh": "嵐翼鼯鼠",
+        "name_en": "The Stormwing Petaurista",
+        "class_archetype": "忍者 (Ninja)",
+        "origin_realm": "R09 竹影道場·天元竹林 / Bamboo Grove: Zen Puppet Dojo",
+        "lore_anchor": "滑翔於竹影道場·天元竹林「發條天元竹海」與「青石武鬥古道場·演武坪」，穿梭於「山門竹煙茶舍」與「飛瀑木簧水碓」，巡檢「古老重型零件輸送翻斗軌道·竹林終端站」與「晨曦天軌 9 號演武道場月台」，守望「凌雲青竹懸索天梯·道場總站」與「天元雲海風帆渡口」，依託防護「翠竹彈力阻尼編織網」，配合煮茶發條偶·阿茶、天元道場武僧長老·圓空師傅與機關木人樁小師弟·木木；通體覆蓋高溫象牙白瓷面甲與生漆竹木拼花底盤、白瓷竹葉耳暗忍面甲兜帽、雙聯薄竹葉聲納收音耳、多節同軸精密摺疊式漆竹翼膜連桿、多節同軸竹編平衡舵短尾、三葉禪韻風鈴黃銅發條鑰匙，右手單持專屬竹影八卦旋刃機關鏢，以2.2頭身矮萌微胖體態、四肢精工黃銅球形鉸鏈、竹梢微彈看破、高空滑翔翼展身法與破空音叉多段旋鏢牽制見長的東方武道機巧暗忍",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (1930s-1950s 古典鐵皮空中特技滑翔機關偶與東方機巧木偶)",
+          "posture": "2.2 頭身矮萌身軀側身45度輕靈站立，雙足微屈抓地，雙爪捧八卦機關鏢立於胸前，身側摺疊竹翼收攏，舵尾微翹，三葉風鈴發條鑰匙隨秒針每3.0秒跳拍一格勻速自轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "溫潤象牙白瓷圓形面甲（#FFFDF8 / #4ED86A），頭頂配備生漆打磨竹片暗忍兜帽與竹節濾氣孔，眼眶處精準中空供黑曜石英目鏡穿透",
+          "ears": "頭部兩側對稱安裝雙聯薄竹葉聲納收音耳（#4ED86A / #FFD028），天然竹篾壓製薄片配微型黃銅轉軸，隨風顫動調焦，無肉耳",
+          "torso_and_limbs": "打磨椴木骨架外包生漆竹木板件（#4ED86A）與白瓷胸板，雙脅配備多節同軸摺疊竹篾滑翔翼膜連桿，四肢為精工黃銅球形鉸鏈",
+          "tail": "多節同軸打磨薄竹編片平衡舵短尾（#4ED86A / #FFD028），內嵌微型發條鋼絲連桿，末端為扁平橢圓舵板",
+          "weapon_system": "右手單持專屬「竹影八卦旋刃機關鏢（Zen Octagonal Bamboo Shuriken）」，八角沖壓鋼刃嵌竹纖維核心，自帶滾珠軸承與破空音叉孔，底層掛載 equipment.json 既有 mist_darts (tier 1) 與 shadow_chakram (tier 3)"
+        },
+        "color_palette": {
+          "base": "#FFFDF8 (基底象牙白瓷/打磨椴木高光，面甲基座、胸腹白瓷襯板與手爪關節)",
+          "primary": "#4ED86A (主色多巴胺薄荷竹翠綠，竹木外殼、摺疊滑翔翼膜與機關鏢鏢刃塗裝)",
+          "secondary": "#38A0FF (次色多巴胺天藍，暗忍胸甲飾邊、石英目鏡反光與水墨漸層流蘇)",
+          "accent": "#FF5E8A (點綴色多巴胺珊瑚粉/硃砂紅，眼眶忍者面紋、發條鑰匙中心按鈕與飛鏢中心標記)",
+          "metal": "#FFD028 (金屬天元黃銅金，三葉風鈴發條鑰匙、黃銅活動鉸鏈與飛鏢中心軸承)",
+          "outline": "#1F1A3A (深藍紫手繪立體外輪廓描邊，確保明亮清爽零泥土髒黑)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_petaurista.png (品牌形象立牌)",
+              "web/media/hero/char_petaurista.png (官網英雄展示立繪)",
+              "docs/art/stormwing_petaurista_concept.png (概念立繪)",
+              "game/assets/sprites/player/petaurista_idle.png (64x64 待機)",
+              "game/assets/sprites/player/petaurista_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/petaurista_idle.png (隊伍待機)",
+              "web/media/hero/petaurista_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/petaurista_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/petaurista_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/petaurista_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/petaurista_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/petaurista_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/petaurista_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/petaurista/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/petaurista.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/petaurista_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/stormwing_petaurista.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/petaurista/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_petaurista.png (420x840 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/stormwing_petaurista_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_petaurista.png (420x840 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/petaurista_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/petaurista_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/petaurista_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/petaurista_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/petaurista_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/petaurista_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/petaurista_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/petaurista/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/petaurista.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/stormwing_petaurista.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/petaurista/{slot_id}/{item_id}.png [待產出]"
+        }
       }
     ]
   },
@@ -6647,7 +6763,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 56 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 57 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -6669,7 +6785,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "五十七重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩、重閥河馬沖壓厚鑄耐壓黃銅矮萌體態與巨輪城重裝抗震高壓鉚釘胸甲、星岩鼴鼠乳白工程塑料矮萌體態與軌道高抗衝擊防護工裝背帶褲) 由渲染器微調縮放適配"
+        "rule": "五十八重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩、重閥河馬沖壓厚鑄耐壓黃銅矮萌體態與巨輪城重裝抗震高壓鉚釘胸甲、星岩鼴鼠乳白工程塑料矮萌體態與軌道高抗衝擊防護工裝背帶褲、嵐翼鼯鼠溫潤白瓷面甲矮萌體態與天元竹林摺疊翼膜暗忍胸甲) 由渲染器微調縮放適配"
       }
     ]
   },
@@ -6733,7 +6849,8 @@
         "game/assets/sprites/player/paperdoll/camel/",
         "game/assets/sprites/player/paperdoll/giraffe/",
         "game/assets/sprites/player/paperdoll/hippo/",
-        "game/assets/sprites/player/paperdoll/mole/"
+        "game/assets/sprites/player/paperdoll/mole/",
+        "game/assets/sprites/player/paperdoll/petaurista/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
