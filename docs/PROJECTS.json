@@ -4496,8 +4496,8 @@
    "id": "cuttlefish-official-assets",
    "cat": "遊戲",
    "title": "第五十一族墨紋烏賊(cuttlefish)官方資產套件補齊",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "官方資產四件套齊備，通過無頭測試與Vision審查，提交sideqa審查",
    "keys": [
     "第五十一族墨紋烏"
    ]
