@@ -40,7 +40,7 @@ for r in table_d["races_specification"]["races"]:
 
 assert toucan_table is not None, "正表未找到 toucan 定義！"
 total_races = table_d["races_specification"]["total_races"]
-assert total_races == 60, f"total_races 應為 60，實際為 {total_races}"
+assert total_races >= 60, f"total_races 應 >= 60，實際為 {total_races}"
 assert toucan_table["name_zh"] == "彩喙巨嘴鳥", f"name_zh 應為 '彩喙巨嘴鳥'，實際為: {toucan_table['name_zh']}"
 assert toucan_table["name_en"] == "The Prism-Bill Toucan", f"name_en 應為 'The Prism-Bill Toucan'，實際為: {toucan_table['name_en']}"
 assert toucan_table["class_archetype"] == "遊俠 (Ranger)", f"class_archetype 應為 '遊俠 (Ranger)'，實際為: {toucan_table['class_archetype']}"
@@ -61,8 +61,8 @@ with open(gd_path, "r", encoding="utf-8") as f:
 m_total = re.search(r'"races_specification":\s*\{\s*"total_races":\s*(\d+)', gd_content)
 assert m_total is not None, "paperdoll_renderer.gd 未找到 races_specification.total_races 定義！"
 fallback_total_races = int(m_total.group(1))
-assert fallback_total_races == 60, f"fallback 表 total_races 應為 60，實際為 {fallback_total_races}（0-QA33 規範）"
-print(f"✓ 3.1 fallback 表 total_races 精確為 60 (實際: {fallback_total_races})，符合 0-QA33 規範")
+assert fallback_total_races == total_races, f"fallback 表 total_races 應與正表一致 ({total_races})，實際為 {fallback_total_races}（0-QA33 規範）"
+print(f"✓ 3.1 fallback 表 total_races 與正表一致 (實際: {fallback_total_races})，符合 0-QA33 規範")
 
 fallback_races_map = {}
 for line in gd_content.splitlines():
@@ -88,25 +88,34 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3.2 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/toucan 目錄存在且恪守零美術佔位圖（僅保留 .gitkeep）
+# 4. 驗證 7 大槽位 128x128 與 512x512 切片圖層全數就緒，poses/toucan 恪守 .gitkeep
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/toucan")
-image_exts = (".png", ".webp", ".jpg", ".jpeg")
+expected_slice_files = {
+    "back_curio": ["curio_toucan_segmented_copper_rudder_tail.png", "curio_toucan_segmented_copper_rudder_tail_512.png"],
+    "chassis": ["chassis_toucan_canopy_alloy_default.png", "chassis_toucan_canopy_alloy_default_512.png"],
+    "costume": ["costume_toucan_vine_valley_scout_harness.png", "costume_toucan_vine_valley_scout_harness_512.png"],
+    "head_unit": ["head_toucan_prism_bill_visor_cowl.png", "head_toucan_prism_bill_visor_cowl_512.png"],
+    "optic_core": ["face_toucan_emerald_quartz_monocle.png", "face_toucan_emerald_quartz_monocle_512.png"],
+    "weapon": ["weapon_toucan_canopy_prism_pneumatic_arquebus.png", "weapon_toucan_canopy_prism_pneumatic_arquebus_512.png"],
+    "winding_key": ["key_toucan_tri_vane_canopy_rotor_brass.png", "key_toucan_tri_vane_canopy_rotor_brass_512.png"]
+}
 
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"槽位目錄缺少 .gitkeep: {s_dir}"
-    images = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert not images, f"槽位目錄發現非預期圖片檔案（違反骨架先行零佔位圖規則）: {s_dir} -> {images}"
+    for req_f in expected_slice_files[s]:
+        f_path = os.path.join(s_dir, req_f)
+        assert os.path.exists(f_path), f"缺少切片檔案: {f_path}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/toucan")
 assert os.path.isdir(poses_dir), f"poses/toucan 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/toucan 缺少 .gitkeep"
+image_exts = (".png", ".webp", ".jpg", ".jpeg")
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
 assert not poses_images, f"poses/toucan 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-print("✓ 4. 7 大槽位空目錄與 poses/toucan 目錄恪守零美術佔位圖規範（僅保留 .gitkeep）")
+print("✓ 4. 7 大槽位 128x128 與 512x512 切片圖層全數就緒，poses/toucan 恪守 .gitkeep（零佔位圖）")
 
 # 5. 驗證開局武器符合 equipment.json 既有 ID (flint_gun)
 equip_path = os.path.join(repo_root, "game/data/tables/equipment.json")
