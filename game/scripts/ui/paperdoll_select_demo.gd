@@ -1014,16 +1014,61 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_walrus_icebreaker_alloy_default", "name_zh": "深淵耐壓鍍鈦合金底盤", "desc": "耐壓鍍鈦合金骨架配象牙白瓷腹板，厚實金屬腳蹼與防滑橡膠抓握墊"}
 		]
+	},
+	"takin": {
+		"id": "takin",
+		"name_zh": "破竹羚牛",
+		"name_en": "The Bamboo-Cleaving Takin",
+		"archetype": "戰士 (Viking)",
+		"thumb": "res://assets/sprites/player/showcase/takin_idle_hd.png",
+		"desc": "竹影道場天元竹林拓荒戰士，青古銅鑄鐵重裝底盤配象牙白瓷護腹板，黃銅反曲扭角重盔、天元拓荒道袍重肩甲與專屬天元破竹開山巨斧。",
+		"costumes": [
+			{"id": "costume_takin_zen_pioneer_heavy_robe", "name_zh": "天元拓荒道袍重肩甲", "desc": "多巴胺奶油白與落日暖橘防磨滾邊道袍重肩甲，飾天元金黃銅鈕扣與減震閥"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現沖壓青古銅鑄鐵合金底盤與象牙白瓷護腹板"}
+		],
+		"chassis": [
+			{"id": "chassis_takin_bronze_cast_default", "name_zh": "青古銅鑄鐵重裝底盤", "desc": "青古銅鑄鐵合金厚重骨架配象牙白瓷護板，防滑青石蹄與球形轉向鉸鏈"}
+		]
+	},
+	"lemur": {
+		"id": "lemur",
+		"name_zh": "星環狐猴",
+		"name_en": "The Star-Ring Lemur",
+		"archetype": "忍者 (Ninja)",
+		"thumb": "res://assets/sprites/player/showcase/lemur_idle_hd.png",
+		"desc": "星穹軌道外星基地高機動忍者，象牙白工程聚合物底盤配冷光雷達耳罩面甲、琥珀脈衝星穹雙目鏡與專屬星軌脈衝雙鋒短匕。",
+		"costumes": [
+			{"id": "costume_lemur_astro_stealth_harness", "name_zh": "宇航匿蹤輕量安全吊帶胸甲", "desc": "多巴胺天藍金屬編織尼龍與暖橘反光條輕甲，配備四枚微型冷氣向量反推噴嘴"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現象牙白高抗衝擊工程聚合物底盤與導電矽膠防滑墊"}
+		],
+		"chassis": [
+			{"id": "chassis_lemur_orbit_polymer_default", "name_zh": "星穹輕量聚合物高機動底盤", "desc": "象牙白工程塑料外殼配自潤滑尼龍球鉸，雙手掌底與足底嵌導電矽膠吸附墊"}
+		]
+	},
+	"marmot": {
+		"id": "marmot",
+		"name_zh": "碎石旱獺",
+		"name_en": "The Rockbreaker Marmot",
+		"archetype": "武術家 (Monk)",
+		"thumb": "res://assets/sprites/player/showcase/marmot_idle_hd.png",
+		"desc": "荒漠齒輪塚遺忘舊庫破障武術家，沖壓生鐵馬口鐵耐磨底盤配合金鑿齒面罩、雙聯琥珀風鏡與專屬廢土偏心衝壓機關拳套。",
+		"costumes": [
+			{"id": "costume_marmot_scavenger_canvas_harness", "name_zh": "舊庫拾荒加固帆布工裝胸甲", "desc": "耐磨帆布配鍍鋅護胸鐵板，飾以暖金黃與落日暖橘警示斜紋"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現生鐵青灰沖壓耐磨馬口鐵底盤與黃銅抓地鉚釘足底"}
+		],
+		"chassis": [
+			{"id": "chassis_marmot_quarry_tinplate_default", "name_zh": "碎石耐磨馬口鐵底盤", "desc": "沖壓生鐵青灰外殼配奶油米白隔震襯板，冷軋鎢鋼自潤滑球鉸與黃銅抓地鉚釘足底"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -1538,6 +1583,9 @@ func confirm_selection() -> void:
 				"scarab": gs.player_name = "黑曜金龜"
 				"toucan": gs.player_name = "彩喙巨嘴鳥"
 				"walrus": gs.player_name = "破冰海象"
+				"takin": gs.player_name = "破竹羚牛"
+				"lemur": gs.player_name = "星環狐猴"
+				"marmot": gs.player_name = "碎石旱獺"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
