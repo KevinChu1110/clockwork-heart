@@ -445,6 +445,12 @@
             "name": "磨砂馬口鐵雙峰矮萌素體底盤",
             "tier": "common",
             "race": "camel"
+          },
+          {
+            "id": "chassis_giraffe_sanded_tinplate_default",
+            "name": "沖壓馬口鐵胡桃拼花矮萌底盤",
+            "tier": "common",
+            "race": "giraffe"
           }
         ]
       },
@@ -785,6 +791,12 @@
             "name": "日晷晷針折光觀測兜帽",
             "tier": "common",
             "race": "camel"
+          },
+          {
+            "id": "head_giraffe_telescoping_periscope_cowl",
+            "name": "三節黃銅伸縮潛望觀測兜帽",
+            "tier": "common",
+            "race": "giraffe"
           }
         ]
       },
@@ -1069,6 +1081,11 @@
           {
             "id": "key_camel_armillary_dial_brass",
             "name": "黃銅日晷雙環刻度發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_giraffe_three_ring_carillon_brass",
+            "name": "三環鏤空八音音筒發條鑰匙",
             "tier": "common"
           }
         ]
@@ -1463,6 +1480,12 @@
             "name": "廢土觀星學者帆布補丁長袍",
             "tier": "common",
             "race": "camel"
+          },
+          {
+            "id": "costume_giraffe_dawn_herald_woolen_cape",
+            "name": "晨曦禮賓防風呢絨斗篷披肩",
+            "tier": "common",
+            "race": "giraffe"
           }
         ]
       },
@@ -1794,6 +1817,12 @@
             "name": "雙聯光譜分折石英目鏡",
             "tier": "common",
             "race": "camel"
+          },
+          {
+            "id": "face_giraffe_dual_periscope_quartz_lens",
+            "name": "雙聯潛望測距石英凸透鏡",
+            "tier": "common",
+            "race": "giraffe"
           }
         ]
       },
@@ -2132,6 +2161,12 @@
             "name": "廢土日晷折射短杖",
             "tier": "common",
             "weapon_type": "magic"
+          },
+          {
+            "id": "weapon_giraffe_belfry_celestial_bow",
+            "name": "鐘樓天弦複合機關弓",
+            "tier": "common",
+            "weapon_type": "bow"
           }
         ]
       },
@@ -2473,13 +2508,19 @@
             "name": "雙聯散熱油壺金屬駝峰",
             "tier": "common",
             "race": "camel"
+          },
+          {
+            "id": "curio_giraffe_pendulum_bob_link_tail",
+            "name": "微型黃銅鐘擺重錘連桿短尾",
+            "tier": "common",
+            "race": "giraffe"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 53,
+    "total_races": 54,
     "races": [
       {
         "race_id": "rabbit",
@@ -6373,7 +6414,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 53 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 54 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -6395,7 +6436,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "五十三重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍) 由渲染器微調縮放適配"
+        "rule": "五十四重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩) 由渲染器微調縮放適配"
       }
     ]
   },
@@ -6456,7 +6497,8 @@
         "game/assets/sprites/player/paperdoll/caterpillar/",
         "game/assets/sprites/player/paperdoll/cuttlefish/",
         "game/assets/sprites/player/paperdoll/crab/",
-        "game/assets/sprites/player/paperdoll/camel/"
+        "game/assets/sprites/player/paperdoll/camel/",
+        "game/assets/sprites/player/paperdoll/giraffe/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",

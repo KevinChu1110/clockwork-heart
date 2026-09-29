@@ -894,16 +894,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_camel_sanded_tinplate_default", "name_zh": "磨砂馬口鐵雙峰矮萌素體底盤", "desc": "沖壓耐磨馬口鐵板件邊緣暖金黃銅包邊，四足防滑橡膠馬蹄與微型螺旋彈簧"}
 		]
+	},
+	"giraffe": {
+		"id": "giraffe",
+		"name_zh": "鐘塔長頸鹿",
+		"name_en": "The Belfry Giraffe",
+		"archetype": "遊俠 (Ranger)",
+		"thumb": "res://assets/sprites/player/showcase/giraffe_idle_hd.png",
+		"desc": "晨曦小鎮懸吊鐘樓天軌守望遊俠，沖壓馬口鐵打磨胡桃木拼花矮萌底盤，三節黃銅伸縮頸管、晨曦禮賓防風呢絨斗篷與鐘樓天弦複合機關弓。",
+		"costumes": [
+			{"id": "costume_giraffe_dawn_herald_woolen_cape", "name_zh": "晨曦禮賓防風呢絨斗篷披肩", "desc": "多巴胺晨曦暖橘與奶油米白雙色呢絨披肩，黃銅雙聯排扣與精紡金線滾邊"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現沖壓馬口鐵胡桃拼花矮萌底盤"}
+		],
+		"chassis": [
+			{"id": "chassis_giraffe_sanded_tinplate_default", "name_zh": "沖壓馬口鐵胡桃拼花矮萌底盤", "desc": "沖壓薄馬口鐵板件嵌合打磨胡桃木拼花，下身配置粗短圓柱形步進腿與多層階梯式黃銅防滑蹄"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -1410,6 +1425,7 @@ func confirm_selection() -> void:
 				"cuttlefish": gs.player_name = "墨影烏賊"
 				"crab": gs.player_name = "熔砧石蟹"
 				"camel": gs.player_name = "日晷駱駝"
+				"giraffe": gs.player_name = "鐘塔長頸鹿"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
