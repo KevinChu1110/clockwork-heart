@@ -5130,8 +5130,8 @@
    "id": "race67-proposal",
    "cat": "世界觀",
    "title": "第六十七種動物潮汐蝠魟(manta)角色與世界觀設計提案",
-   "status": "開發中",
-   "note": "第六十七種動物潮汐蝠魟(The Tidal Manta)設計提案完成，送審 sideqa (t_3eb6ca82)",
+   "status": "測試中",
+   "note": "提案審查通過，待合入 main (t_3eb6ca82)",
    "keys": [
     "第六十七種動物潮"
    ]
