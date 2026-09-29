@@ -1,5 +1,5 @@
 extends SceneTree
-## 《發條之心》第五十八族嵐翼鼯鼠 (petaurista) 骨架先行建置驗證
+## 《發條之心》第五十八族嵐翼鼯鼠 (petaurista) 骨架先行建置與切片就緒驗證
 ## 執行方式：godot --path game --headless -s res://scripts/art/test_paperdoll_petaurista_skeleton.gd
 
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
@@ -8,7 +8,7 @@ const WardrobeDialog = preload("res://scripts/ui/wardrobe_dialog.gd")
 
 func _initialize() -> void:
 	var ok := true
-	print("=== 開始第五十八族嵐翼鼯鼠 (petaurista) 骨架先行建置測試 ===")
+	print("=== 開始第五十八族嵐翼鼯鼠 (petaurista) 骨架與切片就緒測試 ===")
 
 	# 1. 驗證規格檔 (paperdoll_slots.json) 讀取與種族數
 	var spec: Dictionary = PaperdollRenderer.get_spec()
@@ -76,35 +76,30 @@ func _initialize() -> void:
 		else:
 			print("  ✓ 0-QA30 查驗合格：正表與 fallback 表 petaurista aliases 100%% 對齊一致: %s" % str(fallback_aliases))
 
-	# 2. 驗證 7 大槽位目錄與既有族完全一致，且恪守零美術佔位圖（僅保留 .gitkeep）
+	# 2. 驗證 7 大槽位 128x128 與 512x512 切片圖層全數就緒
 	var expected_slots := ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 	var base_path := "res://assets/sprites/player/paperdoll/petaurista"
-	var image_exts := [".png", ".webp", ".jpg", ".jpeg"]
+	var petaurista_global_dir := ProjectSettings.globalize_path(base_path)
+	var expected_slice_files := {
+		"back_curio": ["curio_petaurista_bamboo_weave_rudder_tail.png", "curio_petaurista_bamboo_weave_rudder_tail_512.png"],
+		"chassis": ["chassis_petaurista_lacquered_bamboo_default.png", "chassis_petaurista_lacquered_bamboo_default_512.png"],
+		"costume": ["costume_petaurista_folding_glider_wing_harness.png", "costume_petaurista_folding_glider_wing_harness_512.png"],
+		"head_unit": ["head_petaurista_zen_bamboo_ninja_cowl.png", "head_petaurista_zen_bamboo_ninja_cowl_512.png"],
+		"optic_core": ["face_petaurista_obsidian_goggle_cinnabar_mask.png", "face_petaurista_obsidian_goggle_cinnabar_mask_512.png"],
+		"weapon": ["weapon_petaurista_zen_octagonal_bamboo_dart.png", "weapon_petaurista_zen_octagonal_bamboo_dart_512.png"],
+		"winding_key": ["key_petaurista_three_leaf_windchime_brass.png", "key_petaurista_three_leaf_windchime_brass_512.png"]
+	}
+	var missing_files: Array[String] = []
 	for sid in expected_slots:
-		var slot_dir := "%s/%s" % [base_path, sid]
-		var global_slot_dir := ProjectSettings.globalize_path(slot_dir)
-		if not DirAccess.dir_exists_absolute(global_slot_dir):
-			push_error("嵐翼鼯鼠槽位目錄不存在: %s" % slot_dir)
-			ok = false
-		else:
-			var gitkeep_file := "%s/.gitkeep" % global_slot_dir
-			if not FileAccess.file_exists(gitkeep_file):
-				push_error("嵐翼鼯鼠槽位目錄缺少 .gitkeep: %s" % slot_dir)
-				ok = false
-			# 檢查無圖片
-			var da := DirAccess.open(global_slot_dir)
-			if da:
-				da.list_dir_begin()
-				var fn := da.get_next()
-				while fn != "":
-					if not da.current_is_dir():
-						for ext in image_exts:
-							if fn.ends_with(ext):
-								push_error("先行骨架發現非預期圖片檔案（違反零佔位圖規則）: %s/%s" % [sid, fn])
-								ok = false
-					fn = da.get_next()
-				da.list_dir_end()
-			print("  ✓ 槽位目錄存在且恪守零佔位圖: %s" % sid)
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [petaurista_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("嵐翼鼯鼠切片檔案缺失: %s" % str(missing_files))
+		ok = false
+	else:
+		print("  ✓ 嵐翼鼯鼠 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 驗證 poses/petaurista 目錄
 	var poses_petaurista := "res://assets/sprites/player/poses/petaurista"
@@ -116,19 +111,7 @@ func _initialize() -> void:
 		if not FileAccess.file_exists("%s/.gitkeep" % global_poses_dir):
 			push_error("poses/petaurista 缺少 .gitkeep")
 			ok = false
-		var da_poses := DirAccess.open(global_poses_dir)
-		if da_poses:
-			da_poses.list_dir_begin()
-			var pfn := da_poses.get_next()
-			while pfn != "":
-				if not da_poses.current_is_dir():
-					for ext in image_exts:
-						if pfn.ends_with(ext):
-							push_error("poses/petaurista 發現非預期圖片檔案: %s" % pfn)
-							ok = false
-				pfn = da_poses.get_next()
-			da_poses.list_dir_end()
-		print("  ✓ poses/petaurista 目錄存在且恪守 .gitkeep 與零佔位圖")
+		print("  ✓ poses/petaurista 目錄存在且恪守 .gitkeep")
 
 	# 3. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog)
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
@@ -139,13 +122,13 @@ func _initialize() -> void:
 		var pet_rdata: Dictionary = races_data["petaurista"]
 		print("  ✓ PaperdollSelectDemo.RACES_DATA 正確納入 petaurista: %s" % pet_rdata.get("name_zh"))
 
-	# 驗證 has_race_assets 防護守衛（因為尚無切片與立繪，必須返回 false 安全隱藏）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("petaurista")
-	if has_assets:
-		push_error("尚未產出切片立繪前，has_race_assets('petaurista') 應為 false（安全隱藏防護守衛）！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('petaurista') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ has_race_assets('petaurista') 正確回傳 false（安全隱藏未解鎖族群，不露出空卡）")
+		print("  ✓ 防護守衛生效：has_race_assets('petaurista') 正確回傳 true（展示正常）")
 
 	var filter_found := false
 	for rf in WardrobeDialog.RACE_FILTER_OPTIONS:
@@ -186,7 +169,7 @@ func _initialize() -> void:
 		print("  • 槽位 %s 解析 fallback 路徑: %s" % [sid, path_res])
 
 	if ok:
-		print("\n🎉 第五十八族嵐翼鼯鼠 (petaurista) 骨架先行建置測試全部 PASS！")
+		print("\n🎉 第五十八族嵐翼鼯鼠 (petaurista) 骨架先行建置與切片就緒測試全部 PASS！")
 		print("PAPERDOLL_PETAURISTA_SKELETON_OK")
 		quit(0)
 	else:

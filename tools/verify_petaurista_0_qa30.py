@@ -88,17 +88,27 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3.2 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/petaurista 目錄存在且恪守零美術佔位圖（僅保留 .gitkeep）
+# 4. 驗證 7 大槽位切片已全數就緒 (128x128 與 512x512) 且 poses/petaurista 恪守零美術佔位圖
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/petaurista")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
 
+expected_slice_files = {
+    "back_curio": ["curio_petaurista_bamboo_weave_rudder_tail.png", "curio_petaurista_bamboo_weave_rudder_tail_512.png"],
+    "chassis": ["chassis_petaurista_lacquered_bamboo_default.png", "chassis_petaurista_lacquered_bamboo_default_512.png"],
+    "costume": ["costume_petaurista_folding_glider_wing_harness.png", "costume_petaurista_folding_glider_wing_harness_512.png"],
+    "head_unit": ["head_petaurista_zen_bamboo_ninja_cowl.png", "head_petaurista_zen_bamboo_ninja_cowl_512.png"],
+    "optic_core": ["face_petaurista_obsidian_goggle_cinnabar_mask.png", "face_petaurista_obsidian_goggle_cinnabar_mask_512.png"],
+    "weapon": ["weapon_petaurista_zen_octagonal_bamboo_dart.png", "weapon_petaurista_zen_octagonal_bamboo_dart_512.png"],
+    "winding_key": ["key_petaurista_three_leaf_windchime_brass.png", "key_petaurista_three_leaf_windchime_brass_512.png"]
+}
+
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"槽位缺少 .gitkeep: {s_dir}"
-    slot_images = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert not slot_images, f"槽位 {s} 發現非預期圖片檔案（違反零佔位圖規則）: {slot_images}"
+    for req_f in expected_slice_files.get(s, []):
+        fp = os.path.join(s_dir, req_f)
+        assert os.path.exists(fp), f"槽位切片缺失: {fp}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/petaurista")
 assert os.path.isdir(poses_dir), f"poses/petaurista 目錄不存在: {poses_dir}"
@@ -106,7 +116,7 @@ assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/petaurista �
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
 assert not poses_images, f"poses/petaurista 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-print("✓ 4. 7 大槽位與 poses/petaurista 目錄存在且恪守零美術佔位圖規範（僅保留 .gitkeep）")
+print("✓ 4. 7 大槽位 128x128 與 512x512 切片全數就緒，poses/petaurista 目錄恪守零美術佔位圖規範（僅保留 .gitkeep）")
 
 # 5. 驗證開局武器符合 equipment.json 既有 ID (mist_darts)
 equip_path = os.path.join(repo_root, "game/data/tables/equipment.json")
