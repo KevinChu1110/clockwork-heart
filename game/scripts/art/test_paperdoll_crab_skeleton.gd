@@ -1,5 +1,5 @@
 extends SceneTree
-## 《發條之心》第五十二族熔砧石蟹 (crab) 骨架先行建置驗證
+## 《發條之心》第五十二族熔砧石蟹 (crab) 骨架與切片就緒驗證
 ## 執行方式：godot --path game --headless -s res://scripts/art/test_paperdoll_crab_skeleton.gd
 
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
@@ -8,7 +8,7 @@ const WardrobeDialog = preload("res://scripts/ui/wardrobe_dialog.gd")
 
 func _initialize() -> void:
 	var ok := true
-	print("=== 開始第五十二族熔砧石蟹 (crab) 骨架先行建置測試 ===")
+	print("=== 開始第五十二族熔砧石蟹 (crab) 骨架與切片就緒測試 ===")
 
 	# 1. 驗證規格檔 (paperdoll_slots.json) 讀取與種族數
 	var spec: Dictionary = PaperdollRenderer.get_spec()
@@ -76,35 +76,30 @@ func _initialize() -> void:
 		else:
 			print("  ✓ 0-QA30 查驗合格：正表與 fallback 表 crab aliases 100%% 對齊一致: %s" % str(fallback_aliases))
 
-	# 2. 驗證 7 大槽位目錄與既有族完全一致，且恪守零美術佔位圖（僅保留 .gitkeep）
+	# 2. 驗證 7 大槽位美術切片均已就緒 (128x128 與 512x512)
 	var expected_slots := ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 	var base_path := "res://assets/sprites/player/paperdoll/crab"
-	var image_exts := [".png", ".webp", ".jpg", ".jpeg"]
+	var crab_global_dir := ProjectSettings.globalize_path(base_path)
+	var missing_files: Array[String] = []
+	var expected_slice_files := {
+		"back_curio": ["curio_crab_pneumatic_exhaust_chimney.png", "curio_crab_pneumatic_exhaust_chimney_512.png"],
+		"chassis": ["chassis_crab_molten_iron_default.png", "chassis_crab_molten_iron_default_512.png"],
+		"costume": ["costume_crab_furnace_sapper_cuirass.png", "costume_crab_furnace_sapper_cuirass_512.png"],
+		"head_unit": ["head_crab_periscope_visor_cowl.png", "head_crab_periscope_visor_cowl_512.png"],
+		"optic_core": ["face_crab_dual_gauge_convex_lens.png", "face_crab_dual_gauge_convex_lens_512.png"],
+		"weapon": ["weapon_crab_obsidian_stamping_fist.png", "weapon_crab_obsidian_stamping_fist_512.png"],
+		"winding_key": ["key_crab_quad_flue_crucible_t_bar.png", "key_crab_quad_flue_crucible_t_bar_512.png"]
+	}
 	for sid in expected_slots:
-		var slot_dir := "%s/%s" % [base_path, sid]
-		var global_slot_dir := ProjectSettings.globalize_path(slot_dir)
-		if not DirAccess.dir_exists_absolute(global_slot_dir):
-			push_error("熔砧石蟹槽位目錄不存在: %s" % slot_dir)
-			ok = false
-		else:
-			var gitkeep_file := "%s/.gitkeep" % global_slot_dir
-			if not FileAccess.file_exists(gitkeep_file):
-				push_error("熔砧石蟹槽位目錄缺少 .gitkeep: %s" % slot_dir)
-				ok = false
-			# 檢查無圖片
-			var da := DirAccess.open(global_slot_dir)
-			if da:
-				da.list_dir_begin()
-				var fn := da.get_next()
-				while fn != "":
-					if not da.current_is_dir():
-						for ext in image_exts:
-							if fn.ends_with(ext):
-								push_error("先行骨架發現非預期圖片檔案（違反零佔位圖規則）: %s/%s" % [sid, fn])
-								ok = false
-					fn = da.get_next()
-				da.list_dir_end()
-			print("  ✓ 槽位目錄存在且恪守零佔位圖: %s" % sid)
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [crab_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("熔砧石蟹切片檔案缺失: %s" % str(missing_files))
+		ok = false
+	else:
+		print("  ✓ 熔砧石蟹 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 驗證 poses/crab 目錄
 	var poses_crab := "res://assets/sprites/player/poses/crab"
@@ -127,13 +122,13 @@ func _initialize() -> void:
 		var crab_rdata: Dictionary = races_data["crab"]
 		print("  ✓ PaperdollSelectDemo.RACES_DATA 正確納入 crab: %s" % crab_rdata.get("name_zh"))
 
-	# 驗證 has_race_assets 防護守衛（因為尚無切片與立繪，必須返回 false 安全隱藏）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("crab")
-	if has_assets:
-		push_error("尚未產出切片立繪前，has_race_assets('crab') 應為 false（安全隱藏防護守衛）！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('crab') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ has_race_assets('crab') 正確回傳 false（安全隱藏未解鎖族群，不露出空卡）")
+		print("  ✓ 防護守衛生效：has_race_assets('crab') 正確回傳 true（展示正常）")
 
 	var filter_found := false
 	for rf in WardrobeDialog.RACE_FILTER_OPTIONS:
@@ -174,9 +169,9 @@ func _initialize() -> void:
 		print("  • 槽位 %s 解析 fallback 路徑: %s" % [sid, path_res])
 
 	if ok:
-		print("\n🎉 第五十二族熔砧石蟹 (crab) 骨架先行建置測試全部 PASS！")
+		print("\n🎉 第五十二族熔砧石蟹 (crab) 骨架與切片就緒測試全部 PASS！")
 		print("PAPERDOLL_CRAB_SKELETON_OK")
 		quit(0)
 	else:
-		printerr("\n❌ 第五十二族熔砧石蟹 (crab) 骨架先行建置測試有失敗項目！")
+		printerr("\n❌ 第五十二族熔砧石蟹 (crab) 骨架與切片就緒測試有失敗項目！")
 		quit(1)
