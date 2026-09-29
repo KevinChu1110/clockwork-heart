@@ -822,6 +822,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"mole": "anvil_hammer",
 	"petaurista": "mist_darts",
 	"lynx": "hunt_claw",
+	"scarab": "shard_focus",
 }
 
 
@@ -889,6 +890,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"mole": default_name = "星岩鼴鼠"
 		"petaurista": default_name = "嵐翼鼯鼠"
 		"lynx": default_name = "提線猞猁"
+		"scarab": default_name = "黑曜金龜"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
