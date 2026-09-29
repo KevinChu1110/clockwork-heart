@@ -143,7 +143,7 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		if ResourceLoader.exists(common_slice_clean) or FileAccess.file_exists(common_slice_clean):
 			return common_slice_clean
 		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限四十四重大正式族系）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan"]
 		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
 			for other in all_races:
 				if str(other) == rid:
@@ -362,6 +362,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "chassis_lynx_marionette_walnut_default"
 			elif race == "scarab":
 				return "chassis_scarab_obsidian_forge_default"
+			elif race == "toucan":
+				return "chassis_toucan_canopy_alloy_default"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -480,6 +482,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_lynx_bazaar_marionette_tufted_cowl"
 			elif race == "scarab":
 				return "head_scarab_quenched_obsidian_cowl"
+			elif race == "toucan":
+				return "head_toucan_prism_bill_visor_cowl"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -590,6 +594,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_lynx_twin_ring_chime_brass"
 			elif race == "scarab":
 				return "key_scarab_crucible_cross_fire_brass"
+			elif race == "toucan":
+				return "key_toucan_tri_vane_canopy_rotor_brass"
 			elif race == "fox":
 				return ""
 			return "key_classic_brass"
@@ -710,6 +716,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_lynx_marionette_acrobat_vest"
 			elif race == "scarab":
 				return "costume_scarab_crucible_artisan_apron"
+			elif race == "toucan":
+				return "costume_toucan_vine_valley_scout_harness"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -822,6 +830,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "face_lynx_emerald_quartz_eyemask"
 			elif race == "scarab":
 				return "face_scarab_amber_crystal_visor"
+			elif race == "toucan":
+				return "face_toucan_emerald_quartz_monocle"
 			elif race == "boar":
 				return "core_molten_crimson"
 			return "core_cyan_emerald"
@@ -942,6 +952,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "weapon_lynx_dawn_marionette_steel_claws"
 			elif race == "scarab":
 				return "weapon_scarab_crucible_obsidian_focus"
+			elif race == "toucan":
+				return "weapon_toucan_canopy_prism_pneumatic_arquebus"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -1060,6 +1072,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_lynx_pendulum_bobtail_balance"
 			elif race == "scarab":
 				return "curio_scarab_twin_vent_exhaust_tail"
+			elif race == "toucan":
+				return "curio_toucan_segmented_copper_rudder_tail"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -1307,7 +1321,7 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
@@ -1872,7 +1886,7 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 59,
+			"total_races": 60,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
@@ -1932,7 +1946,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "mole", "aliases": ["asteroid_mole", "prospector_mole", "orbital_mole", "space_mole", "clockwork_mole"], "name_zh": "星岩鼴鼠", "name_en": "The Asteroid Mole", "class_archetype": "戰士 (Viking)"},
 				{"race_id": "petaurista", "aliases": ["stormwing_petaurista", "flying_squirrel", "glider", "zen_petaurista", "clockwork_petaurista"], "name_zh": "嵐翼鼯鼠", "name_en": "The Stormwing Petaurista", "class_archetype": "忍者 (Ninja)"},
 				{"race_id": "lynx", "aliases": ["marionette_lynx", "clockwork_lynx", "bobcat", "bazaar_lynx", "dawn_lynx"], "name_zh": "提線猞猁", "name_en": "The Marionette Lynx", "class_archetype": "武術家 (Monk)"},
-				{"race_id": "scarab", "aliases": ["obsidian_scarab", "crucible_scarab", "forge_beetle", "clockwork_scarab", "volcano_scarab"], "name_zh": "黑曜金龜", "name_en": "The Obsidian Scarab", "class_archetype": "法師 (Mage)"}
+				{"race_id": "scarab", "aliases": ["obsidian_scarab", "crucible_scarab", "forge_beetle", "clockwork_scarab", "volcano_scarab"], "name_zh": "黑曜金龜", "name_en": "The Obsidian Scarab", "class_archetype": "法師 (Mage)"},
+				{"race_id": "toucan", "aliases": ["prism_bill_toucan", "canopy_toucan", "clockwork_toucan", "emerald_toucan", "prism_toucan"], "name_zh": "彩喙巨嘴鳥", "name_en": "The Prism-Bill Toucan", "class_archetype": "遊俠 (Ranger)"}
 			]
 		}
 	}

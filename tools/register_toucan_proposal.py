@@ -15,18 +15,18 @@ TOUCAN_DEFAULT_ITEMS = {
         "race": "toucan"
     },
     "head_unit": {
-        "id": "head_toucan_prism_bill_brass_cowl",
+        "id": "head_toucan_prism_bill_visor_cowl",
         "name": "彩晶折光巨嘴面罩",
         "tier": "common",
         "race": "toucan"
     },
     "winding_key": {
-        "id": "key_toucan_canopy_rotor_brass",
+        "id": "key_toucan_tri_vane_canopy_rotor_brass",
         "name": "三葉林冠旋翼黃銅發條鑰匙",
         "tier": "common"
     },
     "costume": {
-        "id": "costume_toucan_vine_scout_harness",
+        "id": "costume_toucan_vine_valley_scout_harness",
         "name": "蔓谷探險巡林獵裝",
         "tier": "common",
         "race": "toucan"
@@ -38,7 +38,7 @@ TOUCAN_DEFAULT_ITEMS = {
         "race": "toucan"
     },
     "weapon": {
-        "id": "weapon_toucan_canopy_prism_arquebus",
+        "id": "weapon_toucan_canopy_prism_pneumatic_arquebus",
         "name": "林冠聚能氣動銃",
         "tier": "common",
         "weapon_type": "gun"
@@ -128,5 +128,63 @@ TOUCAN_RACE_SPEC = {
     }
 }
 
-if __name__ == "__main__":
-    print("Toucan proposal registered specification ready.")
+for file_path in TARGET_FILES:
+    print(f"Processing {file_path}...")
+    with open(file_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # 1. Update default_items in slots_architecture.slots
+    slots = data["slots_architecture"]["slots"]
+    for s in slots:
+        slot_id = s["slot_id"]
+        if slot_id in TOUCAN_DEFAULT_ITEMS:
+            item = TOUCAN_DEFAULT_ITEMS[slot_id]
+            if "default_items" not in s:
+                s["default_items"] = []
+            existing_ids = [x["id"] for x in s["default_items"]]
+            if item["id"] not in existing_ids:
+                s["default_items"].append(item)
+                print(f"  Added {item['id']} to slot {slot_id} default_items")
+
+    # 2. Update races_specification
+    races_spec = data["races_specification"]
+    races = races_spec["races"]
+    existing_race_ids = [r["race_id"] for r in races]
+    if "toucan" not in existing_race_ids:
+        races.append(TOUCAN_RACE_SPEC)
+        print("  Added toucan to races_specification.races")
+    races_spec["total_races"] = 60
+
+    # 3. Update interchangeability_and_compatibility
+    compat = data.get("interchangeability_and_compatibility", {})
+    univ = compat.get("universal_slots", [])
+    for u in univ:
+        if u.get("slot_id") == "winding_key":
+            u["rule"] = "上背發條插座公規化，所有鑰匙款式適用於 60 種動物素體"
+    adapted = compat.get("race_adapted_slots", [])
+    for a in adapted:
+        if a.get("slot_id") == "costume":
+            old_rule = a.get("rule", "")
+            if "彩喙巨嘴鳥" not in old_rule:
+                new_rule = old_rule.replace("六十重大種族", "六十一重大種族")
+                if "黑曜金龜高耐熱鑄鐵底盤與赤焰熔爐隔熱工匠護裙" in new_rule:
+                    new_rule = new_rule.replace(
+                        "黑曜金龜高耐熱鑄鐵底盤與赤焰熔爐隔熱工匠護裙)",
+                        "黑曜金龜高耐熱鑄鐵底盤與赤焰熔爐隔熱工匠護裙、彩喙巨嘴鳥輕量化合金底盤與蔓谷探險巡林獵裝)"
+                    )
+                a["rule"] = new_rule
+                print("  Updated costume rule in race_adapted_slots")
+
+    # 4. Update directory_structure_blueprint
+    dir_bp = data.get("directory_structure_blueprint", {}).get("sub_directories", {})
+    races_dirs = dir_bp.get("races", [])
+    toucan_dir = "game/assets/sprites/player/paperdoll/toucan/"
+    if toucan_dir not in races_dirs:
+        races_dirs.append(toucan_dir)
+        print(f"  Added {toucan_dir} to sub_directories.races")
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    print(f"Successfully updated {file_path}")
+
+print("All paperdoll_slots.json updates completed successfully.")
