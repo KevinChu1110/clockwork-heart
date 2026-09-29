@@ -4946,8 +4946,8 @@
    "id": "walrus-combat-poses",
    "cat": "遊戲",
    "title": "第六十二族破冰海象(walrus)六大戰鬥姿態補齊",
-   "status": "測試中",
-   "note": "六大戰鬥姿態雙規格完成，無頭測試全綠，待 sideqa 審查 (t_9e248270)",
+   "status": "已上線",
+   "note": "六大戰鬥姿態雙規格過審已合main",
    "keys": [
     "第六十二族破冰海"
    ]
