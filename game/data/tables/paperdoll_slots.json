@@ -451,6 +451,12 @@
             "name": "沖壓馬口鐵胡桃拼花矮萌底盤",
             "tier": "common",
             "race": "giraffe"
+          },
+          {
+            "id": "chassis_hippo_thick_cast_brass_default",
+            "name": "沖壓厚鑄黃銅鎢鋼矮萌底盤",
+            "tier": "common",
+            "race": "hippo"
           }
         ]
       },
@@ -797,6 +803,12 @@
             "name": "三節黃銅伸縮潛望觀測兜帽",
             "tier": "common",
             "race": "giraffe"
+          },
+          {
+            "id": "head_hippo_ballast_safety_valve_cowl",
+            "name": "沖壓金屬面甲活動大頜兜帽",
+            "tier": "common",
+            "race": "hippo"
           }
         ]
       },
@@ -1086,6 +1098,11 @@
           {
             "id": "key_giraffe_three_ring_carillon_brass",
             "name": "三環鏤空八音音筒發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_hippo_dual_valve_handwheel_brass",
+            "name": "雙聯閥門輪轂黃銅發條鑰匙",
             "tier": "common"
           }
         ]
@@ -1486,6 +1503,12 @@
             "name": "晨曦禮賓防風呢絨斗篷披肩",
             "tier": "common",
             "race": "giraffe"
+          },
+          {
+            "id": "costume_hippo_greatcog_high_pressure_cuirass",
+            "name": "巨輪城重裝抗震高壓鉚釘胸甲",
+            "tier": "common",
+            "race": "hippo"
           }
         ]
       },
@@ -1823,6 +1846,12 @@
             "name": "雙聯潛望測距石英凸透鏡",
             "tier": "common",
             "race": "giraffe"
+          },
+          {
+            "id": "face_hippo_dual_pressure_gauge_quartz_lens",
+            "name": "雙聯同軸高壓石英壓力表目鏡",
+            "tier": "common",
+            "race": "hippo"
           }
         ]
       },
@@ -2167,6 +2196,12 @@
             "name": "鐘樓天弦複合機關弓",
             "tier": "common",
             "weapon_type": "bow"
+          },
+          {
+            "id": "weapon_hippo_steamvalve_piston_heavy_lance",
+            "name": "重閥活塞衝刺長槍",
+            "tier": "common",
+            "weapon_type": "spear"
           }
         ]
       },
@@ -2514,13 +2549,19 @@
             "name": "微型黃銅鐘擺重錘連桿短尾",
             "tier": "common",
             "race": "giraffe"
+          },
+          {
+            "id": "curio_hippo_dual_steam_exhaust_ballast_tail",
+            "name": "雙聯蒸氣排氣壓載水箱短尾",
+            "tier": "common",
+            "race": "hippo"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 54,
+    "total_races": 55,
     "races": [
       {
         "race_id": "rabbit",
@@ -6330,16 +6371,18 @@
         },
         "asset_naming_conventions": {
           "status": {
-            "existing": [],
-            "pending": [
-              "branding/char_giraffe.png (品牌形象立牌)",
-              "web/media/hero/char_giraffe.png (官網英雄展示立繪)",
-              "docs/art/belfry_giraffe_concept.png (概念立繪)",
+            "existing": [
               "game/assets/sprites/player/giraffe_idle.png (64x64 待機)",
               "game/assets/sprites/player/giraffe_idle_x3.png (128x128 待機)",
               "game/assets/sprites/player/party/giraffe_idle.png (隊伍待機)",
               "web/media/hero/giraffe_idle.png (128x128 官網待機)",
               "game/assets/sprites/player/showcase/giraffe_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/paperdoll/giraffe/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ],
+            "pending": [
+              "branding/char_giraffe.png (品牌形象立牌)",
+              "web/media/hero/char_giraffe.png (官網英雄展示立繪)",
+              "docs/art/belfry_giraffe_concept.png (概念立繪)",
               "game/assets/sprites/player/giraffe_battle.png (128x128 戰鬥特寫姿態)",
               "game/assets/sprites/player/giraffe_battle_512.png (512x512 戰鬥特寫姿態)",
               "game/assets/sprites/player/giraffe_walk_{0..3}.png (64x64 行走動畫)",
@@ -6348,24 +6391,173 @@
               "game/assets/sprites/player/poses/giraffe/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
               "game/assets/sprites/portraits/giraffe.png (HUD 戰鬥頭像)",
               "game/assets/sprites/portraits/giraffe_512.png (512x512 HUD 戰鬥頭像)",
-              "game/assets/sprites/portraits/belfry_giraffe.png (對話半身像)",
-              "game/assets/sprites/player/paperdoll/giraffe/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+              "game/assets/sprites/portraits/belfry_giraffe.png (對話半身像)"
             ]
           },
           "branding_standee": "branding/char_giraffe.png (420x840 -> 1344x1680) [待產出]",
           "branding_concept_art": "docs/art/belfry_giraffe_concept.png (928x1152) [待產出]",
           "web_hero": "web/media/hero/char_giraffe.png (420x840 -> 1344x1680) [待產出]",
-          "web_preview": "web/media/hero/giraffe_idle.png (128x128) [待產出]",
-          "game_sprite_idle_base": "game/assets/sprites/player/giraffe_idle.png (64x64) [待產出]",
-          "game_sprite_idle_hi": "game/assets/sprites/player/giraffe_idle_x3.png (128x128) [待產出]",
-          "game_sprite_party_idle": "game/assets/sprites/player/party/giraffe_idle.png (128x128) [待產出]",
+          "web_preview": "web/media/hero/giraffe_idle.png (128x128) [既有]",
+          "game_sprite_idle_base": "game/assets/sprites/player/giraffe_idle.png (64x64) [既有]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/giraffe_idle_x3.png (128x128) [既有]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/giraffe_idle.png (128x128) [既有]",
           "game_sprite_battle": "game/assets/sprites/player/giraffe_battle.png (128x128) [待產出]",
           "game_sprite_walk": "game/assets/sprites/player/giraffe_walk_{0..3}.png (64x64) [待產出]",
           "game_sprite_walk_hi": "game/assets/sprites/player/giraffe_walk_{0..3}_x3.png (128x128) [待產出]",
           "game_action_poses": "game/assets/sprites/player/poses/giraffe/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
           "portrait_hud": "game/assets/sprites/portraits/giraffe.png (128x128) [待產出]",
           "portrait_dialogue": "game/assets/sprites/portraits/belfry_giraffe.png (384x480) [待產出]",
-          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/giraffe/{slot_id}/{item_id}.png [待產出]"
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/giraffe/{slot_id}/{item_id}.png [既有]"
+        }
+      },
+      {
+        "race_id": "hippo",
+        "aliases": [
+          "steamvalve_hippo",
+          "ballast_hippo",
+          "pressure_hippo",
+          "greatcog_hippo",
+          "clockwork_hippo"
+        ],
+        "name_zh": "重閥河馬",
+        "name_en": "The Steamvalve Hippo",
+        "class_archetype": "騎士 (Knight)",
+        "origin_realm": "R04 黃銅都市·巨輪城 / Brass Metropolis: The Great Cog City",
+        "lore_anchor": "穿行於黃銅都市·巨輪城「摩天齒輪工坊群」、「高壓蒸氣管道網」與「高架重軌引橋·巨輪城站」，巡檢「自律工廠與天街吊橋」與「中央蒸氣沐浴池」，駐守防護「磁吸緩衝防墜鋼網」，配合總工技師·銅齒、管道巡檢員·小鎢與老鐘錶匠·星擺；通體覆蓋沖壓厚鑄黃銅板件與冷軋鎢鋼骨架、雙聯旋轉式微型氣壓安全洩壓閥門耳、雙聯同軸高壓石英壓力表目鏡、巨輪城重裝抗震高壓鉚釘胸甲、雙聯蒸氣排氣壓載水箱、雙聯閥門輪轂黃銅發條鑰匙，雙手持握專屬重閥活塞衝刺長槍，以2.2頭身矮萌微胖體態、四足活塞減震金屬蹄、蒸氣超壓衝程、沉穩低重心防禦反震見長的巨輪城防衛者與鋼鐵壁壘騎士",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (1930s-1950s 古典鐵皮發條河馬自動機與維多利亞蒸氣管道洩壓自動檢測偶)",
+          "posture": "2.2 頭身矮萌身軀沉穩屹立，四足活塞蹄扎實抓地，右手單手持長槍斜指前方，雙耳微型洩壓閥門伴隨秒針每1.5秒跳動一格規律旋轉排氣，雙聯閥門手輪發條鑰匙隨走時均勻自轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "沖壓厚鑄黃銅面甲（#FFFDF8 / #FFA010）配可活動式金屬大頜，內置黃銅冷卻進氣散熱隔柵，眼窩處精準沖孔供 optic_core 穿透",
+          "ears": "頭部頂端雙聯旋轉式微型黃銅安全洩壓閥（#FFD028），外圈帶有珊瑚粉超壓警示環，隨走時排氣自轉，無生物耳廓",
+          "torso_and_limbs": "沖壓厚鑄耐壓黃銅板件（#FFA010）包覆冷軋鎢鋼框架，下身配置四足圓柱形活塞避震腿與加厚黃銅防滑蹄蓋",
+          "tail": "圓柱形微型黃銅壓載水箱與錐形排水閥短尾（#FFA010 / #FFD028），以固定重量提供低重心衝鋒配重平衡",
+          "weapon_system": "單手挽持專屬「重閥活塞衝刺長槍（Steamvalve Piston Heavy Lance）」，槍身內置雙腔往復活塞，突刺時釋放高壓蒸氣二次加速，底層掛載 equipment.json 既有 knight_pike (tier 1) 與 ash_spear (tier 2/3)"
+        },
+        "color_palette": {
+          "base": "#FFFDF8 (基底象牙白陶瓷釉/拋光馬口鐵，面部前頜高光、腹部抗震襯板與活動襯墊)",
+          "primary": "#FFA010 (主色多巴胺巨輪暖橘，厚鑄黃銅外殼、胸甲塗裝與長槍配重段)",
+          "secondary": "#4ED86A (次色薄荷冷翡翠，眼部壓力表盤背光、長槍導壓液發光線與瞄準刻度)",
+          "accent": "#FF5E8A (點綴色多巴胺珊瑚粉，洩壓閥安全指示環、胸甲應急拉閥與排風標籤)",
+          "metal": "#FFD028 (金屬天元黃銅金，長槍主槍管、發條閥門手輪鑰匙、四足活塞管與面頰齒輪)",
+          "outline": "#1F1A3A (深藍紫手繪立體外輪廓描邊，確保明亮清爽零泥土髒黑)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_hippo.png (品牌形象立牌)",
+              "web/media/hero/char_hippo.png (官網英雄展示立繪)",
+              "docs/art/steamvalve_hippo_concept.png (概念立繪)",
+              "game/assets/sprites/player/hippo_idle.png (64x64 待機)",
+              "game/assets/sprites/player/hippo_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/hippo_idle.png (隊伍待機)",
+              "web/media/hero/hippo_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/hippo_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/hippo_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/hippo_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/hippo_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/hippo_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/hippo_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/hippo/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/hippo.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/hippo_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/steamvalve_hippo.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/hippo/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_hippo.png (420x840 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/steamvalve_hippo_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_hippo.png (420x840 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/hippo_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/hippo_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/hippo_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/hippo_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/hippo_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/hippo_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/hippo_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/hippo/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/hippo.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/steamvalve_hippo.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/hippo/{slot_id}/{item_id}.png [待產出]"
+        }
+      },
+      {
+        "race_id": "mole",
+        "aliases": [
+          "asteroid_mole",
+          "prospector_mole",
+          "orbital_mole",
+          "space_mole",
+          "clockwork_mole"
+        ],
+        "name_zh": "星岩鼴鼠",
+        "name_en": "The Asteroid Mole",
+        "class_archetype": "戰士 (Viking)",
+        "origin_realm": "R07 星穹軌道·外星基地 / Starfall Orbit: Polymer Space Station",
+        "lore_anchor": "巡弋於星穹軌道·外星基地「聚合物太空艙模組」與「高光懸空螢光軌道」，巡檢「太陽能帆板與微型排氣天線」與「太空拼裝維修船塢」，守望「高壓地熱升空彈射井·軌道受壓對接艙」與「垂直磁浮天軌·星穹軌道月台」，維護清理「軌道廢棄排障滑道」，依託防護「失重慣性磁力捕捉網」，並在「高真空抗靜電除塵室」保養除塵，配合宇航機器人隊長·螺栓隊長、太空發條小狗·萊卡波波與軌道站資深工程師·光纖婆婆；通體覆蓋高密度乳白工程塑料板件（ABS/POM）與冷軋鎢鋼骨架、防爆聚碳酸酯採礦護目頭盔、雙聯超導微型雷達葉片耳、軌道高抗衝擊防護工裝背帶褲、琥珀點陣LED採礦護目目鏡、圓筒形微型冷氣反推短尾、四葉微型發條天線鑰匙，雙手持握專屬星穹高頻等離子重鎚，以2.2頭身矮萌微胖體態、四足磁吸防滑工程矽膠吸盤滾足、失重磁吸定點霸體、高頻電漿震盪碎岩見長的高軌空間站採礦工程師與鋼鐵重裝戰士",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (1950s-1970s 古典鐵皮發條掘地鼴鼠與太空探索工程自動偶)",
+          "posture": "2.2 頭身矮萌身軀沉穩屹立，四足磁吸吸盤牢牢吸附地面，雙爪平穩握持等離子重鎚立於身前偏右，背部冷氣噴管微幅排氣，天線發條鑰匙隨秒針每3.0秒跳拍一格勻速旋轉",
+          "standee_height_px": 840,
+          "standee_width_px": 420
+        },
+        "mechanical_features": {
+          "head_and_neck": "乳白高密度工程塑料圓形面甲（#FFFDF8 / #38A0FF），前端配備防爆聚碳酸酯採礦護目罩與黃銅微型過濾閥，眼窩處精準中空供 optic_core 穿透",
+          "ears": "頭部兩側對稱安裝雙聯超導微型雷達葉片耳（#FFD028 / #4ED86A），超薄黃銅片與薄荷光纖編織，隨走時脈衝微幅自轉，無生物耳廓",
+          "torso_and_limbs": "高密度工程塑料板件（#FFFDF8）包覆冷軋鎢鋼框架，雙臂為重型沖壓合金多齒採礦爪，下身配置四足圓柱形腿部與防滑耐磨磁吸矽膠吸盤滾足",
+          "tail": "短粗圓筒形高密度塑料冷氣反推排氣噴嘴（#38A0FF / #FF5E8A），末端帶珊瑚粉防撞橡膠環與四孔定向反推微型噴孔",
+          "weapon_system": "單手挽持專屬「星穹高頻等離子重鎚（Orbital Plasma Sledgehammer）」，透明聚碳酸酯鎚身內嵌高頻電漿環，下砸釋放引力震盪，底層掛載 equipment.json 既有 anvil_hammer (tier 1)、iron_cudgel (tier 2) 與 bastion_blade (tier 3)"
+        },
+        "color_palette": {
+          "base": "#FFFDF8 (基底象牙白工程塑料/拋光鋁鎳金屬，面罩基座高光、腹部抗靜電襯板與活動襯墊)",
+          "primary": "#38A0FF (主色多巴胺天藍，太空採礦防護外殼、胸甲塗裝與重鎚鎚頭外罩)",
+          "secondary": "#4ED86A (次色薄荷冷翡翠，雷達天線導光纖維、等離子重鎚聚能環與面罩刻度光圈)",
+          "accent": "#FF5E8A (點綴色多巴胺珊瑚粉，冷氣反推噴嘴防撞環、重鎚過載指示燈與發條軸心按鈕)",
+          "metal": "#FFD028 (金屬天元黃銅金，四葉發條天線鑰匙、採礦爪同軸齒輪與重鎚金屬握柄)",
+          "outline": "#1F1A3A (深藍紫手繪立體外輪廓描邊，確保明亮清爽零泥土髒黑)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_mole.png (品牌形象立牌)",
+              "web/media/hero/char_mole.png (官網英雄展示立繪)",
+              "docs/art/asteroid_mole_concept.png (概念立繪)",
+              "game/assets/sprites/player/mole_idle.png (64x64 待機)",
+              "game/assets/sprites/player/mole_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/mole_idle.png (隊伍待機)",
+              "web/media/hero/mole_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/mole_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/mole_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/mole_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/mole_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/mole_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/mole_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/mole/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/mole.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/mole_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/asteroid_mole.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/mole/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_mole.png (420x840 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/asteroid_mole_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_mole.png (420x840 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/mole_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/mole_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/mole_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/mole_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/mole_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/mole_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/mole_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/mole/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/mole.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/asteroid_mole.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/mole/{slot_id}/{item_id}.png [待產出]"
         }
       }
     ]
@@ -6414,7 +6606,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 54 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 55 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -6436,7 +6628,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "五十四重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩) 由渲染器微調縮放適配"
+        "rule": "五十七重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩、重閥河馬沖壓厚鑄耐壓黃銅矮萌體態與巨輪城重裝抗震高壓鉚釘胸甲、星岩鼴鼠乳白工程塑料矮萌體態與軌道高抗衝擊防護工裝背帶褲) 由渲染器微調縮放適配"
       }
     ]
   },
@@ -6498,7 +6690,9 @@
         "game/assets/sprites/player/paperdoll/cuttlefish/",
         "game/assets/sprites/player/paperdoll/crab/",
         "game/assets/sprites/player/paperdoll/camel/",
-        "game/assets/sprites/player/paperdoll/giraffe/"
+        "game/assets/sprites/player/paperdoll/giraffe/",
+        "game/assets/sprites/player/paperdoll/hippo/",
+        "game/assets/sprites/player/paperdoll/mole/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
