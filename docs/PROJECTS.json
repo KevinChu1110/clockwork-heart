@@ -4731,6 +4731,56 @@
    "keys": [
     "第五十六族重閘河"
    ]
+  },
+  {
+   "id": "race58-proposal",
+   "cat": "世界觀",
+   "title": "第五十八種動物紙娃娃角色設計提案",
+   "status": "已上線",
+   "note": "第五十八種動物嵐翼鼯鼠世界觀與角色設計提案審查通過",
+   "keys": [
+    "第五十八種動物紙"
+   ]
+  },
+  {
+   "id": "petaurista-skeleton",
+   "cat": "遊戲",
+   "title": "第五十八族嵐翼鼯鼠(petaurista)資料表骨架與空目錄先行建置",
+   "status": "測試中",
+   "note": "骨架先行建置完成，0-QA30/33與無頭測試全綠，待 sideqa 審查",
+   "keys": [
+    "第五十八族嵐翼鼯"
+   ]
+  },
+  {
+   "id": "petaurista-paperdoll",
+   "cat": "遊戲",
+   "title": "第五十八族嵐翼鼯鼠(petaurista)7大部件槽位紙娃娃切片與雙規格資產",
+   "status": "測試中",
+   "note": "7大部件切片與雙規格資產產出完成，0-ART/0-QA量化稽核與無頭測試全綠，待 sideqa 審查 (t_426c9478)",
+   "keys": [
+    "第五十八族嵐翼鼯"
+   ]
+  },
+  {
+   "id": "petaurista-combat-poses",
+   "cat": "遊戲",
+   "title": "第五十八族嵐翼鼯鼠(petaurista)六大戰鬥姿態補齊",
+   "status": "測試中",
+   "note": "六大戰鬥姿態雙規格補齊，測試全綠待審",
+   "keys": [
+    "第五十八族嵐翼鼯"
+   ]
+  },
+  {
+   "id": "petaurista-official-assets",
+   "cat": "遊戲",
+   "title": "第五十八族嵐翼鼯鼠(petaurista)官方資產套件補齊",
+   "status": "測試中",
+   "note": "自測全綠、準備送審",
+   "keys": [
+    "第五十八族嵐翼鼯"
+   ]
   }
  ]
 }
