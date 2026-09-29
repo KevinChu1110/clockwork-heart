@@ -815,6 +815,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"armadillo": "meager_edge",
 	"caterpillar": "anvil_hammer",
 	"cuttlefish": "star_fang",
+	"crab": "wrap_gloves",
 }
 
 
@@ -875,6 +876,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"armadillo": default_name = "熔鎧犰狳"
 		"caterpillar": default_name = "風箱毛蟲"
 		"cuttlefish": default_name = "墨影烏賊"
+		"crab": default_name = "熔砧石蟹"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
