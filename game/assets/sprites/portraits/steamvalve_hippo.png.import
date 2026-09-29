@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2jg8i6sk6m3d"
-path="res://.godot/imported/hippo_idle.png-66c1a13f87d6316188a4bc3ce3e21d3f.ctex"
+uid="uid://cc5l7amoqfxi7"
+path="res://.godot/imported/steamvalve_hippo.png-03cf9d5a39efce49b1fbaa200df132e9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/hippo_idle.png"
-dest_files=["res://.godot/imported/hippo_idle.png-66c1a13f87d6316188a4bc3ce3e21d3f.ctex"]
+source_file="res://assets/sprites/portraits/steamvalve_hippo.png"
+dest_files=["res://.godot/imported/steamvalve_hippo.png-03cf9d5a39efce49b1fbaa200df132e9.ctex"]
 
 [params]
 

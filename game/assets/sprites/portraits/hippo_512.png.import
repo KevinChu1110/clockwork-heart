@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2jg8i6sk6m3d"
-path="res://.godot/imported/hippo_idle.png-66c1a13f87d6316188a4bc3ce3e21d3f.ctex"
+uid="uid://cdlwqsmoya4l6"
+path="res://.godot/imported/hippo_512.png-af441c809dcfc2648f5ab18307b9fe59.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/hippo_idle.png"
-dest_files=["res://.godot/imported/hippo_idle.png-66c1a13f87d6316188a4bc3ce3e21d3f.ctex"]
+source_file="res://assets/sprites/portraits/hippo_512.png"
+dest_files=["res://.godot/imported/hippo_512.png-af441c809dcfc2648f5ab18307b9fe59.ctex"]
 
 [params]
 
