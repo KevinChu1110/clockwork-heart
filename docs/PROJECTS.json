@@ -5210,8 +5210,8 @@
    "id": "kingfisher-slices",
    "cat": "遊戲",
    "title": "第六十八族穿雲翠鳥(kingfisher)7大部件槽位紙娃娃切片產出",
-   "status": "開發中",
-   "note": "開始製作穿雲翠鳥7大部件切片",
+   "status": "測試中",
+   "note": "切片與雙規格資產產出完成，測試全綠，送審 sideqa",
    "keys": [
     "第六十八族穿雲翠"
    ]
