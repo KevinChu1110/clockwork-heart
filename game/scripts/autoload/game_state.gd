@@ -824,6 +824,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"lynx": "hunt_claw",
 	"scarab": "shard_focus",
 	"toucan": "flint_gun",
+	"walrus": "rusty_blade",
 }
 
 
@@ -893,6 +894,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"lynx": default_name = "提線猞猁"
 		"scarab": default_name = "黑曜金龜"
 		"toucan": default_name = "彩喙巨嘴鳥"
+		"walrus": default_name = "破冰海象"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值

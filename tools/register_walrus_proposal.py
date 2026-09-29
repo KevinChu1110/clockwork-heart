@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import os
 import sys
 
 TARGET_FILES = [
@@ -128,5 +129,63 @@ WALRUS_RACE_SPEC = {
     }
 }
 
-if __name__ == "__main__":
-    print("Walrus proposal registered specification ready.")
+for file_path in TARGET_FILES:
+    print(f"Processing {file_path}...")
+    with open(file_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    # 1. Update default_items in slots_architecture.slots
+    slots = data["slots_architecture"]["slots"]
+    for s in slots:
+        slot_id = s["slot_id"]
+        if slot_id in WALRUS_DEFAULT_ITEMS:
+            item = WALRUS_DEFAULT_ITEMS[slot_id]
+            if "default_items" not in s:
+                s["default_items"] = []
+            existing_ids = [x["id"] for x in s["default_items"]]
+            if item["id"] not in existing_ids:
+                s["default_items"].append(item)
+                print(f"  Added {item['id']} to slot {slot_id} default_items")
+
+    # 2. Update races_specification
+    races_spec = data["races_specification"]
+    races = races_spec["races"]
+    existing_race_ids = [r["race_id"] for r in races]
+    if "walrus" not in existing_race_ids:
+        races.append(WALRUS_RACE_SPEC)
+        print("  Added walrus to races_specification.races")
+    races_spec["total_races"] = 61
+
+    # 3. Update interchangeability_and_compatibility
+    compat = data.get("interchangeability_and_compatibility", {})
+    univ = compat.get("universal_slots", [])
+    for u in univ:
+        if u.get("slot_id") == "winding_key":
+            u["rule"] = "上背發條插座公規化，所有鑰匙款式適用於 61 種動物素體"
+    adapted = compat.get("race_adapted_slots", [])
+    for a in adapted:
+        if a.get("slot_id") == "costume":
+            old_rule = a.get("rule", "")
+            if "破冰海象" not in old_rule:
+                new_rule = old_rule.replace("六十一重大種族", "六十二重大種族")
+                if "彩喙巨嘴鳥輕量化合金底盤與蔓谷探險巡林獵裝" in new_rule:
+                    new_rule = new_rule.replace(
+                        "彩喙巨嘴鳥輕量化合金底盤與蔓谷探險巡林獵裝)",
+                        "彩喙巨嘴鳥輕量化合金底盤與蔓谷探險巡林獵裝、破冰海象耐壓鍍鈦合金底盤與深淵領航雙排扣水手胸甲)"
+                    )
+                a["rule"] = new_rule
+                print("  Updated costume rule in race_adapted_slots")
+
+    # 4. Update directory_structure_blueprint
+    dir_bp = data.get("directory_structure_blueprint", {}).get("sub_directories", {})
+    races_dirs = dir_bp.get("races", [])
+    walrus_dir = "game/assets/sprites/player/paperdoll/walrus/"
+    if walrus_dir not in races_dirs:
+        races_dirs.append(walrus_dir)
+        print(f"  Added {walrus_dir} to sub_directories.races")
+
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    print(f"Successfully updated {file_path}")
+
+print("Walrus proposal registered specification complete.")
