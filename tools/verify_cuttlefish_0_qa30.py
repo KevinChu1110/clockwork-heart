@@ -5,7 +5,7 @@
 2. cuttlefish 正表 aliases 與 paperdoll_renderer.gd fallback 表 aliases 100% 對齊一致
 3. 全部 51 族 aliases 在正表與 fallback 表 100% 逐族對齊，零分歧
 4. 0-QA33 防護查驗：fallback 表 total_races 必須 100% 精確為 51
-5. cuttlefish 7 大部件目錄與 poses/cuttlefish 目錄存在且恪守零佔位圖（僅保留 .gitkeep）
+5. cuttlefish 7 大部件雙規格切片圖檔全數到位且 poses/cuttlefish 目錄恪守零佔位圖（僅保留 .gitkeep）
 6. 開局武器符合 equipment.json 既有 ID 規範 (star_fang)
 """
 import json
@@ -87,17 +87,26 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3.2 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/cuttlefish 目錄存在且恪守零美術佔位圖（僅保留 .gitkeep）
+# 4. 驗證 7 大槽位切片已全數就緒且 poses/cuttlefish 恪守零美術佔位圖（僅保留 .gitkeep）
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/cuttlefish")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
+expected_slices = {
+    "back_curio": ["curio_cuttlefish_pneumatic_ink_siphon.png", "curio_cuttlefish_pneumatic_ink_siphon_512.png"],
+    "chassis": ["chassis_cuttlefish_abyssal_cyan_default.png", "chassis_cuttlefish_abyssal_cyan_default_512.png"],
+    "costume": ["costume_cuttlefish_abyssal_shinobi_cuirass.png", "costume_cuttlefish_abyssal_shinobi_cuirass_512.png"],
+    "head_unit": ["head_cuttlefish_diving_cowl_fins.png", "head_cuttlefish_diving_cowl_fins_512.png"],
+    "optic_core": ["face_cuttlefish_dual_quartz_optic_lens.png", "face_cuttlefish_dual_quartz_optic_lens_512.png"],
+    "weapon": ["weapon_cuttlefish_abyssal_inksmoke_dagger.png", "weapon_cuttlefish_abyssal_inksmoke_dagger_512.png"],
+    "winding_key": ["key_cuttlefish_tri_vane_turbine_brass.png", "key_cuttlefish_tri_vane_turbine_brass_512.png"]
+}
 
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"槽位目錄缺少 .gitkeep: {s_dir}"
-    slot_images = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert not slot_images, f"槽位目錄 {s} 發現非預期圖片檔案（違反零佔位圖規則）: {slot_images}"
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/cuttlefish")
 assert os.path.isdir(poses_dir), f"poses/cuttlefish 目錄不存在: {poses_dir}"
@@ -105,7 +114,7 @@ assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/cuttlefish �
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
 assert not poses_images, f"poses/cuttlefish 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-print("✓ 4. 7 大槽位空目錄與 poses/cuttlefish 均已就緒，且恪守零美術佔位圖（僅保留 .gitkeep）規範")
+print("✓ 4. 7 大槽位切片已全數就緒且 poses/cuttlefish 恪守零美術佔位圖（僅保留 .gitkeep）規範")
 
 # 5. 驗證開局武器符合 equipment.json 既有 ID (star_fang)
 equip_path = os.path.join(repo_root, "game/data/tables/equipment.json")
