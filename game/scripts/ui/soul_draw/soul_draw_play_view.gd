@@ -33,6 +33,7 @@ var daily
 var card
 var _title_lbl: Label
 var _ticket_lbl: Label
+var _footprint_lbl: Label
 var _log: RichTextLabel
 var _btn: Button
 var _cont_btn: Button
@@ -132,12 +133,22 @@ func _build() -> void:
 		_ticket_lbl.add_theme_font_override("font", _font)
 	add_child(_ticket_lbl)
 
+	# 3b. 足跡連線提示（二級字 15px，深暖褐次級字）
+	_footprint_lbl = Label.new()
+	_footprint_lbl.name = "FootprintLabel"
+	_footprint_lbl.position = Vector2(40, 90)
+	_footprint_lbl.add_theme_font_size_override("font_size", 15)
+	_footprint_lbl.add_theme_color_override("font_color", UiStyle.INK_DIM)
+	if _font != null:
+		_footprint_lbl.add_theme_font_override("font", _font)
+	add_child(_footprint_lbl)
+
 	# 4. 結果卡（奶油卡規格）
 	card = CardScript.new()
 	card.name = "SoulResultCard"
 	card.set_anchors_preset(Control.PRESET_FULL_RECT)
 	card.offset_left = 40
-	card.offset_top = 96
+	card.offset_top = 118
 	card.offset_right = -40
 	card.offset_bottom = -165
 	add_child(card)
@@ -206,6 +217,8 @@ func _refresh() -> void:
 		var tickets: int = econ.soul_tickets if econ != null else 0
 		var pulls: int = daily.daily_soul_pulls if daily != null else 0
 		_ticket_lbl.text = _t("封靈票 ×%d · 今日已抽 %d") % [tickets, pulls]
+	if _footprint_lbl and is_instance_valid(_footprint_lbl):
+		_footprint_lbl.text = _get_footprint_line()
 	if _err and is_instance_valid(_err):
 		if _last_err_key == "lack_tickets":
 			_err.text = _t("封靈票不足")
@@ -239,3 +252,13 @@ func _on_pull() -> void:
 	card.show_drop(drop)
 	_log.append_text("%s\n" % str(drop))
 	_refresh()
+
+
+func _get_footprint_line() -> String:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var ss: Node = (loop as SceneTree).root.get_node_or_null("SoulSystem")
+		if ss and ss.has_method("ritual_footprint_line"):
+			return str(ss.call("ritual_footprint_line"))
+	return ""
+
