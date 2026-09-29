@@ -4926,8 +4926,8 @@
    "id": "toucan-paperdoll",
    "cat": "遊戲",
    "title": "第六十一族彩喙巨嘴鳥(toucan)7大部件槽位紙娃娃切片與雙規格資產",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "完成7大槽位128px/512px切片、0-ART量化稽核全過、無頭測試全綠，待 sideqa 驗收",
    "keys": [
     "第六十一族彩喙巨"
    ]
