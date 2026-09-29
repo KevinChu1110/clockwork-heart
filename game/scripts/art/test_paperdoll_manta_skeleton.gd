@@ -76,36 +76,30 @@ func _initialize() -> void:
 		else:
 			print("  ✓ 0-QA30 查驗合格：正表與 fallback 表 manta aliases 100%% 對齊一致: %s" % str(fallback_aliases))
 
-	# 2. 驗證 7 大槽位空目錄與 poses/manta、player/manta 目錄存在且恪守零佔位圖（僅保留 .gitkeep）
+	# 2. 驗證 7 大槽位 128x128 與 512x512 切片圖層全數就緒
 	var expected_slots := ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 	var base_path := "res://assets/sprites/player/paperdoll/manta"
-	var image_exts := [".png", ".webp", ".jpg", ".jpeg"]
-
+	var manta_global_dir := ProjectSettings.globalize_path(base_path)
+	var expected_slice_files := {
+		"back_curio": ["curio_manta_flexible_wings_antenna_tail.png", "curio_manta_flexible_wings_antenna_tail_512.png"],
+		"chassis": ["chassis_manta_titanium_default.png", "chassis_manta_titanium_default_512.png"],
+		"costume": ["costume_manta_diver_harness_cuirass.png", "costume_manta_diver_harness_cuirass_512.png"],
+		"head_unit": ["head_manta_hydrofoil_horn_cowl.png", "head_manta_hydrofoil_horn_cowl_512.png"],
+		"optic_core": ["face_manta_high_pressure_quartz_goggles.png", "face_manta_high_pressure_quartz_goggles_512.png"],
+		"weapon": ["weapon_manta_hydro_compound_bow.png", "weapon_manta_hydro_compound_bow_512.png"],
+		"winding_key": ["key_manta_starfish_gear_brass.png", "key_manta_starfish_gear_brass_512.png"]
+	}
+	var missing_files: Array[String] = []
 	for sid in expected_slots:
-		var slot_dir := "%s/%s" % [base_path, sid]
-		var global_slot_dir := ProjectSettings.globalize_path(slot_dir)
-		if not DirAccess.dir_exists_absolute(global_slot_dir):
-			push_error("潮汐蝠魟槽位目錄不存在: %s" % slot_dir)
-			ok = false
-		else:
-			var gitkeep_file := "%s/.gitkeep" % global_slot_dir
-			if not FileAccess.file_exists(gitkeep_file):
-				push_error("潮汐蝠魟槽位目錄缺少 .gitkeep: %s" % slot_dir)
-				ok = false
-			# 檢查無圖片
-			var da := DirAccess.open(global_slot_dir)
-			if da:
-				da.list_dir_begin()
-				var fn := da.get_next()
-				while fn != "":
-					if not da.current_is_dir():
-						for ext in image_exts:
-							if fn.ends_with(ext):
-								push_error("先行骨架發現非預期圖片檔案（違反零佔位圖規則）: %s/%s" % [sid, fn])
-								ok = false
-					fn = da.get_next()
-				da.list_dir_end()
-			print("  ✓ 槽位目錄存在且恪守零佔位圖: %s" % sid)
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [manta_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("潮汐蝠魟切片檔案缺失: %s" % str(missing_files))
+		ok = false
+	else:
+		print("  ✓ 潮汐蝠魟 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 驗證 poses/manta 目錄
 	var poses_manta := "res://assets/sprites/player/poses/manta"
@@ -119,18 +113,6 @@ func _initialize() -> void:
 			ok = false
 		print("  ✓ poses/manta 目錄存在且恪守 .gitkeep")
 
-	# 驗證 player/manta 目錄
-	var player_manta := "res://assets/sprites/player/manta"
-	var global_pm_dir := ProjectSettings.globalize_path(player_manta)
-	if not DirAccess.dir_exists_absolute(global_pm_dir):
-		push_error("player/manta 目錄不存在: %s" % player_manta)
-		ok = false
-	else:
-		if not FileAccess.file_exists("%s/.gitkeep" % global_pm_dir):
-			push_error("player/manta 缺少 .gitkeep")
-			ok = false
-		print("  ✓ player/manta 目錄存在且恪守 .gitkeep")
-
 	# 3. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog)
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
 	if not races_data.has("manta"):
@@ -140,13 +122,13 @@ func _initialize() -> void:
 		var manta_rdata: Dictionary = races_data["manta"]
 		print("  ✓ PaperdollSelectDemo.RACES_DATA 正確納入 manta: %s" % manta_rdata.get("name_zh"))
 
-	# 驗證 has_race_assets 防護守衛（尚未產出切片與立繪前，必須返回 false 安全隱藏）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("manta")
-	if has_assets:
-		push_error("尚未產出切片立繪前，has_race_assets('manta') 應為 false（安全隱藏防護守衛）！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('manta') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ has_race_assets('manta') 正確回傳 false（安全隱藏未解鎖族群，不露出空卡）")
+		print("  ✓ 防護守衛生效：has_race_assets('manta') 正確回傳 true（展示正常）")
 
 	var filter_found := false
 	for rf in WardrobeDialog.RACE_FILTER_OPTIONS:
@@ -187,9 +169,9 @@ func _initialize() -> void:
 		print("  • 槽位 %s 解析 fallback 路徑: %s" % [sid, path_res])
 
 	if ok:
-		print("\n🎉 第六十七族潮汐蝠魟 (manta) 資料表骨架先行建置測試全部 PASS！")
+		print("\n🎉 第六十七族潮汐蝠魟 (manta) 資料表骨架與切片驗證測試全部 PASS！")
 		print("PAPERDOLL_MANTA_SKELETON_OK")
 		quit(0)
 	else:
-		printerr("\n❌ 第六十七族潮汐蝠魟 (manta) 資料表骨架先行建置測試有失敗項目！")
+		printerr("\n❌ 第六十七族潮汐蝠魟 (manta) 資料表骨架與切片驗證測試有失敗項目！")
 		quit(1)
