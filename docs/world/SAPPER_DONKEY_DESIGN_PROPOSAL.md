@@ -6,9 +6,9 @@
 > **提案作者**：小凱（側案·策劃總監 sideplan）
 > **對應看板任務**：`t_bfa41282`（📖 世界觀｜第六十九種動物紙娃娃角色設計提案（只寫文件，不產圖不產片））
 > **法源依據與對齊規範**：
-> - `docs/world/CANON.md`（世界憲章：覺醒玩具世界、100% 零真皮毛、零動物肉身、零生物黏液、零真羽毛、零真昆蟲甲殼肉體、零機油污漬；歐風沖壓冷軋馬口鐵底盤、雙聯棘輪立體折疊長耳面盔、雙聯高透青石琉璃圓形目鏡、集市工兵鉚接皮革紋生漆胸甲、雙聯天軌木榫馱架與分節配重平衡尾、晨曦三葉雕花黃銅發條鑰匙、集市天軌闢道重斧）
+> - `docs/world/CANON.md`（世界憲章：覺醒玩具世界、100% 零真皮毛、零動物肉身、零生物黏液、零真羽毛、零真昆蟲甲殼肉體、零機油污漬；歐風沖壓冷軋馬口鐵底盤、雙聯棘輪立體折疊長耳面盔、雙聯高透青石琉璃圓形目鏡、集市工兵鉚接生漆板甲胸甲、雙聯天軌木榫馱架與分節配重平衡尾、晨曦三葉雕花黃銅發條鑰匙、集市天軌闢道重斧）
 > - `docs/ART_DIRECTION.md`（第 142 行核心世界觀定位：「被遺忘的玩具世界——木馬、錫兵、八音盒、陀螺、積木、舊書、玩具零件」；§0 手機優先三層辨識系統；§1.1 瓦力+鋼鐵人+胡桃鉗童話發條玩具定調；多巴胺高飽和鮮亮色彩：奶油米白 #FFFDF8、落日暖橘 #FFA010、天藍 #38A0FF、薄荷綠 #4ED86A、天元金黃 #FFD028、珊瑚粉 #FF5E8A、深藍紫描邊 #1F1A3A）
-> - `docs/world/regions/R02_DAWN_TOWN.md`（第 1 行區域代號與名稱「R02 晨曦小鎮·木偶集市 / Dawn Town: Marionette Bazaar」、第 4 行沙盤工藝材質套件「歐風木造街屋、石板路與精緻提線木偶套件（Timber Architecture, Cobblestone & Marionette Playset）」、第 6 行局域走時狀態「慢速延遲偏快（秒針每隔 2~3 秒跳動一格，齒輪持續運轉，集市維持熱絡但部分商用機械因動力波動開始過熱）」、第 15 行「沙盤本體為一直徑約 22 公里的多邊形胡桃木拼花浮空展台底座，托盤邊緣環繞包覆著帶有精緻巴洛克浮雕的金色黃銅護欄與外露齒輪嚙合環軌」、第 16 行「展台底座下方懸空處，由三組巨大的差速齒輪箱、垂直減速蝸輪與懸吊發條平衡懸臂構成穩定機械骨架，以金屬鉸鏈咬合中層天軌支架」、第 18 行及第 19 行「街道鋪面採用細緻打磨的淺灰硬質磨石灰岩積木拼合而成，步道邊緣鑲嵌著細小的金黃銅質防滑飾條，踩踏時發出清脆紮實的敲擊回饋」、第 20 行「歐風木造街屋：採用精巧榫卯結構搭蓋的多層山形牆商鋪，外牆施以陽光童話風格的高飽和水性彩漆（奶油米白、明亮暖橘、薄荷淺綠），每棟建築屋頂皆矗立著迷你黃銅發條煙囪，規律排出帶有薰衣草淡香的微溫散熱蒸氣」、第 21 行「懸吊齒輪鐘樓（Suspended Gear Belltower）：小鎮中央廣場矗立著一座高達 25 公尺的鏤空雕花鐘樓，巨大青銅擒縱輪與金色鐘擺於半空中悠然擺動，鐘面外緣懸掛著數十枚微型發條八音風鈴，隨風傳出輕靈樂韻」、第 23 行「永恆晨曦柔光（#FFF8E7）」、第 28 行「齒輪吊索大橋·小鎮站（Cogwheel Cableway Terminal）」、第 29 行「晨曦天軌 2 號月台（Dawn Rail Platform 2）」、第 31 行「蔓谷天梯引道（Vine Valley Stairway Gate）」、第 32 行「巨輪城重型空軌貨運棧橋（Great Cog Rail Freight Way）」、第 34 行「邊界安全防護彈簧網（Perimeter Safety Spring-Net）」、第 42 行「提線木偶族（Marionettes）」、第 43 行「彩釉玩偶貴族（Glazed Porcelain Chibi Citizens）」、第 44 行「摺紙手藝人族（Origami Artisans）」、第 46 行「精紡線莊」與「中央油坊」、第 54 行 NPC「提線商會會長·巴納姆（Barnum the Threadmaster）」、第 63 行 NPC「彩釉玩偶夫人·瑪德琳（Lady Madeline the Glazed Belle）」、第 71 行 NPC「摺紙工匠·小鶴（Tsuru the Origami Crafter）」、第 85 行「失控自動販賣傀儡（Runaway Vending Automaton）」、第 89 行「脫線提線小丑（Tangled Marionette Clown）」、第 93 行「巡市木偶捕犬（Bazaar Clockwork Terrier）」、第 99 行「集市守護機關·提線巨偶（Bazaar Overseer: Grand Marionette Titan）」、第 106 行部位破壞點「劇團面具與聚光水晶目鏡（Troupe Mask & Optical Lens）」、第 107 行「鐵杉木握劍巨臂與驅動滑輪（Timber Cleaver Arm & Pulley）」、第 108 行「背部天車牽引主纜與下肢配重（Aerial Hoist Cable & Counterweights）」、第 118 行特產武器「精紡刺劍·引線者（Threadneedle Rapier）」、第 119 行特產武器「集市重型發條剪（Bazaar Clockwork Shears）」、第 120 行特產武器「紳士機關短杖（Gentleman's Cane-Bludgeon）」、第 233 行「精紡棉線」、第 234 行「高剛性木材」、第 235 行「黃銅滑輪」、第 236 行「微型發條軸承」、第 237 行「天機星軸」）
+> - `docs/world/regions/R02_DAWN_TOWN.md`（第 1 行區域代號與名稱「R02 晨曦小鎮·木偶集市 / Dawn Town: Marionette Bazaar」、第 4 行沙盤工藝材質套件「歐風木造街屋、石板路與精緻提線木偶套件（Timber Architecture, Cobblestone & Marionette Playset）」、第 6 行局域走時狀態「慢速延遲偏快（秒針每隔 2~3 秒跳動一格，齒輪持續運轉，集市維持熱絡但部分商用機械因動力波動開始過熱）」、第 15 行「沙盤本體為一直徑約 22 公里的多邊形胡桃木拼花浮空展台底座，托盤邊緣環繞包覆著帶有精緻巴洛克浮雕的金色黃銅護欄與外露齒輪嚙合環軌」、第 16 行「展台底座下方懸空處，由三組巨大的差速齒輪箱、垂直減速蝸輪與懸吊發條平衡懸臂構成穩定機械骨架，以金屬鉸鏈咬合中層天軌支架」、第 18 行及第 19 行「街道鋪面採用細緻打磨的淺灰硬質磨石灰岩積木拼合而成，步道邊緣鑲嵌著細小的金黃銅質防滑飾條，踩踏時發出清脆紮實的敲擊回饋」、第 20 行「歐風木造街屋：採用精巧榫卯結構搭蓋的多層山形牆商鋪，外牆施以陽光童話風格的高飽和水性彩漆（奶油米白、明亮暖橘、薄荷淺綠），每棟建築屋頂皆矗立著迷你黃銅發條煙囪，規律排出帶有薰衣草淡香的微溫散熱蒸氣」、第 21 行「懸吊齒輪鐘樓（Suspended Gear Belltower）：小鎮中央廣場矗立著一座高達 25 公尺的鏤空雕花鐘樓，巨大青銅擒縱輪與金色鐘擺於半空中悠然擺動，鐘面外緣懸掛著數十枚微型發條八音風鈴，隨風傳出輕靈樂韻」、第 23 行「永恆晨曦柔光（#FFF8E7）」、第 28 行「齒輪吊索大橋·小鎮站（Cogwheel Cableway Terminal）」、第 29 行「晨曦天軌 2 號月台（Dawn Rail Platform 2）」、第 31 行「蔓谷天梯引道（Vine Valley Stairway Gate）」、第 32 行「巨輪城重型空軌貨運棧橋（Great Cog Rail Freight Way）」、第 34 行「邊界安全防護彈簧網（Perimeter Safety Spring-Net）」、第 42 行「提線木偶族（Marionettes）」、第 43 行「彩釉玩偶貴族（Glazed Porcelain Chibi Citizens）」、第 44 行「摺紙手藝人族（Origami Artisans）」、第 46 行「精紡線莊」與「中央油坊」、第 54 行 NPC「提線商會會長·巴納姆（Barnum the Threadmaster）」、第 63 行 NPC「彩釉玩偶夫人·瑪德琳（Lady Madeline the Glazed Belle）」、第 71 行 NPC「摺紙工匠·小鶴（Tsuru the Origami Crafter）」、第 85 行「失控自動販賣傀儡（Runaway Vending Automaton）」、第 89 行「脫線提線小丑（Tangled Marionette Clown）」、第 93 行「巡市木偶捕犬（Bazaar Clockwork Terrier）」、第 99 行「集市守護機關·提線巨偶（Bazaar Overseer: Grand Marionette Titan）」、第 106 行部位破壞點「劇團面具與聚光水晶目鏡（Troupe Mask & Optical Lens）」、第 107 行「鐵杉木握劍巨臂與驅動滑輪（Timber Cleaver Arm & Pulley）」、第 108 行「背部天車牽引主纜與下肢配重（Aerial Hoist Cable & Counterweights）」、第 118 行特產武器「精紡刺劍·引線者（Threadneedle Rapier）」、第 119 行特產武器「集市重型發條剪（Bazaar Clockwork Shears）」、第 120 行特產武器「紳士機關短杖（Gentleman's Cane-Bludgeon）」、第 234 行「高剛性木材」、第 235 行「黃銅滑輪」、第 236 行「微型發條軸承」、第 237 行「天機星軸」）
 > - `docs/PRODUCT_LOCK_0.20.md`（§1.6 體驗支柱、§3.1 核心循環、§5.2 包體規範、§9 准入門檻）
 > - `game/data/tables/weapon_classes.json`（戰士正式名稱 `viking`，戰斧標籤宣言 `\"一擊要有重量\"`，武器 `axe`，稱號 `維京·斧`，數值 `atk: 4, def: 1, hp: 2, crit: 0.5, speed: -1`，玩法 `\"抓重擊的空檔下手。同職也可玩鎚。\"`，初始相容武器 `notch_axe`）
 > - `game/data/tables/equipment.json`（戰斧類正式 line: `\"axe\"`，初階武器：第 236 行 `notch_axe` 缺刃手斧，高階相容武器：第 249 行 `split_greataxe` 裂山巨斧）
@@ -25,8 +25,8 @@
    - 本提案選定全球古典機械玩具、鐵皮玩具與古典鐘錶木偶自動機史上的經典工藝原型：
      ① **1900s-1930s 歐洲萊曼發條鐵皮頑皮驢名品（Vintage Lehmann #490 / #670 "Balky Donkey" Wind-up Tinplate Automaton）**，通體由沖壓冷軋馬口鐵薄板、亮面耐磨生漆烤漆與微型走時發條機構組裝而成，旋緊發條後，體內微型偏心連桿機構帶動四足交替踏步，雙聯金屬長耳隨內部齒輪棘輪規律擺動，遭遇阻力時以沉穩頑固的姿態抵住拉力，是世界發條玩具史上最具童趣、工程堅韌感與標誌性造型的殿堂級傳奇經典；
      ② **19 世紀德國厄爾士山脈與瑞士阿爾卑斯山古典木雕馱運拉車玩具（Erzgebirge & Alpine Hand-carved Wooden Pull Pack-Donkey Toys）**，民間木雕匠人以胡桃木、楓木與黃銅軸承精密切削出背負高剛性木材與齒輪零件的工兵馱驢，四肢關節以雙密封自潤滑軸承鉸接，呈現歐風童話市集最樸實忠誠的勞動者形象；
-     ③ **歐風木偶童話集市鐵道開拓與清障工兵自動偶（Vintage Marionette Bazaar Track-Clearing Sapper Automaton）**，將經典開拓大斧轉譯為「集市天軌闢道重斧」，斧身以冷軋沖壓高碳鋼板咬合黃銅減震樞紐，配以防滑亞麻粗帶握柄，專門用於在高架空軌棧橋與吊索大橋上清理糾結纏繞的失控線纜、劈開阻障硬木、校準沉重齒輪軌道，完美詮釋戰士職業「一擊要有重量、站到最後才是贏家、防禦高血厚、拿重斧敲擊部位」之戰士之魂，完美呼應世界憲章 `docs/ART_DIRECTION.md` 第 142 行所明載之核心世界觀：「**被遺忘的玩具世界——木馬、錫兵、八音盒、陀螺、積木、舊書、玩具零件**」；
-   - 作為全遊戲首款且唯一具備**「歐風沖壓冷軋馬口鐵底盤、雙聯棘輪立體折疊長耳面盔、雙聯高透青石琉璃圓形目鏡、集市工兵鉚接皮革紋生漆胸甲、雙聯天軌木榫馱架與分節配重平衡尾、晨曦三葉雕花黃銅發條鑰匙與集市天軌闢道重斧」之晨曦集市重裝開拓戰士素體（Bazaar Sapper Donkey Chassis, Dual Ratchet Long Ears Cowl, High-Clarity Slate Glass Goggles, Sapper Riveted Brass Cuirass, Dual Cograil Timber Pack & Segmented Counterweight Tail, Dawn Three-Leaf Clover Brass Key & Bazaar Cograil Clearing Axe）**。
+     ③ **歐風木偶童話集市鐵道開拓與清障工兵自動偶（Vintage Marionette Bazaar Track-Clearing Sapper Automaton）**，將經典開拓大斧轉譯為「集市天軌闢道重斧」，斧身以冷軋沖壓高碳鋼板咬合黃銅減震樞紐，配以黃銅防滑刻紋握柄，專門用於在高架空軌棧橋與吊索大橋上清理糾結纏繞的失控線纜、劈開阻障硬木、校準沉重齒輪軌道，完美詮釋戰士職業「一擊要有重量、站到最後才是贏家、防禦高血厚、拿重斧敲擊部位」之戰士之魂，完美呼應世界憲章 `docs/ART_DIRECTION.md` 第 142 行所明載之核心世界觀：「**被遺忘的玩具世界——木馬、錫兵、八音盒、陀螺、積木、舊書、玩具零件**」；
+   - 作為全遊戲首款且唯一具備**「歐風沖壓冷軋馬口鐵底盤、雙聯棘輪立體折疊長耳面盔、雙聯高透青石琉璃圓形目鏡、集市工兵鉚接生漆板甲胸甲、雙聯天軌木榫馱架與分節配重平衡尾、晨曦三葉雕花黃銅發條鑰匙與集市天軌闢道重斧」之晨曦集市重裝開拓戰士素體（Bazaar Sapper Donkey Chassis, Dual Ratchet Long Ears Cowl, High-Clarity Slate Glass Goggles, Sapper Riveted Brass Cuirass, Dual Cograil Timber Pack & Segmented Counterweight Tail, Dawn Three-Leaf Clover Brass Key & Bazaar Cograil Clearing Axe）**。
 3. **生態補足：徹底終結晨曦小鎮·木偶集市（R02）長久「零戰士（Viking）素體」之歷史空白，打造首位集市天軌闢障重裝鐵衛**：
    在全遊戲 9 大界域中，中層歐風木偶貿易界域 `R02 晨曦小鎮·木偶集市` 先前擁有靈鐘鴞（法師·杖）、棘輪刺蝟（忍者·鏢）、稜鏡孔雀（法師·晶）、鐵蹄駿駒（騎士·劍）、旋音天鵝（騎士·槍）、鐘塔長頸鹿（遊俠·弓）與提線猞猁（武術家·爪）共 7 族。
    長久以來，R02 晨曦小鎮是全遊戲所有擴充界域中唯一完全沒有任何一位**戰士 (Viking)** 核心素體駐留的界域！全域皆為輕靈、優雅、高速穿行或法術遠射之素體。
@@ -120,7 +120,7 @@
 - **底層武器掛載**：掛載於 `game/data/tables/weapon_classes.json` 之 `axe`（戰斧）體系，繼承戰士「一擊要有重量、抓重擊的空檔下手、單下最痛、對重甲和石拳很有效、站到最後才是贏家」的核心戰術宣言（`atk: 4, def: 1, hp: 2, crit: 0.5, speed: -1`）。相容既有初始裝備 `notch_axe`（缺刃手斧，tier 1）與 `split_greataxe`（裂山巨斧，tier 3）；
 - **專屬武器外觀與機巧設計**：
   - 武器外觀命名：`weapon_donkey_bazaar_clearing_axe`（集市天軌闢道重斧 / Bazaar Cograil Clearing Axe，規劃為其原生專屬兵刃，資產與 `equipment.json` 掛載留待後續骨架／切片單）；
-  - 構造與工藝機巧：斧身由高厚度冷軋沖壓高碳鋼板（Stamped High-Carbon Steel）鍛造而成，斧面施以高耐磨深海軍藍防鏽烤漆與金黃（#FFD028）鉚釘加固；雙刃斧頭中央裝配一枚大型黃銅減震棘輪樞紐（Brass Damping Ratchet Hub），斧背設有專門用於清理齒輪天軌碎屑的排渣凹槽與重型撬壓突起；長柄採用陳化胡桃木芯外覆防滑麻布帶與生漆防潮塗裝，柄尾配備金屬平衡配重鐵箍；
+  - 構造與工藝機巧：斧身由高厚度冷軋沖壓高碳鋼板（Stamped High-Carbon Steel）鍛造而成，斧面施以高耐磨深海軍藍防鏽烤漆與金黃（#FFD028）鉚釘加固；雙刃斧頭中央裝配一枚大型黃銅減震棘輪樞紐（Brass Damping Ratchet Hub），斧背設有專門用於清理齒輪天軌碎屑的排渣凹槽與重型撬壓突起；長柄採用陳化胡桃木芯外覆生漆防滑刻紋握柄與生漆防潮塗裝，柄尾配備金屬平衡配重鐵箍；
   - 攻擊節奏與手感：持斧架勢沉穩扎實，重心深沉後移。下劈揮砍時，雙臂帶動沉重重力動能自右上向左下劃出 160 度大弧度重劈，斧刃觸碰物體瞬間，黃銅棘輪樞紐受壓發出清脆沉悶的「咔嚓——轟！」金屬破障震鳴，在 0.5 秒停拍間隙精準粉碎敵人外部重甲，爆散出明亮暖橘（#FFA010）與天元金黃（#FFD028）的金屬星芒碎屑，完美符合 `review.md 0-MKT7` 單手持握重斧標準（右手握持斧柄中段斜立身側，左臂自然屈於胸前護胸防禦，0 佔位短棒，0 多餘浮動武器，0 雙持穿模違規）。
 
 ### 1.3 差異化定位：與既有 5 款戰斧戰士（鋼岳象、浪花海獺、重角犀牛、劈木河狸、破竹羚牛）絕不撞型之論證
@@ -160,7 +160,7 @@
 - **歐風沖壓冷軋馬口鐵金屬底盤與矮萌扎實身軀**：闢道頑驢的身軀絕非生物驢類肉身或毛皮覆蓋體，而是由沖壓成型的輕量化高強度馬口鐵薄板件（Stamped Tinplate Sheets）精密鉚接而成，表面施以多層亮面防刮歐風生漆烤漆（奶油米白 #FFFDF8 與落日暖橘 #FFA010），胸腹部嵌裝耐磨陶瓷防護板，呈現 2.0 ~ 2.2 頭身矮萌可愛 Q 版身軀。四肢關節為微型雙密封自潤滑黃銅球形鉸鏈，四足蹄部裝配圓形耐磨防滑黑色抗震橡膠吸附墊，踩踏於小鎮石板街面上發出清脆扎實的敲擊回饋，杜絕任何真實生物毛皮、皮屑脫落或肉體組織。
 - **雙聯棘輪立體折疊長耳面盔**：頭部為圓弧形沖壓金屬面罩，頭頂聳立著一對長達 32px 的標誌性**雙聯棘輪立體折疊長耳面盔（Dual Ratchet Foldable Long Ears Cowl）**。長耳由多節沖壓冷軋黃銅薄板鉸接而成，外側施以暖橘與金黃烤漆，內側嵌有微型散熱通風格柵；耳根樞紐內部封裝微型單向棘爪棘輪連桿，在蓄力劈砍、受擊震盪或排出過熱蒸氣時，長耳會伴隨著清脆的「嗒、嗒」聲前後微幅折疊擺動，極具發條玩具機械趣味。
 - **雙聯高透青石琉璃圓形目鏡**：面部鑲嵌一對圓滾滾的大尺寸雙聯高透青石琉璃圓形目鏡（Dual High-Clarity Slate Glass Goggles #38A0FF 天藍 / #FFD028 天元金黃）。外周包覆深藍紫（#1F1A3A）鍍鈦金屬防眩光密封眼圈，鏡片由小鎮工坊高透光耐磨琉璃壓鑄而成，內部浮現精密的十字同心圓瞄準分劃線與暖金微型指針，眼神專注、堅毅、忠誠而略帶一絲發條玩具獨有的倔強呆萌，杜絕任何恐怖死白或空洞無神。
-- **集市工兵鉚接皮革紋生漆胸甲**：身著由歐風工兵戰袍與沖壓鍍銅胸板組合而成的**集市工兵鉚接皮革紋生漆胸甲（Sapper Riveted Brass Cuirass #FFFDF8 / #FFA010）**。前胸帶有多巴胺薄荷綠（#4ED86A）與天藍（#38A0FF）工兵巡檢飾帶，胸口正中嵌裝一枚拋光黃銅齒輪護胸鏡（Brass Cog Medallion），配備快拆黃銅卡扣與重型工具皮帶扣環，背部精確預留開孔以容納發條鑰匙。
+- **集市工兵鉚接生漆板甲胸甲**：身著由歐風工兵板甲與沖壓鍍銅胸板組合而成的**集市工兵鉚接生漆板甲胸甲（Sapper Riveted Brass Cuirass #FFFDF8 / #FFA010）**。前胸帶有多巴胺薄荷綠（#4ED86A）與天藍（#38A0FF）工兵巡檢飾帶，胸口正中嵌裝一枚拋光黃銅齒輪護胸鏡（Brass Cog Medallion），配備快拆黃銅卡扣與重型工具金屬扣環，背部精確預留開孔以容納發條鑰匙。
 - **雙聯天軌木榫馱架與分節配重平衡尾**：後背安裝工兵標誌性的**雙聯天軌木榫馱架（Dual Cograil Timber Pack）**。馱架由細緻打磨的百年胡桃木與微型黃銅榫卯卡扣組裝而成，兩側各牢牢固定著一束縮比的微型鐵道枕木與傳動齒輪替換件；身後垂下一組三段式鉸接黃銅分節配重平衡尾（Segmented Counterweight Tail），尾端配有一枚圓形黃銅防後座阻尼重錘，在重斧全力下劈時接地提供反作用力平衡，絕無任何真毛髮或生物組織！
 - **晨曦三葉雕花黃銅發條鑰匙**：背部插著一柄獨具小鎮市集工藝特色的**晨曦三葉雕花黃銅發條鑰匙（Dawn Three-Leaf Clover Brass Key #FFD028）**。鑰匙柄由三葉幸運草輪廓交錯嚙合的黃銅齒輪雕花而成，中心嵌有一枚多巴胺珊瑚粉（#FF5E8A）防震橡膠鉚釘。隨小鎮中央大鐘秒針每 2~3 秒跳動一格時勻速自轉，停拍時精準自鎖。
 
@@ -173,7 +173,7 @@
   - 基底主色：**奶油米白 #FFFDF8**（沖壓耐磨生漆金屬身軀與面罩高光）；
   - 工兵飾帶：**落日暖橘 #FFA010**（工兵背心飾帶、長耳外罩彩漆與馱架加固扣帶）；
   - 琉璃目鏡：**天藍 #38A0FF**（青石琉璃目鏡分劃線、天軌工兵防撞標籤）；
-  - 齒輪防震：**薄荷綠 #4ED86A**（長耳軸承防震膠圈、重斧握柄亞麻生漆防滑帶）；
+  - 齒輪防震：**薄荷綠 #4ED86A**（長耳軸承防震膠圈、重斧握柄生漆防滑刻紋帶）；
   - 金屬反光：**天元金黃 #FFD028**（三葉發條鑰匙、長耳內部棘輪、胸前齒輪徽章與重斧鉚釘）；
   - 核心點綴：**珊瑚粉 #FF5E8A**（發條鑰匙中心鉚釘、耳尖內襯減震軟墊）；
   - 結構輪廓：**深藍紫 #1F1A3A**（全外輪廓 5~6px 厚實立體手繪深色描邊與陰影，保證果凍厚底按鈕與手遊螢幕高辨識度，絕不用髒泥土灰黑）。
@@ -208,11 +208,11 @@
   - 穿梭於「**懸吊齒輪鐘樓（Suspended Gear Belltower）**」、「**歐風木造街屋**」與「**多邊形胡桃木拼花浮空展台底座**」之間，巡邏於「**街道鋪面採用細緻打磨的淺灰硬質磨石灰岩積木拼合而成，步道邊緣鑲嵌著細小的金黃銅質防滑飾條**」的集市主幹道；
   - 闢道頑驢常年駐守於重型交通節點「**巨輪城重型空軌貨運棧橋（Great Cog Rail Freight Way）**」與「**齒輪吊索大橋·小鎮站（Cogwheel Cableway Terminal）**」，負責揮動重斧清理鐵軌上的障礙物與脫落螺栓，確保來自今日村莊與黃銅都市的懸空纜車暢通無阻；
   - 巡檢連接翡翠深林的「**蔓谷天梯引道（Vine Valley Stairway Gate）**」與高台的「**晨曦天軌 2 號月台（Dawn Rail Platform 2）**」，並在展台邊緣的「**邊界安全防護彈簧網（Perimeter Safety Spring-Net）**」旁巡視，引導誤入邊界的不慎跌落者安全返回人行步道；
-  - 定期在「**精紡線莊**」領取耐磨亞麻捆紮繩，前往「**中央油坊**」領取散熱發條潤滑油浸潤耳根棘輪，享受小鎮特有的「**永恆晨曦柔光（#FFF8E7）**」；
+  - 定期在「**精紡線莊**」領取耐磨發條牽引銅絲繩，前往「**中央油坊**」領取散熱發條潤滑油浸潤耳根棘輪，享受小鎮特有的「**永恆晨曦柔光（#FFF8E7）**」；
 - **結伴核心 NPC 與原住玩具族群**：
   - 協助「**提線商會會長·巴納姆（Barnum the Threadmaster）**」維護空軌貨運路線，以沉穩步態背負大批貨物往返棧橋，巴納姆讚譽其為「商會天軌最堅固的基石」；
   - 在露天茶座接受「**彩釉玩偶夫人·瑪德琳（Lady Madeline the Glazed Belle）**」的茶點慰勞，瑪德琳夫人親手為其長耳擦拭潤滑油，感謝其維護街面整潔；
-  - 與「**摺紙工匠·小鶴（Tsuru the Origami Crafter）**」切磋榫卯與折疊結構，小鶴特別為其馱架製作輕量化防水棉紙雨棚，護衛「**提線木偶族（Marionettes）**」、「**彩釉玩偶貴族（Glazed Porcelain Chibi Citizens）**」與「**摺紙手藝人族（Origami Artisans）**」；
+  - 與「**摺紙工匠·小鶴（Tsuru the Origami Crafter）**」切磋榫卯與折疊結構，小鶴特別為其馱架製作輕量化防水摺紙雨棚，護衛「**提線木偶族（Marionettes）**」、「**彩釉玩偶貴族（Glazed Porcelain Chibi Citizens）**」與「**摺紙手藝人族（Origami Artisans）**」；
 - **化解區域旗艦危機**：
   - 在小鎮防衛設施發生紊亂、「**失控自動販賣傀儡（Runaway Vending Automaton）**」向街面傾瀉硬糖彈幕、巡迴劇團「**脫線提線小丑（Tangled Marionette Clown）**」陷入脫線狂舞時，闢道頑驢挺身而出，以厚實胸甲硬頂衝撞，一斧劈開失控機械的制動閥門；
   - 當小鎮頂級 BOSS「**集市守護機關·提線巨偶（Bazaar Overseer: Grand Marionette Titan）**」因天車齒箱卡死引發狂暴、拔出舞台道具巨劍執行全域鎮壓時，闢道頑驢沉穩扎馬，在巨偶重踏震地的空檔中硬扛橫掃，揮動集市天軌闢道重斧精準斬擊巨偶的三大部位破壞點——「**劇團面具與聚光水晶目鏡（Troupe Mask & Optical Lens）**」、「**鐵杉木握劍巨臂與驅動滑輪（Timber Cleaver Arm & Pulley）**」與「**背部天車牽引主纜與下肢配重（Aerial Hoist Cable & Counterweights）**」，助小白精準挑飛卡死的主調速插銷，使提線巨偶平穩恢復清明、謝幕鞠躬！
@@ -240,7 +240,7 @@
 │ optic_core    │ 雙聯高透青石琉璃圓形目鏡                  │ common   │ donkey    │ 高透青石耐磨琉璃鏡  │
 │               │ face_donkey_slate_goggles                 │          │           │ 天藍十字分劃、金指針│
 ├───────────────┼───────────────────────────────────────────┼──────────┼───────────┼─────────────────────┤
-│ costume       │ 集市工兵鉚接皮革紋生漆胸甲                │ common   │ donkey    │ 工兵厚實生漆戰甲    │
+│ costume       │ 集市工兵鉚接生漆板甲胸甲                │ common   │ donkey    │ 工兵厚實生漆戰甲    │
 │               │ costume_donkey_sapper_harness             │          │           │ 黃銅齒輪鏡、巡檢帶  │
 ├───────────────┼───────────────────────────────────────────┼──────────┼───────────┼─────────────────────┤
 │ back_curio    │ 雙聯天軌木榫馱架與分節配重平衡尾          │ common   │ donkey    │ 百年胡桃木榫卯馱架  │
@@ -266,8 +266,8 @@
    - 雙聯大尺寸高透球形青石琉璃目鏡，外圈包覆深藍紫（#1F1A3A）鍍鈦金屬防眩光密封眼圈；
    - 鏡片內部散發天藍（#38A0FF）與天元金黃（#FFD028）的光暈，浮現十字同心圓瞄準分劃線與暖金微型指針，眼神憨厚、專注而倔強，杜絕任何恐怖死白或空洞感。
 4. **服飾胸甲（Costume - `costume_donkey_sapper_harness`）**：
-   - 厚重工兵防護胸甲，由耐磨生漆金屬片與歐風工兵戰袍鉚接而成；
-   - 前胸飾有多巴胺薄荷綠（#4ED86A）與天藍（#38A0FF）巡檢飾帶，胸口正中嵌裝一枚拋光黃銅齒輪護胸徽章，配備快拆黃銅卡扣與工具皮帶扣環，背部預留精準鑰匙孔位。
+   - 厚重工兵防護胸甲，由耐磨生漆金屬片與歐風工兵板甲鉚接而成；
+   - 前胸飾有多巴胺薄荷綠（#4ED86A）與天藍（#38A0FF）巡檢飾帶，胸口正中嵌裝一枚拋光黃銅齒輪護胸徽章，配備快拆黃銅卡扣與工具金屬扣環，背部預留精準鑰匙孔位。
 5. **背部飾品（Back Curio - `curio_donkey_cograil_pack_tail`）**：
    - 標誌性的雙聯天軌木榫馱架，由細緻打磨的胡桃木架與微型黃銅榫卯組裝而成，兩側捆紮微縮鐵道枕木與備用齒輪；
    - 身後垂下一組三段式鉸接黃銅平衡尾，尾端嵌有一枚圓形黃銅防後座阻尼重錘，全力揮斧時提供絕佳動態平衡。
@@ -275,7 +275,7 @@
    - 晨曦三葉雕花黃銅發條鑰匙，輪緣呈古典巴洛克幸運草雕花鏤空造型，中心嵌裝多巴胺珊瑚粉（#FF5E8A）防震橡膠鉚釘；
    - 隨小鎮天穹秒針每 2~3 秒跳動一格時勻速自轉，停拍時精準自鎖。
 7. **專屬武器（Weapon - `weapon_donkey_bazaar_clearing_axe`）**：
-   - 集市天軌闢道重斧，長柄由陳化胡桃木芯包覆防滑亞麻布帶製成；
+   - 集市天軌闢道重斧，長柄由陳化胡桃木芯包覆黃銅防滑刻紋握柄製成；
    - 雙刃高碳鋼斧身嵌有大型黃銅減震棘輪與天軌排渣榫槽，揮砍時發出低沉威猛的破空破障之音！
 
 ---
@@ -348,7 +348,7 @@
   "origin_realm": "R02 晨曦小鎮·木偶集市 / Dawn Town: Marionette Bazaar",
   "starter_weapon": "notch_axe",
   "weapon_class": "axe",
-  "lore_anchor": "穿行於晨曦小鎮·木偶集市「懸吊齒輪鐘樓」、「歐風木造街屋」與「多邊形胡桃木拼花浮空展台底座」，巡邏於「街道鋪面採用細緻打磨的淺灰硬質磨石灰岩積木拼合而成，步道邊緣鑲嵌著細小的金黃銅質防滑飾條」之街道，守護「巨輪城重型空軌貨運棧橋」、「齒輪吊索大橋·小鎮站」、「蔓谷天梯引道」與「晨曦天軌 2 號月台」，在永恆晨曦柔光下引導邊界安全防護彈簧網，結伴巴納姆會長、瑪德琳夫人與工匠小鶴，護衛提線木偶族、彩釉玩偶貴族與摺紙手藝人族；通體覆蓋集市工兵沖壓馬口鐵金屬底盤、雙聯棘輪立體折疊長耳面盔、雙聯高透青石琉璃圓形目鏡、集市工兵鉚接皮革紋生漆胸甲、雙聯天軌木榫馱架與分節配重平衡尾、晨曦三葉雕花黃銅發條鑰匙，手持集市天軌闢道重斧，以2.2頭身矮萌扎實身軀、沉穩四平破障步法、一擊要有重量的重劈與頑固防線卡位見長的集市重裝開拓鐵衛戰士",
+  "lore_anchor": "穿行於晨曦小鎮·木偶集市「懸吊齒輪鐘樓」、「歐風木造街屋」與「多邊形胡桃木拼花浮空展台底座」，巡邏於「街道鋪面採用細緻打磨的淺灰硬質磨石灰岩積木拼合而成，步道邊緣鑲嵌著細小的金黃銅質防滑飾條」之街道，守護「巨輪城重型空軌貨運棧橋」、「齒輪吊索大橋·小鎮站」、「蔓谷天梯引道」與「晨曦天軌 2 號月台」，在永恆晨曦柔光下引導邊界安全防護彈簧網，結伴巴納姆會長、瑪德琳夫人與工匠小鶴，護衛提線木偶族、彩釉玩偶貴族與摺紙手藝人族；通體覆蓋集市工兵沖壓馬口鐵金屬底盤、雙聯棘輪立體折疊長耳面盔、雙聯高透青石琉璃圓形目鏡、集市工兵鉚接生漆板甲胸甲、雙聯天軌木榫馱架與分節配重平衡尾、晨曦三葉雕花黃銅發條鑰匙，手持集市天軌闢道重斧，以2.2頭身矮萌扎實身軀、沉穩四平破障步法、一擊要有重量的重劈與頑固防線卡位見長的集市重裝開拓鐵衛戰士",
   "proportions": {
     "head_to_body_ratio": "2.0 ~ 2.2 頭身 (1900s-1930s 歐洲萊曼發條鐵皮頑皮驢與巴伐利亞木雕工兵自動偶)",
     "posture": "2.2 頭身矮萌身軀穩健立定於地面，右手單手將集市闢道重斧立於身側地面，左臂曲於胸前呈現沉穩守勢，頭頂雙聯黃銅長耳隨呼吸輕柔後擺約10度，身後分節黃銅尾如鐘擺般節律輕晃，背後三葉發條鑰匙隨小鎮秒針每2~3秒跳動勻速自轉，停拍時精準自鎖",
@@ -367,7 +367,7 @@
     "primary": "#FFFDF8 (奶油米白沖壓胸腹耐磨生漆板件)",
     "secondary": "#FFA010 (明亮暖橘工兵背心飾帶、長耳外罩彩漆與馱架扣帶)",
     "accent_blue": "#38A0FF (天藍防眩光琉璃目鏡分劃與天軌防撞標籤)",
-    "accent_mint": "#4ED86A (薄荷綠軸承防震膠圈與重斧握柄亞麻生漆防滑帶)",
+    "accent_mint": "#4ED86A (薄荷綠軸承防震膠圈與重斧握柄生漆防滑刻紋帶)",
     "accent_gold": "#FFD028 (晨曦金黃三葉發條鑰匙、黃銅鉚釘、長耳棘輪齒與斧刃破勢鑲邊)",
     "accent_pink": "#FF5E8A (多巴胺珊瑚粉發條鑰匙中心鉚釘與耳尖減震軟墊)",
     "outline": "#1F1A3A (深藍紫立體手繪描邊)"
@@ -393,7 +393,7 @@
 ### 8.1 官方立繪概念提示詞（Hero Standee Prompt）
 
 ```text
-Chibi 2.2 head-to-body ratio clockwork donkey sapper warrior toy automaton, standing cutely and solidly on a fairy-tale cobblestone town street diorama with European half-timbered shops and brass gear rails. Pure awakening toy, 100% NO animal fur, NO leather, NO biological flesh, NO biological mouth, NO biological tissue, NO rust, NO oil leaks. Crafted from stamped cold-rolled tinplate sheets with glossy enamel lacquer (#FFFDF8 cream white body with #FFA010 warm orange sapper vest trims), smooth articulated brass ball-socket joints with solid black rubber hoof pads. Head unit featuring a rounded metal cowl with upright dual articulated stamped brass long donkey ears (#FFA010 warm orange) showing internal ratchet cogs and cooling vents. Eyes are glowing dual spherical high-clarity slate glass goggles (#38A0FF sky blue with #FFD028 gold concentric reticle) set within deep indigo violet metal anti-glare rings (#1F1A3A). Wearing a heavy-duty sapper harness with stamped brass shoulder plates and a polished brass gear chest medallion. Back curio features a miniature walnut timber cograil saddle pack laden with tiny wooden ties and a 3-segment brass counterweight tail with a round balance brass bob. On the back, a rotating three-leaf clover brass wind-up key with a coral pink central rivet (#FF5E8A). Single-wielding a heavy clearing battle axe with stamped high-carbon steel double blades, central brass damping ratchet, and textured linen grip (#4ED86A mint green). Clean dopamine palette, thick bottom jelly button feel, crisp hand-drawn cell-shading with deep indigo violet outlines (#1F1A3A), soft morning tyndall sunbeams through clockwork belltowers, pure cream white background --ar 1:1 --stylize 250
+Chibi 2.2 head-to-body ratio clockwork donkey sapper warrior toy automaton, standing cutely and solidly on a fairy-tale cobblestone town street diorama with European half-timbered shops and brass gear rails. Pure awakening toy, 100% NO animal fur, NO leather, NO biological flesh, NO biological mouth, NO biological tissue, NO rust, NO oil leaks. Crafted from stamped cold-rolled tinplate sheets with glossy enamel lacquer (#FFFDF8 cream white body with #FFA010 warm orange sapper vest trims), smooth articulated brass ball-socket joints with solid black rubber hoof pads. Head unit featuring a rounded metal cowl with upright dual articulated stamped brass long donkey ears (#FFA010 warm orange) showing internal ratchet cogs and cooling vents. Eyes are glowing dual spherical high-clarity slate glass goggles (#38A0FF sky blue with #FFD028 gold concentric reticle) set within deep indigo violet metal anti-glare rings (#1F1A3A). Wearing a heavy-duty sapper harness with stamped brass shoulder plates and a polished brass gear chest medallion. Back curio features a miniature walnut timber cograil saddle pack laden with tiny wooden ties and a 3-segment brass counterweight tail with a round balance brass bob. On the back, a rotating three-leaf clover brass wind-up key with a coral pink central rivet (#FF5E8A). Single-wielding a heavy clearing battle axe with stamped high-carbon steel double blades, central brass damping ratchet, and textured lacquer grip (#4ED86A mint green). Clean dopamine palette, thick bottom jelly button feel, crisp hand-drawn cell-shading with deep indigo violet outlines (#1F1A3A), soft morning tyndall sunbeams through clockwork belltowers, pure cream white background --ar 1:1 --stylize 250
 ```
 
 ### 8.2 負面提示詞（Negative Prompt）
