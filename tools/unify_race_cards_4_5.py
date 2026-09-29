@@ -53,6 +53,7 @@ RACES = [
     ("petaurista", "嵐翼鼯鼠"),
     ("lynx", "提線猞猁"),
     ("scarab", "黑曜金龜"),
+    ("walrus", "破冰海象"),
 ]
 
 def pad_to_4_5(im: Image.Image, race_name: str) -> Image.Image:

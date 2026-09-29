@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://pkupo8815wnbv"
-path="res://.godot/imported/weapon_petaurista_zen_octagonal_bamboo_dart.png-0ead216ef6d14f58ab2e92ef83b7e03f.ctex"
+uid="uid://dym3w3ibhb01l"
+path="res://.godot/imported/weapon_petaurista_zen_octagonal_bamboo_dart.png-a7f5e18a9ba0a371f6b79e20715c5412.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/weapon_petaurista_zen_octagonal_bamboo_dart.png"
-dest_files=["res://.godot/imported/weapon_petaurista_zen_octagonal_bamboo_dart.png-0ead216ef6d14f58ab2e92ef83b7e03f.ctex"]
+source_file="res://assets/paperdoll/weapon/weapon_petaurista_zen_octagonal_bamboo_dart.png"
+dest_files=["res://.godot/imported/weapon_petaurista_zen_octagonal_bamboo_dart.png-a7f5e18a9ba0a371f6b79e20715c5412.ctex"]
 
 [params]
 
