@@ -4466,8 +4466,8 @@
    "id": "cuttlefish-skeleton",
    "cat": "遊戲",
    "title": "第五十一族墨紋烏賊(cuttlefish)資料表骨架與空目錄先行建置",
-   "status": "測試中",
-   "note": "建立第七大槽位空目錄與資料表正表/fallback骨架，通過0-QA30/0-QA33驗證 (t_286417e3)",
+   "status": "已上線",
+   "note": "骨架已過審合main（t_286417e3 done），補正落後狀態",
    "keys": [
     "第五十一族墨紋烏"
    ]
