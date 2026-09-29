@@ -4786,8 +4786,8 @@
    "id": "lynx-skeleton",
    "cat": "遊戲",
    "title": "第五十九族提線猞猁(lynx)資料表骨架與空目錄先行建置",
-   "status": "草稿",
-   "note": "骨架建置完成，無頭測試與 0-QA30 查驗通過",
+   "status": "已上線",
+   "note": "審核通過並合併進 main (t_9ddafa3a)",
    "keys": [
     "第五十九族提線猞"
    ]
