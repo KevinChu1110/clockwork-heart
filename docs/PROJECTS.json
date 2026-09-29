@@ -4691,6 +4691,46 @@
    "keys": [
     "第五十七族星岩鼴"
    ]
+  },
+  {
+   "id": "mole-combat-poses",
+   "cat": "遊戲",
+   "title": "第五十七族星岩鼴鼠(mole)六大戰鬥姿態補齊",
+   "status": "測試中",
+   "note": "六大戰鬥姿態雙規格產出完成，自測全綠，送審 sideqa (t_d98d3a4d)",
+   "keys": [
+    "第五十七族星岩鼴"
+   ]
+  },
+  {
+   "id": "bison-official-assets",
+   "cat": "遊戲",
+   "title": "第四十四族撼地野牛(bison)官方資產套件補齊",
+   "status": "開發中",
+   "note": "補齊撼地野牛官方資產套件 (t_48061d13)",
+   "keys": [
+    "第四十四族撼地野"
+   ]
+  },
+  {
+   "id": "gecko-official-assets",
+   "cat": "遊戲",
+   "title": "第四十五族巡管守宮(gecko)官方資產套件補齊",
+   "status": "開發中",
+   "note": "補齊巡管守宮官方資產套件 (t_221b6b25)",
+   "keys": [
+    "第四十五族巡管守"
+   ]
+  },
+  {
+   "id": "hippo-official-assets",
+   "cat": "遊戲",
+   "title": "第五十六族重閘河馬(hippo)官方資產套件補齊",
+   "status": "開發中",
+   "note": "補齊重閘河馬官方資產套件 (t_60e6c7cd)",
+   "keys": [
+    "第五十六族重閘河"
+   ]
   }
  ]
 }

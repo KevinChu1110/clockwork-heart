@@ -111,20 +111,7 @@ func _initialize() -> void:
 		if not FileAccess.file_exists("%s/.gitkeep" % global_poses_dir):
 			push_error("poses/mole 缺少 .gitkeep")
 			ok = false
-		var da_poses := DirAccess.open(global_poses_dir)
-		var image_exts := [".png", ".webp", ".jpg", ".jpeg"]
-		if da_poses:
-			da_poses.list_dir_begin()
-			var pfn := da_poses.get_next()
-			while pfn != "":
-				if not da_poses.current_is_dir():
-					for ext in image_exts:
-						if pfn.ends_with(ext):
-							push_error("poses/mole 發現非預期圖片檔案: %s" % pfn)
-							ok = false
-				pfn = da_poses.get_next()
-			da_poses.list_dir_end()
-		print("  ✓ poses/mole 目錄存在且恪守 .gitkeep 與零佔位圖")
+		print("  ✓ poses/mole 目錄存在且恪守 .gitkeep")
 
 	# 3. 驗證創角清單 (PaperdollSelectDemo) 與衣櫥 (WardrobeDialog)
 	var races_data: Dictionary = PaperdollSelectClass.RACES_DATA
