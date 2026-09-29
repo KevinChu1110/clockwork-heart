@@ -87,17 +87,27 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3.2 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/camel 目錄存在且恪守零美術佔位圖（僅保留 .gitkeep）
+# 4. 驗證 7 大槽位切片已全數就緒 (128x128 與 512x512) 且 poses/camel 恪守零美術佔位圖
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/camel")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
 
+expected_slices = {
+    "back_curio": ["curio_camel_twin_condenser_humps.png", "curio_camel_twin_condenser_humps_512.png"],
+    "chassis": ["chassis_camel_sanded_tinplate_default.png", "chassis_camel_sanded_tinplate_default_512.png"],
+    "costume": ["costume_camel_scavenger_astronomer_robe.png", "costume_camel_scavenger_astronomer_robe_512.png"],
+    "head_unit": ["head_camel_sundial_gnomon_cowl.png", "head_camel_sundial_gnomon_cowl_512.png"],
+    "optic_core": ["face_camel_dual_spectroscope_quartz_lens.png", "face_camel_dual_spectroscope_quartz_lens_512.png"],
+    "weapon": ["weapon_camel_sundial_refraction_rod.png", "weapon_camel_sundial_refraction_rod_512.png"],
+    "winding_key": ["key_camel_armillary_dial_brass.png", "key_camel_armillary_dial_brass_512.png"]
+}
+
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"槽位目錄缺少 .gitkeep: {s_dir}"
-    slot_images = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert not slot_images, f"槽位目錄 {s} 發現非預期圖片檔案（違反零佔位圖規則）: {slot_images}"
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/camel")
 assert os.path.isdir(poses_dir), f"poses/camel 目錄不存在: {poses_dir}"
@@ -105,7 +115,7 @@ assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/camel 缺少 
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
 assert not poses_images, f"poses/camel 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-print("✓ 4. 7 大槽位空目錄與 poses/camel 均已就緒，且恪守零美術佔位圖（僅保留 .gitkeep）規範")
+print("✓ 4. 7 大槽位切片已全數就緒且 poses/camel 恪守零美術佔位圖規範")
 
 # 5. 驗證開局武器符合 equipment.json 既有 ID (star_rod)
 equip_path = os.path.join(repo_root, "game/data/tables/equipment.json")
