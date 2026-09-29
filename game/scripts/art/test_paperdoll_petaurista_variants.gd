@@ -71,12 +71,15 @@ func _initialize() -> void:
 
 		var out_path := "res://assets/sprites/player/paperdoll/petaurista/proof_paperdoll_petaurista_composite.png"
 		var abs_out := ProjectSettings.globalize_path(out_path)
-		var err := comp_img.save_png(abs_out)
-		if err == OK:
-			print("  ✓ 成功儲存嵐翼鼯鼠 7 槽合成存證圖: %s" % abs_out)
+		if not FileAccess.file_exists(abs_out):
+			var err := comp_img.save_png(abs_out)
+			if err == OK:
+				print("  ✓ 成功儲存嵐翼鼯鼠 7 槽合成存證圖: %s" % abs_out)
+			else:
+				push_error("儲存合成圖失敗: %d" % err)
+				ok = false
 		else:
-			push_error("儲存合成圖失敗: %d" % err)
-			ok = false
+			print("  ✓ 嵐翼鼯鼠 7 槽合成存證圖已存在，保留出貨切片重合成規格: %s" % abs_out)
 
 	# 3. 測試卸除外裝 (none / 裸機素體)
 	print("\n--- 3. 驗證卸除外裝 (none / 裸機素體) 切換 ---")
