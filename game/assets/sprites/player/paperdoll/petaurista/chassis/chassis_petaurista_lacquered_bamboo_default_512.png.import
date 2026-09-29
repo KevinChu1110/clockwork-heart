@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://oth22rynubttu"
-path="res://.godot/imported/chassis_petaurista_lacquered_bamboo_default_512.png-7ce58c982907c1011ca653d70b9d4305.ctex"
+uid="uid://c8ahbl7v5o7kk"
+path="res://.godot/imported/chassis_petaurista_lacquered_bamboo_default_512.png-dd50c4845884b8adeb36b67157201d25.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/petaurista/chassis/chassis_petaurista_lacquered_bamboo_default_512.png"
-dest_files=["res://.godot/imported/chassis_petaurista_lacquered_bamboo_default_512.png-7ce58c982907c1011ca653d70b9d4305.ctex"]
+source_file="res://assets/paperdoll/petaurista/chassis/chassis_petaurista_lacquered_bamboo_default_512.png"
+dest_files=["res://.godot/imported/chassis_petaurista_lacquered_bamboo_default_512.png-dd50c4845884b8adeb36b67157201d25.ctex"]
 
 [params]
 

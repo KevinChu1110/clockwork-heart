@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://crp3izsfuq92u"
-path="res://.godot/imported/head_petaurista_zen_bamboo_ninja_cowl.png-5a5ad981245553fb9ba60de83cb4e607.ctex"
+uid="uid://crp3i0sfura2u"
+path="res://.godot/imported/head_petaurista_zen_bamboo_ninja_cowl.png-7347354a06e10107cfcc5fe30a802235.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/petaurista/head_unit/head_petaurista_zen_bamboo_ninja_cowl.png"
-dest_files=["res://.godot/imported/head_petaurista_zen_bamboo_ninja_cowl.png-5a5ad981245553fb9ba60de83cb4e607.ctex"]
+source_file="res://assets/paperdoll/petaurista/head_unit/head_petaurista_zen_bamboo_ninja_cowl.png"
+dest_files=["res://.godot/imported/head_petaurista_zen_bamboo_ninja_cowl.png-7347354a06e10107cfcc5fe30a802235.ctex"]
 
 [params]
 
