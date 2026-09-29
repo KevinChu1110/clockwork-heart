@@ -76,35 +76,30 @@ func _initialize() -> void:
 		else:
 			print("  ✓ 0-QA30 查驗合格：正表與 fallback 表 mole aliases 100%% 對齊一致: %s" % str(fallback_aliases))
 
-	# 2. 驗證 7 大槽位目錄與既有族完全一致，且恪守零美術佔位圖（僅保留 .gitkeep）
+	# 2. 驗證 7 大槽位 128x128 與 512x512 切片圖層全數就緒
 	var expected_slots := ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 	var base_path := "res://assets/sprites/player/paperdoll/mole"
-	var image_exts := [".png", ".webp", ".jpg", ".jpeg"]
+	var mole_global_dir := ProjectSettings.globalize_path(base_path)
+	var expected_slice_files := {
+		"back_curio": ["curio_mole_cold_gas_thruster_tail.png", "curio_mole_cold_gas_thruster_tail_512.png"],
+		"chassis": ["chassis_mole_milky_polymer_default.png", "chassis_mole_milky_polymer_default_512.png"],
+		"costume": ["costume_mole_orbital_sapper_dungarees.png", "costume_mole_orbital_sapper_dungarees_512.png"],
+		"head_unit": ["head_mole_orbital_mining_visor_cowl.png", "head_mole_orbital_mining_visor_cowl_512.png"],
+		"optic_core": ["face_mole_amber_led_mining_visor_lens.png", "face_mole_amber_led_mining_visor_lens_512.png"],
+		"weapon": ["weapon_mole_orbital_plasma_sledgehammer.png", "weapon_mole_orbital_plasma_sledgehammer_512.png"],
+		"winding_key": ["key_mole_four_vane_antenna_brass.png", "key_mole_four_vane_antenna_brass_512.png"]
+	}
+	var missing_files: Array[String] = []
 	for sid in expected_slots:
-		var slot_dir := "%s/%s" % [base_path, sid]
-		var global_slot_dir := ProjectSettings.globalize_path(slot_dir)
-		if not DirAccess.dir_exists_absolute(global_slot_dir):
-			push_error("星岩鼴鼠槽位目錄不存在: %s" % slot_dir)
-			ok = false
-		else:
-			var gitkeep_file := "%s/.gitkeep" % global_slot_dir
-			if not FileAccess.file_exists(gitkeep_file):
-				push_error("星岩鼴鼠槽位目錄缺少 .gitkeep: %s" % slot_dir)
-				ok = false
-			# 檢查無圖片
-			var da := DirAccess.open(global_slot_dir)
-			if da:
-				da.list_dir_begin()
-				var fn := da.get_next()
-				while fn != "":
-					if not da.current_is_dir():
-						for ext in image_exts:
-							if fn.ends_with(ext):
-								push_error("先行骨架發現非預期圖片檔案（違反零佔位圖規則）: %s/%s" % [sid, fn])
-								ok = false
-					fn = da.get_next()
-				da.list_dir_end()
-			print("  ✓ 槽位目錄存在且恪守零佔位圖: %s" % sid)
+		for req_f in expected_slice_files.get(sid, []):
+			var fp := "%s/%s/%s" % [mole_global_dir, sid, req_f]
+			if not FileAccess.file_exists(fp):
+				missing_files.append("%s/%s" % [sid, req_f])
+	if not missing_files.is_empty():
+		push_error("星岩鼴鼠切片檔案缺失: %s" % str(missing_files))
+		ok = false
+	else:
+		print("  ✓ 星岩鼴鼠 7 大槽位 128x128 與 512x512 切片圖層全數就緒！")
 
 	# 驗證 poses/mole 目錄
 	var poses_mole := "res://assets/sprites/player/poses/mole"
@@ -117,6 +112,7 @@ func _initialize() -> void:
 			push_error("poses/mole 缺少 .gitkeep")
 			ok = false
 		var da_poses := DirAccess.open(global_poses_dir)
+		var image_exts := [".png", ".webp", ".jpg", ".jpeg"]
 		if da_poses:
 			da_poses.list_dir_begin()
 			var pfn := da_poses.get_next()
@@ -139,13 +135,13 @@ func _initialize() -> void:
 		var mole_rdata: Dictionary = races_data["mole"]
 		print("  ✓ PaperdollSelectDemo.RACES_DATA 正確納入 mole: %s" % mole_rdata.get("name_zh"))
 
-	# 驗證 has_race_assets 防護守衛（因為尚無切片與立繪，必須返回 false 安全隱藏）
+	# 驗證防護守衛 has_race_assets 正常運作（素材就緒後應為 true）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("mole")
-	if has_assets:
-		push_error("尚未產出切片立繪前，has_race_assets('mole') 應為 false（安全隱藏防護守衛）！")
+	if not has_assets:
+		push_error("素材就緒後 has_race_assets('mole') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ has_race_assets('mole') 正確回傳 false（安全隱藏未解鎖族群，不露出空卡）")
+		print("  ✓ 防護守衛生效：has_race_assets('mole') 正確回傳 true（展示正常）")
 
 	var filter_found := false
 	for rf in WardrobeDialog.RACE_FILTER_OPTIONS:
