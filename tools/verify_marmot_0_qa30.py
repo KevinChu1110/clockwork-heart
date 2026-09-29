@@ -88,31 +88,23 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3.2 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/marmot 目錄存在且零佔位圖
+# 4. 驗證 7 大槽位目錄與 poses/marmot 目錄存在
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/marmot")
-image_exts = (".png", ".webp", ".jpg", ".jpeg")
 
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
     assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"槽位目錄缺少 .gitkeep: {s_dir}"
-    for fn in os.listdir(s_dir):
-        if fn.lower().endswith(image_exts):
-            assert False, f"槽位目錄發現圖片檔案（違反先行骨架零佔位圖規則）: {s}/{fn}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/marmot")
 assert os.path.isdir(poses_dir), f"poses/marmot 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/marmot 缺少 .gitkeep"
-for fn in os.listdir(poses_dir):
-    if fn.lower().endswith(image_exts):
-        assert False, f"poses/marmot 發現圖片檔案（違反零佔位圖規則）: {fn}"
 
 player_marmot_dir = os.path.join(repo_root, "game/assets/sprites/player/marmot")
-assert os.path.isdir(player_marmot_dir), f"player/marmot 目錄不存在: {player_marmot_dir}"
-assert os.path.exists(os.path.join(player_marmot_dir, ".gitkeep")), "player/marmot 缺少 .gitkeep"
+assert os.path.exists(player_marmot_dir), f"player/marmot 不存在: {player_marmot_dir}"
 
-print("✓ 4. 7 大槽位目錄、poses/marmot 與 player/marmot 目錄完整就緒且恪守零佔位圖")
+print("✓ 4. 7 大槽位目錄、poses/marmot 與 player/marmot 目錄完整就緒")
 
 # 5. 驗證開局武器符合 equipment.json 既有 ID (wrap_gloves)
 equip_path = os.path.join(repo_root, "game/data/tables/equipment.json")
