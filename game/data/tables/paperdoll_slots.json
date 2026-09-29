@@ -501,6 +501,12 @@
             "name": "青古銅鑄鐵重裝底盤",
             "tier": "common",
             "race": "takin"
+          },
+          {
+            "id": "chassis_lemur_orbit_polymer_default",
+            "name": "星穹輕量聚合物高機動底盤",
+            "tier": "common",
+            "race": "lemur"
           }
         ]
       },
@@ -897,6 +903,12 @@
             "name": "黃銅反曲扭角重盔",
             "tier": "common",
             "race": "takin"
+          },
+          {
+            "id": "head_lemur_orbit_radar_cowl",
+            "name": "星軌冷光雷達耳罩面甲",
+            "tier": "common",
+            "race": "lemur"
           }
         ]
       },
@@ -1228,6 +1240,11 @@
           {
             "id": "key_takin_tri_leaf_zen_brass",
             "name": "三葉天元雕花黃銅發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_lemur_tri_ring_orbit_brass",
+            "name": "三環軌道星環黃銅發條鑰匙",
             "tier": "common"
           }
         ]
@@ -1678,6 +1695,12 @@
             "name": "天元拓荒道袍重肩甲",
             "tier": "common",
             "race": "takin"
+          },
+          {
+            "id": "costume_lemur_astro_stealth_harness",
+            "name": "宇航匿蹤輕量安全吊帶胸甲",
+            "tier": "common",
+            "race": "lemur"
           }
         ]
       },
@@ -2065,6 +2088,12 @@
             "name": "翡翠石英耐震雙目鏡",
             "tier": "common",
             "race": "takin"
+          },
+          {
+            "id": "face_lemur_amber_pulsar_visors",
+            "name": "琥珀脈衝星穹雙目鏡",
+            "tier": "common",
+            "race": "lemur"
           }
         ]
       },
@@ -2459,6 +2488,12 @@
             "name": "天元破竹開山巨斧",
             "tier": "common",
             "weapon_type": "axe"
+          },
+          {
+            "id": "weapon_lemur_orbital_pulse_daggers",
+            "name": "星軌脈衝雙鋒短匕",
+            "tier": "common",
+            "weapon_type": "dagger"
           }
         ]
       },
@@ -2856,13 +2891,19 @@
             "name": "雙聯竹露油壺減震閥",
             "tier": "common",
             "race": "takin"
+          },
+          {
+            "id": "curio_lemur_neon_ring_fiber_tail",
+            "name": "多節霓光光纖星環天線尾",
+            "tier": "common",
+            "race": "lemur"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 62,
+    "total_races": 63,
     "races": [
       {
         "race_id": "rabbit",
@@ -7326,6 +7367,93 @@
           "winding_key": "key_takin_tri_leaf_zen_brass",
           "weapon": "weapon_takin_zen_bamboo_cleaving_axe"
         }
+      },
+      {
+        "race_id": "lemur",
+        "aliases": [
+          "star_ring_lemur",
+          "orbit_lemur",
+          "ringtail_lemur",
+          "clockwork_lemur",
+          "pulse_lemur"
+        ],
+        "name_zh": "星環狐猴",
+        "name_en": "The Star-Ring Lemur",
+        "class_archetype": "忍者 (Ninja)",
+        "origin_realm": "R07 星穹軌道·外星基地 / Starfall Orbit: Polymer Space Station",
+        "lore_anchor": "穿行於星穹軌道·外星基地「高光懸空螢光軌道」、「太陽能帆板與微型排氣天線」與「太空拼裝維修船塢」，巡檢「聚合物太空艙模組」、「失重慣性磁力捕捉網」與「高真空抗靜電除塵室」，駐守「高壓地熱升空彈射井·軌道受壓對接艙」與「垂直磁浮天軌·星穹軌道月台」，在太空船塢更換特種全氟聚醚耐低溫潤滑油，結伴螺栓隊長、萊卡波波與光纖婆婆，庇護組裝式宇航機器人、太空發條小狗與螢光軌道維護偶；通體覆蓋高抗衝擊工程聚合物塑料底盤與象牙白防滑襯板、星軌冷光雷達耳罩面甲、琥珀脈衝星穹雙目鏡、宇航匿蹤輕量安全吊帶胸甲、多節霓光光纖星環天線尾、三環軌道星環黃銅發條鑰匙，雙持專屬星軌脈衝雙鋒短匕，以2.2頭身輕巧機動體態、掌底矽膠吸附踏步、失重微氣反推向量折返與近戰雙刃死角背刺見長的星穹軌道匿蹤忍者",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (1960s-1980s 太空時代發條翻滾玩偶與科幻組裝微縮偶)",
+          "posture": "2.2 頭身矮萌輕巧身軀微屈膝靈動站姿，雙腳矽膠吸盤穩踏地面，右手反握主鋒匕橫於胸前，左手副匕微屈護胸，身後光纖星環長尾優雅高翹，背後三環發條鑰匙隨星穹秒針每3.0秒鐘鳴一格勻速自轉",
+          "standee_height_px": 800,
+          "standee_width_px": 520
+        },
+        "mechanical_features": {
+          "ears": "半透明高透聚碳酸酯冷光雷達耳罩，邊緣流動薄荷綠光纖微光，耳根嵌黃銅微型轉軸",
+          "eyes": "雙聯球形高透聚碳酸酯太空泡罩目鏡，深藍紫金屬眼圈，浮現落日暖橘脈衝雷達刻線",
+          "tail": "七節同軸深空消光黑曜與薄荷綠冷光光纖星環天線尾，末端安裝金黃微型全向天線球",
+          "torso_and_limbs": "象牙白高強度工程聚合物塑料外殼，關節為自潤滑尼龍球鉸，雙手掌底與足底嵌導電矽膠吸附墊",
+          "key": "三環軌道同心嵌套星環黃銅發條鑰匙，中心飾有多巴胺珊瑚粉防塵鉚釘",
+          "weapon_system": "雙持專屬「星軌脈衝雙鋒短匕（Orbital Pulse Twin Daggers）」，沖壓半透明聚碳酸酯星環護手銅環，天藍電離導光槽配薄荷綠光學測距鋸齒，底層掛載 equipment.json 既有 star_fang (tier 2 短匕)"
+        },
+        "color_palette": {
+          "primary": "#FFFDF8 (象牙白高抗衝擊聚合物板件)",
+          "secondary": "#38A0FF (多巴胺天藍宇航吊帶胸甲與短匕刃身)",
+          "accent_mint": "#4ED86A (薄荷綠冷光光纖尾環與雷達飾圈)",
+          "accent_gold": "#FFD028 (金黃星環發條鑰匙與天線姿態球)",
+          "accent_orange": "#FFA010 (落日暖橘琥珀目鏡與反光警示條)",
+          "accent_pink": "#FF5E8A (珊瑚粉防塵鉚釘與減震密封膠圈)",
+          "dark_polymer": "#1A243B (深空消光星夜藍黑聚合物尾環)",
+          "outline": "#1F1A3A (深藍紫立體手繪描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_lemur.png (品牌形象立牌)",
+              "web/media/hero/char_lemur.png (官網英雄展示立繪)",
+              "docs/art/star_ring_lemur_concept.png (概念立繪)",
+              "game/assets/sprites/player/lemur_idle.png (64x64 待機)",
+              "game/assets/sprites/player/lemur_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/lemur_idle.png (隊伍待機)",
+              "web/media/hero/lemur_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/lemur_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/lemur_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/lemur_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/lemur_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/lemur_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/lemur_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/lemur/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/lemur.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/lemur_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/star_ring_lemur.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/lemur/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_lemur.png (520x800 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/star_ring_lemur_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_lemur.png (520x800 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/lemur_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/lemur_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/lemur_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/lemur_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/lemur_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/lemur_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/lemur_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/lemur/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/lemur.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/star_ring_lemur.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/lemur/{slot_id}/{item_id}.png [待產出]"
+        },
+        "default_items": {
+          "chassis": "chassis_lemur_orbit_polymer_default",
+          "head_unit": "head_lemur_orbit_radar_cowl",
+          "optic_core": "face_lemur_amber_pulsar_visors",
+          "costume": "costume_lemur_astro_stealth_harness",
+          "back_curio": "curio_lemur_neon_ring_fiber_tail",
+          "winding_key": "key_lemur_tri_ring_orbit_brass",
+          "weapon": "weapon_lemur_orbital_pulse_daggers"
+        }
       }
     ]
   },
@@ -7373,7 +7501,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 62 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 63 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -7395,7 +7523,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "六十三重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩、重閥河馬沖壓厚鑄耐壓黃銅矮萌體態與巨輪城重裝抗震高壓鉚釘胸甲、星岩鼴鼠乳白工程塑料矮萌體態與軌道高抗衝擊防護工裝背帶褲、嵐翼鼯鼠溫潤白瓷面甲矮萌體態與天元竹林摺疊翼膜暗忍胸甲、提線猞猁精雕胡桃木與晨曦小鎮提線雜技工裝背心、黑曜金龜高耐熱鑄鐵底盤與赤焰熔爐隔熱工匠護裙、彩喙巨嘴鳥輕量化合金底盤與蔓谷探險巡林獵裝、破冰海象耐壓鍍鈦合金底盤與深淵領航雙排扣水手胸甲、破竹羚牛青古銅鑄鐵重裝底盤與天元拓荒道袍重肩甲) 由渲染器微調縮放適配"
+        "rule": "六十四重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩、重閥河馬沖壓厚鑄耐壓黃銅矮萌體態與巨輪城重裝抗震高壓鉚釘胸甲、星岩鼴鼠乳白工程塑料矮萌體態與軌道高抗衝擊防護工裝背帶褲、嵐翼鼯鼠溫潤白瓷面甲矮萌體態與天元竹林摺疊翼膜暗忍胸甲、提線猞猁精雕胡桃木與晨曦小鎮提線雜技工裝背心、黑曜金龜高耐熱鑄鐵底盤與赤焰熔爐隔熱工匠護裙、彩喙巨嘴鳥輕量化合金底盤與蔓谷探險巡林獵裝、破冰海象耐壓鍍鈦合金底盤與深淵領航雙排扣水手胸甲、破竹羚牛青古銅鑄鐵重裝底盤與天元拓荒道袍重肩甲、星環狐猴象牙白高抗衝擊聚合物底盤與宇航匿蹤輕量安全吊帶胸甲) 由渲染器微調縮放適配"
       }
     ]
   },
@@ -7465,7 +7593,8 @@
         "game/assets/sprites/player/paperdoll/scarab/",
         "game/assets/sprites/player/paperdoll/toucan/",
         "game/assets/sprites/player/paperdoll/walrus/",
-        "game/assets/sprites/player/paperdoll/takin/"
+        "game/assets/sprites/player/paperdoll/takin/",
+        "game/assets/sprites/player/paperdoll/lemur/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",

@@ -826,6 +826,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"toucan": "flint_gun",
 	"walrus": "rusty_blade",
 	"takin": "notch_axe",
+	"lemur": "star_fang",
 }
 
 
@@ -897,6 +898,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"toucan": default_name = "彩喙巨嘴鳥"
 		"walrus": default_name = "破冰海象"
 		"takin": default_name = "破竹羚牛"
+		"lemur": default_name = "星環狐猴"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
