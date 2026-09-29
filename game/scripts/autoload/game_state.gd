@@ -830,6 +830,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"marmot": "wrap_gloves",
 	"firefly": "star_rod",
 	"manta": "reed_bow",
+	"kingfisher": "ash_spear",
 }
 
 
@@ -905,6 +906,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"marmot": default_name = "碎石旱獺"
 		"firefly": default_name = "靈燈飛螢"
 		"manta": default_name = "潮汐蝠魟"
+		"kingfisher": default_name = "穿雲翠鳥"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值
