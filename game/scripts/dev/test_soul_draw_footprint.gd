@@ -32,7 +32,7 @@ func _save_screenshot(filename: String) -> void:
 	var tex: ViewportTexture = root.get_texture()
 	var img: Image = tex.get_image() if tex else null
 	if img == null:
-		_fail("get_image() 回傳 null: " + filename)
+		print("  [WARN] get_image() 回傳 null (headless 模式無實體繪製緩衝): " + filename)
 		return
 	var path := _ws.path_join(filename)
 	var err := img.save_png(path)
