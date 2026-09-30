@@ -1119,16 +1119,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_donkey_tinplate_default", "name_zh": "集市工兵沖壓馬口鐵金屬底盤", "desc": "沖壓冷軋馬口鐵耐磨烤漆板件配耐磨陶瓷底板，黃銅球形鉸鏈與黑色防滑橡膠吸附墊"}
 		]
+	},
+	"scorpion": {
+		"id": "scorpion",
+		"name_zh": "伏影沙蠍",
+		"name_en": "The Duneshadow Scorpion",
+		"archetype": "忍者 (Ninja)",
+		"thumb": "res://assets/sprites/player/showcase/scorpion_idle_hd.png",
+		"desc": "荒漠齒輪塚遺忘舊庫廢土沙丘穿棘潛行特工，沖壓耐磨馬口鐵底盤配防沙折角面盔、琥珀琉璃目鏡與專屬沙丘穿棘機關鏢。",
+		"costumes": [
+			{"id": "costume_scorpion_scavenger_plate", "name_zh": "荒漠拾荒鉚接生漆板甲胸甲", "desc": "廢土拾荒生漆板甲，嵌黃銅齒輪護胸徽章，飾以落日暖橘與薄荷綠防沙巡檢飾帶"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現落日暖橘沖壓耐磨冷軋馬口鐵板件與橡膠爪墊"}
+		],
+		"chassis": [
+			{"id": "chassis_scorpion_stock", "name_zh": "荒漠沖壓馬口鐵沙蠍底盤", "desc": "沖壓冷軋馬口鐵耐磨烤漆板件配耐磨陶瓷底板，黃銅球形關節與黑色防滑吸附橡膠爪墊"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -1650,6 +1665,7 @@ func confirm_selection() -> void:
 				"manta": gs.player_name = "潮汐蝠魟"
 				"kingfisher": gs.player_name = "穿雲翠鳥"
 				"donkey": gs.player_name = "闢道頑驢"
+				"scorpion": gs.player_name = "伏影沙蠍"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)
