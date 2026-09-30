@@ -897,5 +897,15 @@
   "巨偶蓄力中… %.1f 秒後可格擋": "Coloso cargando… se podrá parar en %.1f s",
   "蓄力必殺": "Golpe Cargado",
   "現在按 J 或點發條格擋！": "¡Pulsa J o toca Parada de Cuerda ahora!",
-  "現在點發條格擋！": "¡Toca Parada de Cuerda ahora!"
+  "現在點發條格擋！": "¡Toca Parada de Cuerda ahora!",
+  "連轉——抽十格": "Dar Cuerda — Extraer 10",
+  "soul.btn_pull_ten": "Dar Cuerda — Extraer 10",
+  "✦ 封靈連轉結果 ✦": "✦ Resultados de 10 Extracciones ✦",
+  "soul.ten_pull_title": "✦ Resultados de 10 Extracciones ✦",
+  "收入行囊": "Recoger Todo",
+  "soul.btn_collect": "Recoger Todo",
+  "再連轉一次": "Extraer 10 Otra Vez",
+  "soul.btn_pull_ten_again": "Extraer 10 Otra Vez",
+  "跳過": "Saltar",
+  "soul.btn_skip": "Saltar"
 }

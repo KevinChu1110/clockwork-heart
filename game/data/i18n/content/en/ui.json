@@ -3523,5 +3523,15 @@
   "荒漠拾荒鉚接生漆板甲胸甲": "Wasteland Scavenger Riveted Plate Cuirass",
   "多節同軸彈簧尾刺導軌與配重重錘": "Articulated Spring Stinger Tail Rail",
   "荒漠四角齒輪雕花黃銅發條鑰匙": "Dune Cross-Cog Brass Key",
-  "沙丘穿棘機關鏢": "Duneshadow Spike Dart"
+  "沙丘穿棘機關鏢": "Duneshadow Spike Dart",
+  "連轉——抽十格": "Wind Up — Draw 10",
+  "soul.btn_pull_ten": "Wind Up — Draw 10",
+  "✦ 封靈連轉結果 ✦": "✦ Ten Pull Results ✦",
+  "soul.ten_pull_title": "✦ Ten Pull Results ✦",
+  "收入行囊": "Collect All",
+  "soul.btn_collect": "Collect All",
+  "再連轉一次": "Draw 10 Again",
+  "soul.btn_pull_ten_again": "Draw 10 Again",
+  "跳過": "Skip",
+  "soul.btn_skip": "Skip"
 }

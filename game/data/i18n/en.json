@@ -897,5 +897,15 @@
   "巨偶蓄力中… %.1f 秒後可格擋": "Colossus charging… parryable in %.1f s",
   "蓄力必殺": "Charged Strike",
   "現在按 J 或點發條格擋！": "Press J or tap Windup Parry now!",
-  "現在點發條格擋！": "Tap Windup Parry now!"
+  "現在點發條格擋！": "Tap Windup Parry now!",
+  "連轉——抽十格": "Wind Up — Draw 10",
+  "soul.btn_pull_ten": "Wind Up — Draw 10",
+  "✦ 封靈連轉結果 ✦": "✦ Ten Pull Results ✦",
+  "soul.ten_pull_title": "✦ Ten Pull Results ✦",
+  "收入行囊": "Collect All",
+  "soul.btn_collect": "Collect All",
+  "再連轉一次": "Draw 10 Again",
+  "soul.btn_pull_ten_again": "Draw 10 Again",
+  "跳過": "Skip",
+  "soul.btn_skip": "Skip"
 }

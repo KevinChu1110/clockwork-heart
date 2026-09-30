@@ -1,6 +1,6 @@
 extends Control
 signal continue_requested
-## SoulDraw 可玩 UI：扣票 → 抽一格 → 結果卡。
+## SoulDraw 可玩 UI：扣票 → 發條儀式召喚動效 → 單抽/十連抽多巴胺結果卡。
 ## ⛔ 不開第二轉蛋；唯一池＝soul_draw_v2。
 
 const UiStyle := preload("res://scripts/ui/ui_style.gd")
@@ -11,6 +11,8 @@ const ConfigK1 := preload("res://scripts/systems/wave8/w8_k1_config.gd")
 const CardScript := preload("res://scripts/ui/soul_draw/soul_result_card_view.gd")
 const DailyScript := preload("res://scripts/systems/wave8/w8_daily_cycle.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
+const SummonFxScript := preload("res://scripts/ui/soul_draw/soul_summon_fx.gd")
+const TenPullScript := preload("res://scripts/ui/soul_draw/soul_ten_pull_view.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
@@ -36,8 +38,11 @@ var _ticket_lbl: Label
 var _footprint_lbl: Label
 var _log: RichTextLabel
 var _btn: Button
+var _btn_ten: Button
 var _cont_btn: Button
 var _err: Label
+var _summon_fx: Control
+var _ten_pull_view: Control
 var _font: Font = null
 var _last_err_key: String = ""
 
@@ -97,10 +102,10 @@ func _load_font() -> void:
 func _build() -> void:
 	_load_font()
 
-	# 1. 溫潤奶油全屏底板（取代 0.09 黑底）
+	# 1. 溫潤奶油全屏底板（#FFFDF8）
 	var bg := ColorRect.new()
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	bg.color = UiStyle.TATA_CARD_BG
+	bg.color = UiStyle.CREAM
 	add_child(bg)
 
 	var outer_panel := Panel.new()
@@ -112,7 +117,7 @@ func _build() -> void:
 	outer_panel.add_theme_stylebox_override("panel", UiStyle.panel_style())
 	add_child(outer_panel)
 
-	# 2. 標題（一級字 26px，深暖褐 INK，封靈罐）
+	# 2. 標題（一級字 26px，深暖褐 INK）
 	_title_lbl = Label.new()
 	_title_lbl.name = "TitleLabel"
 	_title_lbl.text = _t("抽魂 · 封靈罐")
@@ -143,7 +148,7 @@ func _build() -> void:
 		_footprint_lbl.add_theme_font_override("font", _font)
 	add_child(_footprint_lbl)
 
-	# 4. 結果卡（奶油卡規格）
+	# 4. 結果卡（多巴胺果凍色階光框規格）
 	card = CardScript.new()
 	card.name = "SoulResultCard"
 	card.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -153,7 +158,7 @@ func _build() -> void:
 	card.offset_bottom = -165
 	add_child(card)
 
-	# 5. 錯誤提示（三級字 16px，深色 DANGER，不可亮底亮字）
+	# 5. 錯誤提示（三級字 16px，深色 DANGER）
 	_err = Label.new()
 	_err.name = "ErrorLabel"
 	_err.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
@@ -168,14 +173,14 @@ func _build() -> void:
 		_err.add_theme_font_override("font", _font)
 	add_child(_err)
 
-	# 6. 主按鈕「上緊——抽一格」（UiStyle.style_button(btn, true)，高度 54px ≥ 50px）
+	# 6. 單抽主按鈕「上緊——抽一格」（消耗 1 票）
 	_btn = Button.new()
 	_btn.name = "PullBtn"
 	_btn.text = _t("上緊——抽一格")
-	_btn.custom_minimum_size = Vector2(300, 54)
+	_btn.custom_minimum_size = Vector2(200, 54)
 	_btn.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	_btn.offset_left = -150
-	_btn.offset_right = 150
+	_btn.offset_left = -215
+	_btn.offset_right = -15
 	_btn.offset_top = -128
 	_btn.offset_bottom = -74
 	_btn.pressed.connect(_on_pull)
@@ -184,7 +189,33 @@ func _build() -> void:
 		_btn.add_theme_font_override("font", _font)
 	add_child(_btn)
 
-	# 7. 次按鈕「去玩具堆邊緣（C0）」（UiStyle.style_button(btn, false)，高度 50px ≥ 50px）
+	# 6b. 十連抽主按鈕「連轉——抽十格」（消耗 10 票，多巴胺亮橘果凍）
+	_btn_ten = Button.new()
+	_btn_ten.name = "PullTenBtn"
+	_btn_ten.text = _t("連轉——抽十格")
+	_btn_ten.custom_minimum_size = Vector2(200, 54)
+	_btn_ten.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	_btn_ten.offset_left = 15
+	_btn_ten.offset_right = 215
+	_btn_ten.offset_top = -128
+	_btn_ten.offset_bottom = -74
+	_btn_ten.pressed.connect(_on_pull_ten)
+	UiStyle.style_button(_btn_ten, true)
+	# 增強十連抽按鈕的多巴胺果凍暖橘感
+	var ten_style := StyleBoxFlat.new()
+	ten_style.bg_color = Color("#FFA010")
+	ten_style.border_color = Color("#1F1A3A")
+	ten_style.set_border_width_all(3)
+	ten_style.border_width_bottom = 6
+	ten_style.set_corner_radius_all(18)
+	ten_style.shadow_color = Color(1.0, 0.63, 0.06, 0.5)
+	ten_style.shadow_size = 10
+	_btn_ten.add_theme_stylebox_override("normal", ten_style)
+	if _font != null:
+		_btn_ten.add_theme_font_override("font", _font)
+	add_child(_btn_ten)
+
+	# 7. 次按鈕「去玩具堆邊緣」（高度 50px ≥ 50px）
 	_cont_btn = Button.new()
 	_cont_btn.name = "ContinueBtn"
 	_cont_btn.text = _t("去玩具堆邊緣")
@@ -205,12 +236,25 @@ func _build() -> void:
 	_log.visible = false
 	add_child(_log)
 
+	# 9. 召喚儀式感動效層（發條鑰匙上鍊、金色齒輪解鎖、彩糖星芒爆散）
+	_summon_fx = SummonFxScript.new()
+	_summon_fx.name = "SoulSummonFx"
+	add_child(_summon_fx)
+
+	# 10. 十連抽多巴胺結果面板（5x2 陣列、色階光框、流光）
+	_ten_pull_view = TenPullScript.new()
+	_ten_pull_view.name = "SoulTenPullView"
+	_ten_pull_view.pull_again_requested.connect(_on_pull_ten)
+	add_child(_ten_pull_view)
+
 
 func _refresh() -> void:
 	if _title_lbl and is_instance_valid(_title_lbl):
 		_title_lbl.text = _t("抽魂 · 封靈罐")
 	if _btn and is_instance_valid(_btn):
 		_btn.text = _t("上緊——抽一格")
+	if _btn_ten and is_instance_valid(_btn_ten):
+		_btn_ten.text = _t("連轉——抽十格")
 	if _cont_btn and is_instance_valid(_cont_btn):
 		_cont_btn.text = _t("去玩具堆邊緣")
 	if _ticket_lbl and is_instance_valid(_ticket_lbl):
@@ -228,8 +272,8 @@ func _refresh() -> void:
 				_err.text = card.tr_key("err.daily_cap_pull")
 		elif _last_err_key == "":
 			_err.text = ""
-		if card and is_instance_valid(card) and card.has_method("refresh"):
-			card.refresh()
+	if card and is_instance_valid(card) and card.has_method("refresh"):
+		card.refresh()
 
 
 func _on_pull() -> void:
@@ -245,12 +289,60 @@ func _on_pull() -> void:
 		_last_err_key = "lack_tickets"
 		_err.text = _t("封靈票不足")
 		return
+
 	daily.note_soul_pull()
-	card.show_placeholder("soul.pull_start")
 	var drop: Dictionary = pool.pull()
 	loadout.apply_soul_drop(drop)
-	card.show_drop(drop)
 	_log.append_text("%s\n" % str(drop))
+
+	# 播放召喚儀式動效後展示結果卡
+	if _summon_fx and is_instance_valid(_summon_fx):
+		_summon_fx.play_summon(false, func():
+			card.show_drop(drop)
+		)
+	else:
+		card.show_drop(drop)
+
+	_refresh()
+
+
+func _on_pull_ten() -> void:
+	_last_err_key = ""
+	_err.text = ""
+
+	# 檢查是否能進行 10 抽
+	var remaining_cap: int = 30 - daily.daily_soul_pulls
+	if remaining_cap < 10:
+		_last_err_key = "daily_cap"
+		_err.text = _t("err.daily_cap_pull")
+		if _err.text == "err.daily_cap_pull" and card != null and card.has_method("tr_key"):
+			_err.text = card.tr_key("err.daily_cap_pull")
+		return
+
+	if econ.soul_tickets < 10:
+		_last_err_key = "lack_tickets"
+		_err.text = _t("封靈票不足")
+		return
+
+	var drops: Array[Dictionary] = []
+	for i in range(10):
+		if not econ.spend_soul_pull():
+			break
+		daily.note_soul_pull()
+		var drop: Dictionary = pool.pull()
+		loadout.apply_soul_drop(drop)
+		drops.append(drop)
+		_log.append_text("%s\n" % str(drop))
+
+	# 播放十連召喚儀式動效後展開十連結果面板
+	if _summon_fx and is_instance_valid(_summon_fx):
+		_summon_fx.play_summon(true, func():
+			if _ten_pull_view and is_instance_valid(_ten_pull_view):
+				_ten_pull_view.show_drops(drops)
+		)
+	elif _ten_pull_view and is_instance_valid(_ten_pull_view):
+		_ten_pull_view.show_drops(drops)
+
 	_refresh()
 
 
@@ -261,4 +353,3 @@ func _get_footprint_line() -> String:
 		if ss and ss.has_method("ritual_footprint_line"):
 			return str(ss.call("ritual_footprint_line"))
 	return ""
-
