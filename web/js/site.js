@@ -45,36 +45,41 @@
     });
   })();
 
-  var nav = el(
-    '<nav class="gnb" aria-label="主選單"><div class="container gnb-inner">' +
-      '<a class="logo" href="' +
-      depth +
-      '/index.html"><span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1A1408" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><circle cx="12" cy="12" r="3" fill="#3ECFBF"/><path d="M12 9v3l2 2"/></svg></span><span>' +
-      brand +
-      "</span></a>" +
-      '<div class="gnb-menu" id="gnb-menu"></div>' +
-      '<div class="gnb-actions">' +
-      '<button type="button" class="gnb-toggle" id="gnb-toggle" aria-label="打開選單" aria-expanded="false" aria-controls="gnb-menu">' +
-      "<span></span><span></span><span></span></button>" +
-      '<a class="btn btn-primary" href="' +
-      depth +
-      '/pages/download.html">下載</a></div>' +
-      "</div></nav>"
-  );
-  document.body.insertBefore(nav, document.body.firstChild);
+  var nav = document.querySelector(".gnb, .aww-nav");
+  if (!nav) {
+    nav = el(
+      '<nav class="gnb" aria-label="主選單"><div class="container gnb-inner">' +
+        '<a class="logo" href="' +
+        depth +
+        '/index.html"><span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#1A1408" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/><circle cx="12" cy="12" r="3" fill="#3ECFBF"/><path d="M12 9v3l2 2"/></svg></span><span>' +
+        brand +
+        "</span></a>" +
+        '<div class="gnb-menu" id="gnb-menu"></div>' +
+        '<div class="gnb-actions">' +
+        '<button type="button" class="gnb-toggle" id="gnb-toggle" aria-label="打開選單" aria-expanded="false" aria-controls="gnb-menu">' +
+        "<span></span><span></span><span></span></button>" +
+        '<a class="btn btn-primary" href="' +
+        depth +
+        '/pages/download.html">下載</a></div>' +
+        "</div></nav>"
+    );
+    document.body.insertBefore(nav, document.body.firstChild);
 
-  var menu = document.getElementById("gnb-menu");
-  links.forEach(function (L) {
-    var a = document.createElement("a");
-    a.href = L.href;
-    a.textContent = L.label;
-    if (L.id === active) a.className = "active";
-    menu.appendChild(a);
-  });
+    var menu = document.getElementById("gnb-menu");
+    if (menu) {
+      links.forEach(function (L) {
+        var a = document.createElement("a");
+        a.href = L.href;
+        a.textContent = L.label;
+        if (L.id === active) a.className = "active";
+        menu.appendChild(a);
+      });
+    }
+  }
 
   (function setupMobileNav() {
     var toggle = document.getElementById("gnb-toggle");
-    if (!toggle) return;
+    if (!toggle || !nav) return;
     function close() {
       nav.classList.remove("is-open");
       document.body.classList.remove("is-nav-lock");
@@ -91,9 +96,12 @@
       if (nav.classList.contains("is-open")) close();
       else open();
     });
-    menu.querySelectorAll("a").forEach(function (a) {
-      a.addEventListener("click", close);
-    });
+    var menu = document.getElementById("gnb-menu");
+    if (menu) {
+      menu.querySelectorAll("a").forEach(function (a) {
+        a.addEventListener("click", close);
+      });
+    }
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") close();
     });
@@ -109,23 +117,26 @@
   var social = cfg.facebook
     ? ' · <a href="' + cfg.facebook + '" target="_blank" rel="noopener">Facebook</a>'
     : "";
-  var foot = el(
-    '<footer><div class="container footer-inner">' +
-      "<div>" +
-      brand +
-      " · Clockwork Heart · 開發中</div>" +
-      '<div><a href="' +
-      depth +
-      '/index.html">首頁</a> · <a href="' +
-      depth +
-      '/pages/download.html">下載</a> · <a href="' +
-      depth +
-      '/pages/account.html">帳號</a>' +
-      social +
-      "</div>" +
-      "</div></footer>"
-  );
-  document.body.appendChild(foot);
+  var foot = document.querySelector("footer");
+  if (!foot) {
+    foot = el(
+      '<footer><div class="container footer-inner">' +
+        "<div>" +
+        brand +
+        " · Clockwork Heart · 開發中</div>" +
+        '<div><a href="' +
+        depth +
+        '/index.html">首頁</a> · <a href="' +
+        depth +
+        '/pages/download.html">下載</a> · <a href="' +
+        depth +
+        '/pages/account.html">帳號</a>' +
+        social +
+        "</div>" +
+        "</div></footer>"
+    );
+    document.body.appendChild(foot);
+  }
 
   /* 頂部捲動進度 */
   var bar = document.createElement("div");
