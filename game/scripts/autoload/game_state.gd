@@ -834,6 +834,7 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"donkey": "notch_axe",
 	"scorpion": "mist_darts",
 	"mantis": "hunt_claw",
+	"nightingale": "shard_focus",
 }
 
 
@@ -913,6 +914,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"donkey": default_name = "闢道頑驢"
 		"scorpion": default_name = "伏影沙蠍"
 		"mantis": default_name = "翠刃螳螂"
+		"nightingale": default_name = "晨音夜鶯"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值

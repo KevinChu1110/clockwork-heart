@@ -1149,16 +1149,31 @@ const RACES_DATA: Dictionary = {
 		"chassis": [
 			{"id": "chassis_mantis_stock", "name_zh": "蔓谷沖壓薄銅螳螂底盤", "desc": "沖壓薄銅耐磨烤漆板件配耐磨陶瓷底板，黃銅球形關節與黑色防滑吸附橡膠爪墊"}
 		]
+	},
+	"nightingale": {
+		"id": "nightingale",
+		"name_zh": "晨音夜鶯",
+		"name_en": "The Dawn Nightingale",
+		"archetype": "法師 (Mage)",
+		"thumb": "res://assets/sprites/player/showcase/nightingale_idle_hd.png",
+		"desc": "晨曦小鎮木偶集市鐘樓八音諧振護體靈晶大師法師，沖壓黃銅底盤配鐘面鏤空雕花面盔、黃玉琉璃目鏡與晨音八音諧振靈晶。",
+		"costumes": [
+			{"id": "costume_nightingale_chime_plate", "name_zh": "小鎮禮樂銅板八音胸甲", "desc": "晨曦小鎮工坊沖壓薄銅烤漆禮樂胸甲，飾以多巴胺暖橘與天藍飾帶，嵌石英視窗"},
+			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現天元金黃沖壓鍍金薄銅板件與橡膠爪墊"}
+		],
+		"chassis": [
+			{"id": "chassis_nightingale_stock", "name_zh": "晨曦鍍金沖壓黃銅夜鶯底盤", "desc": "沖壓鍛造高剛性黃銅薄板件，表面天元金黃與薄荷綠琺瑯塗層，配耐磨橡膠爪墊"}
+		]
 	}
 }
 
-const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion", "mantis"]
+const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion", "mantis", "nightingale"]
 
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
 const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
-const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion", "mantis"]
+const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion", "mantis", "nightingale"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
@@ -1682,6 +1697,7 @@ func confirm_selection() -> void:
 				"donkey": gs.player_name = "闢道頑驢"
 				"scorpion": gs.player_name = "伏影沙蠍"
 				"mantis": gs.player_name = "翠刃螳螂"
+				"nightingale": gs.player_name = "晨音夜鶯"
 				_: gs.player_name = "小白"
 			if gs.has_method("equip_starter_weapon"):
 				gs.call("equip_starter_weapon", _current_race_id)

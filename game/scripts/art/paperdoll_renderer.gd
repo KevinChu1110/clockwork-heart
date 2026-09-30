@@ -143,7 +143,7 @@ static func resolve_slot_texture_path(race: String, slot_id: String, item_id: St
 		if ResourceLoader.exists(common_slice_clean) or FileAccess.file_exists(common_slice_clean):
 			return common_slice_clean
 		# 1b. 外裝／武器／鑰匙／奇玩／塗裝跨種族共用：本族沒有切片就找其他族同檔名（僅限四十四重大正式族系）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion", "mantis"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion", "mantis", "nightingale"]
 		if rid in all_races and sid in [SLOT_WEAPON, SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY, SLOT_CHASSIS]:
 			for other in all_races:
 				if str(other) == rid:
@@ -384,6 +384,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "chassis_scorpion_stock"
 			elif race == "mantis":
 				return "chassis_mantis_stock"
+			elif race == "nightingale":
+				return "chassis_nightingale_stock"
 			return "paint_ivory_stock"
 		SLOT_HEAD_UNIT:
 			if race == "macaque":
@@ -524,6 +526,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "head_scorpion_dune_visor"
 			elif race == "mantis":
 				return "head_mantis_canopy_cowl"
+			elif race == "nightingale":
+				return "head_nightingale_dial_cowl"
 			return "ear_rabbit_straight"
 		SLOT_WINDING_KEY:
 			if race == "tiger":
@@ -656,6 +660,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "key_scorpion_cross_brass"
 			elif race == "mantis":
 				return "key_mantis_vine_brass"
+			elif race == "nightingale":
+				return "key_nightingale_clef_brass"
 			elif race == "fox":
 				return ""
 			return "key_classic_brass"
@@ -798,6 +804,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "costume_scorpion_scavenger_plate"
 			elif race == "mantis":
 				return "costume_mantis_vine_plate"
+			elif race == "nightingale":
+				return "costume_nightingale_chime_plate"
 			return "costume_nutcracker_guard"
 		SLOT_OPTIC_CORE:
 			if race == "lion":
@@ -932,6 +940,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "face_scorpion_amber_goggles"
 			elif race == "mantis":
 				return "face_mantis_emerald_goggles"
+			elif race == "nightingale":
+				return "face_nightingale_topaz_goggles"
 			elif race == "boar":
 				return "core_molten_crimson"
 			return "core_cyan_emerald"
@@ -1074,6 +1084,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "weapon_scorpion_duneshadow_dart"
 			elif race == "mantis":
 				return "weapon_mantis_scythe_claw"
+			elif race == "nightingale":
+				return "weapon_nightingale_chime_crystal"
 			return "wpn_dawn_blade"
 		SLOT_BACK_CURIO:
 			if race == "macaque":
@@ -1214,6 +1226,8 @@ static func _get_default_variant_id(race: String, slot_id: String) -> String:
 				return "curio_scorpion_spring_stinger_tail"
 			elif race == "mantis":
 				return "curio_mantis_spring_pack"
+			elif race == "nightingale":
+				return "curio_nightingale_chime_tail"
 			return "curio_clockwork_pigeon"
 		_:
 			return "default"
@@ -1461,7 +1475,7 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 					var p_c := "%s/%s/%s/head_cloud_crane_stock_512.png" % [PAPERDOLL_ROOT, rid, sid]
 					if ResourceLoader.exists(p_c) or FileAccess.file_exists(p_c): return p_c
 		# 2. 跨族 512 切片共用（外裝／奇玩／鑰匙）
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion", "mantis"]
+		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion", "mantis", "nightingale"]
 		if rid in all_races and sid in [SLOT_COSTUME, SLOT_BACK_CURIO, SLOT_WINDING_KEY]:
 			for other in all_races:
 				if str(other) == rid:
@@ -2026,7 +2040,7 @@ static func _get_fallback_spec() -> Dictionary:
 			]
 		},
 		"races_specification": {
-			"total_races": 70,
+			"total_races": 71,
 			"races": [
 				{"race_id": "rabbit", "name_zh": "白金兔", "name_en": "Clockwork Rabbit", "class_archetype": "劍士 (Knight)"},
 				{"race_id": "lion", "name_zh": "烈鬃獅", "name_en": "Gilded Lion", "class_archetype": "騎士 (Knight)"},
@@ -2097,7 +2111,8 @@ static func _get_fallback_spec() -> Dictionary:
 				{"race_id": "kingfisher", "aliases": ["jade_kingfisher", "bamboo_kingfisher", "halcyon_kingfisher", "clockwork_kingfisher", "lance_kingfisher"], "name_zh": "穿雲翠鳥", "name_en": "The Jade Kingfisher", "class_archetype": "騎士 (Knight)"},
 				{"race_id": "donkey", "aliases": ["sapper_donkey", "bazaar_donkey", "clockwork_donkey", "burro", "pack_donkey", "iron_donkey"], "name_zh": "闢道頑驢", "name_en": "The Sapper Donkey", "class_archetype": "戰士 (Viking)"},
 				{"race_id": "scorpion", "aliases": ["duneshadow_scorpion", "sand_scorpion", "clockwork_scorpion", "tinplate_scorpion", "stinger_scorpion", "junkyard_scorpion"], "name_zh": "伏影沙蠍", "name_en": "The Duneshadow Scorpion", "class_archetype": "忍者 (Ninja)"},
-				{"race_id": "mantis", "aliases": ["jade_mantis", "emerald_mantis", "clockwork_mantis", "tinplate_mantis", "scythe_mantis", "canopy_mantis"], "name_zh": "翠刃螳螂", "name_en": "The Jade Mantis", "class_archetype": "武術家 (Monk)"}
+				{"race_id": "mantis", "aliases": ["jade_mantis", "emerald_mantis", "clockwork_mantis", "tinplate_mantis", "scythe_mantis", "canopy_mantis"], "name_zh": "翠刃螳螂", "name_en": "The Jade Mantis", "class_archetype": "武術家 (Monk)"},
+				{"race_id": "nightingale", "aliases": ["dawn_nightingale", "chime_nightingale", "clockwork_nightingale", "belfry_nightingale", "songbird_nightingale", "golden_nightingale"], "name_zh": "晨音夜鶯", "name_en": "The Dawn Nightingale", "class_archetype": "法師 (Mage)"}
 			]
 		}
 	}

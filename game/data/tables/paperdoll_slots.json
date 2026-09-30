@@ -549,6 +549,12 @@
             "name": "蔓谷沖壓薄銅螳螂底盤",
             "tier": "common",
             "race": "mantis"
+          },
+          {
+            "id": "chassis_nightingale_stock",
+            "name": "晨曦鍍金沖壓黃銅夜鶯底盤",
+            "tier": "common",
+            "race": "nightingale"
           }
         ]
       },
@@ -993,6 +999,12 @@
             "name": "沖壓林冠折角金屬面盔",
             "tier": "common",
             "race": "mantis"
+          },
+          {
+            "id": "head_nightingale_dial_cowl",
+            "name": "晨曦鐘面鏤空雕花面盔",
+            "tier": "common",
+            "race": "nightingale"
           }
         ]
       },
@@ -1364,6 +1376,11 @@
           {
             "id": "key_mantis_vine_brass",
             "name": "蔓谷雙環藤蔓雕花黃銅發條鑰匙",
+            "tier": "common"
+          },
+          {
+            "id": "key_nightingale_clef_brass",
+            "name": "晨曦高音譜號雕花黃銅發條鑰匙",
             "tier": "common"
           }
         ]
@@ -1862,6 +1879,12 @@
             "name": "蔓谷藤蔓鉚接生漆板甲胸甲",
             "tier": "common",
             "race": "mantis"
+          },
+          {
+            "id": "costume_nightingale_chime_plate",
+            "name": "小鎮禮樂銅板八音胸甲",
+            "tier": "common",
+            "race": "nightingale"
           }
         ]
       },
@@ -2297,6 +2320,12 @@
             "name": "雙聯高透翡翠石英琉璃球形目鏡",
             "tier": "common",
             "race": "mantis"
+          },
+          {
+            "id": "face_nightingale_topaz_goggles",
+            "name": "雙聯高透黃玉石英琉璃球形目鏡",
+            "tier": "common",
+            "race": "nightingale"
           }
         ]
       },
@@ -2739,6 +2768,12 @@
             "name": "翠刃連斬機關爪",
             "tier": "common",
             "weapon_type": "claw"
+          },
+          {
+            "id": "weapon_nightingale_chime_crystal",
+            "name": "晨音八音諧振靈晶",
+            "tier": "common",
+            "weapon_type": "crystal"
           }
         ]
       },
@@ -3184,13 +3219,19 @@
             "name": "多節同軸彈簧平衡背囊與微型排氣風箱",
             "tier": "common",
             "race": "mantis"
+          },
+          {
+            "id": "curio_nightingale_chime_tail",
+            "name": "多節沖壓薄銅扇形音律尾翼與微型共鳴風箱",
+            "tier": "common",
+            "race": "nightingale"
           }
         ]
       }
     ]
   },
   "races_specification": {
-    "total_races": 70,
+    "total_races": 71,
     "races": [
       {
         "race_id": "rabbit",
@@ -8359,6 +8400,95 @@
           "winding_key": "key_mantis_vine_brass",
           "weapon": "weapon_mantis_scythe_claw"
         }
+      },
+      {
+        "race_id": "nightingale",
+        "aliases": [
+          "dawn_nightingale",
+          "chime_nightingale",
+          "clockwork_nightingale",
+          "belfry_nightingale",
+          "songbird_nightingale",
+          "golden_nightingale"
+        ],
+        "name_zh": "晨音夜鶯",
+        "name_en": "The Dawn Nightingale",
+        "class_archetype": "法師 (Mage)",
+        "origin_realm": "R02 晨曦小鎮·木偶集市 / Dawn Town: Marionette Bazaar",
+        "starter_weapon": "shard_focus",
+        "weapon_class": "crystal",
+        "lore_anchor": "棲息於晨曦小鎮·木偶集市「懸吊齒輪鐘樓」，穿梭於青銅擒縱輪與金色鐘擺之間，守護鐘面外緣懸掛之「微型發條八音風鈴」，巡邏於「細緻打磨的淺灰硬質磨石灰岩積木」鋪面與金黃銅質防滑飾條街道，穿行於「歐風木造街屋」山形牆商鋪與迷你黃銅發條煙囪之間，守護「齒輪吊索大橋·小鎮站」、「晨曦天軌 2 號月台」、「蔓谷天梯引道」與「巨輪城重型空軌貨運棧橋」，引導迷途玩具重返「邊界安全防護彈簧網」，在「永恆晨曦柔光」下唱響天穹秒針授時之音，結伴提線商會會長·巴納姆、彩釉玩偶夫人·瑪德琳與摺紙工匠·小鶴，護衛提線木偶族、彩釉玩偶貴族與摺紙手藝人族；通體覆蓋晨曦鍍金沖壓黃銅夜鶯底盤、晨曦鐘面鏤空雕花面盔、雙聯高透黃玉石英琉璃球形目鏡、小鎮禮樂銅板八音胸甲、多節沖壓薄銅扇形音律尾翼與微型共鳴風箱、晨曦高音譜號雕花黃銅發條鑰匙，引導晨音八音諧振靈晶，以2.2頭身矮萌典雅身軀、八音諧振護體、把護盾織成刃與清脆音刃反震見長的晨曦音律護體靈晶大師法師",
+        "proportions": {
+          "head_to_body_ratio": "2.0 ~ 2.2 頭身 (18-19 世紀瑞士布朗東與羅夏兄弟純金發條八音唱歌鳥自動盒名品)",
+          "posture": "2.2 頭身矮萌身軀呈靈動典雅站位，胸前懸浮著晨音八音諧振靈晶緩慢自轉，左前翼自然微收呈現禮儀守勢，頭部輕微左右微側，背後高音譜號發條鑰匙隨小鎮秒針每2秒跳動勻速自轉，停拍時精準自鎖",
+          "standee_height_px": 800,
+          "standee_width_px": 480
+        },
+        "mechanical_features": {
+          "ears_cowl": "晨曦鐘面鏤空雕花面盔，額前雕刻精細鐘面刻度，兩側設有微型八音孔散熱格柵與一體成型黃銅平扁小喙",
+          "eyes": "雙聯大尺寸高透黃玉石英琉璃球形目鏡，深藍紫金屬防眩光密封眼圈，浮現天藍同心音階分劃線與暖金指針",
+          "chime_wings": "雙翼三層同軸鉸接冷軋薄鋼沖壓音片小翼，倒角鈍化打磨光滑，隨施法手勢微幅開合發出金屬音律共鳴",
+          "back_tail": "五節沖壓薄銅梳齒音片扇形尾翼，內置手風琴式排氣微囊與減震發條扭簧，施法時微量排氣共振平抑震動",
+          "torso_and_limbs": "天元金黃沖壓黃銅板件，黃銅球形關節，雙足爪底覆蓋耐磨防滑黑色橡膠吸附墊",
+          "key": "晨曦高音譜號雕花黃銅發條鑰匙，輪柄呈古典高音譜號盤旋雕花造型，中心嵌裝多巴胺珊瑚粉防震橡膠鉚釘"
+        },
+        "color_palette": {
+          "primary": "#FFD028 (天元金黃沖壓面盔與黃銅夜鶯底盤亮面生漆)",
+          "secondary": "#4ED86A (薄荷綠雙翼音片護甲、胸甲滾邊與尾翼底板)",
+          "accent_blue": "#38A0FF (天藍防眩光琉璃目鏡分劃與八音靈晶音波光環)",
+          "accent_orange": "#FFA010 (落日暖橘關節防震膠圈與禮樂胸甲飾條)",
+          "accent_white": "#FFFDF8 (奶油米白胸前裝甲高光嵌片與鐘面刻度環)",
+          "accent_pink": "#FF5E8A (多巴胺珊瑚粉發條鑰匙中心鉚釘與耳羽頂珠)",
+          "outline": "#1F1A3A (深藍紫立體手繪描邊)"
+        },
+        "asset_naming_conventions": {
+          "status": {
+            "existing": [],
+            "pending": [
+              "branding/char_nightingale.png (品牌形象立牌)",
+              "web/media/hero/char_nightingale.png (官網英雄展示立繪)",
+              "docs/art/dawn_nightingale_concept.png (概念立繪)",
+              "game/assets/sprites/player/nightingale_idle.png (64x64 待機)",
+              "game/assets/sprites/player/nightingale_idle_x3.png (128x128 待機)",
+              "game/assets/sprites/player/party/nightingale_idle.png (隊伍待機)",
+              "web/media/hero/nightingale_idle.png (128x128 官網待機)",
+              "game/assets/sprites/player/showcase/nightingale_idle_hd.png (800x1200 HD 展示立繪)",
+              "game/assets/sprites/player/nightingale_battle.png (128x128 戰鬥特寫姿態)",
+              "game/assets/sprites/player/nightingale_battle_512.png (512x512 戰鬥特寫姿態)",
+              "game/assets/sprites/player/nightingale_walk_{0..3}.png (64x64 行走動畫)",
+              "game/assets/sprites/player/nightingale_walk_{0..3}_x3.png (128x128 行走動畫)",
+              "game/assets/sprites/player/nightingale_walk_{0..3}_512.png (512x512 行走動畫)",
+              "game/assets/sprites/player/poses/nightingale/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS 六大戰鬥姿態)",
+              "game/assets/sprites/portraits/nightingale.png (HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/nightingale_512.png (512x512 HUD 戰鬥頭像)",
+              "game/assets/sprites/portraits/dawn_nightingale.png (對話半身像)",
+              "game/assets/sprites/player/paperdoll/nightingale/{slot_id}/{item_id}.png (紙娃娃切片圖層)"
+            ]
+          },
+          "branding_standee": "branding/char_nightingale.png (480x800 -> 1344x1680) [待產出]",
+          "branding_concept_art": "docs/art/dawn_nightingale_concept.png (928x1152) [待產出]",
+          "web_hero": "web/media/hero/char_nightingale.png (480x800 -> 1344x1680) [待產出]",
+          "web_preview": "web/media/hero/nightingale_idle.png (128x128) [待產出]",
+          "game_sprite_idle_base": "game/assets/sprites/player/nightingale_idle.png (64x64) [待產出]",
+          "game_sprite_idle_hi": "game/assets/sprites/player/nightingale_idle_x3.png (128x128) [待產出]",
+          "game_sprite_party_idle": "game/assets/sprites/player/party/nightingale_idle.png (128x128) [待產出]",
+          "game_sprite_battle": "game/assets/sprites/player/nightingale_battle.png (128x128) [待產出]",
+          "game_sprite_walk": "game/assets/sprites/player/nightingale_walk_{0..3}.png (64x64) [待產出]",
+          "game_sprite_walk_hi": "game/assets/sprites/player/nightingale_walk_{0..3}_x3.png (128x128) [待產出]",
+          "game_action_poses": "game/assets/sprites/player/poses/nightingale/{attack,hit,idle,recover,skill,telegraph}.png (128x128 & 512x512 LANCZOS) [待產出]",
+          "portrait_hud": "game/assets/sprites/portraits/nightingale.png (128x128) [待產出]",
+          "portrait_dialogue": "game/assets/sprites/portraits/dawn_nightingale.png (384x480) [待產出]",
+          "paperdoll_slices_dir": "game/assets/sprites/player/paperdoll/nightingale/{slot_id}/{item_id}.png [待產出]"
+        },
+        "default_items": {
+          "chassis": "chassis_nightingale_stock",
+          "head_unit": "head_nightingale_dial_cowl",
+          "optic_core": "face_nightingale_topaz_goggles",
+          "costume": "costume_nightingale_chime_plate",
+          "back_curio": "curio_nightingale_chime_tail",
+          "winding_key": "key_nightingale_clef_brass",
+          "weapon": "weapon_nightingale_chime_crystal"
+        }
       }
     ]
   },
@@ -8406,7 +8536,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 70 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 71 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -8428,7 +8558,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "七十一重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩、重閥河馬沖壓厚鑄耐壓黃銅矮萌體態與巨輪城重裝抗震高壓鉚釘胸甲、星岩鼴鼠乳白工程塑料矮萌體態與軌道高抗衝擊防護工裝背帶褲、嵐翼鼯鼠溫潤白瓷面甲矮萌體態與天元竹林摺疊翼膜暗忍胸甲、提線猞猁精雕胡桃木與晨曦小鎮提線雜技工裝背心、黑曜金龜高耐熱鑄鐵底盤與赤焰熔爐隔熱工匠護裙、彩喙巨嘴鳥輕量化合金底盤與蔓谷探險巡林獵裝、破冰海象耐壓鍍鈦合金底盤與深淵領航雙排扣水手胸甲、破竹羚牛青古銅鑄鐵重裝底盤與天元拓荒道袍重肩甲、星環狐猴象牙白高抗衝擊聚合物底盤與宇航匿蹤輕量安全吊帶胸甲、碎石旱獺生鐵青灰耐磨馬口鐵底盤與舊庫拾荒加固帆布工裝胸甲、靈燈飛螢深林沖壓薄銅馬口鐵底盤與藤蔓工裝編織輕量背心胸甲、潮汐蝠魟深海沖壓耐蝕鍍鈦金屬底盤與深海潛水工裝編織輕量胸甲、穿雲翠鳥竹影沖壓彩釉琺瑯金屬底盤與天元道場生漆編織輕量戰袍胸甲、闢道頑驢集市工兵沖壓馬口鐵金屬底盤與集市工兵鉚接生漆板甲胸甲、伏影沙蠍荒漠沖壓馬口鐵沙蠍底盤與荒漠拾荒鉚接生漆板甲胸甲、翠刃螳螂蔓谷沖壓薄銅螳螂底盤與蔓谷藤蔓鉚接生漆板甲胸甲) 由渲染器微調縮放適配"
+        "rule": "七十二重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩、重閥河馬沖壓厚鑄耐壓黃銅矮萌體態與巨輪城重裝抗震高壓鉚釘胸甲、星岩鼴鼠乳白工程塑料矮萌體態與軌道高抗衝擊防護工裝背帶褲、嵐翼鼯鼠溫潤白瓷面甲矮萌體態與天元竹林摺疊翼膜暗忍胸甲、提線猞猁精雕胡桃木與晨曦小鎮提線雜技工裝背心、黑曜金龜高耐熱鑄鐵底盤與赤焰熔爐隔熱工匠護裙、彩喙巨嘴鳥輕量化合金底盤與蔓谷探險巡林獵裝、破冰海象耐壓鍍鈦合金底盤與深淵領航雙排扣水手胸甲、破竹羚牛青古銅鑄鐵重裝底盤與天元拓荒道袍重肩甲、星環狐猴象牙白高抗衝擊聚合物底盤與宇航匿蹤輕量安全吊帶胸甲、碎石旱獺生鐵青灰耐磨馬口鐵底盤與舊庫拾荒加固帆布工裝胸甲、靈燈飛螢深林沖壓薄銅馬口鐵底盤與藤蔓工裝編織輕量背心胸甲、潮汐蝠魟深海沖壓耐蝕鍍鈦金屬底盤與深海潛水工裝編織輕量胸甲、穿雲翠鳥竹影沖壓彩釉琺瑯金屬底盤與天元道場生漆編織輕量戰袍胸甲、闢道頑驢集市工兵沖壓馬口鐵金屬底盤與集市工兵鉚接生漆板甲胸甲、伏影沙蠍荒漠沖壓馬口鐵沙蠍底盤與荒漠拾荒鉚接生漆板甲胸甲、翠刃螳螂蔓谷沖壓薄銅螳螂底盤與蔓谷藤蔓鉚接生漆板甲胸甲、晨音夜鶯晨曦鍍金沖壓黃銅夜鶯底盤與小鎮禮樂銅板八音胸甲) 由渲染器微調縮放適配"
       }
     ]
   },
@@ -8506,7 +8636,8 @@
         "game/assets/sprites/player/paperdoll/kingfisher/",
         "game/assets/sprites/player/paperdoll/donkey/",
         "game/assets/sprites/player/paperdoll/scorpion/",
-        "game/assets/sprites/player/paperdoll/mantis/"
+        "game/assets/sprites/player/paperdoll/mantis/",
+        "game/assets/sprites/player/paperdoll/nightingale/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
