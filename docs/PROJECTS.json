@@ -5350,8 +5350,8 @@
    "id": "web-awwwards-polish",
    "cat": "行銷",
    "title": "🌐 官網升級 Awwwards/Webby 得獎標準",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "sideworker2 進行全站 Awwwards/Webby 得獎標準重構 (t_9db8f3f7)",
    "keys": [
     "🌐 官網升級 A"
    ]
