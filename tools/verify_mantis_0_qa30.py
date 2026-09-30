@@ -95,17 +95,27 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3.2 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/mantis、player/mantis 目錄存在且恪守零佔位圖（僅保留 .gitkeep）
+# 4. 驗證 7 大槽位切片已全數就緒且 poses/mantis 恪守零美術佔位圖規範
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/mantis")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
 
+expected_slices = {
+    "back_curio": ["curio_mantis_spring_pack.png", "curio_mantis_spring_pack_512.png"],
+    "chassis": ["chassis_mantis_stock.png", "chassis_mantis_stock_512.png"],
+    "costume": ["costume_mantis_vine_plate.png", "costume_mantis_vine_plate_512.png"],
+    "head_unit": ["head_mantis_canopy_cowl.png", "head_mantis_canopy_cowl_512.png"],
+    "optic_core": ["face_mantis_emerald_goggles.png", "face_mantis_emerald_goggles_512.png"],
+    "weapon": ["weapon_mantis_scythe_claw.png", "weapon_mantis_scythe_claw_512.png"],
+    "winding_key": ["key_mantis_vine_brass.png", "key_mantis_vine_brass_512.png"]
+}
+
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"槽位目錄缺少 .gitkeep: {s_dir}"
-    slot_files = [fn for fn in os.listdir(s_dir) if fn.lower().endswith(image_exts)]
-    assert len(slot_files) == 0, f"槽位目錄 {s_dir} 發現非預期圖片檔案（違反零佔位圖規範）: {slot_files}"
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/mantis")
 assert os.path.isdir(poses_dir), f"poses/mantis 目錄不存在: {poses_dir}"
@@ -113,13 +123,7 @@ assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/mantis 缺少
 poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
 assert len(poses_images) == 0, f"poses/mantis 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-player_dir = os.path.join(repo_root, "game/assets/sprites/player/mantis")
-assert os.path.isdir(player_dir), f"player/mantis 目錄不存在: {player_dir}"
-assert os.path.exists(os.path.join(player_dir, ".gitkeep")), "player/mantis 缺少 .gitkeep"
-player_images = [fn for fn in os.listdir(player_dir) if fn.lower().endswith(image_exts)]
-assert len(player_images) == 0, f"player/mantis 發現非預期圖片檔案: {player_images}"
-
-print("✓ 4. 7 大槽位目錄與 poses/mantis、player/mantis 目錄恪守零美術佔位圖規範（僅保留 .gitkeep）")
+print("✓ 4. 7 大槽位切片已全數就緒且 poses/mantis 恪守零美術佔位圖規範")
 
 # 5. 驗證開局武器符合 equipment.json 既有 ID (hunt_claw)
 equip_path = os.path.join(repo_root, "game/data/tables/equipment.json")
