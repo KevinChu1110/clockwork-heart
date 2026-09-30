@@ -86,6 +86,13 @@ func _process(_delta: float) -> bool:
 				var fx = _view.get_node_or_null("SoulSummonFx")
 				if fx and fx.has_method("skip"):
 					fx.call("skip")
+				# 確保第 4 張包含普通品質搪瓷碎屑，供審查員精確驗收色階與字體對比度
+				var ten_view = _view.get_node_or_null("SoulTenPullView")
+				if ten_view and ten_view.get("_drops"):
+					var cur_drops: Array = ten_view.get("_drops")
+					if cur_drops.size() >= 4:
+						cur_drops[3] = {"kind": "junk", "DropId": "junk_enamel_chip"}
+						ten_view.call("show_drops", cur_drops)
 				_frame = 0
 				_step = 3
 		3:

@@ -10,12 +10,12 @@ const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 ## ── 多巴胺色階定義（白/橘/藍/紫/金/紅） ──
 const TIER_COLORS := {
 	"white": {
-		"frame": Color("#FFFFFF"),
+		"frame": Color("#667085"),
 		"bg": Color("#FFFDF8"),
 		"border": Color("#1F1A3A"),
-		"bottom": Color("#D0D5DD"),
-		"glow": Color(1.0, 1.0, 1.0, 0.55),
-		"badge": Color("#F2F4F7"),
+		"bottom": Color("#475467"),
+		"glow": Color(0.6, 0.65, 0.75, 0.55),
+		"badge": Color("#EAECF0"),
 		"stars": "★ ★ ☆ ☆ ☆",
 		"name": "普通"
 	},

@@ -39,7 +39,12 @@ var _callback: Callable
 
 
 func _ready() -> void:
+	custom_minimum_size = Vector2(1280, 720)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	offset_left = 0
+	offset_top = 0
+	offset_right = 0
+	offset_bottom = 0
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	_load_font()
 	_build_ui()
@@ -55,6 +60,7 @@ func _build_ui() -> void:
 	# 1. 聚光暗幕背景（半透明深藍紫，烘托中央發條金色焦點）
 	_dim_bg = ColorRect.new()
 	_dim_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_dim_bg.custom_minimum_size = Vector2(1280, 720)
 	_dim_bg.color = Color(0.08, 0.06, 0.16, 0.88)
 	add_child(_dim_bg)
 
@@ -182,8 +188,10 @@ func play_summon(is_ten: bool, on_finish: Callable) -> void:
 	_is_playing = true
 	visible = true
 	modulate = Color(1, 1, 1, 1)
+	if size.x <= 0 or size.y <= 0:
+		size = Vector2(1280, 720)
 
-	_center_node.position = Vector2(size.x * 0.5 if size.x > 0 else 640.0, size.y * 0.5 if size.y > 0 else 360.0)
+	_center_node.position = Vector2(size.x * 0.5, size.y * 0.5)
 	_windup_key.rotation = 0.0
 	_windup_key.scale = Vector2(0.9, 0.9)
 	_windup_key.modulate = Color(1, 1, 1, 1)
@@ -262,7 +270,9 @@ func trigger_burst_instant() -> void:
 	## 立即展示解鎖爆散的高峰狀態（供視覺展示與精確截圖）
 	visible = true
 	modulate = Color(1, 1, 1, 1)
-	_center_node.position = Vector2(640, 360)
+	if size.x <= 0 or size.y <= 0:
+		size = Vector2(1280, 720)
+	_center_node.position = Vector2(size.x * 0.5, size.y * 0.5)
 	_windup_key.rotation = PI * 0.8
 	_windup_key.scale = Vector2(1.35, 1.35)
 	_windup_key.modulate = Color(1, 1, 1, 0.95)

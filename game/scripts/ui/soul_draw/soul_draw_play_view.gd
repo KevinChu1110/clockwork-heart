@@ -240,12 +240,22 @@ func _build() -> void:
 	_summon_fx = SummonFxScript.new()
 	_summon_fx.name = "SoulSummonFx"
 	add_child(_summon_fx)
+	_summon_fx.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_summon_fx.offset_left = 0
+	_summon_fx.offset_top = 0
+	_summon_fx.offset_right = 0
+	_summon_fx.offset_bottom = 0
 
 	# 10. 十連抽多巴胺結果面板（5x2 陣列、色階光框、流光）
 	_ten_pull_view = TenPullScript.new()
 	_ten_pull_view.name = "SoulTenPullView"
 	_ten_pull_view.pull_again_requested.connect(_on_pull_ten)
 	add_child(_ten_pull_view)
+	_ten_pull_view.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_ten_pull_view.offset_left = 0
+	_ten_pull_view.offset_top = 0
+	_ten_pull_view.offset_right = 0
+	_ten_pull_view.offset_bottom = 0
 
 
 func _refresh() -> void:

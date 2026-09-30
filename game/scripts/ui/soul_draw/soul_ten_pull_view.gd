@@ -11,12 +11,12 @@ const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 const TIER_COLORS := {
 	"white": {
-		"frame": Color("#FFFFFF"),
+		"frame": Color("#667085"),
 		"bg": Color("#FFFDF8"),
 		"border": Color("#1F1A3A"),
-		"bottom": Color("#D0D5DD"),
-		"glow": Color(1.0, 1.0, 1.0, 0.45),
-		"badge": Color("#F2F4F7"),
+		"bottom": Color("#475467"),
+		"glow": Color(0.6, 0.65, 0.75, 0.5),
+		"badge": Color("#EAECF0"),
 		"stars": "★ ☆ ☆",
 		"name": "普通"
 	},
@@ -136,7 +136,12 @@ static func _t(s: String) -> String:
 
 
 func _ready() -> void:
+	custom_minimum_size = Vector2(1280, 720)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	offset_left = 0
+	offset_top = 0
+	offset_right = 0
+	offset_bottom = 0
 	_load_font()
 	_build_ui()
 	_connect_loc_signal()
@@ -172,7 +177,8 @@ func _build_ui() -> void:
 	# 1. 溫暖暗幕半透明背景
 	_bg = ColorRect.new()
 	_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
-	_bg.color = Color(0.09, 0.08, 0.16, 0.92)
+	_bg.custom_minimum_size = Vector2(1280, 720)
+	_bg.color = Color(0.08, 0.07, 0.14, 0.98)
 	add_child(_bg)
 
 	# 2. 標題
@@ -236,6 +242,8 @@ func _build_ui() -> void:
 func show_drops(drops: Array[Dictionary]) -> void:
 	_drops = drops
 	visible = true
+	if size.x <= 0 or size.y <= 0:
+		size = Vector2(1280, 720)
 
 	# 清理舊卡片
 	for c in _grid.get_children():
