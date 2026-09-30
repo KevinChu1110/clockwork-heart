@@ -204,6 +204,7 @@
   "forge.next": "升下一阶：{cost} 金 · 成功率约 {rate}%",
   "forge.next_slot": "（T{n} 开下一格）",
   "forge.panel_title": "铁匠铺 · 钉钉",
+  "forge.quick_dismantle": "一键分解多余装备",
   "forge.soul_slots": "魂槽 {cur}／{max}",
   "forge.status": "微末之刃 T{tier}／{max} · 攻击 +{atk}\n金币：{gold}",
   "forge.upgrade": "升器阶",

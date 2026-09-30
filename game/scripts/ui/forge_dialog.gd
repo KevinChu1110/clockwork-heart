@@ -63,9 +63,11 @@ var _pity_bars: Array[ProgressBar] = []
 
 var _msg_label: Label
 var _btn_forge: Button
+var _btn_dismantle: Button
 var _btn_close: Button
 var _cached_font: Font = null
 var _last_calibrate_state: Dictionary = {}
+var _confirm_dialog: Control = null
 
 
 func _enter_tree() -> void:
@@ -130,6 +132,10 @@ func _update_ui_texts() -> void:
 		_title_lbl.text = _t("天宮鐵匠 · 裝備鍛造")
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開鐵匠鋪")
+	if _btn_dismantle and is_instance_valid(_btn_dismantle):
+		_btn_dismantle.text = _t("一鍵分解")
+	if _confirm_dialog and is_instance_valid(_confirm_dialog):
+		_update_confirm_dialog_texts()
 
 
 func _ready() -> void:
@@ -431,7 +437,7 @@ func _build_ui() -> void:
 	_btn_forge = Button.new()
 	_btn_forge.name = "BtnForge"
 	_btn_forge.text = ""
-	_btn_forge.custom_minimum_size = Vector2(280, 52)
+	_btn_forge.custom_minimum_size = Vector2(240, 52)
 	_btn_forge.add_theme_font_size_override("font_size", 18)
 	_btn_forge.add_theme_color_override("font_color", Color.WHITE)
 	_btn_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -445,11 +451,28 @@ func _build_ui() -> void:
 	_btn_forge.pressed.connect(_on_forge_pressed)
 	act_row.add_child(_btn_forge)
 
+	# 一鍵分解按鈕 (暖橘立體厚底 5px)
+	_btn_dismantle = Button.new()
+	_btn_dismantle.name = "BtnBatchDismantle"
+	_btn_dismantle.text = _t("一鍵分解")
+	_btn_dismantle.custom_minimum_size = Vector2(150, 52)
+	_btn_dismantle.add_theme_font_size_override("font_size", 18)
+	_btn_dismantle.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_dismantle.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_dismantle.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_btn_dismantle.add_theme_font_override("font", _cached_font)
+	_btn_dismantle.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 20, 2))
+	_btn_dismantle.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB733"), COLOR_BORDER, 5, 20, 2))
+	_btn_dismantle.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08B00"), COLOR_BORDER, 2, 20, 2))
+	_btn_dismantle.pressed.connect(_on_batch_dismantle_pressed)
+	act_row.add_child(_btn_dismantle)
+
 	# 次要按鈕：離開鐵匠鋪 (金黃立體厚底 5px)
 	_btn_close = Button.new()
 	_btn_close.name = "BtnCloseForge"
 	_btn_close.text = _t("離開鐵匠鋪")
-	_btn_close.custom_minimum_size = Vector2(160, 52)
+	_btn_close.custom_minimum_size = Vector2(140, 52)
 	_btn_close.add_theme_font_size_override("font_size", 18)
 	_btn_close.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_btn_close.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -785,6 +808,11 @@ func _refresh_display() -> void:
 	for i in range(_pity_bars.size()):
 		_pity_bars[i].value = 1.0 if streak > i else 0.0
 
+	var p = get_parent()
+	if p and p.has_method("refresh_hud"):
+		p.call("refresh_hud")
+
+
 
 func _on_forge_pressed() -> void:
 	var res: Dictionary = ForgeSystem.try_forge()
@@ -808,6 +836,232 @@ func _on_forge_pressed() -> void:
 			_msg_label.text = _t("鍛造失敗！累積 1 格保底進度（目前 %d/3 格）。") % streak
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 	_refresh_display()
+
+
+func _on_batch_dismantle_pressed() -> void:
+	AudioManager.play_ui()
+	var es: Node = null
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		es = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
+	if es == null or not es.has_method("get_surplus_bag_items"):
+		return
+
+	var targets: Array = es.call("get_surplus_bag_items")
+	if targets.is_empty():
+		if is_instance_valid(_msg_label):
+			_msg_label.text = _t("背包沒有多餘未裝備的低階裝備。")
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+		return
+
+	_show_dismantle_confirm_dialog(targets)
+
+
+func _show_dismantle_confirm_dialog(targets: Array) -> void:
+	if _confirm_dialog and is_instance_valid(_confirm_dialog):
+		_confirm_dialog.queue_free()
+
+	var est_scrap := 0
+	var est_gold := 0
+	var es: Node = null
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		es = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
+	for e in targets:
+		if es and es.has_method("dismantle_yield"):
+			var y: Dictionary = es.call("dismantle_yield", e)
+			est_scrap += int(y.get("iron_scrap", 0))
+			est_gold += int(y.get("gold", 0))
+
+	var confirm_layer := Control.new()
+	confirm_layer.name = "DismantleConfirmDialog"
+	confirm_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	confirm_layer.z_index = 90
+	confirm_layer.set_meta("targets", targets)
+	confirm_layer.set_meta("est_scrap", est_scrap)
+	confirm_layer.set_meta("est_gold", est_gold)
+	add_child(confirm_layer)
+	_confirm_dialog = confirm_layer
+
+	# Scrim
+	var scrim := ResponsiveUi.make_scrim(Color(0.12, 0.10, 0.23, 0.65))
+	confirm_layer.add_child(scrim)
+
+	var center := CenterContainer.new()
+	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	confirm_layer.add_child(center)
+
+	var card := PanelContainer.new()
+	card.name = "DismantleConfirmCard"
+	card.custom_minimum_size = Vector2(540, 280)
+	card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
+	center.add_child(card)
+
+	var margin := MarginContainer.new()
+	margin.add_theme_constant_override("margin_left", 20)
+	margin.add_theme_constant_override("margin_right", 20)
+	margin.add_theme_constant_override("margin_top", 16)
+	margin.add_theme_constant_override("margin_bottom", 16)
+	card.add_child(margin)
+
+	var cv := VBoxContainer.new()
+	cv.add_theme_constant_override("separation", 12)
+	margin.add_child(cv)
+
+	# 標題列
+	var head := HBoxContainer.new()
+	cv.add_child(head)
+
+	var title := Label.new()
+	title.name = "ConfirmTitleLabel"
+	title.text = _t("確認一鍵分解")
+	title.add_theme_font_size_override("font_size", 20)
+	title.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	title.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	title.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		title.add_theme_font_override("font", _cached_font)
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	head.add_child(title)
+
+	var btn_close := ResponsiveUi.make_close_button(func():
+		AudioManager.play_ui()
+		confirm_layer.queue_free()
+		_confirm_dialog = null
+	)
+	head.add_child(btn_close)
+
+	var sep := ColorRect.new()
+	sep.custom_minimum_size = Vector2(0, 2)
+	sep.color = COLOR_ORANGE
+	cv.add_child(sep)
+
+	# 說明文字
+	var count_lbl := Label.new()
+	count_lbl.name = "DismantleCountLabel"
+	count_lbl.text = _t("即將分解背包中未裝備的低階裝備（共 %d 件）") % targets.size()
+	count_lbl.add_theme_font_size_override("font_size", 16)
+	count_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	count_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	count_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		count_lbl.add_theme_font_override("font", _cached_font)
+	cv.add_child(count_lbl)
+
+	# 預估收益面板
+	var yield_panel := PanelContainer.new()
+	yield_panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 3, 14))
+	cv.add_child(yield_panel)
+
+	var ym := MarginContainer.new()
+	ym.add_theme_constant_override("margin_left", 14)
+	ym.add_theme_constant_override("margin_right", 14)
+	ym.add_theme_constant_override("margin_top", 10)
+	ym.add_theme_constant_override("margin_bottom", 10)
+	yield_panel.add_child(ym)
+
+	var yield_lbl := Label.new()
+	yield_lbl.name = "DismantleYieldLabel"
+	yield_lbl.text = _t("預計回收：鐵屑 ×%d · 金幣 +%d") % [est_scrap, est_gold]
+	yield_lbl.add_theme_font_size_override("font_size", 17)
+	yield_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	yield_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	yield_lbl.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		yield_lbl.add_theme_font_override("font", _cached_font)
+	ym.add_child(yield_lbl)
+
+	# 貴重裝備保護提示
+	var safe_lbl := Label.new()
+	safe_lbl.name = "DismantleSafeLabel"
+	safe_lbl.text = _t("已裝備與貴重裝備受保護，不會被分解。")
+	safe_lbl.add_theme_font_size_override("font_size", 14)
+	safe_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	safe_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	safe_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		safe_lbl.add_theme_font_override("font", _cached_font)
+	cv.add_child(safe_lbl)
+
+	# 按鈕列
+	var btns := HBoxContainer.new()
+	btns.alignment = BoxContainer.ALIGNMENT_CENTER
+	btns.add_theme_constant_override("separation", 16)
+	cv.add_child(btns)
+
+	var btn_cancel := Button.new()
+	btn_cancel.name = "BtnCancelDismantle"
+	btn_cancel.text = _t("取消分解")
+	btn_cancel.custom_minimum_size = Vector2(140, 50)
+	btn_cancel.add_theme_font_size_override("font_size", 16)
+	btn_cancel.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_cancel.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	btn_cancel.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		btn_cancel.add_theme_font_override("font", _cached_font)
+	btn_cancel.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_GOLD, COLOR_BORDER, 4, 18, 2))
+	btn_cancel.pressed.connect(func():
+		AudioManager.play_ui()
+		confirm_layer.queue_free()
+		_confirm_dialog = null
+	)
+	btns.add_child(btn_cancel)
+
+	var btn_confirm := Button.new()
+	btn_confirm.name = "BtnConfirmDismantle"
+	btn_confirm.text = _t("確定分解")
+	btn_confirm.custom_minimum_size = Vector2(160, 50)
+	btn_confirm.add_theme_font_size_override("font_size", 16)
+	btn_confirm.add_theme_color_override("font_color", Color.WHITE)
+	btn_confirm.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	btn_confirm.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		btn_confirm.add_theme_font_override("font", _cached_font)
+	btn_confirm.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18, 2))
+	btn_confirm.add_theme_stylebox_override("hover", _create_button_style(Color("#68E882"), COLOR_BORDER, 5, 18, 2))
+	btn_confirm.add_theme_stylebox_override("pressed", _create_button_style(Color("#3BBF55"), COLOR_BORDER, 2, 18, 2))
+	btn_confirm.pressed.connect(func():
+		AudioManager.play_ui()
+		confirm_layer.queue_free()
+		_confirm_dialog = null
+		if es and es.has_method("dismantle_surplus_bag"):
+			var res: Dictionary = es.call("dismantle_surplus_bag")
+			if is_instance_valid(_msg_label):
+				_msg_label.text = str(res.get("msg", ""))
+				_msg_label.add_theme_color_override("font_color", COLOR_MINT if bool(res.get("ok", false)) else COLOR_TEXT_ORANGE)
+		_refresh_display()
+		_refresh_all_forge_core_slots()
+	)
+	btns.add_child(btn_confirm)
+
+
+func _update_confirm_dialog_texts() -> void:
+	if not _confirm_dialog or not is_instance_valid(_confirm_dialog):
+		return
+	var targets: Array = _confirm_dialog.get_meta("targets", [])
+	var est_scrap: int = int(_confirm_dialog.get_meta("est_scrap", 0))
+	var est_gold: int = int(_confirm_dialog.get_meta("est_gold", 0))
+
+	var title := _confirm_dialog.find_child("ConfirmTitleLabel", true, false) as Label
+	if title:
+		title.text = _t("確認一鍵分解")
+	var count_lbl := _confirm_dialog.find_child("DismantleCountLabel", true, false) as Label
+	if count_lbl:
+		count_lbl.text = _t("即將分解背包中未裝備的低階裝備（共 %d 件）") % targets.size()
+	var yield_lbl := _confirm_dialog.find_child("DismantleYieldLabel", true, false) as Label
+	if yield_lbl:
+		yield_lbl.text = _t("預計回收：鐵屑 ×%d · 金幣 +%d") % [est_scrap, est_gold]
+	var safe_lbl := _confirm_dialog.find_child("DismantleSafeLabel", true, false) as Label
+	if safe_lbl:
+		safe_lbl.text = _t("已裝備與貴重裝備受保護，不會被分解。")
+	var btn_cancel := _confirm_dialog.find_child("BtnCancelDismantle", true, false) as Button
+	if btn_cancel:
+		btn_cancel.text = _t("取消分解")
+	var btn_confirm := _confirm_dialog.find_child("BtnConfirmDismantle", true, false) as Button
+	if btn_confirm:
+		btn_confirm.text = _t("確定分解")
+
 
 
 func _on_close() -> void:

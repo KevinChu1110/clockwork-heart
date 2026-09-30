@@ -204,6 +204,7 @@
   "forge.next": "Siguiente nivel: {cost} oro · éxito ~{rate}%",
   "forge.next_slot": "(la siguiente en T{n})",
   "forge.panel_title": "Herrería · Ding",
+  "forge.quick_dismantle": "Desmantelar equipo sobrante",
   "forge.soul_slots": "Ranuras de alma {cur}/{max}",
   "forge.status": "Filo Ínfimo T{tier}/{max} · Ataque +{atk}\nOro: {gold}",
   "forge.upgrade": "Subir nivel del equipo",

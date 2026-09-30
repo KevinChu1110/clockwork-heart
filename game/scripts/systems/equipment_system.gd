@@ -1057,3 +1057,72 @@ func dismantle(uid: String) -> Dictionary:
 		"gold": gold_n,
 		"msg": _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [inst.get("name", ""), scrap_n, gold_n],
 	}
+
+
+## 取得背包中所有未裝備且可分解的多餘/低階裝備（保護已裝備與未標記貴重裝備）
+func get_surplus_bag_items() -> Array:
+	_ensure_state()
+	var targets: Array = []
+	for e in GameState.equip_bag:
+		if e.is_empty():
+			continue
+		var uid := str(e.get("uid", ""))
+		if uid == "":
+			continue
+		if GameState.equip_worn.has(uid):
+			continue
+		var is_worn := false
+		for s in SLOTS:
+			if str(GameState.equip_slots.get(s, "")) == uid:
+				is_worn = true
+				break
+		if is_worn:
+			continue
+		for i in WEAPON_LOADOUT_SIZE:
+			if str(GameState.weapon_loadout[i]) == uid:
+				is_worn = true
+				break
+		if is_worn:
+			continue
+		if bool(e.get("locked", false)):
+			continue
+
+		var q := str(e.get("quality", "common"))
+		var marked_surplus := bool(e.get("is_surplus", false)) or bool(e.get("surplus", false)) or bool(e.get("junk", false))
+		if marked_surplus or q in ["common", "uncommon"]:
+			targets.append(e)
+	return targets
+
+
+## 一鍵分解背包中未裝備的多餘/低階裝備
+func dismantle_surplus_bag() -> Dictionary:
+	_ensure_state()
+	var targets := get_surplus_bag_items()
+	if targets.is_empty():
+		return {
+			"ok": false,
+			"count": 0,
+			"iron_scrap": 0,
+			"gold": 0,
+			"msg": _t("背包沒有多餘未裝備的低階裝備。")
+		}
+
+	var total_scrap := 0
+	var total_gold := 0
+	var dismantled_count := 0
+	for e in targets:
+		var uid := str(e.get("uid", ""))
+		var res: Dictionary = dismantle(uid)
+		if bool(res.get("ok", false)):
+			dismantled_count += 1
+			total_scrap += int(res.get("iron_scrap", 0))
+			total_gold += int(res.get("gold", 0))
+
+	return {
+		"ok": true,
+		"count": dismantled_count,
+		"iron_scrap": total_scrap,
+		"gold": total_gold,
+		"msg": _t("已分解 %d 件多餘裝備：獲得鐵屑 ×%d、金幣 +%d") % [dismantled_count, total_scrap, total_gold]
+	}
+

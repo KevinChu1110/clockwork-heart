@@ -6575,10 +6575,40 @@ func _show_forge_panel() -> void:
 		buttons.append({"text": debt_label, "cb": _side_start_ding_debt})
 	if GameState.has_flag("c1_forged"):
 		buttons.append({"text": Loc.t("forge.craft_class"), "cb": _go_craft_panel})
+		buttons.append({"text": _t("一鍵分解多餘裝備"), "cb": _go_dismantle_surplus_confirm})
 		buttons.append({"text": _t("廢鐵桶拆解（回收鐵屑）"), "cb": _go_scrap_bin_panel})
 		buttons.append({"text": Loc.t("pause.path", {"path": GameState.path_display()}), "cb": _go_path_panel})
 	buttons.append({"text": Loc.t("forge.back_square"), "cb": _go_c1_town})
 	_panel(Loc.t("forge.panel_title"), body, buttons, {"forge_pity": true})
+
+
+func _go_dismantle_surplus_confirm() -> void:
+	var targets: Array = EquipmentSystem.get_surplus_bag_items()
+	if targets.is_empty():
+		_show_toast(_t("背包沒有多餘未裝備的低階裝備。"))
+		return
+	var total_scrap := 0
+	var total_gold := 0
+	for e in targets:
+		var y: Dictionary = EquipmentSystem.dismantle_yield(e)
+		total_scrap += int(y.get("iron_scrap", 0))
+		total_gold += int(y.get("gold", 0))
+	var body: String = _t("[b]一鍵分解確認[/b]\n即將分解背包中未裝備的多餘/低階裝備（共 %d 件）。\n預計回收資源：鐵屑 ×%d · 金幣 +%d\n（已裝備與貴重裝備均受到保護，不會被分解。）") % [
+		targets.size(), total_scrap, total_gold
+	]
+	var btns: Array = [
+		{"text": _t("確定分解（%d 件）") % targets.size(), "cb": _do_dismantle_surplus},
+		{"text": Loc.t("btn.cancel"), "cb": _show_forge_panel}
+	]
+	_panel(_t("一鍵分解確認"), body, btns)
+
+
+func _do_dismantle_surplus() -> void:
+	var res: Dictionary = EquipmentSystem.dismantle_surplus_bag()
+	_show_toast(str(res.get("msg", "")))
+	_show_forge_panel()
+
+
 
 
 func _go_craft_panel() -> void:

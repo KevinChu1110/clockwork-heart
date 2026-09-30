@@ -204,6 +204,7 @@
   "forge.next": "Next tier: {cost} gold · ~{rate}% success",
   "forge.next_slot": "(next at T{n})",
   "forge.panel_title": "Smithy · Ding",
+  "forge.quick_dismantle": "Quick-Dismantle Surplus Gear",
   "forge.soul_slots": "Soul slots {cur}/{max}",
   "forge.status": "Meager Edge T{tier}/{max} · ATK +{atk}\nGold: {gold}",
   "forge.upgrade": "Raise tier",

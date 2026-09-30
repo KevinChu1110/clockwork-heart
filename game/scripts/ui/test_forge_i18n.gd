@@ -148,9 +148,10 @@ func _run_test_suite() -> void:
 	var pity_title_lbl := _find_named(dlg, "PityTitleLabel") as Label
 	var pity_sub_lbl := _find_named(dlg, "PitySubLabel") as Label
 	var btn_forge := _find_named(dlg, "BtnForge") as Button
+	var btn_dismantle := _find_named(dlg, "BtnBatchDismantle") as Button
 	var btn_close := _find_named(dlg, "BtnCloseForge") as Button
 
-	if title_lbl == null or weapon_lbl == null or atk_lbl == null or btn_forge == null or btn_close == null:
+	if title_lbl == null or weapon_lbl == null or atk_lbl == null or btn_forge == null or btn_close == null or btn_dismantle == null:
 		_fail("無法找到 ForgeDialog 關鍵 UI 節點")
 		return
 
@@ -159,6 +160,8 @@ func _run_test_suite() -> void:
 		_fail("初始繁中標題不符: " + title_lbl.text)
 	if btn_close.text != expected_close["zh_TW"]:
 		_fail("初始繁中關閉按鈕不符: " + btn_close.text)
+	if btn_dismantle.text != "一鍵分解":
+		_fail("初始繁中一鍵分解按鈕不符: " + btn_dismantle.text)
 	print("  ✓ 初始繁中 UI 節點文字正確")
 
 	# 動態切換至 en
@@ -169,6 +172,8 @@ func _run_test_suite() -> void:
 		_fail("切換 en 後標題未更新: 期望 '%s', 實際 '%s'" % [expected_title["en"], title_lbl.text])
 	if btn_close.text != expected_close["en"]:
 		_fail("切換 en 後離開按鈕未更新: " + btn_close.text)
+	if btn_dismantle.text != "Quick Dismantle":
+		_fail("切換 en 後一鍵分解按鈕未更新: " + btn_dismantle.text)
 	if not weapon_lbl.text.begins_with("Equipped:"):
 		_fail("切換 en 後武器標籤未更新: " + weapon_lbl.text)
 	if not atk_lbl.text.begins_with("Weapon ATK:"):
@@ -195,6 +200,8 @@ func _run_test_suite() -> void:
 		_fail("切換 ja 後標題未更新: 期望 '%s', 實際 '%s'" % [expected_title["ja"], title_lbl.text])
 	if btn_close.text != expected_close["ja"]:
 		_fail("切換 ja 後離開按鈕未更新: " + btn_close.text)
+	if btn_dismantle.text != "一括分解":
+		_fail("切換 ja 後一鍵分解按鈕未更新: " + btn_dismantle.text)
 	if not weapon_lbl.text.begins_with("現在の装備："):
 		_fail("切換 ja 後武器標籤未更新: " + weapon_lbl.text)
 	if not atk_lbl.text.begins_with("武器攻撃："):
