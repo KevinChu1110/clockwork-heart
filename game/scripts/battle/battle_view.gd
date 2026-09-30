@@ -9,6 +9,7 @@ const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const OutlineShader = preload("res://shaders/outline.gdshader")
 const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
+const CombatHitFx := preload("res://scripts/battle/combat_hit_fx.gd")
 
 ## 戰鬥站位高台 Y 偏移表：場景如有石橋、高台、懸崖等地形，將站位與陰影錨點自基準地面抬升。
 const BATTLE_PLATFORM_OFFSETS := {
@@ -1504,8 +1505,8 @@ func _ensure_foot_shadow(body: TextureRect) -> void:
 		mat = ShaderMaterial.new()
 		mat.shader = FootShadowShader
 		sh.material = mat
-	mat.set_shader_parameter("strength", 0.92)
-	mat.set_shader_parameter("shadow_color", Color(0.01, 0.01, 0.02, 1.0))
+	mat.set_shader_parameter("strength", 0.55)
+	mat.set_shader_parameter("shadow_color", Color(0.12, 0.10, 0.23, 1.0))
 	_layout_foot_shadow(body)
 
 
@@ -1598,7 +1599,7 @@ func _ensure_battle_look() -> void:
 	var dim := get_node_or_null("BGDim") as ColorRect
 	if dim:
 		dim.visible = false
-		dim.color = Color(1.0, 0.95, 0.82, 0.0)
+		dim.queue_free()
 	call_deferred("_layout_battle_equipment_overlays")
 
 
@@ -2318,19 +2319,19 @@ func _mirror_hp_to_state(p: BattleUnit) -> void:
 		(Engine.get_main_loop() as SceneTree).call_group(MapleHud.VITALS_GROUP, "refresh_vitals")
 
 
-## 裂縫四種各自的染色。背景是共用的地圖底圖，靠色調把四場仗分開。
+## 裂縫四種各自的染色。保持明亮通透手繪插畫質感，微調氛圍，拒絕髒黑泥土濾鏡。
 func _battle_bg_tint(mode: String) -> Color:
 	match mode:
 		"wrath":
-			return Color(1.1, 0.55, 0.45, 1)
+			return Color(1.05, 0.96, 0.95, 1)
 		"tide":
-			return Color(0.55, 0.7, 1.0, 1)
+			return Color(0.96, 0.98, 1.05, 1)
 		"statue":
-			return Color(0.85, 0.75, 0.6, 1)
+			return Color(1.03, 1.01, 0.96, 1)
 		"chrono":
-			return Color(0.7, 0.55, 0.95, 1)
+			return Color(1.01, 0.96, 1.05, 1)
 		"mirror_wraith":
-			return Color(0.75, 0.75, 0.8, 1)
+			return Color(0.98, 0.99, 1.03, 1)
 	return Color(1, 1, 1, 1)
 
 
@@ -3326,14 +3327,17 @@ func _on_event(kind: String, data: Dictionary) -> void:
 							if is_instance_valid(self) and not _ended and _boss_pose == "hit":
 								_set_boss_pose("idle")
 						)
-			## 命中特效：普攻命中播放武器線 FX
+			## 命中特效：普攻命中播放武器線 FX 與金屬火花齒輪受擊粒子
 			if str(data.get("attacker", "")) == "player":
 				var wclass := ""
 				var p_u: BattleUnit = sim.get_unit("player") if sim else null
 				if p_u:
 					wclass = p_u.weapon_class
 				var fx_kind := _weapon_hit_fx_kind(wclass)
-				_spawn_hit_fx(str(data.get("defender")), fx_kind)
+				_spawn_hit_fx(str(data.get("defender")), fx_kind, 0, is_crit)
+			else:
+				## 敵方打我方：我方受擊爆出金屬火花與飛散小齒輪
+				_spawn_hit_fx("player", "slash_arc", 0, is_crit)
 			if is_crit:
 				_spawn_float(str(data.get("defender")), str(data.get("damage")), Color(1.0, 0.85, 0.2), true)
 				_shake = 0.35
@@ -3735,7 +3739,7 @@ func _weapon_hit_fx_kind(wclass: String) -> String:
 			return "slash_arc"
 
 
-func _spawn_hit_fx(target_id: String, kind: String, hit_i: int = 0) -> void:
+func _spawn_hit_fx(target_id: String, kind: String, hit_i: int = 0, is_crit: bool = false) -> void:
 	var gp := get_node_or_null("/root/GraphicsProfile")
 	if gp != null and not gp.vfx_enabled():
 		return
@@ -3758,7 +3762,8 @@ func _spawn_hit_fx(target_id: String, kind: String, hit_i: int = 0) -> void:
 	fx.custom_minimum_size = sz
 	fx.size = sz
 	var jitter := Vector2(float((hit_i * 37) % 48) - 24.0, float((hit_i * 19) % 36) - 18.0)
-	fx.global_position = body.global_position + body.size * 0.5 - sz * 0.5 + jitter
+	var impact_pt := body.global_position + body.size * Vector2(0.5, 0.45) + jitter
+	fx.global_position = impact_pt - sz * 0.5
 	fx.z_index = 40
 	fx.modulate = Color(1, 1, 1, 0.95)
 	fx.scale = Vector2(0.7, 0.7)
@@ -3771,6 +3776,8 @@ func _spawn_hit_fx(target_id: String, kind: String, hit_i: int = 0) -> void:
 		if is_instance_valid(fx):
 			fx.queue_free()
 	)
+	## 金屬火花與齒輪爆散粒子特效（受擊打擊感）
+	CombatHitFx.spawn_hit_particles(self, impact_pt, is_crit, 1.0)
 
 
 
@@ -3831,7 +3838,8 @@ func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> v
 	fx.size = sz
 	## 多段錯開落點，避免全疊同一點
 	var jitter := Vector2(float((hit_i * 37) % 48) - 24.0, float((hit_i * 19) % 36) - 18.0)
-	fx.global_position = body.global_position + body.size * 0.5 - sz * 0.5 + jitter
+	var impact_pt := body.global_position + body.size * Vector2(0.5, 0.45) + jitter
+	fx.global_position = impact_pt - sz * 0.5
 	fx.z_index = 40
 	fx.modulate = Color(1, 1, 1, 0.95)
 	fx.scale = Vector2(0.7, 0.7)
@@ -3844,6 +3852,8 @@ func _spawn_skill_hit_fx(defender_id: String, skill_id: String, hit_i: int) -> v
 		if is_instance_valid(fx):
 			fx.queue_free()
 	)
+	## 技能命中：金屬火花與飛散小齒輪粒子
+	CombatHitFx.spawn_hit_particles(self, impact_pt, false, 1.15)
 
 
 func _present_skill_hit(data: Dictionary, hits_total: int, hit_i: int) -> void:
