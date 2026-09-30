@@ -95,31 +95,35 @@ for rid, t_aliases in table_races_map.items():
 assert not diffs, "發現正表與 fallback aliases 分歧: " + "; ".join(diffs)
 print(f"✓ 3.2 全量 {len(table_races_map)} 族 aliases 在正表與 fallback 表 100% 逐行完全對齊！")
 
-# 4. 驗證 7 大槽位目錄與 poses/scorpion 目錄存在且零佔位圖
+# 4. 驗證 7 大槽位切片已全數就緒且 poses/scorpion 恪守零美術佔位圖規範
 slots = ["back_curio", "chassis", "costume", "head_unit", "optic_core", "weapon", "winding_key"]
 base_paperdoll = os.path.join(repo_root, "game/assets/sprites/player/paperdoll/scorpion")
 image_exts = (".png", ".webp", ".jpg", ".jpeg")
 
+expected_slices = {
+    "back_curio": ["curio_scorpion_spring_stinger_tail.png", "curio_scorpion_spring_stinger_tail_512.png"],
+    "chassis": ["chassis_scorpion_stock.png", "chassis_scorpion_stock_512.png"],
+    "costume": ["costume_scorpion_scavenger_plate.png", "costume_scorpion_scavenger_plate_512.png"],
+    "head_unit": ["head_scorpion_dune_visor.png", "head_scorpion_dune_visor_512.png"],
+    "optic_core": ["face_scorpion_amber_goggles.png", "face_scorpion_amber_goggles_512.png"],
+    "weapon": ["weapon_scorpion_duneshadow_dart.png", "weapon_scorpion_duneshadow_dart_512.png"],
+    "winding_key": ["key_scorpion_cross_brass.png", "key_scorpion_cross_brass_512.png"]
+}
+
 for s in slots:
     s_dir = os.path.join(base_paperdoll, s)
     assert os.path.isdir(s_dir), f"槽位目錄不存在: {s_dir}"
-    assert os.path.exists(os.path.join(s_dir, ".gitkeep")), f"槽位目錄缺少 .gitkeep: {s_dir}"
-    for fn in os.listdir(s_dir):
-        if fn.lower().endswith(image_exts):
-            assert False, f"槽位目錄發現圖片檔案（違反先行骨架零佔位圖規則）: {s}/{fn}"
+    for req_f in expected_slices[s]:
+        req_p = os.path.join(s_dir, req_f)
+        assert os.path.exists(req_p), f"缺少切片圖檔: {req_p}"
 
 poses_dir = os.path.join(repo_root, "game/assets/sprites/player/poses/scorpion")
 assert os.path.isdir(poses_dir), f"poses/scorpion 目錄不存在: {poses_dir}"
 assert os.path.exists(os.path.join(poses_dir, ".gitkeep")), "poses/scorpion 缺少 .gitkeep"
-for fn in os.listdir(poses_dir):
-    if fn.lower().endswith(image_exts):
-        assert False, f"poses/scorpion 發現圖片檔案（違反零佔位圖規則）: {fn}"
+poses_images = [fn for fn in os.listdir(poses_dir) if fn.lower().endswith(image_exts)]
+assert len(poses_images) == 0, f"poses/scorpion 發現非預期圖片檔案（違反零佔位圖規則）: {poses_images}"
 
-player_scorpion_dir = os.path.join(repo_root, "game/assets/sprites/player/scorpion")
-assert os.path.isdir(player_scorpion_dir), f"player/scorpion 目錄不存在: {player_scorpion_dir}"
-assert os.path.exists(os.path.join(player_scorpion_dir, ".gitkeep")), "player/scorpion 缺少 .gitkeep"
-
-print("✓ 4. 7 大槽位目錄、poses/scorpion 與 player/scorpion 目錄完整就緒且恪守零佔位圖")
+print("✓ 4. 7 大槽位切片已全數就緒且 poses/scorpion 恪守零美術佔位圖規範")
 
 # 5. 驗證開局武器符合 equipment.json 既有 ID (mist_darts)
 equip_path = os.path.join(repo_root, "game/data/tables/equipment.json")

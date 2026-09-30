@@ -114,13 +114,13 @@ func _initialize() -> void:
 		var scorpion_rdata: Dictionary = races_data["scorpion"]
 		print("  ✓ PaperdollSelectDemo.RACES_DATA 正確納入 scorpion: %s" % scorpion_rdata.get("name_zh"))
 
-	# 驗證防護守衛 has_race_assets 正常運作（骨架先行階段尚無切片素材，應為 false 安全隱藏）
+	# 驗證防護守衛 has_race_assets 正常運作（切片產出後應回傳 true，安全解鎖展示）
 	var has_assets: bool = PaperdollSelectClass.has_race_assets("scorpion")
-	if has_assets:
-		push_error("先行骨架階段尚未產出切片，has_race_assets('scorpion') 應回傳 false 以防露出空卡！")
+	if not has_assets:
+		push_error("切片素材已就緒，has_race_assets('scorpion') 應回傳 true！")
 		ok = false
 	else:
-		print("  ✓ 防護守衛生效：has_race_assets('scorpion') 正確回傳 false（安全隱藏空卡）")
+		print("  ✓ 防護守衛生效：has_race_assets('scorpion') 正確回傳 true（素材齊全解鎖展示）")
 
 	var filter_found := false
 	for rf in WardrobeDialog.RACE_FILTER_OPTIONS:
