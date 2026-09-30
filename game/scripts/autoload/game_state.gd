@@ -762,7 +762,7 @@ func from_dict(d: Dictionary) -> void:
 	dmg_variance = float(d.get("dmg_variance", 0.08))
 
 
-## 八族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
+## 九族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
 const RACE_STARTER_WEAPONS: Dictionary = {
 	"rabbit": "rusty_blade",
 	"lion": "ash_spear",
@@ -773,66 +773,6 @@ const RACE_STARTER_WEAPONS: Dictionary = {
 	"crane": "reed_bow",
 	"bear": "anvil_hammer",
 	"penguin": "flint_gun",
-	"tortoise": "shard_focus",
-	"elephant": "notch_axe",
-	"frog": "mist_darts",
-	"panda": "wrap_gloves",
-	"fawn": "reed_bow",
-	"hound": "ash_spear",
-	"owl": "star_rod",
-	"cat": "star_fang",
-	"pangolin": "hunt_claw",
-	"otter": "notch_axe",
-	"raccoon": "flint_gun",
-	"hedgehog": "mist_darts",
-	"wolf": "rusty_blade",
-	"seahorse": "shard_focus",
-	"kangaroo": "wrap_gloves",
-	"squirrel": "rusty_blade",
-	"salamander": "anvil_hammer",
-	"viper": "star_fang",
-	"falcon": "hunt_claw",
-	"ram": "star_rod",
-	"chameleon": "reed_bow",
-	"sailfish": "ash_spear",
-	"rhino": "notch_axe",
-	"bat": "mist_darts",
-	"gorilla": "wrap_gloves",
-	"peacock": "shard_focus",
-	"meerkat": "flint_gun",
-	"courser": "rusty_blade",
-	"beaver": "notch_axe",
-	"stoat": "star_fang",
-	"seal": "wrap_gloves",
-	"raven": "star_rod",
-	"kite": "reed_bow",
-	"swan": "ash_spear",
-	"bison": "anvil_hammer",
-	"gecko": "mist_darts",
-	"badger": "hunt_claw",
-	"capybara": "shard_focus",
-	"woodpecker": "flint_gun",
-	"armadillo": "meager_edge",
-	"caterpillar": "anvil_hammer",
-	"cuttlefish": "star_fang",
-	"crab": "wrap_gloves",
-	"camel": "star_rod",
-	"giraffe": "reed_bow",
-	"hippo": "ash_spear",
-	"mole": "anvil_hammer",
-	"petaurista": "mist_darts",
-	"lynx": "hunt_claw",
-	"scarab": "shard_focus",
-	"toucan": "flint_gun",
-	"walrus": "rusty_blade",
-	"takin": "notch_axe",
-	"lemur": "star_fang",
-	"marmot": "wrap_gloves",
-	"firefly": "star_rod",
-	"manta": "reed_bow",
-	"kingfisher": "ash_spear",
-	"donkey": "notch_axe",
-	"scorpion": "mist_darts",
 }
 
 
@@ -851,66 +791,6 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"crane": default_name = "雲嵐鶴"
 		"bear": default_name = "玄軸熊"
 		"penguin": default_name = "蒸氣企鵝"
-		"tortoise": default_name = "玄機龜"
-		"elephant": default_name = "鋼岳象"
-		"frog": default_name = "碧簧蛙"
-		"panda": default_name = "瓷韻熊貓"
-		"fawn": default_name = "翠角鹿"
-		"hound": default_name = "星軌犬"
-		"owl": default_name = "靈鐘鴞"
-		"cat": default_name = "幽影貓"
-		"pangolin": default_name = "沙鱗穿山甲"
-		"otter": default_name = "浪花海獺"
-		"raccoon": default_name = "星巡浣熊"
-		"hedgehog": default_name = "棘輪刺蝟"
-		"wolf": default_name = "荒原鋼狼"
-		"seahorse": default_name = "琉璃海馬"
-		"kangaroo": default_name = "鐵拳袋鼠"
-		"squirrel": default_name = "巡林松鼠"
-		"salamander": default_name = "熔火蜥蜴"
-		"viper": default_name = "竹影青蛇"
-		"falcon": default_name = "疾影神隼"
-		"ram": default_name = "星盤靈羊"
-		"chameleon": default_name = "幻彩變色龍"
-		"sailfish": default_name = "破浪旗魚"
-		"rhino": default_name = "重角犀牛"
-		"bat": default_name = "星翼蝙蝠"
-		"gorilla": default_name = "鋼臂巨猩"
-		"peacock": default_name = "稜鏡孔雀"
-		"meerkat": default_name = "沙哨狐獴"
-		"courser": default_name = "鐵蹄駿駒"
-		"beaver": default_name = "劈木河狸"
-		"stoat": default_name = "旋刃伶鼬"
-		"seal": default_name = "拍浪海豹"
-		"raven": default_name = "星儀渡鴉"
-		"kite": default_name = "熱流赤鳶"
-		"swan": default_name = "旋音天鵝"
-		"bison": default_name = "撼地野牛"
-		"gecko": default_name = "巡管守宮"
-		"badger": default_name = "破星蜜獾"
-		"capybara": default_name = "澄心水豚"
-		"woodpecker": default_name = "振律啄木鳥"
-		"armadillo": default_name = "熔鎧犰狳"
-		"caterpillar": default_name = "風箱毛蟲"
-		"cuttlefish": default_name = "墨影烏賊"
-		"crab": default_name = "熔砧石蟹"
-		"camel": default_name = "日晷駱駝"
-		"giraffe": default_name = "鐘塔長頸鹿"
-		"hippo": default_name = "重閥河馬"
-		"mole": default_name = "星岩鼴鼠"
-		"petaurista": default_name = "嵐翼鼯鼠"
-		"lynx": default_name = "提線猞猁"
-		"scarab": default_name = "黑曜金龜"
-		"toucan": default_name = "彩喙巨嘴鳥"
-		"walrus": default_name = "破冰海象"
-		"takin": default_name = "破竹羚牛"
-		"lemur": default_name = "星環狐猴"
-		"marmot": default_name = "碎石旱獺"
-		"firefly": default_name = "靈燈飛螢"
-		"manta": default_name = "潮汐蝠魟"
-		"kingfisher": default_name = "穿雲翠鳥"
-		"donkey": default_name = "闢道頑驢"
-		"scorpion": default_name = "伏影沙蠍"
 		_: default_name = "小白"
 
 	## 該族若本來就有一樣的開局武器，不要改數值

@@ -89,66 +89,6 @@ const RACE_FILTER_OPTIONS: Array[Dictionary] = [
 	{"id": "bear", "name_zh": "熊"},
 	{"id": "crane", "name_zh": "鶴"},
 	{"id": "penguin", "name_zh": "企鵝"},
-	{"id": "tortoise", "name_zh": "龜"},
-	{"id": "elephant", "name_zh": "象"},
-	{"id": "frog", "name_zh": "蛙"},
-	{"id": "panda", "name_zh": "熊貓"},
-	{"id": "fawn", "name_zh": "鹿"},
-	{"id": "hound", "name_zh": "犬"},
-	{"id": "owl", "name_zh": "鴞"},
-	{"id": "cat", "name_zh": "貓"},
-	{"id": "pangolin", "name_zh": "穿山甲"},
-	{"id": "otter", "name_zh": "海獺"},
-	{"id": "raccoon", "name_zh": "浣熊"},
-	{"id": "hedgehog", "name_zh": "刺蝟"},
-	{"id": "wolf", "name_zh": "鋼狼"},
-	{"id": "seahorse", "name_zh": "海馬"},
-	{"id": "kangaroo", "name_zh": "袋鼠"},
-	{"id": "squirrel", "name_zh": "松鼠"},
-	{"id": "salamander", "name_zh": "蜥蜴"},
-	{"id": "viper", "name_zh": "青蛇"},
-	{"id": "falcon", "name_zh": "神隼"},
-	{"id": "ram", "name_zh": "靈羊"},
-	{"id": "chameleon", "name_zh": "變色龍"},
-	{"id": "sailfish", "name_zh": "旗魚"},
-	{"id": "rhino", "name_zh": "犀牛"},
-	{"id": "bat", "name_zh": "蝙蝠"},
-	{"id": "gorilla", "name_zh": "巨猩"},
-	{"id": "peacock", "name_zh": "孔雀"},
-	{"id": "meerkat", "name_zh": "狐獴"},
-	{"id": "courser", "name_zh": "駿駒"},
-	{"id": "beaver", "name_zh": "河狸"},
-	{"id": "stoat", "name_zh": "伶鼬"},
-	{"id": "seal", "name_zh": "海豹"},
-	{"id": "raven", "name_zh": "渡鴉"},
-	{"id": "kite", "name_zh": "赤鳶"},
-	{"id": "swan", "name_zh": "天鵝"},
-	{"id": "bison", "name_zh": "野牛"},
-	{"id": "gecko", "name_zh": "守宮"},
-	{"id": "badger", "name_zh": "蜜獾"},
-	{"id": "capybara", "name_zh": "水豚"},
-	{"id": "woodpecker", "name_zh": "啄木鳥"},
-	{"id": "armadillo", "name_zh": "犰狳"},
-	{"id": "caterpillar", "name_zh": "毛蟲"},
-	{"id": "cuttlefish", "name_zh": "烏賊"},
-	{"id": "crab", "name_zh": "石蟹"},
-	{"id": "camel", "name_zh": "駱駝"},
-	{"id": "giraffe", "name_zh": "長頸鹿"},
-	{"id": "hippo", "name_zh": "河馬"},
-	{"id": "mole", "name_zh": "鼴鼠"},
-	{"id": "petaurista", "name_zh": "鼯鼠"},
-	{"id": "lynx", "name_zh": "猞猁"},
-	{"id": "scarab", "name_zh": "金龜"},
-	{"id": "toucan", "name_zh": "巨嘴鳥"},
-	{"id": "walrus", "name_zh": "海象"},
-	{"id": "takin", "name_zh": "羚牛"},
-	{"id": "lemur", "name_zh": "狐猴"},
-	{"id": "marmot", "name_zh": "旱獺"},
-	{"id": "firefly", "name_zh": "飛螢"},
-	{"id": "manta", "name_zh": "蝠魟"},
-	{"id": "kingfisher", "name_zh": "翠鳥"},
-	{"id": "donkey", "name_zh": "頑驢"},
-	{"id": "scorpion", "name_zh": "沙蠍"},
 ]
 
 ## 檢查種族是否具備美術立繪與切片資源
@@ -678,66 +618,6 @@ func _get_race_short_name(rid: String) -> String:
 		"bear": return "熊"
 		"crane": return "鶴"
 		"penguin": return "企鵝"
-		"tortoise": return "龜"
-		"elephant": return "象"
-		"frog": return "蛙"
-		"panda": return "熊貓"
-		"fawn": return "鹿"
-		"hound": return "犬"
-		"owl": return "鴞"
-		"cat": return "貓"
-		"pangolin": return "穿山甲"
-		"otter": return "海獺"
-		"raccoon": return "浣熊"
-		"hedgehog": return "刺蝟"
-		"wolf": return "鋼狼"
-		"seahorse": return "海馬"
-		"kangaroo": return "袋鼠"
-		"squirrel": return "松鼠"
-		"salamander": return "蜥蜴"
-		"viper": return "青蛇"
-		"falcon": return "神隼"
-		"ram": return "靈羊"
-		"chameleon": return "變色龍"
-		"sailfish": return "旗魚"
-		"rhino": return "犀牛"
-		"bat": return "蝙蝠"
-		"gorilla": return "巨猩"
-		"peacock": return "孔雀"
-		"meerkat": return "狐獴"
-		"courser": return "駿駒"
-		"beaver": return "河狸"
-		"stoat": return "伶鼬"
-		"seal": return "海豹"
-		"raven": return "渡鴉"
-		"kite": return "赤鳶"
-		"swan": return "天鵝"
-		"bison": return "野牛"
-		"gecko": return "守宮"
-		"badger": return "蜜獾"
-		"capybara": return "水豚"
-		"woodpecker": return "啄木鳥"
-		"armadillo": return "犰狳"
-		"caterpillar": return "毛蟲"
-		"cuttlefish": return "烏賊"
-		"crab": return "石蟹"
-		"camel": return "駱駝"
-		"giraffe": return "長頸鹿"
-		"hippo": return "河馬"
-		"mole": return "鼴鼠"
-		"petaurista": return "鼯鼠"
-		"lynx": return "猞猁"
-		"scarab": return "金龜"
-		"toucan": return "巨嘴鳥"
-		"walrus": return "海象"
-		"takin": return "羚牛"
-		"lemur": return "狐猴"
-		"marmot": return "旱獺"
-		"firefly": return "飛螢"
-		"manta": return "蝠魟"
-		"kingfisher": return "翠鳥"
-		"donkey": return "頑驢"
-		"scorpion": return "沙蠍"
 		_: return rid
 
 

@@ -161,76 +161,58 @@
         ],
         "default_items": [
           {
-            "id": "chassis_lynx_marionette_walnut_default",
-            "name": "提線木偶精雕胡桃木矮萌底盤",
+            "id": "paint_ivory_stock",
+            "name": "原廠象牙白",
             "tier": "common",
-            "race": "lynx"
+            "race": "rabbit"
           },
           {
-            "id": "chassis_scarab_obsidian_forge_default",
-            "name": "黑曜耐火鑄鐵矮萌底盤",
-            "tier": "common",
-            "race": "scarab"
+            "id": "paint_fox_orange",
+            "name": "靈狐曜橙烤漆",
+            "tier": "rare",
+            "race": "fox"
           },
           {
-            "id": "chassis_toucan_canopy_alloy_default",
-            "name": "林冠輕量化合金素體底盤",
-            "tier": "common",
-            "race": "toucan"
+            "id": "paint_brass_gold",
+            "name": "黃銅原金拋光",
+            "tier": "epic",
+            "race": "lion"
           },
           {
-            "id": "chassis_walrus_icebreaker_alloy_default",
-            "name": "深淵耐壓鍍鈦合金底盤",
-            "tier": "common",
-            "race": "walrus"
+            "id": "paint_molten_crimson",
+            "name": "赤焰熔爐烤漆",
+            "tier": "rare",
+            "race": "boar"
           },
           {
-            "id": "chassis_takin_bronze_cast_default",
-            "name": "青古銅鑄鐵重裝底盤",
-            "tier": "common",
-            "race": "takin"
+            "id": "paint_bamboo_bronze",
+            "name": "天元青古銅烤漆",
+            "tier": "rare",
+            "race": "macaque"
           },
           {
-            "id": "chassis_lemur_orbit_polymer_default",
-            "name": "星穹輕量聚合物高機動底盤",
+            "id": "paint_ember_orange",
+            "name": "原廠餘燼橙紅",
             "tier": "common",
-            "race": "lemur"
+            "race": "tiger"
           },
           {
-            "id": "chassis_marmot_quarry_tinplate_default",
-            "name": "碎石耐磨馬口鐵底盤",
+            "id": "paint_crane_porcelain",
+            "name": "原廠冷淬青瓷白",
             "tier": "common",
-            "race": "marmot"
+            "race": "crane"
           },
           {
-            "id": "chassis_firefly_emerald_tinplate_default",
-            "name": "深林沖壓薄銅馬口鐵底盤",
+            "id": "paint_bear_amber",
+            "name": "原廠焦糖琥珀烤漆",
             "tier": "common",
-            "race": "firefly"
+            "race": "bear"
           },
           {
-            "id": "chassis_manta_titanium_default",
-            "name": "深海沖壓耐蝕鍍鈦金屬底盤",
+            "id": "paint_penguin_navy",
+            "name": "原廠深海鍍鈦藍",
             "tier": "common",
-            "race": "manta"
-          },
-          {
-            "id": "chassis_kingfisher_enamel_default",
-            "name": "竹影沖壓彩釉琺瑯金屬底盤",
-            "tier": "common",
-            "race": "kingfisher"
-          },
-          {
-            "id": "chassis_donkey_tinplate_default",
-            "name": "集市工兵沖壓馬口鐵金屬底盤",
-            "tier": "common",
-            "race": "donkey"
-          },
-          {
-            "id": "chassis_scorpion_stock",
-            "name": "荒漠沖壓馬口鐵沙蠍底盤",
-            "tier": "common",
-            "race": "scorpion"
+            "race": "penguin"
           }
         ]
       },
@@ -311,76 +293,58 @@
         ],
         "default_items": [
           {
-            "id": "head_lynx_bazaar_marionette_tufted_cowl",
-            "name": "歐風提線雙天線金耳兜帽",
+            "id": "ear_rabbit_straight",
+            "name": "雙聯長立金屬耳",
             "tier": "common",
-            "race": "lynx"
+            "race": "rabbit"
           },
           {
-            "id": "head_scarab_quenched_obsidian_cowl",
-            "name": "黑曜淬火雙叉金角面罩",
-            "tier": "common",
-            "race": "scarab"
+            "id": "ear_fox_radar",
+            "name": "雷達折疊天線尖耳",
+            "tier": "rare",
+            "race": "fox"
           },
           {
-            "id": "head_toucan_prism_bill_visor_cowl",
-            "name": "彩晶折光巨嘴面罩",
-            "tier": "common",
-            "race": "toucan"
+            "id": "ear_lion_gilded_mane",
+            "name": "金屬疊片外擴鬃毛冠",
+            "tier": "epic",
+            "race": "lion"
           },
           {
-            "id": "head_walrus_tungsten_tusk_cowl",
-            "name": "雙聯鎢鋼破冰長牙面罩",
+            "id": "ear_boar_rivet_cowl",
+            "name": "衝壓鋼板防撞罩耳",
             "tier": "common",
-            "race": "walrus"
+            "race": "boar"
           },
           {
-            "id": "head_takin_brass_twisted_horn_cowl",
-            "name": "黃銅反曲扭角重盔",
+            "id": "ear_macaque_coaxial",
+            "name": "同心圓階梯金屬耳罩",
             "tier": "common",
-            "race": "takin"
+            "race": "macaque"
           },
           {
-            "id": "head_lemur_orbit_radar_cowl",
-            "name": "星軌冷光雷達耳罩面甲",
+            "id": "head_ember_tiger_stock",
+            "name": "標準百葉耳與工字鋼樑額板",
             "tier": "common",
-            "race": "lemur"
+            "race": "tiger"
           },
           {
-            "id": "head_marmot_alloy_chisel_visor",
-            "name": "雙聯合金鑿齒護目面罩",
+            "id": "head_cloud_crane_stock",
+            "name": "八角丹頂閥與三節波紋頸環",
             "tier": "common",
-            "race": "marmot"
+            "race": "crane"
           },
           {
-            "id": "head_firefly_brass_antenna_cowl",
-            "name": "雙聯微調黃銅觸角調諧冠",
+            "id": "head_iron_bear_stock",
+            "name": "雙層同心圓耳罩與乳白口鼻罩",
             "tier": "common",
-            "race": "firefly"
+            "race": "bear"
           },
           {
-            "id": "head_manta_hydrofoil_horn_cowl",
-            "name": "雙聯微型導流頭角導航冠",
+            "id": "head_steam_penguin_stock",
+            "name": "沖壓黃銅風鏡與雙瓣短喙",
             "tier": "common",
-            "race": "manta"
-          },
-          {
-            "id": "head_kingfisher_beak_lance_cowl",
-            "name": "雙聯微調黃銅鳥喙長刺面盔",
-            "tier": "common",
-            "race": "kingfisher"
-          },
-          {
-            "id": "head_donkey_ratchet_ears_cowl",
-            "name": "雙聯棘輪立體折疊長耳面盔",
-            "tier": "common",
-            "race": "donkey"
-          },
-          {
-            "id": "head_scorpion_dune_visor",
-            "name": "沖壓防沙折角金屬面盔",
-            "tier": "common",
-            "race": "scorpion"
+            "race": "penguin"
           }
         ]
       },
@@ -450,64 +414,58 @@
         ],
         "default_items": [
           {
-            "id": "key_lynx_twin_ring_chime_brass",
-            "name": "雙環八音風鈴黃銅發條鑰匙",
-            "tier": "common"
+            "id": "key_classic_brass",
+            "name": "雙孔古銅發條鑰匙",
+            "tier": "common",
+            "race": "rabbit"
           },
           {
-            "id": "key_scarab_crucible_cross_fire_brass",
-            "name": "四葉鍛造十字火紋黃銅發條鑰匙",
-            "tier": "common"
+            "id": "key_classic_brass",
+            "name": "雙孔古銅發條鑰匙",
+            "tier": "common",
+            "race": "fox"
           },
           {
-            "id": "key_toucan_tri_vane_canopy_rotor_brass",
-            "name": "三葉林冠旋翼黃銅發條鑰匙",
-            "tier": "common"
+            "id": "key_classic_brass",
+            "name": "雙孔古銅發條鑰匙",
+            "tier": "common",
+            "race": "lion"
           },
           {
-            "id": "key_walrus_anchor_handwheel_brass",
-            "name": "雙葉海錨輪轂黃銅發條鑰匙",
-            "tier": "common"
+            "id": "key_classic_brass",
+            "name": "雙孔古銅發條鑰匙",
+            "tier": "common",
+            "race": "boar"
           },
           {
-            "id": "key_takin_tri_leaf_zen_brass",
-            "name": "三葉天元雕花黃銅發條鑰匙",
-            "tier": "common"
+            "id": "key_classic_brass",
+            "name": "雙孔古銅發條鑰匙",
+            "tier": "common",
+            "race": "macaque"
           },
           {
-            "id": "key_lemur_tri_ring_orbit_brass",
-            "name": "三環軌道星環黃銅發條鑰匙",
-            "tier": "common"
+            "id": "key_turbine_flame",
+            "name": "渦輪火焰發條鑰匙",
+            "tier": "common",
+            "race": "tiger"
           },
           {
-            "id": "key_marmot_dual_pawl_brass",
-            "name": "雙向棘爪減速黃銅發條鑰匙",
-            "tier": "common"
+            "id": "key_tri_wing_zephyr",
+            "name": "三翼凌雲風輪鑰匙",
+            "tier": "common",
+            "race": "crane"
           },
           {
-            "id": "key_firefly_floral_gear_brass",
-            "name": "花蕾造型四瓣齒輪黃銅發條鑰匙",
-            "tier": "common"
+            "id": "key_cross_pendulum",
+            "name": "玄軸雙重重錘十字鑰匙",
+            "tier": "common",
+            "race": "bear"
           },
           {
-            "id": "key_manta_starfish_gear_brass",
-            "name": "海星造型五齒輪黃銅發條鑰匙",
-            "tier": "common"
-          },
-          {
-            "id": "key_kingfisher_zen_taichi_gear_brass",
-            "name": "天元太極雙輪黃銅發條鑰匙",
-            "tier": "common"
-          },
-          {
-            "id": "key_donkey_dawn_clover_brass",
-            "name": "晨曦三葉雕花黃銅發條鑰匙",
-            "tier": "common"
-          },
-          {
-            "id": "key_scorpion_cross_brass",
-            "name": "荒漠四角齒輪雕花黃銅發條鑰匙",
-            "tier": "common"
+            "id": "key_twin_ring_helm",
+            "name": "雙環舵輪造型黃銅鑰匙",
+            "tier": "common",
+            "race": "penguin"
           }
         ]
       },
@@ -629,76 +587,58 @@
         ],
         "default_items": [
           {
-            "id": "costume_lynx_marionette_acrobat_vest",
-            "name": "晨曦小鎮提線雜技工裝背心",
-            "tier": "common",
-            "race": "lynx"
+            "id": "costume_nutcracker_guard",
+            "name": "胡桃鉗近衛軍裝",
+            "tier": "rare",
+            "race": "rabbit"
           },
           {
-            "id": "costume_scarab_crucible_artisan_apron",
-            "name": "赤焰熔爐隔熱工匠護裙",
-            "tier": "common",
-            "race": "scarab"
+            "id": "costume_astral_cape",
+            "name": "星紋見習占星斗篷",
+            "tier": "epic",
+            "race": "fox"
           },
           {
-            "id": "costume_toucan_vine_valley_scout_harness",
-            "name": "蔓谷探險巡林獵裝",
-            "tier": "common",
-            "race": "toucan"
+            "id": "costume_nutcracker_guard",
+            "name": "胡桃鉗近衛軍裝",
+            "tier": "rare",
+            "race": "lion"
           },
           {
-            "id": "costume_walrus_abyssal_peacoat_cuirass",
-            "name": "深淵領航雙排扣水手胸甲",
+            "id": "costume_viking_harness",
+            "name": "粗獷鍛爐護胸鐵束帶",
             "tier": "common",
-            "race": "walrus"
+            "race": "boar"
           },
           {
-            "id": "costume_takin_zen_pioneer_heavy_robe",
-            "name": "天元拓荒道袍重肩甲",
-            "tier": "common",
-            "race": "takin"
+            "id": "costume_dawn_monk_tunic",
+            "name": "晨曦行者武道短褂",
+            "tier": "rare",
+            "race": "macaque"
           },
           {
-            "id": "costume_lemur_astro_stealth_harness",
-            "name": "宇航匿蹤輕量安全吊帶胸甲",
+            "id": "costume_ember_tunic",
+            "name": "餘燼工匠淬火戰褂",
             "tier": "common",
-            "race": "lemur"
+            "race": "tiger"
           },
           {
-            "id": "costume_marmot_scavenger_canvas_harness",
-            "name": "舊庫拾荒加固帆布工裝胸甲",
+            "id": "costume_zephyr_robe",
+            "name": "凌雲羽衣輕鋼道袍",
             "tier": "common",
-            "race": "marmot"
+            "race": "crane"
           },
           {
-            "id": "costume_firefly_vine_harness_cuirass",
-            "name": "藤蔓工裝編織輕量背心胸甲",
+            "id": "costume_ironclad_overalls",
+            "name": "玄軸工坊重裝工作吊帶甲",
             "tier": "common",
-            "race": "firefly"
+            "race": "bear"
           },
           {
-            "id": "costume_manta_diver_harness_cuirass",
-            "name": "深海潛水工裝編織輕量胸甲",
+            "id": "costume_navigator_harness",
+            "name": "深海導航員合金防撞工作甲",
             "tier": "common",
-            "race": "manta"
-          },
-          {
-            "id": "costume_kingfisher_dojo_lacquer_cuirass",
-            "name": "天元道場生漆編織輕量戰袍胸甲",
-            "tier": "common",
-            "race": "kingfisher"
-          },
-          {
-            "id": "costume_donkey_sapper_harness",
-            "name": "集市工兵鉚接生漆板甲胸甲",
-            "tier": "common",
-            "race": "donkey"
-          },
-          {
-            "id": "costume_scorpion_scavenger_plate",
-            "name": "荒漠拾荒鉚接生漆板甲胸甲",
-            "tier": "common",
-            "race": "scorpion"
+            "race": "penguin"
           }
         ]
       },
@@ -770,76 +710,58 @@
         ],
         "default_items": [
           {
-            "id": "face_lynx_emerald_quartz_eyemask",
-            "name": "雙色翡翠寶石目鏡彩釉面甲",
+            "id": "core_cyan_emerald",
+            "name": "天青翡翠透鏡核心",
             "tier": "common",
-            "race": "lynx"
+            "race": "rabbit"
           },
           {
-            "id": "face_scarab_amber_crystal_visor",
-            "name": "熔金琥珀透鏡耐火面甲",
+            "id": "core_cyan_emerald",
+            "name": "天青翡翠透鏡核心",
             "tier": "common",
-            "race": "scarab"
+            "race": "fox"
           },
           {
-            "id": "face_toucan_emerald_quartz_monocle",
-            "name": "翡翠石英瞄準目鏡",
-            "tier": "common",
-            "race": "toucan"
+            "id": "core_amber_sun",
+            "name": "琥珀烈陽透鏡核心",
+            "tier": "rare",
+            "race": "lion"
           },
           {
-            "id": "face_walrus_quartz_dome_eyes",
-            "name": "雙聯耐壓石英泡罩目鏡",
+            "id": "core_cyan_emerald",
+            "name": "天青翡翠透鏡核心",
             "tier": "common",
-            "race": "walrus"
+            "race": "boar"
           },
           {
-            "id": "face_takin_emerald_quartz_visors",
-            "name": "翡翠石英耐震雙目鏡",
+            "id": "core_cyan_emerald",
+            "name": "天青翡翠透鏡核心",
             "tier": "common",
-            "race": "takin"
+            "race": "macaque"
           },
           {
-            "id": "face_lemur_amber_pulsar_visors",
-            "name": "琥珀脈衝星穹雙目鏡",
+            "id": "core_molten_amber",
+            "name": "原廠熔火琥珀核心",
             "tier": "common",
-            "race": "lemur"
+            "race": "tiger"
           },
           {
-            "id": "face_marmot_amber_dust_goggles",
-            "name": "雙聯琥珀防塵石英風鏡",
+            "id": "core_vermilion_lens",
+            "name": "原廠丹頂朱砂透鏡核心",
             "tier": "common",
-            "race": "marmot"
+            "race": "crane"
           },
           {
-            "id": "face_firefly_dual_lantern_quartz_eyes",
-            "name": "雙聯聚碳酸酯夜燈球形目鏡",
+            "id": "core_emerald_lens",
+            "name": "原廠薄荷翡翠透鏡核心",
             "tier": "common",
-            "race": "firefly"
+            "race": "bear"
           },
           {
-            "id": "face_manta_high_pressure_quartz_goggles",
-            "name": "雙聯耐高壓深海石英泡罩目鏡",
+            "id": "core_cyan_quartz",
+            "name": "原廠天藍石英透鏡核心",
             "tier": "common",
-            "race": "manta"
-          },
-          {
-            "id": "face_kingfisher_zen_slate_goggles",
-            "name": "雙聯高透青石琉璃圓形目鏡",
-            "tier": "common",
-            "race": "kingfisher"
-          },
-          {
-            "id": "face_donkey_slate_goggles",
-            "name": "雙聯高透青石琉璃圓形目鏡",
-            "tier": "common",
-            "race": "donkey"
-          },
-          {
-            "id": "face_scorpion_amber_goggles",
-            "name": "雙聯高透琥珀金晶琉璃圓形目鏡",
-            "tier": "common",
-            "race": "scorpion"
+            "race": "penguin"
           }
         ]
       },
@@ -918,76 +840,67 @@
         ],
         "default_items": [
           {
-            "id": "weapon_lynx_dawn_marionette_steel_claws",
-            "name": "晨曦提線裂空機關爪",
-            "tier": "common",
-            "weapon_type": "claw"
+            "id": "wpn_dawn_blade",
+            "name": "晨曦發條單手長劍",
+            "weapon_type": "sword",
+            "tier": "rare",
+            "race": "rabbit"
           },
           {
-            "id": "weapon_scarab_crucible_obsidian_focus",
-            "name": "赤焰黑曜護體靈晶",
-            "tier": "common",
-            "weapon_type": "crystal"
+            "id": "wpn_astral_staff",
+            "name": "星盤晶核秘術法杖",
+            "weapon_type": "magic",
+            "tier": "rare",
+            "race": "fox"
           },
           {
-            "id": "weapon_toucan_canopy_prism_pneumatic_arquebus",
-            "name": "林冠聚能氣動銃",
-            "tier": "common",
-            "weapon_type": "gun"
+            "id": "wpn_knight_lance",
+            "name": "皇家黃銅突刺長槍",
+            "weapon_type": "spear",
+            "tier": "rare",
+            "race": "lion"
           },
           {
-            "id": "weapon_walrus_abyssal_icebreaker_cutlass",
-            "name": "深淵破冰海軍短闊劍",
+            "id": "wpn_anvil_greathammer",
+            "name": "鍛爐鐵砧重型戰鎚",
+            "weapon_type": "hammer",
             "tier": "common",
-            "weapon_type": "sword"
+            "race": "boar"
           },
           {
-            "id": "weapon_takin_zen_bamboo_cleaving_axe",
-            "name": "天元破竹開山巨斧",
-            "tier": "common",
-            "weapon_type": "axe"
+            "id": "wpn_spring_claws",
+            "name": "機關發條靈爪護手",
+            "weapon_type": "claw",
+            "tier": "rare",
+            "race": "macaque"
           },
           {
-            "id": "weapon_lemur_orbital_pulse_daggers",
-            "name": "星軌脈衝雙鋒短匕",
+            "id": "wpn_twin_ember_sabers",
+            "name": "齒輪發條雙斬刃",
+            "weapon_type": "dagger",
             "tier": "common",
-            "weapon_type": "dagger"
+            "race": "tiger"
           },
           {
-            "id": "weapon_marmot_eccentric_piston_fists",
-            "name": "廢土偏心衝壓機關拳套",
+            "id": "wpn_zephyr_wing_bow",
+            "name": "風弦羽翼機關弓",
+            "weapon_type": "bow",
             "tier": "common",
-            "weapon_type": "fist"
+            "race": "crane"
           },
           {
-            "id": "weapon_firefly_luminescent_vine_staff",
-            "name": "深林熒光藤蔓發條長杖",
+            "id": "wpn_eccentric_gyro_sledge",
+            "name": "玄軸偏心重力錘",
+            "weapon_type": "hammer",
             "tier": "common",
-            "weapon_type": "magic"
+            "race": "bear"
           },
           {
-            "id": "weapon_manta_hydro_compound_bow",
-            "name": "海淵流體脈衝複合機關弓",
+            "id": "wpn_twin_harpoon_gun",
+            "name": "蒸氣雙管導航火槍",
+            "weapon_type": "gun",
             "tier": "common",
-            "weapon_type": "bow"
-          },
-          {
-            "id": "weapon_kingfisher_bamboo_spring_lance",
-            "name": "青竹旋簧刺槍",
-            "tier": "common",
-            "weapon_type": "spear"
-          },
-          {
-            "id": "weapon_donkey_bazaar_clearing_axe",
-            "name": "集市天軌闢道重斧",
-            "tier": "common",
-            "weapon_type": "axe"
-          },
-          {
-            "id": "weapon_scorpion_duneshadow_dart",
-            "name": "沙丘穿棘機關鏢",
-            "tier": "common",
-            "weapon_type": "dart"
+            "race": "penguin"
           }
         ]
       },
@@ -1069,76 +982,58 @@
         ],
         "default_items": [
           {
-            "id": "curio_lynx_pendulum_bobtail_balance",
-            "name": "雙節同軸鐘擺平衡配重短尾",
-            "tier": "common",
-            "race": "lynx"
+            "id": "curio_clockwork_pigeon",
+            "name": "自走發條通訊小信鴿",
+            "tier": "rare",
+            "race": "rabbit"
           },
           {
-            "id": "curio_scarab_twin_vent_exhaust_tail",
-            "name": "雙聯微型高壓洩壓排煙管短尾",
-            "tier": "common",
-            "race": "scarab"
+            "id": "curio_fox_astral_tail",
+            "name": "多節連桿星軸導能尾",
+            "tier": "rare",
+            "race": "fox"
           },
           {
-            "id": "curio_toucan_segmented_copper_rudder_tail",
-            "name": "多節沖壓銅片導航尾翼",
-            "tier": "common",
-            "race": "toucan"
+            "id": "curio_lion_fan_tail",
+            "name": "黃銅多節連桿扇尾",
+            "tier": "rare",
+            "race": "lion"
           },
           {
-            "id": "curio_walrus_dual_ballast_tanks",
-            "name": "雙聯減壓壓載氣箱與防鏽油壺",
+            "id": "curio_spring_tail",
+            "name": "機關發條彈簧捲尾",
             "tier": "common",
-            "race": "walrus"
+            "race": "boar"
           },
           {
-            "id": "curio_takin_dual_bamboo_oil_flasks",
-            "name": "雙聯竹露油壺減震閥",
+            "id": "curio_spring_tail",
+            "name": "機關發條彈簧尾",
             "tier": "common",
-            "race": "takin"
+            "race": "macaque"
           },
           {
-            "id": "curio_lemur_neon_ring_fiber_tail",
-            "name": "多節霓光光纖星環天線尾",
+            "id": "curio_exhaust_tiger_tail",
+            "name": "分節排氣管重力虎尾",
             "tier": "common",
-            "race": "lemur"
+            "race": "tiger"
           },
           {
-            "id": "curio_marmot_pneumatic_sand_tail",
-            "name": "減震氣動平衡排砂尾",
+            "id": "curio_origami_crane",
+            "name": "懸浮發條千紙鶴",
             "tier": "common",
-            "race": "marmot"
+            "race": "crane"
           },
           {
-            "id": "curio_firefly_luminescent_resin_abdomen",
-            "name": "注塑樹脂熒光腹囊與沖壓透光薄翅",
+            "id": "curio_music_honey_cask",
+            "name": "懸浮發條八音小蜂箱",
             "tier": "common",
-            "race": "firefly"
+            "race": "bear"
           },
           {
-            "id": "curio_manta_flexible_wings_antenna_tail",
-            "name": "柔性鈦合金滑翔翼翅與天線平衡細尾",
+            "id": "curio_mini_steam_boiler",
+            "name": "微型黃銅耐壓蒸氣鍋爐",
             "tier": "common",
-            "race": "manta"
-          },
-          {
-            "id": "curio_kingfisher_bamboo_wings_spring_tail",
-            "name": "剛竹纖維高彈摺疊雙翼與分節避震尾翎",
-            "tier": "common",
-            "race": "kingfisher"
-          },
-          {
-            "id": "curio_donkey_cograil_pack_tail",
-            "name": "雙聯天軌木榫馱架與分節配重平衡尾",
-            "tier": "common",
-            "race": "donkey"
-          },
-          {
-            "id": "curio_scorpion_spring_stinger_tail",
-            "name": "多節同軸彈簧尾刺導軌與配重重錘",
-            "tier": "common",
-            "race": "scorpion"
+            "race": "penguin"
           }
         ]
       }
@@ -1765,7 +1660,7 @@
       {
         "slot_id": "winding_key",
         "status": "100% 跨種族通用",
-        "rule": "上背發條插座公規化，所有鑰匙款式適用於 69 種動物素體"
+        "rule": "上背發條插座公規化，所有鑰匙款式適用於 9 種動物素體"
       },
       {
         "slot_id": "weapon",
@@ -1787,7 +1682,7 @@
       {
         "slot_id": "costume",
         "status": "標準 Chibi 軀幹通版裁切",
-        "rule": "七十重大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豬/熊/象/蜥蜴寬肩、青蛇修長靈巧、神隼流線收翼、靈羊微浮披肩、變色龍高聳導流冠、旗魚流體導流護胸、犀牛粗砂鑄鐵重甲護胸、蝙蝠失重匿蹤飛行護胸、巨猩重型鍛工背帶鍋爐胸甲、孔雀修長芭蕾身姿與木偶宮廷胸甲、沙哨狐獴直立哨兵體態與防沙短斗篷、鐵蹄駿駒高雅駿逸挺拔體態與巡防輕胸甲、劈木河狸敦實水桶腰工兵體態與開拓胸甲、旋刃伶鼬流線修長拱背刺客體態與拾荒防風斗篷、拍浪海豹圓潤流線水滴體態與深海武道束帶、星儀渡鴉俐落鳥偶體態與鐘錶學者斗篷、熱流赤鳶俐落猛禽體態與阻燃帆布斗篷、旋音天鵝典雅長頸芭蕾體態與大劇院儀仗胸甲、撼地野牛粗獷寬厚駝峰重甲與舊庫拆解工兵胸甲、巡管守宮靈敏扁平爬壁體態與耐熱暗忍胸甲、破星蜜獾平頂抗衝擊體態與軌道防護工裝、澄心水豚溫潤方鈍體態與道場茶道防塵練功袍、振律啄木鳥挺拔精幹體態與高空巡檢工裝、熔鎧犰狳敦實穩重厚裝體態與熔爐鐵砧重裝板甲、風箱毛蟲多節風箱體態與蔓谷深林工兵板甲、墨影烏賊流線型體態與海淵夜行輕量耐壓背心、熔砧石蟹矮萌微胖體態與熔爐工兵重裝石磚胸甲、日晷駱駝雙峰矮萌體態與廢土觀星學者帆布補丁長袍、鐘塔長頸鹿三節黃銅伸縮頸管矮萌體態與晨曦禮賓防風呢絨斗篷披肩、重閥河馬沖壓厚鑄耐壓黃銅矮萌體態與巨輪城重裝抗震高壓鉚釘胸甲、星岩鼴鼠乳白工程塑料矮萌體態與軌道高抗衝擊防護工裝背帶褲、嵐翼鼯鼠溫潤白瓷面甲矮萌體態與天元竹林摺疊翼膜暗忍胸甲、提線猞猁精雕胡桃木與晨曦小鎮提線雜技工裝背心、黑曜金龜高耐熱鑄鐵底盤與赤焰熔爐隔熱工匠護裙、彩喙巨嘴鳥輕量化合金底盤與蔓谷探險巡林獵裝、破冰海象耐壓鍍鈦合金底盤與深淵領航雙排扣水手胸甲、破竹羚牛青古銅鑄鐵重裝底盤與天元拓荒道袍重肩甲、星環狐猴象牙白高抗衝擊聚合物底盤與宇航匿蹤輕量安全吊帶胸甲、碎石旱獺生鐵青灰耐磨馬口鐵底盤與舊庫拾荒加固帆布工裝胸甲、靈燈飛螢深林沖壓薄銅馬口鐵底盤與藤蔓工裝編織輕量背心胸甲、潮汐蝠魟深海沖壓耐蝕鍍鈦金屬底盤與深海潛水工裝編織輕量胸甲、穿雲翠鳥竹影沖壓彩釉琺瑯金屬底盤與天元道場生漆編織輕量戰袍胸甲、闢道頑驢集市工兵沖壓馬口鐵金屬底盤與集市工兵鉚接生漆板甲胸甲、伏影沙蠍荒漠沖壓馬口鐵沙蠍底盤與荒漠拾荒鉚接生漆板甲胸甲) 由渲染器微調縮放適配"
+        "rule": "九大種族軀幹均維持 2.0~2.8 頭身 Chibi 比例，服飾外裝共用標準胸腰版型，部分特殊體態 (如獅/豕/熊寬肩、靈狐修長靈巧、雲嵐鶴高雅仙姿、烈焰虎矯健流線、靈爪猴精悍靈動、蒸氣企鵝圓潤憨實) 由渲染器微調縮放適配"
       }
     ]
   },
@@ -1804,67 +1699,7 @@
         "game/assets/sprites/player/paperdoll/tiger/",
         "game/assets/sprites/player/paperdoll/crane/",
         "game/assets/sprites/player/paperdoll/bear/",
-        "game/assets/sprites/player/paperdoll/penguin/",
-        "game/assets/sprites/player/paperdoll/tortoise/",
-        "game/assets/sprites/player/paperdoll/elephant/",
-        "game/assets/sprites/player/paperdoll/frog/",
-        "game/assets/sprites/player/paperdoll/panda/",
-        "game/assets/sprites/player/paperdoll/fawn/",
-        "game/assets/sprites/player/paperdoll/hound/",
-        "game/assets/sprites/player/paperdoll/owl/",
-        "game/assets/sprites/player/paperdoll/cat/",
-        "game/assets/sprites/player/paperdoll/pangolin/",
-        "game/assets/sprites/player/paperdoll/otter/",
-        "game/assets/sprites/player/paperdoll/raccoon/",
-        "game/assets/sprites/player/paperdoll/hedgehog/",
-        "game/assets/sprites/player/paperdoll/wolf/",
-        "game/assets/sprites/player/paperdoll/seahorse/",
-        "game/assets/sprites/player/paperdoll/kangaroo/",
-        "game/assets/sprites/player/paperdoll/squirrel/",
-        "game/assets/sprites/player/paperdoll/salamander/",
-        "game/assets/sprites/player/paperdoll/viper/",
-        "game/assets/sprites/player/paperdoll/falcon/",
-        "game/assets/sprites/player/paperdoll/ram/",
-        "game/assets/sprites/player/paperdoll/chameleon/",
-        "game/assets/sprites/player/paperdoll/sailfish/",
-        "game/assets/sprites/player/paperdoll/rhino/",
-        "game/assets/sprites/player/paperdoll/bat/",
-        "game/assets/sprites/player/paperdoll/gorilla/",
-        "game/assets/sprites/player/paperdoll/peacock/",
-        "game/assets/sprites/player/paperdoll/meerkat/",
-        "game/assets/sprites/player/paperdoll/courser/",
-        "game/assets/sprites/player/paperdoll/beaver/",
-        "game/assets/sprites/player/paperdoll/stoat/",
-        "game/assets/sprites/player/paperdoll/seal/",
-        "game/assets/sprites/player/paperdoll/raven/",
-        "game/assets/sprites/player/paperdoll/kite/",
-        "game/assets/sprites/player/paperdoll/swan/",
-        "game/assets/sprites/player/paperdoll/bison/",
-        "game/assets/sprites/player/paperdoll/gecko/",
-        "game/assets/sprites/player/paperdoll/badger/",
-        "game/assets/sprites/player/paperdoll/capybara/",
-        "game/assets/sprites/player/paperdoll/woodpecker/",
-        "game/assets/sprites/player/paperdoll/armadillo/",
-        "game/assets/sprites/player/paperdoll/caterpillar/",
-        "game/assets/sprites/player/paperdoll/cuttlefish/",
-        "game/assets/sprites/player/paperdoll/crab/",
-        "game/assets/sprites/player/paperdoll/camel/",
-        "game/assets/sprites/player/paperdoll/giraffe/",
-        "game/assets/sprites/player/paperdoll/hippo/",
-        "game/assets/sprites/player/paperdoll/mole/",
-        "game/assets/sprites/player/paperdoll/petaurista/",
-        "game/assets/sprites/player/paperdoll/lynx/",
-        "game/assets/sprites/player/paperdoll/scarab/",
-        "game/assets/sprites/player/paperdoll/toucan/",
-        "game/assets/sprites/player/paperdoll/walrus/",
-        "game/assets/sprites/player/paperdoll/takin/",
-        "game/assets/sprites/player/paperdoll/lemur/",
-        "game/assets/sprites/player/paperdoll/marmot/",
-        "game/assets/sprites/player/paperdoll/firefly/",
-        "game/assets/sprites/player/paperdoll/manta/",
-        "game/assets/sprites/player/paperdoll/kingfisher/",
-        "game/assets/sprites/player/paperdoll/donkey/",
-        "game/assets/sprites/player/paperdoll/scorpion/"
+        "game/assets/sprites/player/paperdoll/penguin/"
       ],
       "universal_equipment": [
         "game/assets/sprites/player/paperdoll/weapon/",
