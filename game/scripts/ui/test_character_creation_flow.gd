@@ -6,7 +6,7 @@ const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 
 var _ok := true
 var _frame := 0
-var _races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+var _races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin"]
 var _race_textures: Dictionary = {}
 
 
@@ -247,56 +247,6 @@ func _run_test_suite() -> void:
 	_assert(confirmed_data["race"] == "penguin", "訊號回傳正確選取種族 'penguin'")
 	_assert(str(gs.get("player_race")) == "penguin", "confirm_selection 成功將 'penguin' 寫入 GameState")
 	_assert(str(gs.get("player_name")) == "蒸氣企鵝", "confirm_selection 成功將預設英雄名稱設為 '蒸氣企鵝'")
-
-	# 切換至玄機龜並確認
-	confirmed_data["called"] = false
-	demo.call("select_race", "tortoise")
-	demo.call("confirm_selection")
-
-	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (tortoise)")
-	_assert(confirmed_data["race"] == "tortoise", "訊號回傳正確選取種族 'tortoise'")
-	_assert(str(gs.get("player_race")) == "tortoise", "confirm_selection 成功將 'tortoise' 寫入 GameState")
-	_assert(str(gs.get("player_name")) == "玄機龜", "confirm_selection 成功將預設英雄名稱設為 '玄機龜'")
-
-	# 切換至鋼岳象並確認
-	confirmed_data["called"] = false
-	demo.call("select_race", "elephant")
-	demo.call("confirm_selection")
-
-	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (elephant)")
-	_assert(confirmed_data["race"] == "elephant", "訊號回傳正確選取種族 'elephant'")
-	_assert(str(gs.get("player_race")) == "elephant", "confirm_selection 成功將 'elephant' 寫入 GameState")
-	_assert(str(gs.get("player_name")) == "鋼岳象", "confirm_selection 成功將預設英雄名稱設為 '鋼岳象'")
-
-	# 切換至碧簧蛙並確認
-	confirmed_data["called"] = false
-	demo.call("select_race", "frog")
-	demo.call("confirm_selection")
-
-	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (frog)")
-	_assert(confirmed_data["race"] == "frog", "訊號回傳正確選取種族 'frog'")
-	_assert(str(gs.get("player_race")) == "frog", "confirm_selection 成功將 'frog' 寫入 GameState")
-	_assert(str(gs.get("player_name")) == "碧簧蛙", "confirm_selection 成功將預設英雄名稱設為 '碧簧蛙'")
-
-	# 切換至瓷韻熊貓並確認
-	confirmed_data["called"] = false
-	demo.call("select_race", "panda")
-	demo.call("confirm_selection")
-
-	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (panda)")
-	_assert(confirmed_data["race"] == "panda", "訊號回傳正確選取種族 'panda'")
-	_assert(str(gs.get("player_race")) == "panda", "confirm_selection 成功將 'panda' 寫入 GameState")
-	_assert(str(gs.get("player_name")) == "瓷韻熊貓", "confirm_selection 成功將預設英雄名稱設為 '瓷韻熊貓'")
-
-	# 切換至翠角鹿並確認
-	confirmed_data["called"] = false
-	demo.call("select_race", "fawn")
-	demo.call("confirm_selection")
-
-	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (fawn)")
-	_assert(confirmed_data["race"] == "fawn", "訊號回傳正確選取種族 'fawn'")
-	_assert(str(gs.get("player_race")) == "fawn", "confirm_selection 成功將 'fawn' 寫入 GameState")
-	_assert(str(gs.get("player_name")) == "翠角鹿", "confirm_selection 成功將預設英雄名稱設為 '翠角鹿'")
 
 	demo.queue_free()
 

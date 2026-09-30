@@ -31,12 +31,12 @@ func _initialize() -> void:
 
 	# 1. 驗證詞條字典解析
 	var expected_astral := {
-		"zh_TW": "星紋斗篷",
-		"zh_CN": "星纹斗篷",
-		"en": "Astral Cape",
-		"ja": "星紋のマント",
-		"ko": "성문 망토",
-		"es": "Capa Astral"
+		"zh_TW": "星紋見習占星斗篷",
+		"zh_CN": "星纹见习占星斗篷",
+		"en": "Astral Apprentice Cape",
+		"ja": "星紋見習い占星マント",
+		"ko": "성문 수습 점성 망토",
+		"es": "Capa Astral de Aprendiz de Astrólogo"
 	}
 	var expected_bare := {
 		"zh_TW": "無外裝 (裸機素體)",
@@ -50,11 +50,11 @@ func _initialize() -> void:
 	for code in LOCALES:
 		if loc_node:
 			loc_node.call("set_locale", code)
-		var trans_astral := ContentLoc.text("ui", "星紋斗篷")
+		var trans_astral := ContentLoc.text("ui", "星紋見習占星斗篷")
 		if trans_astral != expected_astral[code]:
-			_fail("語系 [%s] 星紋斗篷 翻譯不符: 期望 '%s'，實際 '%s'" % [code, expected_astral[code], trans_astral])
+			_fail("語系 [%s] 星紋見習占星斗篷 翻譯不符: 期望 '%s'，實際 '%s'" % [code, expected_astral[code], trans_astral])
 		else:
-			print("  ✓ [%s] 星紋斗篷 -> %s" % [code, trans_astral])
+			print("  ✓ [%s] 星紋見習占星斗篷 -> %s" % [code, trans_astral])
 
 		var trans_bare := ContentLoc.text("ui", "無外裝 (裸機素體)")
 		if trans_bare != expected_bare[code]:
@@ -68,7 +68,7 @@ func _initialize() -> void:
 
 	var dlg = WardrobeDialog.new()
 	root_node.add_child(dlg)
-	dlg.set_race_filter("frog")
+	dlg.set_race_filter("fox")
 
 	# zh_TW 檢查
 	if dlg._title_label.text != "發條衣櫥 · 英雄換裝":
@@ -101,14 +101,14 @@ func _initialize() -> void:
 	for btn in dlg._costume_cards:
 		var lbl = btn.find_child("NameLabel", true, false)
 		if lbl is Label:
-			if lbl.text == "Astral Cape":
+			if lbl.text == "Astral Apprentice Cape":
 				found_astral_en = true
 			elif lbl.text == "No Costume (Bare Frame)":
 				found_bare_en = true
 	if not found_astral_en:
-		_fail("en 蛙衣櫥卡片未找到 Astral Cape")
+		_fail("en 狐衣櫥卡片未找到 Astral Apprentice Cape")
 	if not found_bare_en:
-		_fail("en 蛙衣櫥卡片未找到 No Costume (Bare Frame)")
+		_fail("en 狐衣櫥卡片未找到 No Costume (Bare Frame)")
 	print("  ✓ en 彈窗文字與卡片即時切換驗證通過")
 
 	# 切換至 ja 檢查
@@ -128,14 +128,14 @@ func _initialize() -> void:
 	for btn in dlg._costume_cards:
 		var lbl = btn.find_child("NameLabel", true, false)
 		if lbl is Label:
-			if lbl.text == "星紋のマント":
+			if lbl.text == "星紋見習い占星マント":
 				found_astral_ja = true
 			elif lbl.text == "外装なし (素体)":
 				found_bare_ja = true
 	if not found_astral_ja:
-		_fail("ja 蛙衣櫥卡片未找到 星紋のマント")
+		_fail("ja 狐衣櫥卡片未找到 星紋見習い占星マント")
 	if not found_bare_ja:
-		_fail("ja 蛙衣櫥卡片未找到 外装なし (素体)")
+		_fail("ja 狐衣櫥卡片未找到 外装なし (素体)")
 	print("  ✓ ja 彈窗文字與卡片即時切換驗證通過")
 
 	dlg.queue_free()

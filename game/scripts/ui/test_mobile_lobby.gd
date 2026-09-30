@@ -655,80 +655,46 @@ func _test_hero_portrait() -> void:
 		_fail("大廳缺少 _get_hero_portrait 方法")
 		return
 
-	# 1. 驗證玄機龜專屬頭像讀取，不為空且非小白兔 fallback
-	var tortoise_tex: Texture2D = _lobby.call("_get_hero_portrait", "tortoise")
-	if tortoise_tex == null:
-		_fail("玄機龜 (tortoise) 大廳頭像貼圖為空")
+	# 1. 驗證虎霸專屬頭像讀取，不為空且非小白兔 fallback
+	var tiger_tex: Texture2D = _lobby.call("_get_hero_portrait", "tiger")
+	if tiger_tex == null:
+		_fail("虎霸 (tiger) 大廳頭像貼圖為空")
 	else:
-		var path: String = tortoise_tex.resource_path
-		print("  [玄機龜頭像路徑] %s" % path)
-		if not path.ends_with("portraits/tortoise.png"):
-			_fail("玄機龜大廳頭像路徑應為 res://assets/sprites/portraits/tortoise.png，實際為: %s" % path)
-		elif path.find("rabbit") >= 0:
-			_fail("玄機龜大廳頭像不應退回小白兔 (rabbit)")
+		var path: String = tiger_tex.resource_path
+		print("  [虎霸頭像路徑] %s" % path)
+		if not path.ends_with("portraits/tiger.png"):
+			_fail("虎霸大廳頭像路徑應為 res://assets/sprites/portraits/tiger.png，實際為: %s" % path)
 		else:
-			print("  ok 玄機龜 (tortoise) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
+			print("  ok 虎霸 (tiger) 大廳頭像正確讀取專屬貼圖")
 
-	# 1.5 驗證鋼岳象專屬頭像讀取，不為空且非小白兔 fallback
-	var elephant_tex: Texture2D = _lobby.call("_get_hero_portrait", "elephant")
-	if elephant_tex == null:
-		_fail("鋼岳象 (elephant) 大廳頭像貼圖為空")
+	# 1.5 驗證雲嵐鶴專屬頭像讀取，不為空且非小白兔 fallback
+	var crane_tex: Texture2D = _lobby.call("_get_hero_portrait", "crane")
+	if crane_tex == null:
+		_fail("雲嵐鶴 (crane) 大廳頭像貼圖為空")
 	else:
-		var path: String = elephant_tex.resource_path
-		print("  [鋼岳象頭像路徑] %s" % path)
-		if not path.ends_with("portraits/elephant.png"):
-			_fail("鋼岳象大廳頭像路徑應為 res://assets/sprites/portraits/elephant.png，實際為: %s" % path)
-		elif path.find("rabbit") >= 0:
-			_fail("鋼岳象大廳頭像不應退回小白兔 (rabbit)")
+		var path: String = crane_tex.resource_path
+		print("  [雲嵐鶴頭像路徑] %s" % path)
+		if not path.ends_with("portraits/crane.png"):
+			_fail("雲嵐鶴大廳頭像路徑應為 res://assets/sprites/portraits/crane.png，實際為: %s" % path)
 		else:
-			print("  ok 鋼岳象 (elephant) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
+			print("  ok 雲嵐鶴 (crane) 大廳頭像正確讀取專屬貼圖")
 
-	# 1.6 驗證碧簧蛙專屬頭像讀取，不為空且非小白兔 fallback
-	var frog_tex: Texture2D = _lobby.call("_get_hero_portrait", "frog")
-	if frog_tex == null:
-		_fail("碧簧蛙 (frog) 大廳頭像貼圖為空")
+	# 1.6 驗證墨煞熊專屬頭像讀取，不為空且非小白兔 fallback
+	var bear_tex: Texture2D = _lobby.call("_get_hero_portrait", "bear")
+	if bear_tex == null:
+		_fail("墨煞熊 (bear) 大廳頭像貼圖為空")
 	else:
-		var path: String = frog_tex.resource_path
-		print("  [碧簧蛙頭像路徑] %s" % path)
-		if not path.ends_with("portraits/frog.png"):
-			_fail("碧簧蛙大廳頭像路徑應為 res://assets/sprites/portraits/frog.png，實際為: %s" % path)
-		elif path.find("rabbit") >= 0:
-			_fail("碧簧蛙大廳頭像不應退回小白兔 (rabbit)")
+		var path: String = bear_tex.resource_path
+		print("  [墨煞熊頭像路徑] %s" % path)
+		if not path.ends_with("portraits/bear.png"):
+			_fail("墨煞熊大廳頭像路徑應為 res://assets/sprites/portraits/bear.png，實際為: %s" % path)
 		else:
-			print("  ok 碧簧蛙 (frog) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
+			print("  ok 墨煞熊 (bear) 大廳頭像正確讀取專屬貼圖")
 
-	# 1.7 驗證瓷韻熊貓專屬頭像讀取，不為空且非小白兔 fallback
-	var panda_tex: Texture2D = _lobby.call("_get_hero_portrait", "panda")
-	if panda_tex == null:
-		_fail("瓷韻熊貓 (panda) 大廳頭像貼圖為空")
-	else:
-		var path: String = panda_tex.resource_path
-		print("  [瓷韻熊貓頭像路徑] %s" % path)
-		if not path.ends_with("portraits/panda.png"):
-			_fail("瓷韻熊貓大廳頭像路徑應為 res://assets/sprites/portraits/panda.png，實際為: %s" % path)
-		elif path.find("rabbit") >= 0:
-			_fail("瓷韻熊貓大廳頭像不應退回小白兔 (rabbit)")
-		else:
-			print("  ok 瓷韻熊貓 (panda) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
-
-	# 1.8 驗證翠角鹿專屬頭像讀取，不為空且非小白兔 fallback
-	var fawn_tex: Texture2D = _lobby.call("_get_hero_portrait", "fawn")
-	if fawn_tex == null:
-		_fail("翠角鹿 (fawn) 大廳頭像貼圖為空")
-	else:
-		var path: String = fawn_tex.resource_path
-		print("  [翠角鹿頭像路徑] %s" % path)
-		if not path.ends_with("portraits/fawn.png"):
-			_fail("翠角鹿大廳頭像路徑應為 res://assets/sprites/portraits/fawn.png，實際為: %s" % path)
-		elif path.find("rabbit") >= 0:
-			_fail("翠角鹿大廳頭像不應退回小白兔 (rabbit)")
-		else:
-			print("  ok 翠角鹿 (fawn) 大廳頭像正確讀取專屬貼圖 (非小白兔 fallback)")
-
-	# 2. 驗證切換玩家種族為玄機龜時，左上角 _profile_avatar 更新為玄機龜頭像
+	# 2. 驗證切換玩家種族為虎霸時，左上角 _profile_avatar 更新為虎霸頭像
 	var gs := root.get_node_or_null("GameState")
 	if gs:
-		gs.player_race = "tortoise"
+		gs.player_race = "tiger"
 		if _lobby.has_method("refresh_hud"):
 			_lobby.call("refresh_hud")
 		var avatar = _lobby.get("_profile_avatar") as TextureRect
@@ -736,66 +702,38 @@ func _test_hero_portrait() -> void:
 			_fail("大廳 _profile_avatar 為空或無貼圖")
 		else:
 			var apath: String = avatar.texture.resource_path
-			if not apath.ends_with("portraits/tortoise.png"):
-				_fail("切換為玄機龜後 _profile_avatar 應為 portraits/tortoise.png，實際為: %s" % apath)
+			if not apath.ends_with("portraits/tiger.png"):
+				_fail("切換為虎霸後 _profile_avatar 應為 portraits/tiger.png，實際為: %s" % apath)
 			else:
-				print("  ok 大廳 _profile_avatar 在玄機龜種族下正確顯示 tortoise.png")
+				print("  ok 大廳 _profile_avatar 在虎霸種族下正確顯示 tiger.png")
 
-		# 2.5 驗證切換玩家種族為鋼岳象時，左上角 _profile_avatar 更新為鋼岳象頭像
-		gs.player_race = "elephant"
+		# 2.5 驗證切換玩家種族為雲嵐鶴時，左上角 _profile_avatar 更新為雲嵐鶴頭像
+		gs.player_race = "crane"
 		if _lobby.has_method("refresh_hud"):
 			_lobby.call("refresh_hud")
-		var avatar_el = _lobby.get("_profile_avatar") as TextureRect
-		if avatar_el == null or avatar_el.texture == null:
-			_fail("大廳 _profile_avatar 為空或無貼圖 (elephant)")
+		var avatar_cr = _lobby.get("_profile_avatar") as TextureRect
+		if avatar_cr == null or avatar_cr.texture == null:
+			_fail("大廳 _profile_avatar 為空或無貼圖 (crane)")
 		else:
-			var epath: String = avatar_el.texture.resource_path
-			if not epath.ends_with("portraits/elephant.png"):
-				_fail("切換為鋼岳象後 _profile_avatar 應為 portraits/elephant.png，實際為: %s" % epath)
+			var epath: String = avatar_cr.texture.resource_path
+			if not epath.ends_with("portraits/crane.png"):
+				_fail("切換為雲嵐鶴後 _profile_avatar 應為 portraits/crane.png，實際為: %s" % epath)
 			else:
-				print("  ok 大廳 _profile_avatar 在鋼岳象種族下正確顯示 elephant.png")
+				print("  ok 大廳 _profile_avatar 在雲嵐鶴種族下正確顯示 crane.png")
 
-		# 2.6 驗證切換玩家種族為碧簧蛙時，左上角 _profile_avatar 更新為碧簧蛙頭像
-		gs.player_race = "frog"
+		# 2.6 驗證切換玩家種族為墨煞熊時，左上角 _profile_avatar 更新為墨煞熊頭像
+		gs.player_race = "bear"
 		if _lobby.has_method("refresh_hud"):
 			_lobby.call("refresh_hud")
-		var avatar_fr = _lobby.get("_profile_avatar") as TextureRect
-		if avatar_fr == null or avatar_fr.texture == null:
-			_fail("大廳 _profile_avatar 為空或無貼圖 (frog)")
+		var avatar_be = _lobby.get("_profile_avatar") as TextureRect
+		if avatar_be == null or avatar_be.texture == null:
+			_fail("大廳 _profile_avatar 為空或無貼圖 (bear)")
 		else:
-			var fpath: String = avatar_fr.texture.resource_path
-			if not fpath.ends_with("portraits/frog.png"):
-				_fail("切換為碧簧蛙後 _profile_avatar 應為 portraits/frog.png，實際為: %s" % fpath)
+			var fpath: String = avatar_be.texture.resource_path
+			if not fpath.ends_with("portraits/bear.png"):
+				_fail("切換為墨煞熊後 _profile_avatar 應為 portraits/bear.png，實際為: %s" % fpath)
 			else:
-				print("  ok 大廳 _profile_avatar 在碧簧蛙種族下正確顯示 frog.png")
-
-		# 2.7 驗證切換玩家種族為瓷韻熊貓時，左上角 _profile_avatar 更新為瓷韻熊貓頭像
-		gs.player_race = "panda"
-		if _lobby.has_method("refresh_hud"):
-			_lobby.call("refresh_hud")
-		var avatar_pa = _lobby.get("_profile_avatar") as TextureRect
-		if avatar_pa == null or avatar_pa.texture == null:
-			_fail("大廳 _profile_avatar 為空或無貼圖 (panda)")
-		else:
-			var papath: String = avatar_pa.texture.resource_path
-			if not papath.ends_with("portraits/panda.png"):
-				_fail("切換為瓷韻熊貓後 _profile_avatar 應為 portraits/panda.png，實際為: %s" % papath)
-			else:
-				print("  ok 大廳 _profile_avatar 在瓷韻熊貓種族下正確顯示 panda.png")
-
-		# 2.8 驗證切換玩家種族為翠角鹿時，左上角 _profile_avatar 更新為翠角鹿頭像
-		gs.player_race = "fawn"
-		if _lobby.has_method("refresh_hud"):
-			_lobby.call("refresh_hud")
-		var avatar_fa = _lobby.get("_profile_avatar") as TextureRect
-		if avatar_fa == null or avatar_fa.texture == null:
-			_fail("大廳 _profile_avatar 為空或無貼圖 (fawn)")
-		else:
-			var fapath: String = avatar_fa.texture.resource_path
-			if not fapath.ends_with("portraits/fawn.png"):
-				_fail("切換為翠角鹿後 _profile_avatar 應為 portraits/fawn.png，實際為: %s" % fapath)
-			else:
-				print("  ok 大廳 _profile_avatar 在翠角鹿種族下正確顯示 fawn.png")
+				print("  ok 大廳 _profile_avatar 在墨煞熊種族下正確顯示 bear.png")
 
 
 ## ──────────────────────────────────────────
@@ -811,7 +749,7 @@ func _test_hero_race_poses() -> void:
 		_fail("無法取得 GameState 單例")
 		return
 
-	var races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+	var races := ["rabbit", "lion", "fox", "macaque", "boar", "tiger", "crane", "bear", "penguin"]
 	for r in races:
 		gs.player_race = r
 		gs.paperdoll_slots = {}

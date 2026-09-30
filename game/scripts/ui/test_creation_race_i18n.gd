@@ -211,7 +211,7 @@ func _run_test_suite() -> void:
 
 		# 切換到擴充分頁檢查長譯名種族卡自適應 (0-QA23)
 		demo.call("switch_tab", "expansion")
-		var exp_races := ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+		var exp_races := ["tiger", "crane", "bear", "penguin"]
 		for erid in exp_races:
 			var btn_er = demo.get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_" + erid) as Button
 			if btn_er and btn_er.visible:
@@ -231,13 +231,13 @@ func _run_test_suite() -> void:
 		demo.call("switch_tab", "launch")
 		print("  ✓ [%s] 實例化介面即時翻譯查驗通過" % code)
 
-	# 3. 驗證翠角鹿 (fawn) 在擴充分頁正常可見且已本地化
+	# 3. 驗證蒸氣企鵝 (penguin) 在擴充分頁正常可見且已本地化
 	demo.call("switch_tab", "expansion")
-	var btn_fawn = demo.get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_fawn") as Button
-	if btn_fawn == null or not btn_fawn.visible:
-		_fail("翠角鹿 (fawn) 已具備正式美術切片與立繪，應在擴充分頁 visible，但目前為 null 或隱藏")
+	var btn_penguin = demo.get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_penguin") as Button
+	if btn_penguin == null or not btn_penguin.visible:
+		_fail("蒸氣企鵝 (penguin) 應在擴充分頁 visible，但目前為 null 或隱藏")
 	else:
-		print("  ✓ 翠角鹿擴充按鈕正常可見且已本地化")
+		print("  ✓ 蒸氣企鵝擴充按鈕正常可見且已本地化")
 
 	demo.queue_free()
 

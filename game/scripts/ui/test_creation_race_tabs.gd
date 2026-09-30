@@ -92,7 +92,7 @@ func _run_test_suite() -> void:
 	# 4. 首發頁只放兔狐獅豬猴五張種族卡，其餘 8 族隱藏
 	var race_buttons: Dictionary = demo_node.get("_race_buttons")
 	var launch_keys := ["rabbit", "fox", "lion", "boar", "macaque"]
-	var expansion_keys := ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
+	var expansion_keys := ["tiger", "crane", "bear", "penguin"]
 
 	var launch_all_visible := true
 	for rid in launch_keys:
@@ -108,7 +108,7 @@ func _run_test_suite() -> void:
 		if btn == null or btn.visible:
 			expansion_all_hidden = false
 			break
-	_assert(expansion_all_hidden, "首發頁中擴充 8 族種族卡全數隱藏")
+	_assert(expansion_all_hidden, "首發頁中擴充 4 族種族卡全數隱藏")
 
 	# 檢查首發頁橫向排版尺寸無溢出 (5 張卡均在 1200px 內完整可見)
 	var top_bar = demo_node.get_node_or_null("TopRaceBar") as ScrollContainer
@@ -129,7 +129,7 @@ func _run_test_suite() -> void:
 		var btn: Button = race_buttons.get(rid)
 		if btn != null and btn.visible:
 			exp_visible_count += 1
-	_assert(exp_visible_count == 8, "擴充頁中虎／鶴／熊／企鵝／龜／象／蛙／熊貓 8 張卡全數可見")
+	_assert(exp_visible_count == 4, "擴充頁中虎／鶴／熊／企鵝 4 張卡全數可見")
 
 	var launch_hidden_on_exp := true
 	for rid in launch_keys:
@@ -139,25 +139,25 @@ func _run_test_suite() -> void:
 			break
 	_assert(launch_hidden_on_exp, "擴充頁中首發 5 族全數隱藏")
 
-	var panda_btn: Button = race_buttons.get("panda")
-	_assert(panda_btn != null and panda_btn.visible, "擴充頁中清楚可見瓷韻熊貓 (panda) 卡片")
+	var crane_btn: Button = race_buttons.get("crane")
+	_assert(crane_btn != null and crane_btn.visible, "擴充頁中清楚可見雲嵐鶴 (crane) 卡片")
 
-	# 檢查擴充頁 8 張卡排版尺寸無溢出 (8 * 136 + 7 * 10 = 1158 <= 1200)
+	# 檢查擴充頁 4 張卡排版尺寸無溢出 (4 * 136 + 3 * 10 = 574 <= 1200)
 	var total_exp_width: float = 0.0
 	for rid in expansion_keys:
 		var btn: Button = race_buttons[rid]
 		total_exp_width += btn.custom_minimum_size.x
 	total_exp_width += (expansion_keys.size() - 1) * 10.0
-	_assert(total_exp_width <= 1200.0, "擴充頁 8 張卡寬度合計 %.1fpx <= 1200px，全數完整顯示不必滑到盡頭" % total_exp_width)
+	_assert(total_exp_width <= 1200.0, "擴充頁 4 張卡寬度合計 %.1fpx <= 1200px，全數完整顯示不必滑到盡頭" % total_exp_width)
 
-	# 6. 從擴充頁點擊熊貓，驗證選取狀態與預覽
-	demo_node.call("select_race", "panda")
-	_assert(demo_node.call("get_current_race") == "panda", "點擊熊貓卡後當前種族為 panda")
+	# 6. 從擴充頁點擊雲嵐鶴，驗證選取狀態與預覽
+	demo_node.call("select_race", "crane")
+	_assert(demo_node.call("get_current_race") == "crane", "點擊鶴卡後當前種族為 crane")
 
 	var selections: Dictionary = demo_node.call("get_current_selections")
-	_assert(selections.get("race") == "panda", "當前選取種族確認為 panda (非 rabbit)")
-	_assert(selections.get("costume") == "costume_panda_zen_apprentice_robe", "預設外裝為禪道學徒生漆長袍 (costume_panda_zen_apprentice_robe)")
-	_assert(selections.get("chassis") == "paint_panda_porcelain", "預設塗裝為羊脂白瓷生漆塗裝 (paint_panda_porcelain)")
+	_assert(selections.get("race") == "crane", "當前選取種族確認為 crane (非 rabbit)")
+	_assert(selections.get("costume") == "costume_zephyr_robe", "預設外裝為凌雲羽衣輕鋼道袍 (costume_zephyr_robe)")
+	_assert(selections.get("chassis") == "paint_crane_porcelain", "預設塗裝為原廠冷淬青瓷白 (paint_crane_porcelain)")
 
 	var stage_tex = demo_node.call("get_stage_texture")
 	_assert(stage_tex != null, "中央舞台 512 預覽貼圖成功載入")
@@ -169,7 +169,7 @@ func _run_test_suite() -> void:
 	cur_tab = str(demo_node.call("get_current_tab"))
 	_assert(cur_tab == "launch", "可隨時順暢切回首發頁")
 	_assert(race_buttons["rabbit"].visible, "切回首發頁後白金兔卡片重新可見")
-	_assert(not race_buttons["panda"].visible, "切回首發頁後熊貓卡片正確隱藏")
+	_assert(not race_buttons["crane"].visible, "切回首發頁後鶴卡片正確隱藏")
 
 	# 8. 程式調用 select_race 具有自動跨分頁定位功能
 	demo_node.call("select_race", "macaque")

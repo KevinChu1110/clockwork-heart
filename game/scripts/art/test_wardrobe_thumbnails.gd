@@ -87,11 +87,6 @@ func _initialize() -> void:
 		"bear": "key_cross_pendulum",
 		"crane": "key_tri_wing_zephyr",
 		"penguin": "key_twin_ring_helm",
-		"tortoise": "key_tai_chi_dual_fish",
-		"elephant": "key_heavy_cross_wheel",
-		"frog": "key_twin_wing_concentric",
-		"panda": "key_panda_taiji_ruyi_brass",
-		"fawn": "key_fawn_clover_leaf_brass",
 	}
 	for r_id in expected_keys.keys():
 		total_count += 1
