@@ -161,6 +161,27 @@ var _is_interacting: bool = false
 var enable_idle_breathing: bool = true
 var enable_idle_flavor: bool = true
 
+## ── 發條微動、浮空島呼吸與紙娃娃發條鑰匙獨立圖層 ──
+var _hero_key_avatar: TextureRect = null
+var _bg_rect: TextureRect = null
+var _bg_tween: Tween = null
+var _key_wind_tween: Tween = null
+var _key_wind_timer: float = 0.0
+var _key_rotation_turns: float = 0.0
+var _cached_hero_body_comp_512: Texture2D = null
+var _cached_hero_body_key: String = ""
+
+const KEY_PIVOTS_320: Dictionary = {
+	"rabbit": Vector2(103, 186),
+	"macaque": Vector2(103, 186),
+	"boar": Vector2(103, 186),
+	"lion": Vector2(238, 162),
+	"bear": Vector2(66, 98),
+	"penguin": Vector2(52, 68),
+	"tortoise": Vector2(71, 80),
+	"fawn": Vector2(211, 116),
+}
+
 ## 動作姿態紋理快取
 var _tex_idle: Texture2D
 var _tex_attack: Texture2D
@@ -427,17 +448,64 @@ func _hero_display_tex() -> Texture2D:
 	return _tex_idle
 
 
+func _hero_body_display_tex() -> Texture2D:
+	var race := _current_race()
+	var slots := _current_paperdoll_slots()
+	var cache_key := "%s:%s" % [race, str(slots)]
+	if _cached_hero_body_comp_512 != null and _cached_hero_body_key == cache_key:
+		return _cached_hero_body_comp_512
+	var slots_no_key := slots.duplicate()
+	slots_no_key["winding_key"] = "none"
+	var comp := PaperdollRenderer.build_composite_texture_512(race, slots_no_key)
+	if comp != null:
+		_cached_hero_body_comp_512 = comp
+		_cached_hero_body_key = cache_key
+		return comp
+	return null
+
+
+func _get_hero_key_tex(race: String, slots: Dictionary) -> Texture2D:
+	var chosen_item := str(slots.get("winding_key", ""))
+	var p512 := PaperdollRenderer.resolve_slot_texture_path_512(race, "winding_key", chosen_item)
+	if p512 != "":
+		if ResourceLoader.exists(p512):
+			return load(p512) as Texture2D
+		elif FileAccess.file_exists(p512):
+			var img := Image.load_from_file(ProjectSettings.globalize_path(p512))
+			if img and not img.is_empty():
+				return ImageTexture.create_from_image(img)
+	return null
+
+
 func _apply_hero_idle_visual() -> void:
+	var race := _current_race()
+	var slots := _current_paperdoll_slots()
 	var hd: Texture2D = _hero_display_tex()
 	if hd == null or hd.get_width() < 256:
-		var sc := _hero_showcase_hd_tex(_current_race())
+		var sc := _hero_showcase_hd_tex(race)
 		if sc != null and sc.get_width() >= 256:
 			hd = sc
 		else:
 			hd = null
 
+	var body_tex: Texture2D = _hero_body_display_tex()
+	var key_tex: Texture2D = _get_hero_key_tex(race, slots)
+
+	if _hero_key_avatar:
+		if body_tex != null and key_tex != null:
+			_hero_key_avatar.texture = key_tex
+			_hero_key_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+			_hero_key_avatar.pivot_offset = KEY_PIVOTS_320.get(race, Vector2(103, 186))
+			_hero_key_avatar.visible = true
+		else:
+			_hero_key_avatar.texture = null
+			_hero_key_avatar.visible = false
+
 	if _hero_avatar:
-		if hd != null and hd.get_width() >= 256:
+		if body_tex != null and key_tex != null:
+			_hero_avatar.texture = body_tex
+			_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		elif hd != null and hd.get_width() >= 256:
 			_hero_avatar.texture = hd
 			_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		else:
@@ -597,6 +665,8 @@ func _restore_hero_idle() -> void:
 func _load_hero_poses() -> void:
 	_cached_hero_comp_512 = null
 	_cached_hero_comp_key = ""
+	_cached_hero_body_comp_512 = null
+	_cached_hero_body_key = ""
 	var gs := _gs()
 	var race := "rabbit"
 	if gs and "player_race" in gs:
@@ -669,6 +739,10 @@ func _build_ui() -> void:
 	var bg := TextureRect.new()
 	bg.name = "TempleLobbyBg"
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	bg.offset_left = -8
+	bg.offset_right = 8
+	bg.offset_top = -8
+	bg.offset_bottom = 8
 	bg.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -686,6 +760,8 @@ func _build_ui() -> void:
 	elif bg.texture == null and ResourceLoader.exists("res://assets/sprites/maps/town_bg.webp"):
 		bg.texture = load("res://assets/sprites/maps/town_bg.webp")
 	add_child(bg)
+	_bg_rect = bg
+	_start_bg_floating_tween()
 
 	## 2. 飄散的黃金以太塵埃微光粒子 (Golden Ether Motes)
 	_particles_root = Control.new()
@@ -746,38 +822,60 @@ func _create_banner_panel() -> StyleBoxFlat:
 	s.shadow_offset = Vector2(0, 3)
 	return s
 
+func _start_bg_floating_tween() -> void:
+	if _bg_tween and _bg_tween.is_valid():
+		_bg_tween.kill()
+	if _bg_rect == null or not is_instance_valid(_bg_rect):
+		return
+	_bg_rect.position.y = 0.0
+	_bg_tween = create_tween().set_loops()
+	# 幅度 2~3px，柔和 Sine 曲線 (4.8 秒週期，上下浮動 ±2.5px)
+	_bg_tween.tween_property(_bg_rect, "position:y", -2.5, 2.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_bg_tween.tween_property(_bg_rect, "position:y", 2.5, 2.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
 ## ──────────────────────────────────────────
-## 黃金以太塵埃微粒 (Golden Ether Motes)
+## 黃金以太塵埃微粒與發條微光 (Golden Ether Motes)
 ## ──────────────────────────────────────────
 func _spawn_floating_ether_motes() -> void:
 	var gp: Node = null
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree:
 		gp = (loop as SceneTree).root.get_node_or_null("GraphicsProfile")
-	var n := 14
+	var n := 18
 	if gp != null:
-		n = int(gp.particle_count(14))
+		n = int(gp.particle_count(18))
 	if n <= 0:
 		return
 	for i in range(n):
 		var star := ColorRect.new()
-		var sz := 4.0 + float((i % 3) * 2)
+		star.name = "EtherMote_%d" % i
+		var sz := 3.0 + float((i % 4) * 1.5)
 		star.custom_minimum_size = Vector2(sz, sz)
 		star.size = Vector2(sz, sz)
 		star.pivot_offset = Vector2(sz * 0.5, sz * 0.5)
 		star.rotation = PI * 0.25
-		var c := Color(0.831, 0.686, 0.216, 0.70) if i % 2 == 0 else Color(0.243, 0.812, 0.749, 0.60)
+		# 金色發條微光粒子色盤：金黃、暖橘、亮香檳金、以太青綠
+		var c := COLOR_GOLD if (i % 3 == 0) else (COLOR_ORANGE if (i % 3 == 1) else Color(0.98, 0.90, 0.55, 0.75))
+		if i % 5 == 0:
+			c = Color(0.243, 0.812, 0.749, 0.65) # 以太微光
 		star.color = c
-		star.position = Vector2(randf_range(40.0, 1240.0), randf_range(100.0, 580.0))
+		star.position = Vector2(randf_range(40.0, 1240.0), randf_range(90.0, 590.0))
+		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_particles_root.add_child(star)
 
-		# 緩慢升騰與呼吸淡入淡出
+		# 緩慢升騰、微幅左右飄動與柔和呼吸
 		var tw := create_tween().set_loops()
-		var dur := randf_range(2.5, 4.0)
-		var dy := randf_range(-15.0, -30.0)
+		var dur := randf_range(3.0, 5.0)
+		var dy := randf_range(-18.0, -36.0)
+		var dx := randf_range(-8.0, 8.0)
 		tw.tween_property(star, "position:y", star.position.y + dy, dur).set_trans(Tween.TRANS_SINE)
-		tw.parallel().tween_property(star, "modulate:a", 0.2, dur * 0.5)
+		tw.parallel().tween_property(star, "position:x", star.position.x + dx, dur).set_trans(Tween.TRANS_SINE)
+		tw.parallel().tween_property(star, "rotation", star.rotation + PI * 0.5, dur).set_trans(Tween.TRANS_SINE)
+		tw.parallel().tween_property(star, "modulate:a", 0.20, dur * 0.5)
 		tw.tween_property(star, "position:y", star.position.y, dur).set_trans(Tween.TRANS_SINE)
+		tw.parallel().tween_property(star, "position:x", star.position.x, dur).set_trans(Tween.TRANS_SINE)
+		tw.parallel().tween_property(star, "rotation", star.rotation + PI, dur).set_trans(Tween.TRANS_SINE)
 		tw.parallel().tween_property(star, "modulate:a", 0.85, dur * 0.5)
 
 ## ──────────────────────────────────────────
@@ -1106,10 +1204,19 @@ func _switch_tab(target: Tab) -> void:
 		_style_dock_button(_dock_buttons[i], is_active)
 
 ## ──────────────────────────────────────────
-## 每幀小動作判定 (動態待機自然活化)
+## 每幀小動作與發條微動判定 (動態待機自然活化)
 ## ──────────────────────────────────────────
 func _process(delta: float) -> void:
-	if _current_tab != Tab.VILLAGE or _is_interacting or not enable_idle_flavor:
+	if _current_tab != Tab.VILLAGE or _is_interacting:
+		return
+
+	# 背後發條鑰匙每隔 4~6 秒微轉半圈並伴隨微小抖動反饋
+	_key_wind_timer += delta
+	if _key_wind_timer >= 4.5:
+		_key_wind_timer = 0.0
+		_trigger_key_half_turn()
+
+	if not enable_idle_flavor:
 		return
 
 	_idle_action_timer += delta
@@ -1117,10 +1224,66 @@ func _process(delta: float) -> void:
 		_idle_action_timer = 0.0
 		_play_random_idle_flavor()
 
+
+func trigger_key_half_turn() -> void:
+	_trigger_key_half_turn()
+
+
+func _trigger_key_half_turn() -> void:
+	if _hero_key_avatar == null or not is_instance_valid(_hero_key_avatar) or not _hero_key_avatar.visible:
+		return
+	if _is_interacting:
+		return
+	_key_rotation_turns += PI
+	var tw := create_tween()
+	# 微轉半圈 (180度, PI 弧度)，帶機械卡榫回彈
+	tw.tween_property(_hero_key_avatar, "rotation", _key_rotation_turns, 0.30).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	# 伴隨微小抖動反饋 (內部齒輪嚙合的震顫)
+	if _hero_avatar and is_instance_valid(_hero_avatar):
+		tw.parallel().tween_property(_hero_avatar, "position:x", -158.5, 0.05).set_delay(0.20)
+		tw.parallel().tween_property(_hero_avatar, "position:x", -161.5, 0.05).set_delay(0.25)
+		tw.parallel().tween_property(_hero_avatar, "position:x", -160.0, 0.05).set_delay(0.30)
+	# 發條自身回彈卡位微抖動
+	tw.tween_property(_hero_key_avatar, "rotation", _key_rotation_turns + 0.05, 0.04)
+	tw.tween_property(_hero_key_avatar, "rotation", _key_rotation_turns, 0.04)
+	tw.tween_callback(func():
+		if is_inside_tree() and visible:
+			_burst_tiny_key_sparks()
+	)
+
+
+func _burst_tiny_key_sparks() -> void:
+	if _hero_avatar == null or not is_inside_tree():
+		return
+	var center := _hero_avatar.global_position + Vector2(100, 175)
+	for i in range(3):
+		var spark := ColorRect.new()
+		spark.name = "KeySpark_%d" % i
+		spark.custom_minimum_size = Vector2(3, 3)
+		spark.size = Vector2(3, 3)
+		spark.pivot_offset = Vector2(1.5, 1.5)
+		spark.rotation = PI * 0.25
+		spark.color = COLOR_GOLD if i % 2 == 0 else Color("#FFF4B8")
+		spark.global_position = center
+		spark.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(spark)
+
+		var angle := randf_range(-PI * 0.8, -PI * 0.2)
+		var dist := randf_range(15.0, 30.0)
+		var target := center + Vector2(cos(angle), sin(angle)) * dist
+
+		var tw := create_tween()
+		tw.tween_property(spark, "global_position", target, 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.parallel().tween_property(spark, "modulate:a", 0.0, 0.25).set_delay(0.08)
+		tw.tween_callback(spark.queue_free)
+
+
 func _play_random_idle_flavor() -> void:
 	var roll := randi() % 3
 	if roll == 0 and _tex_telegraph:
 		## 小伸展站姿
+		if _hero_key_avatar:
+			_hero_key_avatar.visible = false
 		_hero_avatar.texture = _tex_telegraph
 		_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		var tw := create_tween()
@@ -1131,6 +1294,8 @@ func _play_random_idle_flavor() -> void:
 		)
 	elif roll == 1 and _tex_recover:
 		## 伸個懶腰
+		if _hero_key_avatar:
+			_hero_key_avatar.visible = false
 		_hero_avatar.texture = _tex_recover
 		_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 		var tw := create_tween()
@@ -1209,6 +1374,19 @@ func _build_village_tab() -> void:
 	_hero_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_hero_avatar.pivot_offset = Vector2(160, 260)
+
+	## 2.1 背後發條鑰匙 (Winding Key 獨立圖層：show_behind_parent 隨軀幹同步待機微轉)
+	_hero_key_avatar = TextureRect.new()
+	_hero_key_avatar.name = "HeroWindingKey"
+	_hero_key_avatar.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_hero_key_avatar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_hero_key_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_hero_key_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_hero_key_avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hero_key_avatar.show_behind_parent = true
+	_hero_key_avatar.pivot_offset = KEY_PIVOTS_320.get("rabbit", Vector2(103, 186))
+	_hero_avatar.add_child(_hero_key_avatar)
+
 	_apply_hero_idle_visual()
 	stage_anchor.add_child(_hero_avatar)
 
@@ -1607,6 +1785,9 @@ func _on_hero_clicked(forced_act: int = -1, forced_speech: int = -1) -> void:
 	if _breathe_tween and _breathe_tween.is_valid():
 		_breathe_tween.kill()
 
+	if _hero_key_avatar:
+		_hero_key_avatar.visible = false
+
 	if forced_speech >= 0 and forced_speech < HERO_SPEECH_KEYS.size():
 		_current_speech_index = forced_speech
 	else:
@@ -1624,23 +1805,53 @@ func _on_hero_clicked(forced_act: int = -1, forced_speech: int = -1) -> void:
 		_bubble_tween.tween_property(_speech_bubble, "modulate:a", 0.0, 0.15)
 		_bubble_tween.tween_callback(func(): _speech_bubble.visible = false)
 
-	## 噴散 8 顆黃金以太星芒微粒
+	## 噴散喜悅星芒與發條火花微粒
 	if _hero_avatar:
-		_burst_click_particles(_hero_avatar.global_position + Vector2(125, 120))
+		_burst_click_particles(_hero_avatar.global_position + Vector2(160, 160))
 
 	if _poke_tween and _poke_tween.is_valid():
 		_poke_tween.kill()
 	var tw := create_tween()
 	_poke_tween = tw
+
+	# 先賦予動作姿態貼圖 (確保測試同步讀取到 512x512 貼圖)
 	match act_type:
 		0:
-			## 揮劍劈砍姿態 (attack -> recover -> equipped idle)
 			if _tex_attack and _hero_avatar:
 				_hero_avatar.texture = _tex_attack
 				_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-			tw.tween_property(_hero_avatar, "position", Vector2(-110, -165), 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		1:
+			if _tex_skill and _hero_avatar:
+				_hero_avatar.texture = _tex_skill
+				_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		2:
+			if _tex_telegraph and _hero_avatar:
+				_hero_avatar.texture = _tex_telegraph
+				_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+
+	# 觸發果凍擠壓彈跳動效 (Squash & Stretch: Scale 稍微壓扁再彈高回正)
+	_hero_avatar.pivot_offset = Vector2(160, 260)
+	# 1. 壓扁 (Squash)
+	tw.tween_property(_hero_avatar, "scale", Vector2(1.18, 0.82), 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	if _hero_shadow:
+		tw.parallel().tween_property(_hero_shadow, "scale", Vector2(1.18, 1.18), 0.08)
+	# 2. 彈高 (Stretch)
+	tw.tween_property(_hero_avatar, "scale", Vector2(0.88, 1.16), 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	if _hero_shadow:
+		tw.parallel().tween_property(_hero_shadow, "scale", Vector2(0.85, 0.85), 0.14)
+	# 3. 微微回彈
+	tw.tween_property(_hero_avatar, "scale", Vector2(1.04, 0.96), 0.10).set_trans(Tween.TRANS_SINE)
+	# 4. 回正
+	tw.tween_property(_hero_avatar, "scale", Vector2(1.0, 1.0), 0.08).set_trans(Tween.TRANS_SINE)
+	if _hero_shadow:
+		tw.parallel().tween_property(_hero_shadow, "scale", Vector2(1.0, 1.0), 0.08)
+
+	match act_type:
+		0:
+			## 揮劍劈砍姿態位移
+			tw.parallel().tween_property(_hero_avatar, "position", Vector2(-110, -165), 0.12).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT).set_delay(0.08)
 			tw.tween_property(_hero_avatar, "position", Vector2(-125, -140), 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
-			tw.tween_interval(0.4)
+			tw.tween_interval(0.3)
 			tw.tween_callback(func():
 				if _tex_recover and _hero_avatar:
 					_hero_avatar.texture = _tex_recover
@@ -1649,21 +1860,13 @@ func _on_hero_clicked(forced_act: int = -1, forced_speech: int = -1) -> void:
 			tw.tween_interval(0.3)
 			tw.tween_callback(_restore_hero_idle)
 		1:
-			## 聚氣勝利姿態 (skill -> equipped idle)
-			if _tex_skill and _hero_avatar:
-				_hero_avatar.texture = _tex_skill
-				_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-			tw.tween_property(_hero_avatar, "scale", Vector2(1.15, 1.15), 0.15).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-			tw.tween_property(_hero_avatar, "scale", Vector2(1.0, 1.0), 0.2).set_trans(Tween.TRANS_SINE)
+			## 聚氣勝利姿態
 			tw.tween_interval(0.6)
 			tw.tween_callback(_restore_hero_idle)
 		2:
-			## 靈巧後翻大跳躍 (telegraph -> equipped idle)
-			if _tex_telegraph and _hero_avatar:
-				_hero_avatar.texture = _tex_telegraph
-				_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-			tw.tween_property(_hero_avatar, "position:y", -175.0, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-			tw.parallel().tween_property(_hero_avatar, "scale:x", -1.0, 0.15)
+			## 靈巧後翻大跳躍
+			tw.parallel().tween_property(_hero_avatar, "position:y", -175.0, 0.15).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT).set_delay(0.08)
+			tw.parallel().tween_property(_hero_avatar, "scale:x", -1.0, 0.15).set_delay(0.08)
 			tw.tween_property(_hero_avatar, "position:y", -140.0, 0.18).set_trans(Tween.TRANS_BOUNCE).set_ease(Tween.EASE_OUT)
 			tw.parallel().tween_property(_hero_avatar, "scale:x", 1.0, 0.18)
 			tw.tween_interval(0.2)
@@ -1671,37 +1874,44 @@ func _on_hero_clicked(forced_act: int = -1, forced_speech: int = -1) -> void:
 
 func _burst_click_particles(center_pos: Vector2) -> void:
 	var gp := get_node_or_null("/root/GraphicsProfile")
-	var n := 8
+	var n := 10
 	if gp != null:
-		n = int(gp.particle_count(8))
+		n = int(gp.particle_count(10))
 	if n <= 0:
 		return
 	var cols: Array[Color] = [
-		GOLD_CLASSICAL,
-		GOLD_HOVER,
-		TEAL_CORE,
-		BRONZE_WARM
+		COLOR_GOLD,
+		COLOR_ORANGE,
+		COLOR_PINK,
+		COLOR_SKY,
+		Color(0.98, 0.92, 0.55),
+		TEAL_CORE
 	]
 	for i in range(n):
 		var star := ColorRect.new()
 		star.name = "BurstParticle_%d" % i
 		star.add_to_group("burst_particles")
-		star.custom_minimum_size = Vector2(6, 6)
-		star.size = Vector2(6, 6)
-		star.pivot_offset = Vector2(3, 3)
+		var sz := 6.0
+		star.custom_minimum_size = Vector2(sz, sz)
+		star.size = Vector2(sz, sz)
+		star.pivot_offset = Vector2(sz * 0.5, sz * 0.5)
 		star.rotation = PI * 0.25
 		star.color = cols[i % cols.size()]
-		star.global_position = center_pos - Vector2(3, 3)
+		star.global_position = center_pos - Vector2(sz * 0.5, sz * 0.5)
 		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(star)
 
-		var angle := float(i) * (PI * 2.0 / float(n))
-		var dist := randf_range(40.0, 80.0)
+		var angle := float(i) * (PI * 2.0 / float(n)) + randf_range(-0.15, 0.15)
+		var dist := randf_range(50.0, 95.0)
 		var target := center_pos + Vector2(cos(angle), sin(angle)) * dist
 
 		var tw := create_tween()
-		tw.tween_property(star, "global_position", target, 0.35).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		tw.parallel().tween_property(star, "modulate:a", 0.0, 0.35).set_delay(0.15)
+		star.scale = Vector2(0.4, 0.4)
+		tw.tween_property(star, "scale", Vector2(1.3, 1.3), 0.10).set_trans(Tween.TRANS_BACK)
+		tw.parallel().tween_property(star, "global_position", target, 0.38).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.parallel().tween_property(star, "rotation", star.rotation + PI * 0.75, 0.38)
+		tw.tween_property(star, "scale", Vector2(0.2, 0.2), 0.20)
+		tw.parallel().tween_property(star, "modulate:a", 0.0, 0.20).set_delay(0.10)
 		tw.tween_callback(star.queue_free)
 
 ## ──────────────────────────────────────────
