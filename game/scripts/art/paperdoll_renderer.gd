@@ -1219,19 +1219,28 @@ static func build_paperdoll_map(race: String, slot_selection: Dictionary = {}) -
 	return result
 
 
+static var _slot_texture_cache: Dictionary = {}
+
 ## 安全取得貼圖資源（缺圖時回傳 null，絕不拋出例外）
 static func get_slot_texture(path: String) -> Texture2D:
-	if path == "" or (not ResourceLoader.exists(path) and not FileAccess.file_exists(path)):
+	if path == "":
 		return null
+	if _slot_texture_cache.has(path):
+		return _slot_texture_cache[path]
+	if not ResourceLoader.exists(path) and not FileAccess.file_exists(path):
+		return null
+	var res_tex: Texture2D = null
 	if FileAccess.file_exists(path):
 		var img := Image.load_from_file(path)
 		if img != null and not img.is_empty():
-			return ImageTexture.create_from_image(img)
-	if ResourceLoader.exists(path):
+			res_tex = ImageTexture.create_from_image(img)
+	if res_tex == null and ResourceLoader.exists(path):
 		var res = load(path)
 		if res is Texture2D:
-			return res as Texture2D
-	return null
+			res_tex = res as Texture2D
+	if res_tex != null:
+		_slot_texture_cache[path] = res_tex
+	return res_tex
 
 
 ## 組出 {slot_id: Texture2D or null} 對照表

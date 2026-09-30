@@ -95,6 +95,8 @@ var _active_hall_index: int = -1
 var _char_prev: TextureRect = null
 var _equip_schematic: VBoxContainer = null
 var _cached_font: Font = null
+var _cached_hero_comp_512: Texture2D = null
+var _cached_hero_comp_key: String = ""
 var _bag_grid: GridContainer = null
 var _bag_cells: Array = []
 var _bag_ids: Array = []
@@ -397,25 +399,28 @@ func _hero_showcase_hd_tex(race: String) -> Texture2D:
 
 
 func _hero_display_tex() -> Texture2D:
-	## 大廳／角色分頁：有換裝時 512 合成成功就用 512；失敗改讀官方立牌；沒換裝時讀官方立牌
+	## 大廳／角色分頁：全面優先串接 PaperdollRenderer 512 高清即時外裝合成
 	var race := _current_race()
 	var slots := _current_paperdoll_slots()
-	if _has_custom_paperdoll_outfit(slots):
-		var comp_512: Texture2D = PaperdollRenderer.build_composite_texture_512(race, slots)
-		if comp_512 != null:
-			return comp_512
-		var costume := str(slots.get("costume", slots.get("costume_id", ""))).strip_edges()
-		if not costume.is_empty():
-			var hd_cut := "res://assets/sprites/player/showcase/%s_%s_hd_cut.png" % [race, costume]
-			if ResourceLoader.exists(hd_cut):
-				return load(hd_cut) as Texture2D
-		# 512 合成失敗，改讀官方立牌或本族 showcase_idle_256，不准退回 128 糊圖
-		var sc := _hero_showcase_hd_tex(race)
-		if sc != null:
-			return sc
-		return null
+	var cache_key := "%s:%s" % [race, str(slots)]
+	if _cached_hero_comp_512 != null and _cached_hero_comp_key == cache_key:
+		return _cached_hero_comp_512
 
-	# 沒自訂外裝時：九族讀取官方品牌立牌高清展示貼圖
+	# 1. 優先嘗試 512 高清即時外裝合成（白兔預設具備全套胡桃鉗外裝與背插發條等 7 大槽位）
+	var comp_512: Texture2D = PaperdollRenderer.build_composite_texture_512(race, slots)
+	if comp_512 != null:
+		_cached_hero_comp_512 = comp_512
+		_cached_hero_comp_key = cache_key
+		return comp_512
+
+	# 2. 自訂外裝指定切片 fallback
+	var costume := str(slots.get("costume", slots.get("costume_id", ""))).strip_edges()
+	if not costume.is_empty():
+		var hd_cut := "res://assets/sprites/player/showcase/%s_%s_hd_cut.png" % [race, costume]
+		if ResourceLoader.exists(hd_cut):
+			return load(hd_cut) as Texture2D
+
+	# 3. 官方展示立牌 fallback (>=256)，不准退回 128 糊圖
 	var sc := _hero_showcase_hd_tex(race)
 	if sc != null:
 		return sc
@@ -528,6 +533,17 @@ func _add_equip_chip(parent: Container, slot_title: String, item_name: String, t
 	btn.clip_text = true
 	btn.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	UiStyle.style_button(btn, false)
+	var sb := UiStyle.button_normal()
+	sb.bg_color = Color(1.0, 0.965, 0.88, 0.95)
+	sb.border_width_bottom = 5
+	sb.set_corner_radius_all(18)
+	btn.add_theme_stylebox_override("normal", sb)
+	var sb_h := sb.duplicate() as StyleBoxFlat
+	sb_h.bg_color = Color(1.0, 0.91, 0.72, 1.0)
+	btn.add_theme_stylebox_override("hover", sb_h)
+	btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
+	btn.add_theme_constant_override("outline_size", 2)
 	var full_text := "%s  %s" % [slot_title, item_name]
 	if full_text.length() > 36:
 		btn.add_theme_font_size_override("font_size", 10)
@@ -570,7 +586,7 @@ func _restore_hero_idle() -> void:
 	_tex_idle = _get_hero_equipped_idle_texture()
 	_apply_hero_idle_visual()
 	if _hero_avatar:
-		_hero_avatar.position = Vector2(-125, -140)
+		_hero_avatar.position = Vector2(-160, -150)
 		_hero_avatar.scale = Vector2.ONE
 	if _speech_bubble:
 		_speech_bubble.visible = false
@@ -579,6 +595,8 @@ func _restore_hero_idle() -> void:
 
 
 func _load_hero_poses() -> void:
+	_cached_hero_comp_512 = null
+	_cached_hero_comp_key = ""
 	var gs := _gs()
 	var race := "rabbit"
 	if gs and "player_race" in gs:
@@ -647,7 +665,7 @@ static func _soft_shadow_tex() -> Texture2D:
 func _build_ui() -> void:
 	if _content_root != null:
 		return
-	## 1. 背景插畫（神殿黑曜石底圖 / LINEAR 平滑採樣）
+	## 1. 背景插畫（陽光浮空島天空王國 / LINEAR 平滑採樣）
 	var bg := TextureRect.new()
 	bg.name = "TempleLobbyBg"
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -655,14 +673,16 @@ func _build_ui() -> void:
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	
-	var temple_path := "res://assets/sprites/maps/temple_lobby_bg.png"
-	var abs_temple_path := ProjectSettings.globalize_path(temple_path)
-	if FileAccess.file_exists(abs_temple_path):
-		var img := Image.load_from_file(abs_temple_path)
+	var sky_path := "res://assets/sprites/maps/sky_kingdom_bg.png"
+	var abs_sky_path := ProjectSettings.globalize_path(sky_path)
+	if FileAccess.file_exists(abs_sky_path):
+		var img := Image.load_from_file(abs_sky_path)
 		if img and not img.is_empty():
 			bg.texture = ImageTexture.create_from_image(img)
-	if bg.texture == null and ResourceLoader.exists("res://assets/sprites/maps/sky_kingdom_bg.png"):
-		bg.texture = load("res://assets/sprites/maps/sky_kingdom_bg.png")
+	if bg.texture == null and ResourceLoader.exists(sky_path):
+		bg.texture = load(sky_path)
+	elif bg.texture == null and ResourceLoader.exists("res://assets/sprites/maps/temple_lobby_bg.png"):
+		bg.texture = load("res://assets/sprites/maps/temple_lobby_bg.png")
 	elif bg.texture == null and ResourceLoader.exists("res://assets/sprites/maps/town_bg.webp"):
 		bg.texture = load("res://assets/sprites/maps/town_bg.webp")
 	add_child(bg)
@@ -1177,16 +1197,18 @@ func _build_village_tab() -> void:
 	contact_shadow.material = contact_mat
 	stage_anchor.add_child(contact_shadow)
 
-	## 2. 2.2 頭身白兔主角
+	## 2. 2.2 頭身白兔主角 (512 高清紙娃娃外裝合成)
 	_hero_avatar = TextureRect.new()
-	_hero_avatar.offset_left = -125
-	_hero_avatar.offset_top = -140
-	_hero_avatar.offset_right = 125
-	_hero_avatar.offset_bottom = 125
+	_hero_avatar.name = "HeroAvatar"
+	_hero_avatar.offset_left = -160
+	_hero_avatar.offset_top = -150
+	_hero_avatar.offset_right = 160
+	_hero_avatar.offset_bottom = 170
+	_hero_avatar.custom_minimum_size = Vector2(320, 320)
 	_hero_avatar.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_hero_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-	_hero_avatar.pivot_offset = Vector2(125, 240)
+	_hero_avatar.pivot_offset = Vector2(160, 260)
 	_apply_hero_idle_visual()
 	stage_anchor.add_child(_hero_avatar)
 
@@ -1200,9 +1222,9 @@ func _build_village_tab() -> void:
 	var tag_panel := PanelContainer.new()
 	tag_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	tag_panel.offset_left = -56
-	tag_panel.offset_top = -174
+	tag_panel.offset_top = -142
 	tag_panel.offset_right = 56
-	tag_panel.offset_bottom = -132
+	tag_panel.offset_bottom = -100
 	tag_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var tag_sb := StyleBoxFlat.new()
@@ -1364,6 +1386,9 @@ func _build_village_tab() -> void:
 		btn_go.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	btn_go.custom_minimum_size = Vector2(280, 64)
 	btn_go.add_theme_font_size_override("font_size", 20)
+	btn_go.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_go.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
+	btn_go.add_theme_constant_override("outline_size", 3)
 	btn_go.pressed.connect(func(): _switch_tab(Tab.ADVENTURE))
 	_sortie_button = btn_go
 	rv.add_child(btn_go)
@@ -1394,15 +1419,15 @@ func _style_hall_card(btn: Button, is_active: bool) -> void:
 		sb.bg_color = COLOR_ORANGE
 		sb.border_color = COLOR_BORDER
 		sb.set_border_width_all(2)
-		sb.border_width_bottom = 5
-		sb.set_corner_radius_all(18)
+		sb.border_width_bottom = 6
+		sb.set_corner_radius_all(20)
 		sb.content_margin_top = 8
-		sb.content_margin_bottom = 8
+		sb.content_margin_bottom = 10
 		sb.content_margin_left = 14
 		sb.content_margin_right = 14
-		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
-		sb.shadow_size = 6
-		sb.shadow_offset = Vector2(0, 3)
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+		sb.shadow_size = 8
+		sb.shadow_offset = Vector2(0, 4)
 		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		btn.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
 		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
@@ -1410,15 +1435,15 @@ func _style_hall_card(btn: Button, is_active: bool) -> void:
 		sb.bg_color = COLOR_CARD_WARM
 		sb.border_color = COLOR_BORDER
 		sb.set_border_width_all(2)
-		sb.border_width_bottom = 4
-		sb.set_corner_radius_all(18)
+		sb.border_width_bottom = 5
+		sb.set_corner_radius_all(20)
 		sb.content_margin_top = 8
-		sb.content_margin_bottom = 8
+		sb.content_margin_bottom = 9
 		sb.content_margin_left = 14
 		sb.content_margin_right = 14
-		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.10)
-		sb.shadow_size = 4
-		sb.shadow_offset = Vector2(0, 2)
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.16)
+		sb.shadow_size = 6
+		sb.shadow_offset = Vector2(0, 3)
 		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		btn.add_theme_color_override("font_hover_color", COLOR_ORANGE)
 		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
@@ -1431,6 +1456,10 @@ func _style_hall_card(btn: Button, is_active: bool) -> void:
 
 	var sb_p := sb.duplicate() as StyleBoxFlat
 	sb_p.border_width_bottom = 2
+	sb_p.content_margin_top = 11
+	sb_p.content_margin_bottom = 6
+	sb_p.shadow_size = 3
+	sb_p.shadow_offset = Vector2(0, 1)
 
 	btn.add_theme_stylebox_override("normal", sb)
 	btn.add_theme_stylebox_override("hover", sb_h)
@@ -1441,11 +1470,13 @@ func _style_hall_card(btn: Button, is_active: bool) -> void:
 	var s_lbl := btn.get_node_or_null("TextContainer/SubtitleLabel") as Label
 	if t_lbl:
 		t_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		t_lbl.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
+		t_lbl.add_theme_constant_override("outline_size", 2)
 	if s_lbl:
 		if is_active:
 			s_lbl.add_theme_color_override("font_color", Color("#4A240A"))
 		else:
-			s_lbl.add_theme_color_override("font_color", Color("#6B6278"))
+			s_lbl.add_theme_color_override("font_color", Color("#6A4225"))
 
 func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, icon_res_or_symbol: String = "", cb_fallback: Callable = Callable()) -> Button:
 	var cb: Callable
