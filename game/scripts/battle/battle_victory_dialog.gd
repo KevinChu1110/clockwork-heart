@@ -52,6 +52,9 @@ var _btn_equip: Button
 var _btn_confirm: Button
 var _btn_close: Button
 var _cached_font: Font = null
+var _medal_badge: Control = null
+var _gear_chest: Control = null
+var _tier_halo: Control = null
 
 # ── 機芯替換比較彈窗 (Compare Modal) ──
 var _compare_layer: Control = null
@@ -122,6 +125,7 @@ func _ready() -> void:
 	z_index = 100
 	_build_ui()
 	_refresh_display()
+	_play_entrance_animations()
 
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree:
@@ -162,29 +166,34 @@ func _build_ui() -> void:
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(center)
 
-	# 3. 彈窗主卡片 (寬 750px，奶油米白底，深藍紫描邊)
+	# 3. 彈窗主卡片 (寬 760px，奶油米白底，深藍紫描邊)
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "VictoryCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 420)
+	_dialog_card.custom_minimum_size = Vector2(760, 440)
 	_dialog_card.add_theme_stylebox_override("panel", _create_floating_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 24)
 	margin.add_theme_constant_override("margin_right", 24)
-	margin.add_theme_constant_override("margin_top", 18)
-	margin.add_theme_constant_override("margin_bottom", 20)
+	margin.add_theme_constant_override("margin_top", 16)
+	margin.add_theme_constant_override("margin_bottom", 18)
 	_dialog_card.add_child(margin)
 
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 12)
+	v.add_theme_constant_override("separation", 10)
 	margin.add_child(v)
 
-	# ── 標題列 + 關閉按鈕 ──
+	# ── 標題列 + 3D金色大勝獎牌 + 關閉按鈕 ──
 	var head := HBoxContainer.new()
-	head.add_theme_constant_override("separation", 10)
+	head.add_theme_constant_override("separation", 12)
+	head.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(head)
+
+	_medal_badge = VictoryMedalBadge.new()
+	_medal_badge.name = "VictoryMedalBadge"
+	head.add_child(_medal_badge)
 
 	var title_col := VBoxContainer.new()
 	title_col.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -222,19 +231,25 @@ func _build_ui() -> void:
 	v.add_child(drop_panel)
 
 	var drop_margin := MarginContainer.new()
-	drop_margin.add_theme_constant_override("margin_left", 20)
-	drop_margin.add_theme_constant_override("margin_right", 20)
-	drop_margin.add_theme_constant_override("margin_top", 16)
-	drop_margin.add_theme_constant_override("margin_bottom", 16)
+	drop_margin.add_theme_constant_override("margin_left", 18)
+	drop_margin.add_theme_constant_override("margin_right", 18)
+	drop_margin.add_theme_constant_override("margin_top", 12)
+	drop_margin.add_theme_constant_override("margin_bottom", 12)
 	drop_panel.add_child(drop_margin)
 
 	var drop_row := HBoxContainer.new()
-	drop_row.add_theme_constant_override("separation", 20)
+	drop_row.add_theme_constant_override("separation", 16)
 	drop_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	drop_margin.add_child(drop_row)
 
-	# 圖示外框
+	# 齒輪寶箱 (GearChestWidget)
+	_gear_chest = GearChestWidget.new()
+	_gear_chest.name = "GearChest"
+	drop_row.add_child(_gear_chest)
+
+	# 圖示外框與八色階光環
 	var icon_box := PanelContainer.new()
+	icon_box.name = "IconBox"
 	icon_box.custom_minimum_size = Vector2(88, 88)
 	var icon_st := StyleBoxFlat.new()
 	icon_st.bg_color = Color(0.96, 0.95, 0.98, 1)
@@ -243,6 +258,10 @@ func _build_ui() -> void:
 	icon_st.set_corner_radius_all(14)
 	icon_box.add_theme_stylebox_override("panel", icon_st)
 	drop_row.add_child(icon_box)
+
+	_tier_halo = TierHaloEffect.new()
+	_tier_halo.name = "TierHalo"
+	icon_box.add_child(_tier_halo)
 
 	_slot_icon = TextureRect.new()
 	_slot_icon.name = "SlotIcon"
@@ -447,6 +466,9 @@ func _refresh_display() -> void:
 		if tex:
 			_slot_icon.texture = tex
 		_slot_icon.modulate = tier_color
+
+	if _tier_halo != null and _tier_halo.has_method("set_tier"):
+		_tier_halo.call("set_tier", tier_id, tier_color)
 
 	var stat_parts: Array[String] = []
 	var pstats := {}
@@ -773,3 +795,330 @@ func _create_close_button() -> Button:
 	if _cached_font:
 		btn.add_theme_font_override("font", _cached_font)
 	return btn
+
+
+## ── 開箱與獎牌動效 ──
+func _play_entrance_animations() -> void:
+	if _medal_badge != null and _medal_badge.has_method("play_entrance"):
+		_medal_badge.call("play_entrance")
+	if _gear_chest != null and _gear_chest.has_method("play_unlock"):
+		_gear_chest.call("play_unlock", func():
+			if _tier_halo != null and _tier_halo.has_method("play_pop"):
+				_tier_halo.call("play_pop")
+			_bounce_rewards()
+		)
+	else:
+		_bounce_rewards()
+
+
+func _bounce_rewards() -> void:
+	if _slot_icon != null:
+		_slot_icon.scale = Vector2(0.3, 0.3)
+		_slot_icon.pivot_offset = _slot_icon.size * 0.5
+		var tw := create_tween()
+		if tw != null:
+			tw.tween_property(_slot_icon, "scale", Vector2(1.0, 1.0), 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	if _exp_panel != null and _exp_panel.visible:
+		_exp_panel.modulate.a = 0.0
+		var tw_exp := create_tween()
+		if tw_exp != null:
+			tw_exp.tween_property(_exp_panel, "modulate:a", 1.0, 0.25).set_delay(0.08)
+	if _scrap_panel != null and _scrap_panel.visible:
+		_scrap_panel.modulate.a = 0.0
+		var tw_sc := create_tween()
+		if tw_sc != null:
+			tw_sc.tween_property(_scrap_panel, "modulate:a", 1.0, 0.25).set_delay(0.16)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 1. 立體金色大勝獎牌 (VictoryMedalBadge)
+# ══════════════════════════════════════════════════════════════════════════════
+class VictoryMedalBadge extends Control:
+	var ray_rot: float = 0.0
+	var font: Font = null
+
+	func _init() -> void:
+		custom_minimum_size = Vector2(88, 76)
+		size = Vector2(88, 76)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		pivot_offset = Vector2(44, 38)
+		if ResourceLoader.exists(FONT_PATH):
+			font = load(FONT_PATH) as Font
+
+	func _process(delta: float) -> void:
+		ray_rot += delta * 0.8
+		queue_redraw()
+
+	func play_entrance() -> void:
+		scale = Vector2(0.1, 0.1)
+		modulate.a = 0.0
+		var tw := create_tween()
+		if tw != null:
+			tw.set_parallel(true)
+			tw.tween_property(self, "scale", Vector2(1.0, 1.0), 0.38).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+			tw.tween_property(self, "modulate:a", 1.0, 0.2)
+
+	func _draw() -> void:
+		var center := Vector2(44, 36)
+
+		# 1. 旋轉金黃向外星芒光輝 (Sunburst Rays)
+		var num_rays := 12
+		var r_ray := 38.0
+		for i in range(num_rays):
+			var a1 := ray_rot + float(i) * TAU / float(num_rays)
+			var a2 := a1 + (TAU / float(num_rays)) * 0.45
+			var pts := PackedVector2Array([
+				center,
+				center + Vector2(cos(a1), sin(a1)) * r_ray,
+				center + Vector2(cos(a2), sin(a2)) * r_ray
+			])
+			var col := Color(1.0, 0.82, 0.16, 0.38 if i % 2 == 0 else 0.22)
+			draw_colored_polygon(pts, col)
+
+		# 2. 緞帶翅膀 (Coral/Orange Ribbons)
+		var ribbon_pts_l := PackedVector2Array([
+			Vector2(12, 42), Vector2(2, 54), Vector2(14, 52), Vector2(24, 46)
+		])
+		draw_colored_polygon(ribbon_pts_l, Color("#E03E6C"))
+		draw_polyline(ribbon_pts_l, Color("#1F1A3A"), 2.0)
+
+		var ribbon_pts_r := PackedVector2Array([
+			Vector2(76, 42), Vector2(86, 54), Vector2(74, 52), Vector2(64, 46)
+		])
+		draw_colored_polygon(ribbon_pts_r, Color("#E03E6C"))
+		draw_polyline(ribbon_pts_r, Color("#1F1A3A"), 2.0)
+
+		# 3. 3D 底層厚立體深金陰影 (Bottom Bevel Shadow)
+		var shadow_rect := Rect2(18, 12 + 5, 52, 48)
+		draw_rect(shadow_rect, Color("#996300"), true)
+
+		# 4. 深藍紫厚描邊 (3px Border)
+		var border_rect := Rect2(17, 11, 54, 50)
+		draw_rect(border_rect, Color("#1F1A3A"), true)
+
+		# 5. 金黃金屬獎牌主體 (Golden Medal Body)
+		var body_rect := Rect2(19, 13, 50, 46)
+		draw_rect(body_rect, Color("#FFD028"), true)
+
+		# 6. 上半部金屬反光 (Top Highlight)
+		var hi_rect := Rect2(22, 15, 44, 18)
+		draw_rect(hi_rect, Color(1.0, 1.0, 1.0, 0.45), true)
+
+		# 7. 中心大勝八角星芒或獎牌標記 (Victory 8-Point Star)
+		var star_pts := PackedVector2Array()
+		var n_star := 8
+		for s in range(n_star * 2):
+			var a := float(s) * PI / float(n_star) - PI * 0.5
+			var r := 16.0 if (s % 2 == 0) else 7.0
+			star_pts.append(center + Vector2(cos(a), sin(a)) * r)
+		draw_colored_polygon(star_pts, Color("#FFFFFF"))
+		draw_polyline(star_pts, Color("#1F1A3A"), 2.0)
+
+		# 8. 中心精緻金色圓心
+		draw_circle(center, 5.0, Color("#FFA010"))
+		draw_circle(center, 3.0, Color("#FFD028"))
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 2. 齒輪寶箱彈出解鎖動效 (GearChestWidget)
+# ══════════════════════════════════════════════════════════════════════════════
+class GearChestWidget extends Control:
+	var lid_open_ratio: float = 0.0  ## 0.0=關閉, 1.0=全開
+	var lock_rot: float = 0.0
+	var spark_flash: float = 0.0
+	var is_open: bool = false
+	static var _brass_gear_tex: Texture2D = null
+
+	func _init() -> void:
+		custom_minimum_size = Vector2(104, 88)
+		size = Vector2(104, 88)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		pivot_offset = Vector2(52, 44)
+		if _brass_gear_tex == null:
+			const path := "res://assets/sprites/fx/fx_gear_brass.png"
+			if ResourceLoader.exists(path):
+				_brass_gear_tex = load(path) as Texture2D
+
+	func _process(delta: float) -> void:
+		if spark_flash > 0.0:
+			spark_flash = maxf(0.0, spark_flash - delta * 3.0)
+			queue_redraw()
+
+	func play_unlock(on_opened: Callable = Callable()) -> void:
+		scale = Vector2(0.2, 0.2)
+		modulate.a = 0.0
+		lid_open_ratio = 0.0
+		lock_rot = 0.0
+		is_open = false
+
+		var tw := create_tween()
+		if tw == null:
+			lid_open_ratio = 1.0
+			is_open = true
+			if on_opened.is_valid():
+				on_opened.call()
+			return
+
+		# 1. 寶箱彈跳入場 (0.28s)
+		tw.set_parallel(true)
+		tw.tween_property(self, "scale", Vector2(1.0, 1.0), 0.28).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tw.tween_property(self, "modulate:a", 1.0, 0.15)
+		tw.chain()
+
+		# 2. 齒輪鎖疾轉解鎖 (0.32s)
+		tw.tween_property(self, "lock_rot", TAU * 2.0, 0.32).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tw.chain()
+
+		# 3. 開鎖金光閃爍 + 開蓋
+		tw.tween_callback(func():
+			spark_flash = 1.0
+			is_open = true
+			queue_redraw()
+		)
+		tw.tween_property(self, "lid_open_ratio", 1.0, 0.28).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+		# 4. 回呼通報道具彈出
+		tw.tween_callback(func():
+			if on_opened.is_valid():
+				on_opened.call()
+		)
+
+	func _draw() -> void:
+		var c_w := 92.0
+		var c_h := 50.0
+		var c_x := 6.0
+		var c_y := 30.0
+
+		# 1. 寶箱底部 3D 陰影
+		draw_rect(Rect2(c_x + 3, c_y + c_h - 2, c_w - 6, 8), Color(0.12, 0.10, 0.22, 0.35), true)
+
+		# 2. 寶箱本體 (Chest Body)
+		var body_rect := Rect2(c_x, c_y, c_w, c_h)
+		# 深藍紫厚描邊
+		draw_rect(body_rect, Color("#1F1A3A"), true)
+		# 暖米黃/鍍金板件主底
+		draw_rect(Rect2(c_x + 3, c_y + 3, c_w - 6, c_h - 6), Color("#FFF4D0"), true)
+		# 黃銅金屬包邊條
+		draw_rect(Rect2(c_x + 10, c_y + 3, 12, c_h - 6), Color("#FFA010"), true)
+		draw_rect(Rect2(c_x + c_w - 22, c_y + 3, 12, c_h - 6), Color("#FFA010"), true)
+		# 鉚釘點綴
+		draw_circle(Vector2(c_x + 16, c_y + 10), 2.2, Color("#1F1A3A"))
+		draw_circle(Vector2(c_x + 16, c_y + c_h - 10), 2.2, Color("#1F1A3A"))
+		draw_circle(Vector2(c_x + c_w - 16, c_y + 10), 2.2, Color("#1F1A3A"))
+		draw_circle(Vector2(c_x + c_w - 16, c_y + c_h - 10), 2.2, Color("#1F1A3A"))
+
+		# 3. 寶箱開啟後噴出的金光 (Golden Light Beams)
+		if lid_open_ratio > 0.05:
+			var beam_alpha := 0.7 * lid_open_ratio
+			var b_pts := PackedVector2Array([
+				Vector2(c_x + 16, c_y + 4),
+				Vector2(c_x - 10, c_y - 28.0 * lid_open_ratio),
+				Vector2(c_x + c_w + 10, c_y - 28.0 * lid_open_ratio),
+				Vector2(c_x + c_w - 16, c_y + 4)
+			])
+			draw_colored_polygon(b_pts, Color(1.0, 0.85, 0.2, beam_alpha * 0.45))
+			draw_circle(Vector2(c_x + c_w * 0.5, c_y + 2), 18.0 * lid_open_ratio, Color(1.0, 1.0, 0.6, beam_alpha * 0.75))
+
+		# 4. 寶箱頂蓋 (Chest Lid) - 支援向上掀開動態
+		var lid_lift := lid_open_ratio * 18.0
+		var lid_rot := -lid_open_ratio * 0.22
+
+		# 繪製掀開的寶箱蓋
+		draw_set_transform(Vector2(c_x, c_y), lid_rot, Vector2.ONE)
+		draw_rect(Rect2(-2, -12.0 - lid_lift, c_w + 4, 18.0), Color("#1F1A3A"), true)
+		draw_rect(Rect2(1, -9.0 - lid_lift, c_w - 2, 12.0), Color("#FFD028"), true)
+		# 頂蓋亮金反光
+		draw_rect(Rect2(6, -8.0 - lid_lift, c_w - 12, 4.0), Color(1.0, 1.0, 1.0, 0.55), true)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+
+		# 5. 中心發條黃銅齒輪鎖 (Brass Gear Lock)
+		var lock_center := Vector2(c_x + c_w * 0.5, c_y + 14)
+		if _brass_gear_tex != null:
+			var g_sz := Vector2(28, 28)
+			draw_set_transform(lock_center, lock_rot, Vector2.ONE)
+			draw_texture_rect(_brass_gear_tex, Rect2(-g_sz * 0.5, g_sz), false, Color("#FFA010"))
+			draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		else:
+			# 向量齒輪 fallback
+			draw_circle(lock_center, 12.0, Color("#1F1A3A"))
+			draw_circle(lock_center, 10.0, Color("#FFA010"))
+			for g in range(6):
+				var a := lock_rot + float(g) * TAU / 6.0
+				draw_circle(lock_center + Vector2(cos(a), sin(a)) * 10.0, 2.8, Color("#FFA010"))
+
+		# 鑰匙孔
+		draw_circle(lock_center, 3.5, Color("#1F1A3A"))
+		draw_rect(Rect2(lock_center.x - 1.5, lock_center.y, 3, 5), Color("#1F1A3A"), true)
+
+		# 6. 解鎖火花爆閃光環 (Spark Flash)
+		if spark_flash > 0.0:
+			draw_circle(lock_center, 22.0 * (2.0 - spark_flash), Color(1.0, 1.0, 1.0, spark_flash * 0.8))
+			draw_arc(lock_center, 28.0 * (2.0 - spark_flash), 0, TAU, 24, Color("#FFD028", spark_flash), 3.0)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# 3. 八色階光環彈跳呈現 (TierHaloEffect)
+# ══════════════════════════════════════════════════════════════════════════════
+class TierHaloEffect extends Control:
+	var tier_id: String = "white"
+	var tier_color: Color = Color.WHITE
+	var pulse_phase: float = 0.0
+	var sparkle_rot: float = 0.0
+	var pop_scale: float = 1.0
+	var pop_alpha: float = 1.0
+
+	func _init() -> void:
+		custom_minimum_size = Vector2(88, 88)
+		size = Vector2(88, 88)
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+		pivot_offset = Vector2(44, 44)
+
+	func set_tier(tid: String, col: Color) -> void:
+		tier_id = tid
+		tier_color = col
+		queue_redraw()
+
+	func play_pop() -> void:
+		pop_scale = 0.3
+		pop_alpha = 1.5
+		var tw := create_tween()
+		if tw != null:
+			tw.set_parallel(true)
+			tw.tween_property(self, "pop_scale", 1.0, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+			tw.tween_property(self, "pop_alpha", 1.0, 0.4)
+
+	func _process(delta: float) -> void:
+		pulse_phase += delta * 2.8
+		sparkle_rot += delta * 1.4
+		queue_redraw()
+
+	func _draw() -> void:
+		var center := Vector2(44, 44)
+		var pulse := sin(pulse_phase) * 0.06 + 1.0
+		var r_outer := 46.0 * pulse * pop_scale
+		var r_mid := 36.0 * pulse * pop_scale
+		var r_inner := 26.0 * pulse * pop_scale
+
+		# 1. 外層多巴胺色階光暈柔光 (Ambient Glow)
+		draw_circle(center, r_outer, Color(tier_color.r, tier_color.g, tier_color.b, 0.32 * pop_alpha))
+
+		# 2. 中層鮮亮色階日冕光環 (Pulsing Corona Ring)
+		draw_arc(center, r_mid, 0, TAU, 32, Color(tier_color.r, tier_color.g, tier_color.b, 0.85 * pop_alpha), 4.5)
+
+		# 3. 內層白亮核心光環 (Inner Bright Ring)
+		var core_col := tier_color.lightened(0.45)
+		draw_arc(center, r_inner, 0, TAU, 28, Color(core_col.r, core_col.g, core_col.b, 0.95 * pop_alpha), 2.5)
+
+		# 4. 環繞四角微光菱形星芒 (Orbiting Star Sparkles)
+		var n_sp := 4
+		for i in range(n_sp):
+			var a := sparkle_rot + float(i) * TAU / float(n_sp)
+			var sp_pos := center + Vector2(cos(a), sin(a)) * (36.0 * pop_scale)
+			var sp_sz := 4.5 * (0.8 + 0.4 * sin(pulse_phase + float(i) * 1.5))
+			var sp_pts := PackedVector2Array([
+				sp_pos + Vector2(0, -sp_sz),
+				sp_pos + Vector2(sp_sz * 0.6, 0),
+				sp_pos + Vector2(0, sp_sz),
+				sp_pos + Vector2(-sp_sz * 0.6, 0)
+			])
+			draw_colored_polygon(sp_pts, Color(core_col.r, core_col.g, core_col.b, 0.9 * pop_alpha))

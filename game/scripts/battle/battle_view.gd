@@ -3367,14 +3367,18 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			else:
 				_append_log(_t("[color=#fc0]部位破壞！【%s】碎裂！[/color]") % pname)
 			_spawn_float(boss_id, "BREAK！" + pname, Color(1.0, 0.85, 0.15), false, true)
-			# Alice 糖果屑（粉紫奶油琺瑯＋黃銅屑）；⛔ 不用焊花主特效
+			# Alice 糖果屑（粉紫奶油琺瑯＋黃銅屑）
 			_spawn_candy_chip_break(boss_id, data)
-			_shake = 0.5
-			trigger_hit_stop(0.12)
-			_flash(_body_of(boss_id), Color(3.0, 2.5, 1.0))
+			# 升級部位破壞特寫：衝擊頓挫 (0.24s) 與零件齒輪慢動作噴發 (Slow-Mo)
+			var break_body := _body_of(boss_id)
+			var break_pt := (break_body.global_position + break_body.size * Vector2(0.5, 0.45)) if break_body != null else (size * 0.5)
+			CombatHitFx.spawn_part_break_fx(self, break_pt, pname)
+			_shake = 0.85
+			trigger_hit_stop(0.24)
+			_flash(break_body, Color(3.5, 3.0, 1.2))
 			_set_boss_pose("recover")
 			_refresh_part_focus_hint()
-			get_tree().create_timer(0.8).timeout.connect(func():
+			get_tree().create_timer(1.0).timeout.connect(func():
 				if is_instance_valid(self) and not _ended:
 					_set_boss_pose("idle")
 			)
