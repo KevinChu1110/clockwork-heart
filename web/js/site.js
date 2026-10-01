@@ -29,8 +29,11 @@
     return t.content.firstChild;
   }
 
-  /* 確保 sections.css / motion.css 有載入 */
+  /* 確保 sections.css / motion.css 有載入（首頁由 awwwards.css 完全掌控，不重複載入舊樣式） */
   (function ensureCss() {
+    if (active === "home" || document.querySelector('link[href*="awwwards.css"]')) {
+      return;
+    }
     ["sections.css", "motion.css", "rwd.css", "temple.css"].forEach(function (name) {
       var found = false;
       Array.prototype.forEach.call(document.querySelectorAll('link[rel="stylesheet"]'), function (l) {
