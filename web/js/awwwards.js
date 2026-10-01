@@ -1,7 +1,6 @@
 /**
  * Clockwork Heart · Award-Winning Experience Engine
- * Awwwards / Webby / FWA Standard Interactive System
- * Zerotype.ai Aesthetic Benchmark & Micro-Interactions
+ * Awwwards / Webby / Zerotype Standard Interactive System
  */
 
 (function () {
@@ -59,331 +58,233 @@
       quote: '「十四主星軸轉動之處，魔能如發條般蔓延。」',
       desc: '星象觀測台與發條藤蔓守護者。專精十四主星軸共鳴秘術與懸浮連桿星軸長尾，操縱星象符文引發範圍崩解。',
       weaponName: '星盤晶核秘術法杖',
-      weaponDesc: '頂端鑲嵌精密透鏡與能量晶核，引導星盤齒輪光束穿透敵方防護。',
+      weaponDesc: '內嵌星盤陀螺儀與翡翠晶核，導引星軸發條共振引發魔能幾何陣列。',
       stamina: 15,
       breakRate: 88,
       agility: 95,
       defense: 72,
-      weakness: '星盤晶核過載散熱間隙',
-      trait: '星象共鳴 (範圍元素侵蝕)',
-      material: '鍍銀輕質板件 · 靈能紫水晶核 · 懸浮磁力連桿'
+      weakness: '星軸連桿關節 (光學核心干擾)',
+      trait: '星軸共振 (全場秘法擴散)',
+      material: '琉璃琺瑯板件 · 懸浮星輪連桿 · 占星翡翠核心'
     },
     {
       id: 'boar',
       name: '鋼牙豕',
-      role: '攻城鍛造者 · 重裝破陣官',
+      role: '鍛爐工兵 · 重破壞者',
       shortRole: '戰士',
       image: 'media/hero/char_boar.png',
       idle: 'media/hero/boar_idle.png',
-      quote: '「只要力道夠大，所有精密零件都是廢鐵。」',
-      desc: '鍛造火山高爐的核心爐工。粗壯的生鐵板件與雙螺旋合金獠牙，手持巨型鍛造重鎚，擅長正面硬碰硬砸碎敵方厚實裝甲。',
-      weaponName: '熔火雙手鍛造重鎚',
-      weaponDesc: '內建氣動加壓活塞，落下瞬間觸發二次爆燃衝擊波。',
+      quote: '「沒有什麼是一鐵砧鎚砸不爛的，如果有，就兩鎚。」',
+      desc: '耐熱高溫鍛爐的重裝工兵。外露鎢鋼長獠牙與履帶紋底盤，專克泰坦巨甲，任何金屬在鐵砧重鎚前皆為齏粉。',
+      weaponName: '鍛爐鐵砧重型戰鎚',
+      weaponDesc: '重型鍛造鐵砧鎚頭，下砸時釋放高壓蒸氣衝擊波，震碎重型板件。',
       stamina: 15,
-      breakRate: 97,
-      agility: 68,
-      defense: 96,
-      weakness: '背部氣閥冷卻管',
-      trait: '破陣碎甲 (強制破防暴擊)',
-      material: '鑄鐵防爆板件 · 氣動活塞系統 · 高溫耐熱塗層'
+      breakRate: 98,
+      agility: 65,
+      defense: 94,
+      weakness: '背部蒸氣閥洩壓口',
+      trait: '碎甲猛擊 (破甲值翻倍)',
+      material: '耐火鑄鐵板件 · 鎢鋼獠牙 · 蒸氣高壓氣閥'
     },
     {
-      id: 'macaque',
+      id: 'monkey',
       name: '靈爪猴',
-      role: '天樞武鬥家 · 機關行者',
+      role: '千機巧匠 · 靈動客',
       shortRole: '武術家',
-      image: 'media/hero/char_macaque.png',
-      idle: 'media/hero/macaque_idle.png',
-      quote: '「拳如流星，轉眼間你身上的螺帽就全空了。」',
-      desc: '天元竹林機關道場的流浪武僧。全身配備多關節伺服連桿與精鋼爪拳套，以如影隨形的近身連打與徒手拆卸零件名震四方。',
-      weaponName: '天樞發條鋼爪拳套',
-      weaponDesc: '手腕內藏高速棘輪扳手機構，命中瞬間可強行旋開受擊者外殼螺帽。',
+      image: 'media/hero/char_monkey.png',
+      idle: 'media/hero/monkey_idle.png',
+      quote: '「只要給我一根連桿，我就能撬起整座玩具城堡。」',
+      desc: '齒輪高塔的靈巧工匠。四肢配備微型發條抓鉤，能在機關立柱間疾速攀爬，以精密千機棍拆卸敵人齒輪軸心。',
+      weaponName: '千機伸縮發條長棍',
+      weaponDesc: '多節連桿伸縮長棍，可隨發條釋放瞬間延長三倍，精準挑開暗扣。',
       stamina: 15,
-      breakRate: 95,
-      agility: 98,
-      defense: 76,
-      weakness: '關節連桿超轉過載',
-      trait: '連鎖拆卸 (極速多段連擊)',
-      material: '拉絲黃銅板件 · 柔性鋼絲肌腱 · 橡膠緩衝墊'
+      breakRate: 92,
+      agility: 99,
+      defense: 70,
+      weakness: '抓鉤伸縮捲簧卡滯',
+      trait: '疾風跳躍 (滯空連段拆解)',
+      material: '輕量鋁合金板件 · 微型發條捲簧 · 琥珀動能核心'
     },
     {
       id: 'tiger',
       name: '烈焰虎',
-      role: '夜影刺客 · 破曉狂刃',
+      role: '熾火斥候 · 瞬影者',
       shortRole: '忍者',
       image: 'media/hero/char_tiger.png',
       idle: 'media/hero/tiger_idle.png',
-      quote: '「黑暗中只有金屬火花閃爍，那是死亡的序曲。」',
-      desc: '陰影工坊與廢棄齒輪堆的潛行獵手。淬火黑鋼與幾何幾何導流板，背部微型氣冷推進器能在瞬間爆發超音速衝刺。',
-      weaponName: '黑鋼折疊雙短刃',
-      weaponDesc: '高頻振動等離子刃口，切開合金護板宛如熱刀切黃油。',
+      quote: '「在火星迸發的剎那，勝負早已底定。」',
+      desc: '黑曜石熔火盆地的先鋒斥候。純黑曜石烤漆與赤金發條，雙手裝備高頻震盪苦無，擅長在高速位移中進行背刺部位破壞。',
+      weaponName: '赤金高頻震盪苦無',
+      weaponDesc: '發條高速旋轉帶動鋸齒高頻震動，切金斷玉如裂薄紙。',
       stamina: 15,
       breakRate: 94,
-      agility: 99,
-      defense: 70,
-      weakness: '高速排氣閥門過載',
-      trait: '暴擊瞬殺 (殘影疾速位移)',
-      material: '淬火黑鋼板件 · 幾何排氣狹縫 · 高溫熔鐵核心'
+      agility: 98,
+      defense: 75,
+      weakness: '高速散熱排氣葉片',
+      trait: '瞬影背刺 (暴擊部位必斷)',
+      material: '黑曜烤漆鋼板 · 鈦合金利爪 · 赤金蓄能發條'
     },
     {
       id: 'crane',
       name: '雲嵐鶴',
-      role: '風弦巡守者 · 神射手',
+      role: '天際巡音 · 狙擊手',
       shortRole: '遊俠',
       image: 'media/hero/char_crane.png',
       idle: 'media/hero/crane_idle.png',
-      quote: '「一羽穿雲，千里之外已定勝負。」',
-      desc: '通體冷淬青瓷琺瑯與折疊合金羽翼。以超視距風弦機關弓見長，能精準洞穿百米外敵人的精密發條樞紐。',
-      weaponName: '風弦羽翼機關弓',
-      weaponDesc: '折疊弓臂由微型絞盤拉緊，射出高轉速鎢鋼穿甲箭矢，附帶微型氣旋。',
+      quote: '「羽翼劃過長空，唯留精準貫穿的彈道。」',
+      desc: '浮空島浮雲頂層的守望者。修長銀白板件與展開式滑翔翼翼弦，手持長管發條風壓銃，超遠距離精準擊破敵方脆弱發條。',
+      weaponName: '雲嵐超長管發條風壓銃',
+      weaponDesc: '利用三段式發條壓縮氣囊，釋放音速穿甲氣彈，超視距破壞部位。',
       stamina: 15,
-      breakRate: 91,
+      breakRate: 93,
       agility: 94,
       defense: 68,
-      weakness: '翼軸伺服馬達受創',
-      trait: '超視距穿甲 (弱點致命一擊)',
-      material: '冷淬青瓷琺瑯 · 航空鈦合金羽 · 高張力弦索'
+      weakness: '滑翔翼展鉸鏈節點',
+      trait: '鷹眼狙擊 (弱點倍率增幅)',
+      material: '航空超輕銀白合金 · 碳纖維滑翔翼 · 蔚藍氣動核心'
     },
     {
       id: 'bear',
       name: '玄軸熊',
-      role: '離心狂戰士 · 撼地者',
+      role: '重盾壁壘 · 守護者',
       shortRole: '戰士',
       image: 'media/hero/char_bear.png',
       idle: 'media/hero/bear_idle.png',
-      quote: '「大地在我的重錘之下戰慄，無物能擋離心風暴。」',
-      desc: '赤焰熔爐黑曜石淬火神壇的沉穩巨靈。焦糖琥珀漆壓鑄鋼板，以偏心離心重力巨錘與震地重擊令群敵膽寒。',
-      weaponName: '玄軸偏心重力錘',
-      weaponDesc: '偏心飛輪驅動重力鎚，揮動時離心力指數加劇，產生毀滅性重擊震波。',
-      stamina: 15,
-      breakRate: 98,
-      agility: 65,
-      defense: 99,
-      weakness: '轉向慣性過大延遲',
-      trait: '離心蓄力 (震地範圍衝擊)',
-      material: '焦糖琥珀漆壓鑄板 · 偏心離心飛輪 · 厚重生鐵'
-    },
-    {
-      id: 'penguin',
-      name: '蒸氣企鵝',
-      role: '深海導航員 · 射手',
-      shortRole: '遊俠',
-      image: 'media/hero/char_penguin.png',
-      idle: 'media/hero/char_penguin.png',
-      quote: '「冰層與深海之下，發條的律動從不熄滅。」',
-      desc: '水下發條宮殿深海導航員。耐壓鍍鈦深藍琺瑯，背部配備蒸氣微型鍋爐與雙管火槍，可在極端環境下精準制導。',
-      weaponName: '蒸氣雙管導航火槍',
-      weaponDesc: '雙管黃銅發條氣動槍，發射高壓壓縮氣彈與自導向追蹤水銀彈。',
-      stamina: 15,
-      breakRate: 89,
-      agility: 88,
-      defense: 86,
-      weakness: '鍋爐蒸氣減壓閥',
-      trait: '雙管齊射 (高壓氣動推進)',
-      material: '耐壓鍍鈦深藍板件 · 蒸氣鍋爐 · 導航陀螺儀'
-    },
-    {
-      id: 'tortoise',
-      name: '玄機龜',
-      role: '奇門陣法師 · 宗師',
-      shortRole: '法師',
-      image: 'media/hero/char_tortoise.png',
-      idle: 'media/hero/tortoise_idle.png',
-      quote: '「八卦星盤定乾坤，機關萬象皆在陣中。」',
-      desc: '天元竹林青石古道場的機關術宗師。青古銅龜甲板件，以八卦發條星盤與結界壁壘見長，能以柔克剛化解萬鈞重擊。',
-      weaponName: '玄機八卦發條星盤',
-      weaponDesc: '八卦齒輪星盤可推演敵方攻勢軌跡，展開多面金屬力場結界防壁。',
+      quote: '「若我立於此處，王國大門絕不陷落。」',
+      desc: '極北冰原發條防線的不可撼動之盾。全身包裹多層防禦板件與重型減震液壓阻尼，以巨型齒輪重盾抵禦一切狂轟濫炸。',
+      weaponName: '玄鐵旋轉齒輪巨盾',
+      weaponDesc: '邊緣具備高速咬合旋轉齒輪，能碾碎近身攻擊並反彈動能。',
       stamina: 15,
       breakRate: 85,
       agility: 62,
       defense: 100,
-      weakness: '星盤推演齒輪重置間隙',
-      trait: '奇門結界 (力場化勁反震)',
-      material: '青古銅雕紋甲 · 八卦星盤機構 · 玄武能量核'
+      weakness: '液壓阻尼活塞密封圈',
+      trait: '絕對壁壘 (格擋反震崩解)',
+      material: '玄鐵多層裝甲 · 液壓減震筒 · 寒霜動能核心'
+    },
+    {
+      id: 'penguin',
+      name: '蒸氣企鵝',
+      role: '霜河航海士 · 連射手',
+      shortRole: '遊俠',
+      image: 'media/hero/char_penguin.png',
+      idle: 'media/hero/penguin_idle.png',
+      quote: '「蒸氣在鳴笛，這片海域由我的雙銃主宰。」',
+      desc: '冰河運河的巡邏領航員。身著潛水銅盔造型裝甲與背負式微型蒸氣鍋爐，手持雙持發條連發銃，在滑行中持續壓制敵人。',
+      weaponName: '雙持蒸氣連動旋轉銃',
+      weaponDesc: '雙管交替供彈，每分鐘釋放 600 發發條鋼珠，造成密集壓制破甲。',
+      stamina: 15,
+      breakRate: 89,
+      agility: 88,
+      defense: 80,
+      weakness: '背部微型鍋爐壓力表',
+      trait: '滑行射擊 (保持距離擊破)',
+      material: '黃銅抗腐蝕合金 · 耐寒生膠密封件 · 蒸氣動力背包'
+    },
+    {
+      id: 'turtle',
+      name: '玄機龜',
+      role: '古軸占星師 · 陣法使',
+      shortRole: '法師',
+      image: 'media/hero/char_turtle.png',
+      idle: 'media/hero/turtle_idle.png',
+      quote: '「古老陣盤轉動時，時間將在此停滯。」',
+      desc: '深淵遺跡的千古陣法學者。背負碩大星盤羅盤甲殼，能引導古代發條密碼，製造重力遲滯力場並瓦解大範圍敵方機關。',
+      weaponName: '古代星軸八卦陣盤',
+      weaponDesc: '八層重疊銅環陣盤，轉動時釋放時空遲滯重力場，定住敵人部件。',
+      stamina: 15,
+      breakRate: 87,
+      agility: 58,
+      defense: 99,
+      weakness: '甲殼底盤中軸滑槽',
+      trait: '時空力場 (範圍降速易碎)',
+      material: '古青銅包覆板件 · 隕鐵重力軸心 · 星象占卜陣列'
     },
     {
       id: 'elephant',
       name: '鋼岳象',
-      role: '發條巨靈 · 破城前鋒',
+      role: '泰坦破城者 · 先鋒隊',
       shortRole: '戰士',
       image: 'media/hero/char_elephant.png',
       idle: 'media/hero/elephant_idle.png',
-      quote: '「每一步都是山崩地裂，機關堡壘的終結者。」',
-      desc: '黃銅都市中央動力塔的守衛巨靈。啞光鈦灰裝甲板件，身背巨型蒸氣減速箱與液壓鋼鼻，一擊足以崩碎城門。',
-      weaponName: '液壓多段衝擊長鼻',
-      weaponDesc: '多節液壓鋼環套筒，伸縮間產生千噸撞擊力，伴隨高溫蒸氣排斥。',
+      quote: '「鋼鐵的重壓下，城壘化為齏粉。」',
+      desc: '攻城戰線的巨型泰坦先鋒。龐大的身軀以高張力鋼板與多級齒輪變速箱驅動，長象鼻為重型液壓破城鎚，踐踏震撼大地。',
+      weaponName: '液壓多級破城重象鼻',
+      weaponDesc: '內建三級增壓活塞，正面撞擊能將重型防禦裝甲一次性徹底擊碎。',
       stamina: 15,
       breakRate: 99,
-      agility: 58,
-      defense: 100,
-      weakness: '液壓活塞密封圈老化',
-      trait: '巨獸重壓 (粉碎性障礙清除)',
-      material: '啞光鈦灰重型裝甲 · 巨型蒸氣減速箱 · 液壓千斤頂'
+      agility: 55,
+      defense: 99,
+      weakness: '頸部液壓主管道鉸鍊',
+      trait: '泰坦踐踏 (全場霸體擊飛)',
+      material: '高張力複合鋼板 · 三級行星齒輪箱 · 泰坦液壓桿'
     },
     {
       id: 'frog',
       name: '碧簧蛙',
-      role: '彈簧特攻隊員 · 突擊手',
+      role: '暗夜跳躍者 · 毒刃客',
       shortRole: '忍者',
       image: 'media/hero/char_frog.png',
       idle: 'media/hero/frog_idle.png',
-      quote: '「你看到我起跳時，我已經在你的頭頂上拆零件了。」',
-      desc: '翠綠烤漆與雙腿高張力發條彈簧。以超高機動力空中突襲與彈射衝擊聞名，能在戰場各角度靈巧跳躍穿梭。',
-      weaponName: '高張力發條迴旋雙鏢',
-      weaponDesc: '彈射飛鏢由微型鋼絲牽引，飛出後自動收回並切割路徑上的所有機械。',
+      quote: '「彈簧收緊的瞬間，即是獵物命運的落幕。」',
+      desc: '青竹秘境暗夜潛行者。高彈性發條避震彈簧腿與外露雙眼光學核心，以機關旋刃鏢與疾速跳躍突襲見長。',
+      weaponName: '碧葉旋刃機關鏢',
+      weaponDesc: '旋轉飛鏢附帶回力倒鉤，投擲後可高速切割並回收發條動能。',
       stamina: 15,
-      breakRate: 93,
-      agility: 100,
+      breakRate: 91,
+      agility: 99,
       defense: 66,
-      weakness: '腿部主彈簧疲勞卡死',
-      trait: '極限彈跳 (垂直制空突襲)',
-      material: '翠綠琺瑯烤漆 · 琴鋼絲高張力彈簧 · 輕量化鋁合金'
+      weakness: '腿部簧片蓄力僵直',
+      trait: '彈簧跳躍 (旋刃突刺割裂)',
+      material: '碧綠烤漆板件 · 鎢鋼彈簧腿 · 光學偵測眼'
     },
     {
       id: 'panda',
       name: '瓷韻熊貓',
-      role: '兩儀調和師 · 太極宗師',
+      role: '太極拳聖 · 禪武者',
       shortRole: '武術家',
       image: 'media/hero/char_panda.png',
       idle: 'media/hero/panda_idle.png',
-      quote: '「陰陽齒輪互咬合，靜動之間轉乾坤。」',
-      desc: '白瓷與黑曜石雙色板件。將兩儀太極之道融入發條律動，能在戰鬥中吸收敵人的撞擊動能，反向轉化為自身發條爆發力。',
-      weaponName: '兩儀玄晶發條竹棍',
-      weaponDesc: '竹節內藏同軸差速齒輪，旋轉時可牽引空氣形成渦流力場。',
+      quote: '「以柔克剛，借彼之力，化萬物為發條律動。」',
+      desc: '雲頂禪道古剎的武道修行者。羊脂白瓷板件與黑曜生漆光澤，手戴太極機關拳套，擅長借力打力與寸勁破勢連打。',
+      weaponName: '乾坤太極機關拳套',
+      weaponDesc: '拳套內置太極陰陽雙發條，剛柔並濟，引導對手力量反震並擊碎部位。',
       stamina: 15,
-      breakRate: 92,
-      agility: 85,
-      defense: 94,
-      weakness: '兩儀差速輪軸過熱',
-      trait: '動能借力 (反彈蓄力釋放)',
-      material: '高嶺土精燒白瓷板 · 磨砂黑曜石 · 太極雙動核心'
+      breakRate: 95,
+      agility: 90,
+      defense: 88,
+      weakness: '生漆關節防潮保養期',
+      trait: '陰陽化勁 (寸勁破勢連打)',
+      material: '羊脂白瓷板件 · 黑曜生漆護手 · 陰陽太極發條'
     }
   ];
 
   let currentRaceIdx = 0;
-  let audioContext = null;
-  let isSoundEnabled = true;
-  let burstParticles = [];
 
   // =========================================================================
-  // 2. Web Audio Ratchet Sound Synthesis Engine
-  // =========================================================================
-  function initAudioEngine() {
-    const saved = localStorage.getItem('cw_sound_enabled');
-    if (saved !== null) {
-      isSoundEnabled = saved === 'true';
-    }
-
-    const toggleBtn = document.getElementById('sound-toggle');
-    const toggleLabel = document.getElementById('sound-label');
-
-    function updateUi() {
-      if (toggleBtn && toggleLabel) {
-        if (isSoundEnabled) {
-          toggleBtn.classList.remove('is-muted');
-          toggleLabel.textContent = '音效 ON';
-        } else {
-          toggleBtn.classList.add('is-muted');
-          toggleLabel.textContent = '音效 OFF';
-        }
-      }
-    }
-    updateUi();
-
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', () => {
-        isSoundEnabled = !isSoundEnabled;
-        localStorage.setItem('cw_sound_enabled', String(isSoundEnabled));
-        updateUi();
-        if (isSoundEnabled) playTickSound(1200);
-      });
-    }
-  }
-
-  function getAudioContext() {
-    if (!audioContext) {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (AudioCtx) audioContext = new AudioCtx();
-    }
-    if (audioContext && audioContext.state === 'suspended') {
-      audioContext.resume();
-    }
-    return audioContext;
-  }
-
-  // Realistic Clockwork Ratchet Click
-  function playTickSound(freq = 1600) {
-    if (!isSoundEnabled) return;
-    try {
-      const ctx = getAudioContext();
-      if (!ctx) return;
-
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      const filter = ctx.createBiquadFilter();
-
-      filter.type = 'highpass';
-      filter.frequency.setValueAtTime(800, ctx.currentTime);
-
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(300, ctx.currentTime + 0.035);
-
-      gain.gain.setValueAtTime(0.25, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.035);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
-
-      osc.start();
-      osc.stop(ctx.currentTime + 0.04);
-    } catch (e) {
-      // Audio autoplay policy fallback
-    }
-  }
-
-  // Resonant Metallic Spring Release Chime
-  function playReleaseChime() {
-    if (!isSoundEnabled) return;
-    try {
-      const ctx = getAudioContext();
-      if (!ctx) return;
-
-      const chord = [523.25, 659.25, 783.99, 1046.50]; // C Major Harmonic
-      chord.forEach((freq, i) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime + i * 0.04);
-
-        const startTime = ctx.currentTime + i * 0.04;
-        gain.gain.setValueAtTime(0.2, startTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.65);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start(startTime);
-        osc.stop(startTime + 0.7);
-      });
-    } catch (e) {
-      // Audio autoplay policy fallback
-    }
-  }
-
-  // =========================================================================
-  // 3. Canvas Astrolabe Gears & Spark Engine (60FPS)
+  // 2. Astrolabe Canvas & Gold Dust Particle Engine
   // =========================================================================
   function initAstrolabeCanvas() {
     const canvas = document.getElementById('hero-astrolabe-canvas');
     if (!canvas) return;
-
     const ctx = canvas.getContext('2d');
     let width = 0, height = 0;
-    const dustParticles = [];
-    const DUST_COUNT = 45;
+    let animationFrameId = null;
+
+    const PARTICLE_COUNT = 75;
+    const particles = [];
+
+    // Shockwave ripples on heartbeat
+    const shockwaves = [];
+
+    window._triggerAstrolabePulse = function () {
+      shockwaves.push({
+        radius: 40,
+        maxRadius: Math.max(width, height) * 0.75,
+        alpha: 0.8,
+        speed: 9
+      });
+    };
 
     function resize() {
       width = canvas.width = window.innerWidth;
@@ -392,342 +293,503 @@
     resize();
     window.addEventListener('resize', resize, { passive: true });
 
-    for (let i = 0; i < DUST_COUNT; i++) {
-      dustParticles.push({
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: Math.random() * 1.8 + 0.6,
-        alpha: Math.random() * 0.6 + 0.2,
+        radius: Math.random() * 2 + 0.6,
+        alpha: Math.random() * 0.7 + 0.2,
         speedX: (Math.random() - 0.5) * 0.35,
-        speedY: -Math.random() * 0.45 - 0.1,
-        twinkle: Math.random() * Math.PI * 2
+        speedY: -Math.random() * 0.45 - 0.15,
+        twinkleSpeed: Math.random() * 0.02 + 0.008,
+        twinkleAngle: Math.random() * Math.PI * 2
       });
     }
 
     let gearAngle1 = 0;
     let gearAngle2 = 0;
 
-    function drawGear(cx, cy, radius, teeth, depth, angle, color) {
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(angle);
-      ctx.beginPath();
-      const step = (Math.PI * 2) / teeth;
-      for (let i = 0; i < teeth; i++) {
-        const a1 = i * step;
-        const a2 = a1 + step * 0.25;
-        const a3 = a1 + step * 0.5;
-        const a4 = a1 + step * 0.75;
-        const rIn = radius - depth;
-        if (i === 0) ctx.moveTo(Math.cos(a1) * rIn, Math.sin(a1) * rIn);
-        else ctx.lineTo(Math.cos(a1) * rIn, Math.sin(a1) * rIn);
-        ctx.lineTo(Math.cos(a2) * radius, Math.sin(a2) * radius);
-        ctx.lineTo(Math.cos(a3) * radius, Math.sin(a3) * radius);
-        ctx.lineTo(Math.cos(a4) * rIn, Math.sin(a4) * rIn);
-      }
-      ctx.closePath();
-      ctx.strokeStyle = color;
-      ctx.lineWidth = 1.2;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(0, 0, radius * 0.3, 0, Math.PI * 2);
-      ctx.stroke();
-      ctx.restore();
-    }
-
     function render() {
       ctx.clearRect(0, 0, width, height);
 
-      // 1. Draw Gold Dust
-      dustParticles.forEach(p => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-        p.twinkle += 0.02;
-        const currentAlpha = p.alpha * (0.6 + 0.4 * Math.sin(p.twinkle));
-        if (p.y < -10) { p.y = height + 10; p.x = Math.random() * width; }
-        if (p.x < -10) p.x = width + 10;
-        if (p.x > width + 10) p.x = -10;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255, 230, 130, ${Math.max(0, currentAlpha)})`;
-        ctx.fill();
-      });
-
-      // 2. Draw Astrolabe Gears
-      const isMobile = width < 768;
-      const cx = isMobile ? width * 0.5 : width * 0.75;
-      const cy = isMobile ? height * 0.6 : height * 0.5;
-
-      gearAngle1 += 0.0025;
-      gearAngle2 -= 0.0035;
-
-      // Outer delicate armillary rings
+      // 1. Draw Subtle Rotating Gear Background
       ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(gearAngle1 * 0.5);
-      const rOuter = isMobile ? 180 : 280;
-      ctx.beginPath();
-      ctx.arc(0, 0, rOuter, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(255, 215, 0, 0.22)';
+      const centerX = width * 0.5;
+      const centerY = height * 0.45;
+      ctx.translate(centerX, centerY);
+
+      // Outer Astrolabe Ring 1
+      gearAngle1 += 0.0012;
+      ctx.save();
+      ctx.rotate(gearAngle1);
+      ctx.strokeStyle = 'rgba(229, 195, 104, 0.07)';
       ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.arc(0, 0, 360, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Degree tick marks
-      for (let i = 0; i < 36; i++) {
-        const a = (i * Math.PI * 2) / 36;
-        const len = i % 3 === 0 ? 12 : 6;
+      ctx.setLineDash([8, 16]);
+      ctx.beginPath();
+      ctx.arc(0, 0, 340, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+
+      // Outer Astrolabe Ring 2 (Counter-rotate)
+      gearAngle2 -= 0.0018;
+      ctx.save();
+      ctx.rotate(gearAngle2);
+      ctx.strokeStyle = 'rgba(62, 207, 191, 0.05)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(0, 0, 260, 0, Math.PI * 2);
+      ctx.stroke();
+
+      for (let g = 0; g < 12; g++) {
+        const rad = (g * Math.PI * 2) / 12;
         ctx.beginPath();
-        ctx.moveTo(Math.cos(a) * (rOuter - len), Math.sin(a) * (rOuter - len));
-        ctx.lineTo(Math.cos(a) * rOuter, Math.sin(a) * rOuter);
-        ctx.strokeStyle = i % 3 === 0 ? 'rgba(255, 230, 130, 0.55)' : 'rgba(255, 215, 0, 0.2)';
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
+        ctx.arc(Math.cos(rad) * 260, Math.sin(rad) * 260, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(229, 195, 104, 0.18)';
+        ctx.fill();
       }
       ctx.restore();
 
-      // Inner Interlocking Gears
-      drawGear(cx, cy, isMobile ? 120 : 190, 24, 12, gearAngle1, 'rgba(255, 215, 0, 0.3)');
-      drawGear(cx - (isMobile ? 130 : 200), cy - 60, isMobile ? 70 : 110, 16, 8, gearAngle2, 'rgba(62, 207, 191, 0.28)');
+      // Draw active shockwaves
+      for (let s = shockwaves.length - 1; s >= 0; s--) {
+        const wave = shockwaves[s];
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(0, 0, wave.radius, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(62, 207, 191, ${wave.alpha * 0.6})`;
+        ctx.lineWidth = 2.5;
+        ctx.shadowColor = '#3ECFBF';
+        ctx.shadowBlur = 14;
+        ctx.stroke();
+        ctx.restore();
 
-      // 3. Render Burst Sparks
-      for (let i = burstParticles.length - 1; i >= 0; i--) {
-        const sp = burstParticles[i];
-        sp.x += sp.vx;
-        sp.y += sp.vy;
-        sp.vx *= 0.94;
-        sp.vy *= 0.94;
-        sp.alpha -= sp.decay;
-
-        if (sp.alpha <= 0) {
-          burstParticles.splice(i, 1);
-        } else {
-          ctx.beginPath();
-          ctx.arc(sp.x, sp.y, sp.size, 0, Math.PI * 2);
-          ctx.fillStyle = sp.color.replace('ALPHA', String(Math.max(0, sp.alpha)));
-          ctx.shadowColor = sp.shadow;
-          ctx.shadowBlur = 8;
-          ctx.fill();
-          ctx.shadowBlur = 0;
+        wave.radius += wave.speed;
+        wave.alpha -= 0.015;
+        if (wave.alpha <= 0 || wave.radius >= wave.maxRadius) {
+          shockwaves.splice(s, 1);
         }
       }
 
-      requestAnimationFrame(render);
-    }
-    requestAnimationFrame(render);
-  }
+      ctx.restore();
 
-  // Spawn High-Energy Key Sparks on Release
-  function spawnKeyBurst(originX, originY) {
-    const count = 48;
-    for (let i = 0; i < count; i++) {
-      const angle = Math.random() * Math.PI * 2;
-      const speed = Math.random() * 9 + 3;
-      const isCyan = Math.random() > 0.65;
-      burstParticles.push({
-        x: originX,
-        y: originY,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
-        size: Math.random() * 2.5 + 1.2,
-        alpha: 1,
-        decay: Math.random() * 0.025 + 0.015,
-        color: isCyan ? 'rgba(62, 207, 191, ALPHA)' : 'rgba(255, 230, 130, ALPHA)',
-        shadow: isCyan ? '#3ECFBF' : '#FFE580'
-      });
+      // 2. Draw Gold Dust Particles
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
+        p.twinkleAngle += p.twinkleSpeed;
+        const currentAlpha = p.alpha + Math.sin(p.twinkleAngle) * 0.2;
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(229, 195, 104, ${Math.max(0.1, currentAlpha)})`;
+        ctx.shadowColor = '#FFE580';
+        ctx.shadowBlur = 6;
+        ctx.fill();
+
+        p.x += p.speedX;
+        p.y += p.speedY;
+
+        if (p.y < -10) {
+          p.y = height + 10;
+          p.x = Math.random() * width;
+        }
+        if (p.x < -10) p.x = width + 10;
+        if (p.x > width + 10) p.x = -10;
+      }
+
+      animationFrameId = requestAnimationFrame(render);
     }
+
+    render();
   }
 
   // =========================================================================
-  // 4. Central 3D Golden Winding Key Interactive Module (zerotype Alt-Key)
+  // 3. Custom Clockwork Cursor
   // =========================================================================
-  function initWindingKey() {
-    const keyBtn = document.getElementById('winding-key-btn');
-    const keyObject = document.getElementById('key-object');
-    const dialTicks = document.getElementById('dial-ticks');
-    const dialProgress = document.getElementById('dial-progress');
-    const bubbleText = document.getElementById('bubble-text');
-    const cadenceVal = document.getElementById('hud-cadence-val');
-    const cadenceSub = document.getElementById('key-cadence-sub');
-    const statusText = document.getElementById('hud-status-text');
-    const detailMsg = document.getElementById('hud-detail-msg');
-    const stage = document.querySelector('.stage');
+  function initCustomCursor() {
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-    if (!keyBtn || !keyObject) return;
+    let cursor = document.querySelector('.c-cursor');
+    if (!cursor) {
+      cursor = document.createElement('div');
+      cursor.className = 'c-cursor';
+      cursor.innerHTML = '<div class="c-cursor__dot"></div><div class="c-cursor__ring"></div>';
+      document.body.appendChild(cursor);
+    }
 
-    // Generate 15 Cadence Tick Marks on SVG Dial
-    if (dialTicks) {
-      dialTicks.innerHTML = '';
-      const totalTicks = 15;
-      const radius = 148;
-      const cx = 160, cy = 160;
-      for (let i = 0; i < totalTicks; i++) {
-        const a = (i * (Math.PI * 2)) / totalTicks - Math.PI / 2;
-        const x1 = cx + Math.cos(a) * (radius - 12);
-        const y1 = cy + Math.sin(a) * (radius - 12);
-        const x2 = cx + Math.cos(a) * radius;
-        const y2 = cy + Math.sin(a) * radius;
+    let mouseX = -100, mouseY = -100;
+    let ringX = -100, ringY = -100;
+
+    window.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      cursor.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+    }, { passive: true });
+
+    function animateRing() {
+      ringX += (mouseX - ringX) * 0.22;
+      ringY += (mouseY - ringY) * 0.22;
+      const ring = cursor.querySelector('.c-cursor__ring');
+      if (ring) {
+        ring.style.transform = `translate3d(${ringX - mouseX}px, ${ringY - mouseY}px, 0)`;
+      }
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('a, button, [role="button"], .race-nav-btn, .aww-tilt-card, .theater-tab-btn, .physical-key').forEach((el) => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('is-hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('is-hover'));
+      el.addEventListener('mousedown', () => cursor.classList.add('is-active'));
+      el.addEventListener('mouseup', () => cursor.classList.remove('is-active'));
+    });
+  }
+
+  // =========================================================================
+  // 4. Hero Focal Object: Zerotype Tactile Physical Winding Key Micro-interaction
+  // =========================================================================
+  function initPhysicalWindingKey() {
+    const key = document.getElementById('physical-key');
+    const mount = document.getElementById('keycap-mount');
+    const stage = document.getElementById('keycap-stage');
+    const ticksGroup = document.getElementById('dial-ticks-group');
+    const cadenceMeter = document.getElementById('keycap-cadence-meter');
+    const statusDot = document.getElementById('hud-status-dot');
+    const statusLabel = document.getElementById('hud-status-label');
+    const metricNumber = document.getElementById('hud-metric-number');
+    const heartGem = document.getElementById('hub-heart-gem');
+    const socketGlow = document.getElementById('socket-glow-ring');
+    const sparksContainer = document.getElementById('key-sparks-container');
+
+    const btnStep = document.getElementById('btn-wind-step');
+    const btnFull = document.getElementById('btn-wind-full');
+    const btnRelease = document.getElementById('btn-wind-release');
+
+    if (!key || !mount) return;
+
+    let tension = 0; // 0 to 15
+    const MAX_TENSION = 15;
+    let heartbeatTimer = null;
+    let audioCtx = null;
+
+    // A. Populate Dial Ticks in SVG (15 calibrated steps around perimeter)
+    if (ticksGroup) {
+      ticksGroup.innerHTML = '';
+      const cx = 170, cy = 170, rInner = 138, rOuter = 152;
+      for (let i = 0; i < MAX_TENSION; i++) {
+        const deg = (i * 360 / MAX_TENSION) - 90;
+        const rad = (deg * Math.PI) / 180;
+
+        const x1 = cx + Math.cos(rad) * rInner;
+        const y1 = cy + Math.sin(rad) * rInner;
+        const x2 = cx + Math.cos(rad) * rOuter;
+        const y2 = cy + Math.sin(rad) * rOuter;
 
         const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-        line.setAttribute('x1', x1);
-        line.setAttribute('y1', y1);
-        line.setAttribute('x2', x2);
-        line.setAttribute('y2', y2);
-        line.setAttribute('stroke', 'rgba(255, 215, 0, 0.35)');
-        line.setAttribute('stroke-width', i === 0 ? '3' : '2');
-        dialTicks.appendChild(line);
+        line.setAttribute('x1', x1.toFixed(1));
+        line.setAttribute('y1', y1.toFixed(1));
+        line.setAttribute('x2', x2.toFixed(1));
+        line.setAttribute('y2', y2.toFixed(1));
+        line.setAttribute('class', 'dial-tick-line');
+        line.setAttribute('id', `dial-tick-line-${i}`);
+        ticksGroup.appendChild(line);
+
+        const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        dot.setAttribute('cx', x2.toFixed(1));
+        dot.setAttribute('cy', y2.toFixed(1));
+        dot.setAttribute('r', '2.5');
+        dot.setAttribute('class', 'dial-tick-dot');
+        dot.setAttribute('id', `dial-tick-dot-${i}`);
+        ticksGroup.appendChild(dot);
       }
     }
 
-    let isDown = false;
-    let currentAngle = 0;
-    let targetAngle = 0;
-    let cadence = 0;
-    let lastTickAngle = 0;
-    let animFrame = null;
-
-    const DIAL_CIRCUMFERENCE = 930; // 2 * PI * 148 ≈ 930
-
-    function updateCadenceUi() {
-      const displayCadence = Math.min(15, Math.floor(cadence));
-      if (cadenceVal) cadenceVal.textContent = `${String(displayCadence).padStart(2, '0')} / 15 發條蓄能`;
-      if (cadenceSub) cadenceSub.textContent = `CADENCE ${String(displayCadence).padStart(2, '0')} / 15`;
-
-      if (dialProgress) {
-        const progressOffset = DIAL_CIRCUMFERENCE * (1 - displayCadence / 15);
-        dialProgress.style.strokeDashoffset = progressOffset;
+    // B. Populate Cadence Meter Segments (15 blocks)
+    if (cadenceMeter) {
+      cadenceMeter.innerHTML = '';
+      for (let i = 0; i < MAX_TENSION; i++) {
+        const seg = document.createElement('div');
+        seg.className = 'cadence-segment';
+        seg.id = `cadence-seg-${i}`;
+        cadenceMeter.appendChild(seg);
       }
     }
 
-    function onStart() {
-      if (isDown) return;
-      isDown = true;
-      keyBtn.classList.add('is-down');
-      if (stage) stage.classList.add('is-winding');
+    // C. Web Audio API Sound Synthesizer (Realistic Gear Ratchet & Heartbeat)
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioCtor = window.AudioContext || window.webkitAudioContext;
+        if (AudioCtor) audioCtx = new AudioCtor();
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
 
-      if (bubbleText) bubbleText.textContent = '發條上緊中⋯⋯ 齒輪咬合 100%';
-      if (statusText) statusText.textContent = '轉動蓄力中';
-      if (detailMsg) detailMsg.textContent = '長耳聽辨機關卡死異響 · 發條張力持續攀升';
+    function playRatchetSound(step) {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const t = ctx.currentTime;
+        const pitch = 0.95 + (step / MAX_TENSION) * 0.65;
 
-      playTickSound(1000 + cadence * 40);
+        // Metallic tooth oscillator
+        const osc = ctx.createOscillator();
+        const oscGain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1250 * pitch, t);
+        osc.frequency.exponentialRampToValueAtTime(340 * pitch, t + 0.04);
+        oscGain.gain.setValueAtTime(0.28, t);
+        oscGain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+        osc.connect(oscGain);
+        oscGain.connect(ctx.destination);
+        osc.start(t);
+        osc.stop(t + 0.04);
 
-      function windLoop() {
-        if (!isDown) return;
-        targetAngle += 2.8; // Rotate speed
-        currentAngle += (targetAngle - currentAngle) * 0.4;
-        keyObject.style.transform = `rotate(${currentAngle.toFixed(1)}deg)`;
+        // Mechanical snap noise burst
+        const bufferSize = ctx.sampleRate * 0.025;
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(2800 * pitch, t);
+        filter.Q.setValueAtTime(4, t);
+        const noiseGain = ctx.createGain();
+        noiseGain.gain.setValueAtTime(0.22, t);
+        noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.025);
+        noise.connect(filter);
+        filter.connect(noiseGain);
+        noiseGain.connect(ctx.destination);
+        noise.start(t);
+        noise.stop(t + 0.025);
+      } catch (e) {}
+    }
 
-        // Ratchet tick every 24 degrees
-        if (currentAngle - lastTickAngle >= 24) {
-          lastTickAngle = currentAngle;
-          if (cadence < 15) {
-            cadence = Math.min(15, cadence + 1);
-            playTickSound(1200 + cadence * 65);
-            updateCadenceUi();
+    function playHeartbeatSound() {
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        [0, 0.18].forEach((delay, idx) => {
+          const t = ctx.currentTime + delay;
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(idx === 0 ? 100 : 75, t);
+          osc.frequency.exponentialRampToValueAtTime(32, t + 0.16);
+          gain.gain.setValueAtTime(0.42, t);
+          gain.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(t);
+          osc.stop(t + 0.18);
+        });
+      } catch (e) {}
+    }
 
-            if (cadence === 15) {
-              if (bubbleText) bubbleText.textContent = '滿鍊蓄力完成！放開以釋放發條心臟！';
-              if (statusText) statusText.textContent = 'MAX 滿鍊就緒';
-            }
+    // D. Visual Feedback & Spark Particles
+    function emitSparks(count = 5) {
+      if (!sparksContainer) return;
+      for (let i = 0; i < count; i++) {
+        const spark = document.createElement('div');
+        spark.className = 'key-spark';
+        spark.style.left = '50%';
+        spark.style.top = '50%';
+        const angle = Math.random() * Math.PI * 2;
+        const dist = 35 + Math.random() * 65;
+        spark.style.setProperty('--dx', `${(Math.cos(angle) * dist).toFixed(1)}px`);
+        spark.style.setProperty('--dy', `${(Math.sin(angle) * dist).toFixed(1)}px`);
+        sparksContainer.appendChild(spark);
+        setTimeout(() => spark.remove(), 600);
+      }
+    }
+
+    // E. Tension State Updater
+    function setTension(newTension, playSound = true) {
+      tension = Math.max(0, Math.min(MAX_TENSION, newTension));
+      const angle = tension * (360 / MAX_TENSION);
+
+      key.style.transform = `rotate(${angle}deg)`;
+
+      // Update dial tick dots
+      for (let i = 0; i < MAX_TENSION; i++) {
+        const dot = document.getElementById(`dial-tick-dot-${i}`);
+        if (dot) {
+          if (i < tension) {
+            dot.classList.add('is-lit');
+          } else {
+            dot.classList.remove('is-lit');
           }
         }
-        animFrame = requestAnimationFrame(windLoop);
       }
-      animFrame = requestAnimationFrame(windLoop);
-    }
 
-    function onRelease() {
-      if (!isDown) return;
-      isDown = false;
-      keyBtn.classList.remove('is-down');
-      if (stage) stage.classList.remove('is-winding');
-      if (animFrame) cancelAnimationFrame(animFrame);
-
-      const rect = keyBtn.getBoundingClientRect();
-      const originX = rect.left + rect.width / 2;
-      const originY = rect.top + rect.height / 2;
-
-      if (cadence > 0) {
-        // Trigger celebration & release
-        playReleaseChime();
-        spawnKeyBurst(originX, originY);
-
-        if (bubbleText) bubbleText.textContent = '發條扣緊！心臟開始跳動 · 能量共鳴！';
-        if (statusText) statusText.textContent = '心臟全速跳動中';
-        if (detailMsg) detailMsg.textContent = '15/15 發條體力全滿載 · 聽聲拆件戰鬥啟動！';
-
-        // Spin back with inertia
-        targetAngle += 360;
-        let snapFrames = 0;
-        function spinRelease() {
-          if (snapFrames < 35) {
-            currentAngle += (targetAngle - currentAngle) * 0.18;
-            keyObject.style.transform = `rotate(${currentAngle.toFixed(1)}deg)`;
-            snapFrames++;
-            requestAnimationFrame(spinRelease);
+      // Update cadence progress segments
+      for (let i = 0; i < MAX_TENSION; i++) {
+        const seg = document.getElementById(`cadence-seg-${i}`);
+        if (seg) {
+          if (i < tension) {
+            seg.classList.add('is-active');
+            if (tension === MAX_TENSION) seg.classList.add('is-full');
+            else seg.classList.remove('is-full');
+          } else {
+            seg.classList.remove('is-active', 'is-full');
           }
         }
-        requestAnimationFrame(spinRelease);
+      }
 
-        // Keep cadence fully wound for a rewarding feel, then relax
-        cadence = 15;
-        updateCadenceUi();
-      } else {
-        if (bubbleText) bubbleText.textContent = '按住鑰匙上鍊';
-        if (statusText) statusText.textContent = '待命上鍊';
+      if (metricNumber) {
+        metricNumber.innerHTML = `${tension} <small>/ 15 點</small>`;
+      }
+      if (cadenceMeter) {
+        cadenceMeter.setAttribute('aria-valuenow', tension);
+      }
+
+      if (playSound && tension > 0) {
+        playRatchetSound(tension);
+        emitSparks(4);
+        if (socketGlow) socketGlow.classList.add('is-active');
+      }
+
+      if (heartGem) {
+        heartGem.classList.remove('is-pulsing');
+      }
+      if (statusDot) {
+        statusDot.classList.remove('is-active');
+      }
+
+      if (statusLabel) {
+        if (tension === 0) {
+          statusLabel.textContent = '待命狀態 · 點擊鑰匙開始上鍊';
+        } else if (tension === MAX_TENSION) {
+          statusLabel.textContent = '滿鍊蓄力完成 · 點擊放開釋放動能';
+        } else {
+          statusLabel.textContent = `正在上鍊 · 齒輪咬合蓄力 (CADENCE: ${tension}/15)`;
+        }
       }
     }
 
-    // Pointer events on key
-    keyBtn.addEventListener('pointerdown', (e) => {
+    // F. Release Tension -> Heartbeat Awakening Sequence
+    function releaseKey() {
+      if (tension === 0) {
+        setTension(MAX_TENSION, true);
+      }
+
+      key.classList.add('is-releasing');
+      key.style.transform = `rotate(${tension * (360 / MAX_TENSION) + 360}deg)`;
+
+      setTimeout(() => {
+        key.classList.remove('is-releasing');
+      }, 1200);
+
+      // Trigger Heart Gem Pulse
+      if (heartGem) {
+        heartGem.classList.add('is-pulsing');
+      }
+      if (statusDot) {
+        statusDot.classList.add('is-active');
+      }
+      if (statusLabel) {
+        statusLabel.textContent = '已完全上鍊 · 心臟正在跳動 (HEARTBEAT RUNNING · 60 BPM)';
+      }
+
+      playHeartbeatSound();
+      emitSparks(12);
+
+      // Canvas shockwave ripple
+      if (typeof window._triggerAstrolabePulse === 'function') {
+        window._triggerAstrolabePulse();
+      }
+
+      // Sustained Heartbeat interval for 10 beats
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
+      let beatsRemaining = 10;
+      heartbeatTimer = setInterval(() => {
+        playHeartbeatSound();
+        if (typeof window._triggerAstrolabePulse === 'function') {
+          window._triggerAstrolabePulse();
+        }
+        beatsRemaining--;
+        if (beatsRemaining <= 0) {
+          clearInterval(heartbeatTimer);
+          heartbeatTimer = null;
+        }
+      }, 1000);
+    }
+
+    // G. Event Listeners for Buttons & Key Clicks
+    if (btnStep) {
+      btnStep.addEventListener('click', (e) => {
+        e.preventDefault();
+        setTension(tension < MAX_TENSION ? tension + 1 : 1, true);
+      });
+    }
+
+    if (btnFull) {
+      btnFull.addEventListener('click', (e) => {
+        e.preventDefault();
+        let step = tension;
+        const interval = setInterval(() => {
+          step++;
+          setTension(step, true);
+          if (step >= MAX_TENSION) {
+            clearInterval(interval);
+          }
+        }, 35);
+      });
+    }
+
+    if (btnRelease) {
+      btnRelease.addEventListener('click', (e) => {
+        e.preventDefault();
+        releaseKey();
+      });
+    }
+
+    key.addEventListener('click', (e) => {
       e.preventDefault();
-      onStart();
-    });
-
-    window.addEventListener('pointerup', onRelease);
-    window.addEventListener('pointercancel', onRelease);
-
-    // Keyboard Spacebar integration
-    window.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && !e.repeat && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-        const overview = document.getElementById('overview');
-        if (!overview) return;
-        const rect = overview.getBoundingClientRect();
-        if (rect.bottom > 100 && rect.top < window.innerHeight) {
-          e.preventDefault();
-          onStart();
-        }
+      if (tension >= MAX_TENSION) {
+        releaseKey();
+      } else {
+        setTension(tension + 1, true);
       }
     });
 
-    window.addEventListener('keyup', (e) => {
-      if (e.code === 'Space') {
-        onRelease();
-      }
-    });
+    // H. 3D Perspective Tilt on Mouse Movement
+    if (stage) {
+      stage.addEventListener('mousemove', (e) => {
+        const rect = mount.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = (e.clientX - cx) / (rect.width / 2);
+        const dy = (e.clientY - cy) / (rect.height / 2);
 
-    // Initialize UI
-    updateCadenceUi();
+        const tiltX = -dy * 9;
+        const tiltY = dx * 11;
+        mount.style.transform = `perspective(1200px) rotateX(${tiltX.toFixed(2)}deg) rotateY(${tiltY.toFixed(2)}deg)`;
+      });
+
+      stage.addEventListener('mouseleave', () => {
+        mount.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg)';
+      });
+    }
+
+    // Initialize initial visual state
+    setTension(0, false);
 
     // Automation helpers for testing & QA verification
     window.testWindFull = function () {
-      isDown = true;
-      keyBtn.classList.add('is-down');
-      if (stage) stage.classList.add('is-winding');
-      cadence = 15;
-      targetAngle = 360;
-      currentAngle = 360;
-      keyObject.style.transform = 'rotate(360deg)';
-      updateCadenceUi();
-      if (bubbleText) bubbleText.textContent = '滿鍊蓄力完成！放開以釋放發條心臟！';
-      if (statusText) statusText.textContent = 'MAX 滿鍊就緒';
-      if (detailMsg) detailMsg.textContent = '長耳聽辨機關卡死異響 · 15 點發條蓄滿！';
-      playTickSound(2100);
+      setTension(MAX_TENSION, true);
     };
-
     window.testRelease = function () {
-      onRelease();
+      releaseKey();
     };
   }
 
@@ -739,17 +801,22 @@
     if (!rail) return;
 
     rail.innerHTML = '';
-    RACES_DATA.forEach((race, idx) => {
+    RACES_DATA.forEach((race, index) => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'race-nav-btn' + (idx === 0 ? ' is-active' : '');
-      btn.setAttribute('data-idx', idx);
+      btn.className = `race-nav-btn ${index === 0 ? 'is-active' : ''}`;
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+      btn.dataset.index = index;
+
+      const idxStr = String(index + 1).padStart(2, '0');
       btn.innerHTML = `
-        <span class="race-nav-btn__idx">${String(idx + 1).padStart(2, '0')}</span>
+        <span class="race-nav-btn__idx">${idxStr}</span>
         <span class="race-nav-btn__name">${race.name.split('·')[0].trim()}</span>
         <span class="race-nav-btn__role">${race.shortRole}</span>
       `;
-      btn.addEventListener('click', () => switchRace(idx));
+
+      btn.addEventListener('click', () => switchRace(index));
       rail.appendChild(btn);
     });
 
@@ -758,170 +825,155 @@
 
     if (prevBtn) {
       prevBtn.addEventListener('click', () => {
-        const nextIdx = (currentRaceIdx - 1 + RACES_DATA.length) % RACES_DATA.length;
-        switchRace(nextIdx);
+        const prev = (currentRaceIdx - 1 + RACES_DATA.length) % RACES_DATA.length;
+        switchRace(prev);
       });
     }
+
     if (nextBtn) {
       nextBtn.addEventListener('click', () => {
-        const nextIdx = (currentRaceIdx + 1) % RACES_DATA.length;
-        switchRace(nextIdx);
+        const next = (currentRaceIdx + 1) % RACES_DATA.length;
+        switchRace(next);
       });
     }
 
-    document.addEventListener('keydown', (e) => {
-      const raceSec = document.getElementById('races');
-      if (!raceSec) return;
-      const rect = raceSec.getBoundingClientRect();
-      if (rect.top < window.innerHeight && rect.bottom > 0) {
-        if (e.key === 'ArrowLeft') {
-          const nextIdx = (currentRaceIdx - 1 + RACES_DATA.length) % RACES_DATA.length;
-          switchRace(nextIdx);
-        } else if (e.key === 'ArrowRight') {
-          const nextIdx = (currentRaceIdx + 1) % RACES_DATA.length;
-          switchRace(nextIdx);
-        }
-      }
-    });
-
-    updateRaceStage(0, false);
+    updateRaceView(0);
   }
 
-  function switchRace(idx) {
-    if (idx === currentRaceIdx) return;
-    currentRaceIdx = idx;
-    playTickSound(1400);
+  function switchRace(targetIndex) {
+    if (targetIndex === currentRaceIdx) return;
+    currentRaceIdx = targetIndex;
 
-    const railBtns = document.querySelectorAll('.race-nav-btn');
-    railBtns.forEach((btn, i) => {
-      if (i === idx) {
+    const btns = document.querySelectorAll('.race-nav-btn');
+    btns.forEach((btn, idx) => {
+      if (idx === targetIndex) {
         btn.classList.add('is-active');
+        btn.setAttribute('aria-selected', 'true');
         btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       } else {
         btn.classList.remove('is-active');
+        btn.setAttribute('aria-selected', 'false');
       }
     });
 
-    updateRaceStage(idx, true);
-  }
-
-  function updateRaceStage(idx, animate) {
-    const data = RACES_DATA[idx];
-    if (!data) return;
-
-    const idxBig = document.getElementById('stage-race-idx');
-    const nameEl = document.getElementById('stage-race-name');
-    const roleEl = document.getElementById('stage-race-role');
-    const quoteEl = document.getElementById('stage-race-quote');
-    const descEl = document.getElementById('stage-race-desc');
-    const weaponNameEl = document.getElementById('stage-weapon-name');
-    const weaponDescEl = document.getElementById('stage-weapon-desc');
-    const mainImgEl = document.getElementById('stage-main-img');
-    const pixelImgEl = document.getElementById('stage-pixel-img');
-
-    const barBreak = document.getElementById('spec-bar-break');
-    const barAgility = document.getElementById('spec-bar-agility');
-    const barDef = document.getElementById('spec-bar-def');
-    const valBreak = document.getElementById('spec-val-break');
-    const valAgility = document.getElementById('spec-val-agility');
-    const valDef = document.getElementById('spec-val-def');
-
-    const weaknessEl = document.getElementById('spec-weakness-val');
-    const traitEl = document.getElementById('spec-trait-val');
-    const matEl = document.getElementById('spec-material-val');
-
-    if (animate && mainImgEl) {
-      mainImgEl.style.opacity = '0';
-      mainImgEl.style.transform = 'scale(0.92) translateY(10px)';
+    const mainImg = document.getElementById('stage-main-img');
+    if (mainImg) {
+      mainImg.style.opacity = '0';
+      mainImg.style.transform = 'scale(0.92) translateY(12px)';
     }
 
     setTimeout(() => {
-      if (idxBig) idxBig.textContent = `№ ${String(idx + 1).padStart(2, '0')} / 13`;
-      if (nameEl) nameEl.textContent = data.name;
-      if (roleEl) roleEl.textContent = data.role;
-      if (quoteEl) quoteEl.textContent = data.quote;
-      if (descEl) descEl.textContent = data.desc;
-      if (weaponNameEl) weaponNameEl.textContent = data.weaponName;
-      if (weaponDescEl) weaponDescEl.textContent = data.weaponDesc;
-
-      if (mainImgEl) {
-        mainImgEl.src = data.image;
-        mainImgEl.alt = `${data.name} 2.2頭身發條玩具立繪展示`;
-        mainImgEl.style.opacity = '1';
-        mainImgEl.style.transform = 'scale(1) translateY(0)';
+      updateRaceView(targetIndex);
+      if (mainImg) {
+        mainImg.style.opacity = '1';
+        mainImg.style.transform = 'scale(1) translateY(0)';
       }
+    }, 180);
+  }
 
-      if (pixelImgEl) {
-        pixelImgEl.src = data.idle;
-        pixelImgEl.alt = `${data.name} 實機像素素體`;
-      }
+  function updateRaceView(index) {
+    const data = RACES_DATA[index];
+    if (!data) return;
 
-      if (barBreak) barBreak.style.width = `${data.breakRate}%`;
-      if (barAgility) barAgility.style.width = `${data.agility}%`;
-      if (barDef) barDef.style.width = `${data.defense}%`;
+    const idxStr = String(index + 1).padStart(2, '0');
+    const elIdx = document.getElementById('stage-race-idx');
+    const elName = document.getElementById('stage-race-name');
+    const elRole = document.getElementById('stage-race-role');
+    const elQuote = document.getElementById('stage-race-quote');
+    const elDesc = document.getElementById('stage-race-desc');
+    const elWeaponName = document.getElementById('stage-weapon-name');
+    const elWeaponDesc = document.getElementById('stage-weapon-desc');
+    const elMainImg = document.getElementById('stage-main-img');
+    const elPixelImg = document.getElementById('stage-pixel-img');
 
-      if (valBreak) valBreak.textContent = `${data.breakRate}%`;
-      if (valAgility) valAgility.textContent = `${data.agility}%`;
-      if (valDef) valDef.textContent = `${data.defense}%`;
+    const barBreak = document.getElementById('spec-bar-break');
+    const valBreak = document.getElementById('spec-val-break');
+    const barAgility = document.getElementById('spec-bar-agility');
+    const valAgility = document.getElementById('spec-val-agility');
+    const barDef = document.getElementById('spec-bar-def');
+    const valDef = document.getElementById('spec-val-def');
 
-      if (weaknessEl) weaknessEl.textContent = data.weakness;
-      if (traitEl) traitEl.textContent = data.trait;
-      if (matEl) matEl.textContent = data.material;
-    }, animate ? 140 : 0);
+    const elWeakness = document.getElementById('spec-weakness-val');
+    const elTrait = document.getElementById('spec-trait-val');
+    const elMaterial = document.getElementById('spec-material-val');
+
+    if (elIdx) elIdx.textContent = `№ ${idxStr} / 13`;
+    if (elName) elName.textContent = data.name;
+    if (elRole) elRole.textContent = data.role;
+    if (elQuote) elQuote.textContent = data.quote;
+    if (elDesc) elDesc.textContent = data.desc;
+    if (elWeaponName) elWeaponName.textContent = data.weaponName;
+    if (elWeaponDesc) elWeaponDesc.textContent = data.weaponDesc;
+
+    if (elMainImg) {
+      elMainImg.src = data.image;
+      elMainImg.alt = `${data.name}立繪展示`;
+    }
+    if (elPixelImg) {
+      elPixelImg.src = data.idle;
+      elPixelImg.alt = `${data.name}實機像素素體`;
+    }
+
+    if (barBreak && valBreak) {
+      barBreak.style.width = `${data.breakRate}%`;
+      valBreak.textContent = `${data.breakRate}%`;
+    }
+    if (barAgility && valAgility) {
+      barAgility.style.width = `${data.agility}%`;
+      valAgility.textContent = `${data.agility}%`;
+    }
+    if (barDef && valDef) {
+      barDef.style.width = `${data.defense}%`;
+      valDef.textContent = `${data.defense}%`;
+    }
+
+    if (elWeakness) elWeakness.textContent = data.weakness;
+    if (elTrait) elTrait.textContent = data.trait;
+    if (elMaterial) elMaterial.textContent = data.material;
   }
 
   // =========================================================================
-  // 6. 3D Tilt Parallax Cards (Core Pillars)
+  // 6. Core Gameplay 3D Tilt Cards (Unified Dark Glassmorphism)
   // =========================================================================
   function init3DTiltCards() {
     const cards = document.querySelectorAll('.aww-tilt-card');
-    if (!cards.length) return;
-
     cards.forEach((card) => {
-      let bounds = null;
-
-      card.addEventListener('mouseenter', () => {
-        bounds = card.getBoundingClientRect();
-      });
-
       card.addEventListener('mousemove', (e) => {
-        if (!bounds) bounds = card.getBoundingClientRect();
-        const mouseX = e.clientX - bounds.left;
-        const mouseY = e.clientY - bounds.top;
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
 
-        const xPct = (mouseX / bounds.width - 0.5) * 2;
-        const yPct = (mouseY / bounds.height - 0.5) * 2;
+        const rotateX = ((y - centerY) / centerY) * -9;
+        const rotateY = ((x - centerX) / centerX) * 9;
 
-        const rotateX = -yPct * 8;
-        const rotateY = xPct * 8;
-
-        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`;
+        card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-6px)`;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
       });
 
       card.addEventListener('mouseleave', () => {
-        bounds = null;
-        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+        card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0)';
       });
     });
   }
 
   // =========================================================================
-  // 7. Cinematic Theater Switcher
+  // 7. Official Cinematic Theater Video Switcher
   // =========================================================================
   function initTheaterSwitcher() {
     const tabs = document.querySelectorAll('.theater-tab-btn');
     const screen16x9 = document.getElementById('theater-screen-16x9');
     const chassis9x16 = document.getElementById('theater-chassis-9x16');
 
-    if (!tabs.length) return;
-
     tabs.forEach((tab) => {
       tab.addEventListener('click', () => {
-        tabs.forEach((t) => t.classList.remove('is-active'));
+        tabs.forEach(t => t.classList.remove('is-active'));
         tab.classList.add('is-active');
 
-        const mode = tab.getAttribute('data-theater-mode');
-        const videoSrc = tab.getAttribute('data-video-src');
+        const mode = tab.dataset.theaterMode;
+        const videoSrc = tab.dataset.videoSrc;
 
         if (mode === 'portrait') {
           if (screen16x9) {
@@ -957,7 +1009,7 @@
   }
 
   // =========================================================================
-  // 8. Navigation Bar & Mobile Menu
+  // 8. Navigation Bar Scroll & Mobile Menu Toggle
   // =========================================================================
   function initNavigation() {
     const nav = document.querySelector('.aww-nav');
@@ -999,7 +1051,7 @@
   }
 
   // =========================================================================
-  // 9. Scroll Reveal Observer
+  // 9. Scroll Reveal Observer (IntersectionObserver)
   // =========================================================================
   function initScrollReveal() {
     const revealElements = document.querySelectorAll('.reveal-fade-up');
@@ -1017,15 +1069,15 @@
       });
     }, {
       root: null,
-      threshold: 0.05,
-      rootMargin: '60px 0px 60px 0px'
+      threshold: 0.02,
+      rootMargin: '100px 0px 100px 0px'
     });
 
     revealElements.forEach((el) => observer.observe(el));
   }
 
   // =========================================================================
-  // Bootstrap
+  // Bootstrap on DOMContentLoaded
   // =========================================================================
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAll);
@@ -1034,13 +1086,13 @@
   }
 
   function initAll() {
-    initAudioEngine();
+    initNavigation();
     initAstrolabeCanvas();
-    initWindingKey();
+    initCustomCursor();
+    initPhysicalWindingKey();
     initRacesShowcase();
     init3DTiltCards();
     initTheaterSwitcher();
-    initNavigation();
     initScrollReveal();
   }
 
