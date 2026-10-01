@@ -5350,8 +5350,8 @@
    "id": "web-awwwards-polish",
    "cat": "行銷",
    "title": "🌐 官網升級 Awwwards/Webby 得獎標準",
-   "status": "已上線",
-   "note": "sideqa 驗收通過，Awwwards/Webby 得獎標準重構完成上線 (t_9db8f3f7)",
+   "status": "開發中",
+   "note": "對標 zerotype.ai 頂級暗黑極簡，統一美學與實體發條鑰匙微交互重構 (t_46e5502e)",
    "keys": [
     "🌐 官網升級 A"
    ]
