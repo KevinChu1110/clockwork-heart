@@ -452,14 +452,14 @@
   // 4. Hero Focal Object: Zerotype Tactile Physical Winding Key Micro-interaction
   // =========================================================================
   function initPhysicalWindingKey() {
-    const key = document.getElementById('physical-key');
-    const mount = document.getElementById('keycap-mount');
-    const stage = document.getElementById('keycap-stage');
-    const ticksGroup = document.getElementById('dial-ticks-group');
+    const key = document.getElementById('winding-key-btn') || document.getElementById('physical-key');
+    const mount = document.getElementById('keycap-mount') || document.getElementById('winding-key-btn');
+    const stage = document.getElementById('keycap-stage') || document.querySelector('.stage');
+    const ticksGroup = document.getElementById('dial-ticks-group') || document.getElementById('dial-ticks');
     const cadenceMeter = document.getElementById('keycap-cadence-meter');
     const statusDot = document.getElementById('hud-status-dot');
-    const statusLabel = document.getElementById('hud-status-label');
-    const metricNumber = document.getElementById('hud-metric-number');
+    const statusLabel = document.getElementById('hud-status-label') || document.getElementById('hud-status-text');
+    const metricNumber = document.getElementById('hud-metric-number') || document.getElementById('hud-cadence-val');
     const heartGem = document.getElementById('hub-heart-gem');
     const socketGlow = document.getElementById('socket-glow-ring');
     const sparksContainer = document.getElementById('key-sparks-container');
@@ -617,7 +617,7 @@
       tension = Math.max(0, Math.min(MAX_TENSION, newTension));
       const angle = tension * (360 / MAX_TENSION);
 
-      key.style.transform = `rotate(${angle}deg)`;
+      key.style.transform = `rotate(${angle}deg)`; const keyObj = document.getElementById('key-object'); if (keyObj) keyObj.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`; const cadSub = document.getElementById('key-cadence-sub'); if (cadSub) cadSub.textContent = `CADENCE ${String(tension).padStart(2, '0')} / 15`; const dProg = document.getElementById('dial-progress'); if (dProg) dProg.style.strokeDashoffset = 930 * (1 - tension / MAX_TENSION);
 
       // Update dial tick dots
       for (let i = 0; i < MAX_TENSION; i++) {
@@ -782,7 +782,7 @@
     }
 
     // Initialize initial visual state
-    setTension(0, false);
+    setTension(0, false); window.testWindFull = function () { setTension(MAX_TENSION, true); }; window.testRelease = function () { releaseKey(); };
 
     // Automation helpers for testing & QA verification
     window.testWindFull = function () {
