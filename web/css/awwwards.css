@@ -631,46 +631,88 @@ ul, ol {
   color: var(--ivory-muted);
 }
 
-/* Keywrap */
+/* =========================================================================
+   Hero Focal Object: 3D Physical Brass Winding Key & Cadence Dial
+   ========================================================================= */
+.stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 24px auto 36px;
+  width: 100%;
+  max-width: 680px;
+  z-index: 10;
+}
+
+.stage__bubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(13, 15, 20, 0.85);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  color: var(--ivory-white);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+  margin-bottom: 24px;
+}
+
+.stage__bubble-icon {
+  color: var(--gold-primary);
+  animation: logoGearTurn 8s linear infinite;
+}
+
+.stage__bubble-alt {
+  color: var(--ivory-muted);
+  font-size: 0.74rem;
+}
+
 .keywrap {
   position: relative;
+  width: 280px;
+  height: 280px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* 3D Key Button */
 .key3d {
-  --kw: clamp(220px, min(24vw, 36vh), 320px);
   position: relative;
-  width: var(--kw);
-  height: var(--kw);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
-  touch-action: none;
   outline: none;
-}
-.key3d:focus-visible {
-  outline: 2px solid var(--gold-primary);
-  outline-offset: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Diffuse Radial Glow behind key */
+.key3d:focus-visible {
+  outline: 2px solid var(--gold-primary);
+  outline-offset: 8px;
+  border-radius: 50%;
+}
+
 .key3d__glow {
   position: absolute;
-  inset: -20%;
+  inset: -24px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(229, 195, 104, 0.22) 0%, rgba(62, 207, 191, 0.1) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(229, 195, 104, 0.25) 0%, rgba(62, 207, 191, 0.1) 45%, transparent 70%);
+  filter: blur(24px);
   pointer-events: none;
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
+
 .key3d:hover .key3d__glow {
-  transform: scale(1.12);
+  transform: scale(1.15);
   opacity: 1;
 }
 
@@ -681,12 +723,16 @@ ul, ol {
   width: 100%;
   height: 100%;
   pointer-events: none;
+  display: block;
 }
+
 .dial-track {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.08);
-  stroke-width: 3;
+  fill: #080A0E;
+  stroke: rgba(229, 195, 104, 0.35);
+  stroke-width: 2;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.95));
 }
+
 .dial-progress {
   fill: none;
   stroke: var(--gold-primary);
@@ -694,47 +740,71 @@ ul, ol {
   stroke-linecap: round;
   stroke-dasharray: 930;
   stroke-dashoffset: 930;
-  filter: drop-shadow(0 0 6px var(--gold-primary));
+  filter: drop-shadow(0 0 8px var(--gold-primary));
   transition: stroke-dashoffset 0.1s linear;
 }
 
-/* The 3D Keycap Object */
-.key3d__object {
-  position: relative;
-  width: 78%;
-  height: 78%;
-  transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1);
-  will-change: transform;
+.dial-ticks line {
+  stroke: rgba(229, 195, 104, 0.3);
+  stroke-width: 1.5;
 }
-.key3d__svg {
+
+.dial-ticks circle {
+  fill: rgba(255, 255, 255, 0.15);
+  transition: fill 0.2s ease;
+}
+
+.dial-ticks circle.is-lit {
+  fill: #E5C368;
+  filter: drop-shadow(0 0 6px #E5C368);
+}
+
+/* The 3D Keycap Object - PERFECTLY CENTERED OVER DIAL */
+.key3d__object {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  will-change: transform;
+  transition: transform 0.12s cubic-bezier(0.2, 0.8, 0.2, 1);
+  filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.9)) drop-shadow(0 2px 6px rgba(229, 195, 104, 0.4));
+}
+
+.key3d__svg {
+  width: 220px;
+  height: 220px;
   display: block;
   overflow: visible;
 }
 
 /* Key Active & Pressed States */
 .key3d.is-down .key3d__object {
-  transform: scale(0.94) translateY(6px);
+  transform: scale(0.94);
 }
+
 .key3d.is-down .key3d__glow {
-  transform: scale(1.25);
-  background: radial-gradient(circle, rgba(255, 230, 130, 0.4) 0%, rgba(62, 207, 191, 0.25) 50%, transparent 75%);
+  transform: scale(1.3);
+  background: radial-gradient(circle, rgba(255, 230, 130, 0.45) 0%, rgba(62, 207, 191, 0.28) 50%, transparent 75%);
 }
 
 .key3d__sub {
   position: absolute;
-  bottom: -28px;
+  bottom: -32px;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.2em;
+  font-size: 0.74rem;
+  letter-spacing: 0.15em;
   color: var(--gold-primary);
-  font-weight: 600;
+  font-weight: 700;
   pointer-events: none;
 }
+
 .key3d__led {
   position: absolute;
-  bottom: -14px;
+  bottom: -15px;
   width: 6px;
   height: 6px;
   border-radius: 50%;
@@ -742,7 +812,64 @@ ul, ol {
   box-shadow: 0 0 8px var(--cyan-core);
 }
 
-/* Sleek Minimalist HUD */
+/* Feature Pillars Tags (No Collision) */
+.aww-hero__tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 36px auto 20px;
+  width: 100%;
+  max-width: 860px;
+  position: relative;
+  z-index: 5;
+}
+
+.aww-hero__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  color: var(--ivory-dim);
+  transition: all 0.25s ease;
+}
+
+.aww-hero__tag:hover {
+  background: rgba(229, 195, 104, 0.08);
+  border-color: rgba(229, 195, 104, 0.3);
+  color: var(--ivory-white);
+  transform: translateY(-1px);
+}
+
+.aww-hero__tag-icon {
+  color: var(--gold-primary);
+  font-size: 0.72rem;
+}
+
+/* Hero Actions (Generous spacing, clean layout) */
+.aww-hero__actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin: 0 auto 36px;
+  width: 100%;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 5;
+}
+
+.aww-hero__main-title {
+  letter-spacing: -0.02em;
+  font-feature-settings: "palt";
+}
+
+/* Legacy HUD Fallback */
 .hud {
   position: relative;
   margin-top: 48px;
@@ -1803,7 +1930,7 @@ ul, ol {
     display: flex;
   }
   .hero__line--bot {
-    align-self: flex-start;
+    align-self: center !important;
     white-space: nowrap !important;
   }
   .hero__line--bot span {
@@ -1811,12 +1938,14 @@ ul, ol {
     white-space: nowrap !important;
   }
   .hero__line--top {
+    align-self: center !important;
     white-space: nowrap !important;
   }
   .hero__title {
-    font-size: clamp(1.6rem, 7.2vw, 2.4rem) !important;
+    align-items: center;
+    font-size: clamp(1.4rem, 6.5vw, 2.1rem) !important;
     letter-spacing: -0.02em;
-    line-height: 1.2;
+    line-height: 1.25;
   }
   .stage {
     margin: 16px auto 28px;
@@ -1829,3 +1958,9 @@ ul, ol {
     align-items: flex-start;
   }
 }
+
+.key3d__object { position: absolute !important; top: 50% !important; left: 50% !important; transform: translate(-50%, -50%); width: 72% !important; height: 72% !important; display: flex; align-items: center; justify-content: center; pointer-events: none; will-change: transform; }
+.key3d { position: relative; width: clamp(260px, 28vw, 330px); height: clamp(260px, 28vw, 330px); border-radius: 50%; display: flex; align-items: center; justify-content: center; background: none; border: none; cursor: pointer; outline: none; }
+.key3d__dial { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.key3d__svg { width: 100%; height: 100%; display: block; }
+.key3d__sub { position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%); font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.2em; color: var(--gold-primary); font-weight: 600; white-space: nowrap; }
