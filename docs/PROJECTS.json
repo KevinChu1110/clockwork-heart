@@ -5360,8 +5360,8 @@
    "id": "gear-power-progression",
    "cat": "遊戲",
    "title": "裝備戰力成長階梯表與隨機副詞條系統",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "阿翔阿宏開發中（t_281617df/t_7c27cb1f）：戰力階梯表+隨機副詞條",
    "keys": [
     "裝備戰力成長階梯"
    ]

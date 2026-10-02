@@ -8,6 +8,7 @@ const ITEMS_META_PATH := "res://data/tables/items_meta.json"
 const WEAPON_CLASS_PATH := "res://data/tables/weapon_classes.json"
 const PACING_PATH := "res://data/tables/pacing_s1.json"
 const CORE_COLOR_TIERS_PATH := "res://data/tables/core_color_tiers.json"
+const POWER_PROGRESSION_PATH := "res://data/tables/power_progression.json"
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const WEAPON_CLASS_TEXT_FIELDS: PackedStringArray = ["name", "title", "tagline", "play", "pros", "cons"]
 
@@ -17,6 +18,7 @@ var items_meta: Dictionary = {}
 var weapon_classes: Dictionary = {}
 var pacing: Dictionary = {}
 var core_color_tiers: Dictionary = {}
+var power_progression: Dictionary = {}
 var loaded: bool = false
 
 
@@ -31,9 +33,10 @@ func reload() -> void:
 	weapon_classes = _load_json(WEAPON_CLASS_PATH)
 	pacing = _load_json(PACING_PATH)
 	core_color_tiers = _load_json(CORE_COLOR_TIERS_PATH)
+	power_progression = _load_json(POWER_PROGRESSION_PATH)
 	loaded = not combat.is_empty()
 	if loaded:
-		print("[DataTables] combat/equipment/items_meta/weapon_classes/pacing/core_color_tiers loaded")
+		print("[DataTables] combat/equipment/items_meta/weapon_classes/pacing/core_color_tiers/power_progression loaded")
 
 
 func _load_json(path: String) -> Dictionary:
@@ -201,3 +204,26 @@ func _dig(root: Dictionary, path: String, default: Variant) -> Variant:
 			return default
 		cur = (cur as Dictionary)[part]
 	return cur
+
+
+func get_power_progression() -> Dictionary:
+	if not loaded or power_progression.is_empty():
+		reload()
+	return power_progression
+
+
+func power_tier_data(tier: int) -> Dictionary:
+	var pp := get_power_progression()
+	var tiers: Dictionary = pp.get("tiers", {})
+	return tiers.get(str(tier), {}) as Dictionary
+
+
+func power_slot_weights() -> Dictionary:
+	var pp := get_power_progression()
+	return pp.get("slot_weights", {}) as Dictionary
+
+
+func power_quality_multipliers() -> Dictionary:
+	var pp := get_power_progression()
+	return pp.get("quality_multipliers", {}) as Dictionary
+

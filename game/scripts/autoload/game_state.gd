@@ -494,13 +494,194 @@ func add_xp(n: int) -> Dictionary:
 	return {"gained": gained, "levels": levels, "messages": msgs}
 
 
-## 綜合戰力（路線建議／軟鎖用）
+## ─── 戰力成長階梯與戰力權重公式（對齊 data/tables/power_progression.json）───
+
+const POWER_PROGRESSION_TABLE_FALLBACK: Dictionary = {
+	"stat_weights": {
+		"hp": 0.5,
+		"atk": 2.5,
+		"def": 2.0,
+		"crit": 1.5,
+		"crit_dmg": 0.15,
+		"speed": 1.0,
+	},
+	"slot_weights": {
+		"weapon": 0.35,
+		"armor": 0.25,
+		"accessory": 0.20,
+		"core": 0.20,
+	},
+	"accessory_slots": [
+		"ring", "necklace", "bracelet", "earring", "amulet", "belt"
+	],
+	"quality_multipliers": {
+		"common": 1.0,
+		"uncommon": 1.25,
+		"rare": 1.6,
+		"epic": 2.1,
+	},
+	"core_tier_multipliers": {
+		"gray": 0.8,
+		"white": 1.0,
+		"orange": 1.15,
+		"blue": 1.25,
+		"purple": 1.6,
+		"gold": 2.1,
+		"green": 2.5,
+		"red": 3.0,
+	},
+	"tiers": {
+		"1": {"base_power": 220, "equip_base_power": 145},
+		"2": {"base_power": 380, "equip_base_power": 230},
+		"3": {"base_power": 610, "equip_base_power": 360},
+		"4": {"base_power": 800, "equip_base_power": 480},
+		"5": {"base_power": 1320, "equip_base_power": 870},
+	}
+}
+
+
+func _get_power_progression_table() -> Dictionary:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var dt: Node = (tree as SceneTree).root.get_node_or_null("DataTables")
+		if dt and dt.has_method("get_power_progression"):
+			var res: Dictionary = dt.call("get_power_progression")
+			if not res.is_empty():
+				return res
+	return POWER_PROGRESSION_TABLE_FALLBACK
+
+
+## 基礎屬性戰力評分（基於玩家面板固有屬性折算）
+func base_stat_power_score() -> int:
+	var pp := _get_power_progression_table()
+	var sw: Dictionary = pp.get("stat_weights", POWER_PROGRESSION_TABLE_FALLBACK["stat_weights"])
+	var hp_w: float = float(sw.get("hp", 0.5))
+	var atk_w: float = float(sw.get("atk", 2.5))
+	var def_w: float = float(sw.get("def", 2.0))
+	var crit_w: float = float(sw.get("crit", 1.5))
+	var cdmg_w: float = float(sw.get("crit_dmg", 0.15))
+	var score: float = float(max_hp) * hp_w + float(atk) * atk_w + float(def_stat) * def_w
+	score += float(crit_rate) * crit_w + float(crit_dmg) * cdmg_w
+	return int(round(score))
+
+
+## 單件裝備戰力評分
+func get_single_equip_power(inst: Dictionary) -> float:
+	if inst.is_empty():
+		return 0.0
+	var pp := _get_power_progression_table()
+	var tiers: Dictionary = pp.get("tiers", POWER_PROGRESSION_TABLE_FALLBACK["tiers"])
+	var slot_weights: Dictionary = pp.get("slot_weights", POWER_PROGRESSION_TABLE_FALLBACK["slot_weights"])
+	var q_mults: Dictionary = pp.get("quality_multipliers", POWER_PROGRESSION_TABLE_FALLBACK["quality_multipliers"])
+	var acc_slots: Array = pp.get("accessory_slots", POWER_PROGRESSION_TABLE_FALLBACK["accessory_slots"])
+
+	var tier_i := clampi(int(inst.get("tier", 1)), 1, 5)
+	var t_data: Dictionary = tiers.get(str(tier_i), tiers.get("1", {}))
+	var equip_base: float = float(t_data.get("equip_base_power", 145.0))
+
+	var raw_slot := str(inst.get("slot", "weapon")).to_lower().strip_edges()
+	var slot_w: float = 0.0
+	if raw_slot == "weapon":
+		slot_w = float(slot_weights.get("weapon", 0.35))
+	elif raw_slot == "armor":
+		slot_w = float(slot_weights.get("armor", 0.25))
+	elif raw_slot in acc_slots:
+		var acc_total_w: float = float(slot_weights.get("accessory", 0.20))
+		slot_w = acc_total_w / float(maxi(1, acc_slots.size()))
+	else:
+		slot_w = float(slot_weights.get("accessory", 0.20)) / 6.0
+
+	var q_key := str(inst.get("quality", "common")).to_lower().strip_edges()
+	var q_mult: float = float(q_mults.get(q_key, 1.0))
+
+	var base_score := equip_base * slot_w * q_mult
+
+	# 詞條微幅浮動加成（若有 rolled 屬性）
+	var roll_mod := 1.0
+	var rolled: Dictionary = inst.get("rolled", {})
+	if not rolled.is_empty():
+		var total_rolled := 0.0
+		for k in ["atk", "def", "hp"]:
+			total_rolled += float(rolled.get(k, 0.0))
+		if total_rolled > 0:
+			roll_mod = 1.0 + clampf((total_rolled - 10.0) * 0.002, -0.05, 0.05)
+
+	return base_score * roll_mod
+
+
+## 單個發條核心戰力評分
+func get_single_core_power(part: Dictionary, player_tier: int = 1) -> float:
+	if part.is_empty():
+		return 0.0
+	var pp := _get_power_progression_table()
+	var tiers: Dictionary = pp.get("tiers", POWER_PROGRESSION_TABLE_FALLBACK["tiers"])
+	var slot_weights: Dictionary = pp.get("slot_weights", POWER_PROGRESSION_TABLE_FALLBACK["slot_weights"])
+	var core_mults: Dictionary = pp.get("core_tier_multipliers", POWER_PROGRESSION_TABLE_FALLBACK["core_tier_multipliers"])
+
+	var tier_i := clampi(player_tier, 1, 5)
+	var t_data: Dictionary = tiers.get(str(tier_i), tiers.get("1", {}))
+	var equip_base: float = float(t_data.get("equip_base_power", 145.0))
+
+	var core_total_w: float = float(slot_weights.get("core", 0.20))
+	var slot_w: float = core_total_w / 5.0 # 五槽機芯
+
+	var tier_key := str(part.get("tier", "white")).to_lower().strip_edges()
+	var mult: float = float(core_mults.get(tier_key, 1.0))
+
+	var base_score := equip_base * slot_w * mult
+	var score_val: int = int(part.get("score", 0))
+	var score_bonus := float(maxi(0, score_val)) * 0.25
+
+	return base_score + score_bonus
+
+
+## 裝備與核心總戰力評分
+func equipment_power_score() -> int:
+	var total: float = 0.0
+	var player_tier: int = 1
+	var w_uid := str(equip_slots.get("weapon", ""))
+	if w_uid != "" and equip_worn.has(w_uid):
+		player_tier = clampi(int((equip_worn[w_uid] as Dictionary).get("tier", 1)), 1, 5)
+	elif weapon_tier > 0:
+		player_tier = clampi(weapon_tier, 1, 5)
+
+	# 1. 身上各部位裝備評分
+	var has_worn_weapon := false
+	for s_key in equip_slots.keys():
+		var uid := str(equip_slots[s_key])
+		if uid != "" and equip_worn.has(uid):
+			var inst: Dictionary = equip_worn[uid]
+			if str(inst.get("slot", "")) == "weapon":
+				has_worn_weapon = true
+			total += get_single_equip_power(inst)
+
+	# 舊版武器相容 fallback
+	if not has_worn_weapon and weapon_tier > 0:
+		var fb_w := {"slot": "weapon", "tier": weapon_tier, "quality": "common"}
+		total += get_single_equip_power(fb_w)
+
+	# 2. 發條機芯五槽評分
+	for slot_id in core_slots.keys():
+		var part = core_slots[slot_id]
+		if part is Dictionary and not (part as Dictionary).is_empty():
+			total += get_single_core_power(part as Dictionary, player_tier)
+
+	# 3. 戰魂加成
+	for s in souls:
+		if s is Dictionary and bool((s as Dictionary).get("equipped", false)):
+			var star: int = int((s as Dictionary).get("star", 1))
+			var slv: int = int((s as Dictionary).get("level", 1))
+			total += float(star * 8 + slv * 2)
+
+	return int(round(total))
+
+
+## 綜合戰力（手遊標準清晰梯度：整合基礎屬性與裝備評分）
 func power_score() -> int:
-	var s := level * 3 + weapon_tier * 4 + effective_atk() + effective_def()
-	s += int(effective_crit() / 2.0)
-	if path_style != "":
-		s += 2
-	return s
+	var base_score := base_stat_power_score()
+	var equip_score := equipment_power_score()
+	return base_score + equip_score
+
 
 
 ## 非即時 PVP：上傳／被打的是這份殘影，不是即時操作

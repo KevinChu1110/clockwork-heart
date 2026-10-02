@@ -1,0 +1,106 @@
+{
+  "schema": "power_progression_v1",
+  "version": 1,
+  "description": "裝備戰力成長階梯表與戰力權重公式：定義 Tier 1~Tier 5 基礎戰力基準、槽位權重、品質倍率及關卡推薦銜接",
+  "stat_weights": {
+    "hp": 0.5,
+    "atk": 2.5,
+    "def": 2.0,
+    "crit": 1.5,
+    "crit_dmg": 0.15,
+    "speed": 1.0
+  },
+  "slot_weights": {
+    "weapon": 0.35,
+    "armor": 0.25,
+    "accessory": 0.20,
+    "core": 0.20
+  },
+  "accessory_slots": [
+    "ring",
+    "necklace",
+    "bracelet",
+    "earring",
+    "amulet",
+    "belt"
+  ],
+  "quality_multipliers": {
+    "common": 1.0,
+    "uncommon": 1.25,
+    "rare": 1.6,
+    "epic": 2.1
+  },
+  "core_tier_multipliers": {
+    "gray": 0.8,
+    "white": 1.0,
+    "orange": 1.15,
+    "blue": 1.25,
+    "purple": 1.6,
+    "gold": 2.1,
+    "green": 2.5,
+    "red": 3.0
+  },
+  "tiers": {
+    "1": {
+      "base_power": 220,
+      "equip_base_power": 145,
+      "rec_power_min": 220,
+      "rec_power_max": 380,
+      "expected_level": 1,
+      "description": "階級一：荒路前哨與初始整裝，凡品全套約 220，秘寶全套達 380 碾壓"
+    },
+    "2": {
+      "base_power": 380,
+      "equip_base_power": 230,
+      "rec_power_min": 380,
+      "rec_power_max": 610,
+      "expected_level": 12,
+      "description": "階級二：白霧外緣至聖獅殿，過渡巨偶-1（發條獅 610）"
+    },
+    "3": {
+      "base_power": 610,
+      "equip_base_power": 360,
+      "rec_power_min": 610,
+      "rec_power_max": 800,
+      "expected_level": 20,
+      "description": "階級三：霧崖鏡廊與道場修行，過渡巨偶-2（提線人偶 800）"
+    },
+    "4": {
+      "base_power": 800,
+      "equip_base_power": 480,
+      "rec_power_min": 800,
+      "rec_power_max": 1320,
+      "expected_level": 28,
+      "description": "階級四：石岸沉船與通天塔，過渡巨偶-3（蒸氣巨象 1320）"
+    },
+    "5": {
+      "base_power": 1320,
+      "equip_base_power": 870,
+      "rec_power_min": 1320,
+      "rec_power_max": 2250,
+      "expected_level": 30,
+      "description": "階級五：巔峰機芯與頂級神裝，挑戰終局高難裂縫"
+    }
+  },
+  "stage_recommendations": {
+    "1-1": 220,
+    "1-2": 260,
+    "1-3": 300,
+    "1-4": 340,
+    "2-1": 380,
+    "2-2": 420,
+    "2-3": 450,
+    "2-4": 520,
+    "colossus_lion": 610,
+    "3-1": 560,
+    "3-2": 600,
+    "3-3": 640,
+    "3-4": 720,
+    "colossus_puppet": 800,
+    "4-1": 760,
+    "4-2": 800,
+    "4-3": 840,
+    "4-4": 920,
+    "colossus_elephant": 1320
+  }
+}
