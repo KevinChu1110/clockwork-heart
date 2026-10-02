@@ -50,6 +50,98 @@
       "max_ratio": 1.2
     }
   },
+  "affixes_pool": {
+    "hit": {
+      "id": "hit",
+      "name": "命中",
+      "weight": 20,
+      "base_min": 1,
+      "base_max": 3,
+      "is_percentage": false,
+      "power_weight": 1.5
+    },
+    "crit": {
+      "id": "crit",
+      "name": "暴擊",
+      "weight": 15,
+      "base_min": 1.0,
+      "base_max": 2.5,
+      "is_percentage": true,
+      "power_weight": 1.5
+    },
+    "crit_dmg": {
+      "id": "crit_dmg",
+      "name": "暴傷",
+      "weight": 15,
+      "base_min": 3.0,
+      "base_max": 8.0,
+      "is_percentage": true,
+      "power_weight": 0.15
+    },
+    "rage_gain": {
+      "id": "rage_gain",
+      "name": "發條充能",
+      "weight": 15,
+      "base_min": 1,
+      "base_max": 3,
+      "is_percentage": false,
+      "power_weight": 2.0
+    },
+    "speed": {
+      "id": "speed",
+      "name": "速度",
+      "weight": 15,
+      "base_min": 1,
+      "base_max": 3,
+      "is_percentage": false,
+      "power_weight": 1.0
+    },
+    "hp": {
+      "id": "hp",
+      "name": "生命",
+      "weight": 20,
+      "base_min": 5,
+      "base_max": 25,
+      "is_percentage": false,
+      "power_weight": 0.5
+    },
+    "atk": {
+      "id": "atk",
+      "name": "攻擊",
+      "weight": 15,
+      "base_min": 2,
+      "base_max": 6,
+      "is_percentage": false,
+      "power_weight": 2.5
+    },
+    "def": {
+      "id": "def",
+      "name": "防禦",
+      "weight": 15,
+      "base_min": 2,
+      "base_max": 6,
+      "is_percentage": false,
+      "power_weight": 2.0
+    }
+  },
+  "affix_counts": {
+    "common": {
+      "min": 0,
+      "max": 1
+    },
+    "uncommon": {
+      "min": 1,
+      "max": 2
+    },
+    "rare": {
+      "min": 2,
+      "max": 3
+    },
+    "epic": {
+      "min": 3,
+      "max": 4
+    }
+  },
   "bases": {
     "rusty_blade": {
       "name": "鏽劍",
@@ -424,6 +516,19 @@
         "atk": 0,
         "def": 3,
         "hp": 12,
+        "crit": 0,
+        "crit_dmg": 0
+      }
+    },
+    "wasteland_gear_suit": {
+      "name": "荒路發條套服",
+      "slot": "armor",
+      "tier": 5,
+      "line": "common",
+      "base": {
+        "atk": 0,
+        "def": 95,
+        "hp": 150,
         "crit": 0,
         "crit_dmg": 0
       }

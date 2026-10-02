@@ -78,6 +78,18 @@ func float_ranges() -> Dictionary:
 	return equipment.get("float_ranges", {}) as Dictionary
 
 
+func equip_affixes_pool() -> Dictionary:
+	if not loaded or equipment.is_empty():
+		reload()
+	return equipment.get("affixes_pool", {}) as Dictionary
+
+
+func equip_affix_counts() -> Dictionary:
+	if not loaded or equipment.is_empty():
+		reload()
+	return equipment.get("affix_counts", {}) as Dictionary
+
+
 func craft_recipes() -> Array:
 	var a: Variant = equipment.get("craft_recipes", [])
 	if a is Array:

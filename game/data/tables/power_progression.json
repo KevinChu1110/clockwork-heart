@@ -8,7 +8,9 @@
     "def": 2.0,
     "crit": 1.5,
     "crit_dmg": 0.15,
-    "speed": 1.0
+    "speed": 1.0,
+    "hit": 1.5,
+    "rage_gain": 2.0
   },
   "slot_weights": {
     "weapon": 0.35,

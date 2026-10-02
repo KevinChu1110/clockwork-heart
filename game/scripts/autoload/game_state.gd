@@ -230,8 +230,8 @@ func effective_crit() -> float:
 
 
 func effective_hit() -> float:
-	## 寶石＋武器線天生命中（原作互剋：拳爪準、斧鎚糊）
-	var base := float(_gem_bonuses().get("hit", 0.0))
+	## 寶石＋裝備副詞條＋武器線天生命中（原作互剋：拳爪準、斧鎚糊）
+	var base := float(_gem_bonuses().get("hit", 0.0)) + equip_bonus_hit()
 	var line := ""
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:
@@ -248,6 +248,10 @@ func effective_eva() -> float:
 
 func effective_crit_dmg() -> float:
 	return crit_dmg + equip_bonus_crit_dmg() + core_bonus_crit_dmg()
+
+
+func effective_rage_gain() -> float:
+	return equip_bonus_rage_gain()
 
 
 ## 機芯五槽實質加成（0.25 核心循環支柱二）
@@ -348,7 +352,7 @@ func effective_variance() -> float:
 ## 裝備目前沒有 speed 欄位（equipment.json 裡沒有），所以這裡不接 —— 
 ## 要接的是資料而不是程式，補了資料這支自然要加上 equip_bonus_speed()。
 func effective_speed() -> int:
-	var sp := speed
+	var sp := speed + equip_bonus_speed()
 	var wb := weapon_class_bonuses()
 	sp += int(wb.get("speed", 0))
 	return maxi(1, sp)
@@ -374,6 +378,18 @@ func equip_bonus_crit_dmg() -> float:
 	return float(_equip_bonus().get("crit_dmg", 0.0))
 
 
+func equip_bonus_hit() -> float:
+	return float(_equip_bonus().get("hit", 0.0))
+
+
+func equip_bonus_rage_gain() -> float:
+	return float(_equip_bonus().get("rage_gain", 0.0))
+
+
+func equip_bonus_speed() -> int:
+	return int(_equip_bonus().get("speed", 0))
+
+
 func _equip_bonus() -> Dictionary:
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree:
@@ -381,16 +397,42 @@ func _equip_bonus() -> Dictionary:
 		if es and es.has_method("bonus_totals"):
 			return es.call("bonus_totals")
 	## Fallback: 直接從 equip_worn 統計（例如無頭測試或 EquipmentSystem 未載入時）
-	var t := {"atk": 0, "def": 0, "hp": 0, "crit": 0.0, "crit_dmg": 0.0}
+	var t := {
+		"atk": 0, "def": 0, "hp": 0, "crit": 0.0, "crit_dmg": 0.0,
+		"hit": 0.0, "rage_gain": 0.0, "speed": 0
+	}
 	for s in ["weapon", "offhand", "armor", "helmet", "boots", "ring", "necklace", "bracelet", "earring", "amulet", "belt"]:
 		var uid := str(equip_slots.get(s, ""))
 		if uid != "" and equip_worn.has(uid):
-			var r: Dictionary = (equip_worn[uid] as Dictionary).get("rolled", {})
+			var inst: Dictionary = equip_worn[uid] as Dictionary
+			var r: Dictionary = inst.get("rolled", {})
 			t["atk"] = int(t["atk"]) + int(r.get("atk", 0))
 			t["def"] = int(t["def"]) + int(r.get("def", 0))
 			t["hp"] = int(t["hp"]) + int(r.get("hp", 0))
 			t["crit"] = float(t["crit"]) + float(r.get("crit", 0))
 			t["crit_dmg"] = float(t["crit_dmg"]) + float(r.get("crit_dmg", 0))
+
+			for aff in inst.get("affixes", []):
+				if aff is Dictionary:
+					var aid: String = str(aff.get("id", ""))
+					var val: float = float(aff.get("val", 0.0))
+					match aid:
+						"atk":
+							t["atk"] = int(t["atk"]) + int(round(val))
+						"def":
+							t["def"] = int(t["def"]) + int(round(val))
+						"hp":
+							t["hp"] = int(t["hp"]) + int(round(val))
+						"crit":
+							t["crit"] = float(t["crit"]) + val
+						"crit_dmg":
+							t["crit_dmg"] = float(t["crit_dmg"]) + val
+						"hit":
+							t["hit"] = float(t["hit"]) + val
+						"rage_gain":
+							t["rage_gain"] = float(t["rage_gain"]) + val
+						"speed":
+							t["speed"] = int(t["speed"]) + int(round(val))
 	return t
 
 
@@ -504,6 +546,8 @@ const POWER_PROGRESSION_TABLE_FALLBACK: Dictionary = {
 		"crit": 1.5,
 		"crit_dmg": 0.15,
 		"speed": 1.0,
+		"hit": 1.5,
+		"rage_gain": 2.0,
 	},
 	"slot_weights": {
 		"weapon": 0.35,
@@ -606,7 +650,27 @@ func get_single_equip_power(inst: Dictionary) -> float:
 		if total_rolled > 0:
 			roll_mod = 1.0 + clampf((total_rolled - 10.0) * 0.002, -0.05, 0.05)
 
-	return base_score * roll_mod
+	# 隨機副詞條戰力加成（若有 affixes，依權重折算）
+	var affix_power := get_equip_affixes_power(inst)
+
+	return base_score * roll_mod + affix_power
+
+
+## 計算單件裝備副詞條之戰力總和
+func get_equip_affixes_power(inst: Dictionary) -> float:
+	var aff_list: Array = inst.get("affixes", [])
+	if aff_list.is_empty():
+		return 0.0
+	var pp := _get_power_progression_table()
+	var sw: Dictionary = pp.get("stat_weights", POWER_PROGRESSION_TABLE_FALLBACK["stat_weights"])
+	var total: float = 0.0
+	for item in aff_list:
+		if item is Dictionary:
+			var aid: String = str(item.get("id", ""))
+			var val: float = float(item.get("val", 0.0))
+			var w: float = float(sw.get(aid, 1.0))
+			total += val * w
+	return total
 
 
 ## 單個發條核心戰力評分

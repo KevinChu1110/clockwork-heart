@@ -22,6 +22,14 @@ const LEGACY_ACCESSORY_TO := "ring"
 const WEAPON_LOADOUT_SIZE := 3
 const WEAPON_LOADOUT_LEVEL_REQ := [1, 10, 16]
 
+## 裝備副詞條品質抽取數量規則（凡品 0~1 條、良品 1~2 條、上品 2~3 條、秘寶 3~4 條）
+const DEFAULT_AFFIX_COUNTS: Dictionary = {
+	"common": {"min": 0, "max": 1},
+	"uncommon": {"min": 1, "max": 2},
+	"rare": {"min": 2, "max": 3},
+	"epic": {"min": 3, "max": 4},
+}
+
 ## 八族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
 const RACE_STARTER_WEAPONS: Dictionary = {
 	"rabbit": "rusty_blade",
@@ -273,6 +281,8 @@ func equip_weapon_to_loadout(uid: String, index: int = -1) -> Dictionary:
 	var old_uid := str(GameState.weapon_loadout[idx])
 	if old_uid != "" and old_uid != uid:
 		_unequip_weapon_uid(old_uid)
+	var old_pow: int = GameState.power_score() if GameState and GameState.has_method("power_score") else 0
+
 	## 從 bag 移到 worn
 	if find_bag(uid).is_empty() == false:
 		_remove_from_bag(uid)
@@ -282,7 +292,15 @@ func equip_weapon_to_loadout(uid: String, index: int = -1) -> Dictionary:
 	_sync_active_weapon_mirror()
 	equipment_changed.emit()
 	SaveManager.save_game()
-	return {"ok": true, "msg": _t("武器欄 %d：【%s】") % [idx + 1, inst.get("name", "")]}
+
+	var new_pow: int = GameState.power_score() if GameState and GameState.has_method("power_score") else 0
+	var diff := new_pow - old_pow
+	var msg := _t("武器欄 %d：【%s】") % [idx + 1, inst.get("name", "")]
+	if diff > 0:
+		msg += "（戰力 +%d 🔺）" % diff
+	elif diff < 0:
+		msg += "（戰力 %d 🔻）" % diff
+	return {"ok": true, "msg": msg, "power_diff": diff}
 
 
 ## 戰鬥外切換作用中武器欄（同步 path_style／面板攻擊）
@@ -497,19 +515,97 @@ func roll_instance(base_id: String, quality: String = "", rng: RandomNumberGener
 			rolled[k] = snappedf(base_v * ratio, 0.1)
 		else:
 			rolled[k] = float(maxi(0, int(round(base_v * ratio))))
+	var tier := int(def.get("tier", 1))
+	var affixes := roll_affixes(tier, quality, rng)
 	var inst := {
 		"uid": _uid(),
 		"base_id": base_id,
 		"name": str(def.get("name", base_id)),
 		"slot": normalize_slot(str(def.get("slot", "weapon"))),
-		"tier": int(def.get("tier", 1)),
+		"tier": tier,
 		"line": str(def.get("line", "")),
 		"quality": quality,
 		"quality_label": str(qdef.get("label", quality)),
 		"rolled": rolled,
+		"affixes": affixes,
 		"bound": false,
 	}
 	return inst
+
+
+## 依照品質抽取隨機副詞條（凡品 0~1 條、良品 1~2 條、上品 2~3 條、秘寶 3~4 條）
+func roll_affixes(tier: int, quality: String, rng: RandomNumberGenerator = null) -> Array:
+	if rng == null:
+		rng = RandomNumberGenerator.new()
+		rng.randomize()
+	var dt: Node = null
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		dt = (tree as SceneTree).root.get_node_or_null("DataTables")
+	var counts_table: Dictionary = dt.equip_affix_counts() if dt and dt.has_method("equip_affix_counts") else DEFAULT_AFFIX_COUNTS
+	var pool: Dictionary = dt.equip_affixes_pool() if dt and dt.has_method("equip_affixes_pool") else {}
+	if pool.is_empty():
+		return []
+
+	var c_range: Dictionary = counts_table.get(quality, DEFAULT_AFFIX_COUNTS.get(quality, {"min": 0, "max": 1}))
+	var min_c: int = int(c_range.get("min", 0))
+	var max_c: int = int(c_range.get("max", min_c))
+	var count: int = rng.randi_range(min_c, max_c)
+	if count <= 0:
+		return []
+
+	var available_keys: Array = pool.keys()
+	var qdef: Dictionary = dt.equip_qualities().get(quality, {}) if dt and dt.has_method("equip_qualities") else {}
+	var q_bonus: float = float(qdef.get("roll_bonus", 0.0))
+	var tier_factor: float = 1.0 + float(clampi(tier, 1, 5) - 1) * 0.35
+
+	var result: Array = []
+	for _i in range(count):
+		if available_keys.is_empty():
+			break
+		var total_weight := 0
+		for k in available_keys:
+			total_weight += int((pool[k] as Dictionary).get("weight", 10))
+		if total_weight <= 0:
+			break
+		var r_val := rng.randi_range(1, total_weight)
+		var acc := 0
+		var chosen_k := ""
+		for k in available_keys:
+			acc += int((pool[k] as Dictionary).get("weight", 10))
+			if r_val <= acc:
+				chosen_k = str(k)
+				break
+		if chosen_k == "":
+			chosen_k = str(available_keys[0])
+		available_keys.erase(chosen_k)
+
+		var aff_def: Dictionary = pool.get(chosen_k, {})
+		var is_pct: bool = bool(aff_def.get("is_percentage", false)) or chosen_k in ["crit", "crit_dmg"]
+		var b_min: float = float(aff_def.get("base_min", 1.0))
+		var b_max: float = float(aff_def.get("base_max", 3.0))
+
+		var min_val := b_min * tier_factor
+		var max_val := b_max * tier_factor * (1.0 + q_bonus)
+		if max_val < min_val:
+			max_val = min_val
+
+		var rolled_val: float = 0.0
+		if is_pct:
+			rolled_val = snappedf(rng.randf_range(min_val, max_val), 0.1)
+			if rolled_val < 0.1:
+				rolled_val = 0.1
+		else:
+			rolled_val = float(maxi(1, int(round(rng.randf_range(min_val, max_val)))))
+
+		result.append({
+			"id": chosen_k,
+			"name": str(aff_def.get("name", chosen_k)),
+			"val": rolled_val,
+			"is_percentage": is_pct,
+		})
+
+	return result
 
 
 func _roll_quality(rng: RandomNumberGenerator) -> String:
@@ -605,6 +701,9 @@ func equip(uid: String) -> Dictionary:
 		return equip_weapon_to_loadout(uid, idx)
 	if is_accessory_slot(slot) and not accessories_unlocked():
 		return {"ok": false, "msg": _t("飾品六槽需達到 Lv%d（現 Lv%d）。") % [ACCESSORY_LEVEL_REQ, GameState.level]}
+
+	var old_pow: int = GameState.power_score() if GameState and GameState.has_method("power_score") else 0
+
 	## 卸下舊的
 	var old_uid := str(GameState.equip_slots.get(slot, ""))
 	if old_uid != "":
@@ -616,7 +715,15 @@ func equip(uid: String) -> Dictionary:
 	_sync_legacy_weapon()
 	equipment_changed.emit()
 	SaveManager.save_game()
-	return {"ok": true, "msg": _t("裝備【%s】") % inst.get("name", "")}
+
+	var new_pow: int = GameState.power_score() if GameState and GameState.has_method("power_score") else 0
+	var diff := new_pow - old_pow
+	var msg := _t("裝備【%s】") % inst.get("name", "")
+	if diff > 0:
+		msg += "（戰力 +%d 🔺）" % diff
+	elif diff < 0:
+		msg += "（戰力 %d 🔻）" % diff
+	return {"ok": true, "msg": msg, "power_diff": diff}
 
 
 func unequip(slot: String) -> Dictionary:
@@ -703,18 +810,102 @@ func _sync_legacy_weapon() -> void:
 
 func bonus_totals() -> Dictionary:
 	_ensure_state()
-	var t := {"atk": 0, "def": 0, "hp": 0, "crit": 0.0, "crit_dmg": 0.0}
+	var t := {
+		"atk": 0, "def": 0, "hp": 0, "crit": 0.0, "crit_dmg": 0.0,
+		"hit": 0.0, "rage_gain": 0.0, "speed": 0
+	}
 	for s in SLOTS:
 		var uid := str(GameState.equip_slots.get(s, ""))
 		if uid == "" or not GameState.equip_worn.has(uid):
 			continue
-		var r: Dictionary = (GameState.equip_worn[uid] as Dictionary).get("rolled", {})
+		var inst: Dictionary = GameState.equip_worn[uid] as Dictionary
+		var r: Dictionary = inst.get("rolled", {})
 		t["atk"] = int(t["atk"]) + int(r.get("atk", 0))
 		t["def"] = int(t["def"]) + int(r.get("def", 0))
 		t["hp"] = int(t["hp"]) + int(r.get("hp", 0))
 		t["crit"] = float(t["crit"]) + float(r.get("crit", 0))
 		t["crit_dmg"] = float(t["crit_dmg"]) + float(r.get("crit_dmg", 0))
+
+		for aff in inst.get("affixes", []):
+			if aff is Dictionary:
+				var aid: String = str(aff.get("id", ""))
+				var val: float = float(aff.get("val", 0.0))
+				match aid:
+					"atk":
+						t["atk"] = int(t["atk"]) + int(round(val))
+					"def":
+						t["def"] = int(t["def"]) + int(round(val))
+					"hp":
+						t["hp"] = int(t["hp"]) + int(round(val))
+					"crit":
+						t["crit"] = float(t["crit"]) + val
+					"crit_dmg":
+						t["crit_dmg"] = float(t["crit_dmg"]) + val
+					"hit":
+						t["hit"] = float(t["hit"]) + val
+					"rage_gain":
+						t["rage_gain"] = float(t["rage_gain"]) + val
+					"speed":
+						t["speed"] = int(t["speed"]) + int(round(val))
 	return t
+
+
+static func format_affix(affix: Dictionary) -> String:
+	if affix.is_empty():
+		return ""
+	var name_str: String = str(affix.get("name", ""))
+	var aid: String = str(affix.get("id", ""))
+	if name_str.is_empty():
+		match aid:
+			"hit": name_str = "命中"
+			"crit": name_str = "暴擊"
+			"crit_dmg": name_str = "暴傷"
+			"rage_gain": name_str = "發條充能"
+			"speed": name_str = "速度"
+			"hp": name_str = "生命"
+			"atk": name_str = "攻擊"
+			"def": name_str = "防禦"
+			_: name_str = aid
+	var val: float = float(affix.get("val", 0.0))
+	var is_pct: bool = bool(affix.get("is_percentage", false)) or aid in ["crit", "crit_dmg"]
+	if is_pct:
+		if is_equal_approx(val, roundf(val)):
+			return "%s +%d%%" % [name_str, int(roundf(val))]
+		else:
+			return "%s +%.1f%%" % [name_str, val]
+	else:
+		return "%s +%d" % [name_str, int(roundf(val))]
+
+
+static func format_affixes_summary(inst: Dictionary) -> String:
+	var aff_list: Array = inst.get("affixes", [])
+	if aff_list.is_empty():
+		return ""
+	var parts: PackedStringArray = []
+	for aff in aff_list:
+		if aff is Dictionary:
+			var s := format_affix(aff as Dictionary)
+			if s != "":
+				parts.append(s)
+	return " · ".join(parts)
+
+
+func label(inst: Dictionary) -> String:
+	if inst.is_empty():
+		return _t("（空）")
+	var r: Dictionary = inst.get("rolled", {})
+	var q_lbl := _t(str(inst.get("quality_label", "")))
+	var main_str := _t("%s〔%s〕攻%d 防%d 暴%.0f%%") % [
+		display_name(inst),
+		q_lbl,
+		int(r.get("atk", 0)),
+		int(r.get("def", 0)),
+		float(r.get("crit", 0)),
+	]
+	var aff_str := format_affixes_summary(inst)
+	if aff_str != "":
+		return "%s · %s" % [main_str, aff_str]
+	return main_str
 
 
 static func display_name(inst: Variant) -> String:
@@ -765,20 +956,6 @@ static func weapon_line_name(line: String) -> String:
 		"magic": "法杖", "crystal": "寶珠", "bow": "弓", "gun": "火槍",
 	}
 	return str(DEFAULT_WEAPON_CLASSES.get(line, line))
-
-
-func label(inst: Dictionary) -> String:
-	if inst.is_empty():
-		return _t("（空）")
-	var r: Dictionary = inst.get("rolled", {})
-	var q_lbl := _t(str(inst.get("quality_label", "")))
-	return _t("%s〔%s〕攻%d 防%d 暴%.0f%%") % [
-		display_name(inst),
-		q_lbl,
-		int(r.get("atk", 0)),
-		int(r.get("def", 0)),
-		float(r.get("crit", 0)),
-	]
 
 
 func status_bbcode() -> String:

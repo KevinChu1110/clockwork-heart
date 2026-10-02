@@ -541,6 +541,16 @@ func _slot_card(slot: String, compact: bool = false, unlocked: bool = true) -> C
 		name_l.add_theme_color_override("font_color", UiStyle.INK)
 	inner.add_child(name_l)
 	if not inst.is_empty():
+		var aff_s := EquipmentSystem.format_affixes_summary(inst)
+		if aff_s != "":
+			var al := Label.new()
+			al.text = aff_s
+			al.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+			al.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			al.add_theme_font_size_override("font_size", 9)
+			al.add_theme_color_override("font_color", Color(0.2, 0.55, 0.85))
+			inner.add_child(al)
+	if not inst.is_empty():
 		var btn := Button.new()
 		btn.text = _t("卸下")
 		UiStyle.style_button(btn, false)
@@ -840,6 +850,17 @@ func _bag_cell(inst: Dictionary) -> Control:
 	ql.add_theme_color_override("font_color", UiStyle.KEY_STRONG)
 	ql.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	col.add_child(ql)
+
+	var aff_s := EquipmentSystem.format_affixes_summary(inst)
+	if aff_s != "":
+		var al := Label.new()
+		al.text = aff_s
+		al.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		al.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		al.add_theme_font_size_override("font_size", 9)
+		al.add_theme_color_override("font_color", Color(0.2, 0.55, 0.85))
+		al.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		col.add_child(al)
 
 	var btn := Button.new()
 	btn.flat = true
