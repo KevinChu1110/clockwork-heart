@@ -287,13 +287,13 @@ func _test_display_labels_and_equip_power_diff(gs: Node, eq: Node) -> void:
 	print("  ok format_affix 輸出符合視覺規範: 命中 +2, 暴擊 +1%%, 暴傷 +5.5%%")
 
 	var suit_inst := {
-		"base_id": "wasteland_gear_suit",
-		"name": "荒路發條套服",
+		"base_id": "ash_mail",
+		"name": "灰燼輕甲",
 		"slot": "armor",
-		"tier": 5,
+		"tier": 1,
 		"quality": "uncommon",
 		"quality_label": "良品",
-		"rolled": {"atk": 0, "def": 100, "hp": 150, "crit": 0, "crit_dmg": 0},
+		"rolled": {"atk": 0, "def": 10, "hp": 30, "crit": 0, "crit_dmg": 0},
 		"affixes": [aff_hit, aff_crit]
 	}
 	var summary_s: String = eq.format_affixes_summary(suit_inst)
@@ -303,7 +303,7 @@ func _test_display_labels_and_equip_power_diff(gs: Node, eq: Node) -> void:
 		print("  ok format_affixes_summary 輸出: %s" % summary_s)
 
 	var label_s: String = eq.label(suit_inst)
-	if not label_s.contains("荒路發條套服") or not label_s.contains("命中 +2") or not label_s.contains("暴擊 +1%"):
+	if not label_s.contains("灰燼輕甲") or not label_s.contains("命中 +2") or not label_s.contains("暴擊 +1%"):
 		_fail("label() 未包含副詞條資訊: %s" % label_s)
 	else:
 		print("  ok label() 完整輸出: %s" % label_s)

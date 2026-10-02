@@ -520,19 +520,6 @@
         "crit_dmg": 0
       }
     },
-    "wasteland_gear_suit": {
-      "name": "荒路發條套服",
-      "slot": "armor",
-      "tier": 5,
-      "line": "common",
-      "base": {
-        "atk": 0,
-        "def": 95,
-        "hp": 150,
-        "crit": 0,
-        "crit_dmg": 0
-      }
-    },
     "knight_plate": {
       "name": "騎士殘甲",
       "slot": "armor",
