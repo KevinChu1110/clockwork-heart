@@ -3533,5 +3533,10 @@
   "再連轉一次": "Draw 10 Again",
   "soul.btn_pull_ten_again": "Draw 10 Again",
   "跳過": "Skip",
-  "soul.btn_skip": "Skip"
+  "soul.btn_skip": "Skip",
+  "裝備替換確認": "Equipment Replacement",
+  "該部位已有穿戴裝備，是否確認替換？": "An item is already equipped in this slot. Confirm replacement?",
+  "無副詞條": "No Affixes",
+  "副詞條": "Affixes",
+  "基礎屬性": "Base Stats"
 }

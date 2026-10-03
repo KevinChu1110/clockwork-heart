@@ -280,6 +280,7 @@ func equip_weapon_to_loadout(uid: String, index: int = -1) -> Dictionary:
 	## 原欄有武 → 回背包（若仍 worn）
 	var old_uid := str(GameState.weapon_loadout[idx])
 	if old_uid != "" and old_uid != uid:
+		GameState.weapon_loadout[idx] = ""
 		_unequip_weapon_uid(old_uid)
 	var old_pow: int = GameState.power_score() if GameState and GameState.has_method("power_score") else 0
 

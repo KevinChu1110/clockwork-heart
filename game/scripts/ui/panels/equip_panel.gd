@@ -11,6 +11,7 @@ const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const CoreSystem := preload("res://scripts/systems/core_system.gd")
 const SpriteDB := preload("res://scripts/art/sprite_db.gd")
 const CoreReplaceDialogScript := preload("res://scripts/ui/core_replace_dialog.gd")
+const EquipReplaceDialogScript := preload("res://scripts/ui/equip_replace_dialog.gd")
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 
 var _host: Node
@@ -22,6 +23,10 @@ var _core_hint_label: Label = null
 var _active_compare_slot: String = ""
 var _active_compare_old: Dictionary = {}
 var _active_compare_new: Dictionary = {}
+var _active_equip_compare_slot: String = ""
+var _active_equip_compare_old: Dictionary = {}
+var _active_equip_compare_new: Dictionary = {}
+var _active_equip_compare_target_loadout: int = -1
 
 
 static func _t(s: String) -> String:
@@ -97,9 +102,16 @@ func _on_locale_changed(_new_loc: String = "") -> void:
 		var keep_slot := _active_compare_slot
 		var keep_old := _active_compare_old
 		var keep_new := _active_compare_new
+		var keep_eq_slot := _active_equip_compare_slot
+		var keep_eq_old := _active_equip_compare_old
+		var keep_eq_new := _active_equip_compare_new
+		var keep_eq_idx := _active_equip_compare_target_loadout
+
 		open("core" if not keep_slot.is_empty() else "")
 		if not keep_slot.is_empty():
 			_show_core_replace_dialog(keep_slot, keep_old, keep_new)
+		elif not keep_eq_slot.is_empty():
+			_show_equip_replace_dialog(keep_eq_slot, keep_eq_old, keep_eq_new, keep_eq_idx)
 
 
 func scroll_to_core() -> void:
@@ -883,19 +895,65 @@ func wear(uid: String) -> void:
 		_host.ui_toast(_t("背包沒有此裝。"))
 		open()
 		return
-	var is_weapon := EquipmentSystem.normalize_slot(str(inst.get("slot", ""))) == "weapon"
+	var raw_slot := str(inst.get("slot", "weapon"))
+	var slot := EquipmentSystem.normalize_slot(raw_slot)
+	var is_weapon := slot == "weapon"
+
 	if _pending_loadout >= 0:
 		if not is_weapon:
 			_host.ui_toast(_t("請選擇武器裝入武器欄。"))
 			return
-		var r: Dictionary = EquipmentSystem.equip_weapon_to_loadout(uid, _pending_loadout)
+		var current_uid := EquipmentSystem.loadout_uid(_pending_loadout)
+		if current_uid == "":
+			var r: Dictionary = EquipmentSystem.equip_weapon_to_loadout(uid, _pending_loadout)
+			_host.ui_toast(str(r.get("msg", "")))
+			_pending_loadout = -1
+			open()
+			return
+		else:
+			var old_inst := EquipmentSystem.weapon_inst(current_uid)
+			var slot_name := _t("武器欄 %d") % (_pending_loadout + 1)
+			_show_equip_replace_dialog(slot_name, old_inst, inst, _pending_loadout)
+			return
+
+	if is_weapon:
+		var has_empty_slot := false
+		for i in EquipmentSystem.WEAPON_LOADOUT_SIZE:
+			if EquipmentSystem.loadout_slot_unlocked(i) and EquipmentSystem.loadout_uid(i) == "":
+				has_empty_slot = true
+				break
+		if has_empty_slot:
+			var r: Dictionary = EquipmentSystem.equip(uid)
+			_host.ui_toast(str(r.get("msg", "")))
+			open()
+			return
+		else:
+			var active_idx := EquipmentSystem.active_loadout_index()
+			var old_uid := EquipmentSystem.loadout_uid(active_idx)
+			var old_inst := EquipmentSystem.weapon_inst(old_uid)
+			var slot_name := _t("武器欄 %d") % (active_idx + 1)
+			_show_equip_replace_dialog(slot_name, old_inst, inst, active_idx)
+			return
+
+	if EquipmentSystem.is_accessory_slot(slot) and not EquipmentSystem.accessories_unlocked():
+		var r: Dictionary = EquipmentSystem.equip(uid)
 		_host.ui_toast(str(r.get("msg", "")))
-		_pending_loadout = -1
 		open()
 		return
-	var r2: Dictionary = EquipmentSystem.equip(uid)
-	_host.ui_toast(str(r2.get("msg", "")))
-	open()
+
+	var old_uid := str(GameState.equip_slots.get(slot, ""))
+	if old_uid == "":
+		var r: Dictionary = EquipmentSystem.equip(uid)
+		_host.ui_toast(str(r.get("msg", "")))
+		open()
+		return
+	else:
+		var old_inst: Dictionary = GameState.equip_worn.get(old_uid, {})
+		if old_inst.is_empty():
+			old_inst = EquipmentSystem.find_any(old_uid)
+		var slot_name := EquipmentSystem.slot_label(slot)
+		_show_equip_replace_dialog(slot_name, old_inst, inst, -1)
+		return
 
 
 func unequip(slot: String) -> void:
@@ -1016,4 +1074,52 @@ func _show_core_replace_dialog(norm_slot: String, old_part: Dictionary, new_part
 
 	var dlg = CoreReplaceDialogScript.show_dialog(target_parent, norm_slot, old_part, new_part, on_confirm, on_cancel, "free")
 	return dlg
+
+
+func _show_equip_replace_dialog(
+	slot_display_name: String,
+	old_inst: Dictionary,
+	new_inst: Dictionary,
+	target_weapon_loadout_idx: int = -1
+) -> Control:
+	var target_parent: Node = _layer if is_instance_valid(_layer) else (_host.ui_host() if _host != null and _host.has_method("ui_host") else null)
+	if target_parent == null:
+		return null
+	var existing = target_parent.get_node_or_null("EquipCompareLayer")
+	if existing != null and is_instance_valid(existing):
+		target_parent.remove_child(existing)
+		existing.queue_free()
+
+	_active_equip_compare_slot = slot_display_name
+	_active_equip_compare_old = old_inst
+	_active_equip_compare_new = new_inst
+	_active_equip_compare_target_loadout = target_weapon_loadout_idx
+
+	var on_confirm = func():
+		var uid := str(new_inst.get("uid", ""))
+		_active_equip_compare_slot = ""
+		_active_equip_compare_old = {}
+		_active_equip_compare_new = {}
+		var target_idx := _active_equip_compare_target_loadout
+		_active_equip_compare_target_loadout = -1
+		var r: Dictionary = {}
+		if target_idx >= 0:
+			r = EquipmentSystem.equip_weapon_to_loadout(uid, target_idx)
+			_pending_loadout = -1
+		else:
+			r = EquipmentSystem.equip(uid)
+		if _host != null and _host.has_method("ui_toast"):
+			_host.ui_toast(str(r.get("msg", "")))
+		open()
+
+	var on_cancel = func():
+		_active_equip_compare_slot = ""
+		_active_equip_compare_old = {}
+		_active_equip_compare_new = {}
+		_active_equip_compare_target_loadout = -1
+		# 取消或右上關閉 -> 槽與背包不變
+
+	var dlg = EquipReplaceDialogScript.show_dialog(target_parent, slot_display_name, old_inst, new_inst, on_confirm, on_cancel, "free")
+	return dlg
+
 

@@ -3533,5 +3533,10 @@
   "再連轉一次": "Extraer 10 Otra Vez",
   "soul.btn_pull_ten_again": "Extraer 10 Otra Vez",
   "跳過": "Saltar",
-  "soul.btn_skip": "Saltar"
+  "soul.btn_skip": "Saltar",
+  "裝備替換確認": "Confirmar reemplazo de equipo",
+  "該部位已有穿戴裝備，是否確認替換？": "Ya hay equipo en esta ranura. ¿Confirmar reemplazo?",
+  "無副詞條": "Sin afijos",
+  "副詞條": "Afijos",
+  "基礎屬性": "Atributos base"
 }
