@@ -10,6 +10,7 @@ const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
+const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 
@@ -141,6 +142,7 @@ static func get_item_icon(id: String) -> Texture2D:
 var _profile_avatar: TextureRect
 var _hero_avatar: TextureRect
 var _hero_shadow: TextureRect
+var _hero_contact_shadow: TextureRect = null
 var _hero_name_tag: Label
 var _speech_bubble: PanelContainer
 var _speech_label: Label
@@ -166,6 +168,8 @@ var enable_idle_flavor: bool = true
 var _hero_key_avatar: TextureRect = null
 var _bg_rect: TextureRect = null
 var _bg_tween: Tween = null
+var _stage_anchor: Control = null
+var _stage_tween: Tween = null
 var _key_wind_tween: Tween = null
 var _key_wind_timer: float = 0.0
 var _key_rotation_turns: float = 0.0
@@ -746,15 +750,21 @@ func _start_breathe_tween() -> void:
 		_hero_avatar.scale = Vector2.ONE
 	if _hero_shadow:
 		_hero_shadow.scale = Vector2.ONE
+	if _hero_contact_shadow:
+		_hero_contact_shadow.scale = Vector2.ONE
 	if not enable_idle_breathing:
 		return
 	_breathe_tween = create_tween().set_loops()
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
 	if _hero_shadow:
 		_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	if _hero_contact_shadow:
+		_breathe_tween.parallel().tween_property(_hero_contact_shadow, "scale", Vector2(1.02, 0.98), 1.1).set_trans(Tween.TRANS_SINE)
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
 	if _hero_shadow:
 		_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+	if _hero_contact_shadow:
+		_breathe_tween.parallel().tween_property(_hero_contact_shadow, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
 
 
 func _start_sortie_glow_tween() -> void:
@@ -954,10 +964,27 @@ func _start_bg_floating_tween() -> void:
 	if _bg_rect == null or not is_instance_valid(_bg_rect):
 		return
 	_bg_rect.position.y = 0.0
+	_bg_rect.position.x = 0.0
 	_bg_tween = create_tween().set_loops()
-	# 幅度 2~3px，柔和 Sine 曲線 (4.8 秒週期，上下浮動 ±2.5px)
-	_bg_tween.tween_property(_bg_rect, "position:y", -2.5, 2.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_bg_tween.tween_property(_bg_rect, "position:y", 2.5, 2.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	## 天宮遠景背景視差浮動：長週期 (5.6s) 悠揚平滑 Sine 呼吸浮動 (y: ±2.2px, x: ±1.0px)
+	_bg_tween.tween_property(_bg_rect, "position:y", -2.2, 2.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_bg_tween.parallel().tween_property(_bg_rect, "position:x", 1.0, 3.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_bg_tween.tween_property(_bg_rect, "position:y", 2.2, 2.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_bg_tween.parallel().tween_property(_bg_rect, "position:x", -1.0, 3.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _start_stage_parallax_tween(stage: Control) -> void:
+	if _stage_tween and _stage_tween.is_valid():
+		_stage_tween.kill()
+	if stage == null or not is_instance_valid(stage):
+		return
+	_stage_anchor = stage
+	var base_y := 45.0
+	stage.position.y = base_y
+	_stage_tween = create_tween().set_loops()
+	## 中央展台視差浮動：中景不同頻率 (3.8s) 浮動 (y: ±1.4px)，與遠景天空形成立體景深視差
+	_stage_tween.tween_property(stage, "position:y", base_y - 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_stage_tween.tween_property(stage, "position:y", base_y + 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 ## ──────────────────────────────────────────
@@ -968,41 +995,57 @@ func _spawn_floating_ether_motes() -> void:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree:
 		gp = (loop as SceneTree).root.get_node_or_null("GraphicsProfile")
-	var n := 18
+	var n := 20
 	if gp != null:
-		n = int(gp.particle_count(18))
+		n = int(gp.particle_count(20))
 	if n <= 0:
 		return
 	for i in range(n):
 		var star := ColorRect.new()
 		star.name = "EtherMote_%d" % i
-		var sz := 3.0 + float((i % 4) * 1.5)
+		var sz := 3.2 + float((i % 4) * 1.6)
 		star.custom_minimum_size = Vector2(sz, sz)
 		star.size = Vector2(sz, sz)
 		star.pivot_offset = Vector2(sz * 0.5, sz * 0.5)
 		star.rotation = PI * 0.25
-		# 金色發條微光粒子色盤：金黃、暖橘、亮香檳金、以太青綠
-		var c := COLOR_GOLD if (i % 3 == 0) else (COLOR_ORANGE if (i % 3 == 1) else Color(0.98, 0.90, 0.55, 0.75))
+		## 金色微光星屑粒子色盤：金黃、暖橘、亮香檳金、以太青綠
+		var c := COLOR_GOLD if (i % 3 == 0) else (COLOR_ORANGE if (i % 3 == 1) else Color(1.0, 0.94, 0.70, 0.90))
 		if i % 5 == 0:
-			c = Color(0.243, 0.812, 0.749, 0.65) # 以太微光
+			c = Color(0.243, 0.812, 0.749, 0.75) # 以太微光
 		star.color = c
-		star.position = Vector2(randf_range(40.0, 1240.0), randf_range(90.0, 590.0))
+		star.position = Vector2(randf_range(40.0, 1240.0), randf_range(80.0, 600.0))
 		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+		## 雙層微光星屑：外圈微光光暈
+		if i % 2 == 0:
+			var halo := ColorRect.new()
+			halo.name = "Halo"
+			var hsz := sz * 2.2
+			halo.size = Vector2(hsz, hsz)
+			halo.position = Vector2(-sz * 0.6, -sz * 0.6)
+			halo.pivot_offset = Vector2(hsz * 0.5, hsz * 0.5)
+			halo.rotation = PI * 0.25
+			var hc := c
+			hc.a = 0.28
+			halo.color = hc
+			halo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			star.add_child(halo)
+
 		_particles_root.add_child(star)
 
-		# 緩慢升騰、微幅左右飄動與柔和呼吸
+		# 緩慢升騰、微幅左右飄動與柔和呼吸閃爍
 		var tw := create_tween().set_loops()
-		var dur := randf_range(3.0, 5.0)
-		var dy := randf_range(-18.0, -36.0)
-		var dx := randf_range(-8.0, 8.0)
+		var dur := randf_range(3.2, 5.4)
+		var dy := randf_range(-22.0, -42.0)
+		var dx := randf_range(-10.0, 10.0)
 		tw.tween_property(star, "position:y", star.position.y + dy, dur).set_trans(Tween.TRANS_SINE)
 		tw.parallel().tween_property(star, "position:x", star.position.x + dx, dur).set_trans(Tween.TRANS_SINE)
 		tw.parallel().tween_property(star, "rotation", star.rotation + PI * 0.5, dur).set_trans(Tween.TRANS_SINE)
-		tw.parallel().tween_property(star, "modulate:a", 0.20, dur * 0.5)
+		tw.parallel().tween_property(star, "modulate:a", 0.25, dur * 0.5)
 		tw.tween_property(star, "position:y", star.position.y, dur).set_trans(Tween.TRANS_SINE)
 		tw.parallel().tween_property(star, "position:x", star.position.x, dur).set_trans(Tween.TRANS_SINE)
 		tw.parallel().tween_property(star, "rotation", star.rotation + PI, dur).set_trans(Tween.TRANS_SINE)
-		tw.parallel().tween_property(star, "modulate:a", 0.85, dur * 0.5)
+		tw.parallel().tween_property(star, "modulate:a", 0.95, dur * 0.5)
 
 ## ──────────────────────────────────────────
 ## ──────────────────────────────────────────
@@ -1483,6 +1526,42 @@ func _play_random_idle_flavor() -> void:
 ## ──────────────────────────────────────────
 ## Tab 1: 發條新村 (神殿日晷展台 + 點擊互動 + 黃金以太粒子)
 ## ──────────────────────────────────────────
+class SundialPedestal extends Control:
+	func _init() -> void:
+		name = "HeroStagePedestal"
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		var c := Vector2(10, 106)
+		var rx := 168.0
+		var ry := 38.0
+		# 1. 底部接地微影 (Ambient Floor Shadow)
+		draw_set_transform(Vector2(0, 10), 0.0, Vector2.ONE)
+		draw_colored_polygon(_ellipse_pts(c, rx + 12.0, ry + 5.0), Color(0.08, 0.06, 0.12, 0.35))
+
+		# 2. 展台側面黃銅金屬厚度 (3D Bevel Height 10px)
+		draw_set_transform(Vector2(0, 6), 0.0, Vector2.ONE)
+		draw_colored_polygon(_ellipse_pts(c, rx, ry), Color(0.24, 0.17, 0.10, 0.95))
+
+		# 3. 頂部發條日晷大理石檯面 (Top Dial Platform)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		draw_colored_polygon(_ellipse_pts(c, rx, ry), Color(0.98, 0.93, 0.83, 0.96))
+
+		# 黃銅外邊框
+		draw_polyline(_ellipse_pts(c, rx, ry), Color(0.83, 0.68, 0.22, 1.0), 3.0, true)
+		# 內圈古典發條日晷齒輪刻度同心光環
+		draw_polyline(_ellipse_pts(c, rx * 0.78, ry * 0.78), Color(0.83, 0.68, 0.22, 0.50), 1.5, true)
+		draw_polyline(_ellipse_pts(c, rx * 0.48, ry * 0.48), Color(0.83, 0.68, 0.22, 0.35), 1.0, true)
+
+	func _ellipse_pts(center: Vector2, r_x: float, r_y: float) -> PackedVector2Array:
+		var pts := PackedVector2Array()
+		var segs := 56
+		for i in range(segs):
+			var a := float(i) * TAU / float(segs)
+			pts.append(Vector2(center.x + cos(a) * r_x, center.y + sin(a) * r_y))
+		return pts
+
+
 func _build_village_tab() -> void:
 	_village_layer = Control.new()
 	_village_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1493,51 +1572,62 @@ func _build_village_tab() -> void:
 	stage_anchor.set_anchors_preset(Control.PRESET_CENTER)
 	stage_anchor.offset_top = 45
 	_village_layer.add_child(stage_anchor)
+	_start_stage_parallax_tween(stage_anchor)
 
-	## 1. 角色腳底接地軟影 (Foot Soft Shadow / review.md 第 16 條)
+	## 0. 地面舞台日晷展台 (Ground Sunken Dial Pedestal / 消除浮空貼紙感)
+	var stage_pedestal := SundialPedestal.new()
+	stage_anchor.add_child(stage_pedestal)
+
+	## 1. 角色腳底接地軟影 (Foot Soft Shadow / 漸層軟影漫反射)
 	_hero_shadow = TextureRect.new()
 	_hero_shadow.name = "HeroFootShadow"
 	_hero_shadow.add_to_group("soft_shadow")
-	_hero_shadow.offset_left = -62
-	_hero_shadow.offset_top = 74
-	_hero_shadow.offset_right = 98
-	_hero_shadow.offset_bottom = 116
+	_hero_shadow.offset_left = -110
+	_hero_shadow.offset_top = 78
+	_hero_shadow.offset_right = 130
+	_hero_shadow.offset_bottom = 128
 	_hero_shadow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_hero_shadow.stretch_mode = TextureRect.STRETCH_SCALE
-	_hero_shadow.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_hero_shadow.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_hero_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hero_shadow.texture = _soft_shadow_tex()
-	_hero_shadow.pivot_offset = Vector2(80, 21)
+	_hero_shadow.pivot_offset = Vector2(120, 25)
 
 	var shadow_mat := ShaderMaterial.new()
 	shadow_mat.shader = FootShadowShader
-	shadow_mat.set_shader_parameter("strength", 0.95)
-	shadow_mat.set_shader_parameter("shadow_color", Color(0.01, 0.01, 0.02, 1.0))
+	shadow_mat.set_shader_parameter("strength", 0.55)
+	shadow_mat.set_shader_parameter("smooth_gradient", true)
+	shadow_mat.set_shader_parameter("is_contact_shadow", false)
+	shadow_mat.set_shader_parameter("shadow_color", Color(0.015, 0.012, 0.025, 1.0))
 	_hero_shadow.material = shadow_mat
 	stage_anchor.add_child(_hero_shadow)
 
-	## 1.1 緊密接地閉塞陰影 (Contact Occlusion Shadow)
+	## 1.1 緊密接地閉塞陰影 (Contact Occlusion Shadow / 深色接觸硬影)
 	var contact_shadow := TextureRect.new()
 	contact_shadow.name = "HeroContactShadow"
 	contact_shadow.add_to_group("soft_shadow")
-	contact_shadow.offset_left = -38
-	contact_shadow.offset_top = 84
-	contact_shadow.offset_right = 74
-	contact_shadow.offset_bottom = 104
+	contact_shadow.offset_left = -46
+	contact_shadow.offset_top = 99
+	contact_shadow.offset_right = 66
+	contact_shadow.offset_bottom = 113
 	contact_shadow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	contact_shadow.stretch_mode = TextureRect.STRETCH_SCALE
 	contact_shadow.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	contact_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	contact_shadow.texture = _soft_shadow_tex()
+	contact_shadow.pivot_offset = Vector2(56, 7)
 
 	var contact_mat := ShaderMaterial.new()
 	contact_mat.shader = FootShadowShader
 	contact_mat.set_shader_parameter("strength", 0.98)
+	contact_mat.set_shader_parameter("is_contact_shadow", true)
+	contact_mat.set_shader_parameter("smooth_gradient", false)
 	contact_mat.set_shader_parameter("shadow_color", Color(0.005, 0.005, 0.01, 1.0))
 	contact_shadow.material = contact_mat
 	stage_anchor.add_child(contact_shadow)
+	_hero_contact_shadow = contact_shadow
 
-	## 2. 2.2 頭身白兔主角 (512 高清紙娃娃外裝合成)
+	## 2. 2.2 頭身白兔主角 (512 高清紙娃娃外裝合成 + 金色邊緣輪廓光著色器)
 	_hero_avatar = TextureRect.new()
 	_hero_avatar.name = "HeroAvatar"
 	_hero_avatar.offset_left = -160
@@ -1550,7 +1640,19 @@ func _build_village_tab() -> void:
 	_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_hero_avatar.pivot_offset = Vector2(160, 260)
 
-	## 2.1 背後發條鑰匙 (Winding Key 獨立圖層：show_behind_parent 隨軀幹同步待機微轉)
+	var hero_rim_mat := ShaderMaterial.new()
+	hero_rim_mat.shader = RimLightShader
+	hero_rim_mat.set_shader_parameter("outline_color", Color(0.22, 0.14, 0.09, 1.0))
+	hero_rim_mat.set_shader_parameter("outline_width", 2.6)
+	hero_rim_mat.set_shader_parameter("outline_enabled", true)
+	hero_rim_mat.set_shader_parameter("rim_enabled", true)
+	hero_rim_mat.set_shader_parameter("rim_color", Color(1.0, 0.85, 0.28, 1.0))
+	hero_rim_mat.set_shader_parameter("rim_width", 6.2)
+	hero_rim_mat.set_shader_parameter("rim_intensity", 2.0)
+	hero_rim_mat.set_shader_parameter("rim_direction", Vector2(0.15, -0.95))
+	_hero_avatar.material = hero_rim_mat
+
+	## 2.1 背後發條鑰匙 (Winding Key 獨立圖層：show_behind_parent 隨軀幹同步待機微轉 + 金色反光)
 	_hero_key_avatar = TextureRect.new()
 	_hero_key_avatar.name = "HeroWindingKey"
 	_hero_key_avatar.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1560,6 +1662,18 @@ func _build_village_tab() -> void:
 	_hero_key_avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hero_key_avatar.show_behind_parent = true
 	_hero_key_avatar.pivot_offset = KEY_PIVOTS_320.get("rabbit", Vector2(103, 186))
+
+	var key_rim_mat := ShaderMaterial.new()
+	key_rim_mat.shader = RimLightShader
+	key_rim_mat.set_shader_parameter("outline_color", Color(0.22, 0.14, 0.09, 1.0))
+	key_rim_mat.set_shader_parameter("outline_width", 2.2)
+	key_rim_mat.set_shader_parameter("outline_enabled", true)
+	key_rim_mat.set_shader_parameter("rim_enabled", true)
+	key_rim_mat.set_shader_parameter("rim_color", Color(1.0, 0.85, 0.28, 1.0))
+	key_rim_mat.set_shader_parameter("rim_width", 5.0)
+	key_rim_mat.set_shader_parameter("rim_intensity", 1.8)
+	key_rim_mat.set_shader_parameter("rim_direction", Vector2(0.15, -0.95))
+	_hero_key_avatar.material = key_rim_mat
 	_hero_avatar.add_child(_hero_key_avatar)
 
 	_apply_hero_idle_visual()
@@ -2147,16 +2261,22 @@ func _on_hero_clicked(forced_act: int = -1, forced_speech: int = -1) -> void:
 	tw.tween_property(_hero_avatar, "scale", Vector2(1.18, 0.82), 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	if _hero_shadow:
 		tw.parallel().tween_property(_hero_shadow, "scale", Vector2(1.18, 1.18), 0.08)
+	if _hero_contact_shadow:
+		tw.parallel().tween_property(_hero_contact_shadow, "scale", Vector2(1.22, 1.22), 0.08)
 	# 2. 彈高 (Stretch)
 	tw.tween_property(_hero_avatar, "scale", Vector2(0.88, 1.16), 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	if _hero_shadow:
 		tw.parallel().tween_property(_hero_shadow, "scale", Vector2(0.85, 0.85), 0.14)
+	if _hero_contact_shadow:
+		tw.parallel().tween_property(_hero_contact_shadow, "scale", Vector2(0.68, 0.68), 0.14)
 	# 3. 微微回彈
 	tw.tween_property(_hero_avatar, "scale", Vector2(1.04, 0.96), 0.10).set_trans(Tween.TRANS_SINE)
 	# 4. 回正
 	tw.tween_property(_hero_avatar, "scale", Vector2(1.0, 1.0), 0.08).set_trans(Tween.TRANS_SINE)
 	if _hero_shadow:
 		tw.parallel().tween_property(_hero_shadow, "scale", Vector2(1.0, 1.0), 0.08)
+	if _hero_contact_shadow:
+		tw.parallel().tween_property(_hero_contact_shadow, "scale", Vector2(1.0, 1.0), 0.08)
 
 	match act_type:
 		0:
