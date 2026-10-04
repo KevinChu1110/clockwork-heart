@@ -5365,6 +5365,16 @@
    "keys": [
     "戰鬥HUD去PP"
    ]
+  },
+  {
+   "id": "battle-mobile-ergonomics",
+   "cat": "遊戲",
+   "title": "開發中",
+   "status": "草稿",
+   "note": "戰鬥HUD手遊人因重構（去PC化、扇形輪盤、戰鬥飄字）",
+   "keys": [
+    "開發中"
+   ]
   }
  ]
 }
