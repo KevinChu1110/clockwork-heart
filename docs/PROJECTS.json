@@ -5390,8 +5390,8 @@
    "id": "character-rimlight-shadow",
    "cat": "遊戲",
    "title": "草稿",
-   "status": "草稿",
-   "note": "角色動態光影與大氣景深升級（第3批，相依第1+2批）",
+   "status": "開發中",
+   "note": "開始實作角色邊緣輪廓光Shader、雙層接地陰影與天宮背景視差/金色星屑粒子",
    "keys": [
     "草稿"
    ]
