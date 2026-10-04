@@ -10,6 +10,25 @@ const OutlineShader = preload("res://shaders/outline.gdshader")
 const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 
+const FONT_HUNINN_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
+static var _cached_huninn: Font = null
+static var _cached_huninn_bold: FontVariation = null
+
+static func _get_huninn_font() -> Font:
+	if _cached_huninn == null and ResourceLoader.exists(FONT_HUNINN_PATH):
+		_cached_huninn = load(FONT_HUNINN_PATH) as Font
+	return _cached_huninn
+
+static func _get_huninn_bold_font() -> FontVariation:
+	if _cached_huninn_bold == null:
+		var base := _get_huninn_font()
+		if base:
+			var fv := FontVariation.new()
+			fv.base_font = base
+			fv.variation_embolden = 0.6  ## 顯著胖胖字加粗效果
+			_cached_huninn_bold = fv
+	return _cached_huninn_bold
+
 ## 戰鬥站位高台 Y 偏移表：場景如有石橋、高台、懸崖等地形，將站位與陰影錨點自基準地面抬升。
 const BATTLE_PLATFORM_OFFSETS := {
 	"bamboo_spirit": 112.0,  ## 竹林溪流石橋平台
@@ -84,6 +103,8 @@ var _battle_weapon: TextureRect = null
 var _battle_armor: TextureRect = null
 var _skill_banner: Label
 var _rage_ready: Label
+var _rage_shimmer_tween: Tween = null
+var _last_rage_style_state := ""
 var _weapon_dock: HBoxContainer
 var _weapon_dock_cells: Array = []  ## Label per bar
 const WEAPON_KEYS: PackedStringArray = ["Z", "X", "C"]
@@ -168,28 +189,112 @@ func _is_enemy_telegraphing() -> bool:
 	return b != null and b.telegraph_active
 
 
+func _style_thumb_attack_btn(is_parry: bool) -> void:
+	if _btn_attack == null or not is_instance_valid(_btn_attack):
+		return
+	var huninn_bold := _get_huninn_bold_font()
+	if huninn_bold:
+		_btn_attack.add_theme_font_override("font", huninn_bold)
+
+	var normal_sb := StyleBoxFlat.new()
+	var hover_sb := StyleBoxFlat.new()
+	var pressed_sb := StyleBoxFlat.new()
+
+	normal_sb.border_color = Color("#1F1A3A")
+	normal_sb.set_border_width_all(2)
+	normal_sb.border_width_bottom = 6  ## 立體果凍厚底 6px
+	normal_sb.set_corner_radius_all(18)
+	normal_sb.content_margin_left = 10
+	normal_sb.content_margin_right = 10
+	normal_sb.content_margin_top = 8
+	normal_sb.content_margin_bottom = 12
+
+	hover_sb.border_color = Color("#1F1A3A")
+	hover_sb.set_border_width_all(2)
+	hover_sb.border_width_bottom = 6
+	hover_sb.set_corner_radius_all(18)
+	hover_sb.content_margin_left = 10
+	hover_sb.content_margin_right = 10
+	hover_sb.content_margin_top = 8
+	hover_sb.content_margin_bottom = 12
+
+	pressed_sb.border_color = Color("#1F1A3A")
+	pressed_sb.set_border_width_all(2)
+	pressed_sb.border_width_bottom = 2  ## 按壓下陷立體反饋
+	pressed_sb.set_corner_radius_all(18)
+	pressed_sb.content_margin_left = 10
+	pressed_sb.content_margin_right = 10
+	pressed_sb.content_margin_top = 12
+	pressed_sb.content_margin_bottom = 8
+
+	if is_parry:
+		## 巨偶蓄力格擋窗：多巴胺暖橘厚底果凍反饋（實體厚底陰影）
+		normal_sb.bg_color = Color("#FFA010")
+		normal_sb.shadow_color = Color(0.85, 0.35, 0.05, 0.8)
+		normal_sb.shadow_size = 0  ## 實體 3D 擠出厚底
+		normal_sb.shadow_offset = Vector2(0, 5)
+
+		hover_sb.bg_color = Color(1.0, 0.65, 0.22, 1.0)
+		hover_sb.shadow_color = Color(0.9, 0.45, 0.1, 0.9)
+		hover_sb.shadow_size = 0
+		hover_sb.shadow_offset = Vector2(0, 5)
+
+		pressed_sb.bg_color = Color(0.90, 0.42, 0.06, 1.0)
+		pressed_sb.shadow_color = Color(0.6, 0.25, 0.05, 0.5)
+		pressed_sb.shadow_size = 0
+		pressed_sb.shadow_offset = Vector2(0, 2)
+	else:
+		## 普攻按鈕：多巴胺蜜糖金黃厚底果凍反饋（實體厚底陰影）
+		normal_sb.bg_color = Color("#FFD028")
+		normal_sb.shadow_color = Color(0.78, 0.48, 0.05, 0.85)  ## 金琥珀實體 3D 厚底
+		normal_sb.shadow_size = 0  ## 實體厚底擠出
+		normal_sb.shadow_offset = Vector2(0, 5)
+
+		hover_sb.bg_color = Color(1.0, 0.88, 0.28, 1.0)
+		hover_sb.shadow_color = Color(0.82, 0.52, 0.08, 0.9)
+		hover_sb.shadow_size = 0
+		hover_sb.shadow_offset = Vector2(0, 5)
+
+		pressed_sb.bg_color = Color(0.95, 0.72, 0.12, 1.0)
+		pressed_sb.shadow_color = Color(0.65, 0.38, 0.05, 0.6)
+		pressed_sb.shadow_size = 0
+		pressed_sb.shadow_offset = Vector2(0, 2)
+
+	_btn_attack.add_theme_stylebox_override("normal", normal_sb)
+	_btn_attack.add_theme_stylebox_override("hover", hover_sb)
+	_btn_attack.add_theme_stylebox_override("pressed", pressed_sb)
+	_btn_attack.add_theme_stylebox_override("focus", hover_sb)
+	_btn_attack.add_theme_color_override("font_color", Color("#1F1A3A"))
+	_btn_attack.add_theme_color_override("font_hover_color", Color("#1F1A3A"))
+	_btn_attack.add_theme_color_override("font_pressed_color", Color("#1F1A3A"))
+	_btn_attack.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
+	_btn_attack.add_theme_constant_override("outline_size", 3)
+
+
 func _update_thumb_attack_text(txt: String) -> void:
 	if _btn_attack == null or not is_instance_valid(_btn_attack):
 		return
 	var loc := ContentLoc.locale()
-	if txt == _t("發條格擋") or txt.contains("Parry") or txt.contains("パリィ") or txt.contains("패링") or txt.contains("Parada"):
+	var is_parry := txt == _t("發條格擋") or txt.contains("Parry") or txt.contains("パリィ") or txt.contains("패링") or txt.contains("Parada")
+	_style_thumb_attack_btn(is_parry)
+	if is_parry:
 		_btn_attack.custom_minimum_size = Vector2(108, 72)
 		_btn_attack.add_theme_constant_override("line_spacing", 2)
 		if loc == "en":
 			_btn_attack.text = "Windup\nParry"
-			_btn_attack.add_theme_font_size_override("font_size", 12)
+			_btn_attack.add_theme_font_size_override("font_size", 15)
 		elif loc == "es":
 			_btn_attack.text = "Parada de\nCuerda"
-			_btn_attack.add_theme_font_size_override("font_size", 11)
+			_btn_attack.add_theme_font_size_override("font_size", 14)
 		elif loc == "ja":
 			_btn_attack.text = "ぜんまい\nパリィ"
-			_btn_attack.add_theme_font_size_override("font_size", 12)
+			_btn_attack.add_theme_font_size_override("font_size", 15)
 		elif loc == "ko":
 			_btn_attack.text = "태엽\n패링"
-			_btn_attack.add_theme_font_size_override("font_size", 13)
+			_btn_attack.add_theme_font_size_override("font_size", 15)
 		else:
 			_btn_attack.text = txt
-			_btn_attack.add_theme_font_size_override("font_size", 15)
+			_btn_attack.add_theme_font_size_override("font_size", 16)
 	else:
 		_btn_attack.custom_minimum_size = Vector2(108, 72)
 		_btn_attack.autowrap_mode = TextServer.AUTOWRAP_OFF
@@ -494,9 +599,7 @@ func _apply_hud_chrome() -> void:
 			lab.add_theme_constant_override("shadow_offset_x", 1)
 			lab.add_theme_constant_override("shadow_offset_y", 1)
 
-	var huninn: Font = null
-	if ResourceLoader.exists("res://assets/fonts/jf-openhuninn-2.1.ttf"):
-		huninn = load("res://assets/fonts/jf-openhuninn-2.1.ttf") as Font
+	var huninn := _get_huninn_font()
 
 	if player_name_l:
 		if huninn:
@@ -560,7 +663,7 @@ func _apply_hud_chrome() -> void:
 	if resist_notice:
 		if huninn:
 			resist_notice.add_theme_font_override("font", huninn)
-		resist_notice.add_theme_font_size_override("font_size", 13)
+		resist_notice.add_theme_font_size_override("font_size", 15)
 		resist_notice.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 		resist_notice.add_theme_constant_override("shadow_offset_x", 1)
 		resist_notice.add_theme_constant_override("shadow_offset_y", 1)
@@ -646,8 +749,12 @@ func _apply_hud_chrome() -> void:
 		_skill_banner.offset_right = 220
 		_skill_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_skill_banner.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		if huninn:
+			_skill_banner.add_theme_font_override("font", huninn)
 		_skill_banner.add_theme_font_size_override("font_size", 28)
 		_skill_banner.add_theme_color_override("font_color", Color(0.65, 0.88, 1.0))
+		_skill_banner.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+		_skill_banner.add_theme_constant_override("outline_size", 3)
 		_skill_banner.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
 		_skill_banner.add_theme_constant_override("shadow_offset_x", 2)
 		_skill_banner.add_theme_constant_override("shadow_offset_y", 2)
@@ -663,15 +770,12 @@ func _apply_hud_chrome() -> void:
 		_rage_ready.set_anchors_preset(Control.PRESET_TOP_LEFT)
 		_rage_ready.offset_left = 28
 		_rage_ready.offset_top = 168
-		_rage_ready.offset_right = 280
-		_rage_ready.offset_bottom = 192
-		_rage_ready.add_theme_font_size_override("font_size", 13)
-		_rage_ready.add_theme_color_override("font_color", Color(1.0, 0.75, 0.35))
-		_rage_ready.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
-		_rage_ready.add_theme_constant_override("shadow_offset_x", 1)
-		_rage_ready.add_theme_constant_override("shadow_offset_y", 1)
+		_rage_ready.offset_right = 210
+		_rage_ready.offset_bottom = 204
+		_rage_ready.custom_minimum_size = Vector2(170, 36)
 		_rage_ready.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		add_child(_rage_ready)
+		_apply_rage_ready_style("full")
 	_apply_safe_hud()
 	_ensure_weapon_dock()
 	_ensure_coach()
@@ -701,7 +805,7 @@ func _apply_safe_hud() -> void:
 		_rage_ready.offset_left = m.x + 16.0
 		var r_top: float = m.y + 156.0
 		if resist_notice and resist_notice.visible:
-			r_top = m.y + 182.0
+			r_top = m.y + 196.0
 		_rage_ready.offset_top = r_top
 
 
@@ -711,10 +815,17 @@ func _notification(what: int) -> void:
 
 
 func _ensure_resist_hud() -> void:
+	var huninn := _get_huninn_font()
 	if resist_notice != null and is_instance_valid(resist_notice):
+		if huninn:
+			resist_notice.add_theme_font_override("font", huninn)
+		resist_notice.add_theme_font_size_override("font_size", 15)
 		return
 	if has_node("%ResistNotice"):
 		resist_notice = get_node("%ResistNotice") as Label
+		if huninn:
+			resist_notice.add_theme_font_override("font", huninn)
+		resist_notice.add_theme_font_size_override("font_size", 15)
 		return
 	var player_side := get_node_or_null("SideBars/PlayerSide") as Control
 	if player_side == null:
@@ -724,7 +835,9 @@ func _ensure_resist_hud() -> void:
 	resist_notice.unique_name_in_owner = true
 	resist_notice.visible = false
 	resist_notice.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	resist_notice.add_theme_font_size_override("font_size", 13)
+	if huninn:
+		resist_notice.add_theme_font_override("font", huninn)
+	resist_notice.add_theme_font_size_override("font_size", 15)
 	player_side.add_child(resist_notice)
 
 
@@ -733,16 +846,113 @@ func _apply_resist_notice_style(bg_col: Color, font_col: Color) -> void:
 		return
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = bg_col
-	sb.set_corner_radius_all(6)
-	sb.set_border_width_all(1)
-	sb.border_width_bottom = 3
+	sb.set_corner_radius_all(10)
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
 	sb.border_color = Color("#1F1A3A")
-	sb.content_margin_left = 8
-	sb.content_margin_right = 8
-	sb.content_margin_top = 2
-	sb.content_margin_bottom = 2
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 6
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 5
+	sb.shadow_offset = Vector2(0, 2)
 	resist_notice.add_theme_stylebox_override("normal", sb)
+	var huninn := _get_huninn_font()
+	if huninn:
+		resist_notice.add_theme_font_override("font", huninn)
+	resist_notice.add_theme_font_size_override("font_size", 15)
 	resist_notice.add_theme_color_override("font_color", font_col)
+	resist_notice.add_theme_color_override("font_outline_color", Color("#1F1A3A") if font_col == Color.WHITE else Color(1.0, 1.0, 1.0, 0.95))
+	resist_notice.add_theme_constant_override("outline_size", 2)
+
+
+func _apply_rage_ready_style(state: String) -> void:
+	if _rage_ready == null or not is_instance_valid(_rage_ready):
+		return
+	var huninn_bold := _get_huninn_bold_font()
+	if huninn_bold:
+		_rage_ready.add_theme_font_override("font", huninn_bold)
+	_rage_ready.add_theme_font_size_override("font_size", 15)
+	_rage_ready.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_rage_ready.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_rage_ready.custom_minimum_size = Vector2(170, 36)
+
+	if state == _last_rage_style_state:
+		return
+	_last_rage_style_state = state
+
+	var sb := StyleBoxFlat.new()
+	sb.border_color = Color("#1F1A3A")
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 5  ## 立體果凍厚底 5px
+	sb.set_corner_radius_all(14)
+	sb.content_margin_left = 14
+	sb.content_margin_right = 14
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 6
+
+	match state:
+		"full":
+			## 怒氣滿：多巴胺鮮亮蜜糖金黃底 + 醒目深藍紫字與白描邊 + 實體厚底 + 動態微光
+			sb.bg_color = Color("#FFD028")
+			sb.shadow_color = Color(0.78, 0.48, 0.05, 0.85)  ## 實體 3D 金珀厚底
+			sb.shadow_size = 0
+			sb.shadow_offset = Vector2(0, 4)
+			_rage_ready.add_theme_color_override("font_color", Color("#1F1A3A"))
+			_rage_ready.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
+			_rage_ready.add_theme_constant_override("outline_size", 3)
+			_rage_ready.add_theme_stylebox_override("normal", sb)
+			_start_rage_shimmer()
+		"berserk":
+			## 暴怒中：草莓粉底 + 白字 + 深藍紫厚描邊 + 實體厚底
+			_stop_rage_shimmer()
+			sb.bg_color = Color("#FF5E8A")
+			sb.shadow_color = Color(0.65, 0.15, 0.3, 0.85)
+			sb.shadow_size = 0
+			sb.shadow_offset = Vector2(0, 4)
+			_rage_ready.add_theme_color_override("font_color", Color.WHITE)
+			_rage_ready.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+			_rage_ready.add_theme_constant_override("outline_size", 3)
+			_rage_ready.add_theme_stylebox_override("normal", sb)
+		"charging":
+			## 蓄力中(>=70%)：溫潤奶油米白底 + 深藍紫字 + 實體厚底
+			_stop_rage_shimmer()
+			sb.bg_color = Color("#FFFDF8")
+			sb.border_width_bottom = 4
+			sb.shadow_color = Color(0.12, 0.10, 0.23, 0.35)
+			sb.shadow_size = 0
+			sb.shadow_offset = Vector2(0, 3)
+			_rage_ready.add_theme_color_override("font_color", Color("#1F1A3A"))
+			_rage_ready.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.8))
+			_rage_ready.add_theme_constant_override("outline_size", 2)
+			_rage_ready.add_theme_stylebox_override("normal", sb)
+
+
+func _start_rage_shimmer() -> void:
+	if _rage_shimmer_tween != null and _rage_shimmer_tween.is_valid():
+		return
+	if _rage_ready == null or not is_instance_valid(_rage_ready):
+		return
+	_rage_ready.pivot_offset = _rage_ready.size * 0.5
+	_rage_shimmer_tween = create_tween().set_loops()
+	_rage_shimmer_tween.tween_property(_rage_ready, "scale", Vector2(1.04, 1.04), 0.5)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_rage_shimmer_tween.parallel().tween_property(_rage_ready, "modulate", Color(1.15, 1.10, 0.88, 1.0), 0.5)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_rage_shimmer_tween.tween_property(_rage_ready, "scale", Vector2(1.0, 1.0), 0.5)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_rage_shimmer_tween.parallel().tween_property(_rage_ready, "modulate", Color(1.0, 1.0, 1.0, 1.0), 0.5)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _stop_rage_shimmer() -> void:
+	if _rage_shimmer_tween != null and _rage_shimmer_tween.is_valid():
+		_rage_shimmer_tween.kill()
+		_rage_shimmer_tween = null
+	if _rage_ready and is_instance_valid(_rage_ready):
+		_rage_ready.scale = Vector2.ONE
+		_rage_ready.modulate = Color.WHITE
 
 
 func _update_resist_notice(p: BattleUnit = null) -> void:
@@ -796,7 +1006,10 @@ func _ensure_weapon_dock() -> void:
 		cell.custom_minimum_size = Vector2(56, 56)
 		cell.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		cell.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		cell.add_theme_font_size_override("font_size", 13)
+		var huninn := _get_huninn_font()
+		if huninn:
+			cell.add_theme_font_override("font", huninn)
+		cell.add_theme_font_size_override("font_size", 15)
 		cell.add_theme_color_override("font_color", Color(0.9, 0.88, 0.82))
 		cell.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.85))
 		cell.add_theme_constant_override("shadow_offset_x", 1)
@@ -2284,6 +2497,7 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 func _exit_tree() -> void:
 	_disconnect_loc_signal()
 	_stop_breathe_tween()
+	_stop_rage_shimmer()
 	_release_hp_authority()
 	## 完美格擋慢鏡／命中定格若在收場瞬間還沒播完，恢復用的 tween 會隨
 	## 節點一起死，Engine.time_scale 就永遠卡在慢速 —— 離場一律歸位。
@@ -2371,17 +2585,18 @@ func _refresh_hud() -> void:
 			if p.fury_active:
 				_rage_ready.visible = true
 				_rage_ready.text = Loc.t("battle.berserk_active")
-				_rage_ready.modulate = Color(1.0, 0.45, 0.2)
+				_apply_rage_ready_style("berserk")
 			elif p.can_skill and not p.bare_fisted and p.rage >= 100.0:
 				_rage_ready.visible = true
 				_rage_ready.text = Loc.t("battle.rage_full")
-				_rage_ready.modulate = Color(1.0, 0.85, 0.4)
+				_apply_rage_ready_style("full")
 			elif (p.can_skill or p.bare_fisted) and p.rage >= 70.0:
 				_rage_ready.visible = true
 				_rage_ready.text = Loc.t("battle.rage_pct", {"n": int(p.rage)})
-				_rage_ready.modulate = Color(0.9, 0.75, 0.5, 0.85)
+				_apply_rage_ready_style("charging")
 			else:
 				_rage_ready.visible = false
+				_stop_rage_shimmer()
 		if player_rage:
 			if p.fury_active:
 				player_rage.modulate = Color(1.35, 0.7, 0.35)
@@ -2537,7 +2752,7 @@ func _ensure_part_hud() -> void:
 	sb.shadow_offset = Vector2(0, 2)
 	part_panel.add_theme_stylebox_override("panel", sb)
 	part_panel.size_flags_horizontal = Control.SIZE_SHRINK_END
-	part_panel.custom_minimum_size.x = 220
+	part_panel.custom_minimum_size.x = 230
 
 	_part_box = VBoxContainer.new()
 	_part_box.name = "PartBars"
@@ -2553,10 +2768,13 @@ func _ensure_part_hud() -> void:
 	_focus_hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	_focus_hint.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	_focus_hint.clip_text = true
-	if huninn:
-		_focus_hint.add_theme_font_override("font", huninn)
-	_focus_hint.add_theme_font_size_override("font_size", 13)
-	_focus_hint.add_theme_color_override("font_color", Color("#8B4513"))
+	var h_font := _get_huninn_font()
+	if h_font:
+		_focus_hint.add_theme_font_override("font", h_font)
+	_focus_hint.add_theme_font_size_override("font_size", 14)
+	_focus_hint.add_theme_color_override("font_color", Color("#1F1A3A"))
+	_focus_hint.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
+	_focus_hint.add_theme_constant_override("outline_size", 2)
 	_part_box.add_child(_focus_hint)
 	for p in boss.parts:
 		var pid := str(p.get("id", ""))
@@ -2565,8 +2783,8 @@ func _ensure_part_hud() -> void:
 		row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		row.add_theme_constant_override("separation", 8)
 		var lab := Label.new()
-		if huninn:
-			lab.add_theme_font_override("font", huninn)
+		if h_font:
+			lab.add_theme_font_override("font", h_font)
 		var ptype := str(p.get("ptype", p.get("effect", "")))
 		var tag := ""
 		match ptype:
@@ -2587,14 +2805,16 @@ func _ensure_part_hud() -> void:
 		lab.text = ("%s·%s" % [tag, pname]) if tag != "" else pname
 		lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		lab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		lab.custom_minimum_size.x = 96
+		lab.custom_minimum_size.x = 104
 		lab.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		lab.clip_text = true
-		lab.add_theme_font_size_override("font_size", 12)
-		lab.add_theme_color_override("font_color", Color.WHITE)
-		lab.modulate = Color("#1F1A3A")
+		lab.add_theme_font_size_override("font_size", 14)
+		lab.add_theme_color_override("font_color", Color("#1F1A3A"))
+		lab.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
+		lab.add_theme_constant_override("outline_size", 2)
+		lab.modulate = Color.WHITE
 		var bar := ProgressBar.new()
-		bar.custom_minimum_size = Vector2(80, 12)
+		bar.custom_minimum_size = Vector2(80, 14)
 		bar.size_flags_horizontal = Control.SIZE_SHRINK_END
 		bar.max_value = float(p.get("max_hp", 1))
 		bar.value = float(p.get("hp", 0))
@@ -2684,9 +2904,9 @@ func _refresh_part_focus_hint() -> void:
 	if _focus_hint:
 		_focus_hint.text = _t("部位鎖定 → %s") % label
 		if sim.focus_part_id != "" and sim.focus_part_id != "body":
-			_focus_hint.add_theme_color_override("font_color", Color("#C22B55"))
+			_focus_hint.add_theme_color_override("font_color", Color("#FF5E8A"))
 		else:
-			_focus_hint.add_theme_color_override("font_color", Color("#8B4513"))
+			_focus_hint.add_theme_color_override("font_color", Color("#1F1A3A"))
 
 
 func _update_tide_hud() -> void:
@@ -4472,6 +4692,12 @@ func _thumb_btn(text: String, primary: bool, cb: Callable) -> Button:
 	b.focus_mode = Control.FOCUS_NONE
 	b.mouse_filter = Control.MOUSE_FILTER_STOP
 	UiStyle.style_button(b, primary)
+	var huninn := _get_huninn_font()
+	if huninn:
+		b.add_theme_font_override("font", huninn)
+	b.add_theme_font_size_override("font_size", 16)
+	b.add_theme_color_override("font_outline_color", Color.WHITE if not primary else Color("#1F1A3A"))
+	b.add_theme_constant_override("outline_size", 2)
 	b.custom_minimum_size = Vector2(THUMB_MIN + 6, THUMB_MIN + 6)
 	b.pressed.connect(cb)
 	return b
@@ -4488,7 +4714,8 @@ func _ensure_thumb_hud() -> void:
 	_thumb_pad.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	_thumb_pad.grow_vertical = Control.GROW_DIRECTION_BEGIN
 	_thumb_pad.mouse_filter = Control.MOUSE_FILTER_STOP
-	_thumb_pad.z_index = 25
+	_thumb_pad.z_index = 35
+	_thumb_pad.z_as_relative = false
 	add_child(_thumb_pad)
 
 	var col := VBoxContainer.new()
@@ -4543,6 +4770,8 @@ func _ensure_thumb_hud() -> void:
 	_btn_attack.add_theme_font_size_override("font_size", 16)
 	if _is_colossus_fight() and _is_enemy_telegraphing():
 		_update_thumb_attack_text(_t("發條格擋"))
+	else:
+		_style_thumb_attack_btn(false)
 	bot.add_child(_btn_attack)
 
 	_layout_thumb_hud()
