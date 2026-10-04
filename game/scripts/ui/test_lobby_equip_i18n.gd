@@ -123,9 +123,9 @@ func _process(_d: float) -> bool:
 			return false
 		_step = 1
 
-		var equip_box: VBoxContainer = _lobby.get("_equip_schematic") as VBoxContainer
+		var equip_box: Container = _lobby.get("_equip_schematic") as Container
 		if equip_box == null:
-			equip_box = _find_named(_lobby, "EquipSchematic") as VBoxContainer
+			equip_box = _find_named(_lobby, "EquipSchematic") as Container
 		if equip_box == null:
 			_fail("找不到 EquipSchematic 容器")
 		else:
@@ -141,9 +141,9 @@ func _process(_d: float) -> bool:
 		if _loc_node:
 			_loc_node.call("set_locale", "en")
 
-		equip_box = _lobby.get("_equip_schematic") as VBoxContainer
+		equip_box = _lobby.get("_equip_schematic") as Container
 		if equip_box == null:
-			equip_box = _find_named(_lobby, "EquipSchematic") as VBoxContainer
+			equip_box = _find_named(_lobby, "EquipSchematic") as Container
 		if equip_box:
 			var chips_en := equip_box.get_children()
 			if chips_en.size() >= 4:
@@ -170,9 +170,9 @@ func _process(_d: float) -> bool:
 		if _loc_node:
 			_loc_node.call("set_locale", "ja")
 
-		equip_box = _lobby.get("_equip_schematic") as VBoxContainer
+		equip_box = _lobby.get("_equip_schematic") as Container
 		if equip_box == null:
-			equip_box = _find_named(_lobby, "EquipSchematic") as VBoxContainer
+			equip_box = _find_named(_lobby, "EquipSchematic") as Container
 		if equip_box:
 			var chips_ja := equip_box.get_children()
 			if chips_ja.size() >= 4:
