@@ -5395,6 +5395,16 @@
    "keys": [
     "草稿"
    ]
+  },
+  {
+   "id": "battle-hud-auto-turns",
+   "cat": "遊戲",
+   "title": "戰鬥HUD去動作化：移除格擋與手動按鈕，改三欄自動換武與戰報",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "戰鬥HUD去動作"
+   ]
   }
  ]
 }
