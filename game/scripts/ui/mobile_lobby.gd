@@ -602,6 +602,7 @@ func _add_equip_chip(parent: Container, slot_title: String, item_name: String, t
 	var btn := Button.new()
 	btn.name = "EquipSlot_" + sid if sid != "" else ("EquipSlot_" + slot_title)
 	btn.custom_minimum_size = Vector2(114, 104)
+	btn.clip_text = true
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	btn.tooltip_text = "%s: %s" % [slot_title, item_name]
@@ -979,7 +980,7 @@ func _start_stage_parallax_tween(stage: Control) -> void:
 	if stage == null or not is_instance_valid(stage):
 		return
 	_stage_anchor = stage
-	var base_y := 45.0
+	var base_y := 105.0
 	stage.position.y = base_y
 	_stage_tween = create_tween().set_loops()
 	## 中央展台視差浮動：中景不同頻率 (3.8s) 浮動 (y: ±1.4px)，與遠景天空形成立體景深視差
@@ -1570,7 +1571,7 @@ func _build_village_tab() -> void:
 	## 中央英雄展台
 	var stage_anchor := Control.new()
 	stage_anchor.set_anchors_preset(Control.PRESET_CENTER)
-	stage_anchor.offset_top = 45
+	stage_anchor.offset_top = 105
 	_village_layer.add_child(stage_anchor)
 	_start_stage_parallax_tween(stage_anchor)
 
@@ -1800,11 +1801,11 @@ func _build_village_tab() -> void:
 	_equip_schematic.name = "EquipSchematic"
 	_equip_schematic.columns = 2
 	_equip_schematic.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	_equip_schematic.offset_left = -260
+	_equip_schematic.offset_left = -298
 	_equip_schematic.offset_top = 16
-	_equip_schematic.offset_right = -20
+	_equip_schematic.offset_right = -58
 	_equip_schematic.offset_bottom = 242
-	_equip_schematic.add_theme_constant_override("h_separation", 10)
+	_equip_schematic.add_theme_constant_override("h_separation", 12)
 	_equip_schematic.add_theme_constant_override("v_separation", 10)
 	_village_layer.add_child(_equip_schematic)
 	_refresh_equip_schematic()
