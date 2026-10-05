@@ -10,6 +10,7 @@ const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
+const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 
@@ -93,7 +94,7 @@ var _gem_title_label: Label = null
 var _hero_title_tag: Label = null
 var _active_hall_index: int = -1
 var _char_prev: TextureRect = null
-var _equip_schematic: VBoxContainer = null
+var _equip_schematic: GridContainer = null
 var _cached_font: Font = null
 var _cached_hero_comp_512: Texture2D = null
 var _cached_hero_comp_key: String = ""
@@ -141,9 +142,11 @@ static func get_item_icon(id: String) -> Texture2D:
 var _profile_avatar: TextureRect
 var _hero_avatar: TextureRect
 var _hero_shadow: TextureRect
+var _hero_contact_shadow: TextureRect = null
 var _hero_name_tag: Label
 var _speech_bubble: PanelContainer
 var _speech_label: Label
+var _sortie_pulse_tween: Tween = null
 const HERO_SPEECH_KEYS: Array[String] = [
 	"看我的旋風斬～喝！",
 	"背後的發條上得剛剛好，出發吧！",
@@ -165,6 +168,8 @@ var enable_idle_flavor: bool = true
 var _hero_key_avatar: TextureRect = null
 var _bg_rect: TextureRect = null
 var _bg_tween: Tween = null
+var _stage_anchor: Control = null
+var _stage_tween: Tween = null
 var _key_wind_tween: Tween = null
 var _key_wind_timer: float = 0.0
 var _key_rotation_turns: float = 0.0
@@ -590,44 +595,150 @@ func _refresh_equip_schematic() -> void:
 			item_id = tpath.get_file().get_basename()
 		var item_name := _variant_display_name(sid, item_id)
 		var tex: Texture2D = entry.get("texture", null)
-		_add_equip_chip(_equip_schematic, slot_title, item_name, tex)
+		_add_equip_chip(_equip_schematic, slot_title, item_name, tex, sid)
 
 
-func _add_equip_chip(parent: Container, slot_title: String, item_name: String, tex: Texture2D) -> void:
+func _add_equip_chip(parent: Container, slot_title: String, item_name: String, tex: Texture2D, sid: String = "") -> void:
 	var btn := Button.new()
-	btn.custom_minimum_size = Vector2(0, 52)
-	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	btn.clip_text = true
-	btn.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	UiStyle.style_button(btn, false)
-	var sb := UiStyle.button_normal()
-	sb.bg_color = Color(1.0, 0.965, 0.88, 0.95)
-	sb.border_width_bottom = 5
-	sb.set_corner_radius_all(18)
-	btn.add_theme_stylebox_override("normal", sb)
-	var sb_h := sb.duplicate() as StyleBoxFlat
-	sb_h.bg_color = Color(1.0, 0.91, 0.72, 1.0)
-	btn.add_theme_stylebox_override("hover", sb_h)
-	btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	btn.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.9))
-	btn.add_theme_constant_override("outline_size", 2)
-	var full_text := "%s  %s" % [slot_title, item_name]
-	if full_text.length() > 36:
-		btn.add_theme_font_size_override("font_size", 10)
-	elif full_text.length() > 24:
-		btn.add_theme_font_size_override("font_size", 11)
-	elif full_text.length() > 16:
-		btn.add_theme_font_size_override("font_size", 12)
-	else:
-		btn.add_theme_font_size_override("font_size", 13)
-	if tex != null:
-		btn.icon = tex
-		btn.expand_icon = true
-		btn.add_theme_constant_override("icon_max_width", 32)
-		btn.add_theme_constant_override("h_separation", 6)
-	btn.text = full_text
+	btn.name = "EquipSlot_" + sid if sid != "" else ("EquipSlot_" + slot_title)
+	btn.custom_minimum_size = Vector2(114, 104)
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	btn.tooltip_text = "%s: %s" % [slot_title, item_name]
+
+	# 蒸汽發條金屬板件底色與發條品質強調色
+	var bg_color := Color(0.12, 0.09, 0.16, 0.82)
+	var accent_color := Color("#D4AF37")
+	if sid == "costume" or slot_title in ["外裝", "Outfit", "衣装"]:
+		bg_color = Color(0.18, 0.10, 0.14, 0.85) # 蒸氣珊瑚深金屬底
+		accent_color = Color("#FF7A59")
+	elif sid == "weapon" or slot_title in ["武器", "Weapon"]:
+		bg_color = Color(0.18, 0.14, 0.08, 0.85) # 琥珀金屬深底
+		accent_color = Color("#FFA010")
+	elif sid == "winding_key" or slot_title in ["發條", "Clockwork", "ゼンマイ"]:
+		bg_color = Color(0.16, 0.13, 0.08, 0.85) # 發條黃銅深金屬底
+		accent_color = Color("#D4AF37")
+	elif sid == "back_curio" or slot_title in ["奇玩", "Curio", "骨董品"]:
+		bg_color = Color(0.08, 0.15, 0.16, 0.85) # 以太奇玩青綠金屬底
+		accent_color = Color("#3ECFBF")
+
+	# 立體果凍厚底 (6px) + 深藍紫描邊 (#1F1A3A)
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg_color
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 6
+	sb.set_corner_radius_all(18)
+	sb.shadow_color = Color(0.08, 0.06, 0.16, 0.30)
+	sb.shadow_size = 8
+	sb.shadow_offset = Vector2(0, 4)
+	btn.add_theme_stylebox_override("normal", sb)
+
+	var sb_h := sb.duplicate() as StyleBoxFlat
+	sb_h.bg_color = bg_color.lightened(0.15)
+	sb_h.border_color = accent_color
+	btn.add_theme_stylebox_override("hover", sb_h)
+
+	var sb_p := sb.duplicate() as StyleBoxFlat
+	sb_p.border_width_bottom = 2
+	sb_p.shadow_size = 3
+	sb_p.shadow_offset = Vector2(0, 1)
+	btn.add_theme_stylebox_override("pressed", sb_p)
+	btn.add_theme_stylebox_override("focus", sb_h)
+
+	# 內嵌黃銅金屬邊框 (Inner metallic brass bevel)
+	var inner_rim := Panel.new()
+	inner_rim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	inner_rim.offset_left = 3
+	inner_rim.offset_top = 3
+	inner_rim.offset_right = -3
+	inner_rim.offset_bottom = -7
+	inner_rim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var isb := StyleBoxFlat.new()
+	isb.draw_center = false
+	isb.border_color = accent_color.lerp(Color(0.83, 0.68, 0.22), 0.5)
+	isb.set_border_width_all(1)
+	isb.set_corner_radius_all(15)
+	inner_rim.add_theme_stylebox_override("panel", isb)
+	btn.add_child(inner_rim)
+
+	# 內容垂直排列容器
+	var vbox := VBoxContainer.new()
+	vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
+	vbox.offset_left = 6
+	vbox.offset_top = 6
+	vbox.offset_right = -6
+	vbox.offset_bottom = -10
+	vbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	vbox.add_theme_constant_override("separation", 2)
+	vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	btn.add_child(vbox)
+
+	# 1. 槽位精巧標籤 (外裝 / 武器 / 發條 / 奇玩)
+	var badge := PanelContainer.new()
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var bsb := StyleBoxFlat.new()
+	bsb.bg_color = accent_color.lerp(Color(0.12, 0.10, 0.16), 0.5)
+	bsb.border_color = Color(0.83, 0.68, 0.22, 0.70)
+	bsb.set_border_width_all(1)
+	bsb.set_corner_radius_all(8)
+	bsb.content_margin_left = 8
+	bsb.content_margin_right = 8
+	bsb.content_margin_top = 1
+	bsb.content_margin_bottom = 2
+	badge.add_theme_stylebox_override("panel", bsb)
+	badge.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+
+	var badge_lbl := Label.new()
+	badge_lbl.text = slot_title
+	if _cached_font:
+		badge_lbl.add_theme_font_override("font", _cached_font)
+	badge_lbl.add_theme_font_size_override("font_size", 11)
+	badge_lbl.add_theme_color_override("font_color", Color("#FFFDF8"))
+	badge_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	badge_lbl.add_theme_constant_override("outline_size", 1)
+	badge.add_child(badge_lbl)
+	vbox.add_child(badge)
+
+	# 2. 裝備 Icon 圖示區
+	var icon_box := Control.new()
+	icon_box.custom_minimum_size = Vector2(0, 48)
+	icon_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(icon_box)
+
+	var icon_rect := TextureRect.new()
+	icon_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	icon_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if tex != null:
+		icon_rect.texture = tex
+	icon_box.add_child(icon_rect)
+
+	# 3. 裝備名稱 (縮略單行)
+	var name_lbl := Label.new()
+	name_lbl.text = item_name
+	if _cached_font:
+		name_lbl.add_theme_font_override("font", _cached_font)
+	name_lbl.add_theme_font_size_override("font_size", 11)
+	name_lbl.add_theme_color_override("font_color", Color("#FFFDF8"))
+	name_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	name_lbl.add_theme_constant_override("outline_size", 2)
+	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	name_lbl.clip_text = true
+	name_lbl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vbox.add_child(name_lbl)
+
+	# 保持 Button.text 相容性（供 i18n 測試與無障礙讀取），文字透明不干擾自定義排版
+	btn.text = "%s  %s" % [slot_title, item_name]
+	btn.add_theme_color_override("font_color", Color(0, 0, 0, 0))
+	btn.add_theme_color_override("font_pressed_color", Color(0, 0, 0, 0))
+	btn.add_theme_color_override("font_hover_color", Color(0, 0, 0, 0))
+	btn.add_theme_color_override("font_focus_color", Color(0, 0, 0, 0))
+	btn.add_theme_constant_override("outline_size", 0)
+
 	btn.pressed.connect(func(): open_wardrobe())
 	parent.add_child(btn)
 
@@ -639,15 +750,40 @@ func _start_breathe_tween() -> void:
 		_hero_avatar.scale = Vector2.ONE
 	if _hero_shadow:
 		_hero_shadow.scale = Vector2.ONE
+	if _hero_contact_shadow:
+		_hero_contact_shadow.scale = Vector2.ONE
 	if not enable_idle_breathing:
 		return
 	_breathe_tween = create_tween().set_loops()
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
 	if _hero_shadow:
 		_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	if _hero_contact_shadow:
+		_breathe_tween.parallel().tween_property(_hero_contact_shadow, "scale", Vector2(1.02, 0.98), 1.1).set_trans(Tween.TRANS_SINE)
 	_breathe_tween.tween_property(_hero_avatar, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
 	if _hero_shadow:
 		_breathe_tween.parallel().tween_property(_hero_shadow, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+	if _hero_contact_shadow:
+		_breathe_tween.parallel().tween_property(_hero_contact_shadow, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+
+
+func _start_sortie_glow_tween() -> void:
+	if _sortie_pulse_tween and _sortie_pulse_tween.is_valid():
+		_sortie_pulse_tween.kill()
+	if _sortie_button == null or not is_instance_valid(_sortie_button):
+		return
+	_sortie_button.pivot_offset = Vector2(140, 32)
+	_sortie_button.scale = Vector2.ONE
+	var sb := _sortie_button.get_theme_stylebox("normal") as StyleBoxFlat
+	if sb == null:
+		return
+	_sortie_pulse_tween = create_tween().set_loops()
+	_sortie_pulse_tween.tween_property(_sortie_button, "scale", Vector2(1.022, 1.022), 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_sortie_pulse_tween.parallel().tween_property(sb, "shadow_size", 16, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_sortie_pulse_tween.parallel().tween_property(sb, "shadow_color", Color(1.0, 0.82, 0.18, 0.70), 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_sortie_pulse_tween.tween_property(_sortie_button, "scale", Vector2(1.0, 1.0), 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_sortie_pulse_tween.parallel().tween_property(sb, "shadow_size", 8, 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_sortie_pulse_tween.parallel().tween_property(sb, "shadow_color", Color(0.83, 0.68, 0.22, 0.35), 1.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 func _restore_hero_idle() -> void:
@@ -810,14 +946,14 @@ func _create_obsidian_panel(accent: Color = COLOR_BORDER) -> StyleBoxFlat:
 
 
 func _create_banner_panel() -> StyleBoxFlat:
-	## 頂欄／底 Dock 大橫條：暖金玻璃，讓神殿背景透出來
+	## 頂欄／底 Dock 大橫條：蒸汽發條暖金玻璃，讓神殿背景透出來
 	var s := StyleBoxFlat.new()
-	s.bg_color = Color(1.0, 0.94, 0.78, 0.70)
-	s.border_color = COLOR_BORDER
+	s.bg_color = Color(0.98, 0.92, 0.80, 0.72)
+	s.border_color = Color(0.83, 0.68, 0.22, 0.85)
 	s.set_border_width_all(2)
 	s.border_width_bottom = 5
 	s.set_corner_radius_all(20)
-	s.shadow_color = Color(0.12, 0.10, 0.23, 0.16)
+	s.shadow_color = Color(0.12, 0.10, 0.23, 0.18)
 	s.shadow_size = 8
 	s.shadow_offset = Vector2(0, 3)
 	return s
@@ -828,10 +964,27 @@ func _start_bg_floating_tween() -> void:
 	if _bg_rect == null or not is_instance_valid(_bg_rect):
 		return
 	_bg_rect.position.y = 0.0
+	_bg_rect.position.x = 0.0
 	_bg_tween = create_tween().set_loops()
-	# 幅度 2~3px，柔和 Sine 曲線 (4.8 秒週期，上下浮動 ±2.5px)
-	_bg_tween.tween_property(_bg_rect, "position:y", -2.5, 2.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_bg_tween.tween_property(_bg_rect, "position:y", 2.5, 2.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	## 天宮遠景背景視差浮動：長週期 (5.6s) 悠揚平滑 Sine 呼吸浮動 (y: ±2.2px, x: ±1.0px)
+	_bg_tween.tween_property(_bg_rect, "position:y", -2.2, 2.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_bg_tween.parallel().tween_property(_bg_rect, "position:x", 1.0, 3.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_bg_tween.tween_property(_bg_rect, "position:y", 2.2, 2.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_bg_tween.parallel().tween_property(_bg_rect, "position:x", -1.0, 3.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _start_stage_parallax_tween(stage: Control) -> void:
+	if _stage_tween and _stage_tween.is_valid():
+		_stage_tween.kill()
+	if stage == null or not is_instance_valid(stage):
+		return
+	_stage_anchor = stage
+	var base_y := 45.0
+	stage.position.y = base_y
+	_stage_tween = create_tween().set_loops()
+	## 中央展台視差浮動：中景不同頻率 (3.8s) 浮動 (y: ±1.4px)，與遠景天空形成立體景深視差
+	_stage_tween.tween_property(stage, "position:y", base_y - 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_stage_tween.tween_property(stage, "position:y", base_y + 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 ## ──────────────────────────────────────────
@@ -842,41 +995,57 @@ func _spawn_floating_ether_motes() -> void:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree:
 		gp = (loop as SceneTree).root.get_node_or_null("GraphicsProfile")
-	var n := 18
+	var n := 20
 	if gp != null:
-		n = int(gp.particle_count(18))
+		n = int(gp.particle_count(20))
 	if n <= 0:
 		return
 	for i in range(n):
 		var star := ColorRect.new()
 		star.name = "EtherMote_%d" % i
-		var sz := 3.0 + float((i % 4) * 1.5)
+		var sz := 3.2 + float((i % 4) * 1.6)
 		star.custom_minimum_size = Vector2(sz, sz)
 		star.size = Vector2(sz, sz)
 		star.pivot_offset = Vector2(sz * 0.5, sz * 0.5)
 		star.rotation = PI * 0.25
-		# 金色發條微光粒子色盤：金黃、暖橘、亮香檳金、以太青綠
-		var c := COLOR_GOLD if (i % 3 == 0) else (COLOR_ORANGE if (i % 3 == 1) else Color(0.98, 0.90, 0.55, 0.75))
+		## 金色微光星屑粒子色盤：金黃、暖橘、亮香檳金、以太青綠
+		var c := COLOR_GOLD if (i % 3 == 0) else (COLOR_ORANGE if (i % 3 == 1) else Color(1.0, 0.94, 0.70, 0.90))
 		if i % 5 == 0:
-			c = Color(0.243, 0.812, 0.749, 0.65) # 以太微光
+			c = Color(0.243, 0.812, 0.749, 0.75) # 以太微光
 		star.color = c
-		star.position = Vector2(randf_range(40.0, 1240.0), randf_range(90.0, 590.0))
+		star.position = Vector2(randf_range(40.0, 1240.0), randf_range(80.0, 600.0))
 		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+		## 雙層微光星屑：外圈微光光暈
+		if i % 2 == 0:
+			var halo := ColorRect.new()
+			halo.name = "Halo"
+			var hsz := sz * 2.2
+			halo.size = Vector2(hsz, hsz)
+			halo.position = Vector2(-sz * 0.6, -sz * 0.6)
+			halo.pivot_offset = Vector2(hsz * 0.5, hsz * 0.5)
+			halo.rotation = PI * 0.25
+			var hc := c
+			hc.a = 0.28
+			halo.color = hc
+			halo.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			star.add_child(halo)
+
 		_particles_root.add_child(star)
 
-		# 緩慢升騰、微幅左右飄動與柔和呼吸
+		# 緩慢升騰、微幅左右飄動與柔和呼吸閃爍
 		var tw := create_tween().set_loops()
-		var dur := randf_range(3.0, 5.0)
-		var dy := randf_range(-18.0, -36.0)
-		var dx := randf_range(-8.0, 8.0)
+		var dur := randf_range(3.2, 5.4)
+		var dy := randf_range(-22.0, -42.0)
+		var dx := randf_range(-10.0, 10.0)
 		tw.tween_property(star, "position:y", star.position.y + dy, dur).set_trans(Tween.TRANS_SINE)
 		tw.parallel().tween_property(star, "position:x", star.position.x + dx, dur).set_trans(Tween.TRANS_SINE)
 		tw.parallel().tween_property(star, "rotation", star.rotation + PI * 0.5, dur).set_trans(Tween.TRANS_SINE)
-		tw.parallel().tween_property(star, "modulate:a", 0.20, dur * 0.5)
+		tw.parallel().tween_property(star, "modulate:a", 0.25, dur * 0.5)
 		tw.tween_property(star, "position:y", star.position.y, dur).set_trans(Tween.TRANS_SINE)
 		tw.parallel().tween_property(star, "position:x", star.position.x, dur).set_trans(Tween.TRANS_SINE)
 		tw.parallel().tween_property(star, "rotation", star.rotation + PI, dur).set_trans(Tween.TRANS_SINE)
-		tw.parallel().tween_property(star, "modulate:a", 0.85, dur * 0.5)
+		tw.parallel().tween_property(star, "modulate:a", 0.95, dur * 0.5)
 
 ## ──────────────────────────────────────────
 ## ──────────────────────────────────────────
@@ -905,9 +1074,10 @@ func _build_top_hud() -> void:
 
 	var p_frame := PanelContainer.new()
 	var psb := StyleBoxFlat.new()
-	psb.bg_color = COLOR_CARD_WARM
-	psb.border_color = COLOR_BORDER
+	psb.bg_color = Color(0.14, 0.11, 0.18, 0.85)
+	psb.border_color = Color(0.83, 0.68, 0.22, 0.85)
 	psb.set_border_width_all(1)
+	psb.border_width_bottom = 3
 	psb.set_corner_radius_all(26)
 	p_frame.custom_minimum_size = Vector2(52, 52)
 	p_frame.add_theme_stylebox_override("panel", psb)
@@ -930,14 +1100,18 @@ func _build_top_hud() -> void:
 	row1.add_theme_constant_override("separation", 8)
 	_lv_label = Label.new()
 	_lv_label.text = "Lv.1"
-	_lv_label.add_theme_color_override("font_color", COLOR_GOLD_DARK)
+	_lv_label.add_theme_color_override("font_color", COLOR_GOLD)
+	_lv_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_lv_label.add_theme_constant_override("outline_size", 2)
 	_lv_label.add_theme_font_size_override("font_size", 16)
 	row1.add_child(_lv_label)
 
 	_name_label = Label.new()
 	_name_label.text = _get_hero_name()
 	_name_label.add_theme_font_size_override("font_size", 17)
-	_name_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_name_label.add_theme_color_override("font_color", Color("#FFFDF8"))
+	_name_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_name_label.add_theme_constant_override("outline_size", 3)
 	row1.add_child(_name_label)
 	info_v.add_child(row1)
 
@@ -945,7 +1119,9 @@ func _build_top_hud() -> void:
 	pwr_row.add_theme_constant_override("separation", 4)
 	_power_label = Label.new()
 	_power_label.text = _t("戰力 %d") % 0
-	_power_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_power_label.add_theme_color_override("font_color", Color("#E5C158"))
+	_power_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_power_label.add_theme_constant_override("outline_size", 2)
 	_power_label.add_theme_font_size_override("font_size", 13)
 	pwr_row.add_child(_power_label)
 	info_v.add_child(pwr_row)
@@ -955,7 +1131,7 @@ func _build_top_hud() -> void:
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	h.add_child(spacer)
 
-	## 奶油白三寶膠囊（帶對應發條核心圖示與果凍厚底質感）
+	## 蒸汽發條黃銅金屬三寶儀表槽（帶對應發條核心圖示與立體厚底）
 	_energy_label = _add_clean_capsule(h, "能量", "—", COLOR_GOLD_DARK, "res://assets/icons/hud/icon_energy_key.png")
 	if _energy_label.has_meta("title_label"):
 		_energy_title_label = _energy_label.get_meta("title_label") as Label
@@ -990,7 +1166,6 @@ func _build_top_hud() -> void:
 	var shop_btn := Button.new()
 	shop_btn.name = "ShopButton"
 	shop_btn.text = _t("商城")
-	UiStyle.style_button(shop_btn, false)
 	var shop_icon_path := "res://assets/icons/hud/icon_btn_shop.png"
 	if ResourceLoader.exists(shop_icon_path):
 		shop_btn.icon = load(shop_icon_path)
@@ -999,7 +1174,27 @@ func _build_top_hud() -> void:
 		shop_btn.add_theme_constant_override("h_separation", 6)
 		shop_btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	shop_btn.custom_minimum_size = Vector2(104, 50)
+	var shop_sb := StyleBoxFlat.new()
+	shop_sb.bg_color = Color("#FFA010")
+	shop_sb.border_color = COLOR_BORDER
+	shop_sb.set_border_width_all(2)
+	shop_sb.border_width_bottom = 5
+	shop_sb.set_corner_radius_all(18)
+	shop_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	shop_sb.shadow_size = 6
+	shop_sb.shadow_offset = Vector2(0, 3)
+	shop_btn.add_theme_stylebox_override("normal", shop_sb)
+	var shop_sb_h := shop_sb.duplicate() as StyleBoxFlat
+	shop_sb_h.bg_color = Color(1.0, 0.72, 0.20, 1.0)
+	shop_btn.add_theme_stylebox_override("hover", shop_sb_h)
+	shop_btn.add_theme_stylebox_override("focus", shop_sb_h)
+	var shop_sb_p := shop_sb.duplicate() as StyleBoxFlat
+	shop_sb_p.border_width_bottom = 2
+	shop_btn.add_theme_stylebox_override("pressed", shop_sb_p)
 	shop_btn.add_theme_font_size_override("font_size", 16)
+	shop_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	shop_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	shop_btn.add_theme_constant_override("outline_size", 3)
 	shop_btn.pressed.connect(func():
 		open_shop()
 	)
@@ -1009,7 +1204,6 @@ func _build_top_hud() -> void:
 	var set_btn := Button.new()
 	set_btn.name = "SettingsButton"
 	set_btn.text = _t("設置")
-	UiStyle.style_button(set_btn, false)
 	var settings_icon_path := "res://assets/icons/hud/icon_btn_settings.png"
 	if ResourceLoader.exists(settings_icon_path):
 		set_btn.icon = load(settings_icon_path)
@@ -1018,7 +1212,27 @@ func _build_top_hud() -> void:
 		set_btn.add_theme_constant_override("h_separation", 6)
 		set_btn.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	set_btn.custom_minimum_size = Vector2(104, 50)
+	var set_sb := StyleBoxFlat.new()
+	set_sb.bg_color = Color("#38A0FF")
+	set_sb.border_color = COLOR_BORDER
+	set_sb.set_border_width_all(2)
+	set_sb.border_width_bottom = 5
+	set_sb.set_corner_radius_all(18)
+	set_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	set_sb.shadow_size = 6
+	set_sb.shadow_offset = Vector2(0, 3)
+	set_btn.add_theme_stylebox_override("normal", set_sb)
+	var set_sb_h := set_sb.duplicate() as StyleBoxFlat
+	set_sb_h.bg_color = Color(0.35, 0.72, 1.0, 1.0)
+	set_btn.add_theme_stylebox_override("hover", set_sb_h)
+	set_btn.add_theme_stylebox_override("focus", set_sb_h)
+	var set_sb_p := set_sb.duplicate() as StyleBoxFlat
+	set_sb_p.border_width_bottom = 2
+	set_btn.add_theme_stylebox_override("pressed", set_sb_p)
 	set_btn.add_theme_font_size_override("font_size", 16)
+	set_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	set_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	set_btn.add_theme_constant_override("outline_size", 3)
 	set_btn.pressed.connect(func():
 		var s_scn := load("res://scripts/ui/mobile_settings.gd")
 		var s_ui: Control = s_scn.new()
@@ -1031,16 +1245,16 @@ func _build_top_hud() -> void:
 func _add_clean_capsule(parent: Container, title: String, val: String, accent: Color, icon_path: String = "") -> Label:
 	var cap := PanelContainer.new()
 	var csb := StyleBoxFlat.new()
-	csb.bg_color = COLOR_CARD_WARM
-	csb.border_color = COLOR_BORDER
-	csb.set_border_width_all(2)
+	csb.bg_color = Color(0.14, 0.11, 0.18, 0.82)
+	csb.border_color = Color(0.83, 0.68, 0.22, 0.75)
+	csb.set_border_width_all(1)
 	csb.border_width_bottom = 4
 	csb.set_corner_radius_all(16)
 	csb.content_margin_left = 12
 	csb.content_margin_right = 14
 	csb.content_margin_top = 4
 	csb.content_margin_bottom = 5
-	csb.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
+	csb.shadow_color = Color(0.08, 0.06, 0.14, 0.20)
 	csb.shadow_size = 4
 	csb.shadow_offset = Vector2(0, 2)
 	cap.add_theme_stylebox_override("panel", csb)
@@ -1062,7 +1276,9 @@ func _add_clean_capsule(parent: Container, title: String, val: String, accent: C
 	il.text = _t(title)
 	il.set_meta("key", title)
 	il.add_theme_font_size_override("font_size", 13)
-	il.add_theme_color_override("font_color", accent)
+	il.add_theme_color_override("font_color", accent.lerp(Color("#FFD028"), 0.35))
+	il.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	il.add_theme_constant_override("outline_size", 2)
 	il.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	h.add_child(il)
 
@@ -1070,7 +1286,9 @@ func _add_clean_capsule(parent: Container, title: String, val: String, accent: C
 	vl.text = val
 	vl.set_meta("title_label", il)
 	vl.add_theme_font_size_override("font_size", 15)
-	vl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	vl.add_theme_color_override("font_color", Color("#FFFDF8"))
+	vl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	vl.add_theme_constant_override("outline_size", 2)
 	vl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	h.add_child(vl)
 
@@ -1308,6 +1526,42 @@ func _play_random_idle_flavor() -> void:
 ## ──────────────────────────────────────────
 ## Tab 1: 發條新村 (神殿日晷展台 + 點擊互動 + 黃金以太粒子)
 ## ──────────────────────────────────────────
+class SundialPedestal extends Control:
+	func _init() -> void:
+		name = "HeroStagePedestal"
+		mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	func _draw() -> void:
+		var c := Vector2(10, 106)
+		var rx := 168.0
+		var ry := 38.0
+		# 1. 底部接地微影 (Ambient Floor Shadow)
+		draw_set_transform(Vector2(0, 10), 0.0, Vector2.ONE)
+		draw_colored_polygon(_ellipse_pts(c, rx + 12.0, ry + 5.0), Color(0.08, 0.06, 0.12, 0.35))
+
+		# 2. 展台側面黃銅金屬厚度 (3D Bevel Height 10px)
+		draw_set_transform(Vector2(0, 6), 0.0, Vector2.ONE)
+		draw_colored_polygon(_ellipse_pts(c, rx, ry), Color(0.24, 0.17, 0.10, 0.95))
+
+		# 3. 頂部發條日晷大理石檯面 (Top Dial Platform)
+		draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE)
+		draw_colored_polygon(_ellipse_pts(c, rx, ry), Color(0.98, 0.93, 0.83, 0.96))
+
+		# 黃銅外邊框
+		draw_polyline(_ellipse_pts(c, rx, ry), Color(0.83, 0.68, 0.22, 1.0), 3.0, true)
+		# 內圈古典發條日晷齒輪刻度同心光環
+		draw_polyline(_ellipse_pts(c, rx * 0.78, ry * 0.78), Color(0.83, 0.68, 0.22, 0.50), 1.5, true)
+		draw_polyline(_ellipse_pts(c, rx * 0.48, ry * 0.48), Color(0.83, 0.68, 0.22, 0.35), 1.0, true)
+
+	func _ellipse_pts(center: Vector2, r_x: float, r_y: float) -> PackedVector2Array:
+		var pts := PackedVector2Array()
+		var segs := 56
+		for i in range(segs):
+			var a := float(i) * TAU / float(segs)
+			pts.append(Vector2(center.x + cos(a) * r_x, center.y + sin(a) * r_y))
+		return pts
+
+
 func _build_village_tab() -> void:
 	_village_layer = Control.new()
 	_village_layer.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1318,51 +1572,62 @@ func _build_village_tab() -> void:
 	stage_anchor.set_anchors_preset(Control.PRESET_CENTER)
 	stage_anchor.offset_top = 45
 	_village_layer.add_child(stage_anchor)
+	_start_stage_parallax_tween(stage_anchor)
 
-	## 1. 角色腳底接地軟影 (Foot Soft Shadow / review.md 第 16 條)
+	## 0. 地面舞台日晷展台 (Ground Sunken Dial Pedestal / 消除浮空貼紙感)
+	var stage_pedestal := SundialPedestal.new()
+	stage_anchor.add_child(stage_pedestal)
+
+	## 1. 角色腳底接地軟影 (Foot Soft Shadow / 漸層軟影漫反射)
 	_hero_shadow = TextureRect.new()
 	_hero_shadow.name = "HeroFootShadow"
 	_hero_shadow.add_to_group("soft_shadow")
-	_hero_shadow.offset_left = -62
-	_hero_shadow.offset_top = 74
-	_hero_shadow.offset_right = 98
-	_hero_shadow.offset_bottom = 116
+	_hero_shadow.offset_left = -110
+	_hero_shadow.offset_top = 78
+	_hero_shadow.offset_right = 130
+	_hero_shadow.offset_bottom = 128
 	_hero_shadow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_hero_shadow.stretch_mode = TextureRect.STRETCH_SCALE
-	_hero_shadow.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+	_hero_shadow.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_hero_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hero_shadow.texture = _soft_shadow_tex()
-	_hero_shadow.pivot_offset = Vector2(80, 21)
+	_hero_shadow.pivot_offset = Vector2(120, 25)
 
 	var shadow_mat := ShaderMaterial.new()
 	shadow_mat.shader = FootShadowShader
-	shadow_mat.set_shader_parameter("strength", 0.95)
-	shadow_mat.set_shader_parameter("shadow_color", Color(0.01, 0.01, 0.02, 1.0))
+	shadow_mat.set_shader_parameter("strength", 0.55)
+	shadow_mat.set_shader_parameter("smooth_gradient", true)
+	shadow_mat.set_shader_parameter("is_contact_shadow", false)
+	shadow_mat.set_shader_parameter("shadow_color", Color(0.015, 0.012, 0.025, 1.0))
 	_hero_shadow.material = shadow_mat
 	stage_anchor.add_child(_hero_shadow)
 
-	## 1.1 緊密接地閉塞陰影 (Contact Occlusion Shadow)
+	## 1.1 緊密接地閉塞陰影 (Contact Occlusion Shadow / 深色接觸硬影)
 	var contact_shadow := TextureRect.new()
 	contact_shadow.name = "HeroContactShadow"
 	contact_shadow.add_to_group("soft_shadow")
-	contact_shadow.offset_left = -38
-	contact_shadow.offset_top = 84
-	contact_shadow.offset_right = 74
-	contact_shadow.offset_bottom = 104
+	contact_shadow.offset_left = -46
+	contact_shadow.offset_top = 99
+	contact_shadow.offset_right = 66
+	contact_shadow.offset_bottom = 113
 	contact_shadow.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	contact_shadow.stretch_mode = TextureRect.STRETCH_SCALE
 	contact_shadow.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	contact_shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	contact_shadow.texture = _soft_shadow_tex()
+	contact_shadow.pivot_offset = Vector2(56, 7)
 
 	var contact_mat := ShaderMaterial.new()
 	contact_mat.shader = FootShadowShader
 	contact_mat.set_shader_parameter("strength", 0.98)
+	contact_mat.set_shader_parameter("is_contact_shadow", true)
+	contact_mat.set_shader_parameter("smooth_gradient", false)
 	contact_mat.set_shader_parameter("shadow_color", Color(0.005, 0.005, 0.01, 1.0))
 	contact_shadow.material = contact_mat
 	stage_anchor.add_child(contact_shadow)
+	_hero_contact_shadow = contact_shadow
 
-	## 2. 2.2 頭身白兔主角 (512 高清紙娃娃外裝合成)
+	## 2. 2.2 頭身白兔主角 (512 高清紙娃娃外裝合成 + 金色邊緣輪廓光著色器)
 	_hero_avatar = TextureRect.new()
 	_hero_avatar.name = "HeroAvatar"
 	_hero_avatar.offset_left = -160
@@ -1375,7 +1640,19 @@ func _build_village_tab() -> void:
 	_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_hero_avatar.pivot_offset = Vector2(160, 260)
 
-	## 2.1 背後發條鑰匙 (Winding Key 獨立圖層：show_behind_parent 隨軀幹同步待機微轉)
+	var hero_rim_mat := ShaderMaterial.new()
+	hero_rim_mat.shader = RimLightShader
+	hero_rim_mat.set_shader_parameter("outline_color", Color(0.22, 0.14, 0.09, 1.0))
+	hero_rim_mat.set_shader_parameter("outline_width", 2.6)
+	hero_rim_mat.set_shader_parameter("outline_enabled", true)
+	hero_rim_mat.set_shader_parameter("rim_enabled", true)
+	hero_rim_mat.set_shader_parameter("rim_color", Color(1.0, 0.85, 0.28, 1.0))
+	hero_rim_mat.set_shader_parameter("rim_width", 6.2)
+	hero_rim_mat.set_shader_parameter("rim_intensity", 2.0)
+	hero_rim_mat.set_shader_parameter("rim_direction", Vector2(0.15, -0.95))
+	_hero_avatar.material = hero_rim_mat
+
+	## 2.1 背後發條鑰匙 (Winding Key 獨立圖層：show_behind_parent 隨軀幹同步待機微轉 + 金色反光)
 	_hero_key_avatar = TextureRect.new()
 	_hero_key_avatar.name = "HeroWindingKey"
 	_hero_key_avatar.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -1385,6 +1662,18 @@ func _build_village_tab() -> void:
 	_hero_key_avatar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hero_key_avatar.show_behind_parent = true
 	_hero_key_avatar.pivot_offset = KEY_PIVOTS_320.get("rabbit", Vector2(103, 186))
+
+	var key_rim_mat := ShaderMaterial.new()
+	key_rim_mat.shader = RimLightShader
+	key_rim_mat.set_shader_parameter("outline_color", Color(0.22, 0.14, 0.09, 1.0))
+	key_rim_mat.set_shader_parameter("outline_width", 2.2)
+	key_rim_mat.set_shader_parameter("outline_enabled", true)
+	key_rim_mat.set_shader_parameter("rim_enabled", true)
+	key_rim_mat.set_shader_parameter("rim_color", Color(1.0, 0.85, 0.28, 1.0))
+	key_rim_mat.set_shader_parameter("rim_width", 5.0)
+	key_rim_mat.set_shader_parameter("rim_intensity", 1.8)
+	key_rim_mat.set_shader_parameter("rim_direction", Vector2(0.15, -0.95))
+	_hero_key_avatar.material = key_rim_mat
 	_hero_avatar.add_child(_hero_key_avatar)
 
 	_apply_hero_idle_visual()
@@ -1396,7 +1685,7 @@ func _build_village_tab() -> void:
 	hero_click.pressed.connect(_on_hero_clicked)
 	_hero_avatar.add_child(hero_click)
 
-	## 3. 頭頂稱號與名字（精巧微型名牌，上移避開齒輪中央能量光芒與核心，拿掉重陰影）
+	## 3. 頭頂稱號與名字（精巧微型黃銅銘牌，上移避開齒輪中央能量光芒與核心）
 	var tag_panel := PanelContainer.new()
 	tag_panel.set_anchors_preset(Control.PRESET_CENTER_TOP)
 	tag_panel.offset_left = -56
@@ -1406,10 +1695,10 @@ func _build_village_tab() -> void:
 	tag_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var tag_sb := StyleBoxFlat.new()
-	tag_sb.bg_color = Color(1.0, 0.992, 0.973, 0.92) # 奶油白 #FFFDF8 @ 92%
-	tag_sb.border_color = COLOR_BORDER # #1F1A3A 深藍紫
+	tag_sb.bg_color = Color(0.14, 0.11, 0.18, 0.85) # 蒸汽發條半透深金屬板件
+	tag_sb.border_color = Color(0.83, 0.68, 0.22, 0.85) # 古典黃銅邊飾
 	tag_sb.set_border_width_all(1)
-	tag_sb.border_width_bottom = 2
+	tag_sb.border_width_bottom = 3
 	tag_sb.set_corner_radius_all(12)
 	tag_sb.content_margin_left = 8
 	tag_sb.content_margin_right = 8
@@ -1427,8 +1716,8 @@ func _build_village_tab() -> void:
 	_hero_name_tag.text = _get_hero_name()
 	_hero_name_tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_hero_name_tag.add_theme_font_size_override("font_size", 18)
-	_hero_name_tag.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	_hero_name_tag.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.8))
+	_hero_name_tag.add_theme_color_override("font_color", Color("#FFFDF8"))
+	_hero_name_tag.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_hero_name_tag.add_theme_constant_override("outline_size", 2)
 	tag_v.add_child(_hero_name_tag)
 
@@ -1436,8 +1725,8 @@ func _build_village_tab() -> void:
 	title_l.text = "【%s】" % _t("初出茅廬")
 	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_l.add_theme_font_size_override("font_size", 11)
-	title_l.add_theme_color_override("font_color", COLOR_GOLD_DARK)
-	title_l.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.6))
+	title_l.add_theme_color_override("font_color", COLOR_GOLD)
+	title_l.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	title_l.add_theme_constant_override("outline_size", 1)
 	tag_v.add_child(title_l)
 	_hero_title_tag = title_l
@@ -1479,15 +1768,15 @@ func _build_village_tab() -> void:
 	## 呼吸動畫
 	_start_breathe_tween()
 
-	## 左側四大殿堂黑曜石金屬浮雕卡牌 (天宮鐵匠、手藝工坊、演武競技、冒險委託) -> 多巴胺果凍厚底卡
+	## 左側四大殿堂：收斂尺寸與半透明金屬板件，將視覺焦點100%讓給中央主角
 	var left_shops := VBoxContainer.new()
 	left_shops.name = "HallCardsContainer"
 	left_shops.set_anchors_preset(Control.PRESET_LEFT_WIDE)
-	left_shops.offset_left = 32
-	left_shops.offset_top = 20
-	left_shops.offset_right = 248
-	left_shops.offset_bottom = -20
-	left_shops.add_theme_constant_override("separation", 12)
+	left_shops.offset_left = 28
+	left_shops.offset_top = 24
+	left_shops.offset_right = 224
+	left_shops.offset_bottom = -24
+	left_shops.add_theme_constant_override("separation", 10)
 	_village_layer.add_child(left_shops)
 
 	_hall_buttons.clear()
@@ -1506,44 +1795,99 @@ func _build_village_tab() -> void:
 		open_windup_daily()
 	)
 
-	## 裝備示意：高清立繪旁列出當前外裝／武器／發條／奇玩
-	_equip_schematic = VBoxContainer.new()
+	## 裝備示意：2x2 立體方形裝備 Icon 槽位（外裝／武器／發條／奇玩）
+	_equip_schematic = GridContainer.new()
 	_equip_schematic.name = "EquipSchematic"
+	_equip_schematic.columns = 2
 	_equip_schematic.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	_equip_schematic.offset_left = -364
+	_equip_schematic.offset_left = -260
 	_equip_schematic.offset_top = 16
 	_equip_schematic.offset_right = -20
-	_equip_schematic.offset_bottom = 250
-	_equip_schematic.add_theme_constant_override("separation", 8)
+	_equip_schematic.offset_bottom = 242
+	_equip_schematic.add_theme_constant_override("h_separation", 10)
+	_equip_schematic.add_theme_constant_override("v_separation", 10)
 	_village_layer.add_child(_equip_schematic)
 	_refresh_equip_schematic()
 
 	## 右側：多巴胺奶油白戰情報告板 (專注於主線推進)
 	var right_card := PanelContainer.new()
+	right_card.name = "RightSortieCard"
 	right_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	right_card.offset_left = -364
-	right_card.offset_top = -210
+	right_card.offset_left = -336
+	right_card.offset_top = -216
 	right_card.offset_right = -20
 	right_card.offset_bottom = -16
-	right_card.add_theme_stylebox_override("panel", _create_obsidian_panel(COLOR_BORDER))
+
+	# 升級為半透明黑曜黃銅板件與立體果凍厚底質感
+	var rsb := StyleBoxFlat.new()
+	rsb.bg_color = Color(0.12, 0.09, 0.16, 0.82)
+	rsb.border_color = COLOR_BORDER
+	rsb.set_border_width_all(2)
+	rsb.border_width_bottom = 6
+	rsb.set_corner_radius_all(22)
+	rsb.content_margin_left = 18
+	rsb.content_margin_right = 18
+	rsb.content_margin_top = 14
+	rsb.content_margin_bottom = 14
+	rsb.shadow_color = Color(0.08, 0.06, 0.16, 0.35)
+	rsb.shadow_size = 12
+	rsb.shadow_offset = Vector2(0, 5)
+	right_card.add_theme_stylebox_override("panel", rsb)
 	_village_layer.add_child(right_card)
+
+	# 蒸汽發條黃銅雙層內飾邊 (Brass Inner Rim)
+	var r_trim := Panel.new()
+	r_trim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	r_trim.offset_left = 3
+	r_trim.offset_top = 3
+	r_trim.offset_right = -3
+	r_trim.offset_bottom = -7
+	r_trim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var rtsb := StyleBoxFlat.new()
+	rtsb.draw_center = false
+	rtsb.border_color = Color(0.83, 0.68, 0.22, 0.65)
+	rtsb.set_border_width_all(1)
+	rtsb.set_corner_radius_all(19)
+	r_trim.add_theme_stylebox_override("panel", rtsb)
+	right_card.add_child(r_trim)
 
 	var rv := VBoxContainer.new()
 	rv.add_theme_constant_override("separation", 8)
 	right_card.add_child(rv)
 
+	# 標題欄：黃銅金屬小標牌 (Brass Header Badge)
+	var ch_badge := PanelContainer.new()
+	ch_badge.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	var cbsb := StyleBoxFlat.new()
+	cbsb.bg_color = Color(0.83, 0.68, 0.22, 0.22)
+	cbsb.border_color = Color(0.83, 0.68, 0.22, 0.85)
+	cbsb.set_border_width_all(1)
+	cbsb.set_corner_radius_all(8)
+	cbsb.content_margin_left = 8
+	cbsb.content_margin_right = 8
+	cbsb.content_margin_top = 2
+	cbsb.content_margin_bottom = 2
+	ch_badge.add_theme_stylebox_override("panel", cbsb)
+	rv.add_child(ch_badge)
+
 	var ch_lbl := Label.new()
 	ch_lbl.text = _t("冒險出征 · 當前主線")
-	ch_lbl.add_theme_font_size_override("font_size", 14)
-	ch_lbl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
-	rv.add_child(ch_lbl)
+	if _cached_font:
+		ch_lbl.add_theme_font_override("font", _cached_font)
+	ch_lbl.add_theme_font_size_override("font_size", 13)
+	ch_lbl.add_theme_color_override("font_color", Color("#FFF5E0"))
+	ch_badge.add_child(ch_lbl)
 	_sortie_title_label = ch_lbl
 
 	var s_name := Label.new()
 	var stage_name_text := _t("第二地區 · 白霧之地 (2-4 BOSS)")
 	s_name.text = stage_name_text
 	s_name.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	s_name.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		s_name.add_theme_font_override("font", _cached_font)
+	s_name.add_theme_color_override("font_color", Color("#FFFDF8"))
+	s_name.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	s_name.add_theme_constant_override("outline_size", 3)
 	if stage_name_text.length() > 30:
 		s_name.add_theme_font_size_override("font_size", 15)
 	else:
@@ -1554,7 +1898,6 @@ func _build_village_tab() -> void:
 	var btn_go := Button.new()
 	btn_go.name = "SortieButton"
 	btn_go.text = _t("前往出征")
-	UiStyle.style_button(btn_go, true)
 	var sortie_icon_path := "res://assets/icons/hud/icon_btn_sortie.png"
 	if ResourceLoader.exists(sortie_icon_path):
 		btn_go.icon = load(sortie_icon_path)
@@ -1563,13 +1906,57 @@ func _build_village_tab() -> void:
 		btn_go.add_theme_constant_override("h_separation", 10)
 		btn_go.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	btn_go.custom_minimum_size = Vector2(280, 64)
-	btn_go.add_theme_font_size_override("font_size", 20)
-	btn_go.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	btn_go.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
-	btn_go.add_theme_constant_override("outline_size", 3)
+
+	var s_btn_normal := StyleBoxFlat.new()
+	s_btn_normal.bg_color = Color("#FFD028")
+	s_btn_normal.border_color = COLOR_BORDER
+	s_btn_normal.set_border_width_all(2)
+	s_btn_normal.border_width_bottom = 6
+	s_btn_normal.set_corner_radius_all(20)
+	s_btn_normal.shadow_color = Color(0.83, 0.68, 0.22, 0.40)
+	s_btn_normal.shadow_size = 8
+	s_btn_normal.shadow_offset = Vector2(0, 4)
+	btn_go.add_theme_stylebox_override("normal", s_btn_normal)
+
+	var s_btn_hover := s_btn_normal.duplicate() as StyleBoxFlat
+	s_btn_hover.bg_color = Color(1.0, 0.88, 0.32, 1.0)
+	s_btn_hover.border_color = Color("#FFA010")
+	btn_go.add_theme_stylebox_override("hover", s_btn_hover)
+
+	var s_btn_pressed := s_btn_normal.duplicate() as StyleBoxFlat
+	s_btn_pressed.bg_color = Color(0.95, 0.72, 0.12, 1.0)
+	s_btn_pressed.border_width_bottom = 2
+	s_btn_pressed.content_margin_top = 14
+	s_btn_pressed.content_margin_bottom = 10
+	btn_go.add_theme_stylebox_override("pressed", s_btn_pressed)
+	btn_go.add_theme_stylebox_override("focus", s_btn_hover)
+
+	# 內嵌黃銅高光邊飾
+	var s_trim := Panel.new()
+	s_trim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	s_trim.offset_left = 3
+	s_trim.offset_top = 3
+	s_trim.offset_right = -3
+	s_trim.offset_bottom = -7
+	s_trim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var stsb := StyleBoxFlat.new()
+	stsb.draw_center = false
+	stsb.border_color = Color(1.0, 0.95, 0.65, 0.70)
+	stsb.set_border_width_all(1)
+	stsb.set_corner_radius_all(17)
+	s_trim.add_theme_stylebox_override("panel", stsb)
+	btn_go.add_child(s_trim)
+
+	if _cached_font:
+		btn_go.add_theme_font_override("font", _cached_font)
+	btn_go.add_theme_font_size_override("font_size", 22)
+	btn_go.add_theme_color_override("font_color", Color("#FFFFFF"))
+	btn_go.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	btn_go.add_theme_constant_override("outline_size", 4)
 	btn_go.pressed.connect(func(): _switch_tab(Tab.ADVENTURE))
 	_sortie_button = btn_go
 	rv.add_child(btn_go)
+	_start_sortie_glow_tween()
 
 func get_settings_button() -> Button:
 	return _settings_button
@@ -1598,63 +1985,80 @@ func _style_hall_card(btn: Button, is_active: bool) -> void:
 		sb.border_color = COLOR_BORDER
 		sb.set_border_width_all(2)
 		sb.border_width_bottom = 6
-		sb.set_corner_radius_all(20)
-		sb.content_margin_top = 8
-		sb.content_margin_bottom = 10
-		sb.content_margin_left = 14
-		sb.content_margin_right = 14
-		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+		sb.set_corner_radius_all(18)
+		sb.content_margin_top = 6
+		sb.content_margin_bottom = 8
+		sb.content_margin_left = 12
+		sb.content_margin_right = 12
+		sb.shadow_color = Color(0.83, 0.68, 0.22, 0.35)
 		sb.shadow_size = 8
 		sb.shadow_offset = Vector2(0, 4)
-		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-		btn.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
-		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+		btn.add_theme_color_override("font_hover_color", Color("#FFFFFF"))
+		btn.add_theme_color_override("font_pressed_color", Color("#FFFFFF"))
 	else:
-		sb.bg_color = COLOR_CARD_WARM
+		# 半透明蒸汽發條黃銅金屬板件 (淘汰純白高光，視覺焦點100%讓給中央主角)
+		sb.bg_color = Color(0.12, 0.10, 0.16, 0.78)
 		sb.border_color = COLOR_BORDER
 		sb.set_border_width_all(2)
-		sb.border_width_bottom = 5
-		sb.set_corner_radius_all(20)
-		sb.content_margin_top = 8
-		sb.content_margin_bottom = 9
-		sb.content_margin_left = 14
-		sb.content_margin_right = 14
-		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.16)
+		sb.border_width_bottom = 4
+		sb.set_corner_radius_all(18)
+		sb.content_margin_top = 6
+		sb.content_margin_bottom = 8
+		sb.content_margin_left = 12
+		sb.content_margin_right = 12
+		sb.shadow_color = Color(0.08, 0.06, 0.14, 0.25)
 		sb.shadow_size = 6
 		sb.shadow_offset = Vector2(0, 3)
-		btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-		btn.add_theme_color_override("font_hover_color", COLOR_ORANGE)
-		btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+		btn.add_theme_color_override("font_color", Color("#FFF5E0"))
+		btn.add_theme_color_override("font_hover_color", Color("#FFD028"))
+		btn.add_theme_color_override("font_pressed_color", Color("#FFF5E0"))
 
 	var sb_h := sb.duplicate() as StyleBoxFlat
 	if not is_active:
-		sb_h.bg_color = COLOR_CARD_GOLD
+		sb_h.bg_color = Color(0.20, 0.16, 0.26, 0.85)
+		sb_h.border_color = Color("#D4AF37")
 	else:
 		sb_h.bg_color = Color("#FFB84D")
 
 	var sb_p := sb.duplicate() as StyleBoxFlat
 	sb_p.border_width_bottom = 2
-	sb_p.content_margin_top = 11
+	sb_p.content_margin_top = 8
 	sb_p.content_margin_bottom = 6
-	sb_p.shadow_size = 3
+	sb_p.shadow_size = 2
 	sb_p.shadow_offset = Vector2(0, 1)
 
 	btn.add_theme_stylebox_override("normal", sb)
 	btn.add_theme_stylebox_override("hover", sb_h)
 	btn.add_theme_stylebox_override("pressed", sb_p)
-	btn.add_theme_stylebox_override("focus", sb)
+	btn.add_theme_stylebox_override("focus", sb_h)
 
 	var t_lbl := btn.get_node_or_null("TextContainer/TitleLabel") as Label
 	var s_lbl := btn.get_node_or_null("TextContainer/SubtitleLabel") as Label
 	if t_lbl:
-		t_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-		t_lbl.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
-		t_lbl.add_theme_constant_override("outline_size", 2)
+		if _cached_font:
+			t_lbl.add_theme_font_override("font", _cached_font)
+		t_lbl.add_theme_font_size_override("font_size", 15)
+		if is_active:
+			t_lbl.add_theme_color_override("font_color", Color("#FFFFFF"))
+			t_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+			t_lbl.add_theme_constant_override("outline_size", 3)
+		else:
+			t_lbl.add_theme_color_override("font_color", Color("#FFF5E0"))
+			t_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+			t_lbl.add_theme_constant_override("outline_size", 3)
 	if s_lbl:
+		if _cached_font:
+			s_lbl.add_theme_font_override("font", _cached_font)
+		s_lbl.add_theme_font_size_override("font_size", 10)
 		if is_active:
 			s_lbl.add_theme_color_override("font_color", Color("#4A240A"))
+			s_lbl.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
+			s_lbl.add_theme_constant_override("outline_size", 1)
 		else:
-			s_lbl.add_theme_color_override("font_color", Color("#6A4225"))
+			s_lbl.add_theme_color_override("font_color", Color("#D4AF37"))
+			s_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+			s_lbl.add_theme_constant_override("outline_size", 1)
 
 func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, icon_res_or_symbol: String = "", cb_fallback: Callable = Callable()) -> Button:
 	var cb: Callable
@@ -1675,7 +2079,7 @@ func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, ico
 		sub_str = subtitle_or_cb
 		btn.set_meta("hall_subtitle", _t(sub_str))
 		btn.set_meta("hall_subtitle_key", sub_str)
-	btn.custom_minimum_size = Vector2(216, 56)
+	btn.custom_minimum_size = Vector2(196, 50)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.text = ""
 
@@ -1699,15 +2103,32 @@ func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, ico
 		btn.add_theme_constant_override("icon_max_width", 32)
 		btn.alignment = HORIZONTAL_ALIGNMENT_LEFT
 
-	# 內部文字排版：主標題 + 副標題（offset_left=58 避開左側 icon 與 x=100 掃描列）
+	# 蒸汽發條黃銅雙層內飾邊 (Brass Trim)
+	var metal_trim := Panel.new()
+	metal_trim.name = "MetalTrim"
+	metal_trim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	metal_trim.offset_left = 3
+	metal_trim.offset_top = 3
+	metal_trim.offset_right = -3
+	metal_trim.offset_bottom = -5
+	metal_trim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var mtsb := StyleBoxFlat.new()
+	mtsb.draw_center = false
+	mtsb.border_color = Color(0.83, 0.68, 0.22, 0.55)
+	mtsb.set_border_width_all(1)
+	mtsb.set_corner_radius_all(16)
+	metal_trim.add_theme_stylebox_override("panel", mtsb)
+	btn.add_child(metal_trim)
+
+	# 內部文字排版：主標題 + 副標題
 	var tc := VBoxContainer.new()
 	tc.name = "TextContainer"
 	tc.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	tc.set_anchors_preset(Control.PRESET_FULL_RECT)
-	tc.offset_left = 58
-	tc.offset_right = -8
-	tc.offset_top = 4
-	tc.offset_bottom = -6
+	tc.offset_left = 50
+	tc.offset_right = -6
+	tc.offset_top = 3
+	tc.offset_bottom = -5
 	tc.alignment = BoxContainer.ALIGNMENT_CENTER
 	tc.add_theme_constant_override("separation", 1)
 	btn.add_child(tc)
@@ -1721,11 +2142,15 @@ func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, ico
 	t_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	t_lbl.text = t_translated
 	t_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	if _cached_font:
+		t_lbl.add_theme_font_override("font", _cached_font)
 	if cur_loc in ["en", "es"] and t_translated.length() > 14:
 		t_lbl.add_theme_font_size_override("font_size", 13)
 	else:
 		t_lbl.add_theme_font_size_override("font_size", 15)
-	t_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	t_lbl.add_theme_color_override("font_color", Color("#FFF5E0"))
+	t_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	t_lbl.add_theme_constant_override("outline_size", 3)
 	tc.add_child(t_lbl)
 
 	var s_lbl := Label.new()
@@ -1733,11 +2158,12 @@ func _add_hall_card(parent: Container, title: String, subtitle_or_cb = null, ico
 	s_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	s_lbl.text = s_translated
 	s_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	if cur_loc in ["en", "es"]:
-		s_lbl.add_theme_font_size_override("font_size", 9)
-	else:
-		s_lbl.add_theme_font_size_override("font_size", 10)
-	s_lbl.add_theme_color_override("font_color", Color("#6B6278"))
+	if _cached_font:
+		s_lbl.add_theme_font_override("font", _cached_font)
+	s_lbl.add_theme_font_size_override("font_size", 10)
+	s_lbl.add_theme_color_override("font_color", Color("#D4AF37"))
+	s_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	s_lbl.add_theme_constant_override("outline_size", 1)
 	tc.add_child(s_lbl)
 
 	var card_idx := _hall_buttons.size()
@@ -1835,16 +2261,22 @@ func _on_hero_clicked(forced_act: int = -1, forced_speech: int = -1) -> void:
 	tw.tween_property(_hero_avatar, "scale", Vector2(1.18, 0.82), 0.08).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	if _hero_shadow:
 		tw.parallel().tween_property(_hero_shadow, "scale", Vector2(1.18, 1.18), 0.08)
+	if _hero_contact_shadow:
+		tw.parallel().tween_property(_hero_contact_shadow, "scale", Vector2(1.22, 1.22), 0.08)
 	# 2. 彈高 (Stretch)
 	tw.tween_property(_hero_avatar, "scale", Vector2(0.88, 1.16), 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	if _hero_shadow:
 		tw.parallel().tween_property(_hero_shadow, "scale", Vector2(0.85, 0.85), 0.14)
+	if _hero_contact_shadow:
+		tw.parallel().tween_property(_hero_contact_shadow, "scale", Vector2(0.68, 0.68), 0.14)
 	# 3. 微微回彈
 	tw.tween_property(_hero_avatar, "scale", Vector2(1.04, 0.96), 0.10).set_trans(Tween.TRANS_SINE)
 	# 4. 回正
 	tw.tween_property(_hero_avatar, "scale", Vector2(1.0, 1.0), 0.08).set_trans(Tween.TRANS_SINE)
 	if _hero_shadow:
 		tw.parallel().tween_property(_hero_shadow, "scale", Vector2(1.0, 1.0), 0.08)
+	if _hero_contact_shadow:
+		tw.parallel().tween_property(_hero_contact_shadow, "scale", Vector2(1.0, 1.0), 0.08)
 
 	match act_type:
 		0:

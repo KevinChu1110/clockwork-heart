@@ -7,6 +7,7 @@ const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const OutlineShader = preload("res://shaders/outline.gdshader")
+const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 
@@ -1626,12 +1627,18 @@ func _apply_outline(body: TextureRect, width: float) -> void:
 		return
 	body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	var mat := body.material as ShaderMaterial
-	if mat == null or mat.shader != OutlineShader:
+	if mat == null or (mat.shader != OutlineShader and mat.shader != RimLightShader):
 		mat = ShaderMaterial.new()
-		mat.shader = OutlineShader
+		mat.shader = RimLightShader
 		body.material = mat
 	mat.set_shader_parameter("outline_width", width)
 	mat.set_shader_parameter("outline_color", Color(0.20, 0.12, 0.07, 1.0))
+	mat.set_shader_parameter("outline_enabled", true)
+	mat.set_shader_parameter("rim_enabled", true)
+	mat.set_shader_parameter("rim_color", Color(1.0, 0.88, 0.52, 1.0))
+	mat.set_shader_parameter("rim_width", 3.8)
+	mat.set_shader_parameter("rim_intensity", 1.35)
+	mat.set_shader_parameter("rim_direction", Vector2(0.15, -0.95))
 
 
 func _body_drawn_rect(body: TextureRect) -> Rect2:
@@ -1787,7 +1794,33 @@ func _ensure_foot_shadow(body: TextureRect) -> void:
 		mat.shader = FootShadowShader
 		sh.material = mat
 	mat.set_shader_parameter("strength", 0.92)
-	mat.set_shader_parameter("shadow_color", Color(0.01, 0.01, 0.02, 1.0))
+	mat.set_shader_parameter("smooth_gradient", true)
+	mat.set_shader_parameter("is_contact_shadow", false)
+	mat.set_shader_parameter("shadow_color", Color(0.015, 0.012, 0.025, 1.0))
+
+	## 雙層接地陰影：深色接觸硬影 (Contact Occlusion Shadow)
+	var contact_key := "ContactShadow_%s" % body.name
+	var csh := layer.get_node_or_null(contact_key) as TextureRect
+	if csh == null:
+		csh = TextureRect.new()
+		csh.name = contact_key
+		csh.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		csh.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		csh.stretch_mode = TextureRect.STRETCH_SCALE
+		csh.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		csh.texture = _soft_shadow_tex()
+		csh.layout_mode = 0
+		layer.add_child(csh)
+	var cmat := csh.material as ShaderMaterial
+	if cmat == null or cmat.shader != FootShadowShader:
+		cmat = ShaderMaterial.new()
+		cmat.shader = FootShadowShader
+		csh.material = cmat
+	cmat.set_shader_parameter("strength", 0.98)
+	cmat.set_shader_parameter("is_contact_shadow", true)
+	cmat.set_shader_parameter("smooth_gradient", false)
+	cmat.set_shader_parameter("shadow_color", Color(0.005, 0.005, 0.01, 1.0))
+
 	_layout_foot_shadow(body)
 
 
@@ -1798,16 +1831,8 @@ func _layout_foot_shadow(body: TextureRect) -> void:
 	if layer == null:
 		return
 	var sh := layer.get_node_or_null("FootShadow_%s" % body.name) as TextureRect
+	var csh := layer.get_node_or_null("ContactShadow_%s" % body.name) as TextureRect
 	if sh == null or sh.texture == null:
-		return
-	## 角色或敵方貼圖若已自帶接地影，關閉外掛 FootShadow 避免疊第二層與錯位 (review.md 16c)
-	var has_baked := false
-	if body == player_body:
-		has_baked = _player_tex_has_baked_shadow or _texture_has_baked_shadow(body.texture)
-	elif body and body.texture:
-		has_baked = _texture_has_baked_shadow(body.texture)
-	if has_baked:
-		sh.visible = false
 		return
 	var dr := _body_drawn_rect(body)
 	if dr.size.x < 8.0 or dr.size.y < 8.0:
@@ -1815,10 +1840,10 @@ func _layout_foot_shadow(body: TextureRect) -> void:
 	var frac := _content_bottom_frac(body.texture)
 	var local_feet := Vector2(dr.position.x + dr.size.x * 0.5, dr.position.y + dr.size.y * frac)
 	var feet: Vector2 = body.get_global_transform() * local_feet
-	var sz := Vector2(maxf(dr.size.x * 1.60, 220.0), maxf(dr.size.x * 0.22, 36.0))
+	var sz := Vector2(maxf(dr.size.x * 1.55, 230.0), maxf(dr.size.x * 0.26, 42.0))
 	var s_scale := layer.get_global_transform().get_scale()
-	## 扁橢圓貼在腳底地面（約 40% 在腳線上方、60% 在腳線下方落地）
-	var pos_y := feet.y - (sz.y * s_scale.y) * 0.40
+	## 扁橢圓貼在腳底地面（約 38% 在腳線上方、62% 在腳線下方落地）
+	var pos_y := feet.y - (sz.y * s_scale.y) * 0.38
 	var panel_top := size.y - 8.0
 	if _log_panel and is_instance_valid(_log_panel):
 		panel_top = _log_panel.global_position.y
@@ -1832,12 +1857,23 @@ func _layout_foot_shadow(body: TextureRect) -> void:
 	if pos_y + sz.y * s_scale.y > max_bottom:
 		sz.y = maxf(20.0, (max_bottom - pos_y) / maxf(s_scale.y, 0.001))
 	sh.size = sz
-	## 幾乎整塊落腳前方地面；底邊不進戰報。
+	## 雙層接地陰影：大範圍漸層漫射軟影
 	sh.global_position = Vector2(feet.x - (sz.x * s_scale.x) * 0.5, pos_y)
 	sh.visible = true
 	sh.modulate = Color(1, 1, 1, 1)
 	sh.z_index = 0
 	sh.z_as_relative = true
+
+	if csh:
+		## 雙層接地陰影：緊密深色接觸硬影（深黑遮蔽核，消除浮空）
+		var csz := Vector2(sz.x * 0.68, sz.y * 0.52)
+		var cpos_y := feet.y - (csz.y * s_scale.y) * 0.45
+		csh.size = csz
+		csh.global_position = Vector2(feet.x - (csz.x * s_scale.x) * 0.5, cpos_y)
+		csh.visible = true
+		csh.modulate = Color(1, 1, 1, 1)
+		csh.z_index = 1
+		csh.z_as_relative = true
 
 
 func _ensure_screen_grade() -> void:
@@ -3354,6 +3390,13 @@ func _get_player_foot_shadow() -> TextureRect:
 	return layer.get_node_or_null("FootShadow_PlayerBody") as TextureRect
 
 
+func _get_player_contact_shadow() -> TextureRect:
+	var layer := get_node_or_null("ShadowLayer") as Control
+	if layer == null:
+		return null
+	return layer.get_node_or_null("ContactShadow_PlayerBody") as TextureRect
+
+
 func _update_player_pivot() -> void:
 	if player_body == null:
 		return
@@ -3372,18 +3415,28 @@ func _start_breathe_tween() -> void:
 	_update_player_pivot()
 	player_body.scale = Vector2.ONE
 	var sh := _get_player_foot_shadow()
+	var csh := _get_player_contact_shadow()
 	var external_sh: TextureRect = null
+	var external_csh: TextureRect = null
 	if sh and sh.visible and not _player_tex_has_baked_shadow:
 		sh.pivot_offset = sh.size * 0.5
 		sh.scale = Vector2.ONE
 		external_sh = sh
+	if csh and csh.visible and not _player_tex_has_baked_shadow:
+		csh.pivot_offset = csh.size * 0.5
+		csh.scale = Vector2.ONE
+		external_csh = csh
 	_breathe_tween = create_tween().set_loops()
 	_breathe_tween.tween_property(player_body, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
 	if external_sh:
 		_breathe_tween.parallel().tween_property(external_sh, "scale", Vector2(1.03, 0.97), 1.1).set_trans(Tween.TRANS_SINE)
+	if external_csh:
+		_breathe_tween.parallel().tween_property(external_csh, "scale", Vector2(1.02, 0.98), 1.1).set_trans(Tween.TRANS_SINE)
 	_breathe_tween.tween_property(player_body, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
 	if external_sh:
 		_breathe_tween.parallel().tween_property(external_sh, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
+	if external_csh:
+		_breathe_tween.parallel().tween_property(external_csh, "scale", Vector2(0.98, 1.02), 1.1).set_trans(Tween.TRANS_SINE)
 
 
 func _stop_breathe_tween() -> void:
@@ -3395,6 +3448,9 @@ func _stop_breathe_tween() -> void:
 	var sh := _get_player_foot_shadow()
 	if sh:
 		sh.scale = Vector2.ONE
+	var csh := _get_player_contact_shadow()
+	if csh:
+		csh.scale = Vector2.ONE
 
 
 func _set_boss_pose(pose: String, punch: bool = false) -> void:

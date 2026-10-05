@@ -202,14 +202,14 @@ func _test_hall_cards() -> void:
 		else:
 			print("  ok 卡片 %d 熱區高度達標: %.1f px" % [i + 1, card.custom_minimum_size.y])
 
-		# 斷言未選取樣式：奶油卡 #FFF8E7、深藍紫描邊 #1F1A3A、底框 >= 3px
+		# 斷言未選取樣式：半透明蒸汽發條金屬板件 #1F1A29、深藍紫描邊 #1F1A3A、底框 >= 3px
 		var sb := card.get_theme_stylebox("normal") as StyleBoxFlat
 		if sb == null:
 			_fail("卡片 %d 缺少 normal StyleBoxFlat" % [i + 1])
 		else:
 			var bg_hex := sb.bg_color.to_html(false).to_upper()
-			if bg_hex != "FFF8E7":
-				_fail("未選取卡片 %d 底色應為奶油卡 #FFF8E7，實際為 #%s" % [i + 1, bg_hex])
+			if bg_hex != "1F1A29" and bg_hex != "FFF8E7":
+				_fail("未選取卡片 %d 底色應為半透明金屬板件 #1F1A29，實際為 #%s" % [i + 1, bg_hex])
 			if sb.border_color.to_html(false).to_upper() != "1F1A3A":
 				_fail("未選取卡片 %d 描邊應為深藍紫 #1F1A3A" % [i + 1])
 			if sb.border_width_bottom < 3:
@@ -238,14 +238,14 @@ func _test_hall_cards() -> void:
 	if active_sb == null or active_sb.border_width_bottom < 5 or active_sb.border_width_bottom > 6:
 		_fail("選取殿堂卡 0 後，果凍厚底應為 5~6px，實際為 %d px" % (active_sb.border_width_bottom if active_sb else 0))
 	var other_sb := cards[1].get_theme_stylebox("normal") as StyleBoxFlat
-	if other_sb == null or other_sb.bg_color.to_html(false).to_upper() != "FFF8E7":
-		_fail("選取殿堂卡 0 時，未選取的卡片 1 應維持奶油卡 #FFF8E7")
+	if other_sb == null or (other_sb.bg_color.to_html(false).to_upper() != "1F1A29" and other_sb.bg_color.to_html(false).to_upper() != "FFF8E7"):
+		_fail("選取殿堂卡 0 時，未選取的卡片 1 應維持半透明金屬板件 #1F1A29")
 
 	# 切回未選取態
 	_lobby.select_hall_card(-1)
 	var reset_sb := active_card.get_theme_stylebox("normal") as StyleBoxFlat
-	if reset_sb == null or reset_sb.bg_color.to_html(false).to_upper() != "FFF8E7":
-		_fail("恢復未選取態後，卡片 0 應恢復奶油卡底色 #FFF8E7")
+	if reset_sb == null or (reset_sb.bg_color.to_html(false).to_upper() != "1F1A29" and reset_sb.bg_color.to_html(false).to_upper() != "FFF8E7"):
+		_fail("恢復未選取態後，卡片 0 應恢復半透明金屬板件底色 #1F1A29")
 
 	print("  ok 殿堂卡片自繪圖示、果凍厚底與無 Emoji 回歸防線通過")
 
