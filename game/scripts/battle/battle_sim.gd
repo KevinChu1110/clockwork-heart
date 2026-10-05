@@ -397,9 +397,20 @@ func _begin_attack(u: BattleUnit) -> void:
 			target = st
 	u.target_id = target.id
 
-	## 次數已盡 → 先進入赤手再出手（最後一擊仍算持武，在結算時扣）
-	if u.id == player_id:
-		_ensure_armed_or_bare(u)
+	## 次數已盡 → 自動換欄佔一回合並插入戰報『發條劍停擺，換上黃銅槍』
+	if u.id == player_id and not u.bare_fisted:
+		if u.weapon_uses_max > 0 and u.weapon_uses_left <= 0:
+			if _try_auto_switch_weapon(u):
+				u.state = BattleUnit.State.RECOVER
+				u.state_timer = u.recover_time
+				_emit("state", {"id": u.id, "state": "recover"})
+				return
+			else:
+				_enter_bare_fist(u)
+				u.state = BattleUnit.State.RECOVER
+				u.state_timer = u.recover_time
+				_emit("state", {"id": u.id, "state": "recover"})
+				return
 
 	## 怒氣滿且會技能（赤手無武器技）
 	if u.can_skill and not u.bare_fisted and u.rage >= RAGE_MAX:
@@ -2888,6 +2899,43 @@ func get_first_broken_part(enemy: BattleUnit = null) -> Dictionary:
 	return {}
 
 
+func _weapon_line_name(line: String) -> String:
+	match line:
+		"sword":
+			return _t("發條劍")
+		"spear":
+			return _t("黃銅槍")
+		"axe":
+			return _t("破岩斧")
+		"hammer":
+			return _t("鍛造鎚")
+		"dagger":
+			return _t("暗影匕")
+		"dart":
+			return _t("疾風鏢")
+		"fist":
+			return _t("鐵甲拳")
+		"claw":
+			return _t("鋼刃爪")
+		"bow":
+			return _t("精準弓")
+		"gun":
+			return _t("重火銃")
+		"magic":
+			return _t("秘法杖")
+		"crystal":
+			return _t("晶能儀")
+		_:
+			return line if line != "" else _t("發條劍")
+
+
+func _get_bar_name(bar: Dictionary) -> String:
+	var n := str(bar.get("name", "")).strip_edges()
+	if n != "":
+		return n
+	return _weapon_line_name(str(bar.get("line", "sword")))
+
+
 ## 戰鬥中切換真正武器欄（1／2／3 手動；耗盡時 auto=true）。各欄獨立使用次數。
 func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 	var p := get_unit(player_id)
@@ -2910,6 +2958,9 @@ func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 	var line := str(bar.get("line", "sword"))
 	if index == weapon_bar_active and not p.bare_fisted and p.weapon_class == line:
 		return true  ## 已在此欄且 line 相同
+	var old_bar: Dictionary = weapon_bars[weapon_bar_active] if weapon_bar_active >= 0 and weapon_bar_active < weapon_bars.size() else {}
+	var old_name := _get_bar_name(old_bar)
+	var new_name := _get_bar_name(bar)
 	## 換到另一欄才把舊欄次數寫回（同欄重生／單測灌假欄時不可把新次數蓋成 0）
 	if index != weapon_bar_active:
 		_persist_active_bar_uses(p)
@@ -2935,7 +2986,8 @@ func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 		_refresh_player_skill_choice(p)
 	_emit("weapon_slot_switched", {
 		"index": index,
-		"name": str(bar.get("name", "")),
+		"name": new_name,
+		"old_name": old_name,
 		"line": line,
 		"skill_name": p.skill_name,
 		"windup": p.windup_time,

@@ -53,7 +53,7 @@ signal battle_finished(won: bool)
 @onready var countdown_sub: Label = %CountdownSub
 @onready var telegraph: ColorRect = %TelegraphFlash
 @onready var size_compare: Control = %SizeCompare
-@onready var btn_flee: Button = %BtnFlee
+var btn_flee: Button = null
 @onready var player_body: TextureRect = $Arena/PlayerSlot/PlayerBody
 @onready var enemy_body: TextureRect = $Arena/EnemySlot/EnemyBody
 @onready var arena: HBoxContainer = $Arena
@@ -835,7 +835,7 @@ func _apply_safe_hud() -> void:
 	if bars:
 		bars.offset_left = m.x + 16.0
 		bars.offset_top = m.y + 8.0
-		bars.offset_right = -(m.z + 16.0)
+		bars.offset_right = -(m.z + 80.0)
 	if btn_flee and btn_flee.get_parent() != _thumb_pad:
 		btn_flee.offset_right = -m.z
 		btn_flee.offset_bottom = -m.w
@@ -1037,6 +1037,36 @@ func _update_resist_notice(p: BattleUnit = null) -> void:
 	_apply_safe_hud()
 
 
+func _weapon_line_name(line: String) -> String:
+	match line:
+		"sword":
+			return _t("發條劍")
+		"spear":
+			return _t("黃銅槍")
+		"axe":
+			return _t("破岩斧")
+		"hammer":
+			return _t("鍛造鎚")
+		"dagger":
+			return _t("暗影匕")
+		"dart":
+			return _t("疾風鏢")
+		"fist":
+			return _t("鐵甲拳")
+		"claw":
+			return _t("鋼刃爪")
+		"bow":
+			return _t("精準弓")
+		"gun":
+			return _t("重火銃")
+		"magic":
+			return _t("秘法杖")
+		"crystal":
+			return _t("晶能儀")
+		_:
+			return line if line != "" else _t("武器")
+
+
 func _ensure_weapon_dock() -> void:
 	if _weapon_dock != null and is_instance_valid(_weapon_dock):
 		return
@@ -1046,36 +1076,51 @@ func _ensure_weapon_dock() -> void:
 	_weapon_dock = HBoxContainer.new()
 	_weapon_dock.name = "WeaponDock"
 	_weapon_dock.alignment = BoxContainer.ALIGNMENT_BEGIN
-	_weapon_dock.add_theme_constant_override("separation", 6)
+	_weapon_dock.add_theme_constant_override("separation", 8)
 	side.add_child(_weapon_dock)
 	var rage_i := player_rage.get_index() if player_rage else 2
 	side.move_child(_weapon_dock, mini(rage_i + 1, side.get_child_count() - 1))
 	_weapon_dock_cells.clear()
 	for i in 3:
-		var cell := Label.new()
-		cell.custom_minimum_size = Vector2(56, 56)
-		cell.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		cell.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-		var huninn := _get_huninn_font()
-		if huninn:
-			cell.add_theme_font_override("font", huninn)
-		cell.add_theme_font_size_override("font_size", 15)
-		cell.add_theme_color_override("font_color", Color("#1F1A3A"))
-		cell.add_theme_color_override("font_outline_color", Color.WHITE)
-		cell.add_theme_constant_override("outline_size", 2)
+		var cell := PanelContainer.new()
+		cell.name = "WeaponCell%d" % (i + 1)
+		cell.custom_minimum_size = Vector2(44, 44)
+		cell.mouse_filter = Control.MOUSE_FILTER_STOP
+
 		var csb := StyleBoxFlat.new()
 		csb.bg_color = Color("#FFFDF8")
 		csb.border_color = Color("#1F1A3A")
 		csb.set_border_width_all(2)
 		csb.border_width_bottom = 4
-		csb.set_corner_radius_all(14)
-		csb.shadow_color = Color(0.12, 0.1, 0.23, 0.15)
-		csb.shadow_size = 4
-		csb.shadow_offset = Vector2(0, 2)
-		cell.add_theme_stylebox_override("normal", csb)
-		cell.text = _t("欄%d") % [i + 1]
-		cell.mouse_filter = Control.MOUSE_FILTER_STOP
-		cell.tooltip_text = _t("點一下換武器")
+		csb.set_corner_radius_all(10)
+		cell.add_theme_stylebox_override("panel", csb)
+
+		var hbox := HBoxContainer.new()
+		hbox.name = "HBox"
+		hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+		hbox.add_theme_constant_override("separation", 4)
+		hbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cell.add_child(hbox)
+
+		var icon := TextureRect.new()
+		icon.name = "Icon"
+		icon.custom_minimum_size = Vector2(28, 28)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		hbox.add_child(icon)
+
+		var lab := Label.new()
+		lab.name = "Label"
+		var huninn := _get_huninn_font()
+		if huninn:
+			lab.add_theme_font_override("font", huninn)
+		lab.add_theme_font_size_override("font_size", 14)
+		lab.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		lab.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		hbox.add_child(lab)
+
 		cell.gui_input.connect(_on_weapon_cell_gui.bind(i))
 		_weapon_dock.add_child(cell)
 		_weapon_dock_cells.append(cell)
@@ -1117,54 +1162,115 @@ func _refresh_weapon_dock() -> void:
 	if _weapon_dock_cells.size() < 3:
 		return
 	var p: BattleUnit = sim.get_unit("player")
+	var is_bare: bool = (p != null and p.bare_fisted)
+	var active_slot: int = sim.weapon_bar_active
+
 	for i in 3:
-		var lab: Label = _weapon_dock_cells[i]
-		var txt := _t("欄%d") % [i + 1]
-		var active := false
-		var empty := true
+		var cell: PanelContainer = _weapon_dock_cells[i] as PanelContainer
+		if cell == null:
+			continue
+		var hbox: HBoxContainer = cell.get_node_or_null("HBox") as HBoxContainer
+		if hbox == null:
+			continue
+		var icon: TextureRect = hbox.get_node_or_null("Icon") as TextureRect
+		var lab: Label = hbox.get_node_or_null("Label") as Label
+		if icon == null or lab == null:
+			continue
+
 		var locked := false
+		var empty := true
+		var line := "sword"
+		var wname := ""
+		var left := 0
+		var mx := 0
+
 		if i < sim.weapon_bars.size():
 			var b: Dictionary = sim.weapon_bars[i]
 			locked = not bool(b.get("unlocked", true))
 			empty = bool(b.get("empty", true)) or str(b.get("line", "")) == ""
-			var line := str(b.get("line", ""))
-			var left := int(b.get("uses_left", 0))
-			var mx := int(b.get("uses_max", 0))
-			if locked:
-				txt = _t("欄%d\n鎖") % [i + 1]
-			elif empty:
-				txt = _t("欄%d\n空") % [i + 1]
-			else:
-				txt = "%s\n%d/%d" % [_weapon_line_short(line), left, mx]
-			active = (i == sim.weapon_bar_active) and p != null and not p.bare_fisted
-		var csb := lab.get_theme_stylebox("normal") as StyleBoxFlat
-		if csb == null:
-			csb = StyleBoxFlat.new()
-			csb.set_corner_radius_all(14)
-			csb.shadow_color = Color(0.12, 0.1, 0.23, 0.15)
-			csb.shadow_size = 4
-			csb.shadow_offset = Vector2(0, 2)
-			lab.add_theme_stylebox_override("normal", csb)
-		if active:
-			csb.bg_color = Color("#FFF4D0")
-			csb.border_color = Color("#FFA010")
-			csb.set_border_width_all(3)
-			csb.border_width_bottom = 5
-			lab.add_theme_color_override("font_color", Color("#A85A00"))
-		elif locked or empty:
+			line = str(b.get("line", "sword"))
+			wname = str(b.get("name", "")).strip_edges()
+			if wname == "":
+				wname = _weapon_line_name(line)
+			left = int(b.get("uses_left", 0))
+			mx = int(b.get("uses_max", 0))
+
+		var is_current := (i == active_slot) and not is_bare
+		var csb := StyleBoxFlat.new()
+		csb.set_corner_radius_all(10)
+
+		if is_bare and i == active_slot:
+			# 赤手狀態
+			cell.custom_minimum_size = Vector2(88, 44)
 			csb.bg_color = Color("#EDEBE6")
 			csb.border_color = Color("#A8A39D")
 			csb.set_border_width_all(2)
 			csb.border_width_bottom = 3
+			cell.add_theme_stylebox_override("panel", csb)
+
+			icon.visible = true
+			icon.texture = SpriteDB.weapon_tex_for_class("fist")
+			icon.modulate = Color(0.8, 0.5, 0.3)
+
+			lab.visible = true
+			lab.text = _t("赤手")
 			lab.add_theme_color_override("font_color", Color("#7E7A75"))
-		else:
-			csb.bg_color = Color("#FFFDF8")
-			csb.border_color = Color("#1F1A3A")
+		elif is_current:
+			# 當前武器名與剩餘次數
+			cell.custom_minimum_size = Vector2(116, 44)
+			csb.bg_color = Color("#FFF4D0")
+			csb.border_color = Color("#FFA010")
 			csb.set_border_width_all(2)
 			csb.border_width_bottom = 4
-			lab.add_theme_color_override("font_color", Color("#1F1A3A"))
-		lab.modulate = Color.WHITE
-		lab.text = txt
+			csb.shadow_color = Color(0.12, 0.1, 0.23, 0.15)
+			csb.shadow_size = 4
+			csb.shadow_offset = Vector2(0, 2)
+			cell.add_theme_stylebox_override("panel", csb)
+
+			icon.visible = true
+			icon.texture = SpriteDB.weapon_tex_for_class(line)
+			icon.modulate = Color.WHITE
+
+			lab.visible = true
+			lab.text = "%s %d/%d" % [wname, left, mx]
+			lab.add_theme_color_override("font_color", Color("#A85A00"))
+			lab.add_theme_color_override("font_outline_color", Color.WHITE)
+			lab.add_theme_constant_override("outline_size", 2)
+		else:
+			# 兩欄備用武器小圖（用完變灰）
+			cell.custom_minimum_size = Vector2(44, 44)
+			lab.visible = false
+			lab.text = ""
+
+			if locked or empty or left <= 0:
+				# 用完變灰
+				csb.bg_color = Color("#EDEBE6")
+				csb.border_color = Color("#A8A39D")
+				csb.set_border_width_all(2)
+				csb.border_width_bottom = 3
+				cell.add_theme_stylebox_override("panel", csb)
+
+				if not locked and not empty:
+					icon.visible = true
+					icon.texture = SpriteDB.weapon_tex_for_class(line)
+					icon.modulate = Color(0.45, 0.45, 0.45, 0.45)
+				else:
+					icon.visible = false
+					icon.texture = null
+			else:
+				# 備用武器可用
+				csb.bg_color = Color("#FFFDF8")
+				csb.border_color = Color("#1F1A3A")
+				csb.set_border_width_all(2)
+				csb.border_width_bottom = 4
+				csb.shadow_color = Color(0.12, 0.1, 0.23, 0.1)
+				csb.shadow_size = 3
+				csb.shadow_offset = Vector2(0, 1)
+				cell.add_theme_stylebox_override("panel", csb)
+
+				icon.visible = true
+				icon.texture = SpriteDB.weapon_tex_for_class(line)
+				icon.modulate = Color.WHITE
 
 
 class CoreDotIndicator extends Control:
@@ -3748,16 +3854,16 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			_refresh_part_focus_hint()
 		"weapon_slot_switched":
 			var wname := str(data.get("name", ""))
+			var old_wname := str(data.get("old_name", ""))
 			var wline := str(data.get("line", "")).to_upper()
 			var wuses := int(data.get("uses_left", 0))
 			var wmax := int(data.get("uses_max", 0))
 			var skn2 := str(data.get("skill_name", ""))
 			var label := wname if wname != "" else wline
+			var old_label := old_wname if old_wname != "" else _t("發條劍")
 			var auto_sw := bool(data.get("auto", false))
 			if auto_sw:
-				_append_log(_t("[color=#8ff]武器次數耗盡 · 自動切換欄 %d：%s（武 %d/%d）[/color]") % [
-					int(data.get("index", 0)) + 1, label, wuses, wmax,
-				])
+				_append_log(_t("[color=#8ff]『%s停擺，換上%s』[/color]") % [old_label, label])
 				_spawn_float("player", _t("換武！"), Color(0.5, 1.0, 0.55), true)
 			else:
 				_append_log(_t("[color=#8ff]武器欄 %d：%s（武 %d/%d%s）[/color]") % [
@@ -4835,138 +4941,45 @@ func _thumb_btn(text: String, primary: bool, cb: Callable) -> Button:
 
 
 func _ensure_thumb_hud() -> void:
-	if _thumb_pad != null and is_instance_valid(_thumb_pad):
-		_layout_thumb_hud()
-		return
 	_ensure_weapon_dock()
-	_thumb_pad = Control.new()
-	_thumb_pad.name = "ThumbPad"
-	_thumb_pad.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-	_thumb_pad.grow_horizontal = Control.GROW_DIRECTION_BEGIN
-	_thumb_pad.grow_vertical = Control.GROW_DIRECTION_BEGIN
-	_thumb_pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_thumb_pad.z_index = 35
-	_thumb_pad.z_as_relative = false
-	add_child(_thumb_pad)
-
-	## 武器欄：獨立掛載於右下底部（輪盤左側），水平橫排避免與角色穿模
-	if _weapon_dock != null and is_instance_valid(_weapon_dock):
-		if _weapon_dock.get_parent() != self:
-			_weapon_dock.reparent(self)
-		_weapon_dock.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
-		_weapon_dock.alignment = BoxContainer.ALIGNMENT_BEGIN
-		_weapon_dock.z_index = 35
-		_weapon_dock.z_as_relative = false
-		for cell in _weapon_dock_cells:
-			if cell is Control:
-				(cell as Control).custom_minimum_size = Vector2(54, 54)
-
-	## 暫停按鈕
-	_btn_pause = _thumb_btn(_t("暫停"), false, _on_thumb_pause)
-	_btn_pause.name = "ThumbPause"
-	_style_round_thumb_btn(_btn_pause, Color("#FFFDF8"), Color("#1F1A3A"), Color.WHITE, 26, 3)
-	_btn_pause.custom_minimum_size = Vector2(52, 52)
-	_btn_pause.size = Vector2(52, 52)
-	_btn_pause.position = Vector2(218, 10)
-	_thumb_pad.add_child(_btn_pause)
-
-	## 右手拇指扇形輪盤按鈕：大圓普攻在右下，技能/換武/鎖定/逃離呈弧形圍繞
-	## 1. 技能 (角度 ~270°，位於普攻正上方)
-	_btn_skill = _thumb_btn(_t("技能"), false, _on_thumb_skill)
-	_btn_skill.name = "ThumbSkill"
-	_style_round_thumb_btn(_btn_skill, Color("#FF5E8A"), Color.WHITE, Color("#1F1A3A"), 27, 4)
-	_btn_skill.custom_minimum_size = Vector2(54, 54)
-	_btn_skill.size = Vector2(54, 54)
-	_btn_skill.position = Vector2(197, 72)
-	_thumb_pad.add_child(_btn_skill)
-
-	## 2. 換武 (角度 ~234°，位於普攻左上方)
-	_btn_switch = _thumb_btn(_t("換武"), false, _on_thumb_switch)
-	_btn_switch.name = "ThumbSwitch"
-	_style_round_thumb_btn(_btn_switch, Color("#38A0FF"), Color.WHITE, Color("#1F1A3A"), 27, 4)
-	_btn_switch.custom_minimum_size = Vector2(54, 54)
-	_btn_switch.size = Vector2(54, 54)
-	_btn_switch.position = Vector2(136, 94)
-	_thumb_pad.add_child(_btn_switch)
-
-	## 3. 鎖定 (角度 ~197°，位於普攻左側偏上)
-	_btn_lock = _thumb_btn(_t("鎖定"), false, func(): _thumb_cycle_lock(1))
-	_btn_lock.name = "ThumbLock"
-	_style_round_thumb_btn(_btn_lock, Color("#4ED86A"), Color("#1F1A3A"), Color.WHITE, 27, 4)
-	_btn_lock.custom_minimum_size = Vector2(54, 54)
-	_btn_lock.size = Vector2(54, 54)
-	_btn_lock.position = Vector2(92, 148)
-	_thumb_pad.add_child(_btn_lock)
-
-	## 4. 逃離 (角度 ~167°，位於普攻正左方)
-	if btn_flee:
-		var fp := btn_flee.get_parent()
-		if fp:
-			fp.remove_child(btn_flee)
-		_thumb_pad.add_child(btn_flee)
-		btn_flee.focus_mode = Control.FOCUS_NONE
-		_style_round_thumb_btn(btn_flee, Color("#FFF8E7"), Color("#1F1A3A"), Color.WHITE, 27, 4)
-		btn_flee.custom_minimum_size = Vector2(54, 54)
-		btn_flee.size = Vector2(54, 54)
-		btn_flee.position = Vector2(80, 208)
-		btn_flee.text = _t("逃離")
-
-	## 5. 大圓普攻 (右下核心，大圓直徑 92px)
-	_btn_attack = _thumb_btn(_t("攻擊"), true, _on_thumb_attack)
-	_btn_attack.name = "ThumbAttack"
-	_btn_attack.custom_minimum_size = Vector2(92, 92)
-	_btn_attack.size = Vector2(92, 92)
-	_btn_attack.position = Vector2(178, 162)
-	_btn_attack.autowrap_mode = TextServer.AUTOWRAP_OFF
-	_btn_attack.add_theme_font_size_override("font_size", 18)
-	if _is_colossus_fight() and _is_enemy_telegraphing():
-		_update_thumb_attack_text(_t("發條格擋"))
-	else:
-		_style_thumb_attack_btn(false)
-	_thumb_pad.add_child(_btn_attack)
-
+	_ensure_pause_button()
+	if _thumb_pad == null or not is_instance_valid(_thumb_pad):
+		_thumb_pad = Control.new()
+		_thumb_pad.name = "ThumbPad"
+		_thumb_pad.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		add_child(_thumb_pad)
 	_layout_thumb_hud()
 
 
-func _layout_thumb_hud() -> void:
-	if _thumb_pad == null or not is_instance_valid(_thumb_pad):
+func _ensure_pause_button() -> void:
+	if _btn_pause != null and is_instance_valid(_btn_pause):
+		_layout_pause_button()
 		return
-	var vp := get_viewport_rect().size
-	if vp.x < 8.0 or vp.y < 8.0:
+	_btn_pause = _thumb_btn(_t("暫停"), false, _on_thumb_pause)
+	_btn_pause.name = "ThumbPause"
+	_btn_pause.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	_btn_pause.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_btn_pause.grow_vertical = Control.GROW_DIRECTION_END
+	_btn_pause.z_index = 40
+	_style_round_thumb_btn(_btn_pause, Color("#FFFDF8"), Color("#1F1A3A"), Color.WHITE, 22, 3)
+	_btn_pause.custom_minimum_size = Vector2(48, 48)
+	_btn_pause.size = Vector2(48, 48)
+	add_child(_btn_pause)
+	_layout_pause_button()
+
+
+func _layout_pause_button() -> void:
+	if _btn_pause == null or not is_instance_valid(_btn_pause):
 		return
 	var m := ResponsiveUi.safe_margin(self)
-	var m_right := m.z + 16.0
-	var m_bot := m.w + 12.0
-	var w := 280.0
-	var h := 264.0
-	_thumb_pad.offset_left = -w - m_right
-	_thumb_pad.offset_right = -m_right
-	_thumb_pad.offset_top = -h - m_bot
-	_thumb_pad.offset_bottom = -m_bot
+	_btn_pause.offset_left = -68.0 - m.z
+	_btn_pause.offset_right = -20.0 - m.z
+	_btn_pause.offset_top = 16.0 + m.y
+	_btn_pause.offset_bottom = 64.0 + m.y
 
-	if _btn_attack and is_instance_valid(_btn_attack):
-		_btn_attack.position = Vector2(178, 162)
-		_btn_attack.size = Vector2(92, 92)
-	if _btn_skill and is_instance_valid(_btn_skill):
-		_btn_skill.position = Vector2(197, 72)
-		_btn_skill.size = Vector2(54, 54)
-	if _btn_switch and is_instance_valid(_btn_switch):
-		_btn_switch.position = Vector2(136, 94)
-		_btn_switch.size = Vector2(54, 54)
-	if _btn_lock and is_instance_valid(_btn_lock):
-		_btn_lock.position = Vector2(92, 148)
-		_btn_lock.size = Vector2(54, 54)
-	if btn_flee and is_instance_valid(btn_flee) and btn_flee.get_parent() == _thumb_pad:
-		btn_flee.position = Vector2(80, 208)
-		btn_flee.size = Vector2(54, 54)
-	if _btn_pause and is_instance_valid(_btn_pause):
-		_btn_pause.position = Vector2(218, 10)
-		_btn_pause.size = Vector2(52, 52)
-	if _weapon_dock and is_instance_valid(_weapon_dock) and _weapon_dock.get_parent() == self:
-		_weapon_dock.offset_left = -580.0 - m.z
-		_weapon_dock.offset_right = -400.0 - m.z
-		_weapon_dock.offset_bottom = -20.0 - m.w
-		_weapon_dock.offset_top = -76.0 - m.w
+
+func _layout_thumb_hud() -> void:
+	_layout_pause_button()
 
 
 func _on_thumb_attack() -> void:

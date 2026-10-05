@@ -205,34 +205,20 @@ func _process(_delta: float) -> bool:
 		2:
 			if _wait < 3:
 				return false
+			# 3. 驗證依 2026-10-05 規範 BattleView 徹底移除右下手動攻擊／格擋按鈕
+			print("--- 3. 驗證 BattleView 依 2026-10-05 規範徹底移除右下手動攻擊／格擋按鈕 ---")
 			var thumb_controls: Dictionary = _battle_view.call("thumb_controls")
 			var attack_btn: Button = thumb_controls.get("attack") as Button
-			if attack_btn == null:
-				_fail("BattleView 未找到 attack 按鈕")
+			if attack_btn != null and attack_btn.is_visible_in_tree():
+				_fail("依 2026-10-05 規範戰鬥為純自動回合，不應存在可見手動攻擊／格擋按鈕！")
 			else:
-				if attack_btn.custom_minimum_size.y < 50.0:
-					_fail("格擋按鈕高度小於 50px: %.1f" % attack_btn.custom_minimum_size.y)
-				print("  ✓ 格擋按鈕高度符合規範: %.1fpx >= 50px" % attack_btn.custom_minimum_size.y)
-
-				# 平常狀態應為「攻擊」
-				if attack_btn.text != "攻擊":
-					_fail("平常狀態按鈕文案應為『攻擊』，實際: %s" % attack_btn.text)
-
-				# 巨偶蓄力狀態
-				var b_sim: Object = _battle_view.get("sim")
-				var lion = b_sim.call("get_unit", "colossus_lion")
-				b_sim.call("trigger_colossus_windup")
-				_battle_view.call("_update_parry_countdown", lion)
-
-				if attack_btn.text != "發條格擋":
-					_fail("巨偶蓄力時按鈕文案應改為『發條格擋』，實際: %s" % attack_btn.text)
-				print("  ✓ 巨偶蓄力時橫屏按鈕文案正確顯示『%s』" % attack_btn.text)
+				print("  ✓ 戰鬥回歸自動回合：右下零格擋按鈕、零手動攻擊按鈕")
 
 			_battle_view.queue_free()
 			_battle_view = null
 
-			# 4. 驗證普通關卡雜魚戰不出現「發條格擋」
-			print("--- 4. 驗證普通關卡雜魚戰不出現『發條格擋』 ---")
+			# 4. 驗證普通關卡雜魚戰同樣無手動攻擊／格擋按鈕
+			print("--- 4. 驗證普通關卡雜魚戰無手動攻擊／格擋按鈕 ---")
 			var b_scn2: PackedScene = load("res://scenes/battle/battle.tscn")
 			_normal_view = b_scn2.instantiate()
 			root.add_child(_normal_view)
@@ -243,11 +229,10 @@ func _process(_delta: float) -> bool:
 			if _wait < 3:
 				return false
 			var normal_attack_btn: Button = _normal_view.call("thumb_controls").get("attack") as Button
-			if normal_attack_btn.text == "發條格擋":
-				_fail("普通關卡雜魚戰不應出現『發條格擋』按鈕！")
-			if normal_attack_btn.text != "攻擊":
-				_fail("普通關卡雜魚戰按鈕應為『攻擊』，實際: %s" % normal_attack_btn.text)
-			print("  ✓ 普通關卡雜魚戰按鈕為『%s』，零『發條格擋』" % normal_attack_btn.text)
+			if normal_attack_btn != null and normal_attack_btn.is_visible_in_tree():
+				_fail("普通關卡雜魚戰不應出現手動攻擊／格擋按鈕！")
+			else:
+				print("  ✓ 普通關卡雜魚戰零手動攻擊／格擋按鈕")
 			_normal_view.queue_free()
 			_normal_view = null
 			_step = 4

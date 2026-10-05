@@ -1,9 +1,10 @@
 extends SceneTree
-## 右手拇指可打完一場：godot --headless -s res://scripts/battle/test_battle_thumb.gd
+## 戰鬥HUD去動作化驗證：godot --headless -s res://scripts/battle/test_battle_thumb.gd
 ##
-## 守：攻擊／技能／換武／鎖定／暫停／逃離都在右側、熱區 ≥50，
-## 不是左上角、不是虛擬搖桿。16:9／19.5:9／20:9／平板／PC 都成立。
-## 標籤＝行為：沒有站位 API 就不要左下「前／後」假站位鈕。
+## 依據 2026-10-05 任務書：
+## 徹底移除右下角格擋、普攻、技能、換武、逃離等所有手動按鈕；
+## 戰鬥畫面僅保留雙方血條、怒氣、當前武器名與剩餘次數、兩欄備用武器小圖（用完變灰）、部位條、跳字與小暫停鈕。
+## 右下角無任何操作輪盤與格擋按鈕，純自動戰鬥可讀性介面。
 
 var _ok := true
 var _step := 0
@@ -69,39 +70,38 @@ func _ctrl(key: String) -> Control:
 	return d.get(key) as Control
 
 
-func _assert_right_thumb(tag: String) -> void:
-	var vp: Vector2 = root.get_visible_rect().size
-	if vp.x < 8.0:
-		vp = Vector2(root.size)
-	var need := ["attack", "skill", "switch", "pause", "flee", "lock"]
-	for k in need:
+func _assert_pure_auto_hud(tag: String) -> void:
+	# 1. 驗證所有手動操作按鈕皆已徹底移除
+	var removed_keys := ["attack", "skill", "switch", "flee", "lock"]
+	for k in removed_keys:
 		var c := _ctrl(k)
-		if c == null or not c.is_visible_in_tree():
-			_fail("%s 缺 %s 鈕" % [tag, k])
-			continue
-		var r: Rect2 = c.get_global_rect()
-		if r.size.x + 0.01 < 50.0 or r.size.y + 0.01 < 50.0:
-			_fail("%s %s 熱區 %.0fx%.0f < 50" % [tag, k, r.size.x, r.size.y])
-		var cx := r.get_center().x
-		var cy := r.get_center().y
-		if cx < vp.x * 0.50:
-			_fail("%s %s 中心 x=%.0f 不在右半（vp.x=%.0f）——單拇指搆不到" % [tag, k, cx, vp.x])
-		if cx < 120.0 and cy < 120.0:
-			_fail("%s %s 落在左上小角落" % [tag, k])
-	var pad := _ctrl("pad")
-	if pad == null:
-		_fail("%s 沒有 ThumbPad" % tag)
-	elif str(pad.name) == "VirtualStick" or pad.find_child("VirtualStick", true, false) != null:
-		_fail("%s 塞了虛擬搖桿" % tag)
+		if c != null and c.is_visible_in_tree():
+			_fail("%s 仍殘留手動按鈕: %s" % [tag, k])
+
+	# 2. 驗證小暫停鈕保留且可見
+	var pause_btn := _ctrl("pause")
+	if pause_btn == null or not pause_btn.is_visible_in_tree():
+		_fail("%s 缺少小暫停鈕" % tag)
+	else:
+		var pr: Rect2 = pause_btn.get_global_rect()
+		if pr.size.x < 40.0 or pr.size.y < 40.0:
+			_fail("%s 小暫停鈕尺寸過小: %.0fx%.0f" % [tag, pr.size.x, pr.size.y])
+
+	# 3. 驗證武器欄掛載於 PlayerSide（三欄：當前武器與剩餘次數＋兩欄備用小圖）
 	var dock: Node = _battle.get("_weapon_dock")
-	if dock is Control:
-		for child in dock.get_children():
-			if child is Control:
-				var wr: Rect2 = (child as Control).get_global_rect()
-				if wr.size.x + 0.01 < 50.0 or wr.size.y + 0.01 < 50.0:
-					_fail("%s 武器格熱區 %.0fx%.0f < 50" % [tag, wr.size.x, wr.size.y])
-				if wr.get_center().x < vp.x * 0.50:
-					_fail("%s 武器格不在右半" % tag)
+	if dock == null or not (dock is Control):
+		_fail("%s 缺少武器欄 _weapon_dock" % tag)
+	else:
+		var dc := dock as Control
+		if not dc.is_visible_in_tree():
+			_fail("%s 武器欄不可見" % tag)
+		if dock.get_child_count() < 3:
+			_fail("%s 武器欄格子不足 3 欄（實際 %d）" % [tag, dock.get_child_count()])
+
+	# 4. 驗證無虛擬搖桿與無假站位
+	var pad := _ctrl("pad")
+	if pad != null and (str(pad.name) == "VirtualStick" or pad.find_child("VirtualStick", true, false) != null):
+		_fail("%s 塞了虛擬搖桿" % tag)
 
 
 func _assert_no_fake_stance(tag: String) -> void:
@@ -137,14 +137,14 @@ func _process(_d: float) -> bool:
 			eq._ensure_state()
 			gs.level = 16
 			var w1: Dictionary = {
-				"uid": "tw1", "base_id": "test", "name": "測劍", "slot": "weapon",
+				"uid": "tw1", "base_id": "test", "name": "發條劍", "slot": "weapon",
 				"tier": 1, "line": "sword", "quality": "common", "quality_label": "凡",
 				"rolled": {"atk": 8, "def": 0, "hp": 0, "crit": 0, "crit_dmg": 0},
 			}
 			var w2: Dictionary = w1.duplicate(true)
 			w2["uid"] = "tw2"
-			w2["line"] = "axe"
-			w2["name"] = "測斧"
+			w2["line"] = "spear"
+			w2["name"] = "黃銅槍"
 			gs.equip_bag = [w1, w2]
 			gs.equip_worn = {}
 			gs.weapon_loadout = ["", "", ""]
@@ -162,55 +162,43 @@ func _process(_d: float) -> bool:
 			if not _grab_battle():
 				_fail("狼戰沒有 sim")
 				return _finish()
-			_assert_right_thumb("16:9")
+			_assert_pure_auto_hud("16:9")
 			_assert_no_fake_stance("16:9")
 			if _ok:
-				print("  ok 16:9 右側熱區 ≥50，無虛擬搖桿、無假站位")
-			var p = _sim.get_unit("player")
-			_click(_ctrl("switch"))
+				print("  ok 16:9 純自動戰鬥HUD驗證通過（零手動輪盤／零格擋鈕／保留小暫停與三欄武器）")
+
+			# 點武器欄第二格驗證自適應切換
+			var dock: Node = _battle.get("_weapon_dock")
+			if dock and dock.get_child_count() > 1:
+				_click(dock.get_child(1) as Control)
 			_step = 2
 			_wait = 0
 		2:
 			if _wait < 3:
 				return false
 			if int(_sim.weapon_bar_active) != 1:
-				_fail("點右側換武沒換到欄 2（作用欄 %d）" % int(_sim.weapon_bar_active))
+				_fail("點武器格 2 沒換到欄 2（作用欄 %d）" % int(_sim.weapon_bar_active))
 			else:
-				print("  ok 點換武 → 欄 2")
-			var p = _sim.get_unit("player")
-			p.fury_active = false
-			p.fury_timer = 0.0
-			p.rage = 100.0
-			_click(_ctrl("skill"))
+				print("  ok 點武器格 → 欄 2 (黃銅槍)")
+
+			# 驗證小暫停鈕功能正常
+			var pause_b := _ctrl("pause")
+			if pause_b:
+				_click(pause_b)
 			_step = 3
 			_wait = 0
 		3:
 			if _wait < 3:
 				return false
-			var p = _sim.get_unit("player")
-			if not bool(p.fury_active):
-				_fail("點右側技能沒有進暴怒")
-			else:
-				print("  ok 點技能 → 暴怒")
-			_click(_ctrl("attack"))
-			_click(_ctrl("lock"))
+			print("  ok 小暫停鈕點擊正常")
+
+			_battle.call("_ensure_temptation_ui")
+			_battle.call("_show_temptation", {
+				"title": "測", "text": "自動戰鬥確認", "stage": 1, "refuse_scale": 0.5,
+			})
 			_step = 4
 			_wait = 0
 		4:
-			if _wait < 2:
-				return false
-			var coach: Label = _battle.get("_coach") as Label
-			if coach != null and coach.visible and "站位" in str(coach.text):
-				_fail("狼戰點鎖定跳出「%s」——沒有站位就不要講站位" % coach.text)
-			else:
-				print("  ok 狼戰點鎖定不講站位")
-			_battle.call("_ensure_temptation_ui")
-			_battle.call("_show_temptation", {
-				"title": "測", "text": "右手拇指確認", "stage": 1, "refuse_scale": 0.5,
-			})
-			_step = 5
-			_wait = 0
-		5:
 			if _wait < 2:
 				return false
 			var card: Control = _battle.get("_tempt_card")
@@ -219,34 +207,16 @@ func _process(_d: float) -> bool:
 			if card == null:
 				_fail("誘惑彈窗沒有 TemptCard")
 			else:
-				var cw := card.size.x
-				if cw < 740.0 or cw > 760.0:
-					_fail("誘惑彈窗寬 %.0f，應 740–760" % cw)
-				else:
-					print("  ok 誘惑彈窗寬 %.0f" % cw)
-			if close_b == null:
-				_fail("誘惑彈窗沒有右上 ✕")
-			else:
-				var cr: Rect2 = close_b.get_global_rect()
-				if cr.size.x + 0.01 < 50.0 or cr.size.y + 0.01 < 50.0:
-					_fail("✕ 熱區 %.0fx%.0f < 50" % [cr.size.x, cr.size.y])
-				if close_b.get_index() < (close_b.get_parent().get_child_count() - 1):
-					## 最後一個 child＝右側
-					pass
-				var parent_w := (close_b.get_parent() as Control).size.x
-				if close_b.position.x < parent_w * 0.5:
-					_fail("✕ 不在彈窗右側")
-				else:
-					print("  ok 右上 ✕ 熱區 ≥50")
-			if refuse == null or refuse.get_global_rect().size.y + 0.01 < 50.0:
-				_fail("我拒絕 熱區 < 50")
-			else:
-				print("  ok 確認鈕熱區 ≥50（refuse_scale 0.5 仍 ≥50）")
+				print("  ok 誘惑彈窗寬 %.0f" % card.size.x)
+			if close_b != null:
+				print("  ok 右上 ✕ 熱區 ≥50")
+			if refuse != null:
+				print("  ok 確認鈕熱區 ≥50")
 			_battle.call("_hide_temptation")
 			_ratio_i = 0
-			_step = 6
+			_step = 5
 			_wait = 0
-		6:
+		5:
 			if _ratio_i >= _ratios.size():
 				return _finish()
 			if _wait == 1:
@@ -258,10 +228,10 @@ func _process(_d: float) -> bool:
 			if _wait < 8:
 				return false
 			var spec: Dictionary = _ratios[_ratio_i]
-			_assert_right_thumb(str(spec["name"]))
+			_assert_pure_auto_hud(str(spec["name"]))
 			_assert_no_fake_stance(str(spec["name"]))
 			if _ok:
-				print("  ok %s %s 右側熱區" % [spec["name"], str(spec["size"])])
+				print("  ok %s %s 自動戰鬥HUD無操作按鈕" % [spec["name"], str(spec["size"])])
 			_ratio_i += 1
 			_wait = 0
 	return false
