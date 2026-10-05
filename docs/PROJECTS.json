@@ -5420,8 +5420,8 @@
    "id": "combat-prd-shuffle",
    "cat": "遊戲",
    "title": "戰鬥PRD偽隨機超載與部位掉落洗牌袋機制",
-   "status": "開發中",
-   "note": "開始依《電腦不懂隨機》理論實作PRD與洗牌袋",
+   "status": "測試中",
+   "note": "完成PRD與5-bag洗牌袋實作及1000次模擬無頭測試全綠，待QA小婷審查",
    "keys": [
     "戰鬥PRD偽隨機"
    ]
