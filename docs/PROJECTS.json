@@ -5415,6 +5415,16 @@
    "keys": [
     "大廳與戰鬥背景像"
    ]
+  },
+  {
+   "id": "combat-prd-shuffle",
+   "cat": "遊戲",
+   "title": "戰鬥PRD偽隨機超載與部位掉落洗牌袋機制",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "戰鬥PRD偽隨機"
+   ]
   }
  ]
 }
