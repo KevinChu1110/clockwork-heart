@@ -872,7 +872,7 @@ static func _soft_shadow_tex() -> Texture2D:
 func _build_ui() -> void:
 	if _content_root != null:
 		return
-	## 1. 背景插畫（陽光浮空島天空王國 / LINEAR 平滑採樣）
+	## 1. 背景插畫（標準 1080p 古典機械神殿 / LINEAR 平滑採樣）
 	var bg := TextureRect.new()
 	bg.name = "TempleLobbyBg"
 	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -884,16 +884,16 @@ func _build_ui() -> void:
 	bg.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	bg.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	
-	var sky_path := "res://assets/sprites/maps/sky_kingdom_bg.png"
-	var abs_sky_path := ProjectSettings.globalize_path(sky_path)
-	if FileAccess.file_exists(abs_sky_path):
-		var img := Image.load_from_file(abs_sky_path)
+	var temple_path := "res://assets/sprites/maps/temple_lobby_bg.png"
+	var abs_temple_path := ProjectSettings.globalize_path(temple_path)
+	if FileAccess.file_exists(abs_temple_path):
+		var img := Image.load_from_file(abs_temple_path)
 		if img and not img.is_empty():
 			bg.texture = ImageTexture.create_from_image(img)
-	if bg.texture == null and ResourceLoader.exists(sky_path):
-		bg.texture = load(sky_path)
-	elif bg.texture == null and ResourceLoader.exists("res://assets/sprites/maps/temple_lobby_bg.png"):
-		bg.texture = load("res://assets/sprites/maps/temple_lobby_bg.png")
+	if bg.texture == null and ResourceLoader.exists(temple_path):
+		bg.texture = load(temple_path)
+	elif bg.texture == null and ResourceLoader.exists("res://assets/sprites/maps/sky_kingdom_bg.png"):
+		bg.texture = load("res://assets/sprites/maps/sky_kingdom_bg.png")
 	elif bg.texture == null and ResourceLoader.exists("res://assets/sprites/maps/town_bg.webp"):
 		bg.texture = load("res://assets/sprites/maps/town_bg.webp")
 	add_child(bg)

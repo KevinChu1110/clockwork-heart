@@ -5395,6 +5395,46 @@
    "keys": [
     "草稿"
    ]
+  },
+  {
+   "id": "battle-hud-auto-turns",
+   "cat": "遊戲",
+   "title": "戰鬥HUD去動作化：移除格擋與手動按鈕，改三欄自動換武與戰報",
+   "status": "測試中",
+   "note": "完成戰鬥HUD去動作化與自動換武戰報，無頭測試全綠",
+   "keys": [
+    "戰鬥HUD去動作"
+   ]
+  },
+  {
+   "id": "pixel-parallax-bg",
+   "cat": "遊戲",
+   "title": "大廳與戰鬥背景像素化重製：三層視差天宮與石徑廢墟風格統一",
+   "status": "測試中",
+   "note": "三層視差天宮與石徑廢墟像素底圖實裝完畢，無頭測試全綠，Vision實機驗證通過",
+   "keys": [
+    "大廳與戰鬥背景像"
+   ]
+  },
+  {
+   "id": "combat-prd-shuffle",
+   "cat": "遊戲",
+   "title": "戰鬥PRD偽隨機超載與部位掉落洗牌袋機制",
+   "status": "測試中",
+   "note": "完成PRD與5-bag洗牌袋實作及1000次模擬無頭測試全綠，待QA小婷審查",
+   "keys": [
+    "戰鬥PRD偽隨機"
+   ]
+  },
+  {
+   "id": "temple-lobby-battle-ruins-hd",
+   "cat": "遊戲",
+   "title": "大廳古典神殿底圖切換與戰鬥石徑廢墟商業級替換",
+   "status": "測試中",
+   "note": "大廳切換標準1080p古典機械神殿temple_lobby_bg.png並融合日晷舞台；戰鬥重製純橫向石徑廢墟底圖stone_path_ruins_bg.png契合512角色立繪，雙實機截圖經Vision審查通過，送交測試審查",
+   "keys": [
+    "大廳古典神殿底圖"
+   ]
   }
  ]
 }

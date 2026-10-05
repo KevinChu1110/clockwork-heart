@@ -753,6 +753,11 @@ static func map_bg(map_id: String) -> Texture2D:
 ##
 ## `maps/battle_<mode>.png` 是 pixelize_env 量化馬賽克（約 70 色），戰鬥畫面不用。
 const BATTLE_BG_MAP := {
+	## 巨偶停擺戰與石徑廢墟
+	"colossus_lion": "stone_path_ruins",
+	"colossus": "stone_path_ruins",
+	"colossus_elephant": "stone_path_ruins",
+	"ruins": "stone_path_ruins",
 	## 主線 Boss
 	"wolf": "road",
 	"leo": "wild_leo_court",
@@ -790,6 +795,10 @@ const BATTLE_BG_LAST_RESORT := "wild"
 ## 不採用 `maps/battle_<mode>.png`（pixelize_env 量化馬賽克）。
 ## 回空字串代表連保底都不在（正常情況不該發生，test_art 會擋）。
 static func battle_bg_path(mode: String) -> String:
+	if mode.begins_with("colossus") or mode == "ruins" or mode == "stone_path_ruins":
+		var rp := "%s/maps/stone_path_ruins_bg.png" % ROOT
+		if ResourceLoader.exists(rp):
+			return rp
 	var map_id := str(BATTLE_BG_MAP.get(mode, ""))
 	if map_id != "":
 		var by_map := map_bg_path(map_id)
