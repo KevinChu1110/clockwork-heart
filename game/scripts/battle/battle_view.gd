@@ -3756,12 +3756,21 @@ func _on_event(kind: String, data: Dictionary) -> void:
 				)
 		"hit":
 			var is_crit: bool = bool(data.get("crit", false))
-			var crit_s := _t("暴擊") if is_crit else ""
+			var is_overload: bool = bool(data.get("overload", false))
+			var crit_s := ""
+			if is_overload:
+				crit_s = _t("【超載暴擊！】")
+			elif is_crit:
+				crit_s = _t("暴擊")
 			var ks := ""
 			if data.get("king_slash", false):
 				ks = _t("【王者斬】") + " "
 			var aname := _unit_display_name(str(data.get("attacker", "")))
-			var hit_msg := _t("%s%s 造成 %s 傷害 %s") % [ks, aname, data.get("damage"), crit_s]
+			var hit_msg := ""
+			if is_overload:
+				hit_msg = _t("[color=#ff5e8a]【超載大招！】%s 造成 %s 傷害 %s[/color]") % [aname, data.get("damage"), crit_s]
+			else:
+				hit_msg = _t("%s%s 造成 %s 傷害 %s") % [ks, aname, data.get("damage"), crit_s]
 			_append_log(hit_msg.strip_edges())
 			## 玩家挨打：切受擊姿
 			if str(data.get("defender", "")) == "player":
@@ -3787,7 +3796,12 @@ func _on_event(kind: String, data: Dictionary) -> void:
 					wclass = p_u.weapon_class
 				var fx_kind := _weapon_hit_fx_kind(wclass)
 				_spawn_hit_fx(str(data.get("defender")), fx_kind)
-			if is_crit:
+			if is_overload:
+				_spawn_float(str(data.get("defender")), _t("超載！") + str(data.get("damage")), Color(1.0, 0.4, 0.7), true, true)
+				_shake = 0.5
+				trigger_hit_stop(0.12)
+				_flash(_body_of(str(data.get("defender"))), Color(2.5, 0.8, 1.2))
+			elif is_crit:
 				_spawn_float(str(data.get("defender")), str(data.get("damage")), Color(1.0, 0.85, 0.2), true)
 				_shake = 0.35
 				trigger_hit_stop(0.08)
@@ -3852,6 +3866,16 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			banner.visible = true
 		"part_focus":
 			_refresh_part_focus_hint()
+		"weapon_linkage_init":
+			var cname := str(data.get("combo_name", ""))
+			var cdesc := str(data.get("combo_desc", ""))
+			var snames: Array = data.get("slot_names", [])
+			var n0: String = str(snames[0]) if snames.size() > 0 else _t("發條劍")
+			var n1: String = str(snames[1]) if snames.size() > 1 else _t("黃銅槍")
+			var n2: String = str(snames[2]) if snames.size() > 2 else _t("破岩斧")
+			_append_log(_t("[color=#ffd700]三欄配置連動：【先鋒勢】%s →【中堅承】%s →【大將破】%s 已啟動！[/color]") % [n0, n1, n2])
+			if cname != "":
+				_append_log(_t("[color=#ffd700]觸發隊列連動：【%s】%s[/color]") % [cname, cdesc])
 		"weapon_slot_switched":
 			var wname := str(data.get("name", ""))
 			var old_wname := str(data.get("old_name", ""))
@@ -3862,13 +3886,17 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			var label := wname if wname != "" else wline
 			var old_label := old_wname if old_wname != "" else _t("發條劍")
 			var auto_sw := bool(data.get("auto", false))
+			var link_txt := str(data.get("linkage_title", ""))
+			if link_txt != "":
+				link_txt = " " + link_txt
 			if auto_sw:
-				_append_log(_t("[color=#8ff]『%s停擺，換上%s』[/color]") % [old_label, label])
-				_spawn_float("player", _t("換武！"), Color(0.5, 1.0, 0.55), true)
+				_append_log(_t("[color=#8ff]『%s停擺，換上%s』%s[/color]") % [old_label, label, link_txt])
+				_spawn_float("player", _t("換武連動！"), Color(0.5, 1.0, 0.55), true)
 			else:
-				_append_log(_t("[color=#8ff]武器欄 %d：%s（武 %d/%d%s）[/color]") % [
+				_append_log(_t("[color=#8ff]武器欄 %d：%s（武 %d/%d%s）%s[/color]") % [
 					int(data.get("index", 0)) + 1, label, wuses, wmax,
 					(" · " + skn2) if skn2 != "" else "",
+					link_txt,
 				])
 				_spawn_float("player", _t("武欄%d") % [int(data.get("index", 0)) + 1], Color(0.4, 0.9, 1.0))
 			_flash(player_body, Color(0.5, 0.8, 1.0))

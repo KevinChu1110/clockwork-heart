@@ -40,9 +40,16 @@ var pending_micro_end: String = ""
 ## 玩家手動
 var player_id: String = "player"
 ## 戰鬥內真正多武器欄快照（非器魂快捷）
-## 每欄：{index, uid, name, line, weapon_atk, uses_left, uses_max, unlocked, empty}
+## 每欄：{index, uid, name, line, weapon_atk, uses_left, uses_max, unlocked, empty, prd_bonus, had_overload}
 var weapon_bars: Array = []
 var weapon_bar_active: int = 0
+## 三欄武器被動連動資料結構
+var weapon_linkage: Dictionary = {
+	"combo_id": "",
+	"combo_name": "",
+	"combo_desc": "",
+	"slot_passives": ["先鋒勢", "中堅承", "大將破"],
+}
 ## 不含當前武器攻擊的基底（切欄時用）
 var player_base_atk: int = 0
 ## 部位鎖定："body" 或 parts[].id（雷歐盔／盾）
@@ -538,14 +545,45 @@ func _resolve_strike(u: BattleUnit) -> void:
 	var atk_use := float(u.atk) * (u.atk_buff_mult if u.atk_buff_left > 0.0 else 1.0)
 	var var_pct := u.dmg_variance if u.dmg_variance > 0.0 else Formulas.default_variance()
 
+	var is_player := (u.team == BattleUnit.Team.PLAYER)
+	var active_bar: Dictionary = {}
+	if is_player and weapon_bar_active >= 0 and weapon_bar_active < weapon_bars.size():
+		active_bar = weapon_bars[weapon_bar_active]
+
+	## 退場前最後一擊必定超載暴擊保底（耐久剩 1 且有耐久上限）
+	var is_retiring_strike := false
+	if is_player and not u.bare_fisted and u.weapon_uses_max > 0 and u.weapon_uses_left == 1:
+		is_retiring_strike = true
+
+	var prd_bonus: float = float(active_bar.get("prd_bonus", 0.0))
+	var force_overload := is_retiring_strike
+	var is_overload_strike := force_overload
+	var player_eff_crit := 100.0 if force_overload else clampf(u.crit + prd_bonus, 0.0, 100.0)
+
 	if fog_mode and u.team == BattleUnit.Team.PLAYER:
 		## 白霧走自己的幻影命中處理，維持單段
 		var rolled_f: Dictionary = Formulas.roll_hit_damage(
 			atk_use, target.defense, 1.0, var_pct,
-			u.crit, target.crit_resist, u.crit_dmg, rng, false
+			player_eff_crit, 0.0 if force_overload else target.crit_resist, u.crit_dmg, rng, false
 		)
 		var dmg_f: int = int(rolled_f.get("damage", 1))
 		var crit_f: bool = bool(rolled_f.get("crit", false))
+		if force_overload:
+			crit_f = true
+			if not bool(rolled_f.get("crit", false)):
+				dmg_f = int(round(float(dmg_f) * (1.0 + clampf(u.crit_dmg, 25.0, 200.0) / 100.0)))
+		var ov_f := false
+		if is_overload_strike or (crit_f and prd_bonus >= 30.0):
+			ov_f = true
+			var ov_mult_f := 1.5 if weapon_bar_active == 2 else 1.35
+			dmg_f = int(round(float(dmg_f) * ov_mult_f))
+		if not active_bar.is_empty():
+			if crit_f or ov_f:
+				active_bar["prd_bonus"] = 0.0
+				active_bar["had_overload"] = true
+			else:
+				active_bar["prd_bonus"] = prd_bonus + 15.0
+			weapon_bars[weapon_bar_active] = active_bar
 		if u.empower_next_mult > 1.0:
 			dmg_f = int(round(float(dmg_f) * u.empower_next_mult))
 			u.empower_next_mult = 1.0
@@ -576,12 +614,24 @@ func _resolve_strike(u: BattleUnit) -> void:
 	for hi in range(swing_hits):
 		if target == null or not target.is_alive():
 			break
+		var crit_rate_use := player_eff_crit if is_player else u.crit
+		var crit_res_use := 0.0 if (is_player and force_overload) else target.crit_resist
 		var rolled: Dictionary = Formulas.roll_hit_damage(
 			atk_use, target.defense, per_mult, var_pct,
-			u.crit, target.crit_resist, u.crit_dmg, rng, false
+			crit_rate_use, crit_res_use, u.crit_dmg, rng, false
 		)
 		var dmg: int = int(rolled.get("damage", 1))
 		var is_crit: bool = bool(rolled.get("crit", false))
+		if is_player and force_overload:
+			is_crit = true
+			if not bool(rolled.get("crit", false)):
+				dmg = int(round(float(dmg) * (1.0 + clampf(u.crit_dmg, 25.0, 200.0) / 100.0)))
+		var hit_overload := false
+		if is_player and (is_overload_strike or (is_crit and prd_bonus >= 30.0)):
+			hit_overload = true
+			is_overload_strike = true
+			var ov_mult := 1.5 if weapon_bar_active == 2 else 1.35
+			dmg = int(round(float(dmg) * ov_mult))
 		if is_crit:
 			any_crit = true
 		if emp > 1.0:
@@ -616,18 +666,27 @@ func _resolve_strike(u: BattleUnit) -> void:
 		## 出手也累積戰意，否則戰意只能靠挨打累積，而挨到滿之前人就死了。
 		## 多段武器：首段全額、後段三成——快武器本就揮得快，別再疊怒速
 		if u.can_skill and dealt > 0:
-			_gain_rage(u, Formulas.rage_from_strike() * (1.0 if hi == 0 else 0.3))
+			var extra_rage := 3.0 if weapon_linkage.get("combo_id", "") == "resonance" else 0.0
+			_gain_rage(u, (Formulas.rage_from_strike() + extra_rage) * (1.0 if hi == 0 else 0.3))
 		_emit("hit", {
 			"attacker": u.id,
 			"defender": target.id,
 			"damage": dealt,
 			"crit": is_crit,
+			"overload": hit_overload,
 			"hp": target.hp,
 			"max_hp": target.max_hp,
 			"rage": target.rage,
 			"hit_index": hi,
 			"hits": swing_hits,
 		})
+	if is_player and not active_bar.is_empty():
+		if any_crit or is_overload_strike:
+			active_bar["prd_bonus"] = 0.0
+			active_bar["had_overload"] = true
+		else:
+			active_bar["prd_bonus"] = prd_bonus + 15.0
+		weapon_bars[weapon_bar_active] = active_bar
 	if abo_mode and u.team == BattleUnit.Team.PLAYER and target != null and target.id == "abo":
 		_abo_add_guard(28.0 if any_crit else 18.0, _t("普攻"))
 	if statue_mode and u.team == BattleUnit.Team.PLAYER:
@@ -715,15 +774,40 @@ func _resolve_skill(u: BattleUnit) -> void:
 	var var_s := u.dmg_variance if u.dmg_variance > 0.0 else Formulas.default_variance()
 	var any_crit := false
 	var total_dealt := 0
+
+	var is_player_s := (u.team == BattleUnit.Team.PLAYER)
+	var active_bar_s: Dictionary = {}
+	if is_player_s and weapon_bar_active >= 0 and weapon_bar_active < weapon_bars.size():
+		active_bar_s = weapon_bars[weapon_bar_active]
+	var is_retiring_s := false
+	if is_player_s and not u.bare_fisted and u.weapon_uses_max > 0 and u.weapon_uses_left == 1:
+		is_retiring_s = true
+	var prd_bonus_s: float = float(active_bar_s.get("prd_bonus", 0.0))
+	var force_overload_s := is_retiring_s
+	var is_overload_s := force_overload_s
+	var skill_eff_crit := 100.0 if force_overload_s else clampf(u.crit + u.skill_crit_mod + prd_bonus_s, 0.0, 100.0)
+
 	for hi in range(hits_n):
 		if target == null or not target.is_alive():
 			break
+		var crit_rate_use_s := skill_eff_crit if is_player_s else (u.crit + u.skill_crit_mod)
+		var crit_res_use_s := 0.0 if (is_player_s and force_overload_s) else target.crit_resist
 		var sroll: Dictionary = Formulas.roll_hit_damage(
 			atk_s, target.defense, u.skill_mult, var_s,
-			u.crit + u.skill_crit_mod, target.crit_resist, u.crit_dmg, rng, true
+			crit_rate_use_s, crit_res_use_s, u.crit_dmg, rng, true
 		)
 		var dmg: int = int(sroll.get("damage", 1))
 		var skill_crit: bool = bool(sroll.get("crit", false))
+		if is_player_s and force_overload_s:
+			skill_crit = true
+			if not bool(sroll.get("crit", false)):
+				dmg = int(round(float(dmg) * (1.0 + clampf(u.crit_dmg, 25.0, 200.0) / 100.0)))
+		var hit_overload_s := false
+		if is_player_s and (is_overload_s or (skill_crit and prd_bonus_s >= 30.0)):
+			hit_overload_s = true
+			is_overload_s = true
+			var ov_mult_s := 1.5 if weapon_bar_active == 2 else 1.35
+			dmg = int(round(float(dmg) * ov_mult_s))
 		if skill_crit:
 			any_crit = true
 		if u.team == BattleUnit.Team.PLAYER:
@@ -738,6 +822,7 @@ func _resolve_skill(u: BattleUnit) -> void:
 				"skill_id": u.skill_id,
 				"kind": "attack",
 				"crit": skill_crit,
+				"overload": hit_overload_s,
 				"damage": dmg,
 				"hp": target.hp if target else 0,
 				"max_hp": target.max_hp if target else 1,
@@ -763,6 +848,7 @@ func _resolve_skill(u: BattleUnit) -> void:
 		total_dealt += dealt
 		if u.team == BattleUnit.Team.PLAYER and dealt > 0:
 			total_player_damage += dealt
+			_process_part_damage(target, dealt, target.telegraph_active)
 		_emit("skill_hit", {
 			"attacker": u.id,
 			"defender": target.id,
@@ -770,6 +856,7 @@ func _resolve_skill(u: BattleUnit) -> void:
 			"skill_id": u.skill_id,
 			"kind": "attack",
 			"crit": skill_crit,
+			"overload": hit_overload_s,
 			"damage": dealt,
 			"hp": target.hp,
 			"max_hp": target.max_hp,
@@ -777,6 +864,13 @@ func _resolve_skill(u: BattleUnit) -> void:
 			"hits": hits_n,
 			"grant_mastery": hi == 0,
 		})
+	if is_player_s and not active_bar_s.is_empty():
+		if any_crit or is_overload_s:
+			active_bar_s["prd_bonus"] = 0.0
+			active_bar_s["had_overload"] = true
+		else:
+			active_bar_s["prd_bonus"] = prd_bonus_s + 15.0
+		weapon_bars[weapon_bar_active] = active_bar_s
 	if fog_mode and u.team == BattleUnit.Team.PLAYER:
 		if u.id == player_id:
 			_consume_weapon_use(u)
@@ -2065,6 +2159,8 @@ func _setup_weapon_bars(player_stats: Dictionary, unit: BattleUnit = null) -> vo
 				"uses_max": uses_max,
 				"unlocked": bool(e.get("unlocked", true)),
 				"empty": bool(e.get("empty", str(e.get("uid", "")) == "")),
+				"prd_bonus": 0.0,
+				"had_overload": false,
 			}
 			weapon_bars.append(bar)
 			if bool(e.get("active", false)):
@@ -2085,6 +2181,8 @@ func _setup_weapon_bars(player_stats: Dictionary, unit: BattleUnit = null) -> vo
 			"uses_max": um,
 			"unlocked": true,
 			"empty": false,
+			"prd_bonus": 0.0,
+			"had_overload": false,
 		})
 		active = 0
 	weapon_bar_active = clampi(active, 0, maxi(0, weapon_bars.size() - 1))
@@ -2105,6 +2203,97 @@ func _setup_weapon_bars(player_stats: Dictionary, unit: BattleUnit = null) -> vo
 			var tempo: Dictionary = Formulas.weapon_tempo(bline)
 			p.windup_time = float(tempo.get("windup", p.windup_time))
 			p.recover_time = float(tempo.get("recover", p.recover_time))
+		_setup_weapon_linkage_synergies(p)
+
+
+## 計算並激活三欄武器戰前配置順序被動連動
+func _setup_weapon_linkage_synergies(p: BattleUnit) -> void:
+	if p == null:
+		return
+	weapon_linkage = {
+		"combo_id": "",
+		"combo_name": "",
+		"combo_desc": "",
+		"slot_passives": ["先鋒勢", "中堅承", "大將破"],
+	}
+	## 先鋒勢（Slot 0）：初始攻速 +1.0，開場搶攻
+	if weapon_bar_active == 0:
+		p.speed += 1.0
+
+	var lines: Array[String] = []
+	for b in weapon_bars:
+		if not bool(b.get("empty", true)) and str(b.get("line", "")) != "":
+			lines.append(str(b.get("line", "")))
+
+	if lines.size() >= 2:
+		## 1. 斬甲破城：前輕後重 (sword/dagger/claw/spear -> axe/hammer/fist)
+		var cutting := ["sword", "dagger", "claw", "spear"]
+		var heavy := ["axe", "hammer", "fist"]
+		var has_cut_then_heavy := false
+		for i in range(lines.size() - 1):
+			if cutting.has(lines[i]) and heavy.has(lines[i + 1]):
+				has_cut_then_heavy = true
+				break
+		if has_cut_then_heavy:
+			weapon_linkage["combo_id"] = "shred"
+			weapon_linkage["combo_name"] = _t("斬甲破城")
+			weapon_linkage["combo_desc"] = _t("輕兵破甲重刃破防，部位傷害+25%，每擊削減5點防禦")
+
+		## 2. 同脈共鳴：相鄰為同職業體系
+		if str(weapon_linkage.get("combo_id", "")) == "":
+			var profs := {
+				"sword": "knight", "spear": "knight",
+				"axe": "viking", "hammer": "viking",
+				"dagger": "ninja", "dart": "ninja",
+				"fist": "monk", "claw": "monk",
+				"magic": "mage", "crystal": "mage",
+				"bow": "ranger", "gun": "ranger"
+			}
+			var same_prof := false
+			for i in range(lines.size() - 1):
+				var p1: String = profs.get(lines[i], "")
+				var p2: String = profs.get(lines[i + 1], "")
+				if p1 != "" and p1 == p2:
+					same_prof = true
+					break
+			if same_prof:
+				weapon_linkage["combo_id"] = "resonance"
+				weapon_linkage["combo_name"] = _t("同脈共鳴")
+				weapon_linkage["combo_desc"] = _t("同門武器連攜，防禦+8，每刀戰意+3")
+				p.defense += 8
+
+		## 3. 遠近合璧：包含遠程與近戰
+		if str(weapon_linkage.get("combo_id", "")) == "":
+			var ranged := ["bow", "gun", "dart", "magic"]
+			var melee := ["sword", "axe", "hammer", "spear", "fist", "claw"]
+			var has_ranged := false
+			var has_melee := false
+			for l in lines:
+				if ranged.has(l): has_ranged = true
+				if melee.has(l): has_melee = true
+			if has_ranged and has_melee:
+				weapon_linkage["combo_id"] = "range_melee"
+				weapon_linkage["combo_name"] = _t("遠近合璧")
+				weapon_linkage["combo_desc"] = _t("拉扯作戰，暴擊率+5%，閃避+5%")
+				p.crit += 5.0
+				p.eva += 5.0
+
+		## 4. 全械同奏：三欄均填滿且互不相同
+		if str(weapon_linkage.get("combo_id", "")) == "" and lines.size() >= 3:
+			weapon_linkage["combo_id"] = "tri_harmony"
+			weapon_linkage["combo_name"] = _t("全械同奏")
+			weapon_linkage["combo_desc"] = _t("三械流轉生生不息，換武回合攻速回復加快20%")
+
+	var slot_names: Array[String] = []
+	for b in weapon_bars:
+		slot_names.append(_get_bar_name(b))
+
+	_emit("weapon_linkage_init", {
+		"combo_id": weapon_linkage.get("combo_id", ""),
+		"combo_name": weapon_linkage.get("combo_name", ""),
+		"combo_desc": weapon_linkage.get("combo_desc", ""),
+		"slot_names": slot_names,
+	})
 
 
 static func _rift_player(player_stats: Dictionary) -> BattleUnit:
@@ -2721,6 +2910,10 @@ func _process_multi_part_damage(target: BattleUnit, dealt: int, is_telegraph: bo
 		if rate <= 0.0:
 			continue
 		var part_dmg: int = int(round(float(dealt) * base_mult * rate))
+		if str(weapon_linkage.get("combo_id", "")) == "shred":
+			part_dmg = int(round(float(part_dmg) * 1.25))
+			if target != null:
+				target.defense = maxi(1, target.defense - 5)
 		if part_dmg <= 0:
 			continue
 		p["hp"] = int(p.get("hp", 0)) - part_dmg
@@ -2970,6 +3163,15 @@ func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 	var w_atk := int(bar.get("weapon_atk", 0))
 	p.weapon_class = line
 	p.atk = player_base_atk + w_atk
+	var link_title := ""
+	if auto:
+		if index == 1:
+			p.atk = int(round(float(p.atk) * 1.15))
+			bar["prd_bonus"] = maxf(float(bar.get("prd_bonus", 0.0)), 20.0)
+			link_title = _t("觸發【中堅承】：繼承過載餘熱，攻擊+15%！")
+		elif index == 2:
+			p.crit_dmg += 30.0
+			link_title = _t("觸發【大將破】：進入終結姿態，暴傷+30%！")
 	p.armed_atk = p.atk
 	p.armed_weapon_class = line
 	var tempo: Dictionary = Formulas.weapon_tempo(line)
@@ -2996,6 +3198,7 @@ func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 		"uses_max": p.weapon_uses_max,
 		"atk": p.atk,
 		"auto": auto,
+		"linkage_title": link_title,
 	})
 	## 相容舊事件名（UI／測試）
 	_emit("soul_style_switched", {

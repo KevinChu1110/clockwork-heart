@@ -18,6 +18,8 @@ signal part_unequipped(slot_id: String, part: Dictionary)
 static var player_parts: Dictionary = {}
 static var core_inventory: Array = []
 static var inventory: Array = []
+static var _shuffle_bag: Array[String] = []
+static var _last_dropped_slot: String = ""
 
 const DEFAULT_DROP_TIER_WEIGHTS: Dictionary = {
 	"gray": 50,
@@ -1346,19 +1348,103 @@ static func roll_tier(arg1: Variant = null, arg2: String = "stage") -> String:
 	return TIER_WHITE
 
 
-## 隨機抽取五槽之一
+## 重設 5-bag 洗牌袋（單元測試或重新洗牌使用）
+static func reset_shuffle_bag() -> void:
+	_shuffle_bag.clear()
+	_last_dropped_slot = ""
+
+
+## 取得玩家目前尚未裝備的槽位清單（支援 GameState.core_slots）
+static func get_unfilled_slots() -> Array[String]:
+	var unfilled: Array[String] = []
+	var equipped: Dictionary = {}
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs and "core_slots" in gs and gs.core_slots is Dictionary:
+			equipped = gs.core_slots
+	for sid in ALL_SLOT_IDS:
+		var p = equipped.get(sid, null)
+		if p == null or (typeof(p) == TYPE_DICTIONARY and p.is_empty()):
+			unfilled.append(sid)
+	return unfilled
+
+
+## 5-bag 洗牌袋（Shuffle Bag）演算法抽取槽位：
+## 1. 優先補足全身未湊齊的機芯槽位（未湊齊者先出袋，湊齊者後排）
+## 2. 杜絕連續掉同槽垃圾（跨袋時新袋首抽避開前一袋最後一抽）
+## 3. 保證每 5 抽必定五槽各 1 顆，極度平滑保底
+static func roll_slot_shuffle_bag(rng: RandomNumberGenerator = null, priority_unfilled: bool = true) -> String:
+	if _shuffle_bag.is_empty():
+		var missing: Array[String] = []
+		var owned: Array[String] = []
+		var unfilled: Array[String] = []
+		if priority_unfilled:
+			unfilled = get_unfilled_slots()
+		for sid in ALL_SLOT_IDS:
+			if unfilled.has(sid):
+				missing.append(sid)
+			else:
+				owned.append(sid)
+
+		# 洗牌 missing
+		var n_m := missing.size()
+		for i in range(n_m - 1, 0, -1):
+			var j := rng.randi_range(0, i) if rng != null else (randi() % (i + 1))
+			var tmp := missing[i]
+			missing[i] = missing[j]
+			missing[j] = tmp
+
+		# 洗牌 owned
+		var n_o := owned.size()
+		for i in range(n_o - 1, 0, -1):
+			var j := rng.randi_range(0, i) if rng != null else (randi() % (i + 1))
+			var tmp2 := owned[i]
+			owned[i] = owned[j]
+			owned[j] = tmp2
+
+		_shuffle_bag.clear()
+		for sid in missing:
+			_shuffle_bag.append(sid)
+		for sid in owned:
+			_shuffle_bag.append(sid)
+
+		# 杜絕連續掉同槽：若新袋首抽與上一袋最後一抽相同，且袋內有其他選項，則與同優先度組或下一項交換
+		if _last_dropped_slot != "" and _shuffle_bag.size() > 1 and _shuffle_bag[0] == _last_dropped_slot:
+			var swap_idx := 1
+			if missing.size() > 1:
+				swap_idx = 1
+			elif _shuffle_bag.size() > 1:
+				swap_idx = 1
+			var t := _shuffle_bag[0]
+			_shuffle_bag[0] = _shuffle_bag[swap_idx]
+			_shuffle_bag[swap_idx] = t
+
+	var picked: String = _shuffle_bag.pop_front()
+	_last_dropped_slot = picked
+	return picked
+
+
+## 依 5-bag 洗牌袋隨機抽取五槽之一
 static func roll_slot(rng: RandomNumberGenerator = null) -> String:
-	var idx: int = rng.randi_range(0, ALL_SLOT_IDS.size() - 1) if rng != null else (randi() % ALL_SLOT_IDS.size())
-	return ALL_SLOT_IDS[idx]
+	return roll_slot_shuffle_bag(rng, true)
 
 
-## 隨機生成一顆五槽機芯戰利品部件（遵循 create_part 規格與八色階權重，支援傳入來源關卡／巨偶，支援指定槽位鎖定）
+## 隨機生成一顆五槽機芯戰利品部件（遵循 create_part 規格與八色階權重，支援傳入來源關卡／巨偶，支援指定槽位鎖定與洗牌袋）
 static func roll_battle_drop(arg1: Variant = null, arg2: String = "stage", slot_override: String = "") -> Dictionary:
 	var parsed: Array = _parse_roll_args(arg1, arg2)
 	var rng: RandomNumberGenerator = parsed[0]
 	var source: String = parsed[1]
 	var norm_slot_override := normalize_slot_id(slot_override) if slot_override != "" else ""
-	var slot_id: String = norm_slot_override if norm_slot_override in ALL_SLOT_IDS else roll_slot(rng)
+	var slot_id: String = ""
+	if norm_slot_override in ALL_SLOT_IDS:
+		slot_id = norm_slot_override
+		var found_idx := _shuffle_bag.find(slot_id)
+		if found_idx >= 0:
+			_shuffle_bag.remove_at(found_idx)
+		_last_dropped_slot = slot_id
+	else:
+		slot_id = roll_slot(rng)
 	var tier_id := roll_tier(rng, source)
 	var part := create_part_by_tier(slot_id, tier_id)
 	if source == "colossus" or source.begins_with("colossus_"):
