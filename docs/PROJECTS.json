@@ -5430,8 +5430,8 @@
    "id": "temple-lobby-battle-ruins-hd",
    "cat": "遊戲",
    "title": "大廳古典神殿底圖切換與戰鬥石徑廢墟商業級替換",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "大廳切換標準1080p古典機械神殿temple_lobby_bg.png並融合日晷舞台；戰鬥重製純橫向石徑廢墟底圖stone_path_ruins_bg.png契合512角色立繪，雙實機截圖經Vision審查通過，送交測試審查",
    "keys": [
     "大廳古典神殿底圖"
    ]
