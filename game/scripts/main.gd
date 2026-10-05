@@ -338,7 +338,7 @@ func _refresh_hud() -> void:
 	## —— 兩塊直接疊在一起，畫面上會有兩條血條。而且那張卡片在戰鬥中能提供的
 	## 只有等級／金幣／戰力，打到一半沒有人要看；真正要盯的 HP、戰意、敵人血量、
 	## 格擋倒數，戰鬥畫面本來就都有。
-	## 快捷欄留著 —— 戰鬥中要用道具（見 InventorySystem.hp_authority）。
+	## 戰鬥畫面手遊化：隱藏底部 1-8 快捷欄以釋放開闊戰鬥視野。
 	var talking := (_dialogue and is_instance_valid(_dialogue) and _dialogue.visible) \
 		or (_cutscene and is_instance_valid(_cutscene) and _cutscene.visible)
 	var modal_open := _any_modal_open()
@@ -350,7 +350,7 @@ func _refresh_hud() -> void:
 		if show_status_card and _maple_hud.has_method("refresh"):
 			_maple_hud.call("refresh")
 	if _hotbar and is_instance_valid(_hotbar):
-		_hotbar.visible = show_chrome and _current != Screen.LOBBY and not (_dialogue and _dialogue.visible) and not modal_open
+		_hotbar.visible = show_chrome and _current != Screen.LOBBY and _current != Screen.BATTLE and not (_dialogue and _dialogue.visible) and not modal_open
 		if _hotbar.visible and _hotbar.has_method("refresh"):
 			_hotbar.call("refresh")
 	if hud == null:

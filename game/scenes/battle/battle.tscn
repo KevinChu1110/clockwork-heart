@@ -105,7 +105,7 @@ unique_name_in_owner = true
 visible = false
 layout_mode = 2
 size_flags_horizontal = 0
-theme_override_font_sizes/font_size = 13
+theme_override_font_sizes/font_size = 15
 text = ""
 
 [node name="CenterHint" type="VBoxContainer" parent="SideBars"]
@@ -197,6 +197,7 @@ size_flags_vertical = 3
 alignment = 2
 
 [node name="PlayerTag" type="Label" parent="Arena/PlayerSlot"]
+visible = false
 layout_mode = 2
 text = "我方"
 horizontal_alignment = 1
@@ -224,6 +225,7 @@ size_flags_vertical = 3
 alignment = 2
 
 [node name="EnemyTag" type="Label" parent="Arena/EnemySlot"]
+visible = false
 layout_mode = 2
 text = "敵方"
 horizontal_alignment = 1
@@ -268,19 +270,17 @@ modulate = Color(1, 1, 1, 0.85)
 unique_name_in_owner = true
 z_index = 30
 layout_mode = 1
-anchors_preset = 12
+anchors_preset = 2
 anchor_top = 1.0
-anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 28.0
-offset_top = -188.0
-offset_right = -28.0
-offset_bottom = -82.0
-grow_horizontal = 2
+offset_left = 24.0
+offset_top = -88.0
+offset_right = 380.0
+offset_bottom = -20.0
 grow_vertical = 0
 bbcode_enabled = true
 scroll_following = true
-theme_override_font_sizes/normal_font_size = 15
+theme_override_font_sizes/normal_font_size = 16
 
 [node name="Banner" type="Label" parent="."]
 unique_name_in_owner = true

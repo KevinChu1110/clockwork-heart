@@ -5355,6 +5355,46 @@
    "keys": [
     "🌐 官網升級 A"
    ]
+  },
+  {
+   "id": "battle-hud-dopamine",
+   "cat": "遊戲",
+   "title": "戰鬥HUD去PPT化：清除13px以下小字並升級暴怒與攻擊按鈕多巴胺質感",
+   "status": "測試中",
+   "note": "已完成小字拉升至14~18px與果凍厚底按鈕升級，測試全綠，送交 sideqa 審查",
+   "keys": [
+    "戰鬥HUD去PP"
+   ]
+  },
+  {
+   "id": "battle-mobile-ergonomics",
+   "cat": "遊戲",
+   "title": "開發中",
+   "status": "測試中",
+   "note": "戰鬥HUD手遊人因重構完成：已移除PC 1-8快捷列、Z/X/C與角色頭頂標籤，中央改精簡浮動飄字，右下重構為扇形輪盤自測全綠",
+   "keys": [
+    "開發中"
+   ]
+  },
+  {
+   "id": "lobby-hierarchy-brass-ui",
+   "cat": "遊戲",
+   "title": "開發中",
+   "status": "測試中",
+   "note": "完成左側殿堂金屬板件收斂、前往出征微金光呼吸主CTA、全域發條黃銅邊框與厚底果凍重構，測試全綠並送審",
+   "keys": [
+    "開發中"
+   ]
+  },
+  {
+   "id": "character-rimlight-shadow",
+   "cat": "遊戲",
+   "title": "草稿",
+   "status": "草稿",
+   "note": "角色動態光影與大氣景深升級（第3批，相依第1+2批）",
+   "keys": [
+    "草稿"
+   ]
   }
  ]
 }
