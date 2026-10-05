@@ -5425,6 +5425,16 @@
    "keys": [
     "戰鬥PRD偽隨機"
    ]
+  },
+  {
+   "id": "temple-lobby-battle-ruins-hd",
+   "cat": "遊戲",
+   "title": "大廳古典神殿底圖切換與戰鬥石徑廢墟商業級替換",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "大廳古典神殿底圖"
+   ]
   }
  ]
 }
