@@ -6,7 +6,6 @@ var _step := 0
 var _wait := 0
 var _main: Node = null
 var _battle: Control = null
-var _lobby: Control = null
 
 func _initialize() -> void:
 	root.size = Vector2i(1280, 720)
@@ -33,45 +32,44 @@ func _process(_delta: float) -> bool:
 			_main = current_scene
 			var gs: Node = root.get_node_or_null("GameState")
 			if _main == null or gs == null:
+				push_error("Main scene or GameState null")
 				quit(1)
 				return true
 			gs.call("reset_new_game")
 			gs.set("player_name", "小白")
 			gs.set("player_race", "rabbit")
 			
-			# 1. 載入並截取大廳標準 1080p 古典機械神殿實機圖
-			var ml_cls = load("res://scripts/ui/mobile_lobby.gd")
-			_lobby = ml_cls.new()
-			_lobby.name = "ProofLobby"
-			root.add_child(_lobby)
+			# 1. 透過 _go_mobile_lobby 載入大廳標準 1080p 古典機械神殿實機圖（確保 host 容器與邊距正確）
+			if _main.has_method("_go_mobile_lobby"):
+				_main.call("_go_mobile_lobby")
 			_step = 1
 			_wait = 0
 		1:
-			if _wait < 35:
+			if _wait < 45:
 				return false
-			var img: Image = root.get_texture().get_image()
+			var img: Image = null
+			var vp := root.get_viewport()
+			if vp and vp.get_texture():
+				img = vp.get_texture().get_image()
 			if img == null:
-				var vp := root.get_viewport()
-				if vp and vp.get_texture():
-					img = vp.get_texture().get_image()
+				img = root.get_texture().get_image()
+				
 			if img != null:
+				var p1 := "res://../proof_temple_lobby_hd.png"
 				img.save_png("/opt/side/bravesoul-game/proof_temple_lobby_hd.png")
 				img.save_png("/opt/side/bravesoul-game/proofs/proof_temple_lobby_hd.png")
+				img.save_png("/opt/side/bravesoul-game/.worktrees/t_805fa24c/proof_temple_lobby_hd.png")
 				img.save_png("/root/.hermes/kanban/boards/side-bravesoul/workspaces/t_805fa24c/proof_temple_lobby_hd.png")
 				print("CAPTURE_TEMPLE_LOBBY_HD_DONE")
 			else:
 				push_error("TEMPLE_LOBBY_HD_IMAGE_NULL")
-			
-			if _lobby:
-				_lobby.queue_free()
-				_lobby = null
 			
 			# 2. 開啟戰鬥場景 (巨偶停擺戰，載入石徑廢墟底圖)
 			_main.call("_start_battle_raw", "colossus_lion")
 			_step = 2
 			_wait = 0
 		2:
-			if _wait < 40:
+			if _wait < 45:
 				return false
 			var host: Control = _main.get("host") as Control
 			if host and host.get_child_count() > 0:
@@ -86,16 +84,19 @@ func _process(_delta: float) -> bool:
 			_step = 3
 			_wait = 0
 		3:
-			if _wait < 30:
+			if _wait < 35:
 				return false
-			var img: Image = root.get_texture().get_image()
+			var img: Image = null
+			var vp := root.get_viewport()
+			if vp and vp.get_texture():
+				img = vp.get_texture().get_image()
 			if img == null:
-				var vp := root.get_viewport()
-				if vp and vp.get_texture():
-					img = vp.get_texture().get_image()
+				img = root.get_texture().get_image()
+				
 			if img != null:
 				img.save_png("/opt/side/bravesoul-game/proof_battle_ruins_hd.png")
 				img.save_png("/opt/side/bravesoul-game/proofs/proof_battle_ruins_hd.png")
+				img.save_png("/opt/side/bravesoul-game/.worktrees/t_805fa24c/proof_battle_ruins_hd.png")
 				img.save_png("/root/.hermes/kanban/boards/side-bravesoul/workspaces/t_805fa24c/proof_battle_ruins_hd.png")
 				print("CAPTURE_BATTLE_RUINS_HD_DONE")
 			else:
