@@ -111,7 +111,9 @@ func _make(mode: String, st: Dictionary):
 	return null
 
 
-## 玩家看時機格擋（不是無腦連按 —— 那條由 test_parry_discipline 守）
+## 戰鬥已全自動（#17）：每個格擋窗／機制窗由 BattleSim.auto_react() 擲一次骰，
+## 成功率走 auto_deflect_chance()（AUTO_DEFLECT_* 常數，閃避與速度差）。
+## 擲骰用 sim.rng，同 seed 可重現。不再用 try_react() 的「必定彈開」建模。
 func _run(mode: String, lv: int, def_b: int, seed_i: int) -> bool:
 	var sim = _make(mode, _stats(lv, def_b))
 	if sim == null:
@@ -127,8 +129,7 @@ func _run(mode: String, lv: int, def_b: int, seed_i: int) -> bool:
 		if sim.sim_paused and sim.temptation_stage > 0:
 			sim.resolve_temptation(sim.temptation_stage, true)
 			continue
-		if sim.parry_window_open():
-			sim.try_react()
+		sim.auto_react()
 	var p = sim.get_unit("player")
 	## 打不完＝沒贏。時限是 250 秒，正常的仗 40～90 秒就結束。
 	if not sim.finished:
@@ -146,9 +147,6 @@ func _initialize() -> void:
 			if _run(mode, lv, def_b, 5000 + i):
 				wins += 1
 		var rate := 100.0 * float(wins) / float(RUNS)
-		if rate < MIN_RATE:
-			_fail("%s 在建議等級 Lv%d 只贏 %.0f%% —— 玩家照著地圖來會撞牆" % [mode, lv, rate])
-			continue
 
 		## 反方向：低 EARLY_GAP 級不該打得贏
 		var early_lv: int = maxi(1, lv - EARLY_GAP)
@@ -157,6 +155,13 @@ func _initialize() -> void:
 			if _run(mode, early_lv, def_b, 6000 + i):
 				early_wins += 1
 		var early_rate := 100.0 * float(early_wins) / float(RUNS)
+		## 兩個等級的勝率都先印出來：平衡調整要看整張表，不能只看第一個失敗
+		print("  rate %-7s Lv%-3d %3.0f%%（%d/%d）　Lv%-3d %3.0f%%（%d/%d）" % [
+			mode, lv, rate, wins, RUNS, early_lv, early_rate, early_wins, RUNS
+		])
+		if rate < MIN_RATE:
+			_fail("%s 在建議等級 Lv%d 只贏 %.0f%% —— 玩家照著地圖來會撞牆" % [mode, lv, rate])
+			continue
 		if early_rate > MAX_EARLY_RATE:
 			_fail("%s 標建議 Lv%d，但 Lv%d 就有 %.0f%% 勝率 —— 建議等級寫了等於沒寫" % [
 				mode, lv, early_lv, early_rate
