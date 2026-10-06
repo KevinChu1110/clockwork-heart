@@ -4,7 +4,8 @@ const MobileLobby = preload("res://scripts/ui/mobile_lobby.gd")
 const DemoScene = preload("res://scenes/ui/paperdoll_select_demo.tscn")
 const WardrobeDialog = preload("res://scripts/ui/wardrobe_dialog.gd")
 
-const RACES = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+## 狐／獅／野豬毛皮種族已下架（世界觀：覺醒玩具），不再列入
+const RACES = ["rabbit", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
 
 var _frame := 0
 

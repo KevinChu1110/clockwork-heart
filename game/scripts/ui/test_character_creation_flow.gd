@@ -6,7 +6,8 @@ const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 
 var _ok := true
 var _frame := 0
-var _races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
+## 狐／獅／野豬毛皮種族已下架，另在下方驗證舊 id 會對回白金兔
+var _races := ["rabbit", "macaque", "tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn"]
 var _race_textures: Dictionary = {}
 
 
@@ -70,6 +71,11 @@ func _run_test_suite() -> void:
 		var load_err = sm.call("load_game", 3)
 		_assert(load_err == OK, "讀取第 3 存檔槽成功")
 		_assert(str(gs.get("player_race")) == r, "讀檔後 GameState.player_race 正確恢復為 %s" % r)
+
+	# 舊毛皮種族存檔讀回來會對回白金兔本體（存檔相容）
+	for fur in ["fox", "lion", "boar"]:
+		gs.call("from_dict", {"player_race": fur, "flags": {}})
+		_assert(str(gs.get("player_race")) == "rabbit", "舊毛皮種族 %s 存檔讀回對到 rabbit" % fur)
 
 	# ── 2. SpriteDB 貼圖對應五族素體驗證 ──
 	print("\n--- 2. SpriteDB 貼圖對應五族素體 ---")
@@ -169,34 +175,15 @@ func _run_test_suite() -> void:
 
 	_assert(bool(demo.get("creation_mode")) == true, "Demo 面板成功切換至創角模式 (creation_mode = true)")
 
-	# 切換至靈狐並確認
-	demo.call("select_race", "fox")
-	demo.call("confirm_selection")
-
-	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號")
-	_assert(confirmed_data["race"] == "fox", "訊號回傳正確選取種族 'fox'")
-	_assert(str(gs.get("player_race")) == "fox", "confirm_selection 成功將 'fox' 寫入 GameState")
-	_assert(str(gs.get("player_name")) == "靈尾狐", "confirm_selection 成功將預設英雄名稱設為 '靈尾狐'")
-
-	# 切換至烈鬃獅並確認
-	confirmed_data["called"] = false
-	demo.call("select_race", "lion")
-	demo.call("confirm_selection")
-
-	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (lion)")
-	_assert(confirmed_data["race"] == "lion", "訊號回傳正確選取種族 'lion'")
-	_assert(str(gs.get("player_race")) == "lion", "confirm_selection 成功將 'lion' 寫入 GameState")
-	_assert(str(gs.get("player_name")) == "烈鬃獅", "confirm_selection 成功將預設英雄名稱設為 '烈鬃獅'")
-
-	# 切換至鋼牙豕並確認
-	confirmed_data["called"] = false
-	demo.call("select_race", "boar")
-	demo.call("confirm_selection")
-
-	_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (boar)")
-	_assert(confirmed_data["race"] == "boar", "訊號回傳正確選取種族 'boar'")
-	_assert(str(gs.get("player_race")) == "boar", "confirm_selection 成功將 'boar' 寫入 GameState")
-	_assert(str(gs.get("player_name")) == "鋼牙豕", "confirm_selection 成功將預設英雄名稱設為 '鋼牙豕'")
+	# 狐／獅／野豬毛皮種族已下架：選了也會退回白金兔本體
+	for fur in ["fox", "lion", "boar"]:
+		confirmed_data["called"] = false
+		demo.call("select_race", fur)
+		demo.call("confirm_selection")
+		_assert(confirmed_data["called"] == true, "確認按鈕成功觸發 character_confirmed 訊號 (%s)" % fur)
+		_assert(confirmed_data["race"] == "rabbit", "毛皮種族 %s 退回 rabbit（實際 %s）" % [fur, confirmed_data["race"]])
+		_assert(str(gs.get("player_race")) == "rabbit", "毛皮種族 %s 不寫入 GameState" % fur)
+		_assert(str(gs.get("player_name")) == "小白", "毛皮種族 %s 預設名字仍為小白" % fur)
 
 	# 切換至靈爪猴並確認
 	confirmed_data["called"] = false

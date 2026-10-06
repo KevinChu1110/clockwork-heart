@@ -13,6 +13,7 @@ const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
+const WindingKeyAnim = preload("res://scripts/art/winding_key_anim.gd")
 
 ## ── 多巴胺鮮亮色盤標準 (對齊 mobile_settings / maple_hud / review.md) ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
@@ -170,9 +171,10 @@ var _bg_rect: TextureRect = null
 var _bg_tween: Tween = null
 var _stage_anchor: Control = null
 var _stage_tween: Tween = null
-var _key_wind_tween: Tween = null
-var _key_wind_timer: float = 0.0
-var _key_rotation_turns: float = 0.0
+## 背後鑰匙待機：每 8 幀轉一格（WindingKeyAnim），一圈 8 格
+var _key_step_frames: int = 0
+var _key_step: int = 0
+var _hero_key_frames: Array[Texture2D] = []
 var _cached_hero_body_comp_512: Texture2D = null
 var _cached_hero_body_key: String = ""
 
@@ -498,11 +500,17 @@ func _apply_hero_idle_visual() -> void:
 
 	if _hero_key_avatar:
 		if body_tex != null and key_tex != null:
-			_hero_key_avatar.texture = key_tex
+			_hero_key_frames = WindingKeyAnim.build_key_layer_frames_512(race, WindingKeyAnim.resolved_key_id(race, slots), key_tex)
+			if _hero_key_frames.size() == WindingKeyAnim.STEPS_PER_TURN:
+				_hero_key_avatar.texture = _hero_key_frames[_key_step]
+			else:
+				_hero_key_avatar.texture = key_tex
 			_hero_key_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 			_hero_key_avatar.pivot_offset = KEY_PIVOTS_320.get(race, Vector2(103, 186))
+			_hero_key_avatar.rotation = 0.0
 			_hero_key_avatar.visible = true
 		else:
+			_hero_key_frames = []
 			_hero_key_avatar.texture = null
 			_hero_key_avatar.visible = false
 
@@ -1428,11 +1436,10 @@ func _process(delta: float) -> void:
 	if _current_tab != Tab.VILLAGE or _is_interacting:
 		return
 
-	# 背後發條鑰匙每隔 4~6 秒微轉半圈並伴隨微小抖動反饋
-	_key_wind_timer += delta
-	if _key_wind_timer >= 4.5:
-		_key_wind_timer = 0.0
-		_trigger_key_half_turn()
+	# 背後發條鑰匙：每 8 幀轉一格（任務書 §3）；手動觸發才冒金屑
+	_key_step_frames += 1
+	if _key_step_frames % WindingKeyAnim.FRAMES_PER_STEP == 0:
+		_advance_key_step()
 
 	if not enable_idle_flavor:
 		return
@@ -1448,26 +1455,23 @@ func trigger_key_half_turn() -> void:
 
 
 func _trigger_key_half_turn() -> void:
+	_advance_key_step(true)
+
+
+## 鑰匙進一格；有程式轉動幀就換貼圖，沒有就退回壓扁節點（同一個軸向縮放）
+func _advance_key_step(with_sparks: bool = false) -> void:
 	if _hero_key_avatar == null or not is_instance_valid(_hero_key_avatar) or not _hero_key_avatar.visible:
 		return
 	if _is_interacting:
 		return
-	_key_rotation_turns += PI
-	var tw := create_tween()
-	# 微轉半圈 (180度, PI 弧度)，帶機械卡榫回彈
-	tw.tween_property(_hero_key_avatar, "rotation", _key_rotation_turns, 0.30).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	# 伴隨微小抖動反饋 (內部齒輪嚙合的震顫)
-	if _hero_avatar and is_instance_valid(_hero_avatar):
-		tw.parallel().tween_property(_hero_avatar, "position:x", -158.5, 0.05).set_delay(0.20)
-		tw.parallel().tween_property(_hero_avatar, "position:x", -161.5, 0.05).set_delay(0.25)
-		tw.parallel().tween_property(_hero_avatar, "position:x", -160.0, 0.05).set_delay(0.30)
-	# 發條自身回彈卡位微抖動
-	tw.tween_property(_hero_key_avatar, "rotation", _key_rotation_turns + 0.05, 0.04)
-	tw.tween_property(_hero_key_avatar, "rotation", _key_rotation_turns, 0.04)
-	tw.tween_callback(func():
-		if is_inside_tree() and visible:
-			_burst_tiny_key_sparks()
-	)
+	_key_step = (_key_step + 1) % WindingKeyAnim.STEPS_PER_TURN
+	if _hero_key_frames.size() == WindingKeyAnim.STEPS_PER_TURN:
+		_hero_key_avatar.texture = _hero_key_frames[_key_step]
+		_hero_key_avatar.scale = Vector2.ONE
+	else:
+		_hero_key_avatar.scale = Vector2(1.0, WindingKeyAnim.axial_scale(_key_step))
+	if with_sparks and is_inside_tree() and visible:
+		_burst_tiny_key_sparks()
 
 
 func _burst_tiny_key_sparks() -> void:

@@ -3,7 +3,7 @@ extends SceneTree
 ## 驗證：
 ## 1. 六語系 ui.json 包含翠角鹿、職業稱謂（遊俠）、短稱（鹿）、外裝、塗裝、武器與說明翻譯。
 ## 2. 創角介面在六語系切換下，翠角鹿標題、職業、外裝、塗裝、武器與按鈕即時動態刷新。
-## 3. 衣櫥畫面在六語系切換下，翠角鹿外觀卡片、單一族標籤與跨族 [鹿]/[Fawn] 前綴即時動態刷新。
+## 3. 衣櫥畫面在六語系切換下，翠角鹿外觀卡片與族標籤即時動態刷新（玩具家族分頁後卡片不帶種族前綴）。
 ## 4. 大廳畫面英雄名稱在六語系即時切換下同步更新。
 
 const DemoScene = preload("res://scenes/ui/paperdoll_select_demo.tscn")
@@ -231,22 +231,24 @@ func _run_test_suite() -> void:
 
 		print("  ✓ [%s] 衣櫥單一篩選即時切換驗證通過" % code)
 
-	# 驗證「全部」篩選模式下的跨族前綴
+	# 衣櫥改成玩具家族分頁後，卡片名稱不再加種族前綴（[鹿] 之類）
 	dlg.set_race_filter("all")
 	for code in LOCALES:
 		if loc_node:
 			loc_node.call("set_locale", code)
-		var exp_prefix := "[%s] %s" % [expected_dict["鹿"][code], expected_dict["翡翠林緣巡守工裝"][code]]
-		var found_cross := false
+		var exp_plain: String = expected_dict["翡翠林緣巡守工裝"][code]
+		var found_plain := false
 		for btn in dlg._costume_cards:
 			var lbl = btn.find_child("NameLabel", true, false)
-			if lbl is Label and lbl.text == exp_prefix:
-				found_cross = true
-				break
-		if not found_cross:
-			_fail("[%s] 衣櫥全部列表未找到前綴卡片 '%s'" % [code, exp_prefix])
+			if lbl is Label:
+				if lbl.text.begins_with("["):
+					_fail("[%s] 衣櫥卡片仍帶種族前綴 '%s'" % [code, lbl.text])
+				if lbl.text == exp_plain:
+					found_plain = true
+		if not found_plain:
+			_fail("[%s] 衣櫥未找到翠角鹿外裝卡片 '%s'" % [code, exp_plain])
 
-	print("  ✓ 跨族「全部」列表 [鹿] / [Fawn] 前綴六語系驗證通過")
+	print("  ✓ 衣櫥卡片不帶種族前綴，六語系驗證通過")
 	dlg.queue_free()
 
 	# 4. 大廳名稱連動驗證

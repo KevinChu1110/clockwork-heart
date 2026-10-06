@@ -200,14 +200,13 @@ func _run_test_suite() -> void:
 					_fail("[%s] 白金兔 NameLabel 字級過大未調適: %d" % [code, name_lbl.get_theme_font_size("font_size")])
 
 		# 切換種族後文字依舊符合該語系（不退回繁中）
+		# 毛皮種族已下架：選狐退回白金兔，狐卡不顯示
 		demo.call("select_race", "fox")
 		var btn_fox = demo.get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_fox") as Button
-		if btn_fox:
-			var name_lbl_fox = btn_fox.get_node_or_null("Margin/VBox/NameLabel") as Label
-			if name_lbl_fox and name_lbl_fox.text != expected_races["靈尾狐"][code]:
-				_fail("[%s] 點選後靈尾狐卡片文字不符: 期望 '%s'，實際 '%s'" % [code, expected_races["靈尾狐"][code], name_lbl_fox.text])
-			if name_lbl_fox and name_lbl_fox.autowrap_mode != TextServer.AUTOWRAP_WORD_SMART:
-				_fail("[%s] 靈尾狐 NameLabel autowrap_mode 未開啟: %d" % [code, name_lbl_fox.autowrap_mode])
+		if btn_fox and btn_fox.visible:
+			_fail("[%s] 靈尾狐種族卡不應顯示" % code)
+		if str(demo.call("get_current_race")) != "rabbit":
+			_fail("[%s] 選狐應退回白金兔" % code)
 
 		# 切換到擴充分頁檢查長譯名種族卡自適應 (0-QA23)
 		demo.call("switch_tab", "expansion")

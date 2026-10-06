@@ -2049,6 +2049,16 @@ func _get_player_equipped_idle_texture() -> Texture2D:
 	return null
 
 
+## 主角側面待機：背後發條每 8 幀轉一格（紙娃娃渲染，只動 player_body 貼圖；非待機姿勢不碰）
+func _ensure_player_key_ticker() -> void:
+	if player_body == null or player_body.get_node_or_null("WindingKeyTicker") != null:
+		return
+	var ticker: Node = load("res://scripts/art/winding_key_ticker.gd").new()
+	ticker.name = "WindingKeyTicker"
+	player_body.add_child(ticker)
+	ticker.call("attach", player_body, Callable(), func(): return _player_pose == "idle")
+
+
 func _apply_battle_art(mode: String) -> void:
 	## 立繪比例：素材約 160×200（兔）／220×240（Boss），維持長寬比、不擠扁
 	_ensure_battle_look()
@@ -2073,6 +2083,7 @@ func _apply_battle_art(mode: String) -> void:
 	_player_base_mod = SpriteDB.player_armor_modulate()
 	player_body.modulate = _player_base_mod
 	_apply_battle_weapon_overlay()
+	_ensure_player_key_ticker()
 	_start_breathe_tween()
 
 	_boss_art_key = mode
