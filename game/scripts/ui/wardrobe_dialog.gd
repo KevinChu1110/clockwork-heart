@@ -23,6 +23,8 @@ const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const ToyFamily = preload("res://scripts/art/toy_family.gd")
+const WindingKeyTicker = preload("res://scripts/art/winding_key_ticker.gd")
 
 static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
@@ -147,13 +149,10 @@ var _btn_random: Button
 
 var _breathe_tween: Tween = null
 
-## 種族篩選常數與狀態
+## 舊種族短名表：只做 id→名稱查找與存檔相容，不再當衣櫥分頁。
+## 衣櫥分頁只用玩具家族（ToyFamily.FAMILIES）；狐／獅／野豬三個毛皮種族已移除。
 const RACE_FILTER_OPTIONS: Array[Dictionary] = [
-	{"id": "all", "name_zh": "全部"},
 	{"id": "rabbit", "name_zh": "兔"},
-	{"id": "fox", "name_zh": "狐"},
-	{"id": "lion", "name_zh": "獅"},
-	{"id": "boar", "name_zh": "野豬"},
 	{"id": "macaque", "name_zh": "猴"},
 	{"id": "tiger", "name_zh": "虎"},
 	{"id": "bear", "name_zh": "熊"},
@@ -230,8 +229,11 @@ func _has_race_assets(race_id: String) -> bool:
 		return PaperdollSelectClass.has_race_assets(race_id)
 	return true
 
-var current_filter_race: String = "all"
-var _filter_chips: Dictionary = {}
+var current_filter_race: String = "rabbit"
+## 目前的玩具家族分頁；"all" 只給舊測試／除錯用，畫面上沒有這個分頁
+var current_family: String = ToyFamily.DEFAULT_FAMILY
+var _filter_chips: Dictionary = {} # family_id -> Button
+var _key_ticker: Node = null
 
 ## 七大槽位選取狀態與索引
 var current_race: String = "rabbit"
@@ -331,12 +333,7 @@ func _refresh_card_texts() -> void:
 			if name_lbl is Label and name_lbl.has_meta("raw_name"):
 				var raw_name: String = str(name_lbl.get_meta("raw_name", ""))
 				var loc_name := _t(raw_name)
-				var item_race: String = str(name_lbl.get_meta("item_race", ""))
-				if current_filter_race == "all" and not item_race.is_empty():
-					var r_short: String = _get_race_short_name(item_race)
-					name_lbl.text = "[%s] %s" % [_t(r_short), loc_name]
-				else:
-					name_lbl.text = loc_name
+				name_lbl.text = loc_name
 
 
 func ensure_ui() -> void:
@@ -374,12 +371,19 @@ func _get_race_data(target_race: String = "") -> Dictionary:
 
 func _init_from_game_state() -> void:
 	var gs = _get_game_state()
+	var raw_race := ToyFamily.HERO_ART_RACE
 	if gs and "player_race" in gs:
-		var r: String = str(gs.player_race).strip_edges().to_lower()
-		if not r.is_empty() and _has_race_assets(r):
+		raw_race = str(gs.player_race).strip_edges().to_lower()
+		var r: String = ToyFamily.art_race_for(raw_race)
+		if _has_race_assets(r):
 			current_race = r
 
 	current_filter_race = current_race
+	current_family = ToyFamily.family_of(raw_race)
+	if gs and gs.has_method("get_flag"):
+		var saved_family := str(gs.call("get_flag", "wardrobe.family", ""))
+		if ToyFamily.is_family(saved_family):
+			current_family = saved_family
 
 	var equipped_costume: String = ""
 	var equipped_paint: String = ""
@@ -427,6 +431,14 @@ func _init_from_game_state() -> void:
 	var data := _get_race_data()
 	var costumes: Array = data.get("costumes", [])
 	var chassis_list: Array = data.get("chassis", [])
+
+	# 開在目前外裝所屬的家族分頁（裸機／預設件就沿用上次的分頁）
+	var native_costume_ids: Array = []
+	for c in costumes:
+		native_costume_ids.append(str((c as Dictionary).get("id", "")))
+	var equipped_family := ToyFamily.family_of_item(selected_costume_id, current_race, native_costume_ids, ["none"])
+	if ToyFamily.is_family(equipped_family):
+		current_family = equipped_family
 
 	costume_index = 0
 	for i in range(costumes.size()):
@@ -556,6 +568,11 @@ func _build_ui() -> void:
 	_preview_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_preview_rect.pivot_offset = Vector2(110, 240)
 	_preview_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# 待機時背後發條每 8 幀轉一格
+	_key_ticker = WindingKeyTicker.new()
+	_key_ticker.name = "WindingKeyTicker"
+	_preview_rect.add_child(_key_ticker)
+	_key_ticker.call("attach", _preview_rect, _key_ticker_info)
 	_pedestal_stage.add_child(_preview_rect)
 
 	# 底部名牌資訊欄
@@ -918,24 +935,20 @@ func _create_race_filter_bar() -> PanelContainer:
 	chip_scroll.add_child(hbox)
 
 	_filter_chips.clear()
-	for opt in RACE_FILTER_OPTIONS:
-		if opt.get("hidden", false):
-			continue
-		var rid: String = str(opt.get("id", ""))
-		if not _has_race_assets(rid):
-			continue
-		var rname: String = str(opt.get("name_zh", rid))
+	for fam in ToyFamily.FAMILIES:
+		var fid: String = str(fam.get("id", ""))
+		var fname: String = str(fam.get("name_zh", fid))
 		var btn := Button.new()
-		btn.name = "Chip_" + rid
-		btn.text = _t(rname)
-		btn.custom_minimum_size = Vector2(46, 42)
+		btn.name = "Chip_" + fid
+		btn.text = _t(fname)
+		btn.custom_minimum_size = Vector2(72, 42)
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		btn.add_theme_font_size_override("font_size", 14)
 		if _cached_font:
 			btn.add_theme_font_override("font", _cached_font)
-		btn.pressed.connect(func(): set_race_filter(rid))
+		btn.pressed.connect(func(): set_family(fid))
 		hbox.add_child(btn)
-		_filter_chips[rid] = btn
+		_filter_chips[fid] = btn
 
 	var end_spacer := Control.new()
 	end_spacer.name = "EndSpacer"
@@ -946,16 +959,12 @@ func _create_race_filter_bar() -> PanelContainer:
 	return container
 
 
-func set_race_filter(race_id: String) -> void:
-	if race_id != "all" and not _has_race_assets(race_id):
+## 切換玩具家族分頁（衣櫥分頁按鈕走這裡）。本體不變，只換部件清單。
+func set_family(family_id: String) -> void:
+	var fid := family_id.strip_edges()
+	if fid != "all" and not ToyFamily.is_family(fid):
 		return
-	current_filter_race = race_id
-	if race_id != "all":
-		current_race = race_id
-		costume_index = 0
-		chassis_index = 0
-		selected_costume_id = ""
-		selected_chassis_id = ""
+	current_family = fid
 	_update_filter_chips_visual()
 	_rebuild_cards()
 	_update_preview()
@@ -963,10 +972,31 @@ func set_race_filter(race_id: String) -> void:
 	_update_seven_slots_visual()
 
 
+## 相容舊呼叫：
+##   家族 id → 切分頁；"all" → 不分家族（只給測試／除錯）
+##   舊種族 id → 映射到家族；毛皮種族不會換成狐獅豬本體，一律留在兔子本體
+func set_race_filter(race_id: String) -> void:
+	var rid := race_id.strip_edges().to_lower()
+	if rid == "all" or ToyFamily.is_family(rid):
+		set_family(rid)
+		return
+	var art := ToyFamily.art_race_for(rid)
+	if not _has_race_assets(art):
+		return
+	if art != current_race:
+		current_race = art
+		costume_index = 0
+		chassis_index = 0
+		selected_costume_id = ""
+		selected_chassis_id = ""
+	current_filter_race = current_race
+	set_family(ToyFamily.family_of(rid))
+
+
 func _update_filter_chips_visual() -> void:
-	for rid in _filter_chips.keys():
-		var btn: Button = _filter_chips[rid]
-		var is_selected: bool = (str(rid) == current_filter_race)
+	for fid in _filter_chips.keys():
+		var btn: Button = _filter_chips[fid]
+		var is_selected: bool = (str(fid) == current_family)
 		var sb := StyleBoxFlat.new()
 		sb.set_corner_radius_all(14)
 		sb.content_margin_left = 6
@@ -1033,9 +1063,6 @@ func _do_scroll_to_chip(btn: Button) -> void:
 func _get_race_short_name(rid: String) -> String:
 	match rid:
 		"rabbit": return "兔"
-		"fox": return "狐"
-		"lion": return "獅"
-		"boar": return "野豬"
 		"macaque": return "猴"
 		"tiger": return "虎"
 		"bear": return "熊"
@@ -1203,6 +1230,60 @@ func _get_raw_slot_variants(slot_type: String) -> Array[Dictionary]:
 
 
 ## 重新建置全部卡片
+## 目前分頁是否顯示某家族的部件；"" 表示基本款，每個分頁都看得到
+func _family_visible(fam: String) -> bool:
+	return current_family == "all" or fam.is_empty() or fam == current_family
+
+
+## 外裝／塗裝清單：原生部件照 RACES_DATA 順序，接著補上有本體 512 圖的通用部件
+func _family_items(slot_type: String, art_race: String, native_list: Array) -> Array[Dictionary]:
+	var native_ids: Array = []
+	for n in native_list:
+		native_ids.append(str((n as Dictionary).get("id", "")))
+	var base_ids: Array = ["none", PaperdollRenderer._get_default_variant_id(art_race, slot_type)]
+	var out: Array[Dictionary] = []
+	for n in native_list:
+		var nid: String = str((n as Dictionary).get("id", ""))
+		var fam := ToyFamily.family_of_item(nid, art_race, native_ids, base_ids)
+		if not _family_visible(fam):
+			continue
+		var item := (n as Dictionary).duplicate()
+		item["race_id"] = art_race
+		item["family"] = fam
+		out.append(item)
+	for v in _get_raw_slot_variants(slot_type):
+		var vid: String = str(v.get("id", ""))
+		if vid.is_empty() or vid in native_ids:
+			continue
+		var v_race: String = str(v.get("race", "universal"))
+		if v_race != "universal" and v_race != art_race:
+			continue
+		if ToyFamily.is_fur_item(v):
+			continue
+		if not _has_slot_art_512(slot_type, art_race, vid):
+			continue
+		var fam := ToyFamily.family_of_item(vid, art_race, native_ids, base_ids)
+		if not _family_visible(fam):
+			continue
+		var item := (v as Dictionary).duplicate()
+		item["name_zh"] = item.get("name_zh", item.get("name", vid))
+		item["race_id"] = art_race
+		item["family"] = fam
+		out.append(item)
+	return out
+
+
+## 通用部件要能穿在目前本體上：外裝看本體或 common 的 512 切片，塗裝只認本體自己的
+func _has_slot_art_512(slot_type: String, art_race: String, item_id: String) -> bool:
+	var paths: Array[String] = ["res://assets/sprites/player/paperdoll/%s/%s/%s_512.png" % [art_race, slot_type, item_id]]
+	if slot_type == "costume":
+		paths.append("res://assets/sprites/player/paperdoll/common/costume/%s_512.png" % item_id)
+	for p in paths:
+		if ResourceLoader.exists(p) or FileAccess.file_exists(p):
+			return true
+	return false
+
+
 func _rebuild_cards() -> void:
 	for slot_type in _slot_grids.keys():
 		var grid: GridContainer = _slot_grids[slot_type]
@@ -1223,31 +1304,13 @@ func _rebuild_cards() -> void:
 	if PaperdollSelectClass and "RACES_DATA" in PaperdollSelectClass:
 		all_data = PaperdollSelectClass.RACES_DATA
 
-	var target_races: Array[String] = []
-	if current_filter_race == "all":
-		var candidates: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion"]
-		for cr in candidates:
-			if _has_race_assets(cr):
-				target_races.append(cr)
-	else:
-		if _has_race_assets(current_filter_race):
-			target_races = [current_filter_race]
+	# 本體固定為目前的兔子（或舊存檔的其他非毛皮本體）；分頁只篩部件所屬的玩具家族
+	var art_race := current_race
+	var r_data: Dictionary = all_data.get(art_race, {})
 
-	# 1. 建立外裝與機體塗裝
-	for rid in target_races:
-		if not all_data.has(rid):
-			continue
-		var r_data: Dictionary = all_data[rid]
-		var costumes: Array = r_data.get("costumes", [])
-		for c in costumes:
-			var item := (c as Dictionary).duplicate()
-			item["race_id"] = rid
-			_displayed_costumes.append(item)
-		var chassis_list: Array = r_data.get("chassis", [])
-		for p in chassis_list:
-			var item := (p as Dictionary).duplicate()
-			item["race_id"] = rid
-			_displayed_chassis.append(item)
+	# 1. 外裝與機體塗裝：本體原生部件 + 有本體 512 圖的通用部件，再依家族篩選
+	_displayed_costumes.append_array(_family_items("costume", art_race, r_data.get("costumes", [])))
+	_displayed_chassis.append_array(_family_items("chassis", art_race, r_data.get("chassis", [])))
 
 	_displayed_items["costume"] = _displayed_costumes
 	_displayed_items["chassis"] = _displayed_chassis
@@ -1258,14 +1321,23 @@ func _rebuild_cards() -> void:
 		if sid in ["costume", "chassis"]:
 			continue
 		var raw_vars := _get_raw_slot_variants(sid)
+		var default_id := PaperdollRenderer._get_default_variant_id(art_race, sid)
 		var filtered_vars: Array[Dictionary] = []
 		for v in raw_vars:
 			var v_race: String = str(v.get("race", "universal"))
-			if current_filter_race == "all" or v_race == "universal" or v_race == current_race:
-				var item := v.duplicate()
-				item["name_zh"] = item.get("name", item.get("name_zh", ""))
-				item["race_id"] = v_race
-				filtered_vars.append(item)
+			if v_race != "universal" and v_race != art_race:
+				continue
+			if ToyFamily.is_fur_item(v):
+				continue
+			var vid: String = str(v.get("id", ""))
+			var base_ids: Array = [default_id]
+			if not _family_visible(ToyFamily.family_of_item(vid, art_race, [], base_ids)):
+				continue
+			var item := v.duplicate()
+			item["name_zh"] = item.get("name", item.get("name_zh", ""))
+			item["race_id"] = v_race
+			item["family"] = ToyFamily.family_of_item(vid, art_race, [], base_ids)
+			filtered_vars.append(item)
 		_displayed_items[sid] = filtered_vars
 
 	# 3. 實例化所有槽位之卡片
@@ -1332,12 +1404,7 @@ func _create_item_card(slot_type: String, idx: int, item_data: Dictionary) -> Bu
 	name_lbl.set_meta("raw_name", raw_name)
 	name_lbl.set_meta("item_race", item_race)
 	name_lbl.set_meta("tier", item_tier)
-	var loc_name := _t(raw_name)
-	if current_filter_race == "all" and not item_race.is_empty() and item_race != "universal":
-		var r_short: String = _get_race_short_name(item_race)
-		name_lbl.text = "[%s] %s" % [_t(r_short), loc_name]
-	else:
-		name_lbl.text = loc_name
+	name_lbl.text = _t(raw_name)
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	name_lbl.add_theme_font_size_override("font_size", 12)
 	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -1476,7 +1543,7 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 		if ResourceLoader.exists(hd_cut) or FileAccess.file_exists(hd_cut):
 			return _load_texture_safe(hd_cut)
 
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion"]
+		var all_races := ["rabbit", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion"]
 		for other in all_races:
 			if other == r:
 				continue
@@ -1491,7 +1558,7 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 		if ResourceLoader.exists(path512) or FileAccess.file_exists(path512):
 			return _load_texture_safe(path512)
 
-		var all_races := ["rabbit", "fox", "lion", "boar", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion"]
+		var all_races := ["rabbit", "macaque", "tiger", "bear", "crane", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion"]
 		for other in all_races:
 			if other == r:
 				continue
@@ -1526,7 +1593,7 @@ func _get_item_thumbnail(slot_type: String, item_id: String, item_race: String =
 			return _load_texture_safe(p_com)
 
 		# 跨族尋找
-		for other in ["rabbit", "fox", "lion", "tiger", "macaque", "crane", "bear"]:
+		for other in ["rabbit", "tiger", "macaque", "crane", "bear"]:
 			var cross_p := "res://assets/sprites/player/paperdoll/%s/%s/%s_512.png" % [other, slot_type, item_id]
 			if ResourceLoader.exists(cross_p) or FileAccess.file_exists(cross_p):
 				return _load_texture_safe(cross_p)
@@ -1570,10 +1637,7 @@ func _update_card_selection_states() -> void:
 			var item_id: String = str(item.get("id", ""))
 			var is_selected := false
 			if not cur_sel_id.is_empty():
-				if current_filter_race == "all":
-					is_selected = (i == cur_idx)
-				else:
-					is_selected = (item_id == cur_sel_id)
+				is_selected = (item_id == cur_sel_id)
 			else:
 				is_selected = (i == cur_idx)
 			_apply_card_style(cards[i], is_selected)
@@ -1782,13 +1846,12 @@ func _update_ui_texts() -> void:
 	if _btn_confirm:
 		_btn_confirm.text = _t("確認換裝 · 套用新外觀")
 
-	for opt in RACE_FILTER_OPTIONS:
-		var rid: String = str(opt.get("id", ""))
-		if _filter_chips.has(rid):
-			var btn: Button = _filter_chips[rid]
+	for fam in ToyFamily.FAMILIES:
+		var fid: String = str(fam.get("id", ""))
+		if _filter_chips.has(fid):
+			var btn: Button = _filter_chips[fid]
 			if is_instance_valid(btn):
-				var rname: String = str(opt.get("name_zh", rid))
-				btn.text = _t(rname)
+				btn.text = _t(str(fam.get("name_zh", fid)))
 
 	var data := _get_race_data()
 	var race_name_zh := str(data.get("name_zh", current_race))
@@ -1839,6 +1902,13 @@ func _update_preview() -> void:
 		_preview_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 
 
+## 發條節拍器要畫的本體與部件（跟預覽同一組）
+func _key_ticker_info() -> Dictionary:
+	var sel := get_current_selections()
+	sel.erase("race")
+	return {"race": current_race, "sel": sel}
+
+
 ## 確認換裝並寫入 GameState 與存檔
 func confirm_selection() -> void:
 	var sel := get_current_selections()
@@ -1856,6 +1926,8 @@ func confirm_selection() -> void:
 		gs.paperdoll_slots["weapon"] = sel["weapon"]
 		gs.paperdoll_slots["optic_core"] = sel["optic_core"]
 		gs.paperdoll_slots["back_curio"] = sel["back_curio"]
+		if ToyFamily.is_family(current_family) and gs.has_method("set_flag"):
+			gs.call("set_flag", "wardrobe.family", current_family)
 
 		# 自動觸發存檔保全
 		var sm = _get_save_manager()

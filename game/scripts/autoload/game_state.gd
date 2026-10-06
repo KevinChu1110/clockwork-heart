@@ -8,6 +8,8 @@ signal chapter_changed(chapter: String)
 ## 存檔版本。改動存檔結構就 +1，並在 save_migration.gd 補一支對應的升級步驟。
 const VERSION := 10
 
+const ToyFamilyScript = preload("res://scripts/art/toy_family.gd")
+
 ## 主線章節：title | c0 | c1 | c2 | c3 | c4 | c5 | c6 | cleared
 var chapter: String = "title"
 
@@ -684,6 +686,28 @@ func _array_field(d: Dictionary, key: String, fallback: Array = []) -> Array:
 	return (v as Array).duplicate(true)
 
 
+## 任務書 §1／§2：主角固定兔子剪影，衣櫥只剩玩具家族。
+## 舊檔若存了狐／獅／野豬，載入時改回兔子本體並記下對應家族（flags["wardrobe.family"]）。
+## 只改值不改結構，所以不升 VERSION；重複載入結果相同。
+## reset_new_game 內部也走 from_dict，那條路不正規化（創角畫面本身已擋掉毛皮種族；
+## 戰鬥測試仍會直接用舊種族 id 開局驗證數值）。
+var _skip_legacy_race_normalize := false
+
+func _normalize_legacy_hero_race() -> void:
+	if _skip_legacy_race_normalize:
+		return
+	var fixed: Dictionary = ToyFamilyScript.normalize_legacy_save({
+		"player_race": player_race,
+		"player_name": player_name,
+		"paperdoll_slots": paperdoll_slots,
+		"flags": flags,
+	}, ToyFamilyScript.fur_item_ids())
+	player_race = str(fixed.get("player_race", "rabbit"))
+	player_name = str(fixed.get("player_name", player_name))
+	paperdoll_slots = fixed.get("paperdoll_slots", {})
+	flags = fixed.get("flags", {})
+
+
 func from_dict(d: Dictionary) -> void:
 	chapter = str(d.get("chapter", "title"))
 	flags = _dict_field(d, "flags")
@@ -693,6 +717,7 @@ func from_dict(d: Dictionary) -> void:
 	if player_race.is_empty():
 		player_race = "rabbit"
 	paperdoll_slots = _dict_field(d, "paperdoll_slots")
+	_normalize_legacy_hero_race()
 	level = int(d.get("level", 1))
 	xp = int(d.get("xp", 0))
 	path_style = _migrate_path_style(str(d.get("path_style", "")))
@@ -922,6 +947,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		if str(cur_inst.get("base_id", "")) == target_starter:
 			existing_starter = cur_inst.duplicate(true)
 
+	_skip_legacy_race_normalize = true
 	from_dict({
 		"chapter": "c0",
 		"flags": {},
@@ -964,6 +990,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"hotbar": ["", "", "", "", "", "", "", ""],
 		"ui_layout": {},
 	})
+	_skip_legacy_race_normalize = false
 
 	equip_starter_weapon(r, existing_starter)
 	_grant_starter_skills_for_weapon_instance(equip_worn.get(str(equip_slots.get("weapon", "")), {}))
