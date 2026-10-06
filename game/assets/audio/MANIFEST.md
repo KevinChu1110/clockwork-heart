@@ -1,9 +1,43 @@
 # Audio Manifest
 
 ## SFX (`sfx/`)
-Procedural one-shots for combat / UI.
+Procedural one-shots for combat / UI。**全部都還是程式合成的占位**，要換真錄音。
 
-## BGM (`bgm/`) · 地區差異化編曲
+入口只有一個：`AudioManager.play(key, pitch_scale=1.0, volume_db=0.0)`。
+- 缺檔不會當，第一次播到時 `push_warning` 一次。
+- 同時最多 **2 聲**（`MAX_SFX_VOICES`）；滿了搶優先度最低、同級最舊的那聲（`SFX_PRIORITY`）。
+- 所有 SFX 一律一次性，不循環（`warn` 匯入設定也鎖成 loop disabled）。
+
+| key | 用途（任務書 §5） | 長度 | 備註 |
+|-----|------------------|------|------|
+| swap | 換欄那一拍的金屬卡榫 | 0.22 s | **占位**，`python3 tools/gen_sfx_swap.py` 合成 |
+| hit / slash | 命中／斬擊 | 0.12 / 0.16 s | 規格 < 0.3 s |
+| break | 部位碎裂（接 0.4 秒慢動作） | 0.20 s | |
+| warn | Boss 部位將破時一聲，一次性 | 0.10 s | 不是格擋窗 |
+| wind | **只在戰前上鏈**（`play_wind_up`／`battle_start`） | 0.25 s | 戰鬥中的風刃改用 slash |
+| parry | 只可當「彈開」自動演出（`on_battle_event`） | 0.18 s | **不可**綁按鈕或 UI 提示 |
+| ui / reveal / victory / defeat | 沿用 | | UI 提示只准 `UI_SFX`（ui／interact／reveal） |
+
+## BGM (`bgm/`) · 八個 cue（2026-10 依任務書收斂）
+
+遊戲只播這八個：**title、village、town、road、forest、battle、boss、ending**。
+其他地區在 `AudioManager.map_to_bgm` 併過去（舊 id 呼叫 `play_bgm("mist")` 也會被 `resolve_bgm_cue` 接住）：
+
+| 舊區 | 併到 | 理由 |
+|------|------|------|
+| dojo* | town | 有人煙的據點 |
+| wild*／hunting_grounds | road | 開闊戶外、趕路 |
+| coast* | road | 同上 |
+| mist* | forest | 霧、神祕地帶 |
+| tower*／blackflame_scar | forest | 同上 |
+
+循環：ending 只播一次（勝利結算）；其餘循環，village／battle 的匯入設定也開了 loop。
+town 在程式裡再壓 −2 dB（任務書：音量低於 village）。
+響度：八首 mp3 都在 −16 LUFS 附近（2026-10-06 量測 −16.4～−15.9）；battle、ending 重做 loudnorm 到 −16 LUFS／−1.5 dBTP。
+
+`mist`／`dojo`／`coast`／`wild`／`tower` 的 .mp3／.wav 已沒有程式引用，留著待確認後再刪。
+
+### 舊表 · 地區差異化編曲（程式合成 .wav 後備）
 
 每首有獨立 **鼓型／主奏音色／和弦／BPM／EQ**，聽感不該再「全部一個樣」。
 
