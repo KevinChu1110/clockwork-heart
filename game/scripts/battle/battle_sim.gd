@@ -3074,6 +3074,9 @@ func _finish_part_break(
 		"hp": target.hp,
 		"max_hp": target.max_hp,
 	})
+	## 音效事件（AudioManager.on_battle_event → play("break")）。
+	## 跟 part_broken 分開：part_broken 是給畫面／結算的資料事件，這個只代表「碎裂那一下」。
+	_emit("part_break", {"boss_id": target.id, "part_id": part_id})
 
 
 ## 取得本場戰鬥首個被破壞的部位資訊；若未紀錄且傳入敵方單位則由其 parts 中掃描首個 broken 為 true 者
@@ -3200,6 +3203,8 @@ func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 		"auto": auto,
 		"linkage_title": link_title,
 	})
+	## 音效事件（AudioManager.on_battle_event → play("swap")）：換欄那一拍
+	_emit("weapon_swap", {"index": index, "auto": auto, "bare_fist": false})
 	## 相容舊事件名（UI／測試）
 	_emit("soul_style_switched", {
 		"style": line,
@@ -3349,6 +3354,9 @@ func _enter_bare_fist(u: BattleUnit) -> void:
 		"atk": u.atk,
 		"armed_atk": u.armed_atk,
 	})
+	## 三欄用盡改空手也是「換欄那一拍」，同一個卡榫聲
+	if u.team == BattleUnit.Team.PLAYER:
+		_emit("weapon_swap", {"index": -1, "auto": true, "bare_fist": true})
 
 
 func _exit_bare_fist(u: BattleUnit) -> void:
