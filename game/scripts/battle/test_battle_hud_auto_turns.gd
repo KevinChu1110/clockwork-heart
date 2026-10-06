@@ -5,7 +5,7 @@ extends SceneTree
 ## 1. 徹底移除右下角格擋、普攻、技能、換武、逃離等所有手動按鈕，右下角無任何操作輪盤。
 ## 2. 戰鬥畫面僅保留雙方血條、怒氣、當前武器名與剩餘次數、兩欄備用武器小圖（用完變灰）、部位條、跳字與小暫停鈕。
 ## 3. 次數用完自動換欄佔一回合並插入戰報『發條劍停擺，換上黃銅槍』，畫面停一拍。
-## 4. 三欄全空改赤手，同樣佔一回合、戰報一句。
+## 4. 三欄全空改空手，同樣佔一回合、戰報一句。
 ## 5. 部位破壞有 0.4 秒慢動作，結束後時間流速歸位；缺 swap 音檔不當機。
 ## 6. 鍵盤／點擊不能手動換武、暴怒、格擋（見 test_battle_keys／test_battle_touch）。
 ## 7. 產出 proof_battle_hud_auto_turns.png 實機截圖。
@@ -198,8 +198,8 @@ func _process(_delta: float) -> bool:
 			else:
 				print("  ✓ 換武停一拍：%.2fs" % float(_battle.get("_beat_hold_left")))
 
-			# 5. 三欄全空：改赤手，同樣佔一回合
-			print("--- 4. 驗證三欄用盡改赤手 ---")
+			# 5. 三欄全空：改空手，同樣佔一回合
+			print("--- 4. 驗證三欄用盡改空手 ---")
 			_battle.set_process(false)  # 只看這一動，不讓 sim 自己跑
 			for i in _sim.weapon_bars.size():
 				_sim.weapon_bars[i]["uses_left"] = 0
@@ -207,18 +207,26 @@ func _process(_delta: float) -> bool:
 			p.state = 0
 			_sim.call("_begin_attack", p)
 			if not bool(p.bare_fisted):
-				_fail("三欄用盡後應改赤手")
+				_fail("三欄用盡後應改空手")
 			elif p.state != 3:
-				_fail("改赤手那一動應佔一回合（RECOVER），state: %d" % p.state)
+				_fail("改空手那一動應佔一回合（RECOVER），state: %d" % p.state)
 			else:
-				print("  ✓ 三欄用盡 → 赤手，佔一回合")
+				print("  ✓ 三欄用盡 → 空手，佔一回合")
 			var log2 := "\n".join(_battle.get("_log_history"))
-			if not log2.contains("黃銅槍停擺，三欄用盡，改用赤手"):
-				_fail("戰報缺『黃銅槍停擺，三欄用盡，改用赤手』！實際: %s" % log2)
+			if not log2.contains("黃銅槍停擺，三欄用盡，改用空手"):
+				_fail("戰報缺『黃銅槍停擺，三欄用盡，改用空手』！實際: %s" % log2)
 			else:
-				print("  ✓ 戰報：黃銅槍停擺，三欄用盡，改用赤手")
+				print("  ✓ 戰報：黃銅槍停擺，三欄用盡，改用空手")
 
-			# 6. 部位破壞慢動作
+			# 6. 自動彈開沒擲中：戰報一句「沒彈開 · 王者斬」
+			_battle.call("_on_event", "auto_deflect_fail", {"boss": "wolf", "chance": 0.3})
+			var log3 := "\n".join(_battle.get("_log_history"))
+			if not log3.contains("沒彈開 · 王者斬"):
+				_fail("戰報缺『沒彈開 · 王者斬』！實際: %s" % log3.right(200))
+			else:
+				print("  ✓ 戰報：沒彈開 · 王者斬")
+
+			# 7. 部位破壞慢動作
 			print("--- 5. 驗證部位破壞 0.4 秒慢動作 ---")
 			_battle.call("_on_event", "part_broken", {"boss_id": "wolf", "part_name": "測試部位", "part_id": "t"})
 			if Engine.time_scale >= 0.99 or not bool(_battle.get("_in_slowmo")):

@@ -1,12 +1,11 @@
 extends SceneTree
-## 戰鬥 HUD 已裝備五槽機芯色階點驗收測試 (test_battle_hud_core_dots.gd)
+## 戰鬥 HUD 不放機芯色階點（test_battle_hud_core_dots.gd）
 ##
-## 依據任務 t_885c0c30 驗收要求：
-## 1. 五槽齊／全空／只裝三槽狀態呈現（實心色階點 vs 米灰空心點）
-## 2. 熱區 >= 48px、按鈕高 >= 50px，零系統 emoji
-## 3. 點一下展開短提示：槽位名＋色階名，走 _t()／ContentLoc，切語系即時刷新
-## 4. 切 en 後槽位名與色階名無中文殘留
-## 5. 彈層不擋雙拇指操作區 (y < 300, 拇指區 y > 500)
+## 依據 docs/CLOCKWORK_ART_MUSIC_BRIEF.md：戰鬥中玩家什麼都不按，HUD 只留
+## 雙方血條、怒氣、當前武器與次數、兩欄小圖、部位條、跳字、小暫停鈕。
+## 1. 五槽齊／全空時，戰鬥畫面都沒有 CoreDotsBar、CoreSlotBtn_*、CoreDotPopover
+## 2. refresh_core_dots_hud() 仍可呼叫（舊腳本相容）但不會長出按鈕
+## 3. 機芯資料本身（GameState.core_slots）不被戰鬥清掉
 
 const SCREEN_WIDTH := 1280.0
 const SCREEN_HEIGHT := 720.0
@@ -108,171 +107,29 @@ func _run_test_suite() -> void:
 		battle.queue_free()
 		return
 
-	var core_dots_bar = battle.get_node_or_null("SideBars/CoreDotsBar") as Control
-	if core_dots_bar == null:
-		_fail("找不到 SideBars/CoreDotsBar 五槽色階點容器")
-		battle.queue_free()
-		return
-
-	var slot_ids: Array[String] = [
-		"mainspring",
-		"chassis",
-		"escapement",
-		"gear_train",
-		"soul_core",
-	]
-
-	# -------------------------------------------------------------
-	# 測試一：全空槽狀態檢驗
-	# -------------------------------------------------------------
-	print("\n--- [Check 1] 檢驗全空槽狀態 ---")
-	gs.core_slots.clear()
-	battle.call("refresh_core_dots_hud")
-	await process_frame
-
-	for sid in slot_ids:
-		var btn = core_dots_bar.get_node_or_null("CoreSlotBtn_" + sid) as Button
-		if btn == null:
-			_fail("缺少槽位按鈕: " + sid)
-			continue
-
-		# 檢驗按鈕尺寸規範：熱區 >= 48px、按鈕高 >= 50px
-		if btn.custom_minimum_size.x < 48.0:
-			_fail("槽位 %s 按鈕寬度小於 48px: %.1f" % [sid, btn.custom_minimum_size.x])
-		if btn.custom_minimum_size.y < 50.0:
-			_fail("槽位 %s 按鈕高度小於 50px: %.1f" % [sid, btn.custom_minimum_size.y])
-
-		var dot = btn.find_child("DotIndicator", true, false)
-		if dot == null:
-			_fail("槽位 %s 找不到 DotIndicator" % sid)
-			continue
-
-		if not dot.get("is_empty"):
-			_fail("空槽狀態下 %s 的 is_empty 應為 true" % sid)
-		var dot_color: Color = dot.get("dot_color")
-		if abs(dot_color.r - 0.658) > 0.1 and abs(dot_color.g - 0.639) > 0.1: # #A8A39D 米灰色
-			print("  [INFO] 空槽米灰點顏色: ", dot_color.to_html())
-
-		# 測試點擊展開短提示
-		btn.pressed.emit()
-		var popover = battle.get_node_or_null("CoreDotPopover") as Control
-		if popover == null or not popover.visible:
-			_fail("點擊 %s 未能展開短提示 Popover" % sid)
-		else:
-			var lbl: Label = popover.get_node_or_null("PopoverLabel") as Label
-			if lbl == null:
-				_fail("Popover 找不到 PopoverLabel")
-			else:
-				var txt: String = lbl.text
-				if _has_emoji(txt):
-					_fail("全空短提示含有系統 emoji: " + txt)
-				if not ("未裝備" in txt):
-					_fail("全空短提示應包含「未裝備」，實際: " + txt)
-				# 檢驗彈層不擋雙拇指操作區（y < 300）
-				var pop_y: float = popover.global_position.y
-				if pop_y > 300.0:
-					_fail("彈層位置過低 (y=%.1f > 300)，可能擋住雙拇指操作區" % pop_y)
-
-	print("  [PASS] 全空槽狀態及短提示驗證通過 (5 空心米灰點、零 emoji、不擋操作區)")
-
-	# -------------------------------------------------------------
-	# 測試二：五槽齊狀態檢驗
-	# -------------------------------------------------------------
-	print("\n--- [Check 2] 檢驗五槽齊裝備狀態 ---")
-	gs.core_slots["mainspring"] = CoreSystem.create_part_by_tier("mainspring", "red")
-	gs.core_slots["chassis"] = CoreSystem.create_part_by_tier("chassis", "gold")
-	gs.core_slots["escapement"] = CoreSystem.create_part_by_tier("escapement", "blue")
-	gs.core_slots["gear_train"] = CoreSystem.create_part_by_tier("gear_train", "green")
-	gs.core_slots["soul_core"] = CoreSystem.create_part_by_tier("soul_core", "purple")
-
-	battle.call("refresh_core_dots_hud")
-	await process_frame
-
-	var expected_tiers := {
-		"mainspring": "red",
-		"chassis": "gold",
-		"escapement": "blue",
-		"gear_train": "green",
-		"soul_core": "purple",
+	var slot_ids: Array[String] = ["mainspring", "chassis", "escapement", "gear_train", "soul_core"]
+	var cases := {
+		"全空": {},
+		"五槽齊": {"mainspring": "red", "chassis": "gold", "escapement": "blue", "gear_train": "green", "soul_core": "purple"},
 	}
-
-	for sid in slot_ids:
-		var btn = core_dots_bar.get_node_or_null("CoreSlotBtn_" + sid) as Button
-		var dot = btn.find_child("DotIndicator", true, false)
-		if dot.get("is_empty"):
-			_fail("裝備狀態下 %s 的 is_empty 應為 false" % sid)
-
-		var exp_tid: String = expected_tiers[sid]
-		var exp_color: Color = CoreSystem.get_tier_color(exp_tid)
-		var act_color: Color = dot.get("dot_color")
-		if not act_color.is_equal_approx(exp_color):
-			_fail("槽位 %s 顏色不符，期望 %s，實際 %s" % [sid, exp_color.to_html(), act_color.to_html()])
-
-		btn.pressed.emit()
-		var popover: Control = battle.get_node_or_null("CoreDotPopover") as Control
-		var lbl: Label = popover.get_node_or_null("PopoverLabel") as Label if popover else null
-		var txt: String = lbl.text if lbl else ""
-		if _has_emoji(txt):
-			_fail("五槽齊短提示含有系統 emoji: " + txt)
-		var exp_slot_name: String = CoreSystem.get_slot_name(sid)
-		if not (exp_slot_name in txt):
-			_fail("短提示應包含槽位名「%s」，實際: %s" % [exp_slot_name, txt])
-
-	print("  [PASS] 五槽齊狀態驗證通過（實心色階點顏色精準、槽位名正確）")
-
-	# -------------------------------------------------------------
-	# 測試三：只裝三槽狀態檢驗
-	# -------------------------------------------------------------
-	print("\n--- [Check 3] 檢驗只裝三槽狀態 ---")
-	gs.core_slots.clear()
-	gs.core_slots["mainspring"] = CoreSystem.create_part_by_tier("mainspring", "orange")
-	gs.core_slots["escapement"] = CoreSystem.create_part_by_tier("escapement", "white")
-	gs.core_slots["soul_core"] = CoreSystem.create_part_by_tier("soul_core", "gray")
-
-	battle.call("refresh_core_dots_hud")
-	await process_frame
-
-	for sid in slot_ids:
-		var btn = core_dots_bar.get_node_or_null("CoreSlotBtn_" + sid) as Button
-		var dot = btn.find_child("DotIndicator", true, false)
-		var is_equipped: bool = sid in ["mainspring", "escapement", "soul_core"]
-		if dot.get("is_empty") == is_equipped:
-			_fail("槽位 %s 的 is_empty 狀態錯誤: 應為 %s" % [sid, not is_equipped])
-
-	print("  [PASS] 只裝三槽狀態驗證通過（三實二空正確對應）")
-
-	# -------------------------------------------------------------
-	# 測試四：多語系切換與英文 (en) 下無中文殘留
-	# -------------------------------------------------------------
-	print("\n--- [Check 4] 檢驗切換 en 語系後無中文殘留 ---")
-	loc_node.call("set_locale", "en")
-	await process_frame
-
-	for sid in slot_ids:
-		var btn = core_dots_bar.get_node_or_null("CoreSlotBtn_" + sid) as Button
-		btn.pressed.emit()
-		var popover: Control = battle.get_node_or_null("CoreDotPopover") as Control
-		var lbl: Label = popover.get_node_or_null("PopoverLabel") as Label if popover else null
-		var txt: String = lbl.text if lbl else ""
-
-		if _has_emoji(txt):
-			_fail("[en] 短提示含有系統 emoji: " + txt)
-		if _has_cjk(txt):
-			_fail("[en] 短提示含有中文殘留字元: " + txt)
+	for tag in cases:
+		gs.core_slots.clear()
+		var tiers: Dictionary = cases[tag]
+		for sid in tiers:
+			gs.core_slots[sid] = CoreSystem.create_part_by_tier(sid, tiers[sid])
+		battle.call("refresh_core_dots_hud")
+		await process_frame
+		if battle.find_child("CoreDotsBar", true, false) != null:
+			_fail("%s：戰鬥 HUD 還有 CoreDotsBar" % tag)
+		if battle.find_child("CoreDotPopover", true, false) != null:
+			_fail("%s：戰鬥 HUD 還有 CoreDotPopover" % tag)
+		for sid in slot_ids:
+			if battle.find_child("CoreSlotBtn_" + sid, true, false) != null:
+				_fail("%s：戰鬥 HUD 還有機芯按鈕 %s" % [tag, sid])
+		if gs.core_slots.size() != tiers.size():
+			_fail("%s：機芯資料被動到（期望 %d 槽，實際 %d）" % [tag, tiers.size(), gs.core_slots.size()])
 		else:
-			print("  ✓ [en] %s -> '%s' (無中文殘留)" % [sid, txt])
-
-	# 測試即時切回繁中
-	loc_node.call("set_locale", "zh_TW")
-	await process_frame
-	var btn0 = core_dots_bar.get_node_or_null("CoreSlotBtn_mainspring") as Button
-	btn0.pressed.emit()
-	var popover_tw = battle.get_node_or_null("CoreDotPopover") as Control
-	var lbl_tw = popover_tw.get_node_or_null("PopoverLabel") as Label
-	if not ("發條發電機" in lbl_tw.text):
-		_fail("切回 zh_TW 後短提示應包含「發條發電機」，實際: " + lbl_tw.text)
-	else:
-		print("  ✓ [zh_TW] 即時切換繁中正確: ", lbl_tw.text)
+			print("  ✓ %s：戰鬥 HUD 無機芯點與小窗，資料 %d 槽保留" % [tag, gs.core_slots.size()])
 
 	battle.queue_free()
 

@@ -128,21 +128,6 @@ var _coach: Label
 var _coach_timer: float = 0.0
 var _hud_styled: bool = false
 var _log_panel: PanelContainer
-## 戰鬥 HUD 五槽機芯色階點相關
-const CORE_HUD_SLOTS: Array[String] = [
-	"mainspring",
-	"chassis",
-	"escapement",
-	"gear_train",
-	"soul_core",
-]
-var _core_dots_bar: HBoxContainer = null
-var _core_dot_buttons: Dictionary = {}
-var _core_dot_indicators: Dictionary = {}
-var _core_dot_popover: PanelContainer = null
-var _core_dot_popover_label: Label = null
-var _core_dot_popover_timer: Timer = null
-var _active_core_dot_slot: String = ""
 
 ## 雷歐旗艦部位血條
 var _part_bars: Dictionary = {}  ## id -> ProgressBar
@@ -675,7 +660,6 @@ func _apply_hud_chrome() -> void:
 	_ensure_coach()
 	_install_touch_controls()
 	_ensure_thumb_hud()
-	_ensure_core_dots_hud()
 
 
 func _apply_safe_hud() -> void:
@@ -1043,7 +1027,7 @@ func _refresh_weapon_dock() -> void:
 		csb.set_corner_radius_all(10)
 
 		if is_bare and i == active_slot:
-			# 赤手狀態
+			# 空手狀態
 			cell.custom_minimum_size = Vector2(88, 44)
 			csb.bg_color = Color("#EDEBE6")
 			csb.border_color = Color("#A8A39D")
@@ -1056,7 +1040,7 @@ func _refresh_weapon_dock() -> void:
 			icon.modulate = Color(0.8, 0.5, 0.3)
 
 			lab.visible = true
-			lab.text = _t("赤手")
+			lab.text = _t("空手")
 			lab.add_theme_color_override("font_color", Color("#7E7A75"))
 		elif is_current:
 			# 當前武器名與剩餘次數
@@ -1116,309 +1100,11 @@ func _refresh_weapon_dock() -> void:
 				icon.modulate = Color.WHITE
 
 
-class CoreDotIndicator extends Control:
-	var is_empty: bool = true
-	var dot_color: Color = Color.WHITE
-
-	func _draw() -> void:
-		var center := size * 0.5
-		var radius := 5.0
-		if is_empty:
-			# 米灰色空心點：外圈米灰，中間空心透出底色
-			var ring_color := Color("#A8A39D")
-			draw_arc(center, radius, 0.0, TAU, 32, ring_color, 2.0, true)
-		else:
-			# 實心點＝該件色階色，帶 1.2px 深藍紫描邊與多巴胺微高光點
-			draw_circle(center, radius + 1.2, Color("#1F1A3A"))
-			draw_circle(center, radius, dot_color)
-			var hl_pos := center + Vector2(-1.4, -1.4)
-			draw_circle(hl_pos, 1.2, Color(1, 1, 1, 0.6))
-
-
-func _apply_core_dot_button_style(btn: Button) -> void:
-	btn.flat = true
-	var sb_n := StyleBoxFlat.new()
-	sb_n.bg_color = Color("#FFFDF8")
-	sb_n.border_color = Color("#1F1A3A")
-	sb_n.set_border_width_all(2)
-	sb_n.border_width_bottom = 4
-	sb_n.set_corner_radius_all(8)
-	sb_n.content_margin_left = 3
-	sb_n.content_margin_right = 3
-	sb_n.content_margin_top = 3
-	sb_n.content_margin_bottom = 3
-
-	var sb_h := sb_n.duplicate() as StyleBoxFlat
-	sb_h.bg_color = Color("#FFFFFF")
-	sb_h.border_color = Color("#FFA010")
-
-	var sb_p := sb_n.duplicate() as StyleBoxFlat
-	sb_p.bg_color = Color("#FFF5E6")
-	sb_p.border_width_bottom = 2
-	sb_p.content_margin_top = 5
-	sb_p.content_margin_bottom = 1
-
-	btn.add_theme_stylebox_override("normal", sb_n)
-	btn.add_theme_stylebox_override("hover", sb_h)
-	btn.add_theme_stylebox_override("pressed", sb_p)
-	btn.add_theme_stylebox_override("focus", sb_n)
-
-
-func _ensure_core_dots_hud() -> void:
-	if _core_dots_bar != null and is_instance_valid(_core_dots_bar):
-		_refresh_core_dots_hud()
-		return
-	var side_bars := get_node_or_null("SideBars") as HBoxContainer
-	if side_bars == null:
-		return
-
-	if side_bars.has_node("CoreDotsBar"):
-		_core_dots_bar = side_bars.get_node("CoreDotsBar") as HBoxContainer
-		_core_dot_buttons.clear()
-		_core_dot_indicators.clear()
-		for sid in CORE_HUD_SLOTS:
-			var btn := _core_dots_bar.get_node_or_null("CoreSlotBtn_" + sid) as Button
-			if btn:
-				_core_dot_buttons[sid] = btn
-				var dot := btn.find_child("DotIndicator", true, false) as CoreDotIndicator
-				if dot:
-					_core_dot_indicators[sid] = dot
-		_ensure_core_dot_popover()
-		_refresh_core_dots_hud()
-		return
-
-	_core_dots_bar = HBoxContainer.new()
-	_core_dots_bar.name = "CoreDotsBar"
-	_core_dots_bar.alignment = BoxContainer.ALIGNMENT_CENTER
-	_core_dots_bar.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	_core_dots_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_core_dots_bar.add_theme_constant_override("separation", 6)
-	side_bars.add_child(_core_dots_bar)
-
-	var p_side := get_node_or_null("SideBars/PlayerSide") as Control
-	if p_side:
-		var p_idx := p_side.get_index()
-		side_bars.move_child(_core_dots_bar, p_idx + 1)
-
-	_core_dot_buttons.clear()
-	_core_dot_indicators.clear()
-
-	var SDB = load("res://scripts/art/sprite_db.gd") if ResourceLoader.exists("res://scripts/art/sprite_db.gd") else null
-
-	for slot_id in CORE_HUD_SLOTS:
-		var btn := Button.new()
-		btn.name = "CoreSlotBtn_" + slot_id
-		btn.custom_minimum_size = Vector2(48, 50)
-		btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		btn.focus_mode = Control.FOCUS_NONE
-		_apply_core_dot_button_style(btn)
-
-		var vbox := VBoxContainer.new()
-		vbox.name = "Content"
-		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		vbox.add_theme_constant_override("separation", 2)
-		vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-		btn.add_child(vbox)
-
-		var icon_rect := TextureRect.new()
-		icon_rect.name = "SlotIcon"
-		icon_rect.custom_minimum_size = Vector2(24, 24)
-		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		if SDB and SDB.has_method("core_slot_icon"):
-			var tex: Texture2D = SDB.call("core_slot_icon", slot_id)
-			if tex:
-				icon_rect.texture = tex
-		vbox.add_child(icon_rect)
-
-		var dot := CoreDotIndicator.new()
-		dot.name = "DotIndicator"
-		dot.custom_minimum_size = Vector2(14, 14)
-		dot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		vbox.add_child(dot)
-
-		btn.pressed.connect(_on_core_dot_pressed.bind(slot_id, btn))
-		_core_dots_bar.add_child(btn)
-		_core_dot_buttons[slot_id] = btn
-		_core_dot_indicators[slot_id] = dot
-
-	_ensure_core_dot_popover()
-	_refresh_core_dots_hud()
-
-
-func _ensure_core_dot_popover() -> void:
-	if _core_dot_popover != null and is_instance_valid(_core_dot_popover):
-		return
-	if has_node("CoreDotPopover"):
-		_core_dot_popover = get_node("CoreDotPopover") as PanelContainer
-		_core_dot_popover_label = _core_dot_popover.get_node_or_null("PopoverLabel") as Label
-		return
-	_core_dot_popover = PanelContainer.new()
-	_core_dot_popover.name = "CoreDotPopover"
-	_core_dot_popover.visible = false
-	_core_dot_popover.z_index = 50
-	_core_dot_popover.mouse_filter = Control.MOUSE_FILTER_STOP
-
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color("#FFFDF8")
-	sb.border_color = Color("#1F1A3A")
-	sb.set_border_width_all(2)
-	sb.border_width_bottom = 4
-	sb.set_corner_radius_all(10)
-	sb.content_margin_left = 14
-	sb.content_margin_right = 14
-	sb.content_margin_top = 6
-	sb.content_margin_bottom = 6
-	sb.shadow_color = Color(0, 0, 0, 0.25)
-	sb.shadow_size = 4
-	sb.shadow_offset = Vector2(0, 2)
-	_core_dot_popover.add_theme_stylebox_override("panel", sb)
-
-	_core_dot_popover_label = Label.new()
-	_core_dot_popover_label.name = "PopoverLabel"
-	_core_dot_popover_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_core_dot_popover_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_core_dot_popover_label.add_theme_color_override("font_color", Color("#1F1A3A"))
-	_core_dot_popover_label.add_theme_font_size_override("font_size", 14)
-	var huninn: Font = null
-	if ResourceLoader.exists("res://assets/fonts/jf-openhuninn-2.1.ttf"):
-		huninn = load("res://assets/fonts/jf-openhuninn-2.1.ttf") as Font
-	if huninn:
-		_core_dot_popover_label.add_theme_font_override("font", huninn)
-	_core_dot_popover.add_child(_core_dot_popover_label)
-
-	add_child(_core_dot_popover)
-
-
-func _on_core_dot_pressed(slot_id: String, btn: Button) -> void:
-	if _core_dot_popover == null:
-		_ensure_core_dot_popover()
-	if _active_core_dot_slot == slot_id and _core_dot_popover.visible:
-		_hide_core_dot_popover()
-		return
-
-	_active_core_dot_slot = slot_id
-	_update_core_dot_popover_content(slot_id)
-	_position_core_dot_popover(btn)
-	_core_dot_popover.visible = true
-
-	var AM = Engine.get_singleton("AudioManager") if Engine.has_singleton("AudioManager") else null
-	if AM == null and has_node("/root/AudioManager"):
-		AM = get_node("/root/AudioManager")
-	if AM and AM.has_method("play_sfx"):
-		AM.call("play_sfx", "ui")
-
-	if _core_dot_popover_timer == null:
-		_core_dot_popover_timer = Timer.new()
-		_core_dot_popover_timer.name = "PopoverTimer"
-		_core_dot_popover_timer.one_shot = true
-		_core_dot_popover_timer.timeout.connect(_hide_core_dot_popover)
-		add_child(_core_dot_popover_timer)
-	_core_dot_popover_timer.start(3.0)
-
-
-func _hide_core_dot_popover() -> void:
-	if _core_dot_popover and is_instance_valid(_core_dot_popover):
-		_core_dot_popover.visible = false
-	_active_core_dot_slot = ""
-	if _core_dot_popover_timer and is_instance_valid(_core_dot_popover_timer):
-		_core_dot_popover_timer.stop()
-
-
-func _position_core_dot_popover(btn: Button) -> void:
-	if _core_dot_popover == null or btn == null:
-		return
-	_core_dot_popover.reset_size()
-	var pop_sz := _core_dot_popover.size
-	var btn_pos := btn.global_position
-	var btn_sz := btn.size
-	var target_x := btn_pos.x + (btn_sz.x - pop_sz.x) * 0.5
-	target_x = clampf(target_x, 16.0, 1280.0 - pop_sz.x - 16.0)
-	var target_y := btn_pos.y + btn_sz.y + 6.0
-	_core_dot_popover.global_position = Vector2(target_x, target_y)
-
-
-func _update_core_dot_popover_content(slot_id: String) -> void:
-	if _core_dot_popover_label == null:
-		return
-	_core_dot_popover_label.text = _get_core_slot_info_text(slot_id)
-
-
-func _get_core_slot_info_text(slot_id: String) -> String:
-	var CoreSystem = load("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
-	var slot_zh: String = CoreSystem.get_slot_name(slot_id) if CoreSystem else slot_id
-	var slot_loc: String = _t(slot_zh)
-
-	var part: Dictionary = {}
-	if CoreSystem and CoreSystem.has_method("get_equipped_part"):
-		part = CoreSystem.call("get_equipped_part", slot_id)
-	elif GameState != null and "core_slots" in GameState and GameState.core_slots.has(slot_id):
-		part = GameState.core_slots.get(slot_id, {})
-
-	if not part.is_empty() and str(part.get("tier", "")) != "":
-		var raw_tier_name: String = str(part.get("tier_name", ""))
-		if raw_tier_name == "" and CoreSystem:
-			var tid: String = str(part.get("tier", "white"))
-			raw_tier_name = str(CoreSystem.TIER_NAMES.get(tid, tid))
-		var tier_loc: String = _t(raw_tier_name + "階")
-		return "%s · %s" % [slot_loc, tier_loc]
-	else:
-		var unequip_loc: String = _t("未裝備")
-		return "%s · %s" % [slot_loc, unequip_loc]
-
-
-func _refresh_core_dots_hud() -> void:
-	if _core_dots_bar == null or not is_instance_valid(_core_dots_bar):
-		_ensure_core_dots_hud()
-	if _core_dots_bar == null:
-		return
-
-	var CoreSystem = load("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
-
-	for slot_id in CORE_HUD_SLOTS:
-		var btn: Button = _core_dot_buttons.get(slot_id, null)
-		var dot: CoreDotIndicator = _core_dot_indicators.get(slot_id, null)
-		if btn == null or dot == null:
-			continue
-
-		var part: Dictionary = {}
-		if CoreSystem and CoreSystem.has_method("get_equipped_part"):
-			part = CoreSystem.call("get_equipped_part", slot_id)
-		elif GameState != null and "core_slots" in GameState and GameState.core_slots.has(slot_id):
-			part = GameState.core_slots.get(slot_id, {})
-
-		var has_part: bool = (not part.is_empty() and str(part.get("tier", "")) != "")
-		var slot_icon: TextureRect = btn.find_child("SlotIcon", true, false) as TextureRect
-
-		if has_part:
-			var tid: String = str(part.get("tier", "white"))
-			var tier_color: Color = CoreSystem.call("get_tier_color", tid) if CoreSystem else Color.WHITE
-			dot.is_empty = false
-			dot.dot_color = tier_color
-			if slot_icon:
-				slot_icon.modulate = Color.WHITE
-		else:
-			dot.is_empty = true
-			dot.dot_color = Color("#A8A39D")
-			if slot_icon:
-				slot_icon.modulate = Color(0.75, 0.73, 0.70, 0.45)
-
-		dot.queue_redraw()
-		btn.tooltip_text = _get_core_slot_info_text(slot_id)
-
-	if _core_dot_popover != null and _core_dot_popover.visible and _active_core_dot_slot != "":
-		_update_core_dot_popover_content(_active_core_dot_slot)
-		var active_btn: Button = _core_dot_buttons.get(_active_core_dot_slot, null)
-		if active_btn:
-			_position_core_dot_popover(active_btn)
-
-
+## 機芯色階點已移出戰鬥 HUD（任務書：戰鬥只留血條／怒氣／武器／部位條／跳字／暫停）。
+## 機芯資料仍在 CoreSystem／GameState，這裡不再建任何可點按鈕或小窗。
+## 保留公開入口給舊截圖腳本呼叫，什麼都不做。
 func refresh_core_dots_hud() -> void:
-	_refresh_core_dots_hud()
+	pass
 
 
 func _ensure_coach() -> void:
@@ -2082,7 +1768,7 @@ func _layout_battle_equipment_overlays() -> void:
 			_battle_armor.z_index = 1
 		else:
 			_battle_armor.visible = false
-	## 武器：右前手；戰鬥中跟當前武器欄／赤手走（頁遊剪影）
+	## 武器：右前手；戰鬥中跟當前武器欄／空手走（頁遊剪影）
 	if _battle_weapon and is_instance_valid(_battle_weapon):
 		var wtex: Texture2D = null
 		var p_live: BattleUnit = sim.get_unit("player") if sim else null
@@ -2285,11 +1971,7 @@ func _process(delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	## 自動回合：戰鬥中玩家不按普攻／格擋／技能／換武／鎖定（任務書 §0、§2）。
-	## 這裡只剩兩件事：點空白收起機芯小窗、誘惑彈窗的確認／取消。
-	## 數字鍵快捷欄交給 main，不在這裡吃掉。
-	if GameInputGate.primary_pointer_pressed(event):
-		if _core_dot_popover != null and _core_dot_popover.visible:
-			_hide_core_dot_popover()
+	## 這裡只剩誘惑彈窗的確認／取消；數字鍵快捷欄在戰鬥中由 main 擋掉。
 	if sim == null or _ended:
 		return
 	## 誘惑彈窗把 sim 暫停；Confirm／Cancel 仍要接得住（✕／我拒絕）。
@@ -2421,7 +2103,6 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	_refresh_part_bars()
 	_refresh_part_focus_hint()
 	_refresh_log_display()
-	_refresh_core_dots_hud()
 	var prl := get_node_or_null("SideBars/PlayerSide/PlayerRageLabel") as Label
 	if prl:
 		prl.text = Loc.t("battle.rage")
@@ -2562,7 +2243,7 @@ func _refresh_hud() -> void:
 			status = _t(" [虛弱]")
 		## 武器名與剩餘次數只放武器欄，血條這行不再重複
 		if p.bare_fisted and status == "":
-			status = _t(" [赤手]")
+			status = _t(" [空手]")
 		if p.fury_active and status == "":
 			status = _t(" [暴怒]")
 		player_hp_label.text = "HP %d／%d%s" % [p.hp, p.max_hp, status]
@@ -3139,9 +2820,7 @@ func _update_parry_countdown(e: BattleUnit) -> void:
 	var bucket: int = 0
 	if not in_window:
 		bucket = clampi(int(ceil(remain - BattleSim.PARRY_WINDOW)), 1, 3)
-	var lab := _t("蓄力必殺") if _is_colossus_fight() else _t("王者斬")
-	if sim != null and bool(sim.demon_mode):
-		lab = _t("黑鏽必殺")
+	var lab := _charge_label()
 	telegraph.color = Color(1, 0.25, 0.2, 0.2 + 0.1 * sin(Time.get_ticks_msec() * 0.02))
 	countdown.text = "！" if in_window else str(bucket)
 	countdown.add_theme_color_override("font_color", Color(1, 0.85, 0.3))
@@ -3650,12 +3329,12 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			trigger_hit_stop(0.1)
 			_flash(player_body, Color(3.0, 1.5, 0.5))
 		"bare_fist":
-			## 三欄都用完：同樣佔一拍，改赤手
+			## 三欄都用完：同樣佔一拍，改空手
 			var last_w := str(data.get("old_name", ""))
 			if last_w != "":
-				_append_log(_t("[color=#fc8]%s停擺，三欄用盡，改用赤手[/color]") % last_w)
+				_append_log(_t("[color=#fc8]%s停擺，三欄用盡，改用空手[/color]") % last_w)
 			else:
-				_append_log(_t("[color=#fc8]武器次數耗盡 · 改為赤手！（攻擊下降，無法放武器技）[/color]"))
+				_append_log(_t("[color=#fc8]武器次數耗盡 · 改為空手！（攻擊下降，無法放武器技）[/color]"))
 			_play_swap_beat("")
 			_spawn_float("player", _t("赤　手"), Color(1.0, 0.75, 0.4), true)
 			_flash(player_body, Color(1.2, 0.9, 0.5))
@@ -3714,9 +3393,13 @@ func _on_event(kind: String, data: Dictionary) -> void:
 					if is_instance_valid(hazard_fx):
 						hazard_fx.visible = false
 				)
-			_append_log(_t("[color=#ffd700]自動彈開 · %s[/color]") % _unit_display_name(str(data.get("boss", ""))))
+			_append_log(_t("[color=#ffd700]自動彈開 · %s[/color]") % _charge_label())
 			countdown.visible = false
 			countdown_sub.visible = false
+		"auto_deflect_fail":
+			## 自動彈開沒擲中：這一擊照常落下。場地機制失敗由 hazard_resolve 自己寫戰報，這裡只寫 Boss 蓄力。
+			if str(data.get("boss", "")) != "":
+				_append_log(_t("[color=#e88]沒彈開 · %s[/color]") % _charge_label())
 		"banner_end":
 			banner.visible = false
 		"king_slash_start":
@@ -4139,7 +3822,7 @@ func _sfx(key: String, pitch: float = 1.0, volume_db: float = 0.0) -> void:
 
 
 ## 換武那一拍：停 SWAP_BEAT_SEC、卡榫聲、換武姿、頭上跳新武器名。
-## new_label 為空＝三欄用盡改赤手。
+## new_label 為空＝三欄用盡改空手。
 func _play_swap_beat(new_label: String) -> void:
 	_beat_hold_left = maxf(_beat_hold_left, SWAP_BEAT_SEC)
 	_sfx("swap")
@@ -4709,14 +4392,20 @@ func _kh(t: String) -> String:
 	return t
 
 
-## 自動彈開：Boss 蓄力進窗、場地機制進窗時由戰鬥自己反應，不等玩家按。
-## 跟 BattleSim.resolve_auto（無頭自動結算）同一條規則，畫面戰與結算戰結果才一致。
+## 自動彈開：Boss 蓄力進窗、場地機制進窗時由戰鬥自己擲一次骰（BattleSim.auto_react，
+## 機率看閃避與速度），不等玩家按。跟 resolve_auto（無頭自動結算）同一條規則。
 ## parry 音效只在這裡當彈開演出（AudioManager 接 perfect_parry），不綁任何按鍵。
 func _auto_react() -> void:
 	if sim == null or _ended or sim.sim_paused or sim.finished:
 		return
-	if sim.parry_window_open():
-		sim.try_react()
+	sim.auto_react()
+
+
+## 蓄力大招的名字：王者斬／巨偶蓄力必殺／黑鏽必殺（倒數副字與彈開戰報共用）
+func _charge_label() -> String:
+	if sim != null and bool(sim.demon_mode):
+		return _t("黑鏽必殺")
+	return _t("蓄力必殺") if _is_colossus_fight() else _t("王者斬")
 
 
 func _thumb_btn(text: String, primary: bool, cb: Callable) -> Button:
@@ -4845,6 +4534,17 @@ func _on_btn_flee_pressed() -> void:
 		_show_dummy_settlement(false)
 		return
 	battle_finished.emit(false)
+
+
+## 小暫停鈕 → main 的暫停選單。木人樁練習時那裡多一顆「離開練習」。
+func can_leave_practice() -> bool:
+	return _mode == "training_dummy" and not _ended
+
+
+func leave_practice() -> void:
+	if not can_leave_practice():
+		return
+	_on_btn_flee_pressed()
 
 
 func _show_dummy_settlement(won: bool) -> void:

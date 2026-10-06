@@ -12,7 +12,7 @@ const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 
 const NEW_KEYS := [
 	"[color=#8ff]%s停擺，換上%s[/color]",
-	"[color=#fc8]%s停擺，三欄用盡，改用赤手[/color]",
+	"[color=#fc8]%s停擺，三欄用盡，改用空手[/color]",
 	"彈開",
 	"[color=#ffd700]自動彈開 · %s[/color]",
 	"[color=#f66]%s蓄力中[/color]",
@@ -20,6 +20,8 @@ const NEW_KEYS := [
 	"[color=#fc0]本體血量壓到七成、四成時，部位會自動破[/color]",
 	"王者斬蓄力時會自動彈開 · 看部位條",
 	"自動戰鬥 · 次數用完會自動換武",
+	"[color=#e88]沒彈開 · %s[/color]",
+	"離開練習",
 ]
 
 const PROMPTS_ZH := ["按 J", "【J】", "（J）", "靠 J", "Tab", "點閃避", "點鎖定", "右側拇指", "格擋窗"]

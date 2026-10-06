@@ -2,7 +2,7 @@ extends SceneTree
 ## 戰鬥快捷鍵的把關測試：godot --headless -s res://scripts/battle/test_battle_keys.gd
 ##
 ## 守兩件事：
-##   1. 戰鬥中一個鍵只做一件事 —— 數字鍵 1–8 是快捷欄（喝藥），不准順便換武或暴怒。
+##   1. 戰鬥全自動：數字鍵 1–8 在戰鬥中不喝藥、不換武、不暴怒（快捷欄資料保留，出了戰鬥照用）。
 ##   2. 自動回合（任務書 §0）：F／X／J 不再是暴怒／換武／格擋。按了戰鬥不能有反應。
 ##
 ## 走真的主場景，用 Input.parse_input_event 打真的鍵。
@@ -99,7 +99,10 @@ func _process(_d: float) -> bool:
 			if int(_sim.weapon_bar_active) != 0 or _sim.weapon_bars.size() < 2:
 				_fail("開戰時作用欄應為 0 且至少兩欄（得 %d／%d）" % [int(_sim.weapon_bar_active), _sim.weapon_bars.size()])
 				return _finish()
-			## 按 2：喝格 2 的藥，武器欄**不**換到欄 2
+			## 先停掉戰鬥 _process（sim 不走），排除自動出招／挨打的干擾，只看按鍵本身。
+			if _battle:
+				_battle.set_process(false)
+			## 按 2：戰鬥中不喝藥，武器欄也不換
 			p.hp = maxi(1, int(p.max_hp / 2))
 			_hp_before = p.hp
 			_count_before = inv.count("hp_s")
@@ -110,15 +113,15 @@ func _process(_d: float) -> bool:
 			if _wait < 3:
 				return false
 			var p = _player()
-			if inv.count("hp_s") != _count_before - 1:
-				_fail("戰鬥中按 2 沒有喝掉快捷欄格 2 的藥（%d → %d）" % [_count_before, inv.count("hp_s")])
-			elif int(p.hp) <= _hp_before:
-				_fail("按 2 藥扣了但戰鬥單位沒回血")
+			if inv.count("hp_s") != _count_before:
+				_fail("戰鬥中按 2 喝掉了快捷欄的藥（%d → %d）—— 戰鬥應全自動" % [_count_before, inv.count("hp_s")])
+			elif int(p.hp) != _hp_before:
+				_fail("戰鬥中按 2 改了血量（%d → %d）" % [_hp_before, int(p.hp)])
 			elif int(_sim.weapon_bar_active) != 0:
-				_fail("按 2 喝藥的同時把武器欄換到了欄 %d —— 一個鍵做了兩件事" % (int(_sim.weapon_bar_active) + 1))
+				_fail("按 2 把武器欄換到了欄 %d" % (int(_sim.weapon_bar_active) + 1))
 			else:
-				print("  ok 戰鬥中按 2 只喝藥：%d → %d，藥 %d → %d，作用欄仍 1" % [_hp_before, int(p.hp), _count_before, inv.count("hp_s")])
-			## 按 4：只喝格 4 的藥，不觸發暴怒
+				print("  ok 戰鬥中按 2 沒反應：不喝藥（藥 %d）、血量不變、作用欄仍 1" % inv.count("hp_s"))
+			## 按 4：同樣不喝藥，也不觸發暴怒
 			p.fury_active = false
 			p.fury_timer = 0.0
 			p.atk_buff_left = 0.0
@@ -132,16 +135,13 @@ func _process(_d: float) -> bool:
 			if _wait < 3:
 				return false
 			var p = _player()
-			if inv.count("hp_s") != _count_before - 1:
-				_fail("按 4 沒有喝掉格 4 的藥（%d → %d）" % [_count_before, inv.count("hp_s")])
+			if inv.count("hp_s") != _count_before:
+				_fail("戰鬥中按 4 喝掉了藥（%d → %d）" % [_count_before, inv.count("hp_s")])
 			elif bool(p.fury_active):
-				_fail("按 4 喝藥的同時進了暴怒 —— 一個鍵做了兩件事")
+				_fail("戰鬥中按 4 進了暴怒")
 			else:
-				print("  ok 按 4 只喝格 4 的藥，不暴怒")
+				print("  ok 戰鬥中按 4 不喝藥、不暴怒")
 			## 按 F：自動回合不暴怒，快捷欄也不動。
-			## 先停掉戰鬥 _process（sim 不走），排除自動放招／自動暴怒的干擾，只看按鍵本身。
-			if _battle:
-				_battle.set_process(false)
 			p.fury_active = false
 			p.fury_timer = 0.0
 			p.rage = 100.0

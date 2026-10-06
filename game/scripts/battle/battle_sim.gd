@@ -24,8 +24,21 @@ const KING_SLASH_CD := 8.0
 ## 而連按的人第一下必定落在寬限之外（前搖一開始就按），機會照樣花掉。
 const PARRY_EARLY_GRACE := 0.35  ## = time_model.parry_early_grace_sec
 
+## ── 自動彈開（戰鬥全自動，玩家不按格擋）──
+## 王者斬／蓄力必殺前搖、場地機制窗：每窗只擲一次，成功率看玩家既有數值。
+##   機率 = clamp(BASE + 閃避 × PER_EVA + (玩家速度 − 對手速度) × PER_SPEED, MIN, MAX)
+## 閃避（寶石／武器連動）與速度都是現成屬性，不新增數值系統。
+## 擲骰走 sim.rng，同 seed 的無頭結算結果可重現。
+const AUTO_DEFLECT_BASE := 0.40
+const AUTO_DEFLECT_PER_EVA := 0.01     ## 每 1 點閃避 +1%
+const AUTO_DEFLECT_PER_SPEED := 0.02   ## 比對手快 1 點速度 +2%（慢則扣）
+const AUTO_DEFLECT_MIN := 0.15
+const AUTO_DEFLECT_MAX := 0.75
+
 
 var units: Dictionary = {}  ## id -> BattleUnit
+## 測試／除錯用：>=0 時直接當自動彈開機率（1＝必中、0＝必失），平常 -1 走公式
+var auto_deflect_force: float = -1.0
 var time: float = 0.0
 var total_player_damage: int = 0
 var finished: bool = false
@@ -419,7 +432,7 @@ func _begin_attack(u: BattleUnit) -> void:
 				_emit("state", {"id": u.id, "state": "recover"})
 				return
 
-	## 怒氣滿且會技能（赤手無武器技）
+	## 怒氣滿且會技能（空手無武器技）
 	if u.can_skill and not u.bare_fisted and u.rage >= RAGE_MAX:
 		if u.id == player_id:
 			_refresh_player_skill_choice(u)
@@ -1256,6 +1269,43 @@ func try_parry() -> bool:
 			if u.state_timer <= win and u.state_timer > 0.0:
 				_perfect_parry(u)
 				return true
+	return false
+
+
+## 自動彈開成功率（公式與常數見檔頭 AUTO_DEFLECT_*）
+static func auto_deflect_chance(p: BattleUnit, foe: BattleUnit) -> float:
+	if p == null:
+		return AUTO_DEFLECT_MIN
+	var spd_diff := 0.0
+	if foe != null:
+		spd_diff = p.speed - foe.speed
+	var c := AUTO_DEFLECT_BASE + p.eva * AUTO_DEFLECT_PER_EVA + spd_diff * AUTO_DEFLECT_PER_SPEED
+	return clampf(c, AUTO_DEFLECT_MIN, AUTO_DEFLECT_MAX)
+
+
+## 自動戰鬥每個 tick 呼叫：有窗就擲一次骰。
+## 成功＝走原本的完美格擋／機制成功；失敗＝這一擊照常落下（機制窗直接結算失敗），
+## 並發 auto_deflect_fail 給畫面寫「沒彈開 · 王者斬」。回傳是否彈開成功。
+func auto_react() -> bool:
+	if sim_paused or finished or not parry_window_open():
+		return false
+	var p := get_unit(player_id)
+	var foe := _first_telegraph_or_boss()
+	var chance := auto_deflect_force if auto_deflect_force >= 0.0 else auto_deflect_chance(p, foe)
+	var ok := rng.randf() < chance
+	if hazard_phase == "window" and not hazard_reacted:
+		hazard_reacted = true
+		_resolve_hazard(ok)
+		if not ok:
+			_emit("auto_deflect_fail", {"hazard": hazard_kind, "chance": chance})
+		return ok
+	var tel := _telegraphing_boss()
+	if tel == null or tel.parry_used:
+		return false
+	tel.parry_used = true
+	if ok and try_parry():
+		return true
+	_emit("auto_deflect_fail", {"boss": tel.id, "chance": chance})
 	return false
 
 
@@ -2133,7 +2183,7 @@ static func _apply_weapon_class(p: BattleUnit, player_stats: Dictionary) -> void
 	var tempo: Dictionary = Formulas.weapon_tempo(wc)
 	p.windup_time = float(tempo.get("windup", p.windup_time))
 	p.recover_time = float(tempo.get("recover", p.recover_time))
-	## 本場武器使用次數（原作：歸零赤手）
+	## 本場武器使用次數（原作：歸零空手）
 	_init_weapon_uses(p, wc)
 
 
@@ -2630,8 +2680,7 @@ static func resolve_auto(sim: BattleSim, max_steps: int = 3000) -> Dictionary:
 	while not sim.finished and n < max_steps:
 		sim.step(0.1)
 		n += 1
-		if sim.parry_window_open():
-			sim.try_react()
+		sim.auto_react()
 	var p: BattleUnit = sim.get_unit("player")
 	var won: bool = sim.finished and p != null and p.is_alive()
 	return {
@@ -3180,7 +3229,7 @@ func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 	p.weapon_uses_max = int(bar.get("uses_max", Formulas.weapon_uses_for(line)))
 	p.weapon_uses_left = int(bar.get("uses_left", p.weapon_uses_max))
 	p.bare_fisted = false
-	## 手動切到已耗盡欄 → 再試自動下一把；都沒了才赤手
+	## 手動切到已耗盡欄 → 再試自動下一把；都沒了才空手
 	if p.weapon_uses_left <= 0:
 		if not _try_auto_switch_weapon(p):
 			_enter_bare_fist(p)
@@ -3212,7 +3261,7 @@ func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 	return true
 
 
-## 原作：次數耗盡自動換下一把還有次數的武器欄；全光才赤手
+## 原作：次數耗盡自動換下一把還有次數的武器欄；全光才空手
 func _try_auto_switch_weapon(p: BattleUnit) -> bool:
 	if p == null or weapon_bars.is_empty():
 		return false
@@ -3290,7 +3339,7 @@ func trigger_fury_awakening() -> bool:
 	return true
 
 
-## ── 武器次數／赤手／自動暴怒 ──
+## ── 武器次數／空手／自動暴怒 ──
 
 static func _init_weapon_uses(p: BattleUnit, weapon_class: String) -> void:
 	var n := Formulas.weapon_uses_for(weapon_class)
@@ -3302,7 +3351,7 @@ static func _init_weapon_uses(p: BattleUnit, weapon_class: String) -> void:
 	p.armed_can_skill = p.can_skill
 
 
-## 出手前：次數已盡 → 先自動切下一欄有次數的武器；全光才赤手（原作）
+## 出手前：次數已盡 → 先自動切下一欄有次數的武器；全光才空手（原作）
 func _ensure_armed_or_bare(u: BattleUnit) -> void:
 	if u == null or u.bare_fisted:
 		return
@@ -3327,7 +3376,7 @@ func _consume_weapon_use(u: BattleUnit) -> void:
 		"weapon_class": u.weapon_class,
 		"slot": weapon_bar_active,
 	})
-	## 不在此進赤手——最後一擊仍持武；下一動 _ensure_armed_or_bare 才換拳
+	## 不在此進空手——最後一擊仍持武；下一動 _ensure_armed_or_bare 才換拳
 
 
 func _enter_bare_fist(u: BattleUnit) -> void:
@@ -3350,7 +3399,7 @@ func _enter_bare_fist(u: BattleUnit) -> void:
 		"id": u.id,
 		"atk": u.atk,
 		"armed_atk": u.armed_atk,
-		## 戰報「X停擺，三欄用盡，改用赤手」用
+		## 戰報「X停擺，三欄用盡，改用空手」用
 		"old_name": _get_bar_name(last_bar) if not last_bar.is_empty() else "",
 	})
 
@@ -3367,7 +3416,7 @@ func _exit_bare_fist(u: BattleUnit) -> void:
 func _gain_rage(u: BattleUnit, amount: float) -> void:
 	if u == null or amount <= 0.0:
 		return
-	## 赤手仍可累怒（挨打／揮拳），但放不出武器技
+	## 空手仍可累怒（挨打／揮拳），但放不出武器技
 	var crossed := u.add_rage(amount, RAGE_MAX)
 	if crossed:
 		_check_auto_berserk(u)
