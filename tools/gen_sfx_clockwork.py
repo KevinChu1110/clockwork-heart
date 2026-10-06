@@ -13,7 +13,7 @@
   3. true peak（4× 超取樣）超過上限就用前視限幅器壓，保證 ≤ −1 dBTP（內部留 0.3 dB 餘裕）
 
 用法
-  python3 tools/gen_sfx_clockwork.py              # 重產全部（swap hit slash break warn wind）
+  python3 tools/gen_sfx_clockwork.py              # 重產全部（swap hit slash break warn wind miss craft）
   python3 tools/gen_sfx_clockwork.py hit slash    # 只重產指定的
   python3 tools/gen_sfx_clockwork.py --measure    # 量 sfx/ 下現有檔，不寫檔
   python3 tools/gen_sfx_clockwork.py --out-dir /tmp/x
@@ -36,11 +36,14 @@ TARGET_M = {
     "swap": -20.0, "break": -20.0, "warn": -20.0,   # 事件 cue
     "hit": -23.0, "slash": -23.0,                   # 頻繁回饋，和跳字同一瞬間
     "wind": -21.0,                                  # 戰前上鏈
+    "miss": -23.0,                                  # 頻繁回饋（揮空，issue #47）
+    "craft": -20.0,                                 # 事件 cue（鍛造成功，issue #47）
 }
 # true peak 上限（dBTP）。交付規格全部 ≤ −1；hit／slash 和跳字同一瞬間、又最常響，
 # 峰值再壓到 −4（和舊 hit 占位的峰值一樣），讓瞬態不會「啪」一下蓋過跳字
-TP_CEIL = {"hit": -4.0, "slash": -4.0}
-SEEDS = {"swap": 1110, "hit": 3201, "slash": 3202, "break": 3203, "warn": 3204, "wind": 3205}
+TP_CEIL = {"hit": -4.0, "slash": -4.0, "miss": -4.0}
+SEEDS = {"swap": 1110, "hit": 3201, "slash": 3202, "break": 3203, "warn": 3204, "wind": 3205,
+         "miss": 4701, "craft": 4702}
 
 
 # ───────────────────────── 基本元件 ─────────────────────────
@@ -401,9 +404,46 @@ def synth_wind(rng: np.random.Generator) -> tuple[np.ndarray, float]:
     return out, 0.05
 
 
+def synth_miss(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """揮空（0.20 s）：攻擊落空——往下掃的輕空氣聲（和 slash 反方向、比較暗），
+    尾巴一聲很小的木質「篤」（機身空轉），沒有金屬響：什麼都沒打到。"""
+    dur = 0.20
+    n = int(SR * dur)
+    out = np.zeros(n)
+    t = np.arange(n) / SR
+    fc = 2300 - (2300 - 650) * np.clip(t / 0.13, 0, 1) ** 0.7
+    env = np.where(t < 0.035, (t / 0.035) ** 1.2, np.exp(-(t - 0.035) / 0.040))
+    whoosh = svf_bandpass_sweep(rng.uniform(-1, 1, n), fc, 1.6) * env
+    whoosh /= max(np.max(np.abs(whoosh)), 1e-9)
+    place(out, whoosh, 0.0, 0.8)
+    tok = modes(0.06, [(640, 0.6, 0.012), (1480, 0.3, 0.007)], rng, attack=0.001)
+    place(out, tok, 0.105, 0.12)
+    return out, 0.03
+
+
+def synth_craft(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """鍛造成功（0.48 s）：小錘敲黃銅兩下（第二下更亮）→ 零件裝上的八音盒兩音上行。
+    單獨播就夠（有 craft.wav 時 play_craft_success 不再疊 ui＋reveal）。"""
+    dur = 0.48
+    out = np.zeros(int(SR * dur))
+    for t0, k, g in [(0.000, 1.00, 0.75), (0.105, 1.06, 0.90)]:
+        tap = modes(0.18, [(1870 * k, 0.45, 0.045), (3050 * k, 0.32, 0.030), (4630 * k, 0.20, 0.018),
+                           (6420 * k, 0.10, 0.010), (780 * k, 0.25, 0.030)], rng)
+        place(tap, filt(noise_burst(0.0018, rng), "hp", 1500) * 0.8, 0.0)
+        place(tap, sweep_sine(0.06, 260, 190, 0.018, 0.012) * 0.3, 0.0)
+        place(out, tap, t0, g)
+    # 八音盒音梳：B5 → E6，自由簧片分音比例
+    for t0, f0, g in [(0.215, 987.8, 0.45), (0.290, 1318.5, 0.55)]:
+        tine = modes(0.19, [(f0, 0.55, 0.16), (f0 * 2.756, 0.20, 0.05), (f0 * 5.404, 0.07, 0.02)],
+                     rng, attack=0.0015)
+        place(out, tine, t0, g)
+    return out, 0.06
+
+
 SYNTHS = {
     "swap": synth_swap, "hit": synth_hit, "slash": synth_slash,
     "break": synth_break, "warn": synth_warn, "wind": synth_wind,
+    "miss": synth_miss, "craft": synth_craft,
 }
 
 
