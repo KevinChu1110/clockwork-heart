@@ -5430,8 +5430,8 @@
    "id": "temple-lobby-battle-ruins-hd",
    "cat": "遊戲",
    "title": "大廳古典神殿底圖切換與戰鬥石徑廢墟商業級替換",
-   "status": "開發中",
-   "note": "審核退回：大廳底圖為舊圖 LANCZOS 放大冒充 HD、畫風與角色不統一、右側裝備卡被切；戰鬥底圖通過",
+   "status": "已上線",
+   "note": "t_805fa24c 經 sideqa 審查通過已合入",
    "keys": [
     "大廳古典神殿底圖"
    ]
