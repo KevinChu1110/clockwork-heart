@@ -2206,6 +2206,85 @@ func _setup_weapon_bars(player_stats: Dictionary, unit: BattleUnit = null) -> vo
 		_setup_weapon_linkage_synergies(p)
 
 
+## 評估武器槽線型陣列的被動連動（純計算，無副作用，供戰鬥與大廳預覽共用）
+## lines: Array 各欄武器的 line 字串 (如 ["sword", "axe"])
+## 回傳: { combo_id, combo_name, combo_desc }
+static func evaluate_weapon_linkage(lines: Array) -> Dictionary:
+	var valid_lines: Array[String] = []
+	for l in lines:
+		var s := str(l).strip_edges().to_lower()
+		if not s.is_empty():
+			valid_lines.append(s)
+
+	if valid_lines.size() >= 2:
+		## 1. 斬甲破城：前輕後重 (sword/dagger/claw/spear -> axe/hammer/fist)
+		var cutting := ["sword", "dagger", "claw", "spear"]
+		var heavy := ["axe", "hammer", "fist"]
+		var has_cut_then_heavy := false
+		for i in range(valid_lines.size() - 1):
+			if cutting.has(valid_lines[i]) and heavy.has(valid_lines[i + 1]):
+				has_cut_then_heavy = true
+				break
+		if has_cut_then_heavy:
+			return {
+				"combo_id": "shred",
+				"combo_name": _t("斬甲破城"),
+				"combo_desc": _t("輕兵破甲重刃破防，部位傷害+25%，每擊削減5點防禦"),
+			}
+
+		## 2. 同脈共鳴：相鄰為同職業體系
+		var profs := {
+			"sword": "knight", "spear": "knight",
+			"axe": "viking", "hammer": "viking",
+			"dagger": "ninja", "dart": "ninja",
+			"fist": "monk", "claw": "monk",
+			"magic": "mage", "crystal": "mage",
+			"bow": "ranger", "gun": "ranger"
+		}
+		var same_prof := false
+		for i in range(valid_lines.size() - 1):
+			var p1: String = profs.get(valid_lines[i], "")
+			var p2: String = profs.get(valid_lines[i + 1], "")
+			if p1 != "" and p1 == p2:
+				same_prof = true
+				break
+		if same_prof:
+			return {
+				"combo_id": "resonance",
+				"combo_name": _t("同脈共鳴"),
+				"combo_desc": _t("同門武器連攜，防禦+8，每刀戰意+3"),
+			}
+
+		## 3. 遠近合璧：包含遠程與近戰
+		var ranged := ["bow", "gun", "dart", "magic"]
+		var melee := ["sword", "axe", "hammer", "spear", "fist", "claw"]
+		var has_ranged := false
+		var has_melee := false
+		for l in valid_lines:
+			if ranged.has(l): has_ranged = true
+			if melee.has(l): has_melee = true
+		if has_ranged and has_melee:
+			return {
+				"combo_id": "range_melee",
+				"combo_name": _t("遠近合璧"),
+				"combo_desc": _t("拉扯作戰，暴擊率+5%，閃避+5%"),
+			}
+
+		## 4. 全械同奏：三欄均填滿且互不相同
+		if valid_lines.size() >= 3:
+			return {
+				"combo_id": "tri_harmony",
+				"combo_name": _t("全械同奏"),
+				"combo_desc": _t("三械流轉生生不息，換武回合攻速回復加快20%"),
+			}
+
+	return {
+		"combo_id": "",
+		"combo_name": "",
+		"combo_desc": "",
+	}
+
+
 ## 計算並激活三欄武器戰前配置順序被動連動
 func _setup_weapon_linkage_synergies(p: BattleUnit) -> void:
 	if p == null:
@@ -2225,64 +2304,17 @@ func _setup_weapon_linkage_synergies(p: BattleUnit) -> void:
 		if not bool(b.get("empty", true)) and str(b.get("line", "")) != "":
 			lines.append(str(b.get("line", "")))
 
-	if lines.size() >= 2:
-		## 1. 斬甲破城：前輕後重 (sword/dagger/claw/spear -> axe/hammer/fist)
-		var cutting := ["sword", "dagger", "claw", "spear"]
-		var heavy := ["axe", "hammer", "fist"]
-		var has_cut_then_heavy := false
-		for i in range(lines.size() - 1):
-			if cutting.has(lines[i]) and heavy.has(lines[i + 1]):
-				has_cut_then_heavy = true
-				break
-		if has_cut_then_heavy:
-			weapon_linkage["combo_id"] = "shred"
-			weapon_linkage["combo_name"] = _t("斬甲破城")
-			weapon_linkage["combo_desc"] = _t("輕兵破甲重刃破防，部位傷害+25%，每擊削減5點防禦")
+	var eval_res: Dictionary = evaluate_weapon_linkage(lines)
+	weapon_linkage["combo_id"] = str(eval_res.get("combo_id", ""))
+	weapon_linkage["combo_name"] = str(eval_res.get("combo_name", ""))
+	weapon_linkage["combo_desc"] = str(eval_res.get("combo_desc", ""))
 
-		## 2. 同脈共鳴：相鄰為同職業體系
-		if str(weapon_linkage.get("combo_id", "")) == "":
-			var profs := {
-				"sword": "knight", "spear": "knight",
-				"axe": "viking", "hammer": "viking",
-				"dagger": "ninja", "dart": "ninja",
-				"fist": "monk", "claw": "monk",
-				"magic": "mage", "crystal": "mage",
-				"bow": "ranger", "gun": "ranger"
-			}
-			var same_prof := false
-			for i in range(lines.size() - 1):
-				var p1: String = profs.get(lines[i], "")
-				var p2: String = profs.get(lines[i + 1], "")
-				if p1 != "" and p1 == p2:
-					same_prof = true
-					break
-			if same_prof:
-				weapon_linkage["combo_id"] = "resonance"
-				weapon_linkage["combo_name"] = _t("同脈共鳴")
-				weapon_linkage["combo_desc"] = _t("同門武器連攜，防禦+8，每刀戰意+3")
-				p.defense += 8
-
-		## 3. 遠近合璧：包含遠程與近戰
-		if str(weapon_linkage.get("combo_id", "")) == "":
-			var ranged := ["bow", "gun", "dart", "magic"]
-			var melee := ["sword", "axe", "hammer", "spear", "fist", "claw"]
-			var has_ranged := false
-			var has_melee := false
-			for l in lines:
-				if ranged.has(l): has_ranged = true
-				if melee.has(l): has_melee = true
-			if has_ranged and has_melee:
-				weapon_linkage["combo_id"] = "range_melee"
-				weapon_linkage["combo_name"] = _t("遠近合璧")
-				weapon_linkage["combo_desc"] = _t("拉扯作戰，暴擊率+5%，閃避+5%")
-				p.crit += 5.0
-				p.eva += 5.0
-
-		## 4. 全械同奏：三欄均填滿且互不相同
-		if str(weapon_linkage.get("combo_id", "")) == "" and lines.size() >= 3:
-			weapon_linkage["combo_id"] = "tri_harmony"
-			weapon_linkage["combo_name"] = _t("全械同奏")
-			weapon_linkage["combo_desc"] = _t("三械流轉生生不息，換武回合攻速回復加快20%")
+	match str(weapon_linkage.get("combo_id", "")):
+		"resonance":
+			p.defense += 8
+		"range_melee":
+			p.crit += 5.0
+			p.eva += 5.0
 
 	var slot_names: Array[String] = []
 	for b in weapon_bars:

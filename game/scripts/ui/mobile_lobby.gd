@@ -13,6 +13,7 @@ const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
+const BattleSimClass = preload("res://scripts/battle/battle_sim.gd")
 
 ## ── 多巴胺鮮亮色盤標準 (對齊 mobile_settings / maple_hud / review.md) ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
@@ -234,11 +235,13 @@ var _char_weapon_title_label: Label = null
 var _char_weapon_sub_label: Label = null
 var _char_stat_title_label: Label = null
 var _stat_cards: Array[PanelContainer] = []
+var _weapon_slots_data: Array[Dictionary] = []
 
 const WEAPON_SLOTS: Array[Dictionary] = [
 	{
 		"slot_title": "首選武器",
 		"weapon_name": "鐵劍",
+		"line": "sword",
 		"hits": "4 次打擊",
 		"full_text": "首選: 鐵劍 (4次)",
 		"hint": "首選武器 · 鐵劍：近身迅捷連續 4 次斬擊，戰鬥開局起手輪替順位"
@@ -246,6 +249,7 @@ const WEAPON_SLOTS: Array[Dictionary] = [
 	{
 		"slot_title": "副手武器",
 		"weapon_name": "獵弓",
+		"line": "bow",
 		"hits": "4 次打擊",
 		"full_text": "副手: 獵弓 (4次)",
 		"hint": "副手武器 · 獵弓：中距離精準連續 4 次射擊，壓制敵陣並牽制推進"
@@ -253,6 +257,7 @@ const WEAPON_SLOTS: Array[Dictionary] = [
 	{
 		"slot_title": "絕技武器",
 		"weapon_name": "拳套",
+		"line": "fist",
 		"hits": "5 連擊",
 		"full_text": "絕技: 拳套 (5連擊)",
 		"hint": "絕技武器 · 拳套：重裝近身蓄力 5 連擊，滿怒時超頻運轉爆發絕技"
@@ -3451,15 +3456,16 @@ func _build_character_tab() -> void:
 	w_row.add_theme_constant_override("separation", 12)
 	r_v.add_child(w_row)
 
+	_ensure_weapon_slots_data()
 	_weapon_slot_buttons.clear()
-	for i in range(WEAPON_SLOTS.size()):
-		var slot_btn := _build_weapon_slot_button(i, WEAPON_SLOTS[i])
+	for i in range(_weapon_slots_data.size()):
+		var slot_btn := _build_weapon_slot_button(i, _weapon_slots_data[i])
 		w_row.add_child(slot_btn)
 		_weapon_slot_buttons.append(slot_btn)
 
 	# 3. 武器槽提示卡
 	var hint_p := PanelContainer.new()
-	hint_p.custom_minimum_size = Vector2(0, 36)
+	hint_p.custom_minimum_size = Vector2(0, 48)
 	var hsb := StyleBoxFlat.new()
 	hsb.bg_color = COLOR_CARD_WARM
 	hsb.border_color = COLOR_BORDER
@@ -3474,11 +3480,10 @@ func _build_character_tab() -> void:
 	r_v.add_child(hint_p)
 
 	_weapon_slot_hint_label = Label.new()
-	var init_hint := _t(WEAPON_SLOTS[_selected_weapon_slot]["hint"])
-	_weapon_slot_hint_label.text = init_hint
-	var init_h_sz := 12 if init_hint.length() > 70 else 13
-	_apply_label_style(_weapon_slot_hint_label, init_h_sz, COLOR_TEXT_DARK)
+	_weapon_slot_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_apply_label_style(_weapon_slot_hint_label, 12, COLOR_TEXT_DARK)
 	hint_p.add_child(_weapon_slot_hint_label)
+	_update_weapon_slot_hint_label()
 
 	# 4. 戰鬥屬性標題列
 	var s_hdr := HBoxContainer.new()
@@ -3669,11 +3674,183 @@ func _select_weapon_slot(idx: int) -> void:
 	_selected_weapon_slot = idx
 	for i in range(_weapon_slot_buttons.size()):
 		_style_weapon_slot_button(_weapon_slot_buttons[i], i == _selected_weapon_slot)
-	if _weapon_slot_hint_label and idx < WEAPON_SLOTS.size():
-		var hint_text := _t(WEAPON_SLOTS[idx]["hint"])
-		_weapon_slot_hint_label.text = hint_text
-		var h_sz := 12 if hint_text.length() > 70 else 13
-		_weapon_slot_hint_label.add_theme_font_size_override("font_size", h_sz)
+	_update_weapon_slot_hint_label()
+
+func _ensure_weapon_slots_data() -> void:
+	if _weapon_slots_data.is_empty():
+		_weapon_slots_data = WEAPON_SLOTS.duplicate(true)
+
+func _update_weapon_slot_hint_label() -> void:
+	if _weapon_slot_hint_label == null or not is_instance_valid(_weapon_slot_hint_label):
+		return
+	_ensure_weapon_slots_data()
+	if _selected_weapon_slot < 0 or _selected_weapon_slot >= _weapon_slots_data.size():
+		return
+
+	var s_data: Dictionary = _weapon_slots_data[_selected_weapon_slot]
+	var base_hint := _t(str(s_data.get("hint", "")))
+	if base_hint.is_empty():
+		var w_name := _t(str(s_data.get("weapon_name", "")))
+		if w_name.is_empty() or bool(s_data.get("empty", false)):
+			w_name = _t("（空欄位）")
+		base_hint = _t("%s · %s") % [_t(str(s_data.get("slot_title", ""))), w_name]
+
+	var current_lines: Array[String] = []
+	for s in _weapon_slots_data:
+		var l := str(s.get("line", "")).strip_edges().to_lower()
+		if not bool(s.get("empty", false)) and not l.is_empty():
+			current_lines.append(l)
+
+	var eval_res: Dictionary = BattleSimClass.evaluate_weapon_linkage(current_lines)
+	var combo_name := str(eval_res.get("combo_name", ""))
+	var combo_desc := str(eval_res.get("combo_desc", ""))
+
+	var link_text := ""
+	if not combo_name.is_empty():
+		link_text = _t("連動：【%s】%s") % [combo_name, combo_desc]
+	else:
+		link_text = _t("連動：尚未成組")
+
+	var full_hint := "%s\n%s" % [base_hint, link_text]
+	_weapon_slot_hint_label.text = full_hint
+	var h_sz := 11 if full_hint.length() > 90 else (12 if full_hint.length() > 60 else 13)
+	_weapon_slot_hint_label.add_theme_font_size_override("font_size", h_sz)
+
+## 動態配置三欄武器（支援 ["sword", "axe"] 或 Dictionary 陣列）
+func set_weapon_loadout(loadout: Array) -> void:
+	_ensure_weapon_slots_data()
+	for i in range(mini(3, loadout.size())):
+		var item = loadout[i]
+		if item is String:
+			var s_line: String = item.strip_edges().to_lower()
+			if s_line.is_empty():
+				_weapon_slots_data[i]["line"] = ""
+				_weapon_slots_data[i]["weapon_name"] = _t("（空欄位）")
+				_weapon_slots_data[i]["hits"] = ""
+				_weapon_slots_data[i]["empty"] = true
+				_weapon_slots_data[i]["hint"] = _t("%s · （空欄位）") % _t(str(_weapon_slots_data[i].get("slot_title", "")))
+			else:
+				_weapon_slots_data[i]["line"] = s_line
+				var dname := _default_name_for_line(s_line)
+				_weapon_slots_data[i]["weapon_name"] = dname
+				_weapon_slots_data[i]["hits"] = _default_hits_for_line(s_line)
+				_weapon_slots_data[i]["empty"] = false
+				_weapon_slots_data[i]["hint"] = _default_hint_for_line(i, s_line, dname)
+		elif item is Dictionary:
+			var d: Dictionary = item
+			var s_line := str(d.get("line", "")).strip_edges().to_lower()
+			var s_name := str(d.get("name", d.get("weapon_name", "")))
+			var is_empty := bool(d.get("empty", s_line == "" and s_name == ""))
+			_weapon_slots_data[i]["line"] = s_line
+			_weapon_slots_data[i]["empty"] = is_empty
+			if is_empty:
+				_weapon_slots_data[i]["weapon_name"] = _t("（空欄位）")
+				_weapon_slots_data[i]["hits"] = ""
+				_weapon_slots_data[i]["hint"] = _t("%s · （空欄位）") % _t(str(_weapon_slots_data[i].get("slot_title", "")))
+			else:
+				if s_name.is_empty():
+					s_name = _default_name_for_line(s_line)
+				_weapon_slots_data[i]["weapon_name"] = s_name
+				var hits := str(d.get("hits", ""))
+				if hits.is_empty():
+					hits = _default_hits_for_line(s_line)
+				_weapon_slots_data[i]["hits"] = hits
+				var h := str(d.get("hint", ""))
+				if h.is_empty():
+					h = _default_hint_for_line(i, s_line, s_name)
+				_weapon_slots_data[i]["hint"] = h
+	for i in range(loadout.size(), 3):
+		_weapon_slots_data[i]["line"] = ""
+		_weapon_slots_data[i]["weapon_name"] = _t("（空欄位）")
+		_weapon_slots_data[i]["hits"] = ""
+		_weapon_slots_data[i]["empty"] = true
+		_weapon_slots_data[i]["hint"] = _t("%s · （空欄位）") % _t(str(_weapon_slots_data[i].get("slot_title", "")))
+
+	_refresh_weapon_slot_ui()
+
+## 取得當前大廳三欄武器連動即時評估結果
+func get_weapon_linkage_preview() -> Dictionary:
+	_ensure_weapon_slots_data()
+	var current_lines: Array[String] = []
+	for s in _weapon_slots_data:
+		var l := str(s.get("line", "")).strip_edges().to_lower()
+		if not bool(s.get("empty", false)) and not l.is_empty():
+			current_lines.append(l)
+	return BattleSimClass.evaluate_weapon_linkage(current_lines)
+
+func _default_name_for_line(line: String) -> String:
+	match line:
+		"sword": return _t("鐵劍")
+		"axe": return _t("破岩斧")
+		"bow": return _t("獵弓")
+		"fist": return _t("拳套")
+		"spear": return _t("黃銅槍")
+		"dagger": return _t("短匕")
+		"hammer": return _t("戰鎚")
+		"gun": return _t("火銃")
+		"magic": return _t("法杖")
+		"crystal": return _t("水晶球")
+		"claw": return _t("鋼爪")
+		"dart": return _t("飛鏢")
+		_: return _t(line.capitalize())
+
+func _default_hits_for_line(line: String) -> String:
+	match line:
+		"sword": return _t("4 次打擊")
+		"axe": return _t("2 次重擊")
+		"bow": return _t("4 次打擊")
+		"fist": return _t("5 連擊")
+		"spear": return _t("3 次刺擊")
+		"dagger": return _t("5 次快擊")
+		"hammer": return _t("2 次重擊")
+		"gun": return _t("3 次射擊")
+		"magic": return _t("3 次詠唱")
+		"crystal": return _t("4 次引導")
+		"claw": return _t("5 次裂爪")
+		"dart": return _t("4 次投擲")
+		_: return _t("4 次打擊")
+
+func _default_hint_for_line(idx: int, line: String, wname: String) -> String:
+	var title := _t(str(_weapon_slots_data[idx].get("slot_title", "武器")))
+	return _t("%s · %s：戰鬥序列第 %d 順位配置武器") % [title, wname, idx + 1]
+
+func _refresh_weapon_slot_ui() -> void:
+	for i in range(mini(_weapon_slot_buttons.size(), _weapon_slots_data.size())):
+		var btn := _weapon_slot_buttons[i]
+		if is_instance_valid(btn):
+			var t_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
+			var w_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
+			var s_data: Dictionary = _weapon_slots_data[i]
+			if t_lbl:
+				t_lbl.text = _t(str(s_data.get("slot_title", "")))
+			if w_lbl:
+				var w_info := _t(str(s_data.get("weapon_name", "")))
+				var hits := str(s_data.get("hits", ""))
+				if not hits.is_empty():
+					w_info += " · " + _t(hits)
+				w_lbl.text = w_info
+	_update_weapon_slot_hint_label()
+
+func _refresh_weapon_slots_from_equipment() -> void:
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree):
+		return
+	var root_node: Window = (loop as SceneTree).root
+	if root_node == null:
+		return
+	var eq: Node = root_node.get_node_or_null("EquipmentSystem")
+	if eq == null or not eq.has_method("loadout_snapshot_for_battle"):
+		return
+	var snap: Array = eq.call("loadout_snapshot_for_battle")
+	if snap.is_empty():
+		return
+	var has_any := false
+	for entry in snap:
+		if typeof(entry) == TYPE_DICTIONARY and not bool(entry.get("empty", true)):
+			has_any = true
+			break
+	if has_any:
+		set_weapon_loadout(snap)
 
 func _build_stat_card(title: String, val_str: String, subtitle: String, val_color: Color) -> PanelContainer:
 	var c := PanelContainer.new()
@@ -4777,7 +4954,11 @@ func _apply_locale_texts() -> void:
 					title_lbl.add_theme_font_size_override("font_size", 13)
 			var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
 			if info_lbl:
-				var w_text := "%s · %s" % [_t(WEAPON_SLOTS[i]["weapon_name"]), _t(WEAPON_SLOTS[i]["hits"])]
+				var s_data: Dictionary = _weapon_slots_data[i] if i < _weapon_slots_data.size() else WEAPON_SLOTS[i]
+				var hits_s := str(s_data.get("hits", ""))
+				var w_text := _t(str(s_data.get("weapon_name", "")))
+				if not hits_s.is_empty():
+					w_text += " · " + _t(hits_s)
 				info_lbl.text = w_text
 				if w_text.length() > 22:
 					info_lbl.add_theme_font_size_override("font_size", 13)
@@ -4787,13 +4968,7 @@ func _apply_locale_texts() -> void:
 					info_lbl.add_theme_font_size_override("font_size", 16)
 
 	if _weapon_slot_hint_label and is_instance_valid(_weapon_slot_hint_label):
-		if _selected_weapon_slot < WEAPON_SLOTS.size():
-			var hint_text := _t(WEAPON_SLOTS[_selected_weapon_slot]["hint"])
-			_weapon_slot_hint_label.text = hint_text
-			if hint_text.length() > 70:
-				_weapon_slot_hint_label.add_theme_font_size_override("font_size", 12)
-			else:
-				_weapon_slot_hint_label.add_theme_font_size_override("font_size", 13)
+		_update_weapon_slot_hint_label()
 
 	for card in _stat_cards:
 		if is_instance_valid(card):

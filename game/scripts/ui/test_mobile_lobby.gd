@@ -61,6 +61,7 @@ func _process(_d: float) -> bool:
 		_test_settings_and_sortie_buttons()
 		_test_dock_and_topbar_i18n()
 		_test_character_tab_i18n()
+		_test_weapon_slot_linkage_preview()
 		_test_adventure_stages_i18n()
 		return _finish()
 	return false
@@ -1856,8 +1857,8 @@ func _test_character_tab_i18n() -> void:
 
 			_lobby.select_weapon_slot(i)
 			var hint_lbl = _lobby.get("_weapon_slot_hint_label") as Label
-			if hint_lbl == null or hint_lbl.text != exp_s["hint"]:
-				_fail("[%s] 武器槽 %d 提示應為「%s」，實際為「%s」" % [code, i, exp_s["hint"], hint_lbl.text if hint_lbl else "null"])
+			if hint_lbl == null or not hint_lbl.text.begins_with(exp_s["hint"]):
+				_fail("[%s] 武器槽 %d 提示應以「%s」開頭，實際為「%s」" % [code, i, exp_s["hint"], hint_lbl.text if hint_lbl else "null"])
 
 		_lobby.select_weapon_slot(0)
 
@@ -1986,6 +1987,68 @@ func _test_adventure_stages_i18n() -> void:
 	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
 	loc_node.call("set_locale", "zh_TW")
 	print("  ok 出征分頁十六張關卡卡名稱六語系（zh_TW/zh_CN/en/ja/ko/es）即時切換全部檢查通過，資料表保持繁中 key")
+
+
+func _test_weapon_slot_linkage_preview() -> void:
+	print("--- 測試角色頁三欄武器連動即時預覽 ---")
+	_lobby._switch_tab(MobileLobby.Tab.CHARACTER)
+	var hint_lbl = _lobby.get("_weapon_slot_hint_label") as Label
+	if hint_lbl == null:
+		_fail("角色分頁找不到 _weapon_slot_hint_label")
+		return
+
+	# 1. 預設排布：鐵劍(sword) -> 獵弓(bow) -> 拳套(fist) -> 觸發【遠近合璧】
+	_lobby.select_weapon_slot(0)
+	if not hint_lbl.text.contains("遠近合璧"):
+		_fail("預設劍+弓+拳應出現【遠近合璧】，實際為: %s" % hint_lbl.text)
+	if not hint_lbl.text.contains("鐵劍"):
+		_fail("選中 Slot 0 提示卡應包含武器名「鐵劍」，實際為: %s" % hint_lbl.text)
+
+	# 2. 排出 劍(sword) -> 斧(axe) 時提示卡出現「斬甲破城」以及一句效果
+	_lobby.set_weapon_loadout(["sword", "axe"])
+	_lobby.select_weapon_slot(0)
+	if not hint_lbl.text.contains("斬甲破城"):
+		_fail("排出劍->斧時提示卡應出現「斬甲破城」，實際為: %s" % hint_lbl.text)
+	if not hint_lbl.text.contains("輕兵破甲重刃破防"):
+		_fail("排出劍->斧時提示卡應包含一句效果「輕兵破甲重刃破防」，實際為: %s" % hint_lbl.text)
+	if not hint_lbl.text.contains("鐵劍"):
+		_fail("選中 Slot 0 應包含武器名「鐵劍」，實際為: %s" % hint_lbl.text)
+
+	_lobby.select_weapon_slot(1)
+	if not hint_lbl.text.contains("斬甲破城"):
+		_fail("切換 Slot 1 時提示卡仍應出現「斬甲破城」，實際為: %s" % hint_lbl.text)
+	if not hint_lbl.text.contains("破岩斧"):
+		_fail("選中 Slot 1 提示卡應包含武器名「破岩斧」，實際為: %s" % hint_lbl.text)
+
+	# 3. 改成不成組時變「尚未成組」
+	_lobby.set_weapon_loadout(["axe", "sword"])
+	if not hint_lbl.text.contains("尚未成組"):
+		_fail("改為不成組 (斧->劍) 時提示卡應出現「尚未成組」，實際為: %s" % hint_lbl.text)
+	if hint_lbl.text.contains("斬甲破城"):
+		_fail("不成組時不應出現「斬甲破城」，實際為: %s" % hint_lbl.text)
+
+	# 4. 空欄 / 單欄：尚未成組
+	_lobby.set_weapon_loadout(["sword"])
+	if not hint_lbl.text.contains("尚未成組"):
+		_fail("單欄時提示卡應出現「尚未成組」，實際為: %s" % hint_lbl.text)
+
+	_lobby.set_weapon_loadout([])
+	if not hint_lbl.text.contains("尚未成組"):
+		_fail("空欄時提示卡應出現「尚未成組」，實際為: %s" % hint_lbl.text)
+
+	# 5. 測試其他連動：同脈共鳴 (sword -> spear) 與 全械同奏
+	_lobby.set_weapon_loadout(["sword", "spear"])
+	if not hint_lbl.text.contains("同脈共鳴"):
+		_fail("排出劍->槍時提示卡應出現「同脈共鳴」，實際為: %s" % hint_lbl.text)
+
+	# 恢復預設槽位以防影響後續測試
+	_lobby.set_weapon_loadout([
+		{"line": "sword", "weapon_name": "鐵劍", "hits": "4 次打擊", "hint": "首選武器 · 鐵劍：近身迅捷連續 4 次斬擊，戰鬥開局起手輪替順位"},
+		{"line": "bow", "weapon_name": "獵弓", "hits": "4 次打擊", "hint": "副手武器 · 獵弓：中距離精準連續 4 次射擊，壓制敵陣並牽制推進"},
+		{"line": "fist", "weapon_name": "拳套", "hits": "5 連擊", "hint": "絕技武器 · 拳套：重裝近身蓄力 5 連擊，滿怒時超頻運轉爆發絕技"}
+	])
+	_lobby.select_weapon_slot(0)
+	print("  ok 角色頁三欄武器連動預覽測試通過")
 
 
 func _finish() -> bool:
