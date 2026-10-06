@@ -5460,8 +5460,8 @@
    "id": "lobby-equip-slots-visible",
    "cat": "遊戲",
    "title": "大廳右側裝備槽完整可見",
-   "status": "開發中",
-   "note": "開始排版優化與安全距調整",
+   "status": "測試中",
+   "note": "已完成修復與雙解析度實機驗收，送審 sideqa",
    "keys": [
     "大廳右側裝備槽完"
    ]
