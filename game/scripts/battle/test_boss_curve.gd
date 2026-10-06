@@ -96,10 +96,10 @@ func _stats(lv: int, def_bonus: int) -> Dictionary:
 	}
 
 
-func _make(mode: String, st: Dictionary):
+func _make(mode: String, st: Dictionary, seed_i: int):
 	match mode:
 		"leo": return BattleSim.make_leo_fight(st)
-		"fog": return BattleSim.make_fog_fight(st)
+		"fog": return BattleSim.make_fog_fight(st, seed_i)  ## 幻影速度建場時就擲骰，seed 要從這裡給
 		"abo": return BattleSim.make_abo_fight(st)
 		"falcon": return BattleSim.make_falcon_fight(st)
 		"boar": return BattleSim.make_boar_fight(st)
@@ -115,7 +115,7 @@ func _make(mode: String, st: Dictionary):
 ## 成功率走 auto_deflect_chance()（AUTO_DEFLECT_* 常數，閃避與速度差）。
 ## 擲骰用 sim.rng，同 seed 可重現。不再用 try_react() 的「必定彈開」建模。
 func _run(mode: String, lv: int, def_b: int, seed_i: int) -> bool:
-	var sim = _make(mode, _stats(lv, def_b))
+	var sim = _make(mode, _stats(lv, def_b), seed_i)
 	if sim == null:
 		return false
 	sim.rng.seed = seed_i
