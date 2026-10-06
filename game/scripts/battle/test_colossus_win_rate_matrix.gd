@@ -88,8 +88,8 @@ func _run_simulation(mode: String, stats: Dictionary, seed_val: int) -> bool:
 	while not sim.finished and n < 2500:
 		sim.step(DT)
 		n += 1
-		if sim.parry_window_open():
-			sim.try_react()
+		## 自動彈開機率版（#17 AUTO_DEFLECT_*）：每窗擲一次 sim.rng，固定 seed 可重現
+		sim.auto_react()
 	var p = sim.get_unit("player")
 	if not sim.finished:
 		return false
