@@ -31,9 +31,28 @@ Procedural one-shots for combat / UI。**全部都還是程式合成的占位**�
 | mist* | forest | 霧、神祕地帶 |
 | tower*／blackflame_scar | forest | 同上 |
 
-循環：ending 只播一次（勝利結算）；其餘循環，village／battle 的匯入設定也開了 loop。
+循環：ending 只播一次（勝利結算）；其餘七首都循環，`.mp3.import` 也一律開 loop，loop_offset 與 `loops.json` 相同。
 town 在程式裡再壓 −2 dB（任務書：音量低於 village）。
-響度：八首 mp3 都在 −16 LUFS 附近（2026-10-06 量測 −16.4～−15.9）；battle、ending 重做 loudnorm 到 −16 LUFS／−1.5 dBTP。
+
+### 2026-10-06 · 佔位曲裁成 brief 長度（issue #31）
+
+重新作曲規格見 [docs/BGM_SPEC.md](../../../docs/BGM_SPEC.md)。現在的八首是**從下面 Suno 佔位曲剪出來的**，
+只做裁切、調速不變調（±7 % 內）、檔尾交叉淡化成無縫循環、響度對齊，沒有用付費生成。
+重現：`python3 tools/cut_bgm_loops.py --out /tmp/bgm_cut`（原曲從 git blob 取，見工具內 `SOURCE_BLOBS`）。
+
+| cue | 長度 | loop_offset | 響度／true peak | 來源 |
+|-----|------|-------------|-----------------|------|
+| title | 24.0 s | 6.727 s | −16.00 LUFS／−4.13 dBTP | Suno title 0.00–23.70 s＋程式合成發條棘輪聲（本 repo 自產） |
+| village | 45.0 s | 0 | −16.00／−4.64 | Suno village 36.69–80.32 s |
+| town | 40.0 s | 0 | −16.00／−1.79 | Suno town 41.63–79.13 s |
+| road | 30.0 s | 0 | −16.00／−2.88 | Suno road 110.09–139.42 s |
+| forest | 40.0 s | 0 | −15.99／−1.91 | Suno forest 38.01–80.65 s |
+| battle | 35.0 s | 0 | −15.99／−1.84 | Suno battle 181.05–218.45 s |
+| boss | 40.0 s | 0 | −16.00／−2.70 | Suno boss 206.66–245.81 s |
+| ending | 16.0 s | 不循環 | −16.00／−2.34 | Suno ending 255.84 s–結尾 |
+
+授權：沿用原本 Suno 佔位曲（帳號見 `SUNO_SOURCES.json`），沒有引入新的外部音源；發條棘輪聲是 numpy 合成。
+分析時用了 librosa（ISC）與 demucs（MIT）做節拍／人聲偵測，兩者都只在本機分析、不進成品，也不是 repo 相依。
 
 `mist`／`dojo`／`coast`／`wild`／`tower` 的 .mp3／.wav 已沒有程式引用，留著待確認後再刪。
 
