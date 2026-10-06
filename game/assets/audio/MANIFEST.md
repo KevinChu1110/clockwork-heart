@@ -20,8 +20,8 @@
 
 | 層級 | key | M-max 目標 | true peak 上限 | 理由 |
 |------|-----|-----------|---------------|------|
-| 事件 cue | swap、break、warn | −20 LUFS（±1） | −1 dBTP | 一場只響幾次、要聽得出「發生事了」 |
-| 頻繁回饋 | hit、slash | −23 LUFS（±1） | **−4 dBTP** | 每次命中都響、和跳字同一瞬間：比事件 cue 低 3 LU，峰值再壓 3 dB，瞬態不會「啪」一下蓋過跳字 |
+| 事件 cue | swap、break、warn、craft | −20 LUFS（±1） | −1 dBTP | 一場只響幾次、要聽得出「發生事了」 |
+| 頻繁回饋 | hit、slash、miss | −23 LUFS（±1） | **−4 dBTP** | 每次命中都響、和跳字同一瞬間：比事件 cue 低 3 LU，峰值再壓 3 dB，瞬態不會「啪」一下蓋過跳字 |
 | 戰前 | wind | −21 LUFS（±1） | −1 dBTP | 戰前上鏈，和 battle BGM 起頭疊在一起，不要搶 |
 
 為什麼不用 −18 這種更大聲的目標：短促的金屬瞬態用 400 ms 平均會被低估，
@@ -68,8 +68,8 @@ python3 tools/gen_sfx_clockwork.py --measure  # 腳本內建同一套量法（10
 | fire | 火環命中 | 0.3–0.4 s | 小火苗噗 | 舊占位 | P2 |
 | dodge | 危險閃過 | 0.08–0.12 s | 輕掃 | 舊占位 | P2 |
 | step | 探索腳步（優先度 0） | 0.04–0.06 s | 木地板輕踏 | 舊占位 | P2 |
-| craft | 鍛造成功（可選，缺檔走 ui＋reveal） | 0.3–0.5 s | 小錘敲黃銅 | **缺檔** | P2 |
-| miss | `battle_view.gd` 揮空時 `play("miss")`，但不在 `SFX_KEYS`，目前只會警告 | — | 舊格擋流程用；任務書已拿掉格擋，建議跟著刪呼叫 | **缺檔** | — |
+| craft | 鍛造／裝備強化成功（`play_craft_success`；有 craft.wav 就只播它，不再疊 ui＋reveal） | 0.3–0.5 s | 小錘敲黃銅兩下（第二下更亮）→ 零件裝上的八音盒兩音上行 | 合成 `gen_sfx_clockwork.py craft`（#47） | P2 → 已做 |
+| miss | 攻擊落空。目前 `battle_view.gd` 在 `parry_whiff` 時 `play("miss", 1.0, -6.0)`；`battle_sim` 也會發 `miss` 事件但 `on_battle_event` 還沒接 | 0.15–0.25 s（< 0.3） | 往下掃的輕空氣聲（和 slash 反方向、較暗）＋尾巴很小的木質「篤」，沒有金屬響 | 合成 `gen_sfx_clockwork.py miss`（#47）。**`SFX_KEYS` 還沒有 `miss`，要等程式那張 issue 補上才會載入** | P1 → 已做 |
 
 ### P0 六個的實測（2026-10-06，ffmpeg ebur128，量法同上）
 
@@ -82,19 +82,28 @@ python3 tools/gen_sfx_clockwork.py --measure  # 腳本內建同一套量法（10
 | warn | 0.450 s | −19.6 LUFS | −6.7 dBTP | 0.100 s／−28.3／−11.8 | 繃緊 0–150 ms，玻璃鐘在 150 ms |
 | wind | 0.920 s | −21.5 LUFS | −1.7 dBTP | 0.250 s／−22.9／−6.0 | 棘輪 0／200／380／550 ms，到位在 700 ms |
 
+### miss／craft 實測（2026-10-06，issue #47，量法同上）
+
+| key | 長度 | M-max | true peak | 時間點備註 |
+|-----|------|-------|-----------|-----------|
+| miss | 0.200 s | −22.7 LUFS | −5.8 dBTP | 空氣聲 35 ms 到頂，木質「篤」在 105 ms |
+| craft | 0.480 s | −19.7 LUFS | −4.8 dBTP | 錘 0／105 ms，音梳 215／290 ms |
+
+兩個都沒用到限幅器（響度到目標時峰值本來就在上限下）。miss 在 `battle_view` 還會再 −6 dB。
+
 44.1 kHz mono 16-bit（舊占位是 22.05 kHz；金屬高頻需要）。全部一次性，匯入設定沿用原本的 `.import`（loop 關）。
 warn 的 true peak 比上限低很多：它是兩段（吱＋叮）能量平均，響度先到目標，峰值自然不高。
 
 ### 重產
 
 ```bash
-python3 tools/gen_sfx_clockwork.py            # 重產 P0 六個（swap hit slash break warn wind）
+python3 tools/gen_sfx_clockwork.py            # 重產全部八個（swap hit slash break warn wind miss craft）
 python3 tools/gen_sfx_clockwork.py hit warn   # 只重產指定的
 python3 tools/gen_sfx_clockwork.py --measure  # 只量，不寫檔
 godot --path game --headless --import         # 換了音檔後匯入一次（只 commit 對應的 .wav.import）
 ```
 
-`tools/gen_sfx_and_tiles.py` 會跳過上面六個 key，不會把它們蓋回舊占位。
+`tools/gen_sfx_and_tiles.py` 會跳過 P0 六個 key（它本來就不產 miss／craft），不會把它們蓋回舊占位。
 付費生成（錄音室、AI 音效）一律先問 KC；目前全部是免費合成。
 
 ## BGM (`bgm/`) · 八個 cue（2026-10 依任務書收斂）
