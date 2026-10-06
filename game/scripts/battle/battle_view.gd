@@ -103,6 +103,7 @@ var _baked_shadow_cache: Dictionary = {}
 var _battle_weapon: TextureRect = null
 var _battle_armor: TextureRect = null
 var _skill_banner: Label
+var _weapon_swap_banner: Control = null
 var _rage_ready: Label
 var _rage_shimmer_tween: Tween = null
 var _last_rage_style_state := ""
@@ -1698,6 +1699,193 @@ func _flash_skill_banner(skill_name: String, player_side: bool = true) -> void:
 	)
 
 
+func _ensure_weapon_swap_banner() -> Control:
+	if _weapon_swap_banner != null and is_instance_valid(_weapon_swap_banner):
+		return _weapon_swap_banner
+	var container := PanelContainer.new()
+	container.name = "WeaponSwapBanner"
+	container.visible = false
+	container.z_index = 48
+	container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8") # 楓式多巴胺亮色盤奶油米白底
+	sb.border_color = Color("#1F1A3A") # 深藍紫描邊
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 5 # 5px 立體厚底質感
+	sb.set_corner_radius_all(14)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.28)
+	sb.shadow_size = 5
+	sb.shadow_offset = Vector2(0, 3)
+	container.add_theme_stylebox_override("panel", sb)
+
+	var margin := MarginContainer.new()
+	margin.name = "MarginContainer"
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_top", 6)
+	margin.add_theme_constant_override("margin_bottom", 6)
+	container.add_child(margin)
+
+	var hbox := HBoxContainer.new()
+	hbox.name = "HBox"
+	hbox.add_theme_constant_override("separation", 8)
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	margin.add_child(hbox)
+
+	var font_huninn: Font = null
+	if ResourceLoader.exists(FONT_HUNINN_PATH):
+		font_huninn = load(FONT_HUNINN_PATH) as Font
+
+	# 舊武器圖示（停擺灰色）
+	var old_icon := TextureRect.new()
+	old_icon.name = "OldIcon"
+	old_icon.custom_minimum_size = Vector2(32, 32)
+	old_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	old_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	old_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	hbox.add_child(old_icon)
+
+	# 舊武器名稱標籤（停擺色）
+	var old_lbl := Label.new()
+	old_lbl.name = "OldLabel"
+	old_lbl.add_theme_font_size_override("font_size", 18)
+	old_lbl.add_theme_color_override("font_color", Color("#8A5050"))
+	old_lbl.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	old_lbl.add_theme_constant_override("outline_size", 1)
+	if font_huninn:
+		old_lbl.add_theme_font_override("font", font_huninn)
+	hbox.add_child(old_lbl)
+
+	# 換武符號 ➔
+	var arrow_lbl := Label.new()
+	arrow_lbl.name = "Arrow"
+	arrow_lbl.text = "➔"
+	arrow_lbl.add_theme_font_size_override("font_size", 20)
+	arrow_lbl.add_theme_color_override("font_color", Color("#FFA010"))
+	arrow_lbl.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	arrow_lbl.add_theme_constant_override("outline_size", 2)
+	if font_huninn:
+		arrow_lbl.add_theme_font_override("font", font_huninn)
+	hbox.add_child(arrow_lbl)
+
+	# 新武器圖示（亮色）
+	var new_icon := TextureRect.new()
+	new_icon.name = "NewIcon"
+	new_icon.custom_minimum_size = Vector2(36, 36)
+	new_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	new_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	new_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	hbox.add_child(new_icon)
+
+	# 新武器名稱標籤（高亮深藍紫）
+	var new_lbl := Label.new()
+	new_lbl.name = "NewLabel"
+	new_lbl.add_theme_font_size_override("font_size", 20)
+	new_lbl.add_theme_color_override("font_color", Color("#1F1A3A"))
+	new_lbl.add_theme_color_override("font_outline_color", Color("#FFFDF8"))
+	new_lbl.add_theme_constant_override("outline_size", 2)
+	if font_huninn:
+		new_lbl.add_theme_font_override("font", font_huninn)
+	hbox.add_child(new_lbl)
+
+	add_child(container)
+	_weapon_swap_banner = container
+	return _weapon_swap_banner
+
+
+func _flash_weapon_swap_banner(old_label: String, new_label: String, old_line: String, new_line: String, dur: float = 0.45) -> void:
+	var banner := _ensure_weapon_swap_banner()
+	if banner == null or not is_instance_valid(banner):
+		return
+	var hbox := banner.get_node_or_null("MarginContainer/HBox") as HBoxContainer
+	if hbox == null:
+		return
+	var old_icon := hbox.get_node_or_null("OldIcon") as TextureRect
+	var old_lbl := hbox.get_node_or_null("OldLabel") as Label
+	var new_icon := hbox.get_node_or_null("NewIcon") as TextureRect
+	var new_lbl := hbox.get_node_or_null("NewLabel") as Label
+
+	var o_tex := SpriteDB.weapon_tex_for_class(old_line if old_line != "" else "sword")
+	var n_tex := SpriteDB.weapon_tex_for_class(new_line if new_line != "" else "spear")
+
+	if old_icon:
+		old_icon.texture = o_tex
+		old_icon.modulate = Color(0.6, 0.55, 0.55, 0.9)
+	if old_lbl:
+		old_lbl.text = _t("%s停擺") % old_label
+	if new_icon:
+		new_icon.texture = n_tex
+		new_icon.modulate = Color(1.0, 0.95, 0.7, 1.0)
+	if new_lbl:
+		new_lbl.text = _t("換上%s") % new_label
+
+	banner.reset_size()
+	var b_sz := banner.get_combined_minimum_size()
+	banner.size = b_sz
+	banner.pivot_offset = b_sz * 0.5
+
+	# 置中於戰鬥舞台中央上方（開闊空域，零遮擋玩家素體與敵方首領）
+	var target_x: float = (size.x - b_sz.x) * 0.5 if size.x > 100.0 else 460.0
+	var target_y: float = 160.0
+	banner.position = Vector2(target_x, target_y)
+
+	banner.visible = true
+	banner.modulate = Color(1, 1, 1, 0)
+	banner.scale = Vector2(0.65, 0.65)
+
+	var tw := create_tween()
+	tw.tween_property(banner, "modulate:a", 1.0, 0.08)
+	tw.parallel().tween_property(banner, "scale", Vector2.ONE, 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_interval(maxf(0.30, dur))
+	tw.tween_property(banner, "modulate:a", 0.0, 0.16)
+	tw.parallel().tween_property(banner, "scale", Vector2(1.08, 1.08), 0.16)
+	tw.tween_callback(func():
+		if is_instance_valid(banner):
+			banner.visible = false
+	)
+
+
+func _play_weapon_swap_beat(old_label: String, new_label: String, old_line: String, new_line: String, recover_dur: float = 0.40) -> void:
+	# 1. 角色切換為換欄姿態（recover：手臂收緊、收刀蓄能握持）
+	_set_player_pose("recover")
+
+	# 2. 短位移：角色受停擺慣性往後短微位移 16px，並伴隨短震動
+	if player_body and is_instance_valid(player_body):
+		if _player_home == Vector2.ZERO and player_body.position != Vector2.ZERO:
+			_player_home = player_body.position
+		var home := _player_home if _player_home != Vector2.ZERO else player_body.position
+		if _player_lunge_tw and _player_lunge_tw.is_valid():
+			_player_lunge_tw.kill()
+			_player_lunge_tw = null
+		if _player_pose_tween and _player_pose_tween.is_valid():
+			_player_pose_tween.kill()
+			_player_pose_tween = null
+		var recoil_pos := home + Vector2(-16.0, 0.0)
+		player_body.position = recoil_pos
+		_player_pose_tween = create_tween()
+		_player_pose_tween.tween_property(player_body, "position", recoil_pos + Vector2(2.0, 0.0), 0.12).set_trans(Tween.TRANS_SINE)
+		_player_pose_tween.tween_property(player_body, "position", recoil_pos, 0.08).set_trans(Tween.TRANS_SINE)
+
+	# 3. 齒輪機關光效與微螢幕震動
+	_shake = maxf(_shake, 0.18)
+	_flash(player_body, Color(0.65, 0.90, 1.0, 1.0))
+
+	# 4. 武器圖示換欄專用指示條（武器圖示切換：前把停擺 ➔ 新把換上）
+	_flash_weapon_swap_banner(old_label, new_label, old_line, new_line, recover_dur)
+
+	# 5. 回合結束／recover 倒數完畢時回到主位並進入待命/備戰姿態
+	var dur := maxf(0.25, recover_dur)
+	get_tree().create_timer(dur).timeout.connect(func():
+		if is_instance_valid(self) and not _ended:
+			if _player_pose == "recover":
+				_set_player_pose("idle")
+			if player_body and is_instance_valid(player_body):
+				var reset_tw := create_tween()
+				reset_tw.tween_property(player_body, "position", _player_home, 0.14).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	)
+
+
 static func _soft_shadow_tex() -> Texture2D:
 	if _shadow_tex_cache != null:
 		return _shadow_tex_cache
@@ -2224,6 +2412,8 @@ func _apply_platform_elevation(mode: String) -> void:
 func _layout_battle_equipment_overlays() -> void:
 	if enemy_body and is_instance_valid(enemy_body) and _boss_pose == "idle":
 		_enemy_home = enemy_body.position
+	if player_body and is_instance_valid(player_body) and _player_pose == "idle":
+		_player_home = player_body.position
 	_layout_foot_shadow(player_body)
 	_layout_foot_shadow(enemy_body)
 	if player_body == null:
@@ -2267,7 +2457,14 @@ func _layout_battle_equipment_overlays() -> void:
 		else:
 			wtex = SpriteDB.player_weapon_overlay()
 		if wtex:
-			_battle_weapon.visible = false
+			var wsz := Vector2(bs.y * 0.42, bs.y * 0.42)
+			_battle_weapon.texture = wtex
+			_battle_weapon.visible = true
+			_battle_weapon.custom_minimum_size = wsz
+			_battle_weapon.size = wsz
+			_battle_weapon.position = Vector2(bs.x * 0.36, bs.y * 0.22)
+			_battle_weapon.modulate = Color(1, 1, 1, 1.0)
+			_battle_weapon.z_index = 2
 		else:
 			_battle_weapon.visible = false
 
@@ -3879,11 +4076,12 @@ func _on_event(kind: String, data: Dictionary) -> void:
 		"weapon_slot_switched":
 			var wname := str(data.get("name", ""))
 			var old_wname := str(data.get("old_name", ""))
-			var wline := str(data.get("line", "")).to_upper()
+			var wline := str(data.get("line", "")).to_lower()
+			var old_wline := str(data.get("old_line", "")).to_lower()
 			var wuses := int(data.get("uses_left", 0))
 			var wmax := int(data.get("uses_max", 0))
 			var skn2 := str(data.get("skill_name", ""))
-			var label := wname if wname != "" else wline
+			var label := wname if wname != "" else wline.to_upper()
 			var old_label := old_wname if old_wname != "" else _t("發條劍")
 			var auto_sw := bool(data.get("auto", false))
 			var link_txt := str(data.get("linkage_title", ""))
@@ -3892,6 +4090,7 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			if auto_sw:
 				_append_log(_t("[color=#8ff]『%s停擺，換上%s』%s[/color]") % [old_label, label, link_txt])
 				_spawn_float("player", _t("換武連動！"), Color(0.5, 1.0, 0.55), true)
+				_play_weapon_swap_beat(old_label, label, old_wline, wline, float(data.get("recover", 0.40)))
 			else:
 				_append_log(_t("[color=#8ff]武器欄 %d：%s（武 %d/%d%s）%s[/color]") % [
 					int(data.get("index", 0)) + 1, label, wuses, wmax,
@@ -4010,8 +4209,18 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			_set_boss_pose("telegraph")
 			_last_cd_bucket = -1
 		"state":
-			## 單位狀態回 idle 時收招
-			if str(data.get("state", "")) == "idle" and _is_enemy_actor(str(data.get("id", ""))):
+			## 單位狀態回 idle 時收招；玩家狀態進 recover 時切姿態
+			var s_id := str(data.get("id", ""))
+			var s_val := str(data.get("state", ""))
+			if s_id == "player":
+				if s_val == "recover":
+					_set_player_pose("recover")
+				elif s_val == "idle":
+					if _player_pose == "recover":
+						_set_player_pose("idle")
+						if player_body and is_instance_valid(player_body):
+							player_body.position = _player_home
+			elif s_val == "idle" and _is_enemy_actor(s_id):
 				if _boss_pose != "telegraph":
 					_set_boss_pose("idle")
 		"hazard_warn":

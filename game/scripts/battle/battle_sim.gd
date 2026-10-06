@@ -3153,6 +3153,7 @@ func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 		return true  ## 已在此欄且 line 相同
 	var old_bar: Dictionary = weapon_bars[weapon_bar_active] if weapon_bar_active >= 0 and weapon_bar_active < weapon_bars.size() else {}
 	var old_name := _get_bar_name(old_bar)
+	var old_line := str(old_bar.get("line", "sword"))
 	var new_name := _get_bar_name(bar)
 	## 換到另一欄才把舊欄次數寫回（同欄重生／單測灌假欄時不可把新次數蓋成 0）
 	if index != weapon_bar_active:
@@ -3191,6 +3192,7 @@ func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 		"name": new_name,
 		"old_name": old_name,
 		"line": line,
+		"old_line": old_line,
 		"skill_name": p.skill_name,
 		"windup": p.windup_time,
 		"recover": p.recover_time,
