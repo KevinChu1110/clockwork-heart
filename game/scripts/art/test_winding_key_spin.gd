@@ -21,6 +21,7 @@ var _battle: Node = null
 var _test_rect: TextureRect = null
 
 var _initial_key_img: Image = null
+var _initial_stage_anchor_y: float = 0.0
 
 
 func _fail(msg: String) -> void:
@@ -186,6 +187,10 @@ func _test_lobby_step0() -> void:
 	if hero_shadow == null or not hero_shadow.visible:
 		_fail("大廳缺少 _hero_shadow 陰影節點！")
 		return
+	var stage_anchor: Control = _lobby.get("_stage_anchor")
+	if stage_anchor != null:
+		_initial_stage_anchor_y = stage_anchor.global_position.y
+		print("  ✓ 大廳展台 stage_anchor 初始 global_position.y = %.2f (offset_top = %.2f)" % [_initial_stage_anchor_y, stage_anchor.offset_top])
 	print("  ✓ 大廳主角雙足接地錨點穩固，軟影正常，無懸空位移")
 	print("  ✓ 大廳初始幀發條鑰匙掛載成功 (Step: %d)" % anim.get_current_step())
 
@@ -204,6 +209,14 @@ func _test_lobby_step_advanced() -> void:
 	var cur_img: Image = key_avatar.texture.get_image()
 	if cur_img and cur_img.get_format() != Image.FORMAT_RGBA8:
 		cur_img.convert(Image.FORMAT_RGBA8)
+
+	var stage_anchor: Control = _lobby.get("_stage_anchor")
+	if stage_anchor != null:
+		var delta_y: float = abs(stage_anchor.global_position.y - _initial_stage_anchor_y)
+		print("  ✓ 待機推進後 stage_anchor global_position.y = %.2f (位移量: %.2f px)" % [stage_anchor.global_position.y, delta_y])
+		if delta_y > 2.0:
+			_fail("大廳展台 stage_anchor 異常飄移漂浮！24 幀內位移量 %.2f px > 2.0 px" % delta_y)
+			return
 
 	var diff_pixels := 0
 	if _initial_key_img and cur_img:

@@ -985,12 +985,11 @@ func _start_stage_parallax_tween(stage: Control) -> void:
 	if stage == null or not is_instance_valid(stage):
 		return
 	_stage_anchor = stage
-	var base_y := 45.0
-	stage.position.y = base_y
+	var base_top: float = stage.offset_top
 	_stage_tween = create_tween().set_loops()
-	## 中央展台視差浮動：中景不同頻率 (3.8s) 浮動 (y: ±1.4px)，與遠景天空形成立體景深視差
-	_stage_tween.tween_property(stage, "position:y", base_y - 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_stage_tween.tween_property(stage, "position:y", base_y + 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	## 中央展台視差浮動：中景不同頻率 (3.8s) 浮動 (offset_top: ±1.4px)，與遠景天空形成立體景深視差
+	_stage_tween.tween_property(stage, "offset_top", base_top - 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_stage_tween.tween_property(stage, "offset_top", base_top + 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 ## ──────────────────────────────────────────
