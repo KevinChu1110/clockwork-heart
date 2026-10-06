@@ -23,9 +23,10 @@ BGM_DIR = ROOT / "game" / "assets" / "audio" / "bgm"
 GEN = ROOT / "tools" / "gen_bgm.py"
 IMPORT = ROOT / "tools" / "import_bgm.py"
 
+## 任務書 §5：BGM cue 只准這八個名字（舊的 mist／dojo／coast／wild／tower 已併入
+## AudioManager.map_to_bgm，不要再匯入）
 TRACK_IDS = [
-    "title", "village", "town", "mist", "dojo", "forest", "coast",
-    "wild", "road", "battle", "boss", "tower", "ending",
+    "title", "village", "town", "road", "forest", "battle", "boss", "ending",
 ]
 
 
