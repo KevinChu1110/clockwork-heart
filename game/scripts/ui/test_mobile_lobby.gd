@@ -47,6 +47,7 @@ func _process(_d: float) -> bool:
 			return false
 		_step = 1
 		_test_hall_cards()
+		_test_equip_slots_visibility()
 		_test_soft_shadow()
 		_test_hero_click_and_particles()
 		_test_hero_nameplate()
@@ -1986,6 +1987,61 @@ func _test_adventure_stages_i18n() -> void:
 	_lobby._switch_tab(MobileLobby.Tab.VILLAGE)
 	loc_node.call("set_locale", "zh_TW")
 	print("  ok 出征分頁十六張關卡卡名稱六語系（zh_TW/zh_CN/en/ja/ko/es）即時切換全部檢查通過，資料表保持繁中 key")
+
+
+## ──────────────────────────────────────────
+## 17. 斷言大廳右側四格裝備槽完整可見性與安全距
+## ──────────────────────────────────────────
+func _test_equip_slots_visibility() -> void:
+	var equip_box: Container = _find_named(_lobby, "EquipSchematic") as Container
+	if equip_box == null:
+		_fail("找不到 EquipSchematic 裝備槽容器")
+		return
+
+	var chips := equip_box.get_children()
+	if chips.size() != 4:
+		_fail("EquipSchematic 裝備槽數量應為 4，實際為: %d" % chips.size())
+		return
+
+	var vp_size: Vector2 = root.get_viewport().get_visible_rect().size
+	var rects: Array[Rect2] = []
+	for c in chips:
+		if not (c is Control):
+			continue
+		var ctrl := c as Control
+		var r: Rect2 = Rect2(ctrl.global_position, ctrl.size)
+		rects.append(r)
+
+		# 1. 熱區 >= 48px
+		if r.size.x < 48.0 or r.size.y < 48.0:
+			_fail("裝備槽 %s 熱區小於 48px: %s" % [ctrl.name, r.size])
+
+		# 2. 完全落在 viewport 內 (含 margin >= 8px)
+		var m_left: float = r.position.x
+		var m_top: float = r.position.y
+		var m_right: float = vp_size.x - r.end.x
+		var m_bottom: float = vp_size.y - r.end.y
+
+		if m_left < 8.0 or m_top < 8.0 or m_right < 8.0 or m_bottom < 8.0:
+			_fail("裝備槽 %s 安全邊距不足 8px (超出畫面): L=%.1f, R=%.1f, T=%.1f, B=%.1f" % [ctrl.name, m_left, m_right, m_top, m_bottom])
+
+	# 3. 四格裝備卡互不重疊
+	for i in range(chips.size()):
+		for j in range(i + 1, chips.size()):
+			var inter: Rect2 = rects[i].intersection(rects[j])
+			if inter.size.x > 0.01 and inter.size.y > 0.01:
+				_fail("裝備槽 %s 與 %s 發生重疊: %s" % [chips[i].name, chips[j].name, inter])
+
+	# 4. 與右側戰情報告板互不重疊
+	var sortie_card: Control = _find_named(_lobby, "RightSortieCard") as Control
+	if sortie_card != null and sortie_card.visible:
+		var sortie_rect: Rect2 = Rect2(sortie_card.global_position, sortie_card.size)
+		for i in range(chips.size()):
+			var inter: Rect2 = rects[i].intersection(sortie_rect)
+			if inter.size.x > 0.01 and inter.size.y > 0.01:
+				_fail("裝備槽 %s 與 RightSortieCard 發生重疊: %s" % [chips[i].name, inter])
+
+	print("  ok 大廳右側四格裝備卡完整落在 viewport 內（安全邊距 >= 8px）、熱區 >= 48px、互不重疊與無穿模驗證通過")
 
 
 func _finish() -> bool:

@@ -602,6 +602,7 @@ func _add_equip_chip(parent: Container, slot_title: String, item_name: String, t
 	var btn := Button.new()
 	btn.name = "EquipSlot_" + sid if sid != "" else ("EquipSlot_" + slot_title)
 	btn.custom_minimum_size = Vector2(114, 104)
+	btn.clip_text = true
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	btn.tooltip_text = "%s: %s" % [slot_title, item_name]
