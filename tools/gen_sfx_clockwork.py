@@ -155,10 +155,6 @@ def fade_out(x: np.ndarray, dur: float) -> np.ndarray:
     return x
 
 
-def soft_sat(x: np.ndarray, drive: float) -> np.ndarray:
-    return np.tanh(drive * x) / np.tanh(drive)
-
-
 # ───────────────────────── 量測（BS.1770） ─────────────────────────
 
 def _k_weight(x: np.ndarray, fs: int) -> np.ndarray:
@@ -193,9 +189,10 @@ def _hp_1770(fs: int) -> tuple[tuple, tuple]:
 
 
 def m_max(x: np.ndarray, fs: int = SR) -> float:
-    """最大瞬時響度（400 ms 視窗、100 ms 步進），檔尾補 1 秒靜音"""
+    """最大瞬時響度（400 ms 視窗），檔尾補 1 秒靜音。
+    步進用 10 ms（比 ffmpeg ebur128 的 100 ms 細），量出來只會 ≥ ffmpeg，正規化偏保守"""
     y = _k_weight(np.concatenate([x, np.zeros(fs)]), fs)
-    win, hop = int(0.4 * fs), int(0.1 * fs)
+    win, hop = int(0.4 * fs), int(0.01 * fs)
     sq = np.concatenate([[0.0], np.cumsum(y * y)])
     best = 1e-12
     for i in range(0, len(y) - win + 1, hop):
@@ -310,8 +307,103 @@ def synth_slash(rng: np.random.Generator) -> tuple[np.ndarray, float]:
     return out, 0.03
 
 
+def synth_break(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """部位碎裂（0.62 s）：板件崩開的脆裂 → 齒輪螺絲散落叮噹＋鬆掉的彈簧。
+    衝擊集中在前 80 ms，之後的散落聲在 0.4 秒慢動作裡越來越稀、越來越小，收乾淨。"""
+    dur = 0.62
+    out = np.zeros(int(SR * dur))
+    # 崩開：寬頻雜訊硬邊＋黃銅板件共振＋低頻機身「咚」
+    crack = filt(noise_burst(0.008, rng, tau=0.003), "hp", 900)
+    plate = modes(0.25, [(612, 0.40, 0.070), (1013, 0.36, 0.055), (1731, 0.28, 0.038),
+                         (2647, 0.20, 0.024), (3920, 0.12, 0.014)], rng)
+    thump = sweep_sine(0.2, 140, 62, 0.055, 0.03)
+    place(out, crack, 0.0, 0.6)
+    place(out, plate, 0.0008, 0.8)
+    place(out, thump, 0.0, 0.75)
+    # 碎裂的細碎劈啪（前 70 ms 密集、遞減）
+    t0 = 0.004
+    while t0 < 0.075:
+        g = 0.35 * np.exp(-t0 / 0.03)
+        place(out, filt(noise_burst(0.0015, rng), "hp", 2500), t0, g * rng.uniform(0.5, 1.0))
+        t0 += rng.uniform(0.003, 0.009)
+    # 鬆掉的彈簧：一聲帶顫的「啵嗯」往下滑
+    t = _t(0.35)
+    f = 330 - 70 * (1 - np.exp(-t / 0.12)) + 14 * np.sin(2 * np.pi * 17 * t) * np.exp(-t / 0.08)
+    spring = np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-t / 0.11)
+    spring += 0.35 * np.sin(2 * np.pi * np.cumsum(2.7 * f) / SR) * np.exp(-t / 0.05)
+    spring[: int(0.004 * SR)] *= np.linspace(0, 1, int(0.004 * SR))
+    place(out, spring, 0.07, 0.30)
+    # 散落：齒輪／螺絲／玻璃小片落地的叮噹，時間越後越稀、越小
+    t0 = 0.05
+    while t0 < 0.50:
+        f0 = rng.uniform(2100, 5600)
+        r = [1.0, rng.uniform(1.42, 1.58), rng.uniform(2.2, 2.45)]
+        tink = modes(0.09, [(f0 * r[0], 1.0, 0.020), (f0 * r[1], 0.55, 0.013),
+                            (f0 * r[2], 0.30, 0.008)], rng)
+        place(out, tink, t0, 0.60 * np.exp(-(t0 - 0.05) / 0.22) * rng.uniform(0.6, 1.0))
+        t0 += rng.uniform(0.018, 0.035) * (1 + 1.6 * (t0 / 0.5))
+    return out, 0.06
+
+
+def synth_warn(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """Boss 部位將破（0.45 s）：發條繃緊的金屬「吱」一聲 → 一記玻璃鐘「叮」。
+    只響一次，不是倒數、不是嗶嗶警報、不是格擋窗（沒有節拍、沒有重複）。"""
+    dur = 0.45
+    out = np.zeros(int(SR * dur))
+    # 繃緊的吱：stick-slip——一串越來越密、越來越大的微小摩擦脈衝激發板件共振
+    t0, period = 0.0, 0.013
+    while t0 < 0.15:
+        g = 0.12 + 0.55 * (t0 / 0.15) ** 1.5
+        grain = modes(0.02, [(1460, 1.0, 0.0055), (2390, 0.6, 0.0040), (3610, 0.35, 0.0028)], rng)
+        place(out, grain, t0, g * rng.uniform(0.85, 1.0))
+        t0 += period * rng.uniform(0.9, 1.1)
+        period = max(0.0065, period * 0.93)
+    # 玻璃鐘（八音盒音梳那種自由簧片比例 1 : 2.76 : 5.40），成對微失諧帶一點緊張的顫
+    f0 = 1318.5  # E6
+    bell = modes(0.30, [(f0, 0.50, 0.200), (f0 * 1.0045, 0.18, 0.180), (f0 * 2.756, 0.24, 0.070),
+                        (f0 * 5.404, 0.10, 0.030)], rng, attack=0.0015)
+    place(bell, filt(noise_burst(0.0015, rng), "hp", 4000) * 0.25, 0.0)
+    place(out, bell, 0.15, 0.9)
+    return out, 0.08
+
+
+def synth_wind(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """戰前上鏈（0.92 s）：發條鑰匙轉四格，棘輪一格比一格緊、音高微升，最後一聲到位。"""
+    dur = 0.92
+    n = int(SR * dur)
+    out = np.zeros(n)
+    clicks = [(0.00, 1.00, 0.70), (0.20, 1.04, 0.78), (0.38, 1.08, 0.86), (0.55, 1.13, 0.95)]
+    # 轉動摩擦：每格之間一段很輕的黃銅摩擦聲（帶通雜訊、越轉越緊越亮）
+    t = np.arange(n) / SR
+    fric_env = np.zeros(n)
+    for (a, k, _), (b, _, _) in zip(clicks, clicks[1:] + [(0.70, 1.15, 0)]):
+        seg = (t >= a + 0.015) & (t < b)
+        u = (t[seg] - a - 0.015) / max(b - a - 0.015, 1e-3)
+        fric_env[seg] = np.sin(np.pi * u) ** 2 * (0.5 + 0.5 * k)
+    fc = 1800 + 900 * np.clip(t / 0.7, 0, 1)
+    fric = svf_bandpass_sweep(rng.uniform(-1, 1, n), fc, 3.0) * fric_env
+    fric /= max(np.max(np.abs(fric)), 1e-9)
+    out += 0.10 * fric
+    for t0, k, g in clicks:
+        pawl = modes(0.06, [(3020 * k, 0.6, 0.008), (4710 * k, 0.4, 0.006), (6890 * k, 0.25, 0.004),
+                            (1650 * k, 0.25, 0.012)], rng)
+        place(pawl, filt(noise_burst(0.0012, rng), "hp", 2000) * 0.8, 0.0)
+        # 彈簧越繃越緊：每格帶一聲很輕的「嗡」，音高跟著升
+        zing = modes(0.12, [(880 * k * k, 1.0, 0.045), (880 * k * k * 2.01, 0.3, 0.025)], rng, attack=0.003)
+        place(out, pawl, t0, g * 0.75)
+        place(out, zing, t0 + 0.004, 0.12 * g)
+    # 到位：木質機身「篤」＋黃銅擋片
+    lock = modes(0.2, [(520, 0.45, 0.050), (1340, 0.35, 0.035), (2470, 0.20, 0.020),
+                       (3680, 0.10, 0.012)], rng)
+    place(lock, sweep_sine(0.12, 220, 160, 0.035, 0.02) * 0.45, 0.0)
+    place(lock, filt(noise_burst(0.002, rng), "hp", 1200) * 0.7, 0.0)
+    place(out, lock, 0.70, 0.9)
+    return out, 0.05
+
+
 SYNTHS = {
     "swap": synth_swap, "hit": synth_hit, "slash": synth_slash,
+    "break": synth_break, "warn": synth_warn, "wind": synth_wind,
 }
 
 
