@@ -120,13 +120,14 @@ const DROP_TIERS := {
 	"outfit_worker_apron": "purple",
 }
 
+## 換裝名用玩具家族（任務書 §2：衣櫥不再用狐／獅／野豬）；字串與衣櫥線共用同一組 i18n key
 const DROP_NAMES := {
 	"drop_brass_gear": "黃銅齒輪",
 	"drop_spring_coil": "發條游絲",
 	"outfit_cream": "小白 · 奶油便服",
-	"outfit_brass_vest": "獅 · 黃銅背心",
-	"outfit_scarf_tunic": "狐 · 圍巾長衫",
-	"outfit_worker_apron": "野豬 · 工匠工裙",
+	"outfit_brass_vest": "錫兵 · 黃銅背心",
+	"outfit_scarf_tunic": "八音盒 · 圍巾長衫",
+	"outfit_worker_apron": "錫兵 · 工匠工裙",
 	"junk_enamel_chip": "搪瓷碎屑",
 }
 

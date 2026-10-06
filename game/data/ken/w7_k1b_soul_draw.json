@@ -18,7 +18,7 @@
     },
     {
       "CharacterId": "lion",
-      "displayName": "獅",
+      "displayName": "錫兵",
       "artKey": "lion",
       "baseAsset": "res://assets/sprites/pack_a/v2/chars/lion_base.png",
       "defaultOutfit": "outfit_brass_vest",
@@ -26,7 +26,7 @@
     },
     {
       "CharacterId": "fox",
-      "displayName": "狐",
+      "displayName": "八音盒",
       "artKey": "fox",
       "baseAsset": "res://assets/sprites/pack_a/v2/chars/fox_base.png",
       "defaultOutfit": "outfit_scarf_tunic",
@@ -34,7 +34,7 @@
     },
     {
       "CharacterId": "pig",
-      "displayName": "野豬",
+      "displayName": "錫兵",
       "artKey": "pig",
       "baseAsset": "res://assets/sprites/pack_a/v2/chars/pig_base.png",
       "defaultOutfit": "outfit_worker_apron",
@@ -64,24 +64,28 @@
   "outfits": [
     {
       "OutfitId": "outfit_cream",
+      "displayName": "小白 · 奶油便服",
       "CharacterId": "xiaobai",
       "atlasCol": 0,
       "weight": 6
     },
     {
       "OutfitId": "outfit_brass_vest",
+      "displayName": "錫兵 · 黃銅背心",
       "CharacterId": "lion",
       "atlasCol": 1,
       "weight": 6
     },
     {
       "OutfitId": "outfit_scarf_tunic",
+      "displayName": "八音盒 · 圍巾長衫",
       "CharacterId": "fox",
       "atlasCol": 2,
       "weight": 6
     },
     {
       "OutfitId": "outfit_worker_apron",
+      "displayName": "錫兵 · 工匠工裙",
       "CharacterId": "pig",
       "atlasCol": 3,
       "weight": 6
@@ -105,6 +109,7 @@
     {
       "DropId": "outfit_cream",
       "kind": "outfit",
+      "displayName": "小白 · 奶油便服",
       "weight": 6,
       "CharacterId": "xiaobai",
       "toastKey": "soul.pull_outfit"
@@ -112,6 +117,7 @@
     {
       "DropId": "outfit_brass_vest",
       "kind": "outfit",
+      "displayName": "錫兵 · 黃銅背心",
       "weight": 6,
       "CharacterId": "lion",
       "toastKey": "soul.pull_outfit"
@@ -119,6 +125,7 @@
     {
       "DropId": "outfit_scarf_tunic",
       "kind": "outfit",
+      "displayName": "八音盒 · 圍巾長衫",
       "weight": 6,
       "CharacterId": "fox",
       "toastKey": "soul.pull_outfit"
@@ -126,6 +133,7 @@
     {
       "DropId": "outfit_worker_apron",
       "kind": "outfit",
+      "displayName": "錫兵 · 工匠工裙",
       "weight": 6,
       "CharacterId": "pig",
       "toastKey": "soul.pull_outfit"

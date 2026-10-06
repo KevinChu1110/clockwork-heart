@@ -89,6 +89,13 @@ func _check_pool_entries(cfg) -> void:
 		_audit_texture(did, path)
 		if Catalog.drop_name(did) == did:
 			_fail("%s 沒有顯示名稱" % did)
+		var nm := Catalog.drop_name(did)
+		for fur in ["獅", "狐", "野豬"]:
+			if nm.find(fur) >= 0:
+				_fail("%s 名稱還用毛皮種族：%s" % [did, nm])
+		var json_name := str(d.get("displayName", ""))
+		if json_name != "" and json_name != nm:
+			_fail("%s 名稱與 JSON 不一致：%s ≠ %s" % [did, nm, json_name])
 	# 待機卡圖與保底圖也要過同一套稽核
 	_audit_texture("idle", Catalog.IDLE_ART)
 	_audit_texture("fallback", Catalog.FALLBACK_ART)

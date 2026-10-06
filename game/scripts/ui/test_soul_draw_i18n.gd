@@ -288,12 +288,12 @@ func _run_test_suite() -> void:
 				"es": "Atuendo"
 			},
 			"expected_drop_lbl": {
-				"zh_TW": "【換裝】 獅 · 黃銅背心",
-				"zh_CN": "【换装】 狮 · 黄铜背心",
-				"en": "【Outfit】 Lion · Brass Vest",
-				"ja": "【着せ替え】 獅子・真鍮ベスト",
-				"ko": "【의상】 사자 · 황동 조끼",
-				"es": "【Atuendo】 León · Chaleco de latón"
+				"zh_TW": "【換裝】 錫兵 · 黃銅背心",
+				"zh_CN": "【换装】 锡兵 · 黄铜背心",
+				"en": "【Outfit】 Tin Soldier · Brass Vest",
+				"ja": "【着せ替え】 ブリキの兵隊・真鍮ベスト",
+				"ko": "【의상】 주석 병정 · 황동 조끼",
+				"es": "【Atuendo】 Soldado de Plomo · Chaleco de latón"
 			}
 		},
 		{
@@ -307,12 +307,12 @@ func _run_test_suite() -> void:
 				"es": "Atuendo"
 			},
 			"expected_drop_lbl": {
-				"zh_TW": "【換裝】 狐 · 圍巾長衫",
-				"zh_CN": "【换装】 狐 · 围巾长衫",
-				"en": "【Outfit】 Fox · Scarf Tunic",
-				"ja": "【着せ替え】 狐・マフラー長羽織",
-				"ko": "【의상】 여우 · 목도리 긴옷",
-				"es": "【Atuendo】 Zorro · Túnica con bufanda"
+				"zh_TW": "【換裝】 八音盒 · 圍巾長衫",
+				"zh_CN": "【换装】 八音盒 · 围巾长衫",
+				"en": "【Outfit】 Music Box · Scarf Tunic",
+				"ja": "【着せ替え】 オルゴール・マフラー長羽織",
+				"ko": "【의상】 오르골 · 목도리 긴옷",
+				"es": "【Atuendo】 Caja de Música · Túnica con bufanda"
 			}
 		},
 		{
@@ -326,12 +326,12 @@ func _run_test_suite() -> void:
 				"es": "Atuendo"
 			},
 			"expected_drop_lbl": {
-				"zh_TW": "【換裝】 野豬 · 工匠工裙",
-				"zh_CN": "【换装】 野猪 · 工匠工裙",
-				"en": "【Outfit】 Boar · Artisan Apron",
-				"ja": "【着せ替え】 猪・職人エプロン",
-				"ko": "【의상】 멧돼지 · 장인 작업치마",
-				"es": "【Atuendo】 Jabalí · Delantal de artesano"
+				"zh_TW": "【換裝】 錫兵 · 工匠工裙",
+				"zh_CN": "【换装】 锡兵 · 工匠工裙",
+				"en": "【Outfit】 Tin Soldier · Artisan Apron",
+				"ja": "【着せ替え】 ブリキの兵隊・職人エプロン",
+				"ko": "【의상】 주석 병정 · 장인 작업치마",
+				"es": "【Atuendo】 Soldado de Plomo · Delantal de artesano"
 			}
 		},
 		{
