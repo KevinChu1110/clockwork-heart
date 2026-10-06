@@ -13,7 +13,7 @@
   "7 大槽位狀態：全部 %d 槽疊合就緒 (載入: %d/%d)": "7 大槽位狀態：全部 %d 槽疊合就緒 (載入: %d/%d)",
   "[已破]": "[已破]",
   "battle.ally": "我方",
-  "battle.bare_fist": "赤手",
+  "battle.bare_fist": "空手",
   "battle.berserk_active": "暴怒中 · 屬性提升",
   "battle.countdown_left": "(出手倒數 {n}s)",
   "battle.enemy": "敵方",

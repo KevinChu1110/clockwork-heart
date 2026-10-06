@@ -13,6 +13,7 @@ var _main: Node = null
 var _battle: Node = null
 var _sim = null
 var _ratio_i := 0
+var _bar_before := 0
 var _ratios: Array = [
 	{"name": "16:9", "size": Vector2i(1280, 720)},
 	{"name": "19.5:9", "size": Vector2i(1280, 591)},
@@ -167,7 +168,8 @@ func _process(_d: float) -> bool:
 			if _ok:
 				print("  ok 16:9 純自動戰鬥HUD驗證通過（零手動輪盤／零格擋鈕／保留小暫停與三欄武器）")
 
-			# 點武器欄第二格驗證自適應切換
+			# 自動戰鬥：點武器欄第二格不可手動換武（次數用完才自動換）
+			_bar_before = int(_sim.weapon_bar_active)
 			var dock: Node = _battle.get("_weapon_dock")
 			if dock and dock.get_child_count() > 1:
 				_click(dock.get_child(1) as Control)
@@ -176,10 +178,10 @@ func _process(_d: float) -> bool:
 		2:
 			if _wait < 3:
 				return false
-			if int(_sim.weapon_bar_active) != 1:
-				_fail("點武器格 2 沒換到欄 2（作用欄 %d）" % int(_sim.weapon_bar_active))
+			if int(_sim.weapon_bar_active) != _bar_before:
+				_fail("點武器格 2 竟手動換武（作用欄 %d → %d）" % [_bar_before, int(_sim.weapon_bar_active)])
 			else:
-				print("  ok 點武器格 → 欄 2 (黃銅槍)")
+				print("  ok 點武器格不換武（作用欄維持 %d）" % _bar_before)
 
 			# 驗證小暫停鈕功能正常
 			var pause_b := _ctrl("pause")

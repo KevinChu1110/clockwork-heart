@@ -120,6 +120,9 @@ func _initialize() -> void:
 			"boar": sim = BattleSim.make_boar_fight(p_stats)
 		
 		sim.rng.seed = 42
+		## 這支只量鎚系耐久／節奏；自動彈開機率（AUTO_DEFLECT_*）另由 test_auto_deflect 守，
+		## 這裡固定必彈開，免得擲骰運氣蓋過耐久模型的結論。
+		sim.auto_deflect_force = 1.0
 		var bare_fist_triggered := false
 		sim.event.connect(func(kind: String, _d: Dictionary):
 			if kind == "bare_fist":
@@ -137,7 +140,7 @@ func _initialize() -> void:
 			return
 		
 		if bare_fist_triggered:
-			push_error("野豬在 %s (Lv%d) 戰鬥中觸發了赤手空拳狀態" % [blabel, blv])
+			push_error("野豬在 %s (Lv%d) 戰鬥中觸發了空手狀態" % [blabel, blv])
 			print("COMBAT_BOAR_HAMMER_FAIL")
 			quit(1)
 			return
@@ -148,7 +151,7 @@ func _initialize() -> void:
 			quit(1)
 			return
 		
-		print("  ✓ [%s Lv%d] 戰鬥獲勝 (時長 %.2fs)，剩餘耐久: %d/%d (無赤手斷檔)，剩餘HP: %d/%d (%.1f%%)" % [
+		print("  ✓ [%s Lv%d] 戰鬥獲勝 (時長 %.2fs)，剩餘耐久: %d/%d (無空手斷檔)，剩餘HP: %d/%d (%.1f%%)" % [
 			blabel, blv, sim.time, p.weapon_uses_left, p.weapon_uses_max, p.hp, p.max_hp, float(p.hp)/float(p.max_hp)*100.0
 		])
 	

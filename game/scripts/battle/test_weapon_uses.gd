@@ -1,12 +1,12 @@
 extends SceneTree
-## 無頭測試：武器使用次數 → 赤手（原作對齊）
+## 無頭測試：武器使用次數 → 空手（原作對齊）
 
 const BattleSim := preload("res://scripts/battle/battle_sim.gd")
 const Formulas := preload("res://scripts/battle/formulas.gd")
 
 
 func _initialize() -> void:
-	print("== 測試武器次數／赤手 ==")
+	print("== 測試武器次數／空手 ==")
 	test_uses_init_and_tempo()
 	test_consume_to_bare_fist()
 	test_style_switch_restores_uses()
@@ -31,7 +31,7 @@ func test_uses_init_and_tempo() -> void:
 	var p := sim.get_unit("player")
 	assert(p.weapon_uses_left > 0, "開戰應有武器次數")
 	assert(p.weapon_uses_left == p.weapon_uses_max, "次數應滿")
-	assert(not p.bare_fisted, "不應一開始赤手")
+	assert(not p.bare_fisted, "不應一開始空手")
 	print("  ok - 初始化與攻速對比")
 
 
@@ -48,21 +48,21 @@ func test_consume_to_bare_fist() -> void:
 		if kind == "bare_fist":
 			bare_ev["hit"] = true
 	)
-	## 直接耗盡（最後一擊仍持武；確保下一動才赤手）
+	## 直接耗盡（最後一擊仍持武；確保下一動才空手）
 	for _i in range(max_u):
 		sim._consume_weapon_use(p)
 	assert(p.weapon_uses_left == 0, "剩餘 0")
 	assert(not p.bare_fisted, "扣到 0 當下仍持武（最後一擊）")
 	sim._ensure_armed_or_bare(p)
 	assert(bool(bare_ev["hit"]), "應發出 bare_fist 事件")
-	assert(p.bare_fisted, "下一動應赤手")
-	assert(p.atk < armed, "赤手攻擊應下降")
-	assert(p.weapon_class == "fist", "赤手風姿用拳")
-	assert(not p.can_skill, "赤手不可放武器技")
+	assert(p.bare_fisted, "下一動應空手")
+	assert(p.atk < armed, "空手攻擊應下降")
+	assert(p.weapon_class == "fist", "空手風姿用拳")
+	assert(not p.can_skill, "空手不可放武器技")
 	## 再耗不應崩潰
 	sim._consume_weapon_use(p)
-	assert(p.bare_fisted, "赤手中再揮仍赤手")
-	print("  ok - 耗盡進赤手")
+	assert(p.bare_fisted, "空手中再揮仍空手")
+	print("  ok - 耗盡進空手")
 
 
 func test_style_switch_restores_uses() -> void:
@@ -73,13 +73,13 @@ func test_style_switch_restores_uses() -> void:
 	var p := sim.get_unit("player")
 	p.weapon_uses_left = 0
 	sim._enter_bare_fist(p)
-	assert(p.bare_fisted, "預置赤手")
+	assert(p.bare_fisted, "預置空手")
 	assert(sim.switch_soul_style("dagger"), "切換應成功")
-	assert(not p.bare_fisted, "換武應離開赤手")
+	assert(not p.bare_fisted, "換武應離開空手")
 	assert(p.weapon_class == "dagger", "應為匕首")
 	assert(p.weapon_uses_left == p.weapon_uses_max, "新武器次數應重置")
-	## 無 SkillSystem 灌招時 can_skill 可能仍 false（嚴格綁定無此線技）——重點是離開赤手
-	print("  ok - 切換武器欄恢復次數／離開赤手")
+	## 無 SkillSystem 灌招時 can_skill 可能仍 false（嚴格綁定無此線技）——重點是離開空手
+	print("  ok - 切換武器欄恢復次數／離開空手")
 
 
 func test_bare_fist_blocks_skill() -> void:
@@ -90,10 +90,10 @@ func test_bare_fist_blocks_skill() -> void:
 	var p := sim.get_unit("player")
 	p.rage = 100.0
 	sim._enter_bare_fist(p)
-	## 模擬 ATB 滿要行動：赤手即使滿怒也不該進 CAST
+	## 模擬 ATB 滿要行動：空手即使滿怒也不該進 CAST
 	p.atb = 100.0
 	p.state = 0  ## IDLE
 	## 呼叫內部選招路徑：用 _try_act 或 tick
 	## 直接檢查條件與 _start_action 等價邏輯
-	assert(p.bare_fisted and p.rage >= 100.0 and not p.can_skill, "赤手滿怒仍 can_skill=false")
-	print("  ok - 赤手擋技能")
+	assert(p.bare_fisted and p.rage >= 100.0 and not p.can_skill, "空手滿怒仍 can_skill=false")
+	print("  ok - 空手擋技能")

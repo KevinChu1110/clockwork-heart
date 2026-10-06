@@ -53,7 +53,6 @@ signal battle_finished(won: bool)
 @onready var countdown_sub: Label = %CountdownSub
 @onready var telegraph: ColorRect = %TelegraphFlash
 @onready var size_compare: Control = %SizeCompare
-var btn_flee: Button = null
 @onready var player_body: TextureRect = $Arena/PlayerSlot/PlayerBody
 @onready var enemy_body: TextureRect = $Arena/EnemySlot/EnemyBody
 @onready var arena: HBoxContainer = $Arena
@@ -72,7 +71,16 @@ var _revived_by_ad: bool = false
 var _dummy_settlement_dialog: Control = null
 var _victory_settlement_dialog: Control = null
 var _colossus_exp_gain: int = 0
-var _in_parry_slowmo: bool = false
+var _in_slowmo: bool = false
+## 換武停一拍（秒，真實時間）；期間 sim 不前進
+const SWAP_BEAT_SEC := 0.45
+var _beat_hold_left: float = 0.0
+## 部位破壞慢動作：0.4 秒、時間流速 0.3（任務書 §5 break）
+const BREAK_SLOWMO_SEC := 0.4
+const BREAK_SLOWMO_SCALE := 0.3
+## Boss 部位將破時的 warn 只響一次（part id → true）
+const PART_WARN_RATIO := 0.25
+var _part_warned: Dictionary = {}
 var _player_home: Vector2
 var _enemy_home: Vector2
 var _player_race: String = ""
@@ -112,11 +120,7 @@ const WEAPON_KEYS: PackedStringArray = ["Z", "X", "C"]
 ## 右手拇指熱區（Product Lock §5.1 第 4 項）。不是虛擬搖桿。
 const THUMB_MIN := 50
 var _thumb_pad: Control
-var _btn_attack: Button
-var _btn_skill: Button
-var _btn_switch: Button
 var _btn_pause: Button
-var _btn_lock: Button
 var _tempt_card: Control
 var _tempt_close: Button
 var _overlay_key: String = ""
@@ -124,21 +128,6 @@ var _coach: Label
 var _coach_timer: float = 0.0
 var _hud_styled: bool = false
 var _log_panel: PanelContainer
-## 戰鬥 HUD 五槽機芯色階點相關
-const CORE_HUD_SLOTS: Array[String] = [
-	"mainspring",
-	"chassis",
-	"escapement",
-	"gear_train",
-	"soul_core",
-]
-var _core_dots_bar: HBoxContainer = null
-var _core_dot_buttons: Dictionary = {}
-var _core_dot_indicators: Dictionary = {}
-var _core_dot_popover: PanelContainer = null
-var _core_dot_popover_label: Label = null
-var _core_dot_popover_timer: Timer = null
-var _active_core_dot_slot: String = ""
 
 ## 雷歐旗艦部位血條
 var _part_bars: Dictionary = {}  ## id -> ProgressBar
@@ -226,121 +215,6 @@ func _style_round_thumb_btn(b: Button, bg_color: Color, text_color: Color, outli
 	b.add_theme_stylebox_override("hover", sb_hover)
 	b.add_theme_stylebox_override("pressed", sb_pressed)
 	b.add_theme_stylebox_override("focus", sb_hover)
-
-
-func _style_thumb_attack_btn(is_parry: bool) -> void:
-	if _btn_attack == null or not is_instance_valid(_btn_attack):
-		return
-	var huninn_bold := _get_huninn_bold_font()
-	if huninn_bold:
-		_btn_attack.add_theme_font_override("font", huninn_bold)
-
-	var normal_sb := StyleBoxFlat.new()
-	var hover_sb := StyleBoxFlat.new()
-	var pressed_sb := StyleBoxFlat.new()
-
-	normal_sb.border_color = Color("#1F1A3A")
-	normal_sb.set_border_width_all(3)
-	normal_sb.border_width_bottom = 6  ## 立體果凍厚底 6px
-	normal_sb.set_corner_radius_all(46)  ## 大圓普攻 46px 完美圓角
-	normal_sb.content_margin_left = 6
-	normal_sb.content_margin_right = 6
-	normal_sb.content_margin_top = 6
-	normal_sb.content_margin_bottom = 10
-
-	hover_sb.border_color = Color("#1F1A3A")
-	hover_sb.set_border_width_all(3)
-	hover_sb.border_width_bottom = 6
-	hover_sb.set_corner_radius_all(46)
-	hover_sb.content_margin_left = 6
-	hover_sb.content_margin_right = 6
-	hover_sb.content_margin_top = 6
-	hover_sb.content_margin_bottom = 10
-
-	pressed_sb.border_color = Color("#1F1A3A")
-	pressed_sb.set_border_width_all(3)
-	pressed_sb.border_width_bottom = 2  ## 按壓下陷立體反饋
-	pressed_sb.set_corner_radius_all(46)
-	pressed_sb.content_margin_left = 6
-	pressed_sb.content_margin_right = 6
-	pressed_sb.content_margin_top = 10
-	pressed_sb.content_margin_bottom = 6
-
-	if is_parry:
-		## 巨偶蓄力格擋窗：多巴胺暖橘厚底果凍反饋（實體厚底陰影）
-		normal_sb.bg_color = Color("#FFA010")
-		normal_sb.shadow_color = Color(0.85, 0.35, 0.05, 0.8)
-		normal_sb.shadow_size = 0  ## 實體 3D 擠出厚底
-		normal_sb.shadow_offset = Vector2(0, 5)
-
-		hover_sb.bg_color = Color(1.0, 0.65, 0.22, 1.0)
-		hover_sb.shadow_color = Color(0.9, 0.45, 0.1, 0.9)
-		hover_sb.shadow_size = 0
-		hover_sb.shadow_offset = Vector2(0, 5)
-
-		pressed_sb.bg_color = Color(0.90, 0.42, 0.06, 1.0)
-		pressed_sb.shadow_color = Color(0.6, 0.25, 0.05, 0.5)
-		pressed_sb.shadow_size = 0
-		pressed_sb.shadow_offset = Vector2(0, 2)
-	else:
-		## 普攻按鈕：多巴胺蜜糖金黃厚底果凍反饋（實體厚底陰影）
-		normal_sb.bg_color = Color("#FFD028")
-		normal_sb.shadow_color = Color(0.78, 0.48, 0.05, 0.85)  ## 金琥珀實體 3D 厚底
-		normal_sb.shadow_size = 0  ## 實體厚底擠出
-		normal_sb.shadow_offset = Vector2(0, 5)
-
-		hover_sb.bg_color = Color(1.0, 0.88, 0.28, 1.0)
-		hover_sb.shadow_color = Color(0.82, 0.52, 0.08, 0.9)
-		hover_sb.shadow_size = 0
-		hover_sb.shadow_offset = Vector2(0, 5)
-
-		pressed_sb.bg_color = Color(0.95, 0.72, 0.12, 1.0)
-		pressed_sb.shadow_color = Color(0.65, 0.38, 0.05, 0.6)
-		pressed_sb.shadow_size = 0
-		pressed_sb.shadow_offset = Vector2(0, 2)
-
-	_btn_attack.add_theme_stylebox_override("normal", normal_sb)
-	_btn_attack.add_theme_stylebox_override("hover", hover_sb)
-	_btn_attack.add_theme_stylebox_override("pressed", pressed_sb)
-	_btn_attack.add_theme_stylebox_override("focus", hover_sb)
-	_btn_attack.add_theme_color_override("font_color", Color("#1F1A3A"))
-	_btn_attack.add_theme_color_override("font_hover_color", Color("#1F1A3A"))
-	_btn_attack.add_theme_color_override("font_pressed_color", Color("#1F1A3A"))
-	_btn_attack.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
-	_btn_attack.add_theme_constant_override("outline_size", 3)
-
-
-func _update_thumb_attack_text(txt: String) -> void:
-	if _btn_attack == null or not is_instance_valid(_btn_attack):
-		return
-	var loc := ContentLoc.locale()
-	var is_parry := txt == _t("發條格擋") or txt.contains("Parry") or txt.contains("パリィ") or txt.contains("패링") or txt.contains("Parada")
-	_style_thumb_attack_btn(is_parry)
-	_btn_attack.custom_minimum_size = Vector2(92, 92)
-	_btn_attack.size = Vector2(92, 92)
-	if is_parry:
-		_btn_attack.add_theme_constant_override("line_spacing", 2)
-		if loc == "en":
-			_btn_attack.text = "Windup\nParry"
-			_btn_attack.add_theme_font_size_override("font_size", 15)
-		elif loc == "es":
-			_btn_attack.text = "Parada de\nCuerda"
-			_btn_attack.add_theme_font_size_override("font_size", 14)
-		elif loc == "ja":
-			_btn_attack.text = "ぜんまい\nパリィ"
-			_btn_attack.add_theme_font_size_override("font_size", 15)
-		elif loc == "ko":
-			_btn_attack.text = "태엽\n패링"
-			_btn_attack.add_theme_font_size_override("font_size", 15)
-		else:
-			_btn_attack.text = txt
-			_btn_attack.add_theme_font_size_override("font_size", 16)
-	else:
-		_btn_attack.custom_minimum_size = Vector2(92, 92)
-		_btn_attack.size = Vector2(92, 92)
-		_btn_attack.autowrap_mode = TextServer.AUTOWRAP_OFF
-		_btn_attack.text = txt
-		_btn_attack.add_theme_font_size_override("font_size", 18)
 
 
 ## 原作互剋盤提示（R2 §2）：剋制純靠數值互抵，提示玩家換裝
@@ -478,10 +352,7 @@ func setup(mode: String) -> void:
 	sim.battle_ended.connect(_on_end)
 	var p: BattleUnit = sim.get_unit("player")
 	if p:
-		if GameState.player_name in ["", "小白", "Xiaobai", "シロ", "시로", "Blanco"]:
-			p.display_name = ContentLoc.text("ui", "小白")
-		else:
-			p.display_name = ContentLoc.text("ui", GameState.player_name)
+		p.display_name = _hero_display_name()
 	_refresh_hud()
 	_ensure_coach()
 	AudioManager.battle_start(_mode)
@@ -499,32 +370,23 @@ func setup(mode: String) -> void:
 		])
 		_flash_coach(_t("這是對方留下的打法，不是即時對戰。"), 2.8)
 	_flash_coach(_mode_coach_intro(mode), 3.2)
-	_append_trans_log("[color=#8cf]右側拇指：攻擊／技能／換武／鎖定／暫停／逃離。[/color]")
 	if GameState.ng_plus > 0:
 		_append_trans_log("[color=#c8f]黑鏽迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]", [
 			GameState.ng_plus, ng_m
 		])
-		_flash_coach(_t("二周目：敵人更硬，空檔更窄。一樣等綠了再擋。"), 2.5)
+		_flash_coach(_t("二周目：敵人更硬，空檔更窄。"), 2.5)
 	if GameState.stain_flame:
 		_append_trans_log("[color=#a88]沾焰：刃上有一層不肯散的灰。攻擊略升。[/color]")
 	if mode == "leo":
 		_append_trans_log("雷歐：渺小的兔子……也想挑戰獅衛之王？")
-		_append_dual_log(
-			"[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後按 J 跳開[/color]",
-			"[color=#fa6]王者斬要擋，擋住就能反擊 · 火圈亮起後點閃避跳開[/color]"
-		)
 		parry_hint.text = _default_parry_hint_text()
-		_flash_coach(_t("先鎖盾磨掉，防禦會降。盔可破，但牠會暴。"), 3.6)
+		_flash_coach(_t("盾破了防禦會降；盔破了牠會暴。"), 3.6)
 	elif mode == "fog":
 		_append_trans_log("白霧：嘻嘻～真的假的，你分得清嗎？")
 		_append_trans_log("[color=#8cf]分身多 · 本體發白才打得中 · 砍幻影會反咬、變慢[/color]")
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "demon":
 		_append_trans_log("停擺核：那就來——用你的微末，撞我的千年。")
-		_append_dual_log(
-			"[color=#c8f]黑鏽必殺必擋 · 時鐘到就按 J · 半血時記得選『我拒絕』[/color]",
-			"[color=#c8f]黑鏽必殺必擋 · 時鐘到就點閃避 · 半血時記得選『我拒絕』[/color]"
-		)
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "abo":
 		_append_trans_log("阿波：來。打我的架勢——用拳，不是用嘴。")
@@ -532,17 +394,9 @@ func setup(mode: String) -> void:
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "falcon":
 		_append_trans_log("疾影：把發條最鬆的送來了？眼睛，跟得上我嗎？")
-		_append_dual_log(
-			"[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起按 J[/color]",
-			"[color=#8f8]牠停下那一拍才吃滿傷害 · 風聲響起點閃避[/color]"
-		)
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "boar":
 		_append_trans_log("石拳：……把發條最鬆的送來了？還站著？那就接下這一拳——")
-		_append_dual_log(
-			"[color=#c96]衝來按 J 硬碰，岩甲會裂 · 落石按 J[/color]",
-			"[color=#c96]衝來點閃避硬碰，岩甲會裂 · 落石點閃避[/color]"
-		)
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "wrath":
 		_append_trans_log("無臉：…………（焰在顫）")
@@ -558,10 +412,6 @@ func setup(mode: String) -> void:
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "chrono":
 		_append_trans_log("時牢：倒數的焰在腳下盤成環。")
-		_append_dual_log(
-			"[color=#a8f]裂縫·時牢：炸彈窗按 J 拆除 · 落岩進安全[/color]",
-			"[color=#a8f]裂縫·時牢：炸彈窗點閃避拆除 · 落岩進安全[/color]"
-		)
 		parry_hint.text = _default_parry_hint_text()
 	elif mode == "training_dummy":
 		_append_trans_log("木人樁：靜止不動，供武者試招。")
@@ -571,11 +421,7 @@ func setup(mode: String) -> void:
 	## 有多部位的 Boss：通用 HUD／教學（白霧／石像除外——Tab 另有用途）
 	if _boss_has_parts():
 		_ensure_part_hud()
-		if _part_lock_enabled():
-			_append_dual_log(
-				"[color=#fc0]部位破壞：Tab 鎖定部位／本體 · 破甲降防 · 破冠／角會激怒[/color]",
-				"[color=#fc0]部位破壞：點鎖定部位／本體 · 破甲降防 · 破冠／角會激怒[/color]"
-			)
+		_append_trans_log("[color=#fc0]本體血量壓到七成、四成時，部位會自動破[/color]")
 
 
 static func _style_field_tag(lbl: Label, text_col: Color, shrink_mode: int = Control.SIZE_SHRINK_CENTER) -> void:
@@ -767,21 +613,6 @@ func _apply_hud_chrome() -> void:
 		banner.add_theme_font_size_override("font_size", 44)
 		banner.pivot_offset = banner.size * 0.5
 
-	if btn_flee:
-		UiStyle.style_button(btn_flee, false)
-		ResponsiveUi.apply_core_button(btn_flee)
-		btn_flee.text = Loc.t("battle.flee")
-		if _mode == "training_dummy":
-			btn_flee.disabled = false
-			btn_flee.text = _t("結束試招")
-			btn_flee.tooltip_text = ""
-		elif _mode in NO_FLEE_MODES:
-			btn_flee.disabled = true
-			btn_flee.tooltip_text = _t("這一戰逃不掉。")
-		else:
-			btn_flee.disabled = false
-			btn_flee.tooltip_text = ""
-
 	## 技能名橫幅（獨立於格擋 banner）
 	if _skill_banner == null:
 		_skill_banner = Label.new()
@@ -826,7 +657,6 @@ func _apply_hud_chrome() -> void:
 	_ensure_coach()
 	_install_touch_controls()
 	_ensure_thumb_hud()
-	_ensure_core_dots_hud()
 
 
 func _apply_safe_hud() -> void:
@@ -836,11 +666,6 @@ func _apply_safe_hud() -> void:
 		bars.offset_left = m.x + 16.0
 		bars.offset_top = m.y + 8.0
 		bars.offset_right = -(m.z + 80.0)
-	if btn_flee and btn_flee.get_parent() != _thumb_pad:
-		btn_flee.offset_right = -m.z
-		btn_flee.offset_bottom = -m.w
-		btn_flee.offset_left = -114.0 - m.z
-		btn_flee.offset_top = -ResponsiveUi.BTN_H - 8.0 - m.w
 	if _log_panel:
 		_log_panel.offset_left = m.x + 24.0
 		_log_panel.offset_right = m.x + 380.0
@@ -1085,7 +910,7 @@ func _ensure_weapon_dock() -> void:
 		var cell := PanelContainer.new()
 		cell.name = "WeaponCell%d" % (i + 1)
 		cell.custom_minimum_size = Vector2(44, 44)
-		cell.mouse_filter = Control.MOUSE_FILTER_STOP
+		cell.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 		var csb := StyleBoxFlat.new()
 		csb.bg_color = Color("#FFFDF8")
@@ -1121,7 +946,6 @@ func _ensure_weapon_dock() -> void:
 		lab.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		hbox.add_child(lab)
 
-		cell.gui_input.connect(_on_weapon_cell_gui.bind(i))
 		_weapon_dock.add_child(cell)
 		_weapon_dock_cells.append(cell)
 
@@ -1200,7 +1024,7 @@ func _refresh_weapon_dock() -> void:
 		csb.set_corner_radius_all(10)
 
 		if is_bare and i == active_slot:
-			# 赤手狀態
+			# 空手狀態
 			cell.custom_minimum_size = Vector2(88, 44)
 			csb.bg_color = Color("#EDEBE6")
 			csb.border_color = Color("#A8A39D")
@@ -1213,7 +1037,7 @@ func _refresh_weapon_dock() -> void:
 			icon.modulate = Color(0.8, 0.5, 0.3)
 
 			lab.visible = true
-			lab.text = _t("赤手")
+			lab.text = _t("空手")
 			lab.add_theme_color_override("font_color", Color("#7E7A75"))
 		elif is_current:
 			# 當前武器名與剩餘次數
@@ -1273,309 +1097,11 @@ func _refresh_weapon_dock() -> void:
 				icon.modulate = Color.WHITE
 
 
-class CoreDotIndicator extends Control:
-	var is_empty: bool = true
-	var dot_color: Color = Color.WHITE
-
-	func _draw() -> void:
-		var center := size * 0.5
-		var radius := 5.0
-		if is_empty:
-			# 米灰色空心點：外圈米灰，中間空心透出底色
-			var ring_color := Color("#A8A39D")
-			draw_arc(center, radius, 0.0, TAU, 32, ring_color, 2.0, true)
-		else:
-			# 實心點＝該件色階色，帶 1.2px 深藍紫描邊與多巴胺微高光點
-			draw_circle(center, radius + 1.2, Color("#1F1A3A"))
-			draw_circle(center, radius, dot_color)
-			var hl_pos := center + Vector2(-1.4, -1.4)
-			draw_circle(hl_pos, 1.2, Color(1, 1, 1, 0.6))
-
-
-func _apply_core_dot_button_style(btn: Button) -> void:
-	btn.flat = true
-	var sb_n := StyleBoxFlat.new()
-	sb_n.bg_color = Color("#FFFDF8")
-	sb_n.border_color = Color("#1F1A3A")
-	sb_n.set_border_width_all(2)
-	sb_n.border_width_bottom = 4
-	sb_n.set_corner_radius_all(8)
-	sb_n.content_margin_left = 3
-	sb_n.content_margin_right = 3
-	sb_n.content_margin_top = 3
-	sb_n.content_margin_bottom = 3
-
-	var sb_h := sb_n.duplicate() as StyleBoxFlat
-	sb_h.bg_color = Color("#FFFFFF")
-	sb_h.border_color = Color("#FFA010")
-
-	var sb_p := sb_n.duplicate() as StyleBoxFlat
-	sb_p.bg_color = Color("#FFF5E6")
-	sb_p.border_width_bottom = 2
-	sb_p.content_margin_top = 5
-	sb_p.content_margin_bottom = 1
-
-	btn.add_theme_stylebox_override("normal", sb_n)
-	btn.add_theme_stylebox_override("hover", sb_h)
-	btn.add_theme_stylebox_override("pressed", sb_p)
-	btn.add_theme_stylebox_override("focus", sb_n)
-
-
-func _ensure_core_dots_hud() -> void:
-	if _core_dots_bar != null and is_instance_valid(_core_dots_bar):
-		_refresh_core_dots_hud()
-		return
-	var side_bars := get_node_or_null("SideBars") as HBoxContainer
-	if side_bars == null:
-		return
-
-	if side_bars.has_node("CoreDotsBar"):
-		_core_dots_bar = side_bars.get_node("CoreDotsBar") as HBoxContainer
-		_core_dot_buttons.clear()
-		_core_dot_indicators.clear()
-		for sid in CORE_HUD_SLOTS:
-			var btn := _core_dots_bar.get_node_or_null("CoreSlotBtn_" + sid) as Button
-			if btn:
-				_core_dot_buttons[sid] = btn
-				var dot := btn.find_child("DotIndicator", true, false) as CoreDotIndicator
-				if dot:
-					_core_dot_indicators[sid] = dot
-		_ensure_core_dot_popover()
-		_refresh_core_dots_hud()
-		return
-
-	_core_dots_bar = HBoxContainer.new()
-	_core_dots_bar.name = "CoreDotsBar"
-	_core_dots_bar.alignment = BoxContainer.ALIGNMENT_CENTER
-	_core_dots_bar.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
-	_core_dots_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_core_dots_bar.add_theme_constant_override("separation", 6)
-	side_bars.add_child(_core_dots_bar)
-
-	var p_side := get_node_or_null("SideBars/PlayerSide") as Control
-	if p_side:
-		var p_idx := p_side.get_index()
-		side_bars.move_child(_core_dots_bar, p_idx + 1)
-
-	_core_dot_buttons.clear()
-	_core_dot_indicators.clear()
-
-	var SDB = load("res://scripts/art/sprite_db.gd") if ResourceLoader.exists("res://scripts/art/sprite_db.gd") else null
-
-	for slot_id in CORE_HUD_SLOTS:
-		var btn := Button.new()
-		btn.name = "CoreSlotBtn_" + slot_id
-		btn.custom_minimum_size = Vector2(48, 50)
-		btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-		btn.focus_mode = Control.FOCUS_NONE
-		_apply_core_dot_button_style(btn)
-
-		var vbox := VBoxContainer.new()
-		vbox.name = "Content"
-		vbox.alignment = BoxContainer.ALIGNMENT_CENTER
-		vbox.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		vbox.add_theme_constant_override("separation", 2)
-		vbox.set_anchors_preset(Control.PRESET_FULL_RECT)
-		btn.add_child(vbox)
-
-		var icon_rect := TextureRect.new()
-		icon_rect.name = "SlotIcon"
-		icon_rect.custom_minimum_size = Vector2(24, 24)
-		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		if SDB and SDB.has_method("core_slot_icon"):
-			var tex: Texture2D = SDB.call("core_slot_icon", slot_id)
-			if tex:
-				icon_rect.texture = tex
-		vbox.add_child(icon_rect)
-
-		var dot := CoreDotIndicator.new()
-		dot.name = "DotIndicator"
-		dot.custom_minimum_size = Vector2(14, 14)
-		dot.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-		dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		vbox.add_child(dot)
-
-		btn.pressed.connect(_on_core_dot_pressed.bind(slot_id, btn))
-		_core_dots_bar.add_child(btn)
-		_core_dot_buttons[slot_id] = btn
-		_core_dot_indicators[slot_id] = dot
-
-	_ensure_core_dot_popover()
-	_refresh_core_dots_hud()
-
-
-func _ensure_core_dot_popover() -> void:
-	if _core_dot_popover != null and is_instance_valid(_core_dot_popover):
-		return
-	if has_node("CoreDotPopover"):
-		_core_dot_popover = get_node("CoreDotPopover") as PanelContainer
-		_core_dot_popover_label = _core_dot_popover.get_node_or_null("PopoverLabel") as Label
-		return
-	_core_dot_popover = PanelContainer.new()
-	_core_dot_popover.name = "CoreDotPopover"
-	_core_dot_popover.visible = false
-	_core_dot_popover.z_index = 50
-	_core_dot_popover.mouse_filter = Control.MOUSE_FILTER_STOP
-
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color("#FFFDF8")
-	sb.border_color = Color("#1F1A3A")
-	sb.set_border_width_all(2)
-	sb.border_width_bottom = 4
-	sb.set_corner_radius_all(10)
-	sb.content_margin_left = 14
-	sb.content_margin_right = 14
-	sb.content_margin_top = 6
-	sb.content_margin_bottom = 6
-	sb.shadow_color = Color(0, 0, 0, 0.25)
-	sb.shadow_size = 4
-	sb.shadow_offset = Vector2(0, 2)
-	_core_dot_popover.add_theme_stylebox_override("panel", sb)
-
-	_core_dot_popover_label = Label.new()
-	_core_dot_popover_label.name = "PopoverLabel"
-	_core_dot_popover_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_core_dot_popover_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	_core_dot_popover_label.add_theme_color_override("font_color", Color("#1F1A3A"))
-	_core_dot_popover_label.add_theme_font_size_override("font_size", 14)
-	var huninn: Font = null
-	if ResourceLoader.exists("res://assets/fonts/jf-openhuninn-2.1.ttf"):
-		huninn = load("res://assets/fonts/jf-openhuninn-2.1.ttf") as Font
-	if huninn:
-		_core_dot_popover_label.add_theme_font_override("font", huninn)
-	_core_dot_popover.add_child(_core_dot_popover_label)
-
-	add_child(_core_dot_popover)
-
-
-func _on_core_dot_pressed(slot_id: String, btn: Button) -> void:
-	if _core_dot_popover == null:
-		_ensure_core_dot_popover()
-	if _active_core_dot_slot == slot_id and _core_dot_popover.visible:
-		_hide_core_dot_popover()
-		return
-
-	_active_core_dot_slot = slot_id
-	_update_core_dot_popover_content(slot_id)
-	_position_core_dot_popover(btn)
-	_core_dot_popover.visible = true
-
-	var AM = Engine.get_singleton("AudioManager") if Engine.has_singleton("AudioManager") else null
-	if AM == null and has_node("/root/AudioManager"):
-		AM = get_node("/root/AudioManager")
-	if AM and AM.has_method("play_sfx"):
-		AM.call("play_sfx", "ui")
-
-	if _core_dot_popover_timer == null:
-		_core_dot_popover_timer = Timer.new()
-		_core_dot_popover_timer.name = "PopoverTimer"
-		_core_dot_popover_timer.one_shot = true
-		_core_dot_popover_timer.timeout.connect(_hide_core_dot_popover)
-		add_child(_core_dot_popover_timer)
-	_core_dot_popover_timer.start(3.0)
-
-
-func _hide_core_dot_popover() -> void:
-	if _core_dot_popover and is_instance_valid(_core_dot_popover):
-		_core_dot_popover.visible = false
-	_active_core_dot_slot = ""
-	if _core_dot_popover_timer and is_instance_valid(_core_dot_popover_timer):
-		_core_dot_popover_timer.stop()
-
-
-func _position_core_dot_popover(btn: Button) -> void:
-	if _core_dot_popover == null or btn == null:
-		return
-	_core_dot_popover.reset_size()
-	var pop_sz := _core_dot_popover.size
-	var btn_pos := btn.global_position
-	var btn_sz := btn.size
-	var target_x := btn_pos.x + (btn_sz.x - pop_sz.x) * 0.5
-	target_x = clampf(target_x, 16.0, 1280.0 - pop_sz.x - 16.0)
-	var target_y := btn_pos.y + btn_sz.y + 6.0
-	_core_dot_popover.global_position = Vector2(target_x, target_y)
-
-
-func _update_core_dot_popover_content(slot_id: String) -> void:
-	if _core_dot_popover_label == null:
-		return
-	_core_dot_popover_label.text = _get_core_slot_info_text(slot_id)
-
-
-func _get_core_slot_info_text(slot_id: String) -> String:
-	var CoreSystem = load("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
-	var slot_zh: String = CoreSystem.get_slot_name(slot_id) if CoreSystem else slot_id
-	var slot_loc: String = _t(slot_zh)
-
-	var part: Dictionary = {}
-	if CoreSystem and CoreSystem.has_method("get_equipped_part"):
-		part = CoreSystem.call("get_equipped_part", slot_id)
-	elif GameState != null and "core_slots" in GameState and GameState.core_slots.has(slot_id):
-		part = GameState.core_slots.get(slot_id, {})
-
-	if not part.is_empty() and str(part.get("tier", "")) != "":
-		var raw_tier_name: String = str(part.get("tier_name", ""))
-		if raw_tier_name == "" and CoreSystem:
-			var tid: String = str(part.get("tier", "white"))
-			raw_tier_name = str(CoreSystem.TIER_NAMES.get(tid, tid))
-		var tier_loc: String = _t(raw_tier_name + "階")
-		return "%s · %s" % [slot_loc, tier_loc]
-	else:
-		var unequip_loc: String = _t("未裝備")
-		return "%s · %s" % [slot_loc, unequip_loc]
-
-
-func _refresh_core_dots_hud() -> void:
-	if _core_dots_bar == null or not is_instance_valid(_core_dots_bar):
-		_ensure_core_dots_hud()
-	if _core_dots_bar == null:
-		return
-
-	var CoreSystem = load("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
-
-	for slot_id in CORE_HUD_SLOTS:
-		var btn: Button = _core_dot_buttons.get(slot_id, null)
-		var dot: CoreDotIndicator = _core_dot_indicators.get(slot_id, null)
-		if btn == null or dot == null:
-			continue
-
-		var part: Dictionary = {}
-		if CoreSystem and CoreSystem.has_method("get_equipped_part"):
-			part = CoreSystem.call("get_equipped_part", slot_id)
-		elif GameState != null and "core_slots" in GameState and GameState.core_slots.has(slot_id):
-			part = GameState.core_slots.get(slot_id, {})
-
-		var has_part: bool = (not part.is_empty() and str(part.get("tier", "")) != "")
-		var slot_icon: TextureRect = btn.find_child("SlotIcon", true, false) as TextureRect
-
-		if has_part:
-			var tid: String = str(part.get("tier", "white"))
-			var tier_color: Color = CoreSystem.call("get_tier_color", tid) if CoreSystem else Color.WHITE
-			dot.is_empty = false
-			dot.dot_color = tier_color
-			if slot_icon:
-				slot_icon.modulate = Color.WHITE
-		else:
-			dot.is_empty = true
-			dot.dot_color = Color("#A8A39D")
-			if slot_icon:
-				slot_icon.modulate = Color(0.75, 0.73, 0.70, 0.45)
-
-		dot.queue_redraw()
-		btn.tooltip_text = _get_core_slot_info_text(slot_id)
-
-	if _core_dot_popover != null and _core_dot_popover.visible and _active_core_dot_slot != "":
-		_update_core_dot_popover_content(_active_core_dot_slot)
-		var active_btn: Button = _core_dot_buttons.get(_active_core_dot_slot, null)
-		if active_btn:
-			_position_core_dot_popover(active_btn)
-
-
+## 機芯色階點已移出戰鬥 HUD（任務書：戰鬥只留血條／怒氣／武器／部位條／跳字／暫停）。
+## 機芯資料仍在 CoreSystem／GameState，這裡不再建任何可點按鈕或小窗。
+## 保留公開入口給舊截圖腳本呼叫，什麼都不做。
 func refresh_core_dots_hud() -> void:
-	_refresh_core_dots_hud()
+	pass
 
 
 func _ensure_coach() -> void:
@@ -1601,43 +1127,26 @@ func _ensure_coach() -> void:
 
 
 func _mode_coach_intro(mode: String) -> String:
+	## 自動回合：只講這場在看什麼，不教按鍵。
 	match mode:
 		"leo":
-			return _battle_hint_text(
-				"提示：倒數變綠立刻按 J 格擋！火圈亮起後再按 J 躍出",
-				"提示：倒數變綠立刻點閃避格擋！火圈亮起後再點閃避躍出"
-			)
+			return _t("王者斬蓄力時會自動彈開 · 看部位條")
 		"fog":
-			return _battle_hint_text(
-				"提示：Tab 鎖本體 · 本體發白才砍 · 打錯幻影會痛",
-				"提示：點鎖定鎖本體 · 本體發白才砍 · 打錯幻影會痛"
-			)
+			return _t("本體發白時才打得中")
 		"abo":
-			return _t("用技能打散架勢比較快 · 散開後全力打")
+			return _t("架勢散開時傷害吃滿")
 		"falcon":
-			return _battle_hint_text(
-				"提示：別追殘影 · 等停拍再打 · 風切預告按 J",
-				"提示：別追殘影 · 等停拍再打 · 風切預告點閃避"
-			)
+			return _t("牠停下那一拍才吃滿傷害")
 		"boar":
-			return _battle_hint_text(
-				"提示：衝鋒時對撞（J）剝甲 · 落岩進安全區",
-				"提示：衝鋒時對撞點閃避剝甲 · 落岩進安全區"
-			)
+			return _t("衝鋒對撞會剝掉岩甲")
 		"demon":
-			return _battle_hint_text(
-				"提示：必殺與時鐘都靠 J · 血量階段記得「我拒絕」",
-				"提示：必殺與時鐘都點閃避 · 血量階段記得「我拒絕」"
-			)
+			return _t("半血時記得選「我拒絕」")
 		"wolf":
 			return _t("提示：自動互砍 · 怒氣滿會放招 · 撐住就好")
 		"training_dummy":
 			return _t("木人試招：木人不會還手 · 測試出招節奏與技能傷害 · 隨時可按右上結束")
 		_:
-			return _battle_hint_text(
-				"時機窗：按 J 或點畫面",
-				"時機窗：點閃避"
-			)
+			return _t("自動戰鬥 · 次數用完會自動換武")
 
 
 func _flash_coach(text: String, sec: float = 2.4) -> void:
@@ -2256,7 +1765,7 @@ func _layout_battle_equipment_overlays() -> void:
 			_battle_armor.z_index = 1
 		else:
 			_battle_armor.visible = false
-	## 武器：右前手；戰鬥中跟當前武器欄／赤手走（頁遊剪影）
+	## 武器：右前手；戰鬥中跟當前武器欄／空手走（頁遊剪影）
 	if _battle_weapon and is_instance_valid(_battle_weapon):
 		var wtex: Texture2D = null
 		var p_live: BattleUnit = sim.get_unit("player") if sim else null
@@ -2447,62 +1956,27 @@ func _process(delta: float) -> void:
 			arena.position = Vector2.ZERO
 	if sim == null or _ended:
 		return
+	## 換武那一拍：戰鬥停一下讓玩家看清楚換了什麼（動畫照跑、sim 不走）
+	if _beat_hold_left > 0.0:
+		_beat_hold_left = maxf(0.0, _beat_hold_left - delta)
+		_refresh_hud()
+		return
 	sim.step(delta)
+	_auto_react()
 	_refresh_hud()
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
-		if _core_dot_popover != null and _core_dot_popover.visible:
-			_hide_core_dot_popover()
+	## 自動回合：戰鬥中玩家不按普攻／格擋／技能／換武／鎖定（任務書 §0、§2）。
+	## 這裡只剩誘惑彈窗的確認／取消；數字鍵快捷欄在戰鬥中由 main 擋掉。
 	if sim == null or _ended:
 		return
-	## 誘惑彈窗把 sim 暫停；Confirm／Cancel 仍要接得住（右手拇指 ✕／我拒絕）。
+	## 誘惑彈窗把 sim 暫停；Confirm／Cancel 仍要接得住（✕／我拒絕）。
 	if _tempt_layer != null and is_instance_valid(_tempt_layer) and _tempt_layer.visible:
 		if GameInput.matches(event, GameInput.CONFIRM) or GameInput.matches(event, GameInput.CANCEL):
 			_on_refuse_pressed()
 			get_viewport().set_input_as_handled()
 		return
-	if sim.sim_paused:
-		return
-	if GameInput.matches(event, GameInput.INTERACT):
-		_thumb_cycle_lock(1)
-		get_viewport().set_input_as_handled()
-		return
-	if event.is_action_pressed("ui_focus_next"):
-		## Tab：白霧切目標；其餘有部位的 Boss 切部位鎖定
-		if _mode == "fog":
-			var tid: String = sim.cycle_player_target(1)
-			if tid != "":
-				_append_log(_t("鎖定：%s") % sim.get_unit(tid).display_name)
-			get_viewport().set_input_as_handled()
-			return
-		if _part_lock_enabled():
-			sim.cycle_part_focus(1)
-			_append_log(_t("鎖定部位：%s") % sim.part_focus_label())
-			_refresh_part_focus_hint()
-			get_viewport().set_input_as_handled()
-			return
-	## 白霧戰原本把 1/2/3 拿去切鎖定目標並 set_input_as_handled()（BattleView 在樹上
-	## 比 main 深，會先吃到事件）—— 於是全遊戲最需要中途補血的一場，
-	## 快捷欄前三格（玩家最可能放藥的位置）是死的，畫面上也沒有任何一句話說明。
-	## 切目標本來就有 Tab 可以循環，數字鍵還給道具。
-	if GameInputGate.matches(event, GameInputGate.ATTACK):
-		_do_parry()
-		get_viewport().set_input_as_handled()
-		return
-	if GameInputGate.matches(event, GameInputGate.SKILL):
-		sim.trigger_fury_awakening()
-		get_viewport().set_input_as_handled()
-		return
-	if GameInputGate.matches(event, GameInputGate.SWITCH_WEAPON):
-		## 數字鍵 1–8 是快捷欄，武器欄走 SwitchWeapon（PC＝Z／X／C）。
-		var slot := GameInputGate.weapon_slot(event)
-		if slot >= 0:
-			sim.switch_weapon_slot(slot)
-		else:
-			sim.switch_weapon_slot((int(sim.weapon_bar_active) + 1) % maxi(1, sim.weapon_bars.size()))
-		get_viewport().set_input_as_handled()
 
 
 ## ── 戰鬥中的 HP 權威 ──
@@ -2626,7 +2100,6 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	_refresh_part_bars()
 	_refresh_part_focus_hint()
 	_refresh_log_display()
-	_refresh_core_dots_hud()
 	var prl := get_node_or_null("SideBars/PlayerSide/PlayerRageLabel") as Label
 	if prl:
 		prl.text = Loc.t("battle.rage")
@@ -2641,10 +2114,7 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	if sim:
 		var p: BattleUnit = sim.get_unit("player")
 		if p:
-			if GameState.player_name in ["小白", "Xiaobai", "シロ", "시로", "Blanco"]:
-				p.display_name = ContentLoc.text("ui", "小白")
-			else:
-				p.display_name = ContentLoc.text("ui", GameState.player_name)
+			p.display_name = _hero_display_name()
 		var WC = load("res://scripts/world/world_content.gd")
 		for u in sim.units.values():
 			if u is BattleUnit and u.team == BattleUnit.Team.ENEMY:
@@ -2685,24 +2155,8 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 			elif e.id in ["dummy", "training_dummy"] or _mode in ["dummy", "training_dummy"]:
 				e.display_name = _t("木人樁")
 	_refresh_hud()
-	if _btn_lock and is_instance_valid(_btn_lock):
-		_btn_lock.text = _t("鎖定")
-	if _btn_switch and is_instance_valid(_btn_switch):
-		_btn_switch.text = _t("換武")
-	if _btn_skill and is_instance_valid(_btn_skill):
-		_btn_skill.text = _t("技能")
 	if _btn_pause and is_instance_valid(_btn_pause):
 		_btn_pause.text = _t("暫停")
-	if _btn_attack and is_instance_valid(_btn_attack):
-		if _is_colossus_fight() and _is_enemy_telegraphing():
-			_update_thumb_attack_text(_t("發條格擋"))
-		else:
-			_update_thumb_attack_text(_t("攻擊"))
-	if btn_flee and is_instance_valid(btn_flee):
-		if _mode == "dummy" or _mode == "training_dummy":
-			btn_flee.text = _t("結束試招")
-		else:
-			btn_flee.text = Loc.t("battle.flee")
 
 
 ## 逃跑不走 _on_end()，戰鬥畫面直接被清掉。不在這裡交還的話，
@@ -2781,16 +2235,12 @@ func _refresh_hud() -> void:
 			status = _t(" [強化]")
 		elif p.atk_buff_left > 0.0 and p.atk_buff_mult < 1.0:
 			status = _t(" [虛弱]")
-		var uses_txt := ""
-		if p.bare_fisted:
-			uses_txt = _t(" · 赤手")
-			if status == "":
-				status = _t(" [赤手]")
-		elif p.weapon_uses_left >= 0 and p.weapon_uses_max > 0:
-			uses_txt = _t(" · 武 %d/%d") % [p.weapon_uses_left, p.weapon_uses_max]
+		## 武器名與剩餘次數只放武器欄，血條這行不再重複
+		if p.bare_fisted and status == "":
+			status = _t(" [空手]")
 		if p.fury_active and status == "":
 			status = _t(" [暴怒]")
-		player_hp_label.text = "HP %d／%d%s%s" % [p.hp, p.max_hp, status, uses_txt]
+		player_hp_label.text = "HP %d／%d%s" % [p.hp, p.max_hp, status]
 		player_rage.max_value = 100
 		player_rage.value = p.rage
 		## 怒氣將近滿／已滿／暴怒中提示
@@ -2875,8 +2325,6 @@ func _refresh_hud() -> void:
 				countdown.visible = false
 				countdown_sub.visible = false
 				telegraph.visible = false
-				if _is_colossus_fight() and _btn_attack and is_instance_valid(_btn_attack) and _btn_attack.text != _t("攻擊"):
-					_update_thumb_attack_text(_t("攻擊"))
 				if _part_lock_enabled() and not e.telegraph_active:
 					parry_hint.modulate = Color(1, 1, 1)
 					_refresh_part_focus_hint()
@@ -2988,6 +2436,8 @@ func _ensure_part_hud() -> void:
 	_focus_hint.add_theme_color_override("font_color", Color("#1F1A3A"))
 	_focus_hint.add_theme_color_override("font_outline_color", Color(1.0, 1.0, 1.0, 0.95))
 	_focus_hint.add_theme_constant_override("outline_size", 2)
+	## 自動回合不手動鎖部位：文字照寫（測試會讀），畫面上只留部位條
+	_focus_hint.visible = false
 	_part_box.add_child(_focus_hint)
 	for p in boss.parts:
 		var pid := str(p.get("id", ""))
@@ -3036,9 +2486,7 @@ func _ensure_part_hud() -> void:
 		_style_bar(bar, Color("#FFA010"), Color("#EFEAE0"))
 		row.add_child(lab)
 		row.add_child(bar)
-		row.mouse_filter = Control.MOUSE_FILTER_STOP
-		row.tooltip_text = _t("點一下鎖這個部位")
-		row.gui_input.connect(_on_part_row_gui.bind(pid))
+		row.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_part_box.add_child(row)
 		_part_bars[pid] = bar
 		_part_labels[pid] = lab
@@ -3058,8 +2506,6 @@ func _refresh_part_bars(boss: BattleUnit = null) -> void:
 		var lab: Label = _part_labels.get(pid) as Label
 		if bar == null:
 			continue
-		if bar.get_parent() is Control:
-			(bar.get_parent() as Control).tooltip_text = _t("點一下鎖這個部位")
 		bar.max_value = float(p.get("max_hp", 1))
 		bar.value = float(p.get("hp", 0))
 		var broken := bool(p.get("broken", false))
@@ -3093,8 +2539,11 @@ func _refresh_part_bars(boss: BattleUnit = null) -> void:
 		if broken:
 			bar.value = 0.0
 			bar.modulate = Color(0.45, 0.45, 0.45)
+		elif _part_warned.has(pid):
+			bar.modulate = Color(1.35, 0.85, 0.55)
 		else:
 			bar.modulate = Color.WHITE
+	_check_part_warn(boss)
 
 
 func _refresh_part_focus_hint() -> void:
@@ -3228,16 +2677,13 @@ func _update_hazard_hud() -> void:
 		countdown.text = _t("注意")
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.6, 0.25))
 		countdown_sub.text = _t("%s 即將生效… %.1fs") % [nm, sim.hazard_timer]
-		parry_hint.text = _battle_hint_text("準備：黃色「閃」出現時按 J", "準備：黃色「閃」出現時點閃避")
 		parry_hint.modulate = Color(1, 0.7, 0.4)
 	elif sim.hazard_phase == "window":
 		telegraph.visible = true
 		telegraph.color = Color(1.0, 0.9, 0.2, 0.25 + 0.1 * sin(Time.get_ticks_msec() * 0.03))
 		countdown.text = _t("閃")
 		countdown.add_theme_color_override("font_color", Color(1.0, 0.95, 0.3))
-		countdown_sub.text = _battle_hint_text("%s！現在按 J 或滑鼠  %.1fs", "%s！現在點閃避  %.1fs") % [nm, sim.hazard_timer]
-		parry_hint.text = _battle_hint_text("互動窗：按 J", "互動窗：點閃避")
-		parry_hint.modulate = Color(1, 1, 0.5)
+		countdown_sub.text = nm
 		_pulse_countdown()
 
 
@@ -3308,7 +2754,7 @@ func _update_boar_hud() -> void:
 		if win:
 			countdown.text = _t("撞")
 			countdown.add_theme_color_override("font_color", Color(1.0, 0.85, 0.3))
-			countdown_sub.text = _battle_hint_text("對撞！按 J 卸力剝岩甲  %.1fs", "對撞！點閃避卸力剝岩甲  %.1fs") % e.state_timer
+			countdown_sub.text = _t("石拳衝鋒蓄力… 準備對撞")
 			parry_hint.text = _kh(_t("現在對撞"))
 			parry_hint.modulate = Color(1, 0.9, 0.4)
 		else:
@@ -3357,77 +2803,26 @@ func _update_abo_guard_hud() -> void:
 
 
 func _update_parry_countdown(e: BattleUnit) -> void:
+	## Boss 蓄力倒數：純看的。進窗那一刻戰鬥會自動彈開（_auto_react），不提示按鍵。
 	telegraph.visible = true
 	countdown.visible = true
 	countdown_sub.visible = true
-	## 蓄力全程保持 telegraph 幀；進入格擋窗略強調
 	if e.telegraph_active:
-		if _is_colossus_fight():
-			_update_thumb_attack_text(_t("發條格擋"))
-		if e.state_timer <= BattleSim.PARRY_WINDOW:
-			if _boss_pose != "attack":
-				_set_boss_pose("telegraph")
-				## 格擋窗：微放大呼吸
-				enemy_body.scale = Vector2.ONE * (1.0 + 0.04 * sin(Time.get_ticks_msec() * 0.02))
-		else:
-			_set_boss_pose("telegraph")
-
+		_set_boss_pose("telegraph")
 	var remain: float = float(e.state_timer)
 	var in_window: bool = remain <= BattleSim.PARRY_WINDOW and remain > 0.0
-
-	## 整段前搖的「距離出手」秒數（顯示用）
-	var display_sec: float = remain
-	## 倒數桶：3 / 2 / 1 / 格擋
-	var bucket: int
-	if in_window:
-		bucket = 0
-	## 桶的邊界要照格擋窗算，不能寫死。
-	## in_window 的門檻是 PARRY_WINDOW（0.85），而 bucket=1 原本要 remain <= 0.7
-	## —— 0.85 以下早就進 in_window 分支了，所以「1」永遠不會出現，
-	## 玩家看到的是 3 → 2 →「格擋」。
-	##
-	## 順帶：太早的寬限是窗前 PARRY_EARLY_GRACE（0.35），
-	## 也就是 bucket 2 的區間剛好等於「按早了還救得回來」，
-	## bucket 3 則是「按了就揮空」。這是個很乾淨的視覺規則，值得讓它成立。
-	elif remain > BattleSim.PARRY_WINDOW + BattleSim.PARRY_EARLY_GRACE:
-		bucket = 3
-	else:
-		bucket = 2
-
-	if in_window:
-		telegraph.color = Color(0.2, 0.9, 0.35, 0.22 + 0.12 * sin(Time.get_ticks_msec() * 0.025))
-		if _is_colossus_fight():
-			countdown.text = _t("發條格擋")
-			countdown_sub.text = _battle_hint_text(_t("現在按 J 或點發條格擋！"), _t("現在點發條格擋！"))
-		else:
-			countdown.text = _t("格擋")
-			countdown_sub.text = _battle_hint_text("現在按 J 或滑鼠左鍵！", "現在點閃避！")
-		countdown.add_theme_color_override("font_color", Color(0.4, 1.0, 0.45))
-		countdown_sub.add_theme_color_override("font_color", Color(0.6, 1.0, 0.65))
-		if _parry_note_left <= 0.0:
-			parry_hint.text = _kh(_t("格擋時機！（剩餘 %.1f 秒）") % remain)
-			parry_hint.modulate = Color(0.5, 1.0, 0.5)
-		if _last_cd_bucket != 0:
-			_last_cd_bucket = 0
-			_pulse_countdown()
-	else:
-		telegraph.color = Color(1, 0.25, 0.2, 0.2 + 0.1 * sin(Time.get_ticks_msec() * 0.02))
-		countdown.text = str(bucket)
-		countdown.add_theme_color_override("font_color", Color(1, 0.85, 0.3))
-		if _is_colossus_fight():
-			countdown_sub.text = _t("巨偶蓄力中… %.1f 秒後可格擋") % maxf(0.0, remain - BattleSim.PARRY_WINDOW)
-		else:
-			countdown_sub.text = _t("王者斬蓄力中… %.1f 秒後可格擋") % maxf(0.0, remain - BattleSim.PARRY_WINDOW)
-		countdown_sub.add_theme_color_override("font_color", Color(1, 0.7, 0.55))
-		if _parry_note_left <= 0.0:
-			parry_hint.text = _kh(_t("準備：倒數到「格擋」再按"))
-			parry_hint.modulate = Color(1, 0.55, 0.45)
-		if bucket != _last_cd_bucket:
-			_last_cd_bucket = bucket
-			_pulse_countdown()
-
-	## 小字顯示精確剩餘
-	countdown_sub.text += _t("\n(出手倒數 %.1fs)") % display_sec
+	var bucket: int = 0
+	if not in_window:
+		bucket = clampi(int(ceil(remain - BattleSim.PARRY_WINDOW)), 1, 3)
+	var lab := _charge_label()
+	telegraph.color = Color(1, 0.25, 0.2, 0.2 + 0.1 * sin(Time.get_ticks_msec() * 0.02))
+	countdown.text = "！" if in_window else str(bucket)
+	countdown.add_theme_color_override("font_color", Color(1, 0.85, 0.3))
+	countdown_sub.text = _t("%s蓄力中") % lab
+	countdown_sub.add_theme_color_override("font_color", Color(1, 0.7, 0.55))
+	if bucket != _last_cd_bucket:
+		_last_cd_bucket = bucket
+		_pulse_countdown()
 
 
 ## 格擋回饋短暫蓋掉提示條。倒數每幀都在寫 parry_hint，
@@ -3666,6 +3061,23 @@ func _on_telemetry_battle_finished(won: bool) -> void:
 		tel.call("battle_finished", _mode, won)
 
 
+## 狐／獅／野豬已移除（舊檔讀成兔子，見 PR #19）：戰鬥中不顯示這三族的名字，退回兔子主角名。
+## 其他動物族（虎／鶴／熊…）暫時照舊。
+const REMOVED_HERO_NAMES := ["烈鬃獅", "靈尾狐", "鋼牙豕"]
+const DEFAULT_HERO_NAMES := ["", "小白", "Xiaobai", "シロ", "시로", "Blanco"]
+
+
+## 戰鬥中玩家主角顯示名（血條名牌、戰報共用）
+func _hero_display_name() -> String:
+	var n := str(GameState.player_name)
+	if n in DEFAULT_HERO_NAMES or n in REMOVED_HERO_NAMES:
+		return _t("小白")
+	for rn in REMOVED_HERO_NAMES:
+		if n == _t(rn):
+			return _t("小白")
+	return _t(n)
+
+
 func _unit_display_name(unit_id: String) -> String:
 	if sim:
 		var u: BattleUnit = sim.get_unit(unit_id)
@@ -3673,13 +3085,10 @@ func _unit_display_name(unit_id: String) -> String:
 			return u.display_name
 	if unit_id == "player":
 		if GameState.player_name != "":
-			return GameState.player_name
+			return _hero_display_name()
 		var r := str(GameState.player_race).to_lower()
 		match r:
 			"rabbit": return _t("小白")
-			"lion": return _t("烈鬃獅")
-			"fox": return _t("靈尾狐")
-			"boar": return _t("鋼牙豕")
 			"macaque": return _t("靈爪猴")
 			"tiger": return _t("烈焰虎")
 			"crane": return _t("雲嵐鶴")
@@ -3720,12 +3129,12 @@ func _on_event(kind: String, data: Dictionary) -> void:
 		"parry_early":
 			## 「差一點」——機會還在，要講清楚，不然玩家以為格擋壞了
 			_append_log(_t("[color=#fc8]太早了 · 等倒數變綠[/color]"))
-			AudioManager.play("ui", 0.9, -8.0)
+			_sfx("ui", 0.9, -8.0)
 			_flash_parry_note(_t("太早了"), Color(1.0, 0.78, 0.45))
 		"parry_whiff":
 			## 機會用掉了：這一次前搖已經沒有第二下
 			_append_log(_t("[color=#e88]揮空了 · 這一擊擋不掉[/color]"))
-			AudioManager.play("miss", 1.0, -6.0)
+			_sfx("hit", 0.8, -14.0)  ## 沒有 miss 音檔：用壓低的 hit 代替
 			_flash(player_body, Color(1.0, 0.55, 0.45))
 			_shake = 0.12
 			_flash_parry_note(_t("揮空 · 這一擊沒機會了"), Color(1.0, 0.5, 0.42))
@@ -3833,7 +3242,8 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			# Alice 糖果屑（粉紫奶油琺瑯＋黃銅屑）；⛔ 不用焊花主特效
 			_spawn_candy_chip_break(boss_id, data)
 			_shake = 0.5
-			trigger_hit_stop(0.12)
+			_sfx("break")
+			_play_break_slowmo()
 			_flash(_body_of(boss_id), Color(3.0, 2.5, 1.0))
 			_set_boss_pose("recover")
 			_refresh_part_focus_hint()
@@ -3887,12 +3297,15 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			var old_label := old_wname if old_wname != "" else _t("發條劍")
 			var auto_sw := bool(data.get("auto", false))
 			var link_txt := str(data.get("linkage_title", ""))
-			if link_txt != "":
-				link_txt = " " + link_txt
 			if auto_sw:
-				_append_log(_t("[color=#8ff]『%s停擺，換上%s』%s[/color]") % [old_label, label, link_txt])
-				_spawn_float("player", _t("換武連動！"), Color(0.5, 1.0, 0.55), true)
+				## 次數用完自動換欄：戰報一句、停一拍、卡榫聲（這一動不出手）
+				_append_log(_t("[color=#8ff]%s停擺，換上%s[/color]") % [old_label, label])
+				if link_txt != "":
+					_append_log("[color=#ffd700]%s[/color]" % link_txt)
+				_play_swap_beat(label)
 			else:
+				if link_txt != "":
+					link_txt = " " + link_txt
 				_append_log(_t("[color=#8ff]武器欄 %d：%s（武 %d/%d%s）%s[/color]") % [
 					int(data.get("index", 0)) + 1, label, wuses, wmax,
 					(" · " + skn2) if skn2 != "" else "",
@@ -3924,7 +3337,13 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			trigger_hit_stop(0.1)
 			_flash(player_body, Color(3.0, 1.5, 0.5))
 		"bare_fist":
-			_append_log(_t("[color=#fc8]武器次數耗盡 · 改為赤手！（攻擊下降，無法放武器技）[/color]"))
+			## 三欄都用完：同樣佔一拍，改空手
+			var last_w := str(data.get("old_name", ""))
+			if last_w != "":
+				_append_log(_t("[color=#fc8]%s停擺，三欄用盡，改用空手[/color]") % last_w)
+			else:
+				_append_log(_t("[color=#fc8]武器次數耗盡 · 改為空手！（攻擊下降，無法放武器技）[/color]"))
+			_play_swap_beat("")
 			_spawn_float("player", _t("赤　手"), Color(1.0, 0.75, 0.4), true)
 			_flash(player_body, Color(1.2, 0.9, 0.5))
 			_layout_battle_equipment_overlays()
@@ -3954,13 +3373,9 @@ func _on_event(kind: String, data: Dictionary) -> void:
 		"skill_hit":
 			_handle_skill_hit(data)
 		"perfect_parry":
-			## 不用「微末一格／體型對照」等開發梗；只給可讀的短提示
-			## 先把舊的開發梗正規化，最後才翻 —— 反過來的話比對的是譯文，
-			## 換語言就永遠不成立，那句梗會漏到玩家面前。
-			var bn := str(data.get("banner", "完美格擋"))
-			if bn == "微末一格":
-				bn = "完美格擋"
-			banner.text = _t(bn)
+			## 自動彈開（不是玩家按出來的）：短橫幅＋閃光，不另開慢動作，
+			## 慢動作留給部位破壞。parry 音效由 AudioManager.on_battle_event 播。
+			banner.text = _t("彈開")
 			banner.visible = true
 			banner.modulate = Color(1, 1, 1, 1)
 			banner.add_theme_font_size_override("font_size", 28)
@@ -3968,7 +3383,7 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			banner.pivot_offset = banner.size * 0.5 if banner.size.x > 1 else Vector2(200, 40)
 			var tw := create_tween()
 			tw.tween_property(banner, "scale", Vector2.ONE, 0.1).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-			tw.tween_interval(0.55)
+			tw.tween_interval(0.45)
 			tw.tween_property(banner, "modulate:a", 0.0, 0.18)
 			GameState.set_flag("c1_perfect_parry_once", true)
 			_flash(enemy_body, Color(1.2, 1.15, 0.7))
@@ -3977,18 +3392,6 @@ func _on_event(kind: String, data: Dictionary) -> void:
 				if is_instance_valid(self) and not _ended:
 					_set_boss_pose("idle")
 			)
-
-			# 完美格擋慢鏡高光：時間流速驟降至 15%，隨後在 0.75 秒內以正弦曲線平滑恢復常態
-			_in_parry_slowmo = true
-			var orig_scale := sim.time_scale if sim != null else 1.0
-			Engine.time_scale = 0.15
-			var stw := create_tween()
-			stw.tween_property(Engine, "time_scale", orig_scale, 0.75).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-			stw.finished.connect(func():
-				_in_parry_slowmo = false
-				Engine.time_scale = orig_scale
-			)
-
 			var pfx := SpriteDB.fx("parry_flash")
 			if hazard_fx and pfx:
 				hazard_fx.texture = pfx
@@ -3998,14 +3401,18 @@ func _on_event(kind: String, data: Dictionary) -> void:
 					if is_instance_valid(hazard_fx):
 						hazard_fx.visible = false
 				)
-			_append_log("[color=#ffd700]== %s ==[/color]" % data.get("banner", _t("格擋")))
+			_append_log(_t("[color=#ffd700]自動彈開 · %s[/color]") % _charge_label())
 			countdown.visible = false
 			countdown_sub.visible = false
+		"auto_deflect_fail":
+			## 自動彈開沒擲中：這一擊照常落下。場地機制失敗由 hazard_resolve 自己寫戰報，這裡只寫 Boss 蓄力。
+			if str(data.get("boss", "")) != "":
+				_append_log(_t("[color=#e88]沒彈開 · %s[/color]") % _charge_label())
 		"banner_end":
 			banner.visible = false
 		"king_slash_start":
 			var lab := str(data.get("label", _t("王者斬")))
-			_append_log(_t("[color=#f66]蓄力：%s！看畫面中央倒數／格擋窗[/color]") % lab)
+			_append_log(_t("[color=#f66]%s蓄力中[/color]") % lab)
 			_pulse_enemy()
 			_set_boss_pose("telegraph")
 			_last_cd_bucket = -1
@@ -4017,11 +3424,7 @@ func _on_event(kind: String, data: Dictionary) -> void:
 		"hazard_warn":
 			_append_log(_t("[color=#fa6]%s 預告…[/color]") % _hazard_name(str(data.get("kind"))))
 		"hazard_window":
-			_append_dual_log(
-				"[color=#ff5]%s 互動窗！按 J[/color]",
-				"[color=#ff5]%s 互動窗！點閃避[/color]",
-				[_hazard_name(str(data.get("kind")))]
-			)
+			pass  ## 自動閃避，結果由 hazard_resolve 寫戰報
 		"hazard_resolve":
 			var ok := bool(data.get("success", false))
 			var msg := str(data.get("msg", ""))
@@ -4415,16 +3818,87 @@ func _pulse_enemy() -> void:
 	tw.tween_property(enemy_body, "scale", Vector2.ONE, 0.3)
 
 
+## 播音效。AudioManager 不在、或沒有這個 key（例如 swap 音檔還沒進來）都靜默略過，
+## 不能讓戰鬥因為少一個音檔停掉。
+func _sfx(key: String, pitch: float = 1.0, volume_db: float = 0.0) -> void:
+	if not is_inside_tree():
+		return
+	var am := get_node_or_null("/root/AudioManager")
+	if am == null or not am.has_method("play"):
+		return
+	am.call("play", key, pitch, volume_db)
+
+
+## 換武那一拍：停 SWAP_BEAT_SEC、卡榫聲、換武姿、頭上跳新武器名。
+## new_label 為空＝三欄用盡改空手。
+func _play_swap_beat(new_label: String) -> void:
+	_beat_hold_left = maxf(_beat_hold_left, SWAP_BEAT_SEC)
+	_sfx("swap")
+	if _player_race.is_empty():
+		_player_race = SpriteDB.player_race()
+	if SpriteDB.player_pose("swap", _player_race) != null:
+		_set_player_pose("swap", true)
+		get_tree().create_timer(SWAP_BEAT_SEC).timeout.connect(func():
+			if is_instance_valid(self) and not _ended and _player_pose == "swap":
+				_set_player_pose("idle")
+		)
+	if new_label != "":
+		_spawn_float("player", new_label, Color(0.5, 1.0, 0.55), true)
+
+
+## 部位破壞的 0.4 秒慢動作（真實時間計時，不受慢速本身拖長）。
+func _play_break_slowmo() -> void:
+	if not is_inside_tree() or _ended:
+		return
+	_in_slowmo = true
+	Engine.time_scale = BREAK_SLOWMO_SCALE
+	get_tree().create_timer(BREAK_SLOWMO_SEC, true, false, true).timeout.connect(func():
+		_in_slowmo = false
+		Engine.time_scale = 1.0
+	)
+
+
+## Boss 部位快破了：warn 響一次（提醒「要破了」，不是格擋窗）。
+## 只在這道破綻真的破得掉時才算，門檻前被鎖在 1 血的不算。
+func _check_part_warn(boss: BattleUnit) -> void:
+	if sim == null or boss == null or not boss.is_boss or boss.parts.is_empty():
+		return
+	var broken_n := 0
+	for p in boss.parts:
+		if bool(p.get("broken", false)):
+			broken_n += 1
+	var stage := int(sim.parts_break_stage)
+	var allow := 0
+	if stage >= 2 or (sim.parts_break_unlocked and stage == 0):
+		allow = 99
+	elif stage == 1:
+		allow = 1
+	if allow <= broken_n:
+		return
+	for p in boss.parts:
+		var pid := str(p.get("id", ""))
+		if pid == "" or bool(p.get("broken", false)) or _part_warned.has(pid):
+			continue
+		var mx := float(p.get("max_hp", 0))
+		var hp := float(p.get("hp", 0))
+		if mx > 0.0 and hp > 0.0 and hp <= mx * PART_WARN_RATIO:
+			_part_warned[pid] = true
+			_sfx("warn")
+			var bar: ProgressBar = _part_bars.get(pid) as ProgressBar
+			if bar:
+				bar.modulate = Color(1.35, 0.85, 0.55)
+			return  ## 同一拍只響一聲
+
+
 func trigger_hit_stop(duration: float = 0.08) -> void:
 	if not is_inside_tree() or _ended:
 		return
-	if _in_parry_slowmo:
-		return  ## 正在進行完美格擋慢鏡，不被常規命中定格覆蓋
-	var orig_scale := sim.time_scale if sim != null else 1.0
+	if _in_slowmo:
+		return  ## 部位破壞慢動作中，不被一般命中定格蓋掉
 	Engine.time_scale = 0.08
 	get_tree().create_timer(duration, true, false, true).timeout.connect(func():
-		if not _in_parry_slowmo:
-			Engine.time_scale = orig_scale
+		if not _in_slowmo:
+			Engine.time_scale = 1.0
 	)
 
 
@@ -4926,29 +4400,20 @@ func _kh(t: String) -> String:
 	return t
 
 
-func _do_parry() -> bool:
-	if sim == null or _ended or sim.sim_paused:
-		return false
-	if sim.try_react():
-		_shake = 0.3
-		_flash(player_body, Color(1, 0.95, 0.5))
-		return true
-	return false
+## 自動彈開：Boss 蓄力進窗、場地機制進窗時由戰鬥自己擲一次骰（BattleSim.auto_react，
+## 機率看閃避與速度），不等玩家按。跟 resolve_auto（無頭自動結算）同一條規則。
+## parry 音效只在這裡當彈開演出（AudioManager 接 perfect_parry），不綁任何按鍵。
+func _auto_react() -> void:
+	if sim == null or _ended or sim.sim_paused or sim.finished:
+		return
+	sim.auto_react()
 
 
-func _parry_window_open() -> bool:
-	if sim == null:
-		return false
-	if sim.hazard_phase == "window" and not sim.hazard_reacted:
-		return true
-	return sim._telegraphing_boss() != null
-
-
-func _tap_ok(ev: InputEvent) -> bool:
-	if sim == null or _ended or sim.sim_paused:
-		return false
-	## 場上／怒氣／武器格＝對應語意動作的虛擬鍵；裝置判斷在 GameInputGate。
-	return GameInputGate.primary_pointer_pressed(ev)
+## 蓄力大招的名字：王者斬／巨偶蓄力必殺／黑鏽必殺（倒數副字與彈開戰報共用）
+func _charge_label() -> String:
+	if sim != null and bool(sim.demon_mode):
+		return _t("黑鏽必殺")
+	return _t("蓄力必殺") if _is_colossus_fight() else _t("王者斬")
 
 
 func _thumb_btn(text: String, primary: bool, cb: Callable) -> Button:
@@ -5010,134 +4475,35 @@ func _layout_thumb_hud() -> void:
 	_layout_pause_button()
 
 
-func _on_thumb_attack() -> void:
-	_do_parry()
-
-
-func _on_thumb_skill() -> void:
-	if sim == null or _ended:
-		return
-	if not sim.trigger_fury_awakening():
-		_flash_coach(_t("怒氣未滿。"), 1.2)
-
-
-func _on_thumb_switch() -> void:
-	if sim == null or _ended:
-		return
-	var n: int = maxi(1, sim.weapon_bars.size())
-	sim.switch_weapon_slot((int(sim.weapon_bar_active) + 1) % n)
-
-
 func _on_thumb_pause() -> void:
 	GameInput.inject(GameInput.CANCEL)
 
 
-func _thumb_cycle_lock(dir: int) -> void:
-	if sim == null or _ended or sim.sim_paused:
-		return
-	if _mode == "fog":
-		var tid: String = sim.cycle_player_target(dir)
-		if tid != "":
-			_append_log(_t("鎖定：%s") % sim.get_unit(tid).display_name)
-		return
-	if _part_lock_enabled():
-		sim.cycle_part_focus(dir)
-		_append_log(_t("鎖定部位：%s") % sim.part_focus_label())
-		_refresh_part_focus_hint()
-		return
-	## 這場沒有多目標／部位可切，鎖定鈕靜默。不要講站位——模擬沒有站位 API。
-
-
 func thumb_controls() -> Dictionary:
+	## 自動回合只剩一顆小暫停；其餘鍵位保留 key（值為 null）給舊測試查「不可見」。
 	return {
-		"attack": _btn_attack,
-		"skill": _btn_skill,
-		"switch": _btn_switch,
+		"attack": null,
+		"skill": null,
+		"switch": null,
 		"pause": _btn_pause,
-		"flee": btn_flee,
-		"lock": _btn_lock,
+		"flee": null,
+		"lock": null,
 		"pad": _thumb_pad,
 	}
 
 
 func _install_touch_controls() -> void:
-	## 點畫面＝格擋（跟 J 一樣走 try_react）；點敵人＝有前搖就格擋，否則切鎖定；
-	## 點怒氣條＝暴怒；武器欄／部位條各自在建立時接。
-	## 競技場的貼圖框蓋在左右側欄上面（PASS 往上傳到本節點就被吃掉），
-	## 武器欄／怒氣條永遠點不到。貼圖框一律 IGNORE，點擊由底圖與本節點接；
-	## 敵人用矩形命中判斷。
+	## 自動回合：場上、敵人、怒氣條、武器欄、部位條都只是看的，點了不做事。
+	## 貼圖框一律 IGNORE，免得蓋住暫停鈕或機芯小點。
 	for n in [arena, player_body, enemy_body,
 			get_node_or_null("Arena/PlayerSlot"), get_node_or_null("Arena/EnemySlot")]:
 		if n is Control:
 			(n as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if log_label:
 		log_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	for c in [battle_bg, self]:
-		if c and not c.gui_input.is_connected(_on_field_gui):
-			c.gui_input.connect(_on_field_gui)
-	if player_rage and not player_rage.gui_input.is_connected(_on_rage_gui):
-		player_rage.mouse_filter = Control.MOUSE_FILTER_STOP
-		player_rage.gui_input.connect(_on_rage_gui)
-	if _rage_ready and not _rage_ready.gui_input.is_connected(_on_rage_gui):
-		_rage_ready.mouse_filter = Control.MOUSE_FILTER_STOP
-		_rage_ready.gui_input.connect(_on_rage_gui)
-
-
-func _on_field_gui(ev: InputEvent) -> void:
-	if not _tap_ok(ev):
-		return
-	if enemy_body and enemy_body.is_visible_in_tree() \
-			and enemy_body.get_global_rect().has_point(get_global_mouse_position()):
-		_enemy_tap()
-	else:
-		_do_parry()
-	accept_event()
-
-
-func _enemy_tap() -> void:
-	if _parry_window_open():
-		_do_parry()
-	elif _mode == "fog":
-		var tid: String = sim.cycle_player_target(1)
-		if tid != "":
-			_append_log(_t("鎖定：%s") % sim.get_unit(tid).display_name)
-	elif _part_lock_enabled():
-		sim.cycle_part_focus(1)
-		_append_log(_t("鎖定部位：%s") % sim.part_focus_label())
-		_refresh_part_focus_hint()
-	else:
-		_do_parry()
-
-
-func _on_rage_gui(ev: InputEvent) -> void:
-	if not _tap_ok(ev):
-		return
-	if not sim.trigger_fury_awakening():
-		_flash_coach(_t("怒氣未滿。"), 1.2)
-	accept_event()
-
-
-func _on_weapon_cell_gui(ev: InputEvent, index: int) -> void:
-	if not _tap_ok(ev):
-		return
-	sim.switch_weapon_slot(index)
-	accept_event()
-
-
-func _on_part_row_gui(ev: InputEvent, pid: String) -> void:
-	if not _tap_ok(ev) or not _part_lock_enabled():
-		return
-	var boss = sim._primary_boss_unit()
-	if boss == null:
-		return
-	for p in boss.parts:
-		if str(p.get("id", "")) == pid and not bool(p.get("broken", false)):
-			sim.focus_part_id = pid
-			_append_log(_t("鎖定部位：%s") % sim.part_focus_label())
-			_refresh_part_focus_hint()
-			_refresh_part_bars(boss)
-			break
-	accept_event()
+	for c in [player_rage, _rage_ready]:
+		if c is Control:
+			(c as Control).mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 
 func _hazard_name(kind: String) -> String:
@@ -5176,6 +4542,17 @@ func _on_btn_flee_pressed() -> void:
 		_show_dummy_settlement(false)
 		return
 	battle_finished.emit(false)
+
+
+## 小暫停鈕 → main 的暫停選單。木人樁練習時那裡多一顆「離開練習」。
+func can_leave_practice() -> bool:
+	return _mode == "training_dummy" and not _ended
+
+
+func leave_practice() -> void:
+	if not can_leave_practice():
+		return
+	_on_btn_flee_pressed()
 
 
 func _show_dummy_settlement(won: bool) -> void:

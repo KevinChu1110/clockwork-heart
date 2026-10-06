@@ -115,21 +115,22 @@ func _process(_delta: float) -> bool:
 			var pn: Label = _battle.get_node_or_null("%PlayerName")
 			var en: Label = _battle.get_node_or_null("%EnemyName")
 
+			## 獅族已移除：戰鬥名牌退回兔子主角名「小白」
 			if pn:
-				_assert(pn.text == "烈鬃獅", "獅族 PlayerName 應為 '烈鬃獅'，實際為: '%s'" % pn.text)
+				_assert(pn.text == "小白", "已移除的獅族 PlayerName 應退回 '小白'，實際為: '%s'" % pn.text)
 			if en:
 				_assert(en.text == "黑鏽浪人", "black_ronin EnemyName 應為 '黑鏽浪人'，實際為: '%s'" % en.text)
 
 			var p_lion = _battle.call("_unit_display_name", "player")
-			_assert(p_lion == "烈鬃獅", "_unit_display_name('player') 獅族應為 '烈鬃獅'，實際為: '%s'" % p_lion)
+			_assert(p_lion == "小白", "_unit_display_name('player') 已移除的獅族應退回 '小白'，實際為: '%s'" % p_lion)
 			var e_ronin_name = _battle.call("_unit_display_name", "black_ronin")
 			_assert(e_ronin_name == "黑鏽浪人", "_unit_display_name('black_ronin') 應為 '黑鏽浪人'，實際為: '%s'" % e_ronin_name)
 
 			# 4. 驗證其餘各族開局名稱正確性
 			var gs: Node = root.get_node_or_null("GameState")
 			var other_races := {
-				"fox": "靈尾狐",
-				"boar": "鋼牙豕",
+				"fox": "小白",
+				"boar": "小白",
 				"macaque": "靈爪猴",
 				"tiger": "烈焰虎",
 				"crane": "雲嵐鶴",
@@ -144,7 +145,9 @@ func _process(_delta: float) -> bool:
 			for r in other_races.keys():
 				gs.call("reset_new_game", r)
 				var stats = BattleSim.gather_player_stats()
-				_assert(str(stats.get("name")) == other_races[r], "各族 [%s] gather_player_stats 名稱應為 '%s'，實際為: '%s'" % [r, other_races[r], stats.get("name")])
+				## 狐／豬已移除：存檔名由 GameState／換裝線處理，這裡只驗戰鬥顯示名退回小白
+				if r not in ["fox", "boar"]:
+					_assert(str(stats.get("name")) == other_races[r], "各族 [%s] gather_player_stats 名稱應為 '%s'，實際為: '%s'" % [r, other_races[r], stats.get("name")])
 				# 驗證 _unit_display_name 在 sim 為空且 player_name 為空時 fallback 各族中文名
 				gs.player_name = ""
 				var saved_sim = _battle.get("sim")
@@ -188,7 +191,9 @@ func _process(_delta: float) -> bool:
 			_assert("造成 40 傷害" in full_log_text, "日誌應包含造成 40 傷害")
 			_assert("造成 11 傷害" in full_log_text, "日誌應包含造成 11 傷害")
 			_assert("造成 7 傷害" in full_log_text, "日誌應包含造成 7 傷害")
-			_assert("烈鬃獅 造成 40 傷害" in full_log_text, "日誌應包含 '烈鬃獅 造成 40 傷害'")
+			_assert("小白 造成 40 傷害" in full_log_text, "日誌應包含 '小白 造成 40 傷害'（獅族名不再出現）")
+			for rn in ["烈鬃獅", "靈尾狐", "鋼牙豕"]:
+				_assert(not (rn in full_log_text), "戰報不應出現已移除種族名 '%s'" % rn)
 			_assert("黑鏽浪人 造成 11 傷害" in full_log_text, "日誌應包含 '黑鏽浪人 造成 11 傷害'")
 			_assert("荒路匪徒 造成 7 傷害" in full_log_text, "日誌應包含 '荒路匪徒 造成 7 傷害'")
 

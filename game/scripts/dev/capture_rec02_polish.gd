@@ -77,7 +77,7 @@ func _process(delta: float) -> bool:
 			# +1.5s: 普攻第 1 次
 			if _rec_elapsed >= 1.5 and _step == 3:
 				if _battle:
-					_battle.call("_on_thumb_attack")
+					if _battle.has_method("_on_thumb_attack"): _battle.call("_on_thumb_attack")  # 戰鬥已全自動，舊手動入口可能不存在
 				print("REC02_ATTACK_1 at rec_elapsed=", _rec_elapsed)
 				_step = 4
 		4:
@@ -85,7 +85,7 @@ func _process(delta: float) -> bool:
 			# +3.5s: 普攻第 2 次
 			if _rec_elapsed >= 3.5 and _step == 4:
 				if _battle:
-					_battle.call("_on_thumb_attack")
+					if _battle.has_method("_on_thumb_attack"): _battle.call("_on_thumb_attack")  # 戰鬥已全自動，舊手動入口可能不存在
 				print("REC02_ATTACK_2 at rec_elapsed=", _rec_elapsed)
 				_step = 5
 		5:
@@ -93,7 +93,7 @@ func _process(delta: float) -> bool:
 			# +5.5s: 普攻第 3 次（0.15s 打擊停頓與金色跳字）
 			if _rec_elapsed >= 5.5 and _step == 5:
 				if _battle:
-					_battle.call("_on_thumb_attack")
+					if _battle.has_method("_on_thumb_attack"): _battle.call("_on_thumb_attack")  # 戰鬥已全自動，舊手動入口可能不存在
 				print("REC02_ATTACK_3_HITSTOP at rec_elapsed=", _rec_elapsed)
 				_step = 6
 		6:

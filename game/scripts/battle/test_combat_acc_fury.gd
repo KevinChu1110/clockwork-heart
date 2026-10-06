@@ -163,7 +163,7 @@ func _initialize() -> void:
 		else:
 			print("  ok SkillSystem 整合下滿怒自動選招並成功釋放: %s" % p3_box["name"])
 
-	## 4) 反向邊界驗證：赤手空拳（bare_fisted）即使滿怒也「不能」放出武器技能
+	## 4) 反向邊界驗證：空手（bare_fisted）即使滿怒也「不能」放出武器技能
 	var sim4 := BattleSim.new()
 	var p4 := BattleUnit.new()
 	p4.id = "player"
@@ -197,9 +197,9 @@ func _initialize() -> void:
 			break
 
 	if p4_box["cast"]:
-		_fail("赤手狀態不應施放武器技能，但卻觸發了 skill_cast")
+		_fail("空手狀態不應施放武器技能，但卻觸發了 skill_cast")
 	else:
-		print("  ok 赤手狀態不放武器技（反向邊界正常）")
+		print("  ok 空手狀態不放武器技（反向邊界正常）")
 
 	if _ok:
 		print("COMBAT_ACC_FURY_OK")

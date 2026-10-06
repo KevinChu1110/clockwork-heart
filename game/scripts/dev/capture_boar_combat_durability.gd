@@ -69,7 +69,7 @@ func _process(_delta: float) -> bool:
 						battle_node.call("_append_log", "[color=#1a4a75]鋼牙豕 揮動 砧心小鎚！重擊命中 強盜首領[/color]")
 						battle_node.call("_append_log", "[color=#b24a00]造成 24 傷害 · 節奏平穩 4.99s (前搖縮短至 0.35s)[/color]")
 						battle_node.call("_append_log", "[color=#1a6b35]鋼牙豕 使出 碎岩鎚！巨力破勢[/color]")
-						battle_node.call("_append_log", "[color=#6b1a35]鎚系耐久上限 18 次（剩餘 14/18 · 遠離赤手斷檔）[/color]")
+						battle_node.call("_append_log", "[color=#6b1a35]鎚系耐久上限 18 次（剩餘 14/18 · 遠離空手斷檔）[/color]")
 					if battle_node.has_method("_flash_skill_banner"):
 						battle_node.call("_flash_skill_banner", "碎岩鎚", true)
 

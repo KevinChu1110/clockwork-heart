@@ -271,8 +271,9 @@ func _unhandled_input(event: InputEvent) -> void:
 			_show_toast(DisplaySettings.summary_line())
 			get_viewport().set_input_as_handled()
 			return
-		## 1–8 快捷欄（鍵盤數字列；手把暫不綁以免誤觸格擋／選單）
-		if _current != Screen.TITLE and not _paused:
+		## 1–8 快捷欄（鍵盤數字列；手把暫不綁以免誤觸選單）
+		## 戰鬥全自動：戰鬥中不吃數字鍵喝藥（任務書：戰鬥中玩家什麼都不按）
+		if _current != Screen.TITLE and _current != Screen.BATTLE and not _paused:
 			if not (_dialogue and _dialogue.visible) and not (_cutscene and _cutscene.visible):
 				if not (_inv_panel and _inv_panel.visible):
 					var slot := -1
@@ -559,6 +560,21 @@ func _build_pause_layer() -> void:
 	sub.add_theme_font_size_override("font_size", 16)
 	sub.add_theme_color_override("font_color", Color("#1F1A3A"))
 	box.add_child(sub)
+
+	## 戰鬥中（全自動）暫停只給「繼續」；木人樁練習多一顆「離開練習」。
+	## 物品／設定／存檔／回標題在戰鬥中會中途用藥或丟下戰鬥，這裡不給。
+	if _current == Screen.BATTLE:
+		_pause_btn(box, Loc.t("pause.continue"), func():
+			_close_pause()
+		, true)
+		var bnode: Node = host.get_child(0) if host and host.get_child_count() > 0 else null
+		if bnode and bnode.has_method("can_leave_practice") and bool(bnode.call("can_leave_practice")):
+			_pause_btn(box, _t("離開練習"), func():
+				_close_pause()
+				if is_instance_valid(bnode) and bnode.has_method("leave_practice"):
+					bnode.call("leave_practice")
+			)
+		return
 
 	_pause_btn(box, Loc.t("pause.continue"), func():
 		_close_pause()

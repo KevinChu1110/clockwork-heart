@@ -20,9 +20,11 @@ const ALL: PackedStringArray = [
 	MOVE, ATTACK, INTERACT, SKILL, SWITCH_WEAPON, CONFIRM, CANCEL,
 ]
 
-## 語意動作 → InputMap 名稱（含舊名，避免一次拆光既有綁定）
+## 語意動作 → InputMap 名稱
+## 戰鬥是自動回合（任務書 §0）：Skill／SwitchWeapon 不給預設鍵，舊的 parry 動作已改名 attack。
+## 常數與別名留著，免得外部呼叫 matches()／names() 拿到未知動作。
 var _aliases := {
-	ATTACK: PackedStringArray(["attack", "parry"]),
+	ATTACK: PackedStringArray(["attack"]),
 	INTERACT: PackedStringArray(["interact"]),
 	SKILL: PackedStringArray(["skill"]),
 	SWITCH_WEAPON: PackedStringArray([
@@ -49,17 +51,11 @@ func _ensure_bindings() -> void:
 	if _bound:
 		return
 	_bound = true
-	## Attack：沿用既有 parry（J／K／滑鼠左／手把 B）
+	## Attack：project.godot 的 attack（J／K／滑鼠左／手把 B）。戰鬥不讀它。
 	_ensure_action("attack")
-	_copy_events("parry", "attack")
-	## Skill：F、手把 Y
-	_bind_key("skill", KEY_F)
-	_bind_joy("skill", JOY_BUTTON_Y)
-	## SwitchWeapon：Z／X／C 對欄 1／2／3；手把 RB 循環（slot = -1）
-	_bind_key("switch_weapon_1", KEY_Z)
-	_bind_key("switch_weapon_2", KEY_X)
-	_bind_key("switch_weapon_3", KEY_C)
-	_bind_joy("switch_weapon", JOY_BUTTON_RIGHT_SHOULDER)
+	## Skill／SwitchWeapon：自動回合不綁鍵（暴怒、換武都由戰鬥自己觸發）
+	_ensure_action("skill")
+	_ensure_action("switch_weapon")
 	_ensure_action("confirm")
 	_copy_events("ui_accept", "confirm")
 	_ensure_action("cancel")
