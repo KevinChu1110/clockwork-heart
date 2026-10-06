@@ -2452,7 +2452,8 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed:
+	## 點畫面任一處收起機芯點彈窗；裝置判斷交給 GameInput（滑鼠左鍵／觸控皆可）。
+	if GameInput.primary_pointer_pressed(event):
 		if _core_dot_popover != null and _core_dot_popover.visible:
 			_hide_core_dot_popover()
 	if sim == null or _ended:
