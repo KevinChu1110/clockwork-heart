@@ -394,13 +394,13 @@ NEW_ENTRIES = {
         "ko": "돌사자는 한쪽 눈을 잃었다. 다른 한쪽 눈은 내전을 응시한다. 안와 속 태엽 하나가 받침대 위로 떨어져 있다.",
         "es": "Al león de piedra le falta un ojo. El otro mira hacia el santuario interior. De su cuenca cayó un resorte sobre el pedestal.",
     },
-    "發條還溫。塞回去，順毛轉半圈。石獅不說話。": {
-        "zh_TW": "發條還溫。塞回去，順毛轉半圈。石獅不說話。",
-        "zh_CN": "发条还温。塞回去，顺毛转半圈。石狮不说话。",
-        "en": "The spring is still warm. Fit it back in, turn half a circle along the grain. The stone lion remains silent.",
-        "ja": "ゼンマイはまだ温かい。押し戻し、毛並みに沿って半周回す。石獅子は何も語らない。",
-        "ko": "태엽은 아직 온기를 품고 있다. 다시 밀어 넣고 결을 따라 반 바퀴 감아준다. 돌사자는 말이 없다.",
-        "es": "El resorte aún está tibio. Encájalo de vuelta y gira media vuelta. El león de piedra no dice nada.",
+    "發條還溫。塞回去，順著齒紋轉半圈。石獅不說話。": {
+        "zh_TW": "發條還溫。塞回去，順著齒紋轉半圈。石獅不說話。",
+        "zh_CN": "发条还温。塞回去，顺着齿纹转半圈。石狮不说话。",
+        "en": "The spring is still warm. Fit it back in, turn half a circle along the gear teeth. The stone lion remains silent.",
+        "ja": "ゼンマイはまだ温かい。押し戻し、歯の刻みに沿って半周回す。石獅子は何も語らない。",
+        "ko": "태엽은 아직 온기를 품고 있다. 다시 밀어 넣고 톱니를 따라 반 바퀴 감아준다. 돌사자는 말이 없다.",
+        "es": "El resorte aún está tibio. Encájalo de vuelta y gira media vuelta siguiendo los dientes. El león de piedra no dice nada.",
     },
     "白狐像閉著眼。香灰未冷。耳後一截發條卡在半途，轉不動也退不回。": {
         "zh_TW": "白狐像閉著眼。香灰未冷。耳後一截發條卡在半途，轉不動也退不回。",
