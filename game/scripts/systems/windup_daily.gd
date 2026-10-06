@@ -79,7 +79,7 @@ const CASES: Array[Dictionary] = [
 		"kind": "talk",
 		"title": "石獅像掉出發條",
 		"desc": "石獅缺了一眼。另一眼望向內殿。眼窩裡一截發條掉在台座上。",
-		"prompt": "發條還溫。塞回去，順毛轉半圈。石獅不說話。",
+		"prompt": "發條還溫。塞回去，順著齒紋轉半圈。石獅不說話。",
 		"choices": [
 			{"id": "a", "label": "把發條塞回眼窩"},
 			{"id": "b", "label": "先對齊齒再轉半圈"},
