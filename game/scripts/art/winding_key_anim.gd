@@ -25,6 +25,8 @@ const HAND_FRAMES_DIR := "res://assets/sprites/player/paperdoll/%s/winding_key_f
 ## 已量過的鑰匙：主體矩形 (x0, y0, x1, y1) 與樞軸（鑰匙柄插進背板的位置），512 畫布座標
 const KEY_GEOMETRY := {
 	"rabbit/key_classic_brass": {"rect": Rect2i(140, 256, 56, 80), "pivot": Vector2(190, 296)},
+	## 展示立繪 HD 鑰匙層（1344×1680 畫布，不是 512）：只拿來定樞軸，轉法見 WindingKeyTicker.attach_key_layer
+	"rabbit/showcase_hd": {"rect": Rect2i(344, 840, 174, 234), "pivot": Vector2(512, 970)},
 }
 
 ## 每組 8 張 512 貼圖約 8 MB，衣櫥換裝會一直產生新組合，所以只留幾組

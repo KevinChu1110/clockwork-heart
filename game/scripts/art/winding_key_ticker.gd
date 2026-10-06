@@ -1,7 +1,8 @@
 extends Node
 ## 待機發條節拍器：掛在顯示主角的 TextureRect 底下，每 8 幀把貼圖換成下一格鑰匙轉動幀。
 ## 主角在做其他動作（攻擊、受擊…）時，宿主讓 idle_check 回 false，這裡就不碰貼圖。
-## 只接手 512 紙娃娃合成圖；沒存過外觀時用的手繪展示立繪（鑰匙畫死在圖上）維持靜態。
+## 只接手 512 紙娃娃合成圖；沒存過外觀時用的手繪展示立繪，若有身體／鑰匙兩層（#48），
+## 宿主用 attach_key_layer() 把鑰匙層節點交進來，這裡轉節點；沒有兩層就維持靜態。
 ##
 ##   var t = WindingKeyTicker.new()
 ##   rect.add_child(t)
@@ -20,6 +21,9 @@ var step := 0
 var steps_taken := 0
 var _frames: Array[Texture2D] = []
 var _frames_key := ""
+## HD 兩層模式（#48）：沒有紙娃娃合成圖時，展示立繪拆成身體＋鑰匙兩層，
+## 鑰匙層是獨立節點。這裡不逐像素重畫 1344×1680，直接改節點 scale（樞軸由宿主設 pivot_offset）。
+var key_layer: Control = null
 
 
 func attach(rect: Control, provider: Callable = Callable(), is_idle: Callable = Callable()) -> void:
@@ -42,11 +46,36 @@ func tick() -> bool:
 	return advance_step()
 
 
+## 交一個鑰匙層節點給節拍器（HD 兩層模式）。傳 null 取消。
+func attach_key_layer(layer: Control) -> void:
+	key_layer = layer
+	_apply_key_layer_step()
+
+
+func _key_layer_active() -> bool:
+	return key_layer != null and is_instance_valid(key_layer) and key_layer.visible
+
+
+## 鑰匙柄是水平的轉軸：側面看就是鑰匙頭沿垂直方向壓扁、翻面再展開（同 transform_key_image）
+func _apply_key_layer_step() -> void:
+	if key_layer == null or not is_instance_valid(key_layer):
+		return
+	var s := WindingKeyAnim.axial_scale(step)
+	key_layer.scale = Vector2(1.0, s)
+	var shade := 0.72 + 0.28 * absf(s)
+	key_layer.self_modulate = Color(shade, shade, shade, 1.0)
+
+
 ## 直接進一格（大廳點擊等互動也可以呼叫）
 func advance_step() -> bool:
-	if target == null or not is_instance_valid(target) or not ("texture" in target):
-		return false
 	if idle_check.is_valid() and not bool(idle_check.call()):
+		return false
+	if _key_layer_active():
+		step = (step + 1) % WindingKeyAnim.STEPS_PER_TURN
+		steps_taken += 1
+		_apply_key_layer_step()
+		return true
+	if target == null or not is_instance_valid(target) or not ("texture" in target):
 		return false
 	var cur: Texture2D = target.get("texture") as Texture2D
 	if cur == null:

@@ -66,6 +66,24 @@ static func hero_showcase_hd_tex(race: String) -> Texture2D:
 	return null
 
 
+## 展示立繪的身體／鑰匙兩層（#27 美術拆層，#48 接線）：
+## player/showcase/<race>_idle_hd_body.png＋_idle_hd_key.png，跟 <race>_idle_hd.png 同畫布同對位。
+## 兩張都在才回 {"body": Texture2D, "key": Texture2D}；缺任一張回 {}，呼叫端退回整張原圖。
+static func hero_showcase_hd_layers(race: String) -> Dictionary:
+	var r := race.strip_edges().to_lower()
+	if r.is_empty():
+		r = "rabbit"
+	var p_body := "%s/player/showcase/%s_idle_hd_body.png" % [ROOT, r]
+	var p_key := "%s/player/showcase/%s_idle_hd_key.png" % [ROOT, r]
+	if not ResourceLoader.exists(p_body) or not ResourceLoader.exists(p_key):
+		return {}
+	var tb := tex(p_body)
+	var tk := tex(p_key)
+	if tb == null or tk == null or tb.get_size() != tk.get_size():
+		return {}
+	return {"body": tb, "key": tk}
+
+
 ## 清空紙娃娃即時合成快取（換裝／卸裝／種族變更時呼叫）
 static func clear_equipped_cache() -> void:
 	_equipped_idle_cache.clear()
