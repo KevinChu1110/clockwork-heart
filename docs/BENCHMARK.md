@@ -73,7 +73,7 @@
 
 | 遊戲 | 一行理由 |
 |---|---|
-| 劍與遠征：啟程 AFK Journey（Lilith/FARLIGHT） | AFK Arena 的新世代版，可以看放置＋抽卡的最新做法；缺點是更偏中重度 |
+| 劍與遠征：啟程 AFK Journey（莉莉絲／Farlight） | AFK Arena 的新世代版，可以看放置＋抽卡的最新做法；缺點是更偏中重度 |
 | 薑餅人王國 Cookie Run: Kingdom（Devsisters） | 可愛角色＋抽卡＋收藏，跟我們玩具題材最接近；缺點是戰鬥有手動技能 |
 | 史萊姆傳說 Legend of Slime | 像素風放置 RPG，美術路線近；缺點是公開資料少 |
 
@@ -366,3 +366,148 @@
 | G-32 | 開賣前要補的法遵項目（機率公示、退費說明、未成年人購買）沒有清單 | S0（開賣前） | 機率部分見 G-09；其他項目上架前請法務或 KC 確認，本文件只列機率這一條有查證 |
 
 ---
+
+## 4. 最嚴重的差距
+
+依嚴重度排，同級的話「越早被玩家感覺到」越前面。
+
+| 排名 | 差距 | 嚴重度 | 一句話 |
+|---|---|---|---|
+| 1 | G-09（＋G-32） | **S0** | 抽魂池沒有機率公示、保底計數和法定提示語；券或貨幣一旦可以付費，就同時違反台灣規定、Apple 和 Google |
+| 2 | G-24＋G-25 | S1 | 按鈕約 27 pt（平台建議 44 pt／48 dp），文字約 6–10 pt（Apple 最小 11 pt）。手機上會點不準、看不清 |
+| 3 | G-15＋G-14 | S1 | 賽季模型要每天 300 場、4 小時以上，但體力只夠約 65–97 場，而且 2 小時就滿、會溢出。節奏設計自己對不起來 |
+| 4 | G-04 | S1 | 零輸入的自動戰鬥卻不能快轉；建議等級 Boss 要看 50–56 秒 |
+| 5 | G-26 | S1（KC 決定） | 橫屏雙手 vs. 三款休閒對標都是直屏單手 |
+
+次一級（S2）：
+- G-01：開場 50–70 秒才第一戰
+- G-10：兩套「抽魂」同名
+- G-13：抽卡機率沒有統計驗證
+- G-20：免費通關沒有量化驗證
+- G-29：沒有冷啟動和幀率的目標
+
+---
+
+## 5. 審核標準清單
+
+規則：
+- 每一條都只有「過」或「不過」。
+- 「門檻」欄寫 T-xx 的，表示數字**待 KC 決定**（選項見 §6）；KC 選定前，暫時以「標準」檔驗收。
+- 「怎麼驗」寫「工具（待做）」的，表示要另開任務寫腳本；本 PR 不寫程式。
+
+### 5.1 必須達到（任何一條不過 = 不能出版本）
+
+| 編號 | 項目 | 過的條件 | 門檻 | 怎麼驗 | 對應差距 |
+|---|---|---|---|---|---|
+| M-01 | 抽卡機率公示 | 每個抽卡入口一步內能打開「機率說明」；列出每個品質（或物品）的 %；加總 = 100%（誤差 ≤0.01%）；數字和設定檔一致 | 固定 | 人工點測＋比對設定 JSON | G-09 |
+| M-02 | 保底透明 | 抽卡畫面顯示保底規則和「距離保底還有幾抽」；連抽 N 次後計數正確變動，出貨後歸零 | 固定 | 自動測試：模擬 N 抽後讀 UI 數字 | G-09 |
+| M-03 | 實際機率 = 公示 | 固定 seed 抽 10 萬次，卡方檢定 p ≥ 0.01；10 萬條抽卡序列中，服裝最長間隔 ≤ 硬保底（目前 20） | 固定 | 自動測試（待做） | G-13 |
+| M-04 | 付費前的法遵 | 只要券或能換券的貨幣可以付費取得：購買頁有機率入口，而且原文寫出「此為機會中獎商品，消費者購買或參與活動不代表即可獲得特定商品」 | 固定（法規） | 人工檢查購買流程每一頁 | G-09、G-32 |
+| M-05 | 觸控目標 | 所有可點元件的高和寬都 ≥ 門檻（以 720 px 高的畫面量） | T-01 | 工具（待做）：執行時列出所有 `BaseButton` 的實際尺寸；加實機 3 台抽查 | G-11、G-24 |
+| M-06 | 最小字級 | 玩家看得到的文字字級都 ≥ 門檻（除錯介面除外，需列例外清單） | T-04 | 工具（待做）：掃描 `font_size`＋執行時抽查 `Label` | G-25 |
+| M-07 | 新手時間點 | 3 位沒玩過的測試者：開 app 到第一場戰鬥的中位數 ≤ T-02；到第一次抽魂 ≤ T-03；首拆不超過冒煙後 60 秒（現有規格） | T-02、T-03 | 錄影計時，取中位數；另核對遙測時間戳 | G-01 |
+| M-08 | 戰鬥一直有東西看 | 建議等級的戰鬥中，任兩個「可讀事件」（換武器、彈開、冒煙、拆部位、大招、Boss 預警）的最長間隔 ≤ 門檻 | T-12 | 戰鬥模擬 60 seeds，讀戰鬥事件時間戳 | G-05 |
+| M-09 | 單場戰鬥長度 | 建議等級打 Boss，1 倍速下的中位數 ≤ 門檻，P90 ≤ 門檻 ×1.3 | T-05 | 戰鬥模擬 60 seeds | G-05 |
+| M-10 | 倍速（KC 選 B 或 C 才適用） | 切換倍速後，下一場和重開遊戲後都會保持；倍速下的演出和音效不錯位、不漏播 | T-06 | 自動測試＋人工看 3 場 | G-04 |
+| M-11 | 回饋延遲 | 戰鬥事件（命中、彈開、拆部位）到畫面和音效回饋的延遲 ≤ 門檻 | T-08 | 60 fps 錄影逐幀數，10 個樣本都要過 | G-08 |
+| M-12 | 音量規格 | BGM 整合響度 −16 LUFS ±1 LU；同一回合疊加的 SFX ≤2 個 | 固定（brief 第 80 行） | 響度量測工具量 8 段 BGM；SFX 疊加用播放紀錄驗 | G-27 |
+| M-13 | 可以跳過 | 抽卡演出和所有超過 3 秒的非互動演出都能跳過；跳過鈕也要過 M-05 | 固定 | 人工點測清單 | G-11 |
+| M-14 | 免費能通關主線 | 零付費、零廣告的模擬玩家能打到主線結局，不需要紫色以上抽魂，天數 ≤ 門檻 | T-10（要先解決 G-15） | 經濟模擬腳本（待做） | G-20 |
+| M-15 | 包體 | 正式 Android AAB 的首次必要下載 ≤ 80 MB（沿用 Product Lock §5.2）；iOS 同樣標準 | 固定 | 商店後台或 bundletool 的大小報告 | G-30 |
+| M-16 | 廣告不打斷 | 戰鬥中、劇情對話中零廣告；沒有插頁廣告；所有廣告都要玩家主動點 | 固定（BUSINESS §3） | 搜尋所有廣告呼叫點，人工走主線 1 章 | G-31 |
+| M-17 | 去廣告買斷 | 買斷後每一個廣告點都直接給獎勵，不再播廣告 | 固定（BUSINESS §2） | 人工逐一點每個廣告點 | G-31 |
+| M-18 | 冷啟動 | 低階參考機從點圖示到可操作主畫面，5 次的中位數 ≤ 門檻 | T-07 | 計時 5 次 | G-29 |
+| M-19 | 幀率 | 低階參考機打 3 場 Boss，幀率 P5 ≥ 門檻 | T-11 | Godot 效能監看紀錄 | G-29 |
+| M-20 | 安全區 | 19.5:9、20:9、4:3 三種比例下，沒有可點元件落在安全區外或被瀏海、圓角遮住 | 固定 | 三種比例各截主要 10 個畫面 | G-26 |
+| M-21 | 每日必做時間 | 每日必做的事（登入領獎、每日活動、用完體力）實際花的時間中位數 ≤ 門檻 | T-09 | 3 位測試者實機計時 | G-17 |
+| M-22 | 漏天不懲罰 | 斷 1 天、斷 7 天後登入：已得的東西不會少，每日活動照常 | 固定（現有規則） | 改裝置日期測試 | G-18 |
+| M-23 | 既有無障礙 | 傷害跳字可關、震動可關、色盲時鎖敵不只靠紅色，三項都能用 | 固定（UI.md §6） | 人工測試 | — |
+| M-24 | 名稱不撞 | 玩家看得到的同一個名稱，不會指向兩套機率不同的系統 | 固定 | 文案表搜尋「抽魂」「聚魂」 | G-10 |
+
+### 5.2 加分（不擋版本，但列入評分）
+
+| 編號 | 項目 | 過的條件 | 怎麼驗 | 對應差距 |
+|---|---|---|---|---|
+| B-01 | 抽卡紀錄 | 能看到最近至少 50 抽的時間和結果 | 人工 | G-09 |
+| B-02 | 保底常駐 | 保底計數直接顯示在抽卡按鈕上，不必點進說明頁 | 人工 | G-09 |
+| B-03 | 自動處理低品質 | 玩家可以設定「低於某品質自動拆解或出售」 | 人工 | §3.1（對標 [S4]） |
+| B-04 | 出貨分級演出 | 白、藍、紫的演出和音效有可辨識的差別，至少差在顏色＋音效兩項 | 人工盲測：3 人聽或看能分辨 | G-28 |
+| B-05 | 回來就有東西領 | 主畫面有隨時間累積的資源入口（不涉及戰鬥驗證） | 人工 | G-16 |
+| B-06 | 失敗導向 | 戰敗結算有一顆按鈕直接帶到最相關的變強入口 | 人工 | G-07 |
+| B-07 | 彈開原因 | 彈開成功時看得出是速度或閃避的功勞（只是表現，不改機率） | 人工 | G-06 |
+| B-08 | 分享 | 衣櫥可以一鍵截圖分享 | 人工 | G-22 |
+| B-09 | 回流禮 | 離開 ≥7 天回來時有專屬導引或獎勵 | 改日期測試 | G-18 |
+| B-10 | 單手可玩 | 主要循環（領獎 → 出征 → 抽卡 → 換裝）的按鈕都在右下 1/3 區 | 截圖量測 | G-26 |
+| B-11 | 每天有新東西 | 第 1–14 天每天至少解鎖一個新系統或新玩法 | 解鎖表＋實機 | G-02 |
+| B-12 | 字級可調 | 設定裡可以把字放大至少一級 | 人工 | G-25 |
+| B-13 | 對標實測 | 3 款對標完成實機錄影計時（新手、單場長度、按鈕尺寸），結果補進 §2 | 文件檢查 | G-03 |
+
+---
+
+## 6. 待 KC 決定總表
+
+### 6.1 方向類決定
+
+| 編號 | 決定什麼 | 選項 |
+|---|---|---|
+| D-00 | 對標名單 | 推薦 5 款（§1.1）／換掉其中幾款（備選見 §1.2） |
+| D-01 | 畫面方向（G-26） | A 維持橫屏雙手／B 橫屏但主要按鈕集中右下（單手可玩）／C 改直屏 |
+| D-02 | 體力容量（G-14） | A 維持上限 15、每 8 分鐘 1 點（2 小時滿）／B 上限放大到約 6 小時份／C 上限放大到約 12 小時份 |
+| D-03 | 節奏基準（G-15） | a 賽季天數放長／b 一般戰鬥不扣體力／c 重算 BALANCE §10 |
+| D-04 | 兩套抽魂（G-10） | 改名其中一套／合併成一套 |
+| D-05 | 低階參考機 | 指定一款 Android 低階機（M-18、M-19 都用它） |
+
+### 6.2 門檻類決定（寬鬆／標準／嚴格）
+
+| 編號 | 門檻 | 寬鬆 | 標準 | 嚴格 | 現況 |
+|---|---|---|---|---|---|
+| T-01 | 觸控目標最小邊（720 px 高） | ≥52 px（≈Apple 絕對下限 28 pt） | ≥81 px（≈Apple 44 pt） | ≥96 px（≈小 Android 機 48 dp） | 50 px，有 36 px 的元件 → **三檔都不過** |
+| T-02 | 開 app 到第一場戰鬥 | ≤70 秒 | ≤45 秒 | ≤20 秒 | 目標 50–70 秒 → 只過寬鬆 |
+| T-03 | 開 app 到第一次抽魂 | ≤180 秒 | ≤150 秒 | ≤120 秒 | 目標 130–160 秒（總長 ≤180）→ 過寬鬆，標準要實測 |
+| T-04 | 最小字級（720 px 高） | ≥16 px（≈8.7 pt，仍低於 Apple 最小） | ≥20 px（≈Apple 最小 11 pt） | 全部 ≥20 px，對話和按鈕 ≥26 px（≈14 pt） | 11–18 px → **三檔都不過** |
+| T-05 | 建議等級 Boss 單場長度（1 倍速中位數） | ≤90 秒 | ≤60 秒 | ≤45 秒 | 50–56 秒 → 過標準 |
+| T-06 | 戰鬥倍速 | A 不做 | B 2 倍速並記住設定 | C 2 倍速並記住＋已通關的 Boss 可以直接結算 | 文件有寫，程式沒有 |
+| T-07 | 冷啟動到可操作主畫面（低階參考機） | ≤15 秒 | ≤10 秒 | ≤6 秒 | 未量測 |
+| T-08 | 戰鬥回饋延遲（60 fps） | ≤6 幀（≈100 ms） | ≤3 幀（≈50 ms） | ≤2 幀（≈33 ms） | 未量測 |
+| T-09 | 每日必做時間 | ≤20 分鐘 | ≤10 分鐘 | ≤5 分鐘（對標可短到 5 分鐘 [S9]） | 未量測 |
+| T-10 | 零付費到主線結局 | ≤21 天 | ≤14 天 | ≤11 天（BALANCE §10 白板裝） | 未量測，要先解決 D-03 |
+| T-11 | 戰鬥幀率 P5（低階參考機） | ≥24 fps | ≥30 fps | ≥55 fps | 未量測 |
+| T-12 | 戰鬥中可讀事件最長間隔 | ≤8 秒 | ≤5 秒 | ≤3 秒 | 未量測 |
+
+> T-07、T-08、T-11、T-12 的選項是設計判斷，**沒有對標的公開數據支撐**；T-01、T-04 依據平台規範 [S25][S26][S27]；T-09 參考 [S9]；T-02、T-03、T-05、T-10 以現有文件為寬鬆或標準基準。
+
+---
+
+## 7. 來源
+
+存取日期：2026-10-06。只列公開頁面。
+
+| 編號 | 內容 | 連結 |
+|---|---|---|
+| S1 | 菇勇者傳說台港澳上市、首日台灣 iOS 免費榜第一 | https://news.qq.com/rain/a/20240304A06C3800 |
+| S2 | 菇勇者傳說登台灣 iOS 營收榜頂端 | http://www.gamelook.com.cn/2023/12/535011/ |
+| S3 | Sensor Tower 2024 亞太手遊報告（菇勇者營收） | https://sensortower.com/blog/state-of-mobile-games-in-apac-2024-report |
+| S4 | Deconstructor of Fun：The Magic of Legend of Mushroom（第三方分析） | https://www.deconstructoroffun.com/blog/2024/4/15/the-magic-of-legend-of-mushroom |
+| S5 | BlueStacks 菇勇者新手指南 | https://www.bluestacks.com/blog/game-guides/legend-of-the-mushroom-brave-3000-free-draws/lotmb-beginners-guide-en.html |
+| S6 | mobilegamer.biz 數據摘要（卡皮巴拉 Go! 營收、下載、市場） | https://mobilegamer.biz/data-digest-zynga-sells-chartboost-infinity-nikki-capybara-go-netflix-games-rush-royale-numbers-more/ |
+| S7 | PocketGamer.biz：卡皮巴拉 Go! 破 1 億美元 | https://www.pocketgamer.biz/habbys-capybara-go-surpasses-100m-in-gross-player-spending/ |
+| S8 | 業界人士對卡皮巴拉 Go! 操作的分析（LinkedIn） | https://www.linkedin.com/posts/hwibang_capybara-go-is-still-going-strong-and-i-activity-7297369513543536640-mc_n |
+| S9 | Game Developer：Flexible time session design in AFK Arena | https://www.gamedeveloper.com/design/flexible-time-session-design-in-afk-arena |
+| S10 | AFK Arena Wiki：VIP（離線上限延長） | https://afk-arena.fandom.com/wiki/VIP_Rank |
+| S11 | afk.guide：高級酒館機率 | https://afk.guide/the-noble-tavern/ |
+| S12 | Reddit r/afkarena：30 抽保底討論（社群觀察） | https://www.reddit.com/r/afkarena/comments/gsb971/ |
+| S13 | Deconstructor of Fun：Archero 分析 | https://www.deconstructoroffun.com/blog/2019/8/9/why-archero-banked-25m-but-leaves-25m-hanging-hlx9n |
+| S14 | Game World Observer：Archero 首月數據 | https://gameworldobserver.com/2019/06/17/roguelike-archero-grosses-8-5m-first-month |
+| S15 | HoYoverse 客服：崩壞：星穹鐵道躍遷機率（官方） | https://support.hoyoverse.com/hc/en-us/articles/50913710696217 |
+| S16 | gacha-tracker：星穹鐵道軟保底估算（社群） | https://gacha-tracker.com/hsr/pity-calculator |
+| S17 | IGN：星穹鐵道戰鬥指南（倍速） | https://www.ign.com/wikis/honkai-star-rail/Honkai_Star_Rail_Combat_Guide |
+| S18 | 星穹鐵道 Wiki：Auto-Battle | https://honkai-star-rail.fandom.com/wiki/Auto-Battle |
+| S19 | 行政院：網路連線遊戲服務定型化契約修正（機率公告） | https://www.ey.gov.tw/Page/DFB720D019CCCB0A/964028ea-f1f6-4383-9c78-f7d0606086f3 |
+| S20 | 法規整理：機率公告、提示語、罰則 | https://lawdb.tw/2022/09/29/laws220929/ |
+| S21 | 立法院議事資料（公平會處分機率不實案） | https://ppg.ly.gov.tw/ppg/SittingAttachment/download/2024030605/02116028203030411002.pdf |
+| S22 | 遊戲分級委員會：非付費取得不在公告範圍 | https://www.gamerating.org.tw/Message/MessageView?GroupName=%E6%94%BF%E4%BB%A4%E5%AE%A3%E5%B0%8E&itemid=2530&mid=6&page=0 |
+| S23 | Apple App Review Guidelines 3.1.1 | https://developer.apple.com/app-store/review/guidelines/ |
+| S24 | Google Play：隨機物品機率揭露 | https://support.google.com/googleplay/android-developer/answer/9858738 |
+| S25 | Apple HIG：Accessibility（觸控目標） | https://developer.apple.com/design/human-interface-guidelines/accessibility |
+| S26 | Apple HIG：Typography（字級） | https://developer.apple.com/design/human-interface-guidelines/typography |
+| S27 | Android 無障礙說明：觸控目標 48 dp | https://support.google.com/accessibility/android/answer/7101858 |
