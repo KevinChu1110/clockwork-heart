@@ -5435,6 +5435,16 @@
    "keys": [
     "大廳古典神殿底圖"
    ]
+  },
+  {
+   "id": "lobby-weapon-linkage-preview",
+   "cat": "遊戲",
+   "title": "大廳角色頁三欄武器連動預覽",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "大廳角色頁三欄武"
+   ]
   }
  ]
 }
