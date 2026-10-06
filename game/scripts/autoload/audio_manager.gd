@@ -488,10 +488,10 @@ func on_battle_event(kind: String, data: Dictionary = {}) -> void:
 		"skill_cast":
 			play("slash", 1.1, -4.0)
 		"hazard_warn":
-			play("warn")
+			## warn 只留給「Boss 部位將破」（任務書 §5，由戰鬥端直接 play("warn")）；
+			## 這裡改成低一點的發條滴答，聽得出有事但不搶 warn
 			var hk := str(data.get("kind", ""))
-			if hk == "time_clock":
-				play("clock", 1.0, -4.0)
+			play("clock", 1.0 if hk == "time_clock" else 0.85, -6.0)
 		"hazard_window":
 			play("clock", 1.2)
 		"hazard_resolve":
@@ -527,25 +527,23 @@ func on_battle_event(kind: String, data: Dictionary = {}) -> void:
 			else:
 				play("clash")
 		"king_slash_start":
-			play("warn", 0.9, -2.0)
+			## 蓄力同理不用 warn，改低沉滴答
+			play("clock", 0.75, -6.0)
 		"temptation":
 			play("reveal", 0.7, -4.0)
-		## 自動戰鬥回饋（任務書 §5）：換欄卡榫、部位碎裂、Boss 部位將破
+		## 自動戰鬥回饋（任務書 §5）：換欄卡榫、部位碎裂。
+		## 「Boss 部位將破」的 warn 不在這裡：戰鬥端自己 play("warn") 一次，AudioManager 不另外播
 		"weapon_swap":
 			play("swap")
 		"part_break":
 			play("break")
-		"part_warn":
-			play("warn")
 		_:
 			pass
 
 
 func battle_start(mode: String = "wolf") -> void:
-	## 戰前上鏈（wind）；Boss：再疊 warn，與一般遭遇聽感分開（剛好兩聲上限）
+	## 戰前上鏈（wind）。Boss 不再疊 warn——warn 只給部位將破；Boss 感由 boss BGM 負責
 	play_wind_up()
-	if is_boss_battle(mode):
-		play("warn", 0.88, -1.0)
 	play_bgm_for_battle(mode)
 
 

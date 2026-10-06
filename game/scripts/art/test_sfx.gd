@@ -7,6 +7,8 @@ extends SceneTree
 ##   3. 缺檔的 key 不會當，只警告一次
 ##   4. 同時最多兩聲 SFX
 ##   5. parry 不在 UI 提示音清單裡
+##   6. AudioManager 自己不播 warn（危險預警、王斬蓄力、Boss 開戰都不行）；
+##      warn 只由戰鬥端在「Boss 部位將破」時 play("warn") 一次
 ##
 ## 同 test_bgm：autoload 的 _ready 在 _initialize 之後，檢查放第一個影格。
 
@@ -37,6 +39,7 @@ func _process(_delta: float) -> bool:
 		_check_missing_key(am)
 		_check_voice_limit(am)
 		_check_parry_not_ui(am)
+		_check_warn_only_explicit(am)
 	if _ok:
 		print("SFX_OK")
 		quit(0)
@@ -139,3 +142,64 @@ func _check_parry_not_ui(am: Node) -> void:
 func _const(am: Node, name: String) -> Array:
 	var m: Dictionary = am.get_script().get_script_constant_map()
 	return m.get(name, [])
+
+
+## 行為面：觸發以前會帶 warn 的事件，確認沒有任何 voice 在播 warn。
+## 原始碼面：audio_manager.gd 裡不能再有 play("warn"…)，免得之後又被加回某個事件。
+func _check_warn_only_explicit(am: Node) -> void:
+	var warn_stream: Variant = am._streams.get("warn")
+	if warn_stream == null:
+		_fail("warn 沒載到，無法檢查")
+		return
+	var was_muted: bool = am._muted
+	am._muted = false
+	var cases := [
+		["hazard_warn", {"kind": "fire_ring"}],
+		["hazard_warn", {"kind": "time_clock"}],
+		["king_slash_start", {}],
+	]
+	for c in cases:
+		_stop_all(am)
+		am.on_battle_event(c[0], c[1])
+		if _warn_playing(am, warn_stream):
+			_fail("on_battle_event(%s) 不該播 warn" % c[0])
+	_stop_all(am)
+	am.battle_start("leo")  ## leo 是 Boss 戰
+	if _warn_playing(am, warn_stream):
+		_fail("Boss 開戰 battle_start 不該播 warn")
+	am.stop_bgm(0.01)
+	## 明確呼叫還是要播得出來（戰鬥端靠這個）
+	_stop_all(am)
+	am.play("warn")
+	if not _warn_playing(am, warn_stream):
+		_fail("play(\"warn\") 明確呼叫卻沒播")
+	_stop_all(am)
+	am._muted = was_muted
+
+	var f := FileAccess.open("res://scripts/autoload/audio_manager.gd", FileAccess.READ)
+	if f == null:
+		_fail("讀不到 audio_manager.gd")
+		return
+	var re := RegEx.new()
+	re.compile("play\\(\\s*\"warn\"")
+	var hits := 0
+	for line in f.get_as_text().split("\n"):
+		if re.search(line.split("#")[0]) != null:  ## 註解裡提到 play("warn") 不算
+			hits += 1
+	if hits > 0:
+		_fail("audio_manager.gd 還有 %d 處自動 play(\"warn\")" % hits)
+	if _ok:
+		print("  ok AudioManager 不自動播 warn（預警／蓄力／Boss 開戰），明確 play(\"warn\") 仍可播")
+
+
+func _warn_playing(am: Node, warn_stream: Variant) -> bool:
+	for p in am._pool:
+		var ap := p as AudioStreamPlayer
+		if ap.playing and ap.stream == warn_stream:
+			return true
+	return false
+
+
+func _stop_all(am: Node) -> void:
+	for p in am._pool:
+		(p as AudioStreamPlayer).stop()
