@@ -33,7 +33,15 @@ const SFX_KEYS: Array[String] = [
 	"ui", "interact", "step", "warn", "dodge", "battle_start",
 	"swap",
 	"craft",  ## 可選；缺檔時 play_craft_success 走 ui+reveal
+	"miss",  ## 可選；音檔另開 issue 做，缺檔時靜默（見 SFX_OPTIONAL）
 ]
+## 可以沒有音檔的 key：缺檔時 play() 直接靜默略過，連第一次警告都不印
+const SFX_OPTIONAL: Array[String] = ["craft", "miss"]
+## 音檔內的對拍點（秒，量自 MANIFEST 實測表）。畫面要對齊聲音時用這兩個，不要自己寫死數字。
+## swap：開播後 78 ms 卡榫扣入 —— 換欄那一拍（換武姿／新武器名）對這裡
+const SFX_SWAP_LATCH_SEC := 0.078
+## break：衝擊 0–80 ms；0.4 秒慢動作從開播後約 80 ms 起算，散落聲剛好在慢動作裡收完
+const SFX_BREAK_SLOWMO_DELAY_SEC := 0.08
 ## 戰鬥自動回饋一定要有的 key（battle HUD 直接呼叫 AudioManager.play(key)）
 const SFX_REQUIRED: Array[String] = ["swap", "break", "warn", "hit", "slash"]
 ## 還是程式合成的占位音效（要換真錄音）。swap 是 tools/gen_sfx_swap.py 合成的。
@@ -265,6 +273,8 @@ func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 		return
 	var stream: AudioStream = _streams.get(id)
 	if stream == null:
+		if id in SFX_OPTIONAL:
+			return
 		if not _missing_sfx_warned.has(id):
 			_missing_sfx_warned[id] = true
 			push_warning("SFX missing: %s/%s.wav（之後不再提示）" % [SFX_DIR, id])
