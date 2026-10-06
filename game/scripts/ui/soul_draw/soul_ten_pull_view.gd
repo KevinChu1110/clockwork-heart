@@ -9,26 +9,17 @@ const UiStyle := preload("res://scripts/ui/ui_style.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
+## ── 抽卡五色稀有度（白/藍/紫/金/彩） ──
 const TIER_COLORS := {
 	"white": {
 		"frame": Color("#667085"),
 		"bg": Color("#FFFDF8"),
 		"border": Color("#1F1A3A"),
 		"bottom": Color("#475467"),
-		"glow": Color(0.6, 0.65, 0.75, 0.5),
+		"glow": Color(0.40, 0.44, 0.52, 0.55),
 		"badge": Color("#EAECF0"),
 		"stars": "★ ☆ ☆",
 		"name": "普通"
-	},
-	"orange": {
-		"frame": Color("#FFA010"),
-		"bg": Color("#FFFDF8"),
-		"border": Color("#1F1A3A"),
-		"bottom": Color("#E68A00"),
-		"glow": Color(1.0, 0.63, 0.06, 0.65),
-		"badge": Color("#FFA010"),
-		"stars": "★ ★ ☆",
-		"name": "優良"
 	},
 	"blue": {
 		"frame": Color("#38A0FF"),
@@ -37,7 +28,7 @@ const TIER_COLORS := {
 		"bottom": Color("#1E88E5"),
 		"glow": Color(0.22, 0.63, 1.0, 0.65),
 		"badge": Color("#38A0FF"),
-		"stars": "★ ★ ★",
+		"stars": "★ ★ ☆",
 		"name": "稀有"
 	},
 	"purple": {
@@ -47,7 +38,7 @@ const TIER_COLORS := {
 		"bottom": Color("#8E24AA"),
 		"glow": Color(0.64, 0.35, 1.0, 0.70),
 		"badge": Color("#A259FF"),
-		"stars": "★ ★ ★ ★",
+		"stars": "★ ★ ★",
 		"name": "史詩"
 	},
 	"gold": {
@@ -57,25 +48,37 @@ const TIER_COLORS := {
 		"bottom": Color("#C48D00"),
 		"glow": Color(1.0, 0.82, 0.16, 0.75),
 		"badge": Color("#FFD028"),
-		"stars": "★ ★ ★ ★ ★",
+		"stars": "★ ★ ★ ★",
 		"name": "傳奇"
 	},
-	"red": {
-		"frame": Color("#FF4D4D"),
+	"rainbow": {
+		"frame": Color("#FF5E8A"),
 		"bg": Color("#FFFDF8"),
 		"border": Color("#1F1A3A"),
-		"bottom": Color("#B71C1C"),
-		"glow": Color(1.0, 0.30, 0.30, 0.80),
-		"badge": Color("#FF4D4D"),
+		"bottom": Color("#E056FD"),
+		"glow": Color(1.0, 0.45, 0.85, 0.85),
+		"badge": Color("#FF5E8A"),
 		"stars": "✦ ✦ ✦ ✦ ✦",
-		"name": "神話"
+		"name": "彩"
 	}
 }
+
+static func get_tier_data(tier_key: String) -> Dictionary:
+	var k := tier_key.to_lower()
+	if k == "orange":
+		k = "blue"
+	elif k == "red":
+		k = "rainbow"
+	if TIER_COLORS.has(k):
+		return TIER_COLORS[k]
+	return TIER_COLORS["blue"]
 
 const DROP_ASSETS := {
 	"drop_brass_gear": "res://assets/icons/core_slots/slot_04_transmission_gears.png",
 	"drop_spring_coil": "res://assets/icons/core_slots/slot_01_spring_generator.png",
-	"drop_core_shard": "res://assets/sprites/player/paperdoll/rabbit/optic_core/core_cyan_emerald_512.png",
+	"drop_core_shard": "res://assets/icons/core_slots/slot_05_resonance_core.png",
+	"drop_core_module": "res://assets/icons/core_slots/slot_05_resonance_core.png",
+	"drop_resonance_core": "res://assets/icons/core_slots/slot_05_resonance_core.png",
 	"junk_enamel_chip": "res://assets/icons/core_slots/slot_02_chassis_armor.png",
 	"outfit_cream": "res://assets/sprites/pack_a/v2/chars/xiaobai_base.png",
 	"outfit_brass_vest": "res://assets/sprites/pack_a/v2/chars/lion_base.png",
@@ -85,19 +88,23 @@ const DROP_ASSETS := {
 
 const DROP_TIERS := {
 	"junk_enamel_chip": "white",
-	"drop_brass_gear": "orange",
+	"drop_brass_gear": "blue",
 	"drop_spring_coil": "blue",
-	"outfit_cream": "purple",
+	"outfit_cream": "rainbow",
 	"outfit_brass_vest": "purple",
 	"outfit_scarf_tunic": "purple",
 	"outfit_worker_apron": "purple",
-	"drop_core_shard": "gold"
+	"drop_core_shard": "gold",
+	"drop_core_module": "gold",
+	"drop_resonance_core": "gold"
 }
 
 const DROP_NAMES := {
 	"drop_brass_gear": "黃銅齒輪",
 	"drop_spring_coil": "發條游絲",
-	"drop_core_shard": "核心碎片",
+	"drop_core_shard": "核心機芯",
+	"drop_core_module": "核心機芯",
+	"drop_resonance_core": "核心機芯",
 	"outfit_cream": "小白 · 奶油便服",
 	"outfit_brass_vest": "獅 · 黃銅背心",
 	"outfit_scarf_tunic": "狐 · 圍巾長衫",
@@ -265,13 +272,19 @@ func _create_mini_card(drop: Dictionary, index: int) -> Control:
 	var kind_display: String = _t(kind_raw)
 	var name_display: String = _t(name_raw)
 
-	var tier_key: String = DROP_TIERS.get(drop_id, "orange")
-	if kind_str == "outfit":
-		tier_key = "purple"
-	elif kind_str == "junk":
-		tier_key = "white"
+	# 決定稀有度色階（嚴格五色：白/藍/紫/金/彩）
+	var tier_key: String = DROP_TIERS.get(drop_id, "")
+	if tier_key.is_empty():
+		if kind_str == "outfit":
+			tier_key = "purple"
+		elif kind_str == "junk":
+			tier_key = "white"
+		elif kind_str == "part":
+			tier_key = "blue"
+		else:
+			tier_key = "blue"
 
-	var tier_data: Dictionary = TIER_COLORS.get(tier_key, TIER_COLORS["orange"])
+	var tier_data: Dictionary = get_tier_data(tier_key)
 
 	var root_card := Control.new()
 	root_card.custom_minimum_size = Vector2(210, 240)
@@ -289,11 +302,21 @@ func _create_mini_card(drop: Dictionary, index: int) -> Control:
 	style.shadow_color = tier_data.get("glow", Color(1, 0.8, 0.2, 0.6))
 	style.shadow_size = 14
 	panel.add_theme_stylebox_override("panel", style)
+
+	if tier_key == "rainbow":
+		var rainbow_tw := root_card.create_tween().set_loops()
+		rainbow_tw.tween_property(style, "border_color", Color("#FF5E8A"), 0.35)
+		rainbow_tw.tween_property(style, "border_color", Color("#FFA010"), 0.35)
+		rainbow_tw.tween_property(style, "border_color", Color("#FFD028"), 0.35)
+		rainbow_tw.tween_property(style, "border_color", Color("#4ED86A"), 0.35)
+		rainbow_tw.tween_property(style, "border_color", Color("#38A0FF"), 0.35)
+		rainbow_tw.tween_property(style, "border_color", Color("#A259FF"), 0.35)
+
 	root_card.add_child(panel)
 
 	# 頂部星級與稀有度
 	var top_lbl := Label.new()
-	top_lbl.text = "%s %s" % [tier_data.get("stars", "★ ★"), tier_data.get("name", "")]
+	top_lbl.text = "%s %s" % [tier_data.get("stars", "★ ★"), _t(str(tier_data.get("name", "")))]
 	top_lbl.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	top_lbl.offset_top = 10
 	top_lbl.offset_bottom = 30
@@ -328,6 +351,7 @@ func _create_mini_card(drop: Dictionary, index: int) -> Control:
 	art.offset_bottom = -54
 	art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	art.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	art.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	var asset_path: String = DROP_ASSETS.get(drop_id, "")
 	if asset_path != "" and ResourceLoader.exists(asset_path):
 		art.texture = load(asset_path) as Texture2D

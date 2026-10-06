@@ -249,12 +249,12 @@ func _run_test_suite() -> void:
 				"es": "Pieza"
 			},
 			"expected_drop_lbl": {
-				"zh_TW": "【零件】 核心碎片",
-				"zh_CN": "【零件】 核心碎片",
-				"en": "【Part】 Core Shard",
-				"ja": "【パーツ】 コアの破片",
-				"ko": "【부품】 코어 조각",
-				"es": "【Pieza】 Fragmento de núcleo"
+				"zh_TW": "【零件】 核心機芯",
+				"zh_CN": "【零件】 核心机芯",
+				"en": "【Part】 Core Movement",
+				"ja": "【パーツ】 コアムーブメント",
+				"ko": "【부품】 코어 무브먼트",
+				"es": "【Pieza】 Mecanismo central"
 			}
 		},
 		{
