@@ -5480,8 +5480,8 @@
    "id": "soul-card-complete-parts",
    "cat": "遊戲",
    "title": "抽卡卡面完整零件化與五色稀有度框對齊",
-   "status": "開發中",
-   "note": "派工 sideworker2（阿翔）",
+   "status": "測試中",
+   "note": "十連抽卡面完整零件化與五色稀有度框對齊已完成，送審 sideqa",
    "keys": [
     "抽卡卡面完整零件"
    ]
