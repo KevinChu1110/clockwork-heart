@@ -1,114 +1,13 @@
 extends Control
-## 抽魂結果卡：多巴胺果凍色階光框（白/橘/藍/紫/金/紅）與立體流光效果。
-## 支援透明高清立繪與零件圖示，徹底消除簡報 PPT 感。
+## 抽魂結果卡：稀有度框只有五色（白/藍/紫/金/彩），卡面一律是完整零件圖。
+## 卡圖／名稱／框色統一從 soul_draw_card_catalog.gd 取。
 
 const UiStyle := preload("res://scripts/ui/ui_style.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const DEFAULT_CARD := "res://assets/sprites/pack_a/v2/ui/soul_result_card.png"
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
-## ── 多巴胺色階定義（白/橘/藍/紫/金/紅） ──
-const TIER_COLORS := {
-	"white": {
-		"frame": Color("#667085"),
-		"bg": Color("#FFFDF8"),
-		"border": Color("#1F1A3A"),
-		"bottom": Color("#475467"),
-		"glow": Color(0.6, 0.65, 0.75, 0.55),
-		"badge": Color("#EAECF0"),
-		"stars": "★ ★ ☆ ☆ ☆",
-		"name": "普通"
-	},
-	"orange": {
-		"frame": Color("#FFA010"),
-		"bg": Color("#FFFDF8"),
-		"border": Color("#1F1A3A"),
-		"bottom": Color("#E68A00"),
-		"glow": Color(1.0, 0.63, 0.06, 0.65),
-		"badge": Color("#FFA010"),
-		"stars": "★ ★ ★ ☆ ☆",
-		"name": "優良"
-	},
-	"blue": {
-		"frame": Color("#38A0FF"),
-		"bg": Color("#FFFDF8"),
-		"border": Color("#1F1A3A"),
-		"bottom": Color("#1E88E5"),
-		"glow": Color(0.22, 0.63, 1.0, 0.65),
-		"badge": Color("#38A0FF"),
-		"stars": "★ ★ ★ ★ ☆",
-		"name": "稀有"
-	},
-	"purple": {
-		"frame": Color("#A259FF"),
-		"bg": Color("#FFFDF8"),
-		"border": Color("#1F1A3A"),
-		"bottom": Color("#8E24AA"),
-		"glow": Color(0.64, 0.35, 1.0, 0.70),
-		"badge": Color("#A259FF"),
-		"stars": "★ ★ ★ ★ ★",
-		"name": "史詩"
-	},
-	"gold": {
-		"frame": Color("#FFD028"),
-		"bg": Color("#FFFDF8"),
-		"border": Color("#1F1A3A"),
-		"bottom": Color("#C48D00"),
-		"glow": Color(1.0, 0.82, 0.16, 0.75),
-		"badge": Color("#FFD028"),
-		"stars": "★ ★ ★ ★ ★ ★",
-		"name": "傳奇"
-	},
-	"red": {
-		"frame": Color("#FF4D4D"),
-		"bg": Color("#FFFDF8"),
-		"border": Color("#1F1A3A"),
-		"bottom": Color("#B71C1C"),
-		"glow": Color(1.0, 0.30, 0.30, 0.80),
-		"badge": Color("#FF4D4D"),
-		"stars": "✦ ✦ ✦ ✦ ✦ ✦",
-		"name": "神話"
-	}
-}
-
-const DROP_ASSETS := {
-	"drop_brass_gear": "res://assets/icons/core_slots/slot_04_transmission_gears.png",
-	"drop_spring_coil": "res://assets/icons/core_slots/slot_01_spring_generator.png",
-	"drop_core_shard": "res://assets/sprites/player/paperdoll/rabbit/optic_core/core_cyan_emerald_512.png",
-	"junk_enamel_chip": "res://assets/icons/core_slots/slot_02_chassis_armor.png",
-	"outfit_cream": "res://assets/sprites/pack_a/v2/chars/xiaobai_base.png",
-	"outfit_brass_vest": "res://assets/sprites/pack_a/v2/chars/lion_base.png",
-	"outfit_scarf_tunic": "res://assets/sprites/pack_a/v2/chars/fox_base.png",
-	"outfit_worker_apron": "res://assets/sprites/pack_a/v2/chars/pig_base.png"
-}
-
-const DROP_TIERS := {
-	"junk_enamel_chip": "white",
-	"drop_brass_gear": "orange",
-	"drop_spring_coil": "blue",
-	"outfit_cream": "purple",
-	"outfit_brass_vest": "purple",
-	"outfit_scarf_tunic": "purple",
-	"outfit_worker_apron": "purple",
-	"drop_core_shard": "gold"
-}
-
-const DROP_NAMES := {
-	"drop_brass_gear": "黃銅齒輪",
-	"drop_spring_coil": "發條游絲",
-	"drop_core_shard": "核心碎片",
-	"outfit_cream": "小白 · 奶油便服",
-	"outfit_brass_vest": "獅 · 黃銅背心",
-	"outfit_scarf_tunic": "狐 · 圍巾長衫",
-	"outfit_worker_apron": "野豬 · 工匠工裙",
-	"junk_enamel_chip": "搪瓷碎屑"
-}
-
-const KIND_NAMES := {
-	"outfit": "換裝",
-	"part": "零件",
-	"junk": "雜件"
-}
+const Catalog := preload("res://scripts/ui/soul_draw/soul_draw_card_catalog.gd")
 
 var _card_panel: Panel
 var _shimmer_container: Control
@@ -383,16 +282,13 @@ func _render_placeholder() -> void:
 	_ensure()
 	_load_i18n()
 
-	var tier_data: Dictionary = TIER_COLORS["gold"]
+	var tier_data: Dictionary = Catalog.frame_data("gold")
 	_card_panel.add_theme_stylebox_override("panel", _build_card_style(tier_data))
-	_stars_lbl.text = "✦ ✦ ✦ ✦ ✦"
+	_set_rainbow(false)
+	_stars_lbl.text = ""
 	_stars_lbl.add_theme_color_override("font_color", tier_data.frame)
 
-	var default_icon := "res://assets/sprites/player/paperdoll/rabbit/winding_key/key_classic_brass_512.png"
-	if ResourceLoader.exists(default_icon):
-		_art.texture = load(default_icon) as Texture2D
-	elif ResourceLoader.exists(DEFAULT_CARD):
-		_art.texture = load(DEFAULT_CARD) as Texture2D
+	_art.texture = Catalog.idle_texture()
 
 	_badge_lbl.text = _t("封靈")
 	_badge.add_theme_stylebox_override("panel", _build_badge_style(tier_data.badge))
@@ -412,25 +308,22 @@ func _render_drop() -> void:
 	_ensure()
 	_load_i18n()
 
-	var kind_str: String = str(_current_drop.get("kind", ""))
-	var drop_id: String = str(_current_drop.get("DropId", ""))
-	var kind_raw: String = KIND_NAMES.get(kind_str, kind_str)
-	var name_raw: String = DROP_NAMES.get(drop_id, drop_id)
-	var kind_display: String = _t(kind_raw)
-	var name_display: String = _t(name_raw)
+	var drop: Dictionary = Catalog.normalize_drop(_current_drop)
+	var kind_str: String = str(drop.get("kind", ""))
+	var drop_id: String = str(drop.get("DropId", ""))
+	var kind_display: String = _t(Catalog.kind_name(kind_str))
+	var name_display: String = _t(Catalog.drop_name(drop_id))
 
-	# 決定稀有度色階
-	var tier_key: String = DROP_TIERS.get(drop_id, "orange")
-	if kind_str == "outfit":
-		tier_key = "purple"
-	elif kind_str == "junk":
-		tier_key = "white"
-
-	var tier_data: Dictionary = TIER_COLORS.get(tier_key, TIER_COLORS["orange"])
+	# 稀有度只顯示五色框
+	var frame_key: String = Catalog.frame_key_for_drop(drop)
+	var tier_data: Dictionary = Catalog.frame_data(frame_key)
+	set_meta("frame", frame_key)
+	set_meta("drop_id", drop_id)
 
 	# 套用果凍色階光框
 	_card_panel.add_theme_stylebox_override("panel", _build_card_style(tier_data))
-	_stars_lbl.text = "%s  %s" % [tier_data.get("stars", "★ ★ ★ ★ ☆"), tier_data.get("name", "")]
+	_set_rainbow(bool(tier_data.get("rainbow", false)))
+	_stars_lbl.text = "%s  %s" % [tier_data.get("stars", "★"), _t(str(tier_data.get("name", "")))]
 	_stars_lbl.add_theme_color_override("font_color", tier_data.frame)
 
 	# 更新微光光輪顏色
@@ -440,17 +333,22 @@ func _render_drop() -> void:
 			h_style.shadow_color = tier_data.get("glow", Color(1, 0.8, 0.2, 0.5))
 
 	# 載入精緻立繪或純淨透明零件圖示
-	var asset_path: String = DROP_ASSETS.get(drop_id, "")
-	if asset_path != "" and ResourceLoader.exists(asset_path):
-		_art.texture = load(asset_path) as Texture2D
-	elif ResourceLoader.exists(_current_card_path):
-		_art.texture = load(_current_card_path) as Texture2D
+	_art.texture = Catalog.art_texture(drop_id)
 
 	_badge_lbl.text = kind_display
 	_badge.add_theme_stylebox_override("panel", _build_badge_style(tier_data.badge))
 
 	_label.text = tr_key(_current_toast_key)
 	_drop_lbl.text = "【%s】 %s" % [kind_display, name_display]
+
+
+func _set_rainbow(on: bool) -> void:
+	var band: Node = _card_panel.get_node_or_null("RainbowBand")
+	if on and band == null:
+		band = Catalog.rainbow_band(6)
+		_card_panel.add_child(band)
+	if band != null:
+		(band as CanvasItem).visible = on
 
 
 func refresh() -> void:

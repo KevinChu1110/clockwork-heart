@@ -1811,6 +1811,13 @@
   "白狐像閉著眼。香灰未冷。": "The white fox statue has its eyes closed. The incense ash is still warm.",
   "白狐像閉著眼。香灰未冷。耳後一截發條卡在半途，轉不動也退不回。": "The white fox statue keeps its eyes closed. Incense ashes linger warm. Behind its ear, a spring is jammed halfway—neither advancing nor retracting.",
   "白金兔": "Clockwork Rabbit",
+  "胡桃鉗兔": "Nutcracker Rabbit",
+  "八音盒": "Music Box",
+  "錫兵": "Tin Soldier",
+  "旋轉木馬": "Carousel",
+  "錫兵 · 黃銅背心": "Tin Soldier · Brass Vest",
+  "八音盒 · 圍巾長衫": "Music Box · Scarf Tunic",
+  "錫兵 · 工匠工裙": "Tin Soldier · Artisan Apron",
   "白霧": "White Fog",
   "白霧、霧崖與鏡廊。看破虛影。": "White Fog, mist cliff and Mirror Hall. See through the illusions.",
   "白霧之地": "Lands of White Fog",
@@ -3533,5 +3540,10 @@
   "再連轉一次": "Draw 10 Again",
   "soul.btn_pull_ten_again": "Draw 10 Again",
   "跳過": "Skip",
-  "soul.btn_skip": "Skip"
+  "soul.btn_skip": "Skip",
+  "普通": "Common",
+  "精良": "Fine",
+  "稀有": "Rare",
+  "傳說": "Legendary",
+  "炫彩": "Prismatic"
 }
