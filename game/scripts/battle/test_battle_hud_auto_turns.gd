@@ -229,7 +229,19 @@ func _process(_delta: float) -> bool:
 			# 7. 部位破壞慢動作
 			print("--- 5. 驗證部位破壞 0.4 秒慢動作 ---")
 			_battle.call("_on_event", "part_broken", {"boss_id": "wolf", "part_name": "測試部位", "part_id": "t"})
-			if Engine.time_scale >= 0.99 or not bool(_battle.get("_in_slowmo")):
+			## break 音檔衝擊 0–80 ms，慢動作在開播後約 80 ms 才開始（#46）
+			if not bool(_battle.get("_in_slowmo")):
+				_fail("部位破壞後應立刻標記 _in_slowmo（擋掉 hit-stop）")
+			elif Engine.time_scale < 0.99:
+				_fail("慢動作要等 break 衝擊 80 ms 後才開始，不該立刻降速（time_scale=%.2f）" % Engine.time_scale)
+			else:
+				print("  ✓ 部位破壞：先讓 break 衝擊響 80 ms，慢動作待命")
+			_step = 21
+			_wait = 0
+		21:
+			if Engine.time_scale >= 0.99 and bool(_battle.get("_in_slowmo")) and _wait < 600:
+				return false
+			if Engine.time_scale >= 0.99:
 				_fail("部位破壞後應進慢動作（time_scale=%.2f）" % Engine.time_scale)
 			else:
 				print("  ✓ 部位破壞進慢動作 time_scale=%.2f" % Engine.time_scale)

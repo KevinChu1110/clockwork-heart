@@ -3242,7 +3242,8 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			# Alice 糖果屑（粉紫奶油琺瑯＋黃銅屑）；⛔ 不用焊花主特效
 			_spawn_candy_chip_break(boss_id, data)
 			_shake = 0.5
-			_sfx("break")
+			if not _audio_plays_battle_events():
+				_sfx("break")
 			_play_break_slowmo()
 			_flash(_body_of(boss_id), Color(3.0, 2.5, 1.0))
 			_set_boss_pose("recover")
@@ -3833,7 +3834,16 @@ func _sfx(key: String, pitch: float = 1.0, volume_db: float = 0.0) -> void:
 ## new_label 為空＝三欄用盡改空手。
 func _play_swap_beat(new_label: String) -> void:
 	_beat_hold_left = maxf(_beat_hold_left, SWAP_BEAT_SEC)
-	_sfx("swap")
+	if not _audio_plays_battle_events():
+		_sfx("swap")
+	## 卡榫在音檔第 78 ms 扣入（#46）：換武姿／新武器名等那一下再出來，聲畫同拍
+	get_tree().create_timer(_sfx_sync("SFX_SWAP_LATCH_SEC", 0.078), true, false, true).timeout.connect(func():
+		if is_instance_valid(self) and not _ended:
+			_show_swap_beat(new_label)
+	)
+
+
+func _show_swap_beat(new_label: String) -> void:
 	if _player_race.is_empty():
 		_player_race = SpriteDB.player_race()
 	if SpriteDB.player_pose("swap", _player_race) != null:
@@ -3847,15 +3857,38 @@ func _play_swap_beat(new_label: String) -> void:
 
 
 ## 部位破壞的 0.4 秒慢動作（真實時間計時，不受慢速本身拖長）。
+## break 音檔衝擊在 0–80 ms，慢動作從開播後約 80 ms 起算（#46）；這 80 ms 先把
+## _in_slowmo 立起來，免得一般命中的 hit-stop 插進來。
 func _play_break_slowmo() -> void:
 	if not is_inside_tree() or _ended:
 		return
 	_in_slowmo = true
-	Engine.time_scale = BREAK_SLOWMO_SCALE
-	get_tree().create_timer(BREAK_SLOWMO_SEC, true, false, true).timeout.connect(func():
-		_in_slowmo = false
-		Engine.time_scale = 1.0
+	get_tree().create_timer(_sfx_sync("SFX_BREAK_SLOWMO_DELAY_SEC", 0.08), true, false, true).timeout.connect(func():
+		if not is_instance_valid(self) or _ended or not _in_slowmo:
+			return
+		Engine.time_scale = BREAK_SLOWMO_SCALE
+		get_tree().create_timer(BREAK_SLOWMO_SEC, true, false, true).timeout.connect(func():
+			_in_slowmo = false
+			Engine.time_scale = 1.0
+		)
 	)
+
+
+## 音檔對拍點（秒）。AudioManager 有宣告就用它的（#46），舊版沒有就用 MANIFEST 實測值。
+func _sfx_sync(const_name: String, fallback: float) -> float:
+	var am := get_node_or_null("/root/AudioManager")
+	if am != null:
+		var v: Variant = am.get(const_name)
+		if typeof(v) == TYPE_FLOAT or typeof(v) == TYPE_INT:
+			return float(v)
+	return fallback
+
+
+## AudioManager 已經從 sim 的 weapon_swap／part_break 事件播 swap／break 的話（#46），
+## 畫面這邊就不要再播一次，否則同一拍會疊兩聲。
+func _audio_plays_battle_events() -> bool:
+	var am := get_node_or_null("/root/AudioManager")
+	return am != null and am.get("SFX_SWAP_LATCH_SEC") != null
 
 
 ## Boss 部位快破了：warn 響一次（提醒「要破了」，不是格擋窗）。
