@@ -10,6 +10,7 @@ const OutlineShader = preload("res://shaders/outline.gdshader")
 const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
+const WindingKeyAnimator = preload("res://scripts/art/winding_key_animator.gd")
 
 const FONT_HUNINN_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 static var _cached_huninn: Font = null
@@ -2054,19 +2055,26 @@ func _apply_battle_art(mode: String) -> void:
 	_ensure_battle_look()
 	_player_race = SpriteDB.player_race()
 	_player_pose = "idle"
-	var ptex := _get_player_equipped_idle_texture()
-	if ptex != null and ptex.get_width() >= 256:
-		player_body.texture = ptex
-		player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-		_player_tex_has_baked_shadow = _texture_has_baked_shadow(ptex)
-	else:
-		var sc := SpriteDB.hero_showcase_hd_tex(_player_race)
-		if sc != null and sc.get_width() >= 256:
-			player_body.texture = sc
+	var slots: Dictionary = {}
+	if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
+		slots = (GameState.paperdoll_slots as Dictionary).duplicate()
+	var anim := WindingKeyAnimator.setup_for(player_body, _player_race, slots)
+	if anim == null or player_body.texture == null:
+		var ptex := _get_player_equipped_idle_texture()
+		if ptex != null and ptex.get_width() >= 256:
+			player_body.texture = ptex
 			player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-			_player_tex_has_baked_shadow = _texture_has_baked_shadow(sc)
+			_player_tex_has_baked_shadow = _texture_has_baked_shadow(ptex)
 		else:
-			player_body.texture = null
+			var sc := SpriteDB.hero_showcase_hd_tex(_player_race)
+			if sc != null and sc.get_width() >= 256:
+				player_body.texture = sc
+				player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+				_player_tex_has_baked_shadow = _texture_has_baked_shadow(sc)
+			else:
+				player_body.texture = null
+	else:
+		_player_tex_has_baked_shadow = false
 	player_body.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	player_body.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	player_body.custom_minimum_size = Vector2(200, 250)
@@ -3456,6 +3464,24 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 	_player_pose = pose
 	if _player_race.is_empty():
 		_player_race = SpriteDB.player_race()
+	var k_rect := player_body.get_node_or_null("HeroWindingKey") as TextureRect
+	if pose == "idle":
+		var slots: Dictionary = {}
+		if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
+			slots = (GameState.paperdoll_slots as Dictionary).duplicate()
+		var anim := WindingKeyAnimator.setup_for(player_body, _player_race, slots)
+		if anim != null and player_body.texture != null:
+			if k_rect:
+				k_rect.visible = true
+			_player_tex_has_baked_shadow = false
+			_layout_foot_shadow(player_body)
+			if _player_pose_tween and _player_pose_tween.is_valid():
+				_player_pose_tween.kill()
+				_player_pose_tween = null
+			_start_breathe_tween()
+			return
+	if k_rect:
+		k_rect.visible = false
 	var t: Texture2D = null
 	if pose == "idle":
 		t = _get_player_equipped_idle_texture()

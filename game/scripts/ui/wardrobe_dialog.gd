@@ -23,6 +23,7 @@ const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const WindingKeyAnimator = preload("res://scripts/art/winding_key_animator.gd")
 
 static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
@@ -1817,6 +1818,9 @@ func _update_preview() -> void:
 	if _preview_rect == null:
 		return
 	var sel := get_current_selections()
+	var anim := WindingKeyAnimator.setup_for(_preview_rect, current_race, sel)
+	if anim != null and _preview_rect.texture != null:
+		return
 	var idle_tex: Texture2D = SpriteDB.player_equipped_idle(current_race, sel)
 	if idle_tex != null:
 		_preview_rect.texture = idle_tex

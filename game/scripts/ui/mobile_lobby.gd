@@ -13,6 +13,7 @@ const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
+const WindingKeyAnimator = preload("res://scripts/art/winding_key_animator.gd")
 
 ## ── 多巴胺鮮亮色盤標準 (對齊 mobile_settings / maple_hud / review.md) ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
@@ -493,34 +494,38 @@ func _apply_hero_idle_visual() -> void:
 		else:
 			hd = null
 
-	var body_tex: Texture2D = _hero_body_display_tex()
-	var key_tex: Texture2D = _get_hero_key_tex(race, slots)
-
-	if _hero_key_avatar:
-		if body_tex != null and key_tex != null:
-			_hero_key_avatar.texture = key_tex
-			_hero_key_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-			_hero_key_avatar.pivot_offset = KEY_PIVOTS_320.get(race, Vector2(103, 186))
-			_hero_key_avatar.visible = true
-		else:
-			_hero_key_avatar.texture = null
-			_hero_key_avatar.visible = false
-
 	if _hero_avatar:
-		if body_tex != null and key_tex != null:
-			_hero_avatar.texture = body_tex
-			_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-		elif hd != null and hd.get_width() >= 256:
-			_hero_avatar.texture = hd
-			_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-		else:
-			_hero_avatar.texture = null
+		var anim := WindingKeyAnimator.setup_for(_hero_avatar, race, slots)
+		var k_child := _hero_avatar.get_node_or_null("HeroWindingKey") as TextureRect
+		if k_child:
+			_hero_key_avatar = k_child
+			if _hero_key_avatar.material == null:
+				var key_rim_mat := ShaderMaterial.new()
+				key_rim_mat.shader = RimLightShader
+				key_rim_mat.set_shader_parameter("outline_color", Color(0.22, 0.14, 0.09, 1.0))
+				key_rim_mat.set_shader_parameter("outline_width", 2.2)
+				key_rim_mat.set_shader_parameter("outline_enabled", true)
+				key_rim_mat.set_shader_parameter("rim_enabled", true)
+				key_rim_mat.set_shader_parameter("rim_color", Color(1.0, 0.85, 0.28, 1.0))
+				key_rim_mat.set_shader_parameter("rim_width", 5.0)
+				key_rim_mat.set_shader_parameter("rim_intensity", 1.8)
+				key_rim_mat.set_shader_parameter("rim_direction", Vector2(0.15, -0.95))
+				_hero_key_avatar.material = key_rim_mat
+		if anim == null or _hero_avatar.texture == null:
+			if hd != null and hd.get_width() >= 256:
+				_hero_avatar.texture = hd
+				_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+			else:
+				_hero_avatar.texture = null
+
 	if _char_prev:
-		if hd != null and hd.get_width() >= 256:
-			_char_prev.texture = hd
-			_char_prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-		else:
-			_char_prev.texture = null
+		var anim_char := WindingKeyAnimator.setup_for(_char_prev, race, slots)
+		if anim_char == null or _char_prev.texture == null:
+			if hd != null and hd.get_width() >= 256:
+				_char_prev.texture = hd
+				_char_prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+			else:
+				_char_prev.texture = null
 	_refresh_equip_schematic()
 
 
