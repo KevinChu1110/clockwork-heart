@@ -1,12 +1,9 @@
 extends SceneTree
 ## 戰鬥快捷鍵的把關測試：godot --headless -s res://scripts/battle/test_battle_keys.gd
 ##
-## 守一件事：**戰鬥中一個鍵只做一件事。**
-##
-## 踩過：武器欄綁 1／2／3、暴怒綁 4／F，而底部快捷欄 1–8 的格子上就印著數字。
-## BattleView 在樹上比 main 深、先收到事件，卻沒有 set_input_as_handled，
-## 於是按 1 是「換到欄 1 同時喝掉格 1 的藥」、按 4 是「暴怒同時吃掉格 4」。
-## 不報錯、不當掉，玩家只會發現藥莫名其妙少了。
+## 守兩件事：
+##   1. 戰鬥中一個鍵只做一件事 —— 數字鍵 1–8 是快捷欄（喝藥），不准順便換武或暴怒。
+##   2. 自動回合（任務書 §0）：F／X／J 不再是暴怒／換武／格擋。按了戰鬥不能有反應。
 ##
 ## 走真的主場景，用 Input.parse_input_event 打真的鍵。
 
@@ -15,6 +12,7 @@ var _step := 0
 var _wait := 0
 var _main: Node = null
 var _sim = null
+var _battle: Node = null
 var _count_before := 0
 var _hp_before := 0
 
@@ -92,6 +90,7 @@ func _process(_d: float) -> bool:
 				return false
 			var host: Node = _main.get("host")
 			var battle: Node = host.get_child(host.get_child_count() - 1) if host and host.get_child_count() > 0 else null
+			_battle = battle
 			_sim = battle.get("sim") if battle != null else null
 			var p = _player()
 			if p == null:
@@ -139,7 +138,13 @@ func _process(_d: float) -> bool:
 				_fail("按 4 喝藥的同時進了暴怒 —— 一個鍵做了兩件事")
 			else:
 				print("  ok 按 4 只喝格 4 的藥，不暴怒")
-			## 按 F：暴怒，快捷欄不動
+			## 按 F：自動回合不暴怒，快捷欄也不動。
+			## 先停掉戰鬥 _process（sim 不走），排除自動放招／自動暴怒的干擾，只看按鍵本身。
+			if _battle:
+				_battle.set_process(false)
+			p.fury_active = false
+			p.fury_timer = 0.0
+			p.rage = 100.0
 			_count_before = inv.count("hp_s")
 			_press(KEY_F)
 			_step = 4
@@ -148,26 +153,28 @@ func _process(_d: float) -> bool:
 			if _wait < 3:
 				return false
 			var p = _player()
-			if not bool(p.fury_active):
-				_fail("按 F 沒有進暴怒")
+			if bool(p.fury_active) or float(p.rage) < 100.0:
+				_fail("按 F 進了暴怒 —— 自動回合不該有手動暴怒")
 			elif inv.count("hp_s") != _count_before:
-				_fail("按 F 暴怒的同時吃掉了快捷欄的藥（%d → %d）" % [_count_before, inv.count("hp_s")])
+				_fail("按 F 吃掉了快捷欄的藥（%d → %d）" % [_count_before, inv.count("hp_s")])
 			else:
-				print("  ok 按 F 暴怒，快捷欄不動")
-			## 按 X：換到欄 2，不碰道具
+				print("  ok 按 F 沒有手動暴怒，快捷欄不動")
+			## 按 X／Z／C：自動回合不手動換武
 			_count_before = inv.count("hp_s")
 			_press(KEY_X)
+			_press(KEY_Z)
+			_press(KEY_C)
 			_step = 5
 			_wait = 0
 		5:
 			if _wait < 3:
 				return false
 			if inv.count("hp_s") != _count_before:
-				_fail("按 X 切武器欄居然也喝了藥")
-			elif int(_sim.weapon_bar_active) != 1:
-				_fail("按 X 沒有換到欄 2（作用欄 %d）" % int(_sim.weapon_bar_active))
+				_fail("按 X／Z／C 居然喝了藥")
+			elif int(_sim.weapon_bar_active) != 0:
+				_fail("按 X／Z／C 手動換了武器欄（作用欄 %d）" % (int(_sim.weapon_bar_active) + 1))
 			else:
-				print("  ok 按 X 換到欄 2，不碰道具")
+				print("  ok 按 X／Z／C 不換武，不碰道具")
 			return _finish()
 	return false
 

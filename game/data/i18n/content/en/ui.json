@@ -3533,5 +3533,21 @@
   "再連轉一次": "Draw 10 Again",
   "soul.btn_pull_ten_again": "Draw 10 Again",
   "跳過": "Skip",
-  "soul.btn_skip": "Skip"
+  "soul.btn_skip": "Skip",
+  "[color=#8ff]%s停擺，換上%s[/color]": "[color=#8ff]%s winds down. Switching to %s[/color]",
+  "[color=#fc8]%s停擺，三欄用盡，改用赤手[/color]": "[color=#fc8]%s winds down. All three slots spent, bare hands now[/color]",
+  "彈開": "Deflect",
+  "[color=#ffd700]自動彈開 · %s[/color]": "[color=#ffd700]Auto deflect · %s[/color]",
+  "[color=#f66]%s蓄力中[/color]": "[color=#f66]%s charging[/color]",
+  "%s蓄力中": "%s charging",
+  "二周目：敵人更硬，空檔更窄。": "New Game+: enemies are tougher, windows narrower.",
+  "盾破了防禦會降；盔破了牠會暴。": "Break the shield and its defense drops; break the helm and it rages.",
+  "[color=#fc0]本體血量壓到七成、四成時，部位會自動破[/color]": "[color=#fc0]Parts break on their own once the body drops to 70% and 40% HP[/color]",
+  "王者斬蓄力時會自動彈開 · 看部位條": "The King's Cut is deflected automatically · watch the part bars",
+  "本體發白時才打得中": "Hits only land while the real body glows white",
+  "架勢散開時傷害吃滿": "Full damage once its stance breaks",
+  "牠停下那一拍才吃滿傷害": "It only takes full damage in the beat it stops",
+  "衝鋒對撞會剝掉岩甲": "Clashing with its charge strips the rock armor",
+  "半血時記得選「我拒絕」": "At half HP, remember to pick \"I refuse\"",
+  "自動戰鬥 · 次數用完會自動換武": "Auto battle · weapons swap on their own when uses run out"
 }

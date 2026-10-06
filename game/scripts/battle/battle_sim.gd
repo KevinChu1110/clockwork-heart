@@ -3344,10 +3344,14 @@ func _enter_bare_fist(u: BattleUnit) -> void:
 	var tempo: Dictionary = Formulas.bare_fist_tempo()
 	u.windup_time = float(tempo.get("windup", 0.20))
 	u.recover_time = float(tempo.get("recover", 0.32))
+	var last_bar: Dictionary = weapon_bars[weapon_bar_active] \
+		if weapon_bar_active >= 0 and weapon_bar_active < weapon_bars.size() else {}
 	_emit("bare_fist", {
 		"id": u.id,
 		"atk": u.atk,
 		"armed_atk": u.armed_atk,
+		## 戰報「X停擺，三欄用盡，改用赤手」用
+		"old_name": _get_bar_name(last_bar) if not last_bar.is_empty() else "",
 	})
 
 
