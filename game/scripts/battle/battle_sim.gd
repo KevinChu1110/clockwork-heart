@@ -2491,8 +2491,10 @@ static func make_demon_fight(player_stats: Dictionary) -> BattleSim:
 	return sim
 
 
-static func make_fog_fight(player_stats: Dictionary) -> BattleSim:
-	var sim := BattleSim.new()
+## seed：幻影速度在建場時就會擲 sim.rng，建完再設 sim.rng.seed 已經來不及。
+## 要重現（測試／平衡模擬）就從這裡傳；0＝隨機（遊戲內預設）。
+static func make_fog_fight(player_stats: Dictionary, seed: int = 0) -> BattleSim:
+	var sim := BattleSim.new(seed)
 	sim.fog_mode = true
 	sim.fog_vuln_cd = 1.2  ## 開場稍後第一次破綻
 	var p := BattleUnit.new()
