@@ -93,19 +93,13 @@
     {
       "DropId": "drop_brass_gear",
       "kind": "part",
-      "weight": 28,
+      "weight": 35,
       "toastKey": "soul.pull_part"
     },
     {
       "DropId": "drop_spring_coil",
       "kind": "part",
-      "weight": 28,
-      "toastKey": "soul.pull_part"
-    },
-    {
-      "DropId": "drop_core_shard",
-      "kind": "part",
-      "weight": 14,
+      "weight": 35,
       "toastKey": "soul.pull_part"
     },
     {
@@ -162,7 +156,15 @@
   },
   "dropAliases": {
     "junk_scrap": "junk_enamel_chip",
-    "junk": "junk_enamel_chip"
+    "junk": "junk_enamel_chip",
+    "drop_core_shard": "drop_spring_coil"
+  },
+  "retiredDrops": {
+    "drop_core_shard": {
+      "replacedBy": "drop_spring_coil",
+      "date": "2026-10-06",
+      "note": "卡面作廢（美術任務書 §2）；原 14 權重平分給黃銅齒輪／發條游絲，總權重仍 100"
+    }
   },
   "idNote": "canonical CharacterId=xiaobai; rabbit is alias only"
 }

@@ -248,13 +248,14 @@ func _run_test_suite() -> void:
 				"ko": "부품",
 				"es": "Pieza"
 			},
+			## 核心碎片卡已作廢：舊掉落字典要顯示成接手的發條游絲
 			"expected_drop_lbl": {
-				"zh_TW": "【零件】 核心碎片",
-				"zh_CN": "【零件】 核心碎片",
-				"en": "【Part】 Core Shard",
-				"ja": "【パーツ】 コアの破片",
-				"ko": "【부품】 코어 조각",
-				"es": "【Pieza】 Fragmento de núcleo"
+				"zh_TW": "【零件】 發條游絲",
+				"zh_CN": "【零件】 发条游丝",
+				"en": "【Part】 Balance Spring",
+				"ja": "【パーツ】 ヒゲゼンマイ",
+				"ko": "【부품】 태엽 헤어스프링",
+				"es": "【Pieza】 Espiral de cuerda"
 			}
 		},
 		{
