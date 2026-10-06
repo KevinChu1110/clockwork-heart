@@ -18,21 +18,27 @@
 讓短於 400 ms 的音也有完整視窗（等於把能量平均到 400 ms，越短越小聲，正好符合「短促不搶戲」）。
 峰值一律用 **true peak（4× 超取樣）≤ −1 dBTP**。
 
-| 層級 | key | M-max 目標 | 理由 |
-|------|-----|-----------|------|
-| 事件 cue | swap、break、warn | −18 LUFS（±1） | 一場只響幾次、要聽得出「發生事了」 |
-| 頻繁回饋 | hit、slash | −21 LUFS（±1） | 每次命中都會響、和跳字同一瞬間，比事件 cue 低 3 LU，不蓋過跳字 |
-| 戰前 | wind | −20 LUFS（±1） | 戰前上鏈，和 battle BGM 起頭疊在一起，不要搶 |
+| 層級 | key | M-max 目標 | true peak 上限 | 理由 |
+|------|-----|-----------|---------------|------|
+| 事件 cue | swap、break、warn | −20 LUFS（±1） | −1 dBTP | 一場只響幾次、要聽得出「發生事了」 |
+| 頻繁回饋 | hit、slash | −23 LUFS（±1） | **−4 dBTP** | 每次命中都響、和跳字同一瞬間：比事件 cue 低 3 LU，峰值再壓 3 dB，瞬態不會「啪」一下蓋過跳字 |
+| 戰前 | wind | −21 LUFS（±1） | −1 dBTP | 戰前上鏈，和 battle BGM 起頭疊在一起，不要搶 |
+
+為什麼不用 −18 這種更大聲的目標：短促的金屬瞬態用 400 ms 平均會被低估，
+目標拉太高就得靠限幅器硬壓尖峰，喀喀聲會變鈍。−20／−23 讓限幅量 ≤ 約 3 dB，
+也和沒重做的 clash（−20.8）、rock（−20.3）、舊 hit（−23.5）同一個量級。
 
 對照：BGM 檔是 −16 LUFS integrated，遊戲內 BGM 匯流排 −5 dB、SFX 匯流排 −4 dB
-（`_bgm_db`／`_sfx_db`），所以事件 cue 在遊戲裡約 −22 LUFS M-max、BGM 約 −21 LUFS，同一個量級。
+（`_bgm_db`／`_sfx_db`），所以事件 cue 在遊戲裡約 −24 LUFS M-max、BGM 約 −21 LUFS——
+音效靠瞬態切出來，不靠音量壓過配樂。
 
 量測指令（每個檔都要過）：
 
 ```bash
 ffmpeg -nostats -i x.wav -af "apad=pad_dur=1,ebur128=peak=true" -f null - 2>&1 \
-  | awk '/M:/{for(i=1;i<=NF;i++) if($i=="M:" && $(i+1)+0>m) m=$(i+1)} END{print "M-max",m}'
-#  summary 的 Peak: 就是 true peak（dBTP）
+  | grep -oP ' M:\s*\K-?[0-9.]+' | sort -g | tail -1        # M-max（LUFS）
+#  同一段輸出最後 summary 的 Peak: 就是 true peak（dBTP）
+python3 tools/gen_sfx_clockwork.py --measure  # 腳本內建同一套量法（10 ms 步進，略保守）
 ```
 
 ### 清單（每個 key）
@@ -42,12 +48,12 @@ ffmpeg -nostats -i x.wav -af "apad=pad_dur=1,ebur128=peak=true" -f null - 2>&1 \
 
 | key | 用途（誰觸發） | 目標長度 | 質感描述 | 目前來源 | 優先 |
 |-----|---------------|---------|---------|---------|-----|
-| swap | 換欄那一拍（`weapon_swap`）：次數用完自動換下一欄 | 0.20–0.28 s（< 0.3） | 黃銅卡榫：兩下棘輪「喀喀」＋一聲扣入的「卡」，帶一點機身低頻，乾、不拖尾 | 合成占位 `tools/gen_sfx_swap.py`（#16）→ 重做中 | P0 |
-| hit | 一般命中（`hit`、幻影命中） | 0.12–0.20 s（< 0.3） | 錫皮玩具被敲：短「咚」機身＋錫片非諧波「噹」，不要肉擊、不要爆炸 | 舊占位 → 重做中 | P0 |
-| slash | 斬擊／技能命中（`skill_hit`、`skill_cast`、風刃） | 0.18–0.26 s（< 0.3） | 黃銅刃劃過：快掃的空氣聲＋細細一聲「鏘」金屬尾音 | 舊占位 → 重做中 | P0 |
-| break | 部位碎裂（`part_break`、熊貓破防、鍛造摔錘），接 0.4 秒慢動作 | 0.55–0.70 s | 先一聲脆裂（板件崩開），再接齒輪／螺絲散落的叮噹與一聲鬆掉的彈簧，尾巴在 0.4 秒慢動作裡收乾淨 | 舊占位 → 重做中 | P0 |
-| warn | Boss 部位將破時一聲（戰鬥端直接 `play("warn")`，AudioManager 不自動播） | 0.35–0.50 s | 發條繃緊的金屬吱一聲＋一記玻璃鐘「叮」，一次就好，不是倒數、不是嗶嗶警報、不是格擋窗 | 舊占位 → 重做中 | P0 |
-| wind | **只在戰前上鏈**（`battle_start` → `play_wind_up`） | 0.80–1.00 s | 發條鑰匙轉三四格：棘輪喀喀一格比一格緊、音高微升，最後一聲到位 | 舊占位 → 重做中 | P0 |
+| swap | 換欄那一拍（`weapon_swap`）：次數用完自動換下一欄 | 0.20–0.28 s（< 0.3） | 黃銅卡榫：兩下棘輪「喀喀」＋一聲扣入的「卡」，帶一點機身低頻，乾、不拖尾 | 合成 `tools/gen_sfx_clockwork.py swap` | P0 |
+| hit | 一般命中（`hit`、幻影命中） | 0.12–0.20 s（< 0.3） | 錫皮玩具被敲：短「咚」機身＋錫片非諧波「噹」，不要肉擊、不要爆炸 | 合成 `gen_sfx_clockwork.py hit` | P0 |
+| slash | 斬擊／技能命中（`skill_hit`、`skill_cast`、風刃） | 0.18–0.26 s（< 0.3） | 黃銅刃劃過：快掃的空氣聲＋細細一聲「鏘」金屬尾音 | 合成 `gen_sfx_clockwork.py slash` | P0 |
+| break | 部位碎裂（`part_break`、熊貓破防、鍛造摔錘），接 0.4 秒慢動作 | 0.55–0.70 s | 先一聲脆裂（板件崩開），再接齒輪／螺絲散落的叮噹與一聲鬆掉的彈簧，尾巴在 0.4 秒慢動作裡收乾淨 | 合成 `gen_sfx_clockwork.py break` | P0 |
+| warn | Boss 部位將破時一聲（戰鬥端直接 `play("warn")`，AudioManager 不自動播） | 0.35–0.50 s | 發條繃緊的金屬吱一聲＋一記玻璃鐘「叮」，一次就好，不是倒數、不是嗶嗶警報、不是格擋窗 | 合成 `gen_sfx_clockwork.py warn` | P0 |
+| wind | **只在戰前上鏈**（`battle_start` → `play_wind_up`） | 0.80–1.00 s | 發條鑰匙轉三四格：棘輪喀喀一格比一格緊、音高微升，最後一聲到位 | 合成 `gen_sfx_clockwork.py wind` | P0 |
 | parry | **只可當「彈開」自動演出**（`perfect_parry` 等），**不可綁按鈕或 UI 提示** | 0.15–0.25 s | 金屬彈開的一聲「叮」，短 | 舊占位 | P1 |
 | victory | 勝利（`battle_end(true)`），後面接 ending BGM | 0.6–1.2 s | 八音盒三音上行，溫暖、不浮誇 | 舊占位 | P1 |
 | defeat | 落敗（`battle_end(false)`） | 0.6–1.2 s | 發條停擺：音盒走慢、音高下滑 | 舊占位 | P1 |
@@ -65,7 +71,21 @@ ffmpeg -nostats -i x.wav -af "apad=pad_dur=1,ebur128=peak=true" -f null - 2>&1 \
 | craft | 鍛造成功（可選，缺檔走 ui＋reveal） | 0.3–0.5 s | 小錘敲黃銅 | **缺檔** | P2 |
 | miss | `battle_view.gd` 揮空時 `play("miss")`，但不在 `SFX_KEYS`，目前只會警告 | — | 舊格擋流程用；任務書已拿掉格擋，建議跟著刪呼叫 | **缺檔** | — |
 
-### 重產（重做完成後生效）
+### P0 六個的實測（2026-10-06，ffmpeg ebur128，量法同上）
+
+| key | 長度 | M-max | true peak | 舊占位（長度／M-max／TP） | 時間點備註 |
+|-----|------|-------|-----------|--------------------------|-----------|
+| swap | 0.240 s | −19.8 LUFS | −1.3 dBTP | 0.220 s／−22.9／−4.6 | 棘輪 0／32 ms，卡入在 **78 ms**（換欄那一拍對這裡） |
+| hit | 0.160 s | −22.9 LUFS | −4.1 dBTP | 0.120 s／−23.5／−4.0 | 瞬態在 0 ms |
+| slash | 0.220 s | −22.9 LUFS | −4.1 dBTP | 0.160 s／−24.9／−7.9 | 空氣聲 60 ms 到頂，「鏘」在 55 ms |
+| break | 0.620 s | −19.9 LUFS | −1.5 dBTP | 0.200 s／−18.3／−2.0 | 衝擊 0–80 ms；0.4 秒慢動作從開播後約 80 ms 起算，散落聲剛好在慢動作裡收完 |
+| warn | 0.450 s | −19.6 LUFS | −6.7 dBTP | 0.100 s／−28.3／−11.8 | 繃緊 0–150 ms，玻璃鐘在 150 ms |
+| wind | 0.920 s | −21.5 LUFS | −1.7 dBTP | 0.250 s／−22.9／−6.0 | 棘輪 0／200／380／550 ms，到位在 700 ms |
+
+44.1 kHz mono 16-bit（舊占位是 22.05 kHz；金屬高頻需要）。全部一次性，匯入設定沿用原本的 `.import`（loop 關）。
+warn 的 true peak 比上限低很多：它是兩段（吱＋叮）能量平均，響度先到目標，峰值自然不高。
+
+### 重產
 
 ```bash
 python3 tools/gen_sfx_clockwork.py            # 重產 P0 六個（swap hit slash break warn wind）
