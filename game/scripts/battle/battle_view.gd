@@ -352,10 +352,7 @@ func setup(mode: String) -> void:
 	sim.battle_ended.connect(_on_end)
 	var p: BattleUnit = sim.get_unit("player")
 	if p:
-		if GameState.player_name in ["", "小白", "Xiaobai", "シロ", "시로", "Blanco"]:
-			p.display_name = ContentLoc.text("ui", "小白")
-		else:
-			p.display_name = ContentLoc.text("ui", GameState.player_name)
+		p.display_name = _hero_display_name()
 	_refresh_hud()
 	_ensure_coach()
 	AudioManager.battle_start(_mode)
@@ -2117,10 +2114,7 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	if sim:
 		var p: BattleUnit = sim.get_unit("player")
 		if p:
-			if GameState.player_name in ["小白", "Xiaobai", "シロ", "시로", "Blanco"]:
-				p.display_name = ContentLoc.text("ui", "小白")
-			else:
-				p.display_name = ContentLoc.text("ui", GameState.player_name)
+			p.display_name = _hero_display_name()
 		var WC = load("res://scripts/world/world_content.gd")
 		for u in sim.units.values():
 			if u is BattleUnit and u.team == BattleUnit.Team.ENEMY:
@@ -3067,6 +3061,23 @@ func _on_telemetry_battle_finished(won: bool) -> void:
 		tel.call("battle_finished", _mode, won)
 
 
+## 狐／獅／野豬已移除（舊檔讀成兔子，見 PR #19）：戰鬥中不顯示這三族的名字，退回兔子主角名。
+## 其他動物族（虎／鶴／熊…）暫時照舊。
+const REMOVED_HERO_NAMES := ["烈鬃獅", "靈尾狐", "鋼牙豕"]
+const DEFAULT_HERO_NAMES := ["", "小白", "Xiaobai", "シロ", "시로", "Blanco"]
+
+
+## 戰鬥中玩家主角顯示名（血條名牌、戰報共用）
+func _hero_display_name() -> String:
+	var n := str(GameState.player_name)
+	if n in DEFAULT_HERO_NAMES or n in REMOVED_HERO_NAMES:
+		return _t("小白")
+	for rn in REMOVED_HERO_NAMES:
+		if n == _t(rn):
+			return _t("小白")
+	return _t(n)
+
+
 func _unit_display_name(unit_id: String) -> String:
 	if sim:
 		var u: BattleUnit = sim.get_unit(unit_id)
@@ -3074,13 +3085,10 @@ func _unit_display_name(unit_id: String) -> String:
 			return u.display_name
 	if unit_id == "player":
 		if GameState.player_name != "":
-			return GameState.player_name
+			return _hero_display_name()
 		var r := str(GameState.player_race).to_lower()
 		match r:
 			"rabbit": return _t("小白")
-			"lion": return _t("烈鬃獅")
-			"fox": return _t("靈尾狐")
-			"boar": return _t("鋼牙豕")
 			"macaque": return _t("靈爪猴")
 			"tiger": return _t("烈焰虎")
 			"crane": return _t("雲嵐鶴")
