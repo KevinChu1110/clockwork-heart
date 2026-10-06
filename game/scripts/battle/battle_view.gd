@@ -62,6 +62,7 @@ var btn_flee: Button = null
 
 const BattleDefeatDialogScript := preload("res://scripts/battle/battle_defeat_dialog.gd")
 const DummySettlementDialogScript := preload("res://scripts/battle/dummy_settlement_dialog.gd")
+const WindingKeyAnimRef = preload("res://scripts/art/winding_key_anim.gd")
 const BattleVictoryDialogScript := preload("res://scripts/battle/battle_victory_dialog.gd")
 
 var sim: BattleSim
@@ -2059,6 +2060,62 @@ func _ensure_player_key_ticker() -> void:
 	ticker.call("attach", player_body, Callable(), func(): return _player_pose == "idle")
 
 
+## 沒有紙娃娃合成圖（全新存檔、沒存過外觀）時 player_body 用的是展示立繪 HD。
+## 美術拆好身體／鑰匙兩層的話（#27／#48），待機改成「身體＋後面一張鑰匙層」，
+## 鑰匙層交給 WindingKeyTicker 每 8 幀轉一格。非待機姿勢、或用的是紙娃娃 512，就收起鑰匙層。
+const HD_KEY_PIVOT_KEY := "rabbit/showcase_hd"
+
+
+func _sync_hd_key_layer() -> void:
+	if player_body == null:
+		return
+	var layer := player_body.get_node_or_null("HdKeyLayer") as TextureRect
+	var layers: Dictionary = SpriteDB.hero_showcase_hd_layers(_player_race)
+	var sc := SpriteDB.hero_showcase_hd_tex(_player_race)
+	var cur := player_body.texture
+	var on_showcase: bool = sc != null and cur != null and (cur == sc or cur == layers.get("body"))
+	if layers.is_empty() or _player_pose != "idle" or not on_showcase:
+		if layer != null:
+			layer.visible = false
+		return
+	player_body.texture = layers["body"]
+	if layer == null:
+		layer = TextureRect.new()
+		layer.name = "HdKeyLayer"
+		layer.show_behind_parent = true  ## 鑰匙在身體後面
+		layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		layer.set_anchors_preset(Control.PRESET_FULL_RECT)
+		player_body.add_child(layer)
+		player_body.resized.connect(_layout_hd_key_layer)
+	layer.texture = layers["key"]
+	layer.expand_mode = player_body.expand_mode
+	layer.stretch_mode = player_body.stretch_mode
+	layer.texture_filter = player_body.texture_filter
+	layer.material = player_body.material  ## 同一套描邊，鑰匙跟身體看起來是一張圖
+	layer.visible = true
+	_layout_hd_key_layer()
+	var ticker := player_body.get_node_or_null("WindingKeyTicker")
+	if ticker != null and ticker.has_method("attach_key_layer"):
+		ticker.call("attach_key_layer", layer)
+
+
+## 鑰匙層跟身體同 rect、同縮放；樞軸 (512,970)（HD 畫布）換算到畫面上
+func _layout_hd_key_layer() -> void:
+	if player_body == null:
+		return
+	var layer := player_body.get_node_or_null("HdKeyLayer") as TextureRect
+	if layer == null or layer.texture == null:
+		return
+	layer.position = Vector2.ZERO
+	layer.size = player_body.size
+	var dr := _body_drawn_rect(player_body)
+	var ts := layer.texture.get_size()
+	var geom: Dictionary = WindingKeyAnimRef.KEY_GEOMETRY.get(HD_KEY_PIVOT_KEY, {})
+	var piv: Vector2 = geom.get("pivot", Vector2(512, 970))
+	if ts.x > 1.0 and ts.y > 1.0:
+		layer.pivot_offset = dr.position + piv * (dr.size / ts)
+
+
 func _apply_battle_art(mode: String) -> void:
 	## 立繪比例：素材約 160×200（兔）／220×240（Boss），維持長寬比、不擠扁
 	_ensure_battle_look()
@@ -2084,6 +2141,7 @@ func _apply_battle_art(mode: String) -> void:
 	player_body.modulate = _player_base_mod
 	_apply_battle_weapon_overlay()
 	_ensure_player_key_ticker()
+	_sync_hd_key_layer()
 	_start_breathe_tween()
 
 	_boss_art_key = mode
@@ -3486,6 +3544,7 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 			_player_tex_has_baked_shadow = _texture_has_baked_shadow(sc)
 		else:
 			player_body.texture = null
+	_sync_hd_key_layer()
 	_layout_foot_shadow(player_body)
 	if _player_pose_tween and _player_pose_tween.is_valid():
 		_player_pose_tween.kill()
