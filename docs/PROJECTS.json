@@ -5440,8 +5440,8 @@
    "id": "lobby-weapon-linkage-preview",
    "cat": "遊戲",
    "title": "大廳角色頁三欄武器連動預覽",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "完成大廳提示卡連動預覽抽共用與自測，待 sideqa 審查",
    "keys": [
     "大廳角色頁三欄武"
    ]
