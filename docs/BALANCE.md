@@ -151,8 +151,39 @@ miss% = clamp(floor(sqrt(max(0, 5*(spd_def-spd_atk)))) + eva - hit, 0, 95)
 | 目標 | 數值 | 手感 |
 |------|------|------|
 | 雜魚普攻週期 | speed10 ≈ **4.7s/刀**（ATB 4.0 + windup0.25 + strike0.08 + recover0.40） | 可讀、可插道具，不是 2 秒連砍 |
-| Boss 前搖 | 王者斬 **1.85s**，末 **0.85s** 格擋窗（+0.35s 早按寬限） | 第一次見面就能讀倒數 |
+| Boss 前搖 | 王者斬 **1.85s**，末 **0.85s** 彈開窗，進窗自動擲一次（見下「自動彈開」） | 第一次見面就能讀倒數 |
 | 怒氣首次技 | 每刀 +14 → **~8 刀**；speed10 純出手 ~38s，加受傷怒氣 **~25–35s** | 雜魚至少 1 次、Boss 數次 |
+
+### 自動彈開（PR #17 · 2026-10-06 KC 定案）
+
+玩家不按格擋。Boss 蓄力前搖（王者斬、黑鏽必殺、蓄力必殺、阿波重拳、石拳衝鋒）和場地機制窗，進窗時擲一次 `sim.rng`：
+
+```
+機率 = clamp(0.40 + 閃避 × 0.01 + (玩家速度 − 對手速度) × 0.02, 0.15, 0.75)
+```
+
+| 常數（`battle_sim.gd`） | 值 |
+|---|---:|
+| `AUTO_DEFLECT_BASE` | 0.40 |
+| `AUTO_DEFLECT_PER_EVA` | 0.01 |
+| `AUTO_DEFLECT_PER_SPEED` | 0.02 |
+| `AUTO_DEFLECT_MIN` | 0.15 |
+| `AUTO_DEFLECT_MAX` | 0.75 |
+
+- 成功＝完美格擋（硬直、怒氣 +40、反擊）；失敗＝這一擊照常落下，機制窗直接結算失敗。每窗不重擲，同 seed 可重現。細節見 COMBAT.md §4.5。
+- 這五個常數只寫在 `battle_sim.gd`，不在 `combat.json`。`time_model` 的 `boss_parry_window_sec`（0.85）仍是窗長；`parry_early_grace_sec`（0.35）只剩舊的手動 `try_react` 路徑在用，自動彈開不看它。
+- **KC 決定（2026-10-06）**：維持現在的難度，`AUTO_DEFLECT_*` 常數不動，也不改 Boss 數值，接受 Boss 戰變難。
+- **改這五個常數要先經 KC。**
+
+雷歐戰無頭結算 60 seed（PR #17 實測）：
+
+| 等級 | 舊版必定彈開 | 機率版（雷歐戰約 44%） |
+|---|---:|---:|
+| Lv10 | 0/60 | 0/60 |
+| Lv20 | 60/60 | 5/60 |
+| Lv30 | 60/60 | 21/60 |
+
+`test_boss_curve`、`test_colossus_win_rate_matrix` 還是用 `try_react` 必中建模，本節上下的勝率表也是必中時代量的；改成機率規則另案處理（#24）。
 
 **流派風姿**（玩家 only，敵／Boss 各自寫死；數字＝`combat.json` → `weapon_tempo`）：
 
@@ -216,7 +247,7 @@ miss% = clamp(floor(sqrt(max(0, 5*(spd_def-spd_atk)))) + eva - hit, 0, 95)
 ### 停擺巨偶勝率矩陣（0.25 核心循環支柱二 · 任務 t_fc7b4388）
 
 數值定義見 `world_content.gd` 內 `colossus_*`，驗收測試為 `test_colossus_win_rate_matrix.gd`。  
-標準目標：低於建議等級 10 級難通（< 20%）、推薦等級白板一半能過（50%～70%）、高於推薦 3 級或藍／紫機芯穩過（> 85%）。時間模型與前搖格擋嚴格鎖定（BALANCE.md §5）。
+標準目標：低於建議等級 10 級難通（< 20%）、推薦等級白板一半能過（50%～70%）、高於推薦 3 級或藍／紫機芯穩過（> 85%）。時間模型與前搖彈開嚴格鎖定（BALANCE.md §5；表內勝率是必定彈開時代量的，機率版待 #24 重量）。
 
 | 巨偶 | 建議等級 | HP | atk | def | 低10等白板 | 推薦級白板 | 高3等白板 | 推薦級+藍機芯 | 推薦級+紫機芯 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -400,6 +431,6 @@ python3 tools/economy_audit.py --json
 - **驗收腳本**：
   - `tools/pacing_timeline_audit.gd`（輸出逐級累計表格與曲線總結）
   - `game/scripts/systems/test_pacing_curves.gd`（`TEST_FILTER=pacing ./tools/run_tests.sh` 全綠通過）
-- **時間模型硬約束**：嚴格鎖定 `BALANCE.md §5` 常數（ATB 25.0、Strike 0.08s、Boss 前搖 1.85s、格擋窗 0.85s），零竄改。
+- **時間模型硬約束**：嚴格鎖定 `BALANCE.md §5` 常數（ATB 25.0、Strike 0.08s、Boss 前搖 1.85s、彈開窗 0.85s），零竄改。
 
 
