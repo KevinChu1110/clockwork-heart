@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ctyk0cyobaxv5"
-path="res://.godot/imported/chassis_salamander_magma_tungsten_default_512.png-ce0a39c668a09469b44848ba31b41f81.ctex"
+path="res://.godot/imported/chassis_salamander_magma_tungsten_default_512.png-d2bf3a870aadfee94cb7f540ba00b24a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/salamander/chassis/chassis_salamander_magma_tungsten_default_512.png"
-dest_files=["res://.godot/imported/chassis_salamander_magma_tungsten_default_512.png-ce0a39c668a09469b44848ba31b41f81.ctex"]
+source_file="res://assets/sprites/player/paperdoll/salamander/chassis/chassis_salamander_magma_tungsten_default_512.png"
+dest_files=["res://.godot/imported/chassis_salamander_magma_tungsten_default_512.png-d2bf3a870aadfee94cb7f540ba00b24a.ctex"]
 
 [params]
 

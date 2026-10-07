@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bwtn2hbuqr8rm"
-path="res://.godot/imported/curio_manta_flexible_wings_antenna_tail_512.png-704385cae223839291f6bfba853a16a6.ctex"
+path="res://.godot/imported/curio_manta_flexible_wings_antenna_tail_512.png-baba430ac22cc2b816ef67bddfaaf4e3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/manta/back_curio/curio_manta_flexible_wings_antenna_tail_512.png"
-dest_files=["res://.godot/imported/curio_manta_flexible_wings_antenna_tail_512.png-704385cae223839291f6bfba853a16a6.ctex"]
+source_file="res://assets/sprites/player/paperdoll/manta/back_curio/curio_manta_flexible_wings_antenna_tail_512.png"
+dest_files=["res://.godot/imported/curio_manta_flexible_wings_antenna_tail_512.png-baba430ac22cc2b816ef67bddfaaf4e3.ctex"]
 
 [params]
 

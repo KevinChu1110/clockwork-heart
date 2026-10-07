@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fuwmre5pq5o9g"
-path="res://.godot/imported/face_donkey_slate_goggles_512.png-27bbb95166deecd1fbfb7f93962d76ec.ctex"
+uid="uid://b0iq6c8g6xtio"
+path="res://.godot/imported/face_donkey_slate_goggles_512.png-5ee136be3d7d537da3b1e4ab50b77b7a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/donkey/optic_core/face_donkey_slate_goggles_512.png"
-dest_files=["res://.godot/imported/face_donkey_slate_goggles_512.png-27bbb95166deecd1fbfb7f93962d76ec.ctex"]
+source_file="res://assets/paperdoll/donkey/optic_core/face_donkey_slate_goggles_512.png"
+dest_files=["res://.godot/imported/face_donkey_slate_goggles_512.png-5ee136be3d7d537da3b1e4ab50b77b7a.ctex"]
 
 [params]
 

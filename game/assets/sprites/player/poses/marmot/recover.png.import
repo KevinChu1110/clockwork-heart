@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://e02iixkcb08o"
-path="res://.godot/imported/recover.png-6407970ab116f6f47eaba9adeae8fa9f.ctex"
+path="res://.godot/imported/recover.png-b5be5200cb38e72b615ee88048d73842.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/marmot/poses/recover.png"
-dest_files=["res://.godot/imported/recover.png-6407970ab116f6f47eaba9adeae8fa9f.ctex"]
+source_file="res://assets/sprites/player/poses/marmot/recover.png"
+dest_files=["res://.godot/imported/recover.png-b5be5200cb38e72b615ee88048d73842.ctex"]
 
 [params]
 

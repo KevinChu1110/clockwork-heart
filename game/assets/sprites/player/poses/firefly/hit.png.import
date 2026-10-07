@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c5o8p8osifoge"
-path="res://.godot/imported/hit.png-622d139b44d8bb9c57d0f962a826af54.ctex"
+path="res://.godot/imported/hit.png-280a7d0cc5a3b0971f3b4958999cfd10.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/firefly/poses/hit.png"
-dest_files=["res://.godot/imported/hit.png-622d139b44d8bb9c57d0f962a826af54.ctex"]
+source_file="res://assets/sprites/player/poses/firefly/hit.png"
+dest_files=["res://.godot/imported/hit.png-280a7d0cc5a3b0971f3b4958999cfd10.ctex"]
 
 [params]
 

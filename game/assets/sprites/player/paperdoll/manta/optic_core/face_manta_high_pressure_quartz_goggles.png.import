@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://clc0yvbix7ww2"
-path="res://.godot/imported/face_manta_high_pressure_quartz_goggles.png-fe6034e7b892f0d8c243a2e9dbf82c3e.ctex"
+path="res://.godot/imported/face_manta_high_pressure_quartz_goggles.png-9ead2fec857dc426c5170c6d4b45d8e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/manta/optic_core/face_manta_high_pressure_quartz_goggles.png"
-dest_files=["res://.godot/imported/face_manta_high_pressure_quartz_goggles.png-fe6034e7b892f0d8c243a2e9dbf82c3e.ctex"]
+source_file="res://assets/paperdoll/manta/optic_core/face_manta_high_pressure_quartz_goggles.png"
+dest_files=["res://.godot/imported/face_manta_high_pressure_quartz_goggles.png-9ead2fec857dc426c5170c6d4b45d8e8.ctex"]
 
 [params]
 

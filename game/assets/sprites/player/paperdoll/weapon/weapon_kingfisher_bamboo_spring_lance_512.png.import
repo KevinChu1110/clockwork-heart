@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ypwyo3cmzrnub"
-path="res://.godot/imported/weapon_kingfisher_bamboo_spring_lance_512.png-3d3bb356322c105ffcb4551db3c1caff.ctex"
+uid="uid://bjhq5qs4mkfbp"
+path="res://.godot/imported/weapon_kingfisher_bamboo_spring_lance_512.png-1c4dcbde59cfc271bd65f77c4dd4d5bc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/weapon/weapon_kingfisher_bamboo_spring_lance_512.png"
-dest_files=["res://.godot/imported/weapon_kingfisher_bamboo_spring_lance_512.png-3d3bb356322c105ffcb4551db3c1caff.ctex"]
+source_file="res://assets/paperdoll/weapon/weapon_kingfisher_bamboo_spring_lance_512.png"
+dest_files=["res://.godot/imported/weapon_kingfisher_bamboo_spring_lance_512.png-1c4dcbde59cfc271bd65f77c4dd4d5bc.ctex"]
 
 [params]
 

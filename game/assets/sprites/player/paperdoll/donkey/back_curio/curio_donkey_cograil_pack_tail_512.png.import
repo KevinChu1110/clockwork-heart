@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://jfmylt0x6a88r"
-path="res://.godot/imported/curio_donkey_cograil_pack_tail_512.png-c00781e3a477f91707b831f128d5bc53.ctex"
+uid="uid://bos8fp6g1vip8"
+path="res://.godot/imported/curio_donkey_cograil_pack_tail_512.png-320e3fa982de78ae6551b392f8a0da97.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/donkey/back_curio/curio_donkey_cograil_pack_tail_512.png"
-dest_files=["res://.godot/imported/curio_donkey_cograil_pack_tail_512.png-c00781e3a477f91707b831f128d5bc53.ctex"]
+source_file="res://assets/paperdoll/donkey/back_curio/curio_donkey_cograil_pack_tail_512.png"
+dest_files=["res://.godot/imported/curio_donkey_cograil_pack_tail_512.png-320e3fa982de78ae6551b392f8a0da97.ctex"]
 
 [params]
 

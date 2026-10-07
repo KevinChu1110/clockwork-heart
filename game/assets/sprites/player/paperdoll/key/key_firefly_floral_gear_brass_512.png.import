@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dmyhy62qt8n12"
-path="res://.godot/imported/key_firefly_floral_gear_brass_512.png-23f24ebc316d50a9983002c0316bdffa.ctex"
+path="res://.godot/imported/key_firefly_floral_gear_brass_512.png-a1ea04a9adce4d29ac323ea0005eedb7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/key/key_firefly_floral_gear_brass_512.png"
-dest_files=["res://.godot/imported/key_firefly_floral_gear_brass_512.png-23f24ebc316d50a9983002c0316bdffa.ctex"]
+source_file="res://assets/sprites/player/paperdoll/key/key_firefly_floral_gear_brass_512.png"
+dest_files=["res://.godot/imported/key_firefly_floral_gear_brass_512.png-a1ea04a9adce4d29ac323ea0005eedb7.ctex"]
 
 [params]
 

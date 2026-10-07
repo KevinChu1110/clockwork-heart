@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://hv6g23x2e2fk"
-path="res://.godot/imported/idle.png-3b3e33c6eb8327b943b15451422c70db.ctex"
+path="res://.godot/imported/idle.png-ac7ffe07476e0f7e650165839e76f720.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/firefly/poses/idle.png"
-dest_files=["res://.godot/imported/idle.png-3b3e33c6eb8327b943b15451422c70db.ctex"]
+source_file="res://assets/sprites/player/poses/firefly/idle.png"
+dest_files=["res://.godot/imported/idle.png-ac7ffe07476e0f7e650165839e76f720.ctex"]
 
 [params]
 

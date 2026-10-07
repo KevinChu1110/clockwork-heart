@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://daqbesbcb2r7p"
-path="res://.godot/imported/head_takin_brass_twisted_horn_cowl_512.png-1ae140cb8f6837449d356c214fbe5309.ctex"
+path="res://.godot/imported/head_takin_brass_twisted_horn_cowl_512.png-56e62e8c5dd46557014bdd5b3dde60aa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/takin/head_unit/head_takin_brass_twisted_horn_cowl_512.png"
-dest_files=["res://.godot/imported/head_takin_brass_twisted_horn_cowl_512.png-1ae140cb8f6837449d356c214fbe5309.ctex"]
+source_file="res://assets/paperdoll/takin/head_unit/head_takin_brass_twisted_horn_cowl_512.png"
+dest_files=["res://.godot/imported/head_takin_brass_twisted_horn_cowl_512.png-56e62e8c5dd46557014bdd5b3dde60aa.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://iu11qcgv5ynxl"
-path="res://.godot/imported/costume_donkey_sapper_harness.png-3f5ed5b08ea0068b6104b866d532bf6e.ctex"
+uid="uid://48bj7me1kwf2"
+path="res://.godot/imported/costume_donkey_sapper_harness.png-805b8066bf9443e50131439610cfbb54.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/donkey/costume/costume_donkey_sapper_harness.png"
-dest_files=["res://.godot/imported/costume_donkey_sapper_harness.png-3f5ed5b08ea0068b6104b866d532bf6e.ctex"]
+source_file="res://assets/paperdoll/donkey/costume/costume_donkey_sapper_harness.png"
+dest_files=["res://.godot/imported/costume_donkey_sapper_harness.png-805b8066bf9443e50131439610cfbb54.ctex"]
 
 [params]
 

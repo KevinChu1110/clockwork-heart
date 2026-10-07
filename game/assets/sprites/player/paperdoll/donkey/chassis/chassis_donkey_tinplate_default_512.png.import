@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://epzv7oska4u2k"
-path="res://.godot/imported/chassis_donkey_tinplate_default_512.png-3cc5d2b8d1be1e566822cc099ee3d62e.ctex"
+uid="uid://ul1mmvbpw0bs"
+path="res://.godot/imported/chassis_donkey_tinplate_default_512.png-81ee57a9c86098c257ed9c9690f1515d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/donkey/chassis/chassis_donkey_tinplate_default_512.png"
-dest_files=["res://.godot/imported/chassis_donkey_tinplate_default_512.png-3cc5d2b8d1be1e566822cc099ee3d62e.ctex"]
+source_file="res://assets/paperdoll/donkey/chassis/chassis_donkey_tinplate_default_512.png"
+dest_files=["res://.godot/imported/chassis_donkey_tinplate_default_512.png-81ee57a9c86098c257ed9c9690f1515d.ctex"]
 
 [params]
 

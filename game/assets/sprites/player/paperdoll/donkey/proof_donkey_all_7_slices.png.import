@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://oa4bhtuovn0d1"
-path="res://.godot/imported/proof_donkey_all_7_slices.png-a7ebb014787d30f734a586a817805135.ctex"
+uid="uid://covopn3w62d3q"
+path="res://.godot/imported/proof_donkey_all_7_slices.png-6912da0541012833b3002b2f72bf08ef.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/donkey/proof_donkey_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_donkey_all_7_slices.png-a7ebb014787d30f734a586a817805135.ctex"]
+source_file="res://assets/paperdoll/donkey/proof_donkey_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_donkey_all_7_slices.png-6912da0541012833b3002b2f72bf08ef.ctex"]
 
 [params]
 
