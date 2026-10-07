@@ -135,6 +135,16 @@ func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: i
 	else:
 		_scrap_gain = 0
 	_is_colossus = bool(_part.get("is_colossus", false)) or str(_part.get("mode", "")).begins_with("colossus_")
+	if not _part.is_empty():
+		var cs = _cs()
+		if cs != null and cs.has_method("add_part_to_inventory"):
+			cs.call("add_part_to_inventory", _part)
+		else:
+			var tree := Engine.get_main_loop()
+			if tree is SceneTree and (tree as SceneTree).root != null:
+				var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+				if gs and gs.has_method("add_core_part"):
+					gs.call("add_core_part", _part)
 	if _dialog_card == null:
 		_build_ui()
 	_refresh_display()
@@ -691,7 +701,15 @@ func _on_equip_pressed() -> void:
 
 func _do_equip(norm_slot: String) -> void:
 	var cs = _cs()
+	var old_part: Dictionary = {}
+	if cs != null and cs.has_method("get_equipped_part"):
+		old_part = cs.call("get_equipped_part", norm_slot)
 	if cs != null:
+		var uid := str(_part.get("uid", ""))
+		if not uid.is_empty() and cs.has_method("remove_part_from_inventory"):
+			cs.call("remove_part_from_inventory", uid)
+		if not old_part.is_empty() and cs.has_method("add_part_to_inventory"):
+			cs.call("add_part_to_inventory", old_part)
 		cs.equip_part(norm_slot, _part)
 	_is_equipped = true
 	_btn_equip.text = _t("已裝備")
