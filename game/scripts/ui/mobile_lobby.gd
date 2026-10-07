@@ -4473,24 +4473,65 @@ func _refresh_weapon_slot_buttons() -> void:
 		else:
 			_weapon_slot_hint_label.add_theme_font_size_override("font_size", 13)
 
+const WEAPON_LINE_TO_PAPERDOLL: Dictionary = {
+	"sword": "wpn_dawn_blade",
+	"spear": "wpn_knight_lance",
+	"claw": "wpn_spring_claws",
+	"magic": "wpn_astral_staff",
+	"hammer": "wpn_anvil_greathammer",
+	"dagger": "wpn_twin_ember_sabers",
+	"bow": "wpn_zephyr_wing_bow",
+	"fist": "wpn_panda_taiji_cestus",
+	"gun": "wpn_twin_harpoon_gun",
+	"axe": "wpn_colossus_cleaver_axe",
+	"dart": "wpn_lotus_cog_dart",
+	"crystal": "wpn_bagua_astrolabe",
+}
+
+func _resolve_hero_weapon_paperdoll_id(race: String, winst: Dictionary) -> String:
+	if winst.is_empty():
+		return "none"
+	var base_id := str(winst.get("base_id", "")).strip_edges()
+	var line := str(winst.get("line", "")).strip_edges()
+	var raw_id := str(winst.get("id", "")).strip_edges()
+
+	var candidates: Array[String] = []
+	if not base_id.is_empty():
+		candidates.append(base_id)
+	if WEAPON_LINE_TO_PAPERDOLL.has(line):
+		candidates.append(WEAPON_LINE_TO_PAPERDOLL[line])
+	if WEAPON_LINE_TO_PAPERDOLL.has(base_id):
+		candidates.append(WEAPON_LINE_TO_PAPERDOLL[base_id])
+	if not raw_id.is_empty() and raw_id != base_id:
+		candidates.append(raw_id)
+
+	for cid in candidates:
+		if cid.is_empty() or cid in ["none", "empty", "bare"]:
+			continue
+		var p512 := PaperdollRenderer.resolve_slot_texture_path_512(race, "weapon", cid)
+		if p512 != "" and p512.ends_with("_512.png") and (ResourceLoader.exists(p512) or FileAccess.file_exists(p512)):
+			return cid
+
+	return "none"
+
 func _sync_hero_weapon_paperdoll() -> void:
 	var gs := _gs()
 	var eq := _get_equip_sys()
-	var w_id := ""
+	var race := _current_race()
+	var winst: Dictionary = {}
 	if eq and eq.has_method("active_weapon_inst"):
-		var winst: Dictionary = eq.active_weapon_inst()
-		w_id = str(winst.get("base_id", winst.get("line", winst.get("id", ""))))
+		winst = eq.active_weapon_inst()
 	elif gs and "equip_slots" in gs and gs.equip_slots is Dictionary:
 		var wuid: String = str(gs.equip_slots.get("weapon", ""))
 		if wuid != "" and "equip_worn" in gs and gs.equip_worn is Dictionary and gs.equip_worn.has(wuid):
-			var winst: Dictionary = gs.equip_worn[wuid]
-			w_id = str(winst.get("base_id", winst.get("line", winst.get("id", ""))))
+			winst = gs.equip_worn[wuid]
+
+	var w_id := "none"
+	if not winst.is_empty():
+		w_id = _resolve_hero_weapon_paperdoll_id(race, winst)
 
 	if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
-		if w_id != "":
-			gs.paperdoll_slots["weapon"] = w_id
-		else:
-			gs.paperdoll_slots["weapon"] = "none"
+		gs.paperdoll_slots["weapon"] = w_id
 
 	_cached_hero_comp_512 = null
 	_cached_hero_comp_key = ""

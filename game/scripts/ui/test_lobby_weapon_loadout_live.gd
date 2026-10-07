@@ -45,7 +45,7 @@ func _process(_delta: float) -> bool:
 			_step_test_i18n_and_screenshot()
 			_step = 4
 		4:
-			print("ALL_LOBBY_WEAPON_LOADOUT_TESTS_PASS")
+			print("LOBBY_WEAPON_LOADOUT_LIVE_OK")
 			quit(0)
 	return false
 
@@ -153,9 +153,9 @@ func _step_test_switch_and_linkage() -> void:
 		_fail("切換欄位 1 後 equip_slots['weapon'] 應為 w_live_spear")
 	if str(gs.path_style) != "spear":
 		_fail("切換長槍後 path_style 應為 spear，實際為 %s" % gs.path_style)
-	if str(gs.paperdoll_slots.get("weapon", "")) != "spear":
-		_fail("切換長槍後 paperdoll_slots['weapon'] 應同步為 spear，實際為 %s" % gs.paperdoll_slots.get("weapon", ""))
-	print("  ok 點擊切換至欄位 1 (長槍) 成功，紙娃娃手持同步為 spear")
+	if str(gs.paperdoll_slots.get("weapon", "")) != "none":
+		_fail("長槍無專屬 512 切片時 paperdoll_slots['weapon'] 應防護為 none，實際為 %s" % gs.paperdoll_slots.get("weapon", ""))
+	print("  ok 點擊切換至欄位 1 (長槍) 成功，紙娃娃無 512 切片時安全防護為 none 避免穿模")
 
 	# 驗證攻擊力數值卡連動
 	var stat_cards: Array = _lobby.get("_stat_cards")
@@ -170,8 +170,8 @@ func _step_test_switch_and_linkage() -> void:
 	_lobby.select_weapon_slot(2)
 	if int(gs.weapon_loadout_active) != 2:
 		_fail("切換欄位 2 後 GameState.weapon_loadout_active 應為 2")
-	if str(gs.paperdoll_slots.get("weapon", "")) != "fist":
-		_fail("切換鐵拳後 paperdoll_slots['weapon'] 應同步為 fist")
+	if str(gs.paperdoll_slots.get("weapon", "")) != "none":
+		_fail("鐵拳無專屬 512 切片時 paperdoll_slots['weapon'] 應防護為 none，實際為 %s" % gs.paperdoll_slots.get("weapon", ""))
 	var cur_atk2 := int(gs.effective_atk())
 	if int(atk_val_lbl.text) != cur_atk2:
 		_fail("攻擊力屬性卡數值應更新為 %d，實際為 %s" % [cur_atk2, atk_val_lbl.text])
@@ -179,9 +179,9 @@ func _step_test_switch_and_linkage() -> void:
 
 	# 3. 切回欄位 0 (長劍)
 	_lobby.select_weapon_slot(0)
-	if str(gs.paperdoll_slots.get("weapon", "")) != "sword":
-		_fail("切回欄位 0 後 paperdoll_slots['weapon'] 應同步為 sword")
-	print("  ok 點擊切回欄位 0 (長劍) 成功，紙娃娃手持同步為 sword")
+	if str(gs.paperdoll_slots.get("weapon", "")) != "wpn_dawn_blade":
+		_fail("切回欄位 0 後 paperdoll_slots['weapon'] 應同步為 wpn_dawn_blade，實際為 %s" % gs.paperdoll_slots.get("weapon", ""))
+	print("  ok 點擊切回欄位 0 (長劍) 成功，紙娃娃手持同步為 wpn_dawn_blade 專屬 512 切片")
 
 func _step_test_i18n_and_screenshot() -> void:
 	print("\n--- 4. 檢驗全語系文字與實機存證截圖 ---")
