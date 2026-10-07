@@ -5470,8 +5470,8 @@
    "id": "battle-swap-visible-beat",
    "cat": "遊戲",
    "title": "戰鬥換欄那一拍要看得見",
-   "status": "開發中",
-   "note": "開始開發戰鬥換欄視覺與戰報表現",
+   "status": "已上線",
+   "note": "t_4f3836fd sideqa 審查通過已上線",
    "keys": [
     "戰鬥換欄那一拍要"
    ]
