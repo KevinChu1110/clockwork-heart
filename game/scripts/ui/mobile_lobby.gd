@@ -642,7 +642,7 @@ func _refresh_equip_schematic() -> void:
 func _add_equip_chip(parent: Container, slot_title: String, item_name: String, tex: Texture2D, sid: String = "") -> void:
 	var btn := Button.new()
 	btn.name = "EquipSlot_" + sid if sid != "" else ("EquipSlot_" + slot_title)
-	btn.custom_minimum_size = Vector2(114, 104)
+	btn.custom_minimum_size = Vector2(114, 82)
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	btn.tooltip_text = "%s: %s" % [slot_title, item_name]
@@ -743,7 +743,7 @@ func _add_equip_chip(parent: Container, slot_title: String, item_name: String, t
 
 	# 2. 裝備 Icon 圖示區
 	var icon_box := Control.new()
-	icon_box.custom_minimum_size = Vector2(0, 48)
+	icon_box.custom_minimum_size = Vector2(0, 36)
 	icon_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(icon_box)
 
@@ -753,7 +753,13 @@ func _add_equip_chip(parent: Container, slot_title: String, item_name: String, t
 	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if tex != null:
+	if sid == "winding_key":
+		_load_vault_bubble_key_textures()
+		if not _vault_bubble_key_textures.is_empty():
+			icon_rect.texture = _vault_bubble_key_textures[0]
+		elif tex != null:
+			icon_rect.texture = tex
+	elif tex != null:
 		icon_rect.texture = tex
 	icon_box.add_child(icon_rect)
 
@@ -1852,11 +1858,12 @@ func _build_village_tab() -> void:
 	_equip_schematic.columns = 2
 	_equip_schematic.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	_equip_schematic.offset_left = -260
-	_equip_schematic.offset_top = 16
+	_equip_schematic.offset_top = 10
 	_equip_schematic.offset_right = -20
-	_equip_schematic.offset_bottom = 242
+	_equip_schematic.offset_bottom = 180
 	_equip_schematic.add_theme_constant_override("h_separation", 10)
-	_equip_schematic.add_theme_constant_override("v_separation", 10)
+	_equip_schematic.add_theme_constant_override("v_separation", 6)
+	_equip_schematic.z_index = 2
 	_village_layer.add_child(_equip_schematic)
 	_refresh_equip_schematic()
 
@@ -2022,9 +2029,10 @@ func _build_vault_entry_card() -> void:
 	_vault_card.offset_top = -342
 	_vault_card.offset_right = -20
 	_vault_card.offset_bottom = -224
+	_vault_card.z_index = 5
 
 	var csb := StyleBoxFlat.new()
-	csb.bg_color = Color(0.12, 0.09, 0.16, 0.88)
+	csb.bg_color = Color(0.12, 0.09, 0.16, 1.0)
 	csb.border_color = COLOR_BORDER
 	csb.set_border_width_all(2)
 	csb.border_width_bottom = 5
@@ -2177,7 +2185,11 @@ func refresh_vault_display() -> void:
 	# 2. 更新中央日晷展台旁微動氣泡 (Vault Bubble)
 	if _vault_bubble and is_instance_valid(_vault_bubble):
 		if _vault_bubble_time_lbl and is_instance_valid(_vault_bubble_time_lbl):
-			_vault_bubble_time_lbl.text = Loc.t("vault.bubble_accumulated") % [hrs_i, 8]
+			var tmpl: String = Loc.t("vault.bubble_accumulated")
+			if "%d" in tmpl:
+				_vault_bubble_time_lbl.text = tmpl % [hrs_i, 8]
+			else:
+				_vault_bubble_time_lbl.text = "已累積 %dh / %dh" % [hrs_i, 8]
 		if _vault_bubble_status_lbl and is_instance_valid(_vault_bubble_status_lbl):
 			if is_full:
 				_vault_bubble_status_lbl.text = Loc.t("vault.bubble_claim_ready")
@@ -2206,8 +2218,8 @@ func _build_vault_bubble(parent_anchor: Control) -> void:
 	_vault_bubble.custom_minimum_size = Vector2(160, 52)
 	_vault_bubble.size = Vector2(160, 52)
 	_vault_bubble.z_index = 6
-	# 放置在中央英雄日晷展台右側旁 (x=115, y=-75)
-	_vault_bubble.position = Vector2(115, -75)
+	# 放置在中央英雄日晷展台右側旁，自然懸浮於展台與主角右側 (x=115, y=10)
+	_vault_bubble.position = Vector2(115, 10)
 	parent_anchor.add_child(_vault_bubble)
 
 	# 0. 金黃呼吸光暈底板 (滿 8 小時時呼吸發光)
@@ -2285,6 +2297,7 @@ func _build_vault_bubble(parent_anchor: Control) -> void:
 	_vault_bubble_key_icon.custom_minimum_size = Vector2(32, 32)
 	_vault_bubble_key_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_vault_bubble_key_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_vault_bubble_key_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	_vault_bubble_key_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if not _vault_bubble_key_textures.is_empty():
 		_vault_bubble_key_icon.texture = _vault_bubble_key_textures[0]
@@ -2322,9 +2335,12 @@ func _load_vault_bubble_key_textures() -> void:
 		return
 	for p in VAULT_BUBBLE_KEY_FRAME_PATHS:
 		if ResourceLoader.exists(p):
-			var tex: Texture2D = load(p) as Texture2D
-			if tex:
-				_vault_bubble_key_textures.append(tex)
+			var base_tex: Texture2D = load(p) as Texture2D
+			if base_tex:
+				var atlas := AtlasTexture.new()
+				atlas.atlas = base_tex
+				atlas.region = Rect2(138, 256, 58, 80)
+				_vault_bubble_key_textures.append(atlas)
 
 func step_vault_bubble_frame() -> void:
 	if _vault_bubble_key_textures.is_empty():
@@ -2403,12 +2419,16 @@ func open_clockwork_vault() -> Control:
 		return null
 	var dlg: Control = VaultClass.new() as Control
 	dlg.z_index = 80
+	if _equip_schematic and is_instance_valid(_equip_schematic):
+		_equip_schematic.visible = false
 	dlg.rewards_claimed.connect(func(g: int, s: int):
 		refresh_hud()
 		refresh_vault_display()
 		_show_toast(Loc.t("vault.claimed_toast") % [g, s])
 	)
 	dlg.tree_exited.connect(func():
+		if _equip_schematic and is_instance_valid(_equip_schematic):
+			_equip_schematic.visible = true
 		refresh_hud()
 		refresh_vault_display()
 	)
