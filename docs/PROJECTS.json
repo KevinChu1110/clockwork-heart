@@ -5500,8 +5500,8 @@
    "id": "battle-hud-auto-cleanup",
    "cat": "遊戲",
    "title": "戰鬥自動化收尾：三欄用盡改空手、移除喝藥殘留與木人樁暫停離開",
-   "status": "草稿",
-   "note": "已開單 sideworker2 (t_764676f5，等待 t_7bb91427)",
+   "status": "開發中",
+   "note": "sideworker2 開始動工 (t_764676f5)",
    "keys": [
     "戰鬥自動化收尾："
    ]
