@@ -108,6 +108,12 @@ const PRE_WINDUP_DURATION: float = 0.5
 var _is_pre_windup: bool = false
 var _pre_windup_timer: float = 0.0
 var _skill_banner: Label
+var _vignette_overlay: TextureRect = null
+var _burst_sparks: CPUParticles2D = null
+var _burst_gears: CPUParticles2D = null
+var _overwind_banner: Label = null
+static var _vignette_tex_cache: Texture2D = null
+var _last_overwind_burst_msec: int = -99999
 var _rage_ready: Label
 var _rage_shimmer_tween: Tween = null
 var _last_rage_style_state := ""
@@ -377,6 +383,10 @@ func setup(mode: String) -> void:
 		hazard_fx.visible = false
 	if _skill_banner:
 		_skill_banner.visible = false
+	if _overwind_banner:
+		_overwind_banner.visible = false
+	if _vignette_overlay:
+		_vignette_overlay.visible = false
 	_hide_temptation()
 	_player_home = player_body.position
 	_enemy_home = enemy_body.position
@@ -839,6 +849,7 @@ func _apply_hud_chrome() -> void:
 	_install_touch_controls()
 	_ensure_thumb_hud()
 	_ensure_core_dots_hud()
+	_ensure_overwind_burst_nodes()
 
 
 func _apply_safe_hud() -> void:
@@ -1708,6 +1719,259 @@ func _flash_skill_banner(skill_name: String, player_side: bool = true) -> void:
 		if is_instance_valid(_skill_banner):
 			_skill_banner.visible = false
 	)
+
+
+static func _vignette_tex() -> Texture2D:
+	if _vignette_tex_cache != null:
+		return _vignette_tex_cache
+	## 320x180 全螢幕暗角底圖：中心透明無遮擋，外圍向四角平滑漸變為深黑曜石棕＋金色微光環
+	var w := 320
+	var h := 180
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var cx := (w - 1) * 0.5
+	var cy := (h - 1) * 0.5
+	var rx := cx * 1.02
+	var ry := cy * 1.02
+	for y in h:
+		for x in w:
+			var dx := (float(x) - cx) / rx
+			var dy := (float(y) - cy) / ry
+			var d := sqrt(dx * dx + dy * dy)
+			if d <= 0.28:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+			else:
+				var t := clampf((d - 0.28) / 0.72, 0.0, 1.0)
+				var alpha := clampf(pow(t, 1.3) * 0.96, 0.0, 0.96)
+				var vig_col := Color(0.02, 0.01, 0.03, alpha)
+				if t > 0.15 and t < 0.75:
+					var ring_t := sin((t - 0.15) / 0.60 * PI)
+					vig_col = vig_col.blend(Color(1.0, 0.72, 0.18, ring_t * 0.32))
+				img.set_pixel(x, y, vig_col)
+	_vignette_tex_cache = ImageTexture.create_from_image(img)
+	return _vignette_tex_cache
+
+
+static var _gear_tex_cache: Texture2D = null
+static var _spark_tex_cache: Texture2D = null
+
+
+static func _gear_tex() -> Texture2D:
+	if _gear_tex_cache != null:
+		return _gear_tex_cache
+	var size := 32
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var c := (size - 1) * 0.5
+	var r_outer := 14.0
+	var r_root := 10.5
+	var r_inner := 4.0
+	var num_teeth := 8
+	for y in size:
+		for x in size:
+			var dx := float(x) - c
+			var dy := float(y) - c
+			var dist := sqrt(dx * dx + dy * dy)
+			if dist > r_outer + 0.5 or dist < r_inner - 0.5:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+				continue
+			var angle := atan2(dy, dx)
+			var tooth_phase := fposmod(angle * float(num_teeth) / (2.0 * PI), 1.0)
+			var tooth_profile := cos(tooth_phase * 2.0 * PI)
+			var max_r := r_root + (r_outer - r_root) * clampf(tooth_profile * 1.8, 0.0, 1.0)
+			if dist > max_r or dist <= r_inner:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+			else:
+				var light := clampf((-(dx * 0.7 + dy * 0.7) / r_outer + 1.0) * 0.5, 0.0, 1.0)
+				var base_col := Color("#FFD028").lerp(Color("#FFA010"), 1.0 - light)
+				if dist > max_r - 1.2 or dist < r_inner + 1.2:
+					base_col = Color("#5A3005")
+				img.set_pixel(x, y, base_col)
+	_gear_tex_cache = ImageTexture.create_from_image(img)
+	return _gear_tex_cache
+
+
+static func _spark_tex() -> Texture2D:
+	if _spark_tex_cache != null:
+		return _spark_tex_cache
+	var size := 24
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var c := (size - 1) * 0.5
+	for y in size:
+		for x in size:
+			var dx := absf(float(x) - c) / c
+			var dy := absf(float(y) - c) / c
+			var star := maxf(0.0, 1.0 - (sqrt(dx) + sqrt(dy)))
+			var rad := maxf(0.0, 1.0 - sqrt(dx * dx + dy * dy))
+			var val := clampf(star * 0.75 + rad * 0.45, 0.0, 1.0)
+			if val <= 0.01:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+			else:
+				var col := Color(1.0, 0.95, 0.6, val).lerp(Color(1.0, 0.6, 0.1, val), 1.0 - val)
+				img.set_pixel(x, y, col)
+	_spark_tex_cache = ImageTexture.create_from_image(img)
+	return _spark_tex_cache
+
+
+func _ensure_overwind_burst_nodes() -> void:
+	if _vignette_overlay == null:
+		_vignette_overlay = TextureRect.new()
+		_vignette_overlay.name = "OverwindVignette"
+		_vignette_overlay.texture = _vignette_tex()
+		_vignette_overlay.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		_vignette_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+		_vignette_overlay.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_vignette_overlay.stretch_mode = TextureRect.STRETCH_SCALE
+		_vignette_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_vignette_overlay.visible = false
+		_vignette_overlay.z_index = 25
+		add_child(_vignette_overlay)
+
+	if _burst_sparks == null:
+		_burst_sparks = CPUParticles2D.new()
+		_burst_sparks.name = "BurstSparks"
+		_burst_sparks.texture = _spark_tex()
+		_burst_sparks.emitting = false
+		_burst_sparks.one_shot = true
+		_burst_sparks.explosiveness = 0.95
+		_burst_sparks.amount = 40
+		_burst_sparks.lifetime = 0.55
+		_burst_sparks.direction = Vector2(0, -1)
+		_burst_sparks.spread = 180.0
+		_burst_sparks.gravity = Vector2(0, 260)
+		_burst_sparks.initial_velocity_min = 200.0
+		_burst_sparks.initial_velocity_max = 420.0
+		_burst_sparks.scale_amount_min = 1.0
+		_burst_sparks.scale_amount_max = 2.2
+		var grad := Gradient.new()
+		grad.set_color(0, Color(1.0, 0.98, 0.7, 1.0))
+		grad.add_point(0.4, Color(1.0, 0.75, 0.15, 1.0))
+		grad.add_point(1.0, Color(1.0, 0.35, 0.05, 0.0))
+		_burst_sparks.color_ramp = grad
+		_burst_sparks.z_index = 28
+		add_child(_burst_sparks)
+
+	if _burst_gears == null:
+		_burst_gears = CPUParticles2D.new()
+		_burst_gears.name = "BurstGears"
+		_burst_gears.texture = _gear_tex()
+		_burst_gears.emitting = false
+		_burst_gears.one_shot = true
+		_burst_gears.explosiveness = 0.92
+		_burst_gears.amount = 16
+		_burst_gears.lifetime = 0.7
+		_burst_gears.direction = Vector2(0, -1)
+		_burst_gears.spread = 160.0
+		_burst_gears.gravity = Vector2(0, 360)
+		_burst_gears.initial_velocity_min = 160.0
+		_burst_gears.initial_velocity_max = 340.0
+		_burst_gears.angular_velocity_min = 240.0
+		_burst_gears.angular_velocity_max = 720.0
+		_burst_gears.scale_amount_min = 0.8
+		_burst_gears.scale_amount_max = 1.4
+		var gear_grad := Gradient.new()
+		gear_grad.set_color(0, Color(1.0, 1.0, 1.0, 1.0))
+		gear_grad.add_point(0.75, Color(1.0, 1.0, 1.0, 1.0))
+		gear_grad.add_point(1.0, Color(1.0, 1.0, 1.0, 0.0))
+		_burst_gears.color_ramp = gear_grad
+		_burst_gears.z_index = 29
+		add_child(_burst_gears)
+
+	if _overwind_banner == null:
+		var huninn := _get_huninn_font()
+		_overwind_banner = Label.new()
+		_overwind_banner.name = "OverwindBanner"
+		_overwind_banner.visible = false
+		_overwind_banner.set_anchors_preset(Control.PRESET_CENTER_TOP)
+		_overwind_banner.offset_top = 115
+		_overwind_banner.offset_bottom = 165
+		_overwind_banner.offset_left = -300
+		_overwind_banner.offset_right = 300
+		_overwind_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_overwind_banner.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		if huninn:
+			_overwind_banner.add_theme_font_override("font", huninn)
+		_overwind_banner.add_theme_font_size_override("font_size", 34)
+		_overwind_banner.add_theme_color_override("font_color", Color("#FFD028"))
+		_overwind_banner.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+		_overwind_banner.add_theme_constant_override("outline_size", 6)
+		_overwind_banner.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
+		_overwind_banner.add_theme_constant_override("shadow_offset_x", 3)
+		_overwind_banner.add_theme_constant_override("shadow_offset_y", 3)
+		_overwind_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_overwind_banner.z_index = 32
+		add_child(_overwind_banner)
+
+
+func _flash_overwind_banner(text: String) -> void:
+	if _overwind_banner == null:
+		return
+	_overwind_banner.text = text
+	_overwind_banner.visible = true
+	_overwind_banner.modulate = Color(1, 1, 1, 0)
+	_overwind_banner.scale = Vector2(0.6, 0.6)
+	_overwind_banner.pivot_offset = Vector2(300, 25)
+	var tw := create_tween()
+	tw.tween_property(_overwind_banner, "modulate:a", 1.0, 0.08)
+	tw.parallel().tween_property(_overwind_banner, "scale", Vector2(1.15, 1.15), 0.12)
+	tw.tween_property(_overwind_banner, "scale", Vector2.ONE, 0.08)
+	tw.tween_interval(0.45)
+	tw.tween_property(_overwind_banner, "modulate:a", 0.0, 0.2)
+	tw.tween_callback(func():
+		if is_instance_valid(_overwind_banner):
+			_overwind_banner.visible = false
+	)
+
+
+func trigger_overwind_burst(source: String = "manual") -> void:
+	var now := Time.get_ticks_msec()
+	if now - _last_overwind_burst_msec < 250:
+		return
+	_last_overwind_burst_msec = now
+
+	_ensure_overwind_burst_nodes()
+
+	## 1. 0.3 秒全螢幕暗角（vignette）
+	if _vignette_overlay:
+		_vignette_overlay.visible = true
+		_vignette_overlay.modulate = Color(1, 1, 1, 0)
+		var v_tw := create_tween()
+		v_tw.tween_property(_vignette_overlay, "modulate:a", 1.0, 0.04)
+		v_tw.tween_interval(0.16)
+		v_tw.tween_property(_vignette_overlay, "modulate:a", 0.0, 0.10)
+		v_tw.tween_callback(func():
+			if is_instance_valid(_vignette_overlay):
+				_vignette_overlay.visible = false
+		)
+
+	## 2. 0.3 秒震動與頓挫（screen shake / hit stop）
+	_shake = maxf(_shake, 0.35)
+	trigger_hit_stop(0.08)
+
+	## 3. 金色齒輪火花噴射粒子動效（CPU particles）
+	var spawn_pos := Vector2(340, 360)
+	if is_instance_valid(player_body) and player_body.is_visible_in_tree() and player_body.global_position.x > 5.0:
+		spawn_pos = player_body.global_position + Vector2(player_body.size.x * 0.5, player_body.size.y * 0.45)
+	if _burst_sparks:
+		_burst_sparks.global_position = spawn_pos
+		_burst_sparks.restart()
+		_burst_sparks.emitting = true
+	if _burst_gears:
+		_burst_gears.global_position = spawn_pos
+		_burst_gears.restart()
+		_burst_gears.emitting = true
+
+	## 角色高光閃爍
+	if is_instance_valid(player_body):
+		_flash(player_body, Color(3.5, 2.2, 0.8))
+
+	## 4. 播放 overwind 金屬爆裂音效
+	if AudioManager and AudioManager.has_method("play_overwind_burst"):
+		AudioManager.play_overwind_burst()
+
+	## 5. 六語系同步提示
+	_flash_overwind_banner(_t("發條超載爆裂！"))
+	_spawn_float("player", _t("超載爆裂！"), Color(1.0, 0.85, 0.2), true)
+	_append_log(_t("[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]"))
+
 
 
 static func _soft_shadow_tex() -> Texture2D:
@@ -3977,6 +4241,10 @@ func _on_event(kind: String, data: Dictionary) -> void:
 		"soul_style_switched":
 			## 相容舊事件（單測／無 slot 事件時）
 			pass
+		"overwind_burst":
+			var sid := str(data.get("id", "player"))
+			if sid == "player" or sid == "":
+				trigger_overwind_burst(str(data.get("source", "rage_full")))
 		"fury_awakening":
 			var auto_b := bool(data.get("auto", false))
 			var bdur := float(data.get("duration", 8.0))
@@ -3986,6 +4254,7 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			else:
 				_append_log(_t("[color=#f52]暴怒！（%.0f 秒攻速與傷害提升）[/color]") % bdur)
 				_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)
+			trigger_overwind_burst("fury_awakening")
 			_shake = 0.35
 			trigger_hit_stop(0.1)
 			_flash(player_body, Color(3.0, 1.5, 0.5))

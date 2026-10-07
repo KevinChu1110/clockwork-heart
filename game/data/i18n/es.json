@@ -922,5 +922,11 @@
   "上緊發條，啟動！": "¡Cuerda al máximo, activar!",
   "vault.bubble_accumulated": "Acumulado %dh / %dh",
   "vault.bubble_claim_ready": "Reclamar",
-  "vault.bubble_full": "Lleno 8h · Reclamar"
+  "vault.bubble_full": "Lleno 8h · Reclamar",
+  "battle.overwind_burst": "¡Estallido de Sobrecarga!",
+  "發條超載爆裂！": "¡Estallido de Sobrecarga!",
+  "發條超載爆裂": "Estallido de Sobrecarga",
+  "超載爆裂！": "¡Sobrecarga!",
+  "超載爆裂": "Sobrecarga",
+  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]¡Estallido de Sobrecarga! Rotaciones al Máximo · ¡Furia Metálica![/color]"
 }

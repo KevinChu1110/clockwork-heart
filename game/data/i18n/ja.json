@@ -922,5 +922,11 @@
   "上緊發條，啟動！": "ゼンマイを巻いて、起動！",
   "vault.bubble_accumulated": "蓄積 %dh / %dh",
   "vault.bubble_claim_ready": "受取可能",
-  "vault.bubble_full": "満充電 8h · 受取可能"
+  "vault.bubble_full": "満充電 8h · 受取可能",
+  "battle.overwind_burst": "ぜんまい過負荷バースト！",
+  "發條超載爆裂！": "ぜんまい過負荷バースト！",
+  "發條超載爆裂": "ぜんまい過負荷バースト",
+  "超載爆裂！": "過負荷バースト！",
+  "超載爆裂": "過負荷バースト",
+  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]ぜんまい過負荷バースト！回転数最大 · メタル狂暴！[/color]"
 }

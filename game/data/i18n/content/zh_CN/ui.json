@@ -3555,5 +3555,10 @@
   "背包": "背包",
   "vault.bubble_accumulated": "已累积 %dh / %dh",
   "vault.bubble_claim_ready": "可领取",
-  "vault.bubble_full": "已满 8h · 可领取"
+  "vault.bubble_full": "已满 8h · 可领取",
+  "發條超載爆裂！": "发条超载爆裂！",
+  "發條超載爆裂": "发条超载爆裂",
+  "超載爆裂！": "超载爆裂！",
+  "超載爆裂": "超载爆裂",
+  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]发条超载爆裂！转数全满 · 金属狂暴！[/color]"
 }

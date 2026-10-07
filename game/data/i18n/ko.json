@@ -922,5 +922,11 @@
   "上緊發條，啟動！": "태엽을 감고, 기동!",
   "vault.bubble_accumulated": "누적 %dh / %dh",
   "vault.bubble_claim_ready": "수령 가능",
-  "vault.bubble_full": "완전 충전 8h · 수령 가능"
+  "vault.bubble_full": "완전 충전 8h · 수령 가능",
+  "battle.overwind_burst": "태엽 과부하 버스트!",
+  "發條超載爆裂！": "태엽 과부하 버스트!",
+  "發條超載爆裂": "태엽 과부하 버스트",
+  "超載爆裂！": "과부하 버스트!",
+  "超載爆裂": "과부하 버스트",
+  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]태엽 과부하 버스트! 회전수 최대 · 메탈 광폭![/color]"
 }
