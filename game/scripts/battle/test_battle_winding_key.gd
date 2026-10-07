@@ -90,6 +90,10 @@ func _test_structure_and_initial_state() -> void:
 
 func _test_idle_rotation_stepping() -> void:
 	print("--- 2. 驗證戰鬥 idle 待機每 8 幀旋轉一格（8 幀循環不跳）---")
+	# 隔離場景樹背景 _process 累積時間差，避免冷啟動或負載抖動造成 flaky
+	_battle.set_process(false)
+	_battle.set("_winding_key_frame_timer", 0.0)
+
 	var key_layer: TextureRect = _battle.get("_battle_winding_key") as TextureRect
 	var initial_index: int = _battle.call("get_winding_key_frame_index")
 	print("  初始待機幀索引: ", initial_index)
@@ -117,6 +121,8 @@ func _test_idle_rotation_stepping() -> void:
 	print("  ok 完整 8 格循環測試通過，回到初始幀索引: ", cycled_index)
 
 	# 驗證時間差累積 _tick_winding_key 每 8 幀（8/60s）自動推進
+	# 測試前再次重置計時器，確保時序由測試嚴格受控
+	_battle.set("_winding_key_frame_timer", 0.0)
 	var step_duration: float = 8.0 / 60.0
 	var before_tick_idx: int = _battle.call("get_winding_key_frame_index")
 	# 模擬累積未滿 8 幀
