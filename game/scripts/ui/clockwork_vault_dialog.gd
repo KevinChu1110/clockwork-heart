@@ -248,6 +248,10 @@ func _build_ui() -> void:
 	pbsb.border_width_bottom = 4
 	pbsb.set_corner_radius_all(11)
 	_progress_bar_bg.add_theme_stylebox_override("panel", pbsb)
+	_progress_bar_bg.resized.connect(func():
+		if _progress_bar_fill and _progress_bar_bg:
+			refresh_display()
+	)
 	progress_box.add_child(_progress_bar_bg)
 
 	## 進度條填充 (以 Panel 自訂寬度實作平滑動畫)
@@ -422,11 +426,13 @@ func refresh_display() -> void:
 
 	## 更新進度條寬度
 	if _progress_bar_fill and _progress_bar_bg:
-		var total_w: float = _progress_bar_bg.size.x
-		if total_w <= 1.0:
-			total_w = 660.0  ## 預設寬度
+		var total_w: float = _progress_bar_bg.size.x - 4.0  ## 扣除左右邊框 2px*2
+		if total_w < 300.0:
+			total_w = 660.0  ## 預設寬度（未完成排版週期時使用卡片內槽寬 660px）
+		var target_w: float = total_w * ratio
 		_progress_bar_fill.visible = (ratio > 0.001)
-		_progress_bar_fill.size = Vector2(total_w * ratio, 20)
+		_progress_bar_fill.custom_minimum_size = Vector2(target_w, 20)
+		_progress_bar_fill.size = Vector2(target_w, 20)
 
 	## 更新領取按鈕狀態
 	if _btn_claim:
@@ -466,6 +472,14 @@ func get_claim_button() -> Button:
 
 func get_close_button() -> Button:
 	return _btn_close
+
+
+func get_progress_bar_fill() -> Panel:
+	return _progress_bar_fill
+
+
+func get_progress_bar_bg() -> PanelContainer:
+	return _progress_bar_bg
 
 
 ## 多巴胺金幣/鐵屑爆散反饋動效

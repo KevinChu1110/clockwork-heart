@@ -5545,6 +5545,16 @@
    "keys": [
     "戰前發條上鏈儀式"
    ]
+  },
+  {
+   "id": "victory-part-break-badges",
+   "cat": "遊戲",
+   "title": "戰鬥結算部位破壞徽章與多巴胺獎勵入袋演出",
+   "status": "測試中",
+   "note": "完成戰鬥結算部位破壞徽章與多巴胺獎勵入袋演出，單元測試 test_victory_part_break_badges.gd 全綠",
+   "keys": [
+    "戰鬥結算部位破壞"
+   ]
   }
  ]
 }

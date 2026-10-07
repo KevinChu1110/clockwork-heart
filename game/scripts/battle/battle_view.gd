@@ -4717,15 +4717,21 @@ func _on_end(won: bool) -> void:
 			var col_xp: int = Formulas.colossus_xp(GameState.level, GameState.get_level_cap())
 			_colossus_exp_gain = col_xp
 			var scrap_gain: int = 0
+			var broken_list: Array = []
 			if sim != null and won:
 				for mat in sim.pending_part_materials:
 					if str(mat) == "iron_scrap":
 						scrap_gain += 1
+				for bp in sim.broken_parts_order:
+					var pname: String = str(bp.get("raw_name", bp.get("part_name", "")))
+					if not pname.is_empty() and not (pname in broken_list):
+						broken_list.append(pname)
 			if not drop_part.is_empty():
 				drop_part["is_colossus"] = true
 				drop_part["mode"] = _mode
 				drop_part["exp_gain"] = col_xp
 				drop_part["scrap_gain"] = scrap_gain
+				drop_part["broken_parts"] = broken_list
 			if col_xp > 0:
 				_award_xp(col_xp)
 	else:

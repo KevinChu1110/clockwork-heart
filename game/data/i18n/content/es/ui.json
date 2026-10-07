@@ -3545,5 +3545,11 @@
   "vault.capacity": "Progreso de Carga",
   "vault.max_cap": "Lleno (8 Horas)",
   "上緊發條，啟動！": "¡Cuerda al máximo, activar!",
-  "battle.pre_windup": "¡Cuerda al máximo, activar!"
+  "battle.pre_windup": "¡Cuerda al máximo, activar!",
+  "核心反應爐": "Reactor del Núcleo",
+  "動力履帶": "Oruga de Potencia",
+  "PART BREAK": "PART BREAK",
+  "部位破壞成就": "Logro de Parte Destruida",
+  "戰利品已入袋": "Botín en la mochila",
+  "背包": "Mochila"
 }

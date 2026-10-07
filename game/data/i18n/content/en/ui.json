@@ -3545,5 +3545,11 @@
   "vault.capacity": "Vault Progress",
   "vault.max_cap": "Full (8 Hours)",
   "上緊發條，啟動！": "Wind up tight, engage!",
-  "battle.pre_windup": "Wind up tight, engage!"
+  "battle.pre_windup": "Wind up tight, engage!",
+  "核心反應爐": "Core Reactor",
+  "動力履帶": "Power Tread",
+  "PART BREAK": "PART BREAK",
+  "部位破壞成就": "Part Break Achievement",
+  "戰利品已入袋": "Loot Stashed in Bag",
+  "背包": "Bag"
 }
