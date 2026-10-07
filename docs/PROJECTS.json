@@ -5540,8 +5540,8 @@
    "id": "battle-pre-windup",
    "cat": "遊戲",
    "title": "戰前發條上鏈儀式：開戰鑰匙旋轉動效、wind音效與開局戰報",
-   "status": "草稿",
-   "note": "依 docs/CLOCKWORK_ART_MUSIC_BRIEF.md 第 5 條",
+   "status": "開發中",
+   "note": "開工實作戰前發條上鏈儀式",
    "keys": [
     "戰前發條上鏈儀式"
    ]
