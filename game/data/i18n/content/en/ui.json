@@ -3533,5 +3533,15 @@
   "再連轉一次": "Draw 10 Again",
   "soul.btn_pull_ten_again": "Draw 10 Again",
   "跳過": "Skip",
-  "soul.btn_skip": "Skip"
+  "soul.btn_skip": "Skip",
+  "vault.title": "Clockwork Vault",
+  "vault.popup_title": "Clockwork Vault · Idle Yield",
+  "vault.desc": "The winding key charges over time, storing up to 8 hours of yields.",
+  "vault.gold_reward": "Idle Gold",
+  "vault.scrap_reward": "Iron Scrap",
+  "vault.btn_claim": "Claim All",
+  "vault.charging": "Charging...",
+  "vault.claimed_toast": "Vault yield collected: +%d Gold, +%d Iron Scrap!",
+  "vault.capacity": "Vault Progress",
+  "vault.max_cap": "Full (8 Hours)"
 }

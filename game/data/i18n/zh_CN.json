@@ -907,5 +907,15 @@
   "再連轉一次": "再连转一次",
   "soul.btn_pull_ten_again": "再连转一次",
   "跳過": "跳过",
-  "soul.btn_skip": "跳过"
+  "soul.btn_skip": "跳过",
+  "vault.title": "发条储能库",
+  "vault.popup_title": "发条储能库 · 放置收益",
+  "vault.desc": "发条钥匙随时间蓄能，最高累积8小时收益。",
+  "vault.gold_reward": "放置金币",
+  "vault.scrap_reward": "零件铁屑",
+  "vault.btn_claim": "一键领取",
+  "vault.charging": "蓄能中...",
+  "vault.claimed_toast": "已领取发条收益：金币 +%d，铁屑 +%d！",
+  "vault.capacity": "储能进度",
+  "vault.max_cap": "已蓄满 (8小时)"
 }

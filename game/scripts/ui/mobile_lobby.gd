@@ -9,6 +9,17 @@ signal request_settings()
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+
+class LocHelper:
+	static func t(k: String) -> String:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree:
+			var loc = (loop as SceneTree).root.get_node_or_null("Loc")
+			if loc != null and loc.has_method("t"):
+				return str(loc.t(k))
+		return ContentLoc.text("ui", k)
+
+const Loc = LocHelper
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
@@ -122,6 +133,13 @@ var _core_title_lbl: Label = null
 var _core_empty_lbl: Label = null
 var _core_cards_box: HBoxContainer = null
 var _equip_panel_instance: RefCounted = null
+const IdleClockworkVault = preload("res://scripts/systems/idle_clockwork_vault.gd")
+var _vault_card: PanelContainer = null
+var _vault_title_lbl: Label = null
+var _vault_time_lbl: Label = null
+var _vault_progress_fill: Panel = null
+var _vault_progress_bg: PanelContainer = null
+var _vault_claim_btn: Button = null
 const ITEM_ICON_DIR := "res://assets/icons/items/"
 static var _icon_cache: Dictionary = {}
 
@@ -1957,6 +1975,191 @@ func _build_village_tab() -> void:
 	_sortie_button = btn_go
 	rv.add_child(btn_go)
 	_start_sortie_glow_tween()
+
+	## 發條儲能庫放置收益入口卡片 (對齊右側戰情報告板上方)
+	_build_vault_entry_card()
+
+func _build_vault_entry_card() -> void:
+	if _village_layer == null:
+		return
+	_vault_card = PanelContainer.new()
+	_vault_card.name = "ClockworkVaultCard"
+	_vault_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	_vault_card.offset_left = -336
+	_vault_card.offset_top = -342
+	_vault_card.offset_right = -20
+	_vault_card.offset_bottom = -224
+
+	var csb := StyleBoxFlat.new()
+	csb.bg_color = Color(0.12, 0.09, 0.16, 0.88)
+	csb.border_color = COLOR_BORDER
+	csb.set_border_width_all(2)
+	csb.border_width_bottom = 5
+	csb.set_corner_radius_all(18)
+	csb.content_margin_left = 14
+	csb.content_margin_right = 14
+	csb.content_margin_top = 10
+	csb.content_margin_bottom = 10
+	csb.shadow_color = Color(0.08, 0.06, 0.16, 0.35)
+	csb.shadow_size = 10
+	csb.shadow_offset = Vector2(0, 4)
+	_vault_card.add_theme_stylebox_override("panel", csb)
+	_village_layer.add_child(_vault_card)
+
+	var v_trim := Panel.new()
+	v_trim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	v_trim.offset_left = 3
+	v_trim.offset_top = 3
+	v_trim.offset_right = -3
+	v_trim.offset_bottom = -6
+	v_trim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var vtsb := StyleBoxFlat.new()
+	vtsb.draw_center = false
+	vtsb.border_color = Color(0.83, 0.68, 0.22, 0.50)
+	vtsb.set_border_width_all(1)
+	vtsb.set_corner_radius_all(15)
+	v_trim.add_theme_stylebox_override("panel", vtsb)
+	_vault_card.add_child(v_trim)
+
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 6)
+	_vault_card.add_child(vb)
+
+	var top_h := HBoxContainer.new()
+	vb.add_child(top_h)
+
+	_vault_title_lbl = Label.new()
+	_vault_title_lbl.name = "VaultTitle"
+	_vault_title_lbl.text = Loc.t("vault.title")
+	_vault_title_lbl.add_theme_color_override("font_color", COLOR_GOLD)
+	_vault_title_lbl.add_theme_font_size_override("font_size", 14)
+	if _cached_font:
+		_vault_title_lbl.add_theme_font_override("font", _cached_font)
+	top_h.add_child(_vault_title_lbl)
+
+	var sp := Control.new()
+	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top_h.add_child(sp)
+
+	_vault_time_lbl = Label.new()
+	_vault_time_lbl.name = "VaultTime"
+	_vault_time_lbl.text = "00:00 / 08:00 (0%)"
+	_vault_time_lbl.add_theme_color_override("font_color", Color("#C9BFA8"))
+	_vault_time_lbl.add_theme_font_size_override("font_size", 12)
+	if _cached_font:
+		_vault_time_lbl.add_theme_font_override("font", _cached_font)
+	top_h.add_child(_vault_time_lbl)
+
+	_vault_progress_bg = PanelContainer.new()
+	_vault_progress_bg.name = "VaultProgressBg"
+	_vault_progress_bg.custom_minimum_size = Vector2(0, 10)
+	var bg_sb := StyleBoxFlat.new()
+	bg_sb.bg_color = Color(0.04, 0.03, 0.06, 0.95)
+	bg_sb.border_color = COLOR_BORDER
+	bg_sb.set_border_width_all(1)
+	bg_sb.border_width_bottom = 2
+	bg_sb.set_corner_radius_all(5)
+	_vault_progress_bg.add_theme_stylebox_override("panel", bg_sb)
+	vb.add_child(_vault_progress_bg)
+
+	var fill_clip := Control.new()
+	fill_clip.set_anchors_preset(Control.PRESET_FULL_RECT)
+	fill_clip.clip_contents = true
+	_vault_progress_bg.add_child(fill_clip)
+
+	_vault_progress_fill = Panel.new()
+	_vault_progress_fill.name = "VaultProgressFill"
+	_vault_progress_fill.custom_minimum_size = Vector2(0, 8)
+	var fill_sb := StyleBoxFlat.new()
+	fill_sb.bg_color = COLOR_GOLD
+	fill_sb.border_color = Color("#FFA010")
+	fill_sb.set_border_width_all(1)
+	fill_sb.set_corner_radius_all(4)
+	_vault_progress_fill.add_theme_stylebox_override("panel", fill_sb)
+	fill_clip.add_child(_vault_progress_fill)
+
+	_vault_claim_btn = Button.new()
+	_vault_claim_btn.name = "VaultClaimBtn"
+	_vault_claim_btn.custom_minimum_size = Vector2(280, 48)
+	_vault_claim_btn.focus_mode = Control.FOCUS_NONE
+	var btn_sb := StyleBoxFlat.new()
+	btn_sb.bg_color = COLOR_GOLD
+	btn_sb.border_color = COLOR_BORDER
+	btn_sb.set_border_width_all(2)
+	btn_sb.border_width_bottom = 5
+	btn_sb.set_corner_radius_all(14)
+	_vault_claim_btn.add_theme_stylebox_override("normal", btn_sb)
+	_vault_claim_btn.add_theme_stylebox_override("hover", btn_sb)
+	_vault_claim_btn.add_theme_stylebox_override("pressed", btn_sb)
+	_vault_claim_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_vault_claim_btn.add_theme_font_size_override("font_size", 15)
+	if _cached_font:
+		_vault_claim_btn.add_theme_font_override("font", _cached_font)
+	_vault_claim_btn.pressed.connect(func():
+		open_clockwork_vault()
+	)
+	vb.add_child(_vault_claim_btn)
+	refresh_vault_display()
+
+func get_vault_card() -> Control:
+	return _vault_card
+
+func get_vault_claim_button() -> Button:
+	return _vault_claim_btn
+
+func refresh_vault_display() -> void:
+	if _vault_card == null or not is_instance_valid(_vault_card):
+		return
+	var st: Dictionary = IdleClockworkVault.get_status()
+	var sec: float = float(st.get("elapsed_seconds", 0.0))
+	var gold: int = int(st.get("gold", 0))
+	var scrap: int = int(st.get("iron_scrap", 0))
+	var ratio: float = float(st.get("progress_ratio", 0.0))
+	var is_full: bool = bool(st.get("is_full", false))
+
+	var hrs_i := int(sec / 3600.0)
+	var mins_i := int(fmod(sec, 3600.0) / 60.0)
+	var time_str := "%02d:%02d / 08:00" % [hrs_i, mins_i]
+	var pct_str := "(%d%%)" % int(ratio * 100.0)
+	if is_full:
+		pct_str = "[%s]" % Loc.t("vault.max_cap")
+
+	if _vault_time_lbl and is_instance_valid(_vault_time_lbl):
+		_vault_time_lbl.text = "%s %s" % [time_str, pct_str]
+
+	if _vault_progress_fill and _vault_progress_bg and is_instance_valid(_vault_progress_fill):
+		var total_w := _vault_progress_bg.size.x
+		if total_w <= 1.0:
+			total_w = 280.0
+		_vault_progress_fill.visible = (ratio > 0.001)
+		_vault_progress_fill.size = Vector2(total_w * ratio, 8)
+
+	if _vault_claim_btn and is_instance_valid(_vault_claim_btn):
+		if gold > 0 or scrap > 0:
+			_vault_claim_btn.text = "%s (+%d金 +%d鐵)" % [Loc.t("vault.btn_claim"), gold, scrap]
+		else:
+			_vault_claim_btn.text = Loc.t("vault.charging")
+
+## 開啟發條儲能庫放置收益彈窗
+func open_clockwork_vault() -> Control:
+	var existing = get_node_or_null("ClockworkVaultDialog")
+	if existing != null:
+		return existing
+	var VaultClass: GDScript = load("res://scripts/ui/clockwork_vault_dialog.gd")
+	if VaultClass == null:
+		push_error("無法載入 ClockworkVaultDialog")
+		return null
+	var dlg: Control = VaultClass.new() as Control
+	dlg.z_index = 80
+	dlg.rewards_claimed.connect(func(g: int, s: int):
+		refresh_hud()
+		_show_toast(Loc.t("vault.claimed_toast") % [g, s])
+	)
+	dlg.tree_exited.connect(func():
+		refresh_hud()
+	)
+	add_child(dlg)
+	return dlg
 
 func get_settings_button() -> Button:
 	return _settings_button
@@ -4661,8 +4864,11 @@ func refresh_hud() -> void:
 		_gold_label.text = _fmt_int(gold)
 	if _gem_label:
 		_gem_label.text = _fmt_int(dust)
+	refresh_vault_display()
 
 func _apply_locale_texts() -> void:
+	if _vault_title_lbl and is_instance_valid(_vault_title_lbl):
+		_vault_title_lbl.text = Loc.t("vault.title")
 	if _energy_title_label and is_instance_valid(_energy_title_label):
 		_energy_title_label.text = _t("能量")
 	if _gold_title_label and is_instance_valid(_gold_title_label):

@@ -907,5 +907,15 @@
   "再連轉一次": "Extraer 10 Otra Vez",
   "soul.btn_pull_ten_again": "Extraer 10 Otra Vez",
   "跳過": "Saltar",
-  "soul.btn_skip": "Saltar"
+  "soul.btn_skip": "Saltar",
+  "vault.title": "Bóveda de Cuerda",
+  "vault.popup_title": "Bóveda de Cuerda · Ganancia Pasiva",
+  "vault.desc": "La llave de cuerda se carga con el tiempo, almacenando hasta 8 horas de botín.",
+  "vault.gold_reward": "Oro Pasivo",
+  "vault.scrap_reward": "Chatarra de Hierro",
+  "vault.btn_claim": "Reclamar Todo",
+  "vault.charging": "Cargando...",
+  "vault.claimed_toast": "¡Botín reclamado: +%d Oro, +%d Chatarra de Hierro!",
+  "vault.capacity": "Progreso de Carga",
+  "vault.max_cap": "Lleno (8 Horas)"
 }

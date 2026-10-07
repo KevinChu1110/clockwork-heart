@@ -907,5 +907,15 @@
   "再連轉一次": "もう一度十回引く",
   "soul.btn_pull_ten_again": "もう一度十回引く",
   "跳過": "スキップ",
-  "soul.btn_skip": "スキップ"
+  "soul.btn_skip": "スキップ",
+  "vault.title": "ゼンマイ貯蔵庫",
+  "vault.popup_title": "ゼンマイ貯蔵庫 · 放置収益",
+  "vault.desc": "ゼンマイ鍵が自動で蓄電し、最大8時間分の収益を蓄積します。",
+  "vault.gold_reward": "放置ゴールド",
+  "vault.scrap_reward": "鉄くずパーツ",
+  "vault.btn_claim": "一括受取",
+  "vault.charging": "蓄電中...",
+  "vault.claimed_toast": "ゼンマイ収益を獲得：ゴールド +%d、鉄くず +%d！",
+  "vault.capacity": "蓄電進捗",
+  "vault.max_cap": "満充電 (8時間)"
 }

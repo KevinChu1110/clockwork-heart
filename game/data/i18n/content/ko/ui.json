@@ -3533,5 +3533,15 @@
   "再連轉一次": "다시 10칸 뽑기",
   "soul.btn_pull_ten_again": "다시 10칸 뽑기",
   "跳過": "건너뛰기",
-  "soul.btn_skip": "건너뛰기"
+  "soul.btn_skip": "건너뛰기",
+  "vault.title": "태엽 저장고",
+  "vault.popup_title": "태엽 저장고 · 방치 수익",
+  "vault.desc": "태엽 열쇠가 시간에 따라 충전되어 최대 8시간의 수익을 누적합니다.",
+  "vault.gold_reward": "방치 골드",
+  "vault.scrap_reward": "부품 고철",
+  "vault.btn_claim": "일괄 수령",
+  "vault.charging": "충전 중...",
+  "vault.claimed_toast": "태엽 수익 획득: 골드 +%d, 고철 +%d!",
+  "vault.capacity": "충전 진행도",
+  "vault.max_cap": "완전 충전 (8시간)"
 }

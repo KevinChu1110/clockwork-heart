@@ -907,5 +907,15 @@
   "再連轉一次": "再連轉一次",
   "soul.btn_pull_ten_again": "再連轉一次",
   "跳過": "跳過",
-  "soul.btn_skip": "跳過"
+  "soul.btn_skip": "跳過",
+  "vault.title": "發條儲能庫",
+  "vault.popup_title": "發條儲能庫 · 放置收益",
+  "vault.desc": "發條鑰匙隨時間蓄能，最高累積8小時收益。",
+  "vault.gold_reward": "放置金幣",
+  "vault.scrap_reward": "零件鐵屑",
+  "vault.btn_claim": "一鍵領取",
+  "vault.charging": "蓄能中...",
+  "vault.claimed_toast": "已領取發條收益：金幣 +%d，鐵屑 +%d！",
+  "vault.capacity": "儲能進度",
+  "vault.max_cap": "已蓄滿 (8小時)"
 }
