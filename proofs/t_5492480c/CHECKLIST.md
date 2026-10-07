@@ -9,5 +9,5 @@
 
 ## 實機截圖清單
 1. `proof_01_zh_victory_part_break_badges.png`: 繁中部位破壞徽章、結算卡與背包圖示。
-2. `proof_02_zh_victory_reward_particles_flying.png`: 金幣與鐵屑粒子流向背包動畫特寫。
+2. `proof_02_zh_victory_reward_particles_flying.png`: 金幣與鐵屑粒子流向背包動畫特寫（實機噴湧爆散飛向背包中）。
 3. `proof_03_en_victory_part_break_badges.png`: 英文語系部位破壞徽章 (Core Reactor, Power Tread) 零中文殘留。

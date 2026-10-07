@@ -833,10 +833,14 @@ func play_reward_particles_to_bag(on_finished: Callable = Callable()) -> void:
 			on_finished.call()
 		return
 
-	var start_pos: Vector2 = _btn_confirm.global_position + _btn_confirm.size * 0.5 if _btn_confirm else _dialog_card.size * 0.5
-	var target_pos: Vector2 = _bag_target.global_position + _bag_target.size * 0.5 if _bag_target else start_pos + Vector2(100, 0)
-	var local_start: Vector2 = start_pos - _fx_layer.global_position
+	var target_pos: Vector2 = _bag_target.global_position + _bag_target.size * 0.5 if _bag_target else _dialog_card.global_position + _dialog_card.size * Vector2(0.85, 0.85)
 	var local_target: Vector2 = target_pos - _fx_layer.global_position
+
+	# 起點設在獎勵展示列（經驗列與鐵屑列），避免遮擋底部操作按鈕，呈現自獎勵明細流向背包的直觀動態
+	var exp_pos: Vector2 = _exp_panel.global_position + _exp_panel.size * 0.5 if _exp_panel else target_pos - Vector2(180, 80)
+	var scrap_pos: Vector2 = _scrap_panel.global_position + _scrap_panel.size * 0.5 if _scrap_panel else target_pos - Vector2(180, 40)
+	var local_exp_start: Vector2 = exp_pos - _fx_layer.global_position
+	var local_scrap_start: Vector2 = scrap_pos - _fx_layer.global_position
 
 	var particle_count := 14
 	var gold_tex: Texture2D = null
@@ -846,54 +850,61 @@ func play_reward_particles_to_bag(on_finished: Callable = Callable()) -> void:
 	for i in range(particle_count):
 		var p: Control = null
 		var is_gold: bool = (i % 2 == 0)
+		var p_start: Vector2 = local_exp_start if is_gold else local_scrap_start
 
 		if is_gold and gold_tex != null:
 			var trect := TextureRect.new()
-			trect.texture = gold_tex
-			trect.custom_minimum_size = Vector2(16, 16)
-			trect.size = Vector2(16, 16)
 			trect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			trect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			trect.texture = gold_tex
+			trect.custom_minimum_size = Vector2(22, 22)
+			trect.size = Vector2(22, 22)
 			p = trect
 		else:
 			var cbox := PanelContainer.new()
-			cbox.custom_minimum_size = Vector2(12, 12)
-			cbox.size = Vector2(12, 12)
+			cbox.custom_minimum_size = Vector2(14, 14)
+			cbox.size = Vector2(14, 14)
 			var sb := StyleBoxFlat.new()
 			sb.bg_color = COLOR_GOLD if is_gold else COLOR_SKY
 			sb.border_color = COLOR_BORDER
-			sb.set_border_width_all(1)
-			sb.set_corner_radius_all(3)
+			sb.set_border_width_all(2)
+			sb.set_corner_radius_all(4)
 			cbox.add_theme_stylebox_override("panel", sb)
 			p = cbox
 
-		p.position = local_start
+		p.position = p_start
 		p.pivot_offset = p.size * 0.5
 		p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_fx_layer.add_child(p)
 
-		var angle := randf_range(0.0, TAU)
-		var burst_dist := randf_range(35.0, 80.0)
-		var burst_pos := local_start + Vector2(cos(angle), sin(angle) - 0.3) * burst_dist
+		# 粒子分批 Stagger 噴發 (i * 0.02s)，形成自獎勵列流向背包的動態粒子鏈
+		var stagger := i * 0.02
+		var burst_offset := Vector2(randf_range(-30.0, 30.0), randf_range(-40.0, -15.0))
+		var burst_pos := p_start + burst_offset
 
 		var tw := p.create_tween()
-		tw.tween_property(p, "position", burst_pos, 0.16).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-		tw.parallel().tween_property(p, "scale", Vector2(1.3, 1.3), 0.16)
+		if stagger > 0.0:
+			tw.tween_interval(stagger)
 
-		var flight_time := randf_range(0.20, 0.30)
+		# 階段 1：自獎勵列向上微幅噴湧 (0.15s)
+		tw.tween_property(p, "position", burst_pos, 0.15).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		tw.parallel().tween_property(p, "scale", Vector2(1.2, 1.2), 0.15)
+
+		# 階段 2：弧線流向右下角背包圖示 (0.30 ~ 0.38s)
+		var flight_time := randf_range(0.30, 0.38)
 		tw.tween_property(p, "position", local_target, flight_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		tw.parallel().tween_property(p, "scale", Vector2(0.5, 0.5), flight_time)
-		tw.parallel().tween_property(p, "modulate:a", 0.2, flight_time)
+		tw.parallel().tween_property(p, "scale", Vector2(0.4, 0.4), flight_time)
+		tw.parallel().tween_property(p, "modulate:a", 0.3, flight_time)
 		tw.tween_callback(p.queue_free)
 
 	if _bag_target != null:
 		var btw := _bag_target.create_tween()
-		btw.tween_interval(0.24)
-		btw.tween_property(_bag_target, "scale", Vector2(1.25, 1.25), 0.1).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-		btw.tween_property(_bag_target, "scale", Vector2(1.0, 1.0), 0.12).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		btw.tween_interval(0.28)
+		btw.tween_property(_bag_target, "scale", Vector2(1.25, 1.25), 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		btw.tween_property(_bag_target, "scale", Vector2(1.0, 1.0), 0.14).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 
 	var end_tw := create_tween()
-	end_tw.tween_interval(0.48)
+	end_tw.tween_interval(0.68)
 	if on_finished.is_valid():
 		end_tw.tween_callback(on_finished)
 
