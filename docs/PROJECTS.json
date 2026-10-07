@@ -5490,8 +5490,8 @@
    "id": "wardrobe-toy-families",
    "cat": "遊戲",
    "title": "衣櫥玩具家族分頁與發條轉動：下架毛皮種族改四大家族",
-   "status": "草稿",
-   "note": "任務書第2/3條：玩具家族四分頁、發條每8幀轉一格",
+   "status": "開發中",
+   "note": "已派工 sideworker (t_e1fe12f1)",
    "keys": [
     "衣櫥玩具家族分頁"
    ]
