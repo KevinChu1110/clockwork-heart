@@ -5400,8 +5400,8 @@
    "id": "battle-hud-auto-turns",
    "cat": "遊戲",
    "title": "戰鬥HUD去動作化：移除格擋與手動按鈕，改三欄自動換武與戰報",
-   "status": "測試中",
-   "note": "完成戰鬥HUD去動作化與自動換武戰報，無頭測試全綠",
+   "status": "已上線",
+   "note": "t_c5b2eec7 sideqa 審查通過已上線",
    "keys": [
     "戰鬥HUD去動作"
    ]
