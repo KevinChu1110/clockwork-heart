@@ -5525,6 +5525,36 @@
    "keys": [
     "大廳發條儲能庫放"
    ]
+  },
+  {
+   "id": "combat-overwind-burst",
+   "cat": "遊戲",
+   "title": "戰鬥發條超載爆裂（Overwind Burst）：滿怒全螢幕暗角與齒輪火花特效",
+   "status": "開發中",
+   "note": "開始實作滿怒全螢幕暗角與齒輪火花特效",
+   "keys": [
+    "戰鬥發條超載爆裂"
+   ]
+  },
+  {
+   "id": "battle-pre-windup",
+   "cat": "遊戲",
+   "title": "戰前發條上鏈儀式：開戰鑰匙旋轉動效、wind音效與開局戰報",
+   "status": "草稿",
+   "note": "依 docs/CLOCKWORK_ART_MUSIC_BRIEF.md 第 5 條",
+   "keys": [
+    "戰前發條上鏈儀式"
+   ]
+  },
+  {
+   "id": "skill-panel-dummy-btn",
+   "cat": "遊戲",
+   "title": "武術館灰鬚指點面板加前往木人樁試招快捷按鈕",
+   "status": "測試中",
+   "note": "已完成底欄按鈕新增、聚魂按鈕移除、戰鬥閉環返回武術館導師面板，六語系對齊且測試通過，送審 sideqa",
+   "keys": [
+    "武術館灰鬚指點面"
+   ]
   }
  ]
 }
