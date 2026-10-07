@@ -5475,6 +5475,16 @@
    "keys": [
     "戰鬥換欄那一拍要"
    ]
+  },
+  {
+   "id": "audio-cues-polish",
+   "cat": "遊戲",
+   "title": "音訊架構重構：BGM八首收斂、新增換欄金屬卡榫音效與SFX上限",
+   "status": "草稿",
+   "note": "任務書第5條：BGM收斂8 cue、swap.wav、SFX上限",
+   "keys": [
+    "音訊架構重構：B"
+   ]
   }
  ]
 }
