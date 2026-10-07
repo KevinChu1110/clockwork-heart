@@ -5390,8 +5390,8 @@
    "id": "character-rimlight-shadow",
    "cat": "遊戲",
    "title": "草稿",
-   "status": "測試中",
-   "note": "完成角色RimLight Shader、雙層接地陰影與天宮背景視差/金色星屑粒子，無頭冒煙0報錯，專屬測試全綠，Vision實機截圖驗證通過",
+   "status": "已上線",
+   "note": "t_5b8dc14c sideqa 審查通過已上線",
    "keys": [
     "草稿"
    ]
