@@ -5570,8 +5570,8 @@
    "id": "boss-part-break-chest",
    "cat": "遊戲",
    "title": "Boss部位破壞掉落發光寶箱動效",
-   "status": "草稿",
-   "note": "爆點三落地收尾，依 docs/CLOCKWORK_HEART_GAME_OVERVIEW.md 壹.4",
+   "status": "開發中",
+   "note": "開始製作Boss部位破壞掉落發光寶箱動效",
    "keys": [
     "Boss部位破壞"
    ]
