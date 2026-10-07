@@ -4,6 +4,7 @@ extends Node
 signal flags_changed(key: String, value: Variant)
 signal gold_changed(amount: int)
 signal chapter_changed(chapter: String)
+signal core_drop_notify_changed(has_new: bool)
 
 ## 存檔版本。改動存檔結構就 +1，並在 save_migration.gd 補一支對應的升級步驟。
 const VERSION := 10
@@ -104,6 +105,8 @@ var core_slots: Dictionary = {}
 var core_bag: Array = []
 ## 同義別名，支援以 core_inventory 讀寫
 var core_inventory: Array = []
+## 新獲得/掉落機芯部件標記（用於大廳背包/裝備紅點提示）
+var has_new_core_drop: bool = false
 ## 真正多武器欄（原作：升級解鎖更多武器欄；非器魂快捷）
 ## 長度 3；元素＝equip uid 或 ""。equip_slots.weapon 與 active 欄同步。
 var weapon_loadout: Array = ["", "", ""]
@@ -298,11 +301,32 @@ func ensure_core_slots(default_tier: String = "white") -> void:
 			core_slots[sid] = CsClass.create_part_by_tier(sid, default_tier)
 
 
+func mark_new_core_drop(val: bool = true) -> void:
+	has_new_core_drop = val
+	set_flag("has_new_core_drop", val)
+	core_drop_notify_changed.emit(val)
+
+
+func clear_new_core_drop() -> void:
+	mark_new_core_drop(false)
+
+
+func has_new_core_part() -> bool:
+	return has_new_core_drop or bool(get_flag("has_new_core_drop", false))
+
+
 func add_core_part(part: Dictionary) -> void:
 	if part == null or part.is_empty():
 		return
+	var p_uid := str(part.get("uid", ""))
+	if not p_uid.is_empty():
+		for existing in core_bag:
+			if existing is Dictionary and str(existing.get("uid", "")) == p_uid:
+				mark_new_core_drop(true)
+				return
 	core_bag.append(part.duplicate(true))
 	core_inventory = core_bag
+	mark_new_core_drop(true)
 
 
 func get_core_parts() -> Array:
@@ -647,6 +671,7 @@ func to_dict() -> Dictionary:
 		"equip_slots": equip_slots.duplicate(true),
 		"core_slots": core_slots.duplicate(true),
 		"core_bag": core_bag.duplicate(true),
+		"has_new_core_drop": has_new_core_drop,
 		"weapon_loadout": weapon_loadout.duplicate(),
 		"weapon_loadout_active": weapon_loadout_active,
 		"gem_bag": gem_bag.duplicate(true),
@@ -741,6 +766,7 @@ func from_dict(d: Dictionary) -> void:
 	core_slots = _dict_field(d, "core_slots", {})
 	core_bag = _array_field(d, "core_bag", [])
 	core_inventory = core_bag
+	has_new_core_drop = bool(d.get("has_new_core_drop", false))
 	weapon_loadout = _array_field(d, "weapon_loadout", ["", "", ""])
 	## 只補不截：截斷會讓 round-trip 測試／手動加長陣列靜默丟資料；玩法層 _ensure 再用前 3 格
 	while weapon_loadout.size() < 3:
@@ -948,6 +974,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"wheat_stalk_broken": false,
 		"has_removed_ads": false,
 		"forge_fail_streak": 0,
+		"has_new_core_drop": false,
 		"ng_plus": 0,
 		"stain_flame": false,
 		"stardust": 0,

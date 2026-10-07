@@ -368,6 +368,12 @@ func _ready() -> void:
 	_apply_locale_texts()
 	refresh_hud()
 	_switch_tab(Tab.VILLAGE)
+	_refresh_dock_badges()
+	var gs := _gs()
+	if gs and gs.has_signal("core_drop_notify_changed"):
+		gs.core_drop_notify_changed.connect(func(_val):
+			_refresh_dock_badges()
+		)
 	call_deferred("_apply_safe")
 
 func _exit_tree() -> void:
@@ -1400,6 +1406,83 @@ func _build_bottom_dock() -> void:
 		btn.pressed.connect(func(): _switch_tab(t))
 		h.add_child(btn)
 		_dock_buttons.append(btn)
+	_refresh_dock_badges()
+
+
+func _attach_dock_badge(btn: Button) -> Control:
+	var existing = btn.get_node_or_null("DopamineBadge")
+	if existing != null and is_instance_valid(existing):
+		return existing
+	var badge := Panel.new()
+	badge.name = "DopamineBadge"
+	badge.custom_minimum_size = Vector2(16, 16)
+	badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	badge.offset_left = -20
+	badge.offset_top = 4
+	badge.offset_right = -4
+	badge.offset_bottom = 20
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var bsb := StyleBoxFlat.new()
+	bsb.bg_color = COLOR_PINK # #FF5E8A 多巴胺鮮亮珊瑚粉
+	bsb.border_color = COLOR_GOLD # #FFD028 亮金高光邊框
+	bsb.set_border_width_all(2)
+	bsb.set_corner_radius_all(8)
+	bsb.shadow_color = Color(1.0, 0.37, 0.54, 0.6)
+	bsb.shadow_size = 4
+	bsb.shadow_offset = Vector2(0, 1)
+	badge.add_theme_stylebox_override("panel", bsb)
+
+	var dot := Panel.new()
+	dot.name = "GoldCenter"
+	dot.custom_minimum_size = Vector2(6, 6)
+	dot.set_anchors_preset(Control.PRESET_CENTER)
+	dot.offset_left = -3
+	dot.offset_top = -3
+	dot.offset_right = 3
+	dot.offset_bottom = 3
+	dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var dsb := StyleBoxFlat.new()
+	dsb.bg_color = COLOR_GOLD
+	dsb.set_corner_radius_all(3)
+	dot.add_theme_stylebox_override("panel", dsb)
+	badge.add_child(dot)
+
+	btn.add_child(badge)
+	return badge
+
+
+func _has_new_core_drop() -> bool:
+	var gs := _gs()
+	if gs and gs.has_method("has_new_core_part"):
+		return bool(gs.call("has_new_core_part"))
+	var cs := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	if cs != null:
+		return cs.has_new_core_drop()
+	return false
+
+
+func _clear_new_core_drop_notification() -> void:
+	var gs := _gs()
+	if gs and gs.has_method("clear_new_core_drop"):
+		gs.call("clear_new_core_drop")
+	var cs := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	if cs != null:
+		cs.clear_new_core_drop()
+	_refresh_dock_badges()
+
+
+func _refresh_dock_badges() -> void:
+	var has_new := _has_new_core_drop()
+	for i in range(_dock_buttons.size()):
+		var btn: Button = _dock_buttons[i]
+		if i == int(Tab.CHARACTER) or i == int(Tab.BAG):
+			var badge = _attach_dock_badge(btn)
+			badge.visible = has_new
+		else:
+			var b = btn.get_node_or_null("DopamineBadge")
+			if b:
+				b.visible = false
 
 func _style_dock_button(btn: Button, is_active: bool) -> void:
 	var sb := StyleBoxFlat.new()
@@ -1455,6 +1538,8 @@ func switch_tab(target: int) -> void:
 
 func _switch_tab(target: Tab) -> void:
 	_current_tab = target
+	if target == Tab.CHARACTER or target == Tab.BAG:
+		_clear_new_core_drop_notification()
 	if _village_layer:
 		_village_layer.visible = (target == Tab.VILLAGE)
 	if _char_layer:
@@ -1471,6 +1556,7 @@ func _switch_tab(target: Tab) -> void:
 	for i in range(_dock_buttons.size()):
 		var is_active := (i == int(target))
 		_style_dock_button(_dock_buttons[i], is_active)
+	_refresh_dock_badges()
 
 ## ──────────────────────────────────────────
 ## 每幀小動作與發條微動判定 (動態待機自然活化)
@@ -5536,6 +5622,7 @@ func open_shop() -> Control:
 
 ## 開啟角色裝備/整備面板並滾動至機芯五槽
 func open_equip_panel(scroll_to_core: bool = false) -> Control:
+	_clear_new_core_drop_notification()
 	var existing = get_node_or_null("EquipLayer")
 	if existing != null and is_instance_valid(existing):
 		existing.queue_free()
