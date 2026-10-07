@@ -5580,8 +5580,8 @@
    "id": "battle-swap-beat-fx",
    "cat": "遊戲",
    "title": "戰鬥自動換欄角色微動卡榫拍點演出",
-   "status": "草稿",
-   "note": "swap 姿態與發條鑰匙聯動，依 docs/CLOCKWORK_ART_MUSIC_BRIEF.md 第 0 與 3 條",
+   "status": "開發中",
+   "note": "開始開發戰鬥自動換欄角色微動卡榫拍點演出 (t_8b44d76e)",
    "keys": [
     "戰鬥自動換欄角色"
    ]
