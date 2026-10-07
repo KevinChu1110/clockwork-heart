@@ -5520,8 +5520,8 @@
    "id": "lobby-idle-vault",
    "cat": "遊戲",
    "title": "大廳發條儲能庫放置收益系統（掛機累積與多巴胺領取）",
-   "status": "草稿",
-   "note": "依 CLOCKWORK_HEART_GAME_OVERVIEW.md 壹.4 爆點二，實作大廳發條離線放置收益",
+   "status": "開發中",
+   "note": "阿宏接手開發大廳發條儲能庫放置收益系統",
    "keys": [
     "大廳發條儲能庫放"
    ]
