@@ -3543,5 +3543,14 @@
   "vault.charging": "蓄電中...",
   "vault.claimed_toast": "ゼンマイ収益を獲得：ゴールド +%d、鉄くず +%d！",
   "vault.capacity": "蓄電進捗",
-  "vault.max_cap": "満充電 (8時間)"
+  "vault.max_cap": "満充電 (8時間)",
+  "vault.bubble_accumulated": "蓄積 %dh / %dh",
+  "vault.bubble_claim_ready": "受取可能",
+  "vault.bubble_full": "満充電 8h · 受取可能",
+  "核心反應爐": "コア反応炉",
+  "動力履帶": "動力キャタピラ",
+  "PART BREAK": "PART BREAK",
+  "部位破壞成就": "部位破壊実績",
+  "戰利品已入袋": "戦利品獲得",
+  "背包": "バッグ"
 }

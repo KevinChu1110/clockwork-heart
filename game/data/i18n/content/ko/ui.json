@@ -3543,5 +3543,14 @@
   "vault.charging": "충전 중...",
   "vault.claimed_toast": "태엽 수익 획득: 골드 +%d, 고철 +%d!",
   "vault.capacity": "충전 진행도",
-  "vault.max_cap": "완전 충전 (8시간)"
+  "vault.max_cap": "완전 충전 (8시간)",
+  "vault.bubble_accumulated": "누적 %dh / %dh",
+  "vault.bubble_claim_ready": "수령 가능",
+  "vault.bubble_full": "완전 충전 8h · 수령 가능",
+  "核心反應爐": "코어 반응로",
+  "動力履帶": "동력 무한궤도",
+  "PART BREAK": "PART BREAK",
+  "部位破壞成就": "부위 파괴 업적",
+  "戰利品已入袋": "전리품 획득 완료",
+  "背包": "가방"
 }

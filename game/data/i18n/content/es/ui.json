@@ -3543,5 +3543,14 @@
   "vault.charging": "Cargando...",
   "vault.claimed_toast": "¡Botín reclamado: +%d Oro, +%d Chatarra de Hierro!",
   "vault.capacity": "Progreso de Carga",
-  "vault.max_cap": "Lleno (8 Horas)"
+  "vault.max_cap": "Lleno (8 Horas)",
+  "vault.bubble_accumulated": "Acumulado %dh / %dh",
+  "vault.bubble_claim_ready": "Reclamar",
+  "vault.bubble_full": "Lleno 8h · Reclamar",
+  "核心反應爐": "Reactor del Núcleo",
+  "動力履帶": "Oruga de Potencia",
+  "PART BREAK": "PART BREAK",
+  "部位破壞成就": "Logro de Parte Destruida",
+  "戰利品已入袋": "Botín en la mochila",
+  "背包": "Mochila"
 }
