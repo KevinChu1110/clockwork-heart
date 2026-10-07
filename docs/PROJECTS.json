@@ -5510,8 +5510,8 @@
    "id": "battle-break-slowmo",
    "cat": "遊戲",
    "title": "戰鬥部位破壞0.4秒慢動作頓挫與Boss部位將破warn音效整合",
-   "status": "草稿",
-   "note": "依 CLOCKWORK_ART_MUSIC_BRIEF.md 第5條，實作慢動作頓挫與warn音效收斂",
+   "status": "已上線",
+   "note": "審查通過已上線 (t_1a4bca3d done)",
    "keys": [
     "戰鬥部位破壞0."
    ]
