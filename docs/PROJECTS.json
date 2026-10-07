@@ -5480,8 +5480,8 @@
    "id": "audio-cues-polish",
    "cat": "遊戲",
    "title": "音訊架構重構：BGM八首收斂、新增換欄金屬卡榫音效與SFX上限",
-   "status": "測試中",
-   "note": "完成BGM八首收斂、swap.wav卡榫音效與SFX兩聲上限，測試全綠送審 (t_7bb91427)",
+   "status": "已上線",
+   "note": "BGM八首收斂、swap.wav金屬卡榫音效與SFX上限重構已審核通過 (t_7bb91427 done)",
    "keys": [
     "音訊架構重構：B"
    ]
