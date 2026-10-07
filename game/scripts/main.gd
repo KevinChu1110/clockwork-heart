@@ -4260,7 +4260,7 @@ func _on_battle_finished(won: bool) -> void:
 			_pre_dummy_hp = -1
 		if won:
 			_explore_play_pose("skill", 0.55)
-		_return_to_explore("town_tutor", "C1_TOWN")
+		_open_explore_then("town_tutor", Screen.C1_TOWN, _go_skill_panel)
 		return
 	SaveManager.save_game()
 	## 回探索時補一拍勝負姿（場景重建後下一幀也可能已換圖，仍盡力播）
@@ -5848,7 +5848,7 @@ func _go_skill_panel() -> void:
 				"cb": _skill_unlock_cb(sid),
 				"below_control": _make_skill_progress_widget(sid),
 			})
-	buttons.append({"text": Loc.t("pause.soul"), "cb": _go_soul_panel})
+	buttons.append({"text": _t("前往木人樁試招"), "cb": func(): _start_battle("training_dummy")})
 	buttons.append({"text": _t("回到廣場"), "cb": _go_c1_town})
 	_panel(Loc.t("panel.tutor"), body, buttons, {"body_h": 140.0})
 
