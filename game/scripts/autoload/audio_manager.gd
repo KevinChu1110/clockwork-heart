@@ -21,6 +21,11 @@ var _muted: bool = false
 var _bgm_muted: bool = false
 var _step_cd: float = 0.0
 
+## SFX 播放歷史與計數（供測試與除錯斷言）
+var last_sfx: String = ""
+var sfx_play_counts: Dictionary = {}
+var _last_play_time: Dictionary = {}
+
 var _bgm_a: AudioStreamPlayer
 var _bgm_b: AudioStreamPlayer
 var _bgm_active: AudioStreamPlayer
@@ -182,6 +187,13 @@ func set_bgm_muted(v: bool) -> void:
 func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 	if _muted:
 		return
+	var now_msec := Time.get_ticks_msec()
+	if _last_play_time.has(id):
+		if now_msec - int(_last_play_time[id]) < 40:
+			return  ## 40ms 內同音效防重疊破音
+	_last_play_time[id] = now_msec
+	last_sfx = id
+	sfx_play_counts[id] = int(sfx_play_counts.get(id, 0)) + 1
 	var stream: AudioStream = _streams.get(id)
 	if stream == null or _pool.is_empty():
 		return
@@ -191,6 +203,21 @@ func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 	p.pitch_scale = clampf(pitch_scale, 0.5, 2.0)
 	p.volume_db = _sfx_db + volume_db
 	p.play()
+
+
+## 相容呼叫介面：AudioManager.play_sfx("warn")
+func play_sfx(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
+	play(id, pitch_scale, volume_db)
+
+
+func get_sfx_count(id: String) -> int:
+	return int(sfx_play_counts.get(id, 0))
+
+
+func clear_sfx_history() -> void:
+	last_sfx = ""
+	sfx_play_counts.clear()
+	_last_play_time.clear()
 
 
 func play_step() -> void:
@@ -416,7 +443,12 @@ func on_battle_event(kind: String, data: Dictionary = {}) -> void:
 			else:
 				play("clash")
 		"king_slash_start":
-			play("warn", 0.9, -2.0)
+			# docs/CLOCKWORK_ART_MUSIC_BRIEF.md 第 5 條：warn 徹底移出格擋窗，改為部位將破提示
+			pass
+		"part_warn":
+			play_sfx("warn")
+		"part_broken":
+			play_sfx("break")
 		"temptation":
 			play("reveal", 0.7, -4.0)
 		_:

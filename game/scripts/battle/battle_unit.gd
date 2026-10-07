@@ -63,6 +63,7 @@ var part_name: String = ""
 var part_max_hp: int = 0
 var part_hp: int = 0
 var part_broken: bool = false
+var part_warned: bool = false
 ## 多部位：[{id, name, max_hp, hp, broken, effect, material, ptype}]
 ## effect: "def_down" | "enrage" | "expose" | "slow_break"
 ## ptype: helmet | armor | boots | crown（原作分型）

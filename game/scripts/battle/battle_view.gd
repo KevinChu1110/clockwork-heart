@@ -73,6 +73,7 @@ var _dummy_settlement_dialog: Control = null
 var _victory_settlement_dialog: Control = null
 var _colossus_exp_gain: int = 0
 var _in_parry_slowmo: bool = false
+var _in_part_break_slowmo: bool = false
 var _player_home: Vector2
 var _enemy_home: Vector2
 var _player_race: String = ""
@@ -3833,7 +3834,8 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			# Alice 糖果屑（粉紫奶油琺瑯＋黃銅屑）；⛔ 不用焊花主特效
 			_spawn_candy_chip_break(boss_id, data)
 			_shake = 0.5
-			trigger_hit_stop(0.12)
+			# docs/CLOCKWORK_ART_MUSIC_BRIEF.md 第 5 條：部位破壞接入 0.4 秒慢動作頓挫
+			trigger_part_break_slowmo(0.4)
 			_flash(_body_of(boss_id), Color(3.0, 2.5, 1.0))
 			_set_boss_pose("recover")
 			_refresh_part_focus_hint()
@@ -3841,6 +3843,11 @@ func _on_event(kind: String, data: Dictionary) -> void:
 				if is_instance_valid(self) and not _ended:
 					_set_boss_pose("idle")
 			)
+		"part_warn":
+			var pname := str(data.get("part_name", _t("部位")))
+			_append_log(_t("[color=#fa4]⚠ 部位瀕臨破碎！【%s】[/color]") % pname)
+			_flash_coach(_t("Boss 部位將破！"), 1.8)
+			_shake = 0.2
 		"part_effect":
 			var emsg := str(data.get("msg", ""))
 			if emsg != "":
@@ -4418,14 +4425,35 @@ func _pulse_enemy() -> void:
 func trigger_hit_stop(duration: float = 0.08) -> void:
 	if not is_inside_tree() or _ended:
 		return
-	if _in_parry_slowmo:
-		return  ## 正在進行完美格擋慢鏡，不被常規命中定格覆蓋
+	if _in_parry_slowmo or _in_part_break_slowmo:
+		return  ## 正在進行慢鏡，不被常規命中定格覆蓋
 	var orig_scale := sim.time_scale if sim != null else 1.0
 	Engine.time_scale = 0.08
 	get_tree().create_timer(duration, true, false, true).timeout.connect(func():
-		if not _in_parry_slowmo:
+		if not _in_parry_slowmo and not _in_part_break_slowmo:
 			Engine.time_scale = orig_scale
 	)
+
+
+func trigger_part_break_slowmo(duration: float = 0.4) -> void:
+	if not is_inside_tree() or _ended:
+		return
+	_in_part_break_slowmo = true
+	var orig_scale := sim.time_scale if sim != null else 1.0
+	Engine.time_scale = 0.15
+	var stw := create_tween()
+	if stw != null:
+		# docs/CLOCKWORK_ART_MUSIC_BRIEF.md 第 5 條：0.4 秒慢動作頓挫並平滑恢復
+		stw.tween_property(Engine, "time_scale", orig_scale, duration).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		stw.finished.connect(func():
+			_in_part_break_slowmo = false
+			Engine.time_scale = orig_scale
+		)
+	else:
+		get_tree().create_timer(duration, true, false, true).timeout.connect(func():
+			_in_part_break_slowmo = false
+			Engine.time_scale = orig_scale
+		)
 
 
 func _spawn_float(target_id: String, text: String, color: Color, is_crit: bool = false, is_break: bool = false) -> void:

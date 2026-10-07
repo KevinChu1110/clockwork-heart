@@ -2755,6 +2755,7 @@ static func _attach_boss_part(
 		"max_hp": max_hp,
 		"hp": max_hp,
 		"broken": false,
+		"warned": false,
 		"effect": effect,
 		"material": mat,
 		"ptype": pt,
@@ -2779,6 +2780,7 @@ static func _sync_legacy_part_fields(u: BattleUnit) -> void:
 	u.part_max_hp = int(pick.get("max_hp", 0))
 	u.part_hp = int(pick.get("hp", 0))
 	u.part_broken = bool(pick.get("broken", false))
+	u.part_warned = bool(pick.get("warned", false))
 
 
 func cycle_part_focus(dir: int = 1) -> String:
@@ -2844,6 +2846,20 @@ func _process_part_damage(target: BattleUnit, dealt: int, is_telegraph: bool) ->
 		target.part_hp = 0
 		target.part_broken = true
 		_finish_part_break(target, target.part_name, "", is_telegraph)
+	else:
+		if target.is_boss and not target.part_warned and target.part_max_hp > 0:
+			var ratio := float(target.part_hp) / float(target.part_max_hp)
+			if ratio <= 0.20001:
+				target.part_warned = true
+				_emit("part_warn", {
+					"boss_id": target.id,
+					"part_id": "",
+					"part_name": target.part_name,
+					"hp": target.part_hp,
+					"max_hp": target.part_max_hp,
+					"ratio": ratio,
+				})
+				_play_warn_sfx()
 
 
 ## 目前可破部位的數量上限（原作多段血量節點逐段開窗）
@@ -2928,6 +2944,7 @@ func _process_multi_part_damage(target: BattleUnit, dealt: int, is_telegraph: bo
 					"msg": _t("部位仍牢固——先把本體壓到七成血以下。") if allow == 0
 						else _t("這道破綻只夠破一處——再壓低血量，下一道才會開。"),
 				})
+				_check_part_warn(target, p)
 				continue
 			p["hp"] = 0
 			p["broken"] = true
@@ -2951,7 +2968,46 @@ func _process_multi_part_damage(target: BattleUnit, dealt: int, is_telegraph: bo
 				return
 		else:
 			target.parts[i] = p
+			_check_part_warn(target, p)
 	_sync_legacy_part_fields(target)
+
+
+func _play_warn_sfx() -> void:
+	if Engine.has_singleton("AudioManager"):
+		var am = Engine.get_singleton("AudioManager")
+		if am.has_method("play_sfx"):
+			am.play_sfx("warn")
+		elif am.has_method("play"):
+			am.play("warn")
+	elif Engine.get_main_loop() != null and "root" in Engine.get_main_loop() and Engine.get_main_loop().root != null:
+		var am = Engine.get_main_loop().root.get_node_or_null("AudioManager")
+		if am != null:
+			if am.has_method("play_sfx"):
+				am.play_sfx("warn")
+			elif am.has_method("play"):
+				am.play("warn")
+
+
+func _check_part_warn(target: BattleUnit, p: Dictionary) -> void:
+	if target == null or not target.is_boss:
+		return
+	if bool(p.get("broken", false)) or bool(p.get("warned", false)):
+		return
+	var mhp := float(p.get("max_hp", 1))
+	var cur := float(p.get("hp", 0))
+	if cur > 0 and (cur / mhp) <= 0.20001:
+		p["warned"] = true
+		var pid := str(p.get("id", ""))
+		var pname := str(p.get("name", ""))
+		_emit("part_warn", {
+			"boss_id": target.id,
+			"part_id": pid,
+			"part_name": pname,
+			"hp": int(cur),
+			"max_hp": int(mhp),
+			"ratio": cur / mhp,
+		})
+		_play_warn_sfx()
 
 
 func _try_part_flee(target: BattleUnit, part_name: String, effect: String) -> bool:
@@ -3048,6 +3104,7 @@ func _finish_part_break(
 	material: String = "",
 	qty: int = 1
 ) -> void:
+	slowmo = 0.4  ## docs/CLOCKWORK_ART_MUSIC_BRIEF.md 第 5 條：部位破壞接入 0.4 秒慢動作頓挫
 	if was_telegraph:
 		target.telegraph_active = false
 		target.state = BattleUnit.State.RECOVER
@@ -3073,6 +3130,7 @@ func _finish_part_break(
 		"qty": qty,
 		"hp": target.hp,
 		"max_hp": target.max_hp,
+		"slowmo": 0.4,
 	})
 
 
