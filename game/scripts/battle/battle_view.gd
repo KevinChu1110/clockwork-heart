@@ -10,6 +10,7 @@ const OutlineShader = preload("res://shaders/outline.gdshader")
 const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
+const WindingKeyAnimator = preload("res://scripts/art/winding_key_animator.gd")
 
 const FONT_HUNINN_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 static var _cached_huninn: Font = null
@@ -102,6 +103,10 @@ var enable_idle_breathing: bool = true:
 var _baked_shadow_cache: Dictionary = {}
 var _battle_weapon: TextureRect = null
 var _battle_armor: TextureRect = null
+## 戰前發條上鏈儀式（Pre-battle Windup Ritual）：0.5 秒發條加速旋轉、wind 音效與開局戰報
+const PRE_WINDUP_DURATION: float = 0.5
+var _is_pre_windup: bool = false
+var _pre_windup_timer: float = 0.0
 var _skill_banner: Label
 var _rage_ready: Label
 var _rage_shimmer_tween: Tween = null
@@ -485,7 +490,14 @@ func setup(mode: String) -> void:
 	_refresh_hud()
 	_ensure_coach()
 	AudioManager.battle_start(_mode)
-	_append_log("[color=#b8a88a]%s[/color]" % Loc.t("battle.start"))
+	_is_pre_windup = true
+	_pre_windup_timer = PRE_WINDUP_DURATION
+	_trigger_pre_battle_windup()
+	if AudioManager and AudioManager.has_method("play_sfx"):
+		AudioManager.play_sfx("wind")
+	elif AudioManager and AudioManager.has_method("play"):
+		AudioManager.play("wind")
+	_append_log("[color=#ffd028]%s[/color]" % Loc.t("battle.pre_windup"))
 	if mode == "pvp_snap":
 		var WC3 = load("res://scripts/world/world_content.gd")
 		var d3: Dictionary = WC3.enemy_def("pvp_snap") if WC3 else {}
@@ -724,10 +736,10 @@ func _apply_hud_chrome() -> void:
 		_log_panel.grow_horizontal = Control.GROW_DIRECTION_END
 		_log_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 		_log_panel.offset_left = 24.0
-		_log_panel.offset_right = 380.0
+		_log_panel.offset_right = 460.0
 		_log_panel.offset_bottom = -20.0
-		_log_panel.offset_top = -88.0
-		_log_panel.pivot_offset = Vector2(178.0, 34.0)
+		_log_panel.offset_top = -112.0
+		_log_panel.pivot_offset = Vector2(218.0, 46.0)
 		var ls := StyleBoxFlat.new()
 		ls.bg_color = Color("#FFFDF8")
 		ls.border_color = Color("#1F1A3A")
@@ -843,9 +855,9 @@ func _apply_safe_hud() -> void:
 		btn_flee.offset_top = -ResponsiveUi.BTN_H - 8.0 - m.w
 	if _log_panel:
 		_log_panel.offset_left = m.x + 24.0
-		_log_panel.offset_right = m.x + 380.0
+		_log_panel.offset_right = m.x + 460.0
 		_log_panel.offset_bottom = -20.0 - m.w
-		_log_panel.offset_top = -88.0 - m.w
+		_log_panel.offset_top = -112.0 - m.w
 	if _weapon_dock and is_instance_valid(_weapon_dock) and _weapon_dock.get_parent() == self:
 		_weapon_dock.offset_left = -580.0 - m.z
 		_weapon_dock.offset_right = -400.0 - m.z
@@ -1868,9 +1880,12 @@ func _shadow_layer() -> Control:
 	layer.clip_contents = false
 	layer.z_index = 0
 	layer.z_as_relative = false
-	## 地面 → 軟影 → 角色 → 戰報。畫在 Arena 之後會蓋靴子。
-	if arena and layer.get_index() != arena.get_index() - 1:
-		move_child(layer, arena.get_index())
+	## 地面 → 軟影 → 角色 → 戰報。Arena 設 z_index = 2，確保角色永遠在接地軟影前方。
+	if arena:
+		arena.z_index = 2
+		arena.z_as_relative = false
+		if layer.get_index() != arena.get_index() - 1:
+			move_child(layer, arena.get_index())
 	return layer
 
 
@@ -2054,19 +2069,26 @@ func _apply_battle_art(mode: String) -> void:
 	_ensure_battle_look()
 	_player_race = SpriteDB.player_race()
 	_player_pose = "idle"
-	var ptex := _get_player_equipped_idle_texture()
-	if ptex != null and ptex.get_width() >= 256:
-		player_body.texture = ptex
-		player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-		_player_tex_has_baked_shadow = _texture_has_baked_shadow(ptex)
-	else:
-		var sc := SpriteDB.hero_showcase_hd_tex(_player_race)
-		if sc != null and sc.get_width() >= 256:
-			player_body.texture = sc
+	var slots: Dictionary = {}
+	if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
+		slots = (GameState.paperdoll_slots as Dictionary).duplicate()
+	var anim := WindingKeyAnimator.setup_for(player_body, _player_race, slots)
+	if anim == null or player_body.texture == null:
+		var ptex := _get_player_equipped_idle_texture()
+		if ptex != null and ptex.get_width() >= 256:
+			player_body.texture = ptex
 			player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-			_player_tex_has_baked_shadow = _texture_has_baked_shadow(sc)
+			_player_tex_has_baked_shadow = _texture_has_baked_shadow(ptex)
 		else:
-			player_body.texture = null
+			var sc := SpriteDB.hero_showcase_hd_tex(_player_race)
+			if sc != null and sc.get_width() >= 256:
+				player_body.texture = sc
+				player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+				_player_tex_has_baked_shadow = _texture_has_baked_shadow(sc)
+			else:
+				player_body.texture = null
+	else:
+		_player_tex_has_baked_shadow = false
 	player_body.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	player_body.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	player_body.custom_minimum_size = Vector2(200, 250)
@@ -2173,6 +2195,24 @@ func _apply_battle_art(mode: String) -> void:
 	elif battle_bg:
 		battle_bg.texture = null
 		battle_bg.modulate = Color(0.98, 0.93, 0.82)
+
+
+func is_pre_windup() -> bool:
+	return _is_pre_windup
+
+
+func get_pre_windup_timer() -> float:
+	return _pre_windup_timer
+
+
+func _trigger_pre_battle_windup() -> void:
+	if player_body == null:
+		return
+	var k_rect := player_body.get_node_or_null("HeroWindingKey") as TextureRect
+	if k_rect:
+		var animator = k_rect.get_node_or_null("WindingKeyAnimator")
+		if animator and animator.has_method("start_fast_windup"):
+			animator.call("start_fast_windup", PRE_WINDUP_DURATION, 4.0)
 
 
 func _apply_battle_weapon_overlay() -> void:
@@ -2445,6 +2485,14 @@ func _process(delta: float) -> void:
 		arena.position = Vector2(randf_range(-4, 4), randf_range(-3, 3)) * (_shake * 8.0)
 		if _shake <= 0.0:
 			arena.position = Vector2.ZERO
+	if _is_pre_windup:
+		_pre_windup_timer = maxf(0.0, _pre_windup_timer - delta)
+		if _pre_windup_timer <= 0.0:
+			_is_pre_windup = false
+			_append_log("[color=#b8a88a]%s[/color]" % Loc.t("battle.start"))
+		else:
+			_refresh_hud()
+			return
 	if sim == null or _ended:
 		return
 	sim.step(delta)
@@ -3456,6 +3504,24 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 	_player_pose = pose
 	if _player_race.is_empty():
 		_player_race = SpriteDB.player_race()
+	var k_rect := player_body.get_node_or_null("HeroWindingKey") as TextureRect
+	if pose == "idle":
+		var slots: Dictionary = {}
+		if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
+			slots = (GameState.paperdoll_slots as Dictionary).duplicate()
+		var anim := WindingKeyAnimator.setup_for(player_body, _player_race, slots)
+		if anim != null and player_body.texture != null:
+			if k_rect:
+				k_rect.visible = true
+			_player_tex_has_baked_shadow = false
+			_layout_foot_shadow(player_body)
+			if _player_pose_tween and _player_pose_tween.is_valid():
+				_player_pose_tween.kill()
+				_player_pose_tween = null
+			_start_breathe_tween()
+			return
+	if k_rect:
+		k_rect.visible = false
 	var t: Texture2D = null
 	if pose == "idle":
 		t = _get_player_equipped_idle_texture()

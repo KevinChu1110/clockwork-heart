@@ -3543,5 +3543,7 @@
   "vault.charging": "蓄能中...",
   "vault.claimed_toast": "已领取发条收益：金币 +%d，铁屑 +%d！",
   "vault.capacity": "储能进度",
-  "vault.max_cap": "已蓄满 (8小时)"
+  "vault.max_cap": "已蓄满 (8小时)",
+  "上緊發條，啟動！": "上紧发条，启动！",
+  "battle.pre_windup": "上紧发条，启动！"
 }

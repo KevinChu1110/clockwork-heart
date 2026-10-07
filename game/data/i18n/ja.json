@@ -917,5 +917,7 @@
   "vault.charging": "蓄電中...",
   "vault.claimed_toast": "ゼンマイ収益を獲得：ゴールド +%d、鉄くず +%d！",
   "vault.capacity": "蓄電進捗",
-  "vault.max_cap": "満充電 (8時間)"
+  "vault.max_cap": "満充電 (8時間)",
+  "battle.pre_windup": "ゼンマイを巻いて、起動！",
+  "上緊發條，啟動！": "ゼンマイを巻いて、起動！"
 }
