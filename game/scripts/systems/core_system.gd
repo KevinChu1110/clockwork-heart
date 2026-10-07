@@ -20,6 +20,7 @@ static var core_inventory: Array = []
 static var inventory: Array = []
 static var _shuffle_bag: Array[String] = []
 static var _last_dropped_slot: String = ""
+static var _has_new_core_drop_flag: bool = false
 
 const DEFAULT_DROP_TIER_WEIGHTS: Dictionary = {
 	"gray": 50,
@@ -115,13 +116,13 @@ static func get_colossus_part_slot(boss_id: String = "", part_key: String = "") 
 
 	# 2. 通用別名與語意對應
 	match pkey.to_lower():
-		"mainspring", "spring", "發條", "發條部位", "發條發電機", "背後主發條":
+		"mainspring", "spring", "發條", "發條部位", "發條發電機", "背後主發條", "主發條":
 			return SLOT_MAINSPRING
-		"chassis", "機殼", "機殼部位", "機殼裝甲", "外殼", "裝甲":
+		"chassis", "機殼", "機殼部位", "機殼裝甲", "外殼", "裝甲", "平衡擺輪", "擺輪":
 			return SLOT_CHASSIS
-		"escapement", "governor", "調速器", "調速器部位", "擒縱調速器", "鐘擺":
+		"escapement", "governor", "調速器", "調速器部位", "擒縱調速器", "鐘擺", "擒縱叉":
 			return SLOT_ESCAPEMENT
-		"gear_train", "gears", "齒輪", "齒輪部位", "傳動齒輪組", "齒輪組":
+		"gear_train", "gears", "齒輪", "齒輪部位", "傳動齒輪組", "齒輪組", "傳動齒輪":
 			return SLOT_GEAR_TRAIN
 		"soul_core", "core", "核心", "核心部位", "共鳴核心", "溢能核心":
 			return SLOT_SOUL_CORE
@@ -417,15 +418,15 @@ static func get_tier_modulate(score: int) -> Color:
 static func normalize_slot_id(slot_id: String) -> String:
 	var s := slot_id.strip_edges().to_lower()
 	match s:
-		"spring_generator", "slot_01", "generator", "發條發電機", "0", "mainspring":
+		"spring_generator", "slot_01", "generator", "發條發電機", "0", "mainspring", "主發條", "發條":
 			return SLOT_MAINSPRING
-		"chassis_armor", "slot_02", "armor", "機殼裝甲", "1", "chassis":
+		"chassis_armor", "slot_02", "armor", "機殼裝甲", "1", "chassis", "平衡擺輪", "擺輪":
 			return SLOT_CHASSIS
-		"escapement_governor", "slot_03", "governor", "擒縱調速器", "2", "escapement":
+		"escapement_governor", "slot_03", "governor", "擒縱調速器", "2", "escapement", "擒縱叉":
 			return SLOT_ESCAPEMENT
-		"transmission_gears", "slot_04", "gears", "傳動齒輪組", "3", "gear_train":
+		"transmission_gears", "slot_04", "gears", "傳動齒輪組", "3", "gear_train", "傳動齒輪", "齒輪":
 			return SLOT_GEAR_TRAIN
-		"resonance_core", "slot_05", "core", "共鳴核心", "4", "soul_core":
+		"resonance_core", "slot_05", "core", "共鳴核心", "4", "soul_core", "核心":
 			return SLOT_SOUL_CORE
 		_:
 			return s
@@ -1462,6 +1463,14 @@ static func add_part_to_inventory(part: Dictionary) -> void:
 	if part == null or part.is_empty():
 		return
 	var part_copy: Dictionary = part.duplicate(true)
+	var slot_id: String = normalize_slot_id(str(part_copy.get("slot", SLOT_MAINSPRING)))
+	part_copy["slot"] = slot_id
+	if not part_copy.has("slot_name") or str(part_copy.get("slot_name", "")).is_empty():
+		part_copy["slot_name"] = get_slot_name(slot_id)
+	if not part_copy.has("uid") or str(part_copy.get("uid", "")).is_empty():
+		_uid_counter += 1
+		part_copy["uid"] = "core_%s_%d_%d" % [slot_id, int(Time.get_unix_time_from_system() * 1000), _uid_counter]
+
 	var tree := Engine.get_main_loop()
 	var gs: Node = null
 	var cs: Node = null
@@ -1470,16 +1479,53 @@ static func add_part_to_inventory(part: Dictionary) -> void:
 		gs = root.get_node_or_null("GameState")
 		cs = root.get_node_or_null("CoreSystem")
 
+	mark_new_core_drop(true)
+
 	if gs and gs.has_method("add_core_part"):
 		gs.call("add_core_part", part_copy)
 		core_inventory = gs.core_bag
 		inventory = core_inventory
 	else:
-		core_inventory.append(part_copy)
+		var p_uid: String = str(part_copy.get("uid", ""))
+		var exists := false
+		if not p_uid.is_empty():
+			for p in core_inventory:
+				if p is Dictionary and str(p.get("uid", "")) == p_uid:
+					exists = true
+					break
+		if not exists:
+			core_inventory.append(part_copy)
 		inventory = core_inventory
 
 	if cs and cs.has_signal("part_dropped"):
 		cs.emit_signal("part_dropped", part_copy)
+
+
+static func has_new_core_drop() -> bool:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and gs.has_method("has_new_core_part"):
+			return bool(gs.call("has_new_core_part"))
+	return _has_new_core_drop_flag
+
+
+static func clear_new_core_drop() -> void:
+	_has_new_core_drop_flag = false
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and gs.has_method("clear_new_core_drop"):
+			gs.call("clear_new_core_drop")
+
+
+static func mark_new_core_drop(val: bool = true) -> void:
+	_has_new_core_drop_flag = val
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and gs.has_method("mark_new_core_drop"):
+			gs.call("mark_new_core_drop", val)
 
 
 ## 取得當前機芯背包清單
@@ -1499,6 +1545,7 @@ static func get_inventory() -> Array:
 static func clear_inventory() -> void:
 	core_inventory.clear()
 	inventory.clear()
+	clear_new_core_drop()
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:
 		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
