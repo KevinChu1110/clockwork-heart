@@ -97,3 +97,10 @@ func _save_screenshot(abs_path: String) -> void:
 		push_error("save_png failed err=%d" % err)
 	else:
 		print("  Wrote screenshot: ", abs_path)
+	## 同步存入當前 workspace 的 proofs 目錄
+	var local_dir := ProjectSettings.globalize_path("res://../proofs/t_29847304")
+	DirAccess.make_dir_recursive_absolute(local_dir)
+	var local_path := local_dir + "/" + abs_path.get_file()
+	if local_path != abs_path:
+		img.save_png(local_path)
+		print("  Wrote local screenshot: ", local_path)

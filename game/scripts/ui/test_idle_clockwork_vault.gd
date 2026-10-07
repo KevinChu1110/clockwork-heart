@@ -225,6 +225,30 @@ func _test_vault_dialog() -> void:
 	if close_btn == null:
 		_fail("彈窗內找不到 CloseButton")
 
+	## 檢查進度條節點與寬度渲染斷言
+	var fill_panel := dlg.call("get_progress_bar_fill") as Panel
+	var bg_panel := dlg.call("get_progress_bar_bg") as PanelContainer
+	if fill_panel == null or bg_panel == null:
+		_fail("彈窗內找不到 ProgressBarFill 或 ProgressBarBg")
+	else:
+		## 模擬累積 4 小時 (14400s -> 50% 進度)
+		IdleClockworkVault.set_last_claim_ts(Time.get_unix_time_from_system() - 14400.0)
+		dlg.call("refresh_display")
+		var min_w: float = fill_panel.custom_minimum_size.x
+		var act_w: float = fill_panel.size.x
+		if not fill_panel.visible:
+			_fail("50% 進度時 ProgressBarFill 應為可見")
+		if min_w < 300.0 or min_w > 360.0:
+			_fail("50%% 進度條 custom_minimum_size.x 異常，期望約 330px，實得 %f" % min_w)
+		if act_w < 300.0 or act_w > 360.0:
+			_fail("50%% 進度條 size.x 異常，期望約 330px，實得 %f" % act_w)
+
+		## 模擬累積 0 秒 (0% 進度)
+		IdleClockworkVault.set_last_claim_ts(Time.get_unix_time_from_system())
+		dlg.call("refresh_display")
+		if fill_panel.visible and fill_panel.custom_minimum_size.x > 1.0:
+			_fail("0% 進度時 ProgressBarFill 應隱藏或寬度為 0")
+
 	## 測試零 Emoji 與禁止符號
 	_check_forbidden_symbols(dlg)
 
