@@ -2500,8 +2500,6 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if _is_pre_windup:
-		return
 	if event is InputEventMouseButton and event.pressed:
 		if _core_dot_popover != null and _core_dot_popover.visible:
 			_hide_core_dot_popover()
