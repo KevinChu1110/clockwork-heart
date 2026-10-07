@@ -5530,8 +5530,8 @@
    "id": "combat-overwind-burst",
    "cat": "遊戲",
    "title": "戰鬥發條超載爆裂（Overwind Burst）：滿怒全螢幕暗角與齒輪火花特效",
-   "status": "草稿",
-   "note": "依 docs/CLOCKWORK_HEART_GAME_OVERVIEW.md 壹.4 爆點一",
+   "status": "開發中",
+   "note": "開始實作滿怒全螢幕暗角與齒輪火花特效",
    "keys": [
     "戰鬥發條超載爆裂"
    ]
