@@ -67,6 +67,7 @@ func _preload_sfx() -> void:
 		"reveal", "break", "stop", "clash", "victory", "defeat",
 		"ui", "interact", "step", "warn", "dodge", "battle_start",
 		"craft",  ## 可選；缺檔時 play_craft_success 走 ui+reveal
+		"overwind",  ## 發條超載爆裂音效；缺檔時 play_overwind_burst 走 clash+break+clock
 	]
 	for n in names:
 		var path := "%s/%s.wav" % [SFX_DIR, n]
@@ -223,6 +224,16 @@ func play_ritual_success() -> void:
 	play("ui", 1.18, -5.0)
 
 
+## 發條超載爆裂（Overwind Burst）：金屬爆裂音效
+func play_overwind_burst() -> void:
+	if _streams.has("overwind"):
+		play("overwind")
+	else:
+		play("clash", 1.15, 1.0)
+		play("break", 1.05, 0.0)
+		play("clock", 1.25, -2.0)
+
+
 ## ─── BGM ───
 
 func play_bgm(id: String, fade: float = BGM_FADE) -> void:
@@ -363,6 +374,8 @@ static func map_to_bgm(map_id: String) -> String:
 ## 戰鬥事件 → 音效
 func on_battle_event(kind: String, data: Dictionary = {}) -> void:
 	match kind:
+		"overwind_burst":
+			play_overwind_burst()
 		"perfect_parry":
 			play("parry")
 		"hit":

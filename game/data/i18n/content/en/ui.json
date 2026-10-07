@@ -3533,5 +3533,10 @@
   "再連轉一次": "Draw 10 Again",
   "soul.btn_pull_ten_again": "Draw 10 Again",
   "跳過": "Skip",
-  "soul.btn_skip": "Skip"
+  "soul.btn_skip": "Skip",
+  "發條超載爆裂！": "Overwind Burst!",
+  "發條超載爆裂": "Overwind Burst",
+  "超載爆裂！": "Overwind Burst!",
+  "超載爆裂": "Overwind Burst",
+  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]Overwind Burst! Max Rotations · Metal Frenzy![/color]"
 }

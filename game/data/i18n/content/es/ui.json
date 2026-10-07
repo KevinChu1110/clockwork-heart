@@ -3533,5 +3533,10 @@
   "再連轉一次": "Extraer 10 Otra Vez",
   "soul.btn_pull_ten_again": "Extraer 10 Otra Vez",
   "跳過": "Saltar",
-  "soul.btn_skip": "Saltar"
+  "soul.btn_skip": "Saltar",
+  "發條超載爆裂！": "¡Estallido de Sobrecarga!",
+  "發條超載爆裂": "Estallido de Sobrecarga",
+  "超載爆裂！": "¡Sobrecarga!",
+  "超載爆裂": "Sobrecarga",
+  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]¡Estallido de Sobrecarga! Rotaciones al Máximo · ¡Furia Metálica![/color]"
 }

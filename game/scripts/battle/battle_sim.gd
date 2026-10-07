@@ -423,6 +423,12 @@ func _begin_attack(u: BattleUnit) -> void:
 	if u.can_skill and not u.bare_fisted and u.rage >= RAGE_MAX:
 		if u.id == player_id:
 			_refresh_player_skill_choice(u)
+			_emit("overwind_burst", {
+				"id": u.id,
+				"source": "skill_burst",
+				"skill": u.skill_name,
+				"skill_id": u.skill_id,
+			})
 		u.state = BattleUnit.State.CAST
 		u.state_timer = 0.35
 		u.rage = 0.0
@@ -3286,6 +3292,11 @@ func trigger_fury_awakening() -> bool:
 	if p.rage < RAGE_MAX and not p.fury_active:
 		return false
 	p.rage = 0.0
+	_emit("overwind_burst", {
+		"id": p.id,
+		"source": "manual_fury",
+		"rage": 0.0,
+	})
 	_apply_berserk(p, true)
 	return true
 
@@ -3366,6 +3377,12 @@ func _gain_rage(u: BattleUnit, amount: float) -> void:
 	## 赤手仍可累怒（挨打／揮拳），但放不出武器技
 	var crossed := u.add_rage(amount, RAGE_MAX)
 	if crossed:
+		if u.id == player_id:
+			_emit("overwind_burst", {
+				"id": u.id,
+				"source": "rage_full",
+				"rage": u.rage,
+			})
 		_check_auto_berserk(u)
 
 
