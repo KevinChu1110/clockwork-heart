@@ -103,6 +103,10 @@ var enable_idle_breathing: bool = true:
 var _baked_shadow_cache: Dictionary = {}
 var _battle_weapon: TextureRect = null
 var _battle_armor: TextureRect = null
+## 戰前發條上鏈儀式（Pre-battle Windup Ritual）：0.5 秒發條加速旋轉、wind 音效與開局戰報
+const PRE_WINDUP_DURATION: float = 0.5
+var _is_pre_windup: bool = false
+var _pre_windup_timer: float = 0.0
 var _skill_banner: Label
 var _rage_ready: Label
 var _rage_shimmer_tween: Tween = null
@@ -486,7 +490,14 @@ func setup(mode: String) -> void:
 	_refresh_hud()
 	_ensure_coach()
 	AudioManager.battle_start(_mode)
-	_append_log("[color=#b8a88a]%s[/color]" % Loc.t("battle.start"))
+	_is_pre_windup = true
+	_pre_windup_timer = PRE_WINDUP_DURATION
+	_trigger_pre_battle_windup()
+	if AudioManager and AudioManager.has_method("play_sfx"):
+		AudioManager.play_sfx("wind")
+	elif AudioManager and AudioManager.has_method("play"):
+		AudioManager.play("wind")
+	_append_log("[color=#ffd028]%s[/color]" % Loc.t("battle.pre_windup"))
 	if mode == "pvp_snap":
 		var WC3 = load("res://scripts/world/world_content.gd")
 		var d3: Dictionary = WC3.enemy_def("pvp_snap") if WC3 else {}
@@ -725,10 +736,10 @@ func _apply_hud_chrome() -> void:
 		_log_panel.grow_horizontal = Control.GROW_DIRECTION_END
 		_log_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 		_log_panel.offset_left = 24.0
-		_log_panel.offset_right = 380.0
+		_log_panel.offset_right = 460.0
 		_log_panel.offset_bottom = -20.0
-		_log_panel.offset_top = -88.0
-		_log_panel.pivot_offset = Vector2(178.0, 34.0)
+		_log_panel.offset_top = -112.0
+		_log_panel.pivot_offset = Vector2(218.0, 46.0)
 		var ls := StyleBoxFlat.new()
 		ls.bg_color = Color("#FFFDF8")
 		ls.border_color = Color("#1F1A3A")
@@ -844,9 +855,9 @@ func _apply_safe_hud() -> void:
 		btn_flee.offset_top = -ResponsiveUi.BTN_H - 8.0 - m.w
 	if _log_panel:
 		_log_panel.offset_left = m.x + 24.0
-		_log_panel.offset_right = m.x + 380.0
+		_log_panel.offset_right = m.x + 460.0
 		_log_panel.offset_bottom = -20.0 - m.w
-		_log_panel.offset_top = -88.0 - m.w
+		_log_panel.offset_top = -112.0 - m.w
 	if _weapon_dock and is_instance_valid(_weapon_dock) and _weapon_dock.get_parent() == self:
 		_weapon_dock.offset_left = -580.0 - m.z
 		_weapon_dock.offset_right = -400.0 - m.z
@@ -1869,9 +1880,12 @@ func _shadow_layer() -> Control:
 	layer.clip_contents = false
 	layer.z_index = 0
 	layer.z_as_relative = false
-	## 地面 → 軟影 → 角色 → 戰報。畫在 Arena 之後會蓋靴子。
-	if arena and layer.get_index() != arena.get_index() - 1:
-		move_child(layer, arena.get_index())
+	## 地面 → 軟影 → 角色 → 戰報。Arena 設 z_index = 2，確保角色永遠在接地軟影前方。
+	if arena:
+		arena.z_index = 2
+		arena.z_as_relative = false
+		if layer.get_index() != arena.get_index() - 1:
+			move_child(layer, arena.get_index())
 	return layer
 
 
@@ -2183,6 +2197,24 @@ func _apply_battle_art(mode: String) -> void:
 		battle_bg.modulate = Color(0.98, 0.93, 0.82)
 
 
+func is_pre_windup() -> bool:
+	return _is_pre_windup
+
+
+func get_pre_windup_timer() -> float:
+	return _pre_windup_timer
+
+
+func _trigger_pre_battle_windup() -> void:
+	if player_body == null:
+		return
+	var k_rect := player_body.get_node_or_null("HeroWindingKey") as TextureRect
+	if k_rect:
+		var animator = k_rect.get_node_or_null("WindingKeyAnimator")
+		if animator and animator.has_method("start_fast_windup"):
+			animator.call("start_fast_windup", PRE_WINDUP_DURATION, 4.0)
+
+
 func _apply_battle_weapon_overlay() -> void:
 	## 掛在 player_body 底下（不是 PlayerSlot VBox）：
 	## VBox 會重排 sibling，固定 position 無效；當 body 子節點則 lunge／scale 自動跟著走。
@@ -2453,6 +2485,14 @@ func _process(delta: float) -> void:
 		arena.position = Vector2(randf_range(-4, 4), randf_range(-3, 3)) * (_shake * 8.0)
 		if _shake <= 0.0:
 			arena.position = Vector2.ZERO
+	if _is_pre_windup:
+		_pre_windup_timer = maxf(0.0, _pre_windup_timer - delta)
+		if _pre_windup_timer <= 0.0:
+			_is_pre_windup = false
+			_append_log("[color=#b8a88a]%s[/color]" % Loc.t("battle.start"))
+		else:
+			_refresh_hud()
+			return
 	if sim == null or _ended:
 		return
 	sim.step(delta)
@@ -2460,6 +2500,8 @@ func _process(delta: float) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _is_pre_windup:
+		return
 	if event is InputEventMouseButton and event.pressed:
 		if _core_dot_popover != null and _core_dot_popover.visible:
 			_hide_core_dot_popover()

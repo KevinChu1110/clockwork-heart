@@ -33,6 +33,9 @@ var single_tex: Texture2D = null
 var timer: float = 0.0
 var current_step: int = 0
 var enabled: bool = true
+var is_fast_windup: bool = false
+var fast_windup_timer: float = 0.0
+var fast_windup_speed: float = 4.0
 
 
 static func get_key_pivot(r: String, container_size: Vector2) -> Vector2:
@@ -174,12 +177,25 @@ func configure(target_rect: TextureRect, r: String, sl: Dictionary) -> void:
 		_apply_step()
 
 
+func start_fast_windup(duration: float = 0.5, speed_mult: float = 4.0) -> void:
+	is_fast_windup = true
+	fast_windup_timer = duration
+	fast_windup_speed = speed_mult
+	timer = 0.0
+	step_forward()
+
+
 func _process(delta: float) -> void:
 	if not enabled or not is_instance_valid(key_rect) or not key_rect.is_visible_in_tree():
 		return
+	if is_fast_windup:
+		fast_windup_timer = maxf(0.0, fast_windup_timer - delta)
+		if fast_windup_timer <= 0.0:
+			is_fast_windup = false
+	var interval: float = (FRAME_INTERVAL / fast_windup_speed) if is_fast_windup else FRAME_INTERVAL
 	timer += delta
-	if timer >= FRAME_INTERVAL:
-		timer = fmod(timer, FRAME_INTERVAL)
+	if timer >= interval:
+		timer = fmod(timer, interval)
 		current_step = (current_step + 1) % STEPS_PER_CYCLE
 		_apply_step()
 
@@ -197,6 +213,7 @@ func _apply_step() -> void:
 		key_rect.rotation = rot
 	key_rect.set_meta("key_step", current_step)
 	key_rect.set_meta("key_rotation", rot)
+	key_rect.set_meta("fast_windup_active", is_fast_windup)
 
 
 func step_forward() -> void:

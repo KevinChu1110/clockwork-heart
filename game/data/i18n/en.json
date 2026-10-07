@@ -907,5 +907,7 @@
   "再連轉一次": "Draw 10 Again",
   "soul.btn_pull_ten_again": "Draw 10 Again",
   "跳過": "Skip",
-  "soul.btn_skip": "Skip"
+  "soul.btn_skip": "Skip",
+  "battle.pre_windup": "Wind up tight, engage!",
+  "上緊發條，啟動！": "Wind up tight, engage!"
 }
