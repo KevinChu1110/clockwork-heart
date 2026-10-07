@@ -11,6 +11,7 @@ func _initialize() -> void:
 	test_consume_to_bare_fist()
 	test_style_switch_restores_uses()
 	test_bare_fist_blocks_skill()
+	test_three_slots_exhaust_to_bare_fist()
 	print("WEAPON_USES_OK")
 	quit(0)
 
@@ -25,7 +26,7 @@ func test_uses_init_and_tempo() -> void:
 	var dart_cycle := float(dart_t.windup) + float(dart_t.recover)
 	assert(axe_cycle > dart_cycle * 1.5, "斧風姿週期應明顯慢於鏢")
 	var sim := BattleSim.make_tutorial_wolf_fight({
-		"name": "兔", "max_hp": 100, "atk": 40, "def": 10, "speed": 10,
+		"name": "小白", "max_hp": 100, "atk": 40, "def": 10, "speed": 10,
 		"weapon_class": "sword", "can_skill": true,
 	})
 	var p := sim.get_unit("player")
@@ -37,7 +38,7 @@ func test_uses_init_and_tempo() -> void:
 
 func test_consume_to_bare_fist() -> void:
 	var sim := BattleSim.make_tutorial_wolf_fight({
-		"name": "兔", "max_hp": 200, "atk": 50, "def": 10, "speed": 12,
+		"name": "小白", "max_hp": 200, "atk": 50, "def": 10, "speed": 12,
 		"weapon_class": "axe", "can_skill": true,
 	})
 	var p := sim.get_unit("player")
@@ -67,7 +68,7 @@ func test_consume_to_bare_fist() -> void:
 
 func test_style_switch_restores_uses() -> void:
 	var sim := BattleSim.make_tutorial_wolf_fight({
-		"name": "兔", "max_hp": 100, "atk": 30, "def": 10, "speed": 10,
+		"name": "小白", "max_hp": 100, "atk": 30, "def": 10, "speed": 10,
 		"weapon_class": "sword", "can_skill": true,
 	})
 	var p := sim.get_unit("player")
@@ -84,7 +85,7 @@ func test_style_switch_restores_uses() -> void:
 
 func test_bare_fist_blocks_skill() -> void:
 	var sim := BattleSim.make_tutorial_wolf_fight({
-		"name": "兔", "max_hp": 100, "atk": 30, "def": 10, "speed": 10,
+		"name": "小白", "max_hp": 100, "atk": 30, "def": 10, "speed": 10,
 		"weapon_class": "sword", "can_skill": true,
 	})
 	var p := sim.get_unit("player")
@@ -97,3 +98,43 @@ func test_bare_fist_blocks_skill() -> void:
 	## 直接檢查條件與 _start_action 等價邏輯
 	assert(p.bare_fisted and p.rage >= 100.0 and not p.can_skill, "赤手滿怒仍 can_skill=false")
 	print("  ok - 赤手擋技能")
+
+
+func test_three_slots_exhaust_to_bare_fist() -> void:
+	var sim := BattleSim.make_tutorial_wolf_fight({
+		"name": "小白", "max_hp": 150, "atk": 40, "def": 10, "speed": 10,
+		"weapon_class": "sword", "can_skill": true,
+	})
+	var p := sim.get_unit("player")
+	## 設置三欄武器：每欄次數為 1
+	sim.weapon_bars = [
+		{"index": 0, "name": "發條劍", "line": "sword", "weapon_atk": 5, "uses_left": 1, "uses_max": 1, "unlocked": true, "empty": false},
+		{"index": 1, "name": "黃銅槍", "line": "spear", "weapon_atk": 6, "uses_left": 1, "uses_max": 1, "unlocked": true, "empty": false},
+		{"index": 2, "name": "破岩斧", "line": "axe", "weapon_atk": 8, "uses_left": 1, "uses_max": 1, "unlocked": true, "empty": false},
+	]
+	sim.weapon_bar_active = 0
+	p.weapon_uses_max = 1
+	p.weapon_uses_left = 1
+
+	## 消耗第 0 欄
+	sim._consume_weapon_use(p)
+	assert(p.weapon_uses_left == 0, "欄 0 耐久歸 0")
+	sim._ensure_armed_or_bare(p)
+	assert(int(sim.weapon_bar_active) == 1, "自動換至欄 1")
+	assert(not p.bare_fisted, "仍持槍，非空手")
+
+	## 消耗第 1 欄
+	sim._consume_weapon_use(p)
+	assert(p.weapon_uses_left == 0, "欄 1 耐久歸 0")
+	sim._ensure_armed_or_bare(p)
+	assert(int(sim.weapon_bar_active) == 2, "自動換至欄 2")
+	assert(not p.bare_fisted, "仍持斧，非空手")
+
+	## 消耗第 2 欄（三欄全耗盡）
+	sim._consume_weapon_use(p)
+	assert(p.weapon_uses_left == 0, "欄 2 耐久歸 0")
+	sim._ensure_armed_or_bare(p)
+	assert(p.bare_fisted, "三欄皆耗盡後自動進入空手狀態")
+	assert(p.weapon_class == "fist", "空手武器類別為 fist")
+	assert(not p.can_skill, "空手不可釋放武器技能")
+	print("  ok - 三欄耗盡後自動進入空手狀態")

@@ -36,6 +36,16 @@ static func miss_chance(atk_spd: float, def_spd: float, hit: float, eva: float) 
 	return int(clampf(spd_term + eva - hit, 0.0, cap))
 
 
+## 自動彈開機率：依雙方速度差與閃避、命中判定（不依賴手動按鍵）
+static func deflect_chance(atk_spd: float, def_spd: float, hit: float, eva: float) -> int:
+	var spd_term := 0.0
+	var diff := def_spd - atk_spd
+	if diff > 0.0:
+		spd_term = floor(sqrt(5.0 * diff))
+	var cap := _tbl("hit.deflect_cap", 90.0)
+	return int(clampf(spd_term + eva - hit, 0.0, cap))
+
+
 static func normal_damage(atk: float, defense: float) -> int:
 	var def_f := _tbl("damage.normal_def_factor", 0.35)
 	var raw := atk * 1.0 - defense * def_f

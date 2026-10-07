@@ -100,7 +100,7 @@ func _process(_d: float) -> bool:
 			if int(_sim.weapon_bar_active) != 0 or _sim.weapon_bars.size() < 2:
 				_fail("開戰時作用欄應為 0 且至少兩欄（得 %d／%d）" % [int(_sim.weapon_bar_active), _sim.weapon_bars.size()])
 				return _finish()
-			## 按 2：喝格 2 的藥，武器欄**不**換到欄 2
+			## 驗證：戰鬥中徹底移除 PC 快捷鍵喝藥與手動按鍵，按 2 不得扣藥或喝藥
 			p.hp = maxi(1, int(p.max_hp / 2))
 			_hp_before = p.hp
 			_count_before = inv.count("hp_s")
@@ -111,15 +111,13 @@ func _process(_d: float) -> bool:
 			if _wait < 3:
 				return false
 			var p = _player()
-			if inv.count("hp_s") != _count_before - 1:
-				_fail("戰鬥中按 2 沒有喝掉快捷欄格 2 的藥（%d → %d）" % [_count_before, inv.count("hp_s")])
-			elif int(p.hp) <= _hp_before:
-				_fail("按 2 藥扣了但戰鬥單位沒回血")
+			if inv.count("hp_s") != _count_before:
+				_fail("戰鬥中按 2 仍殘留喝藥（藥數被扣除 %d → %d）" % [_count_before, inv.count("hp_s")])
 			elif int(_sim.weapon_bar_active) != 0:
-				_fail("按 2 喝藥的同時把武器欄換到了欄 %d —— 一個鍵做了兩件事" % (int(_sim.weapon_bar_active) + 1))
+				_fail("按 2 把武器欄換到了欄 %d" % (int(_sim.weapon_bar_active) + 1))
 			else:
-				print("  ok 戰鬥中按 2 只喝藥：%d → %d，藥 %d → %d，作用欄仍 1" % [_hp_before, int(p.hp), _count_before, inv.count("hp_s")])
-			## 按 4：只喝格 4 的藥，不觸發暴怒
+				print("  ok 戰鬥中按 2 無殘留喝藥：藥數保持 %d，作用欄仍 1" % inv.count("hp_s"))
+			## 驗證：按 4 亦不扣藥且不觸發暴怒
 			p.fury_active = false
 			p.fury_timer = 0.0
 			p.atk_buff_left = 0.0
@@ -133,13 +131,13 @@ func _process(_d: float) -> bool:
 			if _wait < 3:
 				return false
 			var p = _player()
-			if inv.count("hp_s") != _count_before - 1:
-				_fail("按 4 沒有喝掉格 4 的藥（%d → %d）" % [_count_before, inv.count("hp_s")])
+			if inv.count("hp_s") != _count_before:
+				_fail("按 4 仍殘留喝藥（%d → %d）" % [_count_before, inv.count("hp_s")])
 			elif bool(p.fury_active):
-				_fail("按 4 喝藥的同時進了暴怒 —— 一個鍵做了兩件事")
+				_fail("按 4 仍手動觸發暴怒")
 			else:
-				print("  ok 按 4 只喝格 4 的藥，不暴怒")
-			## 按 F：暴怒，快捷欄不動
+				print("  ok 按 4 無殘留喝藥且不手動暴怒")
+			## 按 F：戰鬥為自動回合，不再手動暴怒
 			_count_before = inv.count("hp_s")
 			_press(KEY_F)
 			_step = 4
@@ -148,13 +146,13 @@ func _process(_d: float) -> bool:
 			if _wait < 3:
 				return false
 			var p = _player()
-			if not bool(p.fury_active):
-				_fail("按 F 沒有進暴怒")
+			if bool(p.fury_active):
+				_fail("按 F 仍可手動觸發暴怒（應改為滿怒自動暴怒）")
 			elif inv.count("hp_s") != _count_before:
-				_fail("按 F 暴怒的同時吃掉了快捷欄的藥（%d → %d）" % [_count_before, inv.count("hp_s")])
+				_fail("按 F 扣了快捷欄的藥")
 			else:
-				print("  ok 按 F 暴怒，快捷欄不動")
-			## 按 X：換到欄 2，不碰道具
+				print("  ok 按 F 無手動暴怒殘留")
+			## 按 X：戰鬥為自動回合，次數用盡才換欄，不可手動按 X 換欄
 			_count_before = inv.count("hp_s")
 			_press(KEY_X)
 			_step = 5
@@ -163,11 +161,11 @@ func _process(_d: float) -> bool:
 			if _wait < 3:
 				return false
 			if inv.count("hp_s") != _count_before:
-				_fail("按 X 切武器欄居然也喝了藥")
-			elif int(_sim.weapon_bar_active) != 1:
-				_fail("按 X 沒有換到欄 2（作用欄 %d）" % int(_sim.weapon_bar_active))
+				_fail("按 X 扣了道具")
+			elif int(_sim.weapon_bar_active) != 0:
+				_fail("按 X 仍可手動切換武器欄（應僅在次數歸零時自動換欄）")
 			else:
-				print("  ok 按 X 換到欄 2，不碰道具")
+				print("  ok 按 X 無手動換武殘留，武器欄維持 0")
 			return _finish()
 	return false
 

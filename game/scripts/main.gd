@@ -272,7 +272,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			return
 		## 1–8 快捷欄（鍵盤數字列；手把暫不綁以免誤觸格擋／選單）
-		if _current != Screen.TITLE and not _paused:
+		if _current != Screen.TITLE and _current != Screen.BATTLE and not _paused:
 			if not (_dialogue and _dialogue.visible) and not (_cutscene and _cutscene.visible):
 				if not (_inv_panel and _inv_panel.visible):
 					var slot := -1
@@ -578,6 +578,19 @@ func _build_pause_layer() -> void:
 		})
 		AudioManager.play_ui()
 	)
+	if _current == Screen.BATTLE and _battle_mode == "training_dummy":
+		var btn_leave := _pause_btn(box, _t("確認離開練習"), func():
+			_close_pause()
+			if host.get_child_count() > 0:
+				var b := host.get_child(0)
+				if b and b.has_method("exit_dummy_practice"):
+					b.call("exit_dummy_practice")
+				elif b and b.has_method("_on_btn_flee_pressed"):
+					b.call("_on_btn_flee_pressed")
+				else:
+					_on_battle_finished(false)
+		)
+		btn_leave.name = "BtnLeaveDummy"
 	_pause_btn(box, Loc.t("pause.title_return"), func():
 		SaveManager.save_game()
 		_close_pause()
@@ -1777,7 +1790,7 @@ func _show_pause_titles(box: VBoxContainer, sub: Label) -> void:
 
 ## primary 要用參數傳，不能靠比對按鈕文字 —— 本來寫的是 text == "繼續"，
 ## 那在英日韓西任何一個語言都不會成立，主要按鈕的樣式直接消失。
-func _pause_btn(parent: VBoxContainer, text: String, cb: Callable, primary := false) -> void:
+func _pause_btn(parent: VBoxContainer, text: String, cb: Callable, primary := false) -> Button:
 	var btn := Button.new()
 	btn.text = text
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -1830,6 +1843,7 @@ func _pause_btn(parent: VBoxContainer, text: String, cb: Callable, primary := fa
 
 	btn.pressed.connect(cb)
 	parent.add_child(btn)
+	return btn
 
 
 ## 這一段帶選項的對話屬於誰。空字串＝沒有人在等選項。
@@ -2335,6 +2349,8 @@ func _toggle_inventory() -> void:
 
 
 func _use_hotbar_slot(slot: int) -> void:
+	if _current == Screen.BATTLE:
+		return
 	var res: Dictionary = InventorySystem.use_hotbar_slot(slot)
 	if not bool(res.get("ok", false)):
 		var msg := str(res.get("msg", ""))

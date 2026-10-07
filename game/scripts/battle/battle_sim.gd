@@ -679,6 +679,7 @@ func _resolve_strike(u: BattleUnit) -> void:
 			"rage": target.rage,
 			"hit_index": hi,
 			"hits": swing_hits,
+			"bare_fist": u.bare_fisted,
 		})
 	if is_player and not active_bar.is_empty():
 		if any_crit or is_overload_strike:
@@ -1277,7 +1278,7 @@ func _perfect_parry(boss: BattleUnit) -> void:
 	boss.state = BattleUnit.State.RECOVER
 	boss.state_timer = 1.2  ## 硬直
 	slowmo = 0.85
-	var banner := _t("完美格擋")
+	var banner := _t("自動彈開")
 	if demon_mode:
 		banner = _t("微末到底")
 	elif abo_mode and boss.id == "abo":
@@ -1343,7 +1344,13 @@ func _resolve_king_slash_hit(boss: BattleUnit) -> void:
 	_emit("parry_window", {"attacker": boss.id, "open": false})
 	var target := get_unit(boss.target_id)
 	if target and target.is_alive():
-		## 未格擋：高傷
+		## 自動彈開判定：改由閃避與速度判定，不依賴手動按鍵
+		var deflect_pct := Formulas.deflect_chance(boss.speed, target.speed, boss.hit, target.eva)
+		var roll := rng.randi_range(1, 100)
+		if roll <= deflect_pct:
+			_perfect_parry(boss)
+			return
+		## 未彈開／未格擋：高傷
 		var mult := 2.8
 		if abo_mode and boss.id == "abo":
 			mult = 2.2
