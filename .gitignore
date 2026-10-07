@@ -22,6 +22,8 @@ user://
 # local tooling
 screenshots/
 !screenshots/.gdignore
+proof_battle_swap_*.png
+proofs/t_4f3836fd/
 .venv-asset/
 .agents/skills/asset-gen/tools/**/__pycache__/
 

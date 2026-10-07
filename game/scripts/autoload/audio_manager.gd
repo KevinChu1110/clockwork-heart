@@ -66,6 +66,7 @@ func _preload_sfx() -> void:
 		"parry", "hit", "slash", "fire", "wind", "rock", "clock",
 		"reveal", "break", "stop", "clash", "victory", "defeat",
 		"ui", "interact", "step", "warn", "dodge", "battle_start",
+		"swap",
 		"craft",  ## 可選；缺檔時 play_craft_success 走 ui+reveal
 		"overwind",  ## 發條超載爆裂音效；缺檔時 play_overwind_burst 走 clash+break+clock
 	]
@@ -203,6 +204,16 @@ func play_step() -> void:
 
 func play_ui() -> void:
 	play("ui", 1.0, -2.0)
+
+
+## 換欄金屬卡榫音效（swap）
+func play_swap() -> void:
+	play("swap")
+
+
+## play 通用別名相容
+func play_sfx(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
+	play(id, pitch_scale, volume_db)
 
 
 func play_interact() -> void:
@@ -432,6 +443,8 @@ func on_battle_event(kind: String, data: Dictionary = {}) -> void:
 			play("warn", 0.9, -2.0)
 		"temptation":
 			play("reveal", 0.7, -4.0)
+		"weapon_slot_switched", "weapon_swap":
+			play_swap()
 		_:
 			pass
 

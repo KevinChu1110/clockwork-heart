@@ -106,6 +106,7 @@ var _battle_winding_key: TextureRect = null
 var _winding_key_idle_frames: Array[Texture2D] = []
 var _winding_key_frame_index: int = 0
 var _winding_key_frame_timer: float = 0.0
+var _swap_spin_steps: int = 0
 const WINDING_KEY_STEP_FRAMES: int = 8
 const WINDING_KEY_FRAME_DURATION: float = 8.0 / 60.0  ## 每 8 幀（60 FPS 基準約 0.133 秒）旋轉一格
 
@@ -124,6 +125,7 @@ var _vignette_overlay: TextureRect = null
 var _burst_sparks: CPUParticles2D = null
 var _burst_gears: CPUParticles2D = null
 var _overwind_banner: Label = null
+var _weapon_swap_banner: PanelContainer = null
 static var _vignette_tex_cache: Texture2D = null
 var _last_overwind_burst_msec: int = -99999
 var _rage_ready: Label
@@ -1978,6 +1980,252 @@ func trigger_overwind_burst(source: String = "manual") -> void:
 	_append_log(_t("[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]"))
 
 
+func _ensure_weapon_swap_banner() -> Control:
+	if _weapon_swap_banner != null and is_instance_valid(_weapon_swap_banner):
+		return _weapon_swap_banner
+	var container := PanelContainer.new()
+	container.name = "WeaponSwapBanner"
+	container.visible = false
+	container.z_index = 48
+	container.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color("#FFFDF8") # 多巴胺奶油米白底
+	sb.border_color = Color("#1F1A3A") # 深藍紫描邊
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 5 # 5px 果凍厚底質感
+	sb.set_corner_radius_all(14)
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.28)
+	sb.shadow_size = 5
+	sb.shadow_offset = Vector2(0, 3)
+	container.add_theme_stylebox_override("panel", sb)
+
+	var margin := MarginContainer.new()
+	margin.name = "MarginContainer"
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_right", 14)
+	margin.add_theme_constant_override("margin_top", 6)
+	margin.add_theme_constant_override("margin_bottom", 6)
+	container.add_child(margin)
+
+	var hbox := HBoxContainer.new()
+	hbox.name = "HBox"
+	hbox.add_theme_constant_override("separation", 8)
+	hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	margin.add_child(hbox)
+
+	var font_huninn := _get_huninn_font()
+
+	# 舊武器圖示（停擺灰色）
+	var old_icon := TextureRect.new()
+	old_icon.name = "OldIcon"
+	old_icon.custom_minimum_size = Vector2(32, 32)
+	old_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	old_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	old_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	hbox.add_child(old_icon)
+
+	# 舊武器名稱標籤（停擺色）
+	var old_lbl := Label.new()
+	old_lbl.name = "OldLabel"
+	old_lbl.add_theme_font_size_override("font_size", 18)
+	old_lbl.add_theme_color_override("font_color", Color("#8A5050"))
+	old_lbl.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	old_lbl.add_theme_constant_override("outline_size", 1)
+	if font_huninn:
+		old_lbl.add_theme_font_override("font", font_huninn)
+	hbox.add_child(old_lbl)
+
+	# 換武箭頭符號 ➔
+	var arrow_lbl := Label.new()
+	arrow_lbl.name = "Arrow"
+	arrow_lbl.text = "➔"
+	arrow_lbl.add_theme_font_size_override("font_size", 18)
+	arrow_lbl.add_theme_color_override("font_color", Color("#FFA010"))
+	arrow_lbl.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+	arrow_lbl.add_theme_constant_override("outline_size", 1)
+	if font_huninn:
+		arrow_lbl.add_theme_font_override("font", font_huninn)
+	hbox.add_child(arrow_lbl)
+
+	# 新武器圖示（亮金色）
+	var new_icon := TextureRect.new()
+	new_icon.name = "NewIcon"
+	new_icon.custom_minimum_size = Vector2(32, 32)
+	new_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	new_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	new_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	hbox.add_child(new_icon)
+
+	# 新武器名稱標籤（金字深描邊）
+	var new_lbl := Label.new()
+	new_lbl.name = "NewLabel"
+	new_lbl.add_theme_font_size_override("font_size", 18)
+	new_lbl.add_theme_color_override("font_color", Color("#1F1A3A"))
+	new_lbl.add_theme_color_override("font_outline_color", Color("#FFD028"))
+	new_lbl.add_theme_constant_override("outline_size", 2)
+	if font_huninn:
+		new_lbl.add_theme_font_override("font", font_huninn)
+	hbox.add_child(new_lbl)
+
+	add_child(container)
+	_weapon_swap_banner = container
+	return _weapon_swap_banner
+
+
+func _flash_weapon_swap_banner(old_label: String, new_label: String, old_line: String, new_line: String, dur: float = 0.25) -> void:
+	var banner := _ensure_weapon_swap_banner()
+	if banner == null or not is_instance_valid(banner):
+		return
+	var hbox := banner.get_node_or_null("MarginContainer/HBox") as HBoxContainer
+	if hbox == null:
+		return
+	var old_icon := hbox.get_node_or_null("OldIcon") as TextureRect
+	var old_lbl := hbox.get_node_or_null("OldLabel") as Label
+	var new_icon := hbox.get_node_or_null("NewIcon") as TextureRect
+	var new_lbl := hbox.get_node_or_null("NewLabel") as Label
+
+	var o_tex := SpriteDB.weapon_tex_for_class(old_line if old_line != "" else "sword")
+	var n_tex := SpriteDB.weapon_tex_for_class(new_line if new_line != "" else "spear")
+
+	if old_icon:
+		old_icon.texture = o_tex
+		old_icon.modulate = Color(0.6, 0.55, 0.55, 0.9)
+	if old_lbl:
+		old_lbl.text = _t("%s停擺") % old_label
+	if new_icon:
+		new_icon.texture = n_tex
+		new_icon.modulate = Color(1.0, 0.95, 0.7, 1.0)
+	if new_lbl:
+		new_lbl.text = _t("換上%s") % new_label
+
+	banner.reset_size()
+	var b_sz := banner.get_combined_minimum_size()
+	banner.size = b_sz
+	banner.pivot_offset = b_sz * 0.5
+
+	# 置中於戰鬥舞台中央上方（開闊空域，零遮擋玩家素體與敵方首領）
+	var target_x: float = (size.x - b_sz.x) * 0.5 if size.x > 100.0 else 460.0
+	var target_y: float = 160.0
+	banner.position = Vector2(target_x, target_y)
+
+	banner.visible = true
+	banner.modulate = Color(1, 1, 1, 0)
+	banner.scale = Vector2(0.75, 0.75)
+
+	var tw := create_tween()
+	tw.tween_property(banner, "modulate:a", 1.0, 0.08)
+	tw.parallel().tween_property(banner, "scale", Vector2.ONE, 0.10).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tw.tween_interval(dur)
+	tw.tween_property(banner, "modulate:a", 0.0, 0.12)
+	tw.parallel().tween_property(banner, "scale", Vector2(1.06, 1.06), 0.12)
+	tw.tween_callback(func():
+		if is_instance_valid(banner):
+			banner.visible = false
+	)
+
+
+func _spin_winding_key_swap(dur: float = 0.25) -> void:
+	if _battle_winding_key == null or not is_instance_valid(_battle_winding_key):
+		return
+	_swap_spin_steps = 1
+	var initial_frame := _winding_key_frame_index
+	# 第 1 格：卡榫觸發瞬間立即咬合推進
+	_winding_key_frame_index = (initial_frame + 1) % 8
+	_update_winding_key_visual()
+	# 後續 3 格在 0.25 秒內平滑連續步進至第 4 格（累計旋轉半圈 180 度）
+	var step_time := dur / 4.0
+	var tw := create_tween()
+	for i in range(2, 5):
+		tw.tween_interval(step_time)
+		var target_idx := (initial_frame + i) % 8
+		var step_num := i
+		tw.tween_callback(func():
+			if is_instance_valid(self):
+				_swap_spin_steps = step_num
+				_winding_key_frame_index = target_idx
+				_update_winding_key_visual()
+		)
+
+
+func _play_weapon_swap_beat(old_label: String = "", new_label: String = "", old_line: String = "", new_line: String = "", dur: float = 0.25) -> void:
+	# 1. 角色切換為換欄姿態（swap：持握與發條鑰匙聯動）
+	_set_player_pose("swap", true)
+	_winding_key_frame_timer = 0.0
+
+	# 2. 角色微揚與微動短位移（向上輕提 8px、慣性短後退 12px，0.25 秒平滑回位）
+	if player_body and is_instance_valid(player_body):
+		if _player_home == Vector2.ZERO and player_body.position != Vector2.ZERO:
+			_player_home = player_body.position
+		var home := _player_home if _player_home != Vector2.ZERO else player_body.position
+		if _player_lunge_tw and _player_lunge_tw.is_valid():
+			_player_lunge_tw.kill()
+			_player_lunge_tw = null
+		if _player_pose_tween and _player_pose_tween.is_valid():
+			_player_pose_tween.kill()
+			_player_pose_tween = null
+		var recoil_pos := home + Vector2(-12.0, -8.0)
+		player_body.position = recoil_pos
+		_player_pose_tween = create_tween()
+		_player_pose_tween.tween_property(player_body, "position", home + Vector2(-6.0, -10.0), 0.10).set_trans(Tween.TRANS_SINE)
+		_player_pose_tween.tween_property(player_body, "position", home, 0.15).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+	# 3. 齒輪光效與微螢幕震動
+	_shake = maxf(_shake, 0.15)
+	_flash(player_body, Color(0.65, 0.90, 1.0, 1.0))
+
+	# 4. 發條鑰匙加速轉動半圈（4 幀 / 180 度）
+	_spin_winding_key_swap(dur)
+
+	# 5. 武器淡入定位演出
+	if _battle_weapon and is_instance_valid(_battle_weapon):
+		var wtex: Texture2D = SpriteDB.weapon_tex_for_class(new_line if new_line != "" else "spear")
+		if wtex == null:
+			wtex = SpriteDB.player_weapon_overlay()
+		if wtex:
+			var bs := player_body.size if player_body else Vector2(200, 250)
+			if bs.x < 8.0:
+				bs = Vector2(200, 250)
+			var wsz := Vector2(bs.x * 0.50, bs.y * 0.45)
+			var target_pos := Vector2(bs.x * 0.38, bs.y * 0.38)
+			_battle_weapon.texture = wtex
+			_battle_weapon.custom_minimum_size = wsz
+			_battle_weapon.size = wsz
+			_battle_weapon.position = target_pos + Vector2(4.0, -4.0)
+			_battle_weapon.modulate.a = 0.0
+			_battle_weapon.z_index = 2
+			_battle_weapon.visible = true
+			var wtw := create_tween().set_parallel(true)
+			wtw.tween_property(_battle_weapon, "modulate:a", 1.0, dur).set_trans(Tween.TRANS_SINE)
+			wtw.tween_property(_battle_weapon, "position", target_pos, dur).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+	# 6. 播放 swap.wav 音效（與換欄拍點緊密對齊）
+	var AM = Engine.get_singleton("AudioManager") if Engine.has_singleton("AudioManager") else null
+	if AM == null and has_node("/root/AudioManager"):
+		AM = get_node("/root/AudioManager")
+	if AM:
+		if AM.has_method("play_swap"):
+			AM.call("play_swap")
+		elif AM.has_method("play"):
+			AM.call("play", "swap")
+		elif AM.has_method("play_sfx"):
+			AM.call("play_sfx", "swap")
+
+	# 7. 武器換欄指示條浮現
+	if old_label != "" and new_label != "":
+		_flash_weapon_swap_banner(old_label, new_label, old_line, new_line, dur)
+
+	# 8. 0.25 秒後拍點結束回歸待機
+	get_tree().create_timer(dur).timeout.connect(func():
+		if is_instance_valid(self) and not _ended:
+			if _player_pose == "swap":
+				_set_player_pose("idle")
+			if player_body and is_instance_valid(player_body) and _player_home != Vector2.ZERO:
+				var rtw := create_tween()
+				rtw.tween_property(player_body, "position", _player_home, 0.08).set_trans(Tween.TRANS_SINE)
+	)
+
+
 
 static func _soft_shadow_tex() -> Texture2D:
 	if _shadow_tex_cache != null:
@@ -2568,7 +2816,14 @@ func _layout_battle_equipment_overlays() -> void:
 		else:
 			wtex = SpriteDB.player_weapon_overlay()
 		if wtex:
-			_battle_weapon.visible = false
+			var wsz := Vector2(bs.x * 0.50, bs.y * 0.45)
+			var wpos := Vector2(bs.x * 0.38, bs.y * 0.38)
+			_battle_weapon.texture = wtex
+			_battle_weapon.custom_minimum_size = wsz
+			_battle_weapon.size = wsz
+			_battle_weapon.position = wpos
+			_battle_weapon.z_index = 2
+			_battle_weapon.visible = true
 		else:
 			_battle_weapon.visible = false
 	## 發條鑰匙：獨立背部圖層（show_behind_parent = true），隨 player_body 動態旋轉步進
@@ -4262,11 +4517,12 @@ func _on_event(kind: String, data: Dictionary) -> void:
 		"weapon_slot_switched":
 			var wname := str(data.get("name", ""))
 			var old_wname := str(data.get("old_name", ""))
-			var wline := str(data.get("line", "")).to_upper()
+			var wline := str(data.get("line", "")).to_lower()
+			var old_wline := str(data.get("old_line", "")).to_lower()
 			var wuses := int(data.get("uses_left", 0))
 			var wmax := int(data.get("uses_max", 0))
 			var skn2 := str(data.get("skill_name", ""))
-			var label := wname if wname != "" else wline
+			var label := wname if wname != "" else wline.to_upper()
 			var old_label := old_wname if old_wname != "" else _t("發條劍")
 			var auto_sw := bool(data.get("auto", false))
 			var link_txt := str(data.get("linkage_title", ""))
@@ -4282,7 +4538,7 @@ func _on_event(kind: String, data: Dictionary) -> void:
 					link_txt,
 				])
 				_spawn_float("player", _t("武欄%d") % [int(data.get("index", 0)) + 1], Color(0.4, 0.9, 1.0))
-			_flash(player_body, Color(0.5, 0.8, 1.0))
+			_play_weapon_swap_beat(old_label, label, old_wline, wline, 0.25)
 			_layout_battle_equipment_overlays()
 			_refresh_weapon_dock()
 		"weapon_slot_blocked":
