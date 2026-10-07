@@ -533,7 +533,7 @@ func on_battle_event(kind: String, data: Dictionary = {}) -> void:
 			play("reveal", 0.7, -4.0)
 		## 自動戰鬥回饋（任務書 §5）：換欄卡榫、部位碎裂。
 		## 「Boss 部位將破」的 warn 不在這裡：戰鬥端自己 play("warn") 一次，AudioManager 不另外播
-		"weapon_swap":
+		"weapon_swap", "weapon_slot_switched":
 			play("swap")
 		"part_break":
 			play("break")

@@ -40,6 +40,7 @@ func _process(_delta: float) -> bool:
 		_check_voice_limit(am)
 		_check_parry_not_ui(am)
 		_check_warn_only_explicit(am)
+		_check_weapon_swap_event(am)
 	if _ok:
 		print("SFX_OK")
 		quit(0)
@@ -203,3 +204,22 @@ func _warn_playing(am: Node, warn_stream: Variant) -> bool:
 func _stop_all(am: Node) -> void:
 	for p in am._pool:
 		(p as AudioStreamPlayer).stop()
+
+
+func _check_weapon_swap_event(am: Node) -> void:
+	var swap_stream: Variant = am._streams.get("swap")
+	if swap_stream == null:
+		_fail("swap 沒載到，無法檢查")
+		return
+	var was_muted: bool = am._muted
+	am._muted = false
+	for ev in ["weapon_swap", "weapon_slot_switched"]:
+		_stop_all(am)
+		am.on_battle_event(ev, {"auto": true})
+		if not _warn_playing(am, swap_stream):
+			_fail("on_battle_event(%s) 應該播放 swap.wav" % ev)
+	_stop_all(am)
+	am._muted = was_muted
+	if _ok:
+		print("  ok on_battle_event(weapon_swap / weapon_slot_switched) 觸發 swap.wav 金屬卡榫音效")
+
