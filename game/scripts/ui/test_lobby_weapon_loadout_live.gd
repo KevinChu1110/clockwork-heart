@@ -213,6 +213,6 @@ func _step_test_i18n_and_screenshot() -> void:
 					var dir := DirAccess.open("res://")
 					if not dir.dir_exists("proofs"):
 						dir.make_dir("proofs")
-					var proof_path := "res://proofs/proof_lobby_weapon_loadout_live.png"
-					img.save_png(ProjectSettings.globalize_path(proof_path))
+					var proof_path := "/opt/side/bravesoul-game/proofs/proof_lobby_weapon_loadout_live.png"
+					img.save_png(proof_path)
 					print("  ok 實機畫面已截圖保存至: %s" % proof_path)
