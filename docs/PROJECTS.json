@@ -5450,8 +5450,8 @@
    "id": "lobby-winding-key-spin",
    "cat": "遊戲",
    "title": "大廳待機背上發條鑰匙要轉",
-   "status": "開發中",
-   "note": "開始實作大廳、衣櫥與戰鬥待機發條鑰匙旋轉/逐幀動畫",
+   "status": "已上線",
+   "note": "t_96c0e9a0 sideqa 審查通過已上線",
    "keys": [
     "大廳待機背上發條"
    ]
