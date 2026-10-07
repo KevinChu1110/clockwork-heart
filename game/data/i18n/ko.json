@@ -919,5 +919,8 @@
   "vault.capacity": "충전 진행도",
   "vault.max_cap": "완전 충전 (8시간)",
   "battle.pre_windup": "태엽을 감고, 기동!",
-  "上緊發條，啟動！": "태엽을 감고, 기동!"
+  "上緊發條，啟動！": "태엽을 감고, 기동!",
+  "vault.bubble_accumulated": "누적 %dh / %dh",
+  "vault.bubble_claim_ready": "수령 가능",
+  "vault.bubble_full": "완전 충전 8h · 수령 가능"
 }

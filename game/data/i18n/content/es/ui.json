@@ -3551,5 +3551,8 @@
   "PART BREAK": "PART BREAK",
   "部位破壞成就": "Logro de Parte Destruida",
   "戰利品已入袋": "Botín en la mochila",
-  "背包": "Mochila"
+  "背包": "Mochila",
+  "vault.bubble_accumulated": "Acumulado %dh / %dh",
+  "vault.bubble_claim_ready": "Reclamar",
+  "vault.bubble_full": "Lleno 8h · Reclamar"
 }

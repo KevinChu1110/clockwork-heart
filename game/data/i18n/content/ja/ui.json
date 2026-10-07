@@ -3551,5 +3551,8 @@
   "PART BREAK": "PART BREAK",
   "部位破壞成就": "部位破壊実績",
   "戰利品已入袋": "戦利品獲得",
-  "背包": "バッグ"
+  "背包": "バッグ",
+  "vault.bubble_accumulated": "蓄積 %dh / %dh",
+  "vault.bubble_claim_ready": "受取可能",
+  "vault.bubble_full": "満充電 8h · 受取可能"
 }

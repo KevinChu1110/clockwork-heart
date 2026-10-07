@@ -1662,5 +1662,8 @@
   "PART BREAK": "PART BREAK",
   "部位破壞成就": "部位破壞成就",
   "戰利品已入袋": "戰利品已入袋",
-  "背包": "背包"
+  "背包": "背包",
+  "vault.bubble_accumulated": "已累積 %dh / %dh",
+  "vault.bubble_claim_ready": "可領取",
+  "vault.bubble_full": "已滿 8h · 可領取"
 }

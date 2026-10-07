@@ -919,5 +919,8 @@
   "vault.capacity": "Vault Progress",
   "vault.max_cap": "Full (8 Hours)",
   "battle.pre_windup": "Wind up tight, engage!",
-  "上緊發條，啟動！": "Wind up tight, engage!"
+  "上緊發條，啟動！": "Wind up tight, engage!",
+  "vault.bubble_accumulated": "Stored %dh / %dh",
+  "vault.bubble_claim_ready": "Claim",
+  "vault.bubble_full": "Full 8h · Claim"
 }

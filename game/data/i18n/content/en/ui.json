@@ -3551,5 +3551,8 @@
   "PART BREAK": "PART BREAK",
   "部位破壞成就": "Part Break Achievement",
   "戰利品已入袋": "Loot Stashed in Bag",
-  "背包": "Bag"
+  "背包": "Bag",
+  "vault.bubble_accumulated": "Stored %dh / %dh",
+  "vault.bubble_claim_ready": "Claim",
+  "vault.bubble_full": "Full 8h · Claim"
 }

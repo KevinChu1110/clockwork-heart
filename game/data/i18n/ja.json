@@ -919,5 +919,8 @@
   "vault.capacity": "蓄電進捗",
   "vault.max_cap": "満充電 (8時間)",
   "battle.pre_windup": "ゼンマイを巻いて、起動！",
-  "上緊發條，啟動！": "ゼンマイを巻いて、起動！"
+  "上緊發條，啟動！": "ゼンマイを巻いて、起動！",
+  "vault.bubble_accumulated": "蓄積 %dh / %dh",
+  "vault.bubble_claim_ready": "受取可能",
+  "vault.bubble_full": "満充電 8h · 受取可能"
 }

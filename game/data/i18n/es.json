@@ -919,5 +919,8 @@
   "vault.capacity": "Progreso de Carga",
   "vault.max_cap": "Lleno (8 Horas)",
   "battle.pre_windup": "¡Cuerda al máximo, activar!",
-  "上緊發條，啟動！": "¡Cuerda al máximo, activar!"
+  "上緊發條，啟動！": "¡Cuerda al máximo, activar!",
+  "vault.bubble_accumulated": "Acumulado %dh / %dh",
+  "vault.bubble_claim_ready": "Reclamar",
+  "vault.bubble_full": "Lleno 8h · Reclamar"
 }

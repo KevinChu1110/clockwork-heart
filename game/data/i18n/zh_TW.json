@@ -919,5 +919,8 @@
   "vault.capacity": "儲能進度",
   "vault.max_cap": "已蓄滿 (8小時)",
   "battle.pre_windup": "上緊發條，啟動！",
-  "上緊發條，啟動！": "上緊發條，啟動！"
+  "上緊發條，啟動！": "上緊發條，啟動！",
+  "vault.bubble_accumulated": "已累積 %dh / %dh",
+  "vault.bubble_claim_ready": "可領取",
+  "vault.bubble_full": "已滿 8h · 可領取"
 }
