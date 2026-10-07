@@ -1,35 +1,39 @@
 {
   "antidote": {
-    "desc": "Restaura 10 de vida y levanta un poco el ánimo.",
-    "name": "Rocío apagallamas"
+    "desc": "Disipa el calor de fricción, restaurando 10 de vida y mejorando la marcha.",
+    "name": "Refrigerante disipador"
   },
   "bread": {
-    "desc": "Restaura 15 de vida. Algo para el camino.",
-    "name": "Ración seca"
+    "desc": "Reemplaza microcomponentes desgastados, restaurando 15 de vida.",
+    "name": "Microengranaje de repuesto"
   },
   "dust_crumb": {
     "desc": "Al usarla obtienes 1 de polvo estelar.",
     "name": "Migaja de polvo estelar"
   },
+  "friendship_key": {
+    "desc": "Se gana en desafíos de amigos. Tres abren un cofre de amistad.",
+    "name": "Llave de amistad"
+  },
   "hp_m": {
-    "desc": "Restaura 55 de vida.",
-    "name": "Poción roja mediana"
+    "desc": "Aceite de cuerda de alta pureza, restaura rápidamente 55 de vida.",
+    "name": "Lubricante de alta pureza"
   },
   "hp_s": {
-    "desc": "Restaura 25 de vida.",
-    "name": "Poción roja pequeña"
+    "desc": "Lubrica las articulaciones y restaura 25 de vida.",
+    "name": "Lubricante tenue"
   },
   "hunt_bone": {
-    "desc": "Material intermedio del coto.",
-    "name": "Hueso llameante"
+    "desc": "Componente intermedio del coto. Un eje de transmisión robusto forjado al calor.",
+    "name": "Eje de fragua"
   },
   "hunt_core": {
     "desc": "Núcleo raro del coto. El mejor precio en la compra de excedentes.",
     "name": "Núcleo de derrame"
   },
   "hunt_hide": {
-    "desc": "Material del coto. Cámbialo en la compra de excedentes.",
-    "name": "Piel de derrame"
+    "desc": "Placa metálica desprendida en el coto. Cámbiala en la compra de excedentes por oro.",
+    "name": "Placa de desbordamiento"
   },
   "iron_scrap": {
     "desc": "Material básico de forja. Lo compran el herrero y la tienda.",
@@ -46,6 +50,10 @@
   "map_scrap": {
     "desc": "Una esquina que el mercader te arrancó. Se mira, no se come.",
     "name": "Retazo del mapa de los seis dominios"
+  },
+  "medal": {
+    "desc": "Mérito del patio de armas. Con 50 se enciende el horno del taller.",
+    "name": "Medalla"
   },
   "mist_shard": {
     "desc": "Lo sueltan las sombras de niebla. Se vende por 12 de oro.",
@@ -68,23 +76,15 @@
     "name": "Concha de marea"
   },
   "star_ore": {
-    "desc": "Material para lectura de estrellas y armas de la Senda Estelar.",
-    "name": "Mena de arena estelar"
-  },
-  "wolf_fang": {
-    "desc": "Botín menor. Se vende por 8 de oro.",
-    "name": "Colmillo de lobo"
-  },
-  "medal": {
-    "desc": "Mérito del patio de armas. Con 50 se enciende el horno del taller.",
-    "name": "Medalla"
-  },
-  "friendship_key": {
-    "name": "Llave de amistad",
-    "desc": "Se gana en desafíos de amigos. Tres abren un cofre de amistad."
+    "desc": "Arena cristalina microrresonante usada en la invocación de almas y forja de armas.",
+    "name": "Arena de cristal de cuerda"
   },
   "windup_fragment": {
-    "name": "Fragmento de cuerda",
-    "desc": "Diente de engranaje caído al dar cuerda a los juguetes. Acumúlalos para desbloquear monólogos."
+    "desc": "Diente de engranaje caído al dar cuerda a los juguetes. Acumúlalos para desbloquear monólogos.",
+    "name": "Fragmento de cuerda"
+  },
+  "wolf_fang": {
+    "desc": "Componente afilado desprendido de autómatas descontrolados. Se vende por 8 de oro.",
+    "name": "Diente de trinquete"
   }
 }

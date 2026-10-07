@@ -1,35 +1,39 @@
 {
   "antidote": {
-    "desc": "Restores 10 health and lifts the spirits a little.",
-    "name": "Flameclear Dew"
+    "desc": "Vents friction heat, restoring 10 health and boosting drive.",
+    "name": "Cooling Coolant"
   },
   "bread": {
-    "desc": "Restores 15 health. Something for the road.",
-    "name": "Dry Rations"
+    "desc": "Replaces worn micro-components, restoring 15 health.",
+    "name": "Spare Micro-Gear"
   },
   "dust_crumb": {
     "desc": "Grants 1 stardust when used.",
     "name": "Stardust Crumb"
   },
+  "friendship_key": {
+    "desc": "Won from friend challenges. Three open a friendship chest.",
+    "name": "Friendship Key"
+  },
   "hp_m": {
-    "desc": "Restores 55 health.",
-    "name": "Medium Red Draught"
+    "desc": "High-purity clockwork oil, swiftly restoring 55 health.",
+    "name": "High-Purity Lubricant"
   },
   "hp_s": {
-    "desc": "Restores 25 health.",
-    "name": "Small Red Draught"
+    "desc": "Lubricates joints, restoring 25 health.",
+    "name": "Glimmer Lubricant"
   },
   "hunt_bone": {
-    "desc": "Mid-tier hunting ground material.",
-    "name": "Flame Bone"
+    "desc": "Mid-tier hunting ground component. A sturdy heat-forged drive shaft.",
+    "name": "Forge Axis"
   },
   "hunt_core": {
     "desc": "Rare hunting ground core. Best price at the surplus buyback.",
     "name": "Spill Core"
   },
   "hunt_hide": {
-    "desc": "Hunting ground material. Trade it at the surplus buyback.",
-    "name": "Spill Hide"
+    "desc": "Metal plating detached in the hunting grounds. Redeem at surplus buyback for gold.",
+    "name": "Overflow Plating"
   },
   "iron_scrap": {
     "desc": "Basic forging material. Both the smith and the shop buy it.",
@@ -46,6 +50,10 @@
   "map_scrap": {
     "desc": "A corner the trader tore off for you. Good to look at, not to eat.",
     "name": "Six-Domain Map Scrap"
+  },
+  "medal": {
+    "desc": "Training-yard merit. 50 light the workshop furnace.",
+    "name": "Medal"
   },
   "mist_shard": {
     "desc": "Dropped by mist shades. Sells for 12 gold.",
@@ -68,23 +76,15 @@
     "name": "Tide Shell"
   },
   "star_ore": {
-    "desc": "Material for star reading and Starpath weapons.",
-    "name": "Star Sand Ore"
-  },
-  "wolf_fang": {
-    "desc": "Minor drop. Sells for 8 gold.",
-    "name": "Wolf Fang"
-  },
-  "medal": {
-    "desc": "Training-yard merit. 50 light the workshop furnace.",
-    "name": "Medal"
-  },
-  "friendship_key": {
-    "name": "Friendship Key",
-    "desc": "Won from friend challenges. Three open a friendship chest."
+    "desc": "Micro-resonant crystal sand used in soul summoning and weapon forging.",
+    "name": "Clockwork Crystal Sand"
   },
   "windup_fragment": {
-    "name": "Windup Fragment",
-    "desc": "A gear tooth dropped while winding up toys. Collect them to unlock monologues."
+    "desc": "A gear tooth dropped while winding up toys. Collect them to unlock monologues.",
+    "name": "Windup Fragment"
+  },
+  "wolf_fang": {
+    "desc": "A sharp component dropped by rogue automatons. Sells for 8 gold.",
+    "name": "Ratchet Tooth"
   }
 }
