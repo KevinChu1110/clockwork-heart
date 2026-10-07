@@ -3074,6 +3074,7 @@ func _finish_part_break(
 		"boss_id": target.id,
 		"part_id": part_id,
 		"part_name": part_name,
+		"raw_name": raw_pname,
 		"staggered": was_telegraph,
 		"material": material,
 		"qty": qty,

@@ -3538,5 +3538,9 @@
   "發條超載爆裂": "Overwind Burst",
   "超載爆裂！": "Overwind Burst!",
   "超載爆裂": "Overwind Burst",
-  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]Overwind Burst! Max Rotations · Metal Frenzy![/color]"
+  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]Overwind Burst! Max Rotations · Metal Frenzy![/color]",
+  "掉落部位機芯：%s": "Part Core Dropped: %s",
+  "【機芯掉落】%s": "[Core Drop] %s",
+  "部位擊破！掉落發光寶箱與機芯：【%s】": "Part Broken! Glowing Chest & Core Dropped: [%s]",
+  "金色發條寶箱": "Golden Clockwork Chest"
 }

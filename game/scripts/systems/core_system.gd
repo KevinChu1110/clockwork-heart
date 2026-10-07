@@ -130,6 +130,87 @@ static func get_colossus_part_slot(boss_id: String = "", part_key: String = "") 
 
 	return ""
 
+
+## 查詢 Boss 部位對應之機芯五槽代號（包含停擺巨偶與各章節 Boss 部位映射）
+static func get_part_core_slot(boss_id: String = "", part_key: String = "", part_id: String = "") -> String:
+	# 1. 優先查停擺巨偶與通用別名
+	var s := get_colossus_part_slot(boss_id, part_key)
+	if s != "":
+		return s
+	if part_id != "":
+		s = get_colossus_part_slot(boss_id, part_id)
+		if s != "":
+			return s
+
+	var pkey := part_key.strip_edges().to_lower()
+	var pid := part_id.strip_edges().to_lower()
+	var combined := (pkey + " " + pid).strip_edges()
+	if combined.is_empty():
+		return SLOT_SOUL_CORE
+
+	# 2. 常規 Boss 特定部位對應
+	var bid := boss_id.strip_edges().to_lower()
+	match bid:
+		"leo":
+			if "helm" in combined or "盔" in combined:
+				return SLOT_CHASSIS
+			if "shield" in combined or "盾" in combined:
+				return SLOT_GEAR_TRAIN
+		"falcon":
+			if "crest" in combined or "冠" in combined:
+				return SLOT_ESCAPEMENT
+			if "wing" in combined or "翼" in combined:
+				return SLOT_ESCAPEMENT
+		"boar":
+			if "horn" in combined or "角" in combined:
+				return SLOT_MAINSPRING
+			if "shell" in combined or "甲" in combined or "殼" in combined:
+				return SLOT_CHASSIS
+		"wrath":
+			if "mask" in combined or "面具" in combined:
+				return SLOT_ESCAPEMENT
+			if "plate" in combined or "甲" in combined:
+				return SLOT_CHASSIS
+		"tide":
+			if "sac" in combined or "囊" in combined:
+				return SLOT_SOUL_CORE
+			if "plate" in combined or "甲" in combined:
+				return SLOT_CHASSIS
+		"chrono":
+			if "hand" in combined or "針" in combined or "機關" in combined:
+				return SLOT_GEAR_TRAIN
+			if "case" in combined or "殼" in combined:
+				return SLOT_CHASSIS
+		"abo":
+			if "gauntlet" in combined or "腕" in combined:
+				return SLOT_MAINSPRING
+			if "mail" in combined or "甲" in combined:
+				return SLOT_CHASSIS
+		"demon":
+			if "horn" in combined or "角" in combined:
+				return SLOT_MAINSPRING
+			if "core" in combined or "核" in combined:
+				return SLOT_SOUL_CORE
+		"fog":
+			if "veil" in combined or "帷" in combined:
+				return SLOT_ESCAPEMENT
+			if "core" in combined or "核" in combined:
+				return SLOT_SOUL_CORE
+
+	# 3. 語意關鍵字推斷
+	if "發條" in combined or "spring" in combined or "角" in combined or "horn" in combined or "spike" in combined or "腕" in combined or "gauntlet" in combined or "動力" in combined:
+		return SLOT_MAINSPRING
+	if "甲" in combined or "殼" in combined or "盔" in combined or "盾" in combined or "chassis" in combined or "armor" in combined or "shield" in combined or "helm" in combined or "mail" in combined or "plate" in combined or "shell" in combined or "case" in combined:
+		return SLOT_CHASSIS
+	if "翼" in combined or "冠" in combined or "面具" in combined or "帷" in combined or "調速" in combined or "擺" in combined or "escapement" in combined or "wings" in combined or "crest" in combined or "mask" in combined or "veil" in combined or "boots" in combined:
+		return SLOT_ESCAPEMENT
+	if "齒輪" in combined or "機關" in combined or "針" in combined or "gear" in combined or "train" in combined or "hand" in combined:
+		return SLOT_GEAR_TRAIN
+	if "核" in combined or "心" in combined or "囊" in combined or "core" in combined or "soul" in combined or "sac" in combined:
+		return SLOT_SOUL_CORE
+
+	return SLOT_SOUL_CORE
+
 const TIER_GRAY: String = "gray"
 const TIER_WHITE: String = "white"
 const TIER_ORANGE: String = "orange"

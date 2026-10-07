@@ -3538,5 +3538,9 @@
   "發條超載爆裂": "Estallido de Sobrecarga",
   "超載爆裂！": "¡Sobrecarga!",
   "超載爆裂": "Sobrecarga",
-  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]¡Estallido de Sobrecarga! Rotaciones al Máximo · ¡Furia Metálica![/color]"
+  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]¡Estallido de Sobrecarga! Rotaciones al Máximo · ¡Furia Metálica![/color]",
+  "掉落部位機芯：%s": "Núcleo de parte caído: %s",
+  "【機芯掉落】%s": "[Núcleo caído] %s",
+  "部位擊破！掉落發光寶箱與機芯：【%s】": "¡Parte rota! Cofre brillante y núcleo obtenidos: [%s]",
+  "金色發條寶箱": "Cofre dorado de cuerda"
 }
