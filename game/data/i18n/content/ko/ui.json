@@ -3543,5 +3543,8 @@
   "vault.charging": "충전 중...",
   "vault.claimed_toast": "태엽 수익 획득: 골드 +%d, 고철 +%d!",
   "vault.capacity": "충전 진행도",
-  "vault.max_cap": "완전 충전 (8시간)"
+  "vault.max_cap": "완전 충전 (8시간)",
+  "vault.bubble_accumulated": "누적 %dh / %dh",
+  "vault.bubble_claim_ready": "수령 가능",
+  "vault.bubble_full": "완전 충전 8h · 수령 가능"
 }

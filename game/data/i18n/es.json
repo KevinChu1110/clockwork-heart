@@ -917,5 +917,8 @@
   "vault.charging": "Cargando...",
   "vault.claimed_toast": "¡Botín reclamado: +%d Oro, +%d Chatarra de Hierro!",
   "vault.capacity": "Progreso de Carga",
-  "vault.max_cap": "Lleno (8 Horas)"
+  "vault.max_cap": "Lleno (8 Horas)",
+  "vault.bubble_accumulated": "Acumulado %dh / %dh",
+  "vault.bubble_claim_ready": "Reclamar",
+  "vault.bubble_full": "Lleno 8h · Reclamar"
 }

@@ -140,6 +140,29 @@ var _vault_time_lbl: Label = null
 var _vault_progress_fill: Panel = null
 var _vault_progress_bg: PanelContainer = null
 var _vault_claim_btn: Button = null
+
+const VAULT_BUBBLE_KEY_FRAME_PATHS: Array[String] = [
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_00.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_01.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_02.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_03.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_04.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_05.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_06.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_07.png"
+]
+var _vault_bubble: Control = null
+var _vault_bubble_btn: Button = null
+var _vault_bubble_key_icon: TextureRect = null
+var _vault_bubble_time_lbl: Label = null
+var _vault_bubble_status_lbl: Label = null
+var _vault_bubble_glow_panel: Panel = null
+var _vault_bubble_key_textures: Array[Texture2D] = []
+var _vault_bubble_frame_idx: int = 0
+var _vault_bubble_frame_timer: float = 0.0
+var _vault_bubble_float_tween: Tween = null
+var _vault_bubble_glow_tween: Tween = null
+var _vault_bubble_is_full_glow: bool = false
 const ITEM_ICON_DIR := "res://assets/icons/items/"
 static var _icon_cache: Dictionary = {}
 
@@ -1452,6 +1475,13 @@ func _process(delta: float) -> void:
 		_key_wind_timer = 0.0
 		_trigger_key_half_turn()
 
+	# 發條儲能庫微動氣泡 8 幀發條旋轉小動效推進
+	if _vault_bubble and is_instance_valid(_vault_bubble) and _vault_bubble.visible and not _vault_bubble_key_textures.is_empty():
+		_vault_bubble_frame_timer += delta
+		if _vault_bubble_frame_timer >= 0.12:
+			_vault_bubble_frame_timer = 0.0
+			step_vault_bubble_frame()
+
 	if not enable_idle_flavor:
 		return
 
@@ -1595,6 +1625,9 @@ func _build_village_tab() -> void:
 	## 0. 地面舞台日晷展台 (Ground Sunken Dial Pedestal / 消除浮空貼紙感)
 	var stage_pedestal := SundialPedestal.new()
 	stage_anchor.add_child(stage_pedestal)
+
+	## 0.1 發條儲能庫微動氣泡 (Vault Bubble / 伴隨中央展台微浮動)
+	_build_vault_bubble(stage_anchor)
 
 	## 1. 角色腳底接地軟影 (Foot Soft Shadow / 漸層軟影漫反射)
 	_hero_shadow = TextureRect.new()
@@ -2108,8 +2141,6 @@ func get_vault_claim_button() -> Button:
 	return _vault_claim_btn
 
 func refresh_vault_display() -> void:
-	if _vault_card == null or not is_instance_valid(_vault_card):
-		return
 	var st: Dictionary = IdleClockworkVault.get_status()
 	var sec: float = float(st.get("elapsed_seconds", 0.0))
 	var gold: int = int(st.get("gold", 0))
@@ -2119,26 +2150,247 @@ func refresh_vault_display() -> void:
 
 	var hrs_i := int(sec / 3600.0)
 	var mins_i := int(fmod(sec, 3600.0) / 60.0)
-	var time_str := "%02d:%02d / 08:00" % [hrs_i, mins_i]
-	var pct_str := "(%d%%)" % int(ratio * 100.0)
-	if is_full:
-		pct_str = "[%s]" % Loc.t("vault.max_cap")
 
-	if _vault_time_lbl and is_instance_valid(_vault_time_lbl):
-		_vault_time_lbl.text = "%s %s" % [time_str, pct_str]
+	# 1. 更新右側發條儲能庫入口卡片
+	if _vault_card and is_instance_valid(_vault_card):
+		var time_str := "%02d:%02d / 08:00" % [hrs_i, mins_i]
+		var pct_str := "(%d%%)" % int(ratio * 100.0)
+		if is_full:
+			pct_str = "[%s]" % Loc.t("vault.max_cap")
 
-	if _vault_progress_fill and _vault_progress_bg and is_instance_valid(_vault_progress_fill):
-		var total_w := _vault_progress_bg.size.x
-		if total_w <= 1.0:
-			total_w = 280.0
-		_vault_progress_fill.visible = (ratio > 0.001)
-		_vault_progress_fill.size = Vector2(total_w * ratio, 8)
+		if _vault_time_lbl and is_instance_valid(_vault_time_lbl):
+			_vault_time_lbl.text = "%s %s" % [time_str, pct_str]
 
-	if _vault_claim_btn and is_instance_valid(_vault_claim_btn):
-		if gold > 0 or scrap > 0:
-			_vault_claim_btn.text = "%s (+%d金 +%d鐵)" % [Loc.t("vault.btn_claim"), gold, scrap]
+		if _vault_progress_fill and _vault_progress_bg and is_instance_valid(_vault_progress_fill):
+			var total_w := _vault_progress_bg.size.x
+			if total_w <= 1.0:
+				total_w = 280.0
+			_vault_progress_fill.visible = (ratio > 0.001)
+			_vault_progress_fill.size = Vector2(total_w * ratio, 8)
+
+		if _vault_claim_btn and is_instance_valid(_vault_claim_btn):
+			if gold > 0 or scrap > 0:
+				_vault_claim_btn.text = "%s (+%d金 +%d鐵)" % [Loc.t("vault.btn_claim"), gold, scrap]
+			else:
+				_vault_claim_btn.text = Loc.t("vault.charging")
+
+	# 2. 更新中央日晷展台旁微動氣泡 (Vault Bubble)
+	if _vault_bubble and is_instance_valid(_vault_bubble):
+		if _vault_bubble_time_lbl and is_instance_valid(_vault_bubble_time_lbl):
+			_vault_bubble_time_lbl.text = Loc.t("vault.bubble_accumulated") % [hrs_i, 8]
+		if _vault_bubble_status_lbl and is_instance_valid(_vault_bubble_status_lbl):
+			if is_full:
+				_vault_bubble_status_lbl.text = Loc.t("vault.bubble_claim_ready")
+				_vault_bubble_status_lbl.add_theme_color_override("font_color", COLOR_GOLD)
+			elif gold > 0 or scrap > 0:
+				_vault_bubble_status_lbl.text = Loc.t("vault.btn_claim")
+				_vault_bubble_status_lbl.add_theme_color_override("font_color", Color("#4ED86A"))
+			else:
+				_vault_bubble_status_lbl.text = Loc.t("vault.charging")
+				_vault_bubble_status_lbl.add_theme_color_override("font_color", Color("#C9BFA8"))
+
+		if is_full:
+			_start_vault_bubble_full_glow()
 		else:
-			_vault_claim_btn.text = Loc.t("vault.charging")
+			_stop_vault_bubble_full_glow()
+
+## 建立中央日晷展台旁發條儲能庫微動氣泡 (Vault Bubble)
+func _build_vault_bubble(parent_anchor: Control) -> void:
+	if parent_anchor == null:
+		return
+
+	_load_vault_bubble_key_textures()
+
+	_vault_bubble = Control.new()
+	_vault_bubble.name = "VaultBubble"
+	_vault_bubble.custom_minimum_size = Vector2(160, 52)
+	_vault_bubble.size = Vector2(160, 52)
+	_vault_bubble.z_index = 6
+	# 放置在中央英雄日晷展台右側旁 (x=115, y=-75)
+	_vault_bubble.position = Vector2(115, -75)
+	parent_anchor.add_child(_vault_bubble)
+
+	# 0. 金黃呼吸光暈底板 (滿 8 小時時呼吸發光)
+	_vault_bubble_glow_panel = Panel.new()
+	_vault_bubble_glow_panel.name = "VaultBubbleGlow"
+	_vault_bubble_glow_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_vault_bubble_glow_panel.offset_left = -4
+	_vault_bubble_glow_panel.offset_top = -4
+	_vault_bubble_glow_panel.offset_right = 4
+	_vault_bubble_glow_panel.offset_bottom = 4
+	_vault_bubble_glow_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_vault_bubble_glow_panel.visible = false
+	var glow_sb := StyleBoxFlat.new()
+	glow_sb.bg_color = Color(1.0, 0.82, 0.2, 0.20)
+	glow_sb.border_color = Color(1.0, 0.85, 0.28, 0.95)
+	glow_sb.set_border_width_all(2)
+	glow_sb.set_corner_radius_all(20)
+	glow_sb.shadow_color = Color(1.0, 0.82, 0.2, 0.75)
+	glow_sb.shadow_size = 14
+	_vault_bubble_glow_panel.add_theme_stylebox_override("panel", glow_sb)
+	_vault_bubble.add_child(_vault_bubble_glow_panel)
+
+	# 1. 氣泡主體按鈕（果凍厚底，熱區 >= 48px）
+	_vault_bubble_btn = Button.new()
+	_vault_bubble_btn.name = "VaultBubbleBtn"
+	_vault_bubble_btn.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_vault_bubble_btn.custom_minimum_size = Vector2(160, 52)
+	_vault_bubble_btn.focus_mode = Control.FOCUS_NONE
+
+	var normal_sb := StyleBoxFlat.new()
+	normal_sb.bg_color = Color(0.13, 0.10, 0.18, 0.92) # 蒸汽黑曜金屬板件
+	normal_sb.border_color = Color(0.83, 0.68, 0.22, 0.90) # 古典黃銅邊飾
+	normal_sb.set_border_width_all(2)
+	normal_sb.border_width_bottom = 5 # 果凍厚底 5px
+	normal_sb.set_corner_radius_all(18)
+	normal_sb.content_margin_left = 10
+	normal_sb.content_margin_right = 12
+	normal_sb.content_margin_top = 4
+	normal_sb.content_margin_bottom = 8
+	normal_sb.shadow_color = Color(0.08, 0.06, 0.16, 0.40)
+	normal_sb.shadow_size = 8
+	normal_sb.shadow_offset = Vector2(0, 3)
+
+	var pressed_sb := StyleBoxFlat.new()
+	pressed_sb.bg_color = Color(0.18, 0.14, 0.24, 0.95)
+	pressed_sb.border_color = Color(1.0, 0.85, 0.28, 1.0)
+	pressed_sb.set_border_width_all(2)
+	pressed_sb.border_width_bottom = 2
+	pressed_sb.set_corner_radius_all(18)
+	pressed_sb.content_margin_left = 10
+	pressed_sb.content_margin_right = 12
+	pressed_sb.content_margin_top = 6
+	pressed_sb.content_margin_bottom = 6
+
+	_vault_bubble_btn.add_theme_stylebox_override("normal", normal_sb)
+	_vault_bubble_btn.add_theme_stylebox_override("hover", normal_sb)
+	_vault_bubble_btn.add_theme_stylebox_override("pressed", pressed_sb)
+
+	_vault_bubble_btn.pressed.connect(func():
+		open_clockwork_vault()
+	)
+	_vault_bubble.add_child(_vault_bubble_btn)
+
+	# 2. 氣泡內容容器 (水平排列: 8幀發條圖示 + 垂直時數/狀態)
+	var hb := HBoxContainer.new()
+	hb.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hb.add_theme_constant_override("separation", 8)
+	hb.alignment = BoxContainer.ALIGNMENT_CENTER
+	_vault_bubble.add_child(hb)
+
+	# 2.1 8 幀發條旋轉圖示
+	_vault_bubble_key_icon = TextureRect.new()
+	_vault_bubble_key_icon.name = "VaultBubbleKeyIcon"
+	_vault_bubble_key_icon.custom_minimum_size = Vector2(32, 32)
+	_vault_bubble_key_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_vault_bubble_key_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_vault_bubble_key_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if not _vault_bubble_key_textures.is_empty():
+		_vault_bubble_key_icon.texture = _vault_bubble_key_textures[0]
+	hb.add_child(_vault_bubble_key_icon)
+
+	# 2.2 垂直文字區塊 (時間 + 狀態)
+	var vb := VBoxContainer.new()
+	vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vb.add_theme_constant_override("separation", 1)
+	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	hb.add_child(vb)
+
+	_vault_bubble_time_lbl = Label.new()
+	_vault_bubble_time_lbl.name = "BubbleTimeLabel"
+	_vault_bubble_time_lbl.text = "0h / 8h"
+	_vault_bubble_time_lbl.add_theme_font_size_override("font_size", 12)
+	_vault_bubble_time_lbl.add_theme_color_override("font_color", Color("#FFFDF8"))
+	if _cached_font:
+		_vault_bubble_time_lbl.add_theme_font_override("font", _cached_font)
+	vb.add_child(_vault_bubble_time_lbl)
+
+	_vault_bubble_status_lbl = Label.new()
+	_vault_bubble_status_lbl.name = "BubbleStatusLabel"
+	_vault_bubble_status_lbl.text = Loc.t("vault.charging")
+	_vault_bubble_status_lbl.add_theme_font_size_override("font_size", 11)
+	_vault_bubble_status_lbl.add_theme_color_override("font_color", Color("#C9BFA8"))
+	if _cached_font:
+		_vault_bubble_status_lbl.add_theme_font_override("font", _cached_font)
+	vb.add_child(_vault_bubble_status_lbl)
+
+	_start_vault_bubble_float_tween()
+
+func _load_vault_bubble_key_textures() -> void:
+	if not _vault_bubble_key_textures.is_empty():
+		return
+	for p in VAULT_BUBBLE_KEY_FRAME_PATHS:
+		if ResourceLoader.exists(p):
+			var tex: Texture2D = load(p) as Texture2D
+			if tex:
+				_vault_bubble_key_textures.append(tex)
+
+func step_vault_bubble_frame() -> void:
+	if _vault_bubble_key_textures.is_empty():
+		return
+	_vault_bubble_frame_idx = (_vault_bubble_frame_idx + 1) % _vault_bubble_key_textures.size()
+	if _vault_bubble_key_icon and is_instance_valid(_vault_bubble_key_icon):
+		_vault_bubble_key_icon.texture = _vault_bubble_key_textures[_vault_bubble_frame_idx]
+
+func _start_vault_bubble_float_tween() -> void:
+	if _vault_bubble_float_tween and _vault_bubble_float_tween.is_valid():
+		_vault_bubble_float_tween.kill()
+	if _vault_bubble == null or not is_instance_valid(_vault_bubble):
+		return
+	var base_y := _vault_bubble.position.y
+	_vault_bubble_float_tween = create_tween().set_loops()
+	_vault_bubble_float_tween.tween_property(_vault_bubble, "position:y", base_y - 3.5, 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_vault_bubble_float_tween.tween_property(_vault_bubble, "position:y", base_y + 3.5, 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+func _start_vault_bubble_full_glow() -> void:
+	if _vault_bubble_is_full_glow:
+		return
+	_vault_bubble_is_full_glow = true
+	if _vault_bubble_glow_panel and is_instance_valid(_vault_bubble_glow_panel):
+		_vault_bubble_glow_panel.visible = true
+	if _vault_bubble_glow_tween and _vault_bubble_glow_tween.is_valid():
+		_vault_bubble_glow_tween.kill()
+	if _vault_bubble_glow_panel == null or not is_instance_valid(_vault_bubble_glow_panel):
+		return
+	_vault_bubble_glow_tween = create_tween().set_loops()
+	_vault_bubble_glow_tween.tween_property(_vault_bubble_glow_panel, "modulate:a", 1.0, 0.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_vault_bubble_glow_tween.tween_property(_vault_bubble_glow_panel, "modulate:a", 0.35, 0.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+func _stop_vault_bubble_full_glow() -> void:
+	_vault_bubble_is_full_glow = false
+	if _vault_bubble_glow_tween and _vault_bubble_glow_tween.is_valid():
+		_vault_bubble_glow_tween.kill()
+	if _vault_bubble_glow_panel and is_instance_valid(_vault_bubble_glow_panel):
+		_vault_bubble_glow_panel.visible = false
+		_vault_bubble_glow_panel.modulate.a = 1.0
+
+func get_vault_bubble() -> Control:
+	return _vault_bubble
+
+func get_vault_bubble_button() -> Button:
+	return _vault_bubble_btn
+
+func get_vault_bubble_key_icon() -> TextureRect:
+	return _vault_bubble_key_icon
+
+func get_vault_bubble_time_label() -> Label:
+	return _vault_bubble_time_lbl
+
+func get_vault_bubble_status_label() -> Label:
+	return _vault_bubble_status_lbl
+
+func get_vault_bubble_glow_panel() -> Panel:
+	return _vault_bubble_glow_panel
+
+func get_vault_bubble_key_textures() -> Array[Texture2D]:
+	return _vault_bubble_key_textures
+
+func get_vault_bubble_frame_index() -> int:
+	return _vault_bubble_frame_idx
+
+func is_vault_bubble_full_glow() -> bool:
+	return _vault_bubble_is_full_glow
 
 ## 開啟發條儲能庫放置收益彈窗
 func open_clockwork_vault() -> Control:
@@ -2153,10 +2405,12 @@ func open_clockwork_vault() -> Control:
 	dlg.z_index = 80
 	dlg.rewards_claimed.connect(func(g: int, s: int):
 		refresh_hud()
+		refresh_vault_display()
 		_show_toast(Loc.t("vault.claimed_toast") % [g, s])
 	)
 	dlg.tree_exited.connect(func():
 		refresh_hud()
+		refresh_vault_display()
 	)
 	add_child(dlg)
 	return dlg

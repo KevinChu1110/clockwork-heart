@@ -3543,5 +3543,8 @@
   "vault.charging": "蓄能中...",
   "vault.claimed_toast": "已领取发条收益：金币 +%d，铁屑 +%d！",
   "vault.capacity": "储能进度",
-  "vault.max_cap": "已蓄满 (8小时)"
+  "vault.max_cap": "已蓄满 (8小时)",
+  "vault.bubble_accumulated": "已累积 %dh / %dh",
+  "vault.bubble_claim_ready": "可领取",
+  "vault.bubble_full": "已满 8h · 可领取"
 }

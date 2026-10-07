@@ -917,5 +917,8 @@
   "vault.charging": "Charging...",
   "vault.claimed_toast": "Vault yield collected: +%d Gold, +%d Iron Scrap!",
   "vault.capacity": "Vault Progress",
-  "vault.max_cap": "Full (8 Hours)"
+  "vault.max_cap": "Full (8 Hours)",
+  "vault.bubble_accumulated": "Stored %dh / %dh",
+  "vault.bubble_claim_ready": "Claim",
+  "vault.bubble_full": "Full 8h · Claim"
 }
