@@ -5360,8 +5360,8 @@
    "id": "battle-hud-dopamine",
    "cat": "遊戲",
    "title": "戰鬥HUD去PPT化：清除13px以下小字並升級暴怒與攻擊按鈕多巴胺質感",
-   "status": "測試中",
-   "note": "已完成小字拉升至14~18px與果凍厚底按鈕升級，測試全綠，送交 sideqa 審查",
+   "status": "已上線",
+   "note": "t_7a4d8bb1 sideqa 審查通過已上線",
    "keys": [
     "戰鬥HUD去PP"
    ]
