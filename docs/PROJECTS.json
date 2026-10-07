@@ -5570,8 +5570,8 @@
    "id": "boss-part-break-chest",
    "cat": "遊戲",
    "title": "Boss部位破壞掉落發光寶箱動效",
-   "status": "開發中",
-   "note": "開始製作Boss部位破壞掉落發光寶箱動效",
+   "status": "測試中",
+   "note": "Boss部位破壞掉落發光寶箱動效與機芯浮字提示完成，單元測試與實機截圖全過",
    "keys": [
     "Boss部位破壞"
    ]
