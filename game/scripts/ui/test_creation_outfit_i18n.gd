@@ -192,14 +192,17 @@ func _run_test_suite() -> void:
 
 	# 4. 跨種族切換驗證
 	print("\n--- 4. 跨種族外裝與塗裝語系驗證 ---")
+	# 毛皮種族已下架：選狐會退回白金兔，名稱照樣跟隨語系
 	demo_node.select_race("fox")
 	if loc_node:
 		loc_node.call("set_locale", "en")
-	if not costume_lbl.text.begins_with("Astral Apprentice Cape"):
-		_fail("en 狐狸外裝名稱未跟隨語系: %s" % costume_lbl.text)
-	if not chassis_lbl.text.begins_with("Radiant Fox Orange Paint"):
-		_fail("en 狐狸塗裝名稱未跟隨語系: %s" % chassis_lbl.text)
-	print("  ✓ en 靈尾狐外裝與塗裝驗證通過")
+	if str(demo_node.call("get_current_race")) != "rabbit":
+		_fail("選狐應退回白金兔本體: %s" % demo_node.call("get_current_race"))
+	if not costume_lbl.text.begins_with("Nutcracker Guard Uniform"):
+		_fail("en 退回白金兔後外裝名稱未跟隨語系: %s" % costume_lbl.text)
+	if not chassis_lbl.text.begins_with("Factory Ivory White"):
+		_fail("en 退回白金兔後塗裝名稱未跟隨語系: %s" % chassis_lbl.text)
+	print("  ✓ en 選狐退回白金兔，外裝與塗裝驗證通過")
 
 	demo_node.queue_free()
 

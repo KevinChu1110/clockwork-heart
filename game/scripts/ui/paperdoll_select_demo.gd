@@ -19,6 +19,7 @@ const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 const PaperdollCharacter = preload("res://scripts/art/paperdoll_character.gd")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const ToyFamily = preload("res://scripts/art/toy_family.gd")
 
 static func _t(s: String) -> String:
 	var res := ContentLoc.text("ui", s)
@@ -1142,11 +1143,14 @@ const RACE_KEYS: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque", "t
 const TAB_LAUNCH := "launch"
 const TAB_EXPANSION := "expansion"
 
-const LAUNCH_RACES: Array[String] = ["rabbit", "fox", "lion", "boar", "macaque"]
+## 狐／獅／野豬三個毛皮種族已下架（世界觀：覺醒玩具，沒有活體毛皮）
+const LAUNCH_RACES: Array[String] = ["rabbit", "macaque"]
 const EXPANSION_RACES: Array[String] = ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda", "fawn", "hound", "owl", "cat", "pangolin", "otter", "raccoon", "hedgehog", "wolf", "seahorse", "kangaroo", "squirrel", "salamander", "viper", "falcon", "ram", "chameleon", "sailfish", "rhino", "bat", "gorilla", "peacock", "meerkat", "courser", "beaver", "stoat", "seal", "raven", "kite", "swan", "bison", "gecko", "badger", "capybara", "woodpecker", "armadillo", "caterpillar", "cuttlefish", "crab", "camel", "giraffe", "hippo", "mole", "petaurista", "lynx", "scarab", "toucan", "walrus", "takin", "lemur", "marmot", "firefly", "manta", "kingfisher", "donkey", "scorpion"]
 
 ## 判斷種族是否已備齊前端立繪與展示切片資源（零美術佔位防護守衛）
 static func has_race_assets(race_id: String) -> bool:
+	if ToyFamily.is_fur_race(race_id):
+		return false
 	if not RACES_DATA.has(race_id):
 		return false
 	var thumb_path: String = str(RACES_DATA[race_id].get("thumb", ""))

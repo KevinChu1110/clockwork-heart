@@ -89,9 +89,14 @@ func _run_test_suite() -> void:
 	_assert(cur_tab == "launch", "創角介面預設停在首發頁 (launch)")
 	_assert(cur_race == "rabbit", "創角介面預設選取白金兔 (rabbit)")
 
-	# 4. 首發頁只放兔狐獅豬猴五張種族卡，其餘 8 族隱藏
+	# 4. 首發頁只放兔、猴兩張種族卡（狐獅豬毛皮種族已下架），其餘 8 族隱藏
 	var race_buttons: Dictionary = demo_node.get("_race_buttons")
-	var launch_keys := ["rabbit", "fox", "lion", "boar", "macaque"]
+	var launch_keys := ["rabbit", "macaque"]
+	for fur in ["fox", "lion", "boar"]:
+		var fur_btn: Button = race_buttons.get(fur)
+		_assert(fur_btn == null or not fur_btn.visible, "毛皮種族 %s 不出現在創角畫面" % fur)
+		var fur_node = demo_node.get_node_or_null("TopRaceBar/ButtonsHBox/BtnRace_" + fur)
+		_assert(fur_node == null or not fur_node.visible, "BtnRace_%s 節點隱藏" % fur)
 	var expansion_keys := ["tiger", "crane", "bear", "penguin", "tortoise", "elephant", "frog", "panda"]
 
 	var launch_all_visible := true
@@ -100,7 +105,7 @@ func _run_test_suite() -> void:
 		if btn == null or not btn.visible:
 			launch_all_visible = false
 			break
-	_assert(launch_all_visible, "首發頁中兔／狐／獅／豬／猴 5 張種族卡全數可見")
+	_assert(launch_all_visible, "首發頁中兔／猴種族卡全數可見")
 
 	var expansion_all_hidden := true
 	for rid in expansion_keys:
@@ -117,7 +122,7 @@ func _run_test_suite() -> void:
 		var btn: Button = race_buttons[rid]
 		total_launch_width += btn.custom_minimum_size.x
 	total_launch_width += (launch_keys.size() - 1) * 10.0 # separation 10
-	_assert(total_launch_width <= 1200.0, "首發頁 5 張卡寬度合計 %.1fpx <= 1200px，一屏完整看完不用橫滑" % total_launch_width)
+	_assert(total_launch_width <= 1200.0, "首發頁種族卡寬度合計 %.1fpx <= 1200px，一屏完整看完不用橫滑" % total_launch_width)
 
 	# 5. 切換至「擴充」分頁
 	demo_node.call("switch_tab", "expansion")
@@ -137,7 +142,7 @@ func _run_test_suite() -> void:
 		if btn != null and btn.visible:
 			launch_hidden_on_exp = false
 			break
-	_assert(launch_hidden_on_exp, "擴充頁中首發 5 族全數隱藏")
+	_assert(launch_hidden_on_exp, "擴充頁中首發種族全數隱藏")
 
 	var panda_btn: Button = race_buttons.get("panda")
 	_assert(panda_btn != null and panda_btn.visible, "擴充頁中清楚可見瓷韻熊貓 (panda) 卡片")
