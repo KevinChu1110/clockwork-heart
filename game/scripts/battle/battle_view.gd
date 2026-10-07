@@ -102,6 +102,23 @@ var enable_idle_breathing: bool = true:
 var _baked_shadow_cache: Dictionary = {}
 var _battle_weapon: TextureRect = null
 var _battle_armor: TextureRect = null
+var _battle_winding_key: TextureRect = null
+var _winding_key_idle_frames: Array[Texture2D] = []
+var _winding_key_frame_index: int = 0
+var _winding_key_frame_timer: float = 0.0
+const WINDING_KEY_STEP_FRAMES: int = 8
+const WINDING_KEY_FRAME_DURATION: float = 8.0 / 60.0  ## 每 8 幀（60 FPS 基準約 0.133 秒）旋轉一格
+
+const KEY_PIVOTS_320: Dictionary = {
+	"rabbit": Vector2(103, 186),
+	"macaque": Vector2(103, 186),
+	"boar": Vector2(103, 186),
+	"lion": Vector2(238, 162),
+	"bear": Vector2(66, 98),
+	"penguin": Vector2(52, 68),
+	"tortoise": Vector2(71, 80),
+	"fawn": Vector2(211, 116),
+}
 var _skill_banner: Label
 var _vignette_overlay: TextureRect = null
 var _burst_sparks: CPUParticles2D = null
@@ -2304,6 +2321,13 @@ func _get_player_equipped_idle_texture() -> Texture2D:
 				var base_id: String = str(winst.get("base_id", winst.get("id", "")))
 				if base_id != "":
 					slots["weapon"] = base_id
+	var slots_no_key := slots.duplicate()
+	slots_no_key["winding_key"] = "none"
+	var pr: GDScript = load("res://scripts/art/paperdoll_renderer.gd")
+	if pr and pr.has_method("build_composite_texture_512"):
+		var comp_no_key: Variant = pr.call("build_composite_texture_512", _player_race, slots_no_key)
+		if comp_no_key is Texture2D and comp_no_key != null and (comp_no_key as Texture2D).get_width() >= 256:
+			return comp_no_key as Texture2D
 	var tex: Texture2D = SpriteDB.player_equipped_idle(_player_race, slots)
 	if tex != null and tex.get_width() >= 256:
 		return tex
@@ -2445,6 +2469,19 @@ func _apply_battle_weapon_overlay() -> void:
 	## 裝備讀 SpriteDB（當前武器／防具／流派），下一場 setup → _apply_battle_art 會重讀。
 	if player_body == null:
 		return
+	if _battle_winding_key == null or not is_instance_valid(_battle_winding_key):
+		_battle_winding_key = TextureRect.new()
+		_battle_winding_key.name = "PlayerWindingKey"
+		_battle_winding_key.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_battle_winding_key.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_battle_winding_key.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		_battle_winding_key.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		_battle_winding_key.show_behind_parent = true
+		player_body.add_child(_battle_winding_key)
+		player_body.move_child(_battle_winding_key, 0)
+	elif _battle_winding_key.get_parent() != player_body:
+		_battle_winding_key.reparent(player_body)
+		player_body.move_child(_battle_winding_key, 0)
 	if _battle_armor == null or not is_instance_valid(_battle_armor):
 		_battle_armor = TextureRect.new()
 		_battle_armor.name = "PlayerArmorOverlay"
@@ -2534,6 +2571,85 @@ func _layout_battle_equipment_overlays() -> void:
 			_battle_weapon.visible = false
 		else:
 			_battle_weapon.visible = false
+	## 發條鑰匙：獨立背部圖層（show_behind_parent = true），隨 player_body 動態旋轉步進
+	if _battle_winding_key and is_instance_valid(_battle_winding_key):
+		_update_winding_key_visual()
+
+
+func _load_winding_key_frames() -> void:
+	if not _winding_key_idle_frames.is_empty():
+		return
+	for i in range(8):
+		var p := "res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_%02d.png" % i
+		if ResourceLoader.exists(p):
+			var tex := load(p) as Texture2D
+			if tex:
+				_winding_key_idle_frames.append(tex)
+
+
+func _update_winding_key_visual() -> void:
+	if _battle_winding_key == null or not is_instance_valid(_battle_winding_key):
+		return
+	if _player_race.is_empty():
+		_player_race = SpriteDB.player_race() if SpriteDB else "rabbit"
+	_load_winding_key_frames()
+
+	var bs := player_body.size if player_body else Vector2(200, 250)
+	if bs.x < 8.0 or bs.y < 8.0:
+		bs = player_body.custom_minimum_size if player_body else Vector2(200, 250)
+	if bs.x < 8.0:
+		bs = Vector2(200, 250)
+
+	_battle_winding_key.size = bs
+	_battle_winding_key.custom_minimum_size = bs
+	_battle_winding_key.position = Vector2.ZERO
+	_battle_winding_key.show_behind_parent = true
+	_battle_winding_key.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_battle_winding_key.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_battle_winding_key.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_battle_winding_key.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	if _player_race == "rabbit" and _winding_key_idle_frames.size() == 8:
+		_battle_winding_key.texture = _winding_key_idle_frames[_winding_key_frame_index % 8]
+		_battle_winding_key.rotation = 0.0
+		_battle_winding_key.pivot_offset = Vector2.ZERO
+	else:
+		# 切片步進旋轉
+		var PaperdollRenderer = load("res://scripts/art/paperdoll_renderer.gd")
+		var key_path: String = ""
+		if PaperdollRenderer and PaperdollRenderer.has_method("resolve_slot_texture_path_512"):
+			key_path = str(PaperdollRenderer.resolve_slot_texture_path_512(_player_race, "winding_key", ""))
+		if key_path != "" and ResourceLoader.exists(key_path):
+			_battle_winding_key.texture = load(key_path) as Texture2D
+		elif not _winding_key_idle_frames.is_empty():
+			_battle_winding_key.texture = _winding_key_idle_frames[0]
+		var p320: Vector2 = KEY_PIVOTS_320.get(_player_race, Vector2(103, 186))
+		_battle_winding_key.pivot_offset = Vector2(bs.x * (p320.x / 320.0), bs.y * (p320.y / 320.0))
+		_battle_winding_key.rotation = float(_winding_key_frame_index) * (PI / 4.0)
+
+	_battle_winding_key.visible = true
+
+
+func _tick_winding_key(delta: float) -> void:
+	if _battle_winding_key == null or not is_instance_valid(_battle_winding_key):
+		return
+	if _player_pose != "idle" or _ended:
+		return
+	_winding_key_frame_timer += delta
+	if _winding_key_frame_timer >= WINDING_KEY_FRAME_DURATION:
+		var steps: int = int(_winding_key_frame_timer / WINDING_KEY_FRAME_DURATION)
+		_winding_key_frame_timer -= float(steps) * WINDING_KEY_FRAME_DURATION
+		_winding_key_frame_index = (_winding_key_frame_index + steps) % 8
+		_update_winding_key_visual()
+
+
+func step_winding_key_frame(steps: int = 1) -> void:
+	_winding_key_frame_index = (_winding_key_frame_index + steps) % 8
+	_update_winding_key_visual()
+
+
+func get_winding_key_frame_index() -> int:
+	return _winding_key_frame_index
 
 
 func _ensure_temptation_ui() -> void:
@@ -2702,6 +2818,7 @@ func _hide_size_compare() -> void:
 func _process(delta: float) -> void:
 	_layout_thumb_hud()
 	_tick_coach(delta)
+	_tick_winding_key(delta)
 	if _parry_note_left > 0.0:
 		_parry_note_left = maxf(0.0, _parry_note_left - delta)
 	if _shake > 0.0:
@@ -3747,6 +3864,8 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 		_start_breathe_tween()
 	else:
 		_stop_breathe_tween()
+	if _battle_winding_key and is_instance_valid(_battle_winding_key):
+		_update_winding_key_visual()
 
 
 func is_breathing() -> bool:
