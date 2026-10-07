@@ -5585,6 +5585,16 @@
    "keys": [
     "武術館灰鬚指點面"
    ]
+  },
+  {
+   "id": "lobby-weapon-slots-live",
+   "cat": "遊戲",
+   "title": "大廳角色頁三欄武器槽連動真實裝備與即時切換預覽",
+   "status": "草稿",
+   "note": "接通 loadout_snapshot_for_battle，即時切換與紙娃娃預覽",
+   "keys": [
+    "大廳角色頁三欄武"
+   ]
   }
  ]
 }
