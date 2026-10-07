@@ -2,7 +2,7 @@ extends SceneTree
 ## 戰鬥不用鍵盤：godot --headless -s res://scripts/battle/test_battle_touch.gd
 ##
 ## 守：滑鼠／觸控點得到每一個戰鬥動作 ——
-##   點武器欄格子＝換欄（不碰道具）、點怒氣條＝暴怒、點畫面＝格擋（無前搖時無副作用）、
+##   點武器欄格子＝換欄（不碰道具）、點怒氣條＝不手動暴怒（依自動回合規範）、點畫面＝格擋（無前搖時無副作用）、
 ##   點敵人＝有部位的 Boss 切鎖定部位。
 ## 走真的主場景，用 Input.parse_input_event 打真的滑鼠事件到控制項中心。
 
@@ -134,10 +134,10 @@ func _process(_d: float) -> bool:
 			if _wait < 3:
 				return false
 			var p = _player()
-			if not bool(p.fury_active):
-				_fail("點怒氣條沒有進暴怒")
+			if bool(p.fury_active):
+				_fail("點怒氣條仍手動觸發暴怒（應改為滿怒自動暴怒）")
 			else:
-				print("  ok 點怒氣條 → 暴怒")
+				print("  ok 點怒氣條不觸發手動暴怒（自動回合規範）")
 			## 無前搖時點畫面：不能炸、不能吃道具、不能動武器欄
 			_count_before = inv.count("hp_s")
 			var bg: Control = _battle.get("battle_bg")

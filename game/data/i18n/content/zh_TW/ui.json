@@ -40,6 +40,8 @@
   "[color=#fc0]部位破壞！【%s】打破擊暈！[/color]": "[color=#fc0]部位破壞！【%s】打破擊暈！[/color]",
   "[color=#fc0]部位破壞！【%s】碎裂！[/color]": "[color=#fc0]部位破壞！【%s】碎裂！[/color]",
   "[已破]": "[已破]",
+  " [空手]": " [空手]",
+  " · 空手": " · 空手",
   "battle.part_broken": "已破",
   "err.daily_cap_pull": "今天抽魂次數滿了，明天再轉",
   "soul.btn_continue": "去玩具堆邊緣",

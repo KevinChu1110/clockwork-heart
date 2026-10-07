@@ -483,7 +483,6 @@ func setup(mode: String) -> void:
 		])
 		_flash_coach(_t("這是對方留下的打法，不是即時對戰。"), 2.8)
 	_flash_coach(_mode_coach_intro(mode), 3.2)
-	_append_trans_log("[color=#8cf]右側拇指：攻擊／技能／換武／鎖定／暫停／逃離。[/color]")
 	if GameState.ng_plus > 0:
 		_append_trans_log("[color=#c8f]黑鏽迴響 ×%d · 敵人強了 ×%.2f · 出手空檔更窄[/color]", [
 			GameState.ng_plus, ng_m
@@ -2457,9 +2456,9 @@ func _refresh_hud() -> void:
 			status = _t(" [虛弱]")
 		var uses_txt := ""
 		if p.bare_fisted:
-			uses_txt = _t(" · 赤手")
+			uses_txt = _t(" · 空手")
 			if status == "":
-				status = _t(" [赤手]")
+				status = _t(" [空手]")
 		elif p.weapon_uses_left >= 0 and p.weapon_uses_max > 0:
 			uses_txt = _t(" · 武 %d/%d") % [p.weapon_uses_left, p.weapon_uses_max]
 		if p.fury_active and status == "":

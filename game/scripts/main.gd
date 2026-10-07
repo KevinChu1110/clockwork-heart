@@ -539,7 +539,12 @@ func _build_pause_layer() -> void:
 	margin.add_child(box)
 
 	var obj := Label.new()
-	obj.text = RegionCatalog.next_objective_line()
+	if _current == Screen.BATTLE and _battle_mode == "training_dummy":
+		obj.text = Loc.t("pause.dummy_title")
+	elif _current == Screen.BATTLE:
+		obj.text = Loc.t("battle.start")
+	else:
+		obj.text = RegionCatalog.next_objective_line()
 	obj.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	obj.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	obj.add_theme_font_size_override("font_size", 18)
@@ -563,23 +568,8 @@ func _build_pause_layer() -> void:
 	_pause_btn(box, Loc.t("pause.continue"), func():
 		_close_pause()
 	, true)
-	_pause_btn(box, Loc.t("pause.inventory"), func():
-		_close_pause()
-		_toggle_inventory()
-	)
-	_pause_btn(box, Loc.t("pause.settings"), func():
-		_close_pause()
-		_go_game_settings_menu()
-	)
-	_pause_btn(box, Loc.t("pause.save"), func():
-		SaveManager.save_game()
-		sub.text = Loc.t("pause.saved", {
-			"hp": GameState.hp, "max": GameState.max_hp, "weapon": GameState.weapon_display(),
-		})
-		AudioManager.play_ui()
-	)
 	if _current == Screen.BATTLE and _battle_mode == "training_dummy":
-		var btn_leave := _pause_btn(box, _t("確認離開練習"), func():
+		var btn_leave := _pause_btn(box, Loc.t("pause.exit_dummy"), func():
 			_close_pause()
 			if host.get_child_count() > 0:
 				var b := host.get_child(0)
@@ -591,6 +581,22 @@ func _build_pause_layer() -> void:
 					_on_battle_finished(false)
 		)
 		btn_leave.name = "BtnLeaveDummy"
+	if _current != Screen.BATTLE:
+		_pause_btn(box, Loc.t("pause.inventory"), func():
+			_close_pause()
+			_toggle_inventory()
+		)
+		_pause_btn(box, Loc.t("pause.save"), func():
+			SaveManager.save_game()
+			sub.text = Loc.t("pause.saved", {
+				"hp": GameState.hp, "max": GameState.max_hp, "weapon": GameState.weapon_display(),
+			})
+			AudioManager.play_ui()
+		)
+	_pause_btn(box, Loc.t("pause.settings"), func():
+		_close_pause()
+		_go_game_settings_menu()
+	)
 	_pause_btn(box, Loc.t("pause.title_return"), func():
 		SaveManager.save_game()
 		_close_pause()

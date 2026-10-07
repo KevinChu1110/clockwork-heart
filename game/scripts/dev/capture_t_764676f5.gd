@@ -21,6 +21,12 @@ func _initialize() -> void:
 	var win := root.get_window()
 	if win:
 		win.size = Vector2i(1280, 720)
+		win.content_scale_size = Vector2i(1280, 720)
+	var gp: Node = root.get_node_or_null("GraphicsProfile")
+	if gp:
+		gp.set("choice", "high")
+		gp.call("save_settings")
+		gp.call("apply")
 	var abs_dir := ProjectSettings.globalize_path(OUT_DIR)
 	DirAccess.make_dir_recursive_absolute(abs_dir)
 	change_scene_to_file("res://scenes/main.tscn")
@@ -70,55 +76,57 @@ func _process(_delta: float) -> bool:
 			eq.equip_weapon_to_loadout("c_w3", 2)
 			eq.switch_weapon_loadout(0)
 
-			_main.call("_start_battle_raw", "wolf")
+			# 步驟 A: 先進木人樁試招戰鬥
+			print("--- 步驟 A: 進入木人樁試招戰鬥 ---")
+			_main.call("_start_battle_raw", "training_dummy")
 			_step = 1
 			_wait = 0
 
 		1:
-			# 步驟 1: 擷取純淨戰鬥 HUD (無按鈕/無殘留)
 			if _wait < 20:
 				return false
-			var host: Node = _main.get("host")
-			_battle = host.get_child(host.get_child_count() - 1) if host and host.get_child_count() > 0 else null
-			_sim = _battle.get("sim") if _battle != null else null
-			_save_screenshot("proof_01_battle_hud_clean.png")
-
-			# 步驟 2: 模擬三欄耗盡轉入空手搏擊
-			var p = _sim.call("get_unit", "player")
-			_sim.call("_enter_bare_fist", p)
-			_battle.call("_refresh_weapon_dock")
+			# 步驟 1: 在木人樁試招中開啟暫停選單
+			print("--- 步驟 1: 開啟木人樁試招暫停選單 ---")
+			_main.call("_open_pause")
 			_step = 2
 			_wait = 0
 
 		2:
 			if _wait < 15:
 				return false
-			_save_screenshot("proof_03_bare_fist_combat.png")
+			# 擷取 proof_02_dummy_pause_menu.png (含「確認離開練習」按鈕)
+			_save_screenshot("proof_02_dummy_pause_menu.png")
+			_main.call("_close_pause")
 
-			# 結束戰鬥，切換至木人樁試招
-			_battle.call("exit_dummy_practice")
+			# 切換至一般狼怪戰鬥以擷取戰鬥 HUD 與空手狀態
+			print("--- 步驟 B: 切換至常規戰鬥 (wolf) ---")
+			_main.call("_start_battle_raw", "wolf")
 			_step = 3
 			_wait = 0
 
 		3:
-			if _wait < 15:
+			if _wait < 20:
 				return false
-			_main.call("_start_battle_raw", "training_dummy")
+			var host: Node = _main.get("host")
+			_battle = host.get_child(host.get_child_count() - 1) if host and host.get_child_count() > 0 else null
+			_sim = _battle.get("sim") if _battle != null else null
+			# 步驟 2: 擷取純淨戰鬥 HUD (無手動按鍵／無操作引導殘留)
+			_save_screenshot("proof_01_battle_hud_clean.png")
+
+			# 步驟 3: 模擬三欄耗盡轉入空手搏擊
+			print("--- 步驟 C: 模擬三欄耗盡進入空手搏擊 ---")
+			var p = _sim.call("get_unit", "player")
+			_sim.call("_enter_bare_fist", p)
+			_battle.call("_refresh_weapon_dock")
+			_battle.call("_refresh_hud")
 			_step = 4
 			_wait = 0
 
 		4:
 			if _wait < 15:
 				return false
-			# 打開木人樁暫停選單
-			_main.call("_open_pause")
-			_step = 5
-			_wait = 0
-
-		5:
-			if _wait < 12:
-				return false
-			_save_screenshot("proof_02_dummy_pause_menu.png")
+			# 擷取 proof_03_bare_fist_combat.png (空手搏擊戰鬥狀態)
+			_save_screenshot("proof_03_bare_fist_combat.png")
 			print("=== 全部 3 張實機截圖擷取完成 ===")
 			quit(0)
 			return true
