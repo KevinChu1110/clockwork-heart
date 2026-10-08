@@ -55,9 +55,10 @@ func _save_viewport(filename: String, crop_rect: Rect2i = Rect2i(), crop_filenam
 	if img == null:
 		print("  [ERROR] 無法取得 viewport 影像: ", filename)
 		return
-	var full_path := _out_dir.path_join(filename)
-	img.save_png(full_path)
-	print("  ✓ 已儲存全景截圖: ", filename)
+	if not filename.is_empty():
+		var full_path := _out_dir.path_join(filename)
+		img.save_png(full_path)
+		print("  ✓ 已儲存全景截圖: ", filename)
 
 	if crop_rect.size.x > 0 and crop_rect.size.y > 0 and not crop_filename.is_empty():
 		var crop_img := img.get_region(crop_rect)
@@ -76,12 +77,13 @@ func _process(_delta: float) -> bool:
 				var LobbyClass: GDScript = load("res://scripts/ui/mobile_lobby.gd")
 				_lobby = LobbyClass.new()
 				root.add_child(_lobby)
-				_lobby.call("_switch_tab", 1) # ADVENTURE
+			elif _wait == 2:
+				_lobby.call("go_to_sortie")
 				_lobby.call("_select_region", 0)
-			elif _wait == 4:
+			elif _wait == 6:
 				_save_viewport(
 					"proof_01_stages_region1_zh_TW.png",
-					Rect2i(60, 180, 560, 240),
+					Rect2i(66, 248, 570, 157),
 					"crops/crop_01_stage_1_1_card.png"
 				)
 				_step = 1
@@ -91,8 +93,12 @@ func _process(_delta: float) -> bool:
 			# 切換至 EN 語系，檢查第一地區出征卡片
 			if _wait == 1:
 				_loc.call("set_locale", "en")
-			elif _wait == 4:
-				_save_viewport("proof_02_stages_region1_en.png")
+			elif _wait == 5:
+				_save_viewport(
+					"proof_02_stages_region1_en.png",
+					Rect2i(66, 248, 570, 157),
+					"crops/crop_02_stage_1_1_en_card.png"
+				)
 				_step = 2
 				_wait = 0
 
@@ -101,12 +107,13 @@ func _process(_delta: float) -> bool:
 			if _wait == 1:
 				_loc.call("set_locale", "zh_TW")
 				_lobby.call("_select_region", 1)
-			elif _wait == 4:
+			elif _wait == 5:
 				_save_viewport(
 					"proof_03_stages_region2_zh_TW.png",
-					Rect2i(60, 340, 560, 240),
-					"crops/crop_02_stage_2_3_card.png"
+					Rect2i(66, 411, 570, 157),
+					"crops/crop_03_stage_2_3_card.png"
 				)
+				_save_viewport("", Rect2i(66, 411, 570, 157), "crops/crop_02_stage_2_3_card.png")
 				_step = 3
 				_wait = 0
 
@@ -114,12 +121,13 @@ func _process(_delta: float) -> bool:
 			# 選擇第三地區（西林外緣·霧影機關偶、霧崖小徑·旋風發條偶、鏡廊入口·鐘擺守衛、白霧核心·守衛泰坦白狐）
 			if _wait == 1:
 				_lobby.call("_select_region", 2)
-			elif _wait == 4:
+			elif _wait == 5:
 				_save_viewport(
 					"proof_04_stages_region3_zh_TW.png",
-					Rect2i(60, 180, 560, 240),
-					"crops/crop_03_stage_3_1_card.png"
+					Rect2i(66, 248, 570, 157),
+					"crops/crop_04_stage_3_1_card.png"
 				)
+				_save_viewport("", Rect2i(66, 248, 570, 157), "crops/crop_03_stage_3_1_card.png")
 				_step = 4
 				_wait = 0
 
@@ -127,10 +135,10 @@ func _process(_delta: float) -> bool:
 			# 選擇第四地區（石岸潮線·破浪哨衛、潮岸沉船·舵輪機關衛、疤地焰徑·熔火發條偶、通天塔底·終境停擺核）
 			if _wait == 1:
 				_lobby.call("_select_region", 3)
-			elif _wait == 4:
+			elif _wait == 5:
 				_save_viewport(
 					"proof_05_stages_region4_zh_TW.png",
-					Rect2i(640, 340, 560, 240),
+					Rect2i(644, 411, 570, 157),
 					"crops/crop_05_stage_4_4_card.png"
 				)
 				if _lobby and is_instance_valid(_lobby):
