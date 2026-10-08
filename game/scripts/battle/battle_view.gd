@@ -5550,8 +5550,18 @@ func _show_dummy_settlement(won: bool) -> void:
 		stats,
 		func():
 			_dummy_settlement_dialog = null
-			battle_finished.emit(won)
+			battle_finished.emit(won),
+		func():
+			_dummy_settlement_dialog = null
+			_restart_dummy_training()
 	)
+
+
+func _restart_dummy_training() -> void:
+	if _dummy_settlement_dialog != null and is_instance_valid(_dummy_settlement_dialog):
+		_dummy_settlement_dialog.queue_free()
+		_dummy_settlement_dialog = null
+	setup("training_dummy")
 
 
 func _award_xp(n: int) -> void:
