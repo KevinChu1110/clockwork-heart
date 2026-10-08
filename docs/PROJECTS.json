@@ -5640,8 +5640,8 @@
    "id": "skill-upgrade-progress",
    "cat": "遊戲",
    "title": "SkillDialog 招式卡片支援熟練度進度條、一鍵突破升階與體悟習得",
-   "status": "開發中",
-   "note": "派工阿宏 t_98ea7703",
+   "status": "測試中",
+   "note": "SkillDialog 招式卡片熟練度進度條、一鍵突破升階與體悟習得完成，單元與迴歸測試全綠，實機截圖完成",
    "keys": [
     "SkillDia"
    ]
