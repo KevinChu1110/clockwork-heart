@@ -5625,6 +5625,16 @@
    "keys": [
     "大廳角色頁新增『"
    ]
+  },
+  {
+   "id": "skill-priority-badge",
+   "cat": "遊戲",
+   "title": "SkillDialog 招式卡片顯示當前出招優先膠囊標籤",
+   "status": "草稿",
+   "note": "由阿翔 sideworker2 開發中",
+   "keys": [
+    "SkillDia"
+   ]
   }
  ]
 }
