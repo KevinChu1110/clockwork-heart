@@ -5670,8 +5670,8 @@
    "id": "dummy-retry-btn",
    "cat": "遊戲",
    "title": "DummySettlementDialog 試招結算新增再次試招按鈕",
-   "status": "開發中",
-   "note": "開始開發木人樁試招結算數據卡『再次試招』按鈕與連動重置",
+   "status": "測試中",
+   "note": "完成DummySettlementDialog再次試招雙按鈕並列、六語系翻譯、重置木人樁狀態單元測試與OpenGL3實機存證",
    "keys": [
     "DummySet"
    ]
