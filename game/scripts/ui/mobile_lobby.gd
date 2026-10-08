@@ -5898,6 +5898,10 @@ func open_skill_dialog() -> Control:
 	dlg.tree_exited.connect(func():
 		refresh_hud()
 	)
+	if dlg.has_signal("practice_dummy_requested"):
+		dlg.practice_dummy_requested.connect(func():
+			request_battle.emit("training_dummy")
+		)
 	add_child(dlg)
 	return dlg
 
