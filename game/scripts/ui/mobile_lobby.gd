@@ -271,6 +271,7 @@ var _weapon_slot_hint_label: Label = null
 var _char_power_badge: Label = null
 var _char_level_badge: Label = null
 var _char_doll_title_label: Label = null
+var _btn_skill_dialog: Button = null
 var _btn_wardrobe: Button = null
 var _char_weapon_title_label: Label = null
 var _char_weapon_sub_label: Label = null
@@ -4012,12 +4013,48 @@ func _build_character_tab() -> void:
 	click_card_btn.pressed.connect(open_wardrobe)
 	_char_prev.add_child(click_card_btn)
 
+	# 招式心法按鈕 (手遊防誤觸標準：高度 50px，熱區 >= 48px，立體厚底 5px)
+	var btn_skill := Button.new()
+	btn_skill.name = "BtnSkillDialog"
+	btn_skill.text = _t("招式 · 核心心法")
+	btn_skill.custom_minimum_size = Vector2(0, 50)
+	btn_skill.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if _cached_font != null:
+		btn_skill.add_theme_font_override("font", _cached_font)
+	btn_skill.add_theme_font_size_override("font_size", 16)
+	btn_skill.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_skill.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_skill.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var ssb := StyleBoxFlat.new()
+	ssb.bg_color = COLOR_SKY
+	ssb.border_color = COLOR_BORDER
+	ssb.set_border_width_all(2)
+	ssb.border_width_bottom = 5
+	ssb.set_corner_radius_all(18)
+	ssb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	ssb.shadow_size = 5
+	ssb.shadow_offset = Vector2(0, 2)
+	var ssb_h := ssb.duplicate() as StyleBoxFlat
+	ssb_h.bg_color = Color("#5EB5FF")
+	var ssb_p := ssb.duplicate() as StyleBoxFlat
+	ssb_p.border_width_bottom = 2
+	btn_skill.add_theme_stylebox_override("normal", ssb)
+	btn_skill.add_theme_stylebox_override("hover", ssb_h)
+	btn_skill.add_theme_stylebox_override("pressed", ssb_p)
+	btn_skill.add_theme_stylebox_override("focus", ssb)
+	btn_skill.pressed.connect(open_skill_dialog)
+	l_vbox.add_child(btn_skill)
+	_btn_skill_dialog = btn_skill
+
 	# 正式更衣按鈕 (手遊防誤觸標準：高度 50px，熱區 >= 50px)
 	var btn_wardrobe := Button.new()
 	btn_wardrobe.name = "BtnWardrobe"
 	btn_wardrobe.text = _t("更衣 · 發條衣櫥")
-	btn_wardrobe.custom_minimum_size = Vector2(0, 58)
+	btn_wardrobe.custom_minimum_size = Vector2(0, 50)
 	btn_wardrobe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if _cached_font != null:
+		btn_wardrobe.add_theme_font_override("font", _cached_font)
 	btn_wardrobe.add_theme_font_size_override("font_size", 16)
 	btn_wardrobe.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	btn_wardrobe.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
@@ -5663,6 +5700,8 @@ func _apply_locale_texts() -> void:
 
 	if _char_doll_title_label and is_instance_valid(_char_doll_title_label):
 		_char_doll_title_label.text = _t("機體外觀 · 發條紙娃娃")
+	if _btn_skill_dialog and is_instance_valid(_btn_skill_dialog):
+		_btn_skill_dialog.text = _t("招式 · 核心心法")
 	if _btn_wardrobe and is_instance_valid(_btn_wardrobe):
 		_btn_wardrobe.text = _t("更衣 · 發條衣櫥")
 	if _char_weapon_title_label and is_instance_valid(_char_weapon_title_label):

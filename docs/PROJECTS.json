@@ -5620,8 +5620,8 @@
    "id": "lobby-skill-dialog-btn",
    "cat": "遊戲",
    "title": "大廳角色頁新增『招式心法』入口按鈕連動 SkillDialog",
-   "status": "開發中",
-   "note": "由阿宏 sideworker 接手開發",
+   "status": "測試中",
+   "note": "大廳角色頁新增招式心法果凍按鈕連動 SkillDialog，六語系與無頭測試已完成",
    "keys": [
     "大廳角色頁新增『"
    ]
