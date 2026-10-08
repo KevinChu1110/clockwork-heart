@@ -59,12 +59,48 @@ var _card2_unit_lbl: Label
 var _card3_header_lbl: Label
 var _card3_sub_lbl: Label
 var _card3_unit_lbl: Label
+var _record_badge: PanelContainer
+var _record_badge_lbl: Label
+var _best_dps_lbl: Label
 
 var _total_damage: int = 0
 var _elapsed_time: float = 0.0
 var _dps: float = 0.0
+var _best_dps: float = 0.0
+var _is_new_record: bool = false
+var _record_evaluated: bool = false
 var _on_confirm: Callable = Callable()
 var _on_retry: Callable = Callable()
+
+
+static func _get_game_state() -> Object:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var n = (loop as SceneTree).root.get_node_or_null("GameState")
+		if n != null:
+			return n
+	if Engine.has_singleton("GameState"):
+		return Engine.get_singleton("GameState")
+	return null
+
+
+func _evaluate_record(stats: Dictionary = {}) -> void:
+	_record_evaluated = true
+	var gs = _get_game_state()
+	var prev_best: float = 0.0
+	if stats.has("best_dummy_dps"):
+		prev_best = float(stats.get("best_dummy_dps", 0.0))
+	elif gs != null and "best_dummy_dps" in gs:
+		prev_best = float(gs.best_dummy_dps)
+
+	if _dps > prev_best:
+		_is_new_record = true
+		_best_dps = _dps
+		if gs != null and "best_dummy_dps" in gs:
+			gs.best_dummy_dps = _dps
+	else:
+		_is_new_record = false
+		_best_dps = prev_best
 
 
 static func show_dialog(parent: Node, stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable()) -> Control:
@@ -80,6 +116,7 @@ func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: 
 	_dps = float(stats.get("dps", 0.0))
 	_on_confirm = on_confirm
 	_on_retry = on_retry
+	_evaluate_record(stats)
 
 	if _dialog_card == null:
 		_build_ui()
@@ -127,6 +164,9 @@ func _ready() -> void:
 		_cached_font = load(FONT_PATH) as Font
 
 	_connect_loc_signal()
+
+	if not _record_evaluated:
+		_evaluate_record({})
 
 	if _dialog_card == null:
 		_build_ui()
@@ -250,6 +290,60 @@ func _build_ui() -> void:
 	_card3_header_lbl = res3.header_label
 	_card3_sub_lbl = res3.sub_label
 	_card3_unit_lbl = res3.unit_label
+
+	# 右上角金黃果凍「新紀錄」膠囊標籤（#FFD028 帶深藍紫描邊，零 Emoji）
+	var badge_overlay := MarginContainer.new()
+	badge_overlay.name = "BadgeOverlay"
+	badge_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge_overlay.add_theme_constant_override("margin_top", 6)
+	badge_overlay.add_theme_constant_override("margin_right", 8)
+	res3.card.add_child(badge_overlay)
+
+	var badge_box := HBoxContainer.new()
+	badge_box.name = "BadgeBox"
+	badge_box.alignment = BoxContainer.ALIGNMENT_END
+	badge_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	badge_overlay.add_child(badge_box)
+
+	_record_badge = PanelContainer.new()
+	_record_badge.name = "NewRecordBadge"
+	_record_badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var badge_sb := StyleBoxFlat.new()
+	badge_sb.bg_color = COLOR_GOLD
+	badge_sb.border_color = COLOR_BORDER
+	badge_sb.set_border_width_all(2)
+	badge_sb.border_width_bottom = 4
+	badge_sb.set_corner_radius_all(10)
+	badge_sb.content_margin_left = 8
+	badge_sb.content_margin_right = 8
+	badge_sb.content_margin_top = 2
+	badge_sb.content_margin_bottom = 4
+	_record_badge.add_theme_stylebox_override("panel", badge_sb)
+
+	_record_badge_lbl = Label.new()
+	_record_badge_lbl.name = "NewRecordLabel"
+	_record_badge_lbl.text = _t("新紀錄")
+	_record_badge_lbl.add_theme_font_size_override("font_size", 12)
+	_record_badge_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_record_badge_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_record_badge_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_record_badge_lbl.add_theme_font_override("font", _cached_font)
+	_record_badge.add_child(_record_badge_lbl)
+	badge_box.add_child(_record_badge)
+
+	# 底部歷史最佳 DPS 輔助說明
+	_best_dps_lbl = Label.new()
+	_best_dps_lbl.name = "BestDpsLabel"
+	_best_dps_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_best_dps_lbl.add_theme_font_size_override("font_size", 12)
+	_best_dps_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	if _cached_font:
+		_best_dps_lbl.add_theme_font_override("font", _cached_font)
+	var dps_vbox: VBoxContainer = res3.get("vbox") as VBoxContainer
+	if dps_vbox:
+		dps_vbox.add_child(_best_dps_lbl)
+
 	stats_hbox.add_child(res3.card)
 
 	# ── 提示說明卡片 ──
@@ -367,6 +461,10 @@ func _update_ui_texts() -> void:
 		_retry_btn.text = _t("再次試招")
 	if _confirm_btn and is_instance_valid(_confirm_btn):
 		_confirm_btn.text = _t("完成試招")
+	if _record_badge_lbl and is_instance_valid(_record_badge_lbl):
+		_record_badge_lbl.text = _t("新紀錄")
+	if _best_dps_lbl and is_instance_valid(_best_dps_lbl):
+		_best_dps_lbl.text = _t("歷史最佳：%.1f DPS") % _best_dps
 
 
 func _build_metric_card(card_name: String, val_name: String, bg_col: Color, accent_col: Color) -> Dictionary:
@@ -440,7 +538,8 @@ func _build_metric_card(card_name: String, val_name: String, bg_col: Color, acce
 		"value_label": val_lbl,
 		"header_label": h_lbl,
 		"sub_label": sub_tag,
-		"unit_label": u_lbl
+		"unit_label": u_lbl,
+		"vbox": cv
 	}
 
 
@@ -451,6 +550,11 @@ func _refresh_display() -> void:
 		_time_label.text = "%.1f" % _elapsed_time
 	if _dps_label:
 		_dps_label.text = "%.1f" % _dps
+	if _record_badge:
+		_record_badge.visible = _is_new_record
+	if _best_dps_lbl:
+		_best_dps_lbl.visible = not _is_new_record
+		_best_dps_lbl.text = _t("歷史最佳：%.1f DPS") % _best_dps
 
 
 func _on_confirm_clicked() -> void:
@@ -509,6 +613,38 @@ func get_retry_text() -> String:
 
 func get_confirm_text() -> String:
 	return _confirm_btn.text if _confirm_btn else ""
+
+
+func is_new_record() -> bool:
+	return _is_new_record
+
+
+func get_best_dps() -> float:
+	return _best_dps
+
+
+func get_best_dps_text() -> String:
+	return _best_dps_lbl.text if _best_dps_lbl else ""
+
+
+func get_record_badge_text() -> String:
+	return _record_badge_lbl.text if _record_badge_lbl else ""
+
+
+func is_record_badge_visible() -> bool:
+	return _record_badge != null and _record_badge.visible
+
+
+func is_best_dps_label_visible() -> bool:
+	return _best_dps_lbl != null and _best_dps_lbl.visible
+
+
+func get_record_badge() -> Control:
+	return _record_badge
+
+
+func get_best_dps_label() -> Label:
+	return _best_dps_lbl
 
 
 func _create_floating_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:

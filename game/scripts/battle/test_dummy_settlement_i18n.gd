@@ -190,6 +190,24 @@ func _run_test_suite() -> void:
 		"es": "Reintentar prueba",
 	}
 
+	var expected_badge := {
+		"zh_TW": "新紀錄",
+		"zh_CN": "新纪录",
+		"en": "New Record",
+		"ja": "新記録",
+		"ko": "신기록",
+		"es": "Nuevo récord",
+	}
+
+	var expected_best := {
+		"zh_TW": "歷史最佳：%.1f DPS",
+		"zh_CN": "历史最佳：%.1f DPS",
+		"en": "Best: %.1f DPS",
+		"ja": "歴代最高：%.1f DPS",
+		"ko": "최고 기록: %.1f DPS",
+		"es": "Mejor récord: %.1f DPS",
+	}
+
 	# 1. 檢驗字典查表解析
 	print("\n--- 檢驗 1: 六語系字典 ContentLoc 查表解析 ---")
 	for code in LOCALES:
@@ -252,7 +270,15 @@ func _run_test_suite() -> void:
 		if t_conf != expected_confirm[code]:
 			_fail("[%s] 確認按鈕不符: 期望 '%s'，得 '%s'" % [code, expected_confirm[code], t_conf])
 
-		print("  ✓ [%s] 字典全部 14 條通過" % code)
+		var t_badge := ContentLoc.text("ui", "新紀錄")
+		if t_badge != expected_badge[code]:
+			_fail("[%s] 新紀錄標籤不符: 期望 '%s'，得 '%s'" % [code, expected_badge[code], t_badge])
+
+		var t_best := ContentLoc.text("ui", "歷史最佳：%.1f DPS")
+		if t_best != expected_best[code]:
+			_fail("[%s] 歷史最佳說明不符: 期望 '%s'，得 '%s'" % [code, expected_best[code], t_best])
+
+		print("  ✓ [%s] 字典全部 16 條通過" % code)
 
 	# 2. 檢驗 DummySettlementDialog 實例化與 locale_changed 動態刷新
 	print("\n--- 檢驗 2: DummySettlementDialog 動態切換與節點即時刷新 ---")

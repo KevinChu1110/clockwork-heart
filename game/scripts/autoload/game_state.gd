@@ -134,6 +134,8 @@ var colossus_daily_entries: int = 3
 var crit_rate: float = 5.0
 var crit_dmg: float = 50.0
 var dmg_variance: float = 0.08
+## 木人樁試招歷史最佳 DPS（float，預設 0.0）
+var best_dummy_dps: float = 0.0
 
 ## 黑焰迴響（NG+ 輕量）：0＝通常；≥1 敵強化層數
 var ng_plus: int = 0
@@ -690,6 +692,7 @@ func to_dict() -> Dictionary:
 		"crit_rate": crit_rate,
 		"crit_dmg": crit_dmg,
 		"dmg_variance": dmg_variance,
+		"best_dummy_dps": best_dummy_dps,
 	}
 
 
@@ -789,6 +792,7 @@ func from_dict(d: Dictionary) -> void:
 	crit_rate = float(d.get("crit_rate", 5.0))
 	crit_dmg = float(d.get("crit_dmg", 50.0))
 	dmg_variance = float(d.get("dmg_variance", 0.08))
+	best_dummy_dps = float(d.get("best_dummy_dps", 0.0))
 
 
 ## 八族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
@@ -991,6 +995,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"colossus_daily_entries": 3,
 		"current_expedition_stage": "",
 		"current_suggest_lv": 0,
+		"best_dummy_dps": 0.0,
 		"inventory": {},
 		"hotbar": ["", "", "", "", "", "", "", ""],
 		"ui_layout": {},

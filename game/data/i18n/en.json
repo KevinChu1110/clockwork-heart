@@ -1012,5 +1012,9 @@
   "點擊切換輪替順位 · 三段作戰序列": "Tap to Switch Order · 3-Stage Combat Sequence",
   "點燃熔爐": "Light Furnace",
   "齒輪發條雙斬刃": "Twin Ember Sabers",
-  "（消耗鐵屑穩火）": " (Used iron scrap to steady flame)"
+  "（消耗鐵屑穩火）": " (Used iron scrap to steady flame)",
+  "新紀錄": "New Record",
+  "歷史最佳：%.1f DPS": "Best: %.1f DPS",
+  "歷史最佳：%s DPS": "Best: %s DPS",
+  "歷史最佳": "Best"
 }

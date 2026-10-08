@@ -3646,5 +3646,9 @@
   "（進入堡壘後解鎖）": "(Se desbloquea al entrar en la Fortaleza)",
   "（進入騎士堡後解鎖）": "(Se desbloquea al entrar en la Fortaleza)",
   "（魂器升至 %s）": "(El recipiente subió a %s)",
-  "（點燃熔爐可再加一條產線）": "(Enciende el horno para tener una línea más)"
+  "（點燃熔爐可再加一條產線）": "(Enciende el horno para tener una línea más)",
+  "新紀錄": "Nuevo récord",
+  "歷史最佳：%.1f DPS": "Mejor récord: %.1f DPS",
+  "歷史最佳：%s DPS": "Mejor récord: %s DPS",
+  "歷史最佳": "Mejor récord"
 }
