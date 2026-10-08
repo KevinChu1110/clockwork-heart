@@ -339,28 +339,28 @@ const WEAPON_SLOTS: Array[Dictionary] = [
 
 const REGION_STAGES: Array[Array] = [
 	[
-		{"num": "1-1", "name": "荒路哨站 · 發條灰鼠", "type": "前哨雜魚", "cost": 1, "power": 220, "mode": "ash_rat"},
-		{"num": "1-2", "name": "堡外野原 · 荒路殘兵", "type": "精英戰鬥", "cost": 1, "power": 260, "mode": "road_bandit"},
-		{"num": "1-3", "name": "堡壘廣場 · 守門暗哨", "type": "精英戰鬥", "cost": 1, "power": 300, "mode": "sewer_slime"},
-		{"num": "1-4", "name": "閣樓大門 · 大型殘兵", "type": "精英戰鬥", "cost": 1, "power": 340, "mode": "road_bandit"},
+		{"num": "1-1", "name": "荒路哨站 · 停擺發條鼠", "type": "前哨哨衛", "cost": 1, "power": 220, "mode": "ash_rat"},
+		{"num": "1-2", "name": "堡外野原 · 鉚兵哨衛", "type": "精英機關", "cost": 1, "power": 260, "mode": "road_bandit"},
+		{"num": "1-3", "name": "堡壘廣場 · 發條機關偶", "type": "精英機關", "cost": 1, "power": 300, "mode": "sewer_slime"},
+		{"num": "1-4", "name": "閣樓大門 · 重裝發條衛", "type": "精英機關", "cost": 1, "power": 340, "mode": "road_bandit"},
 	],
 	[
-		{"num": "2-1", "name": "白霧外緣 · 守望關隘", "type": "前哨雜魚", "cost": 1, "power": 380, "mode": "road_bandit"},
-		{"num": "2-2", "name": "市集街道 · 潛伏暗哨", "type": "精英戰鬥", "cost": 1, "power": 420, "mode": "road_bandit"},
-		{"num": "2-3", "name": "下水道口 · 腐化黏怪", "type": "精英戰鬥", "cost": 1, "power": 450, "mode": "road_bandit"},
-		{"num": "2-4", "name": "聖獅內殿 · 狂暴守護者", "type": "首領部位破壞", "cost": 3, "power": 520, "mode": "leo"},
+		{"num": "2-1", "name": "白霧外緣 · 守望機關衛", "type": "前哨哨衛", "cost": 1, "power": 380, "mode": "road_bandit"},
+		{"num": "2-2", "name": "市集街道 · 潛伏機關偶", "type": "精英機關", "cost": 1, "power": 420, "mode": "road_bandit"},
+		{"num": "2-3", "name": "排水管道 · 黑鏽機關偶", "type": "精英機關", "cost": 1, "power": 450, "mode": "road_bandit"},
+		{"num": "2-4", "name": "聖獅內殿 · 守衛泰坦雷歐", "type": "首領部位破壞", "cost": 3, "power": 520, "mode": "leo"},
 	],
 	[
-		{"num": "3-1", "name": "白霧村外 · 霧影遊魂", "type": "前哨雜魚", "cost": 1, "power": 560, "mode": "fog_shade"},
-		{"num": "3-2", "name": "霧崖小徑 · 林間風妖", "type": "精英戰鬥", "cost": 1, "power": 600, "mode": "forest_sprite"},
-		{"num": "3-3", "name": "鏡廊入口 · 鏡廊殘影", "type": "精英戰鬥", "cost": 1, "power": 640, "mode": "mirror_wraith"},
-		{"num": "3-4", "name": "白霧核心 · 白霧", "type": "首領部位破壞", "cost": 3, "power": 720, "mode": "fog"},
+		{"num": "3-1", "name": "西林外緣 · 霧影機關偶", "type": "前哨哨衛", "cost": 1, "power": 560, "mode": "fog_shade"},
+		{"num": "3-2", "name": "霧崖小徑 · 旋風發條偶", "type": "精英機關", "cost": 1, "power": 600, "mode": "forest_sprite"},
+		{"num": "3-3", "name": "鏡廊入口 · 鐘擺守衛", "type": "精英機關", "cost": 1, "power": 640, "mode": "mirror_wraith"},
+		{"num": "3-4", "name": "白霧核心 · 守衛泰坦白狐", "type": "首領部位破壞", "cost": 3, "power": 720, "mode": "fog"},
 	],
 	[
-		{"num": "4-1", "name": "石岸潮襲 · 潮襲海盜", "type": "前哨雜魚", "cost": 1, "power": 760, "mode": "coast_raider"},
-		{"num": "4-2", "name": "潮岸沉船 · 船長殘影", "type": "精英戰鬥", "cost": 1, "power": 800, "mode": "wreck_captain"},
-		{"num": "4-3", "name": "疤地焰徑 · 疤地焰靈", "type": "精英戰鬥", "cost": 1, "power": 840, "mode": "scar_wisp"},
-		{"num": "4-4", "name": "通天塔底 · 塔底", "type": "首領部位破壞", "cost": 3, "power": 920, "mode": "demon"},
+		{"num": "4-1", "name": "石岸潮線 · 破浪哨衛", "type": "前哨哨衛", "cost": 1, "power": 760, "mode": "coast_raider"},
+		{"num": "4-2", "name": "潮岸沉船 · 舵輪機關衛", "type": "精英機關", "cost": 1, "power": 800, "mode": "wreck_captain"},
+		{"num": "4-3", "name": "疤地焰徑 · 熔火發條偶", "type": "精英機關", "cost": 1, "power": 840, "mode": "scar_wisp"},
+		{"num": "4-4", "name": "通天塔底 · 終境停擺核", "type": "首領部位破壞", "cost": 3, "power": 920, "mode": "demon"},
 	],
 ]
 

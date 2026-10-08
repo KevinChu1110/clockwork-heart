@@ -5590,8 +5590,8 @@
    "id": "lobby-weapon-slots-live",
    "cat": "遊戲",
    "title": "大廳角色頁三欄武器槽連動真實裝備與即時切換預覽",
-   "status": "測試中",
-   "note": "已修正紙娃娃無512切片安全防護與零穿模實機截圖，待小婷審查",
+   "status": "已上線",
+   "note": "老周與sideqa審查通過，乾淨合併至main上線",
    "keys": [
     "大廳角色頁三欄武"
    ]
@@ -5600,8 +5600,8 @@
    "id": "chest-items-toy-canon",
    "cat": "遊戲",
    "title": "探索寶箱消耗品與材料專有名詞玩具世界化轉譯（六語系）",
-   "status": "開發中",
-   "note": "sideworker 進行中",
+   "status": "已上線",
+   "note": "sideqa審查通過，乾淨合併至main上線",
    "keys": [
     "探索寶箱消耗品與"
    ]
@@ -5610,8 +5610,8 @@
    "id": "campaign-stages-toy-canon",
    "cat": "遊戲",
    "title": "四區主線出征關卡名與敵人名玩具世界化轉譯（六語系）",
-   "status": "開發中",
-   "note": "sideworker 執行中",
+   "status": "測試中",
+   "note": "四區主線16關卡名與型別全面轉譯為發條玩具風格，六語系對齊，單元測試與clock-check全綠",
    "keys": [
     "四區主線出征關卡"
    ]

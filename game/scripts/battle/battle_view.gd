@@ -3176,6 +3176,10 @@ func _refresh_hud() -> void:
 					pwr2 = int((raw2 as Dictionary).get("power", 0))
 				if pwr2 > 0:
 					enemy_name.text = "%s  %s" % [e.display_name, _t("戰力 %d") % pwr2]
+			elif GameState and "current_expedition_stage" in GameState and str(GameState.current_expedition_stage) != "":
+				var stage_enemy := _get_expedition_stage_enemy_name(str(GameState.current_expedition_stage))
+				if stage_enemy != "":
+					enemy_name.text = stage_enemy
 			enemy_hp.max_value = e.max_hp
 			enemy_hp.value = e.hp
 			enemy_hp_label.text = "HP %d / %d" % [e.hp, e.max_hp]
@@ -4040,6 +4044,20 @@ func _unit_display_name(unit_id: String) -> String:
 		"demon": return _t("停擺核")
 		"white_fog": return _t("白霧（本體）")
 	return unit_id
+
+
+func _get_expedition_stage_enemy_name(stage_num: String) -> String:
+	var ML = load("res://scripts/ui/mobile_lobby.gd")
+	if ML and "REGION_STAGES" in ML:
+		for reg in ML.REGION_STAGES:
+			for st in reg:
+				if str(st.get("num", "")) == stage_num:
+					var full_name := str(st.get("name", ""))
+					var parts := full_name.split(" · ")
+					if parts.size() > 1:
+						return _t(parts[1])
+					return _t(full_name)
+	return ""
 
 
 func _on_event(kind: String, data: Dictionary) -> void:
