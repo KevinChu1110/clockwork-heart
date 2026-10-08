@@ -342,7 +342,7 @@ func _wave_lottery() -> String:
 	var r := randf()
 	if r < 0.30:
 		InventorySystem.add_item("hp_s", 1)
-		return _t("抽獎：小紅水×1")
+		return _t("抽獎：微光潤滑油×1")
 	elif r < 0.50:
 		GameState.add_stardust(1)
 		return _t("抽獎：星屑×1")
