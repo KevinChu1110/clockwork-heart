@@ -5610,8 +5610,8 @@
    "id": "campaign-stages-toy-canon",
    "cat": "遊戲",
    "title": "四區主線出征關卡名與敵人名玩具世界化轉譯（六語系）",
-   "status": "測試中",
-   "note": "四區主線16關卡名與型別全面轉譯為發條玩具風格，六語系對齊，單元測試與clock-check全綠",
+   "status": "已上線",
+   "note": "sideqa審查通過，乾淨合併至main上線",
    "keys": [
     "四區主線出征關卡"
    ]
