@@ -207,7 +207,7 @@ func _step_test_close_skill_dialog() -> void:
 	print("  ✓ 已點擊 BtnCloseX 觸發關閉")
 
 func _step_verify_after_close() -> void:
-	print("\n--- 5. 檢驗關閉後狀態與無 SCRIPT ERROR ---")
+	print("\n--- 5. 檢驗關閉後狀態無異常 ---")
 	# 經過一幀 queue_free 後，SkillDialog 應已自 tree 移除
 	var dlg: Control = _lobby.get_node_or_null("SkillDialog") as Control
 	if dlg != null and not dlg.is_queued_for_deletion():
