@@ -5625,6 +5625,16 @@
    "keys": [
     "大廳角色頁新增『"
    ]
+  },
+  {
+   "id": "skill-priority-badge",
+   "cat": "遊戲",
+   "title": "SkillDialog 招式卡片顯示當前出招優先膠囊標籤",
+   "status": "測試中",
+   "note": "招式卡片出招優先膠囊標籤實作完成，測試全綠，實機截圖完成",
+   "keys": [
+    "SkillDia"
+   ]
   }
  ]
 }

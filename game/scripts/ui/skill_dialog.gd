@@ -64,6 +64,8 @@ var _priority_card: PanelContainer
 var _prio_title_lbl: Label
 var _prio_normal_lbl: Label
 var _prio_panic_lbl: Label
+var _kit_normal: Dictionary = {}
+var _kit_panic: Dictionary = {}
 
 ## 職業切換 Tab
 var _tab_row: HBoxContainer
@@ -328,10 +330,10 @@ func _refresh_display() -> void:
 		return
 
 	# 1. 更新戰鬥優先資訊
-	var kit_full: Dictionary = sk.pick_battle_skill(1.0)
-	var kit_panic: Dictionary = sk.pick_battle_skill(0.35)
-	var normal_name: String = str(kit_full.get("name", "—"))
-	var panic_name: String = str(kit_panic.get("name", "—"))
+	_kit_normal = sk.pick_battle_skill(1.0)
+	_kit_panic = sk.pick_battle_skill(0.35)
+	var normal_name: String = str(_kit_normal.get("name", "—"))
+	var panic_name: String = str(_kit_panic.get("name", "—"))
 
 	if _prio_normal_lbl:
 		_prio_normal_lbl.text = _t("平常出招：%s") % normal_name
@@ -371,7 +373,63 @@ func _refresh_display() -> void:
 			_skill_cards_box.add_child(card)
 
 
+class PriorityBadge extends PanelContainer:
+	var label: Label
+	var text: String:
+		get:
+			if label != null:
+				return label.text
+			var l = get_node_or_null("BadgeLabel") as Label
+			return l.text if l != null else ""
+		set(v):
+			if label != null:
+				label.text = v
+			var l = get_node_or_null("BadgeLabel") as Label
+			if l != null:
+				l.text = v
+
+
+func _create_priority_badge(bg_col: Color, text_col: Color, text_str: String) -> PriorityBadge:
+	var badge := PriorityBadge.new()
+	badge.name = "PriorityBadge"
+	badge.mouse_filter = Control.MOUSE_FILTER_PASS
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg_col
+	sb.set_corner_radius_all(12)
+	sb.content_margin_left = 6
+	sb.content_margin_right = 6
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	badge.add_theme_stylebox_override("panel", sb)
+
+	var lbl := Label.new()
+	lbl.name = "BadgeLabel"
+	lbl.text = text_str
+	_apply_font(lbl, 13, text_col, true)
+	badge.label = lbl
+	badge.add_child(lbl)
+
+	badge.set_meta("badge_type", "normal" if text_col == COLOR_TEXT_GOLD else "panic")
+	badge.set_meta("text", text_str)
+	badge.set_meta("bg_color", bg_col)
+	badge.set_meta("font_color", text_col)
+
+	return badge
+
+
 func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContainer:
+	if _kit_normal.is_empty() and sk != null and sk.has_method("pick_battle_skill"):
+		_kit_normal = sk.pick_battle_skill(1.0)
+	if _kit_panic.is_empty() and sk != null and sk.has_method("pick_battle_skill"):
+		_kit_panic = sk.pick_battle_skill(0.35)
+
+	var normal_sid := str(_kit_normal.get("id", ""))
+	var panic_sid := str(_kit_panic.get("id", ""))
+	var panic_kind := str(_kit_panic.get("kind", ""))
+	var is_normal: bool = (sid != "" and sid == normal_sid)
+	var is_panic: bool = (sid != "" and sid == panic_sid and (panic_kind == "heal" or sid != normal_sid))
+
 	var loc_d: Dictionary = sk.def_of(sid)
 	var s_name := str(loc_d.get("name", str(raw_d.get("name", sid))))
 	var s_desc := str(loc_d.get("desc", str(raw_d.get("desc", ""))))
@@ -417,6 +475,14 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 	_apply_font(name_lbl, 17, COLOR_TEXT_DARK, true)
 	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top_row.add_child(name_lbl)
+
+	var prio_badge: PriorityBadge = null
+	if is_normal:
+		prio_badge = _create_priority_badge(COLOR_CARD_GOLD, COLOR_TEXT_GOLD, _t("平常首發"))
+		top_row.add_child(prio_badge)
+	elif is_panic:
+		prio_badge = _create_priority_badge(COLOR_CARD_SKY, COLOR_SKY, _t("危急應急"))
+		top_row.add_child(prio_badge)
 
 	var status_lbl := Label.new()
 	status_lbl.name = "SkillStatus"
@@ -478,6 +544,7 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 		"desc": desc_lbl,
 		"preview": preview_lbl,
 		"hint": hint_lbl,
+		"priority_badge": prio_badge,
 	}
 
 	return card
@@ -584,6 +651,32 @@ func get_skill_preview_text(sid: String) -> String:
 	if _card_nodes.has(sid) and _card_nodes[sid].get("preview"):
 		return (_card_nodes[sid]["preview"] as Label).text
 	return ""
+
+
+func get_skill_priority_badge(sid: String) -> Control:
+	if _card_nodes.has(sid):
+		return _card_nodes[sid].get("priority_badge", null)
+	return null
+
+
+func get_skill_priority_badge_text(sid: String) -> String:
+	var b = get_skill_priority_badge(sid)
+	if b == null:
+		return ""
+	if "text" in b:
+		return str(b.text)
+	var lbl: Label = b.find_child("BadgeLabel", true, false) as Label
+	if lbl:
+		return lbl.text
+	return ""
+
+
+func get_prio_normal_text() -> String:
+	return _prio_normal_lbl.text if _prio_normal_lbl else ""
+
+
+func get_prio_panic_text() -> String:
+	return _prio_panic_lbl.text if _prio_panic_lbl else ""
 
 
 func get_title_text() -> String:
