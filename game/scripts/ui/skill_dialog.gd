@@ -656,11 +656,35 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 		_apply_font(hint_lbl, 14, COLOR_TEXT_MUTED)
 		vbox.add_child(hint_lbl)
 
-	# 右側操作按鈕：『突破升階』或『體悟習得』
+	# 右側操作按鈕：『設為首發』/『已設首發』、『突破升階』或『體悟習得』
+	var pref_btn: Button = null
 	var upgrade_btn: Button = null
 	var unlock_btn: Button = null
 	var can_lvl: bool = is_learned and sk != null and sk.can_level_up(sid) and slv < sk.MAX_LV
 	var can_unlk: bool = (not is_learned) and is_unlocked
+	var is_attack: bool = str(raw_d.get("kind", "")) == "attack"
+
+	var actions_box := HBoxContainer.new()
+	actions_box.name = "ActionsHBox"
+	actions_box.add_theme_constant_override("separation", 8)
+	actions_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+
+	if is_learned and is_attack:
+		pref_btn = Button.new()
+		pref_btn.name = "BtnSetPreferred"
+		pref_btn.custom_minimum_size = Vector2(104, 48)
+		pref_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var wline := str(raw_d.get("line", ""))
+		var pref_id: String = str(sk.get_preferred_skill(wline)) if sk != null and sk.has_method("get_preferred_skill") else ""
+		var is_pref_active := (pref_id == sid) or (pref_id == "" and is_normal)
+		if is_pref_active:
+			pref_btn.text = _t("已設首發")
+			_style_jelly_btn(pref_btn, COLOR_CARD_GOLD, COLOR_TEXT_GOLD, 15, 4)
+		else:
+			pref_btn.text = _t("設為首發")
+			_style_jelly_btn(pref_btn, COLOR_CARD_WARM, COLOR_TEXT_DARK, 15, 4)
+		pref_btn.pressed.connect(func(): _on_toggle_preferred_skill(sid, wline, is_pref_active))
+		actions_box.add_child(pref_btn)
 
 	if can_lvl:
 		upgrade_btn = Button.new()
@@ -670,7 +694,7 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 		upgrade_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		_style_jelly_btn(upgrade_btn, COLOR_ORANGE, COLOR_TEXT_DARK, 15, 4)
 		upgrade_btn.pressed.connect(func(): _on_skill_level_up(sid))
-		card_h.add_child(upgrade_btn)
+		actions_box.add_child(upgrade_btn)
 	elif can_unlk:
 		unlock_btn = Button.new()
 		unlock_btn.name = "BtnUnlock"
@@ -679,7 +703,12 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 		unlock_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		_style_jelly_btn(unlock_btn, COLOR_MINT, COLOR_TEXT_DARK, 15, 4)
 		unlock_btn.pressed.connect(func(): _on_skill_unlock(sid))
-		card_h.add_child(unlock_btn)
+		actions_box.add_child(unlock_btn)
+
+	if actions_box.get_child_count() > 0:
+		card_h.add_child(actions_box)
+	else:
+		actions_box.queue_free()
 
 	_card_nodes[sid] = {
 		"card": card,
@@ -694,9 +723,25 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 		"mastery_label": mastery_lbl,
 		"upgrade_btn": upgrade_btn,
 		"unlock_btn": unlock_btn,
+		"preferred_btn": pref_btn,
 	}
 
 	return card
+
+
+func _on_toggle_preferred_skill(sid: String, wline: String, _is_pref_active: bool) -> void:
+	var sk := _get_skill_system()
+	if sk == null:
+		return
+	var pref_id: String = str(sk.get_preferred_skill(wline)) if sk.has_method("get_preferred_skill") else ""
+	if pref_id == sid:
+		if sk.has_method("clear_preferred_skill"):
+			sk.call("clear_preferred_skill", wline)
+	else:
+		if sk.has_method("set_preferred_skill"):
+			sk.call("set_preferred_skill", sid, wline)
+	_play_action_sfx()
+	_refresh_display()
 
 
 func _on_skill_level_up(sid: String) -> void:
@@ -887,6 +932,19 @@ func get_skill_unlock_btn(sid: String) -> Button:
 	if _card_nodes.has(sid):
 		return _card_nodes[sid].get("unlock_btn") as Button
 	return null
+
+
+func get_skill_preferred_btn(sid: String) -> Button:
+	if _card_nodes.has(sid):
+		return _card_nodes[sid].get("preferred_btn") as Button
+	return null
+
+
+func get_skill_preferred_btn_text(sid: String) -> String:
+	var b := get_skill_preferred_btn(sid)
+	if b != null:
+		return b.text
+	return ""
 
 
 func get_skill_max_badge(sid: String) -> Control:

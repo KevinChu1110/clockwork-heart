@@ -1179,6 +1179,57 @@ func try_unlock(id: String) -> bool:
 	return learn(id, 1)
 
 
+## 偏好首發招式查詢與設定（跨存檔保存至 GameState.preferred_skills）
+func get_preferred_skill(line: String = "") -> String:
+	ensure_skill_map()
+	var my_line := normalize_weapon_id(line) if line != "" else _path_id()
+	if my_line == "":
+		my_line = "sword"
+	if GameState == null or not (GameState.preferred_skills is Dictionary):
+		return ""
+	var sid: String = str(GameState.preferred_skills.get(my_line, ""))
+	if sid != "" and is_learned(sid):
+		var d: Dictionary = def_of(sid)
+		var sline := normalize_weapon_id(str(d.get("line", "")))
+		if (my_line == "" or sline == my_line) and str(d.get("kind", "")) == "attack":
+			return sid
+	return ""
+
+
+func set_preferred_skill(skill_id: String, line: String = "") -> bool:
+	ensure_skill_map()
+	if not is_learned(skill_id):
+		return false
+	var d: Dictionary = def_of(skill_id)
+	if d.is_empty():
+		return false
+	if str(d.get("kind", "")) != "attack":
+		return false
+	var sline := normalize_weapon_id(str(d.get("line", "")))
+	var target_line := normalize_weapon_id(line) if line != "" else sline
+	if target_line == "":
+		target_line = sline if sline != "" else "sword"
+	if sline != "" and target_line != sline:
+		target_line = sline
+	if GameState != null and (GameState.preferred_skills is Dictionary):
+		GameState.preferred_skills[target_line] = skill_id
+		return true
+	return false
+
+
+func clear_preferred_skill(line: String = "") -> void:
+	if GameState == null or not (GameState.preferred_skills is Dictionary):
+		return
+	var my_line := normalize_weapon_id(line) if line != "" else _path_id()
+	if my_line == "":
+		my_line = "sword"
+	GameState.preferred_skills.erase(my_line)
+
+
+func has_preferred_skill(line: String = "") -> bool:
+	return get_preferred_skill(line) != ""
+
+
 ## 戰鬥用：挑當前該放的技能（原作：技能綁定武器類型，裝錯不會發動）
 ## weapon_line：戰鬥中當前武器欄的 line；空則用 path_style／作用中裝備
 ## 只允許 **同一武器 line**；不再用同職另一系統或跨職技能自動放
@@ -1228,19 +1279,30 @@ func pick_battle_skill(hp_ratio: float = 1.0, weapon_line: String = "") -> Dicti
 
 	var best: Dictionary = {}
 	var best_p := -1
-	for d in CATALOG:
-		var sid: String = str(d.get("id", ""))
-		if str(d.get("kind", "")) != "attack":
-			continue
-		if not is_learned(sid):
-			continue
-		var line := normalize_weapon_id(str(d.get("line", "")))
-		if my_line == "" or line != my_line:
-			continue
-		var prio: int = int(d.get("priority", 0))
-		if prio > best_p:
-			best_p = prio
-			best = d
+	var pref_sid := get_preferred_skill(my_line)
+	if pref_sid != "":
+		for d in CATALOG:
+			var sid: String = str(d.get("id", ""))
+			if sid == pref_sid:
+				if str(d.get("kind", "")) == "attack" and is_learned(sid):
+					var line := normalize_weapon_id(str(d.get("line", "")))
+					if my_line == "" or line == my_line:
+						best = d
+						break
+	if best.is_empty():
+		for d in CATALOG:
+			var sid: String = str(d.get("id", ""))
+			if str(d.get("kind", "")) != "attack":
+				continue
+			if not is_learned(sid):
+				continue
+			var line := normalize_weapon_id(str(d.get("line", "")))
+			if my_line == "" or line != my_line:
+				continue
+			var prio: int = int(d.get("priority", 0))
+			if prio > best_p:
+				best_p = prio
+				best = d
 	if best.is_empty():
 		## 當前線沒有已學攻擊技 → 不硬塞跨線橫斬
 		return {}

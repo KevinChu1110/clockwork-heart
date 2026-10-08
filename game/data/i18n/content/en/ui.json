@@ -3639,5 +3639,11 @@
   "招式 · 核心心法": "Skills · Core Discipline",
   "突破升階": "Breakthrough",
   "體悟習得": "Comprehend",
-  "Lv.MAX · 極階": "Lv.MAX · Mastered"
+  "Lv.MAX · 極階": "Lv.MAX · Mastered",
+  "設為首發": "Set as Opener",
+  "【設為首發】": "[Set as Opener]",
+  "已設首發": "Opener Set",
+  "【已設首發】": "[Opener Set]",
+  "取消首發": "Unset Opener",
+  "【取消首發】": "[Unset Opener]"
 }
