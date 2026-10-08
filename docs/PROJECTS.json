@@ -5600,8 +5600,8 @@
    "id": "chest-items-toy-canon",
    "cat": "遊戲",
    "title": "探索寶箱消耗品與材料專有名詞玩具世界化轉譯（六語系）",
-   "status": "測試中",
-   "note": "完成六語系道具轉譯、main.gd文案修正與無頭測試驗證，送審小婷",
+   "status": "已上線",
+   "note": "sideqa審查通過，乾淨合併至main上線",
    "keys": [
     "探索寶箱消耗品與"
    ]
