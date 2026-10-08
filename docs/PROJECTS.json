@@ -5660,8 +5660,8 @@
    "id": "skill-custom-priority",
    "cat": "遊戲",
    "title": "SkillDialog 招式卡片支援點擊設為首選並連動戰鬥首發出招",
-   "status": "測試中",
-   "note": "完成SkillDialog招式首發設定與實戰連動，單元測試與截圖存證完畢送審",
+   "status": "已上線",
+   "note": "SkillDialog 招式卡片支援點擊設為首選並連動戰鬥首發出招主線全站回歸驗收通過",
    "keys": [
     "SkillDia"
    ]
