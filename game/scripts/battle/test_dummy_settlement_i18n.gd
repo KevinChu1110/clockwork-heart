@@ -181,6 +181,15 @@ func _run_test_suite() -> void:
 		"es": "Finalizar prueba",
 	}
 
+	var expected_retry := {
+		"zh_TW": "再次試招",
+		"zh_CN": "再次试招",
+		"en": "Retry Trial",
+		"ja": "もう一度試技",
+		"ko": "다시 연습",
+		"es": "Reintentar prueba",
+	}
+
 	# 1. 檢驗字典查表解析
 	print("\n--- 檢驗 1: 六語系字典 ContentLoc 查表解析 ---")
 	for code in LOCALES:
@@ -235,11 +244,15 @@ func _run_test_suite() -> void:
 		if t_tip != expected_tip[code]:
 			_fail("[%s] 說明句不符: 期望 '%s'，得 '%s'" % [code, expected_tip[code], t_tip])
 
+		var t_retry := ContentLoc.text("ui", "再次試招")
+		if t_retry != expected_retry[code]:
+			_fail("[%s] 再次試招按鈕不符: 期望 '%s'，得 '%s'" % [code, expected_retry[code], t_retry])
+
 		var t_conf := ContentLoc.text("ui", "完成試招")
 		if t_conf != expected_confirm[code]:
 			_fail("[%s] 確認按鈕不符: 期望 '%s'，得 '%s'" % [code, expected_confirm[code], t_conf])
 
-		print("  ✓ [%s] 字典全部 13 條通過" % code)
+		print("  ✓ [%s] 字典全部 14 條通過" % code)
 
 	# 2. 檢驗 DummySettlementDialog 實例化與 locale_changed 動態刷新
 	print("\n--- 檢驗 2: DummySettlementDialog 動態切換與節點即時刷新 ---")
@@ -260,6 +273,7 @@ func _run_test_suite() -> void:
 	var title_lbl: Label = dlg.find_child("TitleLabel", true, false)
 	var sub_lbl: Label = dlg.find_child("SubTitleLabel", true, false)
 	var tip_lbl: Label = dlg.find_child("TipLabel", true, false)
+	var retry_btn: Button = dlg.find_child("RetryButton", true, false)
 	var confirm_btn: Button = dlg.find_child("ConfirmButton", true, false)
 
 	var c1: Control = dlg.find_child("TotalDamageCard", true, false)
@@ -316,9 +330,11 @@ func _run_test_suite() -> void:
 		if not c3_unit or c3_unit.text != expected_card3_unit[code]:
 			_fail("[%s] 卡3 UnitLabel 刷新不符: 得 '%s'" % [code, c3_unit.text if c3_unit else "null"])
 
-		# 檢驗說明句與確認鈕
+		# 檢驗說明句與按鈕
 		if not tip_lbl or tip_lbl.text != expected_tip[code]:
 			_fail("[%s] 節點 TipLabel 刷新不符: 得 '%s'" % [code, tip_lbl.text if tip_lbl else "null"])
+		if not retry_btn or retry_btn.text != expected_retry[code]:
+			_fail("[%s] 節點 RetryButton 刷新不符: 得 '%s'" % [code, retry_btn.text if retry_btn else "null"])
 		if not confirm_btn or confirm_btn.text != expected_confirm[code]:
 			_fail("[%s] 節點 ConfirmButton 刷新不符: 得 '%s'" % [code, confirm_btn.text if confirm_btn else "null"])
 
@@ -331,7 +347,7 @@ func _run_test_suite() -> void:
 			_fail("[%s] 卡3 DPS 數值被篡改: 得 '%s'" % [code, c3_val.text if c3_val else "null"])
 
 		# 檢驗零 emoji
-		for txt in [title_lbl.text, sub_lbl.text, c1_hdr.text, c1_sub.text, c1_unit.text, c2_hdr.text, c2_sub.text, c2_unit.text, c3_hdr.text, c3_sub.text, c3_unit.text, tip_lbl.text, confirm_btn.text]:
+		for txt in [title_lbl.text, sub_lbl.text, c1_hdr.text, c1_sub.text, c1_unit.text, c2_hdr.text, c2_sub.text, c2_unit.text, c3_hdr.text, c3_sub.text, c3_unit.text, tip_lbl.text, retry_btn.text, confirm_btn.text]:
 			if _has_emoji(txt):
 				_fail("[%s] 偵測到系統 Emoji: '%s'" % [code, txt])
 

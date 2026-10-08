@@ -12,6 +12,7 @@ extends Control
 ## 8. 六語系多國語言支援 (ContentLoc / Loc.locale_changed 即時切換)。
 
 signal confirmed()
+signal retry_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
@@ -43,6 +44,7 @@ var _damage_label: Label
 var _time_label: Label
 var _dps_label: Label
 var _tip_label: Label
+var _retry_btn: Button
 var _confirm_btn: Button
 var _cached_font: Font = null
 
@@ -62,20 +64,22 @@ var _total_damage: int = 0
 var _elapsed_time: float = 0.0
 var _dps: float = 0.0
 var _on_confirm: Callable = Callable()
+var _on_retry: Callable = Callable()
 
 
-static func show_dialog(parent: Node, stats: Dictionary = {}, on_confirm: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/dummy_settlement_dialog.gd").new()
-	dlg.setup(stats, on_confirm)
+	dlg.setup(stats, on_confirm, on_retry)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(stats: Dictionary = {}, on_confirm: Callable = Callable()) -> void:
+func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable()) -> void:
 	_total_damage = int(stats.get("total_damage", 0))
 	_elapsed_time = float(stats.get("elapsed_time", 0.0))
 	_dps = float(stats.get("dps", 0.0))
 	_on_confirm = on_confirm
+	_on_retry = on_retry
 
 	if _dialog_card == null:
 		_build_ui()
@@ -270,13 +274,43 @@ func _build_ui() -> void:
 		_tip_label.add_theme_font_override("font", _cached_font)
 	tip_margin.add_child(_tip_label)
 
-	# ── 底部確認按鈕 ──
+	# ── 底部按鈕區（再次試招與完成試招雙鍵並列） ──
 	var btn_center := CenterContainer.new()
+	btn_center.name = "ButtonCenterContainer"
 	v.add_child(btn_center)
 
+	var btn_hbox := HBoxContainer.new()
+	btn_hbox.name = "ButtonHBox"
+	btn_hbox.add_theme_constant_override("separation", 18)
+	btn_center.add_child(btn_hbox)
+
+	# 1. 再次試招按鈕（暖橘立體厚底 >= 48px，高度 52px）
+	_retry_btn = Button.new()
+	_retry_btn.name = "RetryButton"
+	_retry_btn.custom_minimum_size = Vector2(200, 52)
+	_retry_btn.add_theme_font_size_override("font_size", 18)
+	_retry_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_retry_btn.add_theme_font_override("font", _cached_font)
+
+	var retry_normal := _create_button_style(COLOR_ORANGE, COLOR_BORDER, 6, 20)
+	var retry_hover := _create_button_style(Color("#FFB535"), COLOR_BORDER, 6, 20)
+	var retry_pressed := _create_button_style(Color("#E08000"), COLOR_BORDER, 2, 20)
+	retry_pressed.content_margin_top = 12
+	retry_pressed.content_margin_bottom = 8
+
+	_retry_btn.add_theme_stylebox_override("normal", retry_normal)
+	_retry_btn.add_theme_stylebox_override("hover", retry_hover)
+	_retry_btn.add_theme_stylebox_override("pressed", retry_pressed)
+	_retry_btn.add_theme_stylebox_override("focus", retry_normal)
+
+	_retry_btn.pressed.connect(_on_retry_clicked)
+	btn_hbox.add_child(_retry_btn)
+
+	# 2. 完成試招按鈕（金黃立體厚底 >= 48px，高度 52px）
 	_confirm_btn = Button.new()
 	_confirm_btn.name = "ConfirmButton"
-	_confirm_btn.custom_minimum_size = Vector2(240, 52)
+	_confirm_btn.custom_minimum_size = Vector2(200, 52)
 	_confirm_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_confirm_btn.add_theme_font_size_override("font_size", 18)
 	_confirm_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -295,7 +329,7 @@ func _build_ui() -> void:
 	_confirm_btn.add_theme_stylebox_override("focus", btn_normal)
 
 	_confirm_btn.pressed.connect(_on_confirm_clicked)
-	btn_center.add_child(_confirm_btn)
+	btn_hbox.add_child(_confirm_btn)
 
 	_update_ui_texts()
 
@@ -329,6 +363,8 @@ func _update_ui_texts() -> void:
 
 	if _tip_label and is_instance_valid(_tip_label):
 		_tip_label.text = _t("木人樁為不消耗能量的自由試招訓練。可在武術館兵器架調配各色兵刃，體會不同招式的出招前搖與段數節奏。")
+	if _retry_btn and is_instance_valid(_retry_btn):
+		_retry_btn.text = _t("再次試招")
 	if _confirm_btn and is_instance_valid(_confirm_btn):
 		_confirm_btn.text = _t("完成試招")
 
@@ -424,6 +460,13 @@ func _on_confirm_clicked() -> void:
 	queue_free()
 
 
+func _on_retry_clicked() -> void:
+	retry_requested.emit()
+	if _on_retry.is_valid():
+		_on_retry.call()
+	queue_free()
+
+
 func get_total_damage() -> int:
 	return _total_damage
 
@@ -458,6 +501,10 @@ func get_subtitle_text() -> String:
 
 func get_tip_text() -> String:
 	return _tip_label.text if _tip_label else ""
+
+
+func get_retry_text() -> String:
+	return _retry_btn.text if _retry_btn else ""
 
 
 func get_confirm_text() -> String:
