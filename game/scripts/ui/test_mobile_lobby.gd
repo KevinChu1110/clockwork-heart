@@ -1813,6 +1813,24 @@ func _test_character_tab_i18n() -> void:
 		}
 	}
 
+	# 設置三欄武器槽測試裝備（鐵劍、獵弓、拳套），驗證多語系切換與名稱/打擊數在地化
+	var gs_node = root.get_node_or_null("GameState")
+	var eq_node = root.get_node_or_null("EquipmentSystem")
+	if gs_node and eq_node:
+		gs_node.level = 20
+		gs_node.atk = 83
+		var w1 := {"uid": "tw_sword", "base_id": "sword", "name": "鐵劍", "line": "sword", "slot": "weapon", "tier": 1, "quality": "common", "quality_label": "凡品", "rolled": {"atk": 8}}
+		var w2 := {"uid": "tw_bow", "base_id": "bow", "name": "獵弓", "line": "bow", "slot": "weapon", "tier": 1, "quality": "common", "quality_label": "凡品", "rolled": {"atk": 8}}
+		var w3 := {"uid": "tw_fist", "base_id": "fist", "name": "拳套", "line": "fist", "slot": "weapon", "tier": 1, "quality": "common", "quality_label": "凡品", "rolled": {"atk": 9}}
+		gs_node.equip_worn["tw_sword"] = w1
+		gs_node.equip_worn["tw_bow"] = w2
+		gs_node.equip_worn["tw_fist"] = w3
+		gs_node.weapon_loadout = ["tw_sword", "tw_bow", "tw_fist"]
+		gs_node.weapon_loadout_active = 0
+		gs_node.equip_slots["weapon"] = "tw_sword"
+		if _lobby.has_method("refresh_weapon_slots"):
+			_lobby.refresh_weapon_slots()
+
 	for code in ["zh_CN", "en", "ja", "ko", "es", "zh_TW"]:
 		loc_node.call("set_locale", code)
 		var exp: Dictionary = expected_char_data[code]

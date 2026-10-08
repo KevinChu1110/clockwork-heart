@@ -3560,5 +3560,12 @@
   "發條超載爆裂": "Estallido de Sobrecarga",
   "超載爆裂！": "¡Sobrecarga!",
   "超載爆裂": "Sobrecarga",
-  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]¡Estallido de Sobrecarga! Rotaciones al Máximo · ¡Furia Metálica![/color]"
+  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]¡Estallido de Sobrecarga! Rotaciones al Máximo · ¡Furia Metálica![/color]",
+  "2 次打擊": "2 Golpes",
+  "3 次打擊": "3 Golpes",
+  "6 連擊": "6 Golpes",
+  "需達 Lv%d": "Req. Nv%d",
+  "空槽": "Vacío",
+  "備用武器槽位：可於冒險者背包或兵器架中裝備武器": "Ranura de arma de reserva: Equipa armas desde la mochila o el armero",
+  "武器欄位未解鎖（角色等級需達到 Lv%d）": "Ranura de arma bloqueada (Requiere Nivel %d)"
 }

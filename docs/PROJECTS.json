@@ -5590,8 +5590,8 @@
    "id": "lobby-weapon-slots-live",
    "cat": "遊戲",
    "title": "大廳角色頁三欄武器槽連動真實裝備與即時切換預覽",
-   "status": "開發中",
-   "note": "sideworker2 進行中",
+   "status": "測試中",
+   "note": "已修正紙娃娃無512切片安全防護與零穿模實機截圖，待小婷審查",
    "keys": [
     "大廳角色頁三欄武"
    ]

@@ -277,6 +277,42 @@ var _char_weapon_sub_label: Label = null
 var _char_stat_title_label: Label = null
 var _stat_cards: Array[PanelContainer] = []
 
+const WEAPON_SLOT_TITLES: Array[String] = [
+	"首選武器",
+	"副手武器",
+	"絕技武器",
+]
+
+const LINE_HITS: Dictionary = {
+	"sword": "4 次打擊",
+	"bow": "4 次打擊",
+	"fist": "5 連擊",
+	"dagger": "4 次打擊",
+	"claw": "5 連擊",
+	"dart": "4 次打擊",
+	"spear": "3 次打擊",
+	"axe": "3 次打擊",
+	"hammer": "2 次打擊",
+	"gun": "3 次打擊",
+	"magic": "4 次打擊",
+	"crystal": "4 次打擊",
+}
+
+const LINE_NAMES: Dictionary = {
+	"sword": "劍",
+	"spear": "長槍",
+	"axe": "斧",
+	"hammer": "鎚",
+	"dagger": "匕首",
+	"dart": "鏢",
+	"fist": "拳套",
+	"claw": "爪",
+	"magic": "法杖",
+	"crystal": "靈晶",
+	"bow": "弓",
+	"gun": "銃",
+}
+
 const WEAPON_SLOTS: Array[Dictionary] = [
 	{
 		"slot_title": "首選武器",
@@ -343,6 +379,12 @@ static func _get_inv_sys() -> Node:
 		return (loop as SceneTree).root.get_node_or_null("InventorySystem")
 	return null
 
+static func _get_equip_sys() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
+	return null
+
 func _get_hero_name() -> String:
 	var gs := _gs()
 	if gs and "player_name" in gs:
@@ -361,6 +403,14 @@ func _ready() -> void:
 		inv.inventory_changed.connect(func():
 			if _current_tab == Tab.BAG:
 				_refresh_bag_tab(false)
+		)
+	var eq := _get_equip_sys()
+	if eq and eq.has_signal("equipment_changed"):
+		eq.equipment_changed.connect(func():
+			if _current_tab == Tab.CHARACTER:
+				_refresh_weapon_slot_buttons()
+				_refresh_char_tab_stats(false)
+				_sync_hero_weapon_paperdoll()
 		)
 	_load_hero_poses()
 	_build_ui()
@@ -1544,6 +1594,9 @@ func _switch_tab(target: Tab) -> void:
 		_village_layer.visible = (target == Tab.VILLAGE)
 	if _char_layer:
 		_char_layer.visible = (target == Tab.CHARACTER)
+		if target == Tab.CHARACTER:
+			_refresh_weapon_slot_buttons()
+			_refresh_char_tab_stats(false)
 	if _adventure_layer:
 		_adventure_layer.visible = (target == Tab.ADVENTURE)
 	if _soul_layer:
@@ -4137,18 +4190,144 @@ func _build_character_tab() -> void:
 	r2.add_child(sc5)
 	_stat_cards.append(sc5)
 
+func _get_weapon_slot_info(slot_idx: int) -> Dictionary:
+	var eq := _get_equip_sys()
+	var gs := _gs()
+	var title := WEAPON_SLOT_TITLES[slot_idx] if slot_idx >= 0 and slot_idx < WEAPON_SLOT_TITLES.size() else "首選武器"
+
+	var fallback: Dictionary = WEAPON_SLOTS[slot_idx] if slot_idx >= 0 and slot_idx < WEAPON_SLOTS.size() else {}
+	var fb_name: String = str(fallback.get("weapon_name", "鐵劍"))
+	var fb_hits: String = str(fallback.get("hits", "4 次打擊"))
+	var fb_hint: String = str(fallback.get("hint", ""))
+
+	if eq == null:
+		return {
+			"slot_title": title,
+			"weapon_name": fb_name,
+			"hits": fb_hits,
+			"quality": "common",
+			"quality_label": "凡品",
+			"quality_color": Color("#8E8A9F"),
+			"hint": fb_hint,
+			"unlocked": true,
+			"empty": false,
+			"is_active": (slot_idx == _selected_weapon_slot),
+			"uid": "",
+			"atk": 0,
+		}
+
+	var snap: Array = []
+	if eq.has_method("loadout_snapshot_for_battle"):
+		snap = eq.loadout_snapshot_for_battle()
+
+	var entry: Dictionary = {}
+	if slot_idx >= 0 and slot_idx < snap.size():
+		entry = snap[slot_idx]
+
+	var unlocked := true
+	if eq.has_method("loadout_slot_unlocked"):
+		unlocked = eq.loadout_slot_unlocked(slot_idx)
+	elif not entry.is_empty():
+		unlocked = bool(entry.get("unlocked", true))
+
+	if not unlocked:
+		var req_lv := 10 if slot_idx == 1 else 16
+		if eq.has_method("loadout_unlock_level"):
+			req_lv = int(eq.loadout_unlock_level(slot_idx))
+		return {
+			"slot_title": title,
+			"weapon_name": "未解鎖",
+			"hits": "需達 Lv%d" % req_lv,
+			"quality": "locked",
+			"quality_label": "未解鎖",
+			"quality_color": Color("#A09CAE"),
+			"hint": "武器欄位未解鎖（角色等級需達到 Lv%d）" % req_lv,
+			"unlocked": false,
+			"empty": true,
+			"is_active": false,
+			"uid": "",
+			"atk": 0,
+		}
+
+	var uid: String = str(entry.get("uid", ""))
+	if uid.is_empty() and gs and "weapon_loadout" in gs and slot_idx < gs.weapon_loadout.size():
+		uid = str(gs.weapon_loadout[slot_idx])
+
+	if uid.is_empty():
+		return {
+			"slot_title": title,
+			"weapon_name": "空槽",
+			"hits": "未裝備",
+			"quality": "none",
+			"quality_label": "未裝備",
+			"quality_color": Color("#A09CAE"),
+			"hint": "備用武器槽位：可於冒險者背包或兵器架中裝備武器",
+			"unlocked": true,
+			"empty": true,
+			"is_active": false,
+			"uid": "",
+			"atk": 0,
+		}
+
+	var inst: Dictionary = {}
+	if eq.has_method("weapon_inst"):
+		inst = eq.weapon_inst(uid)
+	if inst.is_empty() and gs and "equip_worn" in gs and gs.equip_worn is Dictionary:
+		inst = gs.equip_worn.get(uid, {})
+
+	var wname: String = str(inst.get("name", entry.get("name", fb_name)))
+	if wname.is_empty():
+		wname = fb_name
+	var line: String = str(inst.get("line", entry.get("line", "sword")))
+	var hits: String = LINE_HITS.get(line, "4 次打擊")
+	var quality: String = str(inst.get("quality", "common"))
+	var quality_label: String = str(inst.get("quality_label", "凡品"))
+
+	var q_col := Color("#8E8A9F")
+	match quality:
+		"common": q_col = Color("#8E8A9F")
+		"uncommon": q_col = Color("#2E9E4A")
+		"rare": q_col = Color("#2575FC")
+		"epic": q_col = Color("#9B51E0")
+		_: q_col = Color("#8E8A9F")
+
+	var atk: int = int(entry.get("weapon_atk", 0))
+	if atk <= 0 and inst.has("rolled") and inst["rolled"] is Dictionary:
+		atk = int(inst["rolled"].get("atk", 0))
+
+	var hint_str := fb_hint
+	if wname != fb_name:
+		var line_name: String = LINE_NAMES.get(line, line)
+		hint_str = "%s · %s：流派「%s」，%s，基礎攻擊 +%d" % [title, wname, line_name, hits, atk]
+
+	return {
+		"slot_title": title,
+		"weapon_name": wname,
+		"hits": hits,
+		"quality": quality,
+		"quality_label": quality_label,
+		"quality_color": q_col,
+		"hint": hint_str,
+		"unlocked": true,
+		"empty": false,
+		"is_active": (slot_idx == _selected_weapon_slot),
+		"uid": uid,
+		"atk": atk,
+	}
+
 func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 	var btn := Button.new()
 	btn.name = "WeaponSlot_%d" % idx
 	btn.custom_minimum_size = Vector2(0, 68)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn.set_meta("quality_color", slot_data.get("quality_color", COLOR_GOLD_DARK))
 
 	var v := VBoxContainer.new()
 	v.name = "Content"
 	v.set_anchors_preset(Control.PRESET_FULL_RECT)
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	v.add_theme_constant_override("separation", 2)
+	v.add_theme_constant_override("separation", 1)
 	btn.add_child(v)
 
 	var slot_title := Label.new()
@@ -4156,7 +4335,7 @@ func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 	var t_text := _t(slot_data["slot_title"])
 	slot_title.text = t_text
 	slot_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var t_sz := 11 if t_text.length() > 14 else 13
+	var t_sz := 11 if t_text.length() > 14 else 12
 	_apply_label_style(slot_title, t_sz, COLOR_GOLD_DARK)
 	v.add_child(slot_title)
 
@@ -4165,9 +4344,18 @@ func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 	var w_text := "%s · %s" % [_t(slot_data["weapon_name"]), _t(slot_data["hits"])]
 	weapon_info.text = w_text
 	weapon_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var w_sz := 13 if w_text.length() > 22 else (14 if w_text.length() > 18 else 16)
+	var w_sz := 12 if w_text.length() > 22 else (13 if w_text.length() > 18 else 14)
 	_apply_label_style(weapon_info, w_sz, COLOR_TEXT_DARK)
 	v.add_child(weapon_info)
+
+	var quality_lbl := Label.new()
+	quality_lbl.name = "QualityLabel"
+	var q_text := _t(str(slot_data.get("quality_label", "")))
+	quality_lbl.text = q_text
+	quality_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var q_col: Color = slot_data.get("quality_color", COLOR_GOLD_DARK)
+	_apply_label_style(quality_lbl, 10, q_col)
+	v.add_child(quality_lbl)
 
 	_style_weapon_slot_button(btn, idx == _selected_weapon_slot)
 	var slot_idx := idx
@@ -4182,11 +4370,12 @@ func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
 	sb.border_width_bottom = 5
 	sb.content_margin_left = 12
 	sb.content_margin_right = 12
-	sb.content_margin_top = 8
-	sb.content_margin_bottom = 8
+	sb.content_margin_top = 6
+	sb.content_margin_bottom = 6
 
 	var title_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
 	var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
+	var q_lbl := btn.get_node_or_null("Content/QualityLabel") as Label
 
 	if is_selected:
 		sb.bg_color = COLOR_ORANGE
@@ -4197,6 +4386,8 @@ func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
 			title_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		if info_lbl:
 			info_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		if q_lbl:
+			q_lbl.add_theme_color_override("font_color", Color(0.22, 0.18, 0.38))
 	else:
 		sb.bg_color = COLOR_CARD_WARM
 		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
@@ -4206,6 +4397,9 @@ func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
 			title_lbl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 		if info_lbl:
 			info_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		if q_lbl:
+			var q_col: Color = btn.get_meta("quality_color", COLOR_GOLD_DARK)
+			q_lbl.add_theme_color_override("font_color", q_col)
 
 	var sb_h := sb.duplicate() as StyleBoxFlat
 	if not is_selected:
@@ -4230,17 +4424,168 @@ func get_selected_weapon_slot() -> int:
 func get_weapon_slot_buttons() -> Array[Button]:
 	return _weapon_slot_buttons
 
+func refresh_weapon_slots() -> void:
+	_refresh_weapon_slot_buttons()
+
+func _refresh_weapon_slot_buttons() -> void:
+	for i in range(_weapon_slot_buttons.size()):
+		if not is_instance_valid(_weapon_slot_buttons[i]):
+			continue
+		var btn := _weapon_slot_buttons[i]
+		var data := _get_weapon_slot_info(i)
+		btn.set_meta("quality_color", data.get("quality_color", COLOR_GOLD_DARK))
+
+		var title_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
+		if title_lbl:
+			var t_text := _t(str(data["slot_title"]))
+			title_lbl.text = t_text
+			if t_text.length() > 14:
+				title_lbl.add_theme_font_size_override("font_size", 11)
+			else:
+				title_lbl.add_theme_font_size_override("font_size", 12)
+
+		var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
+		if info_lbl:
+			var w_text := "%s · %s" % [_t(str(data["weapon_name"])), _t(str(data["hits"]))]
+			info_lbl.text = w_text
+			if w_text.length() > 22:
+				info_lbl.add_theme_font_size_override("font_size", 12)
+			elif w_text.length() > 18:
+				info_lbl.add_theme_font_size_override("font_size", 13)
+			else:
+				info_lbl.add_theme_font_size_override("font_size", 14)
+
+		var q_lbl := btn.get_node_or_null("Content/QualityLabel") as Label
+		if q_lbl:
+			var q_text := _t(str(data.get("quality_label", "")))
+			q_lbl.text = q_text
+			var q_col: Color = data.get("quality_color", COLOR_GOLD_DARK)
+			q_lbl.add_theme_color_override("font_color", q_col)
+
+		_style_weapon_slot_button(btn, i == _selected_weapon_slot)
+
+	if _weapon_slot_hint_label and is_instance_valid(_weapon_slot_hint_label):
+		var cur_data := _get_weapon_slot_info(_selected_weapon_slot)
+		var hint_text := _t(str(cur_data.get("hint", "")))
+		_weapon_slot_hint_label.text = hint_text
+		if hint_text.length() > 70:
+			_weapon_slot_hint_label.add_theme_font_size_override("font_size", 12)
+		else:
+			_weapon_slot_hint_label.add_theme_font_size_override("font_size", 13)
+
+const WEAPON_LINE_TO_PAPERDOLL: Dictionary = {
+	"sword": "wpn_dawn_blade",
+	"spear": "wpn_knight_lance",
+	"claw": "wpn_spring_claws",
+	"magic": "wpn_astral_staff",
+	"hammer": "wpn_anvil_greathammer",
+	"dagger": "wpn_twin_ember_sabers",
+	"bow": "wpn_zephyr_wing_bow",
+	"fist": "wpn_panda_taiji_cestus",
+	"gun": "wpn_twin_harpoon_gun",
+	"axe": "wpn_colossus_cleaver_axe",
+	"dart": "wpn_lotus_cog_dart",
+	"crystal": "wpn_bagua_astrolabe",
+}
+
+func _resolve_hero_weapon_paperdoll_id(race: String, winst: Dictionary) -> String:
+	if winst.is_empty():
+		return "none"
+	var base_id := str(winst.get("base_id", "")).strip_edges()
+	var line := str(winst.get("line", "")).strip_edges()
+	var raw_id := str(winst.get("id", "")).strip_edges()
+
+	var candidates: Array[String] = []
+	if not base_id.is_empty():
+		candidates.append(base_id)
+	if WEAPON_LINE_TO_PAPERDOLL.has(line):
+		candidates.append(WEAPON_LINE_TO_PAPERDOLL[line])
+	if WEAPON_LINE_TO_PAPERDOLL.has(base_id):
+		candidates.append(WEAPON_LINE_TO_PAPERDOLL[base_id])
+	if not raw_id.is_empty() and raw_id != base_id:
+		candidates.append(raw_id)
+
+	for cid in candidates:
+		if cid.is_empty() or cid in ["none", "empty", "bare"]:
+			continue
+		var p512 := PaperdollRenderer.resolve_slot_texture_path_512(race, "weapon", cid)
+		if p512 != "" and p512.ends_with("_512.png") and (ResourceLoader.exists(p512) or FileAccess.file_exists(p512)):
+			return cid
+
+	return "none"
+
+func _sync_hero_weapon_paperdoll() -> void:
+	var gs := _gs()
+	var eq := _get_equip_sys()
+	var race := _current_race()
+	var winst: Dictionary = {}
+	if eq and eq.has_method("active_weapon_inst"):
+		winst = eq.active_weapon_inst()
+	elif gs and "equip_slots" in gs and gs.equip_slots is Dictionary:
+		var wuid: String = str(gs.equip_slots.get("weapon", ""))
+		if wuid != "" and "equip_worn" in gs and gs.equip_worn is Dictionary and gs.equip_worn.has(wuid):
+			winst = gs.equip_worn[wuid]
+
+	var w_id := "none"
+	if not winst.is_empty():
+		w_id = _resolve_hero_weapon_paperdoll_id(race, winst)
+
+	if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
+		gs.paperdoll_slots["weapon"] = w_id
+
+	_cached_hero_comp_512 = null
+	_cached_hero_comp_key = ""
+	_cached_hero_body_comp_512 = null
+	_cached_hero_body_key = ""
+	_load_hero_poses()
+	_apply_hero_idle_visual()
+	_refresh_equip_schematic()
+
+func _refresh_char_tab_stats(dynamic_atk: bool = true) -> void:
+	var gs := _gs()
+	if gs == null:
+		return
+
+	var cur_pow := 482
+	if gs.has_method("power_score") and int(gs.call("power_score")) > 0:
+		cur_pow = int(gs.call("power_score"))
+	if _char_power_badge and is_instance_valid(_char_power_badge):
+		_char_power_badge.text = _t("有效戰力 %d") % cur_pow
+
+	if _stat_cards.size() > 1 and is_instance_valid(_stat_cards[1]):
+		var atk_card := _stat_cards[1]
+		var cur_atk := 95
+		if dynamic_atk and gs.has_method("effective_atk"):
+			var eff: int = int(gs.effective_atk())
+			if eff > 0:
+				cur_atk = eff
+			atk_card.set_meta("stat_val_key", str(cur_atk))
+		else:
+			cur_atk = int(atk_card.get_meta("stat_val_key", "95"))
+		var v_lbl := atk_card.find_child("ValLabel", true, false) as Label
+		if v_lbl:
+			v_lbl.text = str(cur_atk)
+
 func _select_weapon_slot(idx: int) -> void:
 	if idx < 0 or idx >= _weapon_slot_buttons.size():
 		return
 	_selected_weapon_slot = idx
-	for i in range(_weapon_slot_buttons.size()):
-		_style_weapon_slot_button(_weapon_slot_buttons[i], i == _selected_weapon_slot)
-	if _weapon_slot_hint_label and idx < WEAPON_SLOTS.size():
-		var hint_text := _t(WEAPON_SLOTS[idx]["hint"])
-		_weapon_slot_hint_label.text = hint_text
-		var h_sz := 12 if hint_text.length() > 70 else 13
-		_weapon_slot_hint_label.add_theme_font_size_override("font_size", h_sz)
+
+	var eq := _get_equip_sys()
+	if eq and eq.has_method("switch_weapon_loadout"):
+		var sw_res: Dictionary = eq.switch_weapon_loadout(idx)
+		if not bool(sw_res.get("ok", false)):
+			var reason_msg: String = str(sw_res.get("msg", ""))
+			if not reason_msg.is_empty():
+				_show_toast(reason_msg)
+		else:
+			var toast_msg: String = str(sw_res.get("msg", ""))
+			if not toast_msg.is_empty():
+				_show_toast(toast_msg)
+
+	_sync_hero_weapon_paperdoll()
+	_refresh_char_tab_stats(true)
+	_refresh_weapon_slot_buttons()
 
 func _build_stat_card(title: String, val_str: String, subtitle: String, val_color: Color) -> PanelContainer:
 	var c := PanelContainer.new()
@@ -5334,36 +5679,8 @@ func _apply_locale_texts() -> void:
 		_char_power_badge.text = _t("有效戰力 %d") % cur_pow
 	_update_char_level_badge()
 
-	for i in range(_weapon_slot_buttons.size()):
-		if i < WEAPON_SLOTS.size() and is_instance_valid(_weapon_slot_buttons[i]):
-			var btn := _weapon_slot_buttons[i]
-			var title_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
-			if title_lbl:
-				var t_text := _t(WEAPON_SLOTS[i]["slot_title"])
-				title_lbl.text = t_text
-				if t_text.length() > 14:
-					title_lbl.add_theme_font_size_override("font_size", 11)
-				else:
-					title_lbl.add_theme_font_size_override("font_size", 13)
-			var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
-			if info_lbl:
-				var w_text := "%s · %s" % [_t(WEAPON_SLOTS[i]["weapon_name"]), _t(WEAPON_SLOTS[i]["hits"])]
-				info_lbl.text = w_text
-				if w_text.length() > 22:
-					info_lbl.add_theme_font_size_override("font_size", 13)
-				elif w_text.length() > 18:
-					info_lbl.add_theme_font_size_override("font_size", 14)
-				else:
-					info_lbl.add_theme_font_size_override("font_size", 16)
-
-	if _weapon_slot_hint_label and is_instance_valid(_weapon_slot_hint_label):
-		if _selected_weapon_slot < WEAPON_SLOTS.size():
-			var hint_text := _t(WEAPON_SLOTS[_selected_weapon_slot]["hint"])
-			_weapon_slot_hint_label.text = hint_text
-			if hint_text.length() > 70:
-				_weapon_slot_hint_label.add_theme_font_size_override("font_size", 12)
-			else:
-				_weapon_slot_hint_label.add_theme_font_size_override("font_size", 13)
+	_refresh_weapon_slot_buttons()
+	_refresh_char_tab_stats(false)
 
 	for card in _stat_cards:
 		if is_instance_valid(card):

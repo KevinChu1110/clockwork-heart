@@ -3560,5 +3560,12 @@
   "發條超載爆裂": "Overwind Burst",
   "超載爆裂！": "Overwind Burst!",
   "超載爆裂": "Overwind Burst",
-  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]Overwind Burst! Max Rotations · Metal Frenzy![/color]"
+  "[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]": "[color=#ffcc00]Overwind Burst! Max Rotations · Metal Frenzy![/color]",
+  "2 次打擊": "2 Strikes",
+  "3 次打擊": "3 Strikes",
+  "6 連擊": "6-Hit Combo",
+  "需達 Lv%d": "Req. Lv%d",
+  "空槽": "Empty",
+  "備用武器槽位：可於冒險者背包或兵器架中裝備武器": "Reserve Weapon Slot: Equip weapons from Adventurer Bag or Weapon Rack",
+  "武器欄位未解鎖（角色等級需達到 Lv%d）": "Weapon slot locked (Requires Character Lv%d)"
 }
