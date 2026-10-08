@@ -5655,6 +5655,16 @@
    "keys": [
     "SkillDia"
    ]
+  },
+  {
+   "id": "skill-custom-priority",
+   "cat": "遊戲",
+   "title": "SkillDialog 招式卡片支援點擊設為首選並連動戰鬥首發出招",
+   "status": "草稿",
+   "note": "玩家可於招式心法自選首發出招並連動實戰",
+   "keys": [
+    "SkillDia"
+   ]
   }
  ]
 }
