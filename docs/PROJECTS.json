@@ -5675,6 +5675,16 @@
    "keys": [
     "DummySet"
    ]
+  },
+  {
+   "id": "dummy-dps-record",
+   "cat": "遊戲",
+   "title": "DummySettlementDialog 歷史最佳 DPS 紀錄與新紀錄徽章",
+   "status": "測試中",
+   "note": "DummySettlementDialog 歷史最佳 DPS 紀錄與新紀錄標籤開發完成，單元測試全綠，進行回歸驗收與存證",
+   "keys": [
+    "DummySet"
+   ]
   }
  ]
 }
