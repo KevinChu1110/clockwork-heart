@@ -5650,8 +5650,8 @@
    "id": "skill-dialog-dummy-btn",
    "cat": "遊戲",
    "title": "SkillDialog 底欄新增前往木人樁試招按鈕連動大廳",
-   "status": "測試中",
-   "note": "SkillDialog 底欄新增前往木人樁試招按鈕與大廳連動完成，單元測試與實機截圖通過",
+   "status": "已上線",
+   "note": "全站回歸驗收完成，底欄前往木人樁試招按鈕與大廳連動實機無破圖 (t_8fe4da3b)",
    "keys": [
     "SkillDia"
    ]
