@@ -1030,16 +1030,16 @@ func _test_adventure_region_stages() -> void:
 
 	var expected_prefixes := ["1-", "2-", "3-", "4-"]
 	var expected_first_names := [
-		"荒路哨站 · 發條灰鼠",
-		"白霧外緣 · 守望關隘",
-		"白霧村外 · 霧影遊魂",
-		"石岸潮襲 · 潮襲海盜"
+		"荒路哨站 · 停擺發條鼠",
+		"白霧外緣 · 守望機關衛",
+		"西林外緣 · 霧影機關偶",
+		"石岸潮線 · 破浪哨衛"
 	]
 	var expected_last_names := [
-		"閣樓大門 · 大型殘兵",
-		"聖獅內殿 · 狂暴守護者",
-		"白霧核心 · 白霧",
-		"通天塔底 · 塔底"
+		"閣樓大門 · 重裝發條衛",
+		"聖獅內殿 · 守衛泰坦雷歐",
+		"白霧核心 · 守衛泰坦白狐",
+		"通天塔底 · 終境停擺核"
 	]
 
 	for r in range(4):
@@ -1930,10 +1930,10 @@ func _test_adventure_stages_i18n() -> void:
 
 	# 1. 斷言資料表只存繁中 key，未烤進任何譯文
 	var expected_raw_names := [
-		["荒路哨站 · 發條灰鼠", "堡外野原 · 荒路殘兵", "堡壘廣場 · 守門暗哨", "閣樓大門 · 大型殘兵"],
-		["白霧外緣 · 守望關隘", "市集街道 · 潛伏暗哨", "下水道口 · 腐化黏怪", "聖獅內殿 · 狂暴守護者"],
-		["白霧村外 · 霧影遊魂", "霧崖小徑 · 林間風妖", "鏡廊入口 · 鏡廊殘影", "白霧核心 · 白霧"],
-		["石岸潮襲 · 潮襲海盜", "潮岸沉船 · 船長殘影", "疤地焰徑 · 疤地焰靈", "通天塔底 · 塔底"],
+		["荒路哨站 · 停擺發條鼠", "堡外野原 · 鉚兵哨衛", "堡壘廣場 · 發條機關偶", "閣樓大門 · 重裝發條衛"],
+		["白霧外緣 · 守望機關衛", "市集街道 · 潛伏機關偶", "排水管道 · 黑鏽機關偶", "聖獅內殿 · 守衛泰坦雷歐"],
+		["西林外緣 · 霧影機關偶", "霧崖小徑 · 旋風發條偶", "鏡廊入口 · 鐘擺守衛", "白霧核心 · 守衛泰坦白狐"],
+		["石岸潮線 · 破浪哨衛", "潮岸沉船 · 舵輪機關衛", "疤地焰徑 · 熔火發條偶", "通天塔底 · 終境停擺核"],
 	]
 
 	for r in range(4):
@@ -1996,6 +1996,19 @@ func _test_adventure_stages_i18n() -> void:
 				if code in ["en", "es"]:
 					if _has_cjk_characters(name_lbl.text):
 						_fail("[%s] 關卡 %d-%d 名稱存在中文殘留: %s" % [code, r + 1, i + 1, name_lbl.text])
+
+				# 驗證關卡型別六語系
+				var typ_lbl := card.find_child("StageTypeLabel", true, false) as Label
+				if typ_lbl != null:
+					var raw_type: String = str(MobileLobby.REGION_STAGES[r][i]["type"])
+					var exp_type: String = ContentLoc.text("ui", raw_type)
+					if typ_lbl.text != exp_type:
+						_fail("[%s] 關卡 %d-%d 型別應為「%s」，實際為「%s」" % [code, r + 1, i + 1, exp_type, typ_lbl.text])
+					if _has_forbidden_symbols_or_emoji(typ_lbl.text):
+						_fail("[%s] 關卡 %d-%d 型別含禁止符號或 Emoji: %s" % [code, r + 1, i + 1, typ_lbl.text])
+					if code in ["en", "es"]:
+						if _has_cjk_characters(typ_lbl.text):
+							_fail("[%s] 關卡 %d-%d 型別存在中文殘留: %s" % [code, r + 1, i + 1, typ_lbl.text])
 
 				# 確保資料表本體仍未被污染
 				if str(MobileLobby.REGION_STAGES[r][i]["name"]) != raw_name:
