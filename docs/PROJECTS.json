@@ -5615,6 +5615,16 @@
    "keys": [
     "四區主線出征關卡"
    ]
+  },
+  {
+   "id": "lobby-skill-dialog-btn",
+   "cat": "遊戲",
+   "title": "大廳角色頁新增『招式心法』入口按鈕連動 SkillDialog",
+   "status": "草稿",
+   "note": "大廳角色頁補齊招式技能入口按鈕，連動既有 SkillDialog 與六語系",
+   "keys": [
+    "大廳角色頁新增『"
+   ]
   }
  ]
 }
