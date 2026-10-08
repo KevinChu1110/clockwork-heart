@@ -11,6 +11,7 @@ extends Control
 ## 7. 六語系多國語言支援 (ContentLoc / Loc.locale_changed 即時切換)。
 
 signal closed()
+signal practice_dummy_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -57,6 +58,7 @@ var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _sub_title_lbl: Label
 var _close_x_btn: Button
+var _dummy_btn: Button
 var _bottom_close_btn: Button
 
 ## 戰鬥優先區塊
@@ -277,15 +279,31 @@ func _build_ui() -> void:
 	_skill_cards_box.add_theme_constant_override("separation", 10)
 	_scroll_box.add_child(_skill_cards_box)
 
-	# 7. 底部關閉按鈕
+	# 7. 底部控制列（左側：前往木人樁試招，右側：關閉）
 	var bot_h := HBoxContainer.new()
-	bot_h.alignment = BoxContainer.ALIGNMENT_END
+	bot_h.name = "BottomBar"
+	bot_h.alignment = BoxContainer.ALIGNMENT_BEGIN
 	root_v.add_child(bot_h)
 
+	# 左側天藍立體果凍『前往木人樁試招』按鈕（高50px、熱區>=48px、圓角18px、底邊厚底5px）
+	_dummy_btn = Button.new()
+	_dummy_btn.name = "BtnPracticeDummy"
+	_dummy_btn.custom_minimum_size = Vector2(210, 50)
+	_style_jelly_btn(_dummy_btn, COLOR_SKY, COLOR_TEXT_DARK, 16, 5, 18)
+	_dummy_btn.pressed.connect(_on_practice_dummy_pressed)
+	bot_h.add_child(_dummy_btn)
+
+	# 彈性間隔撐開左右分列
+	var bot_spacer := Control.new()
+	bot_spacer.name = "BottomSpacer"
+	bot_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bot_h.add_child(bot_spacer)
+
+	# 右側保留既有暖橘『關閉』果凍按鈕（高50px、圓角18px、底邊厚底5px）
 	_bottom_close_btn = Button.new()
 	_bottom_close_btn.name = "BtnCloseBottom"
 	_bottom_close_btn.custom_minimum_size = Vector2(140, 50)
-	_style_jelly_btn(_bottom_close_btn, COLOR_CARD_WARM, COLOR_TEXT_DARK, 16, 5)
+	_style_jelly_btn(_bottom_close_btn, COLOR_ORANGE, COLOR_TEXT_DARK, 16, 5, 18)
 	_bottom_close_btn.pressed.connect(_on_close_pressed)
 	bot_h.add_child(_bottom_close_btn)
 
@@ -294,6 +312,11 @@ func _select_profession(prof_key: String) -> void:
 	if prof_key != _selected_prof:
 		_selected_prof = prof_key
 		_refresh_display()
+
+
+func _on_practice_dummy_pressed() -> void:
+	practice_dummy_requested.emit()
+	_on_close_pressed()
 
 
 func _on_close_pressed() -> void:
@@ -308,6 +331,8 @@ func _update_ui_texts() -> void:
 		_sub_title_lbl.text = _t("鐵匠養器 · 星途養魂 · 旅途養招 · 出招隨裝備武器流轉")
 	if _close_x_btn:
 		_close_x_btn.text = "✕"
+	if _dummy_btn:
+		_dummy_btn.text = _t("前往木人樁試招")
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("關閉")
 
@@ -734,7 +759,7 @@ func _apply_font(lbl: Label, size: int, color: Color, bold: bool = false) -> voi
 		lbl.add_theme_constant_override("outline_size", 2)
 
 
-func _style_jelly_btn(btn: Button, bg_col: Color, text_col: Color, font_sz: int, bottom_border: int = 5) -> void:
+func _style_jelly_btn(btn: Button, bg_col: Color, text_col: Color, font_sz: int, bottom_border: int = 5, corner_radius: int = 16) -> void:
 	if _cached_font != null:
 		btn.add_theme_font_override("font", _cached_font)
 	btn.add_theme_font_size_override("font_size", font_sz)
@@ -749,7 +774,7 @@ func _style_jelly_btn(btn: Button, bg_col: Color, text_col: Color, font_sz: int,
 	sb.border_color = COLOR_BORDER
 	sb.set_border_width_all(2)
 	sb.border_width_bottom = bottom_border
-	sb.set_corner_radius_all(16)
+	sb.set_corner_radius_all(corner_radius)
 	sb.content_margin_left = 12
 	sb.content_margin_right = 12
 	sb.content_margin_top = 6
@@ -773,6 +798,12 @@ func _style_jelly_btn(btn: Button, bg_col: Color, text_col: Color, font_sz: int,
 
 
 ## ── 供單元測試與自動化驗證的查詢 API ──
+func get_practice_dummy_button() -> Button:
+	return _dummy_btn
+
+
+func get_bottom_close_button() -> Button:
+	return _bottom_close_btn
 func get_skill_card(sid: String) -> PanelContainer:
 	if _card_nodes.has(sid):
 		return _card_nodes[sid].get("card")
