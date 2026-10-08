@@ -1005,5 +1005,11 @@
   "招式 · 核心心法": "Habilidades · Disciplina Central",
   "突破升階": "Avance de rango",
   "體悟習得": "Comprender y aprender",
-  "Lv.MAX · 極階": "Nv.MAX · Maestro"
+  "Lv.MAX · 極階": "Nv.MAX · Maestro",
+  "設為首發": "Fijar inicial",
+  "【設為首發】": "[Fijar inicial]",
+  "已設首發": "Inicial fijado",
+  "【已設首發】": "[Inicial fijado]",
+  "取消首發": "Quitar inicial",
+  "【取消首發】": "[Quitar inicial]"
 }

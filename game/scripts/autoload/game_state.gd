@@ -69,6 +69,7 @@ var weapon_tier: int = 0
 ## 技能（招）
 var skill_slash_lv: int = 0  ## 舊欄位：與 skill_data.slash.lv 同步
 var skill_data: Dictionary = {}  ## id -> {lv, mastery}
+var preferred_skills: Dictionary = {}  ## weapon_line -> preferred skill_id
 var has_wheat_stalk: bool = false
 var wheat_stalk_broken: bool = false
 ## 一次性去廣告買斷旗標（本機已購買狀態）
@@ -651,6 +652,7 @@ func to_dict() -> Dictionary:
 		"weapon_tier": weapon_tier,
 		"skill_slash_lv": skill_slash_lv,
 		"skill_data": skill_data.duplicate(true),
+		"preferred_skills": preferred_skills.duplicate(true),
 		"has_wheat_stalk": has_wheat_stalk,
 		"wheat_stalk_broken": wheat_stalk_broken,
 		"has_removed_ads": has_removed_ads,
@@ -735,6 +737,7 @@ func from_dict(d: Dictionary) -> void:
 	weapon_tier = int(d.get("weapon_tier", 0))
 	skill_slash_lv = int(d.get("skill_slash_lv", 0))
 	skill_data = _dict_field(d, "skill_data")
+	preferred_skills = _dict_field(d, "preferred_skills")
 	if skill_data.is_empty() and skill_slash_lv > 0:
 		skill_data["slash"] = {"lv": skill_slash_lv, "mastery": 0}
 	has_wheat_stalk = bool(d.get("has_wheat_stalk", false))
@@ -970,6 +973,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"weapon_tier": 0,
 		"skill_slash_lv": 0,
 		"skill_data": {},
+		"preferred_skills": {},
 		"has_wheat_stalk": false,
 		"wheat_stalk_broken": false,
 		"has_removed_ads": false,

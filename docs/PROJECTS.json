@@ -5660,10 +5660,20 @@
    "id": "skill-custom-priority",
    "cat": "遊戲",
    "title": "SkillDialog 招式卡片支援點擊設為首選並連動戰鬥首發出招",
-   "status": "草稿",
-   "note": "玩家可於招式心法自選首發出招並連動實戰",
+   "status": "測試中",
+   "note": "完成SkillDialog招式首發設定與實戰連動，單元測試與截圖存證完畢送審",
    "keys": [
     "SkillDia"
+   ]
+  },
+  {
+   "id": "dummy-retry-btn",
+   "cat": "遊戲",
+   "title": "DummySettlementDialog 試招結算新增再次試招按鈕",
+   "status": "草稿",
+   "note": "木人樁數據卡底部雙按鈕並列，點擊重置狀態立即重新試招",
+   "keys": [
+    "DummySet"
    ]
   }
  ]
