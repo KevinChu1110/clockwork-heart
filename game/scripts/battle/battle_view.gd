@@ -4921,6 +4921,8 @@ func _on_end(won: bool) -> void:
 			BattleSim.last_victory_first_broken_part = first_broken
 			drop_part = CoreSystem.roll_and_add_battle_drop(null, drop_source, target_slot)
 			BattleSim.last_victory_core_part = drop_part
+			if sim != null:
+				BattleSim.last_victory_combat_stats = sim.get_combat_stats()
 			var tnm: String = _t(str(drop_part.get("tier_name", "白")))
 			var snm: String = _t(str(drop_part.get("slot_name", "機芯部件")))
 			if target_slot != "" and not first_broken.is_empty():
@@ -5060,6 +5062,11 @@ func _show_victory_settlement(drop_part: Dictionary) -> void:
 		_victory_settlement_dialog.queue_free()
 	var exp_val: int = int(drop_part.get("exp_gain", _colossus_exp_gain if _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"] else -1))
 	var scrap_val: int = int(drop_part.get("scrap_gain", -1))
+	var c_stats: Dictionary = drop_part.get("combat_stats", {})
+	if c_stats.is_empty() and sim != null:
+		c_stats = sim.get_combat_stats()
+	if c_stats.is_empty() and not BattleSim.last_victory_combat_stats.is_empty():
+		c_stats = BattleSim.last_victory_combat_stats
 	_victory_settlement_dialog = BattleVictoryDialogScript.show_dialog(
 		self,
 		drop_part,
@@ -5067,7 +5074,9 @@ func _show_victory_settlement(drop_part: Dictionary) -> void:
 			_victory_settlement_dialog = null
 			battle_finished.emit(true),
 		exp_val,
-		scrap_val
+		scrap_val,
+		[],
+		c_stats
 	)
 
 

@@ -79,6 +79,8 @@ static var last_victory_first_broken_part: Dictionary = {}
 static var last_victory_part_loot: Array = []
 ## 上一場勝利的機芯戰利品掉落暫存（不進存檔）
 static var last_victory_core_part: Dictionary = {}
+## 上一場勝利的戰鬥數據暫存（三欄武器傷害、輪替次數等）
+static var last_victory_combat_stats: Dictionary = {}
 ## 全破後對本體傷害加成（對齊 boss.py BROKEN_BODY_DAMAGE_BONUS）
 const ALL_PARTS_BROKEN_BODY_MULT := 1.5
 ## 原作：破部位後可能逃走（主線聖獸／魔王關閉；裂縫／秘境可開）
@@ -1940,6 +1942,23 @@ static func make_dummy_fight(player_stats: Dictionary) -> BattleSim:
 	dummy.speed = 0.0
 	sim.add_unit(dummy)
 	return sim
+
+
+## 通用戰鬥數據統計（總傷害、耗時、DPS、最高單擊、總命中次數、三欄武器傷害與輪替切換次數）
+func get_combat_stats() -> Dictionary:
+	var elapsed: float = maxf(0.0, time)
+	var dps: float = (float(total_player_damage) / elapsed) if elapsed > 0.001 else 0.0
+	return {
+		"total_damage": total_player_damage,
+		"elapsed_time": elapsed,
+		"dps": dps,
+		"max_hit_damage": max_hit_damage,
+		"total_hit_count": total_hit_count,
+		"weapon_slot_damages": weapon_slot_damages.duplicate(true),
+		"weapon_slot_swaps": weapon_slot_swaps.duplicate(true),
+		"weapon_swap_count": weapon_swap_count,
+		"weapon_bars": weapon_bars.duplicate(true),
+	}
 
 
 ## 木人樁試招戰鬥數據統計（總傷害、耗時、DPS、最高單擊、總命中次數、三欄武器傷害與輪替切換次數）
