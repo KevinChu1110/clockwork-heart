@@ -13,6 +13,7 @@ extends Control
 signal weapon_swapped(slot_idx: int, uid: String)
 signal slot_unequipped(slot_idx: int)
 signal closed()
+signal line_filter_changed(line_id: String)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -31,6 +32,25 @@ static func _t(s: String) -> String:
 			if loc_t != "" and loc_t != s:
 				return loc_t
 	return res
+
+
+static func get_weapon_atk(inst: Dictionary) -> int:
+	var atk: int = int(inst.get("weapon_atk", 0))
+	if atk <= 0 and inst.has("rolled") and inst["rolled"] is Dictionary:
+		atk = int(inst["rolled"].get("atk", 0))
+	return atk
+
+
+static func sort_weapons_by_atk_desc(weapons: Array) -> Array:
+	var list: Array = weapons.duplicate(true)
+	list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var atkA := get_weapon_atk(a)
+		var atkB := get_weapon_atk(b)
+		if atkA != atkB:
+			return atkA > atkB
+		return str(a.get("uid", "")) < str(b.get("uid", ""))
+	)
+	return list
 
 ## ── 多巴胺鮮亮高飽和色盤 ──
 const COLOR_GOLD         := Color("#FFD028")  ## 金黃
@@ -52,6 +72,19 @@ const COLOR_TEXT_GOLD    := Color("#9A6B00")  ## 壓明度金黃
 const COLOR_TEXT_ORANGE  := Color("#C2600A")  ## 壓明度暖橘
 const COLOR_TEXT_MUTED   := Color("#6B6680")  ## 次要輔助文字
 const COLOR_TEXT_DIM     := Color("#888294")  ## 壓暗提示文字
+
+## ── 攻擊力差額對比膠囊多巴胺高對比配色 ──
+const COLOR_DIFF_POS_BG   := Color("#DDF7E3")  ## 薄荷綠柔底 (高於當前)
+const COLOR_DIFF_POS_TEXT := Color("#1B7535")  ## 薄荷綠加粗深字 (高於當前)
+const COLOR_DIFF_POS_BD   := Color("#38B653")  ## 薄荷綠邊框 (高於當前)
+
+const COLOR_DIFF_NEG_BG   := Color("#EFEBE0")  ## 柔和灰底 (低於當前)
+const COLOR_DIFF_NEG_TEXT := Color("#6B6680")  ## 柔和灰文字 (低於當前)
+const COLOR_DIFF_NEG_BD   := Color("#D2CCC0")  ## 柔和灰邊框 (低於當前)
+
+const COLOR_DIFF_EQ_BG    := Color("#F4F1EA")  ## 相等/為空底
+const COLOR_DIFF_EQ_TEXT  := Color("#888294")  ## 相等/為空文字
+const COLOR_DIFF_EQ_BD    := Color("#DCD7CC")  ## 相等/為空邊框
 
 const LINE_NAMES: Dictionary = {
 	"sword": "劍",
@@ -89,7 +122,76 @@ const SLOT_TITLES: Array[String] = [
 	"絕技武器",
 ]
 
+const FILTER_CHIPS: Array[Dictionary] = [
+	{"id": "all", "key": "全部", "line": "all"},
+	{"id": "sword", "key": "劍", "line": "sword"},
+	{"id": "spear", "key": "長槍", "line": "spear"},
+	{"id": "axe", "key": "斧", "line": "axe"},
+	{"id": "hammer_alt", "key": "錘", "line": "hammer"},
+	{"id": "dagger", "key": "匕首", "line": "dagger"},
+	{"id": "hammer", "key": "鎚", "line": "hammer"},
+	{"id": "fist", "key": "拳套", "line": "fist"},
+	{"id": "claw", "key": "爪", "line": "claw"},
+	{"id": "magic", "key": "法杖", "line": "magic"},
+	{"id": "crystal", "key": "靈晶", "line": "crystal"},
+	{"id": "bow", "key": "弓", "line": "bow"},
+	{"id": "gun", "key": "銃", "line": "gun"},
+]
+
+const FILTER_CHIP_I18N: Dictionary = {
+	"全部": {"zh_TW": "全部", "zh_CN": "全部", "en": "All", "ja": "全部", "ko": "전체", "es": "Todo"},
+	"劍": {"zh_TW": "劍", "zh_CN": "剑", "en": "Sword", "ja": "剣", "ko": "검", "es": "Espada"},
+	"長槍": {"zh_TW": "長槍", "zh_CN": "长枪", "en": "Spear", "ja": "長槍", "ko": "창", "es": "Lanza"},
+	"斧": {"zh_TW": "斧", "zh_CN": "斧", "en": "Axe", "ja": "斧", "ko": "도끼", "es": "Hacha"},
+	"錘": {"zh_TW": "錘", "zh_CN": "锤", "en": "Mace", "ja": "金槌", "ko": "철퇴", "es": "Maza"},
+	"匕首": {"zh_TW": "匕首", "zh_CN": "匕首", "en": "Dagger", "ja": "短剣", "ko": "단검", "es": "Daga"},
+	"鎚": {"zh_TW": "鎚", "zh_CN": "锤", "en": "Hammer", "ja": "槌", "ko": "망치", "es": "Martillo"},
+	"拳套": {"zh_TW": "拳套", "zh_CN": "拳套", "en": "Gauntlets", "ja": "拳套", "ko": "건틀릿", "es": "Guantelete"},
+	"爪": {"zh_TW": "爪", "zh_CN": "爪", "en": "Claw", "ja": "爪", "ko": "클로", "es": "Garra"},
+	"法杖": {"zh_TW": "法杖", "zh_CN": "法杖", "en": "Staff", "ja": "法杖", "ko": "지팡이", "es": "Báculo"},
+	"靈晶": {"zh_TW": "靈晶", "zh_CN": "灵晶", "en": "Crystal", "ja": "霊晶", "ko": "영정", "es": "Cristal"},
+	"弓": {"zh_TW": "弓", "zh_CN": "弓", "en": "Bow", "ja": "弓", "ko": "활", "es": "Arco"},
+	"銃": {"zh_TW": "銃", "zh_CN": "铳", "en": "Gun", "ja": "銃", "ko": "총", "es": "Fusil"},
+}
+
+static func _normalize_line(raw: String) -> String:
+	match raw.to_lower():
+		"sword", "劍", "剑":
+			return "sword"
+		"spear", "長槍", "长枪", "槍", "枪":
+			return "spear"
+		"axe", "斧":
+			return "axe"
+		"hammer", "hammer_alt", "鎚", "錘", "锤":
+			return "hammer"
+		"dagger", "匕首", "匕":
+			return "dagger"
+		"dart", "鏢", "镖":
+			return "dart"
+		"fist", "拳套", "拳":
+			return "fist"
+		"claw", "爪":
+			return "claw"
+		"magic", "法杖", "杖":
+			return "magic"
+		"crystal", "靈晶", "灵晶", "水晶":
+			return "crystal"
+		"bow", "弓":
+			return "bow"
+		"gun", "銃", "铳", "火槍", "火枪":
+			return "gun"
+		_:
+			return raw.to_lower()
+
+static func matches_line_filter(w_line: String, filter: String) -> bool:
+	if filter == "all" or filter == "全部" or filter.is_empty():
+		return true
+	var norm_w := _normalize_line(w_line)
+	var norm_f := _normalize_line(filter)
+	return norm_w == norm_f
+
 var _target_slot: int = 0
+var current_filter_line: String = "all"
 var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _sub_title_lbl: Label
@@ -99,9 +201,14 @@ var _slot_tab_buttons: Array[Button] = []
 var _slot_summary_panel: PanelContainer
 var _slot_summary_lbl: Label
 var _btn_unequip: Button
+var _chip_scroll: ScrollContainer
+var _chips_box: HBoxContainer
+var _filter_chip_buttons: Dictionary = {}
 var _scroll_box: ScrollContainer
 var _weapons_box: VBoxContainer
 var _empty_panel: PanelContainer
+var _empty_title_lbl: Label
+var _empty_sub_lbl: Label
 var _bottom_hint_lbl: Label
 var _cached_font: Font = null
 var _built: bool = false
@@ -136,6 +243,7 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	_refresh_texts()
 	_refresh_slot_tabs()
 	_refresh_slot_summary()
+	_refresh_filter_chips()
 	_rebuild_weapon_list()
 
 
@@ -148,6 +256,7 @@ func setup(slot_idx: int) -> void:
 	if _built:
 		_refresh_slot_tabs()
 		_refresh_slot_summary()
+		_refresh_filter_chips()
 		_rebuild_weapon_list()
 
 
@@ -158,6 +267,7 @@ func _ready() -> void:
 	_build_ui()
 	_refresh_slot_tabs()
 	_refresh_slot_summary()
+	_refresh_filter_chips()
 	_rebuild_weapon_list()
 
 
@@ -286,6 +396,24 @@ func _build_ui() -> void:
 	_btn_unequip.pressed.connect(_on_unequip_pressed)
 	sum_h.add_child(_btn_unequip)
 
+	# 5.5 流派篩選 Chip 列 (水平捲動，按鈕熱區 >= 48px，果凍厚底)
+	var filter_scroll := ScrollContainer.new()
+	filter_scroll.name = "LineFilterScroll"
+	filter_scroll.custom_minimum_size = Vector2(0, 52)
+	filter_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	filter_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	filter_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	root_v.add_child(filter_scroll)
+	_chip_scroll = filter_scroll
+
+	var filter_h := HBoxContainer.new()
+	filter_h.name = "LineFilterHBox"
+	filter_h.add_theme_constant_override("separation", 6)
+	filter_scroll.add_child(filter_h)
+	_chips_box = filter_h
+
+	_build_filter_chips()
+
 	# 6. 武器清單捲動容器
 	_scroll_box = ScrollContainer.new()
 	_scroll_box.name = "WeaponsScroll"
@@ -327,6 +455,7 @@ func _build_ui() -> void:
 	emp_t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_apply_font(emp_t, 16, COLOR_TEXT_DARK, true)
 	emp_v.add_child(emp_t)
+	_empty_title_lbl = emp_t
 
 	var emp_sub := Label.new()
 	emp_sub.name = "EmptySub"
@@ -334,6 +463,7 @@ func _build_ui() -> void:
 	emp_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_apply_font(emp_sub, 13, COLOR_TEXT_MUTED)
 	emp_v.add_child(emp_sub)
+	_empty_sub_lbl = emp_sub
 
 	# 7. 底部列（提示文字 + 關閉按鈕）
 	var bot_h := HBoxContainer.new()
@@ -452,9 +582,7 @@ func _refresh_slot_summary() -> void:
 		var line := str(inst.get("line", "sword"))
 		var hits := _t(LINE_HITS.get(line, "4 次打擊"))
 		var q_label := _t(str(inst.get("quality_label", "凡品")))
-		var atk: int = int(inst.get("weapon_atk", 0))
-		if atk <= 0 and inst.has("rolled") and inst["rolled"] is Dictionary:
-			atk = int(inst["rolled"].get("atk", 0))
+		var atk := get_weapon_atk(inst)
 		_slot_summary_lbl.text = "【%s】%s · %s · %s (攻擊 +%d)" % [slot_title, wname, q_label, hits, atk]
 		_btn_unequip.visible = (_target_slot > 0)
 
@@ -462,11 +590,19 @@ func _refresh_slot_summary() -> void:
 func _rebuild_weapon_list() -> void:
 	for c in _weapons_box.get_children():
 		if c != _empty_panel:
+			_weapons_box.remove_child(c)
 			c.queue_free()
 
 	var candidates := _collect_candidate_weapons()
 	if candidates.is_empty():
 		_empty_panel.visible = true
+		if _empty_title_lbl != null and _empty_sub_lbl != null:
+			if current_filter_line != "all" and not current_filter_line.is_empty():
+				_empty_title_lbl.text = _t("尚無該流派可替換武器")
+				_empty_sub_lbl.text = _t("可嘗試切換其他流派或前往鍛造殿堂打造")
+			else:
+				_empty_title_lbl.text = _t("背包與庫存尚無可替換武器")
+				_empty_sub_lbl.text = _t("可前往冒險出征獲取或在鍛造殿堂打造新武器")
 		return
 
 	_empty_panel.visible = false
@@ -524,6 +660,7 @@ func _collect_candidate_weapons() -> Array[Dictionary]:
 			seen_uids[s_uid] = true
 
 	# 3. 背包中的武器 (equip_bag)
+	var bag_weapons: Array[Dictionary] = []
 	if gs and "equip_bag" in gs and gs.equip_bag is Array:
 		for item in gs.equip_bag:
 			if not (item is Dictionary):
@@ -540,10 +677,172 @@ func _collect_candidate_weapons() -> Array[Dictionary]:
 			if is_weapon:
 				var entry: Dictionary = (item as Dictionary).duplicate(true)
 				entry["_status"] = "bag"
-				result.append(entry)
+				bag_weapons.append(entry)
 				seen_uids[uid] = true
 
+	# 背包武器依攻擊力 (atk) 降序排序
+	bag_weapons.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var atkA := get_weapon_atk(a)
+		var atkB := get_weapon_atk(b)
+		if atkA != atkB:
+			return atkA > atkB
+		return str(a.get("uid", "")) < str(b.get("uid", ""))
+	)
+	result.append_array(bag_weapons)
+
+	# 4. 依照目前流派篩選過濾候選武器
+	if current_filter_line != "all" and not current_filter_line.is_empty():
+		var filtered: Array[Dictionary] = []
+		for w in result:
+			var w_line := str(w.get("line", ""))
+			if w_line.is_empty() and w.has("base_id"):
+				w_line = str(w.get("base_id", ""))
+			if matches_line_filter(w_line, current_filter_line):
+				filtered.append(w)
+		return filtered
+
 	return result
+
+
+func get_candidate_weapons() -> Array[Dictionary]:
+	return _collect_candidate_weapons()
+
+
+func _build_filter_chips() -> void:
+	if _chips_box == null:
+		return
+	_filter_chip_buttons.clear()
+	for child in _chips_box.get_children():
+		_chips_box.remove_child(child)
+		child.queue_free()
+
+	for info in FILTER_CHIPS:
+		var chip_id: String = str(info["id"])
+		var btn := Button.new()
+		btn.name = "Chip_" + chip_id
+		btn.custom_minimum_size = Vector2(58, 48)
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.pressed.connect(func(): set_line_filter(chip_id))
+		_chips_box.add_child(btn)
+		_filter_chip_buttons[chip_id] = btn
+
+	_refresh_filter_chips()
+
+
+func _refresh_filter_chips() -> void:
+	for chip_id in _filter_chip_buttons.keys():
+		var btn: Button = _filter_chip_buttons[chip_id]
+		var info := _get_chip_info(chip_id)
+		btn.text = _get_chip_localized_name(info)
+	_update_filter_chips_visual()
+
+
+func _get_chip_info(chip_id: String) -> Dictionary:
+	for info in FILTER_CHIPS:
+		if info.get("id", "") == chip_id:
+			return info
+	return {"id": chip_id, "key": chip_id, "line": chip_id}
+
+
+func _get_chip_localized_name(info: Dictionary) -> String:
+	var key: String = str(info.get("key", ""))
+	var lc := ContentLoc.locale()
+	if lc == "zh_TW":
+		return key
+	var trans := _t(key)
+	if trans != key and not trans.is_empty():
+		return trans
+	if FILTER_CHIP_I18N.has(key) and FILTER_CHIP_I18N[key].has(lc):
+		return str(FILTER_CHIP_I18N[key][lc])
+	return key
+
+
+func _update_filter_chips_visual() -> void:
+	for chip_id in _filter_chip_buttons.keys():
+		var btn: Button = _filter_chip_buttons[chip_id]
+		var is_selected: bool = (chip_id == current_filter_line)
+		if is_selected:
+			_style_jelly_btn(btn, COLOR_ORANGE, COLOR_TEXT_DARK, 13, 5, 14)
+		else:
+			_style_jelly_btn(btn, COLOR_CARD_WARM, COLOR_TEXT_DARK, 13, 4, 14)
+
+
+func set_line_filter(line_id: String) -> void:
+	var target_chip := "all"
+	for info in FILTER_CHIPS:
+		if info.get("id", "") == line_id or info.get("key", "") == line_id or info.get("line", "") == line_id:
+			target_chip = str(info["id"])
+			break
+	if line_id == "all" or line_id == "全部":
+		target_chip = "all"
+
+	current_filter_line = target_chip
+	_update_filter_chips_visual()
+	_rebuild_weapon_list()
+	if _filter_chip_buttons.has(target_chip):
+		_scroll_to_chip(_filter_chip_buttons[target_chip])
+	line_filter_changed.emit(current_filter_line)
+
+
+func get_current_filter_line() -> String:
+	return current_filter_line
+
+
+func get_filter_chips() -> Dictionary:
+	return _filter_chip_buttons
+
+
+func get_filter_chip(key_or_id: String) -> Button:
+	if _filter_chip_buttons.has(key_or_id):
+		return _filter_chip_buttons[key_or_id]
+	for info in FILTER_CHIPS:
+		if info.get("key", "") == key_or_id or info.get("id", "") == key_or_id or info.get("line", "") == key_or_id:
+			var cid: String = str(info["id"])
+			if _filter_chip_buttons.has(cid):
+				return _filter_chip_buttons[cid]
+	return null
+
+
+func _scroll_to_chip(btn: Button) -> void:
+	if _chip_scroll == null or btn == null:
+		return
+	var btn_left: float = btn.position.x
+	var btn_right: float = btn_left + btn.size.x
+	var scroll_left: float = float(_chip_scroll.scroll_horizontal)
+	var scroll_right: float = scroll_left + _chip_scroll.size.x
+	if btn_left < scroll_left:
+		_chip_scroll.scroll_horizontal = int(btn_left)
+	elif btn_right > scroll_right and _chip_scroll.size.x > 0:
+		_chip_scroll.scroll_horizontal = int(btn_right - _chip_scroll.size.x)
+
+
+func get_target_slot_weapon_info() -> Dictionary:
+	var eq := _get_equip_sys()
+	var gs := _gs()
+	var target_uid := ""
+	if eq and eq.has_method("loadout_uid"):
+		target_uid = str(eq.call("loadout_uid", _target_slot))
+	elif gs and "weapon_loadout" in gs and _target_slot < gs.weapon_loadout.size():
+		target_uid = str(gs.weapon_loadout[_target_slot])
+
+	if target_uid.is_empty():
+		return {"has_weapon": false, "atk": 0, "uid": ""}
+
+	var t_inst: Dictionary = {}
+	if eq and eq.has_method("weapon_inst"):
+		t_inst = eq.call("weapon_inst", target_uid)
+	if t_inst.is_empty() and gs and "equip_worn" in gs and gs.equip_worn is Dictionary:
+		t_inst = gs.equip_worn.get(target_uid, {})
+
+	if t_inst.is_empty():
+		return {"has_weapon": false, "atk": 0, "uid": target_uid}
+
+	return {
+		"has_weapon": true,
+		"atk": get_weapon_atk(t_inst),
+		"uid": target_uid,
+		"inst": t_inst
+	}
 
 
 func _build_weapon_card(winst: Dictionary) -> PanelContainer:
@@ -637,9 +936,7 @@ func _build_weapon_card(winst: Dictionary) -> PanelContainer:
 
 	var stat_lbl := Label.new()
 	var hits_str := _t(LINE_HITS.get(line, "4 次打擊"))
-	var atk: int = int(winst.get("weapon_atk", 0))
-	if atk <= 0 and winst.has("rolled") and winst["rolled"] is Dictionary:
-		atk = int(winst["rolled"].get("atk", 0))
+	var atk := get_weapon_atk(winst)
 
 	var stat_desc := "%s · %s +%d" % [hits_str, _t("攻擊"), atk]
 	if winst.has("rolled") and winst["rolled"] is Dictionary:
@@ -649,6 +946,65 @@ func _build_weapon_card(winst: Dictionary) -> PanelContainer:
 	stat_lbl.text = stat_desc
 	_apply_font(stat_lbl, 12, COLOR_TEXT_MUTED)
 	info_v.add_child(stat_lbl)
+
+	# 差額對比膠囊
+	var t_info := get_target_slot_weapon_info()
+	var has_target_w: bool = bool(t_info.get("has_weapon", false))
+	var target_atk: int = int(t_info.get("atk", 0))
+
+	var diff_text := "--"
+	var diff_bg: Color = COLOR_DIFF_EQ_BG
+	var diff_bd: Color = COLOR_DIFF_EQ_BD
+	var diff_col: Color = COLOR_DIFF_EQ_TEXT
+
+	if has_target_w:
+		var diff := atk - target_atk
+		if diff > 0:
+			diff_text = "+%d %s" % [diff, _t("攻擊")]
+			diff_bg = COLOR_DIFF_POS_BG
+			diff_bd = COLOR_DIFF_POS_BD
+			diff_col = COLOR_DIFF_POS_TEXT
+		elif diff < 0:
+			diff_text = "-%d %s" % [absi(diff), _t("攻擊")]
+			diff_bg = COLOR_DIFF_NEG_BG
+			diff_bd = COLOR_DIFF_NEG_BD
+			diff_col = COLOR_DIFF_NEG_TEXT
+		else:
+			diff_text = "--"
+			diff_bg = COLOR_DIFF_EQ_BG
+			diff_bd = COLOR_DIFF_EQ_BD
+			diff_col = COLOR_DIFF_EQ_TEXT
+	else:
+		diff_text = "--"
+		diff_bg = COLOR_DIFF_EQ_BG
+		diff_bd = COLOR_DIFF_EQ_BD
+		diff_col = COLOR_DIFF_EQ_TEXT
+
+	var diff_p := PanelContainer.new()
+	diff_p.name = "DiffCapsule"
+	diff_p.custom_minimum_size = Vector2(86, 32)
+	diff_p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var dsb := StyleBoxFlat.new()
+	dsb.bg_color = diff_bg
+	dsb.border_color = diff_bd
+	dsb.set_border_width_all(1)
+	dsb.border_width_bottom = 3
+	dsb.set_corner_radius_all(12)
+	dsb.content_margin_left = 6
+	dsb.content_margin_right = 6
+	dsb.content_margin_top = 4
+	dsb.content_margin_bottom = 4
+	diff_p.add_theme_stylebox_override("panel", dsb)
+
+	var diff_lbl := Label.new()
+	diff_lbl.name = "DiffLabel"
+	diff_lbl.text = diff_text
+	diff_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	diff_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_font(diff_lbl, 12, diff_col, true)
+	diff_p.add_child(diff_lbl)
+
+	h.add_child(diff_p)
 
 	# 右側：操作按鈕
 	var act_btn := Button.new()
