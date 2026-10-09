@@ -5740,8 +5740,8 @@
    "id": "weapon-swap-line-filter",
    "cat": "遊戲",
    "title": "WeaponSwapDialog 支援流派篩選 Chip 列",
-   "status": "草稿",
-   "note": "待前置單完成後開工",
+   "status": "開發中",
+   "note": "sideworker2 正在實作 t_82892ad5",
    "keys": [
     "WeaponSw"
    ]
