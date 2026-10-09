@@ -1491,6 +1491,7 @@
   "持有：鐵屑%d 晶砂%d 橡脂%d 騎士碎鐵%d 棘齒%d\n\n": "Tienes: Chatarra %d · Arena de cristal %d · Resina %d · Esquirla de caballero %d · Diente de trinquete %d\n\n",
   "指點 %s（%d金）": "Instrucción en %s (%d de oro)",
   "指點 %s（需 %d 金 · 金幣不足）": "Instrucción de %s (Requiere %d de oro · Oro insuficiente)",
+  "挑戰下一關": "Siguiente etapa",
   "挑戰好友・%s": "Desafiar amigo · %s",
   "挑戰對手 · 雙倍抽獎": "Desafiar Rivales · Doble Lotería",
   "挑戰心魔（週血 %d · 今日剩 %d）": "Desafiar al demonio (VP semanal %d · hoy quedan %d)",

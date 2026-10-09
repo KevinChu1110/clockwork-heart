@@ -11,6 +11,7 @@ extends Control
 ## 7. 支援 Loc.locale_changed 即時切換六語系。
 
 signal confirmed()
+signal next_stage_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
@@ -54,6 +55,7 @@ var _scrap_tag_lbl: Label
 var _scrap_lbl: Label
 var _btn_equip: Button
 var _btn_confirm: Button
+var _btn_next_stage: Button
 var _btn_close: Button
 var _cached_font: Font = null
 
@@ -81,6 +83,9 @@ var _current_cmp_slot_id: String = ""
 
 var _part: Dictionary = {}
 var _on_confirm: Callable = Callable()
+var _on_next_stage: Callable = Callable()
+var _stage_num: String = ""
+var _next_stage_data: Dictionary = {}
 var _is_equipped: bool = false
 var _exp_gain: int = 0
 var _scrap_gain: int = 0
@@ -89,16 +94,62 @@ var _broken_parts: Array[String] = []
 var _is_confirming: bool = false
 
 
-static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = []) -> Control:
+static func get_all_campaign_stages() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var ML = load("res://scripts/ui/mobile_lobby.gd")
+	if ML and "REGION_STAGES" in ML:
+		for reg in ML.REGION_STAGES:
+			for st in reg:
+				if st is Dictionary:
+					result.append(st)
+	return result
+
+
+static func get_next_stage_data(stage_num: String) -> Dictionary:
+	if stage_num.is_empty():
+		return {}
+	var stages := get_all_campaign_stages()
+	for i in range(stages.size()):
+		if str(stages[i].get("num", "")) == stage_num:
+			if i + 1 < stages.size():
+				return stages[i + 1]
+			else:
+				return {}
+	return {}
+
+
+func set_stage(stage_num: String) -> void:
+	_stage_num = stage_num
+	_next_stage_data = get_next_stage_data(_stage_num)
+	_refresh_display()
+
+
+static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "") -> Control:
 	var dlg = load("res://scripts/battle/battle_victory_dialog.gd").new()
-	dlg.setup(part, on_confirm, exp_gain, scrap_gain, broken_parts)
+	dlg.setup(part, on_confirm, exp_gain, scrap_gain, broken_parts, on_next_stage, stage_num)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = []) -> void:
+func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "") -> void:
 	_part = part.duplicate(true)
 	_on_confirm = on_confirm
+	_on_next_stage = on_next_stage
+	if stage_num != "":
+		_stage_num = stage_num
+	elif _part.has("stage") and str(_part["stage"]) != "":
+		_stage_num = str(_part["stage"])
+	elif _part.has("stage_num") and str(_part["stage_num"]) != "":
+		_stage_num = str(_part["stage_num"])
+	elif _part.has("expedition_stage") and str(_part["expedition_stage"]) != "":
+		_stage_num = str(_part["expedition_stage"])
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+			if gs and "current_expedition_stage" in gs:
+				_stage_num = str(gs.current_expedition_stage)
+	_next_stage_data = get_next_stage_data(_stage_num)
 	_broken_parts.clear()
 	if not broken_parts.is_empty():
 		for bp in broken_parts:
@@ -436,6 +487,19 @@ func _build_ui() -> void:
 	_btn_confirm.pressed.connect(_on_confirm_pressed)
 	btn_row.add_child(_btn_confirm)
 
+	_btn_next_stage = Button.new()
+	_btn_next_stage.name = "BtnNextStage"
+	_btn_next_stage.text = _t("挑戰下一關")
+	_btn_next_stage.custom_minimum_size = Vector2(200, 52)
+	_btn_next_stage.focus_mode = Control.FOCUS_NONE
+	if _cached_font:
+		_btn_next_stage.add_theme_font_override("font", _cached_font)
+	_btn_next_stage.add_theme_font_size_override("font_size", 16)
+	_btn_next_stage.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_style_button(_btn_next_stage, COLOR_MINT, COLOR_BORDER)
+	_btn_next_stage.pressed.connect(_on_next_stage_pressed)
+	btn_row.add_child(_btn_next_stage)
+
 	# 背包圖示目標（多巴胺獎勵入袋流向目標，熱區 >= 48px，零系統 emoji）
 	_bag_target = PanelContainer.new()
 	_bag_target.name = "BagTarget"
@@ -483,6 +547,10 @@ func _refresh_display() -> void:
 	_sub_lbl.text = _t("關卡討伐成功！獲得戰利品機芯部件")
 	_btn_confirm.text = _t("收下完成")
 	_btn_equip.text = _t("已裝備") if _is_equipped else _t("立即裝備")
+	if _btn_next_stage != null:
+		_btn_next_stage.text = _t("挑戰下一關")
+		var has_next: bool = not _next_stage_data.is_empty() and not _is_colossus
+		_btn_next_stage.visible = has_next
 
 	if _part.is_empty():
 		_slot_name_lbl.text = _t("機芯部件")
@@ -931,6 +999,30 @@ func _finish_confirm() -> void:
 	confirmed.emit()
 	if _on_confirm.is_valid():
 		_on_confirm.call()
+	queue_free()
+
+
+func _on_next_stage_pressed() -> void:
+	if _is_confirming:
+		return
+	_is_confirming = true
+
+	var a = _audio()
+	if a != null:
+		if a.has_method("play_ui"):
+			a.play_ui()
+
+	if DisplayServer.get_name() == "headless" or not is_inside_tree() or _fx_layer == null:
+		_finish_next_stage()
+		return
+
+	play_reward_particles_to_bag(Callable(self, "_finish_next_stage"))
+
+
+func _finish_next_stage() -> void:
+	next_stage_requested.emit()
+	if _on_next_stage.is_valid():
+		_on_next_stage.call()
 	queue_free()
 
 

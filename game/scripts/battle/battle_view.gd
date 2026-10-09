@@ -69,6 +69,7 @@ const BattleVictoryDialogScript := preload("res://scripts/battle/battle_victory_
 var sim: BattleSim
 var force_touch_mode: Variant = null  ## 測試/截圖強制覆寫觸控模式；null 為自動判定
 var _mode: String = "wolf"
+var _current_expedition_stage: String = ""
 var _ended: bool = false
 var _revived_by_ad: bool = false
 var _dummy_settlement_dialog: Control = null
@@ -369,9 +370,19 @@ static func _kin_hint(kin: String) -> String:
 	return ""
 
 
+static func _gs_node() -> Node:
+	var t := Engine.get_main_loop()
+	if t is SceneTree and (t as SceneTree).root != null:
+		return (t as SceneTree).root.get_node_or_null("GameState")
+	return null
+
+
 func setup(mode: String) -> void:
 	_mode = mode
 	_ended = false
+	var gs := _gs_node()
+	if gs and "current_expedition_stage" in gs and str(gs.current_expedition_stage) != "":
+		_current_expedition_stage = str(gs.current_expedition_stage)
 	_colossus_exp_gain = 0
 	_connect_loc_signal()
 	_claim_hp_authority()
@@ -4890,8 +4901,11 @@ func _try_wheat_save(hp_after: int) -> void:
 
 func _on_end(won: bool) -> void:
 	_ended = true
-	GameState.clear_expedition_stage()
 	if not won:
+		var gs := _gs_node()
+		if gs and gs.has_method("clear_expedition_stage"):
+			gs.call("clear_expedition_stage")
+		_current_expedition_stage = ""
 		_stop_breathe_tween()
 	_release_hp_authority()
 	countdown.visible = false
@@ -5053,6 +5067,10 @@ func _on_end(won: bool) -> void:
 					_victory_settlement_dialog._on_confirm_pressed()
 		return
 	await get_tree().create_timer(1.6).timeout
+	_current_expedition_stage = ""
+	var gs_end := _gs_node()
+	if gs_end and gs_end.has_method("clear_expedition_stage"):
+		gs_end.call("clear_expedition_stage")
 	battle_finished.emit(won)
 
 
@@ -5061,15 +5079,67 @@ func _show_victory_settlement(drop_part: Dictionary) -> void:
 		_victory_settlement_dialog.queue_free()
 	var exp_val: int = int(drop_part.get("exp_gain", _colossus_exp_gain if _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"] else -1))
 	var scrap_val: int = int(drop_part.get("scrap_gain", -1))
+	if not drop_part.has("stage") and _current_expedition_stage != "":
+		drop_part["stage"] = _current_expedition_stage
 	_victory_settlement_dialog = BattleVictoryDialogScript.show_dialog(
 		self,
 		drop_part,
 		func():
 			_victory_settlement_dialog = null
+			_current_expedition_stage = ""
+			var g := _gs_node()
+			if g and g.has_method("clear_expedition_stage"):
+				g.call("clear_expedition_stage")
 			battle_finished.emit(true),
 		exp_val,
-		scrap_val
+		scrap_val,
+		[],
+		func():
+			_victory_settlement_dialog = null
+			_start_next_expedition_stage(),
+		_current_expedition_stage
 	)
+
+
+func _start_next_expedition_stage() -> void:
+	if _victory_settlement_dialog != null and is_instance_valid(_victory_settlement_dialog):
+		_victory_settlement_dialog.queue_free()
+		_victory_settlement_dialog = null
+
+	var next_st: Dictionary = BattleVictoryDialogScript.get_next_stage_data(_current_expedition_stage)
+	if next_st.is_empty():
+		_current_expedition_stage = ""
+		var g := _gs_node()
+		if g and g.has_method("clear_expedition_stage"):
+			g.call("clear_expedition_stage")
+		battle_finished.emit(true)
+		return
+
+	var next_num: String = str(next_st.get("num", ""))
+	var next_mode: String = str(next_st.get("mode", ""))
+
+	_current_expedition_stage = next_num
+	var gs := _gs_node()
+	if gs:
+		gs.set("current_expedition_stage", next_num)
+		var RC = load("res://scripts/world/region_catalog.gd")
+		var sug_lv: int = int(RC.call("expedition_suggest_lv", next_num)) if RC else 0
+		gs.set("current_suggest_lv", sug_lv)
+
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var es: Node = (loop as SceneTree).root.get_node_or_null("EnergySystem")
+		if es and es.has_method("try_spend_for_battle"):
+			var er: Dictionary = es.call("try_spend_for_battle", next_mode)
+			if not bool(er.get("ok", true)):
+				_append_log(_t("[color=#fc8]能量不足，無法連續挑戰下一關！[/color]"))
+				_current_expedition_stage = ""
+				if gs and gs.has_method("clear_expedition_stage"):
+					gs.call("clear_expedition_stage")
+				battle_finished.emit(true)
+				return
+
+	setup(next_mode)
 
 
 func _can_offer_ad_revive() -> bool:

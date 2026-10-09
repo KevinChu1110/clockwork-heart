@@ -1491,6 +1491,7 @@
   "持有：鐵屑%d 晶砂%d 橡脂%d 騎士碎鐵%d 棘齒%d\n\n": "You have: Scrap Iron %d · Crystal Sand %d · Resin %d · Knight Shard %d · Ratchet Tooth %d\n\n",
   "指點 %s（%d金）": "Coaching on %s (%d gold)",
   "指點 %s（需 %d 金 · 金幣不足）": "Coach %s (Needs %d Gold · Not enough gold)",
+  "挑戰下一關": "Next Stage",
   "挑戰好友・%s": "Challenge friend · %s",
   "挑戰對手 · 雙倍抽獎": "Challenge Rivals · Double Lottery",
   "挑戰心魔（週血 %d · 今日剩 %d）": "Challenge Heart Demon (weekly HP %d · %d left today)",
