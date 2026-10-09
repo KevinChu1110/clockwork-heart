@@ -499,6 +499,9 @@ func _initialize() -> void:
 		ok = false
 
 	# 測試點擊隨機按鈕：僅更新預覽，不寫入存檔與 GameState
+	# 固定亂數種子（#57）：#19 之後衣櫥只列本家族外裝（4 套 × 3 塗裝＝12 種），
+	# 不固定種子時「連續兩次外裝＋塗裝相同」約有 1/12 機率，測試會間歇失敗。
+	seed(57)
 	var saved_costume_before = str(gs.paperdoll_slots.get("costume_id", gs.paperdoll_slots.get("costume", "")))
 	dlg_rand.randomize_selection()
 	var rand1_sel = dlg_rand.get_current_selections()
@@ -514,8 +517,10 @@ func _initialize() -> void:
 	var rand2_sel = dlg_rand.get_current_selections()
 	print("  ✓ 隨機 1 組合: costume=%s, chassis=%s" % [rand1_sel.get("costume"), rand1_sel.get("chassis")])
 	print("  ✓ 隨機 2 組合: costume=%s, chassis=%s" % [rand2_sel.get("costume"), rand2_sel.get("chassis")])
-	if rand1_sel.get("costume") == rand2_sel.get("costume") and rand1_sel.get("chassis") == rand2_sel.get("chassis"):
-		push_error("連續兩次隨機結果完全相同")
+	# 比整套七槽（外裝、塗裝、頭部、武器、發條、核心、奇玩），而不是只比外裝＋塗裝：
+	# 隨機按鈕的承諾是「換一套造型」，武器／發條換了外觀就已經不同。
+	if rand1_sel == rand2_sel:
+		push_error("連續兩次隨機結果完全相同：%s" % str(rand1_sel))
 		ok = false
 	else:
 		print("  ✓ 連續隨機成功產生不同外觀組合")
