@@ -129,6 +129,9 @@ var _bag_detail_glyph: Label = null
 var _bag_detail_name: Label = null
 var _bag_detail_count: Label = null
 var _bag_detail_kind: Label = null
+var _bag_lock_capsule: PanelContainer = null
+var _bag_lock_capsule_lbl: Label = null
+var _bag_lock_btn: Button = null
 var _core_bag_panel: PanelContainer = null
 var _core_title_lbl: Label = null
 var _core_empty_lbl: Label = null
@@ -414,6 +417,8 @@ func _ready() -> void:
 				_refresh_weapon_slot_buttons()
 				_refresh_char_tab_stats(false)
 				_sync_hero_weapon_paperdoll()
+			elif _current_tab == Tab.BAG:
+				_refresh_bag_tab(false)
 		)
 	_load_hero_poses()
 	_build_ui()
@@ -4995,6 +5000,19 @@ func _build_bag_tab() -> void:
 	_apply_label_style(_bag_detail_count, 18, COLOR_TEXT_ORANGE)
 	name_row.add_child(_bag_detail_count)
 
+	_bag_lock_capsule = PanelContainer.new()
+	_bag_lock_capsule.name = "BagLockCapsule"
+	_bag_lock_capsule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_bag_lock_capsule.visible = false
+	name_row.add_child(_bag_lock_capsule)
+
+	_bag_lock_capsule_lbl = Label.new()
+	_bag_lock_capsule_lbl.name = "LockStatusLabel"
+	_bag_lock_capsule_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_bag_lock_capsule_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_label_style(_bag_lock_capsule_lbl, 14, COLOR_TEXT_DARK)
+	_bag_lock_capsule.add_child(_bag_lock_capsule_lbl)
+
 	_bag_detail_kind = Label.new()
 	_bag_detail_kind.name = "DetailKind"
 	_apply_label_style(_bag_detail_kind, 16, Color("#4A3E60"))
@@ -5013,10 +5031,27 @@ func _build_bag_tab() -> void:
 	_bag_detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	detail_vbox.add_child(_bag_detail)
 
-	# 按鈕列 (「使用 / 賣出」薄荷綠 + 「放到快捷欄」天藍)
+	# 按鈕列 (「鎖定/解鎖」多巴胺厚底小按鈕 + 「使用 / 賣出」薄荷綠 + 「放到快捷欄」天藍)
 	var btn_row := HBoxContainer.new()
 	btn_row.add_theme_constant_override("separation", 14)
 	right.add_child(btn_row)
+
+	_bag_lock_btn = Button.new()
+	_bag_lock_btn.name = "BtnLock"
+	_bag_lock_btn.text = _t("鎖定")
+	_bag_lock_btn.custom_minimum_size = Vector2(88, 52)
+	_bag_lock_btn.visible = false
+	_bag_lock_btn.focus_mode = Control.FOCUS_NONE
+	_bag_lock_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_bag_lock_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 5, 18))
+	_bag_lock_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFFDF0"), COLOR_BORDER, 5, 18))
+	_bag_lock_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 18))
+	_bag_lock_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_bag_lock_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_bag_lock_btn.add_theme_font_override("font", _cached_font)
+	_bag_lock_btn.pressed.connect(_on_bag_lock_pressed)
+	btn_row.add_child(_bag_lock_btn)
 
 	_bag_use_btn = Button.new()
 	_bag_use_btn.text = _t("使用 / 賣出")
@@ -5325,6 +5360,10 @@ func _on_bag_cell_input(idx: int, ev: InputEvent) -> void:
 		return
 	if button == MOUSE_BUTTON_RIGHT:
 		_selected_bag_item = id
+		var equip_inst := _get_selected_equip_inst()
+		if not equip_inst.is_empty():
+			_on_bag_use_pressed()
+			return
 		var inv := _get_inv_sys()
 		if inv and inv.has_method("use_item"):
 			var res: Dictionary = inv.call("use_item", id)
@@ -5336,6 +5375,10 @@ func _on_bag_cell_input(idx: int, ev: InputEvent) -> void:
 		var now := Time.get_ticks_msec()
 		if _last_bag_click_i == idx and now - _last_bag_click_t < 350:
 			_selected_bag_item = id
+			var equip_inst := _get_selected_equip_inst()
+			if not equip_inst.is_empty():
+				_on_bag_use_pressed()
+				return
 			var inv := _get_inv_sys()
 			if inv and inv.has_method("use_item"):
 				var res: Dictionary = inv.call("use_item", id)
@@ -5352,12 +5395,55 @@ func _on_bag_cell_input(idx: int, ev: InputEvent) -> void:
 func _on_bag_use_pressed() -> void:
 	if _selected_bag_item == "":
 		return
+	var equip_inst := _get_selected_equip_inst()
+	if not equip_inst.is_empty():
+		var uid := str(equip_inst.get("uid", _selected_bag_item))
+		var eq := _get_equip_sys()
+		var is_locked := false
+		if eq and eq.has_method("is_equip_locked"):
+			is_locked = bool(eq.call("is_equip_locked", uid))
+		elif equip_inst.has("locked"):
+			is_locked = bool(equip_inst.get("locked", false))
+		if is_locked:
+			_show_toast(_t("裝備已鎖定無法出售"))
+			return
+		if eq and eq.has_method("equip"):
+			var res: Dictionary = eq.call("equip", uid)
+			_show_bag_msg(res)
+		refresh_hud()
+		_refresh_bag_tab()
+		return
 	var inv := _get_inv_sys()
 	if inv and inv.has_method("use_item"):
 		var res: Dictionary = inv.call("use_item", _selected_bag_item)
 		_show_bag_msg(res)
 	refresh_hud()
 	_refresh_bag_tab()
+
+func _on_bag_lock_pressed() -> void:
+	if _selected_bag_item == "":
+		return
+	var eq := _get_equip_sys()
+	var equip_inst := _get_selected_equip_inst()
+	var uid := str(equip_inst.get("uid", _selected_bag_item))
+	if uid == "":
+		return
+	var cur_locked := false
+	if eq and eq.has_method("is_equip_locked"):
+		cur_locked = bool(eq.call("is_equip_locked", uid))
+	elif equip_inst.has("locked"):
+		cur_locked = bool(equip_inst.get("locked", false))
+
+	var new_locked := not cur_locked
+	if eq and eq.has_method("set_equip_locked"):
+		eq.call("set_equip_locked", uid, new_locked)
+	if not equip_inst.is_empty():
+		equip_inst["locked"] = new_locked
+
+	_play_ui_sound()
+	_show_toast(_t("已鎖定裝備") if new_locked else _t("已解除鎖定"))
+	_update_bag_detail(_get_inv_sys())
+	_refresh_bag_tab(false)
 
 func _show_bag_msg(res: Dictionary) -> void:
 	var msg := str(res.get("msg", ""))
@@ -5372,6 +5458,16 @@ func _show_bag_msg(res: Dictionary) -> void:
 
 func _on_bag_hotbar_pressed() -> void:
 	if _selected_bag_item == "":
+		return
+	var equip_inst := _get_selected_equip_inst()
+	if not equip_inst.is_empty():
+		var uid := str(equip_inst.get("uid", _selected_bag_item))
+		var eq := _get_equip_sys()
+		if eq and eq.has_method("equip"):
+			var res: Dictionary = eq.call("equip", uid)
+			_show_bag_msg(res)
+		refresh_hud()
+		_refresh_bag_tab()
 		return
 	var inv := _get_inv_sys()
 	if inv:
@@ -5401,6 +5497,33 @@ func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 
 	_bag_ids.clear()
 	var list: Array = inv.call("bag_list") if (inv and inv.has_method("bag_list")) else []
+	var gs := _gs()
+	var eq := _get_equip_sys()
+	if gs and "equip_bag" in gs and gs.equip_bag is Array:
+		for e in gs.equip_bag:
+			if e is Dictionary and not e.is_empty():
+				var uid := str(e.get("uid", ""))
+				if uid.is_empty():
+					continue
+				var eq_name := str(e.get("name", ""))
+				if eq and eq.has_method("display_name"):
+					eq_name = eq.call("display_name", e)
+				var eq_desc := ""
+				if eq and eq.has_method("label"):
+					eq_desc = eq.call("label", e)
+				list.append({
+					"id": uid,
+					"uid": uid,
+					"count": 1,
+					"is_equip": true,
+					"equip": e,
+					"def": {
+						"name": eq_name,
+						"glyph": "武" if str(e.get("slot", "weapon")) == "weapon" else "裝",
+						"desc": eq_desc,
+						"kind": str(e.get("slot", "weapon")),
+					}
+				})
 
 	# 若目前已選取的道具已經不在背包內，且背包還有道具，重選第一個
 	if _selected_bag_item != "":
@@ -5414,7 +5537,6 @@ func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 	elif list.size() > 0 and allow_auto_select:
 		_selected_bag_item = str(list[0].get("id", ""))
 
-
 	for i in range(_bag_cells.size()):
 		var cell: PanelContainer = _bag_cells[i]
 		var icon: TextureRect = cell.find_child("Icon", true, false)
@@ -5425,7 +5547,15 @@ func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 			var id := str(it.get("id", ""))
 			_bag_ids.append(id)
 			var def: Dictionary = it.get("def", {})
-			var icon_tex := get_item_icon(id)
+			var icon_tex: Texture2D = null
+			if bool(it.get("is_equip", false)) or it.has("equip"):
+				var eq_inst: Dictionary = it.get("equip", {})
+				if SpriteDB != null:
+					icon_tex = SpriteDB.equip_icon_for_inst(eq_inst)
+				if icon_tex == null:
+					icon_tex = get_item_icon(str(eq_inst.get("base_id", "")))
+			if icon_tex == null:
+				icon_tex = get_item_icon(id)
 			if icon_tex != null:
 				if icon:
 					icon.texture = icon_tex
@@ -5489,12 +5619,44 @@ func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 	_update_bag_detail(inv)
 	_refresh_core_bag()
 
+func _get_selected_equip_inst() -> Dictionary:
+	if _selected_bag_item.is_empty():
+		return {}
+	var eq := _get_equip_sys()
+	if eq != null:
+		if eq.has_method("find_bag"):
+			var inst: Dictionary = eq.call("find_bag", _selected_bag_item)
+			if not inst.is_empty():
+				return inst
+		if eq.has_method("find_any"):
+			var inst2: Dictionary = eq.call("find_any", _selected_bag_item)
+			if not inst2.is_empty():
+				return inst2
+	var gs := _gs()
+	if gs and "equip_bag" in gs and gs.equip_bag is Array:
+		for e in gs.equip_bag:
+			if e is Dictionary:
+				if str(e.get("uid", "")) == _selected_bag_item or str(e.get("base_id", "")) == _selected_bag_item or str(e.get("id", "")) == _selected_bag_item:
+					return e
+	if gs and "equip_worn" in gs and gs.equip_worn is Dictionary:
+		for uid_k in gs.equip_worn.keys():
+			var w = gs.equip_worn[uid_k]
+			if w is Dictionary:
+				if str(w.get("uid", "")) == _selected_bag_item or str(w.get("base_id", "")) == _selected_bag_item or str(w.get("id", "")) == _selected_bag_item:
+					return w
+	return {}
+
 func _update_bag_detail(inv: Node) -> void:
 	if _bag_detail == null:
 		return
-	if _selected_bag_item == "" or inv == null:
+	var equip_inst := _get_selected_equip_inst()
+	if _selected_bag_item == "" or (inv == null and equip_inst.is_empty()):
 		if _bag_preview_row:
 			_bag_preview_row.visible = false
+		if _bag_lock_capsule:
+			_bag_lock_capsule.visible = false
+		if _bag_lock_btn:
+			_bag_lock_btn.visible = false
 		_bag_detail.text = "[color=#1F1A3A][b][font_size=20]%s[/font_size][/b]\n\n%s\n\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s[/color]" % [
 			_t("冒險者背包"),
 			_t("請點選左側格子查看道具詳情。"),
@@ -5509,6 +5671,15 @@ func _update_bag_detail(inv: Node) -> void:
 			_bag_hb_btn.disabled = true
 			_bag_hb_btn.text = _t("放到快捷欄")
 		return
+
+	if not equip_inst.is_empty():
+		_update_bag_equip_detail(equip_inst)
+		return
+
+	if _bag_lock_capsule:
+		_bag_lock_capsule.visible = false
+	if _bag_lock_btn:
+		_bag_lock_btn.visible = false
 
 	if _bag_hb_btn:
 		_bag_hb_btn.disabled = false
@@ -5566,6 +5737,141 @@ func _update_bag_detail(inv: Node) -> void:
 				_bag_detail_glyph.visible = true
 
 	_bag_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
+
+func _update_bag_equip_detail(equip_inst: Dictionary) -> void:
+	var eq := _get_equip_sys()
+	var uid := str(equip_inst.get("uid", _selected_bag_item))
+	var is_locked := false
+	if eq and eq.has_method("is_equip_locked"):
+		is_locked = bool(eq.call("is_equip_locked", uid))
+	elif equip_inst.has("locked"):
+		is_locked = bool(equip_inst.get("locked", false))
+
+	if _bag_preview_row:
+		_bag_preview_row.visible = true
+
+	var eq_name := str(equip_inst.get("name", _selected_bag_item))
+	if eq and eq.has_method("display_name"):
+		eq_name = eq.call("display_name", equip_inst)
+	if _bag_detail_name:
+		_bag_detail_name.text = eq_name
+	if _bag_detail_count:
+		_bag_detail_count.text = ""
+
+	var slot := str(equip_inst.get("slot", "weapon"))
+	var slot_name: String = str(eq.slot_label(slot)) if (eq and eq.has_method("slot_label")) else _t("裝備")
+	var line := str(equip_inst.get("line", ""))
+	var line_name: String = str(eq.weapon_line_name(line)) if (eq and eq.has_method("weapon_line_name")) else ""
+	if _bag_detail_kind:
+		if line_name.is_empty():
+			_bag_detail_kind.text = _t("類型：%s") % slot_name
+		else:
+			_bag_detail_kind.text = "%s · %s" % [_t("類型：%s") % slot_name, line_name]
+
+	var icon_tex: Texture2D = null
+	if SpriteDB != null:
+		icon_tex = SpriteDB.equip_icon_for_inst(equip_inst)
+	if icon_tex == null:
+		icon_tex = get_item_icon(str(equip_inst.get("base_id", "")))
+	if icon_tex != null:
+		if _bag_detail_icon:
+			_bag_detail_icon.texture = icon_tex
+			_bag_detail_icon.visible = true
+		if _bag_detail_glyph:
+			_bag_detail_glyph.visible = false
+	else:
+		if _bag_detail_icon:
+			_bag_detail_icon.visible = false
+		if _bag_detail_glyph:
+			_bag_detail_glyph.text = "武" if slot == "weapon" else "裝"
+			_bag_detail_glyph.visible = true
+
+	# 顯示數值詳情
+	var lines: PackedStringArray = []
+	var quality_lbl := _t(str(equip_inst.get("quality_label", "普通")))
+	lines.append("[b][color=#C2600A]%s〔%s〕[/color][/b]" % [eq_name, quality_lbl])
+	var rolled: Dictionary = equip_inst.get("rolled", {})
+	var atk := int(rolled.get("atk", 0))
+	var def_val := int(rolled.get("def", 0))
+	var hp_val := int(rolled.get("hp", 0))
+	var crit_val := float(rolled.get("crit", 0))
+	var stat_parts: PackedStringArray = []
+	if atk > 0: stat_parts.append("%s +%d" % [_t("攻擊"), atk])
+	if def_val > 0: stat_parts.append("%s +%d" % [_t("防禦"), def_val])
+	if hp_val > 0: stat_parts.append("%s +%d" % [_t("生命"), hp_val])
+	if crit_val > 0: stat_parts.append("%s +%.1f%%" % [_t("暴擊"), crit_val])
+	if not stat_parts.is_empty():
+		lines.append("[color=#1F1A3A]%s[/color]" % " · ".join(stat_parts))
+	else:
+		lines.append("[color=#4A3E60]%s[/color]" % (eq.label(equip_inst) if (eq and eq.has_method("label")) else ""))
+	if is_locked:
+		lines.append("[color=#E05020]%s[/color]" % _t("裝備已鎖定無法出售"))
+	_bag_detail.text = "\n".join(lines)
+
+	# 鎖定狀態標籤膠囊（金色/深藍紫）
+	if _bag_lock_capsule and _bag_lock_capsule_lbl:
+		_bag_lock_capsule.visible = true
+		var csb := StyleBoxFlat.new()
+		csb.set_border_width_all(1)
+		csb.border_width_bottom = 3
+		csb.set_corner_radius_all(10)
+		csb.content_margin_left = 8
+		csb.content_margin_right = 8
+		csb.content_margin_top = 2
+		csb.content_margin_bottom = 2
+		if is_locked:
+			_bag_lock_capsule_lbl.text = _t("已鎖定")
+			csb.bg_color = COLOR_GOLD
+			csb.border_color = COLOR_BORDER
+			_apply_label_style(_bag_lock_capsule_lbl, 14, COLOR_TEXT_DARK)
+		else:
+			_bag_lock_capsule_lbl.text = _t("未鎖定")
+			csb.bg_color = COLOR_BORDER
+			csb.border_color = COLOR_BORDER
+			_apply_label_style(_bag_lock_capsule_lbl, 14, Color("#FFFDF8"))
+		_bag_lock_capsule.add_theme_stylebox_override("panel", csb)
+
+	# 鎖定/解鎖按鈕
+	if _bag_lock_btn:
+		_bag_lock_btn.visible = true
+		_bag_lock_btn.set_meta("uid", uid)
+		_bag_lock_btn.set_meta("is_locked", is_locked)
+		if is_locked:
+			_bag_lock_btn.text = _t("解鎖")
+			_bag_lock_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18))
+			_bag_lock_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18))
+			_bag_lock_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_GOLD, COLOR_BORDER, 2, 18))
+		else:
+			_bag_lock_btn.text = _t("鎖定")
+			_bag_lock_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 5, 18))
+			_bag_lock_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFFDF0"), COLOR_BORDER, 5, 18))
+			_bag_lock_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 18))
+
+	# 使用/賣出按鈕（當裝備處於鎖定狀態時自動禁用或提示無法出售）
+	if _bag_use_btn:
+		if is_locked:
+			_bag_use_btn.disabled = true
+			_bag_use_btn.text = _t("已鎖定（無法出售）")
+		else:
+			_bag_use_btn.disabled = false
+			_bag_use_btn.text = _t("使用 / 裝備")
+
+	if _bag_hb_btn:
+		if slot == "weapon":
+			_bag_hb_btn.disabled = false
+			_bag_hb_btn.text = _t("裝入武器欄")
+		else:
+			_bag_hb_btn.disabled = true
+			_bag_hb_btn.text = _t("放到快捷欄")
+
+func get_bag_lock_button() -> Button:
+	return _bag_lock_btn
+
+func get_bag_lock_capsule() -> PanelContainer:
+	return _bag_lock_capsule
+
+func get_bag_lock_label() -> Label:
+	return _bag_lock_capsule_lbl
 
 func _fmt_int(n: int) -> String:
 	var neg := n < 0
