@@ -5780,8 +5780,8 @@
    "id": "lobby-auto-equip-btn",
    "cat": "遊戲",
    "title": "大廳角色頁新增一鍵配置最高戰力武器按鈕與即時數值連動",
-   "status": "草稿",
-   "note": "大廳角色頁武器標題列新增一鍵最強果凍按鈕，連動 EquipmentSystem.auto_equip_best_weapons()",
+   "status": "開發中",
+   "note": "阿宏開始動工：大廳角色頁一鍵配置最高戰力武器按鈕與即時數值連動 (t_728315d8)",
    "keys": [
     "大廳角色頁新增一"
    ]
