@@ -75,7 +75,7 @@ func _process(_delta: float) -> bool:
 				_step = 6
 			else:
 				print("\n--- 6. 無頭模式 (headless)，略過 Viewport 截圖與雜湊比對 ---")
-				_step = 9
+				_step = 10
 		6:
 			_wait += 1
 			if _wait < 6:
@@ -102,14 +102,20 @@ func _process(_delta: float) -> bool:
 			var loc = root.get_node_or_null("Loc")
 			if loc:
 				loc.call("set_locale", "en")
+			_wait = 0
+			_step = 9
+		9:
+			_wait += 1
+			if _wait < 8:
+				return false
 			var p3 := _out_dir.path_join("proof_03_weapon_swap_diff_en.png")
 			_h3 = _capture_and_save(p3)
 			if _h1 == _h2 or _h2 == _h3 or _h1 == _h3:
 				_fail("截圖 SHA256 重複！不可上傳相同截圖冒充流程: h1=%s, h2=%s, h3=%s" % [_h1, _h2, _h3])
 				return false
 			print("  ok 成功產出 3 張實機截圖存證且 SHA256 皆獨立不重複")
-			_step = 9
-		9:
+			_step = 10
+		10:
 			print("\n=======================================================")
 			print("  TEST_LOBBY_WEAPON_SWAP_DIFF_OK")
 			print("=======================================================")

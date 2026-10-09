@@ -5715,6 +5715,36 @@
    "keys": [
     "大廳角色頁三欄武"
    ]
+  },
+  {
+   "id": "weapon-swap-diff",
+   "cat": "遊戲",
+   "title": "WeaponSwapDialog 武器清單依攻擊力排序與差額比對膠囊",
+   "status": "測試中",
+   "note": "WeaponSwapDialog 武器依 atk 降序排序、攻擊力差額膠囊（升攻/降攻/相等/空槽）與六語系支援，單元測試與實機截圖通過",
+   "keys": [
+    "WeaponSw"
+   ]
+  },
+  {
+   "id": "lobby-auto-equip-weapons",
+   "cat": "遊戲",
+   "title": "EquipmentSystem 與大廳角色頁支援一鍵配置最高戰力武器",
+   "status": "測試中",
+   "note": "阿宏已實作完成，單元測試 TEST_LOBBY_AUTO_EQUIP_WEAPONS_OK 全綠，clock-check 全過",
+   "keys": [
+    "Equipmen"
+   ]
+  },
+  {
+   "id": "weapon-swap-line-filter",
+   "cat": "遊戲",
+   "title": "WeaponSwapDialog 支援流派篩選 Chip 列",
+   "status": "草稿",
+   "note": "待前置單完成後開工",
+   "keys": [
+    "WeaponSw"
+   ]
   }
  ]
 }
