@@ -5720,8 +5720,8 @@
    "id": "weapon-swap-diff",
    "cat": "遊戲",
    "title": "WeaponSwapDialog 武器清單依攻擊力排序與差額比對膠囊",
-   "status": "測試中",
-   "note": "WeaponSwapDialog 武器依 atk 降序排序、攻擊力差額膠囊（升攻/降攻/相等/空槽）與六語系支援，單元測試與實機截圖通過",
+   "status": "已上線",
+   "note": "sideqa 審查通過 (t_d5f64a67 done)，已合併 main",
    "keys": [
     "WeaponSw"
    ]
