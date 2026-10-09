@@ -5800,8 +5800,8 @@
    "id": "weapon-swap-quality-filter",
    "cat": "遊戲",
    "title": "WeaponSwapDialog 支援五色品質稀有度篩選 Chip 列",
-   "status": "開發中",
-   "note": "WeaponSwapDialog 支援五色品質稀有度篩選 Chip 列動工",
+   "status": "測試中",
+   "note": "WeaponSwapDialog 支援五色品質稀有度篩選 Chip 列開發完成送審",
    "keys": [
     "WeaponSw"
    ]
