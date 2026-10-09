@@ -43,6 +43,10 @@ const SFX_PLACEHOLDER: Array[String] = [
 ]
 ## UI／操作提示只准用這些。parry 不可綁按鈕（任務書 §5），只能當自動彈開演出。
 const UI_SFX: Array[String] = ["ui", "interact", "reveal"]
+## 按鈕點擊／操作提示走自己的一個 UI 聲道，不算進戰鬥 SFX 的兩聲上限（#63）：
+## 戰鬥中破壞、換武、勝利音正響時，按暫停／結算按鈕照樣要有回饋。
+## reveal 是演出音（觀星、迷霧揭開），仍走一般池子搶位置。
+const UI_VOICE_SFX: Array[String] = ["ui", "interact"]
 ## 撞上兩聲上限時誰留下：數字大的贏；沒列的＝1
 const SFX_PRIORITY := {
 	"break": 4, "victory": 4, "defeat": 4,
@@ -59,6 +63,7 @@ var _pool: Array = []  ## AudioStreamPlayer（數量＝MAX_SFX_VOICES）
 var _voice_prio: Array[int] = []  ## 每個 voice 目前播的優先度
 var _voice_serial: Array[int] = []  ## 每個 voice 開播序號（越小越舊）
 var _serial: int = 0
+var _ui_voice: AudioStreamPlayer  ## UI_VOICE_SFX 專用，新的點擊直接接替上一聲
 var _missing_sfx_warned: Dictionary = {}  ## 已警告過的缺檔 key，每個只警告一次
 var _sfx_db: float = -4.0
 var _bgm_db: float = -5.0  ## 悠揚版略抬一點，仍避免蓋過 SFX
@@ -94,6 +99,10 @@ func _build_pool() -> void:
 		_pool.append(p)
 		_voice_prio.append(-1)
 		_voice_serial.append(0)
+	_ui_voice = AudioStreamPlayer.new()
+	_ui_voice.name = "SfxUi"
+	_ui_voice.bus = "Master"
+	add_child(_ui_voice)
 
 
 func _build_bgm_players() -> void:
@@ -136,7 +145,12 @@ func sfx_voice_limit() -> int:
 	return MAX_SFX_VOICES
 
 
-## 目前同時在響的 SFX 數（≤ MAX_SFX_VOICES）
+## UI 聲道是否正在響（測試／自檢用）
+func ui_sfx_playing() -> bool:
+	return _ui_voice != null and _ui_voice.playing
+
+
+## 目前同時在響的戰鬥／演出 SFX 數（≤ MAX_SFX_VOICES；不含 UI 聲道）
 func active_sfx_count() -> int:
 	var n := 0
 	for p in _pool:
@@ -260,6 +274,7 @@ func set_bgm_muted(v: bool) -> void:
 ## SFX 唯一入口：AudioManager.play(key, pitch_scale, volume_db)
 ## 缺檔不會當，只在第一次播到時 push_warning 一次。
 ## 同時最多 MAX_SFX_VOICES 聲；滿了就搶優先度最低（同級搶最舊）的那聲，搶不到就丟掉新的。
+## UI_VOICE_SFX（ui／interact）例外：走專屬 UI 聲道，不搶也不被搶。
 func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 	if _muted:
 		return
@@ -268,6 +283,13 @@ func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 		if not _missing_sfx_warned.has(id):
 			_missing_sfx_warned[id] = true
 			push_warning("SFX missing: %s/%s.wav（之後不再提示）" % [SFX_DIR, id])
+		return
+	if UI_VOICE_SFX.has(id) and _ui_voice != null:
+		_ui_voice.stop()
+		_ui_voice.stream = stream
+		_ui_voice.pitch_scale = clampf(pitch_scale, 0.5, 2.0)
+		_ui_voice.volume_db = _sfx_db + volume_db
+		_ui_voice.play()
 		return
 	if _pool.is_empty():
 		return
