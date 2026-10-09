@@ -5730,8 +5730,8 @@
    "id": "lobby-auto-equip-weapons",
    "cat": "遊戲",
    "title": "EquipmentSystem 與大廳角色頁支援一鍵配置最高戰力武器",
-   "status": "開發中",
-   "note": "sideworker 開發中",
+   "status": "測試中",
+   "note": "阿宏已實作完成，單元測試 TEST_LOBBY_AUTO_EQUIP_WEAPONS_OK 全綠，clock-check 全過",
    "keys": [
     "Equipmen"
    ]
