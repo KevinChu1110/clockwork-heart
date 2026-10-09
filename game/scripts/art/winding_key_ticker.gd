@@ -1,5 +1,6 @@
 extends Node
-## 待機發條節拍器：掛在顯示主角的 TextureRect 底下，每 8 幀把貼圖換成下一格鑰匙轉動幀。
+## 待機發條節拍器：掛在顯示主角的 TextureRect 底下，每 8/60 秒（60 FPS 動畫的 8 幀）
+## 把貼圖換成下一格鑰匙轉動幀；用時間累積，不跟螢幕刷新率走（#61）。
 ## 主角在做其他動作（攻擊、受擊…）時，宿主讓 idle_check 回 false，這裡就不碰貼圖。
 ## 只接手 512 紙娃娃合成圖；沒存過外觀時用的手繪展示立繪，若有身體／鑰匙兩層（#48），
 ## 宿主用 attach_key_layer() 把鑰匙層節點交進來，這裡轉節點；沒有兩層就維持靜態。
@@ -16,7 +17,7 @@ const ToyFamily = preload("res://scripts/art/toy_family.gd")
 var target: Control = null
 var sel_provider: Callable = Callable()
 var idle_check: Callable = Callable()
-var frame_count := 0
+var _accum := 0.0
 var step := 0
 var steps_taken := 0
 var _frames: Array[Texture2D] = []
@@ -30,20 +31,29 @@ func attach(rect: Control, provider: Callable = Callable(), is_idle: Callable = 
 	target = rect
 	sel_provider = provider
 	idle_check = is_idle
-	frame_count = 0
+	_accum = 0.0
 	set_process(true)
 
 
-func _process(_delta: float) -> void:
-	tick()
+func _process(delta: float) -> void:
+	tick_time(delta)
 
 
-## 推進一幀；剛好滿 8 幀時換下一格。回傳這幀有沒有換格。
+## 推進 delta 秒；回傳這次換了幾格。
+## 長時間卡頓（切到背景再回來）最多補一圈，不會一口氣狂轉。
+func tick_time(delta: float) -> int:
+	var r: Array = WindingKeyAnim.accumulate(_accum, delta)
+	_accum = float(r[1])
+	var changed := 0
+	for i in range(mini(int(r[0]), WindingKeyAnim.STEPS_PER_TURN)):
+		if advance_step():
+			changed += 1
+	return changed
+
+
+## 推進一個 60 FPS 動畫幀（測試與舊呼叫端用）；回傳這幀有沒有換格。
 func tick() -> bool:
-	frame_count += 1
-	if frame_count % WindingKeyAnim.FRAMES_PER_STEP != 0:
-		return false
-	return advance_step()
+	return tick_time(1.0 / WindingKeyAnim.ANIM_FPS) > 0
 
 
 ## 交一個鑰匙層節點給節拍器（HD 兩層模式）。傳 null 取消。

@@ -172,7 +172,7 @@ var _bg_tween: Tween = null
 var _stage_anchor: Control = null
 var _stage_tween: Tween = null
 ## 背後鑰匙待機：每 8 幀轉一格（WindingKeyAnim），一圈 8 格
-var _key_step_frames: int = 0
+var _key_step_accum: float = 0.0
 var _key_step: int = 0
 var _hero_key_frames: Array[Texture2D] = []
 var _cached_hero_body_comp_512: Texture2D = null
@@ -1436,9 +1436,10 @@ func _process(delta: float) -> void:
 	if _current_tab != Tab.VILLAGE or _is_interacting:
 		return
 
-	# 背後發條鑰匙：每 8 幀轉一格（任務書 §3）；手動觸發才冒金屑
-	_key_step_frames += 1
-	if _key_step_frames % WindingKeyAnim.FRAMES_PER_STEP == 0:
+	# 背後發條鑰匙：每 8/60 秒轉一格（任務書 §3「每 8 幀」以 60 FPS 動畫計，#61）；手動觸發才冒金屑
+	var key_r: Array = WindingKeyAnim.accumulate(_key_step_accum, delta)
+	_key_step_accum = float(key_r[1])
+	for i in range(mini(int(key_r[0]), WindingKeyAnim.STEPS_PER_TURN)):
 		_advance_key_step()
 
 	if not enable_idle_flavor:

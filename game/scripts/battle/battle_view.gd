@@ -2062,7 +2062,7 @@ func _ensure_player_key_ticker() -> void:
 
 ## 沒有紙娃娃合成圖（全新存檔、沒存過外觀）時 player_body 用的是展示立繪 HD。
 ## 美術拆好身體／鑰匙兩層的話（#27／#48），待機改成「身體＋後面一張鑰匙層」，
-## 鑰匙層交給 WindingKeyTicker 每 8 幀轉一格。非待機姿勢、或用的是紙娃娃 512，就收起鑰匙層。
+## 鑰匙層交給 WindingKeyTicker 每 8/60 秒轉一格。非待機姿勢、或用的是紙娃娃 512，就收起鑰匙層。
 const HD_KEY_PIVOT_KEY := "rabbit/showcase_hd"
 
 
