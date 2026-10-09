@@ -12,6 +12,7 @@ extends Control
 
 signal confirmed()
 signal next_stage_requested()
+signal replay_stage_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
@@ -55,6 +56,7 @@ var _scrap_tag_lbl: Label
 var _scrap_lbl: Label
 var _btn_equip: Button
 var _btn_confirm: Button
+var _btn_replay_stage: Button
 var _btn_next_stage: Button
 var _btn_close: Button
 var _cached_font: Font = null
@@ -84,6 +86,7 @@ var _current_cmp_slot_id: String = ""
 var _part: Dictionary = {}
 var _on_confirm: Callable = Callable()
 var _on_next_stage: Callable = Callable()
+var _on_replay_stage: Callable = Callable()
 var _stage_num: String = ""
 var _next_stage_data: Dictionary = {}
 var _is_equipped: bool = false
@@ -124,17 +127,18 @@ func set_stage(stage_num: String) -> void:
 	_refresh_display()
 
 
-static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "") -> Control:
+static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/battle_victory_dialog.gd").new()
-	dlg.setup(part, on_confirm, exp_gain, scrap_gain, broken_parts, on_next_stage, stage_num)
+	dlg.setup(part, on_confirm, exp_gain, scrap_gain, broken_parts, on_next_stage, stage_num, on_replay_stage)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "") -> void:
+func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable()) -> void:
 	_part = part.duplicate(true)
 	_on_confirm = on_confirm
 	_on_next_stage = on_next_stage
+	_on_replay_stage = on_replay_stage
 	if stage_num != "":
 		_stage_num = stage_num
 	elif _part.has("stage") and str(_part["stage"]) != "":
@@ -251,13 +255,13 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "VictoryCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 420)
+	_dialog_card.custom_minimum_size = Vector2(756, 420)
 	_dialog_card.add_theme_stylebox_override("panel", _create_floating_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 24)
-	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_right", 14)
 	margin.add_theme_constant_override("margin_top", 18)
 	margin.add_theme_constant_override("margin_bottom", 20)
 	_dialog_card.add_child(margin)
@@ -466,13 +470,13 @@ func _build_ui() -> void:
 	# ── 底部按鈕區（橫屏雙拇指操作，高度 >= 50px）──
 	var btn_row := HBoxContainer.new()
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	btn_row.add_theme_constant_override("separation", 16)
+	btn_row.add_theme_constant_override("separation", 8)
 	v.add_child(btn_row)
 
 	_btn_equip = Button.new()
 	_btn_equip.name = "BtnEquip"
 	_btn_equip.text = _t("立即裝備")
-	_btn_equip.custom_minimum_size = Vector2(200, 52)
+	_btn_equip.custom_minimum_size = Vector2(130, 52)
 	_btn_equip.focus_mode = Control.FOCUS_NONE
 	_style_button(_btn_equip, COLOR_SKY, COLOR_BORDER)
 	_btn_equip.pressed.connect(_on_equip_pressed)
@@ -481,11 +485,25 @@ func _build_ui() -> void:
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
 	_btn_confirm.text = _t("收下完成")
-	_btn_confirm.custom_minimum_size = Vector2(200, 52)
+	_btn_confirm.custom_minimum_size = Vector2(140, 52)
 	_btn_confirm.focus_mode = Control.FOCUS_NONE
 	_style_button(_btn_confirm, COLOR_GOLD, COLOR_BORDER)
 	_btn_confirm.pressed.connect(_on_confirm_pressed)
 	btn_row.add_child(_btn_confirm)
+
+	# 再次挑戰按鈕 (BtnReplayStage, 多巴胺暖橘立體厚底按鈕, 高度 52px, bottom border 6px, 圓角 20px)
+	_btn_replay_stage = Button.new()
+	_btn_replay_stage.name = "BtnReplayStage"
+	_btn_replay_stage.text = _t("再次挑戰")
+	_btn_replay_stage.custom_minimum_size = Vector2(170, 52)
+	_btn_replay_stage.focus_mode = Control.FOCUS_NONE
+	if _cached_font:
+		_btn_replay_stage.add_theme_font_override("font", _cached_font)
+	_btn_replay_stage.add_theme_font_size_override("font_size", 16)
+	_btn_replay_stage.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_style_button(_btn_replay_stage, COLOR_ORANGE, COLOR_BORDER, 6, 20)
+	_btn_replay_stage.pressed.connect(_on_replay_stage_pressed)
+	btn_row.add_child(_btn_replay_stage)
 
 	_btn_next_stage = Button.new()
 	_btn_next_stage.name = "BtnNextStage"
@@ -503,8 +521,8 @@ func _build_ui() -> void:
 	# 背包圖示目標（多巴胺獎勵入袋流向目標，熱區 >= 48px，零系統 emoji）
 	_bag_target = PanelContainer.new()
 	_bag_target.name = "BagTarget"
-	_bag_target.custom_minimum_size = Vector2(52, 52)
-	_bag_target.pivot_offset = Vector2(26, 26)
+	_bag_target.custom_minimum_size = Vector2(50, 52)
+	_bag_target.pivot_offset = Vector2(25, 26)
 	var bag_st := StyleBoxFlat.new()
 	bag_st.bg_color = COLOR_CARD_WARM
 	bag_st.border_color = COLOR_BORDER
@@ -547,6 +565,11 @@ func _refresh_display() -> void:
 	_sub_lbl.text = _t("關卡討伐成功！獲得戰利品機芯部件")
 	_btn_confirm.text = _t("收下完成")
 	_btn_equip.text = _t("已裝備") if _is_equipped else _t("立即裝備")
+	_btn_equip.visible = not _part.is_empty()
+	if _btn_replay_stage != null:
+		_btn_replay_stage.text = _t("再次挑戰")
+		var can_replay: bool = not _stage_num.is_empty() and not _is_colossus
+		_btn_replay_stage.visible = can_replay
 	if _btn_next_stage != null:
 		_btn_next_stage.text = _t("挑戰下一關")
 		var has_next: bool = not _next_stage_data.is_empty() and not _is_colossus
@@ -1002,6 +1025,42 @@ func _finish_confirm() -> void:
 	queue_free()
 
 
+func _on_replay_stage_pressed() -> void:
+	if _is_confirming:
+		return
+	_is_confirming = true
+
+	var a = _audio()
+	if a != null:
+		if a.has_method("play_ui"):
+			a.play_ui()
+
+	if DisplayServer.get_name() == "headless" or not is_inside_tree() or _fx_layer == null:
+		_finish_replay_stage()
+		return
+
+	play_reward_particles_to_bag(Callable(self, "_finish_replay_stage"))
+
+
+func _finish_replay_stage() -> void:
+	replay_stage_requested.emit()
+	if _on_replay_stage.is_valid() and not replay_stage_requested.is_connected(_on_replay_stage):
+		_on_replay_stage.call()
+	queue_free()
+
+
+func get_replay_button() -> Button:
+	return _btn_replay_stage
+
+
+func get_replay_button_text() -> String:
+	return _btn_replay_stage.text if _btn_replay_stage != null else ""
+
+
+func get_retry_button() -> Button:
+	return _btn_replay_stage
+
+
 func _on_next_stage_pressed() -> void:
 	if _is_confirming:
 		return
@@ -1076,13 +1135,13 @@ func _create_inner_card_style(bg: Color, border: Color, bw: int, sh: int, cr: in
 	return sb
 
 
-func _style_button(btn: Button, bg: Color, border: Color) -> void:
+func _style_button(btn: Button, bg: Color, border: Color, bottom_border: int = 5, corner_radius: int = 14) -> void:
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = bg
 	normal.border_color = border
 	normal.set_border_width_all(2)
-	normal.border_width_bottom = 5
-	normal.set_corner_radius_all(14)
+	normal.border_width_bottom = bottom_border
+	normal.set_corner_radius_all(corner_radius)
 
 	var pressed := StyleBoxFlat.new()
 	pressed.bg_color = bg.darkened(0.12)
@@ -1090,14 +1149,14 @@ func _style_button(btn: Button, bg: Color, border: Color) -> void:
 	pressed.set_border_width_all(2)
 	pressed.border_width_bottom = 2
 	pressed.border_width_top = 4
-	pressed.set_corner_radius_all(14)
+	pressed.set_corner_radius_all(corner_radius)
 
 	var disabled := StyleBoxFlat.new()
 	disabled.bg_color = Color(0.85, 0.84, 0.88, 1)
 	disabled.border_color = border.lerp(Color.WHITE, 0.4)
 	disabled.set_border_width_all(2)
 	disabled.border_width_bottom = 3
-	disabled.set_corner_radius_all(14)
+	disabled.set_corner_radius_all(corner_radius)
 
 	btn.add_theme_stylebox_override("normal", normal)
 	btn.add_theme_stylebox_override("hover", normal)

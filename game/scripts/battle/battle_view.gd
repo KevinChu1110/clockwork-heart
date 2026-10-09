@@ -40,6 +40,7 @@ const BATTLE_PLATFORM_OFFSETS := {
 signal battle_finished(won: bool)
 signal gear_up_requested()
 signal retry_stage_requested()
+signal replay_stage_requested()
 
 @onready var log_label: RichTextLabel = %Log
 @onready var player_hp: ProgressBar = %PlayerHP
@@ -5107,8 +5108,11 @@ func _show_victory_settlement(drop_part: Dictionary) -> void:
 		func():
 			_victory_settlement_dialog = null
 			_start_next_expedition_stage(),
-		_current_expedition_stage
+		_current_expedition_stage,
+		_on_replay_stage_victory
 	)
+	if _victory_settlement_dialog and _victory_settlement_dialog.has_signal("replay_stage_requested") and not _victory_settlement_dialog.replay_stage_requested.is_connected(_on_replay_stage_victory):
+		_victory_settlement_dialog.replay_stage_requested.connect(_on_replay_stage_victory)
 
 
 func _start_next_expedition_stage() -> void:
@@ -5150,6 +5154,52 @@ func _start_next_expedition_stage() -> void:
 				return
 
 	setup(next_mode)
+
+
+func _on_replay_stage_victory() -> void:
+	if _victory_settlement_dialog != null and is_instance_valid(_victory_settlement_dialog):
+		_victory_settlement_dialog.queue_free()
+		_victory_settlement_dialog = null
+
+	replay_stage_requested.emit()
+	retry_stage_requested.emit()
+	var target_mode := _mode
+	var stage_num := _current_expedition_stage if _current_expedition_stage != "" else _last_expedition_stage
+	var gs := _gs_node()
+	if stage_num != "" and gs:
+		gs.set("current_expedition_stage", stage_num)
+		var RC = load("res://scripts/world/region_catalog.gd")
+		var sug_lv: int = int(RC.call("expedition_suggest_lv", stage_num)) if RC else 0
+		gs.set("current_suggest_lv", sug_lv)
+		_current_expedition_stage = stage_num
+
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var es: Node = (loop as SceneTree).root.get_node_or_null("EnergySystem")
+		if es and es.has_method("try_spend_for_battle"):
+			var er: Dictionary = es.call("try_spend_for_battle", target_mode)
+			if not bool(er.get("ok", true)):
+				var msg: String = str(er.get("msg", ""))
+				if msg == "":
+					msg = _t("能量不足，無法再次挑戰關卡！")
+				_append_log(_t("[color=#fc8]%s[/color]") % msg)
+				_current_expedition_stage = ""
+				if gs and gs.has_method("clear_expedition_stage"):
+					gs.call("clear_expedition_stage")
+				battle_finished.emit(true)
+				return
+
+	if gs:
+		if gs.has_method("heal_full"):
+			gs.call("heal_full")
+		elif gs.has_method("effective_max_hp"):
+			gs.set("hp", gs.call("effective_max_hp"))
+		elif "max_hp" in gs:
+			gs.set("hp", gs.get("max_hp"))
+	elif GameState:
+		GameState.heal_full()
+
+	setup(target_mode)
 
 
 func _can_offer_ad_revive() -> bool:
