@@ -5770,8 +5770,8 @@
    "id": "equipment-lock-protection",
    "cat": "遊戲",
    "title": "EquipmentSystem與WeaponSwapDialog支援裝備鎖定保護機制",
-   "status": "測試中",
-   "note": "裝備鎖定保護機制實作完成，單元測試 TEST_EQUIPMENT_LOCK_PROTECTION_OK 全綠，3張存證截圖齊全，clock-check全過 (t_3195d5e4)",
+   "status": "已上線",
+   "note": "sideqa 審查通過 (t_3195d5e4 done)，已合併 main",
    "keys": [
     "Equipmen"
    ]
