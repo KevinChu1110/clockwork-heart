@@ -3678,5 +3678,7 @@
   "（進入堡壘後解鎖）": "(Se desbloquea al entrar en la Fortaleza)",
   "（進入騎士堡後解鎖）": "(Se desbloquea al entrar en la Fortaleza)",
   "（魂器升至 %s）": "(El recipiente subió a %s)",
-  "（點燃熔爐可再加一條產線）": "(Enciende el horno para tener una línea más)"
+  "（點燃熔爐可再加一條產線）": "(Enciende el horno para tener una línea más)",
+  "再次挑戰": "Reintentar etapa",
+  "能量不足，無法再次挑戰關卡！": "¡Energía insuficiente para reintentar la etapa!"
 }
