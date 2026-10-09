@@ -5730,8 +5730,8 @@
    "id": "victory-next-stage",
    "cat": "遊戲",
    "title": "出征勝利連續挑戰下一關按鈕",
-   "status": "開發中",
-   "note": "t_a1446e8f 由阿宏開發中",
+   "status": "測試中",
+   "note": "完成 BattleVictoryDialog 連續挑戰下一關按鈕與無頭測試",
    "keys": [
     "出征勝利連續挑戰"
    ]
