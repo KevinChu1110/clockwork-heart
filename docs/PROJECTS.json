@@ -5765,6 +5765,16 @@
    "keys": [
     "BattleVi"
    ]
+  },
+  {
+   "id": "equipment-lock-protection",
+   "cat": "遊戲",
+   "title": "EquipmentSystem與WeaponSwapDialog支援裝備鎖定保護機制",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "Equipmen"
+   ]
   }
  ]
 }
