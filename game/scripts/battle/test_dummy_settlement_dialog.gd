@@ -249,6 +249,33 @@ func _initialize() -> void:
 			push_error("get_confirm_text() 得 '%s'" % dlg.get_confirm_text())
 			ok = false
 
+		# 檢驗三欄武器貢獻與輪替次數展示列
+		var contrib_sec := dlg.find_child("WeaponContributionSection", true, false)
+		var swaps_cap := dlg.find_child("WeaponSwapsCapsule", true, false)
+		var slots_box := dlg.find_child("WeaponSlotsHBox", true, false)
+		if contrib_sec == null:
+			push_error("結算面板缺少 WeaponContributionSection")
+			ok = false
+		else:
+			print("  ok 找到 WeaponContributionSection")
+		if swaps_cap == null:
+			push_error("結算面板缺少 WeaponSwapsCapsule")
+			ok = false
+		else:
+			print("  ok 找到 WeaponSwapsCapsule")
+		if slots_box == null:
+			push_error("結算面板缺少 WeaponSlotsHBox")
+			ok = false
+		else:
+			print("  ok 找到 WeaponSlotsHBox")
+		for si in range(3):
+			var sc := dlg.find_child("WeaponSlotCard_%d" % si, true, false)
+			if sc == null:
+				push_error("缺少 WeaponSlotCard_%d" % si)
+				ok = false
+			else:
+				print("  ok 找到 WeaponSlotCard_%d" % si)
+
 		## 3. 檢驗再次試招與確認按鈕回調與信號
 		print("=== 檢驗 3: 雙按鈕回調與信號發送 ===")
 		# 檢驗 retry 按鈕

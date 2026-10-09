@@ -129,6 +129,11 @@ func _run_all_tests() -> void:
 	else:
 		print("  ok 信號事件與統計完全一致 (hits=%d, max_dmg=%d)" % [total_hits, max_hit])
 
+	if not stats.has("weapon_slot_damages") or not stats.has("weapon_swap_count"):
+		_fail("stats 缺少 weapon_slot_damages 或 weapon_swap_count")
+	else:
+		print("  ok stats 包含 weapon_slot_damages 與 weapon_swap_count")
+
 	# ── 檢驗 2: DummySettlementDialog 雙膠囊卡片佈局與字級 ──
 	print("\n--- 檢驗 2: DummySettlementDialog 雙膠囊卡片佈局與字級規範 ---")
 	if loc_node:
