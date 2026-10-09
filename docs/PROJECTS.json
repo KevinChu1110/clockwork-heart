@@ -5760,8 +5760,8 @@
    "id": "weapon-swap-substats",
    "cat": "遊戲",
    "title": "WeaponSwapDialog 完整顯示武器隨機副詞條",
-   "status": "草稿",
-   "note": "t_dcba17d2 sideworker",
+   "status": "開發中",
+   "note": "阿宏進行中",
    "keys": [
     "WeaponSw"
    ]
