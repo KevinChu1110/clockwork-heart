@@ -5755,6 +5755,16 @@
    "keys": [
     "戰敗結算再次挑戰"
    ]
+  },
+  {
+   "id": "victory-replay",
+   "cat": "遊戲",
+   "title": "勝利結算再次挑戰按鈕",
+   "status": "草稿",
+   "note": "BattleVictoryDialog 新增再次挑戰重複刷關",
+   "keys": [
+    "勝利結算再次挑戰"
+   ]
   }
  ]
 }
