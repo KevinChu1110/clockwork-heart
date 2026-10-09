@@ -5685,6 +5685,16 @@
    "keys": [
     "DummySet"
    ]
+  },
+  {
+   "id": "dummy-combat-stats",
+   "cat": "遊戲",
+   "title": "木人樁試招結算最高單擊與總命中統計",
+   "status": "草稿",
+   "note": "DummySettlementDialog 新增單擊最高傷害與總命中次數雙膠囊卡",
+   "keys": [
+    "木人樁試招結算最"
+   ]
   }
  ]
 }
