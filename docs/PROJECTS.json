@@ -5795,6 +5795,16 @@
    "keys": [
     "背包Tab物品詳"
    ]
+  },
+  {
+   "id": "weapon-swap-quality-filter",
+   "cat": "遊戲",
+   "title": "WeaponSwapDialog 支援五色品質稀有度篩選 Chip 列",
+   "status": "草稿",
+   "note": "WeaponSwapDialog 支援白綠藍紫金五色品質過濾 Chip 列",
+   "keys": [
+    "WeaponSw"
+   ]
   }
  ]
 }
