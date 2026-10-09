@@ -3172,7 +3172,7 @@
   "鍛造已封頂": "Forja al máximo",
   "鍛造成功！升階至第 %d 階，攻擊力上升！%s": "¡Forja exitosa! ¡Subido a Rango %d, ataque aumentado!%s",
   "鍛造連敗保底 %d/3 · 滿 3 格釘釘摔錘必成功": "Garantía de forja %d/3 · Con 3 barras Ding lanza el martillo con éxito asegurado",
-  "鎖定": "Fijar",
+  "鎖定": "Bloquear",
   "鎖定中：%s · Tab/1/2/3 切換 · 等本體發白": "Fijado: %s · Tab/1/2/3 para cambiar · espera a que el cuerpo destelle",
   "鎖定中：%s · 點鎖定切換 · 等本體發白": "Fijado: %s · Toca Fijar para cambiar · espera a que el cuerpo destelle",
   "鎖定部位：%s": "Parte fijada: %s",
@@ -3675,5 +3675,11 @@
   "（進入堡壘後解鎖）": "(Se desbloquea al entrar en la Fortaleza)",
   "（進入騎士堡後解鎖）": "(Se desbloquea al entrar en la Fortaleza)",
   "（魂器升至 %s）": "(El recipiente subió a %s)",
-  "（點燃熔爐可再加一條產線）": "(Enciende el horno para tener una línea más)"
+  "（點燃熔爐可再加一條產線）": "(Enciende el horno para tener una línea más)",
+  "已鎖": "Bloqueado",
+  "解鎖": "Desbloquear",
+  "裝備已鎖定": "Equipo bloqueado",
+  "裝備已解鎖": "Equipo desbloqueado",
+  "裝備已鎖定，無法分解。": "El equipo está bloqueado y no se puede desmantelar.",
+  "裝備已鎖定，無法分解": "El equipo está bloqueado y no se puede desmantelar"
 }

@@ -122,3 +122,14 @@ func _apply_forge_atk_gain(atk_gain: int = 2) -> int:
 	GameState.weapon_atk += atk_gain
 	return GameState.weapon_atk
 
+
+## 鐵匠鋪分解武器（轉發至 EquipmentSystem，具備鎖定保護）
+func dismantle_weapon(uid: String) -> Dictionary:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var es: Node = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if es and es.has_method("dismantle"):
+			return es.call("dismantle", uid)
+	return {"ok": false, "msg": _t("找不到裝備系統。")}
+
+

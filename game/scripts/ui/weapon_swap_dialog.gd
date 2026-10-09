@@ -14,6 +14,7 @@ signal weapon_swapped(slot_idx: int, uid: String)
 signal slot_unequipped(slot_idx: int)
 signal closed()
 signal line_filter_changed(line_id: String)
+signal weapon_lock_changed(uid: String, locked: bool)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -1153,12 +1154,32 @@ func _build_weapon_card(winst: Dictionary) -> PanelContainer:
 
 	h.add_child(diff_p)
 
+	# 鎖定/已鎖按鈕（多巴胺厚底小按鈕，熱區 >= 48px）
+	var lock_btn := Button.new()
+	lock_btn.name = "BtnLock"
+	lock_btn.custom_minimum_size = Vector2(64, 48)
+	lock_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	lock_btn.focus_mode = Control.FOCUS_NONE
+	lock_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+
+	var target_uid: String = str(winst.get("uid", ""))
+	var is_locked: bool = bool(winst.get("locked", false))
+	var eq := _get_equip_sys()
+	if eq and eq.has_method("is_equip_locked"):
+		is_locked = bool(eq.call("is_equip_locked", target_uid))
+	_update_lock_btn_visual(lock_btn, is_locked)
+	lock_btn.set_meta("uid", target_uid)
+	lock_btn.set_meta("is_locked", is_locked)
+
+	lock_btn.pressed.connect(func():
+		_toggle_weapon_lock(target_uid, lock_btn, winst)
+	)
+	h.add_child(lock_btn)
+
 	# 右側：操作按鈕
 	var act_btn := Button.new()
 	act_btn.name = "BtnAction"
 	act_btn.custom_minimum_size = Vector2(100, 48)
-
-	var target_uid: String = str(winst.get("uid", ""))
 	if status == "current_slot":
 		act_btn.text = _t("使用中")
 		act_btn.disabled = true
@@ -1310,3 +1331,52 @@ func _get_equip_sys() -> Node:
 	if loop is SceneTree and (loop as SceneTree).root != null:
 		return (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
 	return null
+
+
+func _get_audio_mgr() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		return (loop as SceneTree).root.get_node_or_null("AudioManager")
+	return null
+
+
+func _update_lock_btn_visual(btn: Button, is_locked: bool) -> void:
+	if not btn:
+		return
+	if is_locked:
+		btn.text = _t("已鎖")
+		_style_jelly_btn(btn, COLOR_GOLD, COLOR_TEXT_DARK, 12, 4, 14, COLOR_BORDER)
+	else:
+		btn.text = _t("鎖定")
+		_style_jelly_btn(btn, COLOR_CARD_WARM, COLOR_TEXT_DARK, 12, 4, 14, COLOR_BORDER)
+
+
+func _toggle_weapon_lock(uid: String, btn: Button, winst: Dictionary = {}) -> void:
+	if uid.is_empty():
+		return
+	var eq := _get_equip_sys()
+	var cur_locked := false
+	if eq and eq.has_method("is_equip_locked"):
+		cur_locked = bool(eq.call("is_equip_locked", uid))
+	elif btn.has_meta("is_locked"):
+		cur_locked = bool(btn.get_meta("is_locked"))
+
+	var new_locked := not cur_locked
+	if eq and eq.has_method("set_equip_locked"):
+		eq.call("set_equip_locked", uid, new_locked)
+
+	if not winst.is_empty():
+		winst["locked"] = new_locked
+
+	btn.set_meta("is_locked", new_locked)
+	_update_lock_btn_visual(btn, new_locked)
+
+	var am := _get_audio_mgr()
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	elif am and am.has_method("play"):
+		am.call("play", "ui")
+
+	_toast(_t("裝備已鎖定") if new_locked else _t("裝備已解鎖"))
+	weapon_lock_changed.emit(uid, new_locked)
+

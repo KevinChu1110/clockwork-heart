@@ -508,6 +508,7 @@ func roll_instance(base_id: String, quality: String = "", rng: RandomNumberGener
 		"quality_label": str(qdef.get("label", quality)),
 		"rolled": rolled,
 		"bound": false,
+		"locked": false,
 	}
 	return inst
 
@@ -547,6 +548,46 @@ func find_bag(uid: String) -> Dictionary:
 		if str(e.get("uid", "")) == uid:
 			return e
 	return {}
+
+
+## 查詢裝備是否處於鎖定保護狀態
+func is_equip_locked(uid: String) -> bool:
+	if uid == "":
+		return false
+	_ensure_state()
+	if GameState.equip_worn != null and GameState.equip_worn.has(uid):
+		return bool((GameState.equip_worn[uid] as Dictionary).get("locked", false))
+	if GameState.equip_bag != null:
+		for e in GameState.equip_bag:
+			if str(e.get("uid", "")) == uid:
+				return bool(e.get("locked", false))
+	return false
+
+
+## 設定裝備鎖定/解鎖狀態，並持久化至 GameState.equip_worn / GameState.equip_bag
+func set_equip_locked(uid: String, locked: bool) -> bool:
+	if uid == "":
+		return false
+	_ensure_state()
+	var found := false
+	if GameState.equip_worn != null and GameState.equip_worn.has(uid):
+		var w: Dictionary = (GameState.equip_worn[uid] as Dictionary).duplicate(true)
+		w["locked"] = locked
+		GameState.equip_worn[uid] = w
+		found = true
+	if GameState.equip_bag != null:
+		for i in range(GameState.equip_bag.size()):
+			var e: Dictionary = (GameState.equip_bag[i] as Dictionary).duplicate(true)
+			if str(e.get("uid", "")) == uid:
+				e["locked"] = locked
+				GameState.equip_bag[i] = e
+				found = true
+				break
+	if not found:
+		return false
+	equipment_changed.emit()
+	SaveManager.save_game()
+	return true
 
 
 func find_any(uid: String) -> Dictionary:
@@ -1013,11 +1054,13 @@ func dismantle_yield(inst: Dictionary) -> Dictionary:
 	return {"iron_scrap": scrap, "gold": gold}
 
 
-## 拆解未裝備的裝備，回收為鐵屑與金幣
+## 拆解未裝備的裝備，回收為鐵屑與金幣（防誤拆保護：已鎖定裝備自動阻擋）
 func dismantle(uid: String) -> Dictionary:
 	_ensure_state()
 	if uid == "":
 		return {"ok": false, "msg": _t("無效的裝備識別碼。")}
+	if is_equip_locked(uid):
+		return {"ok": false, "msg": _t("裝備已鎖定，無法分解。")}
 	if GameState.equip_worn.has(uid):
 		return {"ok": false, "msg": _t("裝備中無法拆解，請先卸下。")}
 	for s in SLOTS:
@@ -1057,3 +1100,9 @@ func dismantle(uid: String) -> Dictionary:
 		"gold": gold_n,
 		"msg": _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [inst.get("name", ""), scrap_n, gold_n],
 	}
+
+
+## 鐵匠鋪分解武器（別名方法，對齊 dismantle）
+func dismantle_weapon(uid: String) -> Dictionary:
+	return dismantle(uid)
+

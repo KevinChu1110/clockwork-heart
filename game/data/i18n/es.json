@@ -1022,5 +1022,12 @@
   "點擊切換輪替順位 · 三段作戰序列": "Toca para cambiar orden · Secuencia de combate de 3 fases",
   "點燃熔爐": "Encender Horno",
   "齒輪發條雙斬刃": "Sables Gemelos de Ascuas Mecánicos",
-  "（消耗鐵屑穩火）": " (Hierro residual usado para avivar el fuego)"
+  "（消耗鐵屑穩火）": " (Hierro residual usado para avivar el fuego)",
+  "鎖定": "Bloquear",
+  "已鎖": "Bloqueado",
+  "解鎖": "Desbloquear",
+  "裝備已鎖定": "Equipo bloqueado",
+  "裝備已解鎖": "Equipo desbloqueado",
+  "裝備已鎖定，無法分解。": "El equipo está bloqueado y no se puede desmantelar.",
+  "裝備已鎖定，無法分解": "El equipo está bloqueado y no se puede desmantelar"
 }
