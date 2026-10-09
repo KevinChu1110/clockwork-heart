@@ -3681,5 +3681,7 @@
   "裝備已鎖定": "Equipo bloqueado",
   "裝備已解鎖": "Equipo desbloqueado",
   "裝備已鎖定，無法分解。": "El equipo está bloqueado y no se puede desmantelar.",
-  "裝備已鎖定，無法分解": "El equipo está bloqueado y no se puede desmantelar"
+  "裝備已鎖定，無法分解": "El equipo está bloqueado y no se puede desmantelar",
+  "當前已是最高戰力配置": "Ya tienes la mejor configuración de combate",
+  "已一鍵配置最高戰力武器：%s": "Armas de mayor poder equipadas automáticamente: %s"
 }

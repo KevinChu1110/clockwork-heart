@@ -1029,5 +1029,8 @@
   "裝備已鎖定": "Equipment locked",
   "裝備已解鎖": "Equipment unlocked",
   "裝備已鎖定，無法分解。": "Equipment is locked and cannot be dismantled.",
-  "裝備已鎖定，無法分解": "Equipment is locked and cannot be dismantled"
+  "裝備已鎖定，無法分解": "Equipment is locked and cannot be dismantled",
+  "一鍵配置": "Auto-Equip",
+  "當前已是最高戰力配置": "Already highest combat power loadout",
+  "已一鍵配置最高戰力武器：%s": "Auto-equipped highest power weapons: %s"
 }
