@@ -3650,5 +3650,17 @@
   "新紀錄": "Nuevo récord",
   "歷史最佳：%.1f DPS": "Mejor récord: %.1f DPS",
   "歷史最佳：%s DPS": "Mejor récord: %s DPS",
-  "歷史最佳": "Mejor récord"
+  "歷史最佳": "Mejor récord",
+  "武器庫 · 更換裝備": "Armería · Cambiar equipo",
+  "選擇要裝備至【%s】的武器 · 即時連動紙娃娃與屬性": "Selecciona arma para [%s] · Sincronización en vivo",
+  "背包與庫存尚無可替換武器": "No hay armas alternativas en el inventario",
+  "可前往冒險出征獲取或在鍛造殿堂打造新武器": "Consíguelas en expediciones o forja en la Sala",
+  "卸下武器": "Desequipar",
+  "使用中": "En uso",
+  "調換至此欄": "Cambiar a esta ranura",
+  "其他欄位使用中": "En otra casilla",
+  "當前槽位裝備中": "Equipado aquí",
+  "需達 Lv%d 解鎖": "Requiere Nv.%d",
+  "當前槽位尚未裝備武器": "No hay arma equipada en esta ranura",
+  "點擊武器卡片即可立即更換，即時更新戰鬥屬性與外觀紙娃娃": "Toca un arma para equiparla al instante · Actualiza atributos y aspecto"
 }

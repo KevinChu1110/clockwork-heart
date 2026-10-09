@@ -275,6 +275,8 @@ var _btn_skill_dialog: Button = null
 var _btn_wardrobe: Button = null
 var _char_weapon_title_label: Label = null
 var _char_weapon_sub_label: Label = null
+var _btn_change_weapon: Button = null
+var _weapon_swap_dialog: Control = null
 var _char_stat_title_label: Label = null
 var _stat_cards: Array[PanelContainer] = []
 
@@ -4103,6 +4105,44 @@ func _build_character_tab() -> void:
 	w_hdr.add_child(w_sub)
 	_char_weapon_sub_label = w_sub
 
+	var w_hdr_spacer := Control.new()
+	w_hdr_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	w_hdr.add_child(w_hdr_spacer)
+
+	var btn_change_weapon := Button.new()
+	btn_change_weapon.name = "BtnChangeWeapon"
+	btn_change_weapon.text = _t("更換裝備")
+	btn_change_weapon.custom_minimum_size = Vector2(104, 48)
+	if _cached_font != null:
+		btn_change_weapon.add_theme_font_override("font", _cached_font)
+	btn_change_weapon.add_theme_font_size_override("font_size", 14)
+	btn_change_weapon.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_change_weapon.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_change_weapon.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var ce_sb := StyleBoxFlat.new()
+	ce_sb.bg_color = COLOR_SKY
+	ce_sb.border_color = COLOR_BORDER
+	ce_sb.set_border_width_all(2)
+	ce_sb.border_width_bottom = 5
+	ce_sb.set_corner_radius_all(16)
+	ce_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	ce_sb.shadow_size = 5
+	ce_sb.shadow_offset = Vector2(0, 2)
+	var ce_sb_h := ce_sb.duplicate() as StyleBoxFlat
+	ce_sb_h.bg_color = Color("#5EB5FF")
+	var ce_sb_p := ce_sb.duplicate() as StyleBoxFlat
+	ce_sb_p.border_width_bottom = 2
+	btn_change_weapon.add_theme_stylebox_override("normal", ce_sb)
+	btn_change_weapon.add_theme_stylebox_override("hover", ce_sb_h)
+	btn_change_weapon.add_theme_stylebox_override("pressed", ce_sb_p)
+	btn_change_weapon.add_theme_stylebox_override("focus", ce_sb)
+	btn_change_weapon.pressed.connect(func():
+		open_weapon_swap_dialog(_selected_weapon_slot)
+	)
+	w_hdr.add_child(btn_change_weapon)
+	_btn_change_weapon = btn_change_weapon
+
 	# 2. 三個武器槽果凍卡
 	var w_row := HBoxContainer.new()
 	w_row.add_theme_constant_override("separation", 12)
@@ -4396,7 +4436,7 @@ func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 
 	_style_weapon_slot_button(btn, idx == _selected_weapon_slot)
 	var slot_idx := idx
-	btn.pressed.connect(func(): _select_weapon_slot(slot_idx))
+	btn.pressed.connect(func(): _on_weapon_slot_clicked(slot_idx))
 	return btn
 
 func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
@@ -4451,6 +4491,10 @@ func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
 	btn.add_theme_stylebox_override("hover", sb_h)
 	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
+
+func _on_weapon_slot_clicked(idx: int) -> void:
+	_select_weapon_slot(idx)
+	open_weapon_swap_dialog(idx)
 
 func select_weapon_slot(idx: int) -> void:
 	_select_weapon_slot(idx)
@@ -5708,6 +5752,8 @@ func _apply_locale_texts() -> void:
 		_char_weapon_title_label.text = _t("武器輪替配置")
 	if _char_weapon_sub_label and is_instance_valid(_char_weapon_sub_label):
 		_char_weapon_sub_label.text = _t("點擊切換輪替順位 · 三段作戰序列")
+	if _btn_change_weapon and is_instance_valid(_btn_change_weapon):
+		_btn_change_weapon.text = _t("更換裝備")
 	if _char_stat_title_label and is_instance_valid(_char_stat_title_label):
 		_char_stat_title_label.text = _t("機體戰鬥屬性")
 	if _char_power_badge and is_instance_valid(_char_power_badge):
@@ -5903,6 +5949,48 @@ func open_skill_dialog() -> Control:
 			request_battle.emit("training_dummy")
 		)
 	add_child(dlg)
+	return dlg
+
+
+## 開啟更換裝備武器庫彈窗
+func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
+	var existing = get_node_or_null("WeaponSwapDialog")
+	if existing != null and not existing.is_queued_for_deletion():
+		return existing
+	var target: int = slot_idx if slot_idx >= 0 else _selected_weapon_slot
+	var DlgClass: GDScript = load("res://scripts/ui/weapon_swap_dialog.gd")
+	if DlgClass == null:
+		push_error("無法載入 WeaponSwapDialog")
+		return null
+	var dlg: Control = DlgClass.new() as Control
+	dlg.name = "WeaponSwapDialog"
+	dlg.z_index = 85
+	dlg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if dlg.has_method("setup"):
+		dlg.call("setup", target)
+	dlg.tree_exited.connect(func():
+		_weapon_swap_dialog = null
+		_sync_hero_weapon_paperdoll()
+		_refresh_char_tab_stats(true)
+		_refresh_weapon_slot_buttons()
+		refresh_hud()
+	)
+	if dlg.has_signal("weapon_swapped"):
+		dlg.connect("weapon_swapped", func(_s_idx: int, _uid: String):
+			_sync_hero_weapon_paperdoll()
+			_refresh_char_tab_stats(true)
+			_refresh_weapon_slot_buttons()
+			refresh_hud()
+		)
+	if dlg.has_signal("slot_unequipped"):
+		dlg.connect("slot_unequipped", func(_s_idx: int):
+			_sync_hero_weapon_paperdoll()
+			_refresh_char_tab_stats(true)
+			_refresh_weapon_slot_buttons()
+			refresh_hud()
+		)
+	add_child(dlg)
+	_weapon_swap_dialog = dlg
 	return dlg
 
 
