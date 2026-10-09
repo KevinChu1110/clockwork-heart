@@ -13,6 +13,7 @@ extends Control
 signal weapon_swapped(slot_idx: int, uid: String)
 signal slot_unequipped(slot_idx: int)
 signal closed()
+signal line_filter_changed(line_id: String)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -121,7 +122,76 @@ const SLOT_TITLES: Array[String] = [
 	"絕技武器",
 ]
 
+const FILTER_CHIPS: Array[Dictionary] = [
+	{"id": "all", "key": "全部", "line": "all"},
+	{"id": "sword", "key": "劍", "line": "sword"},
+	{"id": "spear", "key": "長槍", "line": "spear"},
+	{"id": "axe", "key": "斧", "line": "axe"},
+	{"id": "hammer_alt", "key": "錘", "line": "hammer"},
+	{"id": "dagger", "key": "匕首", "line": "dagger"},
+	{"id": "hammer", "key": "鎚", "line": "hammer"},
+	{"id": "fist", "key": "拳套", "line": "fist"},
+	{"id": "claw", "key": "爪", "line": "claw"},
+	{"id": "magic", "key": "法杖", "line": "magic"},
+	{"id": "crystal", "key": "靈晶", "line": "crystal"},
+	{"id": "bow", "key": "弓", "line": "bow"},
+	{"id": "gun", "key": "銃", "line": "gun"},
+]
+
+const FILTER_CHIP_I18N: Dictionary = {
+	"全部": {"zh_TW": "全部", "zh_CN": "全部", "en": "All", "ja": "全部", "ko": "전체", "es": "Todo"},
+	"劍": {"zh_TW": "劍", "zh_CN": "剑", "en": "Sword", "ja": "剣", "ko": "검", "es": "Espada"},
+	"長槍": {"zh_TW": "長槍", "zh_CN": "长枪", "en": "Spear", "ja": "長槍", "ko": "창", "es": "Lanza"},
+	"斧": {"zh_TW": "斧", "zh_CN": "斧", "en": "Axe", "ja": "斧", "ko": "도끼", "es": "Hacha"},
+	"錘": {"zh_TW": "錘", "zh_CN": "锤", "en": "Mace", "ja": "金槌", "ko": "철퇴", "es": "Maza"},
+	"匕首": {"zh_TW": "匕首", "zh_CN": "匕首", "en": "Dagger", "ja": "短剣", "ko": "단검", "es": "Daga"},
+	"鎚": {"zh_TW": "鎚", "zh_CN": "锤", "en": "Hammer", "ja": "槌", "ko": "망치", "es": "Martillo"},
+	"拳套": {"zh_TW": "拳套", "zh_CN": "拳套", "en": "Gauntlets", "ja": "拳套", "ko": "건틀릿", "es": "Guantelete"},
+	"爪": {"zh_TW": "爪", "zh_CN": "爪", "en": "Claw", "ja": "爪", "ko": "클로", "es": "Garra"},
+	"法杖": {"zh_TW": "法杖", "zh_CN": "法杖", "en": "Staff", "ja": "法杖", "ko": "지팡이", "es": "Báculo"},
+	"靈晶": {"zh_TW": "靈晶", "zh_CN": "灵晶", "en": "Crystal", "ja": "霊晶", "ko": "영정", "es": "Cristal"},
+	"弓": {"zh_TW": "弓", "zh_CN": "弓", "en": "Bow", "ja": "弓", "ko": "활", "es": "Arco"},
+	"銃": {"zh_TW": "銃", "zh_CN": "铳", "en": "Gun", "ja": "銃", "ko": "총", "es": "Fusil"},
+}
+
+static func _normalize_line(raw: String) -> String:
+	match raw.to_lower():
+		"sword", "劍", "剑":
+			return "sword"
+		"spear", "長槍", "长枪", "槍", "枪":
+			return "spear"
+		"axe", "斧":
+			return "axe"
+		"hammer", "hammer_alt", "鎚", "錘", "锤":
+			return "hammer"
+		"dagger", "匕首", "匕":
+			return "dagger"
+		"dart", "鏢", "镖":
+			return "dart"
+		"fist", "拳套", "拳":
+			return "fist"
+		"claw", "爪":
+			return "claw"
+		"magic", "法杖", "杖":
+			return "magic"
+		"crystal", "靈晶", "灵晶", "水晶":
+			return "crystal"
+		"bow", "弓":
+			return "bow"
+		"gun", "銃", "铳", "火槍", "火枪":
+			return "gun"
+		_:
+			return raw.to_lower()
+
+static func matches_line_filter(w_line: String, filter: String) -> bool:
+	if filter == "all" or filter == "全部" or filter.is_empty():
+		return true
+	var norm_w := _normalize_line(w_line)
+	var norm_f := _normalize_line(filter)
+	return norm_w == norm_f
+
 var _target_slot: int = 0
+var current_filter_line: String = "all"
 var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _sub_title_lbl: Label
@@ -131,9 +201,14 @@ var _slot_tab_buttons: Array[Button] = []
 var _slot_summary_panel: PanelContainer
 var _slot_summary_lbl: Label
 var _btn_unequip: Button
+var _chip_scroll: ScrollContainer
+var _chips_box: HBoxContainer
+var _filter_chip_buttons: Dictionary = {}
 var _scroll_box: ScrollContainer
 var _weapons_box: VBoxContainer
 var _empty_panel: PanelContainer
+var _empty_title_lbl: Label
+var _empty_sub_lbl: Label
 var _bottom_hint_lbl: Label
 var _cached_font: Font = null
 var _built: bool = false
@@ -168,6 +243,7 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	_refresh_texts()
 	_refresh_slot_tabs()
 	_refresh_slot_summary()
+	_refresh_filter_chips()
 	_rebuild_weapon_list()
 
 
@@ -180,6 +256,7 @@ func setup(slot_idx: int) -> void:
 	if _built:
 		_refresh_slot_tabs()
 		_refresh_slot_summary()
+		_refresh_filter_chips()
 		_rebuild_weapon_list()
 
 
@@ -190,6 +267,7 @@ func _ready() -> void:
 	_build_ui()
 	_refresh_slot_tabs()
 	_refresh_slot_summary()
+	_refresh_filter_chips()
 	_rebuild_weapon_list()
 
 
@@ -318,6 +396,24 @@ func _build_ui() -> void:
 	_btn_unequip.pressed.connect(_on_unequip_pressed)
 	sum_h.add_child(_btn_unequip)
 
+	# 5.5 流派篩選 Chip 列 (水平捲動，按鈕熱區 >= 48px，果凍厚底)
+	var filter_scroll := ScrollContainer.new()
+	filter_scroll.name = "LineFilterScroll"
+	filter_scroll.custom_minimum_size = Vector2(0, 52)
+	filter_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	filter_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	filter_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	root_v.add_child(filter_scroll)
+	_chip_scroll = filter_scroll
+
+	var filter_h := HBoxContainer.new()
+	filter_h.name = "LineFilterHBox"
+	filter_h.add_theme_constant_override("separation", 6)
+	filter_scroll.add_child(filter_h)
+	_chips_box = filter_h
+
+	_build_filter_chips()
+
 	# 6. 武器清單捲動容器
 	_scroll_box = ScrollContainer.new()
 	_scroll_box.name = "WeaponsScroll"
@@ -359,6 +455,7 @@ func _build_ui() -> void:
 	emp_t.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_apply_font(emp_t, 16, COLOR_TEXT_DARK, true)
 	emp_v.add_child(emp_t)
+	_empty_title_lbl = emp_t
 
 	var emp_sub := Label.new()
 	emp_sub.name = "EmptySub"
@@ -366,6 +463,7 @@ func _build_ui() -> void:
 	emp_sub.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_apply_font(emp_sub, 13, COLOR_TEXT_MUTED)
 	emp_v.add_child(emp_sub)
+	_empty_sub_lbl = emp_sub
 
 	# 7. 底部列（提示文字 + 關閉按鈕）
 	var bot_h := HBoxContainer.new()
@@ -498,6 +596,13 @@ func _rebuild_weapon_list() -> void:
 	var candidates := _collect_candidate_weapons()
 	if candidates.is_empty():
 		_empty_panel.visible = true
+		if _empty_title_lbl != null and _empty_sub_lbl != null:
+			if current_filter_line != "all" and not current_filter_line.is_empty():
+				_empty_title_lbl.text = _t("尚無該流派可替換武器")
+				_empty_sub_lbl.text = _t("可嘗試切換其他流派或前往鍛造殿堂打造")
+			else:
+				_empty_title_lbl.text = _t("背包與庫存尚無可替換武器")
+				_empty_sub_lbl.text = _t("可前往冒險出征獲取或在鍛造殿堂打造新武器")
 		return
 
 	_empty_panel.visible = false
@@ -585,7 +690,130 @@ func _collect_candidate_weapons() -> Array[Dictionary]:
 	)
 	result.append_array(bag_weapons)
 
+	# 4. 依照目前流派篩選過濾候選武器
+	if current_filter_line != "all" and not current_filter_line.is_empty():
+		var filtered: Array[Dictionary] = []
+		for w in result:
+			var w_line := str(w.get("line", ""))
+			if w_line.is_empty() and w.has("base_id"):
+				w_line = str(w.get("base_id", ""))
+			if matches_line_filter(w_line, current_filter_line):
+				filtered.append(w)
+		return filtered
+
 	return result
+
+
+func get_candidate_weapons() -> Array[Dictionary]:
+	return _collect_candidate_weapons()
+
+
+func _build_filter_chips() -> void:
+	if _chips_box == null:
+		return
+	_filter_chip_buttons.clear()
+	for child in _chips_box.get_children():
+		_chips_box.remove_child(child)
+		child.queue_free()
+
+	for info in FILTER_CHIPS:
+		var chip_id: String = str(info["id"])
+		var btn := Button.new()
+		btn.name = "Chip_" + chip_id
+		btn.custom_minimum_size = Vector2(58, 48)
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.pressed.connect(func(): set_line_filter(chip_id))
+		_chips_box.add_child(btn)
+		_filter_chip_buttons[chip_id] = btn
+
+	_refresh_filter_chips()
+
+
+func _refresh_filter_chips() -> void:
+	for chip_id in _filter_chip_buttons.keys():
+		var btn: Button = _filter_chip_buttons[chip_id]
+		var info := _get_chip_info(chip_id)
+		btn.text = _get_chip_localized_name(info)
+	_update_filter_chips_visual()
+
+
+func _get_chip_info(chip_id: String) -> Dictionary:
+	for info in FILTER_CHIPS:
+		if info.get("id", "") == chip_id:
+			return info
+	return {"id": chip_id, "key": chip_id, "line": chip_id}
+
+
+func _get_chip_localized_name(info: Dictionary) -> String:
+	var key: String = str(info.get("key", ""))
+	var lc := ContentLoc.locale()
+	if lc == "zh_TW":
+		return key
+	var trans := _t(key)
+	if trans != key and not trans.is_empty():
+		return trans
+	if FILTER_CHIP_I18N.has(key) and FILTER_CHIP_I18N[key].has(lc):
+		return str(FILTER_CHIP_I18N[key][lc])
+	return key
+
+
+func _update_filter_chips_visual() -> void:
+	for chip_id in _filter_chip_buttons.keys():
+		var btn: Button = _filter_chip_buttons[chip_id]
+		var is_selected: bool = (chip_id == current_filter_line)
+		if is_selected:
+			_style_jelly_btn(btn, COLOR_ORANGE, COLOR_TEXT_DARK, 13, 5, 14)
+		else:
+			_style_jelly_btn(btn, COLOR_CARD_WARM, COLOR_TEXT_DARK, 13, 4, 14)
+
+
+func set_line_filter(line_id: String) -> void:
+	var target_chip := "all"
+	for info in FILTER_CHIPS:
+		if info.get("id", "") == line_id or info.get("key", "") == line_id or info.get("line", "") == line_id:
+			target_chip = str(info["id"])
+			break
+	if line_id == "all" or line_id == "全部":
+		target_chip = "all"
+
+	current_filter_line = target_chip
+	_update_filter_chips_visual()
+	_rebuild_weapon_list()
+	if _filter_chip_buttons.has(target_chip):
+		_scroll_to_chip(_filter_chip_buttons[target_chip])
+	line_filter_changed.emit(current_filter_line)
+
+
+func get_current_filter_line() -> String:
+	return current_filter_line
+
+
+func get_filter_chips() -> Dictionary:
+	return _filter_chip_buttons
+
+
+func get_filter_chip(key_or_id: String) -> Button:
+	if _filter_chip_buttons.has(key_or_id):
+		return _filter_chip_buttons[key_or_id]
+	for info in FILTER_CHIPS:
+		if info.get("key", "") == key_or_id or info.get("id", "") == key_or_id or info.get("line", "") == key_or_id:
+			var cid: String = str(info["id"])
+			if _filter_chip_buttons.has(cid):
+				return _filter_chip_buttons[cid]
+	return null
+
+
+func _scroll_to_chip(btn: Button) -> void:
+	if _chip_scroll == null or btn == null:
+		return
+	var btn_left: float = btn.position.x
+	var btn_right: float = btn_left + btn.size.x
+	var scroll_left: float = float(_chip_scroll.scroll_horizontal)
+	var scroll_right: float = scroll_left + _chip_scroll.size.x
+	if btn_left < scroll_left:
+		_chip_scroll.scroll_horizontal = int(btn_left)
+	elif btn_right > scroll_right and _chip_scroll.size.x > 0:
+		_chip_scroll.scroll_horizontal = int(btn_right - _chip_scroll.size.x)
 
 
 func get_target_slot_weapon_info() -> Dictionary:
