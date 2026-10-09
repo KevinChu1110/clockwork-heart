@@ -5544,7 +5544,7 @@ func _show_dummy_settlement(won: bool) -> void:
 	if sim != null and sim.has_method("get_dummy_combat_stats"):
 		stats = sim.get_dummy_combat_stats()
 	else:
-		stats = {"total_damage": 0, "elapsed_time": 0.0, "dps": 0.0}
+		stats = {"total_damage": 0, "elapsed_time": 0.0, "dps": 0.0, "max_hit_damage": 0, "total_hit_count": 0}
 	_dummy_settlement_dialog = DummySettlementDialogScript.show_dialog(
 		self,
 		stats,

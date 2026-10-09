@@ -62,11 +62,19 @@ var _card3_unit_lbl: Label
 var _record_badge: PanelContainer
 var _record_badge_lbl: Label
 var _best_dps_lbl: Label
+var _max_hit_label: Label
+var _max_hit_title_lbl: Label
+var _max_hit_unit_lbl: Label
+var _total_hits_label: Label
+var _total_hits_title_lbl: Label
+var _total_hits_unit_lbl: Label
 
 var _total_damage: int = 0
 var _elapsed_time: float = 0.0
 var _dps: float = 0.0
 var _best_dps: float = 0.0
+var _max_hit_damage: int = 0
+var _total_hit_count: int = 0
 var _is_new_record: bool = false
 var _record_evaluated: bool = false
 var _on_confirm: Callable = Callable()
@@ -114,6 +122,8 @@ func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: 
 	_total_damage = int(stats.get("total_damage", 0))
 	_elapsed_time = float(stats.get("elapsed_time", 0.0))
 	_dps = float(stats.get("dps", 0.0))
+	_max_hit_damage = int(stats.get("max_hit_damage", 0))
+	_total_hit_count = int(stats.get("total_hit_count", 0))
 	_on_confirm = on_confirm
 	_on_retry = on_retry
 	_evaluate_record(stats)
@@ -195,7 +205,7 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "DummySettlementCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 420)
+	_dialog_card.custom_minimum_size = Vector2(750, 480)
 	_dialog_card.add_theme_stylebox_override("panel", _create_floating_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
@@ -346,6 +356,36 @@ func _build_ui() -> void:
 
 	stats_hbox.add_child(res3.card)
 
+	# ── 多巴胺雙膠囊數據列 (最高單擊 / 總命中次數) ──
+	var capsules_hbox := HBoxContainer.new()
+	capsules_hbox.name = "CapsulesHBox"
+	capsules_hbox.add_theme_constant_override("separation", 14)
+	v.add_child(capsules_hbox)
+
+	# 膠囊 1: 最高單擊 (多巴胺天藍柔和卡片底，字級 >= 14px 加粗深藍紫文字，零 Emoji)
+	var res_capsule1 := _build_capsule_card(
+		"MaxHitCapsule",
+		"MaxHitValueLabel",
+		Color("#F0F7FF"),
+		COLOR_SKY
+	)
+	_max_hit_label = res_capsule1.value_label
+	_max_hit_title_lbl = res_capsule1.title_label
+	_max_hit_unit_lbl = res_capsule1.unit_label
+	capsules_hbox.add_child(res_capsule1.card)
+
+	# 膠囊 2: 總命中次數 (多巴胺薄荷綠柔和卡片底，字級 >= 14px 加粗深藍紫文字，零 Emoji)
+	var res_capsule2 := _build_capsule_card(
+		"TotalHitsCapsule",
+		"TotalHitsValueLabel",
+		Color("#F0FAF2"),
+		COLOR_MINT
+	)
+	_total_hits_label = res_capsule2.value_label
+	_total_hits_title_lbl = res_capsule2.title_label
+	_total_hits_unit_lbl = res_capsule2.unit_label
+	capsules_hbox.add_child(res_capsule2.card)
+
 	# ── 提示說明卡片 ──
 	var tip_card := PanelContainer.new()
 	tip_card.name = "TipCard"
@@ -466,6 +506,15 @@ func _update_ui_texts() -> void:
 	if _best_dps_lbl and is_instance_valid(_best_dps_lbl):
 		_best_dps_lbl.text = _t("歷史最佳：%.1f DPS") % _best_dps
 
+	if _max_hit_title_lbl and is_instance_valid(_max_hit_title_lbl):
+		_max_hit_title_lbl.text = _t("最高單擊")
+	if _max_hit_unit_lbl and is_instance_valid(_max_hit_unit_lbl):
+		_max_hit_unit_lbl.text = _t("點")
+	if _total_hits_title_lbl and is_instance_valid(_total_hits_title_lbl):
+		_total_hits_title_lbl.text = _t("總命中次數")
+	if _total_hits_unit_lbl and is_instance_valid(_total_hits_unit_lbl):
+		_total_hits_unit_lbl.text = _t("次")
+
 
 func _build_metric_card(card_name: String, val_name: String, bg_col: Color, accent_col: Color) -> Dictionary:
 	var card := PanelContainer.new()
@@ -543,6 +592,65 @@ func _build_metric_card(card_name: String, val_name: String, bg_col: Color, acce
 	}
 
 
+func _build_capsule_card(card_name: String, val_name: String, bg_col: Color, accent_col: Color) -> Dictionary:
+	var card := PanelContainer.new()
+	card.name = card_name
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.custom_minimum_size = Vector2(0, 44)
+	card.add_theme_stylebox_override("panel", _create_inner_card_style(bg_col, COLOR_BORDER, 2, 3, 16))
+
+	var m := MarginContainer.new()
+	m.name = "Margin"
+	m.add_theme_constant_override("margin_left", 16)
+	m.add_theme_constant_override("margin_right", 16)
+	m.add_theme_constant_override("margin_top", 8)
+	m.add_theme_constant_override("margin_bottom", 8)
+	card.add_child(m)
+
+	var h := HBoxContainer.new()
+	h.name = "HBox"
+	h.add_theme_constant_override("separation", 8)
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	m.add_child(h)
+
+	var t_lbl := Label.new()
+	t_lbl.name = "TitleLabel"
+	t_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	t_lbl.add_theme_font_size_override("font_size", 14)
+	t_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		t_lbl.add_theme_font_override("font", _cached_font)
+	h.add_child(t_lbl)
+
+	var val_lbl := Label.new()
+	val_lbl.name = val_name
+	val_lbl.text = "0"
+	val_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	val_lbl.add_theme_font_size_override("font_size", 20)
+	val_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	val_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	val_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		val_lbl.add_theme_font_override("font", _cached_font)
+	h.add_child(val_lbl)
+
+	var u_lbl := Label.new()
+	u_lbl.name = "UnitLabel"
+	u_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	u_lbl.add_theme_font_size_override("font_size", 14)
+	u_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	if _cached_font:
+		u_lbl.add_theme_font_override("font", _cached_font)
+	h.add_child(u_lbl)
+
+	return {
+		"card": card,
+		"value_label": val_lbl,
+		"title_label": t_lbl,
+		"unit_label": u_lbl,
+	}
+
+
 func _refresh_display() -> void:
 	if _damage_label:
 		_damage_label.text = str(_total_damage)
@@ -550,6 +658,10 @@ func _refresh_display() -> void:
 		_time_label.text = "%.1f" % _elapsed_time
 	if _dps_label:
 		_dps_label.text = "%.1f" % _dps
+	if _max_hit_label:
+		_max_hit_label.text = str(_max_hit_damage)
+	if _total_hits_label:
+		_total_hits_label.text = str(_total_hit_count)
 	if _record_badge:
 		_record_badge.visible = _is_new_record
 	if _best_dps_lbl:
@@ -593,6 +705,30 @@ func get_time_text() -> String:
 
 func get_dps_text() -> String:
 	return _dps_label.text if _dps_label else ""
+
+
+func get_max_hit_damage() -> int:
+	return _max_hit_damage
+
+
+func get_total_hit_count() -> int:
+	return _total_hit_count
+
+
+func get_max_hit_text() -> String:
+	return _max_hit_label.text if _max_hit_label else ""
+
+
+func get_total_hits_text() -> String:
+	return _total_hits_label.text if _total_hits_label else ""
+
+
+func get_max_hit_title_text() -> String:
+	return _max_hit_title_lbl.text if _max_hit_title_lbl else ""
+
+
+func get_total_hits_title_text() -> String:
+	return _total_hits_title_lbl.text if _total_hits_title_lbl else ""
 
 
 func get_title_text() -> String:

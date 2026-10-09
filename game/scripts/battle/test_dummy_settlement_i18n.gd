@@ -208,6 +208,33 @@ func _run_test_suite() -> void:
 		"es": "Mejor récord: %.1f DPS",
 	}
 
+	var expected_max_hit := {
+		"zh_TW": "最高單擊",
+		"zh_CN": "最高单击",
+		"en": "Max Hit",
+		"ja": "最大単撃",
+		"ko": "최고 단타",
+		"es": "Golpe máx.",
+	}
+
+	var expected_total_hits := {
+		"zh_TW": "總命中次數",
+		"zh_CN": "总命中次数",
+		"en": "Total Hits",
+		"ja": "総命中回数",
+		"ko": "총 적중 횟수",
+		"es": "Total de impactos",
+	}
+
+	var expected_hits_unit := {
+		"zh_TW": "次",
+		"zh_CN": "次",
+		"en": "hits",
+		"ja": "回",
+		"ko": "회",
+		"es": "veces",
+	}
+
 	# 1. 檢驗字典查表解析
 	print("\n--- 檢驗 1: 六語系字典 ContentLoc 查表解析 ---")
 	for code in LOCALES:
@@ -278,7 +305,19 @@ func _run_test_suite() -> void:
 		if t_best != expected_best[code]:
 			_fail("[%s] 歷史最佳說明不符: 期望 '%s'，得 '%s'" % [code, expected_best[code], t_best])
 
-		print("  ✓ [%s] 字典全部 16 條通過" % code)
+		var t_max_hit := ContentLoc.text("ui", "最高單擊")
+		if t_max_hit != expected_max_hit[code]:
+			_fail("[%s] 最高單擊詞條不符: 期望 '%s'，得 '%s'" % [code, expected_max_hit[code], t_max_hit])
+
+		var t_tot_hits := ContentLoc.text("ui", "總命中次數")
+		if t_tot_hits != expected_total_hits[code]:
+			_fail("[%s] 總命中次數詞條不符: 期望 '%s'，得 '%s'" % [code, expected_total_hits[code], t_tot_hits])
+
+		var t_hits_u := ContentLoc.text("ui", "次")
+		if t_hits_u != expected_hits_unit[code]:
+			_fail("[%s] 次單位詞條不符: 期望 '%s'，得 '%s'" % [code, expected_hits_unit[code], t_hits_u])
+
+		print("  ✓ [%s] 字典全部 19 條通過" % code)
 
 	# 2. 檢驗 DummySettlementDialog 實例化與 locale_changed 動態刷新
 	print("\n--- 檢驗 2: DummySettlementDialog 動態切換與節點即時刷新 ---")
@@ -289,6 +328,8 @@ func _run_test_suite() -> void:
 		"total_damage": 500,
 		"elapsed_time": 12.8,
 		"dps": 39.1,
+		"max_hit_damage": 78,
+		"total_hit_count": 21,
 	}
 
 	var dlg: Control = DummySettlementDialogClass.show_dialog(root_node, stats)
@@ -305,6 +346,8 @@ func _run_test_suite() -> void:
 	var c1: Control = dlg.find_child("TotalDamageCard", true, false)
 	var c2: Control = dlg.find_child("ElapsedTimeCard", true, false)
 	var c3: Control = dlg.find_child("DpsCard", true, false)
+	var cap1: Control = dlg.find_child("MaxHitCapsule", true, false)
+	var cap2: Control = dlg.find_child("TotalHitsCapsule", true, false)
 
 	var c1_hdr: Label = c1.find_child("HeaderLabel", true, false) if c1 else null
 	var c1_sub: Label = c1.find_child("SubTagLabel", true, false) if c1 else null
@@ -320,6 +363,14 @@ func _run_test_suite() -> void:
 	var c3_sub: Label = c3.find_child("SubTagLabel", true, false) if c3 else null
 	var c3_unit: Label = c3.find_child("UnitLabel", true, false) if c3 else null
 	var c3_val: Label = c3.find_child("DpsValueLabel", true, false) if c3 else null
+
+	var cap1_t: Label = cap1.find_child("TitleLabel", true, false) if cap1 else null
+	var cap1_v: Label = cap1.find_child("MaxHitValueLabel", true, false) if cap1 else null
+	var cap1_u: Label = cap1.find_child("UnitLabel", true, false) if cap1 else null
+
+	var cap2_t: Label = cap2.find_child("TitleLabel", true, false) if cap2 else null
+	var cap2_v: Label = cap2.find_child("TotalHitsValueLabel", true, false) if cap2 else null
+	var cap2_u: Label = cap2.find_child("UnitLabel", true, false) if cap2 else null
 
 	for code in LOCALES:
 		if loc_node:
@@ -356,6 +407,16 @@ func _run_test_suite() -> void:
 		if not c3_unit or c3_unit.text != expected_card3_unit[code]:
 			_fail("[%s] 卡3 UnitLabel 刷新不符: 得 '%s'" % [code, c3_unit.text if c3_unit else "null"])
 
+		# 檢驗雙膠囊
+		if not cap1_t or cap1_t.text != expected_max_hit[code]:
+			_fail("[%s] 最高單擊膠囊 TitleLabel 刷新不符: 得 '%s'" % [code, cap1_t.text if cap1_t else "null"])
+		if not cap1_u or cap1_u.text != expected_card1_unit[code]:
+			_fail("[%s] 最高單擊膠囊 UnitLabel 刷新不符: 得 '%s'" % [code, cap1_u.text if cap1_u else "null"])
+		if not cap2_t or cap2_t.text != expected_total_hits[code]:
+			_fail("[%s] 總命中膠囊 TitleLabel 刷新不符: 得 '%s'" % [code, cap2_t.text if cap2_t else "null"])
+		if not cap2_u or cap2_u.text != expected_hits_unit[code]:
+			_fail("[%s] 總命中膠囊 UnitLabel 刷新不符: 得 '%s'" % [code, cap2_u.text if cap2_u else "null"])
+
 		# 檢驗說明句與按鈕
 		if not tip_lbl or tip_lbl.text != expected_tip[code]:
 			_fail("[%s] 節點 TipLabel 刷新不符: 得 '%s'" % [code, tip_lbl.text if tip_lbl else "null"])
@@ -371,9 +432,13 @@ func _run_test_suite() -> void:
 			_fail("[%s] 卡2 耗時數值被篡改: 得 '%s'" % [code, c2_val.text if c2_val else "null"])
 		if not c3_val or c3_val.text != "39.1":
 			_fail("[%s] 卡3 DPS 數值被篡改: 得 '%s'" % [code, c3_val.text if c3_val else "null"])
+		if not cap1_v or cap1_v.text != "78":
+			_fail("[%s] 最高單擊數值被篡改: 得 '%s'" % [code, cap1_v.text if cap1_v else "null"])
+		if not cap2_v or cap2_v.text != "21":
+			_fail("[%s] 總命中次數數值被篡改: 得 '%s'" % [code, cap2_v.text if cap2_v else "null"])
 
 		# 檢驗零 emoji
-		for txt in [title_lbl.text, sub_lbl.text, c1_hdr.text, c1_sub.text, c1_unit.text, c2_hdr.text, c2_sub.text, c2_unit.text, c3_hdr.text, c3_sub.text, c3_unit.text, tip_lbl.text, retry_btn.text, confirm_btn.text]:
+		for txt in [title_lbl.text, sub_lbl.text, c1_hdr.text, c1_sub.text, c1_unit.text, c2_hdr.text, c2_sub.text, c2_unit.text, c3_hdr.text, c3_sub.text, c3_unit.text, cap1_t.text, cap1_u.text, cap2_t.text, cap2_u.text, tip_lbl.text, retry_btn.text, confirm_btn.text]:
 			if _has_emoji(txt):
 				_fail("[%s] 偵測到系統 Emoji: '%s'" % [code, txt])
 

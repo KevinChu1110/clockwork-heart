@@ -28,6 +28,8 @@ const PARRY_EARLY_GRACE := 0.35  ## = time_model.parry_early_grace_sec
 var units: Dictionary = {}  ## id -> BattleUnit
 var time: float = 0.0
 var total_player_damage: int = 0
+var max_hit_damage: int = 0
+var total_hit_count: int = 0
 var finished: bool = false
 var won: bool = false
 var rng: RandomNumberGenerator
@@ -507,6 +509,8 @@ func _apply_player_hit_on_fog(attacker: BattleUnit, target: BattleUnit, dmg: int
 	var dealt := target.take_damage(dmg)
 	if attacker.team == BattleUnit.Team.PLAYER and dealt > 0:
 		total_player_damage += dealt
+		max_hit_damage = maxi(max_hit_damage, dealt)
+		total_hit_count += 1
 	if skill_name != "":
 		_emit("skill_hit", {
 			"attacker": attacker.id,
@@ -668,6 +672,8 @@ func _resolve_strike(u: BattleUnit) -> void:
 			_check_auto_berserk(target)
 		if u.team == BattleUnit.Team.PLAYER and dealt > 0:
 			total_player_damage += dealt
+			max_hit_damage = maxi(max_hit_damage, dealt)
+			total_hit_count += 1
 			_process_part_damage(target, dealt, target.telegraph_active)
 		## 出手也累積戰意，否則戰意只能靠挨打累積，而挨到滿之前人就死了。
 		## 多段武器：首段全額、後段三成——快武器本就揮得快，別再疊怒速
@@ -854,6 +860,8 @@ func _resolve_skill(u: BattleUnit) -> void:
 		total_dealt += dealt
 		if u.team == BattleUnit.Team.PLAYER and dealt > 0:
 			total_player_damage += dealt
+			max_hit_damage = maxi(max_hit_damage, dealt)
+			total_hit_count += 1
 			_process_part_damage(target, dealt, target.telegraph_active)
 		_emit("skill_hit", {
 			"attacker": u.id,
@@ -1310,6 +1318,8 @@ func _perfect_parry(boss: BattleUnit) -> void:
 			var dealt_b := boss.take_damage(clash_dmg)
 			if dealt_b > 0:
 				total_player_damage += dealt_b
+				max_hit_damage = maxi(max_hit_damage, dealt_b)
+				total_hit_count += 1
 			_emit("skill_hit", {
 				"attacker": p.id,
 				"defender": boss.id,
@@ -1329,6 +1339,8 @@ func _perfect_parry(boss: BattleUnit) -> void:
 			var dealt := boss.take_damage(dmg)
 			if dealt > 0:
 				total_player_damage += dealt
+				max_hit_damage = maxi(max_hit_damage, dealt)
+				total_hit_count += 1
 			_emit("skill_hit", {
 				"attacker": p.id,
 				"defender": boss.id,
@@ -1925,7 +1937,7 @@ static func make_dummy_fight(player_stats: Dictionary) -> BattleSim:
 	return sim
 
 
-## 木人樁試招戰鬥數據統計（總傷害、耗時、DPS）
+## 木人樁試招戰鬥數據統計（總傷害、耗時、DPS、最高單擊、總命中次數）
 func get_dummy_combat_stats() -> Dictionary:
 	var dummy := get_unit("training_dummy")
 	var dummy_loss := (dummy.max_hp - dummy.hp) if dummy != null else 0
@@ -1936,6 +1948,8 @@ func get_dummy_combat_stats() -> Dictionary:
 		"total_damage": total_dmg,
 		"elapsed_time": elapsed,
 		"dps": dps,
+		"max_hit_damage": max_hit_damage,
+		"total_hit_count": total_hit_count,
 	}
 
 
