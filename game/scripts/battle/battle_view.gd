@@ -2305,9 +2305,11 @@ func _ensure_battle_look() -> void:
 	call_deferred("_layout_battle_equipment_overlays")
 
 
-func _get_player_equipped_idle_texture() -> Texture2D:
-	if _player_race.is_empty():
-		_player_race = SpriteDB.player_race()
+## 戰鬥立繪用的紙娃娃槽位：外觀槽（paperdoll_slots）＋目前實際裝備的武器。
+## 外觀槽沒指定武器時，補上 equip_slots 裡正在用的那把（開局＝種族起始武器），
+## 立繪手上拿的才會是這場戰鬥真的在用的武器。發條鑰匙分層（WindingKeyAnimator）
+## 與整張合成圖都走這一份，兩條路徑畫出來的武器才一致（#72）。
+func _player_art_slots() -> Dictionary:
 	var slots: Dictionary = {}
 	if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
 		slots = (GameState.paperdoll_slots as Dictionary).duplicate()
@@ -2319,6 +2321,13 @@ func _get_player_equipped_idle_texture() -> Texture2D:
 				var base_id: String = str(winst.get("base_id", winst.get("id", "")))
 				if base_id != "":
 					slots["weapon"] = base_id
+	return slots
+
+
+func _get_player_equipped_idle_texture() -> Texture2D:
+	if _player_race.is_empty():
+		_player_race = SpriteDB.player_race()
+	var slots := _player_art_slots()
 	var tex: Texture2D = SpriteDB.player_equipped_idle(_player_race, slots)
 	if tex != null and tex.get_width() >= 256:
 		return tex
@@ -2333,9 +2342,7 @@ func _apply_battle_art(mode: String) -> void:
 	_ensure_battle_look()
 	_player_race = SpriteDB.player_race()
 	_player_pose = "idle"
-	var slots: Dictionary = {}
-	if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
-		slots = (GameState.paperdoll_slots as Dictionary).duplicate()
+	var slots := _player_art_slots()
 	var anim := WindingKeyAnimator.setup_for(player_body, _player_race, slots)
 	if anim == null or player_body.texture == null:
 		var ptex := _get_player_equipped_idle_texture()
@@ -3774,9 +3781,7 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 		_player_race = SpriteDB.player_race()
 	var k_rect := player_body.get_node_or_null("HeroWindingKey") as TextureRect
 	if pose == "idle":
-		var slots: Dictionary = {}
-		if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
-			slots = (GameState.paperdoll_slots as Dictionary).duplicate()
+		var slots := _player_art_slots()
 		var anim := WindingKeyAnimator.setup_for(player_body, _player_race, slots)
 		if anim != null and player_body.texture != null:
 			if k_rect:
