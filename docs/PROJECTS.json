@@ -5765,6 +5765,16 @@
    "keys": [
     "WeaponSw"
    ]
+  },
+  {
+   "id": "equip-lock-protection",
+   "cat": "遊戲",
+   "title": "EquipmentSystem 與 WeaponSwapDialog 支援裝備鎖定保護機制",
+   "status": "草稿",
+   "note": "t_3195d5e4 sideworker2",
+   "keys": [
+    "Equipmen"
+   ]
   }
  ]
 }
