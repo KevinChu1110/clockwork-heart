@@ -13,6 +13,10 @@ extends RefCounted
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
 
 const FRAMES_PER_STEP := 8
+## 「每 8 幀」是 60 FPS 的動畫幀，不是渲染幀（#61）：一格 = 8/60 秒，一秒 7.5 格。
+## 以前在 _process 數渲染幀，120／144Hz 螢幕轉速快到 2～2.4 倍、掉幀又變慢。
+const ANIM_FPS := 60.0
+const STEP_SECONDS := float(FRAMES_PER_STEP) / ANIM_FPS
 const STEPS_PER_TURN := 8
 const CANVAS := 512
 const SLOT_KEY := "winding_key"
@@ -44,6 +48,15 @@ static func axial_scale(step: int) -> float:
 ## 幀計數 → 第幾格（每 FRAMES_PER_STEP 幀進一格）
 static func step_for_frame(frame_count: int) -> int:
 	return posmod(frame_count / FRAMES_PER_STEP, STEPS_PER_TURN)
+
+
+## 時間累加器（純函式）：把這幀的 delta 加進 accum，回傳 [這幀要進幾格, 剩下的秒數]。
+## 浮點累加 8 次 1/60 會差一點點，給 1µs 容差，免得 60Hz 下拖到第 9 幀。
+static func accumulate(accum: float, delta: float) -> Array:
+	var t := accum + maxf(delta, 0.0)
+	var n := int(floor((t + 0.000001) / STEP_SECONDS))
+	t = maxf(0.0, t - float(n) * STEP_SECONDS)
+	return [n, t]
 
 
 ## 鑰匙主體矩形與樞軸；沒量過的鑰匙用不透明像素外框，樞軸取右緣中點（貼背那側）
