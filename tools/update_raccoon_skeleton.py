@@ -58,7 +58,7 @@ def update_paperdoll_slots(path):
     if not any(v.get("id") == "face_raccoon_hud_polarizer_visor" for v in face_variants):
         face_variants.append({
             "id": "face_raccoon_hud_polarizer_visor",
-            "name": "深邃聚碳酸酯HUD偏光護目鏡罩",
+            "name": "深邃偏光瞄準護目鏡罩",
             "race": "raccoon",
             "tier": "common"
         })
@@ -109,7 +109,7 @@ def update_paperdoll_slots(path):
                 "standee_width_px": 420
             },
             "mechanical_features": {
-                "head_and_neck": "圓潤球形聚合物頭盔部，配有象牙米白工程塑料面頰板與微型螺紋套筒吻部，雙眼為深邃聚碳酸酯HUD偏光護目鏡罩，內含雙聯直徑22px薄荷螢綠瞄準光圈與左右六根鍍銀高頻信號探針鬍鬚",
+                "head_and_neck": "圓潤球形聚合物頭盔部，配有象牙米白工程塑料面頰板與微型螺紋套筒吻部，雙眼為深邃偏光瞄準護目鏡罩，內含雙聯直徑22px薄荷螢綠瞄準光圈與左右六根鍍銀高頻信號探針鬍鬚",
                 "ears": "一對360度活動微型碟形定向通訊雷達耳閥，外緣帶有黃銅緊固圓環，內置微型拾音濾網",
                 "torso_and_limbs": "背部與側身覆蓋厚度1.5mm多巴胺電光航太青工程塑料板件，前胸覆蓋圓弧象牙米白減震工程塑料板，四肢末端裝配吸震防滑厚底黑色磁吸工程矽膠靴與微型導軌吸盤",
                 "tail": "由五節沖壓導電金屬環與夜光聚合物絕緣件鉸接而成的同軸高壓放電長尾，蓄能時自根部逐環亮起電光青霓虹光暈",

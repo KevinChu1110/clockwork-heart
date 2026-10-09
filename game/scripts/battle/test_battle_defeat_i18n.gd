@@ -116,7 +116,7 @@ func _run_test_suite() -> void:
 		"en": "Second Chance: Watch a sponsor ad to rewind, returning to battle with 50% HP!",
 		"ja": "セカンドチャンス：広告を視聴してぜんまいを巻き直し、HP 50% で即座に戦場へ復帰！",
 		"ko": "두 번째 기회: 스폰서 광고를 시청하여 태엽을 다시 감고, 즉시 HP 50%로 전장에 복귀합니다!",
-		"es": "Segunda oportunidad: ¡mira un anuncio para recargar la cuerda y vuelve al combate con 50% de PS!",
+		"es": "Segunda oportunidad: ¡mira un anuncio para recargar la cuerda y vuelve al combate con los PV al 50%!",
 	}
 
 	var expected_hint_no_ads := {
@@ -125,7 +125,7 @@ func _run_test_suite() -> void:
 		"en": "Second Chance: Ads removed, rewind directly and return to battle with 50% HP immediately!",
 		"ja": "セカンドチャンス：広告削除済み、直接ぜんまいを巻き直して HP 50% で即座に戦場へ復帰！",
 		"ko": "두 번째 기회: 광고가 제거되어 바로 태엽을 다시 감고, 즉시 HP 50%로 전장에 복귀합니다!",
-		"es": "Segunda oportunidad: ¡anuncios eliminados, puedes recargar la cuerda directamente y volver al combate con 50% de PS!",
+		"es": "Segunda oportunidad: ¡anuncios eliminados, puedes recargar la cuerda directamente y volver al combate con los PV al 50%!",
 	}
 
 	var expected_tip := {

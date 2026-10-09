@@ -714,16 +714,17 @@ func _add_equip_chip(parent: Container, slot_title: String, item_name: String, t
 	# 蒸汽發條金屬板件底色與發條品質強調色
 	var bg_color := Color(0.12, 0.09, 0.16, 0.82)
 	var accent_color := Color("#D4AF37")
-	if sid == "costume" or slot_title in ["外裝", "Outfit", "衣装"]:
+	## 只認 slot id：唯一呼叫端一定帶 sid；比對翻譯後的欄名會隨語系失效
+	if sid == "costume":
 		bg_color = Color(0.18, 0.10, 0.14, 0.85) # 蒸氣珊瑚深金屬底
 		accent_color = Color("#FF7A59")
-	elif sid == "weapon" or slot_title in ["武器", "Weapon"]:
+	elif sid == "weapon":
 		bg_color = Color(0.18, 0.14, 0.08, 0.85) # 琥珀金屬深底
 		accent_color = Color("#FFA010")
-	elif sid == "winding_key" or slot_title in ["發條", "Clockwork", "ゼンマイ"]:
+	elif sid == "winding_key":
 		bg_color = Color(0.16, 0.13, 0.08, 0.85) # 發條黃銅深金屬底
 		accent_color = Color("#D4AF37")
-	elif sid == "back_curio" or slot_title in ["奇玩", "Curio", "骨董品"]:
+	elif sid == "back_curio":
 		bg_color = Color(0.08, 0.15, 0.16, 0.85) # 以太奇玩青綠金屬底
 		accent_color = Color("#3ECFBF")
 
