@@ -5715,6 +5715,16 @@
    "keys": [
     "大廳角色頁三欄武"
    ]
+  },
+  {
+   "id": "weapon-swap-diff",
+   "cat": "遊戲",
+   "title": "WeaponSwapDialog 武器清單依攻擊力排序與差額比對膠囊",
+   "status": "草稿",
+   "note": "t_d5f64a67 開發中",
+   "keys": [
+    "WeaponSw"
+   ]
   }
  ]
 }
