@@ -5760,8 +5760,8 @@
    "id": "victory-weapon-stats",
    "cat": "遊戲",
    "title": "BattleVictoryDialog 支援三欄武器戰鬥數據統計膠囊",
-   "status": "測試中",
-   "note": "完成節點建置、六語系支援與單元測試綠燈",
+   "status": "已上線",
+   "note": "審核通過並順利上線，已完整完成自動化與截圖核對",
    "keys": [
     "BattleVi"
    ]
