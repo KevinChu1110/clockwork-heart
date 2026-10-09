@@ -3683,5 +3683,13 @@
   "裝備已鎖定，無法分解。": "El equipo está bloqueado y no se puede desmantelar.",
   "裝備已鎖定，無法分解": "El equipo está bloqueado y no se puede desmantelar",
   "當前已是最高戰力配置": "Ya tienes la mejor configuración de combate",
-  "已一鍵配置最高戰力武器：%s": "Armas de mayor poder equipadas automáticamente: %s"
+  "已一鍵配置最高戰力武器：%s": "Armas de mayor poder equipadas automáticamente: %s",
+  "精工": "Refinado",
+  "稀有": "Raro",
+  "史詩": "Épico",
+  "傳說": "Legendario",
+  "尚無該品質可替換武器": "No hay armas de esta calidad en el inventario",
+  "可嘗試切換其他品質或前往鍛造殿堂打造": "Prueba otra calidad o forja en la Sala",
+  "尚無該流派與品質之可替換武器": "No hay armas que coincidan con esta clase y calidad",
+  "可嘗試調整篩選條件或前往鍛造殿堂打造": "Ajusta los filtros o forja en la Sala"
 }

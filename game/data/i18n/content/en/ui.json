@@ -3683,5 +3683,13 @@
   "裝備已鎖定，無法分解。": "Equipment is locked and cannot be dismantled.",
   "裝備已鎖定，無法分解": "Equipment is locked and cannot be dismantled",
   "當前已是最高戰力配置": "Already highest combat power loadout",
-  "已一鍵配置最高戰力武器：%s": "Auto-equipped highest power weapons: %s"
+  "已一鍵配置最高戰力武器：%s": "Auto-equipped highest power weapons: %s",
+  "精工": "Refined",
+  "稀有": "Rare",
+  "史詩": "Epic",
+  "傳說": "Legendary",
+  "尚無該品質可替換武器": "No weapons of this quality in inventory",
+  "可嘗試切換其他品質或前往鍛造殿堂打造": "Try selecting another quality or forge in the Hall",
+  "尚無該流派與品質之可替換武器": "No weapons matching this class and quality",
+  "可嘗試調整篩選條件或前往鍛造殿堂打造": "Try adjusting filters or forge in the Hall"
 }

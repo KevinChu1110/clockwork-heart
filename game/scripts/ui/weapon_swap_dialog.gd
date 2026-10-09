@@ -14,6 +14,7 @@ signal weapon_swapped(slot_idx: int, uid: String)
 signal slot_unequipped(slot_idx: int)
 signal closed()
 signal line_filter_changed(line_id: String)
+signal quality_filter_changed(quality_id: String)
 signal weapon_lock_changed(uid: String, locked: bool)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -244,6 +245,24 @@ const FILTER_CHIP_I18N: Dictionary = {
 	"銃": {"zh_TW": "銃", "zh_CN": "铳", "en": "Gun", "ja": "銃", "ko": "총", "es": "Fusil"},
 }
 
+const QUALITY_CHIPS: Array[Dictionary] = [
+	{"id": "all", "key": "全部", "quality": "all", "color": Color("#FFA010")},
+	{"id": "common", "key": "凡品", "quality": "common", "color": Color("#8E8A9F")},
+	{"id": "uncommon", "key": "精工", "quality": "uncommon", "color": Color("#2E9E4A")},
+	{"id": "rare", "key": "稀有", "quality": "rare", "color": Color("#2575FC")},
+	{"id": "epic", "key": "史詩", "quality": "epic", "color": Color("#9B51E0")},
+	{"id": "legendary", "key": "傳說", "quality": "legendary", "color": Color("#FFD028")},
+]
+
+const QUALITY_CHIP_I18N: Dictionary = {
+	"全部": {"zh_TW": "全部", "zh_CN": "全部", "en": "All", "ja": "全部", "ko": "전체", "es": "Todo"},
+	"凡品": {"zh_TW": "凡品", "zh_CN": "凡品", "en": "Common", "ja": "凡品", "ko": "일반", "es": "Común"},
+	"精工": {"zh_TW": "精工", "zh_CN": "精工", "en": "Refined", "ja": "精工", "ko": "정공", "es": "Refinado"},
+	"稀有": {"zh_TW": "稀有", "zh_CN": "稀有", "en": "Rare", "ja": "希少", "ko": "희귀", "es": "Raro"},
+	"史詩": {"zh_TW": "史詩", "zh_CN": "史诗", "en": "Epic", "ja": "叙事詩", "ko": "서사", "es": "Épico"},
+	"傳說": {"zh_TW": "傳說", "zh_CN": "传说", "en": "Legendary", "ja": "伝説", "ko": "전설", "es": "Legendario"},
+}
+
 static func _normalize_line(raw: String) -> String:
 	match raw.to_lower():
 		"sword", "劍", "剑":
@@ -280,8 +299,37 @@ static func matches_line_filter(w_line: String, filter: String) -> bool:
 	var norm_f := _normalize_line(filter)
 	return norm_w == norm_f
 
+static func _normalize_quality(raw: String) -> String:
+	match raw.to_lower():
+		"common", "凡品", "凡", "white", "白":
+			return "common"
+		"uncommon", "精工", "良品", "良", "green", "綠", "绿":
+			return "uncommon"
+		"rare", "稀有", "上品", "上", "blue", "藍", "蓝":
+			return "rare"
+		"epic", "史詩", "史诗", "極品", "极品", "秘寶", "秘宝", "purple", "紫":
+			return "epic"
+		"legendary", "傳說", "传说", "神品", "神", "gold", "金", "orange":
+			return "legendary"
+		_:
+			return raw.to_lower()
+
+static func matches_quality_filter(w_quality: String, w_quality_label: String, filter: String) -> bool:
+	if filter == "all" or filter == "全部" or filter.is_empty():
+		return true
+	var norm_f := _normalize_quality(filter)
+	var norm_q := _normalize_quality(w_quality)
+	if norm_q == norm_f:
+		return true
+	if not w_quality_label.is_empty():
+		var norm_ql := _normalize_quality(w_quality_label)
+		if norm_ql == norm_f:
+			return true
+	return false
+
 var _target_slot: int = 0
 var current_filter_line: String = "all"
+var current_filter_quality: String = "all"
 var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _sub_title_lbl: Label
@@ -295,6 +343,9 @@ var _btn_unequip: Button
 var _chip_scroll: ScrollContainer
 var _chips_box: HBoxContainer
 var _filter_chip_buttons: Dictionary = {}
+var _quality_scroll: ScrollContainer
+var _quality_chips_box: HBoxContainer
+var _quality_chip_buttons: Dictionary = {}
 var _scroll_box: ScrollContainer
 var _weapons_box: VBoxContainer
 var _empty_panel: PanelContainer
@@ -335,6 +386,7 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	_refresh_slot_tabs()
 	_refresh_slot_summary()
 	_refresh_filter_chips()
+	_refresh_quality_chips()
 	_rebuild_weapon_list()
 
 
@@ -348,6 +400,7 @@ func setup(slot_idx: int) -> void:
 		_refresh_slot_tabs()
 		_refresh_slot_summary()
 		_refresh_filter_chips()
+		_refresh_quality_chips()
 		_rebuild_weapon_list()
 
 
@@ -359,6 +412,7 @@ func _ready() -> void:
 	_refresh_slot_tabs()
 	_refresh_slot_summary()
 	_refresh_filter_chips()
+	_refresh_quality_chips()
 	_rebuild_weapon_list()
 
 
@@ -511,6 +565,24 @@ func _build_ui() -> void:
 	_chips_box = filter_h
 
 	_build_filter_chips()
+
+	# 5.6 五色品質稀有度篩選 Chip 列 (全部 / 凡品-白 / 精工-綠 / 稀有-藍 / 史詩-紫 / 傳說-金，熱區 >= 48px，果凍厚底)
+	var quality_scroll := ScrollContainer.new()
+	quality_scroll.name = "QualityFilterScroll"
+	quality_scroll.custom_minimum_size = Vector2(0, 52)
+	quality_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	quality_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	quality_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	root_v.add_child(quality_scroll)
+	_quality_scroll = quality_scroll
+
+	var quality_h := HBoxContainer.new()
+	quality_h.name = "QualityFilterHBox"
+	quality_h.add_theme_constant_override("separation", 6)
+	quality_scroll.add_child(quality_h)
+	_quality_chips_box = quality_h
+
+	_build_quality_chips()
 
 	# 6. 武器清單捲動容器
 	_scroll_box = ScrollContainer.new()
@@ -711,7 +783,13 @@ func _rebuild_weapon_list() -> void:
 	if candidates.is_empty():
 		_empty_panel.visible = true
 		if _empty_title_lbl != null and _empty_sub_lbl != null:
-			if current_filter_line != "all" and not current_filter_line.is_empty():
+			if current_filter_line != "all" and not current_filter_line.is_empty() and current_filter_quality != "all" and not current_filter_quality.is_empty():
+				_empty_title_lbl.text = _t("尚無該流派與品質之可替換武器")
+				_empty_sub_lbl.text = _t("可嘗試調整篩選條件或前往鍛造殿堂打造")
+			elif current_filter_quality != "all" and not current_filter_quality.is_empty():
+				_empty_title_lbl.text = _t("尚無該品質可替換武器")
+				_empty_sub_lbl.text = _t("可嘗試切換其他品質或前往鍛造殿堂打造")
+			elif current_filter_line != "all" and not current_filter_line.is_empty():
 				_empty_title_lbl.text = _t("尚無該流派可替換武器")
 				_empty_sub_lbl.text = _t("可嘗試切換其他流派或前往鍛造殿堂打造")
 			else:
@@ -813,7 +891,17 @@ func _collect_candidate_weapons() -> Array[Dictionary]:
 				w_line = str(w.get("base_id", ""))
 			if matches_line_filter(w_line, current_filter_line):
 				filtered.append(w)
-		return filtered
+		result = filtered
+
+	# 5. 依照目前品質稀有度篩選過濾候選武器
+	if current_filter_quality != "all" and not current_filter_quality.is_empty():
+		var filtered_q: Array[Dictionary] = []
+		for w in result:
+			var w_q := str(w.get("quality", ""))
+			var w_ql := str(w.get("quality_label", ""))
+			if matches_quality_filter(w_q, w_ql, current_filter_quality):
+				filtered_q.append(w)
+		result = filtered_q
 
 	return result
 
@@ -930,6 +1018,139 @@ func _scroll_to_chip(btn: Button) -> void:
 		_chip_scroll.scroll_horizontal = int(btn_right - _chip_scroll.size.x)
 
 
+func _build_quality_chips() -> void:
+	if _quality_chips_box == null:
+		return
+	_quality_chip_buttons.clear()
+	for child in _quality_chips_box.get_children():
+		_quality_chips_box.remove_child(child)
+		child.queue_free()
+
+	for info in QUALITY_CHIPS:
+		var chip_id: String = str(info["id"])
+		var btn := Button.new()
+		btn.name = "QualityChip_" + chip_id
+		btn.custom_minimum_size = Vector2(64, 48)
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.pressed.connect(func(): set_quality_filter(chip_id))
+		_quality_chips_box.add_child(btn)
+		_quality_chip_buttons[chip_id] = btn
+
+	_refresh_quality_chips()
+
+
+func _refresh_quality_chips() -> void:
+	for chip_id in _quality_chip_buttons.keys():
+		var btn: Button = _quality_chip_buttons[chip_id]
+		var info := _get_quality_chip_info(chip_id)
+		btn.text = _get_quality_chip_localized_name(info)
+	_update_quality_chips_visual()
+
+
+func _get_quality_chip_info(chip_id: String) -> Dictionary:
+	for info in QUALITY_CHIPS:
+		if info.get("id", "") == chip_id:
+			return info
+	return {"id": chip_id, "key": chip_id, "quality": chip_id}
+
+
+func _get_quality_chip_localized_name(info: Dictionary) -> String:
+	var key: String = str(info.get("key", ""))
+	var lc := ContentLoc.locale()
+	if lc == "zh_TW":
+		return key
+	var trans := _t(key)
+	if trans != key and not trans.is_empty():
+		return trans
+	if QUALITY_CHIP_I18N.has(key) and QUALITY_CHIP_I18N[key].has(lc):
+		return str(QUALITY_CHIP_I18N[key][lc])
+	return key
+
+
+func _update_quality_chips_visual() -> void:
+	for chip_id in _quality_chip_buttons.keys():
+		var btn: Button = _quality_chip_buttons[chip_id]
+		var is_selected: bool = (chip_id == current_filter_quality)
+		if is_selected:
+			match chip_id:
+				"common":
+					_style_jelly_btn(btn, Color("#E5E0EE"), COLOR_TEXT_DARK, 13, 5, 14, Color("#6C6780"))
+				"uncommon":
+					_style_jelly_btn(btn, Color("#4ED86A"), COLOR_TEXT_DARK, 13, 5, 14, Color("#1B7535"))
+				"rare":
+					_style_jelly_btn(btn, Color("#38A0FF"), COLOR_TEXT_DARK, 13, 5, 14, Color("#175196"))
+				"epic":
+					_style_jelly_btn(btn, Color("#B877FF"), COLOR_TEXT_DARK, 13, 5, 14, Color("#561E8A"))
+				"legendary":
+					_style_jelly_btn(btn, Color("#FFD028"), COLOR_TEXT_DARK, 13, 5, 14, Color("#8F6300"))
+				_:
+					_style_jelly_btn(btn, COLOR_ORANGE, COLOR_TEXT_DARK, 13, 5, 14, COLOR_BORDER)
+		else:
+			_style_jelly_btn(btn, COLOR_CARD_WARM, COLOR_TEXT_DARK, 13, 4, 14, COLOR_BORDER)
+
+
+func set_quality_filter(quality_id: String) -> void:
+	var target_chip := "all"
+	for info in QUALITY_CHIPS:
+		if info.get("id", "") == quality_id or info.get("key", "") == quality_id or info.get("quality", "") == quality_id:
+			target_chip = str(info["id"])
+			break
+	if quality_id == "all" or quality_id == "全部":
+		target_chip = "all"
+	else:
+		var norm := _normalize_quality(quality_id)
+		for info in QUALITY_CHIPS:
+			if str(info.get("id", "")) == norm or str(info.get("quality", "")) == norm:
+				target_chip = str(info["id"])
+				break
+
+	current_filter_quality = target_chip
+	_update_quality_chips_visual()
+	_rebuild_weapon_list()
+	if _quality_chip_buttons.has(target_chip):
+		_scroll_to_quality_chip(_quality_chip_buttons[target_chip])
+	quality_filter_changed.emit(current_filter_quality)
+
+
+func get_current_filter_quality() -> String:
+	return current_filter_quality
+
+
+func get_quality_chips() -> Dictionary:
+	return _quality_chip_buttons
+
+
+func get_quality_chip(key_or_id: String) -> Button:
+	if _quality_chip_buttons.has(key_or_id):
+		return _quality_chip_buttons[key_or_id]
+	for info in QUALITY_CHIPS:
+		if info.get("key", "") == key_or_id or info.get("id", "") == key_or_id or info.get("quality", "") == key_or_id:
+			var qid: String = str(info["id"])
+			if _quality_chip_buttons.has(qid):
+				return _quality_chip_buttons[qid]
+	var norm := _normalize_quality(key_or_id)
+	if _quality_chip_buttons.has(norm):
+		return _quality_chip_buttons[norm]
+	return null
+
+
+func _scroll_to_quality_chip(btn: Button) -> void:
+	if _quality_scroll == null or btn == null:
+		return
+	var btn_left: float = btn.position.x
+	var btn_right: float = btn_left + btn.size.x
+	var scroll_left: float = float(_quality_scroll.scroll_horizontal)
+	var scroll_right: float = scroll_left + _quality_scroll.size.x
+	if btn_left < scroll_left:
+		_quality_scroll.scroll_horizontal = int(btn_left)
+	elif btn_right > scroll_right and _quality_scroll.size.x > 0:
+		_quality_scroll.scroll_horizontal = int(btn_right - _quality_scroll.size.x)
+
+
+func get_visible_weapons_count() -> int:
+	return _collect_candidate_weapons().size()
+
+
 func get_target_slot_weapon_info() -> Dictionary:
 	var eq := _get_equip_sys()
 	var gs := _gs()
@@ -983,8 +1204,11 @@ func _build_weapon_card(winst: Dictionary) -> PanelContainer:
 	card.add_child(h)
 
 	# 左側：品質與流派膠囊
-	var quality: String = str(winst.get("quality", "common"))
-	var q_col := _get_quality_color(quality)
+	var raw_q: String = str(winst.get("quality", ""))
+	if raw_q.is_empty():
+		raw_q = str(winst.get("quality_label", "common"))
+	var quality: String = str(winst.get("quality", raw_q))
+	var q_col := _get_quality_color(raw_q)
 	var q_label := _t(str(winst.get("quality_label", "凡品")))
 	var line: String = str(winst.get("line", "sword"))
 	var line_name := _t(LINE_NAMES.get(line, "武器"))
@@ -1267,11 +1491,12 @@ func _toast(msg: String) -> void:
 
 
 func _get_quality_color(q: String) -> Color:
-	match q:
+	match _normalize_quality(q):
 		"common": return Color("#8E8A9F")
 		"uncommon": return Color("#2E9E4A")
 		"rare": return Color("#2575FC")
 		"epic": return Color("#9B51E0")
+		"legendary": return Color("#FFA010")
 		_: return Color("#8E8A9F")
 
 
