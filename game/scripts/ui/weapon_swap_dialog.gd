@@ -86,6 +86,95 @@ const COLOR_DIFF_EQ_BG    := Color("#F4F1EA")  ## 相等/為空底
 const COLOR_DIFF_EQ_TEXT  := Color("#888294")  ## 相等/為空文字
 const COLOR_DIFF_EQ_BD    := Color("#DCD7CC")  ## 相等/為空邊框
 
+## ── 副詞條多巴胺膠囊高對比配色 ──
+const COLOR_SUBSTAT_DEF_BG   := Color("#E6F2FF")  ## 柔和天藍底 (防禦)
+const COLOR_SUBSTAT_DEF_BD   := Color("#38A0FF")  ## 天藍邊框 (防禦)
+const COLOR_SUBSTAT_HP_BG    := Color("#FFEBF0")  ## 柔和珊瑚粉底 (生命)
+const COLOR_SUBSTAT_HP_BD    := Color("#FF5E8A")  ## 珊瑚粉邊框 (生命)
+const COLOR_SUBSTAT_CDMG_BG  := Color("#FFF8D6")  ## 柔和金黃底 (暴傷)
+const COLOR_SUBSTAT_CDMG_BD  := Color("#FFA010")  ## 暖橘邊框 (暴傷)
+const COLOR_SUBSTAT_CRIT_BG  := Color("#FFF0DE")  ## 柔和琥珀底 (暴擊)
+const COLOR_SUBSTAT_CRIT_BD  := Color("#FF8C00")  ## 深橘邊框 (暴擊)
+
+const SUBSTAT_I18N: Dictionary = {
+	"防禦": {"zh_TW": "防禦", "zh_CN": "防御", "en": "DEF", "ja": "防御", "ko": "방어", "es": "DEF"},
+	"生命": {"zh_TW": "生命", "zh_CN": "生命", "en": "HP", "ja": "HP", "ko": "HP", "es": "Salud"},
+	"暴傷": {"zh_TW": "暴傷", "zh_CN": "暴伤", "en": "Crit DMG", "ja": "会心ダメ", "ko": "치명타 피해", "es": "Daño Crít."},
+	"暴擊傷害": {"zh_TW": "暴擊傷害", "zh_CN": "暴击伤害", "en": "Critical Damage", "ja": "会心ダメージ", "ko": "치명타 대미지", "es": "Daño Crítico"},
+	"暴擊": {"zh_TW": "暴擊", "zh_CN": "暴击", "en": "Crit", "ja": "会心", "ko": "치명타", "es": "Crítico"},
+}
+
+static func get_substat_name(stat_type: String) -> String:
+	var base_key := ""
+	match stat_type:
+		"def": base_key = "防禦"
+		"hp": base_key = "生命"
+		"crit_dmg": base_key = "暴傷"
+		"crit": base_key = "暴擊"
+		_: base_key = stat_type
+	var trans := _t(base_key)
+	if trans != base_key and not trans.is_empty():
+		return trans
+	var lc := ContentLoc.locale()
+	if SUBSTAT_I18N.has(base_key) and SUBSTAT_I18N[base_key].has(lc):
+		return str(SUBSTAT_I18N[base_key][lc])
+	return base_key
+
+static func extract_substats(winst: Dictionary) -> Dictionary:
+	var res := {
+		"def": 0,
+		"hp": 0,
+		"crit_dmg": 0.0,
+		"crit": 0.0
+	}
+	if winst.has("rolled") and winst["rolled"] is Dictionary:
+		var r: Dictionary = winst["rolled"]
+		res["def"] = int(r.get("def", 0))
+		res["hp"] = int(r.get("hp", 0))
+		res["crit_dmg"] = float(r.get("crit_dmg", 0.0))
+		res["crit"] = float(r.get("crit", 0.0))
+	return res
+
+static func has_substats(winst: Dictionary) -> bool:
+	var s := extract_substats(winst)
+	return (int(s["def"]) > 0 or int(s["hp"]) > 0 or float(s["crit_dmg"]) > 0.0 or float(s["crit"]) > 0.0)
+
+static func format_substat_text(stat_type: String, val: float, diff_val: float = 0.0, has_diff: bool = false) -> String:
+	var name_str := get_substat_name(stat_type)
+	var val_str := ""
+	var diff_str := ""
+
+	if stat_type == "crit_dmg" or stat_type == "crit":
+		val_str = "+%.1f%%" % val
+		if has_diff:
+			if diff_val > 0.05:
+				diff_str = " (+%.1f%%)" % diff_val
+			elif diff_val < -0.05:
+				diff_str = " (%.1f%%)" % diff_val
+	else:
+		val_str = "+%d" % int(val)
+		if has_diff:
+			var int_diff := int(round(diff_val))
+			if int_diff > 0:
+				diff_str = " (+%d)" % int_diff
+			elif int_diff < 0:
+				diff_str = " (%d)" % int_diff
+
+	return "%s %s%s" % [name_str, val_str, diff_str]
+
+static func get_substat_colors(stat_type: String) -> Dictionary:
+	match stat_type:
+		"def":
+			return {"bg": COLOR_SUBSTAT_DEF_BG, "bd": COLOR_SUBSTAT_DEF_BD}
+		"hp":
+			return {"bg": COLOR_SUBSTAT_HP_BG, "bd": COLOR_SUBSTAT_HP_BD}
+		"crit_dmg":
+			return {"bg": COLOR_SUBSTAT_CDMG_BG, "bd": COLOR_SUBSTAT_CDMG_BD}
+		"crit":
+			return {"bg": COLOR_SUBSTAT_CRIT_BG, "bd": COLOR_SUBSTAT_CRIT_BD}
+		_:
+			return {"bg": COLOR_CARD_WARM, "bd": COLOR_BORDER}
+
 const LINE_NAMES: Dictionary = {
 	"sword": "劍",
 	"spear": "長槍",
@@ -200,6 +289,7 @@ var _bottom_close_btn: Button
 var _slot_tab_buttons: Array[Button] = []
 var _slot_summary_panel: PanelContainer
 var _slot_summary_lbl: Label
+var _slot_substats_box: HBoxContainer
 var _btn_unequip: Button
 var _chip_scroll: ScrollContainer
 var _chips_box: HBoxContainer
@@ -379,7 +469,7 @@ func _build_ui() -> void:
 	root_v.add_child(_slot_summary_panel)
 
 	var sum_h := HBoxContainer.new()
-	sum_h.add_theme_constant_override("separation", 12)
+	sum_h.add_theme_constant_override("separation", 10)
 	_slot_summary_panel.add_child(sum_h)
 
 	_slot_summary_lbl = Label.new()
@@ -387,6 +477,13 @@ func _build_ui() -> void:
 	_slot_summary_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_apply_font(_slot_summary_lbl, 14, COLOR_TEXT_DARK)
 	sum_h.add_child(_slot_summary_lbl)
+
+	var slot_subs_box := HBoxContainer.new()
+	slot_subs_box.name = "SlotSubstatsBox"
+	slot_subs_box.add_theme_constant_override("separation", 6)
+	slot_subs_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	sum_h.add_child(slot_subs_box)
+	_slot_substats_box = slot_subs_box
 
 	_btn_unequip = Button.new()
 	_btn_unequip.name = "BtnUnequip"
@@ -560,6 +657,11 @@ func _refresh_slot_tabs() -> void:
 
 
 func _refresh_slot_summary() -> void:
+	if _slot_substats_box != null:
+		for c in _slot_substats_box.get_children():
+			_slot_substats_box.remove_child(c)
+			c.queue_free()
+
 	var eq := _get_equip_sys()
 	var gs := _gs()
 	var slot_title := _t(SLOT_TITLES[_target_slot])
@@ -583,8 +685,19 @@ func _refresh_slot_summary() -> void:
 		var hits := _t(LINE_HITS.get(line, "4 次打擊"))
 		var q_label := _t(str(inst.get("quality_label", "凡品")))
 		var atk := get_weapon_atk(inst)
-		_slot_summary_lbl.text = "【%s】%s · %s · %s (攻擊 +%d)" % [slot_title, wname, q_label, hits, atk]
+		_slot_summary_lbl.text = "【%s】%s · %s · %s (%s +%d)" % [slot_title, wname, q_label, hits, _t("攻擊"), atk]
 		_btn_unequip.visible = (_target_slot > 0)
+
+		if _slot_substats_box != null:
+			var cur_subs := extract_substats(inst)
+			if int(cur_subs["def"]) > 0:
+				_slot_substats_box.add_child(_build_substat_capsule("def", float(cur_subs["def"]), 0.0, false))
+			if int(cur_subs["hp"]) > 0:
+				_slot_substats_box.add_child(_build_substat_capsule("hp", float(cur_subs["hp"]), 0.0, false))
+			if float(cur_subs["crit_dmg"]) > 0.0:
+				_slot_substats_box.add_child(_build_substat_capsule("crit_dmg", float(cur_subs["crit_dmg"]), 0.0, false))
+			if float(cur_subs["crit"]) > 0.0:
+				_slot_substats_box.add_child(_build_substat_capsule("crit", float(cur_subs["crit"]), 0.0, false))
 
 
 func _rebuild_weapon_list() -> void:
@@ -848,7 +961,7 @@ func get_target_slot_weapon_info() -> Dictionary:
 func _build_weapon_card(winst: Dictionary) -> PanelContainer:
 	var card := PanelContainer.new()
 	card.name = "WeaponCard_" + str(winst.get("uid", ""))
-	card.custom_minimum_size = Vector2(0, 68)
+	card.custom_minimum_size = Vector2(0, 72)
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var status: String = str(winst.get("_status", "bag"))
@@ -906,7 +1019,7 @@ func _build_weapon_card(winst: Dictionary) -> PanelContainer:
 	_apply_font(l_lbl, 12, COLOR_TEXT_DARK)
 	bv.add_child(l_lbl)
 
-	# 中間：名稱、打擊段數、屬性值
+	# 中間：名稱、打擊段數、屬性值、副詞條膠囊列
 	var info_v := VBoxContainer.new()
 	info_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	info_v.alignment = BoxContainer.ALIGNMENT_CENTER
@@ -939,19 +1052,53 @@ func _build_weapon_card(winst: Dictionary) -> PanelContainer:
 	var atk := get_weapon_atk(winst)
 
 	var stat_desc := "%s · %s +%d" % [hits_str, _t("攻擊"), atk]
-	if winst.has("rolled") and winst["rolled"] is Dictionary:
-		var crit: float = float(winst["rolled"].get("crit", 0.0))
-		if crit > 0:
-			stat_desc += " · %s +%.1f%%" % [_t("暴擊"), crit]
 	stat_lbl.text = stat_desc
 	_apply_font(stat_lbl, 12, COLOR_TEXT_MUTED)
 	info_v.add_child(stat_lbl)
 
-	# 差額對比膠囊
+	# 目標槽位裝備資訊（用於差額計算）
 	var t_info := get_target_slot_weapon_info()
 	var has_target_w: bool = bool(t_info.get("has_weapon", false))
 	var target_atk: int = int(t_info.get("atk", 0))
+	var cur_winst: Dictionary = t_info.get("inst", {}) if has_target_w else {}
+	var is_same_w: bool = (str(winst.get("uid", "")) == str(cur_winst.get("uid", "")) and not str(winst.get("uid", "")).is_empty())
+	var show_sub_diff: bool = (has_target_w and not is_same_w)
 
+	# 副詞條膠囊列
+	var substats_row := HBoxContainer.new()
+	substats_row.name = "SubstatsRow"
+	substats_row.add_theme_constant_override("separation", 6)
+	info_v.add_child(substats_row)
+
+	var cand_subs := extract_substats(winst)
+	var cur_subs := extract_substats(cur_winst)
+
+	if int(cand_subs["def"]) > 0:
+		var diff_def := float(int(cand_subs["def"]) - int(cur_subs["def"]))
+		var cap := _build_substat_capsule("def", float(cand_subs["def"]), diff_def, show_sub_diff)
+		substats_row.add_child(cap)
+
+	if int(cand_subs["hp"]) > 0:
+		var diff_hp := float(int(cand_subs["hp"]) - int(cur_subs["hp"]))
+		var cap := _build_substat_capsule("hp", float(cand_subs["hp"]), diff_hp, show_sub_diff)
+		substats_row.add_child(cap)
+
+	if float(cand_subs["crit_dmg"]) > 0.0:
+		var diff_cdmg := float(cand_subs["crit_dmg"]) - float(cur_subs["crit_dmg"])
+		var cap := _build_substat_capsule("crit_dmg", float(cand_subs["crit_dmg"]), diff_cdmg, show_sub_diff)
+		substats_row.add_child(cap)
+
+	if float(cand_subs["crit"]) > 0.0:
+		var diff_crit := float(cand_subs["crit"]) - float(cur_subs["crit"])
+		var cap := _build_substat_capsule("crit", float(cand_subs["crit"]), diff_crit, show_sub_diff)
+		substats_row.add_child(cap)
+
+	if substats_row.get_child_count() == 0:
+		substats_row.visible = false
+	else:
+		substats_row.visible = true
+
+	# 差額對比膠囊
 	var diff_text := "--"
 	var diff_bg: Color = COLOR_DIFF_EQ_BG
 	var diff_bd: Color = COLOR_DIFF_EQ_BD
@@ -1057,6 +1204,39 @@ func _on_unequip_pressed() -> void:
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
+
+
+func _build_substat_capsule(stat_type: String, val: float, diff_val: float = 0.0, has_diff: bool = false) -> PanelContainer:
+	var p := PanelContainer.new()
+	p.name = "SubstatCapsule_" + stat_type
+	p.custom_minimum_size = Vector2(0, 24)
+	p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+
+	var colors: Dictionary = get_substat_colors(stat_type)
+	var bg_col: Color = colors.get("bg", COLOR_CARD_WARM)
+	var bd_col: Color = colors.get("bd", COLOR_BORDER)
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg_col
+	sb.border_color = bd_col
+	sb.set_border_width_all(1)
+	sb.border_width_bottom = 2
+	sb.set_corner_radius_all(10)
+	sb.content_margin_left = 8
+	sb.content_margin_right = 8
+	sb.content_margin_top = 2
+	sb.content_margin_bottom = 2
+	p.add_theme_stylebox_override("panel", sb)
+
+	var lbl := Label.new()
+	lbl.name = "SubstatLabel"
+	lbl.text = format_substat_text(stat_type, val, diff_val, has_diff)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_font(lbl, 12, COLOR_TEXT_DARK, true)
+	p.add_child(lbl)
+
+	return p
 
 
 func _toast(msg: String) -> void:
