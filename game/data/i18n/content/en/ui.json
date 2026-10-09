@@ -3668,5 +3668,7 @@
   "次": "hits",
   "武器傷害貢獻": "Weapon Damage",
   "總命中次數": "Total Hits",
-  "輪替切換": "Weapon Swaps"
+  "輪替切換": "Weapon Swaps",
+  "當前已是最高戰力配置": "Already highest combat power loadout",
+  "已一鍵配置最高戰力武器：%s": "Auto-equipped highest power weapons: %s"
 }

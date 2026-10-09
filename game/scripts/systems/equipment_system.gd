@@ -285,6 +285,207 @@ func equip_weapon_to_loadout(uid: String, index: int = -1) -> Dictionary:
 	return {"ok": true, "msg": _t("武器欄 %d：【%s】") % [idx + 1, inst.get("name", "")]}
 
 
+## 計算武器強度評分（攻擊力第一優先、品質第二優先、品階第三優先、暴擊率第四優先）
+static func weapon_power_score(inst: Dictionary) -> float:
+	if inst.is_empty():
+		return -1.0
+	var r: Dictionary = inst.get("rolled", {}) if inst.get("rolled") is Dictionary else {}
+	var atk: int = int(r.get("atk", 0))
+	if atk <= 0 and inst.has("atk"):
+		atk = int(inst.get("atk", 0))
+	if atk <= 0:
+		var base_stats: Dictionary = inst.get("base", {}) if inst.get("base") is Dictionary else {}
+		if base_stats.has("atk"):
+			atk = int(base_stats.get("atk", 0))
+	if atk <= 0:
+		var bid := str(inst.get("base_id", ""))
+		if bid != "":
+			var dt: Node = null
+			var loop := Engine.get_main_loop()
+			if loop is SceneTree and (loop as SceneTree).root != null:
+				dt = (loop as SceneTree).root.get_node_or_null("DataTables")
+			if dt and dt.has_method("equip_bases"):
+				var bdef: Dictionary = dt.equip_bases().get(bid, {})
+				var base_dict: Dictionary = bdef.get("base", {})
+				atk = int(base_dict.get("atk", 0))
+	var q_str := str(inst.get("quality", "common")).to_lower()
+	var q_score := 1
+	match q_str:
+		"uncommon": q_score = 2
+		"rare": q_score = 3
+		"epic": q_score = 4
+		_: q_score = 1
+	var tier := int(inst.get("tier", 1))
+	var crit := float(r.get("crit", 0.0))
+	return float(atk) * 10000.0 + float(q_score) * 100.0 + float(tier) * 10.0 + crit
+
+
+## 一鍵配置最高戰力武器：
+## 遍歷已解鎖的武器欄位（Slot 0、Slot 1 若 Lv>=10、Slot 2 若 Lv>=16），
+## 自背包與已裝備武器中篩選出全局最強武器配置進相應欄位，保持冪等。
+func auto_equip_best_weapons() -> Dictionary:
+	_ensure_state()
+	var unlocked_indices: Array[int] = []
+	for i in WEAPON_LOADOUT_SIZE:
+		if loadout_slot_unlocked(i):
+			unlocked_indices.append(i)
+
+	if unlocked_indices.is_empty():
+		return {
+			"success": true,
+			"changed": false,
+			"msg": _t("當前已是最高戰力配置"),
+			"equipped_names": [],
+		}
+
+	# 1. 蒐集全局所有武器（背包 + 已裝備 / worn）
+	var candidate_map: Dictionary = {}
+	if GameState.equip_bag != null:
+		for item in GameState.equip_bag:
+			if typeof(item) == TYPE_DICTIONARY:
+				if normalize_slot(str(item.get("slot", "weapon"))) == "weapon":
+					var uid := str(item.get("uid", ""))
+					if uid == "":
+						uid = _uid()
+						item["uid"] = uid
+					candidate_map[uid] = item
+
+	if GameState.equip_worn != null:
+		for uid_key in GameState.equip_worn.keys():
+			var item = GameState.equip_worn[uid_key]
+			if typeof(item) == TYPE_DICTIONARY:
+				if normalize_slot(str(item.get("slot", "weapon"))) == "weapon":
+					var uid := str(item.get("uid", uid_key))
+					if uid == "":
+						uid = str(uid_key)
+						item["uid"] = uid
+					candidate_map[uid] = item
+
+	# 記錄目前解鎖欄位中的裝備
+	var cur_loadout_uids: Array[String] = []
+	var cur_equipped_set: Dictionary = {}
+	for idx in unlocked_indices:
+		var u := str(GameState.weapon_loadout[idx])
+		cur_loadout_uids.append(u)
+		if u != "":
+			cur_equipped_set[u] = true
+
+	# 2. 排序候選武器（最高戰力在前）
+	var all_candidates: Array = candidate_map.values()
+	all_candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var sa := weapon_power_score(a)
+		var sb := weapon_power_score(b)
+		if absf(sa - sb) > 0.001:
+			return sa > sb
+		var a_u := str(a.get("uid", ""))
+		var b_u := str(b.get("uid", ""))
+		var a_eq := cur_equipped_set.has(a_u)
+		var b_eq := cur_equipped_set.has(b_u)
+		if a_eq != b_eq:
+			return a_eq
+		return a_u < b_u
+	)
+
+	# 3. 選出前 N 把最強武器
+	var N := unlocked_indices.size()
+	var top_weapons: Array = []
+	for i in range(mini(N, all_candidates.size())):
+		top_weapons.append(all_candidates[i])
+
+	# 4. 目標槽位配置
+	var target_uids: Array[String] = []
+	var equipped_names: Array = []
+	for i in range(N):
+		if i < top_weapons.size():
+			var w: Dictionary = top_weapons[i]
+			target_uids.append(str(w.get("uid", "")))
+			equipped_names.append(display_name(w))
+		else:
+			target_uids.append("")
+
+	# 5. 檢查是否有任何變更（冪等性判定）
+	var changed := false
+	for i in range(N):
+		if cur_loadout_uids[i] != target_uids[i]:
+			changed = true
+			break
+
+	if not changed:
+		return {
+			"success": true,
+			"changed": false,
+			"msg": _t("當前已是最高戰力配置"),
+			"equipped_names": equipped_names,
+		}
+
+	# 6. 執行配置：更新 weapon_loadout
+	for i in range(N):
+		var slot_idx: int = unlocked_indices[i]
+		GameState.weapon_loadout[slot_idx] = target_uids[i]
+
+	var new_equipped_uids: Dictionary = {}
+	for i in WEAPON_LOADOUT_SIZE:
+		var u := str(GameState.weapon_loadout[i])
+		if u != "":
+			new_equipped_uids[u] = true
+
+	# 7. 更新 equip_worn 與 equip_bag
+	for uid in candidate_map.keys():
+		var w: Dictionary = candidate_map[uid]
+		if new_equipped_uids.has(uid):
+			GameState.equip_worn[uid] = w
+		else:
+			if GameState.equip_worn.has(uid):
+				GameState.equip_worn.erase(uid)
+
+	var next_bag: Array = []
+	if GameState.equip_bag != null:
+		for item in GameState.equip_bag:
+			if typeof(item) == TYPE_DICTIONARY:
+				if normalize_slot(str(item.get("slot", "weapon"))) != "weapon":
+					next_bag.append(item)
+	for uid in candidate_map.keys():
+		if not new_equipped_uids.has(uid):
+			next_bag.append(candidate_map[uid])
+	GameState.equip_bag = next_bag
+
+	# 8. 同步作用中武器、流派技能與鏡像
+	GameState.weapon_loadout_active = 0
+	_sync_active_weapon_mirror()
+
+	var active_uid := loadout_uid(0)
+	if active_uid != "" and GameState.equip_worn.has(active_uid):
+		var act_inst: Dictionary = GameState.equip_worn[active_uid]
+		var line := str(act_inst.get("line", ""))
+		if line != "":
+			GameState.path_style = line
+			var tree := Engine.get_main_loop()
+			if tree is SceneTree and (tree as SceneTree).root != null:
+				var sk: Node = (tree as SceneTree).root.get_node_or_null("SkillSystem")
+				if sk and sk.has_method("grant_for_weapon_class"):
+					sk.call("grant_for_weapon_class", line)
+	elif active_uid == "":
+		GameState.weapon_name = "空手"
+		GameState.weapon_atk = 0
+
+	equipment_changed.emit()
+	SaveManager.save_game()
+
+	var names_str := "、".join(equipped_names)
+	var msg_str := ""
+	if names_str.is_empty():
+		msg_str = _t("當前已是最高戰力配置")
+	else:
+		msg_str = _t("已一鍵配置最高戰力武器：%s") % names_str
+
+	return {
+		"success": true,
+		"changed": true,
+		"msg": msg_str,
+		"equipped_names": equipped_names,
+	}
+
+
 ## 戰鬥外切換作用中武器欄（同步 path_style／面板攻擊）
 func switch_weapon_loadout(index: int) -> Dictionary:
 	_ensure_state()

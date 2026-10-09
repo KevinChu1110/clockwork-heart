@@ -275,6 +275,7 @@ var _btn_skill_dialog: Button = null
 var _btn_wardrobe: Button = null
 var _char_weapon_title_label: Label = null
 var _char_weapon_sub_label: Label = null
+var _btn_auto_equip_weapons: Button = null
 var _btn_change_weapon: Button = null
 var _weapon_swap_dialog: Control = null
 var _char_stat_title_label: Label = null
@@ -4109,6 +4110,40 @@ func _build_character_tab() -> void:
 	w_hdr_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	w_hdr.add_child(w_hdr_spacer)
 
+	var btn_auto_equip := Button.new()
+	btn_auto_equip.name = "BtnAutoEquipWeapons"
+	btn_auto_equip.text = _t("一鍵配置")
+	btn_auto_equip.custom_minimum_size = Vector2(104, 48)
+	if _cached_font != null:
+		btn_auto_equip.add_theme_font_override("font", _cached_font)
+	btn_auto_equip.add_theme_font_size_override("font_size", 14)
+	btn_auto_equip.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_auto_equip.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_auto_equip.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var ae_sb := StyleBoxFlat.new()
+	ae_sb.bg_color = COLOR_GOLD
+	ae_sb.border_color = COLOR_BORDER
+	ae_sb.set_border_width_all(2)
+	ae_sb.border_width_bottom = 5
+	ae_sb.set_corner_radius_all(16)
+	ae_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	ae_sb.shadow_size = 5
+	ae_sb.shadow_offset = Vector2(0, 2)
+	var ae_sb_h := ae_sb.duplicate() as StyleBoxFlat
+	ae_sb_h.bg_color = Color("#FFE066")
+	var ae_sb_p := ae_sb.duplicate() as StyleBoxFlat
+	ae_sb_p.border_width_bottom = 2
+	btn_auto_equip.add_theme_stylebox_override("normal", ae_sb)
+	btn_auto_equip.add_theme_stylebox_override("hover", ae_sb_h)
+	btn_auto_equip.add_theme_stylebox_override("pressed", ae_sb_p)
+	btn_auto_equip.add_theme_stylebox_override("focus", ae_sb)
+	btn_auto_equip.pressed.connect(func():
+		auto_equip_weapons()
+	)
+	w_hdr.add_child(btn_auto_equip)
+	_btn_auto_equip_weapons = btn_auto_equip
+
 	var btn_change_weapon := Button.new()
 	btn_change_weapon.name = "BtnChangeWeapon"
 	btn_change_weapon.text = _t("更換裝備")
@@ -4621,6 +4656,20 @@ func _sync_hero_weapon_paperdoll() -> void:
 	_load_hero_poses()
 	_apply_hero_idle_visual()
 	_refresh_equip_schematic()
+
+func auto_equip_weapons() -> Dictionary:
+	var eq := _get_equip_sys()
+	var res: Dictionary = {}
+	if eq and eq.has_method("auto_equip_best_weapons"):
+		res = eq.auto_equip_best_weapons()
+	var msg: String = str(res.get("msg", ""))
+	if not msg.is_empty():
+		_show_toast(msg)
+	_sync_hero_weapon_paperdoll()
+	_refresh_char_tab_stats(true)
+	_refresh_weapon_slot_buttons()
+	refresh_hud()
+	return res
 
 func _refresh_char_tab_stats(dynamic_atk: bool = true) -> void:
 	var gs := _gs()
@@ -5752,6 +5801,8 @@ func _apply_locale_texts() -> void:
 		_char_weapon_title_label.text = _t("武器輪替配置")
 	if _char_weapon_sub_label and is_instance_valid(_char_weapon_sub_label):
 		_char_weapon_sub_label.text = _t("點擊切換輪替順位 · 三段作戰序列")
+	if _btn_auto_equip_weapons and is_instance_valid(_btn_auto_equip_weapons):
+		_btn_auto_equip_weapons.text = _t("一鍵配置")
 	if _btn_change_weapon and is_instance_valid(_btn_change_weapon):
 		_btn_change_weapon.text = _t("更換裝備")
 	if _char_stat_title_label and is_instance_valid(_char_stat_title_label):

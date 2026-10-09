@@ -3668,5 +3668,7 @@
   "次": "veces",
   "武器傷害貢獻": "Daño por arma",
   "總命中次數": "Total de impactos",
-  "輪替切換": "Cambios de arma"
+  "輪替切換": "Cambios de arma",
+  "當前已是最高戰力配置": "Ya tienes la mejor configuración de combate",
+  "已一鍵配置最高戰力武器：%s": "Armas de mayor poder equipadas automáticamente: %s"
 }

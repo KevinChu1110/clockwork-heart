@@ -1022,5 +1022,8 @@
   "點擊切換輪替順位 · 三段作戰序列": "Toca para cambiar orden · Secuencia de combate de 3 fases",
   "點燃熔爐": "Encender Horno",
   "齒輪發條雙斬刃": "Sables Gemelos de Ascuas Mecánicos",
-  "（消耗鐵屑穩火）": " (Hierro residual usado para avivar el fuego)"
+  "（消耗鐵屑穩火）": " (Hierro residual usado para avivar el fuego)",
+  "一鍵配置": "Equipamiento rápido",
+  "當前已是最高戰力配置": "Ya tienes la mejor configuración de combate",
+  "已一鍵配置最高戰力武器：%s": "Armas de mayor poder equipadas automáticamente: %s"
 }

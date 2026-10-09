@@ -1022,5 +1022,8 @@
   "點擊切換輪替順位 · 三段作戰序列": "Tap to Switch Order · 3-Stage Combat Sequence",
   "點燃熔爐": "Light Furnace",
   "齒輪發條雙斬刃": "Twin Ember Sabers",
-  "（消耗鐵屑穩火）": " (Used iron scrap to steady flame)"
+  "（消耗鐵屑穩火）": " (Used iron scrap to steady flame)",
+  "一鍵配置": "Auto-Equip",
+  "當前已是最高戰力配置": "Already highest combat power loadout",
+  "已一鍵配置最高戰力武器：%s": "Auto-equipped highest power weapons: %s"
 }
