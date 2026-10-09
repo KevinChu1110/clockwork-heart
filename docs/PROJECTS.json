@@ -5740,8 +5740,8 @@
    "id": "weapon-swap-forge",
    "cat": "遊戲",
    "title": "武器更換彈窗直通天宮鐵匠",
-   "status": "測試中",
-   "note": "完成 WeaponSwapDialog 底部直通天宮鐵匠快捷按鈕 BtnGoForge、forge_requested 信號連動 open_forge() 與六語系支援，無頭測試全綠",
+   "status": "已上線",
+   "note": "t_f8f33c24 全站回歸驗收通過，武器更換直通天宮鐵匠已上線",
    "keys": [
     "武器更換彈窗直通"
    ]
