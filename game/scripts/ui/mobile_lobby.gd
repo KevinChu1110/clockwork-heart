@@ -5989,6 +5989,10 @@ func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
 			_refresh_weapon_slot_buttons()
 			refresh_hud()
 		)
+	if dlg.has_signal("forge_requested"):
+		dlg.connect("forge_requested", func():
+			open_forge()
+		)
 	add_child(dlg)
 	_weapon_swap_dialog = dlg
 	return dlg

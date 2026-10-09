@@ -12,6 +12,7 @@ extends Control
 
 signal weapon_swapped(slot_idx: int, uid: String)
 signal slot_unequipped(slot_idx: int)
+signal forge_requested()
 signal closed()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -94,6 +95,7 @@ var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _sub_title_lbl: Label
 var _close_x_btn: Button
+var _btn_go_forge: Button
 var _bottom_close_btn: Button
 var _slot_tab_buttons: Array[Button] = []
 var _slot_summary_panel: PanelContainer
@@ -335,7 +337,7 @@ func _build_ui() -> void:
 	_apply_font(emp_sub, 13, COLOR_TEXT_MUTED)
 	emp_v.add_child(emp_sub)
 
-	# 7. 底部列（提示文字 + 關閉按鈕）
+	# 7. 底部列（提示文字 + 前往鍛造按鈕 + 關閉按鈕）
 	var bot_h := HBoxContainer.new()
 	bot_h.name = "BottomBar"
 	bot_h.add_theme_constant_override("separation", 12)
@@ -346,6 +348,14 @@ func _build_ui() -> void:
 	_bottom_hint_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_apply_font(_bottom_hint_lbl, 12, COLOR_TEXT_MUTED)
 	bot_h.add_child(_bottom_hint_lbl)
+
+	_btn_go_forge = Button.new()
+	_btn_go_forge.name = "BtnGoForge"
+	_btn_go_forge.text = _t("前往鍛造")
+	_btn_go_forge.custom_minimum_size = Vector2(130, 48)
+	_style_jelly_btn(_btn_go_forge, COLOR_SKY, COLOR_TEXT_DARK, 14, 5, 16)
+	_btn_go_forge.pressed.connect(_on_go_forge_pressed)
+	bot_h.add_child(_btn_go_forge)
 
 	_bottom_close_btn = Button.new()
 	_bottom_close_btn.name = "BtnBottomClose"
@@ -366,6 +376,8 @@ func _refresh_texts() -> void:
 		_sub_title_lbl.text = _t("選擇要裝備至【%s】的武器 · 即時連動紙娃娃與屬性") % slot_name
 	if _bottom_hint_lbl:
 		_bottom_hint_lbl.text = _t("點擊武器卡片即可立即更換，即時更新戰鬥屬性與外觀紙娃娃")
+	if _btn_go_forge:
+		_btn_go_forge.text = _t("前往鍛造")
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("關閉")
 	if _btn_unequip:
@@ -455,7 +467,7 @@ func _refresh_slot_summary() -> void:
 		var atk: int = int(inst.get("weapon_atk", 0))
 		if atk <= 0 and inst.has("rolled") and inst["rolled"] is Dictionary:
 			atk = int(inst["rolled"].get("atk", 0))
-		_slot_summary_lbl.text = "【%s】%s · %s · %s (攻擊 +%d)" % [slot_title, wname, q_label, hits, atk]
+		_slot_summary_lbl.text = "【%s】%s · %s · %s (%s +%d)" % [slot_title, wname, q_label, hits, _t("攻擊"), atk]
 		_btn_unequip.visible = (_target_slot > 0)
 
 
@@ -696,6 +708,15 @@ func _on_unequip_pressed() -> void:
 			_toast(msg)
 	slot_unequipped.emit(_target_slot)
 	queue_free()
+
+
+func get_go_forge_button() -> Button:
+	return _btn_go_forge
+
+
+func _on_go_forge_pressed() -> void:
+	forge_requested.emit()
+	_on_close_pressed()
 
 
 func _on_close_pressed() -> void:
