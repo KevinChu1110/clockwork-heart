@@ -5690,8 +5690,8 @@
    "id": "dummy-combat-stats",
    "cat": "遊戲",
    "title": "木人樁試招結算最高單擊與總命中統計",
-   "status": "草稿",
-   "note": "DummySettlementDialog 新增單擊最高傷害與總命中次數雙膠囊卡",
+   "status": "測試中",
+   "note": "完成 BattleSim 與 DummySettlementDialog 最高單擊與總命中統計，自測與六語系刷新全綠，實機截圖完成",
    "keys": [
     "木人樁試招結算最"
    ]
@@ -5700,8 +5700,8 @@
    "id": "dummy-weapon-contribution",
    "cat": "遊戲",
    "title": "木人樁試招結算三欄武器輪替次數與傷害貢獻統計",
-   "status": "草稿",
-   "note": "DummySettlementDialog 結算卡新增三欄武器傷害佔比與輪替次數卡",
+   "status": "測試中",
+   "note": "完成三欄武器輪替次數與傷害貢獻統計開發，測試全綠，實機截圖存證合格，送審小婷 (t_8f9d6203)",
    "keys": [
     "木人樁試招結算三"
    ]

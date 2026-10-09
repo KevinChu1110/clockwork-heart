@@ -43,12 +43,26 @@ func _initialize() -> void:
 	var total_dmg := int(combat_stats.get("total_damage", 0))
 	var elapsed := float(combat_stats.get("elapsed_time", 0.0))
 	var dps := float(combat_stats.get("dps", 0.0))
+	var max_hit := int(combat_stats.get("max_hit_damage", 0))
+	var total_hits := int(combat_stats.get("total_hit_count", 0))
 
 	if total_dmg <= 0:
 		push_error("total_damage 應大於 0，得 %d" % total_dmg)
 		ok = false
 	else:
 		print("  ok total_damage = %d" % total_dmg)
+
+	if max_hit <= 0:
+		push_error("max_hit_damage 應大於 0，得 %d" % max_hit)
+		ok = false
+	else:
+		print("  ok max_hit_damage = %d" % max_hit)
+
+	if total_hits <= 0:
+		push_error("total_hit_count 應大於 0，得 %d" % total_hits)
+		ok = false
+	else:
+		print("  ok total_hit_count = %d" % total_hits)
 
 	if elapsed < 4.8 or elapsed > 5.2:
 		push_error("elapsed_time 應約為 5.0 秒，得 %.2f" % elapsed)
@@ -69,6 +83,8 @@ func _initialize() -> void:
 		"total_damage": 350,
 		"elapsed_time": 10.0,
 		"dps": 35.0,
+		"max_hit_damage": 88,
+		"total_hit_count": 14,
 	}
 
 	var call_state := {
@@ -115,6 +131,20 @@ func _initialize() -> void:
 		else:
 			print("  ok 找到 DpsCard")
 
+		var max_hit_card := dlg.find_child("MaxHitCapsule", true, false)
+		var hits_card := dlg.find_child("TotalHitsCapsule", true, false)
+		if max_hit_card == null:
+			push_error("結算面板缺少 MaxHitCapsule（最高單擊膠囊）")
+			ok = false
+		else:
+			print("  ok 找到 MaxHitCapsule")
+
+		if hits_card == null:
+			push_error("結算面板缺少 TotalHitsCapsule（總命中膠囊）")
+			ok = false
+		else:
+			print("  ok 找到 TotalHitsCapsule")
+
 		if retry_btn == null:
 			push_error("結算面板缺少 RetryButton（再次試招按鈕）")
 			ok = false
@@ -151,6 +181,8 @@ func _initialize() -> void:
 		var dmg_val: Label = dlg.find_child("DamageValueLabel", true, false) as Label
 		var time_val: Label = dlg.find_child("TimeValueLabel", true, false) as Label
 		var dps_val: Label = dlg.find_child("DpsValueLabel", true, false) as Label
+		var max_hit_val: Label = dlg.find_child("MaxHitValueLabel", true, false) as Label
+		var hits_val: Label = dlg.find_child("TotalHitsValueLabel", true, false) as Label
 
 		if dmg_val == null or dmg_val.text != "350":
 			push_error("DamageValueLabel 數值不符，期望 '350'，得 '%s'" % (dmg_val.text if dmg_val else "null"))
@@ -170,6 +202,18 @@ func _initialize() -> void:
 		else:
 			print("  ok DpsValueLabel = 35.0")
 
+		if max_hit_val == null or max_hit_val.text != "88":
+			push_error("MaxHitValueLabel 數值不符，期望 '88'，得 '%s'" % (max_hit_val.text if max_hit_val else "null"))
+			ok = false
+		else:
+			print("  ok MaxHitValueLabel = 88")
+
+		if hits_val == null or hits_val.text != "14":
+			push_error("TotalHitsValueLabel 數值不符，期望 '14'，得 '%s'" % (hits_val.text if hits_val else "null"))
+			ok = false
+		else:
+			print("  ok TotalHitsValueLabel = 14")
+
 		# 檢驗 getters
 		if dlg.has_method("get_total_damage") and dlg.get_total_damage() != 350:
 			push_error("get_total_damage() 得 %d" % dlg.get_total_damage())
@@ -180,12 +224,57 @@ func _initialize() -> void:
 		if dlg.has_method("get_dps") and absf(dlg.get_dps() - 35.0) > 0.001:
 			push_error("get_dps() 得 %.2f" % dlg.get_dps())
 			ok = false
+		if dlg.has_method("get_max_hit_damage") and dlg.get_max_hit_damage() != 88:
+			push_error("get_max_hit_damage() 得 %d" % dlg.get_max_hit_damage())
+			ok = false
+		if dlg.has_method("get_total_hit_count") and dlg.get_total_hit_count() != 14:
+			push_error("get_total_hit_count() 得 %d" % dlg.get_total_hit_count())
+			ok = false
+		if dlg.has_method("get_max_hit_text") and dlg.get_max_hit_text() != "88":
+			push_error("get_max_hit_text() 得 '%s'" % dlg.get_max_hit_text())
+			ok = false
+		if dlg.has_method("get_total_hits_text") and dlg.get_total_hits_text() != "14":
+			push_error("get_total_hits_text() 得 '%s'" % dlg.get_total_hits_text())
+			ok = false
+		if dlg.has_method("get_max_hit_title_text") and dlg.get_max_hit_title_text() != "最高單擊":
+			push_error("get_max_hit_title_text() 得 '%s'" % dlg.get_max_hit_title_text())
+			ok = false
+		if dlg.has_method("get_total_hits_title_text") and dlg.get_total_hits_title_text() != "總命中次數":
+			push_error("get_total_hits_title_text() 得 '%s'" % dlg.get_total_hits_title_text())
+			ok = false
 		if dlg.has_method("get_retry_text") and dlg.get_retry_text() != "再次試招":
 			push_error("get_retry_text() 得 '%s'" % dlg.get_retry_text())
 			ok = false
 		if dlg.has_method("get_confirm_text") and dlg.get_confirm_text() != "完成試招":
 			push_error("get_confirm_text() 得 '%s'" % dlg.get_confirm_text())
 			ok = false
+
+		# 檢驗三欄武器貢獻與輪替次數展示列
+		var contrib_sec := dlg.find_child("WeaponContributionSection", true, false)
+		var swaps_cap := dlg.find_child("WeaponSwapsCapsule", true, false)
+		var slots_box := dlg.find_child("WeaponSlotsHBox", true, false)
+		if contrib_sec == null:
+			push_error("結算面板缺少 WeaponContributionSection")
+			ok = false
+		else:
+			print("  ok 找到 WeaponContributionSection")
+		if swaps_cap == null:
+			push_error("結算面板缺少 WeaponSwapsCapsule")
+			ok = false
+		else:
+			print("  ok 找到 WeaponSwapsCapsule")
+		if slots_box == null:
+			push_error("結算面板缺少 WeaponSlotsHBox")
+			ok = false
+		else:
+			print("  ok 找到 WeaponSlotsHBox")
+		for si in range(3):
+			var sc := dlg.find_child("WeaponSlotCard_%d" % si, true, false)
+			if sc == null:
+				push_error("缺少 WeaponSlotCard_%d" % si)
+				ok = false
+			else:
+				print("  ok 找到 WeaponSlotCard_%d" % si)
 
 		## 3. 檢驗再次試招與確認按鈕回調與信號
 		print("=== 檢驗 3: 雙按鈕回調與信號發送 ===")

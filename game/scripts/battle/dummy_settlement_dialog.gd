@@ -62,11 +62,31 @@ var _card3_unit_lbl: Label
 var _record_badge: PanelContainer
 var _record_badge_lbl: Label
 var _best_dps_lbl: Label
+var _max_hit_label: Label
+var _max_hit_title_lbl: Label
+var _max_hit_unit_lbl: Label
+var _total_hits_label: Label
+var _total_hits_title_lbl: Label
+var _total_hits_unit_lbl: Label
+
+var _weapon_contrib_section: VBoxContainer
+var _weapon_contrib_title_lbl: Label
+var _weapon_swaps_capsule: PanelContainer
+var _weapon_swaps_title_lbl: Label
+var _weapon_swaps_value_lbl: Label
+var _weapon_swaps_unit_lbl: Label
+var _weapon_slot_cards: Array = []
 
 var _total_damage: int = 0
 var _elapsed_time: float = 0.0
 var _dps: float = 0.0
 var _best_dps: float = 0.0
+var _max_hit_damage: int = 0
+var _total_hit_count: int = 0
+var _weapon_slot_damages: Dictionary = {0: 0, 1: 0, 2: 0}
+var _weapon_slot_swaps: Dictionary = {0: 0, 1: 0, 2: 0}
+var _weapon_swap_count: int = 0
+var _weapon_bars: Array = []
 var _is_new_record: bool = false
 var _record_evaluated: bool = false
 var _on_confirm: Callable = Callable()
@@ -114,6 +134,12 @@ func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: 
 	_total_damage = int(stats.get("total_damage", 0))
 	_elapsed_time = float(stats.get("elapsed_time", 0.0))
 	_dps = float(stats.get("dps", 0.0))
+	_max_hit_damage = int(stats.get("max_hit_damage", 0))
+	_total_hit_count = int(stats.get("total_hit_count", 0))
+	_weapon_slot_damages = stats.get("weapon_slot_damages", {0: 0, 1: 0, 2: 0}).duplicate(true)
+	_weapon_slot_swaps = stats.get("weapon_slot_swaps", {0: 0, 1: 0, 2: 0}).duplicate(true)
+	_weapon_swap_count = int(stats.get("weapon_swap_count", 0))
+	_weapon_bars = stats.get("weapon_bars", []).duplicate(true)
 	_on_confirm = on_confirm
 	_on_retry = on_retry
 	_evaluate_record(stats)
@@ -195,19 +221,19 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "DummySettlementCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 420)
+	_dialog_card.custom_minimum_size = Vector2(750, 560)
 	_dialog_card.add_theme_stylebox_override("panel", _create_floating_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
 	var margin := MarginContainer.new()
 	margin.add_theme_constant_override("margin_left", 24)
 	margin.add_theme_constant_override("margin_right", 24)
-	margin.add_theme_constant_override("margin_top", 18)
-	margin.add_theme_constant_override("margin_bottom", 20)
+	margin.add_theme_constant_override("margin_top", 14)
+	margin.add_theme_constant_override("margin_bottom", 16)
 	_dialog_card.add_child(margin)
 
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 14)
+	v.add_theme_constant_override("separation", 8)
 	margin.add_child(v)
 
 	# ── 標題列 + 關閉按鈕 ──
@@ -346,6 +372,39 @@ func _build_ui() -> void:
 
 	stats_hbox.add_child(res3.card)
 
+	# ── 多巴胺雙膠囊數據列 (最高單擊 / 總命中次數) ──
+	var capsules_hbox := HBoxContainer.new()
+	capsules_hbox.name = "CapsulesHBox"
+	capsules_hbox.add_theme_constant_override("separation", 14)
+	v.add_child(capsules_hbox)
+
+	# 膠囊 1: 最高單擊 (多巴胺天藍柔和卡片底，字級 >= 14px 加粗深藍紫文字，零 Emoji)
+	var res_capsule1 := _build_capsule_card(
+		"MaxHitCapsule",
+		"MaxHitValueLabel",
+		Color("#F0F7FF"),
+		COLOR_SKY
+	)
+	_max_hit_label = res_capsule1.value_label
+	_max_hit_title_lbl = res_capsule1.title_label
+	_max_hit_unit_lbl = res_capsule1.unit_label
+	capsules_hbox.add_child(res_capsule1.card)
+
+	# 膠囊 2: 總命中次數 (多巴胺薄荷綠柔和卡片底，字級 >= 14px 加粗深藍紫文字，零 Emoji)
+	var res_capsule2 := _build_capsule_card(
+		"TotalHitsCapsule",
+		"TotalHitsValueLabel",
+		Color("#F0FAF2"),
+		COLOR_MINT
+	)
+	_total_hits_label = res_capsule2.value_label
+	_total_hits_title_lbl = res_capsule2.title_label
+	_total_hits_unit_lbl = res_capsule2.unit_label
+	capsules_hbox.add_child(res_capsule2.card)
+
+	# ── 多巴胺三欄武器貢獻卡與輪替次數展示列 ──
+	_build_weapon_contribution_section(v)
+
 	# ── 提示說明卡片 ──
 	var tip_card := PanelContainer.new()
 	tip_card.name = "TipCard"
@@ -466,20 +525,42 @@ func _update_ui_texts() -> void:
 	if _best_dps_lbl and is_instance_valid(_best_dps_lbl):
 		_best_dps_lbl.text = _t("歷史最佳：%.1f DPS") % _best_dps
 
+	if _max_hit_title_lbl and is_instance_valid(_max_hit_title_lbl):
+		_max_hit_title_lbl.text = _t("最高單擊")
+	if _max_hit_unit_lbl and is_instance_valid(_max_hit_unit_lbl):
+		_max_hit_unit_lbl.text = _t("點")
+	if _total_hits_title_lbl and is_instance_valid(_total_hits_title_lbl):
+		_total_hits_title_lbl.text = _t("總命中次數")
+	if _total_hits_unit_lbl and is_instance_valid(_total_hits_unit_lbl):
+		_total_hits_unit_lbl.text = _t("次")
+
+	if _weapon_contrib_title_lbl and is_instance_valid(_weapon_contrib_title_lbl):
+		_weapon_contrib_title_lbl.text = _t("武器傷害貢獻")
+	if _weapon_swaps_title_lbl and is_instance_valid(_weapon_swaps_title_lbl):
+		_weapon_swaps_title_lbl.text = _t("輪替切換")
+	if _weapon_swaps_unit_lbl and is_instance_valid(_weapon_swaps_unit_lbl):
+		_weapon_swaps_unit_lbl.text = _t("次")
+
+	for slot_idx in range(_weapon_slot_cards.size()):
+		var c_data: Dictionary = _weapon_slot_cards[slot_idx]
+		var slot_title_lbl: Label = c_data.get("slot_title_label")
+		if slot_title_lbl and is_instance_valid(slot_title_lbl):
+			slot_title_lbl.text = _t("欄位 %d") % (slot_idx + 1)
+
 
 func _build_metric_card(card_name: String, val_name: String, bg_col: Color, accent_col: Color) -> Dictionary:
 	var card := PanelContainer.new()
 	card.name = card_name
 	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	card.custom_minimum_size = Vector2(0, 130)
+	card.custom_minimum_size = Vector2(0, 112)
 	card.add_theme_stylebox_override("panel", _create_inner_card_style(bg_col, COLOR_BORDER, 2, 4, 18))
 
 	var m := MarginContainer.new()
 	m.name = "Margin"
-	m.add_theme_constant_override("margin_left", 14)
-	m.add_theme_constant_override("margin_right", 14)
-	m.add_theme_constant_override("margin_top", 12)
-	m.add_theme_constant_override("margin_bottom", 12)
+	m.add_theme_constant_override("margin_left", 12)
+	m.add_theme_constant_override("margin_right", 12)
+	m.add_theme_constant_override("margin_top", 8)
+	m.add_theme_constant_override("margin_bottom", 8)
 	card.add_child(m)
 
 	var cv := VBoxContainer.new()
@@ -543,6 +624,315 @@ func _build_metric_card(card_name: String, val_name: String, bg_col: Color, acce
 	}
 
 
+func _build_capsule_card(card_name: String, val_name: String, bg_col: Color, accent_col: Color) -> Dictionary:
+	var card := PanelContainer.new()
+	card.name = card_name
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.custom_minimum_size = Vector2(0, 44)
+	card.add_theme_stylebox_override("panel", _create_inner_card_style(bg_col, COLOR_BORDER, 2, 3, 16))
+
+	var m := MarginContainer.new()
+	m.name = "Margin"
+	m.add_theme_constant_override("margin_left", 16)
+	m.add_theme_constant_override("margin_right", 16)
+	m.add_theme_constant_override("margin_top", 8)
+	m.add_theme_constant_override("margin_bottom", 8)
+	card.add_child(m)
+
+	var h := HBoxContainer.new()
+	h.name = "HBox"
+	h.add_theme_constant_override("separation", 8)
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	m.add_child(h)
+
+	var t_lbl := Label.new()
+	t_lbl.name = "TitleLabel"
+	t_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	t_lbl.add_theme_font_size_override("font_size", 14)
+	t_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		t_lbl.add_theme_font_override("font", _cached_font)
+	h.add_child(t_lbl)
+
+	var val_lbl := Label.new()
+	val_lbl.name = val_name
+	val_lbl.text = "0"
+	val_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	val_lbl.add_theme_font_size_override("font_size", 20)
+	val_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	val_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	val_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		val_lbl.add_theme_font_override("font", _cached_font)
+	h.add_child(val_lbl)
+
+	var u_lbl := Label.new()
+	u_lbl.name = "UnitLabel"
+	u_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	u_lbl.add_theme_font_size_override("font_size", 14)
+	u_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	if _cached_font:
+		u_lbl.add_theme_font_override("font", _cached_font)
+	h.add_child(u_lbl)
+
+	return {
+		"card": card,
+		"value_label": val_lbl,
+		"title_label": t_lbl,
+		"unit_label": u_lbl,
+	}
+
+
+func _get_quality_info(quality_key: String) -> Dictionary:
+	match quality_key:
+		"uncommon":
+			return {"label": _t("良品"), "color": Color("#2E9E4A")}
+		"rare":
+			return {"label": _t("上品"), "color": Color("#2575FC")}
+		"epic":
+			return {"label": _t("極品"), "color": Color("#9B51E0")}
+		"legendary":
+			return {"label": _t("神品"), "color": Color("#FFA010")}
+		"none", "empty", "locked":
+			return {"label": _t("未裝備"), "color": Color("#8E8A9F")}
+		_:
+			return {"label": _t("凡品"), "color": Color("#8E8A9F")}
+
+
+func _build_weapon_contribution_section(parent: VBoxContainer) -> void:
+	_weapon_contrib_section = VBoxContainer.new()
+	_weapon_contrib_section.name = "WeaponContributionSection"
+	_weapon_contrib_section.add_theme_constant_override("separation", 6)
+	parent.add_child(_weapon_contrib_section)
+
+	# 1. 頂部標題與輪替次數膠囊
+	var header_hbox := HBoxContainer.new()
+	header_hbox.name = "WeaponContribHeaderHBox"
+	header_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	_weapon_contrib_section.add_child(header_hbox)
+
+	_weapon_contrib_title_lbl = Label.new()
+	_weapon_contrib_title_lbl.name = "WeaponContribTitleLabel"
+	_weapon_contrib_title_lbl.text = _t("武器傷害貢獻")
+	_weapon_contrib_title_lbl.add_theme_font_size_override("font_size", 14)
+	_weapon_contrib_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_weapon_contrib_title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_weapon_contrib_title_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_weapon_contrib_title_lbl.add_theme_font_override("font", _cached_font)
+	header_hbox.add_child(_weapon_contrib_title_lbl)
+
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	header_hbox.add_child(spacer)
+
+	# 輪替切換次數膠囊卡片 (琥珀柔和底 #FFEED6, 圓角 12px, 零 Emoji)
+	_weapon_swaps_capsule = PanelContainer.new()
+	_weapon_swaps_capsule.name = "WeaponSwapsCapsule"
+	_weapon_swaps_capsule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var swaps_sb := StyleBoxFlat.new()
+	swaps_sb.bg_color = Color("#FFF3E0")
+	swaps_sb.border_color = COLOR_BORDER
+	swaps_sb.set_border_width_all(2)
+	swaps_sb.border_width_bottom = 3
+	swaps_sb.set_corner_radius_all(12)
+	swaps_sb.content_margin_left = 10
+	swaps_sb.content_margin_right = 10
+	swaps_sb.content_margin_top = 3
+	swaps_sb.content_margin_bottom = 3
+	_weapon_swaps_capsule.add_theme_stylebox_override("panel", swaps_sb)
+	header_hbox.add_child(_weapon_swaps_capsule)
+
+	var swaps_hbox := HBoxContainer.new()
+	swaps_hbox.name = "SwapsHBox"
+	swaps_hbox.add_theme_constant_override("separation", 6)
+	swaps_hbox.alignment = BoxContainer.ALIGNMENT_CENTER
+	_weapon_swaps_capsule.add_child(swaps_hbox)
+
+	_weapon_swaps_title_lbl = Label.new()
+	_weapon_swaps_title_lbl.name = "TitleLabel"
+	_weapon_swaps_title_lbl.text = _t("輪替切換")
+	_weapon_swaps_title_lbl.add_theme_font_size_override("font_size", 12)
+	_weapon_swaps_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_AMBER)
+	if _cached_font:
+		_weapon_swaps_title_lbl.add_theme_font_override("font", _cached_font)
+	swaps_hbox.add_child(_weapon_swaps_title_lbl)
+
+	_weapon_swaps_value_lbl = Label.new()
+	_weapon_swaps_value_lbl.name = "SwapsValueLabel"
+	_weapon_swaps_value_lbl.text = "0"
+	_weapon_swaps_value_lbl.add_theme_font_size_override("font_size", 15)
+	_weapon_swaps_value_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_weapon_swaps_value_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_weapon_swaps_value_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_weapon_swaps_value_lbl.add_theme_font_override("font", _cached_font)
+	swaps_hbox.add_child(_weapon_swaps_value_lbl)
+
+	_weapon_swaps_unit_lbl = Label.new()
+	_weapon_swaps_unit_lbl.name = "UnitLabel"
+	_weapon_swaps_unit_lbl.text = _t("次")
+	_weapon_swaps_unit_lbl.add_theme_font_size_override("font_size", 12)
+	_weapon_swaps_unit_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	if _cached_font:
+		_weapon_swaps_unit_lbl.add_theme_font_override("font", _cached_font)
+	swaps_hbox.add_child(_weapon_swaps_unit_lbl)
+
+	# 2. 三欄武器卡片列 (WeaponSlotsHBox)
+	var slots_hbox := HBoxContainer.new()
+	slots_hbox.name = "WeaponSlotsHBox"
+	slots_hbox.add_theme_constant_override("separation", 10)
+	_weapon_contrib_section.add_child(slots_hbox)
+
+	_weapon_slot_cards.clear()
+	var slot_bg_colors := [Color("#F4F8FD"), Color("#F4FAF5"), Color("#FFF9EE")]
+	var slot_accent_colors := [COLOR_SKY, COLOR_MINT, COLOR_ORANGE]
+
+	for slot_idx in range(3):
+		var card_dict := _build_single_weapon_slot_card(
+			slot_idx,
+			slot_bg_colors[slot_idx],
+			slot_accent_colors[slot_idx]
+		)
+		slots_hbox.add_child(card_dict.card)
+		_weapon_slot_cards.append(card_dict)
+
+
+func _build_single_weapon_slot_card(slot_idx: int, bg_col: Color, accent_col: Color) -> Dictionary:
+	var card := PanelContainer.new()
+	card.name = "WeaponSlotCard_%d" % slot_idx
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.custom_minimum_size = Vector2(0, 84)
+	card.add_theme_stylebox_override("panel", _create_inner_card_style(bg_col, COLOR_BORDER, 2, 3, 14))
+
+	var m := MarginContainer.new()
+	m.name = "Margin"
+	m.add_theme_constant_override("margin_left", 10)
+	m.add_theme_constant_override("margin_right", 10)
+	m.add_theme_constant_override("margin_top", 6)
+	m.add_theme_constant_override("margin_bottom", 6)
+	card.add_child(m)
+
+	var v := VBoxContainer.new()
+	v.name = "VBox"
+	v.add_theme_constant_override("separation", 3)
+	v.alignment = BoxContainer.ALIGNMENT_CENTER
+	m.add_child(v)
+
+	# Row 1: 欄位標籤與品質色階標籤
+	var row1 := HBoxContainer.new()
+	row1.name = "HeaderRow"
+	v.add_child(row1)
+
+	var slot_title_lbl := Label.new()
+	slot_title_lbl.name = "SlotTitleLabel"
+	slot_title_lbl.text = _t("欄位 %d") % (slot_idx + 1)
+	slot_title_lbl.add_theme_font_size_override("font_size", 12)
+	slot_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		slot_title_lbl.add_theme_font_override("font", _cached_font)
+	row1.add_child(slot_title_lbl)
+
+	var row1_sp := Control.new()
+	row1_sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row1.add_child(row1_sp)
+
+	var quality_badge := PanelContainer.new()
+	quality_badge.name = "QualityBadge"
+	var q_sb := StyleBoxFlat.new()
+	q_sb.bg_color = Color("#8E8A9F")
+	q_sb.set_corner_radius_all(6)
+	q_sb.content_margin_left = 6
+	q_sb.content_margin_right = 6
+	q_sb.content_margin_top = 1
+	q_sb.content_margin_bottom = 2
+	quality_badge.add_theme_stylebox_override("panel", q_sb)
+	row1.add_child(quality_badge)
+
+	var quality_lbl := Label.new()
+	quality_lbl.name = "QualityLabel"
+	quality_lbl.text = _t("凡品")
+	quality_lbl.add_theme_font_size_override("font_size", 10)
+	quality_lbl.add_theme_color_override("font_color", Color.WHITE)
+	if _cached_font:
+		quality_lbl.add_theme_font_override("font", _cached_font)
+	quality_badge.add_child(quality_lbl)
+
+	# Row 2: 武器名稱
+	var name_lbl := Label.new()
+	name_lbl.name = "WeaponNameLabel"
+	name_lbl.text = _t("未裝備")
+	name_lbl.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	name_lbl.add_theme_font_size_override("font_size", 13)
+	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	name_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	name_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		name_lbl.add_theme_font_override("font", _cached_font)
+	v.add_child(name_lbl)
+
+	# Row 3: 傷害佔比與數值
+	var row3 := HBoxContainer.new()
+	row3.name = "DamageRow"
+	row3.add_theme_constant_override("separation", 6)
+	v.add_child(row3)
+
+	var pct_lbl := Label.new()
+	pct_lbl.name = "DamagePercentLabel"
+	pct_lbl.text = "0.0%"
+	pct_lbl.add_theme_font_size_override("font_size", 15)
+	pct_lbl.add_theme_color_override("font_color", accent_col)
+	pct_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	pct_lbl.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		pct_lbl.add_theme_font_override("font", _cached_font)
+	row3.add_child(pct_lbl)
+
+	var dmg_val_lbl := Label.new()
+	dmg_val_lbl.name = "DamageValueLabel"
+	dmg_val_lbl.text = "(0 點)"
+	dmg_val_lbl.vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
+	dmg_val_lbl.add_theme_font_size_override("font_size", 11)
+	dmg_val_lbl.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+	if _cached_font:
+		dmg_val_lbl.add_theme_font_override("font", _cached_font)
+	row3.add_child(dmg_val_lbl)
+
+	# Row 4: 傷害進度條 (ProgressBar)
+	var bar := ProgressBar.new()
+	bar.name = "DamageProgressBar"
+	bar.custom_minimum_size = Vector2(0, 6)
+	bar.show_percentage = false
+	bar.min_value = 0.0
+	bar.max_value = 100.0
+	bar.value = 0.0
+
+	var bar_bg := StyleBoxFlat.new()
+	bar_bg.bg_color = Color("#E4E0D8")
+	bar_bg.set_corner_radius_all(3)
+	bar.add_theme_stylebox_override("background", bar_bg)
+
+	var bar_fill := StyleBoxFlat.new()
+	bar_fill.bg_color = accent_col
+	bar_fill.set_corner_radius_all(3)
+	bar.add_theme_stylebox_override("fill", bar_fill)
+	v.add_child(bar)
+
+	return {
+		"card": card,
+		"slot_title_label": slot_title_lbl,
+		"quality_badge": quality_badge,
+		"quality_label": quality_lbl,
+		"name_label": name_lbl,
+		"percent_label": pct_lbl,
+		"damage_label": dmg_val_lbl,
+		"progress_bar": bar,
+		"quality_stylebox": q_sb,
+		"accent_color": accent_col,
+	}
+
+
 func _refresh_display() -> void:
 	if _damage_label:
 		_damage_label.text = str(_total_damage)
@@ -550,11 +940,61 @@ func _refresh_display() -> void:
 		_time_label.text = "%.1f" % _elapsed_time
 	if _dps_label:
 		_dps_label.text = "%.1f" % _dps
+	if _max_hit_label:
+		_max_hit_label.text = str(_max_hit_damage)
+	if _total_hits_label:
+		_total_hits_label.text = str(_total_hit_count)
 	if _record_badge:
 		_record_badge.visible = _is_new_record
 	if _best_dps_lbl:
 		_best_dps_lbl.visible = not _is_new_record
 		_best_dps_lbl.text = _t("歷史最佳：%.1f DPS") % _best_dps
+
+	if _weapon_swaps_value_lbl and is_instance_valid(_weapon_swaps_value_lbl):
+		_weapon_swaps_value_lbl.text = str(_weapon_swap_count)
+
+	for slot_idx in range(_weapon_slot_cards.size()):
+		var c_data: Dictionary = _weapon_slot_cards[slot_idx]
+		var dmg: int = int(_weapon_slot_damages.get(slot_idx, 0))
+		var pct: float = (float(dmg) / float(_total_damage) * 100.0) if _total_damage > 0 else 0.0
+
+		var bar_info: Dictionary = {}
+		if slot_idx < _weapon_bars.size():
+			bar_info = _weapon_bars[slot_idx]
+
+		var w_name: String = str(bar_info.get("name", ""))
+		var is_empty: bool = bool(bar_info.get("empty", w_name.is_empty()))
+		if is_empty or w_name.is_empty():
+			w_name = _t("未裝備")
+
+		var q_key: String = str(bar_info.get("quality", "common"))
+		if is_empty:
+			q_key = "none"
+		var q_info: Dictionary = _get_quality_info(q_key)
+
+		var name_lbl: Label = c_data.get("name_label")
+		if name_lbl and is_instance_valid(name_lbl):
+			name_lbl.text = w_name
+
+		var q_lbl: Label = c_data.get("quality_label")
+		if q_lbl and is_instance_valid(q_lbl):
+			q_lbl.text = q_info.label
+
+		var q_sb: StyleBoxFlat = c_data.get("quality_stylebox")
+		if q_sb:
+			q_sb.bg_color = q_info.color
+
+		var pct_lbl: Label = c_data.get("percent_label")
+		if pct_lbl and is_instance_valid(pct_lbl):
+			pct_lbl.text = "%.1f%%" % pct
+
+		var dmg_lbl: Label = c_data.get("damage_label")
+		if dmg_lbl and is_instance_valid(dmg_lbl):
+			dmg_lbl.text = "(%d %s)" % [dmg, _t("點")]
+
+		var pbar: ProgressBar = c_data.get("progress_bar")
+		if pbar and is_instance_valid(pbar):
+			pbar.value = pct
 
 
 func _on_confirm_clicked() -> void:
@@ -593,6 +1033,30 @@ func get_time_text() -> String:
 
 func get_dps_text() -> String:
 	return _dps_label.text if _dps_label else ""
+
+
+func get_max_hit_damage() -> int:
+	return _max_hit_damage
+
+
+func get_total_hit_count() -> int:
+	return _total_hit_count
+
+
+func get_max_hit_text() -> String:
+	return _max_hit_label.text if _max_hit_label else ""
+
+
+func get_total_hits_text() -> String:
+	return _total_hits_label.text if _total_hits_label else ""
+
+
+func get_max_hit_title_text() -> String:
+	return _max_hit_title_lbl.text if _max_hit_title_lbl else ""
+
+
+func get_total_hits_title_text() -> String:
+	return _total_hits_title_lbl.text if _total_hits_title_lbl else ""
 
 
 func get_title_text() -> String:
@@ -645,6 +1109,66 @@ func get_record_badge() -> Control:
 
 func get_best_dps_label() -> Label:
 	return _best_dps_lbl
+
+
+func get_weapon_slot_damage(slot: int) -> int:
+	return int(_weapon_slot_damages.get(slot, 0))
+
+
+func get_weapon_slot_percent(slot: int) -> float:
+	if _total_damage <= 0:
+		return 0.0
+	return float(get_weapon_slot_damage(slot)) / float(_total_damage) * 100.0
+
+
+func get_weapon_swap_count() -> int:
+	return _weapon_swap_count
+
+
+func get_weapon_swaps_text() -> String:
+	return _weapon_swaps_value_lbl.text if _weapon_swaps_value_lbl else ""
+
+
+func get_weapon_contrib_title_text() -> String:
+	return _weapon_contrib_title_lbl.text if _weapon_contrib_title_lbl else ""
+
+
+func get_weapon_swaps_title_text() -> String:
+	return _weapon_swaps_title_lbl.text if _weapon_swaps_title_lbl else ""
+
+
+func get_weapon_slot_card(slot: int) -> Control:
+	if slot >= 0 and slot < _weapon_slot_cards.size():
+		return _weapon_slot_cards[slot].get("card")
+	return null
+
+
+func get_weapon_slot_name(slot: int) -> String:
+	if slot >= 0 and slot < _weapon_slot_cards.size():
+		var lbl: Label = _weapon_slot_cards[slot].get("name_label")
+		return lbl.text if lbl else ""
+	return ""
+
+
+func get_weapon_slot_quality_text(slot: int) -> String:
+	if slot >= 0 and slot < _weapon_slot_cards.size():
+		var lbl: Label = _weapon_slot_cards[slot].get("quality_label")
+		return lbl.text if lbl else ""
+	return ""
+
+
+func get_weapon_slot_percent_text(slot: int) -> String:
+	if slot >= 0 and slot < _weapon_slot_cards.size():
+		var lbl: Label = _weapon_slot_cards[slot].get("percent_label")
+		return lbl.text if lbl else ""
+	return ""
+
+
+func get_weapon_slot_damage_text(slot: int) -> String:
+	if slot >= 0 and slot < _weapon_slot_cards.size():
+		var lbl: Label = _weapon_slot_cards[slot].get("damage_label")
+		return lbl.text if lbl else ""
+	return ""
 
 
 func _create_floating_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:
