@@ -5770,8 +5770,8 @@
    "id": "equipment-lock-protection",
    "cat": "遊戲",
    "title": "EquipmentSystem與WeaponSwapDialog支援裝備鎖定保護機制",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "阿翔開發中：EquipmentSystem與WeaponSwapDialog支援裝備鎖定保護機制 (t_3195d5e4)",
    "keys": [
     "Equipmen"
    ]
