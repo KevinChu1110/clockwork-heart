@@ -5780,8 +5780,8 @@
    "id": "lobby-auto-equip-btn",
    "cat": "遊戲",
    "title": "大廳角色頁新增一鍵配置最高戰力武器按鈕與即時數值連動",
-   "status": "開發中",
-   "note": "阿宏開始動工：大廳角色頁一鍵配置最高戰力武器按鈕與即時數值連動 (t_728315d8)",
+   "status": "測試中",
+   "note": "阿宏已實作完成，單元測試 TEST_LOBBY_AUTO_EQUIP_BTN_OK 全綠，clock-check 全過",
    "keys": [
     "大廳角色頁新增一"
    ]
