@@ -5730,8 +5730,8 @@
    "id": "victory-next-stage",
    "cat": "遊戲",
    "title": "出征勝利連續挑戰下一關按鈕",
-   "status": "測試中",
-   "note": "完成 BattleVictoryDialog 連續挑戰下一關按鈕與無頭測試",
+   "status": "已上線",
+   "note": "t_f8f33c24 全站回歸驗收通過，出征連續挑戰下一關按鈕已上線",
    "keys": [
     "出征勝利連續挑戰"
    ]
