@@ -5700,8 +5700,8 @@
    "id": "dummy-weapon-contribution",
    "cat": "遊戲",
    "title": "木人樁試招結算三欄武器輪替次數與傷害貢獻統計",
-   "status": "草稿",
-   "note": "DummySettlementDialog 結算卡新增三欄武器傷害佔比與輪替次數卡",
+   "status": "開發中",
+   "note": "阿宏開始開發三欄武器輪替次數與傷害貢獻統計 (t_8f9d6203)",
    "keys": [
     "木人樁試招結算三"
    ]
