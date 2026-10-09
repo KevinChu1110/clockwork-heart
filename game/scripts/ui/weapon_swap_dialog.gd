@@ -32,6 +32,25 @@ static func _t(s: String) -> String:
 				return loc_t
 	return res
 
+
+static func get_weapon_atk(inst: Dictionary) -> int:
+	var atk: int = int(inst.get("weapon_atk", 0))
+	if atk <= 0 and inst.has("rolled") and inst["rolled"] is Dictionary:
+		atk = int(inst["rolled"].get("atk", 0))
+	return atk
+
+
+static func sort_weapons_by_atk_desc(weapons: Array) -> Array:
+	var list: Array = weapons.duplicate(true)
+	list.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var atkA := get_weapon_atk(a)
+		var atkB := get_weapon_atk(b)
+		if atkA != atkB:
+			return atkA > atkB
+		return str(a.get("uid", "")) < str(b.get("uid", ""))
+	)
+	return list
+
 ## ── 多巴胺鮮亮高飽和色盤 ──
 const COLOR_GOLD         := Color("#FFD028")  ## 金黃
 const COLOR_ORANGE       := Color("#FFA010")  ## 暖橘
@@ -52,6 +71,19 @@ const COLOR_TEXT_GOLD    := Color("#9A6B00")  ## 壓明度金黃
 const COLOR_TEXT_ORANGE  := Color("#C2600A")  ## 壓明度暖橘
 const COLOR_TEXT_MUTED   := Color("#6B6680")  ## 次要輔助文字
 const COLOR_TEXT_DIM     := Color("#888294")  ## 壓暗提示文字
+
+## ── 攻擊力差額對比膠囊多巴胺高對比配色 ──
+const COLOR_DIFF_POS_BG   := Color("#DDF7E3")  ## 薄荷綠柔底 (高於當前)
+const COLOR_DIFF_POS_TEXT := Color("#1B7535")  ## 薄荷綠加粗深字 (高於當前)
+const COLOR_DIFF_POS_BD   := Color("#38B653")  ## 薄荷綠邊框 (高於當前)
+
+const COLOR_DIFF_NEG_BG   := Color("#EFEBE0")  ## 柔和灰底 (低於當前)
+const COLOR_DIFF_NEG_TEXT := Color("#6B6680")  ## 柔和灰文字 (低於當前)
+const COLOR_DIFF_NEG_BD   := Color("#D2CCC0")  ## 柔和灰邊框 (低於當前)
+
+const COLOR_DIFF_EQ_BG    := Color("#F4F1EA")  ## 相等/為空底
+const COLOR_DIFF_EQ_TEXT  := Color("#888294")  ## 相等/為空文字
+const COLOR_DIFF_EQ_BD    := Color("#DCD7CC")  ## 相等/為空邊框
 
 const LINE_NAMES: Dictionary = {
 	"sword": "劍",
@@ -452,9 +484,7 @@ func _refresh_slot_summary() -> void:
 		var line := str(inst.get("line", "sword"))
 		var hits := _t(LINE_HITS.get(line, "4 次打擊"))
 		var q_label := _t(str(inst.get("quality_label", "凡品")))
-		var atk: int = int(inst.get("weapon_atk", 0))
-		if atk <= 0 and inst.has("rolled") and inst["rolled"] is Dictionary:
-			atk = int(inst["rolled"].get("atk", 0))
+		var atk := get_weapon_atk(inst)
 		_slot_summary_lbl.text = "【%s】%s · %s · %s (攻擊 +%d)" % [slot_title, wname, q_label, hits, atk]
 		_btn_unequip.visible = (_target_slot > 0)
 
@@ -462,6 +492,7 @@ func _refresh_slot_summary() -> void:
 func _rebuild_weapon_list() -> void:
 	for c in _weapons_box.get_children():
 		if c != _empty_panel:
+			_weapons_box.remove_child(c)
 			c.queue_free()
 
 	var candidates := _collect_candidate_weapons()
@@ -524,6 +555,7 @@ func _collect_candidate_weapons() -> Array[Dictionary]:
 			seen_uids[s_uid] = true
 
 	# 3. 背包中的武器 (equip_bag)
+	var bag_weapons: Array[Dictionary] = []
 	if gs and "equip_bag" in gs and gs.equip_bag is Array:
 		for item in gs.equip_bag:
 			if not (item is Dictionary):
@@ -540,10 +572,49 @@ func _collect_candidate_weapons() -> Array[Dictionary]:
 			if is_weapon:
 				var entry: Dictionary = (item as Dictionary).duplicate(true)
 				entry["_status"] = "bag"
-				result.append(entry)
+				bag_weapons.append(entry)
 				seen_uids[uid] = true
 
+	# 背包武器依攻擊力 (atk) 降序排序
+	bag_weapons.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
+		var atkA := get_weapon_atk(a)
+		var atkB := get_weapon_atk(b)
+		if atkA != atkB:
+			return atkA > atkB
+		return str(a.get("uid", "")) < str(b.get("uid", ""))
+	)
+	result.append_array(bag_weapons)
+
 	return result
+
+
+func get_target_slot_weapon_info() -> Dictionary:
+	var eq := _get_equip_sys()
+	var gs := _gs()
+	var target_uid := ""
+	if eq and eq.has_method("loadout_uid"):
+		target_uid = str(eq.call("loadout_uid", _target_slot))
+	elif gs and "weapon_loadout" in gs and _target_slot < gs.weapon_loadout.size():
+		target_uid = str(gs.weapon_loadout[_target_slot])
+
+	if target_uid.is_empty():
+		return {"has_weapon": false, "atk": 0, "uid": ""}
+
+	var t_inst: Dictionary = {}
+	if eq and eq.has_method("weapon_inst"):
+		t_inst = eq.call("weapon_inst", target_uid)
+	if t_inst.is_empty() and gs and "equip_worn" in gs and gs.equip_worn is Dictionary:
+		t_inst = gs.equip_worn.get(target_uid, {})
+
+	if t_inst.is_empty():
+		return {"has_weapon": false, "atk": 0, "uid": target_uid}
+
+	return {
+		"has_weapon": true,
+		"atk": get_weapon_atk(t_inst),
+		"uid": target_uid,
+		"inst": t_inst
+	}
 
 
 func _build_weapon_card(winst: Dictionary) -> PanelContainer:
@@ -637,9 +708,7 @@ func _build_weapon_card(winst: Dictionary) -> PanelContainer:
 
 	var stat_lbl := Label.new()
 	var hits_str := _t(LINE_HITS.get(line, "4 次打擊"))
-	var atk: int = int(winst.get("weapon_atk", 0))
-	if atk <= 0 and winst.has("rolled") and winst["rolled"] is Dictionary:
-		atk = int(winst["rolled"].get("atk", 0))
+	var atk := get_weapon_atk(winst)
 
 	var stat_desc := "%s · %s +%d" % [hits_str, _t("攻擊"), atk]
 	if winst.has("rolled") and winst["rolled"] is Dictionary:
@@ -649,6 +718,65 @@ func _build_weapon_card(winst: Dictionary) -> PanelContainer:
 	stat_lbl.text = stat_desc
 	_apply_font(stat_lbl, 12, COLOR_TEXT_MUTED)
 	info_v.add_child(stat_lbl)
+
+	# 差額對比膠囊
+	var t_info := get_target_slot_weapon_info()
+	var has_target_w: bool = bool(t_info.get("has_weapon", false))
+	var target_atk: int = int(t_info.get("atk", 0))
+
+	var diff_text := "--"
+	var diff_bg: Color = COLOR_DIFF_EQ_BG
+	var diff_bd: Color = COLOR_DIFF_EQ_BD
+	var diff_col: Color = COLOR_DIFF_EQ_TEXT
+
+	if has_target_w:
+		var diff := atk - target_atk
+		if diff > 0:
+			diff_text = "+%d %s" % [diff, _t("攻擊")]
+			diff_bg = COLOR_DIFF_POS_BG
+			diff_bd = COLOR_DIFF_POS_BD
+			diff_col = COLOR_DIFF_POS_TEXT
+		elif diff < 0:
+			diff_text = "-%d %s" % [absi(diff), _t("攻擊")]
+			diff_bg = COLOR_DIFF_NEG_BG
+			diff_bd = COLOR_DIFF_NEG_BD
+			diff_col = COLOR_DIFF_NEG_TEXT
+		else:
+			diff_text = "--"
+			diff_bg = COLOR_DIFF_EQ_BG
+			diff_bd = COLOR_DIFF_EQ_BD
+			diff_col = COLOR_DIFF_EQ_TEXT
+	else:
+		diff_text = "--"
+		diff_bg = COLOR_DIFF_EQ_BG
+		diff_bd = COLOR_DIFF_EQ_BD
+		diff_col = COLOR_DIFF_EQ_TEXT
+
+	var diff_p := PanelContainer.new()
+	diff_p.name = "DiffCapsule"
+	diff_p.custom_minimum_size = Vector2(86, 32)
+	diff_p.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	var dsb := StyleBoxFlat.new()
+	dsb.bg_color = diff_bg
+	dsb.border_color = diff_bd
+	dsb.set_border_width_all(1)
+	dsb.border_width_bottom = 3
+	dsb.set_corner_radius_all(12)
+	dsb.content_margin_left = 6
+	dsb.content_margin_right = 6
+	dsb.content_margin_top = 4
+	dsb.content_margin_bottom = 4
+	diff_p.add_theme_stylebox_override("panel", dsb)
+
+	var diff_lbl := Label.new()
+	diff_lbl.name = "DiffLabel"
+	diff_lbl.text = diff_text
+	diff_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	diff_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_font(diff_lbl, 12, diff_col, true)
+	diff_p.add_child(diff_lbl)
+
+	h.add_child(diff_p)
 
 	# 右側：操作按鈕
 	var act_btn := Button.new()
