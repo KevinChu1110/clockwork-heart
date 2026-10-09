@@ -187,6 +187,8 @@ func _initialize() -> void:
 	_assert(str(battle.get("_mode")) == "ash_rat", "再次挑戰應重啟當前關卡模式 ash_rat")
 	_assert(str(battle.get("_current_expedition_stage")) == "1-1", "再次挑戰後出征關卡仍為 1-1")
 	_assert(not bool(battle.get("_ended")), "再次挑戰後戰鬥狀態應重新為進行中 (_ended = false)")
+	_assert(int(gs.get("hp")) == int(gs.call("effective_max_hp")), "再次挑戰後玩家血量應回滿")
+	_assert(battle.get("_defeat_settlement_dialog") == null or not is_instance_valid(battle.get("_defeat_settlement_dialog")), "再次挑戰後戰敗彈窗應確實關閉與銷毀")
 
 	# ─────────────────────────────────────────────────────────────
 	# 5. 檢驗 BattleView 能量不足時提示說明並不予進入戰鬥

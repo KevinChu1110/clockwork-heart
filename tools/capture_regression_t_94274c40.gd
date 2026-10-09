@@ -240,23 +240,40 @@ func _process(_delta: float) -> bool:
 				_wait = 0
 
 		4:
-			# Step 4: 模擬點擊再次挑戰連動重啟戰鬥
+			# Step 4: 觸發戰敗結算彈窗並模擬點擊 BtnRetryStage 按鈕連動重啟戰鬥
 			if _wait >= 5:
 				if _battle != null:
 					_battle.call("_on_end", false)
-					_battle.call("_on_retry_stage_defeat")
+					var btn_retry: Button = _battle.find_child("BtnRetryStage", true, false) as Button
+					if btn_retry == null:
+						var dlg: Control = _battle.get("_defeat_settlement_dialog") as Control
+						if dlg != null:
+							btn_retry = dlg.find_child("BtnRetryStage", true, false) as Button
+					if btn_retry == null:
+						_fail("在戰敗結算中找不到 BtnRetryStage 按鈕")
+					else:
+						print("  ✓ 成功定位戰敗彈窗之 BtnRetryStage，發射 pressed.emit() 模擬點擊")
+						btn_retry.pressed.emit()
 
 				_step = 5
 				_wait = 0
 
 		5:
-			# Step 5: 截圖重啟戰鬥實機全景
-			if _wait >= 25:
+			# Step 5: 截圖重啟戰鬥實機全景（驗證無彈窗遮擋、滿血開戰）
+			if _wait >= 30:
 				if _battle != null:
 					if str(_battle.get("_mode")) != "ash_rat":
 						_fail("重開戰鬥模式未回復為 ash_rat")
 					if str(_battle.get("_current_expedition_stage")) != "1-1":
 						_fail("重開戰鬥出征關卡未保持為 1-1")
+					var remaining_btn: Button = _battle.find_child("BtnRetryStage", true, false) as Button
+					if remaining_btn != null and is_instance_valid(remaining_btn):
+						_fail("重開戰鬥後 BtnRetryStage 仍殘留，彈窗未銷毀")
+					var defeat_dlg_node: Control = _battle.get("_defeat_settlement_dialog") as Control
+					if defeat_dlg_node != null and is_instance_valid(defeat_dlg_node):
+						_fail("重開戰鬥後 _defeat_settlement_dialog 實體未清理")
+					if _gs != null and int(_gs.get("hp")) != int(_gs.call("effective_max_hp")):
+						_fail("重開戰鬥後玩家血量未回滿 (當前 hp: %d, max_hp: %d)" % [int(_gs.get("hp")), int(_gs.call("effective_max_hp"))])
 
 				_save_viewport(
 					"proof_03_battle_defeat_retry_restarted_combat.png",

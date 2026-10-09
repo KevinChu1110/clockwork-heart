@@ -18,12 +18,16 @@
 
 | 編號 | 實機截圖檔名 | 涵蓋內容與驗收重點 | 破圖 | 零Emoji | 零截字 | SHA256 (前12碼) | 驗證結果 |
 |---|---|---|:---:|:---:|:---:|---|:---:|
-| 01 | `proof_01_battle_defeat_retry_zh_TW.png` | `BattleDefeatDialog` 戰敗結算彈窗：展示多巴胺薄荷綠「再次挑戰」按鈕（`BtnRetryStage`，尺寸 170x52px，立體厚底 6px，圓角 20px），排版於 ReviveAdBtn 與 BtnGearUp 之間 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `fac12ad75287` | 合格 (PASS) |
-| 02 | `proof_02_battle_defeat_retry_en.png` | 英文語系 (en) `BattleDefeatDialog`：彈窗內部顯示「Retry Stage」，全彈窗零 CJK 殘留 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `7e03df8feeb2` | 合格 (PASS) |
-| 03 | `proof_03_battle_defeat_retry_restarted_combat.png` | 點擊「再次挑戰」後連動 BattleView 扣除能量並重啟當前出征關卡 1-1（ash_rat）之實機畫面 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `a11fee5fe565` | 合格 (PASS) |
+| 01 | `proof_01_battle_defeat_retry_zh_TW.png` | `BattleDefeatDialog` 戰敗結算彈窗：展示多巴胺薄荷綠「再次挑戰」按鈕（`BtnRetryStage`，尺寸 170x52px，立體厚底 6px，圓角 20px），排版於 ReviveAdBtn 與 BtnGearUp 之間 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `2f610508e5be` | 合格 (PASS) |
+| 02 | `proof_02_battle_defeat_retry_en.png` | 英文語系 (en) `BattleDefeatDialog`：彈窗內部顯示「Retry Stage」，全彈窗零 CJK 殘留 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `a6d92a09d866` | 合格 (PASS) |
+| 03 | `proof_03_battle_defeat_retry_restarted_combat.png` | 點擊「再次挑戰」按鈕（BtnRetryStage 觸發 pressed.emit()）後連動 BattleView 扣除能量、銷毀彈窗、玩家滿血 (HP 50/50) 重啟當前出征關卡 1-1（停擺發條鼠）之實機畫面，無任何彈窗遮擋 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `5573d96ec469` | 合格 (PASS) |
 
 - **防作弊與真實性校驗**：3 張全景實機截圖 SHA256 完全獨立互異（無重複冒充），對應 3 張特寫裁切圖於 `crops/` 目錄。
-- **Vision 視覺複檢**：經 Vision 驗證，所有按鈕比例正確、立體厚底質感完整、無黑屏、無穿模、無截字、無任何違規 Emoji。
+- **Vision 視覺複檢**：經 Vision 驗證，所有按鈕比例正確、立體厚底質感完整、無黑屏、無穿模、無截字、無任何違規 Emoji；proof_03 確認無彈窗遮擋且玩家為 50/50 滿血開戰。
+- **審查意見 (Review Cycle 2) 改善對齊**：
+  1. `BattleView._on_retry_stage_defeat()` 確保舊彈窗實體銷毀（`queue_free()`）置空，並在重開戰鬥前呼叫 `GameState.heal_full()` 重置玩家為滿血。
+  2. `capture_regression_t_94274c40.gd` Step 4 明確透過定位 `BtnRetryStage` 並發射 `pressed.emit()` 模擬點擊，proof_03 重新渲染出無彈窗遮擋、滿血開戰畫面。
+  3. `test_battle_defeat_retry.gd` 補齊重開戰鬥後玩家血量回滿斷言與彈窗銷毀斷言。
 
 ---
 
