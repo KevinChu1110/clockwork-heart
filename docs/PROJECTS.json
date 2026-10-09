@@ -5745,6 +5745,16 @@
    "keys": [
     "武器更換彈窗直通"
    ]
+  },
+  {
+   "id": "defeat-retry",
+   "cat": "遊戲",
+   "title": "戰敗結算再次挑戰按鈕",
+   "status": "草稿",
+   "note": "BattleDefeatDialog 新增再次挑戰重啟關卡",
+   "keys": [
+    "戰敗結算再次挑戰"
+   ]
   }
  ]
 }
