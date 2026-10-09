@@ -3540,5 +3540,16 @@
   "再連轉一次": "Draw 10 Again",
   "soul.btn_pull_ten_again": "Draw 10 Again",
   "跳過": "Skip",
-  "soul.btn_skip": "Skip"
+  "soul.btn_skip": "Skip",
+  "外裝服飾": "Outfits",
+  "機體塗裝": "Paint Finish",
+  "頭部機關": "Head Gear",
+  "手持武器": "Weapon",
+  "背部發條": "Wind-up Key",
+  "光學核心": "Optic Core",
+  "隨身奇玩": "Pocket Curio",
+  "近衛": "Guard",
+  "樂匣": "Melodist",
+  "儀隊": "Honor Guard",
+  "巡遊": "Parade"
 }

@@ -58,49 +58,49 @@ const SEVEN_SLOTS: Array[Dictionary] = [
 	{
 		"id": "costume",
 		"name_zh": "外裝",
-		"title_zh": "外裝服飾 (Costume)",
+		"title_zh": "外裝服飾",
 		"icon_asset": "res://assets/icons/core_slots/slot_02_chassis_armor.png",
 		"grid_name": "GridCostume"
 	},
 	{
 		"id": "chassis",
 		"name_zh": "塗裝",
-		"title_zh": "機體塗裝 (Chassis / Paint)",
+		"title_zh": "機體塗裝",
 		"icon_asset": "res://assets/icons/core_slots/slot_01_spring_generator.png",
 		"grid_name": "GridChassis"
 	},
 	{
 		"id": "head_unit",
 		"name_zh": "頭部",
-		"title_zh": "頭部機關 (Head Unit)",
+		"title_zh": "頭部機關",
 		"icon_asset": "res://assets/icons/core_slots/slot_03_escapement_governor.png",
 		"grid_name": "GridHeadUnit"
 	},
 	{
 		"id": "weapon",
 		"name_zh": "武器",
-		"title_zh": "手持武器 (Weapon)",
+		"title_zh": "手持武器",
 		"icon_asset": "res://assets/icons/hud/icon_dock_equip.png",
 		"grid_name": "GridWeapon"
 	},
 	{
 		"id": "winding_key",
 		"name_zh": "發條",
-		"title_zh": "背部發條 (Wind-up Key)",
+		"title_zh": "背部發條",
 		"icon_asset": "res://assets/icons/hud/icon_energy_key.png",
 		"grid_name": "GridWindingKey"
 	},
 	{
 		"id": "optic_core",
 		"name_zh": "核心",
-		"title_zh": "光學核心 (Optic Core)",
+		"title_zh": "光學核心",
 		"icon_asset": "res://assets/icons/core_slots/slot_05_resonance_core.png",
 		"grid_name": "GridOpticCore"
 	},
 	{
 		"id": "back_curio",
 		"name_zh": "奇玩",
-		"title_zh": "隨身奇玩 (Back Curio)",
+		"title_zh": "隨身奇玩",
 		"icon_asset": "res://assets/icons/core_slots/slot_04_transmission_gears.png",
 		"grid_name": "GridBackCurio"
 	}
@@ -1832,11 +1832,11 @@ func _update_ui_texts() -> void:
 	if _filter_title_lbl:
 		_filter_title_lbl.text = _t("外裝庫")
 	if _costume_section_title:
-		_costume_section_title.text = _t("外裝服飾 (Costume)")
+		_costume_section_title.text = _t("外裝服飾")
 	if _costume_section_tip:
 		_costume_section_tip.text = _t("點擊卡片即時預覽")
 	if _chassis_section_title:
-		_chassis_section_title.text = _t("機體塗裝 (Chassis / Paint)")
+		_chassis_section_title.text = _t("機體塗裝")
 	if _chassis_section_tip:
 		_chassis_section_tip.text = _t("點擊卡片即時預覽")
 	if _btn_reset:
@@ -1853,10 +1853,6 @@ func _update_ui_texts() -> void:
 			if is_instance_valid(btn):
 				btn.text = _t(str(fam.get("name_zh", fid)))
 
-	var data := _get_race_data()
-	var race_name_zh := str(data.get("name_zh", current_race))
-	var archetype := str(data.get("archetype", ""))
-
 	var gs = _get_game_state()
 	var p_name := "小白"
 	if gs and "player_name" in gs:
@@ -1865,15 +1861,23 @@ func _update_ui_texts() -> void:
 	if _badge_name_label:
 		_badge_name_label.text = "%s" % _t(p_name)
 	if _badge_race_label:
-		var loc_race := _t(race_name_zh)
-		var clean_arch := archetype
-		if "(" in clean_arch:
-			clean_arch = clean_arch.split("(")[0].strip_edges()
-		var loc_arch := _t(clean_arch)
-		if ContentLoc.locale() == "zh_TW":
-			_badge_race_label.text = "【%s · %s】" % [race_name_zh, archetype]
-		else:
-			_badge_race_label.text = "【%s · %s】" % [loc_race, loc_arch]
+		## 名牌跟著「身上這套外裝」所屬的玩具家族走（#60）；裸機回本體家族。
+		## 舊版顯示資料表的種族名＋職業英文 id（「白金兔 · 劍士 (knight)」），跟家族分頁對不上。
+		var plate := ToyFamily.family_def(_nameplate_family_id())
+		_badge_race_label.text = "【%s · %s】" % [_t(str(plate.get("name_zh", ""))), _t(str(plate.get("archetype_zh", "")))]
+
+
+## 名牌顯示的家族：目前外裝所屬家族；裸機／預設件 → 本體家族
+func _nameplate_family_id() -> String:
+	var data := _get_race_data()
+	var native_ids: Array = []
+	for c in data.get("costumes", []):
+		if c is Dictionary:
+			native_ids.append(str((c as Dictionary).get("id", "")))
+	var fam := ToyFamily.family_of_item(selected_costume_id, current_race, native_ids, ["none"])
+	if not ToyFamily.is_family(fam):
+		fam = ToyFamily.family_of(current_race)
+	return fam
 
 
 func _update_preview() -> void:
