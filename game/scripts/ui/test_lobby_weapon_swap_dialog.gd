@@ -13,9 +13,8 @@ extends SceneTree
 const MobileLobbyScript = preload("res://scripts/ui/mobile_lobby.gd")
 const WeaponSwapDialogScript = preload("res://scripts/ui/weapon_swap_dialog.gd")
 
-const OUT_DIR := "/opt/side/bravesoul-game/proofs/t_a53d6368"
-
 var _lobby: Control = null
+var _out_dir: String = ""
 var _frame_count: int = 0
 var _step: int = 0
 var _wait: int = 0
@@ -32,8 +31,8 @@ func _initialize() -> void:
 	if win != null:
 		win.size = Vector2i(1280, 720)
 
-	DirAccess.make_dir_recursive_absolute(OUT_DIR)
-	DirAccess.make_dir_recursive_absolute("/opt/side/bravesoul-game/proofs")
+	_out_dir = ProjectSettings.globalize_path("res://proofs/t_a53d6368")
+	DirAccess.make_dir_recursive_absolute(_out_dir)
 
 	var gs = root.get_node_or_null("GameState")
 	var eq = root.get_node_or_null("EquipmentSystem")
@@ -73,15 +72,19 @@ func _process(_delta: float) -> bool:
 			_step_test_i18n()
 			_step = 5
 		5:
-			print("\n--- 6. 擷取實機截圖存證並驗證 SHA256 不重複 ---")
-			_lobby._switch_tab(_lobby.Tab.CHARACTER)
-			_wait = 0
-			_step = 6
+			if DisplayServer.get_name() != "headless":
+				print("\n--- 6. 擷取實機截圖存證並驗證 SHA256 不重複 ---")
+				_lobby._switch_tab(_lobby.Tab.CHARACTER)
+				_wait = 0
+				_step = 6
+			else:
+				print("\n--- 6. 無頭模式 (headless)，略過 Viewport 截圖與雜湊比對 ---")
+				_step = 9
 		6:
 			_wait += 1
 			if _wait < 8:
 				return false
-			var p1 := OUT_DIR.path_join("proof_01_character_tab_before.png")
+			var p1 := _out_dir.path_join("proof_01_character_tab_before.png")
 			_h1 = _capture_and_save(p1)
 			_proof_dlg = _lobby.open_weapon_swap_dialog(0)
 			_wait = 0
@@ -90,7 +93,7 @@ func _process(_delta: float) -> bool:
 			_wait += 1
 			if _wait < 8:
 				return false
-			var p2 := OUT_DIR.path_join("proof_02_weapon_swap_dialog_open.png")
+			var p2 := _out_dir.path_join("proof_02_weapon_swap_dialog_open.png")
 			_h2 = _capture_and_save(p2)
 			if is_instance_valid(_proof_dlg):
 				_proof_dlg.free()
@@ -100,7 +103,7 @@ func _process(_delta: float) -> bool:
 			_wait += 1
 			if _wait < 8:
 				return false
-			var p3 := OUT_DIR.path_join("proof_03_character_tab_after_swap.png")
+			var p3 := _out_dir.path_join("proof_03_character_tab_after_swap.png")
 			_h3 = _capture_and_save(p3)
 			if _h1 == _h2 or _h2 == _h3 or _h1 == _h3:
 				_fail("截圖 SHA256 重複！不可上傳相同截圖冒充互動流程: h1=%s, h2=%s, h3=%s" % [_h1, _h2, _h3])
