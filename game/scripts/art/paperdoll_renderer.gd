@@ -1482,6 +1482,10 @@ static func resolve_slot_texture_path_512(race: String, slot_id: String, item_id
 		if ResourceLoader.exists(p_race_128_clean) or FileAccess.file_exists(p_race_128_clean):
 			return p_race_128_clean
 
+	if sid == SLOT_WEAPON:
+		# 武器 512 解析禁止 fallback 至 61x72 HUD 小圖示（res://assets/sprites/player/weapons/），避免被暴力放大 8 倍覆蓋角色穿模
+		return ""
+
 	return resolve_slot_texture_path(rid, sid, iid)
 
 
@@ -1622,8 +1626,11 @@ static func build_composite_texture_512(race: String, slot_selection: Dictionary
 			layer_img.convert(Image.FORMAT_RGBA8)
 		var is_512 := layer_img.get_width() == 512 and layer_img.get_height() == 512
 		if not is_512:
-			# 128 素體／頭貼到 512 臉上會變成碎塊遮罩；只允許衣服／武器／鑰匙／奇玩蓋上去
-			if sid in [SLOT_CHASSIS, SLOT_HEAD_UNIT, SLOT_OPTIC_CORE]:
+			# 128 素體／頭貼到 512 臉上會變成碎塊遮罩；只允許衣服／鑰匙／奇玩蓋上去
+			# 武器必須具備 512 原生切片，嚴禁將低解析度 (如 61x72) 戰鬥道具 icon 放大 8 倍覆蓋角色穿模
+			if sid in [SLOT_CHASSIS, SLOT_HEAD_UNIT, SLOT_OPTIC_CORE, SLOT_WEAPON]:
+				continue
+			if layer_img.get_width() < 128 or layer_img.get_height() < 128:
 				continue
 			layer_img.resize(512, 512, Image.INTERPOLATE_LANCZOS)
 		var src_rect := Rect2i(0, 0, 512, 512)

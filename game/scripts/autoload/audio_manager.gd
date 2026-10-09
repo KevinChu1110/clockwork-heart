@@ -20,6 +20,8 @@ var _bgm_db: float = -5.0  ## 悠揚版略抬一點，仍避免蓋過 SFX
 var _muted: bool = false
 var _bgm_muted: bool = false
 var _step_cd: float = 0.0
+var last_sfx: String = ""
+var last_sfx_time: float = 0.0
 
 var _bgm_a: AudioStreamPlayer
 var _bgm_b: AudioStreamPlayer
@@ -67,6 +69,7 @@ func _preload_sfx() -> void:
 		"reveal", "break", "stop", "clash", "victory", "defeat",
 		"ui", "interact", "step", "warn", "dodge", "battle_start",
 		"craft",  ## 可選；缺檔時 play_craft_success 走 ui+reveal
+		"overwind",  ## 發條超載爆裂音效；缺檔時 play_overwind_burst 走 clash+break+clock
 	]
 	for n in names:
 		var path := "%s/%s.wav" % [SFX_DIR, n]
@@ -180,6 +183,8 @@ func set_bgm_muted(v: bool) -> void:
 
 
 func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
+	last_sfx = id
+	last_sfx_time = Time.get_ticks_msec() / 1000.0
 	if _muted:
 		return
 	var stream: AudioStream = _streams.get(id)
@@ -191,6 +196,11 @@ func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 	p.pitch_scale = clampf(pitch_scale, 0.5, 2.0)
 	p.volume_db = _sfx_db + volume_db
 	p.play()
+
+
+## 播放指定 SFX 音效（play 的標準別名，符合手冊與規範）
+func play_sfx(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
+	play(id, pitch_scale, volume_db)
 
 
 func play_step() -> void:
@@ -221,6 +231,16 @@ func play_craft_success() -> void:
 func play_ritual_success() -> void:
 	play("reveal", 0.95)
 	play("ui", 1.18, -5.0)
+
+
+## 發條超載爆裂（Overwind Burst）：金屬爆裂音效
+func play_overwind_burst() -> void:
+	if _streams.has("overwind"):
+		play("overwind")
+	else:
+		play("clash", 1.15, 1.0)
+		play("break", 1.05, 0.0)
+		play("clock", 1.25, -2.0)
 
 
 ## ─── BGM ───
@@ -363,6 +383,8 @@ static func map_to_bgm(map_id: String) -> String:
 ## 戰鬥事件 → 音效
 func on_battle_event(kind: String, data: Dictionary = {}) -> void:
 	match kind:
+		"overwind_burst":
+			play_overwind_burst()
 		"perfect_parry":
 			play("parry")
 		"hit":

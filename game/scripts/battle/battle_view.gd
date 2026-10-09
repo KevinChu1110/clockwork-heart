@@ -10,6 +10,7 @@ const OutlineShader = preload("res://shaders/outline.gdshader")
 const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const ColorGradeScreenShader = preload("res://shaders/color_grade_screen.gdshader")
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
+const WindingKeyAnimator = preload("res://scripts/art/winding_key_animator.gd")
 
 const FONT_HUNINN_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 static var _cached_huninn: Font = null
@@ -102,7 +103,17 @@ var enable_idle_breathing: bool = true:
 var _baked_shadow_cache: Dictionary = {}
 var _battle_weapon: TextureRect = null
 var _battle_armor: TextureRect = null
+## 戰前發條上鏈儀式（Pre-battle Windup Ritual）：0.5 秒發條加速旋轉、wind 音效與開局戰報
+const PRE_WINDUP_DURATION: float = 0.5
+var _is_pre_windup: bool = false
+var _pre_windup_timer: float = 0.0
 var _skill_banner: Label
+var _vignette_overlay: TextureRect = null
+var _burst_sparks: CPUParticles2D = null
+var _burst_gears: CPUParticles2D = null
+var _overwind_banner: Label = null
+static var _vignette_tex_cache: Texture2D = null
+var _last_overwind_burst_msec: int = -99999
 var _rage_ready: Label
 var _rage_shimmer_tween: Tween = null
 var _last_rage_style_state := ""
@@ -372,6 +383,10 @@ func setup(mode: String) -> void:
 		hazard_fx.visible = false
 	if _skill_banner:
 		_skill_banner.visible = false
+	if _overwind_banner:
+		_overwind_banner.visible = false
+	if _vignette_overlay:
+		_vignette_overlay.visible = false
 	_hide_temptation()
 	_player_home = player_body.position
 	_enemy_home = enemy_body.position
@@ -485,7 +500,14 @@ func setup(mode: String) -> void:
 	_refresh_hud()
 	_ensure_coach()
 	AudioManager.battle_start(_mode)
-	_append_log("[color=#b8a88a]%s[/color]" % Loc.t("battle.start"))
+	_is_pre_windup = true
+	_pre_windup_timer = PRE_WINDUP_DURATION
+	_trigger_pre_battle_windup()
+	if AudioManager and AudioManager.has_method("play_sfx"):
+		AudioManager.play_sfx("wind")
+	elif AudioManager and AudioManager.has_method("play"):
+		AudioManager.play("wind")
+	_append_log("[color=#ffd028]%s[/color]" % Loc.t("battle.pre_windup"))
 	if mode == "pvp_snap":
 		var WC3 = load("res://scripts/world/world_content.gd")
 		var d3: Dictionary = WC3.enemy_def("pvp_snap") if WC3 else {}
@@ -724,10 +746,10 @@ func _apply_hud_chrome() -> void:
 		_log_panel.grow_horizontal = Control.GROW_DIRECTION_END
 		_log_panel.grow_vertical = Control.GROW_DIRECTION_BEGIN
 		_log_panel.offset_left = 24.0
-		_log_panel.offset_right = 380.0
+		_log_panel.offset_right = 460.0
 		_log_panel.offset_bottom = -20.0
-		_log_panel.offset_top = -88.0
-		_log_panel.pivot_offset = Vector2(178.0, 34.0)
+		_log_panel.offset_top = -112.0
+		_log_panel.pivot_offset = Vector2(218.0, 46.0)
 		var ls := StyleBoxFlat.new()
 		ls.bg_color = Color("#FFFDF8")
 		ls.border_color = Color("#1F1A3A")
@@ -827,6 +849,7 @@ func _apply_hud_chrome() -> void:
 	_install_touch_controls()
 	_ensure_thumb_hud()
 	_ensure_core_dots_hud()
+	_ensure_overwind_burst_nodes()
 
 
 func _apply_safe_hud() -> void:
@@ -843,9 +866,9 @@ func _apply_safe_hud() -> void:
 		btn_flee.offset_top = -ResponsiveUi.BTN_H - 8.0 - m.w
 	if _log_panel:
 		_log_panel.offset_left = m.x + 24.0
-		_log_panel.offset_right = m.x + 380.0
+		_log_panel.offset_right = m.x + 460.0
 		_log_panel.offset_bottom = -20.0 - m.w
-		_log_panel.offset_top = -88.0 - m.w
+		_log_panel.offset_top = -112.0 - m.w
 	if _weapon_dock and is_instance_valid(_weapon_dock) and _weapon_dock.get_parent() == self:
 		_weapon_dock.offset_left = -580.0 - m.z
 		_weapon_dock.offset_right = -400.0 - m.z
@@ -1698,6 +1721,259 @@ func _flash_skill_banner(skill_name: String, player_side: bool = true) -> void:
 	)
 
 
+static func _vignette_tex() -> Texture2D:
+	if _vignette_tex_cache != null:
+		return _vignette_tex_cache
+	## 320x180 全螢幕暗角底圖：中心透明無遮擋，外圍向四角平滑漸變為深黑曜石棕＋金色微光環
+	var w := 320
+	var h := 180
+	var img := Image.create(w, h, false, Image.FORMAT_RGBA8)
+	var cx := (w - 1) * 0.5
+	var cy := (h - 1) * 0.5
+	var rx := cx * 1.02
+	var ry := cy * 1.02
+	for y in h:
+		for x in w:
+			var dx := (float(x) - cx) / rx
+			var dy := (float(y) - cy) / ry
+			var d := sqrt(dx * dx + dy * dy)
+			if d <= 0.28:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+			else:
+				var t := clampf((d - 0.28) / 0.72, 0.0, 1.0)
+				var alpha := clampf(pow(t, 1.3) * 0.96, 0.0, 0.96)
+				var vig_col := Color(0.02, 0.01, 0.03, alpha)
+				if t > 0.15 and t < 0.75:
+					var ring_t := sin((t - 0.15) / 0.60 * PI)
+					vig_col = vig_col.blend(Color(1.0, 0.72, 0.18, ring_t * 0.32))
+				img.set_pixel(x, y, vig_col)
+	_vignette_tex_cache = ImageTexture.create_from_image(img)
+	return _vignette_tex_cache
+
+
+static var _gear_tex_cache: Texture2D = null
+static var _spark_tex_cache: Texture2D = null
+
+
+static func _gear_tex() -> Texture2D:
+	if _gear_tex_cache != null:
+		return _gear_tex_cache
+	var size := 32
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var c := (size - 1) * 0.5
+	var r_outer := 14.0
+	var r_root := 10.5
+	var r_inner := 4.0
+	var num_teeth := 8
+	for y in size:
+		for x in size:
+			var dx := float(x) - c
+			var dy := float(y) - c
+			var dist := sqrt(dx * dx + dy * dy)
+			if dist > r_outer + 0.5 or dist < r_inner - 0.5:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+				continue
+			var angle := atan2(dy, dx)
+			var tooth_phase := fposmod(angle * float(num_teeth) / (2.0 * PI), 1.0)
+			var tooth_profile := cos(tooth_phase * 2.0 * PI)
+			var max_r := r_root + (r_outer - r_root) * clampf(tooth_profile * 1.8, 0.0, 1.0)
+			if dist > max_r or dist <= r_inner:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+			else:
+				var light := clampf((-(dx * 0.7 + dy * 0.7) / r_outer + 1.0) * 0.5, 0.0, 1.0)
+				var base_col := Color("#FFD028").lerp(Color("#FFA010"), 1.0 - light)
+				if dist > max_r - 1.2 or dist < r_inner + 1.2:
+					base_col = Color("#5A3005")
+				img.set_pixel(x, y, base_col)
+	_gear_tex_cache = ImageTexture.create_from_image(img)
+	return _gear_tex_cache
+
+
+static func _spark_tex() -> Texture2D:
+	if _spark_tex_cache != null:
+		return _spark_tex_cache
+	var size := 24
+	var img := Image.create(size, size, false, Image.FORMAT_RGBA8)
+	var c := (size - 1) * 0.5
+	for y in size:
+		for x in size:
+			var dx := absf(float(x) - c) / c
+			var dy := absf(float(y) - c) / c
+			var star := maxf(0.0, 1.0 - (sqrt(dx) + sqrt(dy)))
+			var rad := maxf(0.0, 1.0 - sqrt(dx * dx + dy * dy))
+			var val := clampf(star * 0.75 + rad * 0.45, 0.0, 1.0)
+			if val <= 0.01:
+				img.set_pixel(x, y, Color(0, 0, 0, 0))
+			else:
+				var col := Color(1.0, 0.95, 0.6, val).lerp(Color(1.0, 0.6, 0.1, val), 1.0 - val)
+				img.set_pixel(x, y, col)
+	_spark_tex_cache = ImageTexture.create_from_image(img)
+	return _spark_tex_cache
+
+
+func _ensure_overwind_burst_nodes() -> void:
+	if _vignette_overlay == null:
+		_vignette_overlay = TextureRect.new()
+		_vignette_overlay.name = "OverwindVignette"
+		_vignette_overlay.texture = _vignette_tex()
+		_vignette_overlay.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		_vignette_overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+		_vignette_overlay.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		_vignette_overlay.stretch_mode = TextureRect.STRETCH_SCALE
+		_vignette_overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_vignette_overlay.visible = false
+		_vignette_overlay.z_index = 25
+		add_child(_vignette_overlay)
+
+	if _burst_sparks == null:
+		_burst_sparks = CPUParticles2D.new()
+		_burst_sparks.name = "BurstSparks"
+		_burst_sparks.texture = _spark_tex()
+		_burst_sparks.emitting = false
+		_burst_sparks.one_shot = true
+		_burst_sparks.explosiveness = 0.95
+		_burst_sparks.amount = 40
+		_burst_sparks.lifetime = 0.55
+		_burst_sparks.direction = Vector2(0, -1)
+		_burst_sparks.spread = 180.0
+		_burst_sparks.gravity = Vector2(0, 260)
+		_burst_sparks.initial_velocity_min = 200.0
+		_burst_sparks.initial_velocity_max = 420.0
+		_burst_sparks.scale_amount_min = 1.0
+		_burst_sparks.scale_amount_max = 2.2
+		var grad := Gradient.new()
+		grad.set_color(0, Color(1.0, 0.98, 0.7, 1.0))
+		grad.add_point(0.4, Color(1.0, 0.75, 0.15, 1.0))
+		grad.add_point(1.0, Color(1.0, 0.35, 0.05, 0.0))
+		_burst_sparks.color_ramp = grad
+		_burst_sparks.z_index = 28
+		add_child(_burst_sparks)
+
+	if _burst_gears == null:
+		_burst_gears = CPUParticles2D.new()
+		_burst_gears.name = "BurstGears"
+		_burst_gears.texture = _gear_tex()
+		_burst_gears.emitting = false
+		_burst_gears.one_shot = true
+		_burst_gears.explosiveness = 0.92
+		_burst_gears.amount = 16
+		_burst_gears.lifetime = 0.7
+		_burst_gears.direction = Vector2(0, -1)
+		_burst_gears.spread = 160.0
+		_burst_gears.gravity = Vector2(0, 360)
+		_burst_gears.initial_velocity_min = 160.0
+		_burst_gears.initial_velocity_max = 340.0
+		_burst_gears.angular_velocity_min = 240.0
+		_burst_gears.angular_velocity_max = 720.0
+		_burst_gears.scale_amount_min = 0.8
+		_burst_gears.scale_amount_max = 1.4
+		var gear_grad := Gradient.new()
+		gear_grad.set_color(0, Color(1.0, 1.0, 1.0, 1.0))
+		gear_grad.add_point(0.75, Color(1.0, 1.0, 1.0, 1.0))
+		gear_grad.add_point(1.0, Color(1.0, 1.0, 1.0, 0.0))
+		_burst_gears.color_ramp = gear_grad
+		_burst_gears.z_index = 29
+		add_child(_burst_gears)
+
+	if _overwind_banner == null:
+		var huninn := _get_huninn_font()
+		_overwind_banner = Label.new()
+		_overwind_banner.name = "OverwindBanner"
+		_overwind_banner.visible = false
+		_overwind_banner.set_anchors_preset(Control.PRESET_CENTER_TOP)
+		_overwind_banner.offset_top = 115
+		_overwind_banner.offset_bottom = 165
+		_overwind_banner.offset_left = -300
+		_overwind_banner.offset_right = 300
+		_overwind_banner.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_overwind_banner.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		if huninn:
+			_overwind_banner.add_theme_font_override("font", huninn)
+		_overwind_banner.add_theme_font_size_override("font_size", 34)
+		_overwind_banner.add_theme_color_override("font_color", Color("#FFD028"))
+		_overwind_banner.add_theme_color_override("font_outline_color", Color("#1F1A3A"))
+		_overwind_banner.add_theme_constant_override("outline_size", 6)
+		_overwind_banner.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.9))
+		_overwind_banner.add_theme_constant_override("shadow_offset_x", 3)
+		_overwind_banner.add_theme_constant_override("shadow_offset_y", 3)
+		_overwind_banner.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_overwind_banner.z_index = 32
+		add_child(_overwind_banner)
+
+
+func _flash_overwind_banner(text: String) -> void:
+	if _overwind_banner == null:
+		return
+	_overwind_banner.text = text
+	_overwind_banner.visible = true
+	_overwind_banner.modulate = Color(1, 1, 1, 0)
+	_overwind_banner.scale = Vector2(0.6, 0.6)
+	_overwind_banner.pivot_offset = Vector2(300, 25)
+	var tw := create_tween()
+	tw.tween_property(_overwind_banner, "modulate:a", 1.0, 0.08)
+	tw.parallel().tween_property(_overwind_banner, "scale", Vector2(1.15, 1.15), 0.12)
+	tw.tween_property(_overwind_banner, "scale", Vector2.ONE, 0.08)
+	tw.tween_interval(0.45)
+	tw.tween_property(_overwind_banner, "modulate:a", 0.0, 0.2)
+	tw.tween_callback(func():
+		if is_instance_valid(_overwind_banner):
+			_overwind_banner.visible = false
+	)
+
+
+func trigger_overwind_burst(source: String = "manual") -> void:
+	var now := Time.get_ticks_msec()
+	if now - _last_overwind_burst_msec < 250:
+		return
+	_last_overwind_burst_msec = now
+
+	_ensure_overwind_burst_nodes()
+
+	## 1. 0.3 秒全螢幕暗角（vignette）
+	if _vignette_overlay:
+		_vignette_overlay.visible = true
+		_vignette_overlay.modulate = Color(1, 1, 1, 0)
+		var v_tw := create_tween()
+		v_tw.tween_property(_vignette_overlay, "modulate:a", 1.0, 0.04)
+		v_tw.tween_interval(0.16)
+		v_tw.tween_property(_vignette_overlay, "modulate:a", 0.0, 0.10)
+		v_tw.tween_callback(func():
+			if is_instance_valid(_vignette_overlay):
+				_vignette_overlay.visible = false
+		)
+
+	## 2. 0.3 秒震動與頓挫（screen shake / hit stop）
+	_shake = maxf(_shake, 0.35)
+	trigger_hit_stop(0.08)
+
+	## 3. 金色齒輪火花噴射粒子動效（CPU particles）
+	var spawn_pos := Vector2(340, 360)
+	if is_instance_valid(player_body) and player_body.is_visible_in_tree() and player_body.global_position.x > 5.0:
+		spawn_pos = player_body.global_position + Vector2(player_body.size.x * 0.5, player_body.size.y * 0.45)
+	if _burst_sparks:
+		_burst_sparks.global_position = spawn_pos
+		_burst_sparks.restart()
+		_burst_sparks.emitting = true
+	if _burst_gears:
+		_burst_gears.global_position = spawn_pos
+		_burst_gears.restart()
+		_burst_gears.emitting = true
+
+	## 角色高光閃爍
+	if is_instance_valid(player_body):
+		_flash(player_body, Color(3.5, 2.2, 0.8))
+
+	## 4. 播放 overwind 金屬爆裂音效
+	if AudioManager and AudioManager.has_method("play_overwind_burst"):
+		AudioManager.play_overwind_burst()
+
+	## 5. 六語系同步提示
+	_flash_overwind_banner(_t("發條超載爆裂！"))
+	_spawn_float("player", _t("超載爆裂！"), Color(1.0, 0.85, 0.2), true)
+	_append_log(_t("[color=#ffcc00]發條超載爆裂！轉數全滿 · 金屬狂暴！[/color]"))
+
+
+
 static func _soft_shadow_tex() -> Texture2D:
 	if _shadow_tex_cache != null:
 		return _shadow_tex_cache
@@ -1868,9 +2144,12 @@ func _shadow_layer() -> Control:
 	layer.clip_contents = false
 	layer.z_index = 0
 	layer.z_as_relative = false
-	## 地面 → 軟影 → 角色 → 戰報。畫在 Arena 之後會蓋靴子。
-	if arena and layer.get_index() != arena.get_index() - 1:
-		move_child(layer, arena.get_index())
+	## 地面 → 軟影 → 角色 → 戰報。Arena 設 z_index = 2，確保角色永遠在接地軟影前方。
+	if arena:
+		arena.z_index = 2
+		arena.z_as_relative = false
+		if layer.get_index() != arena.get_index() - 1:
+			move_child(layer, arena.get_index())
 	return layer
 
 
@@ -2054,19 +2333,26 @@ func _apply_battle_art(mode: String) -> void:
 	_ensure_battle_look()
 	_player_race = SpriteDB.player_race()
 	_player_pose = "idle"
-	var ptex := _get_player_equipped_idle_texture()
-	if ptex != null and ptex.get_width() >= 256:
-		player_body.texture = ptex
-		player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-		_player_tex_has_baked_shadow = _texture_has_baked_shadow(ptex)
-	else:
-		var sc := SpriteDB.hero_showcase_hd_tex(_player_race)
-		if sc != null and sc.get_width() >= 256:
-			player_body.texture = sc
+	var slots: Dictionary = {}
+	if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
+		slots = (GameState.paperdoll_slots as Dictionary).duplicate()
+	var anim := WindingKeyAnimator.setup_for(player_body, _player_race, slots)
+	if anim == null or player_body.texture == null:
+		var ptex := _get_player_equipped_idle_texture()
+		if ptex != null and ptex.get_width() >= 256:
+			player_body.texture = ptex
 			player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-			_player_tex_has_baked_shadow = _texture_has_baked_shadow(sc)
+			_player_tex_has_baked_shadow = _texture_has_baked_shadow(ptex)
 		else:
-			player_body.texture = null
+			var sc := SpriteDB.hero_showcase_hd_tex(_player_race)
+			if sc != null and sc.get_width() >= 256:
+				player_body.texture = sc
+				player_body.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+				_player_tex_has_baked_shadow = _texture_has_baked_shadow(sc)
+			else:
+				player_body.texture = null
+	else:
+		_player_tex_has_baked_shadow = false
 	player_body.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	player_body.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	player_body.custom_minimum_size = Vector2(200, 250)
@@ -2173,6 +2459,24 @@ func _apply_battle_art(mode: String) -> void:
 	elif battle_bg:
 		battle_bg.texture = null
 		battle_bg.modulate = Color(0.98, 0.93, 0.82)
+
+
+func is_pre_windup() -> bool:
+	return _is_pre_windup
+
+
+func get_pre_windup_timer() -> float:
+	return _pre_windup_timer
+
+
+func _trigger_pre_battle_windup() -> void:
+	if player_body == null:
+		return
+	var k_rect := player_body.get_node_or_null("HeroWindingKey") as TextureRect
+	if k_rect:
+		var animator = k_rect.get_node_or_null("WindingKeyAnimator")
+		if animator and animator.has_method("start_fast_windup"):
+			animator.call("start_fast_windup", PRE_WINDUP_DURATION, 4.0)
 
 
 func _apply_battle_weapon_overlay() -> void:
@@ -2445,6 +2749,14 @@ func _process(delta: float) -> void:
 		arena.position = Vector2(randf_range(-4, 4), randf_range(-3, 3)) * (_shake * 8.0)
 		if _shake <= 0.0:
 			arena.position = Vector2.ZERO
+	if _is_pre_windup:
+		_pre_windup_timer = maxf(0.0, _pre_windup_timer - delta)
+		if _pre_windup_timer <= 0.0:
+			_is_pre_windup = false
+			_append_log("[color=#b8a88a]%s[/color]" % Loc.t("battle.start"))
+		else:
+			_refresh_hud()
+			return
 	if sim == null or _ended:
 		return
 	sim.step(delta)
@@ -2864,6 +3176,10 @@ func _refresh_hud() -> void:
 					pwr2 = int((raw2 as Dictionary).get("power", 0))
 				if pwr2 > 0:
 					enemy_name.text = "%s  %s" % [e.display_name, _t("戰力 %d") % pwr2]
+			elif GameState and "current_expedition_stage" in GameState and str(GameState.current_expedition_stage) != "":
+				var stage_enemy := _get_expedition_stage_enemy_name(str(GameState.current_expedition_stage))
+				if stage_enemy != "":
+					enemy_name.text = stage_enemy
 			enemy_hp.max_value = e.max_hp
 			enemy_hp.value = e.hp
 			enemy_hp_label.text = "HP %d / %d" % [e.hp, e.max_hp]
@@ -3456,6 +3772,24 @@ func _set_player_pose(pose: String, punch: bool = false) -> void:
 	_player_pose = pose
 	if _player_race.is_empty():
 		_player_race = SpriteDB.player_race()
+	var k_rect := player_body.get_node_or_null("HeroWindingKey") as TextureRect
+	if pose == "idle":
+		var slots: Dictionary = {}
+		if GameState and "paperdoll_slots" in GameState and GameState.paperdoll_slots is Dictionary:
+			slots = (GameState.paperdoll_slots as Dictionary).duplicate()
+		var anim := WindingKeyAnimator.setup_for(player_body, _player_race, slots)
+		if anim != null and player_body.texture != null:
+			if k_rect:
+				k_rect.visible = true
+			_player_tex_has_baked_shadow = false
+			_layout_foot_shadow(player_body)
+			if _player_pose_tween and _player_pose_tween.is_valid():
+				_player_pose_tween.kill()
+				_player_pose_tween = null
+			_start_breathe_tween()
+			return
+	if k_rect:
+		k_rect.visible = false
 	var t: Texture2D = null
 	if pose == "idle":
 		t = _get_player_equipped_idle_texture()
@@ -3712,6 +4046,20 @@ func _unit_display_name(unit_id: String) -> String:
 	return unit_id
 
 
+func _get_expedition_stage_enemy_name(stage_num: String) -> String:
+	var ML = load("res://scripts/ui/mobile_lobby.gd")
+	if ML and "REGION_STAGES" in ML:
+		for reg in ML.REGION_STAGES:
+			for st in reg:
+				if str(st.get("num", "")) == stage_num:
+					var full_name := str(st.get("name", ""))
+					var parts := full_name.split(" · ")
+					if parts.size() > 1:
+						return _t(parts[1])
+					return _t(full_name)
+	return ""
+
+
 func _on_event(kind: String, data: Dictionary) -> void:
 	AudioManager.on_battle_event(kind, data)
 	match kind:
@@ -3911,6 +4259,10 @@ func _on_event(kind: String, data: Dictionary) -> void:
 		"soul_style_switched":
 			## 相容舊事件（單測／無 slot 事件時）
 			pass
+		"overwind_burst":
+			var sid := str(data.get("id", "player"))
+			if sid == "player" or sid == "":
+				trigger_overwind_burst(str(data.get("source", "rage_full")))
 		"fury_awakening":
 			var auto_b := bool(data.get("auto", false))
 			var bdur := float(data.get("duration", 8.0))
@@ -3920,6 +4272,7 @@ func _on_event(kind: String, data: Dictionary) -> void:
 			else:
 				_append_log(_t("[color=#f52]暴怒！（%.0f 秒攻速與傷害提升）[/color]") % bdur)
 				_spawn_float("player", _t("暴怒覺醒！"), Color(1.0, 0.4, 0.1), true)
+			trigger_overwind_burst("fury_awakening")
 			_shake = 0.35
 			trigger_hit_stop(0.1)
 			_flash(player_body, Color(3.0, 1.5, 0.5))
@@ -4651,15 +5004,21 @@ func _on_end(won: bool) -> void:
 			var col_xp: int = Formulas.colossus_xp(GameState.level, GameState.get_level_cap())
 			_colossus_exp_gain = col_xp
 			var scrap_gain: int = 0
+			var broken_list: Array = []
 			if sim != null and won:
 				for mat in sim.pending_part_materials:
 					if str(mat) == "iron_scrap":
 						scrap_gain += 1
+				for bp in sim.broken_parts_order:
+					var pname: String = str(bp.get("raw_name", bp.get("part_name", "")))
+					if not pname.is_empty() and not (pname in broken_list):
+						broken_list.append(pname)
 			if not drop_part.is_empty():
 				drop_part["is_colossus"] = true
 				drop_part["mode"] = _mode
 				drop_part["exp_gain"] = col_xp
 				drop_part["scrap_gain"] = scrap_gain
+				drop_part["broken_parts"] = broken_list
 			if col_xp > 0:
 				_award_xp(col_xp)
 	else:
@@ -5185,14 +5544,24 @@ func _show_dummy_settlement(won: bool) -> void:
 	if sim != null and sim.has_method("get_dummy_combat_stats"):
 		stats = sim.get_dummy_combat_stats()
 	else:
-		stats = {"total_damage": 0, "elapsed_time": 0.0, "dps": 0.0}
+		stats = {"total_damage": 0, "elapsed_time": 0.0, "dps": 0.0, "max_hit_damage": 0, "total_hit_count": 0}
 	_dummy_settlement_dialog = DummySettlementDialogScript.show_dialog(
 		self,
 		stats,
 		func():
 			_dummy_settlement_dialog = null
-			battle_finished.emit(won)
+			battle_finished.emit(won),
+		func():
+			_dummy_settlement_dialog = null
+			_restart_dummy_training()
 	)
+
+
+func _restart_dummy_training() -> void:
+	if _dummy_settlement_dialog != null and is_instance_valid(_dummy_settlement_dialog):
+		_dummy_settlement_dialog.queue_free()
+		_dummy_settlement_dialog = null
+	setup("training_dummy")
 
 
 func _award_xp(n: int) -> void:

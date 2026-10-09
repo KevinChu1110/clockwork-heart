@@ -31,7 +31,13 @@ SOURCES = {
     ## 字面值裡的 \n／\"／\\ 要還原成 GDScript 執行期的字串，表的 key 才對得上
     ## （舊版寫成 \\\\. 只吃得到兩個反斜線，含 \n 的字串整個漏掉，
     ##   它們的譯文反而被當成「殘留」）。
-    "ui": [("__ALL_GD__", [r'\b_t\("((?:[^"\\]|\\.)*)"\)'])],
+    "ui": [("__ALL_GD__", [r'\b_t\("((?:[^"\\]|\\.)*)"\)']),
+           ## mobile_lobby.gd 的 REGION_STAGES：關卡卡片 _t(整串)，戰鬥中
+           ## battle_view._get_expedition_stage_enemy_name() 再拆「地點 · 敵名」查敵名。
+           ("game/scripts/ui/mobile_lobby.gd", [
+               r'\{"num": "[^"]+", "name": "([^"]+)"',
+               r'\{"num": "[^"]+", "name": "[^"]*? · ([^"]+)"',
+           ])],
     ## 星曜與品質的 id 本身是中文，存檔存原文、顯示查譯文
     "soul": [("game/scripts/systems/soul_system.gd", [
         r'\{"id": "([^"]+)", "stat":',

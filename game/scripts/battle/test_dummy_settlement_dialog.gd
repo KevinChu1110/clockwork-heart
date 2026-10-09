@@ -43,12 +43,26 @@ func _initialize() -> void:
 	var total_dmg := int(combat_stats.get("total_damage", 0))
 	var elapsed := float(combat_stats.get("elapsed_time", 0.0))
 	var dps := float(combat_stats.get("dps", 0.0))
+	var max_hit := int(combat_stats.get("max_hit_damage", 0))
+	var total_hits := int(combat_stats.get("total_hit_count", 0))
 
 	if total_dmg <= 0:
 		push_error("total_damage 應大於 0，得 %d" % total_dmg)
 		ok = false
 	else:
 		print("  ok total_damage = %d" % total_dmg)
+
+	if max_hit <= 0:
+		push_error("max_hit_damage 應大於 0，得 %d" % max_hit)
+		ok = false
+	else:
+		print("  ok max_hit_damage = %d" % max_hit)
+
+	if total_hits <= 0:
+		push_error("total_hit_count 應大於 0，得 %d" % total_hits)
+		ok = false
+	else:
+		print("  ok total_hit_count = %d" % total_hits)
 
 	if elapsed < 4.8 or elapsed > 5.2:
 		push_error("elapsed_time 應約為 5.0 秒，得 %.2f" % elapsed)
@@ -63,28 +77,40 @@ func _initialize() -> void:
 	else:
 		print("  ok dps = %.2f" % dps)
 
-	## 2. 檢驗 DummySettlementDialog 結算面板結構與欄位
+	## 2. 檢驗 DummySettlementDialog 結算面板結構與欄位（雙按鈕並列）
 	print("=== 檢驗 2: DummySettlementDialog 結構與數值 ===")
 	var sample_stats := {
 		"total_damage": 350,
 		"elapsed_time": 10.0,
 		"dps": 35.0,
+		"max_hit_damage": 88,
+		"total_hit_count": 14,
 	}
 
-	var call_state := {"confirmed": false}
+	var call_state := {
+		"confirmed": false,
+		"retried": false,
+		"signal_confirmed": false,
+		"signal_retried": false,
+	}
 	var dlg: Control = DummySettlementDialogScript.show_dialog(
 		root,
 		sample_stats,
-		func(): call_state["confirmed"] = true
+		func(): call_state["confirmed"] = true,
+		func(): call_state["retried"] = true
 	)
 
 	if dlg == null:
 		push_error("DummySettlementDialog 建立失敗")
 		ok = false
 	else:
+		dlg.confirmed.connect(func(): call_state["signal_confirmed"] = true)
+		dlg.retry_requested.connect(func(): call_state["signal_retried"] = true)
+
 		var dmg_card := dlg.find_child("TotalDamageCard", true, false)
 		var time_card := dlg.find_child("ElapsedTimeCard", true, false)
 		var dps_card := dlg.find_child("DpsCard", true, false)
+		var retry_btn: Button = dlg.find_child("RetryButton", true, false) as Button
 		var confirm_btn: Button = dlg.find_child("ConfirmButton", true, false) as Button
 
 		if dmg_card == null:
@@ -105,16 +131,58 @@ func _initialize() -> void:
 		else:
 			print("  ok 找到 DpsCard")
 
+		var max_hit_card := dlg.find_child("MaxHitCapsule", true, false)
+		var hits_card := dlg.find_child("TotalHitsCapsule", true, false)
+		if max_hit_card == null:
+			push_error("結算面板缺少 MaxHitCapsule（最高單擊膠囊）")
+			ok = false
+		else:
+			print("  ok 找到 MaxHitCapsule")
+
+		if hits_card == null:
+			push_error("結算面板缺少 TotalHitsCapsule（總命中膠囊）")
+			ok = false
+		else:
+			print("  ok 找到 TotalHitsCapsule")
+
+		if retry_btn == null:
+			push_error("結算面板缺少 RetryButton（再次試招按鈕）")
+			ok = false
+		else:
+			print("  ok 找到 RetryButton")
+			if retry_btn.custom_minimum_size.y < 48:
+				push_error("RetryButton 高度應 >= 48px，得 %.1f" % retry_btn.custom_minimum_size.y)
+				ok = false
+			else:
+				print("  ok RetryButton 高度 >= 48px (%.1fpx)" % retry_btn.custom_minimum_size.y)
+			if retry_btn.text != "再次試招":
+				push_error("RetryButton 文字應為 '再次試招'，得 '%s'" % retry_btn.text)
+				ok = false
+			else:
+				print("  ok RetryButton 文字為 '再次試招'")
+
 		if confirm_btn == null:
 			push_error("結算面板缺少 ConfirmButton（確認按鈕）")
 			ok = false
 		else:
 			print("  ok 找到 ConfirmButton")
+			if confirm_btn.custom_minimum_size.y < 48:
+				push_error("ConfirmButton 高度應 >= 48px，得 %.1f" % confirm_btn.custom_minimum_size.y)
+				ok = false
+			else:
+				print("  ok ConfirmButton 高度 >= 48px (%.1fpx)" % confirm_btn.custom_minimum_size.y)
+			if confirm_btn.text != "完成試招":
+				push_error("ConfirmButton 文字應為 '完成試招'，得 '%s'" % confirm_btn.text)
+				ok = false
+			else:
+				print("  ok ConfirmButton 文字為 '完成試招'")
 
 		# 檢驗欄位文字
 		var dmg_val: Label = dlg.find_child("DamageValueLabel", true, false) as Label
 		var time_val: Label = dlg.find_child("TimeValueLabel", true, false) as Label
 		var dps_val: Label = dlg.find_child("DpsValueLabel", true, false) as Label
+		var max_hit_val: Label = dlg.find_child("MaxHitValueLabel", true, false) as Label
+		var hits_val: Label = dlg.find_child("TotalHitsValueLabel", true, false) as Label
 
 		if dmg_val == null or dmg_val.text != "350":
 			push_error("DamageValueLabel 數值不符，期望 '350'，得 '%s'" % (dmg_val.text if dmg_val else "null"))
@@ -134,6 +202,18 @@ func _initialize() -> void:
 		else:
 			print("  ok DpsValueLabel = 35.0")
 
+		if max_hit_val == null or max_hit_val.text != "88":
+			push_error("MaxHitValueLabel 數值不符，期望 '88'，得 '%s'" % (max_hit_val.text if max_hit_val else "null"))
+			ok = false
+		else:
+			print("  ok MaxHitValueLabel = 88")
+
+		if hits_val == null or hits_val.text != "14":
+			push_error("TotalHitsValueLabel 數值不符，期望 '14'，得 '%s'" % (hits_val.text if hits_val else "null"))
+			ok = false
+		else:
+			print("  ok TotalHitsValueLabel = 14")
+
 		# 檢驗 getters
 		if dlg.has_method("get_total_damage") and dlg.get_total_damage() != 350:
 			push_error("get_total_damage() 得 %d" % dlg.get_total_damage())
@@ -144,16 +224,134 @@ func _initialize() -> void:
 		if dlg.has_method("get_dps") and absf(dlg.get_dps() - 35.0) > 0.001:
 			push_error("get_dps() 得 %.2f" % dlg.get_dps())
 			ok = false
+		if dlg.has_method("get_max_hit_damage") and dlg.get_max_hit_damage() != 88:
+			push_error("get_max_hit_damage() 得 %d" % dlg.get_max_hit_damage())
+			ok = false
+		if dlg.has_method("get_total_hit_count") and dlg.get_total_hit_count() != 14:
+			push_error("get_total_hit_count() 得 %d" % dlg.get_total_hit_count())
+			ok = false
+		if dlg.has_method("get_max_hit_text") and dlg.get_max_hit_text() != "88":
+			push_error("get_max_hit_text() 得 '%s'" % dlg.get_max_hit_text())
+			ok = false
+		if dlg.has_method("get_total_hits_text") and dlg.get_total_hits_text() != "14":
+			push_error("get_total_hits_text() 得 '%s'" % dlg.get_total_hits_text())
+			ok = false
+		if dlg.has_method("get_max_hit_title_text") and dlg.get_max_hit_title_text() != "最高單擊":
+			push_error("get_max_hit_title_text() 得 '%s'" % dlg.get_max_hit_title_text())
+			ok = false
+		if dlg.has_method("get_total_hits_title_text") and dlg.get_total_hits_title_text() != "總命中次數":
+			push_error("get_total_hits_title_text() 得 '%s'" % dlg.get_total_hits_title_text())
+			ok = false
+		if dlg.has_method("get_retry_text") and dlg.get_retry_text() != "再次試招":
+			push_error("get_retry_text() 得 '%s'" % dlg.get_retry_text())
+			ok = false
+		if dlg.has_method("get_confirm_text") and dlg.get_confirm_text() != "完成試招":
+			push_error("get_confirm_text() 得 '%s'" % dlg.get_confirm_text())
+			ok = false
 
-		## 3. 檢驗確認按鈕點擊回調
-		print("=== 檢驗 3: 確認按鈕點擊回調 ===")
-		if confirm_btn != null:
-			confirm_btn.pressed.emit()
-			if not bool(call_state["confirmed"]):
+		# 檢驗三欄武器貢獻與輪替次數展示列
+		var contrib_sec := dlg.find_child("WeaponContributionSection", true, false)
+		var swaps_cap := dlg.find_child("WeaponSwapsCapsule", true, false)
+		var slots_box := dlg.find_child("WeaponSlotsHBox", true, false)
+		if contrib_sec == null:
+			push_error("結算面板缺少 WeaponContributionSection")
+			ok = false
+		else:
+			print("  ok 找到 WeaponContributionSection")
+		if swaps_cap == null:
+			push_error("結算面板缺少 WeaponSwapsCapsule")
+			ok = false
+		else:
+			print("  ok 找到 WeaponSwapsCapsule")
+		if slots_box == null:
+			push_error("結算面板缺少 WeaponSlotsHBox")
+			ok = false
+		else:
+			print("  ok 找到 WeaponSlotsHBox")
+		for si in range(3):
+			var sc := dlg.find_child("WeaponSlotCard_%d" % si, true, false)
+			if sc == null:
+				push_error("缺少 WeaponSlotCard_%d" % si)
+				ok = false
+			else:
+				print("  ok 找到 WeaponSlotCard_%d" % si)
+
+		## 3. 檢驗再次試招與確認按鈕回調與信號
+		print("=== 檢驗 3: 雙按鈕回調與信號發送 ===")
+		# 檢驗 retry 按鈕
+		if retry_btn != null:
+			retry_btn.pressed.emit()
+			if not bool(call_state["retried"]):
+				push_error("點擊再次試招未觸發 on_retry 回調")
+				ok = false
+			else:
+				print("  ok retried_called == true")
+			if not bool(call_state["signal_retried"]):
+				push_error("點擊再次試招未發出 retry_requested 信號")
+				ok = false
+			else:
+				print("  ok retry_requested signal emitted == true")
+
+		# 檢驗 confirm 按鈕 (使用新 instance)
+		var call_state_conf := {"confirmed": false, "signal_confirmed": false}
+		var dlg_conf: Control = DummySettlementDialogScript.show_dialog(
+			root,
+			sample_stats,
+			func(): call_state_conf["confirmed"] = true
+		)
+		dlg_conf.confirmed.connect(func(): call_state_conf["signal_confirmed"] = true)
+		var conf_btn2: Button = dlg_conf.find_child("ConfirmButton", true, false) as Button
+		if conf_btn2 != null:
+			conf_btn2.pressed.emit()
+			if not bool(call_state_conf["confirmed"]):
 				push_error("點擊確認按鈕未觸發 on_confirm 回調")
 				ok = false
 			else:
 				print("  ok confirmed_called == true")
+			if not bool(call_state_conf["signal_confirmed"]):
+				push_error("點擊確認按鈕未發出 confirmed 信號")
+				ok = false
+			else:
+				print("  ok confirmed signal emitted == true")
+
+	## 4. 檢驗再次試招重置狀態與重新計時/刷新木人樁血量
+	print("=== 檢驗 4: 木人樁狀態重置與重新試招驗證 ===")
+	var sim_run := BattleSim.make_dummy_fight(_stats())
+	for _i in range(50):
+		sim_run.step(0.1)
+	var stats_run := sim_run.get_dummy_combat_stats()
+	var run_dmg := int(stats_run.get("total_damage", 0))
+	var dummy_unit := sim_run.get_unit("training_dummy")
+	if run_dmg <= 0 or dummy_unit.hp >= dummy_unit.max_hp:
+		push_error("試招進行中木人樁應已受損，得 hp=%d/%d, total_damage=%d" % [dummy_unit.hp, dummy_unit.max_hp, run_dmg])
+		ok = false
+	else:
+		print("  ok 試招前段傷害累積 hp=%d/%d, total_damage=%d" % [dummy_unit.hp, dummy_unit.max_hp, run_dmg])
+
+	# 模擬觸發再次試招：重新建立試招 fight
+	var sim_re := BattleSim.make_dummy_fight(_stats())
+	var dummy_re := sim_re.get_unit("training_dummy")
+	var stats_re := sim_re.get_dummy_combat_stats()
+	if dummy_re.hp != dummy_re.max_hp or dummy_re.hp != 500:
+		push_error("再次試招木人樁 HP 應刷新為 500 滿血，得 %d" % dummy_re.hp)
+		ok = false
+	else:
+		print("  ok 再次試招木人樁 HP 刷新為滿血 500")
+
+	if float(stats_re.get("elapsed_time", 0.0)) != 0.0 or int(stats_re.get("total_damage", 0)) != 0:
+		push_error("再次試招計時與傷害應歸零，得 time=%.2f, dmg=%d" % [float(stats_re.get("elapsed_time", 0.0)), int(stats_re.get("total_damage", 0))])
+		ok = false
+	else:
+		print("  ok 再次試招計時與總傷害成功重置歸零 (time=0.0, dmg=0)")
+
+	for _i in range(50):
+		sim_re.step(0.1)
+	var stats_re2 := sim_re.get_dummy_combat_stats()
+	if int(stats_re2.get("total_damage", 0)) <= 0 or float(stats_re2.get("elapsed_time", 0.0)) < 4.8:
+		push_error("再次試招重新開打後應正常累計數值，得 dmg=%d, time=%.2f" % [int(stats_re2.get("total_damage", 0)), float(stats_re2.get("elapsed_time", 0.0))])
+		ok = false
+	else:
+		print("  ok 再次試招重新開打正常運作 (time=%.2fs, dmg=%d)" % [float(stats_re2.get("elapsed_time", 0.0)), int(stats_re2.get("total_damage", 0))])
 
 	if ok:
 		print("DUMMY_SETTLEMENT_DIALOG_OK")

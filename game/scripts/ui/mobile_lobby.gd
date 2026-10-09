@@ -9,10 +9,22 @@ signal request_settings()
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+
+class LocHelper:
+	static func t(k: String) -> String:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree:
+			var loc = (loop as SceneTree).root.get_node_or_null("Loc")
+			if loc != null and loc.has_method("t"):
+				return str(loc.t(k))
+		return ContentLoc.text("ui", k)
+
+const Loc = LocHelper
 const FootShadowShader = preload("res://shaders/foot_shadow.gdshader")
 const RimLightShader = preload("res://shaders/rim_light.gdshader")
 const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const PaperdollRenderer = preload("res://scripts/art/paperdoll_renderer.gd")
+const WindingKeyAnimator = preload("res://scripts/art/winding_key_animator.gd")
 
 ## ── 多巴胺鮮亮色盤標準 (對齊 mobile_settings / maple_hud / review.md) ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
@@ -122,6 +134,36 @@ var _core_title_lbl: Label = null
 var _core_empty_lbl: Label = null
 var _core_cards_box: HBoxContainer = null
 var _equip_panel_instance: RefCounted = null
+const IdleClockworkVault = preload("res://scripts/systems/idle_clockwork_vault.gd")
+var _vault_card: PanelContainer = null
+var _vault_title_lbl: Label = null
+var _vault_time_lbl: Label = null
+var _vault_progress_fill: Panel = null
+var _vault_progress_bg: PanelContainer = null
+var _vault_claim_btn: Button = null
+
+const VAULT_BUBBLE_KEY_FRAME_PATHS: Array[String] = [
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_00.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_01.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_02.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_03.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_04.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_05.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_06.png",
+	"res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_07.png"
+]
+var _vault_bubble: Control = null
+var _vault_bubble_btn: Button = null
+var _vault_bubble_key_icon: TextureRect = null
+var _vault_bubble_time_lbl: Label = null
+var _vault_bubble_status_lbl: Label = null
+var _vault_bubble_glow_panel: Panel = null
+var _vault_bubble_key_textures: Array[Texture2D] = []
+var _vault_bubble_frame_idx: int = 0
+var _vault_bubble_frame_timer: float = 0.0
+var _vault_bubble_float_tween: Tween = null
+var _vault_bubble_glow_tween: Tween = null
+var _vault_bubble_is_full_glow: bool = false
 const ITEM_ICON_DIR := "res://assets/icons/items/"
 static var _icon_cache: Dictionary = {}
 
@@ -229,11 +271,50 @@ var _weapon_slot_hint_label: Label = null
 var _char_power_badge: Label = null
 var _char_level_badge: Label = null
 var _char_doll_title_label: Label = null
+var _btn_skill_dialog: Button = null
 var _btn_wardrobe: Button = null
 var _char_weapon_title_label: Label = null
 var _char_weapon_sub_label: Label = null
+var _btn_change_weapon: Button = null
+var _weapon_swap_dialog: Control = null
 var _char_stat_title_label: Label = null
 var _stat_cards: Array[PanelContainer] = []
+
+const WEAPON_SLOT_TITLES: Array[String] = [
+	"首選武器",
+	"副手武器",
+	"絕技武器",
+]
+
+const LINE_HITS: Dictionary = {
+	"sword": "4 次打擊",
+	"bow": "4 次打擊",
+	"fist": "5 連擊",
+	"dagger": "4 次打擊",
+	"claw": "5 連擊",
+	"dart": "4 次打擊",
+	"spear": "3 次打擊",
+	"axe": "3 次打擊",
+	"hammer": "2 次打擊",
+	"gun": "3 次打擊",
+	"magic": "4 次打擊",
+	"crystal": "4 次打擊",
+}
+
+const LINE_NAMES: Dictionary = {
+	"sword": "劍",
+	"spear": "長槍",
+	"axe": "斧",
+	"hammer": "鎚",
+	"dagger": "匕首",
+	"dart": "鏢",
+	"fist": "拳套",
+	"claw": "爪",
+	"magic": "法杖",
+	"crystal": "靈晶",
+	"bow": "弓",
+	"gun": "銃",
+}
 
 const WEAPON_SLOTS: Array[Dictionary] = [
 	{
@@ -261,28 +342,28 @@ const WEAPON_SLOTS: Array[Dictionary] = [
 
 const REGION_STAGES: Array[Array] = [
 	[
-		{"num": "1-1", "name": "荒路哨站 · 發條灰鼠", "type": "前哨雜魚", "cost": 1, "power": 220, "mode": "ash_rat"},
-		{"num": "1-2", "name": "堡外野原 · 荒路殘兵", "type": "精英戰鬥", "cost": 1, "power": 260, "mode": "road_bandit"},
-		{"num": "1-3", "name": "堡壘廣場 · 守門暗哨", "type": "精英戰鬥", "cost": 1, "power": 300, "mode": "sewer_slime"},
-		{"num": "1-4", "name": "閣樓大門 · 大型殘兵", "type": "精英戰鬥", "cost": 1, "power": 340, "mode": "road_bandit"},
+		{"num": "1-1", "name": "荒路哨站 · 停擺發條鼠", "type": "前哨哨衛", "cost": 1, "power": 220, "mode": "ash_rat"},
+		{"num": "1-2", "name": "堡外野原 · 鉚兵哨衛", "type": "精英機關", "cost": 1, "power": 260, "mode": "road_bandit"},
+		{"num": "1-3", "name": "堡壘廣場 · 發條機關偶", "type": "精英機關", "cost": 1, "power": 300, "mode": "sewer_slime"},
+		{"num": "1-4", "name": "閣樓大門 · 重裝發條衛", "type": "精英機關", "cost": 1, "power": 340, "mode": "road_bandit"},
 	],
 	[
-		{"num": "2-1", "name": "白霧外緣 · 守望關隘", "type": "前哨雜魚", "cost": 1, "power": 380, "mode": "road_bandit"},
-		{"num": "2-2", "name": "市集街道 · 潛伏暗哨", "type": "精英戰鬥", "cost": 1, "power": 420, "mode": "road_bandit"},
-		{"num": "2-3", "name": "下水道口 · 腐化黏怪", "type": "精英戰鬥", "cost": 1, "power": 450, "mode": "road_bandit"},
-		{"num": "2-4", "name": "聖獅內殿 · 狂暴守護者", "type": "首領部位破壞", "cost": 3, "power": 520, "mode": "leo"},
+		{"num": "2-1", "name": "白霧外緣 · 守望機關衛", "type": "前哨哨衛", "cost": 1, "power": 380, "mode": "road_bandit"},
+		{"num": "2-2", "name": "市集街道 · 潛伏機關偶", "type": "精英機關", "cost": 1, "power": 420, "mode": "road_bandit"},
+		{"num": "2-3", "name": "排水管道 · 黑鏽機關偶", "type": "精英機關", "cost": 1, "power": 450, "mode": "road_bandit"},
+		{"num": "2-4", "name": "聖獅內殿 · 守衛泰坦雷歐", "type": "首領部位破壞", "cost": 3, "power": 520, "mode": "leo"},
 	],
 	[
-		{"num": "3-1", "name": "白霧村外 · 霧影遊魂", "type": "前哨雜魚", "cost": 1, "power": 560, "mode": "fog_shade"},
-		{"num": "3-2", "name": "霧崖小徑 · 林間風妖", "type": "精英戰鬥", "cost": 1, "power": 600, "mode": "forest_sprite"},
-		{"num": "3-3", "name": "鏡廊入口 · 鏡廊殘影", "type": "精英戰鬥", "cost": 1, "power": 640, "mode": "mirror_wraith"},
-		{"num": "3-4", "name": "白霧核心 · 白霧", "type": "首領部位破壞", "cost": 3, "power": 720, "mode": "fog"},
+		{"num": "3-1", "name": "西林外緣 · 霧影機關偶", "type": "前哨哨衛", "cost": 1, "power": 560, "mode": "fog_shade"},
+		{"num": "3-2", "name": "霧崖小徑 · 旋風發條偶", "type": "精英機關", "cost": 1, "power": 600, "mode": "forest_sprite"},
+		{"num": "3-3", "name": "鏡廊入口 · 鐘擺守衛", "type": "精英機關", "cost": 1, "power": 640, "mode": "mirror_wraith"},
+		{"num": "3-4", "name": "白霧核心 · 守衛泰坦白狐", "type": "首領部位破壞", "cost": 3, "power": 720, "mode": "fog"},
 	],
 	[
-		{"num": "4-1", "name": "石岸潮襲 · 潮襲海盜", "type": "前哨雜魚", "cost": 1, "power": 760, "mode": "coast_raider"},
-		{"num": "4-2", "name": "潮岸沉船 · 船長殘影", "type": "精英戰鬥", "cost": 1, "power": 800, "mode": "wreck_captain"},
-		{"num": "4-3", "name": "疤地焰徑 · 疤地焰靈", "type": "精英戰鬥", "cost": 1, "power": 840, "mode": "scar_wisp"},
-		{"num": "4-4", "name": "通天塔底 · 塔底", "type": "首領部位破壞", "cost": 3, "power": 920, "mode": "demon"},
+		{"num": "4-1", "name": "石岸潮線 · 破浪哨衛", "type": "前哨哨衛", "cost": 1, "power": 760, "mode": "coast_raider"},
+		{"num": "4-2", "name": "潮岸沉船 · 舵輪機關衛", "type": "精英機關", "cost": 1, "power": 800, "mode": "wreck_captain"},
+		{"num": "4-3", "name": "疤地焰徑 · 熔火發條偶", "type": "精英機關", "cost": 1, "power": 840, "mode": "scar_wisp"},
+		{"num": "4-4", "name": "通天塔底 · 終境停擺核", "type": "首領部位破壞", "cost": 3, "power": 920, "mode": "demon"},
 	],
 ]
 
@@ -299,6 +380,12 @@ static func _get_inv_sys() -> Node:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree:
 		return (loop as SceneTree).root.get_node_or_null("InventorySystem")
+	return null
+
+static func _get_equip_sys() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
 	return null
 
 func _get_hero_name() -> String:
@@ -320,12 +407,26 @@ func _ready() -> void:
 			if _current_tab == Tab.BAG:
 				_refresh_bag_tab(false)
 		)
+	var eq := _get_equip_sys()
+	if eq and eq.has_signal("equipment_changed"):
+		eq.equipment_changed.connect(func():
+			if _current_tab == Tab.CHARACTER:
+				_refresh_weapon_slot_buttons()
+				_refresh_char_tab_stats(false)
+				_sync_hero_weapon_paperdoll()
+		)
 	_load_hero_poses()
 	_build_ui()
 	_connect_loc_signal()
 	_apply_locale_texts()
 	refresh_hud()
 	_switch_tab(Tab.VILLAGE)
+	_refresh_dock_badges()
+	var gs := _gs()
+	if gs and gs.has_signal("core_drop_notify_changed"):
+		gs.core_drop_notify_changed.connect(func(_val):
+			_refresh_dock_badges()
+		)
 	call_deferred("_apply_safe")
 
 func _exit_tree() -> void:
@@ -493,34 +594,38 @@ func _apply_hero_idle_visual() -> void:
 		else:
 			hd = null
 
-	var body_tex: Texture2D = _hero_body_display_tex()
-	var key_tex: Texture2D = _get_hero_key_tex(race, slots)
-
-	if _hero_key_avatar:
-		if body_tex != null and key_tex != null:
-			_hero_key_avatar.texture = key_tex
-			_hero_key_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-			_hero_key_avatar.pivot_offset = KEY_PIVOTS_320.get(race, Vector2(103, 186))
-			_hero_key_avatar.visible = true
-		else:
-			_hero_key_avatar.texture = null
-			_hero_key_avatar.visible = false
-
 	if _hero_avatar:
-		if body_tex != null and key_tex != null:
-			_hero_avatar.texture = body_tex
-			_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-		elif hd != null and hd.get_width() >= 256:
-			_hero_avatar.texture = hd
-			_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-		else:
-			_hero_avatar.texture = null
+		var anim := WindingKeyAnimator.setup_for(_hero_avatar, race, slots)
+		var k_child := _hero_avatar.get_node_or_null("HeroWindingKey") as TextureRect
+		if k_child:
+			_hero_key_avatar = k_child
+			if _hero_key_avatar.material == null:
+				var key_rim_mat := ShaderMaterial.new()
+				key_rim_mat.shader = RimLightShader
+				key_rim_mat.set_shader_parameter("outline_color", Color(0.22, 0.14, 0.09, 1.0))
+				key_rim_mat.set_shader_parameter("outline_width", 2.2)
+				key_rim_mat.set_shader_parameter("outline_enabled", true)
+				key_rim_mat.set_shader_parameter("rim_enabled", true)
+				key_rim_mat.set_shader_parameter("rim_color", Color(1.0, 0.85, 0.28, 1.0))
+				key_rim_mat.set_shader_parameter("rim_width", 5.0)
+				key_rim_mat.set_shader_parameter("rim_intensity", 1.8)
+				key_rim_mat.set_shader_parameter("rim_direction", Vector2(0.15, -0.95))
+				_hero_key_avatar.material = key_rim_mat
+		if anim == null or _hero_avatar.texture == null:
+			if hd != null and hd.get_width() >= 256:
+				_hero_avatar.texture = hd
+				_hero_avatar.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+			else:
+				_hero_avatar.texture = null
+
 	if _char_prev:
-		if hd != null and hd.get_width() >= 256:
-			_char_prev.texture = hd
-			_char_prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
-		else:
-			_char_prev.texture = null
+		var anim_char := WindingKeyAnimator.setup_for(_char_prev, race, slots)
+		if anim_char == null or _char_prev.texture == null:
+			if hd != null and hd.get_width() >= 256:
+				_char_prev.texture = hd
+				_char_prev.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+			else:
+				_char_prev.texture = null
 	_refresh_equip_schematic()
 
 
@@ -601,7 +706,7 @@ func _refresh_equip_schematic() -> void:
 func _add_equip_chip(parent: Container, slot_title: String, item_name: String, tex: Texture2D, sid: String = "") -> void:
 	var btn := Button.new()
 	btn.name = "EquipSlot_" + sid if sid != "" else ("EquipSlot_" + slot_title)
-	btn.custom_minimum_size = Vector2(114, 104)
+	btn.custom_minimum_size = Vector2(114, 82)
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	btn.tooltip_text = "%s: %s" % [slot_title, item_name]
@@ -703,7 +808,7 @@ func _add_equip_chip(parent: Container, slot_title: String, item_name: String, t
 
 	# 2. 裝備 Icon 圖示區
 	var icon_box := Control.new()
-	icon_box.custom_minimum_size = Vector2(0, 48)
+	icon_box.custom_minimum_size = Vector2(0, 36)
 	icon_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vbox.add_child(icon_box)
 
@@ -713,7 +818,13 @@ func _add_equip_chip(parent: Container, slot_title: String, item_name: String, t
 	icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	icon_rect.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
 	icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	if tex != null:
+	if sid == "winding_key":
+		_load_vault_bubble_key_textures()
+		if not _vault_bubble_key_textures.is_empty():
+			icon_rect.texture = _vault_bubble_key_textures[0]
+		elif tex != null:
+			icon_rect.texture = tex
+	elif tex != null:
 		icon_rect.texture = tex
 	icon_box.add_child(icon_rect)
 
@@ -980,12 +1091,11 @@ func _start_stage_parallax_tween(stage: Control) -> void:
 	if stage == null or not is_instance_valid(stage):
 		return
 	_stage_anchor = stage
-	var base_y := 45.0
-	stage.position.y = base_y
+	var base_top: float = stage.offset_top
 	_stage_tween = create_tween().set_loops()
-	## 中央展台視差浮動：中景不同頻率 (3.8s) 浮動 (y: ±1.4px)，與遠景天空形成立體景深視差
-	_stage_tween.tween_property(stage, "position:y", base_y - 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	_stage_tween.tween_property(stage, "position:y", base_y + 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	## 中央展台視差浮動：中景不同頻率 (3.8s) 浮動 (offset_top: ±1.4px)，與遠景天空形成立體景深視差
+	_stage_tween.tween_property(stage, "offset_top", base_top - 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_stage_tween.tween_property(stage, "offset_top", base_top + 1.4, 1.9).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 
 ## ──────────────────────────────────────────
@@ -1350,6 +1460,83 @@ func _build_bottom_dock() -> void:
 		btn.pressed.connect(func(): _switch_tab(t))
 		h.add_child(btn)
 		_dock_buttons.append(btn)
+	_refresh_dock_badges()
+
+
+func _attach_dock_badge(btn: Button) -> Control:
+	var existing = btn.get_node_or_null("DopamineBadge")
+	if existing != null and is_instance_valid(existing):
+		return existing
+	var badge := Panel.new()
+	badge.name = "DopamineBadge"
+	badge.custom_minimum_size = Vector2(16, 16)
+	badge.set_anchors_preset(Control.PRESET_TOP_RIGHT)
+	badge.offset_left = -20
+	badge.offset_top = 4
+	badge.offset_right = -4
+	badge.offset_bottom = 20
+	badge.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var bsb := StyleBoxFlat.new()
+	bsb.bg_color = COLOR_PINK # #FF5E8A 多巴胺鮮亮珊瑚粉
+	bsb.border_color = COLOR_GOLD # #FFD028 亮金高光邊框
+	bsb.set_border_width_all(2)
+	bsb.set_corner_radius_all(8)
+	bsb.shadow_color = Color(1.0, 0.37, 0.54, 0.6)
+	bsb.shadow_size = 4
+	bsb.shadow_offset = Vector2(0, 1)
+	badge.add_theme_stylebox_override("panel", bsb)
+
+	var dot := Panel.new()
+	dot.name = "GoldCenter"
+	dot.custom_minimum_size = Vector2(6, 6)
+	dot.set_anchors_preset(Control.PRESET_CENTER)
+	dot.offset_left = -3
+	dot.offset_top = -3
+	dot.offset_right = 3
+	dot.offset_bottom = 3
+	dot.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var dsb := StyleBoxFlat.new()
+	dsb.bg_color = COLOR_GOLD
+	dsb.set_corner_radius_all(3)
+	dot.add_theme_stylebox_override("panel", dsb)
+	badge.add_child(dot)
+
+	btn.add_child(badge)
+	return badge
+
+
+func _has_new_core_drop() -> bool:
+	var gs := _gs()
+	if gs and gs.has_method("has_new_core_part"):
+		return bool(gs.call("has_new_core_part"))
+	var cs := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	if cs != null:
+		return cs.has_new_core_drop()
+	return false
+
+
+func _clear_new_core_drop_notification() -> void:
+	var gs := _gs()
+	if gs and gs.has_method("clear_new_core_drop"):
+		gs.call("clear_new_core_drop")
+	var cs := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	if cs != null:
+		cs.clear_new_core_drop()
+	_refresh_dock_badges()
+
+
+func _refresh_dock_badges() -> void:
+	var has_new := _has_new_core_drop()
+	for i in range(_dock_buttons.size()):
+		var btn: Button = _dock_buttons[i]
+		if i == int(Tab.CHARACTER) or i == int(Tab.BAG):
+			var badge = _attach_dock_badge(btn)
+			badge.visible = has_new
+		else:
+			var b = btn.get_node_or_null("DopamineBadge")
+			if b:
+				b.visible = false
 
 func _style_dock_button(btn: Button, is_active: bool) -> void:
 	var sb := StyleBoxFlat.new()
@@ -1405,10 +1592,15 @@ func switch_tab(target: int) -> void:
 
 func _switch_tab(target: Tab) -> void:
 	_current_tab = target
+	if target == Tab.CHARACTER or target == Tab.BAG:
+		_clear_new_core_drop_notification()
 	if _village_layer:
 		_village_layer.visible = (target == Tab.VILLAGE)
 	if _char_layer:
 		_char_layer.visible = (target == Tab.CHARACTER)
+		if target == Tab.CHARACTER:
+			_refresh_weapon_slot_buttons()
+			_refresh_char_tab_stats(false)
 	if _adventure_layer:
 		_adventure_layer.visible = (target == Tab.ADVENTURE)
 	if _soul_layer:
@@ -1421,6 +1613,7 @@ func _switch_tab(target: Tab) -> void:
 	for i in range(_dock_buttons.size()):
 		var is_active := (i == int(target))
 		_style_dock_button(_dock_buttons[i], is_active)
+	_refresh_dock_badges()
 
 ## ──────────────────────────────────────────
 ## 每幀小動作與發條微動判定 (動態待機自然活化)
@@ -1434,6 +1627,13 @@ func _process(delta: float) -> void:
 	if _key_wind_timer >= 4.5:
 		_key_wind_timer = 0.0
 		_trigger_key_half_turn()
+
+	# 發條儲能庫微動氣泡 8 幀發條旋轉小動效推進
+	if _vault_bubble and is_instance_valid(_vault_bubble) and _vault_bubble.visible and not _vault_bubble_key_textures.is_empty():
+		_vault_bubble_frame_timer += delta
+		if _vault_bubble_frame_timer >= 0.12:
+			_vault_bubble_frame_timer = 0.0
+			step_vault_bubble_frame()
 
 	if not enable_idle_flavor:
 		return
@@ -1578,6 +1778,9 @@ func _build_village_tab() -> void:
 	## 0. 地面舞台日晷展台 (Ground Sunken Dial Pedestal / 消除浮空貼紙感)
 	var stage_pedestal := SundialPedestal.new()
 	stage_anchor.add_child(stage_pedestal)
+
+	## 0.1 發條儲能庫微動氣泡 (Vault Bubble / 伴隨中央展台微浮動)
+	_build_vault_bubble(stage_anchor)
 
 	## 1. 角色腳底接地軟影 (Foot Soft Shadow / 漸層軟影漫反射)
 	_hero_shadow = TextureRect.new()
@@ -1802,11 +2005,12 @@ func _build_village_tab() -> void:
 	_equip_schematic.columns = 2
 	_equip_schematic.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	_equip_schematic.offset_left = -260
-	_equip_schematic.offset_top = 16
+	_equip_schematic.offset_top = 10
 	_equip_schematic.offset_right = -20
-	_equip_schematic.offset_bottom = 242
+	_equip_schematic.offset_bottom = 180
 	_equip_schematic.add_theme_constant_override("h_separation", 10)
-	_equip_schematic.add_theme_constant_override("v_separation", 10)
+	_equip_schematic.add_theme_constant_override("v_separation", 6)
+	_equip_schematic.z_index = 2
 	_village_layer.add_child(_equip_schematic)
 	_refresh_equip_schematic()
 
@@ -1958,6 +2162,425 @@ func _build_village_tab() -> void:
 	_sortie_button = btn_go
 	rv.add_child(btn_go)
 	_start_sortie_glow_tween()
+
+	## 發條儲能庫放置收益入口卡片 (對齊右側戰情報告板上方)
+	_build_vault_entry_card()
+
+func _build_vault_entry_card() -> void:
+	if _village_layer == null:
+		return
+	_vault_card = PanelContainer.new()
+	_vault_card.name = "ClockworkVaultCard"
+	_vault_card.set_anchors_preset(Control.PRESET_BOTTOM_RIGHT)
+	_vault_card.offset_left = -336
+	_vault_card.offset_top = -342
+	_vault_card.offset_right = -20
+	_vault_card.offset_bottom = -224
+	_vault_card.z_index = 5
+
+	var csb := StyleBoxFlat.new()
+	csb.bg_color = Color(0.12, 0.09, 0.16, 1.0)
+	csb.border_color = COLOR_BORDER
+	csb.set_border_width_all(2)
+	csb.border_width_bottom = 5
+	csb.set_corner_radius_all(18)
+	csb.content_margin_left = 14
+	csb.content_margin_right = 14
+	csb.content_margin_top = 10
+	csb.content_margin_bottom = 10
+	csb.shadow_color = Color(0.08, 0.06, 0.16, 0.35)
+	csb.shadow_size = 10
+	csb.shadow_offset = Vector2(0, 4)
+	_vault_card.add_theme_stylebox_override("panel", csb)
+	_village_layer.add_child(_vault_card)
+
+	var v_trim := Panel.new()
+	v_trim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	v_trim.offset_left = 3
+	v_trim.offset_top = 3
+	v_trim.offset_right = -3
+	v_trim.offset_bottom = -6
+	v_trim.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var vtsb := StyleBoxFlat.new()
+	vtsb.draw_center = false
+	vtsb.border_color = Color(0.83, 0.68, 0.22, 0.50)
+	vtsb.set_border_width_all(1)
+	vtsb.set_corner_radius_all(15)
+	v_trim.add_theme_stylebox_override("panel", vtsb)
+	_vault_card.add_child(v_trim)
+
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 6)
+	_vault_card.add_child(vb)
+
+	var top_h := HBoxContainer.new()
+	vb.add_child(top_h)
+
+	_vault_title_lbl = Label.new()
+	_vault_title_lbl.name = "VaultTitle"
+	_vault_title_lbl.text = Loc.t("vault.title")
+	_vault_title_lbl.add_theme_color_override("font_color", COLOR_GOLD)
+	_vault_title_lbl.add_theme_font_size_override("font_size", 14)
+	if _cached_font:
+		_vault_title_lbl.add_theme_font_override("font", _cached_font)
+	top_h.add_child(_vault_title_lbl)
+
+	var sp := Control.new()
+	sp.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	top_h.add_child(sp)
+
+	_vault_time_lbl = Label.new()
+	_vault_time_lbl.name = "VaultTime"
+	_vault_time_lbl.text = "00:00 / 08:00 (0%)"
+	_vault_time_lbl.add_theme_color_override("font_color", Color("#C9BFA8"))
+	_vault_time_lbl.add_theme_font_size_override("font_size", 12)
+	if _cached_font:
+		_vault_time_lbl.add_theme_font_override("font", _cached_font)
+	top_h.add_child(_vault_time_lbl)
+
+	_vault_progress_bg = PanelContainer.new()
+	_vault_progress_bg.name = "VaultProgressBg"
+	_vault_progress_bg.custom_minimum_size = Vector2(0, 10)
+	var bg_sb := StyleBoxFlat.new()
+	bg_sb.bg_color = Color(0.04, 0.03, 0.06, 0.95)
+	bg_sb.border_color = COLOR_BORDER
+	bg_sb.set_border_width_all(1)
+	bg_sb.border_width_bottom = 2
+	bg_sb.set_corner_radius_all(5)
+	_vault_progress_bg.add_theme_stylebox_override("panel", bg_sb)
+	vb.add_child(_vault_progress_bg)
+
+	var fill_clip := Control.new()
+	fill_clip.set_anchors_preset(Control.PRESET_FULL_RECT)
+	fill_clip.clip_contents = true
+	_vault_progress_bg.add_child(fill_clip)
+
+	_vault_progress_fill = Panel.new()
+	_vault_progress_fill.name = "VaultProgressFill"
+	_vault_progress_fill.custom_minimum_size = Vector2(0, 8)
+	var fill_sb := StyleBoxFlat.new()
+	fill_sb.bg_color = COLOR_GOLD
+	fill_sb.border_color = Color("#FFA010")
+	fill_sb.set_border_width_all(1)
+	fill_sb.set_corner_radius_all(4)
+	_vault_progress_fill.add_theme_stylebox_override("panel", fill_sb)
+	fill_clip.add_child(_vault_progress_fill)
+
+	_vault_claim_btn = Button.new()
+	_vault_claim_btn.name = "VaultClaimBtn"
+	_vault_claim_btn.custom_minimum_size = Vector2(280, 48)
+	_vault_claim_btn.focus_mode = Control.FOCUS_NONE
+	var btn_sb := StyleBoxFlat.new()
+	btn_sb.bg_color = COLOR_GOLD
+	btn_sb.border_color = COLOR_BORDER
+	btn_sb.set_border_width_all(2)
+	btn_sb.border_width_bottom = 5
+	btn_sb.set_corner_radius_all(14)
+	_vault_claim_btn.add_theme_stylebox_override("normal", btn_sb)
+	_vault_claim_btn.add_theme_stylebox_override("hover", btn_sb)
+	_vault_claim_btn.add_theme_stylebox_override("pressed", btn_sb)
+	_vault_claim_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_vault_claim_btn.add_theme_font_size_override("font_size", 15)
+	if _cached_font:
+		_vault_claim_btn.add_theme_font_override("font", _cached_font)
+	_vault_claim_btn.pressed.connect(func():
+		open_clockwork_vault()
+	)
+	vb.add_child(_vault_claim_btn)
+	refresh_vault_display()
+
+func get_vault_card() -> Control:
+	return _vault_card
+
+func get_vault_claim_button() -> Button:
+	return _vault_claim_btn
+
+func refresh_vault_display() -> void:
+	var st: Dictionary = IdleClockworkVault.get_status()
+	var sec: float = float(st.get("elapsed_seconds", 0.0))
+	var gold: int = int(st.get("gold", 0))
+	var scrap: int = int(st.get("iron_scrap", 0))
+	var ratio: float = float(st.get("progress_ratio", 0.0))
+	var is_full: bool = bool(st.get("is_full", false))
+
+	var hrs_i := int(sec / 3600.0)
+	var mins_i := int(fmod(sec, 3600.0) / 60.0)
+
+	# 1. 更新右側發條儲能庫入口卡片
+	if _vault_card and is_instance_valid(_vault_card):
+		var time_str := "%02d:%02d / 08:00" % [hrs_i, mins_i]
+		var pct_str := "(%d%%)" % int(ratio * 100.0)
+		if is_full:
+			pct_str = "[%s]" % Loc.t("vault.max_cap")
+
+		if _vault_time_lbl and is_instance_valid(_vault_time_lbl):
+			_vault_time_lbl.text = "%s %s" % [time_str, pct_str]
+
+		if _vault_progress_fill and _vault_progress_bg and is_instance_valid(_vault_progress_fill):
+			var total_w := _vault_progress_bg.size.x
+			if total_w <= 1.0:
+				total_w = 280.0
+			_vault_progress_fill.visible = (ratio > 0.001)
+			_vault_progress_fill.size = Vector2(total_w * ratio, 8)
+
+		if _vault_claim_btn and is_instance_valid(_vault_claim_btn):
+			if gold > 0 or scrap > 0:
+				_vault_claim_btn.text = "%s (+%d金 +%d鐵)" % [Loc.t("vault.btn_claim"), gold, scrap]
+			else:
+				_vault_claim_btn.text = Loc.t("vault.charging")
+
+	# 2. 更新中央日晷展台旁微動氣泡 (Vault Bubble)
+	if _vault_bubble and is_instance_valid(_vault_bubble):
+		if _vault_bubble_time_lbl and is_instance_valid(_vault_bubble_time_lbl):
+			var tmpl: String = Loc.t("vault.bubble_accumulated")
+			if "%d" in tmpl:
+				_vault_bubble_time_lbl.text = tmpl % [hrs_i, 8]
+			else:
+				_vault_bubble_time_lbl.text = "已累積 %dh / %dh" % [hrs_i, 8]
+		if _vault_bubble_status_lbl and is_instance_valid(_vault_bubble_status_lbl):
+			if is_full:
+				_vault_bubble_status_lbl.text = Loc.t("vault.bubble_claim_ready")
+				_vault_bubble_status_lbl.add_theme_color_override("font_color", COLOR_GOLD)
+			elif gold > 0 or scrap > 0:
+				_vault_bubble_status_lbl.text = Loc.t("vault.btn_claim")
+				_vault_bubble_status_lbl.add_theme_color_override("font_color", Color("#4ED86A"))
+			else:
+				_vault_bubble_status_lbl.text = Loc.t("vault.charging")
+				_vault_bubble_status_lbl.add_theme_color_override("font_color", Color("#C9BFA8"))
+
+		if is_full:
+			_start_vault_bubble_full_glow()
+		else:
+			_stop_vault_bubble_full_glow()
+
+## 建立中央日晷展台旁發條儲能庫微動氣泡 (Vault Bubble)
+func _build_vault_bubble(parent_anchor: Control) -> void:
+	if parent_anchor == null:
+		return
+
+	_load_vault_bubble_key_textures()
+
+	_vault_bubble = Control.new()
+	_vault_bubble.name = "VaultBubble"
+	_vault_bubble.custom_minimum_size = Vector2(160, 52)
+	_vault_bubble.size = Vector2(160, 52)
+	_vault_bubble.z_index = 6
+	# 放置在中央英雄日晷展台右側旁，自然懸浮於展台與主角右側 (x=115, y=10)
+	_vault_bubble.position = Vector2(115, 10)
+	parent_anchor.add_child(_vault_bubble)
+
+	# 0. 金黃呼吸光暈底板 (滿 8 小時時呼吸發光)
+	_vault_bubble_glow_panel = Panel.new()
+	_vault_bubble_glow_panel.name = "VaultBubbleGlow"
+	_vault_bubble_glow_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_vault_bubble_glow_panel.offset_left = -4
+	_vault_bubble_glow_panel.offset_top = -4
+	_vault_bubble_glow_panel.offset_right = 4
+	_vault_bubble_glow_panel.offset_bottom = 4
+	_vault_bubble_glow_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_vault_bubble_glow_panel.visible = false
+	var glow_sb := StyleBoxFlat.new()
+	glow_sb.bg_color = Color(1.0, 0.82, 0.2, 0.20)
+	glow_sb.border_color = Color(1.0, 0.85, 0.28, 0.95)
+	glow_sb.set_border_width_all(2)
+	glow_sb.set_corner_radius_all(20)
+	glow_sb.shadow_color = Color(1.0, 0.82, 0.2, 0.75)
+	glow_sb.shadow_size = 14
+	_vault_bubble_glow_panel.add_theme_stylebox_override("panel", glow_sb)
+	_vault_bubble.add_child(_vault_bubble_glow_panel)
+
+	# 1. 氣泡主體按鈕（果凍厚底，熱區 >= 48px）
+	_vault_bubble_btn = Button.new()
+	_vault_bubble_btn.name = "VaultBubbleBtn"
+	_vault_bubble_btn.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_vault_bubble_btn.custom_minimum_size = Vector2(160, 52)
+	_vault_bubble_btn.focus_mode = Control.FOCUS_NONE
+
+	var normal_sb := StyleBoxFlat.new()
+	normal_sb.bg_color = Color(0.13, 0.10, 0.18, 0.92) # 蒸汽黑曜金屬板件
+	normal_sb.border_color = Color(0.83, 0.68, 0.22, 0.90) # 古典黃銅邊飾
+	normal_sb.set_border_width_all(2)
+	normal_sb.border_width_bottom = 5 # 果凍厚底 5px
+	normal_sb.set_corner_radius_all(18)
+	normal_sb.content_margin_left = 10
+	normal_sb.content_margin_right = 12
+	normal_sb.content_margin_top = 4
+	normal_sb.content_margin_bottom = 8
+	normal_sb.shadow_color = Color(0.08, 0.06, 0.16, 0.40)
+	normal_sb.shadow_size = 8
+	normal_sb.shadow_offset = Vector2(0, 3)
+
+	var pressed_sb := StyleBoxFlat.new()
+	pressed_sb.bg_color = Color(0.18, 0.14, 0.24, 0.95)
+	pressed_sb.border_color = Color(1.0, 0.85, 0.28, 1.0)
+	pressed_sb.set_border_width_all(2)
+	pressed_sb.border_width_bottom = 2
+	pressed_sb.set_corner_radius_all(18)
+	pressed_sb.content_margin_left = 10
+	pressed_sb.content_margin_right = 12
+	pressed_sb.content_margin_top = 6
+	pressed_sb.content_margin_bottom = 6
+
+	_vault_bubble_btn.add_theme_stylebox_override("normal", normal_sb)
+	_vault_bubble_btn.add_theme_stylebox_override("hover", normal_sb)
+	_vault_bubble_btn.add_theme_stylebox_override("pressed", pressed_sb)
+
+	_vault_bubble_btn.pressed.connect(func():
+		open_clockwork_vault()
+	)
+	_vault_bubble.add_child(_vault_bubble_btn)
+
+	# 2. 氣泡內容容器 (水平排列: 8幀發條圖示 + 垂直時數/狀態)
+	var hb := HBoxContainer.new()
+	hb.set_anchors_preset(Control.PRESET_FULL_RECT)
+	hb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	hb.add_theme_constant_override("separation", 8)
+	hb.alignment = BoxContainer.ALIGNMENT_CENTER
+	_vault_bubble.add_child(hb)
+
+	# 2.1 8 幀發條旋轉圖示
+	_vault_bubble_key_icon = TextureRect.new()
+	_vault_bubble_key_icon.name = "VaultBubbleKeyIcon"
+	_vault_bubble_key_icon.custom_minimum_size = Vector2(32, 32)
+	_vault_bubble_key_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_vault_bubble_key_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_vault_bubble_key_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	_vault_bubble_key_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if not _vault_bubble_key_textures.is_empty():
+		_vault_bubble_key_icon.texture = _vault_bubble_key_textures[0]
+	hb.add_child(_vault_bubble_key_icon)
+
+	# 2.2 垂直文字區塊 (時間 + 狀態)
+	var vb := VBoxContainer.new()
+	vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	vb.add_theme_constant_override("separation", 1)
+	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	hb.add_child(vb)
+
+	_vault_bubble_time_lbl = Label.new()
+	_vault_bubble_time_lbl.name = "BubbleTimeLabel"
+	_vault_bubble_time_lbl.text = "0h / 8h"
+	_vault_bubble_time_lbl.add_theme_font_size_override("font_size", 12)
+	_vault_bubble_time_lbl.add_theme_color_override("font_color", Color("#FFFDF8"))
+	if _cached_font:
+		_vault_bubble_time_lbl.add_theme_font_override("font", _cached_font)
+	vb.add_child(_vault_bubble_time_lbl)
+
+	_vault_bubble_status_lbl = Label.new()
+	_vault_bubble_status_lbl.name = "BubbleStatusLabel"
+	_vault_bubble_status_lbl.text = Loc.t("vault.charging")
+	_vault_bubble_status_lbl.add_theme_font_size_override("font_size", 11)
+	_vault_bubble_status_lbl.add_theme_color_override("font_color", Color("#C9BFA8"))
+	if _cached_font:
+		_vault_bubble_status_lbl.add_theme_font_override("font", _cached_font)
+	vb.add_child(_vault_bubble_status_lbl)
+
+	_start_vault_bubble_float_tween()
+
+func _load_vault_bubble_key_textures() -> void:
+	if not _vault_bubble_key_textures.is_empty():
+		return
+	for p in VAULT_BUBBLE_KEY_FRAME_PATHS:
+		if ResourceLoader.exists(p):
+			var base_tex: Texture2D = load(p) as Texture2D
+			if base_tex:
+				var atlas := AtlasTexture.new()
+				atlas.atlas = base_tex
+				atlas.region = Rect2(138, 256, 58, 80)
+				_vault_bubble_key_textures.append(atlas)
+
+func step_vault_bubble_frame() -> void:
+	if _vault_bubble_key_textures.is_empty():
+		return
+	_vault_bubble_frame_idx = (_vault_bubble_frame_idx + 1) % _vault_bubble_key_textures.size()
+	if _vault_bubble_key_icon and is_instance_valid(_vault_bubble_key_icon):
+		_vault_bubble_key_icon.texture = _vault_bubble_key_textures[_vault_bubble_frame_idx]
+
+func _start_vault_bubble_float_tween() -> void:
+	if _vault_bubble_float_tween and _vault_bubble_float_tween.is_valid():
+		_vault_bubble_float_tween.kill()
+	if _vault_bubble == null or not is_instance_valid(_vault_bubble):
+		return
+	var base_y := _vault_bubble.position.y
+	_vault_bubble_float_tween = create_tween().set_loops()
+	_vault_bubble_float_tween.tween_property(_vault_bubble, "position:y", base_y - 3.5, 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_vault_bubble_float_tween.tween_property(_vault_bubble, "position:y", base_y + 3.5, 1.2).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+func _start_vault_bubble_full_glow() -> void:
+	if _vault_bubble_is_full_glow:
+		return
+	_vault_bubble_is_full_glow = true
+	if _vault_bubble_glow_panel and is_instance_valid(_vault_bubble_glow_panel):
+		_vault_bubble_glow_panel.visible = true
+	if _vault_bubble_glow_tween and _vault_bubble_glow_tween.is_valid():
+		_vault_bubble_glow_tween.kill()
+	if _vault_bubble_glow_panel == null or not is_instance_valid(_vault_bubble_glow_panel):
+		return
+	_vault_bubble_glow_tween = create_tween().set_loops()
+	_vault_bubble_glow_tween.tween_property(_vault_bubble_glow_panel, "modulate:a", 1.0, 0.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_vault_bubble_glow_tween.tween_property(_vault_bubble_glow_panel, "modulate:a", 0.35, 0.8).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+func _stop_vault_bubble_full_glow() -> void:
+	_vault_bubble_is_full_glow = false
+	if _vault_bubble_glow_tween and _vault_bubble_glow_tween.is_valid():
+		_vault_bubble_glow_tween.kill()
+	if _vault_bubble_glow_panel and is_instance_valid(_vault_bubble_glow_panel):
+		_vault_bubble_glow_panel.visible = false
+		_vault_bubble_glow_panel.modulate.a = 1.0
+
+func get_vault_bubble() -> Control:
+	return _vault_bubble
+
+func get_vault_bubble_button() -> Button:
+	return _vault_bubble_btn
+
+func get_vault_bubble_key_icon() -> TextureRect:
+	return _vault_bubble_key_icon
+
+func get_vault_bubble_time_label() -> Label:
+	return _vault_bubble_time_lbl
+
+func get_vault_bubble_status_label() -> Label:
+	return _vault_bubble_status_lbl
+
+func get_vault_bubble_glow_panel() -> Panel:
+	return _vault_bubble_glow_panel
+
+func get_vault_bubble_key_textures() -> Array[Texture2D]:
+	return _vault_bubble_key_textures
+
+func get_vault_bubble_frame_index() -> int:
+	return _vault_bubble_frame_idx
+
+func is_vault_bubble_full_glow() -> bool:
+	return _vault_bubble_is_full_glow
+
+## 開啟發條儲能庫放置收益彈窗
+func open_clockwork_vault() -> Control:
+	var existing = get_node_or_null("ClockworkVaultDialog")
+	if existing != null:
+		return existing
+	var VaultClass: GDScript = load("res://scripts/ui/clockwork_vault_dialog.gd")
+	if VaultClass == null:
+		push_error("無法載入 ClockworkVaultDialog")
+		return null
+	var dlg: Control = VaultClass.new() as Control
+	dlg.z_index = 80
+	if _equip_schematic and is_instance_valid(_equip_schematic):
+		_equip_schematic.visible = false
+	dlg.rewards_claimed.connect(func(g: int, s: int):
+		refresh_hud()
+		refresh_vault_display()
+		_show_toast(Loc.t("vault.claimed_toast") % [g, s])
+	)
+	dlg.tree_exited.connect(func():
+		if _equip_schematic and is_instance_valid(_equip_schematic):
+			_equip_schematic.visible = true
+		refresh_hud()
+		refresh_vault_display()
+	)
+	add_child(dlg)
+	return dlg
 
 func get_settings_button() -> Button:
 	return _settings_button
@@ -3393,12 +4016,48 @@ func _build_character_tab() -> void:
 	click_card_btn.pressed.connect(open_wardrobe)
 	_char_prev.add_child(click_card_btn)
 
+	# 招式心法按鈕 (手遊防誤觸標準：高度 50px，熱區 >= 48px，立體厚底 5px)
+	var btn_skill := Button.new()
+	btn_skill.name = "BtnSkillDialog"
+	btn_skill.text = _t("招式 · 核心心法")
+	btn_skill.custom_minimum_size = Vector2(0, 50)
+	btn_skill.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if _cached_font != null:
+		btn_skill.add_theme_font_override("font", _cached_font)
+	btn_skill.add_theme_font_size_override("font_size", 16)
+	btn_skill.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_skill.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_skill.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var ssb := StyleBoxFlat.new()
+	ssb.bg_color = COLOR_SKY
+	ssb.border_color = COLOR_BORDER
+	ssb.set_border_width_all(2)
+	ssb.border_width_bottom = 5
+	ssb.set_corner_radius_all(18)
+	ssb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	ssb.shadow_size = 5
+	ssb.shadow_offset = Vector2(0, 2)
+	var ssb_h := ssb.duplicate() as StyleBoxFlat
+	ssb_h.bg_color = Color("#5EB5FF")
+	var ssb_p := ssb.duplicate() as StyleBoxFlat
+	ssb_p.border_width_bottom = 2
+	btn_skill.add_theme_stylebox_override("normal", ssb)
+	btn_skill.add_theme_stylebox_override("hover", ssb_h)
+	btn_skill.add_theme_stylebox_override("pressed", ssb_p)
+	btn_skill.add_theme_stylebox_override("focus", ssb)
+	btn_skill.pressed.connect(open_skill_dialog)
+	l_vbox.add_child(btn_skill)
+	_btn_skill_dialog = btn_skill
+
 	# 正式更衣按鈕 (手遊防誤觸標準：高度 50px，熱區 >= 50px)
 	var btn_wardrobe := Button.new()
 	btn_wardrobe.name = "BtnWardrobe"
 	btn_wardrobe.text = _t("更衣 · 發條衣櫥")
-	btn_wardrobe.custom_minimum_size = Vector2(0, 58)
+	btn_wardrobe.custom_minimum_size = Vector2(0, 50)
 	btn_wardrobe.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	if _cached_font != null:
+		btn_wardrobe.add_theme_font_override("font", _cached_font)
 	btn_wardrobe.add_theme_font_size_override("font_size", 16)
 	btn_wardrobe.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	btn_wardrobe.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
@@ -3446,6 +4105,44 @@ func _build_character_tab() -> void:
 	_apply_label_style(w_sub, 13, COLOR_GOLD_DARK)
 	w_hdr.add_child(w_sub)
 	_char_weapon_sub_label = w_sub
+
+	var w_hdr_spacer := Control.new()
+	w_hdr_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	w_hdr.add_child(w_hdr_spacer)
+
+	var btn_change_weapon := Button.new()
+	btn_change_weapon.name = "BtnChangeWeapon"
+	btn_change_weapon.text = _t("更換裝備")
+	btn_change_weapon.custom_minimum_size = Vector2(104, 48)
+	if _cached_font != null:
+		btn_change_weapon.add_theme_font_override("font", _cached_font)
+	btn_change_weapon.add_theme_font_size_override("font_size", 14)
+	btn_change_weapon.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_change_weapon.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_change_weapon.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var ce_sb := StyleBoxFlat.new()
+	ce_sb.bg_color = COLOR_SKY
+	ce_sb.border_color = COLOR_BORDER
+	ce_sb.set_border_width_all(2)
+	ce_sb.border_width_bottom = 5
+	ce_sb.set_corner_radius_all(16)
+	ce_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	ce_sb.shadow_size = 5
+	ce_sb.shadow_offset = Vector2(0, 2)
+	var ce_sb_h := ce_sb.duplicate() as StyleBoxFlat
+	ce_sb_h.bg_color = Color("#5EB5FF")
+	var ce_sb_p := ce_sb.duplicate() as StyleBoxFlat
+	ce_sb_p.border_width_bottom = 2
+	btn_change_weapon.add_theme_stylebox_override("normal", ce_sb)
+	btn_change_weapon.add_theme_stylebox_override("hover", ce_sb_h)
+	btn_change_weapon.add_theme_stylebox_override("pressed", ce_sb_p)
+	btn_change_weapon.add_theme_stylebox_override("focus", ce_sb)
+	btn_change_weapon.pressed.connect(func():
+		open_weapon_swap_dialog(_selected_weapon_slot)
+	)
+	w_hdr.add_child(btn_change_weapon)
+	_btn_change_weapon = btn_change_weapon
 
 	# 2. 三個武器槽果凍卡
 	var w_row := HBoxContainer.new()
@@ -3571,18 +4268,144 @@ func _build_character_tab() -> void:
 	r2.add_child(sc5)
 	_stat_cards.append(sc5)
 
+func _get_weapon_slot_info(slot_idx: int) -> Dictionary:
+	var eq := _get_equip_sys()
+	var gs := _gs()
+	var title := WEAPON_SLOT_TITLES[slot_idx] if slot_idx >= 0 and slot_idx < WEAPON_SLOT_TITLES.size() else "首選武器"
+
+	var fallback: Dictionary = WEAPON_SLOTS[slot_idx] if slot_idx >= 0 and slot_idx < WEAPON_SLOTS.size() else {}
+	var fb_name: String = str(fallback.get("weapon_name", "鐵劍"))
+	var fb_hits: String = str(fallback.get("hits", "4 次打擊"))
+	var fb_hint: String = str(fallback.get("hint", ""))
+
+	if eq == null:
+		return {
+			"slot_title": title,
+			"weapon_name": fb_name,
+			"hits": fb_hits,
+			"quality": "common",
+			"quality_label": "凡品",
+			"quality_color": Color("#8E8A9F"),
+			"hint": fb_hint,
+			"unlocked": true,
+			"empty": false,
+			"is_active": (slot_idx == _selected_weapon_slot),
+			"uid": "",
+			"atk": 0,
+		}
+
+	var snap: Array = []
+	if eq.has_method("loadout_snapshot_for_battle"):
+		snap = eq.loadout_snapshot_for_battle()
+
+	var entry: Dictionary = {}
+	if slot_idx >= 0 and slot_idx < snap.size():
+		entry = snap[slot_idx]
+
+	var unlocked := true
+	if eq.has_method("loadout_slot_unlocked"):
+		unlocked = eq.loadout_slot_unlocked(slot_idx)
+	elif not entry.is_empty():
+		unlocked = bool(entry.get("unlocked", true))
+
+	if not unlocked:
+		var req_lv := 10 if slot_idx == 1 else 16
+		if eq.has_method("loadout_unlock_level"):
+			req_lv = int(eq.loadout_unlock_level(slot_idx))
+		return {
+			"slot_title": title,
+			"weapon_name": "未解鎖",
+			"hits": "需達 Lv%d" % req_lv,
+			"quality": "locked",
+			"quality_label": "未解鎖",
+			"quality_color": Color("#A09CAE"),
+			"hint": "武器欄位未解鎖（角色等級需達到 Lv%d）" % req_lv,
+			"unlocked": false,
+			"empty": true,
+			"is_active": false,
+			"uid": "",
+			"atk": 0,
+		}
+
+	var uid: String = str(entry.get("uid", ""))
+	if uid.is_empty() and gs and "weapon_loadout" in gs and slot_idx < gs.weapon_loadout.size():
+		uid = str(gs.weapon_loadout[slot_idx])
+
+	if uid.is_empty():
+		return {
+			"slot_title": title,
+			"weapon_name": "空槽",
+			"hits": "未裝備",
+			"quality": "none",
+			"quality_label": "未裝備",
+			"quality_color": Color("#A09CAE"),
+			"hint": "備用武器槽位：可於冒險者背包或兵器架中裝備武器",
+			"unlocked": true,
+			"empty": true,
+			"is_active": false,
+			"uid": "",
+			"atk": 0,
+		}
+
+	var inst: Dictionary = {}
+	if eq.has_method("weapon_inst"):
+		inst = eq.weapon_inst(uid)
+	if inst.is_empty() and gs and "equip_worn" in gs and gs.equip_worn is Dictionary:
+		inst = gs.equip_worn.get(uid, {})
+
+	var wname: String = str(inst.get("name", entry.get("name", fb_name)))
+	if wname.is_empty():
+		wname = fb_name
+	var line: String = str(inst.get("line", entry.get("line", "sword")))
+	var hits: String = LINE_HITS.get(line, "4 次打擊")
+	var quality: String = str(inst.get("quality", "common"))
+	var quality_label: String = str(inst.get("quality_label", "凡品"))
+
+	var q_col := Color("#8E8A9F")
+	match quality:
+		"common": q_col = Color("#8E8A9F")
+		"uncommon": q_col = Color("#2E9E4A")
+		"rare": q_col = Color("#2575FC")
+		"epic": q_col = Color("#9B51E0")
+		_: q_col = Color("#8E8A9F")
+
+	var atk: int = int(entry.get("weapon_atk", 0))
+	if atk <= 0 and inst.has("rolled") and inst["rolled"] is Dictionary:
+		atk = int(inst["rolled"].get("atk", 0))
+
+	var hint_str := fb_hint
+	if wname != fb_name:
+		var line_name: String = LINE_NAMES.get(line, line)
+		hint_str = "%s · %s：流派「%s」，%s，基礎攻擊 +%d" % [title, wname, line_name, hits, atk]
+
+	return {
+		"slot_title": title,
+		"weapon_name": wname,
+		"hits": hits,
+		"quality": quality,
+		"quality_label": quality_label,
+		"quality_color": q_col,
+		"hint": hint_str,
+		"unlocked": true,
+		"empty": false,
+		"is_active": (slot_idx == _selected_weapon_slot),
+		"uid": uid,
+		"atk": atk,
+	}
+
 func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 	var btn := Button.new()
 	btn.name = "WeaponSlot_%d" % idx
 	btn.custom_minimum_size = Vector2(0, 68)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	btn.set_meta("quality_color", slot_data.get("quality_color", COLOR_GOLD_DARK))
 
 	var v := VBoxContainer.new()
 	v.name = "Content"
 	v.set_anchors_preset(Control.PRESET_FULL_RECT)
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	v.add_theme_constant_override("separation", 2)
+	v.add_theme_constant_override("separation", 1)
 	btn.add_child(v)
 
 	var slot_title := Label.new()
@@ -3590,7 +4413,7 @@ func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 	var t_text := _t(slot_data["slot_title"])
 	slot_title.text = t_text
 	slot_title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var t_sz := 11 if t_text.length() > 14 else 13
+	var t_sz := 11 if t_text.length() > 14 else 12
 	_apply_label_style(slot_title, t_sz, COLOR_GOLD_DARK)
 	v.add_child(slot_title)
 
@@ -3599,13 +4422,22 @@ func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 	var w_text := "%s · %s" % [_t(slot_data["weapon_name"]), _t(slot_data["hits"])]
 	weapon_info.text = w_text
 	weapon_info.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	var w_sz := 13 if w_text.length() > 22 else (14 if w_text.length() > 18 else 16)
+	var w_sz := 12 if w_text.length() > 22 else (13 if w_text.length() > 18 else 14)
 	_apply_label_style(weapon_info, w_sz, COLOR_TEXT_DARK)
 	v.add_child(weapon_info)
 
+	var quality_lbl := Label.new()
+	quality_lbl.name = "QualityLabel"
+	var q_text := _t(str(slot_data.get("quality_label", "")))
+	quality_lbl.text = q_text
+	quality_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	var q_col: Color = slot_data.get("quality_color", COLOR_GOLD_DARK)
+	_apply_label_style(quality_lbl, 10, q_col)
+	v.add_child(quality_lbl)
+
 	_style_weapon_slot_button(btn, idx == _selected_weapon_slot)
 	var slot_idx := idx
-	btn.pressed.connect(func(): _select_weapon_slot(slot_idx))
+	btn.pressed.connect(func(): _on_weapon_slot_clicked(slot_idx))
 	return btn
 
 func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
@@ -3616,11 +4448,12 @@ func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
 	sb.border_width_bottom = 5
 	sb.content_margin_left = 12
 	sb.content_margin_right = 12
-	sb.content_margin_top = 8
-	sb.content_margin_bottom = 8
+	sb.content_margin_top = 6
+	sb.content_margin_bottom = 6
 
 	var title_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
 	var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
+	var q_lbl := btn.get_node_or_null("Content/QualityLabel") as Label
 
 	if is_selected:
 		sb.bg_color = COLOR_ORANGE
@@ -3631,6 +4464,8 @@ func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
 			title_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 		if info_lbl:
 			info_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		if q_lbl:
+			q_lbl.add_theme_color_override("font_color", Color(0.22, 0.18, 0.38))
 	else:
 		sb.bg_color = COLOR_CARD_WARM
 		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
@@ -3640,6 +4475,9 @@ func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
 			title_lbl.add_theme_color_override("font_color", COLOR_GOLD_DARK)
 		if info_lbl:
 			info_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		if q_lbl:
+			var q_col: Color = btn.get_meta("quality_color", COLOR_GOLD_DARK)
+			q_lbl.add_theme_color_override("font_color", q_col)
 
 	var sb_h := sb.duplicate() as StyleBoxFlat
 	if not is_selected:
@@ -3655,6 +4493,10 @@ func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
 	btn.add_theme_stylebox_override("pressed", sb_p)
 	btn.add_theme_stylebox_override("focus", sb)
 
+func _on_weapon_slot_clicked(idx: int) -> void:
+	_select_weapon_slot(idx)
+	open_weapon_swap_dialog(idx)
+
 func select_weapon_slot(idx: int) -> void:
 	_select_weapon_slot(idx)
 
@@ -3664,17 +4506,168 @@ func get_selected_weapon_slot() -> int:
 func get_weapon_slot_buttons() -> Array[Button]:
 	return _weapon_slot_buttons
 
+func refresh_weapon_slots() -> void:
+	_refresh_weapon_slot_buttons()
+
+func _refresh_weapon_slot_buttons() -> void:
+	for i in range(_weapon_slot_buttons.size()):
+		if not is_instance_valid(_weapon_slot_buttons[i]):
+			continue
+		var btn := _weapon_slot_buttons[i]
+		var data := _get_weapon_slot_info(i)
+		btn.set_meta("quality_color", data.get("quality_color", COLOR_GOLD_DARK))
+
+		var title_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
+		if title_lbl:
+			var t_text := _t(str(data["slot_title"]))
+			title_lbl.text = t_text
+			if t_text.length() > 14:
+				title_lbl.add_theme_font_size_override("font_size", 11)
+			else:
+				title_lbl.add_theme_font_size_override("font_size", 12)
+
+		var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
+		if info_lbl:
+			var w_text := "%s · %s" % [_t(str(data["weapon_name"])), _t(str(data["hits"]))]
+			info_lbl.text = w_text
+			if w_text.length() > 22:
+				info_lbl.add_theme_font_size_override("font_size", 12)
+			elif w_text.length() > 18:
+				info_lbl.add_theme_font_size_override("font_size", 13)
+			else:
+				info_lbl.add_theme_font_size_override("font_size", 14)
+
+		var q_lbl := btn.get_node_or_null("Content/QualityLabel") as Label
+		if q_lbl:
+			var q_text := _t(str(data.get("quality_label", "")))
+			q_lbl.text = q_text
+			var q_col: Color = data.get("quality_color", COLOR_GOLD_DARK)
+			q_lbl.add_theme_color_override("font_color", q_col)
+
+		_style_weapon_slot_button(btn, i == _selected_weapon_slot)
+
+	if _weapon_slot_hint_label and is_instance_valid(_weapon_slot_hint_label):
+		var cur_data := _get_weapon_slot_info(_selected_weapon_slot)
+		var hint_text := _t(str(cur_data.get("hint", "")))
+		_weapon_slot_hint_label.text = hint_text
+		if hint_text.length() > 70:
+			_weapon_slot_hint_label.add_theme_font_size_override("font_size", 12)
+		else:
+			_weapon_slot_hint_label.add_theme_font_size_override("font_size", 13)
+
+const WEAPON_LINE_TO_PAPERDOLL: Dictionary = {
+	"sword": "wpn_dawn_blade",
+	"spear": "wpn_knight_lance",
+	"claw": "wpn_spring_claws",
+	"magic": "wpn_astral_staff",
+	"hammer": "wpn_anvil_greathammer",
+	"dagger": "wpn_twin_ember_sabers",
+	"bow": "wpn_zephyr_wing_bow",
+	"fist": "wpn_panda_taiji_cestus",
+	"gun": "wpn_twin_harpoon_gun",
+	"axe": "wpn_colossus_cleaver_axe",
+	"dart": "wpn_lotus_cog_dart",
+	"crystal": "wpn_bagua_astrolabe",
+}
+
+func _resolve_hero_weapon_paperdoll_id(race: String, winst: Dictionary) -> String:
+	if winst.is_empty():
+		return "none"
+	var base_id := str(winst.get("base_id", "")).strip_edges()
+	var line := str(winst.get("line", "")).strip_edges()
+	var raw_id := str(winst.get("id", "")).strip_edges()
+
+	var candidates: Array[String] = []
+	if not base_id.is_empty():
+		candidates.append(base_id)
+	if WEAPON_LINE_TO_PAPERDOLL.has(line):
+		candidates.append(WEAPON_LINE_TO_PAPERDOLL[line])
+	if WEAPON_LINE_TO_PAPERDOLL.has(base_id):
+		candidates.append(WEAPON_LINE_TO_PAPERDOLL[base_id])
+	if not raw_id.is_empty() and raw_id != base_id:
+		candidates.append(raw_id)
+
+	for cid in candidates:
+		if cid.is_empty() or cid in ["none", "empty", "bare"]:
+			continue
+		var p512 := PaperdollRenderer.resolve_slot_texture_path_512(race, "weapon", cid)
+		if p512 != "" and p512.ends_with("_512.png") and (ResourceLoader.exists(p512) or FileAccess.file_exists(p512)):
+			return cid
+
+	return "none"
+
+func _sync_hero_weapon_paperdoll() -> void:
+	var gs := _gs()
+	var eq := _get_equip_sys()
+	var race := _current_race()
+	var winst: Dictionary = {}
+	if eq and eq.has_method("active_weapon_inst"):
+		winst = eq.active_weapon_inst()
+	elif gs and "equip_slots" in gs and gs.equip_slots is Dictionary:
+		var wuid: String = str(gs.equip_slots.get("weapon", ""))
+		if wuid != "" and "equip_worn" in gs and gs.equip_worn is Dictionary and gs.equip_worn.has(wuid):
+			winst = gs.equip_worn[wuid]
+
+	var w_id := "none"
+	if not winst.is_empty():
+		w_id = _resolve_hero_weapon_paperdoll_id(race, winst)
+
+	if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
+		gs.paperdoll_slots["weapon"] = w_id
+
+	_cached_hero_comp_512 = null
+	_cached_hero_comp_key = ""
+	_cached_hero_body_comp_512 = null
+	_cached_hero_body_key = ""
+	_load_hero_poses()
+	_apply_hero_idle_visual()
+	_refresh_equip_schematic()
+
+func _refresh_char_tab_stats(dynamic_atk: bool = true) -> void:
+	var gs := _gs()
+	if gs == null:
+		return
+
+	var cur_pow := 482
+	if gs.has_method("power_score") and int(gs.call("power_score")) > 0:
+		cur_pow = int(gs.call("power_score"))
+	if _char_power_badge and is_instance_valid(_char_power_badge):
+		_char_power_badge.text = _t("有效戰力 %d") % cur_pow
+
+	if _stat_cards.size() > 1 and is_instance_valid(_stat_cards[1]):
+		var atk_card := _stat_cards[1]
+		var cur_atk := 95
+		if dynamic_atk and gs.has_method("effective_atk"):
+			var eff: int = int(gs.effective_atk())
+			if eff > 0:
+				cur_atk = eff
+			atk_card.set_meta("stat_val_key", str(cur_atk))
+		else:
+			cur_atk = int(atk_card.get_meta("stat_val_key", "95"))
+		var v_lbl := atk_card.find_child("ValLabel", true, false) as Label
+		if v_lbl:
+			v_lbl.text = str(cur_atk)
+
 func _select_weapon_slot(idx: int) -> void:
 	if idx < 0 or idx >= _weapon_slot_buttons.size():
 		return
 	_selected_weapon_slot = idx
-	for i in range(_weapon_slot_buttons.size()):
-		_style_weapon_slot_button(_weapon_slot_buttons[i], i == _selected_weapon_slot)
-	if _weapon_slot_hint_label and idx < WEAPON_SLOTS.size():
-		var hint_text := _t(WEAPON_SLOTS[idx]["hint"])
-		_weapon_slot_hint_label.text = hint_text
-		var h_sz := 12 if hint_text.length() > 70 else 13
-		_weapon_slot_hint_label.add_theme_font_size_override("font_size", h_sz)
+
+	var eq := _get_equip_sys()
+	if eq and eq.has_method("switch_weapon_loadout"):
+		var sw_res: Dictionary = eq.switch_weapon_loadout(idx)
+		if not bool(sw_res.get("ok", false)):
+			var reason_msg: String = str(sw_res.get("msg", ""))
+			if not reason_msg.is_empty():
+				_show_toast(reason_msg)
+		else:
+			var toast_msg: String = str(sw_res.get("msg", ""))
+			if not toast_msg.is_empty():
+				_show_toast(toast_msg)
+
+	_sync_hero_weapon_paperdoll()
+	_refresh_char_tab_stats(true)
+	_refresh_weapon_slot_buttons()
 
 func _build_stat_card(title: String, val_str: String, subtitle: String, val_color: Color) -> PanelContainer:
 	var c := PanelContainer.new()
@@ -4662,8 +5655,11 @@ func refresh_hud() -> void:
 		_gold_label.text = _fmt_int(gold)
 	if _gem_label:
 		_gem_label.text = _fmt_int(dust)
+	refresh_vault_display()
 
 func _apply_locale_texts() -> void:
+	if _vault_title_lbl and is_instance_valid(_vault_title_lbl):
+		_vault_title_lbl.text = Loc.t("vault.title")
 	if _energy_title_label and is_instance_valid(_energy_title_label):
 		_energy_title_label.text = _t("能量")
 	if _gold_title_label and is_instance_valid(_gold_title_label):
@@ -4749,12 +5745,16 @@ func _apply_locale_texts() -> void:
 
 	if _char_doll_title_label and is_instance_valid(_char_doll_title_label):
 		_char_doll_title_label.text = _t("機體外觀 · 發條紙娃娃")
+	if _btn_skill_dialog and is_instance_valid(_btn_skill_dialog):
+		_btn_skill_dialog.text = _t("招式 · 核心心法")
 	if _btn_wardrobe and is_instance_valid(_btn_wardrobe):
 		_btn_wardrobe.text = _t("更衣 · 發條衣櫥")
 	if _char_weapon_title_label and is_instance_valid(_char_weapon_title_label):
 		_char_weapon_title_label.text = _t("武器輪替配置")
 	if _char_weapon_sub_label and is_instance_valid(_char_weapon_sub_label):
 		_char_weapon_sub_label.text = _t("點擊切換輪替順位 · 三段作戰序列")
+	if _btn_change_weapon and is_instance_valid(_btn_change_weapon):
+		_btn_change_weapon.text = _t("更換裝備")
 	if _char_stat_title_label and is_instance_valid(_char_stat_title_label):
 		_char_stat_title_label.text = _t("機體戰鬥屬性")
 	if _char_power_badge and is_instance_valid(_char_power_badge):
@@ -4765,36 +5765,8 @@ func _apply_locale_texts() -> void:
 		_char_power_badge.text = _t("有效戰力 %d") % cur_pow
 	_update_char_level_badge()
 
-	for i in range(_weapon_slot_buttons.size()):
-		if i < WEAPON_SLOTS.size() and is_instance_valid(_weapon_slot_buttons[i]):
-			var btn := _weapon_slot_buttons[i]
-			var title_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
-			if title_lbl:
-				var t_text := _t(WEAPON_SLOTS[i]["slot_title"])
-				title_lbl.text = t_text
-				if t_text.length() > 14:
-					title_lbl.add_theme_font_size_override("font_size", 11)
-				else:
-					title_lbl.add_theme_font_size_override("font_size", 13)
-			var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
-			if info_lbl:
-				var w_text := "%s · %s" % [_t(WEAPON_SLOTS[i]["weapon_name"]), _t(WEAPON_SLOTS[i]["hits"])]
-				info_lbl.text = w_text
-				if w_text.length() > 22:
-					info_lbl.add_theme_font_size_override("font_size", 13)
-				elif w_text.length() > 18:
-					info_lbl.add_theme_font_size_override("font_size", 14)
-				else:
-					info_lbl.add_theme_font_size_override("font_size", 16)
-
-	if _weapon_slot_hint_label and is_instance_valid(_weapon_slot_hint_label):
-		if _selected_weapon_slot < WEAPON_SLOTS.size():
-			var hint_text := _t(WEAPON_SLOTS[_selected_weapon_slot]["hint"])
-			_weapon_slot_hint_label.text = hint_text
-			if hint_text.length() > 70:
-				_weapon_slot_hint_label.add_theme_font_size_override("font_size", 12)
-			else:
-				_weapon_slot_hint_label.add_theme_font_size_override("font_size", 13)
+	_refresh_weapon_slot_buttons()
+	_refresh_char_tab_stats(false)
 
 	for card in _stat_cards:
 		if is_instance_valid(card):
@@ -4973,7 +5945,53 @@ func open_skill_dialog() -> Control:
 	dlg.tree_exited.connect(func():
 		refresh_hud()
 	)
+	if dlg.has_signal("practice_dummy_requested"):
+		dlg.practice_dummy_requested.connect(func():
+			request_battle.emit("training_dummy")
+		)
 	add_child(dlg)
+	return dlg
+
+
+## 開啟更換裝備武器庫彈窗
+func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
+	var existing = get_node_or_null("WeaponSwapDialog")
+	if existing != null and not existing.is_queued_for_deletion():
+		return existing
+	var target: int = slot_idx if slot_idx >= 0 else _selected_weapon_slot
+	var DlgClass: GDScript = load("res://scripts/ui/weapon_swap_dialog.gd")
+	if DlgClass == null:
+		push_error("無法載入 WeaponSwapDialog")
+		return null
+	var dlg: Control = DlgClass.new() as Control
+	dlg.name = "WeaponSwapDialog"
+	dlg.z_index = 85
+	dlg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if dlg.has_method("setup"):
+		dlg.call("setup", target)
+	dlg.tree_exited.connect(func():
+		_weapon_swap_dialog = null
+		_sync_hero_weapon_paperdoll()
+		_refresh_char_tab_stats(true)
+		_refresh_weapon_slot_buttons()
+		refresh_hud()
+	)
+	if dlg.has_signal("weapon_swapped"):
+		dlg.connect("weapon_swapped", func(_s_idx: int, _uid: String):
+			_sync_hero_weapon_paperdoll()
+			_refresh_char_tab_stats(true)
+			_refresh_weapon_slot_buttons()
+			refresh_hud()
+		)
+	if dlg.has_signal("slot_unequipped"):
+		dlg.connect("slot_unequipped", func(_s_idx: int):
+			_sync_hero_weapon_paperdoll()
+			_refresh_char_tab_stats(true)
+			_refresh_weapon_slot_buttons()
+			refresh_hud()
+		)
+	add_child(dlg)
+	_weapon_swap_dialog = dlg
 	return dlg
 
 
@@ -5053,6 +6071,7 @@ func open_shop() -> Control:
 
 ## 開啟角色裝備/整備面板並滾動至機芯五槽
 func open_equip_panel(scroll_to_core: bool = false) -> Control:
+	_clear_new_core_drop_notification()
 	var existing = get_node_or_null("EquipLayer")
 	if existing != null and is_instance_valid(existing):
 		existing.queue_free()

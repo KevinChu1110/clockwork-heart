@@ -152,9 +152,9 @@ func _process(_delta: float) -> bool:
 					return _fail("選取 hp_m 時詳情卡大圖預覽 _detail_icon 應為 visible 且有 texture")
 				if d_gly and d_gly.visible:
 					return _fail("選取 hp_m 時詳情卡 _detail_glyph 不應為 visible")
-				if d_name and d_name.text != "中紅水":
-					return _fail("選取 hp_m 時詳情卡標題應為「中紅水」，實際為: %s" % d_name.text)
-				print("  ok 點選中紅水時詳情卡大圖預覽與標題連動正常")
+				if d_name and d_name.text != "高純潤滑油":
+					return _fail("選取 hp_m 時詳情卡標題應為「高純潤滑油」，實際為: %s" % d_name.text)
+				print("  ok 點選高純潤滑油時詳情卡大圖預覽與標題連動正常")
 
 			## 9. 驗證關閉邏輯
 			_inv.close()

@@ -1030,16 +1030,16 @@ func _test_adventure_region_stages() -> void:
 
 	var expected_prefixes := ["1-", "2-", "3-", "4-"]
 	var expected_first_names := [
-		"荒路哨站 · 發條灰鼠",
-		"白霧外緣 · 守望關隘",
-		"白霧村外 · 霧影遊魂",
-		"石岸潮襲 · 潮襲海盜"
+		"荒路哨站 · 停擺發條鼠",
+		"白霧外緣 · 守望機關衛",
+		"西林外緣 · 霧影機關偶",
+		"石岸潮線 · 破浪哨衛"
 	]
 	var expected_last_names := [
-		"閣樓大門 · 大型殘兵",
-		"聖獅內殿 · 狂暴守護者",
-		"白霧核心 · 白霧",
-		"通天塔底 · 塔底"
+		"閣樓大門 · 重裝發條衛",
+		"聖獅內殿 · 守衛泰坦雷歐",
+		"白霧核心 · 守衛泰坦白狐",
+		"通天塔底 · 終境停擺核"
 	]
 
 	for r in range(4):
@@ -1813,6 +1813,24 @@ func _test_character_tab_i18n() -> void:
 		}
 	}
 
+	# 設置三欄武器槽測試裝備（鐵劍、獵弓、拳套），驗證多語系切換與名稱/打擊數在地化
+	var gs_node = root.get_node_or_null("GameState")
+	var eq_node = root.get_node_or_null("EquipmentSystem")
+	if gs_node and eq_node:
+		gs_node.level = 20
+		gs_node.atk = 83
+		var w1 := {"uid": "tw_sword", "base_id": "sword", "name": "鐵劍", "line": "sword", "slot": "weapon", "tier": 1, "quality": "common", "quality_label": "凡品", "rolled": {"atk": 8}}
+		var w2 := {"uid": "tw_bow", "base_id": "bow", "name": "獵弓", "line": "bow", "slot": "weapon", "tier": 1, "quality": "common", "quality_label": "凡品", "rolled": {"atk": 8}}
+		var w3 := {"uid": "tw_fist", "base_id": "fist", "name": "拳套", "line": "fist", "slot": "weapon", "tier": 1, "quality": "common", "quality_label": "凡品", "rolled": {"atk": 9}}
+		gs_node.equip_worn["tw_sword"] = w1
+		gs_node.equip_worn["tw_bow"] = w2
+		gs_node.equip_worn["tw_fist"] = w3
+		gs_node.weapon_loadout = ["tw_sword", "tw_bow", "tw_fist"]
+		gs_node.weapon_loadout_active = 0
+		gs_node.equip_slots["weapon"] = "tw_sword"
+		if _lobby.has_method("refresh_weapon_slots"):
+			_lobby.refresh_weapon_slots()
+
 	for code in ["zh_CN", "en", "ja", "ko", "es", "zh_TW"]:
 		loc_node.call("set_locale", code)
 		var exp: Dictionary = expected_char_data[code]
@@ -1912,10 +1930,10 @@ func _test_adventure_stages_i18n() -> void:
 
 	# 1. 斷言資料表只存繁中 key，未烤進任何譯文
 	var expected_raw_names := [
-		["荒路哨站 · 發條灰鼠", "堡外野原 · 荒路殘兵", "堡壘廣場 · 守門暗哨", "閣樓大門 · 大型殘兵"],
-		["白霧外緣 · 守望關隘", "市集街道 · 潛伏暗哨", "下水道口 · 腐化黏怪", "聖獅內殿 · 狂暴守護者"],
-		["白霧村外 · 霧影遊魂", "霧崖小徑 · 林間風妖", "鏡廊入口 · 鏡廊殘影", "白霧核心 · 白霧"],
-		["石岸潮襲 · 潮襲海盜", "潮岸沉船 · 船長殘影", "疤地焰徑 · 疤地焰靈", "通天塔底 · 塔底"],
+		["荒路哨站 · 停擺發條鼠", "堡外野原 · 鉚兵哨衛", "堡壘廣場 · 發條機關偶", "閣樓大門 · 重裝發條衛"],
+		["白霧外緣 · 守望機關衛", "市集街道 · 潛伏機關偶", "排水管道 · 黑鏽機關偶", "聖獅內殿 · 守衛泰坦雷歐"],
+		["西林外緣 · 霧影機關偶", "霧崖小徑 · 旋風發條偶", "鏡廊入口 · 鐘擺守衛", "白霧核心 · 守衛泰坦白狐"],
+		["石岸潮線 · 破浪哨衛", "潮岸沉船 · 舵輪機關衛", "疤地焰徑 · 熔火發條偶", "通天塔底 · 終境停擺核"],
 	]
 
 	for r in range(4):
@@ -1978,6 +1996,19 @@ func _test_adventure_stages_i18n() -> void:
 				if code in ["en", "es"]:
 					if _has_cjk_characters(name_lbl.text):
 						_fail("[%s] 關卡 %d-%d 名稱存在中文殘留: %s" % [code, r + 1, i + 1, name_lbl.text])
+
+				# 驗證關卡型別六語系
+				var typ_lbl := card.find_child("StageTypeLabel", true, false) as Label
+				if typ_lbl != null:
+					var raw_type: String = str(MobileLobby.REGION_STAGES[r][i]["type"])
+					var exp_type: String = ContentLoc.text("ui", raw_type)
+					if typ_lbl.text != exp_type:
+						_fail("[%s] 關卡 %d-%d 型別應為「%s」，實際為「%s」" % [code, r + 1, i + 1, exp_type, typ_lbl.text])
+					if _has_forbidden_symbols_or_emoji(typ_lbl.text):
+						_fail("[%s] 關卡 %d-%d 型別含禁止符號或 Emoji: %s" % [code, r + 1, i + 1, typ_lbl.text])
+					if code in ["en", "es"]:
+						if _has_cjk_characters(typ_lbl.text):
+							_fail("[%s] 關卡 %d-%d 型別存在中文殘留: %s" % [code, r + 1, i + 1, typ_lbl.text])
 
 				# 確保資料表本體仍未被污染
 				if str(MobileLobby.REGION_STAGES[r][i]["name"]) != raw_name:

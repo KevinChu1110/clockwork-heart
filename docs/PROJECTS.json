@@ -1806,8 +1806,8 @@
    "id": "mk-fb-week18",
    "cat": "行銷",
    "title": "📣 第十八週 FB 排程草案規劃",
-   "status": "開發中",
-   "note": "Day 4 已發布，第十八週排程全數完成",
+   "status": "已上線",
+   "note": "第十八週四則貼文排程發布全數完成",
    "keys": [
     "📣 第十八週 F"
    ]
@@ -5300,8 +5300,8 @@
    "id": "lobby-sky-kingdom",
    "cat": "遊戲",
    "title": "大廳主介面視覺全面精緻化（天空王國背景、512高清紙娃娃與果凍按鈕）",
-   "status": "測試中",
-   "note": "完成天空王國背景切換、中央角色串接512即時紙娃娃、果凍厚底按鈕，MOBILE_LOBBY_OK測試通過並產出驗證截圖，提交審查",
+   "status": "已上線",
+   "note": "t_73fa2689 sideqa 審查通過已上線",
    "keys": [
     "大廳主介面視覺全"
    ]
@@ -5310,8 +5310,8 @@
    "id": "soul-summon-polish",
    "cat": "遊戲",
    "title": "聚魂殿堂抽卡召喚視覺精緻化（發條儀式動效與多巴胺十連抽）",
-   "status": "測試中",
-   "note": "已完成自測與截圖，交付測試審查",
+   "status": "已上線",
+   "note": "t_03429be7 sideqa 審查通過已上線",
    "keys": [
     "聚魂殿堂抽卡召喚"
    ]
@@ -5320,8 +5320,8 @@
    "id": "victory-settlement-dopamine",
    "cat": "遊戲",
    "title": "戰鬥勝利結算與部位破壞特寫精緻化",
-   "status": "測試中",
-   "note": "部位破壞頓挫與齒輪噴發完成、結算立體獎牌與齒輪寶箱多巴胺動效完成，測試全綠並產出驗收截圖",
+   "status": "已上線",
+   "note": "t_c21ebe66 sideqa 審查通過已上線",
    "keys": [
     "戰鬥勝利結算與部"
    ]
@@ -5330,8 +5330,8 @@
    "id": "wardrobe-workshop-upgrade",
    "cat": "遊戲",
    "title": "衣櫥換裝與紙娃娃工坊介面精緻化（3D立體木質展示台、部位色階槽位與即時流光）",
-   "status": "測試中",
-   "note": "完成3D立體溫潤木質旋轉展台、七大槽位果凍色階光框與即時流光、金色星芒與金屬齒輪音效回饋，測試全綠並產出驗收截圖",
+   "status": "已上線",
+   "note": "t_28cd1554 sideqa 審查通過已上線",
    "keys": [
     "衣櫥換裝與紙娃娃"
    ]
@@ -5340,8 +5340,8 @@
    "id": "lobby-alive-polish",
    "cat": "遊戲",
    "title": "大廳呼吸感與主角發條微動戳碰反饋",
-   "status": "測試中",
-   "note": "完成浮空島背景上下呼吸浮動、金色微光粒子、背部發條鑰匙獨立微轉半圈與抖動反饋、戳碰果凍擠壓彈跳動效與星芒火花",
+   "status": "已上線",
+   "note": "t_917b4c4c sideqa 審查通過已上線",
    "keys": [
     "大廳呼吸感與主角"
    ]
@@ -5360,8 +5360,8 @@
    "id": "battle-hud-dopamine",
    "cat": "遊戲",
    "title": "戰鬥HUD去PPT化：清除13px以下小字並升級暴怒與攻擊按鈕多巴胺質感",
-   "status": "測試中",
-   "note": "已完成小字拉升至14~18px與果凍厚底按鈕升級，測試全綠，送交 sideqa 審查",
+   "status": "已上線",
+   "note": "t_7a4d8bb1 sideqa 審查通過已上線",
    "keys": [
     "戰鬥HUD去PP"
    ]
@@ -5370,8 +5370,8 @@
    "id": "battle-mobile-ergonomics",
    "cat": "遊戲",
    "title": "開發中",
-   "status": "測試中",
-   "note": "戰鬥HUD手遊人因重構完成：已移除PC 1-8快捷列、Z/X/C與角色頭頂標籤，中央改精簡浮動飄字，右下重構為扇形輪盤自測全綠",
+   "status": "已上線",
+   "note": "t_282af926 sideqa 審查通過已上線",
    "keys": [
     "開發中"
    ]
@@ -5380,8 +5380,8 @@
    "id": "lobby-hierarchy-brass-ui",
    "cat": "遊戲",
    "title": "開發中",
-   "status": "測試中",
-   "note": "完成左側殿堂金屬板件收斂、前往出征微金光呼吸主CTA、全域發條黃銅邊框與厚底果凍重構，測試全綠並送審",
+   "status": "已上線",
+   "note": "t_b81318ae sideqa 審查通過已上線",
    "keys": [
     "開發中"
    ]
@@ -5390,8 +5390,8 @@
    "id": "character-rimlight-shadow",
    "cat": "遊戲",
    "title": "草稿",
-   "status": "測試中",
-   "note": "完成角色RimLight Shader、雙層接地陰影與天宮背景視差/金色星屑粒子，無頭冒煙0報錯，專屬測試全綠，Vision實機截圖驗證通過",
+   "status": "已上線",
+   "note": "t_5b8dc14c sideqa 審查通過已上線",
    "keys": [
     "草稿"
    ]
@@ -5400,8 +5400,8 @@
    "id": "battle-hud-auto-turns",
    "cat": "遊戲",
    "title": "戰鬥HUD去動作化：移除格擋與手動按鈕，改三欄自動換武與戰報",
-   "status": "測試中",
-   "note": "完成戰鬥HUD去動作化與自動換武戰報，無頭測試全綠",
+   "status": "已上線",
+   "note": "t_c5b2eec7 sideqa 審查通過已上線",
    "keys": [
     "戰鬥HUD去動作"
    ]
@@ -5410,8 +5410,8 @@
    "id": "pixel-parallax-bg",
    "cat": "遊戲",
    "title": "大廳與戰鬥背景像素化重製：三層視差天宮與石徑廢墟風格統一",
-   "status": "測試中",
-   "note": "三層視差天宮與石徑廢墟像素底圖實裝完畢，無頭測試全綠，Vision實機驗證通過",
+   "status": "已上線",
+   "note": "t_07ce8628 sideqa 審查通過已上線",
    "keys": [
     "大廳與戰鬥背景像"
    ]
@@ -5420,8 +5420,8 @@
    "id": "combat-prd-shuffle",
    "cat": "遊戲",
    "title": "戰鬥PRD偽隨機超載與部位掉落洗牌袋機制",
-   "status": "測試中",
-   "note": "完成PRD與5-bag洗牌袋實作及1000次模擬無頭測試全綠，待QA小婷審查",
+   "status": "已上線",
+   "note": "t_80899ad4 sideqa 審查通過已上線",
    "keys": [
     "戰鬥PRD偽隨機"
    ]
@@ -5430,8 +5430,8 @@
    "id": "temple-lobby-battle-ruins-hd",
    "cat": "遊戲",
    "title": "大廳古典神殿底圖切換與戰鬥石徑廢墟商業級替換",
-   "status": "開發中",
-   "note": "審核退回：大廳底圖為舊圖 LANCZOS 放大冒充 HD、畫風與角色不統一、右側裝備卡被切；戰鬥底圖通過",
+   "status": "已上線",
+   "note": "由 pixel-parallax-bg (t_07ce8628) 視差重製取代並已上線",
    "keys": [
     "大廳古典神殿底圖"
    ]
@@ -5440,8 +5440,278 @@
    "id": "lobby-weapon-linkage-preview",
    "cat": "遊戲",
    "title": "大廳角色頁三欄武器連動預覽",
-   "status": "測試中",
-   "note": "完成大廳提示卡連動預覽抽共用與自測，待 sideqa 審查",
+   "status": "已上線",
+   "note": "阿翔實作、小婷審查通過：大廳角色頁三欄武器連動即時預覽",
+   "keys": [
+    "大廳角色頁三欄武"
+   ]
+  },
+  {
+   "id": "lobby-winding-key-spin",
+   "cat": "遊戲",
+   "title": "大廳待機背上發條鑰匙要轉",
+   "status": "已上線",
+   "note": "t_96c0e9a0 sideqa 審查通過已上線",
+   "keys": [
+    "大廳待機背上發條"
+   ]
+  },
+  {
+   "id": "lobby-equip-slots-visible",
+   "cat": "遊戲",
+   "title": "大廳右側裝備槽完整可見",
+   "status": "已上線",
+   "note": "t_f523f8fa sideqa 審查通過已上線",
+   "keys": [
+    "大廳右側裝備槽完"
+   ]
+  },
+  {
+   "id": "battle-swap-visible-beat",
+   "cat": "遊戲",
+   "title": "戰鬥換欄那一拍要看得見",
+   "status": "已上線",
+   "note": "t_4f3836fd sideqa 審查通過已上線",
+   "keys": [
+    "戰鬥換欄那一拍要"
+   ]
+  },
+  {
+   "id": "audio-cues-polish",
+   "cat": "遊戲",
+   "title": "音訊架構重構：BGM八首收斂、新增換欄金屬卡榫音效與SFX上限",
+   "status": "已上線",
+   "note": "BGM八首收斂、swap.wav金屬卡榫音效與SFX上限重構已審核通過 (t_7bb91427 done)",
+   "keys": [
+    "音訊架構重構：B"
+   ]
+  },
+  {
+   "id": "wardrobe-toy-families",
+   "cat": "遊戲",
+   "title": "衣櫥玩具家族分頁與發條轉動：下架毛皮種族改四大家族",
+   "status": "已上線",
+   "note": "衣櫥四大家族分頁與背部發條8幀步進轉動已審核通過 (t_e1fe12f1 done)",
+   "keys": [
+    "衣櫥玩具家族分頁"
+   ]
+  },
+  {
+   "id": "battle-hud-auto-cleanup",
+   "cat": "遊戲",
+   "title": "戰鬥自動化收尾：三欄用盡改空手、移除喝藥殘留與木人樁暫停離開",
+   "status": "已上線",
+   "note": "審查通過已上線 (t_764676f5 done)",
+   "keys": [
+    "戰鬥自動化收尾："
+   ]
+  },
+  {
+   "id": "battle-break-slowmo",
+   "cat": "遊戲",
+   "title": "戰鬥部位破壞0.4秒慢動作頓挫與Boss部位將破warn音效整合",
+   "status": "已上線",
+   "note": "審查通過已上線 (t_1a4bca3d done)",
+   "keys": [
+    "戰鬥部位破壞0."
+   ]
+  },
+  {
+   "id": "lobby-idle-vault",
+   "cat": "遊戲",
+   "title": "大廳發條儲能庫放置收益系統（掛機累積與多巴胺領取）",
+   "status": "已上線",
+   "note": "審查通過已上線 (t_29847304 done)",
+   "keys": [
+    "大廳發條儲能庫放"
+   ]
+  },
+  {
+   "id": "combat-overwind-burst",
+   "cat": "遊戲",
+   "title": "戰鬥發條超載爆裂（Overwind Burst）：滿怒全螢幕暗角與齒輪火花特效",
+   "status": "已上線",
+   "note": "滿怒超載爆裂全螢幕暗角震動與齒輪火花特效已過審上線 (t_3767de1f done)",
+   "keys": [
+    "戰鬥發條超載爆裂"
+   ]
+  },
+  {
+   "id": "battle-pre-windup",
+   "cat": "遊戲",
+   "title": "戰前發條上鏈儀式：開戰鑰匙旋轉動效、wind音效與開局戰報",
+   "status": "已上線",
+   "note": "合進主線 (t_96bb1fce)",
+   "keys": [
+    "戰前發條上鏈儀式"
+   ]
+  },
+  {
+   "id": "victory-part-break-badges",
+   "cat": "遊戲",
+   "title": "戰鬥結算部位破壞徽章與多巴胺獎勵入袋演出",
+   "status": "已上線",
+   "note": "合進主線 (t_96bb1fce)",
+   "keys": [
+    "戰鬥結算部位破壞"
+   ]
+  },
+  {
+   "id": "lobby-vault-bubble",
+   "cat": "遊戲",
+   "title": "大廳主畫面發條儲能庫微動氣泡與滿溢提示",
+   "status": "已上線",
+   "note": "合進主線 (t_96bb1fce)",
+   "keys": [
+    "大廳主畫面發條儲"
+   ]
+  },
+  {
+   "id": "victory-drop-core-red-dot",
+   "cat": "遊戲",
+   "title": "戰鬥結算部位掉落機芯直通背包與大廳紅點提示",
+   "status": "已上線",
+   "note": "合進主線 (t_6c455b7d)",
+   "keys": [
+    "戰鬥結算部位掉落"
+   ]
+  },
+  {
+   "id": "skill-panel-dummy-btn",
+   "cat": "遊戲",
+   "title": "武術館灰鬚指點面板加前往木人樁試招快捷按鈕",
+   "status": "已上線",
+   "note": "老周實測無頭測試全綠，功能審查通過，正式部署上線",
+   "keys": [
+    "武術館灰鬚指點面"
+   ]
+  },
+  {
+   "id": "lobby-weapon-slots-live",
+   "cat": "遊戲",
+   "title": "大廳角色頁三欄武器槽連動真實裝備與即時切換預覽",
+   "status": "已上線",
+   "note": "老周與sideqa審查通過，乾淨合併至main上線",
+   "keys": [
+    "大廳角色頁三欄武"
+   ]
+  },
+  {
+   "id": "chest-items-toy-canon",
+   "cat": "遊戲",
+   "title": "探索寶箱消耗品與材料專有名詞玩具世界化轉譯（六語系）",
+   "status": "已上線",
+   "note": "sideqa審查通過，乾淨合併至main上線",
+   "keys": [
+    "探索寶箱消耗品與"
+   ]
+  },
+  {
+   "id": "campaign-stages-toy-canon",
+   "cat": "遊戲",
+   "title": "四區主線出征關卡名與敵人名玩具世界化轉譯（六語系）",
+   "status": "已上線",
+   "note": "sideqa審查通過，乾淨合併至main上線",
+   "keys": [
+    "四區主線出征關卡"
+   ]
+  },
+  {
+   "id": "lobby-skill-dialog-btn",
+   "cat": "遊戲",
+   "title": "大廳角色頁新增『招式心法』入口按鈕連動 SkillDialog",
+   "status": "已上線",
+   "note": "大廳角色頁招式心法按鈕與優先膠囊標籤合進 main，全站回歸驗收通過，實機截圖存證完成",
+   "keys": [
+    "大廳角色頁新增『"
+   ]
+  },
+  {
+   "id": "skill-priority-badge",
+   "cat": "遊戲",
+   "title": "SkillDialog 招式卡片顯示當前出招優先膠囊標籤",
+   "status": "已上線",
+   "note": "SkillDialog 招式卡片出招優先膠囊標籤合進 main，全站回歸驗收通過，實機截圖存證完成",
+   "keys": [
+    "SkillDia"
+   ]
+  },
+  {
+   "id": "skill-upgrade-progress",
+   "cat": "遊戲",
+   "title": "SkillDialog 招式卡片支援熟練度進度條、一鍵突破升階與體悟習得",
+   "status": "已上線",
+   "note": "全站回歸驗收完成，熟練度進度條與一鍵升階實機無破圖 (t_8fe4da3b)",
+   "keys": [
+    "SkillDia"
+   ]
+  },
+  {
+   "id": "skill-dialog-dummy-btn",
+   "cat": "遊戲",
+   "title": "SkillDialog 底欄新增前往木人樁試招按鈕連動大廳",
+   "status": "已上線",
+   "note": "全站回歸驗收完成，底欄前往木人樁試招按鈕與大廳連動實機無破圖 (t_8fe4da3b)",
+   "keys": [
+    "SkillDia"
+   ]
+  },
+  {
+   "id": "skill-custom-priority",
+   "cat": "遊戲",
+   "title": "SkillDialog 招式卡片支援點擊設為首選並連動戰鬥首發出招",
+   "status": "已上線",
+   "note": "SkillDialog 招式卡片支援點擊設為首選並連動戰鬥首發出招主線全站回歸驗收通過",
+   "keys": [
+    "SkillDia"
+   ]
+  },
+  {
+   "id": "dummy-retry-btn",
+   "cat": "遊戲",
+   "title": "DummySettlementDialog 試招結算新增再次試招按鈕",
+   "status": "已上線",
+   "note": "合進主線 (t_8aaa9d27)",
+   "keys": [
+    "DummySet"
+   ]
+  },
+  {
+   "id": "dummy-dps-record",
+   "cat": "遊戲",
+   "title": "DummySettlementDialog 歷史最佳 DPS 紀錄與新紀錄徽章",
+   "status": "已上線",
+   "note": "sideqa 審查通過，合進主線",
+   "keys": [
+    "DummySet"
+   ]
+  },
+  {
+   "id": "dummy-combat-stats",
+   "cat": "遊戲",
+   "title": "木人樁試招結算最高單擊與總命中統計",
+   "status": "已上線",
+   "note": "木人樁最高單擊與總命中統計合進主線 (t_41fb15db)",
+   "keys": [
+    "木人樁試招結算最"
+   ]
+  },
+  {
+   "id": "dummy-weapon-contribution",
+   "cat": "遊戲",
+   "title": "木人樁試招結算三欄武器輪替次數與傷害貢獻統計",
+   "status": "已上線",
+   "note": "木人樁三欄武器傷害統計與輪替次數合進主線 (t_8f9d6203)",
+   "keys": [
+    "木人樁試招結算三"
+   ]
+  },
+  {
+   "id": "lobby-weapon-swap-dialog",
+   "cat": "遊戲",
+   "title": "大廳角色頁三欄武器槽新增更換裝備彈窗連動武器庫",
+   "status": "已上線",
+   "note": "大廳角色頁三欄武器槽更換裝備彈窗合進主線 (t_a53d6368)",
    "keys": [
     "大廳角色頁三欄武"
    ]

@@ -11,6 +11,7 @@ extends Control
 ## 7. 六語系多國語言支援 (ContentLoc / Loc.locale_changed 即時切換)。
 
 signal closed()
+signal practice_dummy_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -57,6 +58,7 @@ var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _sub_title_lbl: Label
 var _close_x_btn: Button
+var _dummy_btn: Button
 var _bottom_close_btn: Button
 
 ## 戰鬥優先區塊
@@ -64,6 +66,8 @@ var _priority_card: PanelContainer
 var _prio_title_lbl: Label
 var _prio_normal_lbl: Label
 var _prio_panic_lbl: Label
+var _kit_normal: Dictionary = {}
+var _kit_panic: Dictionary = {}
 
 ## 職業切換 Tab
 var _tab_row: HBoxContainer
@@ -200,7 +204,7 @@ func _build_ui() -> void:
 
 	_sub_title_lbl = Label.new()
 	_sub_title_lbl.name = "SubTitleLabel"
-	_apply_font(_sub_title_lbl, 13, COLOR_TEXT_MUTED)
+	_apply_font(_sub_title_lbl, 14, COLOR_TEXT_MUTED)
 	title_box.add_child(_sub_title_lbl)
 
 	_close_x_btn = Button.new()
@@ -275,15 +279,31 @@ func _build_ui() -> void:
 	_skill_cards_box.add_theme_constant_override("separation", 10)
 	_scroll_box.add_child(_skill_cards_box)
 
-	# 7. 底部關閉按鈕
+	# 7. 底部控制列（左側：前往木人樁試招，右側：關閉）
 	var bot_h := HBoxContainer.new()
-	bot_h.alignment = BoxContainer.ALIGNMENT_END
+	bot_h.name = "BottomBar"
+	bot_h.alignment = BoxContainer.ALIGNMENT_BEGIN
 	root_v.add_child(bot_h)
 
+	# 左側天藍立體果凍『前往木人樁試招』按鈕（高50px、熱區>=48px、圓角18px、底邊厚底5px）
+	_dummy_btn = Button.new()
+	_dummy_btn.name = "BtnPracticeDummy"
+	_dummy_btn.custom_minimum_size = Vector2(210, 50)
+	_style_jelly_btn(_dummy_btn, COLOR_SKY, COLOR_TEXT_DARK, 16, 5, 18)
+	_dummy_btn.pressed.connect(_on_practice_dummy_pressed)
+	bot_h.add_child(_dummy_btn)
+
+	# 彈性間隔撐開左右分列
+	var bot_spacer := Control.new()
+	bot_spacer.name = "BottomSpacer"
+	bot_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bot_h.add_child(bot_spacer)
+
+	# 右側保留既有暖橘『關閉』果凍按鈕（高50px、圓角18px、底邊厚底5px）
 	_bottom_close_btn = Button.new()
 	_bottom_close_btn.name = "BtnCloseBottom"
 	_bottom_close_btn.custom_minimum_size = Vector2(140, 50)
-	_style_jelly_btn(_bottom_close_btn, COLOR_CARD_WARM, COLOR_TEXT_DARK, 16, 5)
+	_style_jelly_btn(_bottom_close_btn, COLOR_ORANGE, COLOR_TEXT_DARK, 16, 5, 18)
 	_bottom_close_btn.pressed.connect(_on_close_pressed)
 	bot_h.add_child(_bottom_close_btn)
 
@@ -292,6 +312,11 @@ func _select_profession(prof_key: String) -> void:
 	if prof_key != _selected_prof:
 		_selected_prof = prof_key
 		_refresh_display()
+
+
+func _on_practice_dummy_pressed() -> void:
+	practice_dummy_requested.emit()
+	_on_close_pressed()
 
 
 func _on_close_pressed() -> void:
@@ -306,6 +331,8 @@ func _update_ui_texts() -> void:
 		_sub_title_lbl.text = _t("鐵匠養器 · 星途養魂 · 旅途養招 · 出招隨裝備武器流轉")
 	if _close_x_btn:
 		_close_x_btn.text = "✕"
+	if _dummy_btn:
+		_dummy_btn.text = _t("前往木人樁試招")
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("關閉")
 
@@ -328,10 +355,10 @@ func _refresh_display() -> void:
 		return
 
 	# 1. 更新戰鬥優先資訊
-	var kit_full: Dictionary = sk.pick_battle_skill(1.0)
-	var kit_panic: Dictionary = sk.pick_battle_skill(0.35)
-	var normal_name: String = str(kit_full.get("name", "—"))
-	var panic_name: String = str(kit_panic.get("name", "—"))
+	_kit_normal = sk.pick_battle_skill(1.0)
+	_kit_panic = sk.pick_battle_skill(0.35)
+	var normal_name: String = str(_kit_normal.get("name", "—"))
+	var panic_name: String = str(_kit_panic.get("name", "—"))
 
 	if _prio_normal_lbl:
 		_prio_normal_lbl.text = _t("平常出招：%s") % normal_name
@@ -371,7 +398,109 @@ func _refresh_display() -> void:
 			_skill_cards_box.add_child(card)
 
 
+class PriorityBadge extends PanelContainer:
+	var label: Label
+	var text: String:
+		get:
+			if label != null:
+				return label.text
+			var l = get_node_or_null("BadgeLabel") as Label
+			return l.text if l != null else ""
+		set(v):
+			if label != null:
+				label.text = v
+			var l = get_node_or_null("BadgeLabel") as Label
+			if l != null:
+				l.text = v
+
+
+func _create_priority_badge(bg_col: Color, text_col: Color, text_str: String) -> PriorityBadge:
+	var badge := PriorityBadge.new()
+	badge.name = "PriorityBadge"
+	badge.mouse_filter = Control.MOUSE_FILTER_PASS
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg_col
+	sb.set_corner_radius_all(12)
+	sb.content_margin_left = 6
+	sb.content_margin_right = 6
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	badge.add_theme_stylebox_override("panel", sb)
+
+	var lbl := Label.new()
+	lbl.name = "BadgeLabel"
+	lbl.text = text_str
+	_apply_font(lbl, 13, text_col, true)
+	badge.label = lbl
+	badge.add_child(lbl)
+
+	badge.set_meta("badge_type", "normal" if text_col == COLOR_TEXT_GOLD else "panic")
+	badge.set_meta("text", text_str)
+	badge.set_meta("bg_color", bg_col)
+	badge.set_meta("font_color", text_col)
+
+	return badge
+
+
+class MaxBadge extends PanelContainer:
+	var label: Label
+	var text: String:
+		get:
+			if label != null:
+				return label.text
+			var l = get_node_or_null("BadgeLabel") as Label
+			return l.text if l != null else ""
+		set(v):
+			if label != null:
+				label.text = v
+			var l = get_node_or_null("BadgeLabel") as Label
+			if l != null:
+				l.text = v
+
+
+func _create_max_badge(text_str: String) -> MaxBadge:
+	var badge := MaxBadge.new()
+	badge.name = "MaxBadge"
+	badge.mouse_filter = Control.MOUSE_FILTER_PASS
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = COLOR_CARD_GOLD
+	sb.border_color = COLOR_GOLD
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 3
+	sb.set_corner_radius_all(12)
+	sb.content_margin_left = 8
+	sb.content_margin_right = 8
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	badge.add_theme_stylebox_override("panel", sb)
+
+	var lbl := Label.new()
+	lbl.name = "BadgeLabel"
+	lbl.text = text_str
+	_apply_font(lbl, 14, COLOR_TEXT_GOLD, true)
+	badge.label = lbl
+	badge.add_child(lbl)
+
+	badge.set_meta("text", text_str)
+	badge.set_meta("bg_color", COLOR_CARD_GOLD)
+	badge.set_meta("font_color", COLOR_TEXT_GOLD)
+	return badge
+
+
 func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContainer:
+	if _kit_normal.is_empty() and sk != null and sk.has_method("pick_battle_skill"):
+		_kit_normal = sk.pick_battle_skill(1.0)
+	if _kit_panic.is_empty() and sk != null and sk.has_method("pick_battle_skill"):
+		_kit_panic = sk.pick_battle_skill(0.35)
+
+	var normal_sid := str(_kit_normal.get("id", ""))
+	var panic_sid := str(_kit_panic.get("id", ""))
+	var panic_kind := str(_kit_panic.get("kind", ""))
+	var is_normal: bool = (sid != "" and sid == normal_sid)
+	var is_panic: bool = (sid != "" and sid == panic_sid and (panic_kind == "heal" or sid != normal_sid))
+
 	var loc_d: Dictionary = sk.def_of(sid)
 	var s_name := str(loc_d.get("name", str(raw_d.get("name", sid))))
 	var s_desc := str(loc_d.get("desc", str(raw_d.get("desc", ""))))
@@ -402,11 +531,19 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 	csb.content_margin_bottom = 10
 	card.add_theme_stylebox_override("panel", csb)
 
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 6)
-	card.add_child(vbox)
+	var card_h := HBoxContainer.new()
+	card_h.name = "CardHBox"
+	card_h.add_theme_constant_override("separation", 14)
+	card_h.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.add_child(card_h)
 
-	# 頂行：招式名稱 + 階位標籤
+	var vbox := VBoxContainer.new()
+	vbox.name = "InfoVBox"
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.add_theme_constant_override("separation", 6)
+	card_h.add_child(vbox)
+
+	# 頂行：招式名稱 + 優先出招標籤 + 階位標籤/金色極階標籤
 	var top_row := HBoxContainer.new()
 	top_row.add_theme_constant_override("separation", 10)
 	vbox.add_child(top_row)
@@ -418,30 +555,34 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top_row.add_child(name_lbl)
 
-	var status_lbl := Label.new()
-	status_lbl.name = "SkillStatus"
-	if not is_learned:
-		if is_unlocked:
-			status_lbl.text = _t("可體悟")
-			_apply_font(status_lbl, 13, COLOR_TEXT_GOLD, true)
-		else:
-			status_lbl.text = _t("未解鎖")
-			_apply_font(status_lbl, 13, COLOR_TEXT_DIM)
-	elif slv >= sk.MAX_LV:
-		status_lbl.text = _t("Lv.%d · 極階") % slv
-		_apply_font(status_lbl, 13, COLOR_TEXT_ORANGE, true)
-	else:
-		status_lbl.text = "Lv.%d" % slv
-		_apply_font(status_lbl, 13, COLOR_TEXT_DARK, true)
-	top_row.add_child(status_lbl)
+	var prio_badge: PriorityBadge = null
+	if is_normal:
+		prio_badge = _create_priority_badge(COLOR_CARD_GOLD, COLOR_TEXT_GOLD, _t("平常首發"))
+		top_row.add_child(prio_badge)
+	elif is_panic:
+		prio_badge = _create_priority_badge(COLOR_CARD_SKY, COLOR_SKY, _t("危急應急"))
+		top_row.add_child(prio_badge)
 
-	# 熟練度文字
-	if is_learned and slv < sk.MAX_LV:
-		var m_lbl := Label.new()
-		m_lbl.name = "MasteryLabel"
-		m_lbl.text = _t("熟練 %d/%d") % [cur_m, need_m]
-		_apply_font(m_lbl, 13, COLOR_TEXT_MUTED)
-		top_row.add_child(m_lbl)
+	var status_lbl: Label = null
+	var max_badge: MaxBadge = null
+	if slv >= sk.MAX_LV:
+		max_badge = _create_max_badge(_t("Lv.MAX · 極階"))
+		top_row.add_child(max_badge)
+		status_lbl = max_badge.label
+	else:
+		status_lbl = Label.new()
+		status_lbl.name = "SkillStatus"
+		if not is_learned:
+			if is_unlocked:
+				status_lbl.text = _t("可體悟")
+				_apply_font(status_lbl, 14, COLOR_TEXT_GOLD, true)
+			else:
+				status_lbl.text = _t("未解鎖")
+				_apply_font(status_lbl, 14, COLOR_TEXT_DIM)
+		else:
+			status_lbl.text = "Lv.%d" % slv
+			_apply_font(status_lbl, 14, COLOR_TEXT_DARK, true)
+		top_row.add_child(status_lbl)
 
 	# 說明行
 	var desc_lbl := Label.new()
@@ -451,6 +592,50 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 	_apply_font(desc_lbl, 14, COLOR_TEXT_DARK)
 	vbox.add_child(desc_lbl)
 
+	# 熟練度進度條 (已習得招式)
+	var progress_bar: ProgressBar = null
+	var mastery_lbl: Label = null
+	if is_learned:
+		var prog_row := HBoxContainer.new()
+		prog_row.name = "ProgressRow"
+		prog_row.add_theme_constant_override("separation", 10)
+		prog_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		vbox.add_child(prog_row)
+
+		progress_bar = ProgressBar.new()
+		progress_bar.name = "MasteryProgressBar"
+		progress_bar.custom_minimum_size = Vector2(0, 8)
+		progress_bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		progress_bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		progress_bar.show_percentage = false
+		progress_bar.min_value = 0.0
+
+		var pb_bg := StyleBoxFlat.new()
+		pb_bg.bg_color = Color("#E5E0D5")
+		pb_bg.set_corner_radius_all(4)
+		progress_bar.add_theme_stylebox_override("background", pb_bg)
+
+		var pb_fill := StyleBoxFlat.new()
+		pb_fill.bg_color = COLOR_MINT
+		pb_fill.set_corner_radius_all(4)
+		progress_bar.add_theme_stylebox_override("fill", pb_fill)
+
+		mastery_lbl = Label.new()
+		mastery_lbl.name = "MasteryLabel"
+		_apply_font(mastery_lbl, 14, COLOR_TEXT_MUTED, true)
+
+		if slv >= sk.MAX_LV:
+			progress_bar.max_value = 1.0
+			progress_bar.value = 1.0
+			mastery_lbl.text = _t("熟練度 100% · 滿階")
+		else:
+			progress_bar.max_value = float(maxi(1, need_m))
+			progress_bar.value = float(mini(cur_m, need_m))
+			mastery_lbl.text = _t("熟練 %d/%d") % [cur_m, need_m]
+
+		prog_row.add_child(progress_bar)
+		prog_row.add_child(mastery_lbl)
+
 	# 下級預覽句（若已習得且未滿級）
 	var preview_lbl: Label = null
 	if is_learned and slv < sk.MAX_LV:
@@ -459,7 +644,7 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 		preview_lbl = Label.new()
 		preview_lbl.name = "SkillPreview"
 		preview_lbl.text = _t("下級預覽：%s") % preview
-		_apply_font(preview_lbl, 13, COLOR_TEXT_GOLD)
+		_apply_font(preview_lbl, 14, COLOR_TEXT_GOLD)
 		vbox.add_child(preview_lbl)
 
 	# 解鎖提示（若未習得）
@@ -468,8 +653,62 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 		hint_lbl = Label.new()
 		hint_lbl.name = "SkillHint"
 		hint_lbl.text = _t("解鎖條件：%s") % s_unlock
-		_apply_font(hint_lbl, 13, COLOR_TEXT_MUTED)
+		_apply_font(hint_lbl, 14, COLOR_TEXT_MUTED)
 		vbox.add_child(hint_lbl)
+
+	# 右側操作按鈕：『設為首發』/『已設首發』、『突破升階』或『體悟習得』
+	var pref_btn: Button = null
+	var upgrade_btn: Button = null
+	var unlock_btn: Button = null
+	var can_lvl: bool = is_learned and sk != null and sk.can_level_up(sid) and slv < sk.MAX_LV
+	var can_unlk: bool = (not is_learned) and is_unlocked
+	var is_attack: bool = str(raw_d.get("kind", "")) == "attack"
+
+	var actions_box := HBoxContainer.new()
+	actions_box.name = "ActionsHBox"
+	actions_box.add_theme_constant_override("separation", 8)
+	actions_box.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+
+	if is_learned and is_attack:
+		pref_btn = Button.new()
+		pref_btn.name = "BtnSetPreferred"
+		pref_btn.custom_minimum_size = Vector2(104, 48)
+		pref_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		var wline := str(raw_d.get("line", ""))
+		var pref_id: String = str(sk.get_preferred_skill(wline)) if sk != null and sk.has_method("get_preferred_skill") else ""
+		var is_pref_active := (pref_id == sid) or (pref_id == "" and is_normal)
+		if is_pref_active:
+			pref_btn.text = _t("已設首發")
+			_style_jelly_btn(pref_btn, COLOR_CARD_GOLD, COLOR_TEXT_GOLD, 15, 4)
+		else:
+			pref_btn.text = _t("設為首發")
+			_style_jelly_btn(pref_btn, COLOR_CARD_WARM, COLOR_TEXT_DARK, 15, 4)
+		pref_btn.pressed.connect(func(): _on_toggle_preferred_skill(sid, wline, is_pref_active))
+		actions_box.add_child(pref_btn)
+
+	if can_lvl:
+		upgrade_btn = Button.new()
+		upgrade_btn.name = "BtnLevelUp"
+		upgrade_btn.text = _t("突破升階")
+		upgrade_btn.custom_minimum_size = Vector2(104, 48)
+		upgrade_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		_style_jelly_btn(upgrade_btn, COLOR_ORANGE, COLOR_TEXT_DARK, 15, 4)
+		upgrade_btn.pressed.connect(func(): _on_skill_level_up(sid))
+		actions_box.add_child(upgrade_btn)
+	elif can_unlk:
+		unlock_btn = Button.new()
+		unlock_btn.name = "BtnUnlock"
+		unlock_btn.text = _t("體悟習得")
+		unlock_btn.custom_minimum_size = Vector2(104, 48)
+		unlock_btn.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+		_style_jelly_btn(unlock_btn, COLOR_MINT, COLOR_TEXT_DARK, 15, 4)
+		unlock_btn.pressed.connect(func(): _on_skill_unlock(sid))
+		actions_box.add_child(unlock_btn)
+
+	if actions_box.get_child_count() > 0:
+		card_h.add_child(actions_box)
+	else:
+		actions_box.queue_free()
 
 	_card_nodes[sid] = {
 		"card": card,
@@ -478,9 +717,57 @@ func _build_skill_card(sid: String, raw_d: Dictionary, sk: Node) -> PanelContain
 		"desc": desc_lbl,
 		"preview": preview_lbl,
 		"hint": hint_lbl,
+		"priority_badge": prio_badge,
+		"max_badge": max_badge,
+		"progress_bar": progress_bar,
+		"mastery_label": mastery_lbl,
+		"upgrade_btn": upgrade_btn,
+		"unlock_btn": unlock_btn,
+		"preferred_btn": pref_btn,
 	}
 
 	return card
+
+
+func _on_toggle_preferred_skill(sid: String, wline: String, _is_pref_active: bool) -> void:
+	var sk := _get_skill_system()
+	if sk == null:
+		return
+	var pref_id: String = str(sk.get_preferred_skill(wline)) if sk.has_method("get_preferred_skill") else ""
+	if pref_id == sid:
+		if sk.has_method("clear_preferred_skill"):
+			sk.call("clear_preferred_skill", wline)
+	else:
+		if sk.has_method("set_preferred_skill"):
+			sk.call("set_preferred_skill", sid, wline)
+	_play_action_sfx()
+	_refresh_display()
+
+
+func _on_skill_level_up(sid: String) -> void:
+	var sk := _get_skill_system()
+	if sk != null and sk.has_method("try_level_up"):
+		var ok: bool = bool(sk.call("try_level_up", sid))
+		if ok:
+			_play_action_sfx()
+			_refresh_display()
+
+
+func _on_skill_unlock(sid: String) -> void:
+	var sk := _get_skill_system()
+	if sk != null and sk.has_method("try_unlock"):
+		var ok: bool = bool(sk.call("try_unlock", sid))
+		if ok:
+			_play_action_sfx()
+			_refresh_display()
+
+
+func _play_action_sfx() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var am = (loop as SceneTree).root.get_node_or_null("AudioManager")
+		if am != null and am.has_method("play"):
+			am.call("play", "clock", 1.25, -2.0)
 
 
 func _weapon_label(wid: String) -> String:
@@ -517,7 +804,7 @@ func _apply_font(lbl: Label, size: int, color: Color, bold: bool = false) -> voi
 		lbl.add_theme_constant_override("outline_size", 2)
 
 
-func _style_jelly_btn(btn: Button, bg_col: Color, text_col: Color, font_sz: int, bottom_border: int = 5) -> void:
+func _style_jelly_btn(btn: Button, bg_col: Color, text_col: Color, font_sz: int, bottom_border: int = 5, corner_radius: int = 16) -> void:
 	if _cached_font != null:
 		btn.add_theme_font_override("font", _cached_font)
 	btn.add_theme_font_size_override("font_size", font_sz)
@@ -532,7 +819,7 @@ func _style_jelly_btn(btn: Button, bg_col: Color, text_col: Color, font_sz: int,
 	sb.border_color = COLOR_BORDER
 	sb.set_border_width_all(2)
 	sb.border_width_bottom = bottom_border
-	sb.set_corner_radius_all(16)
+	sb.set_corner_radius_all(corner_radius)
 	sb.content_margin_left = 12
 	sb.content_margin_right = 12
 	sb.content_margin_top = 6
@@ -556,6 +843,12 @@ func _style_jelly_btn(btn: Button, bg_col: Color, text_col: Color, font_sz: int,
 
 
 ## ── 供單元測試與自動化驗證的查詢 API ──
+func get_practice_dummy_button() -> Button:
+	return _dummy_btn
+
+
+func get_bottom_close_button() -> Button:
+	return _bottom_close_btn
 func get_skill_card(sid: String) -> PanelContainer:
 	if _card_nodes.has(sid):
 		return _card_nodes[sid].get("card")
@@ -586,5 +879,103 @@ func get_skill_preview_text(sid: String) -> String:
 	return ""
 
 
+func get_skill_priority_badge(sid: String) -> Control:
+	if _card_nodes.has(sid):
+		return _card_nodes[sid].get("priority_badge", null)
+	return null
+
+
+func get_skill_priority_badge_text(sid: String) -> String:
+	var b = get_skill_priority_badge(sid)
+	if b == null:
+		return ""
+	if "text" in b:
+		return str(b.text)
+	var lbl: Label = b.find_child("BadgeLabel", true, false) as Label
+	if lbl:
+		return lbl.text
+	return ""
+
+
+func get_prio_normal_text() -> String:
+	return _prio_normal_lbl.text if _prio_normal_lbl else ""
+
+
+func get_prio_panic_text() -> String:
+	return _prio_panic_lbl.text if _prio_panic_lbl else ""
+
+
 func get_title_text() -> String:
 	return _title_lbl.text if _title_lbl else ""
+
+
+func get_skill_progress_bar(sid: String) -> ProgressBar:
+	if _card_nodes.has(sid):
+		return _card_nodes[sid].get("progress_bar") as ProgressBar
+	return null
+
+
+func get_skill_progress_ratio(sid: String) -> float:
+	var pb = get_skill_progress_bar(sid)
+	if pb and pb.max_value > pb.min_value:
+		return float(pb.value - pb.min_value) / float(pb.max_value - pb.min_value)
+	return 0.0
+
+
+func get_skill_upgrade_btn(sid: String) -> Button:
+	if _card_nodes.has(sid):
+		return _card_nodes[sid].get("upgrade_btn") as Button
+	return null
+
+
+func get_skill_unlock_btn(sid: String) -> Button:
+	if _card_nodes.has(sid):
+		return _card_nodes[sid].get("unlock_btn") as Button
+	return null
+
+
+func get_skill_preferred_btn(sid: String) -> Button:
+	if _card_nodes.has(sid):
+		return _card_nodes[sid].get("preferred_btn") as Button
+	return null
+
+
+func get_skill_preferred_btn_text(sid: String) -> String:
+	var b := get_skill_preferred_btn(sid)
+	if b != null:
+		return b.text
+	return ""
+
+
+func get_skill_max_badge(sid: String) -> Control:
+	if _card_nodes.has(sid):
+		return _card_nodes[sid].get("max_badge") as Control
+	return null
+
+
+func get_skill_max_badge_text(sid: String) -> String:
+	var b = get_skill_max_badge(sid)
+	if b == null:
+		return ""
+	if "text" in b:
+		return str(b.text)
+	var lbl: Label = b.find_child("BadgeLabel", true, false) as Label
+	if lbl:
+		return lbl.text
+	return ""
+
+
+func get_skill_status_text(sid: String) -> String:
+	if _card_nodes.has(sid):
+		var s = _card_nodes[sid].get("status")
+		if s is Label:
+			return s.text
+	return ""
+
+
+func get_skill_mastery_text(sid: String) -> String:
+	if _card_nodes.has(sid):
+		var m = _card_nodes[sid].get("mastery_label")
+		if m is Label:
+			return m.text
+	return ""

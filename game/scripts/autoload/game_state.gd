@@ -4,6 +4,7 @@ extends Node
 signal flags_changed(key: String, value: Variant)
 signal gold_changed(amount: int)
 signal chapter_changed(chapter: String)
+signal core_drop_notify_changed(has_new: bool)
 
 ## 存檔版本。改動存檔結構就 +1，並在 save_migration.gd 補一支對應的升級步驟。
 const VERSION := 10
@@ -68,6 +69,7 @@ var weapon_tier: int = 0
 ## 技能（招）
 var skill_slash_lv: int = 0  ## 舊欄位：與 skill_data.slash.lv 同步
 var skill_data: Dictionary = {}  ## id -> {lv, mastery}
+var preferred_skills: Dictionary = {}  ## weapon_line -> preferred skill_id
 var has_wheat_stalk: bool = false
 var wheat_stalk_broken: bool = false
 ## 一次性去廣告買斷旗標（本機已購買狀態）
@@ -104,6 +106,8 @@ var core_slots: Dictionary = {}
 var core_bag: Array = []
 ## 同義別名，支援以 core_inventory 讀寫
 var core_inventory: Array = []
+## 新獲得/掉落機芯部件標記（用於大廳背包/裝備紅點提示）
+var has_new_core_drop: bool = false
 ## 真正多武器欄（原作：升級解鎖更多武器欄；非器魂快捷）
 ## 長度 3；元素＝equip uid 或 ""。equip_slots.weapon 與 active 欄同步。
 var weapon_loadout: Array = ["", "", ""]
@@ -130,6 +134,8 @@ var colossus_daily_entries: int = 3
 var crit_rate: float = 5.0
 var crit_dmg: float = 50.0
 var dmg_variance: float = 0.08
+## 木人樁試招歷史最佳 DPS（float，預設 0.0）
+var best_dummy_dps: float = 0.0
 
 ## 黑焰迴響（NG+ 輕量）：0＝通常；≥1 敵強化層數
 var ng_plus: int = 0
@@ -298,11 +304,32 @@ func ensure_core_slots(default_tier: String = "white") -> void:
 			core_slots[sid] = CsClass.create_part_by_tier(sid, default_tier)
 
 
+func mark_new_core_drop(val: bool = true) -> void:
+	has_new_core_drop = val
+	set_flag("has_new_core_drop", val)
+	core_drop_notify_changed.emit(val)
+
+
+func clear_new_core_drop() -> void:
+	mark_new_core_drop(false)
+
+
+func has_new_core_part() -> bool:
+	return has_new_core_drop or bool(get_flag("has_new_core_drop", false))
+
+
 func add_core_part(part: Dictionary) -> void:
 	if part == null or part.is_empty():
 		return
+	var p_uid := str(part.get("uid", ""))
+	if not p_uid.is_empty():
+		for existing in core_bag:
+			if existing is Dictionary and str(existing.get("uid", "")) == p_uid:
+				mark_new_core_drop(true)
+				return
 	core_bag.append(part.duplicate(true))
 	core_inventory = core_bag
+	mark_new_core_drop(true)
 
 
 func get_core_parts() -> Array:
@@ -627,6 +654,7 @@ func to_dict() -> Dictionary:
 		"weapon_tier": weapon_tier,
 		"skill_slash_lv": skill_slash_lv,
 		"skill_data": skill_data.duplicate(true),
+		"preferred_skills": preferred_skills.duplicate(true),
 		"has_wheat_stalk": has_wheat_stalk,
 		"wheat_stalk_broken": wheat_stalk_broken,
 		"has_removed_ads": has_removed_ads,
@@ -647,6 +675,7 @@ func to_dict() -> Dictionary:
 		"equip_slots": equip_slots.duplicate(true),
 		"core_slots": core_slots.duplicate(true),
 		"core_bag": core_bag.duplicate(true),
+		"has_new_core_drop": has_new_core_drop,
 		"weapon_loadout": weapon_loadout.duplicate(),
 		"weapon_loadout_active": weapon_loadout_active,
 		"gem_bag": gem_bag.duplicate(true),
@@ -663,6 +692,7 @@ func to_dict() -> Dictionary:
 		"crit_rate": crit_rate,
 		"crit_dmg": crit_dmg,
 		"dmg_variance": dmg_variance,
+		"best_dummy_dps": best_dummy_dps,
 	}
 
 
@@ -710,6 +740,7 @@ func from_dict(d: Dictionary) -> void:
 	weapon_tier = int(d.get("weapon_tier", 0))
 	skill_slash_lv = int(d.get("skill_slash_lv", 0))
 	skill_data = _dict_field(d, "skill_data")
+	preferred_skills = _dict_field(d, "preferred_skills")
 	if skill_data.is_empty() and skill_slash_lv > 0:
 		skill_data["slash"] = {"lv": skill_slash_lv, "mastery": 0}
 	has_wheat_stalk = bool(d.get("has_wheat_stalk", false))
@@ -741,6 +772,7 @@ func from_dict(d: Dictionary) -> void:
 	core_slots = _dict_field(d, "core_slots", {})
 	core_bag = _array_field(d, "core_bag", [])
 	core_inventory = core_bag
+	has_new_core_drop = bool(d.get("has_new_core_drop", false))
 	weapon_loadout = _array_field(d, "weapon_loadout", ["", "", ""])
 	## 只補不截：截斷會讓 round-trip 測試／手動加長陣列靜默丟資料；玩法層 _ensure 再用前 3 格
 	while weapon_loadout.size() < 3:
@@ -760,6 +792,7 @@ func from_dict(d: Dictionary) -> void:
 	crit_rate = float(d.get("crit_rate", 5.0))
 	crit_dmg = float(d.get("crit_dmg", 50.0))
 	dmg_variance = float(d.get("dmg_variance", 0.08))
+	best_dummy_dps = float(d.get("best_dummy_dps", 0.0))
 
 
 ## 八族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
@@ -944,10 +977,12 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"weapon_tier": 0,
 		"skill_slash_lv": 0,
 		"skill_data": {},
+		"preferred_skills": {},
 		"has_wheat_stalk": false,
 		"wheat_stalk_broken": false,
 		"has_removed_ads": false,
 		"forge_fail_streak": 0,
+		"has_new_core_drop": false,
 		"ng_plus": 0,
 		"stain_flame": false,
 		"stardust": 0,
@@ -960,6 +995,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"colossus_daily_entries": 3,
 		"current_expedition_stage": "",
 		"current_suggest_lv": 0,
+		"best_dummy_dps": 0.0,
 		"inventory": {},
 		"hotbar": ["", "", "", "", "", "", "", ""],
 		"ui_layout": {},
