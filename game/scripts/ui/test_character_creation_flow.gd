@@ -118,9 +118,19 @@ func _run_test_suite() -> void:
 		_assert(p_body != null, "戰鬥畫面中 PlayerBody 節點存在 (%s)" % r)
 		if p_body != null:
 			var starter_weapon := str(GameState.RACE_STARTER_WEAPONS.get(r, ""))
-			var expected_tex: Texture2D = SpriteDB.player_equipped_idle(r, {"weapon": starter_weapon})
+			var starter_slots := {"weapon": starter_weapon}
+			## 戰前上鏈儀式（f2188745）之後，戰鬥立繪改成「素體＋鑰匙分層」：
+			## PlayerBody 是不含鑰匙的合成圖，鑰匙畫在子節點 HeroWindingKey 上轉動。
+			## 兩條路徑都必須是本族＋開局武器的合成（#72：鑰匙分層曾漏掉武器）。
+			var k_layer := p_body.get_node_or_null("HeroWindingKey") as TextureRect
+			var layered := k_layer != null and k_layer.get_node_or_null("WindingKeyAnimator") != null
+			var expected_tex: Texture2D
+			if layered:
+				expected_tex = WindingKeyAnimator.build_body_texture_no_key(r, starter_slots)
+			else:
+				expected_tex = SpriteDB.player_equipped_idle(r, starter_slots)
 			_assert(p_body.texture != null, "戰鬥畫面中 PlayerBody.texture 不為 null (%s)" % r)
-			_assert(p_body.texture == expected_tex, "戰鬥畫面中 PlayerBody.texture 精確使用 %s 族開局裝備素體" % r)
+			_assert(p_body.texture == expected_tex, "戰鬥畫面中 PlayerBody.texture 精確使用 %s 族開局裝備素體（%s）" % [r, "鑰匙分層" if layered else "整張合成"])
 
 		battle_node.queue_free()
 
