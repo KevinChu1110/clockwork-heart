@@ -75,6 +75,7 @@ var _saves_ui: RefCounted  ## SaveSlotsPanel
 var _toast: Label
 var _current: Screen = Screen.TITLE
 var _battle_mode: String = "wolf"
+var _defeat_gear_up_requested: bool = false
 var _pre_dummy_hp: int = -1
 var _after_dialogue: Callable = Callable()
 var _paused: bool = false
@@ -4214,7 +4215,10 @@ func _start_battle_raw(mode: String) -> void:
 		battle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		battle.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		host.add_child(battle)
+		_defeat_gear_up_requested = false
 		battle.battle_finished.connect(_on_battle_finished)
+		if battle.has_signal("gear_up_requested"):
+			battle.connect("gear_up_requested", func(): _defeat_gear_up_requested = true)
 		battle.setup(mode)
 		_refresh_hud()
 		return
@@ -4248,12 +4252,27 @@ func _start_battle_raw(mode: String) -> void:
 	battle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	battle.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	host.add_child(battle)
+	_defeat_gear_up_requested = false
 	battle.battle_finished.connect(_on_battle_finished)
+	if battle.has_signal("gear_up_requested"):
+		battle.connect("gear_up_requested", func(): _defeat_gear_up_requested = true)
 	battle.setup(mode)
 	_refresh_hud()
 
 
 func _on_battle_finished(won: bool) -> void:
+	if not won and _defeat_gear_up_requested:
+		_defeat_gear_up_requested = false
+		SaveManager.save_game()
+		_explore_play_pose("hit", 0.5)
+		if _battle_mode != "pvp_snap":
+			var ref: Dictionary = EnergySystem.refund_on_defeat(_battle_mode)
+			var ref_n := int(ref.get("refunded", 0))
+			if ref_n > 0:
+				GameLog.combat(_t("戰鬥失敗：返還能量 %d 點") % ref_n)
+				ui_toast(_t("戰鬥失敗：返還能量 %d 點（現有 %d／%d）") % [ref_n, EnergySystem.current(), EnergySystem.MAX_ENERGY])
+		_go_mobile_lobby(1)
+		return
 	if _battle_mode == "training_dummy":
 		if _pre_dummy_hp > 0:
 			GameState.hp = _pre_dummy_hp

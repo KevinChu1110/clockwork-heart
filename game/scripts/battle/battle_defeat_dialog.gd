@@ -12,6 +12,7 @@ extends Control
 
 signal revive_selected()
 signal give_up_selected()
+signal gear_up_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -44,14 +45,29 @@ var _hint_lbl: Label
 var _tip_lbl: Label
 var _part_hint_lbl: Label
 var _revive_btn: Button
+var _gear_up_btn: Button
 var _give_up_btn: Button
 var _cached_font: Font = null
 var _mode: String = ""
 var _part_name: String = ""
 var _is_built: bool = false
 
+var _diagnostic_card: PanelContainer
+var _diag_title_lbl: Label
+var _diag_capsules_container: HBoxContainer
+var _capsule_weapon: PanelContainer
+var _capsule_weapon_tag: Label
+var _capsule_weapon_text: Label
+var _capsule_affix: PanelContainer
+var _capsule_affix_tag: Label
+var _capsule_affix_text: Label
+var _capsule_skill: PanelContainer
+var _capsule_skill_tag: Label
+var _capsule_skill_text: Label
+
 var _on_revive: Callable = Callable()
 var _on_give_up: Callable = Callable()
+var _on_gear_up: Callable = Callable()
 
 
 func _enter_tree() -> void:
@@ -88,23 +104,40 @@ func _update_ui_texts() -> void:
 		_title_lbl.text = _t("戰鬥失敗")
 	if _sub_lbl and is_instance_valid(_sub_lbl):
 		_sub_lbl.text = _t("發條動能耗盡，齒輪暫時停擺！")
+	if _diag_title_lbl and is_instance_valid(_diag_title_lbl):
+		_diag_title_lbl.text = _t("戰力診斷")
+	if _capsule_weapon_tag and is_instance_valid(_capsule_weapon_tag):
+		_capsule_weapon_tag.text = _t("武器階數")
+	if _capsule_weapon_text and is_instance_valid(_capsule_weapon_text):
+		_capsule_weapon_text.text = _t("天宮鐵匠鍛造強化")
+	if _capsule_affix_tag and is_instance_valid(_capsule_affix_tag):
+		_capsule_affix_tag.text = _t("裝備副詞條")
+	if _capsule_affix_text and is_instance_valid(_capsule_affix_text):
+		_capsule_affix_text.text = _t("調整機芯優化屬性")
+	if _capsule_skill_tag and is_instance_valid(_capsule_skill_tag):
+		_capsule_skill_tag.text = _t("招式調整")
+	if _capsule_skill_text and is_instance_valid(_capsule_skill_text):
+		_capsule_skill_text.text = _t("武術館自訂招式順序")
+	if _gear_up_btn and is_instance_valid(_gear_up_btn):
+		_gear_up_btn.text = _t("前往整頓")
 	if _give_up_btn and is_instance_valid(_give_up_btn):
 		_give_up_btn.text = _t("結束戰鬥")
 	_refresh_display()
 
 
-static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "") -> Control:
+static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/battle_defeat_dialog.gd").new()
-	dlg.setup(on_revive, on_give_up, mode, part_name)
+	dlg.setup(on_revive, on_give_up, mode, part_name, on_gear_up)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "") -> void:
+func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable()) -> void:
 	_on_revive = on_revive
 	_on_give_up = on_give_up
 	_mode = mode
 	_part_name = part_name
+	_on_gear_up = on_gear_up
 	if is_inside_tree():
 		_refresh_display()
 
@@ -142,7 +175,7 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "DefeatCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 420)
+	_dialog_card.custom_minimum_size = Vector2(750, 490)
 	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
@@ -228,6 +261,60 @@ func _build_ui() -> void:
 		_hint_lbl.add_theme_font_override("font", _cached_font)
 	dc_v.add_child(_hint_lbl)
 
+	# 戰力診斷卡 (DiagnosticCard)
+	_diagnostic_card = PanelContainer.new()
+	_diagnostic_card.name = "DiagnosticCard"
+	_diagnostic_card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_GOLD, COLOR_BORDER, 2, 4, 18))
+	v.add_child(_diagnostic_card)
+
+	var diag_m := MarginContainer.new()
+	diag_m.add_theme_constant_override("margin_left", 18)
+	diag_m.add_theme_constant_override("margin_right", 18)
+	diag_m.add_theme_constant_override("margin_top", 10)
+	diag_m.add_theme_constant_override("margin_bottom", 12)
+	_diagnostic_card.add_child(diag_m)
+
+	var diag_v := VBoxContainer.new()
+	diag_v.add_theme_constant_override("separation", 8)
+	diag_m.add_child(diag_v)
+
+	_diag_title_lbl = Label.new()
+	_diag_title_lbl.name = "DiagnosticTitleLbl"
+	_diag_title_lbl.text = _t("戰力診斷")
+	_diag_title_lbl.add_theme_font_size_override("font_size", 16)
+	_diag_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_diag_title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_diag_title_lbl.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		_diag_title_lbl.add_theme_font_override("font", _cached_font)
+	diag_v.add_child(_diag_title_lbl)
+
+	_diag_capsules_container = HBoxContainer.new()
+	_diag_capsules_container.name = "DiagnosticCapsules"
+	_diag_capsules_container.add_theme_constant_override("separation", 10)
+	diag_v.add_child(_diag_capsules_container)
+
+	# 1. 武器階數膠囊
+	var cap1 := _build_diagnostic_capsule("DiagnosticCapsule_Weapon", "WeaponTagLbl", "WeaponDescLbl", _t("武器階數"), _t("天宮鐵匠鍛造強化"), COLOR_TEXT_ORANGE)
+	_capsule_weapon = cap1.card
+	_capsule_weapon_tag = cap1.tag_lbl
+	_capsule_weapon_text = cap1.desc_lbl
+	_diag_capsules_container.add_child(_capsule_weapon)
+
+	# 2. 裝備副詞條膠囊
+	var cap2 := _build_diagnostic_capsule("DiagnosticCapsule_Affix", "AffixTagLbl", "AffixDescLbl", _t("裝備副詞條"), _t("調整機芯優化屬性"), COLOR_SKY)
+	_capsule_affix = cap2.card
+	_capsule_affix_tag = cap2.tag_lbl
+	_capsule_affix_text = cap2.desc_lbl
+	_diag_capsules_container.add_child(_capsule_affix)
+
+	# 3. 招式調整膠囊
+	var cap3 := _build_diagnostic_capsule("DiagnosticCapsule_Skill", "SkillTagLbl", "SkillDescLbl", _t("招式調整"), _t("武術館自訂招式順序"), COLOR_TEXT_MINT)
+	_capsule_skill = cap3.card
+	_capsule_skill_tag = cap3.tag_lbl
+	_capsule_skill_text = cap3.desc_lbl
+	_diag_capsules_container.add_child(_capsule_skill)
+
 	_tip_lbl = Label.new()
 	_tip_lbl.name = "TipLbl"
 	_tip_lbl.text = _t("若是選擇承認敗北，將返回城鎮整頓裝備與招式。")
@@ -239,15 +326,15 @@ func _build_ui() -> void:
 
 	# 底部操作按鈕 (高度 >= 50px)
 	var btn_h := HBoxContainer.new()
-	btn_h.add_theme_constant_override("separation", 16)
+	btn_h.add_theme_constant_override("separation", 14)
 	btn_h.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(btn_h)
 
 	# 觀看廣告立即復活按鈕 (珊瑚粉/薄荷綠立體果凍厚底)
 	_revive_btn = Button.new()
 	_revive_btn.name = "ReviveAdBtn"
-	_revive_btn.custom_minimum_size = Vector2(340, 52)
-	_revive_btn.add_theme_font_size_override("font_size", 18)
+	_revive_btn.custom_minimum_size = Vector2(250, 52)
+	_revive_btn.add_theme_font_size_override("font_size", 17)
 	_revive_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
 	_revive_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_revive_btn.add_theme_constant_override("outline_size", 3)
@@ -260,11 +347,28 @@ func _build_ui() -> void:
 	_revive_btn.pressed.connect(_on_revive_ad_clicked)
 	btn_h.add_child(_revive_btn)
 
+	# 前往整頓按鈕 (BtnGearUp, 暖橘立體果凍厚底按鈕, 高度 >= 50px, 底邊 >= 5px)
+	_gear_up_btn = Button.new()
+	_gear_up_btn.name = "BtnGearUp"
+	_gear_up_btn.text = _t("前往整頓")
+	_gear_up_btn.custom_minimum_size = Vector2(190, 52)
+	_gear_up_btn.add_theme_font_size_override("font_size", 18)
+	_gear_up_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
+	_gear_up_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_gear_up_btn.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		_gear_up_btn.add_theme_font_override("font", _cached_font)
+	_gear_up_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 6))
+	_gear_up_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB030"), COLOR_BORDER, 6))
+	_gear_up_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08B00"), COLOR_BORDER, 2))
+	_gear_up_btn.pressed.connect(_on_gear_up_clicked)
+	btn_h.add_child(_gear_up_btn)
+
 	# 結束戰鬥按鈕 (溫暖米黃/橙底)
 	_give_up_btn = Button.new()
 	_give_up_btn.name = "GiveUpBtn"
 	_give_up_btn.text = _t("結束戰鬥")
-	_give_up_btn.custom_minimum_size = Vector2(180, 52)
+	_give_up_btn.custom_minimum_size = Vector2(170, 52)
 	_give_up_btn.add_theme_font_size_override("font_size", 18)
 	_give_up_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -400,6 +504,58 @@ func _on_give_up_clicked() -> void:
 	queue_free()
 
 
+func _on_gear_up_clicked() -> void:
+	gear_up_requested.emit()
+	if _on_gear_up.is_valid():
+		_on_gear_up.call()
+	queue_free()
+
+
+func _build_diagnostic_capsule(card_name: String, tag_name: String, desc_name: String, tag_text: String, desc_text: String, accent_color: Color) -> Dictionary:
+	var card := PanelContainer.new()
+	card.name = card_name
+	card.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	card.custom_minimum_size = Vector2(0, 56)
+	card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 2, 3, 14))
+
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_left", 8)
+	m.add_theme_constant_override("margin_right", 8)
+	m.add_theme_constant_override("margin_top", 6)
+	m.add_theme_constant_override("margin_bottom", 6)
+	card.add_child(m)
+
+	var vb := VBoxContainer.new()
+	vb.add_theme_constant_override("separation", 2)
+	vb.alignment = BoxContainer.ALIGNMENT_CENTER
+	m.add_child(vb)
+
+	var tag := Label.new()
+	tag.name = tag_name
+	tag.text = tag_text
+	tag.add_theme_font_size_override("font_size", 14)
+	tag.add_theme_color_override("font_color", accent_color)
+	tag.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	tag.add_theme_constant_override("outline_size", 2)
+	tag.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if _cached_font:
+		tag.add_theme_font_override("font", _cached_font)
+	vb.add_child(tag)
+
+	var desc := Label.new()
+	desc.name = desc_name
+	desc.text = desc_text
+	desc.add_theme_font_size_override("font_size", 12)
+	desc.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	desc.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	desc.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	if _cached_font:
+		desc.add_theme_font_override("font", _cached_font)
+	vb.add_child(desc)
+
+	return {"card": card, "tag_lbl": tag, "desc_lbl": desc}
+
+
 func get_title_text() -> String:
 	return _title_lbl.text if _title_lbl and is_instance_valid(_title_lbl) else ""
 
@@ -428,8 +584,36 @@ func get_revive_button_text() -> String:
 	return _revive_btn.text if _revive_btn and is_instance_valid(_revive_btn) else ""
 
 
+func get_gear_up_button_text() -> String:
+	return _gear_up_btn.text if _gear_up_btn and is_instance_valid(_gear_up_btn) else ""
+
+
 func get_give_up_button_text() -> String:
 	return _give_up_btn.text if _give_up_btn and is_instance_valid(_give_up_btn) else ""
+
+
+func get_diagnostic_card() -> PanelContainer:
+	return _diagnostic_card
+
+
+func get_diagnostic_title_text() -> String:
+	return _diag_title_lbl.text if _diag_title_lbl and is_instance_valid(_diag_title_lbl) else ""
+
+
+func get_gear_up_button() -> Button:
+	return _gear_up_btn
+
+
+func get_capsule_weapon() -> PanelContainer:
+	return _capsule_weapon
+
+
+func get_capsule_affix() -> PanelContainer:
+	return _capsule_affix
+
+
+func get_capsule_skill() -> PanelContainer:
+	return _capsule_skill
 
 
 func _create_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:

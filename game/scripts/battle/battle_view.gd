@@ -38,6 +38,7 @@ const BATTLE_PLATFORM_OFFSETS := {
 }
 
 signal battle_finished(won: bool)
+signal gear_up_requested()
 
 @onready var log_label: RichTextLabel = %Log
 @onready var player_hp: ProgressBar = %PlayerHP
@@ -5097,7 +5098,7 @@ func _show_defeat_settlement() -> void:
 			var WC = load("res://scripts/world/world_content.gd")
 			if WC and WC.has_method("colossus_weak_part"):
 				part_hint = str(WC.call("colossus_weak_part", _mode))
-	BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint)
+	BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint, _on_gear_up_defeat)
 
 
 func _on_ad_revive_success() -> void:
@@ -5119,6 +5120,11 @@ func _on_ad_revive_success() -> void:
 
 
 func _on_give_up_defeat() -> void:
+	battle_finished.emit(false)
+
+
+func _on_gear_up_defeat() -> void:
+	gear_up_requested.emit()
 	battle_finished.emit(false)
 
 
