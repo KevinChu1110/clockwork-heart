@@ -5740,8 +5740,8 @@
    "id": "weapon-swap-line-filter",
    "cat": "遊戲",
    "title": "WeaponSwapDialog 支援流派篩選 Chip 列",
-   "status": "草稿",
-   "note": "待前置單完成後開工",
+   "status": "測試中",
+   "note": "WeaponSwapDialog 支援 13 流派篩選 Chip 列，熱區>=48px、果凍厚底、六語系即時切換與零 Emoji，單元測試與實機截圖存證通過",
    "keys": [
     "WeaponSw"
    ]
