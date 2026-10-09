@@ -76,6 +76,8 @@ var _colossus_exp_gain: int = 0
 var _in_parry_slowmo: bool = false
 var _player_home: Vector2
 var _enemy_home: Vector2
+var _arena_shake_home: Vector2 = Vector2.ZERO
+var _arena_shaking: bool = false
 var _player_race: String = ""
 var _player_lunge_tw: Tween
 var _enemy_lunge_tw: Tween
@@ -2745,10 +2747,19 @@ func _process(delta: float) -> void:
 	if _parry_note_left > 0.0:
 		_parry_note_left = maxf(0.0, _parry_note_left - delta)
 	if _shake > 0.0:
+		## 震屏是「繞著 Arena 原本的位置」抖；以前直接設絕對座標、結束歸零，
+		## Arena 的版面偏移（約 48,70）就被吃掉，角色整排跳走、腳底軟影留在原地（#59）。
+		if not _arena_shaking:
+			_arena_shake_home = arena.position
+			_arena_shaking = true
 		_shake = maxf(0.0, _shake - delta)
-		arena.position = Vector2(randf_range(-4, 4), randf_range(-3, 3)) * (_shake * 8.0)
+		arena.position = _arena_shake_home + Vector2(randf_range(-4, 4), randf_range(-3, 3)) * (_shake * 8.0)
 		if _shake <= 0.0:
-			arena.position = Vector2.ZERO
+			arena.position = _arena_shake_home
+			_arena_shaking = false
+	## 軟影在獨立的 ShadowLayer，不會跟著角色的突進、震屏、呼吸縮放走；每幀對齊腳底。
+	_layout_foot_shadow(player_body)
+	_layout_foot_shadow(enemy_body)
 	if _is_pre_windup:
 		_pre_windup_timer = maxf(0.0, _pre_windup_timer - delta)
 		if _pre_windup_timer <= 0.0:
