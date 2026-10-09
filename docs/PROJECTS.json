@@ -5765,6 +5765,16 @@
    "keys": [
     "勝利結算再次挑戰"
    ]
+  },
+  {
+   "id": "forge-loadout-slots",
+   "cat": "遊戲",
+   "title": "天宮鐵匠三欄武器切換",
+   "status": "草稿",
+   "note": "ForgeDialog 支援三欄武器槽位切換鍛造",
+   "keys": [
+    "天宮鐵匠三欄武器"
+   ]
   }
  ]
 }
