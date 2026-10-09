@@ -5690,8 +5690,8 @@
    "id": "dummy-combat-stats",
    "cat": "遊戲",
    "title": "木人樁試招結算最高單擊與總命中統計",
-   "status": "測試中",
-   "note": "完成 BattleSim 與 DummySettlementDialog 最高單擊與總命中統計，自測與六語系刷新全綠，實機截圖完成",
+   "status": "已上線",
+   "note": "木人樁最高單擊與總命中統計合進主線 (t_41fb15db)",
    "keys": [
     "木人樁試招結算最"
    ]
