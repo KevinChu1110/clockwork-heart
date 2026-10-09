@@ -5760,8 +5760,8 @@
    "id": "victory-weapon-stats",
    "cat": "遊戲",
    "title": "BattleVictoryDialog 支援三欄武器戰鬥數據統計膠囊",
-   "status": "草稿",
-   "note": "對齊木人樁試招結算標準，展示三欄武器切換次數與傷害貢獻",
+   "status": "測試中",
+   "note": "完成節點建置、六語系支援與單元測試綠燈",
    "keys": [
     "BattleVi"
    ]
