@@ -5745,6 +5745,16 @@
    "keys": [
     "WeaponSw"
    ]
+  },
+  {
+   "id": "weapon-swap-substats",
+   "cat": "遊戲",
+   "title": "WeaponSwapDialog 完整顯示武器隨機副詞條與屬性標籤膠囊",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "WeaponSw"
+   ]
   }
  ]
 }
