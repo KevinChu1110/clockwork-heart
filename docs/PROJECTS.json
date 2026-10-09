@@ -5745,6 +5745,16 @@
    "keys": [
     "WeaponSw"
    ]
+  },
+  {
+   "id": "victory-weapon-stats",
+   "cat": "遊戲",
+   "title": "BattleVictoryDialog 支援三欄武器戰鬥數據統計膠囊",
+   "status": "草稿",
+   "note": "t_6586cf54 sideworker2",
+   "keys": [
+    "BattleVi"
+   ]
   }
  ]
 }
