@@ -1200,6 +1200,12 @@ func _build_top_hud() -> void:
 	psb.set_corner_radius_all(26)
 	p_frame.custom_minimum_size = Vector2(52, 52)
 	p_frame.add_theme_stylebox_override("panel", psb)
+	p_frame.mouse_filter = Control.MOUSE_FILTER_STOP
+	p_frame.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	p_frame.gui_input.connect(func(ev: InputEvent):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			open_power_stat_dialog()
+	)
 	var p_tex := TextureRect.new()
 	p_tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	p_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -1234,17 +1240,41 @@ func _build_top_hud() -> void:
 	row1.add_child(_name_label)
 	info_v.add_child(row1)
 
+	var pwr_cap := PanelContainer.new()
+	pwr_cap.name = "PowerCapsule"
+	var pwr_sb := StyleBoxFlat.new()
+	pwr_sb.bg_color = Color(0.14, 0.11, 0.18, 0.85)
+	pwr_sb.border_color = Color(0.83, 0.68, 0.22, 0.80)
+	pwr_sb.set_border_width_all(1)
+	pwr_sb.border_width_bottom = 3
+	pwr_sb.set_corner_radius_all(16)
+	pwr_sb.content_margin_left = 12
+	pwr_sb.content_margin_right = 14
+	pwr_sb.content_margin_top = 4
+	pwr_sb.content_margin_bottom = 4
+	pwr_cap.add_theme_stylebox_override("panel", pwr_sb)
+	pwr_cap.custom_minimum_size = Vector2(96, 48)
+	pwr_cap.mouse_filter = Control.MOUSE_FILTER_STOP
+	pwr_cap.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	pwr_cap.gui_input.connect(func(ev: InputEvent):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			open_power_stat_dialog()
+	)
+
 	var pwr_row := HBoxContainer.new()
-	pwr_row.add_theme_constant_override("separation", 4)
+	pwr_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	pwr_row.add_theme_constant_override("separation", 6)
 	_power_label = Label.new()
 	_power_label.text = _t("戰力 %d") % 0
-	_power_label.add_theme_color_override("font_color", Color("#E5C158"))
+	_power_label.add_theme_color_override("font_color", Color("#FFD028"))
 	_power_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_power_label.add_theme_constant_override("outline_size", 2)
-	_power_label.add_theme_font_size_override("font_size", 13)
+	_power_label.add_theme_font_size_override("font_size", 14)
+	_power_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	pwr_row.add_child(_power_label)
-	info_v.add_child(pwr_row)
+	pwr_cap.add_child(pwr_row)
 	p_box.add_child(info_v)
+	p_box.add_child(pwr_cap)
 
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -6375,6 +6405,25 @@ func open_windup_daily() -> Control:
 		dlg.colossus_requested.connect(func():
 			go_to_colossus()
 		)
+	add_child(dlg)
+	return dlg
+
+
+## 開啟『戰力屬性總覽』彈窗 (PowerStatDialog)
+func open_power_stat_dialog() -> Control:
+	var existing = get_node_or_null("PowerStatDialog")
+	if existing != null and is_instance_valid(existing):
+		return existing
+	var PowerStatClass: GDScript = load("res://scripts/ui/power_stat_dialog.gd")
+	if PowerStatClass == null:
+		push_error("無法載入 PowerStatDialog")
+		return null
+	var dlg: Control = PowerStatClass.new() as Control
+	dlg.name = "PowerStatDialog"
+	dlg.z_index = 85
+	dlg.tree_exited.connect(func():
+		refresh_hud()
+	)
 	add_child(dlg)
 	return dlg
 
