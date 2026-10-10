@@ -5850,11 +5850,21 @@
    "id": "forge-auto-forge",
    "cat": "遊戲",
    "title": "天宮鐵匠新增一鍵鍛造按鈕與連動",
-   "status": "測試中",
-   "note": "完成 ForgeSystem auto_forge、ForgeDialog BtnAutoForge、頂部戰力刷新與六語系支援，8項測試全綠 (t_39e65d16)",
+   "status": "已上線",
+   "note": "審核通過已合併上線",
    "keys": [
     "天宮鐵匠新增一鍵"
    ]
-  }
- ]
-}
+   },
+   {
+   "id": "soul-draw-clean",
+   "cat": "遊戲",
+   "title": "聚魂召喚系統清除特殊符號『✦』殘留與合規對齊",
+   "status": "已上線",
+   "note": "審核通過已合併上線",
+   "keys": [
+    "聚魂召喚系統清除"
+   ]
+   }
+   ]
+   }

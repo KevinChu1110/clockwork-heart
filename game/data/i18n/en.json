@@ -351,7 +351,7 @@
   "soul.ritual_free": "Draw Soul (free today)",
   "soul.ritual_gold": "Draw Soul ({n} gold)",
   "soul.ritual_x10": "Draw Soul ×10 (~{n} gold)",
-  "soul.ten_pull_title": "✦ Ten Pull Results ✦",
+  "soul.ten_pull_title": "Ten Pull Results",
   "soul.tickets_status": "Soul Tickets ×%d · Pulled Today: %d",
   "soul.unequip": "Unequip slot {n}",
   "title.blurb": "Forge gear, draw souls, train, daily quests. Playable start to end without signing in.",
@@ -434,7 +434,6 @@
   "• 外裝服飾槽 (Costume Slot - Z:25)": "• Costume Slot (Costume Slot - Z:25)",
   "• 手持武器槽 (Weapon Slot - Z:40)": "• Handheld Weapon Slot (Weapon Slot - Z:40)",
   "• 軀體塗裝槽 (Chassis Shell - Z:10)": "• Chassis Shell Slot (Chassis Shell - Z:10)",
-  "✦ 封靈連轉結果 ✦": "✦ Ten Pull Results ✦",
   "【%s】%s · 目前色階：%s階（剩餘 %d 次）": "[%s] %s · Current Tier: %s (%d Left)",
   "【%s】%s · 鐵屑不足（持有 %d/%d）· 剩餘校準 %d 次": "[%s] %s · Insufficient Scrap (%d/%d held) · %d Calibrations Left",
   "【%s】%s（已達最大校準次數上限 7 次）": "[%s] %s (Reached max 7 calibrations)",
@@ -1059,5 +1058,14 @@
   "一鍵鍛造結束：嘗試 %d 次全數失敗 · 消耗 %d 金幣、%d 鐵屑": "Auto Forge ended: %d tries all failed · Cost %d Gold, %d Iron Scrap",
   "鐵屑不足！一鍵鍛造需要鐵屑穩火。": "Not enough Iron Scrap! Auto Forge requires scrap to steady heat.",
   "金幣不足！無法進行一鍵鍛造。": "Not enough gold! Cannot perform Auto Forge.",
-  "目前條件無法進行一鍵鍛造。": "Cannot perform Auto Forge under current conditions."
+  "目前條件無法進行一鍵鍛造。": "Cannot perform Auto Forge under current conditions.",
+  "封靈連轉結果": "Ten Pull Results",
+  "發條解鎖 · 聚魂召喚": "Clockwork Unlock · Soul Summon",
+  "soul.summon_hint": "Clockwork Unlock · Soul Summon",
+  "普通": "Common",
+  "優良": "Fine",
+  "稀有": "Rare",
+  "史詩": "Epic",
+  "傳奇": "Legendary",
+  "神話": "Mythic"
 }

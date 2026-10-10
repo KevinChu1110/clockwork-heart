@@ -310,7 +310,7 @@
   "soul.btn_skip": "Skip",
   "soul.draw_title": "Soul Draw · Soul Canister",
   "soul.err_tickets": "Not enough Soul Tickets",
-  "soul.ten_pull_title": "✦ Ten Pull Results ✦",
+  "soul.ten_pull_title": "Ten Pull Results",
   "soul.tickets_status": "Soul Tickets ×%d · Pulled Today: %d",
   "ui_goto: 未知去處 '%s'": "ui_goto: unknown destination '%s'",
   "vault.btn_claim": "Claim All",
@@ -404,7 +404,6 @@
   "● 你  ·  路標  ·  NPC  ·  點": "● You  ·  Signpost  ·  NPC  ·  Point",
   "✓ 已選用": "✓ Selected",
   "✓ 鍛造後": "✓ after forging",
-  "✦ 封靈連轉結果 ✦": "✦ Ten Pull Results ✦",
   "　　　　西林（樹冠／靜湖／遺址）\n": "　　　　West Woods (canopy / still lake / ruins)\n",
   "　　　　遊俠森林（樹冠／靜湖／遺址）\n": "　　　　Ranger Forest (canopy / still lake / ruins)\n",
   "　　　武鬥道場（內院／竹林／山巔）\n\n": "　　　Martial Dojo (inner court / bamboo grove / summit)\n\n",
@@ -3734,5 +3733,14 @@
   "一鍵鍛造結束：嘗試 %d 次全數失敗 · 消耗 %d 金幣、%d 鐵屑": "Auto Forge ended: %d tries all failed · Cost %d Gold, %d Iron Scrap",
   "鐵屑不足！一鍵鍛造需要鐵屑穩火。": "Not enough Iron Scrap! Auto Forge requires scrap to steady heat.",
   "金幣不足！無法進行一鍵鍛造。": "Not enough gold! Cannot perform Auto Forge.",
-  "目前條件無法進行一鍵鍛造。": "Cannot perform Auto Forge under current conditions."
+  "目前條件無法進行一鍵鍛造。": "Cannot perform Auto Forge under current conditions.",
+  "封靈連轉結果": "Ten Pull Results",
+  "發條解鎖 · 聚魂召喚": "Clockwork Unlock · Soul Summon",
+  "soul.summon_hint": "Clockwork Unlock · Soul Summon",
+  "普通": "Common",
+  "優良": "Fine",
+  "稀有": "Rare",
+  "史詩": "Epic",
+  "傳奇": "Legendary",
+  "神話": "Mythic"
 }
