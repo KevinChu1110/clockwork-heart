@@ -6428,6 +6428,14 @@ func open_power_stat_dialog() -> Control:
 		dlg.equip_requested.connect(func():
 			_switch_tab(Tab.CHARACTER)
 		)
+	if dlg.has_signal("workshop_requested"):
+		dlg.workshop_requested.connect(func():
+			open_gem_workshop()
+		)
+	if dlg.has_signal("skill_requested"):
+		dlg.skill_requested.connect(func():
+			open_skill_dialog()
+		)
 	add_child(dlg)
 	return dlg
 

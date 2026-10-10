@@ -1883,5 +1883,6 @@
   "裝備總加成: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%": "裝備總加成: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%",
   "T%d · 攻 +%d": "T%d · 攻 +%d",
   "vault.btn_double_claim": "雙倍領取",
-  "vault.ad_removed_double": "已去廣告尊享雙倍"
+  "vault.ad_removed_double": "已去廣告尊享雙倍",
+  "前往心法": "前往心法"
 }
