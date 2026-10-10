@@ -5977,19 +5977,29 @@ func open_wardrobe() -> void:
 ## 開啟天宮鐵匠彈窗
 func open_forge(target_weapon: Variant = null) -> Control:
 	var existing = get_node_or_null("ForgeDialog")
-	if existing != null:
+	if existing != null and not existing.is_queued_for_deletion():
 		if target_weapon != null and existing.has_method("select_target_equipment"):
 			existing.call("select_target_equipment", target_weapon)
 		return existing
+	var existing_workshop = get_node_or_null("GemWorkshopDialog")
+	if existing_workshop != null:
+		if existing_workshop.get_parent() == self:
+			remove_child(existing_workshop)
+		existing_workshop.queue_free()
 	var ForgeClass: GDScript = load("res://scripts/ui/forge_dialog.gd")
 	if ForgeClass == null:
 		push_error("無法載入 ForgeDialog")
 		return null
 	var dlg: Control = ForgeClass.new() as Control
+	dlg.name = "ForgeDialog"
 	dlg.z_index = 80
 	dlg.tree_exited.connect(func():
 		refresh_hud()
 	)
+	if dlg.has_signal("workshop_requested"):
+		dlg.connect("workshop_requested", func():
+			open_gem_workshop()
+		)
 	add_child(dlg)
 	if target_weapon != null and dlg.has_method("select_target_equipment"):
 		dlg.call("select_target_equipment", target_weapon)
@@ -5999,17 +6009,27 @@ func open_forge(target_weapon: Variant = null) -> Control:
 ## 開啟手藝工坊寶石彈窗
 func open_gem_workshop() -> Control:
 	var existing = get_node_or_null("GemWorkshopDialog")
-	if existing != null:
+	if existing != null and not existing.is_queued_for_deletion():
 		return existing
+	var existing_forge = get_node_or_null("ForgeDialog")
+	if existing_forge != null:
+		if existing_forge.get_parent() == self:
+			remove_child(existing_forge)
+		existing_forge.queue_free()
 	var GemClass: GDScript = load("res://scripts/ui/gem_workshop_dialog.gd")
 	if GemClass == null:
 		push_error("無法載入 GemWorkshopDialog")
 		return null
 	var dlg: Control = GemClass.new() as Control
+	dlg.name = "GemWorkshopDialog"
 	dlg.z_index = 80
 	dlg.tree_exited.connect(func():
 		refresh_hud()
 	)
+	if dlg.has_signal("forge_requested"):
+		dlg.connect("forge_requested", func():
+			open_forge()
+		)
 	add_child(dlg)
 	return dlg
 

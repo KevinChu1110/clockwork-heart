@@ -12,6 +12,7 @@ extends Control
 ## 8. 六語系多國語言支援 (ContentLoc / Loc.locale_changed 即時切換)。
 
 signal closed()
+signal workshop_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -72,6 +73,7 @@ var _pity_bars: Array[ProgressBar] = []
 
 var _msg_label: Label
 var _btn_forge: Button
+var _btn_go_workshop: Button
 var _btn_close: Button
 var _cached_font: Font = null
 var _last_calibrate_state: Dictionary = {}
@@ -144,6 +146,8 @@ func _get_equip_sys() -> Node:
 func _update_ui_texts() -> void:
 	if _title_lbl and is_instance_valid(_title_lbl):
 		_title_lbl.text = _t("天宮鐵匠 · 裝備鍛造")
+	if _btn_go_workshop and is_instance_valid(_btn_go_workshop):
+		_btn_go_workshop.text = _t("前往工坊")
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開鐵匠鋪")
 	_refresh_slot_chips()
@@ -496,7 +500,7 @@ func _build_ui() -> void:
 
 	# 動作按鈕列 (按鈕高 >= 50)
 	var act_row := HBoxContainer.new()
-	act_row.add_theme_constant_override("separation", 16)
+	act_row.add_theme_constant_override("separation", 12)
 	act_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(act_row)
 
@@ -504,7 +508,7 @@ func _build_ui() -> void:
 	_btn_forge = Button.new()
 	_btn_forge.name = "BtnForge"
 	_btn_forge.text = ""
-	_btn_forge.custom_minimum_size = Vector2(280, 52)
+	_btn_forge.custom_minimum_size = Vector2(250, 52)
 	_btn_forge.add_theme_font_size_override("font_size", 18)
 	_btn_forge.add_theme_color_override("font_color", Color.WHITE)
 	_btn_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -518,11 +522,28 @@ func _build_ui() -> void:
 	_btn_forge.pressed.connect(_on_forge_pressed)
 	act_row.add_child(_btn_forge)
 
+	# 快捷按鈕：前往工坊 (暖橘立體厚底 5px)
+	_btn_go_workshop = Button.new()
+	_btn_go_workshop.name = "BtnGoWorkshop"
+	_btn_go_workshop.text = _t("前往工坊")
+	_btn_go_workshop.custom_minimum_size = Vector2(160, 52)
+	_btn_go_workshop.add_theme_font_size_override("font_size", 18)
+	_btn_go_workshop.add_theme_color_override("font_color", Color.WHITE)
+	_btn_go_workshop.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_workshop.add_theme_constant_override("outline_size", 4)
+	if _cached_font:
+		_btn_go_workshop.add_theme_font_override("font", _cached_font)
+	_btn_go_workshop.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 20, 2))
+	_btn_go_workshop.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB338"), COLOR_BORDER, 5, 20, 2))
+	_btn_go_workshop.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08B00"), COLOR_BORDER, 2, 20, 2))
+	_btn_go_workshop.pressed.connect(_on_go_workshop_pressed)
+	act_row.add_child(_btn_go_workshop)
+
 	# 次要按鈕：離開鐵匠鋪 (金黃立體厚底 5px)
 	_btn_close = Button.new()
 	_btn_close.name = "BtnCloseForge"
 	_btn_close.text = _t("離開鐵匠鋪")
-	_btn_close.custom_minimum_size = Vector2(160, 52)
+	_btn_close.custom_minimum_size = Vector2(140, 52)
 	_btn_close.add_theme_font_size_override("font_size", 18)
 	_btn_close.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_btn_close.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -1203,6 +1224,16 @@ func _on_forge_pressed() -> void:
 			_msg_label.text = _t("鍛造失敗！累積 1 格保底進度（目前 %d/3 格）。") % streak
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 	_refresh_display()
+
+
+func get_go_workshop_button() -> Button:
+	return _btn_go_workshop
+
+
+func _on_go_workshop_pressed() -> void:
+	workshop_requested.emit()
+	if not is_queued_for_deletion():
+		_on_close()
 
 
 func _on_close() -> void:

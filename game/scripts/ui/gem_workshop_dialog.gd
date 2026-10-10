@@ -12,6 +12,7 @@ extends Control
 ## 8. 六語系多國語言支援 (ContentLoc / Loc.locale_changed 即時切換)。
 
 signal closed()
+signal forge_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -79,6 +80,7 @@ var _btn_auto_socket: Button
 var _case_grid: GridContainer
 
 var _msg_label: Label
+var _btn_go_forge: Button
 var _btn_close: Button
 var _cached_font: Font = null
 
@@ -129,6 +131,8 @@ func _update_ui_texts() -> void:
 		_btn_refresh_case.text = _t("重新盤點")
 	if _btn_auto_socket and is_instance_valid(_btn_auto_socket):
 		_btn_auto_socket.text = _t("一鍵鑲嵌")
+	if _btn_go_forge and is_instance_valid(_btn_go_forge):
+		_btn_go_forge.text = _t("前往鐵匠")
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開工坊")
 
@@ -372,11 +376,30 @@ func _build_ui() -> void:
 		_msg_label.add_theme_font_override("font", _cached_font)
 	v.add_child(_msg_label)
 
-	# 底部離開按鈕 (按鈕高 >= 50, 金黃立體厚底 5px)
+	# 底部操作按鈕列 (按鈕高 >= 50)
 	var foot_row := HBoxContainer.new()
 	foot_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	foot_row.add_theme_constant_override("separation", 16)
 	v.add_child(foot_row)
 
+	# 快捷按鈕：前往鐵匠 (薄荷綠立體厚底 5px)
+	_btn_go_forge = Button.new()
+	_btn_go_forge.name = "BtnGoForge"
+	_btn_go_forge.text = _t("前往鐵匠")
+	_btn_go_forge.custom_minimum_size = Vector2(180, 50)
+	_btn_go_forge.add_theme_font_size_override("font_size", 18)
+	_btn_go_forge.add_theme_color_override("font_color", Color.WHITE)
+	_btn_go_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_forge.add_theme_constant_override("outline_size", 4)
+	if _cached_font:
+		_btn_go_forge.add_theme_font_override("font", _cached_font)
+	_btn_go_forge.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18, 2))
+	_btn_go_forge.add_theme_stylebox_override("hover", _create_button_style(Color("#68E882"), COLOR_BORDER, 5, 18, 2))
+	_btn_go_forge.add_theme_stylebox_override("pressed", _create_button_style(Color("#3BBF55"), COLOR_BORDER, 2, 18, 2))
+	_btn_go_forge.pressed.connect(_on_go_forge_pressed)
+	foot_row.add_child(_btn_go_forge)
+
+	# 次要按鈕：離開工坊 (金黃立體厚底 5px)
 	_btn_close = Button.new()
 	_btn_close.name = "BtnCloseGemWorkshop"
 	_btn_close.text = _t("離開工坊")
@@ -872,6 +895,16 @@ func _create_disabled_button_style(radius: int = 18) -> StyleBoxFlat:
 	sb.content_margin_top = 8
 	sb.content_margin_bottom = 10
 	return sb
+
+
+func get_go_forge_button() -> Button:
+	return _btn_go_forge
+
+
+func _on_go_forge_pressed() -> void:
+	forge_requested.emit()
+	if not is_queued_for_deletion():
+		_on_close()
 
 
 func _on_close() -> void:
