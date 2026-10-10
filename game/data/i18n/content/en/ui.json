@@ -3678,5 +3678,7 @@
   "（進入堡壘後解鎖）": "(Unlocks once you enter the Keep)",
   "（進入騎士堡後解鎖）": "(Unlocks once you enter the Knight Keep)",
   "（魂器升至 %s）": "(Vessel rose to %s)",
-  "（點燃熔爐可再加一條產線）": "(Light the furnace for one more line)"
+  "（點燃熔爐可再加一條產線）": "(Light the furnace for one more line)",
+  "再次挑戰": "Retry Stage",
+  "能量不足，無法再次挑戰關卡！": "Not enough energy to retry stage!"
 }

@@ -39,6 +39,7 @@ const BATTLE_PLATFORM_OFFSETS := {
 
 signal battle_finished(won: bool)
 signal gear_up_requested()
+signal retry_stage_requested()
 
 @onready var log_label: RichTextLabel = %Log
 @onready var player_hp: ProgressBar = %PlayerHP
@@ -70,10 +71,12 @@ var sim: BattleSim
 var force_touch_mode: Variant = null  ## 測試/截圖強制覆寫觸控模式；null 為自動判定
 var _mode: String = "wolf"
 var _current_expedition_stage: String = ""
+var _last_expedition_stage: String = ""
 var _ended: bool = false
 var _revived_by_ad: bool = false
 var _dummy_settlement_dialog: Control = null
 var _victory_settlement_dialog: Control = null
+var _defeat_settlement_dialog: Control = null
 var _colossus_exp_gain: int = 0
 var _in_parry_slowmo: bool = false
 var _player_home: Vector2
@@ -378,11 +381,16 @@ static func _gs_node() -> Node:
 
 
 func setup(mode: String) -> void:
+	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
+		_defeat_settlement_dialog.queue_free()
+		_defeat_settlement_dialog = null
 	_mode = mode
 	_ended = false
+	_revived_by_ad = false
 	var gs := _gs_node()
 	if gs and "current_expedition_stage" in gs and str(gs.current_expedition_stage) != "":
 		_current_expedition_stage = str(gs.current_expedition_stage)
+		_last_expedition_stage = _current_expedition_stage
 	_colossus_exp_gain = 0
 	_connect_loc_signal()
 	_claim_hp_authority()
@@ -4902,6 +4910,8 @@ func _try_wheat_save(hp_after: int) -> void:
 func _on_end(won: bool) -> void:
 	_ended = true
 	if not won:
+		if _current_expedition_stage != "":
+			_last_expedition_stage = _current_expedition_stage
 		var gs := _gs_node()
 		if gs and gs.has_method("clear_expedition_stage"):
 			gs.call("clear_expedition_stage")
@@ -5154,6 +5164,9 @@ func _can_offer_ad_revive() -> bool:
 
 
 func _show_defeat_settlement() -> void:
+	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
+		_defeat_settlement_dialog.queue_free()
+		_defeat_settlement_dialog = null
 	var part_hint := ""
 	if _mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
 		var e: BattleUnit = sim.get_unit(_mode) if sim else null
@@ -5168,10 +5181,14 @@ func _show_defeat_settlement() -> void:
 			var WC = load("res://scripts/world/world_content.gd")
 			if WC and WC.has_method("colossus_weak_part"):
 				part_hint = str(WC.call("colossus_weak_part", _mode))
-	BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint, _on_gear_up_defeat)
+	_defeat_settlement_dialog = BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint, _on_gear_up_defeat, _on_retry_stage_defeat)
+	if _defeat_settlement_dialog and _defeat_settlement_dialog.has_signal("retry_stage_requested") and not _defeat_settlement_dialog.retry_stage_requested.is_connected(_on_retry_stage_defeat):
+		_defeat_settlement_dialog.retry_stage_requested.connect(_on_retry_stage_defeat)
 
 
 func _on_ad_revive_success() -> void:
+	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
+		_defeat_settlement_dialog = null
 	_revived_by_ad = true
 	_ended = false
 	banner.visible = false
@@ -5190,12 +5207,61 @@ func _on_ad_revive_success() -> void:
 
 
 func _on_give_up_defeat() -> void:
+	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
+		_defeat_settlement_dialog = null
 	battle_finished.emit(false)
 
 
 func _on_gear_up_defeat() -> void:
+	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
+		_defeat_settlement_dialog = null
 	gear_up_requested.emit()
 	battle_finished.emit(false)
+
+
+func _on_retry_stage_defeat() -> void:
+	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
+		_defeat_settlement_dialog.queue_free()
+		_defeat_settlement_dialog = null
+
+	retry_stage_requested.emit()
+	var target_mode := _mode
+	var stage_num := _last_expedition_stage
+	var gs := _gs_node()
+	if stage_num != "" and gs:
+		gs.set("current_expedition_stage", stage_num)
+		var RC = load("res://scripts/world/region_catalog.gd")
+		var sug_lv: int = int(RC.call("expedition_suggest_lv", stage_num)) if RC else 0
+		gs.set("current_suggest_lv", sug_lv)
+		_current_expedition_stage = stage_num
+
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var es: Node = (loop as SceneTree).root.get_node_or_null("EnergySystem")
+		if es and es.has_method("try_spend_for_battle"):
+			var er: Dictionary = es.call("try_spend_for_battle", target_mode)
+			if not bool(er.get("ok", true)):
+				var msg: String = str(er.get("msg", ""))
+				if msg == "":
+					msg = _t("能量不足，無法再次挑戰關卡！")
+				_append_log(_t("[color=#fc8]%s[/color]") % msg)
+				_current_expedition_stage = ""
+				if gs and gs.has_method("clear_expedition_stage"):
+					gs.call("clear_expedition_stage")
+				battle_finished.emit(false)
+				return
+
+	if gs:
+		if gs.has_method("heal_full"):
+			gs.call("heal_full")
+		elif gs.has_method("effective_max_hp"):
+			gs.set("hp", gs.call("effective_max_hp"))
+		elif "max_hp" in gs:
+			gs.set("hp", gs.get("max_hp"))
+	elif GameState:
+		GameState.heal_full()
+
+	setup(target_mode)
 
 
 

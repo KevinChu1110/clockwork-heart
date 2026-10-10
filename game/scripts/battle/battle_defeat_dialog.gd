@@ -13,6 +13,7 @@ extends Control
 signal revive_selected()
 signal give_up_selected()
 signal gear_up_requested()
+signal retry_stage_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -45,6 +46,7 @@ var _hint_lbl: Label
 var _tip_lbl: Label
 var _part_hint_lbl: Label
 var _revive_btn: Button
+var _retry_btn: Button
 var _gear_up_btn: Button
 var _give_up_btn: Button
 var _cached_font: Font = null
@@ -68,6 +70,7 @@ var _capsule_skill_text: Label
 var _on_revive: Callable = Callable()
 var _on_give_up: Callable = Callable()
 var _on_gear_up: Callable = Callable()
+var _on_retry: Callable = Callable()
 
 
 func _enter_tree() -> void:
@@ -120,24 +123,27 @@ func _update_ui_texts() -> void:
 		_capsule_skill_text.text = _t("武術館自訂招式順序")
 	if _gear_up_btn and is_instance_valid(_gear_up_btn):
 		_gear_up_btn.text = _t("前往整頓")
+	if _retry_btn and is_instance_valid(_retry_btn):
+		_retry_btn.text = _t("再次挑戰")
 	if _give_up_btn and is_instance_valid(_give_up_btn):
 		_give_up_btn.text = _t("結束戰鬥")
 	_refresh_display()
 
 
-static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable(), on_retry: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/battle_defeat_dialog.gd").new()
-	dlg.setup(on_revive, on_give_up, mode, part_name, on_gear_up)
+	dlg.setup(on_revive, on_give_up, mode, part_name, on_gear_up, on_retry)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable()) -> void:
+func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable(), on_retry: Callable = Callable()) -> void:
 	_on_revive = on_revive
 	_on_give_up = on_give_up
 	_mode = mode
 	_part_name = part_name
 	_on_gear_up = on_gear_up
+	_on_retry = on_retry
 	if is_inside_tree():
 		_refresh_display()
 
@@ -166,7 +172,7 @@ func _build_ui() -> void:
 	var scrim := ResponsiveUi.make_scrim(ResponsiveUi.SCRIM_COLOR)
 	add_child(scrim)
 
-	# 2. 置中卡片 (寬 750px，符合 740~760 規範)
+	# 2. 置中卡片 (寬 760px，符合 740~760 規範)
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -175,13 +181,13 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "DefeatCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 490)
+	_dialog_card.custom_minimum_size = Vector2(760, 490)
 	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 24)
-	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_left", 15)
+	margin.add_theme_constant_override("margin_right", 15)
 	margin.add_theme_constant_override("margin_top", 18)
 	margin.add_theme_constant_override("margin_bottom", 20)
 	_dialog_card.add_child(margin)
@@ -326,15 +332,15 @@ func _build_ui() -> void:
 
 	# 底部操作按鈕 (高度 >= 50px)
 	var btn_h := HBoxContainer.new()
-	btn_h.add_theme_constant_override("separation", 14)
+	btn_h.add_theme_constant_override("separation", 10)
 	btn_h.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(btn_h)
 
 	# 觀看廣告立即復活按鈕 (珊瑚粉/薄荷綠立體果凍厚底)
 	_revive_btn = Button.new()
 	_revive_btn.name = "ReviveAdBtn"
-	_revive_btn.custom_minimum_size = Vector2(250, 52)
-	_revive_btn.add_theme_font_size_override("font_size", 17)
+	_revive_btn.custom_minimum_size = Vector2(210, 52)
+	_revive_btn.add_theme_font_size_override("font_size", 15)
 	_revive_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
 	_revive_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_revive_btn.add_theme_constant_override("outline_size", 3)
@@ -347,11 +353,28 @@ func _build_ui() -> void:
 	_revive_btn.pressed.connect(_on_revive_ad_clicked)
 	btn_h.add_child(_revive_btn)
 
+	# 再次挑戰按鈕 (BtnRetryStage, 多巴胺薄荷綠立體厚底按鈕, 高度 52px, 寬度 >= 170px, bottom border 6px, 圓角 20px)
+	_retry_btn = Button.new()
+	_retry_btn.name = "BtnRetryStage"
+	_retry_btn.text = _t("再次挑戰")
+	_retry_btn.custom_minimum_size = Vector2(170, 52)
+	_retry_btn.add_theme_font_size_override("font_size", 18)
+	_retry_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
+	_retry_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_retry_btn.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		_retry_btn.add_theme_font_override("font", _cached_font)
+	_retry_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 6, 20))
+	_retry_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5CE879"), COLOR_BORDER, 6, 20))
+	_retry_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#3DBB55"), COLOR_BORDER, 2, 20))
+	_retry_btn.pressed.connect(_on_retry_clicked)
+	btn_h.add_child(_retry_btn)
+
 	# 前往整頓按鈕 (BtnGearUp, 暖橘立體果凍厚底按鈕, 高度 >= 50px, 底邊 >= 5px)
 	_gear_up_btn = Button.new()
 	_gear_up_btn.name = "BtnGearUp"
 	_gear_up_btn.text = _t("前往整頓")
-	_gear_up_btn.custom_minimum_size = Vector2(190, 52)
+	_gear_up_btn.custom_minimum_size = Vector2(170, 52)
 	_gear_up_btn.add_theme_font_size_override("font_size", 18)
 	_gear_up_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
 	_gear_up_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -368,7 +391,7 @@ func _build_ui() -> void:
 	_give_up_btn = Button.new()
 	_give_up_btn.name = "GiveUpBtn"
 	_give_up_btn.text = _t("結束戰鬥")
-	_give_up_btn.custom_minimum_size = Vector2(170, 52)
+	_give_up_btn.custom_minimum_size = Vector2(150, 52)
 	_give_up_btn.add_theme_font_size_override("font_size", 18)
 	_give_up_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -511,6 +534,13 @@ func _on_gear_up_clicked() -> void:
 	queue_free()
 
 
+func _on_retry_clicked() -> void:
+	retry_stage_requested.emit()
+	if _on_retry.is_valid() and not retry_stage_requested.is_connected(_on_retry):
+		_on_retry.call()
+	queue_free()
+
+
 func _build_diagnostic_capsule(card_name: String, tag_name: String, desc_name: String, tag_text: String, desc_text: String, accent_color: Color) -> Dictionary:
 	var card := PanelContainer.new()
 	card.name = card_name
@@ -602,6 +632,14 @@ func get_diagnostic_title_text() -> String:
 
 func get_gear_up_button() -> Button:
 	return _gear_up_btn
+
+
+func get_retry_button() -> Button:
+	return _retry_btn
+
+
+func get_retry_button_text() -> String:
+	return _retry_btn.text if _retry_btn and is_instance_valid(_retry_btn) else ""
 
 
 func get_capsule_weapon() -> PanelContainer:

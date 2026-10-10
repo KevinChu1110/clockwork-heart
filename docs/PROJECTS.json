@@ -5750,8 +5750,8 @@
    "id": "defeat-retry",
    "cat": "遊戲",
    "title": "戰敗結算再次挑戰按鈕",
-   "status": "開發中",
-   "note": "BattleDefeatDialog 新增再次挑戰重啟關卡",
+   "status": "測試中",
+   "note": "再次挑戰修復滿血重開、彈窗生命週期管控與補齊截圖斷言 (t_94274c40)",
    "keys": [
     "戰敗結算再次挑戰"
    ]
