@@ -557,6 +557,12 @@ func find_any(uid: String) -> Dictionary:
 		var u := str(GameState.equip_slots.get(s, ""))
 		if u == uid:
 			return _equipped_lookup(uid)
+	for i in WEAPON_LOADOUT_SIZE:
+		var u := str(GameState.weapon_loadout[i])
+		if u == uid:
+			return _equipped_lookup(uid)
+	if GameState.equip_worn.has(uid):
+		return _equipped_lookup(uid)
 	return {}
 
 
@@ -1013,21 +1019,93 @@ func dismantle_yield(inst: Dictionary) -> Dictionary:
 	return {"iron_scrap": scrap, "gold": gold}
 
 
+## 檢查裝備是否處於鎖定狀態
+func is_locked(uid: String) -> bool:
+	_ensure_state()
+	if uid == "":
+		return false
+	var inst := find_any(uid)
+	if not inst.is_empty():
+		if bool(inst.get("locked", false)) or bool(inst.get("is_locked", false)):
+			return true
+	if GameState and GameState.has_method("has_flag"):
+		if GameState.has_flag("equip_locked." + uid):
+			return true
+	return false
+
+
+## 設定裝備鎖定狀態
+func set_locked(uid: String, locked: bool) -> bool:
+	_ensure_state()
+	if uid == "":
+		return false
+	var found := false
+	for e in GameState.equip_bag:
+		if str(e.get("uid", "")) == uid or str(e.get("id", "")) == uid:
+			e["locked"] = locked
+			found = true
+	if GameState.equip_worn.has(uid):
+		var w = GameState.equip_worn[uid]
+		if w is Dictionary:
+			w["locked"] = locked
+			found = true
+	if GameState and GameState.has_method("set_flag"):
+		GameState.set_flag("equip_locked." + uid, locked)
+		found = true
+	if found:
+		equipment_changed.emit()
+		SaveManager.save_game()
+	return found
+
+
+## 切換裝備鎖定狀態
+func toggle_lock(uid: String) -> bool:
+	return set_locked(uid, not is_locked(uid))
+
+
+## 檢查裝備是否正在裝備中 (worn / loadout / equip_slots)
+func is_equipped(uid: String) -> bool:
+	_ensure_state()
+	if uid == "":
+		return false
+	if GameState.equip_worn.has(uid):
+		return true
+	for s in SLOTS:
+		if str(GameState.equip_slots.get(s, "")) == uid:
+			return true
+	for i in WEAPON_LOADOUT_SIZE:
+		if str(GameState.weapon_loadout[i]) == uid:
+			return true
+	return false
+
+
 ## 拆解未裝備的裝備，回收為鐵屑與金幣
 func dismantle(uid: String) -> Dictionary:
 	_ensure_state()
 	if uid == "":
 		return {"ok": false, "msg": _t("無效的裝備識別碼。")}
-	if GameState.equip_worn.has(uid):
+	if is_locked(uid):
+		return {"ok": false, "msg": _t("裝備已鎖定，無法拆解。")}
+	if is_equipped(uid):
 		return {"ok": false, "msg": _t("裝備中無法拆解，請先卸下。")}
-	for s in SLOTS:
-		if str(GameState.equip_slots.get(s, "")) == uid:
-			return {"ok": false, "msg": _t("裝備中無法拆解，請先卸下。")}
-	for i in WEAPON_LOADOUT_SIZE:
-		if str(GameState.weapon_loadout[i]) == uid:
-			return {"ok": false, "msg": _t("裝備中無法拆解，請先卸下。")}
 
 	var inst := find_bag(uid)
+	var from_inv := false
+	if inst.is_empty():
+		if InventorySystem and InventorySystem.has_method("has_item") and InventorySystem.has_item(uid, 1):
+			var icat: Dictionary = InventorySystem.catalog(uid)
+			var ikind := str(icat.get("kind", ""))
+			if ikind == "weapon" or ikind == "equipment":
+				inst = {
+					"uid": uid,
+					"id": uid,
+					"name": icat.get("name", uid),
+					"slot": "weapon" if ikind == "weapon" else "equipment",
+					"tier": 1,
+					"quality": "common",
+				}
+				from_inv = true
+
 	if inst.is_empty():
 		return {"ok": false, "msg": _t("背包沒有此裝。")}
 
@@ -1035,7 +1113,11 @@ func dismantle(uid: String) -> Dictionary:
 	var scrap_n: int = int(y.get("iron_scrap", 1))
 	var gold_n: int = int(y.get("gold", 0))
 
-	_remove_from_bag(uid)
+	if from_inv:
+		InventorySystem.remove_item(uid, 1)
+	else:
+		_remove_from_bag(uid)
+
 	if scrap_n > 0:
 		InventorySystem.add_item("iron_scrap", scrap_n)
 	if gold_n > 0:

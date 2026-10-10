@@ -1034,5 +1034,12 @@
   "前往整頓": "Gear Up",
   "前往鍛造": "Go to Forge",
   "再次挑戰": "Retry Stage",
-  "能量不足，無法再次挑戰關卡！": "Not enough energy to retry stage!"
+  "能量不足，無法再次挑戰關卡！": "Not enough energy to retry stage!",
+  "拆解回收": "Dismantle",
+  "已鎖定": "Locked",
+  "裝備中": "Equipped",
+  "裝備已鎖定，無法拆解。": "Equipment is locked and cannot be dismantled.",
+  "裝備中無法拆解，請先卸下。": "Equipped items cannot be dismantled. Please unequip first.",
+  "拆解裝備回收鐵屑與金幣": "Dismantle equipment for scrap iron and gold",
+  "無法拆解此物品。": "Cannot dismantle this item."
 }

@@ -1034,5 +1034,12 @@
   "前往整頓": "Equiparse",
   "前往鍛造": "Ir a Forja",
   "再次挑戰": "Reintentar etapa",
-  "能量不足，無法再次挑戰關卡！": "¡Energía insuficiente para reintentar la etapa!"
+  "能量不足，無法再次挑戰關卡！": "¡Energía insuficiente para reintentar la etapa!",
+  "拆解回收": "Desmantelar",
+  "已鎖定": "Bloqueado",
+  "裝備中": "Equipado",
+  "裝備已鎖定，無法拆解。": "El equipo está bloqueado y no se puede desmantelar.",
+  "裝備中無法拆解，請先卸下。": "No se puede desmantelar mientras esté equipado. Desequípalo primero.",
+  "拆解裝備回收鐵屑與金幣": "Desmantela equipo para obtener chatarra y oro",
+  "無法拆解此物品。": "No se puede desmantelar este objeto."
 }
