@@ -5805,6 +5805,36 @@
    "keys": [
     "背包Tab武器裝"
    ]
+  },
+  {
+   "id": "bag-gem-detail-dismantle",
+   "cat": "遊戲",
+   "title": "背包Tab裝備詳情顯示已鑲寶石並於拆解時安全返還",
+   "status": "測試中",
+   "note": "自測全綠、實機截圖與六語系驗收通過，送審 sideqa",
+   "keys": [
+    "背包Tab裝備詳"
+   ]
+  },
+  {
+   "id": "forge-workshop-link",
+   "cat": "遊戲",
+   "title": "天宮鐵匠與手藝工坊雙向直通快捷按鈕",
+   "status": "開發中",
+   "note": "天宮鐵匠與手藝工坊支援雙向直通快捷按鈕開發中",
+   "keys": [
+    "天宮鐵匠與手藝工"
+   ]
+  },
+  {
+   "id": "bag-workshop-shortcut",
+   "cat": "遊戲",
+   "title": "背包Tab寶石素材與裝備詳情前往工坊",
+   "status": "草稿",
+   "note": "背包Tab選中寶石/星屑素材或可鑲嵌裝備時新增前往工坊快捷按鈕",
+   "keys": [
+    "背包Tab寶石素"
+   ]
   }
  ]
 }

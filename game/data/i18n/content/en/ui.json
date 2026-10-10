@@ -3717,5 +3717,12 @@
   "裝備中": "Equipped",
   "裝備已鎖定，無法拆解。": "Equipment is locked and cannot be dismantled.",
   "拆解裝備回收鐵屑與金幣": "Dismantle equipment for scrap iron and gold",
-  "無法拆解此物品。": "Cannot dismantle this item."
+  "無法拆解此物品。": "Cannot dismantle this item.",
+  "已鑲寶石：": "Socketed Gem: ",
+  "已鑲寶石：%s · %d 星（%s） · %s %s": "Socketed Gem: %s · %d Star (%s) · %s %s",
+  "類型：%s（已鑲寶石）": "Type: %s (Socketed)",
+  "拆解【%s】：獲得鐵屑 ×%d、金幣 +%d、返還寶石【%s】": "Dismantled [%s]: Iron Scrap x%d, Gold +%d, Returned Gem [%s]",
+  "拆解【%s】，獲得鐵屑×%d、金幣+%d，返還寶石【%s】": "Dismantled [%s], received Iron Scrap x%d, Gold +%d, returned Gem [%s]",
+  "返還寶石": "Returned Gem",
+  "返還寶石【%s】": "Returned Gem [%s]"
 }
