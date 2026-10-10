@@ -5791,7 +5791,7 @@
    "cat": "遊戲",
    "title": "背包Tab武器裝備詳情新增前往鍛造快捷按鈕",
    "status": "測試中",
-   "note": "自測全綠、0 SCRIPT ERROR、4張實機存證SHA256互異、送審中",
+   "note": "已合併至main，待sideqa全面回歸驗收",
    "keys": [
     "背包Tab武器裝"
    ]
