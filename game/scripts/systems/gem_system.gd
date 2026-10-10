@@ -237,6 +237,73 @@ func fuse(color: String, level: int) -> Dictionary:
 	}
 
 
+func can_auto_fuse() -> bool:
+	if not unlocked():
+		return false
+	_ensure_bag()
+	for color in COLORS:
+		for lv in range(1, MAX_LEVEL):
+			if count_of(color, lv) >= FUSE_NEED:
+				return true
+	return false
+
+
+## 一鍵合成：依序檢視紅/黃/藍各色 1~4 級寶石，當數量 >= 3 時自動逐級合成至可合成的最大階級
+func auto_fuse() -> Dictionary:
+	if not unlocked():
+		return {
+			"ok": false,
+			"total_fused": 0,
+			"count": 0,
+			"msg": _t("寶石工坊需達到 Lv%d。") % UNLOCK_LEVEL,
+			"stats": {},
+		}
+	_ensure_bag()
+	if not can_auto_fuse():
+		return {
+			"ok": false,
+			"total_fused": 0,
+			"count": 0,
+			"msg": _t("暫無可合成寶石。"),
+			"stats": {},
+		}
+
+	var total_fused := 0
+	var stats: Dictionary = {}
+	for c in COLORS:
+		stats[c] = {}
+
+	for color in COLORS:
+		for lv in range(1, MAX_LEVEL):
+			var c_count := count_of(color, lv)
+			var times := c_count / FUSE_NEED
+			if times <= 0:
+				continue
+			var need_remove := times * FUSE_NEED
+			var removed := 0
+			var next_bag: Array = []
+			for g in GameState.gem_bag:
+				if removed < need_remove and str(g.get("color", "")) == color and int(g.get("level", 0)) == lv:
+					removed += 1
+					continue
+				next_bag.append(g)
+			GameState.gem_bag = next_bag
+			add_gem(color, lv + 1, times)
+			total_fused += times
+			stats[color][lv + 1] = int(stats[color].get(lv + 1, 0)) + times
+
+	SaveManager.save_game()
+
+	var msg := _t("一鍵合成完成！共晉升 %d 次寶石。") % total_fused
+	return {
+		"ok": true,
+		"total_fused": total_fused,
+		"count": total_fused,
+		"msg": msg,
+		"stats": stats,
+	}
+
+
 func socket_cost(level: int) -> int:
 	return SOCKET_GOLD_BASE + SOCKET_GOLD_PER_LV * maxi(0, level - 1)
 
