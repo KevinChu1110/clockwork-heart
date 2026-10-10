@@ -1034,5 +1034,8 @@
   "前往整頓": "Equiparse",
   "前往鍛造": "Ir a Forja",
   "再次挑戰": "Reintentar etapa",
-  "能量不足，無法再次挑戰關卡！": "¡Energía insuficiente para reintentar la etapa!"
+  "能量不足，無法再次挑戰關卡！": "¡Energía insuficiente para reintentar la etapa!",
+  "一鍵合成": "Fusión Rápida",
+  "暫無可合成寶石。": "No hay gemas para fusionar.",
+  "一鍵合成完成！共晉升 %d 次寶石。": "¡Fusión rápida completada! Gemas mejoradas %d veces."
 }

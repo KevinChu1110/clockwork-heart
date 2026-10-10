@@ -1034,5 +1034,8 @@
   "前往整頓": "Gear Up",
   "前往鍛造": "Go to Forge",
   "再次挑戰": "Retry Stage",
-  "能量不足，無法再次挑戰關卡！": "Not enough energy to retry stage!"
+  "能量不足，無法再次挑戰關卡！": "Not enough energy to retry stage!",
+  "一鍵合成": "Quick Fuse",
+  "暫無可合成寶石。": "No gems available to fuse.",
+  "一鍵合成完成！共晉升 %d 次寶石。": "Quick Fuse complete! Upgraded gems %d times."
 }

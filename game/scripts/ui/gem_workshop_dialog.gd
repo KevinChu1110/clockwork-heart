@@ -69,6 +69,11 @@ var _tab_case_btn: Button
 var _smelt_view: VBoxContainer
 var _smelt_cards_box: HBoxContainer
 var _furnace_bar: PanelContainer
+var _fb_line_info: Label
+var _fb_furnace_tag: Label
+var _fb_btn_unlock: Button
+var _fb_rule_lbl: Label
+var _btn_auto_fuse: Button
 
 var _case_view: VBoxContainer
 var _case_slots_row: HBoxContainer
@@ -110,6 +115,8 @@ func _disconnect_loc_signal() -> void:
 
 func _on_locale_changed(_new_locale: String = "") -> void:
 	_update_ui_texts()
+	if _msg_label and is_instance_valid(_msg_label):
+		_msg_label.text = ""
 	if _current_tab == Tab.SMELT:
 		_refresh_smelt_view()
 	else:
@@ -123,6 +130,14 @@ func _update_ui_texts() -> void:
 		_tab_smelt_btn.text = _t("寶石熔煉與合成")
 	if _tab_case_btn and is_instance_valid(_tab_case_btn):
 		_tab_case_btn.text = _t("寶石櫃盤點檢視")
+	if _btn_auto_fuse and is_instance_valid(_btn_auto_fuse):
+		_btn_auto_fuse.text = _t("一鍵合成")
+	if _fb_furnace_tag and is_instance_valid(_fb_furnace_tag):
+		_fb_furnace_tag.text = _t("· 熔爐已點燃（雙線並行）")
+	if _fb_btn_unlock and is_instance_valid(_fb_btn_unlock):
+		_fb_btn_unlock.text = _t("點燃熔爐")
+	if _fb_rule_lbl and is_instance_valid(_fb_rule_lbl):
+		_fb_rule_lbl.text = _t("3碎片→1級 · 3顆同級可合成")
 	if _grid_title and is_instance_valid(_grid_title):
 		_grid_title.text = _t("倉庫寶石儲備盤點（各階數量）")
 	if _btn_refresh_case and is_instance_valid(_btn_refresh_case):
@@ -262,6 +277,66 @@ func _build_ui() -> void:
 	_furnace_bar.name = "FurnaceBar"
 	_furnace_bar.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 3, 14))
 	_smelt_view.add_child(_furnace_bar)
+
+	var fb_m := MarginContainer.new()
+	fb_m.add_theme_constant_override("margin_left", 12)
+	fb_m.add_theme_constant_override("margin_right", 12)
+	fb_m.add_theme_constant_override("margin_top", 6)
+	fb_m.add_theme_constant_override("margin_bottom", 6)
+	_furnace_bar.add_child(fb_m)
+
+	var fb_row := HBoxContainer.new()
+	fb_row.name = "FurnaceRow"
+	fb_row.add_theme_constant_override("separation", 10)
+	fb_m.add_child(fb_row)
+
+	var left_vbox := VBoxContainer.new()
+	left_vbox.add_theme_constant_override("separation", 2)
+	left_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	fb_row.add_child(left_vbox)
+
+	var top_line := HBoxContainer.new()
+	top_line.add_theme_constant_override("separation", 8)
+	left_vbox.add_child(top_line)
+
+	_fb_line_info = _create_label("", 18, COLOR_TEXT_DARK, true)
+	top_line.add_child(_fb_line_info)
+
+	_fb_furnace_tag = _create_label(_t("· 熔爐已點燃（雙線並行）"), 16, COLOR_SKY, true)
+	top_line.add_child(_fb_furnace_tag)
+
+	_fb_btn_unlock = Button.new()
+	_fb_btn_unlock.name = "BtnUnlockFurnace"
+	_fb_btn_unlock.text = _t("點燃熔爐")
+	_fb_btn_unlock.custom_minimum_size = Vector2(100, 36)
+	_fb_btn_unlock.add_theme_font_size_override("font_size", 16)
+	_fb_btn_unlock.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_fb_btn_unlock.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_fb_btn_unlock.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_fb_btn_unlock.add_theme_font_override("font", _cached_font)
+	_fb_btn_unlock.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 3, 14, 2))
+	_fb_btn_unlock.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 3, 14, 2))
+	_fb_btn_unlock.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 1, 14, 2))
+	_fb_btn_unlock.pressed.connect(func():
+		var u_res: Dictionary = GemSystem.unlock_furnace("auto")
+		_msg_label.text = _t(str(u_res.get("msg", "")))
+		_refresh_smelt_view()
+	)
+	top_line.add_child(_fb_btn_unlock)
+
+	_fb_rule_lbl = _create_label(_t("3碎片→1級 · 3顆同級可合成"), 16, COLOR_TEXT_MUTED)
+	left_vbox.add_child(_fb_rule_lbl)
+
+	_btn_auto_fuse = Button.new()
+	_btn_auto_fuse.name = "BtnAutoFuse"
+	_btn_auto_fuse.text = _t("一鍵合成")
+	_btn_auto_fuse.custom_minimum_size = Vector2(130, 50)
+	_btn_auto_fuse.add_theme_font_size_override("font_size", 16)
+	if _cached_font:
+		_btn_auto_fuse.add_theme_font_override("font", _cached_font)
+	_btn_auto_fuse.pressed.connect(_on_auto_fuse_pressed)
+	fb_row.add_child(_btn_auto_fuse)
 
 	_smelt_cards_box = HBoxContainer.new()
 	_smelt_cards_box.name = "SmeltCardsBox"
@@ -436,54 +511,28 @@ func _switch_tab(tab: Tab) -> void:
 
 func _refresh_smelt_view() -> void:
 	# 1. 刷新頂部產線橫幅
-	for c in _furnace_bar.get_children():
-		c.queue_free()
-
-	var fb_m := MarginContainer.new()
-	fb_m.add_theme_constant_override("margin_left", 12)
-	fb_m.add_theme_constant_override("margin_right", 12)
-	fb_m.add_theme_constant_override("margin_top", 6)
-	fb_m.add_theme_constant_override("margin_bottom", 6)
-	_furnace_bar.add_child(fb_m)
-
-	var row1 := HBoxContainer.new()
-	row1.add_theme_constant_override("separation", 10)
-	fb_m.add_child(row1)
-
 	var left_lines: int = GemSystem.smelt_left_today()
 	var total_lines: int = GemSystem.smelt_lines_per_day()
-	var line_info := _create_label(_t("今日熔煉產線：%d / %d 線") % [left_lines, total_lines], 18, COLOR_TEXT_DARK, true)
-	row1.add_child(line_info)
+	if _fb_line_info and is_instance_valid(_fb_line_info):
+		_fb_line_info.text = _t("今日熔煉產線：%d / %d 線") % [left_lines, total_lines]
 
 	if GemSystem.furnace_unlocked():
-		var furnace_tag := _create_label(_t("· 熔爐已點燃（雙線並行）"), 16, COLOR_SKY, true)
-		row1.add_child(furnace_tag)
+		if _fb_furnace_tag and is_instance_valid(_fb_furnace_tag):
+			_fb_furnace_tag.visible = true
+		if _fb_btn_unlock and is_instance_valid(_fb_btn_unlock):
+			_fb_btn_unlock.visible = false
 	elif GemSystem.furnace_can_unlock():
-		var btn_unlock := Button.new()
-		btn_unlock.text = _t("點燃熔爐")
-		btn_unlock.custom_minimum_size = Vector2(100, 36)
-		btn_unlock.add_theme_font_size_override("font_size", 16)
-		btn_unlock.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-		btn_unlock.add_theme_color_override("font_outline_color", COLOR_BORDER)
-		btn_unlock.add_theme_constant_override("outline_size", 1)
-		if _cached_font:
-			btn_unlock.add_theme_font_override("font", _cached_font)
-		btn_unlock.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 3, 14, 2))
-		btn_unlock.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 3, 14, 2))
-		btn_unlock.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 1, 14, 2))
-		btn_unlock.pressed.connect(func():
-			var u_res: Dictionary = GemSystem.unlock_furnace("auto")
-			_msg_label.text = _t(str(u_res.get("msg", "")))
-			_refresh_smelt_view()
-		)
-		row1.add_child(btn_unlock)
+		if _fb_furnace_tag and is_instance_valid(_fb_furnace_tag):
+			_fb_furnace_tag.visible = false
+		if _fb_btn_unlock and is_instance_valid(_fb_btn_unlock):
+			_fb_btn_unlock.visible = true
+	else:
+		if _fb_furnace_tag and is_instance_valid(_fb_furnace_tag):
+			_fb_furnace_tag.visible = false
+		if _fb_btn_unlock and is_instance_valid(_fb_btn_unlock):
+			_fb_btn_unlock.visible = false
 
-	var spacer := Control.new()
-	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	row1.add_child(spacer)
-
-	var rule_lbl := _create_label(_t("3碎片→1級 · 3顆同級可合成"), 16, COLOR_TEXT_MUTED)
-	row1.add_child(rule_lbl)
+	_update_auto_fuse_button_state()
 
 	# 2. 刷新三色寶石果凍卡片
 	for c in _smelt_cards_box.get_children():
@@ -492,6 +541,38 @@ func _refresh_smelt_view() -> void:
 	for col in GemSystem.COLORS:
 		var card := _build_single_smelt_card(col)
 		_smelt_cards_box.add_child(card)
+
+
+func _update_auto_fuse_button_state() -> void:
+	if not _btn_auto_fuse or not is_instance_valid(_btn_auto_fuse):
+		return
+	var can_f: bool = GemSystem.can_auto_fuse()
+	if can_f:
+		_btn_auto_fuse.disabled = false
+		_btn_auto_fuse.add_theme_color_override("font_color", Color.WHITE)
+		_btn_auto_fuse.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		_btn_auto_fuse.add_theme_constant_override("outline_size", 4)
+		_btn_auto_fuse.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 16, 2))
+		_btn_auto_fuse.add_theme_stylebox_override("hover", _create_button_style(Color("#5AB3FF"), COLOR_BORDER, 5, 16, 2))
+		_btn_auto_fuse.add_theme_stylebox_override("pressed", _create_button_style(Color("#268FE8"), COLOR_BORDER, 2, 16, 2))
+	else:
+		_btn_auto_fuse.disabled = true
+		_btn_auto_fuse.add_theme_color_override("font_disabled_color", COLOR_TEXT_MUTED)
+		_btn_auto_fuse.add_theme_color_override("font_color", COLOR_TEXT_MUTED)
+		_btn_auto_fuse.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		_btn_auto_fuse.add_theme_constant_override("outline_size", 0)
+		_btn_auto_fuse.add_theme_stylebox_override("disabled", _create_disabled_button_style(16))
+
+
+func _on_auto_fuse_pressed() -> void:
+	var res: Dictionary = GemSystem.auto_fuse()
+	_msg_label.text = _t(str(res.get("msg", "")))
+	if bool(res.get("ok", false)):
+		_msg_label.add_theme_color_override("font_color", COLOR_SKY)
+	else:
+		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	SaveManager.save_game()
+	_refresh_smelt_view()
 
 
 func _build_single_smelt_card(col: String) -> PanelContainer:

@@ -489,7 +489,7 @@
   "一擊要有重量": "Cada Golpe Debe Pesar",
   "一次性去廣告（Mock買斷）": "Eliminar anuncios (Compra simulada)",
   "一炷煙直上，在霧裡拐了個彎，像笑了一下。": "Un hilo de humo sube recto, se dobla en la niebla, como si se hubiera reído.",
-  "一鍵合成": "Fusionar todo",
+  "一鍵合成": "Fusión Rápida",
   "一鍵吸收廢魂": "Absorber almas sobrantes (un toque)",
   "一鍵吸收灰魂": "Absorber Almas Grises",
   "一鍵吸收灰魂 (換經驗)": "Absorber Almas Grises (EXP)",
@@ -3711,5 +3711,7 @@
   "防禦 +%d": "DEF +%d",
   "生命 +%d": "PS +%d",
   "速度 +%d": "VEL +%d",
-  "穿透 +%d": "PEN +%d"
+  "穿透 +%d": "PEN +%d",
+  "暫無可合成寶石。": "No hay gemas para fusionar.",
+  "一鍵合成完成！共晉升 %d 次寶石。": "¡Fusión rápida completada! Gemas mejoradas %d veces."
 }
