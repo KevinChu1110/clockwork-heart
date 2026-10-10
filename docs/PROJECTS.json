@@ -5875,6 +5875,16 @@
    "keys": [
     "大廳頂部戰力膠囊"
    ]
+  },
+  {
+   "id": "power-stat-equip-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog戰力屬性總覽新增前往整頓快捷按鈕連動大廳角色裝備Tab",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "PowerSta"
+   ]
   }
  ]
 }
