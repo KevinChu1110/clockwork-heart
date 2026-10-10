@@ -3724,5 +3724,6 @@
   "拆解【%s】：獲得鐵屑 ×%d、金幣 +%d、返還寶石【%s】": "Desmantelado [%s]: Chatarra de hierro x%d, Oro +%d, Gema devuelta [%s]",
   "拆解【%s】，獲得鐵屑×%d、金幣+%d，返還寶石【%s】": "Desmantelado [%s], chatarra de hierro x%d, oro +%d, gema devuelta [%s]",
   "返還寶石": "Gema devuelta",
-  "返還寶石【%s】": "Gema devuelta [%s]"
+  "返還寶石【%s】": "Gema devuelta [%s]",
+  "前往工坊": "Ir al Taller"
 }

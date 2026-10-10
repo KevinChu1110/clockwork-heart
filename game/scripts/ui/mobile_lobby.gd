@@ -121,6 +121,7 @@ var _bag_use_btn: Button = null
 var _bag_hb_btn: Button = null
 var _btn_bag_go_forge: Button = null
 var _btn_bag_dismantle: Button = null
+var _btn_bag_go_workshop: Button = null
 var _bag_tip: Label = null
 var _last_bag_click_i: int = -1
 var _last_bag_click_t: int = 0
@@ -5093,6 +5094,24 @@ func _build_bag_tab() -> void:
 	_btn_bag_dismantle.visible = false
 	btn_row.add_child(_btn_bag_dismantle)
 
+	_btn_bag_go_workshop = Button.new()
+	_btn_bag_go_workshop.name = "BtnBagGoWorkshop"
+	_btn_bag_go_workshop.text = _t("前往工坊")
+	_btn_bag_go_workshop.custom_minimum_size = Vector2(0, 52)
+	_btn_bag_go_workshop.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_btn_bag_go_workshop.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+	_btn_bag_go_workshop.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
+	_btn_bag_go_workshop.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
+	_btn_bag_go_workshop.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_btn_bag_go_workshop.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_bag_go_workshop.add_theme_constant_override("outline_size", 3)
+	_btn_bag_go_workshop.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_btn_bag_go_workshop.add_theme_font_override("font", _cached_font)
+	_btn_bag_go_workshop.pressed.connect(_on_bag_go_workshop_pressed)
+	_btn_bag_go_workshop.visible = false
+	btn_row.add_child(_btn_bag_go_workshop)
+
 	# 操作提示
 	_bag_tip = Label.new()
 	_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
@@ -5444,6 +5463,38 @@ func get_bag_dismantle_button() -> Button:
 	return _btn_bag_dismantle
 
 
+func get_bag_go_workshop_button() -> Button:
+	return _btn_bag_go_workshop
+
+
+func _on_bag_go_workshop_pressed() -> void:
+	var am = get_tree().root.get_node_or_null("AudioManager") if get_tree() else null
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	var target_item := _selected_bag_item
+	_switch_tab(Tab.VILLAGE)
+
+	# 判斷選中物品類型：裝備切換至寶石櫃鑲嵌分頁 (Tab.CASE_INSPECT = 1)，寶石/星屑素材切換至熔煉分頁 (Tab.SMELT = 0)
+	var target_tab := 0
+	var inv := _get_inv_sys()
+	var def: Dictionary = inv.call("catalog", target_item) as Dictionary if (inv and inv.has_method("catalog")) else {}
+	var kind: String = str(def.get("kind", ""))
+	var is_equipment: bool = (kind == "equipment" or kind == "weapon")
+	if not is_equipment and not target_item.is_empty():
+		var eq := _get_equip_sys()
+		if eq != null:
+			var eq_inst: Dictionary = eq.call("find_any", target_item) if eq.has_method("find_any") else {}
+			if not eq_inst.is_empty() or (eq.has_method("base_def") and not (eq.call("base_def", target_item) as Dictionary).is_empty()):
+				is_equipment = true
+
+	if is_equipment:
+		target_tab = 1
+	else:
+		target_tab = 0
+
+	open_gem_workshop(target_tab)
+
+
 func _on_bag_go_forge_pressed() -> void:
 	var am = get_tree().root.get_node_or_null("AudioManager") if get_tree() else null
 	if am and am.has_method("play_ui"):
@@ -5642,6 +5693,8 @@ func _update_bag_detail(inv: Node) -> void:
 			_btn_bag_go_forge.visible = false
 		if _btn_bag_dismantle:
 			_btn_bag_dismantle.visible = false
+		if _btn_bag_go_workshop:
+			_btn_bag_go_workshop.visible = false
 		return
 
 	if _bag_hb_btn:
@@ -5667,6 +5720,13 @@ func _update_bag_detail(inv: Node) -> void:
 	if _btn_bag_go_forge:
 		_btn_bag_go_forge.visible = is_equipment
 		_btn_bag_go_forge.text = _t("前往鍛造")
+
+	var item_id_lower := _selected_bag_item.to_lower()
+	var is_gem_material: bool = (kind == "gem" or item_id_lower.find("gem") != -1 or item_id_lower.find("dust") != -1)
+	var can_go_workshop: bool = is_gem_material or is_equipment
+	if _btn_bag_go_workshop:
+		_btn_bag_go_workshop.visible = can_go_workshop
+		_btn_bag_go_workshop.text = _t("前往工坊")
 
 	if _btn_bag_dismantle:
 		_btn_bag_dismantle.visible = is_equipment
@@ -6050,6 +6110,8 @@ func _apply_locale_texts() -> void:
 		_btn_bag_go_forge.text = _t("前往鍛造")
 	if _btn_bag_dismantle and is_instance_valid(_btn_bag_dismantle):
 		_btn_bag_dismantle.text = _t("拆解回收")
+	if _btn_bag_go_workshop and is_instance_valid(_btn_bag_go_workshop):
+		_btn_bag_go_workshop.text = _t("前往工坊")
 	if _bag_layer and is_instance_valid(_bag_layer):
 		_update_bag_detail(_get_inv_sys())
 		_refresh_core_bag()
@@ -6162,9 +6224,11 @@ func open_forge(target_weapon: Variant = null) -> Control:
 
 
 ## 開啟手藝工坊寶石彈窗
-func open_gem_workshop() -> Control:
+func open_gem_workshop(target_tab: int = 0) -> Control:
 	var existing = get_node_or_null("GemWorkshopDialog")
 	if existing != null:
+		if existing.has_method("set_tab"):
+			existing.call("set_tab", target_tab)
 		return existing
 	var GemClass: GDScript = load("res://scripts/ui/gem_workshop_dialog.gd")
 	if GemClass == null:
@@ -6176,6 +6240,8 @@ func open_gem_workshop() -> Control:
 		refresh_hud()
 	)
 	add_child(dlg)
+	if target_tab != 0 and dlg.has_method("set_tab"):
+		dlg.call("set_tab", target_tab)
 	return dlg
 
 
