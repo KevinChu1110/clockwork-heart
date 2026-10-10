@@ -390,6 +390,12 @@ static func _get_equip_sys() -> Node:
 		return (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
 	return null
 
+static func _get_gem_sys() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).root.get_node_or_null("GemSystem")
+	return null
+
 func _get_hero_name() -> String:
 	var gs := _gs()
 	if gs and "player_name" in gs:
@@ -5470,7 +5476,13 @@ func _on_bag_dismantle_pressed() -> void:
 		var item_name: String = str(res.get("name", target_uid))
 		var toast_msg := str(res.get("msg", ""))
 		if toast_msg.is_empty():
-			toast_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [item_name, scrap_n, gold_n]
+			var refunded_gem: Dictionary = res.get("refunded_gem", {})
+			if not refunded_gem.is_empty():
+				var gem_sys = get_tree().root.get_node_or_null("GemSystem") if get_tree() else null
+				var g_name := str(gem_sys.call("gem_label", refunded_gem)) if gem_sys and gem_sys.has_method("gem_label") else _t("寶石")
+				toast_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d、返還寶石【%s】") % [item_name, scrap_n, gold_n, g_name]
+			else:
+				toast_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [item_name, scrap_n, gold_n]
 		_show_toast(toast_msg)
 		refresh_hud()
 		_refresh_bag_tab(true)
@@ -5731,20 +5743,31 @@ func _update_bag_detail(inv: Node) -> void:
 
 	var item_name: String = _t(str(def.get("name", _selected_bag_item)))
 	var item_desc: String = _t(str(def.get("desc", "")))
-	if is_equipment and (item_desc.is_empty() or def.is_empty()):
+	var eq_inst: Dictionary = {}
+	if is_equipment:
 		var eq := _get_equip_sys()
-		if eq != null:
-			var eq_inst: Dictionary = eq.call("find_any", _selected_bag_item) if eq.has_method("find_any") else {}
-			if not eq_inst.is_empty():
-				item_name = _t(str(eq_inst.get("name", _selected_bag_item)))
-				var tier := int(eq_inst.get("tier", 1))
-				var q_label := _t(str(eq_inst.get("quality_label", "")))
-				item_desc = _t("器階：第 %d 階  品質：%s") % [tier, q_label]
-			elif eq.has_method("base_def"):
-				var bdef: Dictionary = eq.call("base_def", _selected_bag_item)
-				if not bdef.is_empty():
-					item_name = _t(str(bdef.get("name", _selected_bag_item)))
-					item_desc = _t("基礎武器 · 點擊前往鍛造可進行強化")
+		if eq != null and eq.has_method("find_any"):
+			eq_inst = eq.call("find_any", _selected_bag_item) as Dictionary
+		if not eq_inst.is_empty():
+			item_name = _t(str(eq_inst.get("name", _selected_bag_item)))
+			var tier := int(eq_inst.get("tier", 1))
+			var q_label := _t(str(eq_inst.get("quality_label", "")))
+			item_desc = _t("器階：第 %d 階  品質：%s") % [tier, q_label]
+		elif eq != null and eq.has_method("base_def") and (item_desc.is_empty() or def.is_empty()):
+			var bdef: Dictionary = eq.call("base_def", _selected_bag_item)
+			if not bdef.is_empty():
+				item_name = _t(str(bdef.get("name", _selected_bag_item)))
+				item_desc = _t("基礎武器 · 點擊前往鍛造可進行強化")
+
+	var gem_info: Dictionary = {}
+	if not eq_inst.is_empty():
+		var gem_data: Variant = eq_inst.get("gem", null)
+		if typeof(gem_data) == TYPE_DICTIONARY and not (gem_data as Dictionary).is_empty():
+			var g_dict: Dictionary = gem_data as Dictionary
+			var eq_slot := str(eq_inst.get("slot", "weapon"))
+			var gem_sys: Node = _get_gem_sys()
+			if gem_sys and gem_sys.has_method("get_gem_socket_info"):
+				gem_info = gem_sys.call("get_gem_socket_info", g_dict, eq_slot) as Dictionary
 
 	var icon_tex := get_item_icon(_selected_bag_item)
 	if _bag_preview_row:
@@ -5754,7 +5777,10 @@ func _update_bag_detail(inv: Node) -> void:
 		if _bag_detail_count:
 			_bag_detail_count.text = "×%d" % n
 		if _bag_detail_kind:
-			_bag_detail_kind.text = _t("類型：%s") % kind_s
+			if not gem_info.is_empty():
+				_bag_detail_kind.text = _t("類型：%s（已鑲寶石）") % kind_s
+			else:
+				_bag_detail_kind.text = _t("類型：%s") % kind_s
 		if icon_tex != null:
 			if _bag_detail_icon:
 				_bag_detail_icon.texture = icon_tex
@@ -5768,7 +5794,19 @@ func _update_bag_detail(inv: Node) -> void:
 				_bag_detail_glyph.text = str(def.get("glyph", "·"))
 				_bag_detail_glyph.visible = true
 
-	_bag_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
+	if not gem_info.is_empty():
+		var hex_col: String = str(gem_info.get("color_hex", "#9A6B00"))
+		var col_name: String = str(gem_info.get("color_name", ""))
+		var lv: int = int(gem_info.get("level", 1))
+		var stars_lbl: String = str(gem_info.get("stars_label", gem_info.get("stars", "")))
+		var bname: String = str(gem_info.get("bonus_name", ""))
+		var btext: String = str(gem_info.get("bonus_text", ""))
+		var gem_line: String = _t("已鑲寶石：%s · %d 星（%s） · %s %s") % [
+			col_name, lv, stars_lbl, bname, btext
+		]
+		_bag_detail.text = "[color=#4A3E60]%s[/color]\n\n[color=%s][b]%s[/b][/color]" % [item_desc, hex_col, gem_line]
+	else:
+		_bag_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
 
 func _fmt_int(n: int) -> String:
 	var neg := n < 0

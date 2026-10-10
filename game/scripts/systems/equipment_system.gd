@@ -993,6 +993,12 @@ func try_drop_loot(force_id: String = "") -> Dictionary:
 	return {"ok": true, "inst": inst, "msg": _t("獲得 %s") % label(inst)}
 
 
+func _get_gem_sys() -> Node:
+	if Engine.get_main_loop() is SceneTree:
+		return (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GemSystem")
+	return null
+
+
 ## 計算拆解裝備可獲得的鐵屑與金幣收益
 func dismantle_yield(inst: Dictionary) -> Dictionary:
 	if inst.is_empty():
@@ -1113,6 +1119,31 @@ func dismantle(uid: String) -> Dictionary:
 	var scrap_n: int = int(y.get("iron_scrap", 1))
 	var gold_n: int = int(y.get("gold", 0))
 
+	# 檢查是否鑲嵌寶石，若有則完整退回 GemSystem（add_gem），防止拆解吞寶石
+	var refunded_gem: Dictionary = {}
+	var g_data: Variant = inst.get("gem", null)
+	if typeof(g_data) == TYPE_DICTIONARY and not (g_data as Dictionary).is_empty():
+		var g_dict: Dictionary = g_data as Dictionary
+		var g_color: String = str(g_dict.get("color", ""))
+		var g_lv: int = clampi(int(g_dict.get("level", 1)), 1, 5)
+		if g_color in ["red", "yellow", "blue"]:
+			var gem_sys: Node = _get_gem_sys()
+			if gem_sys != null and gem_sys.has_method("add_gem"):
+				gem_sys.call("add_gem", g_color, g_lv, 1)
+			else:
+				if GameState and "gem_bag" in GameState:
+					if GameState.gem_bag == null or typeof(GameState.gem_bag) != TYPE_ARRAY:
+						GameState.gem_bag = []
+					GameState.gem_bag.append({
+						"id": "gem_%d_%d" % [Time.get_unix_time_from_system(), randi() % 99999],
+						"color": g_color,
+						"level": g_lv,
+					})
+			refunded_gem = {
+				"color": g_color,
+				"level": g_lv,
+			}
+
 	if from_inv:
 		InventorySystem.remove_item(uid, 1)
 	else:
@@ -1126,10 +1157,28 @@ func dismantle(uid: String) -> Dictionary:
 	equipment_changed.emit()
 	SaveManager.save_game()
 
+	var gem_label_str := ""
+	if not refunded_gem.is_empty():
+		var gem_sys: Node = _get_gem_sys()
+		if gem_sys != null and gem_sys.has_method("gem_label"):
+			gem_label_str = str(gem_sys.call("gem_label", refunded_gem))
+		else:
+			var c_name: String = {"red": "紅寶石", "yellow": "黃寶石", "blue": "藍寶石"}.get(refunded_gem.get("color", ""), "")
+			gem_label_str = "%s · %d 級" % [c_name, int(refunded_gem.get("level", 1))]
+
+	var log_msg := ""
+	var result_msg := ""
+	if not refunded_gem.is_empty():
+		log_msg = _t("拆解【%s】，獲得鐵屑×%d、金幣+%d，返還寶石【%s】") % [inst.get("name", ""), scrap_n, gold_n, gem_label_str]
+		result_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d、返還寶石【%s】") % [inst.get("name", ""), scrap_n, gold_n, gem_label_str]
+	else:
+		log_msg = _t("拆解【%s】，獲得鐵屑×%d、金幣+%d") % [inst.get("name", ""), scrap_n, gold_n]
+		result_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [inst.get("name", ""), scrap_n, gold_n]
+
 	if Engine.get_main_loop() is SceneTree:
 		var gl: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameLog")
 		if gl and gl.has_method("info"):
-			gl.call("info", "equip", _t("拆解【%s】，獲得鐵屑×%d、金幣+%d") % [inst.get("name", ""), scrap_n, gold_n])
+			gl.call("info", "equip", log_msg)
 
 	return {
 		"ok": true,
@@ -1137,5 +1186,6 @@ func dismantle(uid: String) -> Dictionary:
 		"name": str(inst.get("name", "")),
 		"iron_scrap": scrap_n,
 		"gold": gold_n,
-		"msg": _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [inst.get("name", ""), scrap_n, gold_n],
+		"refunded_gem": refunded_gem,
+		"msg": result_msg,
 	}

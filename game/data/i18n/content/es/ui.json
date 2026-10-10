@@ -3717,5 +3717,12 @@
   "裝備中": "Equipado",
   "裝備已鎖定，無法拆解。": "El equipo está bloqueado y no se puede desmantelar.",
   "拆解裝備回收鐵屑與金幣": "Desmantela equipo para obtener chatarra y oro",
-  "無法拆解此物品。": "No se puede desmantelar este objeto."
+  "無法拆解此物品。": "No se puede desmantelar este objeto.",
+  "已鑲寶石：": "Gema engarzada: ",
+  "已鑲寶石：%s · %d 星（%s） · %s %s": "Gema engarzada: %s · %d Estrella (%s) · %s %s",
+  "類型：%s（已鑲寶石）": "Tipo: %s (Engarzada)",
+  "拆解【%s】：獲得鐵屑 ×%d、金幣 +%d、返還寶石【%s】": "Desmantelado [%s]: Chatarra de hierro x%d, Oro +%d, Gema devuelta [%s]",
+  "拆解【%s】，獲得鐵屑×%d、金幣+%d，返還寶石【%s】": "Desmantelado [%s], chatarra de hierro x%d, oro +%d, gema devuelta [%s]",
+  "返還寶石": "Gema devuelta",
+  "返還寶石【%s】": "Gema devuelta [%s]"
 }

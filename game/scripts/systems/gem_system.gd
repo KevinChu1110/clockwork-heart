@@ -534,6 +534,69 @@ func panel_actions_hint() -> String:
 
 
 ## 盤點當前穿戴裝備（武器/防具）各孔位鑲嵌的寶石色階與六維總加成
+func get_gem_socket_info(gem_data: Dictionary, slot: String = "weapon") -> Dictionary:
+	if gem_data.is_empty():
+		return {}
+	var color := str(gem_data.get("color", ""))
+	if color not in COLORS:
+		return {}
+	var lv := clampi(int(gem_data.get("level", 1)), 1, MAX_LEVEL)
+	var per := {
+		"crit": 2.0, "hp_pct": 0.03, "atk_pct": 0.04,
+		"def_pct": 0.04, "hit": 3.0, "eva": 3.0,
+	}
+	var bonus_key := ""
+	var bonus_name := ""
+	match color:
+		"red":
+			bonus_key = "crit" if slot == "weapon" else "hp_pct"
+			bonus_name = _t("暴擊") if slot == "weapon" else _t("生命%")
+		"yellow":
+			bonus_key = "atk_pct" if slot == "weapon" else "def_pct"
+			bonus_name = _t("攻擊%") if slot == "weapon" else _t("防禦%")
+		"blue":
+			bonus_key = "hit" if slot == "weapon" else "eva"
+			bonus_name = _t("命中") if slot == "weapon" else _t("迴避")
+
+	var per_val: float = float(per.get(bonus_key, 0.0))
+	var bonus_val := per_val * float(lv)
+	var bonus_text := ""
+	if bonus_key.ends_with("_pct"):
+		bonus_text = "+%.1f%%" % [bonus_val * 100.0]
+	else:
+		bonus_text = "+%.1f" % [bonus_val]
+
+	var stars: String = ["凡", "良", "優", "精", "極"][clampi(lv, 1, 5) - 1]
+	# 壓明度多巴胺配色，確保在淺色與深色底上均具備高對比度
+	var color_hex := "#9A6B00"
+	match color:
+		"red":
+			color_hex = "#C2185B"
+		"yellow":
+			color_hex = "#9A6B00"
+		"blue":
+			color_hex = "#1565C0"
+
+	var col_name := color_label(color)
+	var g_label := gem_label(gem_data)
+
+	return {
+		"color": color,
+		"level": lv,
+		"color_name": col_name,
+		"stars": stars,
+		"stars_label": _t(stars),
+		"label": g_label,
+		"bonus_key": bonus_key,
+		"bonus_name": bonus_name,
+		"bonus_val": bonus_val,
+		"bonus_text": bonus_text,
+		"color_hex": color_hex,
+		"display_text": _t("已鑲寶石：%s · %d 星（%s） · %s %s") % [col_name, lv, _t(stars), bonus_name, bonus_text],
+	}
+
+
+## 盤點當前穿戴裝備（武器/防具）各孔位鑲嵌的寶石色階與六維總加成
 func inspect_gem_case() -> Dictionary:
 	_ensure_bag()
 	_ensure_shards()
@@ -570,39 +633,14 @@ func inspect_gem_case() -> Dictionary:
 		var bonus_text := ""
 
 		if typeof(g) == TYPE_DICTIONARY and not (g as Dictionary).is_empty():
-			var color := str((g as Dictionary).get("color", ""))
-			var lv := clampi(int((g as Dictionary).get("level", 1)), 1, MAX_LEVEL)
-			has_gem = true
-			filled_sockets += 1
-			match color:
-				"red":
-					bonus_key = "crit" if slot == "weapon" else "hp_pct"
-					bonus_name = _t("暴擊") if slot == "weapon" else _t("生命%")
-				"yellow":
-					bonus_key = "atk_pct" if slot == "weapon" else "def_pct"
-					bonus_name = _t("攻擊%") if slot == "weapon" else _t("防禦%")
-				"blue":
-					bonus_key = "hit" if slot == "weapon" else "eva"
-					bonus_name = _t("命中") if slot == "weapon" else _t("迴避")
-
-			var per_val: float = float(per.get(bonus_key, 0.0))
-			bonus_val = per_val * float(lv)
-			if bonus_key.ends_with("_pct"):
-				bonus_text = "+%.1f%%" % [bonus_val * 100.0]
-			else:
-				bonus_text = "+%.1f" % [bonus_val]
-
-			gem_info = {
-				"color": color,
-				"level": lv,
-				"color_name": color_label(color),
-				"stars": ["凡", "良", "優", "精", "極"][clampi(lv, 1, 5) - 1],
-				"label": gem_label(g as Dictionary),
-				"bonus_key": bonus_key,
-				"bonus_name": bonus_name,
-				"bonus_val": bonus_val,
-				"bonus_text": bonus_text,
-			}
+			gem_info = get_gem_socket_info(g as Dictionary, slot)
+			if not gem_info.is_empty():
+				has_gem = true
+				filled_sockets += 1
+				bonus_key = str(gem_info.get("bonus_key", ""))
+				bonus_name = str(gem_info.get("bonus_name", ""))
+				bonus_val = float(gem_info.get("bonus_val", 0.0))
+				bonus_text = str(gem_info.get("bonus_text", ""))
 
 		slots_data.append({
 			"slot": slot,

@@ -536,9 +536,9 @@ func grant_starter() -> void:
 	## 新遊戲／教學後
 	if GameState.has_flag("inv.starter_given"):
 		return
+	GameState.set_flag("inv.starter_given", true)
 	add_item("hp_s", 3)
 	add_item("bread", 2)
-	GameState.set_flag("inv.starter_given", true)
 
 
 func roll_skirmish_loot(mode: String) -> Array:
