@@ -5887,6 +5887,16 @@
    ]
   },
   {
+   "id": "power-stat-equip-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog戰力屬性總覽新增前往整頓快捷按鈕連動大廳角色裝備Tab",
+   "status": "測試中",
+   "note": "完成前往整頓快捷按鈕實作、大廳Tab連動、六語系與實機OpenGL3存證截圖",
+   "keys": [
+    "PowerSta"
+   ]
+  },
+  {
    "id": "power-stat-equip-merge",
    "cat": "平台",
    "title": "PowerStatDialog 前往整頓快捷分支合併與主線回歸",

@@ -10,6 +10,7 @@ extends Control
 ## 6. 六語系多國語言支援 (ContentLoc / Loc.locale_changed 即時切換刷新)。
 
 signal closed()
+signal equip_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -64,6 +65,7 @@ var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _sub_title_lbl: Label
 var _close_x_btn: Button
+var _btn_go_equip: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -205,15 +207,26 @@ func _build_ui() -> void:
 	_content_vbox.add_theme_constant_override("separation", 10)
 	_scroll_box.add_child(_content_vbox)
 
-	# 5. 底部按鈕列
+	# 5. 底部按鈕列（並列『前往整頓』與『確定』雙按鈕）
 	var bottom_h := HBoxContainer.new()
 	bottom_h.name = "BottomBar"
 	bottom_h.alignment = BoxContainer.ALIGNMENT_CENTER
+	bottom_h.add_theme_constant_override("separation", 16)
 	root_v.add_child(bottom_h)
 
+	# 前往整頓快捷按鈕（天藍果凍質感，140x48px，熱區>=48px，果凍底 5px）
+	_btn_go_equip = Button.new()
+	_btn_go_equip.name = "BtnGoEquip"
+	_btn_go_equip.text = _t("前往整頓")
+	_btn_go_equip.custom_minimum_size = Vector2(140, 48)
+	_style_jelly_btn(_btn_go_equip, COLOR_SKY, COLOR_TEXT_LIGHT, 16, 5, 16)
+	_btn_go_equip.pressed.connect(_on_go_equip_pressed)
+	bottom_h.add_child(_btn_go_equip)
+
+	# 確定/關閉按鈕（溫暖米黃卡片底果凍按鈕，140x48px，熱區>=48px，果凍底 5px）
 	_bottom_close_btn = Button.new()
 	_bottom_close_btn.name = "BtnBottomClose"
-	_bottom_close_btn.text = _t("關閉")
+	_bottom_close_btn.text = _t("確定")
 	_bottom_close_btn.custom_minimum_size = Vector2(140, 48)
 	_style_jelly_btn(_bottom_close_btn, COLOR_CARD_WARM, COLOR_TEXT_DARK, 16, 5, 16)
 	_bottom_close_btn.pressed.connect(_on_close_pressed)
@@ -238,8 +251,10 @@ func refresh() -> void:
 		var p_lv := int(gs.level) if gs and "level" in gs else 1
 		var p_path := str(gs.call("path_display")) if gs and gs.has_method("path_display") else ""
 		_sub_title_lbl.text = "%s · Lv.%d%s" % [p_name, p_lv, (" · " + p_path) if not p_path.is_empty() else ""]
+	if _btn_go_equip:
+		_btn_go_equip.text = _t("前往整頓")
 	if _bottom_close_btn:
-		_bottom_close_btn.text = _t("關閉")
+		_bottom_close_btn.text = _t("確定")
 
 	# 清空內容區
 	for child in _content_vbox.get_children():
@@ -690,6 +705,11 @@ func _build_gem_and_skill_card(gs: Node, gem: Node, sk: Node) -> HBoxContainer:
 	return h
 
 
+func _on_go_equip_pressed() -> void:
+	equip_requested.emit()
+	_on_close_pressed()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -750,6 +770,9 @@ func _apply_font(node: Control, sz: int, color: Color = COLOR_TEXT_DARK, bold: b
 		node.add_theme_color_override("font_hover_color", color)
 		node.add_theme_color_override("font_pressed_color", color)
 		node.add_theme_color_override("font_disabled_color", COLOR_TEXT_DIM)
+		if bold and color == COLOR_TEXT_LIGHT:
+			node.add_theme_color_override("font_outline_color", COLOR_BORDER)
+			node.add_theme_constant_override("outline_size", 2)
 
 
 func _gs() -> Node:
