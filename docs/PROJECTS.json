@@ -5830,8 +5830,8 @@
    "id": "bag-workshop-shortcut",
    "cat": "遊戲",
    "title": "背包Tab寶石素材與裝備詳情前往工坊",
-   "status": "草稿",
-   "note": "背包Tab選中寶石/星屑素材或可鑲嵌裝備時新增前往工坊快捷按鈕",
+   "status": "開發中",
+   "note": "開始實作背包Tab前往工坊快捷按鈕連動GemWorkshopDialog",
    "keys": [
     "背包Tab寶石素"
    ]
