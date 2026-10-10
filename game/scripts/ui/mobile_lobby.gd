@@ -120,6 +120,7 @@ var _bag_detail: RichTextLabel = null
 var _bag_use_btn: Button = null
 var _bag_hb_btn: Button = null
 var _btn_bag_go_forge: Button = null
+var _btn_bag_dismantle: Button = null
 var _bag_tip: Label = null
 var _last_bag_click_i: int = -1
 var _last_bag_click_t: int = 0
@@ -5067,6 +5068,25 @@ func _build_bag_tab() -> void:
 	_btn_bag_go_forge.visible = false
 	btn_row.add_child(_btn_bag_go_forge)
 
+	_btn_bag_dismantle = Button.new()
+	_btn_bag_dismantle.name = "BtnBagDismantle"
+	_btn_bag_dismantle.text = _t("拆解回收")
+	_btn_bag_dismantle.custom_minimum_size = Vector2(0, 52)
+	_btn_bag_dismantle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_btn_bag_dismantle.add_theme_stylebox_override("normal", _create_button_style(COLOR_PINK, COLOR_BORDER, 5, 18))
+	_btn_bag_dismantle.add_theme_stylebox_override("hover", _create_button_style(Color("#FF7B9E"), COLOR_BORDER, 5, 18))
+	_btn_bag_dismantle.add_theme_stylebox_override("pressed", _create_button_style(COLOR_PINK, COLOR_BORDER, 2, 18))
+	_btn_bag_dismantle.add_theme_stylebox_override("disabled", _create_button_style(Color("#8E8899"), COLOR_BORDER, 3, 18))
+	_btn_bag_dismantle.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_btn_bag_dismantle.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_bag_dismantle.add_theme_constant_override("outline_size", 3)
+	_btn_bag_dismantle.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_btn_bag_dismantle.add_theme_font_override("font", _cached_font)
+	_btn_bag_dismantle.pressed.connect(_on_bag_dismantle_pressed)
+	_btn_bag_dismantle.visible = false
+	btn_row.add_child(_btn_bag_dismantle)
+
 	# 操作提示
 	_bag_tip = Label.new()
 	_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
@@ -5414,6 +5434,10 @@ func get_bag_go_forge_button() -> Button:
 	return _btn_bag_go_forge
 
 
+func get_bag_dismantle_button() -> Button:
+	return _btn_bag_dismantle
+
+
 func _on_bag_go_forge_pressed() -> void:
 	var am = get_tree().root.get_node_or_null("AudioManager") if get_tree() else null
 	if am and am.has_method("play_ui"):
@@ -5421,6 +5445,38 @@ func _on_bag_go_forge_pressed() -> void:
 	var target_item := _selected_bag_item
 	_switch_tab(Tab.VILLAGE)
 	open_forge(target_item)
+
+
+func _on_bag_dismantle_pressed() -> void:
+	var am = get_tree().root.get_node_or_null("AudioManager") if get_tree() else null
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	if _selected_bag_item.is_empty():
+		return
+	var eq := _get_equip_sys()
+	if eq == null:
+		return
+	var target_uid := _selected_bag_item
+	if eq.has_method("is_locked") and bool(eq.call("is_locked", target_uid)):
+		_show_toast(_t("裝備已鎖定，無法拆解。"))
+		return
+	if eq.has_method("is_equipped") and bool(eq.call("is_equipped", target_uid)):
+		_show_toast(_t("裝備中無法拆解，請先卸下。"))
+		return
+	var res: Dictionary = eq.call("dismantle", target_uid) if eq.has_method("dismantle") else {}
+	if bool(res.get("ok", false)):
+		var scrap_n: int = int(res.get("iron_scrap", 0))
+		var gold_n: int = int(res.get("gold", 0))
+		var item_name: String = str(res.get("name", target_uid))
+		var toast_msg := str(res.get("msg", ""))
+		if toast_msg.is_empty():
+			toast_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [item_name, scrap_n, gold_n]
+		_show_toast(toast_msg)
+		refresh_hud()
+		_refresh_bag_tab(true)
+	else:
+		var err_msg := str(res.get("msg", _t("無法拆解此物品。")))
+		_show_toast(err_msg)
 
 func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 	if _bag_layer == null:
@@ -5433,6 +5489,28 @@ func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 
 	_bag_ids.clear()
 	var list: Array = inv.call("bag_list") if (inv and inv.has_method("bag_list")) else []
+	var gs := _gs()
+	if gs and "equip_bag" in gs and gs.equip_bag is Array:
+		for e in gs.equip_bag:
+			if e is Dictionary:
+				var uid := str(e.get("uid", ""))
+				if not uid.is_empty():
+					var in_list := false
+					for existing in list:
+						if str(existing.get("id", "")) == uid:
+							in_list = true
+							break
+					if not in_list:
+						list.append({
+							"id": uid,
+							"count": 1,
+							"def": {
+								"name": e.get("name", uid),
+								"kind": "weapon" if str(e.get("slot", "")) == "weapon" else "equipment",
+								"desc": _t("器階：第 %d 階  品質：%s") % [int(e.get("tier", 1)), _t(str(e.get("quality_label", "")))],
+								"glyph": "刃" if str(e.get("slot", "")) == "weapon" else "裝"
+							}
+						})
 
 	# 若目前已選取的道具已經不在背包內，且背包還有道具，重選第一個
 	if _selected_bag_item != "":
@@ -5442,7 +5520,15 @@ func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 				found = true
 				break
 		if not found:
-			_selected_bag_item = str(list[0].get("id", "")) if (list.size() > 0 and allow_auto_select) else ""
+			var eq := _get_equip_sys()
+			var any_eq: Dictionary = eq.call("find_any", _selected_bag_item) if eq and eq.has_method("find_any") else {}
+			if not any_eq.is_empty():
+				found = true
+		if not found:
+			if allow_auto_select and list.size() > 0:
+				_selected_bag_item = str(list[0].get("id", ""))
+			elif allow_auto_select:
+				_selected_bag_item = ""
 	elif list.size() > 0 and allow_auto_select:
 		_selected_bag_item = str(list[0].get("id", ""))
 
@@ -5542,6 +5628,8 @@ func _update_bag_detail(inv: Node) -> void:
 			_bag_hb_btn.text = _t("放到快捷欄")
 		if _btn_bag_go_forge:
 			_btn_bag_go_forge.visible = false
+		if _btn_bag_dismantle:
+			_btn_bag_dismantle.visible = false
 		return
 
 	if _bag_hb_btn:
@@ -5567,6 +5655,43 @@ func _update_bag_detail(inv: Node) -> void:
 	if _btn_bag_go_forge:
 		_btn_bag_go_forge.visible = is_equipment
 		_btn_bag_go_forge.text = _t("前往鍛造")
+
+	if _btn_bag_dismantle:
+		_btn_bag_dismantle.visible = is_equipment
+		if is_equipment:
+			var eq := _get_equip_sys()
+			var is_locked: bool = false
+			var is_worn: bool = false
+			if eq != null:
+				if eq.has_method("is_locked"):
+					is_locked = bool(eq.call("is_locked", _selected_bag_item))
+				if eq.has_method("is_equipped"):
+					is_worn = bool(eq.call("is_equipped", _selected_bag_item))
+				else:
+					var gs := _gs()
+					if gs and "equip_worn" in gs and gs.equip_worn is Dictionary:
+						is_worn = gs.equip_worn.has(_selected_bag_item)
+			if is_locked:
+				_btn_bag_dismantle.disabled = true
+				_btn_bag_dismantle.text = _t("已鎖定")
+				_btn_bag_dismantle.tooltip_text = _t("裝備已鎖定，無法拆解。")
+				if _bag_tip:
+					_bag_tip.text = _t("裝備已鎖定，無法拆解。")
+			elif is_worn:
+				_btn_bag_dismantle.disabled = true
+				_btn_bag_dismantle.text = _t("裝備中")
+				_btn_bag_dismantle.tooltip_text = _t("裝備中無法拆解，請先卸下。")
+				if _bag_tip:
+					_bag_tip.text = _t("裝備中無法拆解，請先卸下。")
+			else:
+				_btn_bag_dismantle.disabled = false
+				_btn_bag_dismantle.text = _t("拆解回收")
+				_btn_bag_dismantle.tooltip_text = _t("拆解裝備回收鐵屑與金幣")
+				if _bag_tip:
+					_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
+		else:
+			if _bag_tip:
+				_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
 
 	if is_equipment and _bag_hb_btn:
 		_bag_hb_btn.disabled = true
@@ -5613,7 +5738,7 @@ func _update_bag_detail(inv: Node) -> void:
 			if not eq_inst.is_empty():
 				item_name = _t(str(eq_inst.get("name", _selected_bag_item)))
 				var tier := int(eq_inst.get("tier", 1))
-				var q_label := str(eq_inst.get("quality_label", ""))
+				var q_label := _t(str(eq_inst.get("quality_label", "")))
 				item_desc = _t("器階：第 %d 階  品質：%s") % [tier, q_label]
 			elif eq.has_method("base_def"):
 				var bdef: Dictionary = eq.call("base_def", _selected_bag_item)
@@ -5885,6 +6010,8 @@ func _apply_locale_texts() -> void:
 		_core_empty_lbl.text = _t("背包暫無未裝備機芯部件")
 	if _btn_bag_go_forge and is_instance_valid(_btn_bag_go_forge):
 		_btn_bag_go_forge.text = _t("前往鍛造")
+	if _btn_bag_dismantle and is_instance_valid(_btn_bag_dismantle):
+		_btn_bag_dismantle.text = _t("拆解回收")
 	if _bag_layer and is_instance_valid(_bag_layer):
 		_update_bag_detail(_get_inv_sys())
 		_refresh_core_bag()

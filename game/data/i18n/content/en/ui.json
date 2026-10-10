@@ -3711,5 +3711,11 @@
   "防禦 +%d": "DEF +%d",
   "生命 +%d": "HP +%d",
   "速度 +%d": "SPD +%d",
-  "穿透 +%d": "PEN +%d"
+  "穿透 +%d": "PEN +%d",
+  "拆解回收": "Dismantle",
+  "已鎖定": "Locked",
+  "裝備中": "Equipped",
+  "裝備已鎖定，無法拆解。": "Equipment is locked and cannot be dismantled.",
+  "拆解裝備回收鐵屑與金幣": "Dismantle equipment for scrap iron and gold",
+  "無法拆解此物品。": "Cannot dismantle this item."
 }
