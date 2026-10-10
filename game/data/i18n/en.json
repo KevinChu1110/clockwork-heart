@@ -1069,5 +1069,10 @@
   "傳奇": "Legendary",
   "神話": "Mythic",
   "vault.btn_double_claim": "Double Claim",
-  "vault.ad_removed_double": "No-Ads Privilege: Double Rewards Granted"
+  "vault.ad_removed_double": "No-Ads Privilege: Double Rewards Granted",
+  "一鍵整理": "Auto-Sort",
+  "已完成一鍵整理": "Auto-Sort Complete",
+  "寶石": "Gem",
+  "武器": "Weapon",
+  "裝備": "Equipment"
 }

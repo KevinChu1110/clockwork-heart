@@ -3770,5 +3770,8 @@
   "裝備總加成: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%": "Total de Equipo: ATQ+%d · DEF+%d · PV+%d · CRÍT+%.1f%%",
   "T%d · 攻 +%d": "T%d · ATQ +%d",
   "vault.btn_double_claim": "Reclamo Doble",
-  "vault.ad_removed_double": "Sin anuncios: Recompensa doble reclamada"
+  "vault.ad_removed_double": "Sin anuncios: Recompensa doble reclamada",
+  "一鍵整理": "Organizar",
+  "已完成一鍵整理": "Organización completa",
+  "寶石": "Gema"
 }

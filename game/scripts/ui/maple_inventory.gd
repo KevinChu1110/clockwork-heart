@@ -13,6 +13,7 @@ extends Control
 signal closed
 signal item_used(item_id: String)
 signal assign_hotbar(item_id: String)
+signal items_sorted
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
@@ -49,7 +50,7 @@ static func get_item_icon(id: String) -> Texture2D:
 
 ## 彈窗尺寸標準 (橫屏 740~760px)
 const DIALOG_WIDTH := 750.0
-const DIALOG_HEIGHT := 540.0
+const DIALOG_HEIGHT := 560.0
 const COLS := 4
 const ROWS := 6
 
@@ -78,6 +79,8 @@ var _title: Label
 var _sub_title: Label
 var _use_btn: Button
 var _hb_btn: Button
+var _sort_btn: Button
+var _is_sorted: bool = false
 var _tip: Label
 var _selected: String = ""
 var _bag_ids: Array = []
@@ -141,6 +144,8 @@ func _update_ui_texts() -> void:
 		_use_btn.text = _t("使用 / 賣出")
 	if _hb_btn and is_instance_valid(_hb_btn):
 		_hb_btn.text = _t("放到快捷欄")
+	if _sort_btn and is_instance_valid(_sort_btn):
+		_sort_btn.text = _t("一鍵整理")
 	if _tip and is_instance_valid(_tip):
 		_tip.text = _t("左鍵點選查看 · 雙擊或右鍵快速使用")
 
@@ -284,13 +289,19 @@ func _build() -> void:
 	grid_margin.add_theme_constant_override("margin_bottom", 12)
 	grid_panel.add_child(grid_margin)
 
+	var grid_vbox := VBoxContainer.new()
+	grid_vbox.add_theme_constant_override("separation", 8)
+	grid_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	grid_margin.add_child(grid_vbox)
+
 	_grid = GridContainer.new()
 	_grid.columns = COLS
 	_grid.add_theme_constant_override("h_separation", 6)
 	_grid.add_theme_constant_override("v_separation", 6)
 	_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	grid_margin.add_child(_grid)
+	grid_vbox.add_child(_grid)
 
 	_cells.clear()
 	for i in COLS * ROWS:
@@ -348,6 +359,27 @@ func _build() -> void:
 			if ev is InputEventMouseButton and ev.pressed:
 				_on_cell(idx, ev.button_index)
 		)
+
+	## 底部置中「一鍵整理」按鈕 (BtnSortItems，尺寸 120x48px，熱區>=48px，金黃果凍厚底 5px)
+	var sort_box := HBoxContainer.new()
+	sort_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	sort_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	grid_vbox.add_child(sort_box)
+
+	_sort_btn = Button.new()
+	_sort_btn.name = "BtnSortItems"
+	_sort_btn.custom_minimum_size = Vector2(120, 48)
+	_sort_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18))
+	_sort_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18))
+	_sort_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_GOLD, COLOR_BORDER, 2, 18))
+	_sort_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_sort_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_sort_btn.add_theme_font_size_override("font_size", 16)
+	if _cached_font:
+		_sort_btn.add_theme_font_override("font", _cached_font)
+	_sort_btn.text = _t("一鍵整理")
+	_sort_btn.pressed.connect(sort_items)
+	sort_box.add_child(_sort_btn)
 
 	## 右側：道具明細與操作按鈕區
 	var right := VBoxContainer.new()
@@ -533,6 +565,8 @@ func refresh() -> void:
 		inv = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InventorySystem")
 	_bag_ids.clear()
 	var list: Array = inv.call("bag_list") if inv else []
+	if _is_sorted:
+		list = sort_item_list(list)
 
 	## 若目前已選取的道具已經不在背包內，且背包還有道具，重選第一個
 	if _selected != "":
@@ -661,6 +695,12 @@ func _update_detail(inv: Node) -> void:
 			kind_s = _t("素材（點擊使用可賣出）")
 		"key":
 			kind_s = _t("重要道具")
+		"weapon":
+			kind_s = _t("武器")
+		"equipment", "equip":
+			kind_s = _t("裝備")
+		"gem", "jewel":
+			kind_s = _t("寶石")
 		_:
 			kind_s = _t(kind) if kind != "" else ""
 
@@ -719,3 +759,120 @@ func _on_cell(idx: int, button: int) -> void:
 		_last_click_t = now
 		_selected = id
 		refresh()
+
+
+func sort_items() -> void:
+	_is_sorted = true
+	_play_sort_feedback()
+	refresh()
+	items_sorted.emit()
+
+
+func get_sort_button() -> Button:
+	return _sort_btn
+
+
+func is_sorted() -> bool:
+	return _is_sorted
+
+
+func _play_sort_feedback() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var am: Node = (loop as SceneTree).root.get_node_or_null("AudioManager")
+		if am and am.has_method("play_ui"):
+			am.call("play_ui")
+	if _sort_btn and is_instance_valid(_sort_btn):
+		var tw := _sort_btn.create_tween()
+		if tw:
+			_sort_btn.pivot_offset = _sort_btn.size / 2.0
+			tw.tween_property(_sort_btn, "scale", Vector2(1.06, 1.06), 0.08)
+			tw.tween_property(_sort_btn, "scale", Vector2(1.0, 1.0), 0.08)
+	for cell in _cells:
+		if cell is Control and is_instance_valid(cell):
+			var tw_c: Tween = (cell as Control).create_tween()
+			if tw_c:
+				tw_c.tween_property(cell, "modulate", Color(1.15, 1.15, 1.0, 1.0), 0.08)
+				tw_c.tween_property(cell, "modulate", Color.WHITE, 0.12)
+
+
+static func get_item_category_priority(item: Dictionary) -> int:
+	var def: Dictionary = item.get("def", {})
+	var kind: String = str(def.get("kind", item.get("kind", ""))).to_lower()
+	var id: String = str(item.get("id", "")).to_lower()
+
+	# 1. 裝備 (weapon, equipment, equip, armor, accessory, shield, etc.)
+	if kind in ["weapon", "equipment", "equip", "armor", "accessory", "shield", "helm", "boots"] or id.begins_with("wpn_") or id.begins_with("equip_") or id.begins_with("arm_"):
+		return 1
+
+	# 2. 寶石 (gem, jewel, stone, etc.)
+	if kind in ["gem", "jewel", "stone"] or id.begins_with("gem_"):
+		return 2
+
+	# 3. 消耗品 (consumable, potion, food, etc.)
+	if kind in ["consumable", "potion", "food", "scroll"]:
+		return 3
+
+	# 4. 材料 (material, mat, ore, ingredient, etc.)
+	if kind in ["material", "mat", "ore", "craft"]:
+		return 4
+
+	# 5. 其他（如 key/重要道具）
+	return 5
+
+
+static func get_item_quality_score(item: Dictionary) -> int:
+	var def: Dictionary = item.get("def", {})
+	var q = def.get("quality", item.get("quality", null))
+	if q is int or q is float:
+		return int(q)
+	if q is String and not str(q).is_empty():
+		match str(q).to_lower():
+			"mythic", "legendary", "神話", "傳奇", "秘寶":
+				return 5
+			"epic", "史詩", "極品":
+				return 4
+			"rare", "稀有", "上品":
+				return 3
+			"uncommon", "優秀", "良品":
+				return 2
+			"common", "普通", "凡品":
+				return 1
+	var q_lbl: String = str(def.get("quality_label", item.get("quality_label", "")))
+	if not q_lbl.is_empty():
+		match q_lbl:
+			"秘寶", "神話", "傳奇", "Legendary", "Mythic":
+				return 5
+			"極品", "史詩", "Epic":
+				return 4
+			"上品", "稀有", "Rare":
+				return 3
+			"良品", "優秀", "Uncommon":
+				return 2
+			"凡品", "普通", "Common":
+				return 1
+	var lvl = def.get("level", item.get("level", def.get("tier", item.get("tier", 0))))
+	if lvl is int or lvl is float:
+		if int(lvl) > 0:
+			return int(lvl)
+	return 1
+
+
+static func sort_items_comparator(a: Dictionary, b: Dictionary) -> bool:
+	var cat_a := get_item_category_priority(a)
+	var cat_b := get_item_category_priority(b)
+	if cat_a != cat_b:
+		return cat_a < cat_b
+
+	var qual_a := get_item_quality_score(a)
+	var qual_b := get_item_quality_score(b)
+	if qual_a != qual_b:
+		return qual_a > qual_b
+
+	return str(a.get("id", "")) < str(b.get("id", ""))
+
+
+static func sort_item_list(items: Array) -> Array:
+	var sorted := items.duplicate()
+	sorted.sort_custom(sort_items_comparator)
+	return sorted
