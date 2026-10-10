@@ -5905,6 +5905,16 @@
    "keys": [
     "PowerSta"
    ]
+  },
+  {
+   "id": "inventory-sort",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包一鍵整理功能與果凍按鈕",
+   "status": "草稿",
+   "note": "t_604b6c45",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
