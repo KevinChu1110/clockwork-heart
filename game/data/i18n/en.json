@@ -1051,5 +1051,10 @@
   "拆解【%s】，獲得鐵屑×%d、金幣+%d，返還寶石【%s】": "Dismantled [%s], received Iron Scrap x%d, Gold +%d, returned Gem [%s]",
   "返還寶石": "Returned Gem",
   "返還寶石【%s】": "Returned Gem [%s]",
-  "前往工坊": "Go to Workshop"
+  "一鍵鍛造": "Auto Forge",
+  "一鍵鍛造完成！成功 %d 次（嘗試 %d 次）· 攻擊力 +%d · 消耗 %d 金幣、%d 鐵屑": "Auto Forge done! Succeeded %d times (%d tries) · ATK +%d · Cost %d Gold, %d Iron Scrap",
+  "一鍵鍛造結束：嘗試 %d 次全數失敗 · 消耗 %d 金幣、%d 鐵屑": "Auto Forge ended: %d tries all failed · Cost %d Gold, %d Iron Scrap",
+  "鐵屑不足！一鍵鍛造需要鐵屑穩火。": "Not enough Iron Scrap! Auto Forge requires scrap to steady heat.",
+  "金幣不足！無法進行一鍵鍛造。": "Not enough gold! Cannot perform Auto Forge.",
+  "目前條件無法進行一鍵鍛造。": "Cannot perform Auto Forge under current conditions."
 }
