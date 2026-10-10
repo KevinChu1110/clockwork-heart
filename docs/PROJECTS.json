@@ -5820,8 +5820,8 @@
    "id": "forge-workshop-link",
    "cat": "遊戲",
    "title": "天宮鐵匠與手藝工坊雙向直通快捷按鈕",
-   "status": "草稿",
-   "note": "ForgeDialog 與 GemWorkshopDialog 支援雙向直通切換按鈕與大廳連動",
+   "status": "開發中",
+   "note": "天宮鐵匠與手藝工坊支援雙向直通快捷按鈕開發中",
    "keys": [
     "天宮鐵匠與手藝工"
    ]
