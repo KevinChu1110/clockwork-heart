@@ -5910,8 +5910,8 @@
    "id": "inventory-sort",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包一鍵整理功能與果凍按鈕",
-   "status": "草稿",
-   "note": "t_604b6c45",
+   "status": "開發中",
+   "note": "已派工 sideworker (t_604b6c45)",
    "keys": [
     "MapleInv"
    ]
