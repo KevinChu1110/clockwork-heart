@@ -214,7 +214,8 @@ func _process(_delta: float) -> bool:
 			if DisplayServer.get_name() != "headless":
 				var img: Image = root.get_viewport().get_texture().get_image()
 				if img:
-					var p_proof := ProjectSettings.globalize_path("res://../proofs/t_604b6c45/proof_maple_inventory_sort.png")
+					var base_dir := ProjectSettings.globalize_path("res://")
+					var p_proof := base_dir.path_join("../proofs/t_604b6c45/proof_maple_inventory_sort.png")
 					DirAccess.make_dir_recursive_absolute(p_proof.get_base_dir())
 					img.save_png(p_proof)
 					print("  ok 實機截圖存證成功: %s" % p_proof)
