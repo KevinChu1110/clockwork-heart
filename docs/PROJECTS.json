@@ -5835,6 +5835,16 @@
    "keys": [
     "背包Tab寶石素"
    ]
+  },
+  {
+   "id": "gem-auto-fuse",
+   "cat": "遊戲",
+   "title": "手藝工坊寶石熔煉新增一鍵合成",
+   "status": "草稿",
+   "note": "GemWorkshopDialog 與 GemSystem 支援一鍵將所有達標低階寶石向上晉升",
+   "keys": [
+    "手藝工坊寶石熔煉"
+   ]
   }
  ]
 }
