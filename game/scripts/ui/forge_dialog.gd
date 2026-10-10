@@ -47,15 +47,24 @@ const COLOR_TEXT_DARK  := Color("#1F1A3A")  ## 深藍紫加粗文字
 const COLOR_TEXT_GOLD  := Color("#9A6B00")  ## 壓明度金黃（亮底文字專用）
 const COLOR_TEXT_ORANGE:= Color("#C2600A")  ## 壓明度暖橘（亮底文字專用）
 const COLOR_TEXT_PINK  := Color("#D62E5C")  ## 壓明度珊瑚粉（亮底文字專用）
+const COLOR_CARD_MUTED := Color("#EFEBE0")  ## 壓暗奶油底
+const COLOR_BORDER_MUTED := Color("#D2CCC0")  ## 壓暗淡邊框
+const COLOR_TEXT_DIM   := Color("#888294")  ## 壓暗提示文字
+const COLOR_TEXT_MUTED := Color("#6B6680")  ## 次要輔助文字
 
 var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _weapon_label: Label
+var _quality_label: Label
 var _atk_label: Label
 var _gold_label: Label
 var _cost_label: Label
 var _rate_label: Label
 var _slots_label: Label
+var _affix_label: Label
+
+var _slot_chips: Array[Button] = []
+var _active_slot_idx: int = 0
 
 var _pity_title_label: Label
 var _pity_sub_label: Label
@@ -125,11 +134,19 @@ func _update_calibrate_message() -> void:
 		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 
 
+func _get_equip_sys() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		return (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
+	return null
+
+
 func _update_ui_texts() -> void:
 	if _title_lbl and is_instance_valid(_title_lbl):
 		_title_lbl.text = _t("天宮鐵匠 · 裝備鍛造")
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開鐵匠鋪")
+	_refresh_slot_chips()
 
 
 func _ready() -> void:
@@ -152,6 +169,14 @@ func _ready() -> void:
 func _ensure_initial_state() -> void:
 	if not GameState.has_flag("c1_forged"):
 		GameState.set_flag("c1_forged", true)
+	var es := _get_equip_sys()
+	if es and es.has_method("active_loadout_index"):
+		_active_slot_idx = clampi(int(es.call("active_loadout_index")), 0, 2)
+	elif "weapon_loadout_active" in GameState:
+		_active_slot_idx = clampi(int(GameState.weapon_loadout_active), 0, 2)
+	else:
+		_active_slot_idx = 0
+
 	var inst := _current_weapon_inst()
 	if not inst.is_empty():
 		var r: Dictionary = inst.get("rolled", {})
@@ -168,16 +193,29 @@ func _ensure_initial_state() -> void:
 
 
 func _current_weapon_inst() -> Dictionary:
-	var tree := Engine.get_main_loop()
-	if tree is SceneTree and (tree as SceneTree).root != null:
-		var es: Node = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
-		if es and es.has_method("active_weapon_inst"):
+	var es := _get_equip_sys()
+	if es:
+		if es.has_method("loadout_uid") and es.has_method("weapon_inst"):
+			var uid: String = str(es.call("loadout_uid", _active_slot_idx))
+			if not uid.is_empty():
+				var inst: Dictionary = es.call("weapon_inst", uid)
+				if not inst.is_empty():
+					return inst
+		elif es.has_method("active_weapon_inst") and _active_slot_idx == 0:
 			var inst: Dictionary = es.call("active_weapon_inst")
 			if not inst.is_empty():
 				return inst
-	var wuid := str(GameState.equip_slots.get("weapon", "")) if GameState.equip_slots != null else ""
-	if wuid != "" and GameState.equip_worn != null and GameState.equip_worn.has(wuid):
-		return GameState.equip_worn[wuid]
+
+	# Fallback: GameState
+	if "weapon_loadout" in GameState and GameState.weapon_loadout != null and _active_slot_idx < GameState.weapon_loadout.size():
+		var wuid := str(GameState.weapon_loadout[_active_slot_idx])
+		if wuid != "" and GameState.equip_worn != null and GameState.equip_worn.has(wuid):
+			return GameState.equip_worn[wuid]
+
+	if _active_slot_idx == 0:
+		var wuid := str(GameState.equip_slots.get("weapon", "")) if GameState.equip_slots != null else ""
+		if wuid != "" and GameState.equip_worn != null and GameState.equip_worn.has(wuid):
+			return GameState.equip_worn[wuid]
 	return {}
 
 
@@ -186,7 +224,18 @@ func _current_weapon_atk() -> int:
 	if not inst.is_empty():
 		var r: Dictionary = inst.get("rolled", {})
 		return int(r.get("atk", 0))
-	return GameState.weapon_atk
+	if _active_slot_idx == 0:
+		return GameState.weapon_atk
+	return 0
+
+
+func _sync_state_from_weapon() -> void:
+	var inst := _current_weapon_inst()
+	if not inst.is_empty():
+		var r: Dictionary = inst.get("rolled", {})
+		GameState.weapon_atk = int(r.get("atk", GameState.weapon_atk))
+		GameState.weapon_tier = int(inst.get("tier", GameState.weapon_tier))
+		GameState.weapon_name = str(inst.get("name", GameState.weapon_name))
 
 
 func _build_ui() -> void:
@@ -213,7 +262,7 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "ForgeCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 480)
+	_dialog_card.custom_minimum_size = Vector2(750, 520)
 	# 奶油米白底 + 深藍紫立體邊框 + 22px 大圓角
 	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
@@ -226,7 +275,7 @@ func _build_ui() -> void:
 	_dialog_card.add_child(margin)
 
 	var v := VBoxContainer.new()
-	v.add_theme_constant_override("separation", 12)
+	v.add_theme_constant_override("separation", 10)
 	margin.add_child(v)
 
 	# 標題列 + 右上「✕」關閉按鈕 (50x50)
@@ -255,20 +304,39 @@ func _build_ui() -> void:
 	sep.color = COLOR_ORANGE
 	v.add_child(sep)
 
+	# 三欄武器槽位切換 Chip / 頁籤 (槽位 1 / 槽位 2 / 槽位 3)
+	var chip_row := HBoxContainer.new()
+	chip_row.name = "WeaponSlotChipRow"
+	chip_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	chip_row.add_theme_constant_override("separation", 10)
+	v.add_child(chip_row)
+
+	_slot_chips.clear()
+	for i in range(3):
+		var chip := Button.new()
+		chip.name = "WeaponSlotChip_%d" % i
+		chip.custom_minimum_size = Vector2(0, 46)
+		chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		var slot_idx := i
+		chip.pressed.connect(func(): _on_slot_chip_pressed(slot_idx))
+		chip_row.add_child(chip)
+		_slot_chips.append(chip)
+
 	# 武器當前數值面板 (亮金黃溫暖卡片底)
 	var status_panel := PanelContainer.new()
+	status_panel.name = "StatusPanel"
 	status_panel.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 20))
 	v.add_child(status_panel)
 
 	var s_margin := MarginContainer.new()
 	s_margin.add_theme_constant_override("margin_left", 16)
 	s_margin.add_theme_constant_override("margin_right", 16)
-	s_margin.add_theme_constant_override("margin_top", 12)
-	s_margin.add_theme_constant_override("margin_bottom", 12)
+	s_margin.add_theme_constant_override("margin_top", 10)
+	s_margin.add_theme_constant_override("margin_bottom", 10)
 	status_panel.add_child(s_margin)
 
 	var sv := VBoxContainer.new()
-	sv.add_theme_constant_override("separation", 6)
+	sv.add_theme_constant_override("separation", 5)
 	s_margin.add_child(sv)
 
 	_weapon_label = Label.new()
@@ -285,28 +353,33 @@ func _build_ui() -> void:
 	var stats_grid := GridContainer.new()
 	stats_grid.columns = 2
 	stats_grid.add_theme_constant_override("h_separation", 24)
-	stats_grid.add_theme_constant_override("v_separation", 6)
+	stats_grid.add_theme_constant_override("v_separation", 4)
 	sv.add_child(stats_grid)
 
 	_atk_label = _create_info_label(stats_grid, "")
 	_atk_label.name = "AtkLabel"
-	_gold_label = _create_info_label(stats_grid, "")
-	_gold_label.name = "GoldLabel"
+	_quality_label = _create_info_label(stats_grid, "")
+	_quality_label.name = "QualityLabel"
 	_cost_label = _create_info_label(stats_grid, "")
 	_cost_label.name = "CostLabel"
 	_rate_label = _create_info_label(stats_grid, "")
 	_rate_label.name = "RateLabel"
-
-	_slots_label = Label.new()
+	_gold_label = _create_info_label(stats_grid, "")
+	_gold_label.name = "GoldLabel"
+	_slots_label = _create_info_label(stats_grid, "")
 	_slots_label.name = "SlotsLabel"
-	_slots_label.text = ""
-	_slots_label.add_theme_font_size_override("font_size", 16)
 	_slots_label.add_theme_color_override("font_color", COLOR_SKY)
-	_slots_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	_slots_label.add_theme_constant_override("outline_size", 3)
+
+	_affix_label = Label.new()
+	_affix_label.name = "AffixLabel"
+	_affix_label.text = ""
+	_affix_label.add_theme_font_size_override("font_size", 14)
+	_affix_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_affix_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_affix_label.add_theme_constant_override("outline_size", 1)
 	if _cached_font:
-		_slots_label.add_theme_font_override("font", _cached_font)
-	sv.add_child(_slots_label)
+		_affix_label.add_theme_font_override("font", _cached_font)
+	sv.add_child(_affix_label)
 
 	# 機芯五槽部位槽位列 (亮金黃柔和卡片底)
 	var core_panel := PanelContainer.new()
@@ -730,15 +803,250 @@ func _refresh_all_forge_core_slots() -> void:
 					fn.call()
 
 
+func get_slot_chips() -> Array[Button]:
+	return _slot_chips
+
+
+func get_active_slot_index() -> int:
+	return _active_slot_idx
+
+
+func get_quality_label() -> Label:
+	return _quality_label
+
+
+func get_affix_label() -> Label:
+	return _affix_label
+
+
+func _get_quality_color(q: String) -> Color:
+	match q:
+		"common": return Color("#8E8A9F")
+		"uncommon": return Color("#2E9E4A")
+		"rare": return Color("#2575FC")
+		"epic": return Color("#9B51E0")
+		_: return Color("#8E8A9F")
+
+
+func _style_chip_btn(btn: Button, bg: Color, text_col: Color, font_sz: int, bottom_px: int = 4, radius: int = 14, border_col: Color = COLOR_BORDER) -> void:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg
+	sb.border_color = border_col
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = bottom_px
+	sb.set_corner_radius_all(radius)
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
+	sb.content_margin_top = 6
+	sb.content_margin_bottom = 6
+	if bottom_px > 2:
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
+
+	var sb_h := sb.duplicate() as StyleBoxFlat
+	sb_h.bg_color = bg.lightened(0.08)
+
+	var sb_p := sb.duplicate() as StyleBoxFlat
+	sb_p.bg_color = bg.darkened(0.08)
+	sb_p.border_width_bottom = 2
+
+	btn.add_theme_stylebox_override("normal", sb)
+	btn.add_theme_stylebox_override("hover", sb_h)
+	btn.add_theme_stylebox_override("pressed", sb_p)
+	btn.add_theme_stylebox_override("disabled", sb)
+	btn.add_theme_color_override("font_color", text_col)
+	btn.add_theme_color_override("font_hover_color", text_col)
+	btn.add_theme_color_override("font_pressed_color", text_col)
+	btn.add_theme_color_override("font_disabled_color", text_col)
+	btn.add_theme_font_size_override("font_size", font_sz)
+	if _cached_font:
+		btn.add_theme_font_override("font", _cached_font)
+
+
+func _on_slot_chip_pressed(slot_idx: int) -> void:
+	if AudioManager.has_method("play_ui"):
+		AudioManager.play_ui()
+	var es := _get_equip_sys()
+	var req_lv := 10 if slot_idx == 1 else 16
+	if es and es.has_method("loadout_unlock_level"):
+		req_lv = int(es.call("loadout_unlock_level", slot_idx))
+
+	var unlocked := true
+	if es and es.has_method("loadout_slot_unlocked"):
+		unlocked = bool(es.call("loadout_slot_unlocked", slot_idx))
+	elif GameState.level < req_lv:
+		unlocked = (slot_idx == 0)
+
+	if not unlocked:
+		if is_instance_valid(_msg_label):
+			_msg_label.text = _t("武器欄 %d 需達到 Lv%d 解鎖") % [slot_idx + 1, req_lv]
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+		return
+
+	if es and es.has_method("switch_weapon_loadout"):
+		var res: Dictionary = es.call("switch_weapon_loadout", slot_idx)
+		if not bool(res.get("ok", false)):
+			var uid: String = str(es.call("loadout_uid", slot_idx)) if es.has_method("loadout_uid") else ""
+			if uid.is_empty():
+				_active_slot_idx = slot_idx
+				if "weapon_loadout_active" in GameState:
+					GameState.weapon_loadout_active = slot_idx
+				if is_instance_valid(_msg_label):
+					_msg_label.text = _t("武器欄 %d 尚未裝備武器") % [slot_idx + 1]
+					_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+				_refresh_display()
+				return
+			else:
+				if is_instance_valid(_msg_label):
+					_msg_label.text = str(res.get("msg", _t("無法切換該槽位武器")))
+					_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+				return
+	else:
+		_active_slot_idx = slot_idx
+		if "weapon_loadout_active" in GameState:
+			GameState.weapon_loadout_active = slot_idx
+		if "weapon_loadout" in GameState and slot_idx < GameState.weapon_loadout.size():
+			var uid := str(GameState.weapon_loadout[slot_idx])
+			if uid.is_empty():
+				if is_instance_valid(_msg_label):
+					_msg_label.text = _t("武器欄 %d 尚未裝備武器") % [slot_idx + 1]
+					_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+				_refresh_display()
+				return
+			if GameState.equip_slots != null:
+				GameState.equip_slots["weapon"] = uid
+
+	_active_slot_idx = slot_idx
+	_sync_state_from_weapon()
+	if is_instance_valid(_msg_label):
+		var inst := _current_weapon_inst()
+		var wname := _t(str(inst.get("name", GameState.weapon_name)))
+		_msg_label.text = _t("已切換至武器槽位 %d：【%s】") % [slot_idx + 1, wname]
+		_msg_label.add_theme_color_override("font_color", COLOR_MINT)
+	_refresh_display()
+
+
+func _refresh_slot_chips() -> void:
+	var es := _get_equip_sys()
+	for i in range(_slot_chips.size()):
+		var chip: Button = _slot_chips[i]
+		var unlocked := true
+		var req_lv := 10 if i == 1 else 16
+		if es and es.has_method("loadout_slot_unlocked"):
+			unlocked = bool(es.call("loadout_slot_unlocked", i))
+			if es.has_method("loadout_unlock_level"):
+				req_lv = int(es.call("loadout_unlock_level", i))
+		elif GameState.level < req_lv:
+			unlocked = (i == 0)
+
+		if not unlocked:
+			chip.text = _t("槽位 %d（需 Lv%d）") % [i + 1, req_lv]
+			_style_chip_btn(chip, COLOR_CARD_MUTED, COLOR_TEXT_DIM, 13, 2, 14, COLOR_BORDER_MUTED)
+			continue
+
+		var uid := ""
+		if es and es.has_method("loadout_uid"):
+			uid = str(es.call("loadout_uid", i))
+		elif "weapon_loadout" in GameState and GameState.weapon_loadout != null and i < GameState.weapon_loadout.size():
+			uid = str(GameState.weapon_loadout[i])
+
+		var wname := ""
+		var wtier := 1
+		if not uid.is_empty():
+			var inst: Dictionary = {}
+			if es and es.has_method("weapon_inst"):
+				inst = es.call("weapon_inst", uid)
+			if inst.is_empty() and GameState.equip_worn != null and GameState.equip_worn.has(uid):
+				inst = GameState.equip_worn[uid]
+			if not inst.is_empty():
+				wname = _t(str(inst.get("name", "武器")))
+				wtier = int(inst.get("tier", 1))
+
+		var text_str := ""
+		if wname.is_empty():
+			text_str = _t("槽位 %d · 空槽") % [i + 1]
+		else:
+			text_str = _t("槽位 %d · %s") % [i + 1, "%s (T%d)" % [wname, wtier]]
+
+		chip.text = text_str
+		if i == _active_slot_idx:
+			_style_chip_btn(chip, COLOR_ORANGE, COLOR_TEXT_DARK, 14, 5, 14)
+		else:
+			_style_chip_btn(chip, COLOR_CARD_WARM, COLOR_TEXT_DARK, 13, 3, 14)
+
+
+func _format_affixes(inst: Dictionary) -> String:
+	var affixes: Array[String] = []
+	var r: Dictionary = inst.get("rolled", {})
+	if r.has("crit") and float(r["crit"]) > 0.0:
+		affixes.append(_t("暴擊 +%.1f%%") % float(r["crit"]))
+	if r.has("crit_dmg") and float(r["crit_dmg"]) > 0.0:
+		affixes.append(_t("暴傷 +%.1f%%") % float(r["crit_dmg"]))
+	if r.has("def") and int(r["def"]) > 0:
+		affixes.append(_t("防禦 +%d") % int(r["def"]))
+	if r.has("hp") and int(r["hp"]) > 0:
+		affixes.append(_t("生命 +%d") % int(r["hp"]))
+	if r.has("speed") and int(r["speed"]) > 0:
+		affixes.append(_t("速度 +%d") % int(r["speed"]))
+	if r.has("penetration") and int(r["penetration"]) > 0:
+		affixes.append(_t("穿透 +%d") % int(r["penetration"]))
+	if inst.has("affixes") and inst["affixes"] is Array:
+		for af in inst["affixes"]:
+			if af is Dictionary:
+				var af_name := _t(str(af.get("name", "")))
+				var af_val: Variant = af.get("value", 0)
+				if not af_name.is_empty():
+					affixes.append("%s +%s" % [af_name, str(af_val)])
+			elif af is String and not str(af).is_empty():
+				affixes.append(_t(str(af)))
+
+	if affixes.is_empty():
+		return _t("副詞條：暫無")
+	return _t("副詞條：%s") % " · ".join(affixes)
+
+
 func _refresh_display() -> void:
 	if not is_instance_valid(_weapon_label) or not is_instance_valid(_btn_forge):
 		return
 
-	var at_max := GameState.weapon_tier >= ForgeSystem.FORGE_MAX_TIER
-	var wname := GameState.weapon_display() if GameState.has_method("weapon_display") else GameState.weapon_name
-	_weapon_label.text = _t("當前裝備：%s（第 %d 階）") % [wname, GameState.weapon_tier]
+	_refresh_slot_chips()
+
+	var inst := _current_weapon_inst()
+	var is_empty_slot := inst.is_empty() and (_active_slot_idx > 0 or GameState.weapon_name.is_empty())
+
+	if is_empty_slot:
+		_weapon_label.text = _t("當前裝備：空槽（尚未裝備武器）")
+		if is_instance_valid(_quality_label):
+			_quality_label.text = _t("品質色階：未裝備")
+			_quality_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_atk_label.text = _t("武器攻擊：+0")
+		_gold_label.text = _t("持有金幣：%d") % GameState.gold
+		_cost_label.text = _t("升階花費：—")
+		_rate_label.text = _t("基礎成功率：—")
+		if is_instance_valid(_affix_label):
+			_affix_label.text = _t("副詞條：無")
+		_slots_label.text = _t("魂槽開放：—")
+		_btn_forge.text = _t("當前槽位無武器可鍛造")
+		_btn_forge.disabled = true
+		for seg in _pity_bars:
+			seg.value = 0.0
+		_pity_title_label.text = _t("當前槽位未裝備武器")
+		_pity_sub_label.text = _t("請至背包或兵器架裝備武器後再進行鍛造")
+		return
+
+	var cur_tier := int(inst.get("tier", GameState.weapon_tier))
+	var at_max := cur_tier >= ForgeSystem.FORGE_MAX_TIER
+	var wname := _t(str(inst.get("name", GameState.weapon_name)))
+	_weapon_label.text = _t("當前裝備：%s（第 %d 階）") % [wname, cur_tier]
 	_atk_label.text = _t("武器攻擊：+%d") % _current_weapon_atk()
 	_gold_label.text = _t("持有金幣：%d") % GameState.gold
+
+	if is_instance_valid(_quality_label):
+		var q_key := str(inst.get("quality", "common"))
+		var q_label := _t(str(inst.get("quality_label", "凡品")))
+		_quality_label.text = _t("品質色階：%s") % q_label
+		_quality_label.add_theme_color_override("font_color", _get_quality_color(q_key))
 
 	var cost := ForgeSystem.forge_cost()
 	if at_max:
@@ -753,11 +1061,14 @@ func _refresh_display() -> void:
 		_btn_forge.text = _t("強化升階（消耗 %d 金幣）") % cost
 		_btn_forge.disabled = false
 
+	if is_instance_valid(_affix_label):
+		_affix_label.text = _format_affixes(inst)
+
 	# 魂槽狀態
 	var slots := SoulSystem.slot_count()
 	var next_slot := 0
 	for need in SoulSystem.SLOT_TIERS:
-		if GameState.weapon_tier < need:
+		if cur_tier < need:
 			next_slot = need
 			break
 	if next_slot > 0:
@@ -800,6 +1111,17 @@ func _on_forge_pressed() -> void:
 			var scrap_tip := _t("（消耗鐵屑穩火）") if bool(res.get("used_scrap", false)) else ""
 			_msg_label.text = _t("鍛造成功！升階至第 %d 階，攻擊力上升！%s") % [GameState.weapon_tier, scrap_tip]
 			_msg_label.add_theme_color_override("font_color", COLOR_MINT)
+			var es := _get_equip_sys()
+			if es == null:
+				var inst := _current_weapon_inst()
+				if not inst.is_empty() and inst.has("uid"):
+					var uid: String = str(inst["uid"])
+					if GameState.equip_worn != null and GameState.equip_worn.has(uid):
+						var w: Dictionary = GameState.equip_worn[uid]
+						w["tier"] = GameState.weapon_tier
+						if not w.has("rolled"):
+							w["rolled"] = {}
+						w["rolled"]["atk"] = GameState.weapon_atk
 		"pity_break":
 			_msg_label.text = _t("鍛造失敗！釘釘摔錘了，吃塊消氣餅回復體力！")
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
