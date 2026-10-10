@@ -5780,8 +5780,8 @@
    "id": "bag-equip-forge",
    "cat": "遊戲",
    "title": "背包Tab裝備詳情前往鍛造",
-   "status": "草稿",
-   "note": "背包Tab武器裝備物品詳情新增前往天宮鐵匠快捷按鈕",
+   "status": "已上線",
+   "note": "已於 t_cdec80f5 / t_58e87148 / t_d9a6aa7e 完成並上線（同 bag-forge-shortcut）",
    "keys": [
     "背包Tab裝備詳"
    ]
