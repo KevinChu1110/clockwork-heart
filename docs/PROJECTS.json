@@ -5845,6 +5845,16 @@
    "keys": [
     "手藝工坊寶石熔煉"
    ]
+  },
+  {
+   "id": "forge-auto-forge",
+   "cat": "遊戲",
+   "title": "天宮鐵匠新增一鍵鍛造按鈕與連動",
+   "status": "測試中",
+   "note": "完成 ForgeSystem auto_forge、ForgeDialog BtnAutoForge、頂部戰力刷新與六語系支援，8項測試全綠 (t_39e65d16)",
+   "keys": [
+    "天宮鐵匠新增一鍵"
+   ]
   }
  ]
 }

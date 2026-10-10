@@ -73,8 +73,10 @@ var _pity_bars: Array[ProgressBar] = []
 
 var _msg_label: Label
 var _btn_forge: Button
+var _btn_auto_forge: Button
 var _btn_go_workshop: Button
 var _btn_close: Button
+var _power_label: Label
 var _cached_font: Font = null
 var _last_calibrate_state: Dictionary = {}
 
@@ -146,6 +148,8 @@ func _get_equip_sys() -> Node:
 func _update_ui_texts() -> void:
 	if _title_lbl and is_instance_valid(_title_lbl):
 		_title_lbl.text = _t("天宮鐵匠 · 裝備鍛造")
+	if _btn_auto_forge and is_instance_valid(_btn_auto_forge):
+		_btn_auto_forge.text = _t("一鍵鍛造")
 	if _btn_go_workshop and is_instance_valid(_btn_go_workshop):
 		_btn_go_workshop.text = _t("前往工坊")
 	if _btn_close and is_instance_valid(_btn_close):
@@ -282,7 +286,7 @@ func _build_ui() -> void:
 	v.add_theme_constant_override("separation", 10)
 	margin.add_child(v)
 
-	# 標題列 + 右上「✕」關閉按鈕 (50x50)
+	# 標題列 + 頂部戰力展示 + 右上「✕」關閉按鈕 (50x50)
 	var head := HBoxContainer.new()
 	head.add_theme_constant_override("separation", 10)
 	v.add_child(head)
@@ -298,6 +302,18 @@ func _build_ui() -> void:
 		_title_lbl.add_theme_font_override("font", _cached_font)
 	_title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(_title_lbl)
+
+	# 頂部戰力展示 (TopPowerLabel)
+	_power_label = Label.new()
+	_power_label.name = "TopPowerLabel"
+	_power_label.text = ""
+	_power_label.add_theme_font_size_override("font_size", 18)
+	_power_label.add_theme_color_override("font_color", COLOR_GOLD)
+	_power_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_power_label.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		_power_label.add_theme_font_override("font", _cached_font)
+	head.add_child(_power_label)
 
 	var close_btn := ResponsiveUi.make_close_button(_on_close)
 	head.add_child(close_btn)
@@ -500,7 +516,7 @@ func _build_ui() -> void:
 
 	# 動作按鈕列 (按鈕高 >= 50)
 	var act_row := HBoxContainer.new()
-	act_row.add_theme_constant_override("separation", 12)
+	act_row.add_theme_constant_override("separation", 10)
 	act_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(act_row)
 
@@ -508,7 +524,7 @@ func _build_ui() -> void:
 	_btn_forge = Button.new()
 	_btn_forge.name = "BtnForge"
 	_btn_forge.text = ""
-	_btn_forge.custom_minimum_size = Vector2(250, 52)
+	_btn_forge.custom_minimum_size = Vector2(210, 52)
 	_btn_forge.add_theme_font_size_override("font_size", 18)
 	_btn_forge.add_theme_color_override("font_color", Color.WHITE)
 	_btn_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -522,11 +538,29 @@ func _build_ui() -> void:
 	_btn_forge.pressed.connect(_on_forge_pressed)
 	act_row.add_child(_btn_forge)
 
+	# 新增『一鍵鍛造』按鈕 BtnAutoForge（熱區 >= 48px，果凍厚底 5px，薄荷綠配色）
+	_btn_auto_forge = Button.new()
+	_btn_auto_forge.name = "BtnAutoForge"
+	_btn_auto_forge.text = _t("一鍵鍛造")
+	_btn_auto_forge.custom_minimum_size = Vector2(170, 52)
+	_btn_auto_forge.add_theme_font_size_override("font_size", 18)
+	_btn_auto_forge.add_theme_color_override("font_color", Color.WHITE)
+	_btn_auto_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_auto_forge.add_theme_constant_override("outline_size", 4)
+	if _cached_font:
+		_btn_auto_forge.add_theme_font_override("font", _cached_font)
+	_btn_auto_forge.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 20, 2))
+	_btn_auto_forge.add_theme_stylebox_override("hover", _create_button_style(Color("#68E882"), COLOR_BORDER, 5, 20, 2))
+	_btn_auto_forge.add_theme_stylebox_override("pressed", _create_button_style(Color("#3BBF55"), COLOR_BORDER, 2, 20, 2))
+	_btn_auto_forge.add_theme_stylebox_override("disabled", _create_button_style(Color("#D0DDD2"), COLOR_BORDER, 3, 20, 2))
+	_btn_auto_forge.pressed.connect(_on_auto_forge_pressed)
+	act_row.add_child(_btn_auto_forge)
+
 	# 快捷按鈕：前往工坊 (暖橘立體厚底 5px)
 	_btn_go_workshop = Button.new()
 	_btn_go_workshop.name = "BtnGoWorkshop"
 	_btn_go_workshop.text = _t("前往工坊")
-	_btn_go_workshop.custom_minimum_size = Vector2(160, 52)
+	_btn_go_workshop.custom_minimum_size = Vector2(150, 52)
 	_btn_go_workshop.add_theme_font_size_override("font_size", 18)
 	_btn_go_workshop.add_theme_color_override("font_color", Color.WHITE)
 	_btn_go_workshop.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -1104,6 +1138,9 @@ func _refresh_display() -> void:
 	if not is_instance_valid(_weapon_label) or not is_instance_valid(_btn_forge):
 		return
 
+	if is_instance_valid(_power_label):
+		_power_label.text = _t("戰力 %d") % GameState.power_score()
+
 	_refresh_slot_chips()
 
 	var inst := _current_weapon_inst()
@@ -1123,6 +1160,8 @@ func _refresh_display() -> void:
 		_slots_label.text = _t("魂槽開放：—")
 		_btn_forge.text = _t("當前槽位無武器可鍛造")
 		_btn_forge.disabled = true
+		if is_instance_valid(_btn_auto_forge):
+			_btn_auto_forge.disabled = true
 		for seg in _pity_bars:
 			seg.value = 0.0
 		_pity_title_label.text = _t("當前槽位未裝備武器")
@@ -1148,12 +1187,16 @@ func _refresh_display() -> void:
 		_rate_label.text = _t("成功率：已封頂")
 		_btn_forge.text = _t("鍛造已封頂")
 		_btn_forge.disabled = true
+		if is_instance_valid(_btn_auto_forge):
+			_btn_auto_forge.disabled = true
 	else:
 		_cost_label.text = _t("升階花費：%d 金幣") % cost
 		var rate_pct := int(ForgeSystem.forge_rate_base() * 100.0)
 		_rate_label.text = _t("基礎成功率：%d%%") % rate_pct
 		_btn_forge.text = _t("強化升階（消耗 %d 金幣）") % cost
 		_btn_forge.disabled = false
+		if is_instance_valid(_btn_auto_forge):
+			_btn_auto_forge.disabled = false
 
 	if is_instance_valid(_affix_label):
 		_affix_label.text = _format_affixes(inst)
@@ -1224,6 +1267,67 @@ func _on_forge_pressed() -> void:
 			_msg_label.text = _t("鍛造失敗！累積 1 格保底進度（目前 %d/3 格）。") % streak
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 	_refresh_display()
+
+
+func _on_auto_forge_pressed() -> void:
+	if AudioManager.has_method("play_ui"):
+		AudioManager.play_ui()
+	var res: Dictionary = ForgeSystem.auto_forge(10)
+	var es := _get_equip_sys()
+	if es == null:
+		var inst := _current_weapon_inst()
+		if not inst.is_empty() and inst.has("uid"):
+			var uid: String = str(inst["uid"])
+			if GameState.equip_worn != null and GameState.equip_worn.has(uid):
+				var w: Dictionary = GameState.equip_worn[uid]
+				w["tier"] = GameState.weapon_tier
+				if not w.has("rolled"):
+					w["rolled"] = {}
+				w["rolled"]["atk"] = GameState.weapon_atk
+
+	var tries: int = int(res.get("tries", 0))
+	var success_count: int = int(res.get("success_count", 0))
+	var atk_gain: int = int(res.get("atk_gain", 0))
+	var spent_gold: int = int(res.get("spent_gold", 0))
+	var spent_scrap: int = int(res.get("spent_scrap", 0))
+	var stop_reason: String = str(res.get("stop_reason", ""))
+	var code: String = str(res.get("code", ""))
+
+	if tries == 0:
+		match code:
+			"tier_max":
+				_msg_label.text = _t("器階已達上限，無法再進行鍛造！")
+				_msg_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+			"no_gold":
+				_msg_label.text = _t("金幣不足！無法進行一鍵鍛造。")
+				_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
+			"no_scrap":
+				_msg_label.text = _t("鐵屑不足！一鍵鍛造需要鐵屑穩火。")
+				_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
+			_:
+				_msg_label.text = _t("目前條件無法進行一鍵鍛造。")
+				_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	else:
+		if success_count > 0:
+			_msg_label.text = _t("一鍵鍛造完成！成功 %d 次（嘗試 %d 次）· 攻擊力 +%d · 消耗 %d 金幣、%d 鐵屑") % [success_count, tries, atk_gain, spent_gold, spent_scrap]
+			_msg_label.add_theme_color_override("font_color", COLOR_MINT)
+		else:
+			_msg_label.text = _t("一鍵鍛造結束：嘗試 %d 次全數失敗 · 消耗 %d 金幣、%d 鐵屑") % [tries, spent_gold, spent_scrap]
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
+
+	_refresh_display()
+
+
+func get_auto_forge_button() -> Button:
+	return _btn_auto_forge
+
+
+func get_top_power_label() -> Label:
+	return _power_label
+
+
+func get_msg_label() -> Label:
+	return _msg_label
 
 
 func get_go_workshop_button() -> Button:

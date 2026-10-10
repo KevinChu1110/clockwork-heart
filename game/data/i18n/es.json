@@ -1053,5 +1053,11 @@
   "返還寶石【%s】": "Gema devuelta [%s]",
   "一鍵合成": "Fusión Rápida",
   "暫無可合成寶石。": "No hay gemas para fusionar.",
-  "一鍵合成完成！共晉升 %d 次寶石。": "¡Fusión rápida completada! Gemas mejoradas %d veces."
+  "一鍵合成完成！共晉升 %d 次寶石。": "¡Fusión rápida completada! Gemas mejoradas %d veces.",
+  "一鍵鍛造": "Forja Automática",
+  "一鍵鍛造完成！成功 %d 次（嘗試 %d 次）· 攻擊力 +%d · 消耗 %d 金幣、%d 鐵屑": "¡Forja automática completa! Éxito %d veces (%d intentos) · ATQ +%d · Coste %d Oro, %d Chatarra",
+  "一鍵鍛造結束：嘗試 %d 次全數失敗 · 消耗 %d 金幣、%d 鐵屑": "Forja automática finalizada: %d intentos fallidos · Coste %d Oro, %d Chatarra",
+  "鐵屑不足！一鍵鍛造需要鐵屑穩火。": "¡Chatarra de hierro insuficiente! La forja automática requiere chatarra para templar el fuego.",
+  "金幣不足！無法進行一鍵鍛造。": "¡Oro insuficiente! No se puede realizar la forja automática.",
+  "目前條件無法進行一鍵鍛造。": "No se puede realizar la forja automática en las condiciones actuales."
 }
