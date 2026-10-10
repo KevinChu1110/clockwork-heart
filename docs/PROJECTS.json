@@ -5820,8 +5820,8 @@
    "id": "forge-workshop-link",
    "cat": "遊戲",
    "title": "天宮鐵匠與手藝工坊雙向直通快捷按鈕",
-   "status": "測試中",
-   "note": "天宮鐵匠與手藝工坊雙向直通快捷按鈕已實作完成，單元測試、回歸驗證、實機存證與 clock-check 皆全數通過",
+   "status": "已上線",
+   "note": "t_ccf48aae 回歸驗收通過，實機截圖存證至 proofs/t_ccf48aae/",
    "keys": [
     "天宮鐵匠與手藝工"
    ]
