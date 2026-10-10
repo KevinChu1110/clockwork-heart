@@ -417,6 +417,21 @@ func _build_ui() -> void:
 	foot_row.add_child(_btn_close)
 
 
+func set_tab(tab_idx: int) -> void:
+	if tab_idx == 1 or tab_idx == int(Tab.CASE_INSPECT):
+		_switch_tab(Tab.CASE_INSPECT)
+	else:
+		_switch_tab(Tab.SMELT)
+
+
+func switch_tab(tab_idx: int) -> void:
+	set_tab(tab_idx)
+
+
+func get_current_tab() -> Tab:
+	return _current_tab
+
+
 func _switch_tab(tab: Tab) -> void:
 	_current_tab = tab
 	if tab == Tab.SMELT:
