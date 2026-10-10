@@ -1067,5 +1067,7 @@
   "稀有": "Raro",
   "史詩": "Épico",
   "傳奇": "Legendario",
-  "神話": "Mítico"
+  "神話": "Mítico",
+  "vault.btn_double_claim": "Reclamo Doble",
+  "vault.ad_removed_double": "Sin anuncios: Recompensa doble reclamada"
 }
