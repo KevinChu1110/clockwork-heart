@@ -5890,8 +5890,8 @@
    "id": "power-stat-equip-merge",
    "cat": "平台",
    "title": "PowerStatDialog 前往整頓快捷分支合併與主線回歸",
-   "status": "草稿",
-   "note": "t_56bda80d",
+   "status": "開發中",
+   "note": "已派工 sideworker (t_56bda80d)",
    "keys": [
     "PowerSta"
    ]
