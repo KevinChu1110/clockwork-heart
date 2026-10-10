@@ -3742,5 +3742,7 @@
   "稀有": "Rare",
   "史詩": "Epic",
   "傳奇": "Legendary",
-  "神話": "Mythic"
+  "神話": "Mythic",
+  "vault.btn_double_claim": "Double Claim",
+  "vault.ad_removed_double": "No-Ads Privilege: Double Rewards Granted"
 }

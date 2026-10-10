@@ -19,6 +19,7 @@ signal closed()
 signal rewards_claimed(gold: int, scrap: int)
 
 const IdleClockworkVault = preload("res://scripts/systems/idle_clockwork_vault.gd")
+const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 ## ── 多巴胺鮮亮色盤 ──
@@ -47,9 +48,11 @@ var _gold_title_label: Label
 var _scrap_num_label: Label
 var _scrap_title_label: Label
 var _btn_claim: Button
+var _btn_double_claim: Button
 var _btn_close: Button
 var _cached_font: Font = null
 var _fx_container: Control = null
+var last_toast_text: String = ""
 
 
 func _init() -> void:
@@ -360,14 +363,15 @@ func _build_ui() -> void:
 		_scrap_num_label.add_theme_font_override("font", _cached_font)
 	sv.add_child(_scrap_num_label)
 
-	## 底部操作按鈕：一鍵領取 (熱區 260x52, 厚底 6px, 立體果凍)
+	## 底部操作按鈕：普通領取與雙倍領取 (高 52px, 熱區 >= 48px, 立體果凍厚底)
 	var foot_box := HBoxContainer.new()
 	foot_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	foot_box.add_theme_constant_override("separation", 16)
 	main_vbox.add_child(foot_box)
 
 	_btn_claim = Button.new()
 	_btn_claim.name = "ClaimButton"
-	_btn_claim.custom_minimum_size = Vector2(260, 52)
+	_btn_claim.custom_minimum_size = Vector2(240, 52)
 	_btn_claim.focus_mode = Control.FOCUS_NONE
 
 	var claim_sb := StyleBoxFlat.new()
@@ -386,6 +390,28 @@ func _build_ui() -> void:
 	_btn_claim.pressed.connect(_on_claim_pressed)
 	foot_box.add_child(_btn_claim)
 
+	## 雙倍領取按鈕 (DoubleClaimButton，高 52px、天藍 #38A0FF 底色、立體果凍厚底 5px、圓角 18px、字級 18px、零系統 Emoji)
+	_btn_double_claim = Button.new()
+	_btn_double_claim.name = "DoubleClaimButton"
+	_btn_double_claim.custom_minimum_size = Vector2(240, 52)
+	_btn_double_claim.focus_mode = Control.FOCUS_NONE
+
+	var double_sb := StyleBoxFlat.new()
+	double_sb.bg_color = COLOR_SKY
+	double_sb.border_color = COLOR_BORDER
+	double_sb.set_border_width_all(2)
+	double_sb.border_width_bottom = 5
+	double_sb.set_corner_radius_all(18)
+	_btn_double_claim.add_theme_stylebox_override("normal", double_sb)
+	_btn_double_claim.add_theme_stylebox_override("hover", double_sb)
+	_btn_double_claim.add_theme_stylebox_override("pressed", double_sb)
+	_btn_double_claim.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_double_claim.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_btn_double_claim.add_theme_font_override("font", _cached_font)
+	_btn_double_claim.pressed.connect(_on_double_claim_pressed)
+	foot_box.add_child(_btn_double_claim)
+
 
 func _update_localized_texts() -> void:
 	if _title_label:
@@ -396,6 +422,10 @@ func _update_localized_texts() -> void:
 		_gold_title_label.text = Loc.t("vault.gold_reward")
 	if _scrap_title_label:
 		_scrap_title_label.text = Loc.t("vault.scrap_reward")
+	if _btn_claim:
+		_btn_claim.text = Loc.t("vault.btn_claim")
+	if _btn_double_claim:
+		_btn_double_claim.text = Loc.t("vault.btn_double_claim")
 
 
 ## 刷新顯示數值與進度條
@@ -445,6 +475,93 @@ func refresh_display() -> void:
 			_btn_claim.disabled = true
 			_btn_claim.modulate = Color(0.7, 0.7, 0.7, 1)
 
+	## 更新雙倍領取按鈕狀態
+	if _btn_double_claim:
+		_btn_double_claim.text = Loc.t("vault.btn_double_claim")
+		if gold > 0 or scrap > 0:
+			_btn_double_claim.disabled = false
+			_btn_double_claim.modulate = Color(1, 1, 1, 1)
+		else:
+			_btn_double_claim.disabled = true
+			_btn_double_claim.modulate = Color(0.7, 0.7, 0.7, 1)
+
+
+func _is_ad_removed() -> bool:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs:
+			if "has_removed_ads" in gs:
+				return bool(gs.get("has_removed_ads"))
+			if gs.has_method("get_flag"):
+				return bool(gs.call("get_flag", "has_removed_ads", false))
+	return false
+
+
+func _on_double_claim_pressed() -> void:
+	var st: Dictionary = IdleClockworkVault.get_status()
+	var g: int = int(st.get("gold", 0))
+	var s: int = int(st.get("iron_scrap", 0))
+	if g <= 0 and s <= 0:
+		return
+
+	if _is_ad_removed():
+		_execute_double_claim()
+		_show_toast(Loc.t("vault.ad_removed_double"))
+		return
+
+	MockAdDialogScript.show_ad(
+		self,
+		"idle_vault",
+		func():
+			_execute_double_claim()
+	)
+
+
+func _execute_double_claim() -> void:
+	var res: Dictionary = IdleClockworkVault.claim(-1.0, 2)
+	var g: int = int(res.get("gold", 0))
+	var s: int = int(res.get("iron_scrap", 0))
+
+	if g > 0 or s > 0:
+		_play_dopamine_burst(g, s)
+		rewards_claimed.emit(g, s)
+	refresh_display()
+
+
+func _show_toast(msg: String) -> void:
+	last_toast_text = msg
+	var toast := Label.new()
+	toast.name = "VaultToast"
+	toast.text = msg
+	toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	toast.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	toast.offset_left = -180
+	toast.offset_right = 180
+	toast.offset_top = 40
+	toast.offset_bottom = 86
+	toast.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	toast.add_theme_font_size_override("font_size", 16)
+	if _cached_font:
+		toast.add_theme_font_override("font", _cached_font)
+
+	var tsb := StyleBoxFlat.new()
+	tsb.bg_color = COLOR_CARD_GOLD
+	tsb.border_color = COLOR_BORDER
+	tsb.set_border_width_all(2)
+	tsb.border_width_bottom = 4
+	tsb.set_corner_radius_all(18)
+	toast.add_theme_stylebox_override("normal", tsb)
+	add_child(toast)
+
+	var tw := create_tween()
+	if tw:
+		tw.tween_property(toast, "position:y", toast.position.y - 12, 0.3)
+		tw.tween_interval(1.2)
+		tw.tween_property(toast, "modulate:a", 0.0, 0.4)
+		tw.tween_callback(toast.queue_free)
+
 
 func _on_claim_pressed() -> void:
 	var res: Dictionary = IdleClockworkVault.claim()
@@ -468,6 +585,10 @@ func get_title_label() -> Label:
 
 func get_claim_button() -> Button:
 	return _btn_claim
+
+
+func get_double_claim_button() -> Button:
+	return _btn_double_claim
 
 
 func get_close_button() -> Button:
