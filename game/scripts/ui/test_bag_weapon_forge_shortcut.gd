@@ -77,7 +77,11 @@ func _initialize() -> void:
 	if win != null:
 		win.size = Vector2i(1280, 720)
 
-	_out_dir = ProjectSettings.globalize_path("res://../proofs/t_cdec80f5")
+	var env_dir := OS.get_environment("PROOF_DIR")
+	if env_dir != "":
+		_out_dir = env_dir
+	else:
+		_out_dir = ProjectSettings.globalize_path("res://../proofs/t_cdec80f5")
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 
 	_gs = root.get_node_or_null("GameState")
