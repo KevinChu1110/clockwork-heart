@@ -43,6 +43,10 @@
     "desc": "The one you picked up at the mist-gallery mouth. Kept even after it was forged proper.",
     "name": "Rusty Sword (keepsake)"
   },
+  "rusty_blade": {
+    "desc": "A mottled iron blade. Can be taken to Celestial Smith for forging.",
+    "name": "Rusty Sword"
+  },
   "knight_shard": {
     "desc": "A forging fragment from the knights' domain. Makes the sabre line.",
     "name": "Knight Iron Shard"

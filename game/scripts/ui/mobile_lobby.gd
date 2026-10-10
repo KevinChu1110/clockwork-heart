@@ -119,6 +119,7 @@ var _selected_bag_item: String = ""
 var _bag_detail: RichTextLabel = null
 var _bag_use_btn: Button = null
 var _bag_hb_btn: Button = null
+var _btn_bag_go_forge: Button = null
 var _bag_tip: Label = null
 var _last_bag_click_i: int = -1
 var _last_bag_click_t: int = 0
@@ -5048,6 +5049,24 @@ func _build_bag_tab() -> void:
 	_bag_hb_btn.pressed.connect(_on_bag_hotbar_pressed)
 	btn_row.add_child(_bag_hb_btn)
 
+	_btn_bag_go_forge = Button.new()
+	_btn_bag_go_forge.name = "BtnBagGoForge"
+	_btn_bag_go_forge.text = _t("前往鍛造")
+	_btn_bag_go_forge.custom_minimum_size = Vector2(0, 52)
+	_btn_bag_go_forge.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_btn_bag_go_forge.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+	_btn_bag_go_forge.add_theme_stylebox_override("hover", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18))
+	_btn_bag_go_forge.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 18))
+	_btn_bag_go_forge.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_btn_bag_go_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_bag_go_forge.add_theme_constant_override("outline_size", 3)
+	_btn_bag_go_forge.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_btn_bag_go_forge.add_theme_font_override("font", _cached_font)
+	_btn_bag_go_forge.pressed.connect(_on_bag_go_forge_pressed)
+	_btn_bag_go_forge.visible = false
+	btn_row.add_child(_btn_bag_go_forge)
+
 	# 操作提示
 	_bag_tip = Label.new()
 	_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
@@ -5386,9 +5405,22 @@ func _on_bag_hotbar_pressed() -> void:
 					inv.call("set_hotbar", i, _selected_bag_item)
 					placed = true
 					break
-			if not placed:
-				inv.call("set_hotbar", 0, _selected_bag_item)
+		if not placed:
+			inv.call("set_hotbar", 0, _selected_bag_item)
 	_refresh_bag_tab()
+
+
+func get_bag_go_forge_button() -> Button:
+	return _btn_bag_go_forge
+
+
+func _on_bag_go_forge_pressed() -> void:
+	var am = get_tree().root.get_node_or_null("AudioManager") if get_tree() else null
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	var target_item := _selected_bag_item
+	_switch_tab(Tab.VILLAGE)
+	open_forge(target_item)
 
 func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 	if _bag_layer == null:
@@ -5508,6 +5540,8 @@ func _update_bag_detail(inv: Node) -> void:
 		if _bag_hb_btn:
 			_bag_hb_btn.disabled = true
 			_bag_hb_btn.text = _t("放到快捷欄")
+		if _btn_bag_go_forge:
+			_btn_bag_go_forge.visible = false
 		return
 
 	if _bag_hb_btn:
@@ -5517,6 +5551,26 @@ func _update_bag_detail(inv: Node) -> void:
 	var def: Dictionary = inv.call("catalog", _selected_bag_item) as Dictionary if inv.has_method("catalog") else {}
 	var n: int = int(inv.call("count", _selected_bag_item)) if inv.has_method("count") else 0
 	var kind: String = str(def.get("kind", ""))
+
+	# 若 def 內無 kind 或未在 catalog，但為裝備系統內之武器裝備
+	if kind.is_empty() and not _selected_bag_item.is_empty():
+		var eq := _get_equip_sys()
+		if eq != null:
+			var eq_inst: Dictionary = eq.call("find_any", _selected_bag_item) if eq.has_method("find_any") else {}
+			if not eq_inst.is_empty():
+				var eq_slot := str(eq_inst.get("slot", ""))
+				kind = "weapon" if eq_slot == "weapon" else "equipment"
+			elif eq.has_method("base_def") and not (eq.call("base_def", _selected_bag_item) as Dictionary).is_empty():
+				kind = "weapon"
+
+	var is_equipment: bool = (kind == "equipment" or kind == "weapon")
+	if _btn_bag_go_forge:
+		_btn_bag_go_forge.visible = is_equipment
+		_btn_bag_go_forge.text = _t("前往鍛造")
+
+	if is_equipment and _bag_hb_btn:
+		_bag_hb_btn.disabled = true
+
 	var kind_s: String = kind
 	match kind:
 		"consumable":
@@ -5534,6 +5588,16 @@ func _update_bag_detail(inv: Node) -> void:
 			if _bag_use_btn:
 				_bag_use_btn.disabled = false
 				_bag_use_btn.text = _t("無法使用")
+		"equipment":
+			kind_s = _t("裝備")
+			if _bag_use_btn:
+				_bag_use_btn.disabled = false
+				_bag_use_btn.text = _t("使用 / 賣出")
+		"weapon":
+			kind_s = _t("武器")
+			if _bag_use_btn:
+				_bag_use_btn.disabled = false
+				_bag_use_btn.text = _t("使用 / 賣出")
 		_:
 			kind_s = _t("道具")
 			if _bag_use_btn:
@@ -5542,6 +5606,20 @@ func _update_bag_detail(inv: Node) -> void:
 
 	var item_name: String = _t(str(def.get("name", _selected_bag_item)))
 	var item_desc: String = _t(str(def.get("desc", "")))
+	if is_equipment and (item_desc.is_empty() or def.is_empty()):
+		var eq := _get_equip_sys()
+		if eq != null:
+			var eq_inst: Dictionary = eq.call("find_any", _selected_bag_item) if eq.has_method("find_any") else {}
+			if not eq_inst.is_empty():
+				item_name = _t(str(eq_inst.get("name", _selected_bag_item)))
+				var tier := int(eq_inst.get("tier", 1))
+				var q_label := str(eq_inst.get("quality_label", ""))
+				item_desc = _t("器階：第 %d 階  品質：%s") % [tier, q_label]
+			elif eq.has_method("base_def"):
+				var bdef: Dictionary = eq.call("base_def", _selected_bag_item)
+				if not bdef.is_empty():
+					item_name = _t(str(bdef.get("name", _selected_bag_item)))
+					item_desc = _t("基礎武器 · 點擊前往鍛造可進行強化")
 
 	var icon_tex := get_item_icon(_selected_bag_item)
 	if _bag_preview_row:
@@ -5805,6 +5883,8 @@ func _apply_locale_texts() -> void:
 		_core_title_lbl.text = _t("機芯部件背包（點擊替換裝備）")
 	if _core_empty_lbl and is_instance_valid(_core_empty_lbl):
 		_core_empty_lbl.text = _t("背包暫無未裝備機芯部件")
+	if _btn_bag_go_forge and is_instance_valid(_btn_bag_go_forge):
+		_btn_bag_go_forge.text = _t("前往鍛造")
 	if _bag_layer and is_instance_valid(_bag_layer):
 		_update_bag_detail(_get_inv_sys())
 		_refresh_core_bag()
@@ -5895,9 +5975,11 @@ func open_wardrobe() -> void:
 
 
 ## 開啟天宮鐵匠彈窗
-func open_forge() -> Control:
+func open_forge(target_weapon: Variant = null) -> Control:
 	var existing = get_node_or_null("ForgeDialog")
 	if existing != null:
+		if target_weapon != null and existing.has_method("select_target_equipment"):
+			existing.call("select_target_equipment", target_weapon)
 		return existing
 	var ForgeClass: GDScript = load("res://scripts/ui/forge_dialog.gd")
 	if ForgeClass == null:
@@ -5909,6 +5991,8 @@ func open_forge() -> Control:
 		refresh_hud()
 	)
 	add_child(dlg)
+	if target_weapon != null and dlg.has_method("select_target_equipment"):
+		dlg.call("select_target_equipment", target_weapon)
 	return dlg
 
 

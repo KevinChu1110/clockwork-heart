@@ -811,6 +811,79 @@ func get_active_slot_index() -> int:
 	return _active_slot_idx
 
 
+func get_active_weapon_inst() -> Dictionary:
+	return _current_weapon_inst()
+
+
+## 設定或自動選中特定裝備/武器為鍛造目標
+func select_target_equipment(target: Variant) -> void:
+	if target == null:
+		return
+	var es := _get_equip_sys()
+	var target_str := str(target).strip_edges()
+	var target_uid := ""
+	var target_id := ""
+	if target is String:
+		target_uid = target_str
+		target_id = target_str
+	elif target is Dictionary:
+		target_uid = str(target.get("uid", target.get("id", ""))).strip_edges()
+		target_id = str(target.get("id", target.get("base_id", target_uid))).strip_edges()
+		target_str = target_uid if not target_uid.is_empty() else target_id
+
+	# 1. 檢查是否已在武器槽位 0, 1, 2 中
+	for i in range(3):
+		var uid := ""
+		if es and es.has_method("loadout_uid"):
+			uid = str(es.call("loadout_uid", i))
+		elif "weapon_loadout" in GameState and GameState.weapon_loadout != null and i < GameState.weapon_loadout.size():
+			uid = str(GameState.weapon_loadout[i])
+		if not uid.is_empty():
+			if uid == target_uid or uid == target_id:
+				_on_slot_chip_pressed(i)
+				return
+			var inst: Dictionary = {}
+			if es and es.has_method("weapon_inst"):
+				inst = es.call("weapon_inst", uid)
+			elif GameState.equip_worn != null and GameState.equip_worn.has(uid):
+				inst = GameState.equip_worn[uid]
+			if not inst.is_empty():
+				if str(inst.get("uid", "")) == target_uid or str(inst.get("base_id", "")) == target_id or str(inst.get("id", "")) == target_id:
+					_on_slot_chip_pressed(i)
+					return
+
+	# 2. 若未裝備在槽位中，檢查裝備庫 (equip_bag / find_any) 並自動裝入當前作用槽位
+	if es and es.has_method("equip_weapon_to_loadout"):
+		var bag_inst: Dictionary = {}
+		if es.has_method("find_bag"):
+			bag_inst = es.call("find_bag", target_uid)
+		if bag_inst.is_empty() and es.has_method("find_any"):
+			bag_inst = es.call("find_any", target_uid)
+		if bag_inst.is_empty() and "equip_bag" in GameState and GameState.equip_bag is Array:
+			for e in GameState.equip_bag:
+				if e is Dictionary and (str(e.get("uid", "")) == target_uid or str(e.get("base_id", "")) == target_id or str(e.get("id", "")) == target_id):
+					bag_inst = e
+					break
+		if not bag_inst.is_empty():
+			var real_uid := str(bag_inst.get("uid", target_uid))
+			es.call("equip_weapon_to_loadout", real_uid, _active_slot_idx)
+			_sync_state_from_weapon()
+			_refresh_display()
+			_refresh_slot_chips()
+			return
+
+	# 3. 若為純字典或裝備定義，同步至當前鍛造目標
+	if target is Dictionary:
+		var r: Dictionary = target.get("rolled", {})
+		GameState.weapon_atk = int(r.get("atk", target.get("atk", GameState.weapon_atk)))
+		GameState.weapon_tier = int(target.get("tier", GameState.weapon_tier))
+		GameState.weapon_name = str(target.get("name", GameState.weapon_name))
+	elif not target_id.is_empty():
+		GameState.weapon_name = target_id
+	_refresh_display()
+	_refresh_slot_chips()
+
+
 func get_quality_label() -> Label:
 	return _quality_label
 

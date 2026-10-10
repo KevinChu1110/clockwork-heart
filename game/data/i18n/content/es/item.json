@@ -43,6 +43,10 @@
     "desc": "La que recogiste a la entrada de la galería de niebla. La guardas aun tras forjarla en condiciones.",
     "name": "Espada oxidada (recuerdo)"
   },
+  "rusty_blade": {
+    "desc": "Una hoja de hierro moteada. Llévala a la Fragua Celestial para mejorarla.",
+    "name": "Espada oxidada"
+  },
   "knight_shard": {
     "desc": "Fragmento de forja del dominio de los caballeros. Sirve para la línea de sables.",
     "name": "Esquirla de hierro de caballero"
