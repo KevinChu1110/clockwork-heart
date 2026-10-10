@@ -98,7 +98,9 @@ func _process(_delta: float) -> bool:
 				_wait = 0
 		4:
 			if _wait >= 10:
-				# 測試 4: 戰鬥中 _maple_hud 隱藏，但 _hotbar 保持顯示
+				# 測試 4: 戰鬥中 _maple_hud 與 _hotbar 都隱藏
+				# （6c74612c 戰鬥 HUD 手遊化：底部 1-8 快捷欄在戰鬥畫面收起，
+				#  數字鍵 1-8 仍可用道具，見 main.gd::_refresh_hud）
 				_main.call("proof_show_battle", "road_bandit")
 				_step = 5
 				_wait = 0
@@ -110,11 +112,11 @@ func _process(_delta: float) -> bool:
 					printerr("FAIL: 戰鬥中 _maple_hud 應該為 hidden，但 visible == true")
 					quit(1)
 					return false
-				if not hotbar.visible:
-					printerr("FAIL: 戰鬥中 _hotbar 應該維持 visible，但 visible == false")
+				if hotbar.visible:
+					printerr("FAIL: 戰鬥中 _hotbar 應該為 hidden，但 visible == true")
 					quit(1)
 					return false
-				print("  ✓ 測試 4 通過: 戰鬥中 _maple_hud 隱藏且 _hotbar 維持顯示")
+				print("  ✓ 測試 4 通過: 戰鬥中 _maple_hud 與 _hotbar 皆為 hidden")
 
 				print("HUD_MODAL_VISIBILITY_OK")
 				quit(0)

@@ -116,7 +116,7 @@ func _initialize() -> void:
 		var sim: BattleSim = null
 		match bname:
 			"leo": sim = BattleSim.make_leo_fight(p_stats)
-			"fog": sim = BattleSim.make_fog_fight(p_stats)
+			"fog": sim = BattleSim.make_fog_fight(p_stats, 42)  ## 幻影速度建場時就擲骰，seed 要從這裡給
 			"boar": sim = BattleSim.make_boar_fight(p_stats)
 		
 		sim.rng.seed = 42
