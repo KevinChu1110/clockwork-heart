@@ -5885,6 +5885,16 @@
    "keys": [
     "發條儲能庫放置收"
    ]
+  },
+  {
+   "id": "power-stat-equip-merge",
+   "cat": "平台",
+   "title": "PowerStatDialog 前往整頓快捷分支合併與主線回歸",
+   "status": "草稿",
+   "note": "t_56bda80d",
+   "keys": [
+    "PowerSta"
+   ]
   }
  ]
 }
