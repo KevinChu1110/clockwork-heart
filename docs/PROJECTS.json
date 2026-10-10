@@ -5795,6 +5795,16 @@
    "keys": [
     "背包Tab武器裝"
    ]
+  },
+  {
+   "id": "bag-dismantle-btn",
+   "cat": "遊戲",
+   "title": "背包Tab武器裝備詳情新增拆解回收按鈕",
+   "status": "草稿",
+   "note": "連動 EquipmentSystem.dismantle(uid) 回收鐵屑與金幣",
+   "keys": [
+    "背包Tab武器裝"
+   ]
   }
  ]
 }
