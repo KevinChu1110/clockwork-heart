@@ -5810,8 +5810,8 @@
    "id": "gem-auto-fuse",
    "cat": "遊戲",
    "title": "手藝工坊寶石熔煉新增一鍵合成",
-   "status": "開發中",
-   "note": "實作 GemSystem.auto_fuse() 與 GemWorkshopDialog 一鍵合成按鈕",
+   "status": "測試中",
+   "note": "實作完成，單元測試與截圖存證完備，待 sideqa 審查",
    "keys": [
     "手藝工坊寶石熔煉"
    ]
