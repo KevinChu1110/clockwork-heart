@@ -181,5 +181,42 @@ func _initialize() -> void:
 	assert(float(bonuses.get("def_pct", 0.0)) > 0.0, "def_pct bonus from yellow on armor")
 	print("  ok auto_socket: double empty slots filled with optimal gems")
 
+	## == 一鍵合成 auto_fuse 測試 ==
+	gs.level = 20
+	gs.gem_bag = []
+	# 1. 背包無可合成寶石
+	var r_no_fuse: Dictionary = gem.auto_fuse()
+	assert(not bool(r_no_fuse.get("ok", true)), "no fuse should fail")
+	assert(int(r_no_fuse.get("total_fused", 0)) == 0, "0 fused")
+	assert("暫無可合成寶石" in str(r_no_fuse.get("msg", "")), "no fuse msg")
+	assert(gem.can_auto_fuse() == false, "can_auto_fuse is false")
+	print("  ok auto_fuse: empty bag guard")
+
+	# 2. 單色逐級串接合成（9 顆 red 1 -> 3 顆 red 2 -> 1 顆 red 3，共 4 次合成）
+	gem.add_gem("red", 1, 9)
+	assert(gem.can_auto_fuse() == true, "can_auto_fuse is true with 9 red 1")
+	var r_cascade: Dictionary = gem.auto_fuse()
+	assert(bool(r_cascade.get("ok", false)), "cascade fuse ok")
+	assert(int(r_cascade.get("total_fused", 0)) == 4, "total 4 fusions (3 at lv1 + 1 at lv2)")
+	assert(gem.count_of("red", 1) == 0, "red 1 all consumed")
+	assert(gem.count_of("red", 2) == 0, "red 2 all consumed to lv3")
+	assert(gem.count_of("red", 3) == 1, "red 3 produced")
+	assert(int(r_cascade.get("stats", {}).get("red", {}).get(2, 0)) == 3, "red lv2 produced 3")
+	assert(int(r_cascade.get("stats", {}).get("red", {}).get(3, 0)) == 1, "red lv3 produced 1")
+	print("  ok auto_fuse: single color cascading fusion")
+
+	# 3. 多色混合合成（黃色 4 顆 lv2 -> 1 顆 lv3 剩 1 顆 lv2；藍色 3 顆 lv4 -> 1 顆 lv5）
+	gem.add_gem("yellow", 2, 4)
+	gem.add_gem("blue", 4, 3)
+	var r_multi: Dictionary = gem.auto_fuse()
+	assert(bool(r_multi.get("ok", false)), "multi color fuse ok")
+	assert(int(r_multi.get("total_fused", 0)) == 2, "2 fusions across yellow and blue")
+	assert(gem.count_of("yellow", 2) == 1, "1 yellow lv2 remains")
+	assert(gem.count_of("yellow", 3) == 1, "1 yellow lv3 produced")
+	assert(gem.count_of("blue", 4) == 0, "blue lv4 consumed")
+	assert(gem.count_of("blue", 5) == 1, "blue lv5 produced")
+	assert(gem.can_auto_fuse() == false, "no more fusions available")
+	print("  ok auto_fuse: multi color mixed fusion")
+
 	print("GEM_OK")
 	quit(0)

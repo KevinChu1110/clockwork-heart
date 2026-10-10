@@ -489,7 +489,7 @@
   "一擊要有重量": "Every Blow Must Have Weight",
   "一次性去廣告（Mock買斷）": "Remove Ads (Mock Purchase)",
   "一炷煙直上，在霧裡拐了個彎，像笑了一下。": "A thread of smoke rises straight up, then bends in the mist, as if it laughed.",
-  "一鍵合成": "Fuse All",
+  "一鍵合成": "Quick Fuse",
   "一鍵吸收廢魂": "Absorb junk souls (one tap)",
   "一鍵吸收灰魂": "Absorb Gray Souls",
   "一鍵吸收灰魂 (換經驗)": "Absorb Gray Souls (EXP)",
@@ -3727,5 +3727,6 @@
   "拆解【%s】，獲得鐵屑×%d、金幣+%d，返還寶石【%s】": "Dismantled [%s], received Iron Scrap x%d, Gold +%d, returned Gem [%s]",
   "返還寶石": "Returned Gem",
   "返還寶石【%s】": "Returned Gem [%s]",
-  "前往工坊": "Go to Workshop"
+  "暫無可合成寶石。": "No gems available to fuse.",
+  "一鍵合成完成！共晉升 %d 次寶石。": "Quick Fuse complete! Upgraded gems %d times."
 }

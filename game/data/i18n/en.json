@@ -1051,5 +1051,7 @@
   "拆解【%s】，獲得鐵屑×%d、金幣+%d，返還寶石【%s】": "Dismantled [%s], received Iron Scrap x%d, Gold +%d, returned Gem [%s]",
   "返還寶石": "Returned Gem",
   "返還寶石【%s】": "Returned Gem [%s]",
-  "前往工坊": "Go to Workshop"
+  "一鍵合成": "Quick Fuse",
+  "暫無可合成寶石。": "No gems available to fuse.",
+  "一鍵合成完成！共晉升 %d 次寶石。": "Quick Fuse complete! Upgraded gems %d times."
 }
