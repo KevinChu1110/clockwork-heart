@@ -5810,8 +5810,8 @@
    "id": "bag-gem-detail-dismantle",
    "cat": "遊戲",
    "title": "背包Tab裝備詳情顯示已鑲寶石並於拆解時安全返還",
-   "status": "開發中",
-   "note": "開始開發",
+   "status": "測試中",
+   "note": "自測全綠、實機截圖與六語系驗收通過，送審 sideqa",
    "keys": [
     "背包Tab裝備詳"
    ]
