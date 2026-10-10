@@ -6424,6 +6424,10 @@ func open_power_stat_dialog() -> Control:
 	dlg.tree_exited.connect(func():
 		refresh_hud()
 	)
+	if dlg.has_signal("equip_requested"):
+		dlg.equip_requested.connect(func():
+			_switch_tab(Tab.CHARACTER)
+		)
 	add_child(dlg)
 	return dlg
 

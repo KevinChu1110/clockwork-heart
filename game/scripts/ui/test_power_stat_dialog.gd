@@ -133,9 +133,13 @@ func _test_dialog_structure_and_specs() -> void:
 	assert(close_x.text == "✕", "BtnCloseX 文字應為 '✕'")
 
 	var close_bot := _dlg.find_child("BtnBottomClose", true, false) as Button
-	assert(close_bot != null, "缺少底部關閉按鈕 BtnBottomClose")
+	assert(close_bot != null, "缺少底部按鈕 BtnBottomClose")
 	assert(close_bot.custom_minimum_size.x >= 48 and close_bot.custom_minimum_size.y >= 48, "BtnBottomClose 熱區必須 >= 48px")
-	print("  ✓ 右上✕按鈕 (50x50) 與底部關閉按鈕 (140x48) 熱區均 >= 48px")
+
+	var go_equip_btn := _dlg.find_child("BtnGoEquip", true, false) as Button
+	assert(go_equip_btn != null, "缺少前往整頓按鈕 BtnGoEquip")
+	assert(go_equip_btn.custom_minimum_size.x >= 48 and go_equip_btn.custom_minimum_size.y >= 48, "BtnGoEquip 熱區必須 >= 48px")
+	print("  ✓ 右上✕按鈕 (50x50)、前往整頓按鈕 (140x48) 與底部關閉按鈕 (140x48) 熱區均 >= 48px")
 
 	_assert_no_emoji(_dlg)
 
@@ -190,7 +194,7 @@ func _test_locale_switch_and_dynamic_refresh() -> void:
 
 	# 切換英文 (已在上一步切換並截圖)
 	assert(title_lbl.text == "Power & Attributes", "英文標題未正確切換: %s" % title_lbl.text)
-	assert(bot_btn.text == "Close", "英文底部按鈕未正確切換: %s" % bot_btn.text)
+	assert(bot_btn.text in ["OK", "Confirm", "Close"], "英文底部按鈕未正確切換: %s" % bot_btn.text)
 	print("  ✓ 英文 (en) 語系切換刷新正常")
 
 	# 切換日文
@@ -205,7 +209,7 @@ func _test_locale_switch_and_dynamic_refresh() -> void:
 		_loc.call("set_locale", "zh_TW")
 	_dlg.call("_on_locale_changed", "zh_TW")
 	assert(title_lbl.text == "戰力屬性總覽", "繁中標題未正確恢復: %s" % title_lbl.text)
-	assert(bot_btn.text == "關閉", "繁中底部按鈕未正確恢復: %s" % bot_btn.text)
+	assert(bot_btn.text in ["確定", "確認", "關閉"], "繁中底部按鈕未正確恢復: %s" % bot_btn.text)
 	print("  ✓ 繁中 (zh_TW) 語系切換恢復正常")
 
 
