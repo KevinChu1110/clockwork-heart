@@ -17,7 +17,7 @@ const TIER_COLORS := {
 		"bottom": Color("#475467"),
 		"glow": Color(0.6, 0.65, 0.75, 0.5),
 		"badge": Color("#EAECF0"),
-		"stars": "★ ☆ ☆",
+		"stars": "",
 		"name": "普通"
 	},
 	"orange": {
@@ -27,7 +27,7 @@ const TIER_COLORS := {
 		"bottom": Color("#E68A00"),
 		"glow": Color(1.0, 0.63, 0.06, 0.65),
 		"badge": Color("#FFA010"),
-		"stars": "★ ★ ☆",
+		"stars": "",
 		"name": "優良"
 	},
 	"blue": {
@@ -37,7 +37,7 @@ const TIER_COLORS := {
 		"bottom": Color("#1E88E5"),
 		"glow": Color(0.22, 0.63, 1.0, 0.65),
 		"badge": Color("#38A0FF"),
-		"stars": "★ ★ ★",
+		"stars": "",
 		"name": "稀有"
 	},
 	"purple": {
@@ -47,7 +47,7 @@ const TIER_COLORS := {
 		"bottom": Color("#8E24AA"),
 		"glow": Color(0.64, 0.35, 1.0, 0.70),
 		"badge": Color("#A259FF"),
-		"stars": "★ ★ ★ ★",
+		"stars": "",
 		"name": "史詩"
 	},
 	"gold": {
@@ -57,7 +57,7 @@ const TIER_COLORS := {
 		"bottom": Color("#C48D00"),
 		"glow": Color(1.0, 0.82, 0.16, 0.75),
 		"badge": Color("#FFD028"),
-		"stars": "★ ★ ★ ★ ★",
+		"stars": "",
 		"name": "傳奇"
 	},
 	"red": {
@@ -67,7 +67,7 @@ const TIER_COLORS := {
 		"bottom": Color("#B71C1C"),
 		"glow": Color(1.0, 0.30, 0.30, 0.80),
 		"badge": Color("#FF4D4D"),
-		"stars": "✦ ✦ ✦ ✦ ✦",
+		"stars": "",
 		"name": "神話"
 	}
 }
@@ -164,7 +164,7 @@ func _connect_loc_signal() -> void:
 
 func _on_locale_changed(_new_locale: String = "") -> void:
 	if _title_lbl:
-		_title_lbl.text = _t("✦ 封靈連轉結果 ✦")
+		_title_lbl.text = _t("封靈連轉結果")
 	if _btn_again:
 		_btn_again.text = _t("再連轉一次")
 	if _btn_collect:
@@ -183,7 +183,7 @@ func _build_ui() -> void:
 
 	# 2. 標題
 	_title_lbl = Label.new()
-	_title_lbl.text = _t("✦ 封靈連轉結果 ✦")
+	_title_lbl.text = _t("封靈連轉結果")
 	_title_lbl.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	_title_lbl.offset_top = 24
 	_title_lbl.offset_bottom = 64
@@ -291,9 +291,9 @@ func _create_mini_card(drop: Dictionary, index: int) -> Control:
 	panel.add_theme_stylebox_override("panel", style)
 	root_card.add_child(panel)
 
-	# 頂部星級與稀有度
+	# 頂部品質階級
 	var top_lbl := Label.new()
-	top_lbl.text = "%s %s" % [tier_data.get("stars", "★ ★"), tier_data.get("name", "")]
+	top_lbl.text = _t(str(tier_data.get("name", "")))
 	top_lbl.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	top_lbl.offset_top = 10
 	top_lbl.offset_bottom = 30

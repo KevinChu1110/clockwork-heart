@@ -310,7 +310,7 @@
   "soul.btn_skip": "Saltar",
   "soul.draw_title": "Extracción de Almas · Recipiente de Almas",
   "soul.err_tickets": "Boletos de alma insuficientes",
-  "soul.ten_pull_title": "✦ Resultados de 10 Extracciones ✦",
+  "soul.ten_pull_title": "Resultados de 10 Extracciones",
   "soul.tickets_status": "Boletos de Alma ×%d · Extraídas Hoy: %d",
   "ui_goto: 未知去處 '%s'": "ui_goto: destino desconocido '%s'",
   "vault.btn_claim": "Reclamar Todo",
@@ -404,7 +404,6 @@
   "● 你  ·  路標  ·  NPC  ·  點": "● Tú  ·  Poste  ·  NPC  ·  Punto",
   "✓ 已選用": "✓ Seleccionado",
   "✓ 鍛造後": "✓ tras forjar",
-  "✦ 封靈連轉結果 ✦": "✦ Resultados de 10 Extracciones ✦",
   "　　　　西林（樹冠／靜湖／遺址）\n": "　　　　Bosque del Oeste (copas / lago quieto / ruinas)\n",
   "　　　　遊俠森林（樹冠／靜湖／遺址）\n": "　　　　Bosque del Montaraz (copas / lago quieto / ruinas)\n",
   "　　　武鬥道場（內院／竹林／山巔）\n\n": "　　　Dojo marcial (patio interior / bambú / cima)\n\n",
@@ -3734,5 +3733,14 @@
   "一鍵鍛造結束：嘗試 %d 次全數失敗 · 消耗 %d 金幣、%d 鐵屑": "Forja automática finalizada: %d intentos fallidos · Coste %d Oro, %d Chatarra",
   "鐵屑不足！一鍵鍛造需要鐵屑穩火。": "¡Chatarra de hierro insuficiente! La forja automática requiere chatarra para templar el fuego.",
   "金幣不足！無法進行一鍵鍛造。": "¡Oro insuficiente! No se puede realizar la forja automática.",
-  "目前條件無法進行一鍵鍛造。": "No se puede realizar la forja automática en las condiciones actuales."
+  "目前條件無法進行一鍵鍛造。": "No se puede realizar la forja automática en las condiciones actuales.",
+  "封靈連轉結果": "Resultados de 10 Extracciones",
+  "發條解鎖 · 聚魂召喚": "Desbloqueo de Cuerda · Invocación de Almas",
+  "soul.summon_hint": "Desbloqueo de Cuerda · Invocación de Almas",
+  "普通": "Común",
+  "優良": "Bueno",
+  "稀有": "Raro",
+  "史詩": "Épico",
+  "傳奇": "Legendario",
+  "神話": "Mítico"
 }
