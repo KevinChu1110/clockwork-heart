@@ -117,10 +117,19 @@ func _run_test_suite() -> void:
 		var p_body: TextureRect = battle_node.get_node_or_null("Arena/PlayerSlot/PlayerBody") as TextureRect
 		_assert(p_body != null, "戰鬥畫面中 PlayerBody 節點存在 (%s)" % r)
 		if p_body != null:
-			var starter_weapon := str(GameState.RACE_STARTER_WEAPONS.get(r, ""))
-			var expected_tex: Texture2D = SpriteDB.player_equipped_idle(r, {"weapon": starter_weapon})
+			## 戰前上鏈儀式（f2188745）之後，待機立繪改成「素體＋鑰匙分層」：
+			## PlayerBody 是不含鑰匙的紙娃娃合成圖（外觀槽 paperdoll_slots），
+			## 鑰匙畫在子節點 HeroWindingKey 上轉動。舊斷言還在比「含鑰匙＋開局武器 id」
+			## 的整張合成圖，所以 14 族全錯（#72）。這裡改比戰鬥實際走的那條路徑。
+			var art_slots: Dictionary = (gs.paperdoll_slots as Dictionary).duplicate() if gs.paperdoll_slots is Dictionary else {}
+			var k_layer := p_body.get_node_or_null("HeroWindingKey") as TextureRect
+			var layered := k_layer != null and k_layer.get_node_or_null("WindingKeyAnimator") != null
+			_assert(layered, "戰鬥待機立繪走鑰匙分層（HeroWindingKey + WindingKeyAnimator）(%s)" % r)
+			var expected_tex: Texture2D = WindingKeyAnimator.build_body_texture_no_key(r, art_slots)
 			_assert(p_body.texture != null, "戰鬥畫面中 PlayerBody.texture 不為 null (%s)" % r)
-			_assert(p_body.texture == expected_tex, "戰鬥畫面中 PlayerBody.texture 精確使用 %s 族開局裝備素體" % r)
+			_assert(p_body.texture == expected_tex, "戰鬥畫面中 PlayerBody.texture 精確使用 %s 族紙娃娃素體（不含鑰匙）" % r)
+			if expected_tex != null:
+				_assert(expected_tex.get_width() >= 256, "戰鬥立繪是 512 高清合成，不是 128 糊圖 (%s)" % r)
 
 		battle_node.queue_free()
 
