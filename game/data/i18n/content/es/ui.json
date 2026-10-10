@@ -3750,5 +3750,7 @@
   "暴擊折算": "Bono de Crítico",
   "Lv.10 解鎖": "Desbloquea en Nv.10",
   "Lv.20 解鎖": "Desbloquea en Nv.20",
-  "點擊任意處或右上關閉": "Toca en cualquier parte o arriba a la derecha para cerrar"
+  "點擊任意處或右上關閉": "Toca en cualquier parte o arriba a la derecha para cerrar",
+  "裝備總加成: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%": "Total de Equipo: ATQ+%d · DEF+%d · PV+%d · CRÍT+%.1f%%",
+  "T%d · 攻 +%d": "T%d · ATQ +%d"
 }

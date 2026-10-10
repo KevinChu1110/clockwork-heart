@@ -68,28 +68,38 @@ func _process(_delta: float) -> bool:
 	match _step:
 		0:
 			_test_dialog_structure_and_specs()
-			_wait = 2
+			_wait = 3
 			_step = 1
 		1:
 			_test_stats_reading_and_display()
 			_h1 = _capture_and_save(_proof_dir + "/proof_01_power_stat_dialog_open.png")
-			_wait = 2
+			# 切換為英文 (en) 準備在下一幀截取 en 畫面
+			if _loc and _loc.has_method("set_locale"):
+				_loc.call("set_locale", "en")
+			_dlg.call("_on_locale_changed", "en")
+			_wait = 3
 			_step = 2
 		2:
-			_test_locale_switch_and_dynamic_refresh()
+			# 此時畫面已在 en 語系渲染完成，立即截圖存證 proof_02
 			_h2 = _capture_and_save(_proof_dir + "/proof_02_power_stat_dialog_en.png")
-			_wait = 2
+			# 執行語系切換斷言與測試
+			_test_locale_switch_and_dynamic_refresh()
+			_wait = 3
 			_step = 3
 		3:
 			_test_close_and_scrim()
-			_wait = 2
+			_wait = 3
 			_step = 4
 		4:
 			_test_lobby_hud_integration()
-			_h3 = _capture_and_save(_proof_dir + "/proof_03_lobby_top_hud.png")
-			_wait = 2
+			_wait = 3
 			_step = 5
 		5:
+			# 此時大廳畫面已渲染完成，截取 proof_03
+			_h3 = _capture_and_save(_proof_dir + "/proof_03_lobby_top_hud.png")
+			_wait = 2
+			_step = 6
+		6:
 			_verify_proof_hashes()
 			_finish_all_tests()
 			return true
@@ -178,19 +188,16 @@ func _test_locale_switch_and_dynamic_refresh() -> void:
 	var title_lbl := _dlg.find_child("TitleLabel", true, false) as Label
 	var bot_btn := _dlg.find_child("BtnBottomClose", true, false) as Button
 
-	# 切換英文
-	if _loc and _loc.has_method("set_locale"):
-		_loc.call("set_locale", "en")
-	_dlg.call("_on_locale_changed", "en")
-	assert(title_lbl.text == "Power & Attributes" or title_lbl.text == "戰力屬性總覽", "英文標題未正確切換: %s" % title_lbl.text)
-	assert(bot_btn.text == "Close" or bot_btn.text == "關閉", "英文底部按鈕未正確切換: %s" % bot_btn.text)
+	# 切換英文 (已在上一步切換並截圖)
+	assert(title_lbl.text == "Power & Attributes", "英文標題未正確切換: %s" % title_lbl.text)
+	assert(bot_btn.text == "Close", "英文底部按鈕未正確切換: %s" % bot_btn.text)
 	print("  ✓ 英文 (en) 語系切換刷新正常")
 
 	# 切換日文
 	if _loc and _loc.has_method("set_locale"):
 		_loc.call("set_locale", "ja")
 	_dlg.call("_on_locale_changed", "ja")
-	assert(title_lbl.text == "戦力・属性概要" or title_lbl.text == "戰力屬性總覽", "日文標題未正確切換: %s" % title_lbl.text)
+	assert(title_lbl.text == "戦力・属性概要", "日文標題未正確切換: %s" % title_lbl.text)
 	print("  ✓ 日文 (ja) 語系切換刷新正常")
 
 	# 切回繁體中文
@@ -252,8 +259,9 @@ func _test_lobby_hud_integration() -> void:
 
 	var pwr_cap := _lobby.find_child("PowerCapsule", true, false) as PanelContainer
 	assert(pwr_cap != null, "大廳頂部缺少戰力膠囊 PowerCapsule")
+	assert(pwr_cap.custom_minimum_size.x >= 48 and pwr_cap.custom_minimum_size.y >= 48, "戰力膠囊 PowerCapsule 熱區必須 >= 48px，當前: %s" % pwr_cap.custom_minimum_size)
 	assert(pwr_cap.mouse_filter == Control.MOUSE_FILTER_STOP, "PowerCapsule 必須為 STOP 攔截點擊")
-	print("  ✓ 戰力膠囊 PowerCapsule 設定為互動元件")
+	print("  ✓ 戰力膠囊 PowerCapsule (熱區 >= 48px: %s) 設定為互動元件" % pwr_cap.custom_minimum_size)
 
 	# 模擬點擊個人檔案框開啟彈窗
 	var ev_click := InputEventMouseButton.new()
@@ -281,12 +289,13 @@ func _test_lobby_hud_integration() -> void:
 
 
 func _verify_proof_hashes() -> void:
-	if DisplayServer.get_name() != "headless":
-		if not _h1.is_empty() and not _h2.is_empty():
-			assert(_h1 != _h2, "存證截圖 SHA256 不得相同: h1=%s, h2=%s" % [_h1, _h2])
-		if not _h2.is_empty() and not _h3.is_empty():
-			assert(_h2 != _h3, "存證截圖 SHA256 不得相同: h2=%s, h3=%s" % [_h2, _h3])
-		print("  ✓ 存證截圖 SHA256 驗證通過")
+	assert(not _h1.is_empty(), "缺少 proof_01 存證雜湊")
+	assert(not _h2.is_empty(), "缺少 proof_02 存證雜湊")
+	assert(not _h3.is_empty(), "缺少 proof_03 存證雜湊")
+	assert(_h1 != _h2, "存證截圖 SHA256 不得相同: h1=%s, h2=%s" % [_h1, _h2])
+	assert(_h2 != _h3, "存證截圖 SHA256 不得相同: h2=%s, h3=%s" % [_h2, _h3])
+	assert(_h1 != _h3, "存證截圖 SHA256 不得相同: h1=%s, h3=%s" % [_h1, _h3])
+	print("  ✓ 存證截圖 SHA256 驗證通過 (3 張截圖雜湊互不相同)")
 
 
 func _capture_and_save(file_path: String) -> String:
@@ -296,8 +305,22 @@ func _capture_and_save(file_path: String) -> String:
 	if tex:
 		img = tex.get_image()
 	if img == null or img.is_empty():
-		img = Image.create(1280, 720, false, Image.FORMAT_RGBA8)
-		img.fill(Color("#141118"))
+		_fail("無法取得 Viewport 渲染畫面 (img 為空)，請在具備真實圖形渲染之環境 (如 xvfb-run -a godot --rendering-driver opengl3) 執行此測試")
+		return ""
+
+	# 檢查是否為純色黑屏或假圖
+	var is_solid := true
+	var first_pixel := img.get_pixel(0, 0)
+	for sample_y in [50, 180, 360, 540, 680]:
+		for sample_x in [50, 320, 640, 960, 1200]:
+			if img.get_pixel(sample_x, sample_y) != first_pixel:
+				is_solid = false
+				break
+		if not is_solid:
+			break
+	if is_solid:
+		_fail("截圖為純色黑屏 (無有效渲染畫面): %s" % file_path)
+		return ""
 
 	var err := img.save_png(file_path)
 	if err != OK:

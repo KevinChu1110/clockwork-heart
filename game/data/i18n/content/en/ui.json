@@ -3750,5 +3750,7 @@
   "暴擊折算": "Crit Bonus",
   "Lv.10 解鎖": "Unlocks at Lv.10",
   "Lv.20 解鎖": "Unlocks at Lv.20",
-  "點擊任意處或右上關閉": "Tap anywhere or top-right to close"
+  "點擊任意處或右上關閉": "Tap anywhere or top-right to close",
+  "裝備總加成: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%": "Equipment Total: ATK+%d · DEF+%d · HP+%d · CRIT+%.1f%%",
+  "T%d · 攻 +%d": "T%d · ATK +%d"
 }

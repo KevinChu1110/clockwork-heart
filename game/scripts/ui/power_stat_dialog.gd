@@ -487,7 +487,7 @@ func _build_weapon_loadout_card(gs: Node, eq: Node) -> PanelContainer:
 	var summary_lbl := Label.new()
 	summary_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	summary_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	summary_lbl.text = "%s: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%" % [_t("裝備總加成"), b_atk, b_def, b_hp, b_crit]
+	summary_lbl.text = _t("裝備總加成: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%") % [b_atk, b_def, b_hp, b_crit]
 	_apply_font(summary_lbl, 12, COLOR_TEXT_GOLD, true)
 	t_row.add_child(summary_lbl)
 
@@ -543,7 +543,7 @@ func _create_slot_card(slot_idx: int, slot_title: String, eq: Node) -> PanelCont
 	if not is_unlocked:
 		var unlock_lv := 10 if slot_idx == 1 else 20
 		var lock_lbl := Label.new()
-		lock_lbl.text = "Lv.%d 解鎖" % unlock_lv
+		lock_lbl.text = _t("Lv.%d 解鎖" % unlock_lv)
 		lock_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		_apply_font(lock_lbl, 13, COLOR_TEXT_DIM)
 		v.add_child(lock_lbl)
@@ -570,13 +570,13 @@ func _create_slot_card(slot_idx: int, slot_title: String, eq: Node) -> PanelCont
 	var w_tier := int(inst.get("tier", 1))
 
 	var name_lbl := Label.new()
-	name_lbl.text = w_name
+	name_lbl.text = _t(w_name)
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_apply_font(name_lbl, 14, COLOR_TEXT_DARK, true)
 	v.add_child(name_lbl)
 
 	var stat_lbl := Label.new()
-	stat_lbl.text = "T%d · 攻 +%d" % [w_tier, w_atk]
+	stat_lbl.text = _t("T%d · 攻 +%d") % [w_tier, w_atk]
 	stat_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_apply_font(stat_lbl, 12, COLOR_TEXT_ORANGE)
 	v.add_child(stat_lbl)

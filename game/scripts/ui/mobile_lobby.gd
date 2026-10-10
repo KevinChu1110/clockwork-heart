@@ -1243,17 +1243,17 @@ func _build_top_hud() -> void:
 	var pwr_cap := PanelContainer.new()
 	pwr_cap.name = "PowerCapsule"
 	var pwr_sb := StyleBoxFlat.new()
-	pwr_sb.bg_color = Color(0.16, 0.12, 0.22, 0.85)
+	pwr_sb.bg_color = Color(0.14, 0.11, 0.18, 0.85)
 	pwr_sb.border_color = Color(0.83, 0.68, 0.22, 0.80)
 	pwr_sb.set_border_width_all(1)
-	pwr_sb.border_width_bottom = 2
-	pwr_sb.set_corner_radius_all(10)
-	pwr_sb.content_margin_left = 6
-	pwr_sb.content_margin_right = 6
-	pwr_sb.content_margin_top = 2
-	pwr_sb.content_margin_bottom = 2
+	pwr_sb.border_width_bottom = 3
+	pwr_sb.set_corner_radius_all(16)
+	pwr_sb.content_margin_left = 12
+	pwr_sb.content_margin_right = 14
+	pwr_sb.content_margin_top = 4
+	pwr_sb.content_margin_bottom = 4
 	pwr_cap.add_theme_stylebox_override("panel", pwr_sb)
-	pwr_cap.custom_minimum_size = Vector2(80, 24)
+	pwr_cap.custom_minimum_size = Vector2(96, 48)
 	pwr_cap.mouse_filter = Control.MOUSE_FILTER_STOP
 	pwr_cap.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	pwr_cap.gui_input.connect(func(ev: InputEvent):
@@ -1262,17 +1262,19 @@ func _build_top_hud() -> void:
 	)
 
 	var pwr_row := HBoxContainer.new()
-	pwr_row.add_theme_constant_override("separation", 4)
+	pwr_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	pwr_row.add_theme_constant_override("separation", 6)
 	_power_label = Label.new()
 	_power_label.text = _t("戰力 %d") % 0
-	_power_label.add_theme_color_override("font_color", Color("#E5C158"))
+	_power_label.add_theme_color_override("font_color", Color("#FFD028"))
 	_power_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_power_label.add_theme_constant_override("outline_size", 2)
-	_power_label.add_theme_font_size_override("font_size", 13)
+	_power_label.add_theme_font_size_override("font_size", 14)
+	_power_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	pwr_row.add_child(_power_label)
 	pwr_cap.add_child(pwr_row)
-	info_v.add_child(pwr_cap)
 	p_box.add_child(info_v)
+	p_box.add_child(pwr_cap)
 
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
