@@ -6204,10 +6204,14 @@ func open_wardrobe() -> void:
 ## 開啟天宮鐵匠彈窗
 func open_forge(target_weapon: Variant = null) -> Control:
 	var existing = get_node_or_null("ForgeDialog")
-	if existing != null and not existing.is_queued_for_deletion():
-		if target_weapon != null and existing.has_method("select_target_equipment"):
-			existing.call("select_target_equipment", target_weapon)
-		return existing
+	if existing != null:
+		if not existing.is_queued_for_deletion():
+			if target_weapon != null and existing.has_method("select_target_equipment"):
+				existing.call("select_target_equipment", target_weapon)
+			return existing
+		else:
+			if existing.get_parent() == self:
+				remove_child(existing)
 	var existing_workshop = get_node_or_null("GemWorkshopDialog")
 	if existing_workshop != null:
 		if existing_workshop.get_parent() == self:
@@ -6236,10 +6240,14 @@ func open_forge(target_weapon: Variant = null) -> Control:
 ## 開啟手藝工坊寶石彈窗
 func open_gem_workshop(target_tab: int = 0) -> Control:
 	var existing = get_node_or_null("GemWorkshopDialog")
-	if existing != null and not existing.is_queued_for_deletion():
-		if existing.has_method("set_tab"):
-			existing.call("set_tab", target_tab)
-		return existing
+	if existing != null:
+		if not existing.is_queued_for_deletion():
+			if existing.has_method("set_tab"):
+				existing.call("set_tab", target_tab)
+			return existing
+		else:
+			if existing.get_parent() == self:
+				remove_child(existing)
 	var existing_forge = get_node_or_null("ForgeDialog")
 	if existing_forge != null:
 		if existing_forge.get_parent() == self:
