@@ -5790,8 +5790,8 @@
    "id": "bag-forge-shortcut",
    "cat": "遊戲",
    "title": "背包Tab武器裝備詳情新增前往鍛造快捷按鈕",
-   "status": "測試中",
-   "note": "已合併至main，待sideqa全面回歸驗收",
+   "status": "已上線",
+   "note": "全面回歸驗收完成，實機截圖與無頭測試全綠",
    "keys": [
     "背包Tab武器裝"
    ]
