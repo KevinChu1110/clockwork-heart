@@ -5805,6 +5805,16 @@
    "keys": [
     "背包Tab武器裝"
    ]
+  },
+  {
+   "id": "bag-gem-detail-dismantle",
+   "cat": "遊戲",
+   "title": "背包Tab裝備詳情顯示已鑲寶石並於拆解時安全返還",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "背包Tab裝備詳"
+   ]
   }
  ]
 }
