@@ -5950,8 +5950,8 @@
    "id": "inventory-equip-direct",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援選取裝備立即裝備與動態按鈕文案",
-   "status": "測試中",
-   "note": "MapleInventory 探索背包支援立即裝備與動態按鈕文案開發完成，通過單元測試與存證",
+   "status": "已上線",
+   "note": "MapleInventory 探索背包支援立即裝備與動態按鈕文案（經 sideqa 回歸驗收全綠）",
    "keys": [
     "MapleInv"
    ]
