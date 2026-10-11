@@ -129,6 +129,10 @@ func _ready() -> void:
 		_inv_panel.item_used.connect(_on_inv_use_item)
 	if _inv_panel.has_signal("assign_hotbar"):
 		_inv_panel.assign_hotbar.connect(_on_inv_assign_hotbar)
+	if _inv_panel.has_signal("equipment_changed"):
+		_inv_panel.equipment_changed.connect(func():
+			_refresh_hud()
+		)
 	## 短訊：深木提示框，置底中、在探索提示框與快捷欄上方。
 	## 舊版是沒底的深字＋白影，落在地圖上有時讀得到有時讀不到；
 	## 而且錨在底中卻沒設 grow，文字是從螢幕正中往右長出去的，不是置中。
