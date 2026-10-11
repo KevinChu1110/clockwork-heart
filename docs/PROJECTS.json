@@ -5935,6 +5935,16 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "inventory-category-chips-merge",
+   "cat": "平台",
+   "title": "MapleInventory 探索背包分類頁籤 Chip 列分支合併與主線回歸",
+   "status": "草稿",
+   "note": "把已過審的分類 Chip 分支合併至 main 並完成全站回歸驗收",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
