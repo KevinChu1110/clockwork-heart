@@ -6015,6 +6015,16 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "inventory-capacity",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援即時容量進度膠囊顯示與格子滿載提示",
+   "status": "草稿",
+   "note": "即時顯示當前背包已佔用格子數與總容量，支援滿載色階切換",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
