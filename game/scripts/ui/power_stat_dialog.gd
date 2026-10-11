@@ -11,6 +11,8 @@ extends Control
 
 signal closed()
 signal equip_requested()
+signal workshop_requested()
+signal skill_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -66,6 +68,8 @@ var _title_lbl: Label
 var _sub_title_lbl: Label
 var _close_x_btn: Button
 var _btn_go_equip: Button
+var _btn_go_workshop: Button
+var _btn_go_skill: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -253,11 +257,16 @@ func refresh() -> void:
 		_sub_title_lbl.text = "%s · Lv.%d%s" % [p_name, p_lv, (" · " + p_path) if not p_path.is_empty() else ""]
 	if _btn_go_equip:
 		_btn_go_equip.text = _t("前往整頓")
+	if _btn_go_workshop:
+		_btn_go_workshop.text = _t("前往工坊")
+	if _btn_go_skill:
+		_btn_go_skill.text = _t("前往心法")
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("確定")
 
 	# 清空內容區
 	for child in _content_vbox.get_children():
+		_content_vbox.remove_child(child)
 		child.queue_free()
 
 	# 1. 綜合戰力總覽卡片
@@ -619,11 +628,20 @@ func _build_gem_and_skill_card(gs: Node, gem: Node, sk: Node) -> HBoxContainer:
 	gm.add_theme_constant_override("margin_bottom", 8)
 	gem_card.add_child(gm)
 
+	var gh := HBoxContainer.new()
+	gh.name = "GemCardHBox"
+	gh.add_theme_constant_override("separation", 8)
+	gm.add_child(gh)
+
 	var gv := VBoxContainer.new()
+	gv.name = "GemCardVBox"
+	gv.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	gv.alignment = BoxContainer.ALIGNMENT_CENTER
 	gv.add_theme_constant_override("separation", 4)
-	gm.add_child(gv)
+	gh.add_child(gv)
 
 	var gt := Label.new()
+	gt.name = "GemTitleLabel"
 	gt.text = _t("寶石孔位加成")
 	_apply_font(gt, 13, COLOR_TEXT_DARK, true)
 	gv.add_child(gt)
@@ -654,6 +672,7 @@ func _build_gem_and_skill_card(gs: Node, gem: Node, sk: Node) -> HBoxContainer:
 		b_list.append("閃避 +%.0f" % g_eva)
 
 	var g_desc := Label.new()
+	g_desc.name = "GemDescLabel"
 	if b_list.is_empty():
 		g_desc.text = _t("尚未鑲嵌寶石")
 		_apply_font(g_desc, 12, COLOR_TEXT_DIM)
@@ -661,6 +680,16 @@ func _build_gem_and_skill_card(gs: Node, gem: Node, sk: Node) -> HBoxContainer:
 		g_desc.text = " · ".join(b_list)
 		_apply_font(g_desc, 12, Color("#1E7538"), true)
 	gv.add_child(g_desc)
+
+	# 快捷按鈕：前往工坊 (BtnGoWorkshop)（尺寸 84x36px，熱區>=48px，果凍厚底 4px）
+	_btn_go_workshop = Button.new()
+	_btn_go_workshop.name = "BtnGoWorkshop"
+	_btn_go_workshop.text = _t("前往工坊")
+	_btn_go_workshop.custom_minimum_size = Vector2(84, 36)
+	_btn_go_workshop.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_workshop, COLOR_ORANGE, COLOR_TEXT_LIGHT, 12, 4, 12, COLOR_BORDER, 6, 3)
+	_btn_go_workshop.pressed.connect(_on_go_workshop_pressed)
+	gh.add_child(_btn_go_workshop)
 
 	# 招式心法卡片
 	var sk_card := PanelContainer.new()
@@ -676,11 +705,20 @@ func _build_gem_and_skill_card(gs: Node, gem: Node, sk: Node) -> HBoxContainer:
 	sm.add_theme_constant_override("margin_bottom", 8)
 	sk_card.add_child(sm)
 
+	var sh := HBoxContainer.new()
+	sh.name = "SkillCardHBox"
+	sh.add_theme_constant_override("separation", 8)
+	sm.add_child(sh)
+
 	var sv := VBoxContainer.new()
+	sv.name = "SkillCardVBox"
+	sv.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sv.alignment = BoxContainer.ALIGNMENT_CENTER
 	sv.add_theme_constant_override("separation", 4)
-	sm.add_child(sv)
+	sh.add_child(sv)
 
 	var st := Label.new()
+	st.name = "SkillTitleLabel"
 	st.text = _t("招式心法加成")
 	_apply_font(st, 13, COLOR_TEXT_DARK, true)
 	sv.add_child(st)
@@ -694,6 +732,7 @@ func _build_gem_and_skill_card(gs: Node, gem: Node, sk: Node) -> HBoxContainer:
 	var sk_hits: int = int(patch.get("skill_hits", 1))
 
 	var sk_desc := Label.new()
+	sk_desc.name = "SkillDescLabel"
 	if sk_name.is_empty():
 		sk_desc.text = _t("未裝備招式心法")
 		_apply_font(sk_desc, 12, COLOR_TEXT_DIM)
@@ -702,11 +741,31 @@ func _build_gem_and_skill_card(gs: Node, gem: Node, sk: Node) -> HBoxContainer:
 		_apply_font(sk_desc, 12, COLOR_TEXT_ORANGE, true)
 	sv.add_child(sk_desc)
 
+	# 快捷按鈕：前往心法 (BtnGoSkill)（尺寸 84x36px，熱區>=48px，果凍厚底 4px）
+	_btn_go_skill = Button.new()
+	_btn_go_skill.name = "BtnGoSkill"
+	_btn_go_skill.text = _t("前往心法")
+	_btn_go_skill.custom_minimum_size = Vector2(84, 36)
+	_btn_go_skill.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_skill, COLOR_SKY, COLOR_TEXT_LIGHT, 12, 4, 12, COLOR_BORDER, 6, 3)
+	_btn_go_skill.pressed.connect(_on_go_skill_pressed)
+	sh.add_child(_btn_go_skill)
+
 	return h
 
 
 func _on_go_equip_pressed() -> void:
 	equip_requested.emit()
+	_on_close_pressed()
+
+
+func _on_go_workshop_pressed() -> void:
+	workshop_requested.emit()
+	_on_close_pressed()
+
+
+func _on_go_skill_pressed() -> void:
+	skill_requested.emit()
 	_on_close_pressed()
 
 
@@ -728,17 +787,17 @@ func _create_card_style(bg: Color, border: Color, b_width: int = 1, b_bottom: in
 	return sb
 
 
-func _style_jelly_btn(btn: Button, bg: Color, text_col: Color, font_sz: int, bottom_px: int = 5, radius: int = 16, border_col: Color = COLOR_BORDER) -> void:
+func _style_jelly_btn(btn: Button, bg: Color, text_col: Color, font_sz: int, bottom_px: int = 5, radius: int = 16, border_col: Color = COLOR_BORDER, pad_h: int = 12, pad_v: int = 6) -> void:
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = bg
 	sb.border_color = border_col
 	sb.set_border_width_all(2)
 	sb.border_width_bottom = bottom_px
 	sb.set_corner_radius_all(radius)
-	sb.content_margin_left = 12
-	sb.content_margin_right = 12
-	sb.content_margin_top = 6
-	sb.content_margin_bottom = 6
+	sb.content_margin_left = pad_h
+	sb.content_margin_right = pad_h
+	sb.content_margin_top = pad_v
+	sb.content_margin_bottom = pad_v
 	if bottom_px > 2:
 		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 		sb.shadow_size = 4

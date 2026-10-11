@@ -3770,5 +3770,6 @@
   "裝備總加成: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%": "Equipment Total: ATK+%d · DEF+%d · HP+%d · CRIT+%.1f%%",
   "T%d · 攻 +%d": "T%d · ATK +%d",
   "vault.btn_double_claim": "Double Claim",
-  "vault.ad_removed_double": "No-Ads Privilege: Double Rewards Granted"
+  "vault.ad_removed_double": "No-Ads Privilege: Double Rewards Granted",
+  "前往心法": "Go to Skills"
 }

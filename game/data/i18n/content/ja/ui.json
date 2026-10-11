@@ -3770,5 +3770,6 @@
   "裝備總加成: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%": "装備合計加成: 攻+%d · 防+%d · HP+%d · 会心+%.1f%%",
   "T%d · 攻 +%d": "T%d · 攻 +%d",
   "vault.btn_double_claim": "2倍受取",
-  "vault.ad_removed_double": "広告削除特権：2倍受取完了"
+  "vault.ad_removed_double": "広告削除特権：2倍受取完了",
+  "前往心法": "心法へ進む"
 }

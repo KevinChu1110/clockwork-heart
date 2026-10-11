@@ -5910,8 +5910,8 @@
    "id": "power-stat-shortcuts",
    "cat": "遊戲",
    "title": "PowerStatDialog 戰力屬性總覽寶石與招式快捷跳轉工坊與心法",
-   "status": "開發中",
-   "note": "開始實作 PowerStatDialog 寶石前往工坊與招式前往心法快捷按鈕",
+   "status": "測試中",
+   "note": "PowerStatDialog 寶石前往工坊與招式前往心法快捷按鈕實作完成，單元與迴歸測試全綠，待 sideqa 審查",
    "keys": [
     "PowerSta"
    ]
