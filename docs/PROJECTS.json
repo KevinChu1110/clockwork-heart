@@ -6000,8 +6000,8 @@
    "id": "inventory-dismantle-recycle",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包選取裝備支援拆解回收與安全防護",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "開始實作 MapleInventory 裝備拆解回收與安全防護",
    "keys": [
     "MapleInv"
    ]
