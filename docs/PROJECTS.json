@@ -5960,8 +5960,8 @@
    "id": "inventory-stat-comparison",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包選取裝備支援戰力差額比對膠囊與屬性預覽",
-   "status": "測試中",
-   "note": "完成 MapleInventory 探索背包裝備選取戰力差額比對膠囊與屬性預覽，單元測試與存證截圖全數通過",
+   "status": "已上線",
+   "note": "MapleInventory 探索背包選取裝備支援戰力差額比對膠囊與屬性預覽（經 sideqa 回歸驗收全綠）",
    "keys": [
     "MapleInv"
    ]
