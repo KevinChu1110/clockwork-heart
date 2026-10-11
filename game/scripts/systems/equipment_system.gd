@@ -1069,6 +1069,14 @@ func toggle_lock(uid: String) -> bool:
 	return set_locked(uid, not is_locked(uid))
 
 
+func is_equip_locked(uid: String) -> bool:
+	return is_locked(uid)
+
+
+func set_equip_locked(uid: String, locked: bool) -> bool:
+	return set_locked(uid, locked)
+
+
 ## 檢查裝備是否正在裝備中 (worn / loadout / equip_slots)
 func is_equipped(uid: String) -> bool:
 	_ensure_state()

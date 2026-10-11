@@ -3781,5 +3781,11 @@
   "防禦": "DEF",
   "攻擊 +%d": "ATK +%d",
   "已穿戴": "Equipped",
-  "穿戴中": "Equipped"
+  "穿戴中": "Equipped",
+  "解鎖": "Unlock",
+  "未鎖定": "Unlocked",
+  "已鎖定裝備": "Equipment locked",
+  "已解除鎖定": "Lock removed",
+  "裝備已鎖定無法出售": "Equipment is locked and cannot be sold",
+  "已鎖定（無法出售）": "Locked (Cannot Sell)"
 }
