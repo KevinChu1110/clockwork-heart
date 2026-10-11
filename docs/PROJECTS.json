@@ -5965,6 +5965,36 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "inventory-equipped-state",
+   "cat": "遊戲",
+   "title": "探索背包當前裝備狀態辨識與已穿戴按鈕置灰",
+   "status": "測試中",
+   "note": "探索背包選取當前穿戴裝備已穿戴按鈕置灰與穿戴中膠囊完成開發，6項測試全綠、6張實機截圖存證",
+   "keys": [
+    "探索背包當前裝備"
+   ]
+  },
+  {
+   "id": "inventory-lock-toggle",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援裝備鎖定與解鎖",
+   "status": "開發中",
+   "note": "已開卡 t_73dedb6c 派工 sideworker",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "power-stat-soul-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽新增戰魂共鳴卡片與前往聚魂快捷按鈕",
+   "status": "開發中",
+   "note": "已開卡 t_102be271 派工 sideworker2",
+   "keys": [
+    "PowerSta"
+   ]
   }
  ]
 }

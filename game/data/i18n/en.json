@@ -1087,5 +1087,7 @@
   "防禦": "DEF",
   "攻擊": "Attack",
   "攻擊 +%d": "ATK +%d",
-  "防禦 +%d": "DEF +%d"
+  "防禦 +%d": "DEF +%d",
+  "已穿戴": "Equipped",
+  "穿戴中": "Equipped"
 }

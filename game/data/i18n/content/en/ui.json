@@ -3779,5 +3779,7 @@
   "賣出": "Sell",
   "重要物品": "Key Item",
   "防禦": "DEF",
-  "攻擊 +%d": "ATK +%d"
+  "攻擊 +%d": "ATK +%d",
+  "已穿戴": "Equipped",
+  "穿戴中": "Equipped"
 }
