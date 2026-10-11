@@ -6010,8 +6010,8 @@
    "id": "inventory-shortcuts",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包選取裝備與素材支援前往鍛造與前往工坊快捷跳轉",
-   "status": "測試中",
-   "note": "完成 MapleInventory 前往鍛造與前往工坊快捷跳轉、多巴胺亮色盤果凍按鈕、六語系即時切換與單元測試存證",
+   "status": "已上線",
+   "note": "全面回歸驗收通過，完成前往鍛造與前往工坊快捷跳轉、多巴胺亮色盤果凍按鈕、六語系即時切換與實機截圖存證",
    "keys": [
     "MapleInv"
    ]
