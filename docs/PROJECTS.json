@@ -5995,6 +5995,16 @@
    "keys": [
     "PowerSta"
    ]
+  },
+  {
+   "id": "inventory-dismantle-recycle",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包選取裝備支援拆解回收與安全防護",
+   "status": "測試中",
+   "note": "完成 MapleInventory 探索背包裝備拆解回收與安全防護、六語系在地化與單元測試",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }

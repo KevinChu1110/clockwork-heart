@@ -44,7 +44,7 @@ const EXPECTED_LOCKED_TEXTS: Dictionary = {
 	"zh_CN": "已锁定",
 	"en": "Locked",
 	"ja": "ロック中",
-	"ko": "잠금됨",
+	"ko": "잠김",
 	"es": "Bloqueado"
 }
 const EXPECTED_EQUIPPED_TEXTS: Dictionary = {
