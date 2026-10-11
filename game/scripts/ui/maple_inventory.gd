@@ -93,6 +93,9 @@ const COLOR_DIFF_NEG_BD  := Color("#5C5470")  ## 降攻立體邊框
 const COLOR_DIFF_EQ_BG   := Color("#7A7090")  ## 持平灰底
 const COLOR_DIFF_EQ_TEXT := Color("#FFFFFF")  ## 持平白字
 const COLOR_DIFF_EQ_BD   := Color("#5C5470")  ## 持平立體邊框
+const COLOR_DIFF_WORN_BG   := Color("#3870B2")  ## 穿戴中專屬藍底膠囊
+const COLOR_DIFF_WORN_TEXT := Color("#FFFFFF")  ## 穿戴中白字 (高對比)
+const COLOR_DIFF_WORN_BD   := Color("#265288")  ## 穿戴中立體邊框
 
 var _dim: ColorRect
 var _card: PanelContainer
@@ -871,7 +874,17 @@ func _update_detail(inv: Node) -> void:
 			var gs_node: Node = null
 			if Engine.get_main_loop() is SceneTree:
 				gs_node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
-			if gs_node and "equip_bag" in gs_node and gs_node.equip_bag is Array:
+			if gs_node and "equip_worn" in gs_node and gs_node.equip_worn is Dictionary and gs_node.equip_worn.has(_selected):
+				var ew: Dictionary = gs_node.equip_worn[_selected] as Dictionary
+				eq_inst = ew
+				def = {
+					"name": ew.get("name", _selected),
+					"kind": "equip",
+					"slot": ew.get("slot", "weapon"),
+					"desc": _t("品質：%s · 部位：%s") % [str(ew.get("quality_label", "")), str(ew.get("slot", ""))],
+					"rolled": ew.get("rolled", {}),
+				}
+			elif gs_node and "equip_bag" in gs_node and gs_node.equip_bag is Array:
 				for e in gs_node.equip_bag:
 					if e is Dictionary:
 						if str(e.get("uid", "")) == _selected or str(e.get("base_id", "")) == _selected or str(e.get("id", "")) == _selected:
@@ -1007,6 +1020,17 @@ func _update_action_button(inv: Node = null) -> void:
 					"kind": "equip",
 					"slot": eq_inst.get("slot", "weapon"),
 				}
+		if def.is_empty():
+			var gs_node: Node = null
+			if Engine.get_main_loop() is SceneTree:
+				gs_node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
+			if gs_node and "equip_worn" in gs_node and gs_node.equip_worn is Dictionary and gs_node.equip_worn.has(_selected):
+				var ew: Dictionary = gs_node.equip_worn[_selected] as Dictionary
+				def = {
+					"name": ew.get("name", _selected),
+					"kind": "equip",
+					"slot": ew.get("slot", "weapon"),
+				}
 
 	var item_dict: Dictionary = {"id": _selected, "def": def}
 	var kind: String = str(def.get("kind", "")).to_lower()
@@ -1018,12 +1042,18 @@ func _update_action_button(inv: Node = null) -> void:
 		_use_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
 		_use_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
 	elif item_matches_category(item_dict, "equip"):
-		_use_btn.disabled = false
-		_use_btn.text = _t("立即裝備")
-		_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
-		_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB642"), COLOR_BORDER, 5, 18))
-		_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 18))
-		_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		if is_selected_item_equipped():
+			_use_btn.disabled = true
+			_use_btn.text = _t("已穿戴")
+			_use_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+			_use_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+		else:
+			_use_btn.disabled = false
+			_use_btn.text = _t("立即裝備")
+			_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+			_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB642"), COLOR_BORDER, 5, 18))
+			_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 18))
+			_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	elif item_matches_category(item_dict, "material"):
 		_use_btn.disabled = false
 		_use_btn.text = _t("賣出")
@@ -1064,6 +1094,8 @@ func _on_use_button_pressed() -> void:
 		return
 
 	if item_matches_category(item_dict, "equip"):
+		if is_selected_item_equipped():
+			return
 		_equip_selected_item()
 		return
 
@@ -1387,9 +1419,12 @@ func _update_stat_comparison(def: Dictionary, eq_inst: Dictionary, slot: String,
 			stat_text += " · %s +%.1f%%" % [_t("暴擊"), crit]
 		_detail_stat.text = stat_text
 
-		var cur_atk: int = _get_current_equipped_weapon_atk()
-		var diff: int = atk - cur_atk
-		_apply_diff_capsule(diff, _t("攻擊"))
+		if is_selected_item_equipped():
+			_apply_equipped_capsule()
+		else:
+			var cur_atk: int = _get_current_equipped_weapon_atk()
+			var diff: int = atk - cur_atk
+			_apply_diff_capsule(diff, _t("攻擊"))
 	elif is_armor:
 		var def_val: int = _get_item_def(_selected, def, eq_inst)
 		var stat_text: String = "%s +%d" % [_t("防禦"), def_val]
@@ -1398,9 +1433,54 @@ func _update_stat_comparison(def: Dictionary, eq_inst: Dictionary, slot: String,
 			stat_text += " · %s +%d" % [_t("生命"), hp]
 		_detail_stat.text = stat_text
 
-		var cur_def: int = _get_current_equipped_armor_def()
-		var diff: int = def_val - cur_def
-		_apply_diff_capsule(diff, _t("防禦"))
+		if is_selected_item_equipped():
+			_apply_equipped_capsule()
+		else:
+			var cur_def: int = _get_current_equipped_armor_def()
+			var diff: int = def_val - cur_def
+			_apply_diff_capsule(diff, _t("防禦"))
+
+
+func _apply_equipped_capsule() -> void:
+	if _diff_capsule == null or _diff_label == null:
+		return
+
+	_diff_capsule.visible = true
+	_diff_label.text = _t("穿戴中")
+	_diff_capsule.add_theme_stylebox_override("panel", _create_diff_capsule_style(COLOR_DIFF_WORN_BG, COLOR_DIFF_WORN_BD))
+	_diff_label.add_theme_color_override("font_color", COLOR_DIFF_WORN_TEXT)
+
+
+func is_selected_item_equipped() -> bool:
+	if _selected.is_empty():
+		return false
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		return false
+	var root_node := (loop as SceneTree).root
+
+	# 1. EquipmentSystem.is_equipped 檢查
+	var eq_node: Node = root_node.get_node_or_null("EquipmentSystem")
+	if eq_node and eq_node.has_method("is_equipped"):
+		if bool(eq_node.call("is_equipped", _selected)):
+			return true
+
+	# 2. GameState equip_worn 與 equip_slots / weapon_loadout 檢查
+	var gs_node: Node = root_node.get_node_or_null("GameState")
+	if gs_node:
+		if "equip_worn" in gs_node and gs_node.equip_worn is Dictionary:
+			if gs_node.equip_worn.has(_selected):
+				return true
+		if "equip_slots" in gs_node and gs_node.equip_slots is Dictionary:
+			for slot_key in gs_node.equip_slots:
+				if str(gs_node.equip_slots[slot_key]) == _selected and _selected != "":
+					return true
+		if "weapon_loadout" in gs_node and gs_node.weapon_loadout is Array:
+			for w_uid in gs_node.weapon_loadout:
+				if str(w_uid) == _selected and _selected != "":
+					return true
+
+	return false
 
 
 func _apply_diff_capsule(diff: int, stat_name: String) -> void:
@@ -1443,6 +1523,17 @@ func _get_current_equipped_weapon_atk() -> int:
 			var w_uid: String = str(gs.equip_slots.get("weapon", ""))
 			if w_uid != "" and gs.equip_worn.has(w_uid):
 				cur_w = gs.equip_worn[w_uid] as Dictionary
+			elif w_uid != "":
+				for k in gs.equip_worn:
+					var inst: Dictionary = gs.equip_worn[k] as Dictionary
+					if str(inst.get("uid", "")) == w_uid or str(inst.get("base_id", "")) == w_uid:
+						cur_w = inst
+						break
+				if cur_w.is_empty():
+					var inv_node: Node = root_node.get_node_or_null("InventorySystem")
+					var c_def: Dictionary = inv_node.call("catalog", w_uid) as Dictionary if inv_node else {}
+					if not c_def.is_empty():
+						cur_w = c_def
 
 	if cur_w.is_empty():
 		return 0
@@ -1460,6 +1551,17 @@ func _get_current_equipped_armor_def() -> int:
 		var arm_uid: String = str(gs.equip_slots.get("armor", ""))
 		if arm_uid != "" and gs.equip_worn.has(arm_uid):
 			cur_arm = gs.equip_worn[arm_uid] as Dictionary
+		elif arm_uid != "":
+			for k in gs.equip_worn:
+				var inst: Dictionary = gs.equip_worn[k] as Dictionary
+				if str(inst.get("uid", "")) == arm_uid or str(inst.get("base_id", "")) == arm_uid:
+					cur_arm = inst
+					break
+			if cur_arm.is_empty():
+				var inv_node: Node = root_node.get_node_or_null("InventorySystem")
+				var c_def: Dictionary = inv_node.call("catalog", arm_uid) as Dictionary if inv_node else {}
+				if not c_def.is_empty():
+					cur_arm = c_def
 
 	if cur_arm.is_empty():
 		return 0
