@@ -3791,5 +3791,7 @@
   "戰魂共鳴": "Soul Resonance",
   "戰魂總加成: 攻+%d · 防+%d · 血+%d": "Soul Total: ATK+%d · DEF+%d · HP+%d",
   "未喚醒": "Dormant",
-  "全+%d": "ALL+%d"
+  "全+%d": "ALL+%d",
+  "已穿戴無法拆解": "Equipped (Cannot Dismantle)",
+  "已鎖定無法拆解": "Locked (Cannot Dismantle)"
 }

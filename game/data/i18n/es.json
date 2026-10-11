@@ -1100,5 +1100,7 @@
   "戰魂共鳴": "Resonancia de Almas",
   "戰魂總加成: 攻+%d · 防+%d · 血+%d": "Total de Almas: ATQ+%d · DEF+%d · PV+%d",
   "未喚醒": "Inactivo",
-  "全+%d": "TOD+%d"
+  "全+%d": "TOD+%d",
+  "已穿戴無法拆解": "Equipado (No Desmantelar)",
+  "已鎖定無法拆解": "Bloqueado (No Desmantelar)"
 }

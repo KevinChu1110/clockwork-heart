@@ -17,6 +17,7 @@ signal items_sorted
 signal category_changed(category_id: String)
 signal equipment_changed
 signal equipment_lock_toggled(uid: String, is_locked: bool)
+signal equipment_dismantled(uid: String, result: Dictionary)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
@@ -132,6 +133,7 @@ var _diff_label: Label
 var _lock_capsule: PanelContainer = null
 var _lock_label: Label = null
 var _lock_btn: Button = null
+var _dismantle_btn: Button = null
 
 
 func _ready() -> void:
@@ -195,6 +197,7 @@ func _update_ui_texts() -> void:
 		_sub_title.text = _t("冒險者背包 · 點選格子查看詳情")
 	_update_action_button()
 	_update_lock_ui_texts()
+	_update_dismantle_button()
 	if _hb_btn and is_instance_valid(_hb_btn):
 		_hb_btn.text = _t("放到快捷欄")
 	if _sort_btn and is_instance_valid(_sort_btn):
@@ -698,6 +701,29 @@ func _build() -> void:
 	_use_btn.pressed.connect(_on_use_button_pressed)
 	btn_row.add_child(_use_btn)
 
+	## 裝備拆解回收按鈕 (珊瑚粉果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px)
+	_dismantle_btn = Button.new()
+	_dismantle_btn.name = "BtnDismantle"
+	_dismantle_btn.text = _t("拆解回收")
+	_dismantle_btn.custom_minimum_size = Vector2(0, 52)
+	_dismantle_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_dismantle_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_dismantle_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_PINK, COLOR_BORDER, 5, 18))
+	_dismantle_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FF7B9E"), COLOR_BORDER, 5, 18))
+	_dismantle_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_PINK, COLOR_BORDER, 2, 18))
+	_dismantle_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+	_dismantle_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_dismantle_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_dismantle_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_dismantle_btn.add_theme_constant_override("outline_size", 3)
+	_dismantle_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	_dismantle_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_dismantle_btn.add_theme_font_override("font", _cached_font)
+	_dismantle_btn.pressed.connect(_on_dismantle_button_pressed)
+	_dismantle_btn.visible = false
+	right.add_child(_dismantle_btn)
+
 	## 「放到快捷欄」按鈕 (天藍果凍厚底按鈕，高 52px)
 	_hb_btn = Button.new()
 	_hb_btn.custom_minimum_size = Vector2(0, 52)
@@ -761,6 +787,33 @@ func refresh() -> void:
 		inv = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InventorySystem")
 	_bag_ids.clear()
 	var list: Array = inv.call("bag_list") if inv else []
+
+	var gs_node: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		gs_node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
+	if gs_node and "equip_bag" in gs_node and gs_node.equip_bag is Array:
+		for e in gs_node.equip_bag:
+			if e is Dictionary:
+				var uid := str(e.get("uid", ""))
+				if not uid.is_empty():
+					var in_list := false
+					for existing in list:
+						if str(existing.get("id", "")) == uid:
+							in_list = true
+							break
+					if not in_list:
+						list.append({
+							"id": uid,
+							"count": 1,
+							"def": {
+								"name": e.get("name", uid),
+								"kind": "weapon" if str(e.get("slot", "")) == "weapon" else "equipment",
+								"slot": str(e.get("slot", "weapon")),
+								"desc": _t("器階：第 %d 階  品質：%s") % [int(e.get("tier", 1)), _t(str(e.get("quality_label", "")))],
+								"glyph": "刃" if str(e.get("slot", "")) == "weapon" else "裝"
+							}
+						})
+
 	if _is_sorted:
 		list = sort_item_list(list)
 
@@ -894,12 +947,17 @@ func _update_detail(inv: Node) -> void:
 		if _hb_btn:
 			_hb_btn.disabled = true
 			_hb_btn.text = _t("放到快捷欄")
+			_hb_btn.visible = true
+		if _dismantle_btn:
+			_dismantle_btn.visible = false
 		return
 
 	_update_action_button(inv)
-	if _hb_btn:
+	_update_dismantle_button()
+	if _hb_btn and not _is_selected_item_equipment():
 		_hb_btn.disabled = false
 		_hb_btn.text = _t("放到快捷欄")
+		_hb_btn.visible = true
 
 	var def: Dictionary = inv.call("catalog", _selected) as Dictionary
 	var eq_inst: Dictionary = {}
@@ -1054,6 +1112,8 @@ func _update_detail(inv: Node) -> void:
 
 	if _detail:
 		_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
+
+	_update_dismantle_button()
 
 
 func _update_action_button(inv: Node = null) -> void:
@@ -1951,3 +2011,122 @@ func get_bag_lock_capsule() -> PanelContainer:
 
 func get_bag_lock_label() -> Label:
 	return _lock_label
+
+
+func _update_dismantle_button() -> void:
+	if _dismantle_btn == null or not is_instance_valid(_dismantle_btn):
+		return
+	if not _is_selected_item_equipment():
+		_dismantle_btn.visible = false
+		if _hb_btn and is_instance_valid(_hb_btn):
+			_hb_btn.visible = true
+			_hb_btn.disabled = (_selected == "")
+		return
+
+	# 是裝備類物品：隱藏快捷欄按鈕，顯示拆解回收按鈕
+	_dismantle_btn.visible = true
+	if _hb_btn and is_instance_valid(_hb_btn):
+		_hb_btn.visible = false
+
+	var uid := _get_selected_equip_uid()
+	var locked := is_item_locked(uid)
+	var worn := is_selected_item_equipped()
+
+	if locked:
+		_dismantle_btn.disabled = true
+		_dismantle_btn.text = _t("已鎖定無法拆解")
+		_dismantle_btn.tooltip_text = _t("已鎖定無法拆解")
+		_dismantle_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+		_dismantle_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	elif worn:
+		_dismantle_btn.disabled = true
+		_dismantle_btn.text = _t("已穿戴無法拆解")
+		_dismantle_btn.tooltip_text = _t("已穿戴無法拆解")
+		_dismantle_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+		_dismantle_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	else:
+		_dismantle_btn.disabled = false
+		_dismantle_btn.text = _t("拆解回收")
+		_dismantle_btn.tooltip_text = _t("拆解裝備回收鐵屑與金幣")
+		_dismantle_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_PINK, COLOR_BORDER, 5, 18))
+		_dismantle_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FF7B9E"), COLOR_BORDER, 5, 18))
+		_dismantle_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_PINK, COLOR_BORDER, 2, 18))
+		_dismantle_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+		_dismantle_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		_dismantle_btn.add_theme_constant_override("outline_size", 3)
+
+
+func dismantle_selected() -> Dictionary:
+	if _selected.is_empty():
+		return {"ok": false, "msg": _t("未選取裝備。")}
+	if not _is_selected_item_equipment():
+		return {"ok": false, "msg": _t("非裝備類物品無法拆解。")}
+
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		return {"ok": false, "msg": _t("場景樹無效。")}
+	var root_node := (loop as SceneTree).root
+	var eq_sys: Node = root_node.get_node_or_null("EquipmentSystem")
+	if eq_sys == null:
+		return {"ok": false, "msg": _t("缺少裝備系統。")}
+
+	var uid := _get_selected_equip_uid()
+	if is_item_locked(uid):
+		var msg_lock := _t("裝備已鎖定，無法拆解。")
+		_show_tip(msg_lock)
+		return {"ok": false, "msg": msg_lock}
+	if is_selected_item_equipped():
+		var msg_worn := _t("裝備中無法拆解，請先卸下。")
+		_show_tip(msg_worn)
+		return {"ok": false, "msg": msg_worn}
+
+	var res: Dictionary = eq_sys.call("dismantle", uid) if eq_sys.has_method("dismantle") else {}
+	if bool(res.get("ok", false)):
+		var am: Node = root_node.get_node_or_null("AudioManager")
+		if am and am.has_method("play_ui"):
+			am.call("play_ui")
+
+		var toast_msg := str(res.get("msg", ""))
+		if toast_msg.is_empty():
+			var item_name: String = str(res.get("name", uid))
+			var scrap_n: int = int(res.get("iron_scrap", 0))
+			var gold_n: int = int(res.get("gold", 0))
+			var refunded_gem: Dictionary = res.get("refunded_gem", {})
+			if not refunded_gem.is_empty():
+				var gem_sys: Node = root_node.get_node_or_null("GemSystem")
+				var g_name := str(gem_sys.call("gem_label", refunded_gem)) if gem_sys and gem_sys.has_method("gem_label") else _t("寶石")
+				toast_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d、返還寶石【%s】") % [item_name, scrap_n, gold_n, g_name]
+			else:
+				toast_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [item_name, scrap_n, gold_n]
+
+		_show_tip(toast_msg)
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml:
+			if ml.has_method("_show_toast"):
+				ml.call("_show_toast", toast_msg)
+			elif ml.has_method("show_toast"):
+				ml.call("show_toast", toast_msg)
+			if ml.has_method("refresh_hud"):
+				ml.call("refresh_hud")
+
+		equipment_changed.emit()
+		equipment_dismantled.emit(uid, res)
+		refresh()
+	else:
+		var err_msg := str(res.get("msg", _t("無法拆解此物品。")))
+		_show_tip(err_msg)
+
+	return res
+
+
+func _on_dismantle_button_pressed() -> void:
+	dismantle_selected()
+
+
+func get_dismantle_button() -> Button:
+	return _dismantle_btn
+
+
+func get_bag_dismantle_button() -> Button:
+	return _dismantle_btn
+
