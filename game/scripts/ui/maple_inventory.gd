@@ -14,6 +14,7 @@ signal closed
 signal item_used(item_id: String)
 signal assign_hotbar(item_id: String)
 signal items_sorted
+signal category_changed(category_id: String)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
@@ -54,6 +55,14 @@ const DIALOG_HEIGHT := 560.0
 const COLS := 4
 const ROWS := 6
 
+const CHIP_CATEGORIES: Array = [
+	{"id": "all", "label": "全部"},
+	{"id": "equip", "label": "裝備"},
+	{"id": "consumable", "label": "消耗品"},
+	{"id": "material", "label": "素材"},
+	{"id": "gem", "label": "寶石"},
+]
+
 ## ── 多巴胺鮮亮高飽和色盤 ──
 const COLOR_GOLD       := Color("#FFD028")  ## 金黃
 const COLOR_ORANGE     := Color("#FFA010")  ## 暖橘
@@ -81,6 +90,9 @@ var _use_btn: Button
 var _hb_btn: Button
 var _sort_btn: Button
 var _is_sorted: bool = false
+var _chip_buttons: Dictionary = {}
+var _current_category: String = "all"
+var _chip_row: HBoxContainer
 var _tip: Label
 var _selected: String = ""
 var _bag_ids: Array = []
@@ -146,8 +158,42 @@ func _update_ui_texts() -> void:
 		_hb_btn.text = _t("放到快捷欄")
 	if _sort_btn and is_instance_valid(_sort_btn):
 		_sort_btn.text = _t("一鍵整理")
+	for cat in CHIP_CATEGORIES:
+		var cid: String = cat["id"]
+		if _chip_buttons.has(cid):
+			var cbtn: Button = _chip_buttons[cid]
+			if cbtn and is_instance_valid(cbtn):
+				cbtn.text = _t(cat["label"])
 	if _tip and is_instance_valid(_tip):
 		_tip.text = _t("左鍵點選查看 · 雙擊或右鍵快速使用")
+
+
+func _create_chip_style(selected: bool, pressed: bool = false, hover: bool = false) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.set_corner_radius_all(15)
+	sb.set_border_width_all(2)
+	sb.content_margin_left = 6
+	sb.content_margin_right = 6
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+
+	if selected:
+		sb.bg_color = COLOR_GOLD if not hover else Color("#FFE066")
+		sb.border_color = COLOR_BORDER
+		sb.border_width_bottom = 2 if pressed else 5
+		sb.shadow_color = Color(1.0, 0.63, 0.06, 0.30)
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
+	else:
+		# 未選中為奶油白/淡紫邊框底
+		sb.bg_color = COLOR_BG_CREAM if not hover else Color("#FFF8E7")
+		sb.border_color = Color("#7A6899")
+		sb.border_width_bottom = 2 if pressed else 3
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.10)
+		sb.shadow_size = 3
+		sb.shadow_offset = Vector2(0, 1)
+
+	return sb
 
 
 func _create_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: int = 4, radius: int = 20) -> StyleBoxFlat:
@@ -294,6 +340,31 @@ func _build() -> void:
 	grid_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	grid_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	grid_margin.add_child(grid_vbox)
+
+	## 格子區上方配置 5 枚 Chip 按鈕：『全部』、『裝備』、『消耗品』、『素材』、『寶石』
+	_chip_row = HBoxContainer.new()
+	_chip_row.name = "CategoryChipsRow"
+	_chip_row.add_theme_constant_override("separation", 4)
+	_chip_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	grid_vbox.add_child(_chip_row)
+
+	_chip_buttons.clear()
+	for cat in CHIP_CATEGORIES:
+		var cid: String = cat["id"]
+		var btn := Button.new()
+		btn.name = "Chip_" + cid
+		btn.text = _t(cat["label"])
+		btn.custom_minimum_size = Vector2(0, 42)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.add_theme_font_size_override("font_size", 13)
+		if _cached_font:
+			btn.add_theme_font_override("font", _cached_font)
+		btn.pressed.connect(func(): set_category(cid))
+		_chip_row.add_child(btn)
+		_chip_buttons[cid] = btn
+
+	_update_chip_visuals()
 
 	_grid = GridContainer.new()
 	_grid.columns = COLS
@@ -544,6 +615,7 @@ func open() -> void:
 		var first_it = list[0]
 		if first_it is Dictionary and first_it.has("id"):
 			_selected = str(first_it["id"])
+	_update_chip_visuals()
 	refresh()
 
 
@@ -568,7 +640,15 @@ func refresh() -> void:
 	if _is_sorted:
 		list = sort_item_list(list)
 
-	## 若目前已選取的道具已經不在背包內，且背包還有道具，重選第一個
+	# 依當前選擇之 Chip 分類過濾物品列表
+	if _current_category != "all":
+		var filtered: Array = []
+		for it in list:
+			if it is Dictionary and item_matches_category(it, _current_category):
+				filtered.append(it)
+		list = filtered
+
+	## 若目前已選取的道具已經不在當前過濾列表中，重設選取狀態
 	if _selected != "":
 		var found := false
 		for it in list:
@@ -576,8 +656,8 @@ func refresh() -> void:
 				found = true
 				break
 		if not found:
-			_selected = str(list[0].get("id", "")) if list.size() > 0 else ""
-	elif list.size() > 0:
+			_selected = ""
+	elif list.size() > 0 and _current_category == "all" and not visible:
 		_selected = str(list[0].get("id", ""))
 
 	for i in _cells.size():
@@ -774,6 +854,86 @@ func get_sort_button() -> Button:
 
 func is_sorted() -> bool:
 	return _is_sorted
+
+
+func get_chip_buttons() -> Dictionary:
+	return _chip_buttons
+
+
+func get_chip_button(category: String) -> Button:
+	return _chip_buttons.get(category, null)
+
+
+func get_current_category() -> String:
+	return _current_category
+
+
+func set_category(cat_id: String) -> void:
+	var changed := (_current_category != cat_id)
+	_current_category = cat_id
+
+	if changed:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var am: Node = (loop as SceneTree).root.get_node_or_null("AudioManager")
+			if am and am.has_method("play_ui"):
+				am.call("play_ui")
+
+	# 若目前選取的道具不在新分類中，重設選取狀態
+	if _selected != "":
+		var inv: Node = null
+		if Engine.get_main_loop() is SceneTree:
+			inv = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InventorySystem")
+		var it_def: Dictionary = inv.call("catalog", _selected) if inv else {}
+		var it_dict: Dictionary = {"id": _selected, "def": it_def}
+		if not item_matches_category(it_dict, _current_category):
+			_selected = ""
+
+	_update_chip_visuals()
+	refresh()
+	if changed:
+		category_changed.emit(_current_category)
+
+
+func _update_chip_visuals() -> void:
+	for cat in CHIP_CATEGORIES:
+		var cid: String = cat["id"]
+		if _chip_buttons.has(cid):
+			var btn: Button = _chip_buttons[cid]
+			if btn and is_instance_valid(btn):
+				var is_sel := (cid == _current_category)
+				btn.add_theme_stylebox_override("normal", _create_chip_style(is_sel, false, false))
+				btn.add_theme_stylebox_override("hover", _create_chip_style(is_sel, false, true))
+				btn.add_theme_stylebox_override("pressed", _create_chip_style(is_sel, true, false))
+				btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+				if is_sel:
+					btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+					btn.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+					btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+				else:
+					btn.add_theme_color_override("font_color", Color("#4D456B"))
+					btn.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+					btn.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+
+static func item_matches_category(item: Dictionary, category: String) -> bool:
+	if category == "all" or category.is_empty():
+		return true
+	var def: Dictionary = item.get("def", {})
+	var kind: String = str(def.get("kind", item.get("kind", ""))).to_lower()
+	var id: String = str(item.get("id", "")).to_lower()
+
+	match category:
+		"equip":
+			return kind in ["weapon", "equipment", "equip", "armor", "accessory", "shield", "helm", "boots"] or id.begins_with("wpn_") or id.begins_with("equip_") or id.begins_with("arm_")
+		"gem":
+			return kind in ["gem", "jewel", "stone"] or id.begins_with("gem_")
+		"consumable":
+			return kind in ["consumable", "potion", "food", "scroll"] or id.begins_with("pot_")
+		"material":
+			return kind in ["material", "mat", "ore", "craft"] or id.begins_with("mat_")
+		_:
+			return kind == category
 
 
 func _play_sort_feedback() -> void:
