@@ -2364,6 +2364,14 @@ func _on_hotbar_use(slot: int) -> void:
 
 
 func _on_inv_use_item(item_id: String) -> void:
+	var def: Dictionary = InventorySystem.catalog(item_id) if InventorySystem else {}
+	var kind := str(def.get("kind", "")).to_lower()
+	if kind in ["consumable", "potion"] or item_id.begins_with("hp_") or item_id.begins_with("pot_"):
+		SaveManager.save_game()
+		_refresh_hud()
+		if _inv_panel and _inv_panel.has_method("refresh"):
+			_inv_panel.call("refresh")
+		return
 	var res: Dictionary = InventorySystem.use_item(item_id)
 	if not bool(res.get("ok", false)):
 		_show_toast(str(res.get("msg", _t("無法使用"))))

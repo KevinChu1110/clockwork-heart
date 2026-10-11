@@ -12,6 +12,7 @@ extends Control
 
 signal closed
 signal item_used(item_id: String)
+signal consumable_used(item_id: String, result: Dictionary)
 signal assign_hotbar(item_id: String)
 signal items_sorted
 signal category_changed(category_id: String)
@@ -1365,12 +1366,19 @@ func _update_action_button(inv: Node = null) -> void:
 			_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
 			_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	elif item_matches_category(item_dict, "consumable"):
-		_use_btn.disabled = false
-		_use_btn.text = _t("使用")
-		_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
-		_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
-		_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
-		_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		var heal_val: int = int(def.get("heal", 0))
+		if heal_val > 0 and is_player_hp_full():
+			_use_btn.disabled = true
+			_use_btn.text = _t("生命已滿")
+			_use_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+			_use_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+		else:
+			_use_btn.disabled = false
+			_use_btn.text = _t("使用")
+			_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+			_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
+			_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
+			_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	else:
 		_use_btn.disabled = false
 		_use_btn.text = _t("使用")
@@ -1406,6 +1414,13 @@ func _on_use_button_pressed() -> void:
 		if is_item_locked(_selected):
 			_show_tip(_t("裝備已鎖定無法出售"))
 			return
+		item_used.emit(_selected)
+		refresh()
+		return
+
+	if item_matches_category(item_dict, "consumable") or kind in ["consumable", "potion"] or id.begins_with("pot_") or id.begins_with("hp_") or id.begins_with("mp_"):
+		use_consumable(_selected)
+		return
 
 	item_used.emit(_selected)
 	refresh()
@@ -1596,7 +1611,7 @@ static func item_matches_category(item: Dictionary, category: String) -> bool:
 		"gem":
 			return kind in ["gem", "jewel", "stone"] or id.begins_with("gem_")
 		"consumable":
-			return kind in ["consumable", "potion", "food", "scroll"] or id.begins_with("pot_")
+			return kind in ["consumable", "potion", "food", "scroll"] or id.begins_with("pot_") or id.begins_with("hp_") or id.begins_with("mp_")
 		"material":
 			return kind in ["material", "mat", "ore", "craft"] or id.begins_with("mat_")
 		_:
@@ -2722,6 +2737,201 @@ func get_bag_batch_sell_button() -> Button:
 
 func get_floating_gold_toast() -> PanelContainer:
 	return _floating_gold_toast
+
+
+var _floating_consumable_toast: PanelContainer = null
+
+
+func is_player_hp_full() -> bool:
+	var gs: Node = null
+	if Engine.get_main_loop() is SceneTree and (Engine.get_main_loop() as SceneTree).root != null:
+		gs = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
+	if gs == null:
+		return false
+	var max_h: int = 100
+	if gs.has_method("effective_max_hp"):
+		max_h = int(gs.call("effective_max_hp"))
+	elif "max_hp" in gs:
+		max_h = int(gs.max_hp)
+	var cur_h: int = int(gs.hp) if "hp" in gs else max_h
+	return cur_h >= max_h
+
+
+func use_selected_item() -> Dictionary:
+	return use_consumable(_selected)
+
+
+func use_consumable(target_id: String = "") -> Dictionary:
+	if target_id.is_empty():
+		target_id = _selected
+	if target_id.is_empty():
+		return {"ok": false, "msg": _t("沒有選取道具。")}
+
+	var loop := Engine.get_main_loop()
+	var inv: Node = null
+	var gs: Node = null
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		inv = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+		gs = (loop as SceneTree).root.get_node_or_null("GameState")
+
+	var def: Dictionary = inv.call("catalog", target_id) as Dictionary if inv and inv.has_method("catalog") else {}
+	if def.is_empty() and inv and "CATALOG" in inv:
+		def = inv.CATALOG.get(target_id, {})
+
+	var heal_val := int(def.get("heal", 0))
+	if heal_val > 0 and is_player_hp_full():
+		var full_msg := _t("生命已滿")
+		_show_tip(full_msg)
+		return {"ok": false, "msg": full_msg, "hp_full": true}
+
+	var res: Dictionary = {}
+	if inv and inv.has_method("use_item"):
+		res = inv.call("use_item", target_id) as Dictionary
+	elif gs and "inventory" in gs and gs.inventory is Dictionary and gs.inventory.has(target_id):
+		var cnt := int(gs.inventory[target_id])
+		if cnt <= 0:
+			return {"ok": false, "msg": _t("沒有這個道具。")}
+		if cnt == 1:
+			gs.inventory.erase(target_id)
+		else:
+			gs.inventory[target_id] = cnt - 1
+		var healed := 0
+		if heal_val > 0:
+			var max_h: int = int(gs.call("effective_max_hp")) if gs.has_method("effective_max_hp") else (int(gs.max_hp) if "max_hp" in gs else 100)
+			var cur_h: int = int(gs.hp) if "hp" in gs else max_h
+			var new_h: int = mini(max_h, cur_h + heal_val)
+			healed = new_h - cur_h
+			gs.set("hp", new_h)
+		var d_val := int(def.get("dust", 0))
+		if d_val > 0:
+			if gs.has_method("add_stardust"):
+				gs.call("add_stardust", d_val)
+			elif "stardust" in gs:
+				gs.stardust += d_val
+		var item_name := str(def.get("name", target_id))
+		var msg_str := _t("使用【%s】· %s") % [item_name, _t("HP +%d") % healed] if healed > 0 else _t("使用【%s】") % item_name
+		res = {
+			"ok": true,
+			"msg": msg_str,
+			"heal": healed,
+			"dust": d_val,
+			"id": target_id,
+		}
+
+	if not bool(res.get("ok", false)):
+		var fail_msg: String = str(res.get("msg", _t("無法使用。")))
+		_show_tip(fail_msg)
+		return res
+
+	# 1. 播放使用音效
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var am: Node = (loop as SceneTree).root.get_node_or_null("AudioManager")
+		if am:
+			if am.has_method("play_interact"):
+				am.call("play_interact")
+			elif am.has_method("play_ui"):
+				am.call("play_ui")
+
+	# 2. 彈出多巴胺風格浮動飄字提示
+	var healed_amt: int = int(res.get("heal", 0))
+	var dust_amt: int = int(res.get("dust", 0))
+	var toast_text := ""
+	if healed_amt > 0:
+		toast_text = "+%d HP" % healed_amt
+	elif dust_amt > 0:
+		toast_text = _t("星屑 +%d") % dust_amt
+	else:
+		toast_text = str(res.get("msg", _t("使用成功")))
+
+	_show_consumable_floating_toast(toast_text, healed_amt, dust_amt)
+	_show_tip(str(res.get("msg", toast_text)))
+
+	# 3. 同步主畫面與存檔
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("refresh_hud"):
+			ml.call("refresh_hud")
+		var sm: Node = (loop as SceneTree).root.get_node_or_null("SaveManager")
+		if sm and sm.has_method("save_game"):
+			sm.call("save_game")
+
+	# 4. 發射信號
+	item_used.emit(target_id)
+	consumable_used.emit(target_id, res)
+
+	# 5. 即時更新背包清單與右側詳情
+	refresh()
+
+	return res
+
+
+func _show_consumable_floating_toast(msg: String, heal: int = 0, _dust: int = 0) -> void:
+	if _floating_consumable_toast and is_instance_valid(_floating_consumable_toast):
+		_floating_consumable_toast.queue_free()
+		_floating_consumable_toast = null
+
+	var toast := PanelContainer.new()
+	_floating_consumable_toast = toast
+	toast.name = "ConsumableFloatingToast"
+	toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = COLOR_CARD_WARM
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(18)
+	sb.content_margin_left = 22
+	sb.content_margin_right = 22
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 10
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 6
+	sb.shadow_offset = Vector2(0, 3)
+	toast.add_theme_stylebox_override("panel", sb)
+
+	var hbox := HBoxContainer.new()
+	hbox.name = "HBox"
+	hbox.add_theme_constant_override("separation", 8)
+	toast.add_child(hbox)
+
+	var lbl := Label.new()
+	lbl.name = "ConsumableToastLabel"
+	lbl.text = msg
+	var text_color: Color = Color("#1E7538") if heal > 0 else COLOR_TEXT_DARK
+	_apply_label_style(lbl, 20, text_color, Color(0, 0, 0, 0), 0)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hbox.add_child(lbl)
+
+	add_child(toast)
+	toast.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	toast.offset_left = -180
+	toast.offset_right = 180
+	toast.offset_top = 110
+	toast.offset_bottom = 160
+
+	var tw := create_tween()
+	if tw:
+		toast.scale = Vector2(0.95, 0.95)
+		tw.parallel().tween_property(toast, "scale", Vector2(1.0, 1.0), 0.15)
+		tw.tween_property(toast, "offset_top", 96.0, 0.3)
+		tw.tween_interval(1.8)
+		tw.tween_property(toast, "modulate:a", 0.0, 0.35)
+		tw.tween_callback(toast.queue_free)
+
+
+func get_floating_consumable_toast() -> PanelContainer:
+	if _floating_consumable_toast and is_instance_valid(_floating_consumable_toast):
+		return _floating_consumable_toast
+	return null
+
+
+func get_floating_toast() -> PanelContainer:
+	if _floating_consumable_toast and is_instance_valid(_floating_consumable_toast):
+		return _floating_consumable_toast
+	if _floating_gold_toast and is_instance_valid(_floating_gold_toast):
+		return _floating_gold_toast
+	return null
 
 
 func set_item_locked(id: String, locked: bool) -> void:
