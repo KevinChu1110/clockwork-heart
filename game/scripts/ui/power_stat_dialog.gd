@@ -13,6 +13,7 @@ signal closed()
 signal equip_requested()
 signal workshop_requested()
 signal skill_requested()
+signal soul_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -23,6 +24,9 @@ static func _t(s: String) -> String:
 	var res := ContentLoc.text("ui", s)
 	if res != s:
 		return res
+	var soul_res := ContentLoc.text("soul", s)
+	if soul_res != s:
+		return soul_res
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree and (loop as SceneTree).root != null:
 		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
@@ -70,6 +74,7 @@ var _close_x_btn: Button
 var _btn_go_equip: Button
 var _btn_go_workshop: Button
 var _btn_go_skill: Button
+var _btn_go_soul: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -246,6 +251,7 @@ func refresh() -> void:
 	var eq := _eq()
 	var gem := _gem()
 	var sk := _sk()
+	var soul_sys := _soul()
 
 	# 更新頂部文字
 	if _title_lbl:
@@ -261,6 +267,8 @@ func refresh() -> void:
 		_btn_go_workshop.text = _t("前往工坊")
 	if _btn_go_skill:
 		_btn_go_skill.text = _t("前往心法")
+	if _btn_go_soul:
+		_btn_go_soul.text = _t("前往聚魂")
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("確定")
 
@@ -270,7 +278,7 @@ func refresh() -> void:
 		child.queue_free()
 
 	# 1. 綜合戰力總覽卡片
-	_content_vbox.add_child(_build_power_overview_card(gs))
+	_content_vbox.add_child(_build_power_overview_card(gs, soul_sys))
 
 	# 2. 基礎六維屬性卡片
 	_content_vbox.add_child(_build_six_stats_card(gs))
@@ -281,9 +289,12 @@ func refresh() -> void:
 	# 4. 寶石孔位與招式心法加成卡片（雙欄）
 	_content_vbox.add_child(_build_gem_and_skill_card(gs, gem, sk))
 
+	# 5. 戰魂共鳴卡片（第四大戰力支柱）
+	_content_vbox.add_child(_build_soul_resonance_card(gs, soul_sys))
+
 
 ## 綜合戰力總覽卡片
-func _build_power_overview_card(gs: Node) -> PanelContainer:
+func _build_power_overview_card(gs: Node, soul_sys: Node = null) -> PanelContainer:
 	var card := PanelContainer.new()
 	card.name = "PowerOverviewCard"
 	card.add_theme_stylebox_override("panel", _create_card_style(COLOR_CARD_GOLD, COLOR_BORDER, 2, 4, 14))
@@ -351,11 +362,15 @@ func _build_power_overview_card(gs: Node) -> PanelContainer:
 	var e_crit: float = float(gs.call("effective_crit")) if gs and gs.has_method("effective_crit") else 0.0
 	var has_path: bool = (str(gs.path_style) != "") if gs and "path_style" in gs else false
 
+	var s_bonus: Dictionary = soul_sys.call("total_equipped_bonus") if soul_sys and soul_sys.has_method("total_equipped_bonus") else {}
+	var s_pow: int = int(s_bonus.get("atk", 0)) + int(s_bonus.get("def", 0)) + int(int(s_bonus.get("hp", 0)) / 4.0)
+
 	_add_breakdown_item(grid, _t("等級成長"), "+%d" % (lv * 3))
 	_add_breakdown_item(grid, _t("武器階數"), "+%d" % (w_tier * 4))
 	_add_breakdown_item(grid, _t("攻防加成"), "+%d" % (e_atk + e_def))
 	_add_breakdown_item(grid, _t("暴擊折算"), "+%d" % int(e_crit / 2.0))
 	_add_breakdown_item(grid, _t("流派心法"), "+%d" % (2 if has_path else 0))
+	_add_breakdown_item(grid, _t("戰魂共鳴"), "+%d" % s_pow)
 
 	return card
 
@@ -754,6 +769,187 @@ func _build_gem_and_skill_card(gs: Node, gem: Node, sk: Node) -> HBoxContainer:
 	return h
 
 
+## 戰魂共鳴卡片（第四大戰力支柱）
+func _build_soul_resonance_card(_gs: Node, soul_sys: Node) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = "SoulResonanceCard"
+	card.add_theme_stylebox_override("panel", _create_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 14))
+
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_left", 14)
+	m.add_theme_constant_override("margin_right", 14)
+	m.add_theme_constant_override("margin_top", 10)
+	m.add_theme_constant_override("margin_bottom", 10)
+	card.add_child(m)
+
+	var v := VBoxContainer.new()
+	v.name = "SoulCardVBox"
+	v.add_theme_constant_override("separation", 8)
+	m.add_child(v)
+
+	# 頂部列：標題 + 總加成摘要 + 前往聚魂快捷按鈕
+	var t_row := HBoxContainer.new()
+	t_row.name = "SoulHeaderRow"
+	t_row.add_theme_constant_override("separation", 8)
+	v.add_child(t_row)
+
+	var t := Label.new()
+	t.name = "SoulTitleLabel"
+	t.text = _t("戰魂共鳴")
+	_apply_font(t, 14, COLOR_TEXT_DARK, true)
+	t_row.add_child(t)
+
+	var tot_bonus := {"atk": 0, "def": 0, "hp": 0}
+	if soul_sys and soul_sys.has_method("total_equipped_bonus"):
+		tot_bonus = soul_sys.call("total_equipped_bonus") as Dictionary
+
+	var b_atk := int(tot_bonus.get("atk", 0))
+	var b_def := int(tot_bonus.get("def", 0))
+	var b_hp  := int(tot_bonus.get("hp", 0))
+
+	var summary_lbl := Label.new()
+	summary_lbl.name = "SoulSummaryLabel"
+	summary_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	summary_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	summary_lbl.text = _t("戰魂總加成: 攻+%d · 防+%d · 血+%d") % [b_atk, b_def, b_hp]
+	_apply_font(summary_lbl, 12, COLOR_TEXT_GOLD, true)
+	t_row.add_child(summary_lbl)
+
+	# 快捷按鈕：前往聚魂 (BtnGoSoul)（尺寸 88x36px，熱區>=48px，果凍厚底 4px）
+	_btn_go_soul = Button.new()
+	_btn_go_soul.name = "BtnGoSoul"
+	_btn_go_soul.text = _t("前往聚魂")
+	_btn_go_soul.custom_minimum_size = Vector2(88, 36)
+	_btn_go_soul.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_soul, COLOR_PINK, COLOR_TEXT_LIGHT, 12, 4, 12, COLOR_BORDER, 6, 3)
+	_btn_go_soul.pressed.connect(_on_go_soul_pressed)
+	t_row.add_child(_btn_go_soul)
+
+	# 雙欄四大核心展示卡片 (CoreGrid)
+	var core_grid := GridContainer.new()
+	core_grid.name = "CoreGrid"
+	core_grid.columns = 2
+	core_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	core_grid.add_theme_constant_override("h_separation", 10)
+	core_grid.add_theme_constant_override("v_separation", 8)
+	v.add_child(core_grid)
+
+	var core_data: Array = []
+	if soul_sys and soul_sys.has_method("get_core_resonances"):
+		core_data = soul_sys.call("get_core_resonances") as Array
+
+	for i in range(4):
+		var cd: Dictionary = core_data[i] if i < core_data.size() else {}
+		core_grid.add_child(_create_core_cell(i, cd))
+
+	return card
+
+
+func _create_core_cell(idx: int, cd: Dictionary) -> PanelContainer:
+	var c := PanelContainer.new()
+	c.name = "CoreCell_%d" % idx
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c.custom_minimum_size = Vector2(0, 48)
+
+	var sb := StyleBoxFlat.new()
+	match idx:
+		0:
+			sb.bg_color = COLOR_CARD_GOLD
+		1:
+			sb.bg_color = COLOR_CARD_SKY
+		2:
+			sb.bg_color = COLOR_CARD_MINT
+		_:
+			sb.bg_color = COLOR_CARD_WARM
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(1)
+	sb.border_width_bottom = 3
+	sb.set_corner_radius_all(10)
+	sb.content_margin_left = 10
+	sb.content_margin_right = 10
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	c.add_theme_stylebox_override("panel", sb)
+
+	var h := HBoxContainer.new()
+	h.name = "CoreHBox"
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 8)
+	c.add_child(h)
+
+	var default_labels := ["齒", "甲", "簧", "衡"]
+	var default_names := ["銳齒之魂", "固甲之魂", "旋簧之魂", "全衡之魂"]
+	var label_char: String = str(cd.get("label", default_labels[idx]))
+	var core_name: String = str(cd.get("name", _t(default_names[idx])))
+	var is_lit: bool = bool(cd.get("is_lit", false))
+	var quality: String = str(cd.get("quality", cd.get("tier", "")))
+	var lv: int = int(cd.get("level", 0))
+	var bonus: Dictionary = cd.get("bonus", {})
+
+	# 核心代號徽章 【齒】
+	var badge_lbl := Label.new()
+	badge_lbl.name = "CoreBadgeLabel"
+	badge_lbl.text = "【%s】" % label_char
+	_apply_font(badge_lbl, 13, COLOR_TEXT_DARK, true)
+	h.add_child(badge_lbl)
+
+	# 核心名稱
+	var name_lbl := Label.new()
+	name_lbl.name = "CoreNameLabel"
+	name_lbl.text = core_name
+	_apply_font(name_lbl, 13, COLOR_TEXT_DARK, true)
+	h.add_child(name_lbl)
+
+	# 階級與等級 (例如: 凡·Lv.1 或 神·Lv.10 或 未喚醒)
+	var tier_lbl := Label.new()
+	tier_lbl.name = "CoreTierLabel"
+	if is_lit and not quality.is_empty():
+		tier_lbl.text = "%s·Lv.%d" % [_t(quality), lv]
+		_apply_font(tier_lbl, 12, COLOR_TEXT_MUTED)
+	else:
+		tier_lbl.text = _t("未喚醒")
+		_apply_font(tier_lbl, 12, COLOR_TEXT_DIM)
+	h.add_child(tier_lbl)
+
+	# 彈性間隔
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h.add_child(spacer)
+
+	# 屬性加成文字
+	var bonus_lbl := Label.new()
+	bonus_lbl.name = "CoreBonusLabel"
+	var b_atk := int(bonus.get("atk", 0))
+	var b_def := int(bonus.get("def", 0))
+	var b_hp  := int(bonus.get("hp", 0))
+
+	var bonus_text := ""
+	var bonus_color := COLOR_TEXT_DIM
+	match idx:
+		0:
+			bonus_text = _t("攻+%d") % b_atk if b_atk > 0 else "+0"
+			bonus_color = COLOR_TEXT_ORANGE if b_atk > 0 else COLOR_TEXT_DIM
+		1:
+			bonus_text = _t("防+%d") % b_def if b_def > 0 else "+0"
+			bonus_color = Color("#2A5580") if b_def > 0 else COLOR_TEXT_DIM
+		2:
+			bonus_text = _t("血+%d") % b_hp if b_hp > 0 else "+0"
+			bonus_color = Color("#0E8A7A") if b_hp > 0 else COLOR_TEXT_DIM
+		3:
+			if b_atk > 0 or b_def > 0 or b_hp > 0:
+				bonus_text = _t("全+%d") % b_atk
+				bonus_color = Color("#8B2A90")
+			else:
+				bonus_text = "+0"
+				bonus_color = COLOR_TEXT_DIM
+
+	bonus_lbl.text = bonus_text
+	_apply_font(bonus_lbl, 13, bonus_color, true)
+	h.add_child(bonus_lbl)
+
+	return c
+
+
 func _on_go_equip_pressed() -> void:
 	equip_requested.emit()
 	_on_close_pressed()
@@ -766,6 +962,11 @@ func _on_go_workshop_pressed() -> void:
 
 func _on_go_skill_pressed() -> void:
 	skill_requested.emit()
+	_on_close_pressed()
+
+
+func _on_go_soul_pressed() -> void:
+	soul_requested.emit()
 	_on_close_pressed()
 
 
@@ -859,4 +1060,11 @@ func _sk() -> Node:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree and (loop as SceneTree).root != null:
 		return (loop as SceneTree).root.get_node_or_null("SkillSystem")
+	return null
+
+
+func _soul() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		return (loop as SceneTree).root.get_node_or_null("SoulSystem")
 	return null

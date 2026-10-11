@@ -3787,5 +3787,9 @@
   "已鎖定裝備": "Equipment locked",
   "已解除鎖定": "Lock removed",
   "裝備已鎖定無法出售": "Equipment is locked and cannot be sold",
-  "已鎖定（無法出售）": "Locked (Cannot Sell)"
+  "已鎖定（無法出售）": "Locked (Cannot Sell)",
+  "戰魂共鳴": "Soul Resonance",
+  "戰魂總加成: 攻+%d · 防+%d · 血+%d": "Soul Total: ATK+%d · DEF+%d · HP+%d",
+  "未喚醒": "Dormant",
+  "全+%d": "ALL+%d"
 }
