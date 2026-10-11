@@ -357,7 +357,18 @@ func _process(_delta: float) -> bool:
 			if not ("背包空間已滿" in detail.text):
 				return _fail("滿載選取物品時 detail 卡片未包含 '背包空間已滿'，內容為: %s" % detail.text)
 
-			print("  ok 滿載選取物品時提示『背包空間已滿』驗證通過")
+			# 驗證背包總滿載 (24/24) 時切換分類，膠囊與詳情仍維持滿載警示色階一致性
+			_inv.call("set_category", "equip")
+			var cap_full_sb: StyleBoxFlat = _inv.call("get_capacity_capsule").get_theme_stylebox("panel") as StyleBoxFlat
+			if abs(cap_full_sb.bg_color.r - Color("#FF5E8A").r) > 0.05:
+				return _fail("滿載時切換裝備分類，膠囊未維持珊瑚粉滿載警示色階")
+			if not bool(_inv.call("is_capacity_full")):
+				return _fail("滿載時切換裝備分類，is_capacity_full() 應維持 true")
+			_inv.call("set_category", "all")
+			_inv.set("_selected", "blade_iron")
+			_inv.refresh()
+
+			print("  ok 滿載選取物品時提示『背包空間已滿』與分類切換滿載一致性驗證通過")
 
 			_step = 10
 			_wait = 0
@@ -447,18 +458,25 @@ func _process(_delta: float) -> bool:
 
 				print("  ok [%s] 容量文案: '%s' | 滿載提示: '%s' (0 CJK 0 Emoji)" % [l, label.text, tip.text])
 
+			# 切換為英文並 refresh，進入獨立等待幀以供正確截圖
+			loc.call("set_locale", "en")
+			_inv.set("_selected", "blade_iron")
+			_inv.refresh()
+
 			_step = 13
 			_wait = 0
 
 		13:
 			if _wait < 5:
 				return false
-			# 切換至英文截圖存證
+			# 截圖 5: 英文語系 (en) 滿載展示
+			_proof_hashes["proof_05"] = _capture_save(_out_dir.path_join("proof_05_maple_inv_capacity_en_locale.png"))
+
+			# 切換至日文並 refresh，進入獨立等待幀以供正確截圖
 			var loc: Node = root.get_node_or_null("Loc")
-			loc.call("set_locale", "en")
+			loc.call("set_locale", "ja")
 			_inv.set("_selected", "blade_iron")
 			_inv.refresh()
-			_proof_hashes["proof_05"] = _capture_save(_out_dir.path_join("proof_05_maple_inv_capacity_en_locale.png"))
 
 			_step = 14
 			_wait = 0
@@ -466,12 +484,13 @@ func _process(_delta: float) -> bool:
 		14:
 			if _wait < 5:
 				return false
-			# 切換至日文截圖存證
-			var loc: Node = root.get_node_or_null("Loc")
-			loc.call("set_locale", "ja")
-			_inv.set("_selected", "blade_iron")
-			_inv.refresh()
+			# 截圖 6: 日語語系 (ja) 滿載展示
 			_proof_hashes["proof_06"] = _capture_save(_out_dir.path_join("proof_06_maple_inv_capacity_ja_locale.png"))
+
+			# 切換回繁中
+			var loc: Node = root.get_node_or_null("Loc")
+			loc.call("set_locale", "zh_TW")
+			_inv.refresh()
 
 			_step = 15
 			_wait = 0

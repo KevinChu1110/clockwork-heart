@@ -36,8 +36,8 @@
 | 02 | `proof_02_maple_inv_capacity_chip_filter.png` | 分類頁籤切換：切換至【裝備】Chip，膠囊即時動態更新為裝備格數『容量 4/24』 | ✓ | ✓ | ✓ | `547f7210e7ff` | **PASS** |
 | 03 | `proof_03_maple_inv_capacity_full_warning_coral.png` | 滿載狀態 (24/24)：格數達上限，膠囊自動切換為珊瑚粉底 (#FF5E8A) 暖橘光暈警示色階，白字高對比顯示『容量 24/24』 | ✓ | ✓ | ✓ | `eb7ee62203de` | **PASS** |
 | 04 | `proof_04_maple_inv_capacity_full_item_selected_tip.png` | 滿載選取物品提示：選中武器時，操作提示標籤與詳情卡片均高亮提示『背包空間已滿』 | ✓ | ✓ | ✓ | `f91730a11e16` | **PASS** |
-| 05 | `proof_05_maple_inv_capacity_en_locale.png` | 英文語系 (en) 滿載展示：膠囊顯示『Capacity 24/24』，提示『Backpack is full』，100% 零 CJK 殘留 | ✓ | ✓ | ✓ | `16ee6f73ef3b` | **PASS** |
-| 06 | `proof_06_maple_inv_capacity_ja_locale.png` | 日語語系 (ja) 滿載展示：膠囊顯示『容量 24/24』，提示『バッグの空きがありません』，漢字常用規範對齊 | ✓ | ✓ | ✓ | `fa5876961da5` | **PASS** |
+| 05 | `proof_05_maple_inv_capacity_en_locale.png` | 英文語系 (en) 滿載展示：膠囊顯示『Capacity 24/24』，提示『Backpack is full』，100% 零 CJK 殘留 | ✓ | ✓ | ✓ | `fa5876961da5` | **PASS** |
+| 06 | `proof_06_maple_inv_capacity_ja_locale.png` | 日語語系 (ja) 滿載展示：膠囊顯示『容量 24/24』，提示『バッグの空きがありません』，漢字常用規範對齊 | ✓ | ✓ | ✓ | `23009795aa2f` | **PASS** |
 
 ---
 

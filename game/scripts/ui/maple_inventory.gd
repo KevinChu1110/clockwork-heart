@@ -318,7 +318,7 @@ func _update_capacity_ui() -> void:
 	else:
 		_capacity_label.text = "%s %d/%d" % [_t("容量"), _occupied_capacity, TOTAL_CAPACITY]
 
-	var is_full := _occupied_capacity >= TOTAL_CAPACITY
+	var is_full := is_capacity_full()
 	_capacity_capsule.add_theme_stylebox_override("panel", _create_capacity_style(is_full))
 	if is_full:
 		_capacity_label.add_theme_color_override("font_color", Color("#FFFFFF"))
