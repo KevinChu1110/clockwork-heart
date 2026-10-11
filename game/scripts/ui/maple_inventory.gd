@@ -20,6 +20,7 @@ signal equipment_lock_toggled(uid: String, is_locked: bool)
 signal equipment_dismantled(uid: String, result: Dictionary)
 signal forge_requested()
 signal workshop_requested()
+signal materials_batch_sold(gold: int, count: int, result: Dictionary)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
@@ -118,6 +119,8 @@ var _capacity_label: Label = null
 var _occupied_capacity: int = 0
 var _total_bag_count: int = 0
 var _chip_buttons: Dictionary = {}
+var _batch_sell_btn: Button = null
+var _floating_gold_toast: PanelContainer = null
 var _current_category: String = "all"
 var _chip_row: HBoxContainer
 var _tip: Label
@@ -208,10 +211,13 @@ func _update_ui_texts() -> void:
 	_update_lock_ui_texts()
 	_update_dismantle_button()
 	_update_shortcut_buttons()
+	_update_batch_sell_button()
 	if _go_forge_btn and is_instance_valid(_go_forge_btn):
 		_go_forge_btn.text = _t("前往鍛造")
 	if _go_workshop_btn and is_instance_valid(_go_workshop_btn):
 		_go_workshop_btn.text = _t("前往工坊")
+	if _batch_sell_btn and is_instance_valid(_batch_sell_btn):
+		_batch_sell_btn.text = _t("一鍵出售素材")
 	if _hb_btn and is_instance_valid(_hb_btn):
 		_hb_btn.text = _t("放到快捷欄")
 	if _sort_btn and is_instance_valid(_sort_btn):
@@ -852,6 +858,27 @@ func _build() -> void:
 	_go_workshop_btn.visible = false
 	right.add_child(_go_workshop_btn)
 
+	## 『一鍵出售素材』按鈕 (薄荷綠果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px)
+	_batch_sell_btn = Button.new()
+	_batch_sell_btn.name = "BtnBatchSellMaterials"
+	_batch_sell_btn.text = _t("一鍵出售素材")
+	_batch_sell_btn.custom_minimum_size = Vector2(0, 52)
+	_batch_sell_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_batch_sell_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_batch_sell_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18, 2))
+	_batch_sell_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18, 2))
+	_batch_sell_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18, 2))
+	_batch_sell_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18, 2))
+	_batch_sell_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_batch_sell_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_batch_sell_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	_batch_sell_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_batch_sell_btn.add_theme_font_override("font", _cached_font)
+	_batch_sell_btn.pressed.connect(_on_batch_sell_materials_pressed)
+	_batch_sell_btn.visible = false
+	right.add_child(_batch_sell_btn)
+
 	## 「放到快捷欄」按鈕 (天藍果凍厚底按鈕，高 52px)
 	_hb_btn = Button.new()
 	_hb_btn.custom_minimum_size = Vector2(0, 52)
@@ -1087,11 +1114,13 @@ func _update_detail(inv: Node) -> void:
 			_go_forge_btn.visible = false
 		if _go_workshop_btn:
 			_go_workshop_btn.visible = false
+		_update_batch_sell_button()
 		return
 
 	_update_action_button(inv)
 	_update_dismantle_button()
 	_update_shortcut_buttons()
+	_update_batch_sell_button()
 	if _hb_btn and not _is_selected_item_equipment():
 		_hb_btn.disabled = false
 		_hb_btn.text = _t("放到快捷欄")
@@ -2449,4 +2478,266 @@ func get_go_workshop_button() -> Button:
 
 func get_bag_go_workshop_button() -> Button:
 	return _go_workshop_btn
+
+
+# ── 一鍵出售素材支援 (Batch Sell Materials) ──
+
+func _is_selected_item_material() -> bool:
+	if _selected.is_empty():
+		return false
+	if _is_selected_item_equipment():
+		return false
+	var loop := Engine.get_main_loop()
+	var inv: Node = null
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		inv = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+	var def: Dictionary = inv.call("catalog", _selected) as Dictionary if inv and inv.has_method("catalog") else {}
+	var item_dict := {"id": _selected, "def": def}
+	var kind := str(def.get("kind", "")).to_lower()
+	var id := _selected.to_lower()
+	if item_matches_category(item_dict, "gem") or kind in ["gem", "jewel", "stone"] or id.begins_with("gem_"):
+		return false
+	if item_matches_category(item_dict, "consumable") or kind in ["consumable", "potion"] or id.begins_with("pot_") or id.begins_with("hp_") or id.begins_with("mp_"):
+		return false
+	if kind in ["key", "quest", "important"] or id.begins_with("key_"):
+		return false
+	if item_matches_category(item_dict, "material"):
+		return true
+	if kind in ["material", "mat", "ore", "craft"]:
+		return true
+	if id.begins_with("mat_") or id.contains("scrap") or id.contains("ore") or id.contains("fang") or id.contains("bone") or id.contains("hide") or id.contains("shell"):
+		return true
+	return false
+
+
+func _update_batch_sell_button() -> void:
+	if _batch_sell_btn == null or not is_instance_valid(_batch_sell_btn):
+		return
+	_batch_sell_btn.text = _t("一鍵出售素材")
+	var is_mat_category := (_current_category == "material")
+	var is_mat_selected := _is_selected_item_material()
+	if is_mat_category or is_mat_selected:
+		_batch_sell_btn.visible = true
+	else:
+		_batch_sell_btn.visible = false
+
+
+func _on_batch_sell_materials_pressed() -> void:
+	batch_sell_materials()
+
+
+func batch_sell_materials() -> Dictionary:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var am: Node = (loop as SceneTree).root.get_node_or_null("AudioManager")
+		if am and am.has_method("play_ui"):
+			am.call("play_ui")
+
+	var inv: Node = null
+	var gs: Node = null
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		inv = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+		gs = (loop as SceneTree).root.get_node_or_null("GameState")
+
+	var inv_dict: Dictionary = {}
+	if gs and "inventory" in gs and gs.inventory is Dictionary:
+		inv_dict = gs.inventory
+	elif inv and inv.has_method("bag_list"):
+		for it in inv.call("bag_list"):
+			if it is Dictionary and it.has("id"):
+				inv_dict[it["id"]] = it.get("count", 1)
+
+	var total_gold := 0
+	var total_count := 0
+	var sold_items: Array = []
+	var locked_count := 0
+
+	var item_ids: Array = inv_dict.keys().duplicate()
+	for item_id in item_ids:
+		var id_str := str(item_id)
+		var n := int(inv_dict.get(item_id, 0))
+		if n <= 0:
+			continue
+
+		var def: Dictionary = inv.call("catalog", id_str) as Dictionary if inv and inv.has_method("catalog") else {}
+		var item_dict := {"id": id_str, "def": def}
+		var kind := str(def.get("kind", "")).to_lower()
+		var id_lower := id_str.to_lower()
+
+		# 排除非素材類物品 (裝備、寶石、消耗品、重要物品)
+		if item_matches_category(item_dict, "gem") or kind in ["gem", "jewel", "stone"] or id_lower.begins_with("gem_"):
+			continue
+		if item_matches_category(item_dict, "consumable") or kind in ["consumable", "potion"] or id_lower.begins_with("pot_") or id_lower.begins_with("hp_") or id_lower.begins_with("mp_"):
+			continue
+		if kind in ["key", "quest", "important"] or id_lower.begins_with("key_"):
+			continue
+
+		var is_mat := item_matches_category(item_dict, "material") or kind in ["material", "mat", "ore", "craft"] or id_lower.begins_with("mat_") or id_lower.contains("scrap") or id_lower.contains("ore") or id_lower.contains("fang") or id_lower.contains("bone") or id_lower.contains("hide") or id_lower.contains("shell")
+		if not is_mat:
+			continue
+
+		# 檢查鎖定狀態：保留已鎖定素材不被出售
+		if is_item_locked(id_str):
+			locked_count += n
+			continue
+
+		var sell_price := int(def.get("sell", 0))
+		if sell_price <= 0:
+			sell_price = int(def.get("price", 0)) / 2
+		if sell_price <= 0:
+			sell_price = 1
+
+		var success := false
+		if inv and inv.has_method("remove_item"):
+			success = bool(inv.call("remove_item", id_str, n))
+		elif gs and "inventory" in gs and gs.inventory is Dictionary:
+			gs.inventory.erase(item_id)
+			success = true
+
+		if success:
+			var item_gold := sell_price * n
+			total_gold += item_gold
+			total_count += n
+			sold_items.append({
+				"id": id_str,
+				"name": def.get("name", id_str),
+				"count": n,
+				"sell": sell_price,
+				"gold": item_gold,
+			})
+
+	if total_count <= 0:
+		var empty_msg := _t("沒有可賣的材料。")
+		_show_tip(empty_msg)
+		return {
+			"ok": false,
+			"gold": 0,
+			"count": 0,
+			"locked_count": locked_count,
+			"msg": empty_msg,
+		}
+
+	# 增加金幣
+	if gs and gs.has_method("add_gold"):
+		gs.call("add_gold", total_gold)
+	elif gs and "gold" in gs:
+		gs.gold += total_gold
+
+	# 每日任務計數
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var qs: Node = (loop as SceneTree).root.get_node_or_null("QuestSystem")
+		if qs and qs.has_method("track_day"):
+			qs.call("track_day", "sell", total_count)
+
+	var msg_settle := _t("賣出材料 %d 件 · 金 +%d") % [total_count, total_gold]
+	_show_tip(msg_settle)
+	_show_gold_floating_toast(msg_settle, total_gold)
+
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+		if ml:
+			if ml.has_method("_show_toast"):
+				ml.call("_show_toast", msg_settle)
+			elif ml.has_method("show_toast"):
+				ml.call("show_toast", msg_settle)
+			if ml.has_method("refresh_hud"):
+				ml.call("refresh_hud")
+		var sm: Node = (loop as SceneTree).root.get_node_or_null("SaveManager")
+		if sm and sm.has_method("save_game"):
+			sm.call("save_game")
+
+	var res := {
+		"ok": true,
+		"gold": total_gold,
+		"count": total_count,
+		"items": sold_items,
+		"locked_kept": locked_count,
+		"msg": msg_settle,
+	}
+	materials_batch_sold.emit(total_gold, total_count, res)
+	refresh()
+	return res
+
+
+func _show_gold_floating_toast(msg: String, _gold: int = 0) -> void:
+	if _floating_gold_toast and is_instance_valid(_floating_gold_toast):
+		_floating_gold_toast.queue_free()
+		_floating_gold_toast = null
+
+	var toast := PanelContainer.new()
+	_floating_gold_toast = toast
+	toast.name = "GoldFloatingToast"
+	toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = COLOR_CARD_WARM
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(16)
+	sb.content_margin_left = 18
+	sb.content_margin_right = 18
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 10
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 6
+	sb.shadow_offset = Vector2(0, 3)
+	toast.add_theme_stylebox_override("panel", sb)
+
+	var hbox := HBoxContainer.new()
+	hbox.add_theme_constant_override("separation", 8)
+	toast.add_child(hbox)
+
+	var lbl := Label.new()
+	lbl.name = "GoldToastLabel"
+	lbl.text = msg
+	_apply_label_style(lbl, 18, COLOR_TEXT_DARK, Color(0, 0, 0, 0), 0)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hbox.add_child(lbl)
+
+	add_child(toast)
+	toast.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	toast.offset_left = -200
+	toast.offset_right = 200
+	toast.offset_top = 110
+	toast.offset_bottom = 158
+
+	var tw := create_tween()
+	if tw:
+		toast.scale = Vector2(0.95, 0.95)
+		tw.parallel().tween_property(toast, "scale", Vector2(1.0, 1.0), 0.15)
+		tw.tween_property(toast, "offset_top", 96.0, 0.3)
+		tw.tween_interval(1.8)
+		tw.tween_property(toast, "modulate:a", 0.0, 0.35)
+		tw.tween_callback(toast.queue_free)
+
+
+func get_batch_sell_button() -> Button:
+	return _batch_sell_btn
+
+
+func get_bag_batch_sell_button() -> Button:
+	return _batch_sell_btn
+
+
+func get_floating_gold_toast() -> PanelContainer:
+	return _floating_gold_toast
+
+
+func set_item_locked(id: String, locked: bool) -> void:
+	if id.is_empty():
+		return
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var eq_sys: Node = (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if eq_sys and eq_sys.has_method("set_locked"):
+			eq_sys.call("set_locked", id, locked)
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs:
+			if gs.has_method("set_flag"):
+				gs.call("set_flag", "item_locked." + id, locked)
+				gs.call("set_flag", "equip_locked." + id, locked)
+			if "locked_items" in gs and gs.locked_items is Dictionary:
+				gs.locked_items[id] = locked
+
 

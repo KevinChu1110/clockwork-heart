@@ -3796,5 +3796,7 @@
   "已鎖定無法拆解": "Bloqueado (No Desmantelar)",
   "容量 %d/%d": "Capacidad %d/%d",
   "背包空間已滿": "Espacio de mochila lleno",
-  "容量": "Capacidad"
+  "容量": "Capacidad",
+  "一鍵出售素材": "Vender materiales",
+  "已鎖定素材已保留未出售": "Los materiales bloqueados se conservaron."
 }
