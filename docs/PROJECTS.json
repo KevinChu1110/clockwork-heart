@@ -5955,6 +5955,16 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "inventory-stat-comparison",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包選取裝備支援戰力差額比對膠囊與屬性預覽",
+   "status": "草稿",
+   "note": "探索背包選取裝備呈現相較當前裝備之數值差額膠囊",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
