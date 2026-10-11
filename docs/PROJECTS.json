@@ -6030,8 +6030,8 @@
    "id": "inventory-batch-sell-materials",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援一鍵出售未鎖定素材與金幣結算浮動提示",
-   "status": "草稿",
-   "note": "切換至素材分類時可一鍵快速清空多餘素材換取金幣，大幅減少手遊重複點擊負擔",
+   "status": "開發中",
+   "note": "開始開發 MapleInventory 探索背包一鍵出售未鎖定素材與金幣結算",
    "keys": [
     "MapleInv"
    ]
