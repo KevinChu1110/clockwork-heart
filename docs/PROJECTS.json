@@ -5965,6 +5965,16 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "inventory-equipped-state",
+   "cat": "遊戲",
+   "title": "探索背包當前裝備狀態辨識與已穿戴按鈕置灰",
+   "status": "草稿",
+   "note": "已開卡 t_f5877d98 派工 sideworker2",
+   "keys": [
+    "探索背包當前裝備"
+   ]
   }
  ]
 }
