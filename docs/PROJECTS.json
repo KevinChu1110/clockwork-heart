@@ -5975,6 +5975,16 @@
    "keys": [
     "探索背包當前裝備"
    ]
+  },
+  {
+   "id": "inventory-lock-toggle",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援裝備鎖定與解鎖",
+   "status": "草稿",
+   "note": "探索背包物品詳情新增鎖定按鈕連動 EquipmentSystem.toggle_lock",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
