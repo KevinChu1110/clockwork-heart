@@ -16,6 +16,7 @@ signal assign_hotbar(item_id: String)
 signal items_sorted
 signal category_changed(category_id: String)
 signal equipment_changed
+signal equipment_lock_toggled(uid: String, is_locked: bool)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
@@ -125,6 +126,9 @@ var _stat_row: HBoxContainer
 var _detail_stat: Label
 var _diff_capsule: PanelContainer
 var _diff_label: Label
+var _lock_capsule: PanelContainer = null
+var _lock_label: Label = null
+var _lock_btn: Button = null
 
 
 func _ready() -> void:
@@ -187,6 +191,7 @@ func _update_ui_texts() -> void:
 	if _sub_title and is_instance_valid(_sub_title):
 		_sub_title.text = _t("冒險者背包 · 點選格子查看詳情")
 	_update_action_button()
+	_update_lock_ui_texts()
 	if _hb_btn and is_instance_valid(_hb_btn):
 		_hb_btn.text = _t("放到快捷欄")
 	if _sort_btn and is_instance_valid(_sort_btn):
@@ -587,6 +592,19 @@ func _build() -> void:
 	_apply_label_style(_detail_count, 18, COLOR_TEXT_ORANGE)
 	name_row.add_child(_detail_count)
 
+	_lock_capsule = PanelContainer.new()
+	_lock_capsule.name = "LockCapsule"
+	_lock_capsule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_lock_capsule.visible = false
+	name_row.add_child(_lock_capsule)
+
+	_lock_label = Label.new()
+	_lock_label.name = "LockStatusLabel"
+	_lock_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_lock_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_label_style(_lock_label, 14, COLOR_TEXT_DARK)
+	_lock_capsule.add_child(_lock_label)
+
 	_detail_kind = Label.new()
 	_detail_kind.name = "DetailKind"
 	_apply_label_style(_detail_kind, 16, Color("#6B5E80"))
@@ -633,10 +651,36 @@ func _build() -> void:
 	_detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	detail_vbox.add_child(_detail)
 
+	## 按鈕列 (「鎖定/解鎖」按鈕 + 右側適應性操作按鈕)
+	var btn_row := HBoxContainer.new()
+	btn_row.name = "ActionBtnRow"
+	btn_row.add_theme_constant_override("separation", 10)
+	btn_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	right.add_child(btn_row)
+
+	## 「鎖定 / 解鎖」按鈕 (多巴胺果凍厚底規格，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px)
+	_lock_btn = Button.new()
+	_lock_btn.name = "BtnLock"
+	_lock_btn.text = _t("鎖定")
+	_lock_btn.custom_minimum_size = Vector2(88, 52)
+	_lock_btn.visible = false
+	_lock_btn.focus_mode = Control.FOCUS_NONE
+	_lock_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_lock_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 5, 18))
+	_lock_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFFDF0"), COLOR_BORDER, 5, 18))
+	_lock_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 18))
+	_lock_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_lock_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_lock_btn.add_theme_font_override("font", _cached_font)
+	_lock_btn.pressed.connect(_on_lock_button_pressed)
+	btn_row.add_child(_lock_btn)
+
 	## 右側適應性操作按鈕 (預設薄荷綠果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px)
 	_use_btn = Button.new()
 	_use_btn.name = "BtnAction"
 	_use_btn.custom_minimum_size = Vector2(0, 52)
+	_use_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_use_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
 	_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
@@ -649,7 +693,7 @@ func _build() -> void:
 	if _cached_font:
 		_use_btn.add_theme_font_override("font", _cached_font)
 	_use_btn.pressed.connect(_on_use_button_pressed)
-	right.add_child(_use_btn)
+	btn_row.add_child(_use_btn)
 
 	## 「放到快捷欄」按鈕 (天藍果凍厚底按鈕，高 52px)
 	_hb_btn = Button.new()
@@ -827,6 +871,10 @@ func _update_detail(inv: Node) -> void:
 			_preview_row.visible = false
 		if _stat_row:
 			_stat_row.visible = false
+		if _lock_capsule:
+			_lock_capsule.visible = false
+		if _lock_btn:
+			_lock_btn.visible = false
 		if _detail:
 			_detail.text = "[color=#1F1A3A][b]%s[/b]\n\n%s\n\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s[/color]" % [
 				_t("冒險者背包"),
@@ -976,6 +1024,21 @@ func _update_detail(inv: Node) -> void:
 	# ── 屬性預覽與差額比對膠囊 ──
 	_update_stat_comparison(def, eq_inst, slot, kind)
 
+	# ── 裝備鎖定狀態與按鈕更新 ──
+	var item_dict: Dictionary = {"id": _selected, "def": def}
+	var is_equip: bool = item_matches_category(item_dict, "equip") or not eq_inst.is_empty() or kind in ["weapon", "equipment", "equip", "armor", "accessory", "shield"] or slot in ["weapon", "armor"]
+	if is_equip:
+		var uid := _get_selected_equip_uid()
+		var locked := is_item_locked(uid)
+		_update_lock_ui(locked)
+		if locked:
+			item_desc += "\n[color=#E05020]%s[/color]" % _t("裝備已鎖定無法出售")
+	else:
+		if _lock_capsule:
+			_lock_capsule.visible = false
+		if _lock_btn:
+			_lock_btn.visible = false
+
 	if _detail:
 		_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
 
@@ -1025,12 +1088,18 @@ func _update_action_button(inv: Node = null) -> void:
 		_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 18))
 		_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	elif item_matches_category(item_dict, "material"):
-		_use_btn.disabled = false
-		_use_btn.text = _t("賣出")
-		_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
-		_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
-		_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
-		_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		if is_item_locked(_selected):
+			_use_btn.disabled = true
+			_use_btn.text = _t("已鎖定（無法出售）")
+			_use_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+			_use_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+		else:
+			_use_btn.disabled = false
+			_use_btn.text = _t("賣出")
+			_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+			_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
+			_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
+			_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	elif item_matches_category(item_dict, "consumable"):
 		_use_btn.disabled = false
 		_use_btn.text = _t("使用")
@@ -1066,6 +1135,11 @@ func _on_use_button_pressed() -> void:
 	if item_matches_category(item_dict, "equip"):
 		_equip_selected_item()
 		return
+
+	if item_matches_category(item_dict, "material") or kind == "material":
+		if is_item_locked(_selected):
+			_show_tip(_t("裝備已鎖定無法出售"))
+			return
 
 	item_used.emit(_selected)
 	refresh()
@@ -1578,3 +1652,200 @@ func get_diff_capsule() -> PanelContainer:
 
 func get_diff_label() -> Label:
 	return _diff_label
+
+
+# ── 裝備鎖定與解鎖切換邏輯 ──
+func _update_lock_ui(locked: bool) -> void:
+	if _lock_capsule and _lock_label:
+		_lock_capsule.visible = true
+		var csb := StyleBoxFlat.new()
+		csb.set_border_width_all(1)
+		csb.border_width_bottom = 3
+		csb.set_corner_radius_all(10)
+		csb.content_margin_left = 8
+		csb.content_margin_right = 8
+		csb.content_margin_top = 2
+		csb.content_margin_bottom = 2
+		if locked:
+			_lock_label.text = _t("已鎖定")
+			csb.bg_color = COLOR_GOLD
+			csb.border_color = COLOR_BORDER
+			_apply_label_style(_lock_label, 14, COLOR_TEXT_DARK)
+		else:
+			_lock_label.text = _t("未鎖定")
+			csb.bg_color = Color("#7A7090")
+			csb.border_color = Color("#5C5470")
+			_apply_label_style(_lock_label, 14, Color.WHITE)
+		_lock_capsule.add_theme_stylebox_override("panel", csb)
+
+	if _lock_btn:
+		_lock_btn.visible = true
+		if locked:
+			_lock_btn.text = _t("解鎖")
+			_lock_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18))
+			_lock_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18))
+			_lock_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_GOLD, COLOR_BORDER, 2, 18))
+		else:
+			_lock_btn.text = _t("鎖定")
+			_lock_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 5, 18))
+			_lock_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFFDF0"), COLOR_BORDER, 5, 18))
+			_lock_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 18))
+
+
+func _update_lock_ui_texts() -> void:
+	if _selected.is_empty() or not _is_selected_item_equipment():
+		if _lock_capsule:
+			_lock_capsule.visible = false
+		if _lock_btn:
+			_lock_btn.visible = false
+		return
+	var uid := _get_selected_equip_uid()
+	var locked := is_item_locked(uid)
+	_update_lock_ui(locked)
+
+
+func _is_selected_item_equipment() -> bool:
+	if _selected.is_empty():
+		return false
+	var inst := _get_selected_equip_inst()
+	if not inst.is_empty():
+		return true
+	var loop := Engine.get_main_loop()
+	var inv: Node = null
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		inv = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+	var def: Dictionary = inv.call("catalog", _selected) as Dictionary if inv else {}
+	var item_dict := {"id": _selected, "def": def}
+	var kind := str(def.get("kind", "")).to_lower()
+	var slot := str(def.get("slot", "")).to_lower()
+	return item_matches_category(item_dict, "equip") or kind in ["weapon", "equipment", "equip", "armor", "accessory", "shield"] or slot in ["weapon", "armor"]
+
+
+func _get_selected_equip_inst() -> Dictionary:
+	if _selected.is_empty():
+		return {}
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		return {}
+	var root_node := (loop as SceneTree).root
+	var eq_sys: Node = root_node.get_node_or_null("EquipmentSystem")
+	if eq_sys:
+		if eq_sys.has_method("find_bag"):
+			var inst: Dictionary = eq_sys.call("find_bag", _selected) as Dictionary
+			if not inst.is_empty():
+				return inst
+		if eq_sys.has_method("find_any"):
+			var inst2: Dictionary = eq_sys.call("find_any", _selected) as Dictionary
+			if not inst2.is_empty():
+				return inst2
+	var gs: Node = root_node.get_node_or_null("GameState")
+	if gs and "equip_bag" in gs and gs.equip_bag is Array:
+		for e in gs.equip_bag:
+			if e is Dictionary:
+				if str(e.get("uid", "")) == _selected or str(e.get("base_id", "")) == _selected or str(e.get("id", "")) == _selected:
+					return e
+	if gs and "equip_worn" in gs and gs.equip_worn is Dictionary:
+		if gs.equip_worn.has(_selected) and gs.equip_worn[_selected] is Dictionary:
+			return gs.equip_worn[_selected]
+		for k in gs.equip_worn.keys():
+			var w = gs.equip_worn[k]
+			if w is Dictionary:
+				if str(w.get("uid", "")) == _selected or str(w.get("base_id", "")) == _selected or str(w.get("id", "")) == _selected:
+					return w
+	return {}
+
+
+func _get_selected_equip_uid() -> String:
+	var inst := _get_selected_equip_inst()
+	if not inst.is_empty():
+		return str(inst.get("uid", _selected))
+	return _selected
+
+
+func is_item_locked(uid: String = "") -> bool:
+	if uid.is_empty():
+		uid = _get_selected_equip_uid()
+	if uid.is_empty():
+		return false
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var eq_sys: Node = (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if eq_sys and eq_sys.has_method("is_locked"):
+			return bool(eq_sys.call("is_locked", uid))
+		elif eq_sys and eq_sys.has_method("is_equip_locked"):
+			return bool(eq_sys.call("is_equip_locked", uid))
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs and gs.has_method("has_flag") and gs.call("has_flag", "equip_locked." + uid):
+			return bool(gs.call("get_flag", "equip_locked." + uid))
+	var inst := _get_selected_equip_inst()
+	if not inst.is_empty():
+		return bool(inst.get("locked", false)) or bool(inst.get("is_locked", false))
+	return false
+
+
+func _on_lock_button_pressed() -> void:
+	if _selected.is_empty():
+		return
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		return
+	var eq_sys: Node = (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
+	var uid := _get_selected_equip_uid()
+	if uid.is_empty():
+		return
+
+	var new_locked := false
+	if eq_sys and eq_sys.has_method("toggle_lock"):
+		eq_sys.call("toggle_lock", uid)
+		new_locked = is_item_locked(uid)
+	elif eq_sys and eq_sys.has_method("set_locked"):
+		var cur := is_item_locked(uid)
+		new_locked = not cur
+		eq_sys.call("set_locked", uid, new_locked)
+	else:
+		var cur2 := is_item_locked(uid)
+		new_locked = not cur2
+		var inst := _get_selected_equip_inst()
+		if not inst.is_empty():
+			inst["locked"] = new_locked
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs and gs.has_method("set_flag"):
+			gs.call("set_flag", "equip_locked." + uid, new_locked)
+
+	var am: Node = (loop as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+
+	equipment_lock_toggled.emit(uid, new_locked)
+
+	var inv: Node = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+	_update_detail(inv)
+
+
+func _show_tip(msg: String) -> void:
+	if _tip and is_instance_valid(_tip):
+		_tip.text = msg
+
+
+func get_lock_button() -> Button:
+	return _lock_btn
+
+
+func get_lock_capsule() -> PanelContainer:
+	return _lock_capsule
+
+
+func get_lock_label() -> Label:
+	return _lock_label
+
+
+func get_bag_lock_button() -> Button:
+	return _lock_btn
+
+
+func get_bag_lock_capsule() -> PanelContainer:
+	return _lock_capsule
+
+
+func get_bag_lock_label() -> Label:
+	return _lock_label
