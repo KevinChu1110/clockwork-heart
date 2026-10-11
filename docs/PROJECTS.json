@@ -5940,8 +5940,8 @@
    "id": "inventory-category-chips-merge",
    "cat": "平台",
    "title": "MapleInventory 探索背包分類頁籤 Chip 列分支合併與主線回歸",
-   "status": "測試中",
-   "note": "完成分支合併與衝突解決，測試全數通過，送審 sideqa",
+   "status": "已上線",
+   "note": "主線合併審查通過，全站回歸驗收完成",
    "keys": [
     "MapleInv"
    ]
