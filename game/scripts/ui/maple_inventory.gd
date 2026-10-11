@@ -18,6 +18,8 @@ signal category_changed(category_id: String)
 signal equipment_changed
 signal equipment_lock_toggled(uid: String, is_locked: bool)
 signal equipment_dismantled(uid: String, result: Dictionary)
+signal forge_requested()
+signal workshop_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
@@ -134,6 +136,8 @@ var _lock_capsule: PanelContainer = null
 var _lock_label: Label = null
 var _lock_btn: Button = null
 var _dismantle_btn: Button = null
+var _go_forge_btn: Button = null
+var _go_workshop_btn: Button = null
 
 
 func _ready() -> void:
@@ -198,6 +202,11 @@ func _update_ui_texts() -> void:
 	_update_action_button()
 	_update_lock_ui_texts()
 	_update_dismantle_button()
+	_update_shortcut_buttons()
+	if _go_forge_btn and is_instance_valid(_go_forge_btn):
+		_go_forge_btn.text = _t("前往鍛造")
+	if _go_workshop_btn and is_instance_valid(_go_workshop_btn):
+		_go_workshop_btn.text = _t("前往工坊")
 	if _hb_btn and is_instance_valid(_hb_btn):
 		_hb_btn.text = _t("放到快捷欄")
 	if _sort_btn and is_instance_valid(_sort_btn):
@@ -724,6 +733,52 @@ func _build() -> void:
 	_dismantle_btn.visible = false
 	right.add_child(_dismantle_btn)
 
+	## 『前往鍛造』快捷按鈕 (暖橘果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px)
+	_go_forge_btn = Button.new()
+	_go_forge_btn.name = "BtnGoForge"
+	_go_forge_btn.text = _t("前往鍛造")
+	_go_forge_btn.custom_minimum_size = Vector2(0, 52)
+	_go_forge_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_go_forge_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_go_forge_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+	_go_forge_btn.add_theme_stylebox_override("hover", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18))
+	_go_forge_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 18))
+	_go_forge_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+	_go_forge_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_go_forge_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_go_forge_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_go_forge_btn.add_theme_constant_override("outline_size", 3)
+	_go_forge_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	_go_forge_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_forge_btn.add_theme_font_override("font", _cached_font)
+	_go_forge_btn.pressed.connect(_on_go_forge_pressed)
+	_go_forge_btn.visible = false
+	right.add_child(_go_forge_btn)
+
+	## 『前往工坊』快捷按鈕 (薄荷綠果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px)
+	_go_workshop_btn = Button.new()
+	_go_workshop_btn.name = "BtnGoWorkshop"
+	_go_workshop_btn.text = _t("前往工坊")
+	_go_workshop_btn.custom_minimum_size = Vector2(0, 52)
+	_go_workshop_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_go_workshop_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_go_workshop_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+	_go_workshop_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
+	_go_workshop_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
+	_go_workshop_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+	_go_workshop_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_go_workshop_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_go_workshop_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_go_workshop_btn.add_theme_constant_override("outline_size", 3)
+	_go_workshop_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	_go_workshop_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_workshop_btn.add_theme_font_override("font", _cached_font)
+	_go_workshop_btn.pressed.connect(_on_go_workshop_pressed)
+	_go_workshop_btn.visible = false
+	right.add_child(_go_workshop_btn)
+
 	## 「放到快捷欄」按鈕 (天藍果凍厚底按鈕，高 52px)
 	_hb_btn = Button.new()
 	_hb_btn.custom_minimum_size = Vector2(0, 52)
@@ -950,10 +1005,15 @@ func _update_detail(inv: Node) -> void:
 			_hb_btn.visible = true
 		if _dismantle_btn:
 			_dismantle_btn.visible = false
+		if _go_forge_btn:
+			_go_forge_btn.visible = false
+		if _go_workshop_btn:
+			_go_workshop_btn.visible = false
 		return
 
 	_update_action_button(inv)
 	_update_dismantle_button()
+	_update_shortcut_buttons()
 	if _hb_btn and not _is_selected_item_equipment():
 		_hb_btn.disabled = false
 		_hb_btn.text = _t("放到快捷欄")
@@ -1114,6 +1174,7 @@ func _update_detail(inv: Node) -> void:
 		_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
 
 	_update_dismantle_button()
+	_update_shortcut_buttons()
 
 
 func _update_action_button(inv: Node = null) -> void:
@@ -2129,4 +2190,155 @@ func get_dismantle_button() -> Button:
 
 func get_bag_dismantle_button() -> Button:
 	return _dismantle_btn
+
+
+func _is_selected_item_gem_or_material() -> bool:
+	if _selected.is_empty():
+		return false
+	if _is_selected_item_equipment():
+		return false
+	var loop := Engine.get_main_loop()
+	var inv: Node = null
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		inv = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+	var def: Dictionary = inv.call("catalog", _selected) as Dictionary if inv else {}
+	var item_dict := {"id": _selected, "def": def}
+	var kind := str(def.get("kind", "")).to_lower()
+	var id := _selected.to_lower()
+	if item_matches_category(item_dict, "gem") or item_matches_category(item_dict, "material"):
+		return true
+	if kind in ["gem", "jewel", "stone", "material", "mat", "ore", "craft"]:
+		return true
+	if id.contains("gem") or id.contains("dust") or id.begins_with("mat_") or id.contains("scrap") or id.contains("ore"):
+		return true
+	return false
+
+
+func _update_shortcut_buttons() -> void:
+	if _go_forge_btn == null or not is_instance_valid(_go_forge_btn):
+		return
+	if _go_workshop_btn == null or not is_instance_valid(_go_workshop_btn):
+		return
+
+	if _selected.is_empty():
+		_go_forge_btn.visible = false
+		_go_workshop_btn.visible = false
+		return
+
+	if _is_selected_item_equipment():
+		_go_forge_btn.visible = true
+		_go_forge_btn.text = _t("前往鍛造")
+		_go_workshop_btn.visible = false
+	elif _is_selected_item_gem_or_material():
+		_go_forge_btn.visible = false
+		_go_workshop_btn.visible = true
+		_go_workshop_btn.text = _t("前往工坊")
+	else:
+		_go_forge_btn.visible = false
+		_go_workshop_btn.visible = false
+
+
+func _on_go_forge_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	var target_item := _selected
+	forge_requested.emit()
+	open_forge(target_item)
+
+
+func _on_go_workshop_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	var target_item := _selected
+	workshop_requested.emit()
+	var target_tab := 0
+	if _is_selected_item_equipment():
+		target_tab = 1
+	open_gem_workshop(target_tab)
+
+
+func open_forge(target_weapon: Variant = null) -> Control:
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		close()
+		return null
+	var root_node := (loop as SceneTree).root
+	var ml: Node = root_node.get_node_or_null("MobileLobby")
+	if ml and ml.has_method("open_forge"):
+		close()
+		return ml.call("open_forge", target_weapon) as Control
+	var p := get_parent()
+	if p and p.has_method("open_forge"):
+		close()
+		return p.call("open_forge", target_weapon) as Control
+
+	var ForgeClass: GDScript = load("res://scripts/ui/forge_dialog.gd")
+	if ForgeClass:
+		var dlg: Control = ForgeClass.new() as Control
+		dlg.name = "ForgeDialog"
+		dlg.z_index = z_index + 10
+		if p != null:
+			p.add_child(dlg)
+		else:
+			root_node.add_child(dlg)
+		if target_weapon != null and dlg.has_method("select_target_equipment"):
+			dlg.call("select_target_equipment", target_weapon)
+		close()
+		return dlg
+	close()
+	return null
+
+
+func open_gem_workshop(target_tab: int = 0) -> Control:
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		close()
+		return null
+	var root_node := (loop as SceneTree).root
+	var ml: Node = root_node.get_node_or_null("MobileLobby")
+	if ml and ml.has_method("open_gem_workshop"):
+		close()
+		return ml.call("open_gem_workshop", target_tab) as Control
+	var p := get_parent()
+	if p and p.has_method("open_gem_workshop"):
+		close()
+		return p.call("open_gem_workshop", target_tab) as Control
+
+	var GemClass: GDScript = load("res://scripts/ui/gem_workshop_dialog.gd")
+	if GemClass:
+		var dlg: Control = GemClass.new() as Control
+		dlg.name = "GemWorkshopDialog"
+		dlg.z_index = z_index + 10
+		if p != null:
+			p.add_child(dlg)
+		else:
+			root_node.add_child(dlg)
+		if target_tab != 0 and dlg.has_method("set_tab"):
+			dlg.call("set_tab", target_tab)
+		close()
+		return dlg
+	close()
+	return null
+
+
+func get_go_forge_button() -> Button:
+	return _go_forge_btn
+
+
+func get_bag_go_forge_button() -> Button:
+	return _go_forge_btn
+
+
+func get_go_workshop_button() -> Button:
+	return _go_workshop_btn
+
+
+func get_bag_go_workshop_button() -> Button:
+	return _go_workshop_btn
 
