@@ -15,6 +15,7 @@ signal item_used(item_id: String)
 signal assign_hotbar(item_id: String)
 signal items_sorted
 signal category_changed(category_id: String)
+signal equipment_changed
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
@@ -152,8 +153,7 @@ func _update_ui_texts() -> void:
 		_title.text = _t("物品欄")
 	if _sub_title and is_instance_valid(_sub_title):
 		_sub_title.text = _t("冒險者背包 · 點選格子查看詳情")
-	if _use_btn and is_instance_valid(_use_btn):
-		_use_btn.text = _t("使用 / 賣出")
+	_update_action_button()
 	if _hb_btn and is_instance_valid(_hb_btn):
 		_hb_btn.text = _t("放到快捷欄")
 	if _sort_btn and is_instance_valid(_sort_btn):
@@ -557,21 +557,22 @@ func _build() -> void:
 	_detail.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	detail_vbox.add_child(_detail)
 
-	## 「使用 / 賣出」按鈕 (薄荷綠果凍厚底按鈕，高 52px)
+	## 右側適應性操作按鈕 (預設薄荷綠果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px)
 	_use_btn = Button.new()
+	_use_btn.name = "BtnAction"
 	_use_btn.custom_minimum_size = Vector2(0, 52)
+	_use_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
 	_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
 	_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
+	_use_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+	_use_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_use_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
 	_use_btn.add_theme_font_size_override("font_size", 18)
 	if _cached_font:
 		_use_btn.add_theme_font_override("font", _cached_font)
-	_use_btn.pressed.connect(func():
-		if _selected != "":
-			item_used.emit(_selected)
-			refresh()
-	)
+	_use_btn.pressed.connect(_on_use_button_pressed)
 	right.add_child(_use_btn)
 
 	## 「放到快捷欄」按鈕 (天藍果凍厚底按鈕，高 52px)
@@ -752,20 +753,33 @@ func _update_detail(inv: Node) -> void:
 		if _use_btn:
 			_use_btn.disabled = true
 			_use_btn.text = _t("使用 / 賣出")
+			_use_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+			_use_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
 		if _hb_btn:
 			_hb_btn.disabled = true
 			_hb_btn.text = _t("放到快捷欄")
 		return
 
-	if _use_btn:
-		_use_btn.disabled = false
-		_use_btn.text = _t("使用 / 賣出")
+	_update_action_button(inv)
 	if _hb_btn:
 		_hb_btn.disabled = false
 		_hb_btn.text = _t("放到快捷欄")
 
 	var def: Dictionary = inv.call("catalog", _selected) as Dictionary
-	var n: int = int(inv.call("count", _selected))
+	if def.is_empty():
+		var eq_node: Node = null
+		if Engine.get_main_loop() is SceneTree:
+			eq_node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if eq_node and eq_node.has_method("find_bag"):
+			var eq_inst: Dictionary = eq_node.call("find_bag", _selected) as Dictionary
+			if not eq_inst.is_empty():
+				def = {
+					"name": eq_inst.get("name", _selected),
+					"kind": "equip",
+					"slot": eq_inst.get("slot", "weapon"),
+					"desc": _t("品質：%s · 部位：%s") % [str(eq_inst.get("quality_label", "")), str(eq_inst.get("slot", ""))],
+				}
+	var n: int = int(inv.call("count", _selected)) if inv.has_method("count") else 1
 	var kind: String = str(def.get("kind", ""))
 	var kind_s: String = kind
 	match kind:
@@ -814,6 +828,160 @@ func _update_detail(inv: Node) -> void:
 		_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
 
 
+func _update_action_button(inv: Node = null) -> void:
+	if _use_btn == null or not is_instance_valid(_use_btn):
+		return
+
+	if _selected == "":
+		_use_btn.disabled = true
+		_use_btn.text = _t("使用 / 賣出")
+		_use_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+		_use_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+		return
+
+	if inv == null and Engine.get_main_loop() is SceneTree:
+		inv = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InventorySystem")
+
+	var def: Dictionary = inv.call("catalog", _selected) as Dictionary if inv else {}
+	if def.is_empty():
+		var eq_node: Node = null
+		if Engine.get_main_loop() is SceneTree:
+			eq_node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if eq_node and eq_node.has_method("find_bag"):
+			var eq_inst: Dictionary = eq_node.call("find_bag", _selected) as Dictionary
+			if not eq_inst.is_empty():
+				def = {
+					"name": eq_inst.get("name", _selected),
+					"kind": "equip",
+					"slot": eq_inst.get("slot", "weapon"),
+				}
+
+	var item_dict: Dictionary = {"id": _selected, "def": def}
+	var kind: String = str(def.get("kind", "")).to_lower()
+	var id: String = _selected.to_lower()
+
+	if kind in ["key", "important", "quest"] or id.begins_with("key_"):
+		_use_btn.disabled = true
+		_use_btn.text = _t("重要物品")
+		_use_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+		_use_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	elif item_matches_category(item_dict, "equip"):
+		_use_btn.disabled = false
+		_use_btn.text = _t("立即裝備")
+		_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+		_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB642"), COLOR_BORDER, 5, 18))
+		_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 18))
+		_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	elif item_matches_category(item_dict, "material"):
+		_use_btn.disabled = false
+		_use_btn.text = _t("賣出")
+		_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+		_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
+		_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
+		_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	elif item_matches_category(item_dict, "consumable"):
+		_use_btn.disabled = false
+		_use_btn.text = _t("使用")
+		_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+		_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
+		_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
+		_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	else:
+		_use_btn.disabled = false
+		_use_btn.text = _t("使用")
+		_use_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+		_use_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
+		_use_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
+		_use_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+
+
+func _on_use_button_pressed() -> void:
+	if _selected == "":
+		return
+
+	var inv: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		inv = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InventorySystem")
+
+	var def: Dictionary = inv.call("catalog", _selected) as Dictionary if inv else {}
+	var item_dict: Dictionary = {"id": _selected, "def": def}
+	var kind: String = str(def.get("kind", "")).to_lower()
+	var id: String = _selected.to_lower()
+
+	if kind in ["key", "important", "quest"] or id.begins_with("key_"):
+		return
+
+	if item_matches_category(item_dict, "equip"):
+		_equip_selected_item()
+		return
+
+	item_used.emit(_selected)
+	refresh()
+
+
+func _equip_selected_item() -> void:
+	var loop := Engine.get_main_loop()
+	var eq_sys: Node = null
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		eq_sys = (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
+
+	var uid_to_equip := _selected
+	if eq_sys:
+		var inst: Dictionary = eq_sys.call("find_bag", _selected) as Dictionary
+		if inst.is_empty():
+			var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+			if gs and "equip_bag" in gs and gs.equip_bag is Array:
+				for e in gs.equip_bag:
+					if e is Dictionary:
+						if str(e.get("uid", "")) == _selected or str(e.get("base_id", "")) == _selected or str(e.get("id", "")) == _selected:
+							inst = e
+							uid_to_equip = str(e.get("uid", _selected))
+							break
+
+		if inst.is_empty():
+			var inv_sys: Node = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+			var it_def: Dictionary = inv_sys.call("catalog", _selected) as Dictionary if inv_sys else {}
+			var raw_slot := str(it_def.get("slot", ""))
+			if raw_slot.is_empty():
+				var k := str(it_def.get("kind", "")).to_lower()
+				if k == "weapon":
+					raw_slot = "weapon"
+				elif k in ["equipment", "equip", "armor"]:
+					raw_slot = "armor"
+				else:
+					raw_slot = "weapon"
+
+			if eq_sys.has_method("roll_instance"):
+				inst = eq_sys.call("roll_instance", _selected, "common") as Dictionary
+			if inst.is_empty():
+				inst = {
+					"uid": "equip_" + _selected + "_" + str(Time.get_ticks_msec()),
+					"base_id": _selected,
+					"name": str(it_def.get("name", _selected)),
+					"slot": raw_slot,
+					"tier": int(it_def.get("tier", 1)),
+					"line": str(it_def.get("line", "")),
+					"quality": "common",
+					"quality_label": "凡品",
+					"rolled": {"atk": float(it_def.get("atk", 10.0))},
+					"bound": false,
+				}
+			if eq_sys.has_method("add_to_bag"):
+				eq_sys.call("add_to_bag", inst)
+			uid_to_equip = str(inst.get("uid", _selected))
+
+		if eq_sys.has_method("equip"):
+			eq_sys.call("equip", uid_to_equip)
+
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var am: Node = (loop as SceneTree).root.get_node_or_null("AudioManager")
+		if am and am.has_method("play_ui"):
+			am.call("play_ui")
+
+	equipment_changed.emit()
+	refresh()
+
+
 func _on_cell(idx: int, button: int) -> void:
 	if idx < 0 or idx >= _bag_ids.size():
 		return
@@ -824,21 +992,23 @@ func _on_cell(idx: int, button: int) -> void:
 		return
 	if button == MOUSE_BUTTON_RIGHT:
 		_selected = id
-		item_used.emit(id)
-		refresh()
+		_on_use_button_pressed()
 		return
 	if button == MOUSE_BUTTON_LEFT:
 		var now := Time.get_ticks_msec()
 		if _last_click_i == idx and now - _last_click_t < 350:
 			_selected = id
-			item_used.emit(id)
+			_on_use_button_pressed()
 			_last_click_i = -1
-			refresh()
 			return
 		_last_click_i = idx
 		_last_click_t = now
 		_selected = id
 		refresh()
+
+
+func get_use_button() -> Button:
+	return _use_btn
 
 
 func sort_items() -> void:
