@@ -80,6 +80,20 @@ const COLOR_TEXT_GOLD  := Color("#9A6B00")  ## 壓明度金黃（亮底文字專
 const COLOR_TEXT_ORANGE:= Color("#C2600A")  ## 壓明度暖橘（亮底文字專用）
 const COLOR_TEXT_PINK  := Color("#D62E5C")  ## 壓明度珊瑚粉（亮底文字專用）
 
+## 戰力差額比對膠囊配色規範 (升攻/升防綠色膠囊 #1E7538、降攻/降防灰色膠囊 #7A7090)
+const COLOR_DIFF_POS     := Color("#1E7538")  ## 升攻綠色膠囊主色
+const COLOR_DIFF_NEG     := Color("#7A7090")  ## 降攻灰色膠囊主色
+const COLOR_DIFF_EQ      := Color("#7A7090")  ## 持平灰色膠囊主色
+const COLOR_DIFF_POS_BG  := Color("#1E7538")  ## 升攻綠底
+const COLOR_DIFF_POS_TEXT:= Color("#FFFFFF")  ## 升攻白字 (高對比)
+const COLOR_DIFF_POS_BD  := Color("#145227")  ## 升攻立體邊框
+const COLOR_DIFF_NEG_BG  := Color("#7A7090")  ## 降攻灰底
+const COLOR_DIFF_NEG_TEXT:= Color("#FFFFFF")  ## 降攻白字 (高對比)
+const COLOR_DIFF_NEG_BD  := Color("#5C5470")  ## 降攻立體邊框
+const COLOR_DIFF_EQ_BG   := Color("#7A7090")  ## 持平灰底
+const COLOR_DIFF_EQ_TEXT := Color("#FFFFFF")  ## 持平白字
+const COLOR_DIFF_EQ_BD   := Color("#5C5470")  ## 持平立體邊框
+
 var _dim: ColorRect
 var _card: PanelContainer
 var _grid: GridContainer
@@ -107,6 +121,10 @@ var _detail_glyph: Label
 var _detail_name: Label
 var _detail_count: Label
 var _detail_kind: Label
+var _stat_row: HBoxContainer
+var _detail_stat: Label
+var _diff_capsule: PanelContainer
+var _diff_label: Label
 
 
 func _ready() -> void:
@@ -133,6 +151,10 @@ func _connect_loc_signal() -> void:
 		if loc and loc.has_signal("locale_changed"):
 			if not loc.locale_changed.is_connected(_on_locale_changed):
 				loc.locale_changed.connect(_on_locale_changed)
+		var eq: Node = (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if eq and eq.has_signal("equipment_changed"):
+			if not eq.equipment_changed.is_connected(_on_equipment_changed):
+				eq.equipment_changed.connect(_on_equipment_changed)
 
 
 func _disconnect_loc_signal() -> void:
@@ -141,6 +163,17 @@ func _disconnect_loc_signal() -> void:
 		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
 		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
 			loc.locale_changed.disconnect(_on_locale_changed)
+		var eq: Node = (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if eq and eq.has_signal("equipment_changed") and eq.equipment_changed.is_connected(_on_equipment_changed):
+			eq.equipment_changed.disconnect(_on_equipment_changed)
+
+
+func _on_equipment_changed() -> void:
+	if visible and _selected != "":
+		var inv: Node = null
+		if Engine.get_main_loop() is SceneTree:
+			inv = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InventorySystem")
+		_update_detail(inv)
 
 
 func _on_locale_changed(_new_locale: String = "") -> void:
@@ -206,6 +239,20 @@ func _create_panel_style(bg: Color, border: Color, border_w: int = 2, bottom_w: 
 	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 	sb.shadow_size = 8
 	sb.shadow_offset = Vector2(0, 4)
+	return sb
+
+
+func _create_diff_capsule_style(bg_color: Color, border_color: Color) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg_color
+	sb.border_color = border_color
+	sb.set_border_width_all(1)
+	sb.border_width_bottom = 2
+	sb.set_corner_radius_all(13)
+	sb.content_margin_left = 8
+	sb.content_margin_right = 8
+	sb.content_margin_top = 2
+	sb.content_margin_bottom = 3
 	return sb
 
 
@@ -486,6 +533,7 @@ func _build() -> void:
 
 	_preview_frame = PanelContainer.new()
 	_preview_frame.custom_minimum_size = Vector2(80, 80)
+	_preview_frame.clip_contents = true
 	_preview_frame.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_GOLD, COLOR_BORDER, 2, 4, 16))
 	_preview_row.add_child(_preview_frame)
 
@@ -513,6 +561,7 @@ func _build() -> void:
 	_detail_glyph.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_detail_glyph.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_detail_glyph.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_detail_glyph.clip_text = true
 	_apply_label_style(_detail_glyph, 36, COLOR_TEXT_DARK)
 	_detail_glyph.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_detail_glyph.visible = false
@@ -542,6 +591,33 @@ func _build() -> void:
 	_detail_kind.name = "DetailKind"
 	_apply_label_style(_detail_kind, 16, Color("#6B5E80"))
 	header_vbox.add_child(_detail_kind)
+
+	## 裝備屬性預覽與差額比對膠囊列
+	_stat_row = HBoxContainer.new()
+	_stat_row.name = "StatRow"
+	_stat_row.add_theme_constant_override("separation", 8)
+	_stat_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	_stat_row.visible = false
+	header_vbox.add_child(_stat_row)
+
+	_detail_stat = Label.new()
+	_detail_stat.name = "StatPreview"
+	_apply_label_style(_detail_stat, 16, COLOR_TEXT_DARK)
+	_stat_row.add_child(_detail_stat)
+
+	_diff_capsule = PanelContainer.new()
+	_diff_capsule.name = "DiffCapsule"
+	_diff_capsule.custom_minimum_size = Vector2(84, 28)
+	_diff_capsule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_diff_capsule.add_theme_stylebox_override("panel", _create_diff_capsule_style(COLOR_DIFF_EQ_BG, COLOR_DIFF_EQ_BD))
+	_stat_row.add_child(_diff_capsule)
+
+	_diff_label = Label.new()
+	_diff_label.name = "DiffLabel"
+	_diff_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_diff_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_label_style(_diff_label, 13, Color.WHITE)
+	_diff_capsule.add_child(_diff_label)
 
 	_detail = RichTextLabel.new()
 	_detail.bbcode_enabled = true
@@ -684,7 +760,14 @@ func refresh() -> void:
 					icon.visible = false
 				if g:
 					var raw_glyph := str(def.get("glyph", "·"))
-					g.text = ContentLoc.text("ui", raw_glyph)
+					var t_glyph := ContentLoc.text("ui", raw_glyph)
+					g.text = t_glyph
+					if t_glyph.length() > 2:
+						g.add_theme_font_size_override("font_size", 12)
+					elif t_glyph.length() > 1:
+						g.add_theme_font_size_override("font_size", 16)
+					else:
+						g.add_theme_font_size_override("font_size", 24)
 					g.add_theme_color_override("font_color", def.get("color", COLOR_TEXT_DARK))
 					g.visible = true
 			if c:
@@ -742,6 +825,8 @@ func _update_detail(inv: Node) -> void:
 	if _selected == "" or inv == null:
 		if _preview_row:
 			_preview_row.visible = false
+		if _stat_row:
+			_stat_row.visible = false
 		if _detail:
 			_detail.text = "[color=#1F1A3A][b]%s[/b]\n\n%s\n\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s[/color]" % [
 				_t("冒險者背包"),
@@ -766,21 +851,66 @@ func _update_detail(inv: Node) -> void:
 		_hb_btn.text = _t("放到快捷欄")
 
 	var def: Dictionary = inv.call("catalog", _selected) as Dictionary
+	var eq_inst: Dictionary = {}
+	var eq_node: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		eq_node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EquipmentSystem")
+	if eq_node and eq_node.has_method("find_bag"):
+		eq_inst = eq_node.call("find_bag", _selected) as Dictionary
+
 	if def.is_empty():
-		var eq_node: Node = null
+		if not eq_inst.is_empty():
+			def = {
+				"name": eq_inst.get("name", _selected),
+				"kind": "equip",
+				"slot": eq_inst.get("slot", "weapon"),
+				"desc": _t("品質：%s · 部位：%s") % [str(eq_inst.get("quality_label", "")), str(eq_inst.get("slot", ""))],
+				"rolled": eq_inst.get("rolled", {}),
+			}
+		else:
+			var gs_node: Node = null
+			if Engine.get_main_loop() is SceneTree:
+				gs_node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameState")
+			if gs_node and "equip_bag" in gs_node and gs_node.equip_bag is Array:
+				for e in gs_node.equip_bag:
+					if e is Dictionary:
+						if str(e.get("uid", "")) == _selected or str(e.get("base_id", "")) == _selected or str(e.get("id", "")) == _selected:
+							eq_inst = e
+							def = {
+								"name": e.get("name", _selected),
+								"kind": "equip",
+								"slot": e.get("slot", "weapon"),
+								"desc": _t("品質：%s · 部位：%s") % [str(e.get("quality_label", "")), str(e.get("slot", ""))],
+								"rolled": e.get("rolled", {}),
+							}
+							break
+
+	if def.is_empty():
+		var dt_node: Node = null
 		if Engine.get_main_loop() is SceneTree:
-			eq_node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("EquipmentSystem")
-		if eq_node and eq_node.has_method("find_bag"):
-			var eq_inst: Dictionary = eq_node.call("find_bag", _selected) as Dictionary
-			if not eq_inst.is_empty():
+			dt_node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("DataTables")
+		if dt_node and dt_node.has_method("equip_bases"):
+			var bases: Dictionary = dt_node.call("equip_bases") as Dictionary
+			if bases.has(_selected):
+				var b: Dictionary = bases[_selected]
 				def = {
-					"name": eq_inst.get("name", _selected),
+					"name": b.get("name", _selected),
 					"kind": "equip",
-					"slot": eq_inst.get("slot", "weapon"),
-					"desc": _t("品質：%s · 部位：%s") % [str(eq_inst.get("quality_label", "")), str(eq_inst.get("slot", ""))],
+					"slot": b.get("slot", "weapon"),
+					"desc": _t("裝備 · 部位：%s") % [str(b.get("slot", ""))],
+					"base": b.get("base", {}),
 				}
 	var n: int = int(inv.call("count", _selected)) if inv.has_method("count") else 1
 	var kind: String = str(def.get("kind", ""))
+	var slot: String = str(def.get("slot", "")).to_lower()
+	if slot.is_empty():
+		if not eq_inst.is_empty():
+			slot = str(eq_inst.get("slot", "")).to_lower()
+		elif kind == "weapon" or _selected in ["rusty_blade", "meager_edge"]:
+			slot = "weapon"
+		elif kind in ["armor", "shield"] or _selected in ["ash_mail", "knight_plate", "viking_hide"]:
+			slot = "armor"
+
 	var kind_s: String = kind
 	match kind:
 		"consumable":
@@ -791,12 +921,24 @@ func _update_detail(inv: Node) -> void:
 			kind_s = _t("重要道具")
 		"weapon":
 			kind_s = _t("武器")
+		"armor":
+			kind_s = _t("防具")
 		"equipment", "equip":
-			kind_s = _t("裝備")
+			if slot == "weapon":
+				kind_s = _t("武器")
+			elif slot == "armor":
+				kind_s = _t("防具")
+			else:
+				kind_s = _t("裝備")
 		"gem", "jewel":
 			kind_s = _t("寶石")
 		_:
-			kind_s = _t(kind) if kind != "" else ""
+			if slot == "weapon":
+				kind_s = _t("武器")
+			elif slot == "armor":
+				kind_s = _t("防具")
+			else:
+				kind_s = _t(kind) if kind != "" else ""
 
 	var item_name: String = str(def.get("name", _selected))
 	var item_desc: String = str(def.get("desc", ""))
@@ -821,8 +963,18 @@ func _update_detail(inv: Node) -> void:
 				_detail_icon.visible = false
 			if _detail_glyph:
 				var raw_glyph := str(def.get("glyph", "·"))
-				_detail_glyph.text = ContentLoc.text("ui", raw_glyph)
+				var t_glyph := ContentLoc.text("ui", raw_glyph)
+				_detail_glyph.text = t_glyph
+				if t_glyph.length() > 2:
+					_detail_glyph.add_theme_font_size_override("font_size", 16)
+				elif t_glyph.length() > 1:
+					_detail_glyph.add_theme_font_size_override("font_size", 22)
+				else:
+					_detail_glyph.add_theme_font_size_override("font_size", 36)
 				_detail_glyph.visible = true
+
+	# ── 屬性預覽與差額比對膠囊 ──
+	_update_stat_comparison(def, eq_inst, slot, kind)
 
 	if _detail:
 		_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
@@ -954,6 +1106,11 @@ func _equip_selected_item() -> void:
 			if eq_sys.has_method("roll_instance"):
 				inst = eq_sys.call("roll_instance", _selected, "common") as Dictionary
 			if inst.is_empty():
+				var rolled_stats: Dictionary = {}
+				if raw_slot == "armor":
+					rolled_stats = {"def": float(it_def.get("def", 5.0)), "hp": float(it_def.get("hp", 15.0))}
+				else:
+					rolled_stats = {"atk": float(it_def.get("atk", 10.0))}
 				inst = {
 					"uid": "equip_" + _selected + "_" + str(Time.get_ticks_msec()),
 					"base_id": _selected,
@@ -963,7 +1120,7 @@ func _equip_selected_item() -> void:
 					"line": str(it_def.get("line", "")),
 					"quality": "common",
 					"quality_label": "凡品",
-					"rolled": {"atk": float(it_def.get("atk", 10.0))},
+					"rolled": rolled_stats,
 					"bound": false,
 				}
 			if eq_sys.has_method("add_to_bag"):
@@ -1206,3 +1363,218 @@ static func sort_item_list(items: Array) -> Array:
 	var sorted := items.duplicate()
 	sorted.sort_custom(sort_items_comparator)
 	return sorted
+
+
+# ── 裝備戰力差額比對與屬性預覽邏輯 ──
+func _update_stat_comparison(def: Dictionary, eq_inst: Dictionary, slot: String, kind: String) -> void:
+	if _stat_row == null or _diff_capsule == null or _diff_label == null or _detail_stat == null:
+		return
+
+	var is_weapon := (slot == "weapon" or kind == "weapon" or _selected in ["rusty_blade", "meager_edge"])
+	var is_armor := (slot == "armor" or kind == "armor" or _selected in ["ash_mail", "knight_plate", "viking_hide"])
+
+	if not (is_weapon or is_armor):
+		_stat_row.visible = false
+		return
+
+	_stat_row.visible = true
+
+	if is_weapon:
+		var atk: int = _get_item_atk(_selected, def, eq_inst)
+		var stat_text: String = "%s +%d" % [_t("攻擊"), atk]
+		var crit: float = _get_item_crit(_selected, def, eq_inst)
+		if crit > 0.0:
+			stat_text += " · %s +%.1f%%" % [_t("暴擊"), crit]
+		_detail_stat.text = stat_text
+
+		var cur_atk: int = _get_current_equipped_weapon_atk()
+		var diff: int = atk - cur_atk
+		_apply_diff_capsule(diff, _t("攻擊"))
+	elif is_armor:
+		var def_val: int = _get_item_def(_selected, def, eq_inst)
+		var stat_text: String = "%s +%d" % [_t("防禦"), def_val]
+		var hp: int = _get_item_hp(_selected, def, eq_inst)
+		if hp > 0:
+			stat_text += " · %s +%d" % [_t("生命"), hp]
+		_detail_stat.text = stat_text
+
+		var cur_def: int = _get_current_equipped_armor_def()
+		var diff: int = def_val - cur_def
+		_apply_diff_capsule(diff, _t("防禦"))
+
+
+func _apply_diff_capsule(diff: int, stat_name: String) -> void:
+	if _diff_capsule == null or _diff_label == null:
+		return
+
+	_diff_capsule.visible = true
+
+	if diff > 0:
+		_diff_label.text = "+%d %s" % [diff, stat_name]
+		_diff_capsule.add_theme_stylebox_override("panel", _create_diff_capsule_style(COLOR_DIFF_POS_BG, COLOR_DIFF_POS_BD))
+		_diff_label.add_theme_color_override("font_color", COLOR_DIFF_POS_TEXT)
+	elif diff < 0:
+		_diff_label.text = "-%d %s" % [absi(diff), stat_name]
+		_diff_capsule.add_theme_stylebox_override("panel", _create_diff_capsule_style(COLOR_DIFF_NEG_BG, COLOR_DIFF_NEG_BD))
+		_diff_label.add_theme_color_override("font_color", COLOR_DIFF_NEG_TEXT)
+	else:
+		_diff_label.text = "--"
+		_diff_capsule.add_theme_stylebox_override("panel", _create_diff_capsule_style(COLOR_DIFF_EQ_BG, COLOR_DIFF_EQ_BD))
+		_diff_label.add_theme_color_override("font_color", COLOR_DIFF_EQ_TEXT)
+
+
+func _get_current_equipped_weapon_atk() -> int:
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		return 0
+	var root_node := (loop as SceneTree).root
+	var eq_node: Node = root_node.get_node_or_null("EquipmentSystem")
+	var cur_w: Dictionary = {}
+	if eq_node and eq_node.has_method("active_weapon_inst"):
+		cur_w = eq_node.call("active_weapon_inst") as Dictionary
+	if cur_w.is_empty() and eq_node and eq_node.has_method("loadout_uid"):
+		var idx: int = eq_node.call("active_loadout_index") if eq_node.has_method("active_loadout_index") else 0
+		var uid: String = eq_node.call("loadout_uid", idx)
+		if uid != "" and eq_node.has_method("weapon_inst"):
+			cur_w = eq_node.call("weapon_inst", uid) as Dictionary
+	if cur_w.is_empty():
+		var gs: Node = root_node.get_node_or_null("GameState")
+		if gs and "equip_slots" in gs and "equip_worn" in gs and gs.equip_slots is Dictionary and gs.equip_worn is Dictionary:
+			var w_uid: String = str(gs.equip_slots.get("weapon", ""))
+			if w_uid != "" and gs.equip_worn.has(w_uid):
+				cur_w = gs.equip_worn[w_uid] as Dictionary
+
+	if cur_w.is_empty():
+		return 0
+	return _get_item_atk(cur_w.get("uid", cur_w.get("base_id", "")), cur_w, cur_w)
+
+
+func _get_current_equipped_armor_def() -> int:
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		return 0
+	var root_node := (loop as SceneTree).root
+	var cur_arm: Dictionary = {}
+	var gs: Node = root_node.get_node_or_null("GameState")
+	if gs and "equip_slots" in gs and "equip_worn" in gs and gs.equip_slots is Dictionary and gs.equip_worn is Dictionary:
+		var arm_uid: String = str(gs.equip_slots.get("armor", ""))
+		if arm_uid != "" and gs.equip_worn.has(arm_uid):
+			cur_arm = gs.equip_worn[arm_uid] as Dictionary
+
+	if cur_arm.is_empty():
+		return 0
+	return _get_item_def(cur_arm.get("uid", cur_arm.get("base_id", "")), cur_arm, cur_arm)
+
+
+func _get_item_atk(id: String, def: Dictionary = {}, inst: Dictionary = {}) -> int:
+	if not inst.is_empty():
+		if inst.has("weapon_atk"):
+			return int(inst["weapon_atk"])
+		var r: Dictionary = inst.get("rolled", {})
+		if r.has("atk") and int(r["atk"]) > 0:
+			return int(r["atk"])
+		var b: Dictionary = inst.get("base", {})
+		if b.has("atk") and int(b["atk"]) > 0:
+			return int(b["atk"])
+
+	if not def.is_empty():
+		if def.has("weapon_atk"):
+			return int(def["weapon_atk"])
+		var r2: Dictionary = def.get("rolled", {})
+		if r2.has("atk") and int(r2["atk"]) > 0:
+			return int(r2["atk"])
+		var b2: Dictionary = def.get("base", {})
+		if b2.has("atk") and int(b2["atk"]) > 0:
+			return int(b2["atk"])
+		if def.has("atk") and int(def["atk"]) > 0:
+			return int(def["atk"])
+
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var dt: Node = (loop as SceneTree).root.get_node_or_null("DataTables")
+		if dt and dt.has_method("equip_bases"):
+			var bases: Dictionary = dt.call("equip_bases") as Dictionary
+			var base_id: String = id
+			if not inst.is_empty() and inst.has("base_id"):
+				base_id = str(inst["base_id"])
+			elif not def.is_empty() and def.has("base_id"):
+				base_id = str(def["base_id"])
+			if bases.has(base_id):
+				return int(bases[base_id].get("base", {}).get("atk", 0))
+
+	return 0
+
+
+func _get_item_def(id: String, def: Dictionary = {}, inst: Dictionary = {}) -> int:
+	if not inst.is_empty():
+		if inst.has("armor_def"):
+			return int(inst["armor_def"])
+		var r: Dictionary = inst.get("rolled", {})
+		if r.has("def") and int(r["def"]) > 0:
+			return int(r["def"])
+		var b: Dictionary = inst.get("base", {})
+		if b.has("def") and int(b["def"]) > 0:
+			return int(b["def"])
+
+	if not def.is_empty():
+		if def.has("armor_def"):
+			return int(def["armor_def"])
+		var r2: Dictionary = def.get("rolled", {})
+		if r2.has("def") and int(r2["def"]) > 0:
+			return int(r2["def"])
+		var b2: Dictionary = def.get("base", {})
+		if b2.has("def") and int(b2["def"]) > 0:
+			return int(b2["def"])
+		if def.has("def") and int(def["def"]) > 0:
+			return int(def["def"])
+
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var dt: Node = (loop as SceneTree).root.get_node_or_null("DataTables")
+		if dt and dt.has_method("equip_bases"):
+			var bases: Dictionary = dt.call("equip_bases") as Dictionary
+			var base_id: String = id
+			if not inst.is_empty() and inst.has("base_id"):
+				base_id = str(inst["base_id"])
+			elif not def.is_empty() and def.has("base_id"):
+				base_id = str(def["base_id"])
+			if bases.has(base_id):
+				return int(bases[base_id].get("base", {}).get("def", 0))
+
+	return 0
+
+
+func _get_item_crit(_id: String, def: Dictionary = {}, inst: Dictionary = {}) -> float:
+	var r: Dictionary = inst.get("rolled", def.get("rolled", {}))
+	if r.has("crit"):
+		return float(r["crit"])
+	var b: Dictionary = inst.get("base", def.get("base", {}))
+	if b.has("crit"):
+		return float(b["crit"])
+	return 0.0
+
+
+func _get_item_hp(_id: String, def: Dictionary = {}, inst: Dictionary = {}) -> int:
+	var r: Dictionary = inst.get("rolled", def.get("rolled", {}))
+	if r.has("hp"):
+		return int(r["hp"])
+	var b: Dictionary = inst.get("base", def.get("base", {}))
+	if b.has("hp"):
+		return int(b["hp"])
+	return 0
+
+
+func get_stat_row() -> HBoxContainer:
+	return _stat_row
+
+
+func get_stat_preview() -> Label:
+	return _detail_stat
+
+
+func get_diff_capsule() -> PanelContainer:
+	return _diff_capsule
+
+
+func get_diff_label() -> Label:
+	return _diff_label
