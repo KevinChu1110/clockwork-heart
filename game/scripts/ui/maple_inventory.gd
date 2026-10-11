@@ -59,6 +59,7 @@ const DIALOG_WIDTH := 750.0
 const DIALOG_HEIGHT := 560.0
 const COLS := 4
 const ROWS := 6
+const TOTAL_CAPACITY := 24
 
 const CHIP_CATEGORIES: Array = [
 	{"id": "all", "label": "全部"},
@@ -112,6 +113,10 @@ var _use_btn: Button
 var _hb_btn: Button
 var _sort_btn: Button
 var _is_sorted: bool = false
+var _capacity_capsule: PanelContainer = null
+var _capacity_label: Label = null
+var _occupied_capacity: int = 0
+var _total_bag_count: int = 0
 var _chip_buttons: Dictionary = {}
 var _current_category: String = "all"
 var _chip_row: HBoxContainer
@@ -211,6 +216,7 @@ func _update_ui_texts() -> void:
 		_hb_btn.text = _t("放到快捷欄")
 	if _sort_btn and is_instance_valid(_sort_btn):
 		_sort_btn.text = _t("一鍵整理")
+	_update_capacity_ui()
 	for cat in CHIP_CATEGORIES:
 		var cid: String = cat["id"]
 		if _chip_buttons.has(cid):
@@ -274,6 +280,54 @@ func _create_diff_capsule_style(bg_color: Color, border_color: Color) -> StyleBo
 	sb.content_margin_top = 2
 	sb.content_margin_bottom = 3
 	return sb
+
+
+func _create_capacity_style(warning: bool = false) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	if warning:
+		sb.bg_color = COLOR_PINK  ## 珊瑚粉 #FF5E8A 滿載警示
+		sb.border_color = COLOR_BORDER  ## 深藍紫描邊 #1F1A3A
+		sb.shadow_color = Color(1.0, 0.63, 0.06, 0.40)  ## 暖橘警示光暈
+		sb.shadow_size = 4
+		sb.shadow_offset = Vector2(0, 2)
+	else:
+		sb.bg_color = COLOR_BG_CREAM  ## 陽光童話·奶油米白底 #FFFDF8
+		sb.border_color = COLOR_BORDER  ## 深藍紫描邊 #1F1A3A
+		sb.shadow_color = Color(0.12, 0.10, 0.23, 0.15)
+		sb.shadow_size = 3
+		sb.shadow_offset = Vector2(0, 2)
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 3
+	sb.set_corner_radius_all(16)
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	return sb
+
+
+func _update_capacity_ui() -> void:
+	if _capacity_label == null or not is_instance_valid(_capacity_label):
+		return
+	if _capacity_capsule == null or not is_instance_valid(_capacity_capsule):
+		return
+
+	var fmt := _t("容量 %d/%d")
+	if "%d" in fmt:
+		_capacity_label.text = fmt % [_occupied_capacity, TOTAL_CAPACITY]
+	else:
+		_capacity_label.text = "%s %d/%d" % [_t("容量"), _occupied_capacity, TOTAL_CAPACITY]
+
+	var is_full := is_capacity_full()
+	_capacity_capsule.add_theme_stylebox_override("panel", _create_capacity_style(is_full))
+	if is_full:
+		_capacity_label.add_theme_color_override("font_color", Color("#FFFFFF"))
+		_capacity_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		_capacity_label.add_theme_constant_override("outline_size", 2)
+	else:
+		_capacity_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_capacity_label.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0))
+		_capacity_label.add_theme_constant_override("outline_size", 0)
 
 
 func _create_button_style(bg: Color, border: Color = COLOR_BORDER, bottom_border: int = 5, radius: int = 18, border_w: int = 2) -> StyleBoxFlat:
@@ -498,11 +552,30 @@ func _build() -> void:
 				_on_cell(idx, ev.button_index)
 		)
 
-	## 底部置中「一鍵整理」按鈕 (BtnSortItems，尺寸 120x48px，熱區>=48px，金黃果凍厚底 5px)
+	## 底部置中「一鍵整理」按鈕與「容量進度膠囊」 (尺寸 120x48px，熱區>=48px，圓角 16px)
 	var sort_box := HBoxContainer.new()
+	sort_box.name = "GridBottomBar"
 	sort_box.alignment = BoxContainer.ALIGNMENT_CENTER
+	sort_box.add_theme_constant_override("separation", 10)
 	sort_box.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	grid_vbox.add_child(sort_box)
+
+	## 容量進度膠囊 (_capacity_capsule 與 _capacity_label，即時顯示佔用格數/總容量)
+	_capacity_capsule = PanelContainer.new()
+	_capacity_capsule.name = "CapacityCapsule"
+	_capacity_capsule.custom_minimum_size = Vector2(120, 48)
+	_capacity_capsule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_capacity_capsule.add_theme_stylebox_override("panel", _create_capacity_style(false))
+	sort_box.add_child(_capacity_capsule)
+
+	_capacity_label = Label.new()
+	_capacity_label.name = "CapacityLabel"
+	_capacity_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_capacity_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_label_style(_capacity_label, 16, COLOR_TEXT_DARK)
+	if _cached_font:
+		_capacity_label.add_theme_font_override("font", _cached_font)
+	_capacity_capsule.add_child(_capacity_label)
 
 	_sort_btn = Button.new()
 	_sort_btn.name = "BtnSortItems"
@@ -872,6 +945,8 @@ func refresh() -> void:
 	if _is_sorted:
 		list = sort_item_list(list)
 
+	_total_bag_count = list.size()
+
 	# 依當前選擇之 Chip 分類過濾物品列表
 	if _current_category != "all":
 		var filtered: Array = []
@@ -879,6 +954,9 @@ func refresh() -> void:
 			if it is Dictionary and item_matches_category(it, _current_category):
 				filtered.append(it)
 		list = filtered
+
+	_occupied_capacity = mini(list.size(), TOTAL_CAPACITY)
+	_update_capacity_ui()
 
 	## 若目前已選取的道具已經不在當前過濾列表中，重設選取狀態
 	if _selected != "":
@@ -1169,6 +1247,12 @@ func _update_detail(inv: Node) -> void:
 			_lock_capsule.visible = false
 		if _lock_btn:
 			_lock_btn.visible = false
+
+	if is_capacity_full():
+		_show_tip(_t("背包空間已滿"))
+		item_desc += "\n[color=#FF5E8A]%s[/color]" % _t("背包空間已滿")
+	else:
+		_show_tip(_t("左鍵點選查看 · 雙擊或右鍵快速使用"))
 
 	if _detail:
 		_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
@@ -2048,6 +2132,30 @@ func _on_lock_button_pressed() -> void:
 func _show_tip(msg: String) -> void:
 	if _tip and is_instance_valid(_tip):
 		_tip.text = msg
+
+
+func get_capacity_capsule() -> PanelContainer:
+	return _capacity_capsule
+
+
+func get_capacity_label() -> Label:
+	return _capacity_label
+
+
+func get_occupied_capacity() -> int:
+	return _occupied_capacity
+
+
+func get_total_capacity() -> int:
+	return TOTAL_CAPACITY
+
+
+func is_capacity_full() -> bool:
+	return _occupied_capacity >= TOTAL_CAPACITY or _total_bag_count >= TOTAL_CAPACITY
+
+
+func get_capacity_text() -> String:
+	return _capacity_label.text if _capacity_label else ""
 
 
 func get_lock_button() -> Button:
