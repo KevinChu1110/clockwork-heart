@@ -3775,5 +3775,9 @@
   "一鍵整理": "Organizar",
   "已完成一鍵整理": "Organización completa",
   "素材": "Material",
-  "寶石": "Gema"
+  "寶石": "Gema",
+  "戰魂共鳴": "Resonancia de Almas",
+  "戰魂總加成: 攻+%d · 防+%d · 血+%d": "Total de Almas: ATQ+%d · DEF+%d · PV+%d",
+  "未喚醒": "Inactivo",
+  "全+%d": "TOD+%d"
 }

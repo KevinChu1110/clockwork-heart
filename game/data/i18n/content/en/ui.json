@@ -3775,5 +3775,9 @@
   "一鍵整理": "Auto-Sort",
   "已完成一鍵整理": "Auto-Sort Complete",
   "素材": "Material",
-  "寶石": "Gem"
+  "寶石": "Gem",
+  "戰魂共鳴": "Soul Resonance",
+  "戰魂總加成: 攻+%d · 防+%d · 血+%d": "Soul Total: ATK+%d · DEF+%d · HP+%d",
+  "未喚醒": "Dormant",
+  "全+%d": "ALL+%d"
 }

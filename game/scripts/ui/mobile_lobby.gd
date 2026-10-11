@@ -6436,8 +6436,17 @@ func open_power_stat_dialog() -> Control:
 		dlg.skill_requested.connect(func():
 			open_skill_dialog()
 		)
+	if dlg.has_signal("soul_requested"):
+		dlg.soul_requested.connect(func():
+			open_soul_hall()
+		)
 	add_child(dlg)
 	return dlg
+
+
+## 開啟聚魂殿堂 Tab (Tab.SOUL_HALL)
+func open_soul_hall() -> void:
+	_switch_tab(Tab.SOUL_HALL)
 
 
 ## 開啟能量/體力補充彈窗（看廣告拿能量）

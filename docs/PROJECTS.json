@@ -5950,8 +5950,8 @@
    "id": "inventory-equip-direct",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援選取裝備立即裝備與動態按鈕文案",
-   "status": "草稿",
-   "note": "探索背包支援裝備類立即裝備與適應性按鈕文案",
+   "status": "測試中",
+   "note": "MapleInventory 探索背包支援立即裝備與動態按鈕文案開發完成，通過單元測試與存證",
    "keys": [
     "MapleInv"
    ]
@@ -5960,10 +5960,40 @@
    "id": "inventory-stat-comparison",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包選取裝備支援戰力差額比對膠囊與屬性預覽",
-   "status": "草稿",
-   "note": "探索背包選取裝備呈現相較當前裝備之數值差額膠囊",
+   "status": "測試中",
+   "note": "完成 MapleInventory 探索背包裝備選取戰力差額比對膠囊與屬性預覽，單元測試與存證截圖全數通過",
    "keys": [
     "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-equipped-state",
+   "cat": "遊戲",
+   "title": "探索背包當前裝備狀態辨識與已穿戴按鈕置灰",
+   "status": "測試中",
+   "note": "探索背包選取當前穿戴裝備已穿戴按鈕置灰與穿戴中膠囊完成開發，6項測試全綠、6張實機截圖存證",
+   "keys": [
+    "探索背包當前裝備"
+   ]
+  },
+  {
+   "id": "inventory-lock-toggle",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援裝備鎖定與解鎖",
+   "status": "開發中",
+   "note": "已開卡 t_73dedb6c 派工 sideworker",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "power-stat-soul-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽新增戰魂共鳴卡片與前往聚魂快捷按鈕",
+   "status": "測試中",
+   "note": "完成戰魂共鳴卡片與前往聚魂按鈕開發並通過單元測試",
+   "keys": [
+    "PowerSta"
    ]
   }
  ]

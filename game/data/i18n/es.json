@@ -1078,5 +1078,9 @@
   "素材": "Material",
   "寶石": "Gema",
   "武器": "Arma",
-  "裝備": "Equipo"
+  "裝備": "Equipo",
+  "戰魂共鳴": "Resonancia de Almas",
+  "戰魂總加成: 攻+%d · 防+%d · 血+%d": "Total de Almas: ATQ+%d · DEF+%d · PV+%d",
+  "未喚醒": "Inactivo",
+  "全+%d": "TOD+%d"
 }
