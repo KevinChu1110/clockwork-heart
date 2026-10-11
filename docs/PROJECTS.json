@@ -5930,8 +5930,8 @@
    "id": "inventory-category-chips",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援分類頁籤 Chip 列",
-   "status": "開發中",
-   "note": "已派工給 sideworker (t_362cc11b)",
+   "status": "測試中",
+   "note": "MapleInventory 探索背包支援分類頁籤 Chip 列完成，通過單元與回歸測試",
    "keys": [
     "MapleInv"
    ]
