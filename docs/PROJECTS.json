@@ -6040,8 +6040,8 @@
    "id": "inventory-consumable-use",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援消耗品即時使用效果結算與恢復浮動提示",
-   "status": "草稿",
-   "note": "選取消耗品直接使用扣除並恢復生命，彈出多巴胺飄字提示與即時刷新",
+   "status": "開發中",
+   "note": "阿宏開始實作 MapleInventory 消耗品即時使用效果結算與浮動提示",
    "keys": [
     "MapleInv"
    ]
