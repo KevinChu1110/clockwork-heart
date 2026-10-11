@@ -6005,6 +6005,16 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "inventory-shortcuts",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包選取裝備與素材支援前往鍛造與前往工坊快捷跳轉",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
