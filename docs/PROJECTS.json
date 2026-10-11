@@ -5925,6 +5925,16 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "inventory-category-chips",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援分類頁籤 Chip 列",
+   "status": "草稿",
+   "note": "在背包格子區上方新增分類頁籤 Chip 列（全部／裝備／消耗品／素材／寶石），支援即時篩選與多巴胺高亮反饋",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
