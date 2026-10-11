@@ -6020,8 +6020,8 @@
    "id": "inventory-capacity",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援即時容量進度膠囊顯示與格子滿載提示",
-   "status": "開發中",
-   "note": "開始實作容量進度膠囊與滿載提示",
+   "status": "測試中",
+   "note": "單元測試全綠、6張實機存證截圖齊全、clock-check全過",
    "keys": [
     "MapleInv"
    ]
