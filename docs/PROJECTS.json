@@ -5920,8 +5920,8 @@
    "id": "inventory-sort",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包一鍵整理功能與果凍按鈕",
-   "status": "測試中",
-   "note": "MapleInventory 一鍵整理與果凍按鈕完成自測，送審 QA",
+   "status": "已上線",
+   "note": "合入 main 分支，完成 MapleInventory 探索背包一鍵整理功能與果凍按鈕",
    "keys": [
     "MapleInv"
    ]
