@@ -5980,8 +5980,8 @@
    "id": "inventory-lock-toggle",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援裝備鎖定與解鎖",
-   "status": "測試中",
-   "note": "MapleInventory 探索背包支援裝備鎖定與解鎖功能開發完成，待回歸驗收",
+   "status": "已上線",
+   "note": "MapleInventory 探索背包支援裝備鎖定與解鎖（經 sideqa 回歸驗收全綠）",
    "keys": [
     "MapleInv"
    ]
