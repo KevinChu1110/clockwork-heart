@@ -463,6 +463,11 @@ func _build_ui() -> void:
 	_btn_confirm.custom_minimum_size = Vector2(210, 52)
 	_btn_confirm.focus_mode = Control.FOCUS_NONE
 	_style_button(_btn_confirm, COLOR_SKY, COLOR_BORDER)
+	_btn_confirm.add_theme_color_override("font_color", Color.WHITE)
+	_btn_confirm.add_theme_color_override("font_hover_color", Color.WHITE)
+	_btn_confirm.add_theme_color_override("font_pressed_color", Color.WHITE)
+	_btn_confirm.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_confirm.add_theme_constant_override("outline_size", 3)
 	_btn_confirm.pressed.connect(_on_confirm_pressed)
 	btn_row.add_child(_btn_confirm)
 
@@ -554,6 +559,8 @@ func _get_slot_name_for(norm_slot: String) -> String:
 
 
 func _get_bracket_tier_text(part: Dictionary) -> String:
+	if part.is_empty():
+		return _t("未裝備")
 	var cs = _cs()
 	var tier_id: String = str(part.get("tier", "white"))
 	var tier_name: String = str(part.get("tier_name", ""))
@@ -566,6 +573,8 @@ func _get_bracket_tier_text(part: Dictionary) -> String:
 
 
 func _get_part_tier_color(part: Dictionary) -> Color:
+	if part.is_empty():
+		return Color(0.72, 0.68, 0.82)
 	var cs = _cs()
 	var tier_id: String = str(part.get("tier", "white"))
 	if cs != null and cs.has_method("get_tier_color"):
@@ -574,6 +583,8 @@ func _get_part_tier_color(part: Dictionary) -> Color:
 
 
 func _format_stats_string(part: Dictionary) -> String:
+	if part.is_empty():
+		return _t("標準數值")
 	var cs = _cs()
 	var stat_parts: Array[String] = []
 	var pstats := {}

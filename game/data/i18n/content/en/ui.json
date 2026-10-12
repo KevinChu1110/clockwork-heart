@@ -3799,5 +3799,8 @@
   "背包空間已滿": "Backpack is full",
   "容量": "Capacity",
   "一鍵出售素材": "Quick-Sell Materials",
-  "已鎖定素材已保留未出售": "Locked materials were kept."
+  "已鎖定素材已保留未出售": "Locked materials were kept.",
+  "機芯五槽配置": "5 Core Slots Configuration",
+  "點擊更換裝備 · 強化核心機芯": "Tap to swap · Enhance core mechanisms",
+  "背包暫無此部位可替換機芯": "No replaceable core parts for this slot in bag"
 }
