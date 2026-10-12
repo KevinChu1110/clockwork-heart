@@ -308,7 +308,7 @@ func _build_ui() -> void:
 	_power_label.name = "TopPowerLabel"
 	_power_label.text = ""
 	_power_label.add_theme_font_size_override("font_size", 18)
-	_power_label.add_theme_color_override("font_color", COLOR_GOLD)
+	_power_label.add_theme_color_override("font_color", COLOR_TEXT_GOLD)  ## 亮底用壓明度金（#9A6B00，對奶油底 4.6:1）
 	_power_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_power_label.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
