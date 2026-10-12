@@ -156,9 +156,8 @@ var _floating_hotbar_toast: PanelContainer = null
 func _ready() -> void:
 	visible = false
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
-	set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	set_anchors_preset(Control.PRESET_FULL_RECT)
 	custom_minimum_size = Vector2(1280, 720)
-	size = Vector2(1280, 720)
 	z_index = 60
 
 	if ResourceLoader.exists(FONT_PATH):
