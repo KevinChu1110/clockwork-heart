@@ -22,6 +22,7 @@ signal equipment_changed
 signal equipment_lock_toggled(uid: String, is_locked: bool)
 signal equipment_dismantled(uid: String, result: Dictionary)
 signal core_dismantled(part: Dictionary, result: Dictionary)
+signal calibrate_requested()
 signal forge_requested()
 signal workshop_requested()
 signal materials_batch_sold(gold: int, count: int, result: Dictionary)
@@ -164,6 +165,7 @@ var _core_tier_capsule: PanelContainer = null
 var _core_tier_swatch: ColorRect = null
 var _core_tier_label: Label = null
 var _replace_core_btn: Button = null
+var _go_calibrate_btn: Button = null
 
 
 func _ready() -> void:
@@ -238,9 +240,12 @@ func _update_ui_texts() -> void:
 	_update_action_button()
 	_update_lock_ui_texts()
 	_update_dismantle_button()
+	_update_calibrate_button()
 	_update_shortcut_buttons()
 	_update_batch_sell_button()
 	_update_hotbar_ui()
+	if _go_calibrate_btn and is_instance_valid(_go_calibrate_btn):
+		_go_calibrate_btn.text = _t("前往校準")
 	if _go_forge_btn and is_instance_valid(_go_forge_btn):
 		_go_forge_btn.text = _t("前往鍛造")
 	if _go_workshop_btn and is_instance_valid(_go_workshop_btn):
@@ -930,6 +935,27 @@ func _build() -> void:
 	_replace_core_btn.visible = false
 	btn_row.add_child(_replace_core_btn)
 
+	## 『前往校準』快捷按鈕 (金黃果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px，深藍紫描邊 2px)
+	_go_calibrate_btn = Button.new()
+	_go_calibrate_btn.name = "BtnGoCalibrate"
+	_go_calibrate_btn.text = _t("前往校準")
+	_go_calibrate_btn.custom_minimum_size = Vector2(0, 52)
+	_go_calibrate_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_go_calibrate_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_go_calibrate_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18, 2))
+	_go_calibrate_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18, 2))
+	_go_calibrate_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_GOLD, COLOR_BORDER, 2, 18, 2))
+	_go_calibrate_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18, 2))
+	_go_calibrate_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_go_calibrate_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_go_calibrate_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	_go_calibrate_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_calibrate_btn.add_theme_font_override("font", _cached_font)
+	_go_calibrate_btn.pressed.connect(_on_go_calibrate_pressed)
+	_go_calibrate_btn.visible = false
+	right.add_child(_go_calibrate_btn)
+
 	## 裝備拆解回收按鈕 (珊瑚粉果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px)
 	_dismantle_btn = Button.new()
 	_dismantle_btn.name = "BtnDismantle"
@@ -1316,6 +1342,8 @@ func _update_detail(inv: Node) -> void:
 			_update_hotbar_ui()
 		if _dismantle_btn:
 			_dismantle_btn.visible = false
+		if _go_calibrate_btn:
+			_go_calibrate_btn.visible = false
 		if _go_forge_btn:
 			_go_forge_btn.visible = false
 		if _go_workshop_btn:
@@ -1325,6 +1353,7 @@ func _update_detail(inv: Node) -> void:
 
 	_update_action_button(inv)
 	_update_dismantle_button()
+	_update_calibrate_button()
 	_update_shortcut_buttons()
 	_update_batch_sell_button()
 	_update_hotbar_ui()
@@ -2870,6 +2899,72 @@ func _on_go_workshop_pressed() -> void:
 	open_gem_workshop(target_tab)
 
 
+func get_go_calibrate_button() -> Button:
+	if _go_calibrate_btn and is_instance_valid(_go_calibrate_btn):
+		return _go_calibrate_btn
+	return null
+
+
+func get_selected_core_calibrations_remaining() -> int:
+	var part := _get_selected_core_part()
+	if part.is_empty():
+		return 0
+	if bool(part.get("is_broken", false)):
+		return 0
+	var max_c: int = 7
+	if CoreSysClass != null and "MAX_CALIBRATIONS" in CoreSysClass:
+		max_c = int(part.get("max_calibrations", CoreSysClass.MAX_CALIBRATIONS))
+	else:
+		max_c = int(part.get("max_calibrations", 7))
+	var count: int = int(part.get("calibration_count", 0))
+	var rem: int = max(0, max_c - count)
+	if CoreSysClass != null:
+		if not CoreSysClass.can_calibrate(part):
+			return 0
+	return rem
+
+
+func _update_calibrate_button() -> void:
+	if _go_calibrate_btn == null or not is_instance_valid(_go_calibrate_btn):
+		return
+	if _selected.is_empty():
+		_go_calibrate_btn.visible = false
+		return
+
+	var is_core := _is_selected_item_core()
+	if not is_core:
+		_go_calibrate_btn.visible = false
+		return
+
+	_go_calibrate_btn.visible = true
+	_go_calibrate_btn.text = _t("前往校準")
+	if _cached_font:
+		_go_calibrate_btn.add_theme_font_override("font", _cached_font)
+
+	var is_equipped: bool = is_selected_item_equipped()
+	var remaining: int = get_selected_core_calibrations_remaining()
+
+	if is_equipped and remaining > 0:
+		_go_calibrate_btn.disabled = false
+		_go_calibrate_btn.tooltip_text = _t("前往校準")
+	else:
+		_go_calibrate_btn.disabled = true
+		if not is_equipped:
+			_go_calibrate_btn.tooltip_text = _t("未裝備無法校準")
+		else:
+			_go_calibrate_btn.tooltip_text = _t("校準次數已達上限")
+
+
+func _on_go_calibrate_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	calibrate_requested.emit()
+	open_forge()
+
+
 func open_forge(target_weapon: Variant = null) -> Control:
 	var loop := Engine.get_main_loop()
 	if not (loop is SceneTree and (loop as SceneTree).root != null):
@@ -3705,6 +3800,20 @@ func _get_selected_core_part() -> Dictionary:
 	for p in core_parts:
 		if p is Dictionary and (str(p.get("uid", "")) == _selected or str(p.get("id", "")) == _selected):
 			return p.duplicate(true)
+
+	# 1.5 查 GameState.core_slots 與 CoreSystem 已裝備部件
+	if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+		for slot_k in gs.core_slots:
+			var sp = gs.core_slots[slot_k]
+			if typeof(sp) == TYPE_DICTIONARY and not sp.is_empty():
+				if str(sp.get("uid", "")) == _selected or str(sp.get("id", "")) == _selected:
+					return sp.duplicate(true)
+	if CoreSys != null and "ALL_SLOT_IDS" in CoreSys:
+		for s in CoreSys.ALL_SLOT_IDS:
+			var ep: Dictionary = CoreSys.get_equipped_part(s)
+			if not ep.is_empty():
+				if str(ep.get("uid", "")) == _selected or str(ep.get("id", "")) == _selected:
+					return ep.duplicate(true)
 
 	# 2. 再查 InventorySystem 註冊道具 / catalog
 	var inv_sys: Node = null
