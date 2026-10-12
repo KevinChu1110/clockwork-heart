@@ -6160,8 +6160,8 @@
    "id": "forge-weapon-swap-dialog",
    "cat": "遊戲",
    "title": "天宮鐵匠武器槽新增更換裝備按鈕連動WeaponSwapDialog",
-   "status": "草稿",
-   "note": "開工開發中 (t_7db3e5a2)",
+   "status": "開發中",
+   "note": "開始開發 ForgeDialog 更換裝備按鈕與 WeaponSwapDialog 連動 (t_7db3e5a2)",
    "keys": [
     "天宮鐵匠武器槽新"
    ]
