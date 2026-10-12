@@ -4171,5 +4171,7 @@
   "已鎖定素材已保留未出售": "Los materiales bloqueados se conservaron.",
   "機芯五槽配置": "Configuración de 5 Ranuras de Núcleo",
   "點擊更換裝備 · 強化核心機芯": "Toca para cambiar equipo · Mejorar núcleos",
-  "背包暫無此部位可替換機芯": "Sin piezas de núcleo reemplazables para esta ranura en la mochila"
+  "背包暫無此部位可替換機芯": "Sin piezas de núcleo reemplazables para esta ranura en la mochila",
+  "戰力提升 +%d！已一鍵配置最高戰力機芯。": "¡Poder +%d! Núcleos de mayor poder equipados.",
+  "目前已是最佳機芯配置！": "¡Ya está en la configuración óptima de núcleos!"
 }
