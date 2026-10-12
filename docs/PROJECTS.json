@@ -6120,8 +6120,8 @@
    "id": "inventory-core-calibrate-shortcut",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包機芯詳情新增前往校準快捷按鈕連動天宮鐵匠",
-   "status": "測試中",
-   "note": "完成開發與自測，產出 9 張 OpenGL3 截圖，送審 sideqa",
+   "status": "已上線",
+   "note": "sideqa 審查通過，全站回歸與實機截圖完成 (t_a9ea5a87 done)",
    "keys": [
     "MapleInv"
    ]
