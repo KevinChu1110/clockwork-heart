@@ -6155,6 +6155,16 @@
    "keys": [
     "PowerSta"
    ]
+  },
+  {
+   "id": "forge-weapon-swap-dialog",
+   "cat": "遊戲",
+   "title": "天宮鐵匠武器槽新增更換裝備按鈕連動WeaponSwapDialog",
+   "status": "草稿",
+   "note": "開工開發中 (t_7db3e5a2)",
+   "keys": [
+    "天宮鐵匠武器槽新"
+   ]
   }
  ]
 }
