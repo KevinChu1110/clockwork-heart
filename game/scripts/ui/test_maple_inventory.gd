@@ -164,6 +164,9 @@ func _process(_delta: float) -> bool:
 
 			## 10. 驗證六語系切換 (Loc.locale_changed 動態即時更新)
 			print("\n--- 開始測試六語系 (en, ja, ko, es, zh_CN, zh_TW) 即時切換 ---")
+			var gs: Node = root.get_node_or_null("GameState")
+			if gs and "hp" in gs:
+				gs.hp = 20
 			if inv_sys:
 				inv_sys.call("add_item", "iron_scrap", 5)
 			_inv.open()

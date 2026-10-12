@@ -58,6 +58,8 @@ func _process(_delta: float) -> bool:
 			loc.call("set_locale", "zh_TW")
 			if "inventory" in gs and gs.inventory != null:
 				gs.inventory.clear()
+			if "hp" in gs:
+				gs.hp = 20
 
 			# 註冊並加入各類型道具
 			inv_sys.call("add_item", "hp_s", 5)          # 消耗品
