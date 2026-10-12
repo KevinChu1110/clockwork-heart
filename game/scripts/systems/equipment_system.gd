@@ -3,6 +3,7 @@ extends Node
 ## Autoload：EquipmentSystem
 
 signal equipment_changed
+signal weapons_auto_equipped(result: Dictionary)
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 
@@ -299,6 +300,229 @@ func switch_weapon_loadout(index: int) -> Dictionary:
 	SaveManager.save_game()
 	var inst := weapon_inst(uid)
 	return {"ok": true, "msg": _t("切換武器欄 %d：【%s】") % [index + 1, inst.get("name", "")], "line": str(inst.get("line", "")), "uid": uid}
+
+
+## 取得裝備武器之攻擊力
+static func get_weapon_attack(w: Dictionary) -> int:
+	if w.is_empty():
+		return 0
+	var r: Dictionary = w.get("rolled", {}) as Dictionary
+	if r.has("atk"):
+		return int(r.get("atk", 0))
+	if w.has("atk"):
+		return int(w.get("atk", 0))
+	return 0
+
+
+## 取得武器品質層級排序值
+static func get_weapon_quality_rank(w: Dictionary) -> int:
+	if w.is_empty():
+		return 0
+	var q: String = str(w.get("quality", "common")).to_lower()
+	match q:
+		"epic": return 4
+		"rare": return 3
+		"uncommon": return 2
+		"common": return 1
+		_: return 0
+
+
+## 計算武器綜合戰力權重
+static func calculate_weapon_power(w: Dictionary) -> int:
+	if w.is_empty():
+		return 0
+	var atk_v: int = get_weapon_attack(w)
+	var q_rank: int = get_weapon_quality_rank(w)
+	var tier_v: int = int(w.get("tier", 1))
+	var r: Dictionary = w.get("rolled", {}) as Dictionary
+	var crit_v: float = float(r.get("crit", 0.0))
+	var crit_dmg_v: float = float(r.get("crit_dmg", 0.0))
+	var hp_v: int = int(r.get("hp", 0))
+	var def_v: int = int(r.get("def", 0))
+	var p: float = float(atk_v * 10) + float(q_rank * 50) + float(tier_v * 20) + (crit_v * 2.0) + crit_dmg_v + float(def_v) + (float(hp_v) * 0.2)
+	return int(round(p))
+
+
+## 武器排序比對函式：依攻擊力與品質排序背包武器
+static func _sort_weapons_comparator(a: Dictionary, b: Dictionary) -> bool:
+	var atk_a: int = get_weapon_attack(a)
+	var atk_b: int = get_weapon_attack(b)
+	if atk_a != atk_b:
+		return atk_a > atk_b
+	var q_a: int = get_weapon_quality_rank(a)
+	var q_b: int = get_weapon_quality_rank(b)
+	if q_a != q_b:
+		return q_a > q_b
+	var t_a: int = int(a.get("tier", 1))
+	var t_b: int = int(b.get("tier", 1))
+	if t_a != t_b:
+		return t_a > t_b
+	var p_a: int = calculate_weapon_power(a)
+	var p_b: int = calculate_weapon_power(b)
+	if p_a != p_b:
+		return p_a > p_b
+	return str(a.get("uid", "")) < str(b.get("uid", ""))
+
+
+## 自動依攻擊力與品質排序背包武器，將最佳武器填入已解鎖的三個武器槽位
+func auto_equip_best_weapons() -> Dictionary:
+	_ensure_state()
+	_ensure_weapon_loadout()
+
+	var unlocked_slots: Array[int] = []
+	for i in WEAPON_LOADOUT_SIZE:
+		if loadout_slot_unlocked(i):
+			unlocked_slots.append(i)
+
+	if unlocked_slots.is_empty():
+		return {
+			"ok": true,
+			"changed": false,
+			"power_gain": 0,
+			"changes": [],
+			"loadout": GameState.weapon_loadout.duplicate(),
+		}
+
+	var power_before: int = 0
+	if GameState and GameState.has_method("power_score"):
+		power_before = int(GameState.call("power_score"))
+
+	var old_loadout: Array = GameState.weapon_loadout.duplicate()
+
+	# 收集所有候選武器（已裝備在武器欄位之武器 + 背包武器）
+	var candidates: Array[Dictionary] = []
+	var seen_uids: Dictionary = {}
+
+	for i in WEAPON_LOADOUT_SIZE:
+		var u := str(GameState.weapon_loadout[i])
+		if u != "" and GameState.equip_worn.has(u):
+			var winst: Dictionary = GameState.equip_worn[u]
+			if not winst.is_empty() and normalize_slot(str(winst.get("slot", "weapon"))) == "weapon":
+				if not seen_uids.has(u):
+					seen_uids[u] = true
+					candidates.append(winst)
+
+	for item in GameState.equip_bag:
+		if item is Dictionary:
+			var u := str(item.get("uid", ""))
+			if u != "" and not seen_uids.has(u):
+				if normalize_slot(str(item.get("slot", "weapon"))) == "weapon":
+					seen_uids[u] = true
+					candidates.append(item)
+
+	# 依攻擊力與品質排序背包武器
+	candidates.sort_custom(_sort_weapons_comparator)
+
+	# 根據已解鎖槽位挑選最佳武器
+	var target_loadout: Array = old_loadout.duplicate()
+	var cand_idx := 0
+	for slot_idx in unlocked_slots:
+		if cand_idx < candidates.size():
+			target_loadout[slot_idx] = str(candidates[cand_idx].get("uid", ""))
+			cand_idx += 1
+		else:
+			target_loadout[slot_idx] = ""
+
+	# 檢查是否有變更
+	var is_changed := false
+	var changes: Array[Dictionary] = []
+	var total_atk_diff := 0
+
+	for i in WEAPON_LOADOUT_SIZE:
+		var old_u := str(old_loadout[i])
+		var new_u := str(target_loadout[i])
+		if old_u != new_u:
+			is_changed = true
+			var old_w: Dictionary = GameState.equip_worn.get(old_u, {}) if (old_u != "" and GameState.equip_worn.has(old_u)) else find_bag(old_u)
+			var new_w: Dictionary = GameState.equip_worn.get(new_u, {}) if (new_u != "" and GameState.equip_worn.has(new_u)) else find_bag(new_u)
+			var atk_diff := get_weapon_attack(new_w) - get_weapon_attack(old_w)
+			total_atk_diff += atk_diff
+			changes.append({
+				"slot": i,
+				"old_uid": old_u,
+				"new_uid": new_u,
+				"old_weapon": old_w,
+				"new_weapon": new_w,
+				"atk_diff": atk_diff,
+			})
+
+	if not is_changed:
+		return {
+			"ok": true,
+			"changed": false,
+			"power_gain": 0,
+			"changes": [],
+			"loadout": GameState.weapon_loadout.duplicate(),
+		}
+
+	# 執行換裝：
+	# 1. 舊 loadout 中不再使用的武器，移回背包
+	var target_uids: Array[String] = []
+	for i in WEAPON_LOADOUT_SIZE:
+		var u := str(target_loadout[i])
+		if u != "":
+			target_uids.append(u)
+
+	for i in WEAPON_LOADOUT_SIZE:
+		var old_u := str(old_loadout[i])
+		if old_u != "" and not target_uids.has(old_u):
+			if GameState.equip_worn.has(old_u):
+				var old_inst: Dictionary = GameState.equip_worn[old_u]
+				GameState.equip_worn.erase(old_u)
+				var in_bag := false
+				for b_item in GameState.equip_bag:
+					if str(b_item.get("uid", "")) == old_u:
+						in_bag = true
+						break
+				if not in_bag:
+					GameState.equip_bag.append(old_inst)
+
+	# 2. 新選中的武器，若原在背包中，移至 worn
+	for u in target_uids:
+		var in_bag_idx := -1
+		for b_idx in range(GameState.equip_bag.size()):
+			var b_item = GameState.equip_bag[b_idx]
+			if b_item is Dictionary and str(b_item.get("uid", "")) == u:
+				in_bag_idx = b_idx
+				break
+		if in_bag_idx >= 0:
+			var w_inst: Dictionary = GameState.equip_bag[in_bag_idx]
+			GameState.equip_bag.remove_at(in_bag_idx)
+			GameState.equip_worn[u] = w_inst
+
+	# 3. 套用新的 loadout
+	GameState.weapon_loadout = target_loadout
+	_sync_active_weapon_mirror()
+	equipment_changed.emit()
+	SaveManager.save_game()
+
+	var power_after: int = 0
+	if GameState and GameState.has_method("power_score"):
+		power_after = int(GameState.call("power_score"))
+	var power_gain := maxi(power_after - power_before, 0)
+	if power_gain <= 0:
+		power_gain = maxi(total_atk_diff, 1)
+
+	var ret := {
+		"ok": true,
+		"changed": true,
+		"power_gain": power_gain,
+		"changes": changes,
+		"loadout": GameState.weapon_loadout.duplicate(),
+	}
+
+	weapons_auto_equipped.emit(ret)
+	return ret
+
+
+## 支援全域/靜態呼叫 auto_equip_best_weapons
+static func auto_equip_best_weapons_static() -> Dictionary:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var es: Node = (tree as SceneTree).root.get_node_or_null("EquipmentSystem")
+		if es and es.has_method("auto_equip_best_weapons"):
+			return es.auto_equip_best_weapons()
+	return {}
 
 
 func _unequip_weapon_uid(uid: String) -> void:

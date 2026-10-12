@@ -4195,5 +4195,8 @@
   "機芯部件 · 部位：%s · 色階：%s": "Core Part · Slot: %s · %s",
   "前往拆解": "Dismantle",
   "鐵屑：%d（每次消耗 %d）": "Iron Scrap: %d (Cost %d)",
-  "調整心法": "Adjust Skills"
+  "調整心法": "Adjust Skills",
+  "戰力提升 +%d！已一鍵配置最高戰力武器。": "Power +%d! Equipped highest power weapons.",
+  "已一鍵配置最高戰力武器。": "Equipped highest power weapons.",
+  "目前已是最佳武器配置！": "Already at optimal weapon configuration!"
 }

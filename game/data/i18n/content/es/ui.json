@@ -3833,5 +3833,8 @@
   "機芯部件 · 部位：%s · 色階：%s": "Pieza de núcleo · Ranura: %s · %s",
   "前往拆解": "Desmontar",
   "鐵屑：%d（每次消耗 %d）": "Chatarra: %d (Coste %d)",
-  "調整心法": "Ajustar habilidades"
+  "調整心法": "Ajustar habilidades",
+  "戰力提升 +%d！已一鍵配置最高戰力武器。": "¡Poder +%d! Armas de mayor poder equipadas.",
+  "已一鍵配置最高戰力武器。": "Armas de mayor poder equipadas.",
+  "目前已是最佳武器配置！": "¡Ya está en la configuración óptima de armas!"
 }

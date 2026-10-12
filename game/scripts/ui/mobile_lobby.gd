@@ -7,6 +7,7 @@ signal request_battle(mode: String)
 signal request_settings()
 signal core_replaced(slot_id: String, part: Dictionary)
 signal cores_auto_equipped(result: Dictionary)
+signal weapons_auto_equipped(result: Dictionary)
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -281,6 +282,7 @@ var _btn_wardrobe: Button = null
 var _char_weapon_title_label: Label = null
 var _char_weapon_sub_label: Label = null
 var _btn_change_weapon: Button = null
+var _btn_weapon_auto_equip: Button = null
 var _weapon_swap_dialog: Control = null
 var _char_core_title_label: Label = null
 var _char_core_sub_label: Label = null
@@ -4138,21 +4140,60 @@ func _build_character_tab() -> void:
 	w_hdr.add_theme_constant_override("separation", 12)
 	r_v.add_child(w_hdr)
 
+	var w_title_v := VBoxContainer.new()
+	w_title_v.add_theme_constant_override("separation", 2)
+	w_hdr.add_child(w_title_v)
+
 	var w_title := Label.new()
 	w_title.text = _t("武器輪替配置")
 	_apply_label_style(w_title, 18, COLOR_TEXT_DARK)
-	w_hdr.add_child(w_title)
+	w_title_v.add_child(w_title)
 	_char_weapon_title_label = w_title
 
 	var w_sub := Label.new()
 	w_sub.text = _t("點擊切換輪替順位 · 三段作戰序列")
-	_apply_label_style(w_sub, 14, COLOR_GOLD_DARK, COLOR_BORDER, 2)
-	w_hdr.add_child(w_sub)
+	_apply_label_style(w_sub, 13, COLOR_GOLD_DARK, COLOR_BORDER, 2)
+	w_title_v.add_child(w_sub)
 	_char_weapon_sub_label = w_sub
 
 	var w_hdr_spacer := Control.new()
 	w_hdr_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	w_hdr.add_child(w_hdr_spacer)
+
+	var btn_weapon_auto := Button.new()
+	btn_weapon_auto.name = "BtnWeaponAutoEquip"
+	btn_weapon_auto.text = _t("一鍵配置")
+	btn_weapon_auto.custom_minimum_size = Vector2(104, 48)
+	if _cached_font != null:
+		btn_weapon_auto.add_theme_font_override("font", _cached_font)
+	btn_weapon_auto.add_theme_font_size_override("font_size", 14)
+	btn_weapon_auto.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_weapon_auto.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_weapon_auto.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var wa_sb := StyleBoxFlat.new()
+	wa_sb.bg_color = COLOR_MINT
+	wa_sb.border_color = COLOR_BORDER
+	wa_sb.set_border_width_all(2)
+	wa_sb.border_width_bottom = 5
+	wa_sb.set_corner_radius_all(16)
+	wa_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	wa_sb.shadow_size = 5
+	wa_sb.shadow_offset = Vector2(0, 2)
+	var wa_sb_h := wa_sb.duplicate() as StyleBoxFlat
+	wa_sb_h.bg_color = Color("#62E67D")
+	var wa_sb_p := wa_sb.duplicate() as StyleBoxFlat
+	wa_sb_p.border_width_bottom = 2
+	btn_weapon_auto.add_theme_stylebox_override("normal", wa_sb)
+	btn_weapon_auto.add_theme_stylebox_override("hover", wa_sb_h)
+	btn_weapon_auto.add_theme_stylebox_override("pressed", wa_sb_p)
+	btn_weapon_auto.add_theme_stylebox_override("focus", wa_sb)
+	btn_weapon_auto.pressed.connect(func():
+		_play_ui_sound()
+		auto_equip_weapons()
+	)
+	w_hdr.add_child(btn_weapon_auto)
+	_btn_weapon_auto_equip = btn_weapon_auto
 
 	var btn_change_weapon := Button.new()
 	btn_change_weapon.name = "BtnChangeWeapon"
@@ -4226,18 +4267,22 @@ func _build_character_tab() -> void:
 	c_hdr.add_theme_constant_override("separation", 12)
 	r_v.add_child(c_hdr)
 
+	var c_title_v := VBoxContainer.new()
+	c_title_v.add_theme_constant_override("separation", 2)
+	c_hdr.add_child(c_title_v)
+
 	var c_title := Label.new()
 	c_title.name = "CharCoreTitleLabel"
 	c_title.text = _t("機芯五槽配置")
 	_apply_label_style(c_title, 18, COLOR_TEXT_DARK)
-	c_hdr.add_child(c_title)
+	c_title_v.add_child(c_title)
 	_char_core_title_label = c_title
 
 	var c_sub := Label.new()
 	c_sub.name = "CharCoreSubLabel"
 	c_sub.text = _t("點擊更換裝備 · 強化核心機芯")
-	_apply_label_style(c_sub, 14, COLOR_GOLD_DARK, COLOR_BORDER, 2)
-	c_hdr.add_child(c_sub)
+	_apply_label_style(c_sub, 13, COLOR_GOLD_DARK, COLOR_BORDER, 2)
+	c_title_v.add_child(c_sub)
 	_char_core_sub_label = c_sub
 
 	var c_hdr_spacer := Control.new()
@@ -4614,6 +4659,9 @@ func get_selected_weapon_slot() -> int:
 
 func get_weapon_slot_buttons() -> Array[Button]:
 	return _weapon_slot_buttons
+
+func get_btn_weapon_auto_equip() -> Button:
+	return _btn_weapon_auto_equip
 
 func refresh_weapon_slots() -> void:
 	_refresh_weapon_slot_buttons()
@@ -6156,6 +6204,8 @@ func _apply_locale_texts() -> void:
 		_char_weapon_sub_label.text = _t("點擊切換輪替順位 · 三段作戰序列")
 	if _btn_change_weapon and is_instance_valid(_btn_change_weapon):
 		_btn_change_weapon.text = _t("更換裝備")
+	if _btn_weapon_auto_equip and is_instance_valid(_btn_weapon_auto_equip):
+		_btn_weapon_auto_equip.text = _t("一鍵配置")
 	if _char_stat_title_label and is_instance_valid(_char_stat_title_label):
 		_char_stat_title_label.text = _t("機體戰鬥屬性")
 	if _char_core_title_label and is_instance_valid(_char_core_title_label):
@@ -6875,6 +6925,32 @@ func open_core_replace_dialog(slot_id: String, new_part: Dictionary = {}) -> Con
 	if dlg != null:
 		dlg.z_index = 95
 	return dlg
+
+
+## 一鍵配置最高戰力武器並即時刷新三欄武器卡、有效戰力與戰鬥屬性卡片
+func auto_equip_weapons() -> Dictionary:
+	var equip_sys = _get_equip_sys()
+	if equip_sys == null or not equip_sys.has_method("auto_equip_best_weapons"):
+		return {}
+
+	var result: Dictionary = equip_sys.auto_equip_best_weapons()
+	var is_changed: bool = bool(result.get("changed", false))
+	if is_changed:
+		var power_gain: int = int(result.get("power_gain", 0))
+		if power_gain > 0:
+			_show_toast(_t("戰力提升 +%d！已一鍵配置最高戰力武器。") % power_gain)
+		else:
+			_show_toast(_t("已一鍵配置最高戰力武器。"))
+		_sync_hero_weapon_paperdoll()
+		_refresh_weapon_slot_buttons()
+		_refresh_char_tab_stats(true)
+		_refresh_bag_tab(false)
+		refresh_hud()
+		weapons_auto_equipped.emit(result)
+	else:
+		_show_toast(_t("目前已是最佳武器配置！"))
+
+	return result
 
 
 ## 一鍵配置五大槽位最高戰力機芯並即時屬性刷新
