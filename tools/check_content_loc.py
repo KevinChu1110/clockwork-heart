@@ -221,6 +221,26 @@ def placeholders(s: str) -> list:
     return [m.group(0) for m in PLACEHOLDER.finditer(s) if m.group(0) != "%%"]
 
 
+## 有些介面字串是用 id 當 key（例如 _t("ui_hotbar_slot_capsule")），
+## id 本身沒有 %d，真正的原文在 content/zh_TW/<domain>.json。
+## 這種 key 的佔位符要拿 zh_TW 那句來比，不然每條帶 %d 的 id 都會被誤報。
+ID_KEY = re.compile(r"^[a-z][a-z0-9_.]*$")
+_ZH_TW_CACHE: dict = {}
+
+
+def expected_placeholders(domain: str, src: str) -> list:
+    if ID_KEY.match(src):
+        if domain not in _ZH_TW_CACHE:
+            path = os.path.join(CONTENT, "zh_TW", "%s.json" % domain)
+            _ZH_TW_CACHE[domain] = (
+                json.load(io.open(path, encoding="utf-8")) if os.path.exists(path) else {}
+            )
+        zh = _ZH_TW_CACHE[domain].get(src)
+        if isinstance(zh, str):
+            return placeholders(zh)
+    return placeholders(src)
+
+
 def _block(rel: str, const_name: str) -> str:
     src = io.open(os.path.join(ROOT, rel), encoding="utf-8").read()
     if const_name is None:
@@ -274,9 +294,9 @@ def main() -> None:
                 tr = str(tbl.get(src_s, ""))
                 if not tr.strip():
                     continue
-                if placeholders(tr) != placeholders(src_s):
+                if placeholders(tr) != expected_placeholders(domain, src_s):
                     problems.append((code, domain, "佔位符對不上（會在執行時炸）", [
-                        "原文 %s → %s" % (placeholders(src_s), src_s[:50]),
+                        "原文 %s → %s" % (expected_placeholders(domain, src_s), src_s[:50]),
                         "譯文 %s → %s" % (placeholders(tr), tr[:50]),
                     ]))
             if missing:

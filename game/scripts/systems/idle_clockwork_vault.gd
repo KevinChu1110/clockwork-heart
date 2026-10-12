@@ -88,14 +88,17 @@ static func get_status(now_ts: float = -1.0) -> Dictionary:
 	}
 
 
-## 一鍵領取收益並重置計時
-static func claim(now_ts: float = -1.0) -> Dictionary:
+## 一鍵領取收益並重置計時（支援 multiplier 倍數，預設 1 倍）
+static func claim(now_ts: float = -1.0, multiplier: int = 1) -> Dictionary:
 	var current_now := now_ts if now_ts >= 0.0 else Time.get_unix_time_from_system()
-	var g := get_accumulated_gold(current_now)
-	var s := get_accumulated_iron_scrap(current_now)
+	var base_g := get_accumulated_gold(current_now)
+	var base_s := get_accumulated_iron_scrap(current_now)
+	var mult := maxi(1, multiplier)
+	var g := base_g * mult
+	var s := base_s * mult
 	var sec := get_elapsed_seconds(current_now)
 	var hrs := sec / 3600.0
-	var claimed := (g > 0 or s > 0)
+	var claimed := (base_g > 0 or base_s > 0)
 
 	var gs = Engine.get_main_loop().root.get_node_or_null("GameState")
 	var inv = Engine.get_main_loop().root.get_node_or_null("InventorySystem")
@@ -113,6 +116,9 @@ static func claim(now_ts: float = -1.0) -> Dictionary:
 		"claimed": claimed,
 		"gold": g,
 		"iron_scrap": s,
+		"base_gold": base_g,
+		"base_iron_scrap": base_s,
+		"multiplier": mult,
 		"elapsed_seconds": sec,
 		"hours": hrs,
 		"reset_ts": current_now

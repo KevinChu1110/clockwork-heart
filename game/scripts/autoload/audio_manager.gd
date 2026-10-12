@@ -287,6 +287,9 @@ func play_bgm(id: String, fade: float = BGM_FADE) -> void:
 	var incoming: AudioStreamPlayer = _bgm_b if _bgm_active == _bgm_a else _bgm_a
 	var outgoing: AudioStreamPlayer = _bgm_active
 
+	if incoming == null:
+		return
+
 	if _fade_tween and is_instance_valid(_fade_tween):
 		_fade_tween.kill()
 

@@ -557,6 +557,12 @@ func find_any(uid: String) -> Dictionary:
 		var u := str(GameState.equip_slots.get(s, ""))
 		if u == uid:
 			return _equipped_lookup(uid)
+	for i in WEAPON_LOADOUT_SIZE:
+		var u := str(GameState.weapon_loadout[i])
+		if u == uid:
+			return _equipped_lookup(uid)
+	if GameState.equip_worn.has(uid):
+		return _equipped_lookup(uid)
 	return {}
 
 
@@ -987,6 +993,12 @@ func try_drop_loot(force_id: String = "") -> Dictionary:
 	return {"ok": true, "inst": inst, "msg": _t("獲得 %s") % label(inst)}
 
 
+func _get_gem_sys() -> Node:
+	if Engine.get_main_loop() is SceneTree:
+		return (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GemSystem")
+	return null
+
+
 ## 計算拆解裝備可獲得的鐵屑與金幣收益
 func dismantle_yield(inst: Dictionary) -> Dictionary:
 	if inst.is_empty():
@@ -1013,21 +1025,101 @@ func dismantle_yield(inst: Dictionary) -> Dictionary:
 	return {"iron_scrap": scrap, "gold": gold}
 
 
+## 檢查裝備是否處於鎖定狀態
+func is_locked(uid: String) -> bool:
+	_ensure_state()
+	if uid == "":
+		return false
+	var inst := find_any(uid)
+	if not inst.is_empty():
+		if bool(inst.get("locked", false)) or bool(inst.get("is_locked", false)):
+			return true
+	if GameState and GameState.has_method("has_flag"):
+		if GameState.has_flag("equip_locked." + uid):
+			return true
+	return false
+
+
+## 設定裝備鎖定狀態
+func set_locked(uid: String, locked: bool) -> bool:
+	_ensure_state()
+	if uid == "":
+		return false
+	var found := false
+	for e in GameState.equip_bag:
+		if str(e.get("uid", "")) == uid or str(e.get("id", "")) == uid:
+			e["locked"] = locked
+			found = true
+	if GameState.equip_worn.has(uid):
+		var w = GameState.equip_worn[uid]
+		if w is Dictionary:
+			w["locked"] = locked
+			found = true
+	if GameState and GameState.has_method("set_flag"):
+		GameState.set_flag("equip_locked." + uid, locked)
+		found = true
+	if found:
+		equipment_changed.emit()
+		SaveManager.save_game()
+	return found
+
+
+## 切換裝備鎖定狀態
+func toggle_lock(uid: String) -> bool:
+	return set_locked(uid, not is_locked(uid))
+
+
+func is_equip_locked(uid: String) -> bool:
+	return is_locked(uid)
+
+
+func set_equip_locked(uid: String, locked: bool) -> bool:
+	return set_locked(uid, locked)
+
+
+## 檢查裝備是否正在裝備中 (worn / loadout / equip_slots)
+func is_equipped(uid: String) -> bool:
+	_ensure_state()
+	if uid == "":
+		return false
+	if GameState.equip_worn.has(uid):
+		return true
+	for s in SLOTS:
+		if str(GameState.equip_slots.get(s, "")) == uid:
+			return true
+	for i in WEAPON_LOADOUT_SIZE:
+		if str(GameState.weapon_loadout[i]) == uid:
+			return true
+	return false
+
+
 ## 拆解未裝備的裝備，回收為鐵屑與金幣
 func dismantle(uid: String) -> Dictionary:
 	_ensure_state()
 	if uid == "":
 		return {"ok": false, "msg": _t("無效的裝備識別碼。")}
-	if GameState.equip_worn.has(uid):
+	if is_locked(uid):
+		return {"ok": false, "msg": _t("裝備已鎖定，無法拆解。")}
+	if is_equipped(uid):
 		return {"ok": false, "msg": _t("裝備中無法拆解，請先卸下。")}
-	for s in SLOTS:
-		if str(GameState.equip_slots.get(s, "")) == uid:
-			return {"ok": false, "msg": _t("裝備中無法拆解，請先卸下。")}
-	for i in WEAPON_LOADOUT_SIZE:
-		if str(GameState.weapon_loadout[i]) == uid:
-			return {"ok": false, "msg": _t("裝備中無法拆解，請先卸下。")}
 
 	var inst := find_bag(uid)
+	var from_inv := false
+	if inst.is_empty():
+		if InventorySystem and InventorySystem.has_method("has_item") and InventorySystem.has_item(uid, 1):
+			var icat: Dictionary = InventorySystem.catalog(uid)
+			var ikind := str(icat.get("kind", ""))
+			if ikind == "weapon" or ikind == "equipment":
+				inst = {
+					"uid": uid,
+					"id": uid,
+					"name": icat.get("name", uid),
+					"slot": "weapon" if ikind == "weapon" else "equipment",
+					"tier": 1,
+					"quality": "common",
+				}
+				from_inv = true
+
 	if inst.is_empty():
 		return {"ok": false, "msg": _t("背包沒有此裝。")}
 
@@ -1035,7 +1127,36 @@ func dismantle(uid: String) -> Dictionary:
 	var scrap_n: int = int(y.get("iron_scrap", 1))
 	var gold_n: int = int(y.get("gold", 0))
 
-	_remove_from_bag(uid)
+	# 檢查是否鑲嵌寶石，若有則完整退回 GemSystem（add_gem），防止拆解吞寶石
+	var refunded_gem: Dictionary = {}
+	var g_data: Variant = inst.get("gem", null)
+	if typeof(g_data) == TYPE_DICTIONARY and not (g_data as Dictionary).is_empty():
+		var g_dict: Dictionary = g_data as Dictionary
+		var g_color: String = str(g_dict.get("color", ""))
+		var g_lv: int = clampi(int(g_dict.get("level", 1)), 1, 5)
+		if g_color in ["red", "yellow", "blue"]:
+			var gem_sys: Node = _get_gem_sys()
+			if gem_sys != null and gem_sys.has_method("add_gem"):
+				gem_sys.call("add_gem", g_color, g_lv, 1)
+			else:
+				if GameState and "gem_bag" in GameState:
+					if GameState.gem_bag == null or typeof(GameState.gem_bag) != TYPE_ARRAY:
+						GameState.gem_bag = []
+					GameState.gem_bag.append({
+						"id": "gem_%d_%d" % [Time.get_unix_time_from_system(), randi() % 99999],
+						"color": g_color,
+						"level": g_lv,
+					})
+			refunded_gem = {
+				"color": g_color,
+				"level": g_lv,
+			}
+
+	if from_inv:
+		InventorySystem.remove_item(uid, 1)
+	else:
+		_remove_from_bag(uid)
+
 	if scrap_n > 0:
 		InventorySystem.add_item("iron_scrap", scrap_n)
 	if gold_n > 0:
@@ -1044,10 +1165,28 @@ func dismantle(uid: String) -> Dictionary:
 	equipment_changed.emit()
 	SaveManager.save_game()
 
+	var gem_label_str := ""
+	if not refunded_gem.is_empty():
+		var gem_sys: Node = _get_gem_sys()
+		if gem_sys != null and gem_sys.has_method("gem_label"):
+			gem_label_str = str(gem_sys.call("gem_label", refunded_gem))
+		else:
+			var c_name: String = {"red": "紅寶石", "yellow": "黃寶石", "blue": "藍寶石"}.get(refunded_gem.get("color", ""), "")
+			gem_label_str = "%s · %d 級" % [c_name, int(refunded_gem.get("level", 1))]
+
+	var log_msg := ""
+	var result_msg := ""
+	if not refunded_gem.is_empty():
+		log_msg = _t("拆解【%s】，獲得鐵屑×%d、金幣+%d，返還寶石【%s】") % [inst.get("name", ""), scrap_n, gold_n, gem_label_str]
+		result_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d、返還寶石【%s】") % [inst.get("name", ""), scrap_n, gold_n, gem_label_str]
+	else:
+		log_msg = _t("拆解【%s】，獲得鐵屑×%d、金幣+%d") % [inst.get("name", ""), scrap_n, gold_n]
+		result_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [inst.get("name", ""), scrap_n, gold_n]
+
 	if Engine.get_main_loop() is SceneTree:
 		var gl: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GameLog")
 		if gl and gl.has_method("info"):
-			gl.call("info", "equip", _t("拆解【%s】，獲得鐵屑×%d、金幣+%d") % [inst.get("name", ""), scrap_n, gold_n])
+			gl.call("info", "equip", log_msg)
 
 	return {
 		"ok": true,
@@ -1055,5 +1194,6 @@ func dismantle(uid: String) -> Dictionary:
 		"name": str(inst.get("name", "")),
 		"iron_scrap": scrap_n,
 		"gold": gold_n,
-		"msg": _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [inst.get("name", ""), scrap_n, gold_n],
+		"refunded_gem": refunded_gem,
+		"msg": result_msg,
 	}

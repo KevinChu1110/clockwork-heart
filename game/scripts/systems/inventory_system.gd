@@ -95,6 +95,50 @@ const CATALOG: Dictionary = {
 		"color": Color(0.55, 0.5, 0.4),
 		"glyph": "劍",
 	},
+	"rusty_blade": {
+		"name": "鏽劍",
+		"desc": "斑駁的鐵質短刃。可前往天宮鐵匠進行升階鍛造。",
+		"kind": "weapon",
+		"slot": "weapon",
+		"stack": 1,
+		"sell": 15,
+		"atk": 4,
+		"color": Color(0.75, 0.65, 0.5),
+		"glyph": "刃",
+	},
+	"meager_edge": {
+		"name": "微末之刃",
+		"desc": "初具鋒芒的精鍛短劍。可在天宮鐵匠持續淬煉。",
+		"kind": "weapon",
+		"slot": "weapon",
+		"stack": 1,
+		"sell": 30,
+		"atk": 9,
+		"color": Color(0.8, 0.7, 0.55),
+		"glyph": "劍",
+	},
+	"ash_mail": {
+		"name": "灰燼甲片",
+		"desc": "以灰燼鍛打的輕質胸甲。可前往天宮鐵匠進行升階鍛造。",
+		"kind": "armor",
+		"slot": "armor",
+		"stack": 1,
+		"sell": 20,
+		"def": 3,
+		"color": Color(0.65, 0.65, 0.7),
+		"glyph": "甲",
+	},
+	"knight_plate": {
+		"name": "騎士殘甲",
+		"desc": "精鋼鍛造的厚重胸甲，散發著沈穩的金屬光澤。",
+		"kind": "armor",
+		"slot": "armor",
+		"stack": 1,
+		"sell": 40,
+		"def": 7,
+		"color": Color(0.65, 0.65, 0.75),
+		"glyph": "甲",
+	},
 	"map_scrap": {
 		"name": "六域殘圖",
 		"desc": "行商撕給你的一角。可看不可吃。",
@@ -320,10 +364,20 @@ func ensure_hotbar() -> void:
 		GameState.inventory = {}
 
 
+var _custom_items: Dictionary = {}
+
+
+func register_item(id: String, def: Dictionary) -> void:
+	_custom_items[id] = def
+	inventory_changed.emit()
+
+
 ## 道具名與說明在非繁中會被 ContentLoc 換掉。CATALOG 是 id → 資料，
 ## 但每筆裡面沒有 id 欄位，所以補一個再交給 apply()。
 func catalog(id: String) -> Dictionary:
-	var d: Dictionary = CATALOG.get(id, {})
+	var d: Dictionary = _custom_items.get(id, {})
+	if d.is_empty():
+		d = CATALOG.get(id, {})
 	if d.is_empty():
 		return d
 	if ContentLoc.locale() == "zh_TW":
@@ -369,7 +423,7 @@ func has_item(id: String, n: int = 1) -> bool:
 
 
 func add_item(id: String, n: int = 1) -> bool:
-	if n <= 0 or not CATALOG.has(id):
+	if n <= 0 or (not CATALOG.has(id) and not _custom_items.has(id)):
 		return false
 	ensure_hotbar()
 	var stack_max := int(catalog(id).get("stack", 99))
@@ -434,7 +488,7 @@ func bag_list() -> Array:
 		if not (val is int or val is float):
 			continue
 		var c := int(val)
-		if c > 0 and CATALOG.has(id):
+		if c > 0 and (CATALOG.has(id) or _custom_items.has(id)):
 			out.append({"id": id, "count": c, "def": catalog(id)})
 	out.sort_custom(func(a, b): return str(a.get("id")) < str(b.get("id")))
 	return out
@@ -517,9 +571,9 @@ func grant_starter() -> void:
 	## 新遊戲／教學後
 	if GameState.has_flag("inv.starter_given"):
 		return
+	GameState.set_flag("inv.starter_given", true)
 	add_item("hp_s", 3)
 	add_item("bread", 2)
-	GameState.set_flag("inv.starter_given", true)
 
 
 func roll_skirmish_loot(mode: String) -> Array:

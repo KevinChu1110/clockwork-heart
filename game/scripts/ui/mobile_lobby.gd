@@ -5,6 +5,7 @@ extends Control
 
 signal request_battle(mode: String)
 signal request_settings()
+signal core_replaced(slot_id: String, part: Dictionary)
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -119,6 +120,9 @@ var _selected_bag_item: String = ""
 var _bag_detail: RichTextLabel = null
 var _bag_use_btn: Button = null
 var _bag_hb_btn: Button = null
+var _btn_bag_go_forge: Button = null
+var _btn_bag_dismantle: Button = null
+var _btn_bag_go_workshop: Button = null
 var _bag_tip: Label = null
 var _last_bag_click_i: int = -1
 var _last_bag_click_t: int = 0
@@ -277,6 +281,9 @@ var _char_weapon_title_label: Label = null
 var _char_weapon_sub_label: Label = null
 var _btn_change_weapon: Button = null
 var _weapon_swap_dialog: Control = null
+var _char_core_title_label: Label = null
+var _char_core_sub_label: Label = null
+var _char_core_slots_row: HBoxContainer = null
 var _char_stat_title_label: Label = null
 var _stat_cards: Array[PanelContainer] = []
 
@@ -386,6 +393,12 @@ static func _get_equip_sys() -> Node:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree:
 		return (loop as SceneTree).root.get_node_or_null("EquipmentSystem")
+	return null
+
+static func _get_gem_sys() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).root.get_node_or_null("GemSystem")
 	return null
 
 func _get_hero_name() -> String:
@@ -1192,6 +1205,12 @@ func _build_top_hud() -> void:
 	psb.set_corner_radius_all(26)
 	p_frame.custom_minimum_size = Vector2(52, 52)
 	p_frame.add_theme_stylebox_override("panel", psb)
+	p_frame.mouse_filter = Control.MOUSE_FILTER_STOP
+	p_frame.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	p_frame.gui_input.connect(func(ev: InputEvent):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			open_power_stat_dialog()
+	)
 	var p_tex := TextureRect.new()
 	p_tex.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	p_tex.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -1226,17 +1245,41 @@ func _build_top_hud() -> void:
 	row1.add_child(_name_label)
 	info_v.add_child(row1)
 
+	var pwr_cap := PanelContainer.new()
+	pwr_cap.name = "PowerCapsule"
+	var pwr_sb := StyleBoxFlat.new()
+	pwr_sb.bg_color = Color(0.14, 0.11, 0.18, 0.85)
+	pwr_sb.border_color = Color(0.83, 0.68, 0.22, 0.80)
+	pwr_sb.set_border_width_all(1)
+	pwr_sb.border_width_bottom = 3
+	pwr_sb.set_corner_radius_all(16)
+	pwr_sb.content_margin_left = 12
+	pwr_sb.content_margin_right = 14
+	pwr_sb.content_margin_top = 4
+	pwr_sb.content_margin_bottom = 4
+	pwr_cap.add_theme_stylebox_override("panel", pwr_sb)
+	pwr_cap.custom_minimum_size = Vector2(96, 48)
+	pwr_cap.mouse_filter = Control.MOUSE_FILTER_STOP
+	pwr_cap.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	pwr_cap.gui_input.connect(func(ev: InputEvent):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			open_power_stat_dialog()
+	)
+
 	var pwr_row := HBoxContainer.new()
-	pwr_row.add_theme_constant_override("separation", 4)
+	pwr_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	pwr_row.add_theme_constant_override("separation", 6)
 	_power_label = Label.new()
 	_power_label.text = _t("戰力 %d") % 0
-	_power_label.add_theme_color_override("font_color", Color("#E5C158"))
+	_power_label.add_theme_color_override("font_color", Color("#FFD028"))
 	_power_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_power_label.add_theme_constant_override("outline_size", 2)
-	_power_label.add_theme_font_size_override("font_size", 13)
+	_power_label.add_theme_font_size_override("font_size", 14)
+	_power_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	pwr_row.add_child(_power_label)
-	info_v.add_child(pwr_row)
+	pwr_cap.add_child(pwr_row)
 	p_box.add_child(info_v)
+	p_box.add_child(pwr_cap)
 
 	var spacer := Control.new()
 	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -4102,7 +4145,7 @@ func _build_character_tab() -> void:
 
 	var w_sub := Label.new()
 	w_sub.text = _t("點擊切換輪替順位 · 三段作戰序列")
-	_apply_label_style(w_sub, 13, COLOR_GOLD_DARK)
+	_apply_label_style(w_sub, 14, COLOR_GOLD_DARK, COLOR_BORDER, 2)
 	w_hdr.add_child(w_sub)
 	_char_weapon_sub_label = w_sub
 
@@ -4174,11 +4217,41 @@ func _build_character_tab() -> void:
 	_weapon_slot_hint_label = Label.new()
 	var init_hint := _t(WEAPON_SLOTS[_selected_weapon_slot]["hint"])
 	_weapon_slot_hint_label.text = init_hint
-	var init_h_sz := 12 if init_hint.length() > 70 else 13
-	_apply_label_style(_weapon_slot_hint_label, init_h_sz, COLOR_TEXT_DARK)
+	_apply_label_style(_weapon_slot_hint_label, 14, COLOR_TEXT_DARK, COLOR_BORDER, 2)
 	hint_p.add_child(_weapon_slot_hint_label)
 
-	# 4. 戰鬥屬性標題列
+	# 4. 機芯五槽配置標題與五大機芯槽位
+	var c_hdr := HBoxContainer.new()
+	c_hdr.add_theme_constant_override("separation", 12)
+	r_v.add_child(c_hdr)
+
+	var c_title := Label.new()
+	c_title.name = "CharCoreTitleLabel"
+	c_title.text = _t("機芯五槽配置")
+	_apply_label_style(c_title, 18, COLOR_TEXT_DARK)
+	c_hdr.add_child(c_title)
+	_char_core_title_label = c_title
+
+	var c_sub := Label.new()
+	c_sub.name = "CharCoreSubLabel"
+	c_sub.text = _t("點擊更換裝備 · 強化核心機芯")
+	_apply_label_style(c_sub, 14, COLOR_GOLD_DARK, COLOR_BORDER, 2)
+	c_hdr.add_child(c_sub)
+	_char_core_sub_label = c_sub
+
+	var c_hdr_spacer := Control.new()
+	c_hdr_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c_hdr.add_child(c_hdr_spacer)
+
+	var c_row := HBoxContainer.new()
+	c_row.name = "CoreSlotsRow"
+	c_row.add_theme_constant_override("separation", 8)
+	r_v.add_child(c_row)
+	_char_core_slots_row = c_row
+
+	_refresh_char_core_slots()
+
+	# 5. 戰鬥屬性標題列
 	var s_hdr := HBoxContainer.new()
 	s_hdr.add_theme_constant_override("separation", 12)
 	r_v.add_child(s_hdr)
@@ -4209,7 +4282,7 @@ func _build_character_tab() -> void:
 	if gs and gs.has_method("power_score") and int(gs.call("power_score")) > 0:
 		cur_pow = int(gs.call("power_score"))
 	_char_power_badge.text = _t("有效戰力 %d") % cur_pow
-	_apply_label_style(_char_power_badge, 13, COLOR_TEXT_DARK)
+	_apply_label_style(_char_power_badge, 14, COLOR_TEXT_DARK, COLOR_BORDER, 2)
 	pow_capsule.add_child(_char_power_badge)
 
 	var lv_capsule := PanelContainer.new()
@@ -4228,7 +4301,7 @@ func _build_character_tab() -> void:
 
 	_char_level_badge = Label.new()
 	_update_char_level_badge()
-	_apply_label_style(_char_level_badge, 13, COLOR_TEXT_DARK)
+	_apply_label_style(_char_level_badge, 14, COLOR_TEXT_DARK, COLOR_BORDER, 2)
 	lv_capsule.add_child(_char_level_badge)
 
 	# 5. 獨立屬性小卡 (生命／攻擊／防禦／暴擊／怒氣)
@@ -4314,12 +4387,12 @@ func _get_weapon_slot_info(slot_idx: int) -> Dictionary:
 			req_lv = int(eq.loadout_unlock_level(slot_idx))
 		return {
 			"slot_title": title,
-			"weapon_name": "未解鎖",
-			"hits": "需達 Lv%d" % req_lv,
+			"weapon_name": _t("未解鎖"),
+			"hits": _t("需達 Lv%d") % req_lv,
 			"quality": "locked",
-			"quality_label": "未解鎖",
+			"quality_label": _t("未解鎖"),
 			"quality_color": Color("#A09CAE"),
-			"hint": "武器欄位未解鎖（角色等級需達到 Lv%d）" % req_lv,
+			"hint": _t("武器欄位未解鎖（角色等級需達到 Lv%d）") % req_lv,
 			"unlocked": false,
 			"empty": true,
 			"is_active": false,
@@ -5049,6 +5122,61 @@ func _build_bag_tab() -> void:
 	_bag_hb_btn.pressed.connect(_on_bag_hotbar_pressed)
 	btn_row.add_child(_bag_hb_btn)
 
+	_btn_bag_go_forge = Button.new()
+	_btn_bag_go_forge.name = "BtnBagGoForge"
+	_btn_bag_go_forge.text = _t("前往鍛造")
+	_btn_bag_go_forge.custom_minimum_size = Vector2(0, 52)
+	_btn_bag_go_forge.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_btn_bag_go_forge.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+	_btn_bag_go_forge.add_theme_stylebox_override("hover", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18))
+	_btn_bag_go_forge.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 18))
+	_btn_bag_go_forge.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_btn_bag_go_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_bag_go_forge.add_theme_constant_override("outline_size", 3)
+	_btn_bag_go_forge.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_btn_bag_go_forge.add_theme_font_override("font", _cached_font)
+	_btn_bag_go_forge.pressed.connect(_on_bag_go_forge_pressed)
+	_btn_bag_go_forge.visible = false
+	btn_row.add_child(_btn_bag_go_forge)
+
+	_btn_bag_dismantle = Button.new()
+	_btn_bag_dismantle.name = "BtnBagDismantle"
+	_btn_bag_dismantle.text = _t("拆解回收")
+	_btn_bag_dismantle.custom_minimum_size = Vector2(0, 52)
+	_btn_bag_dismantle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_btn_bag_dismantle.add_theme_stylebox_override("normal", _create_button_style(COLOR_PINK, COLOR_BORDER, 5, 18))
+	_btn_bag_dismantle.add_theme_stylebox_override("hover", _create_button_style(Color("#FF7B9E"), COLOR_BORDER, 5, 18))
+	_btn_bag_dismantle.add_theme_stylebox_override("pressed", _create_button_style(COLOR_PINK, COLOR_BORDER, 2, 18))
+	_btn_bag_dismantle.add_theme_stylebox_override("disabled", _create_button_style(Color("#8E8899"), COLOR_BORDER, 3, 18))
+	_btn_bag_dismantle.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_btn_bag_dismantle.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_bag_dismantle.add_theme_constant_override("outline_size", 3)
+	_btn_bag_dismantle.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_btn_bag_dismantle.add_theme_font_override("font", _cached_font)
+	_btn_bag_dismantle.pressed.connect(_on_bag_dismantle_pressed)
+	_btn_bag_dismantle.visible = false
+	btn_row.add_child(_btn_bag_dismantle)
+
+	_btn_bag_go_workshop = Button.new()
+	_btn_bag_go_workshop.name = "BtnBagGoWorkshop"
+	_btn_bag_go_workshop.text = _t("前往工坊")
+	_btn_bag_go_workshop.custom_minimum_size = Vector2(0, 52)
+	_btn_bag_go_workshop.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_btn_bag_go_workshop.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+	_btn_bag_go_workshop.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18))
+	_btn_bag_go_workshop.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18))
+	_btn_bag_go_workshop.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_btn_bag_go_workshop.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_bag_go_workshop.add_theme_constant_override("outline_size", 3)
+	_btn_bag_go_workshop.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_btn_bag_go_workshop.add_theme_font_override("font", _cached_font)
+	_btn_bag_go_workshop.pressed.connect(_on_bag_go_workshop_pressed)
+	_btn_bag_go_workshop.visible = false
+	btn_row.add_child(_btn_bag_go_workshop)
+
 	# 操作提示
 	_bag_tip = Label.new()
 	_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
@@ -5251,7 +5379,7 @@ func _create_lobby_core_card(part: Dictionary, card_idx: int = 0) -> Control:
 	action_lbl.name = "ActionLabel"
 	action_lbl.text = _t("更換裝備")
 	action_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_apply_label_style(action_lbl, 12, COLOR_TEXT_ORANGE)
+	_apply_label_style(action_lbl, 14, COLOR_TEXT_ORANGE, COLOR_BORDER, 2)
 	action_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vb.add_child(action_lbl)
 
@@ -5387,9 +5515,96 @@ func _on_bag_hotbar_pressed() -> void:
 					inv.call("set_hotbar", i, _selected_bag_item)
 					placed = true
 					break
-			if not placed:
-				inv.call("set_hotbar", 0, _selected_bag_item)
+		if not placed:
+			inv.call("set_hotbar", 0, _selected_bag_item)
 	_refresh_bag_tab()
+
+
+func get_bag_go_forge_button() -> Button:
+	return _btn_bag_go_forge
+
+
+func get_bag_dismantle_button() -> Button:
+	return _btn_bag_dismantle
+
+
+func get_bag_go_workshop_button() -> Button:
+	return _btn_bag_go_workshop
+
+
+func _on_bag_go_workshop_pressed() -> void:
+	var am = get_tree().root.get_node_or_null("AudioManager") if get_tree() else null
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	var target_item := _selected_bag_item
+	_switch_tab(Tab.VILLAGE)
+
+	# 判斷選中物品類型：裝備切換至寶石櫃鑲嵌分頁 (Tab.CASE_INSPECT = 1)，寶石/星屑素材切換至熔煉分頁 (Tab.SMELT = 0)
+	var target_tab := 0
+	var inv := _get_inv_sys()
+	var def: Dictionary = inv.call("catalog", target_item) as Dictionary if (inv and inv.has_method("catalog")) else {}
+	var kind: String = str(def.get("kind", ""))
+	var is_equipment: bool = (kind == "equipment" or kind == "weapon")
+	if not is_equipment and not target_item.is_empty():
+		var eq := _get_equip_sys()
+		if eq != null:
+			var eq_inst: Dictionary = eq.call("find_any", target_item) if eq.has_method("find_any") else {}
+			if not eq_inst.is_empty() or (eq.has_method("base_def") and not (eq.call("base_def", target_item) as Dictionary).is_empty()):
+				is_equipment = true
+
+	if is_equipment:
+		target_tab = 1
+	else:
+		target_tab = 0
+
+	open_gem_workshop(target_tab)
+
+
+func _on_bag_go_forge_pressed() -> void:
+	var am = get_tree().root.get_node_or_null("AudioManager") if get_tree() else null
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	var target_item := _selected_bag_item
+	_switch_tab(Tab.VILLAGE)
+	open_forge(target_item)
+
+
+func _on_bag_dismantle_pressed() -> void:
+	var am = get_tree().root.get_node_or_null("AudioManager") if get_tree() else null
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	if _selected_bag_item.is_empty():
+		return
+	var eq := _get_equip_sys()
+	if eq == null:
+		return
+	var target_uid := _selected_bag_item
+	if eq.has_method("is_locked") and bool(eq.call("is_locked", target_uid)):
+		_show_toast(_t("裝備已鎖定，無法拆解。"))
+		return
+	if eq.has_method("is_equipped") and bool(eq.call("is_equipped", target_uid)):
+		_show_toast(_t("裝備中無法拆解，請先卸下。"))
+		return
+	var res: Dictionary = eq.call("dismantle", target_uid) if eq.has_method("dismantle") else {}
+	if bool(res.get("ok", false)):
+		var scrap_n: int = int(res.get("iron_scrap", 0))
+		var gold_n: int = int(res.get("gold", 0))
+		var item_name: String = str(res.get("name", target_uid))
+		var toast_msg := str(res.get("msg", ""))
+		if toast_msg.is_empty():
+			var refunded_gem: Dictionary = res.get("refunded_gem", {})
+			if not refunded_gem.is_empty():
+				var gem_sys = get_tree().root.get_node_or_null("GemSystem") if get_tree() else null
+				var g_name := str(gem_sys.call("gem_label", refunded_gem)) if gem_sys and gem_sys.has_method("gem_label") else _t("寶石")
+				toast_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d、返還寶石【%s】") % [item_name, scrap_n, gold_n, g_name]
+			else:
+				toast_msg = _t("拆解【%s】：獲得鐵屑 ×%d、金幣 +%d") % [item_name, scrap_n, gold_n]
+		_show_toast(toast_msg)
+		refresh_hud()
+		_refresh_bag_tab(true)
+	else:
+		var err_msg := str(res.get("msg", _t("無法拆解此物品。")))
+		_show_toast(err_msg)
 
 func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 	if _bag_layer == null:
@@ -5402,6 +5617,28 @@ func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 
 	_bag_ids.clear()
 	var list: Array = inv.call("bag_list") if (inv and inv.has_method("bag_list")) else []
+	var gs := _gs()
+	if gs and "equip_bag" in gs and gs.equip_bag is Array:
+		for e in gs.equip_bag:
+			if e is Dictionary:
+				var uid := str(e.get("uid", ""))
+				if not uid.is_empty():
+					var in_list := false
+					for existing in list:
+						if str(existing.get("id", "")) == uid:
+							in_list = true
+							break
+					if not in_list:
+						list.append({
+							"id": uid,
+							"count": 1,
+							"def": {
+								"name": e.get("name", uid),
+								"kind": "weapon" if str(e.get("slot", "")) == "weapon" else "equipment",
+								"desc": _t("器階：第 %d 階  品質：%s") % [int(e.get("tier", 1)), _t(str(e.get("quality_label", "")))],
+								"glyph": "刃" if str(e.get("slot", "")) == "weapon" else "裝"
+							}
+						})
 
 	# 若目前已選取的道具已經不在背包內，且背包還有道具，重選第一個
 	if _selected_bag_item != "":
@@ -5411,7 +5648,15 @@ func _refresh_bag_tab(allow_auto_select: bool = true) -> void:
 				found = true
 				break
 		if not found:
-			_selected_bag_item = str(list[0].get("id", "")) if (list.size() > 0 and allow_auto_select) else ""
+			var eq := _get_equip_sys()
+			var any_eq: Dictionary = eq.call("find_any", _selected_bag_item) if eq and eq.has_method("find_any") else {}
+			if not any_eq.is_empty():
+				found = true
+		if not found:
+			if allow_auto_select and list.size() > 0:
+				_selected_bag_item = str(list[0].get("id", ""))
+			elif allow_auto_select:
+				_selected_bag_item = ""
 	elif list.size() > 0 and allow_auto_select:
 		_selected_bag_item = str(list[0].get("id", ""))
 
@@ -5509,6 +5754,12 @@ func _update_bag_detail(inv: Node) -> void:
 		if _bag_hb_btn:
 			_bag_hb_btn.disabled = true
 			_bag_hb_btn.text = _t("放到快捷欄")
+		if _btn_bag_go_forge:
+			_btn_bag_go_forge.visible = false
+		if _btn_bag_dismantle:
+			_btn_bag_dismantle.visible = false
+		if _btn_bag_go_workshop:
+			_btn_bag_go_workshop.visible = false
 		return
 
 	if _bag_hb_btn:
@@ -5518,6 +5769,70 @@ func _update_bag_detail(inv: Node) -> void:
 	var def: Dictionary = inv.call("catalog", _selected_bag_item) as Dictionary if inv.has_method("catalog") else {}
 	var n: int = int(inv.call("count", _selected_bag_item)) if inv.has_method("count") else 0
 	var kind: String = str(def.get("kind", ""))
+
+	# 若 def 內無 kind 或未在 catalog，但為裝備系統內之武器裝備
+	if kind.is_empty() and not _selected_bag_item.is_empty():
+		var eq := _get_equip_sys()
+		if eq != null:
+			var eq_inst: Dictionary = eq.call("find_any", _selected_bag_item) if eq.has_method("find_any") else {}
+			if not eq_inst.is_empty():
+				var eq_slot := str(eq_inst.get("slot", ""))
+				kind = "weapon" if eq_slot == "weapon" else "equipment"
+			elif eq.has_method("base_def") and not (eq.call("base_def", _selected_bag_item) as Dictionary).is_empty():
+				kind = "weapon"
+
+	var is_equipment: bool = (kind == "equipment" or kind == "weapon")
+	if _btn_bag_go_forge:
+		_btn_bag_go_forge.visible = is_equipment
+		_btn_bag_go_forge.text = _t("前往鍛造")
+
+	var item_id_lower := _selected_bag_item.to_lower()
+	var is_gem_material: bool = (kind == "gem" or item_id_lower.find("gem") != -1 or item_id_lower.find("dust") != -1)
+	var can_go_workshop: bool = is_gem_material or is_equipment
+	if _btn_bag_go_workshop:
+		_btn_bag_go_workshop.visible = can_go_workshop
+		_btn_bag_go_workshop.text = _t("前往工坊")
+
+	if _btn_bag_dismantle:
+		_btn_bag_dismantle.visible = is_equipment
+		if is_equipment:
+			var eq := _get_equip_sys()
+			var is_locked: bool = false
+			var is_worn: bool = false
+			if eq != null:
+				if eq.has_method("is_locked"):
+					is_locked = bool(eq.call("is_locked", _selected_bag_item))
+				if eq.has_method("is_equipped"):
+					is_worn = bool(eq.call("is_equipped", _selected_bag_item))
+				else:
+					var gs := _gs()
+					if gs and "equip_worn" in gs and gs.equip_worn is Dictionary:
+						is_worn = gs.equip_worn.has(_selected_bag_item)
+			if is_locked:
+				_btn_bag_dismantle.disabled = true
+				_btn_bag_dismantle.text = _t("已鎖定")
+				_btn_bag_dismantle.tooltip_text = _t("裝備已鎖定，無法拆解。")
+				if _bag_tip:
+					_bag_tip.text = _t("裝備已鎖定，無法拆解。")
+			elif is_worn:
+				_btn_bag_dismantle.disabled = true
+				_btn_bag_dismantle.text = _t("裝備中")
+				_btn_bag_dismantle.tooltip_text = _t("裝備中無法拆解，請先卸下。")
+				if _bag_tip:
+					_bag_tip.text = _t("裝備中無法拆解，請先卸下。")
+			else:
+				_btn_bag_dismantle.disabled = false
+				_btn_bag_dismantle.text = _t("拆解回收")
+				_btn_bag_dismantle.tooltip_text = _t("拆解裝備回收鐵屑與金幣")
+				if _bag_tip:
+					_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
+		else:
+			if _bag_tip:
+				_bag_tip.text = _t("點選格子查看詳情 · 雙擊或點擊按鈕使用")
+
+	if is_equipment and _bag_hb_btn:
+		_bag_hb_btn.disabled = true
+
 	var kind_s: String = kind
 	match kind:
 		"consumable":
@@ -5535,6 +5850,16 @@ func _update_bag_detail(inv: Node) -> void:
 			if _bag_use_btn:
 				_bag_use_btn.disabled = false
 				_bag_use_btn.text = _t("無法使用")
+		"equipment":
+			kind_s = _t("裝備")
+			if _bag_use_btn:
+				_bag_use_btn.disabled = false
+				_bag_use_btn.text = _t("使用 / 賣出")
+		"weapon":
+			kind_s = _t("武器")
+			if _bag_use_btn:
+				_bag_use_btn.disabled = false
+				_bag_use_btn.text = _t("使用 / 賣出")
 		_:
 			kind_s = _t("道具")
 			if _bag_use_btn:
@@ -5543,6 +5868,31 @@ func _update_bag_detail(inv: Node) -> void:
 
 	var item_name: String = _t(str(def.get("name", _selected_bag_item)))
 	var item_desc: String = _t(str(def.get("desc", "")))
+	var eq_inst: Dictionary = {}
+	if is_equipment:
+		var eq := _get_equip_sys()
+		if eq != null and eq.has_method("find_any"):
+			eq_inst = eq.call("find_any", _selected_bag_item) as Dictionary
+		if not eq_inst.is_empty():
+			item_name = _t(str(eq_inst.get("name", _selected_bag_item)))
+			var tier := int(eq_inst.get("tier", 1))
+			var q_label := _t(str(eq_inst.get("quality_label", "")))
+			item_desc = _t("器階：第 %d 階  品質：%s") % [tier, q_label]
+		elif eq != null and eq.has_method("base_def") and (item_desc.is_empty() or def.is_empty()):
+			var bdef: Dictionary = eq.call("base_def", _selected_bag_item)
+			if not bdef.is_empty():
+				item_name = _t(str(bdef.get("name", _selected_bag_item)))
+				item_desc = _t("基礎武器 · 點擊前往鍛造可進行強化")
+
+	var gem_info: Dictionary = {}
+	if not eq_inst.is_empty():
+		var gem_data: Variant = eq_inst.get("gem", null)
+		if typeof(gem_data) == TYPE_DICTIONARY and not (gem_data as Dictionary).is_empty():
+			var g_dict: Dictionary = gem_data as Dictionary
+			var eq_slot := str(eq_inst.get("slot", "weapon"))
+			var gem_sys: Node = _get_gem_sys()
+			if gem_sys and gem_sys.has_method("get_gem_socket_info"):
+				gem_info = gem_sys.call("get_gem_socket_info", g_dict, eq_slot) as Dictionary
 
 	var icon_tex := get_item_icon(_selected_bag_item)
 	if _bag_preview_row:
@@ -5552,7 +5902,10 @@ func _update_bag_detail(inv: Node) -> void:
 		if _bag_detail_count:
 			_bag_detail_count.text = "×%d" % n
 		if _bag_detail_kind:
-			_bag_detail_kind.text = _t("類型：%s") % kind_s
+			if not gem_info.is_empty():
+				_bag_detail_kind.text = _t("類型：%s（已鑲寶石）") % kind_s
+			else:
+				_bag_detail_kind.text = _t("類型：%s") % kind_s
 		if icon_tex != null:
 			if _bag_detail_icon:
 				_bag_detail_icon.texture = icon_tex
@@ -5566,7 +5919,19 @@ func _update_bag_detail(inv: Node) -> void:
 				_bag_detail_glyph.text = str(def.get("glyph", "·"))
 				_bag_detail_glyph.visible = true
 
-	_bag_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
+	if not gem_info.is_empty():
+		var hex_col: String = str(gem_info.get("color_hex", "#9A6B00"))
+		var col_name: String = str(gem_info.get("color_name", ""))
+		var lv: int = int(gem_info.get("level", 1))
+		var stars_lbl: String = str(gem_info.get("stars_label", gem_info.get("stars", "")))
+		var bname: String = str(gem_info.get("bonus_name", ""))
+		var btext: String = str(gem_info.get("bonus_text", ""))
+		var gem_line: String = _t("已鑲寶石：%s · %d 星（%s） · %s %s") % [
+			col_name, lv, stars_lbl, bname, btext
+		]
+		_bag_detail.text = "[color=#4A3E60]%s[/color]\n\n[color=%s][b]%s[/b][/color]" % [item_desc, hex_col, gem_line]
+	else:
+		_bag_detail.text = "[color=#4A3E60]%s[/color]" % item_desc
 
 func _fmt_int(n: int) -> String:
 	var neg := n < 0
@@ -5757,6 +6122,11 @@ func _apply_locale_texts() -> void:
 		_btn_change_weapon.text = _t("更換裝備")
 	if _char_stat_title_label and is_instance_valid(_char_stat_title_label):
 		_char_stat_title_label.text = _t("機體戰鬥屬性")
+	if _char_core_title_label and is_instance_valid(_char_core_title_label):
+		_char_core_title_label.text = _t("機芯五槽配置")
+	if _char_core_sub_label and is_instance_valid(_char_core_sub_label):
+		_char_core_sub_label.text = _t("點擊更換裝備 · 強化核心機芯")
+	_refresh_char_core_slots()
 	if _char_power_badge and is_instance_valid(_char_power_badge):
 		var gs := _gs()
 		var cur_pow := 482
@@ -5774,20 +6144,12 @@ func _apply_locale_texts() -> void:
 			if t_lbl:
 				var t_text := _t(str(card.get_meta("stat_title_key", "")))
 				t_lbl.text = t_text
-				if t_text.length() > 14:
-					t_lbl.add_theme_font_size_override("font_size", 12)
-				else:
-					t_lbl.add_theme_font_size_override("font_size", 14)
+				t_lbl.add_theme_font_size_override("font_size", 14)
 			var sub_lbl := card.find_child("SubLabel", true, false) as Label
 			if sub_lbl:
 				var sub_text := _t(str(card.get_meta("stat_subtitle_key", "")))
 				sub_lbl.text = sub_text
-				if sub_text.length() > 24:
-					sub_lbl.add_theme_font_size_override("font_size", 10)
-				elif sub_text.length() > 16:
-					sub_lbl.add_theme_font_size_override("font_size", 11)
-				else:
-					sub_lbl.add_theme_font_size_override("font_size", 12)
+				sub_lbl.add_theme_font_size_override("font_size", 14)
 			var v_lbl := card.find_child("ValLabel", true, false) as Label
 			if v_lbl:
 				var v_k := str(card.get_meta("stat_val_key", ""))
@@ -5806,6 +6168,12 @@ func _apply_locale_texts() -> void:
 		_core_title_lbl.text = _t("機芯部件背包（點擊替換裝備）")
 	if _core_empty_lbl and is_instance_valid(_core_empty_lbl):
 		_core_empty_lbl.text = _t("背包暫無未裝備機芯部件")
+	if _btn_bag_go_forge and is_instance_valid(_btn_bag_go_forge):
+		_btn_bag_go_forge.text = _t("前往鍛造")
+	if _btn_bag_dismantle and is_instance_valid(_btn_bag_dismantle):
+		_btn_bag_dismantle.text = _t("拆解回收")
+	if _btn_bag_go_workshop and is_instance_valid(_btn_bag_go_workshop):
+		_btn_bag_go_workshop.text = _t("前往工坊")
 	if _bag_layer and is_instance_valid(_bag_layer):
 		_update_bag_detail(_get_inv_sys())
 		_refresh_core_bag()
@@ -5840,6 +6208,7 @@ func _show_toast(msg: String) -> void:
 	toast.add_theme_stylebox_override("normal", tsb)
 	toast.add_theme_color_override("font_color", INK_IVORY)
 	toast.add_theme_font_size_override("font_size", 15)
+	toast.z_index = 100
 	add_child(toast)
 
 	var tw := create_tween()
@@ -5896,38 +6265,74 @@ func open_wardrobe() -> void:
 
 
 ## 開啟天宮鐵匠彈窗
-func open_forge() -> Control:
+func open_forge(target_weapon: Variant = null) -> Control:
 	var existing = get_node_or_null("ForgeDialog")
 	if existing != null:
-		return existing
+		if not existing.is_queued_for_deletion():
+			if target_weapon != null and existing.has_method("select_target_equipment"):
+				existing.call("select_target_equipment", target_weapon)
+			return existing
+		else:
+			if existing.get_parent() == self:
+				remove_child(existing)
+	var existing_workshop = get_node_or_null("GemWorkshopDialog")
+	if existing_workshop != null:
+		if existing_workshop.get_parent() == self:
+			remove_child(existing_workshop)
+		existing_workshop.queue_free()
 	var ForgeClass: GDScript = load("res://scripts/ui/forge_dialog.gd")
 	if ForgeClass == null:
 		push_error("無法載入 ForgeDialog")
 		return null
 	var dlg: Control = ForgeClass.new() as Control
+	dlg.name = "ForgeDialog"
 	dlg.z_index = 80
 	dlg.tree_exited.connect(func():
 		refresh_hud()
 	)
+	if dlg.has_signal("workshop_requested"):
+		dlg.connect("workshop_requested", func():
+			open_gem_workshop()
+		)
 	add_child(dlg)
+	if target_weapon != null and dlg.has_method("select_target_equipment"):
+		dlg.call("select_target_equipment", target_weapon)
 	return dlg
 
 
 ## 開啟手藝工坊寶石彈窗
-func open_gem_workshop() -> Control:
+func open_gem_workshop(target_tab: int = 0) -> Control:
 	var existing = get_node_or_null("GemWorkshopDialog")
 	if existing != null:
-		return existing
+		if not existing.is_queued_for_deletion():
+			if existing.has_method("set_tab"):
+				existing.call("set_tab", target_tab)
+			return existing
+		else:
+			if existing.get_parent() == self:
+				remove_child(existing)
+	var existing_forge = get_node_or_null("ForgeDialog")
+	if existing_forge != null:
+		if existing_forge.get_parent() == self:
+			remove_child(existing_forge)
+		existing_forge.queue_free()
 	var GemClass: GDScript = load("res://scripts/ui/gem_workshop_dialog.gd")
 	if GemClass == null:
 		push_error("無法載入 GemWorkshopDialog")
 		return null
 	var dlg: Control = GemClass.new() as Control
+	dlg.name = "GemWorkshopDialog"
 	dlg.z_index = 80
 	dlg.tree_exited.connect(func():
 		refresh_hud()
 	)
+	if dlg.has_signal("forge_requested"):
+		dlg.connect("forge_requested", func():
+			open_forge()
+		)
 	add_child(dlg)
+	if target_tab != 0 and dlg.has_method("set_tab"):
+		dlg.call("set_tab", target_tab)
 	return dlg
 
 
@@ -5990,6 +6395,10 @@ func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
 			_refresh_weapon_slot_buttons()
 			refresh_hud()
 		)
+	if dlg.has_signal("forge_requested"):
+		dlg.connect("forge_requested", func():
+			open_forge()
+		)
 	add_child(dlg)
 	_weapon_swap_dialog = dlg
 	return dlg
@@ -6031,6 +6440,46 @@ func open_windup_daily() -> Control:
 		)
 	add_child(dlg)
 	return dlg
+
+
+## 開啟『戰力屬性總覽』彈窗 (PowerStatDialog)
+func open_power_stat_dialog() -> Control:
+	var existing = get_node_or_null("PowerStatDialog")
+	if existing != null and is_instance_valid(existing):
+		return existing
+	var PowerStatClass: GDScript = load("res://scripts/ui/power_stat_dialog.gd")
+	if PowerStatClass == null:
+		push_error("無法載入 PowerStatDialog")
+		return null
+	var dlg: Control = PowerStatClass.new() as Control
+	dlg.name = "PowerStatDialog"
+	dlg.z_index = 85
+	dlg.tree_exited.connect(func():
+		refresh_hud()
+	)
+	if dlg.has_signal("equip_requested"):
+		dlg.equip_requested.connect(func():
+			_switch_tab(Tab.CHARACTER)
+		)
+	if dlg.has_signal("workshop_requested"):
+		dlg.workshop_requested.connect(func():
+			open_gem_workshop()
+		)
+	if dlg.has_signal("skill_requested"):
+		dlg.skill_requested.connect(func():
+			open_skill_dialog()
+		)
+	if dlg.has_signal("soul_requested"):
+		dlg.soul_requested.connect(func():
+			open_soul_hall()
+		)
+	add_child(dlg)
+	return dlg
+
+
+## 開啟聚魂殿堂 Tab (Tab.SOUL_HALL)
+func open_soul_hall() -> void:
+	_switch_tab(Tab.SOUL_HALL)
 
 
 ## 開啟能量/體力補充彈窗（看廣告拿能量）
@@ -6105,7 +6554,212 @@ func close_equip_panel() -> void:
 		layer.queue_free()
 	_equip_panel_instance = null
 	_refresh_bag_tab()
+	_refresh_char_core_slots()
 	refresh_hud()
+
+
+## 機芯五槽大廳角色頁元件與 CoreReplaceDialog 連動
+func _refresh_char_core_slots() -> void:
+	if _char_core_slots_row == null or not is_instance_valid(_char_core_slots_row):
+		return
+	for c in _char_core_slots_row.get_children():
+		_char_core_slots_row.remove_child(c)
+		c.queue_free()
+
+	var CoreSys := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	var sdb = preload("res://scripts/art/sprite_db.gd")
+
+	var defs: Array = []
+	if sdb != null and "CORE_SLOT_DEFS" in sdb:
+		defs = sdb.CORE_SLOT_DEFS
+	elif CoreSys != null:
+		var cs_inst = CoreSys.new()
+		if cs_inst.has_method("get_slot_defs"):
+			var d_dict: Dictionary = cs_inst.get_slot_defs()
+			for k in d_dict:
+				defs.append(d_dict[k])
+
+	for def in defs:
+		var slot_id: String = str(def.get("id", ""))
+		var norm_slot: String = CoreSys.normalize_slot_id(slot_id) if CoreSys != null else slot_id
+		var slot_name: String = str(def.get("name", ""))
+		if slot_name.is_empty() and CoreSys != null:
+			slot_name = CoreSys.get_slot_name(norm_slot)
+
+		var part: Dictionary = {}
+		if CoreSys != null:
+			part = CoreSys.get_equipped_part(norm_slot)
+		if part.is_empty():
+			var gs := _gs()
+			if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+				part = gs.core_slots.get(norm_slot, {})
+
+		var tier_id: String = str(part.get("tier", "white"))
+		var tier_name: String = str(part.get("tier_name", "白"))
+		var is_equipped: bool = not part.is_empty()
+
+		var tier_color: Color = CoreSys.get_tier_color(tier_id) if (CoreSys != null and is_equipped) else Color(0.72, 0.68, 0.82)
+
+		var card := PanelContainer.new()
+		card.name = "CoreSlot_" + norm_slot
+		card.custom_minimum_size = Vector2(88, 64)
+		card.mouse_filter = Control.MOUSE_FILTER_STOP
+
+		var cs := StyleBoxFlat.new()
+		cs.bg_color = COLOR_CARD_WARM if is_equipped else Color(0.95, 0.94, 0.97, 0.9)
+		cs.border_color = tier_color if is_equipped else COLOR_BORDER
+		cs.set_border_width_all(2)
+		cs.border_width_bottom = 4
+		cs.set_corner_radius_all(14)
+		cs.shadow_color = Color(tier_color.r, tier_color.g, tier_color.b, 0.25) if is_equipped else Color(0.12, 0.10, 0.23, 0.10)
+		cs.shadow_size = 4
+		cs.shadow_offset = Vector2(0, 2)
+		card.add_theme_stylebox_override("panel", cs)
+
+		var btn := Button.new()
+		btn.name = "SlotButton"
+		btn.flat = true
+		btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		btn.custom_minimum_size = Vector2(88, 50)
+		btn.mouse_filter = Control.MOUSE_FILTER_STOP
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.focus_mode = Control.FOCUS_NONE
+		var captured_slot := norm_slot
+		btn.pressed.connect(func():
+			_play_ui_sound()
+			_on_char_core_slot_clicked(captured_slot)
+		)
+		card.add_child(btn)
+
+		var margin := MarginContainer.new()
+		margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		margin.add_theme_constant_override("margin_left", 6)
+		margin.add_theme_constant_override("margin_right", 6)
+		margin.add_theme_constant_override("margin_top", 4)
+		margin.add_theme_constant_override("margin_bottom", 4)
+		card.add_child(margin)
+
+		var vb := VBoxContainer.new()
+		vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vb.alignment = BoxContainer.ALIGNMENT_CENTER
+		vb.add_theme_constant_override("separation", 2)
+		margin.add_child(vb)
+
+		var top_row := HBoxContainer.new()
+		top_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		top_row.alignment = BoxContainer.ALIGNMENT_CENTER
+		top_row.add_theme_constant_override("separation", 4)
+		vb.add_child(top_row)
+
+		var icon := TextureRect.new()
+		icon.name = "SlotIcon"
+		icon.custom_minimum_size = Vector2(24, 24)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if sdb != null:
+			var tex: Texture2D = sdb.core_slot_icon(norm_slot)
+			if tex:
+				icon.texture = tex
+		icon.modulate = tier_color if is_equipped else Color(0.6, 0.58, 0.68)
+		top_row.add_child(icon)
+
+		var slot_lbl := Label.new()
+		slot_lbl.name = "SlotLabel"
+		slot_lbl.text = _t(slot_name)
+		slot_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_apply_label_style(slot_lbl, 14, COLOR_TEXT_DARK)
+		slot_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		top_row.add_child(slot_lbl)
+
+		var tier_lbl := Label.new()
+		tier_lbl.name = "TierLabel"
+		var t_txt := (_t(tier_name) if tier_name.ends_with("階") else _t(tier_name + "階")) if is_equipped else _t("未裝備")
+		tier_lbl.text = t_txt
+		tier_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_apply_label_style(tier_lbl, 14, tier_color if (is_equipped and tier_id != "white") else COLOR_TEXT_DARK, COLOR_BORDER, 2)
+		tier_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vb.add_child(tier_lbl)
+
+		_char_core_slots_row.add_child(card)
+
+
+func _on_char_core_slot_clicked(slot_id: String) -> void:
+	var CoreSys := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	if CoreSys == null:
+		return
+	var norm_slot := CoreSys.normalize_slot_id(slot_id)
+	var inv: Array = CoreSys.get_inventory()
+	var candidate: Dictionary = {}
+	for p in inv:
+		if p is Dictionary and CoreSys.normalize_slot_id(p.get("slot", "")) == norm_slot:
+			candidate = p
+			break
+	if not candidate.is_empty():
+		open_core_replace_dialog(norm_slot, candidate)
+	else:
+		_show_toast(_t("背包暫無此部位可替換機芯"))
+
+
+## 連動彈出多巴胺風格 CoreReplaceDialog (機芯替換比較確認彈窗)
+func open_core_replace_dialog(slot_id: String, new_part: Dictionary = {}) -> Control:
+	var CoreSys := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	if CoreSys == null:
+		return null
+	var norm_slot := CoreSys.normalize_slot_id(slot_id)
+	var old_part: Dictionary = CoreSys.get_equipped_part(norm_slot)
+	if old_part.is_empty():
+		var gs := _gs()
+		if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+			old_part = gs.core_slots.get(norm_slot, {})
+
+	var target_new_part := new_part.duplicate(true)
+	if target_new_part.is_empty():
+		var inv: Array = CoreSys.get_inventory()
+		for p in inv:
+			if p is Dictionary and CoreSys.normalize_slot_id(p.get("slot", "")) == norm_slot:
+				target_new_part = p
+				break
+
+	if target_new_part.is_empty():
+		_show_toast(_t("背包暫無此部位可替換機芯"))
+		return null
+
+	var existing = get_node_or_null("CompareLayer")
+	if existing != null and is_instance_valid(existing):
+		remove_child(existing)
+		existing.queue_free()
+
+	var CoreReplaceDialogScript := preload("res://scripts/ui/core_replace_dialog.gd")
+	if CoreReplaceDialogScript == null:
+		push_error("無法載入 CoreReplaceDialog")
+		return null
+
+	var on_confirm = func():
+		var uid_new := str(target_new_part.get("uid", ""))
+		if not uid_new.is_empty():
+			CoreSys.remove_part_from_inventory(uid_new)
+		if not old_part.is_empty():
+			CoreSys.add_part_to_inventory(old_part)
+		CoreSys.equip_part(norm_slot, target_new_part)
+		var gs := _gs()
+		if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+			gs.core_slots[norm_slot] = target_new_part
+		core_replaced.emit(norm_slot, target_new_part)
+		_show_toast(_t("已成功替換裝備至【%s】槽位！") % _t(CoreSys.get_slot_name(norm_slot)))
+		_refresh_char_core_slots()
+		_refresh_core_bag()
+		_refresh_bag_tab(false)
+		refresh_hud()
+
+	var on_cancel = func():
+		pass
+
+	var dlg = CoreReplaceDialogScript.show_dialog(self, norm_slot, old_part, target_new_part, on_confirm, on_cancel, "free")
+	if dlg != null:
+		dlg.z_index = 95
+	return dlg
 
 
 # EquipPanel host 介面支援

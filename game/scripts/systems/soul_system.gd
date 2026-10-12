@@ -1266,6 +1266,61 @@ func survey_soul_codex() -> Dictionary:
 	}
 
 
+## 取得四大核心（齒、甲、簧、衡）之階級、等級與屬性加成
+func get_core_resonances() -> Array[Dictionary]:
+	ensure_slots()
+	var survey: Dictionary = survey_soul_codex()
+	var cores: Array = survey.get("cores", [])
+	var res: Array[Dictionary] = []
+	for c in cores:
+		var cid: String = str(c.get("id", ""))
+		var label: String = str(c.get("label", ""))
+		var is_lit: bool = bool(c.get("is_lit", false))
+		var q: String = str(c.get("highest_quality", ""))
+		var lv: int = int(c.get("max_level", 0))
+		var best_s: Dictionary = c.get("best_soul", {})
+
+		var eq_b := {"atk": 0, "def": 0, "hp": 0}
+		var eq_count: int = 0
+		for sid in GameState.soul_slots:
+			if str(sid) == "":
+				continue
+			var s: Dictionary = find_soul(str(sid))
+			if s.is_empty():
+				continue
+			var star: String = str(s.get("star", ""))
+			if STAR_TO_CORE_MIGRATION.has(star):
+				star = STAR_TO_CORE_MIGRATION[star]
+			if star == cid:
+				var sb: Dictionary = calc_soul_bonus(s)
+				eq_b["atk"] += int(sb.get("atk", 0))
+				eq_b["def"] += int(sb.get("def", 0))
+				eq_b["hp"] += int(sb.get("hp", 0))
+				eq_count += 1
+
+		var best_b: Dictionary = calc_soul_bonus(best_s) if not best_s.is_empty() else {"atk": 0, "def": 0, "hp": 0}
+		var active_b: Dictionary = eq_b if eq_count > 0 else (best_b if is_lit else {"atk": 0, "def": 0, "hp": 0})
+
+		res.append({
+			"id": cid,
+			"key": str(c.get("key", "")),
+			"label": label,
+			"name": soul_word(cid),
+			"stat": str(c.get("stat", "atk")),
+			"stat_name": str(c.get("stat_name", "")),
+			"is_lit": is_lit,
+			"quality": q,
+			"tier": q,
+			"level": lv,
+			"max_level": lv,
+			"equipped_count": eq_count,
+			"bonus": active_b,
+			"equipped_bonus": eq_b,
+			"best_bonus": best_b,
+		})
+	return res
+
+
 func survey_astrolabe() -> Dictionary:
 	return survey_soul_codex()
 

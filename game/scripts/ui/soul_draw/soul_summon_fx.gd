@@ -5,6 +5,7 @@ extends Control
 signal animation_finished
 
 const UiStyle := preload("res://scripts/ui/ui_style.gd")
+const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 const KEY_ASSET := "res://assets/sprites/player/paperdoll/rabbit/winding_key/key_classic_brass_512.png"
 const GEAR_ASSET := "res://assets/icons/core_slots/slot_04_transmission_gears.png"
@@ -38,6 +39,20 @@ var _is_playing: bool = false
 var _callback: Callable
 
 
+static func _t(s: String) -> String:
+	var res := ContentLoc.text("ui", s)
+	if res != s:
+		return res
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_method("t"):
+			var loc_t = str(loc.call("t", s))
+			if loc_t != "" and loc_t != s:
+				return loc_t
+	return res
+
+
 func _ready() -> void:
 	custom_minimum_size = Vector2(1280, 720)
 	set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -48,7 +63,24 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	_load_font()
 	_build_ui()
+	_connect_loc_signal()
 	visible = false
+
+
+func _connect_loc_signal() -> void:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+		if loc and loc.has_signal("locale_changed"):
+			if not loc.locale_changed.is_connected(_on_locale_changed):
+				loc.locale_changed.connect(_on_locale_changed)
+
+
+func _on_locale_changed(_new_locale: String = "") -> void:
+	if _title_hint:
+		_title_hint.text = _t("發條解鎖 · 聚魂召喚")
+	if _skip_btn:
+		_skip_btn.text = _t("跳過")
 
 
 func _load_font() -> void:
@@ -72,7 +104,7 @@ func _build_ui() -> void:
 
 	# 3. 儀式標題提示
 	_title_hint = Label.new()
-	_title_hint.text = "✦ 發條解鎖 · 聚魂召喚 ✦"
+	_title_hint.text = _t("發條解鎖 · 聚魂召喚")
 	_title_hint.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	_title_hint.offset_top = 36
 	_title_hint.offset_bottom = 76
@@ -164,7 +196,7 @@ func _build_ui() -> void:
 
 	# 9. 右上角快速跳過按鈕
 	_skip_btn = Button.new()
-	_skip_btn.text = "跳過 >>"
+	_skip_btn.text = _t("跳過")
 	_skip_btn.custom_minimum_size = Vector2(90, 36)
 	_skip_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	_skip_btn.offset_left = -110

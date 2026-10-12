@@ -75,6 +75,7 @@ var _saves_ui: RefCounted  ## SaveSlotsPanel
 var _toast: Label
 var _current: Screen = Screen.TITLE
 var _battle_mode: String = "wolf"
+var _defeat_gear_up_requested: bool = false
 var _pre_dummy_hp: int = -1
 var _after_dialogue: Callable = Callable()
 var _paused: bool = false
@@ -128,6 +129,12 @@ func _ready() -> void:
 		_inv_panel.item_used.connect(_on_inv_use_item)
 	if _inv_panel.has_signal("assign_hotbar"):
 		_inv_panel.assign_hotbar.connect(_on_inv_assign_hotbar)
+	if _inv_panel.has_signal("remove_hotbar"):
+		_inv_panel.remove_hotbar.connect(_on_inv_remove_hotbar)
+	if _inv_panel.has_signal("equipment_changed"):
+		_inv_panel.equipment_changed.connect(func():
+			_refresh_hud()
+		)
 	## 短訊：深木提示框，置底中、在探索提示框與快捷欄上方。
 	## 舊版是沒底的深字＋白影，落在地圖上有時讀得到有時讀不到；
 	## 而且錨在底中卻沒設 grow，文字是從螢幕正中往右長出去的，不是置中。
@@ -2359,6 +2366,14 @@ func _on_hotbar_use(slot: int) -> void:
 
 
 func _on_inv_use_item(item_id: String) -> void:
+	var def: Dictionary = InventorySystem.catalog(item_id) if InventorySystem else {}
+	var kind := str(def.get("kind", "")).to_lower()
+	if kind in ["consumable", "potion"] or item_id.begins_with("hp_") or item_id.begins_with("pot_"):
+		SaveManager.save_game()
+		_refresh_hud()
+		if _inv_panel and _inv_panel.has_method("refresh"):
+			_inv_panel.call("refresh")
+		return
 	var res: Dictionary = InventorySystem.use_item(item_id)
 	if not bool(res.get("ok", false)):
 		_show_toast(str(res.get("msg", _t("無法使用"))))
@@ -2384,6 +2399,21 @@ func _on_inv_assign_hotbar(item_id: String) -> void:
 		_show_toast(_t("快捷欄已滿，改綁 1：%s") % InventorySystem.item_name(item_id))
 	if _hotbar and _hotbar.has_method("refresh"):
 		_hotbar.call("refresh")
+	if _inv_panel and _inv_panel.has_method("refresh"):
+		_inv_panel.call("refresh")
+
+
+func _on_inv_remove_hotbar(item_id: String) -> void:
+	InventorySystem.ensure_hotbar()
+	for i in GameState.hotbar.size():
+		if str(GameState.hotbar[i]) == item_id:
+			InventorySystem.clear_hotbar(i)
+	var name_str := InventorySystem.item_name(item_id) if InventorySystem else item_id
+	_show_toast(_t("已從快捷欄卸下：%s") % name_str)
+	if _hotbar and _hotbar.has_method("refresh"):
+		_hotbar.call("refresh")
+	if _inv_panel and _inv_panel.has_method("refresh"):
+		_inv_panel.call("refresh")
 
 
 func _show_toast(msg: String) -> void:
@@ -4214,7 +4244,10 @@ func _start_battle_raw(mode: String) -> void:
 		battle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		battle.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		host.add_child(battle)
+		_defeat_gear_up_requested = false
 		battle.battle_finished.connect(_on_battle_finished)
+		if battle.has_signal("gear_up_requested"):
+			battle.connect("gear_up_requested", func(): _defeat_gear_up_requested = true)
 		battle.setup(mode)
 		_refresh_hud()
 		return
@@ -4248,12 +4281,27 @@ func _start_battle_raw(mode: String) -> void:
 	battle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	battle.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	host.add_child(battle)
+	_defeat_gear_up_requested = false
 	battle.battle_finished.connect(_on_battle_finished)
+	if battle.has_signal("gear_up_requested"):
+		battle.connect("gear_up_requested", func(): _defeat_gear_up_requested = true)
 	battle.setup(mode)
 	_refresh_hud()
 
 
 func _on_battle_finished(won: bool) -> void:
+	if not won and _defeat_gear_up_requested:
+		_defeat_gear_up_requested = false
+		SaveManager.save_game()
+		_explore_play_pose("hit", 0.5)
+		if _battle_mode != "pvp_snap":
+			var ref: Dictionary = EnergySystem.refund_on_defeat(_battle_mode)
+			var ref_n := int(ref.get("refunded", 0))
+			if ref_n > 0:
+				GameLog.combat(_t("戰鬥失敗：返還能量 %d 點") % ref_n)
+				ui_toast(_t("戰鬥失敗：返還能量 %d 點（現有 %d／%d）") % [ref_n, EnergySystem.current(), EnergySystem.MAX_ENERGY])
+		_go_mobile_lobby(1)
+		return
 	if _battle_mode == "training_dummy":
 		if _pre_dummy_hp > 0:
 			GameState.hp = _pre_dummy_hp

@@ -43,6 +43,10 @@
     "desc": "La que recogiste a la entrada de la galería de niebla. La guardas aun tras forjarla en condiciones.",
     "name": "Espada oxidada (recuerdo)"
   },
+  "rusty_blade": {
+    "desc": "Una hoja de hierro moteada. Llévala a la Fragua Celestial para mejorarla.",
+    "name": "Espada oxidada"
+  },
   "knight_shard": {
     "desc": "Fragmento de forja del dominio de los caballeros. Sirve para la línea de sables.",
     "name": "Esquirla de hierro de caballero"
@@ -86,5 +90,17 @@
   "wolf_fang": {
     "desc": "Componente afilado desprendido de autómatas descontrolados. Se vende por 8 de oro.",
     "name": "Diente de trinquete"
+  },
+  "meager_edge": {
+    "desc": "Una daga bien forjada que apenas empieza a cortar. Sigue templándola en la Fragua Celestial.",
+    "name": "Filo Humilde"
+  },
+  "ash_mail": {
+    "desc": "Un peto ligero batido con ceniza. Llévalo a la Fragua Celestial para subirlo de nivel.",
+    "name": "Malla de Ceniza"
+  },
+  "knight_plate": {
+    "desc": "Un peto pesado de acero fino, con un sereno brillo metálico.",
+    "name": "Coraza del Caballero"
   }
 }

@@ -164,8 +164,15 @@ func _process(_delta: float) -> bool:
 
 			## 10. 驗證六語系切換 (Loc.locale_changed 動態即時更新)
 			print("\n--- 開始測試六語系 (en, ja, ko, es, zh_CN, zh_TW) 即時切換 ---")
+			var gs: Node = root.get_node_or_null("GameState")
+			if gs and "hp" in gs:
+				gs.hp = 20
+			if gs and "hotbar" in gs:
+				gs.hotbar = ["", "", "", "", "", "", "", ""]
 			if inv_sys:
 				inv_sys.call("add_item", "iron_scrap", 5)
+			if gs and "hotbar" in gs:
+				gs.hotbar = ["", "", "", "", "", "", "", ""]
 			_inv.open()
 			var loc: Node = root.get_node_or_null("Loc")
 			if loc == null:
@@ -179,7 +186,7 @@ func _process(_delta: float) -> bool:
 				return _fail("en 語系標題錯誤，預期 'Inventory'，實際: '%s'" % (title_lbl.text if title_lbl else "null"))
 			if sub_lbl == null or sub_lbl.text != "Adventurer's Bag · Tap slot to view details":
 				return _fail("en 語系副標錯誤，實際: '%s'" % (sub_lbl.text if sub_lbl else "null"))
-			if use_btn.text != "Use / Sell":
+			if use_btn.text != "Use":
 				return _fail("en 語系使用按鈕錯誤，實際: '%s'" % use_btn.text)
 			if hb_btn.text != "Assign to Hotbar":
 				return _fail("en 語系快捷欄按鈕錯誤，實際: '%s'" % hb_btn.text)
@@ -191,6 +198,8 @@ func _process(_delta: float) -> bool:
 			_inv.call("_update_detail", null)
 			if not detail_rt.text.contains("Adventurer's Bag") or not detail_rt.text.contains("Consumable: Use to restore stats"):
 				return _fail("en 語系空選取說明未包含英文翻譯: %s" % detail_rt.text)
+			if use_btn.text != "Use / Sell":
+				return _fail("en 語系空選取按鈕錯誤，預期 'Use / Sell'，實際: '%s'" % use_btn.text)
 
 			# 測試 en 道具詳情與類型標籤
 			_inv.set("_selected", "iron_scrap")
@@ -198,6 +207,8 @@ func _process(_delta: float) -> bool:
 			var d_kind: Label = _inv.get("_detail_kind")
 			if d_kind == null or d_kind.text != "Type: Material (Click Use to Sell)":
 				return _fail("en 語系素材類型標籤錯誤，實際: '%s'" % (d_kind.text if d_kind else "null"))
+			if use_btn.text != "Sell":
+				return _fail("en 語系素材賣出按鈕錯誤，預期 'Sell'，實際: '%s'" % use_btn.text)
 			print("  ok en (英文) 標題、副標、按鈕、操作提示、空格說明與道具類型切換通過")
 
 			# (2) 日文 ja
@@ -206,7 +217,7 @@ func _process(_delta: float) -> bool:
 				return _fail("ja 語系標題錯誤，預期 'インベントリ'，實際: '%s'" % title_lbl.text)
 			if sub_lbl.text != "冒険者のバッグ · マスをタップして詳細確認":
 				return _fail("ja 語系副標錯誤，實際: '%s'" % sub_lbl.text)
-			if use_btn.text != "使う / 売却":
+			if use_btn.text != "売却":
 				return _fail("ja 語系使用按鈕錯誤，實際: '%s'" % use_btn.text)
 			if hb_btn.text != "ショートカットに登録":
 				return _fail("ja 語系快捷欄按鈕錯誤，實際: '%s'" % hb_btn.text)
@@ -220,7 +231,7 @@ func _process(_delta: float) -> bool:
 			loc.call("set_locale", "ko")
 			if title_lbl.text != "소지품":
 				return _fail("ko 語系標題錯誤，預期 '소지품'，實際: '%s'" % title_lbl.text)
-			if use_btn.text != "사용 / 판매":
+			if use_btn.text != "판매":
 				return _fail("ko 語系使用按鈕錯誤，實際: '%s'" % use_btn.text)
 			if hb_btn.text != "단축칸에 등록":
 				return _fail("ko 語系快捷欄按鈕錯誤，實際: '%s'" % hb_btn.text)
@@ -232,7 +243,7 @@ func _process(_delta: float) -> bool:
 			loc.call("set_locale", "es")
 			if title_lbl.text != "Inventario":
 				return _fail("es 語系標題錯誤，預期 'Inventario'，實際: '%s'" % title_lbl.text)
-			if use_btn.text != "Usar / Vender":
+			if use_btn.text != "Vender":
 				return _fail("es 語系使用按鈕錯誤，實際: '%s'" % use_btn.text)
 			if hb_btn.text != "Asignar a acceso rápido":
 				return _fail("es 語系快捷欄按鈕錯誤，實際: '%s'" % hb_btn.text)
@@ -244,7 +255,7 @@ func _process(_delta: float) -> bool:
 			loc.call("set_locale", "zh_CN")
 			if title_lbl.text != "物品栏":
 				return _fail("zh_CN 語系標題錯誤，預期 '物品栏'，實際: '%s'" % title_lbl.text)
-			if use_btn.text != "使用 / 出售":
+			if use_btn.text != "出售":
 				return _fail("zh_CN 語系使用按鈕錯誤，實際: '%s'" % use_btn.text)
 			if hb_btn.text != "放入快捷栏":
 				return _fail("zh_CN 語系快捷欄按鈕錯誤，實際: '%s'" % hb_btn.text)
@@ -258,7 +269,7 @@ func _process(_delta: float) -> bool:
 				return _fail("zh_TW 語系標題錯誤，預期 '物品欄'，實際: '%s'" % title_lbl.text)
 			if sub_lbl.text != "冒險者背包 · 點選格子查看詳情":
 				return _fail("zh_TW 語系副標錯誤，實際: '%s'" % sub_lbl.text)
-			if use_btn.text != "使用 / 賣出":
+			if use_btn.text != "賣出":
 				return _fail("zh_TW 語系使用按鈕錯誤，實際: '%s'" % use_btn.text)
 			if hb_btn.text != "放到快捷欄":
 				return _fail("zh_TW 語系快捷欄按鈕錯誤，實際: '%s'" % hb_btn.text)

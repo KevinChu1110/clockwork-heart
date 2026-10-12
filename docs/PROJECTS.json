@@ -5715,6 +5715,356 @@
    "keys": [
     "大廳角色頁三欄武"
    ]
+  },
+  {
+   "id": "defeat-diagnostic",
+   "cat": "遊戲",
+   "title": "戰敗結算戰力診斷與前往整頓",
+   "status": "已上線",
+   "note": "t_f8f33c24 全站回歸驗收通過，戰敗診斷卡與前往整頓已上線",
+   "keys": [
+    "戰敗結算戰力診斷"
+   ]
+  },
+  {
+   "id": "victory-next-stage",
+   "cat": "遊戲",
+   "title": "出征勝利連續挑戰下一關按鈕",
+   "status": "已上線",
+   "note": "t_f8f33c24 全站回歸驗收通過，出征連續挑戰下一關按鈕已上線",
+   "keys": [
+    "出征勝利連續挑戰"
+   ]
+  },
+  {
+   "id": "weapon-swap-forge",
+   "cat": "遊戲",
+   "title": "武器更換彈窗直通天宮鐵匠",
+   "status": "已上線",
+   "note": "t_f8f33c24 全站回歸驗收通過，武器更換直通天宮鐵匠已上線",
+   "keys": [
+    "武器更換彈窗直通"
+   ]
+  },
+  {
+   "id": "defeat-retry",
+   "cat": "遊戲",
+   "title": "戰敗結算再次挑戰按鈕",
+   "status": "已上線",
+   "note": "再次挑戰重啟關卡滿血滿狀態全面回歸通過 (t_2554e391)",
+   "keys": [
+    "戰敗結算再次挑戰"
+   ]
+  },
+  {
+   "id": "victory-replay",
+   "cat": "遊戲",
+   "title": "勝利結算再次挑戰按鈕",
+   "status": "已上線",
+   "note": "出征勝利再次挑戰重複刷關扣體發獎全面回歸通過 (t_2554e391)",
+   "keys": [
+    "勝利結算再次挑戰"
+   ]
+  },
+  {
+   "id": "forge-loadout-slots",
+   "cat": "遊戲",
+   "title": "天宮鐵匠三欄武器切換",
+   "status": "已上線",
+   "note": "天宮鐵匠三欄武器切換鍛造副詞條刷新全面回歸通過 (t_2554e391)",
+   "keys": [
+    "天宮鐵匠三欄武器"
+   ]
+  },
+  {
+   "id": "bag-equip-forge",
+   "cat": "遊戲",
+   "title": "背包Tab裝備詳情前往鍛造",
+   "status": "已上線",
+   "note": "已於 t_cdec80f5 / t_58e87148 / t_d9a6aa7e 完成並上線（同 bag-forge-shortcut）",
+   "keys": [
+    "背包Tab裝備詳"
+   ]
+  },
+  {
+   "id": "bag-forge-shortcut",
+   "cat": "遊戲",
+   "title": "背包Tab武器裝備詳情新增前往鍛造快捷按鈕",
+   "status": "已上線",
+   "note": "全面回歸驗收完成，實機截圖與無頭測試全綠",
+   "keys": [
+    "背包Tab武器裝"
+   ]
+  },
+  {
+   "id": "bag-dismantle-btn",
+   "cat": "遊戲",
+   "title": "背包Tab武器裝備詳情新增拆解回收按鈕",
+   "status": "已上線",
+   "note": "t_ccf48aae 回歸驗收通過，實機截圖存證至 proofs/t_ccf48aae/",
+   "keys": [
+    "背包Tab武器裝"
+   ]
+  },
+  {
+   "id": "bag-gem-detail-dismantle",
+   "cat": "遊戲",
+   "title": "背包Tab裝備詳情顯示已鑲寶石並於拆解時安全返還",
+   "status": "已上線",
+   "note": "t_ccf48aae 回歸驗收通過，實機截圖存證至 proofs/t_ccf48aae/",
+   "keys": [
+    "背包Tab裝備詳"
+   ]
+  },
+  {
+   "id": "forge-workshop-link",
+   "cat": "遊戲",
+   "title": "天宮鐵匠與手藝工坊雙向直通快捷按鈕",
+   "status": "已上線",
+   "note": "t_ccf48aae 回歸驗收通過，實機截圖存證至 proofs/t_ccf48aae/",
+   "keys": [
+    "天宮鐵匠與手藝工"
+   ]
+  },
+  {
+   "id": "bag-workshop-shortcut",
+   "cat": "遊戲",
+   "title": "背包Tab寶石素材與裝備詳情前往工坊",
+   "status": "已上線",
+   "note": "t_ccf48aae 回歸驗收通過，實機截圖存證至 proofs/t_ccf48aae/",
+   "keys": [
+    "背包Tab寶石素"
+   ]
+  },
+  {
+   "id": "gem-auto-fuse",
+   "cat": "遊戲",
+   "title": "手藝工坊寶石熔煉新增一鍵合成",
+   "status": "已上線",
+   "note": "審核通過已合併上線",
+   "keys": [
+    "手藝工坊寶石熔煉"
+   ]
+  },
+  {
+   "id": "forge-auto-forge",
+   "cat": "遊戲",
+   "title": "天宮鐵匠新增一鍵鍛造按鈕與連動",
+   "status": "已上線",
+   "note": "審核通過已合併上線",
+   "keys": [
+    "天宮鐵匠新增一鍵"
+   ]
+  },
+  {
+   "id": "soul-draw-clean",
+   "cat": "遊戲",
+   "title": "聚魂召喚系統清除特殊符號『✦』殘留與合規對齊",
+   "status": "已上線",
+   "note": "審核通過已合併上線",
+   "keys": [
+    "聚魂召喚系統清除"
+   ]
+  },
+  {
+   "id": "lobby-power-stat-dialog",
+   "cat": "遊戲",
+   "title": "大廳頂部戰力膠囊點擊開啟戰力屬性總覽彈窗",
+   "status": "已上線",
+   "note": "審核通過已合併上線",
+   "keys": [
+    "大廳頂部戰力膠囊"
+   ]
+  },
+  {
+   "id": "vault-double-claim",
+   "cat": "遊戲",
+   "title": "發條儲能庫放置收益雙倍領取連動獎勵廣告",
+   "status": "已上線",
+   "note": "審核通過已合併上線",
+   "keys": [
+    "發條儲能庫放置收"
+   ]
+  },
+  {
+   "id": "power-stat-equip-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog戰力屬性總覽新增前往整頓快捷按鈕連動大廳角色裝備Tab",
+   "status": "已上線",
+   "note": "主線合併回歸驗收全數通過，已成功合入 main",
+   "keys": [
+    "PowerSta"
+   ]
+  },
+  {
+   "id": "power-stat-equip-merge",
+   "cat": "平台",
+   "title": "PowerStatDialog 前往整頓快捷分支合併與主線回歸",
+   "status": "已上線",
+   "note": "合入 main 並完成雙按鈕與大廳連動回歸驗收存證 (t_56bda80d)",
+   "keys": [
+    "PowerSta"
+   ]
+  },
+  {
+   "id": "power-stat-shortcuts",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽寶石與招式快捷跳轉工坊與心法",
+   "status": "已上線",
+   "note": "合入 main 分支，完成 PowerStatDialog 寶石前往工坊與招式前往心法快捷按鈕",
+   "keys": [
+    "PowerSta"
+   ]
+  },
+  {
+   "id": "inventory-sort",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包一鍵整理功能與果凍按鈕",
+   "status": "已上線",
+   "note": "合入 main 分支，完成 MapleInventory 探索背包一鍵整理功能與果凍按鈕",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-category-chips",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援分類頁籤 Chip 列",
+   "status": "已上線",
+   "note": "審核通過，分類 Chip 功能已上線",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-category-chips-merge",
+   "cat": "平台",
+   "title": "MapleInventory 探索背包分類頁籤 Chip 列分支合併與主線回歸",
+   "status": "已上線",
+   "note": "主線合併審查通過，全站回歸驗收完成",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-equip-direct",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援選取裝備立即裝備與動態按鈕文案",
+   "status": "已上線",
+   "note": "MapleInventory 探索背包支援立即裝備與動態按鈕文案（經 sideqa 回歸驗收全綠）",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-stat-comparison",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包選取裝備支援戰力差額比對膠囊與屬性預覽",
+   "status": "已上線",
+   "note": "MapleInventory 探索背包選取裝備支援戰力差額比對膠囊與屬性預覽（經 sideqa 回歸驗收全綠）",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-equipped-state",
+   "cat": "遊戲",
+   "title": "探索背包當前裝備狀態辨識與已穿戴按鈕置灰",
+   "status": "已上線",
+   "note": "MapleInventory 探索背包當前裝備狀態辨識與已穿戴按鈕置灰（經 sideqa 回歸驗收全綠）",
+   "keys": [
+    "探索背包當前裝備"
+   ]
+  },
+  {
+   "id": "inventory-lock-toggle",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援裝備鎖定與解鎖",
+   "status": "已上線",
+   "note": "MapleInventory 探索背包支援裝備鎖定與解鎖（經 sideqa 回歸驗收全綠）",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "power-stat-soul-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽新增戰魂共鳴卡片與前往聚魂快捷按鈕",
+   "status": "已上線",
+   "note": "PowerStatDialog 戰力屬性總覽新增戰魂共鳴卡片與前往聚魂快捷按鈕（經 sideqa 回歸驗收全綠）",
+   "keys": [
+    "PowerSta"
+   ]
+  },
+  {
+   "id": "inventory-dismantle-recycle",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包選取裝備支援拆解回收與安全防護",
+   "status": "已上線",
+   "note": "探索背包裝備拆解回收功能全站回歸驗收通過 (t_a36f9bb8)",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-shortcuts",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包選取裝備與素材支援前往鍛造與前往工坊快捷跳轉",
+   "status": "已上線",
+   "note": "全面回歸驗收通過，完成前往鍛造與前往工坊快捷跳轉、多巴胺亮色盤果凍按鈕、六語系即時切換與實機截圖存證",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-capacity",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援即時容量進度膠囊顯示與格子滿載提示",
+   "status": "已上線",
+   "note": "合入 main 分支，支援即時容量進度膠囊顯示與格子滿載提示",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-batch-sell-materials",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援一鍵出售未鎖定素材與金幣結算浮動提示",
+   "status": "已上線",
+   "note": "主線合併與全站回歸驗收通過，實機截圖存證完成",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-consumable-use",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援消耗品即時使用效果結算與恢復浮動提示",
+   "status": "已上線",
+   "note": "完成消耗品即時使用結算、生命已滿防浪費保護、多巴胺浮動飄字提示、六語系支援與單元測試全綠",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-hotbar-toggle",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援快捷欄綁定狀態膠囊顯示與一鍵卸下快捷鍵",
+   "status": "已上線",
+   "note": "雙分支合進 main，快捷欄綁定狀態與一鍵卸下已全面回歸驗收",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "lobby-core-replace-compare",
+   "cat": "遊戲",
+   "title": "大廳角色頁五大機芯槽位點擊更換支援 CoreReplaceDialog 比較確認彈窗連動",
+   "status": "已上線",
+   "note": "雙分支合進 main，大廳機芯更換 CoreReplaceDialog 已全面回歸驗收",
+   "keys": [
+    "大廳角色頁五大機"
+   ]
   }
  ]
 }
