@@ -47,9 +47,9 @@ func _process(_delta: float) -> bool:
 				return _fail("找不到 CategoryChipsRow 節點")
 
 			var chips_dict: Dictionary = _inv.call("get_chip_buttons")
-			var expected_categories := ["all", "equip", "consumable", "material", "gem"]
-			if chips_dict.size() != 5:
-				return _fail("Chip 按鈕數量應為 5，實際為: %d" % chips_dict.size())
+			var expected_categories := ["all", "equip", "core", "consumable", "material", "gem"]
+			if chips_dict.size() != 6:
+				return _fail("Chip 按鈕數量應為 6，實際為: %d" % chips_dict.size())
 
 			for cid in expected_categories:
 				if not chips_dict.has(cid):
@@ -100,12 +100,12 @@ func _process(_delta: float) -> bool:
 
 			var chips_dict: Dictionary = _inv.call("get_chip_buttons")
 			var expected_texts := {
-				"zh_TW": {"all": "全部", "equip": "裝備", "consumable": "消耗品", "material": "素材", "gem": "寶石"},
-				"zh_CN": {"all": "全部", "equip": "装备", "consumable": "消耗品", "material": "素材", "gem": "宝石"},
-				"en": {"all": "All", "equip": "Equipment", "consumable": "Consumable", "material": "Material", "gem": "Gem"},
-				"ja": {"all": "全部", "equip": "装備", "consumable": "消耗品", "material": "素材", "gem": "宝石"},
-				"ko": {"all": "전체", "equip": "장비", "consumable": "소모품", "material": "소재", "gem": "보석"},
-				"es": {"all": "Todo", "equip": "Equipo", "consumable": "Consumible", "material": "Material", "gem": "Gema"},
+				"zh_TW": {"all": "全部", "equip": "裝備", "core": "機芯", "consumable": "消耗品", "material": "素材", "gem": "寶石"},
+				"zh_CN": {"all": "全部", "equip": "装备", "core": "机芯", "consumable": "消耗品", "material": "素材", "gem": "宝石"},
+				"en": {"all": "All", "equip": "Equipment", "core": "Core", "consumable": "Consumable", "material": "Material", "gem": "Gem"},
+				"ja": {"all": "全部", "equip": "装備", "core": "コア", "consumable": "消耗品", "material": "素材", "gem": "宝石"},
+				"ko": {"all": "전체", "equip": "장비", "core": "코어", "consumable": "소모품", "material": "소재", "gem": "보석"},
+				"es": {"all": "Todo", "equip": "Equipo", "core": "Núcleo", "consumable": "Consumible", "material": "Material", "gem": "Gema"},
 			}
 
 			for code in ["en", "ja", "ko", "es", "zh_CN", "zh_TW"]:
@@ -116,7 +116,7 @@ func _process(_delta: float) -> bool:
 					var exp: String = expected_for_code[cid]
 					if btn.text != exp:
 						return _fail("[%s] Chip [%s] 標籤文字不符: 期望 '%s'，實際 '%s'" % [code, cid, exp, btn.text])
-				print("  ok [%s] 5 枚 Chip 在地化文字全部吻合" % code)
+				print("  ok [%s] 6 枚 Chip 在地化文字全部吻合" % code)
 
 			loc.call("set_locale", "zh_TW")
 			_step = 3
