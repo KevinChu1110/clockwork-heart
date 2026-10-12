@@ -15,6 +15,7 @@ signal workshop_requested()
 signal skill_requested()
 signal soul_requested()
 signal calibrate_requested()
+signal forge_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -64,7 +65,7 @@ const COLOR_TEXT_LIGHT   := Color("#FFFDF8")  ## 奶油白高亮文字
 const COLOR_TEXT_DIM     := Color("#888294")  ## 壓暗提示文字
 
 const DIALOG_WIDTH  := 720
-const DIALOG_HEIGHT := 520
+const DIALOG_HEIGHT := 560
 const CORNER_RADIUS := 18
 
 var _scrim: ColorRect
@@ -77,6 +78,7 @@ var _btn_go_workshop: Button
 var _btn_go_skill: Button
 var _btn_go_soul: Button
 var _btn_go_calibrate: Button
+var _btn_go_forge: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -273,6 +275,8 @@ func refresh() -> void:
 		_btn_go_soul.text = _t("前往聚魂")
 	if _btn_go_calibrate:
 		_btn_go_calibrate.text = _t("前往校準")
+	if _btn_go_forge:
+		_btn_go_forge.text = _t("前往鍛造")
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("確定")
 
@@ -528,9 +532,12 @@ func _build_weapon_loadout_card(gs: Node, eq: Node) -> PanelContainer:
 	m.add_child(v)
 
 	var t_row := HBoxContainer.new()
+	t_row.name = "WeaponHeaderRow"
+	t_row.add_theme_constant_override("separation", 8)
 	v.add_child(t_row)
 
 	var t := Label.new()
+	t.name = "WeaponLoadoutTitleLabel"
 	t.text = _t("三欄武器裝備貢獻")
 	_apply_font(t, 14, COLOR_TEXT_DARK, true)
 	t_row.add_child(t)
@@ -545,11 +552,22 @@ func _build_weapon_loadout_card(gs: Node, eq: Node) -> PanelContainer:
 	var b_crit := float(eq_bonus.get("crit", 0.0))
 
 	var summary_lbl := Label.new()
+	summary_lbl.name = "WeaponSummaryLabel"
 	summary_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	summary_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	summary_lbl.text = _t("裝備總加成: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%") % [b_atk, b_def, b_hp, b_crit]
 	_apply_font(summary_lbl, 12, COLOR_TEXT_GOLD, true)
 	t_row.add_child(summary_lbl)
+
+	# 快捷按鈕：前往鍛造 (BtnGoForge)（高>=48px，熱區>=48px，金黃果凍厚底 5px，深藍紫描邊 2px，字級 14px）
+	_btn_go_forge = Button.new()
+	_btn_go_forge.name = "BtnGoForge"
+	_btn_go_forge.text = _t("前往鍛造")
+	_btn_go_forge.custom_minimum_size = Vector2(96, 48)
+	_btn_go_forge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_forge, COLOR_GOLD, COLOR_TEXT_DARK, 14, 5, 14, COLOR_BORDER, 10, 4)
+	_btn_go_forge.pressed.connect(_on_go_forge_pressed)
+	t_row.add_child(_btn_go_forge)
 
 	# 三槽武器卡片列
 	var slots_h := HBoxContainer.new()
@@ -1190,6 +1208,15 @@ func _on_go_soul_pressed() -> void:
 func _on_go_calibrate_pressed() -> void:
 	calibrate_requested.emit()
 	_on_close_pressed()
+
+
+func _on_go_forge_pressed() -> void:
+	forge_requested.emit()
+	_on_close_pressed()
+
+
+func get_go_forge_button() -> Button:
+	return _btn_go_forge
 
 
 func _on_close_pressed() -> void:

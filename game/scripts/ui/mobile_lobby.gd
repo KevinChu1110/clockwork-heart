@@ -6555,6 +6555,10 @@ func open_power_stat_dialog() -> Control:
 		dlg.calibrate_requested.connect(func():
 			open_forge()
 		)
+	if dlg.has_signal("forge_requested"):
+		dlg.forge_requested.connect(func():
+			open_forge()
+		)
 	add_child(dlg)
 	return dlg
 
