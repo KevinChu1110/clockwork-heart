@@ -239,13 +239,22 @@ func _process(_delta: float) -> bool:
 
 				if _swap_dlg and _swap_dlg.has_signal("weapon_swapped"):
 					_swap_dlg.weapon_swapped.emit(0, test_uid)
+				if is_instance_valid(_swap_dlg) and not _swap_dlg.is_queued_for_deletion():
+					_swap_dlg.queue_free()
 
 				_step = 4
 				_wait = 0
 
 		4:
-			# Step 4: 截圖 3 - 驗證 WeaponSwapDialog 換裝完成後 ForgeDialog 原地刷新
-			if _wait >= 20:
+			# Step 4: 截圖 3 - 驗證 WeaponSwapDialog 換裝完成後關閉且 ForgeDialog 原地刷新
+			if _wait >= 25:
+				if is_instance_valid(_swap_dlg):
+					print("  等待 _swap_dlg 完全釋放...")
+					return false
+				var existing_swap := _forge_dlg.get_node_or_null("WeaponSwapDialog")
+				if existing_swap != null:
+					_fail("WeaponSwapDialog 仍在 ForgeDialog 中未關閉")
+					return true
 				var w_lbl: Label = _forge_dlg.find_child("WeaponLabel", true, false) as Label
 				if w_lbl == null or not ("天工神刃" in w_lbl.text):
 					_fail("ForgeDialog 未原地刷新為天工神刃: %s" % (w_lbl.text if w_lbl else "null"))
@@ -253,6 +262,10 @@ func _process(_delta: float) -> bool:
 					print("  ✓ ForgeDialog 成功原地刷新: %s" % w_lbl.text)
 
 				var crop_refreshed := Rect2i(260, 100, 760, 200)
+				var head_node := _forge_dlg.find_child("WeaponStatusHead", true, false) as Control
+				if head_node:
+					var gpos: Vector2 = head_node.global_position
+					crop_refreshed = Rect2i(int(gpos.x) - 20, int(gpos.y) - 15, int(head_node.size.x) + 40, 180)
 				_save_viewport("proof_03_weapon_swapped_forge_refreshed.png", crop_refreshed, "crop_03_forge_refreshed_head.png")
 
 				# 切換語系至 zh_CN

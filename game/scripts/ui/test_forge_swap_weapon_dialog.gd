@@ -212,9 +212,12 @@ func _run_tests() -> void:
 	else:
 		print("  ✓ 槽位標籤 Chip_0 原地刷新成功: %s" % chip0.text)
 
-	# 關閉並清理暫態子彈窗
+	# 驗證 WeaponSwapDialog 在換裝後已被 ForgeDialog 觸發 queue_free 關閉
 	if swap_dlg and is_instance_valid(swap_dlg):
-		swap_dlg.queue_free()
+		if not swap_dlg.is_queued_for_deletion():
+			_fail("WeaponSwapDialog 在發出 weapon_swapped 後未被標記關閉釋放 (queue_free)")
+		else:
+			print("  ✓ WeaponSwapDialog 在換裝後成功標記關閉釋放 (is_queued_for_deletion)")
 
 	# =========================================================================
 	# 測試 4：六語系即時切換與無缺詞檢驗

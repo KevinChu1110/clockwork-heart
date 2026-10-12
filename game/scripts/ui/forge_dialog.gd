@@ -1830,6 +1830,9 @@ func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
 
 
 func _on_weapon_swapped_from_dialog(slot_idx: int, uid: String) -> void:
+	if is_instance_valid(_weapon_swap_dialog) and not _weapon_swap_dialog.is_queued_for_deletion():
+		_weapon_swap_dialog.queue_free()
+		_weapon_swap_dialog = null
 	_active_slot_idx = clampi(slot_idx, 0, 2)
 	var es := _get_equip_sys()
 	if es and es.has_method("equip_weapon_to_loadout") and not uid.is_empty():
@@ -1856,6 +1859,9 @@ func _on_weapon_swapped_from_dialog(slot_idx: int, uid: String) -> void:
 
 
 func _on_slot_unequipped_from_dialog(slot_idx: int) -> void:
+	if is_instance_valid(_weapon_swap_dialog) and not _weapon_swap_dialog.is_queued_for_deletion():
+		_weapon_swap_dialog.queue_free()
+		_weapon_swap_dialog = null
 	_active_slot_idx = clampi(slot_idx, 0, 2)
 	if "weapon_loadout_active" in GameState:
 		GameState.weapon_loadout_active = _active_slot_idx

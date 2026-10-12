@@ -24,15 +24,15 @@
 
 | 編號 | 檔案名稱 | 截圖內容說明 | 破圖檢核 | Emoji檢核 | 截字檢核 | SHA256 前綴 | 狀態 |
 |---|---|---|---|---|---|---|---|
-| 01 | `proof_01_forge_dialog_btn_swap_weapon_zh_TW.png` | 繁中天宮鐵匠武器鍛造區當前槽位標題列：天藍色『更換裝備』立體果凍按鈕（`BtnSwapWeapon`，110x48px，厚底 5px） | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `d705f752b687` | 合格 (PASS) |
-| 02 | `proof_02_weapon_swap_dialog_opened.png` | 點擊『更換裝備』後順暢連動開啟 `WeaponSwapDialog`（750px 橫屏、全螢幕半透明遮罩、三欄槽位與庫存武器清單） | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `205a6d0a81b9` | 合格 (PASS) |
-| 03 | `proof_03_weapon_swapped_forge_refreshed.png` | 於 `WeaponSwapDialog` 更換武器（天工神刃 T5 攻擊+999）後，彈窗關閉且 `ForgeDialog` 原地即時刷新武器名稱、攻擊力與槽位標籤 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `9b4192592eb8` | 合格 (PASS) |
-| 04 | `proof_04_forge_btn_swap_weapon_zh_CN.png` | 簡體中文語系 (zh_CN) 下 `BtnSwapWeapon` 顯示「更换装备」 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `08dce2efa03c` | 合格 (PASS) |
-| 05 | `proof_05_forge_btn_swap_weapon_en.png` | 英文語系 (en) 下 `BtnSwapWeapon` 顯示「Change Equipment」，零 CJK 殘留 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `6b32d287e396` | 合格 (PASS) |
-| 06 | `proof_06_forge_btn_swap_weapon_ja.png` | 日文語系 (ja) 下 `BtnSwapWeapon` 顯示「装備変更」 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `a39e6c7e717e` | 合格 (PASS) |
-| 07 | `proof_07_forge_btn_swap_weapon_ko.png` | 韓文語系 (ko) 下 `BtnSwapWeapon` 顯示「장비 교체」 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `7d36117925a8` | 合格 (PASS) |
-| 08 | `proof_08_forge_btn_swap_weapon_es.png` | 西班牙文語系 (es) 下 `BtnSwapWeapon` 顯示「Cambiar equipo」，零 CJK 殘留 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `cb1ee40beae9` | 合格 (PASS) |
-| 09 | `proof_09_forge_empty_slot_swap_weapon.png` | 切換至空武器槽位時，依然具備『更換裝備』按鈕，玩家可直接換裝，體驗無斷點 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `03e61309901e` | 合格 (PASS) |
+| 01 | `proof_01_forge_dialog_btn_swap_weapon_zh_TW.png` | 繁中天宮鐵匠武器鍛造區當前槽位標題列：天藍色『更換裝備』立體果凍按鈕（`BtnSwapWeapon`，110x48px，厚底 5px） | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `b5b2ccfd5a00` | 合格 (PASS) |
+| 02 | `proof_02_weapon_swap_dialog_opened.png` | 點擊『更換裝備』後順暢連動開啟 `WeaponSwapDialog`（750px 橫屏、全螢幕半透明遮罩、三欄槽位與庫存武器清單） | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `bc776be51484` | 合格 (PASS) |
+| 03 | `proof_03_weapon_swapped_forge_refreshed.png` | 於 `WeaponSwapDialog` 更換武器（天工神刃 T5 攻擊+999）後，彈窗關閉且 `ForgeDialog` 原地即時刷新武器名稱、攻擊力與槽位標籤 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `619497b9f901` | 合格 (PASS) |
+| 04 | `proof_04_forge_btn_swap_weapon_zh_CN.png` | 簡體中文語系 (zh_CN) 下 `BtnSwapWeapon` 顯示「更换装备」 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `f3d623e0836d` | 合格 (PASS) |
+| 05 | `proof_05_forge_btn_swap_weapon_en.png` | 英文語系 (en) 下 `BtnSwapWeapon` 顯示「Change Equipment」，零 CJK 殘留 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `77a1d0e8388b` | 合格 (PASS) |
+| 06 | `proof_06_forge_btn_swap_weapon_ja.png` | 日文語系 (ja) 下 `BtnSwapWeapon` 顯示「装備変更」 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `281617a47bc9` | 合格 (PASS) |
+| 07 | `proof_07_forge_btn_swap_weapon_ko.png` | 韓文語系 (ko) 下 `BtnSwapWeapon` 顯示「장비 교체」 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `f8ac529396fc` | 合格 (PASS) |
+| 08 | `proof_08_forge_btn_swap_weapon_es.png` | 西班牙文語系 (es) 下 `BtnSwapWeapon` 顯示「Cambiar equipo」，零 CJK 殘留 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `fbb83922be9b` | 合格 (PASS) |
+| 09 | `proof_09_forge_empty_slot_swap_weapon.png` | 切換至空武器槽位時，依然具備『更換裝備』按鈕，玩家可直接換裝，體驗無斷點 | ✓ 無破圖 | ✓ 零Emoji | ✓ 零截字 | `4d602aae70bf` | 合格 (PASS) |
 
 ---
 
