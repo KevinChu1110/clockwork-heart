@@ -4171,5 +4171,9 @@
   "已鎖定素材已保留未出售": "Los materiales bloqueados se conservaron.",
   "機芯五槽配置": "Configuración de 5 Ranuras de Núcleo",
   "點擊更換裝備 · 強化核心機芯": "Toca para cambiar equipo · Mejorar núcleos",
-  "背包暫無此部位可替換機芯": "Sin piezas de núcleo reemplazables para esta ranura en la mochila"
+  "背包暫無此部位可替換機芯": "Sin piezas de núcleo reemplazables para esta ranura en la mochila",
+  "前往校準": "Calibrar",
+  "機芯總加成: 攻+%d · 防+%d · 血+%d": "Total de Núcleo: ATQ+%d · DEF+%d · PV+%d",
+  "機芯加成": "Bonus de Núcleo",
+  "攻+%d · 防+%d · 血+%d": "ATQ+%d · DEF+%d · PV+%d"
 }

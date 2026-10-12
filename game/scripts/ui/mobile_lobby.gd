@@ -6472,6 +6472,10 @@ func open_power_stat_dialog() -> Control:
 		dlg.soul_requested.connect(func():
 			open_soul_hall()
 		)
+	if dlg.has_signal("calibrate_requested"):
+		dlg.calibrate_requested.connect(func():
+			open_forge()
+		)
 	add_child(dlg)
 	return dlg
 
