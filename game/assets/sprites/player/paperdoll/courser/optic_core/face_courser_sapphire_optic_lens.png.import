@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cmfe35gtlxowi"
-path="res://.godot/imported/face_courser_sapphire_optic_lens.png-5f42d314799e0c4367534bebc474b2db.ctex"
+path="res://.godot/imported/face_courser_sapphire_optic_lens.png-04202a9ff97306ac792b7f801e1d5fed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/courser/optic_core/face_courser_sapphire_optic_lens.png"
-dest_files=["res://.godot/imported/face_courser_sapphire_optic_lens.png-5f42d314799e0c4367534bebc474b2db.ctex"]
+source_file="res://assets/paperdoll/courser/optic_core/face_courser_sapphire_optic_lens.png"
+dest_files=["res://.godot/imported/face_courser_sapphire_optic_lens.png-04202a9ff97306ac792b7f801e1d5fed.ctex"]
 
 [params]
 

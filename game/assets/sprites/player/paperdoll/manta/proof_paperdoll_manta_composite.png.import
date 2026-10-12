@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://car2skmwtbjpq"
-path="res://.godot/imported/proof_paperdoll_manta_composite.png-0d7950d5d4482b064d0c08b1310e9182.ctex"
+path="res://.godot/imported/proof_paperdoll_manta_composite.png-7f719079b0cdf3ab52df0d4cf63d1770.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/manta/proof_paperdoll_manta_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_manta_composite.png-0d7950d5d4482b064d0c08b1310e9182.ctex"]
+source_file="res://assets/paperdoll/manta/proof_paperdoll_manta_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_manta_composite.png-7f719079b0cdf3ab52df0d4cf63d1770.ctex"]
 
 [params]
 

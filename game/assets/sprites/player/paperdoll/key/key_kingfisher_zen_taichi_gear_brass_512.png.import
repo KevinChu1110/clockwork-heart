@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://a3coak7pzdsmv"
-path="res://.godot/imported/key_kingfisher_zen_taichi_gear_brass_512.png-b7fdacc82609809936337b0bc3977393.ctex"
+uid="uid://3coak7p0dsmv"
+path="res://.godot/imported/key_kingfisher_zen_taichi_gear_brass_512.png-6c70651871bbdf14173de5caa2dfcbbe.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/key/key_kingfisher_zen_taichi_gear_brass_512.png"
-dest_files=["res://.godot/imported/key_kingfisher_zen_taichi_gear_brass_512.png-b7fdacc82609809936337b0bc3977393.ctex"]
+source_file="res://assets/paperdoll/key/key_kingfisher_zen_taichi_gear_brass_512.png"
+dest_files=["res://.godot/imported/key_kingfisher_zen_taichi_gear_brass_512.png-6c70651871bbdf14173de5caa2dfcbbe.ctex"]
 
 [params]
 

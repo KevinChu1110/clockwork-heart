@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bgu8qs5ss8jox"
-path="res://.godot/imported/hero_winding_key_idle_00.png-ce1e19b4582a254953dcdf109c109513.ctex"
+path="res://.godot/imported/hero_winding_key_idle_00.png-33d9b5ca8dca016efdd076d88b92453f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_00.png"
-dest_files=["res://.godot/imported/hero_winding_key_idle_00.png-ce1e19b4582a254953dcdf109c109513.ctex"]
+source_file="res://assets/sprites/player/paperdoll/rabbit/winding_key_frames/hero_winding_key_idle_00.png"
+dest_files=["res://.godot/imported/hero_winding_key_idle_00.png-33d9b5ca8dca016efdd076d88b92453f.ctex"]
 
 [params]
 

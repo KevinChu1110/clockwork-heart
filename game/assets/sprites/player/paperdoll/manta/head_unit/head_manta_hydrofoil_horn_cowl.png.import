@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://kc6hj2832ork"
-path="res://.godot/imported/head_manta_hydrofoil_horn_cowl.png-7c2e1810a017f952649b83dd967c73c5.ctex"
+path="res://.godot/imported/head_manta_hydrofoil_horn_cowl.png-7aabb887bfc0909ccd42ec3325736354.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/manta/head_unit/head_manta_hydrofoil_horn_cowl.png"
-dest_files=["res://.godot/imported/head_manta_hydrofoil_horn_cowl.png-7c2e1810a017f952649b83dd967c73c5.ctex"]
+source_file="res://assets/paperdoll/manta/head_unit/head_manta_hydrofoil_horn_cowl.png"
+dest_files=["res://.godot/imported/head_manta_hydrofoil_horn_cowl.png-7aabb887bfc0909ccd42ec3325736354.ctex"]
 
 [params]
 

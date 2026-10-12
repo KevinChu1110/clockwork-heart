@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://hxg80swbttr20"
-path="res://.godot/imported/curio_kingfisher_bamboo_wings_spring_tail.png-bd9c6cebe8de772d39ba9054a7fb3363.ctex"
+uid="uid://d22efqy2amwb8"
+path="res://.godot/imported/curio_kingfisher_bamboo_wings_spring_tail.png-29d8cae87dfc1143c915bb0a9d1e2e12.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/kingfisher/back_curio/curio_kingfisher_bamboo_wings_spring_tail.png"
-dest_files=["res://.godot/imported/curio_kingfisher_bamboo_wings_spring_tail.png-bd9c6cebe8de772d39ba9054a7fb3363.ctex"]
+source_file="res://assets/paperdoll/kingfisher/back_curio/curio_kingfisher_bamboo_wings_spring_tail.png"
+dest_files=["res://.godot/imported/curio_kingfisher_bamboo_wings_spring_tail.png-29d8cae87dfc1143c915bb0a9d1e2e12.ctex"]
 
 [params]
 

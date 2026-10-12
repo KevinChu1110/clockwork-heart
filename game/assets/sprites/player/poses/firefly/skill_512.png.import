@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d27m5gkmed7y4"
-path="res://.godot/imported/skill_512.png-e13e1fe8f9a26592ee6af56c1864d018.ctex"
+path="res://.godot/imported/skill_512.png-cb6fe6f9891c09bf9a551a390bff2289.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/firefly/poses/skill_512.png"
-dest_files=["res://.godot/imported/skill_512.png-e13e1fe8f9a26592ee6af56c1864d018.ctex"]
+source_file="res://assets/sprites/player/paperdoll/firefly/poses/skill_512.png"
+dest_files=["res://.godot/imported/skill_512.png-cb6fe6f9891c09bf9a551a390bff2289.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bjb43eg0mgu2n"
-path="res://.godot/imported/chassis_manta_titanium_default.png-4ebe62e07ebf68706d5504907b21b14d.ctex"
+path="res://.godot/imported/chassis_manta_titanium_default.png-3e5ba49c1387cc7999e3447af996d7c8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/manta/chassis/chassis_manta_titanium_default.png"
-dest_files=["res://.godot/imported/chassis_manta_titanium_default.png-4ebe62e07ebf68706d5504907b21b14d.ctex"]
+source_file="res://assets/paperdoll/manta/chassis/chassis_manta_titanium_default.png"
+dest_files=["res://.godot/imported/chassis_manta_titanium_default.png-3e5ba49c1387cc7999e3447af996d7c8.ctex"]
 
 [params]
 

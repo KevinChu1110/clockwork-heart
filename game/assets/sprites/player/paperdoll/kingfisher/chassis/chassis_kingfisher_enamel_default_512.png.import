@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://q4w8ch2xvtph6"
-path="res://.godot/imported/chassis_kingfisher_enamel_default_512.png-9344da0640f8e489fddf159137df923d.ctex"
+uid="uid://bobqyaexm07g4"
+path="res://.godot/imported/chassis_kingfisher_enamel_default_512.png-07a748f46836823d774cd0a88afd7810.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/kingfisher/chassis/chassis_kingfisher_enamel_default_512.png"
-dest_files=["res://.godot/imported/chassis_kingfisher_enamel_default_512.png-9344da0640f8e489fddf159137df923d.ctex"]
+source_file="res://assets/paperdoll/kingfisher/chassis/chassis_kingfisher_enamel_default_512.png"
+dest_files=["res://.godot/imported/chassis_kingfisher_enamel_default_512.png-07a748f46836823d774cd0a88afd7810.ctex"]
 
 [params]
 

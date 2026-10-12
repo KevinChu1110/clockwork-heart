@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b5501wj8o2cje"
-path="res://.godot/imported/telegraph.png-133c27c4174d0c25d3c24e6d4e272b00.ctex"
+path="res://.godot/imported/telegraph.png-b976869c80ec7be273ae687b3fd3c08b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/firefly/poses/telegraph.png"
-dest_files=["res://.godot/imported/telegraph.png-133c27c4174d0c25d3c24e6d4e272b00.ctex"]
+source_file="res://assets/sprites/player/paperdoll/firefly/poses/telegraph.png"
+dest_files=["res://.godot/imported/telegraph.png-b976869c80ec7be273ae687b3fd3c08b.ctex"]
 
 [params]
 
