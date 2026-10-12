@@ -6150,8 +6150,8 @@
    "id": "power-stat-weapon-forge-shortcut",
    "cat": "遊戲",
    "title": "PowerStatDialog 戰力屬性總覽武器卡片新增前往鍛造快捷按鈕連動天宮鐵匠",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "開始開發 PowerStatDialog 武器卡片前往鍛造快捷按鈕 (t_7716e1d4)",
    "keys": [
     "PowerSta"
    ]
