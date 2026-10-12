@@ -4191,5 +4191,7 @@
   "拆解機芯回收鐵屑": "Desmantelar núcleo para recuperar chatarra",
   "非裝備或機芯物品無法拆解。": "No se pueden desmantelar objetos que no sean equipo o núcleos.",
   "機芯部件 · 強化發條動力核心": "Pieza de núcleo · Mejora el núcleo cinético",
-  "機芯部件 · 部位：%s · 色階：%s": "Pieza de núcleo · Ranura: %s · %s"
+  "機芯部件 · 部位：%s · 色階：%s": "Pieza de núcleo · Ranura: %s · %s",
+  "前往拆解": "Desmontar",
+  "鐵屑：%d（每次消耗 %d）": "Chatarra: %d (Coste %d)"
 }

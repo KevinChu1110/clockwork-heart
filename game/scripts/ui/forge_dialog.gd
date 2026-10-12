@@ -13,11 +13,13 @@ extends Control
 
 signal closed()
 signal workshop_requested()
+signal dismantle_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const CoreSystem = preload("res://scripts/systems/core_system.gd")
+const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
@@ -76,6 +78,9 @@ var _btn_forge: Button
 var _btn_auto_forge: Button
 var _btn_auto_calibrate: Button
 var _core_title_lbl: Label
+var _iron_scrap_capsule: PanelContainer
+var _scrap_label: Label
+var _btn_go_dismantle: Button
 var _btn_go_workshop: Button
 var _btn_close: Button
 var _power_label: Label
@@ -100,6 +105,10 @@ func _connect_loc_signal() -> void:
 		if loc and loc.has_signal("locale_changed"):
 			if not loc.locale_changed.is_connected(_on_locale_changed):
 				loc.locale_changed.connect(_on_locale_changed)
+		var inv: Node = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+		if inv and inv.has_signal("inventory_changed"):
+			if not inv.inventory_changed.is_connected(_refresh_iron_scrap_display):
+				inv.inventory_changed.connect(_refresh_iron_scrap_display)
 
 
 func _disconnect_loc_signal() -> void:
@@ -108,6 +117,9 @@ func _disconnect_loc_signal() -> void:
 		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
 		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
 			loc.locale_changed.disconnect(_on_locale_changed)
+		var inv: Node = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+		if inv and inv.has_signal("inventory_changed") and inv.inventory_changed.is_connected(_refresh_iron_scrap_display):
+			inv.inventory_changed.disconnect(_refresh_iron_scrap_display)
 
 
 func _on_locale_changed(_new_locale: String = "") -> void:
@@ -158,11 +170,14 @@ func _update_ui_texts() -> void:
 		_btn_auto_forge.text = _t("一鍵鍛造")
 	if _btn_auto_calibrate and is_instance_valid(_btn_auto_calibrate):
 		_btn_auto_calibrate.text = _t("一鍵校準")
+	if _btn_go_dismantle and is_instance_valid(_btn_go_dismantle):
+		_btn_go_dismantle.text = _t("前往拆解")
 	if _btn_go_workshop and is_instance_valid(_btn_go_workshop):
 		_btn_go_workshop.text = _t("前往工坊")
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開鐵匠鋪")
 	_refresh_slot_chips()
+	_refresh_iron_scrap_display()
 
 
 func _ready() -> void:
@@ -427,6 +442,8 @@ func _build_ui() -> void:
 	cm.add_child(cv)
 
 	var core_head := HBoxContainer.new()
+	core_head.name = "ForgeCoreSlotsHead"
+	core_head.add_theme_constant_override("separation", 8)
 	cv.add_child(core_head)
 
 	_core_title_lbl = Label.new()
@@ -442,24 +459,77 @@ func _build_ui() -> void:
 		_core_title_lbl.add_theme_font_override("font", _cached_font)
 	core_head.add_child(_core_title_lbl)
 
+	# ── 鐵屑持有進度膠囊 (IronScrapCapsule 與 _scrap_label) ──
+	_iron_scrap_capsule = PanelContainer.new()
+	_iron_scrap_capsule.name = "IronScrapCapsule"
+	_iron_scrap_capsule.custom_minimum_size = Vector2(0, 48)
+	_iron_scrap_capsule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_iron_scrap_capsule.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
+	core_head.add_child(_iron_scrap_capsule)
+
+	var scm := MarginContainer.new()
+	scm.add_theme_constant_override("margin_left", 12)
+	scm.add_theme_constant_override("margin_right", 12)
+	scm.add_theme_constant_override("margin_top", 4)
+	scm.add_theme_constant_override("margin_bottom", 6)
+	_iron_scrap_capsule.add_child(scm)
+
+	_scrap_label = Label.new()
+	_scrap_label.name = "IronScrapLabel"
+	_scrap_label.text = ""
+	_scrap_label.add_theme_font_size_override("font_size", 16)
+	_scrap_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_scrap_label.add_theme_color_override("font_outline_color", Color.WHITE)
+	_scrap_label.add_theme_constant_override("outline_size", 2)
+	_scrap_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_scrap_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if _cached_font:
+		_scrap_label.add_theme_font_override("font", _cached_font)
+	scm.add_child(_scrap_label)
+
+	# ── 前往拆解立體果凍按鈕 (BtnGoDismantle，高>=48px，熱區>=48px，圓角18px，薄荷綠果凍厚底，零Emoji) ──
+	_btn_go_dismantle = Button.new()
+	_btn_go_dismantle.name = "BtnGoDismantle"
+	_btn_go_dismantle.text = _t("前往拆解")
+	_btn_go_dismantle.custom_minimum_size = Vector2(110, 48)
+	_btn_go_dismantle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_btn_go_dismantle.add_theme_font_size_override("font_size", 16)
+	_btn_go_dismantle.add_theme_color_override("font_color", Color.WHITE)
+	_btn_go_dismantle.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_dismantle.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		_btn_go_dismantle.add_theme_font_override("font", _cached_font)
+	_btn_go_dismantle.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18, 2))
+	_btn_go_dismantle.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18, 2))
+	_btn_go_dismantle.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18, 2))
+	_btn_go_dismantle.add_theme_stylebox_override("disabled", _create_button_style(Color("#D0DDD2"), COLOR_BORDER, 2, 18, 2))
+	_btn_go_dismantle.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_go_dismantle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_dismantle.pressed.connect(_on_go_dismantle_pressed)
+	core_head.add_child(_btn_go_dismantle)
+
 	# 一鍵校準果凍厚底按鈕 (BtnAutoCalibrateCore，高>=48px，金黃果凍厚底，零Emoji)
 	_btn_auto_calibrate = Button.new()
 	_btn_auto_calibrate.name = "BtnAutoCalibrateCore"
 	_btn_auto_calibrate.text = _t("一鍵校準")
-	_btn_auto_calibrate.custom_minimum_size = Vector2(130, 48)
+	_btn_auto_calibrate.custom_minimum_size = Vector2(110, 48)
 	_btn_auto_calibrate.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	_btn_auto_calibrate.add_theme_font_size_override("font_size", 14)
+	_btn_auto_calibrate.add_theme_font_size_override("font_size", 16)
 	_btn_auto_calibrate.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_btn_auto_calibrate.add_theme_color_override("font_outline_color", Color.WHITE)
 	_btn_auto_calibrate.add_theme_constant_override("outline_size", 2)
 	if _cached_font:
 		_btn_auto_calibrate.add_theme_font_override("font", _cached_font)
-	_btn_auto_calibrate.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 14, 2))
-	_btn_auto_calibrate.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 14, 2))
-	_btn_auto_calibrate.add_theme_stylebox_override("pressed", _create_button_style(Color("#E6B800"), COLOR_BORDER, 2, 14, 2))
-	_btn_auto_calibrate.add_theme_stylebox_override("disabled", _create_button_style(Color("#D0DDD2"), COLOR_BORDER, 2, 14, 2))
+	_btn_auto_calibrate.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18, 2))
+	_btn_auto_calibrate.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18, 2))
+	_btn_auto_calibrate.add_theme_stylebox_override("pressed", _create_button_style(Color("#E6B800"), COLOR_BORDER, 2, 18, 2))
+	_btn_auto_calibrate.add_theme_stylebox_override("disabled", _create_button_style(Color("#D0DDD2"), COLOR_BORDER, 2, 18, 2))
+	_btn_auto_calibrate.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_auto_calibrate.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_btn_auto_calibrate.pressed.connect(_on_auto_calibrate_pressed)
 	core_head.add_child(_btn_auto_calibrate)
+
+	_refresh_iron_scrap_display()
 
 	var core_row := HBoxContainer.new()
 	core_row.name = "ForgeCoreSlotsRow"
@@ -877,7 +947,29 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 	return card
 
 
+func _refresh_iron_scrap_display() -> void:
+	if not _scrap_label or not is_instance_valid(_scrap_label):
+		return
+	var scrap: int = int(GameState.iron_scrap) if "iron_scrap" in GameState else CoreSystem.get_player_scrap()
+	var cost: int = CoreSystem.get_calibration_scrap_cost()
+	_scrap_label.text = _t("鐵屑：%d（每次消耗 %d）") % [scrap, cost]
+	var is_insufficient: bool = (scrap < cost)
+	if is_insufficient:
+		if _iron_scrap_capsule and is_instance_valid(_iron_scrap_capsule):
+			_iron_scrap_capsule.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_PINK, COLOR_PINK, 2, 4, 18))
+		_scrap_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
+		if _btn_go_dismantle and is_instance_valid(_btn_go_dismantle):
+			_btn_go_dismantle.visible = true
+	else:
+		if _iron_scrap_capsule and is_instance_valid(_iron_scrap_capsule):
+			_iron_scrap_capsule.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
+		_scrap_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		if _btn_go_dismantle and is_instance_valid(_btn_go_dismantle):
+			_btn_go_dismantle.visible = false
+
+
 func _refresh_all_forge_core_slots() -> void:
+	_refresh_iron_scrap_display()
 	var core_row = find_child("ForgeCoreSlotsRow", true, false)
 	if core_row:
 		for card in core_row.get_children():
@@ -1564,6 +1656,38 @@ func get_msg_label() -> Label:
 
 func get_go_workshop_button() -> Button:
 	return _btn_go_workshop
+
+
+func get_iron_scrap_capsule() -> PanelContainer:
+	return _iron_scrap_capsule
+
+
+func get_scrap_label() -> Label:
+	return _scrap_label
+
+
+func get_btn_go_dismantle() -> Button:
+	return _btn_go_dismantle
+
+
+func _on_go_dismantle_pressed() -> void:
+	dismantle_requested.emit()
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_maple_inventory"):
+			ml.call("open_maple_inventory", "core")
+	var p := get_parent()
+	if p and p.has_method("open_maple_inventory"):
+		p.call("open_maple_inventory", "core")
+	if not is_queued_for_deletion():
+		_on_close()
 
 
 func _on_go_workshop_pressed() -> void:

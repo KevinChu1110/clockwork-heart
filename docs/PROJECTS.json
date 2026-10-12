@@ -6120,8 +6120,8 @@
    "id": "inventory-core-calibrate-shortcut",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包機芯詳情新增前往校準快捷按鈕連動天宮鐵匠",
-   "status": "開發中",
-   "note": "開始開發 MapleInventory 機芯詳情前往校準按鈕與連動",
+   "status": "測試中",
+   "note": "完成開發與自測，產出 9 張 OpenGL3 截圖，送審 sideqa (t_a9ea5a87)",
    "keys": [
     "MapleInv"
    ]
@@ -6129,9 +6129,9 @@
   {
    "id": "forge-scrap-shortcut",
    "cat": "遊戲",
-   "title": "ForgeDialog 天宮鐵匠新增持有鐵屑進度膠囊與鐵屑不足前往拆解快捷按鈕",
+   "title": "ForgeDialog 天宮鐵匠持有鐵屑膠囊與前往拆解快捷按鈕",
    "status": "測試中",
-   "note": "sideqa 審查通過 (t_2e0eeb9f done)，待合入 main",
+   "note": "完成 ForgeDialog 鐵屑持有進度膠囊與前往拆解快捷按鈕實作，單元測試全綠，產出 proofs/t_2e0eeb9f/",
    "keys": [
     "ForgeDia"
    ]
