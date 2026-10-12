@@ -6120,8 +6120,8 @@
    "id": "inventory-core-calibrate-shortcut",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包機芯詳情新增前往校準快捷按鈕連動天宮鐵匠",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "開始開發 MapleInventory 機芯詳情前往校準按鈕與連動",
    "keys": [
     "MapleInv"
    ]
