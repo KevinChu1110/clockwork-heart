@@ -6100,8 +6100,8 @@
    "id": "inventory-core-dismantle-recycle",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援選取機芯拆解回收與安全防護",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "開始實作機芯拆解回收、八色階鐵屑產出與已裝備防護",
    "keys": [
     "MapleInv"
    ]
