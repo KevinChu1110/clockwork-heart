@@ -70,7 +70,7 @@ en 有 9 句用 Pity／pity，而且同一個概念有三種寫法：「Floor」
 ### 外部參考
 
 - 「Pity」是玩家社群的俗稱，不是官方用語。《原神》官方規則寫的是「4★ drop guarantee」「5★ drop guarantee」，Fandom 維基也註明「pity」「banner」都是非官方用語。來源：Genshin Impact Wiki「Wish」頁（https://genshin-impact.fandom.com/wiki/Wish）、「Wanderlust Invocation」頁（https://genshin-impact.fandom.com/wiki/Wanderlust_Invocation）。
-- 社群說明也把 pity 定義成「玩家社群取的名字」：FandomSpot「What is 'Pity' in Gacha Gaming?」（https://www.fandomspot.com/what-is-gacha-pity/）；HighGround Gaming 寫「Hoyoverse has a guarantee (dubbed "pity" by players) system」（https://www.highgroundgaming.com/genshin-impact-wishing-guide-pity/）。
+- 抽卡維基也把 pity 當成玩家的通稱，並把「累積換取」另外叫 spark：Gachawiki「Pity system」（https://gachawiki.com/wiki/pity-system.md）。
 - 非抽卡的類似機制，有遊戲用「bad luck protection」（《魔獸世界》的稀有掉落），參考：GameDesign.gg 詞彙表「Pity System」（https://gamedesign.gg/glossary/pity-system/）。
 
 > 以上只引用到這些頁面寫的內容；ko／ja 的「천장」「天井」是當地玩家常用說法，這點我沒有找官方來源，僅供參考。
