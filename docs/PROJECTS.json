@@ -6070,8 +6070,8 @@
    "id": "inventory-core-category-replace",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援機芯分類頁籤與機芯詳情替換彈窗直通連動",
-   "status": "測試中",
-   "note": "完成 MapleInventory 機芯分類 Chip 列、槽位色階標籤與 CoreReplaceDialog 直通連動，14/14測試全綠，截圖存證完成",
+   "status": "已上線",
+   "note": "雙分支合併進 main，回歸測試與 clock-check 全綠",
    "keys": [
     "MapleInv"
    ]
