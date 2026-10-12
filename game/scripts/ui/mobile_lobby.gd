@@ -3989,18 +3989,18 @@ func _build_character_tab() -> void:
 	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	panel.offset_left = 50
 	panel.offset_right = -50
-	panel.offset_top = 16
-	panel.offset_bottom = -16
+	panel.offset_top = 12
+	panel.offset_bottom = -18
 	var panel_sb := StyleBoxFlat.new()
 	panel_sb.bg_color = COLOR_BG_CREAM
 	panel_sb.border_color = COLOR_BORDER
 	panel_sb.set_border_width_all(2)
 	panel_sb.border_width_bottom = 5
 	panel_sb.set_corner_radius_all(20)
-	panel_sb.content_margin_left = 20
-	panel_sb.content_margin_right = 20
-	panel_sb.content_margin_top = 16
-	panel_sb.content_margin_bottom = 16
+	panel_sb.content_margin_left = 18
+	panel_sb.content_margin_right = 18
+	panel_sb.content_margin_top = 12
+	panel_sb.content_margin_bottom = 12
 	panel_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 	panel_sb.shadow_size = 8
 	panel_sb.shadow_offset = Vector2(0, 4)
@@ -4132,7 +4132,7 @@ func _build_character_tab() -> void:
 
 	var r_v := VBoxContainer.new()
 	r_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	r_v.add_theme_constant_override("separation", 12)
+	r_v.add_theme_constant_override("separation", 6)
 	h.add_child(r_v)
 
 	# 1. 武器輪替配置標題
@@ -4242,7 +4242,7 @@ func _build_character_tab() -> void:
 
 	# 3. 武器槽提示卡
 	var hint_p := PanelContainer.new()
-	hint_p.custom_minimum_size = Vector2(0, 36)
+	hint_p.custom_minimum_size = Vector2(0, 28)
 	var hsb := StyleBoxFlat.new()
 	hsb.bg_color = COLOR_CARD_WARM
 	hsb.border_color = COLOR_BORDER
@@ -4251,15 +4251,15 @@ func _build_character_tab() -> void:
 	hsb.set_corner_radius_all(10)
 	hsb.content_margin_left = 14
 	hsb.content_margin_right = 14
-	hsb.content_margin_top = 6
-	hsb.content_margin_bottom = 6
+	hsb.content_margin_top = 3
+	hsb.content_margin_bottom = 3
 	hint_p.add_theme_stylebox_override("panel", hsb)
 	r_v.add_child(hint_p)
 
 	_weapon_slot_hint_label = Label.new()
 	var init_hint := _t(WEAPON_SLOTS[_selected_weapon_slot]["hint"])
 	_weapon_slot_hint_label.text = init_hint
-	_apply_label_style(_weapon_slot_hint_label, 14, COLOR_TEXT_DARK, COLOR_BORDER, 2)
+	_apply_label_style(_weapon_slot_hint_label, 13, COLOR_TEXT_DARK, COLOR_BORDER, 2)
 	hint_p.add_child(_weapon_slot_hint_label)
 
 	# 4. 機芯五槽配置標題與五大機芯槽位
@@ -4387,13 +4387,13 @@ func _build_character_tab() -> void:
 
 	# 5. 獨立屬性小卡 (生命／攻擊／防禦／暴擊／怒氣)
 	var stats_v := VBoxContainer.new()
-	stats_v.add_theme_constant_override("separation", 10)
+	stats_v.add_theme_constant_override("separation", 6)
 	stats_v.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	r_v.add_child(stats_v)
 
 	_stat_cards.clear()
 	var r1 := HBoxContainer.new()
-	r1.add_theme_constant_override("separation", 10)
+	r1.add_theme_constant_override("separation", 8)
 	r1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stats_v.add_child(r1)
 
@@ -4410,7 +4410,7 @@ func _build_character_tab() -> void:
 	_stat_cards.append(sc3)
 
 	var r2 := HBoxContainer.new()
-	r2.add_theme_constant_override("separation", 10)
+	r2.add_theme_constant_override("separation", 8)
 	r2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stats_v.add_child(r2)
 
@@ -4550,7 +4550,7 @@ func _get_weapon_slot_info(slot_idx: int) -> Dictionary:
 func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 	var btn := Button.new()
 	btn.name = "WeaponSlot_%d" % idx
-	btn.custom_minimum_size = Vector2(0, 68)
+	btn.custom_minimum_size = Vector2(0, 60)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.set_meta("quality_color", slot_data.get("quality_color", COLOR_GOLD_DARK))
 
@@ -4602,8 +4602,8 @@ func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
 	sb.border_width_bottom = 5
 	sb.content_margin_left = 12
 	sb.content_margin_right = 12
-	sb.content_margin_top = 6
-	sb.content_margin_bottom = 6
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
 
 	var title_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
 	var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
@@ -4833,19 +4833,19 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 	c.set_meta("stat_title_key", title)
 	c.set_meta("stat_val_key", val_str)
 	c.set_meta("stat_subtitle_key", subtitle)
-	c.custom_minimum_size = Vector2(0, 80)
+	c.custom_minimum_size = Vector2(0, 56)
 	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = COLOR_CARD_WARM
 	sb.border_color = COLOR_BORDER
 	sb.set_border_width_all(2)
-	sb.border_width_bottom = 5
-	sb.set_corner_radius_all(18)
-	sb.content_margin_left = 16
-	sb.content_margin_right = 16
-	sb.content_margin_top = 8
-	sb.content_margin_bottom = 8
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(14)
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
 	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
 	sb.shadow_size = 4
 	sb.shadow_offset = Vector2(0, 2)
@@ -4853,7 +4853,7 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 
 	var v := VBoxContainer.new()
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.add_theme_constant_override("separation", 2)
+	v.add_theme_constant_override("separation", 1)
 	c.add_child(v)
 
 	var top_row := HBoxContainer.new()
@@ -4864,7 +4864,7 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 	t_lbl.name = "TitleLabel"
 	var t_text := _t(title)
 	t_lbl.text = t_text
-	var t_sz := 12 if t_text.length() > 14 else 14
+	var t_sz := 12 if t_text.length() > 14 else 13
 	_apply_label_style(t_lbl, t_sz, COLOR_TEXT_DARK)
 	top_row.add_child(t_lbl)
 
@@ -4873,7 +4873,7 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 		sub_lbl.name = "SubLabel"
 		var sub_text := _t(subtitle)
 		sub_lbl.text = sub_text
-		var sub_sz := 10 if sub_text.length() > 24 else (11 if sub_text.length() > 16 else 12)
+		var sub_sz := 10 if sub_text.length() > 24 else (11 if sub_text.length() > 16 else 11)
 		_apply_label_style(sub_lbl, sub_sz, COLOR_GOLD_DARK)
 		top_row.add_child(sub_lbl)
 
@@ -4884,7 +4884,7 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 	var v_lbl := Label.new()
 	v_lbl.name = "ValLabel"
 	v_lbl.text = _t(val_str)
-	_apply_label_style(v_lbl, 22, val_color)
+	_apply_label_style(v_lbl, 20, val_color)
 	val_row.add_child(v_lbl)
 
 	return c
@@ -6232,12 +6232,14 @@ func _apply_locale_texts() -> void:
 			if t_lbl:
 				var t_text := _t(str(card.get_meta("stat_title_key", "")))
 				t_lbl.text = t_text
-				t_lbl.add_theme_font_size_override("font_size", 14)
+				var t_sz := 12 if t_text.length() > 14 else 13
+				t_lbl.add_theme_font_size_override("font_size", t_sz)
 			var sub_lbl := card.find_child("SubLabel", true, false) as Label
 			if sub_lbl:
 				var sub_text := _t(str(card.get_meta("stat_subtitle_key", "")))
 				sub_lbl.text = sub_text
-				sub_lbl.add_theme_font_size_override("font_size", 14)
+				var sub_sz := 10 if sub_text.length() > 24 else (11 if sub_text.length() > 16 else 11)
+				sub_lbl.add_theme_font_size_override("font_size", sub_sz)
 			var v_lbl := card.find_child("ValLabel", true, false) as Label
 			if v_lbl:
 				var v_k := str(card.get_meta("stat_val_key", ""))
@@ -6767,15 +6769,15 @@ func _refresh_char_core_slots() -> void:
 
 		var card := PanelContainer.new()
 		card.name = "CoreSlot_" + norm_slot
-		card.custom_minimum_size = Vector2(88, 64)
+		card.custom_minimum_size = Vector2(88, 54)
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
 
 		var cs := StyleBoxFlat.new()
 		cs.bg_color = COLOR_CARD_WARM if is_equipped else Color(0.95, 0.94, 0.97, 0.9)
 		cs.border_color = tier_color if is_equipped else COLOR_BORDER
 		cs.set_border_width_all(2)
-		cs.border_width_bottom = 4
-		cs.set_corner_radius_all(14)
+		cs.border_width_bottom = 3
+		cs.set_corner_radius_all(12)
 		cs.shadow_color = Color(tier_color.r, tier_color.g, tier_color.b, 0.25) if is_equipped else Color(0.12, 0.10, 0.23, 0.10)
 		cs.shadow_size = 4
 		cs.shadow_offset = Vector2(0, 2)
@@ -6785,7 +6787,7 @@ func _refresh_char_core_slots() -> void:
 		btn.name = "SlotButton"
 		btn.flat = true
 		btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		btn.custom_minimum_size = Vector2(88, 50)
+		btn.custom_minimum_size = Vector2(88, 48)
 		btn.mouse_filter = Control.MOUSE_FILTER_STOP
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		btn.focus_mode = Control.FOCUS_NONE
@@ -6800,14 +6802,14 @@ func _refresh_char_core_slots() -> void:
 		margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		margin.add_theme_constant_override("margin_left", 6)
 		margin.add_theme_constant_override("margin_right", 6)
-		margin.add_theme_constant_override("margin_top", 4)
-		margin.add_theme_constant_override("margin_bottom", 4)
+		margin.add_theme_constant_override("margin_top", 2)
+		margin.add_theme_constant_override("margin_bottom", 2)
 		card.add_child(margin)
 
 		var vb := VBoxContainer.new()
 		vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vb.alignment = BoxContainer.ALIGNMENT_CENTER
-		vb.add_theme_constant_override("separation", 2)
+		vb.add_theme_constant_override("separation", 1)
 		margin.add_child(vb)
 
 		var top_row := HBoxContainer.new()
@@ -6818,7 +6820,7 @@ func _refresh_char_core_slots() -> void:
 
 		var icon := TextureRect.new()
 		icon.name = "SlotIcon"
-		icon.custom_minimum_size = Vector2(24, 24)
+		icon.custom_minimum_size = Vector2(20, 20)
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -6834,7 +6836,7 @@ func _refresh_char_core_slots() -> void:
 		slot_lbl.name = "SlotLabel"
 		slot_lbl.text = _t(slot_name)
 		slot_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_apply_label_style(slot_lbl, 14, COLOR_TEXT_DARK)
+		_apply_label_style(slot_lbl, 13, COLOR_TEXT_DARK)
 		slot_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		top_row.add_child(slot_lbl)
 
@@ -6843,7 +6845,7 @@ func _refresh_char_core_slots() -> void:
 		var t_txt := (_t(tier_name) if tier_name.ends_with("階") else _t(tier_name + "階")) if is_equipped else _t("未裝備")
 		tier_lbl.text = t_txt
 		tier_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_apply_label_style(tier_lbl, 14, tier_color if (is_equipped and tier_id != "white") else COLOR_TEXT_DARK, COLOR_BORDER, 2)
+		_apply_label_style(tier_lbl, 12, tier_color if (is_equipped and tier_id != "white") else COLOR_TEXT_DARK, COLOR_BORDER, 2)
 		tier_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vb.add_child(tier_lbl)
 

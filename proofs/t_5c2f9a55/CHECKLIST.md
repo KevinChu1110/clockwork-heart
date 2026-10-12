@@ -45,12 +45,12 @@
 
 | 檔案名稱 | 說明 | SHA256 |
 |---|---|---|
-| `proof_01_char_weapon_slots_before_auto_equip_zh_TW.png` | 繁中角色頁三槽武器輪替配置（初始低階）與「一鍵配置」薄荷綠果凍按鈕（104x48px） | `5cd72ec4d8847c9343266cc3c3c68221ef2c1a6633c420debf24acc65dc9e2ce` |
-| `proof_02_char_weapon_auto_equipped_toast_zh_TW.png` | 點擊一鍵配置後換上最強三槽武器（星紋龍牙/燼木銳矛/風葦輕弓），戰力從 89 飆升至 196，上方飄字「戰力提升 +107！已一鍵配置最高戰力武器。」 | `52627bffdecf2117f6b24729bac75f64d0008bffcce1ef51e42212c367eaa96b` |
-| `proof_03_char_weapon_auto_equip_already_best_zh_TW.png` | 最佳狀態下再次點擊一鍵配置，上方飄字「目前已是最佳武器配置！」 | `ebf343e3f1341230f7015c9fb57e52a73b5629f02d9a62f9adbdf1327df15a39` |
-| `proof_04_char_weapon_auto_equip_en.png` | 英文語系角色頁 Auto-Equip 按鈕與最佳配置飄字 (Already at optimal weapon configuration!)，零中文殘留 | `472a242a9d6674cedd189d20e175b5e825c7673f9702bdacb33638eefb06704f` |
-| `proof_05_char_weapon_auto_equip_ja.png` | 日文語系角色頁 一括装着 按鈕與最佳配置飄字 (現在は最適な武器配置です！) | `61849e20c80d0b11564d1914e4b9f1a6ad6d42213f15bfe5876fb24bc5f1a216` |
-| `proof_06_btn_auto_equip_min_size_48px.png` | 一鍵配置按鈕規格特寫（尺寸 104x48px，立體厚底 5px，圓角 16px）與三槽武器完成態 | `e7061c860c50e7131a0da2af3f9e872d9e6826e9f0bc61e95061c43ac90b7f88` |
+| `proof_01_char_weapon_slots_before_auto_equip_zh_TW.png` | 繁中角色頁三槽武器輪替配置（初始低階）與「一鍵配置」薄荷綠果凍按鈕（104x48px），右側屬性卡（暴擊率、怒氣量表）完全收納於白色面板內，圓角、邊框、陰影完整，與底欄保持乾淨安全間距 | `292eedcc654f0c71fbc09567cf8ca7c73414a446df04473c7551d4b15cb88c84` |
+| `proof_02_char_weapon_auto_equipped_toast_zh_TW.png` | 點擊一鍵配置後換上最強三槽武器（星紋龍牙/燼木銳矛/風葦輕弓），戰力從 89 飆升至 196，上方飄字「戰力提升 +107！已一鍵配置最高戰力武器。」 | `5df24f910bf4cabe94735aa4841dca84d6d18ba907ba88ec2f7d124c64bda15a` |
+| `proof_03_char_weapon_auto_equip_already_best_zh_TW.png` | 最佳狀態下再次點擊一鍵配置，上方飄字「目前已是最佳武器配置！」 | `774f706355ed891338e7cba4d743088556d663082c24af031ef9736b31a4b15f` |
+| `proof_04_char_weapon_auto_equip_en.png` | 英文語系角色頁 Auto-Equip 按鈕與最佳配置飄字 (Already at optimal weapon configuration!)，零中文殘留，屬性卡完整保留邊框圓角與安全留白 | `3e65a47a9c5021d12afbafff7640f2ef99c31d1f034a9d7109725874007fb3e0` |
+| `proof_05_char_weapon_auto_equip_ja.png` | 日文語系角色頁 一括装着 按鈕與最佳配置飄字 (現在は最適な武器配置です！)，屬性卡完整無遮擋裁切 | `f73de257fcdc6a8d49c8380a6102ba44b28da928b55cb60d94f53bb847628181` |
+| `proof_06_btn_auto_equip_min_size_48px.png` | 一鍵配置按鈕規格特寫（尺寸 104x48px，立體厚底 5px，圓角 16px）與三槽武器完成態 | `ce84fb2a33aeb678a446f7fa9844e0c4091b4f44d1f069b43078461979074006` |
 
 ---
 
