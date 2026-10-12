@@ -3799,5 +3799,12 @@
   "背包空間已滿": "Backpack is full",
   "容量": "Capacity",
   "一鍵出售素材": "Quick-Sell Materials",
-  "已鎖定素材已保留未出售": "Locked materials were kept."
+  "已鎖定素材已保留未出售": "Locked materials were kept.",
+  "ui_hotbar_slot_capsule": "Hotbar %d",
+  "快捷欄 %d": "Hotbar %d",
+  "快捷欄 1": "Hotbar 1",
+  "快捷欄 2": "Hotbar 2",
+  "ui_remove_hotbar": "Remove from Hotbar",
+  "從快捷欄卸下": "Remove from Hotbar",
+  "已從快捷欄卸下：%s": "Removed from Hotbar: %s"
 }

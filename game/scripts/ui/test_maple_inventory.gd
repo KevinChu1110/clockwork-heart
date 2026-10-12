@@ -167,8 +167,12 @@ func _process(_delta: float) -> bool:
 			var gs: Node = root.get_node_or_null("GameState")
 			if gs and "hp" in gs:
 				gs.hp = 20
+			if gs and "hotbar" in gs:
+				gs.hotbar = ["", "", "", "", "", "", "", ""]
 			if inv_sys:
 				inv_sys.call("add_item", "iron_scrap", 5)
+			if gs and "hotbar" in gs:
+				gs.hotbar = ["", "", "", "", "", "", "", ""]
 			_inv.open()
 			var loc: Node = root.get_node_or_null("Loc")
 			if loc == null:
