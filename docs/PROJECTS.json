@@ -6070,8 +6070,8 @@
    "id": "inventory-core-category-replace",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援機芯分類頁籤與機芯詳情替換彈窗直通連動",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "開始實作 MapleInventory 機芯分類頁籤與替換彈窗直通連動",
    "keys": [
     "MapleInv"
    ]
