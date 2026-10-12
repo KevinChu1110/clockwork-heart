@@ -4179,5 +4179,11 @@
   "前往校準": "Calibrar",
   "機芯總加成: 攻+%d · 防+%d · 血+%d": "Total de Núcleo: ATQ+%d · DEF+%d · PV+%d",
   "機芯加成": "Bonus de Núcleo",
-  "攻+%d · 防+%d · 血+%d": "ATQ+%d · DEF+%d · PV+%d"
+  "攻+%d · 防+%d · 血+%d": "ATQ+%d · DEF+%d · PV+%d",
+  "已裝備無法拆解": "Equipado (No Desmantelar)",
+  "拆解【%s】：獲得鐵屑 ×%d": "Desmantelado [%s]: Chatarra de hierro x%d",
+  "拆解機芯回收鐵屑": "Desmantelar núcleo para recuperar chatarra",
+  "非裝備或機芯物品無法拆解。": "No se pueden desmantelar objetos que no sean equipo o núcleos.",
+  "機芯部件 · 強化發條動力核心": "Pieza de núcleo · Mejora el núcleo cinético",
+  "機芯部件 · 部位：%s · 色階：%s": "Pieza de núcleo · Ranura: %s · %s"
 }

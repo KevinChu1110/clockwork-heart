@@ -3817,5 +3817,11 @@
   "前往校準": "Calibrate",
   "機芯總加成: 攻+%d · 防+%d · 血+%d": "Core Total: ATK+%d · DEF+%d · HP+%d",
   "機芯加成": "Core Bonus",
-  "攻+%d · 防+%d · 血+%d": "ATK+%d · DEF+%d · HP+%d"
+  "攻+%d · 防+%d · 血+%d": "ATK+%d · DEF+%d · HP+%d",
+  "已裝備無法拆解": "Equipped (Cannot Dismantle)",
+  "拆解【%s】：獲得鐵屑 ×%d": "Dismantled [%s]: Iron Scrap x%d",
+  "拆解機芯回收鐵屑": "Dismantle Core for Scrap Iron",
+  "非裝備或機芯物品無法拆解。": "Cannot dismantle items other than equipment or cores.",
+  "機芯部件 · 強化發條動力核心": "Core Part · Enhances Clockwork Power Core",
+  "機芯部件 · 部位：%s · 色階：%s": "Core Part · Slot: %s · %s"
 }
