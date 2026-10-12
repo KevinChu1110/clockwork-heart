@@ -120,6 +120,7 @@ func _process(_delta: float) -> bool:
 			_capture_and_save(_proof_dir + "/proof_03_lobby_forge_integration.png")
 			print("\n==========================================")
 			print("  PASS: test_power_stat_core_shortcut 全部測試通過！")
+			print("POWER_STAT_CORE_SHORTCUT_OK")
 			print("==========================================")
 			quit(0)
 			return true
