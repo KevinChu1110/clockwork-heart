@@ -6050,8 +6050,8 @@
    "id": "inventory-hotbar-toggle",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包支援快捷欄綁定狀態膠囊顯示與一鍵卸下快捷鍵",
-   "status": "測試中",
-   "note": "完成快捷欄綁定狀態膠囊顯示與一鍵卸下快捷鍵開發與驗證，送交 sideqa 審查",
+   "status": "已上線",
+   "note": "雙分支合進 main，快捷欄綁定狀態與一鍵卸下已全面回歸驗收",
    "keys": [
     "MapleInv"
    ]
