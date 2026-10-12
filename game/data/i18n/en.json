@@ -4175,5 +4175,9 @@
   "機芯": "Core",
   "替換機芯": "Swap Core",
   "戰力提升 +%d！已一鍵配置最高戰力機芯。": "Power +%d! Equipped highest power cores.",
-  "目前已是最佳機芯配置！": "Already at optimal core configuration!"
+  "目前已是最佳機芯配置！": "Already at optimal core configuration!",
+  "前往校準": "Calibrate",
+  "機芯總加成: 攻+%d · 防+%d · 血+%d": "Core Total: ATK+%d · DEF+%d · HP+%d",
+  "機芯加成": "Core Bonus",
+  "攻+%d · 防+%d · 血+%d": "ATK+%d · DEF+%d · HP+%d"
 }

@@ -3813,5 +3813,9 @@
   "機芯": "Núcleo",
   "替換機芯": "Cambiar núcleo",
   "戰力提升 +%d！已一鍵配置最高戰力機芯。": "¡Poder +%d! Núcleos de mayor poder equipados.",
-  "目前已是最佳機芯配置！": "¡Ya está en la configuración óptima de núcleos!"
+  "目前已是最佳機芯配置！": "¡Ya está en la configuración óptima de núcleos!",
+  "前往校準": "Calibrar",
+  "機芯總加成: 攻+%d · 防+%d · 血+%d": "Total de Núcleo: ATQ+%d · DEF+%d · PV+%d",
+  "機芯加成": "Bonus de Núcleo",
+  "攻+%d · 防+%d · 血+%d": "ATQ+%d · DEF+%d · PV+%d"
 }
