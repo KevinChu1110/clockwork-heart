@@ -1155,7 +1155,7 @@
   "密火圈：預告後按 J · 必殺可格擋": "Dense fire rings: press J after the telegraph · the finisher can be parried",
   "密火圈：預告後點閃避 · 必殺可格擋": "Dense fire rings: tap Dodge after telegraph · Finisher parryable",
   "密碼（至少 6 字）": "Password (at least 6 characters)",
-  "寶石工坊需達到 Lv%d。": "The gem workshop needs Lv%d.",
+  "寶石工坊需達到 Lv%d。": "Gem Workshop requires Lv%d.",
   "寶石櫃檢視": "View Gem Cabinet",
   "寶石櫃盤點檢視": "Gem Case Inventory",
   "寶石熔煉與合成": "Gem Smelting & Fusion",
@@ -3833,5 +3833,11 @@
   "機芯部件 · 部位：%s · 色階：%s": "Core Part · Slot: %s · %s",
   "前往拆解": "Dismantle",
   "鐵屑：%d（每次消耗 %d）": "Iron Scrap: %d (Cost %d)",
-  "調整心法": "Adjust Skills"
+  "調整心法": "Adjust Skills",
+  "目前未穿戴任何武器或防具。": "No weapon or armor currently equipped.",
+  "目前穿戴裝備皆已鑲嵌寶石，無閒置空孔。": "All equipped gear is socketed, no empty slots.",
+  "背包沒有可鑲嵌的寶石。": "No socketable gems in bag.",
+  "金幣不足，無法鑲嵌（需 %d 金）。": "Not enough gold to socket (requires %d gold).",
+  "無法自動鑲嵌寶石。": "Unable to auto-socket gems.",
+  "一鍵鑲嵌完成：成功填補 %d 個空孔（%s）！": "Quick socket complete: Filled %d slot(s) (%s)!"
 }

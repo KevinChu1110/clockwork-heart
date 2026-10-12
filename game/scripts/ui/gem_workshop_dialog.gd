@@ -422,16 +422,7 @@ func _build_ui() -> void:
 	_btn_auto_socket.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 16, 2))
 	_btn_auto_socket.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE584"), COLOR_BORDER, 5, 16, 2))
 	_btn_auto_socket.add_theme_stylebox_override("pressed", _create_button_style(Color("#36B850"), COLOR_BORDER, 2, 16, 2))
-	_btn_auto_socket.pressed.connect(func():
-		var res: Dictionary = GemSystem.auto_socket()
-		_msg_label.text = _t(str(res.get("msg", "")))
-		if bool(res.get("ok", false)):
-			_msg_label.add_theme_color_override("font_color", COLOR_MINT)
-		else:
-			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
-		SaveManager.save_game()
-		_refresh_case_view()
-	)
+	_btn_auto_socket.pressed.connect(_on_auto_socket_pressed)
 	grid_head.add_child(_btn_auto_socket)
 
 	_case_grid = GridContainer.new()
@@ -632,6 +623,17 @@ func _on_auto_fuse_pressed() -> void:
 		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 	SaveManager.save_game()
 	_refresh_smelt_view()
+
+
+func _on_auto_socket_pressed() -> void:
+	var res: Dictionary = GemSystem.auto_socket()
+	_msg_label.text = _t(str(res.get("msg", "")))
+	if bool(res.get("ok", false)):
+		_msg_label.add_theme_color_override("font_color", COLOR_MINT)
+	else:
+		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	SaveManager.save_game()
+	_refresh_case_view()
 
 
 func _build_single_smelt_card(col: String) -> PanelContainer:
