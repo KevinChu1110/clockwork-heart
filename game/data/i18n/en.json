@@ -2133,7 +2133,7 @@
   "已嘗試上傳殘影": "Afterimage upload attempted",
   "已套用雲存檔": "Cloud save applied",
   "已建立角色，展開旅途！": "Character created, begin your journey!",
-  "已成功替換裝備至【%s】槽位！": "Equipped to slot [%s] successfully!",
+  "已成功替換裝備至【%s】槽位！": "Successfully equipped to slot [%s]!",
   "已拆解 %d 件凡品裝備：獲得鐵屑 ×%d、金幣 +%d": "Dismantled %d pieces of Common gear: gained Scrap Iron ×%d, Gold +%d",
   "已拆解機芯，獲得 %d 鐵屑": "Core dismantled, gained %d Scrap Iron",
   "已擁有去廣告特權": "Ad-Free Privilege Owned",
@@ -4171,5 +4171,7 @@
   "已鎖定素材已保留未出售": "Locked materials were kept.",
   "機芯五槽配置": "5 Core Slots Configuration",
   "點擊更換裝備 · 強化核心機芯": "Tap to swap · Enhance core mechanisms",
-  "背包暫無此部位可替換機芯": "No replaceable core parts for this slot in bag"
+  "背包暫無此部位可替換機芯": "No replaceable core parts for this slot in bag",
+  "機芯": "Core",
+  "替換機芯": "Swap Core"
 }
