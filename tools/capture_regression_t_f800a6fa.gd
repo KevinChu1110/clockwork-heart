@@ -72,7 +72,7 @@ func _initialize() -> void:
 
 	var inv = root.get_node_or_null("InventorySystem")
 	if inv == null:
-		var InvClass = load("res://scripts/autoload/inventory_system.gd")
+		var InvClass = load("res://scripts/systems/inventory_system.gd")
 		if InvClass:
 			inv = InvClass.new()
 			inv.name = "InventorySystem"
