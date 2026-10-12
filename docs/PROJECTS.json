@@ -6170,8 +6170,8 @@
    "id": "dummy-settlement-skills",
    "cat": "遊戲",
    "title": "木人樁試招結算新增調整心法快捷按鈕連動 SkillDialog",
-   "status": "開發中",
-   "note": "開始實作 BtnGoSkills 與連動",
+   "status": "測試中",
+   "note": "完成實作與存證，送審 sideqa (t_f8bc43d5)",
    "keys": [
     "木人樁試招結算新"
    ]
