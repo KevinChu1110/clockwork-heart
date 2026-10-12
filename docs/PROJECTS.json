@@ -6065,6 +6065,16 @@
    "keys": [
     "大廳角色頁五大機"
    ]
+  },
+  {
+   "id": "inventory-core-category-replace",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援機芯分類頁籤與機芯詳情替換彈窗直通連動",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
