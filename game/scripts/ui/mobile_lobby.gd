@@ -6332,10 +6332,50 @@ func open_forge(target_weapon: Variant = null) -> Control:
 		dlg.connect("workshop_requested", func():
 			open_gem_workshop()
 		)
+	if dlg.has_signal("dismantle_requested"):
+		dlg.connect("dismantle_requested", func():
+			open_maple_inventory("core")
+		)
 	add_child(dlg)
 	if target_weapon != null and dlg.has_method("select_target_equipment"):
 		dlg.call("select_target_equipment", target_weapon)
 	return dlg
+
+
+## 開啟 MapleInventory 探索背包彈窗並可指定初始分類 (如 "core")
+func open_maple_inventory(initial_category: String = "") -> Control:
+	var existing = get_node_or_null("MapleInventory")
+	if existing != null:
+		if not existing.is_queued_for_deletion():
+			if not initial_category.is_empty() and existing.has_method("set_category"):
+				existing.call("set_category", initial_category)
+			if existing.has_method("open"):
+				existing.call("open")
+			return existing
+		else:
+			if existing.get_parent() == self:
+				remove_child(existing)
+	var existing_forge = get_node_or_null("ForgeDialog")
+	if existing_forge != null:
+		if existing_forge.get_parent() == self:
+			remove_child(existing_forge)
+		existing_forge.queue_free()
+	var MapleInventoryScn: GDScript = load("res://scripts/ui/maple_inventory.gd")
+	if MapleInventoryScn == null:
+		push_error("無法載入 MapleInventory")
+		return null
+	var inv: Control = MapleInventoryScn.new() as Control
+	inv.name = "MapleInventory"
+	inv.z_index = 80
+	inv.tree_exited.connect(func():
+		refresh_hud()
+	)
+	add_child(inv)
+	if not initial_category.is_empty() and inv.has_method("set_category"):
+		inv.call("set_category", initial_category)
+	if inv.has_method("open"):
+		inv.call("open")
+	return inv
 
 
 ## 開啟手藝工坊寶石彈窗
