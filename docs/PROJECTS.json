@@ -6095,6 +6095,16 @@
    "keys": [
     "PowerSta"
    ]
+  },
+  {
+   "id": "forge-core-auto-calibrate",
+   "cat": "遊戲",
+   "title": "ForgeDialog 天宮鐵匠機芯五槽新增一鍵校準果凍按鈕與連動",
+   "status": "草稿",
+   "note": "已開卡派工 t_4f136f47",
+   "keys": [
+    "ForgeDia"
+   ]
   }
  ]
 }
