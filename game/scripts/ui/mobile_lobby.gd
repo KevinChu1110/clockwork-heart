@@ -6360,6 +6360,11 @@ func open_maple_inventory(initial_category: String = "") -> Control:
 		if existing_forge.get_parent() == self:
 			remove_child(existing_forge)
 		existing_forge.queue_free()
+	var existing_workshop = get_node_or_null("GemWorkshopDialog")
+	if existing_workshop != null:
+		if existing_workshop.get_parent() == self:
+			remove_child(existing_workshop)
+		existing_workshop.queue_free()
 	var MapleInventoryScn: GDScript = load("res://scripts/ui/maple_inventory.gd")
 	if MapleInventoryScn == null:
 		push_error("無法載入 MapleInventory")
@@ -6370,6 +6375,10 @@ func open_maple_inventory(initial_category: String = "") -> Control:
 	inv.tree_exited.connect(func():
 		refresh_hud()
 	)
+	if inv.has_signal("workshop_requested"):
+		inv.connect("workshop_requested", func():
+			open_gem_workshop()
+		)
 	add_child(inv)
 	if not initial_category.is_empty() and inv.has_method("set_category"):
 		inv.call("set_category", initial_category)
@@ -6394,6 +6403,11 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 		if existing_forge.get_parent() == self:
 			remove_child(existing_forge)
 		existing_forge.queue_free()
+	var existing_inv = get_node_or_null("MapleInventory")
+	if existing_inv != null:
+		if existing_inv.get_parent() == self:
+			remove_child(existing_inv)
+		existing_inv.queue_free()
 	var GemClass: GDScript = load("res://scripts/ui/gem_workshop_dialog.gd")
 	if GemClass == null:
 		push_error("無法載入 GemWorkshopDialog")
@@ -6407,6 +6421,10 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 	if dlg.has_signal("forge_requested"):
 		dlg.connect("forge_requested", func():
 			open_forge()
+		)
+	if dlg.has_signal("inventory_requested"):
+		dlg.connect("inventory_requested", func():
+			open_maple_inventory("gem")
 		)
 	add_child(dlg)
 	if target_tab != 0 and dlg.has_method("set_tab"):
