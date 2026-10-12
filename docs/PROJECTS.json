@@ -6185,6 +6185,16 @@
    "keys": [
     "大廳角色頁新增一"
    ]
+  },
+  {
+   "id": "gem-workshop-auto-socket",
+   "cat": "遊戲",
+   "title": "手藝工坊 GemWorkshopDialog 寶石櫃新增『一鍵鑲嵌』果凍按鈕連動 GemSystem",
+   "status": "草稿",
+   "note": "已完成 BtnAutoSocket 薄荷綠果凍按鈕、GemSystem.auto_socket() 連動與六語系支援，單元測試與 OpenGL3 存證 PASS，送審 sideqa",
+   "keys": [
+    "手藝工坊 Gem"
+   ]
   }
  ]
 }
