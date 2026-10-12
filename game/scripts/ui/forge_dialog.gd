@@ -14,6 +14,8 @@ extends Control
 signal closed()
 signal workshop_requested()
 signal dismantle_requested()
+signal swap_weapon_requested(slot_idx: int)
+signal weapon_swapped(slot_idx: int, uid: String)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -83,6 +85,8 @@ var _scrap_label: Label
 var _btn_go_dismantle: Button
 var _btn_go_workshop: Button
 var _btn_close: Button
+var _btn_swap_weapon: Button
+var _weapon_swap_dialog: Control = null
 var _power_label: Label
 var _cached_font: Font = null
 var _last_calibrate_state: Dictionary = {}
@@ -176,6 +180,8 @@ func _update_ui_texts() -> void:
 		_btn_go_workshop.text = _t("前往工坊")
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開鐵匠鋪")
+	if _btn_swap_weapon and is_instance_valid(_btn_swap_weapon):
+		_btn_swap_weapon.text = _t("更換裝備")
 	_refresh_slot_chips()
 	_refresh_iron_scrap_display()
 
@@ -382,6 +388,11 @@ func _build_ui() -> void:
 	sv.add_theme_constant_override("separation", 5)
 	s_margin.add_child(sv)
 
+	var weapon_head := HBoxContainer.new()
+	weapon_head.name = "WeaponStatusHead"
+	weapon_head.add_theme_constant_override("separation", 10)
+	sv.add_child(weapon_head)
+
 	_weapon_label = Label.new()
 	_weapon_label.name = "WeaponLabel"
 	_weapon_label.text = ""
@@ -389,9 +400,32 @@ func _build_ui() -> void:
 	_weapon_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_weapon_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_weapon_label.add_theme_constant_override("outline_size", 2)
+	_weapon_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_weapon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	if _cached_font:
 		_weapon_label.add_theme_font_override("font", _cached_font)
-	sv.add_child(_weapon_label)
+	weapon_head.add_child(_weapon_label)
+
+	# ── 更換裝備立體果凍按鈕 (BtnSwapWeapon，高>=48px，熱區>=48px，圓角18px，天藍果凍厚底，深藍紫描邊2px，零Emoji) ──
+	_btn_swap_weapon = Button.new()
+	_btn_swap_weapon.name = "BtnSwapWeapon"
+	_btn_swap_weapon.text = _t("更換裝備")
+	_btn_swap_weapon.custom_minimum_size = Vector2(110, 48)
+	_btn_swap_weapon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_btn_swap_weapon.add_theme_font_size_override("font_size", 16)
+	_btn_swap_weapon.add_theme_color_override("font_color", Color.WHITE)
+	_btn_swap_weapon.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_swap_weapon.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		_btn_swap_weapon.add_theme_font_override("font", _cached_font)
+	_btn_swap_weapon.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18, 2))
+	_btn_swap_weapon.add_theme_stylebox_override("hover", _create_button_style(Color("#5DBBFF"), COLOR_BORDER, 5, 18, 2))
+	_btn_swap_weapon.add_theme_stylebox_override("pressed", _create_button_style(Color("#268AE6"), COLOR_BORDER, 2, 18, 2))
+	_btn_swap_weapon.add_theme_stylebox_override("disabled", _create_button_style(Color("#CAD9E8"), COLOR_BORDER, 2, 18, 2))
+	_btn_swap_weapon.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_swap_weapon.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_swap_weapon.pressed.connect(_on_swap_weapon_pressed)
+	weapon_head.add_child(_btn_swap_weapon)
 
 	var stats_grid := GridContainer.new()
 	stats_grid.columns = 2
@@ -1750,3 +1784,91 @@ func _style_dopamine_progress(bar: ProgressBar, fill: Color, bg: Color = Color("
 	bar.add_theme_stylebox_override("background", bg_s)
 	bar.add_theme_stylebox_override("fill", fill_s)
 	bar.show_percentage = false
+
+
+func get_swap_weapon_button() -> Button:
+	return _btn_swap_weapon
+
+
+func get_weapon_swap_dialog() -> Control:
+	return _weapon_swap_dialog
+
+
+func _on_swap_weapon_pressed() -> void:
+	swap_weapon_requested.emit(_active_slot_idx)
+	open_weapon_swap_dialog(_active_slot_idx)
+
+
+func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
+	var target_slot := slot_idx if slot_idx >= 0 else _active_slot_idx
+	var existing := get_node_or_null("WeaponSwapDialog")
+	if existing != null and not existing.is_queued_for_deletion():
+		return existing
+	var DlgClass: GDScript = load("res://scripts/ui/weapon_swap_dialog.gd")
+	if DlgClass == null:
+		push_error("無法載入 WeaponSwapDialog")
+		return null
+	var dlg: Control = DlgClass.new(target_slot) as Control
+	dlg.name = "WeaponSwapDialog"
+	dlg.z_index = 85
+	dlg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if dlg.has_method("setup"):
+		dlg.call("setup", target_slot)
+
+	_weapon_swap_dialog = dlg
+	dlg.tree_exited.connect(func():
+		_weapon_swap_dialog = null
+	)
+
+	if dlg.has_signal("weapon_swapped"):
+		dlg.weapon_swapped.connect(_on_weapon_swapped_from_dialog)
+	if dlg.has_signal("slot_unequipped"):
+		dlg.slot_unequipped.connect(_on_slot_unequipped_from_dialog)
+
+	add_child(dlg)
+	return dlg
+
+
+func _on_weapon_swapped_from_dialog(slot_idx: int, uid: String) -> void:
+	if is_instance_valid(_weapon_swap_dialog) and not _weapon_swap_dialog.is_queued_for_deletion():
+		_weapon_swap_dialog.queue_free()
+		_weapon_swap_dialog = null
+	_active_slot_idx = clampi(slot_idx, 0, 2)
+	var es := _get_equip_sys()
+	if es and es.has_method("equip_weapon_to_loadout") and not uid.is_empty():
+		var cur_uid: String = str(es.call("loadout_uid", _active_slot_idx)) if es.has_method("loadout_uid") else ""
+		if cur_uid != uid:
+			es.call("equip_weapon_to_loadout", uid, _active_slot_idx)
+	if "weapon_loadout" in GameState and GameState.weapon_loadout != null:
+		if _active_slot_idx < GameState.weapon_loadout.size():
+			GameState.weapon_loadout[_active_slot_idx] = uid
+	if "weapon_loadout_active" in GameState:
+		GameState.weapon_loadout_active = _active_slot_idx
+	if GameState.equip_slots != null and not uid.is_empty() and _active_slot_idx == 0:
+		GameState.equip_slots["weapon"] = uid
+	_sync_state_from_weapon()
+	_refresh_display()
+	_refresh_all_forge_core_slots()
+	weapon_swapped.emit(slot_idx, uid)
+	if is_instance_valid(_msg_label):
+		var inst := _current_weapon_inst()
+		var wname := _t(str(inst.get("name", GameState.weapon_name)))
+		_msg_label.text = _t("已成功更換槽位 %d 裝備：【%s】") % [slot_idx + 1, wname]
+		_msg_label.add_theme_color_override("font_color", COLOR_MINT)
+
+
+
+func _on_slot_unequipped_from_dialog(slot_idx: int) -> void:
+	if is_instance_valid(_weapon_swap_dialog) and not _weapon_swap_dialog.is_queued_for_deletion():
+		_weapon_swap_dialog.queue_free()
+		_weapon_swap_dialog = null
+	_active_slot_idx = clampi(slot_idx, 0, 2)
+	if "weapon_loadout_active" in GameState:
+		GameState.weapon_loadout_active = _active_slot_idx
+	_sync_state_from_weapon()
+	_refresh_display()
+	_refresh_all_forge_core_slots()
+	if is_instance_valid(_msg_label):
+		_msg_label.text = _t("武器欄 %d 尚未裝備武器") % [slot_idx + 1]
+		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+
