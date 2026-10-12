@@ -111,6 +111,7 @@ func _initialize() -> void:
 		var time_card := dlg.find_child("ElapsedTimeCard", true, false)
 		var dps_card := dlg.find_child("DpsCard", true, false)
 		var retry_btn: Button = dlg.find_child("RetryButton", true, false) as Button
+		var skills_btn: Button = dlg.find_child("BtnGoSkills", true, false) as Button
 		var confirm_btn: Button = dlg.find_child("ConfirmButton", true, false) as Button
 
 		if dmg_card == null:
@@ -160,6 +161,22 @@ func _initialize() -> void:
 				ok = false
 			else:
 				print("  ok RetryButton 文字為 '再次試招'")
+
+		if skills_btn == null:
+			push_error("結算面板缺少 BtnGoSkills（調整心法按鈕）")
+			ok = false
+		else:
+			print("  ok 找到 BtnGoSkills")
+			if skills_btn.custom_minimum_size.x < 170 or skills_btn.custom_minimum_size.y < 52:
+				push_error("BtnGoSkills 尺寸應 >= 170x52px，得 %.1fx%.1f" % [skills_btn.custom_minimum_size.x, skills_btn.custom_minimum_size.y])
+				ok = false
+			else:
+				print("  ok BtnGoSkills 尺寸 >= 170x52px (%.1fx%.1fpx)" % [skills_btn.custom_minimum_size.x, skills_btn.custom_minimum_size.y])
+			if skills_btn.text != "調整心法":
+				push_error("BtnGoSkills 文字應為 '調整心法'，得 '%s'" % skills_btn.text)
+				ok = false
+			else:
+				print("  ok BtnGoSkills 文字為 '調整心法'")
 
 		if confirm_btn == null:
 			push_error("結算面板缺少 ConfirmButton（確認按鈕）")
@@ -245,6 +262,9 @@ func _initialize() -> void:
 		if dlg.has_method("get_retry_text") and dlg.get_retry_text() != "再次試招":
 			push_error("get_retry_text() 得 '%s'" % dlg.get_retry_text())
 			ok = false
+		if dlg.has_method("get_skills_text") and dlg.get_skills_text() != "調整心法":
+			push_error("get_skills_text() 得 '%s'" % dlg.get_skills_text())
+			ok = false
 		if dlg.has_method("get_confirm_text") and dlg.get_confirm_text() != "完成試招":
 			push_error("get_confirm_text() 得 '%s'" % dlg.get_confirm_text())
 			ok = false
@@ -276,8 +296,8 @@ func _initialize() -> void:
 			else:
 				print("  ok 找到 WeaponSlotCard_%d" % si)
 
-		## 3. 檢驗再次試招與確認按鈕回調與信號
-		print("=== 檢驗 3: 雙按鈕回調與信號發送 ===")
+		## 3. 檢驗按鈕回調與信號發送（再次試招、調整心法、確認）
+		print("=== 檢驗 3: 按鈕回調與信號發送 ===")
 		# 檢驗 retry 按鈕
 		if retry_btn != null:
 			retry_btn.pressed.emit()
@@ -291,6 +311,30 @@ func _initialize() -> void:
 				ok = false
 			else:
 				print("  ok retry_requested signal emitted == true")
+
+		# 檢驗 skills 按鈕
+		var call_state_skills := {"skills": false, "signal_skills": false}
+		var dlg_skills: Control = DummySettlementDialogScript.show_dialog(
+			root,
+			sample_stats,
+			Callable(),
+			Callable(),
+			func(): call_state_skills["skills"] = true
+		)
+		dlg_skills.skills_requested.connect(func(): call_state_skills["signal_skills"] = true)
+		var skills_btn2: Button = dlg_skills.find_child("BtnGoSkills", true, false) as Button
+		if skills_btn2 != null:
+			skills_btn2.pressed.emit()
+			if not bool(call_state_skills["skills"]):
+				push_error("點擊調整心法未觸發 on_skills 回調")
+				ok = false
+			else:
+				print("  ok skills_called == true")
+			if not bool(call_state_skills["signal_skills"]):
+				push_error("點擊調整心法未發出 skills_requested 信號")
+				ok = false
+			else:
+				print("  ok skills_requested signal emitted == true")
 
 		# 檢驗 confirm 按鈕 (使用新 instance)
 		var call_state_conf := {"confirmed": false, "signal_confirmed": false}

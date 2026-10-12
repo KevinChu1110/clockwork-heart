@@ -13,6 +13,7 @@ extends Control
 
 signal confirmed()
 signal retry_requested()
+signal skills_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
@@ -45,6 +46,7 @@ var _time_label: Label
 var _dps_label: Label
 var _tip_label: Label
 var _retry_btn: Button
+var _skills_btn: Button
 var _confirm_btn: Button
 var _cached_font: Font = null
 
@@ -91,6 +93,7 @@ var _is_new_record: bool = false
 var _record_evaluated: bool = false
 var _on_confirm: Callable = Callable()
 var _on_retry: Callable = Callable()
+var _on_skills: Callable = Callable()
 
 
 static func _get_game_state() -> Object:
@@ -123,14 +126,14 @@ func _evaluate_record(stats: Dictionary = {}) -> void:
 		_best_dps = prev_best
 
 
-static func show_dialog(parent: Node, stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/dummy_settlement_dialog.gd").new()
-	dlg.setup(stats, on_confirm, on_retry)
+	dlg.setup(stats, on_confirm, on_retry, on_skills)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable()) -> void:
+func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable()) -> void:
 	_total_damage = int(stats.get("total_damage", 0))
 	_elapsed_time = float(stats.get("elapsed_time", 0.0))
 	_dps = float(stats.get("dps", 0.0))
@@ -142,6 +145,7 @@ func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: 
 	_weapon_bars = stats.get("weapon_bars", []).duplicate(true)
 	_on_confirm = on_confirm
 	_on_retry = on_retry
+	_on_skills = on_skills
 	_evaluate_record(stats)
 
 	if _dialog_card == null:
@@ -427,7 +431,7 @@ func _build_ui() -> void:
 		_tip_label.add_theme_font_override("font", _cached_font)
 	tip_margin.add_child(_tip_label)
 
-	# ── 底部按鈕區（再次試招與完成試招雙鍵並列） ──
+	# ── 底部按鈕區（再次試招、調整心法與完成試招三鍵並列） ──
 	var btn_center := CenterContainer.new()
 	btn_center.name = "ButtonCenterContainer"
 	v.add_child(btn_center)
@@ -440,7 +444,7 @@ func _build_ui() -> void:
 	# 1. 再次試招按鈕（暖橘立體厚底 >= 48px，高度 52px）
 	_retry_btn = Button.new()
 	_retry_btn.name = "RetryButton"
-	_retry_btn.custom_minimum_size = Vector2(200, 52)
+	_retry_btn.custom_minimum_size = Vector2(170, 52)
 	_retry_btn.add_theme_font_size_override("font_size", 18)
 	_retry_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -460,10 +464,33 @@ func _build_ui() -> void:
 	_retry_btn.pressed.connect(_on_retry_clicked)
 	btn_hbox.add_child(_retry_btn)
 
-	# 2. 完成試招按鈕（金黃立體厚底 >= 48px，高度 52px）
+	# 2. 調整心法按鈕（天藍立體果凍厚底 >= 48px，尺寸 >= 170x52px，圓角 20px，深藍紫描邊 2px）
+	_skills_btn = Button.new()
+	_skills_btn.name = "BtnGoSkills"
+	_skills_btn.custom_minimum_size = Vector2(170, 52)
+	_skills_btn.add_theme_font_size_override("font_size", 18)
+	_skills_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_skills_btn.add_theme_font_override("font", _cached_font)
+
+	var skills_normal := _create_button_style(COLOR_SKY, COLOR_BORDER, 6, 20, 2)
+	var skills_hover := _create_button_style(Color("#5CB2FF"), COLOR_BORDER, 6, 20, 2)
+	var skills_pressed := _create_button_style(Color("#2680D9"), COLOR_BORDER, 2, 20, 2)
+	skills_pressed.content_margin_top = 12
+	skills_pressed.content_margin_bottom = 8
+
+	_skills_btn.add_theme_stylebox_override("normal", skills_normal)
+	_skills_btn.add_theme_stylebox_override("hover", skills_hover)
+	_skills_btn.add_theme_stylebox_override("pressed", skills_pressed)
+	_skills_btn.add_theme_stylebox_override("focus", skills_normal)
+
+	_skills_btn.pressed.connect(_on_skills_clicked)
+	btn_hbox.add_child(_skills_btn)
+
+	# 3. 完成試招按鈕（金黃立體厚底 >= 48px，高度 52px）
 	_confirm_btn = Button.new()
 	_confirm_btn.name = "ConfirmButton"
-	_confirm_btn.custom_minimum_size = Vector2(200, 52)
+	_confirm_btn.custom_minimum_size = Vector2(170, 52)
 	_confirm_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_confirm_btn.add_theme_font_size_override("font_size", 18)
 	_confirm_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -518,6 +545,8 @@ func _update_ui_texts() -> void:
 		_tip_label.text = _t("木人樁為不消耗能量的自由試招訓練。可在武術館兵器架調配各色兵刃，體會不同招式的出招前搖與段數節奏。")
 	if _retry_btn and is_instance_valid(_retry_btn):
 		_retry_btn.text = _t("再次試招")
+	if _skills_btn and is_instance_valid(_skills_btn):
+		_skills_btn.text = _t("調整心法")
 	if _confirm_btn and is_instance_valid(_confirm_btn):
 		_confirm_btn.text = _t("完成試招")
 	if _record_badge_lbl and is_instance_valid(_record_badge_lbl):
@@ -1011,6 +1040,13 @@ func _on_retry_clicked() -> void:
 	queue_free()
 
 
+func _on_skills_clicked() -> void:
+	skills_requested.emit()
+	if _on_skills.is_valid():
+		_on_skills.call()
+	queue_free()
+
+
 func get_total_damage() -> int:
 	return _total_damage
 
@@ -1073,6 +1109,14 @@ func get_tip_text() -> String:
 
 func get_retry_text() -> String:
 	return _retry_btn.text if _retry_btn else ""
+
+
+func get_skills_text() -> String:
+	return _skills_btn.text if _skills_btn else ""
+
+
+func get_skills_btn() -> Button:
+	return _skills_btn
 
 
 func get_confirm_text() -> String:
