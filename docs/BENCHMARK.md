@@ -34,12 +34,12 @@
 |---|---|---|
 | 類型 | 單機為主、輕連線的玩具 RPG。核心是「上鏈 → 自動戰鬥 → 拆部位 → 換裝」 | `docs/CLOCKWORK_HEART_GAME_OVERVIEW.md` |
 | 畫面方向 | **橫屏**，1280×720 參考解析度，`canvas_items` + `expand`，感測器橫向 | `game/project.godot`（`window/handheld/orientation=4`） |
-| 戰鬥 | **全自動回合**，玩家不按任何鍵。換武器、彈開、拆部位都是自動演出；彈開用機率版 | PR #17（未合併）、`docs/COMBAT.md` §4.5 |
+| 戰鬥 | **目標是全自動回合**，玩家不按任何鍵；換武器、彈開、拆部位都是自動演出，彈開用機率版。**`main` 目前還留著手動輸入**（點怒氣條觸發怒氣覺醒 `_on_rage_gui`、點武器格換武 `_on_weapon_cell_gui`、`_do_parry`、鎖定部位，皆在 `game/scripts/battle/battle_view.gd`），移除要等 PR #17 合併 | PR #17（未合併）、`docs/COMBAT.md` §4.5 |
 | 戰鬥長度 | 建議等級打 Boss 約 50–56 秒 | `docs/BALANCE.md` §6 |
 | 新手 | 目標 ≤180 秒走完：第一場戰鬥在 50–70 秒、首拆在 70–110 秒、用教學券抽魂在 130–160 秒 | `docs/W8_B1_ONBOARD_DAILY.md` |
 | 首拆保護 | 冒煙開始 60 秒內沒拆到就強制提示 | `game/data/ken/w5_k1_s8_uiux.json`（`FirstBreakDeadlineSec: 60`） |
 | 每日 | 7 種輪替每日活動，一天選一個，漏天不補。上鏈體力上限 15，每 8 分鐘回 1 點（約 2 小時回滿） | `game/data/ken/w8_k2_daily_events.json`、`docs/BALANCE.md` |
-| 抽卡 | 兩套都叫「抽魂」：舊的葫蘆戰魂，和新的抽魂池。抽魂池白 6／藍 70／紫 24，服裝硬保底 20 抽，每週約 10 張券 | PR #18（未合併）、`docs/BALANCE.md` §3 |
+| 抽卡 | 兩套都叫「抽魂」：舊的葫蘆戰魂，和新的抽魂池。抽魂池掉落權重：雜件 6／零件 70（28＋28＋14）／換裝 24（4 款×6），換裝硬保底 20 抽、10 抽起出軟保底提示，每週約 10 張券 | `game/data/ken/w7_k1b_soul_draw.json`、`game/scripts/systems/soul_draw_v2/soul_draw_pool.gd`（皆已在 `main`）；PR #18（未合併）只換卡面、把核心碎片 14 併入另兩種零件（權重總和仍 100） |
 | 收藏 | 7 槽紙娃娃衣櫥＋玩具家族 | PR #19（未合併）、`docs/TOY_FAMILIES.md`（PR #38） |
 | 賽季 | 7–14 天到 Lv30 | `docs/BALANCE.md` §10 |
 | 商業 | F2P＋內購＋獎勵廣告＋去廣告買斷。**不放插頁廣告，保底要透明** | `docs/BUSINESS.md` |
@@ -155,7 +155,7 @@
 - 劍與遠征：主線沒有體力限制，卡關時玩家可以先去養成再回來；Boss 關卡是刻意設計的難度高峰 [S9]。
 
 **我們現在**
-- 全自動回合，玩家零輸入（PR #17）。
+- 目標是全自動回合、玩家零輸入（PR #17，未合併）。**`main` 現況仍可手動**：點怒氣條、點武器格、彈開、鎖定部位（`battle_view.gd` 的 `_on_rage_gui`、`_on_weapon_cell_gui`、`_do_parry`）。本節「零輸入」的差距以 PR #17 合併後為前提。
 - 自動彈開走機率：`clamp(0.40 + 閃避×0.01 + 速度差×0.02, 0.15, 0.75)`（`docs/COMBAT.md` §4.5）。
 - 打擊演出：拆部位時有慢鏡，`Engine.time_scale` 0.15／0.08（`game/scripts/battle/battle_view.gd`）。
 - 戰鬥長度：建議等級打 Boss 約 50–56 秒（`docs/BALANCE.md` §6）。
@@ -185,10 +185,10 @@
   - Google Play：販售隨機物品前要清楚揭露機率 [S24]。
 
 **我們現在**
-- 抽魂池：白 6／藍 70／紫 24，服裝硬保底 20 抽，軟保底只會出提示（PR #18 的 `soul_draw_pool.gd`）。券每週約 10 張；每日上限抽 30、券上限 40（`game/data/ken/w8_k1_daily_growth_econ.json`）。
-- **抽魂池畫面沒有機率表，也沒有保底計數**：查過 `main` 和 PR #18 的 `game/scripts/ui/soul_draw/*.gd`，都沒有顯示機率或保底的地方。
+- 抽魂池（已在 `main`）：`game/data/ken/w7_k1b_soul_draw.json` 的 LootTable 權重——雜件 6、零件 70（齒輪 28／游絲 28／核心碎片 14）、換裝 24（4 款各 6），總和 100；換裝硬保底 20 抽、10 抽起只出軟保底提示（`soul_draw_pool.gd`，`pity.hardPity=20`、`softPity=10`）。PR #18（未合併）會移除核心碎片、齒輪和游絲各改為 35，總和仍 100。`docs/SOUL_DRAW_V2.md` 寫「無獨立轉蛋 UI」，但 `soul_draw/soul_draw_play_view.gd` 已有抽魂畫面。券每週約 10 張；每日上限抽 30、券上限 40（`game/data/ken/w8_k1_daily_growth_econ.json`）。
+- **抽魂池畫面沒有機率表，也沒有保底計數**：查過 `main`（2026-10-12 的 `ad28947d`）和 PR #18 的 `game/scripts/ui/soul_draw/*.gd`，都沒有顯示機率或保底的地方；畫面上只有「封靈票 ×N · 今日已抽 N」（`soul_draw_play_view.gd`）。
 - 舊的聚魂殿（葫蘆戰魂，用金幣抽）畫面有保底進度條（`game/scripts/main.gd` 的 `soul_pity`）。
-- 兩套系統都叫「抽魂」（`docs/BALANCE.md` §3「抽魂＝聚魂」，以及 PR #18 的抽魂池）。
+- 兩套系統都叫「抽魂」（`docs/BALANCE.md` §3「抽魂＝聚魂」，以及 `game/scripts/systems/soul_draw_v2/` 的抽魂池）。
 - 演出：轉鑰匙 → 開鎖 → 爆光，有跳過鈕，大小 90×36 px（`soul_summon_fx.gd`）。
 - 商業原則已寫明「保底要透明」（`docs/BUSINESS.md`）。
 - 抽到的部位不進背包，只是展示（PR #41 提案 `docs/proposals/soul_draw_rare_parts.md`）。
