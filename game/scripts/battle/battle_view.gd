@@ -4542,7 +4542,8 @@ func _on_end(won: bool) -> void:
 	_release_hp_authority()
 	countdown.visible = false
 	countdown_sub.visible = false
-	AudioManager.battle_end(won)
+	## 勝利結算切 ending（#64）；木人試招沒有勝利結算，只播 victory 音效
+	AudioManager.battle_end(won, _mode != "training_dummy")
 	## 破部位掉落暫存：僅勝利入袋（由 main._grant_boss_loot 統一發；不進存檔）
 	if sim != null:
 		BattleSim.last_victory_part_loot = sim.pending_part_materials.duplicate() if won else []

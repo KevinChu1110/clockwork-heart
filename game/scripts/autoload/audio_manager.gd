@@ -18,6 +18,9 @@ const BGM_CUES: Array[String] = [
 ]
 ## 只播一次、不循環的 cue（ending＝勝利結算 16 秒）。其餘地區曲循環，免得走路走到沒聲音。
 const BGM_ONESHOT: Array[String] = ["ending"]
+## 勝利結算切 ending 的淡入秒數。victory 音效的起音約 0.3 s，ending 從 −40 dB
+## 爬上來的這段剛好讓開，不會兩聲同時炸開（#64、任務書 §5）。
+const ENDING_FADE_IN := 0.45
 ## 舊曲目 id → 八 cue。main.gd 還有直接 play_bgm("mist") 之類的舊呼叫，在這裡接住。
 const BGM_LEGACY_ALIAS := {
 	"mist": "forest", "dojo": "town", "coast": "road", "wild": "road", "tower": "forest",
@@ -71,6 +74,12 @@ var _bgm_b: AudioStreamPlayer
 var _bgm_active: AudioStreamPlayer
 var _current_bgm: String = ""
 var _fade_tween: Tween
+## 不循環的 cue（ending）自然播完時發出。中途被切走（stop／換曲）不會發。
+signal bgm_finished(id: String)
+## 不循環的 cue 播完後要接回哪首；"" ＝ 不接（保持安靜）
+var _resume_bgm: String = ""
+## 開戰前在播的非戰鬥 cue（地區曲／大廳），勝利 ending 播完接回它
+var _pre_battle_bgm: String = ""
 
 
 func _ready() -> void:
@@ -106,6 +115,21 @@ func _build_bgm_players() -> void:
 	_bgm_b.bus = "Master"
 	add_child(_bgm_b)
 	_bgm_active = _bgm_a
+	_bgm_a.finished.connect(_on_bgm_player_finished.bind(_bgm_a))
+	_bgm_b.finished.connect(_on_bgm_player_finished.bind(_bgm_b))
+
+
+## 只有不循環的曲子會走到這裡（循環曲不會 finished）。被淡出 stop() 的不會發 finished。
+func _on_bgm_player_finished(p: AudioStreamPlayer) -> void:
+	if p != _bgm_active or not BGM_ONESHOT.has(_current_bgm):
+		return
+	var id := _current_bgm
+	var back := _resume_bgm
+	_resume_bgm = ""
+	_current_bgm = ""
+	bgm_finished.emit(id)
+	if back != "" and back != id:
+		play_bgm(back)
 
 
 func _preload_sfx() -> void:
@@ -345,6 +369,8 @@ func play_bgm(id: String, fade: float = BGM_FADE) -> void:
 	if id == "":
 		return
 	id = resolve_bgm_cue(id)
+	## 任何明確的換曲都取消「播完接回」；play_victory_ending 會在這之後再設
+	_resume_bgm = ""
 	var target_db := _bgm_target_db(id)
 	if _bgm_muted or _muted:
 		_current_bgm = id
@@ -544,14 +570,36 @@ func on_battle_event(kind: String, data: Dictionary = {}) -> void:
 func battle_start(mode: String = "wolf") -> void:
 	## 戰前上鏈（wind）。Boss 不再疊 warn——warn 只給部位將破；Boss 感由 boss BGM 負責
 	play_wind_up()
+	## 記住開戰前的地區曲；結算頁直接「再次挑戰」時現在播的是 ending／battle，不覆蓋
+	if _current_bgm != "" and not _current_bgm in ["battle", "boss", "ending"]:
+		_pre_battle_bgm = _current_bgm
 	play_bgm_for_battle(mode)
 
 
-func battle_end(won: bool) -> void:
+## celebrate＝false 給木人試招這類「沒有勝利結算」的戰：只播 victory 音效、不切 ending
+func battle_end(won: bool, celebrate: bool = true) -> void:
 	if won:
 		play("victory")
 	else:
 		play("defeat")
-	## 暫時壓低 BGM，回探索時會由 map 切回
+	if won and celebrate:
+		play_victory_ending()
+		return
+	## 輸了（或試招）：暫時壓低 BGM，回探索時會由 map 切回
 	if _bgm_active and _bgm_active.playing:
 		_bgm_active.volume_db = _bgm_target_db(_current_bgm) - 8.0
+
+
+## 勝利結算：ending 淡入（讓開 victory 起音），播完自動接回開戰前的地區曲。
+## 若玩家先離開結算（play_bgm_for_map 等任何換曲），接回就取消，照新場景的曲子走。
+func play_victory_ending() -> void:
+	play_bgm("ending", ENDING_FADE_IN)
+	_resume_bgm = _pre_battle_bgm
+
+
+func current_bgm_cue() -> String:
+	return _current_bgm
+
+
+func resume_bgm_cue() -> String:
+	return _resume_bgm
