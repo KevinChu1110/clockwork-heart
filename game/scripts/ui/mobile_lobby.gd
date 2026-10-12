@@ -5,6 +5,7 @@ extends Control
 
 signal request_battle(mode: String)
 signal request_settings()
+signal core_replaced(slot_id: String, part: Dictionary)
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -280,6 +281,9 @@ var _char_weapon_title_label: Label = null
 var _char_weapon_sub_label: Label = null
 var _btn_change_weapon: Button = null
 var _weapon_swap_dialog: Control = null
+var _char_core_title_label: Label = null
+var _char_core_sub_label: Label = null
+var _char_core_slots_row: HBoxContainer = null
 var _char_stat_title_label: Label = null
 var _stat_cards: Array[PanelContainer] = []
 
@@ -4140,7 +4144,7 @@ func _build_character_tab() -> void:
 
 	var w_sub := Label.new()
 	w_sub.text = _t("點擊切換輪替順位 · 三段作戰序列")
-	_apply_label_style(w_sub, 13, COLOR_GOLD_DARK)
+	_apply_label_style(w_sub, 14, COLOR_GOLD_DARK, COLOR_BORDER, 2)
 	w_hdr.add_child(w_sub)
 	_char_weapon_sub_label = w_sub
 
@@ -4212,11 +4216,41 @@ func _build_character_tab() -> void:
 	_weapon_slot_hint_label = Label.new()
 	var init_hint := _t(WEAPON_SLOTS[_selected_weapon_slot]["hint"])
 	_weapon_slot_hint_label.text = init_hint
-	var init_h_sz := 12 if init_hint.length() > 70 else 13
-	_apply_label_style(_weapon_slot_hint_label, init_h_sz, COLOR_TEXT_DARK)
+	_apply_label_style(_weapon_slot_hint_label, 14, COLOR_TEXT_DARK, COLOR_BORDER, 2)
 	hint_p.add_child(_weapon_slot_hint_label)
 
-	# 4. 戰鬥屬性標題列
+	# 4. 機芯五槽配置標題與五大機芯槽位
+	var c_hdr := HBoxContainer.new()
+	c_hdr.add_theme_constant_override("separation", 12)
+	r_v.add_child(c_hdr)
+
+	var c_title := Label.new()
+	c_title.name = "CharCoreTitleLabel"
+	c_title.text = _t("機芯五槽配置")
+	_apply_label_style(c_title, 18, COLOR_TEXT_DARK)
+	c_hdr.add_child(c_title)
+	_char_core_title_label = c_title
+
+	var c_sub := Label.new()
+	c_sub.name = "CharCoreSubLabel"
+	c_sub.text = _t("點擊更換裝備 · 強化核心機芯")
+	_apply_label_style(c_sub, 14, COLOR_GOLD_DARK, COLOR_BORDER, 2)
+	c_hdr.add_child(c_sub)
+	_char_core_sub_label = c_sub
+
+	var c_hdr_spacer := Control.new()
+	c_hdr_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c_hdr.add_child(c_hdr_spacer)
+
+	var c_row := HBoxContainer.new()
+	c_row.name = "CoreSlotsRow"
+	c_row.add_theme_constant_override("separation", 8)
+	r_v.add_child(c_row)
+	_char_core_slots_row = c_row
+
+	_refresh_char_core_slots()
+
+	# 5. 戰鬥屬性標題列
 	var s_hdr := HBoxContainer.new()
 	s_hdr.add_theme_constant_override("separation", 12)
 	r_v.add_child(s_hdr)
@@ -4247,7 +4281,7 @@ func _build_character_tab() -> void:
 	if gs and gs.has_method("power_score") and int(gs.call("power_score")) > 0:
 		cur_pow = int(gs.call("power_score"))
 	_char_power_badge.text = _t("有效戰力 %d") % cur_pow
-	_apply_label_style(_char_power_badge, 13, COLOR_TEXT_DARK)
+	_apply_label_style(_char_power_badge, 14, COLOR_TEXT_DARK, COLOR_BORDER, 2)
 	pow_capsule.add_child(_char_power_badge)
 
 	var lv_capsule := PanelContainer.new()
@@ -4266,7 +4300,7 @@ func _build_character_tab() -> void:
 
 	_char_level_badge = Label.new()
 	_update_char_level_badge()
-	_apply_label_style(_char_level_badge, 13, COLOR_TEXT_DARK)
+	_apply_label_style(_char_level_badge, 14, COLOR_TEXT_DARK, COLOR_BORDER, 2)
 	lv_capsule.add_child(_char_level_badge)
 
 	# 5. 獨立屬性小卡 (生命／攻擊／防禦／暴擊／怒氣)
@@ -4352,12 +4386,12 @@ func _get_weapon_slot_info(slot_idx: int) -> Dictionary:
 			req_lv = int(eq.loadout_unlock_level(slot_idx))
 		return {
 			"slot_title": title,
-			"weapon_name": "未解鎖",
-			"hits": "需達 Lv%d" % req_lv,
+			"weapon_name": _t("未解鎖"),
+			"hits": _t("需達 Lv%d") % req_lv,
 			"quality": "locked",
-			"quality_label": "未解鎖",
+			"quality_label": _t("未解鎖"),
 			"quality_color": Color("#A09CAE"),
-			"hint": "武器欄位未解鎖（角色等級需達到 Lv%d）" % req_lv,
+			"hint": _t("武器欄位未解鎖（角色等級需達到 Lv%d）") % req_lv,
 			"unlocked": false,
 			"empty": true,
 			"is_active": false,
@@ -5344,7 +5378,7 @@ func _create_lobby_core_card(part: Dictionary, card_idx: int = 0) -> Control:
 	action_lbl.name = "ActionLabel"
 	action_lbl.text = _t("更換裝備")
 	action_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_apply_label_style(action_lbl, 12, COLOR_TEXT_ORANGE)
+	_apply_label_style(action_lbl, 14, COLOR_TEXT_ORANGE, COLOR_BORDER, 2)
 	action_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	vb.add_child(action_lbl)
 
@@ -6087,6 +6121,11 @@ func _apply_locale_texts() -> void:
 		_btn_change_weapon.text = _t("更換裝備")
 	if _char_stat_title_label and is_instance_valid(_char_stat_title_label):
 		_char_stat_title_label.text = _t("機體戰鬥屬性")
+	if _char_core_title_label and is_instance_valid(_char_core_title_label):
+		_char_core_title_label.text = _t("機芯五槽配置")
+	if _char_core_sub_label and is_instance_valid(_char_core_sub_label):
+		_char_core_sub_label.text = _t("點擊更換裝備 · 強化核心機芯")
+	_refresh_char_core_slots()
 	if _char_power_badge and is_instance_valid(_char_power_badge):
 		var gs := _gs()
 		var cur_pow := 482
@@ -6104,20 +6143,12 @@ func _apply_locale_texts() -> void:
 			if t_lbl:
 				var t_text := _t(str(card.get_meta("stat_title_key", "")))
 				t_lbl.text = t_text
-				if t_text.length() > 14:
-					t_lbl.add_theme_font_size_override("font_size", 12)
-				else:
-					t_lbl.add_theme_font_size_override("font_size", 14)
+				t_lbl.add_theme_font_size_override("font_size", 14)
 			var sub_lbl := card.find_child("SubLabel", true, false) as Label
 			if sub_lbl:
 				var sub_text := _t(str(card.get_meta("stat_subtitle_key", "")))
 				sub_lbl.text = sub_text
-				if sub_text.length() > 24:
-					sub_lbl.add_theme_font_size_override("font_size", 10)
-				elif sub_text.length() > 16:
-					sub_lbl.add_theme_font_size_override("font_size", 11)
-				else:
-					sub_lbl.add_theme_font_size_override("font_size", 12)
+				sub_lbl.add_theme_font_size_override("font_size", 14)
 			var v_lbl := card.find_child("ValLabel", true, false) as Label
 			if v_lbl:
 				var v_k := str(card.get_meta("stat_val_key", ""))
@@ -6176,6 +6207,7 @@ func _show_toast(msg: String) -> void:
 	toast.add_theme_stylebox_override("normal", tsb)
 	toast.add_theme_color_override("font_color", INK_IVORY)
 	toast.add_theme_font_size_override("font_size", 15)
+	toast.z_index = 100
 	add_child(toast)
 
 	var tw := create_tween()
@@ -6521,7 +6553,212 @@ func close_equip_panel() -> void:
 		layer.queue_free()
 	_equip_panel_instance = null
 	_refresh_bag_tab()
+	_refresh_char_core_slots()
 	refresh_hud()
+
+
+## 機芯五槽大廳角色頁元件與 CoreReplaceDialog 連動
+func _refresh_char_core_slots() -> void:
+	if _char_core_slots_row == null or not is_instance_valid(_char_core_slots_row):
+		return
+	for c in _char_core_slots_row.get_children():
+		_char_core_slots_row.remove_child(c)
+		c.queue_free()
+
+	var CoreSys := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	var sdb = preload("res://scripts/art/sprite_db.gd")
+
+	var defs: Array = []
+	if sdb != null and "CORE_SLOT_DEFS" in sdb:
+		defs = sdb.CORE_SLOT_DEFS
+	elif CoreSys != null:
+		var cs_inst = CoreSys.new()
+		if cs_inst.has_method("get_slot_defs"):
+			var d_dict: Dictionary = cs_inst.get_slot_defs()
+			for k in d_dict:
+				defs.append(d_dict[k])
+
+	for def in defs:
+		var slot_id: String = str(def.get("id", ""))
+		var norm_slot: String = CoreSys.normalize_slot_id(slot_id) if CoreSys != null else slot_id
+		var slot_name: String = str(def.get("name", ""))
+		if slot_name.is_empty() and CoreSys != null:
+			slot_name = CoreSys.get_slot_name(norm_slot)
+
+		var part: Dictionary = {}
+		if CoreSys != null:
+			part = CoreSys.get_equipped_part(norm_slot)
+		if part.is_empty():
+			var gs := _gs()
+			if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+				part = gs.core_slots.get(norm_slot, {})
+
+		var tier_id: String = str(part.get("tier", "white"))
+		var tier_name: String = str(part.get("tier_name", "白"))
+		var is_equipped: bool = not part.is_empty()
+
+		var tier_color: Color = CoreSys.get_tier_color(tier_id) if (CoreSys != null and is_equipped) else Color(0.72, 0.68, 0.82)
+
+		var card := PanelContainer.new()
+		card.name = "CoreSlot_" + norm_slot
+		card.custom_minimum_size = Vector2(88, 64)
+		card.mouse_filter = Control.MOUSE_FILTER_STOP
+
+		var cs := StyleBoxFlat.new()
+		cs.bg_color = COLOR_CARD_WARM if is_equipped else Color(0.95, 0.94, 0.97, 0.9)
+		cs.border_color = tier_color if is_equipped else COLOR_BORDER
+		cs.set_border_width_all(2)
+		cs.border_width_bottom = 4
+		cs.set_corner_radius_all(14)
+		cs.shadow_color = Color(tier_color.r, tier_color.g, tier_color.b, 0.25) if is_equipped else Color(0.12, 0.10, 0.23, 0.10)
+		cs.shadow_size = 4
+		cs.shadow_offset = Vector2(0, 2)
+		card.add_theme_stylebox_override("panel", cs)
+
+		var btn := Button.new()
+		btn.name = "SlotButton"
+		btn.flat = true
+		btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+		btn.custom_minimum_size = Vector2(88, 50)
+		btn.mouse_filter = Control.MOUSE_FILTER_STOP
+		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+		btn.focus_mode = Control.FOCUS_NONE
+		var captured_slot := norm_slot
+		btn.pressed.connect(func():
+			_play_ui_sound()
+			_on_char_core_slot_clicked(captured_slot)
+		)
+		card.add_child(btn)
+
+		var margin := MarginContainer.new()
+		margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		margin.add_theme_constant_override("margin_left", 6)
+		margin.add_theme_constant_override("margin_right", 6)
+		margin.add_theme_constant_override("margin_top", 4)
+		margin.add_theme_constant_override("margin_bottom", 4)
+		card.add_child(margin)
+
+		var vb := VBoxContainer.new()
+		vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vb.alignment = BoxContainer.ALIGNMENT_CENTER
+		vb.add_theme_constant_override("separation", 2)
+		margin.add_child(vb)
+
+		var top_row := HBoxContainer.new()
+		top_row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		top_row.alignment = BoxContainer.ALIGNMENT_CENTER
+		top_row.add_theme_constant_override("separation", 4)
+		vb.add_child(top_row)
+
+		var icon := TextureRect.new()
+		icon.name = "SlotIcon"
+		icon.custom_minimum_size = Vector2(24, 24)
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		if sdb != null:
+			var tex: Texture2D = sdb.core_slot_icon(norm_slot)
+			if tex:
+				icon.texture = tex
+		icon.modulate = tier_color if is_equipped else Color(0.6, 0.58, 0.68)
+		top_row.add_child(icon)
+
+		var slot_lbl := Label.new()
+		slot_lbl.name = "SlotLabel"
+		slot_lbl.text = _t(slot_name)
+		slot_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_apply_label_style(slot_lbl, 14, COLOR_TEXT_DARK)
+		slot_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		top_row.add_child(slot_lbl)
+
+		var tier_lbl := Label.new()
+		tier_lbl.name = "TierLabel"
+		var t_txt := (_t(tier_name) if tier_name.ends_with("階") else _t(tier_name + "階")) if is_equipped else _t("未裝備")
+		tier_lbl.text = t_txt
+		tier_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_apply_label_style(tier_lbl, 14, tier_color if (is_equipped and tier_id != "white") else COLOR_TEXT_DARK, COLOR_BORDER, 2)
+		tier_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		vb.add_child(tier_lbl)
+
+		_char_core_slots_row.add_child(card)
+
+
+func _on_char_core_slot_clicked(slot_id: String) -> void:
+	var CoreSys := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	if CoreSys == null:
+		return
+	var norm_slot := CoreSys.normalize_slot_id(slot_id)
+	var inv: Array = CoreSys.get_inventory()
+	var candidate: Dictionary = {}
+	for p in inv:
+		if p is Dictionary and CoreSys.normalize_slot_id(p.get("slot", "")) == norm_slot:
+			candidate = p
+			break
+	if not candidate.is_empty():
+		open_core_replace_dialog(norm_slot, candidate)
+	else:
+		_show_toast(_t("背包暫無此部位可替換機芯"))
+
+
+## 連動彈出多巴胺風格 CoreReplaceDialog (機芯替換比較確認彈窗)
+func open_core_replace_dialog(slot_id: String, new_part: Dictionary = {}) -> Control:
+	var CoreSys := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	if CoreSys == null:
+		return null
+	var norm_slot := CoreSys.normalize_slot_id(slot_id)
+	var old_part: Dictionary = CoreSys.get_equipped_part(norm_slot)
+	if old_part.is_empty():
+		var gs := _gs()
+		if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+			old_part = gs.core_slots.get(norm_slot, {})
+
+	var target_new_part := new_part.duplicate(true)
+	if target_new_part.is_empty():
+		var inv: Array = CoreSys.get_inventory()
+		for p in inv:
+			if p is Dictionary and CoreSys.normalize_slot_id(p.get("slot", "")) == norm_slot:
+				target_new_part = p
+				break
+
+	if target_new_part.is_empty():
+		_show_toast(_t("背包暫無此部位可替換機芯"))
+		return null
+
+	var existing = get_node_or_null("CompareLayer")
+	if existing != null and is_instance_valid(existing):
+		remove_child(existing)
+		existing.queue_free()
+
+	var CoreReplaceDialogScript := preload("res://scripts/ui/core_replace_dialog.gd")
+	if CoreReplaceDialogScript == null:
+		push_error("無法載入 CoreReplaceDialog")
+		return null
+
+	var on_confirm = func():
+		var uid_new := str(target_new_part.get("uid", ""))
+		if not uid_new.is_empty():
+			CoreSys.remove_part_from_inventory(uid_new)
+		if not old_part.is_empty():
+			CoreSys.add_part_to_inventory(old_part)
+		CoreSys.equip_part(norm_slot, target_new_part)
+		var gs := _gs()
+		if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+			gs.core_slots[norm_slot] = target_new_part
+		core_replaced.emit(norm_slot, target_new_part)
+		_show_toast(_t("已成功替換裝備至【%s】槽位！") % _t(CoreSys.get_slot_name(norm_slot)))
+		_refresh_char_core_slots()
+		_refresh_core_bag()
+		_refresh_bag_tab(false)
+		refresh_hud()
+
+	var on_cancel = func():
+		pass
+
+	var dlg = CoreReplaceDialogScript.show_dialog(self, norm_slot, old_part, target_new_part, on_confirm, on_cancel, "free")
+	if dlg != null:
+		dlg.z_index = 95
+	return dlg
 
 
 # EquipPanel host 介面支援

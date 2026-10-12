@@ -3806,5 +3806,8 @@
   "快捷欄 2": "Acceso rápido 2",
   "ui_remove_hotbar": "Quitar de acceso rápido",
   "從快捷欄卸下": "Quitar de acceso rápido",
-  "已從快捷欄卸下：%s": "Quitado del acceso rápido: %s"
+  "已從快捷欄卸下：%s": "Quitado del acceso rápido: %s",
+  "機芯五槽配置": "Configuración de 5 Ranuras de Núcleo",
+  "點擊更換裝備 · 強化核心機芯": "Toca para cambiar equipo · Mejorar núcleos",
+  "背包暫無此部位可替換機芯": "Sin piezas de núcleo reemplazables para esta ranura en la mochila"
 }

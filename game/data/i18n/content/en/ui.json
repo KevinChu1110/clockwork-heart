@@ -3806,5 +3806,8 @@
   "快捷欄 2": "Hotbar 2",
   "ui_remove_hotbar": "Remove from Hotbar",
   "從快捷欄卸下": "Remove from Hotbar",
-  "已從快捷欄卸下：%s": "Removed from Hotbar: %s"
+  "已從快捷欄卸下：%s": "Removed from Hotbar: %s",
+  "機芯五槽配置": "5 Core Slots Configuration",
+  "點擊更換裝備 · 強化核心機芯": "Tap to swap · Enhance core mechanisms",
+  "背包暫無此部位可替換機芯": "No replaceable core parts for this slot in bag"
 }
