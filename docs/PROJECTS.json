@@ -6095,6 +6095,16 @@
    "keys": [
     "PowerSta"
    ]
+  },
+  {
+   "id": "inventory-core-dismantle-recycle",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援選取機芯拆解回收與安全防護",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
