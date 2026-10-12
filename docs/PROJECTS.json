@@ -6140,8 +6140,8 @@
    "id": "gem-workshop-go-inventory",
    "cat": "遊戲",
    "title": "GemWorkshopDialog 手藝工坊新增前往背包快捷按鈕連動探索背包寶石頁籤",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "開始實作手藝工坊前往背包快捷按鈕與連動探索背包寶石頁籤",
    "keys": [
     "GemWorks"
    ]
