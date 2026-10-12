@@ -166,11 +166,12 @@ func _process(_delta: float) -> bool:
 
 			if btn.visible:
 				return _fail("未選取道具時拆解按鈕應為隱藏 (visible=false)")
-			var hb_btn: Button = null
-			for child in _inv.find_children("*", "Button", true, false):
-				if child.text == "放到快捷欄":
-					hb_btn = child
-					break
+			var hb_btn: Button = _inv.call("get_hotbar_button") if _inv.has_method("get_hotbar_button") else null
+			if hb_btn == null:
+				for child in _inv.find_children("*", "Button", true, false):
+					if child.text in ["放到快捷欄", "從快捷欄卸下"] or child.name.contains("Hotbar"):
+						hb_btn = child
+						break
 			if hb_btn != null:
 				if not hb_btn.visible:
 					return _fail("未選取狀態下快捷欄按鈕應為可見")
@@ -193,11 +194,12 @@ func _process(_delta: float) -> bool:
 			_inv.refresh()
 			if btn.visible:
 				return _fail("選取消耗品時拆解按鈕應隱藏 (visible=false)")
-			var hb_btn: Button = null
-			for child in _inv.find_children("*", "Button", true, false):
-				if child.text == "放到快捷欄":
-					hb_btn = child
-					break
+			var hb_btn: Button = _inv.call("get_hotbar_button") if _inv.has_method("get_hotbar_button") else null
+			if hb_btn == null:
+				for child in _inv.find_children("*", "Button", true, false):
+					if child.text in ["放到快捷欄", "從快捷欄卸下"] or child.name.contains("Hotbar"):
+						hb_btn = child
+						break
 			if hb_btn == null or not hb_btn.visible or hb_btn.disabled:
 				return _fail("選取消耗品時快捷欄按鈕應為可見且啟用 (visible=true, disabled=false)")
 			print("  ok 消耗品選取時維持快捷欄按鈕啟用，拆解按鈕隱藏")

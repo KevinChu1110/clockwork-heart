@@ -129,6 +129,8 @@ func _ready() -> void:
 		_inv_panel.item_used.connect(_on_inv_use_item)
 	if _inv_panel.has_signal("assign_hotbar"):
 		_inv_panel.assign_hotbar.connect(_on_inv_assign_hotbar)
+	if _inv_panel.has_signal("remove_hotbar"):
+		_inv_panel.remove_hotbar.connect(_on_inv_remove_hotbar)
 	if _inv_panel.has_signal("equipment_changed"):
 		_inv_panel.equipment_changed.connect(func():
 			_refresh_hud()
@@ -2397,6 +2399,21 @@ func _on_inv_assign_hotbar(item_id: String) -> void:
 		_show_toast(_t("快捷欄已滿，改綁 1：%s") % InventorySystem.item_name(item_id))
 	if _hotbar and _hotbar.has_method("refresh"):
 		_hotbar.call("refresh")
+	if _inv_panel and _inv_panel.has_method("refresh"):
+		_inv_panel.call("refresh")
+
+
+func _on_inv_remove_hotbar(item_id: String) -> void:
+	InventorySystem.ensure_hotbar()
+	for i in GameState.hotbar.size():
+		if str(GameState.hotbar[i]) == item_id:
+			InventorySystem.clear_hotbar(i)
+	var name_str := InventorySystem.item_name(item_id) if InventorySystem else item_id
+	_show_toast(_t("已從快捷欄卸下：%s") % name_str)
+	if _hotbar and _hotbar.has_method("refresh"):
+		_hotbar.call("refresh")
+	if _inv_panel and _inv_panel.has_method("refresh"):
+		_inv_panel.call("refresh")
 
 
 func _show_toast(msg: String) -> void:

@@ -14,6 +14,7 @@ signal closed
 signal item_used(item_id: String)
 signal consumable_used(item_id: String, result: Dictionary)
 signal assign_hotbar(item_id: String)
+signal remove_hotbar(item_id: String)
 signal items_sorted
 signal category_changed(category_id: String)
 signal equipment_changed
@@ -147,12 +148,16 @@ var _lock_btn: Button = null
 var _dismantle_btn: Button = null
 var _go_forge_btn: Button = null
 var _go_workshop_btn: Button = null
+var _hotbar_capsule: PanelContainer = null
+var _hotbar_capsule_label: Label = null
+var _floating_hotbar_toast: PanelContainer = null
 
 
 func _ready() -> void:
 	visible = false
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 	set_anchors_preset(Control.PRESET_FULL_RECT)
+	custom_minimum_size = Vector2(1280, 720)
 	z_index = 60
 
 	if ResourceLoader.exists(FONT_PATH):
@@ -213,14 +218,13 @@ func _update_ui_texts() -> void:
 	_update_dismantle_button()
 	_update_shortcut_buttons()
 	_update_batch_sell_button()
+	_update_hotbar_ui()
 	if _go_forge_btn and is_instance_valid(_go_forge_btn):
 		_go_forge_btn.text = _t("前往鍛造")
 	if _go_workshop_btn and is_instance_valid(_go_workshop_btn):
 		_go_workshop_btn.text = _t("前往工坊")
 	if _batch_sell_btn and is_instance_valid(_batch_sell_btn):
 		_batch_sell_btn.text = _t("一鍵出售素材")
-	if _hb_btn and is_instance_valid(_hb_btn):
-		_hb_btn.text = _t("放到快捷欄")
 	if _sort_btn and is_instance_valid(_sort_btn):
 		_sort_btn.text = _t("一鍵整理")
 	_update_capacity_ui()
@@ -700,6 +704,21 @@ func _build() -> void:
 	_apply_label_style(_lock_label, 14, COLOR_TEXT_DARK)
 	_lock_capsule.add_child(_lock_label)
 
+	## 快捷欄槽位狀態膠囊 (_hotbar_capsule，綁定時顯示天藍底『快捷欄 1』等)
+	_hotbar_capsule = PanelContainer.new()
+	_hotbar_capsule.name = "HotbarCapsule"
+	_hotbar_capsule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_hotbar_capsule.add_theme_stylebox_override("panel", _create_hotbar_capsule_style())
+	_hotbar_capsule.visible = false
+	name_row.add_child(_hotbar_capsule)
+
+	_hotbar_capsule_label = Label.new()
+	_hotbar_capsule_label.name = "HotbarCapsuleLabel"
+	_hotbar_capsule_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hotbar_capsule_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_label_style(_hotbar_capsule_label, 14, Color.WHITE, COLOR_BORDER, 3)
+	_hotbar_capsule.add_child(_hotbar_capsule_label)
+
 	_detail_kind = Label.new()
 	_detail_kind.name = "DetailKind"
 	_apply_label_style(_detail_kind, 16, Color("#6B5E80"))
@@ -880,22 +899,25 @@ func _build() -> void:
 	_batch_sell_btn.visible = false
 	right.add_child(_batch_sell_btn)
 
-	## 「放到快捷欄」按鈕 (天藍果凍厚底按鈕，高 52px)
+	## 「放到快捷欄」/「從快捷欄卸下」按鈕 (高 52px，熱區 >= 48px，果凍厚底 5px，圓角 18px)
 	_hb_btn = Button.new()
+	_hb_btn.name = "BtnHotbarToggle"
 	_hb_btn.custom_minimum_size = Vector2(0, 52)
+	_hb_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_hb_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_hb_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18))
 	_hb_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5DB3FF"), COLOR_BORDER, 5, 18))
 	_hb_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_SKY, COLOR_BORDER, 2, 18))
+	_hb_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+	_hb_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 	_hb_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
 	_hb_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_hb_btn.add_theme_constant_override("outline_size", 3)
+	_hb_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
 	_hb_btn.add_theme_font_size_override("font_size", 18)
 	if _cached_font:
 		_hb_btn.add_theme_font_override("font", _cached_font)
-	_hb_btn.pressed.connect(func():
-		if _selected != "":
-			assign_hotbar.emit(_selected)
-	)
+	_hb_btn.pressed.connect(_on_hotbar_button_pressed)
 	right.add_child(_hb_btn)
 
 	## 操作提示標籤 (字級 16px 加粗，深藍紫文字)
@@ -1106,9 +1128,7 @@ func _update_detail(inv: Node) -> void:
 			_use_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
 			_use_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
 		if _hb_btn:
-			_hb_btn.disabled = true
-			_hb_btn.text = _t("放到快捷欄")
-			_hb_btn.visible = true
+			_update_hotbar_ui()
 		if _dismantle_btn:
 			_dismantle_btn.visible = false
 		if _go_forge_btn:
@@ -1122,10 +1142,7 @@ func _update_detail(inv: Node) -> void:
 	_update_dismantle_button()
 	_update_shortcut_buttons()
 	_update_batch_sell_button()
-	if _hb_btn and not _is_selected_item_equipment():
-		_hb_btn.disabled = false
-		_hb_btn.text = _t("放到快捷欄")
-		_hb_btn.visible = true
+	_update_hotbar_ui()
 
 	var def: Dictionary = inv.call("catalog", _selected) as Dictionary
 	var eq_inst: Dictionary = {}
@@ -1289,6 +1306,7 @@ func _update_detail(inv: Node) -> void:
 
 	_update_dismantle_button()
 	_update_shortcut_buttons()
+	_update_hotbar_ui()
 
 
 func _update_action_button(inv: Node = null) -> void:
@@ -2231,15 +2249,15 @@ func _update_dismantle_button() -> void:
 		return
 	if not _is_selected_item_equipment():
 		_dismantle_btn.visible = false
-		if _hb_btn and is_instance_valid(_hb_btn):
-			_hb_btn.visible = true
-			_hb_btn.disabled = (_selected == "")
+		_update_hotbar_ui()
 		return
 
-	# 是裝備類物品：隱藏快捷欄按鈕，顯示拆解回收按鈕
+	# 是裝備類物品：隱藏快捷欄按鈕與膠囊，顯示拆解回收按鈕
 	_dismantle_btn.visible = true
 	if _hb_btn and is_instance_valid(_hb_btn):
 		_hb_btn.visible = false
+	if _hotbar_capsule and is_instance_valid(_hotbar_capsule):
+		_hotbar_capsule.visible = false
 
 	var uid := _get_selected_equip_uid()
 	var locked := is_item_locked(uid)
@@ -2927,6 +2945,8 @@ func get_floating_consumable_toast() -> PanelContainer:
 
 
 func get_floating_toast() -> PanelContainer:
+	if _floating_hotbar_toast and is_instance_valid(_floating_hotbar_toast):
+		return _floating_hotbar_toast
 	if _floating_consumable_toast and is_instance_valid(_floating_consumable_toast):
 		return _floating_consumable_toast
 	if _floating_gold_toast and is_instance_valid(_floating_gold_toast):
@@ -2949,5 +2969,283 @@ func set_item_locked(id: String, locked: bool) -> void:
 				gs.call("set_flag", "equip_locked." + id, locked)
 			if "locked_items" in gs and gs.locked_items is Dictionary:
 				gs.locked_items[id] = locked
+
+
+func _get_game_state() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		return (loop as SceneTree).root.get_node_or_null("GameState")
+	return null
+
+
+func get_item_hotbar_slot(item_id: String) -> int:
+	if item_id.is_empty():
+		return -1
+	var gs := _get_game_state()
+	if gs and "hotbar" in gs and gs.hotbar is Array:
+		for i in gs.hotbar.size():
+			if str(gs.hotbar[i]) == item_id:
+				return i
+	return -1
+
+
+func is_item_in_hotbar(item_id: String) -> bool:
+	return get_item_hotbar_slot(item_id) >= 0
+
+
+func _create_hotbar_capsule_style() -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = COLOR_SKY
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(1)
+	sb.border_width_bottom = 3
+	sb.set_corner_radius_all(10)
+	sb.content_margin_left = 8
+	sb.content_margin_right = 8
+	sb.content_margin_top = 2
+	sb.content_margin_bottom = 2
+	return sb
+
+
+func _update_hotbar_ui() -> void:
+	if _hb_btn == null or not is_instance_valid(_hb_btn):
+		return
+
+	if _selected.is_empty():
+		_hb_btn.visible = true
+		_hb_btn.disabled = true
+		_hb_btn.text = _t("放到快捷欄")
+		_hb_btn.tooltip_text = ""
+		_hb_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18))
+		_hb_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5DB3FF"), COLOR_BORDER, 5, 18))
+		_hb_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_SKY, COLOR_BORDER, 2, 18))
+		_hb_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+		_hb_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+		_hb_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+		if _hotbar_capsule and is_instance_valid(_hotbar_capsule):
+			_hotbar_capsule.visible = false
+		return
+
+	# 若選取的是裝備，隱藏快捷欄按鈕與膠囊
+	if _is_selected_item_equipment():
+		_hb_btn.visible = false
+		if _hotbar_capsule and is_instance_valid(_hotbar_capsule):
+			_hotbar_capsule.visible = false
+		return
+
+	_hb_btn.visible = true
+	_hb_btn.disabled = false
+
+	var slot := get_item_hotbar_slot(_selected)
+	var is_bound := (slot >= 0)
+
+	if is_bound:
+		# 已綁定於快捷欄：顯示『快捷欄 X』膠囊，按鈕切換為珊瑚粉『從快捷欄卸下』
+		if _hotbar_capsule and is_instance_valid(_hotbar_capsule) and _hotbar_capsule_label and is_instance_valid(_hotbar_capsule_label):
+			_hotbar_capsule.visible = true
+			_hotbar_capsule.add_theme_stylebox_override("panel", _create_hotbar_capsule_style())
+			var slot_tpl := _t("ui_hotbar_slot_capsule")
+			if not slot_tpl.contains("%d"):
+				slot_tpl = _t("快捷欄 %d")
+			_hotbar_capsule_label.text = slot_tpl % (slot + 1)
+			_apply_label_style(_hotbar_capsule_label, 14, Color.WHITE, COLOR_BORDER, 3)
+
+		var remove_text := _t("ui_remove_hotbar")
+		if remove_text == "ui_remove_hotbar":
+			remove_text = _t("從快捷欄卸下")
+		_hb_btn.text = remove_text
+		_hb_btn.tooltip_text = remove_text
+		# 珊瑚粉果凍厚底樣式
+		_hb_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_PINK, COLOR_BORDER, 5, 18))
+		_hb_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FF7B9E"), COLOR_BORDER, 5, 18))
+		_hb_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_PINK, COLOR_BORDER, 2, 18))
+		_hb_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+		_hb_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		_hb_btn.add_theme_constant_override("outline_size", 3)
+	else:
+		# 未綁定：隱藏膠囊，按鈕顯示天藍底『放到快捷欄』
+		if _hotbar_capsule and is_instance_valid(_hotbar_capsule):
+			_hotbar_capsule.visible = false
+
+		_hb_btn.text = _t("放到快捷欄")
+		_hb_btn.tooltip_text = _t("放到快捷欄")
+		_hb_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18))
+		_hb_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5DB3FF"), COLOR_BORDER, 5, 18))
+		_hb_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_SKY, COLOR_BORDER, 2, 18))
+		_hb_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+		_hb_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+		_hb_btn.add_theme_constant_override("outline_size", 3)
+
+
+func _on_hotbar_button_pressed() -> void:
+	if _selected.is_empty():
+		return
+	var slot := get_item_hotbar_slot(_selected)
+	if slot >= 0:
+		unbind_selected_from_hotbar()
+	else:
+		assign_selected_to_hotbar()
+
+
+func assign_selected_to_hotbar() -> int:
+	if _selected.is_empty():
+		return -1
+	var assigned_slot := -1
+	assign_hotbar.emit(_selected)
+	assigned_slot = get_item_hotbar_slot(_selected)
+	if assigned_slot < 0:
+		var inv_sys: Node = null
+		if Engine.get_main_loop() is SceneTree:
+			inv_sys = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InventorySystem")
+		var gs := _get_game_state()
+		if gs and "hotbar" in gs and gs.hotbar is Array:
+			for i in gs.hotbar.size():
+				if str(gs.hotbar[i]) == "" or str(gs.hotbar[i]) == _selected:
+					if inv_sys and inv_sys.has_method("set_hotbar"):
+						inv_sys.call("set_hotbar", i, _selected)
+					else:
+						gs.hotbar[i] = _selected
+					assigned_slot = i
+					break
+			if assigned_slot < 0:
+				if inv_sys and inv_sys.has_method("set_hotbar"):
+					inv_sys.call("set_hotbar", 0, _selected)
+				else:
+					gs.hotbar[0] = _selected
+				assigned_slot = 0
+	refresh()
+	return assigned_slot
+
+
+func unbind_selected_from_hotbar() -> bool:
+	if _selected.is_empty():
+		return false
+	return unbind_hotbar(_selected)
+
+
+func unbind_hotbar(item_id: String) -> bool:
+	if item_id.is_empty():
+		return false
+	var slot := get_item_hotbar_slot(item_id)
+	if slot < 0:
+		return false
+
+	var inv_sys: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		inv_sys = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("InventorySystem")
+	var gs := _get_game_state()
+	if gs and "hotbar" in gs and gs.hotbar is Array:
+		for i in gs.hotbar.size():
+			if str(gs.hotbar[i]) == item_id:
+				if inv_sys and inv_sys.has_method("clear_hotbar"):
+					inv_sys.call("clear_hotbar", i)
+				elif inv_sys and inv_sys.has_method("set_hotbar"):
+					inv_sys.call("set_hotbar", i, "")
+				else:
+					gs.hotbar[i] = ""
+
+	remove_hotbar.emit(item_id)
+
+	var def: Dictionary = {}
+	if inv_sys and inv_sys.has_method("catalog"):
+		def = inv_sys.call("catalog", item_id) as Dictionary
+	var item_name: String = str(def.get("name", item_id))
+	var toast_msg := _t("已從快捷欄卸下：%s") % item_name
+	_show_tip(toast_msg)
+	_show_hotbar_floating_toast(toast_msg)
+
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root = (loop as SceneTree).root
+		var ml: Node = root.get_node_or_null("Main")
+		if ml == null:
+			ml = root.get_node_or_null("MobileLobby")
+		if ml:
+			if ml.has_method("_show_toast"):
+				ml.call("_show_toast", toast_msg)
+			elif ml.has_method("show_toast"):
+				ml.call("show_toast", toast_msg)
+			if "_hotbar" in ml and ml._hotbar and ml._hotbar.has_method("refresh"):
+				ml._hotbar.call("refresh")
+
+	refresh()
+	return true
+
+
+func _show_hotbar_floating_toast(msg: String) -> void:
+	if _floating_hotbar_toast and is_instance_valid(_floating_hotbar_toast):
+		_floating_hotbar_toast.queue_free()
+		_floating_hotbar_toast = null
+
+	var toast := PanelContainer.new()
+	_floating_hotbar_toast = toast
+	toast.name = "HotbarFloatingToast"
+	toast.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = COLOR_CARD_WARM
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(18)
+	sb.content_margin_left = 22
+	sb.content_margin_right = 22
+	sb.content_margin_top = 8
+	sb.content_margin_bottom = 10
+	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
+	sb.shadow_size = 6
+	sb.shadow_offset = Vector2(0, 3)
+	toast.add_theme_stylebox_override("panel", sb)
+
+	var hbox := HBoxContainer.new()
+	hbox.name = "HBox"
+	hbox.add_theme_constant_override("separation", 8)
+	toast.add_child(hbox)
+
+	var lbl := Label.new()
+	lbl.name = "HotbarToastLabel"
+	lbl.text = msg
+	_apply_label_style(lbl, 20, COLOR_TEXT_DARK, Color(0, 0, 0, 0), 0)
+	lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	hbox.add_child(lbl)
+
+	add_child(toast)
+	toast.z_index = 100
+	toast.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	toast.offset_left = -220
+	toast.offset_right = 220
+	toast.offset_top = 110
+	toast.offset_bottom = 160
+
+	var tw := create_tween()
+	if tw:
+		toast.scale = Vector2(0.95, 0.95)
+		tw.parallel().tween_property(toast, "scale", Vector2(1.0, 1.0), 0.15)
+		tw.tween_property(toast, "offset_top", 96.0, 0.3)
+		tw.tween_interval(1.8)
+		tw.tween_property(toast, "modulate:a", 0.0, 0.35)
+		tw.tween_callback(toast.queue_free)
+
+
+func get_hotbar_capsule() -> PanelContainer:
+	return _hotbar_capsule
+
+
+func get_hotbar_capsule_label() -> Label:
+	return _hotbar_capsule_label
+
+
+func get_hotbar_button() -> Button:
+	return _hb_btn
+
+
+func get_bag_hotbar_button() -> Button:
+	return _hb_btn
+
+
+func get_floating_hotbar_toast() -> PanelContainer:
+	if _floating_hotbar_toast and is_instance_valid(_floating_hotbar_toast):
+		return _floating_hotbar_toast
+	return null
 
 
