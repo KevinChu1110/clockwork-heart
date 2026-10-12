@@ -6055,6 +6055,16 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "lobby-core-replace-compare",
+   "cat": "遊戲",
+   "title": "大廳角色頁五大機芯槽位點擊更換支援 CoreReplaceDialog 比較確認彈窗連動",
+   "status": "草稿",
+   "note": "開發中",
+   "keys": [
+    "大廳角色頁五大機"
+   ]
   }
  ]
 }
