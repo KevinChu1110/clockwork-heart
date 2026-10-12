@@ -2133,7 +2133,7 @@
   "已嘗試上傳殘影": "Se intentó subir la estela",
   "已套用雲存檔": "Partida de la nube aplicada",
   "已建立角色，展開旅途！": "¡Personaje creado, comienza tu viaje!",
-  "已成功替換裝備至【%s】槽位！": "¡Equipo reemplazado con éxito en la ranura [%s]!",
+  "已成功替換裝備至【%s】槽位！": "¡Equipado con éxito en la ranura [%s]!",
   "已拆解 %d 件凡品裝備：獲得鐵屑 ×%d、金幣 +%d": "Desmanteladas %d piezas de equipo común: obtuviste Chatarra ×%d, Oro +%d",
   "已拆解機芯，獲得 %d 鐵屑": "Núcleo desarmado, obtuviste %d chatarra",
   "已擁有去廣告特權": "Privilegio sin anuncios obtenido",
@@ -4173,5 +4173,7 @@
   "點擊更換裝備 · 強化核心機芯": "Toca para cambiar equipo · Mejorar núcleos",
   "背包暫無此部位可替換機芯": "Sin piezas de núcleo reemplazables para esta ranura en la mochila",
   "機芯": "Núcleo",
-  "替換機芯": "Cambiar núcleo"
+  "替換機芯": "Cambiar núcleo",
+  "戰力提升 +%d！已一鍵配置最高戰力機芯。": "¡Poder +%d! Núcleos de mayor poder equipados.",
+  "目前已是最佳機芯配置！": "¡Ya está en la configuración óptima de núcleos!"
 }

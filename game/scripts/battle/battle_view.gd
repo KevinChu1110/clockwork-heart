@@ -1429,8 +1429,8 @@ func _ensure_core_dots_hud() -> void:
 		icon_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon_rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		if SDB and SDB.has_method("core_slot_icon"):
-			var tex: Texture2D = SDB.call("core_slot_icon", slot_id)
+		if SDB != null:
+			var tex: Texture2D = SDB.core_slot_icon(slot_id)
 			if tex:
 				icon_rect.texture = tex
 		vbox.add_child(icon_rect)

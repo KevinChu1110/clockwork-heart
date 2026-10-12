@@ -14,6 +14,7 @@ signal part_calibrated(slot_id: String, part: Dictionary, result: Dictionary)
 signal part_dropped(part: Dictionary)
 signal part_dismantled(part: Dictionary, scrap_gain: int)
 signal part_unequipped(slot_id: String, part: Dictionary)
+signal cores_auto_equipped(result: Dictionary)
 
 static var player_parts: Dictionary = {}
 static var core_inventory: Array = []
@@ -1246,13 +1247,14 @@ static func create_part_by_tier(slot_id: String, tier_id: String, bonus_stats: D
 ## 裝備部件至 GameState.core_slots
 static func equip_part(slot_id: String, part: Dictionary) -> bool:
 	var norm := normalize_slot_id(slot_id)
+	player_parts[norm] = part.duplicate(true)
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:
 		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
 		if gs and "core_slots" in gs:
 			gs.core_slots[norm] = part.duplicate(true)
 			return true
-	return false
+	return true
 
 
 ## 卸下部件至未裝備背包
@@ -1292,8 +1294,134 @@ static func get_equipped_part(slot_id: String) -> Dictionary:
 	if tree is SceneTree and (tree as SceneTree).root != null:
 		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
 		if gs and "core_slots" in gs:
-			return (gs.core_slots.get(norm, {}) as Dictionary).duplicate(true)
+			if gs.core_slots.has(norm) and typeof(gs.core_slots[norm]) == TYPE_DICTIONARY:
+				return (gs.core_slots[norm] as Dictionary).duplicate(true)
+			return {}
+	if player_parts.has(norm) and typeof(player_parts[norm]) == TYPE_DICTIONARY:
+		return (player_parts[norm] as Dictionary).duplicate(true)
 	return {}
+
+
+## 計算單一機芯部件綜合戰力（用於一鍵配置與戰力評分比對）
+static func calculate_part_power(part: Dictionary) -> int:
+	if part == null or part.is_empty():
+		return 0
+	var pstats: Dictionary = get_part_stats(part)
+	var atk_v: int = int(pstats.get("atk", 0))
+	var def_v: int = int(pstats.get("def", 0))
+	var hp_v: int = int(pstats.get("hp", 0))
+	var crit_v: float = float(pstats.get("crit", 0.0))
+	var crit_dmg_v: float = float(pstats.get("crit_dmg", 0.0))
+	var sc: int = int(part.get("score", 0))
+	var tier_id: String = str(part.get("tier", "white"))
+	var tier_idx: int = get_tier_index(tier_id)
+	# 綜合戰力計算：攻(x1) + 防(x1) + 血量折算(x0.2) + 暴擊(x2.0) + 暴傷(x1.0) + 校準評分(max 0) + 色階權重
+	var p: float = float(atk_v) + float(def_v) + (float(hp_v) * 0.2) + (crit_v * 2.0) + crit_dmg_v + float(maxi(sc, 0)) + float(tier_idx * 5)
+	return int(round(p))
+
+
+## 自動比對背包中機芯綜合戰力並將最高數值機芯換上對應槽位
+static func auto_equip_best_cores() -> Dictionary:
+	var bag: Array = get_inventory().duplicate(true)
+	var changes: Array[Dictionary] = []
+	var total_power_diff: int = 0
+	var slots_to_equip: Dictionary = {}
+
+	var tree := Engine.get_main_loop()
+	var gs: Node = null
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		gs = (tree as SceneTree).root.get_node_or_null("GameState")
+
+	var power_before: int = 0
+	if gs and gs.has_method("power_score"):
+		power_before = int(gs.call("power_score"))
+
+	for sid in ALL_SLOT_IDS:
+		var norm_slot := normalize_slot_id(sid)
+		var old_part: Dictionary = get_equipped_part(norm_slot)
+		var cur_pow: int = calculate_part_power(old_part)
+
+		var best_candidate: Dictionary = {}
+		var best_cand_pow: int = -1
+		var best_cand_idx: int = -1
+
+		for i in range(bag.size()):
+			var p: Dictionary = bag[i]
+			if p is Dictionary and normalize_slot_id(str(p.get("slot", ""))) == norm_slot:
+				var pow_val: int = calculate_part_power(p)
+				if pow_val > best_cand_pow:
+					best_cand_pow = pow_val
+					best_candidate = p
+					best_cand_idx = i
+
+		if not best_candidate.is_empty():
+			if old_part.is_empty() or (best_cand_pow > cur_pow):
+				var p_diff: int = best_cand_pow - cur_pow if not old_part.is_empty() else best_cand_pow
+				changes.append({
+					"slot": norm_slot,
+					"old_part": old_part,
+					"new_part": best_candidate,
+					"power_diff": p_diff
+				})
+				total_power_diff += p_diff
+				slots_to_equip[norm_slot] = {
+					"new_part": best_candidate,
+					"old_part": old_part,
+					"bag_idx": best_cand_idx
+				}
+				if best_cand_idx >= 0 and best_cand_idx < bag.size():
+					bag.remove_at(best_cand_idx)
+
+	if changes.is_empty():
+		return {
+			"ok": true,
+			"changed": false,
+			"power_gain": 0,
+			"changes": [],
+			"equipped_slots": get_all_player_parts()
+		}
+
+	for sid in slots_to_equip.keys():
+		var info: Dictionary = slots_to_equip[sid]
+		var new_p: Dictionary = info["new_part"]
+		var old_p: Dictionary = info["old_part"]
+		var uid_new: String = str(new_p.get("uid", ""))
+
+		if not uid_new.is_empty():
+			remove_part_from_inventory(uid_new)
+		if not old_p.is_empty():
+			add_part_to_inventory(old_p)
+
+		equip_part(sid, new_p)
+		if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+			gs.core_slots[sid] = new_p.duplicate(true)
+
+	var power_gain := total_power_diff
+	if gs and gs.has_method("power_score"):
+		var power_after: int = int(gs.call("power_score"))
+		var real_gain := power_after - power_before
+		if real_gain > 0:
+			power_gain = real_gain
+	if power_gain <= 0:
+		power_gain = maxi(total_power_diff, 1)
+
+	var cs: Node = null
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		cs = (tree as SceneTree).root.get_node_or_null("CoreSystem")
+	if cs and cs.has_signal("cores_auto_equipped"):
+		cs.emit_signal("cores_auto_equipped", {
+			"changed": true,
+			"power_gain": power_gain,
+			"changes": changes
+		})
+
+	return {
+		"ok": true,
+		"changed": true,
+		"power_gain": power_gain,
+		"changes": changes,
+		"equipped_slots": get_all_player_parts()
+	}
 
 
 ## 取得八色階掉落機率權重表（支援來源：關卡／巨偶，預設 stage）

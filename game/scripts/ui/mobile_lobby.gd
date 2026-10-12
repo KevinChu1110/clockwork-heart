@@ -6,6 +6,7 @@ extends Control
 signal request_battle(mode: String)
 signal request_settings()
 signal core_replaced(slot_id: String, part: Dictionary)
+signal cores_auto_equipped(result: Dictionary)
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -283,6 +284,7 @@ var _btn_change_weapon: Button = null
 var _weapon_swap_dialog: Control = null
 var _char_core_title_label: Label = null
 var _char_core_sub_label: Label = null
+var _btn_core_auto_equip: Button = null
 var _char_core_slots_row: HBoxContainer = null
 var _char_stat_title_label: Label = null
 var _stat_cards: Array[PanelContainer] = []
@@ -4242,6 +4244,41 @@ func _build_character_tab() -> void:
 	c_hdr_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	c_hdr.add_child(c_hdr_spacer)
 
+	var btn_core_auto := Button.new()
+	btn_core_auto.name = "BtnCoreAutoEquip"
+	btn_core_auto.text = _t("一鍵配置")
+	btn_core_auto.custom_minimum_size = Vector2(104, 48)
+	if _cached_font != null:
+		btn_core_auto.add_theme_font_override("font", _cached_font)
+	btn_core_auto.add_theme_font_size_override("font_size", 14)
+	btn_core_auto.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_core_auto.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_core_auto.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var ca_sb := StyleBoxFlat.new()
+	ca_sb.bg_color = COLOR_MINT
+	ca_sb.border_color = COLOR_BORDER
+	ca_sb.set_border_width_all(2)
+	ca_sb.border_width_bottom = 5
+	ca_sb.set_corner_radius_all(16)
+	ca_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	ca_sb.shadow_size = 5
+	ca_sb.shadow_offset = Vector2(0, 2)
+	var ca_sb_h := ca_sb.duplicate() as StyleBoxFlat
+	ca_sb_h.bg_color = Color("#62E67D")
+	var ca_sb_p := ca_sb.duplicate() as StyleBoxFlat
+	ca_sb_p.border_width_bottom = 2
+	btn_core_auto.add_theme_stylebox_override("normal", ca_sb)
+	btn_core_auto.add_theme_stylebox_override("hover", ca_sb_h)
+	btn_core_auto.add_theme_stylebox_override("pressed", ca_sb_p)
+	btn_core_auto.add_theme_stylebox_override("focus", ca_sb)
+	btn_core_auto.pressed.connect(func():
+		_play_ui_sound()
+		auto_equip_cores()
+	)
+	c_hdr.add_child(btn_core_auto)
+	_btn_core_auto_equip = btn_core_auto
+
 	var c_row := HBoxContainer.new()
 	c_row.name = "CoreSlotsRow"
 	c_row.add_theme_constant_override("separation", 8)
@@ -6125,6 +6162,8 @@ func _apply_locale_texts() -> void:
 		_char_core_title_label.text = _t("機芯五槽配置")
 	if _char_core_sub_label and is_instance_valid(_char_core_sub_label):
 		_char_core_sub_label.text = _t("點擊更換裝備 · 強化核心機芯")
+	if _btn_core_auto_equip and is_instance_valid(_btn_core_auto_equip):
+		_btn_core_auto_equip.text = _t("一鍵配置")
 	_refresh_char_core_slots()
 	if _char_power_badge and is_instance_valid(_char_power_badge):
 		var gs := _gs()
@@ -6759,6 +6798,29 @@ func open_core_replace_dialog(slot_id: String, new_part: Dictionary = {}) -> Con
 	if dlg != null:
 		dlg.z_index = 95
 	return dlg
+
+
+## 一鍵配置五大槽位最高戰力機芯並即時屬性刷新
+func auto_equip_cores() -> Dictionary:
+	var CoreSys := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	if CoreSys == null:
+		return {}
+
+	var result: Dictionary = CoreSys.auto_equip_best_cores()
+	var is_changed: bool = bool(result.get("changed", false))
+	if is_changed:
+		var power_gain: int = int(result.get("power_gain", 0))
+		_show_toast(_t("戰力提升 +%d！已一鍵配置最高戰力機芯。") % power_gain)
+		_refresh_char_core_slots()
+		_refresh_core_bag()
+		_refresh_bag_tab(false)
+		refresh_hud()
+		_refresh_char_tab_stats(false)
+		cores_auto_equipped.emit(result)
+	else:
+		_show_toast(_t("目前已是最佳機芯配置！"))
+
+	return result
 
 
 # EquipPanel host 介面支援

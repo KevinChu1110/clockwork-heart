@@ -6065,6 +6065,36 @@
    "keys": [
     "大廳角色頁五大機"
    ]
+  },
+  {
+   "id": "inventory-core-category-replace",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援機芯分類頁籤與機芯詳情替換彈窗直通連動",
+   "status": "測試中",
+   "note": "完成 MapleInventory 機芯分類 Chip 列、槽位色階標籤與 CoreReplaceDialog 直通連動，14/14測試全綠，截圖存證完成",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "lobby-core-auto-equip",
+   "cat": "遊戲",
+   "title": "大廳角色頁五大機芯槽位支援一鍵配置最高戰力機芯與即時屬性刷新",
+   "status": "測試中",
+   "note": "完成大廳角色頁五大機芯槽位一鍵配置最高戰力與即時屬性刷新，單元測試全綠，實機截圖完成",
+   "keys": [
+    "大廳角色頁五大機"
+   ]
+  },
+  {
+   "id": "power-stat-core-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽新增機芯部件卡片與前往校準快捷按鈕",
+   "status": "開發中",
+   "note": "已開卡 t_f6bb0eb2 派給 sideworker2",
+   "keys": [
+    "PowerSta"
+   ]
   }
  ]
 }
