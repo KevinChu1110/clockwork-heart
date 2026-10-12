@@ -3813,5 +3813,11 @@
   "機芯": "Core",
   "替換機芯": "Swap Core",
   "戰力提升 +%d！已一鍵配置最高戰力機芯。": "Power +%d! Equipped highest power cores.",
-  "目前已是最佳機芯配置！": "Already at optimal core configuration!"
+  "目前已是最佳機芯配置！": "Already at optimal core configuration!",
+  "已裝備無法拆解": "Equipped (Cannot Dismantle)",
+  "拆解【%s】：獲得鐵屑 ×%d": "Dismantled [%s]: Iron Scrap x%d",
+  "拆解機芯回收鐵屑": "Dismantle Core for Scrap Iron",
+  "非裝備或機芯物品無法拆解。": "Cannot dismantle items other than equipment or cores.",
+  "機芯部件 · 強化發條動力核心": "Core Part · Enhances Clockwork Power Core",
+  "機芯部件 · 部位：%s · 色階：%s": "Core Part · Slot: %s · %s"
 }

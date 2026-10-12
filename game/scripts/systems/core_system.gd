@@ -1725,7 +1725,7 @@ static func on_battle_won(arg1: Variant = null, arg2: String = "stage", slot_ove
 static func get_dismantle_scrap_yield(part: Dictionary) -> int:
 	if part.is_empty():
 		return 0
-	var tier_id: String = str(part.get("tier", TIER_WHITE)).to_lower().strip_edges()
+	var tier_id: String = str(part.get("tier", "")).to_lower().strip_edges()
 	match tier_id:
 		"灰", "gray": return 1
 		"白", "white": return 2
@@ -1737,6 +1737,11 @@ static func get_dismantle_scrap_yield(part: Dictionary) -> int:
 		"紅", "red": return 10
 	if CORE_DISMANTLE_SCRAP_MAP.has(tier_id):
 		return int(CORE_DISMANTLE_SCRAP_MAP[tier_id])
+	if part.has("score"):
+		var t_info := get_tier_by_score(int(part["score"]))
+		var t_id := str(t_info.get("id", "")).to_lower().strip_edges()
+		if CORE_DISMANTLE_SCRAP_MAP.has(t_id):
+			return int(CORE_DISMANTLE_SCRAP_MAP[t_id])
 	return 2
 
 
@@ -1766,6 +1771,8 @@ static func is_part_equipped(part_or_uid: Variant) -> bool:
 		target_uid = str(part_or_uid).strip_edges()
 	elif typeof(part_or_uid) == TYPE_DICTIONARY:
 		target_uid = str(part_or_uid.get("uid", "")).strip_edges()
+		if target_uid.is_empty():
+			target_uid = str(part_or_uid.get("id", "")).strip_edges()
 
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree and (loop as SceneTree).root != null:
@@ -1774,10 +1781,17 @@ static func is_part_equipped(part_or_uid: Variant) -> bool:
 			for sid in gs.core_slots.keys():
 				var sp = gs.core_slots[sid]
 				if typeof(sp) == TYPE_DICTIONARY and not sp.is_empty():
-					if not target_uid.is_empty() and str(sp.get("uid", "")) == target_uid:
+					if not target_uid.is_empty() and (str(sp.get("uid", "")) == target_uid or str(sp.get("id", "")) == target_uid):
 						return true
 					if typeof(part_or_uid) == TYPE_DICTIONARY and sp == part_or_uid:
 						return true
+	for sid in player_parts.keys():
+		var sp = player_parts[sid]
+		if typeof(sp) == TYPE_DICTIONARY and not sp.is_empty():
+			if not target_uid.is_empty() and (str(sp.get("uid", "")) == target_uid or str(sp.get("id", "")) == target_uid):
+				return true
+			if typeof(part_or_uid) == TYPE_DICTIONARY and sp == part_or_uid:
+				return true
 	return false
 
 
@@ -1805,7 +1819,7 @@ static func dismantle_part(part_or_uid: Variant) -> Dictionary:
 	for i in range(inv_list.size()):
 		var p = inv_list[i]
 		if typeof(p) == TYPE_DICTIONARY:
-			if not uid.is_empty() and str(p.get("uid", "")) == uid:
+			if not uid.is_empty() and (str(p.get("uid", "")) == uid or str(p.get("id", "")) == uid):
 				target_part = p
 				found_idx = i
 				break

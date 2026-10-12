@@ -4175,5 +4175,11 @@
   "機芯": "Núcleo",
   "替換機芯": "Cambiar núcleo",
   "戰力提升 +%d！已一鍵配置最高戰力機芯。": "¡Poder +%d! Núcleos de mayor poder equipados.",
-  "目前已是最佳機芯配置！": "¡Ya está en la configuración óptima de núcleos!"
+  "目前已是最佳機芯配置！": "¡Ya está en la configuración óptima de núcleos!",
+  "已裝備無法拆解": "Equipado (No Desmantelar)",
+  "拆解【%s】：獲得鐵屑 ×%d": "Desmantelado [%s]: Chatarra de hierro x%d",
+  "拆解機芯回收鐵屑": "Desmantelar núcleo para recuperar chatarra",
+  "非裝備或機芯物品無法拆解。": "No se pueden desmantelar objetos que no sean equipo o núcleos.",
+  "機芯部件 · 強化發條動力核心": "Pieza de núcleo · Mejora el núcleo cinético",
+  "機芯部件 · 部位：%s · 色階：%s": "Pieza de núcleo · Ranura: %s · %s"
 }
