@@ -6336,10 +6336,21 @@ func open_forge(target_weapon: Variant = null) -> Control:
 		dlg.connect("dismantle_requested", func():
 			open_maple_inventory("core")
 		)
+	if dlg.has_signal("weapon_swapped"):
+		dlg.connect("weapon_swapped", func(_s_idx: int, _uid: String):
+			_sync_hero_weapon_paperdoll()
+			_refresh_char_tab_stats(true)
+			_refresh_weapon_slot_buttons()
+			refresh_hud()
+		)
 	add_child(dlg)
 	if target_weapon != null and dlg.has_method("select_target_equipment"):
 		dlg.call("select_target_equipment", target_weapon)
 	return dlg
+
+
+func open_forge_dialog(target_weapon: Variant = null) -> Control:
+	return open_forge(target_weapon)
 
 
 ## 開啟 MapleInventory 探索背包彈窗並可指定初始分類 (如 "core")
