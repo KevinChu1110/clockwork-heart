@@ -6180,8 +6180,8 @@
    "id": "lobby-weapon-auto-equip",
    "cat": "遊戲",
    "title": "大廳角色頁新增一鍵配置最高戰力武器",
-   "status": "開發中",
-   "note": "開始實作 EquipmentSystem 與大廳角色頁一鍵配置最高戰力武器 (t_5c2f9a55)",
+   "status": "測試中",
+   "note": "完成 EquipmentSystem 與大廳角色頁一鍵配置最高戰力武器 (t_5c2f9a55)",
    "keys": [
     "大廳角色頁新增一"
    ]
