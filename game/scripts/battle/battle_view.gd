@@ -41,6 +41,7 @@ signal battle_finished(won: bool)
 signal gear_up_requested()
 signal retry_stage_requested()
 signal replay_stage_requested()
+signal skills_requested()
 
 @onready var log_label: RichTextLabel = %Log
 @onready var player_hp: ProgressBar = %PlayerHP
@@ -5745,7 +5746,10 @@ func _show_dummy_settlement(won: bool) -> void:
 			battle_finished.emit(won),
 		func():
 			_dummy_settlement_dialog = null
-			_restart_dummy_training()
+			_restart_dummy_training(),
+		func():
+			_dummy_settlement_dialog = null
+			skills_requested.emit()
 	)
 
 
