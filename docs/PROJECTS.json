@@ -6155,6 +6155,16 @@
    "keys": [
     "PowerSta"
    ]
+  },
+  {
+   "id": "lobby-weapon-auto-equip",
+   "cat": "遊戲",
+   "title": "大廳角色頁新增一鍵配置最高戰力武器",
+   "status": "草稿",
+   "note": "已開卡派發 sideworker，等待主線合併後展開 (t_5c2f9a55)",
+   "keys": [
+    "大廳角色頁新增一"
+   ]
   }
  ]
 }
