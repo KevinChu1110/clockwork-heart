@@ -114,7 +114,7 @@ func _process(_delta: float) -> bool:
 				_frame = 0
 		3:
 			# 截圖 2: 一鍵配置後（高階五槽換上、頂部飄字戰力提升 +XX、有效戰力即時刷新）
-			if _frame >= 20:
+			if _frame >= 3:
 				_save_viewport("proof_02_char_core_auto_equipped_toast_zh_TW.png")
 				# 再次點擊一鍵配置，觸發最佳配置提示
 				_lobby.auto_equip_cores()
@@ -122,7 +122,7 @@ func _process(_delta: float) -> bool:
 				_frame = 0
 		4:
 			# 截圖 3: 已是最佳配置提示（飄字「目前已是最佳機芯配置！」）
-			if _frame >= 20:
+			if _frame >= 3:
 				_save_viewport("proof_03_char_core_auto_equip_already_best_zh_TW.png")
 				# 切換至英文 (en)
 				if _loc and _loc.has_method("set_locale"):
@@ -133,7 +133,7 @@ func _process(_delta: float) -> bool:
 				_frame = 0
 		5:
 			# 截圖 4: 英文 (en) 角色頁 Auto-Equip 按鈕與最佳配置飄字 (Already at optimal core configuration!)
-			if _frame >= 25:
+			if _frame >= 3:
 				_save_viewport("proof_04_char_core_auto_equip_en.png")
 				# 切換至日文 (ja)
 				if _loc and _loc.has_method("set_locale"):
@@ -144,7 +144,7 @@ func _process(_delta: float) -> bool:
 				_frame = 0
 		6:
 			# 截圖 5: 日文 (ja) 角色頁 一括装着 按鈕與最佳配置飄字 (現在は最適なコア配置です！)
-			if _frame >= 25:
+			if _frame >= 3:
 				_save_viewport("proof_05_char_core_auto_equip_ja.png")
 				# 切回繁中 (zh_TW) 並截取按鈕特寫與五槽狀態
 				if _loc and _loc.has_method("set_locale"):

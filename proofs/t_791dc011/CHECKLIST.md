@@ -41,12 +41,12 @@
 
 | 檔案名稱 | 說明 | SHA256 |
 |---|---|---|
-| `proof_01_char_core_slots_before_auto_equip_zh_TW.png` | 繁中角色頁五大機芯槽位（初始白板）與「一鍵配置」薄荷綠果凍按鈕（104x48px） | `ebff83b3e6383d4438aca75129a32ae71ac29609cc1f19d55bc618fa7bcaa849` |
-| `proof_02_char_core_auto_equipped_toast_zh_TW.png` | 點擊一鍵配置後換上高階五槽（金/藍/紫/綠/紅），戰力從 30 飆升至 326，上方飄字「戰力提升 +296！已一鍵配置最高戰力機芯。」 | `9ce4a0104220b42c44a73ab9cfab4f5e24971376a122deee351987744c2f860f` |
-| `proof_03_char_core_auto_equip_already_best_zh_TW.png` | 最佳狀態下再次點擊一鍵配置，上方飄字「目前已是最佳機芯配置！」 | `21d159e1aa5c709c112275500b3287a520792b44ad8cc9da3cc7f4271b607ce8` |
-| `proof_04_char_core_auto_equip_en.png` | 英文語系角色頁 Auto-Equip 按鈕與最佳配置飄字 (Already at optimal core configuration!)，零中文殘留 | `a577bd1ba85377edab91056223b85580ac92043d8817e8aec33f735773bb22c2` |
-| `proof_05_char_core_auto_equip_ja.png` | 日文語系角色頁 一括装着 按鈕與最佳配置飄字 (現在は最適なコア配置です！) | `2c23f603f4a2689b2b40a8a9eecd7d6ddfb6a0b8c3fb51d3494d4baf8e2a02f1` |
-| `proof_06_btn_auto_equip_min_size_48px.png` | 一鍵配置按鈕規格特寫（尺寸 104x48px，立體厚底 5px，圓角 16px）與五槽金藍紫綠紅完成態 | `8d1f56e8f7ff90372b0af4f58a836019edee73cc61b03efd91c487f94c381b80` |
+| `proof_01_char_core_slots_before_auto_equip_zh_TW.png` | 繁中角色頁五大機芯槽位（初始白板）與「一鍵配置」薄荷綠果凍按鈕（104x48px） | `0fbb92c50314307a466479627e2e7f5ec1addbf5cee7b20a3ae23984a5b08a46` |
+| `proof_02_char_core_auto_equipped_toast_zh_TW.png` | 點擊一鍵配置後換上高階五槽（金/藍/紫/綠/紅），戰力從 30 飆升至 326，上方飄字「戰力提升 +296！已一鍵配置最高戰力機芯。」（觸發後 3 幀完整拍到 Toast） | `88c337143f66978876abe389749ca64cb1b7772a63f29af3174be6d2f3b7aa9a` |
+| `proof_03_char_core_auto_equip_already_best_zh_TW.png` | 最佳狀態下再次點擊一鍵配置，上方飄字「目前已是最佳機芯配置！」（觸發後 3 幀完整拍到 Toast） | `f8d027d2a2cfc7552edd19b9303506bf4ed33d1e0e7b3bfc55adcff3614b58df` |
+| `proof_04_char_core_auto_equip_en.png` | 英文語系角色頁 Auto-Equip 按鈕與最佳配置飄字 (Already at optimal core configuration!)，零中文殘留（觸發後 3 幀完整拍到 Toast） | `5020e7d0d464568338e843fe5f4b51ff01a9cfff03655e434df824158cd7ac87` |
+| `proof_05_char_core_auto_equip_ja.png` | 日文語系角色頁 一括装着 按鈕與最佳配置飄字 (現在は最適なコア配置です！)（觸發後 3 幀完整拍到 Toast） | `44e58d80d11e9cb3e1a52f080323e8c389dea688b59598b49067681f95229e40` |
+| `proof_06_btn_auto_equip_min_size_48px.png` | 一鍵配置按鈕規格特寫（尺寸 104x48px，立體厚底 5px，圓角 16px）與五槽金藍紫綠紅完成態 | `48540809b122043aaf820ab0dda7a2a70d4eb13c9ccd7ba71d0c8c489f8197fc` |
 
 ---
 
