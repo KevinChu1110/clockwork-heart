@@ -13,6 +13,7 @@ extends Control
 signal confirmed()
 signal next_stage_requested()
 signal replay_stage_requested()
+signal gear_up_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
@@ -56,6 +57,7 @@ var _scrap_tag_lbl: Label
 var _scrap_lbl: Label
 var _btn_equip: Button
 var _btn_confirm: Button
+var _btn_go_gear_up: Button
 var _btn_replay_stage: Button
 var _btn_next_stage: Button
 var _btn_close: Button
@@ -87,6 +89,7 @@ var _part: Dictionary = {}
 var _on_confirm: Callable = Callable()
 var _on_next_stage: Callable = Callable()
 var _on_replay_stage: Callable = Callable()
+var _on_gear_up: Callable = Callable()
 var _stage_num: String = ""
 var _next_stage_data: Dictionary = {}
 var _is_equipped: bool = false
@@ -127,18 +130,19 @@ func set_stage(stage_num: String) -> void:
 	_refresh_display()
 
 
-static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable(), on_gear_up: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/battle_victory_dialog.gd").new()
-	dlg.setup(part, on_confirm, exp_gain, scrap_gain, broken_parts, on_next_stage, stage_num, on_replay_stage)
+	dlg.setup(part, on_confirm, exp_gain, scrap_gain, broken_parts, on_next_stage, stage_num, on_replay_stage, on_gear_up)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable()) -> void:
+func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable(), on_gear_up: Callable = Callable()) -> void:
 	_part = part.duplicate(true)
 	_on_confirm = on_confirm
 	_on_next_stage = on_next_stage
 	_on_replay_stage = on_replay_stage
+	_on_gear_up = on_gear_up
 	if stage_num != "":
 		_stage_num = stage_num
 	elif _part.has("stage") and str(_part["stage"]) != "":
@@ -491,6 +495,20 @@ func _build_ui() -> void:
 	_btn_confirm.pressed.connect(_on_confirm_pressed)
 	btn_row.add_child(_btn_confirm)
 
+	# 前往整頓按鈕 (BtnGoGearUp, 暖橘 #FFA010 果凍厚底 5px, 圓角 14px, 尺寸 >= 120x50, 熱區 >= 48px, 零 Emoji)
+	_btn_go_gear_up = Button.new()
+	_btn_go_gear_up.name = "BtnGoGearUp"
+	_btn_go_gear_up.text = _t("前往整頓")
+	_btn_go_gear_up.custom_minimum_size = Vector2(130, 52)
+	_btn_go_gear_up.focus_mode = Control.FOCUS_NONE
+	if _cached_font:
+		_btn_go_gear_up.add_theme_font_override("font", _cached_font)
+	_btn_go_gear_up.add_theme_font_size_override("font_size", 16)
+	_btn_go_gear_up.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_style_button(_btn_go_gear_up, COLOR_ORANGE, COLOR_BORDER, 5, 14)
+	_btn_go_gear_up.pressed.connect(_on_gear_up_pressed)
+	btn_row.add_child(_btn_go_gear_up)
+
 	# 再次挑戰按鈕 (BtnReplayStage, 多巴胺暖橘立體厚底按鈕, 高度 52px, bottom border 6px, 圓角 20px)
 	_btn_replay_stage = Button.new()
 	_btn_replay_stage.name = "BtnReplayStage"
@@ -566,6 +584,9 @@ func _refresh_display() -> void:
 	_btn_confirm.text = _t("收下完成")
 	_btn_equip.text = _t("已裝備") if _is_equipped else _t("立即裝備")
 	_btn_equip.visible = not _part.is_empty()
+	if _btn_go_gear_up != null:
+		_btn_go_gear_up.text = _t("前往整頓")
+		_btn_go_gear_up.visible = true
 	if _btn_replay_stage != null:
 		_btn_replay_stage.text = _t("再次挑戰")
 		var can_replay: bool = not _stage_num.is_empty() and not _is_colossus
@@ -1059,6 +1080,60 @@ func get_replay_button_text() -> String:
 
 func get_retry_button() -> Button:
 	return _btn_replay_stage
+
+
+func get_gear_up_button() -> Button:
+	return _btn_go_gear_up
+
+
+func get_gear_up_button_text() -> String:
+	return _btn_go_gear_up.text if _btn_go_gear_up != null else ""
+
+
+func _on_gear_up_pressed() -> void:
+	if _is_confirming:
+		return
+	_is_confirming = true
+
+	var a = _audio()
+	if a != null:
+		if a.has_method("play_ui"):
+			a.play_ui()
+
+	if DisplayServer.get_name() == "headless" or not is_inside_tree() or _fx_layer == null:
+		_finish_gear_up()
+		return
+
+	play_reward_particles_to_bag(Callable(self, "_finish_gear_up"))
+
+
+func _finish_gear_up() -> void:
+	gear_up_requested.emit()
+	if _on_gear_up.is_valid() and not gear_up_requested.is_connected(_on_gear_up):
+		_on_gear_up.call()
+	_try_switch_lobby_to_character_tab()
+	queue_free()
+
+
+func _try_switch_lobby_to_character_tab() -> void:
+	var cur: Node = get_parent()
+	while cur != null:
+		if cur.has_method("_switch_tab"):
+			cur.call("_switch_tab", 1)
+			return
+		elif cur.has_method("switch_tab"):
+			cur.call("switch_tab", 1)
+			return
+		cur = cur.get_parent()
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var root_node: Node = (tree as SceneTree).root
+		var lobby_node = root_node.find_child("MobileLobby", true, false)
+		if lobby_node != null:
+			if lobby_node.has_method("_switch_tab"):
+				lobby_node.call("_switch_tab", 1)
+			elif lobby_node.has_method("switch_tab"):
+				lobby_node.call("switch_tab", 1)
 
 
 func _on_next_stage_pressed() -> void:

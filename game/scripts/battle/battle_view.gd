@@ -5110,10 +5110,13 @@ func _show_victory_settlement(drop_part: Dictionary) -> void:
 			_victory_settlement_dialog = null
 			_start_next_expedition_stage(),
 		_current_expedition_stage,
-		_on_replay_stage_victory
+		_on_replay_stage_victory,
+		_on_gear_up_victory
 	)
 	if _victory_settlement_dialog and _victory_settlement_dialog.has_signal("replay_stage_requested") and not _victory_settlement_dialog.replay_stage_requested.is_connected(_on_replay_stage_victory):
 		_victory_settlement_dialog.replay_stage_requested.connect(_on_replay_stage_victory)
+	if _victory_settlement_dialog and _victory_settlement_dialog.has_signal("gear_up_requested") and not _victory_settlement_dialog.gear_up_requested.is_connected(_on_gear_up_victory):
+		_victory_settlement_dialog.gear_up_requested.connect(_on_gear_up_victory)
 
 
 func _start_next_expedition_stage() -> void:
@@ -5268,6 +5271,17 @@ func _on_gear_up_defeat() -> void:
 		_defeat_settlement_dialog = null
 	gear_up_requested.emit()
 	battle_finished.emit(false)
+
+
+func _on_gear_up_victory() -> void:
+	if _victory_settlement_dialog != null and is_instance_valid(_victory_settlement_dialog):
+		_victory_settlement_dialog = null
+	_current_expedition_stage = ""
+	var g := _gs_node()
+	if g and g.has_method("clear_expedition_stage"):
+		g.call("clear_expedition_stage")
+	gear_up_requested.emit()
+	battle_finished.emit(true)
 
 
 func _on_retry_stage_defeat() -> void:
