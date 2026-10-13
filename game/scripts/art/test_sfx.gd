@@ -5,7 +5,7 @@ extends SceneTree
 ##   1. 戰鬥自動回饋要用的 key（swap／break／warn／hit／slash）都載得到
 ##   2. hit、slash、swap 都短於 0.3 秒；所有 SFX 都不循環（warn 是一次性）
 ##   3. 缺檔的 key 不會當，只警告一次
-##   4. 同時最多兩聲 SFX
+##   4. 同時最多兩聲 SFX；UI 點擊／操作音走自己的聲道，兩聲滿了照樣播（#63）
 ##   5. parry 不在 UI 提示音清單裡
 ##   6. AudioManager 自己不播 warn（危險預警、王斬蓄力、Boss 開戰都不行）；
 ##      warn 只由戰鬥端在「Boss 部位將破」時 play("warn") 一次
@@ -38,6 +38,7 @@ func _process(_delta: float) -> bool:
 		_check_lengths_and_loop(am)
 		_check_missing_key(am)
 		_check_voice_limit(am)
+		_check_ui_not_swallowed(am)
 		_check_parry_not_ui(am)
 		_check_warn_only_explicit(am)
 	if _ok:
@@ -121,6 +122,45 @@ func _check_voice_limit(am: Node) -> void:
 	am._muted = was_muted
 	if _ok:
 		print("  ok 同時最多 2 聲，低優先度滿載時被丟掉")
+
+
+## #63：break＋swap 佔滿兩聲時，ui／interact 點擊仍要響，而且不擠掉戰鬥音
+func _check_ui_not_swallowed(am: Node) -> void:
+	var was_muted: bool = am._muted
+	am._muted = false
+	for id in ["ui", "interact"]:
+		if not am.has_sfx(id):
+			_fail("%s 沒載到，無法檢查 UI 聲道" % id)
+			continue
+		_stop_all(am)
+		am._ui_voice.stop()
+		am.play("break")
+		am.play("swap")
+		var before := _playing_keys(am)
+		if before.size() != 2:
+			_fail("break＋swap 後應佔滿 2 聲，實際 %d（檢查會空轉）" % before.size())
+			continue
+		if id == "ui":
+			am.play_ui()
+		else:
+			am.play_interact()
+		if not am.ui_sfx_playing():
+			_fail("兩聲戰鬥音滿載時 %s 被吞掉了" % id)
+		if _playing_keys(am) != before:
+			_fail("%s 不該擠掉戰鬥音（%s → %s）" % [id, str(before), str(_playing_keys(am))])
+		if am.active_sfx_count() > 2:
+			_fail("戰鬥 SFX 超過兩聲：%d" % am.active_sfx_count())
+	## 靜音時 UI 聲道也要安靜
+	am._ui_voice.stop()
+	am._muted = true
+	am.play_ui()
+	if am.ui_sfx_playing():
+		_fail("靜音時 UI 點擊仍在響")
+	am._muted = was_muted
+	_stop_all(am)
+	am._ui_voice.stop()
+	if _ok:
+		print("  ok 兩聲戰鬥音滿載時 ui／interact 點擊照樣響，且不擠掉戰鬥音")
 
 
 func _playing_keys(am: Node) -> Array:
