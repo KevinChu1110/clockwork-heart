@@ -6245,6 +6245,16 @@
    "keys": [
     "大廳聚魂殿新增前"
    ]
+  },
+  {
+   "id": "energy-lack-shop-shortcut",
+   "cat": "遊戲",
+   "title": "EnergyLackDialog 能量不足彈窗新增前往商城快捷按鈕連動 ShopDialog",
+   "status": "草稿",
+   "note": "能量不足時支援前往商城快捷補給",
+   "keys": [
+    "EnergyLa"
+   ]
   }
  ]
 }
