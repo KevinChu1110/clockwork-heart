@@ -31,12 +31,12 @@
 
 | 檔名 | 說明 | SHA256 (前 16 碼) | Vision 審查結果 |
 |---|---|---|---|
-| `proof_01_zh_TW_lobby_default_title.png` | 大廳初始頭頂名牌展示預設稱號【初出茅廬】小白（繁中） | `8236f6fe136e26bf` | PASS，主角頭頂上方深色銘牌清晰顯示【初出茅廬】小白，無穿模、文字無溢出、零系統 Emoji |
-| `proof_02_zh_TW_title_wall_equip_claw_parry.png` | 稱號牆【以劍抵爪】展示金黃光框與「✓ 佩戴中」高亮果凍標籤 | `cdcadab7ea09566a` | PASS，金黃光框厚底 (6px) 鮮明，高亮果凍標籤「✓ 佩戴中」對齊工整，排版嚴謹，零系統 Emoji |
-| `proof_03_zh_TW_lobby_equipped_linkage.png` | 佩戴稱號後大廳主角頭頂名牌即時同步刷新為【以劍抵爪】小白 | `08388d2639deffc1` | PASS，大廳頭頂名牌即時連動變更為【以劍抵爪】小白，金黃高亮字級清晰，零系統 Emoji |
-| `proof_04_en_title_wall_equipped.png` | 英文語系稱號牆彈窗（Achievements · Title Wall），Sword Against Claw 顯示「✓ Equipped」 | `cb36ccf428d2291b` | PASS，標題與條件全英文連動，狀態標籤精確顯示「✓ Equipped」，底部「Back to Lobby」，零 CJK 殘留，零 Emoji |
-| `proof_05_en_lobby_equipped_linkage.png` | 英文語系大廳頭頂名牌即時同步刷新為【Sword Against Claw】Xiaobai | `dd630d0b94e81625` | PASS，大廳名牌雙行英文排列【Sword Against Claw】Xiaobai，無文字溢出，零 CJK 殘留，零 Emoji |
-| `proof_06_ja_title_wall_equipped.png` | 日語語系稱號牆彈窗（実績・称号の壁），剣もて爪を受く 顯示「✓ 装備中」，按鈕「ロビーへ戻る」 | `5296bd39c1062b2e` | PASS，日文常用漢字與新字體對齊，狀態標籤「✓ 装備中」，底部按鈕「ロビーへ戻る」，零系統 Emoji |
+| `proof_01_zh_TW_lobby_default_title.png` | 大廳初始頭頂名牌展示預設稱號【初出茅廬】小白（繁中） | `be19682ac0e360c3` | PASS，主角頭頂上方深色銘牌清晰顯示【初出茅廬】小白，無穿模、文字無溢出、零系統 Emoji |
+| `proof_02_zh_TW_title_wall_equip_claw_parry.png` | 稱號牆【以劍抵爪】展示金黃光框與「✓ 佩戴中」高亮果凍標籤 | `295179ce0e5c6572` | PASS，金黃光框厚底 (6px) 鮮明，高亮果凍標籤「✓ 佩戴中」對齊工整，排版嚴謹，零系統 Emoji |
+| `proof_03_zh_TW_lobby_equipped_linkage.png` | 佩戴稱號後大廳主角頭頂名牌即時同步刷新為【以劍抵爪】小白 | `db005190cb7d8ff8` | PASS，大廳頭頂名牌即時連動變更為【以劍抵爪】小白，金黃高亮字級清晰，零系統 Emoji |
+| `proof_04_en_title_wall_equipped.png` | 英文語系稱號牆彈窗（Achievements · Title Wall），Sword Against Claw 顯示「✓ Equipped」 | `02e613f20a2c2b28` | PASS，標題與條件全英文連動，狀態標籤精確顯示「✓ Equipped」，底部「Back to Lobby」，零 CJK 殘留，零 Emoji |
+| `proof_05_en_lobby_equipped_linkage.png` | 英文語系大廳頭頂名牌即時同步刷新為【Sword Against Claw】Xiaobai | `a5d6e0e3caf08c3a` | PASS，大廳名牌雙行英文排列【Sword Against Claw】Xiaobai，無文字溢出，零 CJK 殘留，零 Emoji |
+| `proof_06_ja_title_wall_equipped.png` | 日語語系稱號牆彈窗（実績・称号の壁），剣もて爪を受く 顯示「✓ 装備中」，按鈕「ロビーへ戻る」 | `572b6878b56d615b` | PASS，日文常用漢字與新字體對齊，狀態標籤「✓ 装備中」，底部按鈕「ロビーへ戻る」，零系統 Emoji |
 
 ---
 
