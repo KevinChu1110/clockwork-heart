@@ -4220,5 +4220,10 @@
   "卸下稱號": "Desequipar título",
   "shop.btn_go_inventory": "Ir al Inventario",
   "shop.btn_go_soul_hall": "Ir a Sala de Almas",
-  "shop.btn_go_forge": "Ir a la Forja"
+  "shop.btn_go_forge": "Ir a la Forja",
+  "power_stat.title_card": "Título Equipado",
+  "power_stat.btn_go_title_wall": "Ir a Títulos",
+  "power_stat.title_desc": "Equipa títulos para mostrar tu gloria. Ve a títulos para cambiar o desequipar.",
+  "前往稱號": "Ir a Títulos",
+  "佩戴稱號展現專屬榮耀，前往稱號牆可自由切換或卸下": "Equipa títulos para mostrar tu gloria. Ve a títulos para cambiar o desequipar."
 }

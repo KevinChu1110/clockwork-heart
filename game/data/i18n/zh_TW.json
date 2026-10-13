@@ -2337,5 +2337,10 @@
   "卸下稱號": "卸下稱號",
   "shop.btn_go_inventory": "前往背包",
   "shop.btn_go_soul_hall": "前往聚魂",
-  "shop.btn_go_forge": "前往鍛造"
+  "shop.btn_go_forge": "前往鍛造",
+  "power_stat.title_card": "佩戴稱號",
+  "power_stat.btn_go_title_wall": "前往稱號",
+  "power_stat.title_desc": "佩戴稱號展現專屬榮耀，前往稱號牆可自由切換或卸下",
+  "前往稱號": "前往稱號",
+  "佩戴稱號展現專屬榮耀，前往稱號牆可自由切換或卸下": "佩戴稱號展現專屬榮耀，前往稱號牆可自由切換或卸下"
 }

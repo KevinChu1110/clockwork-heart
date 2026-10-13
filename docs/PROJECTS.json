@@ -6355,6 +6355,16 @@
    "keys": [
     "ShopDial"
    ]
+  },
+  {
+   "id": "power-stat-title-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽新增稱號卡片與前往稱號牆快捷按鈕",
+   "status": "測試中",
+   "note": "完成 TitleCard、BtnGoTitleWall 快捷連動 TitleWallDialog、六語系支援、單元與整合測試及實機截圖存證",
+   "keys": [
+    "PowerSta"
+   ]
   }
  ]
 }

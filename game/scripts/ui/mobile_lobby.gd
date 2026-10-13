@@ -6945,6 +6945,10 @@ func open_power_stat_dialog() -> Control:
 		dlg.forge_requested.connect(func():
 			open_forge()
 		)
+	if dlg.has_signal("title_wall_requested"):
+		dlg.title_wall_requested.connect(func():
+			open_title_wall_dialog()
+		)
 	add_child(dlg)
 	return dlg
 

@@ -3858,5 +3858,10 @@
   "卸下稱號": "称号を外す",
   "shop.btn_go_inventory": "インベントリへ進む",
   "shop.btn_go_soul_hall": "聚魂殿へ進む",
-  "shop.btn_go_forge": "鍛冶屋へ進む"
+  "shop.btn_go_forge": "鍛冶屋へ進む",
+  "power_stat.title_card": "称号",
+  "power_stat.btn_go_title_wall": "称号一覧へ",
+  "power_stat.title_desc": "称号を身につけて栄誉を示そう。称号一覧で変更・解除できます。",
+  "前往稱號": "称号一覧へ",
+  "佩戴稱號展現專屬榮耀，前往稱號牆可自由切換或卸下": "称号を身につけて栄誉を示そう。称号一覧で変更・解除できます。"
 }
