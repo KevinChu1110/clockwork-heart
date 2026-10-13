@@ -6390,6 +6390,10 @@ func open_maple_inventory(initial_category: String = "") -> Control:
 		inv.connect("workshop_requested", func():
 			open_gem_workshop()
 		)
+	if inv.has_signal("go_soul_hall_requested"):
+		inv.connect("go_soul_hall_requested", func():
+			open_soul_hall()
+		)
 	add_child(inv)
 	if not initial_category.is_empty() and inv.has_method("set_category"):
 		inv.call("set_category", initial_category)
