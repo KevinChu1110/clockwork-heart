@@ -6285,6 +6285,16 @@
    "keys": [
     "TitleWal"
    ]
+  },
+  {
+   "id": "soul-hall-unequip-all",
+   "cat": "遊戲",
+   "title": "大廳聚魂殿堂新增一鍵卸下全部戰魂",
+   "status": "草稿",
+   "note": "聚魂殿新增一鍵卸下果凍按鈕連動SoulSystem，與鐵匠/工坊/角色頁對齊",
+   "keys": [
+    "大廳聚魂殿堂新增"
+   ]
   }
  ]
 }
