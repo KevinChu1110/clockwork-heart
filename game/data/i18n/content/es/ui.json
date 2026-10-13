@@ -3845,5 +3845,6 @@
   "當前無可卸下的武器！": "¡No hay armas para desequipar actualmente!",
   "已卸下所有機芯": "Todos los núcleos desequipados",
   "未裝備任何機芯": "No hay núcleos equipados",
-  "vault.btn_go_forge": "Ir a Forja"
+  "vault.btn_go_forge": "Ir a Forja",
+  "vault.btn_go_inventory": "Ir al Inventario"
 }

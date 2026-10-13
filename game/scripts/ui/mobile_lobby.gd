@@ -2628,9 +2628,18 @@ func open_clockwork_vault() -> Control:
 		dlg.forge_requested.connect(func():
 			open_forge()
 		)
+	if dlg.has_signal("go_inventory"):
+		dlg.go_inventory.connect(func():
+			open_maple_inventory()
+		)
+	if dlg.has_signal("inventory_requested"):
+		dlg.inventory_requested.connect(func():
+			open_maple_inventory()
+		)
 	dlg.tree_exited.connect(func():
 		var has_forge: bool = get_node_or_null("ForgeDialog") != null
-		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge:
+		var has_inv: bool = get_node_or_null("MapleInventory") != null
+		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv:
 			_equip_schematic.visible = true
 		refresh_hud()
 		refresh_vault_display()
