@@ -110,6 +110,15 @@ func _run_test_suite() -> void:
 		"es": "Volver más tarde",
 	}
 
+	var expected_shop := {
+		"zh_TW": "前往商城",
+		"zh_CN": "前往商城",
+		"en": "Go to Shop",
+		"ja": "ショップへ",
+		"ko": "상점으로",
+		"es": "Ir a la tienda",
+	}
+
 	var expected_energy_fmt := {
 		"zh_TW": "當前能量：%d／%d",
 		"zh_CN": "当前能量：%d／%d",
@@ -186,6 +195,10 @@ func _run_test_suite() -> void:
 		if t_back != expected_back[code]:
 			_fail("[%s] 返回按鈕翻譯不符: 期望 '%s'，實際 '%s'" % [code, expected_back[code], t_back])
 
+		var t_shop := ContentLoc.text("ui", "前往商城")
+		if t_shop != expected_shop[code]:
+			_fail("[%s] 前往商城按鈕翻譯不符: 期望 '%s'，實際 '%s'" % [code, expected_shop[code], t_shop])
+
 		var t_energy := ContentLoc.text("ui", "當前能量：%d／%d")
 		if t_energy != expected_energy_fmt[code]:
 			_fail("[%s] 能量格式翻譯不符: 期望 '%s'，實際 '%s'" % [code, expected_energy_fmt[code], t_energy])
@@ -199,10 +212,10 @@ func _run_test_suite() -> void:
 			_fail("[%s] 看廣告按鈕翻譯不符: 期望 '%s'，實際 '%s'" % [code, expected_btn_claim_normal_fmt[code], t_ad_btn])
 
 		if code in ["en", "es"]:
-			if _has_cjk(t_title) or _has_cjk(t_back) or _has_cjk(t_energy) or _has_cjk(t_desc) or _has_cjk(t_ad_btn):
+			if _has_cjk(t_title) or _has_cjk(t_back) or _has_cjk(t_shop) or _has_cjk(t_energy) or _has_cjk(t_desc) or _has_cjk(t_ad_btn):
 				_fail("[%s] 詞條存在 CJK 中文字元殘留！" % code)
 
-		if _has_emoji(t_title) or _has_emoji(t_back) or _has_emoji(t_energy) or _has_emoji(t_desc) or _has_emoji(t_ad_btn):
+		if _has_emoji(t_title) or _has_emoji(t_back) or _has_emoji(t_shop) or _has_emoji(t_energy) or _has_emoji(t_desc) or _has_emoji(t_ad_btn):
 			_fail("[%s] 詞條存在 Emoji！" % code)
 
 		print("  ✓ [%s] 字典詞條檢核通過 (標題: '%s', 按鈕: '%s')" % [code, t_title, t_ad_btn % [3, 3]])
@@ -220,6 +233,7 @@ func _run_test_suite() -> void:
 
 	var title_node: Label = dlg.find_child("TitleLbl", true, false) as Label
 	var back_node: Button = dlg.find_child("BackBtn", true, false) as Button
+	var shop_node: Button = dlg.find_child("BtnGoShop", true, false) as Button
 	var ad_btn_node: Button = dlg.find_child("WatchAdBtn", true, false) as Button
 	var energy_lbl: Label = dlg.find_child("EnergyValLabel", true, false) as Label
 	var desc_lbl: Label = dlg.find_child("DescLbl", true, false) as Label
@@ -227,16 +241,21 @@ func _run_test_suite() -> void:
 	var card_node: PanelContainer = dlg.find_child("EnergyLackCard", true, false) as PanelContainer
 	var close_node: Button = dlg.find_child("CloseBtn", true, false) as Button
 
-	if title_node == null or back_node == null or ad_btn_node == null or energy_lbl == null or desc_lbl == null:
+	if title_node == null or back_node == null or shop_node == null or ad_btn_node == null or energy_lbl == null or desc_lbl == null:
 		_fail("EnergyLackDialog 子節點查找失敗")
 		dlg.queue_free()
 		return
 
-	# 尺寸規範驗證 (橫屏 740~760，關閉鈕 >= 50px)
+	# 尺寸規範驗證 (橫屏 740~760，關閉鈕 >= 50px，商城鈕 >= 48px)
 	if card_node.custom_minimum_size.x < 740 or card_node.custom_minimum_size.x > 760:
 		_fail("卡片寬度不符規範 (740~760): %f" % card_node.custom_minimum_size.x)
 	else:
 		print("  ✓ 卡片寬度符合規範: %f" % card_node.custom_minimum_size.x)
+
+	if shop_node.custom_minimum_size.x < 48 or shop_node.custom_minimum_size.y < 50:
+		_fail("前往商城按鈕尺寸小於規範 (>=48x50): %s" % str(shop_node.custom_minimum_size))
+	else:
+		print("  ✓ 前往商城按鈕尺寸符合規範: %s" % str(shop_node.custom_minimum_size))
 
 	if close_node == null or close_node.custom_minimum_size.x < 50 or close_node.custom_minimum_size.y < 50:
 		_fail("關閉按鈕尺寸小於 50px: %s" % (close_node.custom_minimum_size if close_node else "null"))
@@ -248,6 +267,8 @@ func _run_test_suite() -> void:
 		_fail("初始繁中標題不符: %s" % title_node.text)
 	if back_node.text != expected_back["zh_TW"]:
 		_fail("初始繁中返回按鈕不符: %s" % back_node.text)
+	if shop_node.text != expected_shop["zh_TW"]:
+		_fail("初始繁中前往商城按鈕不符: %s" % shop_node.text)
 	if not ad_btn_node.text.contains("觀看廣告回復能量"):
 		_fail("初始繁中看廣告按鈕不符: %s" % ad_btn_node.text)
 	print("  ✓ 初始繁中內容驗證正確")
@@ -258,6 +279,7 @@ func _run_test_suite() -> void:
 
 		var exp_title: String = expected_title[code]
 		var exp_back: String = expected_back[code]
+		var exp_shop: String = expected_shop[code]
 		var exp_energy: String = expected_energy_fmt[code] % [gs.energy, 15]
 		var exp_desc: String = expected_desc_normal[code]
 		var exp_ad_btn: String = expected_btn_claim_normal_fmt[code] % [3, 3]
@@ -266,6 +288,8 @@ func _run_test_suite() -> void:
 			_fail("[%s] 標題未即時更新: 實際 '%s'，期望 '%s'" % [code, title_node.text, exp_title])
 		if back_node.text != exp_back:
 			_fail("[%s] 返回按鈕未即時更新: 實際 '%s'，期望 '%s'" % [code, back_node.text, exp_back])
+		if shop_node.text != exp_shop:
+			_fail("[%s] 前往商城按鈕未即時更新: 實際 '%s'，期望 '%s'" % [code, shop_node.text, exp_shop])
 		if energy_lbl.text != exp_energy:
 			_fail("[%s] 能量標籤未即時更新: 實際 '%s'，期望 '%s'" % [code, energy_lbl.text, exp_energy])
 		if desc_lbl.text != exp_desc:
@@ -274,10 +298,10 @@ func _run_test_suite() -> void:
 			_fail("[%s] 看廣告按鈕未即時更新: 實際 '%s'，期望 '%s'" % [code, ad_btn_node.text, exp_ad_btn])
 
 		if code in ["en", "es"]:
-			if _has_cjk(title_node.text) or _has_cjk(back_node.text) or _has_cjk(energy_lbl.text) or _has_cjk(desc_lbl.text) or _has_cjk(ad_btn_node.text):
+			if _has_cjk(title_node.text) or _has_cjk(back_node.text) or _has_cjk(shop_node.text) or _has_cjk(energy_lbl.text) or _has_cjk(desc_lbl.text) or _has_cjk(ad_btn_node.text):
 				_fail("[%s] 畫面文字存在 CJK 中文字元殘留！" % code)
 
-		if _has_emoji(title_node.text) or _has_emoji(back_node.text) or _has_emoji(energy_lbl.text) or _has_emoji(desc_lbl.text) or _has_emoji(ad_btn_node.text):
+		if _has_emoji(title_node.text) or _has_emoji(back_node.text) or _has_emoji(shop_node.text) or _has_emoji(energy_lbl.text) or _has_emoji(desc_lbl.text) or _has_emoji(ad_btn_node.text):
 			_fail("[%s] 畫面文字存在 Emoji！" % code)
 
 		print("  ✓ [%s] 開窗即時切換連動驗證成功: 標題='%s' | 按鈕='%s'" % [code, title_node.text, ad_btn_node.text])

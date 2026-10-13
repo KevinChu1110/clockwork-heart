@@ -410,9 +410,9 @@ func _is_modal_node(n: Node) -> bool:
 	var scr = n.get_script()
 	if scr and scr is Script:
 		sname = scr.resource_path.get_file().get_basename()
-	if sname in ["wardrobe_dialog", "forge_dialog", "gem_workshop_dialog", "windup_daily_dialog", "energy_lack_dialog", "mobile_settings", "mock_ad_dialog", "skill_dialog"]:
+	if sname in ["wardrobe_dialog", "forge_dialog", "gem_workshop_dialog", "windup_daily_dialog", "energy_lack_dialog", "mobile_settings", "mock_ad_dialog", "skill_dialog", "shop_dialog"]:
 		return true
-	if n.name in ["WardrobeDialog", "ForgeDialog", "GemWorkshopDialog", "WindupDailyDialog", "EnergyLackDialog", "SettingsCard", "MobileSettings", "MockAdDialog", "SkillDialog"]:
+	if n.name in ["WardrobeDialog", "ForgeDialog", "GemWorkshopDialog", "WindupDailyDialog", "EnergyLackDialog", "SettingsCard", "MobileSettings", "MockAdDialog", "SkillDialog", "ShopDialog"]:
 		return true
 	return false
 
@@ -2434,7 +2434,13 @@ func _show_toast(msg: String) -> void:
 
 
 func _show_energy_lack_dialog(on_granted: Callable = Callable(), on_close: Callable = Callable()) -> void:
-	EnergyLackDialogScn.show_dialog(self, on_granted, on_close)
+	var dlg = EnergyLackDialogScn.show_dialog(self, on_granted, on_close)
+	if dlg and dlg.has_signal("shop_requested"):
+		dlg.shop_requested.connect(func():
+			var ShopClass: GDScript = load("res://scripts/ui/shop_dialog.gd")
+			if ShopClass != null and ShopClass.has_method("show_shop"):
+				ShopClass.show_shop(self)
+		)
 
 
 

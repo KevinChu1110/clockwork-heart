@@ -10,6 +10,7 @@ extends Control
 ## 6. 連接 EnergySystem 看廣告回復能量邏輯。
 
 signal energy_granted(amount: int)
+signal shop_requested()
 signal closed()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
@@ -42,6 +43,7 @@ var _energy_val_label: Label
 var _status_detail_label: Label
 var _desc_lbl: Label
 var _ad_btn: Button
+var _shop_btn: Button
 var _back_btn: Button
 var _cached_font: Font = null
 var _is_built: bool = false
@@ -82,6 +84,8 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 func _update_ui_texts() -> void:
 	if _title_lbl and is_instance_valid(_title_lbl):
 		_title_lbl.text = _t("能量不足")
+	if _shop_btn and is_instance_valid(_shop_btn):
+		_shop_btn.text = _t("前往商城")
 	if _back_btn and is_instance_valid(_back_btn):
 		_back_btn.text = _t("稍後再來")
 	_refresh_display()
@@ -223,17 +227,17 @@ func _build_ui() -> void:
 	_desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	v.add_child(_desc_lbl)
 
-	# 底部雙操作按鈕 (高度 >= 50px)
+	# 底部操作按鈕區 (高度 >= 50px，熱區 >= 48px)
 	var btn_h := HBoxContainer.new()
-	btn_h.add_theme_constant_override("separation", 16)
+	btn_h.add_theme_constant_override("separation", 12)
 	btn_h.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(btn_h)
 
 	# 看廣告拿體力按鈕 (薄荷綠立體果凍厚底)
 	_ad_btn = Button.new()
 	_ad_btn.name = "WatchAdBtn"
-	_ad_btn.custom_minimum_size = Vector2(340, 52)
-	_ad_btn.add_theme_font_size_override("font_size", 18)
+	_ad_btn.custom_minimum_size = Vector2(300, 52)
+	_ad_btn.add_theme_font_size_override("font_size", 16)
 	_ad_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
 	_ad_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_ad_btn.add_theme_constant_override("outline_size", 3)
@@ -246,12 +250,29 @@ func _build_ui() -> void:
 	_ad_btn.pressed.connect(_on_watch_ad_clicked)
 	btn_h.add_child(_ad_btn)
 
+	# 前往商城按鈕 (暖橘立體果凍厚底，高度 >= 50px，熱區 >= 48px)
+	_shop_btn = Button.new()
+	_shop_btn.name = "BtnGoShop"
+	_shop_btn.text = _t("前往商城")
+	_shop_btn.custom_minimum_size = Vector2(180, 52)
+	_shop_btn.add_theme_font_size_override("font_size", 17)
+	_shop_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_shop_btn.add_theme_font_override("font", _cached_font)
+	_shop_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 6, 20, 2))
+	_shop_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB030"), COLOR_BORDER, 6, 20, 2))
+	_shop_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E58F00"), COLOR_BORDER, 2, 20, 2))
+	_shop_btn.add_theme_stylebox_override("focus", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 6, 20, 2))
+	_shop_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#B0ADBE"), COLOR_BORDER, 3, 20, 2))
+	_shop_btn.pressed.connect(_on_go_shop_clicked)
+	btn_h.add_child(_shop_btn)
+
 	# 返回按鈕 (溫暖米黃/橙底)
 	_back_btn = Button.new()
 	_back_btn.name = "BackBtn"
 	_back_btn.text = _t("稍後再來")
-	_back_btn.custom_minimum_size = Vector2(180, 52)
-	_back_btn.add_theme_font_size_override("font_size", 18)
+	_back_btn.custom_minimum_size = Vector2(160, 52)
+	_back_btn.add_theme_font_size_override("font_size", 17)
 	_back_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		_back_btn.add_theme_font_override("font", _cached_font)
@@ -366,6 +387,25 @@ func _on_ad_watch_success() -> void:
 
 	if _on_granted.is_valid():
 		_on_granted.call()
+
+
+func _on_go_shop_clicked() -> void:
+	shop_requested.emit()
+	var parent_node := get_parent()
+	if parent_node != null:
+		if parent_node.has_method("open_shop"):
+			parent_node.call("open_shop")
+		elif parent_node.has_method("open_shop_dialog"):
+			parent_node.call("open_shop_dialog")
+		elif parent_node.get_node_or_null("ShopDialog") == null:
+			var ShopClass: GDScript = load("res://scripts/ui/shop_dialog.gd")
+			if ShopClass != null and ShopClass.has_method("show_shop"):
+				ShopClass.show_shop(parent_node)
+	_on_close_clicked()
+
+
+func get_go_shop_btn() -> Button:
+	return _shop_btn
 
 
 func _on_close_clicked() -> void:

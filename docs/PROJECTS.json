@@ -6260,8 +6260,8 @@
    "id": "energy-lack-shop-shortcut",
    "cat": "遊戲",
    "title": "EnergyLackDialog 能量不足彈窗新增前往商城快捷按鈕連動 ShopDialog",
-   "status": "開發中",
-   "note": "派工 sideworker 進行中",
+   "status": "測試中",
+   "note": "完成 BtnGoShop 果凍按鈕規格、六語系支援、連動 ShopDialog 與實機截圖存證",
    "keys": [
     "EnergyLa"
    ]
