@@ -6220,8 +6220,8 @@
    "id": "forge-core-unequip-all",
    "cat": "遊戲",
    "title": "天宮鐵匠 ForgeDialog 機芯五槽新增『一鍵卸下全部機芯』果凍按鈕",
-   "status": "開發中",
-   "note": "開始實作一鍵卸下機芯果凍按鈕、CoreSystem卸下五槽、六語系支援與自動化測試",
+   "status": "已上線",
+   "note": "天宮鐵匠五槽機芯一鍵卸下完成驗證",
    "keys": [
     "天宮鐵匠 For"
    ]
