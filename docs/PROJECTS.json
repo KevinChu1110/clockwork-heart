@@ -6330,8 +6330,8 @@
    "id": "shop-inventory-shortcut",
    "cat": "遊戲",
    "title": "ShopDialog 商城彈窗新增前往背包快捷按鈕連動探索背包",
-   "status": "草稿",
-   "note": "商城彈窗新增直通探索背包快捷果凍按鈕",
+   "status": "測試中",
+   "note": "完成開發，已推至分支 agent/20261013-shop-inventory-shortcut-t_6821e62c，送審 sideqa",
    "keys": [
     "ShopDial"
    ]
