@@ -6215,6 +6215,16 @@
    "keys": [
     "大廳角色頁三欄武"
    ]
+  },
+  {
+   "id": "energy-lack-shop-shortcut",
+   "cat": "遊戲",
+   "title": "EnergyLackDialog 能量不足彈窗新增前往商城快捷按鈕連動 ShopDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "EnergyLa"
+   ]
   }
  ]
 }
