@@ -33,7 +33,7 @@ const SFX_KEYS: Array[String] = [
 	"ui", "interact", "step", "warn", "dodge", "battle_start",
 	"swap",
 	"craft",  ## 可選；缺檔時 play_craft_success 走 ui+reveal
-	"overwind",  ## 可選（main 合入）：發條超載爆裂；缺檔時 play_overwind_burst 走 clash+break+clock
+	"overwind",  ## 可選（main 合入）：發條超載爆裂；缺檔時 play_overwind_burst 走 OVERWIND_FALLBACK 兩層
 ]
 ## 戰鬥自動回饋一定要有的 key（battle HUD 直接呼叫 AudioManager.play(key)）
 const SFX_REQUIRED: Array[String] = ["swap", "break", "warn", "hit", "slash"]
@@ -47,10 +47,19 @@ const UI_SFX: Array[String] = ["ui", "interact", "reveal"]
 ## 撞上兩聲上限時誰留下：數字大的贏；沒列的＝1
 const SFX_PRIORITY := {
 	"break": 4, "victory": 4, "defeat": 4,
+	"overwind": 4,  ## 戰鬥高潮，不能輸給一般命中（#88）
 	"warn": 3, "swap": 3, "wind": 3, "battle_start": 3,
 	"hit": 2, "slash": 2, "clash": 2, "reveal": 2,
 	"step": 0,
 }
+
+## 沒有 overwind.wav 時的疊層：最多 MAX_SFX_VOICES 層，整組用 overwind 的優先度播，
+## 才不會輸給正在響的 hit／slash，也不會被自己後一層搶走（#88）。
+## [key, pitch_scale, volume_db]
+const OVERWIND_FALLBACK: Array = [
+	["clash", 1.15, 1.0],
+	["break", 1.05, 0.0],
+]
 
 var _streams: Dictionary = {}  ## sfx id -> AudioStream
 var _bgm_streams: Dictionary = {}  ## bgm id -> AudioStream
@@ -266,20 +275,26 @@ func set_bgm_muted(v: bool) -> void:
 func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 	last_sfx = id
 	last_sfx_time = Time.get_ticks_msec() / 1000.0
+	_play_with_prio(id, pitch_scale, volume_db, int(SFX_PRIORITY.get(id, 1)))
+
+
+## play() 的本體。prio 可由呼叫端指定（疊層音效整組同優先度）；
+## exclude 裡的 voice 不會被搶（同一組疊層不互搶）。回傳用到的 voice，丟掉回 -1。
+func _play_with_prio(id: String, pitch_scale: float, volume_db: float, prio: int,
+		exclude: Array[int] = []) -> int:
 	if _muted:
-		return
+		return -1
 	var stream: AudioStream = _streams.get(id)
 	if stream == null:
 		if not _missing_sfx_warned.has(id):
 			_missing_sfx_warned[id] = true
 			push_warning("SFX missing: %s/%s.wav（之後不再提示）" % [SFX_DIR, id])
-		return
+		return -1
 	if _pool.is_empty():
-		return
-	var prio := int(SFX_PRIORITY.get(id, 1))
-	var slot := _pick_voice(prio)
+		return -1
+	var slot := _pick_voice(prio, exclude)
 	if slot < 0:
-		return
+		return -1
 	var p: AudioStreamPlayer = _pool[slot]
 	p.stop()
 	p.stream = stream
@@ -289,12 +304,15 @@ func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 	_serial += 1
 	_voice_prio[slot] = prio
 	_voice_serial[slot] = _serial
+	return slot
 
 
 ## 空的 voice 優先；全滿就挑「優先度最低、同級最舊」的；新的優先度更低就回 -1（丟掉）
-func _pick_voice(prio: int) -> int:
+func _pick_voice(prio: int, exclude: Array[int] = []) -> int:
 	var victim := -1
 	for i in _pool.size():
+		if exclude.has(i):
+			continue
 		var p: AudioStreamPlayer = _pool[i]
 		if not p.playing:
 			return i
@@ -353,10 +371,15 @@ func play_ritual_success() -> void:
 func play_overwind_burst() -> void:
 	if _streams.has("overwind"):
 		play("overwind")
-	else:
-		play("clash", 1.15, 1.0)
-		play("break", 1.05, 0.0)
-		play("clock", 1.25, -2.0)
+		return
+	var prio := int(SFX_PRIORITY.get("overwind", 1))
+	var claimed: Array[int] = []
+	for layer in OVERWIND_FALLBACK:
+		var slot := _play_with_prio(str(layer[0]), float(layer[1]), float(layer[2]), prio, claimed)
+		if slot >= 0:
+			claimed.append(slot)
+	last_sfx = "overwind"
+	last_sfx_time = Time.get_ticks_msec() / 1000.0
 
 
 ## ─── BGM ───

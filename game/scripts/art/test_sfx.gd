@@ -40,6 +40,7 @@ func _process(_delta: float) -> bool:
 		_check_voice_limit(am)
 		_check_parry_not_ui(am)
 		_check_warn_only_explicit(am)
+		_check_overwind_burst(am)
 	if _ok:
 		print("SFX_OK")
 		quit(0)
@@ -203,3 +204,75 @@ func _warn_playing(am: Node, warn_stream: Variant) -> bool:
 func _stop_all(am: Node) -> void:
 	for p in am._pool:
 		(p as AudioStreamPlayer).stop()
+
+
+## #88：超載爆裂在兩聲上限下，設計好的層都要響、不能被自己搶掉，也不能輸給一般命中。
+func _check_overwind_burst(am: Node) -> void:
+	var prio: Dictionary = am.SFX_PRIORITY
+	if not prio.has("overwind"):
+		_fail("SFX_PRIORITY 沒有 overwind")
+		return
+	var burst_prio := int(prio["overwind"])
+	for k in ["hit", "slash"]:
+		if burst_prio <= int(prio.get(k, 1)):
+			_fail("overwind 優先度 %d 沒有高過一般命中 %s（%d）" % [burst_prio, k, int(prio.get(k, 1))])
+	var fallback: Array = am.OVERWIND_FALLBACK
+	if fallback.size() > am.sfx_voice_limit():
+		_fail("overwind fallback 有 %d 層，超過同時 %d 聲上限" % [fallback.size(), am.sfx_voice_limit()])
+	var want: Array = []
+	for layer in fallback:
+		want.append(str(layer[0]))
+	var was_muted: bool = am._muted
+	am._muted = false
+	var had_file: bool = am._streams.has("overwind")
+	var saved: Variant = am._streams.get("overwind")
+	am._streams.erase("overwind")  ## 走缺檔 fallback（repo 目前也沒有 overwind.wav）
+	var cases := {"安靜時": [], "break＋hit 進行中": ["break", "hit"], "slash＋hit 進行中": ["slash", "hit"]}
+	for label in cases:
+		_stop_all(am)
+		for k in cases[label]:
+			am.play(k)
+		am.play_overwind_burst()
+		var got := _playing_ids(am)
+		if got.size() > am.sfx_voice_limit():
+			_fail("%s爆裂：同時 %d 聲，超過上限" % [label, got.size()])
+		var g2 := got.duplicate()
+		g2.sort()
+		var w2 := want.duplicate()
+		w2.sort()
+		if g2 != w2:
+			_fail("%s爆裂：在響的是 %s，設計的層是 %s" % [label, str(got), str(want)])
+	## 有 overwind.wav 時：單檔、搶得贏 hit＋slash
+	var fake: AudioStream = am._streams.get("clash")
+	am._streams["overwind"] = fake
+	_stop_all(am)
+	am.play("hit")
+	am.play("slash")
+	am.play_overwind_burst()
+	var n_burst := 0
+	for i in am._pool.size():
+		var ap := am._pool[i] as AudioStreamPlayer
+		if ap.playing and ap.stream == fake and int(am._voice_prio[i]) == burst_prio:
+			n_burst += 1
+	if n_burst != 1:
+		_fail("有 overwind.wav 時，hit＋slash 進行中爆裂應搶到 1 聲，實際 %d" % n_burst)
+	if had_file:
+		am._streams["overwind"] = saved
+	else:
+		am._streams.erase("overwind")
+	_stop_all(am)
+	am._muted = was_muted
+	if _ok:
+		print("  ok 超載爆裂 fallback %s：≤2 聲、層都在、贏過一般命中" % str(want))
+
+
+func _playing_ids(am: Node) -> Array:
+	var by_stream := {}
+	for k in am._streams:
+		by_stream[am._streams[k]] = k
+	var out: Array = []
+	for p in am._pool:
+		var ap := p as AudioStreamPlayer
+		if ap.playing and ap.stream:
+			out.append(str(by_stream.get(ap.stream, ap.stream.resource_path)))
+	return out
