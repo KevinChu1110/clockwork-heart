@@ -4195,5 +4195,12 @@
   "機芯部件 · 部位：%s · 色階：%s": "Pieza de núcleo · Ranura: %s · %s",
   "前往拆解": "Desmontar",
   "鐵屑：%d（每次消耗 %d）": "Chatarra: %d (Coste %d)",
-  "調整心法": "Ajustar habilidades"
+  "調整心法": "Ajustar habilidades",
+  "胡桃鉗兔": "Conejo Cascanueces",
+  "八音盒": "Caja de Música",
+  "錫兵": "Soldado de Plomo",
+  "旋轉木馬": "Carrusel",
+  "錫兵 · 黃銅背心": "Soldado de Plomo · Chaleco de latón",
+  "八音盒 · 圍巾長衫": "Caja de Música · Túnica con bufanda",
+  "錫兵 · 工匠工裙": "Soldado de Plomo · Delantal de artesano"
 }

@@ -3833,5 +3833,15 @@
   "機芯部件 · 部位：%s · 色階：%s": "Core Part · Slot: %s · %s",
   "前往拆解": "Dismantle",
   "鐵屑：%d（每次消耗 %d）": "Iron Scrap: %d (Cost %d)",
-  "調整心法": "Adjust Skills"
+  "調整心法": "Adjust Skills",
+  "胡桃鉗兔": "Nutcracker Rabbit",
+  "八音盒": "Music Box",
+  "錫兵": "Tin Soldier",
+  "旋轉木馬": "Carousel",
+  "錫兵 · 黃銅背心": "Tin Soldier · Brass Vest",
+  "八音盒 · 圍巾長衫": "Music Box · Scarf Tunic",
+  "錫兵 · 工匠工裙": "Tin Soldier · Artisan Apron",
+  "精良": "Fine",
+  "傳說": "Legendary",
+  "炫彩": "Prismatic"
 }
