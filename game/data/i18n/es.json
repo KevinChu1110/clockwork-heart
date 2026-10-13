@@ -4203,5 +4203,7 @@
   "已一鍵配置最高戰力武器。": "Armas de mayor poder equipadas.",
   "目前已是最佳武器配置！": "¡Ya está en la configuración óptima de armas!",
   "已將副武器卸下歸還背包！": "¡Armas secundarias desequipadas y devueltas a la bolsa!",
-  "當前無可卸下的武器！": "¡No hay armas para desequipar actualmente!"
+  "當前無可卸下的武器！": "¡No hay armas para desequipar actualmente!",
+  "已卸下所有機芯": "Todos los núcleos desequipados",
+  "未裝備任何機芯": "No hay núcleos equipados"
 }

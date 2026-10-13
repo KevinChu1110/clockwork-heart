@@ -15,6 +15,7 @@ signal part_dropped(part: Dictionary)
 signal part_dismantled(part: Dictionary, scrap_gain: int)
 signal part_unequipped(slot_id: String, part: Dictionary)
 signal cores_auto_equipped(result: Dictionary)
+signal cores_unequipped(result: Dictionary)
 
 static var player_parts: Dictionary = {}
 static var core_inventory: Array = []
@@ -1421,6 +1422,63 @@ static func auto_equip_best_cores() -> Dictionary:
 		"power_gain": power_gain,
 		"changes": changes,
 		"equipped_slots": get_all_player_parts()
+	}
+
+
+## 一次性安全卸下五槽機芯並返還至背包，同步更新 CoreSystem 與 GameState
+static func unequip_all_cores() -> Dictionary:
+	var unequipped_slots: Array[String] = []
+	var unequipped_parts: Array[Dictionary] = []
+
+	var tree := Engine.get_main_loop()
+	var gs: Node = null
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		gs = (tree as SceneTree).root.get_node_or_null("GameState")
+
+	# 檢查並卸下五大槽位部件
+	for sid in ALL_SLOT_IDS:
+		var norm_slot := normalize_slot_id(sid)
+		var part: Dictionary = get_equipped_part(norm_slot)
+		if not part.is_empty():
+			var old := unequip_part(norm_slot)
+			unequipped_slots.append(norm_slot)
+			unequipped_parts.append(old if not old.is_empty() else part)
+
+	# 雙重防護：若 gs.core_slots 還有殘留鍵，確保全部安全清空並返還背包
+	if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+		for sid in ALL_SLOT_IDS:
+			var norm_slot := normalize_slot_id(sid)
+			if gs.core_slots.has(norm_slot):
+				var p = gs.core_slots[norm_slot]
+				if p is Dictionary and not (p as Dictionary).is_empty() and not unequipped_slots.has(norm_slot):
+					add_part_to_inventory(p)
+					unequipped_slots.append(norm_slot)
+					unequipped_parts.append(p)
+				gs.core_slots.erase(norm_slot)
+
+	# 清理 player_parts
+	for sid in ALL_SLOT_IDS:
+		var norm_slot := normalize_slot_id(sid)
+		if player_parts.has(norm_slot):
+			player_parts.erase(norm_slot)
+
+	var is_changed: bool = not unequipped_slots.is_empty()
+
+	var cs: Node = null
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		cs = (tree as SceneTree).root.get_node_or_null("CoreSystem")
+	if cs and cs.has_signal("cores_unequipped"):
+		cs.emit_signal("cores_unequipped", {
+			"changed": is_changed,
+			"unequipped_slots": unequipped_slots,
+			"unequipped_parts": unequipped_parts
+		})
+
+	return {
+		"ok": true,
+		"changed": is_changed,
+		"unequipped_slots": unequipped_slots,
+		"unequipped_parts": unequipped_parts
 	}
 
 
