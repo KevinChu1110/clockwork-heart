@@ -250,6 +250,7 @@ var _gourd_lit: Array[bool] = [true, false, false, false]
 var _gourd_btns: Array[Button] = []
 var _gourd_btn_absorb: Button = null
 var _gourd_btn_draw: Button = null
+var _gourd_btn_inventory: Button = null
 var _soul_title_label: Label = null
 var _soul_desc_label: Label = null
 
@@ -3094,13 +3095,13 @@ func _build_soul_hall_tab() -> void:
 
 	var bot_h := HBoxContainer.new()
 	bot_h.alignment = BoxContainer.ALIGNMENT_CENTER
-	bot_h.add_theme_constant_override("separation", 28)
+	bot_h.add_theme_constant_override("separation", 20)
 	v.add_child(bot_h)
 
 	var btn_absorb := Button.new()
 	btn_absorb.name = "BtnAbsorb"
 	btn_absorb.text = _t("一鍵吸收灰魂")
-	btn_absorb.custom_minimum_size = Vector2(210, 52)
+	btn_absorb.custom_minimum_size = Vector2(200, 52)
 	btn_absorb.add_theme_font_size_override("font_size", 16)
 	var asb := StyleBoxFlat.new()
 	asb.bg_color = COLOR_ORANGE
@@ -3132,10 +3133,45 @@ func _build_soul_hall_tab() -> void:
 	bot_h.add_child(btn_absorb)
 	_gourd_btn_absorb = btn_absorb
 
+	var btn_inv := Button.new()
+	btn_inv.name = "BtnGoInventory"
+	btn_inv.text = _t("前往背包")
+	btn_inv.custom_minimum_size = Vector2(200, 52)
+	btn_inv.add_theme_font_size_override("font_size", 16)
+	var isb := StyleBoxFlat.new()
+	isb.bg_color = COLOR_PINK
+	isb.border_color = COLOR_BORDER
+	isb.set_border_width_all(2)
+	isb.border_width_bottom = 5
+	isb.set_corner_radius_all(18)
+	isb.content_margin_top = 8
+	isb.content_margin_bottom = 8
+	isb.content_margin_left = 14
+	isb.content_margin_right = 14
+	isb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	isb.shadow_size = 6
+	isb.shadow_offset = Vector2(0, 3)
+	var isb_h := isb.duplicate() as StyleBoxFlat
+	isb_h.bg_color = Color("#FF759E")
+	var isb_p := isb.duplicate() as StyleBoxFlat
+	isb_p.border_width_bottom = 2
+	btn_inv.add_theme_stylebox_override("normal", isb)
+	btn_inv.add_theme_stylebox_override("hover", isb_h)
+	btn_inv.add_theme_stylebox_override("pressed", isb_p)
+	btn_inv.add_theme_stylebox_override("focus", isb)
+	btn_inv.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_inv.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_inv.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+	btn_inv.pressed.connect(func():
+		open_maple_inventory("material")
+	)
+	bot_h.add_child(btn_inv)
+	_gourd_btn_inventory = btn_inv
+
 	var btn_draw := Button.new()
 	btn_draw.name = "BtnDrawTen"
 	btn_draw.text = _t("聚魂十連")
-	btn_draw.custom_minimum_size = Vector2(220, 56)
+	btn_draw.custom_minimum_size = Vector2(210, 56)
 	btn_draw.add_theme_font_size_override("font_size", 18)
 	var dsb := StyleBoxFlat.new()
 	dsb.bg_color = COLOR_GOLD
@@ -6260,6 +6296,8 @@ func _apply_locale_texts() -> void:
 		_soul_desc_label.text = _t("聚引四大共鳴核心之魂：銳齒(攻) · 固甲(防) · 旋簧(血) · 全衡(衡)。點擊點亮更高階封靈罐！")
 	if _gourd_btn_absorb and is_instance_valid(_gourd_btn_absorb):
 		_gourd_btn_absorb.text = _t("一鍵吸收灰魂")
+	if _gourd_btn_inventory and is_instance_valid(_gourd_btn_inventory):
+		_gourd_btn_inventory.text = _t("前往背包")
 	if _gourd_btn_draw and is_instance_valid(_gourd_btn_draw):
 		_gourd_btn_draw.text = _t("聚魂十連")
 	_refresh_gourds_ui()
@@ -6741,6 +6779,11 @@ func open_power_stat_dialog() -> Control:
 ## 開啟聚魂殿堂 Tab (Tab.SOUL_HALL)
 func open_soul_hall() -> void:
 	_switch_tab(Tab.SOUL_HALL)
+
+
+## 取得聚魂殿堂前往背包快捷按鈕
+func get_soul_hall_go_inventory_btn() -> Button:
+	return _gourd_btn_inventory
 
 
 ## 開啟能量/體力補充彈窗（看廣告拿能量）

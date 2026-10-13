@@ -6245,6 +6245,36 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "soul-hall-inventory-shortcut",
+   "cat": "遊戲",
+   "title": "大廳聚魂殿新增前往背包快捷按鈕連動探索背包素材頁籤",
+   "status": "測試中",
+   "note": "大廳聚魂殿堂新增前往背包快捷按鈕連動探索背包素材頁籤",
+   "keys": [
+    "大廳聚魂殿新增前"
+   ]
+  },
+  {
+   "id": "energy-lack-shop-shortcut",
+   "cat": "遊戲",
+   "title": "EnergyLackDialog 能量不足彈窗新增前往商城快捷按鈕連動 ShopDialog",
+   "status": "開發中",
+   "note": "派工 sideworker 進行中",
+   "keys": [
+    "EnergyLa"
+   ]
+  },
+  {
+   "id": "vault-forge-shortcut",
+   "cat": "遊戲",
+   "title": "ClockworkVaultDialog 發條儲能庫放置收益彈窗新增前往鍛造快捷果凍按鈕連動天宮鐵匠",
+   "status": "草稿",
+   "note": "領取鐵屑收益後支援直通天宮鐵匠鍛造",
+   "keys": [
+    "Clockwor"
+   ]
   }
  ]
 }
