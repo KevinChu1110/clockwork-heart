@@ -6365,6 +6365,16 @@
    "keys": [
     "PowerSta"
    ]
+  },
+  {
+   "id": "title-wall-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "TitleWallDialog 稱號牆新增前往戰力快捷果凍按鈕連動 PowerStatDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "TitleWal"
+   ]
   }
  ]
 }
