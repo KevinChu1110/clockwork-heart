@@ -3833,5 +3833,8 @@
   "機芯部件 · 部位：%s · 色階：%s": "Pieza de núcleo · Ranura: %s · %s",
   "前往拆解": "Desmontar",
   "鐵屑：%d（每次消耗 %d）": "Chatarra: %d (Coste %d)",
-  "調整心法": "Ajustar habilidades"
+  "調整心法": "Ajustar habilidades",
+  "一鍵卸下": "Desengarzar Todo",
+  "當前無已鑲嵌寶石！": "¡No hay gemas engarzadas actualmente!",
+  "已卸下 %d 顆寶石並歸還背包！": "¡Se desengarzaron %d gemas y se guardaron en el inventario!"
 }

@@ -17,6 +17,11 @@ const SHARD_NEED := 3  ## 碎片熔煉 → 1 級寶石
 const SOCKET_GOLD_BASE := 40
 const SOCKET_GOLD_PER_LV := 25
 
+var _gems: Array:
+	get:
+		_ensure_bag()
+		return GameState.gem_bag if GameState and GameState.gem_bag != null else []
+
 
 static func _t(s: String) -> String:
 	return ContentLoc.text("ui", s)
@@ -502,6 +507,48 @@ func auto_socket() -> Dictionary:
 		"total_gold": total_spent_gold,
 		"details": socketed_details,
 		"msg": _t("一鍵鑲嵌完成：成功填補 %d 個空孔（%s）！") % [socketed_count, details_str],
+	}
+
+
+## 一鍵卸下：遍歷穿戴裝備所有孔位，將已鑲嵌之寶石安全卸下歸還至背包，更新空孔狀態並重新計算 worn_bonuses
+func auto_unsocket() -> Dictionary:
+	if not unlocked():
+		return {"ok": false, "count": 0, "msg": _t("寶石工坊需達到 Lv%d。") % UNLOCK_LEVEL}
+	_ensure_bag()
+
+	var unsocketed_count := 0
+	var unsocketed_details: Array = []
+
+	if GameState.equip_worn:
+		for uid in GameState.equip_worn.keys():
+			var inst: Dictionary = GameState.equip_worn[uid]
+			var g: Variant = inst.get("gem", {})
+			if typeof(g) == TYPE_DICTIONARY and not (g as Dictionary).is_empty():
+				var color := str((g as Dictionary).get("color", ""))
+				var lv := clampi(int((g as Dictionary).get("level", 1)), 1, MAX_LEVEL)
+				if color != "":
+					add_gem(color, lv, 1)
+					inst.erase("gem")
+					GameState.equip_worn[uid] = inst
+					unsocketed_count += 1
+					var target_name := str(inst.get("name", str(inst.get("slot", ""))))
+					unsocketed_details.append("%s: %s" % [target_name, gem_label({"color": color, "level": lv})])
+
+	if unsocketed_count == 0:
+		return {
+			"ok": false,
+			"count": 0,
+			"msg": _t("當前無已鑲嵌寶石！"),
+		}
+
+	SaveManager.save_game()
+	var _wb := worn_bonuses()
+
+	return {
+		"ok": true,
+		"count": unsocketed_count,
+		"details": unsocketed_details,
+		"msg": _t("已卸下 %d 顆寶石並歸還背包！") % unsocketed_count,
 	}
 
 
