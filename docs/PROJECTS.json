@@ -6370,8 +6370,8 @@
    "id": "title-wall-power-stat-shortcut",
    "cat": "遊戲",
    "title": "TitleWallDialog 稱號牆新增前往戰力快捷果凍按鈕連動 PowerStatDialog",
-   "status": "開發中",
-   "note": "開始開發稱號牆前往戰力快捷按鈕",
+   "status": "測試中",
+   "note": "完成開發與驗證，準備送審 sideqa",
    "keys": [
     "TitleWal"
    ]
