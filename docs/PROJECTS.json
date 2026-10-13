@@ -6190,8 +6190,8 @@
    "id": "gem-workshop-auto-unsocket",
    "cat": "遊戲",
    "title": "手藝工坊 GemWorkshopDialog 寶石櫃支援『一鍵卸下』已鑲嵌寶石",
-   "status": "開發中",
-   "note": "指派給阿翔 sideworker2 (t_87339dc9)",
+   "status": "測試中",
+   "note": "手藝工坊寶石櫃支援一鍵卸下、珊瑚粉果凍按鈕、防呆飄字與六語系切換完成",
    "keys": [
     "手藝工坊 Gem"
    ]

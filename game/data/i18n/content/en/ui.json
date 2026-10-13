@@ -3833,5 +3833,8 @@
   "機芯部件 · 部位：%s · 色階：%s": "Core Part · Slot: %s · %s",
   "前往拆解": "Dismantle",
   "鐵屑：%d（每次消耗 %d）": "Iron Scrap: %d (Cost %d)",
-  "調整心法": "Adjust Skills"
+  "調整心法": "Adjust Skills",
+  "一鍵卸下": "Quick Unsocket",
+  "當前無已鑲嵌寶石！": "No gems are currently socketed!",
+  "已卸下 %d 顆寶石並歸還背包！": "Unsocketed %d gems and returned to inventory!"
 }

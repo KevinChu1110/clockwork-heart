@@ -83,7 +83,10 @@ var _case_bonus_panel: PanelContainer
 var _grid_title: Label
 var _btn_refresh_case: Button
 var _btn_auto_socket: Button
+var _btn_auto_unsocket: Button
 var _case_grid: GridContainer
+
+var last_toast_text: String = ""
 
 var _msg_label: Label
 var _btn_go_inventory: Button
@@ -148,12 +151,47 @@ func _update_ui_texts() -> void:
 		_btn_refresh_case.text = _t("重新盤點")
 	if _btn_auto_socket and is_instance_valid(_btn_auto_socket):
 		_btn_auto_socket.text = _t("一鍵鑲嵌")
+	if _btn_auto_unsocket and is_instance_valid(_btn_auto_unsocket):
+		_btn_auto_unsocket.text = _t("一鍵卸下")
 	if _btn_go_inventory and is_instance_valid(_btn_go_inventory):
 		_btn_go_inventory.text = _t("前往背包")
 	if _btn_go_forge and is_instance_valid(_btn_go_forge):
 		_btn_go_forge.text = _t("前往鐵匠")
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開工坊")
+
+
+func show_toast(msg: String) -> void:
+	last_toast_text = msg
+	if _msg_label and is_instance_valid(_msg_label):
+		_msg_label.text = msg
+	var toast := Label.new()
+	toast.name = "GemToast"
+	toast.text = msg
+	toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	toast.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	toast.offset_left = -220
+	toast.offset_right = 220
+	toast.offset_top = 80
+	toast.offset_bottom = 125
+	toast.add_theme_font_size_override("font_size", 16)
+	toast.add_theme_color_override("font_color", Color.WHITE)
+	toast.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	toast.add_theme_constant_override("outline_size", 4)
+	if _cached_font:
+		toast.add_theme_font_override("font", _cached_font)
+	var bg := _create_panel_style(COLOR_PINK, COLOR_BORDER, 2, 4, 16)
+	toast.add_theme_stylebox_override("normal", bg)
+	add_child(toast)
+	var tw := create_tween()
+	if tw:
+		tw.tween_interval(1.8)
+		tw.tween_property(toast, "modulate:a", 0.0, 0.4)
+		tw.tween_callback(toast.queue_free)
+	else:
+		toast.queue_free()
+
 
 
 func _ready() -> void:
@@ -396,7 +434,7 @@ func _build_ui() -> void:
 	_btn_refresh_case = Button.new()
 	_btn_refresh_case.name = "BtnRefreshCase"
 	_btn_refresh_case.text = _t("重新盤點")
-	_btn_refresh_case.custom_minimum_size = Vector2(130, 50)
+	_btn_refresh_case.custom_minimum_size = Vector2(115, 50)
 	_btn_refresh_case.add_theme_font_size_override("font_size", 16)
 	_btn_refresh_case.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_btn_refresh_case.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -412,7 +450,7 @@ func _build_ui() -> void:
 	_btn_auto_socket = Button.new()
 	_btn_auto_socket.name = "BtnAutoSocket"
 	_btn_auto_socket.text = _t("一鍵鑲嵌")
-	_btn_auto_socket.custom_minimum_size = Vector2(130, 50)
+	_btn_auto_socket.custom_minimum_size = Vector2(115, 50)
 	_btn_auto_socket.add_theme_font_size_override("font_size", 16)
 	_btn_auto_socket.add_theme_color_override("font_color", Color.WHITE)
 	_btn_auto_socket.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -424,7 +462,8 @@ func _build_ui() -> void:
 	_btn_auto_socket.add_theme_stylebox_override("pressed", _create_button_style(Color("#36B850"), COLOR_BORDER, 2, 16, 2))
 	_btn_auto_socket.pressed.connect(func():
 		var res: Dictionary = GemSystem.auto_socket()
-		_msg_label.text = _t(str(res.get("msg", "")))
+		var msg_str := _t(str(res.get("msg", "")))
+		show_toast(msg_str)
 		if bool(res.get("ok", false)):
 			_msg_label.add_theme_color_override("font_color", COLOR_MINT)
 		else:
@@ -433,6 +472,35 @@ func _build_ui() -> void:
 		_refresh_case_view()
 	)
 	grid_head.add_child(_btn_auto_socket)
+
+	_btn_auto_unsocket = Button.new()
+	_btn_auto_unsocket.name = "BtnAutoUnsocket"
+	_btn_auto_unsocket.text = _t("一鍵卸下")
+	_btn_auto_unsocket.custom_minimum_size = Vector2(115, 50)
+	_btn_auto_unsocket.add_theme_font_size_override("font_size", 16)
+	_btn_auto_unsocket.add_theme_color_override("font_color", Color.WHITE)
+	_btn_auto_unsocket.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_auto_unsocket.add_theme_constant_override("outline_size", 4)
+	_btn_auto_unsocket.add_theme_color_override("font_disabled_color", COLOR_TEXT_MUTED)
+	if _cached_font:
+		_btn_auto_unsocket.add_theme_font_override("font", _cached_font)
+	_btn_auto_unsocket.add_theme_stylebox_override("normal", _create_button_style(COLOR_PINK, COLOR_BORDER, 5, 16, 2))
+	_btn_auto_unsocket.add_theme_stylebox_override("hover", _create_button_style(Color("#FF7A9F"), COLOR_BORDER, 5, 16, 2))
+	_btn_auto_unsocket.add_theme_stylebox_override("pressed", _create_button_style(Color("#D63B66"), COLOR_BORDER, 2, 16, 2))
+	_btn_auto_unsocket.add_theme_stylebox_override("disabled", _create_button_style(COLOR_CARD_MUTED, COLOR_BORDER_MUTED, 2, 16, 2))
+	_btn_auto_unsocket.pressed.connect(func():
+		var res: Dictionary = GemSystem.auto_unsocket()
+		var msg_str := _t(str(res.get("msg", "")))
+		show_toast(msg_str)
+		if bool(res.get("ok", false)):
+			_msg_label.add_theme_color_override("font_color", COLOR_PINK)
+		else:
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+		SaveManager.save_game()
+		_refresh_case_view()
+	)
+	grid_head.add_child(_btn_auto_unsocket)
+
 
 	_case_grid = GridContainer.new()
 	_case_grid.name = "CaseGrid"
@@ -791,6 +859,9 @@ func _build_single_smelt_card(col: String) -> PanelContainer:
 
 func _refresh_case_view() -> void:
 	var survey: Dictionary = GemSystem.inspect_gem_case()
+	var has_filled_sockets: bool = int(survey.get("filled_sockets", 0)) > 0
+	if _btn_auto_unsocket and is_instance_valid(_btn_auto_unsocket):
+		_btn_auto_unsocket.disabled = not has_filled_sockets
 
 	# 1. 孔位狀態卡片
 	for c in _case_slots_row.get_children():
