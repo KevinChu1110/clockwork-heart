@@ -14,6 +14,10 @@ extends Control
 signal closed()
 signal go_inventory()
 signal inventory_requested()
+signal go_soul_hall()
+signal soul_hall_requested()
+signal go_forge()
+signal forge_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -21,7 +25,7 @@ const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
-	if s == "shop.btn_go_inventory":
+	if s == "shop.btn_go_inventory" or s == "前往背包":
 		var lc := ContentLoc.locale()
 		if lc == "zh_TW":
 			return "前往背包"
@@ -29,6 +33,22 @@ static func _t(s: String) -> String:
 		if str(v) != "":
 			return str(v)
 		return ContentLoc.text("ui", "前往背包")
+	if s == "shop.btn_go_soul_hall" or s == "前往聚魂":
+		var lc := ContentLoc.locale()
+		if lc == "zh_TW":
+			return "前往聚魂"
+		var v = ContentLoc._table("ui", lc).get("shop.btn_go_soul_hall", "")
+		if str(v) != "":
+			return str(v)
+		return ContentLoc.text("ui", "前往聚魂")
+	if s == "shop.btn_go_forge" or s == "前往鍛造":
+		var lc := ContentLoc.locale()
+		if lc == "zh_TW":
+			return "前往鍛造"
+		var v = ContentLoc._table("ui", lc).get("shop.btn_go_forge", "")
+		if str(v) != "":
+			return str(v)
+		return ContentLoc.text("ui", "前往鍛造")
 	return ContentLoc.text("ui", s)
 
 static func tr_ui(s: String) -> String:
@@ -69,6 +89,8 @@ var _item_buy_buttons: Dictionary = {}
 var _item_note_labels: Dictionary = {}
 var _status_msg_lbl: Label
 var _btn_go_inventory: Button
+var _btn_go_soul_hall: Button
+var _btn_go_forge: Button
 var _cached_font: Font = null
 
 ## IAP 佔位品項定義（TODO: 內購定價帶尚未定案，依據 docs/BUSINESS.md 待 Kevin 裁定）
@@ -196,7 +218,11 @@ func _apply_locale_texts() -> void:
 	if _status_msg_lbl and is_instance_valid(_status_msg_lbl):
 		_status_msg_lbl.text = _t("歡迎來到發條工坊商城！請點擊各項功能進行模擬測試。")
 	if _btn_go_inventory and is_instance_valid(_btn_go_inventory):
-		_btn_go_inventory.text = _t("前往背包")
+		_btn_go_inventory.text = _t("shop.btn_go_inventory")
+	if _btn_go_soul_hall and is_instance_valid(_btn_go_soul_hall):
+		_btn_go_soul_hall.text = _t("shop.btn_go_soul_hall")
+	if _btn_go_forge and is_instance_valid(_btn_go_forge):
+		_btn_go_forge.text = _t("shop.btn_go_forge")
 
 
 func _build_ui() -> void:
@@ -399,16 +425,17 @@ func _build_ui() -> void:
 		_status_msg_lbl.add_theme_font_override("font", _cached_font)
 	v.add_child(_status_msg_lbl)
 
-	# ── 底部操作快捷列 (前往背包快捷果凍按鈕) ──
+	# ── 底部操作快捷列 (前往背包、前往聚魂、前往鍛造快捷果凍按鈕) ──
 	var foot_h := HBoxContainer.new()
 	foot_h.name = "FooterBar"
 	foot_h.alignment = BoxContainer.ALIGNMENT_CENTER
 	foot_h.add_theme_constant_override("separation", 12)
 	v.add_child(foot_h)
 
+	# 1. 前往背包 (薄荷綠)
 	_btn_go_inventory = Button.new()
 	_btn_go_inventory.name = "BtnGoInventory"
-	_btn_go_inventory.text = _t("前往背包")
+	_btn_go_inventory.text = _t("shop.btn_go_inventory")
 	_btn_go_inventory.custom_minimum_size = Vector2(160, 52)
 	_btn_go_inventory.focus_mode = Control.FOCUS_NONE
 	_btn_go_inventory.add_theme_font_size_override("font_size", 17)
@@ -431,6 +458,60 @@ func _build_ui() -> void:
 	_btn_go_inventory.add_theme_stylebox_override("pressed", inv_sb_p)
 	_btn_go_inventory.pressed.connect(_on_go_inventory_clicked)
 	foot_h.add_child(_btn_go_inventory)
+
+	# 2. 前往聚魂 (珊瑚粉)
+	_btn_go_soul_hall = Button.new()
+	_btn_go_soul_hall.name = "BtnGoSoulHall"
+	_btn_go_soul_hall.text = _t("shop.btn_go_soul_hall")
+	_btn_go_soul_hall.custom_minimum_size = Vector2(160, 52)
+	_btn_go_soul_hall.focus_mode = Control.FOCUS_NONE
+	_btn_go_soul_hall.add_theme_font_size_override("font_size", 17)
+	_btn_go_soul_hall.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_go_soul_hall.add_theme_font_override("font", _cached_font)
+
+	var soul_sb := StyleBoxFlat.new()
+	soul_sb.bg_color = COLOR_PINK
+	soul_sb.border_color = COLOR_BORDER
+	soul_sb.set_border_width_all(2)
+	soul_sb.border_width_bottom = 5
+	soul_sb.set_corner_radius_all(18)
+	var soul_sb_h := soul_sb.duplicate() as StyleBoxFlat
+	soul_sb_h.bg_color = Color("#FF769D")
+	var soul_sb_p := soul_sb.duplicate() as StyleBoxFlat
+	soul_sb_p.border_width_bottom = 2
+	_btn_go_soul_hall.add_theme_stylebox_override("normal", soul_sb)
+	_btn_go_soul_hall.add_theme_stylebox_override("hover", soul_sb_h)
+	_btn_go_soul_hall.add_theme_stylebox_override("pressed", soul_sb_p)
+	_btn_go_soul_hall.pressed.connect(_on_go_soul_hall_clicked)
+	foot_h.add_child(_btn_go_soul_hall)
+
+	# 3. 前往鍛造 (金黃)
+	_btn_go_forge = Button.new()
+	_btn_go_forge.name = "BtnGoForge"
+	_btn_go_forge.text = _t("shop.btn_go_forge")
+	_btn_go_forge.custom_minimum_size = Vector2(160, 52)
+	_btn_go_forge.focus_mode = Control.FOCUS_NONE
+	_btn_go_forge.add_theme_font_size_override("font_size", 17)
+	_btn_go_forge.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_go_forge.add_theme_font_override("font", _cached_font)
+
+	var forge_sb := StyleBoxFlat.new()
+	forge_sb.bg_color = COLOR_GOLD
+	forge_sb.border_color = COLOR_BORDER
+	forge_sb.set_border_width_all(2)
+	forge_sb.border_width_bottom = 5
+	forge_sb.set_corner_radius_all(18)
+	var forge_sb_h := forge_sb.duplicate() as StyleBoxFlat
+	forge_sb_h.bg_color = Color("#FFE050")
+	var forge_sb_p := forge_sb.duplicate() as StyleBoxFlat
+	forge_sb_p.border_width_bottom = 2
+	_btn_go_forge.add_theme_stylebox_override("normal", forge_sb)
+	_btn_go_forge.add_theme_stylebox_override("hover", forge_sb_h)
+	_btn_go_forge.add_theme_stylebox_override("pressed", forge_sb_p)
+	_btn_go_forge.pressed.connect(_on_go_forge_clicked)
+	foot_h.add_child(_btn_go_forge)
 
 
 func _build_service_card(title: String, desc: String, card_name: String) -> PanelContainer:
@@ -717,6 +798,48 @@ func _set_status(msg: String) -> void:
 
 func get_go_inventory_button() -> Button:
 	return _btn_go_inventory
+
+
+func get_go_soul_hall_button() -> Button:
+	return _btn_go_soul_hall
+
+
+func get_go_forge_button() -> Button:
+	return _btn_go_forge
+
+
+func _on_go_soul_hall_clicked() -> void:
+	go_soul_hall.emit()
+	soul_hall_requested.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_soul_hall"):
+		p.call("open_soul_hall")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_soul_hall"):
+				ml.call("open_soul_hall")
+	_on_close()
+
+
+func _on_go_forge_clicked() -> void:
+	go_forge.emit()
+	forge_requested.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_forge"):
+		p.call("open_forge")
+	elif p != null and p.has_method("open_forge_dialog"):
+		p.call("open_forge_dialog")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_forge"):
+				ml.call("open_forge")
+			elif ml and ml.has_method("open_forge_dialog"):
+				ml.call("open_forge_dialog")
+	_on_close()
 
 
 func _on_go_inventory_clicked() -> void:

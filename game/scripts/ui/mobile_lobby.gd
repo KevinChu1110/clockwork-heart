@@ -6661,6 +6661,11 @@ func open_forge(target_weapon: Variant = null) -> Control:
 		if existing_workshop.get_parent() == self:
 			remove_child(existing_workshop)
 		existing_workshop.queue_free()
+	var existing_shop = get_node_or_null("ShopDialog")
+	if existing_shop != null:
+		if existing_shop.get_parent() == self:
+			remove_child(existing_shop)
+		existing_shop.queue_free()
 	var ForgeClass: GDScript = load("res://scripts/ui/forge_dialog.gd")
 	if ForgeClass == null:
 		push_error("無法載入 ForgeDialog")
@@ -6946,6 +6951,11 @@ func open_power_stat_dialog() -> Control:
 
 ## 開啟聚魂殿堂 Tab (Tab.SOUL_HALL)
 func open_soul_hall() -> void:
+	var existing_shop = get_node_or_null("ShopDialog")
+	if existing_shop != null:
+		if existing_shop.get_parent() == self:
+			remove_child(existing_shop)
+		existing_shop.queue_free()
 	_switch_tab(Tab.SOUL_HALL)
 	_refresh_soul_hall_ui()
 
@@ -7015,6 +7025,22 @@ func open_shop() -> Control:
 	if dlg.has_signal("inventory_requested"):
 		dlg.inventory_requested.connect(func():
 			open_maple_inventory()
+		)
+	if dlg.has_signal("go_soul_hall"):
+		dlg.go_soul_hall.connect(func():
+			open_soul_hall()
+		)
+	if dlg.has_signal("soul_hall_requested"):
+		dlg.soul_hall_requested.connect(func():
+			open_soul_hall()
+		)
+	if dlg.has_signal("go_forge"):
+		dlg.go_forge.connect(func():
+			open_forge()
+		)
+	if dlg.has_signal("forge_requested"):
+		dlg.forge_requested.connect(func():
+			open_forge()
 		)
 	dlg.tree_exited.connect(func():
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
