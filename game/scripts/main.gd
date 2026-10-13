@@ -5563,6 +5563,7 @@ func _go_soul_panel() -> void:
 	buttons.append({"text": _t("一鍵吸收廢魂"), "cb": _soul_absorb_junk})
 	buttons.append({"text": _t("一鍵合成"), "cb": _soul_fuse_all})
 	buttons.append({"text": _t("一鍵配置"), "cb": _soul_auto_equip_best})
+	buttons.append({"text": _t("一鍵卸下"), "cb": _soul_unequip_all})
 	## 背包入魂：先進對比槽位，不默默塞第一空槽
 	var bag: Array = SoulSystem.bag_souls()
 	for i in mini(5, bag.size()):
@@ -6568,6 +6569,15 @@ func _soul_fuse_all() -> void:
 
 func _soul_auto_equip_best() -> void:
 	var r: Dictionary = SoulSystem.auto_equip_best()
+	if bool(r.get("ok", false)) and bool(r.get("changed", false)):
+		SaveManager.save_game()
+		if AudioManager and AudioManager.has_method("play"):
+			AudioManager.play("interact", 1.0, -4.0)
+	_play_dialog([{"speaker": _t("星讀"), "text": str(r.get("msg", ""))}], _go_soul_panel)
+
+
+func _soul_unequip_all() -> void:
+	var r: Dictionary = SoulSystem.unequip_all_souls()
 	if bool(r.get("ok", false)) and bool(r.get("changed", false)):
 		SaveManager.save_game()
 		if AudioManager and AudioManager.has_method("play"):

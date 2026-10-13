@@ -4210,5 +4210,10 @@
   "vault.btn_go_forge": "Ir a Forja",
   "✓ 佩戴中": "✓ Equipado",
   "佩戴稱號": "Equipar título",
-  "回到大廳": "Volver al vestíbulo"
+  "回到大廳": "Volver al vestíbulo",
+  "已卸下所有戰魂": "Todas las almas desequipadas",
+  "未裝備任何戰魂": "No hay almas equipadas",
+  "已一鍵配置最高戰力戰魂": "Almas más fuertes autoequipadas",
+  "目前已是最佳戰魂配置！": "¡Ya es la mejor configuración de almas!",
+  "一鍵卸下全部戰魂": "Desequipar todas las almas"
 }

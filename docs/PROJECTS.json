@@ -6300,8 +6300,8 @@
    "id": "vault-inventory-shortcut",
    "cat": "遊戲",
    "title": "ClockworkVaultDialog 發條儲能庫新增前往背包快捷按鈕",
-   "status": "開發中",
-   "note": "已開卡派工",
+   "status": "測試中",
+   "note": "完成 ClockworkVaultDialog 發條儲能庫新增前往背包快捷果凍按鈕連動探索背包",
    "keys": [
     "Clockwor"
    ]

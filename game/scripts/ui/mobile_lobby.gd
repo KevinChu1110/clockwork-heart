@@ -10,6 +10,8 @@ signal cores_auto_equipped(result: Dictionary)
 signal weapons_auto_equipped(result: Dictionary)
 signal weapons_unequipped(result: Dictionary)
 signal cores_unequipped(result: Dictionary)
+signal souls_unequipped(result: Dictionary)
+signal souls_auto_equipped(result: Dictionary)
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -251,6 +253,9 @@ var _gourd_btns: Array[Button] = []
 var _gourd_btn_absorb: Button = null
 var _gourd_btn_draw: Button = null
 var _gourd_btn_inventory: Button = null
+var _soul_btn_unequip_all: Button = null
+var _soul_btn_auto_equip: Button = null
+var _soul_status_bbcode_label: RichTextLabel = null
 var _soul_title_label: Label = null
 var _soul_desc_label: Label = null
 
@@ -408,6 +413,12 @@ static func _get_gem_sys() -> Node:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree:
 		return (loop as SceneTree).root.get_node_or_null("GemSystem")
+	return null
+
+static func _get_soul_sys() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree:
+		return (loop as SceneTree).root.get_node_or_null("SoulSystem")
 	return null
 
 func _get_hero_name() -> String:
@@ -3111,15 +3122,50 @@ func _build_soul_hall_tab() -> void:
 
 	_refresh_gourds_ui()
 
+	var status_box := PanelContainer.new()
+	status_box.name = "SoulStatusPanel"
+	status_box.custom_minimum_size = Vector2(0, 160)
+	status_box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	var ssb := StyleBoxFlat.new()
+	ssb.bg_color = Color(1.0, 1.0, 1.0, 0.70)
+	ssb.border_color = COLOR_BORDER
+	ssb.set_border_width_all(2)
+	ssb.border_width_bottom = 4
+	ssb.set_corner_radius_all(14)
+	ssb.content_margin_left = 16
+	ssb.content_margin_right = 16
+	ssb.content_margin_top = 10
+	ssb.content_margin_bottom = 10
+	status_box.add_theme_stylebox_override("panel", ssb)
+	v.add_child(status_box)
+
+	var rtl := RichTextLabel.new()
+	rtl.name = "SoulStatusBBCode"
+	rtl.bbcode_enabled = true
+	rtl.fit_content = false
+	rtl.scroll_active = true
+	rtl.custom_minimum_size = Vector2(0, 140)
+	rtl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rtl.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	rtl.add_theme_color_override("default_color", COLOR_TEXT_DARK)
+	if _cached_font != null:
+		rtl.add_theme_font_override("normal_font", _cached_font)
+	rtl.add_theme_font_size_override("normal_font_size", 13)
+	rtl.add_theme_font_size_override("bold_font_size", 14)
+	status_box.add_child(rtl)
+	_soul_status_bbcode_label = rtl
+
+	_refresh_soul_hall_status_bbcode()
+
 	var bot_h := HBoxContainer.new()
 	bot_h.alignment = BoxContainer.ALIGNMENT_CENTER
-	bot_h.add_theme_constant_override("separation", 20)
+	bot_h.add_theme_constant_override("separation", 14)
 	v.add_child(bot_h)
 
 	var btn_absorb := Button.new()
 	btn_absorb.name = "BtnAbsorb"
 	btn_absorb.text = _t("一鍵吸收灰魂")
-	btn_absorb.custom_minimum_size = Vector2(200, 52)
+	btn_absorb.custom_minimum_size = Vector2(160, 52)
 	btn_absorb.add_theme_font_size_override("font_size", 16)
 	var asb := StyleBoxFlat.new()
 	asb.bg_color = COLOR_ORANGE
@@ -3129,8 +3175,8 @@ func _build_soul_hall_tab() -> void:
 	asb.set_corner_radius_all(18)
 	asb.content_margin_top = 8
 	asb.content_margin_bottom = 8
-	asb.content_margin_left = 14
-	asb.content_margin_right = 14
+	asb.content_margin_left = 12
+	asb.content_margin_right = 12
 	asb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 	asb.shadow_size = 6
 	asb.shadow_offset = Vector2(0, 3)
@@ -3151,10 +3197,82 @@ func _build_soul_hall_tab() -> void:
 	bot_h.add_child(btn_absorb)
 	_gourd_btn_absorb = btn_absorb
 
+	var btn_auto := Button.new()
+	btn_auto.name = "BtnAutoEquipSouls"
+	btn_auto.text = _t("一鍵配置")
+	btn_auto.custom_minimum_size = Vector2(160, 52)
+	btn_auto.add_theme_font_size_override("font_size", 16)
+	var asb_auto := StyleBoxFlat.new()
+	asb_auto.bg_color = COLOR_SKY
+	asb_auto.border_color = COLOR_BORDER
+	asb_auto.set_border_width_all(2)
+	asb_auto.border_width_bottom = 5
+	asb_auto.set_corner_radius_all(18)
+	asb_auto.content_margin_top = 8
+	asb_auto.content_margin_bottom = 8
+	asb_auto.content_margin_left = 12
+	asb_auto.content_margin_right = 12
+	asb_auto.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	asb_auto.shadow_size = 6
+	asb_auto.shadow_offset = Vector2(0, 3)
+	var asb_auto_h := asb_auto.duplicate() as StyleBoxFlat
+	asb_auto_h.bg_color = Color("#5CB3FF")
+	var asb_auto_p := asb_auto.duplicate() as StyleBoxFlat
+	asb_auto_p.border_width_bottom = 2
+	btn_auto.add_theme_stylebox_override("normal", asb_auto)
+	btn_auto.add_theme_stylebox_override("hover", asb_auto_h)
+	btn_auto.add_theme_stylebox_override("pressed", asb_auto_p)
+	btn_auto.add_theme_stylebox_override("focus", asb_auto)
+	btn_auto.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_auto.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_auto.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+	btn_auto.pressed.connect(func():
+		_play_ui_sound()
+		auto_equip_souls()
+	)
+	bot_h.add_child(btn_auto)
+	_soul_btn_auto_equip = btn_auto
+
+	var btn_unequip := Button.new()
+	btn_unequip.name = "BtnUnequipAllSouls"
+	btn_unequip.text = _t("一鍵卸下")
+	btn_unequip.custom_minimum_size = Vector2(160, 52)
+	btn_unequip.add_theme_font_size_override("font_size", 16)
+	var usb := StyleBoxFlat.new()
+	usb.bg_color = COLOR_PINK
+	usb.border_color = COLOR_BORDER
+	usb.set_border_width_all(2)
+	usb.border_width_bottom = 5
+	usb.set_corner_radius_all(18)
+	usb.content_margin_top = 8
+	usb.content_margin_bottom = 8
+	usb.content_margin_left = 12
+	usb.content_margin_right = 12
+	usb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	usb.shadow_size = 6
+	usb.shadow_offset = Vector2(0, 3)
+	var usb_h := usb.duplicate() as StyleBoxFlat
+	usb_h.bg_color = Color("#FF759E")
+	var usb_p := usb.duplicate() as StyleBoxFlat
+	usb_p.border_width_bottom = 2
+	btn_unequip.add_theme_stylebox_override("normal", usb)
+	btn_unequip.add_theme_stylebox_override("hover", usb_h)
+	btn_unequip.add_theme_stylebox_override("pressed", usb_p)
+	btn_unequip.add_theme_stylebox_override("focus", usb)
+	btn_unequip.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_unequip.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_unequip.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+	btn_unequip.pressed.connect(func():
+		_play_ui_sound()
+		unequip_all_souls()
+	)
+	bot_h.add_child(btn_unequip)
+	_soul_btn_unequip_all = btn_unequip
+
 	var btn_inv := Button.new()
 	btn_inv.name = "BtnGoInventory"
 	btn_inv.text = _t("前往背包")
-	btn_inv.custom_minimum_size = Vector2(200, 52)
+	btn_inv.custom_minimum_size = Vector2(160, 52)
 	btn_inv.add_theme_font_size_override("font_size", 16)
 	var isb := StyleBoxFlat.new()
 	isb.bg_color = COLOR_PINK
@@ -3164,8 +3282,8 @@ func _build_soul_hall_tab() -> void:
 	isb.set_corner_radius_all(18)
 	isb.content_margin_top = 8
 	isb.content_margin_bottom = 8
-	isb.content_margin_left = 14
-	isb.content_margin_right = 14
+	isb.content_margin_left = 12
+	isb.content_margin_right = 12
 	isb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 	isb.shadow_size = 6
 	isb.shadow_offset = Vector2(0, 3)
@@ -3189,7 +3307,7 @@ func _build_soul_hall_tab() -> void:
 	var btn_draw := Button.new()
 	btn_draw.name = "BtnDrawTen"
 	btn_draw.text = _t("聚魂十連")
-	btn_draw.custom_minimum_size = Vector2(210, 56)
+	btn_draw.custom_minimum_size = Vector2(180, 52)
 	btn_draw.add_theme_font_size_override("font_size", 18)
 	var dsb := StyleBoxFlat.new()
 	dsb.bg_color = COLOR_GOLD
@@ -3199,8 +3317,8 @@ func _build_soul_hall_tab() -> void:
 	dsb.set_corner_radius_all(18)
 	dsb.content_margin_top = 8
 	dsb.content_margin_bottom = 8
-	dsb.content_margin_left = 16
-	dsb.content_margin_right = 16
+	dsb.content_margin_left = 14
+	dsb.content_margin_right = 14
 	dsb.shadow_color = Color(0.12, 0.10, 0.23, 0.25)
 	dsb.shadow_size = 6
 	dsb.shadow_offset = Vector2(0, 3)
@@ -3314,6 +3432,20 @@ func _refresh_gourds_ui() -> void:
 				v_content.modulate = Color(1.0, 1.0, 1.0, 0.5)
 			b.add_theme_stylebox_override("disabled", sb)
 			b.add_theme_stylebox_override("normal", sb)
+	_refresh_soul_hall_status_bbcode()
+
+
+func _refresh_soul_hall_ui() -> void:
+	_refresh_gourds_ui()
+	_refresh_soul_hall_status_bbcode()
+
+
+func _refresh_soul_hall_status_bbcode() -> void:
+	if _soul_status_bbcode_label == null or not is_instance_valid(_soul_status_bbcode_label):
+		return
+	var ss := _get_soul_sys()
+	if ss and ss.has_method("panel_status_bbcode"):
+		_soul_status_bbcode_label.text = str(ss.panel_status_bbcode())
 
 func _do_gourd_draw(idx: int, is_ten: bool) -> void:
 	if not _gourd_lit[idx] and not is_ten:
@@ -6315,6 +6447,10 @@ func _apply_locale_texts() -> void:
 		_soul_desc_label.text = _t("聚引四大共鳴核心之魂：銳齒(攻) · 固甲(防) · 旋簧(血) · 全衡(衡)。點擊點亮更高階封靈罐！")
 	if _gourd_btn_absorb and is_instance_valid(_gourd_btn_absorb):
 		_gourd_btn_absorb.text = _t("一鍵吸收灰魂")
+	if _soul_btn_auto_equip and is_instance_valid(_soul_btn_auto_equip):
+		_soul_btn_auto_equip.text = _t("一鍵配置")
+	if _soul_btn_unequip_all and is_instance_valid(_soul_btn_unequip_all):
+		_soul_btn_unequip_all.text = _t("一鍵卸下")
 	if _gourd_btn_inventory and is_instance_valid(_gourd_btn_inventory):
 		_gourd_btn_inventory.text = _t("前往背包")
 	if _gourd_btn_draw and is_instance_valid(_gourd_btn_draw):
@@ -6797,11 +6933,32 @@ func open_power_stat_dialog() -> Control:
 ## 開啟聚魂殿堂 Tab (Tab.SOUL_HALL)
 func open_soul_hall() -> void:
 	_switch_tab(Tab.SOUL_HALL)
+	_refresh_soul_hall_ui()
 
 
 ## 取得聚魂殿堂前往背包快捷按鈕
 func get_soul_hall_go_inventory_btn() -> Button:
 	return _gourd_btn_inventory
+
+
+## 取得聚魂殿堂一鍵卸下全部戰魂按鈕
+func get_soul_hall_unequip_all_btn() -> Button:
+	return _soul_btn_unequip_all
+
+
+## 相容別名
+func get_btn_soul_unequip_all() -> Button:
+	return _soul_btn_unequip_all
+
+
+## 取得聚魂殿堂一鍵配置戰魂按鈕
+func get_soul_hall_auto_equip_btn() -> Button:
+	return _soul_btn_auto_equip
+
+
+## 取得聚魂殿堂狀態 BBCode 顯示框
+func get_soul_hall_status_bbcode_label() -> RichTextLabel:
+	return _soul_status_bbcode_label
 
 
 ## 開啟能量/體力補充彈窗（看廣告拿能量）
@@ -7259,6 +7416,46 @@ func unequip_all_cores() -> Dictionary:
 		cores_unequipped.emit(result)
 	else:
 		_show_toast(_t("未裝備任何機芯"))
+
+	return result
+
+
+## 一鍵安全卸下所有魂槽戰魂並返還背包，支援空槽防呆提示 Toast，即時刷新聚魂殿面板 BBCode 狀態與戰力屬性
+func unequip_all_souls() -> Dictionary:
+	var ss := _get_soul_sys()
+	if ss == null or not ss.has_method("unequip_all_souls"):
+		return {}
+
+	var result: Dictionary = ss.unequip_all_souls()
+	var is_changed: bool = bool(result.get("changed", false))
+	if is_changed:
+		_show_toast(_t("已卸下所有戰魂"))
+		_refresh_soul_hall_ui()
+		refresh_hud()
+		_refresh_char_tab_stats(false)
+		souls_unequipped.emit(result)
+	else:
+		_show_toast(_t("未裝備任何戰魂"))
+
+	return result
+
+
+## 一鍵配置最高戰力戰魂並即時屬性刷新
+func auto_equip_souls() -> Dictionary:
+	var ss := _get_soul_sys()
+	if ss == null or not ss.has_method("auto_equip_best"):
+		return {}
+
+	var result: Dictionary = ss.auto_equip_best()
+	var is_changed: bool = bool(result.get("changed", false))
+	if is_changed:
+		_show_toast(_t("已一鍵配置最高戰力戰魂"))
+		_refresh_soul_hall_ui()
+		refresh_hud()
+		_refresh_char_tab_stats(false)
+		souls_auto_equipped.emit(result)
+	else:
+		_show_toast(_t("目前已是最佳戰魂配置！"))
 
 	return result
 

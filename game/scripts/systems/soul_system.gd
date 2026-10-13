@@ -3,6 +3,8 @@ extends Node
 ## 葫蘆魂器綠→藍→紫→橙跳階；金幣＋每日免費；紫微十四主星。
 ## 見 docs/PRODUCT_BRIDGE.md §6；參考 bravesoul/engine/soul.py。
 
+signal souls_unequipped(result: Dictionary)
+
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 
 ## 四大共鳴核心（攻／防／血／衡）——取代舊十四主星架構
@@ -781,6 +783,65 @@ func unequip_slot(slot: int) -> void:
 	if sid != "":
 		_set_soul_equipped(sid, false)
 	GameState.soul_slots[slot] = ""
+
+
+## 一鍵安全卸下所有魂槽戰魂並返還至背包，同步更新 GameState 與 UI
+func unequip_all_souls() -> Dictionary:
+	ensure_slots()
+	var unequipped_slots: Array[int] = []
+	var unequipped_souls: Array[Dictionary] = []
+
+	for i in range(GameState.soul_slots.size()):
+		var sid: String = str(GameState.soul_slots[i])
+		if not sid.is_empty():
+			var soul: Dictionary = find_soul(sid)
+			_set_soul_equipped(sid, false)
+			GameState.soul_slots[i] = ""
+			unequipped_slots.append(i)
+			if not soul.is_empty():
+				unequipped_souls.append(soul)
+
+	# 雙重防護：若 GameState.souls 內部仍有標記為 equipped=true 但槽位已無殘留者，一併校正為 false
+	for i in range(GameState.souls.size()):
+		var s: Dictionary = GameState.souls[i]
+		if bool(s.get("equipped", false)):
+			var sid := str(s.get("id", ""))
+			if not (sid in GameState.soul_slots):
+				s["equipped"] = false
+				GameState.souls[i] = s
+				if not unequipped_souls.any(func(x: Dictionary) -> bool: return str(x.get("id", "")) == sid):
+					unequipped_souls.append(s)
+
+	var is_changed: bool = not unequipped_slots.is_empty()
+	var msg: String = ""
+	if is_changed:
+		msg = _t("已卸下所有戰魂")
+	else:
+		msg = _t("未裝備任何戰魂")
+
+	var result := {
+		"ok": true,
+		"changed": is_changed,
+		"count": unequipped_slots.size(),
+		"unequipped_slots": unequipped_slots,
+		"unequipped_souls": unequipped_souls,
+		"msg": msg
+	}
+
+	if has_signal("souls_unequipped"):
+		emit_signal("souls_unequipped", result)
+
+	return result
+
+
+## 靜態相容轉發
+static func unequip_all_souls_static() -> Dictionary:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var ss = (tree as SceneTree).root.get_node_or_null("SoulSystem")
+		if ss and ss.has_method("unequip_all_souls"):
+			return ss.unequip_all_souls()
+	return {}
 
 
 func bag_souls() -> Array:
