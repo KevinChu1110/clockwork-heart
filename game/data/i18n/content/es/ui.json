@@ -794,12 +794,12 @@
   "前往熔煉與鑲嵌": "Ir a fundir y engarzar",
   "前往玩具堆邊緣": "Dirigiéndose a Orilla del montón",
   "前往白霧之地": "Ir a Tierras de la Niebla Blanca",
-  "前往聚魂": "Ir a extracción de almas",
+  "前往聚魂": "Ir a Sala de Almas",
   "前往道場": "Ir al dojo",
   "前往工坊": "Ir al Taller",
   "前往鐵匠": "Ir a la Herrería",
   "前往背包": "Ir al Inventario",
-  "前往鍛造": "Ir a Forja",
+  "前往鍛造": "Ir a la Forja",
   "前往商城": "Ir a la tienda",
   "器階：第 %d 階  品質：%s": "Nivel: %d  Calidad: %s",
   "基礎武器 · 點擊前往鍛造可進行強化": "Arma básica · Toca Ir a Forja para mejorar",
@@ -3855,5 +3855,7 @@
   "目前已是最佳戰魂配置！": "¡Ya es la mejor configuración de almas!",
   "一鍵卸下全部戰魂": "Desequipar todas las almas",
   "vault.btn_go_inventory": "Ir al Inventario",
-  "shop.btn_go_inventory": "Ir al Inventario"
+  "shop.btn_go_inventory": "Ir al Inventario",
+  "shop.btn_go_soul_hall": "Ir a Sala de Almas",
+  "shop.btn_go_forge": "Ir a la Forja"
 }

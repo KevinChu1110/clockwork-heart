@@ -490,7 +490,7 @@
   "前哨雜魚": "Esbirro de Avanzada",
   "前往停擺巨偶": "Ir al Coloso Paralizado",
   "前往玩具堆邊緣": "Dirigiéndose a Orilla del montón",
-  "前往聚魂": "Ir a extracción de almas",
+  "前往聚魂": "Ir a Sala de Almas",
   "副手武器": "Arma Secundaria",
   "副手武器 · 獵弓：中距離精準連續 4 次射擊，壓制敵陣並牽制推進": "Arma Secundaria · Arco de Caza: 4 disparos precisos de medio alcance para reprimir y frenar",
   "劍士": "Espadachín",
@@ -1034,7 +1034,7 @@
   "前往工坊": "Ir al Taller",
   "前往鐵匠": "Ir a la Herrería",
   "前往背包": "Ir al Inventario",
-  "前往鍛造": "Ir a Forja",
+  "前往鍛造": "Ir a la Forja",
   "前往商城": "Ir a la tienda",
   "再次挑戰": "Reintentar etapa",
   "能量不足，無法再次挑戰關卡！": "¡Energía insuficiente para reintentar la etapa!",
@@ -4217,5 +4217,7 @@
   "目前已是最佳戰魂配置！": "¡Ya es la mejor configuración de almas!",
   "一鍵卸下全部戰魂": "Desequipar todas las almas",
   "vault.btn_go_inventory": "Ir al Inventario",
-  "shop.btn_go_inventory": "Ir al Inventario"
+  "shop.btn_go_inventory": "Ir al Inventario",
+  "shop.btn_go_soul_hall": "Ir a Sala de Almas",
+  "shop.btn_go_forge": "Ir a la Forja"
 }

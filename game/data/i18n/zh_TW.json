@@ -2334,5 +2334,7 @@
   "目前已是最佳戰魂配置！": "目前已是最佳戰魂配置！",
   "一鍵卸下全部戰魂": "一鍵卸下全部戰魂",
   "vault.btn_go_inventory": "前往背包",
-  "shop.btn_go_inventory": "前往背包"
+  "shop.btn_go_inventory": "前往背包",
+  "shop.btn_go_soul_hall": "前往聚魂",
+  "shop.btn_go_forge": "前往鍛造"
 }
