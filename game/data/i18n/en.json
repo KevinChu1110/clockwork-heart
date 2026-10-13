@@ -490,7 +490,7 @@
   "前哨雜魚": "Outpost Minion",
   "前往停擺巨偶": "Go to Stalled Colossus",
   "前往玩具堆邊緣": "Proceeding to Toy-pile Edge",
-  "前往聚魂": "Go to Soul Draw",
+  "前往聚魂": "Go to Soul Hall",
   "副手武器": "Secondary Weapon",
   "副手武器 · 獵弓：中距離精準連續 4 次射擊，壓制敵陣並牽制推進": "Secondary Weapon · Hunting Bow: Precise mid-range 4-shot volley to suppress and harass foes",
   "劍士": "Swordsman",
@@ -4218,5 +4218,7 @@
   "一鍵卸下全部戰魂": "Unequip All Souls",
   "vault.btn_go_inventory": "Go to Inventory",
   "卸下稱號": "Unequip Title",
-  "shop.btn_go_inventory": "Go to Inventory"
+  "shop.btn_go_inventory": "Go to Inventory",
+  "shop.btn_go_soul_hall": "Go to Soul Hall",
+  "shop.btn_go_forge": "Go to Forge"
 }

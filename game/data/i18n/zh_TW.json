@@ -2335,5 +2335,7 @@
   "一鍵卸下全部戰魂": "一鍵卸下全部戰魂",
   "vault.btn_go_inventory": "前往背包",
   "卸下稱號": "卸下稱號",
-  "shop.btn_go_inventory": "前往背包"
+  "shop.btn_go_inventory": "前往背包",
+  "shop.btn_go_soul_hall": "前往聚魂",
+  "shop.btn_go_forge": "前往鍛造"
 }
