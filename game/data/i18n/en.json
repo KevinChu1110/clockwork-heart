@@ -4217,5 +4217,6 @@
   "目前已是最佳戰魂配置！": "Already optimal soul loadout!",
   "一鍵卸下全部戰魂": "Unequip All Souls",
   "vault.btn_go_inventory": "Go to Inventory",
-  "卸下稱號": "Unequip Title"
+  "卸下稱號": "Unequip Title",
+  "shop.btn_go_inventory": "Go to Inventory"
 }

@@ -3855,5 +3855,6 @@
   "目前已是最佳戰魂配置！": "¡Ya es la mejor configuración de almas!",
   "一鍵卸下全部戰魂": "Desequipar todas las almas",
   "vault.btn_go_inventory": "Ir al Inventario",
-  "卸下稱號": "Desequipar título"
+  "卸下稱號": "Desequipar título",
+  "shop.btn_go_inventory": "Ir al Inventario"
 }

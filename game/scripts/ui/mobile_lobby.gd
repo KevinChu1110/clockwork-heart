@@ -6719,6 +6719,11 @@ func open_maple_inventory(initial_category: String = "") -> Control:
 		if existing_workshop.get_parent() == self:
 			remove_child(existing_workshop)
 		existing_workshop.queue_free()
+	var existing_shop = get_node_or_null("ShopDialog")
+	if existing_shop != null:
+		if existing_shop.get_parent() == self:
+			remove_child(existing_shop)
+		existing_shop.queue_free()
 	var MapleInventoryScn: GDScript = load("res://scripts/ui/maple_inventory.gd")
 	if MapleInventoryScn == null:
 		push_error("無法載入 MapleInventory")
@@ -7003,7 +7008,18 @@ func open_shop() -> Control:
 		return null
 	var dlg: Control = ShopClass.new() as Control
 	dlg.z_index = 85
+	if dlg.has_signal("go_inventory"):
+		dlg.go_inventory.connect(func():
+			open_maple_inventory()
+		)
+	if dlg.has_signal("inventory_requested"):
+		dlg.inventory_requested.connect(func():
+			open_maple_inventory()
+		)
 	dlg.tree_exited.connect(func():
+		var has_inv: bool = get_node_or_null("MapleInventory") != null
+		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_inv:
+			_equip_schematic.visible = true
 		refresh_hud()
 	)
 	add_child(dlg)

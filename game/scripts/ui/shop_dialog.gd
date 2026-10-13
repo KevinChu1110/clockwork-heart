@@ -12,6 +12,8 @@ extends Control
 ## 8. 串接 MockAdDialog 獎勵型廣告與 GameState.has_removed_ads 去廣告開關，全走 mock 邏輯。
 
 signal closed()
+signal go_inventory()
+signal inventory_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -19,6 +21,14 @@ const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
+	if s == "shop.btn_go_inventory":
+		var lc := ContentLoc.locale()
+		if lc == "zh_TW":
+			return "前往背包"
+		var v = ContentLoc._table("ui", lc).get("shop.btn_go_inventory", "")
+		if str(v) != "":
+			return str(v)
+		return ContentLoc.text("ui", "前往背包")
 	return ContentLoc.text("ui", s)
 
 static func tr_ui(s: String) -> String:
@@ -58,6 +68,7 @@ var _item_desc_labels: Dictionary = {}
 var _item_buy_buttons: Dictionary = {}
 var _item_note_labels: Dictionary = {}
 var _status_msg_lbl: Label
+var _btn_go_inventory: Button
 var _cached_font: Font = null
 
 ## IAP 佔位品項定義（TODO: 內購定價帶尚未定案，依據 docs/BUSINESS.md 待 Kevin 裁定）
@@ -184,6 +195,8 @@ func _apply_locale_texts() -> void:
 
 	if _status_msg_lbl and is_instance_valid(_status_msg_lbl):
 		_status_msg_lbl.text = _t("歡迎來到發條工坊商城！請點擊各項功能進行模擬測試。")
+	if _btn_go_inventory and is_instance_valid(_btn_go_inventory):
+		_btn_go_inventory.text = _t("前往背包")
 
 
 func _build_ui() -> void:
@@ -210,7 +223,7 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "ShopCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 520)
+	_dialog_card.custom_minimum_size = Vector2(750, 580)
 	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
@@ -385,6 +398,39 @@ func _build_ui() -> void:
 	if _cached_font:
 		_status_msg_lbl.add_theme_font_override("font", _cached_font)
 	v.add_child(_status_msg_lbl)
+
+	# ── 底部操作快捷列 (前往背包快捷果凍按鈕) ──
+	var foot_h := HBoxContainer.new()
+	foot_h.name = "FooterBar"
+	foot_h.alignment = BoxContainer.ALIGNMENT_CENTER
+	foot_h.add_theme_constant_override("separation", 12)
+	v.add_child(foot_h)
+
+	_btn_go_inventory = Button.new()
+	_btn_go_inventory.name = "BtnGoInventory"
+	_btn_go_inventory.text = _t("前往背包")
+	_btn_go_inventory.custom_minimum_size = Vector2(160, 52)
+	_btn_go_inventory.focus_mode = Control.FOCUS_NONE
+	_btn_go_inventory.add_theme_font_size_override("font_size", 17)
+	_btn_go_inventory.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_go_inventory.add_theme_font_override("font", _cached_font)
+
+	var inv_sb := StyleBoxFlat.new()
+	inv_sb.bg_color = COLOR_MINT
+	inv_sb.border_color = COLOR_BORDER
+	inv_sb.set_border_width_all(2)
+	inv_sb.border_width_bottom = 5
+	inv_sb.set_corner_radius_all(18)
+	var inv_sb_h := inv_sb.duplicate() as StyleBoxFlat
+	inv_sb_h.bg_color = Color("#62E47C")
+	var inv_sb_p := inv_sb.duplicate() as StyleBoxFlat
+	inv_sb_p.border_width_bottom = 2
+	_btn_go_inventory.add_theme_stylebox_override("normal", inv_sb)
+	_btn_go_inventory.add_theme_stylebox_override("hover", inv_sb_h)
+	_btn_go_inventory.add_theme_stylebox_override("pressed", inv_sb_p)
+	_btn_go_inventory.pressed.connect(_on_go_inventory_clicked)
+	foot_h.add_child(_btn_go_inventory)
 
 
 func _build_service_card(title: String, desc: String, card_name: String) -> PanelContainer:
@@ -667,6 +713,29 @@ func _set_status(msg: String) -> void:
 		_status_msg_lbl.text = msg
 	if get_parent() != null and get_parent().has_method("refresh_hud"):
 		get_parent().call("refresh_hud")
+
+
+func get_go_inventory_button() -> Button:
+	return _btn_go_inventory
+
+
+func _on_go_inventory_clicked() -> void:
+	go_inventory.emit()
+	inventory_requested.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_maple_inventory"):
+		p.call("open_maple_inventory")
+	elif p != null and p.has_method("open_bag"):
+		p.call("open_bag")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_maple_inventory"):
+				ml.call("open_maple_inventory")
+			elif ml and ml.has_method("open_bag"):
+				ml.call("open_bag")
+	_on_close()
 
 
 func _on_close() -> void:
