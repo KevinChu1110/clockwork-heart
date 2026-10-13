@@ -1,0 +1,21 @@
+extends SceneTree
+const SoulSummonFx := preload("res://scripts/ui/soul_draw/soul_summon_fx.gd")
+const FRAMES := [10, 25, 40, 55, 70]
+var _fx: Control
+var _f := 0
+func _initialize() -> void:
+	_fx = SoulSummonFx.new()
+	root.add_child(_fx)
+func _process(_d: float) -> bool:
+	_f += 1
+	if _f == 3: _fx.call("play_summon", true, func(): pass)
+	var t := _f - 3
+	if t in FRAMES:
+		var k: TextureRect = _fx.get("_windup_key")
+		var r := k.get_global_rect()
+		var tex_sz := k.texture.get_size() if k.texture else Vector2.ZERO
+		var b: Button = _fx.get("_skip_btn")
+		print("f%d key center=%s size=%s scale=%s rot=%.2f tex=%s | btn=%s font=%d" % [t, str(r.get_center()), str(r.size), str(k.scale), k.rotation, str(tex_sz), str(b.get_global_rect().size), b.get_theme_font_size("font_size")])
+		root.get_texture().get_image().save_png("/workspace/qa/shots/r4_%s_f%d.png" % [OS.get_environment("QA_TAG"), t])
+	if t > FRAMES[-1]: quit(0)
+	return false
