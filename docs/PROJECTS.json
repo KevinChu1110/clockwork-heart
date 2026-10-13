@@ -6215,6 +6215,16 @@
    "keys": [
     "大廳角色頁三欄武"
    ]
+  },
+  {
+   "id": "forge-core-unequip-all",
+   "cat": "遊戲",
+   "title": "天宮鐵匠 ForgeDialog 機芯五槽新增『一鍵卸下全部機芯』果凍按鈕",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "天宮鐵匠 For"
+   ]
   }
  ]
 }
