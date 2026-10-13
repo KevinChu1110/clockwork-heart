@@ -75,11 +75,11 @@ var fury_active: bool = false
 var fury_timer: float = 0.0
 var fury_atb_mult: float = 1.4  ## 由 BattleSim 依 auto／manual 寫入
 
-## 武器使用次數（原作：歸零→赤手）
+## 武器使用次數（原作：歸零→空手）
 var weapon_uses_left: int = -1  ## <0＝未啟用（敵／測試舊路徑）
 var weapon_uses_max: int = 0
 var bare_fisted: bool = false
-var armed_atk: int = 0  ## 持武時的攻擊（赤手前快照）
+var armed_atk: int = 0  ## 持武時的攻擊（空手前快照）
 var armed_weapon_class: String = ""
 var armed_can_skill: bool = true
 

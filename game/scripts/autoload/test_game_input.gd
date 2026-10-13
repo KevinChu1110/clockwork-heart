@@ -33,23 +33,22 @@ func _initialize() -> void:
 
 	var atk := _key(KEY_J)
 	if not gi.matches(atk, gi.ATTACK):
-		_fail("J 應是 Attack（舊 parry）")
+		_fail("J 應是 Attack")
 	else:
 		print("  ok J → Attack")
-
-	var skill := _key(KEY_F)
-	if not gi.matches(skill, gi.SKILL):
-		_fail("F 應是 Skill")
+	if InputMap.has_action("parry"):
+		_fail("InputMap 不應再有 parry 動作（自動回合，格擋不綁鍵）")
 	else:
-		print("  ok F → Skill")
+		print("  ok 沒有 parry 綁鍵")
 
-	var sw := _key(KEY_X)
-	if not gi.matches(sw, gi.SWITCH_WEAPON):
-		_fail("X 應是 SwitchWeapon")
-	elif int(gi.weapon_slot(sw)) != 1:
-		_fail("X 應是武器欄 2（slot 1），得 %d" % int(gi.weapon_slot(sw)))
-	else:
-		print("  ok X → SwitchWeapon slot 1")
+	## 自動回合：暴怒、換武都由戰鬥自己觸發，不給預設鍵（任務書 §0）
+	for code in [KEY_F, KEY_Z, KEY_X, KEY_C]:
+		var ev := _key(code)
+		if gi.matches(ev, gi.SKILL):
+			_fail("%s 不應綁 Skill" % OS.get_keycode_string(code))
+		if gi.matches(ev, gi.SWITCH_WEAPON) or int(gi.weapon_slot(ev)) >= 0:
+			_fail("%s 不應綁 SwitchWeapon" % OS.get_keycode_string(code))
+	print("  ok F／Z／X／C 不綁技能、換武")
 
 	var enter := _key(KEY_ENTER)
 	if not gi.matches(enter, gi.CONFIRM):
@@ -84,7 +83,8 @@ func _initialize() -> void:
 func _scan_sources() -> void:
 	## 戰鬥／探索／對話／過場不得再直接用鍵碼或滑鼠驅動七個動作。
 	var files := {
-		"res://scripts/battle/battle_view.gd": ["InputEventMouseButton", "KEY_Z", "KEY_X", "KEY_C", "KEY_F", "is_action_pressed(\"parry\")"],
+		"res://scripts/battle/battle_view.gd": ["InputEventMouseButton", "KEY_Z", "KEY_X", "KEY_C", "KEY_F", "is_action_pressed(\"parry\")",
+			"GameInputGate.ATTACK", "GameInputGate.SKILL", "GameInputGate.SWITCH_WEAPON", "try_parry()"],
 		"res://scripts/world/explore_view.gd": ["InputEventMouseButton"],
 		"res://scripts/world/explore_host.gd": ["InputEventMouseButton"],
 		"res://scripts/ui/dialogue_box.gd": ["InputEventMouseButton", "is_action_pressed(\"ui_accept\")"],

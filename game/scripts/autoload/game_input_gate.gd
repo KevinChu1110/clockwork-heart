@@ -91,7 +91,7 @@ static func inject(action: String, down: bool = true) -> void:
 static func _fallback_names(action: String) -> PackedStringArray:
 	match action:
 		ATTACK:
-			return PackedStringArray(["attack", "parry"])
+			return PackedStringArray(["attack"])
 		INTERACT:
 			return PackedStringArray(["interact"])
 		SKILL:

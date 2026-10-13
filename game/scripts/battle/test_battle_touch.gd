@@ -1,10 +1,11 @@
 extends SceneTree
-## 戰鬥不用鍵盤：godot --headless -s res://scripts/battle/test_battle_touch.gd
+## 戰鬥點擊把關：godot --headless -s res://scripts/battle/test_battle_touch.gd
 ##
-## 守：滑鼠／觸控點得到每一個戰鬥動作 ——
-##   點武器欄格子＝換欄（不碰道具）、點怒氣條＝暴怒、點畫面＝格擋（無前搖時無副作用）、
-##   點敵人＝有部位的 Boss 切鎖定部位。
+## 自動回合（任務書 §0、§2）：戰鬥中點哪裡都不能代替玩家出手 ——
+##   點武器欄格子不換欄、點怒氣條不暴怒、點畫面不格擋也不吃道具、
+##   點敵人不切鎖定部位。只剩右上那顆小暫停可以按。
 ## 走真的主場景，用 Input.parse_input_event 打真的滑鼠事件到控制項中心。
+## 點之前先停掉戰鬥 _process，排除自動換武／自動暴怒的干擾，只看點擊本身。
 
 var _ok := true
 var _step := 0
@@ -109,6 +110,7 @@ func _process(_d: float) -> bool:
 			if dock == null or dock.get_child_count() < 2:
 				_fail("沒有武器欄格子")
 				return _finish()
+			_battle.set_process(false)
 			_count_before = inv.count("hp_s")
 			_click(dock.get_child(1) as Control)
 			_step = 2
@@ -116,12 +118,12 @@ func _process(_d: float) -> bool:
 		2:
 			if _wait < 3:
 				return false
-			if int(_sim.weapon_bar_active) != 1:
-				_fail("點武器欄格 2 沒有換到欄 2（作用欄 %d）" % int(_sim.weapon_bar_active))
+			if int(_sim.weapon_bar_active) != 0:
+				_fail("點武器欄格 2 手動換了欄（作用欄 %d）" % (int(_sim.weapon_bar_active) + 1))
 			elif inv.count("hp_s") != _count_before:
 				_fail("點武器欄居然吃了道具")
 			else:
-				print("  ok 點武器欄格 2 → 欄 2，道具不動")
+				print("  ok 點武器欄不換欄、道具不動")
 			var p = _player()
 			p.fury_active = false
 			p.fury_timer = 0.0
@@ -134,11 +136,10 @@ func _process(_d: float) -> bool:
 			if _wait < 3:
 				return false
 			var p = _player()
-			if not bool(p.fury_active):
-				_fail("點怒氣條沒有進暴怒")
+			if bool(p.fury_active) or float(p.rage) < 100.0:
+				_fail("點怒氣條手動進了暴怒")
 			else:
-				print("  ok 點怒氣條 → 暴怒")
-			## 無前搖時點畫面：不能炸、不能吃道具、不能動武器欄
+				print("  ok 點怒氣條不暴怒（怒氣滿由戰鬥自己放）")
 			_count_before = inv.count("hp_s")
 			var bg: Control = _battle.get("battle_bg")
 			_click(bg)
@@ -147,11 +148,11 @@ func _process(_d: float) -> bool:
 		4:
 			if _wait < 3:
 				return false
-			if inv.count("hp_s") != _count_before or int(_sim.weapon_bar_active) != 1:
-				_fail("無前搖時點畫面有副作用")
+			if inv.count("hp_s") != _count_before or int(_sim.weapon_bar_active) != 0:
+				_fail("點畫面有副作用")
 			else:
-				print("  ok 無前搖時點畫面無副作用")
-			## 換一場有部位的 Boss：點敵人切鎖定部位
+				print("  ok 點畫面無副作用")
+			## 換一場有部位的 Boss：點敵人不切鎖定
 			_main.call("_start_battle_raw", "leo")
 			_step = 5
 			_wait = 0
@@ -163,14 +164,9 @@ func _process(_d: float) -> bool:
 				return _finish()
 			var boss = _sim._primary_boss_unit()
 			if boss == null or boss.parts.is_empty():
-				print("  skip 雷歐沒有部位，略過點敵人切部位")
+				print("  skip 雷歐沒有部位，略過點敵人")
 				return _finish()
-			if bool(_sim.sim_paused) or _sim.hazard_phase == "window" or _sim._telegraphing_boss() != null:
-				## 開場暫停／剛開打就前搖：多等幾拍
-				if _wait < 240:
-					return false
-				_fail("雷歐戰 240 幀後仍暫停或前搖中，無法測點敵人")
-				return _finish()
+			_battle.set_process(false)
 			var before: String = str(_sim.focus_part_id)
 			_click(_battle.get("enemy_body") as Control)
 			_step = 6
@@ -180,10 +176,10 @@ func _process(_d: float) -> bool:
 			if _wait < 3:
 				return false
 			var before: String = str(get_meta("before"))
-			if str(_sim.focus_part_id) == before:
-				_fail("點敵人沒有切鎖定部位（仍 %s）" % before)
+			if str(_sim.focus_part_id) != before:
+				_fail("點敵人手動切了鎖定部位（%s → %s）" % [before, str(_sim.focus_part_id)])
 			else:
-				print("  ok 點敵人 %s → %s" % [before, str(_sim.focus_part_id)])
+				print("  ok 點敵人不切鎖定（仍 %s）" % before)
 			return _finish()
 	return false
 

@@ -72,7 +72,7 @@ func test_battle_slot_switch_independent_uses() -> void:
 
 
 func test_auto_switch_on_deplete() -> void:
-	## 原作：打光這把 → 自動切下一欄；全光才赤手
+	## 原作：打光這把 → 自動切下一欄；全光才空手
 	var stats := {
 		"name": "兔", "max_hp": 100, "atk": 40, "def": 8, "speed": 10,
 		"weapon_class": "sword", "weapon_atk": 10, "can_skill": true,
@@ -98,13 +98,13 @@ func test_auto_switch_on_deplete() -> void:
 	assert(bool(auto_hit["ok"]), "應自動切欄")
 	assert(int(auto_hit["idx"]) == 1, "應切到斧欄")
 	assert(p.weapon_class == "axe", "應為斧")
-	assert(not p.bare_fisted, "還有下一欄不應赤手")
-	## 斧也打光 → 無下一欄 → 赤手
+	assert(not p.bare_fisted, "還有下一欄不應空手")
+	## 斧也打光 → 無下一欄 → 空手
 	p.weapon_uses_left = 0
 	sim._persist_active_bar_uses(p)
 	sim._ensure_armed_or_bare(p)
-	assert(p.bare_fisted, "全光應赤手")
-	print("  ok - 耗盡自動切欄／全光赤手")
+	assert(p.bare_fisted, "全光應空手")
+	print("  ok - 耗盡自動切欄／全光空手")
 
 
 func test_skill_bind_via_refresh() -> void:

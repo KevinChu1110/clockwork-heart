@@ -104,7 +104,7 @@ func _process(delta: float) -> bool:
 			# +0.8s: 第 1 次普攻
 			if _rec_elapsed >= 0.8 and _step == 3:
 				if _battle:
-					_battle.call("_on_thumb_attack")
+					if _battle.has_method("_on_thumb_attack"): _battle.call("_on_thumb_attack")  # 戰鬥已全自動，舊手動入口可能不存在
 				print("REC01_ATTACK_1 at rec_elapsed=", _rec_elapsed)
 				_step = 4
 		4:
@@ -112,7 +112,7 @@ func _process(delta: float) -> bool:
 			# +1.6s: 第 2 次普攻
 			if _rec_elapsed >= 1.6 and _step == 4:
 				if _battle:
-					_battle.call("_on_thumb_attack")
+					if _battle.has_method("_on_thumb_attack"): _battle.call("_on_thumb_attack")  # 戰鬥已全自動，舊手動入口可能不存在
 				print("REC01_ATTACK_2 at rec_elapsed=", _rec_elapsed)
 				_step = 5
 		5:
@@ -120,7 +120,7 @@ func _process(delta: float) -> bool:
 			# +2.4s: 第 3 次普攻
 			if _rec_elapsed >= 2.4 and _step == 5:
 				if _battle:
-					_battle.call("_on_thumb_attack")
+					if _battle.has_method("_on_thumb_attack"): _battle.call("_on_thumb_attack")  # 戰鬥已全自動，舊手動入口可能不存在
 				print("REC01_ATTACK_3 at rec_elapsed=", _rec_elapsed)
 				_step = 6
 		6:
@@ -128,7 +128,7 @@ func _process(delta: float) -> bool:
 			# +3.2s: 換武 ThumbSwitch
 			if _rec_elapsed >= 3.2 and _step == 6:
 				if _battle:
-					_battle.call("_on_thumb_switch")
+					if _battle.has_method("_on_thumb_switch"): _battle.call("_on_thumb_switch")  # 戰鬥已全自動，舊手動入口可能不存在
 				print("REC01_SWITCH_WEAPON at rec_elapsed=", _rec_elapsed)
 				_step = 7
 		7:
@@ -136,7 +136,7 @@ func _process(delta: float) -> bool:
 			# +3.8s: 鎖定切換 ThumbLock
 			if _rec_elapsed >= 3.8 and _step == 7:
 				if _battle:
-					_battle.call("_thumb_cycle_lock", 1)
+					if _battle.has_method("_thumb_cycle_lock"): _battle.call("_thumb_cycle_lock", 1)  # 戰鬥已全自動，舊手動入口可能不存在
 				print("REC01_CYCLE_LOCK at rec_elapsed=", _rec_elapsed)
 				_step = 8
 		8:
