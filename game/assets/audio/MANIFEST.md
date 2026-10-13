@@ -154,3 +154,13 @@ Suno／外部成品：`python3 tools/import_bgm.py <file> --id <曲目>`
 ### 2026-08-21 · Suno 真曲已入庫
 帳號 `guanrung1110` 產的 `bravesoul_*` 已下載並 `import_bgm` 覆蓋 13 首。  
 來源 uuid 見 `SUNO_SOURCES.json`。多數曲循環相似度偏低（Suno 歌曲結構），若聽得出接縫可再產 loopable 版或手動 `--loop-offset`。
+
+### overwind（發條超載爆裂，#88／#97）
+
+| key | 用途 | 長度 | M-max | true peak | 聲音 | 來源 |
+|---|---|---|---|---|---|---|
+| overwind | 滿轉數觸發超載爆裂（`play_overwind_burst()`；有這個檔就只播它，不再走 clash＋break 的 fallback） | 0.900 s | −18.5 LUFS | −2.4 dBTP | 0–150 ms 發條上過頭的「嘎——」越繃越高 → 150 ms 棘輪打滑「喀喀喀」→ 230 ms 主發條爆開：黃銅大「鏘」＋低頻衝擊＋齒輪火花碎響 → 鬆掉的彈簧「嗡」 | 合成 `gen_sfx_clockwork.py overwind`（numpy，固定種子） |
+
+- 響度比 break／swap（−20）大 1.5 LU，因為這是戰鬥高潮；仍然 ≤ −1 dBTP。
+- 一個檔就是完整的高潮，只佔 **1 個 voice**。另外一個 voice 留給同時發生的命中或破壞。
+- `SFX_KEYS` 裡的 `overwind` 已經在 #16 的 head（main 合進來的）；優先度 4 由 #97 加。音效這邊不用再改程式。

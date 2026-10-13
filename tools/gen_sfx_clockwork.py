@@ -38,12 +38,13 @@ TARGET_M = {
     "wind": -21.0,                                  # 戰前上鏈
     "miss": -23.0,                                  # 頻繁回饋（揮空，issue #47）
     "craft": -20.0,                                 # 事件 cue（鍛造成功，issue #47）
+    "overwind": -18.5,                              # 戰鬥高潮（發條超載爆裂，#88／#97），比 break 大 1.5 LU
 }
 # true peak 上限（dBTP）。交付規格全部 ≤ −1；hit／slash 和跳字同一瞬間、又最常響，
 # 峰值再壓到 −4（和舊 hit 占位的峰值一樣），讓瞬態不會「啪」一下蓋過跳字
 TP_CEIL = {"hit": -4.0, "slash": -4.0, "miss": -4.0}
 SEEDS = {"swap": 1110, "hit": 3201, "slash": 3202, "break": 3203, "warn": 3204, "wind": 3205,
-         "miss": 4701, "craft": 4702}
+         "miss": 4701, "craft": 4702, "overwind": 8801}
 
 
 # ───────────────────────── 基本元件 ─────────────────────────
@@ -440,10 +441,54 @@ def synth_craft(rng: np.random.Generator) -> tuple[np.ndarray, float]:
     return out, 0.06
 
 
+def synth_overwind(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """發條超載爆裂（0.90 s，單檔取代 clash＋break＋clock 三層 fallback，#88／#97）：
+    0–150 ms 發條被上過頭的金屬「嘎——」越繃越高 → 150 ms 棘輪打滑連串「喀喀喀」
+    → 230 ms 主發條爆開：黃銅大「鏘」＋低頻衝擊＋齒輪火花碎響散開 → 尾巴一聲鬆掉的彈簧。
+    一個檔就是完整的高潮，只佔一個 voice，不會跟自己的層互搶。"""
+    dur = 0.90
+    out = np.zeros(int(SR * dur))
+    # 1) 過繃：stick-slip 摩擦，頻率與密度一起往上爬
+    t0, period = 0.0, 0.016
+    while t0 < 0.15:
+        k = t0 / 0.15
+        grain = modes(0.02, [(1100 * (1 + 0.6 * k), 1.0, 0.005), (1900 * (1 + 0.6 * k), 0.6, 0.004),
+                             (3100 * (1 + 0.6 * k), 0.3, 0.003)], rng)
+        place(out, grain, t0, 0.10 + 0.45 * k ** 1.3)
+        t0 += period * rng.uniform(0.9, 1.1)
+        period = max(0.006, period * 0.9)
+    # 2) 棘輪打滑：6 下越來越快的喀
+    t0 = 0.15
+    for i in range(6):
+        c = modes(0.03, [(2600, 0.6, 0.006), (4300, 0.4, 0.004), (1150, 0.35, 0.008)], rng)
+        place(c, filt(noise_burst(0.001, rng), "hp", 2500) * 0.5, 0.0)
+        place(out, c, t0, 0.45 + 0.08 * i)
+        t0 += 0.018 - 0.002 * i
+    # 3) 爆開：黃銅大鏘（非諧波）＋低頻衝擊
+    tb = 0.23
+    clang = modes(0.62, [(523, 0.55, 0.28), (1187, 0.45, 0.20), (1873, 0.35, 0.12), (2741, 0.25, 0.08),
+                         (4210, 0.18, 0.05), (6390, 0.10, 0.03)], rng, attack=0.0008)
+    place(out, clang, tb, 0.9)
+    place(out, filt(noise_burst(0.06, rng, tau=0.015), "hp", 1200) * 0.8, tb)
+    place(out, sweep_sine(0.35, 120, 48, 0.10, 0.03) * 0.9, tb)
+    # 4) 齒輪火花碎響：隨機小零件叮噹往後散
+    for _ in range(18):
+        ts = tb + 0.02 + rng.exponential(0.12)
+        if ts > 0.80:
+            continue
+        f = rng.uniform(2600, 7600)
+        sp = modes(0.06, [(f, 1.0, 0.012), (f * 1.53, 0.5, 0.008)], rng)
+        place(out, sp, ts, rng.uniform(0.08, 0.22) * np.exp(-(ts - tb) / 0.25))
+    # 5) 鬆掉的彈簧：低一點的「嗡」往下滑
+    place(out, sweep_sine(0.30, 340, 210, 0.11, 0.08) * 0.22, 0.52)
+    return out, 0.12
+
+
 SYNTHS = {
     "swap": synth_swap, "hit": synth_hit, "slash": synth_slash,
     "break": synth_break, "warn": synth_warn, "wind": synth_wind,
     "miss": synth_miss, "craft": synth_craft,
+    "overwind": synth_overwind,
 }
 
 
