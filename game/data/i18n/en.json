@@ -4195,5 +4195,8 @@
   "機芯部件 · 部位：%s · 色階：%s": "Core Part · Slot: %s · %s",
   "前往拆解": "Dismantle",
   "鐵屑：%d（每次消耗 %d）": "Iron Scrap: %d (Cost %d)",
-  "調整心法": "Adjust Skills"
+  "調整心法": "Adjust Skills",
+  "一鍵卸下": "Unequip All",
+  "已卸下所有機芯": "All cores unequipped",
+  "未裝備任何機芯": "No cores equipped"
 }
