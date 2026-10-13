@@ -6315,6 +6315,16 @@
    "keys": [
     "稱號佩戴、聚魂殿"
    ]
+  },
+  {
+   "id": "title-wall-unequip",
+   "cat": "遊戲",
+   "title": "TitleWallDialog 稱號牆新增卸下稱號按鈕與連動安全防護",
+   "status": "草稿",
+   "note": "稱號牆新增卸下稱號果凍按鈕並連動大廳名牌",
+   "keys": [
+    "TitleWal"
+   ]
   }
  ]
 }
