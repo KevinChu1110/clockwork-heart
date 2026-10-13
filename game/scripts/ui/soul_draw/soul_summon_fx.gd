@@ -34,6 +34,12 @@ var _skip_btn: Button
 ## 跳過鈕最小點擊區（T-01 標準檔 81px；KC 定了門檻後改這裡）
 const SKIP_BTN_MIN := Vector2(168, 84)
 const SKIP_BTN_GAP := 8.0
+## 跳過鈕字級（T-04 標準檔 ≥20px；#102）
+const SKIP_BTN_FONT := 28
+## 開場保護時間：這段時間內點畫面不跳過（跳過鈕不受限）。數值待 design 定（#101 建議 0.3～0.5 秒）
+const SKIP_GUARD_SEC := 0.35
+var _play_elapsed := 0.0
+var _sched_tweens: Array[Tween] = []
 var _title_hint: Label
 var _font: Font = null
 
@@ -211,13 +217,14 @@ func _build_ui() -> void:
 	_skip_btn = Button.new()
 	_skip_btn.text = _t("跳過")
 	## 觸控目標 ≥ T-01 標準檔 81px（#93／M-05、M-13）；翻譯較長時往左長，不會被裁字
-	_skip_btn.custom_minimum_size = SKIP_BTN_MIN
-	_skip_btn.clip_text = false
-	_skip_btn.add_theme_font_size_override("font_size", 26)
 	_skip_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
 	_skip_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
 	_layout_skip_btn()
 	UiStyle.style_button(_skip_btn, false)
+	## style_button 會把字級設回 17、最小高度設回 50（ui_style.gd），所以尺寸要在它之後設（#102）
+	_skip_btn.custom_minimum_size = SKIP_BTN_MIN
+	_skip_btn.clip_text = false
+	_skip_btn.add_theme_font_size_override("font_size", SKIP_BTN_FONT)
 	if _font != null:
 		_skip_btn.add_theme_font_override("font", _font)
 	_skip_btn.pressed.connect(skip)
@@ -235,14 +242,40 @@ func _layout_skip_btn() -> void:
 	_skip_btn.offset_bottom = _skip_btn.offset_top + SKIP_BTN_MIN.y
 
 
+## 點畫面跳過（#101）：只收主要點擊／觸控（左鍵按下、觸控按下），滾輪、右鍵、放開都不算；
+## 開場 SKIP_GUARD_SEC 內不收，避免「按抽」的連點第二下把整段演出跳掉。
+## 計時用演出自己的時間（_process 的 delta 累加），跟 tween 同一個時鐘。
 func _gui_input(event: InputEvent) -> void:
-	if _is_playing and event is InputEventMouseButton and event.pressed:
-		skip()
+	if not _is_playing or not _is_primary_press(event):
+		return
+	accept_event()
+	if _play_elapsed < SKIP_GUARD_SEC:
+		return
+	skip()
+
+
+func _is_primary_press(event: InputEvent) -> bool:
+	var gi: Node = get_node_or_null("/root/GameInput")
+	if gi != null and gi.has_method("primary_pointer_pressed"):
+		return bool(gi.call("primary_pointer_pressed", event))
+	if event is InputEventMouseButton:
+		var mb := event as InputEventMouseButton
+		return mb.pressed and mb.button_index == MOUSE_BUTTON_LEFT
+	if event is InputEventScreenTouch:
+		return (event as InputEventScreenTouch).pressed
+	return false
+
+
+func _process(delta: float) -> void:
+	if _is_playing:
+		_play_elapsed += delta
 
 
 func play_summon(is_ten: bool, on_finish: Callable) -> void:
 	_callback = on_finish
 	_is_playing = true
+	_play_elapsed = 0.0
+	_kill_scheduled()
 	visible = true
 	_layout_skip_btn()
 	modulate = Color(1, 1, 1, 1)
@@ -267,7 +300,7 @@ func play_summon(is_ten: bool, on_finish: Callable) -> void:
 	if _tween and _tween.is_valid():
 		_tween.kill()
 
-	_tween = create_tween()
+	_tween = _track(create_tween())
 	_tween.set_parallel(true)
 
 	var windup_dur: float = 0.5
@@ -287,7 +320,7 @@ func play_summon(is_ten: bool, on_finish: Callable) -> void:
 		_tween.tween_property(_right_gear, "rotation", TAU * spin_turns * 0.8, windup_dur)
 
 	# ── 階段 2：齒輪卡榫解鎖彈出 ──
-	var t2 := create_tween()
+	var t2 := _track(create_tween())
 	t2.tween_interval(windup_dur)
 	t2.tween_callback(func():
 		if not _is_playing: return
@@ -303,7 +336,7 @@ func play_summon(is_ten: bool, on_finish: Callable) -> void:
 	)
 
 	# ── 階段 3：彩糖星芒爆散與同心圓衝擊波 ──
-	var t3 := create_tween()
+	var t3 := _track(create_tween())
 	t3.tween_interval(windup_dur + unlock_dur)
 	t3.tween_callback(func():
 		if not _is_playing: return
@@ -316,7 +349,7 @@ func play_summon(is_ten: bool, on_finish: Callable) -> void:
 	)
 
 	# ── 階段 4：整體平滑過渡至結算卡 ──
-	var t_end := create_tween()
+	var t_end := _track(create_tween())
 	t_end.tween_interval(windup_dur + unlock_dur + burst_dur)
 	t_end.tween_property(self, "modulate:a", 0.0, 0.2)
 	t_end.tween_callback(func():
@@ -467,11 +500,24 @@ func _clear_particles() -> void:
 		c.queue_free()
 
 
+## 演出排程的 tween 都記起來：跳過或重播時一起停掉。
+## 以前只停 _tween，蓄力／爆發／收尾那幾支還會照時間跑，下一次演出會被上一次的收尾提早結束（callback 也多叫一次）。
+func _track(t: Tween) -> Tween:
+	_sched_tweens.append(t)
+	return t
+
+
+func _kill_scheduled() -> void:
+	for t in _sched_tweens:
+		if t != null and t.is_valid():
+			t.kill()
+	_sched_tweens.clear()
+
+
 func skip() -> void:
 	if not _is_playing:
 		return
-	if _tween and _tween.is_valid():
-		_tween.kill()
+	_kill_scheduled()
 	_clear_particles()
 	_finish()
 
