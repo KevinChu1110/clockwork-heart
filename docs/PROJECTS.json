@@ -6230,8 +6230,8 @@
    "id": "inventory-soul-shortcut",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包戰魂素材新增前往聚魂快捷按鈕連動大廳聚魂殿",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "開始開發 MapleInventory 戰魂素材前往聚魂快捷按鈕",
    "keys": [
     "MapleInv"
    ]
