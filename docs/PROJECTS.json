@@ -6280,8 +6280,8 @@
    "id": "title-wall-equip",
    "cat": "遊戲",
    "title": "TitleWallDialog 支援佩戴稱號與大廳頭頂名牌連動",
-   "status": "草稿",
-   "note": "稱號牆點擊佩戴稱號，GameState持久化保存，大廳頭頂名牌即時刷新",
+   "status": "開發中",
+   "note": "已開卡派工",
    "keys": [
     "TitleWal"
    ]
