@@ -79,6 +79,7 @@ var _msg_label: Label
 var _btn_forge: Button
 var _btn_auto_forge: Button
 var _btn_auto_calibrate: Button
+var _btn_unequip_all: Button
 var _core_title_lbl: Label
 var _iron_scrap_capsule: PanelContainer
 var _scrap_label: Label
@@ -174,6 +175,8 @@ func _update_ui_texts() -> void:
 		_btn_auto_forge.text = _t("一鍵鍛造")
 	if _btn_auto_calibrate and is_instance_valid(_btn_auto_calibrate):
 		_btn_auto_calibrate.text = _t("一鍵校準")
+	if _btn_unequip_all and is_instance_valid(_btn_unequip_all):
+		_btn_unequip_all.text = _t("一鍵卸下")
 	if _btn_go_dismantle and is_instance_valid(_btn_go_dismantle):
 		_btn_go_dismantle.text = _t("前往拆解")
 	if _btn_go_workshop and is_instance_valid(_btn_go_workshop):
@@ -562,6 +565,27 @@ func _build_ui() -> void:
 	_btn_auto_calibrate.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_btn_auto_calibrate.pressed.connect(_on_auto_calibrate_pressed)
 	core_head.add_child(_btn_auto_calibrate)
+
+	# 一鍵卸下全部機芯果凍按鈕 (BtnUnequipAllCores，高度 46px，珊瑚粉 #FF5E8A，深藍紫描邊 #1F1A3A，底邊 5px，圓角 16px，與一鍵校準按鈕成對並列)
+	_btn_unequip_all = Button.new()
+	_btn_unequip_all.name = "BtnUnequipAllCores"
+	_btn_unequip_all.text = _t("一鍵卸下")
+	_btn_unequip_all.custom_minimum_size = Vector2(105, 46)
+	_btn_unequip_all.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_btn_unequip_all.add_theme_font_size_override("font_size", 15)
+	_btn_unequip_all.add_theme_color_override("font_color", Color.WHITE)
+	_btn_unequip_all.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_unequip_all.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		_btn_unequip_all.add_theme_font_override("font", _cached_font)
+	_btn_unequip_all.add_theme_stylebox_override("normal", _create_button_style(COLOR_PINK, COLOR_BORDER, 5, 16, 2))
+	_btn_unequip_all.add_theme_stylebox_override("hover", _create_button_style(Color("#FF7096"), COLOR_BORDER, 5, 16, 2))
+	_btn_unequip_all.add_theme_stylebox_override("pressed", _create_button_style(Color("#E04E78"), COLOR_BORDER, 2, 16, 2))
+	_btn_unequip_all.add_theme_stylebox_override("disabled", _create_button_style(Color("#D0DDD2"), COLOR_BORDER, 2, 16, 2))
+	_btn_unequip_all.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_unequip_all.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_unequip_all.pressed.connect(_on_unequip_all_cores_pressed)
+	core_head.add_child(_btn_unequip_all)
 
 	_refresh_iron_scrap_display()
 
@@ -1481,6 +1505,14 @@ func get_auto_calibrate_button() -> Button:
 	return _btn_auto_calibrate
 
 
+func get_unequip_all_cores_button() -> Button:
+	return _btn_unequip_all
+
+
+func get_unequip_all_button() -> Button:
+	return _btn_unequip_all
+
+
 func get_current_toast() -> Label:
 	return _current_toast
 
@@ -1632,6 +1664,59 @@ func _on_auto_calibrate_pressed() -> void:
 	if AudioManager.has_method("play_ui"):
 		AudioManager.play_ui()
 	auto_calibrate_cores()
+
+
+func _on_unequip_all_cores_pressed() -> void:
+	if AudioManager.has_method("play_ui"):
+		AudioManager.play_ui()
+	unequip_all_cores()
+
+
+func unequip_all_cores() -> Dictionary:
+	var slot_defs: Array = SpriteDB.CORE_SLOT_DEFS
+	var equipped_slots: Array = []
+	for def in slot_defs:
+		var slot_id: String = str(def.get("id", ""))
+		var norm: String = CoreSystem.normalize_slot_id(slot_id)
+		var p: Dictionary = CoreSystem.get_equipped_part(norm)
+		if not p.is_empty():
+			equipped_slots.append(norm)
+
+	if equipped_slots.is_empty():
+		var no_eq_msg := _t("未裝備任何機芯")
+		if is_instance_valid(_msg_label):
+			_msg_label.text = no_eq_msg
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_show_toast(no_eq_msg)
+		return {
+			"ok": false,
+			"code": "no_equipped",
+			"message": no_eq_msg,
+			"unequipped_count": 0
+		}
+
+	var unequipped_count: int = 0
+	for norm in equipped_slots:
+		var old: Dictionary = CoreSystem.unequip_part(norm)
+		if not old.is_empty():
+			unequipped_count += 1
+
+	_last_calibrate_state.clear()
+	_refresh_all_forge_core_slots()
+	_refresh_display()
+
+	var success_msg := _t("已卸下所有機芯")
+	if is_instance_valid(_msg_label):
+		_msg_label.text = success_msg
+		_msg_label.add_theme_color_override("font_color", COLOR_GOLD)
+	_show_toast(success_msg)
+
+	return {
+		"ok": true,
+		"code": "success",
+		"message": success_msg,
+		"unequipped_count": unequipped_count
+	}
 
 
 func _show_toast(msg: String) -> void:
