@@ -6335,6 +6335,16 @@
    "keys": [
     "ShopDial"
    ]
+  },
+  {
+   "id": "merge-title-shop-shortcuts",
+   "cat": "平台",
+   "title": "稱號卸下與商城背包快捷雙分支合併與主線回歸",
+   "status": "草稿",
+   "note": "整合稱號卸下與商城背包快捷雙分支至 main 並回歸驗證",
+   "keys": [
+    "稱號卸下與商城背"
+   ]
   }
  ]
 }
