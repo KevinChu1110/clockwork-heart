@@ -17,6 +17,7 @@ const Loc = LocHelper
 
 signal closed()
 signal rewards_claimed(gold: int, scrap: int)
+signal forge_requested()
 
 const IdleClockworkVault = preload("res://scripts/systems/idle_clockwork_vault.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -49,6 +50,7 @@ var _scrap_num_label: Label
 var _scrap_title_label: Label
 var _btn_claim: Button
 var _btn_double_claim: Button
+var _btn_go_forge: Button
 var _btn_close: Button
 var _cached_font: Font = null
 var _fx_container: Control = null
@@ -363,7 +365,7 @@ func _build_ui() -> void:
 		_scrap_num_label.add_theme_font_override("font", _cached_font)
 	sv.add_child(_scrap_num_label)
 
-	## 底部操作按鈕：普通領取與雙倍領取 (高 52px, 熱區 >= 48px, 立體果凍厚底)
+	## 底部操作按鈕：普通領取、雙倍領取與前往鍛造 (高 52px, 熱區 >= 48px, 立體果凍厚底)
 	var foot_box := HBoxContainer.new()
 	foot_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	foot_box.add_theme_constant_override("separation", 16)
@@ -371,7 +373,7 @@ func _build_ui() -> void:
 
 	_btn_claim = Button.new()
 	_btn_claim.name = "ClaimButton"
-	_btn_claim.custom_minimum_size = Vector2(240, 52)
+	_btn_claim.custom_minimum_size = Vector2(200, 52)
 	_btn_claim.focus_mode = Control.FOCUS_NONE
 
 	var claim_sb := StyleBoxFlat.new()
@@ -393,7 +395,7 @@ func _build_ui() -> void:
 	## 雙倍領取按鈕 (DoubleClaimButton，高 52px、天藍 #38A0FF 底色、立體果凍厚底 5px、圓角 18px、字級 18px、零系統 Emoji)
 	_btn_double_claim = Button.new()
 	_btn_double_claim.name = "DoubleClaimButton"
-	_btn_double_claim.custom_minimum_size = Vector2(240, 52)
+	_btn_double_claim.custom_minimum_size = Vector2(200, 52)
 	_btn_double_claim.focus_mode = Control.FOCUS_NONE
 
 	var double_sb := StyleBoxFlat.new()
@@ -412,6 +414,32 @@ func _build_ui() -> void:
 	_btn_double_claim.pressed.connect(_on_double_claim_pressed)
 	foot_box.add_child(_btn_double_claim)
 
+	## 前往鍛造快捷按鈕 (BtnGoForge，高 52px、熱區 >= 48px、金黃 #FFD028 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 18px、零系統 Emoji)
+	_btn_go_forge = Button.new()
+	_btn_go_forge.name = "BtnGoForge"
+	_btn_go_forge.custom_minimum_size = Vector2(200, 52)
+	_btn_go_forge.focus_mode = Control.FOCUS_NONE
+
+	var forge_sb := StyleBoxFlat.new()
+	forge_sb.bg_color = COLOR_GOLD
+	forge_sb.border_color = COLOR_BORDER
+	forge_sb.set_border_width_all(2)
+	forge_sb.border_width_bottom = 5
+	forge_sb.set_corner_radius_all(18)
+	var forge_sb_h := forge_sb.duplicate() as StyleBoxFlat
+	forge_sb_h.bg_color = Color("#FFE050")
+	var forge_sb_p := forge_sb.duplicate() as StyleBoxFlat
+	forge_sb_p.border_width_bottom = 2
+	_btn_go_forge.add_theme_stylebox_override("normal", forge_sb)
+	_btn_go_forge.add_theme_stylebox_override("hover", forge_sb_h)
+	_btn_go_forge.add_theme_stylebox_override("pressed", forge_sb_p)
+	_btn_go_forge.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_forge.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_btn_go_forge.add_theme_font_override("font", _cached_font)
+	_btn_go_forge.pressed.connect(_on_go_forge_pressed)
+	foot_box.add_child(_btn_go_forge)
+
 
 func _update_localized_texts() -> void:
 	if _title_label:
@@ -426,6 +454,8 @@ func _update_localized_texts() -> void:
 		_btn_claim.text = Loc.t("vault.btn_claim")
 	if _btn_double_claim:
 		_btn_double_claim.text = Loc.t("vault.btn_double_claim")
+	if _btn_go_forge:
+		_btn_go_forge.text = Loc.t("vault.btn_go_forge")
 
 
 ## 刷新顯示數值與進度條
@@ -484,6 +514,11 @@ func refresh_display() -> void:
 		else:
 			_btn_double_claim.disabled = true
 			_btn_double_claim.modulate = Color(0.7, 0.7, 0.7, 1)
+
+	## 更新前往鍛造按鈕狀態
+	if _btn_go_forge:
+		_btn_go_forge.text = Loc.t("vault.btn_go_forge")
+		_btn_go_forge.disabled = false
 
 
 func _is_ad_removed() -> bool:
@@ -574,6 +609,12 @@ func _on_claim_pressed() -> void:
 	refresh_display()
 
 
+func _on_go_forge_pressed() -> void:
+	forge_requested.emit()
+	closed.emit()
+	queue_free()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -589,6 +630,10 @@ func get_claim_button() -> Button:
 
 func get_double_claim_button() -> Button:
 	return _btn_double_claim
+
+
+func get_go_forge_button() -> Button:
+	return _btn_go_forge
 
 
 func get_close_button() -> Button:
