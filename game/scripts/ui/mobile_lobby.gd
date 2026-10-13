@@ -9,6 +9,7 @@ signal core_replaced(slot_id: String, part: Dictionary)
 signal cores_auto_equipped(result: Dictionary)
 signal weapons_auto_equipped(result: Dictionary)
 signal weapons_unequipped(result: Dictionary)
+signal cores_unequipped(result: Dictionary)
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -289,6 +290,7 @@ var _weapon_swap_dialog: Control = null
 var _char_core_title_label: Label = null
 var _char_core_sub_label: Label = null
 var _btn_core_auto_equip: Button = null
+var _btn_core_unequip_all: Button = null
 var _char_core_slots_row: HBoxContainer = null
 var _char_stat_title_label: Label = null
 var _stat_cards: Array[PanelContainer] = []
@@ -3991,8 +3993,8 @@ func _build_character_tab() -> void:
 	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	panel.offset_left = 50
 	panel.offset_right = -50
-	panel.offset_top = 12
-	panel.offset_bottom = -18
+	panel.offset_top = 26
+	panel.offset_bottom = -16
 	var panel_sb := StyleBoxFlat.new()
 	panel_sb.bg_color = COLOR_BG_CREAM
 	panel_sb.border_color = COLOR_BORDER
@@ -4361,6 +4363,41 @@ func _build_character_tab() -> void:
 	c_hdr.add_child(btn_core_auto)
 	_btn_core_auto_equip = btn_core_auto
 
+	var btn_core_unequip := Button.new()
+	btn_core_unequip.name = "BtnCoreUnequipAll"
+	btn_core_unequip.text = _t("一鍵卸下")
+	btn_core_unequip.custom_minimum_size = Vector2(104, 48)
+	if _cached_font != null:
+		btn_core_unequip.add_theme_font_override("font", _cached_font)
+	btn_core_unequip.add_theme_font_size_override("font_size", 16)
+	btn_core_unequip.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_core_unequip.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_core_unequip.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var cu_sb := StyleBoxFlat.new()
+	cu_sb.bg_color = COLOR_PINK
+	cu_sb.border_color = COLOR_BORDER
+	cu_sb.set_border_width_all(2)
+	cu_sb.border_width_bottom = 5
+	cu_sb.set_corner_radius_all(16)
+	cu_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	cu_sb.shadow_size = 5
+	cu_sb.shadow_offset = Vector2(0, 2)
+	var cu_sb_h := cu_sb.duplicate() as StyleBoxFlat
+	cu_sb_h.bg_color = Color("#FF7A9F")
+	var cu_sb_p := cu_sb.duplicate() as StyleBoxFlat
+	cu_sb_p.border_width_bottom = 2
+	btn_core_unequip.add_theme_stylebox_override("normal", cu_sb)
+	btn_core_unequip.add_theme_stylebox_override("hover", cu_sb_h)
+	btn_core_unequip.add_theme_stylebox_override("pressed", cu_sb_p)
+	btn_core_unequip.add_theme_stylebox_override("focus", cu_sb)
+	btn_core_unequip.pressed.connect(func():
+		_play_ui_sound()
+		unequip_all_cores()
+	)
+	c_hdr.add_child(btn_core_unequip)
+	_btn_core_unequip_all = btn_core_unequip
+
 	var c_row := HBoxContainer.new()
 	c_row.name = "CoreSlotsRow"
 	c_row.add_theme_constant_override("separation", 8)
@@ -4702,6 +4739,12 @@ func get_btn_weapon_auto_equip() -> Button:
 
 func get_btn_weapon_unequip_all() -> Button:
 	return _btn_weapon_unequip_all
+
+func get_btn_core_auto_equip() -> Button:
+	return _btn_core_auto_equip
+
+func get_btn_core_unequip_all() -> Button:
+	return _btn_core_unequip_all
 
 func refresh_weapon_slots() -> void:
 	_refresh_weapon_slot_buttons()
@@ -6256,6 +6299,8 @@ func _apply_locale_texts() -> void:
 		_char_core_sub_label.text = _t("點擊更換裝備 · 強化核心機芯")
 	if _btn_core_auto_equip and is_instance_valid(_btn_core_auto_equip):
 		_btn_core_auto_equip.text = _t("一鍵配置")
+	if _btn_core_unequip_all and is_instance_valid(_btn_core_unequip_all):
+		_btn_core_unequip_all.text = _t("一鍵卸下")
 	_refresh_char_core_slots()
 	if _char_power_badge and is_instance_valid(_char_power_badge):
 		var gs := _gs()
@@ -6316,19 +6361,22 @@ var _current_toast: Label = null
 
 func _show_toast(msg: String) -> void:
 	if _current_toast and is_instance_valid(_current_toast):
+		if _current_toast.get_parent() != null:
+			_current_toast.get_parent().remove_child(_current_toast)
 		_current_toast.queue_free()
 		_current_toast = null
 	var toast := Label.new()
+	toast.name = "ToastLabel"
 	_current_toast = toast
 	toast.text = msg
 	toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	toast.set_anchors_preset(Control.PRESET_CENTER_TOP)
-	var toast_w := clampi(int(msg.length() * 11) + 48, 360, 800)
+	var toast_w := clampi(int(msg.length() * 11) + 48, 320, 680)
 	toast.offset_left = -int(toast_w / 2)
 	toast.offset_right = int(toast_w / 2)
-	toast.offset_top = 80
-	toast.offset_bottom = 126
+	toast.offset_top = 66
+	toast.offset_bottom = 104
 	var tsb := StyleBoxFlat.new()
 	tsb.bg_color = Color(0.043, 0.039, 0.055, 0.95)
 	tsb.border_color = GOLD_CLASSICAL
@@ -6339,12 +6387,12 @@ func _show_toast(msg: String) -> void:
 	tsb.content_margin_right = 16
 	toast.add_theme_stylebox_override("normal", tsb)
 	toast.add_theme_color_override("font_color", INK_IVORY)
-	toast.add_theme_font_size_override("font_size", 15)
+	toast.add_theme_font_size_override("font_size", 14)
 	toast.z_index = 100
 	add_child(toast)
 
 	var tw := create_tween()
-	tw.tween_property(toast, "position:y", toast.position.y - 12, 0.3)
+	tw.tween_property(toast, "position:y", toast.position.y - 6, 0.3)
 	tw.tween_interval(1.5)
 	tw.tween_property(toast, "modulate:a", 0.0, 0.4)
 	tw.tween_callback(toast.queue_free)
@@ -7120,6 +7168,28 @@ func auto_equip_cores() -> Dictionary:
 		cores_auto_equipped.emit(result)
 	else:
 		_show_toast(_t("目前已是最佳機芯配置！"))
+
+	return result
+
+
+## 一鍵安全卸下五槽機芯並返還背包，即時刷新五槽卡片為未裝備狀態與總戰力
+func unequip_all_cores() -> Dictionary:
+	var CoreSys := preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	if CoreSys == null:
+		return {}
+
+	var result: Dictionary = CoreSys.unequip_all_cores()
+	var is_changed: bool = bool(result.get("changed", false))
+	if is_changed:
+		_show_toast(_t("已卸下所有機芯"))
+		_refresh_char_core_slots()
+		_refresh_core_bag()
+		_refresh_bag_tab(false)
+		refresh_hud()
+		_refresh_char_tab_stats(false)
+		cores_unequipped.emit(result)
+	else:
+		_show_toast(_t("未裝備任何機芯"))
 
 	return result
 

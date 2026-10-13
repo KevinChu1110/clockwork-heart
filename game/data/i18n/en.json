@@ -4203,5 +4203,7 @@
   "已一鍵配置最高戰力武器。": "Equipped highest power weapons.",
   "目前已是最佳武器配置！": "Already at optimal weapon configuration!",
   "已將副武器卸下歸還背包！": "Secondary weapons unequipped and returned to bag!",
-  "當前無可卸下的武器！": "No weapons to unequip currently!"
+  "當前無可卸下的武器！": "No weapons to unequip currently!",
+  "已卸下所有機芯": "All cores unequipped",
+  "未裝備任何機芯": "No cores equipped"
 }
