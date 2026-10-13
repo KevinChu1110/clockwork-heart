@@ -3836,5 +3836,10 @@
   "調整心法": "Adjust Skills",
   "一鍵卸下": "Quick Unsocket",
   "當前無已鑲嵌寶石！": "No gems are currently socketed!",
-  "已卸下 %d 顆寶石並歸還背包！": "Unsocketed %d gems and returned to inventory!"
+  "已卸下 %d 顆寶石並歸還背包！": "Unsocketed %d gems and returned to inventory!",
+  "戰力提升 +%d！已一鍵配置最高戰力武器。": "Power +%d! Equipped highest power weapons.",
+  "已一鍵配置最高戰力武器。": "Equipped highest power weapons.",
+  "目前已是最佳武器配置！": "Already at optimal weapon configuration!",
+  "已將副武器卸下歸還背包！": "Secondary weapons unequipped and returned to bag!",
+  "當前無可卸下的武器！": "No weapons to unequip currently!"
 }

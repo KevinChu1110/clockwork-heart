@@ -3836,5 +3836,10 @@
   "調整心法": "Ajustar habilidades",
   "一鍵卸下": "Desengarzar Todo",
   "當前無已鑲嵌寶石！": "¡No hay gemas engarzadas actualmente!",
-  "已卸下 %d 顆寶石並歸還背包！": "¡Se desengarzaron %d gemas y se guardaron en el inventario!"
+  "已卸下 %d 顆寶石並歸還背包！": "¡Se desengarzaron %d gemas y se guardaron en el inventario!",
+  "戰力提升 +%d！已一鍵配置最高戰力武器。": "¡Poder +%d! Armas de mayor poder equipadas.",
+  "已一鍵配置最高戰力武器。": "Armas de mayor poder equipadas.",
+  "目前已是最佳武器配置！": "¡Ya está en la configuración óptima de armas!",
+  "已將副武器卸下歸還背包！": "¡Armas secundarias desequipadas y devueltas a la bolsa!",
+  "當前無可卸下的武器！": "¡No hay armas para desequipar actualmente!"
 }
