@@ -156,23 +156,24 @@ Suno／外部成品：`python3 tools/import_bgm.py <file> --id <曲目>`
 帳號 `guanrung1110` 產的 `bravesoul_*` 已下載並 `import_bgm` 覆蓋 13 首。  
 來源 uuid 見 `SUNO_SOURCES.json`。多數曲循環相似度偏低（Suno 歌曲結構），若聽得出接縫可再產 loopable 版或手動 `--loop-offset`。
 
-### 抽魂音效分級（#91）
+### 抽魂音效分級（#91 → #98 改成每階一個檔）
 
-只用現有 API `AudioManager.play(id, pitch_scale, volume_db)`。稀有度順序照 `soul_draw_card_catalog.gd` 的 `FRAME_ORDER`。
-pitch 每一階大約升一個大三度，所以每升一階都**更高、更亮、更短**，而且每階大聲約 3 dB。
-金和彩會多疊一層 `craft`，同時發聲仍然 ≤ 2。
+#98 要求每一階都有自己的檔，金和彩不能只靠升 pitch 加疊 craft。所以每張翻卡現在**只播 1 個檔、只佔 1 個 voice**，不再疊第二層。
+五個檔的開頭都是同一個「黃銅卡翻面＋卡榫」動作，越高階越長、越大聲，層次也越多：
 
-| 時機 | 呼叫 | 實測（M-max／true peak／頻譜重心／長度） |
-|---|---|---|
-| 按「抽」 | `play_ui()` | 沿用 ui |
-| 演出開始 | `play("summon")`；key 還沒加之前先用 `play("clock", 0.8, -3.0)` | summon −21.0 LUFS／−7.3 dBTP／0.95 s |
-| 翻卡・白 普通 | `play("reveal", 0.84, -6.0)` | −27.1／−15.8 dBTP／3857 Hz／0.59 s |
-| 翻卡・藍 精良 | `play("reveal", 1.0, -3.0)` | −24.0／−12.7／4858 Hz／0.50 s |
-| 翻卡・紫 稀有 | `play("reveal", 1.26, 0.0)` | −21.3／−9.8／5089 Hz／0.39 s |
-| 翻卡・金 傳說 | `play("reveal", 1.5, 2.0)`＋`play("craft", 1.0, -5.0)` | −18.6／−3.8／5300 Hz／0.46 s |
-| 翻卡・彩 炫彩 | `play("reveal", 1.68, 3.0)`＋`play("craft", 1.26, -3.0)` | −17.6／−4.2／5078 Hz／0.37 s |
-| 十連：每張翻卡 | 同上，但 `volume_db` 再 −6，間隔 ≥ 90 ms | 兩聲上限會自動丟掉最舊的 |
-| 十連：結算 | 只對**最高稀有度**那張播一次上表的組合（不要 10 張一起響） | — |
+| 階級（`FRAME_ORDER`） | key／檔案 | 建議呼叫 | 長度 | M-max（檔案） | true peak | 聲音 |
+|---|---|---|---|---|---|---|
+| 白 普通 | `reveal`／reveal.wav | `play("reveal", 1.0, -5.0)`（實際約 −26） | 0.52 s | −21.0 LUFS | −9.7 dBTP | 翻面＋三音上行 |
+| 藍 精良 | `reveal_blue`／reveal_blue.wav | `play("reveal_blue")` | 0.62 s | −22.0 | −10.1 | 四音上行，收在高八度，加少許碎光 |
+| 紫 稀有 | `reveal_purple`／reveal_purple.wav | `play("reveal_purple")` | 0.85 s | −20.5 | −10.0 | 低的玻璃鐘托底，接五音小調色彩琶音（神祕），碎光散開 |
+| 金 傳說 | `reveal_gold`／reveal_gold.wav | `play("reveal_gold")` | 1.15 s | −19.0 | −5.0 | 翻面後停半拍，黃銅大鐘「噹」加低頻衝擊，兩個八度的大三和弦齊響，金色碎光雨 |
+| 彩 炫彩 | `reveal_rainbow`／reveal_rainbow.wav | `play("reveal_rainbow")` | 1.50 s | −18.0 | −7.1 | 發條急速上緊，彈簧放開「咻」，接大鐘加音梳三個八度刷奏，長長的彩色碎光 |
 
-量法：把 reveal／craft 用 `pitch_scale` 重取樣（音高和速度一起變，跟 AudioStreamPlayer 一樣），再疊上 volume_db。
-M-max 和 true peak 的量法跟本檔「響度規格」相同；表上的數字還沒算 AudioManager 的 `_sfx_db`（−4 dB）。
+其他時機：
+- 按「抽」：`play_ui()`。
+- 演出開始：`play("summon")`。
+- 十連的每張翻卡：用該階的 key，`volume_db` −6。
+- 十連結算：只播最高階那個檔一次。
+
+`reveal_blue`／`reveal_purple`／`reveal_gold`／`reveal_rainbow`／`summon` 都還**不在 `SFX_KEYS`**，要等程式加，加之前這些檔不會被載入。
+量法跟本檔「響度規格」相同；這些數字還沒算 AudioManager 的 `_sfx_db`（−4 dB）。

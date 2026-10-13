@@ -39,13 +39,16 @@ TARGET_M = {
     "miss": -23.0,                                  # 頻繁回饋（揮空，issue #47）
     "craft": -20.0,                                 # 事件 cue（鍛造成功，issue #47）
     "reveal": -21.0,                                # 抽魂翻卡（issue #91）；稀有度靠 pitch／volume_db 往上加
+    "reveal_blue": -22.0, "reveal_purple": -20.5,   # 分階翻卡（#98）：一階比一階大、長、亮
+    "reveal_gold": -19.0, "reveal_rainbow": -18.0,
     "summon": -21.0,                                # 抽魂演出開始（issue #91，key 待程式加）
 }
 # true peak 上限（dBTP）。交付規格全部 ≤ −1；hit／slash 和跳字同一瞬間、又最常響，
 # 峰值再壓到 −4（和舊 hit 占位的峰值一樣），讓瞬態不會「啪」一下蓋過跳字
 TP_CEIL = {"hit": -4.0, "slash": -4.0, "miss": -4.0}
 SEEDS = {"swap": 1110, "hit": 3201, "slash": 3202, "break": 3203, "warn": 3204, "wind": 3205,
-         "miss": 4701, "craft": 4702, "reveal": 9101, "summon": 9102}
+         "miss": 4701, "craft": 4702, "reveal": 9101, "summon": 9102,
+         "reveal_blue": 9801, "reveal_purple": 9802, "reveal_gold": 9803, "reveal_rainbow": 9804}
 
 
 # ───────────────────────── 基本元件 ─────────────────────────
@@ -467,6 +470,99 @@ def synth_reveal(rng: np.random.Generator) -> tuple[np.ndarray, float]:
     return out, 0.10
 
 
+def _flip(out: np.ndarray, rng: np.random.Generator, g: float = 1.0) -> None:
+    """翻卡共用開頭：黃銅卡片翻面「刷」＋卡榫「嗒」（跟 reveal 同一個動作，各階一致）"""
+    sw = noise_burst(0.055, rng, tau=0.02)
+    place(out, svf_bandpass_sweep(sw, np.linspace(1800, 5200, len(sw)), 1.6) * 0.35 * g, 0.0)
+    latch = modes(0.03, [(2950, 0.6, 0.006), (4720, 0.35, 0.004), (1210, 0.3, 0.007)], rng)
+    place(latch, filt(noise_burst(0.0012, rng), "hp", 3000) * 0.5, 0.0)
+    place(out, latch, 0.045, 0.55 * g)
+
+
+def _tine(f0: float, rng: np.random.Generator, tau: float = 0.22, dur: float = 0.4) -> np.ndarray:
+    return modes(dur, [(f0, 0.55, tau), (f0 * 1.003, 0.15, tau * 0.9), (f0 * 2.756, 0.20, tau * 0.27),
+                       (f0 * 5.404, 0.06, tau * 0.09)], rng, attack=0.0015)
+
+
+def _sparkle(out: np.ndarray, rng: np.random.Generator, t0: float, t1: float, n: int, g: float) -> None:
+    """高頻小鈴碎光，隨機散在 t0–t1"""
+    for _ in range(n):
+        ts = rng.uniform(t0, t1)
+        f = rng.uniform(4200, 9000)
+        place(out, modes(0.12, [(f, 1.0, 0.03), (f * 1.51, 0.4, 0.02)], rng, attack=0.002), ts,
+              g * rng.uniform(0.5, 1.0))
+
+
+def synth_reveal_blue(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """翻卡・藍 精良（0.62 s）：翻面 → 四音上行（E6 G#6 B6 E7），比白卡多一個高八度收尾＋少許碎光"""
+    out = np.zeros(int(SR * 0.62))
+    _flip(out, rng)
+    for i, f in enumerate([1318.5, 1661.2, 1975.5, 2637.0]):
+        place(out, _tine(f, rng), 0.07 + 0.038 * i, 0.45 + 0.06 * i)
+    _sparkle(out, rng, 0.20, 0.35, 4, 0.12)
+    return out, 0.10
+
+
+def synth_reveal_purple(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """翻卡・紫 稀有（0.85 s）：翻面 → 一記低的玻璃鐘托底 → 五音上行琶音（小調色彩的 E–G–B–D#–G，神祕）
+    → 碎光慢慢散開"""
+    out = np.zeros(int(SR * 0.85))
+    _flip(out, rng)
+    bell = modes(0.7, [(659.3, 0.5, 0.30), (659.3 * 2.756, 0.22, 0.10), (659.3 * 1.004, 0.18, 0.28)],
+                 rng, attack=0.002)
+    place(out, bell, 0.07, 0.55)
+    for i, f in enumerate([1318.5, 1568.0, 1975.5, 2489.0, 3136.0]):
+        place(out, _tine(f, rng, 0.26, 0.5), 0.09 + 0.045 * i, 0.40 + 0.05 * i)
+    _sparkle(out, rng, 0.25, 0.60, 9, 0.14)
+    return out, 0.14
+
+
+def synth_reveal_gold(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """翻卡・金 傳說（1.15 s）：翻面停半拍（期待感）→ 黃銅大鐘「噹」＋低頻衝擊 → 大三和弦齊響（兩個八度）
+    → 金色碎光雨。單檔就完整，不用再疊 craft。"""
+    out = np.zeros(int(SR * 1.15))
+    _flip(out, rng, 1.1)
+    tb = 0.14
+    gong = modes(1.0, [(392.0, 0.55, 0.45), (392.0 * 2.0, 0.30, 0.35), (392.0 * 2.76, 0.28, 0.20),
+                       (392.0 * 4.07, 0.15, 0.12), (392.0 * 5.4, 0.08, 0.06)], rng, attack=0.001)
+    place(out, gong, tb, 0.75)
+    place(out, sweep_sine(0.30, 110, 55, 0.09, 0.03) * 0.6, tb)
+    for f in [1318.5, 1661.2, 1975.5, 2637.0, 3322.4]:
+        place(out, _tine(f, rng, 0.35, 0.8), tb + 0.01 + rng.uniform(0, 0.012), 0.32)
+    _sparkle(out, rng, tb + 0.10, 0.95, 18, 0.16)
+    return out, 0.18
+
+
+def synth_reveal_rainbow(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """翻卡・彩 炫彩（1.50 s）：翻面 → 發條急速上緊（棘輪由疏到密）→ 彈簧放開「咻」上掃
+    → 黃銅大鐘＋音梳三個八度刷奏（glissando）→ 長長的彩色碎光。最稀有，一聽就知道"""
+    out = np.zeros(int(SR * 1.50))
+    _flip(out, rng, 1.1)
+    t0, period = 0.08, 0.05
+    while t0 < 0.34:
+        k = (t0 - 0.08) / 0.26
+        c = modes(0.03, [(2300 * (1 + 0.3 * k), 0.6, 0.006), (3900 * (1 + 0.3 * k), 0.4, 0.004)], rng)
+        place(out, c, t0, 0.25 + 0.35 * k)
+        t0 += period
+        period = max(0.015, period * 0.8)
+    wh = noise_burst(0.20, rng, tau=0.09)
+    place(out, svf_bandpass_sweep(wh, np.geomspace(700, 7000, len(wh)), 2.2) * 0.4, 0.30)
+    tb = 0.42
+    gong = modes(1.05, [(392.0, 0.55, 0.50), (392.0 * 2.0, 0.30, 0.38), (392.0 * 2.76, 0.26, 0.22),
+                        (392.0 * 4.07, 0.14, 0.12)], rng, attack=0.001)
+    place(out, gong, tb, 0.7)
+    place(out, sweep_sine(0.30, 110, 55, 0.09, 0.03) * 0.55, tb)
+    # 音梳刷奏：E 大調五聲音階往上三個八度，每 22 ms 一音
+    scale = [1318.5, 1480.0, 1661.2, 1975.5, 2217.5]
+    notes = [f * (2 ** o) for o in range(3) for f in scale][:13]
+    for i, f in enumerate(notes):
+        if f >= SR * 0.42:
+            break
+        place(out, _tine(f, rng, 0.30, 0.6), tb + 0.02 + 0.022 * i, 0.26 + 0.01 * i)
+    _sparkle(out, rng, tb + 0.15, 1.30, 28, 0.15)
+    return out, 0.22
+
+
 def synth_summon(rng: np.random.Generator) -> tuple[np.ndarray, float]:
     """抽魂演出開始（0.95 s）：發條快速上緊（棘輪越來越密，跟戰前 wind 的四格慢轉不同）
     → 彈簧放開的「咻」上掃 → 一聲低的黃銅共鳴托住，接翻卡。"""
@@ -498,6 +594,8 @@ SYNTHS = {
     "break": synth_break, "warn": synth_warn, "wind": synth_wind,
     "miss": synth_miss, "craft": synth_craft,
     "reveal": synth_reveal, "summon": synth_summon,
+    "reveal_blue": synth_reveal_blue, "reveal_purple": synth_reveal_purple,
+    "reveal_gold": synth_reveal_gold, "reveal_rainbow": synth_reveal_rainbow,
 }
 
 
