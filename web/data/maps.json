@@ -7,10 +7,10 @@
       "kicker": "序章起點",
       "image": "../media/shots/proof_12_village.png",
       "gallery": ["../media/gemini/keyart_village.png"],
-      "blurb": "旅途起點。閣樓那把齒輪短劍、開場乾糧都從這裡帶走。背負十五圈發條的小白由此邁向創想界域。",
+      "blurb": "旅途起點。閣樓那把齒輪短劍、開場微型備用齒輪都從這裡帶走。背負十五圈發條的小白由此邁向創想界域。",
       "enemies": [],
       "drops": ["bread", "key_rusty", "hp_s"],
-      "note": "開場贈送乾糧與小紅水。"
+      "note": "開場贈送微型備用齒輪與微光潤滑油。"
     },
     {
       "id": "road",
@@ -51,10 +51,10 @@
       "kicker": "琥珀材料行",
       "image": "../media/shots/proof_15_market.png",
       "gallery": ["../media/npc_amber.jpg"],
-      "blurb": "琥珀的材料行掛在每日／委託。鐵屑 14、星砂 22、橡脂 18、騎士碎鐵 28；小紅水 12、乾糧 8。野外掉不夠再買，買了再打，這是循環。",
+      "blurb": "琥珀的材料行掛在每日／委託。鐵屑 14、發條晶砂 22、橡脂 18、騎士碎鐵 28；微光潤滑油 12、微型備用齒輪 8。野外掉不夠再買，買了再打，這是循環。",
       "enemies": [],
       "drops": ["iron_scrap", "star_ore", "oak_resin", "knight_shard", "hp_s", "bread"],
-      "note": "狼牙、霧晶、潮貝、疤焰燼材料行不賣。"
+      "note": "棘輪尖齒、霧晶、潮貝、疤焰燼材料行不賣。"
     },
     {
       "id": "sewers",
@@ -139,10 +139,10 @@
       "kicker": "狩獵",
       "image": "../media/shots/proof_21_hunt.png",
       "gallery": [],
-      "blurb": "岔路連過去的溢地獵場。溢皮、焰骨、溢核只在這裡出，可拿去溢物回收換金。不是演武場。",
+      "blurb": "岔路連過去的溢地獵場。溢流板件、鍛火軸心、溢核只在這裡出，可拿去溢物回收換金。不是演武場。",
       "enemies": ["鏽蝕哨兵偶", "灰燼鼠潮"],
       "drops": ["hunt_hide", "hunt_bone", "hunt_core"],
-      "note": "中階焰骨、稀有溢核。"
+      "note": "中階鍛火軸心、稀有溢核。"
     },
     {
       "id": "caravan",
@@ -183,10 +183,10 @@
       "kicker": "通關獎勵",
       "image": "../media/shots/proof_14_tower.png",
       "gallery": ["../media/gemini/keyart_tower.png", "../media/gemini/keyart_mirror.png"],
-      "blurb": "鏡廊、沉船、疤地各藏秘境。通關留秘境印記，並給一瓶中紅水。小 Boss 也走同一套獎勵。",
+      "blurb": "鏡廊、沉船、疤地各藏秘境。通關留秘境印記，並給高純潤滑油。小 Boss 也走同一套獎勵。",
       "enemies": ["疤主", "鏡影", "船長"],
       "drops": ["relic_token", "hp_m"],
-      "note": "中紅水材料行不賣。"
+      "note": "高純潤滑油材料行不賣。"
     }
   ]
 }

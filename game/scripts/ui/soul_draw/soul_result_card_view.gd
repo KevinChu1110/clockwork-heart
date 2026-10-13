@@ -285,7 +285,7 @@ func _render_placeholder() -> void:
 	var tier_data: Dictionary = Catalog.frame_data("gold")
 	_card_panel.add_theme_stylebox_override("panel", _build_card_style(tier_data))
 	_set_rainbow(false)
-	_stars_lbl.text = ""
+	_stars_lbl.text = _t(str(tier_data.get("name", "")))
 	_stars_lbl.add_theme_color_override("font_color", tier_data.frame)
 
 	_art.texture = Catalog.idle_texture()
@@ -323,7 +323,7 @@ func _render_drop() -> void:
 	# 套用果凍色階光框
 	_card_panel.add_theme_stylebox_override("panel", _build_card_style(tier_data))
 	_set_rainbow(bool(tier_data.get("rainbow", false)))
-	_stars_lbl.text = "%s  %s" % [tier_data.get("stars", "★"), _t(str(tier_data.get("name", "")))]
+	_stars_lbl.text = _t(str(tier_data.get("name", "")))
 	_stars_lbl.add_theme_color_override("font_color", tier_data.frame)
 
 	# 更新微光光輪顏色

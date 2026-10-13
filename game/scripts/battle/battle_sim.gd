@@ -28,6 +28,12 @@ const PARRY_EARLY_GRACE := 0.35  ## = time_model.parry_early_grace_sec
 var units: Dictionary = {}  ## id -> BattleUnit
 var time: float = 0.0
 var total_player_damage: int = 0
+var max_hit_damage: int = 0
+var total_hit_count: int = 0
+## 三欄武器傷害累積與輪替切換次數統計
+var weapon_slot_damages: Dictionary = {0: 0, 1: 0, 2: 0}
+var weapon_slot_swaps: Dictionary = {0: 0, 1: 0, 2: 0}
+var weapon_swap_count: int = 0
 var finished: bool = false
 var won: bool = false
 var rng: RandomNumberGenerator
@@ -423,6 +429,12 @@ func _begin_attack(u: BattleUnit) -> void:
 	if u.can_skill and not u.bare_fisted and u.rage >= RAGE_MAX:
 		if u.id == player_id:
 			_refresh_player_skill_choice(u)
+			_emit("overwind_burst", {
+				"id": u.id,
+				"source": "skill_burst",
+				"skill": u.skill_name,
+				"skill_id": u.skill_id,
+			})
 		u.state = BattleUnit.State.CAST
 		u.state_timer = 0.35
 		u.rage = 0.0
@@ -475,6 +487,16 @@ func set_player_target(id: String) -> void:
 		_emit("target_changed", {"id": id, "name": t.display_name})
 
 
+func _record_player_damage(dealt: int) -> void:
+	if dealt <= 0:
+		return
+	total_player_damage += dealt
+	max_hit_damage = maxi(max_hit_damage, dealt)
+	total_hit_count += 1
+	var slot := clampi(weapon_bar_active, 0, 2)
+	weapon_slot_damages[slot] = int(weapon_slot_damages.get(slot, 0)) + dealt
+
+
 func _apply_player_hit_on_fog(attacker: BattleUnit, target: BattleUnit, dmg: int, is_crit: bool, skill_name: String = "") -> void:
 	## 幻影：反噬
 	if target.is_phantom:
@@ -500,7 +522,7 @@ func _apply_player_hit_on_fog(attacker: BattleUnit, target: BattleUnit, dmg: int
 	## 本體破綻
 	var dealt := target.take_damage(dmg)
 	if attacker.team == BattleUnit.Team.PLAYER and dealt > 0:
-		total_player_damage += dealt
+		_record_player_damage(dealt)
 	if skill_name != "":
 		_emit("skill_hit", {
 			"attacker": attacker.id,
@@ -661,7 +683,7 @@ func _resolve_strike(u: BattleUnit) -> void:
 		if target.id == player_id:
 			_check_auto_berserk(target)
 		if u.team == BattleUnit.Team.PLAYER and dealt > 0:
-			total_player_damage += dealt
+			_record_player_damage(dealt)
 			_process_part_damage(target, dealt, target.telegraph_active)
 		## 出手也累積戰意，否則戰意只能靠挨打累積，而挨到滿之前人就死了。
 		## 多段武器：首段全額、後段三成——快武器本就揮得快，別再疊怒速
@@ -847,7 +869,7 @@ func _resolve_skill(u: BattleUnit) -> void:
 		var dealt := target.take_damage(dmg)
 		total_dealt += dealt
 		if u.team == BattleUnit.Team.PLAYER and dealt > 0:
-			total_player_damage += dealt
+			_record_player_damage(dealt)
 			_process_part_damage(target, dealt, target.telegraph_active)
 		_emit("skill_hit", {
 			"attacker": u.id,
@@ -1303,7 +1325,7 @@ func _perfect_parry(boss: BattleUnit) -> void:
 			clash_dmg = p.scale_outgoing(clash_dmg)
 			var dealt_b := boss.take_damage(clash_dmg)
 			if dealt_b > 0:
-				total_player_damage += dealt_b
+				_record_player_damage(dealt_b)
 			_emit("skill_hit", {
 				"attacker": p.id,
 				"defender": boss.id,
@@ -1322,7 +1344,7 @@ func _perfect_parry(boss: BattleUnit) -> void:
 				dmg = _falcon_filter_damage(boss, dmg)
 			var dealt := boss.take_damage(dmg)
 			if dealt > 0:
-				total_player_damage += dealt
+				_record_player_damage(dealt)
 			_emit("skill_hit", {
 				"attacker": p.id,
 				"defender": boss.id,
@@ -1905,6 +1927,7 @@ static func make_dummy_fight(player_stats: Dictionary) -> BattleSim:
 	_apply_player_skill_stats(sim, p, player_stats)
 	sim.add_unit(p)
 	sim.player_id = p.id
+	sim._setup_weapon_bars(player_stats, p)
 
 	var dummy := BattleUnit.new()
 	dummy.id = "training_dummy"
@@ -1919,7 +1942,7 @@ static func make_dummy_fight(player_stats: Dictionary) -> BattleSim:
 	return sim
 
 
-## 木人樁試招戰鬥數據統計（總傷害、耗時、DPS）
+## 木人樁試招戰鬥數據統計（總傷害、耗時、DPS、最高單擊、總命中次數、三欄武器傷害與輪替切換次數）
 func get_dummy_combat_stats() -> Dictionary:
 	var dummy := get_unit("training_dummy")
 	var dummy_loss := (dummy.max_hp - dummy.hp) if dummy != null else 0
@@ -1930,7 +1953,25 @@ func get_dummy_combat_stats() -> Dictionary:
 		"total_damage": total_dmg,
 		"elapsed_time": elapsed,
 		"dps": dps,
+		"max_hit_damage": max_hit_damage,
+		"total_hit_count": total_hit_count,
+		"weapon_slot_damages": weapon_slot_damages.duplicate(true),
+		"weapon_slot_swaps": weapon_slot_swaps.duplicate(true),
+		"weapon_swap_count": weapon_swap_count,
+		"weapon_bars": weapon_bars.duplicate(true),
 	}
+
+
+func get_weapon_slot_damage(slot: int) -> int:
+	return int(weapon_slot_damages.get(slot, 0))
+
+
+func get_weapon_slot_swaps(slot: int) -> int:
+	return int(weapon_slot_swaps.get(slot, 0))
+
+
+func get_weapon_swap_count() -> int:
+	return weapon_swap_count
 
 
 static func make_leo_fight(player_stats: Dictionary) -> BattleSim:
@@ -2159,6 +2200,8 @@ func _setup_weapon_bars(player_stats: Dictionary, unit: BattleUnit = null) -> vo
 				"uses_max": uses_max,
 				"unlocked": bool(e.get("unlocked", true)),
 				"empty": bool(e.get("empty", str(e.get("uid", "")) == "")),
+				"quality": str(e.get("quality", "common")),
+				"quality_label": str(e.get("quality_label", "凡品")),
 				"prd_bonus": 0.0,
 				"had_overload": false,
 			}
@@ -2181,6 +2224,8 @@ func _setup_weapon_bars(player_stats: Dictionary, unit: BattleUnit = null) -> vo
 			"uses_max": um,
 			"unlocked": true,
 			"empty": false,
+			"quality": str(player_stats.get("weapon_quality", "common")),
+			"quality_label": str(player_stats.get("weapon_quality_label", "凡品")),
 			"prd_bonus": 0.0,
 			"had_overload": false,
 		})
@@ -3157,6 +3202,9 @@ func switch_weapon_slot(index: int, auto: bool = false) -> bool:
 	## 換到另一欄才把舊欄次數寫回（同欄重生／單測灌假欄時不可把新次數蓋成 0）
 	if index != weapon_bar_active:
 		_persist_active_bar_uses(p)
+		weapon_swap_count += 1
+		var safe_slot := clampi(index, 0, 2)
+		weapon_slot_swaps[safe_slot] = int(weapon_slot_swaps.get(safe_slot, 0)) + 1
 	weapon_bar_active = index
 	if p.bare_fisted:
 		_exit_bare_fist(p)
@@ -3286,6 +3334,11 @@ func trigger_fury_awakening() -> bool:
 	if p.rage < RAGE_MAX and not p.fury_active:
 		return false
 	p.rage = 0.0
+	_emit("overwind_burst", {
+		"id": p.id,
+		"source": "manual_fury",
+		"rage": 0.0,
+	})
 	_apply_berserk(p, true)
 	return true
 
@@ -3366,6 +3419,12 @@ func _gain_rage(u: BattleUnit, amount: float) -> void:
 	## 赤手仍可累怒（挨打／揮拳），但放不出武器技
 	var crossed := u.add_rage(amount, RAGE_MAX)
 	if crossed:
+		if u.id == player_id:
+			_emit("overwind_burst", {
+				"id": u.id,
+				"source": "rage_full",
+				"rage": u.rage,
+			})
 		_check_auto_berserk(u)
 
 

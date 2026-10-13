@@ -86,7 +86,7 @@ func status_bbcode() -> String:
 	if is_run_active():
 		lines.append(_t("[color=#c96]進行中：第 %d／%d 波[/color]") % [current_wave() + 1, WAVES.size()])
 	lines.append("")
-	lines.append(_t("掉落：溢皮、焰骨、溢核（可在溢物回收換金）"))
+	lines.append(_t("掉落：溢流板件、鍛火軸心、溢核（可在溢物回收換金）"))
 	return "\n".join(lines)
 
 
@@ -218,7 +218,7 @@ func _finish_run(full_clear: bool) -> Dictionary:
 			extra += _grant_items({"hunt_core": 1})
 		if randf() < 0.4:
 			InventorySystem.add_item("hp_s", 1)
-			extra += _t(" 小紅水×1")
+			extra += _t(" 微光潤滑油×1")
 		## 寶石碎片（手藝工坊熔煉原料）
 		if Engine.get_main_loop() is SceneTree:
 			var gem: Node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("GemSystem")

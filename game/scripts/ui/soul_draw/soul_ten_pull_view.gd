@@ -64,7 +64,7 @@ func _connect_loc_signal() -> void:
 
 func _on_locale_changed(_new_locale: String = "") -> void:
 	if _title_lbl:
-		_title_lbl.text = _t("✦ 封靈連轉結果 ✦")
+		_title_lbl.text = _t("封靈連轉結果")
 	if _btn_again:
 		_btn_again.text = _t("再連轉一次")
 	if _btn_collect:
@@ -83,7 +83,7 @@ func _build_ui() -> void:
 
 	# 2. 標題
 	_title_lbl = Label.new()
-	_title_lbl.text = _t("✦ 封靈連轉結果 ✦")
+	_title_lbl.text = _t("封靈連轉結果")
 	_title_lbl.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	_title_lbl.offset_top = 24
 	_title_lbl.offset_bottom = 64
@@ -188,9 +188,9 @@ func _create_mini_card(raw_drop: Dictionary, index: int) -> Control:
 	panel.add_theme_stylebox_override("panel", style)
 	root_card.add_child(panel)
 
-	# 頂部星級與稀有度
+	# 頂部品質階級
 	var top_lbl := Label.new()
-	top_lbl.text = "%s %s" % [tier_data.get("stars", "★"), _t(str(tier_data.get("name", "")))]
+	top_lbl.text = _t(str(tier_data.get("name", "")))
 	top_lbl.set_anchors_preset(Control.PRESET_TOP_WIDE)
 	top_lbl.offset_top = 10
 	top_lbl.offset_bottom = 30

@@ -85,32 +85,32 @@ func _run_tests(loc: Node, gs: Node, inv: Node) -> void:
 	# 1. 測試各語系詞條對齊
 	var expected := {
 		"zh_TW": {
-			"hp_s": {"name": "小紅水", "desc": "恢復 25 生命。"},
+			"hp_s": {"name": "微光潤滑油", "desc": "滋潤關節，恢復 25 生命。"},
 			"iron_scrap": {"name": "鐵屑", "desc": "鍛造基礎材。鐵匠與商店都收。"},
 			"key_rusty": {"name": "鏽劍（紀念）", "desc": "霧廊入口撿起的那把。已鍛成正器後仍留念。"}
 		},
 		"zh_CN": {
-			"hp_s": {"name": "小红水", "desc": "恢复 25 生命。"},
+			"hp_s": {"name": "微光润滑油", "desc": "滋润关节，恢复 25 生命。"},
 			"iron_scrap": {"name": "铁屑", "desc": "锻造基础材。铁匠与商店都收。"},
 			"key_rusty": {"name": "锈剑（纪念）", "desc": "雾廊入口捡起的那把。已锻成正器后仍留念。"}
 		},
 		"en": {
-			"hp_s": {"name": "Small Red Draught", "desc": "Restores 25 health."},
+			"hp_s": {"name": "Glimmer Lubricant", "desc": "Lubricates joints, restoring 25 health."},
 			"iron_scrap": {"name": "Scrap Iron", "desc": "Basic forging material. Both the smith and the shop buy it."},
 			"key_rusty": {"name": "Rusty Sword (keepsake)", "desc": "The one you picked up at the mist-gallery mouth. Kept even after it was forged proper."}
 		},
 		"ja": {
-			"hp_s": {"name": "小さな赤い水", "desc": "生命を 25 回復。"},
+			"hp_s": {"name": "微光の潤滑油", "desc": "関節を潤し、生命を 25 回復。"},
 			"iron_scrap": {"name": "鉄屑", "desc": "鍛造の基礎素材。鍛冶屋も店も買い取る。"},
 			"key_rusty": {"name": "錆びた剣（記念）", "desc": "霧廊の入口で拾ったあの一振り。正式に鍛え直したあとも手元に。"}
 		},
 		"ko": {
-			"hp_s": {"name": "작은 붉은 물", "desc": "생명을 25 회복."},
+			"hp_s": {"name": "희미한 윤활유", "desc": "관절을 윤활하여 생명을 25 회복."},
 			"iron_scrap": {"name": "철 부스러기", "desc": "제작 기초재. 대장장이도 상점도 사들인다."},
 			"key_rusty": {"name": "녹슨 검（기념）", "desc": "안개회랑 어귀에서 주운 그 한 자루. 제대로 벼린 뒤에도 간직."}
 		},
 		"es": {
-			"hp_s": {"name": "Poción roja pequeña", "desc": "Restaura 25 de vida."},
+			"hp_s": {"name": "Lubricante tenue", "desc": "Lubrica las articulaciones y restaura 25 de vida."},
 			"iron_scrap": {"name": "Chatarra de hierro", "desc": "Material básico de forja. Lo compran el herrero y la tienda."},
 			"key_rusty": {"name": "Espada oxidada (recuerdo)", "desc": "La que recogiste a la entrada de la galería de niebla. La guardas aun tras forjarla en condiciones."}
 		}
@@ -176,14 +176,14 @@ func _run_tests(loc: Node, gs: Node, inv: Node) -> void:
 	# 檢查初始繁中
 	loc.call("set_locale", "en")
 	var en_name: String = str(inv.call("item_name", "hp_s"))
-	if en_name != "Small Red Draught":
+	if en_name != "Glimmer Lubricant":
 		_fail("動態切換 en 道具名不符: " + en_name)
 	else:
 		print("  ok 動態切換 en 即時生效: " + en_name)
 
 	loc.call("set_locale", "ja")
 	var ja_name: String = str(inv.call("item_name", "hp_s"))
-	if ja_name != "小さな赤い水":
+	if ja_name != "微光の潤滑油":
 		_fail("動態切換 ja 道具名不符: " + ja_name)
 	else:
 		print("  ok 動態切換 ja 即時生效: " + ja_name)
