@@ -6210,8 +6210,8 @@
    "id": "lobby-weapon-unequip-all",
    "cat": "遊戲",
    "title": "大廳角色頁三欄武器槽新增『一鍵卸下』按鈕與安全防護",
-   "status": "開發中",
-   "note": "指派給阿翔 sideworker2 (t_3c98e3bb, link t_87339dc9)",
+   "status": "測試中",
+   "note": "大廳角色頁三欄武器槽一鍵卸下與安全防護開發完成，無頭測試與截圖全綠 (t_3c98e3bb)",
    "keys": [
     "大廳角色頁三欄武"
    ]
