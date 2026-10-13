@@ -6350,8 +6350,8 @@
    "id": "shop-soul-forge-shortcuts",
    "cat": "遊戲",
    "title": "ShopDialog 商城彈窗底部新增前往聚魂與前往鍛造快捷果凍按鈕",
-   "status": "測試中",
-   "note": "ShopDialog 商城彈窗底部新增前往聚魂與前往鍛造快捷果凍按鈕已完成實作與 8 張真實實機截圖存證",
+   "status": "已上線",
+   "note": "ShopDialog 商城前往聚魂與前往鍛造快捷已完成測試並合併至 main 主線",
    "keys": [
     "ShopDial"
    ]
