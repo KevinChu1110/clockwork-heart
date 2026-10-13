@@ -3853,5 +3853,6 @@
   "未裝備任何戰魂": "No hay almas equipadas",
   "已一鍵配置最高戰力戰魂": "Almas más fuertes autoequipadas",
   "目前已是最佳戰魂配置！": "¡Ya es la mejor configuración de almas!",
-  "一鍵卸下全部戰魂": "Desequipar todas las almas"
+  "一鍵卸下全部戰魂": "Desequipar todas las almas",
+  "vault.btn_go_inventory": "Ir al Inventario"
 }
