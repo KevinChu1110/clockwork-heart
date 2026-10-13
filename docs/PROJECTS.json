@@ -6320,8 +6320,8 @@
    "id": "title-wall-unequip",
    "cat": "遊戲",
    "title": "TitleWallDialog 稱號牆新增卸下稱號按鈕與連動安全防護",
-   "status": "開發中",
-   "note": "開始實作 TitleWallDialog 卸下稱號果凍按鈕與連動安全防護 (t_71a3c58d)",
+   "status": "測試中",
+   "note": "TitleWallDialog 卸下稱號果凍按鈕與連動安全防護實作完成，單元測試、冒煙測試與 clock-check 全數通過，產出實機截圖存證 (t_71a3c58d)",
    "keys": [
     "TitleWal"
    ]
