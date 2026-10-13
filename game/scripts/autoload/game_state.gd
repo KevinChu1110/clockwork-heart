@@ -5,6 +5,7 @@ signal flags_changed(key: String, value: Variant)
 signal gold_changed(amount: int)
 signal chapter_changed(chapter: String)
 signal core_drop_notify_changed(has_new: bool)
+signal equipped_title_changed(title_name: String)
 
 ## 存檔版本。改動存檔結構就 +1，並在 save_migration.gd 補一支對應的升級步驟。
 const VERSION := 10
@@ -16,6 +17,23 @@ var chapter: String = "title"
 var flags: Dictionary = {}
 
 var player_name: String = "小白"
+## 玩家當前佩戴稱號（預設「初出茅廬」）
+var equipped_title: String = "初出茅廬"
+
+
+func get_equipped_title() -> String:
+	if equipped_title.strip_edges().is_empty():
+		return "初出茅廬"
+	return equipped_title
+
+
+func set_equipped_title(t: String) -> void:
+	var clean_t := t.strip_edges()
+	if clean_t.is_empty():
+		clean_t = "初出茅廬"
+	if equipped_title != clean_t:
+		equipped_title = clean_t
+		equipped_title_changed.emit(equipped_title)
 var player_race: String = "rabbit"
 var paperdoll_slots: Dictionary = {}
 var level: int = 1
@@ -644,6 +662,7 @@ func to_dict() -> Dictionary:
 		"chapter": chapter,
 		"flags": flags.duplicate(true),
 		"player_name": player_name,
+		"equipped_title": get_equipped_title(),
 		"player_race": player_race,
 		"paperdoll_slots": paperdoll_slots.duplicate(true),
 		"level": level,
@@ -677,6 +696,7 @@ func to_dict() -> Dictionary:
 		"soul_free_draws": soul_free_draws,
 		"soul_free_day": soul_free_day,
 		"inventory": inventory.duplicate(true),
+		"iron_scrap": iron_scrap,
 		"hotbar": hotbar.duplicate(),
 		"ui_layout": ui_layout.duplicate(true),
 		"equip_bag": equip_bag.duplicate(true),
@@ -728,6 +748,8 @@ func from_dict(d: Dictionary) -> void:
 	flags = _dict_field(d, "flags")
 	has_removed_ads = bool(d.get("has_removed_ads", flags.get("has_removed_ads", false)))
 	player_name = str(d.get("player_name", "小白"))
+	var eq_t: String = str(d.get("equipped_title", "初出茅廬")).strip_edges()
+	equipped_title = eq_t if not eq_t.is_empty() else "初出茅廬"
 	player_race = str(d.get("player_race", "rabbit")).to_lower().strip_edges()
 	if player_race.is_empty():
 		player_race = "rabbit"
@@ -766,6 +788,8 @@ func from_dict(d: Dictionary) -> void:
 	soul_free_draws = int(d.get("soul_free_draws", 1))
 	soul_free_day = str(d.get("soul_free_day", ""))
 	inventory = _dict_field(d, "inventory")
+	if d.has("iron_scrap"):
+		iron_scrap = int(d.get("iron_scrap", 0))
 	hotbar = _array_field(d, "hotbar", ["", "", "", "", "", "", "", ""])
 	while hotbar.size() < 8:
 		hotbar.append("")
@@ -968,6 +992,7 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"chapter": "c0",
 		"flags": {},
 		"player_name": default_name,
+		"equipped_title": "初出茅廬",
 		"player_race": r,
 		"paperdoll_slots": chosen_slots,
 		"level": 1,

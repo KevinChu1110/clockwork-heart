@@ -449,6 +449,10 @@ func _ready() -> void:
 		gs.core_drop_notify_changed.connect(func(_val):
 			_refresh_dock_badges()
 		)
+	if gs and gs.has_signal("equipped_title_changed"):
+		gs.equipped_title_changed.connect(func(_val):
+			_refresh_hero_title_tag()
+		)
 	call_deferred("_apply_safe")
 
 func _exit_tree() -> void:
@@ -1947,7 +1951,11 @@ func _build_village_tab() -> void:
 	tag_panel.offset_top = -142
 	tag_panel.offset_right = 56
 	tag_panel.offset_bottom = -100
-	tag_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tag_panel.mouse_filter = Control.MOUSE_FILTER_STOP
+	tag_panel.gui_input.connect(func(event: InputEvent):
+		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			open_title_wall_dialog()
+	)
 
 	var tag_sb := StyleBoxFlat.new()
 	tag_sb.bg_color = Color(0.14, 0.11, 0.18, 0.85) # 蒸汽發條半透深金屬板件
@@ -1977,7 +1985,12 @@ func _build_village_tab() -> void:
 	tag_v.add_child(_hero_name_tag)
 
 	var title_l := Label.new()
-	title_l.text = "【%s】" % _t("初出茅廬")
+	title_l.name = "HeroTitleTag"
+	var raw_title := "初出茅廬"
+	var gs_inst := _gs()
+	if gs_inst and gs_inst.has_method("get_equipped_title"):
+		raw_title = gs_inst.get_equipped_title()
+	title_l.text = "【%s】" % _get_title_display_name(raw_title)
 	title_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title_l.add_theme_font_size_override("font_size", 11)
 	title_l.add_theme_color_override("font_color", COLOR_GOLD)
@@ -6208,6 +6221,7 @@ func refresh_hud() -> void:
 		_name_label.text = _get_hero_name()
 	if _hero_name_tag:
 		_hero_name_tag.text = _get_hero_name()
+	_refresh_hero_title_tag()
 	if _profile_avatar:
 		var cur_r := str(gs.player_race).strip_edges().to_lower() if gs and "player_race" in gs else "rabbit"
 		_profile_avatar.texture = _get_hero_portrait(cur_r)
@@ -6315,8 +6329,7 @@ func _apply_locale_texts() -> void:
 
 	_update_speech_bubble_text()
 
-	if _hero_title_tag and is_instance_valid(_hero_title_tag):
-		_hero_title_tag.text = "【%s】" % _t("初出茅廬")
+	_refresh_hero_title_tag()
 
 	if _char_doll_title_label and is_instance_valid(_char_doll_title_label):
 		_char_doll_title_label.text = _t("機體外觀 · 發條紙娃娃")
@@ -7283,6 +7296,57 @@ func ui_goto(target: String) -> bool:
 	if p != null and p.has_method("ui_goto"):
 		return bool(p.call("ui_goto", target))
 	return false
+
+
+func _refresh_hero_title_tag() -> void:
+	if not _hero_title_tag or not is_instance_valid(_hero_title_tag):
+		return
+	var raw_title := "初出茅廬"
+	var gs := _gs()
+	if gs and gs.has_method("get_equipped_title"):
+		raw_title = gs.get_equipped_title()
+	_hero_title_tag.text = "【%s】" % _get_title_display_name(raw_title)
+
+
+func _get_title_display_name(raw_title: String) -> String:
+	if raw_title.is_empty() or raw_title == "初出茅廬":
+		return _t("初出茅廬")
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var tc: Node = (loop as SceneTree).root.get_node_or_null("TitleCatalog")
+		if tc and tc.has_method("entries"):
+			for e in tc.entries():
+				if str(e.get("raw_name", "")) == raw_title or str(e.get("name", "")) == raw_title or str(e.get("flag", "")) == raw_title:
+					return str(e.get("name", raw_title))
+	return _t(raw_title)
+
+
+func get_hero_title_text() -> String:
+	if _hero_title_tag and is_instance_valid(_hero_title_tag):
+		return _hero_title_tag.text
+	return ""
+
+
+func refresh_hero_title() -> void:
+	_refresh_hero_title_tag()
+
+
+func open_title_wall_dialog() -> Control:
+	var existing = get_node_or_null("TitleWallDialog")
+	if existing:
+		return existing
+	var scn: GDScript = load("res://scripts/ui/title_wall_dialog.gd")
+	if not scn:
+		push_error("無法載入 TitleWallDialog")
+		return null
+	var dlg: Control = scn.new()
+	dlg.name = "TitleWallDialog"
+	var tc: Node = Engine.get_main_loop().root.get_node_or_null("TitleCatalog") if Engine.get_main_loop() else null
+	var newly: Array[String] = tc.evaluate_all() if tc and tc.has_method("evaluate_all") else []
+	dlg.setup(newly, func(): dlg.queue_free(), Callable(), _t("回到大廳"))
+	add_child(dlg)
+	return dlg
+
 
 
 
