@@ -38,33 +38,33 @@ const ITEM_ICON_DIR := "res://assets/icons/items/"
 
 const CATALOG: Dictionary = {
 	"hp_s": {
-		"name": "小紅水",
-		"desc": "恢復 25 生命。",
+		"name": "微光潤滑油",
+		"desc": "滋潤關節，恢復 25 生命。",
 		"kind": "consumable",
 		"stack": 99,
 		"heal": 25,
 		"color": Color(0.9, 0.25, 0.25),
-		"glyph": "小",
+		"glyph": "油",
 		"icon": "res://assets/icons/items/hp_s.png",
 	},
 	"hp_m": {
-		"name": "中紅水",
-		"desc": "恢復 55 生命。",
+		"name": "高純潤滑油",
+		"desc": "高純度發條油，迅速恢復 55 生命。",
 		"kind": "consumable",
 		"stack": 99,
 		"heal": 55,
 		"color": Color(0.85, 0.15, 0.2),
-		"glyph": "中",
+		"glyph": "純",
 		"icon": "res://assets/icons/items/hp_m.png",
 	},
 	"bread": {
-		"name": "乾糧",
-		"desc": "恢復 15 生命。路上充飢。",
+		"name": "微型備用齒輪",
+		"desc": "替換微損組件，恢復 15 生命。",
 		"kind": "consumable",
 		"stack": 99,
 		"heal": 15,
 		"color": Color(0.75, 0.55, 0.3),
-		"glyph": "糧",
+		"glyph": "齒",
 		"icon": "res://assets/icons/items/bread.png",
 	},
 	"dust_crumb": {
@@ -78,13 +78,13 @@ const CATALOG: Dictionary = {
 		"icon": "res://assets/icons/items/dust_crumb.png",
 	},
 	"antidote": {
-		"name": "清焰露",
-		"desc": "恢復 10 生命，並略提振精神。",
+		"name": "散熱冷卻劑",
+		"desc": "導出摩擦積熱，恢復 10 生命並提振運轉。",
 		"kind": "consumable",
 		"stack": 30,
 		"heal": 10,
 		"color": Color(0.4, 0.75, 0.55),
-		"glyph": "露",
+		"glyph": "冷",
 		"icon": "res://assets/icons/items/antidote.png",
 	},
 	"key_rusty": {
@@ -94,6 +94,50 @@ const CATALOG: Dictionary = {
 		"stack": 1,
 		"color": Color(0.55, 0.5, 0.4),
 		"glyph": "劍",
+	},
+	"rusty_blade": {
+		"name": "鏽劍",
+		"desc": "斑駁的鐵質短刃。可前往天宮鐵匠進行升階鍛造。",
+		"kind": "weapon",
+		"slot": "weapon",
+		"stack": 1,
+		"sell": 15,
+		"atk": 4,
+		"color": Color(0.75, 0.65, 0.5),
+		"glyph": "刃",
+	},
+	"meager_edge": {
+		"name": "微末之刃",
+		"desc": "初具鋒芒的精鍛短劍。可在天宮鐵匠持續淬煉。",
+		"kind": "weapon",
+		"slot": "weapon",
+		"stack": 1,
+		"sell": 30,
+		"atk": 9,
+		"color": Color(0.8, 0.7, 0.55),
+		"glyph": "劍",
+	},
+	"ash_mail": {
+		"name": "灰燼甲片",
+		"desc": "以灰燼鍛打的輕質胸甲。可前往天宮鐵匠進行升階鍛造。",
+		"kind": "armor",
+		"slot": "armor",
+		"stack": 1,
+		"sell": 20,
+		"def": 3,
+		"color": Color(0.65, 0.65, 0.7),
+		"glyph": "甲",
+	},
+	"knight_plate": {
+		"name": "騎士殘甲",
+		"desc": "精鋼鍛造的厚重胸甲，散發著沈穩的金屬光澤。",
+		"kind": "armor",
+		"slot": "armor",
+		"stack": 1,
+		"sell": 40,
+		"def": 7,
+		"color": Color(0.65, 0.65, 0.75),
+		"glyph": "甲",
 	},
 	"map_scrap": {
 		"name": "六域殘圖",
@@ -121,13 +165,13 @@ const CATALOG: Dictionary = {
 		"glyph": "印",
 	},
 	"wolf_fang": {
-		"name": "狼牙",
-		"desc": "雜魚掉落。可賣 8 金。",
+		"name": "棘輪尖齒",
+		"desc": "失控機械掉落的尖銳零件。可賣 8 金。",
 		"kind": "material",
 		"stack": 99,
 		"sell": 8,
 		"color": Color(0.7, 0.7, 0.75),
-		"glyph": "牙",
+		"glyph": "齒",
 		"icon": "res://assets/icons/items/wolf_fang.png",
 	},
 	"mist_shard": {
@@ -159,24 +203,24 @@ const CATALOG: Dictionary = {
 		"glyph": "燼",
 	},
 	"hunt_hide": {
-		"name": "溢皮",
-		"desc": "狩獵場材料。可在溢物回收換金。",
+		"name": "溢流板件",
+		"desc": "狩獵場脫落的金屬板件。可在溢物回收換金。",
 		"kind": "material",
 		"stack": 99,
 		"sell": 10,
 		"tradeable": true,
 		"color": Color(0.55, 0.4, 0.3),
-		"glyph": "皮",
+		"glyph": "板",
 	},
 	"hunt_bone": {
-		"name": "焰骨",
-		"desc": "狩獵場中階材料。",
+		"name": "鍛火軸心",
+		"desc": "狩獵場中階機件。高溫鍛打的堅固傳動軸。",
 		"kind": "material",
 		"stack": 99,
 		"sell": 22,
 		"tradeable": true,
 		"color": Color(0.7, 0.55, 0.4),
-		"glyph": "骨",
+		"glyph": "軸",
 	},
 	"hunt_core": {
 		"name": "溢核",
@@ -202,8 +246,8 @@ const CATALOG: Dictionary = {
 		"icon": "res://assets/icons/items/iron_scrap.png",
 	},
 	"star_ore": {
-		"name": "星砂礦",
-		"desc": "抽魂／獵場武器材料。",
+		"name": "發條晶砂",
+		"desc": "聚魂與武器鍛造的微型共振晶砂。",
 		"kind": "material",
 		"stack": 99,
 		"sell": 10,
@@ -320,10 +364,20 @@ func ensure_hotbar() -> void:
 		GameState.inventory = {}
 
 
+var _custom_items: Dictionary = {}
+
+
+func register_item(id: String, def: Dictionary) -> void:
+	_custom_items[id] = def
+	inventory_changed.emit()
+
+
 ## 道具名與說明在非繁中會被 ContentLoc 換掉。CATALOG 是 id → 資料，
 ## 但每筆裡面沒有 id 欄位，所以補一個再交給 apply()。
 func catalog(id: String) -> Dictionary:
-	var d: Dictionary = CATALOG.get(id, {})
+	var d: Dictionary = _custom_items.get(id, {})
+	if d.is_empty():
+		d = CATALOG.get(id, {})
 	if d.is_empty():
 		return d
 	if ContentLoc.locale() == "zh_TW":
@@ -369,7 +423,7 @@ func has_item(id: String, n: int = 1) -> bool:
 
 
 func add_item(id: String, n: int = 1) -> bool:
-	if n <= 0 or not CATALOG.has(id):
+	if n <= 0 or (not CATALOG.has(id) and not _custom_items.has(id)):
 		return false
 	ensure_hotbar()
 	var stack_max := int(catalog(id).get("stack", 99))
@@ -434,7 +488,7 @@ func bag_list() -> Array:
 		if not (val is int or val is float):
 			continue
 		var c := int(val)
-		if c > 0 and CATALOG.has(id):
+		if c > 0 and (CATALOG.has(id) or _custom_items.has(id)):
 			out.append({"id": id, "count": c, "def": catalog(id)})
 	out.sort_custom(func(a, b): return str(a.get("id")) < str(b.get("id")))
 	return out
@@ -517,9 +571,9 @@ func grant_starter() -> void:
 	## 新遊戲／教學後
 	if GameState.has_flag("inv.starter_given"):
 		return
+	GameState.set_flag("inv.starter_given", true)
 	add_item("hp_s", 3)
 	add_item("bread", 2)
-	GameState.set_flag("inv.starter_given", true)
 
 
 func roll_skirmish_loot(mode: String) -> Array:

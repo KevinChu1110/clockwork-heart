@@ -16,7 +16,7 @@ const TIER_COLORS := {
 		"bottom": Color("#475467"),
 		"glow": Color(0.6, 0.65, 0.75, 0.55),
 		"badge": Color("#EAECF0"),
-		"stars": "★ ★ ☆ ☆ ☆",
+		"stars": "",
 		"name": "普通"
 	},
 	"orange": {
@@ -26,7 +26,7 @@ const TIER_COLORS := {
 		"bottom": Color("#E68A00"),
 		"glow": Color(1.0, 0.63, 0.06, 0.65),
 		"badge": Color("#FFA010"),
-		"stars": "★ ★ ★ ☆ ☆",
+		"stars": "",
 		"name": "優良"
 	},
 	"blue": {
@@ -36,7 +36,7 @@ const TIER_COLORS := {
 		"bottom": Color("#1E88E5"),
 		"glow": Color(0.22, 0.63, 1.0, 0.65),
 		"badge": Color("#38A0FF"),
-		"stars": "★ ★ ★ ★ ☆",
+		"stars": "",
 		"name": "稀有"
 	},
 	"purple": {
@@ -46,7 +46,7 @@ const TIER_COLORS := {
 		"bottom": Color("#8E24AA"),
 		"glow": Color(0.64, 0.35, 1.0, 0.70),
 		"badge": Color("#A259FF"),
-		"stars": "★ ★ ★ ★ ★",
+		"stars": "",
 		"name": "史詩"
 	},
 	"gold": {
@@ -56,7 +56,7 @@ const TIER_COLORS := {
 		"bottom": Color("#C48D00"),
 		"glow": Color(1.0, 0.82, 0.16, 0.75),
 		"badge": Color("#FFD028"),
-		"stars": "★ ★ ★ ★ ★ ★",
+		"stars": "",
 		"name": "傳奇"
 	},
 	"red": {
@@ -66,7 +66,7 @@ const TIER_COLORS := {
 		"bottom": Color("#B71C1C"),
 		"glow": Color(1.0, 0.30, 0.30, 0.80),
 		"badge": Color("#FF4D4D"),
-		"stars": "✦ ✦ ✦ ✦ ✦ ✦",
+		"stars": "",
 		"name": "神話"
 	}
 }
@@ -385,7 +385,7 @@ func _render_placeholder() -> void:
 
 	var tier_data: Dictionary = TIER_COLORS["gold"]
 	_card_panel.add_theme_stylebox_override("panel", _build_card_style(tier_data))
-	_stars_lbl.text = "✦ ✦ ✦ ✦ ✦"
+	_stars_lbl.text = _t(str(tier_data.get("name", "傳奇")))
 	_stars_lbl.add_theme_color_override("font_color", tier_data.frame)
 
 	var default_icon := "res://assets/sprites/player/paperdoll/rabbit/winding_key/key_classic_brass_512.png"
@@ -430,7 +430,7 @@ func _render_drop() -> void:
 
 	# 套用果凍色階光框
 	_card_panel.add_theme_stylebox_override("panel", _build_card_style(tier_data))
-	_stars_lbl.text = "%s  %s" % [tier_data.get("stars", "★ ★ ★ ★ ☆"), tier_data.get("name", "")]
+	_stars_lbl.text = _t(str(tier_data.get("name", "")))
 	_stars_lbl.add_theme_color_override("font_color", tier_data.frame)
 
 	# 更新微光光輪顏色

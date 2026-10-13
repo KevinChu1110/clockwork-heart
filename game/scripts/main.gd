@@ -75,6 +75,8 @@ var _saves_ui: RefCounted  ## SaveSlotsPanel
 var _toast: Label
 var _current: Screen = Screen.TITLE
 var _battle_mode: String = "wolf"
+var _defeat_gear_up_requested: bool = false
+var _dummy_skills_requested: bool = false
 var _pre_dummy_hp: int = -1
 var _after_dialogue: Callable = Callable()
 var _paused: bool = false
@@ -128,6 +130,12 @@ func _ready() -> void:
 		_inv_panel.item_used.connect(_on_inv_use_item)
 	if _inv_panel.has_signal("assign_hotbar"):
 		_inv_panel.assign_hotbar.connect(_on_inv_assign_hotbar)
+	if _inv_panel.has_signal("remove_hotbar"):
+		_inv_panel.remove_hotbar.connect(_on_inv_remove_hotbar)
+	if _inv_panel.has_signal("equipment_changed"):
+		_inv_panel.equipment_changed.connect(func():
+			_refresh_hud()
+		)
 	## 短訊：深木提示框，置底中、在探索提示框與快捷欄上方。
 	## 舊版是沒底的深字＋白影，落在地圖上有時讀得到有時讀不到；
 	## 而且錨在底中卻沒設 grow，文字是從螢幕正中往右長出去的，不是置中。
@@ -1074,7 +1082,7 @@ func _go_hunt_recycle_panel() -> void:
 		if n > 0:
 			buttons.append({"text": _t("賣 %s") % InventorySystem.item_name(id), "cb": _hunt_recycle_one.bind(id)})
 	if buttons.is_empty():
-		body += _t("\n（袋裡沒有溢皮／焰骨／溢核。）")
+		body += _t("\n（袋裡沒有溢流板件／鍛火軸心／溢核。）")
 	buttons.append({"text": _t("返回獵場"), "cb": _go_hunt_panel})
 	buttons.append({"text": Loc.t("btn.close"), "cb": _hub_back})
 	_panel(Loc.t("panel.recycle"), body, buttons)
@@ -1577,7 +1585,7 @@ func _go_quest_panel() -> void:
 func _go_material_shop() -> void:
 	## 琥珀材料行：買鍛材／耗材，賣材料
 	var body := _t("琥珀的材料行 · 金幣 %d\n\n") % GameState.gold
-	body += _t("持有：鐵屑%d 星砂%d 橡脂%d 騎士碎鐵%d 狼牙%d\n\n") % [
+	body += _t("持有：鐵屑%d 晶砂%d 橡脂%d 騎士碎鐵%d 棘齒%d\n\n") % [
 		InventorySystem.count("iron_scrap"),
 		InventorySystem.count("star_ore"),
 		InventorySystem.count("oak_resin"),
@@ -1587,11 +1595,11 @@ func _go_material_shop() -> void:
 	body += _t("野外掉的材料，賣我換金，或拿去鍛。")
 	var buttons: Array = [
 		{"text": _t("買鐵屑（14金）"), "cb": func(): _shop_buy("iron_scrap", 14)},
-		{"text": _t("買星砂礦（22金）"), "cb": func(): _shop_buy("star_ore", 22)},
+		{"text": _t("買發條晶砂（22金）"), "cb": func(): _shop_buy("star_ore", 22)},
 		{"text": _t("買橡脂（18金）"), "cb": func(): _shop_buy("oak_resin", 18)},
 		{"text": _t("買騎士碎鐵（28金）"), "cb": func(): _shop_buy("knight_shard", 28)},
-		{"text": _t("買小紅水×1（12金）"), "cb": func(): _shop_buy("hp_s", 12)},
-		{"text": _t("買乾糧×1（8金）"), "cb": func(): _shop_buy("bread", 8)},
+		{"text": _t("買微光潤滑油×1（12金）"), "cb": func(): _shop_buy("hp_s", 12)},
+		{"text": _t("買微型備用齒輪×1（8金）"), "cb": func(): _shop_buy("bread", 8)},
 		{"text": _t("一鍵賣出全部材料"), "cb": _shop_sell_all},
 		{"text": _t("回上發條"), "cb": _go_daily_panel},
 		{"text": Loc.t("btn.close"), "cb": _hub_back},
@@ -2375,6 +2383,14 @@ func _on_hotbar_use(slot: int) -> void:
 
 
 func _on_inv_use_item(item_id: String) -> void:
+	var def: Dictionary = InventorySystem.catalog(item_id) if InventorySystem else {}
+	var kind := str(def.get("kind", "")).to_lower()
+	if kind in ["consumable", "potion"] or item_id.begins_with("hp_") or item_id.begins_with("pot_"):
+		SaveManager.save_game()
+		_refresh_hud()
+		if _inv_panel and _inv_panel.has_method("refresh"):
+			_inv_panel.call("refresh")
+		return
 	var res: Dictionary = InventorySystem.use_item(item_id)
 	if not bool(res.get("ok", false)):
 		_show_toast(str(res.get("msg", _t("無法使用"))))
@@ -2400,6 +2416,21 @@ func _on_inv_assign_hotbar(item_id: String) -> void:
 		_show_toast(_t("快捷欄已滿，改綁 1：%s") % InventorySystem.item_name(item_id))
 	if _hotbar and _hotbar.has_method("refresh"):
 		_hotbar.call("refresh")
+	if _inv_panel and _inv_panel.has_method("refresh"):
+		_inv_panel.call("refresh")
+
+
+func _on_inv_remove_hotbar(item_id: String) -> void:
+	InventorySystem.ensure_hotbar()
+	for i in GameState.hotbar.size():
+		if str(GameState.hotbar[i]) == item_id:
+			InventorySystem.clear_hotbar(i)
+	var name_str := InventorySystem.item_name(item_id) if InventorySystem else item_id
+	_show_toast(_t("已從快捷欄卸下：%s") % name_str)
+	if _hotbar and _hotbar.has_method("refresh"):
+		_hotbar.call("refresh")
+	if _inv_panel and _inv_panel.has_method("refresh"):
+		_inv_panel.call("refresh")
 
 
 func _show_toast(msg: String) -> void:
@@ -2686,6 +2717,23 @@ func _go_title_settings_menu() -> void:
 func _go_game_settings_menu() -> void:
 	_settings_from_title = false
 	_open_mobile_settings()
+
+
+func _on_dummy_skills_requested(battle_node: Node = null) -> void:
+	_dummy_skills_requested = true
+	if battle_node != null and is_instance_valid(battle_node) and battle_node.has_signal("battle_finished"):
+		battle_node.battle_finished.emit(false)
+	else:
+		_open_lobby_skills()
+
+
+func _open_lobby_skills() -> void:
+	_go_mobile_lobby(1)
+	for child in host.get_children():
+		if child is MobileLobby or child.get_script() != null and child.get_script().resource_path.ends_with("mobile_lobby.gd"):
+			if child.has_method("open_skill_dialog"):
+				child.open_skill_dialog()
+			break
 
 
 func _open_mobile_settings() -> void:
@@ -3529,8 +3577,8 @@ func _side_nest_care() -> void:
 		return
 	_play_dialog([
 		{"speaker": _t("旁白"), "text": _t("橋下鳥巢軟軟的。裡面沒有蛋，只有碎殼與乾草。")},
-		{"speaker": _t("內心"), "text": _t("留言板寫過：別掏蛋。那就……補一點乾糧屑。")},
-		{"speaker": _t("旁白"), "text": _t("你撒下少許乾糧碎。巢緣被風掀起，又落回去，像點了頭。")},
+		{"speaker": _t("內心"), "text": _t("留言板寫過：別掏蛋。那就……補一點齒輪碎屑。")},
+		{"speaker": _t("旁白"), "text": _t("你撒下少許備用齒輪碎屑。巢緣被風掀起，又落回去，像點了頭。")},
 		{"speaker": _t("系統"), "text": _t("【支線】橋下軟羽完成。金 15 · 星屑 1 · 經驗 12 · 橡脂×1。")},
 	], func():
 		_grant_side_reward(SideMilestones.reward("nest_care"))
@@ -3582,7 +3630,7 @@ func _side_hearth() -> void:
 		{"speaker": _t("旁白"), "text": _t("熄滅壁爐積滿灰。爐邊半袋乾柴——像要回來，沒回來。")},
 		{"speaker": _t("內心"), "text": _t("替下一個人點著。我也是過路的。")},
 		{"speaker": _t("旁白"), "text": _t("火舌爬上柴。「歇腳」兩個字沒那麼破了。")},
-		{"speaker": _t("系統"), "text": _t("【支線】歇腳餘溫完成。金 18 · 星屑 1 · 經驗 14 · 乾糧×1。")},
+		{"speaker": _t("系統"), "text": _t("【支線】歇腳餘溫完成。金 18 · 星屑 1 · 經驗 14 · 微型備用齒輪×1。")},
 	], func():
 		_grant_side_reward(SideMilestones.reward("hearth"))
 	)
@@ -3658,7 +3706,7 @@ func _flavor_world_object(id: String) -> void:
 		"memory_orb_b": _t("記憶球：堡壘的旗第一次升起。"),
 		"memory_orb_c": _t("記憶球：守衛泰坦還清明時的眼睛。"),
 		"throne_shadow": _t("王座影沒有實體。卻讓人想跪下——你沒有。"),
-		"wagon_a": _t("篷車裡有乾糧味與遠方泥土。"),
+		"wagon_a": _t("篷車裡有發條潤滑油味與遠方泥土。"),
 		"map_table": _t("地圖桌標了六域。塔被畫得最大。"),
 		"goods_pile": _t("貨堆用帆布蓋著。行商的規矩：先問價。"),
 		"codex_shelf": _t("典籍架上積灰。絲絨的字跡比灰塵新。"),
@@ -3739,10 +3787,10 @@ func _handle_world_content(id: String) -> bool:
 		var drop_msg := ""
 		if randf() < 0.7:
 			InventorySystem.add_item("hp_s", 1)
-			drop_msg = _t(" · 小紅水×1")
+			drop_msg = _t(" · 微光潤滑油×1")
 		elif randf() < 0.5:
 			InventorySystem.add_item("bread", 1)
-			drop_msg = _t(" · 乾糧×1")
+			drop_msg = _t(" · 微型備用齒輪×1")
 		if randf() < 0.25:
 			InventorySystem.add_item("dust_crumb", 1)
 			drop_msg += _t(" · 星屑碎×1")
@@ -3853,12 +3901,12 @@ func _handle_world_travel(id: String) -> bool:
 				return true
 			_play_dialog([
 				{"speaker": _t("行商"), "portrait": "caravan_chief", "text": _t("六域的路我都走過。金幣換消息：塔下最近開了門。")},
-				{"speaker": _t("行商"), "portrait": "caravan_chief", "text": _t("乾糧 15 金。先付再說。")},
+				{"speaker": _t("行商"), "portrait": "caravan_chief", "text": _t("微型備用齒輪 15 金。先付再說。")},
 			], func():
 				if GameState.gold >= 15:
 					GameState.add_gold(-15)
 					InventorySystem.add_item("bread", 1)
-					_show_toast(_t("買下乾糧×1"))
+					_show_toast(_t("買下微型備用齒輪×1"))
 					if not GameState.has_flag("inv.map_scrap"):
 						InventorySystem.add_item("map_scrap", 1)
 						GameState.set_flag("inv.map_scrap", true)
@@ -4043,7 +4091,7 @@ func _maybe_show_tutorial() -> void:
 	if not GameState.has_flag("tut_done"):
 		GameState.set_flag("tut_done", true)
 		InventorySystem.grant_starter()
-		_show_toast(_t("起始補給：小紅水×3 · 乾糧×2"))
+		_show_toast(_t("起始補給：微光潤滑油×3 · 微型備用齒輪×2"))
 		SaveManager.save_game()
 		_refresh_hud()
 	if _explore and is_instance_valid(_explore) and _explore.has_method("show_guide_hint"):
@@ -4230,7 +4278,12 @@ func _start_battle_raw(mode: String) -> void:
 		battle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		battle.size_flags_vertical = Control.SIZE_EXPAND_FILL
 		host.add_child(battle)
+		_defeat_gear_up_requested = false
 		battle.battle_finished.connect(_on_battle_finished)
+		if battle.has_signal("gear_up_requested"):
+			battle.connect("gear_up_requested", func(): _defeat_gear_up_requested = true)
+		if battle.has_signal("skills_requested"):
+			battle.connect("skills_requested", func(): _on_dummy_skills_requested(battle))
 		battle.setup(mode)
 		_refresh_hud()
 		return
@@ -4264,19 +4317,38 @@ func _start_battle_raw(mode: String) -> void:
 	battle.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	battle.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	host.add_child(battle)
+	_defeat_gear_up_requested = false
 	battle.battle_finished.connect(_on_battle_finished)
+	if battle.has_signal("gear_up_requested"):
+		battle.connect("gear_up_requested", func(): _defeat_gear_up_requested = true)
 	battle.setup(mode)
 	_refresh_hud()
 
 
 func _on_battle_finished(won: bool) -> void:
+	if not won and _defeat_gear_up_requested:
+		_defeat_gear_up_requested = false
+		SaveManager.save_game()
+		_explore_play_pose("hit", 0.5)
+		if _battle_mode != "pvp_snap":
+			var ref: Dictionary = EnergySystem.refund_on_defeat(_battle_mode)
+			var ref_n := int(ref.get("refunded", 0))
+			if ref_n > 0:
+				GameLog.combat(_t("戰鬥失敗：返還能量 %d 點") % ref_n)
+				ui_toast(_t("戰鬥失敗：返還能量 %d 點（現有 %d／%d）") % [ref_n, EnergySystem.current(), EnergySystem.MAX_ENERGY])
+		_go_mobile_lobby(1)
+		return
 	if _battle_mode == "training_dummy":
 		if _pre_dummy_hp > 0:
 			GameState.hp = _pre_dummy_hp
 			_pre_dummy_hp = -1
 		if won:
 			_explore_play_pose("skill", 0.55)
-		_return_to_explore("town_tutor", "C1_TOWN")
+		if _dummy_skills_requested:
+			_dummy_skills_requested = false
+			_open_lobby_skills()
+			return
+		_open_explore_then("town_tutor", Screen.C1_TOWN, _go_skill_panel)
 		return
 	SaveManager.save_game()
 	## 回探索時補一拍勝負姿（場景重建後下一幀也可能已換圖，仍盡力播）
@@ -4386,7 +4458,7 @@ func _on_world_battle_finished(won: bool) -> void:
 				win_lines.append({"speaker": _t("系統"), "text": relic_msg})
 				if not bool(relic.get("duplicate", false)):
 					win_lines.append({"speaker": _t("系統"), "text": _t("秘境魂器入槽才有用。Esc →「戰魂」嵌進去。")})
-			win_lines.append({"speaker": _t("系統"), "text": _t("背包：秘境印記×1 · 中紅水×1")})
+			win_lines.append({"speaker": _t("系統"), "text": _t("背包：秘境印記×1 · 高純潤滑油×1")})
 			var wmap := str(b.get("win_map", "crossroads"))
 			var wsc := str(b.get("win_screen", "C1_WILD"))
 			_play_dialog(win_lines, func(): _return_to_explore(wmap, wsc))
@@ -5864,7 +5936,7 @@ func _go_skill_panel() -> void:
 				"cb": _skill_unlock_cb(sid),
 				"below_control": _make_skill_progress_widget(sid),
 			})
-	buttons.append({"text": Loc.t("pause.soul"), "cb": _go_soul_panel})
+	buttons.append({"text": _t("前往木人樁試招"), "cb": func(): _start_battle("training_dummy")})
 	buttons.append({"text": _t("回到廣場"), "cb": _go_c1_town})
 	_panel(Loc.t("panel.tutor"), body, buttons, {"body_h": 140.0})
 
@@ -6937,7 +7009,7 @@ func _interact_wild(id: String) -> void:
 				_play_dialog(DialogLines.lines("c1.crate_empty"))
 			else:
 				_play_dialog([
-					{"speaker": _t("系統"), "text": _t("補給箱裡有繃帶與乾糧。回復一些傷勢，金幣 ＋20。")},
+					{"speaker": _t("系統"), "text": _t("補給箱裡有修復膠帶與微型備用齒輪。回復一些傷勢，金幣 ＋20。")},
 				], func():
 					GameState.hp = mini(GameState.effective_max_hp(), GameState.hp + 25)
 					GameState.add_gold(20)

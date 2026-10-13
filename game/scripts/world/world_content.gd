@@ -170,7 +170,7 @@ static func chests() -> Dictionary:
 		"sealed_chest": {"flag": "loot.chest.road_ruins", "gold": 40, "dust": 2, "text": _t("封箱裂開：古驛的通行費，如今歸你。")},
 		"chest_root": {"flag": "loot.chest.forest_ruins", "gold": 44, "dust": 3, "text": _t("根纏箱打開：林裡留下的箭矢錢。")},
 		"chest_half": {"flag": "loot.chest.coast_wreck", "gold": 48, "dust": 2, "text": _t("半埋箱：海水泡過的金幣仍作響。")},
-		"supply_crate": {"flag": "loot.chest.wild_supply", "gold": 26, "dust": 1, "text": _t("補給箱：乾糧與幾枚城徽幣。")},
+		"supply_crate": {"flag": "loot.chest.wild_supply", "gold": 26, "dust": 1, "text": _t("補給箱：微型齒輪與幾枚城徽幣。")},
 		"hidden_cache": {"flag": "loot.chest.forest_cache", "gold": 35, "dust": 2, "text": _t("獵人藏匿處：藥草與銅板。")},
 		"cellar_hatch": {"flag": "loot.chest.road_inn", "gold": 30, "dust": 1, "text": _t("地窖底：旅舍老闆偶藏的小費罐。")},
 		"ore_cart": {"flag": "loot.chest.village_cave", "gold": 22, "dust": 2, "text": _t("礦車夾層：半袋未熔的星屑礦砂。")},

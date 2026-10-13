@@ -99,6 +99,71 @@ func try_forge() -> Dictionary:
 			}
 
 
+## 批次連續鍛造升階判定
+## 支援批次連續升階判定直至鐵屑或金幣不足、達到最大階級或達到嘗試上限
+func auto_forge(max_tries: int = 10) -> Dictionary:
+	var start_tier := GameState.weapon_tier
+	var start_atk := GameState.weapon_atk
+	var tries := 0
+	var success_count := 0
+	var fail_count := 0
+	var spent_gold := 0
+	var spent_scrap := 0
+	var stop_reason := "max_tries"
+
+	while tries < max_tries:
+		if GameState.weapon_tier >= FORGE_MAX_TIER:
+			stop_reason = "tier_max"
+			break
+		if not InventorySystem.has_item("iron_scrap", 1):
+			stop_reason = "no_scrap"
+			break
+		var cost := forge_cost()
+		if GameState.gold < cost:
+			stop_reason = "no_gold"
+			break
+
+		var res := try_forge()
+		tries += 1
+		spent_gold += int(res.get("cost", 0))
+		if bool(res.get("used_scrap", false)):
+			spent_scrap += 1
+
+		if bool(res.get("ok", false)):
+			success_count += 1
+		else:
+			fail_count += 1
+
+		if GameState.weapon_tier >= FORGE_MAX_TIER:
+			stop_reason = "tier_max"
+			break
+
+	var end_tier := GameState.weapon_tier
+	var end_atk := GameState.weapon_atk
+	var atk_gain := success_count * 2
+
+	var ok := success_count > 0
+	var code := "success" if ok else (stop_reason if tries == 0 else "failed")
+
+	return {
+		"ok": ok,
+		"code": code,
+		"stop_reason": stop_reason,
+		"tries": tries,
+		"success_count": success_count,
+		"fail_count": fail_count,
+		"atk_gain": atk_gain,
+		"spent_gold": spent_gold,
+		"spent_scrap": spent_scrap,
+		"tier": end_tier,
+		"start_tier": start_tier,
+		"end_tier": end_tier,
+		"atk": end_atk,
+		"cost": spent_gold
+	}
+
+
+
 func _apply_forge_atk_gain(atk_gain: int = 2) -> int:
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:
