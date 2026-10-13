@@ -6200,8 +6200,8 @@
    "id": "victory-gear-up-shortcut",
    "cat": "遊戲",
    "title": "BattleVictoryDialog 勝利結算新增『前往整頓』快捷按鈕連動大廳角色裝備 Tab",
-   "status": "草稿",
-   "note": "勝利結算介面新增前往整頓果凍按鈕並連動大廳角色裝備頁",
+   "status": "開發中",
+   "note": "指派給阿宏 sideworker (t_0b3a919b)",
    "keys": [
     "BattleVi"
    ]
