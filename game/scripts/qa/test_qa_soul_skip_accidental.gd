@@ -3,6 +3,10 @@ extends SceneTree
 ## 量四種常見誤觸：連點抽卡的第二下（演出開始 1 幀內）、滑鼠滾輪、右鍵、只有放開沒有按下。
 ## 每種情境都重開一次演出，印出「有沒有被跳過」；誤觸會跳過就判 FAIL。
 ## 另外量：一般點擊（演出 0.5 秒後）一定要能跳過。
+##
+## ⚠️ 情境用「幀數」排時間，一定要用 --fixed-fps 60 跑（30 幀＝0.5 秒）；
+## 不鎖幀的 headless 約 150fps，30 幀只有 0.2 秒，會撞到開場保護時間（#101 留言）。
+## godot --path game --headless --fixed-fps 60 -s res://scripts/qa/test_qa_soul_skip_accidental.gd
 
 const SoulSummonFx := preload("res://scripts/ui/soul_draw/soul_summon_fx.gd")
 
