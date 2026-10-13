@@ -7,6 +7,7 @@ signal request_battle(mode: String)
 signal request_settings()
 signal core_replaced(slot_id: String, part: Dictionary)
 signal cores_auto_equipped(result: Dictionary)
+signal weapons_auto_equipped(result: Dictionary)
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -281,6 +282,7 @@ var _btn_wardrobe: Button = null
 var _char_weapon_title_label: Label = null
 var _char_weapon_sub_label: Label = null
 var _btn_change_weapon: Button = null
+var _btn_weapon_auto_equip: Button = null
 var _weapon_swap_dialog: Control = null
 var _char_core_title_label: Label = null
 var _char_core_sub_label: Label = null
@@ -3987,18 +3989,18 @@ func _build_character_tab() -> void:
 	panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	panel.offset_left = 50
 	panel.offset_right = -50
-	panel.offset_top = 16
-	panel.offset_bottom = -16
+	panel.offset_top = 12
+	panel.offset_bottom = -18
 	var panel_sb := StyleBoxFlat.new()
 	panel_sb.bg_color = COLOR_BG_CREAM
 	panel_sb.border_color = COLOR_BORDER
 	panel_sb.set_border_width_all(2)
 	panel_sb.border_width_bottom = 5
 	panel_sb.set_corner_radius_all(20)
-	panel_sb.content_margin_left = 20
-	panel_sb.content_margin_right = 20
-	panel_sb.content_margin_top = 16
-	panel_sb.content_margin_bottom = 16
+	panel_sb.content_margin_left = 18
+	panel_sb.content_margin_right = 18
+	panel_sb.content_margin_top = 12
+	panel_sb.content_margin_bottom = 12
 	panel_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
 	panel_sb.shadow_size = 8
 	panel_sb.shadow_offset = Vector2(0, 4)
@@ -4130,7 +4132,7 @@ func _build_character_tab() -> void:
 
 	var r_v := VBoxContainer.new()
 	r_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	r_v.add_theme_constant_override("separation", 12)
+	r_v.add_theme_constant_override("separation", 6)
 	h.add_child(r_v)
 
 	# 1. 武器輪替配置標題
@@ -4138,21 +4140,60 @@ func _build_character_tab() -> void:
 	w_hdr.add_theme_constant_override("separation", 12)
 	r_v.add_child(w_hdr)
 
+	var w_title_v := VBoxContainer.new()
+	w_title_v.add_theme_constant_override("separation", 2)
+	w_hdr.add_child(w_title_v)
+
 	var w_title := Label.new()
 	w_title.text = _t("武器輪替配置")
 	_apply_label_style(w_title, 18, COLOR_TEXT_DARK)
-	w_hdr.add_child(w_title)
+	w_title_v.add_child(w_title)
 	_char_weapon_title_label = w_title
 
 	var w_sub := Label.new()
 	w_sub.text = _t("點擊切換輪替順位 · 三段作戰序列")
-	_apply_label_style(w_sub, 14, COLOR_GOLD_DARK, COLOR_BORDER, 2)
-	w_hdr.add_child(w_sub)
+	_apply_label_style(w_sub, 13, COLOR_GOLD_DARK, COLOR_BORDER, 2)
+	w_title_v.add_child(w_sub)
 	_char_weapon_sub_label = w_sub
 
 	var w_hdr_spacer := Control.new()
 	w_hdr_spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	w_hdr.add_child(w_hdr_spacer)
+
+	var btn_weapon_auto := Button.new()
+	btn_weapon_auto.name = "BtnWeaponAutoEquip"
+	btn_weapon_auto.text = _t("一鍵配置")
+	btn_weapon_auto.custom_minimum_size = Vector2(104, 48)
+	if _cached_font != null:
+		btn_weapon_auto.add_theme_font_override("font", _cached_font)
+	btn_weapon_auto.add_theme_font_size_override("font_size", 14)
+	btn_weapon_auto.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_weapon_auto.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_weapon_auto.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var wa_sb := StyleBoxFlat.new()
+	wa_sb.bg_color = COLOR_MINT
+	wa_sb.border_color = COLOR_BORDER
+	wa_sb.set_border_width_all(2)
+	wa_sb.border_width_bottom = 5
+	wa_sb.set_corner_radius_all(16)
+	wa_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	wa_sb.shadow_size = 5
+	wa_sb.shadow_offset = Vector2(0, 2)
+	var wa_sb_h := wa_sb.duplicate() as StyleBoxFlat
+	wa_sb_h.bg_color = Color("#62E67D")
+	var wa_sb_p := wa_sb.duplicate() as StyleBoxFlat
+	wa_sb_p.border_width_bottom = 2
+	btn_weapon_auto.add_theme_stylebox_override("normal", wa_sb)
+	btn_weapon_auto.add_theme_stylebox_override("hover", wa_sb_h)
+	btn_weapon_auto.add_theme_stylebox_override("pressed", wa_sb_p)
+	btn_weapon_auto.add_theme_stylebox_override("focus", wa_sb)
+	btn_weapon_auto.pressed.connect(func():
+		_play_ui_sound()
+		auto_equip_weapons()
+	)
+	w_hdr.add_child(btn_weapon_auto)
+	_btn_weapon_auto_equip = btn_weapon_auto
 
 	var btn_change_weapon := Button.new()
 	btn_change_weapon.name = "BtnChangeWeapon"
@@ -4201,7 +4242,7 @@ func _build_character_tab() -> void:
 
 	# 3. 武器槽提示卡
 	var hint_p := PanelContainer.new()
-	hint_p.custom_minimum_size = Vector2(0, 36)
+	hint_p.custom_minimum_size = Vector2(0, 28)
 	var hsb := StyleBoxFlat.new()
 	hsb.bg_color = COLOR_CARD_WARM
 	hsb.border_color = COLOR_BORDER
@@ -4210,15 +4251,15 @@ func _build_character_tab() -> void:
 	hsb.set_corner_radius_all(10)
 	hsb.content_margin_left = 14
 	hsb.content_margin_right = 14
-	hsb.content_margin_top = 6
-	hsb.content_margin_bottom = 6
+	hsb.content_margin_top = 3
+	hsb.content_margin_bottom = 3
 	hint_p.add_theme_stylebox_override("panel", hsb)
 	r_v.add_child(hint_p)
 
 	_weapon_slot_hint_label = Label.new()
 	var init_hint := _t(WEAPON_SLOTS[_selected_weapon_slot]["hint"])
 	_weapon_slot_hint_label.text = init_hint
-	_apply_label_style(_weapon_slot_hint_label, 14, COLOR_TEXT_DARK, COLOR_BORDER, 2)
+	_apply_label_style(_weapon_slot_hint_label, 13, COLOR_TEXT_DARK, COLOR_BORDER, 2)
 	hint_p.add_child(_weapon_slot_hint_label)
 
 	# 4. 機芯五槽配置標題與五大機芯槽位
@@ -4226,18 +4267,22 @@ func _build_character_tab() -> void:
 	c_hdr.add_theme_constant_override("separation", 12)
 	r_v.add_child(c_hdr)
 
+	var c_title_v := VBoxContainer.new()
+	c_title_v.add_theme_constant_override("separation", 2)
+	c_hdr.add_child(c_title_v)
+
 	var c_title := Label.new()
 	c_title.name = "CharCoreTitleLabel"
 	c_title.text = _t("機芯五槽配置")
 	_apply_label_style(c_title, 18, COLOR_TEXT_DARK)
-	c_hdr.add_child(c_title)
+	c_title_v.add_child(c_title)
 	_char_core_title_label = c_title
 
 	var c_sub := Label.new()
 	c_sub.name = "CharCoreSubLabel"
 	c_sub.text = _t("點擊更換裝備 · 強化核心機芯")
-	_apply_label_style(c_sub, 14, COLOR_GOLD_DARK, COLOR_BORDER, 2)
-	c_hdr.add_child(c_sub)
+	_apply_label_style(c_sub, 13, COLOR_GOLD_DARK, COLOR_BORDER, 2)
+	c_title_v.add_child(c_sub)
 	_char_core_sub_label = c_sub
 
 	var c_hdr_spacer := Control.new()
@@ -4342,13 +4387,13 @@ func _build_character_tab() -> void:
 
 	# 5. 獨立屬性小卡 (生命／攻擊／防禦／暴擊／怒氣)
 	var stats_v := VBoxContainer.new()
-	stats_v.add_theme_constant_override("separation", 10)
+	stats_v.add_theme_constant_override("separation", 6)
 	stats_v.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	r_v.add_child(stats_v)
 
 	_stat_cards.clear()
 	var r1 := HBoxContainer.new()
-	r1.add_theme_constant_override("separation", 10)
+	r1.add_theme_constant_override("separation", 8)
 	r1.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stats_v.add_child(r1)
 
@@ -4365,7 +4410,7 @@ func _build_character_tab() -> void:
 	_stat_cards.append(sc3)
 
 	var r2 := HBoxContainer.new()
-	r2.add_theme_constant_override("separation", 10)
+	r2.add_theme_constant_override("separation", 8)
 	r2.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stats_v.add_child(r2)
 
@@ -4505,7 +4550,7 @@ func _get_weapon_slot_info(slot_idx: int) -> Dictionary:
 func _build_weapon_slot_button(idx: int, slot_data: Dictionary) -> Button:
 	var btn := Button.new()
 	btn.name = "WeaponSlot_%d" % idx
-	btn.custom_minimum_size = Vector2(0, 68)
+	btn.custom_minimum_size = Vector2(0, 60)
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.set_meta("quality_color", slot_data.get("quality_color", COLOR_GOLD_DARK))
 
@@ -4557,8 +4602,8 @@ func _style_weapon_slot_button(btn: Button, is_selected: bool) -> void:
 	sb.border_width_bottom = 5
 	sb.content_margin_left = 12
 	sb.content_margin_right = 12
-	sb.content_margin_top = 6
-	sb.content_margin_bottom = 6
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
 
 	var title_lbl := btn.get_node_or_null("Content/SlotTitle") as Label
 	var info_lbl := btn.get_node_or_null("Content/WeaponInfo") as Label
@@ -4614,6 +4659,9 @@ func get_selected_weapon_slot() -> int:
 
 func get_weapon_slot_buttons() -> Array[Button]:
 	return _weapon_slot_buttons
+
+func get_btn_weapon_auto_equip() -> Button:
+	return _btn_weapon_auto_equip
 
 func refresh_weapon_slots() -> void:
 	_refresh_weapon_slot_buttons()
@@ -4785,19 +4833,19 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 	c.set_meta("stat_title_key", title)
 	c.set_meta("stat_val_key", val_str)
 	c.set_meta("stat_subtitle_key", subtitle)
-	c.custom_minimum_size = Vector2(0, 80)
+	c.custom_minimum_size = Vector2(0, 56)
 	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = COLOR_CARD_WARM
 	sb.border_color = COLOR_BORDER
 	sb.set_border_width_all(2)
-	sb.border_width_bottom = 5
-	sb.set_corner_radius_all(18)
-	sb.content_margin_left = 16
-	sb.content_margin_right = 16
-	sb.content_margin_top = 8
-	sb.content_margin_bottom = 8
+	sb.border_width_bottom = 4
+	sb.set_corner_radius_all(14)
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
 	sb.shadow_color = Color(0.12, 0.10, 0.23, 0.12)
 	sb.shadow_size = 4
 	sb.shadow_offset = Vector2(0, 2)
@@ -4805,7 +4853,7 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 
 	var v := VBoxContainer.new()
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.add_theme_constant_override("separation", 2)
+	v.add_theme_constant_override("separation", 1)
 	c.add_child(v)
 
 	var top_row := HBoxContainer.new()
@@ -4816,7 +4864,7 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 	t_lbl.name = "TitleLabel"
 	var t_text := _t(title)
 	t_lbl.text = t_text
-	var t_sz := 12 if t_text.length() > 14 else 14
+	var t_sz := 12 if t_text.length() > 14 else 13
 	_apply_label_style(t_lbl, t_sz, COLOR_TEXT_DARK)
 	top_row.add_child(t_lbl)
 
@@ -4825,7 +4873,7 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 		sub_lbl.name = "SubLabel"
 		var sub_text := _t(subtitle)
 		sub_lbl.text = sub_text
-		var sub_sz := 10 if sub_text.length() > 24 else (11 if sub_text.length() > 16 else 12)
+		var sub_sz := 10 if sub_text.length() > 24 else (11 if sub_text.length() > 16 else 11)
 		_apply_label_style(sub_lbl, sub_sz, COLOR_GOLD_DARK)
 		top_row.add_child(sub_lbl)
 
@@ -4836,7 +4884,7 @@ func _build_stat_card(title: String, val_str: String, subtitle: String, val_colo
 	var v_lbl := Label.new()
 	v_lbl.name = "ValLabel"
 	v_lbl.text = _t(val_str)
-	_apply_label_style(v_lbl, 22, val_color)
+	_apply_label_style(v_lbl, 20, val_color)
 	val_row.add_child(v_lbl)
 
 	return c
@@ -6156,6 +6204,8 @@ func _apply_locale_texts() -> void:
 		_char_weapon_sub_label.text = _t("點擊切換輪替順位 · 三段作戰序列")
 	if _btn_change_weapon and is_instance_valid(_btn_change_weapon):
 		_btn_change_weapon.text = _t("更換裝備")
+	if _btn_weapon_auto_equip and is_instance_valid(_btn_weapon_auto_equip):
+		_btn_weapon_auto_equip.text = _t("一鍵配置")
 	if _char_stat_title_label and is_instance_valid(_char_stat_title_label):
 		_char_stat_title_label.text = _t("機體戰鬥屬性")
 	if _char_core_title_label and is_instance_valid(_char_core_title_label):
@@ -6182,12 +6232,14 @@ func _apply_locale_texts() -> void:
 			if t_lbl:
 				var t_text := _t(str(card.get_meta("stat_title_key", "")))
 				t_lbl.text = t_text
-				t_lbl.add_theme_font_size_override("font_size", 14)
+				var t_sz := 12 if t_text.length() > 14 else 13
+				t_lbl.add_theme_font_size_override("font_size", t_sz)
 			var sub_lbl := card.find_child("SubLabel", true, false) as Label
 			if sub_lbl:
 				var sub_text := _t(str(card.get_meta("stat_subtitle_key", "")))
 				sub_lbl.text = sub_text
-				sub_lbl.add_theme_font_size_override("font_size", 14)
+				var sub_sz := 10 if sub_text.length() > 24 else (11 if sub_text.length() > 16 else 11)
+				sub_lbl.add_theme_font_size_override("font_size", sub_sz)
 			var v_lbl := card.find_child("ValLabel", true, false) as Label
 			if v_lbl:
 				var v_k := str(card.get_meta("stat_val_key", ""))
@@ -6717,15 +6769,15 @@ func _refresh_char_core_slots() -> void:
 
 		var card := PanelContainer.new()
 		card.name = "CoreSlot_" + norm_slot
-		card.custom_minimum_size = Vector2(88, 64)
+		card.custom_minimum_size = Vector2(88, 54)
 		card.mouse_filter = Control.MOUSE_FILTER_STOP
 
 		var cs := StyleBoxFlat.new()
 		cs.bg_color = COLOR_CARD_WARM if is_equipped else Color(0.95, 0.94, 0.97, 0.9)
 		cs.border_color = tier_color if is_equipped else COLOR_BORDER
 		cs.set_border_width_all(2)
-		cs.border_width_bottom = 4
-		cs.set_corner_radius_all(14)
+		cs.border_width_bottom = 3
+		cs.set_corner_radius_all(12)
 		cs.shadow_color = Color(tier_color.r, tier_color.g, tier_color.b, 0.25) if is_equipped else Color(0.12, 0.10, 0.23, 0.10)
 		cs.shadow_size = 4
 		cs.shadow_offset = Vector2(0, 2)
@@ -6735,7 +6787,7 @@ func _refresh_char_core_slots() -> void:
 		btn.name = "SlotButton"
 		btn.flat = true
 		btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-		btn.custom_minimum_size = Vector2(88, 50)
+		btn.custom_minimum_size = Vector2(88, 48)
 		btn.mouse_filter = Control.MOUSE_FILTER_STOP
 		btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		btn.focus_mode = Control.FOCUS_NONE
@@ -6750,14 +6802,14 @@ func _refresh_char_core_slots() -> void:
 		margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		margin.add_theme_constant_override("margin_left", 6)
 		margin.add_theme_constant_override("margin_right", 6)
-		margin.add_theme_constant_override("margin_top", 4)
-		margin.add_theme_constant_override("margin_bottom", 4)
+		margin.add_theme_constant_override("margin_top", 2)
+		margin.add_theme_constant_override("margin_bottom", 2)
 		card.add_child(margin)
 
 		var vb := VBoxContainer.new()
 		vb.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vb.alignment = BoxContainer.ALIGNMENT_CENTER
-		vb.add_theme_constant_override("separation", 2)
+		vb.add_theme_constant_override("separation", 1)
 		margin.add_child(vb)
 
 		var top_row := HBoxContainer.new()
@@ -6768,7 +6820,7 @@ func _refresh_char_core_slots() -> void:
 
 		var icon := TextureRect.new()
 		icon.name = "SlotIcon"
-		icon.custom_minimum_size = Vector2(24, 24)
+		icon.custom_minimum_size = Vector2(20, 20)
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
@@ -6784,7 +6836,7 @@ func _refresh_char_core_slots() -> void:
 		slot_lbl.name = "SlotLabel"
 		slot_lbl.text = _t(slot_name)
 		slot_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_apply_label_style(slot_lbl, 14, COLOR_TEXT_DARK)
+		_apply_label_style(slot_lbl, 13, COLOR_TEXT_DARK)
 		slot_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		top_row.add_child(slot_lbl)
 
@@ -6793,7 +6845,7 @@ func _refresh_char_core_slots() -> void:
 		var t_txt := (_t(tier_name) if tier_name.ends_with("階") else _t(tier_name + "階")) if is_equipped else _t("未裝備")
 		tier_lbl.text = t_txt
 		tier_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_apply_label_style(tier_lbl, 14, tier_color if (is_equipped and tier_id != "white") else COLOR_TEXT_DARK, COLOR_BORDER, 2)
+		_apply_label_style(tier_lbl, 12, tier_color if (is_equipped and tier_id != "white") else COLOR_TEXT_DARK, COLOR_BORDER, 2)
 		tier_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vb.add_child(tier_lbl)
 
@@ -6875,6 +6927,32 @@ func open_core_replace_dialog(slot_id: String, new_part: Dictionary = {}) -> Con
 	if dlg != null:
 		dlg.z_index = 95
 	return dlg
+
+
+## 一鍵配置最高戰力武器並即時刷新三欄武器卡、有效戰力與戰鬥屬性卡片
+func auto_equip_weapons() -> Dictionary:
+	var equip_sys = _get_equip_sys()
+	if equip_sys == null or not equip_sys.has_method("auto_equip_best_weapons"):
+		return {}
+
+	var result: Dictionary = equip_sys.auto_equip_best_weapons()
+	var is_changed: bool = bool(result.get("changed", false))
+	if is_changed:
+		var power_gain: int = int(result.get("power_gain", 0))
+		if power_gain > 0:
+			_show_toast(_t("戰力提升 +%d！已一鍵配置最高戰力武器。") % power_gain)
+		else:
+			_show_toast(_t("已一鍵配置最高戰力武器。"))
+		_sync_hero_weapon_paperdoll()
+		_refresh_weapon_slot_buttons()
+		_refresh_char_tab_stats(true)
+		_refresh_bag_tab(false)
+		refresh_hud()
+		weapons_auto_equipped.emit(result)
+	else:
+		_show_toast(_t("目前已是最佳武器配置！"))
+
+	return result
 
 
 ## 一鍵配置五大槽位最高戰力機芯並即時屬性刷新
