@@ -6340,8 +6340,8 @@
    "id": "shop-soul-forge-shortcuts",
    "cat": "遊戲",
    "title": "ShopDialog 商城彈窗底部新增前往聚魂與前往鍛造快捷果凍按鈕",
-   "status": "開發中",
-   "note": "正在實作 ShopDialog 底部前往聚魂與前往鍛造快捷果凍按鈕",
+   "status": "測試中",
+   "note": "ShopDialog 商城彈窗底部新增前往聚魂與前往鍛造快捷果凍按鈕已完成實作與 8 張真實實機截圖存證",
    "keys": [
     "ShopDial"
    ]
