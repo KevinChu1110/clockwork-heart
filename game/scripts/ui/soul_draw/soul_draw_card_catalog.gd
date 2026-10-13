@@ -14,7 +14,7 @@ const FRAMES := {
 		"bg": Color("#FFFDF8"),
 		"glow": Color(0.6, 0.65, 0.75, 0.5),
 		"badge": Color("#EAECF0"),
-		"stars": "★",
+		"stars": "",  ## main db088cc8：卡面不顯示星號，只顯示階級名
 		"name": "普通",
 	},
 	"blue": {
@@ -22,7 +22,7 @@ const FRAMES := {
 		"bg": Color("#FFFDF8"),
 		"glow": Color(0.22, 0.63, 1.0, 0.65),
 		"badge": Color("#38A0FF"),
-		"stars": "★ ★",
+		"stars": "",  ## main db088cc8：卡面不顯示星號，只顯示階級名
 		"name": "精良",
 	},
 	"purple": {
@@ -30,7 +30,7 @@ const FRAMES := {
 		"bg": Color("#FFFDF8"),
 		"glow": Color(0.64, 0.35, 1.0, 0.70),
 		"badge": Color("#A259FF"),
-		"stars": "★ ★ ★",
+		"stars": "",  ## main db088cc8：卡面不顯示星號，只顯示階級名
 		"name": "稀有",
 	},
 	"gold": {
@@ -38,7 +38,7 @@ const FRAMES := {
 		"bg": Color("#FFFDF8"),
 		"glow": Color(1.0, 0.82, 0.16, 0.75),
 		"badge": Color("#FFD028"),
-		"stars": "★ ★ ★ ★",
+		"stars": "",  ## main db088cc8：卡面不顯示星號，只顯示階級名
 		"name": "傳說",
 	},
 	"rainbow": {
@@ -46,7 +46,7 @@ const FRAMES := {
 		"bg": Color("#FFFDF8"),
 		"glow": Color(1.0, 0.45, 0.75, 0.80),
 		"badge": Color("#FFD028"),
-		"stars": "★ ★ ★ ★ ★",
+		"stars": "",  ## main db088cc8：卡面不顯示星號，只顯示階級名
 		"name": "炫彩",
 		"rainbow": true,
 	},

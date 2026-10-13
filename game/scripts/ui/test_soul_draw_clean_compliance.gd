@@ -8,6 +8,7 @@ extends SceneTree
 ## 3. 六語系 (zh_TW, zh_CN, en, ja, ko, es) ui.json 與語言字典無特殊符號殘留，即時刷新切換完全合規。
 
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
+const Catalog := preload("res://scripts/ui/soul_draw/soul_draw_card_catalog.gd")
 const SoulTenPullView := preload("res://scripts/ui/soul_draw/soul_ten_pull_view.gd")
 const SoulSummonFx := preload("res://scripts/ui/soul_draw/soul_summon_fx.gd")
 const SoulResultCardView := preload("res://scripts/ui/soul_draw/soul_result_card_view.gd")
@@ -154,11 +155,12 @@ func _run_all_tests() -> void:
 		print("  ✓ SoulTenPullView 標題純淨無特殊符號: ", title_lbl.text)
 
 	# 檢驗 TIER_COLORS 內部星星定義已完全清空
-	for tier_k in SoulTenPullView.TIER_COLORS.keys():
-		var t_data: Dictionary = SoulTenPullView.TIER_COLORS[tier_k]
+	## #18 起兩個面板共用 Catalog 五色框（白/藍/紫/金/彩），不再各自帶 TIER_COLORS
+	for tier_k in Catalog.FRAMES.keys():
+		var t_data: Dictionary = Catalog.FRAMES[tier_k]
 		var stars_str: String = str(t_data.get("stars", ""))
 		if stars_str != "":
-			_fail("SoulTenPullView.TIER_COLORS['%s']['stars'] 應為空字串，實際為: '%s'" % [tier_k, stars_str])
+			_fail("Catalog.FRAMES['%s']['stars']（SoulTenPullView） 應為空字串，實際為: '%s'" % [tier_k, stars_str])
 
 	# 測試六語系切換時標題即時連動
 	for code in LOCALES:
@@ -232,11 +234,12 @@ func _run_all_tests() -> void:
 	root.add_child(card)
 
 	# 檢驗 TIER_COLORS 內部星星定義已完全清空
-	for tier_k in SoulResultCardView.TIER_COLORS.keys():
-		var t_data: Dictionary = SoulResultCardView.TIER_COLORS[tier_k]
+	## #18 起兩個面板共用 Catalog 五色框（白/藍/紫/金/彩），不再各自帶 TIER_COLORS
+	for tier_k in Catalog.FRAMES.keys():
+		var t_data: Dictionary = Catalog.FRAMES[tier_k]
 		var stars_str: String = str(t_data.get("stars", ""))
 		if stars_str != "":
-			_fail("SoulResultCardView.TIER_COLORS['%s']['stars'] 應為空字串，實際為: '%s'" % [tier_k, stars_str])
+			_fail("Catalog.FRAMES['%s']['stars']（SoulResultCardView） 應為空字串，實際為: '%s'" % [tier_k, stars_str])
 
 	# 檢驗 placeholder 狀態無 『✦』
 	card.show_placeholder()
@@ -244,19 +247,22 @@ func _run_all_tests() -> void:
 	if stars_lbl == null:
 		_fail("SoulResultCardView 缺少 _stars_lbl")
 	else:
-		if stars_lbl.text != "傳奇":
-			_fail("SoulResultCardView placeholder 星級標籤應為純文字 '傳奇'，實際為: '%s'" % stars_lbl.text)
+		## 佔位卡用金框；#18 五色框的金框名稱是「傳說」
+		if stars_lbl.text != "傳說":
+			_fail("SoulResultCardView placeholder 星級標籤應為純文字 '傳說'，實際為: '%s'" % stars_lbl.text)
 		if _has_forbidden(stars_lbl.text):
 			_fail("SoulResultCardView placeholder 星級含有違規符號: '%s'" % stars_lbl.text)
 		print("  ✓ placeholder 星級標籤正確呈現純文字: ", stars_lbl.text)
 
 	# 檢驗各種品質 drop 之純文字階級展示
 	var single_test_drops := [
+		## #18 五色框：orange→藍框「精良」、blue→藍框「精良」、purple→紫框「稀有」；
+		## 「核心碎片」卡已作廢，舊 DropId 顯示成發條游絲（藍框）
 		{"drop": {"kind": "junk", "DropId": "junk_enamel_chip"}, "expected_tier": "普通"},
-		{"drop": {"kind": "part", "DropId": "drop_brass_gear"}, "expected_tier": "優良"},
-		{"drop": {"kind": "part", "DropId": "drop_spring_coil"}, "expected_tier": "稀有"},
-		{"drop": {"kind": "outfit", "DropId": "outfit_cream"}, "expected_tier": "史詩"},
-		{"drop": {"kind": "part", "DropId": "drop_core_shard"}, "expected_tier": "傳奇"},
+		{"drop": {"kind": "part", "DropId": "drop_brass_gear"}, "expected_tier": "精良"},
+		{"drop": {"kind": "part", "DropId": "drop_spring_coil"}, "expected_tier": "精良"},
+		{"drop": {"kind": "outfit", "DropId": "outfit_cream"}, "expected_tier": "稀有"},
+		{"drop": {"kind": "part", "DropId": "drop_core_shard"}, "expected_tier": "精良"},
 	]
 
 	for item in single_test_drops:
