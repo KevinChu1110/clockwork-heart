@@ -106,6 +106,11 @@ DEV_JSON_KEYS = (
     "asset_naming_conventions",
     "mechanical_features",
     "art_output_standards",
+    ## races_specification 裡給美術的色票（"#RRGGBB (用途說明)"）與世界觀錨點筆記：
+    ## 遊戲腳本完全不讀這兩欄（rg color_palette／lore_anchor 只出現在本檔），
+    ## 跟上面的 mechanical_features 一樣是設定書，不是玩家面字串。
+    "color_palette",
+    "lore_anchor",
 )
 
 

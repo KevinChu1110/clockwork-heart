@@ -31,7 +31,13 @@ SOURCES = {
     ## 字面值裡的 \n／\"／\\ 要還原成 GDScript 執行期的字串，表的 key 才對得上
     ## （舊版寫成 \\\\. 只吃得到兩個反斜線，含 \n 的字串整個漏掉，
     ##   它們的譯文反而被當成「殘留」）。
-    "ui": [("__ALL_GD__", [r'\b_t\("((?:[^"\\]|\\.)*)"\)'])],
+    "ui": [("__ALL_GD__", [r'\b_t\("((?:[^"\\]|\\.)*)"\)']),
+           ## mobile_lobby.gd 的 REGION_STAGES：關卡卡片 _t(整串)，戰鬥中
+           ## battle_view._get_expedition_stage_enemy_name() 再拆「地點 · 敵名」查敵名。
+           ("game/scripts/ui/mobile_lobby.gd", [
+               r'\{"num": "[^"]+", "name": "([^"]+)"',
+               r'\{"num": "[^"]+", "name": "[^"]*? · ([^"]+)"',
+           ])],
     ## 星曜與品質的 id 本身是中文，存檔存原文、顯示查譯文
     "soul": [("game/scripts/systems/soul_system.gd", [
         r'\{"id": "([^"]+)", "stat":',
@@ -77,6 +83,10 @@ EXTRA = {
         "【潮吼】力氣若沒方向，只是浪打空岸！",
         "【風耳】停拍那一瞬，記得數自己的呼吸。",
         "【系統】本週盟約目標：裂縫勝場。貢獻可換補給。",
+        ## core_replace_dialog.gd／battle_victory_dialog.gd：`"【%s階】" % tier_name` 組出來再 _t()，
+        ## tier_name 來自 core_color_tiers.json 的八色階。
+        "【灰階】", "【白階】", "【橘階】", "【藍階】",
+        "【紫階】", "【金階】", "【綠階】", "【紅階】",
     ],
     "map": [
         "長明燈（亮）", "長明燈",
@@ -89,6 +99,64 @@ EXTRA = {
         "香爐（已燃）", "香爐",
     ],
 }
+
+
+## ── 「殘留」要怎麼算 ──────────────────────────────────────────────
+## 覆蓋表裡有一大半的 key 不是 _t("字面值") 來的，而是資料驅動、在執行期才包 _t()：
+##   · paperdoll_slots.json 的部件／種族名、equipment.json 的裝備名（weapon_name
+##     存的就是裝備實例的 name，game_state 先查 weapon 表再查 ui 表）
+##   · windup_daily.gd、quest_system.gd 這類 const 字典裡的台詞，讀出來才 _t(str(...))
+##   · .tscn 裡的預設標籤字
+## 上面的 regex 抓不到這些，所以它們不能拿來算「漏翻」（抓不到就不知道該有哪些）；
+## 但也不能因為 regex 沒抓到就判成「殘留」—— 照舊規則刪下去，會把 1100 多條
+## 還在畫面上的譯文刪掉，en/ja/ko/es 玩家直接看到中文。
+## 所以「殘留」的定義回到這行訊息本來的意思：原文在遊戲裡**任何地方都找不到了**
+## （腳本含測試、場景、資料表都沒有一字不差的字串）。漏翻與佔位符的檢查不受影響。
+
+
+def _gd_literals(src: str) -> set:
+    body = "\n".join(ln for ln in src.split("\n") if not ln.strip().startswith("#"))
+    out = set()
+    for m in re.finditer(r'"((?:[^"\\\n]|\\.)*)"', body):
+        out.add(_unescape_gd(m.group(1)))
+    for m in re.finditer(r"'((?:[^'\\\n]|\\.)*)'", body):
+        out.add(_unescape_gd(m.group(1)))
+    return out
+
+
+def _json_strings(x, out: set) -> None:
+    if isinstance(x, dict):
+        for k, v in x.items():
+            out.add(k)
+            _json_strings(v, out)
+    elif isinstance(x, list):
+        for v in x:
+            _json_strings(v, out)
+    elif isinstance(x, str):
+        out.add(x)
+
+
+_REFERENCED = None
+
+
+def referenced_strings() -> set:
+    """遊戲裡還原字出現的所有字串：scripts（含測試，不含 dev/ 截圖腳本）、scenes、data（不含 i18n）。"""
+    global _REFERENCED
+    if _REFERENCED is not None:
+        return _REFERENCED
+    out = set()
+    for f in glob.glob(os.path.join(ROOT, "game/scripts/**/*.gd"), recursive=True):
+        if os.sep + "dev" + os.sep in f:
+            continue
+        out |= _gd_literals(io.open(f, encoding="utf-8").read())
+    for f in glob.glob(os.path.join(ROOT, "game/scenes/**/*.tscn"), recursive=True):
+        out |= _gd_literals(io.open(f, encoding="utf-8").read())
+    for f in glob.glob(os.path.join(ROOT, "game/data/**/*.json"), recursive=True):
+        if os.sep + "i18n" + os.sep in f:
+            continue
+        _json_strings(json.load(io.open(f, encoding="utf-8")), out)
+    _REFERENCED = out
+    return out
 
 
 def sources_for(domain: str) -> set:
@@ -153,6 +221,26 @@ def placeholders(s: str) -> list:
     return [m.group(0) for m in PLACEHOLDER.finditer(s) if m.group(0) != "%%"]
 
 
+## 有些介面字串是用 id 當 key（例如 _t("ui_hotbar_slot_capsule")），
+## id 本身沒有 %d，真正的原文在 content/zh_TW/<domain>.json。
+## 這種 key 的佔位符要拿 zh_TW 那句來比，不然每條帶 %d 的 id 都會被誤報。
+ID_KEY = re.compile(r"^[a-z][a-z0-9_.]*$")
+_ZH_TW_CACHE: dict = {}
+
+
+def expected_placeholders(domain: str, src: str) -> list:
+    if ID_KEY.match(src):
+        if domain not in _ZH_TW_CACHE:
+            path = os.path.join(CONTENT, "zh_TW", "%s.json" % domain)
+            _ZH_TW_CACHE[domain] = (
+                json.load(io.open(path, encoding="utf-8")) if os.path.exists(path) else {}
+            )
+        zh = _ZH_TW_CACHE[domain].get(src)
+        if isinstance(zh, str):
+            return placeholders(zh)
+    return placeholders(src)
+
+
 def _block(rel: str, const_name: str) -> str:
     src = io.open(os.path.join(ROOT, rel), encoding="utf-8").read()
     if const_name is None:
@@ -201,14 +289,14 @@ def main() -> None:
                 continue
             tbl = json.load(io.open(path, encoding="utf-8"))
             missing = sorted(s for s in want if not str(tbl.get(s, "")).strip())
-            stale = sorted(k for k in tbl if k not in want)
+            stale = sorted(k for k in tbl if k not in want and k not in referenced_strings())
             for src_s in sorted(want):
                 tr = str(tbl.get(src_s, ""))
                 if not tr.strip():
                     continue
-                if placeholders(tr) != placeholders(src_s):
+                if placeholders(tr) != expected_placeholders(domain, src_s):
                     problems.append((code, domain, "佔位符對不上（會在執行時炸）", [
-                        "原文 %s → %s" % (placeholders(src_s), src_s[:50]),
+                        "原文 %s → %s" % (expected_placeholders(domain, src_s), src_s[:50]),
                         "譯文 %s → %s" % (placeholders(tr), tr[:50]),
                     ]))
             if missing:

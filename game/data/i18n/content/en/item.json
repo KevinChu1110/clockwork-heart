@@ -90,5 +90,17 @@
   "wolf_fang": {
     "desc": "A sharp component dropped by rogue automatons. Sells for 8 gold.",
     "name": "Ratchet Tooth"
+  },
+  "meager_edge": {
+    "desc": "A short sword, honed just enough to bite. Keep tempering it at the Celestial Smith.",
+    "name": "Humble Edge"
+  },
+  "ash_mail": {
+    "desc": "A light breastplate hammered from ash. Take it to the Celestial Smith to forge it up a tier.",
+    "name": "Ashen Mail"
+  },
+  "knight_plate": {
+    "desc": "A heavy breastplate of fine steel, glowing with a calm metallic sheen.",
+    "name": "Knight's Remnant Plate"
   }
 }

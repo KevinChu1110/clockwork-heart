@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dd0d2jvesarjr"
-path="res://.godot/imported/telegraph.png-a5e20d53fb0cd21471a5a7f9dd204a7c.ctex"
+path="res://.godot/imported/telegraph.png-7f8279d84664a5ae972f076cd4625c61.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/kingfisher/telegraph.png"
-dest_files=["res://.godot/imported/telegraph.png-a5e20d53fb0cd21471a5a7f9dd204a7c.ctex"]
+source_file="res://assets/sprites/player/paperdoll/kingfisher/telegraph.png"
+dest_files=["res://.godot/imported/telegraph.png-7f8279d84664a5ae972f076cd4625c61.ctex"]
 
 [params]
 

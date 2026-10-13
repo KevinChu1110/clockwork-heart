@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cp81kidsb5gpe"
-path="res://.godot/imported/key_camel_armillary_dial_brass.png-12912eceabdc11f2589e6988f9d03254.ctex"
+path="res://.godot/imported/key_camel_armillary_dial_brass.png-1e9bb9669300750689f33e0588e08541.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/key/key_camel_armillary_dial_brass.png"
-dest_files=["res://.godot/imported/key_camel_armillary_dial_brass.png-12912eceabdc11f2589e6988f9d03254.ctex"]
+source_file="res://assets/paperdoll/key/key_camel_armillary_dial_brass.png"
+dest_files=["res://.godot/imported/key_camel_armillary_dial_brass.png-1e9bb9669300750689f33e0588e08541.ctex"]
 
 [params]
 

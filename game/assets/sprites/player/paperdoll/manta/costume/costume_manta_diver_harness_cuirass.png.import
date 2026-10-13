@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://djx878a0e74mv"
-path="res://.godot/imported/costume_manta_diver_harness_cuirass.png-f5763f60e09288e4d77311f020ffc351.ctex"
+path="res://.godot/imported/costume_manta_diver_harness_cuirass.png-39c693f591afc6ed3ac4939d7eaab550.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/manta/costume/costume_manta_diver_harness_cuirass.png"
-dest_files=["res://.godot/imported/costume_manta_diver_harness_cuirass.png-f5763f60e09288e4d77311f020ffc351.ctex"]
+source_file="res://assets/paperdoll/manta/costume/costume_manta_diver_harness_cuirass.png"
+dest_files=["res://.godot/imported/costume_manta_diver_harness_cuirass.png-39c693f591afc6ed3ac4939d7eaab550.ctex"]
 
 [params]
 

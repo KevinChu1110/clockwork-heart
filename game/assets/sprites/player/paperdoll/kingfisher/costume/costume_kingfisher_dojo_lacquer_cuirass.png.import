@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://sxm8iqkpqslmi"
-path="res://.godot/imported/costume_kingfisher_dojo_lacquer_cuirass.png-527280dc6e15c14c0b4e1f330269348b.ctex"
+uid="uid://dh0q5ivphy3lg"
+path="res://.godot/imported/costume_kingfisher_dojo_lacquer_cuirass.png-5ac55a0f2707858415f58d1ac8480fa6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/kingfisher/costume/costume_kingfisher_dojo_lacquer_cuirass.png"
-dest_files=["res://.godot/imported/costume_kingfisher_dojo_lacquer_cuirass.png-527280dc6e15c14c0b4e1f330269348b.ctex"]
+source_file="res://assets/paperdoll/kingfisher/costume/costume_kingfisher_dojo_lacquer_cuirass.png"
+dest_files=["res://.godot/imported/costume_kingfisher_dojo_lacquer_cuirass.png-5ac55a0f2707858415f58d1ac8480fa6.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3c3iq21oh0c4"
-path="res://.godot/imported/weapon_manta_hydro_compound_bow_512.png-c54f52ab3126e6a7c82c8e9c288d146c.ctex"
+path="res://.godot/imported/weapon_manta_hydro_compound_bow_512.png-d1189a2a63ed5001b0a17b91d41ff707.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/manta/weapon/weapon_manta_hydro_compound_bow_512.png"
-dest_files=["res://.godot/imported/weapon_manta_hydro_compound_bow_512.png-c54f52ab3126e6a7c82c8e9c288d146c.ctex"]
+source_file="res://assets/paperdoll/manta/weapon/weapon_manta_hydro_compound_bow_512.png"
+dest_files=["res://.godot/imported/weapon_manta_hydro_compound_bow_512.png-d1189a2a63ed5001b0a17b91d41ff707.ctex"]
 
 [params]
 

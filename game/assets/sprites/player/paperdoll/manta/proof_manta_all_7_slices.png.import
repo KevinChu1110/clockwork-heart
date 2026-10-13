@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://tbugcfjtwdq1"
-path="res://.godot/imported/proof_manta_all_7_slices.png-c1da8dc64da8784df1e7907ad8b965d4.ctex"
+path="res://.godot/imported/proof_manta_all_7_slices.png-68fa1a5dd0cb6561b92254dfcae87c82.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/manta/proof_manta_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_manta_all_7_slices.png-c1da8dc64da8784df1e7907ad8b965d4.ctex"]
+source_file="res://assets/paperdoll/manta/proof_manta_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_manta_all_7_slices.png-68fa1a5dd0cb6561b92254dfcae87c82.ctex"]
 
 [params]
 

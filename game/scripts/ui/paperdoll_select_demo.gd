@@ -558,7 +558,7 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/showcase/sailfish_idle_hd.png",
 		"desc": "深海發條海淵的巡洋長，深海陽極氧化鍍鈦骨架，破浪螺旋合金長槍與多節發條折疊背鰭帆。",
 		"costumes": [
-			{"id": "costume_sailfish_abyssal_knight_cuirass", "name_zh": "海淵深潛騎士重裝護胸甲", "desc": "鈷藍色耐壓加厚鍍鈦胸甲，胸口鉚接象牙白與珊瑚金海錨紋飾"},
+			{"id": "costume_sailfish_abyssal_knight_cuirass", "name_zh": "海淵深潛騎士重裝護胸甲", "desc": "鈷藍色耐壓雙層鍍鈦胸甲，胸口鉚接象牙白與珊瑚金海錨紋飾"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現深海陽極氧化鈷藍鍍鈦板件與陶瓷胸腹板"}
 		],
 		"chassis": [
@@ -693,7 +693,7 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/showcase/seal_idle_hd.png",
 		"desc": "琉璃汪洋的發條拍浪宗師，鍍鈦天藍馬口鐵板件素體，沖壓流體減阻兜帽與琉璃氣動拍浪拳套。",
 		"costumes": [
-			{"id": "costume_seal_deepsea_diver_harness", "name_zh": "深海武道防壓束帶", "desc": "多巴胺暖橘高抗撕裂加厚潛水束帶，珊瑚粉浮標小球與鍍金海錨金屬搭扣"},
+			{"id": "costume_seal_deepsea_diver_harness", "name_zh": "深海武道防壓束帶", "desc": "活力暖橘雙層防撕裂潛水束帶，珊瑚粉浮標小球與鍍金海錨金屬搭扣"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現鍍鈦天藍馬口鐵防蝕板件與氣動導流雙葉尾鰭"}
 		],
 		"chassis": [
@@ -783,7 +783,7 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/showcase/badger_idle_hd.png",
 		"desc": "星穹軌道外星基地無畏前鋒武道家，高密度聚合物平頭抗衝擊素體，平頭防暴沖壓護額與逐星裂空機關爪。",
 		"costumes": [
-			{"id": "costume_badger_eva_heavy_harness", "name_zh": "軌道高抗衝擊防護工裝", "desc": "雙層加厚高密度聚合物胸甲，配備多巴胺暖金卡扣與防撞護肩"},
+			{"id": "costume_badger_eva_heavy_harness", "name_zh": "軌道高抗衝擊防護工裝", "desc": "雙層厚實高密度胸甲，配備亮暖金卡扣與防撞護肩"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現高密度聚合物平頭抗衝擊素體與象牙白隆脊板"}
 		],
 		"chassis": [
@@ -798,7 +798,7 @@ const RACES_DATA: Dictionary = {
 		"thumb": "res://assets/sprites/player/showcase/capybara_idle_hd.png",
 		"desc": "天元竹林道場禪意護盾法師，溫潤青瓷椴木禪意底盤，天元禪修竹笠斗笠與澄心太極護體靈晶。",
 		"costumes": [
-			{"id": "costume_capybara_tea_ceremony_wrap", "name_zh": "道場茶道防塵練功袍", "desc": "雙層加厚靛藍與米白粗麻禪袍，飾以暖金滾邊與多巴胺珊瑚粉茶道編織結"},
+			{"id": "costume_capybara_tea_ceremony_wrap", "name_zh": "道場茶道防塵練功袍", "desc": "雙層厚織靛藍與米白粗麻禪袍，飾以暖金滾邊與珊瑚粉茶道編織結"},
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現溫潤青瓷椴木禪意底盤與高透石英機芯視窗"}
 		],
 		"chassis": [
@@ -922,7 +922,7 @@ const RACES_DATA: Dictionary = {
 			{"id": "none", "name_zh": "無外裝 (裸機素體)", "desc": "卸除外裝，呈現沖壓厚鑄黃銅鎢鋼矮萌底盤"}
 		],
 		"chassis": [
-			{"id": "chassis_hippo_thick_cast_brass_default", "name_zh": "沖壓厚鑄黃銅鎢鋼矮萌底盤", "desc": "沖壓厚鑄耐壓黃銅板件包覆冷軋鎢鋼框架，四足圓柱形活塞避震腿與加厚黃銅防滑蹄蓋"}
+			{"id": "chassis_hippo_thick_cast_brass_default", "name_zh": "沖壓厚鑄黃銅鎢鋼矮萌底盤", "desc": "沖壓厚鑄耐壓黃銅板件包覆冷軋鎢鋼框架，四足圓柱形活塞避震腿與厚實黃銅防滑蹄蓋"}
 		]
 	},
 	"mole": {

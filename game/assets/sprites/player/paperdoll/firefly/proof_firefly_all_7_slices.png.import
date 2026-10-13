@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cc05yqk40rpyf"
-path="res://.godot/imported/proof_firefly_all_7_slices.png-4fdc634bfd8d304c090fedf6f305cb93.ctex"
+path="res://.godot/imported/proof_firefly_all_7_slices.png-6665263388d284fe38de2d3f3d2395d5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/firefly/proof_firefly_all_7_slices.png"
-dest_files=["res://.godot/imported/proof_firefly_all_7_slices.png-4fdc634bfd8d304c090fedf6f305cb93.ctex"]
+source_file="res://assets/sprites/player/paperdoll/firefly/proof_firefly_all_7_slices.png"
+dest_files=["res://.godot/imported/proof_firefly_all_7_slices.png-6665263388d284fe38de2d3f3d2395d5.ctex"]
 
 [params]
 

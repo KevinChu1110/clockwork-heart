@@ -90,5 +90,17 @@
   "wolf_fang": {
     "desc": "Componente afilado desprendido de autómatas descontrolados. Se vende por 8 de oro.",
     "name": "Diente de trinquete"
+  },
+  "meager_edge": {
+    "desc": "Una daga bien forjada que apenas empieza a cortar. Sigue templándola en la Fragua Celestial.",
+    "name": "Filo Humilde"
+  },
+  "ash_mail": {
+    "desc": "Un peto ligero batido con ceniza. Llévalo a la Fragua Celestial para subirlo de nivel.",
+    "name": "Peto de Ceniza"
+  },
+  "knight_plate": {
+    "desc": "Un peto pesado de acero fino, con un sereno brillo metálico.",
+    "name": "Coraza del Caballero"
   }
 }

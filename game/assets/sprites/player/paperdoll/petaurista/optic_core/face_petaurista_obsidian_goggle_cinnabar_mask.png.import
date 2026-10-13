@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d2vmu6o3fstco"
-path="res://.godot/imported/face_petaurista_obsidian_goggle_cinnabar_mask.png-e82aa7c6f4e31c9c3ad31c69329b59ff.ctex"
+path="res://.godot/imported/face_petaurista_obsidian_goggle_cinnabar_mask.png-6cae5ebde22d7d0bed95a158dadc633f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/petaurista/optic_core/face_petaurista_obsidian_goggle_cinnabar_mask.png"
-dest_files=["res://.godot/imported/face_petaurista_obsidian_goggle_cinnabar_mask.png-e82aa7c6f4e31c9c3ad31c69329b59ff.ctex"]
+source_file="res://assets/sprites/player/paperdoll/petaurista/optic_core/face_petaurista_obsidian_goggle_cinnabar_mask.png"
+dest_files=["res://.godot/imported/face_petaurista_obsidian_goggle_cinnabar_mask.png-6cae5ebde22d7d0bed95a158dadc633f.ctex"]
 
 [params]
 

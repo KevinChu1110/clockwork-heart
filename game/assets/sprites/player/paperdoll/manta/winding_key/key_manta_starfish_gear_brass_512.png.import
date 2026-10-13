@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bcnhtxo8g77lo"
-path="res://.godot/imported/key_manta_starfish_gear_brass_512.png-486c1981bbe99a6318b467e8953ce9b4.ctex"
+path="res://.godot/imported/key_manta_starfish_gear_brass_512.png-134d69540b931304c3d84dee8d1055a8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/manta/winding_key/key_manta_starfish_gear_brass_512.png"
-dest_files=["res://.godot/imported/key_manta_starfish_gear_brass_512.png-486c1981bbe99a6318b467e8953ce9b4.ctex"]
+source_file="res://assets/paperdoll/manta/winding_key/key_manta_starfish_gear_brass_512.png"
+dest_files=["res://.godot/imported/key_manta_starfish_gear_brass_512.png-134d69540b931304c3d84dee8d1055a8.ctex"]
 
 [params]
 
