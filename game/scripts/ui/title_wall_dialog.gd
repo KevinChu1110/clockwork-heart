@@ -13,6 +13,7 @@ extends Control
 ## 8. 零系統 Emoji、零字元圖示、零新產圖。
 
 signal closed()
+signal title_equipped(title_name: String)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -68,6 +69,8 @@ func setup(newly: Array[String], back_cb: Callable, fortress_cb: Callable = Call
 			_back_key = "回到廣場"
 		elif "標題" in back_text or "title" in back_text.to_lower() or "タイトル" in back_text or "타이틀" in back_text or "título" in back_text:
 			_back_key = "返回標題"
+		elif "大廳" in back_text or "lobby" in back_text.to_lower() or "ロビー" in back_text or "로비" in back_text or "vestíbulo" in back_text.to_lower():
+			_back_key = "回到大廳"
 		else:
 			_back_key = back_text
 	if is_inside_tree():
@@ -84,6 +87,7 @@ func _ready() -> void:
 		_cached_font = load(FONT_PATH) as Font
 
 	_connect_loc_signal()
+	_connect_game_state_signal()
 
 	if not _built:
 		_build_ui()
@@ -92,6 +96,31 @@ func _ready() -> void:
 
 func _exit_tree() -> void:
 	_disconnect_loc_signal()
+	_disconnect_game_state_signal()
+
+
+func _get_game_state() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		return (loop as SceneTree).root.get_node_or_null("GameState")
+	return null
+
+
+func _connect_game_state_signal() -> void:
+	var gs := _get_game_state()
+	if gs and gs.has_signal("equipped_title_changed"):
+		if not gs.equipped_title_changed.is_connected(_on_equipped_title_changed):
+			gs.equipped_title_changed.connect(_on_equipped_title_changed)
+
+
+func _disconnect_game_state_signal() -> void:
+	var gs := _get_game_state()
+	if gs and gs.has_signal("equipped_title_changed") and gs.equipped_title_changed.is_connected(_on_equipped_title_changed):
+		gs.equipped_title_changed.disconnect(_on_equipped_title_changed)
+
+
+func _on_equipped_title_changed(_new_title: String = "") -> void:
+	_update_cards_equipped_state()
 
 
 func _connect_loc_signal() -> void:
@@ -147,16 +176,19 @@ func _update_ui_texts() -> void:
 	for card in _cards:
 		if not is_instance_valid(card):
 			continue
-		var unlocked: bool = card.get_meta("is_unlocked", false)
 		var flag: String = str(card.get_meta("flag", ""))
 		var raw_name: String = str(card.get_meta("raw_name", ""))
 		var raw_desc: String = str(card.get_meta("raw_desc", ""))
 
-		var badge_lbl: Label = card.find_child("BadgeLabel", true, false) as Label
-		if badge_lbl and is_instance_valid(badge_lbl):
-			badge_lbl.text = _t("已解鎖") if unlocked else _t("未解鎖")
-
 		var e_info: Dictionary = entries_map.get(flag, {})
+		var unlocked: bool = card.get_meta("is_unlocked", false)
+		if tc and tc.has_method("is_unlocked") and not e_info.is_empty():
+			unlocked = tc.is_unlocked(e_info)
+		elif flag != "":
+			var gs := _get_game_state()
+			if gs and gs.has_method("has_flag") and gs.has_flag(flag):
+				unlocked = true
+		card.set_meta("is_unlocked", unlocked)
 		var t_name: String = str(e_info.get("name", ""))
 		if t_name == "":
 			t_name = _t(raw_name)
@@ -176,6 +208,8 @@ func _update_ui_texts() -> void:
 		var desc_lbl: Label = card.find_child("DescLabel", true, false) as Label
 		if desc_lbl and is_instance_valid(desc_lbl):
 			desc_lbl.text = t_desc
+
+		_update_card_visual(card)
 
 
 func _rebuild() -> void:
@@ -456,26 +490,6 @@ func _create_title_card(entry: Dictionary, unlocked: bool, index: int) -> PanelC
 	card.set_meta("raw_name", raw_name)
 	card.set_meta("raw_desc", raw_desc)
 
-	# 卡片底板：已解鎖＝暖橘果凍厚底 5px；未解鎖＝壓暗奶油底
-	var card_sb := StyleBoxFlat.new()
-	if unlocked:
-		card_sb.bg_color = COLOR_CARD_UNLOCKED
-		card_sb.border_color = COLOR_ORANGE
-		card_sb.set_border_width_all(2)
-		card_sb.border_width_bottom = 5  ## 暖橘果凍厚底 5px
-		card_sb.set_corner_radius_all(16)
-		card_sb.shadow_color = Color(0.9, 0.5, 0.1, 0.15)
-		card_sb.shadow_size = 4
-		card_sb.shadow_offset = Vector2(0, 2)
-	else:
-		card_sb.bg_color = COLOR_CARD_LOCKED
-		card_sb.border_color = COLOR_CARD_LOCKED_BORDER
-		card_sb.set_border_width_all(2)
-		card_sb.border_width_bottom = 3
-		card_sb.set_corner_radius_all(16)
-
-	card.add_theme_stylebox_override("panel", card_sb)
-
 	var cm := MarginContainer.new()
 	cm.add_theme_constant_override("margin_left", 14)
 	cm.add_theme_constant_override("margin_right", 14)
@@ -496,43 +510,15 @@ func _create_title_card(entry: Dictionary, unlocked: bool, index: int) -> PanelC
 	var name_lbl := Label.new()
 	name_lbl.name = "NameLabel"
 	name_lbl.text = str(entry.get("name", ""))
-	if unlocked:
-		_apply_label_style(name_lbl, 18, COLOR_TEXT_DARK, Color("#FFFDF8"), 2)
-	else:
-		_apply_label_style(name_lbl, 18, COLOR_TEXT_MUTED, Color(0, 0, 0, 0), 0)
 	name_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	name_lbl.clip_text = false
 	top_row.add_child(name_lbl)
 
-	# 狀態標籤（已解鎖 / 未解鎖，零 Emoji，字級 16）
+	# 狀態標籤（已解鎖 / 未解鎖 / ✓ 佩戴中，零 Emoji，字級 16）
 	var badge_panel := PanelContainer.new()
 	badge_panel.name = "BadgePanel"
-	var b_sb := StyleBoxFlat.new()
-	b_sb.set_corner_radius_all(10)
-	b_sb.content_margin_left = 10
-	b_sb.content_margin_right = 10
-	b_sb.content_margin_top = 2
-	b_sb.content_margin_bottom = 3
-
 	var badge_lbl := Label.new()
 	badge_lbl.name = "BadgeLabel"
-
-	if unlocked:
-		b_sb.bg_color = COLOR_ORANGE
-		b_sb.border_color = COLOR_BORDER
-		b_sb.set_border_width_all(2)
-		b_sb.border_width_bottom = 3
-		badge_lbl.text = _t("已解鎖")
-		_apply_label_style(badge_lbl, 16, Color("#FFFFFF"), COLOR_BORDER, 2)
-	else:
-		b_sb.bg_color = Color("#DED6CA")
-		b_sb.border_color = Color("#A89E90")
-		b_sb.set_border_width_all(1)
-		b_sb.border_width_bottom = 2
-		badge_lbl.text = _t("未解鎖")
-		_apply_label_style(badge_lbl, 16, Color("#706860"), Color(0, 0, 0, 0), 0)
-
-	badge_panel.add_theme_stylebox_override("panel", b_sb)
 	badge_panel.add_child(badge_lbl)
 	top_row.add_child(badge_panel)
 
@@ -541,21 +527,183 @@ func _create_title_card(entry: Dictionary, unlocked: bool, index: int) -> PanelC
 	desc_lbl.name = "DescLabel"
 	desc_lbl.text = str(entry.get("desc", ""))
 	desc_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	if unlocked:
-		_apply_label_style(desc_lbl, 16, COLOR_DESC_UNLOCKED, Color(0, 0, 0, 0), 0)
-	else:
-		_apply_label_style(desc_lbl, 16, COLOR_DESC_LOCKED, Color(0, 0, 0, 0), 0)
 	v.add_child(desc_lbl)
 
-	# 點擊拇指觸控回饋
+	_update_card_visual(card)
+
+	# 點擊拇指觸控回饋與佩戴稱號
 	card.gui_input.connect(func(event: InputEvent):
 		if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			var am: Node = Engine.get_main_loop().root.get_node_or_null("AudioManager") if Engine.get_main_loop() else null
-			if am and am.has_method("play_ui"):
-				am.play_ui()
+			_on_card_clicked(card)
 	)
 
 	return card
+
+
+func _is_card_equipped(card: PanelContainer) -> bool:
+	if not is_instance_valid(card):
+		return false
+	var flag: String = str(card.get_meta("flag", ""))
+	var raw_name: String = str(card.get_meta("raw_name", ""))
+	var unlocked: bool = card.get_meta("is_unlocked", false)
+	if not unlocked:
+		var gs_temp := _get_game_state()
+		if gs_temp and gs_temp.has_method("has_flag") and flag != "" and gs_temp.has_flag(flag):
+			unlocked = true
+			card.set_meta("is_unlocked", true)
+	if not unlocked:
+		return false
+	var cur_equipped := "初出茅廬"
+	var gs := _get_game_state()
+	if gs and gs.has_method("get_equipped_title"):
+		cur_equipped = gs.get_equipped_title()
+	return cur_equipped == raw_name or cur_equipped == flag
+
+
+func _update_card_visual(card: PanelContainer) -> void:
+	if not is_instance_valid(card):
+		return
+	var unlocked: bool = card.get_meta("is_unlocked", false)
+	var is_equipped: bool = _is_card_equipped(card)
+	card.set_meta("is_equipped", is_equipped)
+
+	# 卡片底板：已佩戴＝金黃光框 6px 厚底；已解鎖＝暖橘果凍厚底 5px；未解鎖＝壓暗奶油底
+	var card_sb := StyleBoxFlat.new()
+	card_sb.set_corner_radius_all(16)
+	if is_equipped:
+		card_sb.bg_color = Color("#FFFBE8")
+		card_sb.border_color = COLOR_GOLD
+		card_sb.set_border_width_all(3)
+		card_sb.border_width_bottom = 6
+		card_sb.shadow_color = Color(1.0, 0.82, 0.16, 0.40)
+		card_sb.shadow_size = 8
+		card_sb.shadow_offset = Vector2(0, 3)
+	elif unlocked:
+		card_sb.bg_color = COLOR_CARD_UNLOCKED
+		card_sb.border_color = COLOR_ORANGE
+		card_sb.set_border_width_all(2)
+		card_sb.border_width_bottom = 5
+		card_sb.shadow_color = Color(0.9, 0.5, 0.1, 0.15)
+		card_sb.shadow_size = 4
+		card_sb.shadow_offset = Vector2(0, 2)
+	else:
+		card_sb.bg_color = COLOR_CARD_LOCKED
+		card_sb.border_color = COLOR_CARD_LOCKED_BORDER
+		card_sb.set_border_width_all(2)
+		card_sb.border_width_bottom = 3
+	card.add_theme_stylebox_override("panel", card_sb)
+
+	# 狀態標籤（已解鎖 / 未解鎖 / ✓ 佩戴中，零 Emoji，字級 16）
+	var badge_panel := card.find_child("BadgePanel", true, false) as PanelContainer
+	var badge_lbl := card.find_child("BadgeLabel", true, false) as Label
+	if badge_panel and badge_lbl:
+		var b_sb := StyleBoxFlat.new()
+		b_sb.set_corner_radius_all(10)
+		b_sb.content_margin_left = 10
+		b_sb.content_margin_right = 10
+		b_sb.content_margin_top = 2
+		b_sb.content_margin_bottom = 3
+		if is_equipped:
+			b_sb.bg_color = COLOR_GOLD
+			b_sb.border_color = COLOR_BORDER
+			b_sb.set_border_width_all(2)
+			b_sb.border_width_bottom = 4
+			badge_lbl.text = _t("✓ 佩戴中")
+			_apply_label_style(badge_lbl, 16, COLOR_TEXT_DARK, Color("#FFFFFF"), 2)
+		elif unlocked:
+			b_sb.bg_color = COLOR_ORANGE
+			b_sb.border_color = COLOR_BORDER
+			b_sb.set_border_width_all(2)
+			b_sb.border_width_bottom = 3
+			badge_lbl.text = _t("已解鎖")
+			_apply_label_style(badge_lbl, 16, Color("#FFFFFF"), COLOR_BORDER, 2)
+		else:
+			b_sb.bg_color = Color("#DED6CA")
+			b_sb.border_color = Color("#A89E90")
+			b_sb.set_border_width_all(1)
+			b_sb.border_width_bottom = 2
+			badge_lbl.text = _t("未解鎖")
+			_apply_label_style(badge_lbl, 16, Color("#706860"), Color(0, 0, 0, 0), 0)
+		badge_panel.add_theme_stylebox_override("panel", b_sb)
+
+	# 稱號名稱
+	var name_lbl := card.find_child("NameLabel", true, false) as Label
+	if name_lbl:
+		if is_equipped:
+			_apply_label_style(name_lbl, 18, COLOR_TEXT_DARK, COLOR_GOLD, 2)
+		elif unlocked:
+			_apply_label_style(name_lbl, 18, COLOR_TEXT_DARK, Color("#FFFDF8"), 2)
+		else:
+			_apply_label_style(name_lbl, 18, COLOR_TEXT_MUTED, Color(0, 0, 0, 0), 0)
+
+	# 描述條件
+	var desc_lbl := card.find_child("DescLabel", true, false) as Label
+	if desc_lbl:
+		if unlocked:
+			_apply_label_style(desc_lbl, 16, COLOR_DESC_UNLOCKED, Color(0, 0, 0, 0), 0)
+		else:
+			_apply_label_style(desc_lbl, 16, COLOR_DESC_LOCKED, Color(0, 0, 0, 0), 0)
+
+
+func _on_card_clicked(card: PanelContainer) -> void:
+	if not is_instance_valid(card):
+		return
+	var unlocked: bool = card.get_meta("is_unlocked", false)
+	if not unlocked:
+		return
+	var am: Node = Engine.get_main_loop().root.get_node_or_null("AudioManager") if Engine.get_main_loop() else null
+	if am and am.has_method("play_ui"):
+		am.play_ui()
+	var raw_name: String = str(card.get_meta("raw_name", ""))
+	if raw_name.is_empty():
+		raw_name = str(card.get_meta("name", ""))
+	var gs := _get_game_state()
+	if gs and gs.has_method("set_equipped_title"):
+		gs.set_equipped_title(raw_name)
+	title_equipped.emit(raw_name)
+	_update_cards_equipped_state()
+
+
+func _update_cards_equipped_state() -> void:
+	for card in _cards:
+		if is_instance_valid(card):
+			_update_card_visual(card)
+
+
+func equip_title(raw_name_or_flag: String) -> void:
+	var target_card := get_card_by_flag(raw_name_or_flag)
+	if not target_card:
+		for card in _cards:
+			if is_instance_valid(card) and str(card.get_meta("raw_name", "")) == raw_name_or_flag:
+				target_card = card
+				break
+	if target_card:
+		_on_card_clicked(target_card)
+	else:
+		var gs := _get_game_state()
+		if gs and gs.has_method("set_equipped_title"):
+			gs.set_equipped_title(raw_name_or_flag)
+		title_equipped.emit(raw_name_or_flag)
+		_update_cards_equipped_state()
+
+
+func is_card_equipped(flag_or_name: String) -> bool:
+	var card := get_card_by_flag(flag_or_name)
+	if not card:
+		for c in _cards:
+			if is_instance_valid(c) and str(c.get_meta("raw_name", "")) == flag_or_name:
+				card = c
+				break
+	if card:
+		return _is_card_equipped(card)
+	return false
+
+
+func get_equipped_title() -> String:
+	var gs := _get_game_state()
+	if gs and gs.has_method("get_equipped_title"):
+		return gs.get_equipped_title()
+	return "初出茅廬"
 
 
 func get_card_count() -> int:

@@ -4207,5 +4207,8 @@
   "當前無可卸下的武器！": "No weapons to unequip currently!",
   "已卸下所有機芯": "All cores unequipped",
   "未裝備任何機芯": "No cores equipped",
-  "vault.btn_go_forge": "Go to Forge"
+  "vault.btn_go_forge": "Go to Forge",
+  "✓ 佩戴中": "✓ Equipped",
+  "佩戴稱號": "Equip Title",
+  "回到大廳": "Back to Lobby"
 }
