@@ -25,6 +25,7 @@ signal core_dismantled(part: Dictionary, result: Dictionary)
 signal calibrate_requested()
 signal forge_requested()
 signal workshop_requested()
+signal go_soul_hall_requested()
 signal materials_batch_sold(gold: int, count: int, result: Dictionary)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -155,6 +156,7 @@ var _lock_btn: Button = null
 var _dismantle_btn: Button = null
 var _go_forge_btn: Button = null
 var _go_workshop_btn: Button = null
+var _go_soul_btn: Button = null
 var _hotbar_capsule: PanelContainer = null
 var _hotbar_capsule_label: Label = null
 var _floating_hotbar_toast: PanelContainer = null
@@ -250,6 +252,8 @@ func _update_ui_texts() -> void:
 		_go_forge_btn.text = _t("前往鍛造")
 	if _go_workshop_btn and is_instance_valid(_go_workshop_btn):
 		_go_workshop_btn.text = _t("前往工坊")
+	if _go_soul_btn and is_instance_valid(_go_soul_btn):
+		_go_soul_btn.text = _t("前往聚魂")
 	if _batch_sell_btn and is_instance_valid(_batch_sell_btn):
 		_batch_sell_btn.text = _t("一鍵出售素材")
 	if _sort_btn and is_instance_valid(_sort_btn):
@@ -1025,6 +1029,27 @@ func _build() -> void:
 	_go_workshop_btn.visible = false
 	right.add_child(_go_workshop_btn)
 
+	## 『前往聚魂』快捷按鈕 (金黃果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px，深藍紫文字與描邊 #1F1A3A)
+	_go_soul_btn = Button.new()
+	_go_soul_btn.name = "BtnGoSoul"
+	_go_soul_btn.text = _t("前往聚魂")
+	_go_soul_btn.custom_minimum_size = Vector2(0, 52)
+	_go_soul_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_go_soul_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_go_soul_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18, 2))
+	_go_soul_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18, 2))
+	_go_soul_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_GOLD, COLOR_BORDER, 2, 18, 2))
+	_go_soul_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18, 2))
+	_go_soul_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_go_soul_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_go_soul_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	_go_soul_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_soul_btn.add_theme_font_override("font", _cached_font)
+	_go_soul_btn.pressed.connect(_on_go_soul_pressed)
+	_go_soul_btn.visible = false
+	right.add_child(_go_soul_btn)
+
 	## 『一鍵出售素材』按鈕 (薄荷綠果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px)
 	_batch_sell_btn = Button.new()
 	_batch_sell_btn.name = "BtnBatchSellMaterials"
@@ -1348,6 +1373,8 @@ func _update_detail(inv: Node) -> void:
 			_go_forge_btn.visible = false
 		if _go_workshop_btn:
 			_go_workshop_btn.visible = false
+		if _go_soul_btn:
+			_go_soul_btn.visible = false
 		_update_batch_sell_button()
 		return
 
@@ -2828,10 +2855,40 @@ func get_bag_dismantle_button() -> Button:
 	return _dismantle_btn
 
 
-func _is_selected_item_gem_or_material() -> bool:
+func _is_selected_item_soul_fragment() -> bool:
 	if _selected.is_empty():
 		return false
 	if _is_selected_item_equipment() or _is_selected_item_core():
+		return false
+	var id := _selected.to_lower()
+	if id == "windup_fragment" or id.contains("soul_frag") or id.contains("soul_shard") or id.contains("soul_piece") or id.contains("windup_frag"):
+		return true
+	if id.contains("soul") and not id.contains("core"):
+		return true
+	var loop := Engine.get_main_loop()
+	var inv: Node = null
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		inv = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+	var def: Dictionary = inv.call("catalog", _selected) as Dictionary if inv and inv.has_method("catalog") else {}
+	var kind := str(def.get("kind", "")).to_lower()
+	var tags: Variant = def.get("tags", [])
+	if kind in ["soul", "soul_fragment", "soul_frag", "soul_shard", "windup_fragment"]:
+		return true
+	if tags is Array:
+		for t in tags:
+			var ts := str(t).to_lower()
+			if ts in ["soul", "soul_fragment", "windup_fragment"]:
+				return true
+	var name_str := str(def.get("name", ""))
+	if name_str.contains("戰魂") or name_str.contains("发条碎片") or name_str.contains("發條碎片") or name_str.contains("聚魂"):
+		return true
+	return false
+
+
+func _is_selected_item_gem_or_material() -> bool:
+	if _selected.is_empty():
+		return false
+	if _is_selected_item_equipment() or _is_selected_item_core() or _is_selected_item_soul_fragment():
 		return false
 	var loop := Engine.get_main_loop()
 	var inv: Node = null
@@ -2855,23 +2912,34 @@ func _update_shortcut_buttons() -> void:
 		return
 	if _go_workshop_btn == null or not is_instance_valid(_go_workshop_btn):
 		return
+	if _go_soul_btn == null or not is_instance_valid(_go_soul_btn):
+		return
 
 	if _selected.is_empty():
 		_go_forge_btn.visible = false
 		_go_workshop_btn.visible = false
+		_go_soul_btn.visible = false
 		return
 
-	if _is_selected_item_equipment():
+	if _is_selected_item_soul_fragment():
+		_go_forge_btn.visible = false
+		_go_workshop_btn.visible = false
+		_go_soul_btn.visible = true
+		_go_soul_btn.text = _t("前往聚魂")
+	elif _is_selected_item_equipment():
 		_go_forge_btn.visible = true
 		_go_forge_btn.text = _t("前往鍛造")
 		_go_workshop_btn.visible = false
+		_go_soul_btn.visible = false
 	elif _is_selected_item_gem_or_material():
 		_go_forge_btn.visible = false
 		_go_workshop_btn.visible = true
 		_go_workshop_btn.text = _t("前往工坊")
+		_go_soul_btn.visible = false
 	else:
 		_go_forge_btn.visible = false
 		_go_workshop_btn.visible = false
+		_go_soul_btn.visible = false
 
 
 func _on_go_forge_pressed() -> void:
@@ -2897,6 +2965,16 @@ func _on_go_workshop_pressed() -> void:
 	if _is_selected_item_equipment():
 		target_tab = 1
 	open_gem_workshop(target_tab)
+
+
+func _on_go_soul_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	go_soul_hall_requested.emit()
+	open_soul_hall()
 
 
 func get_go_calibrate_button() -> Button:
@@ -3029,6 +3107,22 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 	return null
 
 
+func open_soul_hall() -> void:
+	close()
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		return
+	var root_node := (loop as SceneTree).root
+	var ml: Node = root_node.get_node_or_null("MobileLobby")
+	if ml and ml.has_method("open_soul_hall"):
+		ml.call("open_soul_hall")
+		return
+	var p := get_parent()
+	if p and p.has_method("open_soul_hall"):
+		p.call("open_soul_hall")
+		return
+
+
 func get_go_forge_button() -> Button:
 	return _go_forge_btn
 
@@ -3045,12 +3139,20 @@ func get_bag_go_workshop_button() -> Button:
 	return _go_workshop_btn
 
 
+func get_go_soul_button() -> Button:
+	return _go_soul_btn
+
+
+func get_bag_go_soul_button() -> Button:
+	return _go_soul_btn
+
+
 # ── 一鍵出售素材支援 (Batch Sell Materials) ──
 
 func _is_selected_item_material() -> bool:
 	if _selected.is_empty():
 		return false
-	if _is_selected_item_equipment() or _is_selected_item_core():
+	if _is_selected_item_equipment() or _is_selected_item_core() or _is_selected_item_soul_fragment():
 		return false
 	var loop := Engine.get_main_loop()
 	var inv: Node = null
