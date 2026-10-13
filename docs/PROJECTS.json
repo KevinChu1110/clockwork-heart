@@ -6220,8 +6220,8 @@
    "id": "vault-forge-shortcut",
    "cat": "遊戲",
    "title": "ClockworkVaultDialog 發條儲能庫放置收益彈窗新增前往鍛造快捷果凍按鈕連動天宮鐵匠",
-   "status": "開發中",
-   "note": "ClockworkVaultDialog 新增前往鍛造快捷果凍按鈕連動天宮鐵匠",
+   "status": "測試中",
+   "note": "ClockworkVaultDialog 新增前往鍛造快捷果凍按鈕連動天宮鐵匠已完成自測與存證，送審小婷",
    "keys": [
     "Clockwor"
    ]
