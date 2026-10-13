@@ -6910,7 +6910,11 @@ func open_windup_daily() -> Control:
 func open_power_stat_dialog() -> Control:
 	var existing = get_node_or_null("PowerStatDialog")
 	if existing != null and is_instance_valid(existing):
-		return existing
+		if not existing.is_queued_for_deletion():
+			return existing
+		else:
+			if existing.get_parent() == self:
+				remove_child(existing)
 	var PowerStatClass: GDScript = load("res://scripts/ui/power_stat_dialog.gd")
 	if PowerStatClass == null:
 		push_error("無法載入 PowerStatDialog")
@@ -7585,8 +7589,12 @@ func refresh_hero_title() -> void:
 
 func open_title_wall_dialog() -> Control:
 	var existing = get_node_or_null("TitleWallDialog")
-	if existing:
-		return existing
+	if existing != null and is_instance_valid(existing):
+		if not existing.is_queued_for_deletion():
+			return existing
+		else:
+			if existing.get_parent() == self:
+				remove_child(existing)
 	var scn: GDScript = load("res://scripts/ui/title_wall_dialog.gd")
 	if not scn:
 		push_error("無法載入 TitleWallDialog")
@@ -7596,6 +7604,10 @@ func open_title_wall_dialog() -> Control:
 	var tc: Node = Engine.get_main_loop().root.get_node_or_null("TitleCatalog") if Engine.get_main_loop() else null
 	var newly: Array[String] = tc.evaluate_all() if tc and tc.has_method("evaluate_all") else []
 	dlg.setup(newly, func(): dlg.queue_free(), Callable(), _t("回到大廳"))
+	if dlg.has_signal("power_stat_requested"):
+		dlg.power_stat_requested.connect(func():
+			open_power_stat_dialog()
+		)
 	add_child(dlg)
 	return dlg
 
