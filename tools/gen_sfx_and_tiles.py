@@ -20,7 +20,7 @@ rng = random.Random(42)
 
 
 ## 這幾個 key 已改由 tools/gen_sfx_clockwork.py 合成（issue #32），這裡不再覆蓋回舊占位
-OWNED_BY_CLOCKWORK = {"swap", "hit", "slash", "break", "warn", "wind"}
+OWNED_BY_CLOCKWORK = {"swap", "hit", "slash", "break", "warn", "wind", "reveal"}  ## reveal：#91
 
 
 def write_wav(path: Path, samples: list[float], sr: int = SR) -> None:

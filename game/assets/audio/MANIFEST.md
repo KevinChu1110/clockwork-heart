@@ -57,7 +57,8 @@ python3 tools/gen_sfx_clockwork.py --measure  # 腳本內建同一套量法（10
 | parry | **只可當「彈開」自動演出**（`perfect_parry` 等），**不可綁按鈕或 UI 提示** | 0.15–0.25 s | 金屬彈開的一聲「叮」，短 | 舊占位 | P1 |
 | victory | 勝利（`battle_end(true)`），後面接 ending BGM | 0.6–1.2 s | 八音盒三音上行，溫暖、不浮誇 | 舊占位 | P1 |
 | defeat | 落敗（`battle_end(false)`） | 0.6–1.2 s | 發條停擺：音盒走慢、音高下滑 | 舊占位 | P1 |
-| reveal | 抽魂／聚魂揭曉、霧中現形、UI 揭曉 | 0.3–0.6 s | 鐘琴閃一下，亮 | 舊占位 | P1 |
+| reveal | **抽魂翻卡專用**（brief §5，#91）；稀有度用 `pitch_scale`／`volume_db` 分級，見下表 | 0.52 s | 黃銅卡片翻面「刷」＋卡榫「嗒」→ 八音盒音梳大三和弦上行（E6–G#6–B6）＋高頻小鈴閃光 | 合成 `gen_sfx_clockwork.py reveal`（#91）；−21.0 LUFS M-max／−9.7 dBTP，留 +6 dB 給高階 | P1 → 已做 |
+| summon | 抽魂演出開始（**key 尚未加進 `SFX_KEYS`，要程式加**，#91） | 0.95 s | 發條快速上緊（棘輪越來越密，和戰前 wind 的四格慢轉不同）→ 彈簧放開「咻」上掃 → 低音黃銅共鳴托住 | 合成 `gen_sfx_clockwork.py summon`（#91）；−21.0 LUFS／−7.3 dBTP | P1 → 檔已做，待接 |
 | ui | UI 點擊（`play_ui`） | 0.04–0.08 s | 木質小按鍵「嗒」，很輕 | 舊占位 | P1 |
 | battle_start | `wind` 缺檔時的上鏈後備 | 0.2–0.4 s | 同 wind 但短 | 舊占位 | P2 |
 | clash | 王斬命中、野豬破甲、炸彈 | 0.12–0.20 s | 厚重金屬對撞 | 舊占位 | P1 |
@@ -154,3 +155,24 @@ Suno／外部成品：`python3 tools/import_bgm.py <file> --id <曲目>`
 ### 2026-08-21 · Suno 真曲已入庫
 帳號 `guanrung1110` 產的 `bravesoul_*` 已下載並 `import_bgm` 覆蓋 13 首。  
 來源 uuid 見 `SUNO_SOURCES.json`。多數曲循環相似度偏低（Suno 歌曲結構），若聽得出接縫可再產 loopable 版或手動 `--loop-offset`。
+
+### 抽魂音效分級（#91）
+
+只用現有 API `AudioManager.play(id, pitch_scale, volume_db)`。稀有度順序照 `soul_draw_card_catalog.gd` 的 `FRAME_ORDER`。
+pitch 每一階大約升一個大三度，所以每升一階都**更高、更亮、更短**，而且每階大聲約 3 dB。
+金和彩會多疊一層 `craft`，同時發聲仍然 ≤ 2。
+
+| 時機 | 呼叫 | 實測（M-max／true peak／頻譜重心／長度） |
+|---|---|---|
+| 按「抽」 | `play_ui()` | 沿用 ui |
+| 演出開始 | `play("summon")`；key 還沒加之前先用 `play("clock", 0.8, -3.0)` | summon −21.0 LUFS／−7.3 dBTP／0.95 s |
+| 翻卡・白 普通 | `play("reveal", 0.84, -6.0)` | −27.1／−15.8 dBTP／3857 Hz／0.59 s |
+| 翻卡・藍 精良 | `play("reveal", 1.0, -3.0)` | −24.0／−12.7／4858 Hz／0.50 s |
+| 翻卡・紫 稀有 | `play("reveal", 1.26, 0.0)` | −21.3／−9.8／5089 Hz／0.39 s |
+| 翻卡・金 傳說 | `play("reveal", 1.5, 2.0)`＋`play("craft", 1.0, -5.0)` | −18.6／−3.8／5300 Hz／0.46 s |
+| 翻卡・彩 炫彩 | `play("reveal", 1.68, 3.0)`＋`play("craft", 1.26, -3.0)` | −17.6／−4.2／5078 Hz／0.37 s |
+| 十連：每張翻卡 | 同上，但 `volume_db` 再 −6，間隔 ≥ 90 ms | 兩聲上限會自動丟掉最舊的 |
+| 十連：結算 | 只對**最高稀有度**那張播一次上表的組合（不要 10 張一起響） | — |
+
+量法：把 reveal／craft 用 `pitch_scale` 重取樣（音高和速度一起變，跟 AudioStreamPlayer 一樣），再疊上 volume_db。
+M-max 和 true peak 的量法跟本檔「響度規格」相同；表上的數字還沒算 AudioManager 的 `_sfx_db`（−4 dB）。

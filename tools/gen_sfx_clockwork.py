@@ -38,12 +38,14 @@ TARGET_M = {
     "wind": -21.0,                                  # 戰前上鏈
     "miss": -23.0,                                  # 頻繁回饋（揮空，issue #47）
     "craft": -20.0,                                 # 事件 cue（鍛造成功，issue #47）
+    "reveal": -21.0,                                # 抽魂翻卡（issue #91）；稀有度靠 pitch／volume_db 往上加
+    "summon": -21.0,                                # 抽魂演出開始（issue #91，key 待程式加）
 }
 # true peak 上限（dBTP）。交付規格全部 ≤ −1；hit／slash 和跳字同一瞬間、又最常響，
 # 峰值再壓到 −4（和舊 hit 占位的峰值一樣），讓瞬態不會「啪」一下蓋過跳字
 TP_CEIL = {"hit": -4.0, "slash": -4.0, "miss": -4.0}
 SEEDS = {"swap": 1110, "hit": 3201, "slash": 3202, "break": 3203, "warn": 3204, "wind": 3205,
-         "miss": 4701, "craft": 4702}
+         "miss": 4701, "craft": 4702, "reveal": 9101, "summon": 9102}
 
 
 # ───────────────────────── 基本元件 ─────────────────────────
@@ -440,10 +442,62 @@ def synth_craft(rng: np.random.Generator) -> tuple[np.ndarray, float]:
     return out, 0.06
 
 
+def synth_reveal(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """抽魂翻卡（0.52 s）：黃銅卡片翻面的輕「刷」＋卡榫「嗒」→ 八音盒音梳大三和弦上行（E6–G#6–B6）＋泛音閃光。
+    設計成可用 pitch_scale 分稀有度：pitch 越高越亮、越短（0.84 白 → 1.0 藍 → 1.26 紫 → 1.5 金 → 1.68 彩），
+    和聲是大三和弦，移調後仍是同一個「揭曉」動機，所以 1 個 key 就分得出階級，不用另開檔。"""
+    dur = 0.52
+    out = np.zeros(int(SR * dur))
+    # 翻面：很短的帶通雜訊往上掃（紙／薄黃銅片擦過空氣）
+    sw = noise_burst(0.055, rng, tau=0.02)
+    fc = np.linspace(1800, 5200, len(sw))
+    place(out, svf_bandpass_sweep(sw, fc, 1.6) * 0.35, 0.0)
+    # 卡榫「嗒」：卡片翻到位
+    latch = modes(0.03, [(2950, 0.6, 0.006), (4720, 0.35, 0.004), (1210, 0.3, 0.007)], rng)
+    place(latch, filt(noise_burst(0.0012, rng), "hp", 3000) * 0.5, 0.0)
+    place(out, latch, 0.045, 0.55)
+    # 八音盒音梳：自由簧片分音比例，三個音 40 ms 間隔上行
+    for t0, f0, g in [(0.070, 1318.5, 0.45), (0.110, 1661.2, 0.50), (0.150, 1975.5, 0.62)]:
+        tine = modes(0.36, [(f0, 0.55, 0.22), (f0 * 1.003, 0.15, 0.20), (f0 * 2.756, 0.20, 0.06),
+                            (f0 * 5.404, 0.06, 0.02)], rng, attack=0.0015)
+        place(out, tine, t0, g)
+    # 閃光：高頻非諧波小鈴，給「揭曉」的亮點（升 pitch 時更突出）
+    sp = modes(0.30, [(5274, 0.20, 0.07), (6645, 0.14, 0.05), (7902, 0.10, 0.04)], rng, attack=0.003)
+    place(out, sp, 0.16, 0.35)
+    return out, 0.10
+
+
+def synth_summon(rng: np.random.Generator) -> tuple[np.ndarray, float]:
+    """抽魂演出開始（0.95 s）：發條快速上緊（棘輪越來越密，跟戰前 wind 的四格慢轉不同）
+    → 彈簧放開的「咻」上掃 → 一聲低的黃銅共鳴托住，接翻卡。"""
+    dur = 0.95
+    out = np.zeros(int(SR * dur))
+    t0, period = 0.0, 0.075
+    k = 0
+    while t0 < 0.52:
+        g = 0.25 + 0.5 * (t0 / 0.52)
+        f = 1.0 + 0.25 * (t0 / 0.52)
+        click = modes(0.03, [(2300 * f, 0.6, 0.006), (3900 * f, 0.4, 0.004), (980 * f, 0.35, 0.008)], rng)
+        place(click, filt(noise_burst(0.001, rng), "hp", 2500) * 0.4, 0.0)
+        place(out, click, t0, g * rng.uniform(0.9, 1.0))
+        t0 += period
+        period = max(0.022, period * 0.84)
+        k += 1
+    # 彈簧放開：帶通雜訊往上掃
+    wh = noise_burst(0.30, rng, tau=0.12)
+    fc = np.geomspace(600, 6000, len(wh))
+    place(out, svf_bandpass_sweep(wh, fc, 2.2) * 0.45, 0.52)
+    # 黃銅低共鳴（G3 附近，非諧波）托底
+    body = modes(0.42, [(196.0, 0.5, 0.20), (196.0 * 2.01, 0.25, 0.12), (196.0 * 3.2, 0.12, 0.06)], rng, attack=0.01)
+    place(out, body, 0.53, 0.55)
+    return out, 0.12
+
+
 SYNTHS = {
     "swap": synth_swap, "hit": synth_hit, "slash": synth_slash,
     "break": synth_break, "warn": synth_warn, "wind": synth_wind,
     "miss": synth_miss, "craft": synth_craft,
+    "reveal": synth_reveal, "summon": synth_summon,
 }
 
 
