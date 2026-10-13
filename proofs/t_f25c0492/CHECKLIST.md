@@ -29,12 +29,12 @@
 
 | 編號 | 存證檔案名 | 驗收項目與畫面說明 | 無破圖 | 零 Emoji | 零截字 | SHA256 前綴 | 判定 |
 |:---:|---|---|:---:|:---:|:---:|:---:|:---:|
-| 01 | `proof_01_energy_lack_dialog_three_buttons_zh_TW.png` | 繁中 (zh_TW) 能量不足彈窗操作區並列三顆果凍按鈕（`WatchAdBtn` 綠底、`BtnGoShop` 暖橘底、`BackBtn` 米黃底），規格完整置中 | ✓ | ✓ | ✓ | `24d0d2ce18d2` | **PASS** |
-| 02 | `proof_02_energy_lack_btn_go_shop_en.png` | 英文語系 (en) 彈窗展示：按鈕文字為『Go to Shop』，標題為『Insufficient Energy』，零 CJK 殘留 | ✓ | ✓ | ✓ | `db15a91c6fb9` | **PASS** |
-| 03 | `proof_03_energy_lack_btn_go_shop_ja.png` | 日文語系 (ja) 彈窗展示：按鈕文字為『ショップへ』，標題為『エネルギー不足』，排版工整無溢出 | ✓ | ✓ | ✓ | `50f9354a8c2a` | **PASS** |
-| 04 | `proof_04_energy_lack_btn_go_shop_ko.png` | 韓文語系 (ko) 彈窗展示：按鈕文字為『상점으로』，標題為『에너지 부족』，排版工整無溢出 | ✓ | ✓ | ✓ | `f03e1562954b` | **PASS** |
-| 05 | `proof_05_energy_lack_btn_go_shop_es.png` | 西文語系 (es) 彈窗展示：按鈕文字為『Ir a la tienda』，標題為『Energía insuficiente』，零 CJK 殘留 | ✓ | ✓ | ✓ | `1ac0416ba657` | **PASS** |
-| 06 | `proof_06_click_btn_go_shop_opens_shop_dialog.png` | 點擊『前往商城』後發射 `shop_requested` 訊號，無縫開啟大廳商城彈窗 `ShopDialog`，並展示『發條能量補給箱』(NT$ 30) | ✓ | ✓ | ✓ | `1852f20326ec` | **PASS** |
+| 01 | `proof_01_energy_lack_dialog_three_buttons_zh_TW.png` | 繁中 (zh_TW) 能量不足彈窗操作區並列三顆果凍按鈕（`WatchAdBtn` 綠底、`BtnGoShop` 暖橘底、`BackBtn` 米黃底），規格完整置中 | ✓ | ✓ | ✓ | `1fc1513c0e42` | **PASS** |
+| 02 | `proof_02_energy_lack_btn_go_shop_en.png` | 英文語系 (en) 彈窗展示：按鈕文字為『Go to Shop』，標題為『Insufficient Energy』，零 CJK 殘留 | ✓ | ✓ | ✓ | `63bdfff36bb7` | **PASS** |
+| 03 | `proof_03_energy_lack_btn_go_shop_ja.png` | 日文語系 (ja) 彈窗展示：按鈕文字為『ショップへ』，標題為『エネルギー不足』，排版工整無溢出 | ✓ | ✓ | ✓ | `a422eb5924a4` | **PASS** |
+| 04 | `proof_04_energy_lack_btn_go_shop_ko.png` | 韓文語系 (ko) 彈窗展示：按鈕文字為『상점으로』，標題為『에너지 부족』，排版工整無溢出 | ✓ | ✓ | ✓ | `514576e48b62` | **PASS** |
+| 05 | `proof_05_energy_lack_btn_go_shop_es.png` | 西文語系 (es) 彈窗展示：按鈕文字為『Ir a la tienda』，標題為『Energía insuficiente』，零 CJK 殘留 | ✓ | ✓ | ✓ | `239201644727` | **PASS** |
+| 06 | `proof_06_click_btn_go_shop_opens_shop_dialog.png` | 點擊『前往商城』後發射 `shop_requested` 訊號，無縫開啟大廳商城彈窗 `ShopDialog`，並展示『發條能量補給箱』(NT$ 30) | ✓ | ✓ | ✓ | `897e183c24aa` | **PASS** |
 
 ---
 
