@@ -4322,6 +4322,14 @@ func _on_battle_finished(won: bool) -> void:
 				ui_toast(_t("戰鬥失敗：返還能量 %d 點（現有 %d／%d）") % [ref_n, EnergySystem.current(), EnergySystem.MAX_ENERGY])
 		_go_mobile_lobby(1)
 		return
+	if won and _defeat_gear_up_requested:
+		_defeat_gear_up_requested = false
+		if _battle_mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
+			_grant_part_break_loot()
+		SaveManager.save_game()
+		_explore_play_pose("skill", 0.55)
+		_go_mobile_lobby(1)
+		return
 	if _battle_mode == "training_dummy":
 		if _pre_dummy_hp > 0:
 			GameState.hp = _pre_dummy_hp
