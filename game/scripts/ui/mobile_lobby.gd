@@ -6982,7 +6982,7 @@ func _refresh_char_core_slots() -> void:
 		slot_lbl.name = "SlotLabel"
 		slot_lbl.text = _t(slot_name)
 		slot_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_apply_label_style(slot_lbl, 13, COLOR_TEXT_DARK)
+		_apply_label_style(slot_lbl, 14, COLOR_TEXT_DARK)
 		slot_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		top_row.add_child(slot_lbl)
 
@@ -6991,7 +6991,7 @@ func _refresh_char_core_slots() -> void:
 		var t_txt := (_t(tier_name) if tier_name.ends_with("階") else _t(tier_name + "階")) if is_equipped else _t("未裝備")
 		tier_lbl.text = t_txt
 		tier_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_apply_label_style(tier_lbl, 12, tier_color if (is_equipped and tier_id != "white") else COLOR_TEXT_DARK, COLOR_BORDER, 2)
+		_apply_label_style(tier_lbl, 14, tier_color if (is_equipped and tier_id != "white") else COLOR_TEXT_DARK, COLOR_BORDER, 2)
 		tier_lbl.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		vb.add_child(tier_lbl)
 
