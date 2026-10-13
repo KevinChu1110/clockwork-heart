@@ -3854,5 +3854,6 @@
   "已一鍵配置最高戰力戰魂": "Auto-equipped best souls",
   "目前已是最佳戰魂配置！": "Already optimal soul loadout!",
   "一鍵卸下全部戰魂": "Unequip All Souls",
-  "vault.btn_go_inventory": "Go to Inventory"
+  "vault.btn_go_inventory": "Go to Inventory",
+  "shop.btn_go_inventory": "Go to Inventory"
 }
