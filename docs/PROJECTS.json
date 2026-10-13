@@ -6185,6 +6185,16 @@
    "keys": [
     "大廳角色頁新增一"
    ]
+  },
+  {
+   "id": "gem-workshop-auto-unsocket",
+   "cat": "遊戲",
+   "title": "手藝工坊 GemWorkshopDialog 寶石櫃支援『一鍵卸下』已鑲嵌寶石",
+   "status": "草稿",
+   "note": "手藝工坊寶石櫃新增一鍵卸下果凍按鈕與連動 GemSystem 安全卸除歸還",
+   "keys": [
+    "手藝工坊 Gem"
+   ]
   }
  ]
 }
