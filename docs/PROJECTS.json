@@ -6235,6 +6235,16 @@
    "keys": [
     "天宮鐵匠 For"
    ]
+  },
+  {
+   "id": "inventory-soul-shortcut",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包戰魂素材新增『前往聚魂』快捷按鈕連動大廳聚魂殿",
+   "status": "草稿",
+   "note": "MapleInventory 選取戰魂素材時右側詳情按鈕支援前往聚魂快捷跳轉，連動大廳聚魂殿與六語系切換",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
