@@ -6240,8 +6240,8 @@
    "id": "soul-hall-inventory-shortcut",
    "cat": "遊戲",
    "title": "大廳聚魂殿新增前往背包快捷按鈕連動探索背包素材頁籤",
-   "status": "草稿",
-   "note": "聚魂殿堂底欄新增前往背包按鈕，連動探索背包素材頁籤",
+   "status": "開發中",
+   "note": "已開卡 t_13a0ab72 派工給阿翔 sideworker2 實作",
    "keys": [
     "大廳聚魂殿新增前"
    ]
