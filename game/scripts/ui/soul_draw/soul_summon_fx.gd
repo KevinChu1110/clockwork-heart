@@ -8,6 +8,10 @@ const UiStyle := preload("res://scripts/ui/ui_style.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 const KEY_ASSET := "res://assets/sprites/player/paperdoll/rabbit/winding_key/key_classic_brass_512.png"
+## 這張是紙娃娃背上的圖層（512 畫布，鑰匙只佔左中一小塊，旁邊還有切圖殘片）。
+## 只取鑰匙本體那一塊，讓鑰匙置中、殘片不進畫面（#103）。換成置中的專用鑰匙圖後可拿掉。
+const KEY_REGION := Rect2(144, 258, 51, 76)
+const KEY_BOX := 220.0
 const GEAR_ASSET := "res://assets/icons/core_slots/slot_04_transmission_gears.png"
 
 ## 多巴胺糖果爆散色盤
@@ -174,14 +178,15 @@ func _build_ui() -> void:
 
 	# 6. 中央發條主鑰匙
 	_windup_key = TextureRect.new()
-	if ResourceLoader.exists(KEY_ASSET):
-		_windup_key.texture = load(KEY_ASSET) as Texture2D
-	_windup_key.custom_minimum_size = Vector2(220, 220)
-	_windup_key.size = Vector2(220, 220)
-	_windup_key.position = Vector2(-110, -110)
-	_windup_key.pivot_offset = Vector2(110, 110)
+	_windup_key.texture = _key_texture()
+	## expand_mode 要先設：TextureRect 預設最小尺寸＝貼圖原尺寸（512），先設 size 會被撐回 512，
+	## pivot (110,110) 就不在中心，旋轉／縮放時鑰匙會繞著光環外圈跑、壓到標題（#103）。
 	_windup_key.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_windup_key.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_windup_key.custom_minimum_size = Vector2(KEY_BOX, KEY_BOX)
+	_windup_key.size = Vector2(KEY_BOX, KEY_BOX)
+	_windup_key.position = Vector2(-KEY_BOX * 0.5, -KEY_BOX * 0.5)
+	_windup_key.pivot_offset = Vector2(KEY_BOX * 0.5, KEY_BOX * 0.5)
 	_center_node.add_child(_windup_key)
 
 	# 7. 衝擊波環層
@@ -208,6 +213,19 @@ func _build_ui() -> void:
 		_skip_btn.add_theme_font_override("font", _font)
 	_skip_btn.pressed.connect(skip)
 	add_child(_skip_btn)
+
+
+func _key_texture() -> Texture2D:
+	if not ResourceLoader.exists(KEY_ASSET):
+		return null
+	var base := load(KEY_ASSET) as Texture2D
+	if base == null:
+		return null
+	var at := AtlasTexture.new()
+	at.atlas = base
+	at.region = KEY_REGION
+	at.filter_clip = true  ## 不讓相鄰的殘片像素滲進來
+	return at
 
 
 func _gui_input(event: InputEvent) -> void:
