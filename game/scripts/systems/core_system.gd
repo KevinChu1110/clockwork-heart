@@ -14,12 +14,14 @@ signal part_calibrated(slot_id: String, part: Dictionary, result: Dictionary)
 signal part_dropped(part: Dictionary)
 signal part_dismantled(part: Dictionary, scrap_gain: int)
 signal part_unequipped(slot_id: String, part: Dictionary)
+signal cores_auto_equipped(result: Dictionary)
 
 static var player_parts: Dictionary = {}
 static var core_inventory: Array = []
 static var inventory: Array = []
 static var _shuffle_bag: Array[String] = []
 static var _last_dropped_slot: String = ""
+static var _has_new_core_drop_flag: bool = false
 
 const DEFAULT_DROP_TIER_WEIGHTS: Dictionary = {
 	"gray": 50,
@@ -115,13 +117,13 @@ static func get_colossus_part_slot(boss_id: String = "", part_key: String = "") 
 
 	# 2. 通用別名與語意對應
 	match pkey.to_lower():
-		"mainspring", "spring", "發條", "發條部位", "發條發電機", "背後主發條":
+		"mainspring", "spring", "發條", "發條部位", "發條發電機", "背後主發條", "主發條":
 			return SLOT_MAINSPRING
-		"chassis", "機殼", "機殼部位", "機殼裝甲", "外殼", "裝甲":
+		"chassis", "機殼", "機殼部位", "機殼裝甲", "外殼", "裝甲", "平衡擺輪", "擺輪":
 			return SLOT_CHASSIS
-		"escapement", "governor", "調速器", "調速器部位", "擒縱調速器", "鐘擺":
+		"escapement", "governor", "調速器", "調速器部位", "擒縱調速器", "鐘擺", "擒縱叉":
 			return SLOT_ESCAPEMENT
-		"gear_train", "gears", "齒輪", "齒輪部位", "傳動齒輪組", "齒輪組":
+		"gear_train", "gears", "齒輪", "齒輪部位", "傳動齒輪組", "齒輪組", "傳動齒輪":
 			return SLOT_GEAR_TRAIN
 		"soul_core", "core", "核心", "核心部位", "共鳴核心", "溢能核心":
 			return SLOT_SOUL_CORE
@@ -417,15 +419,15 @@ static func get_tier_modulate(score: int) -> Color:
 static func normalize_slot_id(slot_id: String) -> String:
 	var s := slot_id.strip_edges().to_lower()
 	match s:
-		"spring_generator", "slot_01", "generator", "發條發電機", "0", "mainspring":
+		"spring_generator", "slot_01", "generator", "發條發電機", "0", "mainspring", "主發條", "發條":
 			return SLOT_MAINSPRING
-		"chassis_armor", "slot_02", "armor", "機殼裝甲", "1", "chassis":
+		"chassis_armor", "slot_02", "armor", "機殼裝甲", "1", "chassis", "平衡擺輪", "擺輪":
 			return SLOT_CHASSIS
-		"escapement_governor", "slot_03", "governor", "擒縱調速器", "2", "escapement":
+		"escapement_governor", "slot_03", "governor", "擒縱調速器", "2", "escapement", "擒縱叉":
 			return SLOT_ESCAPEMENT
-		"transmission_gears", "slot_04", "gears", "傳動齒輪組", "3", "gear_train":
+		"transmission_gears", "slot_04", "gears", "傳動齒輪組", "3", "gear_train", "傳動齒輪", "齒輪":
 			return SLOT_GEAR_TRAIN
-		"resonance_core", "slot_05", "core", "共鳴核心", "4", "soul_core":
+		"resonance_core", "slot_05", "core", "共鳴核心", "4", "soul_core", "核心":
 			return SLOT_SOUL_CORE
 		_:
 			return s
@@ -1245,13 +1247,14 @@ static func create_part_by_tier(slot_id: String, tier_id: String, bonus_stats: D
 ## 裝備部件至 GameState.core_slots
 static func equip_part(slot_id: String, part: Dictionary) -> bool:
 	var norm := normalize_slot_id(slot_id)
+	player_parts[norm] = part.duplicate(true)
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:
 		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
 		if gs and "core_slots" in gs:
 			gs.core_slots[norm] = part.duplicate(true)
 			return true
-	return false
+	return true
 
 
 ## 卸下部件至未裝備背包
@@ -1291,8 +1294,134 @@ static func get_equipped_part(slot_id: String) -> Dictionary:
 	if tree is SceneTree and (tree as SceneTree).root != null:
 		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
 		if gs and "core_slots" in gs:
-			return (gs.core_slots.get(norm, {}) as Dictionary).duplicate(true)
+			if gs.core_slots.has(norm) and typeof(gs.core_slots[norm]) == TYPE_DICTIONARY:
+				return (gs.core_slots[norm] as Dictionary).duplicate(true)
+			return {}
+	if player_parts.has(norm) and typeof(player_parts[norm]) == TYPE_DICTIONARY:
+		return (player_parts[norm] as Dictionary).duplicate(true)
 	return {}
+
+
+## 計算單一機芯部件綜合戰力（用於一鍵配置與戰力評分比對）
+static func calculate_part_power(part: Dictionary) -> int:
+	if part == null or part.is_empty():
+		return 0
+	var pstats: Dictionary = get_part_stats(part)
+	var atk_v: int = int(pstats.get("atk", 0))
+	var def_v: int = int(pstats.get("def", 0))
+	var hp_v: int = int(pstats.get("hp", 0))
+	var crit_v: float = float(pstats.get("crit", 0.0))
+	var crit_dmg_v: float = float(pstats.get("crit_dmg", 0.0))
+	var sc: int = int(part.get("score", 0))
+	var tier_id: String = str(part.get("tier", "white"))
+	var tier_idx: int = get_tier_index(tier_id)
+	# 綜合戰力計算：攻(x1) + 防(x1) + 血量折算(x0.2) + 暴擊(x2.0) + 暴傷(x1.0) + 校準評分(max 0) + 色階權重
+	var p: float = float(atk_v) + float(def_v) + (float(hp_v) * 0.2) + (crit_v * 2.0) + crit_dmg_v + float(maxi(sc, 0)) + float(tier_idx * 5)
+	return int(round(p))
+
+
+## 自動比對背包中機芯綜合戰力並將最高數值機芯換上對應槽位
+static func auto_equip_best_cores() -> Dictionary:
+	var bag: Array = get_inventory().duplicate(true)
+	var changes: Array[Dictionary] = []
+	var total_power_diff: int = 0
+	var slots_to_equip: Dictionary = {}
+
+	var tree := Engine.get_main_loop()
+	var gs: Node = null
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		gs = (tree as SceneTree).root.get_node_or_null("GameState")
+
+	var power_before: int = 0
+	if gs and gs.has_method("power_score"):
+		power_before = int(gs.call("power_score"))
+
+	for sid in ALL_SLOT_IDS:
+		var norm_slot := normalize_slot_id(sid)
+		var old_part: Dictionary = get_equipped_part(norm_slot)
+		var cur_pow: int = calculate_part_power(old_part)
+
+		var best_candidate: Dictionary = {}
+		var best_cand_pow: int = -1
+		var best_cand_idx: int = -1
+
+		for i in range(bag.size()):
+			var p: Dictionary = bag[i]
+			if p is Dictionary and normalize_slot_id(str(p.get("slot", ""))) == norm_slot:
+				var pow_val: int = calculate_part_power(p)
+				if pow_val > best_cand_pow:
+					best_cand_pow = pow_val
+					best_candidate = p
+					best_cand_idx = i
+
+		if not best_candidate.is_empty():
+			if old_part.is_empty() or (best_cand_pow > cur_pow):
+				var p_diff: int = best_cand_pow - cur_pow if not old_part.is_empty() else best_cand_pow
+				changes.append({
+					"slot": norm_slot,
+					"old_part": old_part,
+					"new_part": best_candidate,
+					"power_diff": p_diff
+				})
+				total_power_diff += p_diff
+				slots_to_equip[norm_slot] = {
+					"new_part": best_candidate,
+					"old_part": old_part,
+					"bag_idx": best_cand_idx
+				}
+				if best_cand_idx >= 0 and best_cand_idx < bag.size():
+					bag.remove_at(best_cand_idx)
+
+	if changes.is_empty():
+		return {
+			"ok": true,
+			"changed": false,
+			"power_gain": 0,
+			"changes": [],
+			"equipped_slots": get_all_player_parts()
+		}
+
+	for sid in slots_to_equip.keys():
+		var info: Dictionary = slots_to_equip[sid]
+		var new_p: Dictionary = info["new_part"]
+		var old_p: Dictionary = info["old_part"]
+		var uid_new: String = str(new_p.get("uid", ""))
+
+		if not uid_new.is_empty():
+			remove_part_from_inventory(uid_new)
+		if not old_p.is_empty():
+			add_part_to_inventory(old_p)
+
+		equip_part(sid, new_p)
+		if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+			gs.core_slots[sid] = new_p.duplicate(true)
+
+	var power_gain := total_power_diff
+	if gs and gs.has_method("power_score"):
+		var power_after: int = int(gs.call("power_score"))
+		var real_gain := power_after - power_before
+		if real_gain > 0:
+			power_gain = real_gain
+	if power_gain <= 0:
+		power_gain = maxi(total_power_diff, 1)
+
+	var cs: Node = null
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		cs = (tree as SceneTree).root.get_node_or_null("CoreSystem")
+	if cs and cs.has_signal("cores_auto_equipped"):
+		cs.emit_signal("cores_auto_equipped", {
+			"changed": true,
+			"power_gain": power_gain,
+			"changes": changes
+		})
+
+	return {
+		"ok": true,
+		"changed": true,
+		"power_gain": power_gain,
+		"changes": changes,
+		"equipped_slots": get_all_player_parts()
+	}
 
 
 ## 取得八色階掉落機率權重表（支援來源：關卡／巨偶，預設 stage）
@@ -1462,6 +1591,14 @@ static func add_part_to_inventory(part: Dictionary) -> void:
 	if part == null or part.is_empty():
 		return
 	var part_copy: Dictionary = part.duplicate(true)
+	var slot_id: String = normalize_slot_id(str(part_copy.get("slot", SLOT_MAINSPRING)))
+	part_copy["slot"] = slot_id
+	if not part_copy.has("slot_name") or str(part_copy.get("slot_name", "")).is_empty():
+		part_copy["slot_name"] = get_slot_name(slot_id)
+	if not part_copy.has("uid") or str(part_copy.get("uid", "")).is_empty():
+		_uid_counter += 1
+		part_copy["uid"] = "core_%s_%d_%d" % [slot_id, int(Time.get_unix_time_from_system() * 1000), _uid_counter]
+
 	var tree := Engine.get_main_loop()
 	var gs: Node = null
 	var cs: Node = null
@@ -1470,16 +1607,53 @@ static func add_part_to_inventory(part: Dictionary) -> void:
 		gs = root.get_node_or_null("GameState")
 		cs = root.get_node_or_null("CoreSystem")
 
+	mark_new_core_drop(true)
+
 	if gs and gs.has_method("add_core_part"):
 		gs.call("add_core_part", part_copy)
 		core_inventory = gs.core_bag
 		inventory = core_inventory
 	else:
-		core_inventory.append(part_copy)
+		var p_uid: String = str(part_copy.get("uid", ""))
+		var exists := false
+		if not p_uid.is_empty():
+			for p in core_inventory:
+				if p is Dictionary and str(p.get("uid", "")) == p_uid:
+					exists = true
+					break
+		if not exists:
+			core_inventory.append(part_copy)
 		inventory = core_inventory
 
 	if cs and cs.has_signal("part_dropped"):
 		cs.emit_signal("part_dropped", part_copy)
+
+
+static func has_new_core_drop() -> bool:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and gs.has_method("has_new_core_part"):
+			return bool(gs.call("has_new_core_part"))
+	return _has_new_core_drop_flag
+
+
+static func clear_new_core_drop() -> void:
+	_has_new_core_drop_flag = false
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and gs.has_method("clear_new_core_drop"):
+			gs.call("clear_new_core_drop")
+
+
+static func mark_new_core_drop(val: bool = true) -> void:
+	_has_new_core_drop_flag = val
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs and gs.has_method("mark_new_core_drop"):
+			gs.call("mark_new_core_drop", val)
 
 
 ## 取得當前機芯背包清單
@@ -1499,6 +1673,7 @@ static func get_inventory() -> Array:
 static func clear_inventory() -> void:
 	core_inventory.clear()
 	inventory.clear()
+	clear_new_core_drop()
 	var tree := Engine.get_main_loop()
 	if tree is SceneTree and (tree as SceneTree).root != null:
 		var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
@@ -1550,7 +1725,7 @@ static func on_battle_won(arg1: Variant = null, arg2: String = "stage", slot_ove
 static func get_dismantle_scrap_yield(part: Dictionary) -> int:
 	if part.is_empty():
 		return 0
-	var tier_id: String = str(part.get("tier", TIER_WHITE)).to_lower().strip_edges()
+	var tier_id: String = str(part.get("tier", "")).to_lower().strip_edges()
 	match tier_id:
 		"灰", "gray": return 1
 		"白", "white": return 2
@@ -1562,6 +1737,11 @@ static func get_dismantle_scrap_yield(part: Dictionary) -> int:
 		"紅", "red": return 10
 	if CORE_DISMANTLE_SCRAP_MAP.has(tier_id):
 		return int(CORE_DISMANTLE_SCRAP_MAP[tier_id])
+	if part.has("score"):
+		var t_info := get_tier_by_score(int(part["score"]))
+		var t_id := str(t_info.get("id", "")).to_lower().strip_edges()
+		if CORE_DISMANTLE_SCRAP_MAP.has(t_id):
+			return int(CORE_DISMANTLE_SCRAP_MAP[t_id])
 	return 2
 
 
@@ -1591,6 +1771,8 @@ static func is_part_equipped(part_or_uid: Variant) -> bool:
 		target_uid = str(part_or_uid).strip_edges()
 	elif typeof(part_or_uid) == TYPE_DICTIONARY:
 		target_uid = str(part_or_uid.get("uid", "")).strip_edges()
+		if target_uid.is_empty():
+			target_uid = str(part_or_uid.get("id", "")).strip_edges()
 
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree and (loop as SceneTree).root != null:
@@ -1599,10 +1781,17 @@ static func is_part_equipped(part_or_uid: Variant) -> bool:
 			for sid in gs.core_slots.keys():
 				var sp = gs.core_slots[sid]
 				if typeof(sp) == TYPE_DICTIONARY and not sp.is_empty():
-					if not target_uid.is_empty() and str(sp.get("uid", "")) == target_uid:
+					if not target_uid.is_empty() and (str(sp.get("uid", "")) == target_uid or str(sp.get("id", "")) == target_uid):
 						return true
 					if typeof(part_or_uid) == TYPE_DICTIONARY and sp == part_or_uid:
 						return true
+	for sid in player_parts.keys():
+		var sp = player_parts[sid]
+		if typeof(sp) == TYPE_DICTIONARY and not sp.is_empty():
+			if not target_uid.is_empty() and (str(sp.get("uid", "")) == target_uid or str(sp.get("id", "")) == target_uid):
+				return true
+			if typeof(part_or_uid) == TYPE_DICTIONARY and sp == part_or_uid:
+				return true
 	return false
 
 
@@ -1630,7 +1819,7 @@ static func dismantle_part(part_or_uid: Variant) -> Dictionary:
 	for i in range(inv_list.size()):
 		var p = inv_list[i]
 		if typeof(p) == TYPE_DICTIONARY:
-			if not uid.is_empty() and str(p.get("uid", "")) == uid:
+			if not uid.is_empty() and (str(p.get("uid", "")) == uid or str(p.get("id", "")) == uid):
 				target_part = p
 				found_idx = i
 				break

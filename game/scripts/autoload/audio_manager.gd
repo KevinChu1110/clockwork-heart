@@ -33,6 +33,7 @@ const SFX_KEYS: Array[String] = [
 	"ui", "interact", "step", "warn", "dodge", "battle_start",
 	"swap",
 	"craft",  ## 可選；缺檔時 play_craft_success 走 ui+reveal
+	"overwind",  ## 可選（main 合入）：發條超載爆裂；缺檔時 play_overwind_burst 走 clash+break+clock
 ]
 ## 戰鬥自動回饋一定要有的 key（battle HUD 直接呼叫 AudioManager.play(key)）
 const SFX_REQUIRED: Array[String] = ["swap", "break", "warn", "hit", "slash"]
@@ -65,6 +66,8 @@ var _bgm_db: float = -5.0  ## 悠揚版略抬一點，仍避免蓋過 SFX
 var _muted: bool = false
 var _bgm_muted: bool = false
 var _step_cd: float = 0.0
+var last_sfx: String = ""
+var last_sfx_time: float = 0.0
 
 var _bgm_a: AudioStreamPlayer
 var _bgm_b: AudioStreamPlayer
@@ -261,6 +264,8 @@ func set_bgm_muted(v: bool) -> void:
 ## 缺檔不會當，只在第一次播到時 push_warning 一次。
 ## 同時最多 MAX_SFX_VOICES 聲；滿了就搶優先度最低（同級搶最舊）的那聲，搶不到就丟掉新的。
 func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
+	last_sfx = id
+	last_sfx_time = Time.get_ticks_msec() / 1000.0
 	if _muted:
 		return
 	var stream: AudioStream = _streams.get(id)
@@ -301,6 +306,11 @@ func _pick_voice(prio: int) -> int:
 	return -1
 
 
+## 播放指定 SFX 音效（play 的標準別名，符合手冊與規範）
+func play_sfx(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
+	play(id, pitch_scale, volume_db)
+
+
 func play_step() -> void:
 	if _step_cd > 0.0:
 		return
@@ -339,6 +349,16 @@ func play_ritual_success() -> void:
 	play("ui", 1.18, -5.0)
 
 
+## 發條超載爆裂（Overwind Burst）：金屬爆裂音效
+func play_overwind_burst() -> void:
+	if _streams.has("overwind"):
+		play("overwind")
+	else:
+		play("clash", 1.15, 1.0)
+		play("break", 1.05, 0.0)
+		play("clock", 1.25, -2.0)
+
+
 ## ─── BGM ───
 
 func play_bgm(id: String, fade: float = BGM_FADE) -> void:
@@ -369,6 +389,9 @@ func play_bgm(id: String, fade: float = BGM_FADE) -> void:
 		return
 	var incoming: AudioStreamPlayer = _bgm_b if _bgm_active == _bgm_a else _bgm_a
 	var outgoing: AudioStreamPlayer = _bgm_active
+
+	if incoming == null:
+		return
 
 	if _fade_tween and is_instance_valid(_fade_tween):
 		_fade_tween.kill()
@@ -473,6 +496,8 @@ static func resolve_bgm_cue(id: String) -> String:
 ## 戰鬥事件 → 音效
 func on_battle_event(kind: String, data: Dictionary = {}) -> void:
 	match kind:
+		"overwind_burst":
+			play_overwind_burst()
 		"perfect_parry":
 			play("parry")
 		"hit":

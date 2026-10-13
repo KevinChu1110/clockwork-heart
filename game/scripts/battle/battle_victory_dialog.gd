@@ -11,6 +11,8 @@ extends Control
 ## 7. 支援 Loc.locale_changed 即時切換六語系。
 
 signal confirmed()
+signal next_stage_requested()
+signal replay_stage_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
@@ -42,6 +44,10 @@ var _slot_name_lbl: Label
 var _tier_lbl: Label
 var _stats_lbl: Label
 var _desc_lbl: Label
+var _part_break_container: HBoxContainer
+var _bag_target: PanelContainer
+var _bag_icon: TextureRect
+var _fx_layer: Control
 var _exp_panel: PanelContainer
 var _exp_tag_lbl: Label
 var _exp_lbl: Label
@@ -50,6 +56,8 @@ var _scrap_tag_lbl: Label
 var _scrap_lbl: Label
 var _btn_equip: Button
 var _btn_confirm: Button
+var _btn_replay_stage: Button
+var _btn_next_stage: Button
 var _btn_close: Button
 var _cached_font: Font = null
 
@@ -77,22 +85,93 @@ var _current_cmp_slot_id: String = ""
 
 var _part: Dictionary = {}
 var _on_confirm: Callable = Callable()
+var _on_next_stage: Callable = Callable()
+var _on_replay_stage: Callable = Callable()
+var _stage_num: String = ""
+var _next_stage_data: Dictionary = {}
 var _is_equipped: bool = false
 var _exp_gain: int = 0
 var _scrap_gain: int = 0
 var _is_colossus: bool = false
+var _broken_parts: Array[String] = []
+var _is_confirming: bool = false
 
 
-static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1) -> Control:
+static func get_all_campaign_stages() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var ML = load("res://scripts/ui/mobile_lobby.gd")
+	if ML and "REGION_STAGES" in ML:
+		for reg in ML.REGION_STAGES:
+			for st in reg:
+				if st is Dictionary:
+					result.append(st)
+	return result
+
+
+static func get_next_stage_data(stage_num: String) -> Dictionary:
+	if stage_num.is_empty():
+		return {}
+	var stages := get_all_campaign_stages()
+	for i in range(stages.size()):
+		if str(stages[i].get("num", "")) == stage_num:
+			if i + 1 < stages.size():
+				return stages[i + 1]
+			else:
+				return {}
+	return {}
+
+
+func set_stage(stage_num: String) -> void:
+	_stage_num = stage_num
+	_next_stage_data = get_next_stage_data(_stage_num)
+	_refresh_display()
+
+
+static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/battle_victory_dialog.gd").new()
-	dlg.setup(part, on_confirm, exp_gain, scrap_gain)
+	dlg.setup(part, on_confirm, exp_gain, scrap_gain, broken_parts, on_next_stage, stage_num, on_replay_stage)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1) -> void:
+func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable()) -> void:
 	_part = part.duplicate(true)
 	_on_confirm = on_confirm
+	_on_next_stage = on_next_stage
+	_on_replay_stage = on_replay_stage
+	if stage_num != "":
+		_stage_num = stage_num
+	elif _part.has("stage") and str(_part["stage"]) != "":
+		_stage_num = str(_part["stage"])
+	elif _part.has("stage_num") and str(_part["stage_num"]) != "":
+		_stage_num = str(_part["stage_num"])
+	elif _part.has("expedition_stage") and str(_part["expedition_stage"]) != "":
+		_stage_num = str(_part["expedition_stage"])
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+			if gs and "current_expedition_stage" in gs:
+				_stage_num = str(gs.current_expedition_stage)
+	_next_stage_data = get_next_stage_data(_stage_num)
+	_broken_parts.clear()
+	if not broken_parts.is_empty():
+		for bp in broken_parts:
+			var s := str(bp).strip_edges()
+			if not s.is_empty() and not (s in _broken_parts):
+				_broken_parts.append(s)
+	elif _part.has("broken_parts") and _part["broken_parts"] is Array:
+		for bp in _part["broken_parts"]:
+			if bp is Dictionary:
+				var s := str(bp.get("raw_name", bp.get("name", bp.get("part_name", "")))).strip_edges()
+				if not s.is_empty() and not (s in _broken_parts):
+					_broken_parts.append(s)
+			else:
+				var s := str(bp).strip_edges()
+				if not s.is_empty() and not (s in _broken_parts):
+					_broken_parts.append(s)
+	elif _part.has("broken_part") and not str(_part["broken_part"]).strip_edges().is_empty():
+		_broken_parts.append(str(_part["broken_part"]).strip_edges())
 	if exp_gain >= 0:
 		_exp_gain = exp_gain
 	elif _part.has("exp_gain"):
@@ -111,6 +190,16 @@ func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: i
 	else:
 		_scrap_gain = 0
 	_is_colossus = bool(_part.get("is_colossus", false)) or str(_part.get("mode", "")).begins_with("colossus_")
+	if not _part.is_empty():
+		var cs = _cs()
+		if cs != null and cs.has_method("add_part_to_inventory"):
+			cs.call("add_part_to_inventory", _part)
+		else:
+			var tree := Engine.get_main_loop()
+			if tree is SceneTree and (tree as SceneTree).root != null:
+				var gs: Node = (tree as SceneTree).root.get_node_or_null("GameState")
+				if gs and gs.has_method("add_core_part"):
+					gs.call("add_core_part", _part)
 	if _dialog_card == null:
 		_build_ui()
 	_refresh_display()
@@ -166,13 +255,13 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "VictoryCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 420)
+	_dialog_card.custom_minimum_size = Vector2(756, 420)
 	_dialog_card.add_theme_stylebox_override("panel", _create_floating_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 24)
-	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_left", 14)
+	margin.add_theme_constant_override("margin_right", 14)
 	margin.add_theme_constant_override("margin_top", 18)
 	margin.add_theme_constant_override("margin_bottom", 20)
 	_dialog_card.add_child(margin)
@@ -214,6 +303,13 @@ func _build_ui() -> void:
 	_btn_close.name = "CloseButton"
 	_btn_close.pressed.connect(_on_confirm_pressed)
 	head.add_child(_btn_close)
+
+	# ── 部位破壞徽章展示區 (PartBreakBadgesContainer) ──
+	_part_break_container = HBoxContainer.new()
+	_part_break_container.name = "PartBreakBadgesContainer"
+	_part_break_container.alignment = BoxContainer.ALIGNMENT_CENTER
+	_part_break_container.add_theme_constant_override("separation", 10)
+	v.add_child(_part_break_container)
 
 	# ── 機芯掉落展示卡 (CorePartDropCard) ──
 	var drop_panel := PanelContainer.new()
@@ -374,13 +470,13 @@ func _build_ui() -> void:
 	# ── 底部按鈕區（橫屏雙拇指操作，高度 >= 50px）──
 	var btn_row := HBoxContainer.new()
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	btn_row.add_theme_constant_override("separation", 16)
+	btn_row.add_theme_constant_override("separation", 8)
 	v.add_child(btn_row)
 
 	_btn_equip = Button.new()
 	_btn_equip.name = "BtnEquip"
 	_btn_equip.text = _t("立即裝備")
-	_btn_equip.custom_minimum_size = Vector2(200, 52)
+	_btn_equip.custom_minimum_size = Vector2(130, 52)
 	_btn_equip.focus_mode = Control.FOCUS_NONE
 	_style_button(_btn_equip, COLOR_SKY, COLOR_BORDER)
 	_btn_equip.pressed.connect(_on_equip_pressed)
@@ -389,11 +485,76 @@ func _build_ui() -> void:
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
 	_btn_confirm.text = _t("收下完成")
-	_btn_confirm.custom_minimum_size = Vector2(200, 52)
+	_btn_confirm.custom_minimum_size = Vector2(140, 52)
 	_btn_confirm.focus_mode = Control.FOCUS_NONE
 	_style_button(_btn_confirm, COLOR_GOLD, COLOR_BORDER)
 	_btn_confirm.pressed.connect(_on_confirm_pressed)
 	btn_row.add_child(_btn_confirm)
+
+	# 再次挑戰按鈕 (BtnReplayStage, 多巴胺暖橘立體厚底按鈕, 高度 52px, bottom border 6px, 圓角 20px)
+	_btn_replay_stage = Button.new()
+	_btn_replay_stage.name = "BtnReplayStage"
+	_btn_replay_stage.text = _t("再次挑戰")
+	_btn_replay_stage.custom_minimum_size = Vector2(170, 52)
+	_btn_replay_stage.focus_mode = Control.FOCUS_NONE
+	if _cached_font:
+		_btn_replay_stage.add_theme_font_override("font", _cached_font)
+	_btn_replay_stage.add_theme_font_size_override("font_size", 16)
+	_btn_replay_stage.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_style_button(_btn_replay_stage, COLOR_ORANGE, COLOR_BORDER, 6, 20)
+	_btn_replay_stage.pressed.connect(_on_replay_stage_pressed)
+	btn_row.add_child(_btn_replay_stage)
+
+	_btn_next_stage = Button.new()
+	_btn_next_stage.name = "BtnNextStage"
+	_btn_next_stage.text = _t("挑戰下一關")
+	_btn_next_stage.custom_minimum_size = Vector2(200, 52)
+	_btn_next_stage.focus_mode = Control.FOCUS_NONE
+	if _cached_font:
+		_btn_next_stage.add_theme_font_override("font", _cached_font)
+	_btn_next_stage.add_theme_font_size_override("font_size", 16)
+	_btn_next_stage.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_style_button(_btn_next_stage, COLOR_MINT, COLOR_BORDER)
+	_btn_next_stage.pressed.connect(_on_next_stage_pressed)
+	btn_row.add_child(_btn_next_stage)
+
+	# 背包圖示目標（多巴胺獎勵入袋流向目標，熱區 >= 48px，零系統 emoji）
+	_bag_target = PanelContainer.new()
+	_bag_target.name = "BagTarget"
+	_bag_target.custom_minimum_size = Vector2(50, 52)
+	_bag_target.pivot_offset = Vector2(25, 26)
+	var bag_st := StyleBoxFlat.new()
+	bag_st.bg_color = COLOR_CARD_WARM
+	bag_st.border_color = COLOR_BORDER
+	bag_st.set_border_width_all(2)
+	bag_st.border_width_bottom = 5
+	bag_st.set_corner_radius_all(14)
+	_bag_target.add_theme_stylebox_override("panel", bag_st)
+
+	var bag_margin := MarginContainer.new()
+	bag_margin.add_theme_constant_override("margin_left", 6)
+	bag_margin.add_theme_constant_override("margin_right", 6)
+	bag_margin.add_theme_constant_override("margin_top", 6)
+	bag_margin.add_theme_constant_override("margin_bottom", 6)
+	_bag_target.add_child(bag_margin)
+
+	_bag_icon = TextureRect.new()
+	_bag_icon.name = "BagIcon"
+	_bag_icon.custom_minimum_size = Vector2(36, 36)
+	_bag_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_bag_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_bag_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR
+	if ResourceLoader.exists("res://assets/icons/hud/icon_dock_bag.png"):
+		_bag_icon.texture = load("res://assets/icons/hud/icon_dock_bag.png")
+	bag_margin.add_child(_bag_icon)
+	btn_row.add_child(_bag_target)
+
+	# 多巴胺特效飛散圖層 (FxLayer)
+	_fx_layer = Control.new()
+	_fx_layer.name = "FxLayer"
+	_fx_layer.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_fx_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_dialog_card.add_child(_fx_layer)
 
 
 func _refresh_display() -> void:
@@ -404,6 +565,15 @@ func _refresh_display() -> void:
 	_sub_lbl.text = _t("關卡討伐成功！獲得戰利品機芯部件")
 	_btn_confirm.text = _t("收下完成")
 	_btn_equip.text = _t("已裝備") if _is_equipped else _t("立即裝備")
+	_btn_equip.visible = not _part.is_empty()
+	if _btn_replay_stage != null:
+		_btn_replay_stage.text = _t("再次挑戰")
+		var can_replay: bool = not _stage_num.is_empty() and not _is_colossus
+		_btn_replay_stage.visible = can_replay
+	if _btn_next_stage != null:
+		_btn_next_stage.text = _t("挑戰下一關")
+		var has_next: bool = not _next_stage_data.is_empty() and not _is_colossus
+		_btn_next_stage.visible = has_next
 
 	if _part.is_empty():
 		_slot_name_lbl.text = _t("機芯部件")
@@ -506,6 +676,31 @@ func _refresh_display() -> void:
 			_scrap_panel.visible = false
 			_scrap_lbl.text = _t("鐵屑 +0")
 
+	# ── 更新頂部部位破壞徽章 ──
+	if _part_break_container != null:
+		if _broken_parts.is_empty():
+			_part_break_container.visible = false
+			for c in _part_break_container.get_children():
+				_part_break_container.remove_child(c)
+				c.queue_free()
+		else:
+			_part_break_container.visible = true
+			if _part_break_container.get_child_count() == _broken_parts.size():
+				for i in range(_broken_parts.size()):
+					var badge: PanelContainer = _part_break_container.get_child(i) as PanelContainer
+					if badge:
+						var name_lbl: Label = badge.find_child("PartNameLabel", true, false) as Label
+						if name_lbl:
+							name_lbl.text = _t(_broken_parts[i])
+			else:
+				for c in _part_break_container.get_children():
+					_part_break_container.remove_child(c)
+					c.queue_free()
+				for i in range(_broken_parts.size()):
+					var bp_name: String = _broken_parts[i]
+					var badge := _create_part_break_badge(bp_name, i)
+					_part_break_container.add_child(badge)
+
 
 func _is_player_max_level() -> bool:
 	if bool(_part.get("is_max_level", false)):
@@ -597,7 +792,15 @@ func _on_equip_pressed() -> void:
 
 func _do_equip(norm_slot: String) -> void:
 	var cs = _cs()
+	var old_part: Dictionary = {}
+	if cs != null and cs.has_method("get_equipped_part"):
+		old_part = cs.call("get_equipped_part", norm_slot)
 	if cs != null:
+		var uid := str(_part.get("uid", ""))
+		if not uid.is_empty() and cs.has_method("remove_part_from_inventory"):
+			cs.call("remove_part_from_inventory", uid)
+		if not old_part.is_empty() and cs.has_method("add_part_to_inventory"):
+			cs.call("add_part_to_inventory", old_part)
 		cs.equip_part(norm_slot, _part)
 	_is_equipped = true
 	_btn_equip.text = _t("已裝備")
@@ -647,13 +850,238 @@ func _refresh_compare_display() -> void:
 		_compare_layer.refresh_display()
 
 
+func _create_part_break_badge(part_name: String, index: int) -> PanelContainer:
+	var badge := PanelContainer.new()
+	badge.name = "PartBreakBadge_%d" % index
+	var st := StyleBoxFlat.new()
+	st.bg_color = Color("#FFF0F4")
+	st.border_color = COLOR_BORDER
+	st.set_border_width_all(2)
+	st.border_width_bottom = 4
+	st.set_corner_radius_all(14)
+	st.shadow_color = Color(0.12, 0.1, 0.22, 0.12)
+	st.shadow_size = 3
+	st.shadow_offset = Vector2(0, 2)
+	badge.add_theme_stylebox_override("panel", st)
+
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_left", 12)
+	m.add_theme_constant_override("margin_right", 12)
+	m.add_theme_constant_override("margin_top", 4)
+	m.add_theme_constant_override("margin_bottom", 4)
+	badge.add_child(m)
+
+	var h := HBoxContainer.new()
+	h.add_theme_constant_override("separation", 8)
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	m.add_child(h)
+
+	# PART BREAK 標籤小膠囊
+	var tag_box := PanelContainer.new()
+	tag_box.name = "TagBox"
+	var tag_st := StyleBoxFlat.new()
+	tag_st.bg_color = COLOR_PINK
+	tag_st.border_color = COLOR_BORDER
+	tag_st.set_border_width_all(1)
+	tag_st.border_width_bottom = 2
+	tag_st.set_corner_radius_all(8)
+	tag_box.add_theme_stylebox_override("panel", tag_st)
+
+	var tm := MarginContainer.new()
+	tm.add_theme_constant_override("margin_left", 6)
+	tm.add_theme_constant_override("margin_right", 6)
+	tm.add_theme_constant_override("margin_top", 2)
+	tm.add_theme_constant_override("margin_bottom", 2)
+	tag_box.add_child(tm)
+
+	var tag_lbl := Label.new()
+	tag_lbl.name = "BreakTagLabel"
+	tag_lbl.text = "PART BREAK"
+	tag_lbl.add_theme_font_size_override("font_size", 11)
+	tag_lbl.add_theme_color_override("font_color", Color.WHITE)
+	if _cached_font:
+		tag_lbl.add_theme_font_override("font", _cached_font)
+	tm.add_child(tag_lbl)
+	h.add_child(tag_box)
+
+	# 部位名稱標籤
+	var name_lbl := Label.new()
+	name_lbl.name = "PartNameLabel"
+	name_lbl.text = _t(part_name)
+	name_lbl.add_theme_font_size_override("font_size", 14)
+	name_lbl.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		name_lbl.add_theme_font_override("font", _cached_font)
+	h.add_child(name_lbl)
+
+	return badge
+
+
 func _on_confirm_pressed() -> void:
+	if _is_confirming:
+		return
+	_is_confirming = true
+
 	var a = _audio()
 	if a != null:
-		a.play_ui()
+		if a.has_method("play_craft_success"):
+			a.play_craft_success()
+		elif a.has_method("play_ui"):
+			a.play_ui()
+
+	if DisplayServer.get_name() == "headless" or not is_inside_tree() or _fx_layer == null:
+		_finish_confirm()
+		return
+
+	play_reward_particles_to_bag(Callable(self, "_finish_confirm"))
+
+
+func play_reward_particles_to_bag(on_finished: Callable = Callable()) -> void:
+	if _fx_layer == null:
+		if on_finished.is_valid():
+			on_finished.call()
+		return
+
+	var target_pos: Vector2 = _bag_target.global_position + _bag_target.size * 0.5 if _bag_target else _dialog_card.global_position + _dialog_card.size * Vector2(0.85, 0.85)
+	var local_target: Vector2 = target_pos - _fx_layer.global_position
+
+	# 起點設在獎勵展示列（經驗列與鐵屑列），避免遮擋底部操作按鈕，呈現自獎勵明細流向背包的直觀動態
+	var exp_pos: Vector2 = _exp_panel.global_position + _exp_panel.size * 0.5 if _exp_panel else target_pos - Vector2(180, 80)
+	var scrap_pos: Vector2 = _scrap_panel.global_position + _scrap_panel.size * 0.5 if _scrap_panel else target_pos - Vector2(180, 40)
+	var local_exp_start: Vector2 = exp_pos - _fx_layer.global_position
+	var local_scrap_start: Vector2 = scrap_pos - _fx_layer.global_position
+
+	var particle_count := 14
+	var gold_tex: Texture2D = null
+	if ResourceLoader.exists("res://assets/icons/hud/icon_gold_coin.png"):
+		gold_tex = load("res://assets/icons/hud/icon_gold_coin.png") as Texture2D
+
+	for i in range(particle_count):
+		var p: Control = null
+		var is_gold: bool = (i % 2 == 0)
+		var p_start: Vector2 = local_exp_start if is_gold else local_scrap_start
+
+		if is_gold and gold_tex != null:
+			var trect := TextureRect.new()
+			trect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			trect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			trect.texture = gold_tex
+			trect.custom_minimum_size = Vector2(22, 22)
+			trect.size = Vector2(22, 22)
+			p = trect
+		else:
+			var cbox := PanelContainer.new()
+			cbox.custom_minimum_size = Vector2(14, 14)
+			cbox.size = Vector2(14, 14)
+			var sb := StyleBoxFlat.new()
+			sb.bg_color = COLOR_GOLD if is_gold else COLOR_SKY
+			sb.border_color = COLOR_BORDER
+			sb.set_border_width_all(2)
+			sb.set_corner_radius_all(4)
+			cbox.add_theme_stylebox_override("panel", sb)
+			p = cbox
+
+		p.position = p_start
+		p.pivot_offset = p.size * 0.5
+		p.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_fx_layer.add_child(p)
+
+		# 粒子分批 Stagger 噴發 (i * 0.02s)，形成自獎勵列流向背包的動態粒子鏈
+		var stagger := i * 0.02
+		var burst_offset := Vector2(randf_range(-30.0, 30.0), randf_range(-40.0, -15.0))
+		var burst_pos := p_start + burst_offset
+
+		var tw := p.create_tween()
+		if stagger > 0.0:
+			tw.tween_interval(stagger)
+
+		# 階段 1：自獎勵列向上微幅噴湧 (0.15s)
+		tw.tween_property(p, "position", burst_pos, 0.15).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		tw.parallel().tween_property(p, "scale", Vector2(1.2, 1.2), 0.15)
+
+		# 階段 2：弧線流向右下角背包圖示 (0.30 ~ 0.38s)
+		var flight_time := randf_range(0.30, 0.38)
+		tw.tween_property(p, "position", local_target, flight_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tw.parallel().tween_property(p, "scale", Vector2(0.4, 0.4), flight_time)
+		tw.parallel().tween_property(p, "modulate:a", 0.3, flight_time)
+		tw.tween_callback(p.queue_free)
+
+	if _bag_target != null:
+		var btw := _bag_target.create_tween()
+		btw.tween_interval(0.28)
+		btw.tween_property(_bag_target, "scale", Vector2(1.25, 1.25), 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		btw.tween_property(_bag_target, "scale", Vector2(1.0, 1.0), 0.14).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+
+	var end_tw := create_tween()
+	end_tw.tween_interval(0.68)
+	if on_finished.is_valid():
+		end_tw.tween_callback(on_finished)
+
+
+func _finish_confirm() -> void:
 	confirmed.emit()
 	if _on_confirm.is_valid():
 		_on_confirm.call()
+	queue_free()
+
+
+func _on_replay_stage_pressed() -> void:
+	if _is_confirming:
+		return
+	_is_confirming = true
+
+	var a = _audio()
+	if a != null:
+		if a.has_method("play_ui"):
+			a.play_ui()
+
+	if DisplayServer.get_name() == "headless" or not is_inside_tree() or _fx_layer == null:
+		_finish_replay_stage()
+		return
+
+	play_reward_particles_to_bag(Callable(self, "_finish_replay_stage"))
+
+
+func _finish_replay_stage() -> void:
+	replay_stage_requested.emit()
+	if _on_replay_stage.is_valid() and not replay_stage_requested.is_connected(_on_replay_stage):
+		_on_replay_stage.call()
+	queue_free()
+
+
+func get_replay_button() -> Button:
+	return _btn_replay_stage
+
+
+func get_replay_button_text() -> String:
+	return _btn_replay_stage.text if _btn_replay_stage != null else ""
+
+
+func get_retry_button() -> Button:
+	return _btn_replay_stage
+
+
+func _on_next_stage_pressed() -> void:
+	if _is_confirming:
+		return
+	_is_confirming = true
+
+	var a = _audio()
+	if a != null:
+		if a.has_method("play_ui"):
+			a.play_ui()
+
+	if DisplayServer.get_name() == "headless" or not is_inside_tree() or _fx_layer == null:
+		_finish_next_stage()
+		return
+
+	play_reward_particles_to_bag(Callable(self, "_finish_next_stage"))
+
+
+func _finish_next_stage() -> void:
+	next_stage_requested.emit()
+	if _on_next_stage.is_valid():
+		_on_next_stage.call()
 	queue_free()
 
 
@@ -707,13 +1135,13 @@ func _create_inner_card_style(bg: Color, border: Color, bw: int, sh: int, cr: in
 	return sb
 
 
-func _style_button(btn: Button, bg: Color, border: Color) -> void:
+func _style_button(btn: Button, bg: Color, border: Color, bottom_border: int = 5, corner_radius: int = 14) -> void:
 	var normal := StyleBoxFlat.new()
 	normal.bg_color = bg
 	normal.border_color = border
 	normal.set_border_width_all(2)
-	normal.border_width_bottom = 5
-	normal.set_corner_radius_all(14)
+	normal.border_width_bottom = bottom_border
+	normal.set_corner_radius_all(corner_radius)
 
 	var pressed := StyleBoxFlat.new()
 	pressed.bg_color = bg.darkened(0.12)
@@ -721,14 +1149,14 @@ func _style_button(btn: Button, bg: Color, border: Color) -> void:
 	pressed.set_border_width_all(2)
 	pressed.border_width_bottom = 2
 	pressed.border_width_top = 4
-	pressed.set_corner_radius_all(14)
+	pressed.set_corner_radius_all(corner_radius)
 
 	var disabled := StyleBoxFlat.new()
 	disabled.bg_color = Color(0.85, 0.84, 0.88, 1)
 	disabled.border_color = border.lerp(Color.WHITE, 0.4)
 	disabled.set_border_width_all(2)
 	disabled.border_width_bottom = 3
-	disabled.set_corner_radius_all(14)
+	disabled.set_corner_radius_all(corner_radius)
 
 	btn.add_theme_stylebox_override("normal", normal)
 	btn.add_theme_stylebox_override("hover", normal)
@@ -746,7 +1174,7 @@ func _style_button(btn: Button, bg: Color, border: Color) -> void:
 
 func _create_close_button() -> Button:
 	var btn := Button.new()
-	btn.text = "✕"
+	btn.text = "X"
 	btn.custom_minimum_size = Vector2(52, 52)
 	btn.focus_mode = Control.FOCUS_NONE
 

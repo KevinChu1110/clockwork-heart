@@ -3,44 +3,62 @@
   "items": {
     "hp_s": {
       "id": "hp_s",
-      "name": "小紅水",
-      "desc": "恢復 25 生命。",
+      "name": "微光潤滑油",
+      "desc": "滋潤關節，恢復 25 生命。",
       "kind": "consumable",
       "sell": null,
       "buy": 12,
       "heal": 25,
       "source": "雜魚掉落；琥珀材料行 12 金",
       "sources": [
-        {"label": "雜魚掉落", "map": "road"},
-        {"label": "琥珀材料行 12 金", "map": "market"}
+        {
+          "label": "雜魚掉落",
+          "map": "road"
+        },
+        {
+          "label": "琥珀材料行 12 金",
+          "map": "market"
+        }
       ]
     },
     "hp_m": {
       "id": "hp_m",
-      "name": "中紅水",
-      "desc": "恢復 55 生命。",
+      "name": "高純潤滑油",
+      "desc": "高純度發條油，迅速恢復 55 生命。",
       "kind": "consumable",
       "sell": null,
       "buy": null,
       "heal": 55,
       "source": "擊敗小 Boss／秘境獎勵（材料行不賣）",
       "sources": [
-        {"label": "小 Boss／秘境獎勵", "map": "rift"}
+        {
+          "label": "小 Boss／秘境獎勵",
+          "map": "rift"
+        }
       ]
     },
     "bread": {
       "id": "bread",
-      "name": "乾糧",
-      "desc": "恢復 15 生命。路上充飢。",
+      "name": "微型備用齒輪",
+      "desc": "替換微損組件，恢復 15 生命。",
       "kind": "consumable",
       "sell": null,
       "buy": 8,
       "heal": 15,
       "source": "雜魚掉落；開場贈送；琥珀材料行 8 金",
       "sources": [
-        {"label": "雜魚掉落", "map": "road"},
-        {"label": "開場贈送", "map": "village"},
-        {"label": "琥珀材料行 8 金", "map": "market"}
+        {
+          "label": "雜魚掉落",
+          "map": "road"
+        },
+        {
+          "label": "開場贈送",
+          "map": "village"
+        },
+        {
+          "label": "琥珀材料行 8 金",
+          "map": "market"
+        }
       ]
     },
     "dust_crumb": {
@@ -53,14 +71,20 @@
       "heal": null,
       "source": "雜魚／森林精掉落",
       "sources": [
-        {"label": "雜魚掉落", "map": "road"},
-        {"label": "森林精", "map": "forest"}
+        {
+          "label": "雜魚掉落",
+          "map": "road"
+        },
+        {
+          "label": "森林精",
+          "map": "forest"
+        }
       ]
     },
     "antidote": {
       "id": "antidote",
-      "name": "清焰露",
-      "desc": "恢復 10 生命，並略提振精神。",
+      "name": "散熱冷卻劑",
+      "desc": "導出摩擦積熱，恢復 10 生命並提振運轉。",
       "kind": "consumable",
       "sell": null,
       "buy": null,
@@ -78,7 +102,10 @@
       "heal": null,
       "source": "序章拾劍留下的紀念",
       "sources": [
-        {"label": "閣樓拾劍", "map": "village"}
+        {
+          "label": "閣樓拾劍",
+          "map": "village"
+        }
       ]
     },
     "map_scrap": {
@@ -91,7 +118,10 @@
       "heal": null,
       "source": "行商支線",
       "sources": [
-        {"label": "行商支線", "map": "caravan"}
+        {
+          "label": "行商支線",
+          "map": "caravan"
+        }
       ]
     },
     "medal": {
@@ -104,7 +134,10 @@
       "heal": null,
       "source": "演武場／角鬥日結",
       "sources": [
-        {"label": "演武場日結", "map": "arena"}
+        {
+          "label": "演武場日結",
+          "map": "arena"
+        }
       ]
     },
     "relic_token": {
@@ -117,21 +150,30 @@
       "heal": null,
       "source": "通關秘境",
       "sources": [
-        {"label": "通關秘境", "map": "rift"}
+        {
+          "label": "通關秘境",
+          "map": "rift"
+        }
       ]
     },
     "wolf_fang": {
       "id": "wolf_fang",
-      "name": "狼牙",
-      "desc": "雜魚掉落。可賣 8 金。",
+      "name": "棘輪尖齒",
+      "desc": "失控機械掉落的尖銳零件。可賣 8 金。",
       "kind": "material",
       "sell": 8,
       "buy": null,
       "heal": null,
       "source": "荒路殘兵、灰燼鼠",
       "sources": [
-        {"label": "荒路殘兵", "map": "road"},
-        {"label": "灰燼鼠", "map": "road"}
+        {
+          "label": "荒路殘兵",
+          "map": "road"
+        },
+        {
+          "label": "灰燼鼠",
+          "map": "road"
+        }
       ]
     },
     "mist_shard": {
@@ -144,8 +186,14 @@
       "heal": null,
       "source": "霧影、竹精",
       "sources": [
-        {"label": "霧影", "map": "mist"},
-        {"label": "竹精", "map": "dojo"}
+        {
+          "label": "霧影",
+          "map": "mist"
+        },
+        {
+          "label": "竹精",
+          "map": "dojo"
+        }
       ]
     },
     "sea_shell": {
@@ -158,8 +206,14 @@
       "heal": null,
       "source": "海岸盜、下水道",
       "sources": [
-        {"label": "海岸盜", "map": "coast"},
-        {"label": "舊下水道", "map": "sewers"}
+        {
+          "label": "海岸盜",
+          "map": "coast"
+        },
+        {
+          "label": "舊下水道",
+          "map": "sewers"
+        }
       ]
     },
     "scar_ember": {
@@ -172,33 +226,42 @@
       "heal": null,
       "source": "疤地焰靈",
       "sources": [
-        {"label": "疤地焰靈", "map": "scar"}
+        {
+          "label": "疤地焰靈",
+          "map": "scar"
+        }
       ]
     },
     "hunt_hide": {
       "id": "hunt_hide",
-      "name": "溢皮",
-      "desc": "狩獵場材料。可在溢物回收換金。",
+      "name": "溢流板件",
+      "desc": "狩獵場脫落的金屬板件。可在溢物回收換金。",
       "kind": "material",
       "sell": 10,
       "buy": null,
       "heal": null,
       "source": "野外獵場",
       "sources": [
-        {"label": "野外獵場", "map": "hunt"}
+        {
+          "label": "野外獵場",
+          "map": "hunt"
+        }
       ]
     },
     "hunt_bone": {
       "id": "hunt_bone",
-      "name": "焰骨",
-      "desc": "狩獵場中階材料。",
+      "name": "鍛火軸心",
+      "desc": "狩獵場中階機件。高溫鍛打的堅固傳動軸。",
       "kind": "material",
       "sell": 22,
       "buy": null,
       "heal": null,
       "source": "野外獵場（中階）",
       "sources": [
-        {"label": "野外獵場（中階）", "map": "hunt"}
+        {
+          "label": "野外獵場（中階）",
+          "map": "hunt"
+        }
       ]
     },
     "hunt_core": {
@@ -211,7 +274,10 @@
       "heal": null,
       "source": "野外獵場（稀有）",
       "sources": [
-        {"label": "野外獵場（稀有）", "map": "hunt"}
+        {
+          "label": "野外獵場（稀有）",
+          "map": "hunt"
+        }
       ]
     },
     "iron_scrap": {
@@ -224,25 +290,46 @@
       "heal": null,
       "source": "各域雜魚；琥珀材料行可買；破部位（甲）",
       "sources": [
-        {"label": "各域雜魚", "map": "road"},
-        {"label": "琥珀材料行 14 金", "map": "market"},
-        {"label": "破部位（甲）", "map": "parts"}
+        {
+          "label": "各域雜魚",
+          "map": "road"
+        },
+        {
+          "label": "琥珀材料行 14 金",
+          "map": "market"
+        },
+        {
+          "label": "破部位（甲）",
+          "map": "parts"
+        }
       ]
     },
     "star_ore": {
       "id": "star_ore",
-      "name": "星砂礦",
-      "desc": "抽魂／獵場武器材料。",
+      "name": "發條晶砂",
+      "desc": "聚魂與武器鍛造的微型共振晶砂。",
       "kind": "material",
       "sell": 10,
       "buy": 22,
       "heal": null,
       "source": "各域雜魚、霧域較多；琥珀可買；破部位（冠）",
       "sources": [
-        {"label": "各域雜魚", "map": "road"},
-        {"label": "白霧之地較多", "map": "mist"},
-        {"label": "琥珀材料行 22 金", "map": "market"},
-        {"label": "破部位（冠）", "map": "parts"}
+        {
+          "label": "各域雜魚",
+          "map": "road"
+        },
+        {
+          "label": "白霧之地較多",
+          "map": "mist"
+        },
+        {
+          "label": "琥珀材料行 22 金",
+          "map": "market"
+        },
+        {
+          "label": "破部位（冠）",
+          "map": "parts"
+        }
       ]
     },
     "oak_resin": {
@@ -255,11 +342,26 @@
       "heal": null,
       "source": "各域雜魚、森林／疤地；琥珀可買；破部位（靴）",
       "sources": [
-        {"label": "各域雜魚", "map": "road"},
-        {"label": "遊俠森林", "map": "forest"},
-        {"label": "黑鏽疤地", "map": "scar"},
-        {"label": "琥珀材料行 18 金", "map": "market"},
-        {"label": "破部位（靴）", "map": "parts"}
+        {
+          "label": "各域雜魚",
+          "map": "road"
+        },
+        {
+          "label": "遊俠森林",
+          "map": "forest"
+        },
+        {
+          "label": "黑鏽疤地",
+          "map": "scar"
+        },
+        {
+          "label": "琥珀材料行 18 金",
+          "map": "market"
+        },
+        {
+          "label": "破部位（靴）",
+          "map": "parts"
+        }
       ]
     },
     "knight_shard": {
@@ -272,10 +374,22 @@
       "heal": null,
       "source": "荒路／騎士域、生鏽發條浪人；琥珀可買；破部位（盔）",
       "sources": [
-        {"label": "荒路", "map": "road"},
-        {"label": "騎士堡／生鏽發條浪人", "map": "town"},
-        {"label": "琥珀材料行 28 金", "map": "market"},
-        {"label": "破部位（盔）", "map": "parts"}
+        {
+          "label": "荒路",
+          "map": "road"
+        },
+        {
+          "label": "騎士堡／生鏽發條浪人",
+          "map": "town"
+        },
+        {
+          "label": "琥珀材料行 28 金",
+          "map": "market"
+        },
+        {
+          "label": "破部位（盔）",
+          "map": "parts"
+        }
       ]
     },
     "friendship_key": {
@@ -288,7 +402,10 @@
       "heal": null,
       "source": "好友挑戰勝利。3 把開友誼寶箱",
       "sources": [
-        {"label": "好友挑戰殘影", "map": "visit"}
+        {
+          "label": "好友挑戰殘影",
+          "map": "visit"
+        }
       ]
     }
   }
