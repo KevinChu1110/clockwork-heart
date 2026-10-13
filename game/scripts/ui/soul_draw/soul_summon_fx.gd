@@ -31,6 +31,9 @@ var _windup_key: TextureRect
 var _shockwave: Control
 var _star_layer: Control
 var _skip_btn: Button
+## 跳過鈕最小點擊區（T-01 標準檔 81px；KC 定了門檻後改這裡）
+const SKIP_BTN_MIN := Vector2(168, 84)
+const SKIP_BTN_GAP := 8.0
 var _title_hint: Label
 var _font: Font = null
 
@@ -91,6 +94,7 @@ func _load_font() -> void:
 func _build_ui() -> void:
 	# 1. 聚光暗幕背景（半透明深藍紫，烘托中央發條金色焦點）
 	_dim_bg = ColorRect.new()
+	_dim_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE  ## 點畫面任何地方都要能跳過
 	_dim_bg.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_dim_bg.custom_minimum_size = Vector2(1280, 720)
 	_dim_bg.color = Color(0.08, 0.06, 0.16, 0.88)
@@ -98,6 +102,7 @@ func _build_ui() -> void:
 
 	# 2. 中央容器
 	_center_node = Control.new()
+	_center_node.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_center_node.set_anchors_preset(Control.PRESET_CENTER)
 	_center_node.position = Vector2(640, 360)
 	add_child(_center_node)
@@ -117,12 +122,14 @@ func _build_ui() -> void:
 
 	# 4. 儀式光環底層
 	_glow_ring = Control.new()
+	_glow_ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_glow_ring.custom_minimum_size = Vector2(340, 340)
 	_glow_ring.position = Vector2(-170, -170)
 	_glow_ring.pivot_offset = Vector2(170, 170)
 	_center_node.add_child(_glow_ring)
 
 	var ring_panel := Panel.new()
+	ring_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ring_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
 	var r_style := StyleBoxFlat.new()
 	r_style.bg_color = Color(1.0, 0.82, 0.18, 0.15)
@@ -136,6 +143,7 @@ func _build_ui() -> void:
 
 	# 4b. 中央高光閃光球
 	_flash_sphere = Panel.new()
+	_flash_sphere.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_flash_sphere.custom_minimum_size = Vector2(180, 180)
 	_flash_sphere.position = Vector2(-90, -90)
 	_flash_sphere.pivot_offset = Vector2(90, 90)
@@ -153,6 +161,7 @@ func _build_ui() -> void:
 	if ResourceLoader.exists(GEAR_ASSET):
 		var gear_tex := load(GEAR_ASSET) as Texture2D
 		_left_gear = TextureRect.new()
+		_left_gear.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_left_gear.texture = gear_tex
 		_left_gear.custom_minimum_size = Vector2(120, 120)
 		_left_gear.size = Vector2(120, 120)
@@ -163,6 +172,7 @@ func _build_ui() -> void:
 		_center_node.add_child(_left_gear)
 
 		_right_gear = TextureRect.new()
+		_right_gear.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		_right_gear.texture = gear_tex
 		_right_gear.custom_minimum_size = Vector2(120, 120)
 		_right_gear.size = Vector2(120, 120)
@@ -174,6 +184,7 @@ func _build_ui() -> void:
 
 	# 6. 中央發條主鑰匙
 	_windup_key = TextureRect.new()
+	_windup_key.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if ResourceLoader.exists(KEY_ASSET):
 		_windup_key.texture = load(KEY_ASSET) as Texture2D
 	_windup_key.custom_minimum_size = Vector2(220, 220)
@@ -186,28 +197,42 @@ func _build_ui() -> void:
 
 	# 7. 衝擊波環層
 	_shockwave = Control.new()
+	_shockwave.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_shockwave.position = Vector2.ZERO
 	_center_node.add_child(_shockwave)
 
 	# 8. 彩糖星芒粒子層
 	_star_layer = Control.new()
+	_star_layer.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_star_layer.position = Vector2.ZERO
 	_center_node.add_child(_star_layer)
 
 	# 9. 右上角快速跳過按鈕
 	_skip_btn = Button.new()
 	_skip_btn.text = _t("跳過")
-	_skip_btn.custom_minimum_size = Vector2(90, 36)
+	## 觸控目標 ≥ T-01 標準檔 81px（#93／M-05、M-13）；翻譯較長時往左長，不會被裁字
+	_skip_btn.custom_minimum_size = SKIP_BTN_MIN
+	_skip_btn.clip_text = false
+	_skip_btn.add_theme_font_size_override("font_size", 26)
 	_skip_btn.set_anchors_preset(Control.PRESET_TOP_RIGHT)
-	_skip_btn.offset_left = -110
-	_skip_btn.offset_top = 20
-	_skip_btn.offset_right = -20
-	_skip_btn.offset_bottom = 56
+	_skip_btn.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	_layout_skip_btn()
 	UiStyle.style_button(_skip_btn, false)
 	if _font != null:
 		_skip_btn.add_theme_font_override("font", _font)
 	_skip_btn.pressed.connect(skip)
 	add_child(_skip_btn)
+
+
+## 跳過鈕放在 safe area 內（瀏海／圓角，M-20），每次播放前重算（轉向、換解析度）。
+func _layout_skip_btn() -> void:
+	if _skip_btn == null:
+		return
+	var m: Vector4 = ResponsiveUi.safe_margin(self)
+	_skip_btn.offset_right = -(m.z + SKIP_BTN_GAP)
+	_skip_btn.offset_left = _skip_btn.offset_right - SKIP_BTN_MIN.x
+	_skip_btn.offset_top = m.y + SKIP_BTN_GAP
+	_skip_btn.offset_bottom = _skip_btn.offset_top + SKIP_BTN_MIN.y
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -219,6 +244,7 @@ func play_summon(is_ten: bool, on_finish: Callable) -> void:
 	_callback = on_finish
 	_is_playing = true
 	visible = true
+	_layout_skip_btn()
 	modulate = Color(1, 1, 1, 1)
 	if size.x <= 0 or size.y <= 0:
 		size = Vector2(1280, 720)
@@ -324,6 +350,7 @@ func trigger_burst_instant() -> void:
 func _spawn_starburst_static(count: int) -> void:
 	for i in range(count):
 		var star := Control.new()
+		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var col: Color = DOPAMINE_COLORS[i % DOPAMINE_COLORS.size()]
 		var angle: float = (float(i) / float(count)) * TAU + sin(float(i)) * 0.15
 		var dist: float = 140.0 + (i % 4) * 65.0
@@ -331,6 +358,7 @@ func _spawn_starburst_static(count: int) -> void:
 		var star_size: float = 20.0 + (i % 3) * 10.0
 
 		var rect := ColorRect.new()
+		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		rect.size = Vector2(star_size, star_size)
 		rect.position = Vector2(-star_size * 0.5, -star_size * 0.5)
 		rect.color = col
@@ -341,6 +369,7 @@ func _spawn_starburst_static(count: int) -> void:
 		# 交叉雙芒星（讓星芒更華麗）
 		if i % 2 == 0:
 			var cross := ColorRect.new()
+			cross.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			cross.size = Vector2(star_size * 1.5, star_size * 0.4)
 			cross.position = Vector2(-star_size * 0.75, -star_size * 0.2)
 			cross.color = Color(1, 1, 1, 0.9)
@@ -353,6 +382,7 @@ func _spawn_starburst_static(count: int) -> void:
 func _spawn_shockwave_static() -> void:
 	for i in range(2):
 		var p := Panel.new()
+		p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var rad: float = 240.0 if i == 0 else 380.0
 		p.size = Vector2(rad, rad)
 		p.position = Vector2(-rad * 0.5, -rad * 0.5)
@@ -371,6 +401,7 @@ func _spawn_shockwave_static() -> void:
 func _spawn_starburst(count: int) -> void:
 	for i in range(count):
 		var star := Control.new()
+		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		var col: Color = DOPAMINE_COLORS[i % DOPAMINE_COLORS.size()]
 		var angle: float = (float(i) / float(count)) * TAU + randf_range(-0.1, 0.1)
 		var dist: float = randf_range(180.0, 390.0)
@@ -378,6 +409,7 @@ func _spawn_starburst(count: int) -> void:
 		var star_size: float = randf_range(18.0, 34.0)
 
 		var rect := ColorRect.new()
+		rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		rect.size = Vector2(star_size, star_size)
 		rect.position = Vector2(-star_size * 0.5, -star_size * 0.5)
 		rect.color = col
@@ -387,6 +419,7 @@ func _spawn_starburst(count: int) -> void:
 
 		if i % 2 == 0:
 			var cross := ColorRect.new()
+			cross.mouse_filter = Control.MOUSE_FILTER_IGNORE
 			cross.size = Vector2(star_size * 1.5, star_size * 0.4)
 			cross.position = Vector2(-star_size * 0.75, -star_size * 0.2)
 			cross.color = Color(1, 1, 1, 0.9)
@@ -405,6 +438,7 @@ func _spawn_starburst(count: int) -> void:
 func _spawn_shockwave() -> void:
 	for i in range(2):
 		var p := Panel.new()
+		p.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		p.size = Vector2(60, 60)
 		p.position = Vector2(-30, -30)
 		p.pivot_offset = Vector2(30, 30)
