@@ -12,6 +12,7 @@ const KEY_ASSET := "res://assets/sprites/player/paperdoll/rabbit/winding_key/key
 ## 只取鑰匙本體那一塊，讓鑰匙置中、殘片不進畫面（#103）。換成置中的專用鑰匙圖後可拿掉。
 const KEY_REGION := Rect2(144, 258, 51, 76)
 const KEY_BOX := 220.0
+const KEY_PAD := 2
 const GEAR_ASSET := "res://assets/icons/core_slots/slot_04_transmission_gears.png"
 
 ## 多巴胺糖果爆散色盤
@@ -221,12 +222,63 @@ func _key_texture() -> Texture2D:
 	var base := load(KEY_ASSET) as Texture2D
 	if base == null:
 		return null
-	var at := AtlasTexture.new()
-	at.atlas = base
-	at.region = KEY_REGION
-	at.filter_clip = true  ## 不讓相鄰的殘片像素滲進來
-	return at
+	var img := base.get_image()
+	if img == null:
+		return null
+	if img.is_compressed():
+		img.decompress()
+	return ImageTexture.create_from_image(clean_key_image(img, KEY_REGION, KEY_PAD))
 
+
+## 從紙娃娃圖層裁出鑰匙本體，並清掉不相連的切圖殘片（#103）。
+## 裁切框裡除了鑰匙還有 3 塊深棕色碎片（6／14／91px，跟鑰匙不相連），旋轉時會跟著鑰匙轉，
+## 看起來像雜點。只留最大的 8 連通區塊，四周再墊 KEY_PAD 像素透明邊，濾波取樣不會吃到邊外。
+static func clean_key_image(src: Image, region: Rect2, pad: int) -> Image:
+	var r := Rect2i(region)
+	var crop := src.get_region(r)
+	crop.convert(Image.FORMAT_RGBA8)
+	var w := crop.get_width()
+	var h := crop.get_height()
+	var label := PackedInt32Array()
+	label.resize(w * h)
+	var best_id := 0
+	var best_n := 0
+	var next_id := 0
+	for y in h:
+		for x in w:
+			var i := y * w + x
+			if label[i] != 0 or crop.get_pixel(x, y).a <= 0.0:
+				continue
+			next_id += 1
+			label[i] = next_id
+			var stack: Array[int] = [i]
+			var n := 0
+			while not stack.is_empty():
+				var c: int = stack.pop_back()
+				n += 1
+				var cx := c % w
+				var cy := c / w
+				for d in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+					var dx: int = d.x
+					var dy: int = d.y
+					var nx := cx + dx
+					var ny := cy + dy
+					if nx < 0 or ny < 0 or nx >= w or ny >= h:
+						continue
+					var j := ny * w + nx
+					if label[j] == 0 and crop.get_pixel(nx, ny).a > 0.0:
+						label[j] = next_id
+						stack.append(j)
+			if n > best_n:
+				best_n = n
+				best_id = next_id
+	var out := Image.create(w + pad * 2, h + pad * 2, false, Image.FORMAT_RGBA8)
+	out.fill(Color(0, 0, 0, 0))
+	for y in h:
+		for x in w:
+			if label[y * w + x] == best_id:
+				out.set_pixel(x + pad, y + pad, crop.get_pixel(x, y))
+	return out
 
 func _gui_input(event: InputEvent) -> void:
 	if _is_playing and event is InputEventMouseButton and event.pressed:
