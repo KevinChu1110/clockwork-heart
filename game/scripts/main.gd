@@ -76,6 +76,7 @@ var _toast: Label
 var _current: Screen = Screen.TITLE
 var _battle_mode: String = "wolf"
 var _defeat_gear_up_requested: bool = false
+var _dummy_skills_requested: bool = false
 var _pre_dummy_hp: int = -1
 var _after_dialogue: Callable = Callable()
 var _paused: bool = false
@@ -2702,6 +2703,23 @@ func _go_game_settings_menu() -> void:
 	_open_mobile_settings()
 
 
+func _on_dummy_skills_requested(battle_node: Node = null) -> void:
+	_dummy_skills_requested = true
+	if battle_node != null and is_instance_valid(battle_node) and battle_node.has_signal("battle_finished"):
+		battle_node.battle_finished.emit(false)
+	else:
+		_open_lobby_skills()
+
+
+func _open_lobby_skills() -> void:
+	_go_mobile_lobby(1)
+	for child in host.get_children():
+		if child is MobileLobby or child.get_script() != null and child.get_script().resource_path.ends_with("mobile_lobby.gd"):
+			if child.has_method("open_skill_dialog"):
+				child.open_skill_dialog()
+			break
+
+
 func _open_mobile_settings() -> void:
 	var s_scn: GDScript = load("res://scripts/ui/mobile_settings.gd")
 	var s_ui: Control = s_scn.new()
@@ -4248,6 +4266,8 @@ func _start_battle_raw(mode: String) -> void:
 		battle.battle_finished.connect(_on_battle_finished)
 		if battle.has_signal("gear_up_requested"):
 			battle.connect("gear_up_requested", func(): _defeat_gear_up_requested = true)
+		if battle.has_signal("skills_requested"):
+			battle.connect("skills_requested", func(): _on_dummy_skills_requested(battle))
 		battle.setup(mode)
 		_refresh_hud()
 		return
@@ -4308,6 +4328,10 @@ func _on_battle_finished(won: bool) -> void:
 			_pre_dummy_hp = -1
 		if won:
 			_explore_play_pose("skill", 0.55)
+		if _dummy_skills_requested:
+			_dummy_skills_requested = false
+			_open_lobby_skills()
+			return
 		_open_explore_then("town_tutor", Screen.C1_TOWN, _go_skill_panel)
 		return
 	SaveManager.save_game()

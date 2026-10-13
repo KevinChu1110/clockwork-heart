@@ -17,9 +17,12 @@ signal assign_hotbar(item_id: String)
 signal remove_hotbar(item_id: String)
 signal items_sorted
 signal category_changed(category_id: String)
+signal core_replaced(slot_id: String, part: Dictionary)
 signal equipment_changed
 signal equipment_lock_toggled(uid: String, is_locked: bool)
 signal equipment_dismantled(uid: String, result: Dictionary)
+signal core_dismantled(part: Dictionary, result: Dictionary)
+signal calibrate_requested()
 signal forge_requested()
 signal workshop_requested()
 signal materials_batch_sold(gold: int, count: int, result: Dictionary)
@@ -27,6 +30,9 @@ signal materials_batch_sold(gold: int, count: int, result: Dictionary)
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const GameInputGate = preload("res://scripts/autoload/game_input_gate.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const CoreSysClass = preload("res://scripts/systems/core_system.gd")
+const SpriteDbClass = preload("res://scripts/art/sprite_db.gd")
+const CoreReplaceDialogClass = preload("res://scripts/ui/core_replace_dialog.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 const ITEM_ICON_DIR := "res://assets/icons/items/"
 static var _icon_cache: Dictionary = {}
@@ -67,6 +73,7 @@ const TOTAL_CAPACITY := 24
 const CHIP_CATEGORIES: Array = [
 	{"id": "all", "label": "全部"},
 	{"id": "equip", "label": "裝備"},
+	{"id": "core", "label": "機芯"},
 	{"id": "consumable", "label": "消耗品"},
 	{"id": "material", "label": "素材"},
 	{"id": "gem", "label": "寶石"},
@@ -151,6 +158,14 @@ var _go_workshop_btn: Button = null
 var _hotbar_capsule: PanelContainer = null
 var _hotbar_capsule_label: Label = null
 var _floating_hotbar_toast: PanelContainer = null
+var _core_info_row: HBoxContainer = null
+var _core_slot_capsule: PanelContainer = null
+var _core_slot_label: Label = null
+var _core_tier_capsule: PanelContainer = null
+var _core_tier_swatch: ColorRect = null
+var _core_tier_label: Label = null
+var _replace_core_btn: Button = null
+var _go_calibrate_btn: Button = null
 
 
 func _ready() -> void:
@@ -208,6 +223,15 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 	refresh()
 
 
+func set_locale(lc: String) -> void:
+	if Engine.get_main_loop() is SceneTree and (Engine.get_main_loop() as SceneTree).root != null:
+		var loc_node = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("Loc")
+		if loc_node and loc_node.has_method("set_locale"):
+			loc_node.call("set_locale", lc)
+	_update_ui_texts()
+	refresh()
+
+
 func _update_ui_texts() -> void:
 	if _title and is_instance_valid(_title):
 		_title.text = _t("物品欄")
@@ -216,9 +240,12 @@ func _update_ui_texts() -> void:
 	_update_action_button()
 	_update_lock_ui_texts()
 	_update_dismantle_button()
+	_update_calibrate_button()
 	_update_shortcut_buttons()
 	_update_batch_sell_button()
 	_update_hotbar_ui()
+	if _go_calibrate_btn and is_instance_valid(_go_calibrate_btn):
+		_go_calibrate_btn.text = _t("前往校準")
 	if _go_forge_btn and is_instance_valid(_go_forge_btn):
 		_go_forge_btn.text = _t("前往鍛造")
 	if _go_workshop_btn and is_instance_valid(_go_workshop_btn):
@@ -227,6 +254,8 @@ func _update_ui_texts() -> void:
 		_batch_sell_btn.text = _t("一鍵出售素材")
 	if _sort_btn and is_instance_valid(_sort_btn):
 		_sort_btn.text = _t("一鍵整理")
+	if _replace_core_btn and is_instance_valid(_replace_core_btn):
+		_replace_core_btn.text = _t("替換機芯")
 	_update_capacity_ui()
 	for cat in CHIP_CATEGORIES:
 		var cid: String = cat["id"]
@@ -290,6 +319,20 @@ func _create_diff_capsule_style(bg_color: Color, border_color: Color) -> StyleBo
 	sb.content_margin_right = 8
 	sb.content_margin_top = 2
 	sb.content_margin_bottom = 3
+	return sb
+
+
+func _create_core_capsule_style(bg_color: Color, border_color: Color) -> StyleBoxFlat:
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = bg_color
+	sb.border_color = border_color
+	sb.set_border_width_all(2)
+	sb.border_width_bottom = 3
+	sb.set_corner_radius_all(12)
+	sb.content_margin_left = 10
+	sb.content_margin_right = 10
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
 	return sb
 
 
@@ -719,6 +762,68 @@ func _build() -> void:
 	_apply_label_style(_hotbar_capsule_label, 14, Color.WHITE, COLOR_BORDER, 3)
 	_hotbar_capsule.add_child(_hotbar_capsule_label)
 
+	## 機芯專屬槽位與八色階標籤膠囊列 (_core_info_row)
+	_core_info_row = HBoxContainer.new()
+	_core_info_row.name = "CoreInfoRow"
+	_core_info_row.add_theme_constant_override("separation", 8)
+	_core_info_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	_core_info_row.visible = false
+	header_vbox.add_child(_core_info_row)
+
+	# 專屬槽位標籤膠囊 (_core_slot_capsule / SlotLabel)
+	_core_slot_capsule = PanelContainer.new()
+	_core_slot_capsule.name = "CoreSlotCapsule"
+	_core_slot_capsule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_core_slot_capsule.add_theme_stylebox_override("panel", _create_core_capsule_style(COLOR_CARD_GOLD, COLOR_BORDER))
+	_core_info_row.add_child(_core_slot_capsule)
+
+	_core_slot_label = Label.new()
+	_core_slot_label.name = "CoreSlotLabel"
+	_core_slot_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_core_slot_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_label_style(_core_slot_label, 14, COLOR_TEXT_DARK)
+	_core_slot_capsule.add_child(_core_slot_label)
+
+	var slot_alias := Label.new()
+	slot_alias.name = "SlotLabel"
+	slot_alias.visible = false
+	_core_slot_capsule.add_child(slot_alias)
+
+	# 八色階標籤膠囊 (_core_tier_capsule / TierLabel / ColorSwatch)
+	_core_tier_capsule = PanelContainer.new()
+	_core_tier_capsule.name = "CoreTierCapsule"
+	_core_tier_capsule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_core_tier_capsule.add_theme_stylebox_override("panel", _create_core_capsule_style(COLOR_BG_CREAM, COLOR_BORDER))
+	_core_info_row.add_child(_core_tier_capsule)
+
+	var tier_inner := HBoxContainer.new()
+	tier_inner.add_theme_constant_override("separation", 6)
+	tier_inner.alignment = BoxContainer.ALIGNMENT_CENTER
+	_core_tier_capsule.add_child(tier_inner)
+
+	_core_tier_swatch = ColorRect.new()
+	_core_tier_swatch.name = "CoreTierSwatch"
+	_core_tier_swatch.custom_minimum_size = Vector2(10, 16)
+	_core_tier_swatch.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tier_inner.add_child(_core_tier_swatch)
+
+	var swatch_alias := ColorRect.new()
+	swatch_alias.name = "ColorSwatch"
+	swatch_alias.visible = false
+	tier_inner.add_child(swatch_alias)
+
+	_core_tier_label = Label.new()
+	_core_tier_label.name = "CoreTierLabel"
+	_core_tier_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_core_tier_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_apply_label_style(_core_tier_label, 14, COLOR_TEXT_DARK)
+	tier_inner.add_child(_core_tier_label)
+
+	var tier_alias := Label.new()
+	tier_alias.name = "TierLabel"
+	tier_alias.visible = false
+	tier_inner.add_child(tier_alias)
+
 	_detail_kind = Label.new()
 	_detail_kind.name = "DetailKind"
 	_apply_label_style(_detail_kind, 16, Color("#6B5E80"))
@@ -808,6 +913,48 @@ func _build() -> void:
 		_use_btn.add_theme_font_override("font", _cached_font)
 	_use_btn.pressed.connect(_on_use_button_pressed)
 	btn_row.add_child(_use_btn)
+
+	## 替換機芯專屬按鈕 (果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px)
+	_replace_core_btn = Button.new()
+	_replace_core_btn.name = "BtnReplaceCore"
+	_replace_core_btn.text = _t("替換機芯")
+	_replace_core_btn.custom_minimum_size = Vector2(0, 52)
+	_replace_core_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_replace_core_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_replace_core_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+	_replace_core_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB642"), COLOR_BORDER, 5, 18))
+	_replace_core_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 18))
+	_replace_core_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
+	_replace_core_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_replace_core_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_replace_core_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	_replace_core_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_replace_core_btn.add_theme_font_override("font", _cached_font)
+	_replace_core_btn.pressed.connect(func(): open_core_replace_dialog())
+	_replace_core_btn.visible = false
+	btn_row.add_child(_replace_core_btn)
+
+	## 『前往校準』快捷按鈕 (金黃果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px，深藍紫描邊 2px)
+	_go_calibrate_btn = Button.new()
+	_go_calibrate_btn.name = "BtnGoCalibrate"
+	_go_calibrate_btn.text = _t("前往校準")
+	_go_calibrate_btn.custom_minimum_size = Vector2(0, 52)
+	_go_calibrate_btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_go_calibrate_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_go_calibrate_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18, 2))
+	_go_calibrate_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18, 2))
+	_go_calibrate_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_GOLD, COLOR_BORDER, 2, 18, 2))
+	_go_calibrate_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18, 2))
+	_go_calibrate_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_go_calibrate_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_go_calibrate_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
+	_go_calibrate_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_calibrate_btn.add_theme_font_override("font", _cached_font)
+	_go_calibrate_btn.pressed.connect(_on_go_calibrate_pressed)
+	_go_calibrate_btn.visible = false
+	right.add_child(_go_calibrate_btn)
 
 	## 裝備拆解回收按鈕 (珊瑚粉果凍厚底按鈕，高 52px，熱區 >= 48px，立體厚底 5px，圓角 18px)
 	_dismantle_btn = Button.new()
@@ -992,6 +1139,56 @@ func refresh() -> void:
 							}
 						})
 
+	var core_parts: Array = []
+	if CoreSysClass != null:
+		core_parts = CoreSysClass.get_inventory()
+	elif gs_node and "core_bag" in gs_node and gs_node.core_bag is Array:
+		core_parts = gs_node.core_bag
+
+	for cp in core_parts:
+		if cp is Dictionary:
+			var cp_uid := str(cp.get("uid", cp.get("id", "")))
+			if not cp_uid.is_empty():
+				var in_list := false
+				for existing in list:
+					if str(existing.get("id", "")) == cp_uid:
+						in_list = true
+						break
+				if not in_list:
+					var slot_id: String = str(cp.get("slot", "mainspring"))
+					var slot_name: String = str(cp.get("slot_name", ""))
+					if slot_name.is_empty() and CoreSysClass != null:
+						slot_name = CoreSysClass.get_slot_name(slot_id)
+					var tier_id: String = str(cp.get("tier", "white"))
+					var tier_name: String = str(cp.get("tier_name", ""))
+					if tier_name.is_empty() and CoreSysClass != null:
+						var t_info: Dictionary = CoreSysClass.get_tier_by_score(int(cp.get("score", 0)))
+						tier_name = t_info.get("name", "白")
+					if tier_name.is_empty():
+						tier_name = "白"
+
+					var c_name: String = str(cp.get("name", ""))
+					if c_name.is_empty():
+						c_name = slot_name + "·" + tier_name + "階"
+
+					list.append({
+						"id": cp_uid,
+						"count": 1,
+						"def": {
+							"name": c_name,
+							"kind": "core",
+							"slot": slot_id,
+							"slot_name": slot_name,
+							"tier": tier_id,
+							"tier_name": tier_name,
+							"score": cp.get("score", 0),
+							"stats": cp.get("stats", {}),
+							"part_data": cp,
+							"desc": _t("機芯部件 · 部位：%s · 色階：%s階") % [_t(slot_name), _t(tier_name)],
+							"glyph": "芯"
+						}
+					})
+
 	if _is_sorted:
 		list = sort_item_list(list)
 
@@ -1015,7 +1212,7 @@ func refresh() -> void:
 			if it is Dictionary and str(it.get("id", "")) == _selected:
 				found = true
 				break
-		if not found:
+		if not found and not is_selected_item_equipped():
 			_selected = ""
 	elif list.size() > 0 and _current_category == "all" and not visible:
 		_selected = str(list[0].get("id", ""))
@@ -1032,10 +1229,17 @@ func refresh() -> void:
 			var def: Dictionary = it.get("def", {})
 			cell.tooltip_text = str(def.get("name", id))
 			var icon_tex := get_item_icon(id)
+			if icon_tex == null and def.get("kind", "") == "core":
+				if SpriteDbClass != null:
+					icon_tex = SpriteDbClass.core_slot_icon(str(def.get("slot", "")))
 			if icon_tex != null:
 				if icon:
 					icon.texture = icon_tex
 					icon.visible = true
+					if def.get("kind", "") == "core" and CoreSysClass != null:
+						icon.modulate = CoreSysClass.get_tier_color(str(def.get("tier", "white")))
+					else:
+						icon.modulate = Color.WHITE
 				if g:
 					g.visible = false
 			else:
@@ -1051,7 +1255,10 @@ func refresh() -> void:
 						g.add_theme_font_size_override("font_size", 16)
 					else:
 						g.add_theme_font_size_override("font_size", 24)
-					g.add_theme_color_override("font_color", def.get("color", COLOR_TEXT_DARK))
+					if def.get("kind", "") == "core" and CoreSysClass != null:
+						g.add_theme_color_override("font_color", CoreSysClass.get_tier_color(str(def.get("tier", "white"))))
+					else:
+						g.add_theme_color_override("font_color", def.get("color", COLOR_TEXT_DARK))
 					g.visible = true
 			if c:
 				var n := int(it.get("count", 0))
@@ -1114,6 +1321,10 @@ func _update_detail(inv: Node) -> void:
 			_lock_capsule.visible = false
 		if _lock_btn:
 			_lock_btn.visible = false
+		if _core_info_row:
+			_core_info_row.visible = false
+		if _replace_core_btn:
+			_replace_core_btn.visible = false
 		if _detail:
 			_detail.text = "[color=#1F1A3A][b]%s[/b]\n\n%s\n\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s\n[color=#C2600A]•[/color] %s[/color]" % [
 				_t("冒險者背包"),
@@ -1131,6 +1342,8 @@ func _update_detail(inv: Node) -> void:
 			_update_hotbar_ui()
 		if _dismantle_btn:
 			_dismantle_btn.visible = false
+		if _go_calibrate_btn:
+			_go_calibrate_btn.visible = false
 		if _go_forge_btn:
 			_go_forge_btn.visible = false
 		if _go_workshop_btn:
@@ -1140,6 +1353,7 @@ func _update_detail(inv: Node) -> void:
 
 	_update_action_button(inv)
 	_update_dismantle_button()
+	_update_calibrate_button()
 	_update_shortcut_buttons()
 	_update_batch_sell_button()
 	_update_hotbar_ui()
@@ -1204,6 +1418,29 @@ func _update_detail(inv: Node) -> void:
 					"desc": _t("裝備 · 部位：%s") % [str(b.get("slot", ""))],
 					"base": b.get("base", {}),
 				}
+		if def.is_empty():
+			var cp_cand: Dictionary = _get_selected_core_part()
+			if not cp_cand.is_empty():
+				var slot_id: String = str(cp_cand.get("slot", "mainspring"))
+				var slot_name: String = str(cp_cand.get("slot_name", ""))
+				var CoreSys_tmp = CoreSysClass
+				if slot_name.is_empty() and CoreSys_tmp != null:
+					slot_name = CoreSys_tmp.get_slot_name(slot_id)
+				var tier_id: String = str(cp_cand.get("tier", "white"))
+				var tier_name: String = str(cp_cand.get("tier_name", "白"))
+				def = {
+					"name": cp_cand.get("name", slot_name + "·" + tier_name + "階"),
+					"kind": "core",
+					"slot": slot_id,
+					"slot_name": slot_name,
+					"tier": tier_id,
+					"tier_name": tier_name,
+					"score": cp_cand.get("score", 0),
+					"stats": cp_cand.get("stats", {}),
+					"part_data": cp_cand,
+					"desc": _t("機芯部件 · 部位：%s · 色階：%s階") % [_t(slot_name), _t(tier_name)],
+					"glyph": "芯"
+				}
 	var n: int = int(inv.call("count", _selected)) if inv.has_method("count") else 1
 	var kind: String = str(def.get("kind", ""))
 	var slot: String = str(def.get("slot", "")).to_lower()
@@ -1217,6 +1454,8 @@ func _update_detail(inv: Node) -> void:
 
 	var kind_s: String = kind
 	match kind:
+		"core", "chip":
+			kind_s = _t("機芯")
 		"consumable":
 			kind_s = _t("消耗品")
 		"material":
@@ -1247,7 +1486,22 @@ func _update_detail(inv: Node) -> void:
 	var item_name: String = str(def.get("name", _selected))
 	var item_desc: String = str(def.get("desc", ""))
 
+	# 若為機芯部件，動態依槽位與色階組出在地化名稱與說明（支援六語系切換）
+	if def.get("kind", "") == "core" or not _get_selected_core_part().is_empty():
+		var slot_id: String = str(def.get("slot", _get_selected_core_part().get("slot", "mainspring")))
+		var slot_name: String = str(def.get("slot_name", _get_selected_core_part().get("slot_name", "")))
+		if slot_name.is_empty() and CoreSysClass != null:
+			slot_name = CoreSysClass.get_slot_name(slot_id)
+		var tier_name: String = str(def.get("tier_name", _get_selected_core_part().get("tier_name", "白")))
+		var t_key := tier_name if tier_name.ends_with("階") else (tier_name + "階")
+		item_name = "%s · %s" % [_t(slot_name), _t(t_key)]
+		item_desc = "%s · %s · %s" % [_t("機芯部件"), _t(slot_name), _t(t_key)]
+
 	var icon_tex := get_item_icon(_selected)
+	if icon_tex == null and (def.get("kind", "") == "core" or not _get_selected_core_part().is_empty()):
+		if SpriteDbClass != null:
+			var slot_k: String = str(def.get("slot", _get_selected_core_part().get("slot", "")))
+			icon_tex = SpriteDbClass.core_slot_icon(slot_k)
 	if _preview_row:
 		_preview_row.visible = true
 		if _detail_name:
@@ -1260,6 +1514,13 @@ func _update_detail(inv: Node) -> void:
 			if _detail_icon:
 				_detail_icon.texture = icon_tex
 				_detail_icon.visible = true
+				if def.get("kind", "") == "core":
+					if CoreSysClass != null:
+						_detail_icon.modulate = CoreSysClass.get_tier_color(str(def.get("tier", "white")))
+					else:
+						_detail_icon.modulate = Color.WHITE
+				else:
+					_detail_icon.modulate = Color.WHITE
 			if _detail_glyph:
 				_detail_glyph.visible = false
 		else:
@@ -1280,9 +1541,60 @@ func _update_detail(inv: Node) -> void:
 	# ── 屬性預覽與差額比對膠囊 ──
 	_update_stat_comparison(def, eq_inst, slot, kind)
 
-	# ── 裝備鎖定狀態與按鈕更新 ──
+	# ── 機芯專屬槽位與八色階標籤更新 ──
 	var item_dict: Dictionary = {"id": _selected, "def": def}
-	var is_equip: bool = item_matches_category(item_dict, "equip") or not eq_inst.is_empty() or kind in ["weapon", "equipment", "equip", "armor", "accessory", "shield"] or slot in ["weapon", "armor"]
+	var cp_part: Dictionary = _get_selected_core_part()
+	var is_core: bool = (not cp_part.is_empty()) or item_matches_category(item_dict, "core")
+	if is_core:
+		if _core_info_row:
+			_core_info_row.visible = true
+		var CoreSys_tmp = CoreSysClass
+		var slot_id: String = str(cp_part.get("slot", def.get("slot", "mainspring")))
+		var slot_name: String = str(cp_part.get("slot_name", def.get("slot_name", "")))
+		if slot_name.is_empty() and CoreSys_tmp != null:
+			slot_name = CoreSys_tmp.get_slot_name(slot_id)
+		var tier_id: String = str(cp_part.get("tier", def.get("tier", "white")))
+		var tier_name: String = str(cp_part.get("tier_name", def.get("tier_name", "白")))
+		var tier_color: Color = CoreSys_tmp.get_tier_color(tier_id) if CoreSys_tmp != null else Color.WHITE
+
+		if _core_slot_label:
+			_core_slot_label.text = _t(slot_name)
+			var sa: Label = _core_slot_capsule.find_child("SlotLabel", false, false) as Label
+			if sa: sa.text = _t(slot_name)
+		if _core_tier_swatch:
+			_core_tier_swatch.color = tier_color
+			var swa: ColorRect = _core_tier_capsule.find_child("ColorSwatch", true, false) as ColorRect
+			if swa: swa.color = tier_color
+		if _core_tier_label:
+			var t_key := tier_name if tier_name.ends_with("階") else (tier_name + "階")
+			_core_tier_label.text = _t(t_key)
+			_core_tier_label.add_theme_color_override("font_color", tier_color if tier_id != "white" else COLOR_TEXT_DARK)
+			var ta: Label = _core_tier_capsule.find_child("TierLabel", true, false) as Label
+			if ta:
+				ta.text = _t(t_key)
+				ta.add_theme_color_override("font_color", tier_color if tier_id != "white" else COLOR_TEXT_DARK)
+		if _core_tier_capsule:
+			_core_tier_capsule.add_theme_stylebox_override("panel", _create_core_capsule_style(COLOR_BG_CREAM, tier_color))
+
+		var stats: Dictionary = cp_part.get("stats", def.get("stats", {}))
+		if not stats.is_empty():
+			var s_lines: Array = []
+			for sk in stats.keys():
+				var stat_title := str(sk).to_upper()
+				match stat_title:
+					"ATK": stat_title = _t("攻擊")
+					"DEF": stat_title = _t("防禦")
+					"HP": stat_title = _t("生命")
+					"CRIT": stat_title = _t("暴擊")
+					_: stat_title = _t(str(sk))
+				s_lines.append("[color=#C2600A]•[/color] %s +%s" % [stat_title, str(stats[sk])])
+			item_desc = "%s\n\n%s" % [_t("機芯部件 · 強化發條動力核心"), "\n".join(s_lines)]
+	else:
+		if _core_info_row:
+			_core_info_row.visible = false
+
+	# ── 裝備鎖定狀態與按鈕更新 ──
+	var is_equip: bool = (not is_core) and (item_matches_category(item_dict, "equip") or not eq_inst.is_empty() or kind in ["weapon", "equipment", "equip", "armor", "accessory", "shield"] or slot in ["weapon", "armor"])
 	if is_equip:
 		var uid := _get_selected_equip_uid()
 		var locked := is_item_locked(uid)
@@ -1352,6 +1664,22 @@ func _update_action_button(inv: Node = null) -> void:
 	var kind: String = str(def.get("kind", "")).to_lower()
 	var id: String = _selected.to_lower()
 
+	var cp_part: Dictionary = _get_selected_core_part()
+	var is_core: bool = (not cp_part.is_empty()) or item_matches_category(item_dict, "core")
+	if is_core:
+		if _replace_core_btn:
+			_replace_core_btn.visible = true
+			_replace_core_btn.disabled = false
+			_replace_core_btn.text = _t("替換機芯")
+		_use_btn.visible = false
+		_use_btn.disabled = false
+		_use_btn.text = _t("替換機芯")
+		return
+	else:
+		if _replace_core_btn:
+			_replace_core_btn.visible = false
+		_use_btn.visible = true
+
 	if kind in ["key", "important", "quest"] or id.begins_with("key_"):
 		_use_btn.disabled = true
 		_use_btn.text = _t("重要物品")
@@ -1420,6 +1748,12 @@ func _on_use_button_pressed() -> void:
 	var id: String = _selected.to_lower()
 
 	if kind in ["key", "important", "quest"] or id.begins_with("key_"):
+		return
+
+	var cp_part: Dictionary = _get_selected_core_part()
+	var is_core: bool = (not cp_part.is_empty()) or item_matches_category(item_dict, "core")
+	if is_core:
+		open_core_replace_dialog()
 		return
 
 	if item_matches_category(item_dict, "equip"):
@@ -1568,6 +1902,10 @@ func get_current_category() -> String:
 	return _current_category
 
 
+func select_category(cat_id: String) -> void:
+	set_category(cat_id)
+
+
 func set_category(cat_id: String) -> void:
 	var changed := (_current_category != cat_id)
 	_current_category = cat_id
@@ -1626,6 +1964,10 @@ static func item_matches_category(item: Dictionary, category: String) -> bool:
 	match category:
 		"equip":
 			return kind in ["weapon", "equipment", "equip", "armor", "accessory", "shield", "helm", "boots"] or id.begins_with("wpn_") or id.begins_with("equip_") or id.begins_with("arm_")
+		"core", "chip":
+			var raw_slot: String = str(def.get("slot", "")).to_lower()
+			var is_core_slot := (CoreSysClass != null and CoreSysClass.ALL_SLOT_IDS.has(raw_slot))
+			return kind in ["core", "chip", "core_part", "core_piece"] or id.begins_with("core_") or def.has("slot_name") or is_core_slot
 		"gem":
 			return kind in ["gem", "jewel", "stone"] or id.begins_with("gem_")
 		"consumable":
@@ -1677,8 +2019,12 @@ static func get_item_category_priority(item: Dictionary) -> int:
 	if kind in ["material", "mat", "ore", "craft"]:
 		return 4
 
-	# 5. 其他（如 key/重要道具）
-	return 5
+	# 5. 機芯 (core, chip, core_part, etc.)
+	if kind in ["core", "chip", "core_part", "core_piece"] or id.begins_with("core_") or def.has("slot_name"):
+		return 5
+
+	# 6. 其他（如 key/重要道具）
+	return 6
 
 
 static func get_item_quality_score(item: Dictionary) -> int:
@@ -1796,29 +2142,47 @@ func is_selected_item_equipped() -> bool:
 	if _selected.is_empty():
 		return false
 	var loop := Engine.get_main_loop()
-	if not (loop is SceneTree and (loop as SceneTree).root != null):
-		return false
-	var root_node := (loop as SceneTree).root
+	var root_node: Node = null
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		root_node = (loop as SceneTree).root
 
 	# 1. EquipmentSystem.is_equipped 檢查
-	var eq_node: Node = root_node.get_node_or_null("EquipmentSystem")
-	if eq_node and eq_node.has_method("is_equipped"):
-		if bool(eq_node.call("is_equipped", _selected)):
-			return true
-
-	# 2. GameState equip_worn 與 equip_slots / weapon_loadout 檢查
-	var gs_node: Node = root_node.get_node_or_null("GameState")
-	if gs_node:
-		if "equip_worn" in gs_node and gs_node.equip_worn is Dictionary:
-			if gs_node.equip_worn.has(_selected):
+	if root_node:
+		var eq_node: Node = root_node.get_node_or_null("EquipmentSystem")
+		if eq_node and eq_node.has_method("is_equipped"):
+			if bool(eq_node.call("is_equipped", _selected)):
 				return true
-		if "equip_slots" in gs_node and gs_node.equip_slots is Dictionary:
-			for slot_key in gs_node.equip_slots:
-				if str(gs_node.equip_slots[slot_key]) == _selected and _selected != "":
+
+	# 2. GameState equip_worn 與 equip_slots / weapon_loadout / core_slots 檢查
+	if root_node:
+		var gs_node: Node = root_node.get_node_or_null("GameState")
+		if gs_node:
+			if "equip_worn" in gs_node and gs_node.equip_worn is Dictionary:
+				if gs_node.equip_worn.has(_selected):
 					return true
-		if "weapon_loadout" in gs_node and gs_node.weapon_loadout is Array:
-			for w_uid in gs_node.weapon_loadout:
-				if str(w_uid) == _selected and _selected != "":
+			if "equip_slots" in gs_node and gs_node.equip_slots is Dictionary:
+				for slot_key in gs_node.equip_slots:
+					if str(gs_node.equip_slots[slot_key]) == _selected and _selected != "":
+						return true
+			if "weapon_loadout" in gs_node and gs_node.weapon_loadout is Array:
+				for w_uid in gs_node.weapon_loadout:
+					if str(w_uid) == _selected and _selected != "":
+						return true
+			if "core_slots" in gs_node and gs_node.core_slots is Dictionary:
+				for slot_key in gs_node.core_slots:
+					var sp = gs_node.core_slots[slot_key]
+					if typeof(sp) == TYPE_DICTIONARY and not sp.is_empty():
+						if str(sp.get("uid", "")) == _selected or str(sp.get("id", "")) == _selected:
+							return true
+
+	# 3. CoreSystem 機芯五大槽位與 player_parts 檢查
+	if CoreSysClass != null:
+		if CoreSysClass.is_part_equipped(_selected):
+			return true
+		for s in CoreSysClass.ALL_SLOT_IDS:
+			var ep: Dictionary = CoreSysClass.get_equipped_part(s)
+			if not ep.is_empty():
+				if str(ep.get("uid", "")) == _selected or str(ep.get("id", "")) == _selected:
 					return true
 
 	return false
@@ -2090,6 +2454,21 @@ func _is_selected_item_equipment() -> bool:
 	return item_matches_category(item_dict, "equip") or kind in ["weapon", "equipment", "equip", "armor", "accessory", "shield"] or slot in ["weapon", "armor"]
 
 
+func _is_selected_item_core() -> bool:
+	if _selected.is_empty():
+		return false
+	var cp_part: Dictionary = _get_selected_core_part()
+	if not cp_part.is_empty():
+		return true
+	var loop := Engine.get_main_loop()
+	var inv: Node = null
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		inv = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+	var def: Dictionary = inv.call("catalog", _selected) as Dictionary if inv else {}
+	var item_dict := {"id": _selected, "def": def}
+	return item_matches_category(item_dict, "core")
+
+
 func _get_selected_equip_inst() -> Dictionary:
 	if _selected.is_empty():
 		return {}
@@ -2247,20 +2626,27 @@ func get_bag_lock_label() -> Label:
 func _update_dismantle_button() -> void:
 	if _dismantle_btn == null or not is_instance_valid(_dismantle_btn):
 		return
-	if not _is_selected_item_equipment():
+	var is_eq := _is_selected_item_equipment()
+	var is_core := _is_selected_item_core()
+	if not is_eq and not is_core:
 		_dismantle_btn.visible = false
 		_update_hotbar_ui()
 		return
 
-	# 是裝備類物品：隱藏快捷欄按鈕與膠囊，顯示拆解回收按鈕
+	# 是裝備或機芯類物品：隱藏快捷欄按鈕與膠囊，顯示拆解回收按鈕
 	_dismantle_btn.visible = true
 	if _hb_btn and is_instance_valid(_hb_btn):
 		_hb_btn.visible = false
 	if _hotbar_capsule and is_instance_valid(_hotbar_capsule):
 		_hotbar_capsule.visible = false
 
-	var uid := _get_selected_equip_uid()
-	var locked := is_item_locked(uid)
+	var locked := false
+	if is_eq:
+		var uid := _get_selected_equip_uid()
+		locked = is_item_locked(uid)
+	else:
+		locked = is_item_locked(_selected)
+
 	var worn := is_selected_item_equipped()
 
 	if locked:
@@ -2271,14 +2657,21 @@ func _update_dismantle_button() -> void:
 		_dismantle_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
 	elif worn:
 		_dismantle_btn.disabled = true
-		_dismantle_btn.text = _t("已穿戴無法拆解")
-		_dismantle_btn.tooltip_text = _t("已穿戴無法拆解")
+		if is_core:
+			_dismantle_btn.text = _t("已裝備無法拆解")
+			_dismantle_btn.tooltip_text = _t("已裝備無法拆解")
+		else:
+			_dismantle_btn.text = _t("已穿戴無法拆解")
+			_dismantle_btn.tooltip_text = _t("已穿戴無法拆解")
 		_dismantle_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#E8E4EC"), Color("#9E96AF"), 3, 18))
 		_dismantle_btn.add_theme_color_override("font_disabled_color", Color("#7A7090"))
 	else:
 		_dismantle_btn.disabled = false
 		_dismantle_btn.text = _t("拆解回收")
-		_dismantle_btn.tooltip_text = _t("拆解裝備回收鐵屑與金幣")
+		if is_core:
+			_dismantle_btn.tooltip_text = _t("拆解機芯回收鐵屑")
+		else:
+			_dismantle_btn.tooltip_text = _t("拆解裝備回收鐵屑與金幣")
 		_dismantle_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_PINK, COLOR_BORDER, 5, 18))
 		_dismantle_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FF7B9E"), COLOR_BORDER, 5, 18))
 		_dismantle_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_PINK, COLOR_BORDER, 2, 18))
@@ -2290,13 +2683,85 @@ func _update_dismantle_button() -> void:
 func dismantle_selected() -> Dictionary:
 	if _selected.is_empty():
 		return {"ok": false, "msg": _t("未選取裝備。")}
-	if not _is_selected_item_equipment():
-		return {"ok": false, "msg": _t("非裝備類物品無法拆解。")}
+	var is_eq := _is_selected_item_equipment()
+	var is_core := _is_selected_item_core()
+	if not is_eq and not is_core:
+		return {"ok": false, "msg": _t("非裝備或機芯物品無法拆解。")}
 
 	var loop := Engine.get_main_loop()
 	if not (loop is SceneTree and (loop as SceneTree).root != null):
 		return {"ok": false, "msg": _t("場景樹無效。")}
 	var root_node := (loop as SceneTree).root
+
+	# 處理機芯拆解回收
+	if is_core:
+		var cp_part: Dictionary = _get_selected_core_part()
+		var uid := _selected
+		if not cp_part.is_empty() and cp_part.has("uid"):
+			uid = str(cp_part.get("uid", _selected))
+
+		if is_item_locked(_selected) or is_item_locked(uid):
+			var msg_lock := _t("已鎖定無法拆解")
+			_show_tip(msg_lock)
+			return {"ok": false, "msg": msg_lock}
+
+		if is_selected_item_equipped():
+			var msg_worn := _t("已裝備無法拆解")
+			_show_tip(msg_worn)
+			return {"ok": false, "msg": msg_worn}
+
+		if CoreSysClass == null:
+			return {"ok": false, "msg": _t("缺少機芯系統。")}
+
+		var res: Dictionary = CoreSysClass.dismantle_part(_selected)
+		if not bool(res.get("ok", false)) and uid != _selected:
+			res = CoreSysClass.dismantle_part(uid)
+		if not bool(res.get("ok", false)) and not cp_part.is_empty():
+			res = CoreSysClass.dismantle_part(cp_part)
+
+		if bool(res.get("ok", false)):
+			var inv_sys: Node = root_node.get_node_or_null("InventorySystem")
+			if inv_sys and inv_sys.has_method("count") and inv_sys.has_method("remove_item"):
+				if int(inv_sys.call("count", _selected)) > 0:
+					inv_sys.call("remove_item", _selected, 1)
+				if uid != _selected and int(inv_sys.call("count", uid)) > 0:
+					inv_sys.call("remove_item", uid, 1)
+
+			var am: Node = root_node.get_node_or_null("AudioManager")
+			if am and am.has_method("play_ui"):
+				am.call("play_ui")
+
+			var part_res: Dictionary = res.get("part", cp_part)
+			var item_name: String = str(part_res.get("name", ""))
+			if item_name.is_empty():
+				var slot_name := str(part_res.get("slot_name", ""))
+				var tier_name := str(part_res.get("tier_name", ""))
+				if not slot_name.is_empty() and not tier_name.is_empty():
+					item_name = slot_name + "·" + tier_name + "階"
+				else:
+					item_name = _selected
+			var scrap_n: int = int(res.get("iron_scrap", res.get("scrap", 0)))
+			var toast_msg := _t("拆解【%s】：獲得鐵屑 ×%d") % [item_name, scrap_n]
+			_show_tip(toast_msg)
+
+			var ml: Node = root_node.get_node_or_null("MobileLobby")
+			if ml:
+				if ml.has_method("_show_toast"):
+					ml.call("_show_toast", toast_msg)
+				elif ml.has_method("show_toast"):
+					ml.call("show_toast", toast_msg)
+				if ml.has_method("refresh_hud"):
+					ml.call("refresh_hud")
+
+			core_dismantled.emit(part_res, res)
+			equipment_dismantled.emit(_selected, res)
+			_selected = ""
+			refresh()
+		else:
+			var err_msg := str(res.get("message", res.get("msg", _t("無法拆解此機芯。"))))
+			_show_tip(err_msg)
+		return res
+
 	var eq_sys: Node = root_node.get_node_or_null("EquipmentSystem")
 	if eq_sys == null:
 		return {"ok": false, "msg": _t("缺少裝備系統。")}
@@ -2342,6 +2807,7 @@ func dismantle_selected() -> Dictionary:
 
 		equipment_changed.emit()
 		equipment_dismantled.emit(uid, res)
+		_selected = ""
 		refresh()
 	else:
 		var err_msg := str(res.get("msg", _t("無法拆解此物品。")))
@@ -2365,7 +2831,7 @@ func get_bag_dismantle_button() -> Button:
 func _is_selected_item_gem_or_material() -> bool:
 	if _selected.is_empty():
 		return false
-	if _is_selected_item_equipment():
+	if _is_selected_item_equipment() or _is_selected_item_core():
 		return false
 	var loop := Engine.get_main_loop()
 	var inv: Node = null
@@ -2431,6 +2897,72 @@ func _on_go_workshop_pressed() -> void:
 	if _is_selected_item_equipment():
 		target_tab = 1
 	open_gem_workshop(target_tab)
+
+
+func get_go_calibrate_button() -> Button:
+	if _go_calibrate_btn and is_instance_valid(_go_calibrate_btn):
+		return _go_calibrate_btn
+	return null
+
+
+func get_selected_core_calibrations_remaining() -> int:
+	var part := _get_selected_core_part()
+	if part.is_empty():
+		return 0
+	if bool(part.get("is_broken", false)):
+		return 0
+	var max_c: int = 7
+	if CoreSysClass != null and "MAX_CALIBRATIONS" in CoreSysClass:
+		max_c = int(part.get("max_calibrations", CoreSysClass.MAX_CALIBRATIONS))
+	else:
+		max_c = int(part.get("max_calibrations", 7))
+	var count: int = int(part.get("calibration_count", 0))
+	var rem: int = max(0, max_c - count)
+	if CoreSysClass != null:
+		if not CoreSysClass.can_calibrate(part):
+			return 0
+	return rem
+
+
+func _update_calibrate_button() -> void:
+	if _go_calibrate_btn == null or not is_instance_valid(_go_calibrate_btn):
+		return
+	if _selected.is_empty():
+		_go_calibrate_btn.visible = false
+		return
+
+	var is_core := _is_selected_item_core()
+	if not is_core:
+		_go_calibrate_btn.visible = false
+		return
+
+	_go_calibrate_btn.visible = true
+	_go_calibrate_btn.text = _t("前往校準")
+	if _cached_font:
+		_go_calibrate_btn.add_theme_font_override("font", _cached_font)
+
+	var is_equipped: bool = is_selected_item_equipped()
+	var remaining: int = get_selected_core_calibrations_remaining()
+
+	if is_equipped and remaining > 0:
+		_go_calibrate_btn.disabled = false
+		_go_calibrate_btn.tooltip_text = _t("前往校準")
+	else:
+		_go_calibrate_btn.disabled = true
+		if not is_equipped:
+			_go_calibrate_btn.tooltip_text = _t("未裝備無法校準")
+		else:
+			_go_calibrate_btn.tooltip_text = _t("校準次數已達上限")
+
+
+func _on_go_calibrate_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	calibrate_requested.emit()
+	open_forge()
 
 
 func open_forge(target_weapon: Variant = null) -> Control:
@@ -2518,7 +3050,7 @@ func get_bag_go_workshop_button() -> Button:
 func _is_selected_item_material() -> bool:
 	if _selected.is_empty():
 		return false
-	if _is_selected_item_equipment():
+	if _is_selected_item_equipment() or _is_selected_item_core():
 		return false
 	var loop := Engine.get_main_loop()
 	var inv: Node = null
@@ -3026,8 +3558,8 @@ func _update_hotbar_ui() -> void:
 			_hotbar_capsule.visible = false
 		return
 
-	# 若選取的是裝備，隱藏快捷欄按鈕與膠囊
-	if _is_selected_item_equipment():
+	# 若選取的是裝備或機芯，隱藏快捷欄按鈕與膠囊
+	if _is_selected_item_equipment() or _is_selected_item_core():
 		_hb_btn.visible = false
 		if _hotbar_capsule and is_instance_valid(_hotbar_capsule):
 			_hotbar_capsule.visible = false
@@ -3247,5 +3779,178 @@ func get_floating_hotbar_toast() -> PanelContainer:
 	if _floating_hotbar_toast and is_instance_valid(_floating_hotbar_toast):
 		return _floating_hotbar_toast
 	return null
+
+
+func _get_selected_core_part() -> Dictionary:
+	if _selected.is_empty():
+		return {}
+	var CoreSys = preload("res://scripts/systems/core_system.gd") if ResourceLoader.exists("res://scripts/systems/core_system.gd") else null
+	var tree := Engine.get_main_loop()
+	var gs: Node = null
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		gs = (tree as SceneTree).root.get_node_or_null("GameState")
+
+	# 1. 先查 CoreSystem.get_inventory() 與 GameState.core_bag
+	var core_parts: Array = []
+	if CoreSys != null:
+		core_parts = CoreSys.get_inventory()
+	elif gs != null and "core_bag" in gs and gs.core_bag is Array:
+		core_parts = gs.core_bag
+
+	for p in core_parts:
+		if p is Dictionary and (str(p.get("uid", "")) == _selected or str(p.get("id", "")) == _selected):
+			return p.duplicate(true)
+
+	# 1.5 查 GameState.core_slots 與 CoreSystem 已裝備部件
+	if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+		for slot_k in gs.core_slots:
+			var sp = gs.core_slots[slot_k]
+			if typeof(sp) == TYPE_DICTIONARY and not sp.is_empty():
+				if str(sp.get("uid", "")) == _selected or str(sp.get("id", "")) == _selected:
+					return sp.duplicate(true)
+	if CoreSys != null and "ALL_SLOT_IDS" in CoreSys:
+		for s in CoreSys.ALL_SLOT_IDS:
+			var ep: Dictionary = CoreSys.get_equipped_part(s)
+			if not ep.is_empty():
+				if str(ep.get("uid", "")) == _selected or str(ep.get("id", "")) == _selected:
+					return ep.duplicate(true)
+
+	# 2. 再查 InventorySystem 註冊道具 / catalog
+	var inv_sys: Node = null
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		inv_sys = (tree as SceneTree).root.get_node_or_null("InventorySystem")
+	if inv_sys and inv_sys.has_method("catalog"):
+		var def: Dictionary = inv_sys.call("catalog", _selected) as Dictionary
+		if not def.is_empty():
+			var kind: String = str(def.get("kind", "")).to_lower()
+			var raw_slot: String = str(def.get("slot", "")).to_lower()
+			var is_core_slot := (CoreSysClass != null and CoreSysClass.ALL_SLOT_IDS.has(raw_slot))
+			if kind in ["core", "chip", "core_part", "core_piece"] or _selected.to_lower().begins_with("core_") or def.has("slot_name") or is_core_slot:
+				var p_data: Dictionary = def.get("part_data", {})
+				if not p_data.is_empty():
+					return p_data.duplicate(true)
+				var slot_id: String = str(def.get("slot", "mainspring"))
+				var tier_id: String = str(def.get("tier", "white"))
+				var tier_name: String = str(def.get("tier_name", ""))
+				if tier_name.is_empty() and CoreSysClass != null and "TIER_NAMES" in CoreSysClass and CoreSysClass.TIER_NAMES.has(tier_id):
+					tier_name = str(CoreSysClass.TIER_NAMES[tier_id])
+				if tier_name.is_empty():
+					tier_name = "白"
+				var slot_name: String = str(def.get("slot_name", ""))
+				if slot_name.is_empty() and CoreSysClass != null:
+					slot_name = CoreSysClass.get_slot_name(slot_id)
+				return {
+					"uid": _selected,
+					"id": _selected,
+					"name": def.get("name", _selected),
+					"slot": slot_id,
+					"slot_name": slot_name,
+					"tier": tier_id,
+					"tier_name": tier_name,
+					"stats": def.get("stats", {}),
+					"score": def.get("score", 0)
+				}
+	return {}
+
+
+## 直通連動 CoreReplaceDialog 比較確認彈窗
+func open_core_replace_dialog(slot_id: String = "", new_part: Dictionary = {}) -> Control:
+	if CoreSysClass == null:
+		push_error("無法載入 CoreSystem")
+		return null
+
+	var target_new_part: Dictionary = new_part.duplicate(true)
+	if target_new_part.is_empty():
+		target_new_part = _get_selected_core_part()
+
+	if target_new_part.is_empty():
+		_show_tip(_t("請先選取欲替換之機芯部件"))
+		return null
+
+	var target_slot: String = slot_id
+	if target_slot.is_empty():
+		target_slot = str(target_new_part.get("slot", "mainspring"))
+	var norm_slot: String = CoreSysClass.normalize_slot_id(target_slot)
+
+	var old_part: Dictionary = CoreSysClass.get_equipped_part(norm_slot)
+	if old_part.is_empty():
+		var tree := Engine.get_main_loop()
+		var gs: Node = null
+		if tree is SceneTree and (tree as SceneTree).root != null:
+			gs = (tree as SceneTree).root.get_node_or_null("GameState")
+		if gs != null and "core_slots" in gs and gs.core_slots is Dictionary:
+			old_part = gs.core_slots.get(norm_slot, {})
+
+	var existing = get_node_or_null("CompareLayer")
+	if existing != null and is_instance_valid(existing):
+		remove_child(existing)
+		existing.queue_free()
+
+	if CoreReplaceDialogClass == null:
+		push_error("無法載入 CoreReplaceDialog")
+		return null
+
+	var on_confirm = func():
+		var uid_new := str(target_new_part.get("uid", target_new_part.get("id", "")))
+		if not uid_new.is_empty():
+			CoreSysClass.remove_part_from_inventory(uid_new)
+		if not old_part.is_empty():
+			CoreSysClass.add_part_to_inventory(old_part)
+		CoreSysClass.equip_part(norm_slot, target_new_part)
+
+		var tree_confirm := Engine.get_main_loop()
+		var gs_confirm: Node = null
+		if tree_confirm is SceneTree and (tree_confirm as SceneTree).root != null:
+			gs_confirm = (tree_confirm as SceneTree).root.get_node_or_null("GameState")
+		if gs_confirm != null and "core_slots" in gs_confirm and gs_confirm.core_slots is Dictionary:
+			gs_confirm.core_slots[norm_slot] = target_new_part
+
+		core_replaced.emit(norm_slot, target_new_part)
+
+		var slot_disp_name: String = CoreSysClass.get_slot_name(norm_slot)
+		_show_tip(_t("已成功替換裝備至【%s】槽位！") % _t(slot_disp_name))
+
+		refresh()
+
+		var parent_node := get_parent()
+		if parent_node != null:
+			if parent_node.has_method("refresh_hud"):
+				parent_node.call("refresh_hud")
+			if parent_node.has_method("_refresh_char_core_slots"):
+				parent_node.call("_refresh_char_core_slots")
+			if parent_node.has_method("_refresh_core_bag"):
+				parent_node.call("_refresh_core_bag")
+
+	var on_cancel = func():
+		pass
+
+	var dlg = CoreReplaceDialogClass.show_dialog(self, norm_slot, old_part, target_new_part, on_confirm, on_cancel, "free")
+	if dlg != null:
+		dlg.z_index = 95
+	return dlg
+
+
+func get_core_slot_capsule() -> PanelContainer:
+	return _core_slot_capsule
+
+
+func get_core_slot_label() -> Label:
+	return _core_slot_label
+
+
+func get_core_tier_capsule() -> PanelContainer:
+	return _core_tier_capsule
+
+
+func get_core_tier_label() -> Label:
+	return _core_tier_label
+
+
+func get_core_tier_swatch() -> ColorRect:
+	return _core_tier_swatch
+
+
+func get_replace_core_button() -> Button:
+	return _replace_core_btn
 
 

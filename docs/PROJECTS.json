@@ -6065,6 +6065,156 @@
    "keys": [
     "大廳角色頁五大機"
    ]
+  },
+  {
+   "id": "inventory-core-category-replace",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援機芯分類頁籤與機芯詳情替換彈窗直通連動",
+   "status": "已上線",
+   "note": "雙分支合併進 main，回歸測試與 clock-check 全綠",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "lobby-core-auto-equip",
+   "cat": "遊戲",
+   "title": "大廳角色頁五大機芯槽位支援一鍵配置最高戰力機芯與即時屬性刷新",
+   "status": "已上線",
+   "note": "雙分支合併進 main，回歸測試與 clock-check 全綠",
+   "keys": [
+    "大廳角色頁五大機"
+   ]
+  },
+  {
+   "id": "power-stat-core-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽新增機芯部件卡片與前往校準快捷按鈕",
+   "status": "已上線",
+   "note": "PowerStatDialog 戰力屬性總覽新增機芯部件卡片與前往校準快捷按鈕合併至 main",
+   "keys": [
+    "PowerSta"
+   ]
+  },
+  {
+   "id": "forge-core-auto-calibrate",
+   "cat": "遊戲",
+   "title": "ForgeDialog 天宮鐵匠機芯五槽新增一鍵校準果凍按鈕與連動",
+   "status": "已上線",
+   "note": "ForgeDialog 機芯五槽一鍵校準果凍按鈕與連動 CoreSystem 已合入 main 主線",
+   "keys": [
+    "ForgeDia"
+   ]
+  },
+  {
+   "id": "inventory-core-dismantle-recycle",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包支援選取機芯拆解回收與安全防護",
+   "status": "已上線",
+   "note": "MapleInventory 探索背包支援選取機芯拆解回收與安全防護合併至 main",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-core-calibrate-shortcut",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包機芯詳情新增前往校準快捷按鈕連動天宮鐵匠",
+   "status": "已上線",
+   "note": "MapleInventory 探索背包機芯詳情前往校準快捷按鈕已合入 main 主線",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "forge-scrap-shortcut",
+   "cat": "遊戲",
+   "title": "ForgeDialog 天宮鐵匠持有鐵屑膠囊與前往拆解快捷按鈕",
+   "status": "已上線",
+   "note": "ForgeDialog 天宮鐵匠持有鐵屑膠囊與前往拆解快捷按鈕已合入 main 主線",
+   "keys": [
+    "ForgeDia"
+   ]
+  },
+  {
+   "id": "gem-workshop-go-inventory",
+   "cat": "遊戲",
+   "title": "GemWorkshopDialog 手藝工坊新增前往背包快捷按鈕連動探索背包寶石頁籤",
+   "status": "已上線",
+   "note": "手藝工坊前往背包快捷按鈕連動探索背包寶石頁籤合進主線全面回歸驗收通過 (t_169405f8)",
+   "keys": [
+    "GemWorks"
+   ]
+  },
+  {
+   "id": "power-stat-weapon-forge-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽武器卡片新增前往鍛造快捷按鈕連動天宮鐵匠",
+   "status": "已上線",
+   "note": "戰力總覽武器卡片前往鍛造快捷按鈕連動天宮鐵匠合進主線全面回歸驗收通過 (t_169405f8)",
+   "keys": [
+    "PowerSta"
+   ]
+  },
+  {
+   "id": "forge-weapon-swap-dialog",
+   "cat": "遊戲",
+   "title": "天宮鐵匠武器槽新增更換裝備按鈕連動WeaponSwapDialog",
+   "status": "已上線",
+   "note": "天宮鐵匠武器槽更換裝備按鈕連動 WeaponSwapDialog 合進主線全面回歸驗收通過 (t_f95acf59)",
+   "keys": [
+    "天宮鐵匠武器槽新"
+   ]
+  },
+  {
+   "id": "dummy-settlement-skills",
+   "cat": "遊戲",
+   "title": "木人樁試招結算新增調整心法快捷按鈕連動 SkillDialog",
+   "status": "已上線",
+   "note": "木人樁試招結算調整心法快捷按鈕連動 SkillDialog 合進主線全面回歸驗收通過 (t_f95acf59)",
+   "keys": [
+    "木人樁試招結算新"
+   ]
+  },
+  {
+   "id": "lobby-weapon-auto-equip",
+   "cat": "遊戲",
+   "title": "大廳角色頁新增一鍵配置最高戰力武器",
+   "status": "已上線",
+   "note": "t_5c2f9a55 已過審合入 main 上線",
+   "keys": [
+    "大廳角色頁新增一"
+   ]
+  },
+  {
+   "id": "gem-workshop-auto-unsocket",
+   "cat": "遊戲",
+   "title": "手藝工坊 GemWorkshopDialog 寶石櫃支援『一鍵卸下』已鑲嵌寶石",
+   "status": "開發中",
+   "note": "指派給阿翔 sideworker2 (t_87339dc9)",
+   "keys": [
+    "手藝工坊 Gem"
+   ]
+  },
+  {
+   "id": "victory-gear-up-shortcut",
+   "cat": "遊戲",
+   "title": "BattleVictoryDialog 勝利結算新增『前往整頓』快捷按鈕連動大廳角色裝備 Tab",
+   "status": "開發中",
+   "note": "指派給阿宏 sideworker (t_0b3a919b)",
+   "keys": [
+    "BattleVi"
+   ]
+  },
+  {
+   "id": "lobby-weapon-unequip-all",
+   "cat": "遊戲",
+   "title": "大廳角色頁三欄武器槽新增『一鍵卸下』按鈕與安全防護",
+   "status": "開發中",
+   "note": "指派給阿翔 sideworker2 (t_3c98e3bb, link t_87339dc9)",
+   "keys": [
+    "大廳角色頁三欄武"
+   ]
   }
  ]
 }

@@ -13,11 +13,15 @@ extends Control
 
 signal closed()
 signal workshop_requested()
+signal dismantle_requested()
+signal swap_weapon_requested(slot_idx: int)
+signal weapon_swapped(slot_idx: int, uid: String)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const CoreSystem = preload("res://scripts/systems/core_system.gd")
+const SpriteDB = preload("res://scripts/art/sprite_db.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
@@ -74,11 +78,20 @@ var _pity_bars: Array[ProgressBar] = []
 var _msg_label: Label
 var _btn_forge: Button
 var _btn_auto_forge: Button
+var _btn_auto_calibrate: Button
+var _core_title_lbl: Label
+var _iron_scrap_capsule: PanelContainer
+var _scrap_label: Label
+var _btn_go_dismantle: Button
 var _btn_go_workshop: Button
 var _btn_close: Button
+var _btn_swap_weapon: Button
+var _weapon_swap_dialog: Control = null
 var _power_label: Label
 var _cached_font: Font = null
 var _last_calibrate_state: Dictionary = {}
+var _current_toast: Label = null
+var last_toast_text: String = ""
 
 
 func _enter_tree() -> void:
@@ -96,6 +109,10 @@ func _connect_loc_signal() -> void:
 		if loc and loc.has_signal("locale_changed"):
 			if not loc.locale_changed.is_connected(_on_locale_changed):
 				loc.locale_changed.connect(_on_locale_changed)
+		var inv: Node = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+		if inv and inv.has_signal("inventory_changed"):
+			if not inv.inventory_changed.is_connected(_refresh_iron_scrap_display):
+				inv.inventory_changed.connect(_refresh_iron_scrap_display)
 
 
 func _disconnect_loc_signal() -> void:
@@ -104,6 +121,9 @@ func _disconnect_loc_signal() -> void:
 		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
 		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
 			loc.locale_changed.disconnect(_on_locale_changed)
+		var inv: Node = (loop as SceneTree).root.get_node_or_null("InventorySystem")
+		if inv and inv.has_signal("inventory_changed") and inv.inventory_changed.is_connected(_refresh_iron_scrap_display):
+			inv.inventory_changed.disconnect(_refresh_iron_scrap_display)
 
 
 func _on_locale_changed(_new_locale: String = "") -> void:
@@ -148,13 +168,22 @@ func _get_equip_sys() -> Node:
 func _update_ui_texts() -> void:
 	if _title_lbl and is_instance_valid(_title_lbl):
 		_title_lbl.text = _t("天宮鐵匠 · 裝備鍛造")
+	if _core_title_lbl and is_instance_valid(_core_title_lbl):
+		_core_title_lbl.text = _t("機芯五槽部位")
 	if _btn_auto_forge and is_instance_valid(_btn_auto_forge):
 		_btn_auto_forge.text = _t("一鍵鍛造")
+	if _btn_auto_calibrate and is_instance_valid(_btn_auto_calibrate):
+		_btn_auto_calibrate.text = _t("一鍵校準")
+	if _btn_go_dismantle and is_instance_valid(_btn_go_dismantle):
+		_btn_go_dismantle.text = _t("前往拆解")
 	if _btn_go_workshop and is_instance_valid(_btn_go_workshop):
 		_btn_go_workshop.text = _t("前往工坊")
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開鐵匠鋪")
+	if _btn_swap_weapon and is_instance_valid(_btn_swap_weapon):
+		_btn_swap_weapon.text = _t("更換裝備")
 	_refresh_slot_chips()
+	_refresh_iron_scrap_display()
 
 
 func _ready() -> void:
@@ -359,6 +388,11 @@ func _build_ui() -> void:
 	sv.add_theme_constant_override("separation", 5)
 	s_margin.add_child(sv)
 
+	var weapon_head := HBoxContainer.new()
+	weapon_head.name = "WeaponStatusHead"
+	weapon_head.add_theme_constant_override("separation", 10)
+	sv.add_child(weapon_head)
+
 	_weapon_label = Label.new()
 	_weapon_label.name = "WeaponLabel"
 	_weapon_label.text = ""
@@ -366,9 +400,32 @@ func _build_ui() -> void:
 	_weapon_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_weapon_label.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_weapon_label.add_theme_constant_override("outline_size", 2)
+	_weapon_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_weapon_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	if _cached_font:
 		_weapon_label.add_theme_font_override("font", _cached_font)
-	sv.add_child(_weapon_label)
+	weapon_head.add_child(_weapon_label)
+
+	# ── 更換裝備立體果凍按鈕 (BtnSwapWeapon，高>=48px，熱區>=48px，圓角18px，天藍果凍厚底，深藍紫描邊2px，零Emoji) ──
+	_btn_swap_weapon = Button.new()
+	_btn_swap_weapon.name = "BtnSwapWeapon"
+	_btn_swap_weapon.text = _t("更換裝備")
+	_btn_swap_weapon.custom_minimum_size = Vector2(110, 48)
+	_btn_swap_weapon.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_btn_swap_weapon.add_theme_font_size_override("font_size", 16)
+	_btn_swap_weapon.add_theme_color_override("font_color", Color.WHITE)
+	_btn_swap_weapon.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_swap_weapon.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		_btn_swap_weapon.add_theme_font_override("font", _cached_font)
+	_btn_swap_weapon.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18, 2))
+	_btn_swap_weapon.add_theme_stylebox_override("hover", _create_button_style(Color("#5DBBFF"), COLOR_BORDER, 5, 18, 2))
+	_btn_swap_weapon.add_theme_stylebox_override("pressed", _create_button_style(Color("#268AE6"), COLOR_BORDER, 2, 18, 2))
+	_btn_swap_weapon.add_theme_stylebox_override("disabled", _create_button_style(Color("#CAD9E8"), COLOR_BORDER, 2, 18, 2))
+	_btn_swap_weapon.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_swap_weapon.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_swap_weapon.pressed.connect(_on_swap_weapon_pressed)
+	weapon_head.add_child(_btn_swap_weapon)
 
 	var stats_grid := GridContainer.new()
 	stats_grid.columns = 2
@@ -419,18 +476,94 @@ func _build_ui() -> void:
 	cm.add_child(cv)
 
 	var core_head := HBoxContainer.new()
+	core_head.name = "ForgeCoreSlotsHead"
+	core_head.add_theme_constant_override("separation", 8)
 	cv.add_child(core_head)
 
-	var core_title := Label.new()
-	core_title.name = "ForgeCoreSlotsTitle"
-	core_title.text = _t("機芯五槽部位")
-	core_title.add_theme_font_size_override("font_size", 16)
-	core_title.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
-	core_title.add_theme_color_override("font_outline_color", COLOR_BORDER)
-	core_title.add_theme_constant_override("outline_size", 2)
+	_core_title_lbl = Label.new()
+	_core_title_lbl.name = "ForgeCoreSlotsTitle"
+	_core_title_lbl.text = _t("機芯五槽部位")
+	_core_title_lbl.add_theme_font_size_override("font_size", 16)
+	_core_title_lbl.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+	_core_title_lbl.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_core_title_lbl.add_theme_constant_override("outline_size", 2)
+	_core_title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_core_title_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	if _cached_font:
-		core_title.add_theme_font_override("font", _cached_font)
-	core_head.add_child(core_title)
+		_core_title_lbl.add_theme_font_override("font", _cached_font)
+	core_head.add_child(_core_title_lbl)
+
+	# ── 鐵屑持有進度膠囊 (IronScrapCapsule 與 _scrap_label) ──
+	_iron_scrap_capsule = PanelContainer.new()
+	_iron_scrap_capsule.name = "IronScrapCapsule"
+	_iron_scrap_capsule.custom_minimum_size = Vector2(0, 48)
+	_iron_scrap_capsule.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_iron_scrap_capsule.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
+	core_head.add_child(_iron_scrap_capsule)
+
+	var scm := MarginContainer.new()
+	scm.add_theme_constant_override("margin_left", 12)
+	scm.add_theme_constant_override("margin_right", 12)
+	scm.add_theme_constant_override("margin_top", 4)
+	scm.add_theme_constant_override("margin_bottom", 6)
+	_iron_scrap_capsule.add_child(scm)
+
+	_scrap_label = Label.new()
+	_scrap_label.name = "IronScrapLabel"
+	_scrap_label.text = ""
+	_scrap_label.add_theme_font_size_override("font_size", 16)
+	_scrap_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_scrap_label.add_theme_color_override("font_outline_color", Color.WHITE)
+	_scrap_label.add_theme_constant_override("outline_size", 2)
+	_scrap_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_scrap_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if _cached_font:
+		_scrap_label.add_theme_font_override("font", _cached_font)
+	scm.add_child(_scrap_label)
+
+	# ── 前往拆解立體果凍按鈕 (BtnGoDismantle，高>=48px，熱區>=48px，圓角18px，薄荷綠果凍厚底，零Emoji) ──
+	_btn_go_dismantle = Button.new()
+	_btn_go_dismantle.name = "BtnGoDismantle"
+	_btn_go_dismantle.text = _t("前往拆解")
+	_btn_go_dismantle.custom_minimum_size = Vector2(110, 48)
+	_btn_go_dismantle.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_btn_go_dismantle.add_theme_font_size_override("font_size", 16)
+	_btn_go_dismantle.add_theme_color_override("font_color", Color.WHITE)
+	_btn_go_dismantle.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_dismantle.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		_btn_go_dismantle.add_theme_font_override("font", _cached_font)
+	_btn_go_dismantle.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18, 2))
+	_btn_go_dismantle.add_theme_stylebox_override("hover", _create_button_style(Color("#6BE082"), COLOR_BORDER, 5, 18, 2))
+	_btn_go_dismantle.add_theme_stylebox_override("pressed", _create_button_style(COLOR_MINT, COLOR_BORDER, 2, 18, 2))
+	_btn_go_dismantle.add_theme_stylebox_override("disabled", _create_button_style(Color("#D0DDD2"), COLOR_BORDER, 2, 18, 2))
+	_btn_go_dismantle.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_go_dismantle.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_dismantle.pressed.connect(_on_go_dismantle_pressed)
+	core_head.add_child(_btn_go_dismantle)
+
+	# 一鍵校準果凍厚底按鈕 (BtnAutoCalibrateCore，高>=48px，金黃果凍厚底，零Emoji)
+	_btn_auto_calibrate = Button.new()
+	_btn_auto_calibrate.name = "BtnAutoCalibrateCore"
+	_btn_auto_calibrate.text = _t("一鍵校準")
+	_btn_auto_calibrate.custom_minimum_size = Vector2(110, 48)
+	_btn_auto_calibrate.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_btn_auto_calibrate.add_theme_font_size_override("font_size", 16)
+	_btn_auto_calibrate.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_auto_calibrate.add_theme_color_override("font_outline_color", Color.WHITE)
+	_btn_auto_calibrate.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		_btn_auto_calibrate.add_theme_font_override("font", _cached_font)
+	_btn_auto_calibrate.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18, 2))
+	_btn_auto_calibrate.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18, 2))
+	_btn_auto_calibrate.add_theme_stylebox_override("pressed", _create_button_style(Color("#E6B800"), COLOR_BORDER, 2, 18, 2))
+	_btn_auto_calibrate.add_theme_stylebox_override("disabled", _create_button_style(Color("#D0DDD2"), COLOR_BORDER, 2, 18, 2))
+	_btn_auto_calibrate.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_auto_calibrate.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_auto_calibrate.pressed.connect(_on_auto_calibrate_pressed)
+	core_head.add_child(_btn_auto_calibrate)
+
+	_refresh_iron_scrap_display()
 
 	var core_row := HBoxContainer.new()
 	core_row.name = "ForgeCoreSlotsRow"
@@ -848,7 +981,29 @@ func _create_forge_core_slot(def: Dictionary) -> Control:
 	return card
 
 
+func _refresh_iron_scrap_display() -> void:
+	if not _scrap_label or not is_instance_valid(_scrap_label):
+		return
+	var scrap: int = int(GameState.iron_scrap) if "iron_scrap" in GameState else CoreSystem.get_player_scrap()
+	var cost: int = CoreSystem.get_calibration_scrap_cost()
+	_scrap_label.text = _t("鐵屑：%d（每次消耗 %d）") % [scrap, cost]
+	var is_insufficient: bool = (scrap < cost)
+	if is_insufficient:
+		if _iron_scrap_capsule and is_instance_valid(_iron_scrap_capsule):
+			_iron_scrap_capsule.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_PINK, COLOR_PINK, 2, 4, 18))
+		_scrap_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
+		if _btn_go_dismantle and is_instance_valid(_btn_go_dismantle):
+			_btn_go_dismantle.visible = true
+	else:
+		if _iron_scrap_capsule and is_instance_valid(_iron_scrap_capsule):
+			_iron_scrap_capsule.add_theme_stylebox_override("panel", _create_panel_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 18))
+		_scrap_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		if _btn_go_dismantle and is_instance_valid(_btn_go_dismantle):
+			_btn_go_dismantle.visible = false
+
+
 func _refresh_all_forge_core_slots() -> void:
+	_refresh_iron_scrap_display()
 	var core_row = find_child("ForgeCoreSlotsRow", true, false)
 	if core_row:
 		for card in core_row.get_children():
@@ -1322,6 +1477,209 @@ func get_auto_forge_button() -> Button:
 	return _btn_auto_forge
 
 
+func get_auto_calibrate_button() -> Button:
+	return _btn_auto_calibrate
+
+
+func get_current_toast() -> Label:
+	return _current_toast
+
+
+func auto_calibrate_cores() -> Dictionary:
+	# 1. 檢查鐵屑是否充足 (GameState.iron_scrap 與 CoreSystem.has_enough_scrap_to_calibrate)
+	var scrap: int = int(GameState.iron_scrap) if "iron_scrap" in GameState else CoreSystem.get_player_scrap()
+	var cost: int = CoreSystem.get_calibration_scrap_cost()
+	if scrap < cost or not CoreSystem.has_enough_scrap_to_calibrate():
+		var err_msg := _t("鐵屑不足！無法進行一鍵校準。")
+		if is_instance_valid(_msg_label):
+			_msg_label.text = err_msg
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
+		_show_toast(err_msg)
+		return {
+			"ok": false,
+			"code": "no_scrap",
+			"message": err_msg,
+			"total_calibrated": 0,
+			"power_gain": 0,
+			"spent_scrap": 0
+		}
+
+	# 2. 檢查已裝備機芯部件是否可校準
+	var slot_defs: Array = SpriteDB.CORE_SLOT_DEFS
+	var has_equipped := false
+	var has_eligible := false
+	for def in slot_defs:
+		var slot_id: String = str(def.get("id", ""))
+		var norm: String = CoreSystem.normalize_slot_id(slot_id)
+		var p: Dictionary = CoreSystem.get_equipped_part(norm)
+		if not p.is_empty():
+			has_equipped = true
+			var cnt: int = int(p.get("calibration_count", 0))
+			var max_c: int = int(p.get("max_calibrations", CoreSystem.MAX_CALIBRATIONS))
+			var cur_score: int = int(p.get("score", 0))
+			var tier_info := CoreSystem.get_tier_by_score(cur_score)
+			var tid: String = str(tier_info.get("id", p.get("tier", "white")))
+			if cnt < max_c and tid != CoreSystem.TIER_RED and CoreSystem.can_calibrate(p):
+				has_eligible = true
+				break
+
+	if not has_equipped:
+		var no_eq_msg := _t("未裝備任何可校準的機芯部位！")
+		if is_instance_valid(_msg_label):
+			_msg_label.text = no_eq_msg
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_show_toast(no_eq_msg)
+		return {
+			"ok": false,
+			"code": "no_equipped",
+			"message": no_eq_msg,
+			"total_calibrated": 0,
+			"power_gain": 0,
+			"spent_scrap": 0
+		}
+
+	if not has_eligible:
+		var maxed_msg := _t("所有部位均已達上限或已滿色階！")
+		if is_instance_valid(_msg_label):
+			_msg_label.text = maxed_msg
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_show_toast(maxed_msg)
+		return {
+			"ok": false,
+			"code": "all_maxed",
+			"message": maxed_msg,
+			"total_calibrated": 0,
+			"power_gain": 0,
+			"spent_scrap": 0
+		}
+
+	# 3. 依順序循環對已裝備機芯執行 CoreSystem.calibrate_player_part()，直到鐵屑不足或所有部位校準次數耗盡
+	var initial_power := GameState.power_score()
+	var total_calibrated: int = 0
+	var total_spent_scrap: int = 0
+	var any_in_round := true
+
+	while any_in_round:
+		any_in_round = false
+		for def in slot_defs:
+			if not CoreSystem.has_enough_scrap_to_calibrate():
+				break
+			var slot_id: String = str(def.get("id", ""))
+			var norm: String = CoreSystem.normalize_slot_id(slot_id)
+			var part: Dictionary = CoreSystem.get_equipped_part(norm)
+			if part.is_empty():
+				continue
+			if not CoreSystem.can_calibrate(part):
+				continue
+			var cnt: int = int(part.get("calibration_count", 0))
+			var max_c: int = int(part.get("max_calibrations", CoreSystem.MAX_CALIBRATIONS))
+			if cnt >= max_c:
+				continue
+			var cur_score: int = int(part.get("score", 0))
+			var tier_info := CoreSystem.get_tier_by_score(cur_score)
+			var tid: String = str(tier_info.get("id", part.get("tier", "white")))
+			if tid == CoreSystem.TIER_RED:
+				continue
+
+			var res: Dictionary = CoreSystem.calibrate_player_part(norm)
+			if not bool(res.get("rejected", false)):
+				total_calibrated += 1
+				total_spent_scrap += int(res.get("used_scrap", CoreSystem.get_calibration_scrap_cost()))
+				any_in_round = true
+			else:
+				if not CoreSystem.has_enough_scrap_to_calibrate():
+					break
+		if not CoreSystem.has_enough_scrap_to_calibrate():
+			break
+
+	_last_calibrate_state.clear()
+
+	# 4. 即時更新五槽色階、屬性數值、頂部戰力與飄字提示 (Toast)
+	_refresh_all_forge_core_slots()
+	_refresh_display()
+
+	var final_power := GameState.power_score()
+	var power_gain := final_power - initial_power
+
+	var feedback_msg := ""
+	if total_calibrated > 0:
+		if power_gain > 0:
+			feedback_msg = _t("一鍵校準完成！共校準 %d 次 · 戰力提升 +%d · 消耗 %d 鐵屑") % [total_calibrated, power_gain, total_spent_scrap]
+		else:
+			feedback_msg = _t("一鍵校準完成！共校準 %d 次 · 消耗 %d 鐵屑") % [total_calibrated, total_spent_scrap]
+		if is_instance_valid(_msg_label):
+			_msg_label.text = feedback_msg
+			_msg_label.add_theme_color_override("font_color", COLOR_GOLD if power_gain > 0 else COLOR_TEXT_DARK)
+		_show_toast(feedback_msg)
+	else:
+		feedback_msg = _t("所有部位均已達上限或已滿色階！")
+		if is_instance_valid(_msg_label):
+			_msg_label.text = feedback_msg
+			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+		_show_toast(feedback_msg)
+
+	return {
+		"ok": total_calibrated > 0,
+		"total_calibrated": total_calibrated,
+		"power_gain": power_gain,
+		"spent_scrap": total_spent_scrap,
+		"remaining_scrap": CoreSystem.get_player_scrap(),
+		"message": feedback_msg
+	}
+
+
+func _on_auto_calibrate_pressed() -> void:
+	if AudioManager.has_method("play_ui"):
+		AudioManager.play_ui()
+	auto_calibrate_cores()
+
+
+func _show_toast(msg: String) -> void:
+	last_toast_text = msg
+	if _current_toast and is_instance_valid(_current_toast):
+		_current_toast.queue_free()
+		_current_toast = null
+	var toast := Label.new()
+	toast.name = "ForgeToast"
+	_current_toast = toast
+	toast.text = msg
+	toast.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	toast.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	toast.set_anchors_preset(Control.PRESET_CENTER_TOP)
+	var toast_w := clampi(int(msg.length() * 12) + 60, 360, 720)
+	toast.offset_left = -int(toast_w / 2)
+	toast.offset_right = int(toast_w / 2)
+	toast.offset_top = 80
+	toast.offset_bottom = 128
+
+	var tsb := StyleBoxFlat.new()
+	tsb.bg_color = Color(0.12, 0.10, 0.23, 0.95)
+	tsb.border_color = COLOR_GOLD
+	tsb.set_border_width_all(2)
+	tsb.border_width_bottom = 4
+	tsb.set_corner_radius_all(14)
+	tsb.content_margin_left = 20
+	tsb.content_margin_right = 20
+	tsb.content_margin_top = 8
+	tsb.content_margin_bottom = 10
+	toast.add_theme_stylebox_override("normal", tsb)
+	toast.add_theme_color_override("font_color", Color("#FFFDF8"))
+	toast.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	toast.add_theme_constant_override("outline_size", 2)
+	toast.add_theme_font_size_override("font_size", 16)
+	toast.z_index = 100
+	if _cached_font:
+		toast.add_theme_font_override("font", _cached_font)
+	add_child(toast)
+
+	var tw := create_tween()
+	if tw:
+		tw.tween_property(toast, "position:y", toast.position.y - 12, 0.3)
+		tw.tween_interval(1.5)
+		tw.tween_property(toast, "modulate:a", 0.0, 0.4)
+		tw.tween_callback(toast.queue_free)
+
+
 func get_top_power_label() -> Label:
 	return _power_label
 
@@ -1332,6 +1690,38 @@ func get_msg_label() -> Label:
 
 func get_go_workshop_button() -> Button:
 	return _btn_go_workshop
+
+
+func get_iron_scrap_capsule() -> PanelContainer:
+	return _iron_scrap_capsule
+
+
+func get_scrap_label() -> Label:
+	return _scrap_label
+
+
+func get_btn_go_dismantle() -> Button:
+	return _btn_go_dismantle
+
+
+func _on_go_dismantle_pressed() -> void:
+	dismantle_requested.emit()
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_maple_inventory"):
+			ml.call("open_maple_inventory", "core")
+	var p := get_parent()
+	if p and p.has_method("open_maple_inventory"):
+		p.call("open_maple_inventory", "core")
+	if not is_queued_for_deletion():
+		_on_close()
 
 
 func _on_go_workshop_pressed() -> void:
@@ -1394,3 +1784,91 @@ func _style_dopamine_progress(bar: ProgressBar, fill: Color, bg: Color = Color("
 	bar.add_theme_stylebox_override("background", bg_s)
 	bar.add_theme_stylebox_override("fill", fill_s)
 	bar.show_percentage = false
+
+
+func get_swap_weapon_button() -> Button:
+	return _btn_swap_weapon
+
+
+func get_weapon_swap_dialog() -> Control:
+	return _weapon_swap_dialog
+
+
+func _on_swap_weapon_pressed() -> void:
+	swap_weapon_requested.emit(_active_slot_idx)
+	open_weapon_swap_dialog(_active_slot_idx)
+
+
+func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
+	var target_slot := slot_idx if slot_idx >= 0 else _active_slot_idx
+	var existing := get_node_or_null("WeaponSwapDialog")
+	if existing != null and not existing.is_queued_for_deletion():
+		return existing
+	var DlgClass: GDScript = load("res://scripts/ui/weapon_swap_dialog.gd")
+	if DlgClass == null:
+		push_error("無法載入 WeaponSwapDialog")
+		return null
+	var dlg: Control = DlgClass.new(target_slot) as Control
+	dlg.name = "WeaponSwapDialog"
+	dlg.z_index = 85
+	dlg.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	if dlg.has_method("setup"):
+		dlg.call("setup", target_slot)
+
+	_weapon_swap_dialog = dlg
+	dlg.tree_exited.connect(func():
+		_weapon_swap_dialog = null
+	)
+
+	if dlg.has_signal("weapon_swapped"):
+		dlg.weapon_swapped.connect(_on_weapon_swapped_from_dialog)
+	if dlg.has_signal("slot_unequipped"):
+		dlg.slot_unequipped.connect(_on_slot_unequipped_from_dialog)
+
+	add_child(dlg)
+	return dlg
+
+
+func _on_weapon_swapped_from_dialog(slot_idx: int, uid: String) -> void:
+	if is_instance_valid(_weapon_swap_dialog) and not _weapon_swap_dialog.is_queued_for_deletion():
+		_weapon_swap_dialog.queue_free()
+		_weapon_swap_dialog = null
+	_active_slot_idx = clampi(slot_idx, 0, 2)
+	var es := _get_equip_sys()
+	if es and es.has_method("equip_weapon_to_loadout") and not uid.is_empty():
+		var cur_uid: String = str(es.call("loadout_uid", _active_slot_idx)) if es.has_method("loadout_uid") else ""
+		if cur_uid != uid:
+			es.call("equip_weapon_to_loadout", uid, _active_slot_idx)
+	if "weapon_loadout" in GameState and GameState.weapon_loadout != null:
+		if _active_slot_idx < GameState.weapon_loadout.size():
+			GameState.weapon_loadout[_active_slot_idx] = uid
+	if "weapon_loadout_active" in GameState:
+		GameState.weapon_loadout_active = _active_slot_idx
+	if GameState.equip_slots != null and not uid.is_empty() and _active_slot_idx == 0:
+		GameState.equip_slots["weapon"] = uid
+	_sync_state_from_weapon()
+	_refresh_display()
+	_refresh_all_forge_core_slots()
+	weapon_swapped.emit(slot_idx, uid)
+	if is_instance_valid(_msg_label):
+		var inst := _current_weapon_inst()
+		var wname := _t(str(inst.get("name", GameState.weapon_name)))
+		_msg_label.text = _t("已成功更換槽位 %d 裝備：【%s】") % [slot_idx + 1, wname]
+		_msg_label.add_theme_color_override("font_color", COLOR_MINT)
+
+
+
+func _on_slot_unequipped_from_dialog(slot_idx: int) -> void:
+	if is_instance_valid(_weapon_swap_dialog) and not _weapon_swap_dialog.is_queued_for_deletion():
+		_weapon_swap_dialog.queue_free()
+		_weapon_swap_dialog = null
+	_active_slot_idx = clampi(slot_idx, 0, 2)
+	if "weapon_loadout_active" in GameState:
+		GameState.weapon_loadout_active = _active_slot_idx
+	_sync_state_from_weapon()
+	_refresh_display()
+	_refresh_all_forge_core_slots()
+	if is_instance_valid(_msg_label):
+		_msg_label.text = _t("武器欄 %d 尚未裝備武器") % [slot_idx + 1]
+		_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
+

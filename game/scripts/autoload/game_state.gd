@@ -89,6 +89,15 @@ var soul_free_day: String = ""  ## YYYY-MM-DD；換日重置免費次數
 
 ## 背包／快捷欄（楓式）
 var inventory: Dictionary = {}  ## item_id -> count
+## 既有素材鐵屑 (iron_scrap)，與 inventory["iron_scrap"] 雙向連動
+var iron_scrap: int:
+	get:
+		if inventory is Dictionary:
+			return int(inventory.get("iron_scrap", 0))
+		return 0
+	set(value):
+		if inventory is Dictionary:
+			inventory["iron_scrap"] = maxi(0, value)
 var hotbar: Array = ["", "", "", "", "", "", "", ""]  ## 8 格 item_id
 ## 可拖視窗位置 { "hud": {x,y}, "hotbar":…, "inv":…, "minimap":… }
 var ui_layout: Dictionary = {}
@@ -340,7 +349,7 @@ func remove_core_part(part_uid: String) -> Dictionary:
 	var target_idx := -1
 	for i in range(core_bag.size()):
 		var p: Dictionary = core_bag[i]
-		if str(p.get("uid", "")) == part_uid:
+		if str(p.get("uid", "")) == part_uid or str(p.get("id", "")) == part_uid:
 			target_idx = i
 			break
 	if target_idx >= 0:

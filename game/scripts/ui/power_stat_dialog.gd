@@ -14,6 +14,8 @@ signal equip_requested()
 signal workshop_requested()
 signal skill_requested()
 signal soul_requested()
+signal calibrate_requested()
+signal forge_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -63,7 +65,7 @@ const COLOR_TEXT_LIGHT   := Color("#FFFDF8")  ## 奶油白高亮文字
 const COLOR_TEXT_DIM     := Color("#888294")  ## 壓暗提示文字
 
 const DIALOG_WIDTH  := 720
-const DIALOG_HEIGHT := 520
+const DIALOG_HEIGHT := 560
 const CORNER_RADIUS := 18
 
 var _scrim: ColorRect
@@ -75,6 +77,8 @@ var _btn_go_equip: Button
 var _btn_go_workshop: Button
 var _btn_go_skill: Button
 var _btn_go_soul: Button
+var _btn_go_calibrate: Button
+var _btn_go_forge: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -269,6 +273,10 @@ func refresh() -> void:
 		_btn_go_skill.text = _t("前往心法")
 	if _btn_go_soul:
 		_btn_go_soul.text = _t("前往聚魂")
+	if _btn_go_calibrate:
+		_btn_go_calibrate.text = _t("前往校準")
+	if _btn_go_forge:
+		_btn_go_forge.text = _t("前往鍛造")
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("確定")
 
@@ -291,6 +299,10 @@ func refresh() -> void:
 
 	# 5. 戰魂共鳴卡片（第四大戰力支柱）
 	_content_vbox.add_child(_build_soul_resonance_card(gs, soul_sys))
+
+	# 6. 機芯部件卡片（五大槽位與前往校準）
+	var cs := _core_sys()
+	_content_vbox.add_child(_build_core_parts_card(gs, cs))
 
 
 ## 綜合戰力總覽卡片
@@ -365,12 +377,25 @@ func _build_power_overview_card(gs: Node, soul_sys: Node = null) -> PanelContain
 	var s_bonus: Dictionary = soul_sys.call("total_equipped_bonus") if soul_sys and soul_sys.has_method("total_equipped_bonus") else {}
 	var s_pow: int = int(s_bonus.get("atk", 0)) + int(s_bonus.get("def", 0)) + int(int(s_bonus.get("hp", 0)) / 4.0)
 
+	var c_bonus: Dictionary = {}
+	var CsClass = load("res://scripts/systems/core_system.gd")
+	if CsClass != null and gs and "core_slots" in gs and not gs.core_slots.is_empty():
+		c_bonus = CsClass.get_total_bonuses(gs.core_slots)
+	elif CsClass != null and CsClass.has_method("total_core_bonuses"):
+		c_bonus = CsClass.total_core_bonuses()
+	var c_atk := int(c_bonus.get("atk", 0))
+	var c_def := int(c_bonus.get("def", 0))
+	var c_hp := int(c_bonus.get("hp", 0))
+	var c_crit := float(c_bonus.get("crit", 0.0))
+	var c_pow: int = c_atk + c_def + int(c_hp / 4.0) + int(c_crit / 2.0)
+
 	_add_breakdown_item(grid, _t("等級成長"), "+%d" % (lv * 3))
 	_add_breakdown_item(grid, _t("武器階數"), "+%d" % (w_tier * 4))
 	_add_breakdown_item(grid, _t("攻防加成"), "+%d" % (e_atk + e_def))
 	_add_breakdown_item(grid, _t("暴擊折算"), "+%d" % int(e_crit / 2.0))
 	_add_breakdown_item(grid, _t("流派心法"), "+%d" % (2 if has_path else 0))
 	_add_breakdown_item(grid, _t("戰魂共鳴"), "+%d" % s_pow)
+	_add_breakdown_item(grid, _t("機芯部件"), "+%d" % c_pow)
 
 	return card
 
@@ -507,9 +532,12 @@ func _build_weapon_loadout_card(gs: Node, eq: Node) -> PanelContainer:
 	m.add_child(v)
 
 	var t_row := HBoxContainer.new()
+	t_row.name = "WeaponHeaderRow"
+	t_row.add_theme_constant_override("separation", 8)
 	v.add_child(t_row)
 
 	var t := Label.new()
+	t.name = "WeaponLoadoutTitleLabel"
 	t.text = _t("三欄武器裝備貢獻")
 	_apply_font(t, 14, COLOR_TEXT_DARK, true)
 	t_row.add_child(t)
@@ -524,11 +552,22 @@ func _build_weapon_loadout_card(gs: Node, eq: Node) -> PanelContainer:
 	var b_crit := float(eq_bonus.get("crit", 0.0))
 
 	var summary_lbl := Label.new()
+	summary_lbl.name = "WeaponSummaryLabel"
 	summary_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	summary_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	summary_lbl.text = _t("裝備總加成: 攻+%d · 防+%d · 血+%d · 暴+%.1f%%") % [b_atk, b_def, b_hp, b_crit]
 	_apply_font(summary_lbl, 12, COLOR_TEXT_GOLD, true)
 	t_row.add_child(summary_lbl)
+
+	# 快捷按鈕：前往鍛造 (BtnGoForge)（高>=48px，熱區>=48px，金黃果凍厚底 5px，深藍紫描邊 2px，字級 14px）
+	_btn_go_forge = Button.new()
+	_btn_go_forge.name = "BtnGoForge"
+	_btn_go_forge.text = _t("前往鍛造")
+	_btn_go_forge.custom_minimum_size = Vector2(96, 48)
+	_btn_go_forge.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_forge, COLOR_GOLD, COLOR_TEXT_DARK, 14, 5, 14, COLOR_BORDER, 10, 4)
+	_btn_go_forge.pressed.connect(_on_go_forge_pressed)
+	t_row.add_child(_btn_go_forge)
 
 	# 三槽武器卡片列
 	var slots_h := HBoxContainer.new()
@@ -950,6 +989,202 @@ func _create_core_cell(idx: int, cd: Dictionary) -> PanelContainer:
 	return c
 
 
+## 機芯部件卡片（五大槽位與前往校準）
+func _build_core_parts_card(gs: Node, cs: Node = null) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = "CorePartsCard"
+	card.add_theme_stylebox_override("panel", _create_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 14))
+
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_left", 14)
+	m.add_theme_constant_override("margin_right", 14)
+	m.add_theme_constant_override("margin_top", 10)
+	m.add_theme_constant_override("margin_bottom", 10)
+	card.add_child(m)
+
+	var v := VBoxContainer.new()
+	v.name = "CorePartsVBox"
+	v.add_theme_constant_override("separation", 8)
+	m.add_child(v)
+
+	# 頂部列：標題 + 總加成摘要 + 前往校準快捷按鈕
+	var t_row := HBoxContainer.new()
+	t_row.name = "CorePartsHeaderRow"
+	t_row.add_theme_constant_override("separation", 8)
+	v.add_child(t_row)
+
+	var t := Label.new()
+	t.name = "CorePartsTitleLabel"
+	t.text = _t("機芯部件")
+	_apply_font(t, 14, COLOR_TEXT_DARK, true)
+	t_row.add_child(t)
+
+	var t_alias := Label.new()
+	t_alias.name = "CoreTitleLabel"
+	t_alias.visible = false
+	t_alias.text = _t("機芯部件")
+	t_row.add_child(t_alias)
+
+	var CsClass = load("res://scripts/systems/core_system.gd")
+	var c_bonus: Dictionary = {}
+	if CsClass != null and gs and "core_slots" in gs and not gs.core_slots.is_empty():
+		c_bonus = CsClass.get_total_bonuses(gs.core_slots)
+	elif CsClass != null and CsClass.has_method("total_core_bonuses"):
+		c_bonus = CsClass.total_core_bonuses()
+	elif cs and cs.has_method("total_core_bonuses"):
+		c_bonus = cs.call("total_core_bonuses")
+
+	var b_atk := int(c_bonus.get("atk", 0))
+	var b_def := int(c_bonus.get("def", 0))
+	var b_hp  := int(c_bonus.get("hp", 0))
+
+	var summary_lbl := Label.new()
+	summary_lbl.name = "CorePartsSummaryLabel"
+	summary_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	summary_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	summary_lbl.text = _t("機芯總加成: 攻+%d · 防+%d · 血+%d") % [b_atk, b_def, b_hp]
+	_apply_font(summary_lbl, 12, COLOR_TEXT_GOLD, true)
+	t_row.add_child(summary_lbl)
+
+	var summary_alias := Label.new()
+	summary_alias.name = "CoreSummaryLabel"
+	summary_alias.visible = false
+	summary_alias.text = summary_lbl.text
+	t_row.add_child(summary_alias)
+
+	# 快捷按鈕：前往校準 (BtnGoCalibrate)（尺寸 88x36px，熱區>=48px，果凍厚底 4px）
+	_btn_go_calibrate = Button.new()
+	_btn_go_calibrate.name = "BtnGoCalibrate"
+	_btn_go_calibrate.text = _t("前往校準")
+	_btn_go_calibrate.custom_minimum_size = Vector2(88, 36)
+	_btn_go_calibrate.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_calibrate, COLOR_ORANGE, COLOR_TEXT_LIGHT, 12, 4, 12, COLOR_BORDER, 6, 3)
+	_btn_go_calibrate.pressed.connect(_on_go_calibrate_pressed)
+	t_row.add_child(_btn_go_calibrate)
+
+	# 五大機芯槽位展示容器
+	var slots_vbox := VBoxContainer.new()
+	slots_vbox.name = "CoreSlotsVBox"
+	slots_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slots_vbox.add_theme_constant_override("separation", 6)
+	v.add_child(slots_vbox)
+
+	var slot_ids: Array = []
+	if CsClass != null and "ALL_SLOT_IDS" in CsClass:
+		slot_ids = CsClass.ALL_SLOT_IDS
+	else:
+		slot_ids = ["mainspring", "chassis", "escapement", "gear_train", "soul_core"]
+
+	for i in range(slot_ids.size()):
+		var sid: String = str(slot_ids[i])
+		var part: Dictionary = {}
+		if gs and "core_slots" in gs and gs.core_slots.has(sid):
+			part = gs.core_slots[sid]
+		elif CsClass != null and CsClass.has_method("get_equipped_part"):
+			part = CsClass.get_equipped_part(sid)
+		slots_vbox.add_child(_create_core_part_cell(i, sid, part, CsClass))
+
+	return card
+
+
+func _create_core_part_cell(idx: int, slot_id: String, part: Dictionary, CsClass: Variant) -> PanelContainer:
+	var c := PanelContainer.new()
+	c.name = "CoreSlotCell_%d" % idx
+	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c.custom_minimum_size = Vector2(0, 48)
+
+	var sb := StyleBoxFlat.new()
+	match idx % 4:
+		0: sb.bg_color = COLOR_CARD_GOLD
+		1: sb.bg_color = COLOR_CARD_SKY
+		2: sb.bg_color = COLOR_CARD_MINT
+		_: sb.bg_color = COLOR_CARD_WARM
+	sb.border_color = COLOR_BORDER
+	sb.set_border_width_all(1)
+	sb.border_width_bottom = 3
+	sb.set_corner_radius_all(10)
+	sb.content_margin_left = 10
+	sb.content_margin_right = 10
+	sb.content_margin_top = 4
+	sb.content_margin_bottom = 4
+	c.add_theme_stylebox_override("panel", sb)
+
+	var h := HBoxContainer.new()
+	h.name = "CoreSlotHBox"
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 8)
+	c.add_child(h)
+
+	# 槽位名稱
+	var slot_name: String = ""
+	if CsClass != null and CsClass.has_method("get_slot_name"):
+		slot_name = CsClass.get_slot_name(slot_id)
+	elif CsClass != null and "SLOT_NAMES" in CsClass and CsClass.SLOT_NAMES.has(slot_id):
+		slot_name = str(CsClass.SLOT_NAMES[slot_id])
+	else:
+		slot_name = slot_id
+
+	var slot_name_lbl := Label.new()
+	slot_name_lbl.name = "SlotNameLabel"
+	slot_name_lbl.text = _t(slot_name)
+	_apply_font(slot_name_lbl, 13, COLOR_TEXT_DARK, true)
+	h.add_child(slot_name_lbl)
+
+	# 部件名稱
+	var part_name: String = ""
+	if not part.is_empty():
+		part_name = str(part.get("name", part.get("slot_name", slot_name)))
+	else:
+		part_name = _t("未裝備")
+	var part_name_lbl := Label.new()
+	part_name_lbl.name = "PartNameLabel"
+	part_name_lbl.text = _t(part_name)
+	_apply_font(part_name_lbl, 13, COLOR_TEXT_DARK, true)
+	h.add_child(part_name_lbl)
+
+	# 色階與色票
+	var score: int = int(part.get("score", 0)) if not part.is_empty() else 0
+	var tier_info: Dictionary = {}
+	if CsClass != null and CsClass.has_method("get_tier_by_score"):
+		tier_info = CsClass.get_tier_by_score(score)
+	var raw_tier_name: String = str(part.get("tier_name", tier_info.get("name", "白"))) if not part.is_empty() else "未裝備"
+	var tier_color: Color = tier_info.get("color", Color.WHITE) if not part.is_empty() else COLOR_BORDER_MUTED
+
+	var patch := ColorRect.new()
+	patch.name = "TierColorPatch"
+	patch.custom_minimum_size = Vector2(14, 14)
+	patch.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	patch.color = tier_color
+	h.add_child(patch)
+
+	var tier_name_lbl := Label.new()
+	tier_name_lbl.name = "TierNameLabel"
+	tier_name_lbl.text = _t(raw_tier_name)
+	_apply_font(tier_name_lbl, 12, tier_color if (not part.is_empty() and tier_color != Color.WHITE) else COLOR_TEXT_MUTED)
+	h.add_child(tier_name_lbl)
+
+	# 彈性間隔
+	var spacer := Control.new()
+	spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	h.add_child(spacer)
+
+	# 攻防血加成
+	var pstats: Dictionary = {}
+	if not part.is_empty() and CsClass != null and CsClass.has_method("get_part_stats"):
+		pstats = CsClass.get_part_stats(part)
+	var p_atk: int = int(pstats.get("atk", 0))
+	var p_def: int = int(pstats.get("def", 0))
+	var p_hp: int  = int(pstats.get("hp", 0))
+
+	var bonus_lbl := Label.new()
+	bonus_lbl.name = "PartBonusLabel"
+	bonus_lbl.text = _t("攻+%d · 防+%d · 血+%d") % [p_atk, p_def, p_hp] if not part.is_empty() else "+0"
+	_apply_font(bonus_lbl, 13, COLOR_TEXT_ORANGE if (p_atk > 0 or p_def > 0 or p_hp > 0) else COLOR_TEXT_DIM, true)
+	h.add_child(bonus_lbl)
+
+	return c
+
+
 func _on_go_equip_pressed() -> void:
 	equip_requested.emit()
 	_on_close_pressed()
@@ -968,6 +1203,20 @@ func _on_go_skill_pressed() -> void:
 func _on_go_soul_pressed() -> void:
 	soul_requested.emit()
 	_on_close_pressed()
+
+
+func _on_go_calibrate_pressed() -> void:
+	calibrate_requested.emit()
+	_on_close_pressed()
+
+
+func _on_go_forge_pressed() -> void:
+	forge_requested.emit()
+	_on_close_pressed()
+
+
+func get_go_forge_button() -> Button:
+	return _btn_go_forge
 
 
 func _on_close_pressed() -> void:
@@ -1067,4 +1316,11 @@ func _soul() -> Node:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree and (loop as SceneTree).root != null:
 		return (loop as SceneTree).root.get_node_or_null("SoulSystem")
+	return null
+
+
+func _core_sys() -> Node:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		return (loop as SceneTree).root.get_node_or_null("CoreSystem")
 	return null
