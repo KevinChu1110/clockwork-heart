@@ -9,6 +9,7 @@ const UiStyle := preload("res://scripts/ui/ui_style.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
+const SoulDrawSfx := preload("res://scripts/ui/soul_draw/soul_draw_sfx.gd")
 const Catalog := preload("res://scripts/ui/soul_draw/soul_draw_card_catalog.gd")
 
 var _bg: ColorRect
@@ -155,6 +156,7 @@ func show_drops(drops: Array[Dictionary]) -> void:
 		var card := _create_mini_card(drop, i)
 		_grid.add_child(card)
 		_cards.append(card)
+	SoulDrawSfx.play_reveal_for_drops(drops)
 
 
 func _create_mini_card(raw_drop: Dictionary, index: int) -> Control:

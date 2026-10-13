@@ -7,6 +7,7 @@ const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const DEFAULT_CARD := "res://assets/sprites/pack_a/v2/ui/soul_result_card.png"
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
+const SoulDrawSfx := preload("res://scripts/ui/soul_draw/soul_draw_sfx.gd")
 const Catalog := preload("res://scripts/ui/soul_draw/soul_draw_card_catalog.gd")
 
 var _card_panel: Panel
@@ -302,6 +303,7 @@ func show_drop(drop: Dictionary, card_path: String = DEFAULT_CARD) -> void:
 	_current_card_path = card_path
 	_current_toast_key = str(drop.get("toastKey", "soul.pull_part"))
 	_render_drop()
+	SoulDrawSfx.play_reveal_for_drop(drop)
 
 
 func _render_drop() -> void:
