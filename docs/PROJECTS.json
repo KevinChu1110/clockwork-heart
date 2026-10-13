@@ -6375,6 +6375,16 @@
    "keys": [
     "TitleWal"
    ]
+  },
+  {
+   "id": "skill-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "SkillDialog 心法招式底欄新增前往戰力快捷果凍按鈕聯動 PowerStatDialog",
+   "status": "草稿",
+   "note": "建立項目",
+   "keys": [
+    "SkillDia"
+   ]
   }
  ]
 }
