@@ -99,18 +99,18 @@ TEST_FILTER=art/test_bgm ./tools/run_tests.sh
 
 > 這是**佔位**：從現有 Suno 佔位曲（`SUNO_SOURCES.json`）裁出段落，只做剪輯、微調速度、交叉淡化、響度，
 > 沒有用任何付費生成。重現方式：`python3 tools/cut_bgm_loops.py --out /tmp/bgm_cut`（numpy＋ffmpeg rubberband）。
-> 響度與 true peak 是對最終 `.mp3` 跑 `ffmpeg -af loudnorm=print_format=json` 的量測值（2026-10-06）。
+> 響度與 true peak 是對最終 `.mp3` 跑 `ffmpeg -af loudnorm=print_format=json` 的量測值（2026-10-13 接縫修正後重量）。
 
 | cue | 長度 | 循環 | loop_offset | 整合響度 | true peak | LRA | 取自原曲 | 速度微調 | 佔位實際速度 |
 |-----|------|------|-------------|----------|-----------|-----|----------|----------|--------------|
-| title | 24.000 s | 是 | 6.727 s | −16.00 LUFS | −4.13 dBTP | 8.1 LU | 0.00–23.70 s（前奏＋7 小節） | −1.3 % | ≈ 98 BPM |
-| village | 45.000 s | 是 | 0 | −16.00 LUFS | −4.64 dBTP | 5.0 LU | 36.69–80.32 s（14 小節） | −3.0 % | ≈ 74 BPM |
-| town | 40.000 s | 是 | 0 | −16.00 LUFS | −1.79 dBTP | 1.9 LU | 41.63–79.13 s（15 小節） | −6.3 % | ≈ 90 BPM |
-| road | 30.000 s | 是 | 0 | −16.00 LUFS | −2.88 dBTP | 2.8 LU | 110.09–139.42 s（11 小節） | −2.2 % | ≈ 87 BPM |
-| forest | 40.000 s | 是 | 0 | −15.99 LUFS | −1.91 dBTP | 2.7 LU | 38.01–80.65 s（20 小節） | +6.6 % | ≈ 120 BPM |
-| battle | 35.000 s | 是 | 0 | −15.99 LUFS | −1.84 dBTP | 3.8 LU | 181.05–218.45 s（22 小節） | +6.9 % | ≈ 153 BPM（半拍感 ≈ 77） |
-| boss | 40.000 s | 是 | 0 | −16.00 LUFS | −2.70 dBTP | 2.4 LU | 206.66–245.81 s（19 小節） | −2.1 % | ≈ 115 BPM（半拍感 ≈ 58） |
-| ending | 16.000 s | 否 | — | −16.00 LUFS | −2.34 dBTP | 7.7 LU | 255.84–272.20 s（最後一句到自然收尾） | +2.2 % | ≈ 88 BPM |
+| title | 24.000 s | 是 | 6.727 s | −16.00 LUFS | −3.87 dBTP | 8.0 LU | 0.00–23.70 s（前奏＋7 小節） | −1.3 % | ≈ 98 BPM |
+| village | 46.000 s（預捲 1 s＋循環 45 s） | 是 | 1.000 s | −16.00 LUFS | −4.70 dBTP | 4.9 LU | 36.69–80.32 s（14 小節） | −3.0 % | ≈ 74 BPM |
+| town | 41.000 s（預捲 1 s＋循環 40 s） | 是 | 1.000 s | −16.00 LUFS | −1.86 dBTP | 2.1 LU | 41.63–79.13 s（15 小節） | −6.3 % | ≈ 90 BPM |
+| road | 31.000 s（預捲 1 s＋循環 30 s） | 是 | 1.000 s | −16.00 LUFS | −3.06 dBTP | 2.8 LU | 110.09–139.42 s（11 小節） | −2.2 % | ≈ 87 BPM |
+| forest | 41.000 s（預捲 1 s＋循環 40 s） | 是 | 1.000 s | −16.00 LUFS | −2.00 dBTP | 2.7 LU | 38.01–80.65 s（20 小節） | +6.6 % | ≈ 120 BPM |
+| battle | 36.000 s（預捲 1 s＋循環 35 s） | 是 | 1.000 s | −15.99 LUFS | −2.01 dBTP | 2.7 LU | 181.05–218.45 s（22 小節） | +6.9 % | ≈ 153 BPM（半拍感 ≈ 77） |
+| boss | 41.000 s（預捲 1 s＋循環 40 s） | 是 | 1.000 s | −15.99 LUFS | −2.81 dBTP | 2.4 LU | 206.66–245.81 s（19 小節） | −2.1 % | ≈ 115 BPM（半拍感 ≈ 58） |
+| ending | 16.000 s | 否 | — | −16.00 LUFS | −2.50 dBTP | 7.7 LU | 255.84–272.20 s（最後一句到自然收尾） | +2.2 % | ≈ 88 BPM |
 
 做法：
 - **挑段落**：節拍追蹤後，對每組「起點小節 → 終點小節」比對前後 2 拍的 chroma／MFCC，挑和聲與音色最接得回去、
@@ -119,7 +119,15 @@ TEST_FILTER=art/test_bgm ./tools/run_tests.sh
 - **對齊長度**：rubberband 調速不變調（±7 % 內），長度剛好等於 brief 秒數。
 - **無縫循環**：檔尾 0.35 秒與「循環起點前 0.35 秒」交叉淡化，接縫前後再做樣本級對齊；
   解碼後檢查檔尾 → loop_offset 的樣本跳變，八首都小於曲內 99.9 百分位（沒有爆音）。
-  Godot 4.7 的 MP3 解碼吃 LAME gapless 標頭，`get_length()` 剛好是 24.000／45.000…秒，循環不會多出靜音。
+  Godot 4.7 的 MP3 解碼吃 LAME gapless 標頭，`get_length()` 剛好是 24.000／46.000…秒，循環不會多出靜音。
+- **MP3 預捲（2026-10-13，#50 接縫修正）**：只看樣本跳變不夠。用 Godot 4.7 `AudioStreamPlayback.mix_audio()` 實際渲染
+  「檔尾前 3 秒 → 跳回 loop_offset 後 3 秒」，再跟編碼前的理想訊號逐 frame 比頻譜，發現 loop_offset=0 時
+  minimp3 是從檔頭**冷啟動**，接縫後第一個 frame 冒出 12–20 kHz 雜訊（forest +15 dB、battle 頻譜誤差 2 倍），
+  耳朵聽起來是一聲細小的「嘶／喀」。修法：沒有前奏的六首在檔頭補 1 秒預捲（＝循環最後 1 秒，逐樣本相同），
+  loop_offset 改 1.000 秒，解碼器跳回時是用預捲暖機、狀態和接縫前一致；同時 LAME 改 VBR q0。
+  所以檔案比 brief 長 1 秒，**循環區長度仍等於 brief**（village 循環 45 s…）。
+  OGG Vorbis 在 Godot 循環更乾淨（實測也沒有冷啟動雜訊），AudioManager 也已支援 .ogg，
+  但 `tools/build_bundles.py`、`test_full_bundle_flow` 寫死 `<bgm>.mp3`，換格式要動打包程式，所以這次維持 MP3。
 - **title**：保留原曲八音盒前奏，疊三圈程式合成的發條棘輪聲（「上鏈」），6.727 秒起進入循環主體。
   loop_offset 取到毫秒並避開 Godot float32 截斷，跳回時樣本完全對齊。
 - **town**：檔案一樣 −16 LUFS，靠 `BGM_CUE_GAIN_DB` 在播放時再壓 2 dB，比 village 小聲。

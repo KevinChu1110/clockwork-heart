@@ -1,9 +1,9 @@
 {
 	"title": 6.727,
-	"village": 0.0,
-	"town": 0.0,
-	"road": 0.0,
-	"forest": 0.0,
-	"battle": 0.0,
-	"boss": 0.0
+	"village": 1.0,
+	"town": 1.0,
+	"road": 1.0,
+	"forest": 1.0,
+	"battle": 1.0,
+	"boss": 1.0
 }

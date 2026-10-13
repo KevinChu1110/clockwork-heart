@@ -8,8 +8,13 @@
   3. 檔尾 0.35 秒與「循環起點前 0.35 秒」交叉淡化 → 播到檔尾跳回 loop_offset 時，樣本是連續的，不會爆音
   4. 用 FFT 做循環式重取樣把長度修到精確樣本數（修正量 < 3 ms，聽不出音高差）
   5. 線性增益對齊 −16 LUFS；true peak 超過就跑循環式限幅（前後各接一圈再限幅，接縫不受影響）
-  6. libmp3lame VBR q3 編成 <cue>.mp3（LAME 標頭帶 gapless 資訊，Godot 的 minimp3 會吃）
-  7. 用 ffmpeg loudnorm 量最終 mp3，必要時再修一次增益
+  6. 沒有前奏的曲子在檔頭補 1 秒「預捲」（＝循環體最後 1 秒），loop_offset 設在 1.000 秒：
+     Godot 的 MP3 解碼器（minimp3）跳回 loop_offset 時，是從前面的 frame 暖機解起，
+     暖機吃到的剛好是循環尾巴 → 接縫兩側的解碼器狀態一致。loop_offset=0 時 minimp3 從檔頭冷啟動，
+     接縫後第一個 frame 會冒出 12–20 kHz 的雜訊（forest 實測比原曲高 +15 dB，聽起來像「嘶／喀」）。
+  7. libmp3lame VBR q0 編成 <cue>.mp3（LAME 標頭帶 gapless 資訊，Godot 的 minimp3 會吃）；
+     q0 比 q3 的接縫頻譜誤差小（量法：tools/cut_bgm_loops.py 之外的 Godot mix_audio 渲染比對，見 MANIFEST）
+  8. 用 ffmpeg loudnorm 量最終 mp3，必要時再修一次增益
 
 title 前段（loop_offset 之前，只播一次）另外疊程式合成的發條上鏈聲。
 ending 不循環：取原曲最後一句到自然收尾，速度微調到 16 秒。
@@ -36,6 +41,8 @@ ROOT = Path(__file__).resolve().parents[1]
 SR = 48000
 TARGET_LUFS = -16.0
 XFADE = 0.35
+PREROLL = 1.0  ## 秒；沒有前奏的循環曲在檔頭補循環尾巴，見步驟 6
+MP3_Q = "0"
 
 ## issue #31 之前的佔位曲（git blob），原始來源見 game/assets/audio/bgm/SUNO_SOURCES.json
 SOURCE_BLOBS = {
@@ -214,7 +221,12 @@ def cut_loop(src: np.ndarray, c: dict) -> tuple[np.ndarray, float]:
         G[:k] = F[:k]
         loop = np.fft.irfft(G, n=lt, axis=0) * (lt / len(loop))
     intro = st[S:A]
-    y = np.vstack([intro, loop]) if len(intro) else loop
+    if len(intro):
+        y = np.vstack([intro, loop])
+    else:  ## 預捲：檔頭＝循環最後 PREROLL 秒，loop_offset 跳到它後面
+        P = intro_samples(PREROLL * SR)
+        y = np.vstack([loop[-P:], loop])
+        intro = loop[-P:]
     if c.get("windup"):
         y = y + windup_layer(len(y))
     return y, len(intro) / SR
@@ -236,7 +248,7 @@ def cut_oneshot(src: np.ndarray, c: dict) -> np.ndarray:
     return y
 
 
-def master(y: np.ndarray, loop_off: float | None, ceil: float, dst: Path) -> dict:
+def master(y: np.ndarray, loop_off: float | None, ceil: float, dst: Path, preroll: bool = False) -> dict:
     loop = loop_off is not None
     li = int(round(loop_off * SR)) if loop else 0
 
@@ -251,6 +263,8 @@ def master(y: np.ndarray, loop_off: float | None, ceil: float, dst: Path) -> dic
             body = y[li:]
             p = limiter(np.vstack([y[:li], body, body, body]), ceil - 0.4)
             y = np.vstack([p[:li], p[li + len(body):li + 2 * len(body)]])
+            if preroll:  ## 預捲要和循環尾巴逐樣本相同（限幅後也一樣）
+                y[:li] = y[-li:]
         else:
             y = limiter(y, ceil - 0.4)
         y = norm(y)
@@ -258,7 +272,7 @@ def master(y: np.ndarray, loop_off: float | None, ceil: float, dst: Path) -> dic
     for _ in range(4):
         raw = y.astype("<f4").tobytes()
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "f32le", "-ac", "2", "-ar", str(SR),
-                        "-i", "pipe:0", "-c:a", "libmp3lame", "-q:a", "3", str(dst)],
+                        "-i", "pipe:0", "-c:a", "libmp3lame", "-q:a", MP3_Q, str(dst)],
                        input=raw, check=True)
         j = loudnorm_json(dst)
         i_, tp = float(j["input_i"]), float(j["input_tp"])
@@ -292,7 +306,7 @@ def main() -> int:
         else:
             y, off = cut_loop(src, c)
             loops[cue] = round(off, 3)
-        j = master(y, off, c["ceil"], args.out / f"{cue}.mp3")
+        j = master(y, off, c["ceil"], args.out / f"{cue}.mp3", preroll=not c.get("oneshot") and not c.get("windup"))
         print(f"{cue:8s} {len(y) / SR:6.2f}s  loop_offset {off}  I {j['input_i']} LUFS  TP {j['input_tp']} dBTP")
     print("loops.json 應為：", json.dumps(loops))
     return 0

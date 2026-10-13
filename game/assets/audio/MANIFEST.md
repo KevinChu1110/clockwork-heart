@@ -42,17 +42,19 @@ town 在程式裡再壓 −2 dB（任務書：音量低於 village）。
 
 | cue | 長度 | loop_offset | 響度／true peak | 來源 |
 |-----|------|-------------|-----------------|------|
-| title | 24.0 s | 6.727 s | −16.00 LUFS／−4.13 dBTP | Suno title 0.00–23.70 s＋程式合成發條棘輪聲（本 repo 自產） |
-| village | 45.0 s | 0 | −16.00／−4.64 | Suno village 36.69–80.32 s |
-| town | 40.0 s | 0 | −16.00／−1.79 | Suno town 41.63–79.13 s |
-| road | 30.0 s | 0 | −16.00／−2.88 | Suno road 110.09–139.42 s |
-| forest | 40.0 s | 0 | −15.99／−1.91 | Suno forest 38.01–80.65 s |
-| battle | 35.0 s | 0 | −15.99／−1.84 | Suno battle 181.05–218.45 s |
-| boss | 40.0 s | 0 | −16.00／−2.70 | Suno boss 206.66–245.81 s |
-| ending | 16.0 s | 不循環 | −16.00／−2.34 | Suno ending 255.84 s–結尾 |
+| title | 24.0 s | 6.727 s | −16.00／−3.87 | Suno title 0.00–23.70 s＋程式合成發條棘輪聲（本 repo 自產） |
+| village | 46.0 s | 1.000 s | −16.00／−4.70 | Suno village 36.69–80.32 s |
+| town | 41.0 s | 1.000 s | −16.00／−1.86 | Suno town 41.63–79.13 s |
+| road | 31.0 s | 1.000 s | −16.00／−3.06 | Suno road 110.09–139.42 s |
+| forest | 41.0 s | 1.000 s | −16.00／−2.00 | Suno forest 38.01–80.65 s |
+| battle | 36.0 s | 1.000 s | −15.99／−2.01 | Suno battle 181.05–218.45 s |
+| boss | 41.0 s | 1.000 s | −15.99／−2.81 | Suno boss 206.66–245.81 s |
+| ending | 16.0 s | 不循環 | −16.00／−2.50 | Suno ending 255.84 s–結尾 |
 
 授權：沿用原本 Suno 佔位曲（帳號見 `SUNO_SOURCES.json`），沒有引入新的外部音源；發條棘輪聲是 numpy 合成。
 分析時用了 librosa（ISC）與 demucs（MIT）做節拍／人聲偵測，兩者都只在本機分析、不進成品，也不是 repo 相依。
+
+2026-10-13（#50 QA 接縫）：沒有前奏的六首檔頭加 1 秒預捲、loop_offset 1.0、LAME q0，原因與量測見 `docs/BGM_SPEC.md`。
 
 `mist`／`dojo`／`coast`／`wild`／`tower` 的 .mp3／.wav 已沒有程式引用，留著待確認後再刪。
 
