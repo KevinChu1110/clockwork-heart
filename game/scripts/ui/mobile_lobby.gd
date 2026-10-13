@@ -2617,8 +2617,13 @@ func open_clockwork_vault() -> Control:
 		refresh_vault_display()
 		_show_toast(Loc.t("vault.claimed_toast") % [g, s])
 	)
+	if dlg.has_signal("forge_requested"):
+		dlg.forge_requested.connect(func():
+			open_forge()
+		)
 	dlg.tree_exited.connect(func():
-		if _equip_schematic and is_instance_valid(_equip_schematic):
+		var has_forge: bool = get_node_or_null("ForgeDialog") != null
+		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge:
 			_equip_schematic.visible = true
 		refresh_hud()
 		refresh_vault_display()
