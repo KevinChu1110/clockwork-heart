@@ -6611,6 +6611,10 @@ func open_energy_dialog() -> Control:
 	dlg.tree_exited.connect(func():
 		refresh_hud()
 	)
+	if dlg.has_signal("shop_requested"):
+		dlg.shop_requested.connect(func():
+			open_shop()
+		)
 	add_child(dlg)
 	return dlg
 
