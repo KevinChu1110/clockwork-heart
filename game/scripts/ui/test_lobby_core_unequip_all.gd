@@ -321,7 +321,7 @@ func _test_locales_and_no_emoji() -> void:
 func _finish_test() -> void:
 	print("\n==================================================")
 	if _ok:
-		print("TEST_LOBBY_CORE_UNEQUIP_ALL_OK: 所有斷言全部通過！0 SCRIPT ERROR")
+		print("TEST_LOBBY_CORE_UNEQUIP_ALL_OK: 所有斷言全部通過！0 腳本錯誤")
 		print("==================================================")
 		quit(0)
 	else:
