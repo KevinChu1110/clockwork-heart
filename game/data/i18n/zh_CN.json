@@ -4221,5 +4221,10 @@
   "一鍵卸下全部戰魂": "一键卸下全部战魂",
   "vault.btn_go_inventory": "前往背包",
   "卸下稱號": "卸下称号",
-  "shop.btn_go_inventory": "前往背包"
+  "shop.btn_go_inventory": "前往背包",
+  "power_stat.title_card": "佩戴称号",
+  "power_stat.btn_go_title_wall": "前往称号",
+  "前往稱號": "前往称号",
+  "power_stat.title_desc": "佩戴称号展现专属荣耀，前往称号墙可自由切换或卸下",
+  "佩戴稱號展現專屬榮耀，前往稱號牆可自由切換或卸下": "佩戴称号展现专属荣耀，前往称号墙可自由切换或卸下"
 }

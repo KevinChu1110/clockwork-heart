@@ -16,6 +16,7 @@ signal skill_requested()
 signal soul_requested()
 signal calibrate_requested()
 signal forge_requested()
+signal title_wall_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -79,6 +80,7 @@ var _btn_go_skill: Button
 var _btn_go_soul: Button
 var _btn_go_calibrate: Button
 var _btn_go_forge: Button
+var _btn_go_title_wall: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -101,6 +103,9 @@ func _connect_loc_signal() -> void:
 		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
 		if loc and loc.has_signal("locale_changed") and not loc.locale_changed.is_connected(_on_locale_changed):
 			loc.locale_changed.connect(_on_locale_changed)
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs and gs.has_signal("equipped_title_changed") and not gs.equipped_title_changed.is_connected(_on_equipped_title_changed):
+			gs.equipped_title_changed.connect(_on_equipped_title_changed)
 
 
 func _disconnect_loc_signal() -> void:
@@ -109,6 +114,13 @@ func _disconnect_loc_signal() -> void:
 		var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
 		if loc and loc.has_signal("locale_changed") and loc.locale_changed.is_connected(_on_locale_changed):
 			loc.locale_changed.disconnect(_on_locale_changed)
+		var gs: Node = (loop as SceneTree).root.get_node_or_null("GameState")
+		if gs and gs.has_signal("equipped_title_changed") and gs.equipped_title_changed.is_connected(_on_equipped_title_changed):
+			gs.equipped_title_changed.disconnect(_on_equipped_title_changed)
+
+
+func _on_equipped_title_changed(_new_title: String = "") -> void:
+	refresh()
 
 
 func _on_locale_changed(_new_locale: String = "") -> void:
@@ -277,6 +289,8 @@ func refresh() -> void:
 		_btn_go_calibrate.text = _t("前往校準")
 	if _btn_go_forge:
 		_btn_go_forge.text = _t("前往鍛造")
+	if _btn_go_title_wall:
+		_btn_go_title_wall.text = _t("power_stat.btn_go_title_wall")
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("確定")
 
@@ -303,6 +317,9 @@ func refresh() -> void:
 	# 6. 機芯部件卡片（五大槽位與前往校準）
 	var cs := _core_sys()
 	_content_vbox.add_child(_build_core_parts_card(gs, cs))
+
+	# 7. 佩戴稱號展示卡片（當前稱號膠囊與前往稱號牆）
+	_content_vbox.add_child(_build_title_card(gs))
 
 
 ## 綜合戰力總覽卡片
@@ -1185,6 +1202,105 @@ func _create_core_part_cell(idx: int, slot_id: String, part: Dictionary, CsClass
 	return c
 
 
+## 佩戴稱號展示卡片
+func _build_title_card(gs: Node) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = "TitleCard"
+	card.add_theme_stylebox_override("panel", _create_card_style(COLOR_CARD_SKY, COLOR_BORDER, 2, 4, 14))
+
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_left", 14)
+	m.add_theme_constant_override("margin_right", 14)
+	m.add_theme_constant_override("margin_top", 10)
+	m.add_theme_constant_override("margin_bottom", 10)
+	card.add_child(m)
+
+	var h := HBoxContainer.new()
+	h.name = "TitleCardHBox"
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 14)
+	m.add_child(h)
+
+	# 左側資訊區：標題列與稱號膠囊
+	var left_v := VBoxContainer.new()
+	left_v.name = "TitleLeftVBox"
+	left_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_v.alignment = BoxContainer.ALIGNMENT_CENTER
+	left_v.add_theme_constant_override("separation", 6)
+	h.add_child(left_v)
+
+	var t_row := HBoxContainer.new()
+	t_row.name = "TitleRowHBox"
+	t_row.add_theme_constant_override("separation", 10)
+	t_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	left_v.add_child(t_row)
+
+	var t_lbl := Label.new()
+	t_lbl.name = "TitleCardTitleLabel"
+	t_lbl.text = _t("power_stat.title_card")
+	_apply_font(t_lbl, 14, COLOR_TEXT_DARK, true)
+	t_row.add_child(t_lbl)
+
+	# 佩戴稱號名稱膠囊
+	var raw_title := ""
+	if gs and gs.has_method("get_equipped_title"):
+		raw_title = gs.get_equipped_title()
+	var display_title := _get_title_display_name(raw_title)
+
+	var cap := PanelContainer.new()
+	cap.name = "TitleCapsule"
+	var cap_sb := StyleBoxFlat.new()
+	cap_sb.bg_color = COLOR_CARD_GOLD
+	cap_sb.border_color = COLOR_BORDER
+	cap_sb.set_border_width_all(1)
+	cap_sb.border_width_bottom = 3
+	cap_sb.set_corner_radius_all(10)
+	cap_sb.content_margin_left = 10
+	cap_sb.content_margin_right = 10
+	cap_sb.content_margin_top = 3
+	cap_sb.content_margin_bottom = 3
+	cap.add_theme_stylebox_override("panel", cap_sb)
+	t_row.add_child(cap)
+
+	var cap_lbl := Label.new()
+	cap_lbl.name = "TitleNameLabel"
+	cap_lbl.text = display_title
+	_apply_font(cap_lbl, 13, COLOR_TEXT_DARK, true)
+	cap.add_child(cap_lbl)
+
+	# 說明文字
+	var desc_lbl := Label.new()
+	desc_lbl.name = "TitleDescLabel"
+	desc_lbl.text = _t("power_stat.title_desc")
+	_apply_font(desc_lbl, 12, COLOR_TEXT_MUTED)
+	left_v.add_child(desc_lbl)
+
+	# 右側快捷按鈕：前往稱號 (BtnGoTitleWall)
+	_btn_go_title_wall = Button.new()
+	_btn_go_title_wall.name = "BtnGoTitleWall"
+	_btn_go_title_wall.text = _t("power_stat.btn_go_title_wall")
+	_btn_go_title_wall.custom_minimum_size = Vector2(110, 48)
+	_btn_go_title_wall.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_title_wall, COLOR_SKY, COLOR_TEXT_LIGHT, 14, 4, 16, COLOR_BORDER, 12, 4)
+	_btn_go_title_wall.pressed.connect(_on_go_title_wall_pressed)
+	h.add_child(_btn_go_title_wall)
+
+	return card
+
+
+func _get_title_display_name(raw_title: String) -> String:
+	if raw_title.is_empty() or raw_title == "初出茅廬":
+		return _t("初出茅廬")
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var tc: Node = (loop as SceneTree).root.get_node_or_null("TitleCatalog")
+		if tc and tc.has_method("entries"):
+			for e in tc.entries():
+				if str(e.get("raw_name", "")) == raw_title or str(e.get("name", "")) == raw_title or str(e.get("flag", "")) == raw_title:
+					return str(e.get("name", raw_title))
+	return _t(raw_title)
+
+
 func _on_go_equip_pressed() -> void:
 	equip_requested.emit()
 	_on_close_pressed()
@@ -1217,6 +1333,24 @@ func _on_go_forge_pressed() -> void:
 
 func get_go_forge_button() -> Button:
 	return _btn_go_forge
+
+
+func _on_go_title_wall_pressed() -> void:
+	title_wall_requested.emit()
+	_on_close_pressed()
+
+
+func get_go_title_wall_button() -> Button:
+	return _btn_go_title_wall
+
+
+func get_scroll_box() -> ScrollContainer:
+	return _scroll_box
+
+
+func scroll_to_bottom() -> void:
+	if _scroll_box:
+		_scroll_box.scroll_vertical = 99999
 
 
 func _on_close_pressed() -> void:

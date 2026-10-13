@@ -3856,5 +3856,10 @@
   "一鍵卸下全部戰魂": "すべての戦魂を一括解除",
   "vault.btn_go_inventory": "インベントリへ進む",
   "卸下稱號": "称号を外す",
-  "shop.btn_go_inventory": "インベントリへ進む"
+  "shop.btn_go_inventory": "インベントリへ進む",
+  "power_stat.title_card": "称号",
+  "power_stat.btn_go_title_wall": "称号一覧へ",
+  "前往稱號": "称号一覧へ",
+  "power_stat.title_desc": "称号を身につけて栄誉を示そう。称号一覧で変更・解除できます。",
+  "佩戴稱號展現專屬榮耀，前往稱號牆可自由切換或卸下": "称号を身につけて栄誉を示そう。称号一覧で変更・解除できます。"
 }

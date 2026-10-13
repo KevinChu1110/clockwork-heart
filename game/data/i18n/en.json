@@ -4218,5 +4218,10 @@
   "一鍵卸下全部戰魂": "Unequip All Souls",
   "vault.btn_go_inventory": "Go to Inventory",
   "卸下稱號": "Unequip Title",
-  "shop.btn_go_inventory": "Go to Inventory"
+  "shop.btn_go_inventory": "Go to Inventory",
+  "power_stat.title_card": "Equipped Title",
+  "power_stat.btn_go_title_wall": "Go to Titles",
+  "前往稱號": "Go to Titles",
+  "power_stat.title_desc": "Equip titles to showcase glory. Visit titles to switch or unequip.",
+  "佩戴稱號展現專屬榮耀，前往稱號牆可自由切換或卸下": "Equip titles to showcase glory. Visit titles to switch or unequip."
 }
