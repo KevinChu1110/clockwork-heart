@@ -3587,5 +3587,12 @@
   "缺少裝備系統。": "Falta el sistema de equipo.",
   "裝備 · 部位：%s": "Equipo · Parte: %s",
   "非裝備類物品無法拆解。": "Solo se puede desmantelar el equipo.",
-  "魂槽開放：—": "Ranuras de alma: —"
+  "魂槽開放：—": "Ranuras de alma: —",
+  "已成功更換槽位 %d 裝備：【%s】": "Equipo de la ranura %d reemplazado: [%s]",
+  "未裝備無法校準": "Equípalo para poder calibrarlo",
+  "校準次數已達上限": "Límite de calibraciones alcanzado",
+  "機芯部件 · 部位：%s · 色階：%s階": "Pieza de núcleo · Ranura: %s · %s",
+  "無法拆解此機芯。": "Este núcleo no se puede desmantelar.",
+  "缺少機芯系統。": "Sistema de núcleos no disponible.",
+  "請先選取欲替換之機芯部件": "Primero elige la pieza de núcleo que quieres cambiar"
 }

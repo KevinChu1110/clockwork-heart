@@ -3587,5 +3587,12 @@
   "缺少裝備系統。": "Equipment system unavailable.",
   "裝備 · 部位：%s": "Equipment · Part: %s",
   "非裝備類物品無法拆解。": "Only equipment can be dismantled.",
-  "魂槽開放：—": "Soul Slots: —"
+  "魂槽開放：—": "Soul Slots: —",
+  "已成功更換槽位 %d 裝備：【%s】": "Slot %d equipment replaced: [%s]",
+  "未裝備無法校準": "Equip it first to calibrate",
+  "校準次數已達上限": "Calibration limit reached",
+  "機芯部件 · 部位：%s · 色階：%s階": "Core Part · Slot: %s · %s",
+  "無法拆解此機芯。": "This core can't be dismantled.",
+  "缺少機芯系統。": "Core system unavailable.",
+  "請先選取欲替換之機芯部件": "Select a core part to replace first"
 }
