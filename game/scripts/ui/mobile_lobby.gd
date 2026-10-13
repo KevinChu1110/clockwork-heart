@@ -8,6 +8,7 @@ signal request_settings()
 signal core_replaced(slot_id: String, part: Dictionary)
 signal cores_auto_equipped(result: Dictionary)
 signal weapons_auto_equipped(result: Dictionary)
+signal weapons_unequipped(result: Dictionary)
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -283,6 +284,7 @@ var _char_weapon_title_label: Label = null
 var _char_weapon_sub_label: Label = null
 var _btn_change_weapon: Button = null
 var _btn_weapon_auto_equip: Button = null
+var _btn_weapon_unequip_all: Button = null
 var _weapon_swap_dialog: Control = null
 var _char_core_title_label: Label = null
 var _char_core_sub_label: Label = null
@@ -4195,6 +4197,41 @@ func _build_character_tab() -> void:
 	w_hdr.add_child(btn_weapon_auto)
 	_btn_weapon_auto_equip = btn_weapon_auto
 
+	var btn_weapon_unequip := Button.new()
+	btn_weapon_unequip.name = "BtnWeaponUnequipAll"
+	btn_weapon_unequip.text = _t("一鍵卸下")
+	btn_weapon_unequip.custom_minimum_size = Vector2(104, 48)
+	if _cached_font != null:
+		btn_weapon_unequip.add_theme_font_override("font", _cached_font)
+	btn_weapon_unequip.add_theme_font_size_override("font_size", 16)
+	btn_weapon_unequip.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_weapon_unequip.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_weapon_unequip.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+
+	var wu_sb := StyleBoxFlat.new()
+	wu_sb.bg_color = COLOR_PINK
+	wu_sb.border_color = COLOR_BORDER
+	wu_sb.set_border_width_all(2)
+	wu_sb.border_width_bottom = 5
+	wu_sb.set_corner_radius_all(16)
+	wu_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	wu_sb.shadow_size = 5
+	wu_sb.shadow_offset = Vector2(0, 2)
+	var wu_sb_h := wu_sb.duplicate() as StyleBoxFlat
+	wu_sb_h.bg_color = Color("#FF7A9F")
+	var wu_sb_p := wu_sb.duplicate() as StyleBoxFlat
+	wu_sb_p.border_width_bottom = 2
+	btn_weapon_unequip.add_theme_stylebox_override("normal", wu_sb)
+	btn_weapon_unequip.add_theme_stylebox_override("hover", wu_sb_h)
+	btn_weapon_unequip.add_theme_stylebox_override("pressed", wu_sb_p)
+	btn_weapon_unequip.add_theme_stylebox_override("focus", wu_sb)
+	btn_weapon_unequip.pressed.connect(func():
+		_play_ui_sound()
+		unequip_all_weapons()
+	)
+	w_hdr.add_child(btn_weapon_unequip)
+	_btn_weapon_unequip_all = btn_weapon_unequip
+
 	var btn_change_weapon := Button.new()
 	btn_change_weapon.name = "BtnChangeWeapon"
 	btn_change_weapon.text = _t("更換裝備")
@@ -4662,6 +4699,9 @@ func get_weapon_slot_buttons() -> Array[Button]:
 
 func get_btn_weapon_auto_equip() -> Button:
 	return _btn_weapon_auto_equip
+
+func get_btn_weapon_unequip_all() -> Button:
+	return _btn_weapon_unequip_all
 
 func refresh_weapon_slots() -> void:
 	_refresh_weapon_slot_buttons()
@@ -6206,6 +6246,8 @@ func _apply_locale_texts() -> void:
 		_btn_change_weapon.text = _t("更換裝備")
 	if _btn_weapon_auto_equip and is_instance_valid(_btn_weapon_auto_equip):
 		_btn_weapon_auto_equip.text = _t("一鍵配置")
+	if _btn_weapon_unequip_all and is_instance_valid(_btn_weapon_unequip_all):
+		_btn_weapon_unequip_all.text = _t("一鍵卸下")
 	if _char_stat_title_label and is_instance_valid(_char_stat_title_label):
 		_char_stat_title_label.text = _t("機體戰鬥屬性")
 	if _char_core_title_label and is_instance_valid(_char_core_title_label):
@@ -6952,6 +6994,110 @@ func auto_equip_weapons() -> Dictionary:
 	else:
 		_show_toast(_t("目前已是最佳武器配置！"))
 
+	return result
+
+
+## 一鍵卸下副武器或多餘武器歸還背包，並具備安全防護（保留初始武器或若全卸下則切換至空手拳套防呆）
+func unequip_all_weapons(keep_primary: bool = true) -> Dictionary:
+	var equip_sys = _get_equip_sys()
+	if equip_sys == null:
+		return {"ok": false, "changed": false, "unequipped_slots": []}
+
+	var gs = _gs()
+	var unequipped_slots: Array[int] = []
+	var unequipped_weapons: Array[Dictionary] = []
+
+	# 檢查當前哪些武器欄有裝備
+	var equipped_slots: Array[int] = []
+	for i in range(WEAPON_SLOTS.size()):
+		var uid: String = ""
+		if equip_sys.has_method("loadout_uid"):
+			uid = equip_sys.loadout_uid(i)
+		elif gs and "weapon_loadout" in gs and i < gs.weapon_loadout.size():
+			uid = str(gs.weapon_loadout[i])
+		if not uid.is_empty():
+			equipped_slots.append(i)
+
+	# 決定哪些槽位需要卸下：
+	# 若 keep_primary 為 true：保留初始/首選武器（若 slot 0 有裝備則保留 slot 0；若 slot 0 為空則保留第一個有裝備的槽位），
+	# 將其餘副武器或多餘武器（如 slot 1, slot 2）卸下歸還背包。
+	# 若 keep_primary 為 false：全卸下所有欄位武器。
+	var slots_to_unequip: Array[int] = []
+	if keep_primary:
+		var primary_slot := -1
+		if equipped_slots.has(0):
+			primary_slot = 0
+		elif not equipped_slots.is_empty():
+			primary_slot = equipped_slots[0]
+
+		for slot_idx in equipped_slots:
+			if slot_idx != primary_slot:
+				slots_to_unequip.append(slot_idx)
+	else:
+		slots_to_unequip = equipped_slots.duplicate()
+
+	if slots_to_unequip.is_empty():
+		_show_toast(_t("當前無可卸下的武器！"))
+		return {
+			"ok": true,
+			"changed": false,
+			"unequipped_slots": [],
+			"unequipped_weapons": [],
+			"loadout": gs.weapon_loadout.duplicate() if (gs and "weapon_loadout" in gs) else []
+		}
+
+	# 點擊時遍歷武器欄位，調用 EquipmentSystem.unequip_loadout_slot()
+	for slot_idx in slots_to_unequip:
+		var w_info := _get_weapon_slot_info(slot_idx)
+		var res: Dictionary = {}
+		if equip_sys.has_method("unequip_loadout_slot"):
+			res = equip_sys.unequip_loadout_slot(slot_idx)
+		if bool(res.get("ok", false)) or res.is_empty():
+			unequipped_slots.append(slot_idx)
+			unequipped_weapons.append(w_info)
+
+	# 若當前選中的槽位被卸下，將選中指針切回有效欄位
+	if equip_sys.has_method("active_loadout_index"):
+		_selected_weapon_slot = equip_sys.active_loadout_index()
+
+	# 安全防護：若全卸下（所有欄位皆空）則切換至空手拳套防呆
+	var all_empty := true
+	for i in range(WEAPON_SLOTS.size()):
+		var uid: String = ""
+		if equip_sys.has_method("loadout_uid"):
+			uid = equip_sys.loadout_uid(i)
+		elif gs and "weapon_loadout" in gs and i < gs.weapon_loadout.size():
+			uid = str(gs.weapon_loadout[i])
+		if not uid.is_empty():
+			all_empty = false
+			break
+
+	if all_empty and gs:
+		gs.weapon_name = "空手"
+		gs.weapon_atk = 0
+		gs.path_style = "fist"
+		if "equip_slots" in gs and gs.equip_slots is Dictionary:
+			gs.equip_slots["weapon"] = ""
+		if "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
+			gs.paperdoll_slots["weapon"] = "none"
+
+	# 即時刷新三欄卡片、頂部戰力與屬性面板
+	_sync_hero_weapon_paperdoll()
+	_refresh_weapon_slot_buttons()
+	_refresh_char_tab_stats(true)
+	_refresh_bag_tab(false)
+	refresh_hud()
+
+	_show_toast(_t("已將副武器卸下歸還背包！"))
+
+	var result := {
+		"ok": true,
+		"changed": true,
+		"unequipped_slots": unequipped_slots,
+		"unequipped_weapons": unequipped_weapons,
+		"loadout": gs.weapon_loadout.duplicate() if (gs and "weapon_loadout" in gs) else []
+	}
+	weapons_unequipped.emit(result)
 	return result
 
 
