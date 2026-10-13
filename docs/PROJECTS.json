@@ -6215,6 +6215,16 @@
    "keys": [
     "大廳角色頁三欄武"
    ]
+  },
+  {
+   "id": "t_0b3a919b",
+   "cat": "遊戲",
+   "title": "BattleVictoryDialog 勝利結算新增『前往整頓』快捷按鈕連動大廳角色裝備 Tab",
+   "status": "草稿",
+   "note": "開始動工",
+   "keys": [
+    "BattleVi"
+   ]
   }
  ]
 }
