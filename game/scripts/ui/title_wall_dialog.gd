@@ -14,6 +14,7 @@ extends Control
 
 signal closed()
 signal title_equipped(title_name: String)
+signal title_unequipped()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -47,6 +48,7 @@ var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _count_lbl: Label
 var _banner_lbl: Label
+var _unequip_btn: Button
 var _back_btn: Button
 var _fortress_btn: Button
 var _card_grid: GridContainer
@@ -121,6 +123,7 @@ func _disconnect_game_state_signal() -> void:
 
 func _on_equipped_title_changed(_new_title: String = "") -> void:
 	_update_cards_equipped_state()
+	_update_unequip_btn_state()
 
 
 func _connect_loc_signal() -> void:
@@ -160,6 +163,10 @@ func _update_ui_texts() -> void:
 		for t_name in _newly:
 			translated_newly.append(_t(t_name))
 		_banner_lbl.text = _t("新解鎖稱號：%s") % "、".join(translated_newly)
+
+	if _unequip_btn and is_instance_valid(_unequip_btn):
+		_unequip_btn.text = _t("卸下稱號")
+		_update_unequip_btn_state()
 
 	if _back_btn and is_instance_valid(_back_btn):
 		_back_btn.text = _t(_back_key)
@@ -219,6 +226,7 @@ func _rebuild() -> void:
 	_title_lbl = null
 	_count_lbl = null
 	_banner_lbl = null
+	_unequip_btn = null
 	_back_btn = null
 	_fortress_btn = null
 	_built = false
@@ -425,6 +433,28 @@ func _build_ui() -> void:
 	foot.alignment = BoxContainer.ALIGNMENT_CENTER
 	foot.add_theme_constant_override("separation", 16)
 	v_main.add_child(foot)
+
+	# 卸下稱號 果凍按鈕 (BtnUnequipTitle)
+	_unequip_btn = Button.new()
+	_unequip_btn.name = "BtnUnequipTitle"
+	_unequip_btn.text = _t("卸下稱號")
+	_unequip_btn.custom_minimum_size = Vector2(160, 52)
+	_unequip_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_PINK, COLOR_BORDER, 5, 18))
+	_unequip_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FF759B"), COLOR_BORDER, 5, 18))
+	_unequip_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E04873"), COLOR_BORDER, 2, 18))
+	var unequip_dis_sb := _create_button_style(Color("#D6CFC7"), Color("#A89E90"), 3, 18)
+	unequip_dis_sb.shadow_color = Color(0, 0, 0, 0)
+	_unequip_btn.add_theme_stylebox_override("disabled", unequip_dis_sb)
+	_unequip_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_unequip_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_unequip_btn.add_theme_color_override("font_disabled_color", Color("#8C827A"))
+	_unequip_btn.add_theme_constant_override("outline_size", 3)
+	_unequip_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_unequip_btn.add_theme_font_override("font", _cached_font)
+	_unequip_btn.pressed.connect(_on_unequip_pressed)
+	foot.add_child(_unequip_btn)
+	_update_unequip_btn_state()
 
 	# 返回標題 / 回到廣場 果凍按鈕 (高度 >= 50px)
 	_back_btn = Button.new()
@@ -662,6 +692,7 @@ func _on_card_clicked(card: PanelContainer) -> void:
 		gs.set_equipped_title(raw_name)
 	title_equipped.emit(raw_name)
 	_update_cards_equipped_state()
+	_update_unequip_btn_state()
 
 
 func _update_cards_equipped_state() -> void:
@@ -685,6 +716,7 @@ func equip_title(raw_name_or_flag: String) -> void:
 			gs.set_equipped_title(raw_name_or_flag)
 		title_equipped.emit(raw_name_or_flag)
 		_update_cards_equipped_state()
+		_update_unequip_btn_state()
 
 
 func is_card_equipped(flag_or_name: String) -> bool:
@@ -753,3 +785,58 @@ func _on_fortress() -> void:
 		_fortress_cb.call()
 	else:
 		queue_free()
+
+
+func _on_unequip_pressed() -> void:
+	if not _is_special_title_equipped():
+		return
+	var am: Node = Engine.get_main_loop().root.get_node_or_null("AudioManager") if Engine.get_main_loop() else null
+	if am and am.has_method("play_ui"):
+		am.play_ui()
+	unequip_title()
+
+
+func unequip_title() -> void:
+	var gs := _get_game_state()
+	if gs and gs.has_method("set_equipped_title"):
+		gs.set_equipped_title("")
+	title_unequipped.emit()
+	_update_cards_equipped_state()
+	_update_unequip_btn_state()
+
+
+func _is_special_title_equipped() -> bool:
+	var cur_equipped := get_equipped_title().strip_edges()
+	if cur_equipped.is_empty() or cur_equipped == "初出茅廬":
+		return false
+	for default_t in ["初出茅庐", "Fledgling Novice", "駆け出し", "풋내기 모험가", "Novato Principiante"]:
+		if cur_equipped == default_t:
+			return false
+	if cur_equipped == _t("初出茅廬"):
+		return false
+	return true
+
+
+func _update_unequip_btn_state() -> void:
+	if not _unequip_btn or not is_instance_valid(_unequip_btn):
+		return
+	var is_special := _is_special_title_equipped()
+	_unequip_btn.disabled = not is_special
+	if _unequip_btn.disabled:
+		_unequip_btn.add_theme_constant_override("outline_size", 0)
+	else:
+		_unequip_btn.add_theme_constant_override("outline_size", 3)
+
+
+func get_unequip_button() -> Button:
+	return _unequip_btn
+
+
+func is_unequip_button_disabled() -> bool:
+	if _unequip_btn and is_instance_valid(_unequip_btn):
+		return _unequip_btn.disabled
+	return true
+
+
+func is_special_title_equipped() -> bool:
+	return _is_special_title_equipped()
