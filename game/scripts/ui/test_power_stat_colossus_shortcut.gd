@@ -119,6 +119,8 @@ func _switch_locale(loc_code: String) -> void:
 
 
 func _write_checklist_md() -> void:
+	if _proof_records.is_empty():
+		return
 	var md_path := _out_dir.path_join("CHECKLIST.md")
 	var f := FileAccess.open(md_path, FileAccess.WRITE)
 	if f == null:

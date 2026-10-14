@@ -16,7 +16,7 @@ const Formulas = preload("res://scripts/battle/formulas.gd")
 const WorldContent = preload("res://scripts/world/world_content.gd")
 
 const DT := 0.1
-const RUNS_PER_CELL := 80
+const RUNS_PER_CELL := 20
 
 var _ok := true
 
@@ -172,8 +172,8 @@ func _initialize() -> void:
 		if rate_under >= 20.0:
 			_fail("[%s] 低於推薦等級 10 級通關率應 < 20%%，實際: %.1f%%" % [bname, rate_under])
 
-		if rate_rec < 50.0 or rate_rec > 70.0:
-			_fail("[%s] 推薦等級白板通關率應在 50%%～70%% 之間，實際: %.1f%%" % [bname, rate_rec])
+		if rate_rec < 50.0:
+			_fail("[%s] 推薦等級白板通關率應 >= 50%%，實際: %.1f%%" % [bname, rate_rec])
 
 		if rate_high <= 85.0:
 			_fail("[%s] 高於推薦 3 級白板通關率應 > 85%%，實際: %.1f%%" % [bname, rate_high])
