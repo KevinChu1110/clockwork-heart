@@ -63,7 +63,7 @@ godot --path game --headless -s res://scripts/ui/test_windup_power_stat_shortcut
 # 輸出：TEST_WINDUP_POWER_STAT_SHORTCUT_OK (Exit 0)
 
 # 4. 關聯單元測試
-godot --path game --headless -s res://scripts/ui/test_windup_daily.gd
+godot --path game --headless -s res://scripts/systems/test_windup_daily.gd
 # 輸出：WINDUP_DAILY_OK (Exit 0)
 godot --path game --headless -s res://scripts/ui/test_windup_daily_i18n.gd
 # 輸出：WINDUP_DAILY_I18N_OK (Exit 0)
