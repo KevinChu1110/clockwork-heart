@@ -253,6 +253,7 @@ var _gourd_btns: Array[Button] = []
 var _gourd_btn_absorb: Button = null
 var _gourd_btn_draw: Button = null
 var _gourd_btn_inventory: Button = null
+var _soul_btn_go_power_stat: Button = null
 var _soul_btn_unequip_all: Button = null
 var _soul_btn_auto_equip: Button = null
 var _soul_status_bbcode_label: RichTextLabel = null
@@ -3312,6 +3313,49 @@ func _build_soul_hall_tab() -> void:
 	)
 	bot_h.add_child(btn_inv)
 	_gourd_btn_inventory = btn_inv
+
+	# 快捷按鈕：前往戰力 (金黃立體厚底 5px, 140x52px, 圓角 18px, 文字深藍紫, 零系統 Emoji)
+	var btn_pstat := Button.new()
+	btn_pstat.name = "BtnGoPowerStat"
+	var pstat_txt := _t("soul_hall.btn_go_power_stat")
+	if pstat_txt == "soul_hall.btn_go_power_stat" or pstat_txt.is_empty():
+		pstat_txt = _t("前往戰力")
+	btn_pstat.text = pstat_txt
+	btn_pstat.custom_minimum_size = Vector2(140, 52)
+	btn_pstat.add_theme_font_size_override("font_size", 16)
+	if _cached_font != null:
+		btn_pstat.add_theme_font_override("font", _cached_font)
+	var pstat_sb := StyleBoxFlat.new()
+	pstat_sb.bg_color = COLOR_GOLD
+	pstat_sb.border_color = COLOR_BORDER
+	pstat_sb.set_border_width_all(2)
+	pstat_sb.border_width_bottom = 5
+	pstat_sb.set_corner_radius_all(18)
+	pstat_sb.content_margin_top = 8
+	pstat_sb.content_margin_bottom = 8
+	pstat_sb.content_margin_left = 12
+	pstat_sb.content_margin_right = 12
+	pstat_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	pstat_sb.shadow_size = 6
+	pstat_sb.shadow_offset = Vector2(0, 3)
+	var pstat_sb_h := pstat_sb.duplicate() as StyleBoxFlat
+	pstat_sb_h.bg_color = Color("#FFE066")
+	var pstat_sb_p := pstat_sb.duplicate() as StyleBoxFlat
+	pstat_sb_p.border_width_bottom = 2
+	btn_pstat.add_theme_stylebox_override("normal", pstat_sb)
+	btn_pstat.add_theme_stylebox_override("hover", pstat_sb_h)
+	btn_pstat.add_theme_stylebox_override("pressed", pstat_sb_p)
+	btn_pstat.add_theme_stylebox_override("focus", pstat_sb)
+	btn_pstat.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_pstat.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_pstat.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+	btn_pstat.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn_pstat.pressed.connect(func():
+		_play_ui_sound()
+		open_power_stat_dialog()
+	)
+	bot_h.add_child(btn_pstat)
+	_soul_btn_go_power_stat = btn_pstat
 
 	var btn_draw := Button.new()
 	btn_draw.name = "BtnDrawTen"
@@ -6462,6 +6506,11 @@ func _apply_locale_texts() -> void:
 		_soul_btn_unequip_all.text = _t("一鍵卸下")
 	if _gourd_btn_inventory and is_instance_valid(_gourd_btn_inventory):
 		_gourd_btn_inventory.text = _t("前往背包")
+	if _soul_btn_go_power_stat and is_instance_valid(_soul_btn_go_power_stat):
+		var pstat_txt := _t("soul_hall.btn_go_power_stat")
+		if pstat_txt == "soul_hall.btn_go_power_stat" or pstat_txt.is_empty():
+			pstat_txt = _t("前往戰力")
+		_soul_btn_go_power_stat.text = pstat_txt
 	if _gourd_btn_draw and is_instance_valid(_gourd_btn_draw):
 		_gourd_btn_draw.text = _t("聚魂十連")
 	_refresh_gourds_ui()
@@ -6983,6 +7032,16 @@ func open_soul_hall() -> void:
 ## 取得聚魂殿堂前往背包快捷按鈕
 func get_soul_hall_go_inventory_btn() -> Button:
 	return _gourd_btn_inventory
+
+
+## 取得聚魂殿堂前往戰力快捷按鈕
+func get_soul_hall_go_power_stat_btn() -> Button:
+	return _soul_btn_go_power_stat
+
+
+## 相容別名
+func get_btn_soul_go_power_stat() -> Button:
+	return _soul_btn_go_power_stat
 
 
 ## 取得聚魂殿堂一鍵卸下全部戰魂按鈕
