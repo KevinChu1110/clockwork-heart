@@ -17,6 +17,7 @@ signal soul_requested()
 signal calibrate_requested()
 signal forge_requested()
 signal title_wall_requested()
+signal inventory_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -81,6 +82,7 @@ var _btn_go_soul: Button
 var _btn_go_calibrate: Button
 var _btn_go_forge: Button
 var _btn_go_title_wall: Button
+var _btn_go_inventory: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -248,6 +250,18 @@ func _build_ui() -> void:
 	_btn_go_equip.pressed.connect(_on_go_equip_pressed)
 	bottom_h.add_child(_btn_go_equip)
 
+	# 前往背包快捷按鈕（薄荷綠果凍質感，140x48px，熱區>=48px，果凍底 5px）
+	_btn_go_inventory = Button.new()
+	_btn_go_inventory.name = "BtnGoInventory"
+	var inv_txt := _t("power_stat.btn_go_inventory")
+	if inv_txt == "power_stat.btn_go_inventory" or inv_txt.is_empty():
+		inv_txt = _t("前往背包")
+	_btn_go_inventory.text = inv_txt
+	_btn_go_inventory.custom_minimum_size = Vector2(140, 48)
+	_style_jelly_btn(_btn_go_inventory, COLOR_MINT, COLOR_TEXT_DARK, 16, 5, 16)
+	_btn_go_inventory.pressed.connect(_on_go_inventory_pressed)
+	bottom_h.add_child(_btn_go_inventory)
+
 	# 確定/關閉按鈕（溫暖米黃卡片底果凍按鈕，140x48px，熱區>=48px，果凍底 5px）
 	_bottom_close_btn = Button.new()
 	_bottom_close_btn.name = "BtnBottomClose"
@@ -291,6 +305,11 @@ func refresh() -> void:
 		_btn_go_forge.text = _t("前往鍛造")
 	if _btn_go_title_wall:
 		_btn_go_title_wall.text = _t("power_stat.btn_go_title_wall")
+	if _btn_go_inventory:
+		var inv_txt := _t("power_stat.btn_go_inventory")
+		if inv_txt == "power_stat.btn_go_inventory" or inv_txt.is_empty():
+			inv_txt = _t("前往背包")
+		_btn_go_inventory.text = inv_txt
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("確定")
 
@@ -1350,6 +1369,19 @@ func _on_go_title_wall_pressed() -> void:
 
 func get_go_title_wall_button() -> Button:
 	return _btn_go_title_wall
+
+
+func _on_go_inventory_pressed() -> void:
+	inventory_requested.emit()
+	_on_close_pressed()
+
+
+func get_go_inventory_button() -> Button:
+	return _btn_go_inventory
+
+
+func get_go_soul_button() -> Button:
+	return _btn_go_soul
 
 
 func get_scroll_box() -> ScrollContainer:
