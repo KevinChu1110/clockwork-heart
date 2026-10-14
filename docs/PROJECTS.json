@@ -6405,6 +6405,16 @@
    "keys": [
     "ForgeDia"
    ]
+  },
+  {
+   "id": "battle-defeat-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "BattleDefeatDialog 戰敗結算新增前往戰力快捷按鈕連動 PowerStatDialog",
+   "status": "草稿",
+   "note": "t_2cf9d674",
+   "keys": [
+    "BattleDe"
+   ]
   }
  ]
 }
