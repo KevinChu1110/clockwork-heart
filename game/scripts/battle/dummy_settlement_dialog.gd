@@ -14,12 +14,29 @@ extends Control
 signal confirmed()
 signal retry_requested()
 signal skills_requested()
+signal go_power_stat()
+signal power_stat_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
+	if s == "dummy.btn_go_power_stat" or s == "dummy_settlement.btn_go_power_stat" or s == "前往戰力":
+		var lc := ContentLoc.locale()
+		match lc:
+			"zh_CN":
+				return "前往战力"
+			"en":
+				return "View Power"
+			"ja":
+				return "戦力へ"
+			"ko":
+				return "전투력 보기"
+			"es":
+				return "Ver Poder"
+			_:
+				return "前往戰力"
 	return ContentLoc.text("ui", s)
 
 
@@ -47,6 +64,7 @@ var _dps_label: Label
 var _tip_label: Label
 var _retry_btn: Button
 var _skills_btn: Button
+var _go_power_stat_btn: Button
 var _confirm_btn: Button
 var _cached_font: Font = null
 
@@ -94,6 +112,7 @@ var _record_evaluated: bool = false
 var _on_confirm: Callable = Callable()
 var _on_retry: Callable = Callable()
 var _on_skills: Callable = Callable()
+var _on_power_stat: Callable = Callable()
 
 
 static func _get_game_state() -> Object:
@@ -126,14 +145,14 @@ func _evaluate_record(stats: Dictionary = {}) -> void:
 		_best_dps = prev_best
 
 
-static func show_dialog(parent: Node, stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable(), on_power_stat: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/dummy_settlement_dialog.gd").new()
-	dlg.setup(stats, on_confirm, on_retry, on_skills)
+	dlg.setup(stats, on_confirm, on_retry, on_skills, on_power_stat)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable()) -> void:
+func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable(), on_power_stat: Callable = Callable()) -> void:
 	_total_damage = int(stats.get("total_damage", 0))
 	_elapsed_time = float(stats.get("elapsed_time", 0.0))
 	_dps = float(stats.get("dps", 0.0))
@@ -146,6 +165,7 @@ func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: 
 	_on_confirm = on_confirm
 	_on_retry = on_retry
 	_on_skills = on_skills
+	_on_power_stat = on_power_stat
 	_evaluate_record(stats)
 
 	if _dialog_card == null:
@@ -225,7 +245,7 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "DummySettlementCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 560)
+	_dialog_card.custom_minimum_size = Vector2(760, 560)
 	_dialog_card.add_theme_stylebox_override("panel", _create_floating_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
@@ -438,13 +458,13 @@ func _build_ui() -> void:
 
 	var btn_hbox := HBoxContainer.new()
 	btn_hbox.name = "ButtonHBox"
-	btn_hbox.add_theme_constant_override("separation", 18)
+	btn_hbox.add_theme_constant_override("separation", 12)
 	btn_center.add_child(btn_hbox)
 
 	# 1. 再次試招按鈕（暖橘立體厚底 >= 48px，高度 52px）
 	_retry_btn = Button.new()
 	_retry_btn.name = "RetryButton"
-	_retry_btn.custom_minimum_size = Vector2(170, 52)
+	_retry_btn.custom_minimum_size = Vector2(160, 52)
 	_retry_btn.add_theme_font_size_override("font_size", 18)
 	_retry_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -487,10 +507,33 @@ func _build_ui() -> void:
 	_skills_btn.pressed.connect(_on_skills_clicked)
 	btn_hbox.add_child(_skills_btn)
 
-	# 3. 完成試招按鈕（金黃立體厚底 >= 48px，高度 52px）
+	# 3. 前往戰力按鈕（天藍多巴胺立體厚底果凍按鈕，高度 48~50px 防誤觸，立體果凍厚底 5px，圓角 14px，深藍紫描邊 2px）
+	_go_power_stat_btn = Button.new()
+	_go_power_stat_btn.name = "BtnGoPowerStat"
+	_go_power_stat_btn.custom_minimum_size = Vector2(150, 50)
+	_go_power_stat_btn.add_theme_font_size_override("font_size", 18)
+	_go_power_stat_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_go_power_stat_btn.add_theme_font_override("font", _cached_font)
+
+	var power_stat_normal := _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 14, 2)
+	var power_stat_hover := _create_button_style(Color("#5CB2FF"), COLOR_BORDER, 5, 14, 2)
+	var power_stat_pressed := _create_button_style(Color("#2680D9"), COLOR_BORDER, 2, 14, 2)
+	power_stat_pressed.content_margin_top = 11
+	power_stat_pressed.content_margin_bottom = 7
+
+	_go_power_stat_btn.add_theme_stylebox_override("normal", power_stat_normal)
+	_go_power_stat_btn.add_theme_stylebox_override("hover", power_stat_hover)
+	_go_power_stat_btn.add_theme_stylebox_override("pressed", power_stat_pressed)
+	_go_power_stat_btn.add_theme_stylebox_override("focus", power_stat_normal)
+
+	_go_power_stat_btn.pressed.connect(_on_power_stat_clicked)
+	btn_hbox.add_child(_go_power_stat_btn)
+
+	# 4. 完成試招按鈕（金黃立體厚底 >= 48px，高度 52px）
 	_confirm_btn = Button.new()
 	_confirm_btn.name = "ConfirmButton"
-	_confirm_btn.custom_minimum_size = Vector2(170, 52)
+	_confirm_btn.custom_minimum_size = Vector2(160, 52)
 	_confirm_btn.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_confirm_btn.add_theme_font_size_override("font_size", 18)
 	_confirm_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -547,6 +590,8 @@ func _update_ui_texts() -> void:
 		_retry_btn.text = _t("再次試招")
 	if _skills_btn and is_instance_valid(_skills_btn):
 		_skills_btn.text = _t("調整心法")
+	if _go_power_stat_btn and is_instance_valid(_go_power_stat_btn):
+		_go_power_stat_btn.text = _t("前往戰力")
 	if _confirm_btn and is_instance_valid(_confirm_btn):
 		_confirm_btn.text = _t("完成試招")
 	if _record_badge_lbl and is_instance_valid(_record_badge_lbl):
@@ -1047,6 +1092,34 @@ func _on_skills_clicked() -> void:
 	queue_free()
 
 
+func _on_power_stat_clicked() -> void:
+	go_power_stat.emit()
+	power_stat_requested.emit()
+	if _on_power_stat.is_valid():
+		_on_power_stat.call()
+	_try_open_power_stat()
+	queue_free()
+
+
+func _try_open_power_stat() -> void:
+	var cur: Node = get_parent()
+	while cur != null:
+		if cur.has_method("open_power_stat_dialog"):
+			cur.call("open_power_stat_dialog")
+			return
+		cur = cur.get_parent()
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree != null and tree.root != null:
+		var ml = tree.root.find_child("MobileLobby", true, false)
+		if ml != null and ml.has_method("open_power_stat_dialog"):
+			ml.call("open_power_stat_dialog")
+			return
+		var bv = tree.root.find_child("BattleView", true, false)
+		if bv != null and bv.has_method("open_power_stat_dialog"):
+			bv.call("open_power_stat_dialog")
+			return
+
+
 func get_total_damage() -> int:
 	return _total_damage
 
@@ -1117,6 +1190,22 @@ func get_skills_text() -> String:
 
 func get_skills_btn() -> Button:
 	return _skills_btn
+
+
+func get_go_power_stat_button() -> Button:
+	return _go_power_stat_btn
+
+
+func get_power_stat_button() -> Button:
+	return _go_power_stat_btn
+
+
+func get_go_power_stat_button_text() -> String:
+	return _go_power_stat_btn.text if _go_power_stat_btn else ""
+
+
+func get_go_power_stat_text() -> String:
+	return _go_power_stat_btn.text if _go_power_stat_btn else ""
 
 
 func get_confirm_text() -> String:

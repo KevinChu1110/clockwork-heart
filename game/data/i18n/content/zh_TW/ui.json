@@ -1999,5 +1999,7 @@
   "前往挑戰": "前往挑戰",
   "colossus.btn_confirm": "確定",
   "colossus.btn_go_power_stat": "前往戰力",
-  "colossus.btn_go_forge": "前往鍛造"
+  "colossus.btn_go_forge": "前往鍛造",
+  "dummy.btn_go_power_stat": "前往戰力",
+  "dummy_settlement.btn_go_power_stat": "前往戰力"
 }
