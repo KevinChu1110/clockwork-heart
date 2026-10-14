@@ -6425,6 +6425,16 @@
    "keys": [
     "Clockwor"
    ]
+  },
+  {
+   "id": "inventory-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "探索背包底欄新增前往戰力快捷按鈕連動PowerStatDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "探索背包底欄新增"
+   ]
   }
  ]
 }
