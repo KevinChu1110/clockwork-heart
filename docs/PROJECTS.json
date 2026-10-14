@@ -6425,6 +6425,16 @@
    "keys": [
     "Clockwor"
    ]
+  },
+  {
+   "id": "colossus-limit-shortcuts",
+   "cat": "遊戲",
+   "title": "ColossusLimitDialog 停擺巨偶限制彈窗新增前往戰力與前往鍛造快捷果凍按鈕",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "Colossus"
+   ]
   }
  ]
 }
