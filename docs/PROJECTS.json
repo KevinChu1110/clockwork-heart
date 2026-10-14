@@ -6385,6 +6385,16 @@
    "keys": [
     "SkillDia"
    ]
+  },
+  {
+   "id": "gem-workshop-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "GemWorkshopDialog 手藝工坊新增前往戰力快捷果凍按鈕連動 PowerStatDialog",
+   "status": "草稿",
+   "note": "開始開發",
+   "keys": [
+    "GemWorks"
+   ]
   }
  ]
 }
