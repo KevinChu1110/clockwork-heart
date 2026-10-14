@@ -12,6 +12,7 @@ extends Control
 
 signal closed()
 signal practice_dummy_requested()
+signal power_stat_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -59,6 +60,7 @@ var _title_lbl: Label
 var _sub_title_lbl: Label
 var _close_x_btn: Button
 var _dummy_btn: Button
+var _go_power_stat_btn: Button
 var _bottom_close_btn: Button
 
 ## 戰鬥優先區塊
@@ -279,10 +281,11 @@ func _build_ui() -> void:
 	_skill_cards_box.add_theme_constant_override("separation", 10)
 	_scroll_box.add_child(_skill_cards_box)
 
-	# 7. 底部控制列（左側：前往木人樁試招，右側：關閉）
+	# 7. 底部控制列（左側：前往木人樁試招、前往戰力，右側：關閉）
 	var bot_h := HBoxContainer.new()
 	bot_h.name = "BottomBar"
 	bot_h.alignment = BoxContainer.ALIGNMENT_BEGIN
+	bot_h.add_theme_constant_override("separation", 10)
 	root_v.add_child(bot_h)
 
 	# 左側天藍立體果凍『前往木人樁試招』按鈕（高50px、熱區>=48px、圓角18px、底邊厚底5px）
@@ -292,6 +295,14 @@ func _build_ui() -> void:
 	_style_jelly_btn(_dummy_btn, COLOR_SKY, COLOR_TEXT_DARK, 16, 5, 18)
 	_dummy_btn.pressed.connect(_on_practice_dummy_pressed)
 	bot_h.add_child(_dummy_btn)
+
+	# 金黃立體果凍『前往戰力』按鈕（熱區 160x50px >= 48px、果凍厚底 5px、圓角 18px、字級 16px 開源粉圓體、零系統 Emoji）
+	_go_power_stat_btn = Button.new()
+	_go_power_stat_btn.name = "BtnGoPowerStat"
+	_go_power_stat_btn.custom_minimum_size = Vector2(160, 50)
+	_style_jelly_btn(_go_power_stat_btn, COLOR_GOLD, COLOR_TEXT_DARK, 16, 5, 18)
+	_go_power_stat_btn.pressed.connect(_on_go_power_stat_pressed)
+	bot_h.add_child(_go_power_stat_btn)
 
 	# 彈性間隔撐開左右分列
 	var bot_spacer := Control.new()
@@ -319,6 +330,11 @@ func _on_practice_dummy_pressed() -> void:
 	_on_close_pressed()
 
 
+func _on_go_power_stat_pressed() -> void:
+	power_stat_requested.emit()
+	_on_close_pressed()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -333,6 +349,16 @@ func _update_ui_texts() -> void:
 		_close_x_btn.text = "✕"
 	if _dummy_btn:
 		_dummy_btn.text = _t("前往木人樁試招")
+	if _go_power_stat_btn:
+		var txt := ""
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+			if loc and loc.has_method("t"):
+				txt = str(loc.call("t", "skill.btn_go_power_stat"))
+		if txt == "" or txt == "skill.btn_go_power_stat":
+			txt = _t("前往戰力")
+		_go_power_stat_btn.text = txt
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("關閉")
 
@@ -845,6 +871,10 @@ func _style_jelly_btn(btn: Button, bg_col: Color, text_col: Color, font_sz: int,
 ## ── 供單元測試與自動化驗證的查詢 API ──
 func get_practice_dummy_button() -> Button:
 	return _dummy_btn
+
+
+func get_go_power_stat_button() -> Button:
+	return _go_power_stat_btn
 
 
 func get_bottom_close_button() -> Button:

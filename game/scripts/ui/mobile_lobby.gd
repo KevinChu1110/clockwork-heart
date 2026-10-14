@@ -6803,7 +6803,7 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 ## 開啟招式心法彈窗
 func open_skill_dialog() -> Control:
 	var existing = get_node_or_null("SkillDialog")
-	if existing != null:
+	if existing != null and is_instance_valid(existing) and not existing.is_queued_for_deletion():
 		return existing
 	var SkillClass: GDScript = load("res://scripts/ui/skill_dialog.gd")
 	if SkillClass == null:
@@ -6817,6 +6817,10 @@ func open_skill_dialog() -> Control:
 	if dlg.has_signal("practice_dummy_requested"):
 		dlg.practice_dummy_requested.connect(func():
 			request_battle.emit("training_dummy")
+		)
+	if dlg.has_signal("power_stat_requested"):
+		dlg.power_stat_requested.connect(func():
+			open_power_stat_dialog()
 		)
 	add_child(dlg)
 	return dlg

@@ -1331,6 +1331,10 @@ func _on_go_forge_pressed() -> void:
 	_on_close_pressed()
 
 
+func get_go_skill_button() -> Button:
+	return _btn_go_skill
+
+
 func get_go_forge_button() -> Button:
 	return _btn_go_forge
 
