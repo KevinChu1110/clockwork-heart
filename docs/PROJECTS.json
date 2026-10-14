@@ -6450,8 +6450,8 @@
    "id": "vault-power-stat-shortcut",
    "cat": "遊戲",
    "title": "ClockworkVaultDialog 發條儲能庫放置收益新增前往戰力快捷按鈕連動 PowerStatDialog",
-   "status": "測試中",
-   "note": "完成開發、自測與截圖存證，送審 sideqa",
+   "status": "已上線",
+   "note": "已合併至 main 分支並完成回歸驗收上線 (t_332c3048)",
    "keys": [
     "Clockwor"
    ]
