@@ -3882,5 +3882,7 @@
   "前往挑戰": "도전하기",
   "colossus.btn_confirm": "확인",
   "colossus.btn_go_power_stat": "전투력으로 이동",
-  "colossus.btn_go_forge": "단조로 이동"
+  "colossus.btn_go_forge": "단조로 이동",
+  "dummy.btn_go_power_stat": "전투력 보기",
+  "dummy_settlement.btn_go_power_stat": "전투력 보기"
 }

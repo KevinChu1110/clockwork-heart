@@ -3882,5 +3882,7 @@
   "前往挑戰": "Challenge",
   "colossus.btn_confirm": "OK",
   "colossus.btn_go_power_stat": "Go to Stats",
-  "colossus.btn_go_forge": "Go to Forge"
+  "colossus.btn_go_forge": "Go to Forge",
+  "dummy.btn_go_power_stat": "View Power",
+  "dummy_settlement.btn_go_power_stat": "View Power"
 }

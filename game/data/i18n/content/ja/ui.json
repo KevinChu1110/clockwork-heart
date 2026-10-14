@@ -3882,5 +3882,7 @@
   "前往挑戰": "挑戦へ",
   "colossus.btn_confirm": "確認",
   "colossus.btn_go_power_stat": "戦力詳細へ",
-  "colossus.btn_go_forge": "鍛造へ進む"
+  "colossus.btn_go_forge": "鍛造へ進む",
+  "dummy.btn_go_power_stat": "戦力へ",
+  "dummy_settlement.btn_go_power_stat": "戦力へ"
 }

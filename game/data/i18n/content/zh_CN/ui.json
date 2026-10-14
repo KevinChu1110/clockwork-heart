@@ -3886,5 +3886,7 @@
   "停摆巨偶": "停摆巨偶",
   "colossus.btn_confirm": "确定",
   "colossus.btn_go_power_stat": "前往战力",
-  "colossus.btn_go_forge": "前往锻造"
+  "colossus.btn_go_forge": "前往锻造",
+  "dummy.btn_go_power_stat": "前往战力",
+  "dummy_settlement.btn_go_power_stat": "前往战力"
 }

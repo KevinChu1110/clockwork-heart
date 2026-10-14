@@ -5804,8 +5804,20 @@ func _show_dummy_settlement(won: bool) -> void:
 			_restart_dummy_training(),
 		func():
 			_dummy_settlement_dialog = null
-			skills_requested.emit()
+			skills_requested.emit(),
+		_on_power_stat_dummy
 	)
+	if _dummy_settlement_dialog and _dummy_settlement_dialog.has_signal("power_stat_requested") and not _dummy_settlement_dialog.power_stat_requested.is_connected(_on_power_stat_dummy):
+		_dummy_settlement_dialog.power_stat_requested.connect(_on_power_stat_dummy)
+	if _dummy_settlement_dialog and _dummy_settlement_dialog.has_signal("go_power_stat") and not _dummy_settlement_dialog.go_power_stat.is_connected(_on_power_stat_dummy):
+		_dummy_settlement_dialog.go_power_stat.connect(_on_power_stat_dummy)
+
+
+func _on_power_stat_dummy() -> void:
+	if _dummy_settlement_dialog != null and is_instance_valid(_dummy_settlement_dialog):
+		_dummy_settlement_dialog = null
+	power_stat_requested.emit()
+	open_power_stat_dialog()
 
 
 func _restart_dummy_training() -> void:
