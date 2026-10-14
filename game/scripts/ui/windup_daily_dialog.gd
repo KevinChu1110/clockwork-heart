@@ -15,6 +15,7 @@ extends Control
 signal closed()
 signal sortie_requested()
 signal colossus_requested()
+signal power_stat_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -49,6 +50,7 @@ var _choices_box: HBoxContainer
 var _msg_label: Label
 var _foot_box: HBoxContainer
 var _btn_leave: Button
+var _btn_power_stat: Button
 var _btn_sortie: Button
 var _btn_colossus: Button
 var _btn_done: Button
@@ -300,6 +302,23 @@ func _build_ui() -> void:
 	_btn_leave.pressed.connect(_on_close)
 	_foot_box.add_child(_btn_leave)
 
+	_btn_power_stat = Button.new()
+	_btn_power_stat.name = "BtnGoPowerStat"
+	_btn_power_stat.text = _t("前往戰力")
+	_btn_power_stat.custom_minimum_size = Vector2(180, 52)
+	_btn_power_stat.add_theme_font_size_override("font_size", 16)
+	_btn_power_stat.add_theme_color_override("font_color", Color.WHITE)
+	_btn_power_stat.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_power_stat.add_theme_constant_override("outline_size", 4)
+	if _cached_font:
+		_btn_power_stat.add_theme_font_override("font", _cached_font)
+	_btn_power_stat.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 20, 2))
+	_btn_power_stat.add_theme_stylebox_override("hover", _create_button_style(Color("#5CB3FF"), COLOR_BORDER, 5, 20, 2))
+	_btn_power_stat.add_theme_stylebox_override("pressed", _create_button_style(Color("#268CE6"), COLOR_BORDER, 2, 20, 2))
+	_btn_power_stat.pressed.connect(_on_go_to_power_stat)
+	_btn_power_stat.visible = false
+	_foot_box.add_child(_btn_power_stat)
+
 	_btn_sortie = Button.new()
 	_btn_sortie.name = "BtnGoSortie"
 	_btn_sortie.text = _t("前往出征")
@@ -340,6 +359,8 @@ func _update_ui_texts() -> void:
 		_title_label.text = _t("冒險委託 · 今天誰需要上發條")
 	if _btn_leave:
 		_btn_leave.text = _t("離開委託")
+	if _btn_power_stat and is_instance_valid(_btn_power_stat):
+		_btn_power_stat.text = _t("前往戰力")
 	if _btn_sortie:
 		_btn_sortie.text = _t("前往出征")
 	if _btn_colossus:
@@ -410,14 +431,19 @@ func _refresh_display() -> void:
 				_choices_box.add_child(_btn_done)
 			_btn_done.text = _t("今日委託已完成（當日不可再領）")
 
+		if _btn_leave:
+			_btn_leave.custom_minimum_size = Vector2(130, 52) if has_colossus_entries else Vector2(150, 52)
+		if _btn_power_stat:
+			_btn_power_stat.visible = true
+			_btn_power_stat.custom_minimum_size = Vector2(160, 52) if has_colossus_entries else Vector2(180, 52)
 		if _btn_sortie:
 			_btn_sortie.visible = true
-			_btn_sortie.custom_minimum_size = Vector2(210, 52) if has_colossus_entries else Vector2(240, 52)
+			_btn_sortie.custom_minimum_size = Vector2(170, 52) if has_colossus_entries else Vector2(210, 52)
 		if _btn_colossus:
 			_btn_colossus.visible = has_colossus_entries
-			_btn_colossus.custom_minimum_size = Vector2(240, 52)
-		if _btn_leave:
-			_btn_leave.custom_minimum_size = Vector2(150, 52) if has_colossus_entries else Vector2(160, 52)
+			_btn_colossus.custom_minimum_size = Vector2(190, 52)
+		if _foot_box:
+			_foot_box.add_theme_constant_override("separation", 10 if has_colossus_entries else 14)
 	else:
 		if _btn_done and is_instance_valid(_btn_done):
 			_btn_done.queue_free()
@@ -439,12 +465,16 @@ func _refresh_display() -> void:
 			_msg_label.text = _t("完成委託獎勵：金幣 +25、星塵 +1、發條碎片 +1")
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_ORANGE)
 
+		if _btn_power_stat:
+			_btn_power_stat.visible = false
 		if _btn_sortie:
 			_btn_sortie.visible = false
 		if _btn_colossus:
 			_btn_colossus.visible = false
 		if _btn_leave:
 			_btn_leave.custom_minimum_size = Vector2(180, 52)
+		if _foot_box:
+			_foot_box.add_theme_constant_override("separation", 16)
 
 		var choices: Array = c.get("choices", [])
 		for i in range(choices.size()):
@@ -490,6 +520,14 @@ func _on_choice_selected(choice_id: String) -> void:
 			_msg_label.add_theme_color_override("font_color", COLOR_TEXT_PINK)
 
 
+func get_power_stat_button() -> Button:
+	return _btn_power_stat
+
+
+func get_go_power_stat_button() -> Button:
+	return _btn_power_stat
+
+
 func get_sortie_button() -> Button:
 	return _btn_sortie
 
@@ -515,6 +553,16 @@ func _get_colossus_remaining_entries() -> int:
 		if gs and "colossus_daily_entries" in gs:
 			return int(gs.get("colossus_daily_entries"))
 	return 3
+
+
+func _on_go_to_power_stat() -> void:
+	power_stat_requested.emit()
+	var p := get_parent()
+	if p:
+		if p.has_method("open_power_stat_dialog"):
+			if power_stat_requested.get_connections().is_empty():
+				p.call("open_power_stat_dialog")
+	_on_close()
 
 
 func _on_go_to_sortie() -> void:

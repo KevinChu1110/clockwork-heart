@@ -87,6 +87,14 @@ func _run_test_suite() -> void:
 		"ko": "멈춰 선 거신으로",
 		"es": "Ir al Coloso Paralizado"
 	}
+	var expected_power_stat := {
+		"zh_TW": "前往戰力",
+		"zh_CN": "前往战力",
+		"en": "Go to Stats",
+		"ja": "戦力詳細へ",
+		"ko": "전투력으로 이동",
+		"es": "Ir a Estadísticas"
+	}
 	var expected_done := {
 		"zh_TW": "今日委託已完成（當日不可再領）",
 		"zh_CN": "今日委托已完成（当日不可再领）",
@@ -210,9 +218,15 @@ func _run_test_suite() -> void:
 		ws.call("refresh")
 	dialog.call("_refresh_display")
 
+	var btn_power_stat: Button = dialog.find_child("BtnGoPowerStat", true, false)
 	var btn_sortie: Button = dialog.find_child("BtnGoSortie", true, false)
 	var btn_colossus: Button = dialog.find_child("BtnGoColossus", true, false)
 	var btn_done: Button = dialog.find_child("BtnDoneStatus", true, false)
+
+	if not btn_power_stat or not btn_power_stat.visible or btn_power_stat.text != expected_power_stat["ja"]:
+		_fail("ja 已完成狀態下前往戰力鈕未顯示或文字不符: %s" % (btn_power_stat.text if btn_power_stat else "null"))
+	else:
+		print("  ✓ [ja] 前往戰力鈕 -> ", btn_power_stat.text)
 
 	if not btn_sortie or btn_sortie.text != expected_sortie["ja"]:
 		_fail("ja 已完成狀態下出征鈕文字不符: %s" % (btn_sortie.text if btn_sortie else "null"))
@@ -232,6 +246,10 @@ func _run_test_suite() -> void:
 	# 切換回 en 驗證已完成按鈕連動
 	if loc_node:
 		loc_node.call("set_locale", "en")
+	if btn_power_stat.text != expected_power_stat["en"]:
+		_fail("en 已完成狀態下前往戰力鈕文字不符: %s" % btn_power_stat.text)
+	else:
+		print("  ✓ [en] 前往戰力鈕動態變更 -> ", btn_power_stat.text)
 	if btn_sortie.text != expected_sortie["en"]:
 		_fail("en 已完成狀態下出征鈕文字不符: %s" % btn_sortie.text)
 	else:
