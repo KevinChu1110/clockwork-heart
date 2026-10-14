@@ -5235,9 +5235,11 @@ func _show_defeat_settlement() -> void:
 			var WC = load("res://scripts/world/world_content.gd")
 			if WC and WC.has_method("colossus_weak_part"):
 				part_hint = str(WC.call("colossus_weak_part", _mode))
-	_defeat_settlement_dialog = BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint, _on_gear_up_defeat, _on_retry_stage_defeat)
+	_defeat_settlement_dialog = BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint, _on_gear_up_defeat, _on_retry_stage_defeat, _on_power_stat_defeat)
 	if _defeat_settlement_dialog and _defeat_settlement_dialog.has_signal("retry_stage_requested") and not _defeat_settlement_dialog.retry_stage_requested.is_connected(_on_retry_stage_defeat):
 		_defeat_settlement_dialog.retry_stage_requested.connect(_on_retry_stage_defeat)
+	if _defeat_settlement_dialog and _defeat_settlement_dialog.has_signal("power_stat_requested") and not _defeat_settlement_dialog.power_stat_requested.is_connected(_on_power_stat_defeat):
+		_defeat_settlement_dialog.power_stat_requested.connect(_on_power_stat_defeat)
 
 
 func _on_ad_revive_success() -> void:
@@ -5271,6 +5273,29 @@ func _on_gear_up_defeat() -> void:
 		_defeat_settlement_dialog = null
 	gear_up_requested.emit()
 	battle_finished.emit(false)
+
+
+func open_power_stat_dialog() -> Control:
+	var existing = get_node_or_null("PowerStatDialog")
+	if existing != null and is_instance_valid(existing):
+		if not existing.is_queued_for_deletion():
+			return existing
+		else:
+			remove_child(existing)
+	var PowerStatClass: GDScript = load("res://scripts/ui/power_stat_dialog.gd")
+	if PowerStatClass == null:
+		return null
+	var dlg: Control = PowerStatClass.new() as Control
+	dlg.name = "PowerStatDialog"
+	dlg.z_index = 100
+	add_child(dlg)
+	return dlg
+
+
+func _on_power_stat_defeat() -> void:
+	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
+		_defeat_settlement_dialog = null
+	open_power_stat_dialog()
 
 
 func _on_gear_up_victory() -> void:
