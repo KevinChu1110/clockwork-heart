@@ -6545,6 +6545,16 @@
    "keys": [
     "PowerSta"
    ]
+  },
+  {
+   "id": "energy-lack-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "EnergyLackDialog 能量不足彈窗新增前往戰力快捷按鈕連動 PowerStatDialog",
+   "status": "草稿",
+   "note": "能量不足彈窗新增前往戰力快捷按鈕連動 PowerStatDialog",
+   "keys": [
+    "EnergyLa"
+   ]
   }
  ]
 }
