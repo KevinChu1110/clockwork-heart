@@ -4230,5 +4230,8 @@
   "skill.btn_go_power_stat": "Go to Stats",
   "前往戰力": "Go to Stats",
   "gem_workshop.btn_go_power_stat": "Go to Stats",
-  "forge.btn_go_power_stat": "Go to Stats"
+  "forge.btn_go_power_stat": "Go to Stats",
+  "colossus.btn_confirm": "OK",
+  "colossus.btn_go_power_stat": "Go to Stats",
+  "colossus.btn_go_forge": "Go to Forge"
 }

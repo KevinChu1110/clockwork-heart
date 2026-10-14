@@ -3871,5 +3871,8 @@
   "skill.btn_go_power_stat": "前往战力",
   "前往戰力": "前往战力",
   "gem_workshop.btn_go_power_stat": "前往战力",
-  "forge.btn_go_power_stat": "前往战力"
+  "forge.btn_go_power_stat": "前往战力",
+  "colossus.btn_confirm": "确定",
+  "colossus.btn_go_power_stat": "前往战力",
+  "colossus.btn_go_forge": "前往锻造"
 }
