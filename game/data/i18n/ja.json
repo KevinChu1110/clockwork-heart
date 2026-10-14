@@ -4241,5 +4241,8 @@
   "power_stat.colossus_target": "推奨目標: %s",
   "power_stat.colossus_desc": "過負荷の巨像に毎日挑戦し、コアパーツや強化素材を獲得",
   "power_stat.btn_go_colossus": "挑戦へ",
-  "前往挑戰": "挑戦へ"
+  "前往挑戰": "挑戦へ",
+  "colossus.btn_confirm": "確認",
+  "colossus.btn_go_power_stat": "戦力詳細へ",
+  "colossus.btn_go_forge": "鍛造へ進む"
 }

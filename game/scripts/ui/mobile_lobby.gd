@@ -3763,6 +3763,11 @@ func _show_colossus_limit_dialog() -> Control:
 	dlg.mouse_filter = Control.MOUSE_FILTER_STOP
 	dlg.z_index = 90
 
+	dlg.add_user_signal("power_stat_requested")
+	dlg.add_user_signal("forge_requested")
+	dlg.add_user_signal("confirmed")
+	dlg.add_user_signal("closed")
+
 	var scrim := ResponsiveUi.make_scrim(ResponsiveUi.SCRIM_COLOR)
 	dlg.add_child(scrim)
 	var scrim_btn := Button.new()
@@ -3770,7 +3775,10 @@ func _show_colossus_limit_dialog() -> Control:
 	scrim_btn.flat = true
 	var esb := StyleBoxEmpty.new()
 	scrim_btn.add_theme_stylebox_override("normal", esb)
-	scrim_btn.pressed.connect(func(): dlg.queue_free())
+	scrim_btn.pressed.connect(func():
+		dlg.emit_signal("closed")
+		dlg.queue_free()
+	)
 	scrim.add_child(scrim_btn)
 
 	var center := CenterContainer.new()
@@ -3809,7 +3817,10 @@ func _show_colossus_limit_dialog() -> Control:
 	title_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	head.add_child(title_lbl)
 
-	var close_btn := ResponsiveUi.make_close_button(func(): dlg.queue_free())
+	var close_btn := ResponsiveUi.make_close_button(func():
+		dlg.emit_signal("closed")
+		dlg.queue_free()
+	)
 	head.add_child(close_btn)
 
 	var sep := ColorRect.new()
@@ -3827,26 +3838,88 @@ func _show_colossus_limit_dialog() -> Control:
 
 	var btn_row := HBoxContainer.new()
 	btn_row.alignment = BoxContainer.ALIGNMENT_CENTER
+	btn_row.add_theme_constant_override("separation", 16)
 	v.add_child(btn_row)
 
 	var ok_btn := Button.new()
 	ok_btn.name = "ConfirmButton"
-	ok_btn.text = _t("確定")
-	ok_btn.custom_minimum_size = Vector2(200, 52)
+	var ok_txt := _t("colossus.btn_confirm")
+	if ok_txt == "colossus.btn_confirm" or ok_txt.is_empty():
+		ok_txt = _t("確定")
+	ok_btn.text = ok_txt
+	ok_btn.custom_minimum_size = Vector2(160, 52)
 	ok_btn.add_theme_font_size_override("font_size", 18)
-	var bsb := StyleBoxFlat.new()
-	bsb.bg_color = COLOR_GOLD
-	bsb.border_color = COLOR_BORDER
-	bsb.set_border_width_all(2)
-	bsb.border_width_bottom = 5
-	bsb.set_corner_radius_all(18)
-	ok_btn.add_theme_stylebox_override("normal", bsb)
+	if _cached_font != null:
+		ok_btn.add_theme_font_override("font", _cached_font)
+	ok_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18))
+	ok_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18))
+	ok_btn.add_theme_stylebox_override("pressed", _create_button_style(COLOR_GOLD, COLOR_BORDER, 2, 18))
 	ok_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	ok_btn.pressed.connect(func(): dlg.queue_free())
+	ok_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	ok_btn.pressed.connect(func():
+		_play_ui_sound()
+		dlg.emit_signal("confirmed")
+		dlg.emit_signal("closed")
+		dlg.queue_free()
+	)
 	btn_row.add_child(ok_btn)
+
+	var btn_power_stat := Button.new()
+	btn_power_stat.name = "BtnGoPowerStat"
+	var pstat_txt := _t("colossus.btn_go_power_stat")
+	if pstat_txt == "colossus.btn_go_power_stat" or pstat_txt.is_empty():
+		pstat_txt = _t("前往戰力")
+	btn_power_stat.text = pstat_txt
+	btn_power_stat.custom_minimum_size = Vector2(160, 52)
+	btn_power_stat.add_theme_font_size_override("font_size", 18)
+	if _cached_font != null:
+		btn_power_stat.add_theme_font_override("font", _cached_font)
+	btn_power_stat.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18))
+	btn_power_stat.add_theme_stylebox_override("hover", _create_button_style(Color("#5CB3FF"), COLOR_BORDER, 5, 18))
+	btn_power_stat.add_theme_stylebox_override("pressed", _create_button_style(COLOR_SKY, COLOR_BORDER, 2, 18))
+	btn_power_stat.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_power_stat.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn_power_stat.pressed.connect(func():
+		_play_ui_sound()
+		dlg.emit_signal("power_stat_requested")
+		dlg.emit_signal("closed")
+		dlg.queue_free()
+		open_power_stat_dialog()
+	)
+	btn_row.add_child(btn_power_stat)
+
+	var btn_forge := Button.new()
+	btn_forge.name = "BtnGoForge"
+	var forge_txt := _t("colossus.btn_go_forge")
+	if forge_txt == "colossus.btn_go_forge" or forge_txt.is_empty():
+		forge_txt = _t("前往鍛造")
+	btn_forge.text = forge_txt
+	btn_forge.custom_minimum_size = Vector2(160, 52)
+	btn_forge.add_theme_font_size_override("font_size", 18)
+	if _cached_font != null:
+		btn_forge.add_theme_font_override("font", _cached_font)
+	btn_forge.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+	btn_forge.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB84D"), COLOR_BORDER, 5, 18))
+	btn_forge.add_theme_stylebox_override("pressed", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 2, 18))
+	btn_forge.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_forge.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn_forge.pressed.connect(func():
+		_play_ui_sound()
+		dlg.emit_signal("forge_requested")
+		dlg.emit_signal("closed")
+		dlg.queue_free()
+		open_forge()
+	)
+	btn_row.add_child(btn_forge)
 
 	add_child(dlg)
 	return dlg
+
+func show_colossus_limit_dialog() -> Control:
+	return _show_colossus_limit_dialog()
+
+func get_colossus_limit_dialog() -> Control:
+	return get_node_or_null("ColossusLimitDialog") as Control
 
 func _select_region(r: int) -> void:
 	_selected_region = r
@@ -6613,6 +6686,33 @@ func _apply_locale_texts() -> void:
 	if _bag_layer and is_instance_valid(_bag_layer):
 		_update_bag_detail(_get_inv_sys())
 		_refresh_core_bag()
+
+	var colossus_limit_dlg := get_node_or_null("ColossusLimitDialog")
+	if colossus_limit_dlg and is_instance_valid(colossus_limit_dlg):
+		var c_title := colossus_limit_dlg.find_child("ColossusLimitTitle", true, false) as Label
+		if c_title:
+			c_title.text = _t("停擺巨偶挑戰")
+		var c_desc := colossus_limit_dlg.find_child("ColossusLimitDesc", true, false) as Label
+		if c_desc:
+			c_desc.text = _t("今日挑戰次數已用盡，請明天再來！") + "\n\n" + _t("每日挑戰上限 3 次，每日 00:00 自動重置挑戰次數。")
+		var c_ok := colossus_limit_dlg.find_child("ConfirmButton", true, false) as Button
+		if c_ok:
+			var ok_t := _t("colossus.btn_confirm")
+			if ok_t == "colossus.btn_confirm" or ok_t.is_empty():
+				ok_t = _t("確定")
+			c_ok.text = ok_t
+		var c_pstat := colossus_limit_dlg.find_child("BtnGoPowerStat", true, false) as Button
+		if c_pstat:
+			var pst_t := _t("colossus.btn_go_power_stat")
+			if pst_t == "colossus.btn_go_power_stat" or pst_t.is_empty():
+				pst_t = _t("前往戰力")
+			c_pstat.text = pst_t
+		var c_forge := colossus_limit_dlg.find_child("BtnGoForge", true, false) as Button
+		if c_forge:
+			var frg_t := _t("colossus.btn_go_forge")
+			if frg_t == "colossus.btn_go_forge" or frg_t.is_empty():
+				frg_t = _t("前往鍛造")
+			c_forge.text = frg_t
 
 	refresh_hud()
 

@@ -3879,5 +3879,8 @@
   "power_stat.colossus_target": "추천 목표: %s",
   "power_stat.colossus_desc": "매일 과부하 거상에 도전하여 코어 부품과 기어 승급 재료를 획득하세요",
   "power_stat.btn_go_colossus": "도전하기",
-  "前往挑戰": "도전하기"
+  "前往挑戰": "도전하기",
+  "colossus.btn_confirm": "확인",
+  "colossus.btn_go_power_stat": "전투력으로 이동",
+  "colossus.btn_go_forge": "단조로 이동"
 }

@@ -2358,5 +2358,8 @@
   "power_stat.colossus_target": "推薦目標: %s",
   "power_stat.colossus_desc": "每日挑戰零件過載巨偶，獲取核心機芯與齒輪升階素材",
   "power_stat.btn_go_colossus": "前往挑戰",
-  "前往挑戰": "前往挑戰"
+  "前往挑戰": "前往挑戰",
+  "colossus.btn_confirm": "確定",
+  "colossus.btn_go_power_stat": "前往戰力",
+  "colossus.btn_go_forge": "前往鍛造"
 }

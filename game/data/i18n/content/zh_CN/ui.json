@@ -3883,5 +3883,8 @@
   "power_stat.colossus_desc": "每日挑战零件过载巨偶，获取核心机芯与齿轮升阶素材",
   "power_stat.btn_go_colossus": "前往挑战",
   "前往挑战": "前往挑战",
-  "停摆巨偶": "停摆巨偶"
+  "停摆巨偶": "停摆巨偶",
+  "colossus.btn_confirm": "确定",
+  "colossus.btn_go_power_stat": "前往战力",
+  "colossus.btn_go_forge": "前往锻造"
 }
