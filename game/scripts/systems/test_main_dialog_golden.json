@@ -819,6 +819,17 @@
   ]
  },
  {
+  "key": "skill.tutor_deny",
+  "src_line": 0,
+  "vars": {},
+  "expect": [
+   {
+    "speaker": "灰鬚",
+    "text": "金幣，或你已經頂了。"
+   }
+  ]
+ },
+ {
   "key": "soul.equipped",
   "src_line": 0,
   "vars": {},
