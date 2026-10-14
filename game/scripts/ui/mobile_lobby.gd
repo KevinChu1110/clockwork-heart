@@ -7062,6 +7062,10 @@ func open_shop() -> Control:
 		dlg.forge_requested.connect(func():
 			open_forge()
 		)
+	if dlg.has_signal("power_stat_requested"):
+		dlg.power_stat_requested.connect(func():
+			open_power_stat_dialog()
+		)
 	dlg.tree_exited.connect(func():
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
 		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_inv:
