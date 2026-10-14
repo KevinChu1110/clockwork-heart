@@ -666,7 +666,7 @@
   "曜黑輕量合金機關戰裝與黃金齒輪暗扣": "Traje de combate de aleación de obsidiana con cierres de engranajes dorados",
   "曜黑高光耐熱琺瑯與暗金黃銅關節": "Esmalte resistente al calor negro obsidiana y juntas de latón oscuro",
   "更衣 · 發條衣櫥": "Vestuario · Armario de Cuerda",
-  "最高單擊": "Golpe máx.",
+  "最高單擊": "Golpe Máx.",
   "有效戰力": "Poder Efectivo",
   "有效戰力 %d": "Poder Efectivo %d",
   "木人樁為不消耗能量的自由試招訓練。可在武術館兵器架調配各色兵刃，體會不同招式的出招前搖與段數節奏。": "La práctica con el muñeco no consume energía. Elige armas en el armero de la sala marcial para dominar los tiempos y el ritmo de cada técnica.",
@@ -4244,5 +4244,18 @@
   "前往挑戰": "Desafiar",
   "colossus.btn_confirm": "Aceptar",
   "colossus.btn_go_power_stat": "Ir a Estadísticas",
-  "colossus.btn_go_forge": "Ir a Forja"
+  "colossus.btn_go_forge": "Ir a Forja",
+  "power_stat.dummy_trial_card": "Prueba de Muñeco",
+  "木人樁試招": "Prueba de Muñeco",
+  "power_stat.btn_go_dummy_practice": "Ir a Prueba",
+  "前往試招": "Ir a Prueba",
+  "power_stat.dummy_max_hit": "Golpe Máx.",
+  "power_stat.dummy_hit_count": "Registro de Golpes",
+  "出招記錄": "Registro de Golpes",
+  "power_stat.dummy_desc": "Sin gasto de energía · Prueba tu daño real cuando quieras",
+  "自由試招無消耗 · 隨時實測戰力傷害極限": "Sin gasto de energía · Prueba tu daño real cuando quieras",
+  "power_stat.dummy_no_record": "¡Sin pruebas aún! ¡Prueba tu daño máximo en el muñeco!",
+  "尚未進行試招，快前往木人樁測試最高傷害！": "¡Sin pruebas aún! ¡Prueba tu daño máximo en el muñeco!",
+  "power_stat.dummy_no_record_badge": "Sin Probar",
+  "尚未試招": "Sin Probar"
 }

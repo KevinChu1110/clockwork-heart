@@ -125,6 +125,12 @@ func _evaluate_record(stats: Dictionary = {}) -> void:
 		_is_new_record = false
 		_best_dps = prev_best
 
+	if gs != null:
+		if "best_dummy_max_hit" in gs:
+			gs.best_dummy_max_hit = maxi(int(gs.best_dummy_max_hit), _max_hit_damage)
+		if "best_dummy_hit_count" in gs:
+			gs.best_dummy_hit_count = maxi(int(gs.best_dummy_hit_count), _total_hit_count)
+
 
 static func show_dialog(parent: Node, stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/dummy_settlement_dialog.gd").new()

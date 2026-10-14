@@ -7135,6 +7135,10 @@ func open_power_stat_dialog() -> Control:
 		dlg.colossus_requested.connect(func():
 			go_to_colossus()
 		)
+	if dlg.has_signal("go_dummy_practice"):
+		dlg.go_dummy_practice.connect(func():
+			request_battle.emit("training_dummy")
+		)
 	add_child(dlg)
 	return dlg
 
