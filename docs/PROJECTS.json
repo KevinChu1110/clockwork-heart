@@ -6490,8 +6490,8 @@
    "id": "victory-power-stat-shortcut",
    "cat": "遊戲",
    "title": "BattleVictoryDialog 關卡勝利結算新增前往戰力快捷按鈕連動 PowerStatDialog",
-   "status": "測試中",
-   "note": "阿翔自測全過、截圖存證完畢，送審 sideqa",
+   "status": "已上線",
+   "note": "四分支合併至 main 並完成全套回歸驗收 (t_097c9981)",
    "keys": [
     "BattleVi"
    ]
