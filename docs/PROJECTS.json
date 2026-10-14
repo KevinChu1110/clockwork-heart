@@ -6490,8 +6490,8 @@
    "id": "victory-power-stat-shortcut",
    "cat": "遊戲",
    "title": "BattleVictoryDialog 關卡勝利結算新增前往戰力快捷按鈕連動 PowerStatDialog",
-   "status": "開發中",
-   "note": "阿翔接卡 t_5bd28180 開發中",
+   "status": "測試中",
+   "note": "阿翔自測全過、截圖存證完畢，送審 sideqa",
    "keys": [
     "BattleVi"
    ]
@@ -6512,6 +6512,26 @@
    "title": "PowerStatDialog 戰力屬性總覽新增每日上發條委託進度卡片與前往委託快捷按鈕",
    "status": "草稿",
    "note": "在戰力總覽中顯示冒險委託每日上發條進度與直通每日委託快捷",
+   "keys": [
+    "PowerSta"
+   ]
+  },
+  {
+   "id": "dummy-settlement-power-stat",
+   "cat": "遊戲",
+   "title": "DummySettlementDialog 木人樁試招結算新增前往戰力快捷按鈕",
+   "status": "草稿",
+   "note": "連動 PowerStatDialog，阿宏已開卡",
+   "keys": [
+    "DummySet"
+   ]
+  },
+  {
+   "id": "power-stat-dummy-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽新增木人樁試招紀錄卡片與前往試招快捷",
+   "status": "草稿",
+   "note": "木人樁試招紀錄與前往試招按鈕，阿翔已開卡",
    "keys": [
     "PowerSta"
    ]
