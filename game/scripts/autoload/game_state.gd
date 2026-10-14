@@ -163,6 +163,10 @@ var crit_dmg: float = 50.0
 var dmg_variance: float = 0.08
 ## 木人樁試招歷史最佳 DPS（float，預設 0.0）
 var best_dummy_dps: float = 0.0
+## 木人樁試招最高單擊傷害（int，預設 0）
+var best_dummy_max_hit: int = 0
+## 木人樁試招出招記錄／總命中次數（int，預設 0）
+var best_dummy_hit_count: int = 0
 
 ## 黑焰迴響（NG+ 輕量）：0＝通常；≥1 敵強化層數
 var ng_plus: int = 0
@@ -722,6 +726,8 @@ func to_dict() -> Dictionary:
 		"crit_dmg": crit_dmg,
 		"dmg_variance": dmg_variance,
 		"best_dummy_dps": best_dummy_dps,
+		"best_dummy_max_hit": best_dummy_max_hit,
+		"best_dummy_hit_count": best_dummy_hit_count,
 	}
 
 
@@ -826,6 +832,8 @@ func from_dict(d: Dictionary) -> void:
 	crit_dmg = float(d.get("crit_dmg", 50.0))
 	dmg_variance = float(d.get("dmg_variance", 0.08))
 	best_dummy_dps = float(d.get("best_dummy_dps", 0.0))
+	best_dummy_max_hit = int(d.get("best_dummy_max_hit", 0))
+	best_dummy_hit_count = int(d.get("best_dummy_hit_count", 0))
 
 
 ## 八族開局定案武器對照（對齊 equipment.json bases 既有 id，統一為 T1）
@@ -1030,6 +1038,8 @@ func reset_new_game(chosen_race: String = "rabbit", chosen_slots: Dictionary = {
 		"current_expedition_stage": "",
 		"current_suggest_lv": 0,
 		"best_dummy_dps": 0.0,
+		"best_dummy_max_hit": 0,
+		"best_dummy_hit_count": 0,
 		"inventory": {},
 		"hotbar": ["", "", "", "", "", "", "", ""],
 		"ui_layout": {},

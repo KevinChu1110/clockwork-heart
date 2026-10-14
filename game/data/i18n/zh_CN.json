@@ -4248,5 +4248,18 @@
   "停摆巨偶": "停摆巨偶",
   "colossus.btn_confirm": "确定",
   "colossus.btn_go_power_stat": "前往战力",
-  "colossus.btn_go_forge": "前往锻造"
+  "colossus.btn_go_forge": "前往锻造",
+  "power_stat.dummy_trial_card": "木人桩试招",
+  "木人樁試招": "木人桩试招",
+  "power_stat.btn_go_dummy_practice": "前往试招",
+  "前往試招": "前往试招",
+  "power_stat.dummy_max_hit": "最高单击",
+  "power_stat.dummy_hit_count": "出招记录",
+  "出招記錄": "出招记录",
+  "power_stat.dummy_desc": "自由试招无消耗 · 随时实测战力伤害极限",
+  "自由試招無消耗 · 隨時實測戰力傷害極限": "自由试招无消耗 · 随时实测战力伤害极限",
+  "power_stat.dummy_no_record": "尚未进行试招，快前往木人桩测试最高伤害！",
+  "尚未進行試招，快前往木人樁測試最高傷害！": "尚未进行试招，快前往木人桩测试最高伤害！",
+  "power_stat.dummy_no_record_badge": "尚未试招",
+  "尚未試招": "尚未试招"
 }

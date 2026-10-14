@@ -4244,5 +4244,18 @@
   "前往挑戰": "Challenge",
   "colossus.btn_confirm": "OK",
   "colossus.btn_go_power_stat": "Go to Stats",
-  "colossus.btn_go_forge": "Go to Forge"
+  "colossus.btn_go_forge": "Go to Forge",
+  "power_stat.dummy_trial_card": "Dummy Trial",
+  "木人樁試招": "Dummy Trial",
+  "power_stat.btn_go_dummy_practice": "Practice",
+  "前往試招": "Practice",
+  "power_stat.dummy_max_hit": "Max Hit",
+  "power_stat.dummy_hit_count": "Total Hits",
+  "出招記錄": "Total Hits",
+  "power_stat.dummy_desc": "Zero energy cost · Test your real damage anytime",
+  "自由試招無消耗 · 隨時實測戰力傷害極限": "Zero energy cost · Test your real damage anytime",
+  "power_stat.dummy_no_record": "No trials yet. Go test your peak damage!",
+  "尚未進行試招，快前往木人樁測試最高傷害！": "No trials yet. Go test your peak damage!",
+  "power_stat.dummy_no_record_badge": "Not Practiced",
+  "尚未試招": "Not Practiced"
 }

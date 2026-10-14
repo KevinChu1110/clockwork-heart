@@ -19,6 +19,7 @@ signal forge_requested()
 signal title_wall_requested()
 signal inventory_requested()
 signal colossus_requested()
+signal go_dummy_practice()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -85,6 +86,7 @@ var _btn_go_forge: Button
 var _btn_go_title_wall: Button
 var _btn_go_inventory: Button
 var _btn_go_colossus: Button
+var _btn_go_dummy_practice: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -314,6 +316,11 @@ func refresh() -> void:
 		_btn_go_inventory.text = inv_txt
 	if _btn_go_colossus:
 		_btn_go_colossus.text = _t("power_stat.btn_go_colossus")
+	if _btn_go_dummy_practice:
+		var dummy_btn_txt := _t("power_stat.btn_go_dummy_practice")
+		if dummy_btn_txt == "power_stat.btn_go_dummy_practice" or dummy_btn_txt.is_empty():
+			dummy_btn_txt = _t("前往試招")
+		_btn_go_dummy_practice.text = dummy_btn_txt
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("確定")
 
@@ -346,6 +353,9 @@ func refresh() -> void:
 
 	# 8. 停擺巨偶挑戰進度卡片（今日次數與前往挑戰）
 	_content_vbox.add_child(_build_colossus_card(gs))
+
+	# 9. 木人樁試招紀錄卡片（歷史最佳 DPS、最高單擊與前往試招）
+	_content_vbox.add_child(_build_dummy_trial_card(gs))
 
 
 ## 綜合戰力總覽卡片
@@ -1418,6 +1428,154 @@ func _build_colossus_card(gs: Node) -> PanelContainer:
 	return card
 
 
+func _build_dummy_trial_card(gs: Node) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = "DummyTrialCard"
+	card.add_theme_stylebox_override("panel", _create_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 14))
+
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_left", 14)
+	m.add_theme_constant_override("margin_right", 14)
+	m.add_theme_constant_override("margin_top", 10)
+	m.add_theme_constant_override("margin_bottom", 10)
+	card.add_child(m)
+
+	var h := HBoxContainer.new()
+	h.name = "DummyTrialCardHBox"
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 14)
+	m.add_child(h)
+
+	# 讀取木人樁數值
+	var best_dps := float(gs.get("best_dummy_dps")) if gs and "best_dummy_dps" in gs else 0.0
+	var max_hit := int(gs.get("best_dummy_max_hit")) if gs and "best_dummy_max_hit" in gs else 0
+	var hit_count := int(gs.get("best_dummy_hit_count")) if gs and "best_dummy_hit_count" in gs else 0
+	var has_record := best_dps > 0.0
+
+	# 左側資訊區
+	var left_v := VBoxContainer.new()
+	left_v.name = "DummyTrialLeftVBox"
+	left_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_v.alignment = BoxContainer.ALIGNMENT_CENTER
+	left_v.add_theme_constant_override("separation", 6)
+	h.add_child(left_v)
+
+	# 標題行與 DPS 徽章
+	var t_row := HBoxContainer.new()
+	t_row.name = "DummyTrialRowHBox"
+	t_row.add_theme_constant_override("separation", 10)
+	t_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	left_v.add_child(t_row)
+
+	var t_lbl := Label.new()
+	t_lbl.name = "DummyTrialCardTitleLabel"
+	var title_str := _t("power_stat.dummy_trial_card")
+	if title_str == "power_stat.dummy_trial_card" or title_str.is_empty():
+		title_str = _t("木人樁試招")
+	t_lbl.text = title_str
+	_apply_font(t_lbl, 14, COLOR_TEXT_ORANGE, true)
+	t_row.add_child(t_lbl)
+
+	# 歷史最佳 DPS 紀錄徽章
+	var cap := PanelContainer.new()
+	cap.name = "DpsBadgeCapsule"
+	var cap_sb := StyleBoxFlat.new()
+	if has_record:
+		cap_sb.bg_color = COLOR_CARD_SKY
+		cap_sb.border_color = COLOR_BORDER
+		cap_sb.set_border_width_all(1)
+		cap_sb.border_width_bottom = 3
+		cap_sb.set_corner_radius_all(10)
+		cap_sb.content_margin_left = 10
+		cap_sb.content_margin_right = 10
+		cap_sb.content_margin_top = 3
+		cap_sb.content_margin_bottom = 3
+	else:
+		cap_sb.bg_color = COLOR_CARD_MUTED
+		cap_sb.border_color = COLOR_BORDER_MUTED
+		cap_sb.set_border_width_all(1)
+		cap_sb.border_width_bottom = 2
+		cap_sb.set_corner_radius_all(10)
+		cap_sb.content_margin_left = 8
+		cap_sb.content_margin_right = 8
+		cap_sb.content_margin_top = 2
+		cap_sb.content_margin_bottom = 2
+	cap.add_theme_stylebox_override("panel", cap_sb)
+	t_row.add_child(cap)
+
+	var dps_lbl := Label.new()
+	dps_lbl.name = "BestDpsLabel"
+	if has_record:
+		dps_lbl.text = "%.1f DPS" % best_dps
+		_apply_font(dps_lbl, 13, COLOR_TEXT_DARK, true)
+	else:
+		var no_rec_badge := _t("power_stat.dummy_no_record_badge")
+		if no_rec_badge == "power_stat.dummy_no_record_badge" or no_rec_badge.is_empty():
+			no_rec_badge = _t("尚未試招")
+		dps_lbl.text = no_rec_badge
+		_apply_font(dps_lbl, 12, COLOR_TEXT_MUTED)
+	cap.add_child(dps_lbl)
+
+	# 詳情列 / 尚未試招引導
+	if has_record:
+		var stats_h := HBoxContainer.new()
+		stats_h.name = "DummyStatsRowHBox"
+		stats_h.add_theme_constant_override("separation", 14)
+		stats_h.alignment = BoxContainer.ALIGNMENT_BEGIN
+		left_v.add_child(stats_h)
+
+		var max_hit_lbl := Label.new()
+		max_hit_lbl.name = "MaxHitLabel"
+		var mh_prefix := _t("power_stat.dummy_max_hit")
+		if mh_prefix == "power_stat.dummy_max_hit" or mh_prefix.is_empty():
+			mh_prefix = _t("最高單擊")
+		max_hit_lbl.text = "%s: %d" % [mh_prefix, max_hit]
+		_apply_font(max_hit_lbl, 12, COLOR_TEXT_DARK, true)
+		stats_h.add_child(max_hit_lbl)
+
+		var hit_cnt_lbl := Label.new()
+		hit_cnt_lbl.name = "HitCountLabel"
+		var hc_prefix := _t("power_stat.dummy_hit_count")
+		if hc_prefix == "power_stat.dummy_hit_count" or hc_prefix.is_empty():
+			hc_prefix = _t("出招記錄")
+		hit_cnt_lbl.text = "%s: %d" % [hc_prefix, hit_count]
+		_apply_font(hit_cnt_lbl, 12, COLOR_TEXT_DARK, true)
+		stats_h.add_child(hit_cnt_lbl)
+
+		var desc_lbl := Label.new()
+		desc_lbl.name = "DummyDescLabel"
+		var desc_str := _t("power_stat.dummy_desc")
+		if desc_str == "power_stat.dummy_desc" or desc_str.is_empty():
+			desc_str = _t("自由試招無消耗 · 隨時實測戰力傷害極限")
+		desc_lbl.text = desc_str
+		_apply_font(desc_lbl, 11, COLOR_TEXT_MUTED)
+		left_v.add_child(desc_lbl)
+	else:
+		var no_rec_lbl := Label.new()
+		no_rec_lbl.name = "NoRecordGuideLabel"
+		var guide_str := _t("power_stat.dummy_no_record")
+		if guide_str == "power_stat.dummy_no_record" or guide_str.is_empty():
+			guide_str = _t("尚未進行試招，快前往木人樁測試最高傷害！")
+		no_rec_lbl.text = guide_str
+		_apply_font(no_rec_lbl, 12, COLOR_TEXT_MUTED)
+		left_v.add_child(no_rec_lbl)
+
+	# 右側快捷按鈕：前往試招 (BtnGoDummyPractice)
+	_btn_go_dummy_practice = Button.new()
+	_btn_go_dummy_practice.name = "BtnGoDummyPractice"
+	var btn_txt := _t("power_stat.btn_go_dummy_practice")
+	if btn_txt == "power_stat.btn_go_dummy_practice" or btn_txt.is_empty():
+		btn_txt = _t("前往試招")
+	_btn_go_dummy_practice.text = btn_txt
+	_btn_go_dummy_practice.custom_minimum_size = Vector2(120, 48)
+	_btn_go_dummy_practice.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_dummy_practice, COLOR_SKY, COLOR_TEXT_LIGHT, 14, 5, 18, COLOR_BORDER, 14, 6)
+	_btn_go_dummy_practice.pressed.connect(_on_go_dummy_practice_pressed)
+	h.add_child(_btn_go_dummy_practice)
+
+	return card
+
+
 func _get_colossus_remaining_entries() -> int:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree and (loop as SceneTree).root != null:
@@ -1513,6 +1671,19 @@ func get_go_colossus_button() -> Button:
 
 func get_colossus_card() -> PanelContainer:
 	return find_child("ColossusCard", true, false) as PanelContainer
+
+
+func _on_go_dummy_practice_pressed() -> void:
+	go_dummy_practice.emit()
+	_on_close_pressed()
+
+
+func get_go_dummy_practice_button() -> Button:
+	return _btn_go_dummy_practice
+
+
+func get_dummy_trial_card() -> PanelContainer:
+	return find_child("DummyTrialCard", true, false) as PanelContainer
 
 
 func get_scroll_box() -> ScrollContainer:
