@@ -1335,6 +1335,10 @@ func get_go_skill_button() -> Button:
 	return _btn_go_skill
 
 
+func get_go_soul_button() -> Button:
+	return _btn_go_soul
+
+
 func get_go_forge_button() -> Button:
 	return _btn_go_forge
 

@@ -4230,5 +4230,6 @@
   "skill.btn_go_power_stat": "Go to Stats",
   "前往戰力": "Go to Stats",
   "gem_workshop.btn_go_power_stat": "Go to Stats",
-  "forge.btn_go_power_stat": "Go to Stats"
+  "forge.btn_go_power_stat": "Go to Stats",
+  "soul_hall.btn_go_power_stat": "Go to Stats"
 }

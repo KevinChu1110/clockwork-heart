@@ -4230,5 +4230,6 @@
   "skill.btn_go_power_stat": "전투력으로 이동",
   "前往戰力": "전투력으로 이동",
   "gem_workshop.btn_go_power_stat": "전투력으로 이동",
-  "forge.btn_go_power_stat": "전투력으로 이동"
+  "forge.btn_go_power_stat": "전투력으로 이동",
+  "soul_hall.btn_go_power_stat": "전투력으로 이동"
 }
