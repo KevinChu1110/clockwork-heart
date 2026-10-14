@@ -6385,6 +6385,16 @@
    "keys": [
     "SkillDia"
    ]
+  },
+  {
+   "id": "forge-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "ForgeDialog 天宮鐵匠新增『前往戰力』快捷果凍按鈕聯動 PowerStatDialog",
+   "status": "草稿",
+   "note": "完成開發與自測，進入測試中送審 sideqa",
+   "keys": [
+    "ForgeDia"
+   ]
   }
  ]
 }
