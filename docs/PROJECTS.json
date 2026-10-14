@@ -6430,10 +6430,30 @@
    "id": "inventory-power-stat-shortcut",
    "cat": "遊戲",
    "title": "探索背包底欄新增前往戰力快捷按鈕連動PowerStatDialog",
-   "status": "開發中",
-   "note": "已派工 sideworker2 展開實作",
+   "status": "測試中",
+   "note": "探索背包底欄新增前往戰力快捷按鈕連動PowerStatDialog，完成自測與實機截圖存證",
    "keys": [
     "探索背包底欄新增"
+   ]
+  },
+  {
+   "id": "battle-defeat-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "BattleDefeatDialog 戰敗結算新增前往戰力快捷按鈕連動 PowerStatDialog",
+   "status": "測試中",
+   "note": "BattleDefeatDialog 戰敗結算新增前往戰力快捷按鈕連動 PowerStatDialog",
+   "keys": [
+    "BattleDe"
+   ]
+  },
+  {
+   "id": "vault-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "ClockworkVaultDialog 發條儲能庫放置收益新增前往戰力快捷按鈕連動 PowerStatDialog",
+   "status": "測試中",
+   "note": "完成開發、自測與截圖存證，送審 sideqa",
+   "keys": [
+    "Clockwor"
    ]
   }
  ]

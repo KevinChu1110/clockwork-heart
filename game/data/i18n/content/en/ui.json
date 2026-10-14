@@ -3870,5 +3870,8 @@
   "gem_workshop.btn_go_power_stat": "Go to Stats",
   "forge.btn_go_power_stat": "Go to Stats",
   "shop.btn_go_power_stat": "Go to Stats",
-  "soul_hall.btn_go_power_stat": "Go to Stats"
+  "soul_hall.btn_go_power_stat": "Go to Stats",
+  "inventory.btn_go_power_stat": "Go to Stats",
+  "power_stat.btn_go_inventory": "Go to Inventory",
+  "vault.btn_go_power_stat": "Go to Stats"
 }
