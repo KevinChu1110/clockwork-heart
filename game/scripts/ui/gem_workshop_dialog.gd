@@ -14,6 +14,7 @@ extends Control
 signal closed()
 signal forge_requested()
 signal inventory_requested()
+signal power_stat_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -91,6 +92,7 @@ var last_toast_text: String = ""
 var _msg_label: Label
 var _btn_go_inventory: Button
 var _btn_go_forge: Button
+var _btn_go_power_stat: Button
 var _btn_close: Button
 var _cached_font: Font = null
 
@@ -157,6 +159,11 @@ func _update_ui_texts() -> void:
 		_btn_go_inventory.text = _t("前往背包")
 	if _btn_go_forge and is_instance_valid(_btn_go_forge):
 		_btn_go_forge.text = _t("前往鐵匠")
+	if _btn_go_power_stat and is_instance_valid(_btn_go_power_stat):
+		var btn_txt := _t("gem_workshop.btn_go_power_stat")
+		if btn_txt == "gem_workshop.btn_go_power_stat" or btn_txt.is_empty():
+			btn_txt = _t("前往戰力")
+		_btn_go_power_stat.text = btn_txt
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開工坊")
 
@@ -526,15 +533,15 @@ func _build_ui() -> void:
 	# 底部操作按鈕列 (按鈕高 >= 50)
 	var foot_row := HBoxContainer.new()
 	foot_row.alignment = BoxContainer.ALIGNMENT_CENTER
-	foot_row.add_theme_constant_override("separation", 16)
+	foot_row.add_theme_constant_override("separation", 12)
 	v.add_child(foot_row)
 
 	# 快捷按鈕：前往背包 (天藍立體厚底 5px)
 	_btn_go_inventory = Button.new()
 	_btn_go_inventory.name = "BtnGoInventory"
 	_btn_go_inventory.text = _t("前往背包")
-	_btn_go_inventory.custom_minimum_size = Vector2(170, 50)
-	_btn_go_inventory.add_theme_font_size_override("font_size", 18)
+	_btn_go_inventory.custom_minimum_size = Vector2(145, 50)
+	_btn_go_inventory.add_theme_font_size_override("font_size", 16)
 	_btn_go_inventory.add_theme_color_override("font_color", Color.WHITE)
 	_btn_go_inventory.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_btn_go_inventory.add_theme_constant_override("outline_size", 4)
@@ -550,8 +557,8 @@ func _build_ui() -> void:
 	_btn_go_forge = Button.new()
 	_btn_go_forge.name = "BtnGoForge"
 	_btn_go_forge.text = _t("前往鐵匠")
-	_btn_go_forge.custom_minimum_size = Vector2(170, 50)
-	_btn_go_forge.add_theme_font_size_override("font_size", 18)
+	_btn_go_forge.custom_minimum_size = Vector2(145, 50)
+	_btn_go_forge.add_theme_font_size_override("font_size", 16)
 	_btn_go_forge.add_theme_color_override("font_color", Color.WHITE)
 	_btn_go_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_btn_go_forge.add_theme_constant_override("outline_size", 4)
@@ -563,12 +570,32 @@ func _build_ui() -> void:
 	_btn_go_forge.pressed.connect(_on_go_forge_pressed)
 	foot_row.add_child(_btn_go_forge)
 
+	# 快捷按鈕：前往戰力 (天藍立體厚底 5px, 140x50, 規格 140x50, 文字深藍紫, 零系統 Emoji)
+	_btn_go_power_stat = Button.new()
+	_btn_go_power_stat.name = "BtnGoPowerStat"
+	var pstat_txt := _t("gem_workshop.btn_go_power_stat")
+	if pstat_txt == "gem_workshop.btn_go_power_stat" or pstat_txt.is_empty():
+		pstat_txt = _t("前往戰力")
+	_btn_go_power_stat.text = pstat_txt
+	_btn_go_power_stat.custom_minimum_size = Vector2(140, 50)
+	_btn_go_power_stat.add_theme_font_size_override("font_size", 16)
+	_btn_go_power_stat.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_power_stat.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_power_stat.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_btn_go_power_stat.add_theme_font_override("font", _cached_font)
+	_btn_go_power_stat.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18, 2))
+	_btn_go_power_stat.add_theme_stylebox_override("hover", _create_button_style(Color("#5CB4FF"), COLOR_BORDER, 5, 18, 2))
+	_btn_go_power_stat.add_theme_stylebox_override("pressed", _create_button_style(Color("#2085E5"), COLOR_BORDER, 2, 18, 2))
+	_btn_go_power_stat.pressed.connect(_on_go_power_stat_pressed)
+	foot_row.add_child(_btn_go_power_stat)
+
 	# 次要按鈕：離開工坊 (金黃立體厚底 5px)
 	_btn_close = Button.new()
 	_btn_close.name = "BtnCloseGemWorkshop"
 	_btn_close.text = _t("離開工坊")
-	_btn_close.custom_minimum_size = Vector2(170, 50)
-	_btn_close.add_theme_font_size_override("font_size", 18)
+	_btn_close.custom_minimum_size = Vector2(145, 50)
+	_btn_close.add_theme_font_size_override("font_size", 16)
 	_btn_close.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_btn_close.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_btn_close.add_theme_constant_override("outline_size", 1)
@@ -1110,6 +1137,30 @@ func get_go_forge_button() -> Button:
 
 func _on_go_forge_pressed() -> void:
 	forge_requested.emit()
+	if not is_queued_for_deletion():
+		_on_close()
+
+
+func get_go_power_stat_button() -> Button:
+	return _btn_go_power_stat
+
+
+func _on_go_power_stat_pressed() -> void:
+	var am: Node = Engine.get_main_loop().root.get_node_or_null("AudioManager") if Engine.get_main_loop() else null
+	if am and am.has_method("play_ui"):
+		am.play_ui()
+	power_stat_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_power_stat_dialog"):
+			if power_stat_requested.get_connections().is_empty():
+				ml.call("open_power_stat_dialog")
+	var p := get_parent()
+	if p and p.has_method("open_power_stat_dialog"):
+		if power_stat_requested.get_connections().is_empty():
+			p.call("open_power_stat_dialog")
 	if not is_queued_for_deletion():
 		_on_close()
 
