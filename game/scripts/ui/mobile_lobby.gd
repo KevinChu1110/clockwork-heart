@@ -2660,10 +2660,19 @@ func open_clockwork_vault() -> Control:
 		dlg.inventory_requested.connect(func():
 			open_maple_inventory()
 		)
+	if dlg.has_signal("power_stat_requested"):
+		dlg.power_stat_requested.connect(func():
+			open_power_stat_dialog()
+		)
+	if dlg.has_signal("go_power_stat"):
+		dlg.go_power_stat.connect(func():
+			open_power_stat_dialog()
+		)
 	dlg.tree_exited.connect(func():
 		var has_forge: bool = get_node_or_null("ForgeDialog") != null
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
-		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv:
+		var has_power: bool = get_node_or_null("PowerStatDialog") != null
+		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv and not has_power:
 			_equip_schematic.visible = true
 		refresh_hud()
 		refresh_vault_display()
@@ -6751,6 +6760,10 @@ func open_maple_inventory(initial_category: String = "") -> Control:
 		inv.connect("go_soul_hall_requested", func():
 			open_soul_hall()
 		)
+	if inv.has_signal("power_stat_requested"):
+		inv.connect("power_stat_requested", func():
+			open_power_stat_dialog()
+		)
 	add_child(inv)
 	if not initial_category.is_empty() and inv.has_method("set_category"):
 		inv.call("set_category", initial_category)
@@ -6964,6 +6977,10 @@ func open_power_stat_dialog() -> Control:
 	if dlg.has_signal("title_wall_requested"):
 		dlg.title_wall_requested.connect(func():
 			open_title_wall_dialog()
+		)
+	if dlg.has_signal("inventory_requested"):
+		dlg.inventory_requested.connect(func():
+			open_maple_inventory()
 		)
 	add_child(dlg)
 	return dlg

@@ -3868,5 +3868,8 @@
   "skill.btn_go_power_stat": "Ir a Estadísticas",
   "前往戰力": "Ir a Estadísticas",
   "gem_workshop.btn_go_power_stat": "Ir a Estadísticas",
-  "forge.btn_go_power_stat": "Ir a Estadísticas"
+  "forge.btn_go_power_stat": "Ir a Estadísticas",
+  "inventory.btn_go_power_stat": "Ir a Estadísticas",
+  "power_stat.btn_go_inventory": "Ir al Inventario",
+  "vault.btn_go_power_stat": "Ir a Estadísticas"
 }

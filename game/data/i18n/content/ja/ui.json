@@ -3868,5 +3868,8 @@
   "skill.btn_go_power_stat": "戦力詳細へ",
   "前往戰力": "戦力詳細へ",
   "gem_workshop.btn_go_power_stat": "戦力詳細へ",
-  "forge.btn_go_power_stat": "戦力詳細へ"
+  "forge.btn_go_power_stat": "戦力詳細へ",
+  "inventory.btn_go_power_stat": "戦力詳細へ",
+  "power_stat.btn_go_inventory": "インベントリへ進む",
+  "vault.btn_go_power_stat": "戦力詳細へ"
 }
