@@ -668,7 +668,7 @@
   "停": "止まれ",
   "停。剛上弦的？看腳步就知道。發條最鬆那掛的。": "止まれ。上げたばかりか？足取りで分かる。ゼンマイが一番緩い組だ。",
   "停。看腳步就知道。最弱那掛。": "止まれ。足取りで分かる。一番弱い口だ。",
-  "停擺巨偶": "停止した巨偶",
+  "停擺巨偶": "停止した巨像",
   "停擺巨偶 · 今日剩餘: %d/3": "停止した巨偶 · 本日の残り: %d/3",
   "停擺巨偶挑戰": "停止した巨偶の挑戦",
   "停擺核": "停止核",
@@ -3873,5 +3873,11 @@
   "soul_hall.btn_go_power_stat": "戦力詳細へ",
   "inventory.btn_go_power_stat": "戦力詳細へ",
   "power_stat.btn_go_inventory": "インベントリへ進む",
-  "vault.btn_go_power_stat": "戦力詳細へ"
+  "vault.btn_go_power_stat": "戦力詳細へ",
+  "power_stat.colossus_card": "停止した巨像",
+  "power_stat.colossus_entries": "本日挑戦: %d/3",
+  "power_stat.colossus_target": "推奨目標: %s",
+  "power_stat.colossus_desc": "過負荷の巨像に毎日挑戦し、コアパーツや強化素材を獲得",
+  "power_stat.btn_go_colossus": "挑戦へ",
+  "前往挑戰": "挑戦へ"
 }

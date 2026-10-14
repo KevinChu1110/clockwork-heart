@@ -668,7 +668,7 @@
   "停": "멈춰",
   "停。剛上弦的？看腳步就知道。發條最鬆那掛的。": "멈춰. 방금 감은 놈? 걸음만 봐도 안다. 태엽이 제일 느슨한 축이군.",
   "停。看腳步就知道。最弱那掛。": "멈춰. 발걸음만 봐도 안다. 제일 약한 축이군.",
-  "停擺巨偶": "멈춰 선 거신",
+  "停擺巨偶": "멈춘 거상",
   "停擺巨偶 · 今日剩餘: %d/3": "멈춰 선 거신 · 오늘 남은 횟수: %d/3",
   "停擺巨偶挑戰": "멈춰 선 거신 도전",
   "停擺核": "정지핵",
@@ -3873,5 +3873,11 @@
   "soul_hall.btn_go_power_stat": "전투력으로 이동",
   "inventory.btn_go_power_stat": "전투력으로 이동",
   "power_stat.btn_go_inventory": "인벤토리로 이동",
-  "vault.btn_go_power_stat": "전투력으로 이동"
+  "vault.btn_go_power_stat": "전투력으로 이동",
+  "power_stat.colossus_card": "멈춘 거상",
+  "power_stat.colossus_entries": "오늘 도전: %d/3",
+  "power_stat.colossus_target": "추천 목표: %s",
+  "power_stat.colossus_desc": "매일 과부하 거상에 도전하여 코어 부품과 기어 승급 재료를 획득하세요",
+  "power_stat.btn_go_colossus": "도전하기",
+  "前往挑戰": "도전하기"
 }
