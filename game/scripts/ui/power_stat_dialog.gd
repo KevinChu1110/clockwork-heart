@@ -21,6 +21,7 @@ signal inventory_requested()
 signal colossus_requested()
 signal go_dummy_practice()
 signal vault_requested()
+signal windup_daily_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -90,6 +91,7 @@ var _btn_go_inventory: Button
 var _btn_go_colossus: Button
 var _btn_go_dummy_practice: Button
 var _btn_go_vault: Button
+var _btn_go_windup_daily: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -367,6 +369,9 @@ func refresh() -> void:
 
 	# 10. 發條儲能庫放置收益卡片（累積放置能量值、上限與產能效率，前往儲能）
 	_content_vbox.add_child(_build_vault_card(gs))
+
+	# 11. 冒險委託每日上發條進度卡片（今日完成進度、領取膠囊與前往委託）
+	_content_vbox.add_child(_build_windup_daily_card(gs))
 
 
 ## 綜合戰力總覽卡片
@@ -1705,6 +1710,194 @@ func _build_vault_card(_gs: Node) -> PanelContainer:
 	return card
 
 
+func _build_windup_daily_card(_gs: Node) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = "WindupDailyCard"
+	card.add_theme_stylebox_override("panel", _create_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 14))
+
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_left", 14)
+	m.add_theme_constant_override("margin_right", 14)
+	m.add_theme_constant_override("margin_top", 10)
+	m.add_theme_constant_override("margin_bottom", 10)
+	card.add_child(m)
+
+	var h := HBoxContainer.new()
+	h.name = "WindupDailyCardHBox"
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 14)
+	m.add_child(h)
+
+	# 讀取 QuestSystem 與 WindupDailySystem 狀態
+	var loop := Engine.get_main_loop()
+	var qs: Node = null
+	var ws: Node = null
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		qs = (loop as SceneTree).root.get_node_or_null("QuestSystem")
+		ws = (loop as SceneTree).root.get_node_or_null("WindupDailySystem")
+
+	var total_comm := 3
+	var done_comm := 0
+	var claimed_comm := 0
+	var claimable_comm := 0
+	if qs != null:
+		if qs.has_method("refresh_daily"):
+			qs.call("refresh_daily")
+		if qs.has_method("todays_commissions_raw"):
+			var raw_c: Array = qs.call("todays_commissions_raw")
+			if not raw_c.is_empty():
+				total_comm = raw_c.size()
+				for c in raw_c:
+					if qs.has_method("commission_done") and bool(qs.call("commission_done", c)):
+						done_comm += 1
+					var cid := str(c.get("id", ""))
+					if qs.has_method("commission_claimed") and bool(qs.call("commission_claimed", cid)):
+						claimed_comm += 1
+		if qs.has_method("claimable_commissions"):
+			claimable_comm = int(qs.call("claimable_commissions"))
+
+	var is_windup_done := false
+	var case_title := ""
+	if ws != null:
+		if ws.has_method("refresh"):
+			ws.call("refresh")
+		if ws.has_method("is_done_today"):
+			is_windup_done = bool(ws.call("is_done_today"))
+		if ws.has_method("todays_case"):
+			var tc: Dictionary = ws.call("todays_case")
+			case_title = str(tc.get("title", ""))
+
+	# 左側資訊區
+	var left_v := VBoxContainer.new()
+	left_v.name = "WindupDailyLeftVBox"
+	left_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_v.alignment = BoxContainer.ALIGNMENT_CENTER
+	left_v.add_theme_constant_override("separation", 6)
+	h.add_child(left_v)
+
+	# 標題行與狀態/領取膠囊
+	var t_row := HBoxContainer.new()
+	t_row.name = "WindupTitleRowHBox"
+	t_row.add_theme_constant_override("separation", 10)
+	t_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	left_v.add_child(t_row)
+
+	var t_lbl := Label.new()
+	t_lbl.name = "WindupCardTitleLabel"
+	var title_str := _t("power_stat.windup_card")
+	if title_str == "power_stat.windup_card" or title_str.is_empty():
+		title_str = _t("冒險委託上發條")
+	t_lbl.text = title_str
+	_apply_font(t_lbl, 14, COLOR_TEXT_ORANGE, true)
+	t_row.add_child(t_lbl)
+
+	# 委託狀態標籤膠囊 (WindupStatusCapsule)
+	var is_all_done: bool = (done_comm >= total_comm and total_comm > 0) or is_windup_done
+	var status_cap := PanelContainer.new()
+	status_cap.name = "WindupStatusCapsule"
+	var status_sb := StyleBoxFlat.new()
+	status_sb.bg_color = COLOR_CARD_MINT if is_all_done else COLOR_CARD_GOLD
+	status_sb.border_color = COLOR_BORDER
+	status_sb.set_border_width_all(1)
+	status_sb.border_width_bottom = 3
+	status_sb.set_corner_radius_all(10)
+	status_sb.content_margin_left = 10
+	status_sb.content_margin_right = 10
+	status_sb.content_margin_top = 3
+	status_sb.content_margin_bottom = 3
+	status_cap.add_theme_stylebox_override("panel", status_sb)
+	t_row.add_child(status_cap)
+
+	var status_lbl := Label.new()
+	status_lbl.name = "WindupStatusLabel"
+	var status_str := ""
+	if is_all_done:
+		status_str = _t("power_stat.windup_status_done")
+		if status_str == "power_stat.windup_status_done" or status_str.is_empty():
+			status_str = _t("今日已完成")
+	else:
+		status_str = _t("power_stat.windup_status_ready")
+		if status_str == "power_stat.windup_status_ready" or status_str.is_empty():
+			status_str = _t("待完成委託")
+	status_lbl.text = status_str
+	_apply_font(status_lbl, 12, Color("#1E8238") if is_all_done else COLOR_TEXT_ORANGE, true)
+	status_cap.add_child(status_lbl)
+
+	# 今日領取膠囊 (WindupClaimCapsule)
+	var is_claimed: bool = (claimed_comm >= total_comm and total_comm > 0) or is_windup_done
+	var claim_cap := PanelContainer.new()
+	claim_cap.name = "WindupClaimCapsule"
+	var claim_sb := StyleBoxFlat.new()
+	claim_sb.bg_color = COLOR_CARD_SKY if is_claimed else (COLOR_CARD_GOLD if claimable_comm > 0 else COLOR_CARD_WARM)
+	claim_sb.border_color = COLOR_BORDER
+	claim_sb.set_border_width_all(1)
+	claim_sb.border_width_bottom = 3
+	claim_sb.set_corner_radius_all(10)
+	claim_sb.content_margin_left = 10
+	claim_sb.content_margin_right = 10
+	claim_sb.content_margin_top = 3
+	claim_sb.content_margin_bottom = 3
+	claim_cap.add_theme_stylebox_override("panel", claim_sb)
+	t_row.add_child(claim_cap)
+
+	var claim_lbl := Label.new()
+	claim_lbl.name = "WindupClaimLabel"
+	var claim_str := ""
+	if is_claimed:
+		claim_str = _t("power_stat.windup_claimed")
+		if claim_str == "power_stat.windup_claimed" or claim_str.is_empty():
+			claim_str = _t("今日已領取")
+	elif claimable_comm > 0:
+		claim_str = _t("power_stat.windup_claimable")
+		if claim_str == "power_stat.windup_claimable" or claim_str.is_empty():
+			claim_str = _t("可領取獎勵")
+	else:
+		claim_str = _t("power_stat.windup_unclaimed")
+		if claim_str == "power_stat.windup_unclaimed" or claim_str.is_empty():
+			claim_str = _t("今日未領取")
+	claim_lbl.text = claim_str
+	_apply_font(claim_lbl, 12, COLOR_TEXT_DARK if is_claimed else (COLOR_TEXT_ORANGE if claimable_comm > 0 else COLOR_TEXT_MUTED), true)
+	claim_cap.add_child(claim_lbl)
+
+	# 委託進度標籤 (WindupProgressLabel)
+	var prog_lbl := Label.new()
+	prog_lbl.name = "WindupProgressLabel"
+	var prog_pattern := _t("power_stat.windup_progress")
+	if prog_pattern == "power_stat.windup_progress" or prog_pattern.is_empty():
+		prog_pattern = "今日委託進度: %d/%d"
+	var prog_text := prog_pattern % [done_comm, total_comm]
+	if not case_title.is_empty():
+		prog_text += " · " + _t(case_title)
+	prog_lbl.text = prog_text
+	_apply_font(prog_lbl, 12, COLOR_TEXT_DARK, true)
+	left_v.add_child(prog_lbl)
+
+	# 說明文字 (WindupDescLabel)
+	var desc_lbl := Label.new()
+	desc_lbl.name = "WindupDescLabel"
+	var desc_str := _t("power_stat.windup_desc")
+	if desc_str == "power_stat.windup_desc" or desc_str.is_empty():
+		desc_str = _t("每天一件發條小事 · 完成日常委託領取星屑與金幣")
+	desc_lbl.text = desc_str
+	_apply_font(desc_lbl, 11, COLOR_TEXT_MUTED)
+	left_v.add_child(desc_lbl)
+
+	# 右側快捷按鈕：前往委託 (BtnGoWindupDaily)
+	_btn_go_windup_daily = Button.new()
+	_btn_go_windup_daily.name = "BtnGoWindupDaily"
+	var btn_txt := _t("power_stat.btn_go_windup")
+	if btn_txt == "power_stat.btn_go_windup" or btn_txt.is_empty():
+		btn_txt = _t("前往委託")
+	_btn_go_windup_daily.text = btn_txt
+	_btn_go_windup_daily.custom_minimum_size = Vector2(120, 48)
+	_btn_go_windup_daily.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_windup_daily, COLOR_GOLD, COLOR_TEXT_DARK, 14, 5, 18, COLOR_BORDER, 14, 6)
+	_btn_go_windup_daily.pressed.connect(_on_go_windup_daily_pressed)
+	h.add_child(_btn_go_windup_daily)
+
+	return card
+
+
 func _get_colossus_remaining_entries() -> int:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree and (loop as SceneTree).root != null:
@@ -1820,8 +2013,17 @@ func _on_go_vault_pressed() -> void:
 	_on_close_pressed()
 
 
+func _on_go_windup_daily_pressed() -> void:
+	windup_daily_requested.emit()
+	_on_close_pressed()
+
+
 func get_go_vault_button() -> Button:
 	return _btn_go_vault
+
+
+func get_go_windup_daily_button() -> Button:
+	return _btn_go_windup_daily
 
 
 func get_clockwork_vault_card() -> PanelContainer:
@@ -1830,6 +2032,10 @@ func get_clockwork_vault_card() -> PanelContainer:
 
 func get_vault_card() -> PanelContainer:
 	return get_clockwork_vault_card()
+
+
+func get_windup_daily_card() -> PanelContainer:
+	return find_child("WindupDailyCard", true, false) as PanelContainer
 
 
 func get_scroll_box() -> ScrollContainer:
@@ -1844,12 +2050,18 @@ func scroll_to_bottom() -> void:
 			_scroll_box.scroll_vertical = int(vbar.value)
 		else:
 			_scroll_box.scroll_vertical = 99999
-		var card := get_vault_card()
+		var card := get_windup_daily_card()
+		if card == null:
+			card = get_vault_card()
 		if card:
 			_scroll_box.ensure_control_visible(card)
 
 
 func scroll_to_vault_card() -> void:
+	scroll_to_bottom()
+
+
+func scroll_to_windup_daily_card() -> void:
 	scroll_to_bottom()
 
 

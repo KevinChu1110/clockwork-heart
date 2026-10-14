@@ -7147,6 +7147,10 @@ func open_power_stat_dialog() -> Control:
 		dlg.vault_requested.connect(func():
 			open_clockwork_vault()
 		)
+	if dlg.has_signal("windup_daily_requested"):
+		dlg.windup_daily_requested.connect(func():
+			open_windup_daily()
+		)
 	add_child(dlg)
 	return dlg
 
