@@ -6500,8 +6500,8 @@
    "id": "dummy-settlement-power-stat",
    "cat": "遊戲",
    "title": "DummySettlementDialog 木人樁試招結算新增前往戰力快捷按鈕",
-   "status": "草稿",
-   "note": "連動 PowerStatDialog，阿宏已開卡",
+   "status": "開發中",
+   "note": "開始開發 DummySettlementDialog 前往戰力快捷按鈕",
    "keys": [
     "DummySet"
    ]
