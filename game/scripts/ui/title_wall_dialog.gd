@@ -15,6 +15,7 @@ extends Control
 signal closed()
 signal title_equipped(title_name: String)
 signal title_unequipped()
+signal power_stat_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -48,6 +49,7 @@ var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _count_lbl: Label
 var _banner_lbl: Label
+var _go_power_stat_btn: Button
 var _unequip_btn: Button
 var _back_btn: Button
 var _fortress_btn: Button
@@ -164,6 +166,12 @@ func _update_ui_texts() -> void:
 			translated_newly.append(_t(t_name))
 		_banner_lbl.text = _t("新解鎖稱號：%s") % "、".join(translated_newly)
 
+	if _go_power_stat_btn and is_instance_valid(_go_power_stat_btn):
+		var btn_txt := _t("title_wall.btn_go_power_stat")
+		if btn_txt == "title_wall.btn_go_power_stat" or btn_txt.is_empty():
+			btn_txt = _t("前往戰力")
+		_go_power_stat_btn.text = btn_txt
+
 	if _unequip_btn and is_instance_valid(_unequip_btn):
 		_unequip_btn.text = _t("卸下稱號")
 		_update_unequip_btn_state()
@@ -226,6 +234,7 @@ func _rebuild() -> void:
 	_title_lbl = null
 	_count_lbl = null
 	_banner_lbl = null
+	_go_power_stat_btn = null
 	_unequip_btn = null
 	_back_btn = null
 	_fortress_btn = null
@@ -433,6 +442,26 @@ func _build_ui() -> void:
 	foot.alignment = BoxContainer.ALIGNMENT_CENTER
 	foot.add_theme_constant_override("separation", 16)
 	v_main.add_child(foot)
+
+	# 前往戰力 果凍按鈕 (BtnGoPowerStat)
+	_go_power_stat_btn = Button.new()
+	_go_power_stat_btn.name = "BtnGoPowerStat"
+	var go_stat_txt := _t("title_wall.btn_go_power_stat")
+	if go_stat_txt == "title_wall.btn_go_power_stat" or go_stat_txt.is_empty():
+		go_stat_txt = _t("前往戰力")
+	_go_power_stat_btn.text = go_stat_txt
+	_go_power_stat_btn.custom_minimum_size = Vector2(160, 52)
+	_go_power_stat_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18))
+	_go_power_stat_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5CB3FF"), COLOR_BORDER, 5, 18))
+	_go_power_stat_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#268CE6"), COLOR_BORDER, 2, 18))
+	_go_power_stat_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_go_power_stat_btn.add_theme_color_override("font_outline_color", Color("#FFFFFF"))
+	_go_power_stat_btn.add_theme_constant_override("outline_size", 2)
+	_go_power_stat_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_power_stat_btn.add_theme_font_override("font", _cached_font)
+	_go_power_stat_btn.pressed.connect(_on_go_power_stat_pressed)
+	foot.add_child(_go_power_stat_btn)
 
 	# 卸下稱號 果凍按鈕 (BtnUnequipTitle)
 	_unequip_btn = Button.new()
@@ -772,11 +801,28 @@ func get_card_desc_text(flag: String) -> String:
 
 
 func _on_close() -> void:
+	visible = false
 	closed.emit()
 	if _back_cb.is_valid():
 		_back_cb.call()
 	else:
 		queue_free()
+
+
+func _on_go_power_stat_pressed() -> void:
+	var am: Node = Engine.get_main_loop().root.get_node_or_null("AudioManager") if Engine.get_main_loop() else null
+	if am and am.has_method("play_ui"):
+		am.play_ui()
+	power_stat_requested.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_power_stat_dialog"):
+		if power_stat_requested.get_connections().is_empty():
+			p.call("open_power_stat_dialog")
+	_on_close()
+
+
+func get_go_power_stat_button() -> Button:
+	return _go_power_stat_btn
 
 
 func _on_fortress() -> void:
