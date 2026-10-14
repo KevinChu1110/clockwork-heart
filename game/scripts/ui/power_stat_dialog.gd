@@ -18,6 +18,7 @@ signal calibrate_requested()
 signal forge_requested()
 signal title_wall_requested()
 signal inventory_requested()
+signal colossus_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -83,6 +84,7 @@ var _btn_go_calibrate: Button
 var _btn_go_forge: Button
 var _btn_go_title_wall: Button
 var _btn_go_inventory: Button
+var _btn_go_colossus: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -310,6 +312,8 @@ func refresh() -> void:
 		if inv_txt == "power_stat.btn_go_inventory" or inv_txt.is_empty():
 			inv_txt = _t("前往背包")
 		_btn_go_inventory.text = inv_txt
+	if _btn_go_colossus:
+		_btn_go_colossus.text = _t("power_stat.btn_go_colossus")
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("確定")
 
@@ -339,6 +343,9 @@ func refresh() -> void:
 
 	# 7. 佩戴稱號展示卡片（當前稱號膠囊與前往稱號牆）
 	_content_vbox.add_child(_build_title_card(gs))
+
+	# 8. 停擺巨偶挑戰進度卡片（今日次數與前往挑戰）
+	_content_vbox.add_child(_build_colossus_card(gs))
 
 
 ## 綜合戰力總覽卡片
@@ -1320,6 +1327,121 @@ func _get_title_display_name(raw_title: String) -> String:
 	return _t(raw_title)
 
 
+func _build_colossus_card(gs: Node) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = "ColossusCard"
+	card.add_theme_stylebox_override("panel", _create_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 14))
+
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_left", 14)
+	m.add_theme_constant_override("margin_right", 14)
+	m.add_theme_constant_override("margin_top", 10)
+	m.add_theme_constant_override("margin_bottom", 10)
+	card.add_child(m)
+
+	var h := HBoxContainer.new()
+	h.name = "ColossusCardHBox"
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 14)
+	m.add_child(h)
+
+	# 左側資訊區：標題列與次數膠囊、推薦目標與說明文字
+	var left_v := VBoxContainer.new()
+	left_v.name = "ColossusLeftVBox"
+	left_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_v.alignment = BoxContainer.ALIGNMENT_CENTER
+	left_v.add_theme_constant_override("separation", 6)
+	h.add_child(left_v)
+
+	var t_row := HBoxContainer.new()
+	t_row.name = "ColossusRowHBox"
+	t_row.add_theme_constant_override("separation", 10)
+	t_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	left_v.add_child(t_row)
+
+	var t_lbl := Label.new()
+	t_lbl.name = "ColossusCardTitleLabel"
+	t_lbl.text = _t("power_stat.colossus_card")
+	_apply_font(t_lbl, 14, COLOR_TEXT_ORANGE, true)
+	t_row.add_child(t_lbl)
+
+	# 今日剩餘挑戰次數膠囊
+	var left_entries := _get_colossus_remaining_entries()
+	var cap := PanelContainer.new()
+	cap.name = "ColossusEntriesCapsule"
+	var cap_sb := StyleBoxFlat.new()
+	cap_sb.bg_color = COLOR_CARD_GOLD
+	cap_sb.border_color = COLOR_BORDER
+	cap_sb.set_border_width_all(1)
+	cap_sb.border_width_bottom = 3
+	cap_sb.set_corner_radius_all(10)
+	cap_sb.content_margin_left = 10
+	cap_sb.content_margin_right = 10
+	cap_sb.content_margin_top = 3
+	cap_sb.content_margin_bottom = 3
+	cap.add_theme_stylebox_override("panel", cap_sb)
+	t_row.add_child(cap)
+
+	var cap_lbl := Label.new()
+	cap_lbl.name = "ColossusEntriesLabel"
+	var entries_pattern := _t("power_stat.colossus_entries")
+	cap_lbl.text = entries_pattern % left_entries
+	_apply_font(cap_lbl, 13, COLOR_TEXT_DARK, true)
+	cap.add_child(cap_lbl)
+
+	# 推薦目標
+	var target_lbl := Label.new()
+	target_lbl.name = "ColossusTargetLabel"
+	var rec_name := _get_recommended_colossus_name(gs)
+	var target_pattern := _t("power_stat.colossus_target")
+	target_lbl.text = target_pattern % rec_name
+	_apply_font(target_lbl, 12, COLOR_TEXT_DARK, true)
+	left_v.add_child(target_lbl)
+
+	# 玩法說明文字
+	var desc_lbl := Label.new()
+	desc_lbl.name = "ColossusDescLabel"
+	desc_lbl.text = _t("power_stat.colossus_desc")
+	_apply_font(desc_lbl, 11, COLOR_TEXT_MUTED)
+	left_v.add_child(desc_lbl)
+
+	# 右側快捷按鈕：前往挑戰 (BtnGoColossus)
+	_btn_go_colossus = Button.new()
+	_btn_go_colossus.name = "BtnGoColossus"
+	_btn_go_colossus.text = _t("power_stat.btn_go_colossus")
+	_btn_go_colossus.custom_minimum_size = Vector2(120, 48)
+	_btn_go_colossus.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_colossus, COLOR_GOLD, COLOR_TEXT_DARK, 14, 5, 18, COLOR_BORDER, 14, 6)
+	_btn_go_colossus.pressed.connect(_on_go_colossus_pressed)
+	h.add_child(_btn_go_colossus)
+
+	return card
+
+
+func _get_colossus_remaining_entries() -> int:
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var cds: Node = (loop as SceneTree).root.get_node_or_null("ColossusDailySystem")
+		if cds and cds.has_method("get_remaining_entries"):
+			return int(cds.call("get_remaining_entries"))
+	var gs := _gs()
+	if gs and "colossus_daily_entries" in gs:
+		return maxi(0, int(gs.get("colossus_daily_entries")))
+	return 3
+
+
+func _get_recommended_colossus_name(gs: Node) -> String:
+	var plv: int = 1
+	if gs and "level" in gs:
+		plv = int(gs.get("level"))
+	if plv >= 18:
+		return _t("黑鏽蒸氣巨象") + " (Lv.28)"
+	elif plv >= 10:
+		return _t("霧鐘提線人偶") + " (Lv.20)"
+	else:
+		return _t("失控發條獅") + " (Lv.12)"
+
+
 func _on_go_equip_pressed() -> void:
 	equip_requested.emit()
 	_on_close_pressed()
@@ -1378,6 +1500,19 @@ func _on_go_inventory_pressed() -> void:
 
 func get_go_inventory_button() -> Button:
 	return _btn_go_inventory
+
+
+func _on_go_colossus_pressed() -> void:
+	colossus_requested.emit()
+	_on_close_pressed()
+
+
+func get_go_colossus_button() -> Button:
+	return _btn_go_colossus
+
+
+func get_colossus_card() -> PanelContainer:
+	return find_child("ColossusCard", true, false) as PanelContainer
 
 
 func get_scroll_box() -> ScrollContainer:

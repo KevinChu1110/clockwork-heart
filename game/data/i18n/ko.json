@@ -467,7 +467,7 @@
   "保底已滿 3/3 · 本次升階釘釘摔錘必成功！": "보장 완료 3/3 · 이번 승급은 딩딩 망치 던지기 확정 성공!",
   "保底已觸發 · 釘釘發脾氣必定升階": "보장 발동 · 딩딩의 성화로 확정 승급",
   "倉庫寶石儲備盤點（各階數量）": "창고 보석 비축 점검 (등급별 수량)",
-  "停擺巨偶": "멈춰 선 거신",
+  "停擺巨偶": "멈춘 거상",
   "停擺巨偶 · 今日剩餘: %d/3": "멈춰 선 거신 · 오늘 남은 횟수: %d/3",
   "停擺巨偶挑戰": "멈춰 선 거신 도전",
   "停擺發條鼠": "멈춰선 태엽 쥐",
@@ -4235,5 +4235,11 @@
   "soul_hall.btn_go_power_stat": "전투력으로 이동",
   "inventory.btn_go_power_stat": "전투력으로 이동",
   "power_stat.btn_go_inventory": "인벤토리로 이동",
-  "vault.btn_go_power_stat": "전투력으로 이동"
+  "vault.btn_go_power_stat": "전투력으로 이동",
+  "power_stat.colossus_card": "멈춘 거상",
+  "power_stat.colossus_entries": "오늘 도전: %d/3",
+  "power_stat.colossus_target": "추천 목표: %s",
+  "power_stat.colossus_desc": "매일 과부하 거상에 도전하여 코어 부품과 기어 승급 재료를 획득하세요",
+  "power_stat.btn_go_colossus": "도전하기",
+  "前往挑戰": "도전하기"
 }

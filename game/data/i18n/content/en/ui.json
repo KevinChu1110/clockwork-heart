@@ -668,7 +668,7 @@
   "停": "Stop",
   "停。剛上弦的？看腳步就知道。發條最鬆那掛的。": "Stop. Just wound? The steps give you away. The loosest spring of the lot.",
   "停。看腳步就知道。最弱那掛。": "Stop. I can tell from your steps. The weakest lot.",
-  "停擺巨偶": "Stalled Colossus",
+  "停擺巨偶": "Dormant Colossus",
   "停擺巨偶 · 今日剩餘: %d/3": "Stalled Colossus · Left Today: %d/3",
   "停擺巨偶挑戰": "Stalled Colossus Challenge",
   "停擺核": "Stasis Core",
@@ -3873,5 +3873,11 @@
   "soul_hall.btn_go_power_stat": "Go to Stats",
   "inventory.btn_go_power_stat": "Go to Stats",
   "power_stat.btn_go_inventory": "Go to Inventory",
-  "vault.btn_go_power_stat": "Go to Stats"
+  "vault.btn_go_power_stat": "Go to Stats",
+  "power_stat.colossus_card": "Dormant Colossus",
+  "power_stat.colossus_entries": "Daily: %d/3",
+  "power_stat.colossus_target": "Recommended: %s",
+  "power_stat.colossus_desc": "Challenge overloaded colossi daily for core parts and gear upgrade materials",
+  "power_stat.btn_go_colossus": "Challenge",
+  "前往挑戰": "Challenge"
 }
