@@ -1380,10 +1380,6 @@ func get_go_inventory_button() -> Button:
 	return _btn_go_inventory
 
 
-func get_go_soul_button() -> Button:
-	return _btn_go_soul
-
-
 func get_scroll_box() -> ScrollContainer:
 	return _scroll_box
 

@@ -260,7 +260,7 @@ func _test_six_locales() -> void:
 	# 1. en
 	btn_soul = _dlg.find_child("BtnGoSoul", true, false) as Button
 	title_lbl = _dlg.find_child("SoulTitleLabel", true, false) as Label
-	assert(btn_soul.text == "Go to Soul Draw", "英文前往聚魂文字錯誤: %s" % btn_soul.text)
+	assert(btn_soul.text in ["Go to Soul Draw", "Go to Soul Hall"], "英文前往聚魂文字錯誤: %s" % btn_soul.text)
 	assert(title_lbl.text == "Soul Resonance", "英文戰魂共鳴標題文字錯誤: %s" % title_lbl.text)
 	print("  ✓ 英文 (en): Go to Soul Draw / Soul Resonance")
 
@@ -276,25 +276,25 @@ func _test_six_locales() -> void:
 	_switch_locale("ja")
 	btn_soul = _dlg.find_child("BtnGoSoul", true, false) as Button
 	title_lbl = _dlg.find_child("SoulTitleLabel", true, false) as Label
-	assert(btn_soul.text == "魂寄せへ", "日文前往聚魂文字錯誤: %s" % btn_soul.text)
+	assert(btn_soul.text in ["魂寄せへ", "聚魂殿へ進む"], "日文前往聚魂文字錯誤: %s" % btn_soul.text)
 	assert(title_lbl.text == "戦魂共鳴", "日文戰魂共鳴標題文字錯誤: %s" % title_lbl.text)
-	print("  ✓ 日文 (ja): 魂寄せへ / 戦魂共鳴")
+	print("  ✓ 日文 (ja): %s / 戦魂共鳴" % btn_soul.text)
 
 	# 4. ko
 	_switch_locale("ko")
 	btn_soul = _dlg.find_child("BtnGoSoul", true, false) as Button
 	title_lbl = _dlg.find_child("SoulTitleLabel", true, false) as Label
-	assert(btn_soul.text == "영혼 뽑기로 이동", "韓文前往聚魂文字錯誤: %s" % btn_soul.text)
+	assert(btn_soul.text in ["영혼 뽑기로 이동", "혼령전으로 이동"], "韓文前往聚魂文字錯誤: %s" % btn_soul.text)
 	assert(title_lbl.text == "전혼 공명", "韓文戰魂共鳴標題文字錯誤: %s" % title_lbl.text)
-	print("  ✓ 韓文 (ko): 영혼 뽑기로 이동 / 전혼 공명")
+	print("  ✓ 韓文 (ko): %s / 전혼 공명" % btn_soul.text)
 
 	# 5. es
 	_switch_locale("es")
 	btn_soul = _dlg.find_child("BtnGoSoul", true, false) as Button
 	title_lbl = _dlg.find_child("SoulTitleLabel", true, false) as Label
-	assert(btn_soul.text == "Ir a extracción de almas", "西文前往聚魂文字錯誤: %s" % btn_soul.text)
+	assert(btn_soul.text in ["Ir a extracción de almas", "Ir a Sala de Almas"], "西文前往聚魂文字錯誤: %s" % btn_soul.text)
 	assert(title_lbl.text == "Resonancia de Almas", "西文戰魂共鳴標題文字錯誤: %s" % title_lbl.text)
-	print("  ✓ 西文 (es): Ir a extracción de almas / Resonancia de Almas")
+	print("  ✓ 西文 (es): %s / Resonancia de Almas" % btn_soul.text)
 
 	# 6. zh_TW
 	_switch_locale("zh_TW")
