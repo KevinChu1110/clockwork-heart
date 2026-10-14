@@ -6460,8 +6460,8 @@
    "id": "colossus-limit-shortcuts",
    "cat": "遊戲",
    "title": "ColossusLimitDialog 停擺巨偶限制彈窗新增前往戰力與前往鍛造快捷果凍按鈕",
-   "status": "測試中",
-   "note": "完成開發、六語系即時切換自測與截圖存證，送審 sideqa",
+   "status": "已上線",
+   "note": "已合併至 main 分支並完成回歸驗收上線 (t_e359c391)",
    "keys": [
     "Colossus"
    ]
