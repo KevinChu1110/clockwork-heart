@@ -6395,6 +6395,16 @@
    "keys": [
     "GemWorks"
    ]
+  },
+  {
+   "id": "forge-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "ForgeDialog 天宮鐵匠新增『前往戰力』快捷果凍按鈕聯動 PowerStatDialog",
+   "status": "測試中",
+   "note": "完成開發、自測與截圖存證，送審 sideqa",
+   "keys": [
+    "ForgeDia"
+   ]
   }
  ]
 }
