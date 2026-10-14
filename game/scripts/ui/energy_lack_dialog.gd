@@ -11,6 +11,7 @@ extends Control
 
 signal energy_granted(amount: int)
 signal shop_requested()
+signal power_stat_requested()
 signal closed()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
@@ -44,6 +45,7 @@ var _status_detail_label: Label
 var _desc_lbl: Label
 var _ad_btn: Button
 var _shop_btn: Button
+var _power_stat_btn: Button
 var _back_btn: Button
 var _cached_font: Font = null
 var _is_built: bool = false
@@ -86,6 +88,8 @@ func _update_ui_texts() -> void:
 		_title_lbl.text = _t("能量不足")
 	if _shop_btn and is_instance_valid(_shop_btn):
 		_shop_btn.text = _t("前往商城")
+	if _power_stat_btn and is_instance_valid(_power_stat_btn):
+		_power_stat_btn.text = _t("前往戰力")
 	if _back_btn and is_instance_valid(_back_btn):
 		_back_btn.text = _t("稍後再來")
 	_refresh_display()
@@ -151,8 +155,8 @@ func _build_ui() -> void:
 	center.add_child(_dialog_card)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 24)
-	margin.add_theme_constant_override("margin_right", 24)
+	margin.add_theme_constant_override("margin_left", 20)
+	margin.add_theme_constant_override("margin_right", 20)
 	margin.add_theme_constant_override("margin_top", 18)
 	margin.add_theme_constant_override("margin_bottom", 20)
 	_dialog_card.add_child(margin)
@@ -229,15 +233,15 @@ func _build_ui() -> void:
 
 	# 底部操作按鈕區 (高度 >= 50px，熱區 >= 48px)
 	var btn_h := HBoxContainer.new()
-	btn_h.add_theme_constant_override("separation", 12)
+	btn_h.add_theme_constant_override("separation", 10)
 	btn_h.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(btn_h)
 
 	# 看廣告拿體力按鈕 (薄荷綠立體果凍厚底)
 	_ad_btn = Button.new()
 	_ad_btn.name = "WatchAdBtn"
-	_ad_btn.custom_minimum_size = Vector2(300, 52)
-	_ad_btn.add_theme_font_size_override("font_size", 16)
+	_ad_btn.custom_minimum_size = Vector2(250, 52)
+	_ad_btn.add_theme_font_size_override("font_size", 15)
 	_ad_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
 	_ad_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_ad_btn.add_theme_constant_override("outline_size", 3)
@@ -254,9 +258,11 @@ func _build_ui() -> void:
 	_shop_btn = Button.new()
 	_shop_btn.name = "BtnGoShop"
 	_shop_btn.text = _t("前往商城")
-	_shop_btn.custom_minimum_size = Vector2(180, 52)
-	_shop_btn.add_theme_font_size_override("font_size", 17)
-	_shop_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_shop_btn.custom_minimum_size = Vector2(145, 52)
+	_shop_btn.add_theme_font_size_override("font_size", 16)
+	_shop_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
+	_shop_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_shop_btn.add_theme_constant_override("outline_size", 3)
 	if _cached_font:
 		_shop_btn.add_theme_font_override("font", _cached_font)
 	_shop_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 6, 20, 2))
@@ -267,12 +273,31 @@ func _build_ui() -> void:
 	_shop_btn.pressed.connect(_on_go_shop_clicked)
 	btn_h.add_child(_shop_btn)
 
-	# 返回按鈕 (溫暖米黃/橙底)
+	# 前往戰力按鈕 (天藍立體果凍厚底，高度 >= 50px，熱區 >= 48px)
+	_power_stat_btn = Button.new()
+	_power_stat_btn.name = "BtnGoPowerStat"
+	_power_stat_btn.text = _t("前往戰力")
+	_power_stat_btn.custom_minimum_size = Vector2(145, 52)
+	_power_stat_btn.add_theme_font_size_override("font_size", 16)
+	_power_stat_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
+	_power_stat_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_power_stat_btn.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		_power_stat_btn.add_theme_font_override("font", _cached_font)
+	_power_stat_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 6, 20, 2))
+	_power_stat_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#5AB4FF"), COLOR_BORDER, 6, 20, 2))
+	_power_stat_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#268BE6"), COLOR_BORDER, 2, 20, 2))
+	_power_stat_btn.add_theme_stylebox_override("focus", _create_button_style(COLOR_SKY, COLOR_BORDER, 6, 20, 2))
+	_power_stat_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#B0ADBE"), COLOR_BORDER, 3, 20, 2))
+	_power_stat_btn.pressed.connect(_on_go_power_stat_clicked)
+	btn_h.add_child(_power_stat_btn)
+
+	# 返回按鈕 (溫暖米黃底立體果凍厚底)
 	_back_btn = Button.new()
 	_back_btn.name = "BackBtn"
 	_back_btn.text = _t("稍後再來")
-	_back_btn.custom_minimum_size = Vector2(160, 52)
-	_back_btn.add_theme_font_size_override("font_size", 17)
+	_back_btn.custom_minimum_size = Vector2(130, 52)
+	_back_btn.add_theme_font_size_override("font_size", 16)
 	_back_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		_back_btn.add_theme_font_override("font", _cached_font)
@@ -406,6 +431,42 @@ func _on_go_shop_clicked() -> void:
 
 func get_go_shop_btn() -> Button:
 	return _shop_btn
+
+
+func _on_go_power_stat_clicked() -> void:
+	power_stat_requested.emit()
+	var parent_node := get_parent()
+	if parent_node != null:
+		if parent_node.has_method("open_power_stat_dialog"):
+			if power_stat_requested.get_connections().is_empty():
+				parent_node.call("open_power_stat_dialog")
+		elif parent_node.get_node_or_null("PowerStatDialog") == null:
+			var PowerStatClass: GDScript = load("res://scripts/ui/power_stat_dialog.gd")
+			if PowerStatClass != null:
+				var dlg: Control = PowerStatClass.new() as Control
+				dlg.name = "PowerStatDialog"
+				dlg.z_index = 85
+				parent_node.add_child(dlg)
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_power_stat_dialog"):
+				if power_stat_requested.get_connections().is_empty():
+					ml.call("open_power_stat_dialog")
+	_on_close_clicked()
+
+
+func get_go_power_stat_btn() -> Button:
+	return _power_stat_btn
+
+
+func get_btn_go_power_stat() -> Button:
+	return _power_stat_btn
+
+
+func get_go_power_stat_button() -> Button:
+	return _power_stat_btn
 
 
 func _on_close_clicked() -> void:
