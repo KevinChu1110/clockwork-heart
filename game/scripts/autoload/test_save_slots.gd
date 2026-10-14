@@ -517,6 +517,9 @@ func _check_state_round_trip(gs: Node) -> void:
 			var pname: String = str(p["name"])
 			if pname.begins_with("_") or pname == "core_inventory":
 				continue
+			## 代理欄位本身不佔存檔欄位，資料存在別的欄位裡 —— 另外用 _check_proxy_round_trip 驗
+			if PROXY_FIELDS.has(pname):
+				continue
 			names.append(pname)
 	if names.is_empty():
 		_fail("列不出 GameState 的欄位 —— 這條檢查會變成空轉")
@@ -549,6 +552,41 @@ func _check_state_round_trip(gs: Node) -> void:
 			return
 	gs.reset_new_game()
 	print("  ok GameState %d 個欄位存得下也讀得回" % names.size())
+	_check_proxy_round_trip(gs)
+
+
+## 代理 property：getter／setter 直接讀寫另一個欄位，沒有自己的存檔 key。
+## 名字 -> 實際存資料的欄位。新增代理 property 時要加進來，這裡會替它驗存讀。
+const PROXY_FIELDS := {"iron_scrap": "inventory"}
+
+
+## 代理欄位走一趟真正的存讀：拿到鐵屑 → to_dict（經 JSON）→ 新遊戲 → from_dict，數量不變，
+## 而且資料確實落在 inventory 裡（不是靠 getter 預設值湊巧相等）。
+func _check_proxy_round_trip(gs: Node) -> void:
+	gs.reset_new_game()
+	gs.set("iron_scrap", 37)
+	var inv_before: Dictionary = gs.get("inventory")
+	if int(inv_before.get("iron_scrap", -1)) != 37:
+		_fail("iron_scrap 設成 37，inventory 裡卻是 %s" % str(inv_before.get("iron_scrap")))
+		return
+	var parsed: Variant = JSON.parse_string(JSON.stringify(gs.to_dict()))
+	if not (parsed is Dictionary):
+		_fail("存檔 JSON 解不回來")
+		return
+	gs.reset_new_game()
+	if int(gs.get("iron_scrap")) != 0:
+		_fail("新遊戲 iron_scrap 應為 0，實際 %s" % str(gs.get("iron_scrap")))
+		return
+	gs.from_dict(parsed)
+	if int(gs.get("iron_scrap")) != 37:
+		_fail("鐵屑存檔再讀檔數量變了：存 37，讀回 %s" % str(gs.get("iron_scrap")))
+		return
+	var inv_after: Dictionary = gs.get("inventory")
+	if int(inv_after.get("iron_scrap", -1)) != 37:
+		_fail("讀檔後 inventory['iron_scrap'] 應為 37，實際 %s" % str(inv_after.get("iron_scrap")))
+		return
+	gs.reset_new_game()
+	print("  ok 代理欄位 iron_scrap 經 inventory 存讀，數量不變（37 → 37）")
 
 
 ## 造一個「跟預設不一樣」的值，而且每個欄位都不同 ——
