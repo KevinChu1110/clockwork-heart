@@ -14,6 +14,7 @@ signal revive_selected()
 signal give_up_selected()
 signal gear_up_requested()
 signal retry_stage_requested()
+signal power_stat_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -48,6 +49,7 @@ var _part_hint_lbl: Label
 var _revive_btn: Button
 var _retry_btn: Button
 var _gear_up_btn: Button
+var _btn_go_power_stat: Button
 var _give_up_btn: Button
 var _cached_font: Font = null
 var _mode: String = ""
@@ -71,6 +73,7 @@ var _on_revive: Callable = Callable()
 var _on_give_up: Callable = Callable()
 var _on_gear_up: Callable = Callable()
 var _on_retry: Callable = Callable()
+var _on_power_stat: Callable = Callable()
 
 
 func _enter_tree() -> void:
@@ -123,6 +126,8 @@ func _update_ui_texts() -> void:
 		_capsule_skill_text.text = _t("武術館自訂招式順序")
 	if _gear_up_btn and is_instance_valid(_gear_up_btn):
 		_gear_up_btn.text = _t("前往整頓")
+	if _btn_go_power_stat and is_instance_valid(_btn_go_power_stat):
+		_btn_go_power_stat.text = _t("前往戰力")
 	if _retry_btn and is_instance_valid(_retry_btn):
 		_retry_btn.text = _t("再次挑戰")
 	if _give_up_btn and is_instance_valid(_give_up_btn):
@@ -130,20 +135,21 @@ func _update_ui_texts() -> void:
 	_refresh_display()
 
 
-static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable(), on_retry: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable(), on_retry: Callable = Callable(), on_power_stat: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/battle_defeat_dialog.gd").new()
-	dlg.setup(on_revive, on_give_up, mode, part_name, on_gear_up, on_retry)
+	dlg.setup(on_revive, on_give_up, mode, part_name, on_gear_up, on_retry, on_power_stat)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable(), on_retry: Callable = Callable()) -> void:
+func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable(), on_retry: Callable = Callable(), on_power_stat: Callable = Callable()) -> void:
 	_on_revive = on_revive
 	_on_give_up = on_give_up
 	_mode = mode
 	_part_name = part_name
 	_on_gear_up = on_gear_up
 	_on_retry = on_retry
+	_on_power_stat = on_power_stat
 	if is_inside_tree():
 		_refresh_display()
 
@@ -186,8 +192,8 @@ func _build_ui() -> void:
 	center.add_child(_dialog_card)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 15)
-	margin.add_theme_constant_override("margin_right", 15)
+	margin.add_theme_constant_override("margin_left", 13)
+	margin.add_theme_constant_override("margin_right", 13)
 	margin.add_theme_constant_override("margin_top", 18)
 	margin.add_theme_constant_override("margin_bottom", 20)
 	_dialog_card.add_child(margin)
@@ -332,15 +338,16 @@ func _build_ui() -> void:
 
 	# 底部操作按鈕 (高度 >= 50px)
 	var btn_h := HBoxContainer.new()
-	btn_h.add_theme_constant_override("separation", 10)
+	btn_h.name = "BottomActions"
+	btn_h.add_theme_constant_override("separation", 6)
 	btn_h.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(btn_h)
 
 	# 觀看廣告立即復活按鈕 (珊瑚粉/薄荷綠立體果凍厚底)
 	_revive_btn = Button.new()
 	_revive_btn.name = "ReviveAdBtn"
-	_revive_btn.custom_minimum_size = Vector2(210, 52)
-	_revive_btn.add_theme_font_size_override("font_size", 15)
+	_revive_btn.custom_minimum_size = Vector2(170, 52)
+	_revive_btn.add_theme_font_size_override("font_size", 14)
 	_revive_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
 	_revive_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_revive_btn.add_theme_constant_override("outline_size", 3)
@@ -374,8 +381,8 @@ func _build_ui() -> void:
 	_gear_up_btn = Button.new()
 	_gear_up_btn.name = "BtnGearUp"
 	_gear_up_btn.text = _t("前往整頓")
-	_gear_up_btn.custom_minimum_size = Vector2(170, 52)
-	_gear_up_btn.add_theme_font_size_override("font_size", 18)
+	_gear_up_btn.custom_minimum_size = Vector2(130, 52)
+	_gear_up_btn.add_theme_font_size_override("font_size", 17)
 	_gear_up_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
 	_gear_up_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_gear_up_btn.add_theme_constant_override("outline_size", 3)
@@ -387,12 +394,29 @@ func _build_ui() -> void:
 	_gear_up_btn.pressed.connect(_on_gear_up_clicked)
 	btn_h.add_child(_gear_up_btn)
 
+	# 前往戰力按鈕 (BtnGoPowerStat, 天藍色立體果凍厚底按鈕, 高度 52px, 熱區 >= 48px, 底邊 >= 5px, 圓角 20px, 零 Emoji)
+	_btn_go_power_stat = Button.new()
+	_btn_go_power_stat.name = "BtnGoPowerStat"
+	_btn_go_power_stat.text = _t("前往戰力")
+	_btn_go_power_stat.custom_minimum_size = Vector2(130, 52)
+	_btn_go_power_stat.add_theme_font_size_override("font_size", 17)
+	_btn_go_power_stat.add_theme_color_override("font_color", Color("#FFFDF8"))
+	_btn_go_power_stat.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_power_stat.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		_btn_go_power_stat.add_theme_font_override("font", _cached_font)
+	_btn_go_power_stat.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 6, 20))
+	_btn_go_power_stat.add_theme_stylebox_override("hover", _create_button_style(Color("#5CB4FF"), COLOR_BORDER, 6, 20))
+	_btn_go_power_stat.add_theme_stylebox_override("pressed", _create_button_style(Color("#2085E5"), COLOR_BORDER, 2, 20))
+	_btn_go_power_stat.pressed.connect(_on_go_power_stat_clicked)
+	btn_h.add_child(_btn_go_power_stat)
+
 	# 結束戰鬥按鈕 (溫暖米黃/橙底)
 	_give_up_btn = Button.new()
 	_give_up_btn.name = "GiveUpBtn"
 	_give_up_btn.text = _t("結束戰鬥")
-	_give_up_btn.custom_minimum_size = Vector2(150, 52)
-	_give_up_btn.add_theme_font_size_override("font_size", 18)
+	_give_up_btn.custom_minimum_size = Vector2(110, 52)
+	_give_up_btn.add_theme_font_size_override("font_size", 17)
 	_give_up_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		_give_up_btn.add_theme_font_override("font", _cached_font)
@@ -534,6 +558,40 @@ func _on_gear_up_clicked() -> void:
 	queue_free()
 
 
+func _on_go_power_stat_clicked() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	power_stat_requested.emit()
+	if _on_power_stat.is_valid():
+		_on_power_stat.call()
+	var opened := false
+	var p := get_parent()
+	if p and p.has_method("open_power_stat_dialog"):
+		p.call("open_power_stat_dialog")
+		opened = true
+	if not opened:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var root_node := (loop as SceneTree).root
+			var ml: Node = root_node.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_power_stat_dialog"):
+				ml.call("open_power_stat_dialog")
+				opened = true
+			if not opened:
+				var target_parent = p if p != null else root_node
+				var PowerStatClass = load("res://scripts/ui/power_stat_dialog.gd")
+				if PowerStatClass:
+					var ps = PowerStatClass.new()
+					ps.name = "PowerStatDialog"
+					ps.z_index = 100
+					target_parent.add_child(ps)
+					opened = true
+	queue_free()
+
+
 func _on_retry_clicked() -> void:
 	retry_stage_requested.emit()
 	if _on_retry.is_valid() and not retry_stage_requested.is_connected(_on_retry):
@@ -632,6 +690,18 @@ func get_diagnostic_title_text() -> String:
 
 func get_gear_up_button() -> Button:
 	return _gear_up_btn
+
+
+func get_go_power_stat_button() -> Button:
+	return _btn_go_power_stat
+
+
+func get_power_stat_button() -> Button:
+	return _btn_go_power_stat
+
+
+func get_go_power_stat_button_text() -> String:
+	return _btn_go_power_stat.text if _btn_go_power_stat and is_instance_valid(_btn_go_power_stat) else ""
 
 
 func get_retry_button() -> Button:
