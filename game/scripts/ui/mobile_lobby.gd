@@ -6691,6 +6691,10 @@ func open_forge(target_weapon: Variant = null) -> Control:
 			_refresh_weapon_slot_buttons()
 			refresh_hud()
 		)
+	if dlg.has_signal("power_stat_requested"):
+		dlg.connect("power_stat_requested", func():
+			open_power_stat_dialog()
+		)
 	add_child(dlg)
 	if target_weapon != null and dlg.has_method("select_target_equipment"):
 		dlg.call("select_target_equipment", target_weapon)

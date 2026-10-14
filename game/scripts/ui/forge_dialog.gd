@@ -14,6 +14,7 @@ extends Control
 signal closed()
 signal workshop_requested()
 signal dismantle_requested()
+signal power_stat_requested()
 signal swap_weapon_requested(slot_idx: int)
 signal weapon_swapped(slot_idx: int, uid: String)
 
@@ -85,6 +86,7 @@ var _iron_scrap_capsule: PanelContainer
 var _scrap_label: Label
 var _btn_go_dismantle: Button
 var _btn_go_workshop: Button
+var _btn_go_power_stat: Button
 var _btn_close: Button
 var _btn_swap_weapon: Button
 var _weapon_swap_dialog: Control = null
@@ -181,6 +183,11 @@ func _update_ui_texts() -> void:
 		_btn_go_dismantle.text = _t("前往拆解")
 	if _btn_go_workshop and is_instance_valid(_btn_go_workshop):
 		_btn_go_workshop.text = _t("前往工坊")
+	if _btn_go_power_stat and is_instance_valid(_btn_go_power_stat):
+		var btn_txt := _t("forge.btn_go_power_stat")
+		if btn_txt == "forge.btn_go_power_stat" or btn_txt.is_empty():
+			btn_txt = _t("前往戰力")
+		_btn_go_power_stat.text = btn_txt
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開鐵匠鋪")
 	if _btn_swap_weapon and is_instance_valid(_btn_swap_weapon):
@@ -673,7 +680,7 @@ func _build_ui() -> void:
 
 	# 動作按鈕列 (按鈕高 >= 50)
 	var act_row := HBoxContainer.new()
-	act_row.add_theme_constant_override("separation", 10)
+	act_row.add_theme_constant_override("separation", 8)
 	act_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(act_row)
 
@@ -681,8 +688,8 @@ func _build_ui() -> void:
 	_btn_forge = Button.new()
 	_btn_forge.name = "BtnForge"
 	_btn_forge.text = ""
-	_btn_forge.custom_minimum_size = Vector2(210, 52)
-	_btn_forge.add_theme_font_size_override("font_size", 18)
+	_btn_forge.custom_minimum_size = Vector2(180, 50)
+	_btn_forge.add_theme_font_size_override("font_size", 16)
 	_btn_forge.add_theme_color_override("font_color", Color.WHITE)
 	_btn_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_btn_forge.add_theme_constant_override("outline_size", 4)
@@ -699,8 +706,8 @@ func _build_ui() -> void:
 	_btn_auto_forge = Button.new()
 	_btn_auto_forge.name = "BtnAutoForge"
 	_btn_auto_forge.text = _t("一鍵鍛造")
-	_btn_auto_forge.custom_minimum_size = Vector2(170, 52)
-	_btn_auto_forge.add_theme_font_size_override("font_size", 18)
+	_btn_auto_forge.custom_minimum_size = Vector2(120, 50)
+	_btn_auto_forge.add_theme_font_size_override("font_size", 16)
 	_btn_auto_forge.add_theme_color_override("font_color", Color.WHITE)
 	_btn_auto_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_btn_auto_forge.add_theme_constant_override("outline_size", 4)
@@ -717,8 +724,8 @@ func _build_ui() -> void:
 	_btn_go_workshop = Button.new()
 	_btn_go_workshop.name = "BtnGoWorkshop"
 	_btn_go_workshop.text = _t("前往工坊")
-	_btn_go_workshop.custom_minimum_size = Vector2(150, 52)
-	_btn_go_workshop.add_theme_font_size_override("font_size", 18)
+	_btn_go_workshop.custom_minimum_size = Vector2(120, 50)
+	_btn_go_workshop.add_theme_font_size_override("font_size", 16)
 	_btn_go_workshop.add_theme_color_override("font_color", Color.WHITE)
 	_btn_go_workshop.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_btn_go_workshop.add_theme_constant_override("outline_size", 4)
@@ -730,12 +737,35 @@ func _build_ui() -> void:
 	_btn_go_workshop.pressed.connect(_on_go_workshop_pressed)
 	act_row.add_child(_btn_go_workshop)
 
+	# 快捷按鈕：前往戰力 (金黃立體厚底 5px, 140x50, 規格 140x50, 圓角 18px, 文字深藍紫, 零系統 Emoji)
+	_btn_go_power_stat = Button.new()
+	_btn_go_power_stat.name = "BtnGoPowerStat"
+	var pstat_txt := _t("forge.btn_go_power_stat")
+	if pstat_txt == "forge.btn_go_power_stat" or pstat_txt.is_empty():
+		pstat_txt = _t("前往戰力")
+	_btn_go_power_stat.text = pstat_txt
+	_btn_go_power_stat.custom_minimum_size = Vector2(140, 50)
+	_btn_go_power_stat.add_theme_font_size_override("font_size", 16)
+	_btn_go_power_stat.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_power_stat.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_power_stat.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_btn_go_power_stat.add_theme_font_override("font", _cached_font)
+	_btn_go_power_stat.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18, 2))
+	_btn_go_power_stat.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18, 2))
+	_btn_go_power_stat.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 18, 2))
+	_btn_go_power_stat.add_theme_stylebox_override("disabled", _create_button_style(Color("#EFEBE0"), COLOR_BORDER_MUTED, 3, 18, 2))
+	_btn_go_power_stat.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_go_power_stat.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_power_stat.pressed.connect(_on_go_power_stat_pressed)
+	act_row.add_child(_btn_go_power_stat)
+
 	# 次要按鈕：離開鐵匠鋪 (金黃立體厚底 5px)
 	_btn_close = Button.new()
 	_btn_close.name = "BtnCloseForge"
 	_btn_close.text = _t("離開鐵匠鋪")
-	_btn_close.custom_minimum_size = Vector2(140, 52)
-	_btn_close.add_theme_font_size_override("font_size", 18)
+	_btn_close.custom_minimum_size = Vector2(114, 50)
+	_btn_close.add_theme_font_size_override("font_size", 16)
 	_btn_close.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_btn_close.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_btn_close.add_theme_constant_override("outline_size", 1)
@@ -1811,6 +1841,32 @@ func _on_go_dismantle_pressed() -> void:
 
 func _on_go_workshop_pressed() -> void:
 	workshop_requested.emit()
+	if not is_queued_for_deletion():
+		_on_close()
+
+
+func get_go_power_stat_button() -> Button:
+	return _btn_go_power_stat
+
+
+func _on_go_power_stat_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	power_stat_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_power_stat_dialog"):
+			if power_stat_requested.get_connections().is_empty():
+				ml.call("open_power_stat_dialog")
+	var p := get_parent()
+	if p and p.has_method("open_power_stat_dialog"):
+		if power_stat_requested.get_connections().is_empty():
+			p.call("open_power_stat_dialog")
 	if not is_queued_for_deletion():
 		_on_close()
 
