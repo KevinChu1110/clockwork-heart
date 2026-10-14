@@ -6751,6 +6751,10 @@ func open_maple_inventory(initial_category: String = "") -> Control:
 		inv.connect("go_soul_hall_requested", func():
 			open_soul_hall()
 		)
+	if inv.has_signal("power_stat_requested"):
+		inv.connect("power_stat_requested", func():
+			open_power_stat_dialog()
+		)
 	add_child(inv)
 	if not initial_category.is_empty() and inv.has_method("set_category"):
 		inv.call("set_category", initial_category)
@@ -6964,6 +6968,10 @@ func open_power_stat_dialog() -> Control:
 	if dlg.has_signal("title_wall_requested"):
 		dlg.title_wall_requested.connect(func():
 			open_title_wall_dialog()
+		)
+	if dlg.has_signal("inventory_requested"):
+		dlg.inventory_requested.connect(func():
+			open_maple_inventory()
 		)
 	add_child(dlg)
 	return dlg
