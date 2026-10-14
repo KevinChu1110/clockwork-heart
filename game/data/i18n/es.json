@@ -4257,5 +4257,12 @@
   "power_stat.dummy_no_record": "¡Sin pruebas aún! ¡Prueba tu daño máximo en el muñeco!",
   "尚未進行試招，快前往木人樁測試最高傷害！": "¡Sin pruebas aún! ¡Prueba tu daño máximo en el muñeco!",
   "power_stat.dummy_no_record_badge": "Sin Probar",
-  "尚未試招": "Sin Probar"
+  "尚未試招": "Sin Probar",
+  "power_stat.vault_card": "Bóveda de Cuerda",
+  "power_stat.btn_go_vault": "Ir a Bóveda",
+  "power_stat.vault_rate": "Prod: 150Oro·3Hierro/h",
+  "power_stat.vault_energy": "Energía Acumulada: %s %s",
+  "power_stat.vault_desc": "La ganancia pasiva se carga con el tiempo · Hasta 8 horas",
+  "發條儲能庫": "Bóveda de Cuerda",
+  "前往儲能": "Ir a Bóveda"
 }

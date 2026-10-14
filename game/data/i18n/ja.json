@@ -4257,5 +4257,12 @@
   "power_stat.dummy_no_record": "未試練。木人で極限ダメージを測定しよう！",
   "尚未進行試招，快前往木人樁測試最高傷害！": "未試練。木人で極限ダメージを測定しよう！",
   "power_stat.dummy_no_record_badge": "未試練",
-  "尚未試招": "未試練"
+  "尚未試招": "未試練",
+  "power_stat.vault_card": "ゼンマイ貯蔵庫",
+  "power_stat.btn_go_vault": "貯蔵庫へ",
+  "power_stat.vault_rate": "生産: 150金·3鉄/h",
+  "power_stat.vault_energy": "蓄積エネルギー: %s %s",
+  "power_stat.vault_desc": "放置収益は時間経過で蓄積 · オフライン最大8時間",
+  "發條儲能庫": "ゼンマイ貯蔵庫",
+  "前往儲能": "貯蔵庫へ"
 }

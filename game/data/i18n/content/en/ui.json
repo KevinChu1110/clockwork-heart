@@ -3897,5 +3897,12 @@
   "power_stat.dummy_no_record": "No trials yet. Go test your peak damage!",
   "尚未進行試招，快前往木人樁測試最高傷害！": "No trials yet. Go test your peak damage!",
   "power_stat.dummy_no_record_badge": "Not Practiced",
-  "尚未試招": "Not Practiced"
+  "尚未試招": "Not Practiced",
+  "power_stat.vault_card": "Clockwork Vault",
+  "power_stat.btn_go_vault": "To Vault",
+  "power_stat.vault_rate": "Yield: 150G·3Iron/h",
+  "power_stat.vault_energy": "Stored Energy: %s %s",
+  "power_stat.vault_desc": "Yield charges over time · Up to 8 hours offline",
+  "發條儲能庫": "Clockwork Vault",
+  "前往儲能": "To Vault"
 }

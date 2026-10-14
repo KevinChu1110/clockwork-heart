@@ -4257,5 +4257,12 @@
   "power_stat.dummy_no_record": "시험 기록 없음. 목인에서 최고 데미지를 시험해보세요!",
   "尚未進行試招，快前往木人樁測試最高傷害！": "시험 기록 없음. 목인에서 최고 데미지를 시험해보세요!",
   "power_stat.dummy_no_record_badge": "미시험",
-  "尚未試招": "미시험"
+  "尚未試招": "미시험",
+  "power_stat.vault_card": "태엽 저장고",
+  "power_stat.btn_go_vault": "저장고 이동",
+  "power_stat.vault_rate": "생산: 150골드·3철/h",
+  "power_stat.vault_energy": "누적 에너지: %s %s",
+  "power_stat.vault_desc": "방치 수익은 시간에 따라 충전 · 최대 8시간 누적",
+  "發條儲能庫": "태엽 저장고",
+  "前往儲能": "저장고 이동"
 }

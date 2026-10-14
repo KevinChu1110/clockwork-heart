@@ -2374,5 +2374,12 @@
   "power_stat.dummy_no_record": "尚未進行試招，快前往木人樁測試最高傷害！",
   "尚未進行試招，快前往木人樁測試最高傷害！": "尚未進行試招，快前往木人樁測試最高傷害！",
   "power_stat.dummy_no_record_badge": "尚未試招",
-  "尚未試招": "尚未試招"
+  "尚未試招": "尚未試招",
+  "power_stat.vault_card": "發條儲能庫",
+  "power_stat.btn_go_vault": "前往儲能",
+  "power_stat.vault_rate": "產能: 150金·3鐵/h",
+  "power_stat.vault_energy": "累積能量: %s %s",
+  "power_stat.vault_desc": "放置收益隨時間蓄能 · 離線最高累計8小時",
+  "發條儲能庫": "發條儲能庫",
+  "前往儲能": "前往儲能"
 }

@@ -20,10 +20,12 @@ signal title_wall_requested()
 signal inventory_requested()
 signal colossus_requested()
 signal go_dummy_practice()
+signal vault_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
+const IdleClockworkVault = preload("res://scripts/systems/idle_clockwork_vault.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
@@ -87,6 +89,7 @@ var _btn_go_title_wall: Button
 var _btn_go_inventory: Button
 var _btn_go_colossus: Button
 var _btn_go_dummy_practice: Button
+var _btn_go_vault: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -321,6 +324,11 @@ func refresh() -> void:
 		if dummy_btn_txt == "power_stat.btn_go_dummy_practice" or dummy_btn_txt.is_empty():
 			dummy_btn_txt = _t("前往試招")
 		_btn_go_dummy_practice.text = dummy_btn_txt
+	if _btn_go_vault:
+		var vault_btn_txt := _t("power_stat.btn_go_vault")
+		if vault_btn_txt == "power_stat.btn_go_vault" or vault_btn_txt.is_empty():
+			vault_btn_txt = _t("前往儲能")
+		_btn_go_vault.text = vault_btn_txt
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("確定")
 
@@ -356,6 +364,9 @@ func refresh() -> void:
 
 	# 9. 木人樁試招紀錄卡片（歷史最佳 DPS、最高單擊與前往試招）
 	_content_vbox.add_child(_build_dummy_trial_card(gs))
+
+	# 10. 發條儲能庫放置收益卡片（累積放置能量值、上限與產能效率，前往儲能）
+	_content_vbox.add_child(_build_vault_card(gs))
 
 
 ## 綜合戰力總覽卡片
@@ -1576,6 +1587,124 @@ func _build_dummy_trial_card(gs: Node) -> PanelContainer:
 	return card
 
 
+func _build_vault_card(_gs: Node) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = "ClockworkVaultCard"
+	card.add_theme_stylebox_override("panel", _create_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 14))
+
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_left", 14)
+	m.add_theme_constant_override("margin_right", 14)
+	m.add_theme_constant_override("margin_top", 10)
+	m.add_theme_constant_override("margin_bottom", 10)
+	card.add_child(m)
+
+	var h := HBoxContainer.new()
+	h.name = "ClockworkVaultCardHBox"
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 14)
+	m.add_child(h)
+
+	# 讀取發條儲能庫放置狀態
+	var st: Dictionary = IdleClockworkVault.get_status()
+	var sec: float = float(st.get("elapsed_seconds", 0.0))
+	var hrs_i := int(sec / 3600.0)
+	var mins_i := int(fmod(sec, 3600.0) / 60.0)
+	var ratio: float = float(st.get("progress_ratio", 0.0))
+	var is_full: bool = bool(st.get("is_full", false))
+
+	# 左側資訊區：標題列與產能效率膠囊、累積能量與上限、收益說明文字
+	var left_v := VBoxContainer.new()
+	left_v.name = "ClockworkVaultLeftVBox"
+	left_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_v.alignment = BoxContainer.ALIGNMENT_CENTER
+	left_v.add_theme_constant_override("separation", 6)
+	h.add_child(left_v)
+
+	# 標題行與產能效率膠囊
+	var t_row := HBoxContainer.new()
+	t_row.name = "VaultTitleRowHBox"
+	t_row.add_theme_constant_override("separation", 10)
+	t_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	left_v.add_child(t_row)
+
+	var t_lbl := Label.new()
+	t_lbl.name = "VaultCardTitleLabel"
+	var title_str := _t("power_stat.vault_card")
+	if title_str == "power_stat.vault_card" or title_str.is_empty():
+		title_str = _t("發條儲能庫")
+	t_lbl.text = title_str
+	_apply_font(t_lbl, 14, COLOR_TEXT_ORANGE, true)
+	t_row.add_child(t_lbl)
+
+	# 當前產能效率膠囊
+	var cap := PanelContainer.new()
+	cap.name = "VaultRateCapsule"
+	var cap_sb := StyleBoxFlat.new()
+	cap_sb.bg_color = COLOR_CARD_GOLD
+	cap_sb.border_color = COLOR_BORDER
+	cap_sb.set_border_width_all(1)
+	cap_sb.border_width_bottom = 3
+	cap_sb.set_corner_radius_all(10)
+	cap_sb.content_margin_left = 10
+	cap_sb.content_margin_right = 10
+	cap_sb.content_margin_top = 3
+	cap_sb.content_margin_bottom = 3
+	cap.add_theme_stylebox_override("panel", cap_sb)
+	t_row.add_child(cap)
+
+	var rate_lbl := Label.new()
+	rate_lbl.name = "VaultRateLabel"
+	var rate_str := _t("power_stat.vault_rate")
+	if rate_str == "power_stat.vault_rate" or rate_str.is_empty():
+		rate_str = _t("產能: 150金·3鐵/h")
+	rate_lbl.text = rate_str
+	_apply_font(rate_lbl, 12, COLOR_TEXT_DARK, true)
+	cap.add_child(rate_lbl)
+
+	# 累積放置能量值與上限文字
+	var energy_lbl := Label.new()
+	energy_lbl.name = "VaultEnergyLabel"
+	var time_str := "%02d:%02d / 08:00" % [hrs_i, mins_i]
+	var pct_str := "(%d%%)" % int(ratio * 100.0)
+	if is_full:
+		var full_tag := _t("vault.max_cap")
+		if full_tag == "vault.max_cap" or full_tag.is_empty():
+			full_tag = _t("已蓄滿 (8小時)")
+		pct_str = "[%s]" % full_tag
+	var energy_pattern := _t("power_stat.vault_energy")
+	if energy_pattern == "power_stat.vault_energy" or energy_pattern.is_empty():
+		energy_pattern = "累積能量: %s %s"
+	energy_lbl.text = energy_pattern % [time_str, pct_str]
+	_apply_font(energy_lbl, 12, COLOR_TEXT_DARK, true)
+	left_v.add_child(energy_lbl)
+
+	# 說明文字
+	var desc_lbl := Label.new()
+	desc_lbl.name = "VaultDescLabel"
+	var desc_str := _t("power_stat.vault_desc")
+	if desc_str == "power_stat.vault_desc" or desc_str.is_empty():
+		desc_str = _t("放置收益隨時間蓄能 · 離線最高累計8小時")
+	desc_lbl.text = desc_str
+	_apply_font(desc_lbl, 11, COLOR_TEXT_MUTED)
+	left_v.add_child(desc_lbl)
+
+	# 右側快捷按鈕：前往儲能 (BtnGoVault)
+	_btn_go_vault = Button.new()
+	_btn_go_vault.name = "BtnGoVault"
+	var vault_btn_txt := _t("power_stat.btn_go_vault")
+	if vault_btn_txt == "power_stat.btn_go_vault" or vault_btn_txt.is_empty():
+		vault_btn_txt = _t("前往儲能")
+	_btn_go_vault.text = vault_btn_txt
+	_btn_go_vault.custom_minimum_size = Vector2(120, 48)
+	_btn_go_vault.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_vault, COLOR_GOLD, COLOR_TEXT_DARK, 14, 5, 18, COLOR_BORDER, 14, 6)
+	_btn_go_vault.pressed.connect(_on_go_vault_pressed)
+	h.add_child(_btn_go_vault)
+
+	return card
+
+
 func _get_colossus_remaining_entries() -> int:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree and (loop as SceneTree).root != null:
@@ -1686,13 +1815,42 @@ func get_dummy_trial_card() -> PanelContainer:
 	return find_child("DummyTrialCard", true, false) as PanelContainer
 
 
+func _on_go_vault_pressed() -> void:
+	vault_requested.emit()
+	_on_close_pressed()
+
+
+func get_go_vault_button() -> Button:
+	return _btn_go_vault
+
+
+func get_clockwork_vault_card() -> PanelContainer:
+	return find_child("ClockworkVaultCard", true, false) as PanelContainer
+
+
+func get_vault_card() -> PanelContainer:
+	return get_clockwork_vault_card()
+
+
 func get_scroll_box() -> ScrollContainer:
 	return _scroll_box
 
 
 func scroll_to_bottom() -> void:
 	if _scroll_box:
-		_scroll_box.scroll_vertical = 99999
+		var vbar := _scroll_box.get_v_scroll_bar()
+		if vbar:
+			vbar.value = vbar.max_value - vbar.page
+			_scroll_box.scroll_vertical = int(vbar.value)
+		else:
+			_scroll_box.scroll_vertical = 99999
+		var card := get_vault_card()
+		if card:
+			_scroll_box.ensure_control_visible(card)
+
+
+func scroll_to_vault_card() -> void:
+	scroll_to_bottom()
 
 
 func _on_close_pressed() -> void:
