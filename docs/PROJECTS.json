@@ -6465,6 +6465,16 @@
    "keys": [
     "PowerSta"
    ]
+  },
+  {
+   "id": "windup-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "WindupDailyDialog 冒險委託每日上發條新增前往戰力快捷按鈕連動 PowerStatDialog",
+   "status": "草稿",
+   "note": "開卡 t_58cb4e3e 派 sideworker",
+   "keys": [
+    "WindupDa"
+   ]
   }
  ]
 }
