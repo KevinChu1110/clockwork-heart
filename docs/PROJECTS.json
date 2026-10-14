@@ -6415,6 +6415,16 @@
    "keys": [
     "BattleDe"
    ]
+  },
+  {
+   "id": "vault-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "ClockworkVaultDialog 發條儲能庫放置收益新增前往戰力快捷按鈕連動 PowerStatDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "Clockwor"
+   ]
   }
  ]
 }
