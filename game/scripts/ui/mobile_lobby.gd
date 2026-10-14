@@ -6794,6 +6794,10 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 		dlg.connect("inventory_requested", func():
 			open_maple_inventory("gem")
 		)
+	if dlg.has_signal("power_stat_requested"):
+		dlg.connect("power_stat_requested", func():
+			open_power_stat_dialog()
+		)
 	add_child(dlg)
 	if target_tab != 0 and dlg.has_method("set_tab"):
 		dlg.call("set_tab", target_tab)
