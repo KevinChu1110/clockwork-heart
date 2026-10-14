@@ -6415,6 +6415,16 @@
    "keys": [
     "大廳聚魂殿堂新增"
    ]
+  },
+  {
+   "id": "shop-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "ShopDialog 商城彈窗底欄新增『前往戰力』快捷果凍按鈕連動 PowerStatDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "ShopDial"
+   ]
   }
  ]
 }
