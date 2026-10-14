@@ -6405,6 +6405,16 @@
    "keys": [
     "ForgeDia"
    ]
+  },
+  {
+   "id": "soul-hall-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "大廳聚魂殿堂新增前往戰力快捷按鈕連動 PowerStatDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "大廳聚魂殿堂新增"
+   ]
   }
  ]
 }
