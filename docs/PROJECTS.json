@@ -6505,6 +6505,16 @@
    "keys": [
     "DummySet"
    ]
+  },
+  {
+   "id": "power-stat-dummy-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽新增木人樁試招紀錄卡片與前往試招快捷",
+   "status": "草稿",
+   "note": "木人樁試招紀錄與前往試招按鈕，阿翔已開卡",
+   "keys": [
+    "PowerSta"
+   ]
   }
  ]
 }
