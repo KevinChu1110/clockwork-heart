@@ -3879,5 +3879,8 @@
   "power_stat.colossus_target": "Recommended: %s",
   "power_stat.colossus_desc": "Challenge overloaded colossi daily for core parts and gear upgrade materials",
   "power_stat.btn_go_colossus": "Challenge",
-  "前往挑戰": "Challenge"
+  "前往挑戰": "Challenge",
+  "colossus.btn_confirm": "OK",
+  "colossus.btn_go_power_stat": "Go to Stats",
+  "colossus.btn_go_forge": "Go to Forge"
 }
