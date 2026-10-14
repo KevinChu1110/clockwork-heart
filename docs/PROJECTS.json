@@ -6440,8 +6440,8 @@
    "id": "battle-defeat-power-stat-shortcut",
    "cat": "遊戲",
    "title": "BattleDefeatDialog 戰敗結算新增前往戰力快捷按鈕連動 PowerStatDialog",
-   "status": "測試中",
-   "note": "BattleDefeatDialog 戰敗結算新增前往戰力快捷按鈕連動 PowerStatDialog",
+   "status": "已上線",
+   "note": "已合併至 main 分支並完成回歸驗收上線 (t_332c3048)",
    "keys": [
     "BattleDe"
    ]
