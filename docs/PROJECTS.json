@@ -6500,8 +6500,8 @@
    "id": "power-stat-vault-card",
    "cat": "遊戲",
    "title": "PowerStatDialog 戰力屬性總覽新增發條儲能庫放置進度卡片與前往儲能快捷按鈕",
-   "status": "開發中",
-   "note": "開始實作 PowerStatDialog 發條儲能庫放置收益卡片與前往儲能按鈕",
+   "status": "測試中",
+   "note": "完成 PowerStatDialog 發條儲能庫放置收益卡片、前往儲能按鈕、六語系支援與單元整合測試",
    "keys": [
     "PowerSta"
    ]
