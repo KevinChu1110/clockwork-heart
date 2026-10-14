@@ -7031,6 +7031,10 @@ func open_power_stat_dialog() -> Control:
 		dlg.inventory_requested.connect(func():
 			open_maple_inventory()
 		)
+	if dlg.has_signal("colossus_requested"):
+		dlg.colossus_requested.connect(func():
+			go_to_colossus()
+		)
 	add_child(dlg)
 	return dlg
 

@@ -467,7 +467,7 @@
   "保底已滿 3/3 · 本次升階釘釘摔錘必成功！": "¡Garantía 3/3 · Esta subida Ding lanza el martillo con éxito asegurado!",
   "保底已觸發 · 釘釘發脾氣必定升階": "Garantía activada · El berrinche de Ding asegura la subida",
   "倉庫寶石儲備盤點（各階數量）": "Reservas de Gemas en Almacén (Por Nivel)",
-  "停擺巨偶": "Coloso Paralizado",
+  "停擺巨偶": "Coloso Inerte",
   "停擺巨偶 · 今日剩餘: %d/3": "Coloso Paralizado · Restantes Hoy: %d/3",
   "停擺巨偶挑戰": "Desafío del Coloso Paralizado",
   "停擺發條鼠": "Rata de Cuerda Inerte",
@@ -4235,5 +4235,11 @@
   "soul_hall.btn_go_power_stat": "Ir a Estadísticas",
   "inventory.btn_go_power_stat": "Ir a Estadísticas",
   "power_stat.btn_go_inventory": "Ir al Inventario",
-  "vault.btn_go_power_stat": "Ir a Estadísticas"
+  "vault.btn_go_power_stat": "Ir a Estadísticas",
+  "power_stat.colossus_card": "Coloso Inerte",
+  "power_stat.colossus_entries": "Desafíos de hoy: %d/3",
+  "power_stat.colossus_target": "Objetivo recomendado: %s",
+  "power_stat.colossus_desc": "Desafía colosos sobrecargados a diario para obtener piezas centrales y materiales",
+  "power_stat.btn_go_colossus": "Desafiar",
+  "前往挑戰": "Desafiar"
 }

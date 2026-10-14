@@ -467,7 +467,7 @@
   "保底已滿 3/3 · 本次升階釘釘摔錘必成功！": "Pity Full 3/3 · Ding's hammer throw guarantees tier-up this time!",
   "保底已觸發 · 釘釘發脾氣必定升階": "Pity triggered · Ding's tantrum guarantees tier-up",
   "倉庫寶石儲備盤點（各階數量）": "Warehouse Gem Reserves (By Level)",
-  "停擺巨偶": "Stalled Colossus",
+  "停擺巨偶": "Dormant Colossus",
   "停擺巨偶 · 今日剩餘: %d/3": "Stalled Colossus · Left Today: %d/3",
   "停擺巨偶挑戰": "Stalled Colossus Challenge",
   "停擺發條鼠": "Stagnant Clockwork Rat",
@@ -4235,5 +4235,11 @@
   "soul_hall.btn_go_power_stat": "Go to Stats",
   "inventory.btn_go_power_stat": "Go to Stats",
   "power_stat.btn_go_inventory": "Go to Inventory",
-  "vault.btn_go_power_stat": "Go to Stats"
+  "vault.btn_go_power_stat": "Go to Stats",
+  "power_stat.colossus_card": "Dormant Colossus",
+  "power_stat.colossus_entries": "Daily: %d/3",
+  "power_stat.colossus_target": "Recommended: %s",
+  "power_stat.colossus_desc": "Challenge overloaded colossi daily for core parts and gear upgrade materials",
+  "power_stat.btn_go_colossus": "Challenge",
+  "前往挑戰": "Challenge"
 }

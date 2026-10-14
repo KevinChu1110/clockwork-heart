@@ -668,7 +668,7 @@
   "停": "Alto",
   "停。剛上弦的？看腳步就知道。發條最鬆那掛的。": "Alto. ¿Acabas de dar cuerda? Se ve en el paso. El resorte más flojo del lote.",
   "停。看腳步就知道。最弱那掛。": "Alto. Se nota en tus pasos. De los más débiles.",
-  "停擺巨偶": "Coloso Paralizado",
+  "停擺巨偶": "Coloso Inerte",
   "停擺巨偶 · 今日剩餘: %d/3": "Coloso Paralizado · Restantes Hoy: %d/3",
   "停擺巨偶挑戰": "Desafío del Coloso Paralizado",
   "停擺核": "Núcleo de Inactividad",
@@ -3873,5 +3873,11 @@
   "soul_hall.btn_go_power_stat": "Ir a Estadísticas",
   "inventory.btn_go_power_stat": "Ir a Estadísticas",
   "power_stat.btn_go_inventory": "Ir al Inventario",
-  "vault.btn_go_power_stat": "Ir a Estadísticas"
+  "vault.btn_go_power_stat": "Ir a Estadísticas",
+  "power_stat.colossus_card": "Coloso Inerte",
+  "power_stat.colossus_entries": "Desafíos de hoy: %d/3",
+  "power_stat.colossus_target": "Objetivo recomendado: %s",
+  "power_stat.colossus_desc": "Desafía colosos sobrecargados a diario para obtener piezas centrales y materiales",
+  "power_stat.btn_go_colossus": "Desafiar",
+  "前往挑戰": "Desafiar"
 }
