@@ -6555,6 +6555,16 @@
    "keys": [
     "EnergyLa"
    ]
+  },
+  {
+   "id": "merge-vault-windup-energy-lack",
+   "cat": "平台",
+   "title": "把已過審的儲能庫/每日委託戰力卡片與能量不足前往戰力合進主線",
+   "status": "草稿",
+   "note": "待執行合併與全域回歸驗收",
+   "keys": [
+    "把已過審的儲能庫"
+   ]
   }
  ]
 }
