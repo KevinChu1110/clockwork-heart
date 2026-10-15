@@ -6630,8 +6630,8 @@
    "id": "wardrobe-shop-shortcut",
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗新增前往商城快捷按鈕",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "完成 WardrobeDialog 前往商城快捷按鈕與連動，測試跑綠並產出實機截圖存證",
    "keys": [
     "Wardrobe"
    ]

@@ -3877,6 +3877,8 @@
   "vault.btn_go_power_stat": "戦力詳細へ",
   "wardrobe.go_power_stat": "戦力詳細へ",
   "wardrobe.btn_go_power_stat": "戦力詳細へ",
+  "wardrobe.go_shop": "ショップへ",
+  "wardrobe.btn_go_shop": "ショップへ",
   "power_stat.colossus_card": "停止した巨像",
   "power_stat.colossus_entries": "本日挑戦: %d/3",
   "power_stat.colossus_target": "推奨目標: %s",

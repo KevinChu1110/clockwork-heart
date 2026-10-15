@@ -17,6 +17,7 @@ signal outfit_saved(race_id: String, selections: Dictionary)
 signal cancelled()
 signal closed()
 signal power_stat_requested()
+signal shop_requested()
 
 @export var creation_mode: bool = false
 
@@ -148,6 +149,7 @@ var _btn_confirm: Button
 var _btn_reset: Button
 var _btn_random: Button
 var _btn_go_power_stat: Button
+var _btn_go_shop: Button
 var _stage_header_label: Label = null
 
 var _breathe_tween: Tween = null
@@ -672,7 +674,7 @@ func _build_ui() -> void:
 	if pstat_txt == "wardrobe.go_power_stat" or pstat_txt.is_empty():
 		pstat_txt = _t("前往戰力")
 	_btn_go_power_stat.text = pstat_txt
-	_btn_go_power_stat.custom_minimum_size = Vector2(110, BTN_SIZE)
+	_btn_go_power_stat.custom_minimum_size = Vector2(105, BTN_SIZE)
 	_btn_go_power_stat.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_btn_go_power_stat.add_theme_font_size_override("font_size", 16)
 	_btn_go_power_stat.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -684,6 +686,26 @@ func _build_ui() -> void:
 	_btn_go_power_stat.add_theme_stylebox_override("pressed", pstat_h)
 	_btn_go_power_stat.pressed.connect(_on_go_power_stat_pressed)
 	actions_hbox.add_child(_btn_go_power_stat)
+
+	# 前往商城 果凍按鈕 (BtnGoShop)
+	_btn_go_shop = Button.new()
+	_btn_go_shop.name = "BtnGoShop"
+	var shop_txt := _t("wardrobe.go_shop")
+	if shop_txt == "wardrobe.go_shop" or shop_txt.is_empty():
+		shop_txt = _t("前往商城")
+	_btn_go_shop.text = shop_txt
+	_btn_go_shop.custom_minimum_size = Vector2(105, BTN_SIZE)
+	_btn_go_shop.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_shop.add_theme_font_size_override("font_size", 16)
+	_btn_go_shop.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_go_shop.add_theme_font_override("font", _cached_font)
+	_btn_go_shop.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18, 2))
+	var shop_h := _create_button_style(Color("#FFB338"), COLOR_BORDER, 3, 18, 2)
+	_btn_go_shop.add_theme_stylebox_override("hover", shop_h)
+	_btn_go_shop.add_theme_stylebox_override("pressed", shop_h)
+	_btn_go_shop.pressed.connect(_on_go_shop_pressed)
+	actions_hbox.add_child(_btn_go_shop)
 
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
@@ -1812,6 +1834,11 @@ func _update_ui_texts() -> void:
 		if pstat_txt == "wardrobe.go_power_stat" or pstat_txt.is_empty():
 			pstat_txt = _t("前往戰力")
 		_btn_go_power_stat.text = pstat_txt
+	if _btn_go_shop:
+		var shop_txt := _t("wardrobe.go_shop")
+		if shop_txt == "wardrobe.go_shop" or shop_txt.is_empty():
+			shop_txt = _t("前往商城")
+		_btn_go_shop.text = shop_txt
 	if _btn_confirm:
 		_btn_confirm.text = _t("確認換裝 · 套用新外觀")
 
@@ -1935,6 +1962,15 @@ func get_power_stat_button() -> Button:
 	return _btn_go_power_stat
 
 
+## 取得前往商城快捷按鈕
+func get_go_shop_button() -> Button:
+	return _btn_go_shop
+
+
+func get_shop_button() -> Button:
+	return _btn_go_shop
+
+
 func _on_go_power_stat_pressed() -> void:
 	var am: Node = null
 	if Engine.get_main_loop() is SceneTree:
@@ -1953,6 +1989,28 @@ func _on_go_power_stat_pressed() -> void:
 	if p and p.has_method("open_power_stat_dialog"):
 		if power_stat_requested.get_connections().is_empty():
 			p.call("open_power_stat_dialog")
+	if not is_queued_for_deletion():
+		close()
+
+
+func _on_go_shop_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	shop_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_shop"):
+			if shop_requested.get_connections().is_empty():
+				ml.call("open_shop")
+	var p := get_parent()
+	if p and p.has_method("open_shop"):
+		if shop_requested.get_connections().is_empty():
+			p.call("open_shop")
 	if not is_queued_for_deletion():
 		close()
 

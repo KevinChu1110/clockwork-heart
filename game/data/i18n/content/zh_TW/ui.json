@@ -1994,6 +1994,8 @@
   "vault.btn_go_power_stat": "前往戰力",
   "wardrobe.go_power_stat": "前往戰力",
   "wardrobe.btn_go_power_stat": "前往戰力",
+  "wardrobe.go_shop": "前往商城",
+  "wardrobe.btn_go_shop": "前往商城",
   "power_stat.colossus_card": "停擺巨偶",
   "power_stat.colossus_entries": "今日挑戰: %d/3",
   "power_stat.colossus_target": "推薦目標: %s",
