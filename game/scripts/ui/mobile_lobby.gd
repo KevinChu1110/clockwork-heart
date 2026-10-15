@@ -7110,6 +7110,10 @@ func open_windup_daily() -> Control:
 		dlg.inventory_requested.connect(func():
 			open_maple_inventory()
 		)
+	if dlg.has_signal("vault_requested"):
+		dlg.vault_requested.connect(func():
+			open_clockwork_vault()
+		)
 	add_child(dlg)
 	return dlg
 
