@@ -2069,5 +2069,6 @@
   "shop.btn_go_wardrobe": "前往衣櫥",
   "shop.btn_go_title_wall": "前往稱號",
   "windup_daily.btn_go_inventory": "前往背包",
-  "windup_daily.btn_go_vault": "前往儲能庫"
+  "windup_daily.btn_go_vault": "前往儲能庫",
+  "vault.btn_go_windup": "前往委託"
 }

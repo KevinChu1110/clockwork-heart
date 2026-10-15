@@ -2669,11 +2669,20 @@ func open_clockwork_vault() -> Control:
 		dlg.go_power_stat.connect(func():
 			open_power_stat_dialog()
 		)
+	if dlg.has_signal("windup_requested"):
+		dlg.windup_requested.connect(func():
+			open_windup_daily()
+		)
+	if dlg.has_signal("go_windup"):
+		dlg.go_windup.connect(func():
+			open_windup_daily()
+		)
 	dlg.tree_exited.connect(func():
 		var has_forge: bool = get_node_or_null("ForgeDialog") != null
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
 		var has_power: bool = get_node_or_null("PowerStatDialog") != null
-		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv and not has_power:
+		var has_windup: bool = get_node_or_null("WindupDailyDialog") != null
+		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv and not has_power and not has_windup:
 			_equip_schematic.visible = true
 		refresh_hud()
 		refresh_vault_display()

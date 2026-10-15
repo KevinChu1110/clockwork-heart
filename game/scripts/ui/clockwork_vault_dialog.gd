@@ -22,6 +22,8 @@ signal go_inventory()
 signal inventory_requested()
 signal power_stat_requested()
 signal go_power_stat()
+signal windup_requested()
+signal go_windup()
 
 const IdleClockworkVault = preload("res://scripts/systems/idle_clockwork_vault.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -54,6 +56,7 @@ var _scrap_num_label: Label
 var _scrap_title_label: Label
 var _btn_claim: Button
 var _btn_double_claim: Button
+var _btn_go_windup: Button
 var _btn_go_forge: Button
 var _btn_go_inventory: Button
 var _btn_go_power_stat: Button
@@ -124,8 +127,8 @@ func _build_ui() -> void:
 	csb.set_border_width_all(2)
 	csb.border_width_bottom = 6
 	csb.set_corner_radius_all(22)
-	csb.content_margin_left = 24
-	csb.content_margin_right = 24
+	csb.content_margin_left = 16
+	csb.content_margin_right = 16
 	csb.content_margin_top = 22
 	csb.content_margin_bottom = 24
 	csb.shadow_color = Color(0.0, 0.0, 0.0, 0.45)
@@ -371,15 +374,15 @@ func _build_ui() -> void:
 		_scrap_num_label.add_theme_font_override("font", _cached_font)
 	sv.add_child(_scrap_num_label)
 
-	## 底部操作按鈕：普通領取、雙倍領取、前往鍛造、前往背包與前往戰力 (高 52px, 熱區 >= 48px, 立體果凍厚底)
+	## 底部操作按鈕：普通領取、雙倍領取、前往委託、前往鍛造、前往背包與前往戰力 (高 52px, 熱區 >= 48px, 立體果凍厚底)
 	var foot_box := HBoxContainer.new()
 	foot_box.alignment = BoxContainer.ALIGNMENT_CENTER
-	foot_box.add_theme_constant_override("separation", 10)
+	foot_box.add_theme_constant_override("separation", 6)
 	main_vbox.add_child(foot_box)
 
 	_btn_claim = Button.new()
 	_btn_claim.name = "ClaimButton"
-	_btn_claim.custom_minimum_size = Vector2(136, 52)
+	_btn_claim.custom_minimum_size = Vector2(115, 52)
 	_btn_claim.focus_mode = Control.FOCUS_NONE
 
 	var claim_sb := StyleBoxFlat.new()
@@ -397,16 +400,16 @@ func _build_ui() -> void:
 	_btn_claim.add_theme_stylebox_override("disabled", claim_sb_d)
 	_btn_claim.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_btn_claim.add_theme_color_override("font_disabled_color", Color(0.65, 0.62, 0.72))
-	_btn_claim.add_theme_font_size_override("font_size", 17)
+	_btn_claim.add_theme_font_size_override("font_size", 16)
 	if _cached_font:
 		_btn_claim.add_theme_font_override("font", _cached_font)
 	_btn_claim.pressed.connect(_on_claim_pressed)
 	foot_box.add_child(_btn_claim)
 
-	## 雙倍領取按鈕 (DoubleClaimButton，高 52px、天藍 #38A0FF 底色、立體果凍厚底 5px、圓角 18px、字級 17px、零系統 Emoji)
+	## 雙倍領取按鈕 (DoubleClaimButton，高 52px、天藍 #38A0FF 底色、立體果凍厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
 	_btn_double_claim = Button.new()
 	_btn_double_claim.name = "DoubleClaimButton"
-	_btn_double_claim.custom_minimum_size = Vector2(136, 52)
+	_btn_double_claim.custom_minimum_size = Vector2(115, 52)
 	_btn_double_claim.focus_mode = Control.FOCUS_NONE
 
 	var double_sb := StyleBoxFlat.new()
@@ -424,16 +427,42 @@ func _build_ui() -> void:
 	_btn_double_claim.add_theme_stylebox_override("disabled", double_sb_d)
 	_btn_double_claim.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_btn_double_claim.add_theme_color_override("font_disabled_color", Color(0.65, 0.62, 0.72))
-	_btn_double_claim.add_theme_font_size_override("font_size", 17)
+	_btn_double_claim.add_theme_font_size_override("font_size", 16)
 	if _cached_font:
 		_btn_double_claim.add_theme_font_override("font", _cached_font)
 	_btn_double_claim.pressed.connect(_on_double_claim_pressed)
 	foot_box.add_child(_btn_double_claim)
 
-	## 前往鍛造快捷按鈕 (BtnGoForge，高 52px、熱區 >= 48px、金黃 #FFD028 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 17px、零系統 Emoji)
+	## 前往委託快捷按鈕 (BtnGoWindup，高 52px、熱區 >= 48px、暖橘 #FFA010 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
+	_btn_go_windup = Button.new()
+	_btn_go_windup.name = "BtnGoWindup"
+	_btn_go_windup.custom_minimum_size = Vector2(115, 52)
+	_btn_go_windup.focus_mode = Control.FOCUS_NONE
+
+	var windup_sb := StyleBoxFlat.new()
+	windup_sb.bg_color = COLOR_ORANGE
+	windup_sb.border_color = COLOR_BORDER
+	windup_sb.set_border_width_all(2)
+	windup_sb.border_width_bottom = 5
+	windup_sb.set_corner_radius_all(18)
+	var windup_sb_h := windup_sb.duplicate() as StyleBoxFlat
+	windup_sb_h.bg_color = Color("#FFB030")
+	var windup_sb_p := windup_sb.duplicate() as StyleBoxFlat
+	windup_sb_p.border_width_bottom = 2
+	_btn_go_windup.add_theme_stylebox_override("normal", windup_sb)
+	_btn_go_windup.add_theme_stylebox_override("hover", windup_sb_h)
+	_btn_go_windup.add_theme_stylebox_override("pressed", windup_sb_p)
+	_btn_go_windup.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_windup.add_theme_font_size_override("font_size", 16)
+	if _cached_font:
+		_btn_go_windup.add_theme_font_override("font", _cached_font)
+	_btn_go_windup.pressed.connect(_on_go_windup_pressed)
+	foot_box.add_child(_btn_go_windup)
+
+	## 前往鍛造快捷按鈕 (BtnGoForge，高 52px、熱區 >= 48px、金黃 #FFD028 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
 	_btn_go_forge = Button.new()
 	_btn_go_forge.name = "BtnGoForge"
-	_btn_go_forge.custom_minimum_size = Vector2(136, 52)
+	_btn_go_forge.custom_minimum_size = Vector2(115, 52)
 	_btn_go_forge.focus_mode = Control.FOCUS_NONE
 
 	var forge_sb := StyleBoxFlat.new()
@@ -450,16 +479,16 @@ func _build_ui() -> void:
 	_btn_go_forge.add_theme_stylebox_override("hover", forge_sb_h)
 	_btn_go_forge.add_theme_stylebox_override("pressed", forge_sb_p)
 	_btn_go_forge.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	_btn_go_forge.add_theme_font_size_override("font_size", 17)
+	_btn_go_forge.add_theme_font_size_override("font_size", 16)
 	if _cached_font:
 		_btn_go_forge.add_theme_font_override("font", _cached_font)
 	_btn_go_forge.pressed.connect(_on_go_forge_pressed)
 	foot_box.add_child(_btn_go_forge)
 
-	## 前往背包快捷按鈕 (BtnGoInventory，高 52px、熱區 >= 48px、薄荷綠 #4ED86A 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 17px、零系統 Emoji)
+	## 前往背包快捷按鈕 (BtnGoInventory，高 52px、熱區 >= 48px、薄荷綠 #4ED86A 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
 	_btn_go_inventory = Button.new()
 	_btn_go_inventory.name = "BtnGoInventory"
-	_btn_go_inventory.custom_minimum_size = Vector2(136, 52)
+	_btn_go_inventory.custom_minimum_size = Vector2(115, 52)
 	_btn_go_inventory.focus_mode = Control.FOCUS_NONE
 
 	var inv_sb := StyleBoxFlat.new()
@@ -476,16 +505,16 @@ func _build_ui() -> void:
 	_btn_go_inventory.add_theme_stylebox_override("hover", inv_sb_h)
 	_btn_go_inventory.add_theme_stylebox_override("pressed", inv_sb_p)
 	_btn_go_inventory.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	_btn_go_inventory.add_theme_font_size_override("font_size", 17)
+	_btn_go_inventory.add_theme_font_size_override("font_size", 16)
 	if _cached_font:
 		_btn_go_inventory.add_theme_font_override("font", _cached_font)
 	_btn_go_inventory.pressed.connect(_on_go_inventory_pressed)
 	foot_box.add_child(_btn_go_inventory)
 
-	## 前往戰力快捷按鈕 (BtnGoPowerStat，高 52px、熱區 >= 48px、天藍 #38A0FF 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 17px、零系統 Emoji)
+	## 前往戰力快捷按鈕 (BtnGoPowerStat，高 52px、熱區 >= 48px、天藍 #38A0FF 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
 	_btn_go_power_stat = Button.new()
 	_btn_go_power_stat.name = "BtnGoPowerStat"
-	_btn_go_power_stat.custom_minimum_size = Vector2(136, 52)
+	_btn_go_power_stat.custom_minimum_size = Vector2(115, 52)
 	_btn_go_power_stat.focus_mode = Control.FOCUS_NONE
 
 	var ps_sb := StyleBoxFlat.new()
@@ -502,7 +531,7 @@ func _build_ui() -> void:
 	_btn_go_power_stat.add_theme_stylebox_override("hover", ps_sb_h)
 	_btn_go_power_stat.add_theme_stylebox_override("pressed", ps_sb_p)
 	_btn_go_power_stat.add_theme_color_override("font_color", COLOR_TEXT_DARK)
-	_btn_go_power_stat.add_theme_font_size_override("font_size", 17)
+	_btn_go_power_stat.add_theme_font_size_override("font_size", 16)
 	if _cached_font:
 		_btn_go_power_stat.add_theme_font_override("font", _cached_font)
 	_btn_go_power_stat.pressed.connect(_on_go_power_stat_pressed)
@@ -522,6 +551,8 @@ func _update_localized_texts() -> void:
 		_btn_claim.text = Loc.t("vault.btn_claim")
 	if _btn_double_claim:
 		_btn_double_claim.text = Loc.t("vault.btn_double_claim")
+	if _btn_go_windup:
+		_btn_go_windup.text = Loc.t("vault.btn_go_windup")
 	if _btn_go_forge:
 		_btn_go_forge.text = Loc.t("vault.btn_go_forge")
 	if _btn_go_inventory:
@@ -586,6 +617,11 @@ func refresh_display() -> void:
 		else:
 			_btn_double_claim.disabled = true
 			_btn_double_claim.modulate = Color(0.7, 0.7, 0.7, 1)
+
+	## 更新前往委託按鈕狀態
+	if _btn_go_windup:
+		_btn_go_windup.text = Loc.t("vault.btn_go_windup")
+		_btn_go_windup.disabled = false
 
 	## 更新前往鍛造按鈕狀態
 	if _btn_go_forge:
@@ -691,6 +727,22 @@ func _on_claim_pressed() -> void:
 	refresh_display()
 
 
+func _on_go_windup_pressed() -> void:
+	windup_requested.emit()
+	go_windup.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_windup_daily"):
+		p.call("open_windup_daily")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_windup_daily"):
+				ml.call("open_windup_daily")
+	closed.emit()
+	queue_free()
+
+
 func _on_go_forge_pressed() -> void:
 	forge_requested.emit()
 	closed.emit()
@@ -744,6 +796,14 @@ func get_claim_button() -> Button:
 
 func get_double_claim_button() -> Button:
 	return _btn_double_claim
+
+
+func get_go_windup_button() -> Button:
+	return _btn_go_windup
+
+
+func get_windup_button() -> Button:
+	return _btn_go_windup
 
 
 func get_go_forge_button() -> Button:
