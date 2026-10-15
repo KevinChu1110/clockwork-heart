@@ -1,15 +1,15 @@
 extends RefCounted
 ## 抽魂流程音效（#91）。只走 AudioManager 既有 API（play / play_ui）。
-## - reveal 系列只用在抽魂翻卡（brief §5）；五個框色各播自己的檔（白 reveal、藍／紫／金／彩 reveal_<色>）。
+## - reveal 系列只用在抽魂翻卡（brief §5）；五個框色各播自己的檔（reveal_<色>）。
 ## - 每個時刻最多 2 聲（#16 的兩聲上限）：開場 ui＋summon，翻卡只播 1 個檔。
 ## - 十連一次只播一聲 reveal（取最高框），不疊十聲。
 
 const Catalog := preload("res://scripts/ui/soul_draw/soul_draw_card_catalog.gd")
 
 ## 框色 → 翻卡音效 [key, volume_db]（PR #99 的分級檔；每張只播一個檔、只佔 1 個 voice）
-## 白用基本 reveal 壓低音量；藍／紫／金／彩各有自己的檔，金和彩不再跟紫共用。
+## 五個框色各有自己的檔（白 reveal_white，#99 76dc7f32），金和彩不再跟紫共用。
 const REVEAL_BY_FRAME := {
-	"white": ["reveal", -5.0],
+	"white": ["reveal_white", 0.0],
 	"blue": ["reveal_blue", 0.0],
 	"purple": ["reveal_purple", 0.0],
 	"gold": ["reveal_gold", 0.0],

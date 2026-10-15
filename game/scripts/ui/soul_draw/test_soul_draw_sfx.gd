@@ -11,7 +11,7 @@ const TenPull := preload("res://scripts/ui/soul_draw/soul_ten_pull_view.gd")
 const SummonFx := preload("res://scripts/ui/soul_draw/soul_summon_fx.gd")
 const SFX_DIR := "res://assets/audio/sfx/"
 const EXPECT := {
-	"white": "reveal", "blue": "reveal_blue", "purple": "reveal_purple",
+	"white": "reveal_white", "blue": "reveal_blue", "purple": "reveal_purple",
 	"gold": "reveal_gold", "rainbow": "reveal_rainbow",
 }
 
@@ -107,7 +107,7 @@ func _run(am: Node) -> void:
 		var now := _playing(am)
 		if now != [EXPECT[f]]:
 			_fail("[%s] 單抽翻卡應播 %s，實際 %s" % [f, EXPECT[f], str(now)])
-	print("  ok 單抽翻卡：白／藍／紫掉落播 reveal／reveal_blue／reveal_purple")
+	print("  ok 單抽翻卡：白／藍／紫掉落播 reveal_white／reveal_blue／reveal_purple")
 
 	# 3. 十連：只播一聲、取最高框
 	var ten: Control = TenPull.new()

@@ -71,7 +71,7 @@ func _preload_sfx() -> void:
 		"craft",  ## 可選；缺檔時 play_craft_success 走 ui+reveal
 		"overwind",  ## 發條超載爆裂音效；缺檔時 play_overwind_burst 走 clash+break+clock
 		## 抽魂（#91／PR #99）：每階一個翻卡檔＋召喚開場。#16 合入後要搬進 SFX_KEYS
-		"reveal_blue", "reveal_purple", "reveal_gold", "reveal_rainbow", "summon",
+		"reveal_white", "reveal_blue", "reveal_purple", "reveal_gold", "reveal_rainbow", "summon",
 	]
 	for n in names:
 		var path := "%s/%s.wav" % [SFX_DIR, n]
