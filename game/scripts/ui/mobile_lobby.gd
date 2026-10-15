@@ -7290,6 +7290,14 @@ func open_shop() -> Control:
 		dlg.power_stat_requested.connect(func():
 			open_power_stat_dialog()
 		)
+	if dlg.has_signal("wardrobe_requested"):
+		dlg.wardrobe_requested.connect(func():
+			open_wardrobe()
+		)
+	if dlg.has_signal("go_wardrobe"):
+		dlg.go_wardrobe.connect(func():
+			open_wardrobe()
+		)
 	dlg.tree_exited.connect(func():
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
 		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_inv:

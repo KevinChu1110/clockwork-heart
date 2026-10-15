@@ -3944,5 +3944,6 @@
   "Go to Stats": "Go to Stats",
   "power_stat.swap_weapon": "Swap",
   "更換": "Swap",
-  "Swap": "Swap"
+  "Swap": "Swap",
+  "shop.btn_go_wardrobe": "Go to Wardrobe"
 }
