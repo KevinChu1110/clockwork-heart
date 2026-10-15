@@ -6660,8 +6660,8 @@
    "id": "wardrobe-title-wall-shortcut",
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗新增前往稱號快捷按鈕",
-   "status": "測試中",
-   "note": "完成 BtnGoTitleWall 果凍按鈕、六語系支援、TitleWallDialog 連動、單元與回歸測試全綠與 7 張實機截圖存證",
+   "status": "已上線",
+   "note": "雙分支合進 main 並完成全套回歸驗收 (t_59370955)",
    "keys": [
     "Wardrobe"
    ]
