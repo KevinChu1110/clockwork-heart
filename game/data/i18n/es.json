@@ -4236,6 +4236,8 @@
   "inventory.btn_go_power_stat": "Ir a Estadísticas",
   "power_stat.btn_go_inventory": "Ir al Inventario",
   "vault.btn_go_power_stat": "Ir a Estadísticas",
+  "wardrobe.go_power_stat": "Ir a Estadísticas",
+  "wardrobe.btn_go_power_stat": "Ir a Estadísticas",
   "power_stat.colossus_card": "Coloso Inerte",
   "power_stat.colossus_entries": "Desafíos de hoy: %d/3",
   "power_stat.colossus_target": "Objetivo recomendado: %s",
