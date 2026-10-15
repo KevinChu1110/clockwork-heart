@@ -6565,6 +6565,16 @@
    "keys": [
     "把已過審的儲能庫"
    ]
+  },
+  {
+   "id": "wardrobe-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "WardrobeDialog 衣櫥換裝彈窗新增前往戰力快捷按鈕",
+   "status": "草稿",
+   "note": "連動 PowerStatDialog",
+   "keys": [
+    "Wardrobe"
+   ]
   }
  ]
 }
