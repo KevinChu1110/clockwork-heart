@@ -6690,8 +6690,8 @@
    "id": "merge-shop-title-wall",
    "cat": "平台",
    "title": "把已過審的商城前往稱號與稱號前往商城雙分支合進主線",
-   "status": "草稿",
-   "note": "雙分支已通過審查待合進 main",
+   "status": "開發中",
+   "note": "已派工 sideworker2 (t_e6875db3)",
    "keys": [
     "把已過審的商城前"
    ]
