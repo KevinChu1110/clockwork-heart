@@ -6720,8 +6720,8 @@
    "id": "windup-inventory-shortcut",
    "cat": "遊戲",
    "title": "WindupDailyDialog 冒險委託每日上發條新增前往背包快捷按鈕連動探索背包",
-   "status": "測試中",
-   "note": "完成 WindupDailyDialog 前往背包快捷果凍按鈕與 MapleInventory 連動，單元測試與 8 張六語系截圖存證全數通過",
+   "status": "已上線",
+   "note": "雙分支合進 main 並完成全套回歸驗收 (t_5fa72e81)",
    "keys": [
     "WindupDa"
    ]
