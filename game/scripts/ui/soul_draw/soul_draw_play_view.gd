@@ -4,6 +4,7 @@ signal continue_requested
 ## ⛔ 不開第二轉蛋；唯一池＝soul_draw_v2。
 
 const UiStyle := preload("res://scripts/ui/ui_style.gd")
+const SoulDrawSfx := preload("res://scripts/ui/soul_draw/soul_draw_sfx.gd")
 const PoolScript := preload("res://scripts/systems/soul_draw_v2/soul_draw_pool.gd")
 const LoadoutScript := preload("res://scripts/systems/paper_doll_v2/character_loadout.gd")
 const EconScript := preload("res://scripts/systems/wave8/w8_economy.gd")
@@ -301,6 +302,7 @@ func _on_pull() -> void:
 		return
 
 	daily.note_soul_pull()
+	SoulDrawSfx.play_pull()
 	var drop: Dictionary = pool.pull()
 	loadout.apply_soul_drop(drop)
 	_log.append_text("%s\n" % str(drop))
@@ -334,6 +336,7 @@ func _on_pull_ten() -> void:
 		_err.text = _t("封靈票不足")
 		return
 
+	SoulDrawSfx.play_pull()
 	var drops: Array[Dictionary] = []
 	for i in range(10):
 		if not econ.spend_soul_pull():

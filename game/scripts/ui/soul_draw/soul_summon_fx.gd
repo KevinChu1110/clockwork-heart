@@ -217,6 +217,7 @@ func _gui_input(event: InputEvent) -> void:
 
 func play_summon(is_ten: bool, on_finish: Callable) -> void:
 	_callback = on_finish
+	preload("res://scripts/ui/soul_draw/soul_draw_sfx.gd").play_summon_start(is_ten)
 	_is_playing = true
 	visible = true
 	modulate = Color(1, 1, 1, 1)
@@ -436,6 +437,7 @@ func _clear_particles() -> void:
 func skip() -> void:
 	if not _is_playing:
 		return
+	preload("res://scripts/ui/soul_draw/soul_draw_sfx.gd").stop_summon()
 	if _tween and _tween.is_valid():
 		_tween.kill()
 	_clear_particles()
