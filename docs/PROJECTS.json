@@ -6595,6 +6595,16 @@
    "keys": [
     "把已過審的衣櫥/"
    ]
+  },
+  {
+   "id": "wardrobe-shop-shortcut",
+   "cat": "遊戲",
+   "title": "WardrobeDialog 衣櫥換裝彈窗新增前往商城快捷按鈕",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "Wardrobe"
+   ]
   }
  ]
 }
