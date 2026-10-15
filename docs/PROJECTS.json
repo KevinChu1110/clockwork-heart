@@ -6550,8 +6550,8 @@
    "id": "wardrobe-power-stat-shortcut",
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗底欄新增前往戰力快捷果凍按鈕連動 PowerStatDialog",
-   "status": "開發中",
-   "note": "開始進行 WardrobeDialog 前往戰力快捷按鈕與連動開發",
+   "status": "測試中",
+   "note": "完成 WardrobeDialog 前往戰力快捷按鈕與連動，測試跑綠並產出實機截圖存證",
    "keys": [
     "Wardrobe"
    ]
