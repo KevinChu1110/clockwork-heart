@@ -4241,6 +4241,8 @@
   "wardrobe.btn_go_power_stat": "전투력으로 이동",
   "wardrobe.go_shop": "상점으로",
   "wardrobe.btn_go_shop": "상점으로",
+  "wardrobe.go_title_wall": "칭호로 이동",
+  "wardrobe.btn_go_title_wall": "칭호로 이동",
   "power_stat.colossus_card": "멈춘 거상",
   "power_stat.colossus_entries": "오늘 도전: %d/3",
   "power_stat.colossus_target": "추천 목표: %s",

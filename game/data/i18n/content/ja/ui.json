@@ -3879,6 +3879,8 @@
   "wardrobe.btn_go_power_stat": "戦力詳細へ",
   "wardrobe.go_shop": "ショップへ",
   "wardrobe.btn_go_shop": "ショップへ",
+  "wardrobe.go_title_wall": "称号一覧へ",
+  "wardrobe.btn_go_title_wall": "称号一覧へ",
   "power_stat.colossus_card": "停止した巨像",
   "power_stat.colossus_entries": "本日挑戦: %d/3",
   "power_stat.colossus_target": "推奨目標: %s",

@@ -3879,6 +3879,8 @@
   "wardrobe.btn_go_power_stat": "Ir a Estadísticas",
   "wardrobe.go_shop": "Ir a la tienda",
   "wardrobe.btn_go_shop": "Ir a la tienda",
+  "wardrobe.go_title_wall": "Ir a Títulos",
+  "wardrobe.btn_go_title_wall": "Ir a Títulos",
   "power_stat.colossus_card": "Coloso Inerte",
   "power_stat.colossus_entries": "Desafíos de hoy: %d/3",
   "power_stat.colossus_target": "Objetivo recomendado: %s",

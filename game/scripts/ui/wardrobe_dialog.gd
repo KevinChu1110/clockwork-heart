@@ -18,6 +18,7 @@ signal cancelled()
 signal closed()
 signal power_stat_requested()
 signal shop_requested()
+signal title_wall_requested()
 
 @export var creation_mode: bool = false
 
@@ -150,6 +151,7 @@ var _btn_reset: Button
 var _btn_random: Button
 var _btn_go_power_stat: Button
 var _btn_go_shop: Button
+var _btn_go_title_wall: Button
 var _stage_header_label: Label = null
 
 var _breathe_tween: Tween = null
@@ -633,13 +635,13 @@ func _build_ui() -> void:
 	# 4. 底部操作按鈕列
 	var actions_hbox := HBoxContainer.new()
 	actions_hbox.custom_minimum_size.y = BTN_SIZE
-	actions_hbox.add_theme_constant_override("separation", 10)
+	actions_hbox.add_theme_constant_override("separation", 8)
 	controls_vbox.add_child(actions_hbox)
 
 	_btn_reset = Button.new()
 	_btn_reset.name = "BtnReset"
 	_btn_reset.text = _t("還原預設")
-	_btn_reset.custom_minimum_size = Vector2(90, BTN_SIZE)
+	_btn_reset.custom_minimum_size = Vector2(85, BTN_SIZE)
 	_btn_reset.add_theme_font_size_override("font_size", 16)
 	_btn_reset.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -706,6 +708,26 @@ func _build_ui() -> void:
 	_btn_go_shop.add_theme_stylebox_override("pressed", shop_h)
 	_btn_go_shop.pressed.connect(_on_go_shop_pressed)
 	actions_hbox.add_child(_btn_go_shop)
+
+	# 前往稱號 果凍按鈕 (BtnGoTitleWall)
+	_btn_go_title_wall = Button.new()
+	_btn_go_title_wall.name = "BtnGoTitleWall"
+	var twall_txt := _t("wardrobe.go_title_wall")
+	if twall_txt == "wardrobe.go_title_wall" or twall_txt.is_empty():
+		twall_txt = _t("前往稱號")
+	_btn_go_title_wall.text = twall_txt
+	_btn_go_title_wall.custom_minimum_size = Vector2(105, BTN_SIZE)
+	_btn_go_title_wall.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_title_wall.add_theme_font_size_override("font_size", 16)
+	_btn_go_title_wall.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_go_title_wall.add_theme_font_override("font", _cached_font)
+	_btn_go_title_wall.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18, 2))
+	var twall_h := _create_button_style(Color("#FFB338"), COLOR_BORDER, 3, 18, 2)
+	_btn_go_title_wall.add_theme_stylebox_override("hover", twall_h)
+	_btn_go_title_wall.add_theme_stylebox_override("pressed", twall_h)
+	_btn_go_title_wall.pressed.connect(_on_go_title_wall_pressed)
+	actions_hbox.add_child(_btn_go_title_wall)
 
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
@@ -1839,6 +1861,11 @@ func _update_ui_texts() -> void:
 		if shop_txt == "wardrobe.go_shop" or shop_txt.is_empty():
 			shop_txt = _t("前往商城")
 		_btn_go_shop.text = shop_txt
+	if _btn_go_title_wall:
+		var twall_txt := _t("wardrobe.go_title_wall")
+		if twall_txt == "wardrobe.go_title_wall" or twall_txt.is_empty():
+			twall_txt = _t("前往稱號")
+		_btn_go_title_wall.text = twall_txt
 	if _btn_confirm:
 		_btn_confirm.text = _t("確認換裝 · 套用新外觀")
 
@@ -1971,6 +1998,15 @@ func get_shop_button() -> Button:
 	return _btn_go_shop
 
 
+## 取得前往稱號快捷按鈕
+func get_go_title_wall_button() -> Button:
+	return _btn_go_title_wall
+
+
+func get_title_wall_button() -> Button:
+	return _btn_go_title_wall
+
+
 func _on_go_power_stat_pressed() -> void:
 	var am: Node = null
 	if Engine.get_main_loop() is SceneTree:
@@ -2011,6 +2047,28 @@ func _on_go_shop_pressed() -> void:
 	if p and p.has_method("open_shop"):
 		if shop_requested.get_connections().is_empty():
 			p.call("open_shop")
+	if not is_queued_for_deletion():
+		close()
+
+
+func _on_go_title_wall_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	title_wall_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_title_wall_dialog"):
+			if title_wall_requested.get_connections().is_empty():
+				ml.call("open_title_wall_dialog")
+	var p := get_parent()
+	if p and p.has_method("open_title_wall_dialog"):
+		if title_wall_requested.get_connections().is_empty():
+			p.call("open_title_wall_dialog")
 	if not is_queued_for_deletion():
 		close()
 
