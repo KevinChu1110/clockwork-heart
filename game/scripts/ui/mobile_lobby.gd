@@ -7890,6 +7890,10 @@ func open_title_wall_dialog() -> Control:
 		dlg.shop_requested.connect(func():
 			open_shop()
 		)
+	if dlg.has_signal("inventory_requested"):
+		dlg.inventory_requested.connect(func():
+			open_maple_inventory()
+		)
 	add_child(dlg)
 	return dlg
 

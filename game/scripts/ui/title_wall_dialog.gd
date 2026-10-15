@@ -18,6 +18,7 @@ signal title_unequipped()
 signal power_stat_requested()
 signal wardrobe_requested()
 signal shop_requested()
+signal inventory_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -54,6 +55,7 @@ var _banner_lbl: Label
 var _go_power_stat_btn: Button
 var _go_wardrobe_btn: Button
 var _go_shop_btn: Button
+var _go_inventory_btn: Button
 var _unequip_btn: Button
 var _back_btn: Button
 var _fortress_btn: Button
@@ -188,6 +190,12 @@ func _update_ui_texts() -> void:
 			btn_s_txt = _t("前往商城")
 		_go_shop_btn.text = btn_s_txt
 
+	if _go_inventory_btn and is_instance_valid(_go_inventory_btn):
+		var btn_i_txt := _t("title_wall.btn_go_inventory")
+		if btn_i_txt == "title_wall.btn_go_inventory" or btn_i_txt.is_empty():
+			btn_i_txt = _t("前往背包")
+		_go_inventory_btn.text = btn_i_txt
+
 	if _unequip_btn and is_instance_valid(_unequip_btn):
 		_unequip_btn.text = _t("卸下稱號")
 		_update_unequip_btn_state()
@@ -251,6 +259,9 @@ func _rebuild() -> void:
 	_count_lbl = null
 	_banner_lbl = null
 	_go_power_stat_btn = null
+	_go_wardrobe_btn = null
+	_go_shop_btn = null
+	_go_inventory_btn = null
 	_unequip_btn = null
 	_back_btn = null
 	_fortress_btn = null
@@ -518,6 +529,26 @@ func _build_ui() -> void:
 		_go_shop_btn.add_theme_font_override("font", _cached_font)
 	_go_shop_btn.pressed.connect(_on_go_shop_pressed)
 	foot.add_child(_go_shop_btn)
+
+	# 前往背包 果凍按鈕 (BtnGoInventory)
+	_go_inventory_btn = Button.new()
+	_go_inventory_btn.name = "BtnGoInventory"
+	var go_inv_txt := _t("title_wall.btn_go_inventory")
+	if go_inv_txt == "title_wall.btn_go_inventory" or go_inv_txt.is_empty():
+		go_inv_txt = _t("前往背包")
+	_go_inventory_btn.text = go_inv_txt
+	_go_inventory_btn.custom_minimum_size = Vector2(150, 52)
+	_go_inventory_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+	_go_inventory_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#66E27F"), COLOR_BORDER, 5, 18))
+	_go_inventory_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#3CB855"), COLOR_BORDER, 2, 18))
+	_go_inventory_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_go_inventory_btn.add_theme_color_override("font_outline_color", Color("#FFFFFF"))
+	_go_inventory_btn.add_theme_constant_override("outline_size", 2)
+	_go_inventory_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_inventory_btn.add_theme_font_override("font", _cached_font)
+	_go_inventory_btn.pressed.connect(_on_go_inventory_pressed)
+	foot.add_child(_go_inventory_btn)
 
 	# 卸下稱號 果凍按鈕 (BtnUnequipTitle)
 	_unequip_btn = Button.new()
@@ -925,6 +956,33 @@ func _on_go_shop_pressed() -> void:
 
 func get_go_shop_button() -> Button:
 	return _go_shop_btn
+
+
+func _on_go_inventory_pressed() -> void:
+	var am: Node = Engine.get_main_loop().root.get_node_or_null("AudioManager") if Engine.get_main_loop() else null
+	if am and am.has_method("play_ui"):
+		am.play_ui()
+	inventory_requested.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_maple_inventory"):
+		if inventory_requested.get_connections().is_empty():
+			p.call("open_maple_inventory")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_maple_inventory"):
+				if inventory_requested.get_connections().is_empty():
+					ml.call("open_maple_inventory")
+	_on_close()
+
+
+func get_go_inventory_button() -> Button:
+	return _go_inventory_btn
+
+
+func get_inventory_button() -> Button:
+	return _go_inventory_btn
 
 
 func _on_fortress() -> void:
