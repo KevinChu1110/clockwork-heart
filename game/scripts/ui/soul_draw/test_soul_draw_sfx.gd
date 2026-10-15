@@ -14,6 +14,8 @@ const EXPECT := {
 	"white": "reveal_white", "blue": "reveal_blue", "purple": "reveal_purple",
 	"gold": "reveal_gold", "rainbow": "reveal_rainbow",
 }
+## 各框色的 volume_db（照 game/assets/audio/MANIFEST.md 抽魂翻卡表）
+const EXPECT_DB := {"white": -5.0, "blue": 0.0, "purple": 0.0, "gold": 0.0, "rainbow": 0.0}
 
 var _ok := true
 var _frame := 0
@@ -90,8 +92,15 @@ func _run(am: Node) -> void:
 		var now := _playing(am)
 		if now != [EXPECT[f]]:
 			_fail("[%s] 翻卡應只播 %s，實際在響 %s" % [f, EXPECT[f], str(now)])
+		var sfx_db: float = float(am.get("_sfx_db"))
+		for p in am.get("_pool"):
+			var ap := p as AudioStreamPlayer
+			if ap.playing and ap.stream and ap.stream.resource_path.get_file().get_basename() == EXPECT[f]:
+				var got := ap.volume_db - sfx_db
+				if not is_equal_approx(got, float(EXPECT_DB[f])):
+					_fail("[%s] %s 音量應為 %+.1f dB，實際 %+.1f dB" % [f, EXPECT[f], EXPECT_DB[f], got])
 	if _ok:
-		print("  ok 五個框色各播自己的檔 %s" % str(EXPECT.values()))
+		print("  ok 五個框色各播自己的檔與音量 %s %s" % [str(EXPECT.values()), str(EXPECT_DB.values())])
 
 	# 2. 實際掉落 → 對應框色的檔
 	var card: Control = ResultCard.new()

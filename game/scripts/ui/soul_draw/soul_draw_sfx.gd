@@ -9,7 +9,7 @@ const Catalog := preload("res://scripts/ui/soul_draw/soul_draw_card_catalog.gd")
 ## 框色 → 翻卡音效 [key, volume_db]（PR #99 的分級檔；每張只播一個檔、只佔 1 個 voice）
 ## 五個框色各有自己的檔（白 reveal_white，#99 76dc7f32），金和彩不再跟紫共用。
 const REVEAL_BY_FRAME := {
-	"white": ["reveal_white", 0.0],
+	"white": ["reveal_white", -5.0],  ## MANIFEST：白檔比藍響 1.1 LU，壓 −5 dB
 	"blue": ["reveal_blue", 0.0],
 	"purple": ["reveal_purple", 0.0],
 	"gold": ["reveal_gold", 0.0],
