@@ -1,0 +1,25 @@
+white(#98 舊reveal)   len=0.25s Mmax(播出)=-27.3 centroid=  908Hz 主峰=  660Hz onset=   1ms 峰值時刻=   9ms 起音數=1
+white(#99 新reveal)   len=0.52s Mmax(播出)=-25.6 centroid= 3243Hz 主峰= 1975Hz onset=   0ms 峰值時刻= 155ms 起音數=2
+blue                 len=0.62s Mmax(播出)=-21.7 centroid= 4250Hz 主峰= 2637Hz onset=   0ms 峰值時刻= 188ms 起音數=2
+purple               len=0.85s Mmax(播出)=-20.3 centroid= 5131Hz 主峰= 3136Hz onset=   0ms 峰值時刻= 298ms 起音數=2
+gold                 len=1.15s Mmax(播出)=-19.0 centroid= 4574Hz 主峰=  392Hz onset=   0ms 峰值時刻= 165ms 起音數=2
+rainbow              len=1.50s Mmax(播出)=-18.0 centroid= 4973Hz 主峰=  392Hz onset=   0ms 峰值時刻= 706ms 起音數=9
+
+成對距離：MFCC(c1-12) DTW 距離 ／ 平均 MFCC 歐氏距離 ／ 正規化互相關最大值
+white(#98 舊reveal)   vs white(#99 新reveal)   DTW= 164.4  meanMFCC= 230.7  xcorr=0.09
+white(#98 舊reveal)   vs blue                 DTW= 169.3  meanMFCC= 224.6  xcorr=0.06
+white(#98 舊reveal)   vs purple               DTW= 144.1  meanMFCC= 180.5  xcorr=0.33
+white(#98 舊reveal)   vs gold                 DTW= 119.7  meanMFCC= 131.6  xcorr=0.05
+white(#98 舊reveal)   vs rainbow              DTW= 145.3  meanMFCC= 177.2  xcorr=0.03
+white(#99 新reveal)   vs blue                 DTW=  41.2  meanMFCC=  68.0  xcorr=0.68
+white(#99 新reveal)   vs purple               DTW=  75.7  meanMFCC= 119.4  xcorr=0.34
+white(#99 新reveal)   vs gold                 DTW=  86.4  meanMFCC= 134.1  xcorr=0.30
+white(#99 新reveal)   vs rainbow              DTW=  83.5  meanMFCC= 127.2  xcorr=0.22
+blue                 vs purple               DTW=  56.7  meanMFCC=  87.4  xcorr=0.26
+blue                 vs gold                 DTW=  78.2  meanMFCC= 120.3  xcorr=0.34
+blue                 vs rainbow              DTW=  77.5  meanMFCC= 105.5  xcorr=0.27
+purple               vs gold                 DTW=  68.6  meanMFCC= 102.1  xcorr=0.13
+purple               vs rainbow              DTW=  68.5  meanMFCC=  94.2  xcorr=0.10
+gold                 vs rainbow              DTW=  49.7  meanMFCC=  60.1  xcorr=0.58
+
+參考：blue vs blue 升半音(×1.06) DTW=26.4 meanMFCC=37.5
