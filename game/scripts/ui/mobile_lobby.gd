@@ -7866,6 +7866,10 @@ func open_title_wall_dialog() -> Control:
 		dlg.power_stat_requested.connect(func():
 			open_power_stat_dialog()
 		)
+	if dlg.has_signal("wardrobe_requested"):
+		dlg.wardrobe_requested.connect(func():
+			open_wardrobe()
+		)
 	add_child(dlg)
 	return dlg
 
