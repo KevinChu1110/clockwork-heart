@@ -7878,6 +7878,10 @@ func open_title_wall_dialog() -> Control:
 		dlg.wardrobe_requested.connect(func():
 			open_wardrobe()
 		)
+	if dlg.has_signal("shop_requested"):
+		dlg.shop_requested.connect(func():
+			open_shop()
+		)
 	add_child(dlg)
 	return dlg
 
