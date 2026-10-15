@@ -17,6 +17,7 @@ signal title_equipped(title_name: String)
 signal title_unequipped()
 signal power_stat_requested()
 signal wardrobe_requested()
+signal shop_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -52,6 +53,7 @@ var _count_lbl: Label
 var _banner_lbl: Label
 var _go_power_stat_btn: Button
 var _go_wardrobe_btn: Button
+var _go_shop_btn: Button
 var _unequip_btn: Button
 var _back_btn: Button
 var _fortress_btn: Button
@@ -179,6 +181,12 @@ func _update_ui_texts() -> void:
 		if btn_w_txt == "title_wall.btn_go_wardrobe" or btn_w_txt.is_empty():
 			btn_w_txt = _t("前往衣櫥")
 		_go_wardrobe_btn.text = btn_w_txt
+
+	if _go_shop_btn and is_instance_valid(_go_shop_btn):
+		var btn_s_txt := _t("title_wall.btn_go_shop")
+		if btn_s_txt == "title_wall.btn_go_shop" or btn_s_txt.is_empty():
+			btn_s_txt = _t("前往商城")
+		_go_shop_btn.text = btn_s_txt
 
 	if _unequip_btn and is_instance_valid(_unequip_btn):
 		_unequip_btn.text = _t("卸下稱號")
@@ -490,6 +498,26 @@ func _build_ui() -> void:
 		_go_wardrobe_btn.add_theme_font_override("font", _cached_font)
 	_go_wardrobe_btn.pressed.connect(_on_go_wardrobe_pressed)
 	foot.add_child(_go_wardrobe_btn)
+
+	# 前往商城 果凍按鈕 (BtnGoShop)
+	_go_shop_btn = Button.new()
+	_go_shop_btn.name = "BtnGoShop"
+	var go_shop_txt := _t("title_wall.btn_go_shop")
+	if go_shop_txt == "title_wall.btn_go_shop" or go_shop_txt.is_empty():
+		go_shop_txt = _t("前往商城")
+	_go_shop_btn.text = go_shop_txt
+	_go_shop_btn.custom_minimum_size = Vector2(150, 52)
+	_go_shop_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+	_go_shop_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB236"), COLOR_BORDER, 5, 18))
+	_go_shop_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08805"), COLOR_BORDER, 2, 18))
+	_go_shop_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_go_shop_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_go_shop_btn.add_theme_constant_override("outline_size", 2)
+	_go_shop_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_shop_btn.add_theme_font_override("font", _cached_font)
+	_go_shop_btn.pressed.connect(_on_go_shop_pressed)
+	foot.add_child(_go_shop_btn)
 
 	# 卸下稱號 果凍按鈕 (BtnUnequipTitle)
 	_unequip_btn = Button.new()
@@ -874,6 +902,29 @@ func _on_go_wardrobe_pressed() -> void:
 
 func get_go_wardrobe_button() -> Button:
 	return _go_wardrobe_btn
+
+
+func _on_go_shop_pressed() -> void:
+	var am: Node = Engine.get_main_loop().root.get_node_or_null("AudioManager") if Engine.get_main_loop() else null
+	if am and am.has_method("play_ui"):
+		am.play_ui()
+	shop_requested.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_shop"):
+		if shop_requested.get_connections().is_empty():
+			p.call("open_shop")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_shop"):
+				if shop_requested.get_connections().is_empty():
+					ml.call("open_shop")
+	_on_close()
+
+
+func get_go_shop_button() -> Button:
+	return _go_shop_btn
 
 
 func _on_fortress() -> void:
