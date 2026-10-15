@@ -6,10 +6,12 @@ extends SceneTree
 ## 2. 單抽完整演出：summon 有響、演出結束後 reveal 只響一次
 ## 3. 演出中跳過：summon 立刻停、之後不再有第二次 callback／第二聲 reveal、沒有殘響
 ## 4. 任何時刻抽魂流程同時發聲 ≤ 2
+## 5. 五階實際播出響度（檔案 400 ms 最大均方（近似 M-max）＋volume_db）要由白到彩單調上升（越稀有越響）
+## 2026-10-15：#98 42fa1e5f 起白階改播 reveal_white（#107）
 const Sfx := preload("res://scripts/ui/soul_draw/soul_draw_sfx.gd")
 const Catalog := preload("res://scripts/ui/soul_draw/soul_draw_card_catalog.gd")
 const Fx := preload("res://scripts/ui/soul_draw/soul_summon_fx.gd")
-const WANT := {"white": "reveal.wav", "blue": "reveal_blue.wav", "purple": "reveal_purple.wav", "gold": "reveal_gold.wav", "rainbow": "reveal_rainbow.wav"}
+const WANT := {"white": "reveal_white.wav", "blue": "reveal_blue.wav", "purple": "reveal_purple.wav", "gold": "reveal_gold.wav", "rainbow": "reveal_rainbow.wav"}
 var _ok := true
 var _am: Node
 var _phase := 0
@@ -19,6 +21,7 @@ var _cb := 0
 var _log: Array = []   # [frame, playing files]
 var _maxv := 0
 var _drop_for := {}
+var _loud: Array = []
 func _fail(m: String) -> void:
 	print("  FAIL ", m); _ok = false
 func _playing() -> Array:
@@ -31,6 +34,33 @@ func _stop_all() -> void:
 func _initialize() -> void:
 	## 音訊在牆鐘時間前進：不能用 --fixed-fps（遊戲時間會比聲音快），改成真實 60 fps
 	Engine.max_fps = 60
+## 讀原始 .wav（匯入後可能是壓縮格式，所以直接讀來源檔的 16-bit PCM data chunk）
+func _wav_rms_db(st: AudioStream) -> float:
+	var f := FileAccess.open(st.resource_path, FileAccess.READ)
+	if f == null: return -999.0
+	var b := f.get_buffer(f.get_length())
+	var i := 12
+	while i + 8 <= b.size():
+		var id := b.slice(i, i + 4).get_string_from_ascii()
+		var sz := b.decode_u32(i + 4)
+		if id == "data":
+			## 近似 M-max：400 ms 視窗（檔尾補靜音）、10 ms 步進的最大均方（不含 K 加權）
+			var n := int(sz / 2)
+			var sq := PackedFloat64Array(); sq.resize(n + 1); sq[0] = 0.0
+			for k in n:
+				var v := b.decode_s16(i + 8 + k * 2) / 32768.0
+				sq[k + 1] = sq[k] + v * v
+			var w := 17640; var best := 0.0
+			var st_i := 0
+			while st_i < n:
+				var e := mini(n, st_i + w)
+				best = maxf(best, (sq[e] - sq[st_i]) / w)
+				st_i += 441
+			return 10.0 * log(best + 1e-12) / log(10.0)
+		i += 8 + sz + (sz & 1)
+	return -999.0
+
+
 func _rarity_check() -> void:
 	for k in Catalog.DROP_TIERS.keys():
 		var fr := Catalog.frame_key_for_drop({"DropId": k, "kind": "part"})
@@ -47,6 +77,15 @@ func _rarity_check() -> void:
 		var okk: bool = pl.size() == 1 and pl[0] == WANT[fr]
 		print("  %s %-7s via %-30s → %s" % ["ok" if okk else "FAIL", fr, via, str(pl)])
 		if not okk: _fail("%s 應只播 %s，實際 %s" % [fr, WANT[fr], str(pl)])
+		for p in _am._pool:
+			if p.playing and p.stream:
+				var eff: float = _wav_rms_db(p.stream) + p.volume_db - _am._sfx_db
+				_loud.append([fr, eff, p.volume_db - _am._sfx_db])
+	var prev := -999.0
+	for e in _loud:
+		print("  loud %-7s 400ms最大均方+增益=%.1f dB（volume_db %+.1f）" % [e[0], e[1], e[2]])
+		if e[1] < prev - 0.05: _fail("%s 播出響度 %.1f 低於前一階 %.1f：稀有度響度沒有單調上升" % [e[0], e[1], prev])
+		prev = maxf(prev, e[1])
 	# 十連取最高
 	_stop_all()
 	var drops := []
