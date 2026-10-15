@@ -6655,6 +6655,16 @@
    "keys": [
     "把已過審的衣櫥前"
    ]
+  },
+  {
+   "id": "wardrobe-title-wall-shortcut",
+   "cat": "遊戲",
+   "title": "WardrobeDialog 衣櫥換裝彈窗新增前往稱號快捷按鈕",
+   "status": "草稿",
+   "note": "連動 TitleWallDialog，支援六語系與多巴胺果凍按鈕",
+   "keys": [
+    "Wardrobe"
+   ]
   }
  ]
 }
