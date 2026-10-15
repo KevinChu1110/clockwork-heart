@@ -3879,6 +3879,8 @@
   "wardrobe.btn_go_power_stat": "Go to Stats",
   "wardrobe.go_shop": "Go to Shop",
   "wardrobe.btn_go_shop": "Go to Shop",
+  "wardrobe.go_title_wall": "Go to Titles",
+  "wardrobe.btn_go_title_wall": "Go to Titles",
   "power_stat.colossus_card": "Dormant Colossus",
   "power_stat.colossus_entries": "Daily: %d/3",
   "power_stat.colossus_target": "Recommended: %s",

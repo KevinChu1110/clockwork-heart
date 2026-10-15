@@ -3882,6 +3882,8 @@
   "wardrobe.btn_go_power_stat": "前往战力",
   "wardrobe.go_shop": "前往商城",
   "wardrobe.btn_go_shop": "前往商城",
+  "wardrobe.go_title_wall": "前往称号",
+  "wardrobe.btn_go_title_wall": "前往称号",
   "power_stat.colossus_card": "停摆巨偶",
   "power_stat.colossus_entries": "今日挑战: %d/3",
   "power_stat.colossus_target": "推荐目标: %s",
