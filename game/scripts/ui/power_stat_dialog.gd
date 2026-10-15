@@ -22,6 +22,7 @@ signal colossus_requested()
 signal go_dummy_practice()
 signal vault_requested()
 signal windup_daily_requested()
+signal weapon_swap_requested(slot_idx: int)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -92,6 +93,7 @@ var _btn_go_colossus: Button
 var _btn_go_dummy_practice: Button
 var _btn_go_vault: Button
 var _btn_go_windup_daily: Button
+var _slot_card_buttons: Array[Button] = [null, null, null]
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -296,7 +298,7 @@ func refresh() -> void:
 	if _title_lbl:
 		_title_lbl.text = _t("戰力屬性總覽")
 	if _sub_title_lbl:
-		var p_name := str(gs.player_name) if gs and "player_name" in gs else "勇者"
+		var p_name := _t(str(gs.player_name)) if gs and "player_name" in gs else _t("勇者")
 		var p_lv := int(gs.level) if gs and "level" in gs else 1
 		var p_path := str(gs.call("path_display")) if gs and gs.has_method("path_display") else ""
 		_sub_title_lbl.text = "%s · Lv.%d%s" % [p_name, p_lv, (" · " + p_path) if not p_path.is_empty() else ""]
@@ -585,6 +587,7 @@ func _create_stat_cell(cell_name: String, label_str: String, val_str: String, ex
 
 ## 三欄武器裝備貢獻卡片
 func _build_weapon_loadout_card(gs: Node, eq: Node) -> PanelContainer:
+	_slot_card_buttons = [null, null, null]
 	var card := PanelContainer.new()
 	card.name = "WeaponLoadoutCard"
 	card.add_theme_stylebox_override("panel", _create_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 14))
@@ -659,6 +662,7 @@ func _create_slot_card(slot_idx: int, slot_title: String, eq: Node) -> PanelCont
 	var c := PanelContainer.new()
 	c.name = "SlotCard_%d" % slot_idx
 	c.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	c.custom_minimum_size = Vector2(0, 132)
 
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = COLOR_CARD_GOLD if slot_idx == 0 else COLOR_CARD_SKY
@@ -674,7 +678,7 @@ func _create_slot_card(slot_idx: int, slot_title: String, eq: Node) -> PanelCont
 
 	var v := VBoxContainer.new()
 	v.alignment = BoxContainer.ALIGNMENT_CENTER
-	v.add_theme_constant_override("separation", 2)
+	v.add_theme_constant_override("separation", 3)
 	c.add_child(v)
 
 	var t := Label.new()
@@ -687,13 +691,46 @@ func _create_slot_card(slot_idx: int, slot_title: String, eq: Node) -> PanelCont
 	if eq and eq.has_method("loadout_slot_unlocked"):
 		is_unlocked = bool(eq.call("loadout_slot_unlocked", slot_idx))
 
+	# 槽位『更換』果凍按鈕（熱區 >= 48px，多巴胺亮色盤，符合人體工學）
+	var btn_swap := Button.new()
+	btn_swap.name = "BtnSwapWeapon"
+	var swap_txt := _t("power_stat.swap_weapon")
+	if swap_txt == "power_stat.swap_weapon" or swap_txt.is_empty():
+		swap_txt = _t("更換")
+	btn_swap.text = swap_txt
+	btn_swap.custom_minimum_size = Vector2(80, 48)
+	btn_swap.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	btn_swap.mouse_filter = Control.MOUSE_FILTER_STOP
+	btn_swap.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_style_jelly_btn(btn_swap, COLOR_SKY, COLOR_TEXT_LIGHT, 13, 4, 12, COLOR_BORDER, 10, 4)
+
+	var captured_slot := slot_idx
+	btn_swap.pressed.connect(func():
+		_on_slot_card_button_pressed(captured_slot)
+	)
+
+	if slot_idx >= 0 and slot_idx < _slot_card_buttons.size():
+		_slot_card_buttons[slot_idx] = btn_swap
+
+	# 點擊整張卡片亦支援連動更換
+	c.mouse_filter = Control.MOUSE_FILTER_STOP
+	c.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	c.gui_input.connect(func(ev: InputEvent):
+		if ev is InputEventMouseButton and ev.pressed and ev.button_index == MOUSE_BUTTON_LEFT:
+			_on_slot_card_button_pressed(captured_slot)
+	)
+
 	if not is_unlocked:
 		var unlock_lv := 10 if slot_idx == 1 else 20
 		var lock_lbl := Label.new()
 		lock_lbl.text = _t("Lv.%d 解鎖" % unlock_lv)
 		lock_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_apply_font(lock_lbl, 13, COLOR_TEXT_DIM)
+		_apply_font(lock_lbl, 12, COLOR_TEXT_DIM)
 		v.add_child(lock_lbl)
+		var pad := Control.new()
+		pad.custom_minimum_size = Vector2(0, 14)
+		v.add_child(pad)
+		v.add_child(btn_swap)
 		return c
 
 	var uid := ""
@@ -704,8 +741,12 @@ func _create_slot_card(slot_idx: int, slot_title: String, eq: Node) -> PanelCont
 		var empty_lbl := Label.new()
 		empty_lbl.text = _t("未裝備")
 		empty_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-		_apply_font(empty_lbl, 13, COLOR_TEXT_DIM)
+		_apply_font(empty_lbl, 12, COLOR_TEXT_DIM)
 		v.add_child(empty_lbl)
+		var pad := Control.new()
+		pad.custom_minimum_size = Vector2(0, 14)
+		v.add_child(pad)
+		v.add_child(btn_swap)
 		return c
 
 	var inst: Dictionary = {}
@@ -719,15 +760,16 @@ func _create_slot_card(slot_idx: int, slot_title: String, eq: Node) -> PanelCont
 	var name_lbl := Label.new()
 	name_lbl.text = _t(w_name)
 	name_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_apply_font(name_lbl, 14, COLOR_TEXT_DARK, true)
+	_apply_font(name_lbl, 13, COLOR_TEXT_DARK, true)
 	v.add_child(name_lbl)
 
 	var stat_lbl := Label.new()
 	stat_lbl.text = _t("T%d · 攻 +%d") % [w_tier, w_atk]
 	stat_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_apply_font(stat_lbl, 12, COLOR_TEXT_ORANGE)
+	_apply_font(stat_lbl, 11, COLOR_TEXT_ORANGE)
 	v.add_child(stat_lbl)
 
+	v.add_child(btn_swap)
 	return c
 
 
@@ -1964,6 +2006,17 @@ func get_go_forge_button() -> Button:
 	return _btn_go_forge
 
 
+func get_slot_card_button(slot_idx: int) -> Button:
+	if slot_idx >= 0 and slot_idx < _slot_card_buttons.size():
+		return _slot_card_buttons[slot_idx]
+	return null
+
+
+func _on_slot_card_button_pressed(slot_idx: int) -> void:
+	weapon_swap_requested.emit(slot_idx)
+	_on_close_pressed()
+
+
 func _on_go_title_wall_pressed() -> void:
 	title_wall_requested.emit()
 	_on_close_pressed()
@@ -2063,6 +2116,15 @@ func scroll_to_vault_card() -> void:
 
 func scroll_to_windup_daily_card() -> void:
 	scroll_to_bottom()
+
+
+func scroll_to_weapon_loadout_card() -> void:
+	if _scroll_box:
+		var target_y := 275
+		var card := find_child("WeaponLoadoutCard", true, false) as Control
+		if card and card.position.y > 50:
+			target_y = int(card.position.y) - 10
+		_scroll_box.scroll_vertical = target_y
 
 
 func _on_close_pressed() -> void:

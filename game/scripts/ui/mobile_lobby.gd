@@ -7155,6 +7155,10 @@ func open_power_stat_dialog() -> Control:
 		dlg.windup_daily_requested.connect(func():
 			open_windup_daily()
 		)
+	if dlg.has_signal("weapon_swap_requested"):
+		dlg.weapon_swap_requested.connect(func(slot_idx: int):
+			open_weapon_swap_dialog(slot_idx)
+		)
 	add_child(dlg)
 	return dlg
 

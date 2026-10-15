@@ -3923,5 +3923,8 @@
   "今日未領取": "未受取",
   "weapon_swap.go_power_stat": "戦力詳細へ",
   "weapon_swap.btn_go_power_stat": "戦力詳細へ",
-  "戦力詳細へ": "戦力詳細へ"
+  "戦力詳細へ": "戦力詳細へ",
+  "power_stat.swap_weapon": "変更",
+  "更換": "変更",
+  "変更": "変更"
 }
