@@ -6610,8 +6610,8 @@
    "id": "skill-inventory-shortcut",
    "cat": "遊戲",
    "title": "SkillDialog 心法招式底欄新增前往背包快捷果凍按鈕聯動探索背包",
-   "status": "測試中",
-   "note": "BtnGoInventory 規格樣式符合人體工學，連動探索背包 consumable 頁籤與六語系驗證通過",
+   "status": "已上線",
+   "note": "五分支合進 main 並完成全套回歸驗收 (t_16649654)",
    "keys": [
     "SkillDia"
    ]
