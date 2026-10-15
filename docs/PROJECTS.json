@@ -6550,8 +6550,8 @@
    "id": "energy-lack-power-stat-shortcut",
    "cat": "遊戲",
    "title": "EnergyLackDialog 能量不足彈窗新增前往戰力快捷按鈕連動 PowerStatDialog",
-   "status": "測試中",
-   "note": "t_fba28e4a 開發與測試通過，待合入 main",
+   "status": "已上線",
+   "note": "三分支合併至 main 並完成全套回歸驗收 (t_e969507f)",
    "keys": [
     "EnergyLa"
    ]
