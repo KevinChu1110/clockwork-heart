@@ -6695,6 +6695,16 @@
    "keys": [
     "把已過審的商城前"
    ]
+  },
+  {
+   "id": "windup-inventory-shortcut",
+   "cat": "遊戲",
+   "title": "WindupDailyDialog 冒險委託每日上發條新增前往背包快捷按鈕連動探索背包",
+   "status": "草稿",
+   "note": "每日委託獎勵直通探索背包",
+   "keys": [
+    "WindupDa"
+   ]
   }
  ]
 }
