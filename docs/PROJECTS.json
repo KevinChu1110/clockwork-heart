@@ -6745,6 +6745,16 @@
    "keys": [
     "把已過審的每日委"
    ]
+  },
+  {
+   "id": "title-wall-inventory-shortcut",
+   "cat": "遊戲",
+   "title": "TitleWallDialog 稱號牆新增前往背包快捷按鈕連動探索背包",
+   "status": "草稿",
+   "note": "在 TitleWallDialog 底欄按鈕列新增 BtnGoInventory 連動 MapleInventory (t_e56c4603)",
+   "keys": [
+    "TitleWal"
+   ]
   }
  ]
 }
