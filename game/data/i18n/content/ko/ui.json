@@ -3874,6 +3874,8 @@
   "inventory.btn_go_power_stat": "전투력으로 이동",
   "power_stat.btn_go_inventory": "인벤토리로 이동",
   "vault.btn_go_power_stat": "전투력으로 이동",
+  "wardrobe.go_power_stat": "전투력으로 이동",
+  "wardrobe.btn_go_power_stat": "전투력으로 이동",
   "power_stat.colossus_card": "멈춘 거상",
   "power_stat.colossus_entries": "오늘 도전: %d/3",
   "power_stat.colossus_target": "추천 목표: %s",

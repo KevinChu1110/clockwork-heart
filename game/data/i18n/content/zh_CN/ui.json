@@ -3877,6 +3877,8 @@
   "inventory.btn_go_power_stat": "前往战力",
   "power_stat.btn_go_inventory": "前往背包",
   "vault.btn_go_power_stat": "前往战力",
+  "wardrobe.go_power_stat": "前往战力",
+  "wardrobe.btn_go_power_stat": "前往战力",
   "power_stat.colossus_card": "停摆巨偶",
   "power_stat.colossus_entries": "今日挑战: %d/3",
   "power_stat.colossus_target": "推荐目标: %s",

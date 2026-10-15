@@ -6758,10 +6758,10 @@ func _show_toast(msg: String) -> void:
 
 
 ## 開啟換裝衣櫥彈窗 (非開局選角，是隨時可重複開合的衣櫥)
-func open_wardrobe() -> void:
+func open_wardrobe() -> Control:
 	var existing = get_node_or_null("WardrobeDialog")
 	if existing != null:
-		return
+		return existing
 
 	var wardrobe_scn := load("res://scenes/ui/wardrobe_dialog.tscn")
 	var dlg: Control = null
@@ -6774,7 +6774,9 @@ func open_wardrobe() -> void:
 
 	if dlg == null:
 		push_error("無法載入 WardrobeDialog")
-		return
+		return null
+
+	dlg.z_index = 80
 
 	if "creation_mode" in dlg:
 		dlg.creation_mode = false
@@ -6785,6 +6787,11 @@ func open_wardrobe() -> void:
 			refresh_hud()
 			_apply_hero_idle_visual()
 			_show_toast(_t("換裝完成！新外裝已生效"))
+		)
+
+	if dlg.has_signal("power_stat_requested"):
+		dlg.connect("power_stat_requested", func():
+			open_power_stat_dialog()
 		)
 
 	# 開啟衣櫥時隱藏底層角色預覽，避免高亮剪影穿透全螢幕半透明遮罩 (review.md / 視覺品質標準)
@@ -6801,6 +6808,7 @@ func open_wardrobe() -> void:
 	dlg.tree_exited.connect(restore_prev)
 
 	add_child(dlg)
+	return dlg
 
 
 ## 開啟天宮鐵匠彈窗
