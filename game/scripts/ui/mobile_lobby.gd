@@ -7143,6 +7143,10 @@ func open_power_stat_dialog() -> Control:
 		dlg.go_dummy_practice.connect(func():
 			request_battle.emit("training_dummy")
 		)
+	if dlg.has_signal("vault_requested"):
+		dlg.vault_requested.connect(func():
+			open_clockwork_vault()
+		)
 	add_child(dlg)
 	return dlg
 
