@@ -4310,5 +4310,6 @@
   "power_stat.swap_weapon": "Swap",
   "更換": "Swap",
   "Swap": "Swap",
-  "shop.btn_go_wardrobe": "Go to Wardrobe"
+  "shop.btn_go_wardrobe": "Go to Wardrobe",
+  "shop.btn_go_title_wall": "To Titles"
 }

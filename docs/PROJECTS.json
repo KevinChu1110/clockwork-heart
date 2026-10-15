@@ -6687,6 +6687,16 @@
    ]
   },
   {
+   "id": "shop-title-wall-shortcut",
+   "cat": "遊戲",
+   "title": "ShopDialog 商城彈窗底欄新增前往稱號快捷按鈕連動 TitleWallDialog",
+   "status": "測試中",
+   "note": "完成 ShopDialog 前往稱號快捷按鈕與信號連動，測試全綠且產出實機截圖存證",
+   "keys": [
+    "ShopDial"
+   ]
+  },
+  {
    "id": "merge-shop-title-wall",
    "cat": "平台",
    "title": "把已過審的商城前往稱號與稱號前往商城雙分支合進主線",

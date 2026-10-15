@@ -3950,5 +3950,6 @@
   "power_stat.swap_weapon": "교체",
   "更換": "교체",
   "교체": "교체",
-  "shop.btn_go_wardrobe": "의상실로 이동"
+  "shop.btn_go_wardrobe": "의상실로 이동",
+  "shop.btn_go_title_wall": "칭호로 이동"
 }

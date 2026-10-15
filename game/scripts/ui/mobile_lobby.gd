@@ -7308,6 +7308,14 @@ func open_shop() -> Control:
 		dlg.go_wardrobe.connect(func():
 			open_wardrobe()
 		)
+	if dlg.has_signal("title_wall_requested"):
+		dlg.title_wall_requested.connect(func():
+			open_title_wall_dialog()
+		)
+	if dlg.has_signal("go_title_wall"):
+		dlg.go_title_wall.connect(func():
+			open_title_wall_dialog()
+		)
 	dlg.tree_exited.connect(func():
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
 		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_inv:
