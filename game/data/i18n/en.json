@@ -4300,5 +4300,8 @@
   "旋轉木馬": "Carousel",
   "weapon_swap.go_power_stat": "Go to Stats",
   "weapon_swap.btn_go_power_stat": "Go to Stats",
-  "Go to Stats": "Go to Stats"
+  "Go to Stats": "Go to Stats",
+  "power_stat.swap_weapon": "Swap",
+  "更換": "Swap",
+  "Swap": "Swap"
 }

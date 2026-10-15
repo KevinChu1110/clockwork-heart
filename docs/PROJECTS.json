@@ -6597,6 +6597,16 @@
    ]
   },
   {
+"id": "power-stat-weapon-swap-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽三槽武器卡片支援點擊更換聯動 WeaponSwapDialog",
+   "status": "測試中",
+   "note": "三槽武器卡片更換按鈕與連動實作完成，單元測試全綠，截圖存證就緒",
+   "keys": [
+    "PowerSta"
+   ]
+  },
+  {
    "id": "merge-wardrobe-weapon-skill",
    "cat": "平台",
    "title": "把已過審的衣櫥/戰力總覽/武器更換/心法背包五分支合進主線",
@@ -6623,8 +6633,7 @@
    "status": "草稿",
    "note": "",
    "keys": [
-    "ShopDial"
-   ]
+    "ShopDial"   ]
   }
  ]
 }

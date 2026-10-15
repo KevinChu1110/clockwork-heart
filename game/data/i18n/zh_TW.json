@@ -2416,5 +2416,7 @@
   "錫兵": "錫兵",
   "旋轉木馬": "旋轉木馬",
   "weapon_swap.go_power_stat": "前往戰力",
-  "weapon_swap.btn_go_power_stat": "前往戰力"
+  "weapon_swap.btn_go_power_stat": "前往戰力",
+  "power_stat.swap_weapon": "更換",
+  "更換": "更換"
 }

@@ -4300,5 +4300,8 @@
   "旋轉木馬": "회전목마",
   "weapon_swap.go_power_stat": "전투력으로 이동",
   "weapon_swap.btn_go_power_stat": "전투력으로 이동",
-  "전투력으로 이동": "전투력으로 이동"
+  "전투력으로 이동": "전투력으로 이동",
+  "power_stat.swap_weapon": "교체",
+  "更換": "교체",
+  "교체": "교체"
 }
