@@ -6665,6 +6665,16 @@
    "keys": [
     "Wardrobe"
    ]
+  },
+  {
+   "id": "title-wall-wardrobe-shortcut",
+   "cat": "遊戲",
+   "title": "TitleWallDialog 稱號牆新增前往衣櫥快捷按鈕",
+   "status": "草稿",
+   "note": "連動 WardrobeDialog，支援六語系與多巴胺果凍按鈕",
+   "keys": [
+    "TitleWal"
+   ]
   }
  ]
 }
