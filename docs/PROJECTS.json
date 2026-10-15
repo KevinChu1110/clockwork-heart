@@ -6607,6 +6607,16 @@
    ]
   },
   {
+   "id": "skill-inventory-shortcut",
+   "cat": "遊戲",
+   "title": "SkillDialog 心法招式底欄新增前往背包快捷果凍按鈕聯動探索背包",
+   "status": "測試中",
+   "note": "BtnGoInventory 規格樣式符合人體工學，連動探索背包 consumable 頁籤與六語系驗證通過",
+   "keys": [
+    "SkillDia"
+   ]
+  },
+  {
    "id": "merge-wardrobe-weapon-skill",
    "cat": "平台",
    "title": "把已過審的衣櫥/戰力總覽/武器更換/心法背包五分支合進主線",
@@ -6633,7 +6643,8 @@
    "status": "草稿",
    "note": "",
    "keys": [
-    "ShopDial"   ]
+    "ShopDial"
+   ]
   }
  ]
 }
