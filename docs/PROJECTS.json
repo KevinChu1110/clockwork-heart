@@ -6595,6 +6595,16 @@
    "keys": [
     "WeaponSw"
    ]
+  },
+  {
+   "id": "power-stat-weapon-swap-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽三槽武器卡片支援點擊更換聯動 WeaponSwapDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "PowerSta"
+   ]
   }
  ]
 }
