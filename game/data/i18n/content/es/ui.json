@@ -3952,5 +3952,6 @@
   "更換": "Cambiar",
   "Cambiar": "Cambiar",
   "shop.btn_go_wardrobe": "Ir al Armario",
-  "shop.btn_go_title_wall": "Ir a Títulos"
+  "shop.btn_go_title_wall": "Ir a Títulos",
+  "windup_daily.btn_go_inventory": "Ir a Mochila"
 }

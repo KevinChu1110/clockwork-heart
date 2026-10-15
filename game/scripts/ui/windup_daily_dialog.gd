@@ -16,12 +16,31 @@ signal closed()
 signal sortie_requested()
 signal colossus_requested()
 signal power_stat_requested()
+signal inventory_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
+	if s == "windup_daily.btn_go_inventory" or s == "前往背包":
+		var lc := ContentLoc.locale()
+		if lc == "zh_TW" or lc == "zh_CN":
+			return "前往背包"
+		var v = ContentLoc._table("ui", lc).get("windup_daily.btn_go_inventory", "")
+		if str(v) != "":
+			return str(v)
+		match lc:
+			"en":
+				return "To Inventory"
+			"ja":
+				return "バッグへ"
+			"ko":
+				return "가방으로 이동"
+			"es":
+				return "Ir a Mochila"
+			_:
+				return "前往背包"
 	return ContentLoc.text("ui", s)
 
 ## ── 多巴胺鮮亮高飽和色盤 ──
@@ -51,6 +70,7 @@ var _msg_label: Label
 var _foot_box: HBoxContainer
 var _btn_leave: Button
 var _btn_power_stat: Button
+var _btn_inventory: Button
 var _btn_sortie: Button
 var _btn_colossus: Button
 var _btn_done: Button
@@ -143,7 +163,7 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "WindupDailyCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 480)
+	_dialog_card.custom_minimum_size = Vector2(760, 480)
 	# 奶油米白底 + 深藍紫立體邊框 + 22px 大圓角
 	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
@@ -319,6 +339,23 @@ func _build_ui() -> void:
 	_btn_power_stat.visible = false
 	_foot_box.add_child(_btn_power_stat)
 
+	_btn_inventory = Button.new()
+	_btn_inventory.name = "BtnGoInventory"
+	_btn_inventory.text = _t("前往背包")
+	_btn_inventory.custom_minimum_size = Vector2(160, 52)
+	_btn_inventory.add_theme_font_size_override("font_size", 16)
+	_btn_inventory.add_theme_color_override("font_color", Color.WHITE)
+	_btn_inventory.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_inventory.add_theme_constant_override("outline_size", 4)
+	if _cached_font:
+		_btn_inventory.add_theme_font_override("font", _cached_font)
+	_btn_inventory.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18, 2))
+	_btn_inventory.add_theme_stylebox_override("hover", _create_button_style(Color("#68E882"), COLOR_BORDER, 5, 18, 2))
+	_btn_inventory.add_theme_stylebox_override("pressed", _create_button_style(Color("#3BBF55"), COLOR_BORDER, 2, 18, 2))
+	_btn_inventory.pressed.connect(_on_go_to_inventory)
+	_btn_inventory.visible = false
+	_foot_box.add_child(_btn_inventory)
+
 	_btn_sortie = Button.new()
 	_btn_sortie.name = "BtnGoSortie"
 	_btn_sortie.text = _t("前往出征")
@@ -361,6 +398,8 @@ func _update_ui_texts() -> void:
 		_btn_leave.text = _t("離開委託")
 	if _btn_power_stat and is_instance_valid(_btn_power_stat):
 		_btn_power_stat.text = _t("前往戰力")
+	if _btn_inventory and is_instance_valid(_btn_inventory):
+		_btn_inventory.text = _t("前往背包")
 	if _btn_sortie:
 		_btn_sortie.text = _t("前往出征")
 	if _btn_colossus:
@@ -432,18 +471,21 @@ func _refresh_display() -> void:
 			_btn_done.text = _t("今日委託已完成（當日不可再領）")
 
 		if _btn_leave:
-			_btn_leave.custom_minimum_size = Vector2(130, 52) if has_colossus_entries else Vector2(150, 52)
+			_btn_leave.custom_minimum_size = Vector2(120, 52) if has_colossus_entries else Vector2(140, 52)
 		if _btn_power_stat:
 			_btn_power_stat.visible = true
-			_btn_power_stat.custom_minimum_size = Vector2(160, 52) if has_colossus_entries else Vector2(180, 52)
+			_btn_power_stat.custom_minimum_size = Vector2(135, 52) if has_colossus_entries else Vector2(160, 52)
+		if _btn_inventory:
+			_btn_inventory.visible = true
+			_btn_inventory.custom_minimum_size = Vector2(135, 52) if has_colossus_entries else Vector2(160, 52)
 		if _btn_sortie:
 			_btn_sortie.visible = true
-			_btn_sortie.custom_minimum_size = Vector2(170, 52) if has_colossus_entries else Vector2(210, 52)
+			_btn_sortie.custom_minimum_size = Vector2(145, 52) if has_colossus_entries else Vector2(180, 52)
 		if _btn_colossus:
 			_btn_colossus.visible = has_colossus_entries
-			_btn_colossus.custom_minimum_size = Vector2(190, 52)
+			_btn_colossus.custom_minimum_size = Vector2(150, 52)
 		if _foot_box:
-			_foot_box.add_theme_constant_override("separation", 10 if has_colossus_entries else 14)
+			_foot_box.add_theme_constant_override("separation", 8 if has_colossus_entries else 12)
 	else:
 		if _btn_done and is_instance_valid(_btn_done):
 			_btn_done.queue_free()
@@ -467,6 +509,8 @@ func _refresh_display() -> void:
 
 		if _btn_power_stat:
 			_btn_power_stat.visible = false
+		if _btn_inventory:
+			_btn_inventory.visible = false
 		if _btn_sortie:
 			_btn_sortie.visible = false
 		if _btn_colossus:
@@ -528,6 +572,14 @@ func get_go_power_stat_button() -> Button:
 	return _btn_power_stat
 
 
+func get_inventory_button() -> Button:
+	return _btn_inventory
+
+
+func get_go_inventory_button() -> Button:
+	return _btn_inventory
+
+
 func get_sortie_button() -> Button:
 	return _btn_sortie
 
@@ -562,6 +614,16 @@ func _on_go_to_power_stat() -> void:
 		if p.has_method("open_power_stat_dialog"):
 			if power_stat_requested.get_connections().is_empty():
 				p.call("open_power_stat_dialog")
+	_on_close()
+
+
+func _on_go_to_inventory() -> void:
+	inventory_requested.emit()
+	var p := get_parent()
+	if p:
+		if p.has_method("open_maple_inventory"):
+			if inventory_requested.get_connections().is_empty():
+				p.call("open_maple_inventory")
 	_on_close()
 
 

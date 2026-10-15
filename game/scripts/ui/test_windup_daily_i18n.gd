@@ -95,6 +95,14 @@ func _run_test_suite() -> void:
 		"ko": "전투력으로 이동",
 		"es": "Ir a Estadísticas"
 	}
+	var expected_inventory := {
+		"zh_TW": "前往背包",
+		"zh_CN": "前往背包",
+		"en": "To Inventory",
+		"ja": "バッグへ",
+		"ko": "가방으로 이동",
+		"es": "Ir a Mochila"
+	}
 	var expected_done := {
 		"zh_TW": "今日委託已完成（當日不可再領）",
 		"zh_CN": "今日委托已完成（当日不可再领）",
@@ -219,6 +227,7 @@ func _run_test_suite() -> void:
 	dialog.call("_refresh_display")
 
 	var btn_power_stat: Button = dialog.find_child("BtnGoPowerStat", true, false)
+	var btn_inventory: Button = dialog.find_child("BtnGoInventory", true, false)
 	var btn_sortie: Button = dialog.find_child("BtnGoSortie", true, false)
 	var btn_colossus: Button = dialog.find_child("BtnGoColossus", true, false)
 	var btn_done: Button = dialog.find_child("BtnDoneStatus", true, false)
@@ -227,6 +236,11 @@ func _run_test_suite() -> void:
 		_fail("ja 已完成狀態下前往戰力鈕未顯示或文字不符: %s" % (btn_power_stat.text if btn_power_stat else "null"))
 	else:
 		print("  ✓ [ja] 前往戰力鈕 -> ", btn_power_stat.text)
+
+	if not btn_inventory or not btn_inventory.visible or btn_inventory.text != expected_inventory["ja"]:
+		_fail("ja 已完成狀態下前往背包鈕未顯示或文字不符: %s" % (btn_inventory.text if btn_inventory else "null"))
+	else:
+		print("  ✓ [ja] 前往背包鈕 -> ", btn_inventory.text)
 
 	if not btn_sortie or btn_sortie.text != expected_sortie["ja"]:
 		_fail("ja 已完成狀態下出征鈕文字不符: %s" % (btn_sortie.text if btn_sortie else "null"))
@@ -250,6 +264,10 @@ func _run_test_suite() -> void:
 		_fail("en 已完成狀態下前往戰力鈕文字不符: %s" % btn_power_stat.text)
 	else:
 		print("  ✓ [en] 前往戰力鈕動態變更 -> ", btn_power_stat.text)
+	if btn_inventory.text != expected_inventory["en"]:
+		_fail("en 已完成狀態下前往背包鈕文字不符: %s" % btn_inventory.text)
+	else:
+		print("  ✓ [en] 前往背包鈕動態變更 -> ", btn_inventory.text)
 	if btn_sortie.text != expected_sortie["en"]:
 		_fail("en 已完成狀態下出征鈕文字不符: %s" % btn_sortie.text)
 	else:
