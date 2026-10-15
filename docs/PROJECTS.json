@@ -6670,8 +6670,8 @@
    "id": "title-wall-wardrobe-shortcut",
    "cat": "遊戲",
    "title": "TitleWallDialog 稱號牆新增前往衣櫥快捷按鈕",
-   "status": "測試中",
-   "note": "TitleWallDialog 新增前往衣櫥快捷按鈕連動 WardrobeDialog 完成，單元測試與七張截圖驗證通過",
+   "status": "已上線",
+   "note": "雙分支合進 main 並完成全套回歸驗收 (t_59370955)",
    "keys": [
     "TitleWal"
    ]
