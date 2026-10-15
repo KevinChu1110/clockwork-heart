@@ -6680,8 +6680,8 @@
    "id": "merge-wardrobe-title-wall",
    "cat": "平台",
    "title": "把已過審的衣櫥前往稱號與稱號前往衣櫥雙分支合進主線",
-   "status": "草稿",
-   "note": "雙分支合進 main 並完成全套回歸驗收 (t_59370955)",
+   "status": "開發中",
+   "note": "雙分支合進 main 進行整合驗收",
    "keys": [
     "把已過審的衣櫥前"
    ]
