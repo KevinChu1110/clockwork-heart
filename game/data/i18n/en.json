@@ -4238,6 +4238,8 @@
   "vault.btn_go_power_stat": "Go to Stats",
   "wardrobe.go_power_stat": "Go to Stats",
   "wardrobe.btn_go_power_stat": "Go to Stats",
+  "wardrobe.go_shop": "Go to Shop",
+  "wardrobe.btn_go_shop": "Go to Shop",
   "power_stat.colossus_card": "Dormant Colossus",
   "power_stat.colossus_entries": "Daily: %d/3",
   "power_stat.colossus_target": "Recommended: %s",

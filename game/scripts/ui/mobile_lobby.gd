@@ -6794,6 +6794,11 @@ func open_wardrobe() -> Control:
 			open_power_stat_dialog()
 		)
 
+	if dlg.has_signal("shop_requested"):
+		dlg.connect("shop_requested", func():
+			open_shop()
+		)
+
 	# 開啟衣櫥時隱藏底層角色預覽，避免高亮剪影穿透全螢幕半透明遮罩 (review.md / 視覺品質標準)
 	if _char_prev:
 		_char_prev.visible = false
