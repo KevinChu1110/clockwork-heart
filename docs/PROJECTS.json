@@ -6570,8 +6570,8 @@
    "id": "wardrobe-power-stat-shortcut",
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗底欄新增前往戰力快捷果凍按鈕連動 PowerStatDialog",
-   "status": "測試中",
-   "note": "完成 WardrobeDialog 前往戰力快捷按鈕與連動，測試跑綠並產出實機截圖存證",
+   "status": "已上線",
+   "note": "五分支合進 main 並完成全套回歸驗收 (t_16649654)",
    "keys": [
     "Wardrobe"
    ]
@@ -6597,7 +6597,7 @@
    ]
   },
   {
-"id": "power-stat-weapon-swap-shortcut",
+   "id": "power-stat-weapon-swap-shortcut",
    "cat": "遊戲",
    "title": "PowerStatDialog 戰力屬性總覽三槽武器卡片支援點擊更換聯動 WeaponSwapDialog",
    "status": "測試中",
