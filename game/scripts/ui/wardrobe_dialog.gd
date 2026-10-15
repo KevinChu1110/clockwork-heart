@@ -15,6 +15,8 @@ extends Control
 
 signal outfit_saved(race_id: String, selections: Dictionary)
 signal cancelled()
+signal closed()
+signal power_stat_requested()
 
 @export var creation_mode: bool = false
 
@@ -145,6 +147,8 @@ var active_slot_tab: String = "costume"
 var _btn_confirm: Button
 var _btn_reset: Button
 var _btn_random: Button
+var _btn_go_power_stat: Button
+var _stage_header_label: Label = null
 
 var _breathe_tween: Tween = null
 
@@ -273,6 +277,7 @@ var _ui_built: bool = false
 
 func _init() -> void:
 	name = "WardrobeDialog"
+	z_index = 80
 	set_anchors_preset(Control.PRESET_FULL_RECT)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 	ensure_ui()
@@ -286,6 +291,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	z_index = 80
 	ensure_ui()
 	_init_from_game_state()
 	_update_filter_chips_visual()
@@ -530,6 +536,7 @@ func _build_ui() -> void:
 
 	# 頂部展廳標籤
 	var stage_header := Label.new()
+	_stage_header_label = stage_header
 	stage_header.text = _t("✦ 玩具工坊 · 旋轉展台 ✦")
 	stage_header.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	stage_header.add_theme_font_size_override("font_size", 14)
@@ -630,7 +637,7 @@ func _build_ui() -> void:
 	_btn_reset = Button.new()
 	_btn_reset.name = "BtnReset"
 	_btn_reset.text = _t("還原預設")
-	_btn_reset.custom_minimum_size = Vector2(100, BTN_SIZE)
+	_btn_reset.custom_minimum_size = Vector2(90, BTN_SIZE)
 	_btn_reset.add_theme_font_size_override("font_size", 16)
 	_btn_reset.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
@@ -645,7 +652,7 @@ func _build_ui() -> void:
 	_btn_random = Button.new()
 	_btn_random.name = "BtnRandom"
 	_btn_random.text = _t("隨機")
-	_btn_random.custom_minimum_size = Vector2(80, BTN_SIZE)
+	_btn_random.custom_minimum_size = Vector2(75, BTN_SIZE)
 	_btn_random.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_btn_random.add_theme_font_size_override("font_size", 16)
 	_btn_random.add_theme_color_override("font_color", COLOR_TEXT_DARK)
@@ -657,6 +664,26 @@ func _build_ui() -> void:
 	_btn_random.add_theme_stylebox_override("pressed", rand_h)
 	_btn_random.pressed.connect(_on_random_pressed)
 	actions_hbox.add_child(_btn_random)
+
+	# 前往戰力 果凍按鈕 (BtnGoPowerStat)
+	_btn_go_power_stat = Button.new()
+	_btn_go_power_stat.name = "BtnGoPowerStat"
+	var pstat_txt := _t("wardrobe.go_power_stat")
+	if pstat_txt == "wardrobe.go_power_stat" or pstat_txt.is_empty():
+		pstat_txt = _t("前往戰力")
+	_btn_go_power_stat.text = pstat_txt
+	_btn_go_power_stat.custom_minimum_size = Vector2(110, BTN_SIZE)
+	_btn_go_power_stat.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_power_stat.add_theme_font_size_override("font_size", 16)
+	_btn_go_power_stat.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_go_power_stat.add_theme_font_override("font", _cached_font)
+	_btn_go_power_stat.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18, 2))
+	var pstat_h := _create_button_style(Color("#FFB338"), COLOR_BORDER, 3, 18, 2)
+	_btn_go_power_stat.add_theme_stylebox_override("hover", pstat_h)
+	_btn_go_power_stat.add_theme_stylebox_override("pressed", pstat_h)
+	_btn_go_power_stat.pressed.connect(_on_go_power_stat_pressed)
+	actions_hbox.add_child(_btn_go_power_stat)
 
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
@@ -1780,8 +1807,26 @@ func _update_ui_texts() -> void:
 		_btn_reset.text = _t("還原預設")
 	if _btn_random:
 		_btn_random.text = _t("隨機")
+	if _btn_go_power_stat:
+		var pstat_txt := _t("wardrobe.go_power_stat")
+		if pstat_txt == "wardrobe.go_power_stat" or pstat_txt.is_empty():
+			pstat_txt = _t("前往戰力")
+		_btn_go_power_stat.text = pstat_txt
 	if _btn_confirm:
 		_btn_confirm.text = _t("確認換裝 · 套用新外觀")
+
+	if _stage_header_label:
+		_stage_header_label.text = _t("✦ 玩具工坊 · 旋轉展台 ✦")
+
+	for slot_def in SEVEN_SLOTS:
+		var sid: String = str(slot_def.get("id", ""))
+		var sname: String = str(slot_def.get("name_zh", ""))
+		if _slot_btns.has(sid):
+			var btn: Button = _slot_btns[sid]
+			if is_instance_valid(btn):
+				var lbl = btn.find_child("SlotLabel", true, false)
+				if lbl is Label:
+					lbl.text = _t(sname)
 
 	for opt in RACE_FILTER_OPTIONS:
 		var rid: String = str(opt.get("id", ""))
@@ -1873,7 +1918,43 @@ func confirm_selection() -> void:
 func close() -> void:
 	_stop_breathe_tween()
 	cancelled.emit()
+	closed.emit()
 	queue_free()
+
+
+func _update_locale_texts() -> void:
+	_update_ui_texts()
+
+
+## 取得前往戰力快捷按鈕
+func get_go_power_stat_button() -> Button:
+	return _btn_go_power_stat
+
+
+func get_power_stat_button() -> Button:
+	return _btn_go_power_stat
+
+
+func _on_go_power_stat_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	power_stat_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_power_stat_dialog"):
+			if power_stat_requested.get_connections().is_empty():
+				ml.call("open_power_stat_dialog")
+	var p := get_parent()
+	if p and p.has_method("open_power_stat_dialog"):
+		if power_stat_requested.get_connections().is_empty():
+			p.call("open_power_stat_dialog")
+	if not is_queued_for_deletion():
+		close()
 
 
 ## 待機呼吸小動作 (對齊大廳人體工學規範：scale 在 (1.03, 0.97) ↔ (0.98, 1.02)、約 1.1s、TRANS_SINE、loop)
