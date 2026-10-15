@@ -13,6 +13,7 @@ extends Control
 signal weapon_swapped(slot_idx: int, uid: String)
 signal slot_unequipped(slot_idx: int)
 signal forge_requested()
+signal power_stat_requested()
 signal closed()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -95,6 +96,7 @@ var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _sub_title_lbl: Label
 var _close_x_btn: Button
+var _btn_go_power_stat: Button
 var _btn_go_forge: Button
 var _bottom_close_btn: Button
 var _slot_tab_buttons: Array[Button] = []
@@ -349,6 +351,18 @@ func _build_ui() -> void:
 	_apply_font(_bottom_hint_lbl, 12, COLOR_TEXT_MUTED)
 	bot_h.add_child(_bottom_hint_lbl)
 
+	_btn_go_power_stat = Button.new()
+	_btn_go_power_stat.name = "BtnGoPowerStat"
+	var pstat_key_txt := _t("weapon_swap.go_power_stat")
+	if pstat_key_txt != "weapon_swap.go_power_stat" and not pstat_key_txt.is_empty():
+		_btn_go_power_stat.text = pstat_key_txt
+	else:
+		_btn_go_power_stat.text = _t("前往戰力")
+	_btn_go_power_stat.custom_minimum_size = Vector2(130, 48)
+	_style_jelly_btn(_btn_go_power_stat, COLOR_GOLD, COLOR_TEXT_DARK, 14, 5, 16)
+	_btn_go_power_stat.pressed.connect(_on_go_power_stat_pressed)
+	bot_h.add_child(_btn_go_power_stat)
+
 	_btn_go_forge = Button.new()
 	_btn_go_forge.name = "BtnGoForge"
 	_btn_go_forge.text = _t("前往鍛造")
@@ -376,6 +390,12 @@ func _refresh_texts() -> void:
 		_sub_title_lbl.text = _t("選擇要裝備至【%s】的武器 · 即時連動紙娃娃與屬性") % slot_name
 	if _bottom_hint_lbl:
 		_bottom_hint_lbl.text = _t("點擊武器卡片即可立即更換，即時更新戰鬥屬性與外觀紙娃娃")
+	if _btn_go_power_stat:
+		var pstat_key_txt := _t("weapon_swap.go_power_stat")
+		if pstat_key_txt != "weapon_swap.go_power_stat" and not pstat_key_txt.is_empty():
+			_btn_go_power_stat.text = pstat_key_txt
+		else:
+			_btn_go_power_stat.text = _t("前往戰力")
 	if _btn_go_forge:
 		_btn_go_forge.text = _t("前往鍛造")
 	if _bottom_close_btn:
@@ -708,6 +728,15 @@ func _on_unequip_pressed() -> void:
 			_toast(msg)
 	slot_unequipped.emit(_target_slot)
 	queue_free()
+
+
+func get_go_power_stat_button() -> Button:
+	return _btn_go_power_stat
+
+
+func _on_go_power_stat_pressed() -> void:
+	power_stat_requested.emit()
+	_on_close_pressed()
 
 
 func get_go_forge_button() -> Button:

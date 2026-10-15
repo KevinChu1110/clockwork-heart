@@ -6570,8 +6570,8 @@
    "id": "wardrobe-power-stat-shortcut",
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗底欄新增前往戰力快捷果凍按鈕連動 PowerStatDialog",
-   "status": "測試中",
-   "note": "完成 WardrobeDialog 前往戰力快捷按鈕與連動，測試跑綠並產出實機截圖存證",
+   "status": "已上線",
+   "note": "五分支合進 main 並完成全套回歸驗收 (t_16649654)",
    "keys": [
     "Wardrobe"
    ]
@@ -6579,19 +6579,49 @@
   {
    "id": "power-stat-wardrobe-card",
    "cat": "遊戲",
-   "title": "PowerStatDialog 戰力屬性總覽新增玩具家族與外裝卡片",
-   "status": "草稿",
-   "note": "新增 WardrobeCard 與前往衣櫥按鈕",
+   "title": "PowerStatDialog 戰力屬性總覽新增玩具家族與外裝卡片連動前往衣櫥快捷按鈕",
+   "status": "已上線",
+   "note": "五分支合進 main 並完成全套回歸驗收 (t_16649654)",
    "keys": [
     "PowerSta"
+   ]
+  },
+  {
+   "id": "weapon-swap-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "WeaponSwapDialog 武器更換彈窗底欄新增前往戰力快捷果凍按鈕連動 PowerStatDialog",
+   "status": "已上線",
+   "note": "五分支合進 main 並完成全套回歸驗收 (t_16649654)",
+   "keys": [
+    "WeaponSw"
+   ]
+  },
+  {
+   "id": "power-stat-weapon-swap-shortcut",
+   "cat": "遊戲",
+   "title": "PowerStatDialog 戰力屬性總覽三槽武器卡片支援點擊更換聯動 WeaponSwapDialog",
+   "status": "已上線",
+   "note": "五分支合進 main 並完成全套回歸驗收 (t_16649654)",
+   "keys": [
+    "PowerSta"
+   ]
+  },
+  {
+   "id": "skill-inventory-shortcut",
+   "cat": "遊戲",
+   "title": "SkillDialog 心法招式底欄新增前往背包快捷果凍按鈕聯動探索背包",
+   "status": "已上線",
+   "note": "五分支合進 main 並完成全套回歸驗收 (t_16649654)",
+   "keys": [
+    "SkillDia"
    ]
   },
   {
    "id": "merge-wardrobe-weapon-skill",
    "cat": "平台",
    "title": "把已過審的衣櫥/戰力總覽/武器更換/心法背包五分支合進主線",
-   "status": "草稿",
-   "note": "",
+   "status": "已上線",
+   "note": "五分支合進 main 並完成全套回歸驗收 (t_16649654)",
    "keys": [
     "把已過審的衣櫥/"
    ]

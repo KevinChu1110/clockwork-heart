@@ -7005,6 +7005,10 @@ func open_skill_dialog() -> Control:
 		dlg.power_stat_requested.connect(func():
 			open_power_stat_dialog()
 		)
+	if dlg.has_signal("inventory_requested"):
+		dlg.inventory_requested.connect(func():
+			open_maple_inventory("consumable")
+		)
 	add_child(dlg)
 	return dlg
 
@@ -7049,6 +7053,10 @@ func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
 	if dlg.has_signal("forge_requested"):
 		dlg.connect("forge_requested", func():
 			open_forge()
+		)
+	if dlg.has_signal("power_stat_requested"):
+		dlg.connect("power_stat_requested", func():
+			open_power_stat_dialog()
 		)
 	add_child(dlg)
 	_weapon_swap_dialog = dlg
@@ -7163,6 +7171,14 @@ func open_power_stat_dialog() -> Control:
 	if dlg.has_signal("windup_daily_requested"):
 		dlg.windup_daily_requested.connect(func():
 			open_windup_daily()
+		)
+	if dlg.has_signal("wardrobe_requested"):
+		dlg.wardrobe_requested.connect(func():
+			open_wardrobe()
+		)
+	if dlg.has_signal("weapon_swap_requested"):
+		dlg.weapon_swap_requested.connect(func(slot_idx: int):
+			open_weapon_swap_dialog(slot_idx)
 		)
 	add_child(dlg)
 	return dlg
