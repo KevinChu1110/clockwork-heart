@@ -21,6 +21,8 @@ signal forge_requested()
 signal power_stat_requested()
 signal go_wardrobe()
 signal wardrobe_requested()
+signal go_title_wall()
+signal title_wall_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -68,6 +70,14 @@ static func _t(s: String) -> String:
 		if str(v) != "":
 			return str(v)
 		return ContentLoc.text("ui", "前往衣櫥")
+	if s == "shop.btn_go_title_wall" or s == "前往稱號":
+		var lc := ContentLoc.locale()
+		if lc == "zh_TW":
+			return "前往稱號"
+		var v = ContentLoc._table("ui", lc).get("shop.btn_go_title_wall", "")
+		if str(v) != "":
+			return str(v)
+		return ContentLoc.text("ui", "前往稱號")
 	return ContentLoc.text("ui", s)
 
 static func tr_ui(s: String) -> String:
@@ -112,6 +122,7 @@ var _btn_go_soul_hall: Button
 var _btn_go_forge: Button
 var _btn_go_power_stat: Button
 var _btn_go_wardrobe: Button
+var _btn_go_title_wall: Button
 var _cached_font: Font = null
 
 ## IAP 佔位品項定義（TODO: 內購定價帶尚未定案，依據 docs/BUSINESS.md 待 Kevin 裁定）
@@ -248,6 +259,8 @@ func _apply_locale_texts() -> void:
 		_btn_go_power_stat.text = _t("shop.btn_go_power_stat")
 	if _btn_go_wardrobe and is_instance_valid(_btn_go_wardrobe):
 		_btn_go_wardrobe.text = _t("shop.btn_go_wardrobe")
+	if _btn_go_title_wall and is_instance_valid(_btn_go_title_wall):
+		_btn_go_title_wall.text = _t("shop.btn_go_title_wall")
 
 
 func _build_ui() -> void:
@@ -598,6 +611,36 @@ func _build_ui() -> void:
 	_btn_go_wardrobe.pressed.connect(_on_go_wardrobe_clicked)
 	foot_h.add_child(_btn_go_wardrobe)
 
+	# 6. 前往稱號 (天藍)
+	_btn_go_title_wall = Button.new()
+	_btn_go_title_wall.name = "BtnGoTitleWall"
+	_btn_go_title_wall.text = _t("shop.btn_go_title_wall")
+	_btn_go_title_wall.custom_minimum_size = Vector2(140, 50)
+	_btn_go_title_wall.focus_mode = Control.FOCUS_NONE
+	_btn_go_title_wall.add_theme_font_size_override("font_size", 16)
+	_btn_go_title_wall.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_title_wall.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_title_wall.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_btn_go_title_wall.add_theme_font_override("font", _cached_font)
+
+	var title_wall_sb := StyleBoxFlat.new()
+	title_wall_sb.bg_color = COLOR_SKY
+	title_wall_sb.border_color = COLOR_BORDER
+	title_wall_sb.set_border_width_all(2)
+	title_wall_sb.border_width_bottom = 5
+	title_wall_sb.set_corner_radius_all(18)
+	var title_wall_sb_h := title_wall_sb.duplicate() as StyleBoxFlat
+	title_wall_sb_h.bg_color = Color("#5AB2FF")
+	var title_wall_sb_p := title_wall_sb.duplicate() as StyleBoxFlat
+	title_wall_sb_p.border_width_bottom = 2
+	_btn_go_title_wall.add_theme_stylebox_override("normal", title_wall_sb)
+	_btn_go_title_wall.add_theme_stylebox_override("hover", title_wall_sb_h)
+	_btn_go_title_wall.add_theme_stylebox_override("pressed", title_wall_sb_p)
+	_btn_go_title_wall.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_title_wall.pressed.connect(_on_go_title_wall_clicked)
+	foot_h.add_child(_btn_go_title_wall)
+
 
 func _build_service_card(title: String, desc: String, card_name: String) -> PanelContainer:
 	var card := PanelContainer.new()
@@ -899,6 +942,31 @@ func get_go_power_stat_button() -> Button:
 
 func get_go_wardrobe_button() -> Button:
 	return _btn_go_wardrobe
+
+
+func get_go_title_wall_button() -> Button:
+	return _btn_go_title_wall
+
+
+func get_title_wall_button() -> Button:
+	return _btn_go_title_wall
+
+
+func _on_go_title_wall_clicked() -> void:
+	go_title_wall.emit()
+	title_wall_requested.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_title_wall_dialog"):
+		if title_wall_requested.get_connections().is_empty():
+			p.call("open_title_wall_dialog")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_title_wall_dialog"):
+				if title_wall_requested.get_connections().is_empty():
+					ml.call("open_title_wall_dialog")
+	_on_close()
 
 
 func _on_go_wardrobe_clicked() -> void:
