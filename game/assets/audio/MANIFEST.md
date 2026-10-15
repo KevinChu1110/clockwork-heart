@@ -57,7 +57,9 @@ python3 tools/gen_sfx_clockwork.py --measure  # 腳本內建同一套量法（10
 | parry | **只可當「彈開」自動演出**（`perfect_parry` 等），**不可綁按鈕或 UI 提示** | 0.15–0.25 s | 金屬彈開的一聲「叮」，短 | 舊占位 | P1 |
 | victory | 勝利（`battle_end(true)`），後面接 ending BGM | 0.6–1.2 s | 八音盒三音上行，溫暖、不浮誇 | 舊占位 | P1 |
 | defeat | 落敗（`battle_end(false)`） | 0.6–1.2 s | 發條停擺：音盒走慢、音高下滑 | 舊占位 | P1 |
-| reveal | 抽魂／聚魂揭曉、霧中現形、UI 揭曉 | 0.3–0.6 s | 鐘琴閃一下，亮 | 舊占位 | P1 |
+| reveal | 霧中現形、觀星、讀信等**非抽魂**的揭曉（共用舊鐘琴，**原檔不動**，#107） | 0.25 s | 鐘琴閃一下，亮 | 舊占位 | P1 |
+| reveal_white | **抽魂翻卡・白 普通**（#91／#107；原本 #99 寫進 reveal.wav，改存新檔） | 0.52 s | 黃銅卡片翻面「刷」＋卡榫「嗒」→ 八音盒音梳大三和弦上行（E6–G#6–B6）＋高頻小鈴閃光 | 合成 `gen_sfx_clockwork.py reveal_white`；−21.0 LUFS M-max／−9.7 dBTP | P1 → 已做，待接 |
+| summon | 抽魂演出開始（**key 尚未加進 `SFX_KEYS`，要程式加**，#91） | 0.95 s | 發條快速上緊（棘輪越來越密，和戰前 wind 的四格慢轉不同）→ 彈簧放開「咻」上掃 → 低音黃銅共鳴托住 | 合成 `gen_sfx_clockwork.py summon`（#91）；−21.0 LUFS／−7.3 dBTP | P1 → 檔已做，待接 |
 | ui | UI 點擊（`play_ui`） | 0.04–0.08 s | 木質小按鍵「嗒」，很輕 | 舊占位 | P1 |
 | battle_start | `wind` 缺檔時的上鏈後備 | 0.2–0.4 s | 同 wind 但短 | 舊占位 | P2 |
 | clash | 王斬命中、野豬破甲、炸彈 | 0.12–0.20 s | 厚重金屬對撞 | 舊占位 | P1 |
@@ -154,3 +156,27 @@ Suno／外部成品：`python3 tools/import_bgm.py <file> --id <曲目>`
 ### 2026-08-21 · Suno 真曲已入庫
 帳號 `guanrung1110` 產的 `bravesoul_*` 已下載並 `import_bgm` 覆蓋 13 首。  
 來源 uuid 見 `SUNO_SOURCES.json`。多數曲循環相似度偏低（Suno 歌曲結構），若聽得出接縫可再產 loopable 版或手動 `--loop-offset`。
+
+### 抽魂音效分級（#91 → #98 改成每階一個檔）
+
+#98 要求每一階都有自己的檔，金和彩不能只靠升 pitch 加疊 craft。所以每張翻卡現在**只播 1 個檔、只佔 1 個 voice**，不再疊第二層。
+五個檔的開頭都是同一個「黃銅卡翻面＋卡榫」動作，越高階越長、越大聲，層次也越多：
+
+| 階級（`FRAME_ORDER`） | key／檔案 | 建議呼叫 | 長度 | M-max（檔案） | true peak | 聲音 |
+|---|---|---|---|---|---|---|
+| 白 普通 | `reveal_white`／reveal_white.wav | `play("reveal_white", 1.0, -5.0)`（實際約 −26） | 0.52 s | −21.0 LUFS | −9.7 dBTP | 翻面＋三音上行 |
+| 藍 精良 | `reveal_blue`／reveal_blue.wav | `play("reveal_blue")` | 0.62 s | −22.0 | −10.1 | 四音上行，收在高八度，加少許碎光 |
+| 紫 稀有 | `reveal_purple`／reveal_purple.wav | `play("reveal_purple")` | 0.85 s | −20.5 | −10.0 | 低的玻璃鐘托底，接五音小調色彩琶音（神祕），碎光散開 |
+| 金 傳說 | `reveal_gold`／reveal_gold.wav | `play("reveal_gold")` | 1.15 s | −19.0 | −5.0 | 翻面後停半拍，黃銅大鐘「噹」加低頻衝擊，兩個八度的大三和弦齊響，金色碎光雨 |
+| 彩 炫彩 | `reveal_rainbow`／reveal_rainbow.wav | `play("reveal_rainbow")` | 1.50 s | −18.0 | −7.1 | 發條急速上緊，彈簧放開「咻」，接大鐘加音梳三個八度刷奏，長長的彩色碎光 |
+
+其他時機：
+- 按「抽」：`play_ui()`。
+- 演出開始：`play("summon")`。
+- 十連的每張翻卡：用該階的 key，`volume_db` −6。
+- 十連結算：只播最高階那個檔一次。
+
+`reveal_white`／`reveal_blue`／`reveal_purple`／`reveal_gold`／`reveal_rainbow`／`summon` 都還**不在 `SFX_KEYS`**，要等程式加，加之前這些檔不會被載入。
+量法跟本檔「響度規格」相同；這些數字還沒算 AudioManager 的 `_sfx_db`（−4 dB）。
+
+> #107：共用的 `reveal.wav` 已還原成原本的鐘琴檔（和 base `audio/47-sfx-miss-craft` 逐位元相同）。兩支產生器都不會覆蓋它；抽魂白卡改用 `reveal_white`。
