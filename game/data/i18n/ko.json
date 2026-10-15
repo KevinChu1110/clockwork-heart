@@ -4264,5 +4264,21 @@
   "power_stat.vault_energy": "누적 에너지: %s %s",
   "power_stat.vault_desc": "방치 수익은 시간에 따라 충전 · 최대 8시간 누적",
   "發條儲能庫": "태엽 저장고",
-  "前往儲能": "저장고 이동"
+  "前往儲能": "저장고 이동",
+  "power_stat.windup_card": "모험 의뢰 태엽 감기",
+  "power_stat.btn_go_windup": "의뢰 이동",
+  "power_stat.windup_progress": "의뢰 진행도: %d/%d",
+  "power_stat.windup_status_done": "오늘 완료",
+  "power_stat.windup_status_ready": "의뢰 진행 중",
+  "power_stat.windup_claimed": "오늘 수령 완료",
+  "power_stat.windup_claimable": "보상 수령 가능",
+  "power_stat.windup_unclaimed": "미수령",
+  "power_stat.windup_desc": "매일 작은 태엽 이야기 · 일일 의뢰 완료하고 스타더스트와 골드 획득",
+  "冒險委託上發條": "모험 의뢰 태엽 감기",
+  "前往委託": "의뢰 이동",
+  "今日已完成": "오늘 완료",
+  "待完成委託": "의뢰 진행 중",
+  "今日已領取": "오늘 수령 완료",
+  "可領取獎勵": "보상 수령 가능",
+  "今日未領取": "미수령"
 }

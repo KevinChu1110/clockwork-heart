@@ -3908,5 +3908,21 @@
   "power_stat.vault_energy": "累积能量: %s %s",
   "power_stat.vault_desc": "放置收益随时间蓄能 · 离线最高累计8小时",
   "發條儲能庫": "发条储能库",
-  "前往儲能": "前往储能"
+  "前往儲能": "前往储能",
+  "power_stat.windup_card": "冒险委托上发条",
+  "power_stat.btn_go_windup": "前往委托",
+  "power_stat.windup_progress": "今日委托进度: %d/%d",
+  "power_stat.windup_status_done": "今日已完成",
+  "power_stat.windup_status_ready": "待完成委托",
+  "power_stat.windup_claimed": "今日已领取",
+  "power_stat.windup_claimable": "可领取奖励",
+  "power_stat.windup_unclaimed": "今日未领取",
+  "power_stat.windup_desc": "每天一件发条小事 · 完成日常委托领取星屑与金币",
+  "冒險委託上發條": "冒险委托上发条",
+  "前往委託": "前往委托",
+  "今日已完成": "今日已完成",
+  "待完成委託": "待完成委托",
+  "今日已領取": "今日已领取",
+  "可領取獎勵": "可领取奖励",
+  "今日未領取": "今日未领取"
 }

@@ -3904,5 +3904,21 @@
   "power_stat.vault_energy": "Energía Acumulada: %s %s",
   "power_stat.vault_desc": "La ganancia pasiva se carga con el tiempo · Hasta 8 horas",
   "發條儲能庫": "Bóveda de Cuerda",
-  "前往儲能": "Ir a Bóveda"
+  "前往儲能": "Ir a Bóveda",
+  "power_stat.windup_card": "Cuerda de Encargos",
+  "power_stat.btn_go_windup": "Ir a Encargos",
+  "power_stat.windup_progress": "Progreso: %d/%d",
+  "power_stat.windup_status_done": "Completado Hoy",
+  "power_stat.windup_status_ready": "Encargo Pendiente",
+  "power_stat.windup_claimed": "Reclamado Hoy",
+  "power_stat.windup_claimable": "Recompensa Lista",
+  "power_stat.windup_unclaimed": "Sin Reclamar",
+  "power_stat.windup_desc": "Una tarea diaria de cuerda · Completa encargos para obtener polvo estelar y oro",
+  "冒險委託上發條": "Cuerda de Encargos",
+  "前往委託": "Ir a Encargos",
+  "今日已完成": "Completado Hoy",
+  "待完成委託": "Encargo Pendiente",
+  "今日已領取": "Reclamado Hoy",
+  "可領取獎勵": "Recompensa Lista",
+  "今日未領取": "Sin Reclamar"
 }

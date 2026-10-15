@@ -2021,5 +2021,21 @@
   "power_stat.vault_energy": "累積能量: %s %s",
   "power_stat.vault_desc": "放置收益隨時間蓄能 · 離線最高累計8小時",
   "發條儲能庫": "發條儲能庫",
-  "前往儲能": "前往儲能"
+  "前往儲能": "前往儲能",
+  "power_stat.windup_card": "冒險委託上發條",
+  "power_stat.btn_go_windup": "前往委託",
+  "power_stat.windup_progress": "今日委託進度: %d/%d",
+  "power_stat.windup_status_done": "今日已完成",
+  "power_stat.windup_status_ready": "待完成委託",
+  "power_stat.windup_claimed": "今日已領取",
+  "power_stat.windup_claimable": "可領取獎勵",
+  "power_stat.windup_unclaimed": "今日未領取",
+  "power_stat.windup_desc": "每天一件發條小事 · 完成日常委託領取星屑與金幣",
+  "冒險委託上發條": "冒險委託上發條",
+  "前往委託": "前往委託",
+  "今日已完成": "今日已完成",
+  "待完成委託": "待完成委託",
+  "今日已領取": "今日已領取",
+  "可領取獎勵": "可領取獎勵",
+  "今日未領取": "今日未領取"
 }
