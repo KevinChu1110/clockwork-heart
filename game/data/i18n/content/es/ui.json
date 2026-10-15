@@ -3937,5 +3937,8 @@
   "胡桃鉗兔": "Conejo Cascanueces",
   "八音盒": "Caja de Música",
   "錫兵": "Soldado de Hojalata",
-  "旋轉木馬": "Tiovivo"
+  "旋轉木馬": "Tiovivo",
+  "weapon_swap.go_power_stat": "Ir a Estadísticas",
+  "weapon_swap.btn_go_power_stat": "Ir a Estadísticas",
+  "Ir a Estadísticas": "Ir a Estadísticas"
 }

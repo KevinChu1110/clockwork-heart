@@ -3937,5 +3937,8 @@
   "胡桃鉗兔": "Nutcracker Rabbit",
   "八音盒": "Music Box",
   "錫兵": "Tin Soldier",
-  "旋轉木馬": "Carousel"
+  "旋轉木馬": "Carousel",
+  "weapon_swap.go_power_stat": "Go to Stats",
+  "weapon_swap.btn_go_power_stat": "Go to Stats",
+  "Go to Stats": "Go to Stats"
 }

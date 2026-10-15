@@ -7045,6 +7045,10 @@ func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
 		dlg.connect("forge_requested", func():
 			open_forge()
 		)
+	if dlg.has_signal("power_stat_requested"):
+		dlg.connect("power_stat_requested", func():
+			open_power_stat_dialog()
+		)
 	add_child(dlg)
 	_weapon_swap_dialog = dlg
 	return dlg
