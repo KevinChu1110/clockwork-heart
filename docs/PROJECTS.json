@@ -6690,8 +6690,8 @@
    "id": "shop-title-wall-shortcut",
    "cat": "遊戲",
    "title": "ShopDialog 商城彈窗底欄新增前往稱號快捷按鈕連動 TitleWallDialog",
-   "status": "開發中",
-   "note": "開始實作 ShopDialog BtnGoTitleWall 快捷按鈕與信號連動",
+   "status": "測試中",
+   "note": "完成 ShopDialog 前往稱號快捷按鈕與信號連動，測試全綠且產出實機截圖存證",
    "keys": [
     "ShopDial"
    ]
