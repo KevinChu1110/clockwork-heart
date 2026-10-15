@@ -13,6 +13,7 @@ extends Control
 signal closed()
 signal practice_dummy_requested()
 signal power_stat_requested()
+signal inventory_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -61,6 +62,7 @@ var _sub_title_lbl: Label
 var _close_x_btn: Button
 var _dummy_btn: Button
 var _go_power_stat_btn: Button
+var _go_inventory_btn: Button
 var _bottom_close_btn: Button
 
 ## 戰鬥優先區塊
@@ -304,6 +306,14 @@ func _build_ui() -> void:
 	_go_power_stat_btn.pressed.connect(_on_go_power_stat_pressed)
 	bot_h.add_child(_go_power_stat_btn)
 
+	# 珊瑚粉立體果凍『前往背包』按鈕（熱區 140x50px >= 48px、果凍厚底 5px、圓角 18px、字級 16px 開源粉圓體、零系統 Emoji）
+	_go_inventory_btn = Button.new()
+	_go_inventory_btn.name = "BtnGoInventory"
+	_go_inventory_btn.custom_minimum_size = Vector2(140, 50)
+	_style_jelly_btn(_go_inventory_btn, COLOR_PINK, COLOR_TEXT_DARK, 16, 5, 18)
+	_go_inventory_btn.pressed.connect(_on_go_inventory_pressed)
+	bot_h.add_child(_go_inventory_btn)
+
 	# 彈性間隔撐開左右分列
 	var bot_spacer := Control.new()
 	bot_spacer.name = "BottomSpacer"
@@ -335,6 +345,11 @@ func _on_go_power_stat_pressed() -> void:
 	_on_close_pressed()
 
 
+func _on_go_inventory_pressed() -> void:
+	inventory_requested.emit()
+	_on_close_pressed()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -359,6 +374,20 @@ func _update_ui_texts() -> void:
 		if txt == "" or txt == "skill.btn_go_power_stat":
 			txt = _t("前往戰力")
 		_go_power_stat_btn.text = txt
+	if _go_inventory_btn:
+		var txt := ""
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+			if loc and loc.has_method("t"):
+				txt = str(loc.call("t", "skill.btn_go_inventory"))
+		if txt == "" or txt == "skill.btn_go_inventory":
+			var c_txt := ContentLoc.text("ui", "skill.btn_go_inventory")
+			if c_txt != "skill.btn_go_inventory":
+				txt = c_txt
+			else:
+				txt = _t("前往背包")
+		_go_inventory_btn.text = txt
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("關閉")
 
@@ -875,6 +904,10 @@ func get_practice_dummy_button() -> Button:
 
 func get_go_power_stat_button() -> Button:
 	return _go_power_stat_btn
+
+
+func get_go_inventory_button() -> Button:
+	return _go_inventory_btn
 
 
 func get_bottom_close_button() -> Button:
