@@ -26,10 +26,10 @@ const LOCALES: Array[String] = ["zh_TW", "zh_CN", "en", "ja", "ko", "es"]
 const EXPECTED_SOUL_TEXTS: Dictionary = {
 	"zh_TW": "前往聚魂",
 	"zh_CN": "前往聚魂",
-	"en": "Go to Soul Draw",
-	"ja": "魂寄せへ",
-	"ko": "영혼 뽑기로 이동",
-	"es": "Ir a extracción de almas"
+	"en": "Go to Soul Hall",
+	"ja": "聚魂殿へ進む",
+	"ko": "혼령전으로 이동",
+	"es": "Ir a Sala de Almas"
 }
 
 var _lobby: Control = null
