@@ -6620,8 +6620,8 @@
    "id": "merge-wardrobe-weapon-skill",
    "cat": "平台",
    "title": "把已過審的衣櫥/戰力總覽/武器更換/心法背包五分支合進主線",
-   "status": "草稿",
-   "note": "",
+   "status": "已上線",
+   "note": "五分支合進 main 並完成全套回歸驗收 (t_16649654)",
    "keys": [
     "把已過審的衣櫥/"
    ]
