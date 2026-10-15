@@ -6640,8 +6640,8 @@
    "id": "shop-wardrobe-shortcut",
    "cat": "遊戲",
    "title": "ShopDialog 商城彈窗底欄新增前往衣櫥快捷按鈕",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "開始開發 ShopDialog 底欄前往衣櫥快捷按鈕與連動",
    "keys": [
     "ShopDial"
    ]
