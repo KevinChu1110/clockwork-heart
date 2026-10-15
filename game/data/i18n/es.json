@@ -4280,5 +4280,8 @@
   "待完成委託": "Encargo Pendiente",
   "今日已領取": "Reclamado Hoy",
   "可領取獎勵": "Recompensa Lista",
-  "今日未領取": "Sin Reclamar"
+  "今日未領取": "Sin Reclamar",
+  "weapon_swap.go_power_stat": "Ir a Estadísticas",
+  "weapon_swap.btn_go_power_stat": "Ir a Estadísticas",
+  "Ir a Estadísticas": "Ir a Estadísticas"
 }

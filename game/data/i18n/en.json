@@ -4280,5 +4280,8 @@
   "待完成委託": "Pending Commission",
   "今日已領取": "Claimed Today",
   "可領取獎勵": "Reward Ready",
-  "今日未領取": "Not Claimed"
+  "今日未領取": "Not Claimed",
+  "weapon_swap.go_power_stat": "Go to Stats",
+  "weapon_swap.btn_go_power_stat": "Go to Stats",
+  "Go to Stats": "Go to Stats"
 }
