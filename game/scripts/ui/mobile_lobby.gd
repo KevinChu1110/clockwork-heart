@@ -7219,6 +7219,10 @@ func open_energy_dialog() -> Control:
 		dlg.shop_requested.connect(func():
 			open_shop()
 		)
+	if dlg.has_signal("power_stat_requested"):
+		dlg.power_stat_requested.connect(func():
+			open_power_stat_dialog()
+		)
 	add_child(dlg)
 	return dlg
 
