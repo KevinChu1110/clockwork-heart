@@ -4259,5 +4259,20 @@
   "power_stat.dummy_no_record": "¡Sin pruebas aún! ¡Prueba tu daño máximo en el muñeco!",
   "尚未進行試招，快前往木人樁測試最高傷害！": "¡Sin pruebas aún! ¡Prueba tu daño máximo en el muñeco!",
   "power_stat.dummy_no_record_badge": "Sin Probar",
-  "尚未試招": "Sin Probar"
+  "尚未試招": "Sin Probar",
+  "power_stat.wardrobe_card": "Familia de Juguetes y Atuendo",
+  "玩具家族與外裝": "Familia de Juguetes y Atuendo",
+  "power_stat.go_wardrobe": "Ir al Armario",
+  "power_stat.btn_go_wardrobe": "Ir al Armario",
+  "前往衣櫥": "Ir al Armario",
+  "power_stat.wardrobe_desc": "Personaliza atuendos y piezas centrales con fina artesanía mecánica",
+  "更換精緻玩具外裝與核心部件，展現獨特發條工藝": "Personaliza atuendos y piezas centrales con fina artesanía mecánica",
+  "toy_family.nutcracker_rabbit": "Conejo Cascanueces",
+  "toy_family.music_box": "Caja de Música",
+  "toy_family.tin_soldier": "Soldado de Hojalata",
+  "toy_family.carousel": "Tiovivo",
+  "胡桃鉗兔": "Conejo Cascanueces",
+  "八音盒": "Caja de Música",
+  "錫兵": "Soldado de Hojalata",
+  "旋轉木馬": "Tiovivo"
 }

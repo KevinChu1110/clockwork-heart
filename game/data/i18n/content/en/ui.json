@@ -3899,5 +3899,20 @@
   "power_stat.dummy_no_record": "No trials yet. Go test your peak damage!",
   "尚未進行試招，快前往木人樁測試最高傷害！": "No trials yet. Go test your peak damage!",
   "power_stat.dummy_no_record_badge": "Not Practiced",
-  "尚未試招": "Not Practiced"
+  "尚未試招": "Not Practiced",
+  "power_stat.wardrobe_card": "Toy Family & Outfit",
+  "玩具家族與外裝": "Toy Family & Outfit",
+  "power_stat.go_wardrobe": "Wardrobe",
+  "power_stat.btn_go_wardrobe": "Wardrobe",
+  "前往衣櫥": "Wardrobe",
+  "power_stat.wardrobe_desc": "Customize toy outfits and core parts with fine clockwork craft",
+  "更換精緻玩具外裝與核心部件，展現獨特發條工藝": "Customize toy outfits and core parts with fine clockwork craft",
+  "toy_family.nutcracker_rabbit": "Nutcracker Rabbit",
+  "toy_family.music_box": "Music Box",
+  "toy_family.tin_soldier": "Tin Soldier",
+  "toy_family.carousel": "Carousel",
+  "胡桃鉗兔": "Nutcracker Rabbit",
+  "八音盒": "Music Box",
+  "錫兵": "Tin Soldier",
+  "旋轉木馬": "Carousel"
 }

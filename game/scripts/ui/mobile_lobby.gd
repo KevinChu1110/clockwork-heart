@@ -7151,6 +7151,10 @@ func open_power_stat_dialog() -> Control:
 		dlg.go_dummy_practice.connect(func():
 			request_battle.emit("training_dummy")
 		)
+	if dlg.has_signal("wardrobe_requested"):
+		dlg.wardrobe_requested.connect(func():
+			open_wardrobe()
+		)
 	add_child(dlg)
 	return dlg
 

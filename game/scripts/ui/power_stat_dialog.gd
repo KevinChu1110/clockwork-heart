@@ -20,6 +20,7 @@ signal title_wall_requested()
 signal inventory_requested()
 signal colossus_requested()
 signal go_dummy_practice()
+signal wardrobe_requested()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -87,6 +88,7 @@ var _btn_go_title_wall: Button
 var _btn_go_inventory: Button
 var _btn_go_colossus: Button
 var _btn_go_dummy_practice: Button
+var _btn_go_wardrobe: Button
 var _bottom_close_btn: Button
 var _scroll_box: ScrollContainer
 var _content_vbox: VBoxContainer
@@ -321,6 +323,13 @@ func refresh() -> void:
 		if dummy_btn_txt == "power_stat.btn_go_dummy_practice" or dummy_btn_txt.is_empty():
 			dummy_btn_txt = _t("前往試招")
 		_btn_go_dummy_practice.text = dummy_btn_txt
+	if _btn_go_wardrobe:
+		var wardrobe_btn_txt := _t("power_stat.btn_go_wardrobe")
+		if wardrobe_btn_txt == "power_stat.btn_go_wardrobe" or wardrobe_btn_txt.is_empty():
+			wardrobe_btn_txt = _t("power_stat.go_wardrobe")
+		if wardrobe_btn_txt == "power_stat.go_wardrobe" or wardrobe_btn_txt.is_empty():
+			wardrobe_btn_txt = _t("前往衣櫥")
+		_btn_go_wardrobe.text = wardrobe_btn_txt
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("確定")
 
@@ -356,6 +365,9 @@ func refresh() -> void:
 
 	# 9. 木人樁試招紀錄卡片（歷史最佳 DPS、最高單擊與前往試招）
 	_content_vbox.add_child(_build_dummy_trial_card(gs))
+
+	# 10. 玩具家族與外裝展示卡片（當前家族、外裝與前往衣櫥快捷）
+	_content_vbox.add_child(_build_wardrobe_card(gs))
 
 
 ## 綜合戰力總覽卡片
@@ -1576,6 +1588,195 @@ func _build_dummy_trial_card(gs: Node) -> PanelContainer:
 	return card
 
 
+func _build_wardrobe_card(gs: Node) -> PanelContainer:
+	var card := PanelContainer.new()
+	card.name = "WardrobeCard"
+	card.add_theme_stylebox_override("panel", _create_card_style(COLOR_CARD_WARM, COLOR_BORDER, 2, 4, 14))
+
+	var m := MarginContainer.new()
+	m.add_theme_constant_override("margin_left", 14)
+	m.add_theme_constant_override("margin_right", 14)
+	m.add_theme_constant_override("margin_top", 10)
+	m.add_theme_constant_override("margin_bottom", 10)
+	card.add_child(m)
+
+	var h := HBoxContainer.new()
+	h.name = "WardrobeCardHBox"
+	h.alignment = BoxContainer.ALIGNMENT_CENTER
+	h.add_theme_constant_override("separation", 14)
+	m.add_child(h)
+
+	# 左側資訊區
+	var left_v := VBoxContainer.new()
+	left_v.name = "WardrobeLeftVBox"
+	left_v.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	left_v.alignment = BoxContainer.ALIGNMENT_CENTER
+	left_v.add_theme_constant_override("separation", 6)
+	h.add_child(left_v)
+
+	# 標題行與玩具家族/外裝膠囊
+	var t_row := HBoxContainer.new()
+	t_row.name = "WardrobeRowHBox"
+	t_row.add_theme_constant_override("separation", 10)
+	t_row.alignment = BoxContainer.ALIGNMENT_BEGIN
+	left_v.add_child(t_row)
+
+	var t_lbl := Label.new()
+	t_lbl.name = "WardrobeCardTitleLabel"
+	var title_str := _t("power_stat.wardrobe_card")
+	if title_str == "power_stat.wardrobe_card" or title_str.is_empty():
+		title_str = _t("玩具家族與外裝")
+	t_lbl.text = title_str
+	_apply_font(t_lbl, 14, COLOR_TEXT_ORANGE, true)
+	t_row.add_child(t_lbl)
+
+	# 玩具家族膠囊
+	var fam_cap := PanelContainer.new()
+	fam_cap.name = "WardrobeFamilyCapsule"
+	var fam_sb := StyleBoxFlat.new()
+	fam_sb.bg_color = COLOR_CARD_SKY
+	fam_sb.border_color = COLOR_BORDER
+	fam_sb.set_border_width_all(1)
+	fam_sb.border_width_bottom = 3
+	fam_sb.set_corner_radius_all(10)
+	fam_sb.content_margin_left = 10
+	fam_sb.content_margin_right = 10
+	fam_sb.content_margin_top = 3
+	fam_sb.content_margin_bottom = 3
+	fam_cap.add_theme_stylebox_override("panel", fam_sb)
+	t_row.add_child(fam_cap)
+
+	var fam_lbl := Label.new()
+	fam_lbl.name = "WardrobeFamilyLabel"
+	fam_lbl.text = _get_current_toy_family_name(gs)
+	_apply_font(fam_lbl, 12, COLOR_TEXT_DARK, true)
+	fam_cap.add_child(fam_lbl)
+
+	# 當前外裝膠囊
+	var outfit_cap := PanelContainer.new()
+	outfit_cap.name = "WardrobeOutfitCapsule"
+	var outfit_sb := StyleBoxFlat.new()
+	outfit_sb.bg_color = COLOR_CARD_GOLD
+	outfit_sb.border_color = COLOR_BORDER
+	outfit_sb.set_border_width_all(1)
+	outfit_sb.border_width_bottom = 3
+	outfit_sb.set_corner_radius_all(10)
+	outfit_sb.content_margin_left = 10
+	outfit_sb.content_margin_right = 10
+	outfit_sb.content_margin_top = 3
+	outfit_sb.content_margin_bottom = 3
+	outfit_cap.add_theme_stylebox_override("panel", outfit_sb)
+	t_row.add_child(outfit_cap)
+
+	var outfit_lbl := Label.new()
+	outfit_lbl.name = "WardrobeOutfitLabel"
+	outfit_lbl.text = _get_current_outfit_name(gs)
+	_apply_font(outfit_lbl, 12, COLOR_TEXT_GOLD, true)
+	outfit_cap.add_child(outfit_lbl)
+
+	# 說明文字
+	var desc_lbl := Label.new()
+	desc_lbl.name = "WardrobeDescLabel"
+	var desc_str := _t("power_stat.wardrobe_desc")
+	if desc_str == "power_stat.wardrobe_desc" or desc_str.is_empty():
+		desc_str = _t("更換精緻玩具外裝與核心部件，展現獨特發條工藝")
+	desc_lbl.text = desc_str
+	_apply_font(desc_lbl, 11, COLOR_TEXT_MUTED)
+	left_v.add_child(desc_lbl)
+
+	# 右側快捷按鈕：前往衣櫥 (BtnGoWardrobe)
+	_btn_go_wardrobe = Button.new()
+	_btn_go_wardrobe.name = "BtnGoWardrobe"
+	var btn_txt := _t("power_stat.btn_go_wardrobe")
+	if btn_txt == "power_stat.btn_go_wardrobe" or btn_txt.is_empty():
+		btn_txt = _t("power_stat.go_wardrobe")
+	if btn_txt == "power_stat.go_wardrobe" or btn_txt.is_empty():
+		btn_txt = _t("前往衣櫥")
+	_btn_go_wardrobe.text = btn_txt
+	_btn_go_wardrobe.custom_minimum_size = Vector2(120, 48)
+	_btn_go_wardrobe.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	_style_jelly_btn(_btn_go_wardrobe, COLOR_ORANGE, COLOR_TEXT_LIGHT, 14, 5, 18, COLOR_BORDER, 14, 6)
+	_btn_go_wardrobe.pressed.connect(_on_go_wardrobe_pressed)
+	h.add_child(_btn_go_wardrobe)
+
+	return card
+
+
+func _get_current_toy_family_name(gs: Node) -> String:
+	var fam_id := "nutcracker_rabbit"
+	if gs:
+		if "toy_family" in gs and not str(gs.get("toy_family")).is_empty():
+			fam_id = str(gs.get("toy_family")).strip_edges().to_lower()
+		elif "flags" in gs and gs.flags is Dictionary and gs.flags.has("wardrobe.family"):
+			fam_id = str(gs.flags["wardrobe.family"]).strip_edges().to_lower()
+		elif "player_race" in gs:
+			var r := str(gs.get("player_race")).strip_edges().to_lower()
+			match r:
+				"rabbit", "nutcracker_rabbit": fam_id = "nutcracker_rabbit"
+				"fox", "music_box": fam_id = "music_box"
+				"lion", "tin_soldier": fam_id = "tin_soldier"
+				"carousel": fam_id = "carousel"
+				_: fam_id = "nutcracker_rabbit"
+	var fam_name := "胡桃鉗兔"
+	match fam_id:
+		"nutcracker_rabbit": fam_name = "胡桃鉗兔"
+		"music_box": fam_name = "八音盒"
+		"tin_soldier": fam_name = "錫兵"
+		"carousel": fam_name = "旋轉木馬"
+		_: fam_name = "胡桃鉗兔"
+	var loc_res := _t(fam_name)
+	if loc_res != fam_name:
+		return loc_res
+	var key_res := _t("toy_family." + fam_id)
+	if key_res != "toy_family." + fam_id and not key_res.is_empty():
+		return key_res
+	return loc_res
+
+
+func _get_current_outfit_name(gs: Node) -> String:
+	var costume_id := ""
+	if gs and "paperdoll_slots" in gs and gs.paperdoll_slots is Dictionary:
+		var ps: Dictionary = gs.paperdoll_slots
+		costume_id = str(ps.get("costume_id", ps.get("costume", "")))
+	if costume_id.is_empty():
+		costume_id = "costume_nutcracker_guard"
+
+	if costume_id in ["none", "bare", "empty"]:
+		var bare_str := _t("無外裝 (裸機素體)")
+		if bare_str == "無外裝 (裸機素體)":
+			bare_str = _t("power_stat.wardrobe_bare")
+		return bare_str
+
+	var raw_name := ""
+	match costume_id:
+		"costume_nutcracker_guard": raw_name = "胡桃鉗近衛軍裝"
+		"costume_steam_artisan": raw_name = "蒸氣工匠吊帶工作裝"
+		"costume_royal_parade": raw_name = "皇家巡遊金屬禮服"
+		"costume_astral_cape": raw_name = "星紋見習占星斗篷"
+		"costume_astral_observer": raw_name = "星象觀測者金屬儀裝"
+		"costume_viking_harness": raw_name = "維京重裝甲胃"
+		"costume_viking_ironclad": raw_name = "鐵甲護衛胸甲"
+		"costume_dawn_monk_tunic": raw_name = "晨曦行者武僧服"
+		_:
+			var PaperdollSelectClass = load("res://scripts/ui/paperdoll_select_demo.gd")
+			if PaperdollSelectClass and "RACES_DATA" in PaperdollSelectClass:
+				var all_data: Dictionary = PaperdollSelectClass.RACES_DATA
+				for rid in all_data.keys():
+					var r_data: Dictionary = all_data[rid]
+					var costumes: Array = r_data.get("costumes", [])
+					for c in costumes:
+						if str(c.get("id", "")) == costume_id:
+							raw_name = str(c.get("name_zh", c.get("name", "")))
+							break
+					if not raw_name.is_empty():
+						break
+
+	if raw_name.is_empty():
+		raw_name = "胡桃鉗近衛軍裝"
+
+	return _t(raw_name)
+
+
 func _get_colossus_remaining_entries() -> int:
 	var loop := Engine.get_main_loop()
 	if loop is SceneTree and (loop as SceneTree).root != null:
@@ -1684,6 +1885,26 @@ func get_go_dummy_practice_button() -> Button:
 
 func get_dummy_trial_card() -> PanelContainer:
 	return find_child("DummyTrialCard", true, false) as PanelContainer
+
+
+func _on_go_wardrobe_pressed() -> void:
+	wardrobe_requested.emit()
+	_on_close_pressed()
+
+
+func get_go_wardrobe_button() -> Button:
+	return _btn_go_wardrobe
+
+
+func get_wardrobe_card() -> PanelContainer:
+	return find_child("WardrobeCard", true, false) as PanelContainer
+
+
+func scroll_to_wardrobe_card() -> void:
+	var card := get_wardrobe_card()
+	if card and _scroll_box:
+		_scroll_box.ensure_control_visible(card)
+		_scroll_box.scroll_vertical = int(card.position.y)
 
 
 func get_scroll_box() -> ScrollContainer:

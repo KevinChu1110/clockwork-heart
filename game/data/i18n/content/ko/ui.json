@@ -3899,5 +3899,20 @@
   "power_stat.dummy_no_record": "시험 기록 없음. 목인에서 최고 데미지를 시험해보세요!",
   "尚未進行試招，快前往木人樁測試最高傷害！": "시험 기록 없음. 목인에서 최고 데미지를 시험해보세요!",
   "power_stat.dummy_no_record_badge": "미시험",
-  "尚未試招": "미시험"
+  "尚未試招": "미시험",
+  "power_stat.wardrobe_card": "장난감 가문 및 외형",
+  "玩具家族與外裝": "장난감 가문 및 외형",
+  "power_stat.go_wardrobe": "의상실로",
+  "power_stat.btn_go_wardrobe": "의상실로",
+  "前往衣櫥": "의상실로",
+  "power_stat.wardrobe_desc": "정교한 장난감 외형과 핵심 부품을 교체하여 독특한 태엽 공예를 뽐내세요",
+  "更換精緻玩具外裝與核心部件，展現獨特發條工藝": "정교한 장난감 외형과 핵심 부품을 교체하여 독특한 태엽 공예를 뽐내세요",
+  "toy_family.nutcracker_rabbit": "호두까기 토끼",
+  "toy_family.music_box": "오르골",
+  "toy_family.tin_soldier": "양철 병정",
+  "toy_family.carousel": "회전목마",
+  "胡桃鉗兔": "호두까기 토끼",
+  "八音盒": "오르골",
+  "錫兵": "양철 병정",
+  "旋轉木馬": "회전목마"
 }
