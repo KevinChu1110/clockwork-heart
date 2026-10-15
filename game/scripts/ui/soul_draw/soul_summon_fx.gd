@@ -437,6 +437,7 @@ func _clear_particles() -> void:
 func skip() -> void:
 	if not _is_playing:
 		return
+	preload("res://scripts/ui/soul_draw/soul_draw_sfx.gd").stop_summon()
 	if _tween and _tween.is_valid():
 		_tween.kill()
 	_clear_particles()

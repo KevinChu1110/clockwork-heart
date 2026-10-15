@@ -70,6 +70,8 @@ func _preload_sfx() -> void:
 		"ui", "interact", "step", "warn", "dodge", "battle_start",
 		"craft",  ## 可選；缺檔時 play_craft_success 走 ui+reveal
 		"overwind",  ## 發條超載爆裂音效；缺檔時 play_overwind_burst 走 clash+break+clock
+		## 抽魂（#91／PR #99）：每階一個翻卡檔＋召喚開場。#16 合入後要搬進 SFX_KEYS
+		"reveal_blue", "reveal_purple", "reveal_gold", "reveal_rainbow", "summon",
 	]
 	for n in names:
 		var path := "%s/%s.wav" % [SFX_DIR, n]
@@ -196,6 +198,17 @@ func play(id: String, pitch_scale: float = 1.0, volume_db: float = 0.0) -> void:
 	p.pitch_scale = clampf(pitch_scale, 0.5, 2.0)
 	p.volume_db = _sfx_db + volume_db
 	p.play()
+
+
+## 停掉正在播的某個 SFX（抽魂跳過時收掉 summon，不留殘響；#91）
+func stop_sfx(id: String) -> void:
+	var stream: AudioStream = _streams.get(id)
+	if stream == null:
+		return
+	for p in _pool:
+		var ap := p as AudioStreamPlayer
+		if ap.playing and ap.stream == stream:
+			ap.stop()
 
 
 ## 播放指定 SFX 音效（play 的標準別名，符合手冊與規範）

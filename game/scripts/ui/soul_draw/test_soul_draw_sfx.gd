@@ -1,11 +1,19 @@
 extends SceneTree
-## #91：抽魂流程音效。驗：按抽、演出開始、翻卡、十連結算都有呼叫 AudioManager；
-## reveal 依框色分 3 級（音高不同）；每個時刻 ≤2 聲；十連只播一聲 reveal。
+## #91：抽魂流程音效。
+## 1. 五個框色各播自己的檔（AudioManager 實際播出的 stream 路徑），金／彩不跟紫共用。
+## 2. 實際掉落（白／藍／紫）走對應的檔；十連只播一聲、取最高框。
+## 3. 演出開始播 summon；跳過會收掉 summon，不再加聲音。
+## 4. 每個時刻 AudioManager 同時在響 ≤2 聲（按抽＋召喚、跳過後翻卡、十連結算）。
 
 const Sfx := preload("res://scripts/ui/soul_draw/soul_draw_sfx.gd")
 const ResultCard := preload("res://scripts/ui/soul_draw/soul_result_card_view.gd")
 const TenPull := preload("res://scripts/ui/soul_draw/soul_ten_pull_view.gd")
 const SummonFx := preload("res://scripts/ui/soul_draw/soul_summon_fx.gd")
+const SFX_DIR := "res://assets/audio/sfx/"
+const EXPECT := {
+	"white": "reveal", "blue": "reveal_blue", "purple": "reveal_purple",
+	"gold": "reveal_gold", "rainbow": "reveal_rainbow",
+}
 
 var _ok := true
 var _frame := 0
@@ -32,8 +40,60 @@ func _process(_d: float) -> bool:
 	return true
 
 
+func _stop_all(am: Node) -> void:
+	for p in am.get("_pool"):
+		(p as AudioStreamPlayer).stop()
+
+
+## 現在在響的 SFX 檔名（不含副檔名）
+func _playing(am: Node) -> Array[String]:
+	var out: Array[String] = []
+	for p in am.get("_pool"):
+		var ap := p as AudioStreamPlayer
+		if ap.playing and ap.stream:
+			out.append(ap.stream.resource_path.get_file().get_basename())
+	return out
+
+
+func _cap(am: Node, label: String) -> void:
+	var now := _playing(am)
+	if now.size() > 2:
+		_fail("%s：同時 %d 聲 %s，超過 2" % [label, now.size(), str(now)])
+	else:
+		print("  ok %s：同時 %d 聲 %s" % [label, now.size(), str(now)])
+
+
 func _run(am: Node) -> void:
-	# 1. 單張翻卡：白／藍／紫三級，都走 AudioManager，音高遞增
+	var streams: Dictionary = am.get("_streams")
+	# 0. 檔案都有載入，而且五個 key 是五個不同的檔
+	var paths := {}
+	for f in EXPECT:
+		var key: String = EXPECT[f]
+		if not streams.has(key):
+			_fail("AudioManager 沒載入 %s（SFX 清單沒加？）" % key)
+			continue
+		paths[f] = (streams[key] as AudioStream).resource_path
+	if not streams.has("summon"):
+		_fail("AudioManager 沒載入 summon")
+	if paths.size() == 5:
+		var uniq := {}
+		for f in paths:
+			uniq[paths[f]] = true
+		if uniq.size() != 5:
+			_fail("五個框色的翻卡檔有重複：%s" % str(paths))
+
+	# 1. 五個框色：AudioManager 實際播出的檔
+	for f in EXPECT:
+		_stop_all(am)
+		Sfx.calls.clear()
+		Sfx.play_reveal_frame(f)
+		var now := _playing(am)
+		if now != [EXPECT[f]]:
+			_fail("[%s] 翻卡應只播 %s，實際在響 %s" % [f, EXPECT[f], str(now)])
+	if _ok:
+		print("  ok 五個框色各播自己的檔 %s" % str(EXPECT.values()))
+
+	# 2. 實際掉落 → 對應框色的檔
 	var card: Control = ResultCard.new()
 	root.add_child(card)
 	var drops := {
@@ -41,63 +101,54 @@ func _run(am: Node) -> void:
 		"blue": {"kind": "part", "DropId": "drop_spring_coil"},
 		"purple": {"kind": "outfit", "DropId": "outfit_cream"},
 	}
-	var pitches: Array[float] = []
-	for k in ["white", "blue", "purple"]:
-		Sfx.calls.clear()
-		am.set("last_sfx", "")
-		card.call("show_drop", drops[k])
-		var reveals := Sfx.calls.filter(func(c): return c[0] == "reveal")
-		if reveals.size() != 1:
-			_fail("[%s] 翻卡應播 1 聲 reveal，實際 %s" % [k, str(Sfx.calls)])
-			continue
-		if Sfx.calls.size() > 2:
-			_fail("[%s] 翻卡同時 %d 聲，超過 2" % [k, Sfx.calls.size()])
-		if str(am.get("last_sfx")) == "":
-			_fail("[%s] 翻卡沒有呼叫 AudioManager" % k)
-		pitches.append(float(reveals[0][1]))
-	if pitches.size() == 3 and not (pitches[0] < pitches[1] and pitches[1] < pitches[2]):
-		_fail("reveal 沒有照稀有度分 3 級：%s" % str(pitches))
-	elif pitches.size() == 3:
-		print("  ok 翻卡 reveal 分 3 級 %s" % str(pitches))
+	for f in drops:
+		_stop_all(am)
+		card.call("show_drop", drops[f])
+		var now := _playing(am)
+		if now != [EXPECT[f]]:
+			_fail("[%s] 單抽翻卡應播 %s，實際 %s" % [f, EXPECT[f], str(now)])
+	print("  ok 單抽翻卡：白／藍／紫掉落播 reveal／reveal_blue／reveal_purple")
 
-	# 2. 十連：只播一聲 reveal，取最高框（含紫 → 紫級）
+	# 3. 十連：只播一聲、取最高框
 	var ten: Control = TenPull.new()
 	root.add_child(ten)
 	var ten_drops: Array[Dictionary] = []
 	for i in 9:
 		ten_drops.append(drops["blue"])
 	ten_drops.append(drops["purple"])
+	_stop_all(am)
 	Sfx.calls.clear()
 	ten.call("show_drops", ten_drops)
-	var r10 := Sfx.calls.filter(func(c): return c[0] == "reveal")
-	if r10.size() != 1:
-		_fail("十連結算應只播 1 聲 reveal，實際 %d" % r10.size())
-	elif not is_equal_approx(float(r10[0][1]), pitches[2] if pitches.size() == 3 else -1.0):
-		_fail("十連含紫框，reveal 應為紫級音高，實際 %s" % str(r10[0]))
-	elif Sfx.calls.size() > 2:
-		_fail("十連結算同時 %d 聲，超過 2" % Sfx.calls.size())
+	var now10 := _playing(am)
+	if now10 != ["reveal_purple"]:
+		_fail("十連（含紫）結算應只播 reveal_purple 一聲，實際 %s" % str(now10))
 	else:
-		print("  ok 十連一聲 reveal（最高框）")
+		print("  ok 十連結算只播最高框一聲：%s" % str(now10))
 
-	# 3. 召喚演出開始有聲；跳過後不再追加聲音
+	# 4. 演出：按抽＋summon ≤2；跳過收掉 summon；跳過後翻卡 ≤2
 	var fx: Control = SummonFx.new()
 	root.add_child(fx)
+	_stop_all(am)
 	Sfx.calls.clear()
+	Sfx.play_pull()
 	fx.call("play_summon", true, func(): pass)
-	if Sfx.calls.size() != 1 or Sfx.calls[0][0] != "clock":
-		_fail("召喚開始應播 1 聲 clock，實際 %s" % str(Sfx.calls))
-	Sfx.calls.clear()
+	if not _playing(am).has("summon"):
+		_fail("召喚開始應播 summon，實際 %s" % str(_playing(am)))
+	_cap(am, "按抽＋召喚開始")
 	fx.call("skip")
-	if not Sfx.calls.is_empty():
-		_fail("跳過演出不該再播聲音：%s" % str(Sfx.calls))
-	else:
-		print("  ok 召喚開始有聲，跳過不留殘響")
+	if _playing(am).has("summon"):
+		_fail("跳過後 summon 還在響（殘響）")
+	var played_after := Sfx.calls.filter(func(c): return not str(c[0]).begins_with("stop:") and c[0] != "summon" and c[0] != "ui")
+	if not played_after.is_empty():
+		_fail("跳過演出不該補播聲音：%s" % str(played_after))
+	Sfx.play_reveal_frame("rainbow")
+	_cap(am, "跳過後立刻出彩框")
+	if _ok:
+		print("  ok 召喚播 summon，跳過收掉 summon、不留殘響")
 
-	# 4. 按抽：play_pull 走 play_ui
-	Sfx.calls.clear()
+	# 5. 按抽：play_pull 走 play_ui
 	am.set("last_sfx", "")
 	Sfx.play_pull()
 	if str(am.get("last_sfx")) != "ui":
 		_fail("按抽應播 ui，last_sfx=%s" % str(am.get("last_sfx")))
-	else:
-		print("  ok 按抽有 ui 回饋")
+	_stop_all(am)
