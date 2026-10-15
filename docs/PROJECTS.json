@@ -6750,8 +6750,8 @@
    "id": "title-wall-inventory-shortcut",
    "cat": "遊戲",
    "title": "TitleWallDialog 稱號牆新增前往背包快捷按鈕連動探索背包",
-   "status": "開發中",
-   "note": "開始開發 TitleWallDialog 前往背包快捷按鈕 (t_e56c4603)",
+   "status": "測試中",
+   "note": "完成 TitleWallDialog 前往背包快捷按鈕開發與全套測試 (t_e56c4603)",
    "keys": [
     "TitleWal"
    ]
