@@ -6605,6 +6605,16 @@
    "keys": [
     "Wardrobe"
    ]
+  },
+  {
+   "id": "shop-wardrobe-shortcut",
+   "cat": "遊戲",
+   "title": "ShopDialog 商城彈窗底欄新增前往衣櫥快捷按鈕",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "ShopDial"
+   ]
   }
  ]
 }
