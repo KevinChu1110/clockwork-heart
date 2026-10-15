@@ -173,7 +173,7 @@ func _process(_delta: float) -> bool:
 
 	match _step:
 		0:
-			if _wait < 5:
+			if _wait < 3:
 				return false
 			print("=== 1. 初始化 GameState 與開啟 PowerStatDialog ===")
 			var gs: Node = root.get_node_or_null("GameState")
@@ -191,7 +191,7 @@ func _process(_delta: float) -> bool:
 			_wait = 0
 
 		1:
-			if _wait < 6:
+			if _wait < 4:
 				return false
 			print("\n=== 2. 驗證 WardrobeCard 結構、家族/外裝膠囊與 BtnGoWardrobe 按鈕規格樣式 ===")
 			var wardrobe_card: PanelContainer = _dlg.call("get_wardrobe_card") as PanelContainer
@@ -289,7 +289,7 @@ func _process(_delta: float) -> bool:
 			_wait = 0
 
 		2:
-			if _wait < 6:
+			if _wait < 4:
 				return false
 			print("\n=== 3. 截圖存證：繁中 PowerStatDialog 顯示 WardrobeCard 與 BtnGoWardrobe ===")
 			_capture_save("proof_03_zh_TW_scroll_to_wardrobe_card.png", "透過 scroll_to_wardrobe_card() 聚焦捲動至 WardrobeCard 玩具外裝卡片")
@@ -303,7 +303,7 @@ func _process(_delta: float) -> bool:
 			_wait = 0
 
 		3:
-			if _wait < 5:
+			if _wait < 3:
 				return false
 			print("\n=== 4. 驗證點擊 BtnGoWardrobe 連動發射 wardrobe_requested 並透過 MobileLobby 開啟 WardrobeDialog ===")
 			_signal_emitted = false
@@ -319,7 +319,7 @@ func _process(_delta: float) -> bool:
 			_wait = 0
 
 		4:
-			if _wait < 8:
+			if _wait < 5:
 				return false
 			if not _signal_emitted:
 				return _fail("點擊 BtnGoWardrobe 未發射 wardrobe_requested 訊號")
@@ -345,7 +345,7 @@ func _process(_delta: float) -> bool:
 			_wait = 0
 
 		5:
-			if _wait < 6:
+			if _wait < 3:
 				return false
 			print("\n=== 5. 多語系測試 (zh_TW, zh_CN, en, ja, ko, es) ===")
 			_loc_idx = 0
@@ -353,7 +353,7 @@ func _process(_delta: float) -> bool:
 			_wait = 0
 
 		6:
-			if _wait < 6:
+			if _wait < 2:
 				return false
 			if _loc_idx >= LOCALES.size():
 				_step = 7
@@ -369,14 +369,27 @@ func _process(_delta: float) -> bool:
 				existing_ps.queue_free()
 
 			_dlg = _lobby.call("open_power_stat_dialog")
-			_dlg.call("scroll_to_wardrobe_card")
 			_step = 61
 			_wait = 0
 
 		61:
+			# 等待容器完成佈局排版
+			if _wait < 6:
+				return false
+			# 佈局完成後呼叫 scroll_to_wardrobe_card 聚焦卡片
+			_dlg.call("scroll_to_wardrobe_card")
+			_step = 62
+			_wait = 0
+
+		62:
+			# 等待捲動渲染完成
 			if _wait < 6:
 				return false
 			var loc_code := LOCALES[_loc_idx]
+			var s_box: ScrollContainer = _dlg.call("get_scroll_box") as ScrollContainer
+			if s_box != null:
+				print("  ok [%s] scroll_to_wardrobe_card() 成功呼叫，scroll_vertical = %d" % [loc_code, s_box.scroll_vertical])
+
 			var wardrobe_card: PanelContainer = _dlg.call("get_wardrobe_card") as PanelContainer
 			var title_lbl: Label = wardrobe_card.find_child("WardrobeCardTitleLabel", true, false) as Label
 			var fam_lbl: Label = wardrobe_card.find_child("WardrobeFamilyLabel", true, false) as Label

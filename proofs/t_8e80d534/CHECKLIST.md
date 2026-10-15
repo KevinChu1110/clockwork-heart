@@ -12,11 +12,11 @@
 ## 存證截圖列表
 | 檔案名稱 | SHA256 (前 16 碼) | 說明 |
 |---|---|---|
-| `proof_01_zh_TW_power_stat_initial_overview.png` | `f2ce20b756aed79b` | 繁體中文 PowerStatDialog 戰力總覽初始頂部視圖 |
-| `proof_03_zh_TW_scroll_to_wardrobe_card.png` | `56d3b85291f58aee` | 透過 scroll_to_wardrobe_card() 聚焦捲動至 WardrobeCard 玩具外裝卡片 |
-| `proof_02_zh_TW_click_go_wardrobe_opens_wardrobe_dialog.png` | `ad25487f6a4c94b6` | 點擊 BtnGoWardrobe 前往衣櫥後連動開啟 WardrobeDialog 換裝衣櫥彈窗 |
-| `proof_04_en_power_stat_wardrobe_card.png` | `0db25b616ccad9f4` | English: WardrobeCard with Toy Family & Outfit and Wardrobe button |
-| `proof_05_ja_power_stat_wardrobe_card.png` | `b9cee92b5a637da8` | Japanese: WardrobeCard with Toy Family & Outfit and Wardrobe button |
-| `proof_06_ko_power_stat_wardrobe_card.png` | `bd20bc5b0237624e` | Korean: WardrobeCard with Toy Family & Outfit and Wardrobe button |
-| `proof_07_es_power_stat_wardrobe_card.png` | `68c30b2f5ff895e2` | Spanish: WardrobeCard with Toy Family & Outfit and Wardrobe button |
+| `proof_01_zh_TW_power_stat_initial_overview.png` | `087ae41a2f052506` | 繁體中文 PowerStatDialog 戰力總覽初始頂部視圖 |
+| `proof_03_zh_TW_scroll_to_wardrobe_card.png` | `83fae49e415bd605` | 透過 scroll_to_wardrobe_card() 聚焦捲動至 WardrobeCard 玩具外裝卡片 |
+| `proof_02_zh_TW_click_go_wardrobe_opens_wardrobe_dialog.png` | `931969bbfa69ef0d` | 點擊 BtnGoWardrobe 前往衣櫥後連動開啟 WardrobeDialog 換裝衣櫥彈窗 |
+| `proof_04_en_power_stat_wardrobe_card.png` | `d68422deae1cca37` | English: WardrobeCard with Toy Family & Outfit and Wardrobe button |
+| `proof_05_ja_power_stat_wardrobe_card.png` | `314b6147b054ba2d` | Japanese: WardrobeCard with Toy Family & Outfit and Wardrobe button |
+| `proof_06_ko_power_stat_wardrobe_card.png` | `03e0f10a1730c2a0` | Korean: WardrobeCard with Toy Family & Outfit and Wardrobe button |
+| `proof_07_es_power_stat_wardrobe_card.png` | `b365e1945eddff59` | Spanish: WardrobeCard with Toy Family & Outfit and Wardrobe button |
 
