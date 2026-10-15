@@ -6510,8 +6510,8 @@
    "id": "power-stat-windup-card",
    "cat": "遊戲",
    "title": "PowerStatDialog 戰力屬性總覽新增每日上發條委託進度卡片與前往委託快捷按鈕",
-   "status": "測試中",
-   "note": "PowerStatDialog 每日上發條委託卡片與前往委託快捷按鈕開發自測完成 (t_2389f167)",
+   "status": "已上線",
+   "note": "三分支合併至 main 並完成全套回歸驗收 (t_e969507f)",
    "keys": [
     "PowerSta"
    ]
