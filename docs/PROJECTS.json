@@ -6730,8 +6730,8 @@
    "id": "windup-vault-shortcut",
    "cat": "遊戲",
    "title": "WindupDailyDialog 冒險委託每日上發條新增前往儲能庫快捷按鈕連動發條儲能庫",
-   "status": "草稿",
-   "note": "每日委託與發條儲能庫放置留存雙向閉環",
+   "status": "開發中",
+   "note": "開始開發 WindupDailyDialog 前往儲能庫快捷按鈕",
    "keys": [
     "WindupDa"
    ]
