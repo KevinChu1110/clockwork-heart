@@ -6750,8 +6750,8 @@
    "id": "vault-windup-shortcut",
    "cat": "遊戲",
    "title": "ClockworkVaultDialog 發條儲能庫放置收益彈窗新增前往委託快捷果凍按鈕連動 WindupDailyDialog",
-   "status": "開發中",
-   "note": "開始開發 ClockworkVaultDialog 前往委託快捷按鈕與 WindupDailyDialog 連動",
+   "status": "測試中",
+   "note": "完成 ClockworkVaultDialog 前往委託快捷果凍按鈕與 WindupDailyDialog 連動，單元測試與 8 張六語系截圖存證全數通過",
    "keys": [
     "Clockwor"
    ]
