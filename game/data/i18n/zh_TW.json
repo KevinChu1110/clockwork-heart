@@ -2427,5 +2427,6 @@
   "power_stat.swap_weapon": "更換",
   "更換": "更換",
   "shop.btn_go_wardrobe": "前往衣櫥",
-  "shop.btn_go_title_wall": "前往稱號"
+  "shop.btn_go_title_wall": "前往稱號",
+  "windup_daily.btn_go_inventory": "前往背包"
 }

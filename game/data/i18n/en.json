@@ -4312,5 +4312,6 @@
   "更換": "Swap",
   "Swap": "Swap",
   "shop.btn_go_wardrobe": "Go to Wardrobe",
-  "shop.btn_go_title_wall": "To Titles"
+  "shop.btn_go_title_wall": "To Titles",
+  "windup_daily.btn_go_inventory": "To Inventory"
 }

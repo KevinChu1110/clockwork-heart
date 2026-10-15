@@ -7106,6 +7106,10 @@ func open_windup_daily() -> Control:
 		dlg.power_stat_requested.connect(func():
 			open_power_stat_dialog()
 		)
+	if dlg.has_signal("inventory_requested"):
+		dlg.inventory_requested.connect(func():
+			open_maple_inventory()
+		)
 	add_child(dlg)
 	return dlg
 
