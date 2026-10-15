@@ -38,7 +38,7 @@ TARGET_M = {
     "wind": -21.0,                                  # 戰前上鏈
     "miss": -23.0,                                  # 頻繁回饋（揮空，issue #47）
     "craft": -20.0,                                 # 事件 cue（鍛造成功，issue #47）
-    "reveal": -21.0,                                # 抽魂翻卡（issue #91）；稀有度靠 pitch／volume_db 往上加
+    "reveal_white": -21.0,                                # 抽魂翻卡（issue #91）；稀有度靠 pitch／volume_db 往上加
     "reveal_blue": -22.0, "reveal_purple": -20.5,   # 分階翻卡（#98）：一階比一階大、長、亮
     "reveal_gold": -19.0, "reveal_rainbow": -18.0,
     "summon": -21.0,                                # 抽魂演出開始（issue #91，key 待程式加）
@@ -47,7 +47,7 @@ TARGET_M = {
 # 峰值再壓到 −4（和舊 hit 占位的峰值一樣），讓瞬態不會「啪」一下蓋過跳字
 TP_CEIL = {"hit": -4.0, "slash": -4.0, "miss": -4.0}
 SEEDS = {"swap": 1110, "hit": 3201, "slash": 3202, "break": 3203, "warn": 3204, "wind": 3205,
-         "miss": 4701, "craft": 4702, "reveal": 9101, "summon": 9102,
+         "miss": 4701, "craft": 4702, "reveal_white": 9101, "summon": 9102,
          "reveal_blue": 9801, "reveal_purple": 9802, "reveal_gold": 9803, "reveal_rainbow": 9804}
 
 
@@ -446,7 +446,7 @@ def synth_craft(rng: np.random.Generator) -> tuple[np.ndarray, float]:
 
 
 def synth_reveal(rng: np.random.Generator) -> tuple[np.ndarray, float]:
-    """抽魂翻卡（0.52 s）：黃銅卡片翻面的輕「刷」＋卡榫「嗒」→ 八音盒音梳大三和弦上行（E6–G#6–B6）＋泛音閃光。
+    """抽魂翻卡・白 普通（reveal_white.wav，0.52 s；共用的 reveal.wav 保持原檔不動，#107）：黃銅卡片翻面的輕「刷」＋卡榫「嗒」→ 八音盒音梳大三和弦上行（E6–G#6–B6）＋泛音閃光。
     設計成可用 pitch_scale 分稀有度：pitch 越高越亮、越短（0.84 白 → 1.0 藍 → 1.26 紫 → 1.5 金 → 1.68 彩），
     和聲是大三和弦，移調後仍是同一個「揭曉」動機，所以 1 個 key 就分得出階級，不用另開檔。"""
     dur = 0.52
@@ -593,7 +593,7 @@ SYNTHS = {
     "swap": synth_swap, "hit": synth_hit, "slash": synth_slash,
     "break": synth_break, "warn": synth_warn, "wind": synth_wind,
     "miss": synth_miss, "craft": synth_craft,
-    "reveal": synth_reveal, "summon": synth_summon,
+    "reveal_white": synth_reveal, "summon": synth_summon,
     "reveal_blue": synth_reveal_blue, "reveal_purple": synth_reveal_purple,
     "reveal_gold": synth_reveal_gold, "reveal_rainbow": synth_reveal_rainbow,
 }
