@@ -6585,6 +6585,16 @@
    "keys": [
     "PowerSta"
    ]
+  },
+  {
+   "id": "weapon-swap-power-stat-shortcut",
+   "cat": "遊戲",
+   "title": "WeaponSwapDialog 武器更換彈窗底欄新增前往戰力快捷果凍按鈕連動 PowerStatDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "WeaponSw"
+   ]
   }
  ]
 }
