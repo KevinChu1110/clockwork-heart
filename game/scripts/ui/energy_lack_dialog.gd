@@ -12,6 +12,8 @@ extends Control
 signal energy_granted(amount: int)
 signal shop_requested()
 signal power_stat_requested()
+signal vault_requested()
+signal go_vault()
 signal closed()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
@@ -44,6 +46,7 @@ var _energy_val_label: Label
 var _status_detail_label: Label
 var _desc_lbl: Label
 var _ad_btn: Button
+var _vault_btn: Button
 var _shop_btn: Button
 var _power_stat_btn: Button
 var _back_btn: Button
@@ -86,6 +89,11 @@ func _on_locale_changed(_new_locale: String = "") -> void:
 func _update_ui_texts() -> void:
 	if _title_lbl and is_instance_valid(_title_lbl):
 		_title_lbl.text = _t("能量不足")
+	if _vault_btn and is_instance_valid(_vault_btn):
+		var vt := _t("energy_lack.btn_go_vault")
+		if vt == "energy_lack.btn_go_vault" or vt.is_empty():
+			vt = _t("前往儲能庫")
+		_vault_btn.text = vt
 	if _shop_btn and is_instance_valid(_shop_btn):
 		_shop_btn.text = _t("前往商城")
 	if _power_stat_btn and is_instance_valid(_power_stat_btn):
@@ -150,13 +158,13 @@ func _build_ui() -> void:
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "EnergyLackCard"
 	ResponsiveUi.apply_dialog_card(_dialog_card)
-	_dialog_card.custom_minimum_size = Vector2(750, 440)
+	_dialog_card.custom_minimum_size = Vector2(755, 440)
 	_dialog_card.add_theme_stylebox_override("panel", _create_panel_style(COLOR_BG_CREAM, COLOR_BORDER, 3, 6, 22))
 	center.add_child(_dialog_card)
 
 	var margin := MarginContainer.new()
-	margin.add_theme_constant_override("margin_left", 20)
-	margin.add_theme_constant_override("margin_right", 20)
+	margin.add_theme_constant_override("margin_left", 16)
+	margin.add_theme_constant_override("margin_right", 16)
 	margin.add_theme_constant_override("margin_top", 18)
 	margin.add_theme_constant_override("margin_bottom", 20)
 	_dialog_card.add_child(margin)
@@ -233,15 +241,15 @@ func _build_ui() -> void:
 
 	# 底部操作按鈕區 (高度 >= 50px，熱區 >= 48px)
 	var btn_h := HBoxContainer.new()
-	btn_h.add_theme_constant_override("separation", 10)
+	btn_h.add_theme_constant_override("separation", 8)
 	btn_h.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(btn_h)
 
 	# 看廣告拿體力按鈕 (薄荷綠立體果凍厚底)
 	_ad_btn = Button.new()
 	_ad_btn.name = "WatchAdBtn"
-	_ad_btn.custom_minimum_size = Vector2(250, 52)
-	_ad_btn.add_theme_font_size_override("font_size", 15)
+	_ad_btn.custom_minimum_size = Vector2(195, 52)
+	_ad_btn.add_theme_font_size_override("font_size", 14)
 	_ad_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
 	_ad_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_ad_btn.add_theme_constant_override("outline_size", 3)
@@ -254,12 +262,34 @@ func _build_ui() -> void:
 	_ad_btn.pressed.connect(_on_watch_ad_clicked)
 	btn_h.add_child(_ad_btn)
 
+	# 前往儲能庫按鈕 (金黃立體果凍厚底，高度 >= 50px，熱區 >= 48px)
+	_vault_btn = Button.new()
+	_vault_btn.name = "BtnGoVault"
+	var vt := _t("energy_lack.btn_go_vault")
+	if vt == "energy_lack.btn_go_vault" or vt.is_empty():
+		vt = _t("前往儲能庫")
+	_vault_btn.text = vt
+	_vault_btn.custom_minimum_size = Vector2(125, 52)
+	_vault_btn.add_theme_font_size_override("font_size", 15)
+	_vault_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_vault_btn.add_theme_color_override("font_outline_color", Color("#FFFDF8"))
+	_vault_btn.add_theme_constant_override("outline_size", 2)
+	if _cached_font:
+		_vault_btn.add_theme_font_override("font", _cached_font)
+	_vault_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 6, 20, 2))
+	_vault_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE050"), COLOR_BORDER, 6, 20, 2))
+	_vault_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5B800"), COLOR_BORDER, 2, 20, 2))
+	_vault_btn.add_theme_stylebox_override("focus", _create_button_style(COLOR_GOLD, COLOR_BORDER, 6, 20, 2))
+	_vault_btn.add_theme_stylebox_override("disabled", _create_button_style(Color("#B0ADBE"), COLOR_BORDER, 3, 20, 2))
+	_vault_btn.pressed.connect(_on_go_vault_clicked)
+	btn_h.add_child(_vault_btn)
+
 	# 前往商城按鈕 (暖橘立體果凍厚底，高度 >= 50px，熱區 >= 48px)
 	_shop_btn = Button.new()
 	_shop_btn.name = "BtnGoShop"
 	_shop_btn.text = _t("前往商城")
-	_shop_btn.custom_minimum_size = Vector2(145, 52)
-	_shop_btn.add_theme_font_size_override("font_size", 16)
+	_shop_btn.custom_minimum_size = Vector2(125, 52)
+	_shop_btn.add_theme_font_size_override("font_size", 15)
 	_shop_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
 	_shop_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_shop_btn.add_theme_constant_override("outline_size", 3)
@@ -277,8 +307,8 @@ func _build_ui() -> void:
 	_power_stat_btn = Button.new()
 	_power_stat_btn.name = "BtnGoPowerStat"
 	_power_stat_btn.text = _t("前往戰力")
-	_power_stat_btn.custom_minimum_size = Vector2(145, 52)
-	_power_stat_btn.add_theme_font_size_override("font_size", 16)
+	_power_stat_btn.custom_minimum_size = Vector2(125, 52)
+	_power_stat_btn.add_theme_font_size_override("font_size", 15)
 	_power_stat_btn.add_theme_color_override("font_color", Color("#FFFDF8"))
 	_power_stat_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
 	_power_stat_btn.add_theme_constant_override("outline_size", 3)
@@ -296,8 +326,8 @@ func _build_ui() -> void:
 	_back_btn = Button.new()
 	_back_btn.name = "BackBtn"
 	_back_btn.text = _t("稍後再來")
-	_back_btn.custom_minimum_size = Vector2(130, 52)
-	_back_btn.add_theme_font_size_override("font_size", 16)
+	_back_btn.custom_minimum_size = Vector2(115, 52)
+	_back_btn.add_theme_font_size_override("font_size", 15)
 	_back_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	if _cached_font:
 		_back_btn.add_theme_font_override("font", _cached_font)
@@ -467,6 +497,53 @@ func get_btn_go_power_stat() -> Button:
 
 func get_go_power_stat_button() -> Button:
 	return _power_stat_btn
+
+
+func _on_go_vault_clicked() -> void:
+	vault_requested.emit()
+	go_vault.emit()
+	var parent_node := get_parent()
+	if parent_node != null:
+		if parent_node.has_method("open_clockwork_vault"):
+			if vault_requested.get_connections().is_empty() and go_vault.get_connections().is_empty():
+				parent_node.call("open_clockwork_vault")
+		elif parent_node.has_method("open_vault_dialog"):
+			if vault_requested.get_connections().is_empty() and go_vault.get_connections().is_empty():
+				parent_node.call("open_vault_dialog")
+		elif parent_node.has_method("open_vault"):
+			if vault_requested.get_connections().is_empty() and go_vault.get_connections().is_empty():
+				parent_node.call("open_vault")
+		elif parent_node.get_node_or_null("ClockworkVaultDialog") == null:
+			var VaultClass: GDScript = load("res://scripts/ui/clockwork_vault_dialog.gd")
+			if VaultClass != null:
+				var dlg: Control = VaultClass.new() as Control
+				dlg.name = "ClockworkVaultDialog"
+				dlg.z_index = 80
+				parent_node.add_child(dlg)
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_clockwork_vault"):
+				if vault_requested.get_connections().is_empty() and go_vault.get_connections().is_empty():
+					ml.call("open_clockwork_vault")
+	_on_close_clicked()
+
+
+func get_go_vault_btn() -> Button:
+	return _vault_btn
+
+
+func get_btn_go_vault() -> Button:
+	return _vault_btn
+
+
+func get_go_vault_button() -> Button:
+	return _vault_btn
+
+
+func get_vault_button() -> Button:
+	return _vault_btn
 
 
 func _on_close_clicked() -> void:

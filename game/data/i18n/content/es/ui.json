@@ -3967,5 +3967,6 @@
   "gem_workshop.btn_go_shop": "A Tienda",
   "forge.btn_go_shop": "A Tienda",
   "vault.btn_go_shop": "A Tienda",
-  "shop.btn_go_skill": "A Habilidades"
+  "shop.btn_go_skill": "A Habilidades",
+  "energy_lack.btn_go_vault": "Ir a Bóveda"
 }
