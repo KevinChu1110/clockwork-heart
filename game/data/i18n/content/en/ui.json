@@ -3953,11 +3953,13 @@
   "Swap": "Swap",
   "shop.btn_go_wardrobe": "Go to Wardrobe",
   "shop.btn_go_title_wall": "To Titles",
+  "shop.btn_go_workshop": "To Workshop",
   "windup_daily.btn_go_inventory": "To Inventory",
   "windup_daily.btn_go_vault": "To Vault",
   "vault.btn_go_windup": "To Daily",
   "title_wall.btn_go_inventory": "To Inventory",
   "wardrobe.btn_go_inventory": "To Bag",
   "wardrobe.go_inventory": "To Bag",
-  "inventory.btn_go_wardrobe": "To Wardrobe"
+  "inventory.btn_go_wardrobe": "To Wardrobe",
+  "gem_workshop.btn_go_shop": "To Shop"
 }

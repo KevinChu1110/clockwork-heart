@@ -3953,11 +3953,13 @@
   "変更": "変更",
   "shop.btn_go_wardrobe": "衣装部屋へ",
   "shop.btn_go_title_wall": "称号へ",
+  "shop.btn_go_workshop": "工房へ",
   "windup_daily.btn_go_inventory": "バッグへ",
   "windup_daily.btn_go_vault": "貯蔵庫へ",
   "vault.btn_go_windup": "日課へ",
   "title_wall.btn_go_inventory": "バッグへ",
   "wardrobe.btn_go_inventory": "バッグへ",
   "wardrobe.go_inventory": "バッグへ",
-  "inventory.btn_go_wardrobe": "衣装部屋へ"
+  "inventory.btn_go_wardrobe": "衣装部屋へ",
+  "gem_workshop.btn_go_shop": "ショップへ"
 }
