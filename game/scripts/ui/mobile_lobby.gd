@@ -7028,6 +7028,14 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 		dlg.connect("power_stat_requested", func():
 			open_power_stat_dialog()
 		)
+	if dlg.has_signal("shop_requested"):
+		dlg.connect("shop_requested", func():
+			open_shop()
+		)
+	elif dlg.has_signal("go_shop"):
+		dlg.connect("go_shop", func():
+			open_shop()
+		)
 	add_child(dlg)
 	if target_tab != 0 and dlg.has_method("set_tab"):
 		dlg.call("set_tab", target_tab)
