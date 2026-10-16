@@ -3954,6 +3954,7 @@
   "Cambiar": "Cambiar",
   "shop.btn_go_wardrobe": "Ir al Armario",
   "shop.btn_go_title_wall": "Ir a Títulos",
+  "shop.btn_go_workshop": "Al Taller",
   "windup_daily.btn_go_inventory": "Ir a Mochila",
   "windup_daily.btn_go_vault": "Ir a Bóveda",
   "vault.btn_go_windup": "Ir a Encargos",
@@ -3961,5 +3962,6 @@
   "wardrobe.btn_go_inventory": "A Mochila",
   "wardrobe.go_inventory": "A Mochila",
   "inventory.btn_go_wardrobe": "A Guardarropa",
-  "inventory.btn_go_title_wall": "A Títulos"
+  "inventory.btn_go_title_wall": "A Títulos",
+  "gem_workshop.btn_go_shop": "A Tienda"
 }

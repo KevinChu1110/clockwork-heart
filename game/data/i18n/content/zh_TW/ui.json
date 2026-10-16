@@ -2069,6 +2069,7 @@
   "更換": "更換",
   "shop.btn_go_wardrobe": "前往衣櫥",
   "shop.btn_go_title_wall": "前往稱號",
+  "shop.btn_go_workshop": "前往工坊",
   "windup_daily.btn_go_inventory": "前往背包",
   "windup_daily.btn_go_vault": "前往儲能庫",
   "vault.btn_go_windup": "前往委託",
@@ -2076,5 +2077,6 @@
   "wardrobe.btn_go_inventory": "前往背包",
   "wardrobe.go_inventory": "前往背包",
   "inventory.btn_go_wardrobe": "前往衣櫥",
-  "inventory.btn_go_title_wall": "前往稱號"
+  "inventory.btn_go_title_wall": "前往稱號",
+  "gem_workshop.btn_go_shop": "前往商城"
 }
