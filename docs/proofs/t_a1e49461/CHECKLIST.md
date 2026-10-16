@@ -10,10 +10,10 @@
 - [x] 支援六語系 i18n 即時切換：繁中、簡中、en、ja、ko、es
 
 ## 2. 實機截圖存證清單
-- `proof_01_zh_TW_wardrobe_dialog_with_btn_go_inventory.png`: SHA256 `ccc7d1afc069c2a9b1f691793c32f5407710d871b2785b730915d7f1f16c250b`
-- `proof_02_zh_TW_inventory_opened_from_wardrobe.png`: SHA256 `8ed587d355cc0f119e7e67e70133d6988394cc0b2590c19fa32bf27af133df96`
-- `proof_03_zh_CN_wardrobe_btn_go_inventory.png`: SHA256 `fb3ce3cccffbc7ad8f5da7f26d3e032d7b91b68a0c827ae42abbd33124eadc17`
-- `proof_04_en_wardrobe_btn_go_inventory.png`: SHA256 `e1f281735f2e16cf26d7676d8fb4c755ba4b72ab7ade94d79fbf466331ff5243`
-- `proof_05_ja_wardrobe_btn_go_inventory.png`: SHA256 `2d8e75846a9db0bb41e34df291b4262dfe35c8f680f88306dafdf17ddfca6fdb`
-- `proof_06_ko_wardrobe_btn_go_inventory.png`: SHA256 `656c1308b1ed8b3125f3375b9a083c1f30b896a2a55db002bbf68a243b54452d`
-- `proof_07_es_wardrobe_btn_go_inventory.png`: SHA256 `4f6a7327f361b0c83eee5e4c1ca9a9fb03e0763ba12ccea16921ff52fb447883`
+- `proof_01_zh_TW_wardrobe_dialog_with_btn_go_inventory.png`: SHA256 `45bca5b2c08515a8e6c1bddd033750ba8c3c5cc9b2ad1e793e74bcd4d20a0b85`
+- `proof_02_zh_TW_inventory_opened_from_wardrobe.png`: SHA256 `5ce0afb4ae640a17619636806d8d8ac7cb79ecc5aa59116d48418d7032e6dc94`
+- `proof_03_zh_CN_wardrobe_btn_go_inventory.png`: SHA256 `6cf79de6fc57b1044b0bf595a5b67057df59d34e94e64c6348f6272e6ff1d91b`
+- `proof_04_en_wardrobe_btn_go_inventory.png`: SHA256 `b1eb0294f1e7e4da34e9bb4b9759f43bd6c5a5ff67a55827d84be6fb6d5350b6`
+- `proof_05_ja_wardrobe_btn_go_inventory.png`: SHA256 `046fd20e12cc1629331f557536e306491ffb538c62b508f273eafc04ec15b478`
+- `proof_06_ko_wardrobe_btn_go_inventory.png`: SHA256 `58578a57ded72871f82e9f59a5c07ae47b4127352b45df289728533c93dcfd9b`
+- `proof_07_es_wardrobe_btn_go_inventory.png`: SHA256 `ef48ed85b91828b19b4844b91f1e9315d2c22c92d95b0a656b2c14c8202c843a`

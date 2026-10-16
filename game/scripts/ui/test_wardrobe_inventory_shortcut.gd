@@ -292,7 +292,7 @@ func _process(_delta: float) -> bool:
 			_wait = 0
 
 		6:
-			# 簡中 zh_CN
+			# 簡中 zh_CN 切換與文字檢驗
 			if _wait < 6:
 				return false
 			print("\n=== 4. 測試六語系即時切換：zh_CN ===")
@@ -304,17 +304,23 @@ func _process(_delta: float) -> bool:
 				return _fail("[zh_CN] 按鈕文字不符，期望: '%s'，實測: '%s'" % [EXPECTED_BTN_TEXTS["zh_CN"], btn_cn.text])
 			_check_no_emoji(btn_cn.text, "BtnGoInventory_zh_CN")
 			print("  ok [zh_CN] 語系按鈕文字驗證正確: '%s'" % btn_cn.text)
-
-			var h_cn := _capture_save(_out_dir.path_join("proof_03_zh_CN_wardrobe_btn_go_inventory.png"))
-			if not h_cn.is_empty():
-				_proof_hashes["proof_03_zh_CN_wardrobe_btn_go_inventory.png"] = h_cn
-
 			_step = 7
 			_wait = 0
 
 		7:
-			# 英文 en
+			# 簡中 zh_CN 等待渲染管線重繪後截圖
 			if _wait < 6:
+				return false
+			var h_cn := _capture_save(_out_dir.path_join("proof_03_zh_CN_wardrobe_btn_go_inventory.png"))
+			if not h_cn.is_empty():
+				_proof_hashes["proof_03_zh_CN_wardrobe_btn_go_inventory.png"] = h_cn
+			print("  ok 截圖已儲存: proof_03_zh_CN_wardrobe_btn_go_inventory.png")
+			_step = 8
+			_wait = 0
+
+		8:
+			# 英文 en 切換與文字檢驗
+			if _wait < 4:
 				return false
 			print("\n=== 5. 測試六語系即時切換：en ===")
 			_switch_locale("en")
@@ -325,17 +331,23 @@ func _process(_delta: float) -> bool:
 				return _fail("[en] 按鈕文字不符，期望: '%s'，實測: '%s'" % [EXPECTED_BTN_TEXTS["en"], btn_en.text])
 			_check_no_emoji(btn_en.text, "BtnGoInventory_en")
 			print("  ok [en] 語系按鈕文字驗證正確: '%s'" % btn_en.text)
+			_step = 9
+			_wait = 0
 
+		9:
+			# 英文 en 等待渲染管線重繪後截圖
+			if _wait < 6:
+				return false
 			var h_en := _capture_save(_out_dir.path_join("proof_04_en_wardrobe_btn_go_inventory.png"))
 			if not h_en.is_empty():
 				_proof_hashes["proof_04_en_wardrobe_btn_go_inventory.png"] = h_en
-
-			_step = 8
+			print("  ok 截圖已儲存: proof_04_en_wardrobe_btn_go_inventory.png")
+			_step = 10
 			_wait = 0
 
-		8:
-			# 日文 ja
-			if _wait < 6:
+		10:
+			# 日文 ja 切換與文字檢驗
+			if _wait < 4:
 				return false
 			print("\n=== 6. 測試六語系即時切換：ja ===")
 			_switch_locale("ja")
@@ -346,17 +358,23 @@ func _process(_delta: float) -> bool:
 				return _fail("[ja] 按鈕文字不符，期望: '%s'，實測: '%s'" % [EXPECTED_BTN_TEXTS["ja"], btn_ja.text])
 			_check_no_emoji(btn_ja.text, "BtnGoInventory_ja")
 			print("  ok [ja] 語系按鈕文字驗證正確: '%s'" % btn_ja.text)
+			_step = 11
+			_wait = 0
 
+		11:
+			# 日文 ja 等待渲染管線重繪後截圖
+			if _wait < 6:
+				return false
 			var h_ja := _capture_save(_out_dir.path_join("proof_05_ja_wardrobe_btn_go_inventory.png"))
 			if not h_ja.is_empty():
 				_proof_hashes["proof_05_ja_wardrobe_btn_go_inventory.png"] = h_ja
-
-			_step = 9
+			print("  ok 截圖已儲存: proof_05_ja_wardrobe_btn_go_inventory.png")
+			_step = 12
 			_wait = 0
 
-		9:
-			# 韓文 ko
-			if _wait < 6:
+		12:
+			# 韓文 ko 切換與文字檢驗
+			if _wait < 4:
 				return false
 			print("\n=== 7. 測試六語系即時切換：ko ===")
 			_switch_locale("ko")
@@ -367,17 +385,23 @@ func _process(_delta: float) -> bool:
 				return _fail("[ko] 按鈕文字不符，期望: '%s'，實測: '%s'" % [EXPECTED_BTN_TEXTS["ko"], btn_ko.text])
 			_check_no_emoji(btn_ko.text, "BtnGoInventory_ko")
 			print("  ok [ko] 語系按鈕文字驗證正確: '%s'" % btn_ko.text)
+			_step = 13
+			_wait = 0
 
+		13:
+			# 韓文 ko 等待渲染管線重繪後截圖
+			if _wait < 6:
+				return false
 			var h_ko := _capture_save(_out_dir.path_join("proof_06_ko_wardrobe_btn_go_inventory.png"))
 			if not h_ko.is_empty():
 				_proof_hashes["proof_06_ko_wardrobe_btn_go_inventory.png"] = h_ko
-
-			_step = 10
+			print("  ok 截圖已儲存: proof_06_ko_wardrobe_btn_go_inventory.png")
+			_step = 14
 			_wait = 0
 
-		10:
-			# 西班牙文 es
-			if _wait < 6:
+		14:
+			# 西班牙文 es 切換與文字檢驗
+			if _wait < 4:
 				return false
 			print("\n=== 8. 測試六語系即時切換：es ===")
 			_switch_locale("es")
@@ -388,15 +412,21 @@ func _process(_delta: float) -> bool:
 				return _fail("[es] 按鈕文字不符，期望: '%s'，實測: '%s'" % [EXPECTED_BTN_TEXTS["es"], btn_es.text])
 			_check_no_emoji(btn_es.text, "BtnGoInventory_es")
 			print("  ok [es] 語系按鈕文字驗證正確: '%s'" % btn_es.text)
+			_step = 15
+			_wait = 0
 
+		15:
+			# 西班牙文 es 等待渲染管線重繪後截圖
+			if _wait < 6:
+				return false
 			var h_es := _capture_save(_out_dir.path_join("proof_07_es_wardrobe_btn_go_inventory.png"))
 			if not h_es.is_empty():
 				_proof_hashes["proof_07_es_wardrobe_btn_go_inventory.png"] = h_es
-
-			_step = 11
+			print("  ok 截圖已儲存: proof_07_es_wardrobe_btn_go_inventory.png")
+			_step = 16
 			_wait = 0
 
-		11:
+		16:
 			if _wait < 4:
 				return false
 			_write_checklist()
@@ -410,6 +440,8 @@ func _process(_delta: float) -> bool:
 
 
 func _write_checklist() -> void:
+	if _proof_hashes.is_empty():
+		return
 	var path := _out_dir.path_join("CHECKLIST.md")
 	var f := FileAccess.open(path, FileAccess.WRITE)
 	if f == null:
