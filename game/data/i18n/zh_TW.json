@@ -2438,5 +2438,7 @@
   "wardrobe.go_inventory": "前往背包",
   "inventory.btn_go_wardrobe": "前往衣櫥",
   "inventory.btn_go_title_wall": "前往稱號",
-  "gem_workshop.btn_go_shop": "前往商城"
+  "gem_workshop.btn_go_shop": "前往商城",
+  "forge.btn_go_shop": "前往商城",
+  "vault.btn_go_shop": "前往商城"
 }

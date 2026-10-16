@@ -2677,12 +2677,21 @@ func open_clockwork_vault() -> Control:
 		dlg.go_windup.connect(func():
 			open_windup_daily()
 		)
+	if dlg.has_signal("shop_requested"):
+		dlg.shop_requested.connect(func():
+			open_shop()
+		)
+	if dlg.has_signal("go_shop"):
+		dlg.go_shop.connect(func():
+			open_shop()
+		)
 	dlg.tree_exited.connect(func():
 		var has_forge: bool = get_node_or_null("ForgeDialog") != null
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
 		var has_power: bool = get_node_or_null("PowerStatDialog") != null
 		var has_windup: bool = get_node_or_null("WindupDailyDialog") != null
-		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv and not has_power and not has_windup:
+		var has_shop: bool = get_node_or_null("ShopDialog") != null
+		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv and not has_power and not has_windup and not has_shop:
 			_equip_schematic.visible = true
 		refresh_hud()
 		refresh_vault_display()
@@ -6892,6 +6901,14 @@ func open_forge(target_weapon: Variant = null) -> Control:
 	if dlg.has_signal("power_stat_requested"):
 		dlg.connect("power_stat_requested", func():
 			open_power_stat_dialog()
+		)
+	if dlg.has_signal("shop_requested"):
+		dlg.connect("shop_requested", func():
+			open_shop()
+		)
+	elif dlg.has_signal("go_shop"):
+		dlg.connect("go_shop", func():
+			open_shop()
 		)
 	add_child(dlg)
 	if target_weapon != null and dlg.has_method("select_target_equipment"):

@@ -6860,8 +6860,8 @@
    "id": "forge-shop-shortcut",
    "cat": "遊戲",
    "title": "ForgeDialog 天宮鐵匠底欄新增『前往商城』快捷果凍按鈕連動 ShopDialog",
-   "status": "草稿",
-   "note": "建立任務 (t_5d5f07fd)",
+   "status": "測試中",
+   "note": "完成開發、測試全綠並產出存證截圖 (t_5d5f07fd)",
    "keys": [
     "ForgeDia"
    ]
@@ -6870,8 +6870,8 @@
    "id": "skill-shop-shortcut",
    "cat": "遊戲",
    "title": "SkillDialog 心法招式底欄新增『前往商城』快捷果凍按鈕連動 ShopDialog",
-   "status": "草稿",
-   "note": "建立任務 (t_e424b86c)",
+   "status": "測試中",
+   "note": "sideqa審查通過，等待與後續快捷分支批次合進main",
    "keys": [
     "SkillDia"
    ]
@@ -6904,6 +6904,26 @@
    "note": "待開發每日委託前往商城快捷按鈕",
    "keys": [
     "WindupDa"
+   ]
+  },
+  {
+   "id": "shop-skill-shortcut",
+   "cat": "遊戲",
+   "title": "ShopDialog 商城彈窗底欄新增『前往心法』快捷果凍按鈕連動 SkillDialog",
+   "status": "開發中",
+   "note": "開始開發 ShopDialog 前往心法快捷按鈕 (t_4116f7d6)",
+   "keys": [
+    "ShopDial"
+   ]
+  },
+  {
+   "id": "vault-shop-shortcut",
+   "cat": "遊戲",
+   "title": "ClockworkVaultDialog 發條儲能庫放置收益彈窗新增『前往商城』快捷果凍按鈕連動 ShopDialog",
+   "status": "測試中",
+   "note": "完成開發、測試全綠並產出存證截圖 (t_fb74722c)",
+   "keys": [
+    "Clockwor"
    ]
   }
  ]
