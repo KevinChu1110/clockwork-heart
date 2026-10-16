@@ -7012,6 +7012,14 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 		dlg.connect("power_stat_requested", func():
 			open_power_stat_dialog()
 		)
+	if dlg.has_signal("shop_requested"):
+		dlg.connect("shop_requested", func():
+			open_shop()
+		)
+	elif dlg.has_signal("go_shop"):
+		dlg.connect("go_shop", func():
+			open_shop()
+		)
 	add_child(dlg)
 	if target_tab != 0 and dlg.has_method("set_tab"):
 		dlg.call("set_tab", target_tab)
@@ -7353,6 +7361,14 @@ func open_shop() -> Control:
 	if dlg.has_signal("go_title_wall"):
 		dlg.go_title_wall.connect(func():
 			open_title_wall_dialog()
+		)
+	if dlg.has_signal("workshop_requested"):
+		dlg.workshop_requested.connect(func():
+			open_gem_workshop()
+		)
+	if dlg.has_signal("go_workshop"):
+		dlg.go_workshop.connect(func():
+			open_gem_workshop()
 		)
 	dlg.tree_exited.connect(func():
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
