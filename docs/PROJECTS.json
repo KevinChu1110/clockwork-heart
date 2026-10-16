@@ -6875,6 +6875,16 @@
    "keys": [
     "SkillDia"
    ]
+  },
+  {
+   "id": "merge-shop-shortcuts-batch",
+   "cat": "平台",
+   "title": "把已過審的鐵匠/心法/儲能庫前往商城與商城心法雙向快捷四分支合進主線",
+   "status": "草稿",
+   "note": "待批次合併入 main 並全面回歸驗收",
+   "keys": [
+    "把已過審的鐵匠/"
+   ]
   }
  ]
 }
