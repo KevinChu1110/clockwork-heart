@@ -4318,5 +4318,6 @@
   "vault.btn_go_windup": "日課へ",
   "title_wall.btn_go_inventory": "バッグへ",
   "wardrobe.btn_go_inventory": "バッグへ",
-  "wardrobe.go_inventory": "バッグへ"
+  "wardrobe.go_inventory": "バッグへ",
+  "inventory.btn_go_wardrobe": "衣装部屋へ"
 }

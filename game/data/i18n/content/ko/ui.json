@@ -3958,5 +3958,6 @@
   "vault.btn_go_windup": "일일 의뢰로 이동",
   "title_wall.btn_go_inventory": "가방으로 이동",
   "wardrobe.btn_go_inventory": "가방으로",
-  "wardrobe.go_inventory": "가방으로"
+  "wardrobe.go_inventory": "가방으로",
+  "inventory.btn_go_wardrobe": "옷장으로"
 }

@@ -27,6 +27,8 @@ signal forge_requested()
 signal workshop_requested()
 signal go_soul_hall_requested()
 signal power_stat_requested()
+signal go_wardrobe()
+signal wardrobe_requested()
 signal materials_batch_sold(gold: int, count: int, result: Dictionary)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -159,6 +161,7 @@ var _go_forge_btn: Button = null
 var _go_workshop_btn: Button = null
 var _go_soul_btn: Button = null
 var _go_power_stat_btn: Button = null
+var _go_wardrobe_btn: Button = null
 var _hotbar_capsule: PanelContainer = null
 var _hotbar_capsule_label: Label = null
 var _floating_hotbar_toast: PanelContainer = null
@@ -261,6 +264,11 @@ func _update_ui_texts() -> void:
 		if pstat_txt == "inventory.btn_go_power_stat" or pstat_txt.is_empty():
 			pstat_txt = _t("前往戰力")
 		_go_power_stat_btn.text = pstat_txt
+	if _go_wardrobe_btn and is_instance_valid(_go_wardrobe_btn):
+		var wardrobe_txt := _t("inventory.btn_go_wardrobe")
+		if wardrobe_txt == "inventory.btn_go_wardrobe" or wardrobe_txt.is_empty():
+			wardrobe_txt = _t("前往衣櫥")
+		_go_wardrobe_btn.text = wardrobe_txt
 	if _batch_sell_btn and is_instance_valid(_batch_sell_btn):
 		_batch_sell_btn.text = _t("一鍵出售素材")
 	if _sort_btn and is_instance_valid(_sort_btn):
@@ -676,6 +684,26 @@ func _build() -> void:
 	_go_power_stat_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_go_power_stat_btn.pressed.connect(_on_go_power_stat_pressed)
 	sort_box.add_child(_go_power_stat_btn)
+
+	## 快捷按鈕：前往衣櫥 (BtnGoWardrobe)（尺寸 120x48px，熱區>=48px，暖橘果凍厚底 5px，圓角 18px，深藍紫描邊與文字，零系統 Emoji）
+	_go_wardrobe_btn = Button.new()
+	_go_wardrobe_btn.name = "BtnGoWardrobe"
+	var wardrobe_txt := _t("inventory.btn_go_wardrobe")
+	if wardrobe_txt == "inventory.btn_go_wardrobe" or wardrobe_txt.is_empty():
+		wardrobe_txt = _t("前往衣櫥")
+	_go_wardrobe_btn.text = wardrobe_txt
+	_go_wardrobe_btn.custom_minimum_size = Vector2(120, 48)
+	_go_wardrobe_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+	_go_wardrobe_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB236"), COLOR_BORDER, 5, 18))
+	_go_wardrobe_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08805"), COLOR_BORDER, 2, 18))
+	_go_wardrobe_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_go_wardrobe_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_go_wardrobe_btn.add_theme_font_size_override("font_size", 16)
+	if _cached_font:
+		_go_wardrobe_btn.add_theme_font_override("font", _cached_font)
+	_go_wardrobe_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_go_wardrobe_btn.pressed.connect(_on_go_wardrobe_pressed)
+	sort_box.add_child(_go_wardrobe_btn)
 
 	## 右側：道具明細與操作按鈕區
 	var right := VBoxContainer.new()
@@ -3206,6 +3234,51 @@ func get_go_power_stat_button() -> Button:
 
 func get_bag_go_power_stat_button() -> Button:
 	return _go_power_stat_btn
+
+
+func _on_go_wardrobe_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	go_wardrobe.emit()
+	wardrobe_requested.emit()
+	open_wardrobe_dialog()
+
+
+func open_wardrobe_dialog() -> void:
+	close()
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		return
+	var root_node := (loop as SceneTree).root
+	var ml: Node = root_node.get_node_or_null("MobileLobby")
+	if ml and ml.has_method("open_wardrobe"):
+		ml.call("open_wardrobe")
+		return
+	elif ml and ml.has_method("open_wardrobe_dialog"):
+		ml.call("open_wardrobe_dialog")
+		return
+	var p := get_parent()
+	if p and p.has_method("open_wardrobe"):
+		p.call("open_wardrobe")
+		return
+	elif p and p.has_method("open_wardrobe_dialog"):
+		p.call("open_wardrobe_dialog")
+		return
+
+
+func get_go_wardrobe_button() -> Button:
+	return _go_wardrobe_btn
+
+
+func get_bag_go_wardrobe_button() -> Button:
+	return _go_wardrobe_btn
+
+
+func get_wardrobe_button() -> Button:
+	return _go_wardrobe_btn
 
 
 # ── 一鍵出售素材支援 (Batch Sell Materials) ──

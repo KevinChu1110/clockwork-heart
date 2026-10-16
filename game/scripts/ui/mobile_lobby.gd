@@ -6767,6 +6767,10 @@ func _show_toast(msg: String) -> void:
 
 
 ## 開啟換裝衣櫥彈窗 (非開局選角，是隨時可重複開合的衣櫥)
+func open_wardrobe_dialog() -> Control:
+	return open_wardrobe()
+
+
 func open_wardrobe() -> Control:
 	var existing = get_node_or_null("WardrobeDialog")
 	if existing != null:
@@ -6948,6 +6952,14 @@ func open_maple_inventory(initial_category: String = "") -> Control:
 	if inv.has_signal("power_stat_requested"):
 		inv.connect("power_stat_requested", func():
 			open_power_stat_dialog()
+		)
+	if inv.has_signal("go_wardrobe"):
+		inv.connect("go_wardrobe", func():
+			open_wardrobe()
+		)
+	if inv.has_signal("wardrobe_requested"):
+		inv.connect("wardrobe_requested", func():
+			open_wardrobe()
 		)
 	add_child(inv)
 	if not initial_category.is_empty() and inv.has_method("set_category"):

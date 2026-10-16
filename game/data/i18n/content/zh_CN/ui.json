@@ -3961,5 +3961,6 @@
   "vault.btn_go_windup": "前往委托",
   "title_wall.btn_go_inventory": "前往背包",
   "wardrobe.btn_go_inventory": "前往背包",
-  "wardrobe.go_inventory": "前往背包"
+  "wardrobe.go_inventory": "前往背包",
+  "inventory.btn_go_wardrobe": "前往衣橱"
 }
