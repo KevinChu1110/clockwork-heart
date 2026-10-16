@@ -6813,6 +6813,15 @@ func open_wardrobe() -> Control:
 			open_title_wall_dialog()
 		)
 
+	if dlg.has_signal("go_inventory"):
+		dlg.connect("go_inventory", func():
+			open_maple_inventory()
+		)
+	elif dlg.has_signal("inventory_requested"):
+		dlg.connect("inventory_requested", func():
+			open_maple_inventory()
+		)
+
 	# 開啟衣櫥時隱藏底層角色預覽，避免高亮剪影穿透全螢幕半透明遮罩 (review.md / 視覺品質標準)
 	if _char_prev:
 		_char_prev.visible = false

@@ -6780,10 +6780,50 @@
    "id": "wardrobe-inventory-shortcut",
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗底欄新增『前往背包』快捷果凍按鈕連動探索背包",
-   "status": "開發中",
-   "note": "開始在 WardrobeDialog 底欄新增前往背包快捷按鈕",
+   "status": "測試中",
+   "note": "完成 WardrobeDialog 前往背包果凍按鈕與連動 (t_a1e49461)",
    "keys": [
     "Wardrobe"
+   ]
+  },
+  {
+   "id": "inventory-wardrobe-shortcut",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包底欄新增前往衣櫥快捷按鈕連動 WardrobeDialog",
+   "status": "測試中",
+   "note": "完成 MapleInventory 前往衣櫥快捷按鈕與連動 (t_edd1109c)",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-shop-shortcut",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包底欄新增前往商城快捷按鈕連動 ShopDialog",
+   "status": "開發中",
+   "note": "開始開發 MapleInventory 前往商城快捷按鈕",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "inventory-title-wall-shortcut",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包底欄新增前往稱號快捷按鈕連動 TitleWallDialog",
+   "status": "開發中",
+   "note": "開始開發 MapleInventory 前往稱號快捷按鈕",
+   "keys": [
+    "MapleInv"
+   ]
+  },
+  {
+   "id": "merge-wardrobe-inventory",
+   "cat": "平台",
+   "title": "把已過審的衣櫥前往背包與背包前往衣櫥雙分支合進主線",
+   "status": "開發中",
+   "note": "合併已過審的衣櫥前往背包與背包前往衣櫥雙分支",
+   "keys": [
+    "把已過審的衣櫥前"
    ]
   }
  ]

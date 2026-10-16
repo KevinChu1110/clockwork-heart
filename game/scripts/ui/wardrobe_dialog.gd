@@ -19,6 +19,8 @@ signal closed()
 signal power_stat_requested()
 signal shop_requested()
 signal title_wall_requested()
+signal go_inventory()
+signal inventory_requested()
 
 @export var creation_mode: bool = false
 
@@ -152,6 +154,7 @@ var _btn_random: Button
 var _btn_go_power_stat: Button
 var _btn_go_shop: Button
 var _btn_go_title_wall: Button
+var _btn_go_inventory: Button
 var _stage_header_label: Label = null
 
 var _breathe_tween: Tween = null
@@ -728,6 +731,28 @@ func _build_ui() -> void:
 	_btn_go_title_wall.add_theme_stylebox_override("pressed", twall_h)
 	_btn_go_title_wall.pressed.connect(_on_go_title_wall_pressed)
 	actions_hbox.add_child(_btn_go_title_wall)
+
+	# 前往背包 果凍按鈕 (BtnGoInventory)
+	_btn_go_inventory = Button.new()
+	_btn_go_inventory.name = "BtnGoInventory"
+	var inv_txt := _t("wardrobe.btn_go_inventory")
+	if inv_txt == "wardrobe.btn_go_inventory" or inv_txt.is_empty():
+		inv_txt = _t("wardrobe.go_inventory")
+	if inv_txt == "wardrobe.go_inventory" or inv_txt.is_empty():
+		inv_txt = _t("前往背包")
+	_btn_go_inventory.text = inv_txt
+	_btn_go_inventory.custom_minimum_size = Vector2(105, BTN_SIZE)
+	_btn_go_inventory.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_inventory.add_theme_font_size_override("font_size", 16)
+	_btn_go_inventory.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_go_inventory.add_theme_font_override("font", _cached_font)
+	_btn_go_inventory.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18, 2))
+	var inv_h := _create_button_style(Color("#FFB338"), COLOR_BORDER, 3, 18, 2)
+	_btn_go_inventory.add_theme_stylebox_override("hover", inv_h)
+	_btn_go_inventory.add_theme_stylebox_override("pressed", inv_h)
+	_btn_go_inventory.pressed.connect(_on_go_inventory_pressed)
+	actions_hbox.add_child(_btn_go_inventory)
 
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
@@ -1866,6 +1891,13 @@ func _update_ui_texts() -> void:
 		if twall_txt == "wardrobe.go_title_wall" or twall_txt.is_empty():
 			twall_txt = _t("前往稱號")
 		_btn_go_title_wall.text = twall_txt
+	if _btn_go_inventory:
+		var inv_txt := _t("wardrobe.btn_go_inventory")
+		if inv_txt == "wardrobe.btn_go_inventory" or inv_txt.is_empty():
+			inv_txt = _t("wardrobe.go_inventory")
+		if inv_txt == "wardrobe.go_inventory" or inv_txt.is_empty():
+			inv_txt = _t("前往背包")
+		_btn_go_inventory.text = inv_txt
 	if _btn_confirm:
 		_btn_confirm.text = _t("確認換裝 · 套用新外觀")
 
@@ -2007,6 +2039,15 @@ func get_title_wall_button() -> Button:
 	return _btn_go_title_wall
 
 
+## 取得前往背包快捷按鈕
+func get_go_inventory_button() -> Button:
+	return _btn_go_inventory
+
+
+func get_inventory_button() -> Button:
+	return _btn_go_inventory
+
+
 func _on_go_power_stat_pressed() -> void:
 	var am: Node = null
 	if Engine.get_main_loop() is SceneTree:
@@ -2069,6 +2110,29 @@ func _on_go_title_wall_pressed() -> void:
 	if p and p.has_method("open_title_wall_dialog"):
 		if title_wall_requested.get_connections().is_empty():
 			p.call("open_title_wall_dialog")
+	if not is_queued_for_deletion():
+		close()
+
+
+func _on_go_inventory_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	go_inventory.emit()
+	inventory_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_maple_inventory"):
+			if go_inventory.get_connections().is_empty() and inventory_requested.get_connections().is_empty():
+				ml.call("open_maple_inventory")
+	var p := get_parent()
+	if p and p.has_method("open_maple_inventory"):
+		if go_inventory.get_connections().is_empty() and inventory_requested.get_connections().is_empty():
+			p.call("open_maple_inventory")
 	if not is_queued_for_deletion():
 		close()
 
