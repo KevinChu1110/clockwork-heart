@@ -6840,8 +6840,8 @@
    "id": "workshop-shop-shortcut",
    "cat": "遊戲",
    "title": "GemWorkshopDialog 手藝工坊底欄新增前往商城快捷果凍按鈕連動 ShopDialog",
-   "status": "測試中",
-   "note": "完成 GemWorkshopDialog 前往商城快捷按鈕與 ShopDialog 連動，測試全綠並產出 8 張實機存證截圖",
+   "status": "已上線",
+   "note": "四分支合進 main 主線並通過全套回歸驗收 (t_aa791e10)",
    "keys": [
     "GemWorks"
    ]
