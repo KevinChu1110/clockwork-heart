@@ -6885,6 +6885,16 @@
    "keys": [
     "ShopDial"
    ]
+  },
+  {
+   "id": "vault-shop-shortcut",
+   "cat": "遊戲",
+   "title": "ClockworkVaultDialog 發條儲能庫放置收益彈窗新增『前往商城』快捷果凍按鈕連動 ShopDialog",
+   "status": "草稿",
+   "note": "建立任務 (t_fb74722c)",
+   "keys": [
+    "Clockwor"
+   ]
   }
  ]
 }
