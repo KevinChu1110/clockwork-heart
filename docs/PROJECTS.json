@@ -6815,6 +6815,16 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "merge-wardrobe-inventory",
+   "cat": "平台",
+   "title": "把已過審的衣櫥前往背包與背包前往衣櫥雙分支合進主線",
+   "status": "草稿",
+   "note": "雙分支合進 main 並全面回歸驗收",
+   "keys": [
+    "把已過審的衣櫥前"
+   ]
   }
  ]
 }
