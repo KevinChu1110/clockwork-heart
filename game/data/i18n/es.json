@@ -4328,5 +4328,8 @@
   "forge.btn_go_shop": "A Tienda",
   "vault.btn_go_shop": "A Tienda",
   "shop.btn_go_skill": "A Habilidades",
-  "shop.btn_go_vault": "Ir a Bóveda"
+  "shop.btn_go_vault": "Ir a Bóveda",
+  "windup_daily.btn_go_shop": "A Tienda",
+  "shop.btn_go_daily": "Ir a Encargos",
+  "shop.btn_go_windup": "Ir a Encargos"
 }

@@ -130,6 +130,39 @@ func _initialize() -> void:
 		else:
 			print("  ok BtnGoVault 點擊觸發 go_vault 與 vault_requested 訊號成功")
 
+	# 2.7. 前往委託快捷果凍按鈕檢查 (BtnGoWindupDaily, >=50px, 多巴胺暖橘色盤 #FFA010, 零 Emoji)
+	var windup_btn: Button = shop.get_go_windup_daily_button()
+	if windup_btn == null:
+		windup_btn = shop.find_child("BtnGoWindupDaily", true, false) as Button
+	if windup_btn == null:
+		_fail("ShopDialog 缺少 BtnGoWindupDaily 前往委託按鈕")
+	else:
+		if windup_btn.name != "BtnGoWindupDaily":
+			_fail("前往委託按鈕名稱不符: %s" % windup_btn.name)
+		if windup_btn.custom_minimum_size.y < 50:
+			_fail("BtnGoWindupDaily 高度不足 50px: %f" % windup_btn.custom_minimum_size.y)
+		var sbf := windup_btn.get_theme_stylebox("normal") as StyleBoxFlat
+		if sbf == null:
+			_fail("BtnGoWindupDaily 缺少 normal StyleBoxFlat")
+		else:
+			if sbf.bg_color.to_html(false) != Color("#FFA010").to_html(false):
+				_fail("BtnGoWindupDaily 顏色不符暖橘色盤 #FFA010，實際為: %s" % sbf.bg_color.to_html(false))
+			if sbf.border_width_bottom != 5:
+				_fail("BtnGoWindupDaily 果凍厚底不足 5px，實際為: %d" % sbf.border_width_bottom)
+			if sbf.corner_radius_top_left != 18:
+				_fail("BtnGoWindupDaily 圓角不符 18px，實際為: %d" % sbf.corner_radius_top_left)
+			print("  ok BtnGoWindupDaily 按鈕熱區與多巴胺暖橘果凍厚底達標 (50px, 底厚 5px, 圓角 18px)")
+
+		# 訊號觸發檢查
+		var sig_fired_windup := {"go_windup_daily": false, "windup_daily_requested": false}
+		shop.go_windup_daily.connect(func(): sig_fired_windup["go_windup_daily"] = true)
+		shop.windup_daily_requested.connect(func(): sig_fired_windup["windup_daily_requested"] = true)
+		windup_btn.pressed.emit()
+		if not sig_fired_windup["go_windup_daily"] or not sig_fired_windup["windup_daily_requested"]:
+			_fail("BtnGoWindupDaily 點擊後未正確發射 go_windup_daily 或 windup_daily_requested 訊號")
+		else:
+			print("  ok BtnGoWindupDaily 點擊觸發 go_windup_daily 與 windup_daily_requested 訊號成功")
+
 	# 3. 檢查 3 個 IAP 佔位品項卡
 	var item_ids := ["energy_pack", "soul_pack", "forge_pack"]
 	for item_id in item_ids:
@@ -224,7 +257,8 @@ func _initialize() -> void:
 				"remove_btn": "一次性去廣告（Mock買斷）",
 				"todo_note": "TODO: 定價待定",
 				"skill_btn": "前往心法",
-				"vault_btn": "前往儲能庫"
+				"vault_btn": "前往儲能庫",
+				"daily_btn": "前往委託"
 			},
 			"zh_CN": {
 				"title": "发条补给 · 道具商城",
@@ -235,7 +269,8 @@ func _initialize() -> void:
 				"remove_btn": "一次性去广告（Mock买断）",
 				"todo_note": "TODO: 定价待定",
 				"skill_btn": "前往心法",
-				"vault_btn": "前往储能库"
+				"vault_btn": "前往储能库",
+				"daily_btn": "前往委托"
 			},
 			"en": {
 				"title": "Clockwork Supply · Item Shop",
@@ -246,7 +281,8 @@ func _initialize() -> void:
 				"remove_btn": "Remove Ads (Mock Purchase)",
 				"todo_note": "TODO: Pricing TBD",
 				"skill_btn": "To Skills",
-				"vault_btn": "To Vault"
+				"vault_btn": "To Vault",
+				"daily_btn": "To Daily"
 			},
 			"ja": {
 				"title": "ぜんまい補給 · アイテムショップ",
@@ -257,7 +293,8 @@ func _initialize() -> void:
 				"remove_btn": "広告削除（モック購入）",
 				"todo_note": "TODO: 価格未定",
 				"skill_btn": "心法へ",
-				"vault_btn": "貯蔵庫へ"
+				"vault_btn": "貯蔵庫へ",
+				"daily_btn": "日課へ"
 			},
 			"ko": {
 				"title": "태엽 보급 · 아이템 상점",
@@ -268,7 +305,8 @@ func _initialize() -> void:
 				"remove_btn": "광고 제거 (목업 구매)",
 				"todo_note": "TODO: 가격 미정",
 				"skill_btn": "심법으로",
-				"vault_btn": "저장고로 이동"
+				"vault_btn": "저장고로 이동",
+				"daily_btn": "일일 의뢰로 이동"
 			},
 			"es": {
 				"title": "Suministros de cuerda · Tienda de objetos",
@@ -279,7 +317,8 @@ func _initialize() -> void:
 				"remove_btn": "Eliminar anuncios (Compra simulada)",
 				"todo_note": "TODO: Precio por determinar",
 				"skill_btn": "A Habilidades",
-				"vault_btn": "Ir a Bóveda"
+				"vault_btn": "Ir a Bóveda",
+				"daily_btn": "Ir a Encargos"
 			}
 		}
 
@@ -324,6 +363,10 @@ func _initialize() -> void:
 			if v_btn == null or v_btn.text != exp["vault_btn"]:
 				_fail("[%s] 前往儲能庫按鈕翻譯不符，預期: %s，實際: %s" % [code, exp["vault_btn"], v_btn.text if v_btn else "null"])
 
+			var w_btn: Button = lang_shop.get_go_windup_daily_button()
+			if w_btn == null or w_btn.text != exp["daily_btn"]:
+				_fail("[%s] 前往委託按鈕翻譯不符，預期: %s，實際: %s" % [code, exp["daily_btn"], w_btn.text if w_btn else "null"])
+
 			_check_no_emoji_in_node(lang_shop)
 			print("  ok [%s] 語系商城彈窗標題/按鈕/品項 i18n 驗證通過" % code)
 			lang_shop.queue_free()
@@ -343,6 +386,7 @@ func _initialize() -> void:
 		var dyn_f_desc: Label = dynamic_shop.find_child("ItemDescLabel_forge_pack", true, false) as Label
 		var dyn_sk_btn: Button = dynamic_shop.get_go_skill_button()
 		var dyn_v_btn: Button = dynamic_shop.get_go_vault_button()
+		var dyn_w_btn: Button = dynamic_shop.get_go_windup_daily_button()
 
 		if dyn_e_title.text != "發條能量補給箱":
 			_fail("動態切換初始狀態 energy_title 應為發條能量補給箱，實際: %s" % dyn_e_title.text)
@@ -350,6 +394,8 @@ func _initialize() -> void:
 			_fail("動態切換初始狀態 skill_btn 應為前往心法，實際: %s" % dyn_sk_btn.text)
 		if dyn_v_btn.text != "前往儲能庫":
 			_fail("動態切換初始狀態 vault_btn 應為前往儲能庫，實際: %s" % dyn_v_btn.text)
+		if dyn_w_btn.text != "前往委託":
+			_fail("動態切換初始狀態 daily_btn 應為前往委託，實際: %s" % dyn_w_btn.text)
 
 		for code in ["en", "ja", "ko", "es", "zh_CN", "zh_TW"]:
 			loc_node.call("set_locale", code)
@@ -364,6 +410,8 @@ func _initialize() -> void:
 				_fail("[動態切換 %s] skill_btn 應為 %s，實際: %s" % [code, exp["skill_btn"], dyn_sk_btn.text])
 			if dyn_v_btn.text != exp["vault_btn"]:
 				_fail("[動態切換 %s] vault_btn 應為 %s，實際: %s" % [code, exp["vault_btn"], dyn_v_btn.text])
+			if dyn_w_btn.text != exp["daily_btn"]:
+				_fail("[動態切換 %s] daily_btn 應為 %s，實際: %s" % [code, exp["daily_btn"], dyn_w_btn.text])
 
 			# 驗證說明文字不是空的且已隨語系變換
 			if dyn_e_desc.text.is_empty() or dyn_s_desc.text.is_empty() or dyn_f_desc.text.is_empty():

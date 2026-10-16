@@ -6927,11 +6927,31 @@
    ]
   },
   {
+   "id": "energy-lack-vault-shortcut",
+   "cat": "遊戲",
+   "title": "EnergyLackDialog 能量不足彈窗新增前往儲能庫快捷按鈕連動 ClockworkVaultDialog",
+   "status": "草稿",
+   "note": "待開發",
+   "keys": [
+    "EnergyLa"
+   ]
+  },
+  {
+   "id": "merge-shop-vault-windup-shortcuts",
+   "cat": "平台",
+   "title": "把已過審的商城前往儲能庫、委託前往商城與商城前往委託三分支合進主線",
+   "status": "草稿",
+   "note": "待三分支全數過審後整合",
+   "keys": [
+    "把已過審的商城前"
+   ]
+  },
+  {
    "id": "shop-windup-shortcut",
    "cat": "遊戲",
    "title": "ShopDialog 商城彈窗底欄新增『前往委託』快捷果凍按鈕連動 WindupDailyDialog",
-   "status": "草稿",
-   "note": "閉環商城與每日委託雙向快捷",
+   "status": "測試中",
+   "note": "完成 ShopDialog 前往委託快捷按鈕與連動 WindupDailyDialog 雙向閉環開發及全套驗證",
    "keys": [
     "ShopDial"
    ]

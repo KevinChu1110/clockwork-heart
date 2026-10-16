@@ -29,6 +29,12 @@ signal go_skill()
 signal skill_requested()
 signal go_vault()
 signal vault_requested()
+signal go_windup_daily()
+signal windup_daily_requested()
+signal go_daily()
+signal daily_requested()
+signal go_windup()
+signal windup_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -108,6 +114,17 @@ static func _t(s: String) -> String:
 		if str(v) != "":
 			return str(v)
 		return ContentLoc.text("ui", "前往儲能庫")
+	if s == "shop.btn_go_daily" or s == "shop.btn_go_windup" or s == "前往委託":
+		var lc := ContentLoc.locale()
+		if lc == "zh_TW":
+			return "前往委託"
+		var v = ContentLoc._table("ui", lc).get("shop.btn_go_daily", "")
+		if str(v) != "":
+			return str(v)
+		v = ContentLoc._table("ui", lc).get("shop.btn_go_windup", "")
+		if str(v) != "":
+			return str(v)
+		return ContentLoc.text("ui", "前往委託")
 	return ContentLoc.text("ui", s)
 
 static func tr_ui(s: String) -> String:
@@ -156,6 +173,7 @@ var _btn_go_title_wall: Button
 var _btn_go_workshop: Button
 var _btn_go_skill: Button
 var _btn_go_vault: Button
+var _btn_go_windup_daily: Button
 var _foot_scroll: ScrollContainer
 var _cached_font: Font = null
 
@@ -301,6 +319,8 @@ func _apply_locale_texts() -> void:
 		_btn_go_skill.text = _t("shop.btn_go_skill")
 	if _btn_go_vault and is_instance_valid(_btn_go_vault):
 		_btn_go_vault.text = _t("shop.btn_go_vault")
+	if _btn_go_windup_daily and is_instance_valid(_btn_go_windup_daily):
+		_btn_go_windup_daily.text = _t("shop.btn_go_daily")
 
 
 func _build_ui() -> void:
@@ -778,6 +798,41 @@ func _build_ui() -> void:
 	_btn_go_vault.pressed.connect(_on_go_vault_clicked)
 	foot_h.add_child(_btn_go_vault)
 
+	# 10. 前往委託 (暖橘)
+	_btn_go_windup_daily = Button.new()
+	_btn_go_windup_daily.name = "BtnGoWindupDaily"
+	_btn_go_windup_daily.text = _t("shop.btn_go_daily")
+	_btn_go_windup_daily.custom_minimum_size = Vector2(150, 50)
+	_btn_go_windup_daily.focus_mode = Control.FOCUS_NONE
+	_btn_go_windup_daily.add_theme_font_size_override("font_size", 16)
+	_btn_go_windup_daily.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_windup_daily.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_windup_daily.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_btn_go_windup_daily.add_theme_font_override("font", _cached_font)
+
+	var windup_sb := StyleBoxFlat.new()
+	windup_sb.bg_color = COLOR_ORANGE
+	windup_sb.border_color = COLOR_BORDER
+	windup_sb.set_border_width_all(2)
+	windup_sb.border_width_bottom = 5
+	windup_sb.set_corner_radius_all(18)
+	var windup_sb_h := windup_sb.duplicate() as StyleBoxFlat
+	windup_sb_h.bg_color = Color("#FFB236")
+	var windup_sb_p := windup_sb.duplicate() as StyleBoxFlat
+	windup_sb_p.border_width_bottom = 2
+	_btn_go_windup_daily.add_theme_stylebox_override("normal", windup_sb)
+	_btn_go_windup_daily.add_theme_stylebox_override("hover", windup_sb_h)
+	_btn_go_windup_daily.add_theme_stylebox_override("pressed", windup_sb_p)
+	_btn_go_windup_daily.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_windup_daily.pressed.connect(_on_go_windup_daily_clicked)
+	foot_h.add_child(_btn_go_windup_daily)
+
+	var foot_spacer := Control.new()
+	foot_spacer.name = "FooterEndSpacer"
+	foot_spacer.custom_minimum_size = Vector2(30, 50)
+	foot_h.add_child(foot_spacer)
+
 
 func _build_service_card(title: String, desc: String, card_name: String) -> PanelContainer:
 	var card := PanelContainer.new()
@@ -1113,6 +1168,30 @@ func get_vault_button() -> Button:
 	return _btn_go_vault
 
 
+func get_go_windup_daily_button() -> Button:
+	return _btn_go_windup_daily
+
+
+func get_windup_daily_button() -> Button:
+	return _btn_go_windup_daily
+
+
+func get_go_daily_button() -> Button:
+	return _btn_go_windup_daily
+
+
+func get_daily_button() -> Button:
+	return _btn_go_windup_daily
+
+
+func get_go_windup_button() -> Button:
+	return _btn_go_windup_daily
+
+
+func get_windup_button() -> Button:
+	return _btn_go_windup_daily
+
+
 func get_footer_scroll() -> ScrollContainer:
 	return _foot_scroll
 
@@ -1152,6 +1231,43 @@ func _on_go_vault_clicked() -> void:
 					var vault_dlg = ml.call(method_name)
 					if vault_dlg and is_instance_valid(vault_dlg) and vault_dlg.has_signal("closed") and ml.has_method("open_shop"):
 						vault_dlg.closed.connect(func():
+							if is_instance_valid(ml) and ml.is_inside_tree():
+								var has_modal = ml.get_node_or_null("ShopDialog") != null or ml.get_node_or_null("BattleView") != null
+								if not has_modal:
+									ml.call("open_shop")
+						, CONNECT_ONE_SHOT)
+	_on_close()
+
+
+func _on_go_windup_daily_clicked() -> void:
+	go_windup_daily.emit()
+	windup_daily_requested.emit()
+	go_daily.emit()
+	daily_requested.emit()
+	go_windup.emit()
+	windup_requested.emit()
+	var p := get_parent()
+	if p != null and (p.has_method("open_windup_daily") or p.has_method("open_windup_daily_dialog")):
+		if windup_requested.get_connections().is_empty() and windup_daily_requested.get_connections().is_empty():
+			var method_name: String = "open_windup_daily" if p.has_method("open_windup_daily") else "open_windup_daily_dialog"
+			var windup_dlg = p.call(method_name)
+			if windup_dlg and is_instance_valid(windup_dlg) and windup_dlg.has_signal("closed") and p.has_method("open_shop"):
+				windup_dlg.closed.connect(func():
+					if is_instance_valid(p) and p.is_inside_tree():
+						var has_modal = p.get_node_or_null("ShopDialog") != null or p.get_node_or_null("BattleView") != null
+						if not has_modal:
+							p.call("open_shop")
+				, CONNECT_ONE_SHOT)
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and (ml.has_method("open_windup_daily") or ml.has_method("open_windup_daily_dialog")):
+				if windup_requested.get_connections().is_empty() and windup_daily_requested.get_connections().is_empty():
+					var method_name: String = "open_windup_daily" if ml.has_method("open_windup_daily") else "open_windup_daily_dialog"
+					var windup_dlg = ml.call(method_name)
+					if windup_dlg and is_instance_valid(windup_dlg) and windup_dlg.has_signal("closed") and ml.has_method("open_shop"):
+						windup_dlg.closed.connect(func():
 							if is_instance_valid(ml) and ml.is_inside_tree():
 								var has_modal = ml.get_node_or_null("ShopDialog") != null or ml.get_node_or_null("BattleView") != null
 								if not has_modal:

@@ -7200,6 +7200,10 @@ func open_windup_daily() -> Control:
 		dlg.vault_requested.connect(func():
 			open_clockwork_vault()
 		)
+	if dlg.has_signal("shop_requested"):
+		dlg.shop_requested.connect(func():
+			open_shop()
+		)
 	add_child(dlg)
 	return dlg
 
@@ -7460,6 +7464,50 @@ func open_shop() -> Control:
 			var vault_dlg = open_clockwork_vault()
 			if vault_dlg and is_instance_valid(vault_dlg) and vault_dlg.has_signal("closed"):
 				vault_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("windup_daily_requested"):
+		dlg.windup_daily_requested.connect(func():
+			var windup_dlg = open_windup_daily()
+			if windup_dlg and is_instance_valid(windup_dlg) and windup_dlg.has_signal("closed"):
+				windup_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("go_windup_daily"):
+		dlg.go_windup_daily.connect(func():
+			var windup_dlg = open_windup_daily()
+			if windup_dlg and is_instance_valid(windup_dlg) and windup_dlg.has_signal("closed"):
+				windup_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("windup_requested"):
+		dlg.windup_requested.connect(func():
+			var windup_dlg = open_windup_daily()
+			if windup_dlg and is_instance_valid(windup_dlg) and windup_dlg.has_signal("closed"):
+				windup_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("go_windup"):
+		dlg.go_windup.connect(func():
+			var windup_dlg = open_windup_daily()
+			if windup_dlg and is_instance_valid(windup_dlg) and windup_dlg.has_signal("closed"):
+				windup_dlg.closed.connect(func():
 					if is_instance_valid(self) and is_inside_tree():
 						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
 						if not has_modal:
