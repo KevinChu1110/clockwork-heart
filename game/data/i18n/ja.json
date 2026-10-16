@@ -4323,5 +4323,6 @@
   "wardrobe.go_inventory": "バッグへ",
   "inventory.btn_go_wardrobe": "衣装部屋へ",
   "inventory.btn_go_title_wall": "称号へ",
-  "gem_workshop.btn_go_shop": "ショップへ"
+  "gem_workshop.btn_go_shop": "ショップへ",
+  "forge.btn_go_shop": "ショップへ"
 }

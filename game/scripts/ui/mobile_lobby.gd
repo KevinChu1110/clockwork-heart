@@ -6893,6 +6893,14 @@ func open_forge(target_weapon: Variant = null) -> Control:
 		dlg.connect("power_stat_requested", func():
 			open_power_stat_dialog()
 		)
+	if dlg.has_signal("shop_requested"):
+		dlg.connect("shop_requested", func():
+			open_shop()
+		)
+	elif dlg.has_signal("go_shop"):
+		dlg.connect("go_shop", func():
+			open_shop()
+		)
 	add_child(dlg)
 	if target_weapon != null and dlg.has_method("select_target_equipment"):
 		dlg.call("select_target_equipment", target_weapon)

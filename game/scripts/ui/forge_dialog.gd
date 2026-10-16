@@ -15,6 +15,8 @@ signal closed()
 signal workshop_requested()
 signal dismantle_requested()
 signal power_stat_requested()
+signal shop_requested()
+signal go_shop()
 signal swap_weapon_requested(slot_idx: int)
 signal weapon_swapped(slot_idx: int, uid: String)
 
@@ -87,6 +89,7 @@ var _scrap_label: Label
 var _btn_go_dismantle: Button
 var _btn_go_workshop: Button
 var _btn_go_power_stat: Button
+var _btn_go_shop: Button
 var _btn_close: Button
 var _btn_swap_weapon: Button
 var _weapon_swap_dialog: Control = null
@@ -188,6 +191,11 @@ func _update_ui_texts() -> void:
 		if btn_txt == "forge.btn_go_power_stat" or btn_txt.is_empty():
 			btn_txt = _t("前往戰力")
 		_btn_go_power_stat.text = btn_txt
+	if _btn_go_shop and is_instance_valid(_btn_go_shop):
+		var shop_btn_txt := _t("forge.btn_go_shop")
+		if shop_btn_txt == "forge.btn_go_shop" or shop_btn_txt.is_empty():
+			shop_btn_txt = _t("前往商城")
+		_btn_go_shop.text = shop_btn_txt
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開鐵匠鋪")
 	if _btn_swap_weapon and is_instance_valid(_btn_swap_weapon):
@@ -680,7 +688,7 @@ func _build_ui() -> void:
 
 	# 動作按鈕列 (按鈕高 >= 50)
 	var act_row := HBoxContainer.new()
-	act_row.add_theme_constant_override("separation", 8)
+	act_row.add_theme_constant_override("separation", 6)
 	act_row.alignment = BoxContainer.ALIGNMENT_CENTER
 	v.add_child(act_row)
 
@@ -688,7 +696,7 @@ func _build_ui() -> void:
 	_btn_forge = Button.new()
 	_btn_forge.name = "BtnForge"
 	_btn_forge.text = ""
-	_btn_forge.custom_minimum_size = Vector2(180, 50)
+	_btn_forge.custom_minimum_size = Vector2(130, 50)
 	_btn_forge.add_theme_font_size_override("font_size", 16)
 	_btn_forge.add_theme_color_override("font_color", Color.WHITE)
 	_btn_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -706,7 +714,7 @@ func _build_ui() -> void:
 	_btn_auto_forge = Button.new()
 	_btn_auto_forge.name = "BtnAutoForge"
 	_btn_auto_forge.text = _t("一鍵鍛造")
-	_btn_auto_forge.custom_minimum_size = Vector2(120, 50)
+	_btn_auto_forge.custom_minimum_size = Vector2(105, 50)
 	_btn_auto_forge.add_theme_font_size_override("font_size", 16)
 	_btn_auto_forge.add_theme_color_override("font_color", Color.WHITE)
 	_btn_auto_forge.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -724,7 +732,7 @@ func _build_ui() -> void:
 	_btn_go_workshop = Button.new()
 	_btn_go_workshop.name = "BtnGoWorkshop"
 	_btn_go_workshop.text = _t("前往工坊")
-	_btn_go_workshop.custom_minimum_size = Vector2(120, 50)
+	_btn_go_workshop.custom_minimum_size = Vector2(105, 50)
 	_btn_go_workshop.add_theme_font_size_override("font_size", 16)
 	_btn_go_workshop.add_theme_color_override("font_color", Color.WHITE)
 	_btn_go_workshop.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -760,11 +768,34 @@ func _build_ui() -> void:
 	_btn_go_power_stat.pressed.connect(_on_go_power_stat_pressed)
 	act_row.add_child(_btn_go_power_stat)
 
+	# 快捷按鈕：前往商城 (暖橘立體厚底 5px, 115x50, 規格 115x50, 圓角 18px, 文字深藍紫, 零系統 Emoji)
+	_btn_go_shop = Button.new()
+	_btn_go_shop.name = "BtnGoShop"
+	var shop_btn_txt := _t("forge.btn_go_shop")
+	if shop_btn_txt == "forge.btn_go_shop" or shop_btn_txt.is_empty():
+		shop_btn_txt = _t("前往商城")
+	_btn_go_shop.text = shop_btn_txt
+	_btn_go_shop.custom_minimum_size = Vector2(115, 50)
+	_btn_go_shop.add_theme_font_size_override("font_size", 16)
+	_btn_go_shop.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_shop.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_shop.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_btn_go_shop.add_theme_font_override("font", _cached_font)
+	_btn_go_shop.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18, 2))
+	_btn_go_shop.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB338"), COLOR_BORDER, 5, 18, 2))
+	_btn_go_shop.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08B00"), COLOR_BORDER, 2, 18, 2))
+	_btn_go_shop.add_theme_stylebox_override("disabled", _create_button_style(Color("#EFEBE0"), COLOR_BORDER_MUTED, 3, 18, 2))
+	_btn_go_shop.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_go_shop.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_shop.pressed.connect(_on_go_shop_pressed)
+	act_row.add_child(_btn_go_shop)
+
 	# 次要按鈕：離開鐵匠鋪 (金黃立體厚底 5px)
 	_btn_close = Button.new()
 	_btn_close.name = "BtnCloseForge"
 	_btn_close.text = _t("離開鐵匠鋪")
-	_btn_close.custom_minimum_size = Vector2(114, 50)
+	_btn_close.custom_minimum_size = Vector2(105, 50)
 	_btn_close.add_theme_font_size_override("font_size", 16)
 	_btn_close.add_theme_color_override("font_color", COLOR_TEXT_DARK)
 	_btn_close.add_theme_color_override("font_outline_color", COLOR_BORDER)
@@ -1867,6 +1898,33 @@ func _on_go_power_stat_pressed() -> void:
 	if p and p.has_method("open_power_stat_dialog"):
 		if power_stat_requested.get_connections().is_empty():
 			p.call("open_power_stat_dialog")
+	if not is_queued_for_deletion():
+		_on_close()
+
+
+func get_go_shop_button() -> Button:
+	return _btn_go_shop
+
+
+func _on_go_shop_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	shop_requested.emit()
+	go_shop.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_shop"):
+			if shop_requested.get_connections().is_empty() and go_shop.get_connections().is_empty():
+				ml.call("open_shop")
+	var p := get_parent()
+	if p and p.has_method("open_shop"):
+		if shop_requested.get_connections().is_empty() and go_shop.get_connections().is_empty():
+			p.call("open_shop")
 	if not is_queued_for_deletion():
 		_on_close()
 

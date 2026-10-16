@@ -4323,5 +4323,6 @@
   "wardrobe.go_inventory": "To Bag",
   "inventory.btn_go_wardrobe": "To Wardrobe",
   "inventory.btn_go_title_wall": "To Titles",
-  "gem_workshop.btn_go_shop": "To Shop"
+  "gem_workshop.btn_go_shop": "To Shop",
+  "forge.btn_go_shop": "To Shop"
 }
