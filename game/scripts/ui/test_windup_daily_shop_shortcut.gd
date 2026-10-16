@@ -297,9 +297,9 @@ func _process(_delta: float) -> bool:
 			return false
 
 		5:
-			if _wait < 2:
+			if _wait < 1:
 				return false
-			if _windup_dlg == null or not is_instance_valid(_windup_dlg):
+			if _windup_dlg == null or not is_instance_valid(_windup_dlg) or not _windup_dlg.visible:
 				print("\n=== 4. 重新開啟 WindupDailyDialog 進行六語系 i18n 驗證 ===")
 				_windup_dlg = _lobby.open_windup_daily()
 				if _windup_dlg == null:
@@ -320,7 +320,7 @@ func _process(_delta: float) -> bool:
 			return false
 
 		6:
-			if _wait < 3:
+			if _wait < 1:
 				return false
 
 			var loc_code: String = LOCALES[_locale_test_index]
