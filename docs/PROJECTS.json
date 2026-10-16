@@ -6935,6 +6935,16 @@
    "keys": [
     "EnergyLa"
    ]
+  },
+  {
+   "id": "merge-shop-vault-windup-shortcuts",
+   "cat": "平台",
+   "title": "把已過審的商城前往儲能庫、委託前往商城與商城前往委託三分支合進主線",
+   "status": "草稿",
+   "note": "待三分支全數過審後整合",
+   "keys": [
+    "把已過審的商城前"
+   ]
   }
  ]
 }
