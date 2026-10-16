@@ -3967,5 +3967,6 @@
   "gem_workshop.btn_go_shop": "ショップへ",
   "forge.btn_go_shop": "ショップへ",
   "vault.btn_go_shop": "ショップへ",
-  "shop.btn_go_skill": "心法へ"
+  "shop.btn_go_skill": "心法へ",
+  "windup_daily.btn_go_shop": "ショップへ"
 }

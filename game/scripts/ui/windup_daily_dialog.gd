@@ -18,6 +18,8 @@ signal colossus_requested()
 signal power_stat_requested()
 signal inventory_requested()
 signal vault_requested()
+signal shop_requested()
+signal go_shop()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -62,6 +64,24 @@ static func _t(s: String) -> String:
 				return "Ir a Mochila"
 			_:
 				return "前往背包"
+	if s == "windup_daily.btn_go_shop" or s == "前往商城":
+		var lc := ContentLoc.locale()
+		if lc == "zh_TW" or lc == "zh_CN":
+			return "前往商城"
+		var v = ContentLoc._table("ui", lc).get("windup_daily.btn_go_shop", "")
+		if str(v) != "":
+			return str(v)
+		match lc:
+			"en":
+				return "To Shop"
+			"ja":
+				return "ショップへ"
+			"ko":
+				return "상점으로"
+			"es":
+				return "A Tienda"
+			_:
+				return "前往商城"
 	return ContentLoc.text("ui", s)
 
 ## ── 多巴胺鮮亮高飽和色盤 ──
@@ -93,6 +113,7 @@ var _btn_leave: Button
 var _btn_power_stat: Button
 var _btn_inventory: Button
 var _btn_vault: Button
+var _btn_shop: Button
 var _btn_sortie: Button
 var _btn_colossus: Button
 var _btn_done: Button
@@ -395,6 +416,23 @@ func _build_ui() -> void:
 	_btn_vault.visible = false
 	_foot_box.add_child(_btn_vault)
 
+	_btn_shop = Button.new()
+	_btn_shop.name = "BtnGoShop"
+	_btn_shop.text = _t("windup_daily.btn_go_shop")
+	_btn_shop.custom_minimum_size = Vector2(98, 52)
+	_btn_shop.add_theme_font_size_override("font_size", 16)
+	_btn_shop.add_theme_color_override("font_color", Color.WHITE)
+	_btn_shop.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_shop.add_theme_constant_override("outline_size", 4)
+	if _cached_font:
+		_btn_shop.add_theme_font_override("font", _cached_font)
+	_btn_shop.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18, 2))
+	_btn_shop.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB83D"), COLOR_BORDER, 5, 18, 2))
+	_btn_shop.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08B08"), COLOR_BORDER, 2, 18, 2))
+	_btn_shop.pressed.connect(_on_go_to_shop)
+	_btn_shop.visible = false
+	_foot_box.add_child(_btn_shop)
+
 	_btn_sortie = Button.new()
 	_btn_sortie.name = "BtnGoSortie"
 	_btn_sortie.text = _t("前往出征")
@@ -441,6 +479,8 @@ func _update_ui_texts() -> void:
 		_btn_inventory.text = _t("前往背包")
 	if _btn_vault and is_instance_valid(_btn_vault):
 		_btn_vault.text = _t("windup_daily.btn_go_vault")
+	if _btn_shop and is_instance_valid(_btn_shop):
+		_btn_shop.text = _t("windup_daily.btn_go_shop")
 	if _btn_sortie:
 		_btn_sortie.text = _t("前往出征")
 	if _btn_colossus:
@@ -512,24 +552,27 @@ func _refresh_display() -> void:
 			_btn_done.text = _t("今日委託已完成（當日不可再領）")
 
 		if _btn_leave:
-			_btn_leave.custom_minimum_size = Vector2(100, 52) if has_colossus_entries else Vector2(120, 52)
+			_btn_leave.custom_minimum_size = Vector2(90, 52) if has_colossus_entries else Vector2(105, 52)
 		if _btn_power_stat:
 			_btn_power_stat.visible = true
-			_btn_power_stat.custom_minimum_size = Vector2(120, 52) if has_colossus_entries else Vector2(130, 52)
+			_btn_power_stat.custom_minimum_size = Vector2(96, 52) if has_colossus_entries else Vector2(110, 52)
 		if _btn_inventory:
 			_btn_inventory.visible = true
-			_btn_inventory.custom_minimum_size = Vector2(120, 52) if has_colossus_entries else Vector2(130, 52)
+			_btn_inventory.custom_minimum_size = Vector2(98, 52) if has_colossus_entries else Vector2(110, 52)
 		if _btn_vault:
 			_btn_vault.visible = true
-			_btn_vault.custom_minimum_size = Vector2(120, 52) if has_colossus_entries else Vector2(130, 52)
+			_btn_vault.custom_minimum_size = Vector2(98, 52) if has_colossus_entries else Vector2(110, 52)
+		if _btn_shop:
+			_btn_shop.visible = true
+			_btn_shop.custom_minimum_size = Vector2(98, 52) if has_colossus_entries else Vector2(110, 52)
 		if _btn_sortie:
 			_btn_sortie.visible = true
-			_btn_sortie.custom_minimum_size = Vector2(115, 52) if has_colossus_entries else Vector2(150, 52)
+			_btn_sortie.custom_minimum_size = Vector2(100, 52) if has_colossus_entries else Vector2(125, 52)
 		if _btn_colossus:
 			_btn_colossus.visible = has_colossus_entries
-			_btn_colossus.custom_minimum_size = Vector2(115, 52)
+			_btn_colossus.custom_minimum_size = Vector2(110, 52)
 		if _foot_box:
-			_foot_box.add_theme_constant_override("separation", 6 if has_colossus_entries else 10)
+			_foot_box.add_theme_constant_override("separation", 4 if has_colossus_entries else 8)
 	else:
 		if _btn_done and is_instance_valid(_btn_done):
 			_btn_done.queue_free()
@@ -557,6 +600,8 @@ func _refresh_display() -> void:
 			_btn_inventory.visible = false
 		if _btn_vault:
 			_btn_vault.visible = false
+		if _btn_shop:
+			_btn_shop.visible = false
 		if _btn_sortie:
 			_btn_sortie.visible = false
 		if _btn_colossus:
@@ -634,6 +679,14 @@ func get_go_vault_button() -> Button:
 	return _btn_vault
 
 
+func get_shop_button() -> Button:
+	return _btn_shop
+
+
+func get_go_shop_button() -> Button:
+	return _btn_shop
+
+
 func get_sortie_button() -> Button:
 	return _btn_sortie
 
@@ -688,6 +741,29 @@ func _on_go_to_vault() -> void:
 		if p.has_method("open_clockwork_vault"):
 			if vault_requested.get_connections().is_empty():
 				p.call("open_clockwork_vault")
+	_on_close()
+
+
+func _on_go_to_shop() -> void:
+	shop_requested.emit()
+	if has_signal("go_shop"):
+		emit_signal("go_shop")
+	var p := get_parent()
+	if p:
+		if p.has_method("open_shop"):
+			if shop_requested.get_connections().is_empty():
+				p.call("open_shop")
+		elif p.has_method("open_shop_dialog"):
+			if shop_requested.get_connections().is_empty():
+				p.call("open_shop_dialog")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_shop"):
+				ml.call("open_shop")
+			elif ml and ml.has_method("open_shop_dialog"):
+				ml.call("open_shop_dialog")
 	_on_close()
 
 
@@ -746,8 +822,8 @@ func _create_button_style(bg: Color, border: Color = COLOR_BORDER, bottom_border
 	sb.set_border_width_all(border_w)
 	sb.border_width_bottom = bottom_border
 	sb.set_corner_radius_all(radius)
-	sb.content_margin_left = 20
-	sb.content_margin_right = 20
+	sb.content_margin_left = 12
+	sb.content_margin_right = 12
 	sb.content_margin_top = 10
 	sb.content_margin_bottom = 12
 	if bottom_border > 2:

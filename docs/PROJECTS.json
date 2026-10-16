@@ -6890,8 +6890,8 @@
    "id": "shop-vault-shortcut",
    "cat": "遊戲",
    "title": "ShopDialog 商城彈窗底欄新增『前往儲能庫』快捷果凍按鈕連動 ClockworkVaultDialog",
-   "status": "草稿",
-   "note": "待開發商城前往儲能庫快捷按鈕",
+   "status": "測試中",
+   "note": "完成 ShopDialog 前往儲能庫快捷果凍按鈕與連動 ClockworkVaultDialog 雙向閉環開發及全套驗證",
    "keys": [
     "ShopDial"
    ]
@@ -6900,8 +6900,8 @@
    "id": "windup-shop-shortcut",
    "cat": "遊戲",
    "title": "WindupDailyDialog 冒險委託每日上發條新增『前往商城』快捷果凍按鈕連動 ShopDialog",
-   "status": "開發中",
-   "note": "WindupDailyDialog 冒險委託每日上發條新增前往商城快捷果凍按鈕連動 ShopDialog",
+   "status": "測試中",
+   "note": "WindupDailyDialog 冒險委託每日上發條新增前往商城快捷果凍按鈕連動 ShopDialog（單元測試、六語系、實機截圖與 clock-check 全過）",
    "keys": [
     "WindupDa"
    ]
