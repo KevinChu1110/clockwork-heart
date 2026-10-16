@@ -7418,6 +7418,28 @@ func open_shop() -> Control:
 		dlg.go_workshop.connect(func():
 			open_gem_workshop()
 		)
+	if dlg.has_signal("skill_requested"):
+		dlg.skill_requested.connect(func():
+			var skill_dlg = open_skill_dialog()
+			if skill_dlg and is_instance_valid(skill_dlg) and skill_dlg.has_signal("closed"):
+				skill_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("go_skill"):
+		dlg.go_skill.connect(func():
+			var skill_dlg = open_skill_dialog()
+			if skill_dlg and is_instance_valid(skill_dlg) and skill_dlg.has_signal("closed"):
+				skill_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
 	dlg.tree_exited.connect(func():
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
 		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_inv:

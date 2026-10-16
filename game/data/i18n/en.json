@@ -4326,5 +4326,6 @@
   "inventory.btn_go_title_wall": "To Titles",
   "gem_workshop.btn_go_shop": "To Shop",
   "forge.btn_go_shop": "To Shop",
-  "vault.btn_go_shop": "To Shop"
+  "vault.btn_go_shop": "To Shop",
+  "shop.btn_go_skill": "To Skills"
 }

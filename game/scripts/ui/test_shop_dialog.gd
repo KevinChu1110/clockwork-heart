@@ -3,6 +3,8 @@ extends SceneTree
 ## 執行方式：godot --path game --headless -s res://scripts/ui/test_shop_dialog.gd
 
 var _ok := true
+var _finished := false
+var _exit_code := 0
 
 
 func _fail(msg: String) -> void:
@@ -61,6 +63,39 @@ func _initialize() -> void:
 			_fail("CloseBtn 尺寸小於 50x50px，實際為: %s" % str(close_btn.custom_minimum_size))
 		else:
 			print("  ok CloseBtn 尺寸符合規範: %s" % str(close_btn.custom_minimum_size))
+
+	# 2.5. 前往心法快捷果凍按鈕檢查 (BtnGoSkill, >=50px, 多巴胺天藍色盤 #38A0FF, 零 Emoji)
+	var skill_btn: Button = shop.get_go_skill_button()
+	if skill_btn == null:
+		skill_btn = shop.find_child("BtnGoSkill", true, false) as Button
+	if skill_btn == null:
+		_fail("ShopDialog 缺少 BtnGoSkill 前往心法按鈕")
+	else:
+		if skill_btn.name != "BtnGoSkill":
+			_fail("前往心法按鈕名稱不符: %s" % skill_btn.name)
+		if skill_btn.custom_minimum_size.y < 50:
+			_fail("BtnGoSkill 高度不足 50px: %f" % skill_btn.custom_minimum_size.y)
+		var sbf := skill_btn.get_theme_stylebox("normal") as StyleBoxFlat
+		if sbf == null:
+			_fail("BtnGoSkill 缺少 normal StyleBoxFlat")
+		else:
+			if sbf.bg_color.to_html(false) != Color("#38A0FF").to_html(false):
+				_fail("BtnGoSkill 顏色不符天藍色盤 #38A0FF，實際為: %s" % sbf.bg_color.to_html(false))
+			if sbf.border_width_bottom != 5:
+				_fail("BtnGoSkill 果凍厚底不足 5px，實際為: %d" % sbf.border_width_bottom)
+			if sbf.corner_radius_top_left != 18:
+				_fail("BtnGoSkill 圓角不符 18px，實際為: %d" % sbf.corner_radius_top_left)
+			print("  ok BtnGoSkill 按鈕熱區與多巴胺天藍果凍厚底達標 (50px, 底厚 5px, 圓角 18px)")
+
+		# 訊號觸發檢查
+		var sig_fired := {"go_skill": false, "skill_requested": false}
+		shop.go_skill.connect(func(): sig_fired["go_skill"] = true)
+		shop.skill_requested.connect(func(): sig_fired["skill_requested"] = true)
+		skill_btn.pressed.emit()
+		if not sig_fired["go_skill"] or not sig_fired["skill_requested"]:
+			_fail("BtnGoSkill 點擊後未正確發射 go_skill 或 skill_requested 訊號")
+		else:
+			print("  ok BtnGoSkill 點擊觸發 go_skill 與 skill_requested 訊號成功")
 
 	# 3. 檢查 3 個 IAP 佔位品項卡
 	var item_ids := ["energy_pack", "soul_pack", "forge_pack"]
@@ -154,7 +189,8 @@ func _initialize() -> void:
 				"forge_title": "工坊鍛造資源箱",
 				"buy_btn": "模擬購買",
 				"remove_btn": "一次性去廣告（Mock買斷）",
-				"todo_note": "TODO: 定價待定"
+				"todo_note": "TODO: 定價待定",
+				"skill_btn": "前往心法"
 			},
 			"zh_CN": {
 				"title": "发条补给 · 道具商城",
@@ -163,7 +199,8 @@ func _initialize() -> void:
 				"forge_title": "工坊锻造资源箱",
 				"buy_btn": "模拟购买",
 				"remove_btn": "一次性去广告（Mock买断）",
-				"todo_note": "TODO: 定价待定"
+				"todo_note": "TODO: 定价待定",
+				"skill_btn": "前往心法"
 			},
 			"en": {
 				"title": "Clockwork Supply · Item Shop",
@@ -172,7 +209,8 @@ func _initialize() -> void:
 				"forge_title": "Workshop Forging Resource Box",
 				"buy_btn": "Mock Purchase",
 				"remove_btn": "Remove Ads (Mock Purchase)",
-				"todo_note": "TODO: Pricing TBD"
+				"todo_note": "TODO: Pricing TBD",
+				"skill_btn": "To Skills"
 			},
 			"ja": {
 				"title": "ぜんまい補給 · アイテムショップ",
@@ -181,7 +219,8 @@ func _initialize() -> void:
 				"forge_title": "工房鍛造リソース箱",
 				"buy_btn": "モック購入",
 				"remove_btn": "広告削除（モック購入）",
-				"todo_note": "TODO: 価格未定"
+				"todo_note": "TODO: 価格未定",
+				"skill_btn": "心法へ"
 			},
 			"ko": {
 				"title": "태엽 보급 · 아이템 상점",
@@ -190,7 +229,8 @@ func _initialize() -> void:
 				"forge_title": "공방 단조 자원 상자",
 				"buy_btn": "모의 구매",
 				"remove_btn": "광고 제거 (목업 구매)",
-				"todo_note": "TODO: 가격 미정"
+				"todo_note": "TODO: 가격 미정",
+				"skill_btn": "심법으로"
 			},
 			"es": {
 				"title": "Suministros de cuerda · Tienda de objetos",
@@ -199,7 +239,8 @@ func _initialize() -> void:
 				"forge_title": "Caja de recursos de forja del taller",
 				"buy_btn": "Compra simulada",
 				"remove_btn": "Eliminar anuncios (Compra simulada)",
-				"todo_note": "TODO: Precio por determinar"
+				"todo_note": "TODO: Precio por determinar",
+				"skill_btn": "A Habilidades"
 			}
 		}
 
@@ -236,6 +277,10 @@ func _initialize() -> void:
 			if e_buy == null or e_buy.text != exp["buy_btn"]:
 				_fail("[%s] 能量箱購買鈕翻譯不符，預期: %s，實際: %s" % [code, exp["buy_btn"], e_buy.text if e_buy else "null"])
 
+			var sk_btn: Button = lang_shop.get_go_skill_button()
+			if sk_btn == null or sk_btn.text != exp["skill_btn"]:
+				_fail("[%s] 前往心法按鈕翻譯不符，預期: %s，實際: %s" % [code, exp["skill_btn"], sk_btn.text if sk_btn else "null"])
+
 			_check_no_emoji_in_node(lang_shop)
 			print("  ok [%s] 語系商城彈窗標題/按鈕/品項 i18n 驗證通過" % code)
 			lang_shop.queue_free()
@@ -253,9 +298,12 @@ func _initialize() -> void:
 		var dyn_s_desc: Label = dynamic_shop.find_child("ItemDescLabel_soul_pack", true, false) as Label
 		var dyn_f_title: Label = dynamic_shop.find_child("ItemTitleLabel_forge_pack", true, false) as Label
 		var dyn_f_desc: Label = dynamic_shop.find_child("ItemDescLabel_forge_pack", true, false) as Label
+		var dyn_sk_btn: Button = dynamic_shop.get_go_skill_button()
 
 		if dyn_e_title.text != "發條能量補給箱":
 			_fail("動態切換初始狀態 energy_title 應為發條能量補給箱，實際: %s" % dyn_e_title.text)
+		if dyn_sk_btn.text != "前往心法":
+			_fail("動態切換初始狀態 skill_btn 應為前往心法，實際: %s" % dyn_sk_btn.text)
 
 		for code in ["en", "ja", "ko", "es", "zh_CN", "zh_TW"]:
 			loc_node.call("set_locale", code)
@@ -266,12 +314,14 @@ func _initialize() -> void:
 				_fail("[動態切換 %s] soul_title 應為 %s，實際: %s" % [code, exp["soul_title"], dyn_s_title.text])
 			if dyn_f_title.text != exp["forge_title"]:
 				_fail("[動態切換 %s] forge_title 應為 %s，實際: %s" % [code, exp["forge_title"], dyn_f_title.text])
+			if dyn_sk_btn.text != exp["skill_btn"]:
+				_fail("[動態切換 %s] skill_btn 應為 %s，實際: %s" % [code, exp["skill_btn"], dyn_sk_btn.text])
 
 			# 驗證說明文字不是空的且已隨語系變換
 			if dyn_e_desc.text.is_empty() or dyn_s_desc.text.is_empty() or dyn_f_desc.text.is_empty():
 				_fail("[動態切換 %s] 品項說明文字為空" % code)
 
-			print("  ok [動態切換 %s] 開著商城切換語系即時刷新品項名稱與說明成功" % code)
+			print("  ok [動態切換 %s] 開著商城切換語系即時刷新品項名稱、說明與前往心法按鈕成功" % code)
 
 		dynamic_shop.queue_free()
 
@@ -344,7 +394,17 @@ func _finish() -> void:
 	if _ok:
 		print("SHOP_DIALOG_OK")
 		print("SHOP_DIALOG_UNIT_TESTS_PASS")
+		_exit_code = 0
 	else:
 		print("SHOP_DIALOG_FAIL")
 		print("SHOP_DIALOG_UNIT_TESTS_FAILED")
-	quit(0 if _ok else 1)
+		_exit_code = 1
+	_finished = true
+	quit(_exit_code)
+
+
+func _process(_delta: float) -> bool:
+	if _finished:
+		quit(_exit_code)
+		return true
+	return false

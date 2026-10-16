@@ -2081,5 +2081,6 @@
   "inventory.btn_go_title_wall": "前往稱號",
   "gem_workshop.btn_go_shop": "前往商城",
   "forge.btn_go_shop": "前往商城",
-  "vault.btn_go_shop": "前往商城"
+  "vault.btn_go_shop": "前往商城",
+  "shop.btn_go_skill": "前往心法"
 }
