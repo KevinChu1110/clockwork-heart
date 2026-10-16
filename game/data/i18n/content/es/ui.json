@@ -3963,5 +3963,6 @@
   "wardrobe.go_inventory": "A Mochila",
   "inventory.btn_go_wardrobe": "A Guardarropa",
   "inventory.btn_go_title_wall": "A Títulos",
-  "gem_workshop.btn_go_shop": "A Tienda"
+  "gem_workshop.btn_go_shop": "A Tienda",
+  "shop.btn_go_skill": "A Habilidades"
 }

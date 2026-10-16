@@ -3963,5 +3963,6 @@
   "wardrobe.go_inventory": "가방으로",
   "inventory.btn_go_wardrobe": "옷장으로",
   "inventory.btn_go_title_wall": "칭호로",
-  "gem_workshop.btn_go_shop": "상점으로"
+  "gem_workshop.btn_go_shop": "상점으로",
+  "shop.btn_go_skill": "심법으로"
 }
