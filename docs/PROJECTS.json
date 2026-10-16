@@ -6900,8 +6900,8 @@
    "id": "windup-shop-shortcut",
    "cat": "遊戲",
    "title": "WindupDailyDialog 冒險委託每日上發條新增『前往商城』快捷果凍按鈕連動 ShopDialog",
-   "status": "開發中",
-   "note": "WindupDailyDialog 冒險委託每日上發條新增前往商城快捷果凍按鈕連動 ShopDialog",
+   "status": "測試中",
+   "note": "WindupDailyDialog 冒險委託每日上發條新增前往商城快捷果凍按鈕連動 ShopDialog（單元測試、六語系、實機截圖與 clock-check 全過）",
    "keys": [
     "WindupDa"
    ]
