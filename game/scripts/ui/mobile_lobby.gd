@@ -7200,6 +7200,10 @@ func open_windup_daily() -> Control:
 		dlg.vault_requested.connect(func():
 			open_clockwork_vault()
 		)
+	if dlg.has_signal("shop_requested"):
+		dlg.shop_requested.connect(func():
+			open_shop()
+		)
 	add_child(dlg)
 	return dlg
 
