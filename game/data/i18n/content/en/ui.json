@@ -3960,5 +3960,6 @@
   "title_wall.btn_go_inventory": "To Inventory",
   "wardrobe.btn_go_inventory": "To Bag",
   "wardrobe.go_inventory": "To Bag",
-  "inventory.btn_go_wardrobe": "To Wardrobe"
+  "inventory.btn_go_wardrobe": "To Wardrobe",
+  "inventory.btn_go_title_wall": "To Titles"
 }

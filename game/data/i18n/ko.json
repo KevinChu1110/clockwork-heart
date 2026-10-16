@@ -4320,5 +4320,6 @@
   "title_wall.btn_go_inventory": "가방으로 이동",
   "wardrobe.btn_go_inventory": "가방으로",
   "wardrobe.go_inventory": "가방으로",
-  "inventory.btn_go_wardrobe": "옷장으로"
+  "inventory.btn_go_wardrobe": "옷장으로",
+  "inventory.btn_go_title_wall": "칭호로"
 }

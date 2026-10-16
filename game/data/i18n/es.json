@@ -4320,5 +4320,6 @@
   "title_wall.btn_go_inventory": "Ir a Mochila",
   "wardrobe.btn_go_inventory": "A Mochila",
   "wardrobe.go_inventory": "A Mochila",
-  "inventory.btn_go_wardrobe": "A Guardarropa"
+  "inventory.btn_go_wardrobe": "A Guardarropa",
+  "inventory.btn_go_title_wall": "A Títulos"
 }

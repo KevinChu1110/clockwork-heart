@@ -31,6 +31,8 @@ signal go_wardrobe()
 signal wardrobe_requested()
 signal go_shop()
 signal shop_requested()
+signal go_title_wall()
+signal title_wall_requested()
 signal materials_batch_sold(gold: int, count: int, result: Dictionary)
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -165,6 +167,7 @@ var _go_soul_btn: Button = null
 var _go_power_stat_btn: Button = null
 var _go_wardrobe_btn: Button = null
 var _go_shop_btn: Button = null
+var _go_title_wall_btn: Button = null
 var _hotbar_capsule: PanelContainer = null
 var _hotbar_capsule_label: Label = null
 var _floating_hotbar_toast: PanelContainer = null
@@ -277,6 +280,11 @@ func _update_ui_texts() -> void:
 		if shop_txt == "inventory.btn_go_shop" or shop_txt.is_empty():
 			shop_txt = _t("前往商城")
 		_go_shop_btn.text = shop_txt
+	if _go_title_wall_btn and is_instance_valid(_go_title_wall_btn):
+		var title_wall_txt := _t("inventory.btn_go_title_wall")
+		if title_wall_txt == "inventory.btn_go_title_wall" or title_wall_txt.is_empty():
+			title_wall_txt = _t("前往稱號")
+		_go_title_wall_btn.text = title_wall_txt
 	if _batch_sell_btn and is_instance_valid(_batch_sell_btn):
 		_batch_sell_btn.text = _t("一鍵出售素材")
 	if _sort_btn and is_instance_valid(_sort_btn):
@@ -732,6 +740,26 @@ func _build() -> void:
 	_go_shop_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_go_shop_btn.pressed.connect(_on_go_shop_pressed)
 	sort_box.add_child(_go_shop_btn)
+
+	## 快捷按鈕：前往稱號 (BtnGoTitleWall)（尺寸 120x48px，熱區>=48px，天藍果凍厚底 5px，圓角 18px，深藍紫描邊與文字，零系統 Emoji）
+	_go_title_wall_btn = Button.new()
+	_go_title_wall_btn.name = "BtnGoTitleWall"
+	var title_wall_txt := _t("inventory.btn_go_title_wall")
+	if title_wall_txt == "inventory.btn_go_title_wall" or title_wall_txt.is_empty():
+		title_wall_txt = _t("前往稱號")
+	_go_title_wall_btn.text = title_wall_txt
+	_go_title_wall_btn.custom_minimum_size = Vector2(120, 48)
+	_go_title_wall_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18))
+	_go_title_wall_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#60B5FF"), COLOR_BORDER, 5, 18))
+	_go_title_wall_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#1F85E0"), COLOR_BORDER, 2, 18))
+	_go_title_wall_btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_go_title_wall_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_go_title_wall_btn.add_theme_font_size_override("font_size", 16)
+	if _cached_font:
+		_go_title_wall_btn.add_theme_font_override("font", _cached_font)
+	_go_title_wall_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_go_title_wall_btn.pressed.connect(_on_go_title_wall_pressed)
+	sort_box.add_child(_go_title_wall_btn)
 
 	## 右側：道具明細與操作按鈕區
 	var right := VBoxContainer.new()
@@ -3352,6 +3380,51 @@ func get_bag_go_shop_button() -> Button:
 
 func get_shop_button() -> Button:
 	return _go_shop_btn
+
+
+func _on_go_title_wall_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	go_title_wall.emit()
+	title_wall_requested.emit()
+	open_title_wall_dialog()
+
+
+func open_title_wall_dialog() -> void:
+	close()
+	var loop := Engine.get_main_loop()
+	if not (loop is SceneTree and (loop as SceneTree).root != null):
+		return
+	var root_node := (loop as SceneTree).root
+	var ml: Node = root_node.get_node_or_null("MobileLobby")
+	if ml and ml.has_method("open_title_wall_dialog"):
+		ml.call("open_title_wall_dialog")
+		return
+	elif ml and ml.has_method("open_title_wall"):
+		ml.call("open_title_wall")
+		return
+	var p := get_parent()
+	if p and p.has_method("open_title_wall_dialog"):
+		p.call("open_title_wall_dialog")
+		return
+	elif p and p.has_method("open_title_wall"):
+		p.call("open_title_wall")
+		return
+
+
+func get_go_title_wall_button() -> Button:
+	return _go_title_wall_btn
+
+
+func get_bag_go_title_wall_button() -> Button:
+	return _go_title_wall_btn
+
+
+func get_title_wall_button() -> Button:
+	return _go_title_wall_btn
 
 
 # ── 一鍵出售素材支援 (Batch Sell Materials) ──
