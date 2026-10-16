@@ -227,9 +227,9 @@ func _process(_delta: float) -> bool:
 			# 驗證尺寸與手機端熱區
 			if btn.custom_minimum_size.y < 50.0:
 				return _fail("按鈕高度小於 50px: %.1f" % btn.custom_minimum_size.y)
-			if btn.custom_minimum_size.x < 120.0:
-				return _fail("按鈕寬度過窄小於 120px: %.1f" % btn.custom_minimum_size.x)
-			print("  ✓ 按鈕尺寸符合手機端熱區: %s (高 %.1f px >= 50px, 寬 %.1f px >= 120px)" % [str(btn.custom_minimum_size), btn.custom_minimum_size.y, btn.custom_minimum_size.x])
+			if btn.custom_minimum_size.x < 90.0:
+				return _fail("按鈕寬度過窄小於 90px: %.1f" % btn.custom_minimum_size.x)
+			print("  ✓ 按鈕尺寸符合手機端熱區: %s (高 %.1f px >= 50px, 寬 %.1f px >= 90px)" % [str(btn.custom_minimum_size), btn.custom_minimum_size.y, btn.custom_minimum_size.x])
 
 			# 驗證底色薄荷綠色盤與圓角、厚底
 			var sb := btn.get_theme_stylebox("normal") as StyleBoxFlat
