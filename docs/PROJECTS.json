@@ -6830,8 +6830,8 @@
    "id": "shop-workshop-shortcut",
    "cat": "遊戲",
    "title": "ShopDialog 商城底欄新增『前往工坊』快捷果凍按鈕連動 GemWorkshopDialog",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "拆卡指派 sideworker2 實作",
    "keys": [
     "ShopDial"
    ]
