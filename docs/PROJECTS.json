@@ -6885,6 +6885,16 @@
    "keys": [
     "把已過審的鐵匠/"
    ]
+  },
+  {
+   "id": "shop-vault-shortcut",
+   "cat": "遊戲",
+   "title": "ShopDialog 商城彈窗底欄新增『前往儲能庫』快捷果凍按鈕連動 ClockworkVaultDialog",
+   "status": "草稿",
+   "note": "待開發商城前往儲能庫快捷按鈕",
+   "keys": [
+    "ShopDial"
+   ]
   }
  ]
 }
