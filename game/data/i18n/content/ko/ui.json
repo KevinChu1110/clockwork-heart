@@ -3967,5 +3967,6 @@
   "gem_workshop.btn_go_shop": "상점으로",
   "forge.btn_go_shop": "상점으로",
   "vault.btn_go_shop": "상점으로",
-  "shop.btn_go_skill": "심법으로"
+  "shop.btn_go_skill": "심법으로",
+  "shop.btn_go_vault": "저장고로 이동"
 }
