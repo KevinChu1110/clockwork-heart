@@ -6785,6 +6785,16 @@
    "keys": [
     "Wardrobe"
    ]
+  },
+  {
+   "id": "inventory-shop-shortcut",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包底欄新增『前往商城』快捷果凍按鈕連動 ShopDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
