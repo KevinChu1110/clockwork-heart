@@ -6875,6 +6875,16 @@
    "keys": [
     "SkillDia"
    ]
+  },
+  {
+   "id": "shop-skill-shortcut",
+   "cat": "遊戲",
+   "title": "ShopDialog 商城彈窗底欄新增『前往心法』快捷果凍按鈕連動 SkillDialog",
+   "status": "草稿",
+   "note": "建立任務 (t_4116f7d6)",
+   "keys": [
+    "ShopDial"
+   ]
   }
  ]
 }
