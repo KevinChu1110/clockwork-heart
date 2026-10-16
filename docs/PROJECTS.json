@@ -6790,8 +6790,8 @@
    "id": "inventory-title-wall-shortcut",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包底欄新增前往稱號快捷果凍按鈕連動 TitleWallDialog",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "開始開發 MapleInventory 前往稱號果凍按鈕",
    "keys": [
     "MapleInv"
    ]
