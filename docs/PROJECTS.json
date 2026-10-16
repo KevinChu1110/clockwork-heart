@@ -6805,6 +6805,16 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "inventory-title-wall-shortcut",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包底欄新增前往稱號快捷按鈕連動 TitleWallDialog",
+   "status": "草稿",
+   "note": "打通探索背包前往稱號牆的快捷閉環",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
