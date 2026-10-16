@@ -6785,6 +6785,16 @@
    "keys": [
     "Wardrobe"
    ]
+  },
+  {
+   "id": "inventory-wardrobe-shortcut",
+   "cat": "遊戲",
+   "title": "MapleInventory 探索背包底欄新增前往衣櫥快捷按鈕連動 WardrobeDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "MapleInv"
+   ]
   }
  ]
 }
