@@ -6925,6 +6925,16 @@
    "keys": [
     "Clockwor"
    ]
+  },
+  {
+   "id": "energy-lack-vault-shortcut",
+   "cat": "遊戲",
+   "title": "EnergyLackDialog 能量不足彈窗新增前往儲能庫快捷按鈕連動 ClockworkVaultDialog",
+   "status": "草稿",
+   "note": "待開發",
+   "keys": [
+    "EnergyLa"
+   ]
   }
  ]
 }
