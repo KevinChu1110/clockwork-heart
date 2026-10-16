@@ -6795,6 +6795,16 @@
    "keys": [
     "MapleInv"
    ]
+  },
+  {
+   "id": "gem-workshop-shop-shortcut",
+   "cat": "遊戲",
+   "title": "GemWorkshopDialog 手藝工坊底欄新增『前往商城』快捷果凍按鈕連動 ShopDialog",
+   "status": "草稿",
+   "note": "拆卡指派 sideworker 實作",
+   "keys": [
+    "GemWorks"
+   ]
   }
  ]
 }
