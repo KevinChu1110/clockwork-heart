@@ -6,6 +6,7 @@ extends SceneTree
 ##   2. 每一首都載得到（.ogg／.mp3 真配樂或 .wav 後備，至少要有一個）
 ##   3. 換成壓縮格式的曲子一定要有可讀的長度，檔案壞了要當場抓出來
 ##   4. loops.json 只能有已知曲目 id，循環起點不能是負數、也不能超過曲長
+##   5. MapCatalog 每一張地圖、每個舊曲目 id 都解析到八 cue 之一（不能落空）
 ##
 ## 第 4 點特別重要：循環起點打錯（例如把秒寫成毫秒）會讓曲子從尾巴開始循環，
 ## 聽起來像壞掉但不會報任何錯，只靠耳朵很難抓。
@@ -25,10 +26,12 @@ const MUSIC_EXTS: Array[String] = ["ogg", "mp3"]
 
 ## 遊戲該有的曲目。少一首＝有場景會沒配樂，多一首＝有曲子沒人放。
 ## 兩種都不會噴錯，所以釘在這裡，增刪曲目時逼人來改一次。
+## 任務書（docs/CLOCKWORK_ART_MUSIC_BRIEF.md §5／§6）只准這八個 cue 名。
 const EXPECT_IDS: Array[String] = [
-	"title", "village", "town", "mist", "dojo", "forest", "coast",
-	"wild", "road", "battle", "boss", "tower", "ending",
+	"title", "village", "town", "road", "forest", "battle", "boss", "ending",
 ]
+## 舊曲目 id：main.gd 還會直接 play_bgm 這些，必須被接到八 cue 之一
+const LEGACY_IDS: Array[String] = ["mist", "dojo", "coast", "wild", "tower"]
 
 var _ok := true
 var _done := false
@@ -57,6 +60,7 @@ func _process(_delta: float) -> bool:
 		return true
 	_check_all_loadable(am, ids)
 	_check_loops_json(ids)
+	_check_region_mapping(am)
 	_finish()
 	return true
 
@@ -156,6 +160,49 @@ func _check_loops_json(ids: Array) -> void:
 				_fail("%s 的循環起點 %.2f 秒超過曲長 %.2f 秒（單位寫錯？）" % [id, off, dur])
 				return
 	print("  ok loops.json %d 筆，id 與循環起點都合法" % d.size())
+
+
+## 每張地圖都要落在八 cue 裡。地圖清單從 MapCatalog.ids() 拿，不另外手抄；
+## 先釘清單長度，免得 ids() 被砍空時迴圈空轉變綠。
+func _check_region_mapping(am: Node) -> void:
+	var maps: PackedStringArray = MapCatalog.ids()
+	if maps.size() < 40:
+		_fail("MapCatalog.ids() 只有 %d 張，清單被砍了？" % maps.size())
+		return
+	var used := {}
+	for m in maps:
+		var cue: String = am.map_to_bgm(m)
+		if not EXPECT_IDS.has(cue):
+			_fail("地圖 %s 對到 %s，不在八 cue 裡" % [m, cue])
+			return
+		if cue in ["title", "battle", "boss", "ending"]:
+			_fail("地圖 %s 對到 %s（那是畫面／戰鬥專用 cue）" % [m, cue])
+			return
+		used[cue] = true
+	## 抽幾個代表性的釘死，避免 map_to_bgm 改成「全部回 town」也會過
+	var spot := {
+		"village": "village", "town_forge": "town", "dojo_peak": "town",
+		"road_inn": "road", "wild_ravine": "road", "coast_harbor": "road",
+		"forest_lake": "forest", "mist_shrine": "forest", "tower_memory": "forest",
+	}
+	for m in spot:
+		if am.map_to_bgm(m) != spot[m]:
+			_fail("%s 應對到 %s，實際 %s" % [m, spot[m], am.map_to_bgm(m)])
+			return
+	for legacy in LEGACY_IDS:
+		var r: String = am.resolve_bgm_cue(legacy)
+		if not EXPECT_IDS.has(r):
+			_fail("舊曲目 %s 解析成 %s，不在八 cue 裡" % [legacy, r])
+			return
+	for cue in EXPECT_IDS:
+		if am.resolve_bgm_cue(cue) != cue:
+			_fail("cue %s 不該被改名，卻解析成 %s" % [cue, am.resolve_bgm_cue(cue)])
+			return
+	if am.bgm_loops("ending") or not am.bgm_loops("village") or not am.bgm_loops("battle"):
+		_fail("循環設定不對：ending 要一次性，village／battle 要循環")
+		return
+	print("  ok %d 張地圖＋%d 個舊 id 都落在八 cue（地區曲用到 %s）"
+		% [maps.size(), LEGACY_IDS.size(), str(used.keys())])
 
 
 func _finish() -> void:
