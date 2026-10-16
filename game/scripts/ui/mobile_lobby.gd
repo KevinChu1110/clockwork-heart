@@ -7044,6 +7044,17 @@ func open_skill_dialog() -> Control:
 		dlg.inventory_requested.connect(func():
 			open_maple_inventory("consumable")
 		)
+	if dlg.has_signal("shop_requested"):
+		dlg.shop_requested.connect(func():
+			var shop_dlg = open_shop()
+			if shop_dlg and is_instance_valid(shop_dlg) and shop_dlg.has_signal("closed"):
+				shop_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_skill_dialog()
+				, CONNECT_ONE_SHOT)
+		)
 	add_child(dlg)
 	return dlg
 

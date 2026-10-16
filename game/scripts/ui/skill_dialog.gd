@@ -14,6 +14,8 @@ signal closed()
 signal practice_dummy_requested()
 signal power_stat_requested()
 signal inventory_requested()
+signal shop_requested()
+signal go_shop()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -63,6 +65,7 @@ var _close_x_btn: Button
 var _dummy_btn: Button
 var _go_power_stat_btn: Button
 var _go_inventory_btn: Button
+var _go_shop_btn: Button
 var _bottom_close_btn: Button
 
 ## 戰鬥優先區塊
@@ -158,15 +161,15 @@ func _build_ui() -> void:
 	scrim.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(scrim)
 
-	# 2. 置中卡片 (760 x 540)
+	# 2. 置中卡片 (800 x 540)
 	var card := PanelContainer.new()
 	card.name = "DialogCard"
 	card.set_anchors_preset(Control.PRESET_CENTER)
-	card.offset_left = -380
+	card.offset_left = -400
 	card.offset_top = -270
-	card.offset_right = 380
+	card.offset_right = 400
 	card.offset_bottom = 270
-	card.custom_minimum_size = Vector2(760, 540)
+	card.custom_minimum_size = Vector2(800, 540)
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var card_sb := StyleBoxFlat.new()
@@ -283,36 +286,44 @@ func _build_ui() -> void:
 	_skill_cards_box.add_theme_constant_override("separation", 10)
 	_scroll_box.add_child(_skill_cards_box)
 
-	# 7. 底部控制列（左側：前往木人樁試招、前往戰力，右側：關閉）
+	# 7. 底部控制列（左側：前往木人樁試招、前往戰力、前往背包、前往商城，右側：關閉）
 	var bot_h := HBoxContainer.new()
 	bot_h.name = "BottomBar"
 	bot_h.alignment = BoxContainer.ALIGNMENT_BEGIN
-	bot_h.add_theme_constant_override("separation", 10)
+	bot_h.add_theme_constant_override("separation", 8)
 	root_v.add_child(bot_h)
 
 	# 左側天藍立體果凍『前往木人樁試招』按鈕（高50px、熱區>=48px、圓角18px、底邊厚底5px）
 	_dummy_btn = Button.new()
 	_dummy_btn.name = "BtnPracticeDummy"
-	_dummy_btn.custom_minimum_size = Vector2(210, 50)
+	_dummy_btn.custom_minimum_size = Vector2(180, 50)
 	_style_jelly_btn(_dummy_btn, COLOR_SKY, COLOR_TEXT_DARK, 16, 5, 18)
 	_dummy_btn.pressed.connect(_on_practice_dummy_pressed)
 	bot_h.add_child(_dummy_btn)
 
-	# 金黃立體果凍『前往戰力』按鈕（熱區 160x50px >= 48px、果凍厚底 5px、圓角 18px、字級 16px 開源粉圓體、零系統 Emoji）
+	# 金黃立體果凍『前往戰力』按鈕（熱區 135x50px >= 48px、果凍厚底 5px、圓角 18px、字級 16px 開源粉圓體、零系統 Emoji）
 	_go_power_stat_btn = Button.new()
 	_go_power_stat_btn.name = "BtnGoPowerStat"
-	_go_power_stat_btn.custom_minimum_size = Vector2(160, 50)
+	_go_power_stat_btn.custom_minimum_size = Vector2(135, 50)
 	_style_jelly_btn(_go_power_stat_btn, COLOR_GOLD, COLOR_TEXT_DARK, 16, 5, 18)
 	_go_power_stat_btn.pressed.connect(_on_go_power_stat_pressed)
 	bot_h.add_child(_go_power_stat_btn)
 
-	# 珊瑚粉立體果凍『前往背包』按鈕（熱區 140x50px >= 48px、果凍厚底 5px、圓角 18px、字級 16px 開源粉圓體、零系統 Emoji）
+	# 珊瑚粉立體果凍『前往背包』按鈕（熱區 135x50px >= 48px、果凍厚底 5px、圓角 18px、字級 16px 開源粉圓體、零系統 Emoji）
 	_go_inventory_btn = Button.new()
 	_go_inventory_btn.name = "BtnGoInventory"
-	_go_inventory_btn.custom_minimum_size = Vector2(140, 50)
+	_go_inventory_btn.custom_minimum_size = Vector2(135, 50)
 	_style_jelly_btn(_go_inventory_btn, COLOR_PINK, COLOR_TEXT_DARK, 16, 5, 18)
 	_go_inventory_btn.pressed.connect(_on_go_inventory_pressed)
 	bot_h.add_child(_go_inventory_btn)
+
+	# 暖橘立體果凍『前往商城』按鈕（熱區 135x50px >= 48px、果凍厚底 5px、圓角 18px、字級 16px 開源粉圓體、零系統 Emoji）
+	_go_shop_btn = Button.new()
+	_go_shop_btn.name = "BtnGoShop"
+	_go_shop_btn.custom_minimum_size = Vector2(135, 50)
+	_style_jelly_btn(_go_shop_btn, COLOR_ORANGE, COLOR_TEXT_DARK, 16, 5, 18)
+	_go_shop_btn.pressed.connect(_on_go_shop_pressed)
+	bot_h.add_child(_go_shop_btn)
 
 	# 彈性間隔撐開左右分列
 	var bot_spacer := Control.new()
@@ -323,7 +334,7 @@ func _build_ui() -> void:
 	# 右側保留既有暖橘『關閉』果凍按鈕（高50px、圓角18px、底邊厚底5px）
 	_bottom_close_btn = Button.new()
 	_bottom_close_btn.name = "BtnCloseBottom"
-	_bottom_close_btn.custom_minimum_size = Vector2(140, 50)
+	_bottom_close_btn.custom_minimum_size = Vector2(120, 50)
 	_style_jelly_btn(_bottom_close_btn, COLOR_ORANGE, COLOR_TEXT_DARK, 16, 5, 18)
 	_bottom_close_btn.pressed.connect(_on_close_pressed)
 	bot_h.add_child(_bottom_close_btn)
@@ -347,6 +358,28 @@ func _on_go_power_stat_pressed() -> void:
 
 func _on_go_inventory_pressed() -> void:
 	inventory_requested.emit()
+	_on_close_pressed()
+
+
+func _on_go_shop_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	go_shop.emit()
+	shop_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_shop"):
+			if shop_requested.get_connections().is_empty():
+				ml.call("open_shop")
+	var p := get_parent()
+	if p and p.has_method("open_shop"):
+		if shop_requested.get_connections().is_empty():
+			p.call("open_shop")
 	_on_close_pressed()
 
 
@@ -388,6 +421,20 @@ func _update_ui_texts() -> void:
 			else:
 				txt = _t("前往背包")
 		_go_inventory_btn.text = txt
+	if _go_shop_btn:
+		var txt := ""
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+			if loc and loc.has_method("t"):
+				txt = str(loc.call("t", "skill.btn_go_shop"))
+		if txt == "" or txt == "skill.btn_go_shop":
+			var c_txt := ContentLoc.text("ui", "skill.btn_go_shop")
+			if c_txt != "skill.btn_go_shop":
+				txt = c_txt
+			else:
+				txt = _t("前往商城")
+		_go_shop_btn.text = txt
 	if _bottom_close_btn:
 		_bottom_close_btn.text = _t("關閉")
 
@@ -908,6 +955,14 @@ func get_go_power_stat_button() -> Button:
 
 func get_go_inventory_button() -> Button:
 	return _go_inventory_btn
+
+
+func get_go_shop_button() -> Button:
+	return _go_shop_btn
+
+
+func get_shop_button() -> Button:
+	return _go_shop_btn
 
 
 func get_bottom_close_button() -> Button:
