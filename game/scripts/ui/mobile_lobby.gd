@@ -7470,6 +7470,50 @@ func open_shop() -> Control:
 							open_shop()
 				, CONNECT_ONE_SHOT)
 		)
+	if dlg.has_signal("windup_daily_requested"):
+		dlg.windup_daily_requested.connect(func():
+			var windup_dlg = open_windup_daily()
+			if windup_dlg and is_instance_valid(windup_dlg) and windup_dlg.has_signal("closed"):
+				windup_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("go_windup_daily"):
+		dlg.go_windup_daily.connect(func():
+			var windup_dlg = open_windup_daily()
+			if windup_dlg and is_instance_valid(windup_dlg) and windup_dlg.has_signal("closed"):
+				windup_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("windup_requested"):
+		dlg.windup_requested.connect(func():
+			var windup_dlg = open_windup_daily()
+			if windup_dlg and is_instance_valid(windup_dlg) and windup_dlg.has_signal("closed"):
+				windup_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("go_windup"):
+		dlg.go_windup.connect(func():
+			var windup_dlg = open_windup_daily()
+			if windup_dlg and is_instance_valid(windup_dlg) and windup_dlg.has_signal("closed"):
+				windup_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
 	dlg.tree_exited.connect(func():
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
 		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_inv:

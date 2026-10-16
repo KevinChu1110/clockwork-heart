@@ -4328,5 +4328,8 @@
   "forge.btn_go_shop": "To Shop",
   "vault.btn_go_shop": "To Shop",
   "shop.btn_go_skill": "To Skills",
-  "shop.btn_go_vault": "To Vault"
+  "shop.btn_go_vault": "To Vault",
+  "windup_daily.btn_go_shop": "To Shop",
+  "shop.btn_go_daily": "To Daily",
+  "shop.btn_go_windup": "To Daily"
 }

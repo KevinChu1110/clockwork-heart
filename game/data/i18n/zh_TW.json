@@ -2443,5 +2443,8 @@
   "forge.btn_go_shop": "前往商城",
   "vault.btn_go_shop": "前往商城",
   "shop.btn_go_skill": "前往心法",
-  "shop.btn_go_vault": "前往儲能庫"
+  "shop.btn_go_vault": "前往儲能庫",
+  "windup_daily.btn_go_shop": "前往商城",
+  "shop.btn_go_daily": "前往委託",
+  "shop.btn_go_windup": "前往委託"
 }
