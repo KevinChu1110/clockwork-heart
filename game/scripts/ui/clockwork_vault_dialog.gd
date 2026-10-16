@@ -24,6 +24,8 @@ signal power_stat_requested()
 signal go_power_stat()
 signal windup_requested()
 signal go_windup()
+signal shop_requested()
+signal go_shop()
 
 const IdleClockworkVault = preload("res://scripts/systems/idle_clockwork_vault.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -60,6 +62,7 @@ var _btn_go_windup: Button
 var _btn_go_forge: Button
 var _btn_go_inventory: Button
 var _btn_go_power_stat: Button
+var _btn_go_shop: Button
 var _btn_close: Button
 var _cached_font: Font = null
 var _fx_container: Control = null
@@ -111,13 +114,13 @@ func _build_ui() -> void:
 	_fx_container.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_fx_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-	## 2. 彈窗主體卡片 (寬 760, 高 460, 置中)
+	## 2. 彈窗主體卡片 (寬 820, 高 460, 置中)
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "VaultCard"
 	_dialog_card.set_anchors_preset(Control.PRESET_CENTER)
-	_dialog_card.custom_minimum_size = Vector2(760, 460)
-	_dialog_card.offset_left = -380
-	_dialog_card.offset_right = 380
+	_dialog_card.custom_minimum_size = Vector2(820, 460)
+	_dialog_card.offset_left = -410
+	_dialog_card.offset_right = 410
 	_dialog_card.offset_top = -230
 	_dialog_card.offset_bottom = 230
 
@@ -374,7 +377,7 @@ func _build_ui() -> void:
 		_scrap_num_label.add_theme_font_override("font", _cached_font)
 	sv.add_child(_scrap_num_label)
 
-	## 底部操作按鈕：普通領取、雙倍領取、前往委託、前往鍛造、前往背包與前往戰力 (高 52px, 熱區 >= 48px, 立體果凍厚底)
+	## 底部操作按鈕：普通領取、雙倍領取、前往委託、前往鍛造、前往背包、前往戰力與前往商城 (高 52px, 熱區 >= 48px, 立體果凍厚底)
 	var foot_box := HBoxContainer.new()
 	foot_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	foot_box.add_theme_constant_override("separation", 6)
@@ -537,6 +540,32 @@ func _build_ui() -> void:
 	_btn_go_power_stat.pressed.connect(_on_go_power_stat_pressed)
 	foot_box.add_child(_btn_go_power_stat)
 
+	## 前往商城快捷按鈕 (BtnGoShop，高 52px、熱區 >= 48px、暖橘 #FFA010 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
+	_btn_go_shop = Button.new()
+	_btn_go_shop.name = "BtnGoShop"
+	_btn_go_shop.custom_minimum_size = Vector2(105, 52)
+	_btn_go_shop.focus_mode = Control.FOCUS_NONE
+
+	var shop_sb := StyleBoxFlat.new()
+	shop_sb.bg_color = COLOR_ORANGE
+	shop_sb.border_color = COLOR_BORDER
+	shop_sb.set_border_width_all(2)
+	shop_sb.border_width_bottom = 5
+	shop_sb.set_corner_radius_all(18)
+	var shop_sb_h := shop_sb.duplicate() as StyleBoxFlat
+	shop_sb_h.bg_color = Color("#FFB030")
+	var shop_sb_p := shop_sb.duplicate() as StyleBoxFlat
+	shop_sb_p.border_width_bottom = 2
+	_btn_go_shop.add_theme_stylebox_override("normal", shop_sb)
+	_btn_go_shop.add_theme_stylebox_override("hover", shop_sb_h)
+	_btn_go_shop.add_theme_stylebox_override("pressed", shop_sb_p)
+	_btn_go_shop.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_shop.add_theme_font_size_override("font_size", 16)
+	if _cached_font:
+		_btn_go_shop.add_theme_font_override("font", _cached_font)
+	_btn_go_shop.pressed.connect(_on_go_shop_pressed)
+	foot_box.add_child(_btn_go_shop)
+
 
 func _update_localized_texts() -> void:
 	if _title_label:
@@ -559,6 +588,8 @@ func _update_localized_texts() -> void:
 		_btn_go_inventory.text = Loc.t("vault.btn_go_inventory")
 	if _btn_go_power_stat:
 		_btn_go_power_stat.text = Loc.t("vault.btn_go_power_stat")
+	if _btn_go_shop:
+		_btn_go_shop.text = Loc.t("vault.btn_go_shop")
 
 
 ## 刷新顯示數值與進度條
@@ -637,6 +668,11 @@ func refresh_display() -> void:
 	if _btn_go_power_stat:
 		_btn_go_power_stat.text = Loc.t("vault.btn_go_power_stat")
 		_btn_go_power_stat.disabled = false
+
+	## 更新前往商城按鈕狀態
+	if _btn_go_shop:
+		_btn_go_shop.text = Loc.t("vault.btn_go_shop")
+		_btn_go_shop.disabled = false
 
 
 func _is_ad_removed() -> bool:
@@ -781,6 +817,26 @@ func _on_go_power_stat_pressed() -> void:
 	queue_free()
 
 
+func _on_go_shop_pressed() -> void:
+	shop_requested.emit()
+	go_shop.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_shop"):
+		p.call("open_shop")
+	elif p != null and p.has_method("open_shop_dialog"):
+		p.call("open_shop_dialog")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_shop"):
+				ml.call("open_shop")
+			elif ml and ml.has_method("open_shop_dialog"):
+				ml.call("open_shop_dialog")
+	closed.emit()
+	queue_free()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -816,6 +872,14 @@ func get_go_inventory_button() -> Button:
 
 func get_go_power_stat_button() -> Button:
 	return _btn_go_power_stat
+
+
+func get_go_shop_button() -> Button:
+	return _btn_go_shop
+
+
+func get_shop_button() -> Button:
+	return _btn_go_shop
 
 
 func get_close_button() -> Button:
