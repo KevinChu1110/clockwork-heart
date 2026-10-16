@@ -6940,6 +6940,14 @@ func open_maple_inventory(initial_category: String = "") -> Control:
 		inv.connect("power_stat_requested", func():
 			open_power_stat_dialog()
 		)
+	if inv.has_signal("go_shop"):
+		inv.connect("go_shop", func():
+			open_shop()
+		)
+	if inv.has_signal("shop_requested"):
+		inv.connect("shop_requested", func():
+			open_shop()
+		)
 	add_child(inv)
 	if not initial_category.is_empty() and inv.has_method("set_category"):
 		inv.call("set_category", initial_category)
@@ -7279,6 +7287,10 @@ func open_energy_dialog() -> Control:
 
 
 ## 開啟商城/儲值彈窗
+func open_shop_dialog() -> Control:
+	return open_shop()
+
+
 func open_shop() -> Control:
 	var existing = get_node_or_null("ShopDialog")
 	if existing != null:
