@@ -4316,5 +4316,6 @@
   "windup_daily.btn_go_inventory": "Ir a Mochila",
   "windup_daily.btn_go_vault": "Ir a Bóveda",
   "vault.btn_go_windup": "Ir a Encargos",
-  "title_wall.btn_go_inventory": "Ir a Mochila"
+  "title_wall.btn_go_inventory": "Ir a Mochila",
+  "inventory.btn_go_wardrobe": "A Guardarropa"
 }
