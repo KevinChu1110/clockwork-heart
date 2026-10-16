@@ -6865,6 +6865,16 @@
    "keys": [
     "ForgeDia"
    ]
+  },
+  {
+   "id": "skill-shop-shortcut",
+   "cat": "遊戲",
+   "title": "SkillDialog 心法招式底欄新增『前往商城』快捷果凍按鈕連動 ShopDialog",
+   "status": "草稿",
+   "note": "建立任務 (t_e424b86c)",
+   "keys": [
+    "SkillDia"
+   ]
   }
  ]
 }
