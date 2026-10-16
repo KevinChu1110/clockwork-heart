@@ -3956,5 +3956,6 @@
   "windup_daily.btn_go_inventory": "バッグへ",
   "windup_daily.btn_go_vault": "貯蔵庫へ",
   "vault.btn_go_windup": "日課へ",
-  "title_wall.btn_go_inventory": "バッグへ"
+  "title_wall.btn_go_inventory": "バッグへ",
+  "inventory.btn_go_title_wall": "称号へ"
 }

@@ -6940,6 +6940,14 @@ func open_maple_inventory(initial_category: String = "") -> Control:
 		inv.connect("power_stat_requested", func():
 			open_power_stat_dialog()
 		)
+	if inv.has_signal("go_title_wall"):
+		inv.connect("go_title_wall", func():
+			open_title_wall_dialog()
+		)
+	if inv.has_signal("title_wall_requested"):
+		inv.connect("title_wall_requested", func():
+			open_title_wall_dialog()
+		)
 	add_child(inv)
 	if not initial_category.is_empty() and inv.has_method("set_category"):
 		inv.call("set_category", initial_category)
@@ -7868,6 +7876,10 @@ func get_hero_title_text() -> String:
 
 func refresh_hero_title() -> void:
 	_refresh_hero_title_tag()
+
+
+func open_title_wall() -> Control:
+	return open_title_wall_dialog()
 
 
 func open_title_wall_dialog() -> Control:

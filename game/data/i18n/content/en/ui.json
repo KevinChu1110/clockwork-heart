@@ -3956,5 +3956,6 @@
   "windup_daily.btn_go_inventory": "To Inventory",
   "windup_daily.btn_go_vault": "To Vault",
   "vault.btn_go_windup": "To Daily",
-  "title_wall.btn_go_inventory": "To Inventory"
+  "title_wall.btn_go_inventory": "To Inventory",
+  "inventory.btn_go_title_wall": "To Titles"
 }
