@@ -6880,8 +6880,8 @@
    "id": "shop-skill-shortcut",
    "cat": "遊戲",
    "title": "ShopDialog 商城彈窗底欄新增『前往心法』快捷果凍按鈕連動 SkillDialog",
-   "status": "開發中",
-   "note": "開始開發 ShopDialog 前往心法快捷按鈕 (t_4116f7d6)",
+   "status": "測試中",
+   "note": "ShopDialog 商城底欄新增前往心法快捷果凍按鈕聯動 SkillDialog",
    "keys": [
     "ShopDial"
    ]
