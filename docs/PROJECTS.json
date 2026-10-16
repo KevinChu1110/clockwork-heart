@@ -6825,6 +6825,16 @@
    "keys": [
     "把已過審的衣櫥前"
    ]
+  },
+  {
+   "id": "shop-workshop-shortcut",
+   "cat": "遊戲",
+   "title": "ShopDialog 商城底欄新增『前往工坊』快捷果凍按鈕連動 GemWorkshopDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "ShopDial"
+   ]
   }
  ]
 }
