@@ -2632,6 +2632,10 @@ func is_vault_bubble_full_glow() -> bool:
 	return _vault_bubble_is_full_glow
 
 ## 開啟發條儲能庫放置收益彈窗
+func open_clockwork_vault_dialog() -> Control:
+	return open_clockwork_vault()
+
+
 func open_clockwork_vault() -> Control:
 	var existing = get_node_or_null("ClockworkVaultDialog")
 	if existing != null:
@@ -7434,6 +7438,28 @@ func open_shop() -> Control:
 			var skill_dlg = open_skill_dialog()
 			if skill_dlg and is_instance_valid(skill_dlg) and skill_dlg.has_signal("closed"):
 				skill_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("vault_requested"):
+		dlg.vault_requested.connect(func():
+			var vault_dlg = open_clockwork_vault()
+			if vault_dlg and is_instance_valid(vault_dlg) and vault_dlg.has_signal("closed"):
+				vault_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_shop()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("go_vault"):
+		dlg.go_vault.connect(func():
+			var vault_dlg = open_clockwork_vault()
+			if vault_dlg and is_instance_valid(vault_dlg) and vault_dlg.has_signal("closed"):
+				vault_dlg.closed.connect(func():
 					if is_instance_valid(self) and is_inside_tree():
 						var has_modal = get_node_or_null("ShopDialog") != null or get_node_or_null("BattleView") != null
 						if not has_modal:

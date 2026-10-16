@@ -27,6 +27,8 @@ signal go_workshop()
 signal workshop_requested()
 signal go_skill()
 signal skill_requested()
+signal go_vault()
+signal vault_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -98,6 +100,14 @@ static func _t(s: String) -> String:
 		if str(v) != "":
 			return str(v)
 		return ContentLoc.text("ui", "前往心法")
+	if s == "shop.btn_go_vault" or s == "前往儲能庫":
+		var lc := ContentLoc.locale()
+		if lc == "zh_TW":
+			return "前往儲能庫"
+		var v = ContentLoc._table("ui", lc).get("shop.btn_go_vault", "")
+		if str(v) != "":
+			return str(v)
+		return ContentLoc.text("ui", "前往儲能庫")
 	return ContentLoc.text("ui", s)
 
 static func tr_ui(s: String) -> String:
@@ -145,6 +155,8 @@ var _btn_go_wardrobe: Button
 var _btn_go_title_wall: Button
 var _btn_go_workshop: Button
 var _btn_go_skill: Button
+var _btn_go_vault: Button
+var _foot_scroll: ScrollContainer
 var _cached_font: Font = null
 
 ## IAP 佔位品項定義（TODO: 內購定價帶尚未定案，依據 docs/BUSINESS.md 待 Kevin 裁定）
@@ -287,6 +299,8 @@ func _apply_locale_texts() -> void:
 		_btn_go_workshop.text = _t("shop.btn_go_workshop")
 	if _btn_go_skill and is_instance_valid(_btn_go_skill):
 		_btn_go_skill.text = _t("shop.btn_go_skill")
+	if _btn_go_vault and is_instance_valid(_btn_go_vault):
+		_btn_go_vault.text = _t("shop.btn_go_vault")
 
 
 func _build_ui() -> void:
@@ -489,12 +503,19 @@ func _build_ui() -> void:
 		_status_msg_lbl.add_theme_font_override("font", _cached_font)
 	v.add_child(_status_msg_lbl)
 
-	# ── 底部操作快捷列 (前往背包、前往聚魂、前往鍛造快捷果凍按鈕) ──
+	# ── 底部操作快捷列 (前往背包、前往聚魂、前往鍛造等快捷果凍按鈕，支援橫向捲動) ──
+	_foot_scroll = ScrollContainer.new()
+	_foot_scroll.name = "FooterScroll"
+	_foot_scroll.custom_minimum_size = Vector2(706, 60)
+	_foot_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	_foot_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	v.add_child(_foot_scroll)
+
 	var foot_h := HBoxContainer.new()
 	foot_h.name = "FooterBar"
 	foot_h.alignment = BoxContainer.ALIGNMENT_CENTER
 	foot_h.add_theme_constant_override("separation", 10)
-	v.add_child(foot_h)
+	_foot_scroll.add_child(foot_h)
 
 	# 1. 前往背包 (薄荷綠)
 	_btn_go_inventory = Button.new()
@@ -726,6 +747,36 @@ func _build_ui() -> void:
 	_btn_go_skill.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_btn_go_skill.pressed.connect(_on_go_skill_clicked)
 	foot_h.add_child(_btn_go_skill)
+
+	# 9. 前往儲能庫 (金黃)
+	_btn_go_vault = Button.new()
+	_btn_go_vault.name = "BtnGoVault"
+	_btn_go_vault.text = _t("shop.btn_go_vault")
+	_btn_go_vault.custom_minimum_size = Vector2(140, 50)
+	_btn_go_vault.focus_mode = Control.FOCUS_NONE
+	_btn_go_vault.add_theme_font_size_override("font_size", 16)
+	_btn_go_vault.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_vault.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_vault.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_btn_go_vault.add_theme_font_override("font", _cached_font)
+
+	var vault_sb := StyleBoxFlat.new()
+	vault_sb.bg_color = COLOR_GOLD
+	vault_sb.border_color = COLOR_BORDER
+	vault_sb.set_border_width_all(2)
+	vault_sb.border_width_bottom = 5
+	vault_sb.set_corner_radius_all(18)
+	var vault_sb_h := vault_sb.duplicate() as StyleBoxFlat
+	vault_sb_h.bg_color = Color("#FFE050")
+	var vault_sb_p := vault_sb.duplicate() as StyleBoxFlat
+	vault_sb_p.border_width_bottom = 2
+	_btn_go_vault.add_theme_stylebox_override("normal", vault_sb)
+	_btn_go_vault.add_theme_stylebox_override("hover", vault_sb_h)
+	_btn_go_vault.add_theme_stylebox_override("pressed", vault_sb_p)
+	_btn_go_vault.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_vault.pressed.connect(_on_go_vault_clicked)
+	foot_h.add_child(_btn_go_vault)
 
 
 func _build_service_card(title: String, desc: String, card_name: String) -> PanelContainer:
@@ -1052,6 +1103,61 @@ func get_go_skill_button() -> Button:
 
 func get_skill_button() -> Button:
 	return _btn_go_skill
+
+
+func get_go_vault_button() -> Button:
+	return _btn_go_vault
+
+
+func get_vault_button() -> Button:
+	return _btn_go_vault
+
+
+func get_footer_scroll() -> ScrollContainer:
+	return _foot_scroll
+
+
+func scroll_footer_to_button(btn: Control) -> void:
+	if _foot_scroll and is_instance_valid(_foot_scroll) and btn and is_instance_valid(btn):
+		_foot_scroll.scroll_horizontal = int(max(0, btn.position.x - 200))
+
+
+func scroll_footer_to_end() -> void:
+	if _foot_scroll and is_instance_valid(_foot_scroll):
+		_foot_scroll.scroll_horizontal = 100000
+
+
+func _on_go_vault_clicked() -> void:
+	go_vault.emit()
+	vault_requested.emit()
+	var p := get_parent()
+	if p != null and (p.has_method("open_clockwork_vault") or p.has_method("open_clockwork_vault_dialog")):
+		if vault_requested.get_connections().is_empty():
+			var method_name: String = "open_clockwork_vault" if p.has_method("open_clockwork_vault") else "open_clockwork_vault_dialog"
+			var vault_dlg = p.call(method_name)
+			if vault_dlg and is_instance_valid(vault_dlg) and vault_dlg.has_signal("closed") and p.has_method("open_shop"):
+				vault_dlg.closed.connect(func():
+					if is_instance_valid(p) and p.is_inside_tree():
+						var has_modal = p.get_node_or_null("ShopDialog") != null or p.get_node_or_null("BattleView") != null
+						if not has_modal:
+							p.call("open_shop")
+				, CONNECT_ONE_SHOT)
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and (ml.has_method("open_clockwork_vault") or ml.has_method("open_clockwork_vault_dialog")):
+				if vault_requested.get_connections().is_empty():
+					var method_name: String = "open_clockwork_vault" if ml.has_method("open_clockwork_vault") else "open_clockwork_vault_dialog"
+					var vault_dlg = ml.call(method_name)
+					if vault_dlg and is_instance_valid(vault_dlg) and vault_dlg.has_signal("closed") and ml.has_method("open_shop"):
+						vault_dlg.closed.connect(func():
+							if is_instance_valid(ml) and ml.is_inside_tree():
+								var has_modal = ml.get_node_or_null("ShopDialog") != null or ml.get_node_or_null("BattleView") != null
+								if not has_modal:
+									ml.call("open_shop")
+						, CONNECT_ONE_SHOT)
+	_on_close()
 
 
 func _on_go_skill_clicked() -> void:
