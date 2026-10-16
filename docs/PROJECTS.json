@@ -6790,8 +6790,8 @@
    "id": "inventory-wardrobe-shortcut",
    "cat": "遊戲",
    "title": "MapleInventory 探索背包底欄新增前往衣櫥快捷按鈕連動 WardrobeDialog",
-   "status": "測試中",
-   "note": "完成 MapleInventory 前往衣櫥快捷按鈕與連動 (t_edd1109c)",
+   "status": "已上線",
+   "note": "雙分支合進 main 並完成全套回歸驗收 (t_ac821efb)",
    "keys": [
     "MapleInv"
    ]
