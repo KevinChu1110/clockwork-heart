@@ -7090,8 +7090,8 @@
    "id": "gem-workshop-skill-shortcut",
    "cat": "遊戲",
    "title": "GemWorkshopDialog 手藝工坊底欄新增前往心法快捷果凍按鈕連動 SkillDialog",
-   "status": "開發中",
-   "note": "派工阿宏 sideworker 推進開發",
+   "status": "測試中",
+   "note": "完成 GemWorkshopDialog 前往心法快捷果凍按鈕與 SkillDialog 連動",
    "keys": [
     "GemWorks"
    ]
