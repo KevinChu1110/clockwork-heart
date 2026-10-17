@@ -2082,6 +2082,13 @@ func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
 		dlg.weapon_swapped.connect(_on_weapon_swapped_from_dialog)
 	if dlg.has_signal("slot_unequipped"):
 		dlg.slot_unequipped.connect(_on_slot_unequipped_from_dialog)
+	if dlg.has_signal("inventory_requested"):
+		dlg.inventory_requested.connect(func():
+			if is_instance_valid(_weapon_swap_dialog) and not _weapon_swap_dialog.is_queued_for_deletion():
+				_weapon_swap_dialog.queue_free()
+				_weapon_swap_dialog = null
+			_on_go_inventory_pressed()
+		)
 
 	add_child(dlg)
 	return dlg

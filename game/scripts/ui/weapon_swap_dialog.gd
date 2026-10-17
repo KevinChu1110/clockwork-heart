@@ -14,6 +14,8 @@ signal weapon_swapped(slot_idx: int, uid: String)
 signal slot_unequipped(slot_idx: int)
 signal forge_requested()
 signal power_stat_requested()
+signal inventory_requested()
+signal go_inventory()
 signal closed()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -96,6 +98,7 @@ var _dialog_card: PanelContainer
 var _title_lbl: Label
 var _sub_title_lbl: Label
 var _close_x_btn: Button
+var _btn_go_inventory: Button
 var _btn_go_power_stat: Button
 var _btn_go_forge: Button
 var _bottom_close_btn: Button
@@ -339,10 +342,10 @@ func _build_ui() -> void:
 	_apply_font(emp_sub, 13, COLOR_TEXT_MUTED)
 	emp_v.add_child(emp_sub)
 
-	# 7. 底部列（提示文字 + 前往鍛造按鈕 + 關閉按鈕）
+	# 7. 底部列（提示文字 + 前往背包按鈕 + 前往戰力按鈕 + 前往鍛造按鈕 + 關閉按鈕）
 	var bot_h := HBoxContainer.new()
 	bot_h.name = "BottomBar"
-	bot_h.add_theme_constant_override("separation", 12)
+	bot_h.add_theme_constant_override("separation", 10)
 	root_v.add_child(bot_h)
 
 	_bottom_hint_lbl = Label.new()
@@ -351,6 +354,18 @@ func _build_ui() -> void:
 	_apply_font(_bottom_hint_lbl, 12, COLOR_TEXT_MUTED)
 	bot_h.add_child(_bottom_hint_lbl)
 
+	_btn_go_inventory = Button.new()
+	_btn_go_inventory.name = "BtnGoInventory"
+	var inv_key_txt := _t("weapon_swap.btn_go_inventory")
+	if inv_key_txt != "weapon_swap.btn_go_inventory" and not inv_key_txt.is_empty():
+		_btn_go_inventory.text = inv_key_txt
+	else:
+		_btn_go_inventory.text = _t("前往背包")
+	_btn_go_inventory.custom_minimum_size = Vector2(115, 48)
+	_style_jelly_btn(_btn_go_inventory, COLOR_MINT, COLOR_TEXT_DARK, 14, 5, 16)
+	_btn_go_inventory.pressed.connect(_on_go_inventory_pressed)
+	bot_h.add_child(_btn_go_inventory)
+
 	_btn_go_power_stat = Button.new()
 	_btn_go_power_stat.name = "BtnGoPowerStat"
 	var pstat_key_txt := _t("weapon_swap.go_power_stat")
@@ -358,7 +373,7 @@ func _build_ui() -> void:
 		_btn_go_power_stat.text = pstat_key_txt
 	else:
 		_btn_go_power_stat.text = _t("前往戰力")
-	_btn_go_power_stat.custom_minimum_size = Vector2(130, 48)
+	_btn_go_power_stat.custom_minimum_size = Vector2(115, 48)
 	_style_jelly_btn(_btn_go_power_stat, COLOR_GOLD, COLOR_TEXT_DARK, 14, 5, 16)
 	_btn_go_power_stat.pressed.connect(_on_go_power_stat_pressed)
 	bot_h.add_child(_btn_go_power_stat)
@@ -366,7 +381,7 @@ func _build_ui() -> void:
 	_btn_go_forge = Button.new()
 	_btn_go_forge.name = "BtnGoForge"
 	_btn_go_forge.text = _t("前往鍛造")
-	_btn_go_forge.custom_minimum_size = Vector2(130, 48)
+	_btn_go_forge.custom_minimum_size = Vector2(115, 48)
 	_style_jelly_btn(_btn_go_forge, COLOR_SKY, COLOR_TEXT_DARK, 14, 5, 16)
 	_btn_go_forge.pressed.connect(_on_go_forge_pressed)
 	bot_h.add_child(_btn_go_forge)
@@ -374,7 +389,7 @@ func _build_ui() -> void:
 	_bottom_close_btn = Button.new()
 	_bottom_close_btn.name = "BtnBottomClose"
 	_bottom_close_btn.text = _t("關閉")
-	_bottom_close_btn.custom_minimum_size = Vector2(110, 48)
+	_bottom_close_btn.custom_minimum_size = Vector2(100, 48)
 	_style_jelly_btn(_bottom_close_btn, COLOR_CARD_WARM, COLOR_TEXT_DARK, 15, 5, 16)
 	_bottom_close_btn.pressed.connect(_on_close_pressed)
 	bot_h.add_child(_bottom_close_btn)
@@ -390,6 +405,12 @@ func _refresh_texts() -> void:
 		_sub_title_lbl.text = _t("選擇要裝備至【%s】的武器 · 即時連動紙娃娃與屬性") % slot_name
 	if _bottom_hint_lbl:
 		_bottom_hint_lbl.text = _t("點擊武器卡片即可立即更換，即時更新戰鬥屬性與外觀紙娃娃")
+	if _btn_go_inventory:
+		var inv_key_txt := _t("weapon_swap.btn_go_inventory")
+		if inv_key_txt != "weapon_swap.btn_go_inventory" and not inv_key_txt.is_empty():
+			_btn_go_inventory.text = inv_key_txt
+		else:
+			_btn_go_inventory.text = _t("前往背包")
 	if _btn_go_power_stat:
 		var pstat_key_txt := _t("weapon_swap.go_power_stat")
 		if pstat_key_txt != "weapon_swap.go_power_stat" and not pstat_key_txt.is_empty():
@@ -728,6 +749,16 @@ func _on_unequip_pressed() -> void:
 			_toast(msg)
 	slot_unequipped.emit(_target_slot)
 	queue_free()
+
+
+func get_go_inventory_button() -> Button:
+	return _btn_go_inventory
+
+
+func _on_go_inventory_pressed() -> void:
+	inventory_requested.emit()
+	go_inventory.emit()
+	_on_close_pressed()
 
 
 func get_go_power_stat_button() -> Button:

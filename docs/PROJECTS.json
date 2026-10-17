@@ -7000,8 +7000,8 @@
    "id": "weapon-swap-inventory-shortcut",
    "cat": "遊戲",
    "title": "WeaponSwapDialog 武器更換彈窗底欄新增前往背包快捷果凍按鈕連動 MapleInventory",
-   "status": "草稿",
-   "note": "待開發",
+   "status": "已上線",
+   "note": "WeaponSwapDialog 底欄前往背包快捷果凍按鈕已過審合進主線",
    "keys": [
     "WeaponSw"
    ]
@@ -7010,10 +7010,20 @@
    "id": "victory-inventory-shortcut",
    "cat": "遊戲",
    "title": "BattleVictoryDialog 關卡勝利結算新增前往背包快捷果凍按鈕連動 MapleInventory",
-   "status": "草稿",
-   "note": "待開發",
+   "status": "已上線",
+   "note": "BattleVictoryDialog 關卡勝利前往背包快捷果凍按鈕已過審合進主線",
    "keys": [
     "BattleVi"
+   ]
+  },
+  {
+   "id": "defeat-inventory-shortcut",
+   "cat": "遊戲",
+   "title": "BattleDefeatDialog 戰敗結算新增前往背包快捷果凍按鈕連動 MapleInventory",
+   "status": "已上線",
+   "note": "BattleDefeatDialog 戰敗結算前往背包快捷果凍按鈕已過審合進主線 (t_0bfa03fb, t_944c7230)",
+   "keys": [
+    "BattleDe"
    ]
   },
   {
@@ -7024,6 +7034,16 @@
    "note": "已開卡 t_69029192 派工阿宏 sideworker 推進中",
    "keys": [
     "DummySet"
+   ]
+  },
+  {
+   "id": "merge-inventory-shortcuts-batch",
+   "cat": "平台",
+   "title": "把已過審的武器更換、關卡勝利與戰敗結算前往背包三分支合進主線",
+   "status": "開發中",
+   "note": "已開卡 t_944c7230 阿翔 sideworker2 推進三分支合併與回歸驗收中",
+   "keys": [
+    "把已過審的武器更"
    ]
   }
  ]

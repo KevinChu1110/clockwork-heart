@@ -2089,5 +2089,7 @@
   "shop.btn_go_windup": "前往委託",
   "energy_lack.btn_go_vault": "前往儲能庫",
   "forge.btn_go_inventory": "前往背包",
-  "soul_hall.btn_go_shop": "前往商城"
+  "soul_hall.btn_go_shop": "前往商城",
+  "weapon_swap.btn_go_inventory": "前往背包",
+  "weapon_swap.go_inventory": "前往背包"
 }
