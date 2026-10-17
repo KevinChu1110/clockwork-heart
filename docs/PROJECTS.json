@@ -7030,8 +7030,8 @@
    "id": "battle-defeat-inventory-shortcut",
    "cat": "遊戲",
    "title": "BattleDefeatDialog 戰敗結算新增前往背包快捷按鈕連動 MapleInventory",
-   "status": "開發中",
-   "note": "開始開發",
+   "status": "測試中",
+   "note": "完成開發、單元測試全綠與 6 張實機截圖，送審 sideqa",
    "keys": [
     "BattleDe"
    ]
