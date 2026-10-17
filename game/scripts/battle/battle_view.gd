@@ -43,6 +43,7 @@ signal retry_stage_requested()
 signal replay_stage_requested()
 signal skills_requested()
 signal power_stat_requested()
+signal inventory_requested()
 
 @onready var log_label: RichTextLabel = %Log
 @onready var player_hp: ProgressBar = %PlayerHP
@@ -5296,6 +5297,31 @@ func open_power_stat_dialog() -> Control:
 	return dlg
 
 
+func open_maple_inventory(initial_category: String = "") -> Control:
+	var existing = get_node_or_null("MapleInventory")
+	if existing != null and is_instance_valid(existing):
+		if not existing.is_queued_for_deletion():
+			if not initial_category.is_empty() and existing.has_method("set_category"):
+				existing.call("set_category", initial_category)
+			if existing.has_method("open"):
+				existing.call("open")
+			return existing
+		else:
+			remove_child(existing)
+	var MapleInventoryScn: GDScript = load("res://scripts/ui/maple_inventory.gd")
+	if MapleInventoryScn == null:
+		return null
+	var inv: Control = MapleInventoryScn.new() as Control
+	inv.name = "MapleInventory"
+	inv.z_index = 100
+	add_child(inv)
+	if not initial_category.is_empty() and inv.has_method("set_category"):
+		inv.call("set_category", initial_category)
+	if inv.has_method("open"):
+		inv.call("open")
+	return inv
+
+
 func _on_power_stat_defeat() -> void:
 	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
 		_defeat_settlement_dialog = null
@@ -5805,12 +5831,17 @@ func _show_dummy_settlement(won: bool) -> void:
 		func():
 			_dummy_settlement_dialog = null
 			skills_requested.emit(),
-		_on_power_stat_dummy
+		_on_power_stat_dummy,
+		_on_inventory_dummy
 	)
 	if _dummy_settlement_dialog and _dummy_settlement_dialog.has_signal("power_stat_requested") and not _dummy_settlement_dialog.power_stat_requested.is_connected(_on_power_stat_dummy):
 		_dummy_settlement_dialog.power_stat_requested.connect(_on_power_stat_dummy)
 	if _dummy_settlement_dialog and _dummy_settlement_dialog.has_signal("go_power_stat") and not _dummy_settlement_dialog.go_power_stat.is_connected(_on_power_stat_dummy):
 		_dummy_settlement_dialog.go_power_stat.connect(_on_power_stat_dummy)
+	if _dummy_settlement_dialog and _dummy_settlement_dialog.has_signal("inventory_requested") and not _dummy_settlement_dialog.inventory_requested.is_connected(_on_inventory_dummy):
+		_dummy_settlement_dialog.inventory_requested.connect(_on_inventory_dummy)
+	if _dummy_settlement_dialog and _dummy_settlement_dialog.has_signal("go_inventory") and not _dummy_settlement_dialog.go_inventory.is_connected(_on_inventory_dummy):
+		_dummy_settlement_dialog.go_inventory.connect(_on_inventory_dummy)
 
 
 func _on_power_stat_dummy() -> void:
@@ -5818,6 +5849,13 @@ func _on_power_stat_dummy() -> void:
 		_dummy_settlement_dialog = null
 	power_stat_requested.emit()
 	open_power_stat_dialog()
+
+
+func _on_inventory_dummy() -> void:
+	if _dummy_settlement_dialog != null and is_instance_valid(_dummy_settlement_dialog):
+		_dummy_settlement_dialog = null
+	inventory_requested.emit()
+	open_maple_inventory()
 
 
 func _restart_dummy_training() -> void:
