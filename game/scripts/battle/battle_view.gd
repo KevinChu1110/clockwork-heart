@@ -5856,12 +5856,17 @@ func _show_dummy_settlement(won: bool) -> void:
 		func():
 			_dummy_settlement_dialog = null
 			skills_requested.emit(),
-		_on_power_stat_dummy
+		_on_power_stat_dummy,
+		_on_inventory_dummy
 	)
 	if _dummy_settlement_dialog and _dummy_settlement_dialog.has_signal("power_stat_requested") and not _dummy_settlement_dialog.power_stat_requested.is_connected(_on_power_stat_dummy):
 		_dummy_settlement_dialog.power_stat_requested.connect(_on_power_stat_dummy)
 	if _dummy_settlement_dialog and _dummy_settlement_dialog.has_signal("go_power_stat") and not _dummy_settlement_dialog.go_power_stat.is_connected(_on_power_stat_dummy):
 		_dummy_settlement_dialog.go_power_stat.connect(_on_power_stat_dummy)
+	if _dummy_settlement_dialog and _dummy_settlement_dialog.has_signal("inventory_requested") and not _dummy_settlement_dialog.inventory_requested.is_connected(_on_inventory_dummy):
+		_dummy_settlement_dialog.inventory_requested.connect(_on_inventory_dummy)
+	if _dummy_settlement_dialog and _dummy_settlement_dialog.has_signal("go_inventory") and not _dummy_settlement_dialog.go_inventory.is_connected(_on_inventory_dummy):
+		_dummy_settlement_dialog.go_inventory.connect(_on_inventory_dummy)
 
 
 func _on_power_stat_dummy() -> void:
@@ -5869,6 +5874,13 @@ func _on_power_stat_dummy() -> void:
 		_dummy_settlement_dialog = null
 	power_stat_requested.emit()
 	open_power_stat_dialog()
+
+
+func _on_inventory_dummy() -> void:
+	if _dummy_settlement_dialog != null and is_instance_valid(_dummy_settlement_dialog):
+		_dummy_settlement_dialog = null
+	inventory_requested.emit()
+	open_maple_inventory()
 
 
 func _restart_dummy_training() -> void:

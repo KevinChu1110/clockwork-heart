@@ -16,6 +16,8 @@ signal retry_requested()
 signal skills_requested()
 signal go_power_stat()
 signal power_stat_requested()
+signal go_inventory()
+signal inventory_requested()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
@@ -37,6 +39,21 @@ static func _t(s: String) -> String:
 				return "Ver Poder"
 			_:
 				return "前往戰力"
+	if s == "dummy.btn_go_inventory" or s == "dummy_settlement.btn_go_inventory" or s == "ui.btn_go_inventory" or s == "前往背包":
+		var lc := ContentLoc.locale()
+		match lc:
+			"zh_CN":
+				return "前往背包"
+			"en":
+				return "Go to Inventory"
+			"ja":
+				return "インベントリへ進む"
+			"ko":
+				return "인벤토리로 이동"
+			"es":
+				return "Ir al Inventario"
+			_:
+				return "前往背包"
 	return ContentLoc.text("ui", s)
 
 
@@ -65,6 +82,7 @@ var _tip_label: Label
 var _retry_btn: Button
 var _skills_btn: Button
 var _go_power_stat_btn: Button
+var _go_inventory_btn: Button
 var _confirm_btn: Button
 var _cached_font: Font = null
 
@@ -113,6 +131,7 @@ var _on_confirm: Callable = Callable()
 var _on_retry: Callable = Callable()
 var _on_skills: Callable = Callable()
 var _on_power_stat: Callable = Callable()
+var _on_inventory: Callable = Callable()
 
 
 static func _get_game_state() -> Object:
@@ -151,14 +170,14 @@ func _evaluate_record(stats: Dictionary = {}) -> void:
 			gs.best_dummy_hit_count = maxi(int(gs.best_dummy_hit_count), _total_hit_count)
 
 
-static func show_dialog(parent: Node, stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable(), on_power_stat: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable(), on_power_stat: Callable = Callable(), on_inventory: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/dummy_settlement_dialog.gd").new()
-	dlg.setup(stats, on_confirm, on_retry, on_skills, on_power_stat)
+	dlg.setup(stats, on_confirm, on_retry, on_skills, on_power_stat, on_inventory)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable(), on_power_stat: Callable = Callable()) -> void:
+func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: Callable = Callable(), on_skills: Callable = Callable(), on_power_stat: Callable = Callable(), on_inventory: Callable = Callable()) -> void:
 	_total_damage = int(stats.get("total_damage", 0))
 	_elapsed_time = float(stats.get("elapsed_time", 0.0))
 	_dps = float(stats.get("dps", 0.0))
@@ -172,6 +191,7 @@ func setup(stats: Dictionary = {}, on_confirm: Callable = Callable(), on_retry: 
 	_on_retry = on_retry
 	_on_skills = on_skills
 	_on_power_stat = on_power_stat
+	_on_inventory = on_inventory
 	_evaluate_record(stats)
 
 	if _dialog_card == null:
@@ -536,7 +556,30 @@ func _build_ui() -> void:
 	_go_power_stat_btn.pressed.connect(_on_power_stat_clicked)
 	btn_hbox.add_child(_go_power_stat_btn)
 
-	# 4. 完成試招按鈕（金黃立體厚底 >= 48px，高度 52px）
+	# 4. 前往背包按鈕（天藍色立體果凍按鈕，#38A0FF、深藍紫描邊 #1F1A3A、圓角 16~18px、厚底 5px、字級 16~18px 粉圓體，尺寸不小於 130x48px，緊鄰『前往戰力』按鈕並列）
+	_go_inventory_btn = Button.new()
+	_go_inventory_btn.name = "BtnGoInventory"
+	_go_inventory_btn.custom_minimum_size = Vector2(140, 50)
+	_go_inventory_btn.add_theme_font_size_override("font_size", 18)
+	_go_inventory_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_go_inventory_btn.add_theme_font_override("font", _cached_font)
+
+	var inv_normal := _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 16, 2)
+	var inv_hover := _create_button_style(Color("#5CB2FF"), COLOR_BORDER, 5, 16, 2)
+	var inv_pressed := _create_button_style(Color("#2680D9"), COLOR_BORDER, 2, 16, 2)
+	inv_pressed.content_margin_top = 11
+	inv_pressed.content_margin_bottom = 7
+
+	_go_inventory_btn.add_theme_stylebox_override("normal", inv_normal)
+	_go_inventory_btn.add_theme_stylebox_override("hover", inv_hover)
+	_go_inventory_btn.add_theme_stylebox_override("pressed", inv_pressed)
+	_go_inventory_btn.add_theme_stylebox_override("focus", inv_normal)
+
+	_go_inventory_btn.pressed.connect(_on_inventory_clicked)
+	btn_hbox.add_child(_go_inventory_btn)
+
+	# 5. 完成試招按鈕（金黃立體厚底 >= 48px，高度 52px）
 	_confirm_btn = Button.new()
 	_confirm_btn.name = "ConfirmButton"
 	_confirm_btn.custom_minimum_size = Vector2(160, 52)
@@ -598,6 +641,8 @@ func _update_ui_texts() -> void:
 		_skills_btn.text = _t("調整心法")
 	if _go_power_stat_btn and is_instance_valid(_go_power_stat_btn):
 		_go_power_stat_btn.text = _t("前往戰力")
+	if _go_inventory_btn and is_instance_valid(_go_inventory_btn):
+		_go_inventory_btn.text = _t("前往背包")
 	if _confirm_btn and is_instance_valid(_confirm_btn):
 		_confirm_btn.text = _t("完成試招")
 	if _record_badge_lbl and is_instance_valid(_record_badge_lbl):
@@ -1107,6 +1152,15 @@ func _on_power_stat_clicked() -> void:
 	queue_free()
 
 
+func _on_inventory_clicked() -> void:
+	go_inventory.emit()
+	inventory_requested.emit()
+	if _on_inventory.is_valid():
+		_on_inventory.call()
+	_try_open_maple_inventory()
+	queue_free()
+
+
 func _try_open_power_stat() -> void:
 	var cur: Node = get_parent()
 	while cur != null:
@@ -1123,6 +1177,25 @@ func _try_open_power_stat() -> void:
 		var bv = tree.root.find_child("BattleView", true, false)
 		if bv != null and bv.has_method("open_power_stat_dialog"):
 			bv.call("open_power_stat_dialog")
+			return
+
+
+func _try_open_maple_inventory() -> void:
+	var cur: Node = get_parent()
+	while cur != null:
+		if cur.has_method("open_maple_inventory"):
+			cur.call("open_maple_inventory")
+			return
+		cur = cur.get_parent()
+	var tree := Engine.get_main_loop() as SceneTree
+	if tree != null and tree.root != null:
+		var ml = tree.root.find_child("MobileLobby", true, false)
+		if ml != null and ml.has_method("open_maple_inventory"):
+			ml.call("open_maple_inventory")
+			return
+		var bv = tree.root.find_child("BattleView", true, false)
+		if bv != null and bv.has_method("open_maple_inventory"):
+			bv.call("open_maple_inventory")
 			return
 
 
@@ -1212,6 +1285,22 @@ func get_go_power_stat_button_text() -> String:
 
 func get_go_power_stat_text() -> String:
 	return _go_power_stat_btn.text if _go_power_stat_btn else ""
+
+
+func get_go_inventory_button() -> Button:
+	return _go_inventory_btn
+
+
+func get_inventory_button() -> Button:
+	return _go_inventory_btn
+
+
+func get_go_inventory_button_text() -> String:
+	return _go_inventory_btn.text if _go_inventory_btn else ""
+
+
+func get_go_inventory_text() -> String:
+	return _go_inventory_btn.text if _go_inventory_btn else ""
 
 
 func get_confirm_text() -> String:

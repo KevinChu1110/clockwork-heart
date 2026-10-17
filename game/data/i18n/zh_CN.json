@@ -4342,5 +4342,8 @@
   "weapon_swap.go_inventory": "前往背包",
   "victory.btn_go_inventory": "前往背包",
   "defeat.btn_go_inventory": "前往背包",
-  "defeat.go_inventory": "前往背包"
+  "defeat.go_inventory": "前往背包",
+  "dummy.btn_go_inventory": "前往背包",
+  "dummy_settlement.btn_go_inventory": "前往背包",
+  "ui.btn_go_inventory": "前往背包"
 }

@@ -4339,5 +4339,8 @@
   "weapon_swap.go_inventory": "Go to Inventory",
   "victory.btn_go_inventory": "Go to Inventory",
   "defeat.btn_go_inventory": "Go to Inventory",
-  "defeat.go_inventory": "Go to Inventory"
+  "defeat.go_inventory": "Go to Inventory",
+  "dummy.btn_go_inventory": "Go to Inventory",
+  "dummy_settlement.btn_go_inventory": "Go to Inventory",
+  "ui.btn_go_inventory": "Go to Inventory"
 }
