@@ -7015,6 +7015,16 @@
    "keys": [
     "BattleVi"
    ]
+  },
+  {
+   "id": "dummy-settlement-inventory-shortcut",
+   "cat": "遊戲",
+   "title": "DummySettlementDialog 木人樁試招結算新增前往背包快捷按鈕連動 MapleInventory",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "DummySet"
+   ]
   }
  ]
 }
