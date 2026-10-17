@@ -4336,5 +4336,6 @@
   "forge.btn_go_inventory": "인벤토리로 이동",
   "soul_hall.btn_go_shop": "상점으로",
   "weapon_swap.btn_go_inventory": "인벤토리로 이동",
-  "weapon_swap.go_inventory": "인벤토리로 이동"
+  "weapon_swap.go_inventory": "인벤토리로 이동",
+  "victory.btn_go_inventory": "인벤토리로 이동"
 }

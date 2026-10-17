@@ -3976,5 +3976,6 @@
   "forge.btn_go_inventory": "Ir al Inventario",
   "soul_hall.btn_go_shop": "A Tienda",
   "weapon_swap.btn_go_inventory": "Ir al Inventario",
-  "weapon_swap.go_inventory": "Ir al Inventario"
+  "weapon_swap.go_inventory": "Ir al Inventario",
+  "victory.btn_go_inventory": "Ir al Inventario"
 }

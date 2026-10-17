@@ -77,6 +77,7 @@ var _current: Screen = Screen.TITLE
 var _battle_mode: String = "wolf"
 var _defeat_gear_up_requested: bool = false
 var _defeat_power_stat_requested: bool = false
+var _victory_inventory_requested: bool = false
 var _dummy_skills_requested: bool = false
 var _pre_dummy_hp: int = -1
 var _after_dialogue: Callable = Callable()
@@ -4271,11 +4272,14 @@ func _start_battle_raw(mode: String) -> void:
 		host.add_child(battle)
 		_defeat_gear_up_requested = false
 		_defeat_power_stat_requested = false
+		_victory_inventory_requested = false
 		battle.battle_finished.connect(_on_battle_finished)
 		if battle.has_signal("gear_up_requested"):
 			battle.connect("gear_up_requested", func(): _defeat_gear_up_requested = true)
 		if battle.has_signal("power_stat_requested"):
 			battle.connect("power_stat_requested", func(): _defeat_power_stat_requested = true)
+		if battle.has_signal("inventory_requested"):
+			battle.connect("inventory_requested", func(): _victory_inventory_requested = true)
 		if battle.has_signal("skills_requested"):
 			battle.connect("skills_requested", func(): _on_dummy_skills_requested(battle))
 		battle.setup(mode)
@@ -4313,11 +4317,14 @@ func _start_battle_raw(mode: String) -> void:
 	host.add_child(battle)
 	_defeat_gear_up_requested = false
 	_defeat_power_stat_requested = false
+	_victory_inventory_requested = false
 	battle.battle_finished.connect(_on_battle_finished)
 	if battle.has_signal("gear_up_requested"):
 		battle.connect("gear_up_requested", func(): _defeat_gear_up_requested = true)
 	if battle.has_signal("power_stat_requested"):
 		battle.connect("power_stat_requested", func(): _defeat_power_stat_requested = true)
+	if battle.has_signal("inventory_requested"):
+		battle.connect("inventory_requested", func(): _victory_inventory_requested = true)
 	battle.setup(mode)
 	_refresh_hud()
 
@@ -4348,6 +4355,17 @@ func _on_battle_finished(won: bool) -> void:
 		var ml_node = host.find_child("MobileLobby", true, false)
 		if ml_node and ml_node.has_method("open_power_stat_dialog"):
 			ml_node.call("open_power_stat_dialog")
+		return
+	if won and _victory_inventory_requested:
+		_victory_inventory_requested = false
+		if _battle_mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
+			_grant_part_break_loot()
+		SaveManager.save_game()
+		_explore_play_pose("skill", 0.55)
+		_go_mobile_lobby()
+		var ml_node = host.find_child("MobileLobby", true, false)
+		if ml_node and ml_node.has_method("open_maple_inventory"):
+			ml_node.call("open_maple_inventory")
 		return
 	if not won and _defeat_gear_up_requested:
 		_defeat_gear_up_requested = false

@@ -15,6 +15,8 @@ signal next_stage_requested()
 signal replay_stage_requested()
 signal gear_up_requested()
 signal power_stat_requested()
+signal inventory_requested()
+signal go_inventory()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc := preload("res://scripts/systems/content_loc.gd")
@@ -22,6 +24,13 @@ const CoreReplaceDialogScript := preload("res://scripts/ui/core_replace_dialog.g
 const FONT_PATH := "res://assets/fonts/jf-openhuninn-2.1.ttf"
 
 static func _t(s: String) -> String:
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var loc_node: Node = (tree as SceneTree).root.get_node_or_null("Loc")
+		if loc_node != null and loc_node.has_method("t"):
+			var res: String = str(loc_node.call("t", s))
+			if res != s and not res.is_empty():
+				return res
 	return ContentLoc.text("ui", s)
 
 
@@ -60,6 +69,7 @@ var _btn_equip: Button
 var _btn_confirm: Button
 var _btn_go_gear_up: Button
 var _btn_go_power_stat: Button
+var _btn_go_inventory: Button
 var _btn_replay_stage: Button
 var _btn_next_stage: Button
 var _btn_close: Button
@@ -93,6 +103,7 @@ var _on_next_stage: Callable = Callable()
 var _on_replay_stage: Callable = Callable()
 var _on_gear_up: Callable = Callable()
 var _on_power_stat: Callable = Callable()
+var _on_inventory: Callable = Callable()
 var _stage_num: String = ""
 var _next_stage_data: Dictionary = {}
 var _is_equipped: bool = false
@@ -133,20 +144,21 @@ func set_stage(stage_num: String) -> void:
 	_refresh_display()
 
 
-static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable(), on_gear_up: Callable = Callable(), on_power_stat: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable(), on_gear_up: Callable = Callable(), on_power_stat: Callable = Callable(), on_inventory: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/battle_victory_dialog.gd").new()
-	dlg.setup(part, on_confirm, exp_gain, scrap_gain, broken_parts, on_next_stage, stage_num, on_replay_stage, on_gear_up, on_power_stat)
+	dlg.setup(part, on_confirm, exp_gain, scrap_gain, broken_parts, on_next_stage, stage_num, on_replay_stage, on_gear_up, on_power_stat, on_inventory)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable(), on_gear_up: Callable = Callable(), on_power_stat: Callable = Callable()) -> void:
+func setup(part: Dictionary = {}, on_confirm: Callable = Callable(), exp_gain: int = -1, scrap_gain: int = -1, broken_parts: Array = [], on_next_stage: Callable = Callable(), stage_num: String = "", on_replay_stage: Callable = Callable(), on_gear_up: Callable = Callable(), on_power_stat: Callable = Callable(), on_inventory: Callable = Callable()) -> void:
 	_part = part.duplicate(true)
 	_on_confirm = on_confirm
 	_on_next_stage = on_next_stage
 	_on_replay_stage = on_replay_stage
 	_on_gear_up = on_gear_up
 	_on_power_stat = on_power_stat
+	_on_inventory = on_inventory
 	if stage_num != "":
 		_stage_num = stage_num
 	elif _part.has("stage") and str(_part["stage"]) != "":
@@ -527,6 +539,24 @@ func _build_ui() -> void:
 	_btn_go_power_stat.pressed.connect(_on_go_power_stat_pressed)
 	btn_row.add_child(_btn_go_power_stat)
 
+	# 前往背包按鈕 (BtnGoInventory, 珊瑚粉 #FF5E8A 果凍厚底 5px, 圓角 16px, 尺寸 130x50, 熱區 >= 48px, 零 Emoji)
+	# Loc.t("victory.btn_go_inventory")
+	_btn_go_inventory = Button.new()
+	_btn_go_inventory.name = "BtnGoInventory"
+	var init_inv_txt := _t("victory.btn_go_inventory")
+	if init_inv_txt == "victory.btn_go_inventory" or init_inv_txt.is_empty():
+		init_inv_txt = _t("前往背包")
+	_btn_go_inventory.text = init_inv_txt
+	_btn_go_inventory.custom_minimum_size = Vector2(130, 50)
+	_btn_go_inventory.focus_mode = Control.FOCUS_NONE
+	if _cached_font:
+		_btn_go_inventory.add_theme_font_override("font", _cached_font)
+	_btn_go_inventory.add_theme_font_size_override("font_size", 16)
+	_btn_go_inventory.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_style_button(_btn_go_inventory, COLOR_PINK, COLOR_BORDER, 5, 16)
+	_btn_go_inventory.pressed.connect(_on_go_inventory_pressed)
+	btn_row.add_child(_btn_go_inventory)
+
 	# 再次挑戰按鈕 (BtnReplayStage, 多巴胺暖橘立體厚底按鈕, 高度 52px, bottom border 6px, 圓角 20px)
 	_btn_replay_stage = Button.new()
 	_btn_replay_stage.name = "BtnReplayStage"
@@ -608,6 +638,12 @@ func _refresh_display() -> void:
 	if _btn_go_power_stat != null:
 		_btn_go_power_stat.text = _t("前往戰力")
 		_btn_go_power_stat.visible = true
+	if _btn_go_inventory != null:
+		var txt_inv := _t("victory.btn_go_inventory")
+		if txt_inv == "victory.btn_go_inventory" or txt_inv.is_empty():
+			txt_inv = _t("前往背包")
+		_btn_go_inventory.text = txt_inv
+		_btn_go_inventory.visible = true
 	if _btn_replay_stage != null:
 		_btn_replay_stage.text = _t("再次挑戰")
 		var can_replay: bool = not _stage_num.is_empty() and not _is_colossus
@@ -1172,6 +1208,73 @@ func _try_open_power_stat() -> void:
 			ps.name = "PowerStatDialog"
 			ps.z_index = 100
 			root_node.add_child(ps)
+
+
+func get_go_inventory_button() -> Button:
+	return _btn_go_inventory
+
+
+func get_inventory_button() -> Button:
+	return _btn_go_inventory
+
+
+func get_go_inventory_button_text() -> String:
+	return _btn_go_inventory.text if _btn_go_inventory != null else ""
+
+
+func _on_go_inventory_pressed() -> void:
+	if _is_confirming:
+		return
+	_is_confirming = true
+
+	var a = _audio()
+	if a != null:
+		if a.has_method("play_ui"):
+			a.play_ui()
+
+	if DisplayServer.get_name() == "headless" or not is_inside_tree() or _fx_layer == null:
+		_finish_inventory()
+		return
+
+	play_reward_particles_to_bag(Callable(self, "_finish_inventory"))
+
+
+func _finish_inventory() -> void:
+	inventory_requested.emit()
+	if has_signal("go_inventory"):
+		emit_signal("go_inventory")
+	if _on_inventory.is_valid() and not inventory_requested.is_connected(_on_inventory):
+		_on_inventory.call()
+	_try_open_inventory()
+	queue_free()
+
+
+func _try_open_inventory() -> void:
+	var cur: Node = get_parent()
+	while cur != null:
+		if cur.has_method("open_maple_inventory"):
+			cur.call("open_maple_inventory")
+			return
+		cur = cur.get_parent()
+	var tree := Engine.get_main_loop()
+	if tree is SceneTree and (tree as SceneTree).root != null:
+		var root_node: Node = (tree as SceneTree).root
+		var lobby_node = root_node.find_child("MobileLobby", true, false)
+		if lobby_node != null and lobby_node.has_method("open_maple_inventory"):
+			lobby_node.call("open_maple_inventory")
+			return
+		var battle_node = root_node.find_child("BattleView", true, false)
+		if battle_node != null and battle_node.has_method("open_maple_inventory"):
+			battle_node.call("open_maple_inventory")
+			return
+		var MapleInventoryClass = load("res://scripts/ui/maple_inventory.gd")
+		if MapleInventoryClass:
+			var inv = MapleInventoryClass.new()
+			inv.name = "MapleInventory"
+			inv.z_index = 100
+			root_node.add_child(inv)
+			if inv.has_method("open"):
+				inv.call("open")
 
 
 func _on_gear_up_pressed() -> void:
