@@ -7120,8 +7120,8 @@
    "id": "wardrobe-forge-shortcut",
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗新增前往鍛造快捷果凍按鈕連動 ForgeDialog",
-   "status": "草稿",
-   "note": "待開發",
+   "status": "測試中",
+   "note": "完成 BtnGoForge 果凍按鈕新增、大廳連動 ForgeDialog、六語系即時切換與回歸測試，等待 sideqa 審查",
    "keys": [
     "Wardrobe"
    ]
