@@ -24,7 +24,7 @@
 
 | 編號 | 檔案名稱 | 內容說明 | 狀態檢查 | SHA256 前綴 |
 |---|---|---|---|---|
-| 01 | `proof_01_weapon_swap_dialog_btn_go_inventory.png` | WeaponSwapDialog 武器更換彈窗底欄顯示『前往背包』果凍按鈕 | 零Emoji / 零破圖 / 零截字 | 5e2b362dfd88 |
-| 02 | `proof_02_maple_inventory_dialog_opened.png` | 點擊『前往背包』關閉更換彈窗並連動開啟 MapleInventory 探索背包 | 零Emoji / 零破圖 / 零截字 | 30282462afd1 |
-| 03 | `proof_03_weapon_swap_inventory_en.png` | 英文語系 (en) 下顯示 "Go to Inventory" | 零Emoji / 零破圖 / 零中文殘留 | c2de9af676e4 |
-| 04 | `proof_04_weapon_swap_inventory_ja.png` | 日文語系 (ja) 下顯示 "インベントリへ進む" | 零Emoji / 零破圖 / 零截字 | d4d5c4e9e5dd |
+| 01 | `proof_01_weapon_swap_dialog_btn_go_inventory.png` | WeaponSwapDialog 武器更換彈窗底欄顯示『前往背包』果凍按鈕 | 零Emoji / 零破圖 / 零截字 | 2b3745c1d3d3 |
+| 02 | `proof_02_maple_inventory_dialog_opened.png` | 點擊『前往背包』關閉更換彈窗並連動開啟 MapleInventory 探索背包 | 零Emoji / 零破圖 / 零截字 | ea787ee70f50 |
+| 03 | `proof_03_weapon_swap_inventory_en.png` | 英文語系 (en) 下顯示 "Go to Inventory" | 零Emoji / 零破圖 / 零中文殘留 | f3591facf11f |
+| 04 | `proof_04_weapon_swap_inventory_ja.png` | 日文語系 (ja) 下顯示 "インベントリへ進む" | 零Emoji / 零破圖 / 零截字 | 449c0fdd8f80 |
