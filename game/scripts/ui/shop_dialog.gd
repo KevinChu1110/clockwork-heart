@@ -1124,6 +1124,14 @@ func get_go_soul_hall_button() -> Button:
 	return _btn_go_soul_hall
 
 
+func get_soul_hall_button() -> Button:
+	return _btn_go_soul_hall
+
+
+func get_go_soul_button() -> Button:
+	return _btn_go_soul_hall
+
+
 func get_go_forge_button() -> Button:
 	return _btn_go_forge
 

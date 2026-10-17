@@ -2447,5 +2447,6 @@
   "windup_daily.btn_go_shop": "前往商城",
   "shop.btn_go_daily": "前往委託",
   "shop.btn_go_windup": "前往委託",
-  "energy_lack.btn_go_vault": "前往儲能庫"
+  "energy_lack.btn_go_vault": "前往儲能庫",
+  "soul_hall.btn_go_shop": "前往商城"
 }
