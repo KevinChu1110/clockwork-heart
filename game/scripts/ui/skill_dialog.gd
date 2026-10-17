@@ -18,6 +18,8 @@ signal shop_requested()
 signal go_shop()
 signal forge_requested()
 signal go_forge()
+signal workshop_requested()
+signal go_workshop()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -68,6 +70,7 @@ var _dummy_btn: Button
 var _go_power_stat_btn: Button
 var _go_inventory_btn: Button
 var _go_forge_btn: Button
+var _go_workshop_btn: Button
 var _go_shop_btn: Button
 var _bottom_close_btn: Button
 
@@ -336,6 +339,14 @@ func _build_ui() -> void:
 	_go_shop_btn.pressed.connect(_on_go_shop_pressed)
 	bot_h.add_child(_go_shop_btn)
 
+	# 薄荷綠立體果凍『前往工坊』按鈕（熱區 140x50px >= 140x48px、果凍厚底 5px、圓角 18px、字級 16px 開源粉圓體、零系統 Emoji）
+	_go_workshop_btn = Button.new()
+	_go_workshop_btn.name = "BtnGoWorkshop"
+	_go_workshop_btn.custom_minimum_size = Vector2(140, 50)
+	_style_jelly_btn(_go_workshop_btn, COLOR_MINT, COLOR_TEXT_DARK, 16, 5, 18)
+	_go_workshop_btn.pressed.connect(_on_go_workshop_pressed)
+	bot_h.add_child(_go_workshop_btn)
+
 	# 彈性間隔撐開左右分列
 	var bot_spacer := Control.new()
 	bot_spacer.name = "BottomSpacer"
@@ -416,6 +427,28 @@ func _on_go_forge_pressed() -> void:
 	_on_close_pressed()
 
 
+func _on_go_workshop_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	go_workshop.emit()
+	workshop_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_gem_workshop"):
+			if workshop_requested.get_connections().is_empty():
+				ml.call("open_gem_workshop")
+	var p := get_parent()
+	if p and p.has_method("open_gem_workshop"):
+		if workshop_requested.get_connections().is_empty():
+			p.call("open_gem_workshop")
+	_on_close_pressed()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -468,6 +501,20 @@ func _update_ui_texts() -> void:
 			else:
 				txt = _t("前往鍛造")
 		_go_forge_btn.text = txt
+	if _go_workshop_btn:
+		var txt := ""
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+			if loc and loc.has_method("t"):
+				txt = str(loc.call("t", "skill.btn_go_workshop"))
+		if txt == "" or txt == "skill.btn_go_workshop":
+			var c_txt := ContentLoc.text("ui", "skill.btn_go_workshop")
+			if c_txt != "skill.btn_go_workshop":
+				txt = c_txt
+			else:
+				txt = _t("前往工坊")
+		_go_workshop_btn.text = txt
 	if _go_shop_btn:
 		var txt := ""
 		var loop := Engine.get_main_loop()
@@ -1010,6 +1057,14 @@ func get_go_forge_button() -> Button:
 
 func get_forge_button() -> Button:
 	return _go_forge_btn
+
+
+func get_go_workshop_button() -> Button:
+	return _go_workshop_btn
+
+
+func get_workshop_button() -> Button:
+	return _go_workshop_btn
 
 
 func get_go_shop_button() -> Button:
