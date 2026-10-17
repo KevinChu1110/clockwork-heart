@@ -21,6 +21,8 @@ signal inventory_requested()
 signal go_inventory()
 signal skill_requested()
 signal go_skill()
+signal wardrobe_requested()
+signal go_wardrobe()
 signal swap_weapon_requested(slot_idx: int)
 signal weapon_swapped(slot_idx: int, uid: String)
 
@@ -96,6 +98,7 @@ var _btn_go_power_stat: Button
 var _btn_go_shop: Button
 var _btn_go_inventory: Button
 var _btn_go_skill: Button
+var _btn_go_wardrobe: Button
 var _btn_close: Button
 var _btn_swap_weapon: Button
 var _weapon_swap_dialog: Control = null
@@ -212,6 +215,11 @@ func _update_ui_texts() -> void:
 		if skill_btn_txt == "forge.btn_go_skill" or skill_btn_txt.is_empty():
 			skill_btn_txt = _t("前往心法")
 		_btn_go_skill.text = skill_btn_txt
+	if _btn_go_wardrobe and is_instance_valid(_btn_go_wardrobe):
+		var wardrobe_btn_txt := _t("forge.btn_go_wardrobe")
+		if wardrobe_btn_txt == "forge.btn_go_wardrobe" or wardrobe_btn_txt.is_empty():
+			wardrobe_btn_txt = _t("前往衣櫥")
+		_btn_go_wardrobe.text = wardrobe_btn_txt
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開鐵匠鋪")
 	if _btn_swap_weapon and is_instance_valid(_btn_swap_weapon):
@@ -852,6 +860,29 @@ func _build_ui() -> void:
 	_btn_go_skill.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_btn_go_skill.pressed.connect(_on_go_skill_pressed)
 	act_row.add_child(_btn_go_skill)
+
+	# 快捷按鈕：前往衣櫥 (金黃立體厚底 5px, 140x50 >= 115x50, 規格 140x50, 圓角 18px, 文字深藍紫, 零系統 Emoji)
+	_btn_go_wardrobe = Button.new()
+	_btn_go_wardrobe.name = "BtnGoWardrobe"
+	var wardrobe_btn_txt := _t("forge.btn_go_wardrobe")
+	if wardrobe_btn_txt == "forge.btn_go_wardrobe" or wardrobe_btn_txt.is_empty():
+		wardrobe_btn_txt = _t("前往衣櫥")
+	_btn_go_wardrobe.text = wardrobe_btn_txt
+	_btn_go_wardrobe.custom_minimum_size = Vector2(140, 50)
+	_btn_go_wardrobe.add_theme_font_size_override("font_size", 16)
+	_btn_go_wardrobe.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_wardrobe.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_wardrobe.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_btn_go_wardrobe.add_theme_font_override("font", _cached_font)
+	_btn_go_wardrobe.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18, 2))
+	_btn_go_wardrobe.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18, 2))
+	_btn_go_wardrobe.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 18, 2))
+	_btn_go_wardrobe.add_theme_stylebox_override("disabled", _create_button_style(Color("#EFEBE0"), COLOR_BORDER_MUTED, 3, 18, 2))
+	_btn_go_wardrobe.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_go_wardrobe.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_wardrobe.pressed.connect(_on_go_wardrobe_pressed)
+	act_row.add_child(_btn_go_wardrobe)
 
 	# 次要按鈕：離開鐵匠鋪 (金黃立體厚底 5px)
 	_btn_close = Button.new()
@@ -2043,6 +2074,34 @@ func _on_go_skill_pressed() -> void:
 	if p and p.has_method("open_skill_dialog"):
 		if skill_requested.get_connections().is_empty() and go_skill.get_connections().is_empty():
 			p.call("open_skill_dialog")
+	if not is_queued_for_deletion():
+		_on_close()
+
+
+func get_go_wardrobe_button() -> Button:
+	return _btn_go_wardrobe
+
+
+func _on_go_wardrobe_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	closed.emit()
+	wardrobe_requested.emit()
+	go_wardrobe.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_wardrobe"):
+			if wardrobe_requested.get_connections().is_empty() and go_wardrobe.get_connections().is_empty():
+				ml.call("open_wardrobe")
+	var p := get_parent()
+	if p and p.has_method("open_wardrobe"):
+		if wardrobe_requested.get_connections().is_empty() and go_wardrobe.get_connections().is_empty():
+			p.call("open_wardrobe")
 	if not is_queued_for_deletion():
 		_on_close()
 

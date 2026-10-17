@@ -7151,7 +7151,7 @@
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗新增前往工坊快捷果凍按鈕連動 GemWorkshopDialog",
    "status": "草稿",
-   "note": "待開發",
+   "note": "等待前置任務 t_f9976639 合進主線",
    "keys": [
     "Wardrobe"
    ]
