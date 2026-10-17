@@ -6896,6 +6896,15 @@ func open_wardrobe() -> Control:
 			open_maple_inventory()
 		)
 
+	if dlg.has_signal("forge_requested"):
+		dlg.connect("forge_requested", func():
+			open_forge()
+		)
+	elif dlg.has_signal("go_forge"):
+		dlg.connect("go_forge", func():
+			open_forge()
+		)
+
 	# 開啟衣櫥時隱藏底層角色預覽，避免高亮剪影穿透全螢幕半透明遮罩 (review.md / 視覺品質標準)
 	if _char_prev:
 		_char_prev.visible = false
