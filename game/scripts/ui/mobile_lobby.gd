@@ -2703,6 +2703,14 @@ func open_clockwork_vault() -> Control:
 	add_child(dlg)
 	return dlg
 
+
+func open_vault() -> Control:
+	return open_clockwork_vault()
+
+
+func open_vault_dialog() -> Control:
+	return open_clockwork_vault()
+
 func get_settings_button() -> Button:
 	return _settings_button
 
@@ -7354,6 +7362,14 @@ func open_energy_dialog() -> Control:
 	if dlg.has_signal("power_stat_requested"):
 		dlg.power_stat_requested.connect(func():
 			open_power_stat_dialog()
+		)
+	if dlg.has_signal("vault_requested"):
+		dlg.vault_requested.connect(func():
+			open_clockwork_vault()
+		)
+	if dlg.has_signal("go_vault"):
+		dlg.go_vault.connect(func():
+			open_clockwork_vault()
 		)
 	add_child(dlg)
 	return dlg

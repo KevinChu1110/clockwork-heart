@@ -4331,5 +4331,6 @@
   "shop.btn_go_vault": "貯蔵庫へ",
   "windup_daily.btn_go_shop": "ショップへ",
   "shop.btn_go_daily": "日課へ",
-  "shop.btn_go_windup": "日課へ"
+  "shop.btn_go_windup": "日課へ",
+  "energy_lack.btn_go_vault": "貯蔵庫へ"
 }
