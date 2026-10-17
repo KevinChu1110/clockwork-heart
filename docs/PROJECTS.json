@@ -6970,8 +6970,8 @@
    "id": "forge-inventory-shortcut",
    "cat": "遊戲",
    "title": "ForgeDialog 天宮鐵匠底欄新增前往背包快捷按鈕連動 MapleInventory",
-   "status": "草稿",
-   "note": "待開發",
+   "status": "測試中",
+   "note": "完成 ForgeDialog 前往背包快捷果凍按鈕與雙向閉環，單元測試與截圖已就緒送審",
    "keys": [
     "ForgeDia"
    ]
