@@ -4334,5 +4334,7 @@
   "shop.btn_go_windup": "To Daily",
   "energy_lack.btn_go_vault": "To Vault",
   "forge.btn_go_inventory": "Go to Inventory",
-  "soul_hall.btn_go_shop": "To Shop"
+  "soul_hall.btn_go_shop": "To Shop",
+  "weapon_swap.btn_go_inventory": "Go to Inventory",
+  "weapon_swap.go_inventory": "Go to Inventory"
 }

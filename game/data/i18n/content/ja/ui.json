@@ -3974,5 +3974,7 @@
   "shop.btn_go_windup": "日課へ",
   "energy_lack.btn_go_vault": "貯蔵庫へ",
   "forge.btn_go_inventory": "インベントリへ進む",
-  "soul_hall.btn_go_shop": "ショップへ"
+  "soul_hall.btn_go_shop": "ショップへ",
+  "weapon_swap.btn_go_inventory": "インベントリへ進む",
+  "weapon_swap.go_inventory": "インベントリへ進む"
 }

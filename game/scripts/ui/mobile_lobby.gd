@@ -7214,6 +7214,14 @@ func open_weapon_swap_dialog(slot_idx: int = -1) -> Control:
 		dlg.connect("power_stat_requested", func():
 			open_power_stat_dialog()
 		)
+	if dlg.has_signal("inventory_requested"):
+		dlg.connect("inventory_requested", func():
+			open_maple_inventory()
+		)
+	elif dlg.has_signal("go_inventory"):
+		dlg.connect("go_inventory", func():
+			open_maple_inventory()
+		)
 	add_child(dlg)
 	_weapon_swap_dialog = dlg
 	return dlg
