@@ -7025,6 +7025,16 @@
    "keys": [
     "DummySet"
    ]
+  },
+  {
+   "id": "merge-inventory-shortcuts-batch",
+   "cat": "平台",
+   "title": "把已過審的武器更換、關卡勝利與戰敗結算前往背包三分支合進主線",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "把已過審的武器更"
+   ]
   }
  ]
 }
