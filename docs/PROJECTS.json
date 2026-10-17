@@ -7010,8 +7010,8 @@
    "id": "victory-inventory-shortcut",
    "cat": "遊戲",
    "title": "BattleVictoryDialog 關卡勝利結算新增前往背包快捷果凍按鈕連動 MapleInventory",
-   "status": "草稿",
-   "note": "待開發",
+   "status": "開發中",
+   "note": "開始開發 BattleVictoryDialog 前往背包快捷果凍按鈕連動 MapleInventory (t_567d8611)",
    "keys": [
     "BattleVi"
    ]
