@@ -21,6 +21,8 @@ signal shop_requested()
 signal title_wall_requested()
 signal go_inventory()
 signal inventory_requested()
+signal go_forge()
+signal forge_requested()
 
 @export var creation_mode: bool = false
 
@@ -155,6 +157,7 @@ var _btn_go_power_stat: Button
 var _btn_go_shop: Button
 var _btn_go_title_wall: Button
 var _btn_go_inventory: Button
+var _btn_go_forge: Button
 var _stage_header_label: Label = null
 
 var _breathe_tween: Tween = null
@@ -753,6 +756,28 @@ func _build_ui() -> void:
 	_btn_go_inventory.add_theme_stylebox_override("pressed", inv_h)
 	_btn_go_inventory.pressed.connect(_on_go_inventory_pressed)
 	actions_hbox.add_child(_btn_go_inventory)
+
+	# 前往鍛造 果凍按鈕 (BtnGoForge)
+	_btn_go_forge = Button.new()
+	_btn_go_forge.name = "BtnGoForge"
+	var forge_txt := _t("wardrobe.btn_go_forge")
+	if forge_txt == "wardrobe.btn_go_forge" or forge_txt.is_empty():
+		forge_txt = _t("wardrobe.go_forge")
+	if forge_txt == "wardrobe.go_forge" or forge_txt.is_empty():
+		forge_txt = _t("前往鍛造")
+	_btn_go_forge.text = forge_txt
+	_btn_go_forge.custom_minimum_size = Vector2(105, BTN_SIZE)
+	_btn_go_forge.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_forge.add_theme_font_size_override("font_size", 16)
+	_btn_go_forge.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_go_forge.add_theme_font_override("font", _cached_font)
+	_btn_go_forge.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 5, 18, 2))
+	var forge_h := _create_button_style(Color("#5AB4FF"), COLOR_BORDER, 3, 18, 2)
+	_btn_go_forge.add_theme_stylebox_override("hover", forge_h)
+	_btn_go_forge.add_theme_stylebox_override("pressed", forge_h)
+	_btn_go_forge.pressed.connect(_on_go_forge_pressed)
+	actions_hbox.add_child(_btn_go_forge)
 
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
@@ -1898,6 +1923,13 @@ func _update_ui_texts() -> void:
 		if inv_txt == "wardrobe.go_inventory" or inv_txt.is_empty():
 			inv_txt = _t("前往背包")
 		_btn_go_inventory.text = inv_txt
+	if _btn_go_forge:
+		var forge_txt := _t("wardrobe.btn_go_forge")
+		if forge_txt == "wardrobe.btn_go_forge" or forge_txt.is_empty():
+			forge_txt = _t("wardrobe.go_forge")
+		if forge_txt == "wardrobe.go_forge" or forge_txt.is_empty():
+			forge_txt = _t("前往鍛造")
+		_btn_go_forge.text = forge_txt
 	if _btn_confirm:
 		_btn_confirm.text = _t("確認換裝 · 套用新外觀")
 
@@ -2048,6 +2080,15 @@ func get_inventory_button() -> Button:
 	return _btn_go_inventory
 
 
+## 取得前往鍛造快捷按鈕
+func get_go_forge_button() -> Button:
+	return _btn_go_forge
+
+
+func get_forge_button() -> Button:
+	return _btn_go_forge
+
+
 func _on_go_power_stat_pressed() -> void:
 	var am: Node = null
 	if Engine.get_main_loop() is SceneTree:
@@ -2133,6 +2174,29 @@ func _on_go_inventory_pressed() -> void:
 	if p and p.has_method("open_maple_inventory"):
 		if go_inventory.get_connections().is_empty() and inventory_requested.get_connections().is_empty():
 			p.call("open_maple_inventory")
+	if not is_queued_for_deletion():
+		close()
+
+
+func _on_go_forge_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	forge_requested.emit()
+	go_forge.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_forge"):
+			if forge_requested.get_connections().is_empty() and go_forge.get_connections().is_empty():
+				ml.call("open_forge")
+	var p := get_parent()
+	if p and p.has_method("open_forge"):
+		if forge_requested.get_connections().is_empty() and go_forge.get_connections().is_empty():
+			p.call("open_forge")
 	if not is_queued_for_deletion():
 		close()
 

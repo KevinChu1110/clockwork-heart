@@ -4349,5 +4349,7 @@
   "ui.btn_go_skill": "Ir a Habilidades",
   "skill.btn_go_workshop": "Ir al Taller",
   "ui.btn_go_workshop": "Ir al Taller",
-  "gem_workshop.btn_go_skill": "Ir a Habilidades"
+  "gem_workshop.btn_go_skill": "Ir a Habilidades",
+  "wardrobe.btn_go_forge": "Ir a Forja",
+  "wardrobe.go_forge": "Ir a Forja"
 }
