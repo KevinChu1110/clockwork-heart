@@ -98,7 +98,15 @@ func _check_no_emoji(text: String, context: String) -> void:
 
 
 func _capture_save(filename: String) -> String:
-	var img := root.get_viewport().get_texture().get_image()
+	if DisplayServer.get_name() == "headless":
+		print("  (headless 環境跳過畫面截圖: %s)" % filename)
+		return ""
+	var vp := root.get_viewport()
+	if vp == null:
+		return ""
+	var img := vp.get_texture().get_image()
+	if img == null:
+		return ""
 	var full_path := _out_dir.path_join(filename)
 	img.save_png(full_path)
 	var f := FileAccess.open(full_path, FileAccess.READ)
