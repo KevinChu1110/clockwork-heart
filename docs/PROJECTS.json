@@ -7101,7 +7101,7 @@
    "cat": "遊戲",
    "title": "SkillDialog 心法招式底欄新增前往工坊快捷果凍按鈕連動 GemWorkshopDialog",
    "status": "開發中",
-   "note": "派工阿翔 sideworker2 推進開發",
+   "note": "開始實作 SkillDialog 前往工坊快捷果凍按鈕連動 GemWorkshopDialog",
    "keys": [
     "SkillDia"
    ]
