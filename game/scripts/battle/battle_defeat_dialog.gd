@@ -15,6 +15,8 @@ signal give_up_selected()
 signal gear_up_requested()
 signal retry_stage_requested()
 signal power_stat_requested()
+signal inventory_requested()
+signal go_inventory()
 
 const ResponsiveUi := preload("res://scripts/ui/responsive_ui.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -50,6 +52,7 @@ var _revive_btn: Button
 var _retry_btn: Button
 var _gear_up_btn: Button
 var _btn_go_power_stat: Button
+var _btn_go_inventory: Button
 var _give_up_btn: Button
 var _cached_font: Font = null
 var _mode: String = ""
@@ -74,6 +77,7 @@ var _on_give_up: Callable = Callable()
 var _on_gear_up: Callable = Callable()
 var _on_retry: Callable = Callable()
 var _on_power_stat: Callable = Callable()
+var _on_inventory: Callable = Callable()
 
 
 func _enter_tree() -> void:
@@ -128,6 +132,11 @@ func _update_ui_texts() -> void:
 		_gear_up_btn.text = _t("前往整頓")
 	if _btn_go_power_stat and is_instance_valid(_btn_go_power_stat):
 		_btn_go_power_stat.text = _t("前往戰力")
+	if _btn_go_inventory and is_instance_valid(_btn_go_inventory):
+		var inv_txt := _t("defeat.btn_go_inventory")
+		if inv_txt == "defeat.btn_go_inventory" or inv_txt.is_empty():
+			inv_txt = _t("前往背包")
+		_btn_go_inventory.text = inv_txt
 	if _retry_btn and is_instance_valid(_retry_btn):
 		_retry_btn.text = _t("再次挑戰")
 	if _give_up_btn and is_instance_valid(_give_up_btn):
@@ -135,14 +144,14 @@ func _update_ui_texts() -> void:
 	_refresh_display()
 
 
-static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable(), on_retry: Callable = Callable(), on_power_stat: Callable = Callable()) -> Control:
+static func show_dialog(parent: Node, on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable(), on_retry: Callable = Callable(), on_power_stat: Callable = Callable(), on_inventory: Callable = Callable()) -> Control:
 	var dlg = load("res://scripts/battle/battle_defeat_dialog.gd").new()
-	dlg.setup(on_revive, on_give_up, mode, part_name, on_gear_up, on_retry, on_power_stat)
+	dlg.setup(on_revive, on_give_up, mode, part_name, on_gear_up, on_retry, on_power_stat, on_inventory)
 	parent.add_child(dlg)
 	return dlg
 
 
-func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable(), on_retry: Callable = Callable(), on_power_stat: Callable = Callable()) -> void:
+func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), mode: String = "", part_name: String = "", on_gear_up: Callable = Callable(), on_retry: Callable = Callable(), on_power_stat: Callable = Callable(), on_inventory: Callable = Callable()) -> void:
 	_on_revive = on_revive
 	_on_give_up = on_give_up
 	_mode = mode
@@ -150,6 +159,7 @@ func setup(on_revive: Callable = Callable(), on_give_up: Callable = Callable(), 
 	_on_gear_up = on_gear_up
 	_on_retry = on_retry
 	_on_power_stat = on_power_stat
+	_on_inventory = on_inventory
 	if is_inside_tree():
 		_refresh_display()
 
@@ -411,6 +421,26 @@ func _build_ui() -> void:
 	_btn_go_power_stat.pressed.connect(_on_go_power_stat_clicked)
 	btn_h.add_child(_btn_go_power_stat)
 
+	# 前往背包按鈕 (BtnGoInventory, 天藍色果凍按鈕 #38A0FF, 深藍紫描邊 #1F1A3A, 圓角 20px, 厚底 6px, 字級 17px 粉圓體, 寬度 130px, 高度 52px, 緊鄰前往戰力, 零 Emoji)
+	_btn_go_inventory = Button.new()
+	_btn_go_inventory.name = "BtnGoInventory"
+	var init_inv_txt := _t("defeat.btn_go_inventory")
+	if init_inv_txt == "defeat.btn_go_inventory" or init_inv_txt.is_empty():
+		init_inv_txt = _t("前往背包")
+	_btn_go_inventory.text = init_inv_txt
+	_btn_go_inventory.custom_minimum_size = Vector2(130, 52)
+	_btn_go_inventory.add_theme_font_size_override("font_size", 17)
+	_btn_go_inventory.add_theme_color_override("font_color", Color("#FFFDF8"))
+	_btn_go_inventory.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_inventory.add_theme_constant_override("outline_size", 3)
+	if _cached_font:
+		_btn_go_inventory.add_theme_font_override("font", _cached_font)
+	_btn_go_inventory.add_theme_stylebox_override("normal", _create_button_style(COLOR_SKY, COLOR_BORDER, 6, 20))
+	_btn_go_inventory.add_theme_stylebox_override("hover", _create_button_style(Color("#5CB4FF"), COLOR_BORDER, 6, 20))
+	_btn_go_inventory.add_theme_stylebox_override("pressed", _create_button_style(Color("#2085E5"), COLOR_BORDER, 2, 20))
+	_btn_go_inventory.pressed.connect(_on_go_inventory_clicked)
+	btn_h.add_child(_btn_go_inventory)
+
 	# 結束戰鬥按鈕 (溫暖米黃/橙底)
 	_give_up_btn = Button.new()
 	_give_up_btn.name = "GiveUpBtn"
@@ -592,6 +622,54 @@ func _on_go_power_stat_clicked() -> void:
 	queue_free()
 
 
+func _on_go_inventory_clicked() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	inventory_requested.emit()
+	if has_signal("go_inventory"):
+		emit_signal("go_inventory")
+	if _on_inventory.is_valid():
+		_on_inventory.call()
+	var opened := false
+	var cur: Node = get_parent()
+	while cur != null:
+		if cur.has_method("open_maple_inventory"):
+			cur.call("open_maple_inventory")
+			opened = true
+			break
+		cur = cur.get_parent()
+	if not opened:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var root_node := (loop as SceneTree).root
+			var ml: Node = root_node.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_maple_inventory"):
+				ml.call("open_maple_inventory")
+				opened = true
+			if not opened:
+				var main_node: Node = root_node.get_node_or_null("Main")
+				if main_node:
+					var ml2 = main_node.find_child("MobileLobby", true, false)
+					if ml2 and ml2.has_method("open_maple_inventory"):
+						ml2.call("open_maple_inventory")
+						opened = true
+			if not opened:
+				var target_parent = get_parent() if get_parent() != null else root_node
+				var inv_script = load("res://scripts/ui/maple_inventory.gd")
+				if inv_script:
+					var inv: Control = inv_script.new() as Control
+					inv.name = "MapleInventory"
+					inv.z_index = 100
+					target_parent.add_child(inv)
+					if inv.has_method("open"):
+						inv.call("open")
+					opened = true
+	queue_free()
+
+
 func _on_retry_clicked() -> void:
 	retry_stage_requested.emit()
 	if _on_retry.is_valid() and not retry_stage_requested.is_connected(_on_retry):
@@ -702,6 +780,18 @@ func get_power_stat_button() -> Button:
 
 func get_go_power_stat_button_text() -> String:
 	return _btn_go_power_stat.text if _btn_go_power_stat and is_instance_valid(_btn_go_power_stat) else ""
+
+
+func get_go_inventory_button() -> Button:
+	return _btn_go_inventory
+
+
+func get_inventory_button() -> Button:
+	return _btn_go_inventory
+
+
+func get_go_inventory_button_text() -> String:
+	return _btn_go_inventory.text if _btn_go_inventory and is_instance_valid(_btn_go_inventory) else ""
 
 
 func get_retry_button() -> Button:

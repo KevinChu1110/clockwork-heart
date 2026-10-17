@@ -77,6 +77,7 @@ var _current: Screen = Screen.TITLE
 var _battle_mode: String = "wolf"
 var _defeat_gear_up_requested: bool = false
 var _defeat_power_stat_requested: bool = false
+var _defeat_inventory_requested: bool = false
 var _victory_inventory_requested: bool = false
 var _dummy_skills_requested: bool = false
 var _pre_dummy_hp: int = -1
@@ -4272,6 +4273,7 @@ func _start_battle_raw(mode: String) -> void:
 		host.add_child(battle)
 		_defeat_gear_up_requested = false
 		_defeat_power_stat_requested = false
+		_defeat_inventory_requested = false
 		_victory_inventory_requested = false
 		battle.battle_finished.connect(_on_battle_finished)
 		if battle.has_signal("gear_up_requested"):
@@ -4279,7 +4281,10 @@ func _start_battle_raw(mode: String) -> void:
 		if battle.has_signal("power_stat_requested"):
 			battle.connect("power_stat_requested", func(): _defeat_power_stat_requested = true)
 		if battle.has_signal("inventory_requested"):
-			battle.connect("inventory_requested", func(): _victory_inventory_requested = true)
+			battle.connect("inventory_requested", func():
+				_defeat_inventory_requested = true
+				_victory_inventory_requested = true
+			)
 		if battle.has_signal("skills_requested"):
 			battle.connect("skills_requested", func(): _on_dummy_skills_requested(battle))
 		battle.setup(mode)
@@ -4317,6 +4322,7 @@ func _start_battle_raw(mode: String) -> void:
 	host.add_child(battle)
 	_defeat_gear_up_requested = false
 	_defeat_power_stat_requested = false
+	_defeat_inventory_requested = false
 	_victory_inventory_requested = false
 	battle.battle_finished.connect(_on_battle_finished)
 	if battle.has_signal("gear_up_requested"):
@@ -4324,12 +4330,41 @@ func _start_battle_raw(mode: String) -> void:
 	if battle.has_signal("power_stat_requested"):
 		battle.connect("power_stat_requested", func(): _defeat_power_stat_requested = true)
 	if battle.has_signal("inventory_requested"):
-		battle.connect("inventory_requested", func(): _victory_inventory_requested = true)
+		battle.connect("inventory_requested", func():
+			_defeat_inventory_requested = true
+			_victory_inventory_requested = true
+		)
 	battle.setup(mode)
 	_refresh_hud()
 
 
 func _on_battle_finished(won: bool) -> void:
+	if not won and _defeat_inventory_requested:
+		_defeat_inventory_requested = false
+		SaveManager.save_game()
+		_explore_play_pose("hit", 0.5)
+		if _battle_mode != "pvp_snap":
+			var ref: Dictionary = EnergySystem.refund_on_defeat(_battle_mode)
+			var ref_n := int(ref.get("refunded", 0))
+			if ref_n > 0:
+				GameLog.combat(_t("戰鬥失敗：返還能量 %d 點") % ref_n)
+				ui_toast(_t("戰鬥失敗：返還能量 %d 點（現有 %d／%d）") % [ref_n, EnergySystem.current(), EnergySystem.MAX_ENERGY])
+		_go_mobile_lobby()
+		var ml_node = host.find_child("MobileLobby", true, false)
+		if ml_node and ml_node.has_method("open_maple_inventory"):
+			ml_node.call("open_maple_inventory")
+		return
+	if won and _victory_inventory_requested:
+		_victory_inventory_requested = false
+		if _battle_mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
+			_grant_part_break_loot()
+		SaveManager.save_game()
+		_explore_play_pose("skill", 0.55)
+		_go_mobile_lobby()
+		var ml_node = host.find_child("MobileLobby", true, false)
+		if ml_node and ml_node.has_method("open_maple_inventory"):
+			ml_node.call("open_maple_inventory")
+		return
 	if not won and _defeat_power_stat_requested:
 		_defeat_power_stat_requested = false
 		SaveManager.save_game()
@@ -4355,17 +4390,6 @@ func _on_battle_finished(won: bool) -> void:
 		var ml_node = host.find_child("MobileLobby", true, false)
 		if ml_node and ml_node.has_method("open_power_stat_dialog"):
 			ml_node.call("open_power_stat_dialog")
-		return
-	if won and _victory_inventory_requested:
-		_victory_inventory_requested = false
-		if _battle_mode in ["colossus_lion", "colossus_puppet", "colossus_elephant"]:
-			_grant_part_break_loot()
-		SaveManager.save_game()
-		_explore_play_pose("skill", 0.55)
-		_go_mobile_lobby()
-		var ml_node = host.find_child("MobileLobby", true, false)
-		if ml_node and ml_node.has_method("open_maple_inventory"):
-			ml_node.call("open_maple_inventory")
 		return
 	if not won and _defeat_gear_up_requested:
 		_defeat_gear_up_requested = false

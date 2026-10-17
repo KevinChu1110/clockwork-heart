@@ -3977,5 +3977,7 @@
   "soul_hall.btn_go_shop": "ショップへ",
   "weapon_swap.btn_go_inventory": "インベントリへ進む",
   "weapon_swap.go_inventory": "インベントリへ進む",
-  "victory.btn_go_inventory": "インベントリへ進む"
+  "victory.btn_go_inventory": "インベントリへ進む",
+  "defeat.btn_go_inventory": "インベントリへ進む",
+  "defeat.go_inventory": "インベントリへ進む"
 }

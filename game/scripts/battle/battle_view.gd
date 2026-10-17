@@ -5243,11 +5243,13 @@ func _show_defeat_settlement() -> void:
 			var WC = load("res://scripts/world/world_content.gd")
 			if WC and WC.has_method("colossus_weak_part"):
 				part_hint = str(WC.call("colossus_weak_part", _mode))
-	_defeat_settlement_dialog = BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint, _on_gear_up_defeat, _on_retry_stage_defeat, _on_power_stat_defeat)
+	_defeat_settlement_dialog = BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint, _on_gear_up_defeat, _on_retry_stage_defeat, _on_power_stat_defeat, _on_inventory_defeat)
 	if _defeat_settlement_dialog and _defeat_settlement_dialog.has_signal("retry_stage_requested") and not _defeat_settlement_dialog.retry_stage_requested.is_connected(_on_retry_stage_defeat):
 		_defeat_settlement_dialog.retry_stage_requested.connect(_on_retry_stage_defeat)
 	if _defeat_settlement_dialog and _defeat_settlement_dialog.has_signal("power_stat_requested") and not _defeat_settlement_dialog.power_stat_requested.is_connected(_on_power_stat_defeat):
 		_defeat_settlement_dialog.power_stat_requested.connect(_on_power_stat_defeat)
+	if _defeat_settlement_dialog and _defeat_settlement_dialog.has_signal("inventory_requested") and not _defeat_settlement_dialog.inventory_requested.is_connected(_on_inventory_defeat):
+		_defeat_settlement_dialog.inventory_requested.connect(_on_inventory_defeat)
 
 
 func _on_ad_revive_success() -> void:
@@ -5329,6 +5331,14 @@ func _on_power_stat_defeat() -> void:
 	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
 		_defeat_settlement_dialog = null
 	open_power_stat_dialog()
+
+
+func _on_inventory_defeat() -> void:
+	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
+		_defeat_settlement_dialog = null
+	inventory_requested.emit()
+	battle_finished.emit(false)
+	open_maple_inventory()
 
 
 func _on_gear_up_victory() -> void:
