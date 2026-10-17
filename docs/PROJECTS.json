@@ -7025,6 +7025,16 @@
    "keys": [
     "DummySet"
    ]
+  },
+  {
+   "id": "battle-defeat-inventory-shortcut",
+   "cat": "遊戲",
+   "title": "BattleDefeatDialog 戰敗結算新增前往背包快捷按鈕連動 MapleInventory",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "BattleDe"
+   ]
   }
  ]
 }
