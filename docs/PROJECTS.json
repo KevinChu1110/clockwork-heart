@@ -7130,8 +7130,8 @@
    "id": "forge-wardrobe-shortcut",
    "cat": "遊戲",
    "title": "ForgeDialog 天宮鐵匠底欄新增前往衣櫥快捷果凍按鈕連動 WardrobeDialog",
-   "status": "開發中",
-   "note": "開始開發 ForgeDialog 天宮鐵匠底欄新增前往衣櫥快捷按鈕",
+   "status": "測試中",
+   "note": "完成開發與自測，待 sideqa 審查",
    "keys": [
     "ForgeDia"
    ]
