@@ -6965,6 +6965,16 @@
    "keys": [
     "把已過審的 En"
    ]
+  },
+  {
+   "id": "forge-inventory-shortcut",
+   "cat": "遊戲",
+   "title": "ForgeDialog 天宮鐵匠底欄新增前往背包快捷按鈕連動 MapleInventory",
+   "status": "草稿",
+   "note": "待開發",
+   "keys": [
+    "ForgeDia"
+   ]
   }
  ]
 }
