@@ -7100,8 +7100,8 @@
    "id": "skill-workshop-shortcut",
    "cat": "遊戲",
    "title": "SkillDialog 心法招式底欄新增前往工坊快捷果凍按鈕連動 GemWorkshopDialog",
-   "status": "開發中",
-   "note": "開始實作 SkillDialog 前往工坊快捷果凍按鈕連動 GemWorkshopDialog",
+   "status": "測試中",
+   "note": "完成開發與自測，8張實機截圖存證齊全，送審 sideqa",
    "keys": [
     "SkillDia"
    ]
