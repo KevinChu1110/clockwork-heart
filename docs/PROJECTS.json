@@ -6960,8 +6960,8 @@
    "id": "merge-energy-lack-vault-shortcut",
    "cat": "平台",
    "title": "把已過審的 EnergyLackDialog 前往儲能庫快捷分支合進主線",
-   "status": "草稿",
-   "note": "待合併驗收",
+   "status": "已上線",
+   "note": "EnergyLackDialog 前往儲能庫快捷分支已合併至 main 主線並完成回歸驗收 (t_8f1f5cf3)",
    "keys": [
     "把已過審的 En"
    ]
