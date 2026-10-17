@@ -7135,6 +7135,16 @@
    "keys": [
     "ForgeDia"
    ]
+  },
+  {
+   "id": "merge-wardrobe-forge-shortcuts",
+   "cat": "平台",
+   "title": "把已過審的衣櫥前往鍛造與鐵匠前往衣櫥雙分支合進主線",
+   "status": "草稿",
+   "note": "待合併與回歸驗收",
+   "keys": [
+    "把已過審的衣櫥前"
+   ]
   }
  ]
 }
