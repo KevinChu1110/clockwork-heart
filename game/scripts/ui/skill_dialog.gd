@@ -16,6 +16,8 @@ signal power_stat_requested()
 signal inventory_requested()
 signal shop_requested()
 signal go_shop()
+signal forge_requested()
+signal go_forge()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -65,6 +67,7 @@ var _close_x_btn: Button
 var _dummy_btn: Button
 var _go_power_stat_btn: Button
 var _go_inventory_btn: Button
+var _go_forge_btn: Button
 var _go_shop_btn: Button
 var _bottom_close_btn: Button
 
@@ -161,15 +164,15 @@ func _build_ui() -> void:
 	scrim.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(scrim)
 
-	# 2. 置中卡片 (800 x 540)
+	# 2. 置中卡片 (940 x 540)
 	var card := PanelContainer.new()
 	card.name = "DialogCard"
 	card.set_anchors_preset(Control.PRESET_CENTER)
-	card.offset_left = -400
+	card.offset_left = -470
 	card.offset_top = -270
-	card.offset_right = 400
+	card.offset_right = 470
 	card.offset_bottom = 270
-	card.custom_minimum_size = Vector2(800, 540)
+	card.custom_minimum_size = Vector2(940, 540)
 	card.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var card_sb := StyleBoxFlat.new()
@@ -317,6 +320,14 @@ func _build_ui() -> void:
 	_go_inventory_btn.pressed.connect(_on_go_inventory_pressed)
 	bot_h.add_child(_go_inventory_btn)
 
+	# 金黃立體果凍『前往鍛造』按鈕（熱區 140x50px >= 140x48px、果凍厚底 5px、圓角 18px、字級 16px 開源粉圓體、零系統 Emoji）
+	_go_forge_btn = Button.new()
+	_go_forge_btn.name = "BtnGoForge"
+	_go_forge_btn.custom_minimum_size = Vector2(140, 50)
+	_style_jelly_btn(_go_forge_btn, COLOR_GOLD, COLOR_TEXT_DARK, 16, 5, 18)
+	_go_forge_btn.pressed.connect(_on_go_forge_pressed)
+	bot_h.add_child(_go_forge_btn)
+
 	# 暖橘立體果凍『前往商城』按鈕（熱區 135x50px >= 48px、果凍厚底 5px、圓角 18px、字級 16px 開源粉圓體、零系統 Emoji）
 	_go_shop_btn = Button.new()
 	_go_shop_btn.name = "BtnGoShop"
@@ -383,6 +394,28 @@ func _on_go_shop_pressed() -> void:
 	_on_close_pressed()
 
 
+func _on_go_forge_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	go_forge.emit()
+	forge_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_forge"):
+			if forge_requested.get_connections().is_empty():
+				ml.call("open_forge")
+	var p := get_parent()
+	if p and p.has_method("open_forge"):
+		if forge_requested.get_connections().is_empty():
+			p.call("open_forge")
+	_on_close_pressed()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -421,6 +454,20 @@ func _update_ui_texts() -> void:
 			else:
 				txt = _t("前往背包")
 		_go_inventory_btn.text = txt
+	if _go_forge_btn:
+		var txt := ""
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+			if loc and loc.has_method("t"):
+				txt = str(loc.call("t", "skill.btn_go_forge"))
+		if txt == "" or txt == "skill.btn_go_forge":
+			var c_txt := ContentLoc.text("ui", "skill.btn_go_forge")
+			if c_txt != "skill.btn_go_forge":
+				txt = c_txt
+			else:
+				txt = _t("前往鍛造")
+		_go_forge_btn.text = txt
 	if _go_shop_btn:
 		var txt := ""
 		var loop := Engine.get_main_loop()
@@ -955,6 +1002,14 @@ func get_go_power_stat_button() -> Button:
 
 func get_go_inventory_button() -> Button:
 	return _go_inventory_btn
+
+
+func get_go_forge_button() -> Button:
+	return _go_forge_btn
+
+
+func get_forge_button() -> Button:
+	return _go_forge_btn
 
 
 func get_go_shop_button() -> Button:
