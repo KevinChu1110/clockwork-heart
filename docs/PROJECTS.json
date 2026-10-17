@@ -7115,6 +7115,16 @@
    "keys": [
     "把已過審的手藝工"
    ]
+  },
+  {
+   "id": "wardrobe-forge-shortcut",
+   "cat": "遊戲",
+   "title": "WardrobeDialog 衣櫥換裝彈窗新增前往鍛造快捷果凍按鈕連動 ForgeDialog",
+   "status": "草稿",
+   "note": "待開發",
+   "keys": [
+    "Wardrobe"
+   ]
   }
  ]
 }
