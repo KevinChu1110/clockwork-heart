@@ -4346,5 +4346,7 @@
   "skill.btn_go_forge": "단조로 이동",
   "ui.btn_go_forge": "단조로 이동",
   "forge.btn_go_skill": "심법으로 이동",
-  "ui.btn_go_skill": "심법으로 이동"
+  "ui.btn_go_skill": "심법으로 이동",
+  "skill.btn_go_workshop": "공방으로 이동",
+  "ui.btn_go_workshop": "공방으로 이동"
 }

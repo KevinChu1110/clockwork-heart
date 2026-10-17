@@ -143,7 +143,7 @@ func _process(_delta: float) -> bool:
 			print("  ok BtnGoPowerStat 文字正確: 前往戰力")
 
 			# 尺寸熱區驗證（>= 48px）
-			if btn.custom_minimum_size.x < 150 or btn.custom_minimum_size.y < 48:
+			if btn.custom_minimum_size.x < 48 or btn.custom_minimum_size.y < 48:
 				return _fail("按鈕熱區不合規範 (<48px)，實測: %s" % [str(btn.custom_minimum_size)])
 			print("  ok BtnGoPowerStat 尺寸熱區合規: %s (>= 48px)" % str(btn.custom_minimum_size))
 

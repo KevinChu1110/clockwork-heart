@@ -7184,6 +7184,17 @@ func open_skill_dialog() -> Control:
 							open_skill_dialog()
 				, CONNECT_ONE_SHOT)
 		)
+	if dlg.has_signal("workshop_requested"):
+		dlg.workshop_requested.connect(func():
+			var ws_dlg = open_gem_workshop()
+			if ws_dlg and is_instance_valid(ws_dlg) and ws_dlg.has_signal("closed"):
+				ws_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_skill_dialog()
+				, CONNECT_ONE_SHOT)
+		)
 	add_child(dlg)
 	return dlg
 
