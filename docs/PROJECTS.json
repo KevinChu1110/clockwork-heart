@@ -7110,8 +7110,8 @@
    "id": "merge-gem-workshop-skill-shortcuts",
    "cat": "平台",
    "title": "把已過審的手藝工坊前往心法與心法前往工坊雙分支合進主線",
-   "status": "草稿",
-   "note": "待合併回歸驗收",
+   "status": "開發中",
+   "note": "雙分支合併推進與全面回歸驗收中 (t_fdbc7b51)",
    "keys": [
     "把已過審的手藝工"
    ]
