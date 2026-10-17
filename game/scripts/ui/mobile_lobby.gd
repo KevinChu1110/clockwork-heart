@@ -6922,6 +6922,14 @@ func open_forge(target_weapon: Variant = null) -> Control:
 		dlg.connect("go_shop", func():
 			open_shop()
 		)
+	if dlg.has_signal("inventory_requested"):
+		dlg.connect("inventory_requested", func():
+			open_maple_inventory()
+		)
+	elif dlg.has_signal("go_inventory"):
+		dlg.connect("go_inventory", func():
+			open_maple_inventory()
+		)
 	add_child(dlg)
 	if target_weapon != null and dlg.has_method("select_target_equipment"):
 		dlg.call("select_target_equipment", target_weapon)
