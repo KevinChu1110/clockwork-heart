@@ -1,0 +1,46 @@
+# 驗收證明 · ForgeDialog 天宮鐵匠底欄新增『前往心法』快捷果凍按鈕連動 SkillDialog (t_6dfb17d2)
+
+## 1. 任務說明與驗收規範
+在 `ForgeDialog`（天宮鐵匠裝備鍛造彈窗）底欄動作列 `act_row` 新組立體果凍按鈕『前往心法』（`BtnGoSkill`），點擊後發出 `skill_requested` 與 `go_skill` 訊號並透過回呼安全關閉鐵匠彈窗開啟 `SkillDialog` 心法招式彈窗，實現鍛造兵器與調整招式心法的雙向無縫互通。
+
+- **按鈕規格樣式**：
+  - 命名為 `BtnGoSkill`，位於底欄 `act_row` 按鈕列（前往背包與離開鐵匠鋪之間）。
+  - 尺寸熱區 `140x50px`（不小於 `140x48px`，高度 50px），符合手遊人體工學防誤觸標準。
+  - 多巴胺天藍色盤 `COLOR_SKY` (`#38A0FF`)，立體果凍厚底 5px，圓角 18px，深藍紫描邊 `#1F1A3A`。
+  - 16px 開源粉圓體字型，深藍紫字帶描邊，100% 徹底清除系統 Emoji。
+- **點擊連動與雙向閉環**：
+  - 提供 `skill_requested` 與 `go_skill` 雙訊號，以及 `get_go_skill_button()` 存取器。
+  - 點擊按鈕安全發射 `closed` 訊號並順暢關閉 ForgeDialog（無遮罩殘留）。
+  - 大廳接收訊號連動開啟 `SkillDialog` 心法招式彈窗。
+  - 心法彈窗關閉後順暢返回 `ForgeDialog`。
+- **六語系即時切換**：
+  - 繁中 `zh_TW`：`前往心法`
+  - 簡中 `zh_CN`：`前往心法`
+  - 英文 `en`：`Go to Skills`
+  - 日文 `ja`：`心法へ進む`
+  - 韓文 `ko`：`심법으로 이동`
+  - 西文 `es`：`Ir a Habilidades`
+
+---
+
+## 2. 測試執行結果
+
+| 測試項目 | 指令 | 結果 | 判定 |
+|---|---|---|:---:|
+| **專屬回歸測試 (Headless)** | `godot --path game -s res://scripts/ui/test_forge_dialog_skill_shortcut.gd --headless` | 按鈕節點存在、尺寸樣式、訊號發射與六語系動態刷新全數通過 (PASS_OK) | **PASS** |
+| **無頭冒煙測試** | `godot --path game --headless --quit-after 3` | 0 SCRIPT ERROR / 0 Crash | **PASS** |
+| **clock-check 自動化檢查** | `clock-check .` | 0 缺 .import、0 軟連結、語系 key 齊全、0 舊名詞 | **PASS** |
+| **實機渲染截圖存證** | `xvfb-run -a -s "-screen 0 1280x720x24" godot --audio-driver Dummy --path game --rendering-driver opengl3 -s res://scripts/ui/test_forge_dialog_skill_shortcut.gd` | 8 張真實畫面截圖，雜湊獨立無重複 | **PASS** |
+
+---
+
+## 3. 截圖存證清單
+截圖檔案存放於 `proofs/t_6dfb17d2/` 與 `docs/proofs/t_6dfb17d2/`：
+1. `proof_01_zh_TW_forge_dialog_btn_go_skill.png`：ForgeDialog 繁中介面與天藍色 BtnGoSkill。
+2. `proof_02_click_btn_go_skill_opens_skill_dialog.png`：點擊 BtnGoSkill 後關閉 ForgeDialog 並開啟 SkillDialog 心法招式彈窗。
+3. `proof_03_skill_dialog_loop_back_to_forge.png`：返回 ForgeDialog 雙向閉環與第 2 槽位互動狀態。
+4. `proof_04_zh_CN_forge_dialog_btn_go_skill.png`：簡體中文『前往心法』。
+5. `proof_05_en_forge_dialog_btn_go_skill.png`：英文『Go to Skills』。
+6. `proof_06_ja_forge_dialog_btn_go_skill.png`：日文『心法へ進む』。
+7. `proof_07_ko_forge_dialog_btn_go_skill.png`：韓文『심법으로 이동』。
+8. `proof_08_es_forge_dialog_btn_go_skill.png`：西文『Ir a Habilidades』。

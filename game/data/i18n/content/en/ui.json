@@ -3982,5 +3982,7 @@
   "defeat.go_inventory": "Go to Inventory",
   "dummy.btn_go_inventory": "Go to Inventory",
   "dummy_settlement.btn_go_inventory": "Go to Inventory",
-  "ui.btn_go_inventory": "Go to Inventory"
+  "ui.btn_go_inventory": "Go to Inventory",
+  "forge.btn_go_skill": "Go to Skills",
+  "ui.btn_go_skill": "Go to Skills"
 }

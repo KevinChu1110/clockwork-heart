@@ -4342,5 +4342,7 @@
   "defeat.go_inventory": "Ir al Inventario",
   "dummy.btn_go_inventory": "Ir al Inventario",
   "dummy_settlement.btn_go_inventory": "Ir al Inventario",
-  "ui.btn_go_inventory": "Ir al Inventario"
+  "ui.btn_go_inventory": "Ir al Inventario",
+  "forge.btn_go_skill": "Ir a Habilidades",
+  "ui.btn_go_skill": "Ir a Habilidades"
 }

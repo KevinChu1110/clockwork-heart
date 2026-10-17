@@ -3985,5 +3985,7 @@
   "defeat.go_inventory": "前往背包",
   "dummy.btn_go_inventory": "前往背包",
   "dummy_settlement.btn_go_inventory": "前往背包",
-  "ui.btn_go_inventory": "前往背包"
+  "ui.btn_go_inventory": "前往背包",
+  "forge.btn_go_skill": "前往心法",
+  "ui.btn_go_skill": "前往心法"
 }
