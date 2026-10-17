@@ -7020,8 +7020,8 @@
    "id": "dummy-settlement-inventory-shortcut",
    "cat": "遊戲",
    "title": "DummySettlementDialog 木人樁試招結算新增前往背包快捷按鈕連動 MapleInventory",
-   "status": "開發中",
-   "note": "已開卡 t_69029192 派工阿宏 sideworker 推進中",
+   "status": "測試中",
+   "note": "完成開發、無頭測試全綠與 7 張實機截圖存證，送審 sideqa",
    "keys": [
     "DummySet"
    ]
