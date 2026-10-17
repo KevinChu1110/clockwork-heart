@@ -7085,6 +7085,16 @@
    "keys": [
     "把已過審的心法前"
    ]
+  },
+  {
+   "id": "gem-workshop-skill-shortcut",
+   "cat": "遊戲",
+   "title": "GemWorkshopDialog 手藝工坊底欄新增前往心法快捷果凍按鈕連動 SkillDialog",
+   "status": "草稿",
+   "note": "已開卡派工阿宏 sideworker 推進開發",
+   "keys": [
+    "GemWorks"
+   ]
   }
  ]
 }
