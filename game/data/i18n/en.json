@@ -4331,5 +4331,6 @@
   "shop.btn_go_vault": "To Vault",
   "windup_daily.btn_go_shop": "To Shop",
   "shop.btn_go_daily": "To Daily",
-  "shop.btn_go_windup": "To Daily"
+  "shop.btn_go_windup": "To Daily",
+  "soul_hall.btn_go_shop": "To Shop"
 }

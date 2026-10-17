@@ -254,6 +254,7 @@ var _gourd_btn_absorb: Button = null
 var _gourd_btn_draw: Button = null
 var _gourd_btn_inventory: Button = null
 var _soul_btn_go_power_stat: Button = null
+var _soul_btn_go_shop: Button = null
 var _soul_btn_unequip_all: Button = null
 var _soul_btn_auto_equip: Button = null
 var _soul_status_bbcode_label: RichTextLabel = null
@@ -3387,6 +3388,49 @@ func _build_soul_hall_tab() -> void:
 	)
 	bot_h.add_child(btn_pstat)
 	_soul_btn_go_power_stat = btn_pstat
+
+	# 快捷按鈕：前往商城 (暖橘立體厚底 5px, 140x52px, 圓角 18px, 文字深藍紫, 零系統 Emoji)
+	var btn_shop := Button.new()
+	btn_shop.name = "BtnGoShop"
+	var shop_txt := _t("soul_hall.btn_go_shop")
+	if shop_txt == "soul_hall.btn_go_shop" or shop_txt.is_empty():
+		shop_txt = _t("前往商城")
+	btn_shop.text = shop_txt
+	btn_shop.custom_minimum_size = Vector2(140, 52)
+	btn_shop.add_theme_font_size_override("font_size", 16)
+	if _cached_font != null:
+		btn_shop.add_theme_font_override("font", _cached_font)
+	var shop_sb := StyleBoxFlat.new()
+	shop_sb.bg_color = COLOR_ORANGE
+	shop_sb.border_color = COLOR_BORDER
+	shop_sb.set_border_width_all(2)
+	shop_sb.border_width_bottom = 5
+	shop_sb.set_corner_radius_all(18)
+	shop_sb.content_margin_top = 8
+	shop_sb.content_margin_bottom = 8
+	shop_sb.content_margin_left = 12
+	shop_sb.content_margin_right = 12
+	shop_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	shop_sb.shadow_size = 6
+	shop_sb.shadow_offset = Vector2(0, 3)
+	var shop_sb_h := shop_sb.duplicate() as StyleBoxFlat
+	shop_sb_h.bg_color = Color("#FFB84D")
+	var shop_sb_p := shop_sb.duplicate() as StyleBoxFlat
+	shop_sb_p.border_width_bottom = 2
+	btn_shop.add_theme_stylebox_override("normal", shop_sb)
+	btn_shop.add_theme_stylebox_override("hover", shop_sb_h)
+	btn_shop.add_theme_stylebox_override("pressed", shop_sb_p)
+	btn_shop.add_theme_stylebox_override("focus", shop_sb)
+	btn_shop.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_shop.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_shop.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+	btn_shop.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn_shop.pressed.connect(func():
+		_play_ui_sound()
+		open_shop()
+	)
+	bot_h.add_child(btn_shop)
+	_soul_btn_go_shop = btn_shop
 
 	var btn_draw := Button.new()
 	btn_draw.name = "BtnDrawTen"
@@ -6615,6 +6659,11 @@ func _apply_locale_texts() -> void:
 		if pstat_txt == "soul_hall.btn_go_power_stat" or pstat_txt.is_empty():
 			pstat_txt = _t("前往戰力")
 		_soul_btn_go_power_stat.text = pstat_txt
+	if _soul_btn_go_shop and is_instance_valid(_soul_btn_go_shop):
+		var shop_txt := _t("soul_hall.btn_go_shop")
+		if shop_txt == "soul_hall.btn_go_shop" or shop_txt.is_empty():
+			shop_txt = _t("前往商城")
+		_soul_btn_go_shop.text = shop_txt
 	if _gourd_btn_draw and is_instance_valid(_gourd_btn_draw):
 		_gourd_btn_draw.text = _t("聚魂十連")
 	_refresh_gourds_ui()
@@ -7311,6 +7360,20 @@ func get_soul_hall_go_power_stat_btn() -> Button:
 ## 相容別名
 func get_btn_soul_go_power_stat() -> Button:
 	return _soul_btn_go_power_stat
+
+
+## 取得聚魂殿堂前往商城快捷按鈕
+func get_soul_hall_go_shop_btn() -> Button:
+	return _soul_btn_go_shop
+
+
+## 相容別名
+func get_btn_soul_go_shop() -> Button:
+	return _soul_btn_go_shop
+
+
+func get_soul_hall_shop_btn() -> Button:
+	return _soul_btn_go_shop
 
 
 ## 取得聚魂殿堂一鍵卸下全部戰魂按鈕
