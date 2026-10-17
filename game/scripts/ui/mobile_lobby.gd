@@ -7100,6 +7100,11 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 		if existing_inv.get_parent() == self:
 			remove_child(existing_inv)
 		existing_inv.queue_free()
+	var existing_skill = get_node_or_null("SkillDialog")
+	if existing_skill != null:
+		if existing_skill.get_parent() == self:
+			remove_child(existing_skill)
+		existing_skill.queue_free()
 	var GemClass: GDScript = load("res://scripts/ui/gem_workshop_dialog.gd")
 	if GemClass == null:
 		push_error("無法載入 GemWorkshopDialog")
@@ -7130,6 +7135,14 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 		dlg.connect("go_shop", func():
 			open_shop()
 		)
+	if dlg.has_signal("skill_requested"):
+		dlg.connect("skill_requested", func():
+			open_skill_dialog()
+		)
+	elif dlg.has_signal("go_skill"):
+		dlg.connect("go_skill", func():
+			open_skill_dialog()
+		)
 	add_child(dlg)
 	if target_tab != 0 and dlg.has_method("set_tab"):
 		dlg.call("set_tab", target_tab)
@@ -7141,6 +7154,11 @@ func open_skill_dialog() -> Control:
 	var existing = get_node_or_null("SkillDialog")
 	if existing != null and is_instance_valid(existing) and not existing.is_queued_for_deletion():
 		return existing
+	var existing_workshop = get_node_or_null("GemWorkshopDialog")
+	if existing_workshop != null:
+		if existing_workshop.get_parent() == self:
+			remove_child(existing_workshop)
+		existing_workshop.queue_free()
 	var SkillClass: GDScript = load("res://scripts/ui/skill_dialog.gd")
 	if SkillClass == null:
 		push_error("無法載入 SkillDialog")
@@ -7178,6 +7196,17 @@ func open_skill_dialog() -> Control:
 			var forge_dlg = open_forge()
 			if forge_dlg and is_instance_valid(forge_dlg) and forge_dlg.has_signal("closed"):
 				forge_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_skill_dialog()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("workshop_requested"):
+		dlg.workshop_requested.connect(func():
+			var ws_dlg = open_gem_workshop()
+			if ws_dlg and is_instance_valid(ws_dlg) and ws_dlg.has_signal("closed"):
+				ws_dlg.closed.connect(func():
 					if is_instance_valid(self) and is_inside_tree():
 						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
 						if not has_modal:

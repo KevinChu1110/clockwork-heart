@@ -3986,5 +3986,8 @@
   "skill.btn_go_forge": "鍛造へ進む",
   "ui.btn_go_forge": "鍛造へ進む",
   "forge.btn_go_skill": "心法へ進む",
-  "ui.btn_go_skill": "心法へ進む"
+  "ui.btn_go_skill": "心法へ進む",
+  "skill.btn_go_workshop": "工房へ進む",
+  "ui.btn_go_workshop": "工房へ進む",
+  "gem_workshop.btn_go_skill": "心法へ進む"
 }
