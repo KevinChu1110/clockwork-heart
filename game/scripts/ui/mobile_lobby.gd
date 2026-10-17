@@ -6896,6 +6896,15 @@ func open_wardrobe() -> Control:
 			open_maple_inventory()
 		)
 
+	if dlg.has_signal("forge_requested"):
+		dlg.connect("forge_requested", func():
+			open_forge()
+		)
+	elif dlg.has_signal("go_forge"):
+		dlg.connect("go_forge", func():
+			open_forge()
+		)
+
 	# 開啟衣櫥時隱藏底層角色預覽，避免高亮剪影穿透全螢幕半透明遮罩 (review.md / 視覺品質標準)
 	if _char_prev:
 		_char_prev.visible = false
@@ -6986,6 +6995,14 @@ func open_forge(target_weapon: Variant = null) -> Control:
 	elif dlg.has_signal("go_skill"):
 		dlg.connect("go_skill", func():
 			open_skill_dialog()
+		)
+	if dlg.has_signal("wardrobe_requested"):
+		dlg.connect("wardrobe_requested", func():
+			open_wardrobe()
+		)
+	elif dlg.has_signal("go_wardrobe"):
+		dlg.connect("go_wardrobe", func():
+			open_wardrobe()
 		)
 	add_child(dlg)
 	if target_weapon != null and dlg.has_method("select_target_equipment"):

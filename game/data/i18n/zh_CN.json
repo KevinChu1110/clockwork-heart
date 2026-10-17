@@ -4352,5 +4352,7 @@
   "ui.btn_go_skill": "前往心法",
   "skill.btn_go_workshop": "前往工坊",
   "ui.btn_go_workshop": "前往工坊",
-  "gem_workshop.btn_go_skill": "前往心法"
+  "gem_workshop.btn_go_skill": "前往心法",
+  "forge.btn_go_wardrobe": "前往衣橱",
+  "ui.btn_go_wardrobe": "前往衣橱"
 }

@@ -4349,5 +4349,7 @@
   "ui.btn_go_skill": "심법으로 이동",
   "skill.btn_go_workshop": "공방으로 이동",
   "ui.btn_go_workshop": "공방으로 이동",
-  "gem_workshop.btn_go_skill": "심법으로 이동"
+  "gem_workshop.btn_go_skill": "심법으로 이동",
+  "forge.btn_go_wardrobe": "의상실로 이동",
+  "ui.btn_go_wardrobe": "의상실로 이동"
 }
