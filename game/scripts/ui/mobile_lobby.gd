@@ -6845,6 +6845,11 @@ func open_wardrobe() -> Control:
 	var existing = get_node_or_null("WardrobeDialog")
 	if existing != null:
 		return existing
+	var existing_workshop = get_node_or_null("GemWorkshopDialog")
+	if existing_workshop != null:
+		if existing_workshop.get_parent() == self:
+			remove_child(existing_workshop)
+		existing_workshop.queue_free()
 
 	var wardrobe_scn := load("res://scenes/ui/wardrobe_dialog.tscn")
 	var dlg: Control = null
@@ -7122,6 +7127,11 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 		if existing_skill.get_parent() == self:
 			remove_child(existing_skill)
 		existing_skill.queue_free()
+	var existing_wardrobe = get_node_or_null("WardrobeDialog")
+	if existing_wardrobe != null:
+		if existing_wardrobe.get_parent() == self:
+			remove_child(existing_wardrobe)
+		existing_wardrobe.queue_free()
 	var GemClass: GDScript = load("res://scripts/ui/gem_workshop_dialog.gd")
 	if GemClass == null:
 		push_error("無法載入 GemWorkshopDialog")
@@ -7159,6 +7169,14 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 	elif dlg.has_signal("go_skill"):
 		dlg.connect("go_skill", func():
 			open_skill_dialog()
+		)
+	if dlg.has_signal("wardrobe_requested"):
+		dlg.connect("wardrobe_requested", func():
+			open_wardrobe()
+		)
+	elif dlg.has_signal("go_wardrobe"):
+		dlg.connect("go_wardrobe", func():
+			open_wardrobe()
 		)
 	add_child(dlg)
 	if target_tab != 0 and dlg.has_method("set_tab"):
