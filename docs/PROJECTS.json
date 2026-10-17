@@ -7080,8 +7080,8 @@
    "id": "merge-skill-forge-shortcuts",
    "cat": "平台",
    "title": "把已過審的心法前往鍛造與鐵匠前往心法雙分支合進主線",
-   "status": "草稿",
-   "note": "待工程師合併與全站回歸驗收",
+   "status": "開發中",
+   "note": "派工阿翔 sideworker2 進行主線合併與回歸驗收",
    "keys": [
     "把已過審的心法前"
    ]
