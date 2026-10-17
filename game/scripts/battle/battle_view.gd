@@ -43,6 +43,7 @@ signal retry_stage_requested()
 signal replay_stage_requested()
 signal skills_requested()
 signal power_stat_requested()
+signal inventory_requested()
 
 @onready var log_label: RichTextLabel = %Log
 @onready var player_hp: ProgressBar = %PlayerHP
@@ -5239,11 +5240,13 @@ func _show_defeat_settlement() -> void:
 			var WC = load("res://scripts/world/world_content.gd")
 			if WC and WC.has_method("colossus_weak_part"):
 				part_hint = str(WC.call("colossus_weak_part", _mode))
-	_defeat_settlement_dialog = BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint, _on_gear_up_defeat, _on_retry_stage_defeat, _on_power_stat_defeat)
+	_defeat_settlement_dialog = BattleDefeatDialogScript.show_dialog(self, _on_ad_revive_success, _on_give_up_defeat, _mode, part_hint, _on_gear_up_defeat, _on_retry_stage_defeat, _on_power_stat_defeat, _on_inventory_defeat)
 	if _defeat_settlement_dialog and _defeat_settlement_dialog.has_signal("retry_stage_requested") and not _defeat_settlement_dialog.retry_stage_requested.is_connected(_on_retry_stage_defeat):
 		_defeat_settlement_dialog.retry_stage_requested.connect(_on_retry_stage_defeat)
 	if _defeat_settlement_dialog and _defeat_settlement_dialog.has_signal("power_stat_requested") and not _defeat_settlement_dialog.power_stat_requested.is_connected(_on_power_stat_defeat):
 		_defeat_settlement_dialog.power_stat_requested.connect(_on_power_stat_defeat)
+	if _defeat_settlement_dialog and _defeat_settlement_dialog.has_signal("inventory_requested") and not _defeat_settlement_dialog.inventory_requested.is_connected(_on_inventory_defeat):
+		_defeat_settlement_dialog.inventory_requested.connect(_on_inventory_defeat)
 
 
 func _on_ad_revive_success() -> void:
@@ -5296,10 +5299,43 @@ func open_power_stat_dialog() -> Control:
 	return dlg
 
 
+func open_maple_inventory(initial_category: String = "") -> Control:
+	var existing = get_node_or_null("MapleInventory")
+	if existing != null and is_instance_valid(existing):
+		if not existing.is_queued_for_deletion():
+			if not initial_category.is_empty() and existing.has_method("set_category"):
+				existing.call("set_category", initial_category)
+			if existing.has_method("open"):
+				existing.call("open")
+			return existing
+		else:
+			remove_child(existing)
+	var MapleInventoryScn: GDScript = load("res://scripts/ui/maple_inventory.gd")
+	if MapleInventoryScn == null:
+		return null
+	var inv: Control = MapleInventoryScn.new() as Control
+	inv.name = "MapleInventory"
+	inv.z_index = 100
+	add_child(inv)
+	if not initial_category.is_empty() and inv.has_method("set_category"):
+		inv.call("set_category", initial_category)
+	if inv.has_method("open"):
+		inv.call("open")
+	return inv
+
+
 func _on_power_stat_defeat() -> void:
 	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
 		_defeat_settlement_dialog = null
 	open_power_stat_dialog()
+
+
+func _on_inventory_defeat() -> void:
+	if _defeat_settlement_dialog != null and is_instance_valid(_defeat_settlement_dialog):
+		_defeat_settlement_dialog = null
+	inventory_requested.emit()
+	battle_finished.emit(false)
+	open_maple_inventory()
 
 
 func _on_gear_up_victory() -> void:
