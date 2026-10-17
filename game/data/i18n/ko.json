@@ -4334,5 +4334,6 @@
   "shop.btn_go_windup": "일일 의뢰로 이동",
   "energy_lack.btn_go_vault": "저장고로 이동",
   "forge.btn_go_inventory": "인벤토리로 이동",
-  "soul_hall.btn_go_shop": "상점으로"
+  "soul_hall.btn_go_shop": "상점으로",
+  "victory.btn_go_inventory": "인벤토리로 이동"
 }
