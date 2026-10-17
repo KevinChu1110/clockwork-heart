@@ -7020,8 +7020,8 @@
    "id": "defeat-inventory-shortcut",
    "cat": "遊戲",
    "title": "BattleDefeatDialog 戰敗結算新增前往背包快捷果凍按鈕連動 MapleInventory",
-   "status": "草稿",
-   "note": "",
+   "status": "開發中",
+   "note": "已開卡 t_0bfa03fb 派工阿翔 sideworker2 推進中",
    "keys": [
     "BattleDe"
    ]
