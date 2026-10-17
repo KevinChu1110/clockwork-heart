@@ -6930,8 +6930,8 @@
    "id": "energy-lack-vault-shortcut",
    "cat": "遊戲",
    "title": "EnergyLackDialog 能量不足彈窗新增前往儲能庫快捷按鈕連動 ClockworkVaultDialog",
-   "status": "草稿",
-   "note": "待開發",
+   "status": "已上線",
+   "note": "EnergyLackDialog 前往儲能庫快捷按鈕已合併至 main 並完成全套回歸驗收 (t_8f1f5cf3)",
    "keys": [
     "EnergyLa"
    ]
