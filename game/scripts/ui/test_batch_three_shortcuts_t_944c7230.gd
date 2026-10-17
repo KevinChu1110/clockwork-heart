@@ -29,7 +29,7 @@ func _initialize() -> void:
 
 	_eq = root.get_node_or_null("EquipmentSystem")
 	if _eq == null:
-		var EqClass = load("res://scripts/autoload/equipment_system.gd")
+		var EqClass = load("res://scripts/systems/equipment_system.gd")
 		if EqClass:
 			_eq = EqClass.new()
 			_eq.name = "EquipmentSystem"
