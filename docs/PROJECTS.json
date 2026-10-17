@@ -6990,8 +6990,8 @@
    "id": "merge-forge-inventory-soul-hall-shop",
    "cat": "平台",
    "title": "把已過審的 ForgeDialog 前往背包與大廳聚魂殿堂前往商城雙分支合進主線",
-   "status": "草稿",
-   "note": "開發中",
+   "status": "開發中",
+   "note": "sideworker 正在執行雙分支主線合併與回歸測試",
    "keys": [
     "把已過審的 Fo"
    ]
