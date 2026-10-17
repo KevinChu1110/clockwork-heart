@@ -2459,5 +2459,7 @@
   "dummy_settlement.btn_go_inventory": "前往背包",
   "ui.btn_go_inventory": "前往背包",
   "skill.btn_go_forge": "前往鍛造",
-  "ui.btn_go_forge": "前往鍛造"
+  "ui.btn_go_forge": "前往鍛造",
+  "forge.btn_go_skill": "前往心法",
+  "ui.btn_go_skill": "前往心法"
 }

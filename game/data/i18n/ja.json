@@ -4344,5 +4344,7 @@
   "dummy_settlement.btn_go_inventory": "インベントリへ進む",
   "ui.btn_go_inventory": "インベントリへ進む",
   "skill.btn_go_forge": "鍛造へ進む",
-  "ui.btn_go_forge": "鍛造へ進む"
+  "ui.btn_go_forge": "鍛造へ進む",
+  "forge.btn_go_skill": "心法へ進む",
+  "ui.btn_go_skill": "心法へ進む"
 }
