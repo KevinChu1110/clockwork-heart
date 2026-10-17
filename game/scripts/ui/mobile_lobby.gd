@@ -7165,6 +7165,17 @@ func open_skill_dialog() -> Control:
 							open_skill_dialog()
 				, CONNECT_ONE_SHOT)
 		)
+	if dlg.has_signal("forge_requested"):
+		dlg.forge_requested.connect(func():
+			var forge_dlg = open_forge()
+			if forge_dlg and is_instance_valid(forge_dlg) and forge_dlg.has_signal("closed"):
+				forge_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_skill_dialog()
+				, CONNECT_ONE_SHOT)
+		)
 	add_child(dlg)
 	return dlg
 

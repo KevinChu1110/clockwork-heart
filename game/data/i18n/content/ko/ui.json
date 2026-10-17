@@ -3982,5 +3982,7 @@
   "defeat.go_inventory": "인벤토리로 이동",
   "dummy.btn_go_inventory": "인벤토리로 이동",
   "dummy_settlement.btn_go_inventory": "인벤토리로 이동",
-  "ui.btn_go_inventory": "인벤토리로 이동"
+  "ui.btn_go_inventory": "인벤토리로 이동",
+  "skill.btn_go_forge": "단조로 이동",
+  "ui.btn_go_forge": "단조로 이동"
 }

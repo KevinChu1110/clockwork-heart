@@ -3982,5 +3982,7 @@
   "defeat.go_inventory": "インベントリへ進む",
   "dummy.btn_go_inventory": "インベントリへ進む",
   "dummy_settlement.btn_go_inventory": "インベントリへ進む",
-  "ui.btn_go_inventory": "インベントリへ進む"
+  "ui.btn_go_inventory": "インベントリへ進む",
+  "skill.btn_go_forge": "鍛造へ進む",
+  "ui.btn_go_forge": "鍛造へ進む"
 }
