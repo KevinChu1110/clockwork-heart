@@ -7070,8 +7070,8 @@
    "id": "forge-skill-shortcut",
    "cat": "遊戲",
    "title": "ForgeDialog 天宮鐵匠底欄新增前往心法快捷果凍按鈕連動 SkillDialog",
-   "status": "草稿",
-   "note": "鍛造前往心法快捷連動",
+   "status": "開發中",
+   "note": "已開卡派工阿翔 sideworker2 推進開發",
    "keys": [
     "ForgeDia"
    ]
