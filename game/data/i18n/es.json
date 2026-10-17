@@ -4333,5 +4333,6 @@
   "shop.btn_go_daily": "Ir a Encargos",
   "shop.btn_go_windup": "Ir a Encargos",
   "energy_lack.btn_go_vault": "Ir a Bóveda",
-  "forge.btn_go_inventory": "Ir al Inventario"
+  "forge.btn_go_inventory": "Ir al Inventario",
+  "soul_hall.btn_go_shop": "A Tienda"
 }
