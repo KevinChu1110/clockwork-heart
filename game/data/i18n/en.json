@@ -4359,5 +4359,7 @@
   "gem_workshop.btn_go_wardrobe": "Go to Wardrobe",
   "skill.btn_go_wardrobe": "Go to Wardrobe",
   "wardrobe.btn_go_skill": "Go to Skills",
-  "wardrobe.go_skill": "Go to Skills"
+  "wardrobe.go_skill": "Go to Skills",
+  "vault.go_wardrobe": "To Wardrobe",
+  "vault.btn_go_wardrobe": "To Wardrobe"
 }

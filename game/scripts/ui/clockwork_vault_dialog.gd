@@ -26,6 +26,8 @@ signal windup_requested()
 signal go_windup()
 signal shop_requested()
 signal go_shop()
+signal wardrobe_requested()
+signal go_wardrobe()
 
 const IdleClockworkVault = preload("res://scripts/systems/idle_clockwork_vault.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -63,6 +65,7 @@ var _btn_go_forge: Button
 var _btn_go_inventory: Button
 var _btn_go_power_stat: Button
 var _btn_go_shop: Button
+var _btn_go_wardrobe: Button
 var _btn_close: Button
 var _cached_font: Font = null
 var _fx_container: Control = null
@@ -114,13 +117,13 @@ func _build_ui() -> void:
 	_fx_container.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_fx_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-	## 2. 彈窗主體卡片 (寬 820, 高 460, 置中)
+	## 2. 彈窗主體卡片 (寬 920, 高 460, 置中)
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "VaultCard"
 	_dialog_card.set_anchors_preset(Control.PRESET_CENTER)
-	_dialog_card.custom_minimum_size = Vector2(820, 460)
-	_dialog_card.offset_left = -410
-	_dialog_card.offset_right = 410
+	_dialog_card.custom_minimum_size = Vector2(920, 460)
+	_dialog_card.offset_left = -460
+	_dialog_card.offset_right = 460
 	_dialog_card.offset_top = -230
 	_dialog_card.offset_bottom = 230
 
@@ -377,7 +380,7 @@ func _build_ui() -> void:
 		_scrap_num_label.add_theme_font_override("font", _cached_font)
 	sv.add_child(_scrap_num_label)
 
-	## 底部操作按鈕：普通領取、雙倍領取、前往委託、前往鍛造、前往背包、前往戰力與前往商城 (高 52px, 熱區 >= 48px, 立體果凍厚底)
+	## 底部操作按鈕：普通領取、雙倍領取、前往委託、前往鍛造、前往背包、前往戰力、前往商城與前往衣櫥 (高 52px, 熱區 >= 48px, 立體果凍厚底)
 	var foot_box := HBoxContainer.new()
 	foot_box.alignment = BoxContainer.ALIGNMENT_CENTER
 	foot_box.add_theme_constant_override("separation", 6)
@@ -385,7 +388,7 @@ func _build_ui() -> void:
 
 	_btn_claim = Button.new()
 	_btn_claim.name = "ClaimButton"
-	_btn_claim.custom_minimum_size = Vector2(115, 52)
+	_btn_claim.custom_minimum_size = Vector2(105, 52)
 	_btn_claim.focus_mode = Control.FOCUS_NONE
 
 	var claim_sb := StyleBoxFlat.new()
@@ -412,7 +415,7 @@ func _build_ui() -> void:
 	## 雙倍領取按鈕 (DoubleClaimButton，高 52px、天藍 #38A0FF 底色、立體果凍厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
 	_btn_double_claim = Button.new()
 	_btn_double_claim.name = "DoubleClaimButton"
-	_btn_double_claim.custom_minimum_size = Vector2(115, 52)
+	_btn_double_claim.custom_minimum_size = Vector2(105, 52)
 	_btn_double_claim.focus_mode = Control.FOCUS_NONE
 
 	var double_sb := StyleBoxFlat.new()
@@ -439,7 +442,7 @@ func _build_ui() -> void:
 	## 前往委託快捷按鈕 (BtnGoWindup，高 52px、熱區 >= 48px、暖橘 #FFA010 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
 	_btn_go_windup = Button.new()
 	_btn_go_windup.name = "BtnGoWindup"
-	_btn_go_windup.custom_minimum_size = Vector2(115, 52)
+	_btn_go_windup.custom_minimum_size = Vector2(105, 52)
 	_btn_go_windup.focus_mode = Control.FOCUS_NONE
 
 	var windup_sb := StyleBoxFlat.new()
@@ -465,7 +468,7 @@ func _build_ui() -> void:
 	## 前往鍛造快捷按鈕 (BtnGoForge，高 52px、熱區 >= 48px、金黃 #FFD028 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
 	_btn_go_forge = Button.new()
 	_btn_go_forge.name = "BtnGoForge"
-	_btn_go_forge.custom_minimum_size = Vector2(115, 52)
+	_btn_go_forge.custom_minimum_size = Vector2(105, 52)
 	_btn_go_forge.focus_mode = Control.FOCUS_NONE
 
 	var forge_sb := StyleBoxFlat.new()
@@ -491,7 +494,7 @@ func _build_ui() -> void:
 	## 前往背包快捷按鈕 (BtnGoInventory，高 52px、熱區 >= 48px、薄荷綠 #4ED86A 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
 	_btn_go_inventory = Button.new()
 	_btn_go_inventory.name = "BtnGoInventory"
-	_btn_go_inventory.custom_minimum_size = Vector2(115, 52)
+	_btn_go_inventory.custom_minimum_size = Vector2(105, 52)
 	_btn_go_inventory.focus_mode = Control.FOCUS_NONE
 
 	var inv_sb := StyleBoxFlat.new()
@@ -517,7 +520,7 @@ func _build_ui() -> void:
 	## 前往戰力快捷按鈕 (BtnGoPowerStat，高 52px、熱區 >= 48px、天藍 #38A0FF 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
 	_btn_go_power_stat = Button.new()
 	_btn_go_power_stat.name = "BtnGoPowerStat"
-	_btn_go_power_stat.custom_minimum_size = Vector2(115, 52)
+	_btn_go_power_stat.custom_minimum_size = Vector2(105, 52)
 	_btn_go_power_stat.focus_mode = Control.FOCUS_NONE
 
 	var ps_sb := StyleBoxFlat.new()
@@ -566,6 +569,32 @@ func _build_ui() -> void:
 	_btn_go_shop.pressed.connect(_on_go_shop_pressed)
 	foot_box.add_child(_btn_go_shop)
 
+	## 前往衣櫥快捷按鈕 (BtnGoWardrobe，高 52px、熱區 >= 48px、暖橘 #FFA010 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
+	_btn_go_wardrobe = Button.new()
+	_btn_go_wardrobe.name = "BtnGoWardrobe"
+	_btn_go_wardrobe.custom_minimum_size = Vector2(105, 52)
+	_btn_go_wardrobe.focus_mode = Control.FOCUS_NONE
+
+	var wardrobe_sb := StyleBoxFlat.new()
+	wardrobe_sb.bg_color = COLOR_ORANGE
+	wardrobe_sb.border_color = COLOR_BORDER
+	wardrobe_sb.set_border_width_all(2)
+	wardrobe_sb.border_width_bottom = 5
+	wardrobe_sb.set_corner_radius_all(18)
+	var wardrobe_sb_h := wardrobe_sb.duplicate() as StyleBoxFlat
+	wardrobe_sb_h.bg_color = Color("#FFB030")
+	var wardrobe_sb_p := wardrobe_sb.duplicate() as StyleBoxFlat
+	wardrobe_sb_p.border_width_bottom = 2
+	_btn_go_wardrobe.add_theme_stylebox_override("normal", wardrobe_sb)
+	_btn_go_wardrobe.add_theme_stylebox_override("hover", wardrobe_sb_h)
+	_btn_go_wardrobe.add_theme_stylebox_override("pressed", wardrobe_sb_p)
+	_btn_go_wardrobe.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_wardrobe.add_theme_font_size_override("font_size", 16)
+	if _cached_font:
+		_btn_go_wardrobe.add_theme_font_override("font", _cached_font)
+	_btn_go_wardrobe.pressed.connect(_on_go_wardrobe_pressed)
+	foot_box.add_child(_btn_go_wardrobe)
+
 
 func _update_localized_texts() -> void:
 	if _title_label:
@@ -590,6 +619,17 @@ func _update_localized_texts() -> void:
 		_btn_go_power_stat.text = Loc.t("vault.btn_go_power_stat")
 	if _btn_go_shop:
 		_btn_go_shop.text = Loc.t("vault.btn_go_shop")
+	if _btn_go_wardrobe:
+		_btn_go_wardrobe.text = _get_go_wardrobe_text()
+
+
+func _get_go_wardrobe_text() -> String:
+	var t := Loc.t("vault.btn_go_wardrobe")
+	if t == "vault.btn_go_wardrobe" or t.is_empty():
+		t = Loc.t("vault.go_wardrobe")
+	if t == "vault.go_wardrobe" or t.is_empty():
+		t = "前往衣櫥"
+	return t
 
 
 ## 刷新顯示數值與進度條
@@ -622,7 +662,7 @@ func refresh_display() -> void:
 	if _progress_bar_fill and _progress_bar_bg:
 		var total_w: float = _progress_bar_bg.size.x - 4.0  ## 扣除左右邊框 2px*2
 		if total_w < 300.0:
-			total_w = 660.0  ## 預設寬度（未完成排版週期時使用卡片內槽寬 660px）
+			total_w = 760.0  ## 預設寬度（未完成排版週期時使用卡片內槽寬 760px）
 		var target_w: float = total_w * ratio
 		_progress_bar_fill.visible = (ratio > 0.001)
 		_progress_bar_fill.custom_minimum_size = Vector2(target_w, 20)
@@ -673,6 +713,11 @@ func refresh_display() -> void:
 	if _btn_go_shop:
 		_btn_go_shop.text = Loc.t("vault.btn_go_shop")
 		_btn_go_shop.disabled = false
+
+	## 更新前往衣櫥按鈕狀態
+	if _btn_go_wardrobe:
+		_btn_go_wardrobe.text = _get_go_wardrobe_text()
+		_btn_go_wardrobe.disabled = false
 
 
 func _is_ad_removed() -> bool:
@@ -837,6 +882,31 @@ func _on_go_shop_pressed() -> void:
 	queue_free()
 
 
+func _on_go_wardrobe_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	wardrobe_requested.emit()
+	go_wardrobe.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_wardrobe"):
+		p.call("open_wardrobe")
+	elif p != null and p.has_method("open_wardrobe_dialog"):
+		p.call("open_wardrobe_dialog")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_wardrobe"):
+				ml.call("open_wardrobe")
+			elif ml and ml.has_method("open_wardrobe_dialog"):
+				ml.call("open_wardrobe_dialog")
+	closed.emit()
+	queue_free()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -880,6 +950,14 @@ func get_go_shop_button() -> Button:
 
 func get_shop_button() -> Button:
 	return _btn_go_shop
+
+
+func get_go_wardrobe_button() -> Button:
+	return _btn_go_wardrobe
+
+
+func get_wardrobe_button() -> Button:
+	return _btn_go_wardrobe
 
 
 func get_close_button() -> Button:
