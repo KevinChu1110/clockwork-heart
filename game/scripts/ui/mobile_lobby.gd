@@ -6843,8 +6843,11 @@ func open_wardrobe_dialog() -> Control:
 
 func open_wardrobe() -> Control:
 	var existing = get_node_or_null("WardrobeDialog")
-	if existing != null:
+	if existing != null and is_instance_valid(existing) and not existing.is_queued_for_deletion():
 		return existing
+	elif existing != null:
+		if existing.get_parent() == self:
+			remove_child(existing)
 
 	var wardrobe_scn := load("res://scenes/ui/wardrobe_dialog.tscn")
 	var dlg: Control = null
@@ -6903,6 +6906,15 @@ func open_wardrobe() -> Control:
 	elif dlg.has_signal("go_forge"):
 		dlg.connect("go_forge", func():
 			open_forge()
+		)
+
+	if dlg.has_signal("workshop_requested"):
+		dlg.connect("workshop_requested", func():
+			open_gem_workshop()
+		)
+	elif dlg.has_signal("go_workshop"):
+		dlg.connect("go_workshop", func():
+			open_gem_workshop()
 		)
 
 	# 開啟衣櫥時隱藏底層角色預覽，避免高亮剪影穿透全螢幕半透明遮罩 (review.md / 視覺品質標準)
@@ -7097,6 +7109,10 @@ func open_maple_inventory(initial_category: String = "") -> Control:
 
 
 ## 開啟手藝工坊寶石彈窗
+func open_workshop(target_tab: int = 0) -> Control:
+	return open_gem_workshop(target_tab)
+
+
 func open_gem_workshop(target_tab: int = 0) -> Control:
 	var existing = get_node_or_null("GemWorkshopDialog")
 	if existing != null:

@@ -23,6 +23,8 @@ signal go_inventory()
 signal inventory_requested()
 signal go_forge()
 signal forge_requested()
+signal go_workshop()
+signal workshop_requested()
 
 @export var creation_mode: bool = false
 
@@ -158,6 +160,7 @@ var _btn_go_shop: Button
 var _btn_go_title_wall: Button
 var _btn_go_inventory: Button
 var _btn_go_forge: Button
+var _btn_go_workshop: Button
 var _stage_header_label: Label = null
 
 var _breathe_tween: Tween = null
@@ -778,6 +781,28 @@ func _build_ui() -> void:
 	_btn_go_forge.add_theme_stylebox_override("pressed", forge_h)
 	_btn_go_forge.pressed.connect(_on_go_forge_pressed)
 	actions_hbox.add_child(_btn_go_forge)
+
+	# 前往工坊 果凍按鈕 (BtnGoWorkshop)
+	_btn_go_workshop = Button.new()
+	_btn_go_workshop.name = "BtnGoWorkshop"
+	var ws_txt := _t("wardrobe.btn_go_workshop")
+	if ws_txt == "wardrobe.btn_go_workshop" or ws_txt.is_empty():
+		ws_txt = _t("wardrobe.go_workshop")
+	if ws_txt == "wardrobe.go_workshop" or ws_txt.is_empty():
+		ws_txt = _t("前往工坊")
+	_btn_go_workshop.text = ws_txt
+	_btn_go_workshop.custom_minimum_size = Vector2(105, BTN_SIZE)
+	_btn_go_workshop.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_workshop.add_theme_font_size_override("font_size", 16)
+	_btn_go_workshop.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_go_workshop.add_theme_font_override("font", _cached_font)
+	_btn_go_workshop.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 16, 2))
+	var ws_h := _create_button_style(Color("#6CE884"), COLOR_BORDER, 3, 16, 2)
+	_btn_go_workshop.add_theme_stylebox_override("hover", ws_h)
+	_btn_go_workshop.add_theme_stylebox_override("pressed", ws_h)
+	_btn_go_workshop.pressed.connect(_on_go_workshop_pressed)
+	actions_hbox.add_child(_btn_go_workshop)
 
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
@@ -1930,6 +1955,13 @@ func _update_ui_texts() -> void:
 		if forge_txt == "wardrobe.go_forge" or forge_txt.is_empty():
 			forge_txt = _t("前往鍛造")
 		_btn_go_forge.text = forge_txt
+	if _btn_go_workshop:
+		var ws_txt := _t("wardrobe.btn_go_workshop")
+		if ws_txt == "wardrobe.btn_go_workshop" or ws_txt.is_empty():
+			ws_txt = _t("wardrobe.go_workshop")
+		if ws_txt == "wardrobe.go_workshop" or ws_txt.is_empty():
+			ws_txt = _t("前往工坊")
+		_btn_go_workshop.text = ws_txt
 	if _btn_confirm:
 		_btn_confirm.text = _t("確認換裝 · 套用新外觀")
 
@@ -2089,6 +2121,15 @@ func get_forge_button() -> Button:
 	return _btn_go_forge
 
 
+## 取得前往工坊快捷按鈕
+func get_go_workshop_button() -> Button:
+	return _btn_go_workshop
+
+
+func get_workshop_button() -> Button:
+	return _btn_go_workshop
+
+
 func _on_go_power_stat_pressed() -> void:
 	var am: Node = null
 	if Engine.get_main_loop() is SceneTree:
@@ -2197,6 +2238,35 @@ func _on_go_forge_pressed() -> void:
 	if p and p.has_method("open_forge"):
 		if forge_requested.get_connections().is_empty() and go_forge.get_connections().is_empty():
 			p.call("open_forge")
+	if not is_queued_for_deletion():
+		close()
+
+
+func _on_go_workshop_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	workshop_requested.emit()
+	go_workshop.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_gem_workshop"):
+			if workshop_requested.get_connections().is_empty() and go_workshop.get_connections().is_empty():
+				ml.call("open_gem_workshop")
+		elif ml and ml.has_method("open_workshop"):
+			if workshop_requested.get_connections().is_empty() and go_workshop.get_connections().is_empty():
+				ml.call("open_workshop")
+	var p := get_parent()
+	if p and p.has_method("open_gem_workshop"):
+		if workshop_requested.get_connections().is_empty() and go_workshop.get_connections().is_empty():
+			p.call("open_gem_workshop")
+	elif p and p.has_method("open_workshop"):
+		if workshop_requested.get_connections().is_empty() and go_workshop.get_connections().is_empty():
+			p.call("open_workshop")
 	if not is_queued_for_deletion():
 		close()
 
