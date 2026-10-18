@@ -7330,8 +7330,8 @@
    "id": "merge-forge-title-wall-shortcuts",
    "cat": "平台",
    "title": "把已過審的鐵匠前往稱號與稱號前往鍛造雙分支合進主線並全面回歸驗收",
-   "status": "草稿",
-   "note": "草稿",
+   "status": "開發中",
+   "note": "sideqa 開始執行天宮鐵匠與稱號牆雙向快捷主線合併與整合回歸驗收 (t_2ab04646)",
    "keys": [
     "把已過審的鐵匠前"
    ]
