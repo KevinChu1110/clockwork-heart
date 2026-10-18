@@ -2248,6 +2248,7 @@ func _on_go_workshop_pressed() -> void:
 		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
 	if am and am.has_method("play_ui"):
 		am.call("play_ui")
+	closed.emit()
 	workshop_requested.emit()
 	go_workshop.emit()
 	var loop := Engine.get_main_loop()
