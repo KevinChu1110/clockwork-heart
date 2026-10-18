@@ -23,6 +23,8 @@ signal forge_requested()
 signal go_forge()
 signal workshop_requested()
 signal go_workshop()
+signal skill_requested()
+signal go_skill()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -62,6 +64,7 @@ var _go_shop_btn: Button
 var _go_inventory_btn: Button
 var _go_forge_btn: Button
 var _go_workshop_btn: Button
+var _go_skill_btn: Button
 var _unequip_btn: Button
 var _back_btn: Button
 var _fortress_btn: Button
@@ -214,6 +217,12 @@ func _update_ui_texts() -> void:
 			btn_ws_txt = _t("前往工坊")
 		_go_workshop_btn.text = btn_ws_txt
 
+	if _go_skill_btn and is_instance_valid(_go_skill_btn):
+		var btn_sk_txt := _t("title_wall.btn_go_skill")
+		if btn_sk_txt == "title_wall.btn_go_skill" or btn_sk_txt.is_empty():
+			btn_sk_txt = _t("前往心法")
+		_go_skill_btn.text = btn_sk_txt
+
 	if _unequip_btn and is_instance_valid(_unequip_btn):
 		_unequip_btn.text = _t("卸下稱號")
 		_update_unequip_btn_state()
@@ -281,6 +290,8 @@ func _rebuild() -> void:
 	_go_shop_btn = null
 	_go_inventory_btn = null
 	_go_forge_btn = null
+	_go_workshop_btn = null
+	_go_skill_btn = null
 	_unequip_btn = null
 	_back_btn = null
 	_fortress_btn = null
@@ -608,6 +619,26 @@ func _build_ui() -> void:
 		_go_workshop_btn.add_theme_font_override("font", _cached_font)
 	_go_workshop_btn.pressed.connect(_on_go_workshop_pressed)
 	foot.add_child(_go_workshop_btn)
+
+	# 前往心法 果凍按鈕 (BtnGoSkill)
+	_go_skill_btn = Button.new()
+	_go_skill_btn.name = "BtnGoSkill"
+	var go_sk_txt := _t("title_wall.btn_go_skill")
+	if go_sk_txt == "title_wall.btn_go_skill" or go_sk_txt.is_empty():
+		go_sk_txt = _t("前往心法")
+	_go_skill_btn.text = go_sk_txt
+	_go_skill_btn.custom_minimum_size = Vector2(150, 52)
+	_go_skill_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+	_go_skill_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB236"), COLOR_BORDER, 5, 18))
+	_go_skill_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08805"), COLOR_BORDER, 2, 18))
+	_go_skill_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_go_skill_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_go_skill_btn.add_theme_constant_override("outline_size", 2)
+	_go_skill_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_skill_btn.add_theme_font_override("font", _cached_font)
+	_go_skill_btn.pressed.connect(_on_go_skill_pressed)
+	foot.add_child(_go_skill_btn)
 
 	# 卸下稱號 果凍按鈕 (BtnUnequipTitle)
 	_unequip_btn = Button.new()
@@ -1104,6 +1135,40 @@ func get_go_workshop_button() -> Button:
 
 func get_workshop_button() -> Button:
 	return _go_workshop_btn
+
+
+func _on_go_skill_pressed() -> void:
+	var am: Node = Engine.get_main_loop().root.get_node_or_null("AudioManager") if Engine.get_main_loop() else null
+	if am and am.has_method("play_ui"):
+		am.play_ui()
+	skill_requested.emit()
+	go_skill.emit()
+	var p := get_parent()
+	if p != null and (p.has_method("open_skill_dialog") or p.has_method("open_skill")):
+		if skill_requested.get_connections().is_empty() and go_skill.get_connections().is_empty():
+			if p.has_method("open_skill_dialog"):
+				p.call("open_skill_dialog")
+			else:
+				p.call("open_skill")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and (ml.has_method("open_skill_dialog") or ml.has_method("open_skill")):
+				if skill_requested.get_connections().is_empty() and go_skill.get_connections().is_empty():
+					if ml.has_method("open_skill_dialog"):
+						ml.call("open_skill_dialog")
+					else:
+						ml.call("open_skill")
+	_on_close()
+
+
+func get_go_skill_button() -> Button:
+	return _go_skill_btn
+
+
+func get_skill_button() -> Button:
+	return _go_skill_btn
 
 
 func _on_fortress() -> void:
