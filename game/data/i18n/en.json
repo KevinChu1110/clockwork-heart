@@ -4369,5 +4369,6 @@
   "gem_workshop.btn_go_vault": "To Vault",
   "forge.btn_go_vault": "To Vault",
   "ui.btn_go_vault": "To Vault",
-  "vault.btn_go_workshop": "To Workshop"
+  "vault.btn_go_workshop": "To Workshop",
+  "前往儲能庫": "To Vault"
 }

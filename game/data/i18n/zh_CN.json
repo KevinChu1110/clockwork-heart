@@ -4373,5 +4373,6 @@
   "forge.btn_go_vault": "前往储能库",
   "ui.btn_go_vault": "前往储能库",
   "前往储能库": "前往储能库",
-  "vault.btn_go_workshop": "前往工坊"
+  "vault.btn_go_workshop": "前往工坊",
+  "前往儲能庫": "前往储能库"
 }
