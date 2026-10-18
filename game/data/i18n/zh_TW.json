@@ -2474,5 +2474,7 @@
   "gem_workshop.btn_go_wardrobe": "前往衣櫥",
   "skill.btn_go_wardrobe": "前往衣櫥",
   "wardrobe.btn_go_skill": "前往心法",
-  "wardrobe.go_skill": "前往心法"
+  "wardrobe.go_skill": "前往心法",
+  "wardrobe.btn_go_vault": "前往儲能庫",
+  "wardrobe.go_vault": "前往儲能庫"
 }
