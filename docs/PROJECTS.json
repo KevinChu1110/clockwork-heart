@@ -7210,8 +7210,8 @@
    "id": "wardrobe-vault-shortcut",
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗底欄新增前往儲能庫快捷按鈕連動 ClockworkVaultDialog",
-   "status": "草稿",
-   "note": "新增前往儲能庫果凍按鈕與連動",
+   "status": "測試中",
+   "note": "完成 BtnGoVault 果凍按鈕新增、大廳連動 ClockworkVaultDialog、六語系即時切換與回歸測試，等待 sideqa 審查",
    "keys": [
     "Wardrobe"
    ]

@@ -4359,5 +4359,7 @@
   "gem_workshop.btn_go_wardrobe": "의상실로 이동",
   "skill.btn_go_wardrobe": "의상실로 이동",
   "wardrobe.btn_go_skill": "심법으로 이동",
-  "wardrobe.go_skill": "심법으로 이동"
+  "wardrobe.go_skill": "심법으로 이동",
+  "wardrobe.btn_go_vault": "저장고로 이동",
+  "wardrobe.go_vault": "저장고로 이동"
 }
