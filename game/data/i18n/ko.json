@@ -4378,5 +4378,8 @@
   "title_wall.go_workshop": "공방으로 이동",
   "gem_workshop.btn_go_title_wall": "칭호로 이동",
   "gem_workshop.go_title_wall": "칭호로 이동",
-  "ui.btn_go_title_wall": "칭호로 이동"
+  "ui.btn_go_title_wall": "칭호로 이동",
+  "skill.btn_go_title_wall": "칭호로 이동",
+  "title_wall.btn_go_skill": "심법으로 이동",
+  "title_wall.go_skill": "심법으로 이동"
 }
