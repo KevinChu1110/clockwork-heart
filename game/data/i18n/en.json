@@ -4356,5 +4356,8 @@
   "ui.btn_go_wardrobe": "Go to Wardrobe",
   "wardrobe.btn_go_workshop": "Go to Workshop",
   "wardrobe.go_workshop": "Go to Workshop",
-  "gem_workshop.btn_go_wardrobe": "Go to Wardrobe"
+  "gem_workshop.btn_go_wardrobe": "Go to Wardrobe",
+  "skill.btn_go_wardrobe": "Go to Wardrobe",
+  "wardrobe.btn_go_skill": "Go to Skills",
+  "wardrobe.go_skill": "Go to Skills"
 }

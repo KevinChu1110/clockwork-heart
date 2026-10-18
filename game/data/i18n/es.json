@@ -4356,5 +4356,8 @@
   "ui.btn_go_wardrobe": "Ir al Armario",
   "wardrobe.btn_go_workshop": "Ir al Taller",
   "wardrobe.go_workshop": "Ir al Taller",
-  "gem_workshop.btn_go_wardrobe": "Ir al Armario"
+  "gem_workshop.btn_go_wardrobe": "Ir al Armario",
+  "skill.btn_go_wardrobe": "Ir al Armario",
+  "wardrobe.btn_go_skill": "Ir a Habilidades",
+  "wardrobe.go_skill": "Ir a Habilidades"
 }
