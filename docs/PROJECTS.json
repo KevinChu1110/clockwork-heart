@@ -7150,8 +7150,8 @@
    "id": "wardrobe-workshop-shortcut",
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗新增前往工坊快捷果凍按鈕連動 GemWorkshopDialog",
-   "status": "測試中",
-   "note": "WardrobeDialog 前往工坊快捷按鈕開發完成，自測全綠，送審 sideqa (t_ee1a4077)",
+   "status": "已上線",
+   "note": "衣櫥換裝新增前往工坊快捷按鈕已過審合進主線 (t_325a82f1)",
    "keys": [
     "Wardrobe"
    ]
