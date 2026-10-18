@@ -2115,5 +2115,6 @@
   "skill.btn_go_wardrobe": "前往衣櫥",
   "wardrobe.btn_go_skill": "前往心法",
   "wardrobe.go_skill": "前往心法",
-  "vault.btn_go_skill": "前往心法"
+  "vault.btn_go_skill": "前往心法",
+  "skill.btn_go_vault": "前往儲能庫"
 }

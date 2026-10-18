@@ -4000,5 +4000,6 @@
   "skill.btn_go_wardrobe": "Go to Wardrobe",
   "wardrobe.btn_go_skill": "Go to Skills",
   "wardrobe.go_skill": "Go to Skills",
-  "vault.btn_go_skill": "To Skills"
+  "vault.btn_go_skill": "To Skills",
+  "skill.btn_go_vault": "To Vault"
 }
