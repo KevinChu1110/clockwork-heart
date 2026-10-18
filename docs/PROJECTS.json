@@ -7180,8 +7180,8 @@
    "id": "wardrobe-skill-shortcut",
    "cat": "遊戲",
    "title": "WardrobeDialog 衣櫥換裝彈窗新增前往心法快捷果凍按鈕連動 SkillDialog",
-   "status": "草稿",
-   "note": "待開發",
+   "status": "測試中",
+   "note": "完成 WardrobeDialog 前往心法快捷果凍按鈕開發，單元測試、回歸測試全綠，7張截圖存證齊全，等待審查",
    "keys": [
     "Wardrobe"
    ]
@@ -7190,8 +7190,8 @@
    "id": "skill-wardrobe-shortcut",
    "cat": "遊戲",
    "title": "SkillDialog 心法招式底欄新增前往衣櫥快捷果凍按鈕連動 WardrobeDialog",
-   "status": "草稿",
-   "note": "待開發",
+   "status": "開發中",
+   "note": "底欄新增 BtnGoWardrobe 連動 WardrobeDialog",
    "keys": [
     "SkillDia"
    ]

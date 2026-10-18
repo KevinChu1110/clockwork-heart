@@ -25,6 +25,8 @@ signal go_forge()
 signal forge_requested()
 signal go_workshop()
 signal workshop_requested()
+signal go_skill()
+signal skill_requested()
 
 @export var creation_mode: bool = false
 
@@ -51,6 +53,7 @@ const COLOR_ORANGE     := Color("#FFA010")  ## 暖橘
 const COLOR_MINT       := Color("#4ED86A")  ## 薄荷綠
 const COLOR_SKY        := Color("#38A0FF")  ## 天藍
 const COLOR_PINK       := Color("#FF5E8A")  ## 珊瑚粉
+const COLOR_CORAL      := Color("#FF5E8A")  ## 珊瑚粉 (多巴胺果凍)
 const COLOR_PURPLE     := Color("#A259FF")  ## 炫彩紫
 const COLOR_BORDER     := Color("#1F1A3A")  ## 深藍紫描邊
 const COLOR_BG_CREAM   := Color("#FFFDF8")  ## 陽光童話·奶油米白底
@@ -161,6 +164,7 @@ var _btn_go_title_wall: Button
 var _btn_go_inventory: Button
 var _btn_go_forge: Button
 var _btn_go_workshop: Button
+var _btn_go_skill: Button
 var _stage_header_label: Label = null
 
 var _breathe_tween: Tween = null
@@ -803,6 +807,28 @@ func _build_ui() -> void:
 	_btn_go_workshop.add_theme_stylebox_override("pressed", ws_h)
 	_btn_go_workshop.pressed.connect(_on_go_workshop_pressed)
 	actions_hbox.add_child(_btn_go_workshop)
+
+	# 前往心法 果凍按鈕 (BtnGoSkill)
+	_btn_go_skill = Button.new()
+	_btn_go_skill.name = "BtnGoSkill"
+	var skill_txt := _t("wardrobe.btn_go_skill")
+	if skill_txt == "wardrobe.btn_go_skill" or skill_txt.is_empty():
+		skill_txt = _t("wardrobe.go_skill")
+	if skill_txt == "wardrobe.go_skill" or skill_txt.is_empty():
+		skill_txt = _t("前往心法")
+	_btn_go_skill.text = skill_txt
+	_btn_go_skill.custom_minimum_size = Vector2(105, BTN_SIZE)
+	_btn_go_skill.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_skill.add_theme_font_size_override("font_size", 16)
+	_btn_go_skill.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	if _cached_font:
+		_btn_go_skill.add_theme_font_override("font", _cached_font)
+	_btn_go_skill.add_theme_stylebox_override("normal", _create_button_style(COLOR_CORAL, COLOR_BORDER, 5, 16, 2))
+	var skill_h := _create_button_style(Color("#FF7A9F"), COLOR_BORDER, 3, 16, 2)
+	_btn_go_skill.add_theme_stylebox_override("hover", skill_h)
+	_btn_go_skill.add_theme_stylebox_override("pressed", skill_h)
+	_btn_go_skill.pressed.connect(_on_go_skill_pressed)
+	actions_hbox.add_child(_btn_go_skill)
 
 	_btn_confirm = Button.new()
 	_btn_confirm.name = "BtnConfirm"
@@ -1962,6 +1988,13 @@ func _update_ui_texts() -> void:
 		if ws_txt == "wardrobe.go_workshop" or ws_txt.is_empty():
 			ws_txt = _t("前往工坊")
 		_btn_go_workshop.text = ws_txt
+	if _btn_go_skill:
+		var skill_txt := _t("wardrobe.btn_go_skill")
+		if skill_txt == "wardrobe.btn_go_skill" or skill_txt.is_empty():
+			skill_txt = _t("wardrobe.go_skill")
+		if skill_txt == "wardrobe.go_skill" or skill_txt.is_empty():
+			skill_txt = _t("前往心法")
+		_btn_go_skill.text = skill_txt
 	if _btn_confirm:
 		_btn_confirm.text = _t("確認換裝 · 套用新外觀")
 
@@ -2130,6 +2163,15 @@ func get_workshop_button() -> Button:
 	return _btn_go_workshop
 
 
+## 取得前往心法快捷按鈕
+func get_go_skill_button() -> Button:
+	return _btn_go_skill
+
+
+func get_skill_button() -> Button:
+	return _btn_go_skill
+
+
 func _on_go_power_stat_pressed() -> void:
 	var am: Node = null
 	if Engine.get_main_loop() is SceneTree:
@@ -2268,6 +2310,36 @@ func _on_go_workshop_pressed() -> void:
 	elif p and p.has_method("open_workshop"):
 		if workshop_requested.get_connections().is_empty() and go_workshop.get_connections().is_empty():
 			p.call("open_workshop")
+	if not is_queued_for_deletion():
+		close()
+
+
+func _on_go_skill_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	closed.emit()
+	skill_requested.emit()
+	go_skill.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_skill_dialog"):
+			if skill_requested.get_connections().is_empty() and go_skill.get_connections().is_empty():
+				ml.call("open_skill_dialog")
+		elif ml and ml.has_method("open_skill"):
+			if skill_requested.get_connections().is_empty() and go_skill.get_connections().is_empty():
+				ml.call("open_skill")
+	var p := get_parent()
+	if p and p.has_method("open_skill_dialog"):
+		if skill_requested.get_connections().is_empty() and go_skill.get_connections().is_empty():
+			p.call("open_skill_dialog")
+	elif p and p.has_method("open_skill"):
+		if skill_requested.get_connections().is_empty() and go_skill.get_connections().is_empty():
+			p.call("open_skill")
 	if not is_queued_for_deletion():
 		close()
 

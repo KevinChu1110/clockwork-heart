@@ -6853,6 +6853,11 @@ func open_wardrobe() -> Control:
 		if existing_workshop.get_parent() == self:
 			remove_child(existing_workshop)
 		existing_workshop.queue_free()
+	var existing_skill = get_node_or_null("SkillDialog")
+	if existing_skill != null:
+		if existing_skill.get_parent() == self:
+			remove_child(existing_skill)
+		existing_skill.queue_free()
 
 	var wardrobe_scn := load("res://scenes/ui/wardrobe_dialog.tscn")
 	var dlg: Control = null
@@ -6920,6 +6925,15 @@ func open_wardrobe() -> Control:
 	elif dlg.has_signal("go_workshop"):
 		dlg.connect("go_workshop", func():
 			open_gem_workshop()
+		)
+
+	if dlg.has_signal("skill_requested"):
+		dlg.connect("skill_requested", func():
+			open_skill_dialog()
+		)
+	elif dlg.has_signal("go_skill"):
+		dlg.connect("go_skill", func():
+			open_skill_dialog()
 		)
 
 	# 開啟衣櫥時隱藏底層角色預覽，避免高亮剪影穿透全螢幕半透明遮罩 (review.md / 視覺品質標準)
@@ -7210,6 +7224,11 @@ func open_skill_dialog() -> Control:
 		if existing_workshop.get_parent() == self:
 			remove_child(existing_workshop)
 		existing_workshop.queue_free()
+	var existing_wardrobe = get_node_or_null("WardrobeDialog")
+	if existing_wardrobe != null:
+		if existing_wardrobe.get_parent() == self:
+			remove_child(existing_wardrobe)
+		existing_wardrobe.queue_free()
 	var SkillClass: GDScript = load("res://scripts/ui/skill_dialog.gd")
 	if SkillClass == null:
 		push_error("無法載入 SkillDialog")
@@ -7258,6 +7277,17 @@ func open_skill_dialog() -> Control:
 			var ws_dlg = open_gem_workshop()
 			if ws_dlg and is_instance_valid(ws_dlg) and ws_dlg.has_signal("closed"):
 				ws_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_skill_dialog()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("wardrobe_requested"):
+		dlg.wardrobe_requested.connect(func():
+			var wardrobe_dlg = open_wardrobe()
+			if wardrobe_dlg and is_instance_valid(wardrobe_dlg) and wardrobe_dlg.has_signal("closed"):
+				wardrobe_dlg.closed.connect(func():
 					if is_instance_valid(self) and is_inside_tree():
 						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
 						if not has_modal:
