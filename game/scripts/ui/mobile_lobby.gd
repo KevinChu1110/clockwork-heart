@@ -2711,6 +2711,14 @@ func open_clockwork_vault() -> Control:
 		dlg.go_skill.connect(func():
 			open_skill_dialog()
 		)
+	if dlg.has_signal("workshop_requested"):
+		dlg.workshop_requested.connect(func():
+			open_gem_workshop()
+		)
+	if dlg.has_signal("go_workshop"):
+		dlg.go_workshop.connect(func():
+			open_gem_workshop()
+		)
 	dlg.tree_exited.connect(func():
 		var has_forge: bool = get_node_or_null("ForgeDialog") != null
 		var has_inv: bool = get_node_or_null("MapleInventory") != null

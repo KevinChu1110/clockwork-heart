@@ -4366,11 +4366,8 @@
   "vault.btn_go_wardrobe": "To Wardrobe",
   "vault.btn_go_skill": "To Skills",
   "skill.btn_go_vault": "To Vault",
-<<<<<<< HEAD
   "gem_workshop.btn_go_vault": "To Vault",
-=======
   "forge.btn_go_vault": "To Vault",
->>>>>>> origin/agent/20261018-forge-dialog-vault-shortcut-t_9f578215
   "ui.btn_go_vault": "To Vault",
-  "前往儲能庫": "To Vault"
+  "vault.btn_go_workshop": "To Workshop"
 }

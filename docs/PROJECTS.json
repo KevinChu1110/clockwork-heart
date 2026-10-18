@@ -7270,8 +7270,8 @@
    "id": "t_d9cdfc98",
    "cat": "遊戲",
    "title": "ClockworkVaultDialog 發條儲能庫放置收益彈窗新增前往工坊快捷果凍按鈕聯動 GemWorkshopDialog",
-   "status": "開發中",
-   "note": "已派工 sideworker，等待主線合併後平行推進",
+   "status": "測試中",
+   "note": "完成 ClockworkVaultDialog 前往工坊快捷按鈕、單元測試全綠與存證截圖",
    "keys": [
     "Clockwor"
    ]

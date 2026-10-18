@@ -4366,11 +4366,8 @@
   "vault.btn_go_wardrobe": "의상실로",
   "vault.btn_go_skill": "심법으로",
   "skill.btn_go_vault": "저장고로 이동",
-<<<<<<< HEAD
-  "gem_workshop.btn_go_vault": "저장고로 이동",
-=======
-  "forge.btn_go_vault": "저장고로 이동",
->>>>>>> origin/agent/20261018-forge-dialog-vault-shortcut-t_9f578215
-  "ui.btn_go_vault": "저장고로 이동",
-  "前往儲能庫": "저장고로 이동"
+  "gem_workshop.btn_go_vault": "저장고로",
+  "forge.btn_go_vault": "저장고로",
+  "ui.btn_go_vault": "저장고로",
+  "vault.btn_go_workshop": "공방으로"
 }

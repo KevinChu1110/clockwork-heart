@@ -4009,11 +4009,9 @@
   "vault.btn_go_wardrobe": "前往衣橱",
   "vault.btn_go_skill": "前往心法",
   "skill.btn_go_vault": "前往储能库",
-<<<<<<< HEAD
   "gem_workshop.btn_go_vault": "前往储能库",
-=======
   "forge.btn_go_vault": "前往储能库",
->>>>>>> origin/agent/20261018-forge-dialog-vault-shortcut-t_9f578215
   "ui.btn_go_vault": "前往储能库",
-  "前往儲能庫": "前往储能库"
+  "前往储能库": "前往储能库",
+  "vault.btn_go_workshop": "前往工坊"
 }
