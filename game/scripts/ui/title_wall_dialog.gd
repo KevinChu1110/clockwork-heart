@@ -21,6 +21,8 @@ signal shop_requested()
 signal inventory_requested()
 signal forge_requested()
 signal go_forge()
+signal workshop_requested()
+signal go_workshop()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -59,6 +61,7 @@ var _go_wardrobe_btn: Button
 var _go_shop_btn: Button
 var _go_inventory_btn: Button
 var _go_forge_btn: Button
+var _go_workshop_btn: Button
 var _unequip_btn: Button
 var _back_btn: Button
 var _fortress_btn: Button
@@ -204,6 +207,12 @@ func _update_ui_texts() -> void:
 		if btn_f_txt == "title_wall.btn_go_forge" or btn_f_txt.is_empty():
 			btn_f_txt = _t("前往鍛造")
 		_go_forge_btn.text = btn_f_txt
+
+	if _go_workshop_btn and is_instance_valid(_go_workshop_btn):
+		var btn_ws_txt := _t("title_wall.btn_go_workshop")
+		if btn_ws_txt == "title_wall.btn_go_workshop" or btn_ws_txt.is_empty():
+			btn_ws_txt = _t("前往工坊")
+		_go_workshop_btn.text = btn_ws_txt
 
 	if _unequip_btn and is_instance_valid(_unequip_btn):
 		_unequip_btn.text = _t("卸下稱號")
@@ -579,6 +588,26 @@ func _build_ui() -> void:
 		_go_forge_btn.add_theme_font_override("font", _cached_font)
 	_go_forge_btn.pressed.connect(_on_go_forge_pressed)
 	foot.add_child(_go_forge_btn)
+
+	# 前往工坊 果凍按鈕 (BtnGoWorkshop)
+	_go_workshop_btn = Button.new()
+	_go_workshop_btn.name = "BtnGoWorkshop"
+	var go_ws_txt := _t("title_wall.btn_go_workshop")
+	if go_ws_txt == "title_wall.btn_go_workshop" or go_ws_txt.is_empty():
+		go_ws_txt = _t("前往工坊")
+	_go_workshop_btn.text = go_ws_txt
+	_go_workshop_btn.custom_minimum_size = Vector2(150, 52)
+	_go_workshop_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_MINT, COLOR_BORDER, 5, 18))
+	_go_workshop_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#66E27F"), COLOR_BORDER, 5, 18))
+	_go_workshop_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#3CB855"), COLOR_BORDER, 2, 18))
+	_go_workshop_btn.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_go_workshop_btn.add_theme_color_override("font_outline_color", Color("#FFFFFF"))
+	_go_workshop_btn.add_theme_constant_override("outline_size", 2)
+	_go_workshop_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_workshop_btn.add_theme_font_override("font", _cached_font)
+	_go_workshop_btn.pressed.connect(_on_go_workshop_pressed)
+	foot.add_child(_go_workshop_btn)
 
 	# 卸下稱號 果凍按鈕 (BtnUnequipTitle)
 	_unequip_btn = Button.new()
@@ -1047,6 +1076,34 @@ func get_go_forge_button() -> Button:
 
 func get_forge_button() -> Button:
 	return _go_forge_btn
+
+
+func _on_go_workshop_pressed() -> void:
+	var am: Node = Engine.get_main_loop().root.get_node_or_null("AudioManager") if Engine.get_main_loop() else null
+	if am and am.has_method("play_ui"):
+		am.play_ui()
+	workshop_requested.emit()
+	go_workshop.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_gem_workshop"):
+		if workshop_requested.get_connections().is_empty() and go_workshop.get_connections().is_empty():
+			p.call("open_gem_workshop")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_gem_workshop"):
+				if workshop_requested.get_connections().is_empty() and go_workshop.get_connections().is_empty():
+					ml.call("open_gem_workshop")
+	_on_close()
+
+
+func get_go_workshop_button() -> Button:
+	return _go_workshop_btn
+
+
+func get_workshop_button() -> Button:
+	return _go_workshop_btn
 
 
 func _on_fortress() -> void:

@@ -4373,5 +4373,7 @@
   "vault.btn_go_workshop": "To Workshop",
   "前往儲能庫": "To Vault",
   "title_wall.btn_go_forge": "Go to Forge",
-  "title_wall.go_forge": "Go to Forge"
+  "title_wall.go_forge": "Go to Forge",
+  "title_wall.btn_go_workshop": "Go to Workshop",
+  "title_wall.go_workshop": "Go to Workshop"
 }

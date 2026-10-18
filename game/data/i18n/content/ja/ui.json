@@ -4013,5 +4013,7 @@
   "vault.btn_go_workshop": "工房へ",
   "前往儲能庫": "貯蔵庫へ",
   "title_wall.btn_go_forge": "鍛造へ進む",
-  "title_wall.go_forge": "鍛造へ進む"
+  "title_wall.go_forge": "鍛造へ進む",
+  "title_wall.btn_go_workshop": "工房へ進む",
+  "title_wall.go_workshop": "工房へ進む"
 }
