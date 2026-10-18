@@ -4018,5 +4018,6 @@
   "title_wall.go_workshop": "工房へ進む",
   "gem_workshop.btn_go_title_wall": "称号へ",
   "gem_workshop.go_title_wall": "称号へ",
-  "ui.btn_go_title_wall": "称号へ"
+  "ui.btn_go_title_wall": "称号へ",
+  "skill.btn_go_title_wall": "称号一覧へ"
 }

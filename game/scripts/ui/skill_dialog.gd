@@ -24,6 +24,8 @@ signal wardrobe_requested()
 signal go_wardrobe()
 signal vault_requested()
 signal go_vault()
+signal title_wall_requested()
+signal go_title_wall()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -78,6 +80,7 @@ var _go_shop_btn: Button
 var _go_workshop_btn: Button
 var _go_wardrobe_btn: Button
 var _go_vault_btn: Button
+var _go_title_wall_btn: Button
 var _bottom_close_btn: Button
 var _bottom_scroll: ScrollContainer
 
@@ -378,6 +381,14 @@ func _build_ui() -> void:
 	_go_vault_btn.pressed.connect(_on_go_vault_pressed)
 	bot_h.add_child(_go_vault_btn)
 
+	# 金黃立體果凍『前往稱號』按鈕（高>=48px、熱區 140x50px >= 48px、金黃#FFD028底色、深藍紫#1F1A3A描邊2px、果凍厚底5px、圓角16px、零系統Emoji）
+	_go_title_wall_btn = Button.new()
+	_go_title_wall_btn.name = "BtnGoTitleWall"
+	_go_title_wall_btn.custom_minimum_size = Vector2(140, 50)
+	_style_jelly_btn(_go_title_wall_btn, COLOR_GOLD, COLOR_TEXT_DARK, 16, 5, 16)
+	_go_title_wall_btn.pressed.connect(_on_go_title_wall_pressed)
+	bot_h.add_child(_go_title_wall_btn)
+
 	# 彈性間隔撐開左右分列
 	var bot_spacer := Control.new()
 	bot_spacer.name = "BottomSpacer"
@@ -530,6 +541,34 @@ func _on_go_vault_pressed() -> void:
 	_on_close_pressed()
 
 
+func _on_go_title_wall_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	go_title_wall.emit()
+	title_wall_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_title_wall_dialog"):
+			if title_wall_requested.get_connections().is_empty():
+				ml.call("open_title_wall_dialog")
+		elif ml and ml.has_method("open_title_wall"):
+			if title_wall_requested.get_connections().is_empty():
+				ml.call("open_title_wall")
+	var p := get_parent()
+	if p and p.has_method("open_title_wall_dialog"):
+		if title_wall_requested.get_connections().is_empty():
+			p.call("open_title_wall_dialog")
+	elif p and p.has_method("open_title_wall"):
+		if title_wall_requested.get_connections().is_empty():
+			p.call("open_title_wall")
+	_on_close_pressed()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -624,6 +663,20 @@ func _update_ui_texts() -> void:
 			else:
 				txt = _t("前往儲能庫")
 		_go_vault_btn.text = txt
+	if _go_title_wall_btn:
+		var txt := ""
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+			if loc and loc.has_method("t"):
+				txt = str(loc.call("t", "skill.btn_go_title_wall"))
+		if txt == "" or txt == "skill.btn_go_title_wall":
+			var c_txt := ContentLoc.text("ui", "skill.btn_go_title_wall")
+			if c_txt != "skill.btn_go_title_wall":
+				txt = c_txt
+			else:
+				txt = _t("前往稱號")
+		_go_title_wall_btn.text = txt
 	if _go_shop_btn:
 		var txt := ""
 		var loop := Engine.get_main_loop()
@@ -1192,6 +1245,14 @@ func get_vault_button() -> Button:
 	return _go_vault_btn
 
 
+func get_go_title_wall_button() -> Button:
+	return _go_title_wall_btn
+
+
+func get_title_wall_button() -> Button:
+	return _go_title_wall_btn
+
+
 func get_go_shop_button() -> Button:
 	return _go_shop_btn
 
@@ -1212,6 +1273,16 @@ func scroll_bottom_to_end() -> void:
 func scroll_bottom_to_vault() -> void:
 	if _bottom_scroll and is_instance_valid(_bottom_scroll) and _go_vault_btn and is_instance_valid(_go_vault_btn):
 		_bottom_scroll.ensure_control_visible(_go_vault_btn)
+
+
+func scroll_bottom_to_title_wall() -> void:
+	if _bottom_scroll and is_instance_valid(_bottom_scroll) and _go_title_wall_btn and is_instance_valid(_go_title_wall_btn):
+		var target_x: float = _go_title_wall_btn.position.x - (_bottom_scroll.size.x - _go_title_wall_btn.size.x) * 0.5
+		if target_x <= 0:
+			_bottom_scroll.ensure_control_visible(_go_title_wall_btn)
+			_bottom_scroll.scroll_horizontal += 100
+		else:
+			_bottom_scroll.scroll_horizontal = maxi(0, int(target_x))
 
 
 func scroll_bottom_to_button(btn: Button) -> void:

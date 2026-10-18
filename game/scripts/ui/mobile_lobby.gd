@@ -7312,6 +7312,11 @@ func open_skill_dialog() -> Control:
 		if existing_wardrobe.get_parent() == self:
 			remove_child(existing_wardrobe)
 		existing_wardrobe.queue_free()
+	var existing_title_wall = get_node_or_null("TitleWallDialog")
+	if existing_title_wall != null:
+		if existing_title_wall.get_parent() == self:
+			remove_child(existing_title_wall)
+		existing_title_wall.queue_free()
 	var SkillClass: GDScript = load("res://scripts/ui/skill_dialog.gd")
 	if SkillClass == null:
 		push_error("無法載入 SkillDialog")
@@ -7382,6 +7387,28 @@ func open_skill_dialog() -> Control:
 			var vault_dlg = open_clockwork_vault_dialog()
 			if vault_dlg and is_instance_valid(vault_dlg) and vault_dlg.has_signal("closed"):
 				vault_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_skill_dialog()
+				, CONNECT_ONE_SHOT)
+		)
+	if dlg.has_signal("title_wall_requested"):
+		dlg.title_wall_requested.connect(func():
+			var tw_dlg = open_title_wall_dialog()
+			if tw_dlg and is_instance_valid(tw_dlg) and tw_dlg.has_signal("closed"):
+				tw_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_skill_dialog()
+				, CONNECT_ONE_SHOT)
+		)
+	elif dlg.has_signal("go_title_wall"):
+		dlg.connect("go_title_wall", func():
+			var tw_dlg = open_title_wall_dialog()
+			if tw_dlg and is_instance_valid(tw_dlg) and tw_dlg.has_signal("closed"):
+				tw_dlg.closed.connect(func():
 					if is_instance_valid(self) and is_inside_tree():
 						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
 						if not has_modal:
@@ -8386,6 +8413,11 @@ func open_title_wall_dialog() -> Control:
 		if existing_workshop.get_parent() == self:
 			remove_child(existing_workshop)
 		existing_workshop.queue_free()
+	var existing_skill = get_node_or_null("SkillDialog")
+	if existing_skill != null:
+		if existing_skill.get_parent() == self:
+			remove_child(existing_skill)
+		existing_skill.queue_free()
 	var scn: GDScript = load("res://scripts/ui/title_wall_dialog.gd")
 	if not scn:
 		push_error("無法載入 TitleWallDialog")

@@ -4378,5 +4378,6 @@
   "title_wall.go_workshop": "Go to Workshop",
   "gem_workshop.btn_go_title_wall": "To Titles",
   "gem_workshop.go_title_wall": "To Titles",
-  "ui.btn_go_title_wall": "To Titles"
+  "ui.btn_go_title_wall": "To Titles",
+  "skill.btn_go_title_wall": "Go to Titles"
 }
