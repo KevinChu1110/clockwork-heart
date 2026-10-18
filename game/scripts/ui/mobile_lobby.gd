@@ -2706,6 +2706,14 @@ func open_clockwork_vault() -> Control:
 		dlg.go_skill.connect(func():
 			open_skill_dialog()
 		)
+	if dlg.has_signal("workshop_requested"):
+		dlg.workshop_requested.connect(func():
+			open_gem_workshop()
+		)
+	if dlg.has_signal("go_workshop"):
+		dlg.go_workshop.connect(func():
+			open_gem_workshop()
+		)
 	dlg.tree_exited.connect(func():
 		var has_forge: bool = get_node_or_null("ForgeDialog") != null
 		var has_inv: bool = get_node_or_null("MapleInventory") != null
@@ -2714,7 +2722,8 @@ func open_clockwork_vault() -> Control:
 		var has_shop: bool = get_node_or_null("ShopDialog") != null
 		var has_wardrobe: bool = get_node_or_null("WardrobeDialog") != null
 		var has_skill: bool = get_node_or_null("SkillDialog") != null
-		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv and not has_power and not has_windup and not has_shop and not has_wardrobe and not has_skill:
+		var has_workshop: bool = get_node_or_null("GemWorkshopDialog") != null
+		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv and not has_power and not has_windup and not has_shop and not has_wardrobe and not has_skill and not has_workshop:
 			_equip_schematic.visible = true
 		refresh_hud()
 		refresh_vault_display()

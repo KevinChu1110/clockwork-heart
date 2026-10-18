@@ -30,6 +30,8 @@ signal wardrobe_requested()
 signal go_wardrobe()
 signal skill_requested()
 signal go_skill()
+signal workshop_requested()
+signal go_workshop()
 
 const IdleClockworkVault = preload("res://scripts/systems/idle_clockwork_vault.gd")
 const MockAdDialogScript := preload("res://scripts/ui/mock_ad_dialog.gd")
@@ -70,6 +72,7 @@ var _btn_go_power_stat: Button
 var _btn_go_shop: Button
 var _btn_go_wardrobe: Button
 var _btn_go_skill: Button
+var _btn_go_workshop: Button
 var _btn_close: Button
 var _cached_font: Font = null
 var _fx_container: Control = null
@@ -121,13 +124,13 @@ func _build_ui() -> void:
 	_fx_container.set_anchors_preset(Control.PRESET_FULL_RECT)
 	_fx_container.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
-	## 2. 彈窗主體卡片 (寬 1000, 高 460, 置中)
+	## 2. 彈窗主體卡片 (寬 1120, 高 460, 置中)
 	_dialog_card = PanelContainer.new()
 	_dialog_card.name = "VaultCard"
 	_dialog_card.set_anchors_preset(Control.PRESET_CENTER)
-	_dialog_card.custom_minimum_size = Vector2(1000, 460)
-	_dialog_card.offset_left = -500
-	_dialog_card.offset_right = 500
+	_dialog_card.custom_minimum_size = Vector2(1120, 460)
+	_dialog_card.offset_left = -560
+	_dialog_card.offset_right = 560
 	_dialog_card.offset_top = -230
 	_dialog_card.offset_bottom = 230
 
@@ -625,6 +628,32 @@ func _build_ui() -> void:
 	_btn_go_skill.pressed.connect(_on_go_skill_pressed)
 	foot_box.add_child(_btn_go_skill)
 
+	## 前往工坊快捷按鈕 (BtnGoWorkshop，高 52px、熱區 >= 48px、薄荷綠 #4ED86A 底色、深藍紫描邊 #1F1A3A、厚底 5px、圓角 18px、字級 16px、零系統 Emoji)
+	_btn_go_workshop = Button.new()
+	_btn_go_workshop.name = "BtnGoWorkshop"
+	_btn_go_workshop.custom_minimum_size = Vector2(102, 52)
+	_btn_go_workshop.focus_mode = Control.FOCUS_NONE
+
+	var workshop_sb := StyleBoxFlat.new()
+	workshop_sb.bg_color = COLOR_MINT
+	workshop_sb.border_color = COLOR_BORDER
+	workshop_sb.set_border_width_all(2)
+	workshop_sb.border_width_bottom = 5
+	workshop_sb.set_corner_radius_all(18)
+	var workshop_sb_h := workshop_sb.duplicate() as StyleBoxFlat
+	workshop_sb_h.bg_color = Color("#5FE87A")
+	var workshop_sb_p := workshop_sb.duplicate() as StyleBoxFlat
+	workshop_sb_p.border_width_bottom = 2
+	_btn_go_workshop.add_theme_stylebox_override("normal", workshop_sb)
+	_btn_go_workshop.add_theme_stylebox_override("hover", workshop_sb_h)
+	_btn_go_workshop.add_theme_stylebox_override("pressed", workshop_sb_p)
+	_btn_go_workshop.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_workshop.add_theme_font_size_override("font_size", 16)
+	if _cached_font:
+		_btn_go_workshop.add_theme_font_override("font", _cached_font)
+	_btn_go_workshop.pressed.connect(_on_go_workshop_pressed)
+	foot_box.add_child(_btn_go_workshop)
+
 
 func _update_localized_texts() -> void:
 	if _title_label:
@@ -653,6 +682,8 @@ func _update_localized_texts() -> void:
 		_btn_go_wardrobe.text = _get_go_wardrobe_text()
 	if _btn_go_skill:
 		_btn_go_skill.text = Loc.t("vault.btn_go_skill")
+	if _btn_go_workshop:
+		_btn_go_workshop.text = Loc.t("vault.btn_go_workshop")
 
 
 func _get_go_wardrobe_text() -> String:
@@ -755,6 +786,11 @@ func refresh_display() -> void:
 	if _btn_go_skill:
 		_btn_go_skill.text = Loc.t("vault.btn_go_skill")
 		_btn_go_skill.disabled = false
+
+	## 更新前往工坊按鈕狀態
+	if _btn_go_workshop:
+		_btn_go_workshop.text = Loc.t("vault.btn_go_workshop")
+		_btn_go_workshop.disabled = false
 
 
 func _is_ad_removed() -> bool:
@@ -964,6 +1000,26 @@ func _on_go_skill_pressed() -> void:
 	queue_free()
 
 
+func _on_go_workshop_pressed() -> void:
+	workshop_requested.emit()
+	go_workshop.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_gem_workshop"):
+		p.call("open_gem_workshop")
+	elif p != null and p.has_method("open_workshop"):
+		p.call("open_workshop")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_gem_workshop"):
+				ml.call("open_gem_workshop")
+			elif ml and ml.has_method("open_workshop"):
+				ml.call("open_workshop")
+	closed.emit()
+	queue_free()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -1023,6 +1079,14 @@ func get_go_skill_button() -> Button:
 
 func get_skill_button() -> Button:
 	return _btn_go_skill
+
+
+func get_go_workshop_button() -> Button:
+	return _btn_go_workshop
+
+
+func get_workshop_button() -> Button:
+	return _btn_go_workshop
 
 
 func get_close_button() -> Button:
