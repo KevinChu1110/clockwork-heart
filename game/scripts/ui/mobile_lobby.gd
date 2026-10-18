@@ -7264,6 +7264,17 @@ func open_skill_dialog() -> Control:
 							open_skill_dialog()
 				, CONNECT_ONE_SHOT)
 		)
+	if dlg.has_signal("wardrobe_requested"):
+		dlg.wardrobe_requested.connect(func():
+			var wardrobe_dlg = open_wardrobe()
+			if wardrobe_dlg and is_instance_valid(wardrobe_dlg) and wardrobe_dlg.has_signal("closed"):
+				wardrobe_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_skill_dialog()
+				, CONNECT_ONE_SHOT)
+		)
 	add_child(dlg)
 	return dlg
 
