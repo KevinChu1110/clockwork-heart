@@ -7215,6 +7215,16 @@
    "keys": [
     "Wardrobe"
    ]
+  },
+  {
+   "id": "vault-wardrobe-shortcut",
+   "cat": "遊戲",
+   "title": "ClockworkVaultDialog 發條儲能庫放置收益新增前往衣櫥快捷按鈕連動 WardrobeDialog",
+   "status": "草稿",
+   "note": "新增前往衣櫥果凍按鈕與連動",
+   "keys": [
+    "Clockwor"
+   ]
   }
  ]
 }
