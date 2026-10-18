@@ -4364,5 +4364,6 @@
   "wardrobe.go_vault": "貯蔵庫へ",
   "vault.go_wardrobe": "衣装部屋へ",
   "vault.btn_go_wardrobe": "衣装部屋へ",
-  "vault.btn_go_skill": "心法へ"
+  "vault.btn_go_skill": "心法へ",
+  "skill.btn_go_vault": "貯蔵庫へ"
 }

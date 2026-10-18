@@ -7321,6 +7321,17 @@ func open_skill_dialog() -> Control:
 							open_skill_dialog()
 				, CONNECT_ONE_SHOT)
 		)
+	if dlg.has_signal("vault_requested"):
+		dlg.vault_requested.connect(func():
+			var vault_dlg = open_clockwork_vault_dialog()
+			if vault_dlg and is_instance_valid(vault_dlg) and vault_dlg.has_signal("closed"):
+				vault_dlg.closed.connect(func():
+					if is_instance_valid(self) and is_inside_tree():
+						var has_modal = get_node_or_null("SkillDialog") != null or get_node_or_null("BattleView") != null
+						if not has_modal:
+							open_skill_dialog()
+				, CONNECT_ONE_SHOT)
+		)
 	add_child(dlg)
 	return dlg
 
