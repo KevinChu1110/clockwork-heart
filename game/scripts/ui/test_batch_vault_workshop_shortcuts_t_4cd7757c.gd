@@ -37,6 +37,8 @@ var _out_dir_docs: String = ""
 var _proof_hashes: Dictionary = {}
 var _ok: bool = true
 var _test_locale_index: int = 0
+var _sub_step: int = 0
+var _current_dual_container: Control = null
 
 func _initialize() -> void:
 	print("=== 開始執行儲能庫前往工坊與工坊前往儲能庫雙快捷主線合併回歸驗收 (t_4cd7757c) ===")
@@ -99,8 +101,8 @@ func _fail(msg: String) -> void:
 
 func _on_process_frame() -> void:
 	_total_frames += 1
-	if _total_frames > 800:
-		_fail("測試超時（超過 800 幀仍未完成）")
+	if _total_frames > 1500:
+		_fail("測試超時（超過 1500 幀仍未完成）")
 		quit(1)
 		return
 
@@ -212,50 +214,116 @@ func _on_process_frame() -> void:
 				return
 
 			var loc_name: String = LOCALES[_test_locale_index]
-			_switch_locale(loc_name)
 
-			var VaultClass = load("res://scripts/ui/clockwork_vault_dialog.gd")
-			var WorkshopClass = load("res://scripts/ui/gem_workshop_dialog.gd")
+			if _sub_step == 0:
+				_switch_locale(loc_name)
 
-			var vt: Control = VaultClass.new()
-			root.add_child(vt)
-			vt.position = Vector2(0, 0)
+				# 建立展示容器
+				_current_dual_container = Control.new()
+				_current_dual_container.name = "DualShortcutProofContainer_" + loc_name
+				_current_dual_container.set_anchors_preset(Control.PRESET_FULL_RECT)
+				root.add_child(_current_dual_container)
 
-			var b_workshop: Button = vt.call("get_go_workshop_button") as Button if vt.has_method("get_go_workshop_button") else vt.find_child("BtnGoWorkshop", true, false) as Button
-			if b_workshop == null:
-				_fail("[%s] ClockworkVaultDialog 中找不到 BtnGoWorkshop" % loc_name)
-				vt.queue_free()
+				# 頂部多巴胺資訊標籤
+				var top_bar := PanelContainer.new()
+				top_bar.custom_minimum_size = Vector2(1240, 48)
+				top_bar.position = Vector2(20, 10)
+				var bar_sb := StyleBoxFlat.new()
+				bar_sb.bg_color = Color("#FFFDF8") # 奶油米白底
+				bar_sb.border_color = Color("#1F1A3A") # 深藍紫描邊
+				bar_sb.set_border_width_all(2)
+				bar_sb.border_width_bottom = 5 # 果凍厚底 5px
+				bar_sb.set_corner_radius_all(18)
+				top_bar.add_theme_stylebox_override("panel", bar_sb)
+				var title_lbl := Label.new()
+				title_lbl.text = "【%s】儲能庫前往工坊 (BtnGoWorkshop: %s) ⮂ 工坊前往儲能庫 (BtnGoVault: %s) 雙向快捷對照" % [
+					loc_name,
+					EXPECTED_VAULT_TEXTS[loc_name],
+					EXPECTED_WORKSHOP_TEXTS[loc_name]
+				]
+				title_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				title_lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+				title_lbl.add_theme_color_override("font_color", Color("#1F1A3A"))
+				title_lbl.add_theme_font_size_override("font_size", 16)
+				var huninn = load("res://assets/fonts/jf-openhuninn-2.1.ttf")
+				if huninn:
+					title_lbl.add_theme_font_override("font", huninn)
+				top_bar.add_child(title_lbl)
+				_current_dual_container.add_child(top_bar)
+
+				# 左側：ClockworkVaultDialog（儲能庫）
+				var VaultClass = load("res://scripts/ui/clockwork_vault_dialog.gd")
+				var vt: Control = VaultClass.new()
+				vt.name = "ProofVault_" + loc_name
+				vt.set_anchors_preset(Control.PRESET_FULL_RECT)
+				_current_dual_container.add_child(vt)
+
+				var v_scrim = vt.get_node_or_null("Scrim")
+				if v_scrim:
+					v_scrim.visible = false
+
+				var b_workshop: Button = vt.call("get_go_workshop_button") as Button if vt.has_method("get_go_workshop_button") else vt.find_child("BtnGoWorkshop", true, false) as Button
+				if b_workshop == null:
+					_fail("[%s] ClockworkVaultDialog 中找不到 BtnGoWorkshop" % loc_name)
+					return
+				if b_workshop.text != EXPECTED_VAULT_TEXTS[loc_name]:
+					_fail("[%s] ClockworkVaultDialog BtnGoWorkshop 翻譯不符: '%s' != '%s'" % [loc_name, b_workshop.text, EXPECTED_VAULT_TEXTS[loc_name]])
+					return
+
+				var v_card := vt.get_node_or_null("VaultCard") as Control
+				if v_card:
+					v_card.set_anchors_preset(Control.PRESET_TOP_LEFT)
+					v_card.scale = Vector2(0.52, 0.52)
+					v_card.position = Vector2(20, 140)
+
+				# 右側：GemWorkshopDialog（工坊）
+				var WorkshopClass = load("res://scripts/ui/gem_workshop_dialog.gd")
+				var ws: Control = WorkshopClass.new()
+				ws.name = "ProofWorkshop_" + loc_name
+				ws.set_anchors_preset(Control.PRESET_FULL_RECT)
+				_current_dual_container.add_child(ws)
+
+				for ch in ws.get_children():
+					if ch is ColorRect:
+						ch.visible = false
+
+				var b_vault: Button = ws.call("get_go_vault_button") as Button if ws.has_method("get_go_vault_button") else ws.find_child("BtnGoVault", true, false) as Button
+				if b_vault == null:
+					_fail("[%s] GemWorkshopDialog 中找不到 BtnGoVault" % loc_name)
+					return
+				if b_vault.text != EXPECTED_WORKSHOP_TEXTS[loc_name]:
+					_fail("[%s] GemWorkshopDialog BtnGoVault 翻譯不符: '%s' != '%s'" % [loc_name, b_vault.text, EXPECTED_WORKSHOP_TEXTS[loc_name]])
+					return
+
+				var w_card := ws.find_child("GemWorkshopCard", true, false) as Control
+				if w_card:
+					w_card.clip_contents = false
+					w_card.custom_minimum_size = Vector2(1150, 580)
+					var center = w_card.get_parent() as Control
+					if center:
+						center.set_anchors_preset(Control.PRESET_TOP_LEFT)
+						center.size = Vector2(1150, 580)
+						center.scale = Vector2(0.52, 0.52)
+						center.position = Vector2(650, 140)
+
+				print("  ok [%s] 雙向翻譯一致：儲能庫->工坊 '%s' | 工坊->儲能庫 '%s'" % [loc_name, b_workshop.text, b_vault.text])
+
+				_wait = 15
+				_sub_step = 1
 				return
-			if b_workshop.text != EXPECTED_VAULT_TEXTS[loc_name]:
-				_fail("[%s] ClockworkVaultDialog BtnGoWorkshop 翻譯不符: '%s' != '%s'" % [loc_name, b_workshop.text, EXPECTED_VAULT_TEXTS[loc_name]])
-				vt.queue_free()
+
+			elif _sub_step == 1:
+				var filename := "proof_0%d_%s_dual_shortcuts.png" % [_test_locale_index + 3, loc_name]
+				_capture_proof(filename)
+
+				if _current_dual_container:
+					_current_dual_container.queue_free()
+					_current_dual_container = null
+
+				_test_locale_index += 1
+				_sub_step = 0
+				_wait = 8
 				return
-
-			var ws: Control = WorkshopClass.new()
-			root.add_child(ws)
-			ws.position = Vector2(0, 0)
-
-			var b_vault: Button = ws.call("get_go_vault_button") as Button if ws.has_method("get_go_vault_button") else ws.find_child("BtnGoVault", true, false) as Button
-			if b_vault == null:
-				_fail("[%s] GemWorkshopDialog 中找不到 BtnGoVault" % loc_name)
-				vt.queue_free()
-				ws.queue_free()
-				return
-			if b_vault.text != EXPECTED_WORKSHOP_TEXTS[loc_name]:
-				_fail("[%s] GemWorkshopDialog BtnGoVault 翻譯不符: '%s' != '%s'" % [loc_name, b_vault.text, EXPECTED_WORKSHOP_TEXTS[loc_name]])
-				vt.queue_free()
-				ws.queue_free()
-				return
-
-			print("  ok [%s] 雙向翻譯一致：儲能庫->工坊 '%s' | 工坊->儲能庫 '%s'" % [loc_name, b_workshop.text, b_vault.text])
-
-			var filename := "proof_0%d_%s_dual_shortcuts.png" % [_test_locale_index + 3, loc_name]
-			_capture_proof(filename)
-
-			vt.queue_free()
-			ws.queue_free()
-			_test_locale_index += 1
-			_wait = 6
 
 		6:
 			print("\n--- 5. 驗證所有存證截圖 SHA256 唯一性與無黑屏 ---")
