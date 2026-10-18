@@ -20,6 +20,8 @@ signal forge_requested()
 signal go_forge()
 signal workshop_requested()
 signal go_workshop()
+signal wardrobe_requested()
+signal go_wardrobe()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -70,8 +72,9 @@ var _dummy_btn: Button
 var _go_power_stat_btn: Button
 var _go_inventory_btn: Button
 var _go_forge_btn: Button
-var _go_workshop_btn: Button
 var _go_shop_btn: Button
+var _go_workshop_btn: Button
+var _go_wardrobe_btn: Button
 var _bottom_close_btn: Button
 
 ## 戰鬥優先區塊
@@ -347,6 +350,14 @@ func _build_ui() -> void:
 	_go_workshop_btn.pressed.connect(_on_go_workshop_pressed)
 	bot_h.add_child(_go_workshop_btn)
 
+	# 金黃立體果凍『前往衣櫥』按鈕（高>=48px、熱區 140x50px >= 48px、金黃#FFD028底色、深藍紫#1F1A3A描邊2px、果凍厚底5px、圓角16px、零系統Emoji）
+	_go_wardrobe_btn = Button.new()
+	_go_wardrobe_btn.name = "BtnGoWardrobe"
+	_go_wardrobe_btn.custom_minimum_size = Vector2(140, 50)
+	_style_jelly_btn(_go_wardrobe_btn, COLOR_GOLD, COLOR_TEXT_DARK, 16, 5, 16)
+	_go_wardrobe_btn.pressed.connect(_on_go_wardrobe_pressed)
+	bot_h.add_child(_go_wardrobe_btn)
+
 	# 彈性間隔撐開左右分列
 	var bot_spacer := Control.new()
 	bot_spacer.name = "BottomSpacer"
@@ -449,6 +460,28 @@ func _on_go_workshop_pressed() -> void:
 	_on_close_pressed()
 
 
+func _on_go_wardrobe_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	go_wardrobe.emit()
+	wardrobe_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_wardrobe"):
+			if wardrobe_requested.get_connections().is_empty():
+				ml.call("open_wardrobe")
+	var p := get_parent()
+	if p and p.has_method("open_wardrobe"):
+		if wardrobe_requested.get_connections().is_empty():
+			p.call("open_wardrobe")
+	_on_close_pressed()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -515,6 +548,20 @@ func _update_ui_texts() -> void:
 			else:
 				txt = _t("前往工坊")
 		_go_workshop_btn.text = txt
+	if _go_wardrobe_btn:
+		var txt := ""
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+			if loc and loc.has_method("t"):
+				txt = str(loc.call("t", "skill.btn_go_wardrobe"))
+		if txt == "" or txt == "skill.btn_go_wardrobe":
+			var c_txt := ContentLoc.text("ui", "skill.btn_go_wardrobe")
+			if c_txt != "skill.btn_go_wardrobe":
+				txt = c_txt
+			else:
+				txt = _t("前往衣櫥")
+		_go_wardrobe_btn.text = txt
 	if _go_shop_btn:
 		var txt := ""
 		var loop := Engine.get_main_loop()
@@ -1065,6 +1112,14 @@ func get_go_workshop_button() -> Button:
 
 func get_workshop_button() -> Button:
 	return _go_workshop_btn
+
+
+func get_go_wardrobe_button() -> Button:
+	return _go_wardrobe_btn
+
+
+func get_wardrobe_button() -> Button:
+	return _go_wardrobe_btn
 
 
 func get_go_shop_button() -> Button:
