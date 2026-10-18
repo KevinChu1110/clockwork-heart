@@ -7084,6 +7084,14 @@ func open_forge(target_weapon: Variant = null) -> Control:
 		dlg.connect("go_vault", func():
 			open_clockwork_vault()
 		)
+	if dlg.has_signal("title_wall_requested"):
+		dlg.connect("title_wall_requested", func():
+			open_title_wall_dialog()
+		)
+	elif dlg.has_signal("go_title_wall"):
+		dlg.connect("go_title_wall", func():
+			open_title_wall_dialog()
+		)
 	add_child(dlg)
 	if target_weapon != null and dlg.has_method("select_target_equipment"):
 		dlg.call("select_target_equipment", target_weapon)
