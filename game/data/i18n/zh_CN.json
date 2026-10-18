@@ -4368,5 +4368,8 @@
   "vault.go_wardrobe": "前往衣橱",
   "vault.btn_go_wardrobe": "前往衣橱",
   "vault.btn_go_skill": "前往心法",
-  "skill.btn_go_vault": "前往储能库"
+  "skill.btn_go_vault": "前往储能库",
+  "gem_workshop.btn_go_vault": "前往储能库",
+  "ui.btn_go_vault": "前往储能库",
+  "前往儲能庫": "前往储能库"
 }
