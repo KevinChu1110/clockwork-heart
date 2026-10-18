@@ -7175,6 +7175,16 @@
    "keys": [
     "把已過審的衣櫥前"
    ]
+  },
+  {
+   "id": "wardrobe-skill-shortcut",
+   "cat": "遊戲",
+   "title": "WardrobeDialog 衣櫥換裝彈窗新增前往心法快捷果凍按鈕連動 SkillDialog",
+   "status": "草稿",
+   "note": "待開發",
+   "keys": [
+    "Wardrobe"
+   ]
   }
  ]
 }
