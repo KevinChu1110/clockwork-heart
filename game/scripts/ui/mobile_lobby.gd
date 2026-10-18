@@ -8390,11 +8390,6 @@ func open_title_wall_dialog() -> Control:
 	if not scn:
 		push_error("無法載入 TitleWallDialog")
 		return null
-	var existing_workshop = get_node_or_null("GemWorkshopDialog")
-	if existing_workshop != null:
-		if existing_workshop.get_parent() == self:
-			remove_child(existing_workshop)
-		existing_workshop.queue_free()
 	var dlg: Control = scn.new()
 	dlg.name = "TitleWallDialog"
 	var tc: Node = Engine.get_main_loop().root.get_node_or_null("TitleCatalog") if Engine.get_main_loop() else null
