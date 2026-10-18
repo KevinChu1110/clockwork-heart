@@ -7165,6 +7165,16 @@
    "keys": [
     "GemWorks"
    ]
+  },
+  {
+   "id": "merge-wardrobe-workshop-shortcuts",
+   "cat": "平台",
+   "title": "把已過審的衣櫥前往工坊與工坊前往衣櫥雙分支合進主線",
+   "status": "草稿",
+   "note": "待合併主線與全面回歸驗收",
+   "keys": [
+    "把已過審的衣櫥前"
+   ]
   }
  ]
 }
