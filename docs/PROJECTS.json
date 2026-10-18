@@ -7230,8 +7230,8 @@
    "id": "t_64581b7f",
    "cat": "遊戲",
    "title": "ClockworkVaultDialog 發條儲能庫放置收益彈窗新增前往心法快捷果凍按鈕聯動 SkillDialog",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "已完成 BtnGoSkill 珊瑚粉果凍按鈕、六語系支援、單元測試 test_clockwork_vault_dialog_skill_shortcut.gd 綠燈且 8 張實機截圖存證完成",
    "keys": [
     "Clockwor"
    ]
