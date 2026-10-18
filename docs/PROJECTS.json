@@ -7355,6 +7355,16 @@
    "keys": [
     "TitleWal"
    ]
+  },
+  {
+   "id": "workshop-title-wall-shortcut",
+   "cat": "遊戲",
+   "title": "GemWorkshopDialog 手藝工坊底欄新增前往稱號快捷按鈕連動 TitleWallDialog",
+   "status": "草稿",
+   "note": "準備動工",
+   "keys": [
+    "GemWorks"
+   ]
   }
  ]
 }
