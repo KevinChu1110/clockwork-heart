@@ -7350,8 +7350,8 @@
    "id": "title-wall-workshop-shortcut",
    "cat": "遊戲",
    "title": "TitleWallDialog 稱號牆新增前往工坊快捷按鈕連動 GemWorkshopDialog",
-   "status": "測試中",
-   "note": "TitleWallDialog 前往工坊快捷按鈕已實作，單元測試與 8 張實機截圖全數通過，待 sideqa 回歸驗收",
+   "status": "已上線",
+   "note": "TitleWallDialog 稱號牆前往工坊快捷果凍按鈕已合進 main 主線 (t_353ac700)",
    "keys": [
     "TitleWal"
    ]
