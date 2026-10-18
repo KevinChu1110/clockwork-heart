@@ -7390,7 +7390,7 @@
    "id": "skill-title-wall-shortcut",
    "cat": "遊戲",
    "title": "SkillDialog 心法招式底欄新增前往稱號快捷果凍按鈕連動 TitleWallDialog",
-   "status": "開發中",
+   "status": "測試中",
    "note": "t_4f8cc8c9",
    "keys": [
     "SkillDia"
