@@ -7340,8 +7340,8 @@
    "id": "t_1ebe4685",
    "cat": "遊戲",
    "title": "ForgeDialog 天宮鐵匠底欄新增『前往稱號』快捷果凍按鈕聯動 TitleWallDialog",
-   "status": "測試中",
-   "note": "單元與整合測試全部跑綠，實機渲染截圖完備，送交審查",
+   "status": "已上線",
+   "note": "ForgeDialog 天宮鐵匠底欄新增前往稱號快捷果凍按鈕聯動 TitleWallDialog 已過審合進主線 (t_2ab04646)",
    "keys": [
     "ForgeDia"
    ]
