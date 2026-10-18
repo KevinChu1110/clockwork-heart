@@ -2130,5 +2130,8 @@
   "title_wall.btn_go_forge": "前往鍛造",
   "title_wall.go_forge": "前往鍛造",
   "title_wall.btn_go_workshop": "前往工坊",
-  "title_wall.go_workshop": "前往工坊"
+  "title_wall.go_workshop": "前往工坊",
+  "gem_workshop.btn_go_title_wall": "前往稱號",
+  "gem_workshop.go_title_wall": "前往稱號",
+  "ui.btn_go_title_wall": "前往稱號"
 }

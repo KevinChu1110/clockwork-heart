@@ -4375,5 +4375,8 @@
   "title_wall.btn_go_forge": "Ir a Forja",
   "title_wall.go_forge": "Ir a Forja",
   "title_wall.btn_go_workshop": "Ir al Taller",
-  "title_wall.go_workshop": "Ir al Taller"
+  "title_wall.go_workshop": "Ir al Taller",
+  "gem_workshop.btn_go_title_wall": "Ir a Títulos",
+  "gem_workshop.go_title_wall": "Ir a Títulos",
+  "ui.btn_go_title_wall": "Ir a Títulos"
 }
