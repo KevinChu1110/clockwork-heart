@@ -6922,6 +6922,15 @@ func open_wardrobe() -> Control:
 			open_gem_workshop()
 		)
 
+	if dlg.has_signal("vault_requested"):
+		dlg.connect("vault_requested", func():
+			open_clockwork_vault()
+		)
+	elif dlg.has_signal("go_vault"):
+		dlg.connect("go_vault", func():
+			open_clockwork_vault()
+		)
+
 	# 開啟衣櫥時隱藏底層角色預覽，避免高亮剪影穿透全螢幕半透明遮罩 (review.md / 視覺品質標準)
 	if _char_prev:
 		_char_prev.visible = false
