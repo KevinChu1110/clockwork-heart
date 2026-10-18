@@ -7160,8 +7160,8 @@
    "id": "workshop-wardrobe-shortcut",
    "cat": "遊戲",
    "title": "GemWorkshopDialog 手藝工坊底欄新增前往衣櫥快捷果凍按鈕連動 WardrobeDialog",
-   "status": "測試中",
-   "note": "已完成審查待合併",
+   "status": "已上線",
+   "note": "手藝工坊新增前往衣櫥快捷按鈕已過審合進主線 (t_325a82f1)",
    "keys": [
     "GemWorks"
    ]
