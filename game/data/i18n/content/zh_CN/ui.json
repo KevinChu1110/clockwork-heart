@@ -4006,5 +4006,6 @@
   "wardrobe.btn_go_vault": "前往储能库",
   "wardrobe.go_vault": "前往储能库",
   "vault.go_wardrobe": "前往衣橱",
-  "vault.btn_go_wardrobe": "前往衣橱"
+  "vault.btn_go_wardrobe": "前往衣橱",
+  "vault.btn_go_skill": "前往心法"
 }

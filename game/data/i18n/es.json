@@ -4363,5 +4363,6 @@
   "wardrobe.btn_go_vault": "Ir a Bóveda",
   "wardrobe.go_vault": "Ir a Bóveda",
   "vault.go_wardrobe": "Al Armario",
-  "vault.btn_go_wardrobe": "Al Armario"
+  "vault.btn_go_wardrobe": "Al Armario",
+  "vault.btn_go_skill": "A Habilidades"
 }
