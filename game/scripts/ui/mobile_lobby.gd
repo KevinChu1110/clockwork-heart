@@ -7224,6 +7224,11 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 		if existing_vault.get_parent() == self:
 			remove_child(existing_vault)
 		existing_vault.queue_free()
+	var existing_title = get_node_or_null("TitleWallDialog")
+	if existing_title != null:
+		if existing_title.get_parent() == self:
+			remove_child(existing_title)
+		existing_title.queue_free()
 	var GemClass: GDScript = load("res://scripts/ui/gem_workshop_dialog.gd")
 	if GemClass == null:
 		push_error("無法載入 GemWorkshopDialog")
@@ -8372,6 +8377,11 @@ func open_title_wall_dialog() -> Control:
 	if not scn:
 		push_error("無法載入 TitleWallDialog")
 		return null
+	var existing_workshop = get_node_or_null("GemWorkshopDialog")
+	if existing_workshop != null:
+		if existing_workshop.get_parent() == self:
+			remove_child(existing_workshop)
+		existing_workshop.queue_free()
 	var dlg: Control = scn.new()
 	dlg.name = "TitleWallDialog"
 	var tc: Node = Engine.get_main_loop().root.get_node_or_null("TitleCatalog") if Engine.get_main_loop() else null
@@ -8400,6 +8410,14 @@ func open_title_wall_dialog() -> Control:
 	if dlg.has_signal("go_forge"):
 		dlg.go_forge.connect(func():
 			open_forge()
+		)
+	if dlg.has_signal("workshop_requested"):
+		dlg.workshop_requested.connect(func():
+			open_gem_workshop()
+		)
+	if dlg.has_signal("go_workshop"):
+		dlg.go_workshop.connect(func():
+			open_gem_workshop()
 		)
 	add_child(dlg)
 	return dlg

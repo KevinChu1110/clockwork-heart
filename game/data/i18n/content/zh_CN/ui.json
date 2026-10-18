@@ -4017,5 +4017,7 @@
   "vault.btn_go_workshop": "前往工坊",
   "前往儲能庫": "前往储能库",
   "title_wall.btn_go_forge": "前往锻造",
-  "title_wall.go_forge": "前往锻造"
+  "title_wall.go_forge": "前往锻造",
+  "title_wall.btn_go_workshop": "前往工坊",
+  "title_wall.go_workshop": "前往工坊"
 }
