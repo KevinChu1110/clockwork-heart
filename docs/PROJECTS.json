@@ -7320,8 +7320,8 @@
    "id": "title-wall-forge-shortcut",
    "cat": "遊戲",
    "title": "TitleWallDialog 稱號牆新增前往鍛造快捷果凍按鈕連動 ForgeDialog",
-   "status": "開發中",
-   "note": "sideworker2 開發中",
+   "status": "測試中",
+   "note": "完成開發與自測，交付審查",
    "keys": [
     "TitleWal"
    ]
