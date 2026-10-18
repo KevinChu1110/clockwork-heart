@@ -7230,8 +7230,8 @@
    "id": "vault-skill-shortcut",
    "cat": "遊戲",
    "title": "ClockworkVaultDialog 發條儲能庫放置收益彈窗新增前往心法快捷果凍按鈕連動 SkillDialog",
-   "status": "開發中",
-   "note": "主管老周派工開卡",
+   "status": "已上線",
+   "note": "ClockworkVaultDialog 發條儲能庫放置收益彈窗新增前往心法快捷果凍按鈕連動 SkillDialog 已過審合進主線",
    "keys": [
     "Clockwor"
    ]
