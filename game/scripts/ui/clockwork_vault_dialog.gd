@@ -694,7 +694,7 @@ func refresh_display() -> void:
 	if _progress_bar_fill and _progress_bar_bg:
 		var total_w: float = _progress_bar_bg.size.x - 4.0  ## 扣除左右邊框 2px*2
 		if total_w < 300.0:
-			total_w = 760.0  ## 預設寬度（未完成排版週期時使用卡片內槽寬 760px）
+			total_w = 660.0  ## 預設寬度（未完成排版週期時使用卡片內槽寬 660px）
 		var target_w: float = total_w * ratio
 		_progress_bar_fill.visible = (ratio > 0.001)
 		_progress_bar_fill.custom_minimum_size = Vector2(target_w, 20)
