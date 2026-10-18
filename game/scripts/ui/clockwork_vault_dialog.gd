@@ -863,6 +863,17 @@ func _on_go_windup_pressed() -> void:
 
 func _on_go_forge_pressed() -> void:
 	forge_requested.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_forge"):
+		if forge_requested.get_connections().is_empty():
+			p.call("open_forge")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_forge"):
+				if forge_requested.get_connections().is_empty():
+					ml.call("open_forge")
 	closed.emit()
 	queue_free()
 
