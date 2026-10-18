@@ -7380,8 +7380,8 @@
    "id": "title-wall-skill-shortcut",
    "cat": "遊戲",
    "title": "TitleWallDialog 稱號牆底欄新增前往心法快捷果凍按鈕連動 SkillDialog",
-   "status": "開發中",
-   "note": "開始實作 TitleWallDialog 前往心法快捷果凍按鈕",
+   "status": "測試中",
+   "note": "完成 TitleWallDialog 前往心法快捷果凍按鈕與連動，測試通過，存證齊全",
    "keys": [
     "TitleWal"
    ]
