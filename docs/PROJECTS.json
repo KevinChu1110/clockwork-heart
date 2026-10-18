@@ -7365,6 +7365,16 @@
    "keys": [
     "GemWorks"
    ]
+  },
+  {
+   "id": "merge-title-wall-workshop-shortcuts",
+   "cat": "平台",
+   "title": "把已過審的稱號前往工坊與工坊前往稱號雙分支合進主線並全面回歸驗收",
+   "status": "草稿",
+   "note": "草稿，依賴前兩項",
+   "keys": [
+    "把已過審的稱號前"
+   ]
   }
  ]
 }
