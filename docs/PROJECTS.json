@@ -7235,6 +7235,16 @@
    "keys": [
     "把已過審的衣櫥前"
    ]
+  },
+  {
+   "id": "skill-vault-shortcut",
+   "cat": "遊戲",
+   "title": "SkillDialog 心法招式底欄新增前往儲能庫快捷按鈕連動 ClockworkVaultDialog",
+   "status": "草稿",
+   "note": "新增前往儲能庫果凍按鈕與連動",
+   "keys": [
+    "SkillDia"
+   ]
   }
  ]
 }
