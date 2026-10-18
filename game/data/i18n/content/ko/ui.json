@@ -4010,5 +4010,7 @@
   "forge.btn_go_vault": "저장고로",
   "ui.btn_go_vault": "저장고로 이동",
   "vault.btn_go_workshop": "공방으로",
-  "前往儲能庫": "저장고로 이동"
+  "前往儲能庫": "저장고로 이동",
+  "title_wall.btn_go_forge": "단조로 이동",
+  "title_wall.go_forge": "단조로 이동"
 }

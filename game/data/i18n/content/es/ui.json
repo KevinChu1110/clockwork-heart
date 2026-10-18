@@ -4010,5 +4010,7 @@
   "forge.btn_go_vault": "Al Almacén",
   "ui.btn_go_vault": "Ir a Bóveda",
   "vault.btn_go_workshop": "Al Taller",
-  "前往儲能庫": "Ir a Bóveda"
+  "前往儲能庫": "Ir a Bóveda",
+  "title_wall.btn_go_forge": "Ir a Forja",
+  "title_wall.go_forge": "Ir a Forja"
 }

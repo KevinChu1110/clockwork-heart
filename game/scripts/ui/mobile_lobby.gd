@@ -8385,6 +8385,14 @@ func open_title_wall_dialog() -> Control:
 		dlg.inventory_requested.connect(func():
 			open_maple_inventory()
 		)
+	if dlg.has_signal("forge_requested"):
+		dlg.forge_requested.connect(func():
+			open_forge()
+		)
+	if dlg.has_signal("go_forge"):
+		dlg.go_forge.connect(func():
+			open_forge()
+		)
 	add_child(dlg)
 	return dlg
 

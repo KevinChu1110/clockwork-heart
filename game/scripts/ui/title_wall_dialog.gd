@@ -19,6 +19,8 @@ signal power_stat_requested()
 signal wardrobe_requested()
 signal shop_requested()
 signal inventory_requested()
+signal forge_requested()
+signal go_forge()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -56,6 +58,7 @@ var _go_power_stat_btn: Button
 var _go_wardrobe_btn: Button
 var _go_shop_btn: Button
 var _go_inventory_btn: Button
+var _go_forge_btn: Button
 var _unequip_btn: Button
 var _back_btn: Button
 var _fortress_btn: Button
@@ -196,6 +199,12 @@ func _update_ui_texts() -> void:
 			btn_i_txt = _t("前往背包")
 		_go_inventory_btn.text = btn_i_txt
 
+	if _go_forge_btn and is_instance_valid(_go_forge_btn):
+		var btn_f_txt := _t("title_wall.btn_go_forge")
+		if btn_f_txt == "title_wall.btn_go_forge" or btn_f_txt.is_empty():
+			btn_f_txt = _t("前往鍛造")
+		_go_forge_btn.text = btn_f_txt
+
 	if _unequip_btn and is_instance_valid(_unequip_btn):
 		_unequip_btn.text = _t("卸下稱號")
 		_update_unequip_btn_state()
@@ -262,6 +271,7 @@ func _rebuild() -> void:
 	_go_wardrobe_btn = null
 	_go_shop_btn = null
 	_go_inventory_btn = null
+	_go_forge_btn = null
 	_unequip_btn = null
 	_back_btn = null
 	_fortress_btn = null
@@ -549,6 +559,26 @@ func _build_ui() -> void:
 		_go_inventory_btn.add_theme_font_override("font", _cached_font)
 	_go_inventory_btn.pressed.connect(_on_go_inventory_pressed)
 	foot.add_child(_go_inventory_btn)
+
+	# 前往鍛造 果凍按鈕 (BtnGoForge)
+	_go_forge_btn = Button.new()
+	_go_forge_btn.name = "BtnGoForge"
+	var go_forge_txt := _t("title_wall.btn_go_forge")
+	if go_forge_txt == "title_wall.btn_go_forge" or go_forge_txt.is_empty():
+		go_forge_txt = _t("前往鍛造")
+	_go_forge_btn.text = go_forge_txt
+	_go_forge_btn.custom_minimum_size = Vector2(150, 52)
+	_go_forge_btn.add_theme_stylebox_override("normal", _create_button_style(COLOR_ORANGE, COLOR_BORDER, 5, 18))
+	_go_forge_btn.add_theme_stylebox_override("hover", _create_button_style(Color("#FFB236"), COLOR_BORDER, 5, 18))
+	_go_forge_btn.add_theme_stylebox_override("pressed", _create_button_style(Color("#E08805"), COLOR_BORDER, 2, 18))
+	_go_forge_btn.add_theme_color_override("font_color", Color("#FFFFFF"))
+	_go_forge_btn.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_go_forge_btn.add_theme_constant_override("outline_size", 2)
+	_go_forge_btn.add_theme_font_size_override("font_size", 18)
+	if _cached_font:
+		_go_forge_btn.add_theme_font_override("font", _cached_font)
+	_go_forge_btn.pressed.connect(_on_go_forge_pressed)
+	foot.add_child(_go_forge_btn)
 
 	# 卸下稱號 果凍按鈕 (BtnUnequipTitle)
 	_unequip_btn = Button.new()
@@ -983,6 +1013,40 @@ func get_go_inventory_button() -> Button:
 
 func get_inventory_button() -> Button:
 	return _go_inventory_btn
+
+
+func _on_go_forge_pressed() -> void:
+	var am: Node = Engine.get_main_loop().root.get_node_or_null("AudioManager") if Engine.get_main_loop() else null
+	if am and am.has_method("play_ui"):
+		am.play_ui()
+	forge_requested.emit()
+	go_forge.emit()
+	var p := get_parent()
+	if p != null and p.has_method("open_forge_dialog"):
+		if forge_requested.get_connections().is_empty() and go_forge.get_connections().is_empty():
+			p.call("open_forge_dialog")
+	elif p != null and p.has_method("open_forge"):
+		if forge_requested.get_connections().is_empty() and go_forge.get_connections().is_empty():
+			p.call("open_forge")
+	else:
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var ml: Node = (loop as SceneTree).root.get_node_or_null("MobileLobby")
+			if ml and ml.has_method("open_forge_dialog"):
+				if forge_requested.get_connections().is_empty() and go_forge.get_connections().is_empty():
+					ml.call("open_forge_dialog")
+			elif ml and ml.has_method("open_forge"):
+				if forge_requested.get_connections().is_empty() and go_forge.get_connections().is_empty():
+					ml.call("open_forge")
+	_on_close()
+
+
+func get_go_forge_button() -> Button:
+	return _go_forge_btn
+
+
+func get_forge_button() -> Button:
+	return _go_forge_btn
 
 
 func _on_fortress() -> void:

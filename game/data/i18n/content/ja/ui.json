@@ -4010,5 +4010,7 @@
   "forge.btn_go_vault": "貯蔵庫へ",
   "ui.btn_go_vault": "貯蔵庫へ",
   "vault.btn_go_workshop": "工房へ",
-  "前往儲能庫": "貯蔵庫へ"
+  "前往儲能庫": "貯蔵庫へ",
+  "title_wall.btn_go_forge": "鍛造へ進む",
+  "title_wall.go_forge": "鍛造へ進む"
 }
