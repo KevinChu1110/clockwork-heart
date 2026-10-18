@@ -1,0 +1,232 @@
+{
+  "race": "rabbit",
+  "canvas_size": [
+    512,
+    512
+  ],
+  "root_anchor": [
+    256,
+    480
+  ],
+  "anchors": {
+    "neck": [
+      248,
+      290
+    ],
+    "navel": [
+      256,
+      350
+    ],
+    "hand": [
+      320,
+      440
+    ],
+    "back_key": [
+      190,
+      296
+    ],
+    "brow_relative_to_neck": [
+      2,
+      -60
+    ]
+  },
+  "parts": {
+    "body": {
+      "anchor": "root",
+      "z_index": 10,
+      "origin": [
+        0,
+        0
+      ],
+      "items": {
+        "paint_ivory_stock": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/body/paint_ivory_stock.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        },
+        "paint_brass_gold": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/body/paint_brass_gold.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        },
+        "paint_midnight_navy": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/body/paint_midnight_navy.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "head_unit": {
+      "anchor": "neck",
+      "z_index": 20,
+      "items": {
+        "ear_rabbit_straight": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/head_unit/ear_rabbit_straight.png",
+          "width": 165,
+          "height": 191,
+          "origin": [
+            79,
+            265
+          ]
+        },
+        "ear_rabbit_straight_brass": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/head_unit/ear_rabbit_straight_brass.png",
+          "width": 165,
+          "height": 191,
+          "origin": [
+            79,
+            265
+          ]
+        },
+        "ear_rabbit_straight_midnight": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/head_unit/ear_rabbit_straight_midnight.png",
+          "width": 165,
+          "height": 191,
+          "origin": [
+            79,
+            265
+          ]
+        }
+      }
+    },
+    "eyes": {
+      "anchor": "brow",
+      "z_index": 30,
+      "origin": [
+        71,
+        48
+      ],
+      "items": {
+        "eyes_cyan_emerald": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/eyes/eyes_cyan_emerald.png",
+          "width": 142,
+          "height": 95,
+          "origin": [
+            71,
+            48
+          ]
+        },
+        "eyes_amber_gold": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/eyes/eyes_amber_gold.png",
+          "width": 142,
+          "height": 95,
+          "origin": [
+            71,
+            48
+          ]
+        },
+        "eyes_blink": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/eyes/eyes_blink.png",
+          "width": 142,
+          "height": 95,
+          "origin": [
+            71,
+            48
+          ]
+        }
+      }
+    },
+    "costume": {
+      "anchor": "navel",
+      "z_index": 25,
+      "items": {
+        "costume_nutcracker_guard": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/costume/costume_nutcracker_guard.png",
+          "width": 129,
+          "height": 143,
+          "origin": [
+            61,
+            81
+          ]
+        },
+        "costume_royal_parade": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/costume/costume_royal_parade.png",
+          "width": 160,
+          "height": 136,
+          "origin": [
+            84,
+            58
+          ]
+        },
+        "costume_steam_artisan": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/costume/costume_steam_artisan.png",
+          "width": 160,
+          "height": 132,
+          "origin": [
+            80,
+            58
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "weapon": {
+      "anchor": "hand",
+      "z_index": 40,
+      "items": {
+        "wpn_dawn_blade": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/weapon/wpn_dawn_blade.png",
+          "width": 185,
+          "height": 172,
+          "origin": [
+            131,
+            121
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "winding_key": {
+      "anchor": "back_key",
+      "z_index": 5,
+      "items": {
+        "key_classic_brass": {
+          "path": "res://assets/sprites/player/paperdoll/rabbit/maple_parts/winding_key/key_classic_brass.png",
+          "width": 58,
+          "height": 129,
+          "origin": [
+            54,
+            63
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  }
+}

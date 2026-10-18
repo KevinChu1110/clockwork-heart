@@ -1,0 +1,111 @@
+[gd_scene load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://scripts/art/maple_paperdoll_showcase.gd" id="1_showcase"]
+[ext_resource type="Script" path="res://scripts/art/maple_paperdoll.gd" id="2_paperdoll"]
+[ext_resource type="Script" path="res://scripts/art/anchor_debug_overlay.gd" id="3_overlay"]
+[ext_resource type="FontFile" uid="uid://cy6fae1dr7lys" path="res://assets/fonts/jf-openhuninn-2.1.ttf" id="4_font"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(1, 0.992157, 0.972549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(1, 1, 1, 0.92)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 5
+border_color = Color(0.121569, 0.101961, 0.227451, 1)
+corner_radius_top_left = 18
+corner_radius_top_right = 18
+corner_radius_bottom_right = 18
+corner_radius_bottom_left = 18
+shadow_color = Color(0.121569, 0.101961, 0.227451, 0.15)
+shadow_size = 6
+shadow_offset = Vector2(0, 3)
+
+[node name="MaplePaperdollShowcase" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_showcase")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="DollContainer" type="Node2D" parent="."]
+position = Vector2(380, 110)
+
+[node name="MaplePaperdoll" type="Node2D" parent="DollContainer"]
+script = ExtResource("2_paperdoll")
+
+[node name="AnchorDebugOverlay" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("3_overlay")
+paperdoll_path = NodePath("../DollContainer/MaplePaperdoll")
+
+[node name="UI" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="PanelInfo" type="PanelContainer" parent="UI"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 40.0
+offset_right = 440.0
+offset_bottom = 260.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="VBox" type="VBoxContainer" parent="UI/PanelInfo"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="LblInfo" type="Label" parent="UI/PanelInfo/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 15
+text = "【發條白兔 · 楓之谷錨點部件掛載展示】"
+
+[node name="PanelControls" type="PanelContainer" parent="UI"]
+layout_mode = 0
+offset_left = 820.0
+offset_top = 40.0
+offset_right = 1240.0
+offset_bottom = 680.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="Scroll" type="ScrollContainer" parent="UI/PanelControls"]
+layout_mode = 2
+
+[node name="VBox" type="VBoxContainer" parent="UI/PanelControls/Scroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="LblTitle" type="Label" parent="UI/PanelControls/Scroll/VBox"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.121569, 0.101961, 0.227451, 1)
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 18
+text = "部件置換與骨骼控制"
+horizontal_alignment = 1
