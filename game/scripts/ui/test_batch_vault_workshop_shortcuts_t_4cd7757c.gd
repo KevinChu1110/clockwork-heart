@@ -290,22 +290,13 @@ func _capture_proof(file_name: String) -> void:
 				img = tex.get_image()
 
 	if img == null or img.is_empty():
-		img = Image.create(1280, 720, false, Image.FORMAT_RGBA8)
-		img.fill(Color("#FFFDF8")) # 奶油米白底
-		var marker_color := Color.from_hsv(float((_proof_hashes.size() * 53) % 360) / 360.0, 0.7, 0.9)
-		for x in range(120, 320):
-			for y in range(120, 220):
-				img.set_pixel(x, y, marker_color)
+		_fail("無法截取真實 Framebuffer 畫面（請使用 xvfb-run 與 opengl3 渲染驅動）: " + file_name)
+		return
 
 	var save_path1 := _out_dir.path_join(file_name)
 	var save_path2 := _out_dir_docs.path_join(file_name)
 	img.save_png(save_path1)
 	DirAccess.copy_absolute(save_path1, save_path2)
 
-	var data := img.get_data()
-	var ctx := HashingContext.new()
-	ctx.start(HashingContext.HASH_SHA256)
-	ctx.update(data)
-	var digest := ctx.finish()
-	var hex_hash := digest.hex_encode()
+	var hex_hash := FileAccess.get_sha256(save_path1)
 	_proof_hashes[file_name] = hex_hash
