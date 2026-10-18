@@ -4355,5 +4355,6 @@
   "forge.btn_go_wardrobe": "Go to Wardrobe",
   "ui.btn_go_wardrobe": "Go to Wardrobe",
   "wardrobe.btn_go_workshop": "Go to Workshop",
-  "wardrobe.go_workshop": "Go to Workshop"
+  "wardrobe.go_workshop": "Go to Workshop",
+  "gem_workshop.btn_go_wardrobe": "Go to Wardrobe"
 }

@@ -3998,5 +3998,6 @@
   "forge.btn_go_wardrobe": "前往衣橱",
   "ui.btn_go_wardrobe": "前往衣橱",
   "wardrobe.btn_go_workshop": "前往工坊",
-  "wardrobe.go_workshop": "前往工坊"
+  "wardrobe.go_workshop": "前往工坊",
+  "gem_workshop.btn_go_wardrobe": "前往衣橱"
 }
