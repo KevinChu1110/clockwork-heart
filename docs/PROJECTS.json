@@ -7235,6 +7235,16 @@
    "keys": [
     "Clockwor"
    ]
+  },
+  {
+   "id": "t_aa09bf27",
+   "cat": "遊戲",
+   "title": "SkillDialog 心法招式底欄新增前往儲能庫快捷果凍按鈕聯動 ClockworkVaultDialog",
+   "status": "草稿",
+   "note": "",
+   "keys": [
+    "SkillDia"
+   ]
   }
  ]
 }
