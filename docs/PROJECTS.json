@@ -7230,8 +7230,8 @@
    "id": "merge-wardrobe-vault-shortcuts",
    "cat": "平台",
    "title": "把已過審的衣櫥前往儲能庫與儲能庫前往衣櫥雙分支合進主線",
-   "status": "草稿",
-   "note": "雙分支已通過 sideqa 審查待合併",
+   "status": "開發中",
+   "note": "派工準備合併",
    "keys": [
     "把已過審的衣櫥前"
    ]
