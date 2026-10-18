@@ -7280,8 +7280,8 @@
    "id": "t_570f1c69",
    "cat": "遊戲",
    "title": "GemWorkshopDialog 手藝工坊底欄新增前往儲能庫快捷果凍按鈕聯動 ClockworkVaultDialog",
-   "status": "開發中",
-   "note": "已派工 sideworker2，等待主線合併後平行推進",
+   "status": "測試中",
+   "note": "GemWorkshopDialog 手藝工坊底欄新增前往儲能庫快捷果凍按鈕聯動 ClockworkVaultDialog 自測全綠，截圖已存證",
    "keys": [
     "GemWorks"
    ]
