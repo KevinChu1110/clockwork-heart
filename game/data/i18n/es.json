@@ -4365,5 +4365,8 @@
   "vault.go_wardrobe": "Al Armario",
   "vault.btn_go_wardrobe": "Al Armario",
   "vault.btn_go_skill": "A Habilidades",
-  "skill.btn_go_vault": "Ir a Bóveda"
+  "skill.btn_go_vault": "Ir a Bóveda",
+  "gem_workshop.btn_go_vault": "Ir a Bóveda",
+  "ui.btn_go_vault": "Ir a Bóveda",
+  "前往儲能庫": "Ir a Bóveda"
 }

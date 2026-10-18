@@ -2641,6 +2641,11 @@ func open_clockwork_vault() -> Control:
 	var existing = get_node_or_null("ClockworkVaultDialog")
 	if existing != null:
 		return existing
+	var existing_workshop = get_node_or_null("GemWorkshopDialog")
+	if existing_workshop != null:
+		if existing_workshop.get_parent() == self:
+			remove_child(existing_workshop)
+		existing_workshop.queue_free()
 	var VaultClass: GDScript = load("res://scripts/ui/clockwork_vault_dialog.gd")
 	if VaultClass == null:
 		push_error("無法載入 ClockworkVaultDialog")
@@ -2714,7 +2719,8 @@ func open_clockwork_vault() -> Control:
 		var has_shop: bool = get_node_or_null("ShopDialog") != null
 		var has_wardrobe: bool = get_node_or_null("WardrobeDialog") != null
 		var has_skill: bool = get_node_or_null("SkillDialog") != null
-		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv and not has_power and not has_windup and not has_shop and not has_wardrobe and not has_skill:
+		var has_workshop: bool = get_node_or_null("GemWorkshopDialog") != null
+		if _equip_schematic and is_instance_valid(_equip_schematic) and not has_forge and not has_inv and not has_power and not has_windup and not has_shop and not has_wardrobe and not has_skill and not has_workshop:
 			_equip_schematic.visible = true
 		refresh_hud()
 		refresh_vault_display()
@@ -7189,6 +7195,11 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 		if existing_wardrobe.get_parent() == self:
 			remove_child(existing_wardrobe)
 		existing_wardrobe.queue_free()
+	var existing_vault = get_node_or_null("ClockworkVaultDialog")
+	if existing_vault != null:
+		if existing_vault.get_parent() == self:
+			remove_child(existing_vault)
+		existing_vault.queue_free()
 	var GemClass: GDScript = load("res://scripts/ui/gem_workshop_dialog.gd")
 	if GemClass == null:
 		push_error("無法載入 GemWorkshopDialog")
@@ -7234,6 +7245,14 @@ func open_gem_workshop(target_tab: int = 0) -> Control:
 	elif dlg.has_signal("go_wardrobe"):
 		dlg.connect("go_wardrobe", func():
 			open_wardrobe()
+		)
+	if dlg.has_signal("vault_requested"):
+		dlg.connect("vault_requested", func():
+			open_clockwork_vault_dialog()
+		)
+	elif dlg.has_signal("go_vault"):
+		dlg.connect("go_vault", func():
+			open_clockwork_vault_dialog()
 		)
 	add_child(dlg)
 	if target_tab != 0 and dlg.has_method("set_tab"):
