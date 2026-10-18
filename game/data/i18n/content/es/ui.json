@@ -4013,5 +4013,8 @@
   "vault.btn_go_workshop": "Al Taller",
   "前往儲能庫": "Ir a Bóveda",
   "title_wall.btn_go_forge": "Ir a Forja",
-  "title_wall.go_forge": "Ir a Forja"
+  "title_wall.go_forge": "Ir a Forja",
+  "gem_workshop.btn_go_title_wall": "Ir a Títulos",
+  "gem_workshop.go_title_wall": "Ir a Títulos",
+  "ui.btn_go_title_wall": "Ir a Títulos"
 }

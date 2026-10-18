@@ -23,6 +23,8 @@ signal wardrobe_requested()
 signal go_wardrobe()
 signal vault_requested()
 signal go_vault()
+signal title_wall_requested()
+signal go_title_wall()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const ContentLoc = preload("res://scripts/systems/content_loc.gd")
@@ -105,6 +107,7 @@ var _btn_go_shop: Button
 var _btn_go_skill: Button
 var _btn_go_wardrobe: Button
 var _btn_go_vault: Button
+var _btn_go_title_wall: Button
 var _btn_close: Button
 var _cached_font: Font = null
 
@@ -202,6 +205,13 @@ func _update_ui_texts() -> void:
 		if vault_btn_txt == "ui.btn_go_vault" or vault_btn_txt.is_empty():
 			vault_btn_txt = _t("前往儲能庫")
 		_btn_go_vault.text = vault_btn_txt
+	if _btn_go_title_wall and is_instance_valid(_btn_go_title_wall):
+		var title_wall_btn_txt := _t("gem_workshop.btn_go_title_wall")
+		if title_wall_btn_txt == "gem_workshop.btn_go_title_wall" or title_wall_btn_txt.is_empty():
+			title_wall_btn_txt = _t("ui.btn_go_title_wall")
+		if title_wall_btn_txt == "ui.btn_go_title_wall" or title_wall_btn_txt.is_empty():
+			title_wall_btn_txt = _t("前往稱號")
+		_btn_go_title_wall.text = title_wall_btn_txt
 	if _btn_close and is_instance_valid(_btn_close):
 		_btn_close.text = _t("離開工坊")
 
@@ -722,6 +732,31 @@ func _build_ui() -> void:
 	_btn_go_vault.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	_btn_go_vault.pressed.connect(_on_go_vault_pressed)
 	foot_row.add_child(_btn_go_vault)
+
+	# 快捷按鈕：前往稱號 (金黃立體厚底 5px, 130x50, 規格 130x50, 圓角 18px, 文字深藍紫, 零系統 Emoji)
+	_btn_go_title_wall = Button.new()
+	_btn_go_title_wall.name = "BtnGoTitleWall"
+	var title_wall_btn_txt := _t("gem_workshop.btn_go_title_wall")
+	if title_wall_btn_txt == "gem_workshop.btn_go_title_wall" or title_wall_btn_txt.is_empty():
+		title_wall_btn_txt = _t("ui.btn_go_title_wall")
+	if title_wall_btn_txt == "ui.btn_go_title_wall" or title_wall_btn_txt.is_empty():
+		title_wall_btn_txt = _t("前往稱號")
+	_btn_go_title_wall.text = title_wall_btn_txt
+	_btn_go_title_wall.custom_minimum_size = Vector2(130, 50)
+	_btn_go_title_wall.add_theme_font_size_override("font_size", 16)
+	_btn_go_title_wall.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	_btn_go_title_wall.add_theme_color_override("font_outline_color", COLOR_BORDER)
+	_btn_go_title_wall.add_theme_constant_override("outline_size", 1)
+	if _cached_font:
+		_btn_go_title_wall.add_theme_font_override("font", _cached_font)
+	_btn_go_title_wall.add_theme_stylebox_override("normal", _create_button_style(COLOR_GOLD, COLOR_BORDER, 5, 18, 2))
+	_btn_go_title_wall.add_theme_stylebox_override("hover", _create_button_style(Color("#FFE066"), COLOR_BORDER, 5, 18, 2))
+	_btn_go_title_wall.add_theme_stylebox_override("pressed", _create_button_style(Color("#E5BA1B"), COLOR_BORDER, 2, 18, 2))
+	_btn_go_title_wall.add_theme_stylebox_override("disabled", _create_button_style(COLOR_CARD_MUTED, COLOR_BORDER_MUTED, 3, 18, 2))
+	_btn_go_title_wall.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
+	_btn_go_title_wall.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	_btn_go_title_wall.pressed.connect(_on_go_title_wall_pressed)
+	foot_row.add_child(_btn_go_title_wall)
 
 	# 次要按鈕：離開工坊 (金黃立體厚底 5px)
 	_btn_close = Button.new()
@@ -1365,6 +1400,50 @@ func get_vault_button() -> Button:
 
 func get_btn_go_vault() -> Button:
 	return _btn_go_vault
+
+
+func get_go_title_wall_button() -> Button:
+	return _btn_go_title_wall
+
+
+func get_title_wall_button() -> Button:
+	return _btn_go_title_wall
+
+
+func get_btn_go_title_wall() -> Button:
+	return _btn_go_title_wall
+
+
+func _on_go_title_wall_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	closed.emit()
+	title_wall_requested.emit()
+	go_title_wall.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml:
+			if ml.has_method("open_title_wall_dialog"):
+				if title_wall_requested.get_connections().is_empty() and go_title_wall.get_connections().is_empty():
+					ml.call("open_title_wall_dialog")
+			elif ml.has_method("open_title_wall"):
+				if title_wall_requested.get_connections().is_empty() and go_title_wall.get_connections().is_empty():
+					ml.call("open_title_wall")
+	var p := get_parent()
+	if p:
+		if p.has_method("open_title_wall_dialog"):
+			if title_wall_requested.get_connections().is_empty() and go_title_wall.get_connections().is_empty():
+				p.call("open_title_wall_dialog")
+		elif p.has_method("open_title_wall"):
+			if title_wall_requested.get_connections().is_empty() and go_title_wall.get_connections().is_empty():
+				p.call("open_title_wall")
+	if not is_queued_for_deletion():
+		_on_close()
 
 
 func _on_go_vault_pressed() -> void:

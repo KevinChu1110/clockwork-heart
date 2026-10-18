@@ -3862,7 +3862,7 @@
   "power_stat.title_card": "称号",
   "power_stat.btn_go_title_wall": "称号一覧へ",
   "power_stat.title_desc": "称号を身につけて栄誉を示そう。称号一覧で変更・解除できます。",
-  "前往稱號": "称号一覧へ",
+  "前往稱號": "称号へ",
   "佩戴稱號展現專屬榮耀，前往稱號牆可自由切換或卸下": "称号を身につけて栄誉を示そう。称号一覧で変更・解除できます。",
   "title_wall.btn_go_power_stat": "戦力詳細へ",
   "title_wall.btn_go_wardrobe": "衣装部屋へ",
@@ -4013,5 +4013,8 @@
   "vault.btn_go_workshop": "工房へ",
   "前往儲能庫": "貯蔵庫へ",
   "title_wall.btn_go_forge": "鍛造へ進む",
-  "title_wall.go_forge": "鍛造へ進む"
+  "title_wall.go_forge": "鍛造へ進む",
+  "gem_workshop.btn_go_title_wall": "称号へ",
+  "gem_workshop.go_title_wall": "称号へ",
+  "ui.btn_go_title_wall": "称号へ"
 }

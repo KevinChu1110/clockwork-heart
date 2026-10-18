@@ -4224,7 +4224,7 @@
   "power_stat.title_card": "Equipped Title",
   "power_stat.btn_go_title_wall": "Go to Titles",
   "power_stat.title_desc": "Equip titles to showcase glory. Visit titles to switch or unequip.",
-  "前往稱號": "Go to Titles",
+  "前往稱號": "To Titles",
   "佩戴稱號展現專屬榮耀，前往稱號牆可自由切換或卸下": "Equip titles to showcase glory. Visit titles to switch or unequip.",
   "title_wall.btn_go_power_stat": "Go to Stats",
   "title_wall.btn_go_wardrobe": "Go to Wardrobe",
@@ -4373,5 +4373,8 @@
   "vault.btn_go_workshop": "To Workshop",
   "前往儲能庫": "To Vault",
   "title_wall.btn_go_forge": "Go to Forge",
-  "title_wall.go_forge": "Go to Forge"
+  "title_wall.go_forge": "Go to Forge",
+  "gem_workshop.btn_go_title_wall": "To Titles",
+  "gem_workshop.go_title_wall": "To Titles",
+  "ui.btn_go_title_wall": "To Titles"
 }
