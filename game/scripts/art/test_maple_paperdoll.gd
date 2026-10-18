@@ -99,6 +99,43 @@ func _initialize() -> void:
 	doll.set_eyes("eyes_cyan_emerald")
 
 	# -------------------------------------------------------------
+	# 3.1 驗證眼睛上裝後額頭無黑色遮罩方塊、臉頰無錯位溢色
+	# -------------------------------------------------------------
+	print("\n--- 3.1 驗證眼睛上裝後額頭純淨無黑條遮罩、臉頰無溢色 ---")
+	for eye_id in ["eyes_cyan_emerald", "eyes_amber_gold"]:
+		doll.set_eyes(eye_id)
+		var img_eye := doll.get_composite_image()
+		# 檢查額頭正中央區域 (y: 214..220, x: 242..258) 是否被實心純黑方條破圖覆蓋
+		var black_count := 0
+		for check_y in range(214, 221):
+			for check_x in range(242, 259):
+				var px := img_eye.get_pixel(check_x, check_y)
+				if px.a > 0.5 and px.r < 0.08 and px.g < 0.08 and px.b < 0.08:
+					black_count += 1
+		if black_count > 0:
+			push_error("眼睛 %s 在額頭部位偵測到 %d 個實心黑條遮罩破圖像素！" % [eye_id, black_count])
+			ok = false
+		else:
+			print("  ✓ 眼睛 %s 額頭 (y:214..220) 無任何黑條遮罩破圖" % eye_id)
+
+		# 檢查左臉頰外側 (x: 180..210, y: 220..240) 是否有未裁乾淨之金橘色溢色
+		var stray_count := 0
+		for check_y in range(220, 241):
+			for check_x in range(180, 211):
+				var px := img_eye.get_pixel(check_x, check_y)
+				var base_px := bare_img.get_pixel(check_x, check_y)
+				# 若底層素體此處為透明背景，眼睛圖層不應有任何殘留像素
+				if base_px.a < 0.05 and px.a > 0.1:
+					stray_count += 1
+		if stray_count > 0:
+			push_error("眼睛 %s 在左臉頰外側偵測到 %d 個錯位溢色/雜質像素！" % [eye_id, stray_count])
+			ok = false
+		else:
+			print("  ✓ 眼睛 %s 左臉頰外側純淨無錯位溢色" % eye_id)
+
+	doll.set_eyes("eyes_cyan_emerald")
+
+	# -------------------------------------------------------------
 	# 4. 驗證動態 Z-Order 層級控制
 	# -------------------------------------------------------------
 	print("\n--- 4. 驗證動態 Z-Order 層級控制 ---")

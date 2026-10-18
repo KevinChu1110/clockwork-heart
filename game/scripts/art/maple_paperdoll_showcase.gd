@@ -13,6 +13,7 @@ const MaplePaperdollClass = preload("res://scripts/art/maple_paperdoll.gd")
 @onready var paperdoll: Node2D = $DollContainer/MaplePaperdoll
 @onready var anchor_debug_overlay: Control = $AnchorDebugOverlay
 @onready var lbl_info: Label = $UI/PanelInfo/VBox/LblInfo
+@onready var controls_vbox: VBoxContainer = $UI/PanelControls/Scroll/VBox
 
 var show_anchor_debug: bool = true
 
@@ -30,6 +31,7 @@ func _ready() -> void:
 	if paperdoll != null:
 		paperdoll.position = Vector2(0, 0)
 		paperdoll.breathing_enabled = true
+	_build_control_buttons()
 	_update_info_label()
 
 
@@ -119,3 +121,106 @@ func _update_info_label() -> void:
 	txt += "• 發條鑰匙: %s (Z: %d)\n" % [loadout.get("winding_key", ""), z_order.get("winding_key", 0)]
 	txt += "• 呼吸動態: %s" % ["啟用中 (Active)" if paperdoll.breathing_enabled else "暫停 (Paused)"]
 	lbl_info.text = txt
+
+
+## 動態建立右側控制面板操作按鈕
+func _build_control_buttons() -> void:
+	if controls_vbox == null:
+		return
+	# 清除除標題外的現有項目
+	for child in controls_vbox.get_children():
+		if child.name != "LblTitle":
+			child.queue_free()
+
+	# 1. 塗裝素體組
+	_add_section_header("塗裝素體 (Chassis)")
+	_create_button_grid([
+		{"label": "經典象牙白", "color": Color("#FFD028"), "fn": func(): select_chassis("paint_ivory_stock")},
+		{"label": "黃銅榮耀金", "color": Color("#FFD028"), "fn": func(): select_chassis("paint_brass_gold")},
+		{"label": "午夜深空藍", "color": Color("#FFD028"), "fn": func(): select_chassis("paint_midnight_navy")},
+	])
+
+	# 2. 玩具外裝組
+	_add_section_header("玩具外裝 (Costume)")
+	_create_button_grid([
+		{"label": "胡桃鉗衛兵服", "color": Color("#FFA010"), "fn": func(): select_costume("costume_nutcracker_guard")},
+		{"label": "皇家遊行禮服", "color": Color("#FFA010"), "fn": func(): select_costume("costume_royal_parade")},
+		{"label": "蒸汽工匠套裝", "color": Color("#FFA010"), "fn": func(): select_costume("costume_steam_artisan")},
+		{"label": "卸除外裝 (素體)", "color": Color("#FFA010"), "fn": func(): select_costume("none")},
+	])
+
+	# 3. 面部光學組
+	_add_section_header("面部光學核心 (Eyes)")
+	_create_button_grid([
+		{"label": "天青祖母綠", "color": Color("#38A0FF"), "fn": func(): select_eyes("eyes_cyan_emerald")},
+		{"label": "琥珀黃金核心", "color": Color("#38A0FF"), "fn": func(): select_eyes("eyes_amber_gold")},
+		{"label": "休眠閉眼眨眼", "color": Color("#38A0FF"), "fn": func(): select_eyes("eyes_blink")},
+		{"label": "純淨面甲 (無眼)", "color": Color("#38A0FF"), "fn": func(): select_eyes("none")},
+	])
+
+	# 4. 層級與動態控制組
+	_add_section_header("骨骼層級與動態 (Controls)")
+	_create_button_grid([
+		{"label": "切換武器前後", "color": Color("#4ED86A"), "fn": func(): toggle_weapon_z_order()},
+		{"label": "切換發條鑰匙前後", "color": Color("#4ED86A"), "fn": func(): toggle_key_z_order()},
+		{"label": "待機呼吸動態開關", "color": Color("#4ED86A"), "fn": func(): toggle_breathing()},
+		{"label": "骨骼錨點標記開關", "color": Color("#4ED86A"), "fn": func(): toggle_anchor_debug()},
+	])
+
+
+func _add_section_header(title: String) -> void:
+	var lbl := Label.new()
+	lbl.text = "▶ " + title
+	lbl.add_theme_font_override("font", preload("res://assets/fonts/jf-openhuninn-2.1.ttf"))
+	lbl.add_theme_font_size_override("font_size", 14)
+	lbl.add_theme_color_override("font_color", Color("#1F1A3A"))
+	controls_vbox.add_child(lbl)
+
+
+func _create_button_grid(btn_defs: Array) -> void:
+	var grid := GridContainer.new()
+	grid.columns = 2
+	grid.add_theme_constant_override("h_separation", 8)
+	grid.add_theme_constant_override("v_separation", 8)
+	controls_vbox.add_child(grid)
+
+	for bdef in btn_defs:
+		var btn := Button.new()
+		btn.text = bdef.label
+		btn.custom_minimum_size = Vector2(170, 48)
+		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+
+		# 字體與樣式設定
+		var font: FontFile = preload("res://assets/fonts/jf-openhuninn-2.1.ttf")
+		btn.add_theme_font_override("font", font)
+		btn.add_theme_font_size_override("font_size", 13)
+		btn.add_theme_color_override("font_color", Color("#1F1A3A"))
+		btn.add_theme_color_override("font_hover_color", Color("#1F1A3A"))
+		btn.add_theme_color_override("font_pressed_color", Color("#1F1A3A"))
+
+		var bg_c: Color = bdef.color
+		var style_normal := StyleBoxFlat.new()
+		style_normal.bg_color = bg_c
+		style_normal.border_width_left = 2
+		style_normal.border_width_top = 2
+		style_normal.border_width_right = 2
+		style_normal.border_width_bottom = 5
+		style_normal.border_color = Color("#1F1A3A")
+		style_normal.corner_radius_top_left = 14
+		style_normal.corner_radius_top_right = 14
+		style_normal.corner_radius_bottom_right = 14
+		style_normal.corner_radius_bottom_left = 14
+		btn.add_theme_stylebox_override("normal", style_normal)
+
+		var style_hover := style_normal.duplicate() as StyleBoxFlat
+		style_hover.bg_color = bg_c.lightened(0.12)
+		btn.add_theme_stylebox_override("hover", style_hover)
+
+		var style_pressed := style_normal.duplicate() as StyleBoxFlat
+		style_pressed.border_width_bottom = 2
+		style_pressed.border_width_top = 5
+		btn.add_theme_stylebox_override("pressed", style_pressed)
+
+		var fn: Callable = bdef.fn
+		btn.pressed.connect(fn)
+		grid.add_child(btn)
