@@ -7290,8 +7290,8 @@
    "id": "t_9f578215",
    "cat": "遊戲",
    "title": "ForgeDialog 天宮鐵匠底欄新增前往儲能庫快捷果凍按鈕聯動 ClockworkVaultDialog",
-   "status": "開發中",
-   "note": "已派工 sideworker2 開發",
+   "status": "已上線",
+   "note": "審核通過，已合入 main",
    "keys": [
     "ForgeDia"
    ]
