@@ -7345,6 +7345,16 @@
    "keys": [
     "ForgeDia"
    ]
+  },
+  {
+   "id": "title-wall-workshop-shortcut",
+   "cat": "遊戲",
+   "title": "TitleWallDialog 稱號牆新增前往工坊快捷按鈕連動 GemWorkshopDialog",
+   "status": "草稿",
+   "note": "準備動工",
+   "keys": [
+    "TitleWal"
+   ]
   }
  ]
 }
