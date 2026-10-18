@@ -7240,8 +7240,8 @@
    "id": "t_aa09bf27",
    "cat": "遊戲",
    "title": "SkillDialog 心法招式底欄新增前往儲能庫快捷果凍按鈕聯動 ClockworkVaultDialog",
-   "status": "草稿",
-   "note": "",
+   "status": "測試中",
+   "note": "SkillDialog 前往儲能庫快捷果凍按鈕實作完成，單元與迴歸測試全綠，實機截圖存證齊全",
    "keys": [
     "SkillDia"
    ]
