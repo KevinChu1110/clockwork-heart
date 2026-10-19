@@ -7415,6 +7415,16 @@
    "keys": [
     "第三族烈金雄獅楓"
    ]
+  },
+  {
+   "id": "paperdoll-maple-showcase-multirace",
+   "cat": "遊戲",
+   "title": "MaplePaperdollShowcase 展示場景支援首發多族切換與白兔赤狐雄獅聯動",
+   "status": "草稿",
+   "note": "展示場景支援白兔、赤狐、雄獅多族即時切換與部件控制，等待赤狐與雄獅規格完成",
+   "keys": [
+    "MaplePap"
+   ]
   }
  ]
 }
