@@ -7407,11 +7407,31 @@
    ]
   },
   {
+   "id": "paperdoll-maple-anchors",
+   "cat": "遊戲",
+   "title": "紙娃娃重構：導入楓之谷錨點與部件分層掛載架構",
+   "status": "已上線",
+   "note": "紙娃娃導入楓之谷Character.wz錨點與部件分層掛載架構已驗收並在 main",
+   "keys": [
+    "紙娃娃重構：導入"
+   ]
+  },
+  {
+   "id": "paperdoll-maple-fox",
+   "cat": "遊戲",
+   "title": "第二族熾火赤狐楓之谷骨骼錨點與部件分層規格建置",
+   "status": "測試中",
+   "note": "修復赤狐右臉頰雙線性漸層去補丁、外裝軀幹下擺圓角平滑貼合、視窗金邊去雜色",
+   "keys": [
+    "第二族熾火赤狐楓"
+   ]
+  },
+  {
    "id": "paperdoll-maple-lion",
    "cat": "遊戲",
    "title": "第三族烈金雄獅楓之谷骨骼錨點與部件分層規格建置",
-   "status": "開發中",
-   "note": "由 sideworker2 著手進行 lion 骨骼錨點與緊湊部件切片",
+   "status": "測試中",
+   "note": "完成 sideqa 審查意見修復：1. 素體骨盆海軍藍戰裙徹底轉化為純淨金屬骨骼底盤（B>R+10為0）；2. 修復卸除外裝時x=153..154長達78px之空白裂縫；3. 產圖腳本套用key_z=15實證發條鑰匙身前層級切換（259px差異）",
    "keys": [
     "第三族烈金雄獅楓"
    ]
@@ -7420,8 +7440,8 @@
    "id": "paperdoll-maple-showcase-multirace",
    "cat": "遊戲",
    "title": "MaplePaperdollShowcase 展示場景支援首發多族切換與白兔赤狐雄獅聯動",
-   "status": "草稿",
-   "note": "展示場景支援白兔、赤狐、雄獅多族即時切換與部件控制，等待赤狐與雄獅規格完成",
+   "status": "測試中",
+   "note": "完成 MaplePaperdollShowcase 白兔赤狐雄獅三族即時無縫切換、專屬部件清單刷新、骨骼錨點與尾巴聯動覆蓋、多巴胺鮮亮色盤與48px熱區規範，5組實機Framebuffer截圖與單元測試全綠",
    "keys": [
     "MaplePap"
    ]
