@@ -12,6 +12,7 @@ signal weapons_unequipped(result: Dictionary)
 signal cores_unequipped(result: Dictionary)
 signal souls_unequipped(result: Dictionary)
 signal souls_auto_equipped(result: Dictionary)
+signal skill_requested
 
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
@@ -255,6 +256,7 @@ var _gourd_btn_draw: Button = null
 var _gourd_btn_inventory: Button = null
 var _soul_btn_go_power_stat: Button = null
 var _soul_btn_go_shop: Button = null
+var _soul_btn_go_skill: Button = null
 var _soul_btn_unequip_all: Button = null
 var _soul_btn_auto_equip: Button = null
 var _soul_status_bbcode_label: RichTextLabel = null
@@ -3471,6 +3473,50 @@ func _build_soul_hall_tab() -> void:
 	)
 	bot_h.add_child(btn_shop)
 	_soul_btn_go_shop = btn_shop
+
+	# 快捷按鈕：前往心法 (天藍立體厚底 5px, 140x52px, 圓角 18px, 文字深藍紫, 零系統 Emoji)
+	var btn_skill := Button.new()
+	btn_skill.name = "BtnGoSkill"
+	var skill_txt := _t("soul_hall.btn_go_skill")
+	if skill_txt == "soul_hall.btn_go_skill" or skill_txt.is_empty():
+		skill_txt = _t("前往心法")
+	btn_skill.text = skill_txt
+	btn_skill.custom_minimum_size = Vector2(140, 52)
+	btn_skill.add_theme_font_size_override("font_size", 16)
+	if _cached_font != null:
+		btn_skill.add_theme_font_override("font", _cached_font)
+	var skill_sb := StyleBoxFlat.new()
+	skill_sb.bg_color = COLOR_SKY
+	skill_sb.border_color = COLOR_BORDER
+	skill_sb.set_border_width_all(2)
+	skill_sb.border_width_bottom = 5
+	skill_sb.set_corner_radius_all(18)
+	skill_sb.content_margin_top = 8
+	skill_sb.content_margin_bottom = 8
+	skill_sb.content_margin_left = 12
+	skill_sb.content_margin_right = 12
+	skill_sb.shadow_color = Color(0.12, 0.10, 0.23, 0.20)
+	skill_sb.shadow_size = 6
+	skill_sb.shadow_offset = Vector2(0, 3)
+	var skill_sb_h := skill_sb.duplicate() as StyleBoxFlat
+	skill_sb_h.bg_color = Color("#5CB3FF")
+	var skill_sb_p := skill_sb.duplicate() as StyleBoxFlat
+	skill_sb_p.border_width_bottom = 2
+	btn_skill.add_theme_stylebox_override("normal", skill_sb)
+	btn_skill.add_theme_stylebox_override("hover", skill_sb_h)
+	btn_skill.add_theme_stylebox_override("pressed", skill_sb_p)
+	btn_skill.add_theme_stylebox_override("focus", skill_sb)
+	btn_skill.add_theme_color_override("font_color", COLOR_TEXT_DARK)
+	btn_skill.add_theme_color_override("font_hover_color", COLOR_TEXT_DARK)
+	btn_skill.add_theme_color_override("font_pressed_color", COLOR_TEXT_DARK)
+	btn_skill.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	btn_skill.pressed.connect(func():
+		_play_ui_sound()
+		skill_requested.emit()
+		open_skill_dialog()
+	)
+	bot_h.add_child(btn_skill)
+	_soul_btn_go_skill = btn_skill
 
 	var btn_draw := Button.new()
 	btn_draw.name = "BtnDrawTen"
@@ -6704,6 +6750,11 @@ func _apply_locale_texts() -> void:
 		if shop_txt == "soul_hall.btn_go_shop" or shop_txt.is_empty():
 			shop_txt = _t("前往商城")
 		_soul_btn_go_shop.text = shop_txt
+	if _soul_btn_go_skill and is_instance_valid(_soul_btn_go_skill):
+		var skill_txt := _t("soul_hall.btn_go_skill")
+		if skill_txt == "soul_hall.btn_go_skill" or skill_txt.is_empty():
+			skill_txt = _t("前往心法")
+		_soul_btn_go_skill.text = skill_txt
 	if _gourd_btn_draw and is_instance_valid(_gourd_btn_draw):
 		_gourd_btn_draw.text = _t("聚魂十連")
 	_refresh_gourds_ui()
@@ -7665,6 +7716,20 @@ func get_btn_soul_go_shop() -> Button:
 
 func get_soul_hall_shop_btn() -> Button:
 	return _soul_btn_go_shop
+
+
+## 取得聚魂殿堂前往心法快捷按鈕
+func get_soul_hall_go_skill_btn() -> Button:
+	return _soul_btn_go_skill
+
+
+## 相容別名
+func get_btn_soul_go_skill() -> Button:
+	return _soul_btn_go_skill
+
+
+func get_soul_hall_skill_btn() -> Button:
+	return _soul_btn_go_skill
 
 
 ## 取得聚魂殿堂一鍵卸下全部戰魂按鈕

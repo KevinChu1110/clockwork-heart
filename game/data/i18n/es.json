@@ -4382,5 +4382,7 @@
   "skill.btn_go_title_wall": "Ir a Títulos",
   "title_wall.btn_go_skill": "Ir a Habilidades",
   "title_wall.go_skill": "Ir a Habilidades",
-  "skill.btn_go_soul_hall": "A Salón de Almas"
+  "skill.btn_go_soul_hall": "A Salón de Almas",
+  "soul_hall.btn_go_skill": "A Habilidades",
+  "soul_hall.go_skill": "A Habilidades"
 }

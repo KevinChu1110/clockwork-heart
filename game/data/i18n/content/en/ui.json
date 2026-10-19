@@ -4022,5 +4022,7 @@
   "skill.btn_go_title_wall": "Go to Titles",
   "title_wall.btn_go_skill": "Go to Skills",
   "title_wall.go_skill": "Go to Skills",
-  "skill.btn_go_soul_hall": "To Soul Hall"
+  "skill.btn_go_soul_hall": "To Soul Hall",
+  "soul_hall.btn_go_skill": "To Skills",
+  "soul_hall.go_skill": "To Skills"
 }
