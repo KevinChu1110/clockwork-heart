@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d4de520f217c6"
-path="res://.godot/imported/proof_maple_fox_costume_variants.png-980cfa6a3f56aa317cd0c92575640987.ctex"
+path="res://.godot/imported/proof_maple_fox_costume_variants.png-7b3c75281f474eba2a8eaee94fc224e6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fox/proof_maple_fox_costume_variants.png"
-dest_files=["res://.godot/imported/proof_maple_fox_costume_variants.png-980cfa6a3f56aa317cd0c92575640987.ctex"]
+source_file="res://assets/paperdoll/fox/proof_maple_fox_costume_variants.png"
+dest_files=["res://.godot/imported/proof_maple_fox_costume_variants.png-7b3c75281f474eba2a8eaee94fc224e6.ctex"]
 
 [params]
 
@@ -31,11 +31,10 @@ process/channel_remap/red=0
 process/channel_remap/green=1
 process/channel_remap/blue=2
 process/channel_remap/alpha=3
-process/channel_remap/as_luminance=false
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/decompress_to_hdr=false
+detect_3d/compress_to=1

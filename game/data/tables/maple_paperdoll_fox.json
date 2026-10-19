@@ -170,11 +170,11 @@
         },
         "costume_astral_observer": {
           "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/costume/costume_astral_observer.png",
-          "width": 222,
-          "height": 189,
+          "width": 149,
+          "height": 156,
           "origin": [
-            117,
-            94
+            89,
+            84
           ]
         },
         "none": {
@@ -194,11 +194,11 @@
       "items": {
         "wpn_astral_staff": {
           "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/weapon/wpn_astral_staff.png",
-          "width": 114,
-          "height": 357,
+          "width": 84,
+          "height": 193,
           "origin": [
-            31,
-            215
+            11,
+            172
           ]
         },
         "none": {

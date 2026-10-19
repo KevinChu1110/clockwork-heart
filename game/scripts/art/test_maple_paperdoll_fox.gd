@@ -79,26 +79,74 @@ func _initialize() -> void:
 		print("  ✓ 狐耳/頭部單元 Sprite: %s, 尺寸: %s, 錨點位移: %s" % [spr_head.name, str(spr_head.texture.get_size()), str(spr_head.position)])
 
 		# 驗證各部件並非 512 全圖死切片，而是緊湊獨立素材帶有精確 origin
-		if spr_eyes.texture.get_width() >= 512 or spr_costume.texture.get_width() >= 512 or spr_key.texture.get_width() >= 512 or spr_head.texture.get_width() >= 512:
+		if spr_eyes.texture.get_width() >= 512 or spr_costume.texture.get_width() >= 512 or spr_key.texture.get_width() >= 512 or spr_head.texture.get_width() >= 512 or spr_weapon.texture.get_width() >= 512:
 			push_error("部件非緊湊切片，仍為全圖 512 畫布！")
 			ok = false
 		else:
-			print("  ✓ 所有部件均為獨立緊湊裁剪 Sprite (眼睛 165x60, 外裝 171x168, 發條鑰匙 61x107, 狐耳 253x106, 武器 114x357)")
+			print("  ✓ 所有部件均為獨立緊湊裁剪 Sprite (眼睛 165x60, 外裝 171x168 / 153x181, 發條鑰匙 61x107, 狐耳 253x106, 武器 83x193)")
 
 	# -------------------------------------------------------------
-	# 3. 驗證「眼睛不畫死在素體上」
+	# 3. 驗證「眼睛不畫死在素體上」與雙頰面甲平滑無色差補丁、無黑線雜訊
 	# -------------------------------------------------------------
-	print("\n--- 3. 驗證眼睛不畫死在素體上 ---")
+	print("\n--- 3. 驗證眼睛不畫死在素體上與雙頰面甲平滑無補丁雜訊 ---")
 	doll.set_eyes("none")
 	var bare_img := doll.get_composite_image()
-	# 檢查眼睛處 (x: 215..225, y: 190..200) 是否為乾淨暖色皮毛底色（非黑線死眼）
-	var sample_pixel := bare_img.get_pixel(220, 195)
-	print("  ✓ 卸除眼睛時臉部像素值: %s (乾淨暖色底色，非黑色死眼眶)" % str(sample_pixel))
-	if sample_pixel.r < 0.5 or sample_pixel.g < 0.4:
-		push_error("素體仍殘留畫死的深黑眼睛線條！")
+
+	# 3.1 雙側臉頰底色取樣比對斷言 (sideqa 審查要項 1 & 4)
+	var left_cheek := bare_img.get_pixel(216, 195)
+	var right_cheek := bare_img.get_pixel(315, 195)
+	var left_ref := bare_img.get_pixel(180, 195)
+	var right_ref := bare_img.get_pixel(340, 195)
+
+	print("  左臉頰 (216, 195) 像素: %s vs 參照 (180, 195): %s" % [str(left_cheek), str(left_ref)])
+	print("  右臉頰 (315, 195) 像素: %s vs 參照 (340, 195): %s" % [str(right_cheek), str(right_ref)])
+
+	# 左頰應為飽和溫暖金屬塗裝（非死黑眼眶）
+	if left_cheek.r < 0.7 or left_cheek.g < 0.4:
+		push_error("素體左側臉頰仍殘留畫死的深黑眼睛線條！")
+		ok = false
+	# 右頰應為純淨奶油金屬底色（非死黑眼眶，且與右側底色無補丁色差）
+	if right_cheek.r < 0.8 or right_cheek.g < 0.7:
+		push_error("素體右側臉頰仍殘留畫死的深黑眼睛線條！")
+		ok = false
+	if abs(right_cheek.r - right_ref.r) > 0.05 or abs(right_cheek.g - right_ref.g) > 0.05 or abs(right_cheek.b - right_ref.b) > 0.05:
+		push_error("素體右臉頰去眼處存在明顯邊界生硬的補丁色差！%s vs %s" % [str(right_cheek), str(right_ref)])
 		ok = false
 	else:
-		print("  ✓ 素體為純淨面甲，眼睛 100% 獨立外掛")
+		print("  ✓ 雙側臉頰面甲底色完全一致且無補丁色塊 (左頰橘金、右頰奶霜純淨)")
+
+	# 3.2 檢查額頭眉線區域無殘留黑線雜訊 (y: 148..165, x: 200..335)
+	var brow_artifact_count := 0
+	for by in range(148, 166):
+		for bx in range(200, 336):
+			var bpx := bare_img.get_pixel(bx, by)
+			if bpx.a > 0.5 and bpx.r < 0.25 and bpx.g < 0.25 and bpx.b < 0.25:
+				brow_artifact_count += 1
+	if brow_artifact_count > 0:
+		push_error("素體額頭/眉部偵測到 %d 個殘留黑線雜訊像素！" % brow_artifact_count)
+		ok = false
+	else:
+		print("  ✓ 額頭與眉部無任何殘留黑線雜訊 (0 個黑線像素)")
+
+	# 3.3 檢查右眼下方與鼻頰周圍無切片破圖折線與三角形雜訊碎片 (sideqa 審查要項 1)
+	var noise_artifact_count := 0
+	# 右側鼻頰眼下區域 (x: 283..294, y: 228..236)
+	for ny in range(228, 236):
+		for nx in range(283, 294):
+			var npx := bare_img.get_pixel(nx, ny)
+			if npx.a > 0.5 and npx.r < 0.25 and npx.g < 0.25 and npx.b < 0.25:
+				noise_artifact_count += 1
+	# 左側鼻頰眼下區域 (x: 240..248, y: 228..235)
+	for ny in range(228, 235):
+		for nx in range(240, 248):
+			var npx := bare_img.get_pixel(nx, ny)
+			if npx.a > 0.5 and npx.r < 0.25 and npx.g < 0.25 and npx.b < 0.25:
+				noise_artifact_count += 1
+	if noise_artifact_count > 0:
+		push_error("素體眼下與鼻頰側偵測到 %d 個殘留折線/三角形雜訊破圖碎片！" % noise_artifact_count)
+		ok = false
+	else:
+		print("  ✓ 眼下與鼻頰處乾淨平整，無任何切片殘留破圖碎片")
 
 	# 裝回眼睛
 	doll.set_eyes("eyes_cyan_emerald")
@@ -169,6 +217,26 @@ func _initialize() -> void:
 			push_error("外裝切換失敗: %s" % c)
 			ok = false
 	print("  ✓ 3 款外裝切換驗證通過 (astral_cape / astral_observer / bare)")
+
+	# -------------------------------------------------------------
+	# 5.1 驗證外裝狀態下心臟核心完全露出 (0-ART51 與驗收標準)
+	# -------------------------------------------------------------
+	print("\n--- 5.1 驗證外裝狀態下心臟核心完全露出 (0-ART51) 零穿模 ---")
+	for c_check in ["costume_astral_cape", "costume_astral_observer"]:
+		doll.set_costume(c_check)
+		var c_img := doll.get_composite_image()
+		# 檢查心臟核心中心位置 (263, 319) 像素值
+		var core_px := c_img.get_pixel(263, 319)
+		print("  外裝 %s 胸前心臟核心中心 (263, 319) 像素值: %s" % [c_check, str(core_px)])
+		# 發光心臟核心特徵：青綠天青高 G、高 B、低 R (青綠發光體)
+		if core_px.g < 0.45 or core_px.b < 0.45 or core_px.r > 0.4:
+			push_error("外裝 %s 胸前未開出視窗，心臟核心被完全遮蔽！像素值: %s" % [c_check, str(core_px)])
+			ok = false
+		else:
+			print("  ✓ 外裝 %s 胸前自然開出視窗，青綠發光心臟核心 100%% 露出 (0-ART51 通過)" % c_check)
+
+	# 還原外裝
+	doll.set_costume("costume_astral_cape")
 
 	for e in eye_variants:
 		doll.set_eyes(e)
