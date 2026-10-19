@@ -170,11 +170,11 @@
         },
         "costume_astral_observer": {
           "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/costume/costume_astral_observer.png",
-          "width": 149,
-          "height": 156,
+          "width": 184,
+          "height": 160,
           "origin": [
-            89,
-            84
+            87,
+            86
           ]
         },
         "none": {

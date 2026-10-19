@@ -92,28 +92,32 @@ func _initialize() -> void:
 	doll.set_eyes("none")
 	var bare_img := doll.get_composite_image()
 
-	# 3.1 雙側臉頰底色取樣比對斷言 (sideqa 審查要項 1 & 4)
+	# 3.1 雙側臉頰底色取樣比對斷言 (sideqa 第 2 輪審查要項 1 & 4)
 	var left_cheek := bare_img.get_pixel(216, 195)
 	var right_cheek := bare_img.get_pixel(315, 195)
 	var left_ref := bare_img.get_pixel(180, 195)
-	var right_ref := bare_img.get_pixel(340, 195)
+	var right_ref_lower := bare_img.get_pixel(315, 230)
+	var right_ref_outer := bare_img.get_pixel(355, 195)
 
 	print("  左臉頰 (216, 195) 像素: %s vs 參照 (180, 195): %s" % [str(left_cheek), str(left_ref)])
-	print("  右臉頰 (315, 195) 像素: %s vs 參照 (340, 195): %s" % [str(right_cheek), str(right_ref)])
+	print("  右臉頰 (315, 195) 像素: %s vs 下方真實底色 (315, 230): %s, 外側真實底色 (355, 195): %s" % [str(right_cheek), str(right_ref_lower), str(right_ref_outer)])
 
 	# 左頰應為飽和溫暖金屬塗裝（非死黑眼眶）
 	if left_cheek.r < 0.7 or left_cheek.g < 0.4:
 		push_error("素體左側臉頰仍殘留畫死的深黑眼睛線條！")
 		ok = false
-	# 右頰應為純淨奶油金屬底色（非死黑眼眶，且與右側底色無補丁色差）
+	# 右頰應為純淨奶油金屬底色（非死黑眼眶，且與填補範圍外的真實臉頰底色無補丁色差）
 	if right_cheek.r < 0.8 or right_cheek.g < 0.7:
 		push_error("素體右側臉頰仍殘留畫死的深黑眼睛線條！")
 		ok = false
-	if abs(right_cheek.r - right_ref.r) > 0.05 or abs(right_cheek.g - right_ref.g) > 0.05 or abs(right_cheek.b - right_ref.b) > 0.05:
-		push_error("素體右臉頰去眼處存在明顯邊界生硬的補丁色差！%s vs %s" % [str(right_cheek), str(right_ref)])
+	if abs(right_cheek.r - right_ref_lower.r) > 0.05 or abs(right_cheek.g - right_ref_lower.g) > 0.05 or abs(right_cheek.b - right_ref_lower.b) > 0.05:
+		push_error("素體右臉頰去眼處與下方真實臉頰底色 (315, 230) 存在明顯補丁色差！%s vs %s" % [str(right_cheek), str(right_ref_lower)])
+		ok = false
+	elif abs(right_cheek.r - right_ref_outer.r) > 0.05 or abs(right_cheek.g - right_ref_outer.g) > 0.05 or abs(right_cheek.b - right_ref_outer.b) > 0.05:
+		push_error("素體右臉頰去眼處與外側真實臉頰底色 (355, 195) 存在明顯補丁色差！%s vs %s" % [str(right_cheek), str(right_ref_outer)])
 		ok = false
 	else:
-		print("  ✓ 雙側臉頰面甲底色完全一致且無補丁色塊 (左頰橘金、右頰奶霜純淨)")
+		print("  ✓ 雙側臉頰面甲底色完全一致且無補丁色塊 (左頰橘金、右頰奶霜純淨，與真實底色色差 < 0.03)")
 
 	# 3.2 檢查額頭眉線區域無殘留黑線雜訊 (y: 148..165, x: 200..335)
 	var brow_artifact_count := 0

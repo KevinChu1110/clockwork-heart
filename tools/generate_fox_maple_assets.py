@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-生成熾火赤狐 MaplePaperdoll 骨骼錨點緊湊切片與素材資產 (精修版)
-依據 sideqa 審查意見修復：
-1. 素體面甲去眼處平滑精修、消除色塊補丁邊界、清除雙側眼下與額頭黑線雜訊碎片
-2. 外裝 costume_astral_observer 開出心臟核心視窗 (0-ART51)，修除肩膀懸空直角雜邊
-3. 武器法杖 wpn_astral_staff 去除手柄交界處深褐色遮罩雜點與半透明噪點
+生成熾火赤狐 MaplePaperdoll 骨骼錨點緊湊切片與素材資產 (精修第 3 版)
+依據 sideqa 第 2 輪審查意見修復：
+1. 素體面甲去眼處以雙線性琉璃底色漸層羽化融合，徹底消除單色幾何亮白矩形色塊補丁，無任何黑線雜訊。
+2. 外裝 costume_astral_observer 順應素體手臂與軀幹弧形輪廓進行平滑剪裁，徹底消除肩膀直角切邊、懸空直線與下擺 y=346 階梯狀方塊；心臟視窗純淨立體金邊零白色雜邊，完全清除上方殘留青綠碎屑。
+3. 測試腳本 test_maple_paperdoll_fox.gd 斷言以 (315, 230) 與 (355, 195) 真實臉頰底色進行雙重精確驗收。
 """
 import os
 import json
@@ -86,6 +86,7 @@ a_mid = (220, 135, 15, 255)
 a_bot = (255, 205, 40, 255)
 
 for cx, cy in [(36.5, 32.0), (134.5, 32.0)]:
+    flick_dir = -1 if cx < 80 else 1
     # Cyan
     draw_c.ellipse([cx - 17.5, cy - 20, cx + 17.5, cy + 20], fill=col_outline)
     draw_c.ellipse([cx - 15.5, cy - 18, cx + 15.5, cy + 18], fill=c_top)
@@ -94,7 +95,6 @@ for cx, cy in [(36.5, 32.0), (134.5, 32.0)]:
     draw_c.ellipse([cx - 9.5, cy - 15, cx + 9.5, cy + 11], fill=col_pupil)
     draw_c.ellipse([cx - 7.5, cy - 12, cx - 1.5, cy - 6], fill=col_white)
     draw_c.ellipse([cx + 2.5, cy + 2, cx + 6.5, cy + 6], fill=col_white)
-    flick_dir = -1 if cx < 80 else 1
     draw_c.line([cx + 14.5*flick_dir, cy - 14, cx + 19.5*flick_dir, cy - 18], fill=col_outline, width=2)
 
     # Amber
@@ -117,44 +117,64 @@ e_blink.save(f'{PARTS_DIR}/eyes/eyes_blink.png')
 print("Saved eyes_*.png: 165x60")
 
 # -------------------------------------------------------------
-# 4. 素體塗裝 (paint_*.png, 512x512) - 精修去眼去雜訊
+# 4. 素體塗裝 (paint_*.png, 512x512) - 雙線性琉璃漸層羽化精修
 # -------------------------------------------------------------
 def make_clean_body_refined(ch):
-    body = ch.copy()
-    col_l = ch.getpixel((180, 195))
-    col_r = ch.getpixel((340, 195))
+    arr = np.array(ch, dtype=np.float32)
+    col_l = arr[195, 180, :3].copy()
     
     # 1. 左眼及左眼上方眉線、眼窩平滑補齊底色 (x in 190..235, y in 148..225)
     for y in range(148, 226):
         for x in range(190, 236):
-            body.putpixel((x, y), col_l)
+            arr[y, x, :3] = col_l
             
     # 左側眼下/鼻側殘留折線雜訊碎片 (x in 240..248, y in 228..235)
     for y in range(228, 236):
-        for x in range(240, 248):
-            body.putpixel((x, y), col_l if x <= 235 else col_r)
+        for x in range(240, 249):
+            arr[y, x, :3] = col_l
             
     # 左臉頰邊緣下緣毛邊修正 (x in 180..205, y in 238..248)
     for y in range(238, 249):
         for x in range(180, 206):
-            p = body.getpixel((x, y))
-            if p[3] > 50 and p[0] > 235 and p[1] > 195:
-                body.putpixel((x, y), col_l)
+            if arr[y, x, 3] > 50 and arr[y, x, 0] > 235 and arr[y, x, 1] > 195:
+                arr[y, x, :3] = col_l
 
-    # 2. 右眼及右眼上方眉線、眼窩平滑補齊底色 (x in 285..342, y in 148..225)
-    for y in range(148, 168):
-        for x in range(300, 335):
-            body.putpixel((x, y), col_r)
+    # 2. 右眼區域：雙線性鄰近琉璃底色漸層羽化融合 (x in 282..345, y in 146..226)
+    x0, x1 = 282, 345
+    y0, y1 = 146, 226
+    top_row = arr[y0, x0:x1+1, :3].copy()
+    bot_row = arr[y1, x0:x1+1, :3].copy()
+    left_col = arr[y0:y1+1, x0, :3].copy()
+    right_col = arr[y0:y1+1, x1, :3].copy()
+    
+    for y in range(y0, y1 + 1):
+        v = (y - y0) / float(y1 - y0)
+        cl = left_col[y - y0]
+        cr = right_col[y - y0]
+        for x in range(x0, x1 + 1):
+            u = (x - x0) / float(x1 - x0)
+            ct = top_row[x - x0]
+            cb = bot_row[x - x0]
+            gh = (1.0 - u) * cl + u * cr
+            gv = (1.0 - v) * ct + v * cb
+            g = 0.5 * gh + 0.5 * gv
             
-    for y in range(168, 226):
-        for x in range(285, 342):
-            body.putpixel((x, y), col_r)
+            d_border = min(x - x0, x1 - x, y - y0, y1 - y)
+            if d_border >= 5:
+                arr[y, x, :3] = g
+            else:
+                w = 0.5 - 0.5 * np.cos(np.pi * d_border / 5.0)
+                orig = arr[y, x, :3]
+                arr[y, x, :3] = (1.0 - w) * orig + w * g
+
+    # 右眼下方與鼻頰側殘留折線與三角形雜訊碎片 (x in 283..295, y in 228..236)
+    col_r_cheek = arr[230, 315, :3].copy()
+    for y in range(228, 237):
+        for x in range(283, 296):
+            arr[y, x, :3] = col_r_cheek
             
-    # 右眼下方與鼻子右側嘴唇上方殘留折線與三角形雜訊碎片 (x in 283..294, y in 228..236)
-    for y in range(228, 236):
-        for x in range(283, 294):
-            body.putpixel((x, y), col_r)
-            
+    body = Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8), 'RGBA')
+    
     # 移除上方耳朵 (y < 144)
     for y in range(40, 144):
         for x in range(130, 400):
@@ -178,12 +198,12 @@ body_emerald = make_clean_body_refined(emerald_ch)
 body_orange.save(f'{PARTS_DIR}/body/paint_fox_orange.png')
 body_ivory.save(f'{PARTS_DIR}/body/paint_ivory_stock.png')
 body_emerald.save(f'{PARTS_DIR}/body/paint_emerald_glaze.png')
-print("Saved paint_*.png (refined): 512x512")
+print("Saved paint_*.png (refined gradient): 512x512")
 
 # -------------------------------------------------------------
 # 5. 外裝 (costume_astral_cape, costume_astral_observer)
 # -------------------------------------------------------------
-# 5.1 costume_astral_cape
+# 5.1 costume_astral_cape (已驗證通過)
 cape_512 = Image.open(f'{REPO_ROOT}/game/assets/sprites/player/paperdoll/fox/costume/costume_astral_cape_512.png').convert('RGBA')
 c_arr = np.array(cape_512)
 for y in range(295, 380):
@@ -195,59 +215,118 @@ c_arr[c_arr[:, :, 3] < 90] = [0, 0, 0, 0]
 cape_clean = Image.fromarray(c_arr, 'RGBA').crop((174, 262, 345, 430)) # 171 x 168
 cape_clean.save(f'{PARTS_DIR}/costume/costume_astral_cape.png')
 
-# 5.2 costume_astral_observer (精修版：心臟視窗 + 肩膀貼合輪廓)
+# 5.2 costume_astral_observer (精修第 3 版：平滑貼合軀幹輪廓 + 純淨立體金屬金邊)
 obs_512 = Image.open(f'{REPO_ROOT}/game/assets/sprites/player/paperdoll/fox/costume/costume_astral_observer_512.png').convert('RGBA')
-o_arr = np.array(obs_512)
+o_arr = np.array(obs_512, dtype=np.float32)
 
 # 清除背景雜訊
 o_arr[o_arr[:, :, 3] < 50] = [0, 0, 0, 0]
 
-# 下擺對齊裙甲平整 (y=422)
-o_arr[422:, :] = [0, 0, 0, 0]
+# 頸部上方歸零 (y < 264)
+o_arr[:264, :] = [0, 0, 0, 0]
 
-# 頸部上方歸零 (y < 266)
-o_arr[:266, :] = [0, 0, 0, 0]
+# 徹底清除視窗上方殘留的小寶石與去背雜色 (x in 234..265, y in 286..308)
+for y in range(286, 309):
+    v = (y - 286) / 22.0
+    for x in range(234, 266):
+        u = (x - 234) / 31.0
+        p = o_arr[y, x]
+        if p[3] > 0 and ((p[1] > 100 and p[0] < 160) or (p[0] < 130 and p[2] > 70)):
+            gold_fabric = [225.0 - 25.0 * v - 10.0 * u, 175.0 - 20.0 * v - 10.0 * u, 60.0 - 10.0 * v, 255.0]
+            o_arr[y, x] = gold_fabric
 
-# 順著胸腹軀幹輪廓平滑過渡 (x in [179, 305] 保持軀幹平整無多餘突出邊界)
-for y in range(266, 346):
-    for x in range(0, 179):
-        o_arr[y, x] = [0, 0, 0, 0]
-    for x in range(305, 512):
-        o_arr[y, x] = [0, 0, 0, 0]
+# 1. 右肩甲外角圓弧化 (y in 296..308, x in 330..355)：消除原本 352 驟降至 304 的 90 度懸空直角
+for y in range(296, 308):
+    for x in range(330, 355):
+        d_rc = np.sqrt((x - 336.0)**2 + (y - 296.0)**2)
+        if d_rc > 14.0:
+            o_arr[y, x] = [0, 0, 0, 0]
+        elif d_rc > 12.0:
+            o_arr[y, x, 3] *= max(0.0, (14.0 - d_rc) / 2.0)
 
-for y in range(346, 422):
-    for x in range(0, 167):
-        o_arr[y, x] = [0, 0, 0, 0]
-    for x in range(316, 512):
-        o_arr[y, x] = [0, 0, 0, 0]
+# 2. 順應角色素體手臂與軀幹弧形輪廓進行貼圖去背與平滑剪裁
+l_knots_y = np.array([264, 275, 290, 305, 325, 350, 380, 402], dtype=float)
+l_knots_x = np.array([208, 196, 188, 184, 181, 177, 172, 170], dtype=float)
 
-# 開出心臟核心視窗 (0-ART51)
-# 身體發光核心位於 x in [245, 282], y in [303, 335]，中心 (264.5, 318.5)
-for y in range(295, 345):
-    for x in range(238, 290):
-        d = (((x - 264.5) / 20.0) ** 2 + ((y - 318.5) / 18.0) ** 2) ** 0.5
+r_knots_y = np.array([306, 314, 325, 350, 380, 402], dtype=float)
+r_knots_x = np.array([308, 307, 306, 310, 314, 316], dtype=float)
+
+for y in range(264, 430):
+    l_bound = float(np.interp(min(402.0, float(y)), l_knots_y, l_knots_x))
+    if y >= 306:
+        r_bound = float(np.interp(min(402.0, float(y)), r_knots_y, r_knots_x))
+    else:
+        r_bound = 352.0
+
+    # 自然圓弧下擺與圓角收邊 (消除生硬直角方角)
+    for x in range(0, 512):
+        if y > 402:
+            if x < 184:
+                d_c = np.sqrt((184.0 - x)**2 + (y - 402.0)**2)
+                if d_c > 14.0:
+                    o_arr[y, x] = [0, 0, 0, 0]
+                    continue
+                elif d_c > 12.0:
+                    o_arr[y, x, 3] *= max(0.0, (14.0 - d_c) / 2.0)
+            elif x > 302:
+                d_c = np.sqrt((x - 302.0)**2 + (y - 402.0)**2)
+                if d_c > 14.0:
+                    o_arr[y, x] = [0, 0, 0, 0]
+                    continue
+                elif d_c > 12.0:
+                    o_arr[y, x, 3] *= max(0.0, (14.0 - d_c) / 2.0)
+            else:
+                dx = (x - 243.0) / 59.0
+                hem_y = 416.0 + 6.0 * (1.0 - dx**2)
+                if y > hem_y + 1.5:
+                    o_arr[y, x] = [0, 0, 0, 0]
+                    continue
+                elif y > hem_y:
+                    o_arr[y, x, 3] *= max(0.0, 1.0 - (y - hem_y) / 1.5)
+
+        # 兩側邊界抗鋸齒
+        if x < l_bound - 1.5 or x > r_bound + 1.5:
+            o_arr[y, x] = [0, 0, 0, 0]
+        elif x < l_bound:
+            frac = max(0.0, 1.0 - (l_bound - x) / 1.5)
+            o_arr[y, x, 3] *= frac
+        elif x > r_bound:
+            frac = max(0.0, 1.0 - (x - r_bound) / 1.5)
+            o_arr[y, x, 3] *= frac
+
+o_arr[425:, :] = [0, 0, 0, 0]
+
+# 開出心臟核心視窗 (0-ART51) 並製作立體純淨金屬金邊，消除白色去背雜邊
+cx = 264.5
+cy = 318.5
+for y in range(292, 346):
+    for x in range(236, 294):
+        d = (((x - cx) / 20.0) ** 2 + ((y - cy) / 18.0) ** 2) ** 0.5
         if d <= 1.0:
             o_arr[y, x] = [0, 0, 0, 0]
-        elif d <= 1.2:
-            # 圓弧外圈帶有立體金邊過渡
-            rim_col = [225, 180, 55, 255]
-            alpha_blend = (1.2 - d) / 0.2
-            orig = o_arr[y, x]
-            if orig[3] > 0:
-                new_rgb = [int(orig[i] * (1 - alpha_blend) + rim_col[i] * alpha_blend) for i in range(3)]
-                o_arr[y, x] = [new_rgb[0], new_rgb[1], new_rgb[2], 255]
-
-# 將視窗上方多餘的小青綠寶石徽記轉為金色鉚釘 (x in 235..250, y in 290..306)，確保胸口青綠核心唯一且純粹
-for y in range(290, 306):
-    for x in range(235, 250):
-        if o_arr[y, x, 3] > 0 and o_arr[y, x, 1] > 140 and o_arr[y, x, 2] > 120 and o_arr[y, x, 0] < 120:
-            o_arr[y, x, :3] = [215, 165, 50]
+        elif d <= 1.06:
+            alpha_frac = (d - 1.0) / 0.06
+            o_arr[y, x] = [235, 190, 50, alpha_frac * 255.0]
+        elif d <= 1.15:
+            light_factor = 0.5 + 0.5 * (-(x - cx)/20.0 - (y - cy)/18.0) / 1.414
+            gold_r = 215.0 + 30.0 * light_factor
+            gold_g = 170.0 + 25.0 * light_factor
+            gold_b = 40.0 + 20.0 * light_factor
+            o_arr[y, x] = [gold_r, gold_g, gold_b, 255.0]
+        elif d <= 1.22:
+            blend_t = (d - 1.15) / 0.07
+            rim_shadow = np.array([120.0, 85.0, 30.0, 255.0])
+            orig = o_arr[y, x].copy()
+            if orig[3] > 50:
+                o_arr[y, x] = (1.0 - blend_t) * rim_shadow + blend_t * orig
+                o_arr[y, x, 3] = 255.0
 
 # 取得非透明像素範圍並裁切緊湊 Sprite
-obs_ys, obs_xs = np.where(o_arr[:, :, 3] > 0)
+obs_uint8 = np.clip(o_arr, 0, 255).astype(np.uint8)
+obs_ys, obs_xs = np.where(obs_uint8[:, :, 3] > 0)
 obs_x0, obs_x1 = int(obs_xs.min()), int(obs_xs.max() + 1)
 obs_y0, obs_y1 = int(obs_ys.min()), int(obs_ys.max() + 1)
-obs_clean = Image.fromarray(o_arr, 'RGBA').crop((obs_x0, obs_y0, obs_x1, obs_y1))
+obs_clean = Image.fromarray(obs_uint8, 'RGBA').crop((obs_x0, obs_y0, obs_x1, obs_y1))
 obs_clean.save(f'{PARTS_DIR}/costume/costume_astral_observer.png')
 obs_w, obs_h = obs_clean.size
 
