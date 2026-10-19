@@ -7415,6 +7415,16 @@
    "keys": [
     "紙娃娃重構：導入"
    ]
+  },
+  {
+   "id": "paperdoll-maple-fox",
+   "cat": "遊戲",
+   "title": "第二族熾火赤狐楓之谷骨骼錨點與部件分層規格建置",
+   "status": "草稿",
+   "note": "建立 fox 錨點 JSON 與切片部件，支援 MaplePaperdoll 自由置換與呼吸待機",
+   "keys": [
+    "第二族熾火赤狐楓"
+   ]
   }
  ]
 }
