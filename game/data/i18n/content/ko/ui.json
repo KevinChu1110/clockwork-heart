@@ -4021,5 +4021,8 @@
   "ui.btn_go_title_wall": "칭호로 이동",
   "skill.btn_go_title_wall": "칭호로 이동",
   "title_wall.btn_go_skill": "심법으로 이동",
-  "title_wall.go_skill": "심법으로 이동"
+  "title_wall.go_skill": "심법으로 이동",
+  "skill.btn_go_soul_hall": "집혼전으로",
+  "soul_hall.btn_go_skill": "심법으로",
+  "soul_hall.go_skill": "심법으로"
 }

@@ -2496,5 +2496,8 @@
   "ui.btn_go_title_wall": "前往稱號",
   "skill.btn_go_title_wall": "前往稱號",
   "title_wall.btn_go_skill": "前往心法",
-  "title_wall.go_skill": "前往心法"
+  "title_wall.go_skill": "前往心法",
+  "skill.btn_go_soul_hall": "前往聚魂",
+  "soul_hall.btn_go_skill": "前往心法",
+  "soul_hall.go_skill": "前往心法"
 }
