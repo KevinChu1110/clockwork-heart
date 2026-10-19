@@ -26,6 +26,8 @@ signal vault_requested()
 signal go_vault()
 signal title_wall_requested()
 signal go_title_wall()
+signal soul_hall_requested()
+signal go_soul_hall()
 
 const ResponsiveUi = preload("res://scripts/ui/responsive_ui.gd")
 const UiStyle = preload("res://scripts/ui/ui_style.gd")
@@ -81,6 +83,7 @@ var _go_workshop_btn: Button
 var _go_wardrobe_btn: Button
 var _go_vault_btn: Button
 var _go_title_wall_btn: Button
+var _go_soul_hall_btn: Button
 var _bottom_close_btn: Button
 var _bottom_scroll: ScrollContainer
 
@@ -389,6 +392,14 @@ func _build_ui() -> void:
 	_go_title_wall_btn.pressed.connect(_on_go_title_wall_pressed)
 	bot_h.add_child(_go_title_wall_btn)
 
+	# 金黃立體果凍『前往聚魂』按鈕（高>=50px、熱區 140x50px >= 48px、金黃#FFD028底色、深藍紫#1F1A3A描邊2px、果凍厚底5px、圓角18px、零系統Emoji）
+	_go_soul_hall_btn = Button.new()
+	_go_soul_hall_btn.name = "BtnGoSoulHall"
+	_go_soul_hall_btn.custom_minimum_size = Vector2(140, 50)
+	_style_jelly_btn(_go_soul_hall_btn, COLOR_GOLD, COLOR_TEXT_DARK, 16, 5, 18)
+	_go_soul_hall_btn.pressed.connect(_on_go_soul_hall_pressed)
+	bot_h.add_child(_go_soul_hall_btn)
+
 	# 彈性間隔撐開左右分列
 	var bot_spacer := Control.new()
 	bot_spacer.name = "BottomSpacer"
@@ -569,6 +580,28 @@ func _on_go_title_wall_pressed() -> void:
 	_on_close_pressed()
 
 
+func _on_go_soul_hall_pressed() -> void:
+	var am: Node = null
+	if Engine.get_main_loop() is SceneTree:
+		am = (Engine.get_main_loop() as SceneTree).root.get_node_or_null("AudioManager")
+	if am and am.has_method("play_ui"):
+		am.call("play_ui")
+	go_soul_hall.emit()
+	soul_hall_requested.emit()
+	var loop := Engine.get_main_loop()
+	if loop is SceneTree and (loop as SceneTree).root != null:
+		var root_node := (loop as SceneTree).root
+		var ml: Node = root_node.get_node_or_null("MobileLobby")
+		if ml and ml.has_method("open_soul_hall"):
+			if soul_hall_requested.get_connections().is_empty():
+				ml.call("open_soul_hall")
+	var p := get_parent()
+	if p and p.has_method("open_soul_hall"):
+		if soul_hall_requested.get_connections().is_empty():
+			p.call("open_soul_hall")
+	_on_close_pressed()
+
+
 func _on_close_pressed() -> void:
 	closed.emit()
 	queue_free()
@@ -677,6 +710,20 @@ func _update_ui_texts() -> void:
 			else:
 				txt = _t("前往稱號")
 		_go_title_wall_btn.text = txt
+	if _go_soul_hall_btn:
+		var txt := ""
+		var loop := Engine.get_main_loop()
+		if loop is SceneTree and (loop as SceneTree).root != null:
+			var loc: Node = (loop as SceneTree).root.get_node_or_null("Loc")
+			if loc and loc.has_method("t"):
+				txt = str(loc.call("t", "skill.btn_go_soul_hall"))
+		if txt == "" or txt == "skill.btn_go_soul_hall":
+			var c_txt := ContentLoc.text("ui", "skill.btn_go_soul_hall")
+			if c_txt != "skill.btn_go_soul_hall":
+				txt = c_txt
+			else:
+				txt = _t("前往聚魂")
+		_go_soul_hall_btn.text = txt
 	if _go_shop_btn:
 		var txt := ""
 		var loop := Engine.get_main_loop()
@@ -1253,6 +1300,22 @@ func get_title_wall_button() -> Button:
 	return _go_title_wall_btn
 
 
+func get_go_soul_hall_btn() -> Button:
+	return _go_soul_hall_btn
+
+
+func get_go_soul_hall_button() -> Button:
+	return _go_soul_hall_btn
+
+
+func get_soul_hall_button() -> Button:
+	return _go_soul_hall_btn
+
+
+func get_btn_go_soul_hall() -> Button:
+	return _go_soul_hall_btn
+
+
 func get_go_shop_button() -> Button:
 	return _go_shop_btn
 
@@ -1280,6 +1343,16 @@ func scroll_bottom_to_title_wall() -> void:
 		var target_x: float = _go_title_wall_btn.position.x - (_bottom_scroll.size.x - _go_title_wall_btn.size.x) * 0.5
 		if target_x <= 0:
 			_bottom_scroll.ensure_control_visible(_go_title_wall_btn)
+			_bottom_scroll.scroll_horizontal += 100
+		else:
+			_bottom_scroll.scroll_horizontal = maxi(0, int(target_x))
+
+
+func scroll_bottom_to_soul_hall() -> void:
+	if _bottom_scroll and is_instance_valid(_bottom_scroll) and _go_soul_hall_btn and is_instance_valid(_go_soul_hall_btn):
+		var target_x: float = _go_soul_hall_btn.position.x - (_bottom_scroll.size.x - _go_soul_hall_btn.size.x) * 0.5
+		if target_x <= 0:
+			_bottom_scroll.ensure_control_visible(_go_soul_hall_btn)
 			_bottom_scroll.scroll_horizontal += 100
 		else:
 			_bottom_scroll.scroll_horizontal = maxi(0, int(target_x))

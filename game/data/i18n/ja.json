@@ -4381,5 +4381,6 @@
   "ui.btn_go_title_wall": "称号へ",
   "skill.btn_go_title_wall": "称号一覧へ",
   "title_wall.btn_go_skill": "心法へ進む",
-  "title_wall.go_skill": "心法へ進む"
+  "title_wall.go_skill": "心法へ進む",
+  "skill.btn_go_soul_hall": "聚魂殿へ"
 }

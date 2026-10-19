@@ -7415,6 +7415,14 @@ func open_skill_dialog() -> Control:
 							open_skill_dialog()
 				, CONNECT_ONE_SHOT)
 		)
+	if dlg.has_signal("soul_hall_requested"):
+		dlg.soul_hall_requested.connect(func():
+			open_soul_hall()
+		)
+	elif dlg.has_signal("go_soul_hall"):
+		dlg.connect("go_soul_hall", func():
+			open_soul_hall()
+		)
 	add_child(dlg)
 	return dlg
 
@@ -7617,8 +7625,17 @@ func open_soul_hall() -> void:
 		if existing_shop.get_parent() == self:
 			remove_child(existing_shop)
 		existing_shop.queue_free()
+	var existing_skill = get_node_or_null("SkillDialog")
+	if existing_skill != null:
+		if existing_skill.get_parent() == self:
+			remove_child(existing_skill)
+		existing_skill.queue_free()
 	_switch_tab(Tab.SOUL_HALL)
 	_refresh_soul_hall_ui()
+
+
+func get_current_tab() -> Tab:
+	return _current_tab
 
 
 ## 取得聚魂殿堂前往背包快捷按鈕
