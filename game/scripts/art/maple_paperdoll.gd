@@ -21,6 +21,7 @@ const ANCHOR_BROW_REL_NECK_DEFAULT := Vector2(2, -60)
 
 ## 預設 Z-Index 常數
 const Z_WINDING_KEY_DEFAULT := 5
+const Z_BACK_CURIO_DEFAULT := 8
 const Z_BODY_DEFAULT := 10
 const Z_HEAD_UNIT_DEFAULT := 20
 const Z_COSTUME_DEFAULT := 25
@@ -41,6 +42,7 @@ var node_brow: Node2D = null
 var node_navel: Node2D = null
 var node_hand: Node2D = null
 var node_back_key: Node2D = null
+var node_tail: Node2D = null
 
 ## 各槽位 Sprite2D 節點
 var sprite_body: Sprite2D = null
@@ -49,6 +51,15 @@ var sprite_eyes: Sprite2D = null
 var sprite_costume: Sprite2D = null
 var sprite_weapon: Sprite2D = null
 var sprite_winding_key: Sprite2D = null
+var sprite_back_curio: Sprite2D = null
+
+## 錨點基準位置快取
+var _anchor_neck_base: Vector2 = ANCHOR_NECK_DEFAULT
+var _anchor_navel_base: Vector2 = ANCHOR_NAVEL_DEFAULT
+var _anchor_hand_base: Vector2 = ANCHOR_HAND_DEFAULT
+var _anchor_back_key_base: Vector2 = ANCHOR_BACK_KEY_DEFAULT
+var _anchor_brow_base: Vector2 = ANCHOR_BROW_REL_NECK_DEFAULT
+var _anchor_tail_base: Vector2 = Vector2(360, 380)
 
 ## 規格資料快取
 var _spec: Dictionary = {}
@@ -97,13 +108,74 @@ func load_spec(path: String) -> void:
 			var parsed: Variant = JSON.parse_string(f.get_as_text())
 			if parsed is Dictionary:
 				_spec = parsed as Dictionary
+				_apply_spec_anchors()
+				if is_instance_valid(node_body):
+					_apply_default_loadout()
 				return
 	push_warning("[MaplePaperdoll] 無法讀取規格檔 %s，使用內部預設規格" % spec_path)
 	_spec = _get_builtin_default_spec()
+	_apply_spec_anchors()
+	if is_instance_valid(node_body):
+		_apply_default_loadout()
 
 
-## 建立角色骨骼/錨點體系（neck/navel/hand/brow/back_key）
+## 套用規格定義之錨點
+func _apply_spec_anchors() -> void:
+	var anchors: Dictionary = _spec.get("anchors", {})
+	if anchors.has("neck"):
+		var a: Array = anchors["neck"]
+		_anchor_neck_base = Vector2(a[0], a[1])
+	else:
+		_anchor_neck_base = ANCHOR_NECK_DEFAULT
+
+	if anchors.has("navel"):
+		var a: Array = anchors["navel"]
+		_anchor_navel_base = Vector2(a[0], a[1])
+	else:
+		_anchor_navel_base = ANCHOR_NAVEL_DEFAULT
+
+	if anchors.has("hand"):
+		var a: Array = anchors["hand"]
+		_anchor_hand_base = Vector2(a[0], a[1])
+	else:
+		_anchor_hand_base = ANCHOR_HAND_DEFAULT
+
+	if anchors.has("back_key"):
+		var a: Array = anchors["back_key"]
+		_anchor_back_key_base = Vector2(a[0], a[1])
+	else:
+		_anchor_back_key_base = ANCHOR_BACK_KEY_DEFAULT
+
+	if anchors.has("brow_relative_to_neck"):
+		var a: Array = anchors["brow_relative_to_neck"]
+		_anchor_brow_base = Vector2(a[0], a[1])
+	else:
+		_anchor_brow_base = ANCHOR_BROW_REL_NECK_DEFAULT
+
+	if anchors.has("tail"):
+		var a: Array = anchors["tail"]
+		_anchor_tail_base = Vector2(a[0], a[1])
+	else:
+		_anchor_tail_base = Vector2(360, 380)
+
+	if is_instance_valid(node_neck):
+		node_neck.position = _anchor_neck_base
+	if is_instance_valid(node_navel):
+		node_navel.position = _anchor_navel_base
+	if is_instance_valid(node_hand):
+		node_hand.position = _anchor_hand_base
+	if is_instance_valid(node_back_key):
+		node_back_key.position = _anchor_back_key_base
+	if is_instance_valid(node_brow):
+		node_brow.position = _anchor_brow_base
+	if is_instance_valid(node_tail):
+		node_tail.position = _anchor_tail_base
+
+
+## 建立角色骨骼/錨點體系（neck/navel/hand/brow/back_key/tail）
 func _build_skeleton_hierarchy() -> void:
+	_apply_spec_anchors()
+
 	# 建立 Body 根節點
 	if node_body == null:
 		node_body = Node2D.new()
@@ -122,7 +194,7 @@ func _build_skeleton_hierarchy() -> void:
 	if node_back_key == null:
 		node_back_key = Node2D.new()
 		node_back_key.name = "AnchorBackKey"
-		node_back_key.position = ANCHOR_BACK_KEY_DEFAULT
+		node_back_key.position = _anchor_back_key_base
 		node_body.add_child(node_back_key)
 
 	if sprite_winding_key == null:
@@ -137,7 +209,7 @@ func _build_skeleton_hierarchy() -> void:
 	if node_navel == null:
 		node_navel = Node2D.new()
 		node_navel.name = "AnchorNavel"
-		node_navel.position = ANCHOR_NAVEL_DEFAULT
+		node_navel.position = _anchor_navel_base
 		node_body.add_child(node_navel)
 
 	if sprite_costume == null:
@@ -152,7 +224,7 @@ func _build_skeleton_hierarchy() -> void:
 	if node_hand == null:
 		node_hand = Node2D.new()
 		node_hand.name = "AnchorHand"
-		node_hand.position = ANCHOR_HAND_DEFAULT
+		node_hand.position = _anchor_hand_base
 		node_body.add_child(node_hand)
 
 	if sprite_weapon == null:
@@ -167,7 +239,7 @@ func _build_skeleton_hierarchy() -> void:
 	if node_neck == null:
 		node_neck = Node2D.new()
 		node_neck.name = "AnchorNeck"
-		node_neck.position = ANCHOR_NECK_DEFAULT
+		node_neck.position = _anchor_neck_base
 		node_body.add_child(node_neck)
 
 	if sprite_head_unit == null:
@@ -182,7 +254,7 @@ func _build_skeleton_hierarchy() -> void:
 	if node_brow == null:
 		node_brow = Node2D.new()
 		node_brow.name = "AnchorBrow"
-		node_brow.position = ANCHOR_BROW_REL_NECK_DEFAULT
+		node_brow.position = _anchor_brow_base
 		node_neck.add_child(node_brow)
 
 	if sprite_eyes == null:
@@ -193,8 +265,24 @@ func _build_skeleton_hierarchy() -> void:
 		sprite_eyes.z_index = Z_EYES_DEFAULT
 		node_brow.add_child(sprite_eyes)
 
+	# 6. 建立 Tail（尾部/背飾）錨點（掛在 Body 下）
+	if node_tail == null:
+		node_tail = Node2D.new()
+		node_tail.name = "AnchorTail"
+		node_tail.position = _anchor_tail_base
+		node_body.add_child(node_tail)
+
+	if sprite_back_curio == null:
+		sprite_back_curio = Sprite2D.new()
+		sprite_back_curio.name = "BackCurioSprite"
+		sprite_back_curio.centered = false
+		sprite_back_curio.z_as_relative = false
+		sprite_back_curio.z_index = Z_BACK_CURIO_DEFAULT
+		node_tail.add_child(sprite_back_curio)
+
 	# 初始化 Z-Index 字典
 	_slot_z_indices["winding_key"] = Z_WINDING_KEY_DEFAULT
+	_slot_z_indices["back_curio"] = Z_BACK_CURIO_DEFAULT
 	_slot_z_indices["body"] = Z_BODY_DEFAULT
 	_slot_z_indices["head_unit"] = Z_HEAD_UNIT_DEFAULT
 	_slot_z_indices["costume"] = Z_COSTUME_DEFAULT
@@ -204,12 +292,17 @@ func _build_skeleton_hierarchy() -> void:
 
 ## 預設穿戴初始化
 func _apply_default_loadout() -> void:
-	set_part_item("body", "paint_ivory_stock")
-	set_part_item("head_unit", "ear_rabbit_straight")
-	set_part_item("eyes", "eyes_cyan_emerald")
-	set_part_item("costume", "costume_nutcracker_guard")
-	set_part_item("weapon", "wpn_dawn_blade")
-	set_part_item("winding_key", "key_classic_brass")
+	if _spec.has("default_loadout"):
+		var dl: Dictionary = _spec["default_loadout"]
+		for slot in dl.keys():
+			set_part_item(str(slot), str(dl[slot]))
+	else:
+		set_part_item("body", "paint_ivory_stock")
+		set_part_item("head_unit", "ear_rabbit_straight")
+		set_part_item("eyes", "eyes_cyan_emerald")
+		set_part_item("costume", "costume_nutcracker_guard")
+		set_part_item("weapon", "wpn_dawn_blade")
+		set_part_item("winding_key", "key_classic_brass")
 
 
 ## 取得錨點節點
@@ -221,6 +314,7 @@ func get_anchor_node(anchor_name: String) -> Node2D:
 		"navel": return node_navel
 		"hand": return node_hand
 		"back_key": return node_back_key
+		"tail": return node_tail
 		_: return null
 
 
@@ -233,6 +327,7 @@ func get_slot_sprite(slot_name: String) -> Sprite2D:
 		"costume": return sprite_costume
 		"weapon": return sprite_weapon
 		"winding_key": return sprite_winding_key
+		"back_curio": return sprite_back_curio
 		_: return null
 
 
@@ -317,6 +412,9 @@ func set_weapon(item_id: String) -> void:
 func set_winding_key(item_id: String) -> void:
 	set_part_item("winding_key", item_id)
 
+func set_back_curio(item_id: String) -> void:
+	set_part_item("back_curio", item_id)
+
 
 ## 呼吸待機動態更新 (Breathing Idle Dynamic Motion)
 ## 依據楓之谷骨骼階層概念：
@@ -341,13 +439,13 @@ func update_breathing(delta: float) -> void:
 	# 2. Neck 處頭部的微幅次級慣性旋轉與俯仰
 	if is_instance_valid(node_neck):
 		var neck_lag_phase := phase - 0.25
-		node_neck.position = ANCHOR_NECK_DEFAULT + Vector2(0, sin(neck_lag_phase) * 0.8)
+		node_neck.position = _anchor_neck_base + Vector2(0, sin(neck_lag_phase) * 0.8)
 		node_neck.rotation = sin(neck_lag_phase) * 0.015
 
 	# 3. Hand 處武器的微幅持握呼吸律動
 	if is_instance_valid(node_hand):
 		var hand_lag_phase := phase - 0.15
-		node_hand.position = ANCHOR_HAND_DEFAULT + Vector2(0, sin(hand_lag_phase) * 0.5)
+		node_hand.position = _anchor_hand_base + Vector2(0, sin(hand_lag_phase) * 0.5)
 
 	# 4. 發條鑰匙自轉
 	if is_instance_valid(node_back_key):
@@ -402,7 +500,7 @@ func get_composite_image(canvas_width: int = 512, canvas_height: int = 512) -> I
 
 	# 蒐集所有當前可見的 Sprite2D 與其世界變換
 	var entries: Array[Dictionary] = []
-	var slots := ["body", "head_unit", "eyes", "costume", "weapon", "winding_key"]
+	var slots := ["body", "head_unit", "eyes", "costume", "weapon", "winding_key", "back_curio"]
 
 	for sid in slots:
 		var sprite := get_slot_sprite(sid)
