@@ -256,6 +256,7 @@ func _initialize() -> void:
 	print("\n--- 7. 產生展示截圖 Proofs 存證 ---")
 	doll.breathing_enabled = false
 	doll.node_body.position = Vector2.ZERO
+	doll.node_body.scale = Vector2.ONE
 	doll.node_neck.position = Vector2(250, 274)
 	doll.node_neck.rotation = 0.0
 	doll.node_hand.position = Vector2(144, 320)
@@ -297,6 +298,31 @@ func _initialize() -> void:
 		doll.set_costume(c_list[idx])
 		var c_img := doll.get_composite_image()
 		comp_c.blend_rect(c_img, Rect2i(0, 0, 512, 512), Vector2i(idx * 512, 0))
+		if c_list[idx] == "none":
+			# 斷言 1: 卸除外裝時槍柄與手臂無破縫透光 (x=153..154, y=281..359)
+			var gap_holes := 0
+			for gy in range(281, 360):
+				for gx in [153, 154]:
+					if c_img.get_pixel(gx, gy).a < 0.2:
+						gap_holes += 1
+			if gap_holes > 0:
+				push_error("素體裸裝在槍柄處偵測到 %d 個透明破縫像素！" % gap_holes)
+				ok = false
+			else:
+				print("  ✓ 素體裸裝槍柄接縫處 (x:153..154, y:281..359) 零破圖裂縫")
+
+			# 斷言 2: 素體骨盆處無海軍藍戰裙殘留
+			var blue_skirt_px := 0
+			for py in range(340, 440):
+				for px in range(180, 340):
+					var p := c_img.get_pixel(px, py)
+					if p.a > 0.5 and (p.b > p.r + 0.04):
+						blue_skirt_px += 1
+			if blue_skirt_px > 0:
+				push_error("素體裸裝骨盆處仍殘留 %d 個海軍藍戰裙像素！" % blue_skirt_px)
+				ok = false
+			else:
+				print("  ✓ 素體骨盆處 (y:340..440) 零海軍藍戰裙像素，為純淨機械骨骼底盤")
 	comp_c.save_png(path_c)
 	print("  ✓ 已輸出存證 C: %s (證明部件自由置換無切片邊界破圖)" % path_c)
 
@@ -309,6 +335,20 @@ func _initialize() -> void:
 	doll.set_part_z_index("weapon", 4)
 	doll.set_part_z_index("winding_key", 15)
 	var img_z_back := doll.get_composite_image()
+
+	# 斷言 3: 驗證發條鑰匙提至身前 (Z: 15) 產生像素層級切換
+	var key_diff_count := 0
+	for ky in range(183, 334):
+		for kx in range(322, 442):
+			var pf := img_z_front.get_pixel(kx, ky)
+			var pb := img_z_back.get_pixel(kx, ky)
+			if abs(pf.r - pb.r) > 0.02 or abs(pf.g - pb.g) > 0.02 or abs(pf.b - pb.b) > 0.02:
+				key_diff_count += 1
+	if key_diff_count == 0:
+		push_error("動態 Z-Order 切換存證發條鑰匙區域像素差異為 0！")
+		ok = false
+	else:
+		print("  ✓ 發條鑰匙動態 Z-Order 切換 (z=5 vs z=15) 成功實證 (%d 像素差異)" % key_diff_count)
 
 	doll.set_part_z_index("weapon", 40)
 	doll.set_part_z_index("winding_key", 5)

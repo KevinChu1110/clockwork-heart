@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://x6irxbcb1mx"
-path="res://.godot/imported/ear_lion_gilded_mane_midnight.png-36825a8cd6cbc26ec0da2ec17e7bd42d.ctex"
+path="res://.godot/imported/ear_lion_gilded_mane_midnight.png-159d68bc997b4e29f76a98e95fc7afb5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/maple_parts/head_unit/ear_lion_gilded_mane_midnight.png"
-dest_files=["res://.godot/imported/ear_lion_gilded_mane_midnight.png-36825a8cd6cbc26ec0da2ec17e7bd42d.ctex"]
+source_file="res://assets/paperdoll/lion/maple_parts/head_unit/ear_lion_gilded_mane_midnight.png"
+dest_files=["res://.godot/imported/ear_lion_gilded_mane_midnight.png-159d68bc997b4e29f76a98e95fc7afb5.ctex"]
 
 [params]
 

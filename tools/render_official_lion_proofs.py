@@ -116,8 +116,8 @@ def run():
 
     print("--- Rendering Proof D: Z-Order Swap ---")
     proof_d = Image.new("RGBA", (512 * 2, 512), cream)
-    d_front = composite_lion(weapon_z=40)
-    d_back = composite_lion(weapon_z=4)
+    d_front = composite_lion(weapon_z=40, key_z=5)
+    d_back = composite_lion(weapon_z=4, key_z=15)
     proof_d.alpha_composite(d_front, (0, 0))
     proof_d.alpha_composite(d_back, (512, 0))
     proof_d.save(f"{PROOF_DIR}/proof_maple_lion_z_order_swap.png")
