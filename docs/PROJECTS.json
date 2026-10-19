@@ -7430,8 +7430,8 @@
    "id": "soul-hall-skill-shortcut",
    "cat": "遊戲",
    "title": "大廳聚魂殿堂底欄新增前往心法快捷按鈕連動 SkillDialog",
-   "status": "測試中",
-   "note": "大廳聚魂殿堂底欄新增前往心法快捷按鈕連動 SkillDialog (t_cb73d5ff)",
+   "status": "已上線",
+   "note": "大廳聚魂殿堂底欄新增前往心法快捷按鈕連動 SkillDialog 已合併至 main 主線 (t_cb73d5ff, t_d80cea6d)",
    "keys": [
     "大廳聚魂殿堂底欄"
    ]
