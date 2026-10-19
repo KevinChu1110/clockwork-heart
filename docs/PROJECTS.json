@@ -7420,8 +7420,8 @@
    "id": "paperdoll-maple-fox",
    "cat": "遊戲",
    "title": "第二族熾火赤狐楓之谷骨骼錨點與部件分層規格建置",
-   "status": "開發中",
-   "note": "建立 fox 錨點 JSON 與切片部件，支援 MaplePaperdoll 自由置換與呼吸待機",
+   "status": "測試中",
+   "note": "完成熾火赤狐 MaplePaperdoll 錨點與 7 大切片部件，測試全綠且生成 5 組展示 proof",
    "keys": [
     "第二族熾火赤狐楓"
    ]
