@@ -7405,6 +7405,16 @@
    "keys": [
     "把已過審的稱號前"
    ]
+  },
+  {
+   "id": "paperdoll-maple-lion",
+   "cat": "遊戲",
+   "title": "第三族烈金雄獅楓之谷骨骼錨點與部件分層規格建置",
+   "status": "草稿",
+   "note": "建立 lion 錨點 JSON 與切片部件，支援 MaplePaperdoll 自由置換與呼吸待機",
+   "keys": [
+    "第三族烈金雄獅楓"
+   ]
   }
  ]
 }
