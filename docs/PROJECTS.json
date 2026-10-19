@@ -7425,6 +7425,16 @@
    "keys": [
     "MaplePap"
    ]
+  },
+  {
+   "id": "soul-hall-skill-shortcut",
+   "cat": "遊戲",
+   "title": "大廳聚魂殿堂底欄新增前往心法快捷按鈕連動 SkillDialog",
+   "status": "草稿",
+   "note": "待 t_e6e9756b 完成後由 sideworker 執行",
+   "keys": [
+    "大廳聚魂殿堂底欄"
+   ]
   }
  ]
 }
