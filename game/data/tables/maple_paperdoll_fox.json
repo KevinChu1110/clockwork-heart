@@ -1,0 +1,240 @@
+{
+  "race": "fox",
+  "canvas_size": [
+    512,
+    512
+  ],
+  "root_anchor": [
+    256,
+    480
+  ],
+  "anchors": {
+    "neck": [
+      260,
+      255
+    ],
+    "navel": [
+      256,
+      350
+    ],
+    "hand": [
+      358,
+      363
+    ],
+    "back_key": [
+      370,
+      280
+    ],
+    "brow_relative_to_neck": [
+      0,
+      -60
+    ]
+  },
+  "default_loadout": {
+    "body": "paint_fox_orange",
+    "head_unit": "ear_fox_radar_orange",
+    "eyes": "eyes_cyan_emerald",
+    "costume": "costume_astral_cape",
+    "weapon": "wpn_astral_staff",
+    "winding_key": "key_classic_brass"
+  },
+  "parts": {
+    "body": {
+      "anchor": "root",
+      "z_index": 10,
+      "origin": [
+        0,
+        0
+      ],
+      "items": {
+        "paint_fox_orange": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/body/paint_fox_orange.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        },
+        "paint_ivory_stock": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/body/paint_ivory_stock.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        },
+        "paint_emerald_glaze": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/body/paint_emerald_glaze.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "head_unit": {
+      "anchor": "neck",
+      "z_index": 20,
+      "items": {
+        "ear_fox_radar_orange": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/head_unit/ear_fox_radar_orange.png",
+          "width": 253,
+          "height": 106,
+          "origin": [
+            120,
+            212
+          ]
+        },
+        "ear_fox_radar_ivory": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/head_unit/ear_fox_radar_ivory.png",
+          "width": 253,
+          "height": 106,
+          "origin": [
+            120,
+            212
+          ]
+        },
+        "ear_fox_radar_emerald": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/head_unit/ear_fox_radar_emerald.png",
+          "width": 253,
+          "height": 106,
+          "origin": [
+            120,
+            212
+          ]
+        }
+      }
+    },
+    "eyes": {
+      "anchor": "brow",
+      "z_index": 30,
+      "origin": [
+        80,
+        33
+      ],
+      "items": {
+        "eyes_cyan_emerald": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/eyes/eyes_cyan_emerald.png",
+          "width": 165,
+          "height": 60,
+          "origin": [
+            80,
+            33
+          ]
+        },
+        "eyes_amber_gold": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/eyes/eyes_amber_gold.png",
+          "width": 165,
+          "height": 60,
+          "origin": [
+            80,
+            33
+          ]
+        },
+        "eyes_blink": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/eyes/eyes_blink.png",
+          "width": 165,
+          "height": 60,
+          "origin": [
+            80,
+            33
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "costume": {
+      "anchor": "navel",
+      "z_index": 25,
+      "items": {
+        "costume_astral_cape": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/costume/costume_astral_cape.png",
+          "width": 171,
+          "height": 168,
+          "origin": [
+            82,
+            88
+          ]
+        },
+        "costume_astral_observer": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/costume/costume_astral_observer.png",
+          "width": 222,
+          "height": 189,
+          "origin": [
+            117,
+            94
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "weapon": {
+      "anchor": "hand",
+      "z_index": 40,
+      "items": {
+        "wpn_astral_staff": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/weapon/wpn_astral_staff.png",
+          "width": 114,
+          "height": 357,
+          "origin": [
+            31,
+            215
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "winding_key": {
+      "anchor": "back_key",
+      "z_index": 5,
+      "items": {
+        "key_classic_brass": {
+          "path": "res://assets/sprites/player/paperdoll/fox/maple_parts/winding_key/key_classic_brass.png",
+          "width": 61,
+          "height": 107,
+          "origin": [
+            0,
+            55
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  }
+}

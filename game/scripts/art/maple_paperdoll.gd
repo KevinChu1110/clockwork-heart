@@ -59,6 +59,13 @@ var _slot_origins: Dictionary = {}
 ## 各槽位目前 Z-index：{slot: int}
 var _slot_z_indices: Dictionary = {}
 
+## 核心骨骼錨點快取（支援多族動態切換）
+var _anchor_neck := ANCHOR_NECK_DEFAULT
+var _anchor_navel := ANCHOR_NAVEL_DEFAULT
+var _anchor_hand := ANCHOR_HAND_DEFAULT
+var _anchor_back_key := ANCHOR_BACK_KEY_DEFAULT
+var _anchor_brow_rel_neck := ANCHOR_BROW_REL_NECK_DEFAULT
+
 ## 呼吸動態計時
 var _anim_time: float = 0.0
 var _blink_timer: float = 0.0
@@ -97,9 +104,58 @@ func load_spec(path: String) -> void:
 			var parsed: Variant = JSON.parse_string(f.get_as_text())
 			if parsed is Dictionary:
 				_spec = parsed as Dictionary
+				_parse_anchors_from_spec()
+				if node_body != null:
+					update_anchor_positions()
+					_apply_default_loadout()
 				return
 	push_warning("[MaplePaperdoll] 無法讀取規格檔 %s，使用內部預設規格" % spec_path)
 	_spec = _get_builtin_default_spec()
+	_parse_anchors_from_spec()
+
+
+## 從規格資料解析核心骨骼錨點
+func _parse_anchors_from_spec() -> void:
+	var a: Dictionary = _spec.get("anchors", {})
+	if a.has("neck"):
+		var p: Array = a["neck"]
+		_anchor_neck = Vector2(p[0], p[1])
+	else:
+		_anchor_neck = ANCHOR_NECK_DEFAULT
+	if a.has("navel"):
+		var p: Array = a["navel"]
+		_anchor_navel = Vector2(p[0], p[1])
+	else:
+		_anchor_navel = ANCHOR_NAVEL_DEFAULT
+	if a.has("hand"):
+		var p: Array = a["hand"]
+		_anchor_hand = Vector2(p[0], p[1])
+	else:
+		_anchor_hand = ANCHOR_HAND_DEFAULT
+	if a.has("back_key"):
+		var p: Array = a["back_key"]
+		_anchor_back_key = Vector2(p[0], p[1])
+	else:
+		_anchor_back_key = ANCHOR_BACK_KEY_DEFAULT
+	if a.has("brow_relative_to_neck"):
+		var p: Array = a["brow_relative_to_neck"]
+		_anchor_brow_rel_neck = Vector2(p[0], p[1])
+	else:
+		_anchor_brow_rel_neck = ANCHOR_BROW_REL_NECK_DEFAULT
+
+
+## 更新所有子錨點節點的相對座標
+func update_anchor_positions() -> void:
+	if node_back_key != null:
+		node_back_key.position = _anchor_back_key
+	if node_navel != null:
+		node_navel.position = _anchor_navel
+	if node_hand != null:
+		node_hand.position = _anchor_hand
+	if node_neck != null:
+		node_neck.position = _anchor_neck
+	if node_brow != null:
+		node_brow.position = _anchor_brow_rel_neck
 
 
 ## 建立角色骨骼/錨點體系（neck/navel/hand/brow/back_key）
@@ -122,7 +178,7 @@ func _build_skeleton_hierarchy() -> void:
 	if node_back_key == null:
 		node_back_key = Node2D.new()
 		node_back_key.name = "AnchorBackKey"
-		node_back_key.position = ANCHOR_BACK_KEY_DEFAULT
+		node_back_key.position = _anchor_back_key
 		node_body.add_child(node_back_key)
 
 	if sprite_winding_key == null:
@@ -137,7 +193,7 @@ func _build_skeleton_hierarchy() -> void:
 	if node_navel == null:
 		node_navel = Node2D.new()
 		node_navel.name = "AnchorNavel"
-		node_navel.position = ANCHOR_NAVEL_DEFAULT
+		node_navel.position = _anchor_navel
 		node_body.add_child(node_navel)
 
 	if sprite_costume == null:
@@ -152,7 +208,7 @@ func _build_skeleton_hierarchy() -> void:
 	if node_hand == null:
 		node_hand = Node2D.new()
 		node_hand.name = "AnchorHand"
-		node_hand.position = ANCHOR_HAND_DEFAULT
+		node_hand.position = _anchor_hand
 		node_body.add_child(node_hand)
 
 	if sprite_weapon == null:
@@ -167,7 +223,7 @@ func _build_skeleton_hierarchy() -> void:
 	if node_neck == null:
 		node_neck = Node2D.new()
 		node_neck.name = "AnchorNeck"
-		node_neck.position = ANCHOR_NECK_DEFAULT
+		node_neck.position = _anchor_neck
 		node_body.add_child(node_neck)
 
 	if sprite_head_unit == null:
@@ -182,7 +238,7 @@ func _build_skeleton_hierarchy() -> void:
 	if node_brow == null:
 		node_brow = Node2D.new()
 		node_brow.name = "AnchorBrow"
-		node_brow.position = ANCHOR_BROW_REL_NECK_DEFAULT
+		node_brow.position = _anchor_brow_rel_neck
 		node_neck.add_child(node_brow)
 
 	if sprite_eyes == null:
@@ -204,12 +260,17 @@ func _build_skeleton_hierarchy() -> void:
 
 ## 預設穿戴初始化
 func _apply_default_loadout() -> void:
-	set_part_item("body", "paint_ivory_stock")
-	set_part_item("head_unit", "ear_rabbit_straight")
-	set_part_item("eyes", "eyes_cyan_emerald")
-	set_part_item("costume", "costume_nutcracker_guard")
-	set_part_item("weapon", "wpn_dawn_blade")
-	set_part_item("winding_key", "key_classic_brass")
+	var def_loadout: Dictionary = _spec.get("default_loadout", {})
+	if not def_loadout.is_empty():
+		for slot in def_loadout.keys():
+			set_part_item(slot, str(def_loadout[slot]))
+	else:
+		set_part_item("body", "paint_ivory_stock")
+		set_part_item("head_unit", "ear_rabbit_straight")
+		set_part_item("eyes", "eyes_cyan_emerald")
+		set_part_item("costume", "costume_nutcracker_guard")
+		set_part_item("weapon", "wpn_dawn_blade")
+		set_part_item("winding_key", "key_classic_brass")
 
 
 ## 取得錨點節點
@@ -341,13 +402,13 @@ func update_breathing(delta: float) -> void:
 	# 2. Neck 處頭部的微幅次級慣性旋轉與俯仰
 	if is_instance_valid(node_neck):
 		var neck_lag_phase := phase - 0.25
-		node_neck.position = ANCHOR_NECK_DEFAULT + Vector2(0, sin(neck_lag_phase) * 0.8)
+		node_neck.position = _anchor_neck + Vector2(0, sin(neck_lag_phase) * 0.8)
 		node_neck.rotation = sin(neck_lag_phase) * 0.015
 
 	# 3. Hand 處武器的微幅持握呼吸律動
 	if is_instance_valid(node_hand):
 		var hand_lag_phase := phase - 0.15
-		node_hand.position = ANCHOR_HAND_DEFAULT + Vector2(0, sin(hand_lag_phase) * 0.5)
+		node_hand.position = _anchor_hand + Vector2(0, sin(hand_lag_phase) * 0.5)
 
 	# 4. 發條鑰匙自轉
 	if is_instance_valid(node_back_key):
