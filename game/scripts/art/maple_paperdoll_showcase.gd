@@ -26,6 +26,11 @@ const RACE_SPECS := {
 		"name": "烈金雄獅",
 		"spec_path": "res://data/tables/maple_paperdoll_lion.json",
 		"color": Color("#FF5E8A")
+	},
+	"boar": {
+		"name": "厚鎧野豬",
+		"spec_path": "res://data/tables/maple_paperdoll_boar.json",
+		"color": Color("#38A0FF")
 	}
 }
 
@@ -224,7 +229,7 @@ func _setup_race_chips() -> void:
 	for child in chips_container.get_children():
 		child.queue_free()
 
-	for r_id in ["rabbit", "fox", "lion"]:
+	for r_id in ["rabbit", "fox", "lion", "boar"]:
 		var r_data: Dictionary = RACE_SPECS[r_id]
 		var btn := _create_chip_button(r_id, r_data["name"], r_data["color"], func(): select_race(r_id))
 		btn.custom_minimum_size = Vector2(120, 48)
@@ -257,7 +262,7 @@ func _build_control_buttons() -> void:
 	race_chip_row.add_theme_constant_override("separation", 8)
 	controls_vbox.add_child(race_chip_row)
 
-	for r_id in ["rabbit", "fox", "lion"]:
+	for r_id in ["rabbit", "fox", "lion", "boar"]:
 		var r_data: Dictionary = RACE_SPECS[r_id]
 		var chip := _create_chip_button(r_id, r_data["name"], r_data["color"], func(): select_race(r_id))
 		chip.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -272,6 +277,8 @@ func _build_control_buttons() -> void:
 			_build_fox_buttons()
 		"lion":
 			_build_lion_buttons()
+		"boar":
+			_build_boar_buttons()
 
 	# 通用層級與動態控制組
 	_add_section_header("骨骼層級與動態 (Controls)")
@@ -436,6 +443,63 @@ func _build_lion_buttons() -> void:
 	_add_section_header("發條獅尾 (Back Curio)")
 	_create_button_grid([
 		{"label": "發條獅尾飾件", "color": Color("#FF5E8A"), "fn": func(): select_back_curio("curio_lion_fan_tail")},
+		{"label": "卸除背部飾品", "color": Color("#FF5E8A"), "fn": func(): select_back_curio("none")},
+	])
+
+
+func _build_boar_buttons() -> void:
+	# 1. 塗裝素體組
+	_add_section_header("塗裝素體 (Chassis)")
+	_create_button_grid([
+		{"label": "黃銅原金", "color": Color("#FFA010"), "fn": func(): select_chassis("paint_brass_gold")},
+		{"label": "經典象牙白", "color": Color("#FFD028"), "fn": func(): select_chassis("paint_ivory_stock")},
+		{"label": "赤焰熔爐", "color": Color("#FF5E8A"), "fn": func(): select_chassis("paint_molten_crimson")},
+	])
+
+	# 2. 金屬獠牙面罩
+	_add_section_header("鋼牙面罩 (Head Unit)")
+	_create_button_grid([
+		{"label": "鋼牙面罩·黃銅", "color": Color("#FFA010"), "fn": func(): select_head_unit("ear_boar_rivet_cowl_brass")},
+		{"label": "鋼牙面罩·象牙白", "color": Color("#FFD028"), "fn": func(): select_head_unit("ear_boar_rivet_cowl_ivory")},
+		{"label": "鋼牙面罩·赤焰", "color": Color("#FF5E8A"), "fn": func(): select_head_unit("ear_boar_rivet_cowl_crimson")},
+		{"label": "鋼牙面罩·經典", "color": Color("#38A0FF"), "fn": func(): select_head_unit("ear_boar_rivet_cowl")},
+	])
+
+	# 3. 玩具外裝組
+	_add_section_header("玩具外裝 (Costume)")
+	_create_button_grid([
+		{"label": "粗獷鍛爐束帶", "color": Color("#FFA010"), "fn": func(): select_costume("costume_viking_harness")},
+		{"label": "維京重裝鐵甲", "color": Color("#38A0FF"), "fn": func(): select_costume("costume_viking_ironclad")},
+		{"label": "卸除外裝 (素體)", "color": Color("#FFA010"), "fn": func(): select_costume("none")},
+	])
+
+	# 4. 面部光學組
+	_add_section_header("面部光學核心 (Eyes)")
+	_create_button_grid([
+		{"label": "天青祖母綠", "color": Color("#4ED86A"), "fn": func(): select_eyes("eyes_cyan_emerald")},
+		{"label": "琥珀黃金核心", "color": Color("#FFD028"), "fn": func(): select_eyes("eyes_amber_gold")},
+		{"label": "休眠閉眼眨眼", "color": Color("#38A0FF"), "fn": func(): select_eyes("eyes_blink")},
+		{"label": "純淨面甲 (無眼)", "color": Color("#FF5E8A"), "fn": func(): select_eyes("none")},
+	])
+
+	# 5. 手持武器組
+	_add_section_header("手持武器 (Weapon)")
+	_create_button_grid([
+		{"label": "鐵砧重裝巨錘", "color": Color("#4ED86A"), "fn": func(): select_weapon("wpn_anvil_greathammer")},
+		{"label": "卸除武器 (空手)", "color": Color("#4ED86A"), "fn": func(): select_weapon("none")},
+	])
+
+	# 6. 發條鑰匙組
+	_add_section_header("發條鑰匙 (Winding Key)")
+	_create_button_grid([
+		{"label": "經典雙環黃銅鑰匙", "color": Color("#FFD028"), "fn": func(): select_winding_key("key_classic_brass")},
+		{"label": "卸除發條鑰匙", "color": Color("#FFD028"), "fn": func(): select_winding_key("none")},
+	])
+
+	# 7. 背部尾飾
+	_add_section_header("發條彈簧尾 (Back Curio)")
+	_create_button_grid([
+		{"label": "發條彈簧尾", "color": Color("#FF5E8A"), "fn": func(): select_back_curio("curio_spring_tail")},
 		{"label": "卸除背部飾品", "color": Color("#FF5E8A"), "fn": func(): select_back_curio("none")},
 	])
 

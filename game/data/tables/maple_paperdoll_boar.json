@@ -1,0 +1,278 @@
+{
+  "race": "boar",
+  "canvas_size": [
+    512,
+    512
+  ],
+  "root_anchor": [
+    256,
+    480
+  ],
+  "anchors": {
+    "neck": [
+      250,
+      176
+    ],
+    "navel": [
+      256,
+      340
+    ],
+    "hand": [
+      180,
+      340
+    ],
+    "back_key": [
+      360,
+      140
+    ],
+    "brow_relative_to_neck": [
+      -15,
+      -15
+    ],
+    "tail": [
+      350,
+      335
+    ]
+  },
+  "default_loadout": {
+    "body": "paint_brass_gold",
+    "head_unit": "ear_boar_rivet_cowl_brass",
+    "eyes": "eyes_cyan_emerald",
+    "costume": "costume_viking_harness",
+    "weapon": "wpn_anvil_greathammer",
+    "winding_key": "key_classic_brass",
+    "back_curio": "curio_spring_tail"
+  },
+  "parts": {
+    "body": {
+      "anchor": "root",
+      "z_index": 10,
+      "origin": [
+        0,
+        0
+      ],
+      "items": {
+        "paint_brass_gold": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/body/paint_brass_gold.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        },
+        "paint_ivory_stock": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/body/paint_ivory_stock.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        },
+        "paint_molten_crimson": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/body/paint_molten_crimson.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "head_unit": {
+      "anchor": "neck",
+      "z_index": 20,
+      "items": {
+        "ear_boar_rivet_cowl_brass": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/head_unit/ear_boar_rivet_cowl_brass.png",
+          "width": 265,
+          "height": 200,
+          "origin": [
+            120,
+            161
+          ]
+        },
+        "ear_boar_rivet_cowl_ivory": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/head_unit/ear_boar_rivet_cowl_ivory.png",
+          "width": 265,
+          "height": 200,
+          "origin": [
+            120,
+            161
+          ]
+        },
+        "ear_boar_rivet_cowl_crimson": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/head_unit/ear_boar_rivet_cowl_crimson.png",
+          "width": 265,
+          "height": 200,
+          "origin": [
+            120,
+            161
+          ]
+        },
+        "ear_boar_rivet_cowl": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/head_unit/ear_boar_rivet_cowl.png",
+          "width": 265,
+          "height": 200,
+          "origin": [
+            120,
+            161
+          ]
+        }
+      }
+    },
+    "eyes": {
+      "anchor": "brow",
+      "z_index": 30,
+      "origin": [
+        45,
+        30
+      ],
+      "items": {
+        "eyes_cyan_emerald": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/eyes/eyes_cyan_emerald.png",
+          "width": 90,
+          "height": 60,
+          "origin": [
+            45,
+            30
+          ]
+        },
+        "eyes_amber_gold": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/eyes/eyes_amber_gold.png",
+          "width": 90,
+          "height": 60,
+          "origin": [
+            45,
+            30
+          ]
+        },
+        "eyes_blink": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/eyes/eyes_blink.png",
+          "width": 90,
+          "height": 60,
+          "origin": [
+            45,
+            30
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "costume": {
+      "anchor": "navel",
+      "z_index": 25,
+      "items": {
+        "costume_viking_harness": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/costume/costume_viking_harness.png",
+          "width": 160,
+          "height": 165,
+          "origin": [
+            76,
+            90
+          ]
+        },
+        "costume_viking_ironclad": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/costume/costume_viking_ironclad.png",
+          "width": 160,
+          "height": 165,
+          "origin": [
+            76,
+            90
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "weapon": {
+      "anchor": "hand",
+      "z_index": 40,
+      "items": {
+        "wpn_anvil_greathammer": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/weapon/wpn_anvil_greathammer.png",
+          "width": 167,
+          "height": 254,
+          "origin": [
+            121,
+            90
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "winding_key": {
+      "anchor": "back_key",
+      "z_index": 5,
+      "items": {
+        "key_classic_brass": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/winding_key/key_classic_brass.png",
+          "width": 96,
+          "height": 110,
+          "origin": [
+            18,
+            80
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "back_curio": {
+      "anchor": "tail",
+      "z_index": 8,
+      "items": {
+        "curio_spring_tail": {
+          "path": "res://assets/sprites/player/paperdoll/boar/maple_parts/back_curio/curio_spring_tail.png",
+          "width": 96,
+          "height": 88,
+          "origin": [
+            10,
+            15
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  }
+}

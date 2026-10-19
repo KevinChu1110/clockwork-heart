@@ -371,6 +371,11 @@ func get_layer_order() -> Dictionary:
 
 ## 更換部件（獨立為帶 origin 錨點的部件 Sprite）
 func set_part_item(slot_name: String, item_id: String) -> void:
+	if slot_name == "chassis":
+		slot_name = "body"
+	elif slot_name == "optic_core":
+		slot_name = "eyes"
+
 	_current_loadout[slot_name] = item_id
 	var sprite := get_slot_sprite(slot_name)
 	if sprite == null:
@@ -407,6 +412,10 @@ func set_part_item(slot_name: String, item_id: String) -> void:
 
 
 func get_part_item(slot_name: String) -> String:
+	if slot_name == "chassis":
+		slot_name = "body"
+	elif slot_name == "optic_core":
+		slot_name = "eyes"
 	return _current_loadout.get(slot_name, "")
 
 
@@ -418,10 +427,16 @@ func get_current_loadout() -> Dictionary:
 func set_body(item_id: String) -> void:
 	set_part_item("body", item_id)
 
+func set_chassis(item_id: String) -> void:
+	set_part_item("body", item_id)
+
 func set_head_unit(item_id: String) -> void:
 	set_part_item("head_unit", item_id)
 
 func set_eyes(item_id: String) -> void:
+	set_part_item("eyes", item_id)
+
+func set_optic_core(item_id: String) -> void:
 	set_part_item("eyes", item_id)
 
 func set_costume(item_id: String) -> void:
