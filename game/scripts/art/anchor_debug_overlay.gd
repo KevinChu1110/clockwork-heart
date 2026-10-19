@@ -10,6 +10,8 @@ var _paperdoll: Node2D = null
 
 
 func _ready() -> void:
+	z_index = 100
+	z_as_relative = false
 	if not paperdoll_path.is_empty():
 		_paperdoll = get_node_or_null(paperdoll_path) as Node2D
 
@@ -18,7 +20,7 @@ func _draw() -> void:
 	if _paperdoll == null:
 		return
 
-	# 取得 5 大核心錨點的世界座標 (轉為本 Control 區域座標)
+	# 取得 5 大核心錨點（及可能具備的 tail 尾巴錨點）的世界座標 (轉為本 Control 區域座標)
 	var anchors: Dictionary = {
 		"neck": _get_anchor_pos(_paperdoll.node_neck),
 		"brow": _get_anchor_pos(_paperdoll.node_brow),
@@ -34,6 +36,13 @@ func _draw() -> void:
 		["navel", "hand", Color(1.0, 0.65, 0.1, 0.85)],     # 臍到手 (持握手臂)
 		["navel", "back_key", Color(1.0, 0.35, 0.5, 0.85)], # 臍到背鑰 (動力傳動軸)
 	]
+
+	# 若當前種族具備 tail 尾巴錨點（如烈金雄獅）
+	if is_instance_valid(_paperdoll.node_tail):
+		var anchors_dict: Dictionary = _paperdoll._spec.get("anchors", {})
+		if anchors_dict.has("tail"):
+			anchors["tail"] = _get_anchor_pos(_paperdoll.node_tail)
+			bones.append(["navel", "tail", Color(0.75, 0.45, 1.0, 0.85)])
 
 	for bone in bones:
 		var p1: Vector2 = anchors[bone[0]]
@@ -55,6 +64,8 @@ func _draw() -> void:
 			col = Color(1.0, 0.35, 0.55) # 珊瑚粉
 		elif aname == "hand":
 			col = Color(1.0, 0.6, 0.1) # 暖橘
+		elif aname == "tail":
+			col = Color(0.75, 0.45, 1.0) # 紫晶尾部錨點
 
 		# 外圈深色陰影
 		draw_circle(pt, 7.0, Color(0.12, 0.10, 0.23, 0.9))

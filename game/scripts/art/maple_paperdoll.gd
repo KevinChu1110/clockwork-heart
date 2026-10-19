@@ -297,6 +297,10 @@ func _build_skeleton_hierarchy() -> void:
 
 ## 預設穿戴初始化
 func _apply_default_loadout() -> void:
+	# 先重置所有槽位以確保跨族切換無殘留
+	for slot in ["body", "head_unit", "eyes", "costume", "weapon", "winding_key", "back_curio"]:
+		set_part_item(slot, "none")
+
 	if _spec.has("default_loadout"):
 		var dl: Dictionary = _spec["default_loadout"]
 		for slot in dl.keys():
@@ -321,6 +325,18 @@ func get_anchor_node(anchor_name: String) -> Node2D:
 		"back_key": return node_back_key
 		"tail": return node_tail
 		_: return null
+
+
+## 取得錨點基準設計座標
+func get_anchor_base_position(anchor_name: String) -> Vector2:
+	match anchor_name:
+		"neck": return _anchor_neck_base
+		"navel": return _anchor_navel_base
+		"hand": return _anchor_hand_base
+		"back_key": return _anchor_back_key_base
+		"brow": return _anchor_brow_base
+		"tail": return _anchor_tail_base
+		_: return Vector2.ZERO
 
 
 ## 取得槽位 Sprite2D

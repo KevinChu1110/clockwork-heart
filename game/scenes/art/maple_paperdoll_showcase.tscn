@@ -86,6 +86,19 @@ theme_override_fonts/font = ExtResource("4_font")
 theme_override_font_sizes/font_size = 15
 text = "【發條白兔 · 楓之谷錨點部件掛載展示】"
 
+[node name="PanelRaceChips" type="PanelContainer" parent="UI"]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 280.0
+offset_right = 440.0
+offset_bottom = 356.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="HBoxRaceChips" type="HBoxContainer" parent="UI/PanelRaceChips"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
 [node name="PanelControls" type="PanelContainer" parent="UI"]
 layout_mode = 0
 offset_left = 820.0
