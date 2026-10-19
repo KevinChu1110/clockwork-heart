@@ -7460,8 +7460,8 @@
    "id": "merge-maple-paperdoll-races",
    "cat": "平台",
    "title": "楓之谷紙娃娃架構與首發三族展示切換主線合併與回歸驗收",
-   "status": "開發中",
-   "note": "派工 sideworker2 (t_d50fd787)",
+   "status": "已上線",
+   "note": "已完成首發三族與展示切換主線合併、單元與整合回歸測試全綠 (t_d50fd787)",
    "keys": [
     "楓之谷紙娃娃架構"
    ]
