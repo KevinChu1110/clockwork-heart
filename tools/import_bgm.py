@@ -6,7 +6,7 @@
 直接丟進遊戲會在接回開頭時聽到明顯的斷點。這支做三件事：
 
   1. 轉成 Ogg Vorbis（Godot 原生支援，體積遠小於 WAV）
-  2. 響度正規化，讓 13 首曲子音量一致，玩家不用一直調音量
+  2. 響度正規化，讓 8 首曲子音量一致，玩家不用一直調音量
   3. **自動找循環點** —— 找出一個時間點，讓「曲子結尾」接回那裡時聽起來最連續，
      前面那段當一次性前奏。結果寫進 loops.json 給 AudioManager 讀。
 
@@ -25,8 +25,8 @@
   # 只想看看它會挑哪個循環點，先不寫檔
   python3 tools/import_bgm.py ~/Downloads/title.mp3 --dry-run
 
-曲目 id（13 首）
-  title village town mist dojo forest coast wild road battle boss tower ending
+曲目 id（8 首，docs/CLOCKWORK_ART_MUSIC_BRIEF.md §5）
+  title village town road forest battle boss ending
 
 匯入後
   程式合成的 .wav 會留著當後備；AudioManager 看到同名 .ogg 就優先用 .ogg，
@@ -50,9 +50,10 @@ ROOT = Path(__file__).resolve().parents[1]
 BGM_DIR = ROOT / "game" / "assets" / "audio" / "bgm"
 LOOPS_JSON = BGM_DIR / "loops.json"
 
+## 任務書 §5：BGM cue 只准這八個名字（舊的 mist／dojo／coast／wild／tower 已併入
+## AudioManager.map_to_bgm，不要再匯入）
 TRACK_IDS = [
-    "title", "village", "town", "mist", "dojo", "forest", "coast",
-    "wild", "road", "battle", "boss", "tower", "ending",
+    "title", "village", "town", "road", "forest", "battle", "boss", "ending",
 ]
 
 AUDIO_SUFFIXES = {".mp3", ".wav", ".m4a", ".aac", ".flac", ".ogg", ".opus", ".wma", ".aiff"}
