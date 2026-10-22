@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ci100qhev2vt"
-path="res://.godot/imported/proof_maple_fox_z_order_swap.png-ad8d944636b6e2af2027962e434ee485.ctex"
+path="res://.godot/imported/proof_maple_fox_z_order_swap.png-0bb62b99103486d8ff38d675cdc36413.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/fox/proof_maple_fox_z_order_swap.png"
-dest_files=["res://.godot/imported/proof_maple_fox_z_order_swap.png-ad8d944636b6e2af2027962e434ee485.ctex"]
+source_file="res://assets/sprites/player/paperdoll/fox/proof_maple_fox_z_order_swap.png"
+dest_files=["res://.godot/imported/proof_maple_fox_z_order_swap.png-0bb62b99103486d8ff38d675cdc36413.ctex"]
 
 [params]
 

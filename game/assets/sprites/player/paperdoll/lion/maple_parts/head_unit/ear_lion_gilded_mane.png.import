@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b1qosgg6n31y7"
-path="res://.godot/imported/ear_lion_gilded_mane.png-ebb38e97b516aafa6bd3e99926614f55.ctex"
+path="res://.godot/imported/ear_lion_gilded_mane.png-426105ad54538497cd7025f9738c9efd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lion/maple_parts/head_unit/ear_lion_gilded_mane.png"
-dest_files=["res://.godot/imported/ear_lion_gilded_mane.png-ebb38e97b516aafa6bd3e99926614f55.ctex"]
+source_file="res://assets/paperdoll/lion/maple_parts/head_unit/ear_lion_gilded_mane.png"
+dest_files=["res://.godot/imported/ear_lion_gilded_mane.png-426105ad54538497cd7025f9738c9efd.ctex"]
 
 [params]
 

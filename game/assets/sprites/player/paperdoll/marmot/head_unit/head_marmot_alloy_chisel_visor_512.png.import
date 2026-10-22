@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ch50epx4uimr5"
-path="res://.godot/imported/head_marmot_alloy_chisel_visor_512.png-2a5dffcde27d4673d8ba6ab2f1cead50.ctex"
+path="res://.godot/imported/head_marmot_alloy_chisel_visor_512.png-5a512b6052642a901ea7985a7735515a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/marmot/head_unit/head_marmot_alloy_chisel_visor_512.png"
-dest_files=["res://.godot/imported/head_marmot_alloy_chisel_visor_512.png-2a5dffcde27d4673d8ba6ab2f1cead50.ctex"]
+source_file="res://assets/sprites/player/marmot/head_unit/head_marmot_alloy_chisel_visor_512.png"
+dest_files=["res://.godot/imported/head_marmot_alloy_chisel_visor_512.png-5a512b6052642a901ea7985a7735515a.ctex"]
 
 [params]
 

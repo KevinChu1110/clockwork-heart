@@ -1,0 +1,269 @@
+{
+  "race": "macaque",
+  "canvas_size": [
+    512,
+    512
+  ],
+  "root_anchor": [
+    256,
+    480
+  ],
+  "anchors": {
+    "neck": [
+      232,
+      260
+    ],
+    "navel": [
+      256,
+      345
+    ],
+    "hand": [
+      200,
+      340
+    ],
+    "back_key": [
+      330,
+      240
+    ],
+    "brow_relative_to_neck": [
+      -2,
+      -120
+    ],
+    "tail": [
+      350,
+      280
+    ]
+  },
+  "default_loadout": {
+    "body": "paint_ivory_stock",
+    "head_unit": "ear_macaque_coaxial",
+    "eyes": "eyes_cyan_emerald",
+    "costume": "costume_dawn_monk_tunic",
+    "weapon": "wpn_spring_claws",
+    "winding_key": "key_classic_brass",
+    "back_curio": "curio_spring_tail"
+  },
+  "parts": {
+    "body": {
+      "anchor": "root",
+      "z_index": 10,
+      "origin": [
+        0,
+        0
+      ],
+      "items": {
+        "paint_ivory_stock": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/body/paint_ivory_stock.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        },
+        "paint_bamboo_bronze": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/body/paint_bamboo_bronze.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        },
+        "paint_zen_gold": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/body/paint_zen_gold.png",
+          "width": 512,
+          "height": 512,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "head_unit": {
+      "anchor": "neck",
+      "z_index": 20,
+      "items": {
+        "ear_macaque_coaxial": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/head_unit/ear_macaque_coaxial.png",
+          "width": 247,
+          "height": 212,
+          "origin": [
+            124,
+            209
+          ]
+        },
+        "ear_macaque_coaxial_bronze": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/head_unit/ear_macaque_coaxial_bronze.png",
+          "width": 247,
+          "height": 212,
+          "origin": [
+            124,
+            209
+          ]
+        },
+        "ear_macaque_coaxial_ivory": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/head_unit/ear_macaque_coaxial_ivory.png",
+          "width": 247,
+          "height": 212,
+          "origin": [
+            124,
+            209
+          ]
+        }
+      }
+    },
+    "eyes": {
+      "anchor": "brow",
+      "z_index": 30,
+      "origin": [
+        45,
+        30
+      ],
+      "items": {
+        "eyes_cyan_emerald": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/eyes/eyes_cyan_emerald.png",
+          "width": 90,
+          "height": 60,
+          "origin": [
+            45,
+            30
+          ]
+        },
+        "eyes_amber_gold": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/eyes/eyes_amber_gold.png",
+          "width": 90,
+          "height": 60,
+          "origin": [
+            45,
+            30
+          ]
+        },
+        "eyes_blink": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/eyes/eyes_blink.png",
+          "width": 90,
+          "height": 60,
+          "origin": [
+            45,
+            30
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "costume": {
+      "anchor": "navel",
+      "z_index": 25,
+      "items": {
+        "costume_dawn_monk_tunic": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/costume/costume_dawn_monk_tunic.png",
+          "width": 151,
+          "height": 164,
+          "origin": [
+            73,
+            83
+          ]
+        },
+        "costume_zen_striker": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/costume/costume_zen_striker.png",
+          "width": 150,
+          "height": 118,
+          "origin": [
+            121,
+            118
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "weapon": {
+      "anchor": "hand",
+      "z_index": 40,
+      "items": {
+        "wpn_spring_claws": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/weapon/wpn_spring_claws.png",
+          "width": 278,
+          "height": 146,
+          "origin": [
+            137,
+            69
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "winding_key": {
+      "anchor": "back_key",
+      "z_index": 5,
+      "items": {
+        "key_classic_brass": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/winding_key/key_classic_brass.png",
+          "width": 96,
+          "height": 110,
+          "origin": [
+            18,
+            80
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    },
+    "back_curio": {
+      "anchor": "tail",
+      "z_index": 8,
+      "items": {
+        "curio_spring_tail": {
+          "path": "res://assets/sprites/player/paperdoll/macaque/maple_parts/back_curio/curio_spring_tail.png",
+          "width": 76,
+          "height": 192,
+          "origin": [
+            10,
+            108
+          ]
+        },
+        "none": {
+          "path": "",
+          "width": 0,
+          "height": 0,
+          "origin": [
+            0,
+            0
+          ]
+        }
+      }
+    }
+  }
+}

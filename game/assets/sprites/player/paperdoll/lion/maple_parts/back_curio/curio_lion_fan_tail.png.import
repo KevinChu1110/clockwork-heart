@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dur5u3q7q67rx"
-path="res://.godot/imported/curio_lion_fan_tail.png-618e73cb44c30b2fe9d79b4f69f9753d.ctex"
+path="res://.godot/imported/curio_lion_fan_tail.png-39b642f0d5e0833afd985254691fd4b7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/lion/maple_parts/back_curio/curio_lion_fan_tail.png"
-dest_files=["res://.godot/imported/curio_lion_fan_tail.png-618e73cb44c30b2fe9d79b4f69f9753d.ctex"]
+source_file="res://assets/sprites/player/paperdoll/lion/maple_parts/back_curio/curio_lion_fan_tail.png"
+dest_files=["res://.godot/imported/curio_lion_fan_tail.png-39b642f0d5e0833afd985254691fd4b7.ctex"]
 
 [params]
 

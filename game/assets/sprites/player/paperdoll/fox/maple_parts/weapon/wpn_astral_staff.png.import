@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cy715qjubp730"
-path="res://.godot/imported/wpn_astral_staff.png-1ed2fe47ef24c95520d399972877b363.ctex"
+path="res://.godot/imported/wpn_astral_staff.png-c1300c3a93149733ea4268cec25f3ed9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/fox/maple_parts/weapon/wpn_astral_staff.png"
-dest_files=["res://.godot/imported/wpn_astral_staff.png-1ed2fe47ef24c95520d399972877b363.ctex"]
+source_file="res://assets/paperdoll/fox/maple_parts/weapon/wpn_astral_staff.png"
+dest_files=["res://.godot/imported/wpn_astral_staff.png-c1300c3a93149733ea4268cec25f3ed9.ctex"]
 
 [params]
 

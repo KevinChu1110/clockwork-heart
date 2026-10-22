@@ -1,13 +1,16 @@
+#!/usr/bin/env python3
 from PIL import Image
+import numpy as np
 
-cand = Image.open("/tmp/test_attack_candidate_v2.png").convert("RGBA")
-px = cand.load()
-assert px is not None
-
-print("Checking edge alphas (Rule 12a):")
-for name, col_idx in [("x=0", 0), ("x=1", 1), ("x=126", 126), ("x=127", 127)]:
-    vals = [px[col_idx, y][3] for y in range(128)]
-    print(f"{name}: max alpha={max(vals)}, count>10={sum(1 for v in vals if v > 10)}")
-
-vals_y0 = [px[x, 0][3] for x in range(128)]
-print(f"y=0: max alpha={max(vals_y0)}, count>10={sum(1 for v in vals_y0 if v > 10)}")
+for name in ["body", "head", "key"]:
+    im = Image.open(f"/tmp/crop_ur_{name}.png")
+    arr = np.array(im)
+    print(f"=== {name} in crop ===")
+    print("Non-zero alpha pixels:", np.sum(arr[:, :, 3] > 0))
+    # Look for straight vertical edges in alpha
+    for x in range(arr.shape[1]):
+        col_alpha = arr[:, x, 3]
+        if np.all(col_alpha[30:80] > 200) and x > 0 and np.all(arr[:, x-1, 3] == 0):
+            print(f"  {name} has vertical edge at rel x={x} (abs x={300+x})")
+        if np.all(col_alpha[30:80] == 0) and x > 0 and np.all(arr[:, x-1, 3] > 200):
+            print(f"  {name} has vertical edge at rel x={x} (abs x={300+x})")

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://da457jfmvajst"
-path="res://.godot/imported/weapon_firefly_luminescent_vine_staff.png-b7a098ac4fe2d413c318b2bef72acc8c.ctex"
+path="res://.godot/imported/weapon_firefly_luminescent_vine_staff.png-3ecd33f57191670db38d6c102f94aec3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/weapon/weapon_firefly_luminescent_vine_staff.png"
-dest_files=["res://.godot/imported/weapon_firefly_luminescent_vine_staff.png-b7a098ac4fe2d413c318b2bef72acc8c.ctex"]
+source_file="res://assets/sprites/player/paperdoll/weapon/weapon_firefly_luminescent_vine_staff.png"
+dest_files=["res://.godot/imported/weapon_firefly_luminescent_vine_staff.png-3ecd33f57191670db38d6c102f94aec3.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3nw4gezr46rhy"
-path="res://.godot/imported/head_kingfisher_beak_lance_cowl.png-782562d5e9ab2ce0ea374f56fcce60f4.ctex"
+uid="uid://bl21b0k06rm6m"
+path="res://.godot/imported/head_kingfisher_beak_lance_cowl.png-4f473710c9c2f33d003d76361808c121.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/kingfisher/head_unit/head_kingfisher_beak_lance_cowl.png"
-dest_files=["res://.godot/imported/head_kingfisher_beak_lance_cowl.png-782562d5e9ab2ce0ea374f56fcce60f4.ctex"]
+source_file="res://assets/sprites/player/kingfisher/head_unit/head_kingfisher_beak_lance_cowl.png"
+dest_files=["res://.godot/imported/head_kingfisher_beak_lance_cowl.png-4f473710c9c2f33d003d76361808c121.ctex"]
 
 [params]
 

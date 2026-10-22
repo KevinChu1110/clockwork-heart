@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cdaorfkx3ug4d"
-path="res://.godot/imported/ear_boar_rivet_cowl_crimson.png-e21b75f1072a84566120419c59baae01.ctex"
+path="res://.godot/imported/ear_boar_rivet_cowl_crimson.png-ccdb00e996734409357f46e2d807b47e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/boar/maple_parts/head_unit/ear_boar_rivet_cowl_crimson.png"
-dest_files=["res://.godot/imported/ear_boar_rivet_cowl_crimson.png-e21b75f1072a84566120419c59baae01.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/maple_parts/head_unit/ear_boar_rivet_cowl_crimson.png"
+dest_files=["res://.godot/imported/ear_boar_rivet_cowl_crimson.png-ccdb00e996734409357f46e2d807b47e.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cro3xclid1jgs"
-path="res://.godot/imported/eyes_amber_gold.png-4118048f75279e69265fb0c8b574e587.ctex"
+path="res://.godot/imported/eyes_amber_gold.png-6c49ee1a0d1155580aaea7205af5537b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/boar/maple_parts/eyes/eyes_amber_gold.png"
-dest_files=["res://.godot/imported/eyes_amber_gold.png-4118048f75279e69265fb0c8b574e587.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/maple_parts/eyes/eyes_amber_gold.png"
+dest_files=["res://.godot/imported/eyes_amber_gold.png-6c49ee1a0d1155580aaea7205af5537b.ctex"]
 
 [params]
 

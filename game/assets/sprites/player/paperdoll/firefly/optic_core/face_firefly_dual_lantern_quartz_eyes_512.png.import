@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dkk2lxqtgu5lp"
-path="res://.godot/imported/face_firefly_dual_lantern_quartz_eyes_512.png-28a8efd45e887ca5dbd16452be6f32d9.ctex"
+path="res://.godot/imported/face_firefly_dual_lantern_quartz_eyes_512.png-f4050740f15961546baebafb797a480b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/firefly/optic_core/face_firefly_dual_lantern_quartz_eyes_512.png"
-dest_files=["res://.godot/imported/face_firefly_dual_lantern_quartz_eyes_512.png-28a8efd45e887ca5dbd16452be6f32d9.ctex"]
+source_file="res://assets/sprites/player/firefly/optic_core/face_firefly_dual_lantern_quartz_eyes_512.png"
+dest_files=["res://.godot/imported/face_firefly_dual_lantern_quartz_eyes_512.png-f4050740f15961546baebafb797a480b.ctex"]
 
 [params]
 

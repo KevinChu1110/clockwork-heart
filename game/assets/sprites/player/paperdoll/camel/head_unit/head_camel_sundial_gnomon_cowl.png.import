@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bpisdxy8pc5rv"
-path="res://.godot/imported/head_camel_sundial_gnomon_cowl.png-7897325905503b9ce36027bc95a57dc9.ctex"
+path="res://.godot/imported/head_camel_sundial_gnomon_cowl.png-fd8541cb92eb58b1ed941f9b8f1771fb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/camel/head_unit/head_camel_sundial_gnomon_cowl.png"
-dest_files=["res://.godot/imported/head_camel_sundial_gnomon_cowl.png-7897325905503b9ce36027bc95a57dc9.ctex"]
+source_file="res://assets/sprites/player/paperdoll/camel/head_unit/head_camel_sundial_gnomon_cowl.png"
+dest_files=["res://.godot/imported/head_camel_sundial_gnomon_cowl.png-fd8541cb92eb58b1ed941f9b8f1771fb.ctex"]
 
 [params]
 

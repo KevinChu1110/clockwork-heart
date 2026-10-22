@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b4v6pdphgnsix"
-path="res://.godot/imported/costume_steam_artisan.png-38a5605206cb7b7c2be3dd34e50e8efc.ctex"
+path="res://.godot/imported/costume_steam_artisan.png-bd6d6b0aca4bb1065203f843c2d44c58.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/rabbit/maple_parts/costume/costume_steam_artisan.png"
-dest_files=["res://.godot/imported/costume_steam_artisan.png-38a5605206cb7b7c2be3dd34e50e8efc.ctex"]
+source_file="res://assets/sprites/player/paperdoll/rabbit/maple_parts/costume/costume_steam_artisan.png"
+dest_files=["res://.godot/imported/costume_steam_artisan.png-bd6d6b0aca4bb1065203f843c2d44c58.ctex"]
 
 [params]
 

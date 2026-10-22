@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cgp7cd6srfbk4"
-path="res://.godot/imported/wpn_dawn_blade.png-3e1da4857e42925e832a3c5b206a070b.ctex"
+path="res://.godot/imported/wpn_dawn_blade.png-7e24c9fb32d3c9f148d78f881db83783.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/rabbit/maple_parts/weapon/wpn_dawn_blade.png"
-dest_files=["res://.godot/imported/wpn_dawn_blade.png-3e1da4857e42925e832a3c5b206a070b.ctex"]
+source_file="res://assets/sprites/player/paperdoll/rabbit/maple_parts/weapon/wpn_dawn_blade.png"
+dest_files=["res://.godot/imported/wpn_dawn_blade.png-7e24c9fb32d3c9f148d78f881db83783.ctex"]
 
 [params]
 

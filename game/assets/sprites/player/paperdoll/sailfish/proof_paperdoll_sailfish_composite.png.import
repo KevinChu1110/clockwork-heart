@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cib728jaem087"
-path="res://.godot/imported/proof_paperdoll_sailfish_composite.png-1d0b4e10d438071e9af4bc933e87c020.ctex"
+path="res://.godot/imported/proof_paperdoll_sailfish_composite.png-1ebc9be19bd5367670c159b13a5bd5e7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/sailfish/proof_paperdoll_sailfish_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_sailfish_composite.png-1d0b4e10d438071e9af4bc933e87c020.ctex"]
+source_file="res://assets/sprites/player/paperdoll/sailfish/proof_paperdoll_sailfish_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_sailfish_composite.png-1ebc9be19bd5367670c159b13a5bd5e7.ctex"]
 
 [params]
 

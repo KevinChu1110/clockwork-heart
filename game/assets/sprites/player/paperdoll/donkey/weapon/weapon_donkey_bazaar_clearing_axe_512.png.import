@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://q1bq72dtyavpe"
-path="res://.godot/imported/weapon_donkey_bazaar_clearing_axe_512.png-6f2cfd18139069f0bd6d2b1041281b01.ctex"
+uid="uid://bkoautotpheoc"
+path="res://.godot/imported/weapon_donkey_bazaar_clearing_axe_512.png-8b09fd5417dcf29c49d5863812b086a3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/donkey/weapon/weapon_donkey_bazaar_clearing_axe_512.png"
-dest_files=["res://.godot/imported/weapon_donkey_bazaar_clearing_axe_512.png-6f2cfd18139069f0bd6d2b1041281b01.ctex"]
+source_file="res://assets/sprites/player/donkey/weapon/weapon_donkey_bazaar_clearing_axe_512.png"
+dest_files=["res://.godot/imported/weapon_donkey_bazaar_clearing_axe_512.png-8b09fd5417dcf29c49d5863812b086a3.ctex"]
 
 [params]
 

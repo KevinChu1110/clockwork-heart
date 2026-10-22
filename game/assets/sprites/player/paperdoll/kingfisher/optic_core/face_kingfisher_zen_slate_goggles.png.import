@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://9ofoyb7vbdq06"
-path="res://.godot/imported/face_kingfisher_zen_slate_goggles.png-1647a25e6794e0e8df443c15b3d4705e.ctex"
+uid="uid://dq5p8uuurqqx2"
+path="res://.godot/imported/face_kingfisher_zen_slate_goggles.png-fe3e049e8ba66bbb459b6518068b0403.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/kingfisher/optic_core/face_kingfisher_zen_slate_goggles.png"
-dest_files=["res://.godot/imported/face_kingfisher_zen_slate_goggles.png-1647a25e6794e0e8df443c15b3d4705e.ctex"]
+source_file="res://assets/sprites/player/kingfisher/optic_core/face_kingfisher_zen_slate_goggles.png"
+dest_files=["res://.godot/imported/face_kingfisher_zen_slate_goggles.png-fe3e049e8ba66bbb459b6518068b0403.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d4de520f217c6"
-path="res://.godot/imported/proof_maple_fox_costume_variants.png-7b3c75281f474eba2a8eaee94fc224e6.ctex"
+path="res://.godot/imported/proof_maple_fox_costume_variants.png-f9e705618aca59e78c059c7f791116d9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/fox/proof_maple_fox_costume_variants.png"
-dest_files=["res://.godot/imported/proof_maple_fox_costume_variants.png-7b3c75281f474eba2a8eaee94fc224e6.ctex"]
+source_file="res://assets/sprites/player/paperdoll/fox/proof_maple_fox_costume_variants.png"
+dest_files=["res://.godot/imported/proof_maple_fox_costume_variants.png-f9e705618aca59e78c059c7f791116d9.ctex"]
 
 [params]
 

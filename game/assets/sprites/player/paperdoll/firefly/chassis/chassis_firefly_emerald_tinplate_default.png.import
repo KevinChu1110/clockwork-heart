@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bnk4r5lrs4gi2"
-path="res://.godot/imported/chassis_firefly_emerald_tinplate_default.png-799196a700f7bab30224106fd115b08c.ctex"
+path="res://.godot/imported/chassis_firefly_emerald_tinplate_default.png-ec4af822e394c3c1a9f56a79a4715adc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/firefly/chassis/chassis_firefly_emerald_tinplate_default.png"
-dest_files=["res://.godot/imported/chassis_firefly_emerald_tinplate_default.png-799196a700f7bab30224106fd115b08c.ctex"]
+source_file="res://assets/sprites/player/firefly/chassis/chassis_firefly_emerald_tinplate_default.png"
+dest_files=["res://.godot/imported/chassis_firefly_emerald_tinplate_default.png-ec4af822e394c3c1a9f56a79a4715adc.ctex"]
 
 [params]
 

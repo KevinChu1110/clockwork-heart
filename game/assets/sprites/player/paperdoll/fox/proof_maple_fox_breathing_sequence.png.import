@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bf55b4ef8a524"
-path="res://.godot/imported/proof_maple_fox_breathing_sequence.png-23bae16bb88bf588e1a741b4852abb75.ctex"
+path="res://.godot/imported/proof_maple_fox_breathing_sequence.png-56852e36bf9b3685add127a8ca4de783.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/fox/proof_maple_fox_breathing_sequence.png"
-dest_files=["res://.godot/imported/proof_maple_fox_breathing_sequence.png-23bae16bb88bf588e1a741b4852abb75.ctex"]
+source_file="res://assets/sprites/player/paperdoll/fox/proof_maple_fox_breathing_sequence.png"
+dest_files=["res://.godot/imported/proof_maple_fox_breathing_sequence.png-56852e36bf9b3685add127a8ca4de783.ctex"]
 
 [params]
 

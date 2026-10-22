@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cugglqe1x5rg1"
-path="res://.godot/imported/costume_royal_guard.png-eb79f5a428957c35afa0f0749ebeeb38.ctex"
+path="res://.godot/imported/costume_royal_guard.png-e06bbc16b82c2873b9d6cf67fb3fce34.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/lion/maple_parts/costume/costume_royal_guard.png"
-dest_files=["res://.godot/imported/costume_royal_guard.png-eb79f5a428957c35afa0f0749ebeeb38.ctex"]
+source_file="res://assets/sprites/player/paperdoll/lion/maple_parts/costume/costume_royal_guard.png"
+dest_files=["res://.godot/imported/costume_royal_guard.png-e06bbc16b82c2873b9d6cf67fb3fce34.ctex"]
 
 [params]
 

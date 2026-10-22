@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bb5q1y1v6dte6"
-path="res://.godot/imported/skill_512.png-492cbb966f33d857606a1230f43fad45.ctex"
+path="res://.godot/imported/skill_512.png-c021cb866afa9f95961dc571e2196faf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/kingfisher/skill_512.png"
-dest_files=["res://.godot/imported/skill_512.png-492cbb966f33d857606a1230f43fad45.ctex"]
+source_file="res://assets/sprites/player/kingfisher/skill_512.png"
+dest_files=["res://.godot/imported/skill_512.png-c021cb866afa9f95961dc571e2196faf.ctex"]
 
 [params]
 

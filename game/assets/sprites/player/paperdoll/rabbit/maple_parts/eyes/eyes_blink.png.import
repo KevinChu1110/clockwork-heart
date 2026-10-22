@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bd0yy0bpov1wu"
-path="res://.godot/imported/eyes_blink.png-74881a027680da4e89c4cfb1ac236ee1.ctex"
+path="res://.godot/imported/eyes_blink.png-beb8e91f8b1ca23be9f9a06bdb04cba3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/rabbit/maple_parts/eyes/eyes_blink.png"
-dest_files=["res://.godot/imported/eyes_blink.png-74881a027680da4e89c4cfb1ac236ee1.ctex"]
+source_file="res://assets/sprites/player/paperdoll/rabbit/maple_parts/eyes/eyes_blink.png"
+dest_files=["res://.godot/imported/eyes_blink.png-beb8e91f8b1ca23be9f9a06bdb04cba3.ctex"]
 
 [params]
 

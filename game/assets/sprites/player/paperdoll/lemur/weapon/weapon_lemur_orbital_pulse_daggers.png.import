@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cbs6so8eycdc7"
-path="res://.godot/imported/weapon_lemur_orbital_pulse_daggers.png-7c52693a364242873d629b1c2a944853.ctex"
+path="res://.godot/imported/weapon_lemur_orbital_pulse_daggers.png-683d2ca81440bafce83c959312379f61.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lemur/weapon/weapon_lemur_orbital_pulse_daggers.png"
-dest_files=["res://.godot/imported/weapon_lemur_orbital_pulse_daggers.png-7c52693a364242873d629b1c2a944853.ctex"]
+source_file="res://assets/sprites/player/lemur/weapon/weapon_lemur_orbital_pulse_daggers.png"
+dest_files=["res://.godot/imported/weapon_lemur_orbital_pulse_daggers.png-683d2ca81440bafce83c959312379f61.ctex"]
 
 [params]
 

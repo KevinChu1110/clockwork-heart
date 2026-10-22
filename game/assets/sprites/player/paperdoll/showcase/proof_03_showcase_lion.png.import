@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bkqo7do4bsws1"
-path="res://.godot/imported/proof_03_showcase_lion.png-9c1b7d289909dd7bf4112d857960b4e6.ctex"
+path="res://.godot/imported/proof_03_showcase_lion.png-71efb96ce580af45d59c465266e725fb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/showcase/proof_03_showcase_lion.png"
-dest_files=["res://.godot/imported/proof_03_showcase_lion.png-9c1b7d289909dd7bf4112d857960b4e6.ctex"]
+source_file="res://assets/paperdoll/showcase/proof_03_showcase_lion.png"
+dest_files=["res://.godot/imported/proof_03_showcase_lion.png-71efb96ce580af45d59c465266e725fb.ctex"]
 
 [params]
 

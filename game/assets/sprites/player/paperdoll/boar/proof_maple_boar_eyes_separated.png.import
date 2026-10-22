@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c7l7breuvasjg"
-path="res://.godot/imported/proof_maple_boar_eyes_separated.png-169beedd401d1e7d22bca9b39d1b8075.ctex"
+path="res://.godot/imported/proof_maple_boar_eyes_separated.png-704d6a0d0cdad20c52383ad7b3d365dc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/boar/proof_maple_boar_eyes_separated.png"
-dest_files=["res://.godot/imported/proof_maple_boar_eyes_separated.png-169beedd401d1e7d22bca9b39d1b8075.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/proof_maple_boar_eyes_separated.png"
+dest_files=["res://.godot/imported/proof_maple_boar_eyes_separated.png-704d6a0d0cdad20c52383ad7b3d365dc.ctex"]
 
 [params]
 

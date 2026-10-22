@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c1o81bxj52h0h"
-path="res://.godot/imported/proof_maple_boar_composite.png-13c381acb04fcf247d0b80c806790a75.ctex"
+path="res://.godot/imported/proof_maple_boar_composite.png-907b53bf41ba017316d5b0583bf37f21.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/boar/proof_maple_boar_composite.png"
-dest_files=["res://.godot/imported/proof_maple_boar_composite.png-13c381acb04fcf247d0b80c806790a75.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/proof_maple_boar_composite.png"
+dest_files=["res://.godot/imported/proof_maple_boar_composite.png-907b53bf41ba017316d5b0583bf37f21.ctex"]
 
 [params]
 

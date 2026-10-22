@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bf6ajdcygsw63"
-path="res://.godot/imported/eyes_cyan_emerald.png-dd0b969dd7e17205bdc4bc9632f944e5.ctex"
+path="res://.godot/imported/eyes_cyan_emerald.png-b406bebf35f14d3e7cdd7980eaf4c130.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/fox/maple_parts/eyes/eyes_cyan_emerald.png"
-dest_files=["res://.godot/imported/eyes_cyan_emerald.png-dd0b969dd7e17205bdc4bc9632f944e5.ctex"]
+source_file="res://assets/sprites/player/paperdoll/fox/maple_parts/eyes/eyes_cyan_emerald.png"
+dest_files=["res://.godot/imported/eyes_cyan_emerald.png-b406bebf35f14d3e7cdd7980eaf4c130.ctex"]
 
 [params]
 

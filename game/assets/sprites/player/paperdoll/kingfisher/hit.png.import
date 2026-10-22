@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://de4ffod4khdyr"
-path="res://.godot/imported/hit.png-60a0e2c39d941c25150c40226454f070.ctex"
+path="res://.godot/imported/hit.png-4da1ec64df0ee832176ef12e2570efe8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/kingfisher/hit.png"
-dest_files=["res://.godot/imported/hit.png-60a0e2c39d941c25150c40226454f070.ctex"]
+source_file="res://assets/sprites/player/kingfisher/hit.png"
+dest_files=["res://.godot/imported/hit.png-4da1ec64df0ee832176ef12e2570efe8.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3ca0qqqof8kby"
-path="res://.godot/imported/key_donkey_dawn_clover_brass_512.png-807bb1c04e554ce829db74946efbd0c7.ctex"
+uid="uid://bafwmdbwhtf0m"
+path="res://.godot/imported/key_donkey_dawn_clover_brass_512.png-f80b67b34323386e2e0056cdfb74174c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/donkey/winding_key/key_donkey_dawn_clover_brass_512.png"
-dest_files=["res://.godot/imported/key_donkey_dawn_clover_brass_512.png-807bb1c04e554ce829db74946efbd0c7.ctex"]
+source_file="res://assets/sprites/player/donkey/winding_key/key_donkey_dawn_clover_brass_512.png"
+dest_files=["res://.godot/imported/key_donkey_dawn_clover_brass_512.png-f80b67b34323386e2e0056cdfb74174c.ctex"]
 
 [params]
 

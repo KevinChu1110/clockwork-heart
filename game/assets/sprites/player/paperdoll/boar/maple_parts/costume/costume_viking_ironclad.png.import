@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://csl5uwpx4siry"
-path="res://.godot/imported/costume_viking_ironclad.png-9ca5be9accaf42151d806a6debc0336c.ctex"
+path="res://.godot/imported/costume_viking_ironclad.png-a85c407e3c194010a2d17997bb47fa5a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/boar/maple_parts/costume/costume_viking_ironclad.png"
-dest_files=["res://.godot/imported/costume_viking_ironclad.png-9ca5be9accaf42151d806a6debc0336c.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/maple_parts/costume/costume_viking_ironclad.png"
+dest_files=["res://.godot/imported/costume_viking_ironclad.png-a85c407e3c194010a2d17997bb47fa5a.ctex"]
 
 [params]
 

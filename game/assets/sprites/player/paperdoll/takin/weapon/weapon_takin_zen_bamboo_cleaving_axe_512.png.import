@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bsjlwribr2lgc"
-path="res://.godot/imported/weapon_takin_zen_bamboo_cleaving_axe_512.png-1d6695249d4643ebab76f4f8948bd7b8.ctex"
+path="res://.godot/imported/weapon_takin_zen_bamboo_cleaving_axe_512.png-c93c100a3f569c702db80d4f4c268ce6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/takin/weapon/weapon_takin_zen_bamboo_cleaving_axe_512.png"
-dest_files=["res://.godot/imported/weapon_takin_zen_bamboo_cleaving_axe_512.png-1d6695249d4643ebab76f4f8948bd7b8.ctex"]
+source_file="res://assets/paperdoll/takin/weapon/weapon_takin_zen_bamboo_cleaving_axe_512.png"
+dest_files=["res://.godot/imported/weapon_takin_zen_bamboo_cleaving_axe_512.png-c93c100a3f569c702db80d4f4c268ce6.ctex"]
 
 [params]
 

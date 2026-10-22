@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ivsrb11xyxj3"
-path="res://.godot/imported/proof_01_showcase_rabbit.png-9904609aac893f9f4893357c010d58b1.ctex"
+path="res://.godot/imported/proof_01_showcase_rabbit.png-79870a6a8038232d87f37b11e5acb90b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/showcase/proof_01_showcase_rabbit.png"
-dest_files=["res://.godot/imported/proof_01_showcase_rabbit.png-9904609aac893f9f4893357c010d58b1.ctex"]
+source_file="res://assets/paperdoll/showcase/proof_01_showcase_rabbit.png"
+dest_files=["res://.godot/imported/proof_01_showcase_rabbit.png-79870a6a8038232d87f37b11e5acb90b.ctex"]
 
 [params]
 

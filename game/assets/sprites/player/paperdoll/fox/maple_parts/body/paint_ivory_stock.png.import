@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://eoer6l0655pl"
-path="res://.godot/imported/paint_ivory_stock.png-01fe80fc5056504725e52701f00efb00.ctex"
+path="res://.godot/imported/paint_ivory_stock.png-ad315ab898969594547c50980355201f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/fox/maple_parts/body/paint_ivory_stock.png"
-dest_files=["res://.godot/imported/paint_ivory_stock.png-01fe80fc5056504725e52701f00efb00.ctex"]
+source_file="res://assets/sprites/player/paperdoll/fox/maple_parts/body/paint_ivory_stock.png"
+dest_files=["res://.godot/imported/paint_ivory_stock.png-ad315ab898969594547c50980355201f.ctex"]
 
 [params]
 

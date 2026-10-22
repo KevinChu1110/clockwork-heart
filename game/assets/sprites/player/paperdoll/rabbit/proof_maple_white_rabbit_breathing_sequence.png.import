@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b7le6xyu323lt"
-path="res://.godot/imported/proof_maple_white_rabbit_breathing_sequence.png-a8ce24df8b30dcdc6b4e7c39608e7108.ctex"
+path="res://.godot/imported/proof_maple_white_rabbit_breathing_sequence.png-f561d8dc7c3debe94b1af91b3108eb2a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/rabbit/proof_maple_white_rabbit_breathing_sequence.png"
-dest_files=["res://.godot/imported/proof_maple_white_rabbit_breathing_sequence.png-a8ce24df8b30dcdc6b4e7c39608e7108.ctex"]
+source_file="res://assets/sprites/player/paperdoll/rabbit/proof_maple_white_rabbit_breathing_sequence.png"
+dest_files=["res://.godot/imported/proof_maple_white_rabbit_breathing_sequence.png-f561d8dc7c3debe94b1af91b3108eb2a.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dcsoyg6rsewdd"
-path="res://.godot/imported/costume_takin_zen_pioneer_heavy_robe_512.png-7f9a6036c62038405debfe0095b13636.ctex"
+path="res://.godot/imported/costume_takin_zen_pioneer_heavy_robe_512.png-126b913e424f243e1b542e03f9b84826.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/takin/costume/costume_takin_zen_pioneer_heavy_robe_512.png"
-dest_files=["res://.godot/imported/costume_takin_zen_pioneer_heavy_robe_512.png-7f9a6036c62038405debfe0095b13636.ctex"]
+source_file="res://assets/paperdoll/takin/costume/costume_takin_zen_pioneer_heavy_robe_512.png"
+dest_files=["res://.godot/imported/costume_takin_zen_pioneer_heavy_robe_512.png-126b913e424f243e1b542e03f9b84826.ctex"]
 
 [params]
 

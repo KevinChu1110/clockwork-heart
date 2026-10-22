@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b56xq2y3wyjqs"
-path="res://.godot/imported/paint_ivory_stock.png-9c22340e40f552a2093b714394f98da9.ctex"
+path="res://.godot/imported/paint_ivory_stock.png-4dd2b5641def2fbb0826796c6b52feb1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/rabbit/maple_parts/body/paint_ivory_stock.png"
-dest_files=["res://.godot/imported/paint_ivory_stock.png-9c22340e40f552a2093b714394f98da9.ctex"]
+source_file="res://assets/sprites/player/paperdoll/rabbit/maple_parts/body/paint_ivory_stock.png"
+dest_files=["res://.godot/imported/paint_ivory_stock.png-4dd2b5641def2fbb0826796c6b52feb1.ctex"]
 
 [params]
 

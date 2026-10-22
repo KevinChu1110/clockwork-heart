@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dauydl37w6cqt"
-path="res://.godot/imported/wpn_anvil_greathammer.png-992d90524c22cc2f4d07dacf8469ded5.ctex"
+path="res://.godot/imported/wpn_anvil_greathammer.png-8df4e7b721c26d9fc785336da7996a39.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/boar/maple_parts/weapon/wpn_anvil_greathammer.png"
-dest_files=["res://.godot/imported/wpn_anvil_greathammer.png-992d90524c22cc2f4d07dacf8469ded5.ctex"]
+source_file="res://assets/sprites/player/paperdoll/boar/maple_parts/weapon/wpn_anvil_greathammer.png"
+dest_files=["res://.godot/imported/wpn_anvil_greathammer.png-8df4e7b721c26d9fc785336da7996a39.ctex"]
 
 [params]
 

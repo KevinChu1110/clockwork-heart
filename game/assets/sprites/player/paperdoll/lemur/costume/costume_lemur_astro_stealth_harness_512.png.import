@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cv227pbp8sbyp"
-path="res://.godot/imported/costume_lemur_astro_stealth_harness_512.png-f709f4b6a3a29e67dce151a7ed2439db.ctex"
+path="res://.godot/imported/costume_lemur_astro_stealth_harness_512.png-65eb4a8f90e35dd7cf247b1415640f62.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/lemur/costume/costume_lemur_astro_stealth_harness_512.png"
-dest_files=["res://.godot/imported/costume_lemur_astro_stealth_harness_512.png-f709f4b6a3a29e67dce151a7ed2439db.ctex"]
+source_file="res://assets/sprites/player/lemur/costume/costume_lemur_astro_stealth_harness_512.png"
+dest_files=["res://.godot/imported/costume_lemur_astro_stealth_harness_512.png-65eb4a8f90e35dd7cf247b1415640f62.ctex"]
 
 [params]
 

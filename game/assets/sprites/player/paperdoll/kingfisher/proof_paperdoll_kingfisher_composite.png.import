@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://plfvtck4ouasg"
-path="res://.godot/imported/proof_paperdoll_kingfisher_composite.png-29e09d3a0509b6d3a742b718b3cb4075.ctex"
+uid="uid://dy7a15tdy8ni5"
+path="res://.godot/imported/proof_paperdoll_kingfisher_composite.png-29fb58977c5be8622f0995aec907e395.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/kingfisher/proof_paperdoll_kingfisher_composite.png"
-dest_files=["res://.godot/imported/proof_paperdoll_kingfisher_composite.png-29e09d3a0509b6d3a742b718b3cb4075.ctex"]
+source_file="res://assets/sprites/player/kingfisher/proof_paperdoll_kingfisher_composite.png"
+dest_files=["res://.godot/imported/proof_paperdoll_kingfisher_composite.png-29fb58977c5be8622f0995aec907e395.ctex"]
 
 [params]
 

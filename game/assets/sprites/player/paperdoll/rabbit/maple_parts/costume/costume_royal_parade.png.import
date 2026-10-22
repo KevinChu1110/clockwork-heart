@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bpx5murwmflkn"
-path="res://.godot/imported/costume_royal_parade.png-2688f04eb09e757fb31856d65043ae0e.ctex"
+path="res://.godot/imported/costume_royal_parade.png-92dcea034af979f383da86968ec8186f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/paperdoll/rabbit/maple_parts/costume/costume_royal_parade.png"
-dest_files=["res://.godot/imported/costume_royal_parade.png-2688f04eb09e757fb31856d65043ae0e.ctex"]
+source_file="res://assets/sprites/player/paperdoll/rabbit/maple_parts/costume/costume_royal_parade.png"
+dest_files=["res://.godot/imported/costume_royal_parade.png-92dcea034af979f383da86968ec8186f.ctex"]
 
 [params]
 

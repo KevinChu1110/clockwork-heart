@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bm30slktqsgl0"
-path="res://.godot/imported/costume_firefly_vine_harness_cuirass.png-8a4e3e0f7757c71a6f09922d132ed594.ctex"
+path="res://.godot/imported/costume_firefly_vine_harness_cuirass.png-1a6602b5ef716c8bdd3bde6d78bfb305.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/sprites/player/paperdoll/firefly/costume/costume_firefly_vine_harness_cuirass.png"
-dest_files=["res://.godot/imported/costume_firefly_vine_harness_cuirass.png-8a4e3e0f7757c71a6f09922d132ed594.ctex"]
+source_file="res://assets/sprites/player/firefly/costume/costume_firefly_vine_harness_cuirass.png"
+dest_files=["res://.godot/imported/costume_firefly_vine_harness_cuirass.png-1a6602b5ef716c8bdd3bde6d78bfb305.ctex"]
 
 [params]
 
